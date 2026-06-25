@@ -1,9 +1,9 @@
 /**
  * lawfirm — modèle de domaine (schema-as-code, à triturer en DDD)
  *
- * « lawfirm » (nom de travail, renomme quand tu veux) = un cabinet :
- *   des avocats (Agents) qui appliquent la loi (Rules) pour des clients (Projects).
- *   iamthelaw = la LOI ; les agents/skills = l'ÉQUIPE ; le Profile = le dossier qui lie tout.
+ * « mega-city » (Mega-City One, univers Judge Dredd) = le monde où la loi règne.
+ *   les Juges (Agents) appliquent la loi (Rules) pour des projets — « I AM THE LAW ».
+ *   iamthelaw = la LOI ; the Judges (agents/skills) = l'ÉQUIPE ; le Profile = le dossier qui lie tout.
  *
  * ─────────────────────────────────────────────────────────────────
  * RÈGLE D'OR (leçon lifefindsaway) :

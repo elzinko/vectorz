@@ -1,7 +1,7 @@
-# lawfirm — _starter_ (nom de travail, à renommer)
+# mega-city — _starter_ (univers Judge Dredd)
 
-> Un cabinet : des **avocats** (agents) qui appliquent **la loi** (rules) pour des **clients** (projets),
-> sur **n'importe quel LLM** (Claude Code, Claude Desktop, Cursor, cop1…).
+> **Mega-City One** : des **Juges** (agents) qui appliquent **la loi** (rules) pour des **projets**,
+> sur **n'importe quel LLM** (Claude Code, Claude Desktop, Cursor, cop1…). « I AM THE LAW » → `iamthelaw`.
 >
 > État : **starter à triturer**. Rien n'est branché. Tes `claude-skills` actuels continuent de
 > marcher inchangés — voir `caps/claude-desktop/`.
@@ -44,6 +44,11 @@ ses transitions d'état au LLM → instable. Ici : le LLM rédige et conseille, 
 | `bin/` | moteur déterministe (`bind`, `capture`) | script |
 | `journal/` | mémoire append-only du flywheel | markdown |
 | `docs/` | `domain.ts` (schema-as-code), ADR, diagrammes | — |
+
+## Nommage
+
+Univers **Judge Dredd** (« I AM THE LAW » → `iamthelaw`). Produits/commandes = noms Dredd,
+dossiers techniques = noms fonctionnels. Convention complète : [`docs/naming.md`](docs/naming.md).
 
 ## Par où commencer à triturer
 
