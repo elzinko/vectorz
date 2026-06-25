@@ -1,0 +1,55 @@
+<svg viewBox="0 0 920 480" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, ui-sans-serif, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="480" fill="#ffffff"/>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+  <text x="40" y="34" font-size="19" font-weight="600" fill="#1f1f1d">capture — le LLM rédige / juge, le script range</text>
+  <text x="40" y="56" font-size="12.5" fill="#6e6a64">ajouter une compétence ou une interaction en cours de projet, historisée — c'est le flywheel</text>
+
+  <!-- flywheel loop-back (top + right) -->
+  <path d="M730 350 C 852 350, 852 103, 720 103 L 366 103" fill="none" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#a)"/>
+  <text x="543" y="97" font-size="11.5" fill="#2563eb" text-anchor="middle">♻ flywheel — la session suivante démarre plus loin</text>
+
+  <!-- trigger -->
+  <rect x="40" y="78" width="320" height="50" rx="9" fill="#f6f5f3" stroke="#d9d5cf"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#1f1f1d">
+    <text x="56" y="100">/capture ezk-reviewer \</text>
+    <text x="56" y="117" fill="#6e6a64">  --interaction "…signaler un secret hardcodé"</text>
+  </g>
+
+  <!-- LANE : bords LLM -->
+  <text x="40" y="162" font-size="13.5" font-weight="600" fill="#1f1f1d">BORDS — LLM <tspan font-weight="400" font-size="12" fill="#6e6a64">· rédige / juge (consultatif, ne bloque rien)</tspan></text>
+  <rect x="40" y="174" width="280" height="64" rx="9" fill="#fff" stroke="#2563eb"/>
+  <text x="56" y="200" font-size="13" font-weight="600" fill="#2563eb">1 · Rédacteur (LLM)</text>
+  <text x="56" y="222" font-size="12" fill="#6e6a64">génère le markdown de la règle</text>
+  <rect x="350" y="174" width="300" height="64" rx="9" fill="#fff" stroke="#2563eb"/>
+  <text x="366" y="200" font-size="13" font-weight="600" fill="#2563eb">2 · Juge (LLM)</text>
+  <text x="366" y="222" font-size="12" fill="#6e6a64">cohérent ? doublon ? → un avis</text>
+
+  <!-- boundary -->
+  <line x1="30" y1="270" x2="890" y2="270" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="5 4"/>
+  <text x="884" y="264" font-size="11.5" fill="#b91c1c" text-anchor="end">frontière — le LLM ne RANGE jamais (leçon lifefindsaway)</text>
+
+  <!-- LANE : cœur déterministe -->
+  <text x="40" y="300" font-size="13.5" font-weight="600" fill="#1f1f1d">CŒUR — script déterministe <tspan font-weight="400" font-size="12" fill="#6e6a64">· range (toujours pareil, testé)</tspan></text>
+  <rect x="40" y="312" width="360" height="86" rx="9" fill="#f6f5f3" stroke="#d9d5cf"/>
+  <text x="56" y="338" font-size="13" font-weight="600" fill="#1f1f1d">3 · Moteur (script)</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#6e6a64">
+    <text x="56" y="361">append → agents/ezk-reviewer.md  interactions[]</text>
+    <text x="56" y="381">+ 1 ligne  journal/learnings.md   ·   git commit</text>
+  </g>
+  <rect x="430" y="312" width="300" height="86" rx="9" fill="#f6f5f3" stroke="#d9d5cf"/>
+  <text x="446" y="338" font-size="13" font-weight="600" fill="#1f1f1d">4 · bind (prochaine session)</text>
+  <text x="446" y="361" font-size="12" fill="#6e6a64">ezk-reviewer rechargé AVEC l'ajout</text>
+  <text x="446" y="381" font-size="11.5" fill="#15803d">le LLM se met à jour en relisant sa définition</text>
+
+  <!-- arrows -->
+  <g stroke="#6e6a64" stroke-width="1.4">
+    <line x1="180" y1="128" x2="180" y2="172" marker-end="url(#a)"/>
+    <line x1="320" y1="206" x2="348" y2="206" marker-end="url(#a)"/>
+    <line x1="490" y1="238" x2="235" y2="310" marker-end="url(#a)"/>
+    <line x1="400" y1="355" x2="428" y2="355" marker-end="url(#a)"/>
+  </g>
+  <text x="372" y="292" font-size="11" fill="#6e6a64">avis OK →</text>
+
+  <text x="40" y="464" font-size="12" fill="#6e6a64">catalogues = markdown / yaml neutres · caps/&lt;host&gt; = forme native de chaque LLM (Claude Code, Desktop, cop1…)</text>
+</svg>
