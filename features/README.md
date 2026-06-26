@@ -16,6 +16,7 @@
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo | |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script | refactor | P2 | 🔴 todo | |
 | 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 | 🔴 todo | |
+| 0016 | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 | 🔴 todo | |
 | 0008 | chief-judge — juge de cohérence (avis) | feature | P3 | 🔴 todo | |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo | |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
