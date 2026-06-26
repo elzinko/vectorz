@@ -5,8 +5,8 @@
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
-| 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | 🟠 in-progress | |
-| 0002 | lawgiver `capture` — flywheel | feature | P1 | 🔴 todo | |
+| 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local |
+| 0002 | lawgiver `capture` — flywheel | feature | P1 | 🟠 in-progress | |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
 | 0004 | migrer ezk-commits → skills/ | chore | P1 | 🔴 todo | |
 | 0010 | bind — merge/backup au lieu d'écraser CLAUDE.md et les hooks | feature | P1 | 🔴 todo | |
@@ -17,3 +17,5 @@
 | 0008 | chief-judge — juge de cohérence (avis) | feature | P3 | 🔴 todo | |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo | |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
+
+> Livrées (`done/`) : 0001.
