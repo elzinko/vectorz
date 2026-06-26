@@ -6,10 +6,10 @@
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local |
+| 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | 🔴 todo | |
 | 0002 | lawgiver `capture` — flywheel | feature | P1 | ✅ shipped | local |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
 | 0004 | migrer ezk-commits → skills/ | chore | P1 | 🔴 todo | |
-| 0010 | bind — merge/backup au lieu d'écraser CLAUDE.md et les hooks | feature | P1 | 🔴 todo | |
 | 0013 | capture — câbler une interaction/competence dans le frontmatter d'un agent | feature | P1 | 🔴 todo | |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo | |
 | 0006 | migrer les rulesets iamthelaw → rules/ + bundles/ | chore | P2 | 🔴 todo | |
