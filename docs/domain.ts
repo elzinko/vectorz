@@ -1,5 +1,5 @@
 /**
- * lawfirm — modèle de domaine (schema-as-code, à triturer en DDD)
+ * mega-city — modèle de domaine (schema-as-code, à triturer en DDD)
  *
  * « mega-city » (Mega-City One, univers Judge Dredd) = le monde où la loi règne.
  *   les Juges (Agents) appliquent la loi (Rules) pour des projets — « I AM THE LAW ».
@@ -30,12 +30,17 @@ export interface Enforcement {
   hook?: { stage: string; script: string };  // hook → script déterministe (git hook), bloquant
 }
 
+/** disposition = contrainte sur un artefact ; interaction = protocole de collaboration entre agents (cf. ADR-0002). */
+export type RuleKind = 'disposition' | 'interaction';
+
 /** Unité minimale et composable de « comment travailler ». Fichier MARKDOWN + frontmatter. */
 export interface Rule {
   id: string;             // 'clean-code/no-dead-code'
+  kind: RuleKind;         // 'disposition' (défaut) | 'interaction' ; le tag = la couture de promotion (ADR-0002)
   level: Level;
   content: string;        // la disposition (corps markdown — ce que le LLM lit)
   enforcements?: Enforcement[];
+  participants?: string[];// OPTIONNEL — ids d'Agents, seulement pour kind='interaction'. Latent (ADR-0002).
 }
 
 /** Groupe nommé et composable de règles. Fichier YAML (zéro prose → surtout pas du markdown). */

@@ -1,5 +1,6 @@
 ---
 id: clean-code/no-dead-code
+kind: disposition
 level: MUST
 enforcements:
   - type: agent-check

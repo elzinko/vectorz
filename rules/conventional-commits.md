@@ -1,5 +1,6 @@
 ---
 id: conventional-commits/format
+kind: disposition
 level: MUST
 enforcements:
   - type: hook
