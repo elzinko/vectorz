@@ -1,22 +1,28 @@
 #!/usr/bin/env tsx
 /**
- * lawgiver — CLI du moteur déterministe (ADR-0003).
+ * lawgiver — CLI du moteur déterministe (ADR-0003 / ADR-0004).
  *
- *   lawgiver bind <profile> <projet> [host]   (host par défaut : claude-code)
+ *   lawgiver bind <profile> <projet> [host]          (host par défaut : claude-code)
+ *   lawgiver capture <cible> <kind> --content "<md>"  (kind = rule|skill|agent|interaction)
  *
- * Parse les args, calcule le plan PUR (`bind`) puis l'applique via la coquille
- * I/O unique (`applyPlan`). Aucune logique métier ici.
+ * Parse les args, calcule un plan PUR puis l'applique via la coquille I/O unique.
+ * Aucune logique métier ici. Pour `capture`, le markdown est fourni par `--content`
+ * (les vrais ports LLM author/judge sont injectés ailleurs ; le POC ne câble aucun
+ * appel LLM réel — ADR-0004 §2).
  */
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { bind } from '../src/core/bind.js';
 import { applyPlan } from '../src/io/apply.js';
-import type { HostId } from '../src/domain/model.js';
+import { planCapture } from '../src/core/capture.js';
+import { applyCapture } from '../src/io/capture.js';
+import type { HostId, LearningEntry } from '../src/domain/model.js';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function usage(): never {
   console.error('Usage: lawgiver bind <profile> <projet> [host]');
+  console.error('       lawgiver capture <cible> <kind> --content "<markdown>"');
   process.exit(2);
 }
 
@@ -31,10 +37,42 @@ function runBind(profile: string, projectDir: string, host: HostId): void {
   );
 }
 
+const CAPTURE_KINDS: ReadonlyArray<LearningEntry['kind']> = ['rule', 'skill', 'agent', 'interaction'];
+
+function isCaptureKind(value: string): value is LearningEntry['kind'] {
+  return (CAPTURE_KINDS as readonly string[]).includes(value);
+}
+
+function today(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function runCapture(target: string, kind: string, content: string): void {
+  if (!isCaptureKind(kind)) usage();
+  const plan = planCapture(target, kind, content, today());
+  applyCapture(plan, repoRoot);
+  console.log(`lawgiver: capture ${kind} '${target}' → ${plan.artifact.path} + journal + commit.`);
+}
+
+function parseContentFlag(args: string[]): string {
+  const i = args.indexOf('--content');
+  if (i === -1 || !args[i + 1]) usage();
+  return args[i + 1];
+}
+
 function main(argv: string[]): void {
-  const [command, profile, projectDir, host = 'claude-code'] = argv;
-  if (command !== 'bind' || !profile || !projectDir) usage();
-  runBind(profile, projectDir, host);
+  const [command, ...rest] = argv;
+  if (command === 'bind') {
+    const [profile, projectDir, host = 'claude-code'] = rest;
+    if (!profile || !projectDir) usage();
+    return runBind(profile, projectDir, host);
+  }
+  if (command === 'capture') {
+    const [target, kind] = rest;
+    if (!target || !kind) usage();
+    return runCapture(target, kind, parseContentFlag(rest));
+  }
+  usage();
 }
 
 main(process.argv.slice(2));

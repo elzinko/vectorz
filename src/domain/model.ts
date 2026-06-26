@@ -12,6 +12,7 @@ export type {
   Enforcement,
   EnforcementType,
   HostId,
+  LearningEntry,
   Level,
   Profile,
   ResolvedProfile,
