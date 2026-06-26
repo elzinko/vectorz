@@ -6,7 +6,7 @@
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local |
-| 0002 | lawgiver `capture` — flywheel | feature | P1 | 🟠 in-progress | |
+| 0002 | lawgiver `capture` — flywheel | feature | P1 | ✅ shipped | local |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
 | 0004 | migrer ezk-commits → skills/ | chore | P1 | 🔴 todo | |
 | 0010 | bind — merge/backup au lieu d'écraser CLAUDE.md et les hooks | feature | P1 | 🔴 todo | |
@@ -21,4 +21,4 @@
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
 | 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo | |
 
-> Livrées (`done/`) : 0001.
+> Livrées (`done/`) : 0001, 0002.

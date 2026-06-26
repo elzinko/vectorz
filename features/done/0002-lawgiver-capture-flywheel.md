@@ -3,8 +3,8 @@ id: 0002
 title: lawgiver capture — flywheel
 type: feature
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-26
 ---
 
