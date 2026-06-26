@@ -16,6 +16,9 @@
  *          la composition pure → YAML (Bundle, Profile).
  */
 
+// ADR-0003 : le moteur `bind` est pur et retourne un plan d'écriture.
+import type { WritePlan } from '../src/domain/plan.js';
+
 // ════════════════════════════════════════════════════════════════
 // CATALOGUE 1 — LA LOI (règles)            [ iamthelaw ]
 // ════════════════════════════════════════════════════════════════
@@ -95,10 +98,13 @@ export type HostId = 'claude-code' | 'claude-desktop' | 'cursor' | 'cop1' | stri
  *   - claude-desktop → dossiers de skills importables
  *   - cursor / cop1  → leur format natif
  * C'est ça, « utilisable par n'importe quel LLM » : un Cap de plus, pas un corpus réécrit.
+ *
+ * ADR-0003 : `materialize` retourne un WritePlan PUR (ne touche pas le disque).
+ * Une coquille I/O unique (src/io/apply.ts) applique le plan.
  */
 export interface Cap {
   host: HostId;
-  materialize(resolved: ResolvedProfile, projectDir: string): void; // DÉTERMINISTE
+  materialize(resolved: ResolvedProfile, projectDir: string): WritePlan; // DÉTERMINISTE, PUR
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -115,8 +121,12 @@ export interface ResolvedProfile {
 /** DÉTERMINISTE — pure data : résout extends + déduplique. Aucune IA. */
 export declare function expand(profile: Profile): ResolvedProfile;
 
-/** DÉTERMINISTE — écrit dans le projet via le Cap de l'hôte. « Charger d'un coup ». */
-export declare function bind(profile: Profile, projectDir: string, host: HostId): void;
+/**
+ * DÉTERMINISTE — calcule le PLAN d'écriture du projet via le Cap de l'hôte.
+ * « Charger d'un coup ». ADR-0003 : pur, retourne un WritePlan (l'application
+ * disque est faite par la coquille I/O, src/io/apply.ts).
+ */
+export declare function bind(profile: Profile, projectDir: string, host: HostId): WritePlan;
 
 /** Une ligne du journal append-only = la mémoire du flywheel. */
 export interface LearningEntry {

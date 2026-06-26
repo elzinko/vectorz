@@ -3,7 +3,7 @@ id: 0001
 title: lawgiver bind — cap claude-code (MVP déterministe)
 type: feature
 priority: P0
-status: todo
+status: in-progress
 pr:
 created: 2026-06-26
 ---
