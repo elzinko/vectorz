@@ -13,3 +13,9 @@ ezk-commits/
 
 **Migration** : tes skills `ezk-*` actuels (repo `claude-skills`) viendront ici à ton rythme.
 En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `caps/claude-desktop/`.
+
+## Catalogue
+
+| skill | état | rôle |
+|---|---|---|
+| `ezk-ezk` | 📝 proposé (ADR-0007) | méta-skill : transforme une session en skill réutilisable (compose brainstorming + architecture + skill-creator ; range via `scripts/deploy.sh`) |
