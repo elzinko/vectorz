@@ -3,8 +3,8 @@ id: 0021
 title: ezk-ezk — méta-skill : créer un skill depuis la session (brainstorm → archi → déploiement)
 type: feature
 priority: P2
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-27
 ---
 
