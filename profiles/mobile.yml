@@ -1,8 +1,8 @@
 # Profil mobile — LE keystone : compose tout ce dont un sous-projet mobile a besoin.
 # Chargé d'un coup au démarrage de session :  bind(mobile, <projet>, <host>)
 id: mobile
-extends: []
+extends: [base]            # → hérite le socle (skill ezk-archive, etc.)
 bundles: [mobile]          # → règles (mobile extends base)
 agents: [ezk-reviewer]     # → l'équipe
-skills: [ezk-commits]      # → compétences du projet
+skills: [ezk-commits]      # → compétences du projet (+ ezk-archive hérité de base)
 interactions: []           # → règles d'interaction entre agents

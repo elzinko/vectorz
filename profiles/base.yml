@@ -1,0 +1,8 @@
+# Profil base — socle hérité par les autres profils (via `extends: [base]`).
+# Porte les compétences transverses, indépendantes de la cible (mobile, desktop…).
+id: base
+extends: []
+bundles: [base]            # → règles communes (clean-code, conventional-commits)
+agents: []                 # → pas d'équipe au socle ; chaque profil ajoute la sienne
+skills: [ezk-archive]      # → hygiène de clôture de session (transverse à tout projet)
+interactions: []           # → règles d'interaction entre agents
