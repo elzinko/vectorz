@@ -7,17 +7,19 @@
 |---|-------|------|------|--------|----|
 | 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local |
 | 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | 🔴 todo | |
+| 0017 | cap global — matérialiser un profil dans ~/.claude (porte source-unique) | feature | P0 | 🔴 todo | |
 | 0002 | lawgiver `capture` — flywheel | feature | P1 | ✅ shipped | local |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
-| 0004 | migrer ezk-commits → skills/ (premier pas ADR-0006) | chore | P1 | 🔴 todo | |
+| 0004 | migrer ezk-commits → skills/ (pilote plomberie ADR-0006) | chore | P1 | 🔴 todo | |
 | 0013 | capture — câbler une interaction/competence dans le frontmatter d'un agent | feature | P1 | 🔴 todo | |
-| 0017 | cap global — matérialiser un profil dans ~/.claude (remplace install.sh) | feature | P1 | 🔴 todo | |
+| 0018 | coquille I/O — mode link vs copy (symlink live-update) | feature | P1 | 🔴 todo | |
+| 0019 | migrer + étendre ezk-design-system (UI/UX consultable + requêtable) | feature | P1 | 🔴 todo | |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo | |
 | 0006 | migrer les rulesets iamthelaw → rules/ + bundles/ | chore | P2 | 🔴 todo | |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo | |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script | refactor | P2 | 🔴 todo | |
 | 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 | 🔴 todo | |
-| 0018 | coquille I/O — mode link vs copy (symlink live-update) | feature | P2 | 🔴 todo | |
+| 0020 | explorer le domaine « stack → toolchain » (cousin de Cap, axe techno) | feature | P2 | 🔴 todo | |
 | 0008 | chief-judge — juge de cohérence (avis) | feature | P3 | 🔴 todo | |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo | |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |

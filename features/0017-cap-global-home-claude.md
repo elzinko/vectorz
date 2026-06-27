@@ -2,7 +2,7 @@
 id: 0017
 title: cap global — matérialiser un profil dans ~/.claude (remplace install.sh)
 type: feature
-priority: P1
+priority: P0
 status: todo
 pr:
 created: 2026-06-27

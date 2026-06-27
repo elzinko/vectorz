@@ -2,7 +2,7 @@
 id: 0018
 title: coquille I/O — mode link vs copy (porter le symlink live-update de claude-skills)
 type: feature
-priority: P2
+priority: P1
 status: todo
 pr:
 created: 2026-06-27
