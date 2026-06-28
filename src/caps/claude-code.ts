@@ -21,6 +21,7 @@ function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   return resolved.agents.map((agent) => ({
     path: `.claude/agents/${agent.id}.md`,
     content: `${agent.role.trim()}\n`,
+    intent: 'replace',
   }));
 }
 
@@ -31,6 +32,7 @@ function skillFiles(resolved: ResolvedProfile): FileWrite[] {
     .map((skill) => ({
       path: `.claude/skills/${skill.id}.md`,
       content: `${skill.content.trim()}\n`,
+      intent: 'replace',
     }));
 }
 
@@ -41,11 +43,13 @@ function compileRule(rule: Rule): string {
 function entryFile(resolved: ResolvedProfile): FileWrite {
   const header = ['# I AM THE LAW', '', 'Règles compilées de ce projet (cap claude-code).', ''];
   const body = resolved.rules.map(compileRule);
-  return { path: ENTRY_PATH, content: [...header, ...body].join('\n') };
+  // Le cap POSSÈDE ENTRY.md → remplacement franc.
+  return { path: ENTRY_PATH, content: [...header, ...body].join('\n'), intent: 'replace' };
 }
 
 function claudeMdFile(): FileWrite {
-  return { path: 'CLAUDE.md', content: `${CLAUDE_MD_REFERENCE}\n` };
+  // CLAUDE.md est PARTAGÉ avec l'humain → bloc managé (le reste préservé).
+  return { path: 'CLAUDE.md', content: `${CLAUDE_MD_REFERENCE}\n`, intent: 'managed-block' };
 }
 
 /** Hook git déterministe qui valide le format Conventional Commits (enforcement niveau 2). */
@@ -69,7 +73,12 @@ function collectHooks(resolved: ResolvedProfile): HookWrite[] {
   for (const rule of resolved.rules) {
     for (const enforcement of rule.enforcements ?? []) {
       if (enforcement.type !== 'hook' || !enforcement.hook) continue;
-      hooks.push({ stage: enforcement.hook.stage, script: commitMsgHookScript() });
+      // Un hook perso préexistant qui diffère ne doit jamais être écrasé sans --force.
+      hooks.push({
+        stage: enforcement.hook.stage,
+        script: commitMsgHookScript(),
+        intent: 'skip-if-exists',
+      });
     }
   }
   return hooks;

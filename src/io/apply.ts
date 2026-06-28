@@ -8,12 +8,30 @@
  *
  * Aucune logique métier ici : tout le « quoi écrire » vient du plan.
  */
-import { mkdirSync, writeFileSync, chmodSync, existsSync, readdirSync, statSync } from 'node:fs';
+import {
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  copyFileSync,
+  chmodSync,
+  existsSync,
+  readdirSync,
+  statSync,
+} from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import type { WritePlan } from '../domain/plan.js';
+import type { FileWrite, HookWrite, WritePlan } from '../domain/plan.js';
 
 const EXECUTABLE = 0o755;
+
+/** Marqueurs du bloc managé (fiche 0010) — stables, réutilisables par tous les caps. */
+const BLOCK_START = '<!-- iamthelaw:start -->';
+const BLOCK_END = '<!-- iamthelaw:end -->';
+
+/** Options d'application. `force` autorise la réécriture franche d'un existant qui diffère. */
+export interface ApplyOptions {
+  force?: boolean;
+}
 
 /**
  * Défense en profondeur (F1) : tout chemin du plan doit résoudre SOUS `projectDir`.
@@ -29,11 +47,40 @@ function resolveInsideProject(projectDir: string, path: string): string {
   return absolute;
 }
 
-function writeFile(projectDir: string, path: string, content: string, mode?: number): void {
-  const absolute = resolveInsideProject(projectDir, path);
+function writeRaw(absolute: string, content: string, mode?: number): void {
   mkdirSync(dirname(absolute), { recursive: true });
   writeFileSync(absolute, content);
   if (mode !== undefined) chmodSync(absolute, mode);
+}
+
+/**
+ * Fusionne un bloc managé dans un contenu existant (fiche 0010). Idempotent :
+ *   - pas de marqueurs → AJOUTE le bloc en préservant 100% du contenu existant ;
+ *   - marqueurs présents → REMPLACE uniquement le bloc (le reste intact).
+ */
+function mergeManagedBlock(existing: string, blockBody: string): string {
+  const block = `${BLOCK_START}\n${blockBody.trim()}\n${BLOCK_END}\n`;
+  const startAt = existing.indexOf(BLOCK_START);
+  const endAt = existing.indexOf(BLOCK_END);
+  if (startAt !== -1 && endAt !== -1 && endAt > startAt) {
+    const before = existing.slice(0, startAt);
+    const after = existing.slice(endAt + BLOCK_END.length).replace(/^\n/, '');
+    return `${before}${block}${after}`;
+  }
+  const base = existing.length === 0 || existing.endsWith('\n') ? existing : `${existing}\n`;
+  const separator = base.length === 0 ? '' : '\n';
+  return `${base}${separator}${block}`;
+}
+
+/** Applique un FileWrite selon son intention de fusion. */
+function applyFile(projectDir: string, file: FileWrite): void {
+  const absolute = resolveInsideProject(projectDir, file.path);
+  if (file.intent === 'managed-block') {
+    const existing = existsSync(absolute) ? readFileSync(absolute, 'utf8') : '';
+    writeRaw(absolute, mergeManagedBlock(existing, file.content), file.mode);
+    return;
+  }
+  writeRaw(absolute, file.content, file.mode);
 }
 
 function ensureGitRepo(projectDir: string): void {
@@ -41,22 +88,37 @@ function ensureGitRepo(projectDir: string): void {
   execFileSync('git', ['init', '--quiet'], { cwd: projectDir });
 }
 
-function poseHook(projectDir: string, stage: string, script: string): void {
-  const hookPath = resolveInsideProject(projectDir, join('.git', 'hooks', stage));
-  mkdirSync(dirname(hookPath), { recursive: true });
-  writeFileSync(hookPath, script);
-  chmodSync(hookPath, EXECUTABLE);
+/**
+ * Pose un hook selon son intention (fiche 0010). `skip-if-exists` : un hook
+ * perso préexistant qui DIFFÈRE n'est jamais écrasé sans `force` (sinon backup `.bak`
+ * puis refus explicite). Identique → idempotent, pas d'erreur.
+ */
+function poseHook(projectDir: string, hook: HookWrite, force: boolean): void {
+  const hookPath = resolveInsideProject(projectDir, join('.git', 'hooks', hook.stage));
+  if (hook.intent === 'skip-if-exists' && existsSync(hookPath)) {
+    const current = readFileSync(hookPath, 'utf8');
+    if (current === hook.script) return; // déjà à jour : idempotent.
+    if (!force) {
+      throw new Error(
+        `refus non-destructif : le hook ${JSON.stringify(hook.stage)} existe et diffère. ` +
+          'Relance avec --force pour l’écraser (un backup .bak sera créé).',
+      );
+    }
+    copyFileSync(hookPath, `${hookPath}.bak`);
+  }
+  writeRaw(hookPath, hook.script, EXECUTABLE);
 }
 
 /** Applique le plan sur `projectDir`. Idempotent (réécrit le même contenu). */
-export function applyPlan(plan: WritePlan, projectDir: string): void {
+export function applyPlan(plan: WritePlan, projectDir: string, options: ApplyOptions = {}): void {
+  const force = options.force === true;
   for (const file of plan.files) {
-    writeFile(projectDir, file.path, file.content, file.mode);
+    applyFile(projectDir, file);
   }
   if (plan.hooks.length > 0) {
     ensureGitRepo(projectDir);
     for (const hook of plan.hooks) {
-      poseHook(projectDir, hook.stage, hook.script);
+      poseHook(projectDir, hook, force);
     }
   }
 }
@@ -100,6 +162,6 @@ export function applyGlobalPlan(plan: WritePlan, root: string): void {
     }
   }
   for (const file of plan.files) {
-    writeFile(root, file.path, file.content, file.mode);
+    applyFile(root, file);
   }
 }

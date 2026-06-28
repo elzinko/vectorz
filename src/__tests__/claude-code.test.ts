@@ -91,4 +91,19 @@ describe('claudeCodeCap.materialize (plan pur, sans FS)', () => {
     const paths = plan.files.map((f) => f.path);
     expect(paths).toEqual([...paths].sort((a, b) => a.localeCompare(b)));
   });
+
+  it('déclare l’intention de fusion par fichier (fiche 0010)', () => {
+    const plan = claudeCodeCap.materialize(resolved, '/tmp/projet');
+    // CLAUDE.md est PARTAGÉ avec l'humain → bloc managé (jamais écrasé en entier).
+    expect(find(plan, 'CLAUDE.md')?.intent).toBe('managed-block');
+    // ENTRY.md et les agents sont POSSÉDÉS par le cap → remplacement franc.
+    expect(find(plan, '.iamthelaw/ENTRY.md')?.intent).toBe('replace');
+    expect(find(plan, '.claude/agents/ezk-reviewer.md')?.intent).toBe('replace');
+  });
+
+  it('marque les hooks « skip-if-exists » (ne pas écraser un commit-msg perso)', () => {
+    const plan = claudeCodeCap.materialize(resolved, '/tmp/projet');
+    const hook = plan.hooks.find((h) => h.stage === 'commit-msg');
+    expect(hook?.intent).toBe('skip-if-exists');
+  });
 });

@@ -21,4 +21,4 @@ export type {
   Skill,
 } from '../../docs/domain.js';
 
-export type { FileWrite, HookWrite, WritePlan } from './plan.js';
+export type { FileWrite, HookWrite, WriteIntent, WritePlan } from './plan.js';

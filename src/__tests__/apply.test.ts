@@ -1,7 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
-import { mkdtempSync, rmSync, readFileSync, statSync, existsSync } from 'node:fs';
+import {
+  mkdtempSync,
+  mkdirSync,
+  rmSync,
+  readFileSync,
+  writeFileSync,
+  statSync,
+  existsSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { constants } from 'node:fs';
 import { bind } from '../core/bind.js';
@@ -48,6 +56,31 @@ describe('applyPlan (coquille I/O, projet jouet)', () => {
     applyPlan(plan, projectDir);
     const entry = readFileSync(join(projectDir, '.iamthelaw/ENTRY.md'), 'utf8');
     expect(entry).toContain('clean-code/no-dead-code');
+  });
+
+  it('bind sur un projet AVEC CLAUDE.md + hook préexistants ne perd rien (fiche 0010)', () => {
+    // L'humain a déjà un CLAUDE.md et un hook commit-msg perso.
+    const humanClaudeMd = '# Mon projet\n\nInstructions perso de l’équipe.\n';
+    writeFileSync(join(projectDir, 'CLAUDE.md'), humanClaudeMd);
+    mkdirSync(join(projectDir, '.git', 'hooks'), { recursive: true });
+    const userHook = '#!/bin/sh\n# hook commit-msg perso\nexit 0\n';
+    writeFileSync(join(projectDir, '.git/hooks/commit-msg'), userHook);
+
+    const plan = bind('mobile', projectDir, 'claude-code', repoRoot);
+    // Le hook du cap diffère du hook perso → refus non-destructif sans --force.
+    expect(() => applyPlan(plan, projectDir)).toThrow(/non-destructif|--force/i);
+
+    // Rien n'est perdu : le CLAUDE.md humain a gagné le bloc managé SANS perdre son contenu,
+    // et le hook perso est intact.
+    const claudeMd = readFileSync(join(projectDir, 'CLAUDE.md'), 'utf8');
+    expect(claudeMd).toContain('Instructions perso de l’équipe.');
+    expect(claudeMd).toContain('<!-- iamthelaw:start -->');
+    expect(readFileSync(join(projectDir, '.git/hooks/commit-msg'), 'utf8')).toBe(userHook);
+
+    // Avec --force : le hook perso est sauvegardé en .bak puis remplacé.
+    applyPlan(plan, projectDir, { force: true });
+    expect(readFileSync(join(projectDir, '.git/hooks/commit-msg.bak'), 'utf8')).toBe(userHook);
+    expect(claudeMd).toContain('Instructions perso de l’équipe.');
   });
 
   it('refuse un plan dont un chemin s’échappe du projet et n’écrit rien dehors (F1)', () => {

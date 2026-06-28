@@ -2,7 +2,7 @@
 /**
  * lawgiver — CLI du moteur déterministe (ADR-0003 / ADR-0004).
  *
- *   lawgiver bind <profile> <projet> [host]          (host par défaut : claude-code)
+ *   lawgiver bind <profile> <projet> [host] [--force] (host par défaut : claude-code)
  *   lawgiver bind-global <profile>                   (matérialise dans ~/.claude — fiche 0017)
  *   lawgiver capture <cible> <kind> --content "<md>"  (kind = rule|skill|agent|interaction)
  *
@@ -23,16 +23,16 @@ import type { HostId, LearningEntry } from '../src/domain/model.js';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function usage(): never {
-  console.error('Usage: lawgiver bind <profile> <projet> [host]');
+  console.error('Usage: lawgiver bind <profile> <projet> [host] [--force]');
   console.error('       lawgiver bind-global <profile>');
   console.error('       lawgiver capture <cible> <kind> --content "<markdown>"');
   process.exit(2);
 }
 
-function runBind(profile: string, projectDir: string, host: HostId): void {
+function runBind(profile: string, projectDir: string, host: HostId, force: boolean): void {
   const absoluteProject = resolve(projectDir);
   const plan = bind(profile, absoluteProject, host, repoRoot);
-  applyPlan(plan, absoluteProject);
+  applyPlan(plan, absoluteProject, { force });
   const files = plan.files.length;
   const hooks = plan.hooks.length;
   console.log(
@@ -80,9 +80,10 @@ function parseContentFlag(args: string[]): string {
 function main(argv: string[]): void {
   const [command, ...rest] = argv;
   if (command === 'bind') {
-    const [profile, projectDir, host = 'claude-code'] = rest;
+    const force = rest.includes('--force');
+    const [profile, projectDir, host = 'claude-code'] = rest.filter((arg) => arg !== '--force');
     if (!profile || !projectDir) usage();
-    return runBind(profile, projectDir, host);
+    return runBind(profile, projectDir, host, force);
   }
   if (command === 'bind-global') {
     const [profile] = rest;
