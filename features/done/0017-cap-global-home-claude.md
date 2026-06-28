@@ -3,8 +3,8 @@ id: 0017
 title: cap global — matérialiser un profil dans ~/.claude (remplace install.sh)
 type: feature
 priority: P0
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-27
 ---
 
