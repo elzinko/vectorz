@@ -6,7 +6,7 @@
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local |
-| 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | 🔴 todo | |
+| 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | ✅ shipped | local |
 | 0017 | cap global — matérialiser un profil dans ~/.claude (porte source-unique) | feature | P0 | ✅ shipped | local |
 | 0002 | lawgiver `capture` — flywheel | feature | P1 | ✅ shipped | local |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
@@ -29,4 +29,4 @@
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
 | 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo | |
 
-> Livrées (`done/`) : 0001, 0002, 0017, 0021, 0023.
+> Livrées (`done/`) : 0001, 0002, 0010, 0017, 0021, 0023.

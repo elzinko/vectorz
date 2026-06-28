@@ -3,8 +3,8 @@ id: 0010
 title: bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser
 type: feature
 priority: P0
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-26
 ---
 
