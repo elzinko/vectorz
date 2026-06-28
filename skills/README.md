@@ -20,3 +20,4 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 |---|---|---|
 | `ezk-ezk` | 📝 proposé (ADR-0007) | méta-skill : transforme une session en skill réutilisable (compose brainstorming + architecture + skill-creator ; range via `scripts/deploy.sh`) |
 | `ezk-archive` | 📥 importé (strangler-fig) | rituel de clôture de session : clôt proprement un repo pour ne rien perdre entre deux sessions (check/run via `scripts/check.sh`) |
+| `ezk-product-builder` | 📝 proposé (ADR-0008) | couche product-owner : construit un produit en enchaînant des sprints (compose ezk-backlog + /product-brainstorming + ezk-sprint ; pure orchestration, aucun script) |
