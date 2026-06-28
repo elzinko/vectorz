@@ -3,8 +3,8 @@ id: 0023
 title: ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship)
 type: feature
 priority: P2
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-28
 ---
 
