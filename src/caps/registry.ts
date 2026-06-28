@@ -6,8 +6,12 @@
  */
 import type { Cap, HostId } from '../domain/model.js';
 import { claudeCodeCap } from './claude-code.js';
+import { claudeCodeGlobalCap } from './claude-code-global.js';
 
-const registry = new Map<HostId, Cap>([[claudeCodeCap.host, claudeCodeCap]]);
+const registry = new Map<HostId, Cap>([
+  [claudeCodeCap.host, claudeCodeCap],
+  [claudeCodeGlobalCap.host, claudeCodeGlobalCap],
+]);
 
 export function capFor(host: HostId): Cap {
   const cap = registry.get(host);

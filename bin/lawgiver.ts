@@ -3,6 +3,7 @@
  * lawgiver — CLI du moteur déterministe (ADR-0003 / ADR-0004).
  *
  *   lawgiver bind <profile> <projet> [host]          (host par défaut : claude-code)
+ *   lawgiver bind-global <profile>                   (matérialise dans ~/.claude — fiche 0017)
  *   lawgiver capture <cible> <kind> --content "<md>"  (kind = rule|skill|agent|interaction)
  *
  * Parse les args, calcule un plan PUR puis l'applique via la coquille I/O unique.
@@ -11,9 +12,10 @@
  * appel LLM réel — ADR-0004 §2).
  */
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { dirname, resolve, join } from 'node:path';
+import { homedir } from 'node:os';
 import { bind } from '../src/core/bind.js';
-import { applyPlan } from '../src/io/apply.js';
+import { applyPlan, applyGlobalPlan } from '../src/io/apply.js';
 import { planCapture } from '../src/core/capture.js';
 import { applyCapture } from '../src/io/capture.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
@@ -22,6 +24,7 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function usage(): never {
   console.error('Usage: lawgiver bind <profile> <projet> [host]');
+  console.error('       lawgiver bind-global <profile>');
   console.error('       lawgiver capture <cible> <kind> --content "<markdown>"');
   process.exit(2);
 }
@@ -34,6 +37,20 @@ function runBind(profile: string, projectDir: string, host: HostId): void {
   const hooks = plan.hooks.length;
   console.log(
     `lawgiver: bind '${profile}' → ${absoluteProject} [${host}] : ${files} fichier(s), ${hooks} hook(s).`,
+  );
+}
+
+/**
+ * bind-global — matérialise un profil dans `~/.claude` (fiche 0017). SEUL point qui
+ * résout la racine globale ; le cœur (cap + plan) la reçoit en paramètre. Coquille
+ * I/O non-destructive : ne remplace que ses propres entrées.
+ */
+function runBindGlobal(profile: string): void {
+  const root = join(homedir(), '.claude');
+  const plan = bind(profile, root, 'claude-code-global', repoRoot);
+  applyGlobalPlan(plan, root);
+  console.log(
+    `lawgiver: bind-global '${profile}' → ${root} [claude-code-global] : ${plan.files.length} fichier(s).`,
   );
 }
 
@@ -66,6 +83,11 @@ function main(argv: string[]): void {
     const [profile, projectDir, host = 'claude-code'] = rest;
     if (!profile || !projectDir) usage();
     return runBind(profile, projectDir, host);
+  }
+  if (command === 'bind-global') {
+    const [profile] = rest;
+    if (!profile) usage();
+    return runBindGlobal(profile);
   }
   if (command === 'capture') {
     const [target, kind] = rest;
