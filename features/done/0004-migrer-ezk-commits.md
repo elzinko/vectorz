@@ -3,8 +3,8 @@ id: 0004
 title: migrer ezk-commits vers skills/
 type: chore
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-26
 ---
 
