@@ -3,8 +3,8 @@ id: 0013
 title: capture — câbler une interaction/competence capturée dans le frontmatter d'un agent
 type: feature
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-26
 ---
 

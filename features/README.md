@@ -11,7 +11,7 @@
 | 0002 | lawgiver `capture` — flywheel | feature | P1 | ✅ shipped | local |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
 | 0004 | migrer ezk-commits → skills/ (pilote plomberie ADR-0006) | chore | P1 | ✅ shipped | local |
-| 0013 | capture — câbler une interaction/competence dans le frontmatter d'un agent | feature | P1 | 🔴 todo | |
+| 0013 | capture — câbler une interaction/competence dans le frontmatter d'un agent | feature | P1 | ✅ shipped | local |
 | 0018 | coquille I/O — mode link vs copy (symlink live-update) | feature | P1 | ✅ shipped | local |
 | 0019 | migrer + étendre ezk-design-system (UI/UX consultable + requêtable) | feature | P1 | 🔴 todo | |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo | |
@@ -29,4 +29,4 @@
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
 | 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo | |
 
-> Livrées (`done/`) : 0001, 0002, 0004, 0010, 0017, 0018, 0021, 0023.
+> Livrées (`done/`) : 0001, 0002, 0004, 0010, 0013, 0017, 0018, 0021, 0023.
