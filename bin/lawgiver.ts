@@ -25,7 +25,7 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 function usage(): never {
   console.error('Usage: lawgiver bind <profile> <projet> [host] [--force]');
   console.error('       lawgiver bind-global <profile> [--link]');
-  console.error('       lawgiver capture <cible> <kind> --content "<markdown>"');
+  console.error('       lawgiver capture <cible> <kind> --content "<markdown>" [--for <agentId>]');
   process.exit(2);
 }
 
@@ -68,17 +68,24 @@ function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function runCapture(target: string, kind: string, content: string): void {
+function runCapture(target: string, kind: string, content: string, forAgentId?: string): void {
   if (!isCaptureKind(kind)) usage();
-  const plan = planCapture(target, kind, content, today());
+  const plan = planCapture(target, kind, content, today(), '', forAgentId);
   applyCapture(plan, repoRoot);
-  console.log(`lawgiver: capture ${kind} '${target}' → ${plan.artifact.path} + journal + commit.`);
+  const wired = plan.agentWiring ? ` + ${plan.agentWiring.agentPath} (${plan.agentWiring.listField})` : '';
+  console.log(`lawgiver: capture ${kind} '${target}' → ${plan.artifact.path} + journal${wired} + commit.`);
+}
+
+function parseFlag(args: string[], flag: string): string | undefined {
+  const i = args.indexOf(flag);
+  if (i === -1) return undefined;
+  return args[i + 1];
 }
 
 function parseContentFlag(args: string[]): string {
-  const i = args.indexOf('--content');
-  if (i === -1 || !args[i + 1]) usage();
-  return args[i + 1];
+  const content = parseFlag(args, '--content');
+  if (!content) usage();
+  return content;
 }
 
 function main(argv: string[]): void {
@@ -98,7 +105,7 @@ function main(argv: string[]): void {
   if (command === 'capture') {
     const [target, kind] = rest;
     if (!target || !kind) usage();
-    return runCapture(target, kind, parseContentFlag(rest));
+    return runCapture(target, kind, parseContentFlag(rest), parseFlag(rest, '--for'));
   }
   usage();
 }

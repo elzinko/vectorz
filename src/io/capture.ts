@@ -11,7 +11,8 @@
 import { mkdirSync, writeFileSync, appendFileSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import type { CapturePlan } from '../core/capture.js';
+import matter from 'gray-matter';
+import type { AgentWiring, CapturePlan } from '../core/capture.js';
 
 const JOURNAL_PATH = join('journal', 'learnings.md');
 
@@ -45,6 +46,31 @@ function appendJournalLine(rootDir: string, line: string): void {
 }
 
 /**
+ * Câblage frontmatter (fiche 0013) : lit l'agent ciblé, APPEND `idToAdd` à la liste
+ * SI absent (idempotent), re-stringify stable via gray-matter, réécrit. Le SCRIPT
+ * range — jamais le LLM (ADR-0004). Retourne le chemin modifié (à commiter), ou
+ * `undefined` si aucun câblage.
+ */
+function applyAgentWiring(rootDir: string, wiring: AgentWiring | undefined): string | undefined {
+  if (!wiring) return undefined;
+  const absolute = resolveInsideRoot(rootDir, wiring.agentPath);
+  if (!existsSync(absolute)) {
+    throw new Error(`agent introuvable pour le câblage : ${JSON.stringify(wiring.agentPath)}`);
+  }
+  const parsed = matter(readFileSync(absolute, 'utf8'));
+  const list: string[] = Array.isArray(parsed.data[wiring.listField])
+    ? parsed.data[wiring.listField]
+    : [];
+  if (list.includes(wiring.idToAdd)) return wiring.agentPath; // idempotent : rien à ajouter
+  // On NE mute PAS `parsed.data` en place : gray-matter mémoise l'objet retourné
+  // pour un input identique, une mutation corromprait ce cache partagé. On stringify
+  // à partir d'une copie fraîche du frontmatter, l'objet d'origine reste intact.
+  const nextData = { ...parsed.data, [wiring.listField]: [...list, wiring.idToAdd] };
+  writeFileSync(absolute, matter.stringify(parsed.content, nextData));
+  return wiring.agentPath;
+}
+
+/**
  * Commit SCOPÉ aux seuls chemins du plan : `git commit -- <paths>` n'embarque
  * jamais ce qui traînait dans l'index (isolation déterministe, cf. revue 0002).
  */
@@ -57,5 +83,7 @@ function commit(rootDir: string, paths: string[], message: string): void {
 export function applyCapture(plan: CapturePlan, rootDir: string): void {
   writeArtifact(rootDir, plan.artifact.path, plan.artifact.content);
   appendJournalLine(rootDir, plan.journalLine);
-  commit(rootDir, [plan.artifact.path, JOURNAL_PATH], plan.commitMessage);
+  const wiredAgentPath = applyAgentWiring(rootDir, plan.agentWiring);
+  const paths = [plan.artifact.path, JOURNAL_PATH, ...(wiredAgentPath ? [wiredAgentPath] : [])];
+  commit(rootDir, paths, plan.commitMessage);
 }
