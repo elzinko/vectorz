@@ -60,11 +60,12 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(catalog.profiles.get('mobile')?.agents).toEqual(['ezk-reviewer']);
   });
 
-  it('tolère un dossier skills sans .md : aucune skill résolue, aucune exception', () => {
+  it('charge les skills depuis les sous-dossiers skills/<name>/SKILL.md (fiche 0004)', () => {
     const catalog = loadCatalog(repoRoot);
-    // skills/ ne contient que README.md : ezk-commits / ezk-ci sont externes
-    expect(catalog.skills.size).toBe(0);
-    expect(catalog.skills.get('ezk-commits')).toBeUndefined();
+    // ezk-commits migré dans mega-city/skills/ezk-commits/ → chargé (id = `name` du frontmatter)
+    const skill = catalog.skills.get('ezk-commits');
+    expect(skill).toBeDefined();
+    expect(skill?.content).toContain('Conventional Commits');
   });
 });
 

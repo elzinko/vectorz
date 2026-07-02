@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# commit-msg hook — enforces Conventional Commits v1.0.0
+# https://www.conventionalcommits.org/en/v1.0.0/
+#
+# Install:
+#   cp scripts/commit-msg <project>/.githooks/commit-msg
+#   chmod +x <project>/.githooks/commit-msg
+#   git -C <project> config core.hooksPath .githooks
+
+MSG_FILE="$1"
+MSG=$(head -1 "$MSG_FILE")
+
+# Skip merge / auto-revert commits
+[[ "$MSG" =~ ^Merge[[:space:]] ]] && exit 0
+[[ "$MSG" =~ ^Revert[[:space:]] ]] && exit 0
+
+TYPES="feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert"
+PATTERN="^(${TYPES})(\([^()]+\))?(!)?: .{1,100}$"
+
+if ! echo "$MSG" | grep -qE "$PATTERN"; then
+  echo ""
+  echo "  ✗  Commit message does not follow Conventional Commits format."
+  echo ""
+  echo "     Format :  type(scope): short description   (max 100 chars)"
+  echo "     Types  :  feat | fix | docs | style | refactor | perf"
+  echo "                test | build | ci | chore | revert"
+  echo "     Breaking:  feat!: ... or feat(scope)!: ..."
+  echo ""
+  echo "     Examples:"
+  echo "       feat(auth): add OAuth2 login"
+  echo "       fix(api): handle null response from upstream"
+  echo "       chore(deps): update fastapi to 0.115"
+  echo ""
+  echo "     Got: \"$MSG\""
+  echo ""
+  exit 1
+fi
+exit 0

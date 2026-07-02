@@ -28,9 +28,9 @@ describe('expandProfile(mobile)', () => {
     expect(resolved.agents.map((a) => a.id)).toEqual(['ezk-reviewer']);
   });
 
-  it('ne matérialise que les skills réellement présentes (ezk-commits externe → absente)', () => {
+  it('agrège les skills du profil depuis les sous-dossiers (ezk-commits migré, fiche 0004)', () => {
     const resolved = expandMobile();
-    expect(resolved.skills).toEqual([]);
+    expect(resolved.skills.map((s) => s.id)).toContain('ezk-commits');
   });
 
   it('déduplique par id même si une règle est référencée via plusieurs chemins', () => {

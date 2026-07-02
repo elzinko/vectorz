@@ -7,7 +7,7 @@
  *
  * Tolérances (données réelles) :
  *   - `kind` absent ⇒ 'disposition' (ADR-0002).
- *   - `skills/` sans `.md` (ezk-commits/ezk-ci externes) ⇒ aucune skill, pas d'exception.
+ *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -80,11 +80,32 @@ function readAgent(file: string): Agent | undefined {
   };
 }
 
-/** Tolérant : ne retient que les skills réellement présentes (frontmatter id). */
+/** Skills : id = `name` du frontmatter (convention ezk-*), à défaut `id`. */
 function readSkill(file: string): Skill | undefined {
   const { data, content } = matter(readFileSync(file, 'utf8'));
-  if (typeof data.id !== 'string') return undefined;
-  return { id: data.id, content: content.trim() };
+  const id = typeof data.name === 'string' ? data.name : data.id;
+  if (typeof id !== 'string') return undefined;
+  return { id, content: content.trim() };
+}
+
+const SKILL_FILE = 'SKILL.md';
+
+/**
+ * Skills = sous-dossiers `skills/<name>/SKILL.md` (convention mega-city, cf.
+ * skills/README.md et ADR-0007). Un sous-dossier sans SKILL.md est ignoré
+ * (tolérant). Tri stable des dossiers ; index par l'`id` (= `name` du frontmatter).
+ */
+function loadSkills(skillsRoot: string): Map<string, Skill> {
+  if (!existsSync(skillsRoot)) return new Map();
+  const items = readdirSync(skillsRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort()
+    .map((name) => join(skillsRoot, name, SKILL_FILE))
+    .filter((skillFile) => existsSync(skillFile))
+    .map(readSkill)
+    .filter((skill): skill is Skill => skill !== undefined);
+  return indexById(items);
 }
 
 function readYamlEntity<T>(file: string): T {
@@ -111,7 +132,7 @@ export function loadCatalog(rootDir: string): Catalog {
   return {
     rules: loadMarkdown(join(rootDir, 'rules'), readRule),
     agents: loadMarkdown(join(rootDir, 'agents'), readAgent),
-    skills: loadMarkdown(join(rootDir, 'skills'), readSkill),
+    skills: loadSkills(join(rootDir, 'skills')),
     bundles: loadYaml<Bundle>(join(rootDir, 'bundles')),
     profiles: loadYaml<Profile>(join(rootDir, 'profiles')),
   };
