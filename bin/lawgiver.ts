@@ -3,7 +3,7 @@
  * lawgiver — CLI du moteur déterministe (ADR-0003 / ADR-0004).
  *
  *   lawgiver bind <profile> <projet> [host] [--force] (host par défaut : claude-code)
- *   lawgiver bind-global <profile>                   (matérialise dans ~/.claude — fiche 0017)
+ *   lawgiver bind-global <profile> [--link]          (matérialise dans ~/.claude — fiche 0017/0018)
  *   lawgiver capture <cible> <kind> --content "<md>"  (kind = rule|skill|agent|interaction)
  *
  * Parse les args, calcule un plan PUR puis l'applique via la coquille I/O unique.
@@ -24,7 +24,7 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function usage(): never {
   console.error('Usage: lawgiver bind <profile> <projet> [host] [--force]');
-  console.error('       lawgiver bind-global <profile>');
+  console.error('       lawgiver bind-global <profile> [--link]');
   console.error('       lawgiver capture <cible> <kind> --content "<markdown>"');
   process.exit(2);
 }
@@ -41,16 +41,20 @@ function runBind(profile: string, projectDir: string, host: HostId, force: boole
 }
 
 /**
- * bind-global — matérialise un profil dans `~/.claude` (fiche 0017). SEUL point qui
+ * bind-global — matérialise un profil dans `~/.claude` (fiche 0017/0018). SEUL point qui
  * résout la racine globale ; le cœur (cap + plan) la reçoit en paramètre. Coquille
  * I/O non-destructive : ne remplace que ses propres entrées.
+ *   - défaut : `copy` (contenu figé) ;
+ *   - `--link` : symlink live-update vers la source du catalogue (`catalogRoot = repoRoot`),
+ *     un `git pull` dans mega-city met alors à jour partout.
  */
-function runBindGlobal(profile: string): void {
+function runBindGlobal(profile: string, link: boolean): void {
   const root = join(homedir(), '.claude');
   const plan = bind(profile, root, 'claude-code-global', repoRoot);
-  applyGlobalPlan(plan, root);
+  const mode = link ? 'link' : 'copy';
+  applyGlobalPlan(plan, root, { mode, catalogRoot: repoRoot });
   console.log(
-    `lawgiver: bind-global '${profile}' → ${root} [claude-code-global] : ${plan.files.length} fichier(s).`,
+    `lawgiver: bind-global '${profile}' → ${root} [claude-code-global] (${mode}) : ${plan.files.length} fichier(s).`,
   );
 }
 
@@ -86,9 +90,10 @@ function main(argv: string[]): void {
     return runBind(profile, projectDir, host, force);
   }
   if (command === 'bind-global') {
-    const [profile] = rest;
+    const link = rest.includes('--link');
+    const [profile] = rest.filter((arg) => arg !== '--link');
     if (!profile) usage();
-    return runBindGlobal(profile);
+    return runBindGlobal(profile, link);
   }
   if (command === 'capture') {
     const [target, kind] = rest;

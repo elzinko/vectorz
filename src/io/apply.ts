@@ -17,6 +17,9 @@ import {
   existsSync,
   readdirSync,
   statSync,
+  lstatSync,
+  symlinkSync,
+  rmSync,
 } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -150,18 +153,98 @@ function assertManagedSkillDir(root: string, skillFilePath: string): void {
 }
 
 /**
- * Coquille I/O GLOBALE (fiche 0017) : applique un plan dans une racine `~/.claude`
- * factice ou réelle, de façon NON-DESTRUCTIVE. Ne remplace QUE ses propres entrées
- * (un skill-dir ne contenant que SKILL.md) et refuse d'écraser un fichier/dossier
- * utilisateur étranger préexistant. Idempotent. Pas de hooks côté global.
+ * Mode de matérialisation du cap global (fiche 0018) :
+ *   - `copy` (défaut, comportement 0017) : écrit le contenu figé du plan ;
+ *   - `link` : symlink le skill-dir cible vers sa source dans le catalogue (`catalogRoot`),
+ *     un `git pull` dans mega-city met alors à jour partout (live-update).
  */
-export function applyGlobalPlan(plan: WritePlan, root: string): void {
+export interface GlobalApplyOptions {
+  mode?: 'copy' | 'link';
+  /** Racine du repo mega-city (source des skills) — REQUISE en mode `link`. */
+  catalogRoot?: string;
+}
+
+/** Le segment `skills/<id>` d'un chemin de plan `skills/<id>/SKILL.md`. */
+function skillDirRelative(skillFilePath: string): string {
+  return dirname(skillFilePath); // ex. 'skills/ezk-commits'
+}
+
+/**
+ * Vérifie qu'une entrée cible est REMPLAÇABLE de façon non-destructive (mirror de
+ * `link_or_copy`/deploy.sh) : soit inexistante, soit notre propre symlink, soit un
+ * skill-dir déjà géré (contenant SKILL.md). Sinon (vrai fichier/dossier utilisateur
+ * étranger) : refus. `assertManagedSkillDir` couvre déjà le cas skill-dir géré ; ici
+ * on n'ajoute que la tolérance du symlink (notre propre entrée en mode link).
+ */
+function assertReplaceableEntry(root: string, skillFilePath: string): void {
+  const target = resolveInsideProject(root, skillDirRelative(skillFilePath));
+  if (existsSync(target) && lstatSync(target).isSymbolicLink()) return; // notre propre lien.
+  assertManagedSkillDir(root, skillFilePath);
+}
+
+/** Retire notre propre entrée (symlink ou skill-dir géré) pour la re-matérialiser. */
+function removeManagedEntry(target: string): void {
+  if (!existsSync(target) && !isSymlink(target)) return;
+  rmSync(target, { recursive: true, force: true });
+}
+
+function isSymlink(path: string): boolean {
+  try {
+    return lstatSync(path).isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
+
+/** Matérialise un skill par symlink `<root>/skills/<id>` → `<catalogRoot>/skills/<id>`. */
+function linkSkill(root: string, catalogRoot: string, skillFilePath: string): void {
+  const relative = skillDirRelative(skillFilePath); // 'skills/<id>'
+  const target = resolveInsideProject(root, relative);
+  const source = resolve(catalogRoot, relative);
+  removeManagedEntry(target);
+  mkdirSync(dirname(target), { recursive: true });
+  symlinkSync(source, target);
+}
+
+/**
+ * Coquille I/O GLOBALE (fiche 0017/0018) : applique un plan dans une racine `~/.claude`
+ * factice ou réelle, de façon NON-DESTRUCTIVE dans les DEUX modes. Ne remplace QUE ses
+ * propres entrées (notre symlink, ou un skill-dir ne contenant que SKILL.md) et refuse
+ * d'écraser un fichier/dossier utilisateur étranger préexistant. Idempotent.
+ *   - `copy` (défaut) : écrit le contenu figé du plan.
+ *   - `link` : symlink chaque skill-dir vers sa source (`catalogRoot` requis).
+ * Pas de hooks côté global.
+ */
+export function applyGlobalPlan(
+  plan: WritePlan,
+  root: string,
+  options: GlobalApplyOptions = {},
+): void {
+  const mode = options.mode ?? 'copy';
   for (const file of plan.files) {
     if (file.path.endsWith(`/${SKILL_FILE}`)) {
-      assertManagedSkillDir(root, file.path);
+      assertReplaceableEntry(root, file.path);
     }
   }
+  if (mode === 'link') {
+    const catalogRoot = options.catalogRoot;
+    if (!catalogRoot) {
+      throw new Error("mode 'link' : catalogRoot (racine du catalogue) est requis.");
+    }
+    for (const file of plan.files) {
+      if (file.path.endsWith(`/${SKILL_FILE}`)) {
+        linkSkill(root, catalogRoot, file.path);
+      }
+    }
+    return;
+  }
   for (const file of plan.files) {
+    if (file.path.endsWith(`/${SKILL_FILE}`)) {
+      // bascule link → copy : retire d'abord notre symlink pour écrire un dir figé
+      // (sinon writeRaw écrirait À TRAVERS le lien, dans la source du catalogue).
+      const skillDir = resolveInsideProject(root, skillDirRelative(file.path));
+      if (isSymlink(skillDir)) rmSync(skillDir, { force: true });
+    }
     applyFile(root, file);
   }
 }
