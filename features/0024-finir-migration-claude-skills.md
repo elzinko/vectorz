@@ -21,22 +21,23 @@ Mais la migration du **contenu** est ~33 % faite (4 skills, 1 agent) et il **n'e
 d'ensemble** de ce qui reste. Cette fiche est le **tracker** jusqu'au switchover. Les fiches
 per-skill (ex. 0019 ezk-design-system) restent la maille d'exécution ; celle-ci est l'ombrelle.
 
-État au 2026-07-03 :
-- Migrés dans `mega-city/skills/` : ezk-archive, ezk-commits, ezk-ezk, ezk-product-builder.
-- Migré dans `mega-city/agents/` : ezk-reviewer.
+État (mis à jour) :
+- `mega-city/skills/` : **tous migrés SAUF ezk-design-system** (fiche 0019). Loader corrigé
+  (sous-dossiers `skills/<name>/SKILL.md` + fallback nom de dossier + `readAgent` accepte `name`).
+- `mega-city/agents/` : ezk-architect, ezk-qa, ezk-reviewer, ezk-steward, ezk-tdd (**tous**).
+- Reste : ezk-design-system (0019), le **switchover** (bind --global --link), le **gel** de claude-skills.
 
 ## Proposition — checklist jusqu'au switchover
 
 **Skills restants (8)** — copier `SKILL.md` (+ helpers) dans `skills/`, adapter les refs :
-- [ ] **ezk-backlog** — ⚠️ **porter la version claude-skills PR #31** (add dédoublonnant +
-  regroupement + champ `version` + cadrage brainstorm d'une fiche vague). Ça **satisfait la
-  fiche 0022** (« proposer un brainstorm pour façonner une fiche vague ») → fermer 0022 au passage.
-- [ ] ezk-sprint  · [ ] ezk-ci  · [ ] ezk-preview  · [ ] ezk-device  · [ ] ezk-apk
-- [ ] ezk-npm-scripts
+- [x] **ezk-backlog** — version claude-skills #31 (add dédoublonnant + regroupement + `version` +
+  cadrage brainstorm). **Satisfait la fiche 0022** → 0022 shippée au passage.
+- [x] ezk-sprint  · [x] ezk-ci  · [x] ezk-preview  · [x] ezk-device  · [x] ezk-apk
+- [x] ezk-npm-scripts
 - [ ] ezk-design-system → **déjà tracké par la fiche 0019** (migrer + étendre).
 
 **Agents restants (4)** — copier `<agent>.md` dans `agents/` :
-- [ ] ezk-architect · [ ] ezk-tdd · [ ] ezk-qa · [ ] ezk-steward
+- [x] ezk-architect · [x] ezk-tdd · [x] ezk-qa · [x] ezk-steward
 
 **Switchover** (une fois le contenu migré) :
 - [ ] `bind --global <profile>` écrit `~/.claude/{skills,agents}` en **mode link** → `~/.claude`

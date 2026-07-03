@@ -71,20 +71,26 @@ function readRule(file: string): Rule | undefined {
 
 function readAgent(file: string): Agent | undefined {
   const { data, content } = matter(readFileSync(file, 'utf8'));
-  if (typeof data.id !== 'string') return undefined;
+  // Agents mega-city : `id` ; sous-agents Claude Code migrés : `name`. On accepte les deux.
+  const id = typeof data.name === 'string' ? data.name : data.id;
+  if (typeof id !== 'string') return undefined;
   return {
-    id: data.id,
+    id,
     role: content.trim(),
     competences: data.competences ?? [],
     interactions: data.interactions ?? [],
   };
 }
 
-/** Skills : id = `name` du frontmatter (convention ezk-*), à défaut `id`. */
-function readSkill(file: string): Skill | undefined {
+/** Skills : id = `name` du frontmatter, à défaut `id`, à défaut le nom du dossier. */
+function readSkill(file: string, fallbackId: string): Skill {
   const { data, content } = matter(readFileSync(file, 'utf8'));
-  const id = typeof data.name === 'string' ? data.name : data.id;
-  if (typeof id !== 'string') return undefined;
+  const id =
+    typeof data.name === 'string'
+      ? data.name
+      : typeof data.id === 'string'
+        ? data.id
+        : fallbackId;
   return { id, content: content.trim() };
 }
 
@@ -101,10 +107,9 @@ function loadSkills(skillsRoot: string): Map<string, Skill> {
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .sort()
-    .map((name) => join(skillsRoot, name, SKILL_FILE))
-    .filter((skillFile) => existsSync(skillFile))
-    .map(readSkill)
-    .filter((skill): skill is Skill => skill !== undefined);
+    .map((name) => ({ name, file: join(skillsRoot, name, SKILL_FILE) }))
+    .filter(({ file }) => existsSync(file))
+    .map(({ name, file }) => readSkill(file, name));
   return indexById(items);
 }
 
