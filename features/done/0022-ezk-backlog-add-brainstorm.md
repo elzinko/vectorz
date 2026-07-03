@@ -3,8 +3,8 @@ id: 0022
 title: ezk-backlog add — proposer un brainstorm pour façonner une fiche vague
 type: feature
 priority: P2
-status: todo
-pr:
+status: shipped
+pr: local (via migration ezk-backlog #31, fiche 0024)
 created: 2026-06-27
 ---
 
