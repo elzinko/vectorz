@@ -1,5 +1,7 @@
 # Profil base — socle hérité par les autres profils (via `extends: [base]`).
 # Porte les compétences transverses, indépendantes de la cible (mobile, desktop…).
+# L'équipe COMPLÈTE ezk-* (pour le bind global daily-driver) vit dans `global.yml`,
+# pas ici : base reste minimal pour que les profils par-cible restent curated.
 id: base
 extends: []
 bundles: [base]            # → règles communes (clean-code, conventional-commits)

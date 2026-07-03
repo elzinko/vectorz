@@ -53,3 +53,50 @@ describe('expandProfile(mobile)', () => {
     expect(expandMobile()).toEqual(expandMobile());
   });
 });
+
+function expandGlobal() {
+  const catalog = loadCatalog(repoRoot);
+  const global = catalog.profiles.get('global');
+  if (!global) throw new Error('profil global introuvable');
+  return expandProfile(global, catalog);
+}
+
+describe('expandProfile(global) — l\'équipe complète du bind daily-driver (fiche 0024)', () => {
+  it('agrège TOUS les agents ezk-* (5), triés stablement', () => {
+    const resolved = expandGlobal();
+    expect(resolved.agents.map((a) => a.id)).toEqual([
+      'ezk-architect',
+      'ezk-qa',
+      'ezk-reviewer',
+      'ezk-steward',
+      'ezk-tdd',
+    ]);
+  });
+
+  it('agrège TOUT le catalogue de skills ezk-* (12), triés stablement', () => {
+    const resolved = expandGlobal();
+    expect(resolved.skills.map((s) => s.id)).toEqual([
+      'ezk-apk',
+      'ezk-archive',
+      'ezk-backlog',
+      'ezk-ci',
+      'ezk-commits',
+      'ezk-design-system',
+      'ezk-device',
+      'ezk-ezk',
+      'ezk-npm-scripts',
+      'ezk-preview',
+      'ezk-product-builder',
+      'ezk-sprint',
+    ]);
+  });
+
+  it('n\'altère pas base : le socle reste minimal (mobile reste curated)', () => {
+    const catalog = loadCatalog(repoRoot);
+    const base = catalog.profiles.get('base');
+    if (!base) throw new Error('profil base introuvable');
+    const resolved = expandProfile(base, catalog);
+    expect(resolved.agents.map((a) => a.id)).toEqual([]);
+    expect(resolved.skills.map((s) => s.id)).toEqual(['ezk-archive']);
+  });
+});
