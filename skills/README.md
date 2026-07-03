@@ -29,6 +29,8 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-device` | 📥 importé (0024) | build + test Android sur un tél physique distant (Tailscale/adb) |
 | `ezk-apk` | 📥 importé (0024) | build d'un APK/IPA de preview sur EAS + lien d'install |
 | `ezk-npm-scripts` | 📥 importé (0024) | hygiène des scripts npm/pnpm/turbo d'un monorepo |
+| `ezk-design-system` | 📥 importé (0024) | design system minimal (tokens + atomes + styleguide vivant) — l'« étendre » reste la fiche 0019 |
 
 > **Agents** (`../agents/`) migrés aussi (0024) : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd`.
-> Reste hors de cette vague : `ezk-design-system` (fiche 0019, migrer + étendre).
+> Migration du contenu **terminée** : les 12 skills + 5 agents `ezk-*` vivent désormais dans mega-city.
+> Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
