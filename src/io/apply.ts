@@ -129,6 +129,15 @@ export function applyPlan(plan: WritePlan, projectDir: string, options: ApplyOpt
 /** Le nom de fichier canonique d'une skill matérialisée par le cap global. */
 const SKILL_FILE = 'SKILL.md';
 
+/** Discrimine les deux formes du plan global : skill-dir vs agent-fichier. */
+function isSkillFile(path: string): boolean {
+  return path.endsWith(`/${SKILL_FILE}`);
+}
+
+function isAgentFile(path: string): boolean {
+  return path.startsWith('agents/') && path.endsWith('.md');
+}
+
 /**
  * Garde NON-DESTRUCTIVE pour le cap global (invariant ADR-0006/0010, cf. deploy.sh) :
  * dans `~/.claude/skills`, lawgiver ne gère QUE des dossiers de skill dont l'unique
@@ -182,6 +191,22 @@ function assertReplaceableEntry(root: string, skillFilePath: string): void {
   assertManagedSkillDir(root, skillFilePath);
 }
 
+/**
+ * Pendant agent de `assertReplaceableEntry` : un agent est un FICHIER
+ * `agents/<id>.md` (pas un dossier). Remplaçable de façon non-destructive s'il
+ * est inexistant ou n'est qu'un symlink (le nôtre, ou l'ancien de claude-skills
+ * qu'on bascule). Un vrai fichier utilisateur préexistant → refus (jamais écrasé).
+ */
+function assertReplaceableAgent(root: string, agentFilePath: string): void {
+  const target = resolveInsideProject(root, agentFilePath);
+  if (isSymlink(target)) return; // symlink (le nôtre / l'ancien) : basculable.
+  if (!existsSync(target)) return; // inexistant : rien à protéger.
+  throw new Error(
+    `refus non-destructif : ${JSON.stringify(target)} est un vrai fichier ` +
+      "non géré par lawgiver. Retire-le à la main ou choisis un autre id.",
+  );
+}
+
 /** Retire notre propre entrée (symlink ou skill-dir géré) pour la re-matérialiser. */
 function removeManagedEntry(target: string): void {
   if (!existsSync(target) && !isSymlink(target)) return;
@@ -206,13 +231,25 @@ function linkSkill(root: string, catalogRoot: string, skillFilePath: string): vo
   symlinkSync(source, target);
 }
 
+/** Matérialise un agent par symlink `<root>/agents/<id>.md` → `<catalogRoot>/agents/<id>.md`. */
+function linkAgent(root: string, catalogRoot: string, agentFilePath: string): void {
+  const target = resolveInsideProject(root, agentFilePath); // 'agents/<id>.md'
+  const source = resolve(catalogRoot, agentFilePath);
+  removeManagedEntry(target);
+  mkdirSync(dirname(target), { recursive: true });
+  symlinkSync(source, target);
+}
+
 /**
- * Coquille I/O GLOBALE (fiche 0017/0018) : applique un plan dans une racine `~/.claude`
- * factice ou réelle, de façon NON-DESTRUCTIVE dans les DEUX modes. Ne remplace QUE ses
- * propres entrées (notre symlink, ou un skill-dir ne contenant que SKILL.md) et refuse
- * d'écraser un fichier/dossier utilisateur étranger préexistant. Idempotent.
- *   - `copy` (défaut) : écrit le contenu figé du plan.
- *   - `link` : symlink chaque skill-dir vers sa source (`catalogRoot` requis).
+ * Coquille I/O GLOBALE (fiche 0017/0018 ; agents en link : fiche 0025) : applique un plan
+ * dans une racine `~/.claude` factice ou réelle, de façon NON-DESTRUCTIVE dans les DEUX
+ * modes. Matérialise l'équipe COMPLÈTE — skills (`skills/<id>/SKILL.md`) ET agents
+ * (`agents/<id>.md`). Ne remplace QUE ses propres entrées (un symlink, ou un skill-dir ne
+ * contenant que SKILL.md) et refuse d'écraser un fichier/dossier utilisateur étranger
+ * préexistant. Idempotent.
+ *   - `copy` (défaut) : écrit le contenu figé du plan (skills et agents).
+ *   - `link` : symlink chaque skill-dir ET chaque agent-fichier vers sa source
+ *     (`catalogRoot` requis) → un `git pull` mega-city met tout à jour (live-update).
  * Pas de hooks côté global.
  */
 export function applyGlobalPlan(
@@ -221,10 +258,10 @@ export function applyGlobalPlan(
   options: GlobalApplyOptions = {},
 ): void {
   const mode = options.mode ?? 'copy';
+  // Garde non-destructive AVANT toute écriture, pour les DEUX formes (skills + agents).
   for (const file of plan.files) {
-    if (file.path.endsWith(`/${SKILL_FILE}`)) {
-      assertReplaceableEntry(root, file.path);
-    }
+    if (isSkillFile(file.path)) assertReplaceableEntry(root, file.path);
+    else if (isAgentFile(file.path)) assertReplaceableAgent(root, file.path);
   }
   if (mode === 'link') {
     const catalogRoot = options.catalogRoot;
@@ -232,18 +269,20 @@ export function applyGlobalPlan(
       throw new Error("mode 'link' : catalogRoot (racine du catalogue) est requis.");
     }
     for (const file of plan.files) {
-      if (file.path.endsWith(`/${SKILL_FILE}`)) {
-        linkSkill(root, catalogRoot, file.path);
-      }
+      if (isSkillFile(file.path)) linkSkill(root, catalogRoot, file.path);
+      else if (isAgentFile(file.path)) linkAgent(root, catalogRoot, file.path);
     }
     return;
   }
   for (const file of plan.files) {
-    if (file.path.endsWith(`/${SKILL_FILE}`)) {
-      // bascule link → copy : retire d'abord notre symlink pour écrire un dir figé
-      // (sinon writeRaw écrirait À TRAVERS le lien, dans la source du catalogue).
+    // bascule link → copy : retire d'abord notre symlink pour écrire un contenu figé
+    // (sinon writeRaw écrirait À TRAVERS le lien, dans la source du catalogue).
+    if (isSkillFile(file.path)) {
       const skillDir = resolveInsideProject(root, skillDirRelative(file.path));
       if (isSymlink(skillDir)) rmSync(skillDir, { force: true });
+    } else if (isAgentFile(file.path)) {
+      const agentFile = resolveInsideProject(root, file.path);
+      if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
     }
     applyFile(root, file);
   }

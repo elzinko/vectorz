@@ -8,6 +8,7 @@ import {
   writeFileSync,
   lstatSync,
   realpathSync,
+  symlinkSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { applyGlobalPlan } from '../io/apply.js';
@@ -29,6 +30,9 @@ describe('applyGlobalPlan — mode link vs copy (fiche 0018)', () => {
     const src = join(catalogRoot, 'skills/ezk-commits');
     mkdirSync(src, { recursive: true });
     writeFileSync(join(src, 'SKILL.md'), '# ezk-commits (source catalogue)\n');
+    // … et celle d'un agent (fichier simple).
+    mkdirSync(join(catalogRoot, 'agents'), { recursive: true });
+    writeFileSync(join(catalogRoot, 'agents/ezk-architect.md'), '# ezk-architect (source catalogue)\n');
   });
 
   afterEach(() => {
@@ -39,6 +43,14 @@ describe('applyGlobalPlan — mode link vs copy (fiche 0018)', () => {
   const planWith = (...skillIds: string[]): WritePlan => ({
     files: skillIds.map((id) => ({
       path: `skills/${id}/SKILL.md`,
+      content: `# ${id} (contenu figé du plan)\n`,
+    })),
+    hooks: [],
+  });
+
+  const planWithAgents = (...agentIds: string[]): WritePlan => ({
+    files: agentIds.map((id) => ({
+      path: `agents/${id}.md`,
       content: `# ${id} (contenu figé du plan)\n`,
     })),
     hooks: [],
@@ -100,5 +112,62 @@ describe('applyGlobalPlan — mode link vs copy (fiche 0018)', () => {
     expect(lstatSync(join(root, 'skills/ezk-commits')).isSymbolicLink()).toBe(false);
     applyGlobalPlan(planWith('ezk-commits'), root, { mode: 'link', catalogRoot });
     expect(lstatSync(join(root, 'skills/ezk-commits')).isSymbolicLink()).toBe(true);
+  });
+
+  // — Agents (fiche 0025) : le mode link doit AUSSI symlinker les agents, pas seulement
+  //   les skills, pour que ~/.claude/agents/ pointe vers mega-city au switchover.
+  it('mode link : crée un symlink de l’agent-fichier vers la source du catalogue', () => {
+    applyGlobalPlan(planWithAgents('ezk-architect'), root, { mode: 'link', catalogRoot });
+    const agentFile = join(root, 'agents/ezk-architect.md');
+    expect(lstatSync(agentFile).isSymbolicLink()).toBe(true);
+    expect(realpathSync(agentFile)).toBe(realpathSync(join(catalogRoot, 'agents/ezk-architect.md')));
+    // et à travers le lien, on lit le contenu SOURCE (live-update), pas celui du plan
+    expect(readFileSync(agentFile, 'utf8')).toContain('source catalogue');
+  });
+
+  it('mode copy (défaut) : écrit l’agent en fichier figé, PAS un symlink', () => {
+    applyGlobalPlan(planWithAgents('ezk-architect'), root);
+    const agentFile = join(root, 'agents/ezk-architect.md');
+    expect(lstatSync(agentFile).isSymbolicLink()).toBe(false);
+    expect(readFileSync(agentFile, 'utf8')).toContain('contenu figé du plan');
+  });
+
+  it('mode link : idempotent — re-appliquer les agents ne lève pas et garde le symlink', () => {
+    applyGlobalPlan(planWithAgents('ezk-architect'), root, { mode: 'link', catalogRoot });
+    expect(() =>
+      applyGlobalPlan(planWithAgents('ezk-architect'), root, { mode: 'link', catalogRoot }),
+    ).not.toThrow();
+    expect(lstatSync(join(root, 'agents/ezk-architect.md')).isSymbolicLink()).toBe(true);
+  });
+
+  it('mode link : bascule un ancien symlink d’agent (claude-skills → mega-city)', () => {
+    // Simule l'état pré-switchover : ~/.claude/agents/<id>.md pointe vers un AUTRE repo.
+    const foreign = mkdtempSync(join(tmpdir(), 'lawgiver-foreign-'));
+    mkdirSync(join(foreign, 'agents'), { recursive: true });
+    writeFileSync(join(foreign, 'agents/ezk-architect.md'), '# ancienne source (claude-skills)\n');
+    mkdirSync(join(root, 'agents'), { recursive: true });
+    symlinkSync(join(foreign, 'agents/ezk-architect.md'), join(root, 'agents/ezk-architect.md'));
+
+    applyGlobalPlan(planWithAgents('ezk-architect'), root, { mode: 'link', catalogRoot });
+
+    const agentFile = join(root, 'agents/ezk-architect.md');
+    expect(lstatSync(agentFile).isSymbolicLink()).toBe(true);
+    // repointé vers le catalogue mega-city, plus vers l'ancien repo.
+    expect(realpathSync(agentFile)).toBe(realpathSync(join(catalogRoot, 'agents/ezk-architect.md')));
+    rmSync(foreign, { recursive: true, force: true });
+  });
+
+  it('mode link : non-destructif — refuse un vrai fichier agent utilisateur', () => {
+    mkdirSync(join(root, 'agents'), { recursive: true });
+    const collide = join(root, 'agents/ezk-architect.md');
+    writeFileSync(collide, 'NE PAS TOUCHER');
+
+    expect(() =>
+      applyGlobalPlan(planWithAgents('ezk-architect'), root, { mode: 'link', catalogRoot }),
+    ).toThrow(/non-destructif|refus/i);
+
+    // Rien n'a été touché : toujours un vrai fichier, contenu intact.
+    expect(lstatSync(collide).isSymbolicLink()).toBe(false);
+    expect(readFileSync(collide, 'utf8')).toBe('NE PAS TOUCHER');
   });
 });
