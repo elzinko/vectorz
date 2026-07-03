@@ -15,6 +15,7 @@
 | 0018 | coquille I/O — mode link vs copy (symlink live-update) | feature | P1 | ✅ shipped | local |
 | 0019 | migrer + étendre ezk-design-system (UI/UX consultable + requêtable) | feature | P1 | 🔴 todo | |
 | 0024 | Migration claude-skills → mega-city — finir le strangler-fig (skills + agents restants) | chore | P1 | 🔴 todo | |
+| 0025 | cap global mode link — symlinker AUSSI les agents (pas seulement les skills) | bug | P1 | 🔴 todo | |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo | |
 | 0006 | migrer les rulesets iamthelaw → rules/ + bundles/ | chore | P2 | 🔴 todo | |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo | |
