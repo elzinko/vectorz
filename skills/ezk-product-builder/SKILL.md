@@ -75,6 +75,10 @@ problématique **puis** des options à choisir :
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Continuer]` · `[Passer en mode lean]` · `[Pause]` |
 
+> Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
+> disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
+> — tu ne l'invoques **jamais** toi-même, ça reste au choix de l'utilisateur.
+
 ## Vigilance tokens — mode configurable (`--tokens`)
 
 Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'où un mode :
@@ -94,6 +98,7 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 | `product-management:product-brainstorming` | cadrer une fiche vague / idéer | à l'étape idéation seulement |
 | `engineering:architecture` | trancher une structure non triviale | si l'archi le justifie (sinon laisse `ezk-sprint`/`ezk-architect`) |
 | **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
+| `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |
 
 Tu ne **ranges** rien toi-même (git, fichiers) : ce sont les compétences composées qui rangent
 (`ezk-sprint`/`ezk-commits` commitent & mergent, `ezk-backlog` ship). Frontière ADR-0001 tenue

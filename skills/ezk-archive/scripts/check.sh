@@ -84,6 +84,30 @@ else
 fi
 echo
 
+# --- Note de handoff (fichier persistant) ------------------------------------
+# Read-only : ne fait QUE rapporter les faits. La purge/écriture réelle est un
+# geste de `run` (cf. SKILL.md §6), pas de ce script.
+echo "## Note de handoff (fichier persistant)"
+HANDOFF_FILE=".claude/handoff.md"
+if git check-ignore -q "$HANDOFF_FILE" 2>/dev/null; then
+  echo "✓ $HANDOFF_FILE couvert par .gitignore."
+else
+  echo "⚠ $HANDOFF_FILE n'est PAS ignoré — ajouter une entrée .gitignore avant d'écrire dedans."
+fi
+if [[ -f "$HANDOFF_FILE" ]]; then
+  N_ENTRIES="$(grep -c '^## ' "$HANDOFF_FILE" 2>/dev/null || echo 0)"
+  echo "ℹ $HANDOFF_FILE existe ($N_ENTRIES entrée(s))."
+  REFS="$(grep -oE '#[0-9]+|`[a-zA-Z0-9./_-]+`' "$HANDOFF_FILE" 2>/dev/null | sort -u)"
+  if [[ -n "$REFS" ]]; then
+    echo "  PR/branches mentionnées (à croiser avec la section 2 ci-dessus — absentes"
+    echo "  de la liste live = résolues, purgeables au prochain \`run\`) :"
+    echo "$REFS" | sed 's/^/    /'
+  fi
+else
+  echo "ℹ $HANDOFF_FILE absent — sera créé au premier \`run\`."
+fi
+echo
+
 # --- 4. ADR de la session -----------------------------------------------------
 # (checks 3/5/6/7 = jugement/délégation, pas du ressort de ce helper read-only)
 echo "## 4. ADR de la session"

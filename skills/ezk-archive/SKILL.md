@@ -12,8 +12,9 @@ description: >-
   produit la note de handoff). Vérifie en 7 points : working tree propre +
   stashes, PRs & branches non-mergées (crucial pour les repos sans remote),
   backlog cohérent (délègue à ezk-backlog), ADR de la session restés en
-  branche/PR non-mergée, mémoire projet durable, note de handoff prête-à-coller,
-  verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de clôture
+  branche/PR non-mergée, mémoire projet durable, note de handoff persistée dans
+  `.claude/handoff.md` (append-only, purge des entrées résolues), verdict
+  archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de clôture
   uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).
 ---
 
@@ -100,10 +101,29 @@ leur *pourquoi*, objectifs en cours) et met à jour la mémoire **si le harness 
 une**. Convertis les dates relatives en absolues. Ne mémorise **pas** ce que le repo
 encode déjà (structure du code, historique git, fixes passés, CLAUDE.md).
 
-### 6. Note de handoff — **LE livrable**
+### 6. Note de handoff — **LE livrable**, désormais PERSISTÉ
 Un prompt **prêt-à-coller** pour démarrer la prochaine session (gabarit ci-dessous) :
 sync de `main`, `/ezk-backlog list`, la liste des **pending** PRs/branches avec leur
 action, et les **candidats de travail prioritaires**.
+
+**Persistance** : `run` écrit cette note dans **`.claude/handoff.md`** (racine du
+repo, gitignoré) — pas seulement affichée dans le chat, pour ne pas dépendre de ce
+que l'utilisateur pense à copier-coller. **Append-only, nouvelle entrée en tête**
+(la plus récente en premier) : plusieurs sessions peuvent chacune ajouter la leur
+sans jamais s'écraser ni se verrouiller — l'ajout seul suffit à éviter les conflits,
+pas besoin de state machine consume/lock même si plusieurs sessions tournent en
+parallèle sur des branches différentes.
+
+Avant d'ajouter la nouvelle entrée, `run` **purge les entrées devenues entièrement
+résolues** : croise les PR/branches qu'elles mentionnent avec la liste live du
+check 2 (`scripts/check.sh`) — tout ce qui n'y figure plus (mergé, fermé, supprimé)
+signifie que l'entrée est résolue et peut être retirée. Une entrée **partiellement**
+résolue (au moins un point encore pending) est conservée telle quelle — pas
+d'édition chirurgicale de son contenu, qui resterait fragile pour un gain marginal.
+
+Si `.claude/handoff.md` n'est pas encore couvert par `.gitignore`, `run` ajoute
+l'entrée avant d'écrire (c'est de l'éphémère personnel — pas du code d'équipe, ne
+jamais le committer).
 
 ### 7. Verdict
 - **✅ archivable** — rien en suspens, handoff prêt.
@@ -131,6 +151,9 @@ action, et les **candidats de travail prioritaires**.
 État de clôture : ✅ archivable | ⚠️ pending (voir ci-dessus)
 ```
 
+Cette même note est écrite en tête de `.claude/handoff.md` (nouvelle entrée
+`## <date> <heure> — <branche>`, la plus récente en premier).
+
 ## Déroulé
 
 1. **Lance le helper** `scripts/check.sh` → faits bruts (read-only).
@@ -139,7 +162,8 @@ action, et les **candidats de travail prioritaires**.
 3. Si `check` → **t'arrêtes là** : aucune modification, juste le rapport + le verdict.
 4. Si `run`/`close` → applique les **corrections sûres** (backlog via `ezk-backlog`,
    mémoire), **re-signale** ce qui reste à la main de l'utilisateur (merges/push),
-   puis produis la **note de handoff** et le **verdict**.
+   puis **écrit/purge `.claude/handoff.md`** (nouvelle entrée en tête, entrées
+   résolues retirées) et affiche la **note de handoff** + le **verdict**.
 
 ## Intégration
 
@@ -149,6 +173,9 @@ action, et les **candidats de travail prioritaires**.
   ezk-archive *clôt*. Typiquement invoqué **après** le checkpoint de fin de sprint.
 - **[`ezk-commits`](../ezk-commits/)** : tout commit produit par `run` suit les
   Conventional Commits.
+- **`ezk-product-builder`** : à ses pauses inter-sprint, il **rappelle** que
+  `/ezk-archive` est disponible si l'utilisateur veut s'arrêter là — il ne
+  réimplémente rien du handoff, ça reste ici, seule responsable du fichier.
 
 ## Garde-fous
 
@@ -158,5 +185,9 @@ action, et les **candidats de travail prioritaires**.
 - **Respecte les repos local-only** : pas de remote → pas de `gh`, uniquement les
   branches locales (`git branch --no-merged`).
 - **Idempotent** ; `check` est **strictement read-only**.
+- **`.claude/handoff.md` est de l'éphémère personnel** : gitignoré, jamais committé ;
+  append-only (pas de verrou/consume — l'ajout seul évite les conflits entre
+  sessions parallèles) ; purge uniquement les entrées **entièrement** résolues,
+  jamais d'édition chirurgicale d'une entrée encore partiellement pending.
 - Ne commite jamais à l'aveugle du code ou des secrets ; n'invente ni date ni n° de PR
   (demande si inconnu).
