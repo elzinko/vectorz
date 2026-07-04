@@ -4,8 +4,8 @@ title: cap global mode link — symlinker AUSSI les agents (pas seulement les sk
 type: bug
 priority: P1
 version:
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-07-03
 ---
 

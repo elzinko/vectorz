@@ -4,8 +4,8 @@ title: Migration claude-skills → mega-city — finir le strangler-fig (skills 
 type: chore
 priority: P1
 version:
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-07-03
 ---
 
@@ -21,11 +21,14 @@ Mais la migration du **contenu** est ~33 % faite (4 skills, 1 agent) et il **n'e
 d'ensemble** de ce qui reste. Cette fiche est le **tracker** jusqu'au switchover. Les fiches
 per-skill (ex. 0019 ezk-design-system) restent la maille d'exécution ; celle-ci est l'ombrelle.
 
-État (mis à jour) :
-- `mega-city/skills/` : **tous migrés SAUF ezk-design-system** (fiche 0019). Loader corrigé
+État (**terminé** — switchover fait le 2026-07-04) :
+- `mega-city/skills/` : **les 12 migrés** (ezk-design-system inclus). Loader OK
   (sous-dossiers `skills/<name>/SKILL.md` + fallback nom de dossier + `readAgent` accepte `name`).
 - `mega-city/agents/` : ezk-architect, ezk-qa, ezk-reviewer, ezk-steward, ezk-tdd (**tous**).
-- Reste : ezk-design-system (0019), le **switchover** (bind --global --link), le **gel** de claude-skills.
+- **Switchover fait** : `bind-global global --link` (profil dédié `global`, pas `base`) →
+  `~/.claude/{skills,agents}` symlinke vers mega-city. A nécessité de compléter le mode link
+  pour qu'il symlinke AUSSI les agents (**fiche 0025**, trou de 0018).
+- **claude-skills gelé** (bandeau README lecture seule, PR #32 mergée).
 
 ## Proposition — checklist jusqu'au switchover
 
@@ -34,22 +37,23 @@ per-skill (ex. 0019 ezk-design-system) restent la maille d'exécution ; celle-ci
   cadrage brainstorm). **Satisfait la fiche 0022** → 0022 shippée au passage.
 - [x] ezk-sprint  · [x] ezk-ci  · [x] ezk-preview  · [x] ezk-device  · [x] ezk-apk
 - [x] ezk-npm-scripts
-- [ ] ezk-design-system → **déjà tracké par la fiche 0019** (migrer + étendre).
+- [x] **ezk-design-system** — migré (copie fidèle SKILL.md + BRIEF.md) ; l'« étendre » reste la fiche 0019.
 
 **Agents restants (4)** — copier `<agent>.md` dans `agents/` :
 - [x] ezk-architect · [x] ezk-tdd · [x] ezk-qa · [x] ezk-steward
 
 **Switchover** (une fois le contenu migré) :
-- [ ] `bind --global <profile>` écrit `~/.claude/{skills,agents}` en **mode link** → `~/.claude`
-  pointe vers mega-city (plus vers claude-skills).
-- [ ] **Geler `claude-skills`** : README « migré vers mega-city, lecture seule », plus d'ajout.
+- [x] `bind-global global --link` écrit `~/.claude/{skills,agents}` en **mode link** → `~/.claude`
+  pointe vers mega-city (plus vers claude-skills). Profil dédié `global` (base reste minimal).
+  A demandé de compléter le mode link côté **agents** (fiche **0025**).
+- [x] **Geler `claude-skills`** : bandeau README « migré vers mega-city, lecture seule » (PR #32 mergée).
 
 ## Critères d'acceptation
 
-- [ ] Les 8 skills + 4 agents restants présents dans `mega-city/{skills,agents}`.
-- [ ] `bind --global` installe l'ensemble en mode link ; un `git pull` mega-city met à jour `~/.claude`.
-- [ ] `claude-skills` gelé (note read-only) ; aucune skill n'y est plus éditée.
-- [ ] Fiche 0022 fermée (satisfaite par la migration d'ezk-backlog v#31).
+- [x] Les 8 skills + 4 agents restants présents dans `mega-city/{skills,agents}` (12 skills + 5 agents au total).
+- [x] `bind-global global` installe l'ensemble (skills **et** agents) en mode link ; un `git pull` mega-city met à jour `~/.claude`.
+- [x] `claude-skills` gelé (note read-only) ; aucune skill n'y est plus éditée.
+- [x] Fiche 0022 fermée (satisfaite par la migration d'ezk-backlog v#31) — déjà shippée.
 
 ## Notes / décisions
 
