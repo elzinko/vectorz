@@ -9,7 +9,8 @@ description: >-
   project that has a docs/design-system.md — read it FIRST and apply its
   rules. MVP-grade by design: three files, no build system, no heavy
   tooling — works for vanilla JS/CSS apps served by any backend (Python,
-  Node…).
+  Node…). Nomme et rend CONSULTABLE/REQUÊTABLE le vocabulaire complet — Token,
+  Variant, Slot, Pattern, Breakpoint — sur une page /design vivante.
 ---
 
 # ezk-design-system
@@ -17,6 +18,22 @@ description: >-
 Tu installes et fais respecter un **design system minimal mais pro** :
 tokens → atomes → styleguide vivant. Objectif startup : itérer vite SANS
 diverger visuellement. Pas d'usine à gaz : trois fichiers + une page.
+
+## Vocabulaire — les 5 notions (nomme-les explicitement)
+
+Un design system se raisonne avec 5 notions. **Nomme-les** dans la doc et le styleguide :
+
+| Notion | Ce que c'est | Où ça vit |
+|---|---|---|
+| **Token** | variable de design réutilisable (couleur, espacement, typo, rayon, z-index) | `tokens.css` (`--color-primary`, `--sp-4`) |
+| **Variant** | déclinaison d'un composant par intention/état/taille (primaire/danger, S/M/L) | `components.css` (`.btn--primary`, `.btn--sm`) |
+| **Slot** | zone d'un composant qui accueille du contenu variable (icône, label custom) | convention de markup documentée (`.card > [data-slot="header"]`) |
+| **Pattern** | solution récurrente à un problème UI de + haut niveau (pagination, form multi-étapes, menu déroulant) | `patterns/` documenté + montré sur `/design` |
+| **Breakpoint** | seuil de largeur où la mise en page change (responsive) | tokens `--bp-sm/md/lg` + media queries centralisées |
+
+**Token → Variant → Slot** = l'échelle du composant ; **Pattern** assemble des composants (au-dessus) ; **Breakpoint** = la dimension responsive, transverse. Tout ajout dans l'une de ces 5 familles est **documenté + montré sur `/design`**, jamais en dur dans une vue.
+
+> **Agnostique techno** : ces 5 notions sont **universelles**. Leur *implémentation* (CSS vanilla, Tailwind, styled-components, tokens JSON…) dépend de la **stack** — le choix des outils est **délégué** au domaine « stack → toolchain » (fiche 0020), pas hardcodé ici.
 
 ## Détection — le projet en a-t-il déjà un ?
 
@@ -78,15 +95,25 @@ projet équipé :
 2. **Tokens only** : aucune couleur/taille/z-index en dur — `var(--…)`.
    Une valeur manquante = un token AJOUTÉ et documenté, pas un littéral.
 3. **Composer avant de créer** : besoin d'un bouton/badge/carte → classes
-   canoniques. Variante manquante → l'ajouter dans `components.css`
-   (pas de CSS ad hoc dans la vue).
+   canoniques. **Variant** manquant → l'ajouter dans `components.css` ; contenu
+   variable → **Slot** documenté (pas un sur-composant) ; besoin récurrent
+   (pagination, form multi-étapes…) → **Pattern** dans `patterns/`, pas du copier-coller.
 4. **Tout ajout est montré sur `/design`** dans le même commit.
-5. **Pas de `z-index: 9999`** : ajuster l'échelle nommée.
+5. **Pas de `z-index: 9999`** : ajuster l'échelle nommée. **Responsive** via
+   **Breakpoints** nommés (`--bp-*`), jamais une largeur magique en dur.
 6. En touchant une vue : **migrer son markup** vers les atomes et
    alléger le bridge (règle du boy-scout).
 
 Si l'utilisateur demande explicitement de déroger (prototype jetable),
 acte la dérogation dans la PR — sinon ces règles priment.
+
+## Consultable & requêtable
+
+Le design system doit être interrogeable, **par l'agent ET par un humain** :
+
+- **Par l'agent (enforcement)** : `docs/design-system.md` est lu avant toute UI — c'est déjà le cas ci-dessus.
+- **Par un humain (browsable)** : `/design` liste **chaque** token, variant, slot, pattern et breakpoint (lus en runtime → « la page ne peut pas mentir »). Une section par famille des 5 notions.
+- **Requêtable** : on peut demander « **liste les patterns** dispo », « **les variants** du bouton », « **les breakpoints** » → la réponse se lit dans `tokens.css` / `components.css` / `patterns/` (source de vérité), jamais devinée. Un `patterns/INDEX.md` (une ligne par pattern) rend l'inventaire trivial à interroger.
 
 ## Tests recommandés (anti-régression du système)
 
