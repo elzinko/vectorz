@@ -3,8 +3,8 @@ id: 0019
 title: migrer + étendre ezk-design-system (design system UI/UX consultable + requêtable)
 type: feature
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: local (squash-merge)
 created: 2026-06-27
 ---
 
