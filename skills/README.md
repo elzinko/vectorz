@@ -30,7 +30,8 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-apk` | 📥 importé (0024) | build d'un APK/IPA de preview sur EAS + lien d'install |
 | `ezk-npm-scripts` | 📥 importé (0024) | hygiène des scripts npm/pnpm/turbo d'un monorepo |
 | `ezk-design-system` | 📥 importé (0024) | design system minimal (tokens + atomes + styleguide vivant) — l'« étendre » reste la fiche 0019 |
+| `ezk-pr-pilot` | 📦 nouveau (ADR-0009, fiche 0027) | orchestre le **test-puis-merge d'un stock de PRs** : `init` (convention Validation — template mince lié à `docs/PR_VALIDATION.md`, jamais écrasé), `plan` (ordre de merge par merge-tree, sessions groupées), `run`/`report`/`ship` (compose ezk-preview, ezk-device/apk, verify, ezk-backlog) |
 
 > **Agents** (`../agents/`) migrés aussi (0024) : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd`.
-> Migration du contenu **terminée** : les 12 skills + 5 agents `ezk-*` vivent désormais dans mega-city.
+> Migration du contenu **terminée** : les 12 skills migrés + 1 né ici (`ezk-pr-pilot`) + 5 agents `ezk-*` vivent désormais dans mega-city.
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).

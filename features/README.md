@@ -32,4 +32,4 @@
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
 | 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo | |
 
-> Livrées (`done/`) : 0001, 0002, 0004, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026.
+> Livrées (`done/`) : 0001, 0002, 0004, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027.

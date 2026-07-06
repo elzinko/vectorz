@@ -15,7 +15,7 @@ agents:
   - ezk-reviewer
   - ezk-steward
   - ezk-tdd
-# → tout le catalogue de skills ezk-* (12) → installés dans ~/.claude/skills/
+# → tout le catalogue de skills ezk-* (13) → installés dans ~/.claude/skills/
 skills:
   - ezk-apk
   - ezk-archive
@@ -26,6 +26,7 @@ skills:
   - ezk-device
   - ezk-ezk
   - ezk-npm-scripts
+  - ezk-pr-pilot
   - ezk-preview
   - ezk-product-builder
   - ezk-sprint
