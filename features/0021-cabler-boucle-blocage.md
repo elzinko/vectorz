@@ -25,9 +25,9 @@ Couvre les FR41-44/FR11/FR31/FR43 du PRD.
    BLK-*.yaml + event STORY_BLOCKED (au lieu du seul flag terminal).
 2. Router `/api/blocages` dans HttpServer + onglet mission-control (liste + resolve).
 3. Le RÉSOLVEUR est pluggable : l'humain (matin, via l'UI) ou un agent décideur gouverné
-   par mega-city (`ezk-pm`, fiche mega-city 0027) en client de l'API/EventBus — conforme à
+   par mega-city (`ezk-pm`, fiche mega-city 0036) en client de l'API/EventBus — conforme à
    la frontière ADR-021/022 (pas de 4e port tant qu'une consultation synchrone n'est pas
-   requise ; voir mega-city ADR-0010 §4).
+   requise ; voir mega-city ADR-0011 §4).
 4. Reprise : un blocage `resolved` avec `response` réinjecte la story au prochain run
    (comportement actuel : les `blocked` sont re-tentées — le formaliser).
 
@@ -39,4 +39,4 @@ Couvre les FR41-44/FR11/FR31/FR43 du PRD.
 
 ## Notes / décisions
 Analyse et inventaire du code mort : session mega-city du 2026-07-06. Lien : mega-city
-ADR-0010 (le décideur est un agent du catalogue).
+ADR-0011 (le décideur est un agent du catalogue).

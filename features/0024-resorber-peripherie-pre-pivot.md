@@ -22,7 +22,7 @@ l'intégration mega-city (fiche mega-city 0016, double-gated) attendent ces merg
 
 ## Proposition
 1. Merger ADR-021 ; statuer ADR-022 (WIP → accepté, avec la décision EscalationPort
-   « différé » — cf. mega-city ADR-0010 §4).
+   « différé » — cf. mega-city ADR-0011 §4).
 2. ceremony-engine : sortir du cœur — supprimer, ou geler derrière le Method port si une
    méthode future en a besoin ; décision à l'ADR.
 3. quality-intelligence : idem derrière le Rules port/DoDCheck (le seam ADR-020 couvre déjà
