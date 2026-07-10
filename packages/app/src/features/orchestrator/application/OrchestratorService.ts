@@ -1,8 +1,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import type { EventBus } from '@cop1/shared-kernel';
-import { defaultCommandsForPhase } from '@cop1/sprint-core';
-import type { WorktreePort } from '@cop1/sprint-core';
+import { BlocageType, defaultCommandsForPhase } from '@cop1/sprint-core';
+import type { BlockageService, WorktreePort } from '@cop1/sprint-core';
 import type { BudgetGuard } from '../domain/RunBudget.js';
 import { StoryBudget, type StoryBudgetConfig } from '../domain/StoryBudget.js';
 import type { SupervisorPlaybook } from '../domain/SupervisorPlaybook.js';
@@ -80,6 +80,7 @@ export class OrchestratorService {
     private readonly budgetGuard?: BudgetGuard,
     private readonly worktreePort?: WorktreePort,
     private readonly storyBudgetConfig?: StoryBudgetConfig,
+    private readonly blockageService?: BlockageService,
   ) {}
 
   async run(options: OrchestratorRunOptions): Promise<OrchestratorRunResult> {
@@ -106,6 +107,24 @@ export class OrchestratorService {
       const previousStatus = getStoryStatus(statusRaw, storyKey);
       if (previousStatus === 'done' || previousStatus === 'cancelled') {
         continue;
+      }
+
+      // fiche 0021 — reprise: a story left `blocked` by a supervisor escalation
+      // waits for its blocage to be resolved. An OPEN blocage → skip this run
+      // (re-attempting would just re-block). A resolved/absent blocage → fall
+      // through and re-run. Inert without an injected blockageService (the
+      // pre-0021 behavior: a `blocked` story is simply re-attempted).
+      if (previousStatus === 'blocked' && this.blockageService) {
+        const open = this.blockageService.getOpen().filter((b) => b.storyId === storyKey);
+        if (open.length > 0) {
+          this.eventBus.emit('orchestrator.story.skipped_blocked', {
+            storyKey,
+            blocageId: open[0]?.id,
+            ts: new Date().toISOString(),
+          });
+          outcomes.push({ storyKey, previousStatus, nextStatus: 'blocked', commandsRun: [] });
+          continue;
+        }
       }
 
       this.eventBus.emit('orchestrator.story.started', { storyKey, ts: new Date().toISOString() });
@@ -247,6 +266,14 @@ export class OrchestratorService {
           if (result.escalated) {
             escalated = true;
             if (options.mode === 'abort-on-escalation') {
+              // fiche 0021 — the escalation is no longer a dead-end: declare a
+              // resolvable blocage (BLK-*.yaml + STORY_BLOCKED event) so a human
+              // or a decider agent can unblock the story for a later run.
+              this.blockageService?.declare(
+                storyKey,
+                BlocageType.AMBIGUITY,
+                result.note ?? 'supervisor escalation',
+              );
               outcomes.push({
                 storyKey,
                 previousStatus,

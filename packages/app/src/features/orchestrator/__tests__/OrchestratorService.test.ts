@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
+import { BlockageService } from '@cop1/sprint-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   OrchestratorService,
@@ -485,6 +486,146 @@ describe('OrchestratorService', () => {
     });
     expect(logger).toHaveBeenCalled();
     expect(logger.mock.calls[0]?.[0]).toMatchObject({ event: 'auto-decision' });
+  });
+
+  // fiche 0021 — the blockage loop: an escalation declares a resolvable blocage,
+  // and the reprise honors it (open → skip, resolved → re-run).
+  describe('blockage loop (fiche 0021)', () => {
+    async function seedBlockedStatusFile(dir: string, lines: string[]): Promise<string> {
+      const artifactsDir = join(dir, '_bmad-output', 'implementation-artifacts');
+      await mkdir(artifactsDir, { recursive: true });
+      const path = join(artifactsDir, 'sprint-status.yaml');
+      await writeFile(path, ['development_status:', ...lines, ''].join('\n'));
+      return path;
+    }
+
+    it('declares a resolvable blocage when a supervisor escalation blocks a story', async () => {
+      await seedStatusFile(projectRoot);
+      const bus = new EventBus();
+      const blockage = new BlockageService(projectRoot, bus);
+      const runner = vi.fn(async ({ command }) => ({
+        success: true,
+        escalated: command.includes('dev-story'),
+        nextStatus: 'in-review',
+      }));
+      const svc = new OrchestratorService(
+        runner,
+        bus,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        blockage,
+      );
+
+      const result = await svc.run({
+        playbook: samplePlaybook(),
+        epicId: 'EA99',
+        projectRoot,
+        mode: 'abort-on-escalation',
+      });
+
+      expect(result.escalated).toBe(true);
+      const open = blockage.getOpen();
+      expect(open).toHaveLength(1);
+      expect(open[0]?.storyId).toBe('EA99-S1');
+      expect(open[0]?.type).toBe('ambiguity');
+      expect(open[0]?.status).toBe('open');
+    });
+
+    it('skips a blocked story whose blocage is still open (reprise waits)', async () => {
+      await seedBlockedStatusFile(projectRoot, ['  EA99-S1: blocked', '  EA99-S2: ready-for-dev']);
+      const bus = new EventBus();
+      const skipped: unknown[] = [];
+      bus.on('orchestrator.story.skipped_blocked', (p) => skipped.push(p));
+      const blockage = new BlockageService(projectRoot, bus);
+      blockage.declare('EA99-S1', 'ambiguity', 'need a human decision');
+
+      const ran: string[] = [];
+      const runner = vi.fn(async ({ storyKey, command }) => {
+        ran.push(`${storyKey}:${command}`);
+        return { success: true, nextStatus: 'done' };
+      });
+      const svc = new OrchestratorService(
+        runner,
+        bus,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        blockage,
+      );
+
+      const result = await svc.run({
+        playbook: samplePlaybook(),
+        epicId: 'EA99',
+        projectRoot,
+        mode: 'normal',
+      });
+
+      // S1 skipped (no command ran for it); S2 processed normally.
+      expect(ran.some((c) => c.startsWith('EA99-S1:'))).toBe(false);
+      expect(ran.some((c) => c.startsWith('EA99-S2:'))).toBe(true);
+      expect(skipped).toHaveLength(1);
+      const s1 = result.storiesProcessed.find((o) => o.storyKey === 'EA99-S1');
+      expect(s1?.nextStatus).toBe('blocked');
+    });
+
+    it('re-runs a blocked story once its blocage is resolved (reprise)', async () => {
+      await seedBlockedStatusFile(projectRoot, ['  EA99-S1: blocked']);
+      const bus = new EventBus();
+      const blockage = new BlockageService(projectRoot, bus);
+      const declared = blockage.declare('EA99-S1', 'ambiguity', 'need a human decision');
+      blockage.resolve(declared.id, 'go with option A');
+
+      const ran: string[] = [];
+      const runner = vi.fn(async ({ storyKey, command }) => {
+        ran.push(`${storyKey}:${command}`);
+        return { success: true, nextStatus: 'done' };
+      });
+      const svc = new OrchestratorService(
+        runner,
+        bus,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        blockage,
+      );
+
+      await svc.run({
+        playbook: samplePlaybook(),
+        epicId: 'EA99',
+        projectRoot,
+        mode: 'normal',
+      });
+
+      // Blocage resolved → the story is picked up again instead of being skipped.
+      expect(ran.some((c) => c.startsWith('EA99-S1:'))).toBe(true);
+    });
+
+    it('without a blockageService a blocked story is re-attempted (pre-0021 behavior unchanged)', async () => {
+      await seedBlockedStatusFile(projectRoot, ['  EA99-S1: blocked']);
+      const bus = new EventBus();
+      const ran: string[] = [];
+      const runner = vi.fn(async ({ storyKey, command }) => {
+        ran.push(`${storyKey}:${command}`);
+        return { success: true, nextStatus: 'done' };
+      });
+      const svc = new OrchestratorService(runner, bus);
+
+      await svc.run({
+        playbook: samplePlaybook(),
+        epicId: 'EA99',
+        projectRoot,
+        mode: 'normal',
+      });
+
+      expect(ran.some((c) => c.startsWith('EA99-S1:'))).toBe(true);
+    });
   });
 });
 

@@ -1,5 +1,6 @@
 import { EventBus } from '@cop1/shared-kernel';
-import { SprintSessionService } from '@cop1/sprint-core';
+import { BlockageService, SprintSessionService } from '@cop1/sprint-core';
+import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { HttpOrchestratorAdapter } from '../../orchestrator/infrastructure/HttpOrchestratorAdapter.js';
 import { YamlSprintStatusAdapter } from '../../orchestrator/infrastructure/YamlSprintStatusAdapter.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
@@ -50,6 +51,12 @@ export class DaemonService {
     // Wire the auth-check probe (Story A): GET /api/auth/check runs a cheap,
     // single-turn SDK call inheriting the environment's Claude credentials.
     this.httpServer.setAuthChecker(() => checkAuth());
+
+    // fiche 0021 — wire the blockage API: GET /api/blocages +
+    // POST /api/blocages/:id/resolve. Shares the daemon's EventBus so that a
+    // STORY_UNBLOCKED emitted on resolve bridges to /events like every other event.
+    const blockageService = new BlockageService(projectPath, this.eventBus);
+    this.httpServer.setBlocageApiHandler(new BlocageApiHandler(blockageService));
   }
 
   async start(): Promise<void> {

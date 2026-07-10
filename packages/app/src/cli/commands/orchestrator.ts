@@ -7,6 +7,7 @@ import {
   AgentSdkSessionAdapter,
   AgentSdkSupervisorAdapter,
   type BMADSessionPort,
+  BlockageService,
   CLAUDE_STATUS_EVENT,
   ClaudeResumeSessionAdapter,
   DefaultModelTierRouter,
@@ -202,6 +203,10 @@ export async function buildOrchestratorRun(
         }
       : undefined;
 
+  // fiche 0021 — inject the blockage service so a supervisor escalation declares
+  // a resolvable blocage, and a resolved blocage lets the story re-run.
+  const blockageService = new BlockageService(projectRoot, eventBus);
+
   const svc = new OrchestratorService(
     runner,
     eventBus,
@@ -210,6 +215,7 @@ export async function buildOrchestratorRun(
     budget,
     worktreePort,
     storyBudgetConfig,
+    blockageService,
   );
 
   return { run: () => svc.run({ playbook, epicId: epic, projectRoot, mode }) };

@@ -43,6 +43,16 @@ describe('DaemonService', () => {
     expect(data.status).toBe('ok');
   });
 
+  it('wires GET /api/blocages from the composition root (fiche 0021)', async () => {
+    await daemon.start();
+
+    const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages`);
+    // A 200 (not 404) proves the daemon constructed the BlockageService +
+    // BlocageApiHandler and set it on the HttpServer.
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual([]);
+  });
+
   it('should clean up PID file on stop', async () => {
     await daemon.start();
 

@@ -1,6 +1,10 @@
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
-import { RuleProposalService } from '@cop1/sprint-core';
+import { BlockageService, RuleProposalService } from '@cop1/sprint-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { RunAlreadyActiveError } from '../../orchestrator/infrastructure/HttpOrchestratorAdapter.js';
 import { HttpServer } from '../infrastructure/HttpServer.js';
 import type { OrchestratorAdapterPort } from '../infrastructure/HttpServer.js';
@@ -394,6 +398,68 @@ describe('HttpServer', () => {
 
         reader.cancel();
       }
+    });
+  });
+
+  describe('Blocage API (fiche 0021)', () => {
+    let projectRoot: string;
+    let eventBus: EventBus;
+    let blockage: BlockageService;
+
+    beforeEach(async () => {
+      projectRoot = await mkdtemp(join(tmpdir(), 'httpserver-blocage-'));
+      eventBus = new EventBus();
+      blockage = new BlockageService(projectRoot, eventBus);
+      server.setBlocageApiHandler(new BlocageApiHandler(blockage));
+    });
+
+    afterEach(async () => {
+      eventBus.removeAllListeners();
+      await rm(projectRoot, { recursive: true, force: true });
+    });
+
+    it('GET /api/blocages returns [] when none are declared', async () => {
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages`);
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    });
+
+    it('GET /api/blocages lists an open blocage once one is declared', async () => {
+      blockage.declare('EA1-S1', 'ambiguity', 'need a decision');
+      await server.start(TEST_PORT);
+
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages`);
+      const data = (await res.json()) as Array<{ storyId: string; status: string }>;
+      expect(data).toHaveLength(1);
+      expect(data[0]?.storyId).toBe('EA1-S1');
+      expect(data[0]?.status).toBe('open');
+    });
+
+    it('POST /api/blocages/:id/resolve resolves the blocage and clears the open list', async () => {
+      const declared = blockage.declare('EA1-S1', 'ambiguity', 'need a decision');
+      await server.start(TEST_PORT);
+
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages/${declared.id}/resolve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response: 'go with A' }),
+      });
+      expect(res.status).toBe(200);
+      const data = (await res.json()) as { status: string; response: string };
+      expect(data.status).toBe('resolved');
+      expect(data.response).toBe('go with A');
+
+      const list = await (await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages`)).json();
+      expect(list).toEqual([]);
+    });
+
+    it('falls through to 404 when no blocage route matches (PUT on resolve)', async () => {
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages/BLK-unknown/resolve`, {
+        method: 'PUT',
+      });
+      expect(res.status).toBe(404);
     });
   });
 });

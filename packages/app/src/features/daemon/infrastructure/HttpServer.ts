@@ -66,6 +66,16 @@ export interface RuleProposalProvider {
   updateStatus(ruleId: string, status: RuleProposalStatus, reason?: string): RuleProposalRecord;
 }
 
+/**
+ * Minimal request-handler port for the blocage API (fiche 0021). Structurally
+ * satisfied by `BlocageApiHandler` — keeps HttpServer free of a concrete feature
+ * dependency (mirrors the OrchestratorAdapterPort style). `handle` returns true
+ * when it owns the route (the response has already been written).
+ */
+export interface BlocageApiPort {
+  handle(req: IncomingMessage, res: ServerResponse): boolean;
+}
+
 export class HttpServer {
   private server: Server | null = null;
   private readonly startedAt: number = Date.now();
@@ -74,6 +84,7 @@ export class HttpServer {
   private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private orchestratorAdapter: OrchestratorAdapterPort | null = null;
+  private blocageApiHandler: BlocageApiPort | null = null;
   private eventBusWired = false;
 
   setSprintStatusProvider(provider: SprintStatusProvider): void {
@@ -90,6 +101,10 @@ export class HttpServer {
 
   setOrchestratorAdapter(adapter: OrchestratorAdapterPort): void {
     this.orchestratorAdapter = adapter;
+  }
+
+  setBlocageApiHandler(handler: BlocageApiPort): void {
+    this.blocageApiHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -179,6 +194,12 @@ export class HttpServer {
 
     if (req.method === 'POST' && req.url === '/api/orchestrator/stop') {
       void this.handleOrchestratorStop(res);
+      return;
+    }
+
+    // fiche 0021 — GET /api/blocages + POST /api/blocages/:id/resolve. The
+    // handler returns true when it owns the route (response already written).
+    if (this.blocageApiHandler?.handle(req, res)) {
       return;
     }
 
