@@ -5,14 +5,14 @@ Source de vérité = le front-matter de chaque fiche `features/NNNN-slug.md`. Ce
 
 Règles : 1 PR par feature, squash-merge quand la CI est verte.
 
-Dernière mise à jour : 2026-07-06
+Dernière mise à jour : 2026-07-10
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0001 | Story B — lanceur de run + mission-control live | feature | P1 | ✅ shipped | #24 |
 | 0002 | Fix emplacement du worktree en session concurrente | bug | P1 | ✅ shipped | #26 |
 | 0013 | DoDCheck port + registry + refactor du seam (POC DoD automatisée) | feature | P1 | ✅ shipped | #33 |
-| 0021 | Câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale | feature | P1 | 🔴 todo | |
+| 0021 | Câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale | feature | P1 | ✅ shipped | #50 |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget (épic → ADR-020) | feature | P2 | ✅ shipped | #32 |

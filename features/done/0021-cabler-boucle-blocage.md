@@ -3,8 +3,8 @@ id: 0021
 title: câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale
 type: feature
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: "#50"
 created: 2026-07-06
 ---
 
