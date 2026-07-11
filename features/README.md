@@ -22,7 +22,7 @@ Dernière mise à jour : 2026-07-10
 | 0015 | StoryBudget par story (enforcement budget fin) | feature | P2 | ✅ shipped | #38 |
 | 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 🔴 todo | |
 | 0022 | mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $) | feature | P2 | 🔴 todo | |
-| 0023 | Exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 | 🔴 todo | |
+| 0023 | Exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 | ✅ shipped | #52 |
 | 0024 | Résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo | |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |
 | 0011 | Buffer frames non borné dans la mission-control | refactor | P3 | ✅ shipped | #41 |

@@ -3,8 +3,8 @@ id: 0023
 title: exposer le model-tiering dans cop1.config.yaml (promesse ADR-015)
 type: chore
 priority: P2
-status: todo
-pr:
+status: shipped
+pr: "#52"
 created: 2026-07-06
 ---
 
