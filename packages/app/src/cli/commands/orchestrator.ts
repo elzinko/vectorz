@@ -16,6 +16,7 @@ import {
   SupervisorService,
   WorktreeService,
 } from '@cop1/sprint-core';
+import { ConfigLoader } from '../../features/config/application/ConfigLoader.js';
 import {
   type BMADCommandRunner,
   type OrchestratorMode,
@@ -278,9 +279,12 @@ function resolveRunner(
     if (adapterChoice && adapterChoice !== 'sdk') {
       console.warn(`Unknown COP1_BMAD_ADAPTER value '${adapterChoice}', falling back to 'sdk'`);
     }
+    // fiche 0023 (ADR-015) — model tiering is data-driven from cop1.config.yaml.
+    // Absent `model_tiering` → DEFAULT_MODEL_TIER_CONFIG (behavior unchanged).
+    const cop1Config = new ConfigLoader({ skipRamValidation: true }).load(projectRoot);
     sessionPort = new AgentSdkSessionAdapter(eventBus, {
       questionHandler,
-      modelRouter: new DefaultModelTierRouter(),
+      modelRouter: new DefaultModelTierRouter(cop1Config.model_tiering),
       disallowedTools: DEFAULT_DISALLOWED_TOOLS,
       ...(maxBudgetUsd !== undefined && { maxBudgetUsd }),
     });

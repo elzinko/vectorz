@@ -23,6 +23,14 @@ export interface Cop1Config {
   };
   llm_routing: Record<string, string>;
   llm_fallback: Record<string, string>;
+  /**
+   * fiche 0023 (ADR-015) — model-tiering policy (Claude SDK aliases), overridable
+   * from cop1.config.yaml. Absent → code default (DEFAULT_MODEL_TIER_CONFIG).
+   */
+  model_tiering?: {
+    rules: { match: string; tier: 'opus' | 'sonnet' | 'haiku' }[];
+    fallback: 'opus' | 'sonnet' | 'haiku';
+  };
   git: {
     auto_merge: boolean;
   };

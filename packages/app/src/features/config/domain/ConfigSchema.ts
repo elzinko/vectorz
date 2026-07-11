@@ -33,6 +33,22 @@ export const ConfigSchema = z
       }),
     llm_routing: z.record(z.string(), z.string()).default({}),
     llm_fallback: z.record(z.string(), z.string()).default({}),
+    // fiche 0023 (ADR-015) — model-tiering policy overridable from config, distinct
+    // from `llm_routing` (Ollama local). Aliases only (opus/sonnet/haiku); a pinned
+    // model id is rejected by the enum. Absent → DEFAULT_MODEL_TIER_CONFIG applies.
+    model_tiering: z
+      .object({
+        rules: z
+          .array(
+            z.object({
+              match: z.string().min(1),
+              tier: z.enum(['opus', 'sonnet', 'haiku']),
+            }),
+          )
+          .default([]),
+        fallback: z.enum(['opus', 'sonnet', 'haiku']),
+      })
+      .optional(),
     git: z
       .object({
         auto_merge: z.boolean().default(false),

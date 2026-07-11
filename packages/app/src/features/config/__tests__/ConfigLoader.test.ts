@@ -1,6 +1,7 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { DefaultModelTierRouter } from '@cop1/sprint-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigLoader } from '../application/ConfigLoader.js';
 import { ConfigValidationError } from '../domain/ConfigValidationError.js';
@@ -378,6 +379,71 @@ workflow:
 
       const config = loader.load(testDir);
       expect(config.workflow.useBMAD).toBe(true);
+    });
+  });
+
+  describe('model_tiering config (fiche 0023)', () => {
+    it('is undefined when absent → router uses the code defaults (backward-compatible)', () => {
+      const config = loader.load(testDir);
+      expect(config.model_tiering).toBeUndefined();
+      // DEFAULT_MODEL_TIER_CONFIG: create-story→opus, code-review→opus, fallback sonnet.
+      const router = new DefaultModelTierRouter(config.model_tiering);
+      expect(router.resolve('/bmad-bmm-create-story')).toBe('opus');
+      expect(router.resolve('/bmad-bmm-code-review')).toBe('opus');
+      expect(router.resolve('/bmad-bmm-dev-story')).toBe('sonnet');
+    });
+
+    it('overrides tiering rules from config without any code change', () => {
+      const yaml = `
+model_tiering:
+  rules:
+    - match: dev-story
+      tier: opus
+    - match: create-story
+      tier: haiku
+  fallback: haiku
+`;
+      writeFileSync(join(testDir, 'cop1.config.yaml'), yaml);
+
+      const config = loader.load(testDir);
+      const router = new DefaultModelTierRouter(config.model_tiering);
+      expect(router.resolve('/bmad-bmm-dev-story')).toBe('opus'); // overridden (was sonnet)
+      expect(router.resolve('/bmad-bmm-create-story')).toBe('haiku'); // overridden (was opus)
+      expect(router.resolve('/bmad-bmm-code-review')).toBe('haiku'); // fallback override
+    });
+
+    it('rejects a pinned model id (aliases opus/sonnet/haiku only)', () => {
+      const yaml = `
+model_tiering:
+  rules:
+    - match: dev-story
+      tier: claude-opus-4-8
+  fallback: sonnet
+`;
+      writeFileSync(join(testDir, 'cop1.config.yaml'), yaml);
+      expect(() => loader.load(testDir)).toThrow(ConfigValidationError);
+    });
+
+    it('rejects an invalid fallback alias', () => {
+      const yaml = `
+model_tiering:
+  fallback: gpt-4
+`;
+      writeFileSync(join(testDir, 'cop1.config.yaml'), yaml);
+      expect(() => loader.load(testDir)).toThrow(ConfigValidationError);
+    });
+
+    it('defaults rules to [] when only a fallback is provided', () => {
+      const yaml = `
+model_tiering:
+  fallback: haiku
+`;
+      writeFileSync(join(testDir, 'cop1.config.yaml'), yaml);
+
+      const config = loader.load(testDir);
+      expect(config.model_tiering?.rules).toEqual([]);
+      const router = new DefaultModelTierRouter(config.model_tiering);
+      expect(router.resolve('/bmad-bmm-create-story')).toBe('haiku'); // no rules → fallback
     });
   });
 });
