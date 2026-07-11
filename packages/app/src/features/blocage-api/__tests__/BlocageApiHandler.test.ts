@@ -24,6 +24,7 @@ function createMockRes() {
 
 function createMockReq(method: string, url: string, bodyStr?: string) {
   const handlers: Record<string, Array<(arg: unknown) => void>> = {};
+  let destroyed = false;
   return {
     method,
     url,
@@ -31,13 +32,18 @@ function createMockReq(method: string, url: string, bodyStr?: string) {
       if (!handlers[event]) handlers[event] = [];
       handlers[event].push(cb);
     },
+    destroy() {
+      destroyed = true;
+    },
     triggerBody() {
       if (bodyStr) {
         for (const h of handlers.data ?? []) h(Buffer.from(bodyStr));
       }
+      // Node still fires 'end' after destroy(); the handler must ignore it.
       for (const h of handlers.end ?? []) h(undefined);
     },
-  } as unknown as IncomingMessage & { triggerBody: () => void };
+    wasDestroyed: () => destroyed,
+  } as unknown as IncomingMessage & { triggerBody: () => void; wasDestroyed: () => boolean };
 }
 
 describe('BlocageApiHandler', () => {
@@ -86,6 +92,22 @@ describe('BlocageApiHandler', () => {
     expect(res.getStatusCode()).toBe(200);
     const body = JSON.parse(res.getBody());
     expect(body).toHaveLength(1);
+  });
+
+  it('should reject a body larger than 10KB with 413', () => {
+    const blocage = service.declare('E1-S1', 'technical', 'Build failure');
+
+    const oversized = `{"response":"${'x'.repeat(11 * 1024)}"}`;
+    const req = createMockReq('POST', `/api/blocages/${blocage.id}/resolve`, oversized);
+    const res = createMockRes();
+    handler.handle(req, res);
+    req.triggerBody();
+
+    expect(res.getStatusCode()).toBe(413);
+    expect(JSON.parse(res.getBody()).error).toBe('Request body too large');
+    expect((req as unknown as { wasDestroyed: () => boolean }).wasDestroyed()).toBe(true);
+    // The blocage must remain unresolved — the oversized request never reached the service.
+    expect(service.getOpen().some((b) => b.id === blocage.id)).toBe(true);
   });
 
   it('should return 404 for non-existent blocage', () => {

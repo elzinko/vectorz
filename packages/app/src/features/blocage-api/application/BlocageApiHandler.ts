@@ -1,6 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { BlockageService } from '@cop1/sprint-core';
 
+// Mirrors the daemon HttpServer's own body-size cap (10 KB). The daemon binds
+// 127.0.0.1, so this guards against a runaway/buggy local client OOMing us.
+const MAX_BODY_SIZE = 10_240; // 10 KB
+
 export class BlocageApiHandler {
   constructor(private readonly blockageService: BlockageService) {}
 
@@ -21,10 +25,19 @@ export class BlocageApiHandler {
 
   private handleResolve(req: IncomingMessage, res: ServerResponse, blocageId: string): boolean {
     let body = '';
+    let bodySize = 0;
     req.on('data', (chunk: Buffer) => {
+      bodySize += chunk.length;
+      if (bodySize > MAX_BODY_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Request body too large' }));
+        req.destroy();
+        return;
+      }
       body += chunk.toString();
     });
     req.on('end', () => {
+      if (bodySize > MAX_BODY_SIZE) return;
       try {
         const { response } = JSON.parse(body) as { response: string };
         if (!response) {
