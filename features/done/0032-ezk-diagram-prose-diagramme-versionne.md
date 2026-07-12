@@ -3,8 +3,8 @@ id: 0032
 title: ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal
 type: feature
 priority: P2
-status: idea
-pr:
+status: shipped
+pr: "#3"
 created: 2026-07-12
 ---
 

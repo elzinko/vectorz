@@ -32,6 +32,7 @@
 | 0022 | ezk-backlog add — proposer un brainstorm pour façonner une fiche vague | feature | P2 | ✅ shipped | local (via migration ezk-backlog #31, fiche 0024) |
 | 0023 | ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship) | feature | P2 | ✅ shipped | local (squash-merge) |
 | 0026 | ezk-archive persiste la note de handoff dans .claude/handoff.md | feature | P2 | ✅ shipped | local (squash-merge) |
+| 0032 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 | ✅ shipped | #3 |
 | 0035 | geler puis archiver le repo iamthelaw (post-migration) | chore | P2 | ✅ shipped | local (squash-merge) |
 | 0041 | profils par hôte — cop1-target.yml et desktop.yml | feature | P2 | 🔴 todo |  |
 | 0042 | ezk-recipy — scanner les repos froids et proposer des fiches de skills | feature | P2 | 🔴 todo |  |
@@ -54,8 +55,7 @@
 | 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 | 💡 idea |  |
 | 0030 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 | 💡 idea |  |
 | 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 | 💡 idea |  |
-| 0032 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 | 💡 idea |  |
 | 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 | 💡 idea |  |
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0035, 0036, 0037, 0039, 0040, 0043.
+> Livrées (`done/`) : 0001, 0002, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0043.

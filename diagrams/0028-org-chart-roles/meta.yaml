@@ -1,0 +1,8 @@
+title: Org-chart des rôles ezk-*
+slug: 0028-org-chart-roles
+type: flowchart
+created: 2026-07-13
+generated_by: ezk-diagram
+source: description.md
+links:
+  - features/0028-adr-carte-roles-skills.md

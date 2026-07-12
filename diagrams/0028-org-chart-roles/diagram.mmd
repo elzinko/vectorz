@@ -1,0 +1,24 @@
+flowchart TB
+  subgraph VC["Chaine de valeur (roles)"]
+    direction LR
+    POBA["PO / BA<br/>ezk-backlog + product-brainstorming"] --> ARCH["Architecte<br/>ezk-architect"]
+    ARCH --> DEV["Dev<br/>ezk-dev"]
+    DEV --> QA["QA<br/>ezk-qa"]
+    QA --> REV["Reviewer<br/>ezk-reviewer / code-review"]
+    REV --> SM["Scrum master<br/>ezk-sprint"]
+    SM --> POM["Product Owner multi-sprints<br/>ezk-product-builder"]
+  end
+  subgraph MGMT["Couches de management (orthogonales)"]
+    direction LR
+    IRM["Integration / release manager<br/>ezk-pr-pilot"]
+    CLO["Cloture de session<br/>ezk-archive"]
+  end
+  subgraph CAP["Capacites (mobilisees par un role, pas des roles)"]
+    direction LR
+    TDD["TDD"]
+    RULES["rules / iamthelaw"]
+    DACAP["diagram-as-code<br/>ezk-diagram"]
+  end
+  DEV -. mobilise .-> TDD
+  POM -. pilote .-> IRM
+  POM -. pilote .-> CLO
