@@ -38,6 +38,7 @@
 | 0043 | caps claude-code — sérialiser model/effort/isolation dans les fichiers agents générés | bug | P2 | ✅ shipped | local (squash-merge) |
 | 0044 | formaliser la composition inter-skills (composes) | feature | P2 | 🔴 todo |  |
 | 0045 | ezk-dev — le rôle est un agent, la méthode (TDD) est une rule de profil | refactor | P2 | 🔴 todo |  |
+| 0047 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 | 🔴 todo |  |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo |  |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 | 🔴 todo |  |
