@@ -3,8 +3,8 @@ id: 0041
 title: profils par hôte — cop1-target.yml et desktop.yml
 type: feature
 priority: P2
-status: todo
-pr:
+status: shipped
+pr: "#7"
 created: 2026-07-06
 ---
 
@@ -27,12 +27,14 @@ Le Profile est précisément l'outil fait pour ça (keystone, ADR-0001).
   global `~/.claude` depuis le switchover — la clore ou la re-scoper.
 
 ## Critères d'acceptation
-- [ ] `bind cop1-target <projet-cobaye> claude-code` : agents feuilles + ezk-pm présents, aucun orchestrateur
-- [ ] dogfooding : un run cop1 sur cop1-cobaye ainsi bindé voit les agents (pass-through `settingSources:['project']`)
-- [ ] `bind desktop <projet>` : builder + ezk-pm présents, ezk-ci/ezk-apk/ezk-device absents
-- [ ] `profiles/README.md` créé et documente les 3 profils (global, cop1-target, desktop)
-- [ ] fiche 0003 statuée (close ou re-scopée)
+- [x] `bind cop1-target <projet-cobaye> claude-code` : agents feuilles + ezk-pm présents, aucun orchestrateur — vérifié (5 agents dont ezk-pm, 8 skills feuilles, 0 orchestrateur).
+- [~] dogfooding : un run cop1 voit les agents — **externe** (runtime cop1 + projet-cobaye, non exécutable dans ce repo). Le pass-through `settingSources:['project']` est en place côté matérialisation.
+- [x] `bind desktop <projet>` : builder + ezk-pm présents, ezk-ci/ezk-apk/ezk-device absents — vérifié (agent ezk-pm, builder+backlog+diagram+ezk, 0 env).
+- [x] `profiles/README.md` créé et documente les profils (base, mobile, global, cop1-target, desktop).
+- [x] fiche 0003 statuée → **shipped (#6)** : le cap claude-desktop a été livré (pas juste satisfait par le bind global).
 
 ## Notes
-ADR-0011 §2. Le test de sync profil↔catalogue (audit 2026-07-05, « garde anti-désync »)
-gagnerait à naître ici : 3 profils manuels = 3 occasions de désynchroniser.
+ADR-0011 §2. Livré via #7. Garde anti-désync née ici : `src/__tests__/profiles-sync.test.ts`
+(vérifie que chaque id référencé par un profil existe au catalogue, puisque `expand` ignore
+silencieusement une réf pendante). AC dogfooding-cop1 laissé ouvert (externe) — à valider lors
+d'un vrai run cop1 sur un projet bindé `cop1-target`.
