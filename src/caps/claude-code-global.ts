@@ -16,6 +16,7 @@ import { assertSafeId } from '../loaders/catalog.js';
 import type { Cap, FileWrite, ResolvedProfile } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
 import { agentContent } from './agent-content.js';
+import { skillFolderFiles } from './skill-content.js';
 
 function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   return resolved.agents.map((agent) => ({
@@ -24,19 +25,10 @@ function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   }));
 }
 
-/** Une skill n'est matérialisée que si son contenu est réellement présent. */
-function skillFiles(resolved: ResolvedProfile): FileWrite[] {
-  return resolved.skills
-    .filter((skill) => skill.content.trim().length > 0)
-    .map((skill) => ({
-      path: `skills/${assertSafeId(skill.id)}/SKILL.md`,
-      content: `${skill.content.trim()}\n`,
-    }));
-}
-
 function materialize(resolved: ResolvedProfile, _root: string): WritePlan {
-  const files: FileWrite[] = [...agentFiles(resolved), ...skillFiles(resolved)].sort((a, b) =>
-    a.path.localeCompare(b.path),
+  // Skills en dossiers `skills/<id>/SKILL.md` — logique partagée (ADR-0014, prefix='skills').
+  const files: FileWrite[] = [...agentFiles(resolved), ...skillFolderFiles(resolved, 'skills')].sort(
+    (a, b) => a.path.localeCompare(b.path),
   );
   return { files, hooks: [] };
 }
