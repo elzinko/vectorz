@@ -1,7 +1,7 @@
 # Backlog — mega-city
 
 > Index auto-généré (`/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
-> 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+> 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
@@ -31,5 +31,16 @@
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo | |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
 | 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo | |
+
+### 💡 Idées (non groomées)
+
+> Directions/questions capturées mais **pas encore actionnables** (hors flux P0→P3). Le grooming les promeut en `todo`.
+
+| # | Titre | Type | Prio | Statut | PR |
+|---|-------|------|------|--------|----|
+| 0028 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 | 💡 idea | |
+| 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 | 💡 idea | |
+| 0030 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 | 💡 idea | |
+| 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes | feature | P2 | 💡 idea | |
 
 > Livrées (`done/`) : 0001, 0002, 0004, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027.
