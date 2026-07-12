@@ -62,10 +62,11 @@ function expandGlobal() {
 }
 
 describe('expandProfile(global) — l\'équipe complète du bind daily-driver (fiche 0024)', () => {
-  it('agrège TOUS les agents ezk-* (5), triés stablement', () => {
+  it('agrège TOUS les agents ezk-* (6), triés stablement', () => {
     const resolved = expandGlobal();
     expect(resolved.agents.map((a) => a.id)).toEqual([
       'ezk-architect',
+      'ezk-pm',
       'ezk-qa',
       'ezk-reviewer',
       'ezk-steward',
@@ -73,7 +74,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     ]);
   });
 
-  it('agrège TOUT le catalogue de skills ezk-* (12), triés stablement', () => {
+  it('agrège TOUT le catalogue de skills ezk-* (13), triés stablement', () => {
     const resolved = expandGlobal();
     expect(resolved.skills.map((s) => s.id)).toEqual([
       'ezk-apk',
@@ -85,6 +86,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
       'ezk-device',
       'ezk-ezk',
       'ezk-npm-scripts',
+      'ezk-pr-pilot',
       'ezk-preview',
       'ezk-product-builder',
       'ezk-sprint',
@@ -98,5 +100,29 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     const resolved = expandProfile(base, catalog);
     expect(resolved.agents.map((a) => a.id)).toEqual([]);
     expect(resolved.skills.map((s) => s.id)).toEqual(['ezk-archive']);
+  });
+});
+
+const MIGRATED_BUNDLES = [
+  'architecture',
+  'ci-cd',
+  'clean-code',
+  'conventional-commits',
+  'development',
+  'documentation-guidelines',
+  'hexagonal',
+  'testing',
+  'token-economy',
+  'typescript-2026',
+];
+
+describe('expandProfile — 10 bundles migrés depuis iamthelaw (fiche 0006)', () => {
+  it('charge les 10 bundles sans erreur et résout les 54 règles (53 iamthelaw + no-dead-code)', () => {
+    const catalog = loadCatalog(repoRoot);
+    const profile = { id: 'iamthelaw-full', bundles: MIGRATED_BUNDLES, agents: [], skills: [] };
+    const resolved = expandProfile(profile, catalog);
+    expect(resolved.rules).toHaveLength(54);
+    // pas de doublon d'id malgré 10 bundles distincts
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(54);
   });
 });

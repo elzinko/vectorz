@@ -30,7 +30,9 @@ export type EnforcementType = 'prompt' | 'agent-check' | 'hook'; // niveau 0 / 1
 export interface Enforcement {
   type: EnforcementType;
   agent?: string;                            // agent-check → id d'un Agent. SEUL lien inter-catalogue.
-  hook?: { stage: string; script: string };  // hook → script déterministe (git hook), bloquant
+  hook?: { stage: string; script: string };  // hook → script déterministe (git hook), bloquant.
+  // `script` en frontmatter = CHEMIN (ex. 'hooks/commit-msg.sh') ; le loader (catalog.ts,
+  // fiche 0011) le résout en CONTENU avant que le catalogue n'atteigne bind/cap (purs).
 }
 
 /** disposition = contrainte sur un artefact ; interaction = protocole de collaboration entre agents (cf. ADR-0002). */
@@ -69,6 +71,10 @@ export interface Agent {
   role: string;           // la prose du rôle (markdown — ce que le LLM lit)
   competences: string[];  // ids de Skills  — AJOUTABLES en cours de projet (via capture)
   interactions: string[]; // ids de Rules   — « comment je collabore » (AJOUTABLES via capture)
+  // Réglages d'exécution (host natif). Alias uniquement, jamais d'id épinglé (fiche 0039).
+  model?: string;         // 'opus' | 'sonnet' | 'haiku' | 'fable' | 'inherit' — défaut host = inherit
+  effort?: string;        // 'low' | 'medium' | 'high' | 'xhigh' | 'max'
+  isolation?: string;     // 'worktree' — exécute l'agent dans un git worktree isolé
 }
 
 // ════════════════════════════════════════════════════════════════

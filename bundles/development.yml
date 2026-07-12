@@ -1,0 +1,9 @@
+id: development
+rules:
+  - development/local-first-feedback
+  - development/handle-blockers
+  - development/workaround-traceability
+  - development/test-philosophy
+  - development/use-project-scripts
+  - development/quality-guardrails
+  - development/playwright-mcp-usage

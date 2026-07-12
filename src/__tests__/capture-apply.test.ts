@@ -40,10 +40,10 @@ describe('applyCapture (coquille I/O, repo jouet) — ADR-0004', () => {
     rmSync(rootDir, { recursive: true, force: true });
   });
 
-  it("écrit l'artefact à sa destination", () => {
+  it("écrit l'artefact à sa destination (skill = dossier skills/<id>/SKILL.md, fiche 0037)", () => {
     const plan = planCapture('ezk-bisect', 'skill', '# playbook', DATE);
     applyCapture(plan, rootDir);
-    expect(existsSync(join(rootDir, 'skills/ezk-bisect.md'))).toBe(true);
+    expect(existsSync(join(rootDir, 'skills/ezk-bisect/SKILL.md'))).toBe(true);
   });
 
   it('journal append-only : ajoute en bas sans réécrire la ligne existante (DoD 3)', () => {
@@ -78,7 +78,7 @@ describe('applyCapture (coquille I/O, repo jouet) — ADR-0004', () => {
       cwd: rootDir,
       encoding: 'utf8',
     });
-    expect(files).toContain('skills/ezk-bisect.md');
+    expect(files).toContain('skills/ezk-bisect/SKILL.md');
     expect(files).toContain('journal/learnings.md');
   });
 

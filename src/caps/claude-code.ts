@@ -13,6 +13,7 @@
  */
 import type { Cap, FileWrite, HookWrite, ResolvedProfile, Rule } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
+import { agentContent } from './agent-content.js';
 
 const ENTRY_PATH = '.iamthelaw/ENTRY.md';
 const CLAUDE_MD_REFERENCE = `> **iamthelaw** : avant toute action, lis et applique \`${ENTRY_PATH}\` (la loi de ce projet).`;
@@ -20,7 +21,7 @@ const CLAUDE_MD_REFERENCE = `> **iamthelaw** : avant toute action, lis et appliq
 function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   return resolved.agents.map((agent) => ({
     path: `.claude/agents/${agent.id}.md`,
-    content: `${agent.role.trim()}\n`,
+    content: agentContent(agent),
     intent: 'replace',
   }));
 }
@@ -52,22 +53,11 @@ function claudeMdFile(): FileWrite {
   return { path: 'CLAUDE.md', content: `${CLAUDE_MD_REFERENCE}\n`, intent: 'managed-block' };
 }
 
-/** Hook git déterministe qui valide le format Conventional Commits (enforcement niveau 2). */
-function commitMsgHookScript(): string {
-  return [
-    '#!/bin/sh',
-    '# Généré par lawgiver (cap claude-code) — enforcement: conventional-commits/format.',
-    'msg=$(head -n1 "$1")',
-    'pattern="^(feat|fix|chore|docs|refactor|test|perf|build|ci|style|revert)(\\(.+\\))?!?: .+"',
-    'if ! printf "%s" "$msg" | grep -Eq "$pattern"; then',
-    '  echo "[iamthelaw] commit refusé : message non conforme à Conventional Commits." >&2',
-    '  echo "  format attendu : type(scope): sujet" >&2',
-    '  exit 1',
-    'fi',
-    '',
-  ].join('\n');
-}
-
+/**
+ * Un hook par enforcement type:hook. Le contenu du script est déjà résolu par le
+ * loader (fiche 0011, src/loaders/catalog.ts:resolveHookScript) — le cap reste pur,
+ * il ne lit rien sur disque, il relaie `enforcement.hook.script`.
+ */
 function collectHooks(resolved: ResolvedProfile): HookWrite[] {
   const hooks: HookWrite[] = [];
   for (const rule of resolved.rules) {
@@ -76,7 +66,7 @@ function collectHooks(resolved: ResolvedProfile): HookWrite[] {
       // Un hook perso préexistant qui diffère ne doit jamais être écrasé sans --force.
       hooks.push({
         stage: enforcement.hook.stage,
-        script: commitMsgHookScript(),
+        script: enforcement.hook.script,
         intent: 'skip-if-exists',
       });
     }

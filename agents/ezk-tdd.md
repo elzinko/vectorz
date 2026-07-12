@@ -1,6 +1,9 @@
 ---
 name: ezk-tdd
 description: Developpeur TDD, a utiliser dans la boucle ezk-sprint a l'etape TDD POC, pour implementer le coeur d'une feature en red-green-refactor. Vise un POC fonctionnel (ca marche) en clean code, pas le polissage visuel. S'arrete des que les tests sont verts et renvoie un resume concis.
+model: sonnet
+effort: medium
+isolation: worktree
 color: green
 ---
 

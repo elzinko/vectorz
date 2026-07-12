@@ -8,9 +8,10 @@
 id: global
 extends: [base]            # → hérite le socle (bundle base + ezk-archive)
 bundles: [base]
-# → toute l'équipe ezk-* (5 agents) → installée dans ~/.claude/agents/
+# → toute l'équipe ezk-* (6 agents) → installée dans ~/.claude/agents/
 agents:
   - ezk-architect
+  - ezk-pm
   - ezk-qa
   - ezk-reviewer
   - ezk-steward

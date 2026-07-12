@@ -9,11 +9,11 @@
  *   - `kind` absent ⇒ 'disposition' (ADR-0002).
  *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { readdirSync, readFileSync, existsSync, realpathSync } from 'node:fs';
+import { join, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
-import type { Agent, Bundle, Profile, Rule, RuleKind, Skill } from '../domain/model.js';
+import type { Agent, Bundle, Enforcement, Profile, Rule, RuleKind, Skill } from '../domain/model.js';
 
 export interface Catalog {
   rules: Map<string, Rule>;
@@ -41,12 +41,24 @@ export function assertSafeId(id: string): string {
   return id;
 }
 
-function listFiles(dir: string, match: RegExp): string[] {
+/**
+ * Liste les fichiers d'un dossier qui matchent `match`. `recursive` descend dans les
+ * sous-dossiers : requis pour `rules/`, dont les ids slashés (`clean-code/no-todo`)
+ * produisent des sous-dossiers `rules/<ns>/<name>.md` (capture, fiche 0037 ; migration
+ * fiche 0006). Tri stable sur le chemin complet → « dernier-gagne » déterministe (F4).
+ */
+function listFiles(dir: string, match: RegExp, recursive = false): string[] {
   if (!existsSync(dir)) return [];
-  return readdirSync(dir)
-    .filter((name) => match.test(name))
-    .sort() // tri stable : « dernier-gagne » déterministe en cas de collision d'id (F4)
-    .map((name) => join(dir, name));
+  const files: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (recursive) files.push(...listFiles(full, match, true));
+    } else if (match.test(entry.name)) {
+      files.push(full);
+    }
+  }
+  return files.sort();
 }
 
 function indexById<T extends { id: string }>(items: T[]): Map<string, T> {
@@ -55,16 +67,64 @@ function indexById<T extends { id: string }>(items: T[]): Map<string, T> {
   return map;
 }
 
-function readRule(file: string): Rule | undefined {
+/** `path` est-il `root` lui-même ou un descendant de `root` ? Comparaison sur des chemins déjà résolus. */
+function isInside(root: string, path: string): boolean {
+  return path === root || path.startsWith(root + sep);
+}
+
+/**
+ * Résout `enforcement.hook.script` d'un chemin (frontmatter, ex. 'hooks/commit-msg.sh')
+ * vers son CONTENU (fiche 0011) : le cap (pur, ADR-0003) ne fait plus d'I/O, il reçoit
+ * déjà le script prêt à écrire.
+ *
+ * Défense en profondeur (même schéma que src/io/apply.ts:resolveInsideProject / F1) :
+ * un chemin qui s'échapperait de `rootDir` (ex. '../../etc/passwd') est REFUSÉ — au
+ * même niveau de garantie qu'assertSafeId côté id. `assertSafeId` protège les ids,
+ * pas ce champ ; sans ce garde-fou, une règle malveillante ferait lire (et écrire en
+ * hook exécutable via le cap) un fichier arbitraire hors du dépôt.
+ *
+ * DEUX passes, pas une : (1) lexicale sur le chemin résolu — attrape `../etc/passwd`
+ * avant même de toucher le disque ; (2) après `existsSync`, sur le chemin RÉEL
+ * (`realpathSync`, symlinks déréférencés) — un symlink commité dans `rules/` et
+ * pointant hors du dépôt passerait la passe (1) (lexicalement sous `root`) mais est
+ * rejeté ici. `root` lui-même est résolu en réel pour une comparaison cohérente
+ * (ex. macOS : /tmp est un symlink vers /private/tmp).
+ * Un chemin légitime dont le fichier n'existe pas encore reste TOLÉRÉ (laissé tel
+ * quel) — ADR-0003 §4, ce n'est pas un risque, juste un asset pas encore migré.
+ */
+function resolveHookScript(enforcement: Enforcement, rootDir: string): Enforcement {
+  if (enforcement.type !== 'hook' || !enforcement.hook) return enforcement;
+  const root = resolve(rootDir);
+  const scriptPath = resolve(root, enforcement.hook.script);
+  if (!isInside(root, scriptPath)) {
+    throw new Error(
+      `chemin de hook non sûr (traversal de chemin refusé) : ${JSON.stringify(enforcement.hook.script)}`,
+    );
+  }
+  if (!existsSync(scriptPath)) return enforcement;
+  const realRoot = realpathSync(root);
+  const realScript = realpathSync(scriptPath);
+  if (!isInside(realRoot, realScript)) {
+    throw new Error(
+      `chemin de hook non sûr (symlink hors dépôt refusé) : ${JSON.stringify(enforcement.hook.script)}`,
+    );
+  }
+  return { ...enforcement, hook: { ...enforcement.hook, script: readFileSync(scriptPath, 'utf8') } };
+}
+
+function readRule(file: string, rootDir: string): Rule | undefined {
   const { data, content } = matter(readFileSync(file, 'utf8'));
   if (typeof data.id !== 'string') return undefined;
   const kind: RuleKind = data.kind === 'interaction' ? 'interaction' : 'disposition';
+  const enforcements = Array.isArray(data.enforcements)
+    ? data.enforcements.map((e: Enforcement) => resolveHookScript(e, rootDir))
+    : data.enforcements;
   return {
     id: data.id,
     kind,
     level: data.level,
     content: content.trim(),
-    enforcements: data.enforcements,
+    enforcements,
     participants: data.participants,
   };
 }
@@ -79,6 +139,9 @@ function readAgent(file: string): Agent | undefined {
     role: content.trim(),
     competences: data.competences ?? [],
     interactions: data.interactions ?? [],
+    ...(typeof data.model === 'string' ? { model: data.model } : {}),
+    ...(typeof data.effort === 'string' ? { effort: data.effort } : {}),
+    ...(typeof data.isolation === 'string' ? { isolation: data.isolation } : {}),
   };
 }
 
@@ -120,8 +183,9 @@ function readYamlEntity<T>(file: string): T {
 function loadMarkdown<T extends { id: string }>(
   dir: string,
   read: (file: string) => T | undefined,
+  recursive = false,
 ): Map<string, T> {
-  const items = listFiles(dir, MARKDOWN)
+  const items = listFiles(dir, MARKDOWN, recursive)
     .map(read)
     .filter((item): item is T => item !== undefined);
   return indexById(items);
@@ -135,7 +199,7 @@ function loadYaml<T extends { id: string }>(dir: string): Map<string, T> {
 /** Charge tout le catalogue depuis la racine du repo. Pur (lecture seule, déterministe). */
 export function loadCatalog(rootDir: string): Catalog {
   return {
-    rules: loadMarkdown(join(rootDir, 'rules'), readRule),
+    rules: loadMarkdown(join(rootDir, 'rules'), (file) => readRule(file, rootDir), true), // récursif : ids slashés → sous-dossiers (fiche 0037)
     agents: loadMarkdown(join(rootDir, 'agents'), readAgent),
     skills: loadSkills(join(rootDir, 'skills')),
     bundles: loadYaml<Bundle>(join(rootDir, 'bundles')),

@@ -17,9 +17,11 @@ describe('planCapture (pur, sans disque ni git) — ADR-0004', () => {
     expect(matter(plan.artifact.content).data.kind).toBe('interaction');
   });
 
-  it('kind=skill → skills/<id>.md (pas de frontmatter kind)', () => {
+  it('kind=skill → skills/<id>/SKILL.md (forme dossier — ce que lit loadSkills, fiche 0037)', () => {
     const plan = planCapture('ezk-bisect', 'skill', '# playbook', DATE);
-    expect(plan.artifact.path).toBe('skills/ezk-bisect.md');
+    expect(plan.artifact.path).toBe('skills/ezk-bisect/SKILL.md');
+    // pas de frontmatter kind pour une skill
+    expect(matter(plan.artifact.content).data.kind).toBeUndefined();
   });
 
   it('kind=agent → agents/<id>.md', () => {

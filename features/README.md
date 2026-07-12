@@ -1,49 +1,60 @@
 # Backlog — mega-city
 
-> Index auto-généré (`/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
+> Index auto-généré (`bin/regen-backlog.sh`, appelé par `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
-| 0001 | lawgiver `bind` — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local |
-| 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | ✅ shipped | local |
-| 0017 | cap global — matérialiser un profil dans ~/.claude (porte source-unique) | feature | P0 | ✅ shipped | local |
-| 0002 | lawgiver `capture` — flywheel | feature | P1 | ✅ shipped | local |
-| 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo | |
-| 0004 | migrer ezk-commits → skills/ (pilote plomberie ADR-0006) | chore | P1 | ✅ shipped | local |
-| 0013 | capture — câbler une interaction/competence dans le frontmatter d'un agent | feature | P1 | ✅ shipped | local |
-| 0018 | coquille I/O — mode link vs copy (symlink live-update) | feature | P1 | ✅ shipped | local |
-| 0019 | migrer + étendre ezk-design-system (UI/UX consultable + requêtable) | feature | P1 | ✅ shipped | local |
-| 0024 | Migration claude-skills → mega-city — finir le strangler-fig (skills + agents restants) | chore | P1 | ✅ shipped | local |
-| 0025 | cap global mode link — symlinker AUSSI les agents (pas seulement les skills) | bug | P1 | ✅ shipped | local |
-| 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo | |
-| 0006 | migrer les rulesets iamthelaw → rules/ + bundles/ | chore | P2 | 🔴 todo | |
-| 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo | |
-| 0011 | cap — dériver le hook du champ enforcement.hook.script | refactor | P2 | 🔴 todo | |
-| 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 | 🔴 todo | |
-| 0016 | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 | 🔴 todo | |
-| 0020 | explorer le domaine « stack → toolchain » (cousin de Cap, axe techno) | feature | P2 | 🔴 todo | |
-| 0021 | ezk-ezk — méta-skill : créer un skill depuis la session | feature | P2 | ✅ shipped | local |
-| 0022 | ezk-backlog add — proposer un brainstorm pour façonner une fiche vague | feature | P2 | ✅ shipped | local |
-| 0023 | ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship) | feature | P2 | ✅ shipped | local |
-| 0026 | ezk-archive persiste la note de handoff dans .claude/handoff.md | feature | P2 | ✅ shipped | local |
-| 0008 | chief-judge — juge de cohérence (avis) | feature | P3 | 🔴 todo | |
-| 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo | |
-| 0012 | aligner les signatures de domain.ts sur l'implémentation | chore | P3 | 🔴 todo | |
-| 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo | |
+| 0001 | lawgiver bind — cap claude-code (MVP déterministe) | feature | P0 | ✅ shipped | local (squash-merge) |
+| 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | ✅ shipped | local (squash-merge) |
+| 0017 | cap global — matérialiser un profil dans ~/.claude (remplace install.sh) | feature | P0 | ✅ shipped | local (squash-merge) |
+| 0002 | lawgiver capture — flywheel | feature | P1 | ✅ shipped | local (squash-merge) |
+| 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo |  |
+| 0004 | migrer ezk-commits vers skills/ | chore | P1 | ✅ shipped | local (squash-merge) |
+| 0006 | migrer les rulesets iamthelaw vers rules/ + bundles/ (périmètre complet) | chore | P1 | ✅ shipped | local (squash-merge) |
+| 0013 | capture — câbler une interaction/competence capturée dans le frontmatter d'un agent | feature | P1 | ✅ shipped | local (squash-merge) |
+| 0018 | coquille I/O — mode link vs copy (porter le symlink live-update de claude-skills) | feature | P1 | ✅ shipped | local (squash-merge) |
+| 0019 | migrer + étendre ezk-design-system (design system UI/UX consultable + requêtable) | feature | P1 | ✅ shipped | local (squash-merge) |
+| 0024 | Migration claude-skills → mega-city — finir le strangler-fig (skills + agents restants → switchover) | chore | P1 | ✅ shipped | local (squash-merge) |
+| 0025 | cap global mode link — symlinker AUSSI les agents (pas seulement les skills) | bug | P1 | ✅ shipped | local (squash-merge) |
+| 0027 | ezk-pr-pilot : orchestrateur du test-puis-merge d'un stock de PRs (+ convention Validation) | feature | P1 | ✅ shipped | merge local feat/skill-ezk-pr-pilot |
+| 0036 | agent ezk-pm — le décideur product-owner (jour ET nuit) | feature | P1 | ✅ shipped | local (squash-merge) |
+| 0037 | flywheel cassé — capture écrit des skills/rules que loadCatalog ne relit jamais | bug | P1 | ✅ shipped | local (squash-merge) |
+| 0039 | frontmatter tuning des agents — model, effort, isolation | chore | P1 | ✅ shipped | local (squash-merge) |
+| 0040 | ezk-product-builder — mode --checkpoints ask\|auto (décisions recommandées par défaut) | feature | P1 | ✅ shipped | local (squash-merge) |
+| 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo |  |
+| 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo |  |
+| 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P2 | 🟠 in-progress |  |
+| 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 | 🔴 todo |  |
+| 0016 | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 | 🔴 todo |  |
+| 0020 | explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno) | feature | P2 | 🔴 todo |  |
+| 0021 | ezk-ezk — méta-skill : créer un skill depuis la session (brainstorm → archi → déploiement) | feature | P2 | ✅ shipped | local (squash-merge) |
+| 0022 | ezk-backlog add — proposer un brainstorm pour façonner une fiche vague | feature | P2 | ✅ shipped | local (via migration ezk-backlog #31, fiche 0024) |
+| 0023 | ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship) | feature | P2 | ✅ shipped | local (squash-merge) |
+| 0026 | ezk-archive persiste la note de handoff dans .claude/handoff.md | feature | P2 | ✅ shipped | local (squash-merge) |
+| 0035 | geler puis archiver le repo iamthelaw (post-migration) | chore | P2 | ✅ shipped | local (squash-merge) |
+| 0041 | profils par hôte — cop1-target.yml et desktop.yml | feature | P2 | 🔴 todo |  |
+| 0042 | ezk-recipy — scanner les repos froids et proposer des fiches de skills | feature | P2 | 🔴 todo |  |
+| 0043 | caps claude-code — sérialiser model/effort/isolation dans les fichiers agents générés | bug | P2 | ✅ shipped | local (squash-merge) |
+| 0044 | formaliser la composition inter-skills (composes) | feature | P2 | 🔴 todo |  |
+| 0045 | ezk-dev — le rôle est un agent, la méthode (TDD) est une rule de profil | refactor | P2 | 🔴 todo |  |
+| 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 | 🔴 todo |  |
+| 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo |  |
+| 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 | 🔴 todo |  |
+| 0015 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 | 🔴 todo |  |
+| 0038 | aligner le nommage des modes tokens du product-builder (lean\|cap\|full partout) | chore | P3 | 🔴 todo |  |
+| 0046 | ezk-product-builder — briefing au démarrage (comment je travaille, avec quelles règles) | feature | P3 | 🔴 todo |  |
 
-### 💡 Idées (non groomées)
-
-> Directions/questions capturées mais **pas encore actionnables** (hors flux P0→P3). Le grooming les promeut en `todo`.
+## 💡 Idées (non groomées)
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
-| 0028 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 | 💡 idea | |
-| 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 | 💡 idea | |
-| 0030 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 | 💡 idea | |
-| 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes | feature | P2 | 💡 idea | |
-| 0032 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 | 💡 idea | |
-| 0033 | Modèle typé interaction/autorité → run/draw/document (substrat génératif) | feature | P3 | 💡 idea | |
-| 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea | |
+| 0028 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 | 💡 idea |  |
+| 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 | 💡 idea |  |
+| 0030 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 | 💡 idea |  |
+| 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 | 💡 idea |  |
+| 0032 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 | 💡 idea |  |
+| 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 | 💡 idea |  |
+| 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0004, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027.
+> Livrées (`done/`) : 0001, 0002, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0035, 0036, 0037, 0039, 0040, 0043.

@@ -109,9 +109,15 @@ export function planCapture(
   const id = assertSafeId(target);
   const { dir, ruleKind } = DESTINATIONS[kind];
   const agentWiring = planAgentWiring(id, kind, forAgentId);
+  // Refermer la couture capture→loadCatalog (fiche 0037) : le chemin écrit DOIT être
+  // celui que le loader relit. Skill = dossier `skills/<id>/SKILL.md` (convention
+  // mega-city, ADR-0007, ce que lit loadSkills) ; rule/interaction = `rules/<id>.md`
+  // avec id slashé → sous-dossier `rules/<ns>/<name>.md` que loadMarkdown lit désormais
+  // récursivement ; agent = `agents/<id>.md` plat (id non slashé).
+  const artifactPath = kind === 'skill' ? `${dir}/${id}/SKILL.md` : `${dir}/${id}.md`;
   return {
     artifact: {
-      path: `${dir}/${id}.md`,
+      path: artifactPath,
       content: buildArtifactContent(id, ruleKind, authored),
     },
     journalLine: buildJournalLine(date, id, kind, summary),

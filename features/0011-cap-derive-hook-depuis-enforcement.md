@@ -3,7 +3,7 @@ id: 0011
 title: cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode)
 type: refactor
 priority: P2
-status: todo
+status: in-progress
 pr:
 created: 2026-06-26
 ---
@@ -22,10 +22,24 @@ référencé (fichier versionné dans `rules/`/`hooks/`), soit un registre id→
 Grouper les enforcements par `stage` (un seul hook par stage, composé).
 
 ## Critères d'acceptation
-- [ ] le contenu du hook provient de `enforcement.hook.script`, plus de hardcode
-- [ ] deux règles `type: hook` sur des stages différents → deux hooks distincts corrects
-- [ ] deux enforcements sur le même `stage` → composition déterministe, pas d'écrasement
-- [ ] plus aucune donnée de frontmatter chargée puis ignorée
+- [x] le contenu du hook provient de `enforcement.hook.script`, plus de hardcode — livré via
+      fiche 0006 (commit `752d1cd`) : le LOADER résout `hook.script` (chemin→contenu, avec
+      garde-fou anti-traversal + anti-symlink après revue sécurité), le cap relaie tel quel.
+- [x] deux règles `type: hook` sur des stages différents → deux hooks distincts corrects —
+      vérifié : `conventional-commits/format` (commit-msg), `ci-cd/local-reproduction`
+      (pre-push), `typescript-2026/strict-config` (pre-commit) coexistent, testé (bind.test.ts).
+- [ ] deux enforcements sur le même `stage` → composition déterministe, pas d'écrasement —
+      **PAS livré**. `collectHooks` (claude-code.ts) pousse un `HookWrite` par enforcement
+      sans grouper par stage ; `io/apply.ts:poseHook` en mode `skip-if-exists` ferait taire
+      silencieusement le second hook déclaré sur un stage déjà écrit dans le même bind. Aucune
+      règle réelle ne collide aujourd'hui (1 seul hook/stage dans le catalogue migré), donc
+      latent, pas actif — mais l'AC de composition reste ouvert.
+- [x] plus aucune donnée de frontmatter chargée puis ignorée — `enforcement.hook.script` n'est
+      plus une donnée morte.
 
 ## Notes
 Ironique vu que la règle matérialisée est `clean-code/no-dead-code`.
+Reste ouvert : grouper `collectHooks` par `stage` (ex. `Map<stage, HookWrite[]>` → concaténer
+les scripts avec un séparateur explicite, ou lever si collision non résolvable) — petit
+chantier, à reprendre séparément plutôt que de bloquer la fiche 0006 dessus (YAGNI tant
+qu'aucune règle réelle ne collide).

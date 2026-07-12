@@ -15,11 +15,12 @@
 import { assertSafeId } from '../loaders/catalog.js';
 import type { Cap, FileWrite, ResolvedProfile } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
+import { agentContent } from './agent-content.js';
 
 function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   return resolved.agents.map((agent) => ({
     path: `agents/${assertSafeId(agent.id)}.md`,
-    content: `${agent.role.trim()}\n`,
+    content: agentContent(agent),
   }));
 }
 

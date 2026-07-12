@@ -1,6 +1,8 @@
 ---
 name: ezk-architect
 description: Architecte logiciel, a utiliser dans la boucle ezk-sprint a l'etape Archi, quand une feature justifie une decision de conception non triviale (frontieres de modules, structure, dependances, trade-offs). Produit une decision claire et un ADR court en respectant clean architecture et SOLID. Ne code pas, il decide et documente.
+model: opus
+effort: high
 color: blue
 ---
 

@@ -1,0 +1,8 @@
+id: clean-code
+rules:
+  - clean-code/no-dead-code
+  - clean-code/meaningful-names
+  - clean-code/small-functions
+  - clean-code/no-side-effects
+  - clean-code/dry-principle
+  - clean-code/comments

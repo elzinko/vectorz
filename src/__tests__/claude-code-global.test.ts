@@ -41,6 +41,20 @@ describe('claudeCodeGlobalCap.materialize (plan pur, sans FS)', () => {
     expect(agent?.content).toContain('Reviewer senior');
   });
 
+  it('réémet model/effort/isolation dans le frontmatter du fichier agent généré (fiche 0043)', () => {
+    const tuned: ResolvedProfile = {
+      ...resolved,
+      agents: [{ ...resolved.agents[0], model: 'sonnet', effort: 'medium', isolation: 'worktree' }],
+    };
+    const plan = claudeCodeGlobalCap.materialize(tuned, '/fake/.claude');
+    const agent = find(plan, 'agents/ezk-reviewer.md');
+    expect(agent?.content).toContain('name: ezk-reviewer');
+    expect(agent?.content).toContain('model: sonnet');
+    expect(agent?.content).toContain('effort: medium');
+    expect(agent?.content).toContain('isolation: worktree');
+    expect(agent?.content).toContain('Reviewer senior');
+  });
+
   it("ne matérialise pas de skill sans contenu", () => {
     const empty: ResolvedProfile = { ...resolved, skills: [{ id: 'vide', content: '   ' }] };
     const plan = claudeCodeGlobalCap.materialize(empty, '/fake/.claude');

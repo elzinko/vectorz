@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, resolve } from 'node:path';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { assertSafeId, loadCatalog } from '../loaders/catalog.js';
 
@@ -12,7 +12,7 @@ describe('loadCatalog (données réelles du repo)', () => {
   it('indexe les rules par id du frontmatter, pas par nom de fichier', () => {
     const catalog = loadCatalog(repoRoot);
 
-    // rules/clean-code.md porte id: clean-code/no-dead-code
+    // rules/clean-code/no-dead-code.md porte id: clean-code/no-dead-code
     const rule = catalog.rules.get('clean-code/no-dead-code');
     expect(rule).toBeDefined();
     expect(rule?.id).toBe('clean-code/no-dead-code');
@@ -35,9 +35,27 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(cleanCode?.enforcements).toEqual([{ type: 'agent-check', agent: 'ezk-reviewer' }]);
 
     const commits = catalog.rules.get('conventional-commits/format');
-    expect(commits?.enforcements).toEqual([
-      { type: 'hook', hook: { stage: 'commit-msg', script: 'hooks/commit-msg.sh' } },
-    ]);
+    expect(commits?.enforcements).toHaveLength(1);
+    const hook = commits?.enforcements?.[0];
+    expect(hook?.type).toBe('hook');
+    expect(hook?.hook?.stage).toBe('commit-msg');
+    // fiche 0011 : le loader résout hooks/commit-msg.sh en CONTENU (plus un chemin).
+    expect(hook?.hook?.script).toContain('#!/usr/bin/env bash');
+    expect(hook?.hook?.script).not.toBe('hooks/commit-msg.sh');
+  });
+
+  it('résout les 3 hooks exécutables migrés (fiche 0006/0011) — plus de référence dans le vide', () => {
+    const catalog = loadCatalog(repoRoot);
+
+    const prePush = catalog.rules.get('ci-cd/local-reproduction');
+    const prePushHook = prePush?.enforcements?.find((e) => e.type === 'hook');
+    expect(prePushHook?.hook?.stage).toBe('pre-push');
+    expect(prePushHook?.hook?.script).toContain('#!/usr/bin/env bash');
+
+    const preCommit = catalog.rules.get('typescript-2026/strict-config');
+    const preCommitHook = preCommit?.enforcements?.find((e) => e.type === 'hook');
+    expect(preCommitHook?.hook?.stage).toBe('pre-commit');
+    expect(preCommitHook?.hook?.script).toContain('#!/usr/bin/env bash');
   });
 
   it('charge les agents (rôle + competences + interactions) indexés par id', () => {
@@ -47,6 +65,26 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(agent?.competences).toEqual(['ezk-ci']);
     expect(agent?.interactions).toEqual(['clean-code/no-dead-code']);
     expect(agent?.role).toContain('Reviewer senior');
+  });
+
+  it('lit les réglages d\'exécution model/effort/isolation du frontmatter (fiche 0039)', () => {
+    const catalog = loadCatalog(repoRoot);
+
+    // architecte : cerveau coûteux, réflexion poussée
+    const architect = catalog.agents.get('ezk-architect');
+    expect(architect?.model).toBe('opus');
+    expect(architect?.effort).toBe('high');
+
+    // dev (ezk-tdd) : modèle standard + worktree isolé
+    const tdd = catalog.agents.get('ezk-tdd');
+    expect(tdd?.model).toBe('sonnet');
+    expect(tdd?.effort).toBe('medium');
+    expect(tdd?.isolation).toBe('worktree');
+
+    // absence tolérée : un agent sans ces champs ne les porte pas (optionnels)
+    const steward = catalog.agents.get('ezk-steward');
+    expect(steward?.isolation).toBeUndefined();
+    expect(steward?.effort).toBe('low');
   });
 
   it('charge bundles et profiles depuis le YAML', () => {
@@ -98,5 +136,68 @@ describe('loadCatalog — frontière qui rejette un id malveillant (F1)', () => 
       '---\nid: ../../../../../../tmp/PWNED\n---\nrôle malveillant\n',
     );
     expect(() => loadCatalog(root)).toThrow(/non sûr/);
+  });
+
+  it('lève si enforcement.hook.script tente un traversal (fiche 0011)', () => {
+    // Cible hors racine, dont le contenu ne doit JAMAIS être lu par le loader.
+    const secretDir = mkdtempSync(join(tmpdir(), 'lawgiver-secret-'));
+    writeFileSync(join(secretDir, 'target.txt'), 'CECI NE DOIT JAMAIS ÊTRE LU');
+    try {
+      mkdirSync(join(root, 'rules'), { recursive: true });
+      const relTraversal = relative(root, join(secretDir, 'target.txt'));
+      writeFileSync(
+        join(root, 'rules', 'evil.md'),
+        [
+          '---',
+          'id: evil/pwn',
+          'kind: disposition',
+          'level: MUST',
+          'enforcements:',
+          '  - type: hook',
+          '    hook:',
+          '      stage: pre-commit',
+          `      script: ${relTraversal}`,
+          '---',
+          '',
+          'règle malveillante',
+        ].join('\n'),
+      );
+      expect(() => loadCatalog(root)).toThrow(/non sûr/);
+    } finally {
+      rmSync(secretDir, { recursive: true, force: true });
+    }
+  });
+
+  it('lève si enforcement.hook.script est un symlink commité qui pointe hors dépôt (re-revue)', () => {
+    // Git committe nativement des symlinks : une "règle malveillante" peut en embarquer un
+    // SANS jamais écrire ".." dans le chemin déclaré — le garde-fou lexical seul ne suffit pas.
+    const secretDir = mkdtempSync(join(tmpdir(), 'lawgiver-secret-'));
+    const secretFile = join(secretDir, 'target.txt');
+    writeFileSync(secretFile, 'CECI NE DOIT JAMAIS ÊTRE LU (via symlink)');
+    try {
+      mkdirSync(join(root, 'rules', 'evil'), { recursive: true });
+      const symlinkPath = join(root, 'rules', 'evil', 'payload.sh');
+      symlinkSync(secretFile, symlinkPath);
+      writeFileSync(
+        join(root, 'rules', 'evil', 'pwn.md'),
+        [
+          '---',
+          'id: evil/pwn',
+          'kind: disposition',
+          'level: MUST',
+          'enforcements:',
+          '  - type: hook',
+          '    hook:',
+          '      stage: pre-commit',
+          '      script: rules/evil/payload.sh',
+          '---',
+          '',
+          'règle malveillante (symlink)',
+        ].join('\n'),
+      );
+      expect(() => loadCatalog(root)).toThrow(/non sûr/);
+    } finally {
+      rmSync(secretDir, { recursive: true, force: true });
+    }
   });
 });

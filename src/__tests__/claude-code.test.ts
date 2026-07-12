@@ -42,6 +42,26 @@ describe('claudeCodeCap.materialize (plan pur, sans FS)', () => {
     expect(agentFile?.content).toContain('Reviewer senior');
   });
 
+  it('sans model/effort/isolation : aucun frontmatter ajouté (comportement historique)', () => {
+    const plan = claudeCodeCap.materialize(resolved, '/tmp/projet');
+    const agentFile = find(plan, '.claude/agents/ezk-reviewer.md');
+    expect(agentFile?.content).not.toContain('---');
+  });
+
+  it('réémet model/effort/isolation dans le frontmatter du fichier agent généré (fiche 0043)', () => {
+    const tuned: ResolvedProfile = {
+      ...resolved,
+      agents: [{ ...resolved.agents[0], model: 'opus', effort: 'high', isolation: 'worktree' }],
+    };
+    const plan = claudeCodeCap.materialize(tuned, '/tmp/projet');
+    const agentFile = find(plan, '.claude/agents/ezk-reviewer.md');
+    expect(agentFile?.content).toContain('name: ezk-reviewer');
+    expect(agentFile?.content).toContain('model: opus');
+    expect(agentFile?.content).toContain('effort: high');
+    expect(agentFile?.content).toContain('isolation: worktree');
+    expect(agentFile?.content).toContain('Reviewer senior');
+  });
+
   it("n'écrit AUCUN .claude/skills/* quand aucune skill n'a de contenu", () => {
     const plan = claudeCodeCap.materialize(resolved, '/tmp/projet');
     expect(plan.files.some((f) => f.path.startsWith('.claude/skills/'))).toBe(false);

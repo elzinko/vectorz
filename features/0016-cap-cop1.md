@@ -25,7 +25,9 @@ que cop1 lit déjà :
   confirmé (sous-agents / skills `ezk-*`).
 
 ⚠️ **Ne pas implémenter** tant que (a) le schéma mega-city n'est pas stabilisé (fiches 0012
-« aligner domain.ts », 0006 « migrer rulesets iamthelaw ») et (b) cop1 ADR-021 n'est pas acté.
+« aligner domain.ts », 0006 « migrer rulesets iamthelaw », et toute fiche mutant domain.ts —
+0039 `Agent.model/effort`, 0044 `Skill.composes` + Skill=dossier) et (b) cop1 ADR-021 n'est
+pas acté.
 
 ## Critères d'acceptation
 - [ ] `bind <profile> <projet-cop1> cop1` produit un `iamthelaw/global.yaml` valide que cop1 lit.
@@ -36,3 +38,11 @@ que cop1 lit déjà :
 ## Notes / décisions
 Dépend d'ADR-0005 (ce repo) + cop1 ADR-021. Voir aussi `caps/claude-desktop` (fiche 0003)
 comme modèle de cap.
+
+MAJ 2026-07-06 (revue) : ADR-0010 confirme et facilite la Phase 1 — le dialecte
+`iamthelaw/*.yaml` survit au repo iamthelaw comme format de matérialisation de CE cap, et
+personne d'autre ne l'écrit aujourd'hui (couture libre). ADR-0011 re-scope la Phase 2 :
+l'équipe (agents/skills) atteint déjà cop1 par pass-through du cap claude-code
+(`settingSources:['project']`, cf. fiche 0041 cop1-target.yml) — la Phase 2 se limite donc
+aux compléments cop1-natifs éventuels (ex. mapping `Agent.model` → model-tiering,
+cop1 fiche 0023), à statuer quand le besoin est réel.

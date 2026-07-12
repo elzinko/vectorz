@@ -1,0 +1,7 @@
+id: token-economy
+rules:
+  - token-economy/read-once
+  - token-economy/batch-tool-calls
+  - token-economy/targeted-reads
+  - token-economy/concise-output
+  - token-economy/checkpoint-before-cost

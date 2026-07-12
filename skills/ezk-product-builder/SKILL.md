@@ -1,6 +1,6 @@
 ---
 name: ezk-product-builder
-argument-hint: "[help|build|once|status] [--tokens lean|cap|full]"
+argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -10,7 +10,9 @@ description: >-
   product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build
   d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente
   AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments :
-  inter-sprint, blocage, dérive tokens, idéation. Vigilance tokens configurable
+  inter-sprint, blocage, dérive tokens, idéation. Mode checkpoints configurable
+  (ask par défaut | auto : prend les décisions recommandées et délègue à ezk-pm,
+  ne s'arrêtant que sur les 4 décisions humaines). Vigilance tokens configurable
   (lean par défaut | plafond-dur | pleine-puissance). N'EST PAS le scrum master
   qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus
   qui décide quoi & quand, et le lui confie.
@@ -33,16 +35,16 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-builder [sous-commande] [--tokens lean|cap|full]`
+`/ezk-product-builder [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto]`
 
 | Sous-commande | Effet |
 |---|---|
-| `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + le mode tokens courant — ne lance rien |
+| `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes tokens & checkpoints courants — ne lance rien |
 | `build` (**défaut**) | Lance la **boucle autonome** : enchaîne les sprints jusqu'à un checkpoint |
 | `once` | Construit **une seule** feature (un sprint) puis s'arrête au checkpoint inter-sprint |
-| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés |
+| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
 
-`--tokens` règle la **vigilance tokens** (cf. plus bas). Défaut : `lean`.
+`--tokens` règle la **vigilance tokens** ; `--checkpoints` règle **quand tu t'arrêtes pour demander** (cf. plus bas). Défauts : `lean`, `ask`.
 
 ## La boucle
 
@@ -57,16 +59,21 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
    ensuite (c'est beau). Tests **locaux** d'abord, puis CI (testable en local via
    `act`/`ezk-ci`). **1 PR/feature**, squash + conventional commit. Tu ne touches
    pas au git toi-même : `ezk-sprint` (et `ezk-commits`) rangent.
-4. **Checkpoint inter-sprint** — STOP. Résume (livré / tokens / suite) en
-   **suggestions-à-choix**. Boucle en (1) seulement après accord.
+4. **Checkpoint inter-sprint** — en `--checkpoints ask` (défaut) : STOP, résume
+   (livré / tokens / suite) en **suggestions-à-choix**, boucle en (1) seulement après
+   accord. En `--checkpoints auto` : voir la section « Mode checkpoints » — tu tiens
+   l'**unique** checkpoint de la feature (`ezk-sprint` te remonte sa clôture au lieu de
+   re-demander « on continue ? » à l'humain).
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.
 
 ## Modèle d'interaction — suggestions-à-choix + problématique
 
-Tu t'arrêtes **uniquement** à ces 4 moments, et toujours en présentant la
-problématique **puis** des options à choisir :
+En `--checkpoints ask` (défaut) tu t'arrêtes à ces 4 moments (+ le garde-fou
+irréversible/sortant, cf. Garde-fous), toujours en présentant la problématique **puis**
+des options à choisir. En `--checkpoints auto`, ces moments sont pris/délégués
+automatiquement selon la section « Mode checkpoints » ci-dessous :
 
 | Moment | Ce que tu présentes |
 |---|---|
@@ -90,6 +97,42 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 - **`full`** (pleine-puissance) — multi-agents libre quand ça sert la qualité (mode « ultracode ») ;
   l'utilisateur surveille lui-même la conso.
 
+## Mode checkpoints — configurable (`--checkpoints`)
+
+Règle **quand tu t'arrêtes pour demander à l'humain**. Calqué sur `--tokens`. Défaut : `ask`.
+Mutable à chaud (option `[Passer en auto]` / `[Repasser en ask]` proposée à un checkpoint).
+
+- **`ask` (défaut)** — comportement inchangé : tu t'arrêtes en suggestions-à-choix à
+  chaque moment d'arrêt.
+- **`auto`** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
+  les décisions techniques (au décideur **`ezk-pm`** et aux agents de rôle), tu
+  **journalises** chaque décision dans `SPRINT.md` (`## Notes / décisions`), et tu ne
+  t'arrêtes QUE sur les **4 décisions humaines**.
+
+En `auto`, chaque moment d'arrêt se résout ainsi :
+
+| Moment | En `auto` |
+|---|---|
+| **Inter-sprint** | prends la 1re option (sprint suivant) — **à condition** que `--tokens cap` soit actif (le plafond borne le coût) ; sinon reste `ask`. Journalise. |
+| **Idéation — fiche vague** | délègue à `product-management:product-brainstorming` pour cadrer, puis construis. Journalise. |
+| **Idéation — backlog vide** | **STOP humain** — inventer la direction produit n'est jamais automatisable. |
+| **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
+| **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
+| **Dérive tokens** | dégrade en `lean` (jamais plus cher). Une **augmentation** de budget = **STOP humain**. |
+| **Action sortante / secret** (transversal, hors des 4 moments) | **STOP humain** — jamais automatisé, dans les deux modes (cf. ci-dessous). |
+
+**Les 4 STOP humains — jamais automatisés** (ADR-0011 §3) : action irréversible/sortante
+(deploy, `push --force`, suppression, secret manquant) · **augmentation** d'un budget
+tokens · idée produit sur backlog vide · exigences contradictoires.
+
+**Repli de sûreté** : si le délégataire (`ezk-pm` ou l'agent de rôle) est **absent du
+contexte bindé**, l'arrêt délégable retombe en `ask` — jamais d'improvisation. (`ezk-pm`
+est dans le profil `global` ; vérifie sa présence avant de compter dessus.)
+
+**Le décideur, c'est `ezk-pm`** : en `auto` tu lui confies les arbitrages de checkpoint —
+tu composes son jugement, tu ne le réimplémentes pas (même doctrine que pour les 3 autres
+compétences).
+
 ## Frontière & délégation — compose, ne réimplémente rien
 
 | Compétence | Rôle | Tu en fais quoi |
@@ -97,6 +140,7 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 | `ezk-backlog` | le **quoi/où** (fiches, priorités, ship) | `list` à l'intake, `ship` quand `ezk-sprint` a mergé |
 | `product-management:product-brainstorming` | cadrer une fiche vague / idéer | à l'étape idéation seulement |
 | `engineering:architecture` | trancher une structure non triviale | si l'archi le justifie (sinon laisse `ezk-sprint`/`ezk-architect`) |
+| **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--checkpoints auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
 | **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
 | `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |
 
@@ -109,8 +153,11 @@ par construction : toi = décision produit (bord), elles = exécution détermini
 - **Compose, ne réimplémente rien** : ni le backlog, ni le sprint, ni le brainstorm. Si tu
   réécris l'un des trois, **arrête** et appelle la compétence.
 - **Product-owner ≠ scrum master** : tu décides quoi/quand, `ezk-sprint` fait le comment.
-- **Autonome entre les checkpoints**, mais **suggestions-à-choix** aux 4 moments. Jamais de
-  décision irréversible/sortante (deploy, push --force, suppression) sans demander.
+- **Autonome entre les checkpoints** ; en `--checkpoints ask`, **suggestions-à-choix** aux
+  4 moments ; en `auto`, décisions recommandées prises/déléguées et journalisées. **Dans
+  les deux modes**, jamais de décision irréversible/sortante (deploy, push --force,
+  suppression, secret) ni les 3 autres décisions humaines sans demander — c'est le 5e arrêt
+  dur, non négociable.
 - **POC d'abord, polish ensuite** : pas de peaufinage visuel d'une feature non validée.
 - **N'idée jamais un sujet absent** du backlog/de la conversation : tu proposes, l'utilisateur tranche.
 - **Tokens** : respecte le mode ; en `lean`, préviens avant tout coût élevé.

@@ -1,5 +1,7 @@
 ---
 id: ezk-reviewer
+model: opus
+effort: high
 competences:
   - ezk-ci
 interactions:

@@ -1,6 +1,8 @@
 ---
 name: ezk-qa
 description: QA / Business Analyst BDD + E2E, a utiliser dans la boucle ezk-sprint. Ecrit les scenarios d'acceptation Gherkin (Given/When/Then) qui constituent la Definition of Done, lance la suite de tests, et VALIDE une PR de bout en bout en pilotant l'app qui tourne via le Playwright MCP (navigate, click, fill, snapshot, screenshot). Ecrit les specs et valide ; ne developpe pas la feature.
+model: sonnet
+effort: medium
 color: purple
 ---
 
