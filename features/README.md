@@ -42,5 +42,8 @@
 | 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 | 💡 idea | |
 | 0030 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 | 💡 idea | |
 | 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes | feature | P2 | 💡 idea | |
+| 0032 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 | 💡 idea | |
+| 0033 | Modèle typé interaction/autorité → run/draw/document (substrat génératif) | feature | P3 | 💡 idea | |
+| 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea | |
 
 > Livrées (`done/`) : 0001, 0002, 0004, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027.
