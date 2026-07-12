@@ -62,7 +62,7 @@ liste des features, elle, est sur main**.
 ```
 features/
   README.md            # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
-  0001-slug.md         # features/bugs ACTIFS (todo / in-progress / blocked), id 4 chiffres
+  0001-slug.md         # features/bugs ACTIFS (idea / todo / in-progress / blocked), id 4 chiffres
   0002-autre-slug.md
   done/                # fiches LIVRÉES (déplacées ici quand status: shipped)
     0000-vieux-slug.md
@@ -77,17 +77,35 @@ title: Échec de connexion mobile invisible (caméra tourne, zéro erreur)
 type: feature        # feature | bug | refactor | chore
 priority: P0         # P0 | P1 | P2 | P3
 version:             # optionnel — jalon ciblé, ex. "V1.1" (vide si non pertinent)
-status: todo         # todo | in-progress | blocked | shipped
+status: todo         # idea | todo | in-progress | blocked | shipped
 pr:                  # ex. "#118" quand une PR existe
 created: 2026-06-23
 ---
 ```
 
 Puis le corps libre (cf. `feature-template.md`) : Contexte/Problème, Proposition, Critères
-d'acceptation (cases à cocher), Notes. Statuts : 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+d'acceptation (cases à cocher), Notes. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
 
 > **Une seule source de vérité** : le **front-matter** de chaque fiche. L'index `README.md`
 > est **régénéré** (`regen`) — on ne l'édite jamais à la main (ça tue la double-saisie statut).
+
+## Le statut `idea` — le cran « pas encore groomé » (Definition of Ready)
+
+Tout ce qui arrive n'est pas une fiche **actionnable**. Une **direction**, une **question**
+ouverte, une intuition à explorer = `status: idea` (pas `todo`). C'est le cran de
+raffinement **d'avant le backlog** (l'« Icebox » Scrum / la colonne *Triage* de GitHub
+Projects) : capturé **cheap** pour ne rien perdre, **sans polluer** la liste de travail
+P0→P3. Le **grooming** (souvent via `product-brainstorming`) le **promeut en `todo`**
+quand on le tire — c'est là qu'on fixe problème/valeur/critères, pas à la capture.
+
+- `list` / `regen` **trient les `idea` à part**, sous l'actionnable (comme `blocked`) —
+  ils ne comptent pas dans le flux P0→P3.
+- `add` : si la demande est une **direction non mûre** plutôt qu'une fiche prête, crée-la
+  directement en `status: idea` (au lieu de forcer un `todo` creux **ou** de tout
+  brainstormer à froid maintenant). La priorité **situe** l'idée — on la demande, on ne
+  l'invente pas.
+- Volontairement **MVP** : un cran `question`/`spike` distinct est **différé** — un `idea`
+  suffit pour l'instant.
 
 ## `init` — initialiser le suivi dans un projet
 
@@ -115,7 +133,7 @@ front-matter, dossier `done/`, 1 PR/feature), pas un dossier précis.
 1. Aucun suivi encore ? → `init`. 2. Localise le backlog. 3. Lis le front-matter de chaque
 fiche **active** (hors `done/`), charge-les en contexte et **affiche-les triées par priorité**
 (P0 d'abord), format court `Pn · id · titre · statut` (suffixe ` · vX.Y` si une version est ciblée).
-`blocked` à part. Ne dump pas le contenu.
+`blocked` à part ; les `idea` **tout en bas** (non-groomées, hors flux P0→P3). Ne dump pas le contenu.
 
 ### `add <description>` — créer une fiche, SANS doublonner ni diluer le backlog
 
@@ -123,9 +141,11 @@ Avant de créer quoi que ce soit, **protéger la cohérence du backlog** (l'ordr
 sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-joue pas) :
 
 1. **Clarté d'abord.** Si la demande est vague (une ligne floue, ni problème ni valeur claire),
-   ne crée PAS une fiche creuse : propose de la cadrer en invoquant
-   **`product-management:product-brainstorming`** (problème réel, valeur, critères d'acceptation),
-   puis reviens avec une description nette. Saute cette étape si la demande est déjà précise.
+   ne crée PAS une fiche `todo` creuse. Deux issues : soit **cadrer** en invoquant
+   **`product-management:product-brainstorming`** (problème réel, valeur, critères d'acceptation)
+   puis revenir avec une description nette ; soit, si l'utilisateur veut juste **la garder**
+   sans la cadrer maintenant, la **capturer telle quelle en `status: idea`** (le grooming
+   viendra quand il la tirera). Saute cette étape si la demande est déjà précise.
 2. **Anti-doublon.** Charge le backlog (fiches actives **+ `done/`**) et compare la demande aux
    fiches existantes **par intention** (pas juste par mots-clés). Si une fiche **équivalente existe** :
    - active → ne crée pas de doublon ; propose de l'**enrichir / re-prioriser** ;
@@ -140,8 +160,9 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
      **proposer un re-classement** des priorités si la nouvelle fiche change l'ordre relatif (sans l'imposer).
    - `version` *(optionnel)* — si l'utilisateur cible un jalon (ex. `V1.1`), renseigne `version:` ; sinon laisse vide.
 5. **Création.** Seulement maintenant : `id` = max(actifs + done) + 1 (4 chiffres) ; `slug` kebab court ;
-   fiche depuis `feature-template.md`, front-matter rempli (`status: todo`, `created` = date du jour —
-   demande-la si inconnue, ne l'invente pas). Puis `regen`. Commit `docs(features): add <id> <slug>`.
+   fiche depuis `feature-template.md`, front-matter rempli (`status: todo` — ou `idea` si non-groomé,
+   cf. étape 1 ; `created` = date du jour — demande-la si inconnue, ne l'invente pas). Puis `regen`.
+   Commit `docs(features): add <id> <slug>`.
 
 ### `ship <id> [#PR]`
 1. Front-matter : `status: shipped`, `pr: "#X"`. 2. `git mv features/<id>-<slug>.md features/done/`
@@ -151,7 +172,8 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
 Reconstruis la table depuis le front-matter de **toutes** les fiches : colonnes
 `# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id. **Si au moins une fiche
 cible une version**, insère une colonne `Version` (après `Prio`) ; sinon garde les 6 colonnes.
-En-tête : date + règles projet.
+Les fiches `status: idea` vont dans une **section séparée « 💡 Idées (non groomées) »** sous
+la table actionnable (elles ne se mêlent pas au tri P0→P3 ; mêmes colonnes). En-tête : date + règles projet.
 
 ## Intégration
 
@@ -162,6 +184,7 @@ En-tête : date + règles projet.
 ## Garde-fous
 
 - Ne jamais inventer une priorité, une date ou un n° de PR : demander si inconnu.
+- Une **direction non mûre** = `status: idea`, pas un `todo` creux (ne pas polluer l'actionnable ; groomer au moment de la tirer).
 - **Avant tout `add` : anti-doublon obligatoire** — 1 sujet = 1 fiche ; regrouper plutôt que multiplier ; jamais de fiche creuse (cadrer via `product-brainstorming` si flou).
 - Ne pas éditer l'index à la main (toujours `regen`).
 - Ne pas créer `features/` si le repo a déjà une convention → l'épouser.
