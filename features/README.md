@@ -9,7 +9,7 @@
 | 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 | ✅ shipped | local (squash-merge) |
 | 0017 | cap global — matérialiser un profil dans ~/.claude (remplace install.sh) | feature | P0 | ✅ shipped | local (squash-merge) |
 | 0002 | lawgiver capture — flywheel | feature | P1 | ✅ shipped | local (squash-merge) |
-| 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | 🔴 todo |  |
+| 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 | ✅ shipped | #6 |
 | 0004 | migrer ezk-commits vers skills/ | chore | P1 | ✅ shipped | local (squash-merge) |
 | 0006 | migrer les rulesets iamthelaw vers rules/ + bundles/ (périmètre complet) | chore | P1 | ✅ shipped | local (squash-merge) |
 | 0013 | capture — câbler une interaction/competence capturée dans le frontmatter d'un agent | feature | P1 | ✅ shipped | local (squash-merge) |
@@ -58,4 +58,4 @@
 | 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 | 💡 idea |  |
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0043.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0043.
