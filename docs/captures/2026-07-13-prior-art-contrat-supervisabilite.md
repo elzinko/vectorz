@@ -2,9 +2,11 @@
 
 Statut : résultat d'un balayage multi-agents (10 angles, 11 agents, ~817k tokens, recherche web).
 Compagnon de [2026-07-13-contrat-methode-et-versions.md](./2026-07-13-contrat-methode-et-versions.md) (§5 Q2).
-⚠️ Les références (arXiv, specs) viennent de recherches web agentiques : **avant d'écrire l'article,
-lire de première main les 3-4 sources les plus proches** (Rel(AI)Build, Agent Protocol LangChain,
-A2A v1.0, Faramesh).
+✅ **Lecture de première main faite le 2026-07-13** (fiche 0025 phase 1) : les 4 sources les plus
+proches (Rel(AI)Build, Agent Protocol LangChain, A2A v1.0, Faramesh) + les 2 affirmations tierces
+(Forrester, survey 2504.16736) ont été vérifiées sur les textes originaux — voir
+[notes de lecture](./2026-07-13-notes-lecture-sources-contrat-supervisabilite.md). Le verdict
+global tient ; les corrections de détail sont intégrées ci-dessous (marquées 📖).
 
 Angles balayés : A2A (Google/LF) · LangGraph/Agent Protocol · AutoGen/CrewAI/OpenAI SDK ·
 protocoles 2025-26 (ACP, AGNTCY, ANP, AG-UI) · exécution durable (Temporal/Restate/Inngest) ·
@@ -27,33 +29,57 @@ au grain « méthode ».
 ## 1. Classement des 5 plus proches voisins
 
 **1. LangGraph Platform + Agent Protocol (LangChain) + Agent Inbox — ~6/10, le voisin industriel le plus proche.**
-- ✅ (b) : sémantique exacte de `interrupt()` / `Command(resume=...)` — stop indéfini, reprise
-  uniquement sur commande externe. ✅ (a) partiel : events `lifecycle.interrupted`,
-  `input.requested/respond`, spec CDDL versionnée. ✅ Agent Inbox prouve qu'un superviseur-produit
-  **aveugle au graphe** est viable dès qu'un schéma d'interrupt typé est imposé. ✅ `UsageInfo`
-  tokens vient d'entrer dans le protocole.
+- ✅ (b) : sémantique exacte de `interrupt()` / `Command(resume=...)` — stop indéfini persisté
+  (« waits indefinitely until you resume execution »), reprise uniquement sur commande externe
+  (📖 nuance : la reprise re-exécute le nœud entier depuis le début, matching des interrupts
+  strictement index-based). ✅ (a) partiel : event `input.requested`/commande `input.respond`
+  (📖 `lifecycle.interrupted` n'existe pas sous ce nom : événement `lifecycle` portant le statut
+  `interrupted`). 📖 « spec CDDL versionnée » était surestimé : le cœur du protocole est
+  **OpenAPI** ; le CDDL ne couvre que le sous-protocole streaming, s'auto-intitule « LangGraph
+  Agent Streaming Protocol », est marqué DRAFT et son champ Version (0.0.13) n'est pas maintenu.
+  ✅ Agent Inbox prouve qu'un superviseur-produit **aveugle au graphe** est viable dès qu'un
+  schéma d'interrupt typé est imposé (`HumanInterrupt`/`ActionRequest`/`HumanResponse`).
+  ✅ `UsageInfo` tokens présent côté streaming (par message, optionnel ; rien côté REST).
 - ❌ Fail-safe **opt-in** (un graphe sans interrupt court jusqu'au bout) ; ❌ (d) aucune taxonomie
-  d'escalade — tout bulle dans le même canal ; ❌ (e) reprendre un thread après changement de code
-  = comportement indéfini ; ❌ pas de primitives budget/kill contractuelles ; gouvernance mono-vendeur.
+  d'escalade — un seul canal `input`, payload « Opaque interrupt value from runtime » ; ❌ (e)
+  reprendre un thread après changement de code = comportement indéfini ; ❌ pas de budget
+  contractuel (📖 un kill par run existe côté REST : `POST /runs/{run_id}/cancel` — mais rien
+  côté streaming) ; gouvernance mono-vendeur (org langchain-ai, pas de fondation).
 
 **2. A2A v1.0 (Linux Foundation) — ~4/10, mais le meilleur véhicule/substrat.**
 - ✅ (c) : le versioning le plus propre du marché (header `A2A-Version`, URIs d'extension
-  versionnées, breaking change ⇒ nouvelle URI). ✅ Lifecycle de task typé +
-  `TaskStatusUpdateEvent`/`TaskArtifactUpdateEvent` ordonnés = le seam d'event-stream.
-  ✅ Agents opaques = valide « superviseur aveugle au métier ». ✅ Mécanisme d'extensions
-  (`required: true`) = la voie standard pour porter le contrat cop1 sans forker.
-- ❌ (b) **polarité inverse** : c'est l'agent qui décide de passer en `input-required` ; un agent
-  qui file jusqu'à `completed` ne viole pas la spec. ❌ (a) l'Agent Card déclare des *skills*,
-  pas des *gates*. ❌ (d) un seul canal d'interruption générique. ❌ (e) absent.
+  versionnées — 📖 précision : version dans l'URI = SHOULD, « A new URI **MUST** be created for
+  breaking changes to an extension » = MUST, §4.6.3). ✅ Lifecycle de task typé (9 états
+  `TASK_STATE_*` en v1.0 — 📖 le kebab-case `input-required` est la nomenclature v0.x) +
+  `TaskStatusUpdateEvent`/`TaskArtifactUpdateEvent` strictement ordonnés (« Events MUST NOT be
+  reordered ») = le seam d'event-stream. ✅ Agents opaques = valide « superviseur aveugle au
+  métier » (« Opaque Execution », §1.2). ✅ Mécanisme d'extensions (`required: true` +
+  `ExtensionSupportRequiredError`) = la voie standard pour porter le contrat cop1 sans forker.
+- ❌ (b) **polarité inverse** : c'est l'agent qui décide de passer en `INPUT_REQUIRED` ; un agent
+  qui file jusqu'à `COMPLETED` ne viole pas la spec (l'approbation humaine n'apparaît qu'en
+  exemple facultatif, §7.6 « an agent *may* require authorization »). ❌ (a) l'Agent Card déclare
+  des *skills* (« largely a descriptive concept »), pas des *gates*. ⚠️ (d) 📖 corrigé : pas *un*
+  canal mais **deux** états d'interruption typés (`INPUT_REQUIRED`, `AUTH_REQUIRED`) + §7.6
+  In-Task Authorization chaînable — le prior art le plus proche de notre escalade d'autorité,
+  mais limité à l'authz : aucune occurrence de « budget », « escalat* ». ❌ (e) absent (seul le
+  *protocole* est versionné par requête, jamais le process en cours de run).
 
 **3. Papier Rel(AI)Build, « A Deterministic Control Plane for LLM Coding Agents » (arXiv 2606.26924, juin 2026) — ~5/10, le cousin conceptuel le plus proche.**
-- ✅ (b) au bon grain : phases stage-gatées **fail-closed** (progression refusée par défaut,
-  « receipts » nommés exigés), au-dessus de harnesses non modifiés (Cursor, Claude Code) ;
-  cap d'itérations puis escalade HITL ; audit log hash-chaîné ; revendiqué neutre scrum/kanban.
-- ❌ (a) inversé : les 8 phases sont **imposées par le control plane**, la méthode ne déclare pas
-  les siennes (pas de Method port pluggable) ; ❌ pas de budget tokens, ❌ pas de schéma
-  d'événements versionné, ❌ (d) tout finit dans le même log, ❌ (e) effleuré. C'est un papier,
-  pas un standard.
+- ✅ (b) au bon grain : phases stage-gatées, progression refusée par défaut (« a deterministic
+  state machine enforces invariants and blocks on violation »), « receipts » nommés exigés
+  (📖 le papier réserve « fail-closed » aux permissions/install, pas aux gates de phase),
+  au-dessus de harnesses non modifiés (Cursor, Claude Code — via leurs hooks natifs) ;
+  cap de 3 itérations puis escalade HITL ; audit log hash-chaîné SHA-256.
+- ❌ (a) inversé : les phases sont **imposées par le control plane** (« hard-coded in the control
+  plane », 📖 précision : 7 actives + 2 slots réservés, le papier dit « eight-phase »), la
+  méthode ne déclare pas les siennes (pas de Method port pluggable). 📖 **Correction** : le
+  papier ne revendique PAS de neutralité scrum/kanban (zéro occurrence de ces mots) — son
+  lifecycle « maps Cooper's stage-gate model [Cooper, 1990] » et son « tool-agnostic » signifie
+  agnostique au *harness*, pas à la méthode. ❌ pas de budget tokens (zéro occurrence),
+  ❌ pas de schéma d'événements versionné (log JSONL défini dans le code), ❌ (d) des codes
+  d'échec de gate nommés existent mais pas de taxonomie d'*escalade* (une seule destination :
+  pause + humain + même log), ❌ (e) effleuré. C'est un preprint (auteur unique, Happiest Minds
+  Technologies ; moitié du papier = étude de prévalence des configs d'agents), pas un standard.
 
 **4. Temporal (Worker Versioning + Signals + Nexus) — ~4/10 global, mais (e) résolu à l'échelle.**
 - ✅ (e) mot pour mot : workflows **Pinned** à leur version de départ, upgrade uniquement à
@@ -75,9 +101,12 @@ au grain « méthode ».
 *Mentions : MI9 (arXiv 2508.03858, gouvernance runtime mais posture détective/containment =
 polarité inverse), institutions électroniques AMELI (2004, spec déclarée + middleware
 domain-independent — le précédent intellectuel le plus profond pour l'aveuglement), AG-UI
-(vocabulaire `STEP_*` versionné mais observationnel), Faramesh (arXiv 2601.17744, fail-safe
-agnostique mais au grain action), OpenHands (confirmation-mode fail-safe au grain tool call),
-Devin (budget `max_acu_limit` + `blocked` mais polarité inverse).*
+(vocabulaire `STEP_*` versionné mais observationnel), Faramesh (arXiv 2601.17744, deny-by-default
+fail-closed agnostique mais au grain action — 📖 vérifié : le grain méthode/plan y est un
+**anti-but prouvé**, Lemma 13.1 « Governing cognition would require … enforcing transactional
+control over reasoning steps » ; réserve : preprint d'auteur unique affilié au produit décrit),
+OpenHands (confirmation-mode fail-safe au grain tool call), Devin (budget `max_acu_limit` +
+`blocked` mais polarité inverse).*
 
 ## 2. Le gap — ce que personne ne couvre
 
@@ -99,9 +128,16 @@ Devin (budget `max_acu_limit` + `blocked` mais polarité inverse).*
 - **(e) — vierge dans le monde agentique** : Temporal/Restate l'ont résolu pour du code de
   workflow ; personne ne l'a transposé en **clause de contrat** pour une méthode opaque.
 
-Validation tierce : Forrester (mars 2026) écrit que les « cross-plane governance schemas »
-n'existent pas ; le survey arXiv 2504.16736 n'a pas la catégorie « protocole superviseur↔méthode »
-dans sa taxonomie.
+Validation tierce (📖 vérifiée de première main) : le blog public Forrester de **Leslie Joseph
+(20 mars 2026)**, « Agent Control Planes Still Need A Robust Standards Stack », titre sa
+troisième barrière « **Cross-Plane Governance Schemas Don't Exist** » (« a third layer of
+standards remains absent: the schemas that define how the build, orchestrate, and control
+planes exchange governance-relevant information about agent state, policy, and lifecycle ») ;
+le survey arXiv 2504.16736 (« A Survey of AI Agent Protocols », SJTU, v3 2025-06-21) n'a pas
+la catégorie « protocole superviseur↔méthode » dans sa taxonomie 2×2 (context-oriented /
+inter-agent × general-purpose / domain-specific) — zéro occurrence de « supervisor »,
+« oversight », « gate », « control plane » ; nuance honnête : le survey se limite par
+construction aux protocoles de *communication*.
 
 **Nuance honnête : la fenêtre se referme.** Rel(AI)Build et Faramesh (janv./juin 2026) tournent
 autour, le GenAI SIG d'OTel travaille sur tasks/teams/artifacts, la catégorie « agent control

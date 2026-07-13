@@ -12,6 +12,8 @@ status: working — the deep artefact is `brownfield-snapshot.md`; this index is
 
 - [Brownfield Snapshot](./brownfield-snapshot.md) — identity, real package map, execution flows, ADR inventory, drift ledger, open confrontation points.
 - [Capture 2026-07-13 — contrat de méthode & versions](./captures/2026-07-13-contrat-methode-et-versions.md) — pré-ADR : décisions D1–D6 (pas de hot-migration, adoption aux gates, contrat d'étape fail-safe, cop1 exige une méthode), repositionnement mega-city = implémentation de référence du contrat, dettes repérées, découpage en fiches/ADRs.
+- [Article — le contrat de supervisabilité](./articles/contrat-de-supervisabilite.md) — article de fond (fiche 0025), v2 accessible : récit, tour de contrôle, 5 clauses, squelette v0, siège d'autorité, voisins. Base citable des ADRs ; publication externe différée. La [v1 détaillée](./articles/contrat-de-supervisabilite-v1.md) (positionnement source par source, lignée, glossaire) reste la référence de profondeur.
+- [Notes de lecture — sources du contrat de supervisabilité](./captures/2026-07-13-notes-lecture-sources-contrat-supervisabilite.md) — phase 1 de la fiche 0025 : vérification première main de Rel(AI)Build, Agent Protocol, A2A v1.0, Faramesh + 2 affirmations tierces ; corrections appliquées au prior-art.
 - [Getting Started](./GETTING_STARTED.md) — current user-facing contract (V1-light as of 2026-04-14).
 - [Running cop1 on a project](./running-cop1-on-a-project.md) — practical run guide: auth setup, the run command, safety gates (evidence / verify / review-verdict), transient `claude.status` handling, observability, reset.
 
