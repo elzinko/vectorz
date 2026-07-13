@@ -25,6 +25,7 @@ Dernière mise à jour : 2026-07-14
 | 0023 | Exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 | ✅ shipped | #52 |
 | 0024 | Résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo | |
 | 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | ✅ shipped | #57 |
+| 0026 | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 | ✅ shipped | #59 |
 | 0027 | Validateur de journal de supervisabilité — l'invariant devient exécutable | feature | P2 | 🔴 todo | |
 | 0028 | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P2 | 🔴 todo | |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |
