@@ -42,6 +42,7 @@
 | 0047 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | 🔴 todo |  |
 | 0048 | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 | 🔴 todo |  |
 | 0049 | ezk-article — skill d'écriture d'articles techniques vulgarisés (persona + panel de relecteurs frais) | feature | P2 | 🔴 todo |  |
+| 0050 | Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat | feature | P2 | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 | 🔴 todo |  |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo |  |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 | 🔴 todo |  |
