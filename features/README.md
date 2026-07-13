@@ -5,7 +5,7 @@ Source de vérité = le front-matter de chaque fiche `features/NNNN-slug.md`. Ce
 
 Règles : 1 PR par feature, squash-merge quand la CI est verte.
 
-Dernière mise à jour : 2026-07-10
+Dernière mise à jour : 2026-07-13
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
@@ -24,6 +24,7 @@ Dernière mise à jour : 2026-07-10
 | 0022 | mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $) | feature | P2 | 🔴 todo | |
 | 0023 | Exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 | ✅ shipped | #52 |
 | 0024 | Résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo | |
+| 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | 🔴 todo | |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |
 | 0011 | Buffer frames non borné dans la mission-control | refactor | P3 | ✅ shipped | #41 |
 | 0012 | Rafraîchir brownfield-snapshot.md (ancien emplacement worktree agent/) | chore | P3 | ✅ shipped | #43 |

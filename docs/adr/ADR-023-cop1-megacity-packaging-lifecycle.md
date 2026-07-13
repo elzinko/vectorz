@@ -1,6 +1,7 @@
 # ADR-023 — Packaging & cycle de vie cop1 ↔ mega-city (monorepo vendoré, migrations réversibles)
 
-**Statut :** Proposé (2026-07-12)
+**Statut :** Proposé (2026-07-12) — **Décision §1 révisée par [ADR-025](ADR-025-monorepo-codev-cop1-megacity.md)**
+(2026-07-13 : le « monorepo vendoré » devient un co-développement dans un seul repo ; le reste tient)
 **Déciders :** elzinko
 **Étend :** [ADR-021](ADR-021-megacity-integration-boundary.md) (frontière d'intégration — inchangée)
 **Dépend de :** merge d'ADR-021 + statut ADR-022 (cf. [fiche 0024](../../features/0024-resorber-peripherie-pre-pivot.md))

@@ -11,6 +11,7 @@ status: working — the deep artefact is `brownfield-snapshot.md`; this index is
 ## Working documents (this scan)
 
 - [Brownfield Snapshot](./brownfield-snapshot.md) — identity, real package map, execution flows, ADR inventory, drift ledger, open confrontation points.
+- [Capture 2026-07-13 — contrat de méthode & versions](./captures/2026-07-13-contrat-methode-et-versions.md) — pré-ADR : décisions D1–D6 (pas de hot-migration, adoption aux gates, contrat d'étape fail-safe, cop1 exige une méthode), repositionnement mega-city = implémentation de référence du contrat, dettes repérées, découpage en fiches/ADRs.
 - [Getting Started](./GETTING_STARTED.md) — current user-facing contract (V1-light as of 2026-04-14).
 - [Running cop1 on a project](./running-cop1-on-a-project.md) — practical run guide: auth setup, the run command, safety gates (evidence / verify / review-verdict), transient `claude.status` handling, observability, reset.
 
