@@ -1,0 +1,10 @@
+flowchart TB
+  MODEL["MODELE TYPE (source de verite unique)<br/>noeuds = roles/sieges + aretes = interactions typees"]
+  MODEL --> RUN["RUN<br/>les agents executent"]
+  MODEL --> DRAW["DRAW<br/>diagramme + image (ezk-diagram)"]
+  MODEL --> DOC["DOCUMENT<br/>doc generee (org-chart, catalogue)"]
+  RUN --> LOOP["Boucle bornee : Dev et Reviewer<br/>applique / rejette+justifie, round max N"]
+  LOOP -->|converge| GO["GO"]
+  LOOP -->|"plafond atteint ou hors-autorite"| ESC{{"escalade = siege d'autorite"}}
+  ESC -->|mode INTERACTIF| HUM(["humain = toi"])
+  ESC -->|mode AUTONOME| SUP(["superviseur cop1<br/>un agent occupe le siege"])
