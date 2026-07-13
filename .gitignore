@@ -57,5 +57,8 @@ cobaye-*.png
 tmp/
 temp/
 
+# ezk-sprint scratch (éphémère par-sprint, jamais commité — survit à la compaction, pas au repo)
+SPRINT.md
+
 # Local config (may contain machine-specific paths/models)
 cop1.config.yaml
