@@ -16,6 +16,14 @@ interface SseFrame {
 const TERMINAL_EVENTS = new Set(['orchestrator.run.completed', 'orchestrator.run.failed']);
 const HEARTBEAT_IDLE_MS = 10_000;
 
+/** fiche 0022 — human-readable elapsed duration: "2m 5s" or "42s". */
+function formatDuration(ms: number): string {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return min > 0 ? `${min}m ${sec}s` : `${sec}s`;
+}
+
 /** Parse the `failures` array of a `dod.check.failed` payload into typed violations. */
 function parseDoDViolations(raw: unknown): DoDViolation[] {
   if (!Array.isArray(raw)) return [];
@@ -50,6 +58,10 @@ export function OrchestratorRunView() {
   const [dodViolations, setDodViolations] = useState<DoDViolation[]>([]);
   const [terminal, setTerminal] = useState(false);
   const [silentMs, setSilentMs] = useState(0);
+  // fiche 0022 — run start time + live elapsed duration (data the SSE already carries;
+  // this was purely a display gap). `startedAt` is stamped when the run is accepted.
+  const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [elapsedMs, setElapsedMs] = useState(0);
   // Last-event timestamp lives in a ref (not state) so the heartbeat interval
   // doesn't tear down and re-create on every incoming frame — it re-subscribes
   // only when the run starts or reaches a terminal state.
@@ -142,11 +154,12 @@ export function OrchestratorRunView() {
     if (!runId || terminal) return;
     const interval = setInterval(() => {
       setSilentMs(Date.now() - lastEventAtRef.current);
+      if (startedAt !== null) setElapsedMs(Date.now() - startedAt);
     }, 1000);
     return () => {
       clearInterval(interval);
     };
-  }, [runId, terminal]);
+  }, [runId, terminal, startedAt]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -194,6 +207,8 @@ export function OrchestratorRunView() {
       setTerminal(false);
       lastEventAtRef.current = Date.now();
       setSilentMs(0);
+      setStartedAt(Date.now());
+      setElapsedMs(0);
       setRunId(data.runId);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -299,6 +314,13 @@ export function OrchestratorRunView() {
             <strong>Run :</strong> {runId}
           </p>
           <p>
+            <strong>Démarré à :</strong>{' '}
+            {startedAt !== null ? new Date(startedAt).toLocaleTimeString() : '—'}
+          </p>
+          <p>
+            <strong>Durée :</strong> {formatDuration(elapsedMs)}
+          </p>
+          <p>
             <strong>Story :</strong> {story ?? '—'}
           </p>
           <p>
@@ -327,6 +349,9 @@ export function OrchestratorRunView() {
       {terminal && (
         <div>
           <p className="loading">Run terminé.</p>
+          <p>
+            <strong>Durée totale :</strong> {formatDuration(elapsedMs)}
+          </p>
           {alert && (
             <div className="error" role="alert">
               <strong>⚠ {alert}</strong>

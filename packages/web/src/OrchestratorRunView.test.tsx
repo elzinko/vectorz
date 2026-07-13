@@ -70,6 +70,17 @@ describe('OrchestratorRunView', () => {
     expect(body.mode).toBe('normal');
   });
 
+  it('shows the run start time and an elapsed duration once a run is active (fiche 0022)', async () => {
+    render(<OrchestratorRunView />);
+    await startRun();
+
+    // The mission-control view surfaces when + how long (data already carried, was a display gap).
+    expect(await screen.findByText(/Démarré à/i)).toBeTruthy();
+    expect(screen.getByText(/Durée/i)).toBeTruthy();
+    // Elapsed starts at 0s (before the first heartbeat tick).
+    expect(screen.getByText(/0s/)).toBeTruthy();
+  });
+
   it('renders the current command from a runId-tagged SSE event', async () => {
     render(<OrchestratorRunView />);
     await startRun();
