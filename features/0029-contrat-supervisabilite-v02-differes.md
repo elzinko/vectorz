@@ -1,0 +1,41 @@
+---
+id: 0029
+title: Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace, MCP émetteur)
+type: idea
+priority: P3
+status: todo
+pr:
+created: 2026-07-14
+---
+
+# 0029 — Contrat v0.2 : les différés du gel v0.1
+
+## Contexte / Problème
+
+Le gel v0.1 (capture §7, PR #60) a volontairement réduit le périmètre. Les différés actés
+par le panel design, à ne rouvrir qu'**après au moins un run réel sous v0.1** :
+
+- **Multi-piste intra-run** : v0.1 impose « un run = un flux séquentiel, au plus un gate
+  ouvert » (le parallélisme = N runs). v0.2 : champ `scope/track` dans l'enveloppe +
+  invariant scopé — si l'usage montre que N-runs ne suffit pas.
+- **`max_gate_interval` déclarable** : anti-surplace côté méthode (v0.1 ne l'a que côté
+  superviseur : durée/budget max entre gates).
+- **Hash-chain natif du journal** (v0.1 : miroir d'audit ; la chain est une option du
+  validateur, fiche 0027).
+- **MCP émetteur** : chemin nominal Desktop (D12) — schéma validé à l'émission, au prix
+  d'un service qui tourne.
+- **`report_schema` optionnel par gate** (revendication « rapport structuré comme unité
+  contractuelle » du prior-art, dégonflée en v0.1 au profit d'`outcome`).
+- Compatibilité des paires de versions à l'adoption (hors quiescence — cf. article 0026
+  « fenêtres de mise à jour »).
+
+## Proposition
+
+Grooming à l'usage : chaque item ci-dessus ne s'ouvre que sur douleur constatée en run réel.
+Cette fiche sert de parking officiel pour que rien ne se perde.
+
+## Notes / décisions
+
+- Origine : « Reste pour v0.2 » du compte rendu du panel, capture §7.
+- Ne pas implémenter en anticipation (YAGNI) — le v0.1 d'abord, éprouvé par mega-city
+  (fiche 0050) + validateur (fiche 0027).

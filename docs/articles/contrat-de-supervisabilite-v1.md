@@ -5,7 +5,8 @@
 > ⚠️ Version archivée : la version courante, réécrite pour être lisible sans rien connaître du
 > sujet, est [contrat-de-supervisabilite.md](./contrat-de-supervisabilite.md). Celle-ci reste
 > la référence détaillée (positionnement complet source par source, lignée intellectuelle,
-> glossaire).
+> glossaire). Le squelette qui y figure est le v0 historique ; la version actée (v0.1, revue
+> par panel design) vit dans la [capture §7](../captures/2026-07-13-contrat-methode-et-versions.md).
 
 > Statut : article de fond, publié dans la doc du projet cop1 (2026-07-13). Issu des captures
 > de session du 2026-07-13 ([décisions](../captures/2026-07-13-contrat-methode-et-versions.md),

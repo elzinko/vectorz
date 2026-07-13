@@ -5,7 +5,7 @@ Source de vérité = le front-matter de chaque fiche `features/NNNN-slug.md`. Ce
 
 Règles : 1 PR par feature, squash-merge quand la CI est verte.
 
-Dernière mise à jour : 2026-07-13
+Dernière mise à jour : 2026-07-14
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
@@ -24,7 +24,9 @@ Dernière mise à jour : 2026-07-13
 | 0022 | mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $) | feature | P2 | 🔴 todo | |
 | 0023 | Exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 | ✅ shipped | #52 |
 | 0024 | Résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo | |
-| 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | 🔴 todo | |
+| 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | ✅ shipped | #57 |
+| 0027 | Validateur de journal de supervisabilité — l'invariant devient exécutable | feature | P2 | 🔴 todo | |
+| 0028 | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P2 | 🔴 todo | |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |
 | 0011 | Buffer frames non borné dans la mission-control | refactor | P3 | ✅ shipped | #41 |
 | 0012 | Rafraîchir brownfield-snapshot.md (ancien emplacement worktree agent/) | chore | P3 | ✅ shipped | #43 |
@@ -34,3 +36,4 @@ Dernière mise à jour : 2026-07-13
 | 0007 | V1.1 — format de session log + ADR-009 + D1/D2 (→ session architecte) | chore | P3 | 🔴 todo | |
 | 0017 | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 | ⛔ blocked | |
 | 0018 | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | ⛔ blocked | |
+| 0029 | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace, MCP émetteur) | idea | P3 | 🔴 todo | |

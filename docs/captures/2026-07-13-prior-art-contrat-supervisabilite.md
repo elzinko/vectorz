@@ -178,6 +178,14 @@ contrat sera commoditisé ; seul le versant *prescriptif* (autorité) reste déf
 
 ## 5. Squelette v0 du contrat
 
+> ⚠️ **Supersédé (2026-07-13 soir)** : ce squelette v0 est conservé comme trace historique du
+> balayage. La version actée — **v0.1**, revue par panel design (5 lentilles) — vit dans la
+> [capture §7](./2026-07-13-contrat-methode-et-versions.md). Principaux changements : `budget`
+> retiré de l'escalade (télémétrie mesurée côté superviseur, frein par `hold`/`abort`) ;
+> manifeste réduit à l'identité et porté par `run.started` ; commandes journalisées + accusé
+> `gate.resumed` (l'invariant devient vérifiable depuis les journaux seuls) ; enveloppe
+> `{event_id, run_id, seq, ts}` ; `outcome` typé et `upgrade_ok` calculé au jalon.
+
 ```
 MANIFESTE (déclaré par la méthode avant le run — inspiré Agent Card A2A + OASF)
   contract: "supervisability/v1"        # URI versionnée, breaking change ⇒ nouvelle URI
