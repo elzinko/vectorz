@@ -23,6 +23,7 @@
 | 0039 | frontmatter tuning des agents — model, effort, isolation | chore | P1 | ✅ shipped | local (squash-merge) |
 | 0040 | ezk-product-builder — mode --checkpoints ask\|auto (décisions recommandées par défaut) | feature | P1 | ✅ shipped | local (squash-merge) |
 | 0050 | Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat | feature | P1 | 🟠 in-progress | #8 |
+| 0052 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 | 🟠 in-progress |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo |  |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P2 | 🟠 in-progress |  |
