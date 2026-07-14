@@ -31,3 +31,9 @@ blocage_rules: {}
 
 schedule:
   auto_start: []
+
+# fiche 0031 (ADR-028) — lecteur de journal .supervision/runs/ (mode moniteur).
+# Dormant par défaut : watch_roots vide = aucun fs.watch, aucune surveillance.
+supervision:
+  watch_roots: []
+  presumed_dead_after_min: 5

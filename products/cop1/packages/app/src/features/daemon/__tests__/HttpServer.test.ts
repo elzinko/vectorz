@@ -51,6 +51,26 @@ describe('HttpServer', () => {
     expect(res.status).toBe(404);
   });
 
+  describe('GET /api/supervision/runs (fiche 0031 / ADR-028)', () => {
+    it("renvoie [] quand aucun provider n'est configuré", async () => {
+      await server.start(TEST_PORT);
+
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/runs`);
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    });
+
+    it('renvoie Object.values() du provider (miroir SprintStatusProvider)', async () => {
+      const snapshot = { runId: 'run-1', state: 'running' };
+      server.setSupervisionProvider(() => [snapshot]);
+      await server.start(TEST_PORT);
+
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/runs`);
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([snapshot]);
+    });
+  });
+
   it('should stop cleanly', async () => {
     await server.start(TEST_PORT);
     expect(server.listening).toBe(true);

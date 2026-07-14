@@ -91,6 +91,15 @@ export const ConfigSchema = z
         alert_thresholds: [50, 80, 95],
         auto_pause: true,
       }),
+    // fiche 0031 (ADR-028) — lecteur de journal .supervision/runs/ en mode
+    // moniteur. Dormant par défaut (watch_roots vide) : aucun fs.watch surprise
+    // sur le cwd tant que le projet n'a pas explicitement opté in.
+    supervision: z
+      .object({
+        watch_roots: z.array(z.string()).default([]),
+        presumed_dead_after_min: z.number().positive().default(5),
+      })
+      .default({ watch_roots: [], presumed_dead_after_min: 5 }),
   })
   .refine(
     (data) => {
