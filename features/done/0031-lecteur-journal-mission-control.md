@@ -3,7 +3,7 @@ id: 0031
 title: Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur)
 type: feature
 priority: P1
-status: in-progress
+status: shipped
 pr: "#2"
 created: 2026-07-14
 ---
