@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RuleProposalsView } from './RuleProposalsView.js';
 import type { RuleProposal } from './ProposalCard.js';
+import { RuleProposalsView } from './RuleProposalsView.js';
 
 const mockProposals: RuleProposal[] = [
   {
@@ -34,10 +34,13 @@ describe('RuleProposalsView', () => {
       }),
     );
 
-    vi.stubGlobal('EventSource', vi.fn().mockImplementation(() => ({
-      onmessage: null,
-      close: vi.fn(),
-    })));
+    vi.stubGlobal(
+      'EventSource',
+      vi.fn().mockImplementation(() => ({
+        onmessage: null,
+        close: vi.fn(),
+      })),
+    );
   });
 
   afterEach(() => {
@@ -109,7 +112,9 @@ describe('RuleProposalsView', () => {
     });
 
     const filterButtons = screen.getAllByRole('button');
-    const archButton = filterButtons.find((b) => b.textContent === 'architecture' && b.classList.contains('type-filter-btn'));
+    const archButton = filterButtons.find(
+      (b) => b.textContent === 'architecture' && b.classList.contains('type-filter-btn'),
+    );
     expect(archButton).toBeDefined();
     fireEvent.click(archButton!);
 
@@ -118,7 +123,8 @@ describe('RuleProposalsView', () => {
   });
 
   it('should call PATCH endpoint when Approve is clicked', async () => {
-    const fetchMock = vi.fn()
+    const fetchMock = vi
+      .fn()
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockProposals),
@@ -148,16 +154,19 @@ describe('RuleProposalsView', () => {
 
   it('should re-fetch proposals when SSE event received', async () => {
     let sseHandler: ((event: { data: string }) => void) | null = null;
-    vi.stubGlobal('EventSource', vi.fn().mockImplementation(() => {
-      const instance = {
-        onmessage: null as ((event: { data: string }) => void) | null,
-        close: vi.fn(),
-      };
-      setTimeout(() => {
-        sseHandler = instance.onmessage;
-      }, 0);
-      return instance;
-    }));
+    vi.stubGlobal(
+      'EventSource',
+      vi.fn().mockImplementation(() => {
+        const instance = {
+          onmessage: null as ((event: { data: string }) => void) | null,
+          close: vi.fn(),
+        };
+        setTimeout(() => {
+          sseHandler = instance.onmessage;
+        }, 0);
+        return instance;
+      }),
+    );
 
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

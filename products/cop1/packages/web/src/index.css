@@ -216,11 +216,26 @@ body {
   letter-spacing: 0.05em;
 }
 
-.type-architecture { background: #7c3aed; color: #f1f5f9; }
-.type-team { background: #0891b2; color: #f1f5f9; }
-.type-agent { background: #d97706; color: #1e293b; }
-.type-quality { background: #059669; color: #f1f5f9; }
-.type-process { background: #dc2626; color: #f1f5f9; }
+.type-architecture {
+  background: #7c3aed;
+  color: #f1f5f9;
+}
+.type-team {
+  background: #0891b2;
+  color: #f1f5f9;
+}
+.type-agent {
+  background: #d97706;
+  color: #1e293b;
+}
+.type-quality {
+  background: #059669;
+  color: #f1f5f9;
+}
+.type-process {
+  background: #dc2626;
+  color: #f1f5f9;
+}
 
 .proposal-actions {
   display: flex;

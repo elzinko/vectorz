@@ -1,5 +1,6 @@
 packages:
   - 'products/cop1/packages/*'
+  - 'products/mega-city'
 
 onlyBuiltDependencies:
   - '@biomejs/biome'

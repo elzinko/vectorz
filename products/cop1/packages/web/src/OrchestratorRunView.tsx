@@ -264,11 +264,7 @@ export function OrchestratorRunView() {
           </div>
           <div>
             <label htmlFor="run-mode">Mode</label>
-            <select
-              id="run-mode"
-              value={mode}
-              onChange={(e) => setMode(e.target.value as Mode)}
-            >
+            <select id="run-mode" value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
               <option value="normal">normal</option>
               <option value="abort-on-escalation">abort-on-escalation</option>
             </select>
@@ -336,9 +332,7 @@ export function OrchestratorRunView() {
             </progress>
           )}
           {silentMs > HEARTBEAT_IDLE_MS && (
-            <p className="loading">
-              en cours… (silencieux depuis {Math.floor(silentMs / 1000)}s)
-            </p>
+            <p className="loading">en cours… (silencieux depuis {Math.floor(silentMs / 1000)}s)</p>
           )}
           <button type="button" onClick={stop}>
             STOP

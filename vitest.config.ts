@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
-    include: ['products/cop1/packages/*/src/**/*.test.ts'],
+    include: ['products/cop1/packages/*/src/**/*.test.ts', 'tools/**/*.test.ts'],
     exclude: ['products/cop1/packages/web/**', 'node_modules', 'dist'],
     coverage: {
       provider: 'v8',

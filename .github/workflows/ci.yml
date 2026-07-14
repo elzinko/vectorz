@@ -55,5 +55,14 @@ jobs:
 
       # Tests that spin up throwaway git repos set their own LOCAL identity, so
       # no global git config is needed here (proves the tests are hermetic).
+      # (Root test run includes tools/boundary — the cross-import guardrail, ADR-027 §5.)
       - name: Test
         run: pnpm test
+
+      # Separability guardrails (ADR-027 §5 / ADR-021): each product must build and
+      # test ALONE — mega-city's host-agnosticity is proven mechanically, not asserted.
+      - name: Typecheck (mega-city, standalone)
+        run: pnpm --filter mega-city typecheck
+
+      - name: Test (mega-city, standalone)
+        run: pnpm --filter mega-city test

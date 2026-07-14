@@ -36,7 +36,9 @@ describe('OrchestratorRunView', () => {
     stubEventSource();
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve({ runId: 'r1' }) }),
+      vi
+        .fn()
+        .mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve({ runId: 'r1' }) }),
     );
   });
 
@@ -94,7 +96,10 @@ describe('OrchestratorRunView', () => {
     render(<OrchestratorRunView />);
     await startRun();
 
-    await pushSse('orchestrator.command.started', { command: '/other-run-cmd', runId: 'SOMEONE-ELSE' });
+    await pushSse('orchestrator.command.started', {
+      command: '/other-run-cmd',
+      runId: 'SOMEONE-ELSE',
+    });
 
     expect(screen.queryByText(/other-run-cmd/)).toBeNull();
   });
@@ -165,7 +170,9 @@ describe('OrchestratorRunView', () => {
     // A second run gets a fresh runId; submitting clears the previous buffer.
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve({ runId: 'r2' }) }),
+      vi
+        .fn()
+        .mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve({ runId: 'r2' }) }),
     );
     fireEvent.change(screen.getByLabelText(/epic/i), { target: { value: 'EA2' } });
     fireEvent.click(screen.getByRole('button', { name: /lancer/i }));

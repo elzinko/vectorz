@@ -33,16 +33,7 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      "coverage",
-      "*.tsbuildinfo",
-      "_bmad",
-      "_bmad-output",
-      "pnpm-lock.yaml",
-      "packages/web"
-    ]
+    "ignore": ["products/mega-city/**"]
   },
   "overrides": [
     {
