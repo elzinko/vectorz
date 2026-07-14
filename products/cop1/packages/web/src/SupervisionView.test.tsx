@@ -163,4 +163,110 @@ describe('SupervisionView', () => {
     expect(container.querySelector('a')).toBeNull();
     expect(container.innerHTML).not.toContain('<script>x</script>');
   });
+
+  it('does not let a stale REST hydration overwrite a more recent SSE frame (finding 1)', async () => {
+    // Real sequence: fetch /api/supervision/runs starts (in flight, will resolve
+    // with seq:3 "running"), a fresher SSE frame (seq:4 "at_gate") arrives and is
+    // applied first, then the stale fetch response resolves. The stale response
+    // must NOT overwrite the fresher SSE state.
+    let resolveFetch!: (value: { ok: true; status: 200; json: () => Promise<unknown[]> }) => void;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveFetch = resolve;
+          }),
+      ),
+    );
+    render(<SupervisionView />);
+
+    await pushSse(
+      'supervision.run.updated',
+      makeSnapshot({ runId: 'run-1', state: 'at_gate', lastEventSeq: 4 }),
+    );
+    await screen.findByText(/at_gate/);
+
+    await act(async () => {
+      resolveFetch({
+        ok: true,
+        status: 200,
+        json: () =>
+          Promise.resolve([makeSnapshot({ runId: 'run-1', state: 'running', lastEventSeq: 3 })]),
+      });
+      await Promise.resolve();
+    });
+
+    expect(await screen.findByText(/at_gate/)).toBeTruthy();
+    expect(screen.queryByText(/^running$/)).toBeNull();
+  });
+
+  it('applies a fresher SSE frame over an older one, and ignores a stale SSE frame (finding 1, SSE side)', async () => {
+    stubFetch([makeSnapshot({ runId: 'run-1', state: 'running', lastEventSeq: 3 })]);
+    render(<SupervisionView />);
+    await screen.findByText(/run-1/);
+
+    await pushSse(
+      'supervision.run.updated',
+      makeSnapshot({ runId: 'run-1', state: 'at_gate', lastEventSeq: 4 }),
+    );
+    expect(await screen.findByText(/at_gate/)).toBeTruthy();
+
+    // A stale SSE frame (lower seq) must not regress the displayed state.
+    await pushSse(
+      'supervision.run.updated',
+      makeSnapshot({ runId: 'run-1', state: 'running', lastEventSeq: 2 }),
+    );
+    expect(await screen.findByText(/at_gate/)).toBeTruthy();
+  });
+
+  it('displays a run with runId "__proto__" without polluting Object.prototype (finding 2)', async () => {
+    stubFetch([makeSnapshot({ runId: '__proto__' })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/__proto__/)).toBeTruthy();
+    expect(Object.prototype.hasOwnProperty.call(Object.prototype, 'state')).toBe(false);
+    expect(({} as Record<string, unknown>).state).toBeUndefined();
+  });
+
+  it('computes "il y a Xs" from lastAbsorbedAt when present, not lastEventTs (finding 4)', async () => {
+    const now = Date.now();
+    vi.setSystemTime(now);
+    stubFetch([
+      makeSnapshot({
+        lastEventTs: new Date(now - 60_000).toISOString(),
+        lastAbsorbedAt: new Date(now - 5_000).toISOString(),
+      }),
+    ]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/il y a 5s/)).toBeTruthy();
+  });
+
+  it('falls back to lastEventTs when lastAbsorbedAt is absent (finding 4)', async () => {
+    const now = Date.now();
+    vi.setSystemTime(now);
+    stubFetch([makeSnapshot({ lastEventTs: new Date(now - 7_000).toISOString() })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/il y a 7s/)).toBeTruthy();
+  });
+
+  it('caps rendered violations to the last 100 entries with an overflow notice (finding 3)', async () => {
+    const violations = Array.from({ length: 150 }, (_, i) => ({
+      code: `contract.violation.${i}`,
+      message: `ligne ${i}`,
+    }));
+    stubFetch([makeSnapshot({ violations })]);
+    const { container } = render(<SupervisionView />);
+    await screen.findByText(/run-1/);
+
+    await waitFor(() => {
+      const items = Array.from(container.querySelectorAll('.error li')).filter((li) =>
+        li.textContent?.includes('contract.violation.'),
+      );
+      expect(items.length).toBe(100);
+    });
+    expect(await screen.findByText(/et 50 de plus/)).toBeTruthy();
+  });
 });

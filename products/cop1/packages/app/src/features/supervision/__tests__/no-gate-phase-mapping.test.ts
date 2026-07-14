@@ -59,7 +59,9 @@ describe('Verrou DP2 — zéro mapping gate_id → phase métier côté cop1', (
         offenders.push(file);
       }
       // Aucun type/read-model de la feature ne doit porter de champ "phase".
-      if (/\bphase\s*:/i.test(content) && !file.endsWith('no-gate-phase-mapping.test.ts')) {
+      // (listTsFiles exclut déjà tous les *.test.ts, donc ce fichier n'est
+      // jamais dans `files` — pas besoin de s'auto-exclure ici.)
+      if (/\bphase\s*:/i.test(content)) {
         offenders.push(file);
       }
     }

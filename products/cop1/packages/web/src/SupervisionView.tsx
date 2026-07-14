@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, type ReactNode, useEffect, useState } from 'react';
 
 type RunState = 'launched' | 'running' | 'at_gate' | 'finished' | 'finished_at_gate' | 'aborted';
 type ResumeOrigin = 'command' | 'self_reported';
@@ -27,12 +27,17 @@ type Notice = Violation;
  * le contrat serveur `RunSnapshot` (@cop1/journal-validator `RunProjection` +
  * overlay `app/features/supervision/domain/RunSnapshot`). Aucun champ "phase" :
  * c'est le verrou DP2 — zéro mapping gate→phase côté cop1.
+ *
+ * `lastAbsorbedAt` (horloge SERVEUR de l'absorption) est la source fiable pour
+ * l'âge affiché — contrairement à `lastEventTs`, déclaré par le journal (donc
+ * potentiellement mensonger ou décalé).
  */
 interface RunSnapshot {
   runId: string;
   state: RunState;
   lastEventTs?: string;
   lastEventSeq?: number;
+  lastAbsorbedAt?: string;
   gates: GateProjection[];
   violations: Violation[];
   notices: Notice[];
@@ -53,6 +58,9 @@ const RESUME_ORIGIN_LABEL: Record<ResumeOrigin, string> = {
   self_reported: 'reprise self-reported en session',
 };
 
+/** POC : plafond d'affichage pour les listes (violations/gates) du journal. */
+const MAX_LIST_ITEMS = 100;
+
 /** fiche 0022/0031 — "il y a Xs" (même patron que le heartbeat existant). */
 function formatAge(ms: number): string {
   return `${Math.max(0, Math.floor(ms / 1000))}s`;
@@ -62,8 +70,41 @@ function isRunSnapshot(value: unknown): value is RunSnapshot {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as { runId?: unknown }).runId === 'string'
+    typeof (value as { runId?: unknown }).runId === 'string' &&
+    typeof (value as { runDir?: unknown }).runDir === 'string'
   );
+}
+
+/**
+ * finding 1 (revue FRONT 0031) : garde d'anti-régression contre la course
+ * hydratation REST vs SSE. N'écrase un snapshot existant que si le candidat a
+ * un `lastEventSeq` au moins aussi récent (ou si aucun snapshot n'est encore
+ * en place). Un `lastEventSeq` absent est traité comme "le plus vieux possible"
+ * côté candidat (ne régresse jamais un snapshot déjà seq-é), et comme
+ * "toujours dépassable" côté existant.
+ */
+function isFresherOrEqual(candidate: RunSnapshot, existing: RunSnapshot | undefined): boolean {
+  if (!existing) return true;
+  const candidateSeq = candidate.lastEventSeq ?? Number.NEGATIVE_INFINITY;
+  const existingSeq = existing.lastEventSeq ?? Number.NEGATIVE_INFINITY;
+  return candidateSeq >= existingSeq;
+}
+
+/**
+ * finding 2 (revue FRONT 0031) : keye par `runDir` (chemin serveur unique)
+ * plutôt que `runId` (déclaré par le journal, donc semi-hostile — un
+ * `runId: '__proto__'` corromprait un objet littéral). Une `Map` est en outre
+ * immunisée à la pollution de prototype par construction.
+ */
+function upsertSnapshot(
+  runs: Map<string, RunSnapshot>,
+  snapshot: RunSnapshot,
+): Map<string, RunSnapshot> {
+  const existing = runs.get(snapshot.runDir);
+  if (!isFresherOrEqual(snapshot, existing)) return runs;
+  const next = new Map(runs);
+  next.set(snapshot.runDir, snapshot);
+  return next;
 }
 
 /**
@@ -71,12 +112,11 @@ function isRunSnapshot(value: unknown): value is RunSnapshot {
  * les runs surveillés depuis `.supervision/runs/`. Hydrate via
  * `GET /api/supervision/runs` (le SSE ne rejoue pas le passé), puis applique
  * les deltas `supervision.run.updated` du SSE `/events` existant (upsert par
- * `runId`) — même patron que `OrchestratorRunView`. Aucune requête d'écriture
+ * `runDir`) — même patron que `OrchestratorRunView`. Aucune requête d'écriture
  * n'est jamais émise depuis ce composant (verrou DP2).
  */
 export function SupervisionView() {
-  const [runs, setRuns] = useState<Record<string, RunSnapshot>>({});
-  const [, forceTick] = useState(0);
+  const [runs, setRuns] = useState<Map<string, RunSnapshot>>(() => new Map());
 
   // Hydratation initiale : le SSE ne rejoue pas le passé, donc un run déjà sur
   // disque au montage du front doit être hydraté explicitement.
@@ -87,9 +127,9 @@ export function SupervisionView() {
       .then((data: unknown) => {
         if (cancelled || !Array.isArray(data)) return;
         setRuns((prev) => {
-          const next = { ...prev };
+          let next = prev;
           for (const snapshot of data) {
-            if (isRunSnapshot(snapshot)) next[snapshot.runId] = snapshot;
+            if (isRunSnapshot(snapshot)) next = upsertSnapshot(next, snapshot);
           }
           return next;
         });
@@ -102,7 +142,7 @@ export function SupervisionView() {
     };
   }, []);
 
-  // Live : upsert par runId depuis les deltas supervision.run.updated.
+  // Live : upsert par runDir depuis les deltas supervision.run.updated.
   useEffect(() => {
     const source = new EventSource('/events');
     source.onmessage = (event: MessageEvent) => {
@@ -115,23 +155,14 @@ export function SupervisionView() {
       if (frame.eventType !== 'supervision.run.updated') return;
       if (!isRunSnapshot(frame.payload)) return;
       const snapshot = frame.payload;
-      setRuns((prev) => ({ ...prev, [snapshot.runId]: snapshot }));
+      setRuns((prev) => upsertSnapshot(prev, snapshot));
     };
     return () => {
       source.close();
     };
   }, []);
 
-  // Tick local pour recalculer "il y a Xs" sans attendre une nouvelle frame
-  // (même patron que le heartbeat "silencieux depuis Ns" d'OrchestratorRunView).
-  useEffect(() => {
-    const interval = setInterval(() => forceTick((n) => n + 1), 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const list = Object.values(runs);
+  const list = Array.from(runs.values());
 
   return (
     <div className="supervision-view">
@@ -140,14 +171,18 @@ export function SupervisionView() {
       </p>
       {list.length === 0 && <p>Aucun run surveillé.</p>}
       {list.map((run) => (
-        <RunCard key={run.runId} run={run} />
+        <RunCard key={run.runDir} run={run} />
       ))}
     </div>
   );
 }
 
-function RunCard({ run }: { run: RunSnapshot }) {
-  const ageMs = run.lastEventTs ? Date.now() - new Date(run.lastEventTs).getTime() : null;
+/**
+ * finding 3 (revue FRONT 0031) : mémoïsée pour que le tick "il y a Xs" (isolé
+ * dans `RunAge`) ne re-rende pas la carte entière à chaque seconde. Ne se
+ * re-rend que si le snapshot du run change réellement.
+ */
+const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
   return (
     <div className="run-card">
       <p>
@@ -163,12 +198,13 @@ function RunCard({ run }: { run: RunSnapshot }) {
         <strong>Tokens :</strong>{' '}
         {run.tokens.provenance === 'measured' ? 'mesurés' : 'absents-et-dits-absents'}
       </p>
-      {ageMs !== null && <p>Dernier événement il y a {formatAge(ageMs)}</p>}
+      <RunAge lastAbsorbedAt={run.lastAbsorbedAt} lastEventTs={run.lastEventTs} />
       {run.gates.length > 0 && (
         <div>
           <strong>Gates :</strong>
-          <ul>
-            {run.gates.map((gate) => (
+          <CappedList
+            items={run.gates}
+            renderItem={(gate) => (
               <li key={gate.gateEventId}>
                 gate_id : {gate.gateId ?? '—'}
                 {gate.resumeOrigin && <> — {RESUME_ORIGIN_LABEL[gate.resumeOrigin]}</>}
@@ -179,23 +215,75 @@ function RunCard({ run }: { run: RunSnapshot }) {
                   </>
                 )}
               </li>
-            ))}
-          </ul>
+            )}
+          />
         </div>
       )}
       {run.violations.length > 0 && (
         <div className="error" role="alert">
           <strong>Violations :</strong>
-          <ul>
-            {run.violations.map((v, i) => (
+          <CappedList
+            items={run.violations}
+            renderItem={(v, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: violations have no stable id in the read-model
               <li key={`${v.code}-${i}`}>
                 {v.code} — {v.message}
               </li>
-            ))}
-          </ul>
+            )}
+          />
         </div>
       )}
     </div>
+  );
+});
+
+/**
+ * finding 4 (revue FRONT 0031) : âge calculé depuis `lastAbsorbedAt` (horloge
+ * serveur de l'absorption, fiable) quand présent, sinon repli sur
+ * `lastEventTs` (déclaré par le journal). Isolée dans son propre composant
+ * avec son propre tick 1s pour ne pas re-rendre `RunCard` entière (finding 3).
+ */
+function RunAge({
+  lastAbsorbedAt,
+  lastEventTs,
+}: {
+  lastAbsorbedAt?: string;
+  lastEventTs?: string;
+}) {
+  const [, forceTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => forceTick((n) => n + 1), 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const referenceTs = lastAbsorbedAt ?? lastEventTs;
+  const ageMs = referenceTs ? Date.now() - new Date(referenceTs).getTime() : null;
+  if (ageMs === null) return null;
+  return <p>Dernier événement il y a {formatAge(ageMs)}</p>;
+}
+
+/**
+ * finding 3 (revue FRONT 0031) : plafonne l'affichage à `MAX_LIST_ITEMS`
+ * dernières entrées (POC sobre, pas de virtualisation) pour éviter des
+ * milliers de <li> re-diffés si le journal est pollué.
+ */
+function CappedList<T>({
+  items,
+  renderItem,
+}: {
+  items: T[];
+  renderItem: (item: T, index: number) => ReactNode;
+}) {
+  const overflow = items.length - MAX_LIST_ITEMS;
+  const shown = overflow > 0 ? items.slice(-MAX_LIST_ITEMS) : items;
+  const shownStartIndex = overflow > 0 ? overflow : 0;
+  return (
+    <ul>
+      {shown.map((item, i) => renderItem(item, shownStartIndex + i))}
+      {overflow > 0 && <li>… et {overflow} de plus</li>}
+    </ul>
   );
 }

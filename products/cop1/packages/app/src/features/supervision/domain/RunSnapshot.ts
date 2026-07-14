@@ -20,4 +20,11 @@ export interface RunSnapshot extends RunProjection {
   liveness: Liveness;
   /** Badge « classe B — best-effort » (fiabilité de la mesure, pas du métier). */
   emissionClass: 'B';
+  /**
+   * Horloge LOCALE (serveur) de la dernière absorption réussie de ce run,
+   * en ISO 8601. Sert d'ancre au timer `presumed_dead` et à l'affichage
+   * « il y a Xs » côté front — jamais le `ts` auto-déclaré dans le journal
+   * (semi-hostile, cf. `lastEventTs`), qui reste informatif uniquement.
+   */
+  lastAbsorbedAt?: string;
 }

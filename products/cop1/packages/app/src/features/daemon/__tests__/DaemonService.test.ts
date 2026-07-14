@@ -2,7 +2,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DaemonService } from '../application/DaemonService.js';
 import { PidFileManager } from '../infrastructure/PidFileManager.js';
 
@@ -110,12 +110,14 @@ describe('DaemonService', () => {
     try {
       await wired.start();
 
-      const found = await waitForCondition(async () => {
-        const res = await fetch('http://127.0.0.1:14245/api/supervision/runs');
-        const data = (await res.json()) as Array<{ runId: string }>;
-        return data.some((snapshot) => snapshot.runId === 'run-a');
-      });
-      expect(found).toBe(true);
+      await vi.waitFor(
+        async () => {
+          const res = await fetch('http://127.0.0.1:14245/api/supervision/runs');
+          const data = (await res.json()) as Array<{ runId: string }>;
+          expect(data.some((snapshot) => snapshot.runId === 'run-a')).toBe(true);
+        },
+        { timeout: 2000, interval: 30 },
+      );
     } finally {
       await wired.stop();
     }
@@ -146,16 +148,3 @@ describe('DaemonService', () => {
     }
   });
 });
-
-async function waitForCondition(
-  predicate: () => Promise<boolean>,
-  timeoutMs = 2000,
-  intervalMs = 30,
-): Promise<boolean> {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    if (await predicate()) return true;
-    await new Promise((resolve) => setTimeout(resolve, intervalMs));
-  }
-  return false;
-}

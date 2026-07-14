@@ -23,7 +23,7 @@ Fonctionnalité: Lecteur de journal .supervision/runs/ dans la mission-control (
     Étant donné un dossier ".supervision/runs/<id>/" contenant déjà un "events.jsonl" valide
       avant le démarrage du daemon
     Quand le daemon démarre et que le JournalWatcherAdapter parcourt les watch-roots
-    Alors les événements du run sont rejoués dans l'EventBus
+    Alors un snapshot du run est projeté et émis via "supervision.run.updated" sur l'EventBus
     Et l'état projeté du run reflète la machine à états jusqu'au dernier événement du fichier
 
   @unit
@@ -31,7 +31,7 @@ Fonctionnalité: Lecteur de journal .supervision/runs/ dans la mission-control (
     Étant donné le daemon en cours d'exécution sans aucun run connu
     Quand un nouveau dossier ".supervision/runs/<id>/" apparaît avec un "events.jsonl"
     Alors le JournalWatcherAdapter détecte le nouveau fichier sans redémarrage du daemon
-    Et les événements de ce run sont rejoués dans l'EventBus au fil de leur écriture
+    Et un nouveau snapshot de ce run est émis via "supervision.run.updated" au fil de son écriture
 
   @e2e
   Scénario: Un dossier de run alimenté à la main s'affiche live dans la mission-control
@@ -78,39 +78,45 @@ Fonctionnalité: Lecteur de journal .supervision/runs/ dans la mission-control (
     Et aucune des deux formulations ne laisse penser que cop1 a lui-même déclenché la reprise
 
   # --- presumed_dead : uniquement en running, jamais en at_gate (D8) -------
+  # `presumed_dead` est un overlay serveur (`liveness`), distinct du `state`
+  # de contrat calculé par journal-validator : le `state` reste "running", et
+  # ancré sur l'heure LOCALE de dernière absorption réussie du run
+  # (`lastAbsorbedAt`), jamais sur le `ts` auto-déclaré du journal (semi-hostile).
 
   @unit
-  Scénario: Un silence prolongé en état "running" déclenche presumed_dead
-    Étant donné un run dans l'état "running" dont le dernier événement date de plus que
-      le seuil de silence configuré
-    Quand la projection réévalue l'âge du dernier événement
-    Alors l'état affiché passe à "presumed_dead"
+  Scénario: Un silence prolongé en état "running" fait basculer l'overlay liveness sur presumed_dead
+    Étant donné un run dans l'état "running" dont la dernière absorption réussie date de plus
+      que le seuil de silence configuré (indépendamment du "ts" auto-déclaré dans le journal)
+    Quand le seuil de silence est dépassé depuis la dernière absorption
+    Alors le "state" du run reste "running"
+    Et l'overlay "liveness" du run passe à "presumed_dead"
 
   @unit
   Scénario: Un silence prolongé en état "at_gate" ne déclenche jamais presumed_dead
-    Étant donné un run dans l'état "at_gate" (gate.reached sans gate.resumed) dont le
-      dernier événement date de plus que le seuil de silence configuré
-    Quand la projection réévalue l'âge du dernier événement
+    Étant donné un run dans l'état "at_gate" (gate.reached sans gate.resumed) dont la
+      dernière absorption réussie date de plus que le seuil de silence configuré
+    Quand le seuil de silence est dépassé depuis la dernière absorption
     Alors l'état affiché reste "at_gate"
-    Et "presumed_dead" n'est jamais déclenché tant que le run reste "at_gate"
+    Et l'overlay "liveness" reste "alive" : "presumed_dead" n'est jamais déclenché tant que
+      le run reste "at_gate"
 
-  # --- Ligne invalide : contract.violation affichée, run lisible -----------
+  # --- Ligne invalide : violation affichée, run lisible ---------------------
 
   @unit
-  Scénario: Une ligne JSONL invalide produit un contract.violation sans casser la lecture du run
+  Scénario: Une ligne JSONL invalide produit une violation "contract.violation" sans casser la lecture du run
     Étant donné la fixture "invalid-line" du validateur 0027, rejouée par le
       JournalWatcherAdapter
     Quand le JournalWatcherAdapter lit le fichier "events.jsonl"
-    Alors un événement "contract.violation" référençant la ligne fautive est émis dans
-      l'EventBus
+    Alors le snapshot projeté porte, dans son champ "violations", une entrée de code
+      "contract.violation" référençant la ligne fautive
     Et les événements valides encadrants sont projetés normalement
     Et le run reste consultable dans son ensemble
 
   @e2e
-  Scénario: Le contract.violation est affiché dans la mission-control sans rendre le run illisible
+  Scénario: La violation est affichée dans la mission-control sans rendre le run illisible
     Étant donné un run dont le journal contient une ligne invalide au milieu d'événements valides
     Quand j'ouvre la vue de ce run dans la mission-control
-    Alors une indication "contract.violation" est visible sur le run
+    Alors une indication de violation est visible sur le run
     Et l'historique des événements valides du run reste affiché et navigable
 
   @unit
@@ -118,8 +124,8 @@ Fonctionnalité: Lecteur de journal .supervision/runs/ dans la mission-control (
     Étant donné la fixture "seq-gap" du validateur 0027 (seq 1, 2 puis 4), rejouée par le
       JournalWatcherAdapter
     Quand le JournalWatcherAdapter lit le fichier "events.jsonl"
-    Alors un événement "contract.violation" référençant le trou de séquence est émis dans
-      l'EventBus
+    Alors le snapshot projeté porte, dans son champ "violations", une entrée de code
+      "envelope.seq_gap" référençant le trou de séquence
     Et le run reste consultable jusqu'au dernier événement valide reçu
 
   # --- gate.resumed orphelin (cas limite de projection) --------------------
@@ -130,9 +136,21 @@ Fonctionnalité: Lecteur de journal .supervision/runs/ dans la mission-control (
       référençant un gate_event_id inconnu, sans gate ouvert), rejouée par le
       JournalWatcherAdapter
     Quand le JournalWatcherAdapter projette les événements de ce run
-    Alors un événement "contract.violation" référençant ce gate.resumed orphelin est émis
+    Alors le snapshot projeté porte, dans son champ "violations", une entrée de code
+      "state.gate_resumed_orphan" référençant ce gate.resumed orphelin
     Et l'état du run n'est pas faussement projeté comme "at_gate" repris
     Et le run reste consultable
+
+  # --- Robustesse à un journal semi-hostile (lecture) -----------------------
+
+  @unit
+  Scénario: Un events.jsonl illisible (ex. dossier au lieu d'un fichier) ne fait jamais planter le daemon
+    Étant donné un dossier ".supervision/runs/<id>/events.jsonl" qui est en réalité un
+      dossier et non un fichier (journal mal initialisé côté émetteur tiers)
+    Quand le JournalWatcherAdapter tente d'absorber ce run
+    Alors aucune exception n'est levée jusqu'à l'appelant
+    Et un snapshot est tout de même émis pour ce run, portant une violation de code
+      "watcher.read_error"
 
   # --- Verrou DP2 : zéro mapping gate→phase, panneau read-only -------------
 

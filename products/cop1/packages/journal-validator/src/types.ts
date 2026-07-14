@@ -35,6 +35,7 @@ export interface Envelope {
   run_id: string;
   seq: number;
   ts: string;
+  contract: string;
   type: string;
   payload: Record<string, unknown>;
 }

@@ -1,3 +1,4 @@
+import { basename } from 'node:path';
 import { projectRun } from '@cop1/journal-validator';
 import type { EventBus } from '@cop1/shared-kernel';
 import type { RunSnapshot } from '../domain/RunSnapshot.js';
@@ -12,7 +13,10 @@ export interface SupervisionServiceOptions {
 
 /**
  * Maintient le read-model live des runs surveillés (fiche 0031 / ADR-028) :
- * `Map<runId, RunSnapshot>`, ré-émission `supervision.run.updated` sur le bus
+ * `Map<runDir, RunSnapshot>` (clé serveur stable — le `runId` auto-déclaré
+ * dans le journal semi-hostile n'est qu'un champ d'affichage, jamais une clé,
+ * pour éviter collisions/écrasements entre deux runs déclarant le même id),
+ * ré-émission `supervision.run.updated` sur le bus
  * du daemon (→ SSE `/events` existant), et le timer `presumed_dead` — armé
  * UNIQUEMENT quand `state === 'running'`, jamais en `at_gate` (D8 : le
  * silence au jalon est le comportement exigé). Timers `setTimeout`/`clearTimeout`
@@ -31,25 +35,59 @@ export class SupervisionService {
 
   /** Re-projette le run depuis le disque, met à jour la map, émet sur le bus. */
   absorb(projectRoot: string, runDir: string): RunSnapshot {
-    const projection = projectRun(runDir);
-    const snapshot: RunSnapshot = {
-      ...projection,
-      projectRoot,
-      runDir,
-      liveness: 'alive',
-      emissionClass: 'B',
-    };
-
-    this.snapshots.set(snapshot.runId, snapshot);
+    const snapshot = this.buildSnapshot(projectRoot, runDir);
+    this.snapshots.set(runDir, snapshot);
 
     if (snapshot.state === 'running') {
       this.armPresumedDeadTimer(snapshot);
     } else {
-      this.clearPresumedDeadTimer(snapshot.runId);
+      this.clearPresumedDeadTimer(runDir);
     }
 
     this.eventBus.emit(SUPERVISION_RUN_UPDATED, snapshot);
     return snapshot;
+  }
+
+  /**
+   * Projette le run depuis le disque. Un journal semi-hostile peut avoir été
+   * mal initialisé côté émetteur tiers (`events.jsonl` en réalité un
+   * dossier ⇒ EISDIR, fichier gigantesque ⇒ ERR_STRING_TOO_LONG, etc.) :
+   * jamais de throw non rattrapé jusqu'à l'appelant (le watcher) — un échec
+   * de lecture devient une violation `watcher.read_error` visible sur le
+   * snapshot plutôt qu'un crash du daemon.
+   */
+  private buildSnapshot(projectRoot: string, runDir: string): RunSnapshot {
+    const lastAbsorbedAt = new Date().toISOString();
+    try {
+      const projection = projectRun(runDir);
+      return {
+        ...projection,
+        projectRoot,
+        runDir,
+        liveness: 'alive',
+        emissionClass: 'B',
+        lastAbsorbedAt,
+      };
+    } catch (error) {
+      return {
+        runId: basename(runDir),
+        state: 'launched',
+        gates: [],
+        violations: [
+          {
+            code: 'watcher.read_error',
+            message: `Lecture du run impossible ("${runDir}") : ${errorMessage(error)}`,
+          },
+        ],
+        notices: [],
+        tokens: { provenance: 'absent' },
+        projectRoot,
+        runDir,
+        liveness: 'alive',
+        emissionClass: 'B',
+        lastAbsorbedAt,
+      };
+    }
   }
 
   getSnapshots(): RunSnapshot[] {
@@ -65,34 +103,41 @@ export class SupervisionService {
   }
 
   private armPresumedDeadTimer(snapshot: RunSnapshot): void {
-    this.clearPresumedDeadTimer(snapshot.runId);
+    this.clearPresumedDeadTimer(snapshot.runDir);
 
-    const lastEventMs = snapshot.lastEventTs ? Date.parse(snapshot.lastEventTs) : Date.now();
-    const elapsedMs = Date.now() - lastEventMs;
-    const remainingMs = Math.max(0, this.presumedDeadAfterMs - elapsedMs);
-
-    const timer = setTimeout(() => this.markPresumedDead(snapshot.runId), remainingMs);
-    this.deadTimers.set(snapshot.runId, timer);
+    // Ancré sur l'horloge locale d'absorption (`lastAbsorbedAt`), JAMAIS sur
+    // le `ts` auto-déclaré du journal (semi-hostile) : un `ts` illisible
+    // donnerait `setTimeout(NaN)` (presumed_dead immédiat, faux positif) et
+    // un `ts` futur repousserait la détection indéfiniment.
+    const timer = setTimeout(
+      () => this.markPresumedDead(snapshot.runDir),
+      this.presumedDeadAfterMs,
+    );
+    this.deadTimers.set(snapshot.runDir, timer);
   }
 
-  private clearPresumedDeadTimer(runId: string): void {
-    const timer = this.deadTimers.get(runId);
+  private clearPresumedDeadTimer(runDir: string): void {
+    const timer = this.deadTimers.get(runDir);
     if (timer) {
       clearTimeout(timer);
-      this.deadTimers.delete(runId);
+      this.deadTimers.delete(runDir);
     }
   }
 
-  private markPresumedDead(runId: string): void {
-    this.deadTimers.delete(runId);
-    const current = this.snapshots.get(runId);
+  private markPresumedDead(runDir: string): void {
+    this.deadTimers.delete(runDir);
+    const current = this.snapshots.get(runDir);
     // Le silence n'est un signal d'anomalie qu'en 'running' — un run devenu
     // 'at_gate'/terminal entre-temps a déjà purgé son timer (D8), mais on
     // regarde l'état courant par prudence en cas de course.
     if (!current || current.state !== 'running') return;
 
     const updated: RunSnapshot = { ...current, liveness: 'presumed_dead' };
-    this.snapshots.set(runId, updated);
+    this.snapshots.set(runDir, updated);
     this.eventBus.emit(SUPERVISION_RUN_UPDATED, updated);
   }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
