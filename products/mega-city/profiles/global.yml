@@ -1,0 +1,34 @@
+# Profil global — l'ÉQUIPE COMPLÈTE ezk-*, pour le bind global daily-driver.
+# `bind-global global --link` matérialise ~/.claude/{skills,agents} en symlink live
+# vers mega-city ; il REMPLACE le install.sh de claude-skills (qui installait tout
+# le catalogue en global — ADR-0006, switchover fiche 0024).
+#
+# Contrairement à un profil par-cible (mobile, desktop…) qui conditionne un SOUS-ENSEMBLE
+# à un type d'app, `global` porte TOUT le toolbox : il n'est pas curated, il est exhaustif.
+id: global
+extends: [base]            # → hérite le socle (bundle base + ezk-archive)
+bundles: [base]
+# → toute l'équipe ezk-* (6 agents) → installée dans ~/.claude/agents/
+agents:
+  - ezk-architect
+  - ezk-pm
+  - ezk-qa
+  - ezk-reviewer
+  - ezk-steward
+  - ezk-tdd
+# → tout le catalogue de skills ezk-* (13) → installés dans ~/.claude/skills/
+skills:
+  - ezk-apk
+  - ezk-archive
+  - ezk-backlog
+  - ezk-ci
+  - ezk-commits
+  - ezk-design-system
+  - ezk-device
+  - ezk-ezk
+  - ezk-npm-scripts
+  - ezk-pr-pilot
+  - ezk-preview
+  - ezk-product-builder
+  - ezk-sprint
+interactions: []           # → règles d'interaction entre agents

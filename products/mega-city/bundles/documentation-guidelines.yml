@@ -1,0 +1,6 @@
+id: documentation-guidelines
+rules:
+  - documentation-guidelines/readme-structure
+  - documentation-guidelines/user-guide
+  - documentation-guidelines/contributing-guide
+  - documentation-guidelines/changelog

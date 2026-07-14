@@ -1,0 +1,8 @@
+title: Modèle typé → run/draw/document + siège d'autorité
+slug: 0033-modele-run-draw-document
+type: flowchart
+created: 2026-07-13
+generated_by: ezk-diagram
+source: description.md
+links:
+  - features/0033-modele-type-interaction-autorite.md

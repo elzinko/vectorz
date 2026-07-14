@@ -1,0 +1,6 @@
+id: testing
+rules:
+  - testing/mobile-first-testing
+  - testing/mobile-interactions
+  - testing/visual-validation
+  - testing/playwright-workflow

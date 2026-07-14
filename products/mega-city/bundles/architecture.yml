@@ -1,0 +1,11 @@
+id: architecture
+rules:
+  - architecture/mvp-first
+  - architecture/repo-structure
+  - architecture/hexagonal-architecture
+  - architecture/data-persistence-mvp
+  - architecture/config-secrets-12factor
+  - architecture/containerization-local
+  - architecture/operational-scripts
+  - architecture/provisioning-deployment
+  - architecture/documentation-on-demand

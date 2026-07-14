@@ -1,0 +1,9 @@
+node_modules/
+*.tsbuildinfo
+.DS_Store
+
+# Scratch éphémère du sprint en cours (la liste des features vit dans features/ sur main)
+SPRINT.md
+
+# Note de handoff ezk-archive (éphémère personnel, append-only, jamais committé)
+.claude/handoff.md

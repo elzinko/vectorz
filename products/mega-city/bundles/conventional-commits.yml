@@ -1,0 +1,4 @@
+id: conventional-commits
+rules:
+  - conventional-commits/format
+  - conventional-commits/meaningful-scope

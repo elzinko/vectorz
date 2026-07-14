@@ -1,0 +1,8 @@
+id: ci-cd
+rules:
+  - ci-cd/investigate-failures
+  - ci-cd/local-reproduction
+  - ci-cd/fix-workflow
+  - ci-cd/ci-coverage
+  - ci-cd/smoke-tests
+  - ci-cd/artifact-strategy

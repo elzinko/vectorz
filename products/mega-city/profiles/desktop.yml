@@ -1,0 +1,17 @@
+# Profil desktop — une session Claude Desktop PURE : penser / cadrer / organiser / rédiger.
+# Pas d'environnement d'exécution (ni act+Docker, ni EAS, ni device) → on EXCLUT les skills à
+# environnement (ezk-ci, ezk-apk, ezk-device) et l'exécution de sprint. On garde le product
+# builder (décider quoi & quand), le backlog, le décideur ezk-pm, et les skills de
+# rédaction/organisation (fiche 0041). Le cadrage/brainstorm n'est pas bindable : il arrive par
+# composition externe de product-management:product-brainstorming (ADR-0012).
+id: desktop
+extends: [base]            # → socle (bundle base + ezk-archive)
+bundles: [base]            # → law socle ; Desktop n'exécute pas de code, la LOI dev complète est ailleurs
+agents:
+  - ezk-pm                 # le décideur product-owner (les rôles dev-exécutants n'ont pas leur place ici)
+skills:
+  - ezk-product-builder    # décider quoi & quand (compose le backlog ; l'exécution reste hors Desktop)
+  - ezk-backlog            # organiser les features/bugs
+  - ezk-diagram            # visualiser (prose → diagramme versionné)
+  - ezk-ezk                # capitaliser une session en skill (rédaction/méta)
+interactions: []

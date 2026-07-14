@@ -1,0 +1,5 @@
+# Bundle de base — règles que tout projet hérite.
+id: base
+rules:
+  - clean-code/no-dead-code
+  - conventional-commits/format

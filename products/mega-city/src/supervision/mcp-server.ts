@@ -1,0 +1,158 @@
+/**
+ * `mcp-server.ts` — couche mince MCP stdio du kit émetteur de supervisabilité v0.1
+ * (fiche 0050, §7). Exactement 5 outils, pas un de plus. Toute la logique (machine
+ * à états, enveloppe, seq, upgrade_ok, confinement) vit dans `runtime.ts` ; ce
+ * fichier ne fait que déclarer les schémas d'entrée et traduire runtime ↔ MCP.
+ *
+ * `project_root` est lu UNE FOIS à l'init depuis `SUPERVISION_PROJECT_ROOT`
+ * (fallback `process.cwd()`) — jamais un paramètre d'outil (D12 : la méthode ne
+ * doit pas pouvoir se désigner un autre projet à la volée).
+ *
+ * Test : la QA valide ce fichier via un vrai process stdio ; les 19 scénarios du
+ * Gherkin sont couverts en amont, directement sur `SupervisionRuntime`.
+ */
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { z } from 'zod';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { SupervisionRuntime } from './runtime.js';
+
+/** Traduit une erreur `SupervisionRuntime` (règle métier violée) en résultat d'outil MCP en erreur. */
+function toolError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return { content: [{ type: 'text' as const, text: message }], isError: true };
+}
+
+function toolOk(payload: unknown) {
+  return { content: [{ type: 'text' as const, text: JSON.stringify(payload) }] };
+}
+
+/** Construit le serveur MCP émetteur, câblé sur un `SupervisionRuntime` pour `projectRoot`. */
+export function createSupervisionMcpServer(projectRoot: string): McpServer {
+  const runtime = new SupervisionRuntime(projectRoot);
+
+  const server = new McpServer({
+    name: 'cop1-supervision-emitter',
+    version: '0.1.0',
+  });
+
+  server.registerTool(
+    'run_start',
+    {
+      description: "Ouvre un nouveau run de supervision (premier événement obligatoire du journal).",
+      inputSchema: {
+        method_name: z.string(),
+        method_version: z.string(),
+        seat: z.string().optional(),
+      },
+    },
+    (args) => {
+      try {
+        return toolOk(runtime.runStart(args));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  server.registerTool(
+    'gate_reached',
+    {
+      description: 'Déclare un jalon atteint. La méthode STOP et attend gate_resumed.',
+      inputSchema: {
+        gate_id: z.string(),
+        outcome: z.enum(['ok', 'attention', 'failed']),
+        report_markdown: z.string().optional(),
+        upgrade_ok_veto: z.boolean().optional(),
+      },
+    },
+    (args) => {
+      try {
+        return toolOk(runtime.gateReached(args));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  server.registerTool(
+    'gate_resumed',
+    {
+      description: 'Accuse la reprise après un gate_reached — référence son gate_event_id.',
+      inputSchema: {
+        gate_event_id: z.string(),
+      },
+    },
+    (args) => {
+      try {
+        return toolOk(runtime.gateResumed(args));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  server.registerTool(
+    'escalate',
+    {
+      description: 'Signale un blocage/besoin d’autorité (jamais un frein, D10).',
+      inputSchema: {
+        type: z.enum(['blocked', 'authority']),
+        detail: z.string(),
+      },
+    },
+    (args) => {
+      try {
+        return toolOk(runtime.escalate(args));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  server.registerTool(
+    'run_finished',
+    {
+      description: 'Clôture le run courant.',
+      inputSchema: {
+        status: z.enum(['success', 'failure', 'abandoned']),
+      },
+    },
+    (args) => {
+      try {
+        return toolOk(runtime.runFinished(args));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  return server;
+}
+
+/**
+ * Résout `project_root` depuis l'environnement (jamais un paramètre d'outil).
+ * Fail-fast (N1, D5) : si `SUPERVISION_PROJECT_ROOT` est fourni, il DOIT être un
+ * chemin absolu vers un dossier existant, sinon erreur explicite immédiate plutôt
+ * qu'un échec confus plus tard (ENOENT au premier `run_start`, etc.).
+ */
+export function resolveProjectRootFromEnv(): string {
+  const value = process.env.SUPERVISION_PROJECT_ROOT;
+  if (value === undefined) return process.cwd();
+
+  if (!path.isAbsolute(value)) {
+    throw new Error(
+      `SUPERVISION_PROJECT_ROOT invalide : "${value}" n'est pas un chemin absolu.`,
+    );
+  }
+  let stat: fs.Stats;
+  try {
+    stat = fs.statSync(value);
+  } catch {
+    throw new Error(`SUPERVISION_PROJECT_ROOT invalide : "${value}" n'existe pas.`);
+  }
+  if (!stat.isDirectory()) {
+    throw new Error(`SUPERVISION_PROJECT_ROOT invalide : "${value}" n'est pas un dossier.`);
+  }
+  return value;
+}

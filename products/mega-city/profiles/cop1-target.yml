@@ -1,0 +1,36 @@
+# Profil cop1-target — un projet que cop1 PILOTE (host claude-code), pas le poste de dev.
+# cop1 (orchestrateur de dev autonome) a DÉJÀ sa propre boucle (Supervisor). On lui bind
+# donc l'ÉQUIPE FEUILLE + la LOI + les skills feuilles — mais AUCUN orchestrateur de dev-loop
+# (ezk-product-builder, ezk-sprint, ezk-pr-pilot, ezk-ezk) : deux chefs dans la même session
+# se concurrenceraient (fiche 0041, ADR-0011 §2). Les agents atteignent cop1 par pass-through
+# `settingSources:['project']` du cap claude-code.
+id: cop1-target
+extends: [base]            # → socle (bundle base + ezk-archive)
+# LOI post-0006 : la loi de dev qu'un projet piloté doit suivre.
+bundles:
+  - base
+  - clean-code
+  - conventional-commits
+  - testing
+  - ci-cd
+  - typescript-2026
+  - architecture
+  - development
+  - token-economy
+# Équipe FEUILLE + le décideur ezk-pm (jour ET nuit). Pas de rôle scrum-master : c'est cop1.
+agents:
+  - ezk-architect
+  - ezk-tdd                # dev (→ ezk-dev, fiche 0045)
+  - ezk-qa
+  - ezk-reviewer
+  - ezk-pm
+# Skills FEUILLES (capacités ponctuelles) — surtout PAS les orchestrateurs de boucle.
+skills:
+  - ezk-backlog
+  - ezk-commits
+  - ezk-ci
+  - ezk-design-system
+  - ezk-npm-scripts
+  - ezk-preview
+  - ezk-diagram
+interactions: []

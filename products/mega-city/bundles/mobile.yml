@@ -1,0 +1,4 @@
+# Bundle mobile — hérite de base, ajoute les règles spécifiques mobile.
+id: mobile
+extends: [base]
+rules: []   # ex. à venir : expo/release-build-local-first, etc.

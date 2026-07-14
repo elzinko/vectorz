@@ -1,0 +1,8 @@
+id: typescript-2026
+rules:
+  - typescript-2026/strict-config
+  - typescript-2026/prefer-unknown
+  - typescript-2026/explicit-return-types
+  - typescript-2026/const-assertions
+  - typescript-2026/discriminated-unions
+  - typescript-2026/no-enums
