@@ -2,8 +2,8 @@
 id: 0050
 title: Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat
 type: feature
-priority: P2
-status: todo
+priority: P1
+status: in-progress
 pr:
 created: 2026-07-14
 ---
@@ -53,6 +53,16 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
 
 - Origine : D12 + compte rendu du panel design (capture cop1 §7) ; fiches sœurs côté
   cop1 : 0027 (validateur), 0028 (policy de siège), 0029 (différés v0.2).
-- Le MCP émetteur (chemin nominal Claude Desktop) est un différé v0.2 (fiche cop1 0029) —
-  ce kit couvre pilote SDK + Claude Code (classe A) et desktop best-effort (classe B).
+- ~~Le MCP émetteur (chemin nominal Claude Desktop) est un différé v0.2 (fiche cop1 0029)~~
+  **Dé-parqué le 2026-07-14** (revue de groupe cop1, DP3 — capture cop1
+  `docs/captures/2026-07-14-revue-groupe-deux-sieges.md`) : le **MCP émetteur entre au
+  périmètre de ce kit** comme chemin nominal Desktop (classe B). Contraintes gravées :
+  **5 outils étroits** (`run_start`, `gate_reached(gate_id, outcome, report_markdown?)`,
+  `gate_resumed`, `escalate(type, detail)`, `run_finished(status)`) — jamais d'`emit_event`
+  générique ; enveloppe calculée **serveur**, jamais LLM ; `project_root` fixé à l'**init du
+  serveur** (env/config), jamais paramètre d'outil ; seq relu au démarrage ; refus d'un 2ᵉ
+  `run_start` sur run ouvert ; relance post-`run.finished` = **nouveau run_id** ; le résultat
+  d'outil de `gate_reached` dit « STOP et attends » ; `report_ref` confiné realpath sous la
+  racine projet. Sprint en cours = lib append + MCP + consignes (étapes 1-2 de cop1 0030) ;
+  hooks classe A = suite de fiche, hors 1ʳᵉ PR.
 - Lien : fiche 0016 (cap cop1), fiche 0033 (siège échangeable).
