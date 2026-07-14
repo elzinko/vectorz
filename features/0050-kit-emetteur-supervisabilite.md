@@ -4,7 +4,7 @@ title: Kit émetteur de supervisabilité — mega-city devient la première mét
 type: feature
 priority: P1
 status: in-progress
-pr:
+pr: "#8"
 created: 2026-07-14
 ---
 
