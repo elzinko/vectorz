@@ -7,7 +7,7 @@
   "author": "elzinko",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -b packages/shared-kernel packages/observability packages/quality-intelligence packages/sprint-core packages/llm-intelligence packages/ceremony-engine packages/journal-validator packages/app",
+    "build": "tsc -b products/cop1/packages/shared-kernel products/cop1/packages/observability products/cop1/packages/quality-intelligence products/cop1/packages/sprint-core products/cop1/packages/llm-intelligence products/cop1/packages/ceremony-engine products/cop1/packages/journal-validator products/cop1/packages/app",
     "typecheck": "pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",

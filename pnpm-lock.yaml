@@ -24,7 +24,7 @@ importers:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.19.10)(jsdom@28.1.0)
 
-  packages/app:
+  products/cop1/packages/app:
     dependencies:
       '@anthropic-ai/claude-agent-sdk':
         specifier: ^0.3.185
@@ -57,7 +57,7 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
 
-  packages/ceremony-engine:
+  products/cop1/packages/ceremony-engine:
     dependencies:
       '@cop1/llm-intelligence':
         specifier: workspace:*
@@ -69,9 +69,9 @@ importers:
         specifier: workspace:*
         version: link:../shared-kernel
 
-  packages/journal-validator: {}
+  products/cop1/packages/journal-validator: {}
 
-  packages/llm-intelligence:
+  products/cop1/packages/llm-intelligence:
     dependencies:
       '@cop1/observability':
         specifier: workspace:*
@@ -83,13 +83,13 @@ importers:
         specifier: workspace:*
         version: link:../sprint-core
 
-  packages/observability:
+  products/cop1/packages/observability:
     dependencies:
       '@cop1/shared-kernel':
         specifier: workspace:*
         version: link:../shared-kernel
 
-  packages/quality-intelligence:
+  products/cop1/packages/quality-intelligence:
     dependencies:
       '@cop1/observability':
         specifier: workspace:*
@@ -98,9 +98,9 @@ importers:
         specifier: workspace:*
         version: link:../shared-kernel
 
-  packages/shared-kernel: {}
+  products/cop1/packages/shared-kernel: {}
 
-  packages/sprint-core:
+  products/cop1/packages/sprint-core:
     dependencies:
       '@anthropic-ai/claude-agent-sdk':
         specifier: ^0.3.185
@@ -121,7 +121,7 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
 
-  packages/web:
+  products/cop1/packages/web:
     dependencies:
       react:
         specifier: ^18.3.1

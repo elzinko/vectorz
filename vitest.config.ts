@@ -3,14 +3,18 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
-    include: ['packages/*/src/**/*.test.ts'],
-    exclude: ['packages/web/**', 'node_modules', 'dist'],
+    include: ['products/cop1/packages/*/src/**/*.test.ts'],
+    exclude: ['products/cop1/packages/web/**', 'node_modules', 'dist'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: './coverage',
-      include: ['packages/*/src/**/*.ts'],
-      exclude: ['packages/*/src/**/*.test.ts', 'packages/*/src/index.ts', 'packages/web/**'],
+      include: ['products/cop1/packages/*/src/**/*.ts'],
+      exclude: [
+        'products/cop1/packages/*/src/**/*.test.ts',
+        'products/cop1/packages/*/src/index.ts',
+        'products/cop1/packages/web/**',
+      ],
     },
   },
 });

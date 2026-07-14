@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src"
@@ -8,6 +8,6 @@
   "references": [
     { "path": "../shared-kernel" },
     { "path": "../observability" },
-    { "path": "../sprint-core" }
+    { "path": "../llm-intelligence" }
   ]
 }
