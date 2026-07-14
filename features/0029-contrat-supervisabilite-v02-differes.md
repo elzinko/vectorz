@@ -1,6 +1,6 @@
 ---
 id: 0029
-title: Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace, MCP émetteur)
+title: Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace)
 type: idea
 priority: P3
 status: todo
@@ -22,12 +22,13 @@ par le panel design, à ne rouvrir qu'**après au moins un run réel sous v0.1**
   superviseur : durée/budget max entre gates).
 - **Hash-chain natif du journal** (v0.1 : miroir d'audit ; la chain est une option du
   validateur, fiche 0027).
-- **MCP émetteur** : chemin nominal Desktop (D12) — schéma validé à l'émission, au prix
-  d'un service qui tourne.
 - **`report_schema` optionnel par gate** (revendication « rapport structuré comme unité
   contractuelle » du prior-art, dégonflée en v0.1 au profit d'`outcome`).
 - Compatibilité des paires de versions à l'adoption (hors quiescence — cf. article 0026
   « fenêtres de mise à jour »).
+- **Typage de l'autorité dans le schéma** (`authority` sur `gate.reached`, `resumed_by`,
+  `seat.changed`) + journalisation de la délégation ask→auto du point de décision méthode —
+  avis minoritaire de la revue 2026-07-14 (§6.1), à re-poser après 3 runs réels.
 
 ## Proposition
 
@@ -39,3 +40,6 @@ Cette fiche sert de parking officiel pour que rien ne se perde.
 - Origine : « Reste pour v0.2 » du compte rendu du panel, capture §7.
 - Ne pas implémenter en anticipation (YAGNI) — le v0.1 d'abord, éprouvé par mega-city
   (fiche 0050) + validateur (fiche 0027).
+- **2026-07-14 (revue de groupe, DP3) : le MCP émetteur est dé-parqué** — D12 en fait le
+  chemin nominal Desktop, ce n'est plus un différé v0.2. Porté par la fiche 0030 (MVP démo,
+  étape 1) + mega-city 0050 (kit émetteur).

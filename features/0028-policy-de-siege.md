@@ -2,7 +2,7 @@
 id: 0028
 title: Policy de siège — l'auto-continue configurable sur signaux typés
 type: feature
-priority: P2
+priority: P3
 status: todo
 pr:
 created: 2026-07-14
@@ -43,3 +43,9 @@ du panel (« ce soir je veux configurer auto-continue sauf échec ») n'a aucun 
 - Origine : lentille opérateur du panel design (capture §7).
 - Dépend de l'implémentation du journal côté cop1 (event-stream seam) et du gel v0.1
   (PR #60). Voisin : ADR-017 (budget killswitch) fournit déjà le signal budget.
+- **2026-07-14 (revue de groupe, DP7) — différée P3, à ouvrir après 3 runs réels** (il faut
+  des `outcome` vécus pour écrire une policy sensée). Gravé dès maintenant dans le scope :
+  **allowlist de `gate_id` auto-continuables, default deny** (un gate inconnu n'est JAMAIS
+  auto-continué — parade à l'auto-continue de gates-direction, attaque avocat-2 A2) +
+  **plafond de `continue`/heure** (anti spam-de-gates, red-team). La question du typage
+  `authority` dans le schéma est à l'agenda v0.2 (fiche 0029), pas ici.

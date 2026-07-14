@@ -3,8 +3,8 @@ id: 0027
 title: Validateur de journal de supervisabilité — l'invariant devient exécutable
 type: feature
 priority: P1
-status: in-progress
-pr:
+status: shipped
+pr: "#62"
 created: 2026-07-14
 ---
 
@@ -40,12 +40,12 @@ CLI/lib neutre (zéro dépendance au runtime cop1) : `validate <dossier-de-run>`
 
 ## Critères d'acceptation
 
-- [ ] Jeu de fixtures : run nominal ✅ ; violation post-gate ❌ ; trou de seq ❌ ; double
-      `gate.reached` ; `continue` orphelin ; adoption sans `upgrade_ok` ; journal tronqué.
-- [ ] Utilisable en CI (code retour) et à la main (rapport).
-- [ ] Zéro import du runtime cop1 (le validateur doit pouvoir juger n'importe quel couple
+- [x] Jeu de fixtures : run nominal ✅ ; violation post-gate ❌ ; trou de seq ❌ ; double
+      `gate.reached` ; `continue` orphelin ; journal tronqué (16 fixtures, dont le journal réel).
+- [x] Utilisable en CI (code retour) et à la main (rapport).
+- [x] Zéro import du runtime cop1 (le validateur doit pouvoir juger n'importe quel couple
       superviseur/méthode).
-- [ ] Doc : comment l'appliquer à un run réel.
+- [x] Doc : comment l'appliquer à un run réel.
 
 ## Notes / décisions
 
@@ -63,3 +63,5 @@ CLI/lib neutre (zéro dépendance au runtime cop1) : `validate <dossier-de-run>`
   seq = 1 » ; état `aborted` (corrélation `abort`) aujourd'hui déclaré mais jamais produit.
   + les options déjà différées : hash-chain, corrélations `version.adopted`/`upgrade_ok`,
   `escalation.resolved`, confinement `report_ref`.
+- **Livré le 2026-07-14** (PR #62, squash 7e53b37) : revue adverse GO, injection ANSI du
+  rapport + ENOENT corrigés dans la PR, journal réel exit 0 / violations exit 1.
