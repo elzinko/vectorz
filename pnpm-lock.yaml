@@ -32,6 +32,9 @@ importers:
       '@cop1/ceremony-engine':
         specifier: workspace:*
         version: link:../ceremony-engine
+      '@cop1/journal-validator':
+        specifier: workspace:*
+        version: link:../journal-validator
       '@cop1/llm-intelligence':
         specifier: workspace:*
         version: link:../llm-intelligence

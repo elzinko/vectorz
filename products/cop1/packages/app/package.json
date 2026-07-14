@@ -17,6 +17,7 @@
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.3.185",
     "@cop1/ceremony-engine": "workspace:*",
+    "@cop1/journal-validator": "workspace:*",
     "@cop1/llm-intelligence": "workspace:*",
     "@cop1/observability": "workspace:*",
     "@cop1/quality-intelligence": "workspace:*",

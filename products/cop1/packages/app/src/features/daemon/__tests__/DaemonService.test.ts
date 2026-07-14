@@ -1,8 +1,8 @@
-import { mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DaemonService } from '../application/DaemonService.js';
 import { PidFileManager } from '../infrastructure/PidFileManager.js';
 
@@ -65,6 +65,62 @@ describe('DaemonService', () => {
 
   it('should not throw when stopping without starting', async () => {
     await expect(daemon.stop()).resolves.toBeUndefined();
+  });
+
+  it('supervision reste dormante quand cop1.config.yaml est absent (watch_roots=[])', async () => {
+    await daemon.start();
+
+    const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/runs`);
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual([]);
+  });
+
+  it('découvre un run existant via GET /api/supervision/runs quand supervision.watch_roots est configuré (fiche 0031)', async () => {
+    writeFileSync(
+      join(testDir, 'cop1.config.yaml'),
+      [
+        'budget:',
+        '  sprint_max_tokens: 1000000',
+        '  alert_thresholds: [50, 80, 95]',
+        '  auto_pause: true',
+        'supervision:',
+        `  watch_roots: ["${testDir.replace(/\\/g, '/')}"]`,
+        '  presumed_dead_after_min: 5',
+        '',
+      ].join('\n'),
+    );
+    const runsDir = join(testDir, '.supervision', 'runs', 'run-a');
+    mkdirSync(runsDir, { recursive: true });
+    writeFileSync(
+      join(runsDir, 'events.jsonl'),
+      `${JSON.stringify({
+        event_id: 'e1',
+        run_id: 'run-a',
+        seq: 1,
+        ts: new Date().toISOString(),
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'synthetic', version: '1.0.0' }, seat: 'pilot' },
+      })}\n`,
+    );
+
+    // La config doit exister AVANT la construction du daemon : le chargement
+    // est one-shot dans le constructeur (pas de hot-reload des watch-roots, YAGNI).
+    const wired = new DaemonService({ port: 14245, projectPath: testDir });
+    try {
+      await wired.start();
+
+      await vi.waitFor(
+        async () => {
+          const res = await fetch('http://127.0.0.1:14245/api/supervision/runs');
+          const data = (await res.json()) as Array<{ runId: string }>;
+          expect(data.some((snapshot) => snapshot.runId === 'run-a')).toBe(true);
+        },
+        { timeout: 2000, interval: 30 },
+      );
+    } finally {
+      await wired.stop();
+    }
   });
 
   it('bridges its own EventBus to /events SSE (load-bearing wiring, B1)', async () => {

@@ -50,6 +50,14 @@ export type SprintStatusProvider = () => {
   session: unknown;
 } | null;
 
+/**
+ * fiche 0031 (ADR-028) — hydrate `GET /api/supervision/runs` au montage du
+ * front (le SSE `/events` ne rejoue pas le passé). Miroir de
+ * `SprintStatusProvider` : garde `HttpServer` sans dépendance concrète à la
+ * feature `supervision`.
+ */
+export type SupervisionProvider = () => unknown[];
+
 export interface RuleProposalRecord {
   ruleId: string;
   type: string;
@@ -81,6 +89,7 @@ export class HttpServer {
   private readonly startedAt: number = Date.now();
   private sseClients: Set<ServerResponse> = new Set();
   private sprintStatusProvider: SprintStatusProvider | null = null;
+  private supervisionProvider: SupervisionProvider | null = null;
   private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private orchestratorAdapter: OrchestratorAdapterPort | null = null;
@@ -89,6 +98,10 @@ export class HttpServer {
 
   setSprintStatusProvider(provider: SprintStatusProvider): void {
     this.sprintStatusProvider = provider;
+  }
+
+  setSupervisionProvider(provider: SupervisionProvider): void {
+    this.supervisionProvider = provider;
   }
 
   setRuleProposalProvider(provider: RuleProposalProvider): void {
@@ -148,6 +161,13 @@ export class HttpServer {
 
     if (req.method === 'GET' && req.url === '/api/sprint/status') {
       const data = this.sprintStatusProvider?.() ?? null;
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+      return;
+    }
+
+    if (req.method === 'GET' && req.url === '/api/supervision/runs') {
+      const data = this.supervisionProvider?.() ?? [];
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(data));
       return;
