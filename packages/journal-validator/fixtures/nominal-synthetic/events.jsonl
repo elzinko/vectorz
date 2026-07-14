@@ -1,0 +1,6 @@
+{"event_id":"e1","run_id":"nominal-synthetic","seq":1,"ts":"2026-07-14T10:00:00.000Z","contract":"cop1/supervisability@0.1","type":"run.started","payload":{"method":{"name":"synthetic-method","version":"1.0.0"},"seat":"pilot"}}
+{"event_id":"e2","run_id":"nominal-synthetic","seq":2,"ts":"2026-07-14T10:00:01.000Z","contract":"cop1/supervisability@0.1","type":"gate.reached","payload":{"gate_id":"gate-1","outcome":"ok","upgrade_ok":false,"report_ref":"fixtures/nominal-synthetic/report-gate-1.md"}}
+{"event_id":"e3","run_id":"nominal-synthetic","seq":3,"ts":"2026-07-14T10:00:02.000Z","contract":"cop1/supervisability@0.1","type":"gate.resumed","payload":{"gate_event_id":"e2","command_ref":"c1"}}
+{"event_id":"e4","run_id":"nominal-synthetic","seq":4,"ts":"2026-07-14T10:00:03.000Z","contract":"cop1/supervisability@0.1","type":"gate.reached","payload":{"gate_id":"gate-2","outcome":"attention","upgrade_ok":false,"report_ref":"fixtures/nominal-synthetic/report-gate-2.md"}}
+{"event_id":"e5","run_id":"nominal-synthetic","seq":5,"ts":"2026-07-14T10:00:04.000Z","contract":"cop1/supervisability@0.1","type":"gate.resumed","payload":{"gate_event_id":"e4","command_ref":"c2"}}
+{"event_id":"e6","run_id":"nominal-synthetic","seq":6,"ts":"2026-07-14T10:00:05.000Z","contract":"cop1/supervisability@0.1","type":"run.finished","payload":{"status":"success"}}

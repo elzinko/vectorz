@@ -1,0 +1,2 @@
+{"event_id":"e1","run_id":"run-started-missing","seq":1,"ts":"2026-07-14T10:00:00.000Z","contract":"cop1/supervisability@0.1","type":"gate.reached","payload":{"gate_id":"gate-1","outcome":"ok","upgrade_ok":false,"report_ref":"fixtures/run-started-missing/report-gate-1.md"}}
+{"event_id":"e2","run_id":"run-started-missing","seq":2,"ts":"2026-07-14T10:00:01.000Z","contract":"cop1/supervisability@0.1","type":"gate.resumed","payload":{"gate_event_id":"e1"}}

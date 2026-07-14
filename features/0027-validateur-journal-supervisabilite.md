@@ -2,8 +2,8 @@
 id: 0027
 title: Validateur de journal de supervisabilité — l'invariant devient exécutable
 type: feature
-priority: P2
-status: todo
+priority: P1
+status: in-progress
 pr:
 created: 2026-07-14
 ---
@@ -51,3 +51,15 @@ CLI/lib neutre (zéro dépendance au runtime cop1) : `validate <dossier-de-run>`
 
 - Origine : compte rendu du panel design, capture §7 (« l'invariant devient exécutable »).
 - Dépend du gel v0.1 (PR #60 mergée). Compose avec la fiche mega-city 0050 (kit émetteur).
+- **2026-07-14 (revue de groupe, DP5) — scope réduit v1, re-priorisée P1** : enveloppe +
+  invariant + seq, **enum fermée de commandes**, règle « événement après `run.finished` =
+  violation » ; **hash-chain différée** (reste l'option d'intégrité). Étape 3 du MVP démo
+  (fiche 0030) : parallèle, jamais bloquant — mais son **vert fait partie du script de démo**.
+- **Mode moniteur géré** : `commands.jsonl` ABSENT = légitime (v0.1, gate.resumed
+  self-reported) — le valider comme tel, pas comme une erreur.
+- Le kit émetteur (mega-city PR #8, mergée 2026-07-14) fournit le 1ᵉʳ journal réel → fixture.
+- **Différés v0.2 issus de la revue de code** (NITs N2-N4, non bloquants) : validation de
+  type des champs d'enveloppe (`seq` entier ≥ 1, `run_id`/`type` string) ; contrôle « premier
+  seq = 1 » ; état `aborted` (corrélation `abort`) aujourd'hui déclaré mais jamais produit.
+  + les options déjà différées : hash-chain, corrélations `version.adopted`/`upgrade_ok`,
+  `escalation.resolved`, confinement `report_ref`.

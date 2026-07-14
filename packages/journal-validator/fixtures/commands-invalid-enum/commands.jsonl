@@ -1,0 +1,1 @@
+{"event_id":"c1","run_id":"commands-invalid-enum","seq":1,"ts":"2026-07-14T10:00:01.500Z","contract":"cop1/supervisability@0.1","type":"resume","payload":{"gate_event_id":"e2"}}

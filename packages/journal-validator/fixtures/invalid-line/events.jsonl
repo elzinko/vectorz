@@ -1,0 +1,3 @@
+{"event_id":"e1","run_id":"invalid-line","seq":1,"ts":"2026-07-14T10:00:00.000Z","contract":"cop1/supervisability@0.1","type":"run.started","payload":{"method":{"name":"synthetic-method","version":"1.0.0"},"seat":"pilot"}}
+ceci nest pas du JSON valide {{{
+{"event_id":"e3","run_id":"invalid-line","seq":3,"ts":"2026-07-14T10:00:02.000Z","contract":"cop1/supervisability@0.1","type":"run.finished","payload":{"status":"success"}}

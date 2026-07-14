@@ -69,6 +69,8 @@ importers:
         specifier: workspace:*
         version: link:../shared-kernel
 
+  packages/journal-validator: {}
+
   packages/llm-intelligence:
     dependencies:
       '@cop1/observability':

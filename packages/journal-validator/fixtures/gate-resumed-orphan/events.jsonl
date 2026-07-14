@@ -1,0 +1,2 @@
+{"event_id":"e1","run_id":"gate-resumed-orphan","seq":1,"ts":"2026-07-14T10:00:00.000Z","contract":"cop1/supervisability@0.1","type":"run.started","payload":{"method":{"name":"synthetic-method","version":"1.0.0"},"seat":"pilot"}}
+{"event_id":"e2","run_id":"gate-resumed-orphan","seq":2,"ts":"2026-07-14T10:00:01.000Z","contract":"cop1/supervisability@0.1","type":"gate.resumed","payload":{"gate_event_id":"does-not-exist"}}

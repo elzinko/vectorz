@@ -1,0 +1,4 @@
+{"event_id":"e1","run_id":"commands-continue-noop","seq":1,"ts":"2026-07-14T10:00:00.000Z","contract":"cop1/supervisability@0.1","type":"run.started","payload":{"method":{"name":"synthetic-method","version":"1.0.0"},"seat":"pilot"}}
+{"event_id":"e2","run_id":"commands-continue-noop","seq":2,"ts":"2026-07-14T10:00:01.000Z","contract":"cop1/supervisability@0.1","type":"gate.reached","payload":{"gate_id":"gate-1","outcome":"ok","upgrade_ok":false,"report_ref":"fixtures/commands-continue-noop/report-gate-1.md"}}
+{"event_id":"e3","run_id":"commands-continue-noop","seq":3,"ts":"2026-07-14T10:00:02.000Z","contract":"cop1/supervisability@0.1","type":"gate.resumed","payload":{"gate_event_id":"e2","command_ref":"c1"}}
+{"event_id":"e4","run_id":"commands-continue-noop","seq":4,"ts":"2026-07-14T10:00:03.000Z","contract":"cop1/supervisability@0.1","type":"run.finished","payload":{"status":"success"}}
