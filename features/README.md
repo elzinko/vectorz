@@ -15,7 +15,7 @@ Dernière mise à jour : 2026-07-14
 | 0021 | Câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale | feature | P1 | ✅ shipped | #50 |
 | 0027 | Validateur de journal de supervisabilité — l'invariant devient exécutable | feature | P1 | ✅ shipped | #62 |
 | 0030 | MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur) | feature | P1 | 🟠 in-progress | |
-| 0031 | Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur) | feature | P1 | 🔴 todo | |
+| 0031 | Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur) | feature | P1 | 🟠 in-progress | |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget (épic → ADR-020) | feature | P2 | ✅ shipped | #32 |
