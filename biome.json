@@ -33,11 +33,25 @@
     }
   },
   "files": {
-    "ignore": ["products/mega-city/**"]
+    "ignore": [
+      "node_modules",
+      "dist",
+      "coverage",
+      "*.tsbuildinfo",
+      "_bmad",
+      "_bmad-output",
+      "pnpm-lock.yaml",
+      "products/cop1/packages/web",
+      "products/mega-city"
+    ]
   },
   "overrides": [
     {
-      "include": ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx"],
+      "include": [
+        "**/__tests__/**",
+        "**/*.test.ts",
+        "**/*.test.tsx"
+      ],
       "linter": {
         "rules": {
           "style": {
