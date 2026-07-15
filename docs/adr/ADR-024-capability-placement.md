@@ -1,6 +1,9 @@
 # ADR-024 — Placement des capabilities (Docker & co) : skill portable, pas code du superviseur
 
-Statut : **Proposé** (2026-07-13) — issu d'une session `/architecture`. **Corollaire d'ADR-022.**
+Statut : **Accepté** (2026-07-15, fiche 0035 — était Proposé du 2026-07-13 ; la
+conséquence « réparer ou supprimer E6-S2 » est **exécutée** : `ContainerRuntimePort` +
+`DockerDesktopAdapter` supprimés au commit d200f0e). **Corollaire d'ADR-022** — la
+dépendance survit à la révision DP8 (la brique 1 révisée reste métier-aveugle).
 Voir aussi : ADR-022 (ontologie control plane), ADR-018 (worktree-isolation), fiche E6-S2 (ContainerRuntimePort).
 
 ## Contexte

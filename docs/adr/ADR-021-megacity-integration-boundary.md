@@ -1,6 +1,10 @@
 # ADR-021 — Frontière d'intégration cop1 ↔ mega-city
 
-Statut : **Proposé** (2026-06-26) — à valider avant toute implémentation.
+Statut : **Accepté** (2026-07-15, fiche 0035 — était Proposé du 2026-06-26).
+Justification : le contrat de couture défini ici est référencé « inchangé » par les
+en-têtes d'ADR-023 et ADR-025, et étendu sans révision par ADR-027 — la frontière fait
+consensus dans les décisions ultérieures, elle est actée. (Le merge du document, commit
+3cb9db2/#48, ne valait pas acceptation.)
 
 ## Contexte
 

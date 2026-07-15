@@ -20,12 +20,12 @@ Bascule : ADR-029 (E1→E4, tags `epoch-1-bmad-final` / `epoch-2-post-bmad`).
 | 018 | worktree-isolation | Accepté | 🟢 vivant | — |
 | 019 | worktree-location | Accepté | 🟢 vivant | `.cop1/` = état runtime |
 | 020 | dod-completion-gate | Accepté | 🟢 vivant — **central** (Rules port) | politique `global.yaml` absent : à trancher avec L4 |
-| 021 | megacity-boundary | Proposé | 🟡 à statuer Accepté | fiche 0035 (débloque mega-city 0016) |
+| 021 | megacity-boundary | **Accepté** | 🟢 vivant | ✅ statué (0035, 2026-07-15) — débloque mega-city 0016 |
 | 022 | control-plane-ontology | 🚧 WIP | 🟡 **cœur du pivot, à réviser** — brique 1 « octroie des clairances », loop pull→dispatch caduc | révision de fond, fenêtre DP8 post-démo (L4) ; deviendra le document fondateur d'époque 2 |
 | 023 | packaging-lifecycle | Proposé (§1 révisé par 025) | 🟢 vivant | — |
-| 024 | capability-placement | Proposé | 🔵 exécuté (E6-S2 `d200f0e`) | re-tampon Accepté (0035) |
-| 025 | monorepo-codev | Proposé (§1 révisé par 027) | 🟡 back-ref manquant | bandeau « révisé par ADR-027 » (0035) |
-| 026 | agent-executor-seam | Proposé | 🟢 vivant, différable post-démo | bannière « révisé par ADR-029 » (bmad-orchestration gardé *jusqu'à E4*) |
+| 024 | capability-placement | **Accepté** | 🟢 vivant (E6-S2 exécuté `d200f0e`) | ✅ re-tamponné (0035, 2026-07-15) |
+| 025 | monorepo-codev | Proposé (§1 révisé par 027) | 🟢 vivant | ✅ back-ref « révisé par ADR-027 » posé (0035, 2026-07-15) |
+| 026 | agent-executor-seam | Proposé | 🟢 vivant, différable post-démo | ✅ bannière « révisé par ADR-029 » posée (0035, 2026-07-15) — bmad-orchestration gardé *jusqu'à E4* |
 | 027 | vectorz-umbrella | Proposé | 🔵 exécuté partiellement (`name` ≠ vectorz) | re-tampon post-démo, renommage = arbitrage PO |
 | 028 | lecteur-journal-moniteur | Proposé | 🟢 vivant — **mode nominal** | — |
 | 029 | émancipation-bmad-archivage | **Accepté** | 🟢 **l'acte fondateur d'époque 2** | exécuter E3/E4 (fiches à créer) |
