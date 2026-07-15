@@ -273,14 +273,17 @@ flowchart LR
 - **D4 — ceremony-engine** : suppression pure ou gel derrière Method port (à acter à l'ADR en L4).
 - **D5 — ADR-027 Q1/Q3/Q4** : nom `cop1` vs nom « tour » ; turbo maintenant ou à la
   douleur ; confirmer le scan vitest maison (de facto en place) vs dependency-cruiser.
-- **D6 — useBMAD + agents legacy** : aucune ADR n'acte leur suppression — trancher après L6.
+- **D6 — useBMAD + agents legacy** : **tranché par ADR-029** (retrait en E4, après le
+  gate E3 « run pilote vert sur fiches natives »).
 - **D7 — Double-writer sprint-status.yaml** (snapshot §10.5) : jamais tranché → **porté
   par la fiche [0037](0037-arbitrage-double-writer-sprint-status.md) (P1)**.
 - **D8 — 0022 vs 0031** : une seule vue runs dans la mission-control ou deux sources
   (SSE legacy vs journal `.supervision`) — re-cadrer post-démo.
-- **D9 — `_bmad/` racine (27 fichiers commités) et `_bmad-output/` (225)** : migrer sous
-  `products/cop1/`, garder à la racine, ou purger (réinstallable via `bmad install`) —
-  aucun texte ne le statue aujourd'hui.
+- **D9 — `_bmad/` racine (27 fichiers commités) et `_bmad-output/` (225)** : **tranché
+  par [ADR-029](../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md)**
+  (émancipation, retrait en E4 après gate E3). NB : « réinstallable via `bmad install` »
+  était trompeur — les 27 fichiers sont des customisations projet qu'une réinstallation
+  ne régénère pas ; seul l'historique git les garde (tag d'ancrage `epoch-1-bmad-final`).
 - Hors-lots volontaires : 0017 (blocked), 0028 (P3, gate « 3 runs réels »), 0029 (parking
   v0.2) ; 0007 (P3) : volet format session log/ADR-009 adjacent à D7 (L3), volet D1 pin
   BMAD à re-scoper avec D9 après L5/L6.
