@@ -225,7 +225,7 @@ lot E3 gonflé mais supprime le risque d'indisponibilité et donne un rollback t
 2. [ ] Amender la fiche 0034 : D2/D6/D9 tranchées par ADR-029 ; corriger la note D9
        (« réinstallable » trompeur) — *fait dans la même passe* ; ajouter les lots E
        (E3, E4).
-3. [ ] Créer les fiches : E3 (pilote natif — stories front-matter lecture-écriture,
+3. [x] Créer les fiches : E3 (pilote natif — stories front-matter lecture-écriture,
        exécuteur générique, iamthelaw, tests fixtures natives, gate), E4
        (relogement/suppression/purge).
 4. [x] Arbitrage 0058/0059 : tranché (Décisions de relecture §1) ; reporter la note de
