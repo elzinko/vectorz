@@ -20,23 +20,33 @@ n'est portée par **aucune fiche** (vérifié : `ls features | grep double|sprin
 (ADR-009) mais deux chemins l'écrivent, et le **mode moniteur nominal** (ADR-028) change
 qui devrait le posséder. Bloque l'archivage propre du brownfield-snapshot (§10.5).
 
+**RESCOPÉE 2026-07-15 (ADR-029, relecture PO)** : la direction est tranchée —
+`sprint-status.yaml` est un artefact BMAD (ADR-009) qui **meurt en E4** ; la source de
+vérité native du statut est le **front-matter des fiches** (convention ezk-backlog). Les
+lecteurs runtime basculent en E3. Cette fiche ne porte plus l'arbitrage de destination,
+mais la **fenêtre transitoire**.
+
 ## Proposition
 
-1. Documenter les deux écrivains concurrents de `sprint-status.yaml` (chemin
-   `YamlSprintStatusAdapter.ts:18` + l'autre écrivain à identifier).
-2. Trancher — ou **re-différer explicitement avec motif** — lequel possède l'écriture en
-   mode moniteur nominal (le moniteur observe un journal ; qui écrit le statut ?).
-3. Lister l'impact runtime du choix (qui casse si on retire un writer).
+1. Documenter les deux écrivains concurrents de `sprint-status.yaml`
+   (`YamlSprintStatusAdapter` + le second à identifier, fichier:ligne) et les deux
+   lecteurs (`YamlSprintStatusAdapter.ts:18`, `OrchestratorService.ts:89`).
+2. Documenter la fenêtre transitoire jusqu'à E4 : les writers BMAD restent vivants —
+   **gel des runs pilote** sur la fenêtre (le pilote n'est pas utilisé aujourd'hui,
+   coût nul) ; mettre à jour l'invariant `sprint-status-coupling-invariant.test.ts` au
+   fil de la bascule E3.
+3. Lister ce que E3 devra reprendre : mapping statuts BMAD → front-matter, écriture en
+   retour (`persistStatus`, 5 sites), sémantique épic/ordre, checksum.
 
 ## Critères d'acceptation
 
-- [ ] La fiche identifie nommément les deux writers (fichier:ligne)
-- [ ] Un writer nominal unique est tranché **ou** le double-writer est re-différé avec motif écrit
+- [ ] Writers et lecteurs nommés (fichier:ligne)
+- [ ] Fenêtre transitoire documentée (gel des runs pilote acté jusqu'à E4)
+- [ ] La liste de reprise E3 est complète (statuts, écriture, épic, checksum)
 - [ ] Décidé **avant** l'archivage du brownfield-snapshot (dépendance de L3 dans 0034)
-- [ ] Le double-écriture n'est plus un angle mort du backlog
 
 ## Notes / décisions
 
-Purement une décision d'ownership/archi de données — aucune orientation produit
-irréversible. Si le choix nominal implique de retirer un writer, ça devient un lot code
-séparé (pas dans cette fiche, qui porte l'arbitrage).
+D7 tranchée en direction par ADR-029 + relecture PO (2026-07-15) : ni `.cop1/` ni
+`.supervision/` — le fichier disparaît avec BMAD, le front-matter des fiches est la
+source de vérité native. Cette fiche documente le transitoire ; le lot code vit dans E3.

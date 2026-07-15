@@ -1,8 +1,11 @@
 # ADR-029 — Émancipation de BMAD & politique d'archivage de l'époque 1
 
-**Statut :** Proposé (2026-07-15) — **à relire par l'humain avant toute exécution.**
+**Statut :** **Accepté** (2026-07-15 — relecture PO le jour même : « 1 - ok », avec
+clarifications intégrées : E2 réécrit — `sprint-status.yaml` meurt avec BMAD, le statut
+natif vit dans le front-matter des fiches ; question 0058 tranchée — expérience de
+compliance, émission-side).
 Rédigé puis passé au panel adverse (3 lenses + juge, 2026-07-15) : 3 bloquants et 8
-majeurs corrigés dans la présente version.
+majeurs corrigés avant relecture.
 **Déciders :** elzinko (PO — a tranché l'émancipation le 2026-07-15 : « il faut
 s'émanciper de BMAD absolument, sinon on va garder des anciennes stories »)
 **Révise :** [ADR-026](ADR-026-agent-executor-seam.md) — son non-but « le dossier
@@ -67,12 +70,16 @@ jusqu'au switch prouvé ; il n'y a pas de fenêtre d'indisponibilité.
 - **E1 — Généraliser les ports** (= lots L5/L6 de 0034, inchangés) : `AgentSessionPort`
   (ADR-026), Method/Task port promu depuis `SprintStatusPort`, StubExecutor (rappel : un
   test double, **pas** un exécuteur fonctionnel de repli).
-- **E2 — Sortir `sprint-status.yaml` de `_bmad-output/`** : ownership tranché par la
-  fiche 0037 (D7), puis **lot code dédié** (à créer — 0037 ne porte que l'arbitrage) qui
-  re-cible les **deux** lecteurs (`YamlSprintStatusAdapter`, `OrchestratorService`) et
-  l'invariant de couplage. Fenêtre E2→E4 : les workflows BMAD écriraient dans le vide —
-  **gel des runs pilote** sur cette fenêtre (ou pont d'écriture temporaire, à trancher
-  dans le lot). E2 est **démo-safe** (le daemon ne lit pas ces chemins au démarrage).
+- **E2 — Statut natif, pas de migration** (réécrit sur clarification PO, 2026-07-15) :
+  `sprint-status.yaml` est un artefact BMAD (ADR-009) — il ne **migre pas**, il **meurt
+  avec BMAD en E4**. La source de vérité native du statut est le **front-matter des
+  fiches** (`status:`, convention ezk-backlog déjà en place). Les **deux** lecteurs
+  runtime (`YamlSprintStatusAdapter`, `OrchestratorService`) basculent en E3 (volet
+  stories, port lecture-écriture) ; l'invariant de couplage suit. La fiche 0037 est
+  **rescopée** : documenter la fenêtre transitoire (les writers BMAD restent vivants
+  jusqu'à E4 — gel des runs pilote sur la fenêtre, le pilote n'est pas utilisé
+  aujourd'hui) et le mapping des deux writers. Démo-safe (le daemon ne lit pas ces
+  chemins au démarrage).
 - **E3 — Pilote natif complet** (le gros morceau, volontairement gonflé) :
   - *Stories* : le Method port lit `features/*.md` — avec les **quatre volets** que le
     front-matter seul ne couvre pas : sémantique épic/ordre (remplace
@@ -201,27 +208,30 @@ lot E3 gonflé mais supprime le risque d'indisponibilité et donne un rollback t
 - **First commit / squash / renumérotation** : écartés (option A).
 - **Émanciper mega-city de BMAD** : hors scope — BMAD y reste un sujet supervisable.
 
-## Questions ouvertes (relecture humaine)
+## Décisions de relecture (PO, 2026-07-15)
 
-1. **Arbitrage mega-city 0058/0059 (requis avant E4)** : (i) séquencer 0058 avant E4
-   (l'expérience utilise l'adaptateur tant qu'il vit), (ii) la déclarer caduque par
-   ADR-029, ou (iii) la re-scoper sur un pilotage BMAD externe à cop1.
-   *Recommandation : (iii) si 0058 vise l'émission du contrat par la méthode ; sinon (i).*
-2. Destination de `sprint-status.yaml` en E2 : `.cop1/` (état piloté) ou `.supervision/`
-   (journal) ? — à trancher dans 0037.
-3. E2 dès maintenant (amont P1, démo-safe) ou tout post-démo ?
-   *Recommandation : 0037 (arbitrage) maintenant, lot code E2 post-démo avec E3.*
+1. **0058/0059 tranchées** : 0058 était une **expérience de compliance** (« dans quelle
+   mesure la méthode BMAD peut-elle être rendue conforme au paradigme/contrat ») — pas
+   une dépendance du control-plane. Re-scope émission-side (BMAD = sujet supervisé qui
+   émet le contrat, côté mega-city) ; **ne bloque pas E4**.
+2. **`sprint-status.yaml` : ni `.cop1/` ni `.supervision/`** — le fichier meurt avec
+   BMAD ; le statut natif vit dans le front-matter des fiches (E2 réécrit ci-dessus).
+3. **Plus de lot code E2 séparé** : tout bascule en E3 ; 0037 rescopée sur la fenêtre
+   transitoire.
 
-## Action items (après relecture humaine)
+## Action items
 
-1. [ ] Statuer le présent ADR (Proposé → Accepté).
+1. [x] Statuer le présent ADR (Proposé → Accepté — relecture PO 2026-07-15).
 2. [ ] Amender la fiche 0034 : D2/D6/D9 tranchées par ADR-029 ; corriger la note D9
-       (« réinstallable » trompeur) ; ajouter les lots E (E2-code, E3, E4).
-3. [ ] Créer les fiches : lot code E2 (re-ciblage des deux lecteurs + invariant), E3
-       (pilote natif, 4 volets + exécuteur + gate), E4 (relogement/suppression/purge),
-       registre `docs/adr/README.md`.
-4. [ ] Trancher l'arbitrage 0058/0059 côté mega-city (question ouverte 1) avant E4.
-5. [ ] Bannières : « révisé par ADR-029 » sur ADR-026 (avec la passe 0035) ; extraction
+       (« réinstallable » trompeur) — *fait dans la même passe* ; ajouter les lots E
+       (E3, E4).
+3. [ ] Créer les fiches : E3 (pilote natif — stories front-matter lecture-écriture,
+       exécuteur générique, iamthelaw, tests fixtures natives, gate), E4
+       (relogement/suppression/purge).
+4. [x] Arbitrage 0058/0059 : tranché (Décisions de relecture §1) ; reporter la note de
+       re-scope sur la fiche mega-city 0058.
+5. [x] Registre de lecture `docs/adr/README.md` : créé (2026-07-15).
+6. [ ] Bannières : « révisé par ADR-029 » sur ADR-026 (avec la passe 0035) ; extraction
        des décisions vivantes de `_bmad-output/planning-artifacts/` avant E4.
-6. [ ] Tags : `epoch-1-bmad-final` juste avant E4 ; `epoch-2-post-bmad` + section README
+7. [ ] Tags : `epoch-1-bmad-final` juste avant E4 ; `epoch-2-post-bmad` + section README
        « Époques » + règle allowlist « zéro bmad » au merge d'E4.

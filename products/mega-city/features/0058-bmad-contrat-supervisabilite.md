@@ -60,3 +60,9 @@ sur mega-city) — sinon on stresse le contrat sur deux fronts.
   universelle — seulement que le contrat survit à une méthode non-maison.
 - Liens : 0050 (kit émetteur, prérequis), 0059 (série d'articles), cop1 0027 (validateur),
   0029 (différés v0.2), 0031 (lecteur mission-control).
+- **Re-scope 2026-07-15 (ADR-029 cop1, relecture PO)** : cette fiche est une **expérience
+  de compliance** (« BMAD peut-il être rendu conforme au contrat/paradigme ? »), pas une
+  dépendance du control-plane. cop1 s'émancipe de BMAD (E4 supprime `BMADSessionStep`/
+  `BMADCommandPort`/`SupervisorService` côté pilote) → l'expérience se re-scope
+  **émission-side** : BMAD = méthode supervisée qui **émet** le contrat (kit 0050),
+  observée par le moniteur — sans pilotage cop1. Ne bloque pas E4.
