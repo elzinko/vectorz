@@ -3,8 +3,8 @@ id: 0033
 title: Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique
 type: bug
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: "#16"
 created: 2026-07-15
 ---
 
@@ -33,11 +33,11 @@ Deux volets, cumulables :
 
 ## Critères d'acceptation
 
-- [ ] `ram_budget_* > RAM physique` ⇒ `cop1 start` échoue en < 2 s avec un message qui
+- [x] `ram_budget_* > RAM physique` ⇒ `cop1 start` échoue en < 2 s avec un message qui
       nomme le champ fautif, la valeur et la RAM détectée.
-- [ ] Une config vierge (défauts) démarre sur une machine de 16 GB.
-- [ ] Plus aucun chemin de démarrage ne se termine en timeout sans cause affichée.
-- [ ] L'encadré « piège » correspondant de `docs/demo-desktop-checklist.md` est allégé en
+- [x] Une config vierge (défauts) démarre sur une machine de 16 GB.
+- [x] Plus aucun chemin de démarrage ne se termine en timeout sans cause affichée.
+- [x] L'encadré « piège » correspondant de `docs/demo-desktop-checklist.md` est allégé en
       conséquence.
 
 ## Notes / décisions
