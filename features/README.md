@@ -29,6 +29,8 @@ Dernière mise à jour : 2026-07-15
 | 0024 | Résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo | |
 | 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | ✅ shipped | #57 |
 | 0026 | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 | ✅ shipped | #59 |
+| 0032 | cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte) | bug | P2 | 🔴 todo | |
+| 0033 | Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique | bug | P2 | 🔴 todo | |
 | 0005 | Résorber les warnings biome (no-op : déjà satisfait) | chore | P3 | ✅ shipped | #45 |
 | 0007 | V1.1 — format de session log + ADR-009 + D1/D2 (→ session architecte) | chore | P3 | 🔴 todo | |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |
