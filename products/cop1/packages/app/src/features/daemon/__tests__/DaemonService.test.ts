@@ -83,6 +83,13 @@ describe('DaemonService', () => {
         '  sprint_max_tokens: 1000000',
         '  alert_thresholds: [50, 80, 95]',
         '  auto_pause: true',
+        // Budget RAM volontairement > RAM physique de toute machine : le
+        // câblage supervision ne doit PAS dépendre de la validation RAM
+        // (défaut 48GB > les 16GB des runners CI — cause du rouge historique
+        // sur main, même famille d'échec silencieux que la fiche 0033).
+        'resources:',
+        '  ram_budget_night_gb: 99999',
+        '  ram_budget_day_gb: 99999',
         'supervision:',
         `  watch_roots: ["${testDir.replace(/\\/g, '/')}"]`,
         '  presumed_dead_after_min: 5',
