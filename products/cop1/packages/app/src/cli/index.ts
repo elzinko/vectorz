@@ -19,7 +19,10 @@ program.name('cop1').description('Autonomous AI agents team').version(COP1_VERSI
 program
   .command('start')
   .description('Start the cop1 daemon')
-  .option('-p, --port <port>', 'Daemon port')
+  .option(
+    '-p, --port <port>',
+    'Daemon port (priority: --port > daemon.port from cop1.config.yaml > 4242)',
+  )
   .action(startCommand);
 
 program.command('stop').description('Stop the cop1 daemon').action(stopCommand);

@@ -117,13 +117,13 @@ daemon lit `cop1.config.yaml` dans le dossier **où il est démarré**
 (`cop1 start` utilise `process.cwd()`, pas le projet supervisé) — c'est là,
 et pas ailleurs, que `supervision.watch_roots` doit être configuré.
 
-> ⚠️ **Piège rencontré au replay** : le champ `daemon.port` de
-> `cop1.config.yaml` (visible dans `cop1.config.example.yaml`) n'est **pas**
-> lu par `cop1 start` — la commande garde le port par défaut (4242) sauf si
-> `--port` est passé explicitement en ligne de commande. Ne pas s'y fier ;
-> soit rester sur le port par défaut (recommandé, il correspond au proxy Vite
-> par défaut), soit passer `cop1 start --port <N>` **et**
-> `VITE_DAEMON_PORT=<N>` côté web UI (étape 4.4).
+> ✅ **Règle (depuis la fiche 0032)** : `cop1 start` résout le port avec la
+> priorité `--port` explicite > `daemon.port` de `cop1.config.yaml` (lu depuis
+> le cwd) > défaut 4242. Une config qui déclare `daemon.port: <N>` est donc
+> honorée sans option. Si vous changez de port (option ou config), pensez à
+> `VITE_DAEMON_PORT=<N>` côté web UI (étape 4.4) — le proxy Vite reste sur
+> 4242 par défaut. Une config invalide n'empêche pas le démarrage : warn
+> visible + port par défaut.
 
 > ⚠️ **Piège rencontré au replay** : `resources.ram_budget_night_gb` (défaut
 > 48) et `resources.ram_budget_day_gb` (défaut 20) sont validés contre la RAM
@@ -185,8 +185,8 @@ et pas ailleurs, que `supervision.watch_roots` doit être configuré.
       Résultat attendu : Vite annonce `Local: http://localhost:5173/`. Le
       proxy `/api` et `/events` vers `http://localhost:4242` est déjà
       configuré dans `vite.config.ts` (variable `VITE_DAEMON_PORT`,
-      défaut `4242` — cohérent avec l'étape précédente tant que `--port`
-      n'a pas été utilisé).
+      défaut `4242` — cohérent avec l'étape précédente tant que ni
+      `--port` ni `daemon.port` en config n'ont changé le port du daemon).
 
 - [ ] Ouvrir `http://localhost:5173` dans un navigateur, cliquer l'onglet
       **Moniteur**. Résultat attendu : `classe B — best-effort` et

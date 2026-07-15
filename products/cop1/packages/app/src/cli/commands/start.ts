@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ConfigLoader } from '../../features/config/application/ConfigLoader.js';
 import { DEFAULT_PORT } from '../../features/daemon/domain/DaemonState.js';
 import { PidFileManager } from '../../features/daemon/infrastructure/PidFileManager.js';
 
@@ -21,9 +22,28 @@ async function waitForHealth(port: number, timeoutMs: number): Promise<boolean> 
   return false;
 }
 
+/**
+ * Résout le port du daemon — priorité : `--port` explicite > `daemon.port` de
+ * `cop1.config.yaml` (lu depuis le cwd, comme le reste) > défaut 4242 (fiche 0032).
+ * Une config invalide n'empêche pas le démarrage : warn visible + défaut
+ * (le fail-fast des champs resources.* relève de la fiche 0033).
+ */
+export function resolveStartPort(optionPort: string | undefined, projectPath: string): number {
+  if (optionPort) return Number.parseInt(optionPort, 10);
+  try {
+    // skipRamValidation : lire un port ne doit pas échouer sur un budget RAM (cf. 0033)
+    const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
+    return config.daemon.port;
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.warn(`cop1.config.yaml invalide (${detail}) — port par défaut ${DEFAULT_PORT} utilisé`);
+    return DEFAULT_PORT;
+  }
+}
+
 export async function startCommand(options: { port?: string }): Promise<void> {
-  const port = options.port ? Number.parseInt(options.port, 10) : DEFAULT_PORT;
   const projectPath = process.cwd();
+  const port = resolveStartPort(options.port, projectPath);
   const pidManager = new PidFileManager(projectPath);
 
   const existingPid = pidManager.read();
