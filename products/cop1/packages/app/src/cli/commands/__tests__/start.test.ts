@@ -41,9 +41,48 @@ describe('resolveStartPort — priorité --port > daemon.port > défaut (fiche 0
     warn.mockRestore();
   });
 
-  it("--port présent : la config n'est pas lue (une config cassée ne gêne pas)", () => {
+  it('--port présent : une config cassée ne bloque pas la résolution', () => {
     dir = mkdtempSync(join(tmpdir(), 'cop1-0032-'));
     writeFileSync(join(dir, 'cop1.config.yaml'), '{yaml: [cassé');
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(resolveStartPort('7777', dir)).toBe(7777);
+    warn.mockRestore();
+  });
+
+  describe('fail-fast budget RAM (fiche 0033, volet 1)', () => {
+    it('ram_budget_* utilisateur > RAM physique : resolveStartPort JETTE (jamais de timeout muet)', () => {
+      dir = mkdtempSync(join(tmpdir(), 'cop1-0033-'));
+      writeFileSync(join(dir, 'cop1.config.yaml'), 'resources:\n  ram_budget_night_gb: 999999\n');
+      expect(() => resolveStartPort(undefined, dir)).toThrow(/ram_budget_night_gb/);
+    });
+
+    it("le message nomme le champ, la valeur et la RAM détectée + l'action", () => {
+      dir = mkdtempSync(join(tmpdir(), 'cop1-0033-'));
+      writeFileSync(join(dir, 'cop1.config.yaml'), 'resources:\n  ram_budget_night_gb: 999999\n');
+      try {
+        resolveStartPort(undefined, dir);
+        expect.unreachable('resolveStartPort aurait dû jeter');
+      } catch (err) {
+        const msg = String(err);
+        expect(msg).toContain('ram_budget_night_gb');
+        expect(msg).toContain('999999');
+        expect(msg).toMatch(/total RAM|RAM physique/);
+        expect(msg).toContain('cop1.config.yaml');
+      }
+    });
+
+    it('fail-fast même avec --port explicite (la santé de la config prime)', () => {
+      dir = mkdtempSync(join(tmpdir(), 'cop1-0033-'));
+      writeFileSync(join(dir, 'cop1.config.yaml'), 'resources:\n  ram_budget_night_gb: 999999\n');
+      expect(() => resolveStartPort('7777', dir)).toThrow(/ram_budget_night_gb/);
+    });
+
+    it('config vierge : démarre sans erreur (défauts clampés à la machine)', () => {
+      dir = mkdtempSync(join(tmpdir(), 'cop1-0033-'));
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      expect(resolveStartPort(undefined, dir)).toBe(4242);
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
   });
 });
