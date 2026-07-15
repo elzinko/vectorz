@@ -11,6 +11,7 @@
     { "path": "../llm-intelligence" },
     { "path": "../quality-intelligence" },
     { "path": "../sprint-core" },
-    { "path": "../ceremony-engine" }
+    { "path": "../ceremony-engine" },
+    { "path": "../journal-validator" }
   ]
 }

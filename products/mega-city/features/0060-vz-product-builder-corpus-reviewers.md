@@ -1,5 +1,5 @@
 ---
-id: 0052
+id: 0060
 title: vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*)
 type: feature
 priority: P1
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-14
 ---
 
-# 0052 — vz-product-builder : l'autonomie par le corpus, pas par le silence
+# 0060 — vz-product-builder : l'autonomie par le corpus, pas par le silence
 
 ## Contexte / Problème
 

@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { AuthPanel } from './AuthPanel.js';
 import { OrchestratorRunView } from './OrchestratorRunView.js';
 import { RuleProposalsView } from './RuleProposalsView.js';
+import { SupervisionView } from './SupervisionView.js';
 
 // fiche 0022 — the Projects/Agents/Tasks tabs fetched /api/{projects,agents,tasks},
 // endpoints the daemon never served (404). Removed: no dead promise in the UI.
 // The live surfaces are Run (mission-control), Rules and Connexion, each of which
 // owns its own data fetching/state.
-type Tab = 'run' | 'rules' | 'connexion';
+// fiche 0031 (ADR-028) — "moniteur" : lecteur read-only de .supervision/runs/.
+type Tab = 'run' | 'rules' | 'connexion' | 'moniteur';
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('run');
@@ -39,11 +41,18 @@ function App() {
           >
             Connexion
           </button>
+          <button
+            className={`tab ${activeTab === 'moniteur' ? 'active' : ''}`}
+            onClick={() => setActiveTab('moniteur')}
+          >
+            Moniteur
+          </button>
         </div>
 
         {activeTab === 'run' && <OrchestratorRunView />}
         {activeTab === 'rules' && <RuleProposalsView />}
         {activeTab === 'connexion' && <AuthPanel />}
+        {activeTab === 'moniteur' && <SupervisionView />}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App.js';
 
@@ -9,6 +9,10 @@ describe('App', () => {
     vi.stubGlobal(
       'EventSource',
       vi.fn().mockImplementation(() => ({ onmessage: null, close: vi.fn() })),
+    );
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve([]) }),
     );
   });
 
@@ -35,5 +39,13 @@ describe('App', () => {
     render(<App />);
     // The run launcher form (epic input) is what the Run tab shows when idle.
     expect(screen.getByLabelText(/epic/i)).toBeTruthy();
+  });
+
+  it('fiche 0031 — offers a "moniteur" tab that renders SupervisionView', async () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: /moniteur/i }));
+
+    expect(await screen.findByText(/classe B.*best-effort/i)).toBeTruthy();
   });
 });

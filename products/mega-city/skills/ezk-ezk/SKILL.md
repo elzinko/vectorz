@@ -44,7 +44,7 @@ le refaire chaque fois.
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + le rôle de chaque étape — ne lance rien |
 | `harvest` | **Récolte ≤ 3 sujets** par introspection du contexte de session courant + champ libre ; 1 seul candidat → confirmation. Ne génère rien |
 | `create` (**défaut** en langage naturel) | Déroule le flux complet : harvest → résumé + questions (boucle de validation) → compose les sous-skills → produit le contenu du SKILL.md → demande la destination |
-| `deploy` | Range le skill validé via `scripts/deploy.sh` (dossier + symlink non-destructif) puis émet le verdict de disponibilité + le fallback `/reload-skills` |
+| `deploy` | Range le skill validé via `scripts/deploy.sh` (dossier + symlink non-destructif + ligne de catalogue) puis émet le verdict de disponibilité + le fallback `/reload-skills` |
 
 > **Help** : invoquée sans sous-commande (ou `help`/`?`), affiche ce tableau. Une
 > demande en langage naturel route vers `create`. Sous-commande non reconnue →
@@ -119,6 +119,7 @@ bash skills/ezk-ezk/scripts/deploy.sh [--copy] <name> <chemin/SKILL.md> [dest-sk
 - `<chemin/SKILL.md>` : le SKILL.md **déjà produit** par `skill-creator`.
 - `[dest-skills-dir]` : optionnel, **défaut = `skills/` de mega-city**.
 - `--copy` (option) : pose une **copie figée** au lieu du symlink (par défaut : symlink, qu'un `git pull` met à jour).
+- **catalogue** : après le rangement, `deploy.sh` maintient l'index `skills/README.md` du dossier cible — il **ajoute la ligne du skill si elle est absente** (via `scripts/catalog-sync.mjs`, non-destructif/idempotent, `node` requis, best-effort : n'échoue jamais le deploy). Le libellé état/rôle auto (« 🆕 auto (deploy) ») est à **curer** ; le garde-fou CI `catalog-readme.test.ts` reste le filet de sécurité.
 
 Après le déploiement, énonce le verdict de l'étape suivante.
 
@@ -144,7 +145,7 @@ ADR-0001 §2 — **« le LLM ne range jamais »**, non négociable.
 | Acteur | Fait | Ne fait pas |
 |---|---|---|
 | **LLM (ce playbook + sous-skills)** | récolte, cadre, tranche la structure, **rédige/juge** le contenu via les sous-skills, demande la destination | **ne crée aucun dossier**, **ne pose aucun symlink** lui-même |
-| **`scripts/deploy.sh` (déterministe)** | crée `skills/<name>/`, écrit le SKILL.md fourni, symlink **non-destructif** vers `~/.claude/skills/<name>`, idempotent | **ne décide aucun contenu**, ne touche **que ses propres artefacts** |
+| **`scripts/deploy.sh` (déterministe)** | crée `skills/<name>/`, écrit le SKILL.md fourni, symlink **non-destructif** vers `~/.claude/skills/<name>`, **ajoute la ligne de catalogue** (`catalog-sync.mjs`), idempotent | **ne décide aucun contenu**, ne touche **que ses propres artefacts** |
 
 Le script ne retire **que son propre symlink** (ou un skill homonyme déjà déployé)
 — il **refuse** un vrai fichier/dossier utilisateur préexistant, et un `<name>`

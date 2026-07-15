@@ -5,7 +5,7 @@ Source de vérité = le front-matter de chaque fiche `features/NNNN-slug.md`. Ce
 
 Règles : 1 PR par feature, squash-merge quand la CI est verte.
 
-Dernière mise à jour : 2026-07-14
+Dernière mise à jour : 2026-07-15
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
@@ -15,7 +15,7 @@ Dernière mise à jour : 2026-07-14
 | 0021 | Câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale | feature | P1 | ✅ shipped | #50 |
 | 0027 | Validateur de journal de supervisabilité — l'invariant devient exécutable | feature | P1 | ✅ shipped | #62 |
 | 0030 | MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur) | feature | P1 | 🟠 in-progress | |
-| 0031 | Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur) | feature | P1 | 🔴 todo | |
+| 0031 | Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur) | feature | P1 | ✅ shipped | #2 |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget (épic → ADR-020) | feature | P2 | ✅ shipped | #32 |
@@ -29,6 +29,8 @@ Dernière mise à jour : 2026-07-14
 | 0024 | Résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo | |
 | 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | ✅ shipped | #57 |
 | 0026 | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 | ✅ shipped | #59 |
+| 0032 | cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte) | bug | P2 | 🔴 todo | |
+| 0033 | Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique | bug | P2 | 🔴 todo | |
 | 0005 | Résorber les warnings biome (no-op : déjà satisfait) | chore | P3 | ✅ shipped | #45 |
 | 0007 | V1.1 — format de session log + ADR-009 + D1/D2 (→ session architecte) | chore | P3 | 🔴 todo | |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |

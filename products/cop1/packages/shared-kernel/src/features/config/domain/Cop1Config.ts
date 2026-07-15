@@ -49,4 +49,14 @@ export interface Cop1Config {
     auto_start: string[];
   };
   budget: BudgetConfig;
+  /**
+   * fiche 0031 (ADR-028) — lecteur de journal .supervision/runs/, mode
+   * moniteur. Optionnel (même convention que `model_tiering`) : les literaux
+   * `Cop1Config` construits à la main ailleurs dans le repo n'ont pas à le
+   * fournir. Absent ⇒ code default (watch_roots=[], presumed_dead_after_min=5).
+   */
+  supervision?: {
+    watch_roots: string[];
+    presumed_dead_after_min: number;
+  };
 }
