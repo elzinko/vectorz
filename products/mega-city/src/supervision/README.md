@@ -42,14 +42,18 @@ Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`,
 `escalate`, `run_finished`) sont disponibles dans le contexte — sinon saute
 cette section sans bruit :
 
-- **Au lancement** : `run_start {method_name: "<ta-méthode>", seat: "human"}`.
+- **Au lancement** : `run_start {method_name: "<ta-méthode>",
+  method_version: "<sa-version>", seat: "human"}` (`method_version` est
+  **requis** ; `seat` est optionnel, défaut `human`).
 - **À chaque point d'arrêt de ta méthode** (checkpoint, fin d'étape) :
   `gate_reached {gate_id: <nom-du-point>, outcome: ok|attention|failed,
   report_markdown: <ton résumé>}` **avant** de poser la question — puis
   arrête-toi et attends la réponse.
-- **À la reprise** : `gate_resumed` (le `gate_event_id` vient du résultat d'outil).
-- **Signal non-bloquant** : `escalate {type, detail}` — jamais un arrêt.
-- **À la clôture** : `run_finished {status}`.
+- **À la reprise** : `gate_resumed {gate_event_id: <id>}` (l'id vient du
+  résultat d'outil du `gate_reached`).
+- **Signal non-bloquant** : `escalate {type: blocked|authority, detail: <texte>}`
+  — jamais un arrêt.
+- **À la clôture** : `run_finished {status: success|failure|abandoned}`.
 
 Tu n'écris jamais les champs d'enveloppe (le serveur les calcule) et tu ne
 forces jamais `upgrade_ok` (au mieux un veto). Vocabulaire : tes checkpoints
