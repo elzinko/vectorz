@@ -10,6 +10,10 @@ created: 2026-07-15
 
 # 0034 — Mise à plat post-pivot (épic)
 
+> **Épic non-buildable** — ne pas tirer cette fiche directement à l'intake : tirer ses
+> lots / fiches filles ([0035](0035-consolider-statuts-adr.md),
+> [0036](0036-purge-code-mort-prouve.md), [0037](0037-arbitrage-double-writer-sprint-status.md), …).
+
 ## Contexte / Problème
 
 Le pivot est acté sur le papier — ontologie 7 briques / 3 ports (ADR-022), seam exécuteur
@@ -138,7 +142,7 @@ flowchart TD
 |---|-------|---------|-------|------|
 | 1 | Seam exécuteur Claude-only | `BMADSessionPort` + 2 adapters Claude ; sélection dupliquée `sprint-run.ts`/`orchestrator.ts` ; pas de StubExecutor ni d'allowlist SDK | `AgentSessionPort` + factory `createAgentSessionAdapter(env)` (`COP1_EXECUTOR` sdk\|resume\|stub), StubExecutor, allowlist testée. Nuance capture Q4 : le journal au contrat **est** l'event-stream seam — la démo prouve l'agent-indépendance côté moniteur par un chemin plus court ; le StubExecutor reste la preuve exécutable côté pilote | ADR-026, 0020, ADR-022 (2) |
 | 2 | Périphérie pré-pivot dans le graphe de prod | `ceremony-engine` (dependency morte d'app), `quality-intelligence` (importé par app + sprint-core) | plus aucun import prod ; méthode → Method port, qualité → seam DoDCheck | 0024, ADR-022, ADR-020 |
-| 3 | Méthode BMAD en dur dans le cœur | ~59 fichiers prod mentionnent BMAD ; `SprintStatusPort` = Method port « en germe » | BMAD = **une** implémentation du Method/Task port générique. **À généraliser, PAS à supprimer** : ADR-026 garde explicitement `bmad-orchestration/` | ADR-022 (3), ADR-026 non-buts |
+| 3 | Méthode BMAD en dur dans le cœur | ~59 fichiers prod mentionnent BMAD ; `SprintStatusPort` = Method port « en germe » | BMAD = **une** implémentation du Method/Task port générique — **généraliser, prouver, puis retirer** (révisé par ADR-029 : adaptateur retiré en E4 après gate E3 ; `bmad-orchestration/` gardé *jusqu'à E4*) | ADR-022 (3), ADR-026, ADR-029 |
 | 4 | Ports mal localisés (llm-intelligence) | dépendance `package.json` `llm-intelligence → sprint-core`, réduite à 2 `import type` (ReviewerPort/ReviewResult, CodeGeneratorPort) — zéro couplage runtime | interfaces de port relocalisées (shared-kernel ou brique 1), dépendance au package méthode retirée ; tiering → donnée du Profile à terme | ADR-022 (1), ADR-015 |
 | 5 | Statuts ADR non consolidés | ADR-021 mergé mais « Proposé » ; ADR-025 sans bandeau « révisé par ADR-027 » ; ADR-024 non re-tamponné (E6-S2 exécuté `d200f0e`) | **re-tampons sûrs maintenant** (021 Accepté, 024 Accepté, 025 bandeau — fiche 0035). NB : **ADR-022 n'est PAS un simple re-tampon** — la réécriture de sa brique 1 (loop `pull→dispatch` rendu **caduc**) est une révision de fond différée DP8 ; 026+027 différables ensemble post-démo | capture 2026-07-14, 0035 |
 | 6 | Garde-fous CI presque complets | `tools/boundary` **existe** ; CI = lint + build + test racine (boundary inclus) + couverture `@cop1/web` + steps standalone mega-city (host-agnosticité déjà prouvée mécaniquement) ; manquent seulement : step boundary **nommé**, allowlist SDK | les 2 manques câblés ; check « config générée committée » différé à L9 | ADR-025 §3, ADR-027 §5 |
@@ -234,9 +238,9 @@ flowchart LR
 - **L8 — Dette actée** (petits lots indépendants) : le **sous-ensemble sûr** (S1
   `TokenBudgetService`, S2 `docker-compose.yml`, S3 `ea13-real-run.sh`) part en
   **fiche [0036](0036-purge-code-mort-prouve.md) (P1)** ; le sort de `useBMAD=false` +
-  agents legacy reste **arbitrage humain D6** (runtime-atteignable, testé — pas du code
-  mort), à trancher après L6. (Onglets 404 **déjà retirés** — `web/src/App.tsx` réf. 0022 ;
-  ne reste que l'arbitrage D8 avec 0031.)
+  agents legacy est **tranché par ADR-029 (D6)** : retrait en **E4**, après le gate E3 —
+  runtime-atteignable et testé jusque-là, donc pas à purger ici. (Onglets 404 **déjà
+  retirés** — `web/src/App.tsx` réf. 0022 ; ne reste que l'arbitrage D8 avec 0031.)
 - **L9 — Cap cop1 mega-city Phase 1** (= mega-city 0016 ; après L4 + L2, externe :
   mega-city 0012 + 0044 — 0006 et 0039 sont déjà livrées) : `bind` → WritePlan pur
   byte-for-byte, `iamthelaw/global.yaml` commité read-only ; enforcements → DoDCheck ;
@@ -267,7 +271,9 @@ flowchart LR
 - **D2 — TENSION nommage de branche vs ADR** : la branche courante s'appelle
   `claude/remove-bmad-files` mais ADR-026 (source la plus récente) **garde**
   `bmad-orchestration/` et ne purge que le *nom* du port ; ADR-022 dit « généraliser
-  derrière les ports », pas supprimer. Retenu ici : généraliser, pas supprimer.
+  derrière les ports », pas supprimer. ~~Retenu ici : généraliser, pas supprimer.~~
+  **Révisé par ADR-029** : généraliser, **prouver** (gate E3), **puis retirer**
+  l'adaptateur en E4 — tension résolue (et la branche a été renommée).
 - **D3 — quality-intelligence** : suppression vs relégation derrière Rules port + où
   relocaliser les config-templates (L5).
 - **D4 — ceremony-engine** : suppression pure ou gel derrière Method port (à acter à l'ADR en L4).

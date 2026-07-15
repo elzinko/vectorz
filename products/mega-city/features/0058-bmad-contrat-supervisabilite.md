@@ -63,6 +63,7 @@ sur mega-city) — sinon on stresse le contrat sur deux fronts.
 - **Re-scope 2026-07-15 (ADR-029 cop1, relecture PO)** : cette fiche est une **expérience
   de compliance** (« BMAD peut-il être rendu conforme au contrat/paradigme ? »), pas une
   dépendance du control-plane. cop1 s'émancipe de BMAD (E4 supprime `BMADSessionStep`/
-  `BMADCommandPort`/`SupervisorService` côté pilote) → l'expérience se re-scope
+  `BMADCommandPort`/`DefaultBMADCommandRunner` côté pilote ; `SupervisorService`,
+  générique, est **relogé** — pas supprimé) → l'expérience se re-scope
   **émission-side** : BMAD = méthode supervisée qui **émet** le contrat (kit 0050),
   observée par le moniteur — sans pilotage cop1. Ne bloque pas E4.

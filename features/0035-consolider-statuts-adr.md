@@ -32,12 +32,15 @@ d'un arbitrage humain (voir Notes).
 3. **ADR-025 → ajouter le bandeau back-ref** « Révisé par ADR-027 (remplace Décision §1) ».
    Confirmé manquant (grep `027` sur ADR-025 = vide) alors qu'ADR-027 §5 le déclare.
    Statut reste Proposé.
+4. **ADR-026 → ajouter le bandeau** « Révisé par ADR-029 — `bmad-orchestration/` gardé
+   *jusqu'à E4* » (exécute l'AI-6 d'ADR-029). Statut reste Proposé (différé post-démo).
 
 ## Critères d'acceptation
 
 - [ ] `grep Statut docs/adr/ADR-021*` = Accepté ; `ADR-024*` = Accepté
 - [ ] ADR-022 reste **WIP/Brouillon** ; ADR-025 / 026 / 027 restent **Proposé** (aucune promotion au-delà de ce que la capture 2026-07-14 autorise)
 - [ ] `grep 027 docs/adr/ADR-025*` non vide (back-ref présent)
+- [ ] `grep ADR-029 docs/adr/ADR-026*` non vide (bannière posée, statut inchangé)
 - [ ] Exécution E6-S2 confirmée en historique avant le re-tampon d'ADR-024
 
 ## Notes / décisions

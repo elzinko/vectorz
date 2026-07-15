@@ -1,8 +1,8 @@
 # Registre des ADR — la feuille de lecture de l'époque 2
 
 Ce registre dit **ce qui est vivant, ce qui se consolide, ce qui est caduc** — c'est le
-point d'entrée pour « repartir propre » sans archéologie. Il est **régénéré** à chaque
-changement de statut (ne pas éditer les verdicts à la main sans passer par une fiche).
+point d'entrée pour « repartir propre » sans archéologie. Il est **maintenu à la main** :
+toute fiche qui change un statut ADR met à jour la ligne correspondante dans la même PR.
 Source : ADR-029 + panels adverses du 2026-07-15 (verdicts vérifiés fichier par fichier).
 
 **Époques** : *époque 1* = héritage cop1/BMAD (le moteur de la méthode vivait dans le

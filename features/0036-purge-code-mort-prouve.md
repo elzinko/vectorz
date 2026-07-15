@@ -27,8 +27,9 @@ et relèvent d'arbitrages humains (0034 D6/D9) — voir Notes.
    *Rationale corrigée* : l'event `llm.call.completed` **n'est pas mort** (émis par
    `LLMGateway.ts:73`, `ClaudeCliAdapter.ts:49`) — c'est le **service abonné** qui est
    dormant.
-2. **[S2] Supprimer `docker-compose.yml` racine** — vestige 100 % commenté du mode nuit
-   Ollama (ADR-005 suspendu). **Énoncer** que cela rend ADR-005 de-facto caduc.
+2. **[S2] Supprimer `docker-compose.yml` racine** — vestige dont tout le contenu utile
+   est commenté (ne restent que `version:` et `services:` vides ; mode nuit Ollama,
+   ADR-005 suspendu). **Énoncer** que cela rend ADR-005 de-facto caduc.
 3. **[S3] Supprimer `scripts/ea13-real-run.sh`** ET mettre à jour le commentaire de
    `integration-tests/orchestrator-real-run.test.ts:21` qui le cite comme tracker de
    couverture non-CI (sinon il pointe dans le vide).
@@ -39,7 +40,7 @@ et relèvent d'arbitrages humains (0034 D6/D9) — voir Notes.
 
 ## Critères d'acceptation
 
-- [ ] `grep -rn TokenBudgetService\|YamlBudgetStore products/cop1/**/src` = zéro (hors historique)
+- [ ] `grep -rnE "TokenBudgetService|YamlBudgetStore" products/cop1/packages/*/src` = zéro (24 occurrences aujourd'hui)
 - [ ] `docker-compose.yml` et `scripts/ea13-real-run.sh` supprimés
 - [ ] Le commentaire de `orchestrator-real-run.test.ts` ne cite plus `ea13-real-run.sh`
 - [ ] `pnpm build` + suite de tests verts après suppression
@@ -47,10 +48,10 @@ et relèvent d'arbitrages humains (0034 D6/D9) — voir Notes.
 
 ## Notes / décisions
 
-**Hors périmètre (arbitrage humain, ne PAS toucher ici)** : `useBMAD=false` + agents
-legacy `PMAgent/QAAgent/DevAgent` (D6, branche runtime `PipelineStepFactory.ts:54`,
-testée) ; `_bmad/` (27 fichiers = customisations projet gardées **exprès** par `.gitignore`,
-lues au runtime par `BmadBridgeService.ts` + garde pré-flight `orchestrator.ts:246`) ;
-`_bmad-output/` (source-of-truth ADR-009, `sprint-status.yaml` lu par
-`YamlSprintStatusAdapter.ts:18`, ~20 liens docs). Supprimer l'un de ces trois = émanciper
-de BMAD = décision produit D9 (voir 0034).
+**Hors périmètre (relève d'E4 / ADR-029, ne PAS toucher ici)** : `useBMAD=false` + agents
+legacy `PMAgent/QAAgent/DevAgent` (branche runtime `PipelineStepFactory.ts:54`, testée) ;
+`_bmad/` (27 fichiers = customisations projet gardées **exprès** par `.gitignore`, lues au
+runtime par `BmadBridgeService.ts` + garde pré-flight `orchestrator.ts:246`) ;
+`_bmad-output/` (`sprint-status.yaml` lu par `YamlSprintStatusAdapter.ts:18`, ~20 liens
+docs). L'émancipation est **actée** (ADR-029, D6/D9 tranchées) : ces trois partent en
+**E4, après le gate E3** — pas dans ce lot de purge.

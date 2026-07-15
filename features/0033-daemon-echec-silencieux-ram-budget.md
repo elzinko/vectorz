@@ -2,7 +2,7 @@
 id: 0033
 title: Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique
 type: bug
-priority: P2
+priority: P1
 status: todo
 pr:
 created: 2026-07-15
@@ -50,3 +50,5 @@ Deux volets, cumulables :
   `DaemonService.test.ts` rouge en CI, vert en local). Corrigé en alignant sur
   orchestrator/SprintRunner (`skipRamValidation: true`). Les deux volets de CETTE fiche
   (fail-fast CLI + défauts raisonnables) restent à faire.
+
+**2026-07-15** : promue P2 → P1 (panel de merge PR #10) — lot L1 de 0034, chemin critique de la démo 0030 (P1) : les fixes de fiabilité passent avant de rejouer la démo.
