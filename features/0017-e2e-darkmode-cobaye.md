@@ -33,3 +33,7 @@ manuellement), puis scénario Playwright : bascule de thème, persistance au rel
 
 Bloquée tant que le cobaye reste vierge. Source : split de la fiche 0003 (E2E 2026-06-25).
 Le scénario auth est livré séparément (0003 + `docs/e2e/auth-panel.md`).
+
+**2026-07-16** : le banc cobaye lui-même est porté en natif par la fiche **0041** (harness
+rapide Pareto). Ce scénario dark-mode en est le **candidat premier parcours** — fold dans
+0041 ou maintien comme scénario client à trancher quand 0041 est tirée.

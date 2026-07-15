@@ -18,6 +18,7 @@
 | 0033 | Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique | bug | P1 | ✅ shipped | #16 |
 | 0036 | Purge du code mort prouvé + rescope 0022 AC3 (sous-ensemble sûr de L8) | chore | P1 | ✅ shipped | #13 |
 | 0037 | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | ✅ shipped | #14 |
+| 0041 | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 | 🔴 todo |  |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 | ✅ shipped | #32 |
