@@ -3,8 +3,8 @@ id: 0037
 title: Arbitrage double-writer sprint-status.yaml (porter la décision D7)
 type: chore
 priority: P1
-status: todo
-pr:
+status: shipped
+pr: "#14"
 created: 2026-07-15
 ---
 

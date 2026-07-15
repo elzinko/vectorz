@@ -17,7 +17,7 @@
 | 0032 | cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte) | bug | P1 | 🔴 todo |  |
 | 0033 | Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique | bug | P1 | 🔴 todo |  |
 | 0036 | Purge du code mort prouvé + rescope 0022 AC3 (sous-ensemble sûr de L8) | chore | P1 | ✅ shipped | #13 |
-| 0037 | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | 🔴 todo |  |
+| 0037 | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | ✅ shipped | #14 |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 | ✅ shipped | #32 |
@@ -43,4 +43,4 @@
 | 0028 | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 | 🔴 todo |  |
 | 0029 | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | idea | P3 | 🔴 todo |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0035, 0036.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0035, 0036, 0037.
