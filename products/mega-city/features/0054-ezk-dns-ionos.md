@@ -1,5 +1,5 @@
 ---
-id: 0053
+id: 0054
 title: ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel)
 type: feature
 priority: P2

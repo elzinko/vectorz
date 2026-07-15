@@ -1,5 +1,5 @@
 ---
-id: 0055
+id: 0056
 title: ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate)
 type: feature
 priority: P2
@@ -39,7 +39,7 @@ range (flip statut, regen, commit).
 - [ ] `groom <id>` enrichit la fiche (3 slots DoR) via product-brainstorming, sans changer le statut
 - [ ] `ready <id>` REFUSE tant qu'un slot DoR manque ; au vert, flip idea→todo + regen + commit
 - [ ] Aucune duplication de la connaissance du format de fiche hors d'ezk-backlog (test de séparabilité)
-- [ ] Le challenge adversarial (fiche 0056) est composable comme étape optionnelle de `groom`
+- [ ] Le challenge adversarial (fiche 0057) est composable comme étape optionnelle de `groom`
 - [ ] Doc : quand groomer (avant de tirer) vs cadrer à la création (`add --brainstorm`, 0022)
 
 ## Notes
@@ -49,6 +49,6 @@ range (flip statut, regen, commit).
   sous-commande ; promotion en skill autonome seulement si le grooming devient lourd/récurrent
   (découpe d'epics, dépendances, sizing), via l'entonnoir `ezk-recipy` (0042).
 - Compose : `product-brainstorming` (moteur divergent) + éventuellement le panel de challenge
-  (fiche 0056) pour confronter l'idée avant de la déclarer Ready.
+  (fiche 0057) pour confronter l'idée avant de la déclarer Ready.
 - Origine : discussion session 2026-07-15 (capture de 0052/0053/0054 en idea → « il faut
   groomer dessus »).

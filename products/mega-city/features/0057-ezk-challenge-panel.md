@@ -1,5 +1,5 @@
 ---
-id: 0056
+id: 0057
 title: ezk-challenge — panel de challenge adversarial réutilisable (relecteurs frais + gate)
 type: feature
 priority: P2
@@ -41,7 +41,7 @@ Extraire une **primitive MINCE** `ezk-challenge` (nom candidat) que d'autres ski
 - [ ] La primitive est **lens-agnostic** : elle expose un registre + un contrat, chaque skill injecte ses lentilles
 - [ ] Le **gate** (contre-lecture à froid, verdict ship/no-ship) est centralisé, pas ré-écrit par consommateur
 - [ ] `steelman` puis `red-team` sont des lentilles first-class du registre
-- [ ] Au moins 2 consommateurs la composent (candidats : grooming 0055, ezk-article 0049, ezk-reviewer 0031)
+- [ ] Au moins 2 consommateurs la composent (candidats : grooming 0056, ezk-article 0049, ezk-reviewer 0031)
 - [ ] Décision documentée : primitive réutilisable vs étape interne — trancher au 2e consommateur
 - [ ] L'option générique `--challenge` est spécifiée comme convention d'invocation (ride 0044) ; détails affinés au 1er consommateur réel
 - [ ] Ligne rouge respectée : le registre de lentilles ne recopie PAS la bibliothèque de techniques BMAD (`methods.csv`) — voir Notes

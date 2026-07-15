@@ -1,5 +1,5 @@
 ---
-id: 0058
+id: 0059
 title: série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité
 type: feature
 priority: P2
@@ -25,7 +25,7 @@ volet **documentation/REX des migrations**, en série.
 
 Une **série** d'articles, un par méthode migrée :
 
-- **Article #1 : la migration BMAD** (fiche 0057) — le journal de migration tenu pendant
+- **Article #1 : la migration BMAD** (fiche 0058) — le journal de migration tenu pendant
   l'expérience en est le squelette. Angle candidat : l'échelle adaptateur→overlay→fork et
   ce que chaque cran révèle du contrat.
 - **Rédaction via `ezk-article` (0049)** : brief de persona demandé, panel de relecteurs
@@ -40,13 +40,13 @@ publication.
 ## Critères d'acceptation (esquisse)
 
 - [ ] Cadre de série défini (angle, audience, canal) — via grooming
-- [ ] Article #1 (migration BMAD) écrit après la clôture de 0057, via ezk-article (0049)
+- [ ] Article #1 (migration BMAD) écrit après la clôture de 0058, via ezk-article (0049)
 - [ ] Chaque limite/friction publiée est tracée vers un finding v0.2 (pas d'affirmation sans source)
 - [ ] La série est ouverte : une méthode migrée = un article candidat
 
 ## Notes
 
-- Décision de regroupement (2026-07-15) : fiche **séparée** de 0057 (choix utilisateur) —
-  0057 produit la matière (journal de migration), 0058 porte le cadre éditorial.
-- Liens : 0057 (1ʳᵉ migration), 0049 (ezk-article, l'outil), cop1 0025 (article fondateur),
+- Décision de regroupement (2026-07-15) : fiche **séparée** de 0058 (choix utilisateur) —
+  0058 produit la matière (journal de migration), 0058 porte le cadre éditorial.
+- Liens : 0058 (1ʳᵉ migration), 0049 (ezk-article, l'outil), cop1 0025 (article fondateur),
   cop1 0029 (différés v0.2).

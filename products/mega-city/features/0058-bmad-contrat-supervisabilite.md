@@ -1,5 +1,5 @@
 ---
-id: 0057
+id: 0058
 title: adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable)
 type: feature
 priority: P2
@@ -44,7 +44,7 @@ sur mega-city) — sinon on stresse le contrat sur deux fronts.
 - [ ] Un run BMAD réel (une story de bout en bout) émet un `events.jsonl` qui passe le journal-validator (cop1 0027) et s'affiche dans le lecteur mission-control (0031)
 - [ ] Zéro modification des prompts/personas BMAD au-delà des consignes d'émission (~15 l.) — toute envie d'allègement part en fiche séparée
 - [ ] Chaque friction contrat/méthode (gate interne invisible, phase qui boucle, mapping douteux) documentée comme finding v0.2 (fiche cop1 0029) — jamais maquillée pour « passer le validateur »
-- [ ] Journal de migration tenu au fil de l'eau (squelette du 1ᵉʳ article de la série 0058)
+- [ ] Journal de migration tenu au fil de l'eau (squelette du 1ᵉʳ article de la série 0059)
 - [ ] Si distribution publique : nom **sans « BMad »** (trademark BMad Code, LLC) + notice MIT conservée ; « compatible with BMad Method » est permis
 
 ## Notes
@@ -58,5 +58,5 @@ sur mega-city) — sinon on stresse le contrat sur deux fronts.
   niveau de l'échelle, c'est un finding v0.2 documenté, pas une perte.
 - Limite d'honnêteté du REX : deux méthodes pilotées par cop1 ne prouvent pas la généralité
   universelle — seulement que le contrat survit à une méthode non-maison.
-- Liens : 0050 (kit émetteur, prérequis), 0058 (série d'articles), cop1 0027 (validateur),
+- Liens : 0050 (kit émetteur, prérequis), 0059 (série d'articles), cop1 0027 (validateur),
   0029 (différés v0.2), 0031 (lecteur mission-control).

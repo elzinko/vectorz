@@ -1,5 +1,5 @@
 ---
-id: 0054
+id: 0055
 title: ezk-ci — surveiller et plafonner la consommation GitHub Actions (repos privés)
 type: feature
 priority: P1
@@ -27,7 +27,13 @@ des règles déjà en place sur le monorepo **muti** (à récolter / confirmer) 
 - **Plafonner** : poser un **spending limit à 0** (coupe net dès le quota épuisé, aucun
   dépassement facturé) comme défaut recommandé sur un repo privé.
 - **Réduire les déclenchements** : `paths-ignore` / `paths` pour ne pas lancer la CI sur des
-  changements docs-only ; `concurrency: cancel-in-progress` pour tuer les runs obsolètes.
+  changements docs-only ; un bloc `concurrency` pour tuer les runs obsolètes :
+
+  ```yaml
+  concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+  ```
 - **Gater le lourd** : mettre les jobs e2e / builds coûteux derrière un gate (label, branche,
   `workflow_dispatch`, ou nightly) au lieu de les lancer à chaque push.
 - Rester dans la frontière ezk-ci : conseiller + éditer les `.github/workflows` + poser les
@@ -37,7 +43,7 @@ des règles déjà en place sur le monorepo **muti** (à récolter / confirmer) 
 
 - [ ] Une sous-commande restitue la conso Actions d'un repo (minutes du mois, top jobs coûteux)
 - [ ] Le skill sait poser/vérifier un spending limit à 0 sur un repo privé (ou explique où le faire si non pilotable par API)
-- [ ] Le skill propose des diffs concrets : `paths-ignore`, `concurrency: cancel-in-progress`, gate des jobs e2e lourds
+- [ ] Le skill propose des diffs concrets : `paths-ignore`, bloc `concurrency` (`group` + `cancel-in-progress: true`), gate des jobs e2e lourds
 - [ ] Détecte le passage public → privé comme moment-clé et alerte sur le coût
 - [ ] Les règles de parcimonie `muti` sont récoltées et créditées (ou l'écart documenté si elles n'existent pas telles quelles)
 

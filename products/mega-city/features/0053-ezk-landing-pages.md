@@ -1,5 +1,5 @@
 ---
-id: 0052
+id: 0053
 title: ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés)
 type: feature
 priority: P1
@@ -45,3 +45,8 @@ page blanche :
   (réutiliser celle des patrons existants ?), où vivent les patrons récoltés.
 - Patrons sources : livestreamz.fr, https://byhere.fr/ (repos GitHub de l'utilisateur).
 - Piste d'orchestration : `ezk-ezk harvest` puis `create` pour packager le skill.
+- **Voisine, pas doublon : 0052 `ezk-marketing`** (créée le même jour dans une autre
+  session). Frontière : ezk-landing **produit** le site (l'artefact) ; ezk-marketing
+  **promeut** le produit (épopées, canaux, vidéos). Composition naturelle : ezk-marketing
+  peut proposer « créer une landing » et déléguer ici. À confirmer au grooming si un
+  rattachement est préférable.
