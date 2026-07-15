@@ -61,7 +61,7 @@
 | 0030 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 | 💡 idea |  |
 | 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 | 💡 idea |  |
 | 0051 | ezk-cowork — scaffold + audit du pattern « contrat cowork » (bootstrap mince / guide servi par l'app) | feature | P2 | 💡 idea |  |
-| 0053 | ezk-domains — piloter la gestion de noms de domaine IONOS via leur API depuis un LLM | feature | P2 | 💡 idea |  |
+| 0053 | ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel) | feature | P2 | 💡 idea |  |
 | 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 | 💡 idea |  |
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
 
