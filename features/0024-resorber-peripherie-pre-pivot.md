@@ -16,9 +16,10 @@ méthode-spécifique dans le cœur »). Or deux packages datent des sprints 0-5 
 (audit 2026-07-06) : `ceremony-engine` (9 features de cérémonies scrum, zéro import depuis
 app/web) et `quality-intelligence` (référencé seulement par le chemin legacy déprécié).
 C'est de la méthode et de la qualité — territoire des ports (3) Method/Task et (4) Rules.
-Par ailleurs ADR-021 (frontière mega-city) vit dans une branche non mergée
-(docs/adr-021-megacity-boundary) et ADR-022 est un brouillon WIP : les fondations de
-l'intégration mega-city (fiche mega-city 0016, double-gated) attendent ces merges.
+Par ailleurs ADR-022 est un brouillon WIP : les fondations de l'intégration mega-city
+(fiche mega-city 0016, double-gated) attendent sa consolidation. (Constat 2026-07-15,
+fiche 0034 : ADR-021 est mergé depuis le commit 3cb9db2/PR #48 — il reste à le **statuer**
+Proposé → Accepté, plus à le merger.)
 
 ## Proposition
 1. Merger ADR-021 ; statuer ADR-022 (WIP → accepté, avec la décision EscalationPort
@@ -29,7 +30,7 @@ l'intégration mega-city (fiche mega-city 0016, double-gated) attendent ces merg
    le besoin vivant).
 
 ## Critères d'acceptation
-- [ ] ADR-021 mergé, ADR-022 statué
+- [ ] ADR-021 statué (Proposé → Accepté ; déjà mergé), ADR-022 statué
 - [ ] plus aucun package du graphe de prod n'importe ceremony-engine ni quality-intelligence
 - [ ] build/tests verts après résorption (~850 tests)
 - [ ] la fiche mega-city 0016 (cap cop1) n'est plus bloquée côté cop1
