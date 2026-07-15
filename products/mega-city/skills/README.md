@@ -31,7 +31,11 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-npm-scripts` | 📥 importé (0024) | hygiène des scripts npm/pnpm/turbo d'un monorepo |
 | `ezk-design-system` | 📥 importé (0024) | design system minimal (tokens + atomes + styleguide vivant) — l'« étendre » reste la fiche 0019 |
 | `ezk-pr-pilot` | 📦 nouveau (ADR-0009, fiche 0027) | orchestre le **test-puis-merge d'un stock de PRs** : `init` (convention Validation — template mince lié à `docs/PR_VALIDATION.md`, jamais écrasé), `plan` (ordre de merge par merge-tree, sessions groupées), `run`/`report`/`ship` (compose ezk-preview, ezk-device/apk, verify, ezk-backlog) |
+| `ezk-diagram` | 📦 nouveau | prose → diagramme **Mermaid** versionné (triplet `diagrams/<slug>/`) + vues partageables : `README.md` rendu nativement par GitHub & liens mermaid.live/ink (`scripts/render.sh` + `publish.sh`) |
+| `ezk-docker` | 📦 récupéré (commit orphelin) | pilote une **stack Docker** locale de test/dev via le socket (`up`/`ps`/`logs`/`down`/`nuke`), conventions blast-radius (stacks préfixées, teardown obligatoire) — frontière nette vs `ezk-ci` |
+| `ezk-readme` | 📦 récupéré (commit orphelin) | crée/audite **le README** d'un projet (pitch, badges adossés au réel, quickstart, indirections vers les sources de vérité) ; `create` / `audit` (rapport + diff, jamais d'écrasement) |
 
-> **Agents** (`../agents/`) migrés aussi (0024) : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd`.
-> Migration du contenu **terminée** : les 12 skills migrés + 1 né ici (`ezk-pr-pilot`) + 5 agents `ezk-*` vivent désormais dans mega-city.
+> **Agents** (`../agents/`) : `ezk-architect`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd` (6, tous bindés par le profil `global`).
+> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr-pilot` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) = **16 skills** au profil `global`, + 6 agents.
+> Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
