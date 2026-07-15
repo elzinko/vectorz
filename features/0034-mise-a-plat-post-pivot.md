@@ -21,8 +21,12 @@ qui contredit les décisions. Cette fiche est l'épic **P0** qui met tout à pla
 sourcés, lots séquencés (1 PR/lot), schémas partagés pour valider la direction.
 
 Synthèse produite par lecture exhaustive (ADR-015→028, fiches actives, docs vivants,
-ADR mega-city, cartographie du code) + passe de vérification adversariale (3 lenses) le
-2026-07-15. Les faits marquants vérifiés en repo :
+ADR mega-city, cartographie du code) + **deux** passes adverses le 2026-07-15 (revue de
+la fiche, puis validation du registre garder/consolider/supprimer). Le travail amont
+validé est éclaté en 3 fiches filles : [0035](0035-consolider-statuts-adr.md) (P0,
+statuts ADR = L4a), [0036](0036-purge-code-mort-prouve.md) (P1, purge sûre ⊂ L8),
+[0037](0037-arbitrage-double-writer-sprint-status.md) (P1, D7). Faits marquants vérifiés
+en repo :
 
 - **ADR-021 est mergé** (commit `3cb9db2`, PR #48) mais toujours stampé « Proposé » — la
   fiche 0024 (« vit dans une branche non mergée ») était périmée, corrigée dans cette passe.
@@ -136,7 +140,7 @@ flowchart TD
 | 2 | Périphérie pré-pivot dans le graphe de prod | `ceremony-engine` (dependency morte d'app), `quality-intelligence` (importé par app + sprint-core) | plus aucun import prod ; méthode → Method port, qualité → seam DoDCheck | 0024, ADR-022, ADR-020 |
 | 3 | Méthode BMAD en dur dans le cœur | ~59 fichiers prod mentionnent BMAD ; `SprintStatusPort` = Method port « en germe » | BMAD = **une** implémentation du Method/Task port générique. **À généraliser, PAS à supprimer** : ADR-026 garde explicitement `bmad-orchestration/` | ADR-022 (3), ADR-026 non-buts |
 | 4 | Ports mal localisés (llm-intelligence) | dépendance `package.json` `llm-intelligence → sprint-core`, réduite à 2 `import type` (ReviewerPort/ReviewResult, CodeGeneratorPort) — zéro couplage runtime | interfaces de port relocalisées (shared-kernel ou brique 1), dépendance au package méthode retirée ; tiering → donnée du Profile à terme | ADR-022 (1), ADR-015 |
-| 5 | Statuts ADR non consolidés | ADR-021 mergé mais « Proposé » ; ADR-022 WIP avec brique 1 caduque (revue 14/07) ; ADR-027 « Proposé » exécuté de fait ; ADR-025 sans bandeau « révisé par ADR-027 » | tout statué en une passe coordonnée (fenêtre DP8) | capture 2026-07-14, 0024 |
+| 5 | Statuts ADR non consolidés | ADR-021 mergé mais « Proposé » ; ADR-025 sans bandeau « révisé par ADR-027 » ; ADR-024 non re-tamponné (E6-S2 exécuté `d200f0e`) | **re-tampons sûrs maintenant** (021 Accepté, 024 Accepté, 025 bandeau — fiche 0035). NB : **ADR-022 n'est PAS un simple re-tampon** — la réécriture de sa brique 1 (loop `pull→dispatch` rendu **caduc**) est une révision de fond différée DP8 ; 026+027 différables ensemble post-démo | capture 2026-07-14, 0035 |
 | 6 | Garde-fous CI presque complets | `tools/boundary` **existe** ; CI = lint + build + test racine (boundary inclus) + couverture `@cop1/web` + steps standalone mega-city (host-agnosticité déjà prouvée mécaniquement) ; manquent seulement : step boundary **nommé**, allowlist SDK | les 2 manques câblés ; check « config générée committée » différé à L9 | ADR-025 §3, ADR-027 §5 |
 | 7 | Frontière mega-city non matérialisée | cop1 lit `iamthelaw/*.yaml` mais personne ne l'écrit ; `caps/cop1` inexistant (0016 gelée) | `bind` → `global.yaml` généré, commité, read-only ; enforcements → DoDCheck | ADR-021, mega-city 0016/0010 |
 | 8 | Docs de surface périmés | README « Morpheus / drives BMAD » (avril) ; `docs/index.md` sans ADR ≥ 015 ; GETTING_STARTED + USER-GUIDE-web-ui avec chemins `packages/*` cassés ; brownfield-snapshot supersédé | README Vectorz + README/produit ; index refondé ; snapshot archivé après re-port du drift ledger ; pilote étiqueté « différé », moniteur « nominal » | ADR-027, ADR-028, capture |
@@ -198,18 +202,18 @@ flowchart LR
   sprint-status §10.5) ; documenter la frontière `.cop1/` = état runtime piloté (ADR-019)
   vs `.supervision/` = journal observé, arbre du projet supervisé, gitignoré (ADR-028 +
   capture DP6) — repos potentiellement différents.
-- **L4a — Re-tampons immédiats** (parallèle à L1-L3, **sans gate démo** — la capture DP8
-  ne défère post-démo que {révision ADR-022, migration Vectorz, lexique ATC} ; ADR-021
-  n'y figure pas) : statuer ADR-021 Proposé → Accepté (déjà mergé — lève le bloqueur (b)
-  de mega-city 0016) ; re-stamper ADR-024 (E6-S2 exécuté, PR #55) ; ajouter le bandeau
-  « révisé par ADR-027 » dans ADR-025.
+- **L4a — Re-tampons immédiats** → **fiche [0035](0035-consolider-statuts-adr.md) (P0)**.
+  Parallèle à L1-L3, sans gate démo : ADR-021 → Accepté (justifié par le contrat de
+  couture, pas « code mergé » — lève le bloqueur (b) de mega-city 0016), ADR-024 → Accepté
+  (après confirmation E6-S2 `d200f0e`), bandeau « révisé par ADR-027 » dans ADR-025.
 - **L4 — Consolidation ADR** (fenêtre DP8, post-démo) : réviser ADR-022 en une passe
   (brique 1 → « octroie des clairances », EscalationPort différé, WIP → Proposé),
   coordonné avec le volet ADR de 0024 ; re-stamper ADR-027 ; trancher la politique par
   défaut `iamthelaw/global.yaml` absent (question ADR-020) avant que mega-city devienne
   l'écrivain ; lexique ATC optionnel.
 - **L5 — Résorption périphérie** (= cœur de 0024, après L4) : sortir `ceremony-engine`
-  (dependency morte) et `quality-intelligence` (via seam DoDCheck ; relocaliser les
+  (dépendance fantôme déclarée `app/package.json:19`, jamais importée en TS) et
+  `quality-intelligence` (via seam DoDCheck ; relocaliser les
   config-templates d'InitService) du graphe de prod ; ~850 tests verts ; débloque
   mega-city 0016.
 - **L6 — Executor seam** (= 0020 + ADR-026 ; post-démo recommandé, **parallélisable**
@@ -227,19 +231,20 @@ flowchart LR
   CodeGeneratorPort) — relocaliser ces interfaces (shared-kernel ou brique 1), retirer la
   dépendance `package.json` ; recâbler `sprint-status.ts`/`PipelineStepFactory.ts` ;
   propager le rename L6.
-- **L8 — Dette actée** (petits lots indépendants) : supprimer `TokenBudgetService`
-  (acté ADR-017) ; trancher le sort de `useBMAD=false` + agents legacy après L6 (quand le
-  StubExecutor offre le repli non-Claude) ; purger les vestiges `docker-compose.yml`
-  (Ollama) et `scripts/ea13-real-run.sh` (à auditer). (Les onglets 404 sont **déjà
-  retirés** — `web/src/App.tsx` réf. 0022 ; ne reste que l'arbitrage D8 avec 0031.)
+- **L8 — Dette actée** (petits lots indépendants) : le **sous-ensemble sûr** (S1
+  `TokenBudgetService`, S2 `docker-compose.yml`, S3 `ea13-real-run.sh`) part en
+  **fiche [0036](0036-purge-code-mort-prouve.md) (P1)** ; le sort de `useBMAD=false` +
+  agents legacy reste **arbitrage humain D6** (runtime-atteignable, testé — pas du code
+  mort), à trancher après L6. (Onglets 404 **déjà retirés** — `web/src/App.tsx` réf. 0022 ;
+  ne reste que l'arbitrage D8 avec 0031.)
 - **L9 — Cap cop1 mega-city Phase 1** (= mega-city 0016 ; après L4 + L2, externe :
   mega-city 0012 + 0044 — 0006 et 0039 sont déjà livrées) : `bind` → WritePlan pur
   byte-for-byte, `iamthelaw/global.yaml` commité read-only ; enforcements → DoDCheck ;
   `IamTheLawLoader` stabilisé, pas remplacé ; activer le check L2 différé.
-- **L10 — DoDLimiter** (= 0018 ; il est **non câblé** aujourd'hui — personne ne
-  l'instancie) : boucle de retry par story (follow-up ADR-016, seule dépendance sourcée)
-  puis N rejets → blocked + escalade ; le séquencement après L6 est un **choix proposé
-  ici**, pas une exigence des réfs.
+- **L10 — DoDLimiter** (= 0018 ; **non câblé** aujourd'hui — personne ne l'instancie) :
+  boucle de retry par story (follow-up ADR-016) puis N rejets → blocked + escalade.
+  **C'est un rouage du mode PILOTE que le pivot (moniteur nominal, ADR-028) diffère** —
+  donc lot tardif, pas cœur-pivot ; le séquencement après L6 est un choix proposé ici.
 
 ## Critères d'acceptation
 
@@ -269,8 +274,8 @@ flowchart LR
 - **D5 — ADR-027 Q1/Q3/Q4** : nom `cop1` vs nom « tour » ; turbo maintenant ou à la
   douleur ; confirmer le scan vitest maison (de facto en place) vs dependency-cruiser.
 - **D6 — useBMAD + agents legacy** : aucune ADR n'acte leur suppression — trancher après L6.
-- **D7 — Double-writer sprint-status.yaml** (snapshot §10.5) : jamais tranché — re-porter
-  en fiche avant archivage du snapshot (L3).
+- **D7 — Double-writer sprint-status.yaml** (snapshot §10.5) : jamais tranché → **porté
+  par la fiche [0037](0037-arbitrage-double-writer-sprint-status.md) (P1)**.
 - **D8 — 0022 vs 0031** : une seule vue runs dans la mission-control ou deux sources
   (SSE legacy vs journal `.supervision`) — re-cadrer post-démo.
 - **D9 — `_bmad/` racine (27 fichiers commités) et `_bmad-output/` (225)** : migrer sous

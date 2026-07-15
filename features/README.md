@@ -10,7 +10,10 @@ Dernière mise à jour : 2026-07-15
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0034 | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | refactor | P0 | 🔴 todo | |
+| 0035 | Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034) | chore | P0 | 🔴 todo | |
 | 0001 | Story B — lanceur de run + mission-control live | feature | P1 | ✅ shipped | #24 |
+| 0036 | Purge du code mort prouvé + rescope 0022 AC3 (sous-ensemble sûr de L8) | chore | P1 | 🔴 todo | |
+| 0037 | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | 🔴 todo | |
 | 0002 | Fix emplacement du worktree en session concurrente | bug | P1 | ✅ shipped | #26 |
 | 0013 | DoDCheck port + registry + refactor du seam (POC DoD automatisée) | feature | P1 | ✅ shipped | #33 |
 | 0021 | Câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale | feature | P1 | ✅ shipped | #50 |
