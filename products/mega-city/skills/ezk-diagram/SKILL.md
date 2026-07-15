@@ -105,18 +105,20 @@ valider (6) ; les règles 4-5 s'appliquent selon le type choisi en (2).
    Chaque flèche porte un verbe (`-->|génère|`) : une flèche qu'on ne sait pas nommer est un
    lien qu'on n'a pas compris soi-même.
 4. **Qui fait quoi, dans un seul sens de lecture.** Pour un flux ou une séquence : des acteurs
-   reconnaissables (l'humain « Toi », l'agent, le fichier/système), des étapes numérotées
-   (`autonumber` en `sequenceDiagram`), une action par case, UNE direction (`TD` ou `LR`) tenue
-   de bout en bout, le point d'entrée déclaré en premier, pas de flèche qui remonte le flux sauf
-   boucle explicitement nommée (« retour »).
+   reconnaissables (l'humain « Toi », l'agent, le fichier/système), une action par case, le
+   point d'entrée déclaré en premier, pas de flèche qui remonte le flux sauf boucle
+   explicitement nommée (« retour »). En `flowchart` : UNE direction (`TD` ou `LR`) tenue de
+   bout en bout. En `sequenceDiagram` : l'ordre des messages EST le sens de lecture — numérote
+   avec `autonumber` (`TD`/`LR` n'y existent pas).
 5. **Une comparaison = un face-à-face.** Deux `subgraph` jumeaux à structure interne identique
    (mêmes étapes, même ordre) ; Mermaid ne garantit pas l'alignement ligne-à-ligne — s'il compte
    plus que le dessin, un tableau markdown dans le README est un choix assumé.
 6. **Peu d'éléments, couleurs qui parlent.** ~5-7 nœuds pour un flux/mécanisme ; pour un type
-   structurel (org-chart, `erDiagram`, `gantt`), compte par niveau et **regroupe (`subgraph`)
-   avant de découper**. 2-3 couleurs max, chacune porteuse d'un sens constant (une couleur = un
-   acteur/rôle) ; la légende est un petit `subgraph` dédié, hors budget de nœuds — ou du texte
-   dans le README.
+   structurel (org-chart, `erDiagram`, `gantt`), compte par niveau et **regroupe avant de
+   découper** — avec le mécanisme du type (`subgraph` en flowchart, `section` en gantt ; un
+   `erDiagram` n'a pas de regroupement : scinde par domaine, cf. règle 1). 2-3 couleurs max,
+   chacune porteuse d'un sens constant (une couleur = un acteur/rôle) ; la légende est un petit
+   `subgraph` dédié (flowchart), hors budget de nœuds — ou du texte dans le README.
 7. **Le test final.** Relis le `.mmd` **étiquette par étiquette**, comme si tu découvrais le
    sujet : s'il faut une explication pour comprendre une case, reformule-la — ou sors-la du
    schéma (l'explication vit dans la prose). Le verdict visuel (densité, croisements) revient à
