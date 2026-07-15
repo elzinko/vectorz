@@ -1,6 +1,6 @@
 ---
 name: ezk-diagram
-argument-hint: "[help|add|list|edit|rm|dup]"
+argument-hint: "[help|add|list|edit|rm|dup|publish]"
 description: >-
   Transforme une DESCRIPTION EN PROSE en un diagramme VERSIONNÉ (Mermaid +
   image), itéré VERBALEMENT — sans jamais écrire de Mermaid à la main. A utiliser
@@ -38,6 +38,7 @@ le tout. **L'humain n'écrit jamais de Mermaid ni de YAML.**
 | `edit <slug>` | Reprend un diagramme : tu appliques une correction **verbale** → prose + code + image régénérés |
 | `rm <slug>` | Supprime `diagrams/<slug>/` (demande confirmation) |
 | `dup <slug> [<nouveau-slug>]` | Duplique un diagramme comme point de départ d'une variante |
+| `publish <slug>` | (Re)génère les vues partageables d'un diagramme : `README.md` rendu par GitHub + liens mermaid.live/ink |
 
 ## L'artefact — un triplet versionné par diagramme
 
@@ -46,7 +47,9 @@ diagrams/<slug>/
   description.md   # LA PROSE = source de vérité (ce que l'humain a dit)
   diagram.mmd      # diagram-as-code Mermaid (GÉNÉRÉ depuis la prose — ne pas éditer à la main)
   diagram.svg      # image (RENDUE depuis le .mmd par scripts/render.sh)
-  meta.yaml        # titre, date, type de diagramme, liens (géré par l'outil)
+  README.md        # vue partageable (GÉNÉRÉE depuis le .mmd par scripts/publish.sh) : bloc
+                   #   mermaid rendu NATIVEMENT par GitHub → ouvrir l'URL du dossier suffit à voir le schéma
+  meta.yaml        # titre, date, type, liens + share: (liens mermaid.live/ink) — géré par l'outil
 ```
 
 **Trois couches, chacune générée depuis celle du dessus** (Model → View-as-code → View-as-image) :
@@ -62,17 +65,24 @@ Pour `add` comme pour `edit`, déroule **toujours** :
 2. **Choisir le type Mermaid** adapté au sens : `flowchart` (flux/archi), `sequenceDiagram` (échanges),
    `stateDiagram-v2` (états), `classDiagram` (structures), `erDiagram`, `mindmap`, `gantt`… Ne force pas un flowchart si un autre type dit mieux la chose.
 3. **Générer le Mermaid** — écris/actualise `diagram.mmd`. C'est **ta capacité native** : aucune API, aucun service externe.
-4. **Rendre l'image** — lance le script déterministe :
+4. **Rendre l'image, puis publier les vues** — lance les scripts déterministes :
    ```bash
-   bash <skill>/scripts/render.sh diagrams/<slug>/diagram.mmd
+   bash <skill>/scripts/render.sh  diagrams/<slug>/diagram.mmd   # → diagram.svg
+   bash <skill>/scripts/publish.sh diagrams/<slug>               # → README.md (GitHub) + liens mermaid.live/ink
    ```
-   Il produit `diagram.svg`. **Fallback gracieux** : si `mmdc`/`npx` sont absents, le script garde le `.mmd`
-   et te le dit — tu proposes alors le rendu via un **MCP mermaid** ou l'outil **visualize** si disponible ;
-   sinon tu livres le `.mmd` (toujours lisible) et signales que l'image est en attente.
+   `render.sh` produit `diagram.svg`. `publish.sh` produit `README.md` (bloc mermaid rendu **NATIVEMENT
+   par GitHub** — la vue « ouvrir & visualiser » recommandée) et imprime sur stdout les lignes
+   `edit`/`view`/`img` (mermaid.live / mermaid.ink) — **capture-les** pour le meta (5) et la validation (6).
+   **Fallback gracieux** : si `mmdc`/`npx` sont absents, `render.sh` garde le `.mmd` et te le dit
+   (propose alors un **MCP mermaid** / l'outil **visualize**, ou livre le `.mmd`) ; si `node` est absent,
+   `publish.sh` écrit quand même le `README.md` (bloc mermaid seul) et saute les liens B.
 5. **Écrire la prose + le meta** — `description.md` (la prose validée) et `meta.yaml` (titre, date fournie
-   par l'humain ou `git log`, type de diagramme, liens éventuels). **Ne devine jamais la date** : demande-la si inconnue.
-6. **Valider** — montre le Mermaid + (si rendue) l'image, et **demande** : « c'est le diagramme voulu ? ».
-   L'humain corrige **verbalement** → retour en (1) sur le même slug. On ne fige rien tant que ce n'est pas validé.
+   par l'humain ou `git log`, type de diagramme, liens éventuels, **et un bloc `share:` avec les liens
+   `edit`/`img` capturés en (4)**). **Ne devine jamais la date** : demande-la si inconnue.
+6. **Valider** — montre le Mermaid + (si rendue) l'image, **donne les vues partageables** (l'URL du dossier
+   GitHub `diagrams/<slug>/`, qui rend le `README.md` inline, + le lien mermaid.live d'édition), et **demande** :
+   « c'est le diagramme voulu ? ». L'humain corrige **verbalement** → retour en (1) sur le même slug.
+   On ne fige rien tant que ce n'est pas validé.
 7. **Ranger (git)** — quand l'humain valide, **commit** le triplet (délègue à `ezk-commits` : `docs(diagram): <slug> …`).
    Tu ne fais pas de merge/push toi-même.
 
@@ -84,6 +94,7 @@ Pour `add` comme pour `edit`, déroule **toujours** :
 - **`edit <slug>`** — charge la prose + le .mmd existants, applique la **correction verbale**, régénère code + image, revalide (boucle).
 - **`rm <slug>`** — **confirme** puis supprime le dossier ; commit `docs(diagram): rm <slug>`.
 - **`dup <slug> [<nouveau-slug>]`** — copie le triplet vers un nouveau slug (défaut : `<slug>-copie`) comme base de variante ; ne rend pas tant qu'on n'édite pas.
+- **`publish <slug>`** — (re)génère les vues partageables **sans rien changer au diagramme** : lance `scripts/publish.sh diagrams/<slug>` → réécrit `README.md` (rendu GitHub) et te rend les liens mermaid.live/ink à surfacer. Utile pour publier un diagramme ancien, ou après un `git pull`.
 
 ## Garde-fous
 
@@ -91,7 +102,11 @@ Pour `add` comme pour `edit`, déroule **toujours** :
 - **La prose est la source de vérité** : si prose et .mmd divergent, la prose gagne — régénère le .mmd depuis elle.
 - **Descriptif d'abord** : le diagramme **documente/aide à comprendre** ; il ne *pilote* aucun comportement (pas de moteur d'exécution ici).
 - **Le LLM génère, le script rend** (ADR-0001) : la synthèse prose→Mermaid = toi ; Mermaid→image = `scripts/render.sh`. Ne réimplémente pas mmdc.
-- **Reste dans l'écosystème** : aucune donnée ne sort de la session (synthèse native + rendu local).
+- **Reste dans l'écosystème par défaut** : la synthèse (prose→Mermaid) et le rendu image sont **locaux**,
+  aucune donnée ne sort. **Exception opt-in assumée** — la vue B (`publish.sh` → liens mermaid.live / mermaid.ink)
+  encode le diagramme dans une URL de **service externe** : pratique pour partager/éditer vite, mais le
+  diagramme y voyage. La vue **sans service tiers reste le `README.md` rendu par GitHub** (vue A, recommandée) :
+  privilégie-la, et ne propose B que si l'humain veut éditer/partager en ligne.
 - **Ne devine ni date ni titre** : demande si inconnu (`meta.yaml`).
 - **Une seule responsabilité** : autorat de diagrammes versionnés. Pas le backlog (`ezk-backlog`), pas les commits (`ezk-commits`).
 
