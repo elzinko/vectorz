@@ -2,7 +2,7 @@
 id: 0032
 title: cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte)
 type: bug
-priority: P2
+priority: P1
 status: todo
 pr:
 created: 2026-07-15
@@ -38,3 +38,5 @@ priorité dans le help de la commande.
 
 - Origine : replay d'intégration étape 0 (2026-07-15), sprint fiche 0030. Priorité P2
   fixée par le PO au checkpoint du 2026-07-15.
+
+**2026-07-15** : promue P2 → P1 (panel de merge PR #10) — lot L1 de 0034, chemin critique de la démo 0030 (P1) : les fixes de fiabilité passent avant de rejouer la démo.
