@@ -83,6 +83,13 @@ describe('DaemonService', () => {
         '  sprint_max_tokens: 1000000',
         '  alert_thresholds: [50, 80, 95]',
         '  auto_pause: true',
+        // Budget RAM volontairement > RAM physique de toute machine : le
+        // câblage supervision ne doit PAS dépendre de la validation RAM
+        // (défaut 48GB > les 16GB des runners CI — cause du rouge historique
+        // sur main, même famille d'échec silencieux que la fiche 0033).
+        'resources:',
+        '  ram_budget_night_gb: 99999',
+        '  ram_budget_day_gb: 99999',
         'supervision:',
         `  watch_roots: ["${testDir.replace(/\\/g, '/')}"]`,
         '  presumed_dead_after_min: 5',
@@ -110,13 +117,19 @@ describe('DaemonService', () => {
     try {
       await wired.start();
 
+      // La découverte est normalement quasi immédiate (scan initial +
+      // debounce ~80ms), et `vi.waitFor` court-circuite dès succès : ce budget
+      // n'est PAS le temps attendu, c'est de la marge contre la famine CPU d'un
+      // runner CI chargé, où timers et polling dérivent bien au-delà de 2s
+      // (flake observé à ~2074ms, pile au mur de l'ancien budget). 10s de marge,
+      // happy-path toujours ~100ms.
       await vi.waitFor(
         async () => {
           const res = await fetch('http://127.0.0.1:14245/api/supervision/runs');
           const data = (await res.json()) as Array<{ runId: string }>;
           expect(data.some((snapshot) => snapshot.runId === 'run-a')).toBe(true);
         },
-        { timeout: 2000, interval: 30 },
+        { timeout: 10000, interval: 30 },
       );
     } finally {
       await wired.stop();

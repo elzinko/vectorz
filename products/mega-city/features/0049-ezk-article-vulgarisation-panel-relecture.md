@@ -2,7 +2,7 @@
 id: 0049
 title: ezk-article — skill d'écriture d'articles techniques vulgarisés (persona + panel de relecteurs frais)
 type: feature
-priority: P2
+priority: P1
 status: todo
 pr:
 created: 2026-07-13
@@ -86,3 +86,9 @@ Skill `ezk-article` (candidat), pilotable par sous-commandes (help, new, revise,
 - À groomer : nom définitif (`ezk-article` vs `ezk-vulgarise`), et si la boucle qualité
   mérite d'être un skill séparé réutilisable (panel de relecture générique) composé par
   celui-ci.
+- **Amendement 2026-07-15 (préparé par la fiche 0052 ezk-marketing, revue adverse)** :
+  ajouter aux entrées un **« style-guide additionnel » optionnel**, injecté dans le
+  brief (voix/leçons apprises — ex. l'artefact évolutif maintenu par ezk-marketing) ;
+  les règles d'écriture du skill restent invariantes, le style-guide externe s'ajoute
+  par-dessus sans les remplacer. NB : la 0052 (P1) DÉPEND de cette fiche — arbitrage
+  de priorité à prendre (lot 0049→0052 ?).

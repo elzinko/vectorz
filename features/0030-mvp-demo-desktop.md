@@ -52,7 +52,7 @@ vit dans l'**arbre principal** du projet supervisé, gitignoré d'office.
 - [ ] La mission-control l'affiche live, badge classe B + origine de chaque reprise visibles.
 - [ ] Le validateur 0027 est vert sur le dossier du run (ou la perte détectée est montrée).
 - [ ] Zéro `commands.jsonl` écrit ; zéro code executor touché (mode moniteur pur).
-- [ ] Checklist étape 0 rédigée et rejouable (un lecteur peut refaire la démo).
+- [x] Checklist étape 0 rédigée et rejouable (un lecteur peut refaire la démo) — `docs/demo-desktop-checklist.md`, rejouée en local (PR #3).
 
 ## Notes / décisions
 

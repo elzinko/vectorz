@@ -97,6 +97,15 @@ else
   echo "✓ installé (symlink live-update) → $LINK"
 fi
 
+# --- 4. catalogue : ajoute la ligne du skill si le dossier a un README de catalogue ------
+# Best-effort NON-DESTRUCTIF (ADR-0001 « le script range ») : deploy range un skill mais
+# l'index skills/README.md dérivait faute d'être mis à jour. Idempotent ; n'échoue JAMAIS
+# le deploy (le garde-fou CI catalog-readme.test.ts reste le filet de sécurité).
+CATALOG="$DEST_SKILLS_DIR/README.md"
+if [[ -f "$CATALOG" ]] && command -v node >/dev/null 2>&1; then
+  node "$SCRIPT_DIR/catalog-sync.mjs" "$DEST_SKILL" "$CATALOG" || true
+fi
+
 echo ""
 echo "Skill « $NAME » déployé."
 echo "→ Lance /reload-skills pour l'activer sans quitter la session ;"
