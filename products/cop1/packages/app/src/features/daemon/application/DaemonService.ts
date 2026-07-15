@@ -80,7 +80,12 @@ export class DaemonService {
     let watchRoots: string[] = [];
     let presumedDeadAfterMin = 5;
     try {
-      const config = new ConfigLoader().load(projectPath);
+      // skipRamValidation : le mode moniteur ne consomme que `supervision.*` ;
+      // le budget RAM (défaut 48GB > la RAM de la plupart des machines, dont
+      // les runners CI à 16GB) est une contrainte d'orchestration qui ne doit
+      // pas rendre la supervision silencieusement dormante (cf. fiche 0033).
+      // Même choix que orchestrator.ts et SprintRunner.ts.
+      const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
       watchRoots = config.supervision?.watch_roots ?? [];
       presumedDeadAfterMin = config.supervision?.presumed_dead_after_min ?? 5;
     } catch {

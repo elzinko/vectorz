@@ -44,3 +44,9 @@ Deux volets, cumulables :
 
 - Origine : replay d'intégration étape 0 (2026-07-15), sprint fiche 0030. Priorité P2
   fixée par le PO au checkpoint du 2026-07-15 (« à traiter avant la prochaine démo »).
+- 2026-07-15 : une manifestation supplémentaire corrigée — `DaemonService.wireSupervision`
+  chargeait la config SANS `skipRamValidation`, rendant la supervision (fiche 0031)
+  silencieusement dormante sur toute machine < 48 GB (dont les runners CI à 16 GB ⇒
+  `DaemonService.test.ts` rouge en CI, vert en local). Corrigé en alignant sur
+  orchestrator/SprintRunner (`skipRamValidation: true`). Les deux volets de CETTE fiche
+  (fail-fast CLI + défauts raisonnables) restent à faire.
