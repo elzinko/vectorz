@@ -29,6 +29,12 @@ Extraire une **primitive MINCE** `ezk-challenge` (nom candidat) que d'autres ski
 - **Laissé au consommateur** : le **choix des lentilles** et l'**artefact** sous revue.
 - **Séquence anti-abstraction-prématurée** : inline chez le 1er consommateur, extraire vers la
   primitive **au 2e** — ne centraliser d'abord que le gate + le registre.
+- **Contrat de composition (candidat retenu, 2026-07-15)** : une **option générique
+  `--challenge`** offerte par convention à tous les skills ezk-* — n'importe quelle
+  invocation peut demander que son artefact de sortie passe par le panel avant d'être
+  finalisé. Elle **ride la formalisation `composes` (0044)** plutôt que d'inventer sa
+  propre plomberie. Bonus contrat de supervisabilité (0050) : la gate du panel peut émettre
+  `gate.reached {outcome}` — la revue adverse devient elle-même un événement supervisable.
 
 ## Critères d'acceptation (esquisse)
 
@@ -37,13 +43,22 @@ Extraire une **primitive MINCE** `ezk-challenge` (nom candidat) que d'autres ski
 - [ ] `steelman` puis `red-team` sont des lentilles first-class du registre
 - [ ] Au moins 2 consommateurs la composent (candidats : grooming 0055, ezk-article 0049, ezk-reviewer 0031)
 - [ ] Décision documentée : primitive réutilisable vs étape interne — trancher au 2e consommateur
+- [ ] L'option générique `--challenge` est spécifiée comme convention d'invocation (ride 0044) ; détails affinés au 1er consommateur réel
+- [ ] Ligne rouge respectée : le registre de lentilles ne recopie PAS la bibliothèque de techniques BMAD (`methods.csv`) — voir Notes
 
 ## Notes
 
-- **Point ouvert (relevé par l'utilisateur)** : `ezk-challenge` est FAIT pour être **appelé par
-  d'autres skills** — le **contrat de composition** (comment un skill l'invoque, lui passe ses
-  lentilles, récupère le verdict) reste **à cadrer plus tard**. Ne pas le figer maintenant ;
-  le laisser émerger du 1er/2e consommateur réel.
+- **Contrat de composition (mis à jour 2026-07-15)** : `ezk-challenge` est FAIT pour être
+  **appelé par d'autres skills**. Candidat retenu : l'option générique `--challenge` (cf.
+  Proposition). Les détails (passage des lentilles, format du verdict) restent à affiner au
+  1er/2e consommateur réel — la convention est posée, pas figée.
+- **Pas une réinvention de la roue BMAD** (vérifié 2026-07-15) : l'*advanced elicitation*
+  BMAD est un menu **séquentiel** de techniques (1-5 en v6), **human-in-the-loop**, dans le
+  **même contexte** de conversation, à visée d'**enrichissement**. ezk-challenge est un panel
+  **parallèle** en contextes **frais** (verdicts indépendants, sans ancrage), automatisable,
+  à visée de **véto** (gate). Composant absent de BMAD, composable avec lui. **Ligne rouge** :
+  si le registre de lentilles se met à cataloguer des dizaines de techniques d'élicitation,
+  il recopie `methods.csv` de BMAD → stop.
 - Substrats voisins qui partagent le shape (à ne pas réimplémenter) : `deep-research`
   (adversarially verify), skill `verify`, pattern adversarial-verify des workflows.
 - Origine : discussion session 2026-07-15. Lié à 0049 (qui flague déjà l'extraction du panel)
