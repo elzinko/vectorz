@@ -25,14 +25,15 @@ web pointent sur des API inexistantes (404).
    (completed/aborted/escalated), tokens.
 3. Ventilation budget par agent/commande depuis le YAML journalier (+ conversion $ si
    maxUsdPerSession est configuré).
-4. Réparer ou retirer les onglets 404 (Projects/Agents/Tasks) — pas de promesse morte dans
-   l'UI.
+4. ~~Réparer ou retirer les onglets 404 (Projects/Agents/Tasks) — pas de promesse morte dans
+   l'UI.~~ **FAIT** — onglets retirés (`web/src/App.tsx` référence cette fiche ; constat
+   panel 0034, 2026-07-15).
 
 ## Critères d'acceptation
 - [ ] un run affiche heure de départ, durée live, agent courant
 - [ ] l'historique liste les N derniers runs avec issue et coût tokens
 - [ ] la ventilation par agent est visible pour la journée courante
-- [ ] plus aucun onglet ne pointe sur une API inexistante
+- [x] plus aucun onglet ne pointe sur une API inexistante (onglets retirés — `App.tsx`)
 
 ## Notes / décisions
 Aucune nouvelle collecte : uniquement lecture des fichiers/events existants.
