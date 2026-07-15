@@ -1,0 +1,265 @@
+---
+id: 0034
+title: Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)
+type: refactor
+priority: P0
+status: todo
+pr:
+created: 2026-07-15
+---
+
+# 0034 — Mise à plat post-pivot (épic)
+
+## Contexte / Problème
+
+Le pivot est acté sur le papier — ontologie 7 briques / 3 ports (ADR-022), seam exécuteur
+(ADR-026), umbrella Vectorz (ADR-027), mode moniteur nominal (ADR-028 + capture
+2026-07-14) — mais le code et les docs sont ceux du clone cop1 pré-pivot : méthode BMAD
+en dur dans le cœur, périphérie morte dans le graphe de prod, README « Morpheus / drives
+BMAD », statuts ADR non consolidés. Risque : chaque nouveau lot construit sur un socle
+qui contredit les décisions. Cette fiche est l'épic **P0** qui met tout à plat : écarts
+sourcés, lots séquencés (1 PR/lot), schémas partagés pour valider la direction.
+
+Synthèse produite par lecture exhaustive (ADR-015→028, fiches actives, docs vivants,
+ADR mega-city, cartographie du code) + passe de vérification adversariale (3 lenses) le
+2026-07-15. Les faits marquants vérifiés en repo :
+
+- **ADR-021 est mergé** (commit `3cb9db2`, PR #48) mais toujours stampé « Proposé » — la
+  fiche 0024 (« vit dans une branche non mergée ») était périmée, corrigée dans cette passe.
+- **Le garde-fou de frontière existe déjà** : `tools/boundary/boundary.test.ts` (scan
+  vitest bidirectionnel cop1 ⇸ mega-city, dans le `pnpm test` racine) — la question D4
+  d'ADR-027 est de facto tranchée « test vitest maison » ; L2 le durcit au lieu de le créer.
+- **E6-S2 (ContainerRuntimePort/DockerDesktopAdapter) est déjà supprimé** (commit
+  `d200f0e`, PR #55) — reste à re-stamper ADR-024.
+- **Aucun `dist/` ni `node_modules` commité** (les `dist/` visibles localement sont
+  non-trackés) ; en revanche **`_bmad/` (27 fichiers) est commité à la racine** de
+  l'umbrella et son sort n'était traité nulle part (→ décision ouverte D9).
+- AI-7 d'ADR-027 (re-bind symlinks `~/.claude`) : **fait**. AI-3 (gel des originaux :
+  tag `cop1-pre-vectorz` + README pointeur) : **à vérifier dans les repos d'origine**.
+
+## L'état cible (projection ADR-022 × ADR-027)
+
+> Le nœud Superviseur porte la **révision DP8** (capture 2026-07-14 : « octroie des
+> clairances », pas « tire & dispatche ») — c'est l'état **post-L4**, pas ADR-022 tel
+> qu'écrit aujourd'hui. Briques 5 (Cadre) et rôles (6) côté cop1 : différés, en pointillé.
+
+```mermaid
+flowchart TD
+  subgraph VZ["Vectorz — umbrella neutre ADR-027"]
+    subgraph CP["products/cop1 — control plane"]
+      SUP["Brique 1 — Superviseur<br/>octroie des clairances : budget, gates,<br/>escalade, concurrence (révision DP8, post-L4)"]
+      ASP["Brique 2 — AgentSessionPort<br/>ADR-026"]
+      MP["Brique 3 — Method/Task port<br/>ex SprintStatusPort promu<br/>(nomme/séquence les rôles — brique 6)"]
+      RP["Rules port — seam DoDCheck ADR-020<br/>(impl : mega-city = brique 4)"]
+      PRF["Brique 7 — Profile<br/>composition du run"]
+      CAD["Brique 5 — Cadre/Contexte<br/>connaissance projet + entreprise"]
+      MON["Surface moniteur ADR-028<br/>lecture .supervision read-only"]
+      WEBUI["mission-control web<br/>badge classe B"]
+    end
+    subgraph MC["products/mega-city — gouvernance : brique 4 + agents/skills (partie 6)"]
+      LOI["LA LOI : rules + bundles"]
+      EQP["L'ÉQUIPE : agents + skills"]
+      CAPC["caps/cop1 — bind"]
+      EMIT["MCP émetteur contrat v0.1<br/>5 outils"]
+    end
+  end
+  CLSDK["Adapter Claude SDK"] --> ASP
+  STUB["StubExecutor zéro LLM"] --> ASP
+  OLLA["Ollama — différé"] -.-> ASP
+  BMADA["Adaptateur méthode BMAD"] --> MP
+  AUTM["Autres méthodes — différé"] -.-> MP
+  PRF --> SUP
+  CAD -.->|"nourrit (différé)"| SUP
+  SUP --> ASP
+  SUP --> MP
+  SUP --> RP
+  LOI --> CAPC
+  EQP --> CAPC
+  CAPC -->|"iamthelaw/*.yaml générés,<br/>committés, read-only"| RP
+  DESK["Claude Desktop — manager"] --> EMIT
+  EMIT -->|".supervision/runs events.jsonl"| MON
+  MON --> WEBUI
+```
+
+## L'état courant (zones à résorber marquées)
+
+> Légende : rouge = legacy pré-pivot à sortir du graphe de prod ; jaune = transitionnel
+> (à généraliser, pas à supprimer) ; gris pointillé = manquant. Dépendances vers
+> shared-kernel/observability omises pour la lisibilité (quasi tous en dépendent).
+
+```mermaid
+flowchart TD
+  subgraph VZ["Vectorz — layout ADR-027 en place"]
+    subgraph CP["products/cop1/packages"]
+      APP["app — CLI, OrchestratorService, daemon,<br/>supervision ADR-028, DefaultBMADCommandRunner"]
+      SC["sprint-core — workflow, BMADSessionPort<br/>+ 2 adapters Claude-only, méthode BMAD en dur,<br/>agents legacy deprecated, TokenBudgetService dormant"]
+      CE["ceremony-engine — cérémonies scrum,<br/>importé par personne"]
+      QI["quality-intelligence — gates qualité,<br/>export .js vers .ts fragile"]
+      LLMI["llm-intelligence — routing LLM"]
+      OBS["observability"]
+      SHK["shared-kernel — flag useBMAD deprecated"]
+      JV["journal-validator — contrat v0.1"]
+      WEBUI["web — mission-control,<br/>onglets 404 Projects/Agents/Tasks"]
+    end
+    subgraph MC["products/mega-city"]
+      EMIT["src/supervision — kit émetteur MCP (0050)"]
+      NOCAP["caps/cop1 — inexistant, fiche 0016 gelée"]
+    end
+  end
+  DESK["Claude Desktop"] --> EMIT
+  EMIT -->|".supervision/runs events.jsonl"| APP
+  APP --> SC
+  APP --> QI
+  APP --> LLMI
+  APP --> JV
+  APP --> OBS
+  APP -.->|"dependency déclarée<br/>jamais importée"| CE
+  SC -->|"QualityGatePort type-only"| QI
+  LLMI -->|"layering inversé à corriger"| SC
+  CE --> LLMI
+  WEBUI -->|"HTTP/SSE"| APP
+  classDef legacy fill:#f8d7da,stroke:#c0392b,color:#111
+  classDef transit fill:#fff3cd,stroke:#b7791f,color:#111
+  classDef manquant fill:#e2e3e5,stroke:#6c757d,color:#111,stroke-dasharray:4 3
+  class CE,QI legacy
+  class SC,LLMI transit
+  class NOCAP manquant
+```
+
+## Les écarts (courant → cible, sourcés)
+
+| # | Écart | Courant | Cible | Réfs |
+|---|-------|---------|-------|------|
+| 1 | Seam exécuteur Claude-only | `BMADSessionPort` + 2 adapters Claude ; sélection dupliquée `sprint-run.ts`/`orchestrator.ts` ; pas de StubExecutor ni d'allowlist SDK | `AgentSessionPort` + factory `createAgentSessionAdapter(env)` (`COP1_EXECUTOR` sdk\|resume\|stub), StubExecutor, allowlist testée. Nuance capture Q4 : le journal au contrat **est** l'event-stream seam — la démo prouve l'agent-indépendance côté moniteur par un chemin plus court ; le StubExecutor reste la preuve exécutable côté pilote | ADR-026, 0020, ADR-022 (2) |
+| 2 | Périphérie pré-pivot dans le graphe de prod | `ceremony-engine` (dependency morte d'app), `quality-intelligence` (importé par app + sprint-core) | plus aucun import prod ; méthode → Method port, qualité → seam DoDCheck | 0024, ADR-022, ADR-020 |
+| 3 | Méthode BMAD en dur dans le cœur | ~59 fichiers prod mentionnent BMAD ; `SprintStatusPort` = Method port « en germe » | BMAD = **une** implémentation du Method/Task port générique. **À généraliser, PAS à supprimer** : ADR-026 garde explicitement `bmad-orchestration/` | ADR-022 (3), ADR-026 non-buts |
+| 4 | Layering inversé | `llm-intelligence` (brique 1) dépend de `sprint-core` (méthode) | routing LLM sans dépendance au package méthode ; tiering → donnée du Profile à terme | ADR-022 (1), ADR-015 |
+| 5 | Statuts ADR non consolidés | ADR-021 mergé mais « Proposé » ; ADR-022 WIP avec brique 1 caduque (revue 14/07) ; ADR-027 « Proposé » exécuté de fait ; ADR-025 sans bandeau « révisé par ADR-027 » | tout statué en une passe coordonnée (fenêtre DP8) | capture 2026-07-14, 0024 |
+| 6 | Garde-fous CI partiels | `tools/boundary` **existe** (scan bidirectionnel) ; manquent : jobs `--filter` par produit, check « config générée committée », allowlist SDK | acquis durci + les 3 manques câblés | ADR-025 §3, ADR-027 §5 |
+| 7 | Frontière mega-city non matérialisée | cop1 lit `iamthelaw/*.yaml` mais personne ne l'écrit ; `caps/cop1` inexistant (0016 gelée) | `bind` → `global.yaml` généré, commité, read-only ; enforcements → DoDCheck | ADR-021, mega-city 0016/0010 |
+| 8 | Docs de surface périmés | README « Morpheus / drives BMAD » (avril) ; `docs/index.md` sans ADR ≥ 015 ; GETTING_STARTED + USER-GUIDE-web-ui avec chemins `packages/*` cassés ; brownfield-snapshot supersédé | README Vectorz + README/produit ; index refondé ; snapshot archivé après re-port du drift ledger ; pilote étiqueté « différé », moniteur « nominal » | ADR-027, ADR-028, capture |
+| 9 | Dette actée non résorbée | `TokenBudgetService` dormant ; `useBMAD` + agents legacy `@deprecated` ; onglets 404 web ; vestiges `docker-compose.yml` (Ollama ADR-005) et `scripts/ea13-real-run.sh` ; `_bmad/` racine non statué | purge/tranchage lot par lot | ADR-017, ADR-024, 0022 |
+| 10 | Config daemon incohérente | 0032 (`daemon.port` ignoré), 0033 (RAM : fail-fast CLI + défauts restants — le volet `wireSupervision` est déjà corrigé) | config déclarée = comportement ; défauts sûrs | 0032, 0033 |
+
+## Proposition — lots séquencés (1 PR par lot)
+
+```mermaid
+flowchart LR
+  L1["L1 — Fiabiliser la démo<br/>fiches 0032 + 0033 + audit config"]
+  L2["L2 — Durcir les garde-fous CI<br/>ADR-025 s3 / ADR-027 s5"]
+  L3["L3 — Docs de surface<br/>README, index, archive snapshot"]
+  DEMO{{"JALON : démo Desktop jouée<br/>fiche 0030 — ouvre la fenêtre DP8"}}
+  L4["L4 — Consolidation ADR<br/>statuer 021, réviser 022 — fiche 0024 volet ADR"]
+  L5["L5 — Résorption périphérie<br/>ceremony-engine + quality-intelligence — fiche 0024"]
+  L6["L6 — Executor seam ADR-026<br/>rename + StubExecutor — fiche 0020"]
+  L7["L7 — Layering llm-intelligence"]
+  L8["L8 — Dette actée<br/>TokenBudgetService, agents legacy,<br/>vestiges, onglets 404 — fiche 0022 v4"]
+  L9["L9 — Cap cop1 mega-city<br/>fiche mega-city 0016"]
+  L10["L10 — DoDLimiter wiring<br/>fiche 0018"]
+  EXT["externe : schéma mega-city stabilisé<br/>fiches mega-city 0012 + 0044"]
+  L1 --> DEMO
+  DEMO --> L4
+  DEMO --> L6
+  L4 --> L5
+  L4 --> L9
+  L2 --> L9
+  L5 --> L7
+  L6 --> L7
+  L4 -.->|"recommandé : ADR-022<br/>révisé d'abord"| L6
+  L6 -.->|"volet agents legacy<br/>seulement"| L8
+  L6 -.->|"séquencement proposé<br/>(non exigé par les réfs)"| L10
+  EXT -.-> L9
+  L2 -.->|"protège"| L5
+  L3 -.->|"prépare"| L4
+```
+
+- **L1 — Fiabiliser la démo** (pré-démo, immédiat) : 0032 (honorer `daemon.port` ou le
+  retirer du schéma) ; 0033 (fail-fast RAM < 2 s + défauts raisonnables — le volet
+  `wireSupervision` est déjà corrigé) ; audit `cop1.config.example.yaml` champs morts
+  (`llm_routing` pré-pivot) vs vivants (`supervision.*`) ; alléger la checklist §4.
+- **L2 — Durcir les garde-fous CI** (indépendant) : promouvoir `tools/boundary` en step
+  CI nommé + jobs `pnpm --filter` build/test autonomes par produit (la CI n'a que
+  typecheck+test ; host-agnosticité de mega-city prouvée mécaniquement) ; poser
+  l'allowlist des imports `@anthropic-ai/claude-agent-sdk` (état actuel, durcie en L6) ;
+  le check « config générée committée et à jour » est **différé jusqu'à L9** (personne
+  n'écrit encore le fichier).
+- **L3 — Docs de surface** (zéro code, indépendant) : README racine = README **Vectorz**
+  (umbrella, 2 produits co-égaux) + `products/cop1/README.md` ; refonder `docs/index.md`
+  (colonne vertébrale ADR-015→028, captures, checklist) ; corriger les chemins
+  `packages/*` → `products/cop1/packages/*` dans running-cop1, supervisor-playbook,
+  **GETTING_STARTED, USER-GUIDE-web-ui** ; archiver brownfield-snapshot avec bandeau
+  **après** re-port en fiches des items ouverts du drift ledger (double-writer
+  sprint-status §10.5) ; documenter la frontière `.cop1/` = état runtime piloté (ADR-019)
+  vs `.supervision/` = journal observé, arbre du projet supervisé, gitignoré (ADR-028 +
+  capture DP6) — repos potentiellement différents.
+- **L4 — Consolidation ADR** (fenêtre DP8, post-démo) : **statuer** ADR-021
+  Proposé → Accepté (il est déjà mergé — bloqueur (b) de mega-city 0016) ; réviser
+  ADR-022 en une passe (brique 1 → « octroie des clairances », EscalationPort différé,
+  WIP → Proposé), coordonné avec le volet ADR de 0024 ; re-stamper ADR-027 et ajouter le
+  bandeau « révisé par ADR-027 » dans ADR-025 ; trancher la politique par défaut
+  `iamthelaw/global.yaml` absent (question ADR-020) avant que mega-city devienne l'écrivain.
+- **L5 — Résorption périphérie** (= cœur de 0024, après L4) : sortir `ceremony-engine`
+  (dependency morte) et `quality-intelligence` (via seam DoDCheck ; relocaliser les
+  config-templates d'InitService) du graphe de prod ; ~850 tests verts ; débloque
+  mega-city 0016.
+- **L6 — Executor seam** (= 0020 + ADR-026 ; post-démo recommandé, **parallélisable**
+  d'après la capture Q4 — pas dans le groupe DP8 strict) : rename mécanique
+  `BMADSessionPort` → `AgentSessionPort` (~7 sources + ~7 tests + 2 entrypoints CLI +
+  PipelineStepFactory ≈ 17 fichiers, zéro changement de comportement) ; factory partagée ;
+  `InMemorySessionAdapter` promu StubExecutor (vérifier `session.workflow.completed` +
+  `tokensUsed`, preuve budget ADR-017) ; durcir l'allowlist SDK ; preuve = épic-jouet de
+  bout en bout zéro ligne de Claude. **Ne pas toucher** : `bmad-orchestration/`,
+  AuthChecker, toolCatalog, SupervisorMcpServer (gardés explicitement par ADR-026).
+- **L7 — Layering llm-intelligence** (après L5+L6) : casser `llm-intelligence →
+  sprint-core` ; recâbler `sprint-status.ts`/`PipelineStepFactory.ts` ; propager le rename.
+- **L8 — Dette actée** (petits lots indépendants) : supprimer `TokenBudgetService`
+  (acté ADR-017) ; trancher le sort de `useBMAD=false` + agents legacy après L6 (quand le
+  StubExecutor offre le repli non-Claude) ; re-stamper ADR-024 (E6-S2 déjà supprimé,
+  PR #55) ; purger les vestiges `docker-compose.yml` (Ollama) et `scripts/ea13-real-run.sh`
+  (à auditer) ; onglets 404 web (0022 volet 4, arbitré avec 0031).
+- **L9 — Cap cop1 mega-city Phase 1** (= mega-city 0016 ; après L4 + L2, externe :
+  mega-city 0012 + 0044 — 0006 et 0039 sont déjà livrées) : `bind` → WritePlan pur
+  byte-for-byte, `iamthelaw/global.yaml` commité read-only ; enforcements → DoDCheck ;
+  `IamTheLawLoader` stabilisé, pas remplacé ; activer le check L2 différé.
+- **L10 — DoDLimiter** (= 0018 ; il est **non câblé** aujourd'hui — personne ne
+  l'instancie) : boucle de retry par story (follow-up ADR-016, seule dépendance sourcée)
+  puis N rejets → blocked + escalade ; le séquencement après L6 est un **choix proposé
+  ici**, pas une exigence des réfs.
+
+## Critères d'acceptation
+
+- [ ] Chaque lot L1→L10 est traçable : fiche existante rattachée ou fiche fille créée, 1 PR par lot
+- [ ] L4 : ADR-021 Accepté, ADR-022 révisé/Proposé (brique 1 « clairances »), ADR-025 bandeau, ADR-027 re-stampé, ADR-024 re-stampé
+- [ ] L5 : plus aucun package du graphe de prod n'importe ceremony-engine ni quality-intelligence ; tests verts
+- [ ] L6 : épic-jouet complet (budget, gates, SSE, escalade, worktrees) exécuté avec StubExecutor, zéro ligne Claude ; allowlist SDK verte
+- [ ] L2 : CI prouve la host-agnosticité (jobs filtrés par produit verts isolément) + boundary en step nommé
+- [ ] L3 : README Vectorz + index refondé + zéro chemin `packages/*` cassé dans les docs vivants ; snapshot archivé après re-port du drift ledger
+- [ ] Les décisions ouvertes D1→D9 ci-dessous sont tranchées (ou explicitement re-différées) au fil des lots
+- [ ] Gate locale verte (typecheck/lint/tests) à chaque lot ; E2E si UI
+
+## Notes / décisions ouvertes (arbitrage humain)
+
+- **D1 — Déclencheur DP8** : « la démo 0030 jouée » (capture 14/07) — reste à préciser le
+  critère opérationnel de « jouée ». (« 3 runs réels » gate DP7/0028 et la v0.2, pas L4/L6.)
+- **D2 — TENSION nommage de branche vs ADR** : la branche courante s'appelle
+  `claude/remove-bmad-files` mais ADR-026 (source la plus récente) **garde**
+  `bmad-orchestration/` et ne purge que le *nom* du port ; ADR-022 dit « généraliser
+  derrière les ports », pas supprimer. Retenu ici : généraliser, pas supprimer.
+- **D3 — quality-intelligence** : suppression vs relégation derrière Rules port + où
+  relocaliser les config-templates (L5).
+- **D4 — ceremony-engine** : suppression pure ou gel derrière Method port (à acter à l'ADR en L4).
+- **D5 — ADR-027 Q1/Q3/Q4** : nom `cop1` vs nom « tour » ; turbo maintenant ou à la
+  douleur ; confirmer le scan vitest maison (de facto en place) vs dependency-cruiser.
+- **D6 — useBMAD + agents legacy** : aucune ADR n'acte leur suppression — trancher après L6.
+- **D7 — Double-writer sprint-status.yaml** (snapshot §10.5) : jamais tranché — re-porter
+  en fiche avant archivage du snapshot (L3).
+- **D8 — 0022 vs 0031** : une seule vue runs dans la mission-control ou deux sources
+  (SSE legacy vs journal `.supervision`) — re-cadrer post-démo.
+- **D9 — `_bmad/` racine (27 fichiers commités) et `_bmad-output/` (225)** : migrer sous
+  `products/cop1/`, garder à la racine, ou purger (réinstallable via `bmad install`) —
+  aucun texte ne le statue aujourd'hui.
+- Hors-lots volontaires : 0017 (blocked), 0028 (P3, gate « 3 runs réels »), 0029 (parking v0.2).
+- AI-3 ADR-027 (gel des originaux cop1/mega-city : tag + README pointeur) : à vérifier
+  dans les repos d'origine — hors de ce repo.
+- Vérifs négatives consignées : zéro `dist/`/`node_modules` commité ; zéro résidu
+  `megacity.pin` (ADR-023) ; re-bind symlinks (AI-7) fait.
