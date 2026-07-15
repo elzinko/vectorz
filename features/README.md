@@ -31,6 +31,9 @@
 | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo |  |
 | 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | ✅ shipped | #57 |
 | 0026 | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 | ✅ shipped | #59 |
+| 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | 🔴 todo |  |
+| 0039 | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | 🔴 todo |  |
+| 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 | ✅ shipped | #45 |
 | 0007 | V1.1 — format de session log + discipline de commit | chore | P3 | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | ✅ shipped | #40 |
