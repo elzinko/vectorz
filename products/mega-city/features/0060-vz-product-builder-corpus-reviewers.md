@@ -20,7 +20,8 @@ au lieu d'interrompre l'humain. Contraintes posées par le PO :
 - **Ne pas toucher aux skills ezk-\*** (sa prod) → préfixe distinct `vz-`, skill **overlay**.
 - Les **4 STOP humains** (ADR-0011 §3) restent non automatisables.
 - Un panel coûte cher (~0,4-1M tokens) → **échelle de coût de décision** à 3 crans
-  (l'idée « hybrid decision cost-ladder » de la fiche 0034).
+  (l'idée « hybrid decision cost-ladder » de la revue du 2026-07-14,
+  `docs/captures/2026-07-14-revue-groupe-deux-sieges.md`).
 
 ## Proposition
 
@@ -45,8 +46,19 @@ contrat** (critère de la fiche 0050).
 ## Notes / décisions
 
 - Origine : demande PO 2026-07-14 (« avancer sans répondre à mes questions » + « autre
-  préfixe pour ne pas écraser mes skills »). Compose : fiche 0050 (kit émetteur, mergée
-  PR #8), fiche 0034 (cost-ladder), fiche 0033 (siège échangeable), revue cop1
-  2026-07-14 (modèle un-siège/deux-autorités : le corpus = la policy du point de décision
-  MÉTHODE ; le régalien humain/cop1 n'est pas touché).
+  préfixe pour ne pas écraser mes skills »). Compose : fiche 0050 (kit émetteur,
+  in-progress) et la revue cop1 du 2026-07-14
+  (`docs/captures/2026-07-14-revue-groupe-deux-sieges.md`), d'où viennent l'échelle de
+  coût de décision (cost-ladder), le modèle de siège échangeable et le modèle
+  un-siège/deux-autorités (le corpus = la policy du point de décision MÉTHODE ; le
+  régalien humain/cop1 n'est pas touché).
 - Préfixe `vz-` = signature Vectorz ; renommable par le PO.
+
+## Suivi (dette connue)
+
+- Depuis la création de cette fiche, `main` a extrait **0057 `ezk-challenge`** — la
+  primitive réutilisable de panel adversarial (relecteurs frais, une-lentille-par-agent,
+  gate de contre-lecture, registre de lentilles). Le **cran-3 (corpus)** ci-dessus doit
+  à terme **composer 0057** (via la formalisation `composes`, fiche 0044) au lieu de
+  réimplémenter le panel inline. Non bloquant pour le POC ; à traiter au 2ᵉ temps —
+  0057 recommande elle-même de ne centraliser la primitive qu'ensuite.

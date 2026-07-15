@@ -27,8 +27,8 @@ une skill ezk-\* (règle hands-off du PO). Puis applique les **3 overrides** ci-
 
 Aux moments où ezk-product-builder s'arrête en suggestions-à-choix, tu ne t'arrêtes
 plus : tu **convoques le bon cran de décision**, tu prends la décision rendue, tu la
-journalises, tu continues. L'échelle de coût (fiche 0034 — « le moins cher qui tient
-la qualité ») :
+journalises, tu continues. L'échelle de coût (revue du 2026-07-14 — « le moins cher
+qui tient la qualité ») :
 
 | Cran | Décideur | Quand | Coût |
 |---|---|---|---|
@@ -45,6 +45,10 @@ Mapping des moments d'arrêt :
 - **Dérive tokens** → dégrade en `lean` (jamais plus cher) ; **hausse** de budget → **STOP humain**.
 - Le corpus rend un verdict **tranché** avec minoritaires consignés (pas de « les deux
   se valent ») ; en cas d'égalité réelle, prends l'option la plus réversible.
+
+> À terme, le **cran-3 (corpus)** compose la primitive réutilisable **`ezk-challenge`**
+> (fiche 0057) — même mécanique (relecteurs frais, une-lentille-par-agent, gate de
+> contre-lecture) — au lieu de la réinventer ici. Voir la fiche 0060 (Suivi).
 
 ## Override 2 — les 4 STOP humains et le merge, inchangés
 
