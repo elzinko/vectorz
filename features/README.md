@@ -6,7 +6,7 @@
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0034 | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | refactor | P0 | 🔴 todo |  |
-| 0035 | Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034) | chore | P0 | 🔴 todo |  |
+| 0035 | Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034) | chore | P0 | ✅ shipped | #12 |
 | 0001 | Story B — lanceur de run + mission-control live | feature | P1 | ✅ shipped | #24 |
 | 0002 | Fix emplacement du worktree en session concurrente | bug | P1 | ✅ shipped | #26 |
 | 0013 | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 | ✅ shipped | #33 |
@@ -43,4 +43,4 @@
 | 0028 | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 | 🔴 todo |  |
 | 0029 | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | idea | P3 | 🔴 todo |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0035.

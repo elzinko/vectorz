@@ -3,8 +3,8 @@ id: 0035
 title: Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034)
 type: chore
 priority: P0
-status: todo
-pr:
+status: shipped
+pr: "#12"
 created: 2026-07-15
 ---
 
