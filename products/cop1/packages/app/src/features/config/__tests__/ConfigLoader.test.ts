@@ -16,7 +16,8 @@ describe('ConfigLoader', () => {
       `cop1-config-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     );
     mkdirSync(testDir, { recursive: true });
-    loader = new ConfigLoader({ skipRamValidation: true });
+    // RAM injectée : les attentes 48/20 restent déterministes quelle que soit la machine (CI 16 GB)
+    loader = new ConfigLoader({ skipRamValidation: true, totalMemGbOverride: 128 });
   });
 
   afterEach(() => {
@@ -172,8 +173,56 @@ resources:
 `;
     writeFileSync(join(testDir, 'cop1.config.yaml'), yaml);
 
-    const strictLoader = new ConfigLoader({ skipRamValidation: false });
+    const strictLoader = new ConfigLoader({ skipRamValidation: false, totalMemGbOverride: 16 });
     expect(() => strictLoader.load(testDir)).toThrow(ConfigValidationError);
+  });
+
+  describe('clamp des défauts RAM à la machine (fiche 0033, volet 2)', () => {
+    it('config vierge sur 16 GB : les DÉFAUTS (48/20) sont clampés à la RAM détectée', () => {
+      const l = new ConfigLoader({ skipRamValidation: true, totalMemGbOverride: 16 });
+      const config = l.load(testDir); // aucun fichier
+      expect(config.resources.ram_budget_night_gb).toBe(16);
+      expect(config.resources.ram_budget_day_gb).toBe(16);
+    });
+
+    it('grosse machine : défauts inchangés (48/20)', () => {
+      const l = new ConfigLoader({ skipRamValidation: true, totalMemGbOverride: 128 });
+      const config = l.load(testDir);
+      expect(config.resources.ram_budget_night_gb).toBe(48);
+      expect(config.resources.ram_budget_day_gb).toBe(20);
+    });
+
+    it('machine minuscule : le clamp respecte le plancher du schéma (4)', () => {
+      const l = new ConfigLoader({ skipRamValidation: true, totalMemGbOverride: 2 });
+      const config = l.load(testDir);
+      expect(config.resources.ram_budget_night_gb).toBe(4);
+      expect(config.resources.ram_budget_day_gb).toBe(4);
+    });
+
+    it("une valeur POSÉE par l'utilisateur n'est jamais clampée : validation stricte → erreur nommant champ, valeur et RAM", () => {
+      writeFileSync(join(testDir, 'cop1.config.yaml'), 'resources:\n  ram_budget_night_gb: 48\n');
+      const strict = new ConfigLoader({ skipRamValidation: false, totalMemGbOverride: 16 });
+      expect(() => strict.load(testDir)).toThrow(ConfigValidationError);
+      try {
+        strict.load(testDir);
+      } catch (err) {
+        const msg = String(err);
+        expect(msg).toContain('ram_budget_night_gb');
+        expect(msg).toContain('48');
+        expect(msg).toContain('16');
+      }
+    });
+
+    it('les défauts clampés passent la validation stricte (plus de fail sur config vierge)', () => {
+      const strict = new ConfigLoader({ skipRamValidation: false, totalMemGbOverride: 16 });
+      expect(() => strict.load(testDir)).not.toThrow();
+    });
+
+    it('symétrie : ram_budget_day_gb posé par l utilisateur > RAM → erreur stricte', () => {
+      writeFileSync(join(testDir, 'cop1.config.yaml'), 'resources:\n  ram_budget_day_gb: 32\n');
+      const strict = new ConfigLoader({ skipRamValidation: false, totalMemGbOverride: 16 });
+      expect(() => strict.load(testDir)).toThrow(/ram_budget_day_gb/);
+    });
   });
 
   it('should require llm_routing.default when llm_routing has entries', () => {

@@ -125,13 +125,14 @@ et pas ailleurs, que `supervision.watch_roots` doit être configuré.
 > 4242 par défaut. Une config invalide n'empêche pas le démarrage : warn
 > visible + port par défaut.
 
-> ⚠️ **Piège rencontré au replay** : `resources.ram_budget_night_gb` (défaut
-> 48) et `resources.ram_budget_day_gb` (défaut 20) sont validés contre la RAM
-> physique de la machine au chargement (`ConfigLoader`) — sur une machine avec
-> moins de RAM que ces défauts, `cop1 start` échoue silencieusement au
-> démarrage du daemon (le process meurt, `waitForHealth` finit par timeout
-> après 30 s). Sur un poste de démo modeste, réduire ces deux valeurs (ex. `4`
-> et `4`, le minimum accepté) dans `cop1.config.yaml`.
+> ✅ **Règle (depuis la fiche 0033)** : les **défauts** `ram_budget_*` sont
+> clampés à la RAM détectée — une config vierge démarre sur n'importe quel
+> poste, plus rien à ajuster pour la démo. Si vous **posez** vous-même une
+> valeur qui excède la RAM physique, `cop1 start` échoue **immédiatement**
+> avec un message nommant le champ, la valeur et la RAM détectée (plus de
+> timeout muet de 30 s). En cas d'échec de démarrage pour une autre cause,
+> la sortie du daemon est dans `.cop1/daemon.log` et les dernières lignes
+> sont affichées par la commande.
 
 - [ ] Choisir/créer le **dossier cop1** (là où tourne le daemon — peut être la
       racine du clone `vectorz`, ou un dossier dédié). S'y placer :
