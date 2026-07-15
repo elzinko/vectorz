@@ -1,6 +1,10 @@
 # ADR-025 — Co-développement cop1 + mega-city dans un seul monorepo (option E)
 
 **Statut :** Proposé (2026-07-13)
+**Révisé par :** [ADR-027](ADR-027-vectorz-umbrella-monorepo.md) (2026-07-14) — remplace
+la Décision §1 (« mega-city = workspace package du repo cop1, `mega-city/` à la racine »)
+par l'umbrella neutre E′ (`products/*`, produits co-égaux) ; le reste (§2→§6) tient.
+*(Back-ref posé par la fiche 0035, 2026-07-15.)*
 **Déciders :** elzinko
 **Révise :** [ADR-023](ADR-023-cop1-megacity-packaging-lifecycle.md) — remplace sa Décision §1
 (« monorepo vendoré ») ; le reste d'ADR-023 (build-time couple/runtime indépendant, migrations

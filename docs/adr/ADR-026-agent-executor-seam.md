@@ -1,6 +1,11 @@
 # ADR-026 — Couture d'exécuteur agent-agnostique : renommer le seam de session + StubExecutor
 
 Statut : **Proposé** (2026-07-14) — issu d'une session `/architecture`, cadre la fiche **0020** (AgentSessionPort / prouver l'indépendance à l'agent).
+**Révisé par :** [ADR-029](ADR-029-emancipation-bmad-politique-archivage.md) (2026-07-15) —
+le non-but « le dossier `bmad-orchestration/` est gardé » devient « gardé **jusqu'à E4** »
+(émancipation BMAD : adaptateur retiré en E4, après le gate E3 « run pilote vert sur fiches
+natives »). Le reste (rename, factory, StubExecutor) tient et devient le lot E1.
+*(Bandeau posé par la fiche 0035, 2026-07-15.)*
 **Opérationnalise :** [ADR-022](ADR-022-control-plane-ontology.md) — brique **(2) AgentSessionPort** (executor) ; ADR-022 acte déjà le renommage `BMADSessionPort → AgentSessionPort` (Décision, §Réalité du code l.93 & Q4) et désigne la fiche 0020 comme 1ᵉʳ enabler (« risque existentiel n°1 »). Le présent ADR en fixe le *comment*.
 Voir aussi : ADR-012 (introduction du port de session), ADR-014 (vision superviseur), ADR-021 (frontière mega-city), ADR-025 (monorepo co-dev — n'affecte pas ce seam).
 
