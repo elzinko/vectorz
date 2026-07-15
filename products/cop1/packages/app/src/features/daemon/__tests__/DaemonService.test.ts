@@ -117,13 +117,19 @@ describe('DaemonService', () => {
     try {
       await wired.start();
 
+      // La découverte est normalement quasi immédiate (scan initial +
+      // debounce ~80ms), et `vi.waitFor` court-circuite dès succès : ce budget
+      // n'est PAS le temps attendu, c'est de la marge contre la famine CPU d'un
+      // runner CI chargé, où timers et polling dérivent bien au-delà de 2s
+      // (flake observé à ~2074ms, pile au mur de l'ancien budget). 10s de marge,
+      // happy-path toujours ~100ms.
       await vi.waitFor(
         async () => {
           const res = await fetch('http://127.0.0.1:14245/api/supervision/runs');
           const data = (await res.json()) as Array<{ runId: string }>;
           expect(data.some((snapshot) => snapshot.runId === 'run-a')).toBe(true);
         },
-        { timeout: 2000, interval: 30 },
+        { timeout: 10000, interval: 30 },
       );
     } finally {
       await wired.stop();
