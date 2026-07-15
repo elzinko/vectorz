@@ -18,8 +18,8 @@ import { createDefaultBMADCommandRunner } from '../features/orchestrator/infrast
  * CI-sized integration test. Asserts what can be observed without a real
  * SDK: state transitions, JSONL sprint log shape, exit code.
  *
- * What this test does NOT cover (tracked in `scripts/ea13-real-run.sh` and
- * `deferred-EA13.md`):
+ * What this test does NOT cover (tracked in `deferred-EA13.md`;
+ * `scripts/ea13-real-run.sh` was removed as a pre-pivot vestige, fiche 0036):
  *   - Real git commits with Co-Authored-By trailer (requires live SDK
  *     session invoking the commit_anchor tool).
  *   - `.cop1/history/<story>/track{1,2,3}/` track files (same reason —

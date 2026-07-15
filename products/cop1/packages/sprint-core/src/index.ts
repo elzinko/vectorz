@@ -317,9 +317,7 @@ export type {
 export { SupervisorService } from './features/bmad-orchestration/application/SupervisorService.js';
 export type { DeterministicPattern } from './features/bmad-orchestration/application/SupervisorService.js';
 
-// Budget
-export { TokenBudgetService } from './features/budget/application/TokenBudgetService.js';
-export { YamlBudgetStore } from './features/budget/infrastructure/YamlBudgetStore.js';
+// Budget — domaine seul (le service et le store dormants ont été supprimés, fiche 0036 / ADR-017)
 export type { BudgetStatus } from './features/budget/domain/BudgetStatus.js';
 export type { TokenConsumption } from './features/budget/domain/TokenConsumption.js';
 export type {
