@@ -9,6 +9,10 @@ Local-first CLI that drives Claude Code + BMAD installations in a target project
 
 **V1-light MVP closed 2026-04-14** — `cop1 orchestrator run --epic <id>` drives an epic end-to-end with transcripts (`cop1 transcript <sessionId>`). Two stubs (`commit_anchor`, `BMADCommandRunner`) remain before unassisted dogfooding — see V1.1 scope in the retro below.
 
+## Self-hosting
+
+The stated horizon: **cop1 developing cop1**. Unassisted dogfooding (above) is the first step; the next is *self-hosting* — the point where a story about cop1's own codebase is picked up end-to-end (create-story → dev-story → code-review → QA → retro) by the system, on its own repo, producing a committable artefact. The agent-orchestrator equivalent of a compiler compiling itself.
+
 ## Start here
 
 - **Onboarding** → [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)
