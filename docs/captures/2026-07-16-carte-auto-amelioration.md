@@ -152,3 +152,32 @@ c'est déjà nommé : le « test double-émetteur » d'ADR-030. **BPMN = le bon 
 mauvais artefact de départ** : commence par la topologie minimale déjà prévue
 (`gates_topology?`, que Mermaid rend gratuitement), et ne grossis vers BPMN que si la forme
 l'exige.
+
+## Trajectoire vers le self-hosting (l'objectif cible)
+
+Le self-hosting — cop1 développe cop1 — **est plus proche que tu ne crois** : tu le fais déjà
+à moitié avec `ezk-product-builder` (il enchaîne des sprints sur un backlog). Le pointer sur
+**le backlog de vectorz**, c'est ça, le self-hosting.
+
+**Le piège à éviter : « améliorer la méthode d'abord, pour accélérer ».** C'est le meta-trap —
+tu polirais **à l'aveugle**. La méthode est **déjà assez bonne** pour se self-héberger (tu
+l'utilises tous les jours ailleurs). Ce qui l'améliore vraiment, c'est la **friction d'un vrai
+self-hosting**, pas une phase d'amélioration en amont.
+
+**Donc on inverse cause et effet** — le self-hosting n'est pas la ligne d'arrivée, c'est le
+**moteur** :
+
+1. **Self-héberge UN petit truc, sûr** (markdown only : un skill, une règle, une doc — p.ex.
+   la fiche 0063 `ezk-retro` elle-même) via `ezk-product-builder` sur vectorz. Mode **moniteur**
+   (toi au siège) → pas besoin des 2 stubs *pilote* du README.
+2. **La friction se ramasse en skill/règle** (`ezk-ezk` + Sujet A `ezk-retro`) — *ça*, c'est
+   « améliorer la méthode », mais **nourri par du réel**.
+3. **Un seul truc porteur à ajouter** : le tuple de version `(cop1@sha, méthode@vX)` par
+   feature — **déjà tracké** (fiche 0042 #12). Indispensable dès qu'un outil se modifie lui-même.
+4. **Le rendu graphique vient quand le volume le réclame** (observabilité, fiche 0042 #13) —
+   il **ne bloque pas** le self-hosting.
+5. **Versioning / migration → ADR + articles** tombent naturellement de l'expérience (tu l'as
+   vu) : tester son produit avant de le versionner ouvre le plan LIVRAISON (capture 13 juil. §1).
+
+**Blast-radius** : self-héberge d'abord sur le **markdown** (skills / règles / docs), jamais sur
+le cœur de supervision en vol — `construire → prouver → retirer` vaut aussi pour le self-hosting.
