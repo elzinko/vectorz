@@ -54,7 +54,8 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 
 ### 2. Cérémonie en round-robin (2 tours) — *soudure 1 : le déclencheur*
 Réunis les **bons agents** selon le périmètre — par défaut `ezk-architect`, `ezk-qa`,
-`ezk-reviewer`, `ezk-tdd`, `ezk-pm` (spawn via le mécanisme d'agents). **Deux tours :**
+`ezk-reviewer`, `ezk-tdd`, `ezk-pm`, **spawnés comme sous-agents** (Task/Agent — ces agents
+existent dans `agents/`), **un appel par lentille et par tour**. **Deux tours :**
 - **Tour 1 — chacun observe et propose**, indépendamment, à travers sa lentille (archi, QA,
   revue, dev, produit).
 - **Tour 2 — chacun réagit** aux propositions des autres → on **converge vers un consensus**
@@ -93,6 +94,20 @@ Rien n'est rangé sans le **feu vert du PO** (aucune auto-application) :
 > le **rangement suit la structure déterministe** existante. *MVP : la fiche de règle est
 > écrite au format `rules/` documenté ci-dessus ; un script de rangement déterministe est un
 > durcissement post-MVP.*
+
+## Contrôle direct du PO — `impose` / `retire`
+
+Hors cérémonie, le PO garde la main sur la liste des règles :
+
+- **`impose "<règle>"`** — le PO ajoute une règle **directement** (sans round-robin), mais
+  elle passe **quand même** par le **juge de cohérence** (temps 4) puis le **rangement**
+  (temps 5). Une règle imposée porte tout de même un **critère mesurable** (sinon on ne saura
+  ni la prouver ni la retirer).
+- **`retire <réf-règle>`** — retire une règle. **Réversible et tracé** : supprime le fichier
+  `rules/<cat>/<slug>.md` (ou l'entrée de `bundle`) et **consigne la raison dans le message de
+  commit** (`chore(rules): retire <slug> — <raison>`) ; l'archive git conserve la version
+  retirée (réintroduction = décision PO). *Post-MVP : un `rules/CHANGELOG.md` daté si le volume
+  le justifie.*
 
 ## Ce que le skill compose (il ne réinvente rien)
 
