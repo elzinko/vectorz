@@ -31,6 +31,7 @@ Bascule : ADR-029 (E1→E4, tags `epoch-1-bmad-final` / `epoch-2-post-bmad`).
 | 029 | émancipation-bmad-archivage | **Accepté** | 🟢 **l'acte fondateur d'époque 2** | exécuter E3/E4 (fiches à créer) |
 | 030 | contrat-améliorabilité | **Proposé** | 🟡 jumeau « apprenant » du contrat de supervisabilité — gel après 1ʳᵉ boucle vécue + panel manuel | 27 arbitrages PO en attente — dossier : [capture 2026-07-16](../captures/2026-07-16-note-concept-contrat-ameliorabilite.md) ; fiches 0044/0045/0046 + subtree 0061 |
 | 031 | deux-axes-de-validation | **Proposé** | 🟡 sépare « le produit tourne ? » (Axe 1 = cobaye 0041) de « la méthode est bonne ? » (Axe 2 = mesureur 0044 sur tâches-repères) ; Axe 2 composé sur Axe 1, pas un nouveau système | panel + PO ; compose ADR-030 + supervisabilité + fiche 0041 |
+| 032 | emission-adaptateur-separable | **Proposé** | 🟡 l'émission d'events = adaptateur séparable (« carte d'émission ») ; skill/agent/BMAD contract-blind → conformité par enveloppe, sans réécriture | panel + PO ; cadré par cérémonie ezk-retro ; généralise D12 ; spike 0048 + fiche 0067 |
 
 Cluster cible du pivot : **021 + 022 + 028** (+ 029 qui les opérationnalise).
 
