@@ -3,8 +3,8 @@ id: 0063
 title: ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules)
 type: feature
 priority: P2
-status: idea
-pr:
+status: in-progress
+pr: "#21"
 created: 2026-07-16
 ---
 
@@ -97,6 +97,17 @@ manquantes autour de la machinerie qui existe déjà :
 - Compose : [0008 chief-judge](0008-chief-judge.md), `ezk-steward`, `rules/`, `bundles/`,
   `ezk-backlog`. Voisin de 0034 (garde-fous intégrité agents) et 0028 (modèle typé
   interaction/autorité).
-- À groomer : nom (`ezk-retro` vs `ezk-kaizen` vs `ezk-ameliore`), et si la « cérémonie
-  round-robin » mérite d'être un skill générique réutilisable (party-mode) composé par
-  celui-ci — cf. l'inventaire historique cop1 (fiche vectorz 0042).
+- **Groomé `idea → todo` le 2026-07-16** (premier self-host : la méthode affûte son propre
+  backlog). Décisions de grooming :
+  - **Périmètre MVP** = les **3 soudures** uniquement (déclencheur « rétro à la demande » +
+    avis de cohérence + pont proposition → `rules/`). L'option « ordre tiré au sort » est
+    **différée** (petit ajout post-MVP).
+  - **Skill générique round-robin ?** **Non au départ** (YAGNI) : la cérémonie est intégrée à
+    `ezk-retro` ; extraction en skill réutilisable seulement si un 2ᵉ consommateur apparaît
+    (règle de 3).
+  - **Machinerie cop1 existante** (`RoundTableEngine`, `RetroCeremony`,
+    `AutoRuleSuggestionService`) = **référence d'algorithme** à ré-encoder en orchestration de
+    skills markdown, **pas** du code à réutiliser tel quel (E4 le retire).
+  - **Nom** : `ezk-retro` par défaut (renommage trivial) — micro-décision PO au démarrage du sprint.
+- **Prêt pour sprint (DoR)** : contexte clair, portée MVP fixée, critères d'acceptation
+  observables, compose des briques identifiées (0008, `ezk-steward`, `rules/`, `ezk-backlog`).

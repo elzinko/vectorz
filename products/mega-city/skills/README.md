@@ -34,8 +34,9 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-diagram` | 📦 nouveau | prose → diagramme **Mermaid** versionné (triplet `diagrams/<slug>/`) + vues partageables : `README.md` rendu nativement par GitHub & liens mermaid.live/ink (`scripts/render.sh` + `publish.sh`) |
 | `ezk-docker` | 📦 récupéré (commit orphelin) | pilote une **stack Docker** locale de test/dev via le socket (`up`/`ps`/`logs`/`down`/`nuke`), conventions blast-radius (stacks préfixées, teardown obligatoire) — frontière nette vs `ezk-ci` |
 | `ezk-readme` | 📦 récupéré (commit orphelin) | crée/audite **le README** d'un projet (pitch, badges adossés au réel, quickstart, indirections vers les sources de vérité) ; `create` / `audit` (rapport + diff, jamais d'écrasement) |
+| `ezk-retro` | 📦 né du 1er self-host (fiche 0063) | **cérémonie d'auto-amélioration de la méthode** (Sujet A) : round-robin d'agents → propositions typées symptôme+mesure → juge de cohérence → rangement `rules/`/backlog sous contrôle PO (`help`/`run`/`impose`/`retire`) |
 
 > **Agents** (`../agents/`) : `ezk-architect`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd` (6, tous bindés par le profil `global`).
-> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr-pilot` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) = **16 skills** au profil `global`, + 6 agents.
+> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr-pilot` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) = **17 skills** au profil `global`, + 6 agents.
 > Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
