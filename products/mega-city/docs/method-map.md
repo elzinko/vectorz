@@ -55,14 +55,15 @@ flowchart LR
         direction TB
         E1["le sprint démarre"]
         E2["une gate est atteinte"]
-        E3["blocage / besoin d'autorité"]
-        E4["le sprint se termine"]
+        E3["reprise après un gate (« continue »)"]
+        E4["blocage / besoin d'autorité"]
+        E5["le sprint se termine"]
     end
     subgraph MAP["carte d'émission · adaptateur (ADR-032)"]
         M["moment observable → event du contrat"]
     end
     subgraph CON["COUCHE CONTRAT · vocabulaire stable"]
-        J["events.jsonl (append-only)<br/>run.started · gate.reached<br/>escalation · run.finished"]
+        J["events.jsonl (append-only)<br/>run_start · gate_reached · gate_resumed<br/>escalate · run_finished"]
     end
     MON["🖥️ app moniteur<br/>aveugle à la méthode · rend les artefacts (PR, démo) tels quels"]
 
@@ -70,15 +71,18 @@ flowchart LR
     E2 --> M
     E3 --> M
     E4 --> M
+    E5 --> M
     M -->|émet| J
     J -->|lit, n'écrit jamais| MON
 ```
 
-> ⚠️ **État réel** : la couche 1 (méthode) **existe**. La couche 2 (émission) est **le
-> contrat gelé** (la cible) — les skills `ezk-*` **n'émettent pas encore** ; le câblage est en
-> cours de conception : ADR-032 (émission = adaptateur), fiche subtree 0067 (`ezk-ezk`
-> contract-aware), fiche 0050 (kit émetteur), spike vectorz 0048 (envelopper BMAD). Ce
-> diagramme montre la **cible d'émission**, pas un flux déjà branché.
+> ⚠️ **État réel** : la couche 1 (méthode) **existe**. Le **kit émetteur** de la couche 2
+> **existe aussi** — `products/mega-city/src/supervision/` : journal JSONL, serveur MCP,
+> runtime, avec les 5 outils `run_start` / `gate_reached` / `gate_resumed` / `escalate` /
+> `run_finished` (fiche 0050). Ce qui **manque** : les skills `ezk-*` ne l'**appellent pas
+> encore** (ils n'émettent pas pendant un vrai sprint). La cible = **brancher les skills sur le
+> kit** — objet d'ADR-032 (émission = adaptateur), fiche subtree 0067 (`ezk-ezk`
+> contract-aware), spike vectorz 0048 (envelopper BMAD).
 
 ---
 
