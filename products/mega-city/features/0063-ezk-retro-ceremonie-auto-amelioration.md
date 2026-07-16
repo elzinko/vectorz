@@ -4,7 +4,7 @@ title: ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robi
 type: feature
 priority: P2
 status: in-progress
-pr:
+pr: "#21"
 created: 2026-07-16
 ---
 
