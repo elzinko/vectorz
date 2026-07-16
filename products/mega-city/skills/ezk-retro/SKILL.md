@@ -10,7 +10,8 @@ description: >-
   un sprint qui a coincé. Déroule une cérémonie en ROUND-ROBIN (2 tours) entre les
   agents de l'équipe (ezk-architect, ezk-qa, ezk-reviewer, ezk-tdd, ezk-pm) qui
   tombent d'accord sur des propositions RATTACHÉES À UN SYMPTÔME et MESURABLES
-  (action, feature, spike, ou RÈGLE), les passe à un JUGE DE COHÉRENCE (chief-judge
+  (action, feature, spike, ou RÈGLE) — via les agents bindés du profil
+  (ezk-architect, ezk-qa, ezk-tdd, ezk-pm) —, les passe à un JUGE DE COHÉRENCE (chief-judge
   / ezk-steward : doublons ? contradictions avec les règles existantes ?), puis
   range SOUS CONTRÔLE DU PO : les non-règles vers ezk-backlog, les règles validées
   vers rules/ · bundles/ · DoD (toujours réversibles). Pilotable par sous-commandes :
@@ -53,9 +54,10 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
   si rien de concret ne remonte, dis-le et rends la main.
 
 ### 2. Cérémonie en round-robin (2 tours) — *soudure 1 : le déclencheur*
-Réunis les **bons agents** selon le périmètre — par défaut `ezk-architect`, `ezk-qa`,
-`ezk-reviewer`, `ezk-tdd`, `ezk-pm`, **spawnés comme sous-agents** (Task/Agent — ces agents
-existent dans `agents/`), **un appel par lentille et par tour**. **Deux tours :**
+Réunis les **agents bindés** du profil (`global.yml`) — par défaut `ezk-architect`, `ezk-qa`,
+`ezk-tdd`, `ezk-pm`, **spawnés comme sous-agents** (Task/Agent), **un appel par lentille et
+par tour** (`ezk-reviewer` rejoindra la liste **quand il sera bindé** — fiche 0031 ; ne le
+référence pas tant qu'il n'est pas dans `global.yml`). **Deux tours :**
 - **Tour 1 — chacun observe et propose**, indépendamment, à travers sa lentille (archi, QA,
   revue, dev, produit).
 - **Tour 2 — chacun réagit** aux propositions des autres → on **converge vers un consensus**
