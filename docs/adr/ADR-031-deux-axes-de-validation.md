@@ -30,6 +30,15 @@ avec vectorz) est l'**usage réel** qui *exerce* les deux.
 
 ## Décision (proposée)
 
+![Matrice 2×2 croisant « le produit tourne-t-il ? » (Axe 1) et « la méthode est-elle bonne ? » (Axe 2)](assets/ADR-031-matrice-validation.svg)
+
+> **Figure 1 — Les deux axes sont orthogonaux.** Colonnes = **Axe 1** (« le produit
+> tourne-t-il ? », le cobaye 0041) ; lignes = **Axe 2** (« la méthode est-elle bonne ? »,
+> le mesureur 0044 sur tâches-repères). Le quadrant *outil tourne / méthode mauvaise* est la
+> raison d'être de l'ADR : ça compile mais produit du mauvais, et **seul l'Axe 2 l'attrape** —
+> un test unique passerait au vert en le manquant. Code couleur : **rouge** = ça casse / c'est
+> mauvais ; **vert** = ça tourne / c'est bon.
+
 Reconnaître **deux axes de validation orthogonaux**, plus le self-hosting comme **usage**
 (pas un test) :
 
