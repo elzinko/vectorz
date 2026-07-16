@@ -15,8 +15,16 @@ export class ConfigLoader {
   private watcher: FSWatcher | null = null;
   private skipRamValidation: boolean;
 
-  constructor(options?: { skipRamValidation?: boolean }) {
+  private totalMemGbOverride: number | undefined;
+
+  constructor(options?: { skipRamValidation?: boolean; totalMemGbOverride?: number }) {
     this.skipRamValidation = options?.skipRamValidation ?? false;
+    // Injectable pour des tests déterministes (la CI tourne sur 16 GB) — fiche 0033
+    this.totalMemGbOverride = options?.totalMemGbOverride;
+  }
+
+  private detectTotalGb(): number {
+    return this.totalMemGbOverride ?? Math.round((totalmem() / 1e9) * 100) / 100;
   }
 
   load(projectPath: string): Cop1Config {
@@ -35,18 +43,34 @@ export class ConfigLoader {
       throw new ConfigValidationError(field, detail);
     }
 
+    const totalGB = this.detectTotalGb();
+
+    // Fiche 0033 volet 2 — les DÉFAUTS sont clampés à la RAM détectée (plancher = min
+    // du schéma, 4) : une config vierge démarre sur n'importe quel poste. Seules les
+    // valeurs posées PAR L'UTILISATEUR peuvent excéder la machine (et échouent alors
+    // en validation stricte, volet 1).
+    const rawResources = (raw as { resources?: Record<string, unknown> } | null)?.resources;
+    const nightUserSet = rawResources?.ram_budget_night_gb !== undefined;
+    const dayUserSet = rawResources?.ram_budget_day_gb !== undefined;
+    const clampTo = Math.max(4, Math.floor(totalGB));
+    if (!nightUserSet && result.data.resources.ram_budget_night_gb > clampTo) {
+      result.data.resources.ram_budget_night_gb = clampTo;
+    }
+    if (!dayUserSet && result.data.resources.ram_budget_day_gb > clampTo) {
+      result.data.resources.ram_budget_day_gb = clampTo;
+    }
+
     if (!this.skipRamValidation) {
-      const totalGB = Math.round((totalmem() / 1e9) * 100) / 100;
-      if (result.data.resources.ram_budget_night_gb > totalGB) {
+      if (nightUserSet && result.data.resources.ram_budget_night_gb > totalGB) {
         throw new ConfigValidationError(
           'resources.ram_budget_night_gb',
-          `${result.data.resources.ram_budget_night_gb}GB exceeds total RAM (${totalGB}GB)`,
+          `${result.data.resources.ram_budget_night_gb}GB exceeds total RAM (${totalGB}GB) — adjust cop1.config.yaml`,
         );
       }
-      if (result.data.resources.ram_budget_day_gb > totalGB) {
+      if (dayUserSet && result.data.resources.ram_budget_day_gb > totalGB) {
         throw new ConfigValidationError(
           'resources.ram_budget_day_gb',
-          `${result.data.resources.ram_budget_day_gb}GB exceeds total RAM (${totalGB}GB)`,
+          `${result.data.resources.ram_budget_day_gb}GB exceeds total RAM (${totalGB}GB) — adjust cop1.config.yaml`,
         );
       }
     }

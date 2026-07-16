@@ -64,7 +64,8 @@ Pour `add` comme pour `edit`, déroule **toujours** :
 1. **Comprendre** — pars de la prose (nouvelle description, ou correction verbale sur un diagramme existant).
 2. **Choisir le type Mermaid** adapté au sens : `flowchart` (flux/archi), `sequenceDiagram` (échanges),
    `stateDiagram-v2` (états), `classDiagram` (structures), `erDiagram`, `mindmap`, `gantt`… Ne force pas un flowchart si un autre type dit mieux la chose.
-3. **Générer le Mermaid** — écris/actualise `diagram.mmd`. C'est **ta capacité native** : aucune API, aucun service externe.
+3. **Générer le Mermaid** — écris/actualise `diagram.mmd` en appliquant les **Règles de
+   lisibilité** (section dédiée). C'est **ta capacité native** : aucune API, aucun service externe.
 4. **Rendre l'image, puis publier les vues** — lance les scripts déterministes :
    ```bash
    bash <skill>/scripts/render.sh  diagrams/<slug>/diagram.mmd   # → diagram.svg
@@ -79,12 +80,49 @@ Pour `add` comme pour `edit`, déroule **toujours** :
 5. **Écrire la prose + le meta** — `description.md` (la prose validée) et `meta.yaml` (titre, date fournie
    par l'humain ou `git log`, type de diagramme, liens éventuels, **et un bloc `share:` avec les liens
    `edit`/`img` capturés en (4)**). **Ne devine jamais la date** : demande-la si inconnue.
-6. **Valider** — montre le Mermaid + (si rendue) l'image, **donne les vues partageables** (l'URL du dossier
+6. **Valider** — passe d'abord le diagramme au **test final** des Règles de lisibilité, puis montre le
+   Mermaid + (si rendue) l'image, **donne les vues partageables** (l'URL du dossier
    GitHub `diagrams/<slug>/`, qui rend le `README.md` inline, + le lien mermaid.live d'édition), et **demande** :
-   « c'est le diagramme voulu ? ». L'humain corrige **verbalement** → retour en (1) sur le même slug.
-   On ne fige rien tant que ce n'est pas validé.
+   « c'est le diagramme voulu, et se comprend-il sans explication ? ». L'humain corrige **verbalement** →
+   retour en (1) sur le même slug. On ne fige rien tant que ce n'est pas validé.
 7. **Ranger (git)** — quand l'humain valide, **commit** le triplet (délègue à `ezk-commits` : `docs(diagram): <slug> …`).
    Tu ne fais pas de merge/push toi-même.
+
+## Règles de lisibilité — les conditions d'un schéma parlant
+
+Un diagramme juste mais illisible est un diagramme **raté**. Un bon schéma se comprend
+**sans le texte autour**. Applique ces conditions en générant (3), revérifie-les avant de
+valider (6) ; les règles 4-5 s'appliquent selon le type choisi en (2).
+
+1. **Un concept par diagramme.** Si la prose mêle plusieurs idées (un mécanisme + une
+   comparaison + des garde-fous), propose **plusieurs petits diagrammes** plutôt qu'un seul dense.
+2. **Le vocabulaire du lecteur.** Pour un lecteur non technique, tout terme technique affiché
+   est traduit en langage courant (`cache_hit · « déjà en mémoire »`) ou n'apparaît pas ; pour
+   un lecteur technique, les identifiants exacts restent (dans un `classDiagram`, `user_id` EST
+   l'information). Dans tous les cas, **jamais de payload brut** (`{champ: valeur, …}`) en étiquette.
+3. **Étiquettes courtes, flèches nommées.** ~5 mots par case, un verbe d'action pour les étapes ;
+   si la traduction allonge trop, le terme courant va dans la case et le terme technique en note.
+   Chaque flèche porte un verbe (`-->|génère|`) : une flèche qu'on ne sait pas nommer est un
+   lien qu'on n'a pas compris soi-même.
+4. **Qui fait quoi, dans un seul sens de lecture.** Pour un flux ou une séquence : des acteurs
+   reconnaissables (l'humain « Toi », l'agent, le fichier/système), une action par case, le
+   point d'entrée déclaré en premier, pas de flèche qui remonte le flux sauf boucle
+   explicitement nommée (« retour »). En `flowchart` : UNE direction (`TD` ou `LR`) tenue de
+   bout en bout. En `sequenceDiagram` : l'ordre des messages EST le sens de lecture — numérote
+   avec `autonumber` (`TD`/`LR` n'y existent pas).
+5. **Une comparaison = un face-à-face.** Deux `subgraph` jumeaux à structure interne identique
+   (mêmes étapes, même ordre) ; Mermaid ne garantit pas l'alignement ligne-à-ligne — s'il compte
+   plus que le dessin, un tableau markdown dans le README est un choix assumé.
+6. **Peu d'éléments, couleurs qui parlent.** ~5-7 nœuds pour un flux/mécanisme ; pour un type
+   structurel (org-chart, `erDiagram`, `gantt`), compte par niveau et **regroupe avant de
+   découper** — avec le mécanisme du type (`subgraph` en flowchart, `section` en gantt ; un
+   `erDiagram` n'a pas de regroupement : scinde par domaine, cf. règle 1). 2-3 couleurs max,
+   chacune porteuse d'un sens constant (une couleur = un acteur/rôle) ; la légende est un petit
+   `subgraph` dédié (flowchart), hors budget de nœuds — ou du texte dans le README.
+7. **Le test final.** Relis le `.mmd` **étiquette par étiquette**, comme si tu découvrais le
+   sujet : s'il faut une explication pour comprendre une case, reformule-la — ou sors-la du
+   schéma (l'explication vit dans la prose). Le verdict visuel (densité, croisements) revient à
+   l'humain en (6) — c'est pour ça qu'on lui demande « se comprend-il sans explication ? ».
 
 ## Détail des sous-commandes
 

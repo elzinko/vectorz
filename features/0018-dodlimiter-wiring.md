@@ -35,3 +35,7 @@ story ; au seuil → `blocked` + escalade + event dédié.
 ## Notes / décisions
 
 Bloquée tant que la boucle de retry n'existe pas. Source : split de la fiche 0015 + ADR-020 / ADR-016.
+
+**2026-07-15 (panel adverse 0034)** : c'est un rouage du **mode pilote** que le pivot
+(moniteur nominal, ADR-028) **diffère** — donc lot tardif (L10 de 0034), pas cœur-pivot.
+Ne pas la repêcher comme quick-win pré-démo.

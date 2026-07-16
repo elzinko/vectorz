@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 580" width="760" height="580" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect x="0.5" y="0.5" width="759" height="579" fill="#ffffff" stroke="#e5e7eb"/>
+
+  <!-- Titre -->
+  <text x="380" y="34" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2328">Deux axes de validation — orthogonaux</text>
+  <text x="380" y="56" text-anchor="middle" font-size="12.5" fill="#57606a">un vert ne dit pas lequel — il faut mesurer les deux</text>
+
+  <!-- Axe Y (méthode) -->
+  <text x="30" y="278" transform="rotate(-90 30 278)" text-anchor="middle" font-size="13" font-weight="700" fill="#7d5ad0">▲  la méthode est bonne ?  ·  Axe 2</text>
+  <!-- Axe X (produit) -->
+  <text x="430" y="497" text-anchor="middle" font-size="13" font-weight="700" fill="#4a7ddd">le produit tourne ?  ·  Axe 1  ▶</text>
+
+  <!-- Quadrant haut-gauche : outil casse / méthode bonne -->
+  <rect x="150" y="92" width="272" height="178" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="166" y="124" font-size="14" font-weight="700"><tspan fill="#c0553f">outil casse</tspan><tspan fill="#8a919b"> / </tspan><tspan fill="#1f9d6b">méthode bonne</tspan></text>
+  <text x="166" y="150" font-size="12.5" fill="#424a53">L'outil bloque une bonne méthode.</text>
+  <text x="166" y="234" font-size="11.5" font-weight="600" fill="#4a7ddd">→ l'Axe 1 (cobaye) le détecte</text>
+  <text x="166" y="252" font-size="11.5" font-weight="600" fill="#4a7ddd">· on répare l'outil</text>
+
+  <!-- Quadrant haut-droit : outil tourne / méthode bonne (cible) -->
+  <rect x="438" y="92" width="272" height="178" rx="12" fill="#eef9f3" stroke="#1f9d6b" stroke-width="2"/>
+  <text x="454" y="124" font-size="14" font-weight="700"><tspan fill="#1f9d6b">outil tourne</tspan><tspan fill="#8a919b"> / </tspan><tspan fill="#1f9d6b">méthode bonne</tspan></text>
+  <text x="454" y="150" font-size="12.5" fill="#424a53">La cible : ça tourne ET c'est bon.</text>
+  <text x="454" y="252" font-size="12" font-weight="700" fill="#1f9d6b">✅<tspan dx="6">self-host serein</tspan></text>
+
+  <!-- Quadrant bas-gauche : outil casse / méthode mauvaise -->
+  <rect x="150" y="286" width="272" height="178" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="166" y="318" font-size="14" font-weight="700"><tspan fill="#c0553f">outil casse</tspan><tspan fill="#8a919b"> / </tspan><tspan fill="#c0553f">méthode mauvaise</tspan></text>
+  <text x="166" y="344" font-size="12.5" fill="#424a53">Double peine — les deux axes rouges.</text>
+  <text x="166" y="446" font-size="11.5" font-weight="600" fill="#8a919b">· les deux à réparer</text>
+
+  <!-- Quadrant bas-droit : outil tourne / méthode mauvaise -->
+  <rect x="438" y="286" width="272" height="178" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="454" y="318" font-size="14" font-weight="700"><tspan fill="#1f9d6b">outil tourne</tspan><tspan fill="#8a919b"> / </tspan><tspan fill="#c0553f">méthode mauvaise</tspan></text>
+  <text x="454" y="344" font-size="12.5" fill="#424a53">Ça tourne, mais produit du mauvais.</text>
+  <text x="454" y="428" font-size="11.5" font-weight="600" fill="#7d5ad0">→ l'Axe 2 (mesureur) le détecte</text>
+  <text x="454" y="446" font-size="11.5" font-weight="600" fill="#7d5ad0">· nourrit l'auto-amélioration</text>
+
+  <!-- Légende -->
+  <circle cx="155" cy="524" r="5" fill="#4a7ddd"/>
+  <text x="168" y="528" font-size="12" fill="#424a53"><tspan font-weight="700">Axe 1</tspan> — cobaye (fiche 0041) : « ça tourne ? » — verdict binaire, rapide</text>
+  <circle cx="155" cy="548" r="5" fill="#7d5ad0"/>
+  <text x="168" y="552" font-size="12" fill="#424a53"><tspan font-weight="700">Axe 2</tspan> — mesureur (0044) + tâches-repères : « c'est bon ? » — mesuré, avec variance</text>
+</svg>

@@ -2,9 +2,9 @@
 id: 0033
 title: Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique
 type: bug
-priority: P2
-status: todo
-pr:
+priority: P1
+status: shipped
+pr: "#16"
 created: 2026-07-15
 ---
 
@@ -33,11 +33,11 @@ Deux volets, cumulables :
 
 ## Critères d'acceptation
 
-- [ ] `ram_budget_* > RAM physique` ⇒ `cop1 start` échoue en < 2 s avec un message qui
+- [x] `ram_budget_* > RAM physique` ⇒ `cop1 start` échoue en < 2 s avec un message qui
       nomme le champ fautif, la valeur et la RAM détectée.
-- [ ] Une config vierge (défauts) démarre sur une machine de 16 GB.
-- [ ] Plus aucun chemin de démarrage ne se termine en timeout sans cause affichée.
-- [ ] L'encadré « piège » correspondant de `docs/demo-desktop-checklist.md` est allégé en
+- [x] Une config vierge (défauts) démarre sur une machine de 16 GB.
+- [x] Plus aucun chemin de démarrage ne se termine en timeout sans cause affichée.
+- [x] L'encadré « piège » correspondant de `docs/demo-desktop-checklist.md` est allégé en
       conséquence.
 
 ## Notes / décisions
@@ -50,3 +50,5 @@ Deux volets, cumulables :
   `DaemonService.test.ts` rouge en CI, vert en local). Corrigé en alignant sur
   orchestrator/SprintRunner (`skipRamValidation: true`). Les deux volets de CETTE fiche
   (fail-fast CLI + défauts raisonnables) restent à faire.
+
+**2026-07-15** : promue P2 → P1 (panel de merge PR #10) — lot L1 de 0034, chemin critique de la démo 0030 (P1) : les fixes de fiabilité passent avant de rejouer la démo.
