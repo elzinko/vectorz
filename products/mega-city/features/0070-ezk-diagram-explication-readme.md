@@ -1,5 +1,5 @@
 ---
-id: 0062
+id: 0070
 title: ezk-diagram — publier une explication compréhensible à côté du diagramme (README)
 type: feature
 priority: P1
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-15
 ---
 
-# 0062 — ezk-diagram : une explication compréhensible dans le markdown publié
+# 0070 — ezk-diagram : une explication compréhensible dans le markdown publié
 
 ## Contexte / Problème
 

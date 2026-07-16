@@ -1,5 +1,5 @@
 ---
-id: 0061
+id: 0069
 title: article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code
 type: feature
 priority: P1
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-15
 ---
 
-# 0061 — Article : émettre des events depuis Claude Desktop/Code
+# 0069 — Article : émettre des events depuis Claude Desktop/Code
 
 ## Contexte / Problème
 
