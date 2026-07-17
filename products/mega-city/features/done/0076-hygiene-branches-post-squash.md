@@ -3,9 +3,9 @@ id: 0076
 title: Hygiène de branches post-squash — classification déterministe absorbée/réelle + suppression aux deux chemins de merge
 type: feature
 priority: P1
-status: todo
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#31"
 created: 2026-07-17
 ---
 
