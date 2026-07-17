@@ -3,7 +3,8 @@ id: 0065
 title: ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness)
 type: feature
 priority: P1
-status: todo
+status: in-progress
+ready: 2026-07-17
 pr:
 created: 2026-07-17
 ---

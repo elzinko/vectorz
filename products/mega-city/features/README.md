@@ -26,9 +26,9 @@
 | 0050 | Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat | feature | P1 | 🟠 in-progress | #8 |
 | 0052 | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 | 🔴 todo |  |
 | 0055 | ezk-ci — surveiller et plafonner la consommation GitHub Actions (repos privés) | feature | P1 | 🔴 todo |  |
-| 0056 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 | 🔴 todo |  |
+| 0056 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 | 🟠 in-progress |  |
 | 0060 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 | 🟠 in-progress |  |
-| 0065 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 | 🔴 todo |  |
+| 0065 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 | 🟠 in-progress |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo |  |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P2 | 🟠 in-progress |  |
