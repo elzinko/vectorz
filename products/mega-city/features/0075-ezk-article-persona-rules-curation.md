@@ -1,5 +1,5 @@
 ---
-id: 0064
+id: 0075
 title: Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider
 type: feature
 priority: P2

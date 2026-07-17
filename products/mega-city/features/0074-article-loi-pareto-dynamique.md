@@ -1,5 +1,5 @@
 ---
-id: 0068
+id: 0074
 title: article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve)
 type: feature
 priority: P3
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-17
 ---
 
-# 0068 — Article : la loi de Pareto dynamique
+# 0074 — Article : la loi de Pareto dynamique
 
 ## Contexte / Problème
 

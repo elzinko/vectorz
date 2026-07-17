@@ -1,5 +1,5 @@
 ---
-id: 0067
+id: 0073
 title: article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel)
 type: feature
 priority: P2
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-17
 ---
 
-# 0067 — Article : donner à l'auto-amélioration la direction scrum
+# 0073 — Article : donner à l'auto-amélioration la direction scrum
 
 ## Contexte / Problème
 
@@ -25,7 +25,7 @@ Article technique vulgarisé (via ezk-article, fiche 0049) : le mapping comme bo
 d'auto-amélioration — pourquoi taguer/regrouper par relation canonique plutôt que
 tags libres, comment un gate DoR bloquant change ce qu'un agent autonome a le droit
 de tirer, et ce que « scrum-compliant » veut dire quand l'équipe est un solo + agents.
-Matière première : ADR-0016 (table de mapping), ADR-0017, fiches 0056/0065/0066.
+Matière première : ADR-0016 (table de mapping), ADR-0017, fiches 0056/0071/0072.
 
 ## Critères d'acceptation
 

@@ -29,6 +29,9 @@ Bascule : ADR-029 (E1→E4, tags `epoch-1-bmad-final` / `epoch-2-post-bmad`).
 | 027 | vectorz-umbrella | Proposé | 🔵 exécuté partiellement (`name` ≠ vectorz) | re-tampon post-démo, renommage = arbitrage PO |
 | 028 | lecteur-journal-moniteur | Proposé | 🟢 vivant — **mode nominal** | — |
 | 029 | émancipation-bmad-archivage | **Accepté** | 🟢 **l'acte fondateur d'époque 2** | exécuter E3/E4 (fiches à créer) |
+| 030 | contrat-améliorabilité | **Proposé** | 🟡 jumeau « apprenant » du contrat de supervisabilité — gel après 1ʳᵉ boucle vécue + panel manuel | 27 arbitrages PO en attente — dossier : [capture 2026-07-16](../captures/2026-07-16-note-concept-contrat-ameliorabilite.md) ; fiches 0044/0045/0046 + subtree 0061 |
+| 031 | deux-axes-de-validation | **Proposé** | 🟡 sépare « le produit tourne ? » (Axe 1 = cobaye 0041) de « la méthode est bonne ? » (Axe 2 = mesureur 0044 sur tâches-repères) ; Axe 2 composé sur Axe 1, pas un nouveau système | panel + PO ; compose ADR-030 + supervisabilité + fiche 0041 |
+| 032 | émission : séparable comme vocabulaire | **Accepté** (panel 2026-07-16 → gravé PO 2026-07-17 via le [guide](../brancher-une-methode-existante.md)) | 🟢 l'émetteur canonique **reste dans la méthode** (D12 respecté) ; le **« sidecar »** (bmad-contracter) **installe** l'émission dans les méthodes non possédées (A′ = overlay natif via les prises `customize` de BMAD) ; wrapper d'observation = shim de transition (moitié **observabilité**, classe B annotée) | preuve empirique à venir : **0050 → 0058** (LA fiche sidecar ; ex-0048 fusionnée) — le REX amende le guide ; questions 5/8 → mini-ADR au démarrage de 0058 ; article : fiche 0049 (P3) — [synthèse panel](../captures/2026-07-16-panel-adverse-adr-032.md) |
 
 Cluster cible du pivot : **021 + 022 + 028** (+ 029 qui les opérationnalise).
 

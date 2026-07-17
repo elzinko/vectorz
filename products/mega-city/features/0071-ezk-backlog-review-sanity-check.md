@@ -1,5 +1,5 @@
 ---
-id: 0065
+id: 0071
 title: ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness)
 type: feature
 priority: P1
@@ -9,7 +9,7 @@ pr:
 created: 2026-07-17
 ---
 
-# 0065 — ezk-backlog review : le sanity check global du backlog
+# 0071 — ezk-backlog review : le sanity check global du backlog
 
 ## Contexte / Problème
 
@@ -57,3 +57,6 @@ ancienneté médiane des `todo`.
 - 2026-07-17 — panel adverse + juge : le « avant CHAQUE planning » initial était
   intenable (~60-80k tokens/passe chiffrés par le relecteur dev) → modes full/delta.
 - Compose avec 0056 (`groom`/`ready`) : `review` détecte, `groom` répare une fiche.
+- 2026-07-17 — recoupe la friction **0064** (intake / santé backlog, capturée en session
+  parallèle) : voir sa note de réconciliation — reste chez elle l'émission
+  `backlog.health` au journal de supervisabilité et les seuils « temps de groomer ».

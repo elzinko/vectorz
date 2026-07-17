@@ -1,5 +1,5 @@
 ---
-id: 0066
+id: 0072
 title: épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017)
 type: feature
 priority: P2
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-17
 ---
 
-# 0066 — Épics : `type: epic`, champ `epic:` et rendu regen
+# 0072 — Épics : `type: epic`, champ `epic:` et rendu regen
 
 ## Contexte / Problème
 

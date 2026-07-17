@@ -28,7 +28,10 @@
 | 0055 | ezk-ci — surveiller et plafonner la consommation GitHub Actions (repos privés) | feature | P1 | 🔴 todo |  |
 | 0056 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 | 🟠 in-progress |  |
 | 0060 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 | 🟠 in-progress |  |
-| 0065 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 | 🟠 in-progress |  |
+| 0061 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 | 🔴 todo |  |
+| 0069 | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 | 🔴 todo |  |
+| 0070 | ezk-diagram — publier une explication compréhensible à côté du diagramme (README) | feature | P1 | 🔴 todo |  |
+| 0071 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 | 🟠 in-progress |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo |  |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P2 | 🟠 in-progress |  |
@@ -49,7 +52,8 @@
 | 0047 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | 🔴 todo |  |
 | 0048 | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 | 🔴 todo |  |
 | 0058 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 | 🔴 todo |  |
-| 0066 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 | 🔴 todo |  |
+| 0063 | ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules) | feature | P2 | 🟠 in-progress | #21 |
+| 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 | 🔴 todo |  |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo |  |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 | 🔴 todo |  |
@@ -70,10 +74,16 @@
 | 0054 | ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel) | feature | P2 | 💡 idea |  |
 | 0057 | ezk-challenge — panel de challenge adversarial réutilisable (relecteurs frais + gate) | feature | P2 | 💡 idea |  |
 | 0059 | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | feature | P2 | 💡 idea |  |
-| 0064 | Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider | feature | P2 | 💡 idea |  |
-| 0067 | article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel) | feature | P2 | 💡 idea |  |
+| 0062 | article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère » | feature | P2 | 💡 idea |  |
+| 0064 | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 | 💡 idea |  |
+| 0065 | Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent | feature | P2 | 💡 idea |  |
+| 0066 | Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run) | feature | P2 | 💡 idea |  |
+| 0067 | ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat) | feature | P2 | 💡 idea |  |
+| 0068 | Règle enforced — la carte de la méthode (method-map) à jour à chaque modif de méthode | feature | P2 | 💡 idea |  |
+| 0073 | article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel) | feature | P2 | 💡 idea |  |
+| 0075 | Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider | feature | P2 | 💡 idea |  |
 | 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 | 💡 idea |  |
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
-| 0068 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 💡 idea |  |
+| 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 💡 idea |  |
 
 > Livrées (`done/`) : 0001, 0002, 0003, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043.

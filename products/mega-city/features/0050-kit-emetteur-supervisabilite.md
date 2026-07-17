@@ -44,8 +44,11 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
 - [ ] Méthode jouet 2 gates : journal produit, validateur cop1 0027 vert.
 - [ ] `upgrade_ok` : vrai sur arbre propre, faux avec worktree ouvert, veto LLM possible
       (→ false uniquement).
-- [ ] Consignes intégrées à au moins une skill de méthode réelle ; hooks livrés et
-      documentés (classe A vs B).
+- [x] Consignes intégrées à au moins une skill de méthode réelle — **`ezk-sprint`**
+      (2026-07-17 : `run_start` à l'intake, `gate_reached`/`gate_resumed` au checkpoint ⛳,
+      `escalate` sur stop&ask, `run_finished` à la clôture ; classe B documentée).
+- [ ] Hooks classe A livrés et documentés — **suite de fiche, hors 1ʳᵉ PR** (décision en
+      Notes).
 - [ ] Zéro dépendance à cop1 (le kit fonctionne avec n'importe quel superviseur qui lit
       le format).
 
@@ -66,3 +69,9 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
   racine projet. Sprint en cours = lib append + MCP + consignes (étapes 1-2 de cop1 0030) ;
   hooks classe A = suite de fiche, hors 1ʳᵉ PR.
 - Lien : fiche 0016 (cap cop1), fiche 0033 (siège échangeable).
+- **Incrément 2026-07-17** : consignes intégrées à `ezk-sprint` (AC « skill réelle » ✔ —
+  la 1ʳᵉ méthode de prod parle). Restent avant clôture : **AC1 à dérouler** (méthode jouet
+  `supervision-demo` → journal → validateur cop1 0027 vert — l'automatiser en test créerait
+  une dépendance de test croisée mega-city→cop1 à trancher côté cop1 ; a minima un
+  déroulé manuel documenté), et **hooks classe A** (suite de fiche). L'ADR-032 (gravé,
+  guide `docs/brancher-une-methode-existante.md`) confirme ce chemin comme canonique.

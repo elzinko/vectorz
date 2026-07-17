@@ -49,11 +49,11 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
    | Icebox / triage (P) | `status: idea` |
    | Refinement — activité continue (G) | `groom <id>` — remplit les 3 slots DoR (fiche 0056) |
    | Definition of Ready (P) | gate `ready <id>` : problème / valeur / critères → pose `ready: <date>` |
-   | Sanity check du backlog (P) | `review` — passe globale full/delta (fiche 0065) |
+   | Sanity check du backlog (P) | `review` — passe globale full/delta (fiche 0071) |
    | Ordering / priorisation (G) | buckets P0→P3 à l'`add` + cohérence globale via `review` |
    | Sprint Planning — pourquoi/quoi/comment (G) | intake `ezk-sprint` via `next --ready-only` |
    | Sprint Review (G) | validation de PR par l'opérateur : E2E + checkpoint (ezk-sprint 6/9), convention Validation (ezk-pr-pilot) |
-   | Rétrospective (G) | *inspect* : checkpoint inter-sprint + handoff ezk-archive · *adapt* : flywheel capture (ADR-0001) |
+   | Rétrospective (G) | cérémonie **ezk-retro** (fiche 0063) à la demande · checkpoint inter-sprint + handoff ezk-archive · *adapt* : flywheel capture (ADR-0001) |
    | Product Owner (G) | l'opérateur ; `ezk-pm` en mode checkpoints auto |
 
    **Dette nommée (A11)** : l'ordre *intra-bucket* est l'ordre des id (création), pas
@@ -62,18 +62,18 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
    qu'un sprint n'a pas tiré la mauvaise fiche à cause de cette approximation
    (clause ADR-0013 §4).
 
-   **Couverture Review/Rétro — contrôle « existant vs prévu » (2026-07-17)** : les deux
-   lignes s'appuient sur du **livré** — validation E2E + checkpoint d'ezk-sprint
-   (étapes 6/9), convention Validation d'ezk-pr-pilot (fiche 0027), checkpoint
-   inter-sprint (0023/0040), handoff ezk-archive (0026), et le **flywheel capture**
-   (ADR-0001, fiche 0002) qui est la boucle *adapt* de la méthode (les leçons
-   deviennent des skills/rules). Fiches **prévues** rattachées (relation notée dans
-   chaque fiche) : mega-city 0007 (invariants → rules : canal de sortie type d'une
-   rétro) et 0014 (corpus judge du flywheel) ; côté vectorz, 0041 (banc cobaye =
-   outillage du gate démo). **Pas de fiche « rituel rétro » dédiée** : l'époque 1
-   pratiquait des rétros d'epic (`_bmad-output/*retro*.md`), la boucle vit désormais
-   dans le flywheel — en créer une sans preuve de besoin serait du méta-outillage
-   (ADR-0013).
+   **Couverture Review/Rétro — contrôle « existant vs prévu » (2026-07-17, révisé
+   après merge de main)** : les deux lignes s'appuient sur du **livré**. Sprint
+   Review : validation E2E + checkpoint d'ezk-sprint (étapes 6/9), convention
+   Validation d'ezk-pr-pilot (0027). Rétrospective : la cérémonie **ezk-retro**
+   (fiche 0063, livrée le 2026-07-16 en session parallèle — round-robin des agents,
+   propositions mesurables rattachées à un symptôme, items de DoD/DoR évolutifs), le
+   checkpoint inter-sprint (0023/0040), le handoff ezk-archive (0026), et le
+   **flywheel capture** (ADR-0001, 0002) comme canal *adapt* (les leçons deviennent
+   des skills/rules). Fiches **prévues** rattachées (relation notée dans chacune) :
+   mega-city 0007 (invariants → rules), 0014 (corpus judge), 0064 (santé backlog —
+   reste l'émission `backlog.health` + seuils, cf. sa note de réconciliation), 0065
+   (composition de lot) ; côté vectorz, 0041 (banc cobaye = outillage du gate démo).
 
 2. **Grooming : continu, au plus tard au tirage — et la readiness est persistée
    (A1).** La fiche 0056 est adoptée (elle passe son propre gate DoR : promue
@@ -101,7 +101,7 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
      arbitrage produit requis = **checkpoint bloquant « aucune fiche ready »**
      d'ezk-product-builder, DoR pré-remplies à valider (A5).
 
-4. **`review` = le sanity check global (fiche 0065), à cadence bornée (A4)** :
+4. **`review` = le sanity check global (fiche 0071), à cadence bornée (A4)** :
    **complet** après tout pivot structurant (ADR accepté qui invalide des fiches) et
    **tous les 5 sprints** (défaut, réglable dans le playbook) ; **delta** avant les
    sprint plannings intermédiaires (fiches modifiées depuis le dernier complet + top
@@ -121,11 +121,11 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
      ancienneté médiane des `todo`. Le LLM garde exclusivement les contrôles de
      jugement du point 4.
    - **Phase 2 — sur preuve d'usage seulement** : rendu épics dans regen (ADR-0017,
-     fiche 0066), scoring de priorité (valeur/effort, WSJF), vélocité par sprint.
+     fiche 0072), scoring de priorité (valeur/effort, WSJF), vélocité par sprint.
    - Tout enrichissement au-delà (dashboard, cron, historisation) est **le signal de
      s'arrêter**, pas une roadmap (clause ADR-0013 §4). Pas d'ADR dédié « Pareto
      dynamique » : c'est une stratégie de rollout, pas une décision de structure —
-     candidat article (fiche 0068), pas candidat ADR.
+     candidat article (fiche 0074), pas candidat ADR.
 
 Cycle de vie résultant (les deux gates + le rituel global) :
 
@@ -191,8 +191,8 @@ d'ordre intra-bucket nommée. (**A7, A8, A12, A13** → ADR-0017.)
 1. [x] Fiche 0056 promue `idea → todo` (elle passe son propre gate DoR) — cet ADR.
 2. [ ] Fiche 0056 (`groom`/`ready`, pose de `ready:`) + `next --ready-only` :
    implémenter dans le playbook ezk-backlog.
-3. [ ] Fiche 0065 (`review` full/delta + compteurs côté script) : implémenter.
+3. [ ] Fiche 0071 (`review` full/delta + compteurs côté script) : implémenter.
 4. [ ] Câbler la cadence : intake ezk-sprint = `next --ready-only` + delta-review ;
    ezk-product-builder = checkpoint « aucune fiche ready » + review complet
    tous les 5 sprints.
-5. [ ] Épics : ADR-0017 + fiche 0066 (phase 2).
+5. [ ] Épics : ADR-0017 + fiche 0072 (phase 2).

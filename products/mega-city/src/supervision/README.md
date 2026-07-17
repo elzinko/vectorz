@@ -59,3 +59,7 @@ Tu n'écris jamais les champs d'enveloppe (le serveur les calcule) et tu ne
 forces jamais `upgrade_ok` (au mieux un veto). Vocabulaire : tes checkpoints
 restent des checkpoints ; le gate est leur trace contractuelle.
 ```
+
+**Méthodes réelles intégrées** : `ezk-sprint` (2026-07-17 — `run_start` à l'intake,
+`gate_reached`/`gate_resumed` au checkpoint ⛳, `escalate` sur stop&ask, `run_finished` à
+la clôture). À suivre : `ezk-product-builder`, hooks classe A (suite de fiche 0050).

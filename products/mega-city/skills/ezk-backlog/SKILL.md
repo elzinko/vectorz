@@ -215,7 +215,7 @@ Parcours le backlog trié (P0→P3 puis id) et renvoie la **première fiche éli
 ezk-sprint et ezk-product-builder passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).
 
-### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0065)
+### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0071)
 
 Deux modes, à **cadence bornée** :
 - **complet** : après tout pivot structurant (ADR accepté qui invalide des fiches) et

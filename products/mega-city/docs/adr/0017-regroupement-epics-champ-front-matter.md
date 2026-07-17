@@ -49,16 +49,16 @@ actuel ignore les champs inconnus (ajout non cassant, vérifié le 2026-07-17).
    la « colonne conditionnelle `Version` » décrite dans le SKILL.md d'ezk-backlog
    n'existe **pas encore** dans `regen-backlog.sh` (`extract()` ne lit ni `version:`
    ni aucune colonne conditionnelle) — ce n'était pas un précédent mais une mécanique
-   à implémenter. La fiche 0066 implémente donc **les deux colonnes** (`Version` +
+   à implémenter. La fiche 0072 implémente donc **les deux colonnes** (`Version` +
    `Épic`) du même coup. Les **sections par épic** sont différées sur preuve d'usage
    (elles posent l'ordre des épics dans le tri, les orphelins, l'épic dans `done/`,
    l'interaction avec la section Idées). Non bloquant : le champ est déjà utile en
    lecture de fiche avant tout rendu.
 
-4. **Migration au fil de l'eau — et complète (A13).** Quand 0066 est tirée : 0034
+4. **Migration au fil de l'eau — et complète (A13).** Quand 0072 est tirée : 0034
    (backlog racine vectorz) passe `type: epic` ; ses filles **actives** (0038, 0039,
    0040) **et livrées** (0035, 0036, 0037, dans `done/`) prennent `epic: 0034` —
-   sinon « où en est l'épic 0034 ? » est faux dès le premier jour. 0066 **paramètre**
+   sinon « où en est l'épic 0034 ? » est faux dès le premier jour. 0072 **paramètre**
    aussi `regen-backlog.sh` (chemin racine + titre d'index) au lieu de l'ancrage dur
    mega-city — l'index racine avoue déjà être généré par une version « adaptée ». Le
    playbook ezk-backlog fixe la règle de résolution multi-backlog : **le backlog le
@@ -107,10 +107,10 @@ anti-fourre-tout — si les enfants d'une épic ne partagent pas un objectif
 
 ## Action items
 
-1. [ ] Fiche 0066 : enum `type: epic` + champ `epic:` + warning d'intégrité dans
+1. [ ] Fiche 0072 : enum `type: epic` + champ `epic:` + warning d'intégrité dans
    regen + colonnes conditionnelles `Version`/`Épic` + paramétrage chemin/titre du
    script.
 2. [ ] Migration 0034 + filles actives **et livrées** (0035→0040, backlog racine) au
-   tirage de 0066.
+   tirage de 0072.
 3. [ ] Playbook ezk-backlog : §add/next/regen/review + règle de résolution
    multi-backlog (le plus proche du cwd, demander si ambigu).
