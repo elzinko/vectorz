@@ -5,8 +5,10 @@
 > agent, règle, ou flux). Voir « Mise à jour » en bas. Rendu nativement par GitHub (Mermaid).
 
 Deux couches, volontairement séparées (cf. [ADR-032](../../../docs/adr/ADR-032-emission-adaptateur-separable.md),
-statut **PROPOSÉ** — direction **(i)** actée par le PO le 2026-07-17 : *l'émetteur canonique vit
-**dans** la méthode ; le « sidecar » installe l'émission dans les méthodes qu'on ne possède pas*) :
+**ACCEPTÉ** — gravé par le PO le 2026-07-17, guide compagnon
+[`docs/brancher-une-methode-existante.md`](../../../docs/brancher-une-methode-existante.md) :
+*l'émetteur canonique vit **dans** la méthode ; le « sidecar » installe l'émission dans les
+méthodes qu'on ne possède pas*) :
 la **méthode** (ce qu'on fait) et le **contrat** (les événements qu'on émet pour être supervisable).
 
 ---
