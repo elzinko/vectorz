@@ -3,7 +3,7 @@ id: 0020
 title: explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno)
 type: feature
 priority: P2
-status: todo
+status: idea
 pr:
 created: 2026-06-27
 ---
@@ -27,3 +27,7 @@ Explorer la forme : un `Profile` gagne-t-il une dimension `stack` ? un catalogue
 ## Notes
 Déclenché par **0019** (le skill délègue ici le choix d'outils). Touche potentiellement
 le modèle (`docs/domain.ts`). À garder ouvert : l'utilisateur a dit « ça reste à affiner ».
+
+**2026-07-17 (review)** : rétrogradée `todo → idea`. C'est un **spike exploratoire**
+explicitement « ne pas implémenter tant que pas cadré » — sa place est dans les idées
+(hors flux P0→P3), pas dans l'actionnable. À promouvoir quand la forme se fige (ADR court).

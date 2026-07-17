@@ -4,6 +4,7 @@ title: ezk-diagram — publier une explication compréhensible à côté du diag
 type: feature
 priority: P1
 status: todo
+ready: 2026-07-17
 pr:
 created: 2026-07-15
 ---

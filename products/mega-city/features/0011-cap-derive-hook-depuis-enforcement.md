@@ -2,8 +2,8 @@
 id: 0011
 title: cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode)
 type: refactor
-priority: P2
-status: in-progress
+priority: P3
+status: todo
 pr:
 created: 2026-06-26
 ---
@@ -43,3 +43,9 @@ Reste ouvert : grouper `collectHooks` par `stage` (ex. `Map<stage, HookWrite[]>`
 les scripts avec un séparateur explicite, ou lever si collision non résolvable) — petit
 chantier, à reprendre séparément plutôt que de bloquer la fiche 0006 dessus (YAGNI tant
 qu'aucune règle réelle ne collide).
+
+**2026-07-17 (review)** : sortie d'in-progress → `todo` P3. Le gros du sujet a été **livré
+par la fiche 0006** (commit `752d1cd`) : 3 ACs sur 4 cochés (résolution `hook.script`, deux
+règles `type: hook` sur stages différents, plus de donnée morte). Ne reste que l'AC de
+**composition sur un même `stage`** — latent (aucune règle réelle ne collide aujourd'hui),
+d'où P3. Personne ne travaillait dessus : le statut in-progress était faux.

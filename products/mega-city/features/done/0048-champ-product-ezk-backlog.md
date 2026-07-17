@@ -4,10 +4,19 @@ title: ezk-backlog — champ `product` optionnel dans le front-matter (backlogs 
 type: feature
 priority: P2
 version:
-status: todo
+status: shipped
 pr:
 created: 2026-07-13
 ---
+
+> ⚠️ **Clôturée « sans objet » le 2026-07-17 (review) — aucun code livré.** Déplacée dans
+> `done/` comme fiche résolue *won't-do*. Motif : sa prémisse (**un seul backlog partagé**
+> multi-produits) est **contredite par ADR-0017 A13** (deux backlogs, résolution « le plus
+> proche du cwd ») et par la décision PO du 2026-07-17 (garder deux backlogs + une **vue
+> portfolio** générée par-dessus). La distinction de produit vient de l'**emplacement**
+> (`features/` racine vs `products/mega-city/features/`), pas d'un champ `product:` par fiche —
+> le champ n'a donc plus d'objet. À rouvrir seulement si un jour un backlog **unique**
+> multi-produits est réellement adopté.
 
 # 0048 — ezk-backlog : champ `product` pour les backlogs partagés
 

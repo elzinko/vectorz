@@ -3,10 +3,18 @@ id: 0005
 title: remote + licence (backup + base OSS)
 type: chore
 priority: P2
-status: todo
+status: shipped
 pr:
 created: 2026-06-26
 ---
+
+> ⚠️ **Clôturée le 2026-07-17 (review) — prémisse caduque.** Déplacée dans `done/`. Le volet
+> **remote** visait `github.com/elzinko/mega-city` (repo standalone) : il est désormais
+> **archivé**, mega-city vivant comme sous-projet de l'**umbrella vectorz** (ADR-027) — le
+> versioning/tags attendu passe par le remote vectorz, pas par un remote mega-city propre. Le
+> volet **licence** (MIT au moment de l'OSS) survit mais **remonte au niveau vectorz** : ce
+> n'est plus une décision mega-city. Ouvrir une fiche `LICENSE` au **backlog racine** le jour
+> où l'OSS est décidé.
 
 ## Contexte / Problème
 Pas de backup aujourd'hui (repo local). Pré-requis pour l'OSS plus tard.

@@ -33,6 +33,10 @@ exactement ce que le domaine sait déjà exprimer.
 - [ ] ezk-sprint référence ezk-dev et la boucle tourne inchangée
 
 ## Notes
+**Absorbe la fiche [0030](done/0030-rename-ezk-tdd-ezk-dev.md)** (2026-07-17, review) : son
+rename `ezk-tdd → ezk-dev` est l'étape 1 ci-dessus ; 0030 est clôturée dans `done/` pour ne
+pas doublonner.
+
 ADR-0011 (répartition rôles/méthode) + ADR-0010 (source des rules). Le futur
 « ezk-dev-dispatcher » (devs parallèles sans conflit) est explicitement REPORTÉ : linéaire
 pour l'instant ; les briques existent déjà (isolation worktree par agent, worktree par story

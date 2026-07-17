@@ -3,6 +3,7 @@ id: 0073
 title: article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel)
 type: feature
 priority: P2
+epic: 0059
 status: idea
 pr:
 created: 2026-07-17

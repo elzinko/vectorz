@@ -4,6 +4,7 @@ title: ezk-article — skill d'écriture d'articles techniques vulgarisés (pers
 type: feature
 priority: P1
 status: todo
+ready: 2026-07-17
 pr:
 created: 2026-07-13
 ---

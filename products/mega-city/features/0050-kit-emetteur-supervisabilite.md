@@ -4,7 +4,7 @@ title: Kit émetteur de supervisabilité — mega-city devient la première mét
 type: feature
 priority: P1
 status: in-progress
-pr: "#8"
+pr:
 created: 2026-07-14
 ---
 
@@ -54,6 +54,10 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
 
 ## Notes / décisions
 
+- **`pr:` vidé le 2026-07-17 (review)** : le `#8` précédent datait du repo mega-city
+  **standalone** (pré-subtree) et pointe désormais sur une PR vectorz sans rapport (piège
+  de numérotation pré-subtree). La fiche reste in-progress ; le vrai n° de PR sera posé au
+  ship, dans la numérotation vectorz.
 - Origine : D12 + compte rendu du panel design (capture cop1 §7) ; fiches sœurs côté
   cop1 : 0027 (validateur), 0028 (policy de siège), 0029 (différés v0.2).
 - ~~Le MCP émetteur (chemin nominal Claude Desktop) est un différé v0.2 (fiche cop1 0029)~~

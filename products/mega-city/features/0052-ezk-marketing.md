@@ -139,11 +139,12 @@ toute modification du triplet invalide la validation.
   mécanique et non négociable ; journal public → write-as-if-public + option privée ;
   harvest reformulé sur le récupérable + premier déroulé samplerz ; style-guide =
   artefact de données chez ezk-marketing, injecté dans 0049.
-- **Dépend de : 0049 ezk-article** (aujourd'hui P2 todo) — à construire AVANT ou en
-  LOT avec cette fiche, sinon le volet articles n'a pas sa brique (anti-pattern
-  ezk-readme). **Arbitrage user à prendre** : remonter 0049 en P1 (lot 0049→0052) ou
-  dégrader 0052 en attendant. 0044 (formaliser les composes inter-skills) est aussi
-  directement pertinente — cet orchestrateur en serait le premier client.
+- **Dépend de : 0049 ezk-article** — **arbitrage tranché 2026-07-17 (review) : lot 0049→0052
+  confirmé.** 0049 est passée `ready` (P1, tirable en premier) ; 0052 **reste `todo`
+  non-ready** tant que 0049 n'est pas construite (sa brique articles). La readier
+  automatiquement quand 0049 ship. (0049 était déjà P1, pas P2 : la mention « P2 » de cette
+  note était périmée.) 0044 (composes inter-skills) reste directement pertinente — cet
+  orchestrateur en serait le premier client.
 - **P1** demandé par le user (2026-07-15) : passe devant ~15 fiches P2 todo — coût de
   priorisation signalé, 0050 (in-progress) reste à clore d'abord.
 - **Idées post-v1** (non harvestées — ne construire qu'après un déroulé réel) :

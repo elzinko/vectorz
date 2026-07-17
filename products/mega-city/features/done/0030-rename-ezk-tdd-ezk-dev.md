@@ -1,12 +1,18 @@
 ---
 id: 0030
 title: Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle)
-type: refactor       # feature | bug | refactor | chore
-priority: P2         # P0 | P1 | P2 | P3
-status: idea         # idea | todo | in-progress | blocked | shipped
+type: refactor
+priority: P2
+status: shipped
 pr:
 created: 2026-07-12
 ---
+
+> ⚠️ **Fusionnée dans [0045](0045-ezk-dev-methode-tdd-en-rules.md) le 2026-07-17 (review) —
+> aucun code livré.** Déplacée dans `done/` comme fiche *absorbée*. Le rename
+> `ezk-tdd → ezk-dev` est **l'étape 1 littérale de 0045** (qui va plus loin : extraire la
+> méthode TDD en rule de profil). 0045 (créée 6 jours après) est la fiche vivante ; garder
+> les deux = doublon. Tout le contenu utile ci-dessous est couvert par 0045.
 
 ## Contexte / Problème
 

@@ -3,6 +3,7 @@ id: 0074
 title: article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve)
 type: feature
 priority: P3
+epic: 0059
 status: idea
 pr:
 created: 2026-07-17

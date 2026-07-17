@@ -1,12 +1,16 @@
 ---
 id: 0059
 title: série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité
-type: feature
+type: epic
 priority: P2
-status: idea
+status: todo
 pr:
 created: 2026-07-15
 ---
+
+> **Épic non-buildable** (ADR-0017) — ne pas tirer directement : c'est le **conteneur de la
+> série d'articles REX**. Tirer ses articles-enfants (champ `epic: 0059`) quand ils sont
+> groomés. Passée `type: epic` le 2026-07-17 (review) : une « série » EST un épic.
 
 ## Contexte / Problème
 

@@ -3,7 +3,7 @@ id: 0016
 title: cap cop1 — matérialiser un profil en config native cop1
 type: feature
 priority: P2
-status: todo
+status: blocked
 pr:
 created: 2026-06-26
 ---
@@ -26,8 +26,13 @@ que cop1 lit déjà :
 
 ⚠️ **Ne pas implémenter** tant que (a) le schéma mega-city n'est pas stabilisé (fiches 0012
 « aligner domain.ts », 0006 « migrer rulesets iamthelaw », et toute fiche mutant domain.ts —
-0039 `Agent.model/effort`, 0044 `Skill.composes` + Skill=dossier) et (b) cop1 ADR-021 n'est
-pas acté.
+0039 `Agent.model/effort`, 0044 `Skill.composes` + Skill=dossier) et ~~(b) cop1 ADR-021 n'est
+pas acté~~.
+
+> **2026-07-17 (review) — gate (b) LEVÉ** : cop1 ADR-021 est **Accepté** depuis le 2026-07-15
+> (fiche racine 0035 / PR #12 — plus « en branche non mergée »). Ne reste que le **gate (a)**
+> (schéma mega-city stabilisé : 0012 + 0044 encore ouvertes). Statut `blocked` tant que (a)
+> tient ; repasser `todo` quand `domain.ts` est aligné et `Skill.composes`/Skill=dossier figés.
 
 ## Critères d'acceptation
 - [ ] `bind <profile> <projet-cop1> cop1` produit un `iamthelaw/global.yaml` valide que cop1 lit.

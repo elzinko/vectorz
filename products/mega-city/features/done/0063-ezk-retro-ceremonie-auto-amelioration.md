@@ -3,7 +3,7 @@ id: 0063
 title: ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules)
 type: feature
 priority: P2
-status: in-progress
+status: shipped
 pr: "#21"
 created: 2026-07-16
 ---

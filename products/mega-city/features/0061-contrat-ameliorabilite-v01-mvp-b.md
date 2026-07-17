@@ -2,7 +2,7 @@
 id: 0061
 title: Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B)
 type: feature
-priority: P1 # proposée — arbitrage PO
+priority: P1 # arbitrée 2026-07-17 (review) : P1 confirmée (jumeau MVP B de racine 0044, P1) — gated derrière 0044 (MVP A, prérequis absolu)
 status: todo
 pr:
 created: 2026-07-16
