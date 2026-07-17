@@ -144,7 +144,8 @@ Un monorepo peut porter plusieurs backlogs (ex. vectorz : `features/` racine +
 cwd** ; si l'ambiguïté demeure (cwd à la racine, sujet côté produit), **demander** —
 ne jamais deviner. Toutes les sous-commandes (`add`, `groom`, `ready`, `next`,
 `review`, `ship`, `regen`) opèrent sur le backlog ainsi résolu ; `regen` se lance avec
-la racine et le titre du backlog visé (script paramétré).
+la racine et le titre du backlog visé — ex. depuis la racine vectorz :
+`bash products/mega-city/bin/regen-backlog.sh . "Backlog features & bugs — vectorz (racine)"`.
 
 ## Détail des sous-commandes
 
@@ -262,8 +263,10 @@ modification de fiche sans son accord explicite (jamais d'auto-suppression).
 (layout `roadmap/` : backlog→`implemented/`). 3. `regen`. Commit `docs(features): ship <id> (#X)`.
 
 ### `regen`
-Délègue au script **paramétré** `bin/regen-backlog.sh [racine] [titre]` (fiche 0072 —
-le MÊME script sert tous les backlogs, plus d'« adaptation » manuelle). Il reconstruit
+Délègue au script **paramétré** de mega-city : `products/mega-city/bin/regen-backlog.sh
+[racine] [titre]` depuis la racine du repo — il n'existe **pas** de `bin/` à la racine,
+le script vit dans le produit (fiche 0072 — le MÊME script sert tous les backlogs, plus
+d'« adaptation » manuelle). Il reconstruit
 la table depuis le front-matter de **toutes** les fiches : colonnes
 `# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id, plus deux
 **colonnes conditionnelles** (ADR-0017 A12) : `Version` si au moins un `version:`,

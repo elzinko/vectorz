@@ -98,10 +98,20 @@ check "warning cible non-epic (0022→0021)"  "grep -q 'fiche 0022 — epic: 002
 check "warning sous-épic (0023)"            "grep -q 'fiche 0023 — une épic ne référence pas' '$TMP/c.err'"
 check "warnings NON bloquants (index écrit)" "test -s '$C/features/README.md'"
 
-# ── Cas D : défauts du script (sans argument → mega-city) ─────────────────────────
-echo "Cas D (défauts) :"
-check "sans racine → mega-city, sans casser" \
-  "cd '$TMP' && bash '$SCRIPT' >/dev/null 2>&1 && head -1 \"\$(dirname \"$SCRIPT\")/../features/README.md\" | grep -q 'Backlog — mega-city'"
+# ── Cas D : défauts (racine = parent de bin/, titre mega-city) — hermétique ──────
+# (revue Codex PR #30 : ne JAMAIS régénérer le vrai index depuis le banc — copie du
+# script dans un produit-fixture, la résolution par défaut opère dedans.)
+D="$TMP/d"
+mkdir -p "$D/bin"
+cp "$SCRIPT" "$D/bin/regen-backlog.sh"
+fiche "$D/features" 0030 defaut 'type: feature
+priority: P2
+status: todo'
+echo "Cas D (défauts, hermétique) :"
+check "sans args → racine = parent de bin/ (fixture)" \
+  "cd '$TMP' && bash '$D/bin/regen-backlog.sh' >/dev/null 2>&1 && test -s '$D/features/README.md'"
+check "titre par défaut mega-city" \
+  "head -1 '$D/features/README.md' | grep -q '^# Backlog — mega-city$'"
 
 echo ''
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi
