@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 
 SEP=$'\x1f'
 
-extract() { # $1=file → champs séparés par \x1f : id, title, type, priority, status, pr
+extract() { # $1=file → champs séparés par \x1f : id, title, type, priority, status, pr, ready, created
   awk '
     function unquote(s) { gsub(/^"|"$/, "", s); return s }
     BEGIN { infm=0 }
@@ -18,8 +18,10 @@ extract() { # $1=file → champs séparés par \x1f : id, title, type, priority,
       if ($0 ~ /^priority:/) { sub(/^priority:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); prio=$0 }
       if ($0 ~ /^status:/)   { sub(/^status:[[:space:]]*/, "");   sub(/[[:space:]]*#.*$/, ""); status=$0 }
       if ($0 ~ /^pr:/)       { sub(/^pr:[[:space:]]*/, "");       pr=unquote($0) }
+      if ($0 ~ /^ready:/)    { sub(/^ready:[[:space:]]*/, "");    sub(/[[:space:]]*#.*$/, ""); ready=$0 }
+      if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
     }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr }
+    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, ready, created }
   ' "$1"
 }
 
@@ -40,7 +42,7 @@ done
   echo ''
   echo '| # | Titre | Type | Prio | Statut | PR |'
   echo '|---|-------|------|------|--------|----|'
-  printf '%s' "$rows" | awk -F"$SEP" '$5 != "idea"' | sort -t"$SEP" -k4,4 -k1,1 | while IFS="$SEP" read -r id title type prio status pr; do
+  printf '%s' "$rows" | awk -F"$SEP" '$5 != "idea"' | sort -t"$SEP" -k4,4 -k1,1 | while IFS="$SEP" read -r id title type prio status pr ready created; do
     case "$status" in
       shipped) st='✅ shipped';;
       in-progress) st='🟠 in-progress';;
@@ -59,7 +61,7 @@ done
     echo ''
     echo '| # | Titre | Type | Prio | Statut | PR |'
     echo '|---|-------|------|------|--------|----|'
-    printf '%s\n' "$ideas" | sort -t"$SEP" -k4,4 -k1,1 | while IFS="$SEP" read -r id title type prio status pr; do
+    printf '%s\n' "$ideas" | sort -t"$SEP" -k4,4 -k1,1 | while IFS="$SEP" read -r id title type prio status pr ready created; do
       title="${title//|/\\|}"
       pr="${pr//|/\\|}"
       echo "| $id | $title | $type | $prio | 💡 idea | $pr |"
@@ -70,3 +72,13 @@ done
 } > features/README.md
 
 echo "features/README.md régénéré ($(printf '%s' "$rows" | grep -c .) fiches)."
+
+# Compteurs déterministes (ADR-0016 §5 / fiche 0065) — le script compte, le LLM juge.
+printf '%s' "$rows" | awk -F"$SEP" '
+  NF { n++; c[$5]++; if ($5=="todo" && $7!="") r++ }
+  END { printf "stats: total=%d · idea=%d · todo=%d (dont ready=%d) · in-progress=%d · blocked=%d · shipped=%d\n", \
+        n, c["idea"], c["todo"], r, c["in-progress"], c["blocked"], c["shipped"] }'
+median="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="todo" && $8!="" { print $8 }' | sort | awk '{ a[NR]=$0 } END { if (NR) print a[int((NR+1)/2)] }')"
+if [ -n "$median" ]; then
+  echo "stats: création médiane des todo = ${median}"
+fi

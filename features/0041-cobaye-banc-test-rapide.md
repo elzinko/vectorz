@@ -71,3 +71,6 @@ Transverse :
   d'E3 — coordonner à l'ouverture de 0038 pour ne pas dupliquer les fixtures natives.
 - Portée « Pareto » assumée : on ne vise **pas** l'exhaustivité ; couvrir peu, vite, et
   élargir seulement si un trou de régression le réclame.
+- 2026-07-17 — rattachée à la ligne **Sprint Review** du mapping ADR-0016 §1 mega-city
+  (contrôle « existant vs prévu ») : le banc cobaye outille le gate démo (validation de
+  PR par l'opérateur). Relation informative, pas une dépendance bloquante.

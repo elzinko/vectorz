@@ -48,9 +48,15 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## La boucle
 
-1. **Intake** — `ezk-backlog list` : prends LA prochaine fiche prioritaire (P0→P3).
+1. **Intake** — si un review est dû (`review --delta` avant le planning ; complet
+   post-pivot / tous les 5 sprints — ADR-0016), passe-le d'abord. Puis
+   `ezk-backlog next --ready-only` : prends LA prochaine fiche **tirable**
+   (ready, non-épic).
 2. **Décision « quoi »** :
-   - **Fiche claire** → va construire (3).
+   - **Fiche ready** → va construire (3).
+   - **Fiche de tête non-ready** → `groom` + gate `ready` (fiche 0056) avant de
+     construire ; si le groom exige un arbitrage produit → **checkpoint « aucune
+     fiche ready »** (cf. tableau).
    - **Fiche vague** ou **backlog vide** → **checkpoint idéation** : compose
      `product-management:product-brainstorming` (et `engineering:architecture` si structurant) pour cadrer la
      fiche **avant** de construire. Réutilise la capacité de la fiche 0022
@@ -79,6 +85,7 @@ automatiquement selon la section « Mode checkpoints » ci-dessous :
 |---|---|
 | **Inter-sprint** | ✅ *‹feature› livrée (tests verts, mergée).* → `[Sprint suivant : ‹fiche N+1›]` · `[Polir ‹feature›]` · `[Idéer de nouvelles features]` · `[Stop]` |
 | **Idéation** (backlog vide / fiche vague) | *Plus de fiche claire / ‹fiche› est vague.* → `[Brainstormer pour la cadrer]` · `[Construire telle quelle]` · `[Tu donnes la prochaine idée]` |
+| **Aucune fiche ready** (ADR-0016) | 🚧 *Zéro fiche tirable — DoR pré-remplies pour les fiches de tête.* → `[Valider la DoR de ‹fiche› (gate ready)]` · `[Tirer ‹fiche› non-ready (soupape PO, journalisée)]` · `[Groomer une autre fiche]` |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Continuer]` · `[Passer en mode lean]` · `[Pause]` |
 
@@ -107,7 +114,8 @@ Mutable à chaud (option `[Passer en auto]` / `[Repasser en ask]` proposée à u
 - **`auto`** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
   les décisions techniques (au décideur **`ezk-pm`** et aux agents de rôle), tu
   **journalises** chaque décision dans `SPRINT.md` (`## Notes / décisions`), et tu ne
-  t'arrêtes QUE sur les **4 décisions humaines**.
+  t'arrêtes QUE sur les **4 décisions humaines** (+ la validation du gate `ready`
+  au checkpoint « aucune fiche ready », ADR-0016).
 
 En `auto`, chaque moment d'arrêt se résout ainsi :
 
@@ -116,6 +124,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Inter-sprint** | prends la 1re option (sprint suivant) — **à condition** que `--tokens cap` soit actif (le plafond borne le coût) ; sinon reste `ask`. Journalise. |
 | **Idéation — fiche vague** | délègue à `product-management:product-brainstorming` pour cadrer, puis construis. Journalise. |
 | **Idéation — backlog vide** | **STOP humain** — inventer la direction produit n'est jamais automatisable. |
+| **Aucune fiche ready** | prépare le groom des fiches de tête (DoR pré-remplies via `product-brainstorming`), puis **STOP humain** pour valider le gate `ready` — le gate n'est jamais auto-tamponné (ADR-0016 A5). |
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
 | **Dérive tokens** | dégrade en `lean` (jamais plus cher). Une **augmentation** de budget = **STOP humain**. |

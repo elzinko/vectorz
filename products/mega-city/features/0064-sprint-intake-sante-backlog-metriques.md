@@ -55,6 +55,17 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
 
 ## Notes / décisions
 
+- 2026-07-17 — **réconciliation avec ADR-0016 mega-city (PR #26)**, qui traite le même
+  besoin (travail mené en parallèle, découvert au merge). **Livré** : DoR maison en gate
+  bloquant (`ready <id>` pose `ready:` — fiche 0056) ; compteurs de santé émis par le
+  script `regen` (total / statuts / todo-ready / création médiane — point 3, moitié
+  « résultat du prompt ») ; garde « pas de sprint possible » = checkpoint bloquant
+  « aucune fiche ready » d'ezk-product-builder (point 5) ; priorisation + tirage via
+  `next --ready-only` et `review` (points 1-2). Le « à trancher » (skill `ezk-planning`
+  dédié ?) est **tranché** : sous-commandes d'ezk-backlog (ADR-0016 option B, gate
+  ADR-0013). **Reste à cette fiche** (à groomer) : la DoR comme règle d'équipe dans
+  `rules/` (évolutive via ezk-retro), l'**émission `backlog.health`** au journal de
+  supervisabilité (point 4, moitié monitoring), les seuils « temps de groomer » (point 6).
 - **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../../docs/adr/ADR-031-deux-axes-de-validation.md)
   (Axe 1 « le produit tourne ? », Axe 2 « la méthode est bonne ? ») : ici c'est la santé du
   **backlog**, en amont du sprint.
