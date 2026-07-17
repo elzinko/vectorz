@@ -92,3 +92,21 @@ Skill `ezk-article` (candidat), pilotable par sous-commandes (help, new, revise,
   les règles d'écriture du skill restent invariantes, le style-guide externe s'ajoute
   par-dessus sans les remplacer. NB : la 0052 (P1) DÉPEND de cette fiche — arbitrage
   de priorité à prendre (lot 0049→0052 ?).
+- **Amendement 2026-07-16 (retour terrain : 1ᵉʳ article samplerz écrit via le déroulé
+  manuel).** Cinq règles générales à encoder, remontées de l'usage réel :
+  1. **VOIX à la 1ᵉʳ personne, au nom du porteur** (option de persona) : « j'ai créé »,
+     « je me suis posé la question » — pas la 3ᵉ personne éditoriale ni « l'utilisateur ».
+     Le brief de persona porte ce choix (1ᵉʳ pers. / éditorial / neutre).
+  2. **Accessibilité à un NOVICE** : clair pour tout le monde, y compris un dev hors du
+     domaine. Renforce « définir chaque terme » : quand un mot reste ardu, l'EXPLIQUER,
+     ou l'illustrer par un **bout de code** ou une **image**. Zéro jargon nu.
+  3. **DIAGRAMMES** : illustrer les propos structurants (surtout les flux de
+     communication, machines à états, frontières) par un schéma. Composer **`ezk-diagram`**
+     (prose → Mermaid + image versionnée), pas de Mermaid à la main. Un schéma seulement
+     s'il éclaire (pas de décoration).
+  4. **LIENS vers les OUTILS cités** (Ableton, Chataigne, OSC…) : chaque outil nommé
+     gagne un lien vers sa source officielle, en plus de sa demi-ligne d'identité.
+  5. **LIENS vers les SOURCES d'archi (ADR)** : ne pas écrire « l'ADR dit » sans lien —
+     lier l'ADR PUBLIC. ⚠️ Dépendance : suppose une **surface publique** pour les ADR
+     quand le repo code est privé (cf. samplerz `public_content_annex`) ; tant qu'elle
+     n'existe pas, formuler sans référence nue ni lien mort.

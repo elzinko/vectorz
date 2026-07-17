@@ -53,3 +53,8 @@ Question PO (session 2026-07-16, premier self-host) : la règle actuelle est str
   souvent 1 fiche, parfois un couple ») et **où** l'inscrire (rule mega-city `rules/` vs
   `ezk-sprint`).
 - Origine : session 2026-07-16. Priorité P2 à confirmer au grooming.
+- 2026-07-17 — **articulation ADR-0016 §3 mega-city (PR #26)** : le planning y est fixé en
+  tirage unitaire ready-only (`next --ready-only`) avec but de sprint journalisé —
+  compatible avec le lot cohérent visé ici (le planning peut tirer plusieurs fiches ready
+  vers un même but ; la PR reste l'unité de revue/merge). Cette fiche garde la question
+  de la granularité sprint ↔ PR.
