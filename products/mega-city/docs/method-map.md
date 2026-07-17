@@ -31,20 +31,23 @@ flowchart TB
         S4 --> S5["5 · revue : ezk-steward + agents"] --> S6["6 · PR → squash-merge"]
     end
     RETRO["🔄 ezk-retro<br/>cérémonie d'amélioration (Sujet A)"]
+    ARCH["🗄️ ezk-archive<br/>clôture de session : handoff, rien ne se perd<br/>(tri branches absorbées vs réelles — 0076)"]
     RULES[("⚖️ rules/ · bundles · DoD/DoR<br/>LA LOI")]
 
     PO --> BL
     PO -->|lance| PB
     PB -->|tire la prochaine fiche| SP
-    S6 -->|ship| BL
+    S6 -->|ship + suppr. branche locale+remote| BL
     RULES -.->|guident le sprint| SP
     PO -->|déclenche| RETRO
     RETRO -->|propositions typées symptôme+mesure| RULES
+    PO -->|clôt la session| ARCH
+    ARCH -->|ship/regen du stock · purge des résidus prouvés| BL
 ```
 
 **Acteurs** : le **PO** (déclenche, tranche) · les **skills** `ezk-product-builder` (chaîne),
-`ezk-sprint` (1 fiche → 1 PR), `ezk-backlog` (le stock), `ezk-retro` (améliore) · **LA LOI**
-(`rules/`) qui guide et se fait enrichir.
+`ezk-sprint` (1 fiche → 1 PR), `ezk-backlog` (le stock), `ezk-retro` (améliore),
+`ezk-archive` (clôt sans rien perdre) · **LA LOI** (`rules/`) qui guide et se fait enrichir.
 
 ---
 

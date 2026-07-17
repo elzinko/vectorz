@@ -78,7 +78,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
 8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)).
 9. **⛳ Checkpoint** — **STOP.** Résume + « on continue ? ».
-10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche**. Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Avant de merger : CI verte ET revues de la PR lues et traitées** — reviewers humains **et bots** (Codex poste ses findings en commentaires inline ; une CI verte ne les couvre pas).
+10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Avant de merger : CI verte ET revues de la PR lues et traitées** — reviewers humains **et bots** (Codex poste ses findings en commentaires inline ; une CI verte ne les couvre pas).
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 

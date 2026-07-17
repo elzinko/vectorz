@@ -69,7 +69,9 @@ toucher le template) :
 ## `plan` — le cœur : ordonner et regrouper
 
 1. **Inventaire** : `gh pr list --state open` (repo **sans remote** → branches
-   locales `git branch --no-merged <base>`, cf. ezk-archive). Lire chaque corps
+   locales **RÉELLES uniquement**, via la classification du `check.sh`
+   d'ezk-archive — sur un repo squash-merge, `git branch --no-merged` brut liste
+   surtout des résidus déjà livrés, fiche mega-city 0076). Lire chaque corps
    de PR : si la convention est en place, les blocs Validation disent déjà
    testé/reste/modalités — sinon, déduire du diff (et le signaler comme dette).
 2. **Dépendances & conflits** : `git merge-tree` entre chaque paire qui partage
@@ -107,7 +109,11 @@ toucher le template) :
   de la file de merge et retourne au dev (ezk-sprint), avec le signal en main.
 - `ship` : uniquement les PRs dont **toutes les modalités bloquantes** sont ✅ —
   squash-merge dans l'ordre du plan, CI re-verte entre deux PRs qui partagent
-  des fichiers, branche supprimée, `ezk-backlog ship <fiche> #PR`.
+  des fichiers, branche supprimée **remote ET locale** (+ worktree retiré le cas
+  échéant — une locale oubliée sur un repo squash devient un faux « non-mergé »
+  permanent, fiche mega-city 0076), `ezk-backlog ship <fiche> #PR`. Après un
+  squash fait par le PO **depuis l'UI GitHub** : `git fetch --prune` + supprimer
+  la copie locale — l'UI ne supprime que la branche remote.
 
 ## Frontière & délégation — compose, ne réimplémente rien
 
