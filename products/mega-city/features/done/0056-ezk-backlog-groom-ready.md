@@ -3,9 +3,9 @@ id: 0056
 title: ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate)
 type: feature
 priority: P1
-status: in-progress
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#26"
 created: 2026-07-15
 ---
 

@@ -189,10 +189,10 @@ d'ordre intra-bucket nommée. (**A7, A8, A12, A13** → ADR-0017.)
 ## Action items
 
 1. [x] Fiche 0056 promue `idea → todo` (elle passe son propre gate DoR) — cet ADR.
-2. [ ] Fiche 0056 (`groom`/`ready`, pose de `ready:`) + `next --ready-only` :
-   implémenter dans le playbook ezk-backlog.
-3. [ ] Fiche 0071 (`review` full/delta + compteurs côté script) : implémenter.
-4. [ ] Câbler la cadence : intake ezk-sprint = `next --ready-only` + delta-review ;
+2. [x] Fiche 0056 (`groom`/`ready`, pose de `ready:`) + `next --ready-only` :
+   implémenté dans le playbook ezk-backlog (PR #26).
+3. [x] Fiche 0071 (`review` full/delta + compteurs côté script) : implémenté (PR #26).
+4. [x] Cadence câblée : intake ezk-sprint = `next --ready-only` + delta-review ;
    ezk-product-builder = checkpoint « aucune fiche ready » + review complet
-   tous les 5 sprints.
+   tous les 5 sprints (PR #26).
 5. [ ] Épics : ADR-0017 + fiche 0072 (phase 2).
