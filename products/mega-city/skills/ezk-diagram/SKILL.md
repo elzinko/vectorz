@@ -72,7 +72,12 @@ Pour `add` comme pour `edit`, déroule **toujours** :
    `stateDiagram-v2` (états), `classDiagram` (structures), `erDiagram`, `mindmap`, `gantt`… Ne force pas un flowchart si un autre type dit mieux la chose.
 3. **Générer le Mermaid** — écris/actualise `diagram.mmd` en appliquant les **Règles de
    lisibilité** (section dédiée). C'est **ta capacité native** : aucune API, aucun service externe.
-4. **Rendre l'image, puis publier les vues** — lance les scripts déterministes :
+4. **Rendre l'image, rédiger l'explication, puis publier les vues** — écris/actualise d'abord
+   `explanation.md` (le **résumé lecteur** : « Ce que montre ce diagramme » en langage courant,
+   rédigé par toi **depuis la prose** — quelques phrases adaptées au lecteur, pas un dump de la
+   prose si elle est longue). L'ordre compte : `publish.sh` l'assemble dans le README — l'écrire
+   après publierait un README en repli (prose brute) ou une explication périmée. Puis lance les
+   scripts déterministes :
    ```bash
    bash <skill>/scripts/render.sh  diagrams/<slug>/diagram.mmd   # → diagram.svg
    bash <skill>/scripts/publish.sh diagrams/<slug>               # → README.md (GitHub) + liens mermaid.live/ink
@@ -83,12 +88,10 @@ Pour `add` comme pour `edit`, déroule **toujours** :
    **Fallback gracieux** : si `mmdc`/`npx` sont absents, `render.sh` garde le `.mmd` et te le dit
    (propose alors un **MCP mermaid** / l'outil **visualize**, ou livre le `.mmd`) ; si `node` est absent,
    `publish.sh` écrit quand même le `README.md` (bloc mermaid seul) et saute les liens B.
-5. **Écrire la prose, l'explication + le meta** — `description.md` (la prose validée),
-   `explanation.md` (le **résumé lecteur** : « Ce que montre ce diagramme » en langage courant,
-   rédigé par toi **depuis la prose** — quelques phrases adaptées au lecteur, pas un dump de la
-   prose si elle est longue) et `meta.yaml` (titre, date fournie par l'humain ou `git log`, type
-   de diagramme, liens éventuels, **et un bloc `share:` avec les liens `edit`/`img` capturés
-   en (4)**). **Ne devine jamais la date** : demande-la si inconnue.
+5. **Écrire la prose + le meta** — `description.md` (la prose validée — l'explication, elle,
+   est déjà écrite en (4), avant publication) et `meta.yaml` (titre, date fournie par l'humain
+   ou `git log`, type de diagramme, liens éventuels, **et un bloc `share:` avec les liens
+   `edit`/`img` capturés en (4)**). **Ne devine jamais la date** : demande-la si inconnue.
 6. **Valider** — passe d'abord le diagramme au **test final** des Règles de lisibilité, puis montre le
    Mermaid + (si rendue) l'image, **donne les vues partageables** (l'URL du dossier
    GitHub `diagrams/<slug>/`, qui rend le `README.md` inline, + le lien mermaid.live d'édition), et **demande** :
