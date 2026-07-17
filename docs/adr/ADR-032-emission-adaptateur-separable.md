@@ -1,6 +1,11 @@
 # ADR-032 — Séparabilité de l'émission : ce qu'une « carte d'émission » peut et ne peut pas produire
 
-**Statut :** **PROPOSÉ** — panel adverse manuel + arbitrage PO avant gravure (comme ADR-030/031).
+**Statut :** **ACCEPTÉ** — gravé par le PO le **2026-07-17**, après panel adverse (2026-07-16,
+verdict « revoir-en-profondeur » appliqué) et arbitrage (i). La gravure prend la forme du **guide
+compagnon** [docs/brancher-une-methode-existante.md](../brancher-une-methode-existante.md)
+(comment brancher une méthode existante, exemple BMAD, pièges d'archi résolus). La **preuve
+empirique** (0058, après 0050) reste la validation de la première implémentation sidecar — tout
+retour d'expérience amende le guide.
 **Date :** 2026-07-16 · **révisé 2026-07-16** après panel adverse (verdict *revoir-en-profondeur* ;
 findings confirmés appliqués — la Décision, la table des options, le corollaire BMAD et le critère
 du spike ont tous changé).
@@ -434,24 +439,26 @@ contre un homme de paille ; cette table-ci compare des options réelles.)*
        critères réels de 0058 s'appliquent (run BMAD réel → `events.jsonl` **qui passe le
        journal-validator**, zéro modification au-delà des consignes) — durcissement à intégrer au
        grooming de 0058 : `gate.resumed` **non synthétisé** (E4) + arrêt réel constaté.
-5. [ ] **Trancher le format de la carte** (`emission-map.<fmt>`) — **et rien d'autre** : **le schéma
-       qu'elle doit valider EST le contrat gelé v0.1**, aucun ajout (additif seulement ; **breaking ⇒
-       nouvelle URI de contrat** — capture:289-290 ; `journal.ts`:21
-       `CONTRACT_URI = 'cop1/supervisability@0.1'`). *(La v1 disait « trancher … **le schéma du
-       contrat** qu'elle valide » — lu littéralement, cela rouvrait le gelé par la bande.)*
+5. [ ] **Reporté au démarrage de 0058 (décision PO 2026-07-17 : la gravure n'attend pas ce
+       détail)** — trancher le **format des fiches de branchement du sidecar** dans le mini-ADR
+       d'implémentation qu'exige déjà l'AC1 de 0058. Contrainte maintenue : **le schéma validé EST
+       le contrat gelé v0.1**, aucun ajout (additif seulement ; breaking ⇒ nouvelle URI —
+       capture:289-290 ; `journal.ts`:21 `CONTRACT_URI = 'cop1/supervisability@0.1'`).
 6. [x] **Fait dans cette PR (2026-07-17)** — method-map corrigée : (a) la méthode **parle
        elle-même** (le « continue » n'est plus présenté comme un moment observé de l'extérieur) ;
        (b) **types d'événements** dans la boîte contrat, **noms d'outils MCP** dans la boîte kit ;
        (c) statut **PROPOSÉ** + direction (i) actée mentionnés ; + schéma du **sidecar** ajouté.
 7. [x] **Fait dans cette PR (2026-07-17)** — ADR-031:10 corrigé (« couture = fichiers de config » ;
        la révision « journal » est annoncée, non écrite).
-8. [ ] **Trancher qui possède le vocabulaire des moments observables** (cas (a) noms libres / (b)
-       liste normalisée) et la sortie du constat DIP ((a) surface déclarée & versionnée ⇒ Option C
-       porteuse / (b) découplage de vocabulaire assumé) — **avant gravure** : décision sur la surface
-       publique des skills et sur ce que `ezk-ezk` contract-aware (0067) devra générer.
-9. [x] **Cadré (2026-07-17)** : la **DIRECTION (i) est actée** maintenant ; le passage à
-       « Accepté » attend la **première preuve vécue** (0058, après 0050) — cohérent avec
-       construire → prouver → retirer.
+8. [ ] **Reporté au démarrage de 0058/0067 (décision PO 2026-07-17 : la gravure n'attend pas ce
+       détail)** — trancher **qui possède le vocabulaire des moments** (noms libres + table de
+       traduction vs liste normalisée) et la sortie du constat DIP, dans le mini-ADR
+       d'implémentation (AC1 de 0058), **avant d'écrire la première fiche de branchement**.
+       Décision sur la surface publique des skills et sur ce que `ezk-ezk` (0067) devra générer.
+9. [x] **Tranché par le PO (2026-07-17, 2ᵉ passe) : gravure MAINTENANT**, sous forme de guide
+       (`docs/brancher-une-methode-existante.md`). La **preuve vécue** (0058, après 0050) reste la
+       validation de la première implémentation — construire → prouver → retirer s'applique au
+       pattern **via 0058**, et tout REX amende le guide.
 10. [ ] **0067, re-cadrée (note posée dans la fiche)** : pour une méthode **possédée**, `ezk-ezk`
         génère les **consignes d'émission DANS le skill** (chemin canonique A) ; la carte séparée ne
         concerne que le **sidecar** (A′). Périmètre exact au grooming — après les arbitrages 5 et 8.
