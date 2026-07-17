@@ -8,9 +8,13 @@
 id: global
 extends: [base]            # → hérite le socle (bundle base + ezk-archive)
 bundles: [base]
-# → toute l'équipe ezk-* (6 agents) → installée dans ~/.claude/agents/
+# → toute l'équipe ezk-* (7 agents) → installée dans ~/.claude/agents/
+#   ezk-archive = le sous-agent de clôture, cible de délégation du skill ezk-archive
+#   (skill mince → modèle/effort fixes) ; ici plutôt que dans base pour garder les
+#   profils par-cible curated (le socle reste `agents: []`).
 agents:
   - ezk-architect
+  - ezk-archive
   - ezk-pm
   - ezk-qa
   - ezk-reviewer

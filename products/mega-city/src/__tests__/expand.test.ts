@@ -62,10 +62,11 @@ function expandGlobal() {
 }
 
 describe('expandProfile(global) — l\'équipe complète du bind daily-driver (fiche 0024)', () => {
-  it('agrège TOUS les agents ezk-* (6), triés stablement', () => {
+  it('agrège TOUS les agents ezk-* (7, dont ezk-archive), triés stablement', () => {
     const resolved = expandGlobal();
     expect(resolved.agents.map((a) => a.id)).toEqual([
       'ezk-architect',
+      'ezk-archive',
       'ezk-pm',
       'ezk-qa',
       'ezk-reviewer',

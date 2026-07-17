@@ -20,11 +20,11 @@ description: >-
 
 # ezk-archive
 
-Tu **clôtures proprement une session de travail** avant de l'archiver, pour que
-**rien ne se perde entre deux sessions**. Le besoin réel : entre sessions, des
-ADR/fiches/PRs restent parfois sur des **branches non-mergées** ou **hors backlog**,
-et on les oublie. Ce skill passe une **checklist de clôture** et produit une **note
-de handoff** prête à coller pour reprendre proprement la fois suivante.
+**Point d'entrée mince.** La logique de clôture vit dans le **sous-agent**
+`ezk-archive` (`~/.claude/agents/ezk-archive.md` — `model: sonnet`, `effort: medium`),
+pour que le rituel de clôture tourne **toujours au même modèle/effort**, quel que
+soit le modèle de la session en cours. Ce skill ne fait **QUE déléguer** ; il ne
+déroule jamais la checklist lui-même dans la conversation principale.
 
 > **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
 > scrum (ça, c'est [`ezk-sprint`](../ezk-sprint/)), ni le suivi du *quoi* (ça, c'est
@@ -42,152 +42,48 @@ de handoff** prête à coller pour reprendre proprement la fois suivante.
 | `check` | **Dry-run, ne modifie RIEN** — produit le rapport de clôture (les 7 points) |
 | `run` / `close` | Applique les **corrections sûres** (ship/regen backlog, mémoire) puis produit la **note de handoff** + le **verdict** |
 
-> **Help** : invoquée sans sous-commande (ou `help`/`?`), affiche ce tableau et le
-> rôle de chaque check. Sous-commande non reconnue → traite la demande en prose
-> (la skill reste pilotable naturellement).
+Le détail des 7 vérifications, le gabarit de handoff et les garde-fous vivent dans
+le sous-agent (`~/.claude/agents/ezk-archive.md`) — pas ici, pour ne jamais dupliquer
+le comportement à deux endroits qui pourraient diverger.
 
-> **`check` est strictement read-only** : il n'exécute que des lectures git/gh, ne
-> commite/push/merge **jamais**. `run` n'applique que des corrections **sûres et
-> réversibles** (mettre à jour le backlog, la mémoire) ; il ne merge/push **jamais**
-> une PR ou une branche — ça reste à la main de l'utilisateur (cf. Garde-fous).
+## Comment déléguer
 
-## Le helper read-only
+Le sous-agent **n'a aucune mémoire de cette conversation** — il ne voit que ce que tu
+lui passes explicitement dans le prompt. À chaque invocation :
 
-`bash <skill>/scripts/check.sh [base]` rassemble les faits bruts — working tree,
-stashes, PRs ouvertes, branches non-mergées, ADR touchés — **sans rien modifier**.
-`check` **et** `run` partent tous deux de sa sortie. Il détecte tout seul :
-l'absence de remote (repo **local-only** → pas de `gh`, on s'appuie sur les branches
-locales) et la base (`main` → `master` → `HEAD`).
+1. **Détermine la sous-commande** : `help` par défaut si aucune ou non reconnue,
+   sinon `check` ou `run`/`close`.
+2. **Compose un résumé bref de session** (5-15 lignes) : ce qui a été livré (fiches/
+   PRs avec IDs), les décisions ADR prises, les faits notables appris (contraintes,
+   choix et leur *pourquoi*) — tout ce qui **n'est pas dérivable du seul état git/gh**
+   (le sous-agent lit lui-même `scripts/check.sh` pour l'état git/gh brut).
+3. Appelle l'outil **Agent** avec `subagent_type: "ezk-archive"`, `run_in_background:
+   false` (son résultat conditionne la suite), et un prompt **autonome** contenant :
+   la sous-commande, le chemin du repo courant (cwd), et le résumé de l'étape 2.
+4. **Restitue la réponse de l'agent telle quelle** à l'utilisateur — rapport +
+   verdict (`check`), ou note de handoff + verdict (`run`).
 
-## Les 7 vérifications / actions
-
-### 1. Working tree propre
-`git status --porcelain` + `git stash list`. Rien d'uncommitted/untracked oublié
-(tolère les scratch **connus** comme `SPRINT.md`), pas de stash orphelin. `run` :
-**signale** ce qui doit être commité ; ne commite **pas** à l'aveugle du code
-sensible — laisse la main à l'utilisateur.
-
-### 2. PRs & branches en attente — *ne RIEN oublier*
-- Remote + `gh` dispo → `gh pr list --state open` : aucune PR ouverte oubliée.
-- **Repo SANS remote (crucial)** → pas de `gh` : on s'appuie sur
-  `git branch --no-merged <base>` pour qu'aucune branche locale non-mergée ne soit
-  perdue.
-- Même avec un remote, `git branch --no-merged <base>` attrape les branches locales
-  **jamais poussées**. Pour chaque entrée : dernier commit + **action proposée**
-  (merger ? ouvrir une PR ? abandonner sciemment ?).
-
-### 3. Backlog cohérent — *délègue à [`ezk-backlog`](../ezk-backlog/)*
-- Fiches **livrées cette session** → `ship <id> #PR`.
-- Idées/bugs **notés pendant la session** → `add <description>`.
-- Puis `regen` l'index.
-
-`check` : se contente de **lister** ce qui devrait être shipped/added (read-only).
-`run` : invoque réellement `ezk-backlog`. ezk-archive ne réimplémente pas le suivi —
-il l'**appelle**.
-
-### 4. ADR de la session — *spécifique (ezk-backlog ne suit PAS les ADR)*
-Détecte via git les ADR créés/modifiés depuis le début de session :
-- `git log <base>..HEAD --name-only` → ADR commités sur la branche courante ;
-- working tree (`git diff`, fichiers untracked) → ADR **non commités**.
-
-Vérifie qu'ils sont **commités**, et **signale ceux restés en PR/branche
-non-mergée** (pas perdus, mais *pending*). C'est le check qui justifie ce skill :
-**ezk-backlog ne suit pas les ADR**, donc personne d'autre ne les rattrape.
-Chemins ADR usuels : `docs/adr/`, `adr/`, `docs/decisions/`.
-
-### 5. Mémoire projet
-Propose les faits **DURABLES non-dérivables du repo** (contraintes, décisions et
-leur *pourquoi*, objectifs en cours) et met à jour la mémoire **si le harness en a
-une**. Convertis les dates relatives en absolues. Ne mémorise **pas** ce que le repo
-encode déjà (structure du code, historique git, fixes passés, CLAUDE.md).
-
-### 6. Note de handoff — **LE livrable**, désormais PERSISTÉ
-Un prompt **prêt-à-coller** pour démarrer la prochaine session (gabarit ci-dessous) :
-sync de `main`, `/ezk-backlog list`, la liste des **pending** PRs/branches avec leur
-action, et les **candidats de travail prioritaires**.
-
-**Persistance** : `run` écrit cette note dans **`.claude/handoff.md`** (racine du
-repo, gitignoré) — pas seulement affichée dans le chat, pour ne pas dépendre de ce
-que l'utilisateur pense à copier-coller. **Append-only, nouvelle entrée en tête**
-(la plus récente en premier) : plusieurs sessions peuvent chacune ajouter la leur
-sans jamais s'écraser ni se verrouiller — l'ajout seul suffit à éviter les conflits,
-pas besoin de state machine consume/lock même si plusieurs sessions tournent en
-parallèle sur des branches différentes.
-
-Avant d'ajouter la nouvelle entrée, `run` **purge les entrées devenues entièrement
-résolues** : croise les PR/branches qu'elles mentionnent avec la liste live du
-check 2 (`scripts/check.sh`) — tout ce qui n'y figure plus (mergé, fermé, supprimé)
-signifie que l'entrée est résolue et peut être retirée. Une entrée **partiellement**
-résolue (au moins un point encore pending) est conservée telle quelle — pas
-d'édition chirurgicale de son contenu, qui resterait fragile pour un gain marginal.
-
-Si `.claude/handoff.md` n'est pas encore couvert par `.gitignore`, `run` ajoute
-l'entrée avant d'écrire (c'est de l'éphémère personnel — pas du code d'équipe, ne
-jamais le committer).
-
-### 7. Verdict
-- **✅ archivable** — rien en suspens, handoff prêt.
-- **⚠️ pending à traiter d'abord** — **liste précise** de ce qui bloque (working tree
-  sale, branche non-mergée oubliée, ADR non commité, PR à reviewer…).
-
-## Gabarit de la note de handoff
-
-```markdown
-## Handoff — <projet> — <YYYY-MM-DD>
-
-**Reprendre :**
-1. `git switch main && git pull`   (ou sync local si pas de remote)
-2. `/ezk-backlog list`   → la prochaine fiche prioritaire
-
-**Pending (à ne pas perdre) :**
-- PR #<n> « <titre> » — <action : reviewer / merger / fermer>
-- branche `<nom>` (non-mergée, dernier commit <date>) — <action>
-- ADR `<chemin>` — <commité sur branche X, pending merge / à committer>
-
-**Candidats prioritaires prochaine session :**
-- P0 · <id> · <titre>
-- <idée notée cette session, ajoutée au backlog>
-
-État de clôture : ✅ archivable | ⚠️ pending (voir ci-dessus)
-```
-
-Cette même note est écrite en tête de `.claude/handoff.md` (nouvelle entrée
-`## <date> <heure> — <branche>`, la plus récente en premier).
-
-## Déroulé
-
-1. **Lance le helper** `scripts/check.sh` → faits bruts (read-only).
-2. **Compose le rapport** des 7 points à partir de ces faits + du contexte de session
-   (ce qui a été livré/noté/décidé pendant la session, que git seul ne sait pas).
-3. Si `check` → **t'arrêtes là** : aucune modification, juste le rapport + le verdict.
-4. Si `run`/`close` → applique les **corrections sûres** (backlog via `ezk-backlog`,
-   mémoire), **re-signale** ce qui reste à la main de l'utilisateur (merges/push),
-   puis **écrit/purge `.claude/handoff.md`** (nouvelle entrée en tête, entrées
-   résolues retirées) et affiche la **note de handoff** + le **verdict**.
+**Ne déroule pas la checklist toi-même dans la conversation principale** : c'est
+précisément pour éviter ça (modèle/effort non maîtrisés sur cette tâche) que ce
+skill délègue systématiquement.
 
 ## Intégration
 
-- **[`ezk-backlog`](../ezk-backlog/)** : le check 3 lui délègue `ship`/`add`/`regen` ;
-  la note de handoff renvoie vers `list`.
+- **[`ezk-backlog`](../ezk-backlog/)** : le sous-agent lui délègue `ship`/`add`/
+  `regen` ; sa note de handoff renvoie vers `list`.
 - **[`ezk-sprint`](../ezk-sprint/)** : complémentaire — le sprint *ouvre/déroule*,
   ezk-archive *clôt*. Typiquement invoqué **après** le checkpoint de fin de sprint.
-- **[`ezk-commits`](../ezk-commits/)** : tout commit produit par `run` suit les
-  Conventional Commits.
+- **[`ezk-commits`](../ezk-commits/)** : tout commit produit par le sous-agent suit
+  les Conventional Commits.
 - **`ezk-product-builder`** : à ses pauses inter-sprint, il **rappelle** que
   `/ezk-archive` est disponible si l'utilisateur veut s'arrêter là — il ne
   réimplémente rien du handoff, ça reste ici, seule responsable du fichier.
 
-## Garde-fous
+## Garde-fous (skill)
 
-- **Une seule responsabilité** : l'hygiène de clôture (ce n'est pas du scrum/sprint).
-- **Ne merge/push rien tout seul** : les PRs et branches restent à la main de
-  l'utilisateur — ezk-archive les **signale**, il ne les **résout** pas.
-- **Respecte les repos local-only** : pas de remote → pas de `gh`, uniquement les
-  branches locales (`git branch --no-merged`).
-- **Idempotent** ; `check` est **strictement read-only**.
-- **`.claude/handoff.md` est de l'éphémère personnel** : gitignoré, jamais committé ;
-  append-only (pas de verrou/consume — l'ajout seul évite les conflits entre
-  sessions parallèles) ; purge uniquement les entrées **entièrement** résolues,
-  jamais d'édition chirurgicale d'une entrée encore partiellement pending.
-- Ne commite jamais à l'aveugle du code ou des secrets ; n'invente ni date ni n° de PR
-  (demande si inconnu).
+- **Ne réimplémente jamais la checklist ici** : si tu te surprends à dérouler les 7
+  points toi-même dans la conversation principale, arrête-toi — délègue au sous-agent.
+- **Toujours fournir un résumé de session** au sous-agent : sans lui, il ne peut voir
+  que l'état git/gh, pas ce qui a été décidé/appris/livré pendant la conversation.
+- Ne merge/push rien toi-même en préparant l'appel ; ça reste au sous-agent de
+  signaler, et à l'utilisateur de trancher.
