@@ -2,8 +2,8 @@
 id: 0056
 title: ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate)
 type: feature
-priority: P2
-status: idea
+priority: P1
+status: todo
 pr:
 created: 2026-07-15
 ---
@@ -44,10 +44,11 @@ range (flip statut, regen, commit).
 
 ## Notes
 
-- **Décision de conception à acter en ADR** : « sous-commande d'ezk-backlog » vs « skill dédié
-  ezk-grooming » — trancher par le **test de séparabilité** du repo (cf. ADR-027 B′). Défaut =
-  sous-commande ; promotion en skill autonome seulement si le grooming devient lourd/récurrent
-  (découpe d'epics, dépendances, sizing), via l'entonnoir `ezk-recipy` (0042).
+- **Décision actée : ADR-0016** (2026-07-17) — sous-commandes d'ezk-backlog, pas de skill
+  dédié (gate ADR-0013). L'ADR fixe aussi la cadence (groomer au tirage, pas à la capture)
+  et le caractère **bloquant** du gate `ready` à l'intake d'ezk-sprint.
+- 2026-07-17 — promue `idea → todo` : la fiche passe son propre gate DoR (problème / valeur /
+  critères remplis). Priorité P1 = demande opérateur « à faire tout de suite » (ADR-0016).
 - Compose : `product-brainstorming` (moteur divergent) + éventuellement le panel de challenge
   (fiche 0057) pour confronter l'idée avant de la déclarer Ready.
 - Origine : discussion session 2026-07-15 (capture de 0052/0053/0054 en idea → « il faut
