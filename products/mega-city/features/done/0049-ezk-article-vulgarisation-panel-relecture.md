@@ -3,9 +3,9 @@ id: 0049
 title: ezk-article — skill d'écriture d'articles techniques vulgarisés (persona + panel de relecteurs frais)
 type: feature
 priority: P1
-status: todo
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#32"
 created: 2026-07-13
 ---
 

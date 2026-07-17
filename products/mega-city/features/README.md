@@ -22,7 +22,7 @@
 | 0037 | flywheel cassé — capture écrit des skills/rules que loadCatalog ne relit jamais | bug | P1 |  | ✅ shipped | local (squash-merge) |
 | 0039 | frontmatter tuning des agents — model, effort, isolation | chore | P1 |  | ✅ shipped | local (squash-merge) |
 | 0040 | ezk-product-builder — mode --checkpoints ask\|auto (décisions recommandées par défaut) | feature | P1 |  | ✅ shipped | local (squash-merge) |
-| 0049 | ezk-article — skill d'écriture d'articles techniques vulgarisés (persona + panel de relecteurs frais) | feature | P1 |  | 🔴 todo |  |
+| 0049 | ezk-article — skill d'écriture d'articles techniques vulgarisés (persona + panel de relecteurs frais) | feature | P1 |  | ✅ shipped | #32 |
 | 0050 | Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat | feature | P1 |  | 🟠 in-progress |  |
 | 0052 | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 |  | 🔴 todo |  |
 | 0055 | ezk-ci — surveiller et plafonner la consommation GitHub Actions (repos privés) | feature | P1 |  | 🔴 todo |  |
@@ -92,4 +92,4 @@
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | 💡 idea |  |
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 0059 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0056, 0063, 0071, 0072, 0076.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0056, 0063, 0071, 0072, 0076.
