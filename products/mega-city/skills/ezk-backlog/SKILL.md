@@ -205,6 +205,14 @@ antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` d
 Parcours le backlog trié (P0→P3 puis id) et renvoie la **première fiche éligible** :
 `status: todo` **et** `ready:` posé.
 
+**Réponds toujours en deux parties** : (a) la fiche tirable (ou « aucune ») ET (b) la
+**tête bloquée** — les fiches **`status: todo` sans `ready:`** de priorité *supérieure*
+sautées (et rien d'autre : `idea`, `blocked`, `in-progress` et `type: epic` sont hors
+de ce signal — ils ne sont pas tirables par nature et ne se groome-gatent pas à
+l'intake). **Ne saute jamais silencieusement un `todo` de tête non-ready** : construire
+une P2 ready pendant qu'un `todo` P0 non-ready attend est une inversion de priorité
+que l'appelant doit arbitrer (groomer la tête d'abord, ou décision journalisée).
+
 - Une fiche `type: epic` (ADR-0017) n'est **jamais tirable** : descends sur son prochain
   enfant ready (champ `epic:`), sinon passe à la fiche suivante.
 - Aucune fiche éligible → dis-le et **propose le groom de la fiche de tête** ; en run
