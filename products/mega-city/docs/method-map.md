@@ -102,12 +102,13 @@ flowchart LR
 > **BMAD lui-même** qui émet et **s'arrête aux jalons**. BMAD reste utilisable normalement, avec ou
 > sans vectorz. Fiche : subtree **[0058](../features/0058-bmad-contrat-supervisabilite.md)** (après 0050).
 
-> ⚠️ **État réel** : la couche 1 (méthode) **existe**. Le **kit émetteur** de la couche 2
-> **existe aussi** — `products/mega-city/src/supervision/` : journal JSONL, serveur MCP,
-> runtime, 5 outils (fiche 0050, in-progress). Ce qui **manque** : les skills `ezk-*`
-> n'**appellent pas encore** le kit pendant un vrai sprint, et le sidecar BMAD n'est pas construit.
-> Chemin acté (PO, 2026-07-17) : **finir 0050 → construire 0058 (le sidecar)** ; `ezk-ezk`
-> contract-aware (0067) suivra pour les nouveaux skills.
+> ⚠️ **État réel** : la couche 1 (méthode) **existe**. Le **kit émetteur** existe —
+> `products/mega-city/src/supervision/` : journal JSONL, serveur MCP, runtime, 5 outils
+> (fiche 0050). **`ezk-sprint` porte désormais les consignes d'émission** (2026-07-17 —
+> classe B : émission best-effort quand les outils MCP sont présents, silencieuse sinon).
+> Ce qui **manque encore** : `ezk-product-builder`, les hooks classe A, le déroulé
+> jouet→validateur (AC1 de 0050), et le sidecar BMAD. Chemin acté (PO, 2026-07-17) :
+> **clore 0050 → construire 0058 (le sidecar)** ; `ezk-ezk` contract-aware (0067) suivra.
 
 ---
 

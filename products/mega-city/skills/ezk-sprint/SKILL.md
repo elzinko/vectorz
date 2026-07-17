@@ -80,6 +80,33 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 9. **⛳ Checkpoint** — **STOP.** Résume + « on continue ? ».
 10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche**. Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`).
 
+## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
+
+Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `escalate`,
+`run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
+bruit** :
+
+- **À l'intake (étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
+  <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+- **Au checkpoint (étape 9)** — c'est TON gate : `gate_reached {gate_id:
+  "sprint-<slug>-checkpoint", outcome: ok|attention|failed, report_markdown: <ton résumé
+  de clôture : livré · PR · tokens>}` **avant** de poser « on continue ? » — puis
+  arrête-toi et attends la réponse (ce que tu fais déjà). `outcome` : `ok` si la DoD est
+  verte, `attention` si livré avec réserves, `failed` si le sprint n'a pas abouti.
+- **À la reprise** (accord reçu — de l'humain, ou d'`ezk-product-builder` si tu es
+  absorbé) : `gate_resumed {gate_event_id: <id renvoyé par le résultat d'outil du
+  gate_reached>}`.
+- **Sur un « stop & ask »** (blocage, gate locale rouge 2×, scope creep, action
+  irréversible) : `escalate {type: blocked|authority, detail: <une ligne>}` — un signal,
+  jamais un arrêt de plus que celui que tu fais déjà.
+- **À la clôture du sprint** (après squash-merge, ou abandon) : `run_finished {status:
+  success|failure|abandoned}`.
+
+Tu n'écris **jamais** les champs d'enveloppe (le serveur les calcule) et tu ne forces
+**jamais** `upgrade_ok` (au mieux un veto). Tes checkpoints restent des checkpoints — le
+gate est leur **trace contractuelle** (doc du kit :
+`products/mega-city/src/supervision/README.md`).
+
 ## Definition of Done
 
 Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
