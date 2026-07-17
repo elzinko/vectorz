@@ -78,7 +78,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
 8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)).
 9. **⛳ Checkpoint** — **STOP.** Résume + « on continue ? ».
-10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche**. Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`).
+10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche**. Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Avant de merger : CI verte ET revues de la PR lues et traitées** — reviewers humains **et bots** (Codex poste ses findings en commentaires inline ; une CI verte ne les couvre pas).
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 
@@ -88,6 +88,14 @@ bruit** :
 
 - **À l'intake (étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
   <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+- **Run déjà ouvert = tu es absorbé (P1, revue Codex #25)** : si un run de supervision est
+  **déjà ouvert** — tu es appelé par `vz-product-builder` (qui ouvre le sien au lancement),
+  ou `run_start` répond « refusé : un run est déjà ouvert » — **n'ouvre PAS de run** : ce
+  refus est le **signal d'absorption**, pas une erreur. Émets tes gates **dans le run de
+  l'appelant** (`gate_reached`/`gate_resumed`/`escalate` comme ci-dessous, `gate_id`
+  préfixé `sprint-<slug>-…`), et **laisse `run_finished` à celui qui a ouvert le run** —
+  miroir exact de la règle d'absorption du checkpoint (un seul run, comme un seul
+  « on continue ? »).
 - **Au checkpoint (étape 9)** — c'est TON gate : `gate_reached {gate_id:
   "sprint-<slug>-checkpoint", outcome: ok|attention|failed, report_markdown: <ton résumé
   de clôture : livré · PR · tokens>}` **avant** de poser « on continue ? » — puis

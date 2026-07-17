@@ -55,7 +55,7 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
 
 ## Notes / décisions
 
-- **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../../docs/adr/ADR-031-deux-axes-de-validation.md)
+- **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../../../docs/adr/ADR-031-deux-axes-de-validation.md)
   (Axe 1 « le produit tourne ? », Axe 2 « la méthode est bonne ? ») : ici c'est la santé du
   **backlog**, en amont du sprint.
 - **Non bloquant** pour construire une fiche **déjà prête** (ex. 0063) : ce sujet compte quand

@@ -18,11 +18,14 @@ flowchart LR
     J["📓 JOURNAL events.jsonl<br/>vocabulaire du contrat (gelé)"]
     APP["🖥️ L'APP<br/>aveugle à la méthode"]
     MET -->|appelle| KIT -->|écrit| J -->|lit| APP
-    APP -.->|"retour : continue · pause · stop"| MET
+    APP -.->|"retour : continue · hold · abort"| MET
 ```
 
 > **Figure 1 — Le chemin d'un message.** La méthode appelle le kit, le kit écrit le journal,
-> l'app le lit — et le feu vert de l'humain revient par le canal de commandes.
+> l'app le lit — et le feu vert de l'humain revient par le canal de commandes
+> (`commands.jsonl`). Les trois commandes du contrat : `continue` (reprendre), `hold`
+> (retenir), `abort` (interrompre) — ce sont les **seuls** noms valides, le validateur
+> rejette tout autre.
 
 ## Les deux groupes de messages
 
