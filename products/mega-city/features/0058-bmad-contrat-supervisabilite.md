@@ -67,3 +67,15 @@ sur mega-city) — sinon on stresse le contrat sur deux fronts.
   générique, est **relogé** — pas supprimé) → l'expérience se re-scope
   **émission-side** : BMAD = méthode supervisée qui **émet** le contrat (kit 0050),
   observée par le moniteur — sans pilotage cop1. Ne bloque pas E4.
+- **Fusion 0048 → 0058 (2026-07-17, arbitrage PO) — cette fiche devient LA fiche « sidecar ».**
+  La fiche vectorz 0048 (« spike envelopper BMAD avec une carte d'émission », 2026-07-16) est
+  **absorbée ici et supprimée** : son critère « 0 ligne de source BMAD modifiée » était vacuous
+  (aucune source BMAD vendorée — un overlay le satisfait aussi ; panel ADR-032). Direction actée :
+  **ADR-032 (i)** — l'émetteur canonique reste **dans** la méthode ; le **sidecar/bmad-contracter**
+  (fiches de branchement markdown + moteur d'injection — embryon : `BmadBridgeService`) **installe**
+  les consignes d'émission (kit 0050) dans les **prises natives** de BMAD
+  (`_bmad/_config/agents/*.customize.yaml`) → **cran d'entrée de l'échelle = l'overlay natif (2)**,
+  cohérent avec le re-scope émission-side. Durcissement d'AC à intégrer au grooming :
+  `gate.resumed` **non synthétisé** (ADR-032 E4) + arrêt réel constaté au jalon. Dossier :
+  `docs/adr/ADR-032-emission-adaptateur-separable.md` + capture
+  `docs/captures/2026-07-16-panel-adverse-adr-032.md`.

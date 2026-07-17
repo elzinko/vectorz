@@ -44,3 +44,8 @@ logique au contrat) mais **générer la carte d'émission comme artefact SÉPAR�
   trancher le pattern d'émission AVANT de l'implémenter évite de coder deux fois l'émission.
 - Compose `ezk-ezk`. Dépend de **ADR-032** (vectorz). Lié 0066 (test golden events).
   Origine : cérémonie `ezk-retro` (dry-run 2026-07-16).
+- **Re-cadrage 2026-07-17 (ADR-032 direction (i) actée par le PO)** : pour une méthode qu'on
+  **possède**, l'émetteur canonique vit **dans** la méthode — `ezk-ezk` contract-aware génère donc
+  d'abord les **consignes d'émission dans le skill** (appel du kit 0050, chemin A) ; la « carte
+  séparée » ne concerne que le **sidecar** des méthodes non possédées (A′, fiche 0058). Périmètre
+  exact au grooming, après les arbitrages 5 et 8 de l'ADR-032.

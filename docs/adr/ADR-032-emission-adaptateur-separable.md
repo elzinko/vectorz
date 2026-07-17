@@ -5,6 +5,11 @@
 findings confirmés appliqués — la Décision, la table des options, le corollaire BMAD et le critère
 du spike ont tous changé).
 **Déciders :** elzinko (PO).
+**Arbitrage PO (2026-07-17) : issue (i) RETENUE** — l'émetteur canonique **reste dans la méthode**
+(D12 respecté, rien de rouvert). Le « **sidecar** » (mot du PO — alias *bmad-contracter*) est
+**l'INSTALLATEUR** qui fait parler une méthode qu'on ne possède pas (Option A′), **pas** un wrapper
+d'observation (Option B). Conséquences actées le même jour : fusion du spike 0048 dans la fiche
+0058 (qui devient LA fiche sidecar) ; chemin de dev **0050 → 0058**.
 **Origine :** `/architecture` demandé par le PO (« sujet important »), **cadré par la cérémonie
 `ezk-retro`** (dry-run 2026-07-16 — convergence des lentilles architecte/QA/PM).
 **Compose (sans le rouvrir) :** le contrat de supervisabilité gelé (capture 2026-07-13 §7).
@@ -85,16 +90,23 @@ transition**, pas un pattern de premier ordre.
 Deux issues honnêtes, dont **le choix appartient au PO** (réouverture d'un gelé prononcé par un
 panel de 5 lentilles, verdict unanime — capture:364-369) :
 
-- **(i) Re-cadrage — proposition du réviseur.** « Le shim admis par D12 est **généralisé comme
-  pattern de TRANSITION pour les méthodes non modifiables** ; l'**émetteur canonique reste dans la
-  méthode**. » Rien n'est rouvert, et l'émission-dans-la-méthode (Option A) **n'est pas rejetée** :
-  elle reste le chemin canonique.
-- **(ii) Assumer.** « Cet ADR **RÉVISE D12** » : l'adaptateur externe devient premier, l'émetteur
-  canonique cesse d'être fourni par la méthode. C'est une **réouverture du gelé** — arbitrage PO,
-  pas une note de bas de page.
+- **(i) Re-cadrage — ✅ RETENUE PAR LE PO (2026-07-17).** « Le shim admis par D12 est **généralisé
+  comme pattern de TRANSITION pour les méthodes non modifiables** ; l'**émetteur canonique reste
+  dans la méthode**. » Rien n'est rouvert, et l'émission-dans-la-méthode (Option A) **n'est pas
+  rejetée** : elle reste le chemin canonique.
+- **(ii) Assumer.** « Cet ADR **RÉVISE D12** » — **ÉCARTÉE par le PO (2026-07-17)** : pas de
+  réouverture du gelé.
 
-**Le texte ci-dessous est écrit sous l'hypothèse (i).** Sous (ii), les Options changent de verdict et
-la section « Ce que cet ADR réviserait » devient normative.
+**(i) étant retenue, le texte ci-dessous est normatif ; la branche (ii) est close.**
+
+**Vocabulaire PO (2026-07-17) — le « sidecar ».** L'intuition validée par le PO : un **sidecar**
+(*bmad-contracter*) = des **fiches de branchement markdown** (« pour ce moment de la méthode →
+ajouter cette consigne d'émission → dans cette prise ») + un **moteur** qui les **injecte dans les
+prises natives** de la méthode (embryon existant : `BmadBridgeService`). Résultat : **c'est la
+méthode elle-même qui parle** (consignes d'émission → kit 0050), BMAD reste intact et utilisable
+normalement, avec ou sans vectorz. Le sidecar est donc une **implémentation de l'Option A′**
+(installateur) — pas de l'Option B (observation) : il hérite du **fail-safe** de A (la méthode,
+étendue, s'arrête elle-même aux jalons), et n'est pas concerné par les limites d'E2/E4.
 
 ### E1 — L'émission est séparable de la logique, comme vocabulaire
 
@@ -285,13 +297,12 @@ une extension du gelé, c'est un **trou**. Écrire une 3ᵉ classe = **réouvert
 PO**. En attendant : **une trace produite par enveloppe d'observation est affichée en classe B et
 annotée « fidélité du mapping non vérifiée ; invariant non vérifiable (E4) »**.
 
-### Ce que cet ADR réviserait (à trancher — non acquis)
+### Ce que cet ADR révise (tranché le 2026-07-17)
 
-- **Le template du kit 0050** (`README.md`:33-61) : l'Option A qu'il livre est le **chemin
-  documenté** aujourd'hui. Sous l'hypothèse (i), il n'est **pas** déprécié.
-- **D12**, sous l'hypothèse (ii) seulement.
-
-Les deux sont des **arbitrages PO** (liste jointe), pas des effets de bord de cet ADR.
+- **Le template du kit 0050** : **confirmé, pas déprécié** — (i) retenue, l'Option A reste le
+  chemin canonique pour toute méthode qu'on possède.
+- **D12** : **non révisé** — (ii) écartée. Les décisions gelées restent des précédents
+  d'inspiration, jamais des autorités étendues.
 
 ## Options considérées
 
@@ -312,7 +323,7 @@ l'émetteur au regard de D12** — pas « faut-il réécrire BMAD » (prémisse 
 **Non rejetée** (correction de panel : la v1 la rejetait sans jamais dire que c'était le chemin
 livré). Sous l'hypothèse (i), elle **reste** le chemin canonique pour toute méthode qu'on possède.
 
-### Option A′ — **Overlay natif** via le point d'extension que la méthode documente (BMAD v6)
+### Option A′ — **Overlay natif** via le point d'extension que la méthode documente (BMAD v6) — **le « sidecar » du PO ; voie retenue pour BMAD (2026-07-17)**
 | Dimension | Évaluation |
 |---|---|
 | **Marche pour BMAD ?** | ✅ **Oui, sans réécriture** — `BmadBridgeService.ts`:26-71 injecte déjà des `critical_actions` (`bmm-dev.customize.yaml`:16-17, documenté par BMAD) |
@@ -351,9 +362,13 @@ Pour les moments **non observables de l'extérieur** et pour tout moment devant 
 **Qui nomme ?** — non tranché (cas (a)/(b) ci-dessus) = **arbitrage PO**. Sous la sortie **(a)** du
 constat DIP, cette option devient le **mécanisme porteur**, pas un complément.
 
-**Aucune option n'est marquée « ✅ RETENU » par ce texte** : la table de la v1 produisait son
-« RETENU » contre un **homme de paille** (« réécrire BMAD »), donc sur **aucune comparaison valide**.
-La gravure — et le choix (i)/(ii) qui la conditionne — **appartiennent au PO**.
+**Verdicts (arbitrage PO 2026-07-17)** : **A** = chemin canonique pour toute méthode possédée (les
+consignes d'émission vivent dans le skill) · **A′ « sidecar »** = voie retenue pour les méthodes non
+possédées (BMAD) — portée par la fiche **0058** · **B** = wrapper d'observation, admis en dernier
+recours comme **shim de transition** (moitié observabilité, classe B annotée) · **B′** = écarté
+(poste supprimé par E4, contredit le re-scope « sans pilotage » de 0058) · **C** = complément pour
+les moments non observables — à trancher au grooming (arbitrage 8). *(La v1 produisait son « RETENU »
+contre un homme de paille ; cette table-ci compare des options réelles.)*
 
 ## Conséquences
 
@@ -406,56 +421,39 @@ La gravure — et le choix (i)/(ii) qui la conditionne — **appartiennent au PO
 
 ## Action Items (arbitrages PO / panel)
 
-1. [ ] **Trancher (i) re-cadrage « pattern de transition » vs (ii) « cet ADR révise D12 »** —
-       arbitrage PO (réouverture d'un gelé prononcé par panel unanime, capture:364-369). Conditionne
-       tout le reste, y compris le statut du template du kit 0050.
-2. [ ] **Nommer le poste d'observation CONCRET post-E4** — ou écrire qu'il n'y en a pas, et en tirer
-       les conséquences sur le corollaire BMAD (`features/0039-e4-retrait-bmad.md`:33-34, :37-38).
-3. [ ] **Réconcilier `features/0048` avec `products/mega-city/features/0058`** (doublon non
-       réconcilié : aucune des deux ne cite l'autre ; `features/0039`:58-59 référence bien 0058) et
-       **citer 0050 + 0058** dans ce texte. Reprendre le prérequis de séquencement de 0058:38-39
-       (« ne démarre qu'après 0050 verte » — 0050 est `in-progress`). « Laquelle vit, laquelle
-       meurt » = **PO**.
-4. [ ] **Durcir ou abandonner le critère du spike 0048** : le critère actuel (0048:27-28) compte des
-       **« événements conformes »** — la **FORME** des lignes — **sans jamais constater un arrêt
-       effectif**, et **omet `gate.resumed`** ; et « 0 ligne de source BMAD modifiée » est **vacuous**
-       (A′ le satisfait aussi). Critère durci proposé : *`gate.reached` + **arrêt RÉEL** constaté +
-       `gate.resumed` **non synthétisé** + `journal-validator` vert*
-       (`products/cop1/packages/journal-validator/src/reduceState.ts`:156
-       `code: 'state.activity_while_gate_open'` — l'invariant est **mécaniquement levé** par un
-       validateur qui existe). **Garder / durcir / abandonner = PO.**
+1. [x] **Tranché (PO, 2026-07-17) : (i) retenue** — re-cadrage « pattern de transition », pas de
+       réouverture de D12. Statut du template 0050 : **confirmé**.
+2. [x] **Dissous par le choix A′ (2026-07-17)** : le sidecar émet **en bande** (consignes injectées
+       → kit) — aucun poste d'observation externe n'est requis. Le risque n°1 ne subsiste que pour
+       l'éventuel recours au shim B (transition, dernier ressort).
+3. [x] **Réconcilié (2026-07-17)** : fiche vectorz **0048 fusionnée dans**
+       `products/mega-city/features/0058` (et supprimée du backlog racine) — **0058 = LA fiche
+       sidecar**. 0050 + 0058 sont cités dans ce texte ; le prérequis « ne démarre qu'après 0050
+       verte » est repris.
+4. [x] **Réglé par la fusion (2026-07-17)** : le critère vacuous de 0048 disparaît avec elle ; les
+       critères réels de 0058 s'appliquent (run BMAD réel → `events.jsonl` **qui passe le
+       journal-validator**, zéro modification au-delà des consignes) — durcissement à intégrer au
+       grooming de 0058 : `gate.resumed` **non synthétisé** (E4) + arrêt réel constaté.
 5. [ ] **Trancher le format de la carte** (`emission-map.<fmt>`) — **et rien d'autre** : **le schéma
        qu'elle doit valider EST le contrat gelé v0.1**, aucun ajout (additif seulement ; **breaking ⇒
        nouvelle URI de contrat** — capture:289-290 ; `journal.ts`:21
        `CONTRACT_URI = 'cop1/supervisability@0.1'`). *(La v1 disait « trancher … **le schéma du
        contrat** qu'elle valide » — lu littéralement, cela rouvrait le gelé par la bande.)*
-6. [ ] **Corriger `products/mega-city/docs/method-map.md`** : (a) :58 — « reprise après un gate » ne
-       peut pas être un moment de la boîte « COUCHE MÉTHODE · contract-blind » (E4) ; (b) :66 — la
-       boîte « COUCHE CONTRAT · **vocabulaire stable** » liste `run_start · gate_reached ·
-       gate_resumed · escalate · run_finished`, qui sont les **noms des OUTILS MCP**
-       (`mcp-server.ts`:40, 59, 79, 96, 114), **pas les types d'événements du contrat**
-       (capture:294-324 : `run.started`, `gate.reached`, `gate.resumed`, `version.adopted`,
-       `escalation`, `escalation.resolved`, `heartbeat`, `run.finished`) ⇒ **types** dans la boîte
-       contrat, **noms d'outils** dans la boîte carte/kit ; (c) :7, :62, :84 citent ADR-032 **sans
-       mentionner son statut PROPOSÉ**, dans un document qui se déclare « **VIVANT** … telle qu'elle
-       est **aujourd'hui** » (:3-4). *(Nuance : :79-85 porte bien un ⚠️ « État réel » disant que les
-       skills n'appellent pas encore le kit — la carte n'est pas muette sur l'écart ; elle ne dit
-       simplement pas que le **pattern n'est pas tranché**.)* « Anticipation légitime ou
-       correction ? » = **PO**.
-7. [ ] **Corriger la formule « ADR-021 (couture fichiers + événements) » aux DEUX endroits** : ici
-       (fait) et **ADR-031:9** (copier-coller de corpus). ADR-021 = **couture = fichiers de config**
-       (:43-44) ; la révision « 2ᵉ couture = le journal » est **annoncée, non écrite**
-       (capture:389-390). *(« hexagonal (ADR-021) » a été retiré de la table des options : ADR-021 ne
-       contient aucune occurrence de « hexagonal ».)*
+6. [x] **Fait dans cette PR (2026-07-17)** — method-map corrigée : (a) la méthode **parle
+       elle-même** (le « continue » n'est plus présenté comme un moment observé de l'extérieur) ;
+       (b) **types d'événements** dans la boîte contrat, **noms d'outils MCP** dans la boîte kit ;
+       (c) statut **PROPOSÉ** + direction (i) actée mentionnés ; + schéma du **sidecar** ajouté.
+7. [x] **Fait dans cette PR (2026-07-17)** — ADR-031:10 corrigé (« couture = fichiers de config » ;
+       la révision « journal » est annoncée, non écrite).
 8. [ ] **Trancher qui possède le vocabulaire des moments observables** (cas (a) noms libres / (b)
        liste normalisée) et la sortie du constat DIP ((a) surface déclarée & versionnée ⇒ Option C
        porteuse / (b) découplage de vocabulaire assumé) — **avant gravure** : décision sur la surface
        publique des skills et sur ce que `ezk-ezk` contract-aware (0067) devra générer.
-9. [ ] **Trancher le séquencement** : « à prouver avant de généraliser » (le spike est juge de paix)
-       vs « valider le pattern après panel, puis 0067 » — **grave-t-on le pattern avant sa preuve ?**
-       = PO.
-10. [ ] **0067** — `ezk-ezk` contract-aware génère la carte comme **artefact séparé** (mapping seul,
-        E6 ; passage par le kit, E5) — **après** les arbitrages 1, 5 et 8.
-11. [ ] Mettre à jour `docs/adr/README.md`:34 (résumé de la ligne 032 : « conformité par enveloppe,
-        sans réécriture » ⇒ « **observabilité** par enveloppe ; conformité partielle ») dans la même
-        PR que tout changement de statut.
+9. [x] **Cadré (2026-07-17)** : la **DIRECTION (i) est actée** maintenant ; le passage à
+       « Accepté » attend la **première preuve vécue** (0058, après 0050) — cohérent avec
+       construire → prouver → retirer.
+10. [ ] **0067, re-cadrée (note posée dans la fiche)** : pour une méthode **possédée**, `ezk-ezk`
+        génère les **consignes d'émission DANS le skill** (chemin canonique A) ; la carte séparée ne
+        concerne que le **sidecar** (A′). Périmètre exact au grooming — après les arbitrages 5 et 8.
+11. [x] **Fait dans cette PR (2026-07-17)** — registre mis à jour (observabilité par enveloppe ;
+        direction (i) actée).

@@ -4,7 +4,9 @@
 > Il **doit être mis à jour dans la même PR** que toute modification de la méthode (skill,
 > agent, règle, ou flux). Voir « Mise à jour » en bas. Rendu nativement par GitHub (Mermaid).
 
-Deux couches, volontairement séparées (cf. [ADR-032](../../../docs/adr/ADR-032-emission-adaptateur-separable.md)) :
+Deux couches, volontairement séparées (cf. [ADR-032](../../../docs/adr/ADR-032-emission-adaptateur-separable.md),
+statut **PROPOSÉ** — direction **(i)** actée par le PO le 2026-07-17 : *l'émetteur canonique vit
+**dans** la méthode ; le « sidecar » installe l'émission dans les méthodes qu'on ne possède pas*) :
 la **méthode** (ce qu'on fait) et le **contrat** (les événements qu'on émet pour être supervisable).
 
 ---
@@ -47,42 +49,63 @@ flowchart TB
 ## Couche 2 — Le contrat (les événements émis)
 
 *Ce que la méthode **émet** pour qu'une app moniteur — **aveugle à la méthode** — puisse suivre
-l'avancement. Le vocabulaire est gelé (contrat de supervisabilité, 2026-07-13).*
+l'avancement. Le vocabulaire est gelé (contrat de supervisabilité, 2026-07-13). **C'est la méthode
+elle-même qui parle** : les consignes d'émission vivent **dans** ses skills — ou y sont
+**installées par le sidecar** quand on ne possède pas la méthode. Elle appelle le **kit émetteur**,
+qui écrit le journal.*
 
 ```mermaid
 flowchart LR
-    subgraph MET["COUCHE MÉTHODE · contract-blind"]
+    subgraph MET["MÉTHODE — elle parle elle-même"]
         direction TB
-        E1["le sprint démarre"]
-        E2["une gate est atteinte"]
-        E3["reprise après un gate (« continue »)"]
-        E4["blocage / besoin d'autorité"]
-        E5["le sprint se termine"]
+        M1["skills ezk-* : consignes d'émission<br/>DANS le skill (chemin canonique)"]
+        M2["méthode non possédée (BMAD) :<br/>consignes INSTALLÉES par le sidecar"]
     end
-    subgraph MAP["carte d'émission · adaptateur (ADR-032)"]
-        M["moment observable → event du contrat"]
+    subgraph KIT["KIT ÉMETTEUR (0050) — passage obligatoire"]
+        K["outils MCP : run_start · gate_reached ·<br/>gate_resumed · escalate · run_finished<br/>(enveloppe · seq · upgrade_ok · confinement)"]
     end
-    subgraph CON["COUCHE CONTRAT · vocabulaire stable"]
-        J["events.jsonl (append-only)<br/>run_start · gate_reached · gate_resumed<br/>escalate · run_finished"]
+    subgraph CON["JOURNAL — vocabulaire du CONTRAT (gelé)"]
+        J["events.jsonl : run.started · gate.reached ·<br/>gate.resumed · escalation · run.finished · heartbeat<br/>📎 + report_ref (PR · démo · rapport — contenu libre)"]
     end
-    MON["🖥️ app moniteur<br/>aveugle à la méthode · rend les artefacts (PR, démo) tels quels"]
+    MON["🖥️ app moniteur<br/>aveugle à la méthode · rend les artefacts tels quels"]
 
-    E1 --> M
-    E2 --> M
-    E3 --> M
-    E4 --> M
-    E5 --> M
-    M -->|émet| J
+    M1 -->|appelle| K
+    M2 -->|appelle| K
+    K -->|écrit| J
     J -->|lit, n'écrit jamais| MON
+    MON -.->|"retour : continue · hold · abort (commands.jsonl)"| MET
 ```
+
+**Deux groupes de messages** : ① le **vocabulaire typé** (la petite liste fixe ci-dessus) pilote
+l'état et **les freins** — au `gate.reached`, la méthode **s'arrête** et attend `continue` ; ② le
+**contenu libre de la méthode** (lien de PR, démo, rapport…) voyage **en pièce jointe**
+(`report_ref`) des messages typés — l'app l'affiche **tel quel**, sans le comprendre.
+
+### Le sidecar (méthodes qu'on ne possède pas — ex. BMAD)
+
+```mermaid
+flowchart LR
+    B["📦 BMAD — intact<br/>sources jamais modifiées"]
+    SC["🧩 sidecar « bmad-contracter »<br/>fiches markdown : moment → consigne → prise"]
+    MOT["⚙️ moteur d'injection<br/>embryon : BmadBridgeService"]
+    BP["🗣️ BMAD parle lui-même<br/>consignes actives via ses prises customize"]
+    SC --> MOT
+    B --> MOT
+    MOT --> BP
+    BP -->|kit émetteur| CJ["journal events.jsonl"]
+```
+
+> **Le sidecar est un installateur, pas un observateur** : il injecte les consignes d'émission dans
+> les **prises officielles** de BMAD (`_bmad/_config/agents/*.customize.yaml`) — après quoi c'est
+> **BMAD lui-même** qui émet et **s'arrête aux jalons**. BMAD reste utilisable normalement, avec ou
+> sans vectorz. Fiche : subtree **[0058](../features/0058-bmad-contrat-supervisabilite.md)** (après 0050).
 
 > ⚠️ **État réel** : la couche 1 (méthode) **existe**. Le **kit émetteur** de la couche 2
 > **existe aussi** — `products/mega-city/src/supervision/` : journal JSONL, serveur MCP,
-> runtime, avec les 5 outils `run_start` / `gate_reached` / `gate_resumed` / `escalate` /
-> `run_finished` (fiche 0050). Ce qui **manque** : les skills `ezk-*` ne l'**appellent pas
-> encore** (ils n'émettent pas pendant un vrai sprint). La cible = **brancher les skills sur le
-> kit** — objet d'ADR-032 (émission = adaptateur), fiche subtree 0067 (`ezk-ezk`
-> contract-aware), spike vectorz 0048 (envelopper BMAD).
+> runtime, 5 outils (fiche 0050, in-progress). Ce qui **manque** : les skills `ezk-*`
+> n'**appellent pas encore** le kit pendant un vrai sprint, et le sidecar BMAD n'est pas construit.
+> Chemin acté (PO, 2026-07-17) : **finir 0050 → construire 0058 (le sidecar)** ; `ezk-ezk`
+> contract-aware (0067) suivra pour les nouveaux skills.
 
 ---
 
