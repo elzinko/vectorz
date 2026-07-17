@@ -30,7 +30,7 @@
 | 0060 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 |  | 🟠 in-progress |  |
 | 0061 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | 🔴 todo |  |
 | 0069 | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | 🔴 todo |  |
-| 0070 | ezk-diagram — publier une explication compréhensible à côté du diagramme (README) | feature | P1 |  | 🔴 todo |  |
+| 0070 | ezk-diagram — publier une explication compréhensible à côté du diagramme (README) | feature | P1 |  | ✅ shipped | #33 |
 | 0071 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 |  | ✅ shipped | #26 |
 | 0076 | Hygiène de branches post-squash — classification déterministe absorbée/réelle + suppression aux deux chemins de merge | feature | P1 |  | ✅ shipped | #31 |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 |  | ✅ shipped |  |
@@ -92,4 +92,4 @@
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | 💡 idea |  |
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 0059 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0056, 0063, 0071, 0072, 0076.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0056, 0063, 0070, 0071, 0072, 0076.

@@ -3,9 +3,9 @@ id: 0070
 title: ezk-diagram — publier une explication compréhensible à côté du diagramme (README)
 type: feature
 priority: P1
-status: todo
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#33"
 created: 2026-07-15
 ---
 
