@@ -52,8 +52,8 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
    | Sanity check du backlog (P) | `review` — passe globale full/delta (fiche 0065) |
    | Ordering / priorisation (G) | buckets P0→P3 à l'`add` + cohérence globale via `review` |
    | Sprint Planning — pourquoi/quoi/comment (G) | intake `ezk-sprint` via `next --ready-only` |
-   | Sprint Review (G) | validation de la PR par l'opérateur (gate démo) |
-   | Rétrospective (G) | checkpoint inter-sprint d'ezk-product-builder + handoff ezk-archive |
+   | Sprint Review (G) | validation de PR par l'opérateur : E2E + checkpoint (ezk-sprint 6/9), convention Validation (ezk-pr-pilot) |
+   | Rétrospective (G) | *inspect* : checkpoint inter-sprint + handoff ezk-archive · *adapt* : flywheel capture (ADR-0001) |
    | Product Owner (G) | l'opérateur ; `ezk-pm` en mode checkpoints auto |
 
    **Dette nommée (A11)** : l'ordre *intra-bucket* est l'ordre des id (création), pas
@@ -61,6 +61,19 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
    maison est le re-bucketage via `review` ; pas de levier d'ordonnancement fin tant
    qu'un sprint n'a pas tiré la mauvaise fiche à cause de cette approximation
    (clause ADR-0013 §4).
+
+   **Couverture Review/Rétro — contrôle « existant vs prévu » (2026-07-17)** : les deux
+   lignes s'appuient sur du **livré** — validation E2E + checkpoint d'ezk-sprint
+   (étapes 6/9), convention Validation d'ezk-pr-pilot (fiche 0027), checkpoint
+   inter-sprint (0023/0040), handoff ezk-archive (0026), et le **flywheel capture**
+   (ADR-0001, fiche 0002) qui est la boucle *adapt* de la méthode (les leçons
+   deviennent des skills/rules). Fiches **prévues** rattachées (relation notée dans
+   chaque fiche) : mega-city 0007 (invariants → rules : canal de sortie type d'une
+   rétro) et 0014 (corpus judge du flywheel) ; côté vectorz, 0041 (banc cobaye =
+   outillage du gate démo). **Pas de fiche « rituel rétro » dédiée** : l'époque 1
+   pratiquait des rétros d'epic (`_bmad-output/*retro*.md`), la boucle vit désormais
+   dans le flywheel — en créer une sans preuve de besoin serait du méta-outillage
+   (ADR-0013).
 
 2. **Grooming : continu, au plus tard au tirage — et la readiness est persistée
    (A1).** La fiche 0056 est adoptée (elle passe son propre gate DoR : promue

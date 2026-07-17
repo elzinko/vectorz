@@ -17,3 +17,9 @@ ADR-0002 pose 2 invariants qui protègent l'évolutivité ; le projet devrait s'
 ## Critères d'acceptation
 - [ ] 2 règles rédigées + enforcement (agent-check `ezk-reviewer` ?)
 - [ ] appliquées au repo lui-même
+
+## Notes
+
+- 2026-07-17 — rattachée à la ligne **Rétrospective** du mapping ADR-0016 §1 (contrôle
+  « existant vs prévu ») : canal de sortie type de la boucle *adapt* (leçon → règle),
+  avec 0014 (corpus judge). Relation informative, pas une dépendance bloquante.
