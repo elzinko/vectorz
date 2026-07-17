@@ -26,12 +26,12 @@
 | 0050 | Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat | feature | P1 | 🟠 in-progress | #8 |
 | 0052 | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 | 🔴 todo |  |
 | 0055 | ezk-ci — surveiller et plafonner la consommation GitHub Actions (repos privés) | feature | P1 | 🔴 todo |  |
-| 0056 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 | 🟠 in-progress |  |
+| 0056 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 | ✅ shipped | #26 |
 | 0060 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 | 🟠 in-progress |  |
 | 0061 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 | 🔴 todo |  |
 | 0069 | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 | 🔴 todo |  |
 | 0070 | ezk-diagram — publier une explication compréhensible à côté du diagramme (README) | feature | P1 | 🔴 todo |  |
-| 0071 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 | 🟠 in-progress |  |
+| 0071 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 | ✅ shipped | #26 |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 | 🔴 todo |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo |  |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P2 | 🟠 in-progress |  |
@@ -86,4 +86,4 @@
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0056, 0071.
