@@ -1,6 +1,6 @@
 # ADR 0016 — Rituels scrum du cycle de vie backlog : DoR en gate, review global, priorisation, sprint planning
 
-- Statut : **proposé** (re-tampon panel possible, cf. convention panels adverses)
+- Statut : **accepté** — panel adverse du 2026-07-17 (relecteurs architecture / dev / scrum + juge) : GO unanime, 13 amendements A1-A13 intégrés dans ce texte et ADR-0017 (cf. § Panel adverse)
 - Date : 2026-07-17
 
 ## Contexte
@@ -25,10 +25,10 @@ les trous — c'est la douleur exprimée par l'opérateur le 2026-07-17 :
 
 Repères scrum (Scrum Guide 2020 ; guides Atlassian/Asana sur les cérémonies) : le
 Product Backlog est une liste **ordonnée** et émergente ; le *refinement* est une
-**activité continue** (ce n'est plus une cérémonie depuis le Guide 2020, ~10 % de la
-capacité en pratique) ; le Sprint Planning répond à trois questions — pourquoi (but de
-sprint), quoi (sélection), comment (plan). La DoR est une pratique complémentaire
-(hors Guide) — la maison l'a déjà formulée (0056).
+**activité continue** (il n'a jamais été un évènement officiel du Guide ; la version
+2020 a retiré la guidance « ~10 % de la capacité ») ; le Sprint Planning répond à
+trois questions — pourquoi (but de sprint), quoi (sélection), comment (plan). La DoR
+est une pratique complémentaire (hors Guide) — la maison l'a déjà formulée (0056).
 
 Forces maison : gate ADR-0013 (anti-surproduction de méta-outillage — historique de
 trois systèmes scrum parallèles abandonnés) ; ADR-0001 (le LLM juge, le script range) ;
@@ -38,69 +38,92 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
 
 1. **Pas de nouveau skill.** Les rituels deviennent des **sous-commandes et règles de
    cadence d'`ezk-backlog`**, là où vit la connaissance du format de fiche (test de
-   séparabilité, gate ADR-0013). Le vocabulaire scrum officiel est mappé sur la
-   mécanique maison — c'est ce mapping qui donne à l'auto-amélioration une direction
-   « scrum » lisible machine :
+   séparabilité, gate ADR-0013). Le vocabulaire scrum est mappé sur la mécanique
+   maison — c'est ce mapping qui donne à l'auto-amélioration une direction « scrum »
+   lisible machine (**G** = Guide 2020, **P** = pratique complémentaire hors Guide) :
 
-   | Scrum (vocabulaire officiel) | Mécanique maison |
+   | Scrum | Mécanique maison |
    |---|---|
-   | Product Backlog (liste ordonnée) | `features/*.md` + index régénéré, tri P0→P3 |
-   | Product Backlog Item / story | fiche (front-matter = source de vérité) |
-   | Icebox / triage | `status: idea` |
-   | Refinement (grooming) | `groom <id>` — remplit les 3 slots DoR (fiche 0056) |
-   | Definition of Ready | gate `ready <id>` : problème / valeur / critères (0056) |
-   | Sanity check du backlog | `review` — passe globale sur le stock (fiche 0065) |
-   | Ordering / priorisation | buckets P0→P3 à l'`add` + cohérence globale via `review` |
-   | Sprint Planning | intake `ezk-sprint` : but + capacité + tirage du haut *ready-only* |
-   | Product Owner | l'opérateur ; `ezk-pm` en mode checkpoints auto |
+   | Product Backlog, liste ordonnée (G) | `features/*.md` + index régénéré, tri P0→P3 |
+   | Product Backlog Item / story (G) | fiche (front-matter = source de vérité) |
+   | Icebox / triage (P) | `status: idea` |
+   | Refinement — activité continue (G) | `groom <id>` — remplit les 3 slots DoR (fiche 0056) |
+   | Definition of Ready (P) | gate `ready <id>` : problème / valeur / critères → pose `ready: <date>` |
+   | Sanity check du backlog (P) | `review` — passe globale full/delta (fiche 0065) |
+   | Ordering / priorisation (G) | buckets P0→P3 à l'`add` + cohérence globale via `review` |
+   | Sprint Planning — pourquoi/quoi/comment (G) | intake `ezk-sprint` via `next --ready-only` |
+   | Sprint Review (G) | validation de la PR par l'opérateur (gate démo) |
+   | Rétrospective (G) | checkpoint inter-sprint d'ezk-product-builder + handoff ezk-archive |
+   | Product Owner (G) | l'opérateur ; `ezk-pm` en mode checkpoints auto |
 
-2. **Grooming : continu, au plus tard au tirage.** La fiche 0056 est adoptée telle
-   quelle (elle passe son propre gate DoR : les 3 slots sont remplis → promue
-   `idea → todo`). On groome **quand on s'apprête à tirer** une fiche, pas à la
-   capture (une `idea` qu'on ne tirera jamais ne mérite pas de grooming). Réponse à
-   la question de cadence : le refinement est **au fil de l'eau** ; c'est la
-   *vérification globale* (point 4) qui se cale avant le sprint planning.
+   **Dette nommée (A11)** : l'ordre *intra-bucket* est l'ordre des id (création), pas
+   un jugement de valeur — le Guide exige une liste totalement ordonnée. Le levier
+   maison est le re-bucketage via `review` ; pas de levier d'ordonnancement fin tant
+   qu'un sprint n'a pas tiré la mauvaise fiche à cause de cette approximation
+   (clause ADR-0013 §4).
 
-3. **Sprint planning à trois questions, gate DoR bloquant.**
+2. **Grooming : continu, au plus tard au tirage — et la readiness est persistée
+   (A1).** La fiche 0056 est adoptée (elle passe son propre gate DoR : promue
+   `idea → todo`) : `groom <id>` remplit les 3 slots DoR ; `ready <id>` vérifie la
+   DoR comme gate et, au vert, **pose `ready: <date>` dans le front-matter** (et
+   flippe `idea → todo` le cas échéant). Le front-matter reste la source de vérité :
+   un `todo` né via `add` n'est **pas présumé ready** (pas de champ → groom + gate au
+   moment de le tirer) ; les `todo` existants n'ont **aucun grandfathering** ;
+   `review` peut **révoquer** un `ready:` devenu faux. On groome quand on s'apprête à
+   tirer, pas à la capture. Cadence : refinement au fil de l'eau ; la vérification
+   globale (point 4) se cale sur les plannings.
+
+3. **Sprint planning à trois questions, gate DoR bloquant avec soupape PO.**
    - *Pourquoi* : un but de sprint en une ligne (journalisé dans le scratch de sprint).
-   - *Quoi* : tirage **du haut du backlog ordonné**, uniquement des fiches passées au
-     gate `ready`, dans la capacité (budget tokens / temps de la session).
-   - *Comment* : `ezk-sprint` déroule (BDD → TDD → gates → PR) ; `ezk-product-builder`
-     enchaîne les sprints.
-   Interdiction de tirer une fiche non-ready : si la prochaine fiche P0/P1 ne passe
-   pas le gate, on la groome d'abord — c'est le mécanisme qui empêche les sprints de
-   démarrer sur du creux.
+   - *Quoi* : tirage **du haut du backlog ordonné** via le **point d'entrée unique**
+     `ezk-backlog next --ready-only` (A6) — première fiche éligible (ready,
+     non-épic) ; ezk-sprint et ezk-product-builder l'**appellent** sans réimplémenter
+     la logique du gate. Capacité = budget tokens / temps de la session.
+   - *Comment* : `ezk-sprint` déroule (BDD → TDD → gates → PR).
+   - **Une fiche `type: epic` n'est jamais tirable** (A2) : le tirage descend sur son
+     prochain enfant ready, sinon passe à la fiche suivante (cf. ADR-0017).
+   - Fiche de tête non-ready → on la groome d'abord. **Soupape PO** (A1) : tirer une
+     fiche non-ready reste possible sur décision explicite **journalisée** — le gate
+     est un arbitrage, pas un automatisme. En run autonome, zéro fiche ready +
+     arbitrage produit requis = **checkpoint bloquant « aucune fiche ready »**
+     d'ezk-product-builder, DoR pré-remplies à valider (A5).
 
-4. **`review` = le sanity check global** (fiche 0065), exécuté **avant chaque sprint
-   planning** et **après tout pivot structurant** (ADR accepté qui invalide des
-   fiches). Quatre contrôles : **validité** (la fiche est-elle encore vraie ?),
+4. **`review` = le sanity check global (fiche 0065), à cadence bornée (A4)** :
+   **complet** après tout pivot structurant (ADR accepté qui invalide des fiches) et
+   **tous les 5 sprints** (défaut, réglable dans le playbook) ; **delta** avant les
+   sprint plannings intermédiaires (fiches modifiées depuis le dernier complet + top
+   P0/P1). Contrôles de jugement : **validité** (la fiche est-elle encore vraie ?),
    **doublons/regroupements** par intention, **cohérence de l'ordre** P0→P3 sur
    l'ensemble, **staleness** (vieux `todo` jamais tirés → proposer rétrogradation en
-   `idea` ou clôture). Sortie = rapport + propositions ; **l'arbitrage reste au PO**
-   (jamais d'auto-suppression — même clause que la validation humaine d'ADR-0013).
+   `idea` ou clôture), **cohérence épic/enfants** (A8, cf. ADR-0017) et **révocation**
+   des `ready:` devenus faux. Sortie = rapport + propositions ; **l'arbitrage reste au
+   PO** (jamais d'auto-suppression — même clause que la validation humaine
+   d'ADR-0013).
 
 5. **Rollout Pareto en deux phases** (le « curseur » demandé) :
-   - **Phase 1 — tout de suite, ~zéro code** : adopter les rituels en playbook
-     (points 1-4) + **mesure minimale** embarquée dans le rapport `review` : fiches
-     par statut, % de `todo` ready, âge médian des `todo`, nb d'`idea` non groomées.
-     La mesure est calculée par le LLM depuis les front-matters — aucun outillage.
+   - **Phase 1 — tout de suite** : adopter les rituels en playbook (points 1-4) +
+     **mesure minimale produite par le script** (A3 — doctrine ADR-0001 : le script
+     range, le LLM juge ; un LLM qui compte est non fiable) : `regen` agrège depuis
+     les front-matters fiches par statut, `todo` ready (champ `ready:`), nb d'`idea`,
+     ancienneté médiane des `todo`. Le LLM garde exclusivement les contrôles de
+     jugement du point 4.
    - **Phase 2 — sur preuve d'usage seulement** : rendu épics dans regen (ADR-0017,
      fiche 0066), scoring de priorité (valeur/effort, WSJF), vélocité par sprint.
    - Tout enrichissement au-delà (dashboard, cron, historisation) est **le signal de
      s'arrêter**, pas une roadmap (clause ADR-0013 §4). Pas d'ADR dédié « Pareto
      dynamique » : c'est une stratégie de rollout, pas une décision de structure —
-     candidat article, pas candidat ADR.
+     candidat article (fiche 0068), pas candidat ADR.
 
 Cycle de vie résultant (les deux gates + le rituel global) :
 
 ```mermaid
 flowchart LR
     A["1· capture<br/>(add)"] --> B["idea<br/>(icebox)"]
-    B -- "2· groom<br/>(remplir DoR)" --> C{"3· gate ready<br/>DoR complète ?"}
+    B -- "2· groom<br/>(remplir DoR)" --> C{"3· gate ready<br/>DoR complète ?<br/>(pose ready: date)"}
     C -- non --> B
-    C -- oui --> D["todo<br/>(ordonné P0→P3)"]
-    D -- "4· review global<br/>(avant planning)" --> D
-    D -- "5· sprint planning<br/>(tirage ready-only)" --> E["in-progress"]
+    C -- oui --> D["todo ready<br/>(ordonné P0→P3)"]
+    D -- "4· review delta avant planning<br/>complet post-pivot / 5 sprints" --> D
+    D -- "5· planning<br/>(next --ready-only)" --> E["in-progress"]
     E -- "6· ship" --> F["shipped<br/>(done/)"]
 ```
 
@@ -127,21 +150,36 @@ moment où l'époque 2 vient de l'y rapatrier (ADR-029 vectorz).
 ## Conséquences
 
 **Plus facile** — le sprint planning ne tire plus de fiches creuses (gate DoR
-bloquant) ; le stock ne pourrit plus silencieusement (`review` cadencé) ; la
-convergence « vers scrum » devient testable : le mapping §1 est le référentiel que
-l'auto-amélioration peut auditer.
+bloquant, readiness **auditable en front-matter**) ; le stock ne pourrit plus
+silencieusement (`review` cadencé full/delta) ; la convergence « vers scrum » devient
+testable : le mapping §1 est le référentiel que l'auto-amélioration peut auditer,
+boucle inspect-adapt comprise (Sprint Review, Rétrospective).
 
-**Plus dur / à surveiller** — la discipline de cadence (review avant planning) repose
-sur les playbooks d'`ezk-sprint`/`ezk-product-builder`, à câbler quand les fiches sont
-tirées ; risque de sur-groomer des `idea` qu'on ne tirera jamais (règle : groomer au
-tirage) ; le rapport `review` est du jugement LLM → l'arbitrage PO n'est jamais
-contournable.
+**Plus dur / à surveiller** — la discipline de cadence repose sur les playbooks
+d'`ezk-sprint`/`ezk-product-builder` (câblés via le seul point d'entrée
+`next --ready-only`, pas de logique dupliquée) ; le gate bloquant peut mettre un run
+autonome en impasse → sortie propre par le checkpoint « aucune fiche ready » (A5) ;
+risque de sur-groomer des `idea` qu'on ne tirera jamais (règle : groomer au tirage) ;
+le rapport `review` est du jugement LLM → l'arbitrage PO n'est jamais contournable.
+
+## Panel adverse (2026-07-17)
+
+Trois relecteurs adversariaux (architecture, dev implémenteur, praticien scrum) +
+juge — verdict **unanime : accepté avec amendements**, aucun arbitrage produit à
+remonter au PO. Intégrés ici : **A1** readiness persistée (`ready:`) + soupape PO ·
+**A2** épics jamais tirables · **A3** compteurs au script (ADR-0001) · **A4** review
+complet post-pivot/5 sprints, delta avant planning · **A5** checkpoint « aucune fiche
+ready » · **A6** point d'entrée unique `next --ready-only` · **A9** mapping complété
+(Sprint Review, Rétrospective) · **A10** contresens Guide corrigés · **A11** dette
+d'ordre intra-bucket nommée. (**A7, A8, A12, A13** → ADR-0017.)
 
 ## Action items
 
 1. [x] Fiche 0056 promue `idea → todo` (elle passe son propre gate DoR) — cet ADR.
-2. [ ] Fiche 0065 (`review` — sanity check global + mesure minimale) : implémenter.
-3. [ ] Fiche 0056 (`groom`/`ready`) : implémenter dans le playbook ezk-backlog.
-4. [ ] À l'implémentation : câbler la cadence dans ezk-sprint (intake = review + gate
-   ready) et ezk-product-builder (inter-sprint).
+2. [ ] Fiche 0056 (`groom`/`ready`, pose de `ready:`) + `next --ready-only` :
+   implémenter dans le playbook ezk-backlog.
+3. [ ] Fiche 0065 (`review` full/delta + compteurs côté script) : implémenter.
+4. [ ] Câbler la cadence : intake ezk-sprint = `next --ready-only` + delta-review ;
+   ezk-product-builder = checkpoint « aucune fiche ready » + review complet
+   tous les 5 sprints.
 5. [ ] Épics : ADR-0017 + fiche 0066 (phase 2).

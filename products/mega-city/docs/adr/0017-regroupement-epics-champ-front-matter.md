@@ -1,6 +1,6 @@
 # ADR 0017 — Regroupement en épics : champ front-matter `epic:`, pas de tags libres ni de dossiers
 
-- Statut : **proposé** (re-tampon panel possible, cf. convention panels adverses)
+- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés
 - Date : 2026-07-17
 
 ## Contexte
@@ -26,24 +26,43 @@ actuel ignore les champs inconnus (ajout non cassant, vérifié le 2026-07-17).
 
 1. **Une épic EST une fiche.** `type: epic` est ajouté à l'enum
    (`feature | bug | refactor | chore | epic`). L'épic porte le *pourquoi* commun et
-   la carte de ses enfants ; elle se ship quand son objectif est atteint
-   (généralement : tous les enfants livrés). Pas d'artefact séparé, pas de dossier.
+   la carte de ses enfants. **Elle n'est jamais tirable** (A2) : elle sort du flux
+   actionnable — `regen` la présente dans une **section à part** (comme les `idea`),
+   le gate DoR ne s'applique pas à elle, et le tirage (`next --ready-only`,
+   ADR-0016 §3) descend sur son prochain enfant ready, sinon passe à la fiche
+   suivante. **Son statut est curé à la main, non dérivé des enfants** (A8 — dériver
+   serait de l'outillage prématuré, clause ADR-0013) ; en contrepartie `review`
+   signale les incohérences : épic `shipped` avec enfants actifs, épic en `todo`
+   dont tous les enfants sont livrés.
 
 2. **Le lien enfant → épic est un champ front-matter optionnel `epic: <id>`.** C'est
    l'esprit du tag (une métadonnée, zéro déplacement de fichier) mais en **relation
    canonique unique et vérifiable** : l'id référencé doit exister et être
    `type: epic`. Pas de tags libres (`tags: [...]`) : vocabulaire non borné → dérive,
    aucune intégrité référentielle, et le regroupement scrum n'est pas de
-   l'étiquetage — une story appartient à **au plus une** épic.
+   l'étiquetage — une story appartient à **au plus une** épic (garanti par le champ
+   scalaire). **L'intégrité est contrôlée par le script, en plus du jugement LLM**
+   (A7) : `regen` émet un warning non bloquant sur référence pendante ou pointant
+   une fiche non-`type: epic`.
 
-3. **Rendu : même mécanique conditionnelle que `version:`.** Si au moins une fiche
-   porte `epic:`, `regen` affiche le regroupement (colonne ou sections par épic) ;
-   sinon rien ne change. Implémentation = fiche 0066 (phase 2 d'ADR-0016 §5) — non
-   bloquant : le champ est déjà utile à la lecture des fiches avant le rendu.
+3. **Rendu : colonne conditionnelle — tranché (A12).** Correction sur pièce (panel) :
+   la « colonne conditionnelle `Version` » décrite dans le SKILL.md d'ezk-backlog
+   n'existe **pas encore** dans `regen-backlog.sh` (`extract()` ne lit ni `version:`
+   ni aucune colonne conditionnelle) — ce n'était pas un précédent mais une mécanique
+   à implémenter. La fiche 0066 implémente donc **les deux colonnes** (`Version` +
+   `Épic`) du même coup. Les **sections par épic** sont différées sur preuve d'usage
+   (elles posent l'ordre des épics dans le tri, les orphelins, l'épic dans `done/`,
+   l'interaction avec la section Idées). Non bloquant : le champ est déjà utile en
+   lecture de fiche avant tout rendu.
 
-4. **Migration au fil de l'eau, pas de big-bang.** Quand 0066 est tirée : 0034
-   (backlog racine vectorz) passe `type: epic` ; 0038/0039/0040 prennent
-   `epic: 0034`. Les régnérations suivantes rendent le regroupement visible.
+4. **Migration au fil de l'eau — et complète (A13).** Quand 0066 est tirée : 0034
+   (backlog racine vectorz) passe `type: epic` ; ses filles **actives** (0038, 0039,
+   0040) **et livrées** (0035, 0036, 0037, dans `done/`) prennent `epic: 0034` —
+   sinon « où en est l'épic 0034 ? » est faux dès le premier jour. 0066 **paramètre**
+   aussi `regen-backlog.sh` (chemin racine + titre d'index) au lieu de l'ancrage dur
+   mega-city — l'index racine avoue déjà être généré par une version « adaptée ». Le
+   playbook ezk-backlog fixe la règle de résolution multi-backlog : **le backlog le
+   plus proche du cwd ; demander si ambigu.**
 
 5. **Deux niveaux maximum** (épic → story). Pas de sous-épics, pas de
    thèmes/initiatives tant qu'aucun besoin n'est prouvé — l'envie d'en rajouter est
@@ -77,15 +96,21 @@ Rejeté — mêmes raisons qu'ADR-0016 option C (invariant backlog-sur-main).
 
 **Plus facile** — le regroupement devient machine-lisible : `review` (ADR-0016) peut
 vérifier la cohérence par épic, l'agent d'auto-amélioration peut planifier « le
-prochain enfant ready de l'épic » ; l'existant (0034) est régularisé sans churn.
+prochain enfant ready de l'épic » via `next --ready-only` ; l'existant (0034) est
+régularisé sans churn ; les épics sortent du flux de tirage — plus de « poison
+pill » en tête de backlog.
 
-**Plus dur / à surveiller** — une hiérarchie apparaît : la tenir à deux niveaux ;
-vigilance anti-fourre-tout — si les enfants d'une épic ne partagent pas un objectif
+**Plus dur / à surveiller** — une hiérarchie apparaît : la tenir à deux niveaux ; le
+statut d'épic est manuel → sa cohérence dépend du contrôle `review` ; vigilance
+anti-fourre-tout — si les enfants d'une épic ne partagent pas un objectif
 **livrable**, c'est un tag déguisé, pas une épic (le `review` doit le signaler).
 
 ## Action items
 
-1. [ ] Fiche 0066 : enum `type: epic` + champ `epic:` + contrôle d'intégrité +
-   rendu regen conditionnel.
-2. [ ] Migration 0034/0038/0039/0040 (backlog racine) au tirage de 0066.
-3. [ ] Documenter dans le playbook ezk-backlog (§ add/regen/review).
+1. [ ] Fiche 0066 : enum `type: epic` + champ `epic:` + warning d'intégrité dans
+   regen + colonnes conditionnelles `Version`/`Épic` + paramétrage chemin/titre du
+   script.
+2. [ ] Migration 0034 + filles actives **et livrées** (0035→0040, backlog racine) au
+   tirage de 0066.
+3. [ ] Playbook ezk-backlog : §add/next/regen/review + règle de résolution
+   multi-backlog (le plus proche du cwd, demander si ambigu).
