@@ -1,6 +1,6 @@
 ---
 name: ezk-backlog
-argument-hint: "[help|init|list|add|groom|ready|review|ship|regen]"
+argument-hint: "[help|init|list|add|groom|ready|next|review|ship|regen]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
   jamais les perdre entre worktrees ni entre sessions. A utiliser quand
@@ -39,7 +39,7 @@ worktrees, ni entre sessions, ni quand une branche est abandonnée.
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
 | `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change ni statut ni `ready:` |
 | `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert pose `ready: <date>` (+ flip `idea→todo` le cas échéant) + regen + commit |
-| `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-builder |
+| `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-builder (`next` seul reste l'alias de `list`) |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index |
 | `regen` | Régénère l'index depuis le front-matter des fiches |
