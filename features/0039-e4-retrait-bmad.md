@@ -4,7 +4,7 @@ title: E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque
 type: refactor
 priority: P2
 epic: 0034
-status: todo
+status: blocked
 pr:
 created: 2026-07-16
 ---
@@ -14,6 +14,9 @@ created: 2026-07-16
 > **Gate d'entrée (dure, ADR-029)** : la fiche [0038](0038-e3-pilote-natif.md) est
 > shippée — un run pilote vert zéro-BMAD existe. **Strictement post-démo** (la
 > suppression code casse le build du daemon via la chaîne d'import). Ne pas tirer avant.
+>
+> **Statut `blocked`** (2026-07-17, review) : dépend de 0038 (elle-même blocked) — gate
+> dur non satisfait. Repasser `todo` quand 0038 est shippée.
 
 ## Contexte / Problème
 

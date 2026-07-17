@@ -3,6 +3,7 @@ id: 0020
 title: AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local)
 type: feature
 priority: P2
+epic: 0034
 status: todo
 pr:
 created: 2026-06-28

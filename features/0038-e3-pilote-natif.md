@@ -4,7 +4,7 @@ title: E3 — Pilote natif complet (stories front-matter, exécuteur générique
 type: feature
 priority: P2
 epic: 0034
-status: todo
+status: blocked
 pr:
 created: 2026-07-16
 ---
@@ -14,6 +14,10 @@ created: 2026-07-16
 > **Gates d'entrée** : E1 fait (= fiche 0020 / lot L6 de 0034, post-démo) ; ADR-022
 > révisé (L4, fenêtre DP8). Ne pas tirer avant. **Gate de sortie = gate d'entrée d'E4
 > (fiche 0039)** : un run pilote de bout en bout vert, zéro lecture BMAD.
+>
+> **Statut `blocked`** (2026-07-17, review) : les gates d'entrée ci-dessus sont durs et
+> non satisfaits (0020 todo, ADR-022 encore WIP) — même traitement que 0017/0018. Repasser
+> `todo` quand E1 + ADR-022 révisé sont faits (dé-blocage = tirage possible).
 
 ## Contexte / Problème
 

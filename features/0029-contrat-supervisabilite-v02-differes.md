@@ -1,7 +1,7 @@
 ---
 id: 0029
 title: Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace)
-type: idea
+type: chore
 priority: P3
 status: todo
 pr:
@@ -34,6 +34,12 @@ par le panel design, à ne rouvrir qu'**après au moins un run réel sous v0.1**
 
 Grooming à l'usage : chaque item ci-dessus ne s'ouvre que sur douleur constatée en run réel.
 Cette fiche sert de parking officiel pour que rien ne se perde.
+
+## Critères d'acceptation
+
+- [ ] Chaque item porte son gate (« ≥1 run réel v0.1 », ou plus précis) et sa référence.
+- [ ] Aucun item n'est implémenté par cette fiche (parking pur, façon [[0046]]).
+- [ ] Revue de la fiche au grooming, quand un item est repêché (promotion en fiche dédiée).
 
 ## Notes / décisions
 

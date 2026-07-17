@@ -4,6 +4,7 @@ title: Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les 
 type: chore
 priority: P1
 status: todo
+ready: 2026-07-17
 pr:
 created: 2026-07-16
 ---

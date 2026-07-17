@@ -19,7 +19,6 @@
 | 0037 | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | 0034 | ✅ shipped | #14 |
 | 0041 | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 |  | 🔴 todo |  |
 | 0044 | Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A) | chore | P1 |  | 🔴 todo |  |
-| 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P1 |  | 🔴 todo |  |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | ✅ shipped | #32 |
@@ -27,26 +26,27 @@
 | 0009 | Durcir les appels git worktree (execFileSync, anti-injection shell) | refactor | P2 |  | ✅ shipped | #30 |
 | 0014 | iamthelaw enforced — Rule.check → DoDCheck, advisory dans le prompt | feature | P2 |  | ✅ shipped | #36 |
 | 0015 | StoryBudget par story + câblage DoDLimiter (enforcement budget fin) | feature | P2 |  | ✅ shipped | #38 |
-| 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 |  | 🔴 todo |  |
+| 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 0034 | 🔴 todo |  |
 | 0022 | mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $) | feature | P2 |  | 🔴 todo |  |
 | 0023 | exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 |  | ✅ shipped | #52 |
-| 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 |  | 🔴 todo |  |
+| 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 0034 | 🔴 todo |  |
 | 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 |  | ✅ shipped | #57 |
 | 0026 | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 |  | ✅ shipped | #59 |
-| 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | 0034 | 🔴 todo |  |
-| 0039 | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | 0034 | 🔴 todo |  |
+| 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | 0034 | ⛔ blocked |  |
+| 0039 | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | 0034 | ⛔ blocked |  |
 | 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 0034 | 🔴 todo |  |
+| 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | ✅ shipped | #45 |
-| 0007 | V1.1 — format de session log + discipline de commit | chore | P3 |  | 🔴 todo |  |
+| 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | ✅ shipped | #40 |
 | 0011 | Buffer `frames` non borné dans la mission-control | refactor | P3 |  | ✅ shipped | #41 |
 | 0012 | Rafraîchir brownfield-snapshot.md (ancien emplacement worktree agent/) | chore | P3 |  | ✅ shipped | #43 |
 | 0016 | Surfaçage des violations DoD dans la mission-control (web) | feature | P3 |  | ✅ shipped | #44 |
 | 0017 | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 |  | ⛔ blocked |  |
-| 0018 | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 |  | ⛔ blocked |  |
+| 0018 | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | 0034 | ⛔ blocked |  |
 | 0019 | Rendre `pnpm typecheck` robuste sur état stale (TS6310) | chore | P3 |  | ✅ shipped | #49 |
 | 0028 | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 |  | 🔴 todo |  |
-| 0029 | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | idea | P3 |  | 🔴 todo |  |
+| 0029 | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | 🔴 todo |  |
 | 0046 | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | 🔴 todo |  |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready, ADR-0017)

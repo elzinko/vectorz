@@ -3,6 +3,7 @@ id: 0024
 title: résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022
 type: refactor
 priority: P2
+epic: 0034
 status: todo
 pr:
 created: 2026-07-06
@@ -24,16 +25,17 @@ fiche 0034 : ADR-021 est mergé depuis le commit 3cb9db2/PR #48 — il reste à 
 Proposé → Accepté, plus à le merger.)
 
 ## Proposition
-1. Statuer ADR-021 Proposé → Accepté (déjà mergé, 3cb9db2/PR #48) ; statuer ADR-022
-   (WIP → Proposé, avec la décision EscalationPort « différé » — cf. mega-city
-   ADR-0011 §4).
+1. ~~Statuer ADR-021 Proposé → Accepté~~ **FAIT** (ADR-021 Accepté le 2026-07-15, fiche
+   0035 / PR #12). Reste : statuer ADR-022 (WIP → Proposé, avec la décision EscalationPort
+   « différé » — cf. mega-city ADR-0011 §4).
 2. ceremony-engine : sortir du cœur — supprimer, ou geler derrière le Method port si une
    méthode future en a besoin ; décision à l'ADR.
 3. quality-intelligence : idem derrière le Rules port/DoDCheck (le seam ADR-020 couvre déjà
    le besoin vivant).
 
 ## Critères d'acceptation
-- [ ] ADR-021 statué (Proposé → Accepté ; déjà mergé), ADR-022 statué
+- [x] ADR-021 statué (Proposé → Accepté) — **fait, fiche 0035 / PR #12 (2026-07-15)**
+- [ ] ADR-022 statué (WIP → Proposé)
 - [ ] plus aucun package du graphe de prod n'importe ceremony-engine ni quality-intelligence
 - [ ] build/tests verts après résorption (~850 tests)
 - [ ] la fiche mega-city 0016 (cap cop1) n'est plus bloquée côté cop1
