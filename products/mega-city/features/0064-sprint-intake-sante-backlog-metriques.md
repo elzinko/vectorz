@@ -66,7 +66,7 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
   ADR-0013). **Reste à cette fiche** (à groomer) : la DoR comme règle d'équipe dans
   `rules/` (évolutive via ezk-retro), l'**émission `backlog.health`** au journal de
   supervisabilité (point 4, moitié monitoring), les seuils « temps de groomer » (point 6).
-- **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../../docs/adr/ADR-031-deux-axes-de-validation.md)
+- **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../../../docs/adr/ADR-031-deux-axes-de-validation.md)
   (Axe 1 « le produit tourne ? », Axe 2 « la méthode est bonne ? ») : ici c'est la santé du
   **backlog**, en amont du sprint.
 - **Non bloquant** pour construire une fiche **déjà prête** (ex. 0063) : ce sujet compte quand
