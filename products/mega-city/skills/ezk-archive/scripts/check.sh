@@ -76,17 +76,35 @@ fi
 # « non-mergées » alors que 100 % de leur contenu est livré (fiche 0076). Classification
 # DÉTERMINISTE (le script prouve, le LLM ne devine pas — ADR-0001) :
 #   ABSORBÉE si (a) merger la branche ne changerait RIEN à la base (merge-tree), ou
-#   (b) chaque fichier touché par la branche a son contenu exact (blob) quelque part
-#   dans l'HISTORIQUE de la base (= présent au moment du squash, même si la base a
-#   évolué depuis), les suppressions étant absentes de la base. Sinon RÉELLE.
+#   (b) chaque fichier touché par la branche a son contenu exact (blob) INTRODUIT dans
+#   la base APRÈS le point de fourche (= le squash a atterri, même si la base a évolué
+#   depuis), les suppressions étant absentes de la base. Sinon RÉELLE.
+#   ⚠ La preuve (b) est bornée à la fenêtre post-fourche mb..BASE ET exige qu'un commit
+#   trouvé CONTIENNE le blob (finding Codex PR #31) : un blob réutilisé depuis le vieil
+#   historique (revert, rename pur, contenu dupliqué) ne prouve RIEN — sans ces bornes,
+#   une branche de revert serait « absorbée » à tort et sa purge perdrait du travail réel.
 classify_branch() { # $1=branche → "ABSORBEE" | "REELLE <fichiers-non-prouvés>"
-  local b="$1" mb base_tree merged_tree status path blob unproven=""
+  local b="$1" mb base_tree merged_tree status path path2 blob unproven=""
   base_tree="$(git rev-parse "$BASE^{tree}" 2>/dev/null)" || { echo "REELLE (base illisible)"; return; }
   # (a) fast-path : le merge ne changerait rien (git ≥ 2.38 ; sinon on passe au (b))
   merged_tree="$(git merge-tree --write-tree "$BASE" "$b" 2>/dev/null | head -1)"
   if [[ -n "$merged_tree" && "$merged_tree" == "$base_tree" ]]; then echo "ABSORBEE"; return; fi
-  # (b) contenu au squash : chaque blob de la branche a existé dans l'historique de BASE
+  # (b) le blob a-t-il ATTERRI dans la base après la fourche ?
   mb="$(git merge-base "$BASE" "$b" 2>/dev/null)" || { echo "REELLE (merge-base introuvable)"; return; }
+  blob_landed() { # $1=blob $2=chemin-au-tip-de-branche → 0 si prouvé dans la base
+    # fast-path : contenu exact au même chemin au tip de la base (couvre aussi le rename pur)
+    [[ "$(git rev-parse "$BASE:$2" 2>/dev/null)" == "$1" ]] && return 0
+    # sinon : un commit de la fenêtre post-fourche a touché ce blob ET le contient encore
+    # (le commit qui l'a RETIRÉ matche aussi --find-object — on l'exclut via ls-tree).
+    # NB pas de `grep -q` sur le pipe : son early-exit SIGPIPE ls-tree sous pipefail
+    # et fait rater un match réel sur un gros arbre.
+    local c
+    while IFS= read -r c; do
+      [[ -z "$c" ]] && continue
+      [[ -n "$(git ls-tree -r "$c" 2>/dev/null | grep -F "$1")" ]] && return 0
+    done < <(git log "$mb..$BASE" --format=%H --find-object="$1" 2>/dev/null)
+    return 1
+  }
   while IFS=$'\t' read -r status path path2; do
     [[ -z "$status" ]] && continue
     case "$status" in
@@ -94,9 +112,9 @@ classify_branch() { # $1=branche → "ABSORBEE" | "REELLE <fichiers-non-prouvés
           git cat-file -e "$BASE:$path" 2>/dev/null && unproven="$unproven $path" ;;
       R*) # rename : prouver le blob au nouveau chemin
           blob="$(git rev-parse "$b:$path2" 2>/dev/null)" || { unproven="$unproven $path2"; continue; }
-          [[ -z "$(git log "$BASE" -1 --format=%H --find-object="$blob" 2>/dev/null)" ]] && unproven="$unproven $path2" ;;
+          blob_landed "$blob" "$path2" || unproven="$unproven $path2" ;;
       *)  blob="$(git rev-parse "$b:$path" 2>/dev/null)" || { unproven="$unproven $path"; continue; }
-          [[ -z "$(git log "$BASE" -1 --format=%H --find-object="$blob" 2>/dev/null)" ]] && unproven="$unproven $path" ;;
+          blob_landed "$blob" "$path" || unproven="$unproven $path" ;;
     esac
   done < <(git diff --name-status -M "$mb" "$b" 2>/dev/null)
   if [[ -z "$unproven" ]]; then echo "ABSORBEE"; else echo "REELLE$unproven"; fi
