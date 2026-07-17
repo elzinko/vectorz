@@ -7,7 +7,9 @@ idéalement après la 1ʳᵉ boucle de self-hosting vécue.
 **Compose (sans les rouvrir) :** le contrat de supervisabilité (capture 2026-07-13, gelé),
 le contrat d'améliorabilité ([ADR-030](ADR-030-contrat-ameliorabilite.md), proposé — son
 mesureur = fiche vectorz 0044), la fiche 0041 (cobaye — banc de test rapide).
-**Ne révise pas :** ADR-021 (couture fichiers + événements), ADR-028 (lecteur journal).
+**Ne révise pas :** ADR-021 (couture = **fichiers de config** — la « 2ᵉ couture journal » est
+annoncée par la capture 2026-07-13 §7, pas encore écrite ; formule corrigée par ADR-032 item 7),
+ADR-028 (lecteur journal).
 
 ## Contexte
 

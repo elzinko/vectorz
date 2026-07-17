@@ -55,7 +55,6 @@
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
 | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 | 💡 idea |  |
-| 0048 | Spike — envelopper BMAD avec une carte d'émission (prouver la séparabilité émission/logique) | feature | P2 | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 | 💡 idea |  |
 
