@@ -75,11 +75,12 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     ]);
   });
 
-  it('agrège TOUT le catalogue de skills ezk-* (17), triés stablement', () => {
+  it('agrège TOUT le catalogue de skills ezk-* (18), triés stablement', () => {
     const resolved = expandGlobal();
     expect(resolved.skills.map((s) => s.id)).toEqual([
       'ezk-apk',
       'ezk-archive',
+      'ezk-article',
       'ezk-backlog',
       'ezk-ci',
       'ezk-commits',
