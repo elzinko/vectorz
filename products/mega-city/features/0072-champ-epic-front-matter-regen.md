@@ -3,7 +3,8 @@ id: 0072
 title: épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017)
 type: feature
 priority: P2
-status: todo
+status: in-progress
+ready: 2026-07-17
 pr:
 created: 2026-07-17
 ---
@@ -52,6 +53,11 @@ A13 regen paramétré + migration complète).
 
 ## Notes / décisions
 
+- 2026-07-17 — **gate `ready` passé** (DoR complète : problème / valeur / critères, ADR-0017
+  accepté). **Soupape PO journalisée** : fiche P2 tirée devant les têtes P1 (mega-city
+  0049/0052/0055/0061/0069/0070 ; racine 0041/0044/0045, toutes non-ready) par décision
+  explicite du PO au checkpoint « aucune fiche ready » — motif : compléter l'outillage
+  backlog conditionne l'automatisation Desktop et la descente d'épic de `next --ready-only`.
 - Origine : ADR-0017 (2026-07-17). Phase 2 du rollout Pareto d'ADR-0016 §5 — non
   bloquant pour les rituels (le champ est utile en lecture avant même le rendu).
 - Le script `regen-backlog.sh` actuel ignore les champs inconnus : poser `epic:` dans

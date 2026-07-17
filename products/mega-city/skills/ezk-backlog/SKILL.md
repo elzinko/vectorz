@@ -81,9 +81,10 @@ Chaque fiche commence par un **front-matter YAML = source de vérité** :
 ---
 id: 0002
 title: Échec de connexion mobile invisible (caméra tourne, zéro erreur)
-type: feature        # feature | bug | refactor | chore
+type: feature        # feature | bug | refactor | chore | epic
 priority: P0         # P0 | P1 | P2 | P3
 version:             # optionnel — jalon ciblé, ex. "V1.1" (vide si non pertinent)
+epic:                # optionnel — id de la fiche épic parente (type: epic) ; jamais d'épic → épic (ADR-0017)
 status: todo         # idea | todo | in-progress | blocked | shipped
 ready:               # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non-ready
 pr:                  # ex. "#118" quand une PR existe
@@ -135,6 +136,16 @@ qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
 
 Le but de la skill est la **discipline** (backlog commité, 1 fiche/sujet, statut unique en
 front-matter, dossier `done/`, 1 PR/feature), pas un dossier précis.
+
+## Multi-backlogs (monorepo) — quel backlog viser ?
+
+Un monorepo peut porter plusieurs backlogs (ex. vectorz : `features/` racine +
+`products/mega-city/features/`). Règle (ADR-0017 A13) : **le backlog le plus proche du
+cwd** ; si l'ambiguïté demeure (cwd à la racine, sujet côté produit), **demander** —
+ne jamais deviner. Toutes les sous-commandes (`add`, `groom`, `ready`, `next`,
+`review`, `ship`, `regen`) opèrent sur le backlog ainsi résolu ; `regen` se lance avec
+la racine et le titre du backlog visé — ex. depuis la racine vectorz :
+`bash products/mega-city/bin/regen-backlog.sh . "Backlog features & bugs — vectorz (racine)"`.
 
 ## Détail des sous-commandes
 
@@ -252,14 +263,20 @@ modification de fiche sans son accord explicite (jamais d'auto-suppression).
 (layout `roadmap/` : backlog→`implemented/`). 3. `regen`. Commit `docs(features): ship <id> (#X)`.
 
 ### `regen`
-Reconstruis la table depuis le front-matter de **toutes** les fiches : colonnes
-`# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id. **Si au moins une fiche
-cible une version**, insère une colonne `Version` (après `Prio`) ; sinon garde les 6 colonnes.
-Les fiches `status: idea` vont dans une **section séparée « 💡 Idées (non groomées) »** sous
-la table actionnable (elles ne se mêlent pas au tri P0→P3 ; mêmes colonnes). En-tête : date + règles projet.
+Délègue au script **paramétré** de mega-city : `products/mega-city/bin/regen-backlog.sh
+[racine] [titre]` depuis la racine du repo — il n'existe **pas** de `bin/` à la racine,
+le script vit dans le produit (fiche 0072 — le MÊME script sert tous les backlogs, plus
+d'« adaptation » manuelle). Il reconstruit
+la table depuis le front-matter de **toutes** les fiches : colonnes
+`# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id, plus deux
+**colonnes conditionnelles** (ADR-0017 A12) : `Version` si au moins un `version:`,
+`Épic` si au moins un `epic:`. Sections à part, hors tri actionnable P0→P3 :
+« 🧭 Épics » (les `type: epic`, jamais tirables) et « 💡 Idées (non groomées) ».
 Le script émet aussi sur stdout les **compteurs déterministes** (par statut, `todo`
-ready, création médiane des `todo`) — `review` les lit tels quels, le LLM ne recompte
-jamais (ADR-0001 / ADR-0016 §5).
+ready, épics, création médiane des `todo`) — `review` les lit tels quels, le LLM ne
+recompte jamais (ADR-0001 / ADR-0016 §5) — et des **warnings d'intégrité** non
+bloquants sur stderr (A7) : `epic:` pendant, cible non-épic, sous-épic (2 niveaux max).
+DoD exécutable du script : `bin/test-regen-backlog.sh`.
 
 ## Intégration
 

@@ -1,8 +1,9 @@
 ---
 id: 0000
 title:
-type: feature        # feature | bug | refactor | chore
+type: feature        # feature | bug | refactor | chore | epic
 priority: P2         # P0 | P1 | P2 | P3
+epic:                # optionnel — id de la fiche épic parente (type: epic) ; jamais d'épic → épic
 status: todo         # idea | todo | in-progress | blocked | shipped
 ready:               # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr:

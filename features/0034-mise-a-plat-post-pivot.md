@@ -1,7 +1,7 @@
 ---
 id: 0034
 title: Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)
-type: refactor
+type: epic
 priority: P0
 status: todo
 pr:

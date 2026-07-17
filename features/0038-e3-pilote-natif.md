@@ -3,6 +3,7 @@ id: 0038
 title: E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD)
 type: feature
 priority: P2
+epic: 0034
 status: todo
 pr:
 created: 2026-07-16
