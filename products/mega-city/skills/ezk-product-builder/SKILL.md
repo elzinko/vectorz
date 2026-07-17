@@ -53,10 +53,12 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
    `ezk-backlog next --ready-only` : prends LA prochaine fiche **tirable**
    (ready, non-épic).
 2. **Décision « quoi »** :
-   - **Fiche ready** → va construire (3).
-   - **Fiche de tête non-ready** → `groom` + gate `ready` (fiche 0056) avant de
-     construire ; si le groom exige un arbitrage produit → **checkpoint « aucune
-     fiche ready »** (cf. tableau).
+   - **Fiche ready ET aucune tête bloquée signalée** → va construire (3).
+   - **Tête bloquée** (`next` signale une fiche de priorité supérieure sautée faute de
+     `ready:`) → traite la tête D'ABORD : `groom` + gate `ready` (fiche 0056) ; ne
+     construis la fiche ready inférieure que sur décision **journalisée** (sinon c'est
+     une inversion de priorité silencieuse). Si le groom exige un arbitrage produit →
+     **checkpoint « aucune fiche ready »** (cf. tableau).
    - **Fiche vague** ou **backlog vide** → **checkpoint idéation** : compose
      `product-management:product-brainstorming` (et `engineering:architecture` si structurant) pour cadrer la
      fiche **avant** de construire. Réutilise la capacité de la fiche 0022
