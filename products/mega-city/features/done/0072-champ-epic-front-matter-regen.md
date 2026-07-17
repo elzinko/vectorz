@@ -3,9 +3,9 @@ id: 0072
 title: épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017)
 type: feature
 priority: P2
-status: in-progress
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#30"
 created: 2026-07-17
 ---
 

@@ -53,7 +53,7 @@
 | 0048 | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 | 🔴 todo |  |
 | 0058 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 | 🔴 todo |  |
 | 0063 | ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules) | feature | P2 | 🟠 in-progress | #21 |
-| 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 | 🟠 in-progress |  |
+| 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 | ✅ shipped | #30 |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 | 🔴 todo |  |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 🔴 todo |  |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 | 🔴 todo |  |
@@ -86,4 +86,4 @@
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 | 💡 idea |  |
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0056, 0071.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0056, 0071, 0072.
