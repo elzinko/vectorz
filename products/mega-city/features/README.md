@@ -32,6 +32,7 @@
 | 0069 | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | 🔴 todo |  |
 | 0070 | ezk-diagram — publier une explication compréhensible à côté du diagramme (README) | feature | P1 |  | 🔴 todo |  |
 | 0071 | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 |  | ✅ shipped | #26 |
+| 0076 | Hygiène de branches post-squash — classification déterministe absorbée/réelle + suppression aux deux chemins de merge | feature | P1 |  | 🔴 todo |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 |  | ✅ shipped |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 |  | 🔴 todo |  |
 | 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 |  | 🔴 todo |  |

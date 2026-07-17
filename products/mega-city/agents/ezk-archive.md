@@ -59,14 +59,26 @@ locales) et la base (`main` → `master` → `HEAD`).
 **signale** ce qui doit être commité ; ne commite **pas** à l'aveugle du code
 sensible — laisse la main à l'utilisateur.
 
-### 2. PRs & branches en attente — *ne RIEN oublier*
+### 2. PRs & branches en attente — *ne RIEN oublier, sans fausse alerte*
 - Remote + `gh` dispo → `gh pr list --state open` : aucune PR ouverte oubliée.
-- **Repo SANS remote (crucial)** → pas de `gh` : on s'appuie sur
-  `git branch --no-merged <base>` pour qu'aucune branche locale non-mergée ne soit
-  perdue.
-- Même avec un remote, `git branch --no-merged <base>` attrape les branches locales
-  **jamais poussées**. Pour chaque entrée : dernier commit + **action proposée**
-  (merger ? ouvrir une PR ? abandonner sciemment ?).
+- **Repo SANS remote (crucial)** → pas de `gh` : on s'appuie sur les branches locales
+  pour qu'aucun travail ne soit perdu.
+- **Sur un repo à convention squash-merge, `git branch --no-merged` MENT** (fiche
+  mega-city 0076) : les commits de branche ne sont jamais ancêtres de la base, les
+  branches « non-mergées » s'accumulent alors que leur contenu est livré. Le helper
+  `check.sh` classe donc **déterministiquement** chaque branche (preuve par le
+  script, jamais par ton jugement — ADR-0001) :
+  - **RÉELLES** (contenu non prouvé dans la base) = **le vrai pending** — pour
+    chacune : dernier commit + fichiers non prouvés + **action proposée** (merger ?
+    ouvrir une PR ? brouillon supersédé à abandonner sciemment ?). Une branche
+    flaguée RÉELLE peut être un brouillon dont la version revue/renumérotée est
+    dans main — c'est un **jugement** à rendre sur pièces (diff), jamais une
+    suppression silencieuse.
+  - **ABSORBÉES** (contenu prouvé dans l'historique de la base) = résidu
+    squash-merge, **suppression sûre** (`git branch -D`, récupérable via reflog).
+    Ne les liste PAS en pending — c'est précisément la fausse alerte à tuer.
+  - Suffixe `[worktree — remove d'abord]` : la branche est tenue par un worktree —
+    `git worktree remove` (s'il est propre) avant `git branch -D`.
 
 ### 3. Backlog cohérent — *délègue au skill `ezk-backlog`*
 - Fiches **livrées cette session** (d'après le résumé fourni par l'appelant) →
@@ -158,9 +170,12 @@ Cette même note est écrite en tête de `.claude/handoff.md` (nouvelle entrée
 3. **Compose le rapport** des 7 points à partir de ces faits + du **résumé de session
    fourni** (ce que git seul ne sait pas dire).
 4. Si `check` → **t'arrêtes là** : aucune modification, juste le rapport + le verdict.
-5. Si `run`/`close` → applique les **corrections sûres** (backlog via le skill
-   `ezk-backlog`, mémoire), **re-signale** ce qui reste à la main de l'utilisateur
-   (merges/push), puis **écrit/purge `.claude/handoff.md`** (nouvelle entrée en tête,
+5. Si `run`/`close` → applique les **corrections sûres** : backlog via le skill
+   `ezk-backlog`, mémoire, et **purge des branches ABSORBÉES** (celles que
+   `check.sh` a prouvées — `git branch -D`, plus `git worktree remove` d'abord si
+   la branche est tenue par un worktree **propre** ; liste ce qui a été purgé).
+   **Re-signale** ce qui reste à la main de l'utilisateur (merges/push, branches
+   RÉELLES), puis **écrit/purge `.claude/handoff.md`** (nouvelle entrée en tête,
    entrées résolues retirées) et renvoie la **note de handoff** + le **verdict**.
 6. Réponds de façon **concise et structurée** — ta réponse est restituée telle quelle
    par l'appelant à l'utilisateur.
@@ -168,8 +183,11 @@ Cette même note est écrite en tête de `.claude/handoff.md` (nouvelle entrée
 ## Garde-fous
 
 - **Une seule responsabilité** : l'hygiène de clôture (ce n'est pas du scrum/sprint).
-- **Ne merge/push rien tout seul** : les PRs et branches restent à la main de
-  l'utilisateur — tu les **signales**, tu ne les **résous** pas.
+- **Ne merge/push rien tout seul** : les PRs et branches **RÉELLES** restent à la
+  main de l'utilisateur — tu les **signales**, tu ne les **résous** pas. Seule
+  exception (correction sûre de `run`) : supprimer une branche **ABSORBÉE prouvée
+  par `check.sh`** — jamais sur ton propre jugement, jamais une RÉELLE, jamais un
+  worktree sale.
 - **Respecte les repos local-only** : pas de remote → pas de `gh`, uniquement les
   branches locales (`git branch --no-merged`).
 - **Idempotent** ; `check` est **strictement read-only**.

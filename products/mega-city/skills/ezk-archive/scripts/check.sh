@@ -71,14 +71,67 @@ else
   echo "ℹ repo local-only (pas de remote) — pas de PRs ; on s'appuie sur les branches locales."
 fi
 
-UNMERGED="$(git branch --no-merged "$BASE" 2>/dev/null | sed 's/^[* ] *//' | grep -v "^$BASE$" || true)"
+# Sur un repo à convention SQUASH-MERGE, `git branch --no-merged` ment : les commits
+# de branche ne sont jamais ancêtres de la base, donc les branches restent signalées
+# « non-mergées » alors que 100 % de leur contenu est livré (fiche 0076). Classification
+# DÉTERMINISTE (le script prouve, le LLM ne devine pas — ADR-0001) :
+#   ABSORBÉE si (a) merger la branche ne changerait RIEN à la base (merge-tree), ou
+#   (b) chaque fichier touché par la branche a son contenu exact (blob) quelque part
+#   dans l'HISTORIQUE de la base (= présent au moment du squash, même si la base a
+#   évolué depuis), les suppressions étant absentes de la base. Sinon RÉELLE.
+classify_branch() { # $1=branche → "ABSORBEE" | "REELLE <fichiers-non-prouvés>"
+  local b="$1" mb base_tree merged_tree status path blob unproven=""
+  base_tree="$(git rev-parse "$BASE^{tree}" 2>/dev/null)" || { echo "REELLE (base illisible)"; return; }
+  # (a) fast-path : le merge ne changerait rien (git ≥ 2.38 ; sinon on passe au (b))
+  merged_tree="$(git merge-tree --write-tree "$BASE" "$b" 2>/dev/null | head -1)"
+  if [[ -n "$merged_tree" && "$merged_tree" == "$base_tree" ]]; then echo "ABSORBEE"; return; fi
+  # (b) contenu au squash : chaque blob de la branche a existé dans l'historique de BASE
+  mb="$(git merge-base "$BASE" "$b" 2>/dev/null)" || { echo "REELLE (merge-base introuvable)"; return; }
+  while IFS=$'\t' read -r status path path2; do
+    [[ -z "$status" ]] && continue
+    case "$status" in
+      D*) # suppression : absorbée si le fichier est absent de la base
+          git cat-file -e "$BASE:$path" 2>/dev/null && unproven="$unproven $path" ;;
+      R*) # rename : prouver le blob au nouveau chemin
+          blob="$(git rev-parse "$b:$path2" 2>/dev/null)" || { unproven="$unproven $path2"; continue; }
+          [[ -z "$(git log "$BASE" -1 --format=%H --find-object="$blob" 2>/dev/null)" ]] && unproven="$unproven $path2" ;;
+      *)  blob="$(git rev-parse "$b:$path" 2>/dev/null)" || { unproven="$unproven $path"; continue; }
+          [[ -z "$(git log "$BASE" -1 --format=%H --find-object="$blob" 2>/dev/null)" ]] && unproven="$unproven $path" ;;
+    esac
+  done < <(git diff --name-status -M "$mb" "$b" 2>/dev/null)
+  if [[ -z "$unproven" ]]; then echo "ABSORBEE"; else echo "REELLE$unproven"; fi
+}
+
+# NB `+` = branche tenue par un AUTRE worktree (git branch la préfixe ainsi) : on la
+# classe comme les autres, mais sa suppression exige d'abord `git worktree remove`.
+UNMERGED="$(git branch --no-merged "$BASE" 2>/dev/null | sed 's/^[*+ ] *//' | grep -v "^$BASE$" || true)"
+WT_HELD="$(git branch --no-merged "$BASE" 2>/dev/null | grep '^+' | sed 's/^+ *//' || true)"
 if [[ -n "$UNMERGED" ]]; then
-  echo "⚠ branches locales non-mergées dans $BASE :"
+  ABSORBED_LIST=""; REAL_LIST=""
   while IFS= read -r b; do
     [[ -z "$b" ]] && continue
+    verdict="$(classify_branch "$b")"
     last="$(git log -1 --format='%h %s (%cr)' "$b" 2>/dev/null)"
-    echo "    $b — $last"
+    wtmark=""
+    grep -qx "$b" <<< "$WT_HELD" && wtmark=" [worktree — remove d'abord]"
+    if [[ "$verdict" == "ABSORBEE" ]]; then
+      ABSORBED_LIST="${ABSORBED_LIST}    $b${wtmark} — $last"$'\n'
+    else
+      REAL_LIST="${REAL_LIST}    $b${wtmark} — $last"$'\n'
+      [[ "$verdict" != "REELLE" ]] && REAL_LIST="${REAL_LIST}        non prouvé dans $BASE :${verdict#REELLE}"$'\n'
+    fi
   done <<< "$UNMERGED"
+  if [[ -n "$REAL_LIST" ]]; then
+    echo "⚠ branches locales avec du contenu NON livré dans $BASE (le vrai pending) :"
+    printf '%s' "$REAL_LIST"
+  else
+    echo "✓ aucune branche locale avec du contenu non livré."
+  fi
+  if [[ -n "$ABSORBED_LIST" ]]; then
+    echo "ℹ branches locales ABSORBÉES (contenu prouvé dans $BASE — résidu squash-merge,"
+    echo "  suppression sûre : \`git branch -D <nom>\`, récupérable via reflog ~90 j) :"
+    printf '%s' "$ABSORBED_LIST"
+  fi
 else
   echo "✓ aucune branche locale non-mergée dans $BASE."
 fi
