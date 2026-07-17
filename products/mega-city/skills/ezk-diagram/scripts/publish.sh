@@ -3,7 +3,9 @@
 # .mmd, le script rend/publie). Deux vues DÉTERMINISTES dérivées du seul `diagram.mmd`,
 # que le LLM ne fabrique jamais à la main :
 #
-#   A. README.md  — dans le dossier du diagramme, avec un bloc ```mermaid rendu
+#   A. README.md  — dans le dossier du diagramme, avec une section « Ce que montre ce
+#      diagramme » (fiche 0070 : explanation.md si présent — résumé lecteur rédigé par
+#      le LLM — sinon repli sur la prose description.md) puis un bloc ```mermaid rendu
 #      NATIVEMENT par GitHub (ouvrir l'URL du dossier affiche le diagramme inline,
 #      sans aucun service tiers). C'est le moyen recommandé « ouvrir & visualiser ».
 #   B. liens mermaid.live (édition) / mermaid.ink (image) — encodage `pako:` du .mmd,
@@ -38,6 +40,8 @@ fi
 SLUG="$(basename "$DIR")"
 META="$DIR/meta.yaml"
 README="$DIR/README.md"
+EXPL="$DIR/explanation.md"
+DESC="$DIR/description.md"
 
 # Titre : depuis meta.yaml si présent, sinon le slug.
 TITLE="$SLUG"
@@ -68,7 +72,23 @@ fi
 {
   printf '# %s\n\n' "$TITLE"
   printf '> Diagramme généré par **ezk-diagram**. Source de vérité : [`description.md`](description.md) (prose).\n'
-  printf '> Ce fichier est **généré** depuis `diagram.mmd` — ne pas l’éditer à la main (il serait écrasé au prochain rendu).\n\n'
+  printf '> Ce fichier est **généré** (explication comprise) — ne pas l’éditer à la main (il serait écrasé au prochain `publish`).\n\n'
+  # Section « Ce que montre ce diagramme » (fiche 0070) : le LLM rédige explanation.md
+  # depuis la prose, le script l'assemble ; repli déterministe sur la prose elle-même.
+  if [ -f "$EXPL" ]; then
+    printf '## Ce que montre ce diagramme\n\n'
+    cat "$EXPL"
+    printf '\n\n'
+  elif [ -f "$DESC" ]; then
+    printf '## Ce que montre ce diagramme\n\n'
+    # repli : la prose, débarrassée de son H1 et de son bloc de citation d'en-tête
+    # (sinon le README hérite d'un titre imbriqué et d'une méta-doc redondante)
+    awk 'NR==1 && /^# /{next} h==0 && /^>/{next} h==0 && /^[[:space:]]*$/{next} {h=1; print}' "$DESC"
+    printf '\n\n'
+    echo "publish: explanation.md absent — repli sur la prose description.md (régénérer via le skill pour un résumé lecteur)." >&2
+  else
+    echo "publish: ni explanation.md ni description.md — README publié sans explication (triplet incomplet)." >&2
+  fi
   printf '```mermaid\n'
   cat "$MMD"
   printf '\n```\n'

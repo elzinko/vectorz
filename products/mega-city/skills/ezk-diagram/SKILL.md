@@ -9,9 +9,10 @@ description: >-
   structure avec ses mots et obtenir un diagramme, réviser/corriger un diagramme
   existant en langage naturel, ou versionner / retrouver / dupliquer / supprimer
   un diagramme entre sessions. Pilotable par sous-commandes : help, add, list,
-  edit, rm, dup. Stocke un TRIPLET versionné par diagramme dans
+  edit, rm, dup, publish. Stocke un artefact versionné par diagramme dans
   `diagrams/<slug>/` : la prose (source), le diagram-as-code (Mermaid généré),
-  l'image (SVG rendue), + un meta. Le LLM synthétise le Mermaid depuis la prose
+  l'image (SVG rendue), une explication LECTEUR (« Ce que montre ce diagramme »,
+  assemblée dans le README publié), + un meta. Le LLM synthétise le Mermaid depuis la prose
   (capacité native, ZÉRO service externe) ; le rendu image est LOCAL
   (mermaid-cli/`mmdc`). Descriptif d'abord : le diagramme EST l'artefact
   (comprendre/documenter). N'EST PAS un éditeur Mermaid manuel, ni un service de
@@ -38,17 +39,22 @@ le tout. **L'humain n'écrit jamais de Mermaid ni de YAML.**
 | `edit <slug>` | Reprend un diagramme : tu appliques une correction **verbale** → prose + code + image régénérés |
 | `rm <slug>` | Supprime `diagrams/<slug>/` (demande confirmation) |
 | `dup <slug> [<nouveau-slug>]` | Duplique un diagramme comme point de départ d'une variante |
-| `publish <slug>` | (Re)génère les vues partageables d'un diagramme : `README.md` rendu par GitHub + liens mermaid.live/ink |
+| `publish <slug>` | (Re)génère les vues partageables d'un diagramme : `README.md` rendu par GitHub (explication lecteur + mermaid) + liens mermaid.live/ink |
 
-## L'artefact — un triplet versionné par diagramme
+## L'artefact versionné par diagramme — triplet source + vues dérivées
+
+Le **triplet source** reste prose / Mermaid / image ; `explanation.md`, `README.md` et
+`meta.yaml` en sont des **vues dérivées** (générées, jamais éditées à la main).
 
 ```
 diagrams/<slug>/
   description.md   # LA PROSE = source de vérité (ce que l'humain a dit)
   diagram.mmd      # diagram-as-code Mermaid (GÉNÉRÉ depuis la prose — ne pas éditer à la main)
   diagram.svg      # image (RENDUE depuis le .mmd par scripts/render.sh)
-  README.md        # vue partageable (GÉNÉRÉE depuis le .mmd par scripts/publish.sh) : bloc
-                   #   mermaid rendu NATIVEMENT par GitHub → ouvrir l'URL du dossier suffit à voir le schéma
+  explanation.md   # « Ce que montre ce diagramme » (GÉNÉRÉ depuis la prose : résumé LECTEUR
+                   #   rédigé par le LLM, régénéré à chaque publish — jamais édité à la main)
+  README.md        # vue partageable (GÉNÉRÉE par scripts/publish.sh depuis le .mmd + explanation.md) :
+                   #   explication + bloc mermaid rendus NATIVEMENT par GitHub → ouvrir l'URL du dossier suffit
   meta.yaml        # titre, date, type, liens + share: (liens mermaid.live/ink) — géré par l'outil
 ```
 
@@ -77,9 +83,12 @@ Pour `add` comme pour `edit`, déroule **toujours** :
    **Fallback gracieux** : si `mmdc`/`npx` sont absents, `render.sh` garde le `.mmd` et te le dit
    (propose alors un **MCP mermaid** / l'outil **visualize**, ou livre le `.mmd`) ; si `node` est absent,
    `publish.sh` écrit quand même le `README.md` (bloc mermaid seul) et saute les liens B.
-5. **Écrire la prose + le meta** — `description.md` (la prose validée) et `meta.yaml` (titre, date fournie
-   par l'humain ou `git log`, type de diagramme, liens éventuels, **et un bloc `share:` avec les liens
-   `edit`/`img` capturés en (4)**). **Ne devine jamais la date** : demande-la si inconnue.
+5. **Écrire la prose, l'explication + le meta** — `description.md` (la prose validée),
+   `explanation.md` (le **résumé lecteur** : « Ce que montre ce diagramme » en langage courant,
+   rédigé par toi **depuis la prose** — quelques phrases adaptées au lecteur, pas un dump de la
+   prose si elle est longue) et `meta.yaml` (titre, date fournie par l'humain ou `git log`, type
+   de diagramme, liens éventuels, **et un bloc `share:` avec les liens `edit`/`img` capturés
+   en (4)**). **Ne devine jamais la date** : demande-la si inconnue.
 6. **Valider** — passe d'abord le diagramme au **test final** des Règles de lisibilité, puis montre le
    Mermaid + (si rendue) l'image, **donne les vues partageables** (l'URL du dossier
    GitHub `diagrams/<slug>/`, qui rend le `README.md` inline, + le lien mermaid.live d'édition), et **demande** :
@@ -123,6 +132,8 @@ valider (6) ; les règles 4-5 s'appliquent selon le type choisi en (2).
    sujet : s'il faut une explication pour comprendre une case, reformule-la — ou sors-la du
    schéma (l'explication vit dans la prose). Le verdict visuel (densité, croisements) revient à
    l'humain en (6) — c'est pour ça qu'on lui demande « se comprend-il sans explication ? ».
+   La section « Ce que montre ce diagramme » du README publié **complète** un schéma déjà
+   autoportant — elle n'excuse jamais un schéma illisible.
 
 ## Détail des sous-commandes
 
@@ -132,7 +143,12 @@ valider (6) ; les règles 4-5 s'appliquent selon le type choisi en (2).
 - **`edit <slug>`** — charge la prose + le .mmd existants, applique la **correction verbale**, régénère code + image, revalide (boucle).
 - **`rm <slug>`** — **confirme** puis supprime le dossier ; commit `docs(diagram): rm <slug>`.
 - **`dup <slug> [<nouveau-slug>]`** — copie le triplet vers un nouveau slug (défaut : `<slug>-copie`) comme base de variante ; ne rend pas tant qu'on n'édite pas.
-- **`publish <slug>`** — (re)génère les vues partageables **sans rien changer au diagramme** : lance `scripts/publish.sh diagrams/<slug>` → réécrit `README.md` (rendu GitHub) et te rend les liens mermaid.live/ink à surfacer. Utile pour publier un diagramme ancien, ou après un `git pull`.
+- **`publish <slug>`** — (re)génère les vues partageables **sans rien changer au diagramme**. D'abord
+  **régénère `explanation.md`** depuis `description.md` (toi : résumé lecteur, à réécrire si la prose a
+  changé ou si le fichier manque — cas des diagrammes antérieurs à cette section), puis lance
+  `scripts/publish.sh diagrams/<slug>` → réécrit `README.md` (explication + rendu GitHub) et te rend les
+  liens mermaid.live/ink à surfacer. Repli du script si `explanation.md` manque : la prose telle quelle.
+  Utile pour publier un diagramme ancien, ou après un `git pull`.
 
 ## Garde-fous
 
