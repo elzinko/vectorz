@@ -215,6 +215,30 @@ Parcours le backlog trié (P0→P3 puis id) et renvoie la **première fiche éli
 ezk-sprint et ezk-product-builder passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).
 
+### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0065)
+
+Deux modes, à **cadence bornée** :
+- **complet** : après tout pivot structurant (ADR accepté qui invalide des fiches) et
+  tous les **5 sprints** (défaut, réglable). Porte sur tout le stock actif
+  (+ `done/` pour les doublons).
+- **`--delta`** : avant les sprint plannings intermédiaires — uniquement les fiches
+  modifiées depuis le dernier complet + le top P0/P1.
+
+Contrôles (jugement LLM) :
+1. **Validité** — la fiche est-elle encore vraie (code livré entre-temps, ADR
+   postérieur qui contredit) ?
+2. **Doublons / regroupements** par intention (même moteur que l'anti-doublon d'`add`).
+3. **Cohérence de l'ordre** P0→P3 sur l'ensemble (l'ordre relatif, pas juste les buckets).
+4. **Staleness** — vieux `todo` jamais tirés → proposer rétrogradation en `idea` ou clôture.
+5. **Cohérence épic/enfants** (ADR-0017) — épic `shipped` avec enfants actifs, épic
+   `todo` aux enfants tous livrés, épic fourre-tout sans objectif livrable.
+6. **Révocation** — `ready:` devenus faux (le contexte a bougé depuis le gate).
+
+Les **compteurs viennent du script** (`regen`, doctrine ADR-0001 — ne les recompte
+jamais à la main) : fiches par statut, `todo` ready, création médiane des `todo`.
+Sortie = **rapport + propositions numérotées** ; l'arbitrage est au **PO** — aucune
+modification de fiche sans son accord explicite (jamais d'auto-suppression).
+
 ### `ship <id> [#PR]`
 1. Front-matter : `status: shipped`, `pr: "#X"`. 2. `git mv features/<id>-<slug>.md features/done/`
 (layout `roadmap/` : backlog→`implemented/`). 3. `regen`. Commit `docs(features): ship <id> (#X)`.
@@ -225,6 +249,9 @@ Reconstruis la table depuis le front-matter de **toutes** les fiches : colonnes
 cible une version**, insère une colonne `Version` (après `Prio`) ; sinon garde les 6 colonnes.
 Les fiches `status: idea` vont dans une **section séparée « 💡 Idées (non groomées) »** sous
 la table actionnable (elles ne se mêlent pas au tri P0→P3 ; mêmes colonnes). En-tête : date + règles projet.
+Le script émet aussi sur stdout les **compteurs déterministes** (par statut, `todo`
+ready, création médiane des `todo`) — `review` les lit tels quels, le LLM ne recompte
+jamais (ADR-0001 / ADR-0016 §5).
 
 ## Intégration
 
