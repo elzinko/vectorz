@@ -18,6 +18,12 @@ technique existe pourtant : [[ezk-qa]] pilote l'app qui tourne via le **Playwrig
 preuve** — mais pour valider une PR *en avant* contre une DoD, pas pour confirmer *en arrière* un
 symptôme signalé.
 
+**Valeur** : sans nœud d'intake, un bug signalé « à la voix » se perd s'il n'est pas
+transcrit à la main en fiche exploitable — et une fiche sans repro ni preuve coûte au
+dev un aller-retour de clarification. `ezk-bug` capitalise la repro (procédure,
+attendu/obtenu, screenshot-preuve) au moment du signalement : le backlog reçoit des bugs
+**actionnables du premier coup**, et rien ne se perd entre les sessions.
+
 ## Décision (grooming + vérif adverse 2026-07-12) — rôle vs capacité, tranché
 **`ezk-bug` est un skill d'intake/cadrage mince, pas un agent/rôle, et ne gonfle ni `ezk-qa` ni
 `ezk-backlog`.** Le domaine mega-city (`docs/domain.ts`) modélise un **Agent = rôle** porteur de
@@ -133,3 +139,7 @@ le « VALIDE une PR … dans la boucle ezk-sprint » de `ezk-qa`.
   **alimente 0028**.
 - Issu du brainstorm + grooming + **vérification adverse** (panel 7 lentilles + adjudicateur) de session
   2026-07-12.
+- **Groom 2026-07-18** : DoR revérifiée complète (problème, valeur désormais explicite,
+  8 critères observables déjà présents) en vue du gate `ready` — candidate au run de
+  recette vz-product-builder (fiche 0060), build self-contained (skill authoring + tests,
+  aucun humain requis en cours de build). Statut/`ready:` inchangés (le gate reste au PO).
