@@ -188,7 +188,10 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
 
 1. Charge la fiche ; identifie les slots **DoR** manquants — **problème** (contexte réel,
    reproduction si bug), **valeur** (pourquoi ça compte), **critères d'acceptation**
-   (observables, vérifiables).
+   (observables, vérifiables), et — si la fiche en référence — **dépendances externes**
+   (repo hors monorepo, service, secret : chacune **constatée** accessible, avec une
+   ligne datée « dépendance <nom> — accès constaté le AAAA-MM-JJ » dans la fiche ;
+   rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié).
 2. Session de raffinement **ciblée** sur ces slots via
    `product-management:product-brainstorming` ; le panel de challenge (fiche 0057) est
    composable en étape optionnelle.
@@ -201,8 +204,10 @@ d'`add` (étape 1).
 
 ### `ready <id>` — le gate DoR (bloquant)
 
-1. Vérifie les 3 slots DoR. **Un slot manque → REFUS motivé** (dis précisément quoi
-   groomer) ; ne touche à rien.
+1. Vérifie les slots DoR : les 3 de base (problème / valeur / critères) + le slot
+   **conditionnel** dépendances externes (exigé seulement si la fiche référence un
+   repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »).
+   **Un slot manque → REFUS motivé** (dis précisément quoi groomer) ; ne touche à rien.
 2. Au vert : pose `ready: <YYYY-MM-DD>` dans le front-matter (date du jour — demande-la
    si inconnue), flip `idea → todo` le cas échéant, `regen`, commit
    `docs(features): ready <id>`.
