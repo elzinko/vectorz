@@ -39,5 +39,5 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 
 > **Agents** (`../agents/`) : `ezk-architect`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd` (6, tous bindés par le profil `global`).
 > Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr-pilot` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) = **18 skills** au profil `global`, + 6 agents.
-> Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée).
+> Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée) · `vz-product-builder` (overlay AUTONOME du product-builder à corpus de reviewers, fiche 0060 — opt-in explicite, jamais bindé par défaut : l'autonomie se choisit).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).

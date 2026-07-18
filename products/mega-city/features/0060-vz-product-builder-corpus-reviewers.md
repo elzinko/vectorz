@@ -51,6 +51,33 @@ contrat** (critère de la fiche 0050).
       Override 2 : « `--tokens cap` est le **défaut** de ce mode (pas de cap, pas
       d'auto) », merge autonome conditionné à ce cap.
 
+## Recette de preuve (AC1-AC3) — à jouer depuis une session outillée
+
+Les 3 AC de run réel ne se prouvent PAS depuis une session sans le kit émetteur en
+contexte (l'Override 3 du skill refuse de démarrer — le contourner serait tricher).
+Protocole, depuis un client MCP configuré (Claude Desktop ou équivalent) :
+
+1. **Outillage** : serveur MCP émetteur configuré (`src/supervision/README.md`
+   § « Configurer dans Claude Desktop » ; `SUPERVISION_PROJECT_ROOT` = racine du repo
+   cible), les 5 outils visibles dans le contexte. Backlog cible avec **≥2 fiches
+   ready** (le run doit pouvoir enchaîner 2 sprints).
+2. **Lancement** : `/vz-product-builder build --tokens cap` (le cap est le défaut —
+   le laisser). Ne PAS répondre aux checkpoints : c'est le test.
+3. **Attendus pendant le run** :
+   - AC1 : ≥2 sprints enchaînés, zéro question à l'humain hors des 4 STOP ;
+   - AC2 : chaque décision de checkpoint = un `gate_reached` dont le
+     `report_markdown` contient le rapport du décideur (cran 1/2/3), suivi d'un
+     `gate_resumed` self-reported ;
+   - AC3 : au premier checkpoint structurant rencontré, un corpus cran-3 réel
+     (≥3 lentilles + ≥1 contradicteur, sous-agents frais) et une synthèse qui
+     TRANCHE (minoritaires consignés dans le rapport).
+4. **Vérification post-run** — builder d'abord le validateur (le `dist/` n'est pas
+   commité) : `pnpm --filter @cop1/journal-validator... build` (depuis la racine
+   vectorz), puis `node products/cop1/packages/journal-validator/dist/cli.js
+   validate <racine>/.supervision/runs/<run_id>` → zéro violation attendu ; lecture des
+   rapports de gates = l'audit « qui a décidé quoi, et pourquoi ».
+5. **Clôture** : cocher AC1-AC3 avec le `run_id` en preuve, puis `ship` de la fiche.
+
 ## Notes / décisions
 
 - Origine : demande PO 2026-07-14 (« avancer sans répondre à mes questions » + « autre
@@ -61,6 +88,12 @@ contrat** (critère de la fiche 0050).
   un-siège/deux-autorités (le corpus = la policy du point de décision MÉTHODE ; le
   régalien humain/cop1 n'est pas touché).
 - Préfixe `vz-` = signature Vectorz ; renommable par le PO.
+- **2026-07-18 — arbitrage ezk-pm (checkpoints auto, Option B)** : incrément livré SANS
+  clôture — AC4/AC5 prouvés (diff ezk-* vide vérifié, cap par défaut encodé) + recette de
+  preuve ci-dessus ; la fiche RESTE in-progress, la preuve vivante (run réel outillé MCP)
+  est sa condition de clôture. Re-scoper AC1-3 pour shipper sans run vécu = décision
+  d'exigences → refusée par ezk-pm, réservée au PO. Corpus cran-3 en session : refusé
+  (lean + non journalisable ici).
 
 ## Suivi (dette connue)
 
