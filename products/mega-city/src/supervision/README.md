@@ -13,17 +13,36 @@ Fiche : `features/0050-kit-emetteur-supervisabilite.md`.
 
 ## Configurer dans Claude Desktop
 
+> Guide **utilisateur** pas-à-pas (pédagogique) : `docs/brancher-supervision-claude-desktop.md`.
+> Ci-dessous, la référence condensée pour intégrateur.
+
+Prérequis : Node ≥ 20 + pnpm ≥ 9 installés, et **`pnpm install`** lancé une fois à la
+racine du dépôt (le serveur a besoin de `tsx` et du SDK MCP dans `node_modules`).
+
 ```json
 {
   "mcpServers": {
     "supervision": {
-      "command": "pnpm",
-      "args": ["exec", "tsx", "/chemin/vers/mega-city/bin/supervision-mcp.ts"],
+      "command": "/chemin/absolu/vers/pnpm",
+      "args": [
+        "--dir", "/chemin/absolu/vers/mega-city",
+        "exec", "tsx",
+        "/chemin/absolu/vers/mega-city/bin/supervision-mcp.ts"
+      ],
       "env": { "SUPERVISION_PROJECT_ROOT": "/chemin/absolu/du/projet/supervisé" }
     }
   }
 }
 ```
+
+Deux pièges de lancement GUI (Claude Desktop n'hérite pas du shell), tous deux couverts
+par le bloc ci-dessus :
+- **`command` = chemin absolu de pnpm** (`which pnpm`), pas `"pnpm"` nu : une app lancée
+  depuis l'interface démarre avec un PATH minimal (launchd) et ne trouverait pas un pnpm
+  installé via nvm/corepack/Homebrew → `spawn pnpm ENOENT`.
+- **`--dir <mega-city>`** : `pnpm exec` résout `tsx` depuis ce dossier ; `tsx` n'est pas
+  hoisté à la racine du monorepo, donc sans `--dir` (cwd GUI = `/`) on obtient
+  `ERR_PNPM_RECURSIVE_EXEC_NO_PACKAGE`.
 
 `SUPERVISION_PROJECT_ROOT` doit être **absolu et exister** (fail-fast sinon).
 Autoriser les 5 outils en « toujours autoriser » pour éviter la fatigue de popups.
