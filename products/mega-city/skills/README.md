@@ -24,7 +24,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-commits` | 📥 importé (strangler-fig, pilote 0004) | messages Conventional Commits + hook `commit-msg` (`scripts/commit-msg`) — 1er skill rendu **bindable** (loader sous-dossiers) |
 | `ezk-backlog` | 📥 importé (0024, version #31) | backlog markdown versionné (add dédoublonnant + version + brainstorm) — satisfait la fiche 0022 |
 | `ezk-sprint` | 📥 importé (0024) | orchestrateur de sprints autonomes (BDD→TDD→gate→revue→PR→squash) |
-| `ezk-ci` | 📥 importé (0024) | valide les pipelines GitHub Actions en local (act + Docker) |
+| `ezk-ci` | 📥 importé (0024), volet conso (0055) | valide les pipelines GitHub Actions en local (act + Docker) + surveille/plafonne la conso GHA des repos privés (`conso`/`frugal`) |
 | `ezk-preview` | 📥 importé (0024) | URL de démo pour une feature (Vercel / cloudflared / tailscale) |
 | `ezk-device` | 📥 importé (0024) | build + test Android sur un tél physique distant (Tailscale/adb) |
 | `ezk-apk` | 📥 importé (0024) | build d'un APK/IPA de preview sur EAS + lien d'install |
