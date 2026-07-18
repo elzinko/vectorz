@@ -123,12 +123,12 @@ const MIGRATED_BUNDLES = [
 ];
 
 describe('expandProfile — 10 bundles migrés depuis iamthelaw (fiche 0006)', () => {
-  it('charge les 10 bundles sans erreur et résout les 54 règles (53 iamthelaw + no-dead-code)', () => {
+  it('charge les 10 bundles sans erreur et résout les 55 règles (53 iamthelaw + no-dead-code + proven-outbound-references)', () => {
     const catalog = loadCatalog(repoRoot);
     const profile = { id: 'iamthelaw-full', bundles: MIGRATED_BUNDLES, agents: [], skills: [] };
     const resolved = expandProfile(profile, catalog);
-    expect(resolved.rules).toHaveLength(54);
+    expect(resolved.rules).toHaveLength(55);
     // pas de doublon d'id malgré 10 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(54);
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(55);
   });
 });

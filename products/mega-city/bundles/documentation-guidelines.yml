@@ -4,3 +4,4 @@ rules:
   - documentation-guidelines/user-guide
   - documentation-guidelines/contributing-guide
   - documentation-guidelines/changelog
+  - documentation-guidelines/proven-outbound-references

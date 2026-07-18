@@ -55,6 +55,8 @@
 | 0058 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 |  | 🔴 todo |  |
 | 0063 | ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules) | feature | P2 |  | ✅ shipped | #21 |
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | ✅ shipped | #30 |
+| 0079 | Restitutions PO lisibles — graver la règle dans les skills qui parlent au PO (pas seulement en mémoire d'agent) | feature | P2 |  | 🔴 todo |  |
+| 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 |  | 🔴 todo |  |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P3 |  | 🔴 todo |  |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 |  | 🔴 todo |  |
@@ -74,6 +76,7 @@
 |---|-------|------|------|------|--------|----|
 | 0028 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 |  | 💡 idea |  |
 | 0053 | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 |  | 💡 idea |  |
+| 0081 | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | 💡 idea |  |
 | 0020 | explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno) | feature | P2 |  | 💡 idea |  |
 | 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 |  | 💡 idea |  |
 | 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 |  | 💡 idea |  |
