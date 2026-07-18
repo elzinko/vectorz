@@ -3,9 +3,9 @@ id: 0055
 title: ezk-ci — surveiller et plafonner la consommation GitHub Actions (repos privés)
 type: feature
 priority: P1
-status: todo
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#34"
 created: 2026-07-15
 ---
 
