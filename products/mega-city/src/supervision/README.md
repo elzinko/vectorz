@@ -30,6 +30,37 @@ Autoriser les 5 outils en « toujours autoriser » pour éviter la fatigue de po
 Pour tester sans toucher aux méthodes de prod : skill **`supervision-demo`** (méthode
 jouet 2 gates).
 
+## Conformité prouvée — déroulé méthode jouet → validateur (AC1, fiche 0050)
+
+Le chemin nominal est la session Claude Desktop (skill `supervision-demo` + serveur MCP
+ci-dessus). Le **déroulé reproductible sans client LLM** pilote le même runtime que le
+serveur MCP, directement en script — joué en réel le 2026-07-18, validateur cop1 vert :
+
+```bash
+# 1. Un « projet supervisé » jetable (git init : upgrade_ok mesure la quiescence git).
+mkdir -p /tmp/projet-jouet && git -C /tmp/projet-jouet init -q \
+  && git -C /tmp/projet-jouet commit -q --allow-empty -m init
+
+# 2. Jouer la méthode jouet 2 gates via le runtime — script commité bin/supervision-demo-run.ts
+#    (runStart → escalate factice → gate 1 → resume → gate 2 → resume → runFinished) :
+pnpm --dir <mega-city> exec tsx bin/supervision-demo-run.ts /tmp/projet-jouet
+
+# 3. Valider le journal produit avec le validateur cop1 (fiche cop1 0027) :
+pnpm --filter @cop1/journal-validator... build   # depuis la racine vectorz
+node products/cop1/packages/journal-validator/dist/cli.js validate \
+  /tmp/projet-jouet/.supervision/runs/<run_id>
+```
+
+Résultat observé (2026-07-18) : journal de **7 événements** (`run.started`, `escalation`,
+2× `gate.reached` avec `upgrade_ok: true` sur arbre propre, 2× `gate.resumed`,
+`run.finished`), verdict **« Aucune violation. État final : finished »**, exit 0.
+
+> Volontairement un **déroulé documenté**, pas un test automatisé : l'automatiser dans la
+> CI mega-city créerait une dépendance de test croisée mega-city→cop1 (à trancher côté
+> cop1 — note de la fiche 0050). L'**ADR-021** l'interdit par principe (couplages
+> interdits : « le cœur de mega-city qui dépend de cop1 » ; indépendance des produits,
+> prouvée mécaniquement par les steps CI standalone).
+
 ## Template de consignes d'émission (à intégrer dans une skill de méthode)
 
 L'intégration dans une méthode réelle (ezk-product-builder, ezk-sprint…) est un
