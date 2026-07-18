@@ -71,7 +71,9 @@ Protocole, depuis un client MCP configuré (Claude Desktop ou équivalent) :
    - AC3 : au premier checkpoint structurant rencontré, un corpus cran-3 réel
      (≥3 lentilles + ≥1 contradicteur, sous-agents frais) et une synthèse qui
      TRANCHE (minoritaires consignés dans le rapport).
-4. **Vérification post-run** : `node products/cop1/packages/journal-validator/dist/cli.js
+4. **Vérification post-run** — builder d'abord le validateur (le `dist/` n'est pas
+   commité) : `pnpm --filter @cop1/journal-validator... build` (depuis la racine
+   vectorz), puis `node products/cop1/packages/journal-validator/dist/cli.js
    validate <racine>/.supervision/runs/<run_id>` → zéro violation attendu ; lecture des
    rapports de gates = l'audit « qui a décidé quoi, et pourquoi ».
 5. **Clôture** : cocher AC1-AC3 avec le `run_id` en preuve, puis `ship` de la fiche.
