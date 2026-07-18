@@ -36,12 +36,20 @@ contrat** (critère de la fiche 0050).
 
 ## Critères d'acceptation
 
-- [ ] Un `build` complet enchaîne ≥2 sprints sans question à l'humain hors des 4 STOP.
-- [ ] Chaque décision de checkpoint est journalisée (gate + rapport de corpus en artefact).
+- [ ] Un `build` complet enchaîne ≥2 sprints sans question à l'humain hors des 4 STOP —
+      **à jouer via la Recette de preuve ci-dessous** (exige une session outillée MCP).
+- [ ] Chaque décision de checkpoint est journalisée (gate + rapport de corpus en artefact) —
+      idem, Recette de preuve (les gates exigent les 5 outils MCP du kit en contexte).
 - [ ] Un checkpoint « structurant » convoque un vrai panel (≥3 lentilles + ≥1 contradicteur)
-      et la synthèse tranche (pas de « les deux se valent »).
-- [ ] ezk-product-builder est chargé, jamais modifié (diff ezk-* vide).
-- [ ] `--tokens cap` par défaut (l'autonomie exige une borne).
+      et la synthèse tranche (pas de « les deux se valent ») — idem, joué pendant le run
+      de la recette (le corpus cran-3 se déclenche sur une décision structurante réelle).
+- [x] ezk-product-builder est chargé, jamais modifié (diff ezk-* vide) — **vérifié
+      mécaniquement** : le commit introduisant le skill (`71d32a5`) touche 0 fichier
+      `ezk-*` (uniquement `skills/vz-product-builder/SKILL.md` + fiche + index), et le
+      garde-fou « overlay strict » est encodé dans le SKILL.md.
+- [x] `--tokens cap` par défaut (l'autonomie exige une borne) — encodé dans le SKILL.md,
+      Override 2 : « `--tokens cap` est le **défaut** de ce mode (pas de cap, pas
+      d'auto) », merge autonome conditionné à ce cap.
 
 ## Notes / décisions
 

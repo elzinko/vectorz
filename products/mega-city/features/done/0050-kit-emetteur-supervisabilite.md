@@ -3,8 +3,8 @@ id: 0050
 title: Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat
 type: feature
 priority: P1
-status: in-progress
-pr:
+status: shipped
+pr: "#35"
 created: 2026-07-14
 ---
 
