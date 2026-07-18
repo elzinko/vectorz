@@ -41,16 +41,23 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
 
 ## Critères d'acceptation
 
-- [ ] Méthode jouet 2 gates : journal produit, validateur cop1 0027 vert.
-- [ ] `upgrade_ok` : vrai sur arbre propre, faux avec worktree ouvert, veto LLM possible
-      (→ false uniquement).
+- [x] Méthode jouet 2 gates : journal produit, validateur cop1 0027 vert — **déroulé réel
+      2026-07-18** (runtime piloté par script, journal de 7 événements, « Aucune
+      violation », état `finished`, exit 0) ; déroulé reproductible documenté dans
+      `src/supervision/README.md` § « Conformité prouvée ».
+- [x] `upgrade_ok` : vrai sur arbre propre, faux avec worktree ouvert, veto LLM possible
+      (→ false uniquement) — couvert par `src/supervision/__tests__/upgrade-ok.test.ts`
+      (3 cas + impossibilité de forcer `true` par construction de la signature).
 - [x] Consignes intégrées à au moins une skill de méthode réelle — **`ezk-sprint`**
       (2026-07-17 : `run_start` à l'intake, `gate_reached`/`gate_resumed` au checkpoint ⛳,
       `escalate` sur stop&ask, `run_finished` à la clôture ; classe B documentée).
-- [ ] Hooks classe A livrés et documentés — **suite de fiche, hors 1ʳᵉ PR** (décision en
-      Notes).
-- [ ] Zéro dépendance à cop1 (le kit fonctionne avec n'importe quel superviseur qui lit
-      le format).
+- [x] Hooks classe A livrés et documentés — **sortis en fiche de suite `0077`**
+      (décision « hors 1ʳᵉ PR » du 2026-07-14, Notes ; priorité héritée P1).
+- [x] Zéro dépendance à cop1 (le kit fonctionne avec n'importe quel superviseur qui lit
+      le format) — vérifié : aucun import cop1 dans `src/supervision/` ; le validateur
+      cop1 n'est consommé qu'en vérification externe (déroulé manuel, pas la CI).
+      Assumé : l'URI de contrat `cop1/supervisability@0.1` référence cop1 **par
+      convention de nommage de la spec**, pas par dépendance de code.
 
 ## Notes / décisions
 
@@ -79,3 +86,9 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
   une dépendance de test croisée mega-city→cop1 à trancher côté cop1 ; a minima un
   déroulé manuel documenté), et **hooks classe A** (suite de fiche). L'ADR-032 (gravé,
   guide `docs/brancher-une-methode-existante.md`) confirme ce chemin comme canonique.
+- **Clôture 2026-07-18** : AC1 déroulée en réel (journal 7 événements → validateur cop1
+  vert, exit 0 ; script `bin/supervision-demo-run.ts` + déroulé documenté au README du
+  kit, volontairement PAS automatisé en CI — ADR-021, couplages interdits : le cœur de
+  mega-city ne dépend jamais de cop1). Hooks classe A → **fiche 0077**. Branche WIP
+  `feat/0050-emission-ezk-sprint` purgée (absorbée par le squash #25/bb6ed88, vérifiée
+  ligne à ligne — cas fiche 0076).
