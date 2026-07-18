@@ -1,0 +1,58 @@
+---
+id: 0078
+title: Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb)
+type: feature
+priority: P2
+epic:
+status: idea
+ready:
+pr:
+created: 2026-07-18
+---
+
+# 0078 — Le « bouton » d'installation de l'émetteur (.mcpb)
+
+## Contexte / Problème
+
+Aujourd'hui, brancher l'émetteur de supervisabilité (fiche 0050) sur Claude Desktop
+suppose d'**éditer à la main** `claude_desktop_config.json` (coller un bloc, remplacer 2
+chemins absolus, redémarrer). Acceptable pour l'opérateur qui valide, mais **friction
+forte pour un utilisateur** de vectorz. Le PO veut « un bouton qui ouvre Claude Desktop
+pour ajouter le connecteur » (2026-07-18).
+
+Claude Desktop supporte les **bundles `.mcpb`** (ex-`.dxt`) : une archive (serveur +
+`manifest.json`) que l'utilisateur **double-clique** → Claude Desktop ouvre une carte
+d'installation avec des **champs de config** (ex. un sélecteur de dossier) → installe le
+serveur dans sa config gérée, **sans édition JSON manuelle**. C'est l'équivalent honnête,
+pour un serveur **local**, de la page « Connexion » d'un connecteur distant (Rentila).
+
+## Proposition
+
+- Packager l'émetteur en `.mcpb` : `manifest.json` déclarant `SUPERVISION_PROJECT_ROOT`
+  comme **champ dossier** (directory picker), le reste calculé.
+- L'utilisateur double-clique le `.mcpb`, choisit le projet à superviser, installe ;
+  les 5 outils apparaissent — zéro JSON.
+- Mettre à jour la **doc utilisateur** (créée par ce lot de travail, cf. plus bas) pour
+  mener par le chemin `.mcpb` (l'install manuelle devient le repli « pour les curieux »).
+
+## Critères d'acceptation (à groomer)
+
+- [ ] `.mcpb` construit : double-clic → carte d'install Claude Desktop, sélecteur de
+      dossier pour `SUPERVISION_PROJECT_ROOT`, 5 outils visibles, aucun JSON à la main.
+- [ ] **Décision de packaging tranchée** : embarquer le serveur (node/tsx) dans le bundle
+      vs pointer vers le dépôt mega-city installé — trade-offs (poids, mise à jour, prérequis pnpm).
+- [ ] Doc utilisateur mise à jour pour mener par le `.mcpb`.
+- [ ] Distribution : où vit le `.mcpb` téléchargeable (release GitHub ? page vectorz ?).
+
+## Notes
+
+- **Priorité P2 proposée** (à confirmer au grooming) — capturée en `idea` : direction du
+  PO, pas encore cadrée.
+- **Distinct des connecteurs distants** (Rentila = URL `…/mcp` + OAuth/clé) : l'émetteur
+  est **local**, il écrit `.supervision/` sur la machine ; un serveur cloud ne peut pas
+  s'y substituer. Donc `.mcpb`, pas « custom connector ».
+- Le lot de travail du 2026-07-18 livre **déjà** : la page de config (artefact) + une doc
+  utilisateur versionnée (relue en revue adverse). Cette fiche porte le **cran suivant**
+  (le vrai un-clic), pas la doc elle-même.
+- Réfs : fiche 0050 (kit émetteur, shippé), fiche 0060 (vz-product-builder exige le kit),
+  doc Anthropic « Desktop Extensions / MCPB ».
