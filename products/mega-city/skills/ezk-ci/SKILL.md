@@ -1,14 +1,18 @@
 ---
 name: ezk-ci
-argument-hint: "[help|check|list|dryrun|run|bootstrap]"
+argument-hint: "[help|check|list|dryrun|run|bootstrap|conso|frugal]"
 description: >-
   Validate GitHub Actions pipelines locally with act + Docker before pushing or
-  committing. Use whenever the user asks to run CI locally, mentions GitHub
-  Actions billing exhaustion (spending limit, billing exceeded, out of GHA
-  minutes), reports a workflow failure they want to debug without burning runner
-  minutes, edits a file under .github/workflows/, or needs to test a .yml
-  workflow. Also covers macOS jobs that must run on the host because Docker has
-  no macOS image, and a bootstrap path for projects with no local CI setup yet.
+  committing, AND watch/cap the cloud-side GHA consumption of private repos. Use
+  whenever the user asks to run CI locally, mentions GitHub Actions billing
+  exhaustion (spending limit, billing exceeded, out of GHA minutes), asks how
+  many Actions minutes a repo burns or which workflows cost the most, wants to
+  cap spending on a private repo, makes a repo private (key cost moment), wants
+  a frugal CI (paths-ignore, concurrency, gated heavy jobs), reports a workflow
+  failure they want to debug without burning runner minutes, edits a file under
+  .github/workflows/, or needs to test a .yml workflow. Also covers macOS jobs
+  that must run on the host because Docker has no macOS image, and a bootstrap
+  path for projects with no local CI setup yet.
 ---
 
 # ezk-ci
@@ -30,6 +34,8 @@ feedback rapide (30-60 s avec cache, vs 3-8 min en cloud).
 | `dryrun` | `act --dryrun` — parse sans exécuter (rapide, sûr) |
 | `run [job]` (**défaut** pour une demande en langage naturel) | `act workflow_dispatch -j <job>` (un job ciblé, à privilégier) ou la pipeline complète, après l'arbre de décision |
 | `bootstrap` | Pose le setup local minimal (`.actrc`, `.secrets.example` / `.vars.example`) puis `act -l` (cas c) |
+| `conso [repo]` | Restitue la **conso Actions** : minutes du mois (billing du compte), runs récents et top workflows/jobs coûteux |
+| `frugal [repo]` | Audit **parcimonie** des workflows : spending limit, déclencheurs, `concurrency`, gates du lourd — propose des diffs concrets |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau. Une demande en langage naturel lance `run` après l'arbre de décision ci-dessous. Sous-commande non reconnue → traite la demande en prose (la skill reste pilotable naturellement).
 
@@ -120,6 +126,106 @@ Tout job qui appelle un CLI interactif (`npx vercel …` sans `--yes`) peut hang
 sur stdin ; le timeout GHA par défaut est **360 min** → 6 h cramées. **Mets
 `timeout-minutes:`** sur tout job de déploiement (~2-3× le happy path observé).
 Post-mortem : `gh run view <id> --json jobs` et regarde `duration_ms` par job.
+
+## Parcimonie cloud — surveiller & plafonner la conso GHA (repos privés)
+
+Valider en local (le cœur de ce skill) évite de brûler des minutes **avant** de pousser ;
+ce volet couvre l'autre moitié : la conso **côté GitHub** une fois le workflow poussé.
+Le coût dépend de la **visibilité** : en public, les minutes Actions sont gratuites ; en
+**privé**, chaque run consomme le quota mensuel du compte (2 000 min/mois en Free), puis
+facture. Frontière tenue : conseiller, restituer la conso, éditer les workflows — **pas**
+dupliquer un outil de billing.
+
+### Le moment-clé : passage public → privé
+
+Un `gh repo edit --visibility private` (ou le passage via l'UI) transforme une CI
+« gratuite » en une CI **qui mange du quota** — sans garde-fou on le découvre à la
+facture. Dès que tu détectes ce passage (ou qu'on te le demande sur un repo dont
+`gh repo view --json visibility` dit `PRIVATE`), **alerte** et déroule la checklist :
+spending limit posé ? déclencheurs frugaux ? lourd gaté ? `timeout-minutes` partout ?
+
+### `conso` — mesurer (minutes du mois, top coûteux)
+
+```bash
+# Minutes Actions du mois — choisis la PAIRE selon le propriétaire du repo (compte
+# user OU org), puis essaie legacy et « enhanced billing » : selon le plan, l'un
+# des deux répond (l'autre rend 404/410 — normal, pas une panne).
+# Repo d'un compte USER :
+gh api /users/<user>/settings/billing/actions        # legacy → total_minutes_used, included_minutes
+gh api /users/<user>/settings/billing/usage          # enhanced billing (comptes migrés)
+# Repo d'une ORG :
+gh api /orgs/<org>/settings/billing/actions          # legacy
+gh api /organizations/<org>/settings/billing/usage   # enhanced billing (orgs migrées)
+
+# Qui coûte : runs récents avec durées, à agréger par workflow.
+gh run list --limit 50 --json workflowName,status,createdAt,updatedAt,databaseId
+
+# Minutes FACTURABLES d'un run précis (ventilées par OS — macOS coûte 10×, Windows 2×).
+gh api /repos/<owner>/<repo>/actions/runs/<run_id>/timing
+
+# Post-mortem par job (la commande du safeguard anti-runaway, même esprit) :
+gh run view <run_id> --json jobs   # regarde duration_ms par job
+```
+
+Restitue : minutes consommées / incluses ce mois, top 3 workflows par minutes cumulées,
+et tout job dont la durée déborde son happy path (candidat au gate ou au timeout).
+
+### Plafonner : spending limit à 0 (défaut recommandé sur un repo privé)
+
+Le **spending limit Actions à 0 $** coupe net quand le quota inclus est épuisé — aucun
+dépassement facturé. Il n'est **pas pilotable par l'API publique** (2026) : pose-le dans
+l'UI — compte user : `github.com/settings/billing/spending_limit` ; org :
+`Settings → Billing and plans → Spending limits` — et **vérifie au mieux** en lisant le
+billing (`total_paid_minutes_used` doit rester à 0). Dis-le explicitement à l'utilisateur
+au lieu de simuler un réglage API qui n'existe pas.
+
+### Réduire les déclenchements & gater le lourd — les diffs à proposer
+
+Règles **récoltées du monorepo `muti`** (référence d'implémentation de ce skill —
+relevé 2026-07 sur ses 6 workflows) :
+
+- **CI sur `pull_request` uniquement** (vers `main`), CD séparé sur `push: main` — un
+  push sur une branche sans PR ne consomme rien.
+- **Le lourd est gaté** : la smoke-test multi-OS (matrice mac/linux, la plus chère) ne
+  part que sur **label `smoke-test`** posé sur la PR ou **`workflow_dispatch`** manuel :
+
+  ```yaml
+  on:
+    workflow_dispatch:
+    pull_request:
+      branches: [main]
+      types: [labeled]
+  jobs:
+    smoke-test:
+      if: >-
+        github.event_name == 'workflow_dispatch' ||
+        github.event.label.name == 'smoke-test'
+  ```
+- **Déploiements en `workflow_dispatch`** (jamais automatiques) ; **cleanup en cron
+  hebdo** (`schedule`) + jobs conditionnés (`if: merged == true`).
+
+**Écart documenté** (AC fiche 0055 — ces deux-là ne viennent PAS de muti, qui ne les a
+quasiment pas ; ils viennent de la CI vectorz et du savoir déjà encodé ici) :
+
+- **`concurrency`** — tue les runs obsolètes quand on repousse sur la même ref :
+
+  ```yaml
+  concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+  ```
+
+- **`paths-ignore` / `paths`** — pas de CI sur un changement docs-only :
+
+  ```yaml
+  on:
+    pull_request:
+      branches: [main]
+      paths-ignore: ['**.md', 'docs/**']
+  ```
+
+- **`timeout-minutes` partout** : le safeguard anti-runaway ci-dessus (leçon à 720 min) —
+  même esprit, côté cloud.
 
 ## Workflow d'usage
 
