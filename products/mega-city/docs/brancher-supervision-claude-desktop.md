@@ -1,4 +1,4 @@
-# Brancher le journal de supervision sur Claude Desktop
+# Connecter une méthode au contrat de supervision (Claude Desktop)
 
 *Enregistrer, pour les relire au calme, toutes les décisions que prend un agent qui travaille seul.*
 
@@ -21,18 +21,6 @@ Cette page explique comment le brancher sur **Claude Desktop** — l'application
 de Claude (pas la version web) : c'est la seule qui peut faire tourner ce genre d'outil
 local sur ta machine.
 
-## Pour qui est cette page
-
-Le branchement décrit ici est **manuel** et suppose que tu es à l'aise techniquement :
-
-- tu as le dépôt **mega-city** cloné sur ta machine ;
-- tu as **pnpm** installé (l'outil qui lance le serveur) ;
-- éditer un petit fichier de configuration ne te fait pas peur.
-
-**Si ce n'est pas ton cas**, ce n'est pas grave : une installation **en un clic** est en
-préparation (voir [Bientôt : l'installation en un clic](#bientôt-linstallation-en-un-clic)).
-Reviens à ce moment-là.
-
 ## En as-tu besoin ?
 
 - **Oui**, si tu lances des méthodes autonomes et que tu veux une **trace auditable** de
@@ -51,7 +39,31 @@ Concrètement, pour toi : **pas d'URL ni de mot de passe** à saisir. On l'ajout
 un petit bloc de configuration en local — c'est ce qu'on appelle un **serveur MCP local**
 (MCP = la prise standard par laquelle Claude Desktop se branche sur des outils externes).
 
-## Avant de commencer
+## Installer en un double-clic (recommandé)
+
+L'enregistreur s'installe par un **fichier prêt à l'emploi**, sans rien éditer et sans
+aucun prérequis (le serveur est embarqué dans le fichier — Claude Desktop le lance avec
+son propre Node) :
+
+1. **Le fichier** : `products/mega-city/dist/vectorz-supervision.mcpb`. S'il manque
+   (dépôt fraîchement cloné), une commande le reconstruit :
+   ```bash
+   bash products/mega-city/bin/build-mcpb.sh
+   ```
+2. **Double-clique dessus** : Claude Desktop ouvre une carte d'installation
+   « Journal de supervision vectorz » — clique **Installer**.
+3. **Choisis le dossier du projet à superviser** quand la carte le demande : c'est là
+   que le journal `.supervision/` sera écrit.
+
+Puis passe directement à [Vérifier que c'est bien branché](#vérifier-que-cest-bien-branché).
+
+---
+
+Le reste de cette page décrit la **voie manuelle** (lancer l'enregistreur depuis les
+sources du dépôt en éditant la configuration de Claude Desktop) — pour les curieux, ou
+si tu veux éviter le fichier packagé. Elle suppose d'être à l'aise avec un terminal.
+
+## Configuration manuelle — avant de commencer
 
 Réunis ces trois choses — ça t'évitera de bloquer en cours de route :
 
@@ -71,7 +83,7 @@ Réunis ces trois choses — ça t'évitera de bloquer en cours de route :
    > 💡 Sur macOS, pour copier le chemin exact d'un dossier : clic droit dessus dans le
    > Finder, maintiens **Option**, puis « Copier … en tant que nom de chemin ».
 
-## Brancher en 3 étapes
+## Configuration manuelle — les 3 étapes
 
 *(Guide **macOS**. Sous Windows, il n'y a pas que l'emplacement du fichier qui change :
 le binaire s'appelle `pnpm.cmd`, `which` n'existe pas, et les chemins ne commencent pas
@@ -197,15 +209,6 @@ décisions : `/vz-product-builder build --tokens cap`.
 - **Une méthode se lance mais n'enregistre rien ?** Si un agent ne « voit » pas les cinq
   outils, il continue en mode dégradé et le signale : c'est le symptôme d'un branchement
   incomplet. Reprends les étapes 2 et 3.
-
-## Bientôt : l'installation en un clic
-
-Tu voulais un bouton qui installe tout depuis l'interface de Claude Desktop, sans toucher
-au moindre fichier. Pour un serveur local, ça existe : un **bundle `.mcpb`**. On empaquette
-le journal dans un fichier ; tu le **double-cliques**, Claude Desktop propose de
-l'installer avec un **sélecteur de dossier** pour le projet à superviser, et c'est réglé —
-plus aucun JSON, plus aucun chemin à copier. C'est l'étape prévue juste après (fiche
-backlog **0078**).
 
 ## Aller plus loin
 
