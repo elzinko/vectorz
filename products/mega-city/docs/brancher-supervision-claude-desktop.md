@@ -73,8 +73,10 @@ Réunis ces trois choses — ça t'évitera de bloquer en cours de route :
 
 ## Brancher en 3 étapes
 
-*(Instructions macOS. Sous Windows, seule l'étape 1 change : le fichier de configuration
-est sous `%APPDATA%\Claude\`.)*
+*(Guide **macOS**. Sous Windows, il n'y a pas que l'emplacement du fichier qui change :
+le binaire s'appelle `pnpm.cmd`, `which` n'existe pas, et les chemins ne commencent pas
+par `/` — la config est sous `%APPDATA%\Claude\`, et pour le reste suis les équivalents
+de la [doc officielle Claude Desktop](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop).)*
 
 ### 1. Ouvrir la configuration de Claude Desktop
 
@@ -159,19 +161,25 @@ Si ton fichier ressemble déjà à ceci :
 
 ## Vérifier que c'est bien branché
 
-Dans une **nouvelle conversation** Claude Desktop, tape `/supervision-demo` dans la zone
-de message et envoie. C'est une mini-méthode de test (elle doit être installée comme skill
-dans ton Claude Desktop) qui émet un journal complet en deux étapes.
+Dans une **nouvelle conversation** Claude Desktop, demande simplement :
 
-Deux façons de confirmer que ça a marché :
+> « Appelle l'outil `run_start` (méthode `test`, version `0.0.0`), puis `run_finished`
+> — je vérifie mon branchement supervision. »
 
-- La démo t'annonce dans la conversation où elle a écrit le journal ; **ou**
+Si le branchement est bon, Claude voit les cinq outils et les appelle. Deux façons de
+confirmer :
+
+- Claude te répond avec l'identifiant du run créé ; **ou**
 - tu retrouves le fichier ici :
   ```
   <ton-projet>/.supervision/runs/<identifiant-du-run>/events.jsonl
   ```
   > Le dossier `.supervision` commence par un point : il est **caché** dans le Finder.
   > Pour le voir : dans le dossier du projet, presse **Cmd + Maj + .** (point).
+
+> *Option, pour un test plus complet (2 jalons avec arrêts/reprises)* : le skill jouet
+> `supervision-demo` — attention, il est **hors catalogue par défaut** (non déployé) ;
+> il faut le lier soi-même depuis le dépôt (`products/mega-city/skills/supervision-demo/`).
 
 Pour la vraie chose — laisser une méthode autonome travailler et enregistrer ses
 décisions : `/vz-product-builder build --tokens cap`.
