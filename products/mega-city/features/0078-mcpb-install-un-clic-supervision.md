@@ -4,7 +4,7 @@ title: Émetteur de supervisabilité — install un-clic Claude Desktop (bundle 
 type: feature
 priority: P2
 epic:
-status: idea
+status: in-progress
 ready:
 pr:
 created: 2026-07-18
@@ -35,19 +35,33 @@ pour un serveur **local**, de la page « Connexion » d'un connecteur distant (R
 - Mettre à jour la **doc utilisateur** (créée par ce lot de travail, cf. plus bas) pour
   mener par le chemin `.mcpb` (l'install manuelle devient le repli « pour les curieux »).
 
-## Critères d'acceptation (à groomer)
+## Critères d'acceptation
 
 - [ ] `.mcpb` construit : double-clic → carte d'install Claude Desktop, sélecteur de
-      dossier pour `SUPERVISION_PROJECT_ROOT`, 5 outils visibles, aucun JSON à la main.
-- [ ] **Décision de packaging tranchée** : embarquer le serveur (node/tsx) dans le bundle
-      vs pointer vers le dépôt mega-city installé — trade-offs (poids, mise à jour, prérequis pnpm).
-- [ ] Doc utilisateur mise à jour pour mener par le `.mcpb`.
-- [ ] Distribution : où vit le `.mcpb` téléchargeable (release GitHub ? page vectorz ?).
+      dossier pour `SUPERVISION_PROJECT_ROOT`, 5 outils visibles, aucun JSON à la main —
+      **construit et prouvé côté protocole** (2026-07-19 : `bin/build-mcpb.sh`, serveur
+      bundlé lancé tel que Desktop le ferait → handshake + 5 outils + run complet →
+      validateur cop1 vert) ; **reste le double-clic réel dans Claude Desktop, à jouer
+      par le PO** (seul à avoir l'app).
+- [x] **Décision de packaging tranchée** : le bundle **embarque le serveur** (esbuild →
+      un seul fichier ESM, deps inlinées) — zéro prérequis utilisateur (ni pnpm ni tsx,
+      Claude Desktop fournit Node) ; le pointeur-vers-dépôt reste la voie « manuelle »
+      documentée à part. Manifest MCPB 0.3, `user_config.project_root` type `directory`.
+- [x] Doc utilisateur mise à jour pour mener par le `.mcpb` : guide versionné
+      (`docs/brancher-supervision-claude-desktop.md`, PR #37) + pages publiées (guide
+      principal + page « configuration manuelle » séparée), relues par 2 personas
+      (utilisateur LLM lambda, vulgarisateur doc) — corrections intégrées.
+- [ ] Distribution : où vit le `.mcpb` téléchargeable (release GitHub ? page vectorz ?) —
+      aujourd'hui : `dist/` local (gitignoré) + reconstruction en une commande.
 
 ## Notes
 
 - **Priorité P2 proposée** (à confirmer au grooming) — capturée en `idea` : direction du
   PO, pas encore cadrée.
+- **Tirée le 2026-07-19 sur décision PO explicite** (« il me faudrait tout de suite un
+  mcpb ») — soupape journalisée (fiche non ready-gatée) ; passée `in-progress`.
+  Construit ce jour : `bin/build-mcpb.sh` + preuve protocole (cf. AC1). Clôture quand le
+  double-clic réel est constaté par le PO et la distribution tranchée.
 - **Distinct des connecteurs distants** (Rentila = URL `…/mcp` + OAuth/clé) : l'émetteur
   est **local**, il écrit `.supervision/` sur la machine ; un serveur cloud ne peut pas
   s'y substituer. Donc `.mcpb`, pas « custom connector ».

@@ -55,6 +55,7 @@
 | 0058 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 |  | 🔴 todo |  |
 | 0063 | ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules) | feature | P2 |  | ✅ shipped | #21 |
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | ✅ shipped | #30 |
+| 0078 | Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb) | feature | P2 |  | 🟠 in-progress |  |
 | 0079 | Restitutions PO lisibles — graver la règle dans les skills qui parlent au PO (pas seulement en mémoire d'agent) | feature | P2 |  | 🔴 todo |  |
 | 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 |  | 🔴 todo |  |
@@ -91,7 +92,6 @@
 | 0068 | Règle enforced — la carte de la méthode (method-map) à jour à chaque modif de méthode | feature | P2 |  | 💡 idea |  |
 | 0073 | article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel) | feature | P2 | 0059 | 💡 idea |  |
 | 0075 | Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider | feature | P2 |  | 💡 idea |  |
-| 0078 | Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb) | feature | P2 |  | 💡 idea |  |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 |  | 💡 idea |  |
 | 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 |  | 💡 idea |  |
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | 💡 idea |  |
