@@ -8,6 +8,10 @@
 | 0001 | lawgiver bind — cap claude-code (MVP déterministe) | feature | P0 |  | ✅ shipped | local (squash-merge) |
 | 0010 | bind — fusion non-destructive (intention + bloc managé) au lieu d'écraser | feature | P0 |  | ✅ shipped | local (squash-merge) |
 | 0017 | cap global — matérialiser un profil dans ~/.claude (remplace install.sh) | feature | P0 |  | ✅ shipped | local (squash-merge) |
+| 0083 | SPIKE — où atterrit le journal quand une méthode tourne dans un worktree ? (mesurer cwd et CLAUDE_PROJECT_DIR) | chore | P0 |  | 🔴 todo |  |
+| 0084 | Le calcul de quiescence mélange deux échelles (propreté par dossier, worktrees par dépôt) — prédicat sans sémantique | bug | P0 |  | 🔴 todo |  |
+| 0085 | Redéfinir ce que compte la quiescence — les sous-runs de l'orchestrateur, pas tout worktree git du dépôt | chore | P0 |  | 🔴 todo |  |
+| 0086 | Le journal remonte à l'arbre principal + le serveur annonce où il écrit (fin de la perte silencieuse en worktree) | feature | P0 |  | 🔴 todo |  |
 | 0002 | lawgiver capture — flywheel | feature | P1 |  | ✅ shipped | local (squash-merge) |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 |  | ✅ shipped | #6 |
 | 0004 | migrer ezk-commits vers skills/ | chore | P1 |  | ✅ shipped | local (squash-merge) |
