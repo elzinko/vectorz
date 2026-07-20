@@ -31,7 +31,8 @@ created: 2026-07-20
   en **symlinks** vers les sources mega-city (cap `claude-code-global`, ADR-0018 mode link) ;
 - **par projet** — `lawgiver bind <profile> <projet> claude-code` écrit
   `.claude/{agents,skills}` + `.iamthelaw/ENTRY.md` + les hooks dans `.git/hooks`
-  (cap `claude-code`) ;
+  (cap `claude-code`) — **capacité existante mais non exercée** : vectorz n'a ni
+  `.iamthelaw/`, ni `CLAUDE.md`, ni hook git installé (vérifié 2026-07-20) ;
 - **Claude Desktop** — cap `claude-desktop` (ADR-0014) : dossiers de skills importables.
 
 Trois caps existent (`src/caps/registry.ts`) ; ajouter un hôte = un module + une entrée.
@@ -78,12 +79,17 @@ reste host-agnostique (invariant ADR-0001/0005).
 
 ## Périmètre / Proposition (esquisse — à trancher au grooming)
 
+**La cible, en une phrase (PO, 2026-07-20)** : *une personne qui souhaite développer un produit*
+installe **un plugin `vectorz` versionné** = la méthode mega-city (skills, agents, commandes ezk)
+**+** le serveur MCP de journalisation. Un artefact, un geste.
+
 1. **Un cap `claude-code-plugin`** : `materialize(resolved, dir)` pur et déterministe (ADR-0003),
-   produisant `.claude-plugin/plugin.json` + `skills/` + `agents/`. Entrée dans
+   produisant `.claude-plugin/plugin.json` + `skills/` + `agents/` + `.mcp.json`. Entrée dans
    `src/caps/registry.ts`, `HostId` étendu. Symétrique de ce qu'a fait 0003/ADR-0014 pour desktop.
-2. **Le repo comme son propre marketplace** : `.claude-plugin/marketplace.json` à la racine
-   vectorz — *sous réserve des incertitudes ci-dessous*.
-3. **Une commande de build/publish** dans `bin/`, au même rang que `bind-global`.
+2. **Un marketplace public** — emplacement à trancher (§Incertitude 2), la publicité étant
+   imposée par la cible « consommateur externe ».
+3. **Une commande de build/publish** dans `bin/`, au même rang que `bind-global`, réutilisant
+   le bundling esbuild déjà produit par 0078 pour le serveur MCP.
 4. **Décision de versionnage documentée en ADR** (cf. §Incertitude n°1 — c'est la vraie fiche).
 
 ### Correspondance brique vectorz → slot plugin
@@ -92,15 +98,26 @@ reste host-agnostique (invariant ADR-0001/0005).
 |---|---|---|
 | Skills | `skills/<id>/SKILL.md` | ✅ **déjà la forme native** — le cap `claude-code-global` écrit exactement ça |
 | Agents | `agents/*.md` | ✅ direct (cf. 0043 : model/effort/isolation déjà sérialisés) |
-| Serveur MCP supervision | `.mcp.json` | ⚠️ **recoupe 0078** (même serveur, autre canal de packaging) |
-| Rules / `.iamthelaw/ENTRY.md` | — | ❌ **aucun slot** dans le format plugin |
-| Hooks git (`commit-msg`, `pre-commit`, `pre-push`) | — | ❌ **faux ami** : `hooks/hooks.json` d'un plugin = hooks du **harness** (événements de session), pas des hooks **git**. Un plugin n'installe pas de `.git/hooks` |
+| Serveur MCP supervision | `.mcp.json` | ✅ **embarqué** (décision PO, cf. §Incertitude 5) |
 | Commands | `commands/*.md` | — rien à migrer (vectorz n'en a pas) |
+| Rules / `.iamthelaw/ENTRY.md` | — | 💤 **aucun slot, mais catalogue dormant** (voir ci-dessous) |
+| Hooks git (`commit-msg`, `pre-commit`, `pre-push`) | — | 💤 idem — et **faux ami** : `hooks/hooks.json` d'un plugin = hooks du **harness** (événements de session), pas des hooks **git** |
 
-Autrement dit : le plugin couvre **proprement la moitié « catalogue 2 » (l'équipe)** et
-**pas la moitié « catalogue 1 » (la loi)**. Le `bind` par projet reste probablement nécessaire
-pour les rules + hooks git. Ce n'est pas un remplacement, c'est un **second canal** — et il
-faut l'assumer explicitement plutôt que le découvrir à l'implémentation.
+**Le gap rules/hooks n'est pas bloquant — constaté le 2026-07-20 :** vectorz n'a **ni**
+`.iamthelaw/`, **ni** `CLAUDE.md`, **ni** hook git installé (`.git/hooks` = samples seuls), et
+`~/.claude/` ne contient que `skills/` + `agents/` en symlinks. Le cap qui produit `ENTRY.md`
+(`claude-code`, par projet) **n'a jamais été passé sur vectorz** ; le cap réellement en usage
+est `claude-code-global`, qui matérialise **skills + agents uniquement**.
+
+`rules/` et `bundles/` sont donc un **catalogue construit mais non consommé**. La méthode
+effectivement en usage est **ezk-backlog + `features/`** — du markdown versionné qui vit dans
+le **projet cible**, pas dans le catalogue distribué : ça ne s'installe pas, ça se scaffolde
+(`/ezk-backlog init`).
+
+Conséquence pour cette fiche : le plugin couvre **tout ce qui est réellement distribué
+aujourd'hui**. Le format plugin n'a pas de case pour les rules — mais rien n'attend cette case.
+À rouvrir **si et seulement si** on décide de réactiver le chemin `bind` par projet (ce qui
+serait une fiche à part, pas un prérequis de 0083).
 
 ## Zones d'incertitude (à ne pas combler par hypothèse)
 
@@ -130,29 +147,51 @@ Interaction directe avec **cop1 0050** (canal de release + pastille de MAJ), qui
 « une version figée par squash-merge CI-verte » : si 0050 définit *la* version de vectorz,
 0083 doit s'y brancher plutôt que d'en inventer une troisième.
 
-### 2. Le repo peut-il être son propre marketplace ?
+### 2. Où vit le marketplace ? — *cadre fixé par le PO, emplacement encore ouvert*
 
-Techniquement oui — un repo peut porter son `marketplace.json`. **Deux obstacles constatés,
-non résolus :**
+**Réponse PO (2026-07-20) à « qui installe quoi » :** *une personne qui souhaite développer un
+produit* installe **un plugin `vectorz` versionné**, contenant **la méthode (mega-city)
+versionnée** — commandes / agents / skills ezk — **et** le serveur MCP de journalisation.
+Un seul artefact, un seul geste, pour un **consommateur externe**.
 
-- **`elzinko/vectorz` est privé** (vérifié le 2026-07-20). Un marketplace est un repo que le
-  client **clone** : chaque consommateur aurait besoin d'un accès git au repo. Acceptable pour
-  l'auteur seul, ça annule le bénéfice « multi-devs ».
-- **C'est un monorepo à deux produits.** Un marketplace à la racine expose vectorz — dont cop1,
-  qui n'a rien à faire dans un plugin de catalogue.
+Ce que ça tranche :
 
-Options non départagées : (a) marketplace à la racine du repo privé, accès git requis ;
-(b) **repo public dédié** alimenté par un export déterministe (le cap produit l'arborescence,
-un job la pousse) ; (c) repo public dédié tenu à la main. Le choix dépend de la réponse à
-« qui doit pouvoir installer ? » — question **produit, pour le PO**, pas technique.
+- **La cible est externe** ⇒ le marketplace doit être **publiquement clonable**. L'option
+  « marketplace dans le repo privé » tombe : elle exigerait un accès git de chaque installeur.
+- **Le plugin s'appelle `vectorz`** et porte la méthode — le nom de l'umbrella devient le nom
+  du produit distribué (ce qui justifie a posteriori l'umbrella neutre d'ADR-027).
+- **Le MCP est dedans**, pas à côté (cf. §5).
 
-### 3. Le mode `--link` survit-il ?
+Ce qui reste ouvert — désormais **mécanique**, plus produit :
 
-Le symlink live-update est un actif réel pour l'auteur (boucle d'édition immédiate). Un plugin
-installé est une copie figée. Hypothèse de travail à valider : **les deux coexistent**
-(`bind-global --link` pour l'auteur, plugin pour les consommateurs) — mais alors deux chemins
-d'installation cohabitent sur la même machine et peuvent se marcher dessus dans `~/.claude`.
-Non instruit.
+- (a) **rendre `elzinko/vectorz` public** — simple, mais publie aussi cop1 et tout l'historique ;
+- (b) **repo public dédié**, alimenté par un **export déterministe** (le cap produit
+  l'arborescence, un job la pousse) — le repo de dev reste privé, seul l'artefact est public.
+  Cohérent avec « le script range » (ADR-0001) ; coût : un job de publication.
+
+(b) tient probablement mieux — on ne publie pas un monorepo de travail pour distribuer un
+catalogue — mais ça n'a pas été instruit. **À trancher avec le versionnage (§1) : c'est le
+même geste de release.**
+
+### 3. Deux sources pour les mêmes skills sur la machine de l'auteur
+
+**Le fait :** `~/.claude/skills/ezk-apk` est aujourd'hui un **symlink** vers
+`products/mega-city/skills/ezk-apk`. Le fichier que Claude lit **est** le fichier du repo.
+Éditer un skill le rend actif partout, immédiatement, sans réinstaller — c'est la boucle
+d'itération de l'auteur, et c'est un actif réel.
+
+**Le plugin fonctionne à l'inverse** : il est **copié** à l'installation et ne bouge qu'au
+`/plugin update`. C'est exactement ce qu'on veut pour un consommateur (version figée,
+identifiable, MAJ explicite) et exactement ce qu'on ne veut pas pour l'auteur.
+
+**Le risque :** si l'auteur installe aussi le plugin, `~/.claude` porte **deux fois** les
+mêmes skills — un symlink vivant et une copie figée. Qui gagne ? Le comportement de Claude
+Code en cas de collision de nom entre skill globale et skill de plugin **n'a pas été vérifié**.
+
+Hypothèse de travail : les deux chemins coexistent (`--link` pour développer le catalogue,
+plugin pour le consommer) et l'auteur n'installe pas son propre plugin — sauf pour tester,
+et alors il faut savoir désinstaller proprement. **À vérifier expérimentalement**, c'est
+cheap : installer le plugin sur une machine bindée et regarder.
 
 ### 4. Un plugin, ou un plugin par profil ?
 
@@ -160,36 +199,61 @@ Non instruit.
 Un plugin s'installe en bloc. Faut-il un plugin par profil (`vectorz-global`, `vectorz-mobile`…),
 un seul plugin exhaustif, ou un plugin + une sélection côté utilisateur ? Non tranché.
 
-### 5. Recoupement avec 0078 (`.mcpb`)
+### 5. Articulation avec 0078 — *tranchée : un serveur, deux emballages*
 
-0078 packagera l'émetteur de supervisabilité en `.mcpb` pour **Claude Desktop**. Le slot
-`.mcp.json` d'un plugin ferait la même chose pour **Claude Code**. Même serveur, deux canaux.
-À arbitrer : le plugin embarque-t-il le serveur MCP, ou reste-t-il un plugin de catalogue pur ?
-Sa AC « Distribution : où vit le `.mcpb` téléchargeable » est ouverte et **peut se résoudre
-au même endroit** que celle de cette fiche.
+**Décision PO (2026-07-20) :** le plugin **embarque** le MCP de journalisation. Ce n'est pas
+un plugin de catalogue pur.
+
+Nuance à ne pas confondre — **`.mcpb` n'est pas le format du plugin** :
+
+| | Claude **Code** | Claude **Desktop** |
+|---|---|---|
+| Emballage | slot `.mcp.json` **du plugin `vectorz`** (fiche 0083) | bundle **`.mcpb`** autonome (fiche 0078) |
+| Geste utilisateur | `/plugin install` — le MCP vient avec | double-clic sur le `.mcpb` |
+| Config projet | à déterminer (le plugin est global, `SUPERVISION_PROJECT_ROOT` est par projet) | champ `directory` de la carte d'install |
+
+**Un seul serveur** (`src/supervision/mcp-server.ts`), **deux emballages**, et une seule
+chaîne de build à écrire une fois. 0078 a déjà produit le bundling (esbuild → fichier ESM
+unique, deps inlinées) : 0083 **réutilise ce travail**, il ne le refait pas.
+
+**Point non résolu, hérité :** `SUPERVISION_PROJECT_ROOT`. Le `.mcpb` le demande à
+l'installation via un sélecteur de dossier ; un plugin s'installe globalement et n'a pas cette
+carte. Comment le serveur sait-il quel projet superviser quand il arrive par le plugin ?
+(cwd de la session ? config par projet ? détection de racine git ?) — **à instruire**, c'est
+la seule vraie inconnue technique de l'intégration MCP.
 
 ## Critères d'acceptation (première esquisse — à retravailler au grooming)
 
 - [ ] **Décision de versionnage actée en ADR** (aligné umbrella vs mega-city indépendant),
       cohérente avec ADR-025 §2 / ADR-023 option D et avec cop1 0050. *Bloquant : rien ne se
       code avant.*
-- [ ] **Décision de marketplace actée** (repo privé auto-marketplace vs repo public dédié),
-      avec la réponse explicite à « qui doit pouvoir installer ».
+- [ ] **Emplacement du marketplace public acté** (vectorz public vs repo dédié alimenté par
+      export), tranché **avec** le versionnage — c'est le même geste de release.
 - [ ] Cap `claude-code-plugin` : `materialize` **pur**, testé unitairement sur le `WritePlan`
       (méthode ADR-0014), entrée dans `registry.ts`.
 - [ ] Le plugin produit passe l'agent **`plugin-validator`** (marketplace `claude-plugins-official`).
-- [ ] Sur une machine **vierge de tout `bind`** : `/plugin install …` puis les 18 skills et
-      7 agents sont disponibles — constaté, pas déduit.
+- [ ] Sur une machine **vierge de tout `bind`** : `/plugin install …` puis les 18 skills, les
+      7 agents **et** les outils MCP de supervision sont disponibles — constaté, pas déduit.
 - [ ] Une modification de catalogue mergée sur `main` → nouvelle version → `/plugin update`
       la ramène ; la version installée est **lisible** côté consommateur.
-- [ ] Le sort des rules + hooks git est **écrit** (le plugin ne les porte pas) : soit `bind`
-      par projet reste requis et documenté, soit une alternative est tranchée.
+- [ ] **`SUPERVISION_PROJECT_ROOT` résolu** quand le MCP arrive par le plugin (pas de carte
+      d'install à sélecteur de dossier, contrairement au `.mcpb`) — mécanisme choisi et prouvé.
+- [ ] **Collision auteur vérifiée** : sur une machine déjà bindée `--link`, installer le plugin
+      et constater le comportement (qui gagne, comment désinstaller proprement).
 - [ ] Doc utilisateur : installation, MAJ, et **ce que le plugin ne couvre pas**.
 
 ## Notes
 
 - **P1 (PO, 2026-07-20)** — capturée en `status: idea` : la direction est claire, le point de
   conception n°1 (versionnage) ne l'est pas. `ready:` volontairement vide → gate DoR (ADR-0016).
+- **Décisions PO du 2026-07-20** (2ᵉ passe, après vérification du repo) :
+  1. **Cible = consommateur externe** — « une personne qui souhaite développer un produit ».
+     Le plugin s'appelle **`vectorz`** et porte la méthode mega-city versionnée. ⇒ marketplace
+     **public** (§2).
+  2. **Le plugin embarque le MCP** de journalisation ⇒ un serveur, deux emballages avec 0078 (§5).
+  3. **Le gap rules/hooks est déclassé** : `.iamthelaw/` n'existe nulle part, les rules sont un
+     catalogue dormant, la méthode en usage est ezk-backlog + `features/`. Ce n'était pas un
+     prérequis — correction d'une erreur d'analyse de la 1ʳᵉ passe.
 - **Anti-doublon vérifié (2026-07-20)** : aucune fiche des deux backlogs ne porte le sujet
   « plugin Claude Code / marketplace ». Les seules occurrences de « plugin » sont incidentes
   (0069 : *« pas de plugin exotique »* ; 0052 : postiz).
