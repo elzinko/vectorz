@@ -5,3 +5,4 @@ rules:
   - token-economy/targeted-reads
   - token-economy/concise-output
   - token-economy/checkpoint-before-cost
+  - token-economy/verification-budget

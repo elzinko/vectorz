@@ -106,6 +106,14 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 - **`full`** (pleine-puissance) — multi-agents libre quand ça sert la qualité (mode « ultracode ») ;
   l'utilisateur surveille lui-même la conso.
 
+> **Le mode règle le PLAFOND, pas la pertinence.** Même en `full`, avant tout fan-out :
+> *est-ce qu'un seul appel direct répond ?* Si oui, fais-le et arrête-toi là — un enjeu
+> élevé ne justifie pas de délibérer sur ce qu'une lecture tranche. Et *est-ce que ça
+> dépend d'un fait que seul l'humain détient* (usage réel, intention, tolérance au
+> risque) ? Alors demande-le AVANT : aucune quantité de calcul ne l'infère, et la réponse
+> peut rendre toute l'investigation sans objet.
+> Règles : `token-economy/verification-budget`, `token-economy/checkpoint-before-cost`.
+
 ## Mode checkpoints — configurable (`--checkpoints`)
 
 Règle **quand tu t'arrêtes pour demander à l'humain**. Calqué sur `--tokens`. Défaut : `ask`.
