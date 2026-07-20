@@ -19,6 +19,12 @@ sur la discipline du LLM — il peut « oublier » d'émettre. La proposition d'
 émission **déterministe** (classe de conformité A) : le hook émet, le LLM ne peut pas
 l'omettre. Sortie de la 1ʳᵉ PR par décision journalisée du 2026-07-14 (« hors 1ʳᵉ PR »).
 
+**Valeur** : en classe B, un run peut franchir un gate sans le journaliser — l'audit du
+matin a alors un **trou silencieux**, invisible. La classe A rend l'émission des moments
+mécaniques **impossible à oublier** : le journal ne peut plus mentir par omission. C'est
+le cran qui fait passer la supervisabilité de « best-effort » à « garantie » là où ça
+compte le plus (démarrage, gate, reprise, fin).
+
 ## Proposition
 
 - Hooks Claude Code (config `settings.json` du projet supervisé) qui émettent les
@@ -30,13 +36,27 @@ l'omettre. Sortie de la 1ʳᵉ PR par décision journalisée du 2026-07-14 (« h
 
 ## Critères d'acceptation
 
-- [ ] Un hook émet sans intervention du LLM (démonstration sur un événement au choix).
-- [ ] Zéro duplication de la logique d'enveloppe (la lib reste l'unique émetteur).
-- [ ] README du kit : classes A/B expliquées avec quand choisir quoi.
+- [ ] Un hook Claude Code émet un événement du contrat **sans aucune action du LLM** :
+      sur un tour où le LLM n'émet rien, l'événement apparaît quand même dans
+      `<projet>/.supervision/runs/<run_id>/events.jsonl`.
+- [ ] **Zéro duplication de l'enveloppe** : le hook passe par `src/supervision/journal.ts`
+      (unique émetteur) ; vérifiable en revue — aucun calcul d'`event_id`/`seq`/`ts` dans
+      le hook.
+- [ ] Le journal produit par la voie hook **passe le validateur** cop1 (mêmes invariants
+      que la classe B — un run mixte hooks + MCP reste valide).
+- [ ] `src/supervision/README.md` documente **quand choisir A vs B** (déterministe des
+      moments mécaniques vs best-effort du sémantique) et **comment brancher** les hooks
+      (config `settings.json` du projet supervisé).
+- [ ] Matérialisation via **cap/bind** comme le reste du kit (pas d'installation manuelle
+      ad hoc).
 
 ## Notes
 
 - Priorité **héritée de la fiche mère 0050 (P1)** — à re-prioriser au prochain review si
   la classe B suffit en pratique.
+- **Groom 2026-07-18** : DoR complétée (valeur explicitée, critères rendus observables :
+  émission sans LLM prouvée par le journal, passage au validateur, non-duplication en
+  revue) en vue du gate `ready` — candidate au run de recette vz-product-builder (fiche
+  0060). Statut/`ready:` inchangés (le gate reste au PO).
 - Réfs : fiche 0050 (Notes 2026-07-14 et 2026-07-17), capture cop1
   `docs/captures/2026-07-13-contrat-methode-et-versions.md` §7 (classes de conformité).

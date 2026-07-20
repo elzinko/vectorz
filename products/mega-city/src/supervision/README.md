@@ -13,11 +13,17 @@ Fiche : `features/0050-kit-emetteur-supervisabilite.md`.
 
 ## Configurer dans Claude Desktop
 
+> **Chemin nominal : le paquet un-double-clic.** `bash bin/build-mcpb.sh` produit
+> `dist/vectorz-supervision.mcpb` — serveur embarqué, aucun prérequis côté utilisateur
+> (Claude Desktop fournit son propre Node), sélecteur de dossier à l'installation.
+> Le câblage manuel ci-dessous est le **chemin de secours** : utile pour lancer le
+> serveur depuis les sources, ou si l'installation par paquet n'est pas possible.
+>
 > Guide **utilisateur** pas-à-pas (pédagogique) : `docs/brancher-supervision-claude-desktop.md`.
-> Ci-dessous, la référence condensée pour intégrateur.
 
-Prérequis : Node ≥ 20 + pnpm ≥ 9 installés, et **`pnpm install`** lancé une fois à la
-racine du dépôt (le serveur a besoin de `tsx` et du SDK MCP dans `node_modules`).
+Prérequis du câblage manuel : Node ≥ 20 + pnpm ≥ 9 installés, et **`pnpm install`** lancé
+une fois à la racine du dépôt (le serveur a besoin de `tsx` et du SDK MCP dans
+`node_modules`).
 
 ```json
 {
