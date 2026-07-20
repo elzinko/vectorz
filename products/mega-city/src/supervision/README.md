@@ -13,17 +13,40 @@ Fiche : `features/0050-kit-emetteur-supervisabilite.md`.
 
 ## Configurer dans Claude Desktop
 
+> **Chemin nominal : le paquet un-double-clic.** `bash bin/build-mcpb.sh` produit
+> `dist/vectorz-supervision.mcpb` — serveur embarqué, aucun prérequis côté utilisateur
+> (Claude Desktop fournit son propre Node), sélecteur de dossier à l'installation.
+> Le câblage manuel ci-dessous est le **chemin de secours** : utile pour lancer le
+> serveur depuis les sources, ou si l'installation par paquet n'est pas possible.
+
+Prérequis du câblage manuel : Node ≥ 20 + pnpm ≥ 9 installés, et **`pnpm install`** lancé
+une fois à la racine du dépôt (le serveur a besoin de `tsx` et du SDK MCP dans
+`node_modules`).
+
 ```json
 {
   "mcpServers": {
     "supervision": {
-      "command": "pnpm",
-      "args": ["exec", "tsx", "/chemin/vers/mega-city/bin/supervision-mcp.ts"],
+      "command": "/chemin/absolu/vers/pnpm",
+      "args": [
+        "--dir", "/chemin/absolu/vers/mega-city",
+        "exec", "tsx",
+        "/chemin/absolu/vers/mega-city/bin/supervision-mcp.ts"
+      ],
       "env": { "SUPERVISION_PROJECT_ROOT": "/chemin/absolu/du/projet/supervisé" }
     }
   }
 }
 ```
+
+Deux pièges de lancement GUI (Claude Desktop n'hérite pas du shell), tous deux couverts
+par le bloc ci-dessus :
+- **`command` = chemin absolu de pnpm** (`which pnpm`), pas `"pnpm"` nu : une app lancée
+  depuis l'interface démarre avec un PATH minimal (launchd) et ne trouverait pas un pnpm
+  installé via nvm/corepack/Homebrew → `spawn pnpm ENOENT`.
+- **`--dir <mega-city>`** : `pnpm exec` résout `tsx` depuis ce dossier ; `tsx` n'est pas
+  hoisté à la racine du monorepo, donc sans `--dir` (cwd GUI = `/`) on obtient
+  `ERR_PNPM_RECURSIVE_EXEC_NO_PACKAGE`.
 
 `SUPERVISION_PROJECT_ROOT` doit être **absolu et exister** (fail-fast sinon).
 Autoriser les 5 outils en « toujours autoriser » pour éviter la fatigue de popups.
