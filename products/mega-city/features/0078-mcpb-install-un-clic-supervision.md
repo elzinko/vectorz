@@ -68,5 +68,10 @@ pour un serveur **local**, de la page « Connexion » d'un connecteur distant (R
 - Le lot de travail du 2026-07-18 livre **déjà** : la page de config (artefact) + une doc
   utilisateur versionnée (relue en revue adverse). Cette fiche porte le **cran suivant**
   (le vrai un-clic), pas la doc elle-même.
+- **Lien [0083](0083-plugin-claude-code-distribution.md)** (plugin Claude Code) : l'autre
+  volet packaging, côté **Claude Code**. Le slot `.mcp.json` d'un plugin porterait le même
+  serveur de supervision que ce `.mcpb` — même serveur, deux canaux. La AC ouverte ci-dessus
+  (« où vit le `.mcpb` téléchargeable ») et la question de marketplace de 0083 **peuvent se
+  résoudre au même endroit** : à instruire ensemble, pas séparément.
 - Réfs : fiche 0050 (kit émetteur, shippé), fiche 0060 (vz-product-builder exige le kit),
   doc Anthropic « Desktop Extensions / MCPB ».
