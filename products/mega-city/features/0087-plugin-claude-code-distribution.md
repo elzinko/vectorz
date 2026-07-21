@@ -1,5 +1,5 @@
 ---
-id: 0083
+id: 0087
 title: Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage)
 type: feature
 priority: P1
@@ -10,7 +10,7 @@ pr:
 created: 2026-07-20
 ---
 
-# 0083 — Le catalogue vectorz distribué comme plugin Claude Code
+# 0087 — Le catalogue vectorz distribué comme plugin Claude Code
 
 ## Contexte / Problème
 
@@ -117,7 +117,7 @@ le **projet cible**, pas dans le catalogue distribué : ça ne s'installe pas, �
 Conséquence pour cette fiche : le plugin couvre **tout ce qui est réellement distribué
 aujourd'hui**. Le format plugin n'a pas de case pour les rules — mais rien n'attend cette case.
 À rouvrir **si et seulement si** on décide de réactiver le chemin `bind` par projet (ce qui
-serait une fiche à part, pas un prérequis de 0083).
+serait une fiche à part, pas un prérequis de 0087).
 
 ## Zones d'incertitude (à ne pas combler par hypothèse)
 
@@ -145,7 +145,7 @@ releases »*.
 **À arbitrer par ADR avant de coder** (l'ADR sera probablement une révision d'ADR-025 §2).
 Interaction directe avec **cop1 0050** (canal de release + pastille de MAJ), qui introduit
 « une version figée par squash-merge CI-verte » : si 0050 définit *la* version de vectorz,
-0083 doit s'y brancher plutôt que d'en inventer une troisième.
+0087 doit s'y brancher plutôt que d'en inventer une troisième.
 
 ### 2. Où vit le marketplace ? — *cadre fixé par le PO, emplacement encore ouvert*
 
@@ -208,13 +208,13 @@ Nuance à ne pas confondre — **`.mcpb` n'est pas le format du plugin** :
 
 | | Claude **Code** | Claude **Desktop** |
 |---|---|---|
-| Emballage | slot `.mcp.json` **du plugin `vectorz`** (fiche 0083) | bundle **`.mcpb`** autonome (fiche 0078) |
+| Emballage | slot `.mcp.json` **du plugin `vectorz`** (fiche 0087) | bundle **`.mcpb`** autonome (fiche 0078) |
 | Geste utilisateur | `/plugin install` — le MCP vient avec | double-clic sur le `.mcpb` |
 | Config projet | à déterminer (le plugin est global, `SUPERVISION_PROJECT_ROOT` est par projet) | champ `directory` de la carte d'install |
 
 **Un seul serveur** (`src/supervision/mcp-server.ts`), **deux emballages**, et une seule
 chaîne de build à écrire une fois. 0078 a déjà produit le bundling (esbuild → fichier ESM
-unique, deps inlinées) : 0083 **réutilise ce travail**, il ne le refait pas.
+unique, deps inlinées) : 0087 **réutilise ce travail**, il ne le refait pas.
 
 **Point non résolu, hérité :** `SUPERVISION_PROJECT_ROOT`. Le `.mcpb` le demande à
 l'installation via un sélecteur de dossier ; un plugin s'installe globalement et n'a pas cette
@@ -261,11 +261,11 @@ la seule vraie inconnue technique de l'intégration MCP.
   - **[0078](0078-mcpb-install-un-clic-supervision.md)** — l'autre volet packaging (`.mcpb`,
     Claude Desktop). Même question ouverte de distribution ; cf. §Incertitude 5.
   - **[0029](0029-propagation-maj-skills.md)** — propagation des MAJ *breaking* : traite les
-    **données/schéma** là où 0083 traite le **code + la version**. Un plugin versionné donne
+    **données/schéma** là où 0087 traite le **code + la version**. Un plugin versionné donne
     à 0029 le `VERSION` qu'elle postule.
   - **cop1 [0050](../../../features/0050-release-pastille-dogfooding.md)** — canal de release +
     pastille de MAJ au niveau vectorz. **Dépendance de conception** : si 0050 définit la version
-    figée de vectorz, 0083 s'y branche.
+    figée de vectorz, 0087 s'y branche.
 - **ADR de référence** : ADR-0001 (catalogues host-agnostiques + `caps/<host>/`),
   ADR-0003 (`materialize` pur), ADR-0005 (export statique primaire, MCP différé),
   ADR-0014 (précédent cap desktop), ADR-0018 (link vs copy) ; côté umbrella

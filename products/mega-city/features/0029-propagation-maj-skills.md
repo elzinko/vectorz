@@ -49,8 +49,8 @@ symlink ; 0029 gère les **données/schéma**. Épic, à groomer : granularité 
 migrations non-linéaires, rollback « dur » (au-delà du git revert). Issu du grooming
 session 2026-07-12.
 
-**Lien [0083](0083-plugin-claude-code-distribution.md)** (plugin Claude Code) : cette fiche
-postule un `VERSION` porté par le skill — 0083 doit trancher **d'où vient cette version**
-(tag umbrella vs version mega-city indépendante). Si 0083 aboutit, le `VERSION` de 0029
+**Lien [0087](0087-plugin-claude-code-distribution.md)** (plugin Claude Code) : cette fiche
+postule un `VERSION` porté par le skill — 0087 doit trancher **d'où vient cette version**
+(tag umbrella vs version mega-city indépendante). Si 0087 aboutit, le `VERSION` de 0029
 devient celui du plugin, et `/plugin update` remplace le « pull » esquissé ici pour le
-**code** (0029 garde la charge des **migrations de données**). À re-groomer après 0083.
+**code** (0029 garde la charge des **migrations de données**). À re-groomer après 0087.

@@ -82,7 +82,7 @@
 | 0028 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 |  | 💡 idea |  |
 | 0053 | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 |  | 💡 idea |  |
 | 0081 | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | 💡 idea |  |
-| 0083 | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | 💡 idea |  |
+| 0087 | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | 💡 idea |  |
 | 0020 | explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno) | feature | P2 |  | 💡 idea |  |
 | 0029 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 |  | 💡 idea |  |
 | 0031 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 |  | 💡 idea |  |
