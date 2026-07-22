@@ -1,6 +1,6 @@
 ---
 name: ezk-backlog
-argument-hint: "[help|init|list|add|groom|ready|next|review|ship|regen]"
+argument-hint: "[help|init|list|add|groom|ready|next|plan|review|ship|regen]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
   jamais les perdre entre worktrees ni entre sessions. A utiliser quand
@@ -10,8 +10,8 @@ description: >-
   (« elle est ready ? »), passer le backlog en revue (sanity check), demander la
   prochaine fiche tirable, regrouper des fiches, marquer une feature livrée,
   (re)prioriser, cibler une version/jalon, ou voir l'état du backlog.
-  Pilotable par sous-commandes : help, init, list, add, groom, ready, review,
-  ship, regen. A la
+  Pilotable par sous-commandes : help, init, list, add, groom, ready, next,
+  plan, review, ship, regen. A la
   première invocation dans un projet, INITIALISE la structure (dossier features/,
   sous-dossier done/, fichier de suivi index) ; ensuite charge le backlog trié
   par priorité en contexte de session. Format léger : une fiche markdown par
@@ -40,6 +40,7 @@ worktrees, ni entre sessions, ni quand une branche est abandonnée.
 | `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change ni statut ni `ready:` |
 | `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert pose `ready: <date>` (+ flip `idea→todo` le cas échéant) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-builder (`next` seul reste l'alias de `list`) |
+| `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé, référencé par le README) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index |
 | `regen` | Régénère l'index depuis le front-matter des fiches |
@@ -263,9 +264,27 @@ jamais à la main) : fiches par statut, `todo` ready, création médiane des `to
 Sortie = **rapport + propositions numérotées** ; l'arbitrage est au **PO** — aucune
 modification de fiche sans son accord explicite (jamais d'auto-suppression).
 
-### `ship <id> [#PR]`
-1. Front-matter : `status: shipped`, `pr: "#X"`. 2. `git mv features/<id>-<slug>.md features/done/`
-(layout `roadmap/` : backlog→`implemented/`). 3. `regen`. Commit `docs(features): ship <id> (#X)`.
+### `plan [set …]` — la séquence décidée, persistée entre sessions
+
+Le problème : `priority` ne donne que des **buckets** (P0→P3) et `ready:` n'est qu'un **gate**
+booléen. La **séquence** effectivement décidée en `review`/planning (« d'abord 0043, puis 0017,
+puis les bugs admin, puis la CI… ») ne vivait nulle part → perdue entre sessions. `plan` la
+**fige** dans un fichier dédié.
+
+- **Fichier** : `features/PLAN.md` — **curé** (le LLM rédige, le PO arbitre), **référencé** par
+  `features/README.md` (un lien, pas le contenu), **commité** sur `main` (comme le backlog).
+  **Pas** régénéré par `regen` (ce n'est pas un index dérivé du front-matter, c'est une décision).
+- **Contenu** : une liste **ordonnée** d'entrées `‹id› — ‹intention en une ligne› ‹marqueur›`
+  où le marqueur ∈ {`build` | `audit` | `ship` | `groom`} ; regroupées en **jalons** nommés si
+  utile (ex. « A — finir 0005 », « B — bugs nav »). Daté en tête (« décidé le AAAA-MM-JJ »).
+- **`plan`** (sans arg) : affiche `PLAN.md` (ou « aucun plan — lance `plan set` »).
+- **`plan set …`** : met à jour la séquence **après arbitrage PO** (jamais d'auto-réordonnancement
+  silencieux). Commit `docs(features): update plan`.
+- **Rapport avec le gate** : `next --ready-only` **reste** le point d'entrée technique du tirage
+  (ready + priorité). `PLAN.md` est la **vue humaine** de *quoi groomer/tirer ensuite* et *dans
+  quel ordre* — il **guide** le prochain `groom`/`ready`, il ne **remplace** pas le gate. En cas de
+  divergence : le gate `ready` prime pour *tirer maintenant*, la séquence `PLAN` prime pour *décider
+  la suite*. `review` peut proposer de **réaligner** `PLAN.md` quand le stock a bougé.
 
 ### `regen`
 Délègue au script **paramétré** de mega-city : `products/mega-city/bin/regen-backlog.sh
