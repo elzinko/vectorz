@@ -19,6 +19,7 @@ méthode), `⏳ reste` (avec le plan), ou `N.A.` (avec la raison) :
 | **CI** | le pipeline du repo (lien du run) |
 | **Tests unitaires** | logique pure — nouveaux tests listés |
 | **E2E navigateur** | parcours réel + **commande pour rejouer** |
+| **Before / after (UI)** | **liens** dans le body de la PR : capture (ou courte vidéo) **avant** + **après** · ou **N.A.** si aucun changement UI visible (chore/docs/infra) — règle `development/pr-before-after-media` |
 | **Preview de déploiement** | URL **dans le body** + chemins à vérifier · ou **N.A. : ne montre pas cette feature** (préciser ce que la preview déploie) |
 | **Émulateur / simulateur** | pré-validation sans device (captures) |
 | **Device réel** | si le repo l'exige avant merge : checklist exécutable |
