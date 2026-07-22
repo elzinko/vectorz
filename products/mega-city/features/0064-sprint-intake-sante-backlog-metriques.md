@@ -28,6 +28,23 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
    prêtes »* au lieu de démarrer à vide.
 6. *Un jour* : des **seuils** qui signalent *« il faut penser à groomer »*.
 
+### Réconciliation `done` ↔ état réel des PRs (ajout 2026-07-22)
+
+Sous-problème découvert en revue de la chaîne de skills : le passage d'une fiche à
+`status: shipped` (déplacement dans `done/`) est une **commande explicite** (`ezk-backlog
+ship <id> #PR`, `ezk-backlog/SKILL.md:45`). Elle n'est appelée **que** sur deux chemins :
+`ezk-sprint` étape 10 (`SKILL.md:81`) et `ezk-pr-pilot ship` (`SKILL.md:110`). **Dès que la
+PR est mergée autrement** — PO qui clique « Squash & merge » dans l'UI GitHub, reviewer
+humain, merge par un autre outil — **personne n'appelle `ship`** : la fiche reste `todo`/
+`in-progress` alors que le code est sur `main`. Le `status` est un **cache** de la vraie
+source de vérité (l'état *merged* de la PR) ; il n'a aucun mécanisme de réconciliation
+continue. Seul filet actuel : `ezk-archive` en clôture de session (ponctuel, à la demande)
+et `review` contrôle #1 (« code livré entre-temps ? », au jugement LLM, cadence 5 sprints).
+
+Trou dans la raquette : la dérive n'est corrigée sur **aucun chemin garanti** entre le merge
+et la clôture. Conséquence concrète : une fiche déjà livrée peut être **re-tirée et
+reconstruite** au sprint suivant.
+
 > C'est un **gros sujet** (dixit PO) — et c'est aussi la **démonstration live de la boucle
 > Sujet A** : la 1ʳᵉ friction du self-hosting devient un item d'amélioration de la méthode
 > (cf. [0063 ezk-retro](0063-ezk-retro-ceremonie-auto-amelioration.md)).
@@ -48,10 +65,29 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
   (« groomez d'abord »). En termes de supervisabilité : un état/escalade « pas de travail prêt ».
 - **Futur** : seuils → signal *« temps de groomer »* (relie l'auto-amélioration / Sujet B, ou
   simple alerte de flux).
+- **Réconciliation `done` ↔ PRs mergées** (sous-problème 2026-07-22) — moment retenu :
+  **sprint intake en primaire** (juste avant `next --ready-only` : croiser les fiches actives
+  avec les PRs mergées ; c'est là que la dérive coûte cher — re-build) + **`review` en
+  backstop périodique** (rendre le contrôle #1 *mécanique*, pas seulement au jugement LLM).
+  **Pas de git hook / GitHub Action** (casse le local-only, infra par repo, mapping fiche↔PR
+  flou quand `ship` n'a pas enregistré le n° de PR → jugement LLM requis, donc côté skill).
+  **Jamais d'auto-`ship` silencieux** : proposer au PO « ces fiches semblent mergées → shipper ? »
+  (invariant `review` : arbitrage PO, aucune modification sans accord explicite).
 
 ## Critères d'acceptation
 
-- [ ] À définir au grooming (promotion `idea → todo`).
+- [ ] À définir au grooming (promotion `idea → todo`) pour la partie **santé/DoR/émission**.
+- [x] **Réconciliation** — l'intake d'`ezk-sprint` (avant tirage) signale toute fiche active
+      dont une PR semble déjà mergée (match par id embarqué dans la branche `feat/<id>-<slug>`
+      quand présent, sinon rapprochement au jugement) ; sortie = **proposition de `ship` au PO**,
+      jamais une bascule automatique. → sous-commande `ezk-backlog reconcile` (ADR-0018).
+- [x] `ezk-backlog review` : le contrôle #1 « code livré entre-temps ? » croise
+      explicitement les **PRs mergées** (quand `gh` + remote dispo) via `reconcile`, en plus du
+      jugement LLM.
+- [x] Comportement **local-only** défini : pas de `gh`/remote ⇒ `reconcile` le dit et retombe
+      sur le jugement LLM + le filet `ezk-archive` (documenté, pas d'erreur).
+- [x] Frontière respectée : `reconcile` **propose**, `ezk-backlog ship` **exécute** — brique
+      unique, appelée par intake / review / ezk-pr-pilot, aucune bascule réimplémentée ailleurs.
 
 ## Notes / décisions
 
@@ -75,3 +111,18 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
   DoR), le contrat de supervisabilité (event `backlog.health` → app moniteur), `ezk-retro`
   (0063, fait évoluer la DoR/les règles).
 - Origine : session 2026-07-16 (premier self-host — 1ʳᵉ friction). Priorité P2 à confirmer au grooming.
+- 2026-07-22 — **ajout du sous-problème « réconciliation `done` ↔ PRs mergées »** (arbitrage
+  PO : étendre 0064 plutôt qu'une fiche dédiée — anti-doublon, 0064 possède déjà le moment
+  *intake*). Cross-réf : [0029](0029-propagation-maj-skills.md) (hook de drift des skills —
+  concept voisin, sujet distinct : versions de skills, pas statut de fiche).
+- 2026-07-22 — **sous-problème réconciliation LIVRÉ** (décision + implémentation) : voir
+  [ADR-0018](../../docs/adr/0018-reconciliation-done-etat-reel-des-prs.md). Brique unique
+  `ezk-backlog reconcile` (croise fiches actives ↔ PRs mergées via `gh`, **propose** au PO,
+  ne ship jamais seule, dégrade en local-only) ; appelée à l'intake (`ezk-sprint` étape 0),
+  par `review` (bras mécanique du contrôle #1) et par `ezk-pr-pilot` après un merge UI ;
+  convention de branche `feat/<id>-<slug>` pour un rapprochement mécanique. La décision de
+  frontière était fléchée `ezk-architect` : l'appel a été **interrompu par une erreur d'API**,
+  la décision a donc été tranchée et documentée directement dans l'ADR. **Reste ouvert dans
+  0064** : la DoR comme règle d'équipe, l'émission `backlog.health`, les seuils « temps de
+  groomer » — c'est pourquoi la fiche **reste `idea`** (le sous-problème réconciliation est le
+  seul volet clos).

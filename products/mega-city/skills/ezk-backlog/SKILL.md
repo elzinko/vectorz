@@ -1,6 +1,6 @@
 ---
 name: ezk-backlog
-argument-hint: "[help|init|list|add|groom|ready|next|plan|review|ship|regen]"
+argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
   jamais les perdre entre worktrees ni entre sessions. A utiliser quand
@@ -9,9 +9,11 @@ description: >-
   un bug (avec dédoublonnage), groomer une fiche vers la Definition of Ready
   (« elle est ready ? »), passer le backlog en revue (sanity check), demander la
   prochaine fiche tirable, regrouper des fiches, marquer une feature livrée,
-  (re)prioriser, cibler une version/jalon, ou voir l'état du backlog.
+  réconcilier le statut des fiches avec l'état réel des PRs mergées (merges faits
+  hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, ou voir
+  l'état du backlog.
   Pilotable par sous-commandes : help, init, list, add, groom, ready, next,
-  plan, review, ship, regen. A la
+  plan, review, reconcile, ship, regen. A la
   première invocation dans un projet, INITIALISE la structure (dossier features/,
   sous-dossier done/, fichier de suivi index) ; ensuite charge le backlog trié
   par priorité en contexte de session. Format léger : une fiche markdown par
@@ -42,6 +44,7 @@ worktrees, ni entre sessions, ni quand une branche est abandonnée.
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-builder (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé, référencé par le README) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
+| `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
 | `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index |
 | `regen` | Régénère l'index depuis le front-matter des fiches |
 
@@ -251,7 +254,8 @@ Deux modes, à **cadence bornée** :
 
 Contrôles (jugement LLM) :
 1. **Validité** — la fiche est-elle encore vraie (code livré entre-temps, ADR
-   postérieur qui contredit) ?
+   postérieur qui contredit) ? **Appelle `reconcile`** pour le bras *mécanique* de ce
+   contrôle (croiser les PRs mergées), en plus du jugement LLM (ADR-0018).
 2. **Doublons / regroupements** par intention (même moteur que l'anti-doublon d'`add`).
 3. **Cohérence de l'ordre** P0→P3 sur l'ensemble (l'ordre relatif, pas juste les buckets).
 4. **Staleness** — vieux `todo` jamais tirés → proposer rétrogradation en `idea` ou clôture.
@@ -263,6 +267,36 @@ Les **compteurs viennent du script** (`regen`, doctrine ADR-0001 — ne les reco
 jamais à la main) : fiches par statut, `todo` ready, création médiane des `todo`.
 Sortie = **rapport + propositions numérotées** ; l'arbitrage est au **PO** — aucune
 modification de fiche sans son accord explicite (jamais d'auto-suppression).
+
+### `reconcile` — le statut des fiches ↔ l'état réel des PRs mergées (ADR-0018)
+
+**Le problème.** `ship` est la **seule** commande qui passe une fiche à `shipped` — et elle
+n'est appelée que par `ezk-sprint` (étape 10) et `ezk-pr-pilot` (`ship`). Dès qu'une PR est
+mergée **autrement** (le PO clique « Squash & merge » dans l'UI GitHub, un reviewer humain
+merge), personne n'appelle `ship` : la fiche reste `todo`/`in-progress` alors que le code est
+sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged* de la PR), et
+`reconcile` est son **rafraîchissement** — à cadence bornée, jamais sur `list`/`next`.
+
+**Ce que ça fait.**
+1. Liste les fiches **actives** (hors `done/`, hors `type: epic`) — celles sans `pr:` posé
+   sont les candidates prioritaires (une fiche `shipped` avec `pr:` n'est plus concernée).
+2. `gh pr list --state merged --json number,headRefName,title,mergedAt` (fenêtre récente
+   suffit). **Rapproche** chaque PR mergée d'une fiche :
+   - **mécanique** quand la branche porte l'id : convention `feat/<id>-<slug>` (ADR-0018) →
+     l'id est dans `headRefName`. Match déterministe.
+   - **jugement LLM** en repli (branches legacy sans id) : titre/corps de PR vs titre de
+     fiche. Proposition seulement, jamais un match affirmé.
+3. Sortie = **propositions numérotées** « fiche <id> semble mergée par PR #<n> (<branche>) →
+   `ship <id> #<n>` ? ». **Ne bascule rien** : `reconcile` détecte/propose, **`ship`
+   exécute** après accord PO (invariant `review` — aucune modification sans accord explicite).
+
+**Dégradation local-only (sans erreur).** Pas de remote ou pas de `gh` disponible ⇒ dis-le
+(« réconciliation PR indisponible — pas de remote/`gh` ») et **retombe** sur le jugement LLM
+de `review` + le filet `ezk-archive`. C'est un **mode**, pas une panne.
+
+**Qui l'appelle** (ADR-0018) : `ezk-sprint` à l'intake (avant `next`, primaire) ; `review`
+(bras mécanique du contrôle #1) ; `ezk-pr-pilot` après un squash fait depuis l'UI GitHub.
+Une seule brique, plusieurs appelants — aucun ne réimplémente le croisement.
 
 ### `plan [set …]` — la séquence décidée, persistée entre sessions
 
@@ -305,8 +339,12 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
 ## Intégration
 
 - **ezk-sprint** : à l'intake d'un sprint, ce skill fournit *la prochaine fiche tirable*
-  (`next --ready-only`) ; à la clôture, `ship`. ezk-backlog = le **quoi/où**,
-  ezk-sprint = le **comment**.
+  (`next --ready-only`) — **précédée d'un `reconcile`** (rattraper les fiches mergées
+  hors-`ship` avant d'en tirer une, ADR-0018) ; à la clôture, `ship`. ezk-backlog = le
+  **quoi/où**, ezk-sprint = le **comment**. Convention de branche partagée : `feat/<id>-<slug>`
+  (l'id rend le rapprochement fiche↔PR mécanique pour `reconcile`).
+- **ezk-pr-pilot** : après un squash fait depuis l'UI GitHub, `reconcile` puis `ship` — sinon
+  la fiche reste orpheline du merge (ADR-0018).
 - **ezk-commits** : commits `chore(features): …` / `docs(features): …` ; 1 PR/feature.
 
 ## Garde-fous
@@ -319,3 +357,5 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
 - Ne pas éditer l'index à la main (toujours `regen`).
 - Ne pas créer `features/` si le repo a déjà une convention → l'épouser.
 - Le backlog est commité sur `main` ; un scratch de sprint peut rester par-branche.
+- `reconcile` **propose**, il ne **ship** jamais tout seul (arbitrage PO) ; sans remote/`gh`
+  il le dit et retombe sur le jugement LLM + `ezk-archive` — pas d'erreur (ADR-0018).

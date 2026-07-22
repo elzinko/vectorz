@@ -113,7 +113,10 @@ toucher le template) :
   échéant — une locale oubliée sur un repo squash devient un faux « non-mergé »
   permanent, fiche mega-city 0076), `ezk-backlog ship <fiche> #PR`. Après un
   squash fait par le PO **depuis l'UI GitHub** : `git fetch --prune` + supprimer
-  la copie locale — l'UI ne supprime que la branche remote.
+  la copie locale — l'UI ne supprime que la branche remote — **puis
+  `ezk-backlog reconcile` et `ship`** : un merge fait hors du flux ne passe la
+  fiche en `done` par personne, `reconcile` le détecte et propose le `ship`
+  (ADR-0018) — sinon la fiche reste orpheline du merge.
 
 ## Frontière & délégation — compose, ne réimplémente rien
 
