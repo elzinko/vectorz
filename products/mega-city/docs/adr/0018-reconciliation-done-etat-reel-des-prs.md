@@ -23,14 +23,16 @@ demande) et `ezk-backlog review` contrôle #1 « code livré entre-temps ? » (a
 LLM**, cadence 5 sprints).
 
 Obstacle de conception : **rapprocher une PR mergée d'une fiche est ambigu** quand `ship`
-n'a jamais tourné (donc aucun n° de PR enregistré dans le front-matter). La branche est
-aujourd'hui `feat/<slug>` (`ezk-sprint/SKILL.md:71`) et le titre de PR = conventional commit
-— **l'id de fiche n'y figure nulle part de façon fiable** → pas de matching mécanique.
+n'a jamais tourné (donc aucun n° de PR enregistré dans le front-matter). La branche était,
+**avant cette décision**, `feat/<slug>` (intake `ezk-sprint`, étape 0) et le titre de PR =
+conventional commit — **l'id de fiche n'y figure nulle part de façon fiable** → pas de
+matching mécanique (c'est ce que la convention `feat/<id>-<slug>` du point 2 vient corriger).
 
 Invariant à préserver (ADR-0016) : le backlog vit sur `main`, `review` **propose**, le PO
 **arbitre** ; aucune modification de fiche sans accord explicite. Et l'invariant de
-séparabilité (`ezk-backlog/SKILL.md:240`) : **aucune logique de gate/tirage réimplémentée en
-aval** — `ezk-sprint` compose `ezk-backlog`, il ne le double pas.
+séparabilité (`ezk-backlog` : « aucune logique de gate/tirage réimplémentée en aval, test de
+séparabilité ») : **aucune logique de gate/tirage réimplémentée en aval** — `ezk-sprint`
+compose `ezk-backlog`, il ne le double pas.
 
 ## Décision
 

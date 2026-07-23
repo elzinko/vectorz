@@ -31,8 +31,8 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
 ### Réconciliation `done` ↔ état réel des PRs (ajout 2026-07-22)
 
 Sous-problème découvert en revue de la chaîne de skills : le passage d'une fiche à
-`status: shipped` (déplacement dans `done/`) est une **commande explicite** (`ezk-backlog
-ship <id> #PR`, `ezk-backlog/SKILL.md:45`). Elle n'est appelée **que** sur deux chemins :
+`status: shipped` (déplacement dans `done/`) est une **commande explicite** (sous-commande
+`ship <id> [#PR]` d'`ezk-backlog`). Elle n'est appelée **que** sur deux chemins :
 `ezk-sprint` étape 10 (`SKILL.md:81`) et `ezk-pr-pilot ship` (`SKILL.md:110`). **Dès que la
 PR est mergée autrement** — PO qui clique « Squash & merge » dans l'UI GitHub, reviewer
 humain, merge par un autre outil — **personne n'appelle `ship`** : la fiche reste `todo`/
@@ -47,7 +47,7 @@ reconstruite** au sprint suivant.
 
 > C'est un **gros sujet** (dixit PO) — et c'est aussi la **démonstration live de la boucle
 > Sujet A** : la 1ʳᵉ friction du self-hosting devient un item d'amélioration de la méthode
-> (cf. [0063 ezk-retro](0063-ezk-retro-ceremonie-auto-amelioration.md)).
+> (cf. [0063 ezk-retro](done/0063-ezk-retro-ceremonie-auto-amelioration.md)).
 
 ## Proposition
 
