@@ -94,6 +94,12 @@ emit_row() { # $1..$10 = champs ; émet une ligne de table avec les colonnes act
   echo ''
   echo '> Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.'
   echo '> 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.'
+  # Lien vers la séquence décidée (PLAN.md, curée hors index) — ré-émis à chaque regen
+  # pour qu'il survive à la régénération du README (le contenu de PLAN.md n'est pas touché).
+  if [ -f features/PLAN.md ]; then
+    echo ''
+    echo '> 📋 Séquence décidée (curée, hors index) : [PLAN.md](PLAN.md).'
+  fi
   echo ''
   echo "$cols"
   echo "$dash"

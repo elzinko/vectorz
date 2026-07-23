@@ -280,12 +280,14 @@ sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged*
 **Ce que ça fait.**
 1. Liste les fiches **actives** (hors `done/`, hors `type: epic`) — celles sans `pr:` posé
    sont les candidates prioritaires (une fiche `shipped` avec `pr:` n'est plus concernée).
-2. `gh pr list --state merged --json number,headRefName,title,mergedAt` (fenêtre récente
-   suffit). **Rapproche** chaque PR mergée d'une fiche :
+2. `gh pr list --state merged --json number,headRefName,title,body,mergedAt` (fenêtre
+   récente suffit ; `body` est nécessaire au repli LLM ci-dessous — sur un gros stock,
+   ne le tirer qu'au besoin via `gh pr view <n> --json body` pour les candidats ambigus).
+   **Rapproche** chaque PR mergée d'une fiche :
    - **mécanique** quand la branche porte l'id : convention `feat/<id>-<slug>` (ADR-0018) →
      l'id est dans `headRefName`. Match déterministe.
-   - **jugement LLM** en repli (branches legacy sans id) : titre/corps de PR vs titre de
-     fiche. Proposition seulement, jamais un match affirmé.
+   - **jugement LLM** en repli (branches legacy sans id) : titre **et corps** de PR vs titre
+     de fiche. Proposition seulement, jamais un match affirmé.
 3. Sortie = **propositions numérotées** « fiche <id> semble mergée par PR #<n> (<branche>) →
    `ship <id> #<n>` ? ». **Ne bascule rien** : `reconcile` détecte/propose, **`ship`
    exécute** après accord PO (invariant `review` — aucune modification sans accord explicite).
@@ -298,6 +300,22 @@ de `review` + le filet `ezk-archive`. C'est un **mode**, pas une panne.
 (bras mécanique du contrôle #1) ; `ezk-pr-pilot` après un squash fait depuis l'UI GitHub.
 Une seule brique, plusieurs appelants — aucun ne réimplémente le croisement.
 
+### `ship <id> [#PR]` — la transition « livrée » (cible de `reconcile`)
+
+C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'importance de
+`reconcile`, qui la propose quand un merge s'est fait hors du flux). Étapes, dans l'ordre :
+
+1. Front-matter : pose `status: shipped` **et** `pr: #<n>` (le n° de PR — demande-le si
+   inconnu, ne l'invente pas ; garde-fou n°1).
+2. `git mv` la fiche de `features/` vers `features/done/` — c'est ce déplacement qui la sort
+   du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
+   candidate, elle ne peut pas être re-tirée).
+3. `regen` : l'index est reconstruit, la fiche apparaît dans la ligne « Livrées (`done/`) ».
+4. Commit `docs(features): ship <id> #<PR>` (via `ezk-commits`).
+
+`ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
+détection ne bascule rien seule ; l'arbitrage reste au PO).
+
 ### `plan [set …]` — la séquence décidée, persistée entre sessions
 
 Le problème : `priority` ne donne que des **buckets** (P0→P3) et `ready:` n'est qu'un **gate**
@@ -305,9 +323,11 @@ booléen. La **séquence** effectivement décidée en `review`/planning (« d'ab
 puis les bugs admin, puis la CI… ») ne vivait nulle part → perdue entre sessions. `plan` la
 **fige** dans un fichier dédié.
 
-- **Fichier** : `features/PLAN.md` — **curé** (le LLM rédige, le PO arbitre), **référencé** par
-  `features/README.md` (un lien, pas le contenu), **commité** sur `main` (comme le backlog).
-  **Pas** régénéré par `regen` (ce n'est pas un index dérivé du front-matter, c'est une décision).
+- **Fichier** : `features/PLAN.md` — **curé** (le LLM rédige, le PO arbitre), **commité** sur
+  `main` (comme le backlog). Son **contenu n'est jamais régénéré** par `regen` (ce n'est pas un
+  index dérivé du front-matter, c'est une décision). En revanche le **lien** vers `PLAN.md`
+  dans `features/README.md` est **émis par `regen`** (quand `PLAN.md` existe) — il survit donc
+  à la régénération de l'index, sans édition manuelle du README (interdite).
 - **Contenu** : une liste **ordonnée** d'entrées `‹id› — ‹intention en une ligne› ‹marqueur›`
   où le marqueur ∈ {`build` | `audit` | `ship` | `groom`} ; regroupées en **jalons** nommés si
   utile (ex. « A — finir 0005 », « B — bugs nav »). Daté en tête (« décidé le AAAA-MM-JJ »).
