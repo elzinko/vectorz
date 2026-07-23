@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # DoD exécutable de la fiche 0072 — teste regen-backlog.sh sur fixtures jetables.
 # Cas : A non-cassant (sans epic:/version:) · B colonnes + section Épics + exclusion du
-# tirage · C warnings d'intégrité · D paramétrage racine/titre.
+# tirage · C warnings d'intégrité · D paramétrage racine/titre · E lien PLAN.md conditionnel
+# (PR #43 / ADR-0018).
 set -euo pipefail
 
 SCRIPT="$(cd "$(dirname "$0")" && pwd)/regen-backlog.sh"
@@ -114,4 +115,15 @@ check "titre par défaut mega-city" \
   "head -1 '$D/features/README.md' | grep -q '^# Backlog — mega-city$'"
 
 echo ''
+# ── Cas E : lien PLAN.md émis seulement si features/PLAN.md existe (PR #43 / ADR-0018) ─
+E="$TMP/e"
+fiche "$E/features" 0001 story 'type: feature
+priority: P1
+status: todo'
+: > "$E/features/PLAN.md"   # PLAN.md présent (fichier de séquence curé, hors index)
+"$SCRIPT" "$E" "Backlog — test E" >/dev/null 2>&1
+echo "Cas E (lien PLAN.md conditionnel) :"
+check "lien PLAN.md émis quand PLAN.md existe"  "grep -qF '[PLAN.md](PLAN.md)' '$E/features/README.md'"
+check "aucun lien PLAN.md quand PLAN.md absent" "! grep -qF 'PLAN.md' '$A/features/README.md'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

@@ -68,7 +68,7 @@ Périmètre: <borne tokens-temps>   Statut: en cours | en attente de validation
 
 Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
 
-0. **Intake** — si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche `feat/<slug>`. **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
+0. **Intake** — d'abord **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `todo`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
@@ -76,7 +76,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
-8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)).
+8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)). **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** (screenshots, ou courte vidéo/GIF si besoin) **dans la description de la PR** — pas seulement des fichiers orphelins dans le diff.
 9. **⛳ Checkpoint** — **STOP.** Résume + « on continue ? ».
 10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : CI verte ET revues de la PR lues et traitées** — reviewers humains **et bots** (Codex poste ses findings en commentaires inline ; une CI verte ne les couvre pas).
 
@@ -123,7 +123,9 @@ Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
 
 ## Workflow git
 
-- Branche par feature : `feat/<slug>`, `fix/<slug>`...
+- Branche par feature : **`feat/<id>-<slug>`**, `fix/<id>-<slug>`… (id de fiche en préfixe —
+  rend le rapprochement fiche↔PR mécanique pour `ezk-backlog reconcile`, ADR-0018 ; sans
+  fiche backlog, `feat/<slug>` reste toléré → repli sur rapprochement au jugement).
 - Commits **Conventional Commits** (via [`ezk-commits`](../ezk-commits/)).
 - **1 PR par feature**, **squash + merge uniquement** → un commit propre par feature sur `main`.
 
@@ -137,7 +139,7 @@ les états. Tant que le POC n'est pas validé, on ne dépense pas de tokens sur 
 
 | Étape | Délègue à |
 | --- | --- |
-| Quelle fiche construire / marquer livré | skill `ezk-backlog` (`next --ready-only` à l'intake, `ship` au merge) |
+| Quelle fiche construire / marquer livré | skill `ezk-backlog` (`reconcile` puis `next --ready-only` à l'intake, `ship` au merge) |
 | Décision d'archi / SOLID / ADR | sous-agent `ezk-architect` |
 | Scénarios BDD (Gherkin = DoD) | sous-agent `ezk-qa` |
 | Implémentation TDD | sous-agent `ezk-tdd` |
