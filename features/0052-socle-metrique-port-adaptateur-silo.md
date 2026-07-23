@@ -1,0 +1,59 @@
+---
+id: 0052
+title: Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo
+type: feature
+priority: P1
+epic: 0051
+status: todo
+ready:
+pr:
+created: 2026-07-22
+---
+
+# 0052 — Socle vertical qualité (MVP end-to-end)
+
+## Contexte / Problème
+
+L'épic [0051](0051-observabilite-qualite-produit.md) tient sur une hypothèse à prouver le
+moins cher possible : **capter → garder → lire** une métrique de qualité **réelle**, sur une
+**vraie PR**, sans toucher au relicat `@cop1/quality-intelligence` (portes jetables, promis à
+résorption) ni au coût tokens (hors sujet ici). Tant que cette tranche verticale n'existe pas,
+tout le reste est du papier.
+
+## Proposition
+
+Tranche mince de bout en bout :
+
+1. **`MetricPort`** — port **abstrait, language/outil-agnostic** : « donne-moi la valeur de la
+   métrique M pour ce commit/PR ». Testé d'abord avec un **adaptateur stub**.
+2. **1ᵉʳ adaptateur réel : couverture** — consomme un **format standard** (`lcov` / `cobertura`)
+   via **Codecov** (cible language-agnostic) ou une lecture locale équivalente.
+3. **Remontée au build de PR — writer = tiers** — la méthode **exécute l'outil** en CI et produit
+   un **artefact déterministe** (`lcov` / `cobertura`) ; un **pas tiers** le **lit** et **appende**
+   `quality.measured { metric, value, tool, commit, pr, ts }` derrière une **interface d'écriture
+   `MetricSink`** — un **journal isolé et stubbable**, **PAS lié au silo 0044** tant que Q2
+   (ADR-033) n'est pas tranché ; **miroir tamper-évident hors POC**. *La méthode auditée n'écrit
+   jamais son propre chiffre.*
+4. **Lire 1 KPI** — la couverture de la PR, relue depuis le journal.
+
+## Critères d'acceptation
+
+- [ ] `MetricPort` défini et testé avec un adaptateur **stub** (indépendance à l'outil prouvée)
+- [ ] Un **adaptateur couverture réel** produit un chiffre — prouvé **sur une CI réelle** (hook,
+      secret/token, format `lcov`/`cobertura` réel), **pas seulement sur fixture locale** (c'est le
+      chemin risqué à valider)
+- [ ] `quality.measured` est **écrit par le pas tiers** derrière l'interface **`MetricSink`**
+      (journal **isolé**, PAS le silo 0044), **indexé commit + PR**, append-only
+- [ ] **1 KPI** (couverture de la PR) est **relu** depuis le journal
+- [ ] Le relicat `@cop1/quality-intelligence` **n'est pas touché**
+- [ ] Gate locale verte (typecheck/lint/tests)
+
+## Notes / décisions
+
+- **Ne se lie PAS au silo 0044** : écrit derrière l'interface `MetricSink`. Le **foyer** (Q2,
+  [ADR-033](../docs/adr/ADR-033-port-metrique-qualite-produit.md)) est **différé** — 0052 ne
+  l'attend pas. **Miroir tamper-évident : hors POC.**
+- **Codecov = 1ᵉʳ adaptateur** parce que **language-agnostic** (formats de couverture standard).
+- Remontée **minimale** ici (un chemin PUSH qui marche) ; la remontée **générique multi-outils**
+  et l'ajout d'autres outils = [0054](0054-catalogue-adaptateurs-outils.md).
+- **Tête buildable de l'épic** — à groomer puis `ready` en premier.

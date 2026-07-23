@@ -20,6 +20,7 @@
 | 0041 | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 |  | 🔴 todo |  |
 | 0044 | Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A) | chore | P1 |  | 🔴 todo |  |
 | 0050 | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | 🔴 todo |  |
+| 0052 | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 0051 | 🔴 todo |  |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | ✅ shipped | #32 |
@@ -55,14 +56,20 @@
 | # | Titre | Type | Prio | Épic | Statut | PR |
 |---|-------|------|------|------|--------|----|
 | 0034 | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | epic | P0 |  | 🔴 todo |  |
+| 0051 | Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic) | epic | P1 |  | 🔴 todo |  |
 
 ## 💡 Idées (non groomées)
 
 | # | Titre | Type | Prio | Épic | Statut | PR |
 |---|-------|------|------|------|--------|----|
 | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | 💡 idea |  |
+| 0053 | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | 💡 idea |  |
+| 0054 | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 0051 | 💡 idea |  |
+| 0055 | KPI agrégés — rollups commit → PR → sprint → version depuis le silo | feature | P2 | 0051 | 💡 idea |  |
+| 0056 | Visualisation — onglet « qualité par PR » dans mission-control | feature | P2 | 0051 | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | 💡 idea |  |
+| 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | 💡 idea |  |
 
 > Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037.
