@@ -31,7 +31,7 @@ describe('computeUpgradeOk — rubrique E', () => {
     fs.rmSync(projectRoot, { recursive: true, force: true });
   });
 
-  it('est vrai quand l’arbre est propre et sans worktree en vol', () => {
+  it('est vrai quand l’arbre est propre et sans sous-run en vol', () => {
     expect(computeUpgradeOk(projectRoot)).toBe(true);
   });
 
@@ -40,11 +40,27 @@ describe('computeUpgradeOk — rubrique E', () => {
     expect(computeUpgradeOk(projectRoot)).toBe(false);
   });
 
-  it('est faux quand un worktree additionnel est en vol', () => {
+  it('0085 — reste VRAI quand des worktrees de travail existent hors du dossier dédié (le cas « 7 worktrees du PO »)', () => {
+    // Le cas qui échouait avant la fiche 0085 : un humain travaille en worktrees
+    // (sessions, chantiers parallèles) — ce ne sont PAS des sous-runs de
+    // l'orchestrateur, ils ne doivent pas éteindre le signal en permanence.
     worktreeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mega-city-upgrade-ok-wt-'));
     fs.rmdirSync(worktreeDir); // git worktree add veut créer le dossier lui-même
     execFileSync('git', ['worktree', 'add', worktreeDir, '-b', 'wt-branch'], { cwd: projectRoot });
+    expect(computeUpgradeOk(projectRoot)).toBe(true);
+  });
+
+  it('0085 — est faux quand un sous-run est en vol dans le dossier dédié (.cop1/worktrees)', () => {
+    // Peu importe que l'entrée soit un vrai worktree git ou un résidu : sa seule
+    // présence dans le dossier DÉDIÉ aux sous-runs signifie « travail en vol »
+    // (détection pur-fs, aucune commande git).
+    fs.mkdirSync(path.join(projectRoot, '.cop1', 'worktrees', 'run-123'), { recursive: true });
     expect(computeUpgradeOk(projectRoot)).toBe(false);
+  });
+
+  it('0085 — reste vrai quand le dossier dédié existe mais est vide (sous-runs nettoyés)', () => {
+    fs.mkdirSync(path.join(projectRoot, '.cop1', 'worktrees'), { recursive: true });
+    expect(computeUpgradeOk(projectRoot)).toBe(true);
   });
 
   it('le veto de l’appelant force à faux même sur arbre propre', () => {

@@ -6,7 +6,12 @@ Fiche : `features/0050-kit-emetteur-supervisabilite.md`.
 
 - `journal.ts` — append JSONL par run (`<projet>/.supervision/runs/<run_id>/events.jsonl`),
   enveloppe calculée par la lib, seq relu du disque, lecteur tolérant.
-- `upgrade-ok.ts` — quiescence mécanique (git propre + zéro worktree) ; veto → false only.
+- `upgrade-ok.ts` — quiescence mécanique (git propre + **zéro sous-run dans le dossier
+  dédié `.cop1/worktrees/`**, jamais « zéro worktree du dépôt » — décision produit PO
+  2026-07-24, fiche 0085, modèle « MAJ Claude » : les worktrees de TRAVAIL de
+  l'opérateur ne sont pas des sous-runs, un signal constamment faux est un signal qu'on
+  apprend à ignorer) ; veto → false only ; le forçage humain « malgré l'activité »
+  relève du flux d'adoption (fiche 0050), le signal ne ment jamais.
 - `runtime.ts` — machine à états stateless (replay disque à chaque appel).
 - `mcp-server.ts` + `bin/supervision-mcp.ts` — serveur MCP stdio, **5 outils étroits**
   (chemin nominal Claude Desktop, classe de conformité B).
