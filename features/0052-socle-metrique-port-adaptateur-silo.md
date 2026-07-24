@@ -37,6 +37,10 @@ Tranche mince de bout en bout :
    `.quality/`** (Q2 tranché, ADR-033 : Option B), **isolé du silo 0044** ; **miroir tamper-évident
    hors POC**. *La méthode auditée n'écrit jamais son propre chiffre.*
 4. **Lire 1 KPI** — la couverture de la PR, relue depuis le journal.
+5. **Afficher (minimal)** — la valeur relue est postée en **commentaire de la PR** (une ligne,
+   ex. « couverture : 78 % »), par le **pas tiers**, avec le token CI standard — zéro compte
+   (tranché PO 2026-07-24 ; le rapport riche reste la fiche
+   [0058](0058-rapport-qualite-pr.md)).
 
 ## Critères d'acceptation
 
@@ -49,6 +53,8 @@ Tranche mince de bout en bout :
 - [ ] `quality.measured` porte une **version de schéma** (`schema_version`) — condition Q2 (ADR-033)
 - [ ] **`MetricSink` est l'unique porte d'écriture** — test « aucune écriture hors du sink »
 - [ ] **1 KPI** (couverture de la PR) est **relu** depuis le journal
+- [ ] La valeur relue est postée en **commentaire de la PR** (une ligne), par le **pas tiers** —
+      le gate ne lit **jamais** ce commentaire ; **zéro compte externe**
 - [ ] Le relicat `@cop1/quality-intelligence` **n'est pas touché**
 - [ ] Gate locale verte (typecheck/lint/tests)
 

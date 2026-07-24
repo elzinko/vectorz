@@ -48,6 +48,7 @@ existantes (template PR ezk-sprint, `report` d'ezk-pr-pilot) — ne réinvente p
 - **Séquencement (proposition PO à confirmer au plan)** : à tirer **avant** le gate 0053 —
   bloquer des PRs avant que les devs **voient** les métriques serait le mauvais ordre d'adoption
   (visibilité avant punition).
-- Une **version minimale** (une ligne « couverture : X % ») peut atterrir dès 0052 — arbitrage
-  PO en cours.
+- **Tranché PO 2026-07-24** : la **version minimale** (une ligne « couverture : X % ») est **dans
+  0052**. Cette fiche couvre le **rapport riche** (plusieurs métriques + delta, résumé testé,
+  captures).
 - Dépend de [0052](0052-socle-metrique-port-adaptateur-silo.md) (le journal doit exister).
