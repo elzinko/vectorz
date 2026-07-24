@@ -4,9 +4,9 @@ title: Émetteur de supervisabilité — install un-clic Claude Desktop (bundle 
 type: feature
 priority: P2
 epic:
-status: in-progress
+status: shipped
 ready:
-pr:
+pr: "#41"
 created: 2026-07-18
 ---
 
