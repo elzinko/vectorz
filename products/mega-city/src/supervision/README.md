@@ -49,6 +49,16 @@ par le bloc ci-dessus :
   `ERR_PNPM_RECURSIVE_EXEC_NO_PACKAGE`.
 
 `SUPERVISION_PROJECT_ROOT` doit être **absolu et exister** (fail-fast sinon).
+
+**Racine normalisée vers l'arbre principal (ADR 0019, fiche 0086)** : si la racine
+résolue (explicite ou cwd) pointe un **worktree git lié**, le journal est écrit dans
+**l'arbre principal** du dépôt (même sous-chemin relatif) — fin de la perte silencieuse
+quand un worktree est supprimé. Hors dépôt git / submodule / dépôt bare : racine
+inchangée, aucun crash. Le serveur **annonce sur stderr** au démarrage la racine
+effective et sa provenance (`[supervision] journal → … (racine …, normalisée depuis … |
+telle quelle)`) — c'est la ligne à lire pour savoir où va le journal. Échappatoire
+délibérée : `SUPERVISION_PER_WORKTREE=1` (ou `true`) rétablit un journal par worktree.
+
 Autoriser les 5 outils en « toujours autoriser » pour éviter la fatigue de popups.
 Pour tester sans toucher aux méthodes de prod : skill **`supervision-demo`** (méthode
 jouet 2 gates).
