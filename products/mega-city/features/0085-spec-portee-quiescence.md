@@ -58,12 +58,17 @@ propre boîte noire sera un feu rouge permanent qu'il devra apprendre à ne pas 
 tourne, on ne peut pas mettre à jour ; si pas d'activité en cours, on peut. » Traduction
 dans le monde du kit :
 
-- **Population comptée = les runs de supervision ouverts** dans `.supervision/runs/` de
-  la racine effective (normalisée arbre principal, ADR-0019) — l'« activité » que le kit
-  VOIT, comme Claude ne compte que ses propres sessions. Le **run courant** (arrêté à son
-  gate au moment du calcul) est **exclu** : un autre run ouvert ⇒ pas quiescent.
-- **La topologie git des worktrees sort du prédicat** (les 7 worktrees de travail du PO
-  ne comptent plus) ; la moitié « arbre propre » reste (son échelle exacte = fiche 0084).
+- **Population comptée = les sous-runs du dossier dédié de l'orchestrateur** —
+  concrètement les worktrees sous `.cop1/worktrees/` (source de vérité unique, ADR-019
+  cop1) : l'« activité » que le kit peut VOIR, comme Claude ne compte que ses propres
+  sessions. *(Correction du builder, journalisée : la première traduction « autres runs
+  ouverts du journal » était quasi-vide de sens — l'invariant un-seul-run de `run_start`
+  garantit que le run courant est le seul ouvert à une racine donnée, et le journal v0.1
+  n'a aucune notion de vivacité. Le principe PO est inchangé ; seul le mécanisme de
+  détection retenu est celui que l'AC n°1 nommait déjà : le dossier dédié.)*
+- **Le reste de la topologie git sort du prédicat** (les 7 worktrees de travail du PO,
+  sous `.claude/worktrees/` ou ailleurs, ne comptent plus) ; la moitié « arbre propre »
+  reste (son échelle exacte = fiche 0084).
 - **« On peut forcer, mais il faut indiquer ce que ça implique »** (PO) : le forçage est
   une prérogative du **siège humain en aval** — le signal ne ment jamais (D11 intact :
   veto → false seulement, jamais l'inverse). L'affichage des conséquences (quels runs en
