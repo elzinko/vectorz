@@ -4,9 +4,9 @@ title: Le journal remonte à l'arbre principal + le serveur annonce où il écri
 type: feature
 priority: P0
 epic:
-status: todo
+status: shipped
 ready: 2026-07-24
-pr:
+pr: "#46"
 created: 2026-07-19
 ---
 

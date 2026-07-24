@@ -11,7 +11,7 @@
 | 0083 | SPIKE — où atterrit le journal quand une méthode tourne dans un worktree ? (mesurer cwd et CLAUDE_PROJECT_DIR) | chore | P0 |  | ✅ shipped | #45 |
 | 0084 | Le calcul de quiescence mélange deux échelles (propreté par dossier, worktrees par dépôt) — prédicat sans sémantique | bug | P0 |  | 🔴 todo |  |
 | 0085 | Redéfinir ce que compte la quiescence — les sous-runs de l'orchestrateur, pas tout worktree git du dépôt | chore | P0 |  | 🔴 todo |  |
-| 0086 | Le journal remonte à l'arbre principal + le serveur annonce où il écrit (fin de la perte silencieuse en worktree) | feature | P0 |  | 🔴 todo |  |
+| 0086 | Le journal remonte à l'arbre principal + le serveur annonce où il écrit (fin de la perte silencieuse en worktree) | feature | P0 |  | ✅ shipped | #46 |
 | 0002 | lawgiver capture — flywheel | feature | P1 |  | ✅ shipped | local (squash-merge) |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 |  | ✅ shipped | #6 |
 | 0004 | migrer ezk-commits vers skills/ | chore | P1 |  | ✅ shipped | local (squash-merge) |
@@ -103,4 +103,4 @@
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | 💡 idea |  |
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 0059 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0050, 0055, 0056, 0063, 0070, 0071, 0072, 0076, 0078, 0083.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0050, 0055, 0056, 0063, 0070, 0071, 0072, 0076, 0078, 0083, 0086.
