@@ -4,9 +4,9 @@ title: SPIKE — où atterrit le journal quand une méthode tourne dans un workt
 type: chore
 priority: P0
 epic:
-status: todo
+status: shipped
 ready: 2026-07-24
-pr:
+pr: "#45"
 created: 2026-07-19
 ---
 
