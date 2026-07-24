@@ -8,9 +8,9 @@ Nœuds :
 - **SaaS d'analyse · cloud** : **Codecov, SonarCloud, CodeQL** (language-agnostic), interrogés
   par API (pull) ou déclenchés par webhook (push).
 - **Côté vectorz** : le **Silo** (journal append-only, écrit derrière une interface `MetricSink` —
-  son foyer, dans le silo 0044 ou un frère `.quality/`, est l'arbitrage ouvert Q2) ; un **Miroir**
-  tamper-évident **différé** (hors POC) ; et le **Moniteur mission-control** (app web) qui lit le
-  silo en lecture seule.
+  son foyer = le **cahier frère `.quality/`**, Q2 tranché le 2026-07-22, ADR-033 Option B) ; un
+  **Miroir** tamper-évident **différé** (hors POC) ; et le **Moniteur mission-control** (app web)
+  qui lit le silo en lecture seule.
 - **Navigateur du PO**, qui consulte le moniteur en HTTP.
 
 Canaux : la méthode appelle les outils en API/webhook et reçoit l'artefact ; le **mesureur tiers**

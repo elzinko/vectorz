@@ -120,11 +120,15 @@ Le panel a montré que « F4 » mélangeait **deux** décisions distinctes :
 - **Q1 — QUI écrit `quality.measured` ? → TRANCHÉ : le mesureur tiers** (cf. F3). C'est une règle
   de **confiance**, pas un pari technique : elle découle de 0044. *(Corrige la rédaction
   initiale qui laissait la méthode écrire — ce qui cassait F6.)*
-- **Q2 — OÙ vit le journal ? → DIFFÉRÉ.** Étendre le silo 0044 (Option A) ou créer un journal
-  frère `.quality/` (Option B) ? On **ne tranche pas** : le silo 0044 n'est **pas encore
-  construit**, donc choisir maintenant = graver une forme avant le 1ᵉʳ événement réel. On décidera
-  **après la 1ʳᵉ mesure vécue** — 0052 écrit derrière une **interface** (`MetricSink`), sans se
-  lier au silo 0044 tout de suite. **Arbitrage ouvert.**
+- **Q2 — OÙ vit le journal ? → TRANCHÉ (2026-07-22) : Option B, un cahier frère `.quality/`.**
+  Décision PO (penchant confirmé par `ezk-architect`) — la seule des deux qui **n'exige ni dé-gel
+  de 0044 ni panel**. **4 conditions** (avis archi) : (a) `quality.measured` porte une **version de
+  schéma** (empêche la dérive des définitions) ; (b) le writer append + le futur miroir sont un
+  **composant réutilisable** partagé avec 0044 (« deux cahiers, un seul stylo »), pas un writer
+  jetable ; (c) **`MetricSink` = unique porte d'écriture** (garde la réversibilité) ; (d) la
+  **convergence vers A** (silo unifié) reste **ouverte, non gravée** — cible future si un besoin de
+  preuve unifiée apparaît (ex. agent 0057). *En clair : le tiers écrit dans un cahier neuf
+  `.quality/`, à côté de celui de 0044.*
 
 > **En clair :** on sait désormais **qui tient le stylo** (un tiers) ; on décidera **dans quel
 > cahier** il écrit une fois qu'on aura vu passer une vraie mesure.
@@ -152,9 +156,11 @@ la rend admissible comme signal de qualité (« l'évaluateur d'abord », leçon
 l'agent qui a produit le code. *(F3/Q1 est ce qui rend F6 vrai : si la méthode écrivait son
 chiffre, « objectif » serait un vœu.)*
 
-## Options considérées (OÙ vit le silo — Q2 de F4, **différé**)
+## Options considérées (OÙ vit le silo — Q2 de F4)
 
-> Q1 (qui écrit) est tranché : **mesureur tiers**. Il ne reste que le **foyer** du journal.
+> Q1 (qui écrit) : **mesureur tiers**. Q2 (le foyer) : **tranché le 2026-07-22 → Option B**
+> (`.quality/`, ci-dessous), penchant PO confirmé par l'avis `ezk-architect`. A reste la **cible
+> future**, non gravée.
 
 ### Option A — Silo 0044 étendu (nouvel event `quality.measured`)
 | Dimension | Évaluation |
@@ -211,10 +217,10 @@ chercher », mais c'est le prix de la cohérence avec ADR-032 **et** d'une mesur
 | **Outil non language-agnostic** | prioriser Codecov / Sonar / CodeQL (formats standard) ; l'adaptateur spécifique reste **derrière** le port |
 | **Rouvrir une surface gelée sans le vouloir** | Q2 + « chemins exclus » explicitement **ouverts** → PO + panel |
 
-## Arbitrages réservés au PO (OUVERTS — le panel refuse de les trancher)
+## Arbitrages réservés au PO (point 1 tranché le 2026-07-22 ; 2-5 ouverts)
 
-1. **Q2 — où vit le journal** : silo 0044 étendu (Option A) **ou** frère `.quality/` (Option B).
-   *Différé* jusqu'à la 1ʳᵉ mesure vécue. **En clair : dans quel cahier le tiers écrit.**
+1. ✅ **Q2 — TRANCHÉ (2026-07-22) : Option B, cahier frère `.quality/`** (décision PO + avis
+   `ezk-architect` ; les **4 conditions** sont en F4). *Restent ouverts les points 2-5.*
 2. **« Chemins exclus »** : simple config pas-chère **ou** surface gelée (dé-gel de 0044) ? Le
    panel penche **surface gelée** (exclure un chemin = baisser la barre). **Ta décision.**
 3. **Auteur ≠ approbateur** : empêcher que l'agent qui a écrit le code propose lui-même de
@@ -235,8 +241,8 @@ chercher », mais c'est le prix de la cohérence avec ADR-032 **et** d'une mesur
 ## Action items
 
 1. [x] **Panel adverse** (2026-07-22, 4 lentilles + juge) — findings confirmés appliqués.
-2. [ ] **Arbitrages PO** de la liste ci-dessus (Q2, chemins exclus, auteur≠approbateur,
-       séquencement, 0057).
+2. [ ] **Arbitrages PO** restants (chemins exclus, auteur≠approbateur, séquencement, 0057) —
+       *Q2 tranché le 2026-07-22 : Option B (`.quality/`).*
 3. [ ] Groom + `ready` [0052](../../features/0052-socle-metrique-port-adaptateur-silo.md) (socle) —
        **ne dépend PAS de Q2** (0052 écrit derrière `MetricSink`).
 4. [ ] Mettre à jour `docs/adr/README.md` (registre) — ligne 033 tenue à jour.
