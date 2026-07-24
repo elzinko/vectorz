@@ -1,0 +1,7 @@
+title: "Qualité — composants détaillés (vue à débattre : CI, tiers, journaux, gouvernance)"
+date: 2026-07-24
+type: flowchart
+links:
+  adr: ../../docs/adr/ADR-033-port-metrique-qualite-produit.md
+  epic: ../../features/0051-observabilite-qualite-produit.md
+share: "liens mermaid.live (édition) et mermaid.ink (image) dans README.md"

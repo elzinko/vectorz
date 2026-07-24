@@ -1,0 +1,73 @@
+flowchart TB
+    classDef toi fill:#dbeafe,stroke:#1e40af,color:#111827;
+    classDef methode fill:#ede9fe,stroke:#6d28d9,color:#111827;
+    classDef outils fill:#fef3c7,stroke:#b45309,color:#111827;
+    classDef donnees fill:#dcfce7,stroke:#15803d,color:#111827;
+    classDef neutre fill:#f1f5f9,stroke:#475569,color:#111827;
+    classDef futur fill:#fdf2f8,stroke:#9d174d,stroke-dasharray:6 4,color:#111827;
+
+    subgraph SG1["Toi & tes écrans"]
+        DEV["Toi<br/>développeur · PO"]
+        PR["PR GitHub"]
+        CMT["Commentaire qualité de PR<br/>(à ficher — 0058)"]
+        MC["mission-control<br/>courbes qualité (0056)"]
+        VIZ["Visualisation de la méthode<br/>(à ficher — 0060)"]
+    end
+
+    subgraph SG2["CI — la méthode exécute (ADR-032)"]
+        HK["Hooks CI<br/>post-build · post-test"]
+        CC["Config de collecte (produit)<br/>outil · déclencheur · artefact"]
+        LOC["Outils locaux · zéro compte<br/>vitest lcov · jscpd · osv-scanner"]
+        SAAS["Outils SaaS · gated PO<br/>Codecov · SonarCloud"]
+        ART["Artefact déterministe<br/>lcov.info · json · sarif"]
+    end
+
+    subgraph SG3["Mesure tierce (ADR-031)"]
+        TIERS["Mesureur tiers · neutre"]
+        SINK{{"MetricSink<br/>porte d'écriture unique"}}
+    end
+
+    subgraph SG4["Données & compute — vectorz"]
+        Q[(".quality/<br/>quality.measured · append-only")]
+        SAPP{{"Script d'append<br/>porte d'écriture unique"}}
+        LIFE[(".improvement/lifecycle.jsonl<br/>propositions · approbations")]
+        DUCK["Vues DuckDB<br/>KPI commit → version"]
+    end
+
+    subgraph SG5["Méthode & gouvernance — mega-city"]
+        RG["Règle qualité abstraite<br/>« couverture ≥ seuil »"]
+        CS["Config seuils (méthode)<br/>seuil · métrique requise"]
+        GATE["Gate DoD · fail-closed"]
+        RETRO["Rétro (ezk-retro)<br/>propose outil · seuil · règle"]
+    end
+
+    DEV -->|ouvre · pousse| PR
+    PR -->|déclenche le build| HK
+    CC -.->|déclare quoi collecter| HK
+    HK -->|exécute| LOC
+    HK -.->|exécute si provisionné| SAAS
+    LOC -->|produisent| ART
+    SAAS -.->|produisent| ART
+    TIERS -->|lit| ART
+    TIERS -->|appende quality.measured| SINK
+    SINK -->|écrit| Q
+    RG -.->|exige une métrique| GATE
+    CS -.->|donne le seuil| GATE
+    GATE -->|lit la valeur déjà mesurée| Q
+    GATE -->|verdict bloquant| PR
+    DUCK -->|lit · projette| Q
+    MC -->|lit| DUCK
+    CMT -.->|lira| DUCK
+    VIZ -.->|lira| LIFE
+    RETRO -->|proposal.submitted| SAPP
+    DEV -->|approuve · deny-all · preuve externe| SAPP
+    SAPP -->|écrit| LIFE
+    LIFE -.->|approuvé ⇒ provisionne| CC
+    DEV -.->|crée le compte · pose le secret| SAAS
+
+    class DEV,PR,MC toi;
+    class CMT,VIZ,SAAS futur;
+    class HK,RG,CS,GATE,RETRO methode;
+    class CC,LOC,ART outils;
+    class TIERS,SINK,SAPP neutre;
+    class Q,LIFE,DUCK donnees;
