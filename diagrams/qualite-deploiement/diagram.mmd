@@ -1,0 +1,33 @@
+flowchart TD
+    classDef exec fill:#dbeafe,stroke:#1e40af,color:#111827;
+    classDef cloud fill:#fef3c7,stroke:#b45309,color:#111827;
+    classDef vectorz fill:#dcfce7,stroke:#15803d,color:#111827;
+    classDef neutre fill:#f1f5f9,stroke:#475569,color:#111827;
+
+    subgraph CI[GitHub · runner de CI — au build de PR]
+        MH["Méthode + hooks<br/>lancent l'analyse"]
+        TR["Mesureur tiers<br/>lit l'artefact · écrit la mesure"]
+    end
+    subgraph CLOUD[SaaS d'analyse · cloud]
+        T["Codecov · SonarCloud · CodeQL<br/>language-agnostic"]
+    end
+    subgraph VZ[Côté vectorz]
+        S[("Cahier .quality/ · append-only<br/>via MetricSink · Q2 = B")]
+        MIR[("Miroir tamper-évident<br/>différé · hors POC")]
+        WEB["Moniteur mission-control<br/>app web"]
+    end
+    B["Navigateur du PO"]
+
+    MH -->|"API pull / webhook push"| T
+    T -.->|artefact| TR
+    TR -->|écrit la mesure| S
+    S -.->|"copie · hash (plus tard)"| MIR
+    WEB -->|"lit — lecture seule"| S
+    B -->|HTTP| WEB
+
+    class MH exec;
+    class TR neutre;
+    class T cloud;
+    class S,WEB vectorz;
+    class MIR neutre;
+    class B exec;

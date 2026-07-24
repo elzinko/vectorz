@@ -1,0 +1,38 @@
+flowchart LR
+    classDef methode fill:#dbeafe,stroke:#1e40af,color:#111827;
+    classDef produit fill:#fef3c7,stroke:#b45309,color:#111827;
+    classDef moniteur fill:#dcfce7,stroke:#15803d,color:#111827;
+    classDef neutre fill:#f1f5f9,stroke:#475569,color:#111827;
+
+    subgraph MET[Méthode · mega-city]
+        R["Règle DoD<br/>« couverture ≥ seuil »"]
+        H["Hooks CI<br/>lancent l'outil"]
+    end
+    P{{"MetricPort<br/>contrat abstrait"}}
+    subgraph CAP[Capacité · côté produit]
+        A["Adaptateurs<br/>Codecov · Sonar · CodeQL"]
+        C[("Config · seuil<br/>exclusions = arbitrage")]
+    end
+    T["Mesureur tiers<br/>lit la valeur · écrit la mesure"]
+    S[("Silo<br/>journal des mesures")]
+    subgraph MON[Moniteur · mission-control]
+        K["Projection KPI<br/>vues colonne"]
+        U["Onglet qualité<br/>courbes"]
+        AG["Agent d'analyse<br/>propose · gate PO"]
+    end
+
+    H -->|lancent| A
+    A -->|implémentent| P
+    T -->|lit la valeur| P
+    T -->|écrit la mesure| S
+    R -->|lit la valeur mesurée| S
+    C -.->|paramètre| R
+    C -.->|provisionne| A
+    K -->|lit| S
+    U -->|affiche| K
+    AG -->|lit| K
+
+    class R,H methode;
+    class A,C produit;
+    class K,U,AG moniteur;
+    class P,S,T neutre;

@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant M as Méthode<br/>(skills + hooks · mega-city)
+    participant O as Outil d'analyse<br/>(Codecov · Sonar)
+    participant T as Mesureur tiers<br/>(neutre)
+    participant S as Silo<br/>(journal — le magasin)
+    participant Mon as Moniteur<br/>(mission-control — l'écran)
+    participant PO as PO
+
+    Note over M,O: au build de chaque PR
+    M->>O: lance l'analyse (garantit l'exécution)
+    O-->>M: artefact déterministe (couverture 78 %)
+    Note over M,T: lancer l'outil ≠ écrire le chiffre
+    M->>T: fournit l'artefact
+    T->>S: écrit la mesure, collée au commit/PR
+    Note over T,S: le TIERS écrit — ni la méthode auditée, ni le moniteur
+    Mon->>S: lit (lecture seule)
+    S-->>Mon: les mesures historisées
+    Mon->>Mon: agrège en KPI (commit → PR → sprint → version)
+    Mon->>PO: affiche les courbes
+    PO->>M: décide (seuil DoD · amélioration)
