@@ -26,8 +26,10 @@ Tranche mince de bout en bout :
 
 1. **`MetricPort`** — port **abstrait, language/outil-agnostic** : « donne-moi la valeur de la
    métrique M pour ce commit/PR ». Testé d'abord avec un **adaptateur stub**.
-2. **1ᵉʳ adaptateur réel : couverture** — consomme un **format standard** (`lcov` / `cobertura`)
-   via **Codecov** (cible language-agnostic) ou une lecture locale équivalente.
+2. **1ᵉʳ adaptateur réel : couverture, en LOCAL** — lit le **`lcov.info` produit par le
+   test-runner du projet** (vitest) au build : format standard, **zéro compte, zéro secret**
+   (doctrine local-first, PO 2026-07-24). Codecov (variante SaaS) part au catalogue
+   [0054](0054-catalogue-adaptateurs-outils.md).
 3. **Remontée au build de PR — writer = tiers** — la méthode **exécute l'outil** en CI et produit
    un **artefact déterministe** (`lcov` / `cobertura`) ; un **pas tiers** le **lit** et **appende**
    `quality.measured { metric, value, tool, commit, pr, ts, schema_version }` derrière une
@@ -39,9 +41,9 @@ Tranche mince de bout en bout :
 ## Critères d'acceptation
 
 - [ ] `MetricPort` défini et testé avec un adaptateur **stub** (indépendance à l'outil prouvée)
-- [ ] Un **adaptateur couverture réel** produit un chiffre — prouvé **sur une CI réelle** (hook,
-      secret/token, format `lcov`/`cobertura` réel), **pas seulement sur fixture locale** (c'est le
-      chemin risqué à valider)
+- [ ] Un **adaptateur couverture réel** produit un chiffre — prouvé **sur une CI réelle** (hook
+      GitHub Actions, artefact `lcov` réel produit par le build), **sans secret ni compte
+      externe**, pas seulement sur fixture locale
 - [ ] `quality.measured` est **écrit par le pas tiers** derrière l'interface **`MetricSink`**
       (dans le **cahier frère `.quality/`**, isolé du silo 0044), **indexé commit + PR**, append-only
 - [ ] `quality.measured` porte une **version de schéma** (`schema_version`) — condition Q2 (ADR-033)
@@ -57,7 +59,10 @@ Tranche mince de bout en bout :
   `MetricSink`. Le **writer append (+ futur miroir) est pensé réutilisable/partagé avec 0044**
   (« deux cahiers, un seul stylo »), pas spécifique à `.quality/`. **Miroir tamper-évident : hors
   POC.** Convergence future vers un silo unifié (Option A) laissée ouverte.
-- **Codecov = 1ᵉʳ adaptateur** parce que **language-agnostic** (formats de couverture standard).
+- **Local-first (PO 2026-07-24)** : 1ᵉʳ adaptateur = lecture locale du `lcov` (zéro compte).
+  **Codecov → 0054** (1ᵉʳ adaptateur SaaS). **Risque n°1 à trancher au grooming** : comment le
+  pas tiers **écrit `.quality/` depuis la CI** (commit sur la branche ? artefact de workflow ?
+  droits du token par défaut ?) — même famille de question que le spike mega-city 0083.
 - Remontée **minimale** ici (un chemin PUSH qui marche) ; la remontée **générique multi-outils**
   et l'ajout d'autres outils = [0054](0054-catalogue-adaptateurs-outils.md).
 - **Tête buildable de l'épic** — à groomer puis `ready` en premier.

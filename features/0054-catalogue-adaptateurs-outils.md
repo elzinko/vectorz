@@ -42,6 +42,9 @@ distinct de la règle et de l'ajout de règle.
 
 - Priorité aux outils **language-agnostic** (Codecov, SonarCloud, CodeQL le sont) — un adaptateur
   peut être spécifique à un langage, **le port et le silo ne le sont jamais**.
+- **Codecov (couverture, SaaS) rejoint ce catalogue comme 1ᵉʳ adaptateur SaaS** (déplacé de 0052 —
+  doctrine local-first, PO 2026-07-24). Candidats locaux zéro-compte d'abord : **jscpd**
+  (duplication) puis **osv-scanner** (vulnérabilités).
 - Alimente la **boucle rétro → config** (épic) : une rétro « ajoute un outil » = provisionner un
   adaptateur ici.
 - Dépend de [0052](0052-socle-metrique-port-adaptateur-silo.md).

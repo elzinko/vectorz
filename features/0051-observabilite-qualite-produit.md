@@ -97,7 +97,8 @@ ADR-021 frontière, ADR-026 seam exécuteur, ADR-032 émission adaptateur sépar
 
 | # | Brique | Prouve |
 |---|--------|--------|
-| [0052](0052-socle-metrique-port-adaptateur-silo.md) | Port + 1ᵉʳ adaptateur (couverture) + remontée build PR + silo | capter→garder→lire de bout en bout, 1 métrique réelle |
+| [0052](0052-socle-metrique-port-adaptateur-silo.md) | Port + 1ᵉʳ adaptateur (couverture **locale**) + remontée build PR + silo | capter→garder→lire de bout en bout, 1 métrique réelle |
+| [0058](0058-rapport-qualite-pr.md) | Rapport qualité de PR (commentaire : métriques + testé + captures) | les métriques se **voient** dans chaque PR — avant tout gate |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique (PR bloquée si seuil non tenu) | règle (méthode) ↔ port ↔ adaptateur (produit) |
 | [0054](0054-catalogue-adaptateurs-outils.md) | Catalogue d'adaptateurs (ajouter un outil sans réinventer) | sécu + qualité branchés sans toucher silo/règle |
 | [0055](0055-kpi-agreges-commit-pr-sprint-version.md) | KPI agrégés commit→PR→sprint→version | rollups reproductibles depuis le silo |
@@ -135,6 +136,17 @@ ADR-021 frontière, ADR-026 seam exécuteur, ADR-032 émission adaptateur sépar
   PRs mieux couvertes est une meilleure méthode) — elles ne le **remplacent** pas.
 - **[ADR-030](../docs/adr/ADR-030-contrat-ameliorabilite.md)** — l'agent d'analyse + la mutation
   de règles par rétro **composent** le contrat d'améliorabilité (mesure tierce, deny-all, gate PO).
+
+**Doctrine d'adoption des capacités (PO, 2026-07-24)** : dans l'ordre — (1) **dépendance projet
+/ binaire local** (zéro compte : vitest-coverage/lcov, jscpd, osv-scanner), (2) **docker local**,
+(3) **SaaS** — chaque provisioning SaaS = une **proposition approuvée par le PO** (c'est lui qui
+crée les comptes), via le circuit d'approbation d'ADR-030.
+
+**Pistes évoquées, volontairement NON fichées (PO, 2026-07-24)** : spike « plateformes
+d'agrégation » (Apache DevLake & co — à rouvrir si les vues 0055 s'avèrent insuffisantes ou à
+partir de 3 adaptateurs) ; « introspection de la méthode » (flux cliquable : gates, rules, outils
+installés, décisions de rétro — 1ᵉʳ pas quasi gratuit via ezk-diagram le jour venu). Schéma
+détaillé des composants : [diagrams/qualite-composants-detail](../diagrams/qualite-composants-detail/README.md).
 
 **Non-buts** : comparer des LLM (écarté) ; ressusciter `@cop1/quality-intelligence` tel quel ;
 un nouveau runtime / service / 2ᵉ entrepôt ; l'optimisation permanente en tâche de fond
