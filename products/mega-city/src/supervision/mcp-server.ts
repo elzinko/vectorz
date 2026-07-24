@@ -11,11 +11,17 @@
  * Test : la QA valide ce fichier via un vrai process stdio ; les 19 scénarios du
  * Gherkin sont couverts en amont, directement sur `SupervisionRuntime`.
  */
-import * as fs from 'node:fs';
-import * as path from 'node:path';
 import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { SupervisionRuntime } from './runtime.js';
+
+/**
+ * Re-export : la résolution de `project_root` depuis l'environnement a été
+ * déplacée dans `project-root.ts` (ADR 0019, décision 1 — `project-root.ts`
+ * porte désormais toute la logique git ; ce fichier reste git-agnostique).
+ * Conservé ici pour qu'aucun importeur existant ne casse.
+ */
+export { resolveProjectRootFromEnv } from './project-root.js';
 
 /** Traduit une erreur `SupervisionRuntime` (règle métier violée) en résultat d'outil MCP en erreur. */
 function toolError(error: unknown) {
@@ -128,31 +134,4 @@ export function createSupervisionMcpServer(projectRoot: string): McpServer {
   );
 
   return server;
-}
-
-/**
- * Résout `project_root` depuis l'environnement (jamais un paramètre d'outil).
- * Fail-fast (N1, D5) : si `SUPERVISION_PROJECT_ROOT` est fourni, il DOIT être un
- * chemin absolu vers un dossier existant, sinon erreur explicite immédiate plutôt
- * qu'un échec confus plus tard (ENOENT au premier `run_start`, etc.).
- */
-export function resolveProjectRootFromEnv(): string {
-  const value = process.env.SUPERVISION_PROJECT_ROOT;
-  if (value === undefined) return process.cwd();
-
-  if (!path.isAbsolute(value)) {
-    throw new Error(
-      `SUPERVISION_PROJECT_ROOT invalide : "${value}" n'est pas un chemin absolu.`,
-    );
-  }
-  let stat: fs.Stats;
-  try {
-    stat = fs.statSync(value);
-  } catch {
-    throw new Error(`SUPERVISION_PROJECT_ROOT invalide : "${value}" n'existe pas.`);
-  }
-  if (!stat.isDirectory()) {
-    throw new Error(`SUPERVISION_PROJECT_ROOT invalide : "${value}" n'est pas un dossier.`);
-  }
-  return value;
 }
