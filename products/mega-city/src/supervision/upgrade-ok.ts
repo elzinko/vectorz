@@ -65,6 +65,12 @@ function isTreeClean(projectRoot: string): boolean {
  * nature de l'entrée n'y change rien (un résidu mal nettoyé est aussi un
  * travail non soldé). Dossier absent ou vide = aucun sous-run. Les entrées
  * cachées (`.DS_Store`…) sont ignorées.
+ *
+ * Fail closed (revue Codex #47, même doctrine que M2 sur `isTreeClean`) : seul
+ * « dossier absent » (ENOENT/ENOTDIR) vaut « aucun sous-run ». Tout autre échec
+ * de lecture (droits, montage cassé…) rend l'état INOBSERVABLE : un signal de
+ * sécurité qui n'a pas pu regarder répond `false`, jamais `true` — d'autant que
+ * `.cop1/` étant typiquement gitignoré, `isTreeClean` ne rattraperait rien.
  */
 function hasNoSubRunInFlight(projectRoot: string): boolean {
   for (const relativeDir of SUBRUN_DIRS) {
@@ -72,8 +78,12 @@ function hasNoSubRunInFlight(projectRoot: string): boolean {
     let entries: string[];
     try {
       entries = fs.readdirSync(dir);
-    } catch {
-      continue; // dossier absent : aucun sous-run pour cet orchestrateur
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === 'ENOENT' || code === 'ENOTDIR') {
+        continue; // dossier absent : aucun sous-run pour cet orchestrateur
+      }
+      return false; // état inobservable : fail closed
     }
     if (entries.some((entry) => !entry.startsWith('.'))) return false;
   }

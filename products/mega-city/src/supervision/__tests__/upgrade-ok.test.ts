@@ -63,6 +63,31 @@ describe('computeUpgradeOk — rubrique E', () => {
     expect(computeUpgradeOk(projectRoot)).toBe(true);
   });
 
+  it.skipIf(process.getuid?.() === 0)(
+    'fail closed — dossier dédié présent mais illisible (droits) ⇒ faux, jamais vrai (revue Codex #47)',
+    () => {
+      // Un signal de sécurité qui n'a pas pu regarder ne répond pas « OK » : seul
+      // « dossier absent » vaut « aucun sous-run » ; un readdir en échec (EACCES…)
+      // rend l'état inobservable ⇒ false. (Skippé sous root : chmod 000 n'y bloque rien.)
+      const dir = path.join(projectRoot, '.cop1', 'worktrees');
+      fs.mkdirSync(dir, { recursive: true });
+      fs.chmodSync(dir, 0o000);
+      try {
+        expect(computeUpgradeOk(projectRoot)).toBe(false);
+      } finally {
+        fs.chmodSync(dir, 0o755);
+      }
+    },
+  );
+
+  it('0085 — un fichier à la place du dossier dédié (ENOTDIR) vaut « aucun sous-run », pas un crash', () => {
+    fs.mkdirSync(path.join(projectRoot, '.cop1'), { recursive: true });
+    fs.writeFileSync(path.join(projectRoot, '.cop1', 'worktrees'), 'pas un dossier');
+    // ENOTDIR au readdir du chemin exact ou d'un composant : layout non-orchestrateur,
+    // donc aucun sous-run — et surtout jamais d'exception.
+    expect(() => computeUpgradeOk(projectRoot)).not.toThrow();
+  });
+
   it('le veto de l’appelant force à faux même sur arbre propre', () => {
     expect(computeUpgradeOk(projectRoot, true)).toBe(false);
   });
