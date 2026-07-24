@@ -5,7 +5,7 @@ type: chore
 priority: P0
 epic:
 status: todo
-ready:
+ready: 2026-07-24
 pr:
 created: 2026-07-19
 ---
@@ -52,11 +52,31 @@ propre boîte noire sera un feu rouge permanent qu'il devra apprendre à ne pas 
 - [ ] Le levier de veto reste intact (l'appelant peut toujours forcer à faux, jamais à
       vrai).
 
+## Décision produit — grooming du 2026-07-24 (PO, checkpoint product-builder)
+
+**Modèle de référence choisi par le PO : la mise à jour de Claude.** « Quand une session
+tourne, on ne peut pas mettre à jour ; si pas d'activité en cours, on peut. » Traduction
+dans le monde du kit :
+
+- **Population comptée = les runs de supervision ouverts** dans `.supervision/runs/` de
+  la racine effective (normalisée arbre principal, ADR-0019) — l'« activité » que le kit
+  VOIT, comme Claude ne compte que ses propres sessions. Le **run courant** (arrêté à son
+  gate au moment du calcul) est **exclu** : un autre run ouvert ⇒ pas quiescent.
+- **La topologie git des worktrees sort du prédicat** (les 7 worktrees de travail du PO
+  ne comptent plus) ; la moitié « arbre propre » reste (son échelle exacte = fiche 0084).
+- **« On peut forcer, mais il faut indiquer ce que ça implique »** (PO) : le forçage est
+  une prérogative du **siège humain en aval** — le signal ne ment jamais (D11 intact :
+  veto → false seulement, jamais l'inverse). L'affichage des conséquences (quels runs en
+  vol) relève du **flux d'adoption** → fiche 0050 (canal de release) ; le payload émis
+  reste le booléen du contrat v0.1 (raison détaillée = extension v0.2, fiche 0029).
+- **Question ouverte PO consignée** : « redémarrage de l'appli, mais laquelle ? »
+  (serveur MCP ? méthode ? cop1 ?) — mécanique d'adoption D1/D2, routée fiche 0050.
+
 ## Notes
 
 - **Décision produit**, pas technique : c'est au PO de dire ce que « c'est un bon moment
   pour monter de version » doit signifier chez lui. Le grooming doit poser la question
-  explicitement.
+  explicitement. → **Posée et tranchée le 2026-07-24, cf. section ci-dessus.**
 - Complète la fiche 0084 (cohérence d'échelle du calcul) : 0084 corrige *comment* on
   mesure, 0085 décide *quoi* on mesure.
 - Réfs : `src/supervision/upgrade-ok.ts` ; captures des 2026-07-13 (décision sur
