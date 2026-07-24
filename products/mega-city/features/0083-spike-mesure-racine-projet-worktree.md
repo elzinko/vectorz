@@ -39,15 +39,57 @@ invisible**. 20 minutes de mesure lèvent le doute.
 
 ## Critères d'acceptation
 
-- [ ] Dans un projet **labo neuf** (dépôt git ordinaire, jamais vectorz), on relève :
+- [x] Dans un projet **labo neuf** (dépôt git ordinaire, jamais vectorz), on relève :
       `process.cwd()` et `process.env.CLAUDE_PROJECT_DIR` d'un serveur stdio lancé par
       Claude Code **depuis un worktree** et **depuis l'arbre principal**.
-- [ ] Le relevé est fait par un **moyen indépendant du kit** (le kit ne lit pas encore
+- [x] Le relevé est fait par un **moyen indépendant du kit** (le kit ne lit pas encore
       la variable) — un serveur jetable qui imprime son environnement suffit.
-- [ ] Résultat consigné dans la fiche : la variable pointe-t-elle le worktree ou l'arbre
+- [x] Résultat consigné dans la fiche : la variable pointe-t-elle le worktree ou l'arbre
       principal ?
-- [ ] Conclusion écrite : la normalisation vers l'arbre principal reste-t-elle nécessaire
+- [x] Conclusion écrite : la normalisation vers l'arbre principal reste-t-elle nécessaire
       (fiche 0086), et l'ordre de résolution proposé est-il sûr ?
+
+## Résultats du relevé — 2026-07-24, Claude Code 2.1.218 (macOS)
+
+**Protocole.** Labo jetable hors vectorz : dépôt git neuf + worktree **externe**
+(`../repo-wt`) + worktree **imbriqué** (`.claude/worktrees/wt-nested`, la topologie des
+sessions Claude Code — le cas réel du PO). Sonde = serveur MCP stdio minimal déclaré dans
+le `.mcp.json` du projet (`enableAllProjectMcpServers: true`), qui append `{cwd, env}` en
+JSONL **dès le spawn**, avant tout handshake. Runs `claude -p` (headless, entrypoint
+`sdk-cli`) en environnement nettoyé (`env -i`) pour qu'aucune variable `CLAUDE*` de la
+session parente ne contamine la mesure. 3 runs, 3 lignes de relevé.
+
+| Lancé depuis | `process.cwd()` du serveur | `CLAUDE_PROJECT_DIR` |
+|---|---|---|
+| arbre principal (`repo/`) | `repo/` | `repo/` |
+| worktree externe (`repo-wt/`) | `repo-wt/` | **`repo-wt/`** |
+| worktree imbriqué (`repo/.claude/worktrees/wt-nested/`) | `…/wt-nested/` | **`…/wt-nested/`** |
+
+**Lecture.** `CLAUDE_PROJECT_DIR` est bien **injectée dans l'environnement du serveur**
+(ce que la doc ne disait que pour les hooks) — mais elle vaut le **dossier de lancement
+de la session** : dans les trois cas mesurés, `CLAUDE_PROJECT_DIR == cwd`. Lancée depuis
+un worktree, elle pointe **le worktree**, jamais l'arbre principal. « Stable project
+root » signifie « stable pendant la session », pas « normalisé au dépôt principal ».
+
+**Limites du relevé.** Une version de Claude Code (2.1.218), une machine, mode headless
+`-p` ; une session interactive passe par le même lanceur de serveurs MCP (très faible
+risque de divergence, non re-mesuré). À re-vérifier si le comportement de
+`CLAUDE_PROJECT_DIR` change dans une version future.
+
+## Conclusion (impact 0086 et ordre de résolution)
+
+1. **La normalisation vers l'arbre principal (fiche 0086) reste nécessaire** — c'est
+   même le seul mécanisme possible : aucune des deux sources d'environnement ne remonte
+   au dépôt principal. Sans elle, tout journal écrit depuis une session worktree part
+   dans le worktree et disparaît avec lui (perte silencieuse constatée). La 0086 doit la
+   faire **côté kit** (`git rev-parse --git-common-dir` ou équivalent), pas espérer la
+   recevoir de l'environnement.
+2. **L'ordre `SUPERVISION_PROJECT_ROOT` > `CLAUDE_PROJECT_DIR` > `cwd` est sûr mais ne
+   suffit pas** : `CLAUDE_PROJECT_DIR` ≈ `cwd` en pratique (mesuré identiques) ; l'ajouter
+   n'apporte qu'une meilleure stabilité de session, aucune protection worktree. Il peut
+   être adopté tel quel, **à condition** que la normalisation git de la 0086 s'applique
+   **par-dessus le résultat** de cette résolution (et que l'échappatoire explicite de la
+   0086 reste le seul moyen d'écrire dans le worktree).
 
 ## Notes
 
