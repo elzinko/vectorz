@@ -2,7 +2,7 @@
 id: 0082
 title: Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés)
 type: feature
-priority: P2
+priority: P1
 epic:
 status: idea
 ready:
@@ -84,10 +84,32 @@ modèle.
 
 ## Notes / décisions
 
+- **Montée en P1 par le PO (2026-07-25).** Motif : « il faudrait pouvoir ajouter des
+  projets » est devenu la demande directe du PO en découvrant le Moniteur. Le moment
+  anticipé ci-dessous — « devrait précéder le passage à 2 projets supervisés » — est
+  arrivé.
 - **P2 confirmée par le PO** (2026-07-19). Ne bloque ni 0058 (BMAD peut démarrer en v1
   pure) ni 0078 (le `.mcpb` reste le geste d'ancrage) — mais **devrait précéder** le
   passage à 2 projets supervisés simultanés, moment où la double saisie et l'absence
   d'attendu de méthode commencent à coûter.
+- **✅ Vérifié sur pièce le 2026-07-25** — lève l'item de grooming « références au
+  moniteur à confirmer » ci-dessous. Côté lecture, le moniteur est **déjà multi-projets**
+  et la double saisie est réelle :
+  - `supervision.watch_roots` est une **liste** (`ConfigSchema.ts:99`,
+    `z.array(z.string()).default([])`) — plusieurs projets surveillés simultanément
+    fonctionnent sans modification ;
+  - elle est lue **une seule fois, au démarrage du daemon** (`DaemonService.wireSupervision`,
+    « chargement one-shot ») ⇒ ajouter un projet impose aujourd'hui d'éditer le YAML **et
+    de redémarrer le daemon** ; liste vide ⇒ supervision **dormante**, aucun watcher ;
+  - **aucune interface** ne permet d'ajouter une racine : le seul geste est l'édition
+    manuelle de `cop1.config.yaml`.
+  ⇒ la « dérivation de la liste du moniteur depuis le registre » est donc bien un
+  remplacement d'un `watch_roots` écrit à la main, et non d'un mécanisme dynamique
+  existant. Le point de branchement est `wireSupervision` (un seul appelant).
+- **Prérequis technique identifié (2026-07-25)** : le « marquage d'écart de méthode »
+  (méthode déclarée ↦ méthode attendue) n'a aujourd'hui **rien à comparer** — la
+  projection ne porte ni `method` ni `seat` (fiche racine **0061**). 0061 devrait précéder
+  ce volet-là de la fiche.
 - **Contrat v0.1 non rouvert** : aucun nouvel outil, aucun champ d'enveloppe.
 - **`portfolio.sh` est un faux ami** : il agrège les backlogs internes du monorepo, pas
   des projets clients — mais son **motif** (script en lecture seule qui agrège des
@@ -99,5 +121,5 @@ modèle.
 - Réfs : fiche 0050 (kit émetteur, shippé — invariant anti-falsification), 0058 (BMAD,
   2ᵉ méthode), 0078 (`.mcpb`, la clé Desktop), ADR-021 (couplages interdits, doctrine
   statique/versionné/zéro runtime partagé), ADR-0001 (le script range, l'humain décide).
-  *(Les références au moniteur — liste de dossiers surveillés — sont à confirmer sur
-  pièce au grooming : le vérificateur adverse du panel n'a pas pu passer.)*
+  *(Les références au moniteur — liste de dossiers surveillés — étaient à confirmer sur
+  pièce : **fait le 2026-07-25**, voir la note de vérification ci-dessus.)*
