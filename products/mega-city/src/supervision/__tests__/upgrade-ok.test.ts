@@ -31,7 +31,7 @@ describe('computeUpgradeOk — rubrique E', () => {
     fs.rmSync(projectRoot, { recursive: true, force: true });
   });
 
-  it('est vrai quand l’arbre est propre et sans worktree en vol', () => {
+  it('est vrai quand l’arbre est propre et sans sous-run en vol', () => {
     expect(computeUpgradeOk(projectRoot)).toBe(true);
   });
 
@@ -40,11 +40,52 @@ describe('computeUpgradeOk — rubrique E', () => {
     expect(computeUpgradeOk(projectRoot)).toBe(false);
   });
 
-  it('est faux quand un worktree additionnel est en vol', () => {
+  it('0085 — reste VRAI quand des worktrees de travail existent hors du dossier dédié (le cas « 7 worktrees du PO »)', () => {
+    // Le cas qui échouait avant la fiche 0085 : un humain travaille en worktrees
+    // (sessions, chantiers parallèles) — ce ne sont PAS des sous-runs de
+    // l'orchestrateur, ils ne doivent pas éteindre le signal en permanence.
     worktreeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mega-city-upgrade-ok-wt-'));
     fs.rmdirSync(worktreeDir); // git worktree add veut créer le dossier lui-même
     execFileSync('git', ['worktree', 'add', worktreeDir, '-b', 'wt-branch'], { cwd: projectRoot });
+    expect(computeUpgradeOk(projectRoot)).toBe(true);
+  });
+
+  it('0085 — est faux quand un sous-run est en vol dans le dossier dédié (.cop1/worktrees)', () => {
+    // Peu importe que l'entrée soit un vrai worktree git ou un résidu : sa seule
+    // présence dans le dossier DÉDIÉ aux sous-runs signifie « travail en vol »
+    // (détection pur-fs, aucune commande git).
+    fs.mkdirSync(path.join(projectRoot, '.cop1', 'worktrees', 'run-123'), { recursive: true });
     expect(computeUpgradeOk(projectRoot)).toBe(false);
+  });
+
+  it('0085 — reste vrai quand le dossier dédié existe mais est vide (sous-runs nettoyés)', () => {
+    fs.mkdirSync(path.join(projectRoot, '.cop1', 'worktrees'), { recursive: true });
+    expect(computeUpgradeOk(projectRoot)).toBe(true);
+  });
+
+  it.skipIf(process.getuid?.() === 0)(
+    'fail closed — dossier dédié présent mais illisible (droits) ⇒ faux, jamais vrai (revue Codex #47)',
+    () => {
+      // Un signal de sécurité qui n'a pas pu regarder ne répond pas « OK » : seul
+      // « dossier absent » vaut « aucun sous-run » ; un readdir en échec (EACCES…)
+      // rend l'état inobservable ⇒ false. (Skippé sous root : chmod 000 n'y bloque rien.)
+      const dir = path.join(projectRoot, '.cop1', 'worktrees');
+      fs.mkdirSync(dir, { recursive: true });
+      fs.chmodSync(dir, 0o000);
+      try {
+        expect(computeUpgradeOk(projectRoot)).toBe(false);
+      } finally {
+        fs.chmodSync(dir, 0o755);
+      }
+    },
+  );
+
+  it('0085 — un fichier à la place du dossier dédié (ENOTDIR) vaut « aucun sous-run », pas un crash', () => {
+    fs.mkdirSync(path.join(projectRoot, '.cop1'), { recursive: true });
+    fs.writeFileSync(path.join(projectRoot, '.cop1', 'worktrees'), 'pas un dossier');
+    // ENOTDIR au readdir du chemin exact ou d'un composant : layout non-orchestrateur,
+    // donc aucun sous-run — et surtout jamais d'exception.
+    expect(() => computeUpgradeOk(projectRoot)).not.toThrow();
   });
 
   it('le veto de l’appelant force à faux même sur arbre propre', () => {

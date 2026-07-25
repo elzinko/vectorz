@@ -129,11 +129,21 @@ Fonctionnalité: Kit émetteur de supervisabilité v0.1
   # Rubrique E — upgrade_ok : calcul mécanique, veto possible, jamais forçable à true
   # ---------------------------------------------------------------------------
 
-  Scénario: upgrade_ok est vrai quand l'arbre git est propre et sans worktree en vol
+  Scénario: upgrade_ok est vrai quand l'arbre git est propre et sans sous-run en vol
     Soit un run démarré via "run_start" dans un projet dont l'arbre git est propre
-    Et aucun worktree ni sous-run n'est en cours sur ce projet
+    Et aucun sous-run de l'orchestrateur n'est en vol dans son dossier dédié
     Quand j'appelle "gate_reached" sans fournir de veto
     Alors l'événement "gate.reached" porte "upgrade_ok" à "true"
+
+  Scénario: 0085 — upgrade_ok reste vrai malgré des worktrees de TRAVAIL hors dossier dédié
+    Soit un run démarré via "run_start" dans un projet dont l'arbre git est propre
+    Et des worktrees de travail existent ailleurs dans le dépôt (sessions de l'opérateur)
+    Mais aucune entrée n'est présente dans le dossier dédié aux sous-runs (".cop1/worktrees/")
+    Quand j'appelle "gate_reached" sans fournir de veto
+    Alors l'événement "gate.reached" porte "upgrade_ok" à "true"
+    # Décision produit PO 2026-07-24 (fiche 0085, modèle « MAJ Claude ») : les worktrees
+    # de l'opérateur ne sont pas des sous-runs — un signal constamment faux est un
+    # signal qu'on apprend à ignorer.
 
   Scénario: upgrade_ok est faux quand l'arbre git est sale
     Soit un run démarré via "run_start" dans un projet dont l'arbre git contient
@@ -141,9 +151,9 @@ Fonctionnalité: Kit émetteur de supervisabilité v0.1
     Quand j'appelle "gate_reached" sans fournir de veto
     Alors l'événement "gate.reached" porte "upgrade_ok" à "false"
 
-  Scénario: upgrade_ok est faux quand un worktree est en vol
+  Scénario: upgrade_ok est faux quand un sous-run est en vol dans le dossier dédié
     Soit un run démarré via "run_start" dans un projet dont l'arbre git est propre
-    Mais un worktree additionnel est actuellement ouvert sur ce projet
+    Mais une entrée (worktree ou résidu) est présente dans ".cop1/worktrees/"
     Quand j'appelle "gate_reached" sans fournir de veto
     Alors l'événement "gate.reached" porte "upgrade_ok" à "false"
 

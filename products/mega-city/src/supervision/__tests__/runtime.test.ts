@@ -231,10 +231,20 @@ describe('Rubrique E — upgrade_ok (intégration runtime)', () => {
     expect((events[1] as { payload: { upgrade_ok: boolean } }).payload.upgrade_ok).toBe(false);
   });
 
-  it('est faux quand un worktree additionnel est en vol', () => {
+  it('0085 — reste vrai malgré un worktree de TRAVAIL hors dossier dédié (population redéfinie)', () => {
     extraWorktree = fs.mkdtempSync(path.join(os.tmpdir(), 'mega-city-runtime-wt-'));
     fs.rmdirSync(extraWorktree);
     execFileSync('git', ['worktree', 'add', extraWorktree, '-b', 'wt-branch'], { cwd: projectRoot });
+
+    const runtime = new SupervisionRuntime(projectRoot);
+    const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+    runtime.gateReached({ gate_id: 'gate-1', outcome: 'ok' });
+    const events = readEvents(projectRoot, started.run_id);
+    expect((events[1] as { payload: { upgrade_ok: boolean } }).payload.upgrade_ok).toBe(true);
+  });
+
+  it('0085 — est faux quand un sous-run est en vol dans le dossier dédié (.cop1/worktrees)', () => {
+    fs.mkdirSync(path.join(projectRoot, '.cop1', 'worktrees', 'run-abc'), { recursive: true });
 
     const runtime = new SupervisionRuntime(projectRoot);
     const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
