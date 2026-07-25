@@ -71,6 +71,16 @@ export interface ReduceStateResult {
   lastEventSeq?: number;
 }
 
+/**
+ * Méthode déclarée par le `run.started` (fiche 0061). Optionnelle et tolérante :
+ * un journal semi-hostile peut l'omettre ou la mal-former — dans ce cas elle
+ * reste `undefined`, jamais une valeur inventée (même doctrine que `tokens`).
+ */
+export interface MethodRef {
+  name: string;
+  version?: string;
+}
+
 /** Read-model d'affichage d'un run (mode moniteur) — jamais de champ "phase". */
 export interface RunProjection {
   runId: string;
@@ -82,4 +92,11 @@ export interface RunProjection {
   notices: Notice[];
   /** D9 : jamais auto-déclaré — 'absent' tant qu'aucune mesure runtime n'existe. */
   tokens: { provenance: 'measured' | 'absent' };
+  /**
+   * Méthode + siège déclarés par `run.started` (fiche 0061). `undefined` si le
+   * journal ne les porte pas (ou les porte mal-formés) : l'absence est affichée
+   * comme absence, jamais comme une valeur par défaut.
+   */
+  method?: MethodRef;
+  seat?: string;
 }

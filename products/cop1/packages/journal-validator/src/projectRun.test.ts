@@ -28,6 +28,20 @@ describe('projectRun — read-model de projection live (fiche 0031 / ADR-028)', 
     }
   });
 
+  it('projette la méthode et le siège déclarés par run.started (fiche 0061)', () => {
+    const projection = projectRun(realRunToyDir());
+
+    expect(projection.method).toEqual({ name: 'supervision-demo', version: '0.0.1' });
+    expect(projection.seat).toBe('human');
+  });
+
+  it('un journal sans run.started projette method/seat undefined, sans casser (fiche 0061)', () => {
+    const projection = projectRun(fixture('run-started-missing'));
+
+    expect(projection.method).toBeUndefined();
+    expect(projection.seat).toBeUndefined();
+  });
+
   it('un gate.resumed avec command_ref est projeté avec origine "command"', () => {
     const projection = projectRun(fixture('commands-resume-origin'));
 
