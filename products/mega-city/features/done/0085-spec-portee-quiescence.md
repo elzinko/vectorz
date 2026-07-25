@@ -4,9 +4,9 @@ title: Redéfinir ce que compte la quiescence — les sous-runs de l'orchestrate
 type: chore
 priority: P0
 epic:
-status: todo
+status: shipped
 ready: 2026-07-24
-pr:
+pr: "#47"
 created: 2026-07-19
 ---
 
