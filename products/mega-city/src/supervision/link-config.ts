@@ -8,6 +8,26 @@
  * <supervision-mcp.ts>`, `SUPERVISION_PROJECT_ROOT` fixé à l'init — jamais un
  * paramètre d'outil (invariant anti-falsification, fiche 0050).
  */
+import { isAbsolute, resolve } from 'node:path';
+
+/**
+ * Résout le chemin du projet passé en argument (revue Codex PR #51). Piège : la
+ * commande documentée est `pnpm --dir products/mega-city …`, or `--dir` fait que
+ * le `cwd` du script EST `products/mega-city`, pas le dossier où l'utilisateur a
+ * tapé la commande. Un chemin relatif (`.`, `../projet`) serait donc résolu au
+ * mauvais endroit — et brancherait le mauvais projet. On résout contre
+ * `INIT_CWD` (posé par pnpm/npm = dossier d'invocation) quand il est présent,
+ * sinon contre le `cwd` courant. Un chemin absolu passe tel quel.
+ */
+export function resolveProjectPath(
+  arg: string,
+  initCwd: string | undefined,
+  cwd: string,
+): string {
+  if (isAbsolute(arg)) return arg;
+  const base = initCwd && initCwd.length > 0 ? initCwd : cwd;
+  return resolve(base, arg);
+}
 
 export interface SupervisionServerConfig {
   command: string;

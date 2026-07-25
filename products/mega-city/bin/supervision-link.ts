@@ -14,7 +14,11 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ensureSupervisionIgnored, mergeMcpConfig } from '../src/supervision/link-config.js';
+import {
+  ensureSupervisionIgnored,
+  mergeMcpConfig,
+  resolveProjectPath,
+} from '../src/supervision/link-config.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
@@ -31,7 +35,10 @@ if (!arg || arg === '-h' || arg === '--help') {
   process.exit(arg ? 0 : 2);
 }
 
-const projectRoot = resolve(arg);
+// Résolution contre INIT_CWD (dossier d'invocation) : sous `pnpm --dir`, le cwd
+// du script est le package, pas là où l'utilisateur a tapé la commande (revue
+// Codex PR #51). Un `.` ou `../projet` vise ainsi le bon projet.
+const projectRoot = resolveProjectPath(arg, process.env.INIT_CWD, process.cwd());
 if (!existsSync(projectRoot)) fail(`projet introuvable : ${projectRoot}`);
 
 const megaCityDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');

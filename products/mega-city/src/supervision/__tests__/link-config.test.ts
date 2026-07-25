@@ -4,6 +4,7 @@ import {
   ensureSupervisionIgnored,
   type LinkPaths,
   mergeMcpConfig,
+  resolveProjectPath,
 } from '../link-config.js';
 
 const PATHS: LinkPaths = {
@@ -74,5 +75,22 @@ describe('link-config (fiche 0094)', () => {
 
   it('inserts a missing trailing newline before appending', () => {
     expect(ensureSupervisionIgnored('node_modules')).toBe('node_modules\n.supervision/\n');
+  });
+
+  // revue Codex PR #51 — le piège `pnpm --dir` sur les chemins relatifs
+  describe('resolveProjectPath', () => {
+    it('returns an absolute path unchanged', () => {
+      expect(resolveProjectPath('/abs/projet', '/caller', '/pkg')).toBe('/abs/projet');
+    });
+
+    it('resolves a relative path against INIT_CWD (caller dir), not the script cwd', () => {
+      expect(resolveProjectPath('.', '/caller', '/pkg')).toBe('/caller');
+      expect(resolveProjectPath('../autre', '/caller/sub', '/pkg')).toBe('/caller/autre');
+    });
+
+    it('falls back to cwd when INIT_CWD is absent or empty', () => {
+      expect(resolveProjectPath('projet', undefined, '/cwd')).toBe('/cwd/projet');
+      expect(resolveProjectPath('projet', '', '/cwd')).toBe('/cwd/projet');
+    });
   });
 });
