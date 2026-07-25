@@ -4,9 +4,9 @@ title: Le calcul de quiescence mélange deux échelles (propreté par dossier, w
 type: bug
 priority: P0
 epic:
-status: todo
+status: shipped
 ready: 2026-07-25
-pr:
+pr: "#48"
 created: 2026-07-19
 ---
 
