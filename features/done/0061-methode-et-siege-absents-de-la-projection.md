@@ -4,9 +4,9 @@ title: La projection jette la méthode et le siège — impossible de savoir QUI
 type: bug
 priority: P1
 epic:
-status: todo
+status: shipped
 ready:
-pr:
+pr: "#50"
 created: 2026-07-25
 ---
 

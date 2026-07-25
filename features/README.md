@@ -23,8 +23,8 @@
 | 0044 | Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A) | chore | P1 |  | 🔴 todo |  |
 | 0050 | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | 🔴 todo |  |
 | 0052 | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 0051 | 🔴 todo |  |
-| 0059 | Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en cours, projet, ordre) | feature | P1 |  | 🔴 todo |  |
-| 0061 | La projection jette la méthode et le siège — impossible de savoir QUI a produit un run, ni avec quelle version | bug | P1 |  | 🔴 todo |  |
+| 0059 | Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en cours, projet, ordre) | feature | P1 |  | ✅ shipped | #50 |
+| 0061 | La projection jette la méthode et le siège — impossible de savoir QUI a produit un run, ni avec quelle version | bug | P1 |  | ✅ shipped | #50 |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | ✅ shipped | #32 |
@@ -80,4 +80,4 @@
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | 💡 idea |  |
 | 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0059, 0061.

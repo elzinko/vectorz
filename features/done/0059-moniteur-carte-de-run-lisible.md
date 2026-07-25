@@ -4,9 +4,9 @@ title: Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en 
 type: feature
 priority: P1
 epic:
-status: todo
+status: shipped
 ready:
-pr:
+pr: "#50"
 created: 2026-07-25
 ---
 
