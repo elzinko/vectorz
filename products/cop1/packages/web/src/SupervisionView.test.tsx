@@ -92,6 +92,35 @@ describe('SupervisionView', () => {
     expect(await screen.findByText(/méthode non déclarée/i)).toBeTruthy();
   });
 
+  it('keeps the run id as secondary metadata to correlate with the journal (Codex PR #50)', async () => {
+    stubFetch([makeSnapshot({ runId: '2026-07-25T20-47-43-406Z-8c178a95' })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/8c178a95/)).toBeTruthy();
+  });
+
+  it('shows a gate report by its file name, not the full path (Codex PR #50)', async () => {
+    stubFetch([
+      makeSnapshot({
+        state: 'finished',
+        gates: [
+          {
+            gateEventId: 'g1',
+            gateId: 'etape-1',
+            outcome: 'ok',
+            resumedAt: '2026-01-01T00:00:00Z',
+            resumeOrigin: 'self_reported',
+            reportRef: '.supervision/runs/r/report-etape-1-2.md',
+          },
+        ],
+      }),
+    ]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/report-etape-1-2\.md/)).toBeTruthy();
+    expect(screen.queryByText(/\.supervision\/runs\/r\//)).toBeNull();
+  });
+
   it('translates the state into a French badge, never the raw enum', async () => {
     stubFetch([makeSnapshot({ state: 'at_gate' })]);
     render(<SupervisionView />);
@@ -183,17 +212,27 @@ describe('SupervisionView', () => {
     expect(container.querySelectorAll('input')).toHaveLength(0);
   });
 
-  it('escapes hostile journal content — no injected link or script', async () => {
+  it('escapes hostile journal content (gate id AND report ref) — no injected link or script', async () => {
     stubFetch([
       makeSnapshot({
         state: 'at_gate',
-        gates: [{ gateEventId: 'g1', gateId: '<script>x</script>' }],
+        gates: [
+          {
+            gateEventId: 'g1',
+            gateId: '<script>x</script>',
+            reportRef: '/x/<img src=q onerror=alert(1)>.md',
+          },
+        ],
       }),
     ]);
     const { container } = render(<SupervisionView />);
     await screen.findByText(/demo-methode/);
 
-    expect(container.querySelector('a')).toBeNull();
+    // La vraie garantie : le contenu semi-hostile du journal ne fabrique AUCUN
+    // élément (ni lien, ni image, ni script). Un chemin hostile logé dans un
+    // attribut `title` est inerte — React échappe les quotes, on ne peut pas en
+    // sortir — donc on vérifie le DOM produit, pas la chaîne d'attribut.
+    expect(container.querySelectorAll('a, img, script')).toHaveLength(0);
     expect(container.innerHTML).not.toContain('<script>x</script>');
   });
 

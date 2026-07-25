@@ -101,6 +101,16 @@ function projectName(root: string): string {
   return parts[parts.length - 1] ?? root;
 }
 
+/**
+ * Nom de fichier du rapport de gate (revue Codex PR #50) — on montre OÙ vit le
+ * rapport sans le bruit du chemin complet : le basename est lisible, et le chemin
+ * entier reste reconstructible (runDir + basename) et disponible au survol.
+ */
+function reportName(reportRef: string): string {
+  const parts = reportRef.split('/').filter(Boolean);
+  return parts[parts.length - 1] ?? reportRef;
+}
+
 function isRunSnapshot(value: unknown): value is RunSnapshot {
   return (
     typeof value === 'object' &&
@@ -274,6 +284,9 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
           <i className="run-card__k">tokens</i>{' '}
           {run.tokens.provenance === 'measured' ? 'mesurés' : 'non mesurés'}
         </span>
+        <span className="run-card__runid" title={run.runId}>
+          <i className="run-card__k">run</i> <code>{run.runId}</code>
+        </span>
       </div>
 
       {dead && (
@@ -289,6 +302,11 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
           <span className="run-card__wait-msg">
             La méthode s'est arrêtée à ce jalon et attend ta décision.
           </span>
+          {openGate.reportRef && (
+            <span className="run-card__report" title={openGate.reportRef}>
+              rapport : <code>{reportName(openGate.reportRef)}</code>
+            </span>
+          )}
         </div>
       )}
 
@@ -305,6 +323,12 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
                   <span className="run-card__gate-sub">
                     {' '}
                     · {RESUME_ORIGIN_LABEL[gate.resumeOrigin]}
+                  </span>
+                )}
+                {gate.reportRef && (
+                  <span className="run-card__gate-sub" title={gate.reportRef}>
+                    {' '}
+                    · rapport <code>{reportName(gate.reportRef)}</code>
                   </span>
                 )}
               </li>

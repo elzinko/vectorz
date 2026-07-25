@@ -572,3 +572,31 @@ body {
 .run-card__gate-sub {
   color: #64748b;
 }
+
+.run-card__gate-sub code,
+.run-card__report code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+/* run id — métadonnée secondaire (revue Codex) : lisible mais discret, tronqué
+   pour ne pas dominer la carte ; chemin/valeur complète au survol (title). */
+.run-card__runid {
+  min-width: 0;
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.run-card__runid code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.run-card__report {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+}
