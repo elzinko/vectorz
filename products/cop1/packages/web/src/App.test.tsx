@@ -1,11 +1,10 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App.js';
 
 describe('App', () => {
   beforeEach(() => {
-    // Default tab is Run → OrchestratorRunView opens an EventSource on mount.
-    // Stub it so the tab render stays inert in jsdom.
+    // SupervisionView opens an EventSource + fetches /api/supervision/runs on mount.
     vi.stubGlobal(
       'EventSource',
       vi.fn().mockImplementation(() => ({ onmessage: null, close: vi.fn() })),
@@ -21,31 +20,16 @@ describe('App', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders only the live tabs — no dead Projects/Agents/Tasks (fiche 0022)', () => {
+  it('fiche 0059 — the Monitor is the single live surface', () => {
     render(<App />);
-
-    // Live surfaces remain.
-    expect(screen.getByRole('button', { name: 'Run' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Rules' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Connexion' })).toBeTruthy();
-
-    // The tabs that fetched non-existent /api/{projects,agents,tasks} are gone.
-    expect(screen.queryByRole('button', { name: 'Projects' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Agents' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Tasks' })).toBeNull();
+    expect(screen.getByText(/runs supervisés/i)).toBeTruthy();
+    expect(screen.getByText(/aucun run surveillé/i)).toBeTruthy();
   });
 
-  it('defaults to the Run (mission-control) tab', () => {
+  it('fiche 0059 — the "cop1 pilots" surfaces (Run/Rules/Connexion) are no longer mounted', () => {
     render(<App />);
-    // The run launcher form (epic input) is what the Run tab shows when idle.
-    expect(screen.getByLabelText(/epic/i)).toBeTruthy();
-  });
-
-  it('fiche 0031 — offers a "moniteur" tab that renders SupervisionView', async () => {
-    render(<App />);
-
-    fireEvent.click(screen.getByRole('button', { name: /moniteur/i }));
-
-    expect(await screen.findByText(/classe B.*best-effort/i)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Run' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Rules' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Connexion' })).toBeNull();
   });
 });

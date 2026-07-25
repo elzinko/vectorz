@@ -31,6 +31,8 @@ function makeSnapshot(overrides: Record<string, unknown> = {}): Record<string, u
     violations: [],
     notices: [],
     tokens: { provenance: 'measured' },
+    method: { name: 'demo-methode', version: '0.1.0' },
+    seat: 'human',
     projectRoot: '/proj',
     runDir: '/proj/.supervision/runs/run-1',
     liveness: 'alive',
@@ -67,49 +69,113 @@ describe('SupervisionView', () => {
     vi.restoreAllMocks();
   });
 
-  it('hydrates from GET /api/supervision/runs and shows the run', async () => {
-    stubFetch([makeSnapshot({ runId: 'run-1' })]);
+  it('hydrates from GET /api/supervision/runs and shows the run by method name', async () => {
+    stubFetch([makeSnapshot()]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/run-1/)).toBeTruthy();
+    expect(await screen.findByText(/demo-methode/)).toBeTruthy();
     expect(globalThis.fetch).toHaveBeenCalledWith('/api/supervision/runs');
   });
 
-  it('applies a supervision.run.updated SSE frame without reloading', async () => {
-    stubFetch([makeSnapshot({ runId: 'run-1', state: 'running' })]);
+  it('shows the method version and seat (fiche 0061)', async () => {
+    stubFetch([makeSnapshot()]);
     render(<SupervisionView />);
-    await screen.findByText(/run-1/);
 
-    await pushSse('supervision.run.updated', makeSnapshot({ runId: 'run-1', state: 'at_gate' }));
-
-    expect(await screen.findByText(/at_gate/)).toBeTruthy();
+    expect(await screen.findByText(/v0\.1\.0/)).toBeTruthy();
+    expect(await screen.findByText(/human/)).toBeTruthy();
   });
 
-  it('renders command clearance and self-reported resumes distinctly', async () => {
+  it('shows "méthode non déclarée" when a journal omits method (fiche 0061)', async () => {
+    stubFetch([makeSnapshot({ method: undefined })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/méthode non déclarée/i)).toBeTruthy();
+  });
+
+  it('keeps the run id as secondary metadata to correlate with the journal (Codex PR #50)', async () => {
+    stubFetch([makeSnapshot({ runId: '2026-07-25T20-47-43-406Z-8c178a95' })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/8c178a95/)).toBeTruthy();
+  });
+
+  it('shows a gate report by its file name, not the full path (Codex PR #50)', async () => {
     stubFetch([
       makeSnapshot({
-        runId: 'run-1',
-        state: 'at_gate',
+        state: 'finished',
         gates: [
-          { gateEventId: 'g1', gateId: 'gate-a', resumeOrigin: 'command' },
-          { gateEventId: 'g2', gateId: 'gate-b', resumeOrigin: 'self_reported' },
+          {
+            gateEventId: 'g1',
+            gateId: 'etape-1',
+            outcome: 'ok',
+            resumedAt: '2026-01-01T00:00:00Z',
+            resumeOrigin: 'self_reported',
+            reportRef: '.supervision/runs/r/report-etape-1-2.md',
+          },
         ],
       }),
     ]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/clairance par commande/i)).toBeTruthy();
-    expect(await screen.findByText(/self-reported en session/i)).toBeTruthy();
+    expect(await screen.findByText(/report-etape-1-2\.md/)).toBeTruthy();
+    expect(screen.queryByText(/\.supervision\/runs\/r\//)).toBeNull();
   });
 
-  it('shows absent token provenance as "absents-et-dits-absents", never 0', async () => {
+  it('translates the state into a French badge, never the raw enum', async () => {
+    stubFetch([makeSnapshot({ state: 'at_gate' })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/en attente de ta décision/i)).toBeTruthy();
+    expect(screen.queryByText(/^at_gate$/)).toBeNull();
+  });
+
+  it('applies a supervision.run.updated SSE frame without reloading', async () => {
+    stubFetch([makeSnapshot({ state: 'running' })]);
+    render(<SupervisionView />);
+    await screen.findByText(/demo-methode/);
+
+    await pushSse('supervision.run.updated', makeSnapshot({ state: 'at_gate' }));
+
+    expect(await screen.findByText(/en attente de ta décision/i)).toBeTruthy();
+  });
+
+  it('highlights the open gate awaiting a decision (at_gate)', async () => {
+    stubFetch([
+      makeSnapshot({
+        state: 'at_gate',
+        gates: [{ gateEventId: 'g1', gateId: 'mon-jalon', outcome: 'ok' }],
+      }),
+    ]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/arrêtée à ce jalon/i)).toBeTruthy();
+    expect(await screen.findByText(/mon-jalon/)).toBeTruthy();
+  });
+
+  it('renders command clearance and self-reported resumes distinctly', async () => {
+    stubFetch([
+      makeSnapshot({
+        state: 'finished',
+        gates: [
+          { gateEventId: 'g1', gateId: 'gate-a', resumedAt: '2026-01-01T00:00:00Z', resumeOrigin: 'command' },
+          { gateEventId: 'g2', gateId: 'gate-b', resumedAt: '2026-01-01T00:01:00Z', resumeOrigin: 'self_reported' },
+        ],
+      }),
+    ]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/reprise autorisée par commande/i)).toBeTruthy();
+    expect(await screen.findByText(/reprise déclarée en session/i)).toBeTruthy();
+  });
+
+  it('shows absent token provenance as "non mesurés", never 0', async () => {
     stubFetch([makeSnapshot({ tokens: { provenance: 'absent' } })]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/absents-et-dits-absents/i)).toBeTruthy();
+    expect(await screen.findByText(/non mesurés/i)).toBeTruthy();
   });
 
-  it('renders violations while keeping the run readable', async () => {
+  it('renders a violation message while keeping the run readable', async () => {
     stubFetch([
       makeSnapshot({
         violations: [{ code: 'contract.violation', message: 'ligne invalide', line: 4 }],
@@ -117,58 +183,60 @@ describe('SupervisionView', () => {
     ]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/run-1/)).toBeTruthy();
-    expect(await screen.findByText(/contract\.violation/)).toBeTruthy();
+    expect(await screen.findByText(/demo-methode/)).toBeTruthy();
+    expect(await screen.findByText(/ligne invalide/)).toBeTruthy();
   });
 
-  it('flags a presumed_dead run with "aux dernières nouvelles"', async () => {
+  it('flags a presumed_dead run', async () => {
     stubFetch([makeSnapshot({ liveness: 'presumed_dead' })]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/aux dernières nouvelles/i)).toBeTruthy();
+    expect(await screen.findByText(/silence prolongé/i)).toBeTruthy();
+    expect(await screen.findByText(/aucun signe de vie/i)).toBeTruthy();
   });
 
-  it('shows the "classe B — best-effort" badge', async () => {
+  it('shows the "classe B" reliability note', async () => {
     stubFetch([makeSnapshot()]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/classe B.*best-effort/i)).toBeTruthy();
+    expect(await screen.findByText(/classe B/i)).toBeTruthy();
   });
 
-  it('never renders a piloting control (no button, no link, anywhere in the panel)', async () => {
+  it('never renders a piloting control (no button, no link, no input anywhere)', async () => {
     stubFetch([makeSnapshot({ state: 'at_gate' })]);
     const { container } = render(<SupervisionView />);
-    await screen.findByText(/run-1/);
+    await screen.findByText(/demo-methode/);
 
     expect(container.querySelectorAll('button')).toHaveLength(0);
     expect(container.querySelectorAll('a')).toHaveLength(0);
     expect(container.querySelectorAll('input')).toHaveLength(0);
   });
 
-  it('renders report_ref as inert escaped text, never a clickable link', async () => {
+  it('escapes hostile journal content (gate id AND report ref) — no injected link or script', async () => {
     stubFetch([
       makeSnapshot({
+        state: 'at_gate',
         gates: [
           {
             gateEventId: 'g1',
-            gateId: 'gate-a',
-            reportRef: '/proj/reports/<script>x</script>.md',
+            gateId: '<script>x</script>',
+            reportRef: '/x/<img src=q onerror=alert(1)>.md',
           },
         ],
       }),
     ]);
     const { container } = render(<SupervisionView />);
+    await screen.findByText(/demo-methode/);
 
-    expect(await screen.findByText(/reports/)).toBeTruthy();
-    expect(container.querySelector('a')).toBeNull();
+    // La vraie garantie : le contenu semi-hostile du journal ne fabrique AUCUN
+    // élément (ni lien, ni image, ni script). Un chemin hostile logé dans un
+    // attribut `title` est inerte — React échappe les quotes, on ne peut pas en
+    // sortir — donc on vérifie le DOM produit, pas la chaîne d'attribut.
+    expect(container.querySelectorAll('a, img, script')).toHaveLength(0);
     expect(container.innerHTML).not.toContain('<script>x</script>');
   });
 
   it('does not let a stale REST hydration overwrite a more recent SSE frame (finding 1)', async () => {
-    // Real sequence: fetch /api/supervision/runs starts (in flight, will resolve
-    // with seq:3 "running"), a fresher SSE frame (seq:4 "at_gate") arrives and is
-    // applied first, then the stale fetch response resolves. The stale response
-    // must NOT overwrite the fresher SSE state.
     let resolveFetch!: (value: { ok: true; status: 200; json: () => Promise<unknown[]> }) => void;
     vi.stubGlobal(
       'fetch',
@@ -181,50 +249,39 @@ describe('SupervisionView', () => {
     );
     render(<SupervisionView />);
 
-    await pushSse(
-      'supervision.run.updated',
-      makeSnapshot({ runId: 'run-1', state: 'at_gate', lastEventSeq: 4 }),
-    );
-    await screen.findByText(/at_gate/);
+    await pushSse('supervision.run.updated', makeSnapshot({ state: 'at_gate', lastEventSeq: 4 }));
+    await screen.findByText(/en attente de ta décision/i);
 
     await act(async () => {
       resolveFetch({
         ok: true,
         status: 200,
-        json: () =>
-          Promise.resolve([makeSnapshot({ runId: 'run-1', state: 'running', lastEventSeq: 3 })]),
+        json: () => Promise.resolve([makeSnapshot({ state: 'running', lastEventSeq: 3 })]),
       });
       await Promise.resolve();
     });
 
-    expect(await screen.findByText(/at_gate/)).toBeTruthy();
-    expect(screen.queryByText(/^running$/)).toBeNull();
+    expect(await screen.findByText(/en attente de ta décision/i)).toBeTruthy();
+    expect(screen.queryByText(/^en cours$/i)).toBeNull();
   });
 
   it('applies a fresher SSE frame over an older one, and ignores a stale SSE frame (finding 1, SSE side)', async () => {
-    stubFetch([makeSnapshot({ runId: 'run-1', state: 'running', lastEventSeq: 3 })]);
+    stubFetch([makeSnapshot({ state: 'running', lastEventSeq: 3 })]);
     render(<SupervisionView />);
-    await screen.findByText(/run-1/);
+    await screen.findByText(/demo-methode/);
 
-    await pushSse(
-      'supervision.run.updated',
-      makeSnapshot({ runId: 'run-1', state: 'at_gate', lastEventSeq: 4 }),
-    );
-    expect(await screen.findByText(/at_gate/)).toBeTruthy();
+    await pushSse('supervision.run.updated', makeSnapshot({ state: 'at_gate', lastEventSeq: 4 }));
+    expect(await screen.findByText(/en attente de ta décision/i)).toBeTruthy();
 
-    // A stale SSE frame (lower seq) must not regress the displayed state.
-    await pushSse(
-      'supervision.run.updated',
-      makeSnapshot({ runId: 'run-1', state: 'running', lastEventSeq: 2 }),
-    );
-    expect(await screen.findByText(/at_gate/)).toBeTruthy();
+    await pushSse('supervision.run.updated', makeSnapshot({ state: 'running', lastEventSeq: 2 }));
+    expect(await screen.findByText(/en attente de ta décision/i)).toBeTruthy();
   });
 
   it('displays a run with runId "__proto__" without polluting Object.prototype (finding 2)', async () => {
     stubFetch([makeSnapshot({ runId: '__proto__' })]);
     render(<SupervisionView />);
 
-    expect(await screen.findByText(/__proto__/)).toBeTruthy();
+    expect(await screen.findByText(/demo-methode/)).toBeTruthy();
     expect(Object.prototype.hasOwnProperty.call(Object.prototype, 'state')).toBe(false);
     expect(({} as Record<string, unknown>).state).toBeUndefined();
   });
@@ -246,7 +303,7 @@ describe('SupervisionView', () => {
   it('falls back to lastEventTs when lastAbsorbedAt is absent (finding 4)', async () => {
     const now = Date.now();
     vi.setSystemTime(now);
-    stubFetch([makeSnapshot({ lastEventTs: new Date(now - 7_000).toISOString() })]);
+    stubFetch([makeSnapshot({ lastAbsorbedAt: undefined, lastEventTs: new Date(now - 7_000).toISOString() })]);
     render(<SupervisionView />);
 
     expect(await screen.findByText(/il y a 7s/)).toBeTruthy();
@@ -259,11 +316,11 @@ describe('SupervisionView', () => {
     }));
     stubFetch([makeSnapshot({ violations })]);
     const { container } = render(<SupervisionView />);
-    await screen.findByText(/run-1/);
+    await screen.findByText(/demo-methode/);
 
     await waitFor(() => {
-      const items = Array.from(container.querySelectorAll('.error li')).filter((li) =>
-        li.textContent?.includes('contract.violation.'),
+      const items = Array.from(container.querySelectorAll('.run-card__problems li')).filter((li) =>
+        li.textContent?.startsWith('ligne '),
       );
       expect(items.length).toBe(100);
     });
