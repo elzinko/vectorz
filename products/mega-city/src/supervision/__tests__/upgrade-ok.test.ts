@@ -80,6 +80,30 @@ describe('computeUpgradeOk — rubrique E', () => {
     },
   );
 
+  it('0084 — les deux moitiés mesurent la MÊME échelle : le sous-arbre de la racine fournie', () => {
+    // Le bug d'origine : propreté « par dossier » MAIS worktrees « par dépôt » —
+    // un prédicat sans sémantique. Preuve de cohérence post-0085/0019 : appelé
+    // avec racine = un sous-dossier, le calcul est aveugle à TOUT ce qui vit
+    // au-dessus (saleté comme sous-runs), et voit tout ce qui vit dessous.
+    const subRoot = path.join(projectRoot, 'app');
+    fs.mkdirSync(subRoot, { recursive: true });
+    fs.writeFileSync(path.join(subRoot, 'inside.txt'), 'committed');
+    execFileSync('git', ['add', '.'], { cwd: projectRoot });
+    execFileSync('git', ['commit', '-m', 'sous-dossier'], { cwd: projectRoot });
+
+    // Saleté + sous-run AU-DESSUS de la racine fournie (au niveau dépôt) :
+    fs.writeFileSync(path.join(projectRoot, 'dirty-outside.txt'), 'oops');
+    fs.mkdirSync(path.join(projectRoot, '.cop1', 'worktrees', 'run-xyz'), { recursive: true });
+
+    // À état git ÉGAL : le verdict dépend uniquement du sous-arbre désigné.
+    expect(computeUpgradeOk(subRoot)).toBe(true); // aveugle au-dessus — les 2 moitiés
+    expect(computeUpgradeOk(projectRoot)).toBe(false); // voit les deux — les 2 moitiés
+
+    // Et un sous-run SOUS la racine fournie est bien vu à cette échelle :
+    fs.mkdirSync(path.join(subRoot, '.cop1', 'worktrees', 'run-local'), { recursive: true });
+    expect(computeUpgradeOk(subRoot)).toBe(false);
+  });
+
   it('0085 — un fichier à la place du dossier dédié (ENOTDIR) vaut « aucun sous-run », pas un crash', () => {
     fs.mkdirSync(path.join(projectRoot, '.cop1'), { recursive: true });
     fs.writeFileSync(path.join(projectRoot, '.cop1', 'worktrees'), 'pas un dossier');
