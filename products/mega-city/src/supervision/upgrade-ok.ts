@@ -15,6 +15,14 @@
  * population « par prudence » : un booléen constamment faux est un signal de
  * sécurité qu'on apprend à ignorer — pire qu'un signal absent (fiche 0085).
  *
+ * **Échelle unique, choisie (fiche 0084)** : le SOUS-ARBRE de la racine fournie.
+ * Les deux moitiés (propreté git via pathspec `-- .`, sous-runs via
+ * `<racine>/.cop1/worktrees/`) lisent le MÊME référentiel — aveugles au-dessus,
+ * voyantes dessous (test d'échelle dans upgrade-ok.test.ts). La racine étant
+ * normalisée vers l'arbre principal (ADR-0019), le prédicat mesure en pratique
+ * le projet supervisé entier ; appelé avec une autre racine, il mesure ce
+ * sous-arbre-là, uniformément — jamais un mélange par-dossier / par-dépôt.
+ *
  * Le forçage « je mets à jour malgré l'activité » est une prérogative du siège
  * humain EN AVAL (flux d'adoption, fiche 0050) : le signal, lui, ne ment jamais.
  * Le LLM/appelant ne peut JAMAIS le forcer à `true` — la signature n'accepte

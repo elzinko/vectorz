@@ -40,13 +40,33 @@ préalable à toute discussion sur *ce qu'il doit mesurer*.
 
 ## Critères d'acceptation
 
-- [ ] Les deux moitiés du calcul mesurent à la **même échelle**, explicitement documentée
+- [x] Les deux moitiés du calcul mesurent à la **même échelle**, explicitement documentée
       dans le code (par dépôt, ou par arbre de travail — mais une seule, choisie).
-- [ ] Un test couvre le cas qui échoue aujourd'hui : appeler le calcul **depuis un
+- [x] Un test couvre le cas qui échoue aujourd'hui : appeler le calcul **depuis un
       sous-dossier** et **depuis la racine** donne le même verdict à état git égal.
-- [ ] Le commentaire d'en-tête du module dit ce que le prédicat mesure, sans ambiguïté.
-- [ ] Aucune régression sur les cas déjà couverts (arbre propre → vrai, veto → faux,
+      *(Réinterprété à l'audit, cf. section ci-dessous : l'échelle choisie étant « le
+      sous-arbre de la racine fournie », le test d'échelle prouve que chaque appel est
+      cohérent — aveugle au-dessus, voyant dessous, pour les DEUX moitiés — et non que
+      deux racines différentes rendent le même verdict, ce qui relèverait de l'échelle
+      « par dépôt » non retenue.)*
+- [x] Le commentaire d'en-tête du module dit ce que le prédicat mesure, sans ambiguïté.
+- [x] Aucune régression sur les cas déjà couverts (arbre propre → vrai, veto → faux,
       forçage à vrai impossible par construction).
+
+## Audit d'absorption — 2026-07-25 (mandaté par le PO au checkpoint product-builder)
+
+Le bug a été **structurellement résorbé** par le couple 0086 (#46) + 0085 (#47), et cette
+fiche se clôt par le **verrou** qui l'empêche de revenir :
+
+- La moitié « worktrees **par dépôt** » (`git worktree list`, insensible à la racine) a
+  **disparu** avec la redéfinition 0085 : remplacée par la lecture de
+  `<racine>/.cop1/worktrees/`, relative à la racine comme l'autre moitié.
+- Échelle unique choisie et documentée : **le sous-arbre de la racine fournie** — en
+  pratique l'arbre principal du projet, la racine étant normalisée (ADR-0019).
+- Preuve par test (« 0084 — les deux moitiés mesurent la MÊME échelle ») : à état git
+  égal, saleté et sous-run situés AU-DESSUS de la racine fournie sont invisibles aux
+  deux moitiés, et un sous-run SOUS la racine est vu — plus aucun mélange d'échelles
+  possible sans casser ce test.
 
 ## Notes
 
