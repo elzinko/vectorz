@@ -68,6 +68,26 @@ Autoriser les 5 outils en « toujours autoriser » pour éviter la fatigue de po
 Pour tester sans toucher aux méthodes de prod : skill **`supervision-demo`** (méthode
 jouet 2 gates).
 
+## Brancher un projet Claude Code — une commande (fiche 0094)
+
+Côté **Claude Code**, pas besoin d'éditer le `.mcp.json` à la main. Depuis la racine du
+dépôt :
+
+```bash
+pnpm --dir products/mega-city supervision:link /chemin/absolu/du/projet
+```
+
+La commande écrit (ou **fusionne**, sans toucher aux autres serveurs MCP) le bloc
+`supervision` dans le `.mcp.json` du projet, avec `SUPERVISION_PROJECT_ROOT` fixé à sa
+racine, et ajoute `.supervision/` à son `.gitignore`. **Idempotente** : la rejouer met à
+jour les chemins (utile après un changement de version de Node) sans rien casser.
+
+Puis : rouvre Claude Code **dans ce projet** (le `.mcp.json` est chargé au démarrage),
+autorise le serveur `supervision`, et lance ta méthode (`/ezk-sprint`, ou
+`/supervision-demo` pour un essai). Le côté **lecture** (le Moniteur cop1) reste un
+observateur externe : ajoute le projet aux `supervision.watch_roots` du daemon — modèle à
+deux clés, fiche 0082.
+
 ## Conformité prouvée — déroulé méthode jouet → validateur (AC1, fiche 0050)
 
 Le chemin nominal est la session Claude Desktop (skill `supervision-demo` + serveur MCP

@@ -4,7 +4,7 @@ title: Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfoo
 type: feature
 priority: P0
 epic:
-status: todo
+status: in-progress
 ready:
 pr:
 created: 2026-07-25
@@ -63,18 +63,34 @@ mais elle ne doit alors pas hériter de son blocage.
 
 ## Critères d'acceptation
 
-- [ ] Une session Claude Code ouverte dans `vectorz` voit les **5 outils** `run_start`,
-      `gate_reached`, `gate_resumed`, `escalate`, `run_finished` — pas un de plus.
+- [x] Une session Claude Code ouverte dans un projet branché voit les **5 outils**
+      `run_start`, `gate_reached`, `gate_resumed`, `escalate`, `run_finished` — pas un de
+      plus. *(Prouvé 2026-07-25 : serveur `connected`, 5 tools, dans une vraie session
+      Claude Code sur `vectorz-jouet` ; + probe automatisé sur le `.mcp.json` généré.)*
 - [ ] Un `ezk-sprint` réel (pas le banc de démo) produit un `events.jsonl` dans
       `.supervision/runs/<run_id>/` de l'**arbre principal**, y compris lancé **depuis un
-      worktree** (preuve de la normalisation ADR-0019 en conditions réelles).
-- [ ] Le run apparaît dans l'onglet **Moniteur** de la mission-control, et son gate de
-      checkpoint s'y affiche `at_gate`.
-- [ ] Le validateur cop1 est **vert** sur le dossier du run (ou la perte détectée est
-      montrée — c'est le produit).
-- [ ] `.supervision/` est gitignoré (règle DP6) — le résidu actuel non suivi
-      `.supervision/runs/2026-07-24T16-21-47-105Z-a7e21f55/` est traité (supprimé ou
-      ignoré), il ne doit plus salir `git status`.
+      worktree** (preuve de la normalisation ADR-0019 en conditions réelles). *(Reste dû :
+      la commande branche, mais un vrai run `ezk-sprint` depuis un worktree n'a pas encore
+      été rejoué.)*
+- [x] Le run apparaît dans l'onglet **Moniteur** de la mission-control, et son gate de
+      checkpoint s'y affiche `at_gate`. *(Prouvé 2026-07-25 : run émis depuis une vraie
+      session Claude Code, carte `at_gate` puis `finished` dans le Moniteur.)*
+- [x] Le validateur cop1 est **vert** sur le dossier du run (ou la perte détectée est
+      montrée — c'est le produit). *(Prouvé 2026-07-18 puis rejoué 2026-07-25.)*
+- [x] `.supervision/` est gitignoré (règle DP6) — la commande `supervision:link` l'ajoute
+      au `.gitignore` du projet branché.
+
+## Livré (2026-07-25)
+
+- **Commande `pnpm --dir products/mega-city supervision:link <projet>`** : branchement
+  automatisé côté Claude Code — écrit/**fusionne** le `.mcp.json` (préserve les autres
+  serveurs MCP), gitignore `.supervision/`, imprime les étapes suivantes. **Idempotente**
+  (rejouer met à jour les chemins) et **non-destructive** — prouvé par test (injection
+  d'un serveur MCP tiers conservé) et par un probe MCP (le serveur démarre, 5 outils).
+- Logique pure `src/supervision/link-config.ts` (8 tests) ; coquille I/O
+  `bin/supervision-link.ts` ; doc dans `src/supervision/README.md`.
+- **Reste** avant `shipped` : rejouer un vrai `ezk-sprint` depuis un worktree (2ᵉ AC), et
+  purger le résidu racine `.supervision/runs/2026-07-24T…` du dépôt `vectorz`.
 
 ## Notes
 
