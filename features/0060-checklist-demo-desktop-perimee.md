@@ -1,6 +1,6 @@
 ---
 id: 0060
-title: La checklist démo Desktop publie encore le bloc de config MCP prouvé cassé (corrigé ailleurs par #41)
+title: Les deux docs d'installation ont décroché de main (checklist démo + guide web UI)
 type: bug
 priority: P2
 epic:
@@ -49,9 +49,36 @@ Deux autres écarts constatés en la rejouant le **2026-07-25** :
    `[]` et attribue ce symptôme à un `watch_roots` mal configuré. Diagnostic faux,
    piste perdue. (Vécu tel quel le 2026-07-25 : `dist` du 14/07, antérieur à la route.)
 
+### Second document touché — `docs/USER-GUIDE-web-ui.md`
+
+Même symptôme, autre porte d'entrée (constaté le 2026-07-25) :
+
+- **Chemins d'avant le monorepo** : il fait `cd /Users/elzinko/git/bacasable/cop1` et
+  `pnpm --filter @cop1/web dev` — ce dépôt n'existe plus, le code est sous
+  `products/cop1/` dans `vectorz`. Aucune de ses commandes ne s'exécute telle quelle.
+- **Il décrit le produit d'il y a deux époques** : « elle expose le panneau Connexion
+  (Story A) ; le lanceur de run (Story B) **arrive ensuite** ». Story B est livrée
+  (fiche 0001), et deux onglets de plus existent depuis — dont le **Moniteur**, qui est
+  le chemin actuel du produit et n'est mentionné nulle part.
+- **Il envoie vers un banc d'essai fantôme** : `/Users/elzinko/git/bacasable/cop1-cobaye/`
+  (cf. fiche 0041, banc jamais reconstruit post-pivot).
+
+Un lecteur qui ouvre ce guide pour comprendre l'interface tombe sur une application qui
+n'existe plus, et rate entièrement l'onglet qui compte.
+
 ## Proposition
 
-Remettre la checklist en accord avec l'état de `main` :
+Remettre les **deux** documents en accord avec l'état de `main`.
+
+**`docs/USER-GUIDE-web-ui.md`** :
+
+- corriger les chemins (monorepo) et la commande de lancement du daemon et de la web UI ;
+- décrire les **quatre** onglets, en disant lequel est le chemin vivant — et notamment
+  que `Run` (cop1 pilote) et `Moniteur` (cop1 observe) relèvent de **deux paradigmes
+  différents**, ce que l'interface seule ne laisse pas deviner ;
+- retirer ou requalifier le renvoi au banc `cop1-cobaye` (fiche 0041).
+
+**`docs/demo-desktop-checklist.md`** :
 
 - § 3 : le **`.mcpb`** en chemin nominal (build + installation + réglage `project_root` +
   activation de l'extension) ; le bloc JSON manuel relégué en secours, **avec la
@@ -72,6 +99,12 @@ Remettre la checklist en accord avec l'état de `main` :
 - [ ] Les deux symptômes de build (`Cannot find module`, `not_found`) sont nommés avec
       leur cause et leur remède.
 - [ ] La checklist est **rejouée** de bout en bout après correction (c'est sa promesse).
+- [ ] `USER-GUIDE-web-ui.md` : toutes ses commandes s'exécutent telles quelles depuis un
+      clone frais de `vectorz` (rejouées, pas relues).
+- [ ] Les quatre onglets y sont décrits, avec le statut de chacun (vivant / hérité).
+- [ ] Plus aucun chemin vers `bacasable/cop1` ni `cop1-cobaye` dans `docs/`
+      (`grep -rn "bacasable/cop1\b\|cop1-cobaye" docs/` ne renvoie rien, ou seulement des
+      mentions historiques explicitement datées).
 
 ## Notes
 

@@ -303,3 +303,300 @@ body {
 .proposal-type {
   margin-bottom: 0.5rem;
 }
+
+/* ── Moniteur de supervision (fiche 0031/0059/0061) ───────────────────────── */
+
+.mon {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.mon__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.mon__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.mon__sub {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  max-width: 46ch;
+}
+
+.mon__count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.mon__count-n {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1;
+}
+
+.mon__count-l {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.2rem;
+}
+
+.mon__empty {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  border: 1px dashed #334155;
+  border-radius: 0.75rem;
+}
+
+.mon__empty-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #475569;
+  margin: 0 auto 1rem;
+  box-shadow: 0 0 0 6px rgba(71, 85, 105, 0.18);
+}
+
+.mon__empty-title {
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.mon__empty-hint {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 0.4rem;
+  max-width: 42ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.run-card {
+  background: #172033;
+  border: 1px solid #273449;
+  border-left: 4px solid #475569;
+  border-radius: 0.75rem;
+  padding: 1rem 1.15rem;
+  margin-bottom: 0.85rem;
+}
+
+.run-card--wait {
+  border-left-color: #f59e0b;
+}
+.run-card--run {
+  border-left-color: #60a5fa;
+}
+.run-card--done {
+  border-left-color: #34d399;
+}
+.run-card--stop {
+  border-left-color: #f87171;
+}
+.run-card--idle {
+  border-left-color: #94a3b8;
+}
+
+.run-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.run-card__id {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.run-card__method {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.run-card__ver {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.badge--wait {
+  background: #422006;
+  color: #fbbf24;
+}
+.badge--run {
+  background: #172554;
+  color: #93c5fd;
+}
+.badge--done {
+  background: #052e2b;
+  color: #6ee7b7;
+}
+.badge--stop {
+  background: #450a0a;
+  color: #fca5a5;
+}
+.badge--idle {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+.run-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  margin-top: 0.7rem;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+}
+
+.run-card__k {
+  font-style: normal;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin-right: 0.15rem;
+}
+.run-card__k--danger {
+  color: #f87171;
+}
+
+.run-card__alert {
+  margin-top: 0.7rem;
+  font-size: 0.8125rem;
+  color: #fca5a5;
+}
+
+.run-card__wait {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(245, 158, 11, 0.09);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 0.5rem;
+}
+
+.run-card__wait-tag {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #fbbf24;
+}
+
+.run-card__wait-gate {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8125rem;
+  color: #fde68a;
+}
+
+.run-card__wait-msg {
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+}
+
+.run-card__gates,
+.run-card__problems {
+  margin-top: 0.8rem;
+}
+
+.run-card__gates ul,
+.run-card__problems ul {
+  list-style: none;
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.run-card__gates li,
+.run-card__problems li {
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  padding-left: 0.9rem;
+  position: relative;
+}
+
+.run-card__gates li::before,
+.run-card__problems li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #475569;
+}
+
+.run-card__problems li::before {
+  background: #f87171;
+}
+
+.run-card__gate-name {
+  color: #e2e8f0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+}
+
+.run-card__gate-out {
+  color: #6ee7b7;
+}
+
+.run-card__gate-sub {
+  color: #64748b;
+}
+
+.run-card__gate-sub code,
+.run-card__report code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+/* run id — métadonnée secondaire (revue Codex) : lisible mais discret, tronqué
+   pour ne pas dominer la carte ; chemin/valeur complète au survol (title). */
+.run-card__runid {
+  min-width: 0;
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.run-card__runid code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.run-card__report {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+}

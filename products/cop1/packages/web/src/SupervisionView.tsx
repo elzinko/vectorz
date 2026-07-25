@@ -3,6 +3,11 @@ import { memo, type ReactNode, useEffect, useState } from 'react';
 type RunState = 'launched' | 'running' | 'at_gate' | 'finished' | 'finished_at_gate' | 'aborted';
 type ResumeOrigin = 'command' | 'self_reported';
 
+interface MethodRef {
+  name: string;
+  version?: string;
+}
+
 interface GateProjection {
   gateEventId: string;
   gateId?: string;
@@ -22,15 +27,10 @@ interface Violation {
 type Notice = Violation;
 
 /**
- * fiche 0031 (ADR-028) — read-model d'un run affiché en mode moniteur. Recopié
- * localement (même convention que `SseFrame` dans OrchestratorRunView) depuis
- * le contrat serveur `RunSnapshot` (@cop1/journal-validator `RunProjection` +
- * overlay `app/features/supervision/domain/RunSnapshot`). Aucun champ "phase" :
- * c'est le verrou DP2 — zéro mapping gate→phase côté cop1.
- *
- * `lastAbsorbedAt` (horloge SERVEUR de l'absorption) est la source fiable pour
- * l'âge affiché — contrairement à `lastEventTs`, déclaré par le journal (donc
- * potentiellement mensonger ou décalé).
+ * fiche 0031 (ADR-028) — read-model d'un run affiché en mode moniteur, recopié
+ * du contrat serveur `RunSnapshot`. Aucun champ "phase" (verrou DP2). `method`
+ * et `seat` (fiche 0061) sont optionnels : un journal qui ne les déclare pas
+ * les laisse `undefined`, affichés comme absents, jamais inventés.
  */
 interface RunSnapshot {
   runId: string;
@@ -42,6 +42,8 @@ interface RunSnapshot {
   violations: Violation[];
   notices: Notice[];
   tokens: { provenance: 'measured' | 'absent' };
+  method?: MethodRef;
+  seat?: string;
   projectRoot: string;
   runDir: string;
   liveness: 'alive' | 'presumed_dead';
@@ -54,16 +56,59 @@ interface SseFrame {
 }
 
 const RESUME_ORIGIN_LABEL: Record<ResumeOrigin, string> = {
-  command: 'clairance par commande',
-  self_reported: 'reprise self-reported en session',
+  command: 'reprise autorisée par commande',
+  self_reported: 'reprise déclarée en session',
 };
 
-/** POC : plafond d'affichage pour les listes (violations/gates) du journal. */
+/** Libellé français + tonalité (→ classe CSS de couleur) pour chaque état. */
+interface StateLook {
+  label: string;
+  tone: 'wait' | 'run' | 'idle' | 'done' | 'stop';
+}
+const STATE_LOOK: Record<RunState, StateLook> = {
+  at_gate: { label: 'En attente de ta décision', tone: 'wait' },
+  running: { label: 'En cours', tone: 'run' },
+  launched: { label: 'Démarré', tone: 'idle' },
+  finished: { label: 'Terminé', tone: 'done' },
+  finished_at_gate: { label: 'Terminé (jalon resté ouvert)', tone: 'done' },
+  aborted: { label: 'Interrompu', tone: 'stop' },
+};
+
+/** Ordre d'affichage : ce qui réclame une décision humaine remonte en tête. */
+const STATE_RANK: Record<RunState, number> = {
+  at_gate: 0,
+  running: 1,
+  launched: 2,
+  finished_at_gate: 3,
+  finished: 4,
+  aborted: 5,
+};
+
+/** POC : plafond d'affichage pour les listes (gates/violations) du journal. */
 const MAX_LIST_ITEMS = 100;
 
 /** fiche 0022/0031 — "il y a Xs" (même patron que le heartbeat existant). */
 function formatAge(ms: number): string {
-  return `${Math.max(0, Math.floor(ms / 1000))}s`;
+  const s = Math.max(0, Math.floor(ms / 1000));
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  return m < 60 ? `${m}min ${s % 60}s` : `${Math.floor(m / 60)}h ${m % 60}min`;
+}
+
+/** Nom court du projet supervisé (dernier segment du chemin). */
+function projectName(root: string): string {
+  const parts = root.split('/').filter(Boolean);
+  return parts[parts.length - 1] ?? root;
+}
+
+/**
+ * Nom de fichier du rapport de gate (revue Codex PR #50) — on montre OÙ vit le
+ * rapport sans le bruit du chemin complet : le basename est lisible, et le chemin
+ * entier reste reconstructible (runDir + basename) et disponible au survol.
+ */
+function reportName(reportRef: string): string {
+  const parts = reportRef.split('/').filter(Boolean);
+  return parts[parts.length - 1] ?? reportRef;
 }
 
 function isRunSnapshot(value: unknown): value is RunSnapshot {
@@ -77,11 +122,8 @@ function isRunSnapshot(value: unknown): value is RunSnapshot {
 
 /**
  * finding 1 (revue FRONT 0031) : garde d'anti-régression contre la course
- * hydratation REST vs SSE. N'écrase un snapshot existant que si le candidat a
- * un `lastEventSeq` au moins aussi récent (ou si aucun snapshot n'est encore
- * en place). Un `lastEventSeq` absent est traité comme "le plus vieux possible"
- * côté candidat (ne régresse jamais un snapshot déjà seq-é), et comme
- * "toujours dépassable" côté existant.
+ * hydratation REST vs SSE. N'écrase un snapshot que si le candidat a un
+ * `lastEventSeq` au moins aussi récent (absent = "le plus vieux possible").
  */
 function isFresherOrEqual(candidate: RunSnapshot, existing: RunSnapshot | undefined): boolean {
   if (!existing) return true;
@@ -90,12 +132,7 @@ function isFresherOrEqual(candidate: RunSnapshot, existing: RunSnapshot | undefi
   return candidateSeq >= existingSeq;
 }
 
-/**
- * finding 2 (revue FRONT 0031) : keye par `runDir` (chemin serveur unique)
- * plutôt que `runId` (déclaré par le journal, donc semi-hostile — un
- * `runId: '__proto__'` corromprait un objet littéral). Une `Map` est en outre
- * immunisée à la pollution de prototype par construction.
- */
+/** finding 2 (revue FRONT 0031) : keye par `runDir` (chemin serveur unique). */
 function upsertSnapshot(
   runs: Map<string, RunSnapshot>,
   snapshot: RunSnapshot,
@@ -107,19 +144,21 @@ function upsertSnapshot(
   return next;
 }
 
+/** Rang de tri : les runs présumés morts ou en attente passent devant. */
+function sortRank(run: RunSnapshot): number {
+  if (run.liveness === 'presumed_dead') return -1;
+  return STATE_RANK[run.state];
+}
+
 /**
  * Mode moniteur (fiche 0031, ADR-028) : panneau STRICTEMENT read-only affichant
  * les runs surveillés depuis `.supervision/runs/`. Hydrate via
- * `GET /api/supervision/runs` (le SSE ne rejoue pas le passé), puis applique
- * les deltas `supervision.run.updated` du SSE `/events` existant (upsert par
- * `runDir`) — même patron que `OrchestratorRunView`. Aucune requête d'écriture
- * n'est jamais émise depuis ce composant (verrou DP2).
+ * `GET /api/supervision/runs` puis applique les deltas `supervision.run.updated`
+ * du SSE `/events`. Aucune requête d'écriture n'est jamais émise (verrou DP2).
  */
 export function SupervisionView() {
   const [runs, setRuns] = useState<Map<string, RunSnapshot>>(() => new Map());
 
-  // Hydratation initiale : le SSE ne rejoue pas le passé, donc un run déjà sur
-  // disque au montage du front doit être hydraté explicitement.
   useEffect(() => {
     let cancelled = false;
     fetch('/api/supervision/runs')
@@ -142,7 +181,6 @@ export function SupervisionView() {
     };
   }, []);
 
-  // Live : upsert par runDir depuis les deltas supervision.run.updated.
   useEffect(() => {
     const source = new EventSource('/events');
     source.onmessage = (event: MessageEvent) => {
@@ -162,14 +200,46 @@ export function SupervisionView() {
     };
   }, []);
 
-  const list = Array.from(runs.values());
+  const list = Array.from(runs.values()).sort((a, b) => {
+    const byRank = sortRank(a) - sortRank(b);
+    if (byRank !== 0) return byRank;
+    return (b.lastAbsorbedAt ?? '').localeCompare(a.lastAbsorbedAt ?? '');
+  });
+
+  const waiting = list.filter((r) => r.state === 'at_gate').length;
 
   return (
-    <div className="supervision-view">
-      <p className="badge-classe-b">
-        <strong>classe B — best-effort</strong>
-      </p>
-      {list.length === 0 && <p>Aucun run surveillé.</p>}
+    <div className="mon">
+      <div className="mon__head">
+        <div>
+          <h2 className="mon__title">Runs supervisés</h2>
+          <p className="mon__sub">
+            Lecture seule · classe B — chaque méthode déclare ce qu'elle fait, on la croit
+            sur parole.
+          </p>
+        </div>
+        {list.length > 0 && (
+          <div className="mon__count">
+            <span className="mon__count-n">{list.length}</span>
+            <span className="mon__count-l">
+              {list.length > 1 ? 'runs' : 'run'}
+              {waiting > 0 ? ` · ${waiting} en attente` : ''}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {list.length === 0 && (
+        <div className="mon__empty">
+          <div className="mon__empty-dot" aria-hidden="true" />
+          <p className="mon__empty-title">Aucun run surveillé</p>
+          <p className="mon__empty-hint">
+            Lance une méthode instrumentée dans un projet surveillé : sa première carte
+            apparaîtra ici, en direct.
+          </p>
+        </div>
+      )}
+
       {list.map((run) => (
         <RunCard key={run.runDir} run={run} />
       ))}
@@ -179,56 +249,102 @@ export function SupervisionView() {
 
 /**
  * finding 3 (revue FRONT 0031) : mémoïsée pour que le tick "il y a Xs" (isolé
- * dans `RunAge`) ne re-rende pas la carte entière à chaque seconde. Ne se
- * re-rend que si le snapshot du run change réellement.
+ * dans `RunAge`) ne re-rende pas la carte entière chaque seconde.
  */
 const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
+  const look = STATE_LOOK[run.state];
+  const dead = run.liveness === 'presumed_dead';
+  const tone = dead ? 'stop' : look.tone;
+  const openGate = run.state === 'at_gate' ? run.gates.find((g) => !g.resumedAt) : undefined;
+  const pastGates = openGate ? run.gates.filter((g) => g !== openGate) : run.gates;
+
   return (
-    <div className="run-card">
-      <p>
-        <strong>Run :</strong> {run.runId}
-      </p>
-      <p>
-        <strong>État :</strong> {run.state}
-      </p>
-      {run.liveness === 'presumed_dead' && (
-        <p role="alert">Aux dernières nouvelles : run présumé mort (silence prolongé en running).</p>
+    <div className={`run-card run-card--${tone}`}>
+      <div className="run-card__head">
+        <div className="run-card__id">
+          <span className="run-card__method">
+            {run.method ? run.method.name : 'méthode non déclarée'}
+          </span>
+          {run.method?.version && <span className="run-card__ver">v{run.method.version}</span>}
+        </div>
+        <span className={`badge badge--${tone}`}>{dead ? 'Silence prolongé' : look.label}</span>
+      </div>
+
+      <div className="run-card__meta">
+        <span>
+          <i className="run-card__k">projet</i> {projectName(run.projectRoot)}
+        </span>
+        {run.seat && (
+          <span>
+            <i className="run-card__k">siège</i> {run.seat}
+          </span>
+        )}
+        <RunAge lastAbsorbedAt={run.lastAbsorbedAt} lastEventTs={run.lastEventTs} />
+        <span>
+          <i className="run-card__k">tokens</i>{' '}
+          {run.tokens.provenance === 'measured' ? 'mesurés' : 'non mesurés'}
+        </span>
+        <span className="run-card__runid" title={run.runId}>
+          <i className="run-card__k">run</i> <code>{run.runId}</code>
+        </span>
+      </div>
+
+      {dead && (
+        <p className="run-card__alert" role="alert">
+          Aucun signe de vie depuis un moment alors que le run était en cours.
+        </p>
       )}
-      <p>
-        <strong>Tokens :</strong>{' '}
-        {run.tokens.provenance === 'measured' ? 'mesurés' : 'absents-et-dits-absents'}
-      </p>
-      <RunAge lastAbsorbedAt={run.lastAbsorbedAt} lastEventTs={run.lastEventTs} />
-      {run.gates.length > 0 && (
-        <div>
-          <strong>Gates :</strong>
+
+      {openGate && (
+        <div className="run-card__wait">
+          <span className="run-card__wait-tag">⏸ En attente</span>
+          <span className="run-card__wait-gate">{openGate.gateId ?? 'jalon'}</span>
+          <span className="run-card__wait-msg">
+            La méthode s'est arrêtée à ce jalon et attend ta décision.
+          </span>
+          {openGate.reportRef && (
+            <span className="run-card__report" title={openGate.reportRef}>
+              rapport : <code>{reportName(openGate.reportRef)}</code>
+            </span>
+          )}
+        </div>
+      )}
+
+      {pastGates.length > 0 && (
+        <div className="run-card__gates">
+          <span className="run-card__k">jalons passés</span>
           <CappedList
-            items={run.gates}
+            items={pastGates}
             renderItem={(gate) => (
               <li key={gate.gateEventId}>
-                gate_id : {gate.gateId ?? '—'}
-                {gate.resumeOrigin && <> — {RESUME_ORIGIN_LABEL[gate.resumeOrigin]}</>}
-                {gate.reportRef && (
-                  <>
+                <span className="run-card__gate-name">{gate.gateId ?? 'jalon'}</span>
+                {gate.outcome && <span className="run-card__gate-out"> · {gate.outcome}</span>}
+                {gate.resumeOrigin && (
+                  <span className="run-card__gate-sub">
                     {' '}
-                    — report_ref : <code>{gate.reportRef}</code>
-                  </>
+                    · {RESUME_ORIGIN_LABEL[gate.resumeOrigin]}
+                  </span>
+                )}
+                {gate.reportRef && (
+                  <span className="run-card__gate-sub" title={gate.reportRef}>
+                    {' '}
+                    · rapport <code>{reportName(gate.reportRef)}</code>
+                  </span>
                 )}
               </li>
             )}
           />
         </div>
       )}
+
       {run.violations.length > 0 && (
-        <div className="error" role="alert">
-          <strong>Violations :</strong>
+        <div className="run-card__problems" role="alert">
+          <span className="run-card__k run-card__k--danger">anomalies</span>
           <CappedList
             items={run.violations}
             renderItem={(v, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: violations have no stable id in the read-model
-              <li key={`${v.code}-${i}`}>
-                {v.code} — {v.message}
-              </li>
+              // biome-ignore lint/suspicious/noArrayIndexKey: violations have no stable id
+              <li key={`${v.code}-${i}`}>{v.message}</li>
             )}
           />
         </div>
@@ -238,10 +354,8 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
 });
 
 /**
- * finding 4 (revue FRONT 0031) : âge calculé depuis `lastAbsorbedAt` (horloge
- * serveur de l'absorption, fiable) quand présent, sinon repli sur
- * `lastEventTs` (déclaré par le journal). Isolée dans son propre composant
- * avec son propre tick 1s pour ne pas re-rendre `RunCard` entière (finding 3).
+ * finding 4 (revue FRONT 0031) : âge depuis `lastAbsorbedAt` (horloge serveur
+ * fiable) sinon `lastEventTs`. Isolé pour ne pas re-rendre `RunCard` (finding 3).
  */
 function RunAge({
   lastAbsorbedAt,
@@ -251,25 +365,23 @@ function RunAge({
   lastEventTs?: string;
 }) {
   const [, forceTick] = useState(0);
-
   useEffect(() => {
     const interval = setInterval(() => forceTick((n) => n + 1), 1000);
     return () => {
       clearInterval(interval);
     };
   }, []);
-
   const referenceTs = lastAbsorbedAt ?? lastEventTs;
   const ageMs = referenceTs ? Date.now() - new Date(referenceTs).getTime() : null;
   if (ageMs === null) return null;
-  return <p>Dernier événement il y a {formatAge(ageMs)}</p>;
+  return (
+    <span>
+      <i className="run-card__k">vu</i> il y a {formatAge(ageMs)}
+    </span>
+  );
 }
 
-/**
- * finding 3 (revue FRONT 0031) : plafonne l'affichage à `MAX_LIST_ITEMS`
- * dernières entrées (POC sobre, pas de virtualisation) pour éviter des
- * milliers de <li> re-diffés si le journal est pollué.
- */
+/** finding 3 (revue FRONT 0031) : plafonne l'affichage à `MAX_LIST_ITEMS`. */
 function CappedList<T>({
   items,
   renderItem,
