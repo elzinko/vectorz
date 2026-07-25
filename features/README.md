@@ -3,6 +3,8 @@
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
 
+> 📋 Séquence décidée (curée, hors index) : [PLAN.md](PLAN.md).
+
 | # | Titre | Type | Prio | Épic | Statut | PR |
 |---|-------|------|------|------|--------|----|
 | 0035 | Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034) | chore | P0 | 0034 | ✅ shipped | #12 |

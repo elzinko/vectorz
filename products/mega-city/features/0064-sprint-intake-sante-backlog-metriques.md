@@ -115,6 +115,15 @@ reconstruite** au sprint suivant.
   PO : étendre 0064 plutôt qu'une fiche dédiée — anti-doublon, 0064 possède déjà le moment
   *intake*). Cross-réf : [0029](0029-propagation-maj-skills.md) (hook de drift des skills —
   concept voisin, sujet distinct : versions de skills, pas statut de fiche).
+- 2026-07-26 — **exigence PO (roadmap)** : au lancement d'`ezk-product-builder`, tant qu'il
+  n'y a **pas un nombre suffisant** de fiches `ready` — **pas seulement zéro** — s'arrêter et
+  **proposer une session de grooming** pour constituer un lot tirable, plutôt que de démarrer
+  un sprint à vide. C'est le **seuil de lot** (point 6, « temps de groomer ») + la garde
+  d'intake `ready < seuil ⇒ propose groom` (Proposition), **au-delà** du checkpoint « aucune
+  fiche ready » déjà livré (point 5). Le seuil (« combien = suffisant ») est **configurable**,
+  à fixer au grooming. Contexte : le PO veut lancer le builder depuis une autre session sur
+  le backlog fraîchement ordonnancé (`features/PLAN.md`, 2026-07-26) où le NOW est encore
+  tout en `idea` — le builder doit donc l'aiguiller vers le grooming, pas tenter un sprint.
 - 2026-07-22 — **sous-problème réconciliation LIVRÉ** (décision + implémentation) : voir
   [ADR-0018](../../docs/adr/0018-reconciliation-done-etat-reel-des-prs.md). Brique unique
   `ezk-backlog reconcile` (croise fiches actives ↔ PRs mergées via `gh`, **propose** au PO,
