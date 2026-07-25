@@ -1,9 +1,11 @@
 ---
 id: 0079
-title: Restitutions PO lisibles — graver la règle dans les skills qui parlent au PO (pas seulement en mémoire d'agent)
+title: Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain)
 type: feature
-priority: P2
+priority: P1
 epic:
+depends: []
+labels: [method]
 status: todo
 ready:
 pr:
@@ -27,19 +29,25 @@ skills / agents ».
 
 ## Valeur
 
-Toute restitution adressée au PO (compte rendu de rétro, checkpoint de product-builder,
-résumé de clôture de sprint) est **compréhensible du premier coup** — quel que soit
-l'agent qui la produit. La règle survit aux sessions, aux machines et aux modèles.
+Tout artefact lu par un humain (description de PR, fiche backlog, capture, compte rendu de
+rétro, checkpoint de product-builder, résumé de clôture de sprint) est **compréhensible du
+premier coup** — quel que soit l'agent qui le produit. La règle survit aux sessions, aux
+machines et aux modèles.
 
 ## Proposition
 
 Graver la consigne de restitution dans les artefacts de méthode qui la produisent :
 
-1. **Une règle de communication** dans `rules/` (catégorie à trancher au build —
-   probablement `documentation-guidelines/`) : « une restitution au PO raconte
-   symptôme vécu → proposition en langage courant → effet concret ; le jargon vit en
-   glossaire, jamais en porteur du sens ; codes internes (R1, S1…) interdits hors
-   annexe ».
+1. **Une règle de communication** `rules/documentation-guidelines/human-facing-lisibility.md`
+   (niveau MUST, contrôlée par `ezk-reviewer` comme `pr-before-after-media`), **élargie des
+   seules restitutions PO à TOUT artefact lu par un humain** (description de PR, fiche,
+   capture, restitution, checkpoint) :
+   - ouvre par un bloc « En clair » : l'essentiel en ≤3 phrases, AVANT le détail ;
+   - trame : symptôme vécu → proposition en mots simples → effet concret ;
+   - codes internes et jargon inventé (R1, DoR, « verrou », « borne anti-veto »…) interdits
+     hors annexe/glossaire — jamais porteurs du sens dans l'ouverture ;
+   - on écrit À l'humain visé, pas entre agents ; carte courte plutôt que dossier exhaustif.
+   Activation composable : ajouter la règle au `bundles/documentation-guidelines.yml`.
 2. **Les skills qui parlent au PO** intègrent la consigne à leur étape de restitution :
    `ezk-retro` (temps 5, rangement), `ezk-product-builder` (checkpoints
    suggestions-à-choix), `ezk-sprint` (résumé de clôture ⛳).
@@ -57,7 +65,10 @@ Graver la consigne de restitution dans les artefacts de méthode qui la produise
 
 ## Notes
 
-- **Priorité P2 proposée** (à confirmer par le PO — pas donnée explicitement).
+- **Priorité P1** (montée de P2 par le PO le 2026-07-25 — dérive activement ressentie).
+- **Portée élargie** le 2026-07-25 : des seules restitutions PO à tout artefact lu par un
+  humain (PR, fiches, captures) — cf. commentaire du PR #37 (« borne anti-veto », « verrous »)
+  qui a rendu la dérive tangible.
 - Origine : rétro 2026-07-18, demande directe du PO au rangement.
 - Mesure de succès (retirabilité) : 0 réclamation « pas compris » du PO sur une
   restitution pendant 5 sprints consécutifs.
