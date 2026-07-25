@@ -222,6 +222,61 @@ carte. Comment le serveur sait-il quel projet superviser quand il arrive par le 
 (cwd de la session ? config par projet ? détection de racine git ?) — **à instruire**, c'est
 la seule vraie inconnue technique de l'intégration MCP.
 
+### 6. La méthode DANS le projet (`.vectorz/`, façon BMAD) — 3ᵉ voie de distribution (question PO 2026-07-26)
+
+**La question PO :** la méthode peut-elle vivre dans un **sous-dossier du projet**
+(`.vectorz/`, `.mega-city/`…), **installée par projet**, comme **BMAD** l'est dans son
+dossier `_bmad/` — *sans tout remettre en question* ? Intuition : l'indépendance de la
+méthode implique qu'elle peut être **installée dans le projet** et **exister sans le
+superviseur** ; elle n'est pas obligée de parler au MCP.
+
+**Réponse courte : oui, et c'est une 3ᵉ voie, complémentaire du plugin global — pas une
+refonte.** Le moteur le permet **déjà à moitié** : le cap `claude-code` (par projet) écrit
+`.claude/{agents,skills}` dans le projet — *« capacité existante mais non exercée »*
+(cf. §Distribution). Le cœur host-agnostique (`materialize` pur, ADR-0003) ne bouge pas ;
+c'est une **bascule de mode** (global `--link` → par-projet copié + versionné), pas une
+remise en cause.
+
+**Précédent BMAD** (constaté 2026-07-26) : `npx bmad-method install` déroule un flow
+interactif — dossier cible, modules, **release stable vs `@next`**, **IDE** (claude-code,
+cursor…) — et pose un dossier `_bmad/` dans le projet **+ génère** l'intégration `.claude/`
+et `.cursor/` (command stubs). Installeur par projet, **versionné**, IDE-integration
+générée, MCP non requis. C'est exactement le modèle « méthode contenue par projet ».
+
+**Ce que cette voie débloque — elle résout 3 incertitudes d'un coup :**
+
+- **Version par projet native (axe 1)** : le dossier du projet **épingle sa version** —
+  projet A en v1 pendant que B passe en v2, sans conflit. Répond au « chacun sa méthode »
+  et à *où vit la version* (§1).
+- **`SUPERVISION_PROJECT_ROOT` trivial (résout §5)** : si le MCP est posé **dans** le projet,
+  la racine supervisée **est** le projet courant — l'inconnue technique de §5 disparaît.
+- **Plus de collision auteur (§3)** : chaque projet a **sa copie** figée, au lieu d'un
+  symlink global partagé.
+- **Mode « méthode seule » (axe 3)** : la méthode dans `.vectorz/` **existe sans le MCP** —
+  l'indépendance que le PO pointe. Déjà supporté : les skills portent la clause « si les
+  outils MCP dispo — sinon saute sans bruit ».
+
+**Tension à trancher à l'ADR (pas exclusive)** : *plugin global* (une install, tous les
+projets, marketplace) **vs** *méthode-par-projet* (`.vectorz/`, version par projet, façon
+BMAD). BMAD fait **les deux** : un installeur global qui **pose** la méthode versionnée par
+projet. Piste vectorz : le plugin fournit **l'installeur + les commandes globales**, et un
+`vectorz init` (façon `npx bmad-method install` / `/ezk-backlog init`) matérialise la
+méthode **versionnée** dans le projet. Convention de dossier à arbitrer : `.claude/` (ce que
+Claude Code lit nativement) porte un marqueur de version, **ou** un `.vectorz/` source bindé
+vers `.claude/`.
+
+### 7. Configurateur par type de projet (Go / Node / OS) — probable YAGNI (axe 2, à confirmer à l'ADR)
+
+Question PO : l'install doit-elle différer selon le **langage** (Go, Node…) ou l'**OS** ?
+**Analyse (2026-07-26) : la supervision est agnostique au langage du projet supervisé.**
+Le serveur MCP tourne **côté superviseur** (Node) et **n'installe rien** dans le projet
+Go/Node/Python — il l'observe. Un projet Go et un projet Node se branchent **à l'identique**.
+Ce qui varie réellement : l'**hôte** (Claude Code / Desktop) et l'**OS** (chemins), **pas**
+le langage. Un configurateur par langage ne se justifierait que si on installait des outils
+**spécifiques au langage** (lint Go vs Node) — or la méthode ezk orchestre des agents, pas ça.
+⇒ Pari **YAGNI** ; à **trancher formellement à l'ADR** (`engineering:architecture`) plutôt
+qu'à supposer.
+
 ## Critères d'acceptation (première esquisse — à retravailler au grooming)
 
 - [ ] **Décision de versionnage actée en ADR** (aligné umbrella vs mega-city indépendant),
@@ -241,6 +296,12 @@ la seule vraie inconnue technique de l'intégration MCP.
 - [ ] **Collision auteur vérifiée** : sur une machine déjà bindée `--link`, installer le plugin
       et constater le comportement (qui gagne, comment désinstaller proprement).
 - [ ] Doc utilisateur : installation, MAJ, et **ce que le plugin ne couvre pas**.
+- [ ] **ADR : plugin global vs méthode-par-projet (`.vectorz/`, façon BMAD) — ou les deux**
+      (§6). Tranche *où vit la version* (par projet ?) et *comment le project_root est résolu*.
+- [ ] **ADR : install agnostique au langage** confirmée, ou configurateur par langage justifié
+      par un besoin réel (§7) — pas d'ajout spéculatif.
+- [ ] **Deux modes exposés** : « méthode seule » (skills, pas de MCP) et « supervisé »
+      (+ MCP + watch) — cf. fiche racine 0063.
 
 ## Notes
 
@@ -266,6 +327,12 @@ la seule vraie inconnue technique de l'intégration MCP.
   - **cop1 [0050](../../../features/0050-release-pastille-dogfooding.md)** — canal de release +
     pastille de MAJ au niveau vectorz. **Dépendance de conception** : si 0050 définit la version
     figée de vectorz, 0087 s'y branche.
+  - **racine 0062 / 0063** — le **front** de la distribution côté Moniteur : lister les projets
+    avec leur version installée (0062), ancrer un projet + choisir le mode d'install (0063).
+    0087 décide la *doctrine* (emballages, versionnage, dossier projet) ; 0062/0063 en sont l'UI.
+- **Axes explorés le 2026-07-26 (PO)** — versionnage par projet (§6, axe 1), install agnostique
+  au langage (§7, axe 2), deux modes méthode-seule/supervisé (§6+0063, axe 3), précédent BMAD
+  (`_bmad/` + installeur versionné + intégration IDE générée).
 - **ADR de référence** : ADR-0001 (catalogues host-agnostiques + `caps/<host>/`),
   ADR-0003 (`materialize` pur), ADR-0005 (export statique primaire, MCP différé),
   ADR-0014 (précédent cap desktop), ADR-0018 (link vs copy) ; côté umbrella
