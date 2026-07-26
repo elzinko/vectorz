@@ -184,6 +184,17 @@ forces jamais `upgrade_ok` (au mieux un veto). Vocabulaire : tes checkpoints
 restent des checkpoints ; le gate est leur trace contractuelle.
 ```
 
-**Méthodes réelles intégrées** : `ezk-sprint` (2026-07-17 — `run_start` à l'intake,
-`gate_reached`/`gate_resumed` au checkpoint ⛳, `escalate` sur stop&ask, `run_finished` à
-la clôture). À suivre : `ezk-product-builder`, hooks classe A (suite de fiche 0050).
+**Méthodes réelles intégrées.** Ce tableau **fait foi** : le test
+`src/supervision/__tests__/skill-emission-contract.test.ts` le croise avec la liste qu'il
+porte **et** avec le contenu réel des skills — retirer une consigne d'émission sans
+toucher ici (ou l'inverse) fait rougir la CI. Ajouter une skill émettrice **impose** de
+l'inscrire ici.
+
+| Skill | Depuis | Rôle dans la chaîne d'un run |
+|---|---|---|
+| `ezk-sprint` | 2026-07-17 | **s'absorbe** : si un run est déjà ouvert, il émet ses gates dedans et ne clôt pas le run |
+| `ezk-product-builder` | 2026-07-26 | **ouvre le run** quand il est la tête de chaîne ; `run_finished` lui revient (fiche 0095) |
+| `vz-product-builder` | 2026-07-18 | ouvre le run ; émission **obligatoire** (mode autonome — sans journal, c'est une boîte noire) |
+| `supervision-demo` | 2026-07-18 | méthode **jouet** à plat, ne compose aucun émetteur (banc d'essai) |
+
+À suivre : hooks classe A (fiche 0077, suite de fiche 0050).

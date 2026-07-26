@@ -109,7 +109,11 @@ flowchart LR
 > `products/mega-city/src/supervision/` : journal JSONL, serveur MCP, runtime, 5 outils
 > (fiche 0050). **`ezk-sprint` porte désormais les consignes d'émission** (2026-07-17 —
 > classe B : émission best-effort quand les outils MCP sont présents, silencieuse sinon).
-> Ce qui **manque encore** : `ezk-product-builder`, les hooks classe A, le déroulé
+> **`ezk-product-builder` les porte aussi depuis le 2026-07-26** (fiche 0095 — il **ouvre**
+> le run quand il est la tête de chaîne, l'`ezk-sprint` qu'il lance s'y absorbe ; la liste
+> faisant foi est le tableau « Méthodes réelles intégrées » de
+> `src/supervision/README.md`, croisé par un test).
+> Ce qui **manque encore** : les hooks classe A, le déroulé
 > jouet→validateur (AC1 de 0050), et le sidecar BMAD. Chemin acté (PO, 2026-07-17) :
 > **clore 0050 → construire 0058 (le sidecar)** ; `ezk-ezk` contract-aware (0067) suivra.
 

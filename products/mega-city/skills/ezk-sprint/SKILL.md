@@ -89,13 +89,21 @@ bruit** :
 - **À l'intake (étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
   <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
 - **Run déjà ouvert = tu es absorbé (P1, revue Codex #25)** : si un run de supervision est
-  **déjà ouvert** — tu es appelé par `vz-product-builder` (qui ouvre le sien au lancement),
-  ou `run_start` répond « refusé : un run est déjà ouvert » — **n'ouvre PAS de run** : ce
+  **déjà ouvert** — tu es appelé par `ezk-product-builder` ou `vz-product-builder` (qui
+  ouvrent le leur au lancement), ou `run_start` répond « refusé : un run est déjà
+  ouvert » — **n'ouvre PAS de run** : ce
   refus est le **signal d'absorption**, pas une erreur. Émets tes gates **dans le run de
   l'appelant** (`gate_reached`/`gate_resumed`/`escalate` comme ci-dessous, `gate_id`
   préfixé `sprint-<slug>-…`), et **laisse `run_finished` à celui qui a ouvert le run** —
   miroir exact de la règle d'absorption du checkpoint (un seul run, comme un seul
-  « on continue ? »).
+  « on continue ? »). **Résous ton propre gate** (`gate_resumed`) avant de rendre la main
+  à l'appelant : le serveur n'accepte qu'un seul gate ouvert à la fois, et toi seul
+  détiens ton `gate_event_id` — un gate laissé ouvert bloquerait tous les checkpoints
+  suivants de l'appelant.
+  ⚠️ **Refus SANS appelant = run orphelin, pas absorption** (usage direct, l'humain
+  t'a lancé toi) : une session interrompue a laissé son run ouvert, et personne ne
+  pourra jamais le clore. Ne t'y greffe pas — **arrête-toi et demande** : reprendre, ou
+  abandonner (`run_finished {status: abandoned}`) puis ouvrir un run neuf.
 - **Au checkpoint (étape 9)** — c'est TON gate : `gate_reached {gate_id:
   "sprint-<slug>-checkpoint", outcome: ok|attention|failed, report_markdown: <ton résumé
   de clôture : livré · PR · tokens>}` **avant** de poser « on continue ? » — puis
