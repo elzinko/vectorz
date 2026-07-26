@@ -44,4 +44,5 @@ Skill `ezk-cowork`, deux sous-commandes :
 - Ne PAS y remettre de logique de workflow applicatif : le volatil reste dans le guide
   de chaque app (c'est tout l'intérêt du pattern).
 - L'« update de skill » générique (version bump, validate) reste hors périmètre :
-  couvert par validate.sh + ezk-steward (ADR-0015 §3).
+  couvert par la gate CI (tests `mega-city`) + l'audit `ezk-steward` (ADR-0015 §3 ; le
+  `validate.sh` d'origine n'a jamais existé dans ce monorepo — cf. l'erratum de l'ADR).
