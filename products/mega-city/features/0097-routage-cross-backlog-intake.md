@@ -1,71 +1,63 @@
 ---
 id: 0097
-title: Routage cross-backlog de l'intake — suivre le PLAN.md maître à travers les deux listes (produit + méthode)
+title: Connecter l'ordre du plan à la vue cross-backlog — « la suite, toutes listes confondues » suit PLAN.md
 type: feature
 priority: P0
 epic:
 depends: []
 labels: [enabler]
-status: idea
-ready:
+status: todo
+ready: 2026-07-26
 pr:
 created: 2026-07-26
 ---
 
-# 0097 — Que « c'est quoi la suite ? » regarde les DEUX listes
+# 0097 — Relier deux briques déjà là
 
 ## Contexte / Problème (en clair)
 
-Le dépôt a **deux listes de tâches** : une pour le **produit** (racine, `features/` — cartes
-`0062`, `0063`…) et une pour la **méthode** (mega-city, `products/mega-city/features/` — cartes
-notées `mc-XXXX`).
+Le dépôt a **deux listes** : produit (`features/`, cartes `0062`…) et méthode
+(`products/mega-city/features/`, cartes `mc-XXXX`). Deux briques existent déjà :
 
-Le **plan maître** `features/PLAN.md` est une seule séquence ordonnée qui **mélange les deux**.
-Sa tête aujourd'hui = `mc-0094`, une carte de la liste **méthode**.
+- **`portfolio.sh`** lit **déjà les deux listes** et sait quelle carte est sur quelle liste
+  (`PORTFOLIO.md`, section « Tirables, tous backlogs confondus »). Mais il trie par **priorité**.
+- **`plan:order`** (livré par mc-0089, #52) sait ordonner par ton **plan** `PLAN.md`. Mais il
+  travaille **à l'intérieur d'une seule liste**.
 
-Mais l'étape « c'est quoi la suite ? » (`next --ready-only`, le point d'entrée du builder) ne
-regarde **qu'une seule liste** : celle la plus proche de là où on se tient (règle « backlog le
-plus proche du cwd », ADR-0017 A13). Lancé à la racine, elle lit la liste **produit**, ne voit
-donc pas `mc-0094` (sur l'autre liste), et propose une carte plus basse.
-
-**Livré juste avant (mc-0089, #52)** : `next` suit maintenant l'ordre du plan… mais seulement
-**à l'intérieur d'une liste**. Le pas qui manque = **traverser les deux listes**.
+Ce qui manque = **les brancher**. Résultat aujourd'hui : lancé à la racine, le builder ne pointe
+pas la vraie tête du plan `mc-0094` (elle est sur l'autre liste).
 
 ## Valeur
 
-Le builder lancé « nu » pointe enfin la **vraie** tête du plan (`mc-0094`), quelle que soit la
-liste qui la porte. Fini le décalage silencieux entre « ce que dit mon plan » et « ce que fait
-l'outil ».
+Le builder lancé « nu » annonce enfin la **vraie prochaine carte selon TON plan**, quelle que
+soit la liste — `mc-0094` en tête. La boucle « mon plan = ce que fait l'outil » est refermée.
 
-## Proposition (simple)
+## Proposition (petit périmètre — on RÉUTILISE, on ne reconstruit pas)
 
-1. **Savoir sur quelle liste est une carte** — règle de nommage déjà en place :
-   `mc-XXXX` → liste méthode (`products/mega-city/features/XXXX-*.md`) ;
-   nombre seul `XXXX` → liste produit (`features/XXXX-*.md`).
-2. **Un petit outil déterministe** (dans la lignée de `plan:order`) qui, à partir du plan maître,
-   rend la **tête réelle** : la 1re carte du plan encore active, **avec sa liste** et si elle est
-   prête. Testé, pas « à l'œil ».
-3. **L'intake du builder** appelle cet outil : il annonce la tête (et sa liste), puis va groomer/
-   tirer sur la bonne liste — ou signale « tête bloquée » si elle n'est pas prête.
+- Une section **« 🧭 Prochaine selon le PLAN (tous backlogs) »** alimentée en réutilisant
+  `plan:order` (l'ordre) **et** l'agrégation deux-listes déjà faite par `portfolio.sh`
+  (product + statut + `ready` par carte). Partie déterministe = testée (patron mc-0089 :
+  cœur pur + coquille), pas « à l'œil ».
+- La règle de résolution est **déjà implicite** : `mc-XXXX` → liste méthode, nombre seul →
+  liste produit. On l'explicite dans le petit helper, on ne l'invente pas.
 
-## Critères d'acceptation (comment on saura que c'est fait)
+## Critères d'acceptation (comment on saura)
 
-- [ ] À partir de `features/PLAN.md`, l'outil rend la **tête réelle** = 1re carte non-livrée du
-      plan, **avec la liste** qui la porte (produit ou méthode) et son état `ready`.
-- [ ] Lancé à la racine, le builder **annonce `mc-0094`** comme suite (ou « en tête, pas prête »),
-      **pas** une carte inférieure d'une autre liste.
-- [ ] Une carte `mc-XXXX` est résolue vers `products/mega-city/features/`, un nombre seul vers
-      `features/` ; un id du plan introuvable dans les deux listes est **signalé**, pas ignoré en
-      silence.
-- [ ] Couvert par des tests (résolution id→liste + tête réelle). Aucune régression sur `plan:order`.
+- [ ] À partir de `PLAN.md` + des deux listes, on obtient la **tête réelle** = 1re carte
+      non-livrée du plan, **avec sa liste** et son état `ready`.
+- [ ] Une carte du plan introuvable dans les deux listes est **signalée** (pas ignorée).
+- [ ] La sortie distingue « tirable » vs « tête bloquée (pas encore ready) » — comme mc-0089,
+      mais cross-backlog.
+- [ ] Couvert par des tests ; aucune régression sur `plan:order` ni `portfolio.sh`.
 
 ## Hors scope
 
-- La priorisation/le contenu du plan (ça reste au PO, via `plan set`).
-- Fusionner les deux listes en une seule (ce n'est pas le but — deux domaines distincts).
+- Fusionner les deux listes (on garde deux listes + une vue par-dessus — ADR-0017 A13).
+- Le contenu/la priorisation du plan (au PO, via `plan set`).
 
 ## Notes
 
-- Suite directe de **mc-0089** (#52) qui a branché l'ordre du plan *intra-liste*. Ici on ajoute
-  la **traversée des deux listes**.
-- Réutilise le helper `plan:order` et le patron « logique pure testée + coquille I/O ».
+- Suite de **mc-0089** (#52, ordre intra-liste) et de **`portfolio.sh`** (lecture cross-backlog
+  déjà livrée). Ici : **le trait d'union** entre les deux.
+- Anti-doublon vérifié : `done/0048` (champ `product`) fermée « sans objet » — la distinction
+  vient de l'**emplacement**, pas d'un champ ; cette fiche s'appuie dessus, ne la rouvre pas.

@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "lawgiver": "tsx bin/lawgiver.ts",
     "supervision:link": "tsx bin/supervision-link.ts",
-    "plan:order": "tsx bin/plan-order.ts"
+    "plan:order": "tsx bin/plan-order.ts",
+    "plan:head": "tsx bin/plan-head.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",

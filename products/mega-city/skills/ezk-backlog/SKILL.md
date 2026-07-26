@@ -254,6 +254,15 @@ d'abord, ou décision journalisée).
 - **Soupape PO** : l'opérateur peut décider de tirer une fiche non-ready — décision
   explicite, **journalisée** (note dans la fiche + scratch de sprint).
 
+**Cross-backlog — la tête tous backlogs confondus (mc-0097).** `next` opère sur UN backlog.
+Quand le `PLAN.md` maître mêle plusieurs listes (racine `features/` + méthode
+`products/mega-city/features/`, ids `mc-XXXX`), la vraie tête peut vivre sur l'autre liste.
+`pnpm --dir products/mega-city plan:head [chemin/PLAN.md]` donne la **tête réelle à travers
+les deux listes** : la 1re carte `todo`+`ready` du plan (avec sa liste), les **têtes bloquées**
+(todo sans ready qui précèdent), et les ids **introuvables** (signalés). L'intake du
+product-builder l'utilise pour router vers la bonne liste au lieu de ne voir que la sienne.
+Best-effort (helper mega-city) : hors monorepo, repli sur le `next` mono-liste ci-dessus.
+
 ezk-sprint et ezk-product-builder passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).
 
