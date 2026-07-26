@@ -167,6 +167,67 @@ Tu ne **ranges** rien toi-même (git, fichiers) : ce sont les compétences compo
 (`ezk-sprint`/`ezk-commits` commitent & mergent, `ezk-backlog` ship). Frontière ADR-0001 tenue
 par construction : toi = décision produit (bord), elles = exécution déterministe.
 
+## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
+
+Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `escalate`,
+`run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
+bruit** :
+
+- **Au lancement — UNE fois par session, pas à chaque tour de boucle** : `run_start
+  {method_name: "ezk-product-builder", method_version: <version du catalogue mega-city
+  (package.json), à défaut le SHA court>, seat: "human"}`. Contrairement à `ezk-sprint`
+  (qui s'absorbe quand il est appelé dans un run déjà ouvert), c'est **toi** qui ouvres
+  le run quand tu es la tête de chaîne. ⚠️ Ton étape 4 reboucle en (1) : n'y réémets
+  **pas** `run_start` — un run couvre toute la session, pas un sprint.
+- **Si `run_start` est refusé (« un run est déjà ouvert ») — tu es absorbé, toi aussi.**
+  Ce refus n'est pas une erreur : c'est le signal. Il arrive quand un appelant a déjà
+  ouvert le run, ou qu'une session précédente s'est interrompue en laissant le sien
+  ouvert (l'état est relu du **disque**). Dans ce cas : émets tes gates dans le run
+  existant, et **ne touche pas à `run_finished`** — il appartient à celui qui a ouvert.
+  Miroir exact de la règle d'absorption d'`ezk-sprint`.
+- **La règle d'absorption, vue de ton côté** : chaque `ezk-sprint` que tu lances reçoit
+  ce même refus et émet ses gates (`sprint-<slug>-checkpoint`) **dans TON run**. Côté
+  *run*, c'est mécanique. Côté ***gates*, ça ne l'est pas** : le serveur n'accepte
+  **qu'un seul gate ouvert à la fois** — tant qu'un `gate_reached` n'a pas son
+  `gate_resumed`, tout gate suivant est refusé, **y compris les tiens**. Donc : le
+  sprint absorbé **résout son propre gate** (il détient le `gate_event_id`) au moment
+  où tu lui rends la main, et tu n'ouvres le tien **qu'après**. Un gate de sprint laissé
+  ouvert bloque tous les checkpoints du reste de la session.
+- **À chacun des 5 moments** de ta table « Modèle d'interaction » : `gate_reached
+  {gate_id: <inter-sprint | ideation | aucune-fiche-ready | blocage | derive-tokens>,
+  outcome: ok|attention|failed, report_markdown: <ton résumé : livré · tokens · options
+  posées>}` **avant** de présenter les suggestions-à-choix (mode `ask`) ou de
+  déléguer/journaliser (mode `auto`) — puis arrête-toi ou continue comme tu le fais
+  déjà. `outcome` : `ok` en marche normale, `attention` sur dérive tokens ou tête
+  bloquée, `failed` sur blocage non résolu.
+  ⚠️ **Les `gate_id` sont en ASCII strict** (`[A-Za-z0-9._-]`) : le serveur **refuse**
+  tout le reste. D'où `ideation` et `derive-tokens` sans accent — si tu ajoutes un
+  moment, respecte cette contrainte, sinon l'appel échoue.
+- **À la reprise** (accord humain, ou décision `ezk-pm` en mode `auto`) :
+  `gate_resumed {gate_event_id: <id renvoyé par le gate_reached correspondant>}`.
+- **Sur chacun des 4 STOP humains** (action irréversible/sortante · augmentation de
+  budget tokens · idée produit sur backlog vide · exigences contradictoires — les
+  décisions que tu **refuses** de prendre, cf. « Mode checkpoints ») : `escalate
+  {type: authority, detail: <une ligne>}` — le signal part, tu poses la question, tu
+  attends. Ce n'est jamais un arrêt de plus que celui que tu fais déjà.
+- **À la clôture** (choix `[Stop]`, ou fin de boucle) : `run_finished {status:
+  success|failure|abandoned}` — **seulement si c'est toi qui as ouvert le run**
+  (cf. le cas d'absorption ci-dessus) ; jamais par un `ezk-sprint` absorbé.
+
+Tu n'écris **jamais** les champs d'enveloppe (le serveur les calcule) et tu ne forces
+**jamais** `upgrade_ok` — au mieux un veto (`upgrade_ok_veto`). C'est une tentation
+propre à ta couche : tu es le seul à voir l'ensemble, mais le signal de quiescence est
+mécanique, pas négociable. Tes checkpoints restent des checkpoints — le gate est leur
+**trace contractuelle** (doc du kit : `products/mega-city/src/supervision/README.md`).
+
+> **Pourquoi `vz-product-builder`, lui, refuse de démarrer sans ces outils** (Override
+> 3 de sa SKILL.md) **alors que ce mode-ci reste best-effort** : ce n'est pas un oubli,
+> c'est le mode autonome — sans journal, son autonomie serait une boîte noire. Ici, un
+> humain reste aux checkpoints **par défaut** ; l'émission enrichit le suivi mais n'est
+> pas le seul garde-fou. Nuance à connaître : en `--checkpoints auto --tokens cap`,
+> cette justification s'affaiblit — l'humain n'est plus au four à chaque arrêt, et
+> l'émission redevient la principale trace de ce qui a été décidé.
+
 ## Garde-fous
 
 - **Compose, ne réimplémente rien** : ni le backlog, ni le sprint, ni le brainstorm. Si tu
