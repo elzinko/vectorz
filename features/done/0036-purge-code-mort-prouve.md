@@ -15,7 +15,7 @@ created: 2026-07-15
 
 Amont validé par panel adverse (2026-07-15). La « dette actée non résorbée » parasite
 chaque revue. Ce lot ne prend que le **sous-ensemble 100 % sûr, sans aucune orientation
-produit** (extrait du lot L8 de [0034](0034-mise-a-plat-post-pivot.md)). Il **ne touche
+produit** (extrait du lot L8 de [0034](../0034-mise-a-plat-post-pivot.md)). Il **ne touche
 PAS** `_bmad/`, `_bmad-output/`, ni le flag `useBMAD` : ceux-là sont runtime-atteignables
 et relèvent d'arbitrages humains (0034 D6/D9) — voir Notes.
 
@@ -34,7 +34,7 @@ et relèvent d'arbitrages humains (0034 D6/D9) — voir Notes.
 3. **[S3] Supprimer `scripts/ea13-real-run.sh`** ET mettre à jour le commentaire de
    `integration-tests/orchestrator-real-run.test.ts:21` qui le cite comme tracker de
    couverture non-CI (sinon il pointe dans le vide).
-4. **Rescoper la fiche [0022](0022-observabilite-mission-control-donnees-deja-collectees.md)**
+4. **Rescoper la fiche [0022](../0022-observabilite-mission-control-donnees-deja-collectees.md)**
    : retirer/reformuler l'AC « ventilation budget par agent » — mort-né, il s'adosse au
    YAML de `TokenBudgetService` jamais écrit en prod (donc = re-collecte, pas de
    l'affichage, ce que 0022 promet).

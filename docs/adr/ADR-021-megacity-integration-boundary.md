@@ -8,7 +8,7 @@ consensus dans les décisions ultérieures, elle est actée. (Le merge du docume
 
 ## Contexte
 
-[mega-city](../../../mega-city) (`~/git/bacasable/mega-city`) est un moteur de
+[mega-city](../../products/mega-city) (`~/git/bacasable/mega-city`) est un moteur de
 **composition → matérialisation** host-agnostique : il compose des *profiles*
 (rules + agents + skills + interactions) et les matérialise vers la forme native
 d'un host via des **Caps** (`caps/<host>/`). Son cœur est pur/déterministe ; cop1

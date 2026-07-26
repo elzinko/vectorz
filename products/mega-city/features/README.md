@@ -1,4 +1,4 @@
-# Backlog features & bugs — mega-city (méthode)
+# Backlog — mega-city
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
@@ -68,6 +68,7 @@
 | 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | 🔴 todo |  |
 | 0088 | ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné) | chore | P2 |  | 🔴 todo |  |
 | 0096 | build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient | bug | P2 |  | 🔴 todo |  |
+| 0101 | Câbler check-links.sh — un contrôle que personne ne lance ne protège de rien | chore | P2 |  | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 |  | 🔴 todo |  |
 | 0011 | cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode) | refactor | P3 |  | 🔴 todo |  |
 | 0012 | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 |  | 🔴 todo |  |

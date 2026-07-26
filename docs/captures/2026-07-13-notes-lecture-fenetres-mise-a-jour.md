@@ -1,6 +1,6 @@
 # Notes de lecture première main — fenêtres de mise à jour (2026-07-13)
 
-Statut : phase 1 de la fiche [0026](../../features/0026-article-fenetres-de-mise-a-jour.md).
+Statut : phase 1 de la fiche [0026](../../features/done/0026-article-fenetres-de-mise-a-jour.md).
 Lecture de première main de six familles de systèmes qui savent « mettre à jour un système
 pendant qu'il travaille », en préparation de l'article
 [fenêtres de mise à jour](../articles/fenetres-de-mise-a-jour.md). Toutes les citations

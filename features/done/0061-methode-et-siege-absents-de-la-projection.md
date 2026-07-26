@@ -20,7 +20,7 @@ le 2026-07-25) :
 ```
 
 La **projection la jette**. `RunProjection`
-([`journal-validator/src/types.ts:75`](products/cop1/packages/journal-validator/src/types.ts:75))
+([`journal-validator/src/types.ts:75`](../../products/cop1/packages/journal-validator/src/types.ts#L75))
 expose `runId`, `state`, `lastEventTs`, `lastEventSeq`, `gates`, `violations`, `notices`,
 `tokens` — **ni `method`, ni `seat`**. `RunSnapshot` côté app n'ajoute que
 `projectRoot`/`runDir`/`liveness`/`emissionClass`/`lastAbsorbedAt`, et `RunCard` côté web
@@ -83,7 +83,7 @@ nouvel outil, contrat v0.1 non rouvert :
 - Découvert en répondant à la question PO « chaque projet a-t-il sa propre version de
   méthode ? » (2026-07-25) : la réponse *devrait* être lisible dans l'UI, elle ne l'est
   nulle part.
-- Se tire naturellement **avec** la fiche [0059](features/0059-moniteur-carte-de-run-lisible.md)
+- Se tire naturellement **avec** la fiche [0059](0059-moniteur-carte-de-run-lisible.md)
   (carte de run lisible) : c'est la même carte, et « méthode · version » est justement
   l'information qui manque le plus en tête de carte.
 - Prérequis technique du « marquage d'écart de méthode » de la fiche mega-city **0082**.

@@ -181,7 +181,7 @@ par celui du §7 — en particulier `run.continue`/`run.stop` deviennent les com
    cop1, versionnement d'ensemble, backlog partagé, garde-fous CI de séparabilité ; révise la
    Décision §1 d'ADR-023, conserve la couture ADR-021 et la sortie D).
 8. **Fiche 0025 — créée le 2026-07-13** : article « contrat de supervisabilité »
-   ([features/0025](../../features/0025-article-contrat-supervisabilite.md)) — lecture de
+   ([features/0025](../../features/done/0025-article-contrat-supervisabilite.md)) — lecture de
    première main des 4 sources + article publié dans `docs/articles/` (base interne citable,
    antichambre de l'ADR du §6.1).
 9. **Fiche** : mode moniteur (D7) — canal d'émission d'événements depuis une session

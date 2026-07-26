@@ -40,8 +40,8 @@ symptôme » atterrit proprement sans casser la cohérence de l'ensemble.
 - **Règle mesurable liée à un symptôme** : ✅ `AutoRuleSuggestionService`
   (`…/sprint-core/…/auto-rule-suggestion`) — `blocageRate>0.3`→règle, `coverage<80`→règle,
   `dodRejectionRate>0.2`→`strengthen-dor-validation`, avec `reason` chiffré ; `improvementScore`.
-- **Juge de cohérence** : 🔴 **spécifié, pas codé** — fiche [0008 chief-judge](0008-chief-judge.md)
-  (todo) + couche « Juge » de [0034](0034-garde-fous-integrite-agents.md) ; au runtime,
+- **Juge de cohérence** : 🔴 **spécifié, pas codé** — fiche [0008 chief-judge](../0008-chief-judge.md)
+  (todo) + couche « Juge » de [0034](../0034-garde-fous-integrite-agents.md) ; au runtime,
   `RuleApplicationService.checkDuplicate` ne détecte que les **doublons**, pas les contradictions.
 - **DoD/DoR + stockage des règles** : ✅ `DoDCheck` (ADR-020), règles en `rules/`/`bundles/`
   (53 migrées, fiche done/0006).
@@ -94,7 +94,7 @@ manquantes autour de la machinerie qui existe déjà :
   partagent le juge de cohérence et le rangement des règles → cette fiche pose la plomberie.
 - **Contrôle PO explicite pour l'instant** (2026-07-16) : aucune auto-application ; le
   versionnage des règles est différé (« on verra plus tard »).
-- Compose : [0008 chief-judge](0008-chief-judge.md), `ezk-steward`, `rules/`, `bundles/`,
+- Compose : [0008 chief-judge](../0008-chief-judge.md), `ezk-steward`, `rules/`, `bundles/`,
   `ezk-backlog`. Voisin de 0034 (garde-fous intégrité agents) et 0028 (modèle typé
   interaction/autorité).
 - **Groomé `idea → todo` le 2026-07-16** (premier self-host : la méthode affûte son propre

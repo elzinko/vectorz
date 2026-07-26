@@ -13,7 +13,7 @@ created: 2026-07-13
 ## Contexte / Problème
 
 Issu de la discussion du 2026-07-13 sur la **clause 5 du contrat de supervisabilité**
-([docs/articles/contrat-de-supervisabilite.md](../docs/articles/contrat-de-supervisabilite.md)) :
+([docs/articles/contrat-de-supervisabilite.md](../../docs/articles/contrat-de-supervisabilite.md)) :
 l'adoption de version se fait aux jalons (gates) — mais un jalon n'est **pas forcément un point
 STABLE**. À la fin d'une étape, il peut rester des worktrees ouverts, une migration en cours,
 un état intermédiaire non migrable. L'utilisateur a posé le principe : **« c'est la méthode qui
@@ -36,7 +36,7 @@ Deux phases, calquées sur la fiche 0025 :
    Erlang/OTP hot code swapping (le contre-exemple assumé) ; blue-green / canary. Sortie :
    notes de lecture avec citations exactes vérifiées (URL + passage), dans `docs/captures/`.
 2. **Article dans `docs/articles/`** — même barre de qualité que
-   [contrat-de-supervisabilite.md](../docs/articles/contrat-de-supervisabilite.md) : ouvert par
+   [contrat-de-supervisabilite.md](../../docs/articles/contrat-de-supervisabilite.md) : ouvert par
    un récit, vulgarisation avant formalisation, thèse en épigraphe, proposition d'implémentation
    cop1/mega-city (indicateur d'éligibilité dans le rapport de jalon, `adopt_version` uniquement
    sur jalon éligible, adoption toujours affichée). Relecture par panel indépendant avant merge.
@@ -47,18 +47,18 @@ Publication externe : explicitement différée, comme pour la 0025.
 
 - [x] Notes de lecture de première main des 6 sources, avec citations vérifiées (URL + passage),
       dans `docs/captures/` (datées du jour) →
-      [2026-07-13-notes-lecture-fenetres-mise-a-jour.md](../docs/captures/2026-07-13-notes-lecture-fenetres-mise-a-jour.md)
+      [2026-07-13-notes-lecture-fenetres-mise-a-jour.md](../../docs/captures/2026-07-13-notes-lecture-fenetres-mise-a-jour.md)
       (6 citations porteuses contre-vérifiées par grep sur la source brute).
 - [x] `docs/articles/<slug>.md` : article autonome, **ouvert par un récit** (la genèse : un
       contrat qui dit « adoption aux jalons », et l'objection — seul le travailleur sait si son
       état est migrable), ~2 000-2 500 mots, chaque référence glosée à la première occurrence →
-      [fenetres-de-mise-a-jour.md](../docs/articles/fenetres-de-mise-a-jour.md).
+      [fenetres-de-mise-a-jour.md](../../docs/articles/fenetres-de-mise-a-jour.md).
 - [x] L'article ne contredit ni la capture
-      [2026-07-13-contrat-methode-et-versions.md](../docs/captures/2026-07-13-contrat-methode-et-versions.md)
+      [2026-07-13-contrat-methode-et-versions.md](../../docs/captures/2026-07-13-contrat-methode-et-versions.md)
       (D1, D2) ni ADR-021 (il *étend* la clause 5 : adoption aux jalons **éligibles**).
 - [x] Relecture par panel indépendant passée (lecteur cible, juge essais, copy-editor, fidélité
       article↔notes, accessibilité des références) + contre-lecture finale « publier ».
-- [x] Article et notes indexés dans [docs/index.md](../docs/index.md).
+- [x] Article et notes indexés dans [docs/index.md](../../docs/index.md).
 - [x] Gate locale verte (lint + build + tests ; pas de code touché).
 
 ## Notes / décisions

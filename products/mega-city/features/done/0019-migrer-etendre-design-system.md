@@ -12,7 +12,7 @@ created: 2026-06-27
 `ezk-design-system` (claude-skills) couvre déjà tokens, variants (intentions×tailles), un
 styleguide vivant `/design` et un mode enforcement — mais lui manquent **Slot**, **Pattern**,
 **Breakpoint**, le vocabulaire nommé explicitement, et une forme **requêtable**. C'est le
-1ᵉʳ skill *étendu* migré dans mega-city (cf. [`docs/adr/0006`](../docs/adr/0006-absorber-claude-skills-catalogue2.md)).
+1ᵉʳ skill *étendu* migré dans mega-city (cf. [`docs/adr/0006`](../../docs/adr/0006-absorber-claude-skills-catalogue2.md)).
 
 ## Proposition
 Migrer le skill dans `skills/` et l'étendre — **couches 1+2** (concepts + playbook + enforcement),
