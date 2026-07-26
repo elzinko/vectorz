@@ -8,13 +8,18 @@
 
 ## 🧹 Hygiène préalable (rapide)
 
-- `ship` **0059** · **0061** (racine) — livrés par #50, encore marqués « à faire ».
+- ~~`ship` **0059** · **0061** (racine)~~ — fait (vérifié au `reconcile` du 2026-07-26).
 - `audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le
   2026-07-25, probablement à clore ou re-scoper.
 
 ## ▶️ NOW — voir et gérer ses projets
 
-1. **mc-0094** — finir le branchement de l'émetteur (résidu `.supervision` + preuve worktree) · `build`
+0. **0064** — une seule liste de features (champ `product:`) : la double liste coûte plus
+   qu'elle ne rapporte (P0, PO 2026-07-26) · `groom` *(panel adverse avant build)*
+1. **mc-0094** — brancher l'émetteur **sur vectorz** : c'est en travaillant sur vectorz que
+   le PO peut dire si le Moniteur est **fidèle** et **lisible** — sur un jouet, il ne sait
+   pas ce qu'il devrait voir (décision PO 2026-07-26 : l'émission est de l'**observation**,
+   append-only + gitignorée ; le **cobaye** reste le terrain des tests qui cassent) · `build`
 2. **mc-0095** — faire émettre `ezk-product-builder` (sinon ton vrai manager reste invisible) · `build`
 3. **mc-0082** — registre {projet · méthode} : la donnée « quels projets, quelle version » · `build`
 4. **0062** — onglet « Projets » : liste par projet, cliquable → activité · `build`
