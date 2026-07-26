@@ -8,6 +8,7 @@
 | # | Titre | Type | Prio | Épic | Statut | PR |
 |---|-------|------|------|------|--------|----|
 | 0035 | Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034) | chore | P0 | 0034 | ✅ shipped | #12 |
+| 0064 | Une seule liste de features pour tout le monorepo (champ `product:`) — la double liste coûte plus qu'elle ne rapporte | refactor | P0 |  | 🔴 todo |  |
 | 0001 | Story B — lanceur de run + mission-control live | feature | P1 |  | ✅ shipped | #24 |
 | 0002 | Fix emplacement du worktree en session concurrente | bug | P1 |  | ✅ shipped | #26 |
 | 0013 | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | ✅ shipped | #33 |
