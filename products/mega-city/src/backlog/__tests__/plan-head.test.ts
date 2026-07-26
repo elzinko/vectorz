@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { type PlanCard, crossBacklogHead } from '../plan-head.js';
 
-function card(id: string, product: string, status: string, ready: boolean): PlanCard {
-  return { id, product, status, ready };
+function card(
+  id: string,
+  product: string,
+  status: string,
+  ready: boolean,
+  type = 'feature',
+): PlanCard {
+  return { id, product, type, status, ready };
 }
 
 function indexOf(...cards: PlanCard[]): Map<string, PlanCard> {
@@ -74,6 +80,25 @@ describe('crossBacklogHead (fiche mc-0097)', () => {
     expect(r.head).toBeNull();
     expect(r.blockedAhead).toEqual([card('mc-0094', 'mega-city', 'todo', false)]);
     expect(r.unresolved).toEqual(['mc-8888']);
+  });
+
+  it('signale un introuvable même APRÈS la tête (scan complet — revue Codex #53)', () => {
+    const planIds = ['0062', 'mc-9999'];
+    const index = indexOf(card('0062', 'vectorz', 'todo', true));
+    const r = crossBacklogHead(planIds, index);
+    expect(r.head).toEqual(card('0062', 'vectorz', 'todo', true));
+    expect(r.unresolved).toEqual(['mc-9999']); // pas omis malgré la tête trouvée avant
+  });
+
+  it('n’élit jamais un épic comme tête, même todo+ready (revue Codex #53)', () => {
+    const planIds = ['mc-0051', '0041'];
+    const index = indexOf(
+      card('mc-0051', 'mega-city', 'todo', true, 'epic'), // épic tirable en apparence
+      card('0041', 'vectorz', 'todo', true), // la vraie tirable
+    );
+    const r = crossBacklogHead(planIds, index);
+    expect(r.head).toEqual(card('0041', 'vectorz', 'todo', true));
+    expect(r.blockedAhead).toEqual([]); // l'épic n'est pas non plus un blocage
   });
 
   it('renvoie head null et listes vides sur un plan vide', () => {

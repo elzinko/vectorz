@@ -13,6 +13,8 @@ export interface PlanCard {
   id: string;
   /** Liste d'appartenance, informatif : `mega-city` ou `vectorz`. */
   product: string;
+  /** `feature | bug | refactor | chore | epic`. Un `epic` n'est jamais tirable. */
+  type: string;
   status: string;
   ready: boolean;
 }
@@ -34,24 +36,32 @@ export function crossBacklogHead(
   planIds: string[],
   index: Map<string, PlanCard>,
 ): CrossBacklogHead {
+  let head: PlanCard | null = null;
   const blockedAhead: PlanCard[] = [];
   const unresolved: string[] = [];
 
+  // On parcourt TOUT le plan (pas de return anticipé) : les introuvables doivent
+  // être signalés même après la tête (revue Codex #53).
   for (const id of planIds) {
     const card = index.get(id);
     if (!card) {
       unresolved.push(id);
       continue;
     }
+    // Un épic (ADR-0017) n'est jamais tirable — ce sont ses enfants ; on ne le
+    // choisit ni comme tête ni comme blocage (revue Codex #53).
+    if (card.type === 'epic') continue;
+    if (head) continue; // tête déjà trouvée : on ne scanne plus que les introuvables
     if (card.status === 'todo' && card.ready) {
-      return { head: card, blockedAhead, unresolved };
+      head = card;
+      continue;
     }
     if (card.status === 'todo' && !card.ready) {
       blockedAhead.push(card);
     }
-    // idea | blocked | in-progress | shipped | epic → ni tirable, ni signal de
-    // blocage à l'intake : on passe (miroir de la règle mc-0089).
+    // idea | blocked | in-progress | shipped → ni tirable, ni signal de blocage
+    // à l'intake : on passe (miroir de la règle mc-0089).
   }
 
-  return { head: null, blockedAhead, unresolved };
+  return { head, blockedAhead, unresolved };
 }

@@ -46,6 +46,7 @@ function collect(root: string): Map<string, PlanCard> {
         index.set(id, {
           id,
           product,
+          type: readField(text, 'type') || 'feature',
           status: readField(text, 'status') || 'idea',
           ready: readField(text, 'ready') !== '',
         });
