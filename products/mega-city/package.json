@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lawgiver": "tsx bin/lawgiver.ts",
     "supervision:link": "tsx bin/supervision-link.ts",
+    "supervision:probe": "tsx bin/supervision-probe.ts",
     "plan:order": "tsx bin/plan-order.ts",
     "plan:head": "tsx bin/plan-head.ts"
   },

@@ -62,3 +62,11 @@ SPRINT.md
 
 # Local config (may contain machine-specific paths/models)
 cop1.config.yaml
+.supervision/
+# Branchement de l'émetteur : artefact d'INSTALLATION local, régénéré par
+# `pnpm --dir products/mega-city supervision:link .` (ADR-034). Chemins absolus
+# machine-spécifiques ; commité, il casserait sur tout autre poste et neutraliserait
+# l'échappatoire SUPERVISION_PER_WORKTREE (ADR-019).
+# Ancré à la racine : l'ADR ne décide que du fichier de branchement du dépôt,
+# pas de tout `.mcp.json` à n'importe quelle profondeur.
+/.mcp.json

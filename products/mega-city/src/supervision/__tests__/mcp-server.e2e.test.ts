@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { EXPECTED_SUPERVISION_TOOLS } from '../probe.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '../../..');
@@ -83,9 +84,7 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name).sort();
 
-    expect(names).toEqual(
-      ['escalate', 'gate_reached', 'gate_resumed', 'run_finished', 'run_start'].sort(),
-    );
+    expect(names).toEqual([...EXPECTED_SUPERVISION_TOOLS].sort());
     expect(names).not.toContain('emit_event');
   }, 20000);
 

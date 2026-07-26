@@ -19,6 +19,7 @@ import {
   mergeMcpConfig,
   resolveProjectPath,
 } from '../src/supervision/link-config.js';
+import { EXPECTED_SUPERVISION_TOOLS } from '../src/supervision/probe.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
@@ -82,8 +83,11 @@ writeFileSync(gitignorePath, ensureSupervisionIgnored(gitignore));
 
 // 3. compte rendu + étapes suivantes
 console.log(`✓ ${projectRoot} ${alreadyLinked ? 'ré-branché (chemins mis à jour)' : 'branché'}.`);
-console.log('  · .mcp.json  → serveur « supervision » (5 outils : run_start, gate_reached,');
-console.log('                 gate_resumed, escalate, run_finished)');
+// Les 5 noms viennent de la constante partagée, jamais réécrits à la main :
+// ce compte rendu est de la doc EXÉCUTABLE, il ne doit pas pouvoir mentir.
+console.log(
+  `  · .mcp.json  → serveur « supervision » (${EXPECTED_SUPERVISION_TOOLS.length} outils : ${EXPECTED_SUPERVISION_TOOLS.join(', ')})`,
+);
 console.log('  · .gitignore → .supervision/');
 console.log('');
 console.log('Étapes suivantes :');
