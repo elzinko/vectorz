@@ -6,7 +6,7 @@ priority: P1
 epic:
 depends: []
 labels: [method, enabler]
-status: todo
+status: blocked
 ready: 2026-07-26
 pr:
 created: 2026-07-26
@@ -198,6 +198,14 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 - **DoR** : les 4 slots sont remplis (problème constaté / valeur / critères observables /
   dépendances externes datées) → `ready: 2026-07-26`. Gate posé lors de la rédaction ;
   révocable par le PO.
+- **`status: blocked` (revue Codex #58, P2)** : le contenu est DoR-complet (`ready:` reste
+  posé), mais la **séquence** de cette fiche exige que l'adaptateur samplerz (`make preview-pr`)
+  existe d'abord — écrire `ezk-testbed` contre une commande inexistante serait de la prose
+  non éprouvée. Or `crossBacklogHead` (`src/backlog/plan-head.ts:55`) n'élit une tête que
+  sur `todo` + `ready`, et la prose de `PLAN.md` ne borne rien ; laisser `todo` autoriserait
+  un builder autonome à tirer 0102 prématurément. `blocked` la rend non-tirable jusqu'à ce
+  que le prérequis samplerz soit constaté livré — le PO repassera `blocked → todo` à ce
+  moment.
 - **Renommage `ezk-pr-pilot` → `ezk-pr` : hors périmètre**, explicitement. Décision
   cosmétique, à trancher dans sa propre PR — jamais couplée à un changement de frontière
   (sinon la revue mélange « est-ce le bon découpage ? » et « est-ce le bon mot ? »).

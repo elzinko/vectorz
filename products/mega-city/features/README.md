@@ -44,7 +44,7 @@
 | 0077 | Kit émetteur — hooks Claude Code classe A (émission déterministe) | feature | P1 |  | 🔴 todo |  |
 | 0079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 |  | 🔴 todo |  |
 | 0095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | 🟠 in-progress | '#55' |
-| 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 |  | 🔴 todo |  |
+| 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 |  | ⛔ blocked |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 |  | ✅ shipped |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 |  | 🔴 todo |  |
 | 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 |  | 🔴 todo |  |
