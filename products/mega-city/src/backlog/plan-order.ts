@@ -17,6 +17,10 @@
  *     marqueur — qui seraient sinon pris pour de nouvelles entrées ordonnées
  *     (revue Codex #52, 2e tour).
  *
+ * Seules les puces au **niveau racine** (colonne 0) sont des entrées : une puce
+ * indentée est un sous-item (dépendance, note) et est ignorée même si elle
+ * commence par un id ou porte un marqueur.
+ *
  * Limitations assumées : sur une ligne multi-ids, on garde le 1er id ; un paquet
  * « LATER » purement descriptif (ni id en tête, ni marqueur) n'est pas capté —
  * ces items ne sont de toute façon pas tirables.
@@ -39,6 +43,11 @@ export function parsePlanOrder(planMd: string): string[] {
   const seen = new Set<string>();
 
   for (const line of planMd.split('\n')) {
+    // Une entrée de plan est au NIVEAU RACINE (colonne 0). Une puce INDENTÉE est
+    // un sous-item (dépendance, note sous une entrée) — pas une entrée ordonnée.
+    // On inspecte l'indentation AVANT de trimmer, sinon `groom mc-0017 later`
+    // imbriqué serait pris pour une entrée de tête (revue Codex #52, 3e tour).
+    if (/^\s/.test(line)) continue;
     const trimmed = line.trim();
     if (!LIST_ITEM_RE.test(trimmed)) continue;
 

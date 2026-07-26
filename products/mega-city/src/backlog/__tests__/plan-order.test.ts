@@ -34,12 +34,22 @@ describe('parsePlanOrder (fiche mc-0089)', () => {
   it('exclut les puces qui ne sont pas des entrées : ni id en tête, ni marqueur (revue Codex #52)', () => {
     const md = [
       '1. **mc-0094** — vraie entrée · `build`',
-      '   - depends on 0017', // sous-bullet : référence, pas une entrée
       '- ⚠️ **Distribution / publication** — mc-0087 · 0050 (paquet parking, sans marqueur)',
-      '- voir aussi la note sur 0058', // puce de note
+      '- voir aussi la note sur 0058', // puce de note (racine, ni id en tête ni marqueur)
     ].join('\n');
-    // Seule la vraie entrée est retenue ; 0017, mc-0087, 0058 sont ignorés.
+    // Seule la vraie entrée est retenue ; mc-0087, 0058 sont ignorés.
     expect(parsePlanOrder(md)).toEqual(['mc-0094']);
+  });
+
+  it('exclut les puces IMBRIQUÉES même si elles ont id en tête / marqueur (revue Codex #52, 3e tour)', () => {
+    const md = [
+      '1. **mc-0094** — vraie entrée racine · `build`',
+      '   - 0017 — dépendance (sous-bullet indenté, commence par un id)',
+      '   - groom mc-0018 plus tard (sous-bullet indenté, avec marqueur)',
+      '- 0062 — autre entrée racine · `build`',
+    ].join('\n');
+    // Les sous-bullets 0017 et mc-0018 sont des notes, PAS des entrées de tête.
+    expect(parsePlanOrder(md)).toEqual(['mc-0094', '0062']);
   });
 
   it('ignore les titres, citations et prose', () => {
