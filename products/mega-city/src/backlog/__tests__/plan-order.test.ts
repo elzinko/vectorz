@@ -59,29 +59,45 @@ describe('parsePlanOrder (fiche mc-0089)', () => {
     expect(parsePlanOrder('# Titre\n\nJuste de la prose.\n')).toEqual([]);
   });
 
-  it('ignore les sections hors séquence (## Hygiène, ## Note) mais garde NOW/NEXT/LATER', () => {
+  it('inclut les jalons à noms ARBITRAIRES (contrat plan : "A — …", "B — …") — revue Codex #52', () => {
+    // Le contrat `plan` autorise des jalons nommés librement. Gater sur NOW/NEXT/
+    // LATER omettrait silencieusement ces sections → bug corrigé (mc-0089).
+    const md = [
+      '# PLAN',
+      '## A — finir 0005',
+      '1. 0005 — build',
+      '## B — bugs nav',
+      '- 0017 — fix',
+      'De la prose sous B mentionne 9999 mais sans puce (ignorée).',
+    ].join('\n');
+    expect(parsePlanOrder(md)).toEqual(['0005', '0017']);
+  });
+
+  it('inclut une section de type ## Hygiène (entrées ship/audit = entrées de plan valides)', () => {
     const md = [
       '# PLAN',
       '## 🧹 Hygiène préalable',
-      '- 0059 — déjà livré, hors séquence',
-      '## ▶️ NOW — voir et gérer ses projets',
+      '- `ship` 0059 — nettoyage AVANT la suite',
+      '## ▶️ NOW',
       '1. mc-0094 — dans la séquence',
-      '## 🚦 Note — lancement autonome',
-      '- 0058 — mentionné dans une note, hors séquence',
     ].join('\n');
-    expect(parsePlanOrder(md)).toEqual(['mc-0094']);
+    // 0059 est une entrée de plan (marqueur ship), pas de la prose → incluse, et AVANT mc-0094.
+    expect(parsePlanOrder(md)).toEqual(['0059', 'mc-0094']);
   });
 
-  it('charge le vrai features/PLAN.md : le 1er id est mc-0094, 0062 apparaît après un mc-', () => {
+  it('charge le vrai features/PLAN.md : mc-0094 est présent et précède 0062 ; l’hygiène (0059) est en tête', () => {
     const planPath = resolve(
       dirname(fileURLToPath(import.meta.url)),
       '../../../../../features/PLAN.md',
     );
     const planMd = readFileSync(planPath, 'utf8');
     const ids = parsePlanOrder(planMd);
-    expect(ids[0]).toBe('mc-0094');
-    const idx0062 = ids.indexOf('0062');
-    expect(idx0062).toBeGreaterThan(-1);
-    expect(ids.indexOf('mc-0094')).toBeLessThan(idx0062);
+    expect(ids).toContain('mc-0094');
+    expect(ids).toContain('0062');
+    // La séquence de travail (mc-0094 → 0062) est préservée dans l’ordre du plan.
+    expect(ids.indexOf('mc-0094')).toBeLessThan(ids.indexOf('0062'));
+    // La section Hygiène (0059, marqueur ship) précède le NOW — plus d’omission silencieuse.
+    expect(ids).toContain('0059');
+    expect(ids.indexOf('0059')).toBeLessThan(ids.indexOf('mc-0094'));
   });
 });

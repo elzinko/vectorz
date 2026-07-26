@@ -226,8 +226,9 @@ antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` d
 backlog, l'ordre de travail vient de **LUI**, pas du tri priorité : la priorité est un
 *seau* d'ex æquo, `PLAN.md` est la *séquence*. Obtiens l'ordre des ids **via le helper
 déterministe** (jamais à l'œil — doctrine ADR-0001) :
-`pnpm --dir products/mega-city plan:order <chemin/vers/PLAN.md>` → les ids dans l'ordre
-`NOW → NEXT → LATER`. Restreins aux ids **présents dans ce backlog** (un `PLAN.md` racine
+`pnpm --dir products/mega-city plan:order <chemin/vers/PLAN.md>` → les ids **dans l'ordre du
+document** (tous jalons confondus, quel que soit leur nom — le parseur ne suppose aucun titre
+particulier). Restreins aux ids **présents dans ce backlog** (un `PLAN.md` racine
 peut lister des ids `mc-` d'un autre backlog : hors de CE `next`, à router à part —
 limitation POC). **Sans `PLAN.md`** : repli sur le tri `P0→P3 puis id`.
 
