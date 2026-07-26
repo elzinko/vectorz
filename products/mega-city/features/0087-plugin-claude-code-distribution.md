@@ -339,3 +339,13 @@ qu'à supposer.
   ADR-023 (option D en réserve), ADR-025 §2 (versionnement d'ensemble).
 - **Outillage disponible** : plugin officiel `plugin-dev` (`/create-plugin`, agents
   `plugin-validator` et `skill-reviewer`) — à composer, pas à réimplémenter.
+- **Branche parquée — guide d'onboarding utilisateur (décision PO 2026-07-27).** La branche
+  `docs/guide-supervision-claude-desktop` (PR #37 CLOSED le 2026-07-25, « en attente :
+  vocabulaire + topologie ») porte un guide utilisateur « Connecter une méthode au contrat
+  de supervision (Claude Desktop) » — 2 fichiers non présents dans `main`
+  (`products/mega-city/docs/brancher-supervision-claude-desktop.md`,
+  `products/mega-city/src/supervision/README.md`). **PARQUÉE, pas publiée** : un guide
+  d'onboarding vers d'autres relève de cette famille distribution = LATER. **Condition de
+  reprise** : (a) le PO décide d'ouvrir la distribution à d'autres, ET (b) le socle amont
+  vocabulaire + topologie (motif de fermeture de #37) est stabilisé. La branche reste sur
+  `origin/` : aucune suppression, reprise = rouvrir/rebaser la PR le moment venu.
