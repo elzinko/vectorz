@@ -47,7 +47,7 @@ Question PO (session 2026-07-16, premier self-host) : la règle actuelle est str
   sujet)** forment justement un **lot cohérent** (« améliorer la méthode ») — le cas exact
   décrit par le PO. Elles sont d'ailleurs capturées ensemble (PR #20).
 - Relie [0100](0100-sprint-intake-sante-backlog-metriques.md) (le « lot » = sortie du sprint
-  planning) et [0063](0063-ezk-retro-ceremonie-auto-amelioration.md) (la règle de composition
+  planning) et [0063](done/0063-ezk-retro-ceremonie-auto-amelioration.md) (la règle de composition
   est une **règle d'équipe évolutive** — donc gérable par `ezk-retro`).
 - À trancher au grooming : la formule de règle (« 1 PR = 1 incrément livrable cohérent :
   souvent 1 fiche, parfois un couple ») et **où** l'inscrire (rule mega-city `rules/` vs
