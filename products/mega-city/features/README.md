@@ -66,7 +66,7 @@
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | ✅ shipped | #30 |
 | 0078 | Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb) | feature | P2 |  | ✅ shipped | #41 |
 | 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | 🔴 todo |  |
-| 0088 | ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné) | chore | P2 |  | 🔴 todo |  |
+| 0088 | ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné) | chore | P2 |  | 🟠 in-progress |  |
 | 0096 | build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient | bug | P2 |  | 🔴 todo |  |
 | 0101 | Câbler check-links.sh — un contrôle que personne ne lance ne protège de rien | chore | P2 |  | 🔴 todo |  |
 | 0008 | chief-judge — juge de cohérence (avis, non bloquant) | feature | P3 |  | 🔴 todo |  |
