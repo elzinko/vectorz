@@ -37,9 +37,14 @@ silencieusement, ce que `test-template-unicity.sh` interdit.
 
 ### 1. La section `**Pending` est obligatoire — c'est elle qui porte la rotation
 
-`handoff.sh carry` ne remonte **que** cette section, et **seulement** depuis l'entrée la
-plus récente. Une entrée sans `**Pending` fait perdre au tour suivant tous les reports
-non-git qu'elle aurait dû transmettre. Écris-la même vide (`- (rien)`).
+`handoff.sh carry` ne remonte **que** cette section, depuis l'entrée la plus récente **qui
+en possède une**. Écris-la toujours, même vide (`- (rien)`) : une entrée sans `**Pending`
+force `carry` à remonter celle d'une entrée antérieure, dont certains points peuvent être
+résolus depuis — tu devras alors les trier à la main plutôt que de les recopier.
+
+> Le repli sur une entrée antérieure est un **filet**, pas le fonctionnement normal : il
+> évite de tout perdre quand une entrée n'a pas de Pending (cas vécu — une note courte de
+> correction), mais il ne remplace pas la discipline d'écrire la section à chaque fois.
 
 ### 2. Le pending se compose de DEUX sources, et une seule est à recopier
 

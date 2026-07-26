@@ -98,14 +98,22 @@ case "${1:-help}" in
     ;;
 
   carry)
-    # Read-only. Rend UNIQUEMENT la section **Pending de la PREMIÈRE entrée (la plus
-    # récente), bornée : le rédacteur n'a jamais besoin de lire le fichier entier.
+    # Read-only. Rend la section **Pending la PLUS RÉCENTE QUI EXISTE, bornée : le
+    # rédacteur n'a jamais besoin de lire le fichier entier.
+    #
+    # ⚠ « la plus récente qui existe », et non « celle de la première entrée ». Trouvé en
+    # dogfoodant la clôture : toutes les entrées ne portent pas de section Pending — une
+    # note courte de correction, par exemple, n'en a pas. Se limiter à la première entrée
+    # rendait alors du vide, et TOUS les reports non-git de l'entrée précédente étaient
+    # perdus au tour suivant (ici : deux décisions PO en attente sur des branches, plus une
+    # fiche reportée). Un rituel dont la raison d'être est de ne rien perdre ne peut pas
+    # dépendre de la forme de la dernière entrée écrite.
     [[ -f "$FILE" ]] || exit 0
     awk '
-      /^## / { if (seen) exit; seen=1; next }        # 2ᵉ en-tête = fin de l entree
-      seen && /^\*\*Pending/ { insec=1; print; next }
-      insec && /^\*\*/ { exit }                       # section suivante = fin
-      insec { print }
+      /^## / { if (started) exit; next }              # entrée suivante APRÈS la section = fin
+      /^\*\*Pending/ { started=1; print; next }       # 1re section Pending rencontrée (= la + récente)
+      started && /^\*\*/ { exit }                     # section suivante = fin
+      started { print }
     ' "$FILE" | head -n "$CARRY_MAX"
     ;;
 
