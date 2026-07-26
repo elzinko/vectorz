@@ -3,7 +3,7 @@
 - Statut : **Proposé** — 2026-07-24 (fiche 0086, sprint mega-city)
 - Portée : kit émetteur — `bin/supervision-mcp.ts`, `src/supervision/mcp-server.ts`,
   nouveau `src/supervision/project-root.ts` ; `runtime.ts` inchangé
-- Liens : fiche [0086](../../features/0086-feat-normalisation-arbre-principal.md),
+- Liens : fiche [0086](../../features/done/0086-feat-normalisation-arbre-principal.md),
   spike [0083](../../features/done/0083-spike-mesure-racine-projet-worktree.md),
   fiches 0084/0085 (quiescence)
 

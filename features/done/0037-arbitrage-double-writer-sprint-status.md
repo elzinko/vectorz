@@ -14,7 +14,7 @@ created: 2026-07-15
 ## Contexte / Problème
 
 Amont validé par panel adverse (2026-07-15). La décision **D7** de la fiche
-[0034](0034-mise-a-plat-post-pivot.md) (« double-writer `sprint-status.yaml`, jamais
+[0034](../0034-mise-a-plat-post-pivot.md) (« double-writer `sprint-status.yaml`, jamais
 tranché entre avril et juillet — re-porter en fiche avant archivage du snapshot, L3 »)
 n'est portée par **aucune fiche** (vérifié : `ls features | grep -E 'double|sprint-status|writer'`
 = rien avant cette fiche). C'est un angle mort structurant : `sprint-status.yaml` est déclaré source-of-truth

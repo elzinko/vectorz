@@ -13,7 +13,7 @@ created: 2026-07-13
 ## Contexte / Problème
 
 Le balayage prior-art du 2026-07-13
-([docs/captures/2026-07-13-prior-art-contrat-supervisabilite.md](../docs/captures/2026-07-13-prior-art-contrat-supervisabilite.md))
+([docs/captures/2026-07-13-prior-art-contrat-supervisabilite.md](../../docs/captures/2026-07-13-prior-art-contrat-supervisabilite.md))
 conclut que le contrat complet (gates déclarés par la méthode, stop-par-défaut vérifiable,
 escalade à deux étages, schéma versionné, adoption de version aux gates) **n'existe nulle part**,
 et que le créneau d'article est **libre mais se referme** (Rel(AI)Build et Faramesh tournent

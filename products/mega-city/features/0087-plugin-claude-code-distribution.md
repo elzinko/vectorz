@@ -319,7 +319,7 @@ qu'à supposer.
   « plugin Claude Code / marketplace ». Les seules occurrences de « plugin » sont incidentes
   (0069 : *« pas de plugin exotique »* ; 0052 : postiz).
 - **Fiches liées** :
-  - **[0078](0078-mcpb-install-un-clic-supervision.md)** — l'autre volet packaging (`.mcpb`,
+  - **[0078](done/0078-mcpb-install-un-clic-supervision.md)** — l'autre volet packaging (`.mcpb`,
     Claude Desktop). Même question ouverte de distribution ; cf. §Incertitude 5.
   - **[0029](0029-propagation-maj-skills.md)** — propagation des MAJ *breaking* : traite les
     **données/schéma** là où 0087 traite le **code + la version**. Un plugin versionné donne

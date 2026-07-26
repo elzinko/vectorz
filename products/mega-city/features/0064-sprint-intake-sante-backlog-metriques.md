@@ -125,7 +125,7 @@ reconstruite** au sprint suivant.
   le backlog fraîchement ordonnancé (`features/PLAN.md`, 2026-07-26) où le NOW est encore
   tout en `idea` — le builder doit donc l'aiguiller vers le grooming, pas tenter un sprint.
 - 2026-07-22 — **sous-problème réconciliation LIVRÉ** (décision + implémentation) : voir
-  [ADR-0018](../../docs/adr/0018-reconciliation-done-etat-reel-des-prs.md). Brique unique
+  [ADR-0018](../docs/adr/0018-reconciliation-done-etat-reel-des-prs.md). Brique unique
   `ezk-backlog reconcile` (croise fiches actives ↔ PRs mergées via `gh`, **propose** au PO,
   ne ship jamais seule, dégrade en local-only) ; appelée à l'intake (`ezk-sprint` étape 0),
   par `review` (bras mécanique du contrôle #1) et par `ezk-pr-pilot` après un merge UI ;

@@ -10,7 +10,7 @@ created: 2026-07-16
 
 ## Contexte / Problème
 
-Compagnon de [`0049 ezk-article`](0049-ezk-article-vulgarisation-panel-relecture.md).
+Compagnon de [`0049 ezk-article`](done/0049-ezk-article-vulgarisation-panel-relecture.md).
 À l'usage (session samplerz 2026-07-16, écriture de l'article de positionnement), le
 besoin a émergé : on démarre sur une **persona de base** fournie, puis on veut
 **y ajouter progressivement sa touche d'originalité** — des spécificités à la

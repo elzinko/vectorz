@@ -16,7 +16,7 @@ created: 2026-07-15
 Amont validé par panel adverse (2026-07-15). Le seul vrai préalable de « la suite » :
 tant que les statuts ADR mentent, chaque passe de nettoyage ou de suppression peut
 rouvrir des décisions déjà prises. Ce lot ne touche **que les re-tampons sans dépendance
-à la démo** (extraits du lot L4a de la fiche [0034](0034-mise-a-plat-post-pivot.md)). Il
+à la démo** (extraits du lot L4a de la fiche [0034](../0034-mise-a-plat-post-pivot.md)). Il
 **ne statue PAS** ADR-022/026/027 : ceux-là relèvent de la fenêtre DP8 post-démo et/ou
 d'un arbitrage humain (voir Notes).
 
