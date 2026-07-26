@@ -29,6 +29,7 @@
 | 0037 | flywheel cassé — capture écrit des skills/rules que loadCatalog ne relit jamais | bug | P1 |  | ✅ shipped | local (squash-merge) |
 | 0039 | frontmatter tuning des agents — model, effort, isolation | chore | P1 |  | ✅ shipped | local (squash-merge) |
 | 0040 | ezk-product-builder — mode --checkpoints ask\|auto (décisions recommandées par défaut) | feature | P1 |  | ✅ shipped | local (squash-merge) |
+| 0044 | formaliser la composition inter-skills (composes) | feature | P1 |  | 🔴 todo |  |
 | 0049 | ezk-article — skill d'écriture d'articles techniques vulgarisés (persona + panel de relecteurs frais) | feature | P1 |  | ✅ shipped | #32 |
 | 0050 | Kit émetteur de supervisabilité — mega-city devient la première méthode conforme au contrat | feature | P1 |  | ✅ shipped | #35 |
 | 0052 | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 |  | 🔴 todo |  |
@@ -58,7 +59,6 @@
 | 0041 | profils par hôte — cop1-target.yml et desktop.yml | feature | P2 |  | ✅ shipped | #7 |
 | 0042 | ezk-recipy — scanner les repos froids et proposer des fiches de skills | feature | P2 |  | 🔴 todo |  |
 | 0043 | caps claude-code — sérialiser model/effort/isolation dans les fichiers agents générés | bug | P2 |  | ✅ shipped | local (squash-merge) |
-| 0044 | formaliser la composition inter-skills (composes) | feature | P2 |  | 🔴 todo |  |
 | 0045 | ezk-dev — le rôle est un agent, la méthode (TDD) est une rule de profil | refactor | P2 |  | 🔴 todo |  |
 | 0047 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 |  | 🔴 todo |  |
 | 0048 | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 |  | ✅ shipped |  |
