@@ -224,13 +224,16 @@ antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` d
 
 **Ordre de parcours (mc-0089) — PLAN.md d'abord.** Si un `features/PLAN.md` gouverne ce
 backlog, l'ordre de travail vient de **LUI**, pas du tri priorité : la priorité est un
-*seau* d'ex æquo, `PLAN.md` est la *séquence*. Obtiens l'ordre des ids **via le helper
-déterministe** (jamais à l'œil — doctrine ADR-0001) :
+*seau* d'ex æquo, `PLAN.md` est la *séquence*. Pour obtenir l'ordre des ids **sans le lire
+à l'œil** (doctrine ADR-0001), un helper déterministe existe **dans le monorepo mega-city** :
 `pnpm --dir products/mega-city plan:order <chemin/vers/PLAN.md>` → les ids **dans l'ordre du
-document** (tous jalons confondus, quel que soit leur nom — le parseur ne suppose aucun titre
-particulier). Restreins aux ids **présents dans ce backlog** (un `PLAN.md` racine
-peut lister des ids `mc-` d'un autre backlog : hors de CE `next`, à router à part —
-limitation POC). **Sans `PLAN.md`** : repli sur le tri `P0→P3 puis id`.
+document** (tous jalons confondus, quel que soit leur nom ; une entrée = puce commençant par
+son id **ou** portant un marqueur `build|audit|ship|groom`). **Best-effort — jamais fatal** :
+le helper vivant dans mega-city, dans **tout autre dépôt** où il est absent, **ne fais pas
+échouer `next`** — lis le `PLAN.md` directement (au jugement) ou, à défaut, repli sur
+`P0→P3 puis id`. Restreins aux ids **présents dans ce backlog** (un `PLAN.md` racine peut
+lister des ids `mc-` d'un autre backlog : hors de CE `next`, à router à part — limitation
+POC). **Sans `PLAN.md`** du tout : tri `P0→P3 puis id`.
 
 Parcours le backlog **dans cet ordre** et renvoie la **première fiche éligible** :
 `status: todo` **et** `ready:` posé.

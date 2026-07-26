@@ -26,9 +26,20 @@ describe('parsePlanOrder (fiche mc-0089)', () => {
     expect(parsePlanOrder('1. **mc-0094** — finir')).toEqual(['mc-0094']);
   });
 
-  it('sur une ligne multi-ids, garde le premier (limitation POC assumée)', () => {
-    const md = '- ⚠️ Distribution — mc-0087 · 0050 · mc-0078 · mc-0096 · mc-0029.';
+  it('sur une entrée multi-ids, garde le premier (limitation POC assumée)', () => {
+    const md = '1. **mc-0087** — distribution, voir aussi 0050 et mc-0078 · `build`';
     expect(parsePlanOrder(md)).toEqual(['mc-0087']);
+  });
+
+  it('exclut les puces qui ne sont pas des entrées : ni id en tête, ni marqueur (revue Codex #52)', () => {
+    const md = [
+      '1. **mc-0094** — vraie entrée · `build`',
+      '   - depends on 0017', // sous-bullet : référence, pas une entrée
+      '- ⚠️ **Distribution / publication** — mc-0087 · 0050 (paquet parking, sans marqueur)',
+      '- voir aussi la note sur 0058', // puce de note
+    ].join('\n');
+    // Seule la vraie entrée est retenue ; 0017, mc-0087, 0058 sont ignorés.
+    expect(parsePlanOrder(md)).toEqual(['mc-0094']);
   });
 
   it('ignore les titres, citations et prose', () => {
@@ -94,10 +105,13 @@ describe('parsePlanOrder (fiche mc-0089)', () => {
     const ids = parsePlanOrder(planMd);
     expect(ids).toContain('mc-0094');
     expect(ids).toContain('0062');
+    expect(ids).toContain('0041'); // entrée NEXT (· build)
     // La séquence de travail (mc-0094 → 0062) est préservée dans l’ordre du plan.
     expect(ids.indexOf('mc-0094')).toBeLessThan(ids.indexOf('0062'));
     // La section Hygiène (0059, marqueur ship) précède le NOW — plus d’omission silencieuse.
     expect(ids).toContain('0059');
     expect(ids.indexOf('0059')).toBeLessThan(ids.indexOf('mc-0094'));
+    // Les paquets « LATER » descriptifs (sans marqueur) ne sont PAS pris pour des entrées.
+    expect(ids).not.toContain('mc-0087');
   });
 });
