@@ -40,7 +40,7 @@ All live under `_bmad-output/planning-artifacts/`. Treat these as source-of-trut
 ### Sprint Change Proposals (chronological)
 
 Listed in the snapshot §9. Latest two worth keeping warm:
-- [`sprint-change-proposal-2026-04-14.md`](../_bmad-output/planning-artifacts/sprint-change-proposal-2026-04-14.md) — PRD ↔ epics sync, EA4↔EA5 dep cycle break, EA11 reframe, NFR26–34 mapping, +E5-S13.
+- `sprint-change-proposal-2026-04-14.md` (absent du dépôt — jamais commité) — PRD ↔ epics sync, EA4↔EA5 dep cycle break, EA11 reframe, NFR26–34 mapping, +E5-S13.
 - [`sprint-change-proposal-2026-04-14-readiness-fixes.md`](../_bmad-output/planning-artifacts/sprint-change-proposal-2026-04-14-readiness-fixes.md) — copy-paste epic patches.
 
 ### Implementation state
@@ -51,8 +51,8 @@ Listed in the snapshot §9. Latest two worth keeping warm:
 - [`supervisor-playbook-reference.md`](../_bmad-output/planning-artifacts/supervisor-playbook-reference.md) — canonical reference playbook.
 
 ## Runtime artefacts (not docs)
-- [`supervisor-playbook.md`](../supervisor-playbook.md) — the minimal playbook the orchestrator loads by default.
-- [`cop1.config.yaml`](../cop1.config.yaml) — runtime config (pre-pivot, mostly dormant — see snapshot §10.4).
+- [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — the minimal playbook the orchestrator loads by default.
+- [`cop1.config.example.yaml`](../cop1.config.example.yaml) — gabarit versionné ; le `cop1.config.yaml` réel est gitignoré, local à chaque poste. Runtime config (pre-pivot, mostly dormant — see snapshot §10.4).
 
 ## Pre-Phase-A archive
 
