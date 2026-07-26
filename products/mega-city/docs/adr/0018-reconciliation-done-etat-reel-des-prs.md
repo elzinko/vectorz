@@ -3,7 +3,7 @@
 - Statut : **accepté** — décision de frontière, 2026-07-22 (sole-judge sur délégation PO ; l'appel `ezk-architect` a été interrompu par une erreur d'API, la décision est reprise et tranchée ici)
 - Date : 2026-07-22
 - Portée : skills mega-city `ezk-backlog`, `ezk-sprint`, `ezk-pr-pilot`
-- Liens : [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) (cycle de vie du backlog), fiche [0064](../../features/0064-sprint-intake-sante-backlog-metriques.md) (sprint intake / santé du backlog)
+- Liens : [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) (cycle de vie du backlog), fiche [0100](../../features/0100-sprint-intake-sante-backlog-metriques.md) (sprint intake / santé du backlog — **ex-0064**, renumérotée le 2026-07-26 pour lever la collision d'id avec la fiche racine 0064)
 
 ## Contexte
 
@@ -45,7 +45,7 @@ compose `ezk-backlog`, il ne le double pas.
 
 2. **Rapprochement fiche↔PR — mécanique quand c'est possible, LLM en repli.**
    - *Going forward* : **la branche de sprint devient `feat/<id>-<slug>`** (id de fiche en
-     préfixe — ex. `feat/0064-reconcile-done`). L'id remonte alors dans `headRefName` des PRs
+     préfixe — ex. `feat/0100-reconcile-done`). L'id remonte alors dans `headRefName` des PRs
      et rend le croisement **déterministe** : `gh pr list --state merged --json
      number,headRefName,title,mergedAt` → une fiche est « probablement mergée » si une PR
      mergée porte son id en préfixe de branche.
@@ -112,4 +112,4 @@ bascule ».
 2. [ ] `ezk-sprint` : étape 0 appelle `reconcile` avant `next` ; branche `feat/<id>-<slug>`.
 3. [ ] `ezk-pr-pilot` : bloc merge-UI → `reconcile` puis `ship`.
 4. [ ] `ezk-backlog review` : contrôle #1 appelle `reconcile` (bras mécanique).
-5. [ ] Fiche 0064 : cocher les critères de réconciliation traités, lier cet ADR.
+5. [ ] Fiche 0100 (ex-0064) : cocher les critères de réconciliation traités, lier cet ADR.

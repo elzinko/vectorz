@@ -71,7 +71,7 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
    checkpoint inter-sprint (0023/0040), le handoff ezk-archive (0026), et le
    **flywheel capture** (ADR-0001, 0002) comme canal *adapt* (les leçons deviennent
    des skills/rules). Fiches **prévues** rattachées (relation notée dans chacune) :
-   mega-city 0007 (invariants → rules), 0014 (corpus judge), 0064 (santé backlog —
+   mega-city 0007 (invariants → rules), 0014 (corpus judge), 0100 (santé backlog, ex-0064 —
    reste l'émission `backlog.health` + seuils, cf. sa note de réconciliation), 0065
    (composition de lot) ; côté vectorz, 0041 (banc cobaye = outillage du gate démo).
 

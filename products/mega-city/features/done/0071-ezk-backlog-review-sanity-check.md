@@ -57,6 +57,6 @@ ancienneté médiane des `todo`.
 - 2026-07-17 — panel adverse + juge : le « avant CHAQUE planning » initial était
   intenable (~60-80k tokens/passe chiffrés par le relecteur dev) → modes full/delta.
 - Compose avec 0056 (`groom`/`ready`) : `review` détecte, `groom` répare une fiche.
-- 2026-07-17 — recoupe la friction **0064** (intake / santé backlog, capturée en session
+- 2026-07-17 — recoupe la friction **0100** (ex-0064 ; intake / santé backlog, capturée en session
   parallèle) : voir sa note de réconciliation — reste chez elle l'émission
   `backlog.health` au journal de supervisabilité et les seuils « temps de groomer ».

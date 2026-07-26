@@ -32,13 +32,19 @@ pièce, pas en théorie :
    « router vers la bonne liste » — trois mécanismes qui n'auraient aucune raison
    d'être avec une liste unique.
 
-3. **La preuve par l'absurde, faite le jour même.** Cette fiche porte l'id **0064** à la
-   racine — or `products/mega-city/features/0064-sprint-intake-sante-backlog-metriques.md`
-   (P2, 2026-07-16) existe déjà. **La collision s'est produite pendant la rédaction de la
-   fiche qui la dénonce**, alors même que son auteur en avait le problème en tête et venait
-   d'en documenter deux cas. Ce n'est pas une inattention : chaque liste numérote depuis
-   0001, donc la collision est **structurelle** — elle se reproduira à chaque fiche créée
-   des deux côtés, quelle que soit la vigilance.
+3. **La preuve par l'absurde, faite le jour même.** Cette fiche a été créée sous l'id
+   **0064** à la racine — alors que la liste méthode portait déjà un `0064` (« Sprint
+   intake — DoR & santé du backlog », P2, 2026-07-16). **La collision s'est produite
+   pendant la rédaction de la fiche qui la dénonce**, alors même que son auteur en avait le
+   problème en tête et venait d'en documenter deux cas. Ce n'est pas une inattention :
+   chaque liste numérote depuis 0001, donc la collision est **structurelle** — elle se
+   reproduira à chaque fiche créée des deux côtés, quelle que soit la vigilance.
+   *Suite (2026-07-26)* : la collision a été **levée à la main** en renumérotant la fiche
+   méthode en [mc-0100](../products/mega-city/features/0100-sprint-intake-sante-backlog-metriques.md)
+   — 8 fichiers touchés, dont **deux ADR** (0016, 0018) et un lien markdown qui aurait
+   cassé. Ce correctif **confirme** le constat au lieu de l'annuler : il a fallu un
+   arbitrage humain et une passe manuelle pour un simple numéro, et l'id `max+1` du côté
+   racine (0065) était lui-même déjà pris côté méthode.
 
 4. **Une règle de désambiguïsation à la place d'une structure.** ADR-0017 A13 tranche
    « le backlog le plus proche du cwd ; si l'ambiguïté demeure, **demander** ». Une règle
@@ -99,3 +105,11 @@ fiche**, pas une donnée de l'arborescence :
   lui. Ce n'est pas une raison de conserver la double liste — c'est une raison de trancher
   vite, avant d'en payer un troisième.
 - Fiche volontairement **rangée dans la liste racine** — celle qui survit.
+- 2026-07-26 — **collision d'id levée ponctuellement** (mc-0064 → mc-0100, cf. point 3).
+  `0064` et `0100` sont désormais **uniques sur l'ensemble** — mais la mesure faite à
+  l'occasion donne l'ampleur du reste : **62 ids sont portés des deux côtés** (tout
+  `0001`→`0063` sauf `0048`, actifs + `done/` confondus). Le « 0059 et 0061 » du point 1
+  n'était que les deux cas rencontrés, pas le compte. Aucune renumérotation de masse n'a
+  été faite : c'est la **stratégie de migration**, à trancher au grooming (le panel), pas
+  à improviser. Commande de contrôle :
+  `comm -12 <(ids features) <(ids products/mega-city/features)`.

@@ -43,7 +43,7 @@
   d'ouvrir à d'autres.
 - **Observabilité qualité** (epic 0051) — 0052/0053/0054/0055/0056/0058 : mesurer la qualité par PR.
 - **Articles & promo** — 0043/0049 · mc-0052/0053/0069/0073/0074/0062 · epic mc-0059.
-- **Méthode avancée** (mc) — 0064→0068 / 0077 / 0080 / 0088 / 0092 (dont le seuil de lot ready, voir ci-dessous).
+- **Méthode avancée** (mc) — 0065→0068 / 0077 / 0080 / 0088 / 0092 / 0100 (dont le seuil de lot ready, voir ci-dessous).
 - **2ᵉ méthode / BMAD** — mc-0058.
 - **Archi historique en pause** — epic 0034 · 0024 · 0038/0039 (bloqués) + périphérie P3 (réserve).
 
@@ -53,6 +53,7 @@ Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être
 (gate DoR). Les fiches du NOW sont encore `idea` → **0 fiche ready aujourd'hui**.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
-mc-0064 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
+mc-0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
 vide. Le raffinement demandé par le PO le 2026-07-26 — s'arrêter tant que le nombre de
-fiches ready est **sous un seuil de lot** (pas seulement zéro) — est capturé dans **mc-0064**.
+fiches ready est **sous un seuil de lot** (pas seulement zéro) — est capturé dans **mc-0100**
+(ex-mc-0064, renumérotée le 2026-07-26 : collision d'id avec la fiche racine 0064).
