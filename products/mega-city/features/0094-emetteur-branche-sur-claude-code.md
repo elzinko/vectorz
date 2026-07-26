@@ -35,10 +35,20 @@ Moniteur → validateur vert (rejoué de bout en bout le 2026-07-25).
 
 ## Proposition
 
-Un `.mcp.json` **commité à la racine du dépôt** (portée projet Claude Code), déclarant le
+Un `.mcp.json` à la racine du dépôt (portée projet Claude Code), déclarant le
 serveur `supervision` avec `SUPERVISION_PROJECT_ROOT` fixé — **jamais** un paramètre
 d'outil (invariant anti-falsification de la fiche 0050 : le modèle ne choisit jamais où
 son journal s'écrit).
+
+> **Révisé le 2026-07-26 par [ADR-034](../../../docs/adr/ADR-034-mcp-json-artefact-local.md)** :
+> ce fichier est **local et gitignoré**, pas commité. Trois raisons vérifiées sur pièce —
+> il contient des chemins machine (nvm, `$HOME`) dans un dépôt public ; commité il
+> *fail-fast* sur tout autre poste (`assertValidExplicitRoot`) ; et il neutraliserait
+> l'échappatoire `SUPERVISION_PER_WORKTREE` en figeant la même racine dans tous les
+> worktrees (`project-root.ts:156-161` — la racine explicite est prise comme base **avant**
+> l'échappatoire). `supervision:link` **est** l'étape d'installation. L'invariant
+> anti-falsification est intact : il porte sur *qui écrit la racine* (un script, depuis un
+> argument humain), pas sur *où le fichier est rangé*.
 
 Points à trancher pendant le sprint :
 
@@ -61,6 +71,28 @@ externe**. Cette fiche-ci est le **chemin interne d'aujourd'hui** : un fichier d
 zéro doctrine. Si le PO préfère, elle peut être absorbée comme première tâche de 0087 —
 mais elle ne doit alors pas hériter de son blocage.
 
+## Décision PO — 2026-07-26 (arbitrage à l'intake d'`ezk-sprint`)
+
+Le PO a d'abord refusé de brancher vectorz (« trop risqué, on teste sur un cobaye »), puis
+**maintenu le branchement** après vérification de la surface d'écriture. Les deux moitiés
+de sa décision, à conserver ensemble :
+
+- **Vectorz émet — c'est de l'observation, pas du dogfooding risqué.** Vérifié sur pièce
+  le 2026-07-26 : `appendFileSync` sur `.supervision/runs/<id>/events.jsonl`
+  (`journal.ts:123`), rapport de gate **confiné** au dossier du run avec garde `realpath`
+  active (`runtime.ts:126-151`), `.mcp.json` fusionné sans destruction, `.supervision/`
+  gitignoré. **Aucune écriture dans le code, aucune suppression.** Le branchement se défait
+  en supprimant un fichier.
+- **Pourquoi vectorz et pas seulement le cobaye** : « le moment où je travaille sur
+  vectorz est le bon moment pour regarder si ce qui apparaît dans le monitoring reflète
+  bien ce qu'il se passe […] je sais ce que je demande et je peux tout de suite constater
+  si c'est ok dans le produit, et corriger avec des fix/features si besoin ». Le Moniteur
+  se juge sur deux axes — **fidélité** (ce qu'il montre = ce qui se passe) et **lisibilité**
+  (projet, PR, infos remontées, liens cliquables, organisation) — et ces deux jugements
+  exigent un observateur qui **sait ce qu'il devrait voir**. Sur un jouet, personne ne le sait.
+- **Le cobaye reste** le terrain de ce qui casse (tests destructifs) — cohérent avec
+  ADR-031 (Axe 1 = banc fonctionnel, fiche racine 0041).
+
 ## Critères d'acceptation
 
 - [x] Une session Claude Code ouverte dans un projet branché voit les **5 outils**
@@ -72,6 +104,12 @@ mais elle ne doit alors pas hériter de son blocage.
       worktree** (preuve de la normalisation ADR-0019 en conditions réelles). *(Reste dû :
       la commande branche, mais un vrai run `ezk-sprint` depuis un worktree n'a pas encore
       été rejoué.)*
+- [x] **`supervision:probe`** — un banc **automatisable** vérifie qu'un `.mcp.json` donné
+      démarre *tel qu'il est écrit* et expose exactement les 5 outils. Ajouté le 2026-07-26 :
+      le trou constaté est que les tests existants prouvent le **serveur**, jamais le
+      **fichier généré** (chemin `pnpm`, `--dir`, entrée `tsx`). Jouable sur vectorz **et**
+      sur le cobaye, en local comme en CI — c'est la forme « test e2e rapide, déclenché
+      ponctuellement » demandée par le PO.
 - [x] Le run apparaît dans l'onglet **Moniteur** de la mission-control, et son gate de
       checkpoint s'y affiche `at_gate`. *(Prouvé 2026-07-25 : run émis depuis une vraie
       session Claude Code, carte `at_gate` puis `finished` dans le Moniteur.)*

@@ -5,7 +5,9 @@
  *   pnpm --dir products/mega-city supervision:link <chemin-du-projet>
  *
  * Écrit/fusionne le `.mcp.json` du projet (préserve tout autre serveur MCP),
- * gitignore `.supervision/`, et imprime les étapes suivantes. Idempotent :
+ * gitignore `.supervision/` ET `/.mcp.json` (artefact local, ADR-034 — la règle
+ * suit chaque projet branché, pas seulement vectorz), et imprime les étapes
+ * suivantes. Idempotent :
  * rejouer met à jour les chemins sans rien casser. Ne touche JAMAIS à la config
  * du daemon (le côté LECTURE est un observateur externe — modèle à deux clés,
  * fiche 0082).
@@ -19,10 +21,27 @@ import {
   mergeMcpConfig,
   resolveProjectPath,
 } from '../src/supervision/link-config.js';
+import { EXPECTED_SUPERVISION_TOOLS } from '../src/supervision/probe.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
   process.exit(2);
+}
+
+/**
+ * Le fichier est-il dans l'index git du projet ? `git ls-files --error-unmatch`
+ * sort 0 si suivi, non-zéro sinon — y compris quand la cible n'est pas un dépôt
+ * git du tout, ce qui est le bon comportement (rien à détracker).
+ */
+function isTrackedByGit(root: string, relativePath: string): boolean {
+  try {
+    execFileSync('git', ['-C', root, 'ls-files', '--error-unmatch', relativePath], {
+      stdio: 'ignore',
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 const arg = process.argv[2];
@@ -31,7 +50,7 @@ if (!arg || arg === '-h' || arg === '--help') {
   console.log('');
   console.log("Branche l'émetteur de supervision sur un projet (côté Claude Code) :");
   console.log('  · écrit/fusionne son .mcp.json (préserve les autres serveurs MCP)');
-  console.log('  · ajoute .supervision/ à son .gitignore');
+  console.log('  · ajoute .supervision/ et /.mcp.json à son .gitignore');
   process.exit(arg ? 0 : 2);
 }
 
@@ -57,8 +76,25 @@ try {
 
 const paths = { pnpm, megaCityDir, serverEntry, projectRoot };
 
-// 1. .mcp.json — fusion non-destructive
+// 0. Refus si le .mcp.json de la cible est SUIVI par git (finding Codex P1, PR #54).
+// Un `.gitignore` ne s'applique jamais à un fichier déjà dans l'index : y ajouter
+// `/.mcp.json` ne détracke rien. On écrirait donc des chemins absolus de machine
+// dans un fichier suivi — commitable, cassé chez les autres — tout en ANNONÇANT
+// qu'il est ignoré. Le cas n'est pas exotique : versionner son `.mcp.json` est la
+// pratique normale pour partager un serveur MCP d'équipe. Mieux vaut refuser et
+// dire quoi faire que rassurer à tort (ADR-034).
 const mcpPath = join(projectRoot, '.mcp.json');
+if (isTrackedByGit(projectRoot, '.mcp.json')) {
+  fail(
+    `.mcp.json est SUIVI par git dans ce projet : ${mcpPath}\n` +
+      "  La règle d'ignore n'a aucun effet sur un fichier déjà indexé — le branchement\n" +
+      '  écrirait des chemins absolus de TA machine dans un fichier versionné.\n' +
+      '  Détracke-le, puis relance :\n' +
+      `    git -C "${projectRoot}" rm --cached .mcp.json\n` +
+      '  (ou versionne-le sciemment, mais alors ne branche pas la supervision ici.)',
+  );
+}
+
 let existing: unknown = {};
 if (existsSync(mcpPath)) {
   try {
@@ -82,9 +118,12 @@ writeFileSync(gitignorePath, ensureSupervisionIgnored(gitignore));
 
 // 3. compte rendu + étapes suivantes
 console.log(`✓ ${projectRoot} ${alreadyLinked ? 'ré-branché (chemins mis à jour)' : 'branché'}.`);
-console.log('  · .mcp.json  → serveur « supervision » (5 outils : run_start, gate_reached,');
-console.log('                 gate_resumed, escalate, run_finished)');
-console.log('  · .gitignore → .supervision/');
+// Les 5 noms viennent de la constante partagée, jamais réécrits à la main :
+// ce compte rendu est de la doc EXÉCUTABLE, il ne doit pas pouvoir mentir.
+console.log(
+  `  · .mcp.json  → serveur « supervision » (${EXPECTED_SUPERVISION_TOOLS.length} outils : ${EXPECTED_SUPERVISION_TOOLS.join(', ')})`,
+);
+console.log('  · .gitignore → .supervision/ + /.mcp.json (artefact local, ADR-034)');
 console.log('');
 console.log('Étapes suivantes :');
 console.log(`  1. Rouvre Claude Code DANS ce projet :  cd "${projectRoot}" && claude`);

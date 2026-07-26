@@ -74,11 +74,39 @@ export function mergeMcpConfig(existing: unknown, paths: LinkPaths): Record<stri
 
 /** Ajoute `.supervision/` au contenu d'un `.gitignore` s'il n'y figure pas déjà. */
 export function ensureSupervisionIgnored(gitignore: string): string {
-  const alreadyIgnored = gitignore.split('\n').some((line) => {
-    const trimmed = line.trim();
-    return trimmed === '.supervision' || trimmed === '.supervision/';
-  });
+  return appendIfAbsent(appendIfAbsent(gitignore, SUPERVISION_IGNORE), MCP_JSON_IGNORE);
+}
+
+/** Le journal : jamais versionné (règle DP6). */
+const SUPERVISION_IGNORE = {
+  entry: '.supervision/',
+  aliases: ['.supervision', '.supervision/'],
+  comment: null,
+};
+
+/**
+ * Le fichier de branchement : artefact d'INSTALLATION local (ADR-034). Ignoré
+ * dans CHAQUE projet branché, pas seulement dans vectorz — `supervision:link`
+ * accepte un chemin arbitraire, et un `.mcp.json` généré pour un cobaye est
+ * tout aussi machine-spécifique : commité, il casserait sur tout autre poste
+ * (finding Codex P1 sur la PR #54). Ancré : la décision ne porte que sur le
+ * fichier de branchement du projet, pas sur tout `.mcp.json` en profondeur.
+ */
+const MCP_JSON_IGNORE = {
+  entry: '/.mcp.json',
+  aliases: ['/.mcp.json', '.mcp.json'],
+  comment: '# Branchement de supervision : artefact local, régénéré par supervision:link (ADR-034)',
+};
+
+function appendIfAbsent(
+  gitignore: string,
+  rule: { entry: string; aliases: string[]; comment: string | null },
+): string {
+  const alreadyIgnored = gitignore
+    .split('\n')
+    .some((line) => rule.aliases.includes(line.trim()));
   if (alreadyIgnored) return gitignore;
   const needsNewline = gitignore.length > 0 && !gitignore.endsWith('\n');
-  return `${gitignore}${needsNewline ? '\n' : ''}.supervision/\n`;
+  const comment = rule.comment === null ? '' : `${rule.comment}\n`;
+  return `${gitignore}${needsNewline ? '\n' : ''}${comment}${rule.entry}\n`;
 }

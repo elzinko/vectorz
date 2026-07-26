@@ -88,6 +88,41 @@ autorise le serveur `supervision`, et lance ta méthode (`/ezk-sprint`, ou
 observateur externe : ajoute le projet aux `supervision.watch_roots` du daemon — modèle à
 deux clés, fiche 0082.
 
+> **Le `.mcp.json` est LOCAL, jamais versionné** (ADR-034). C'est un artefact
+> d'**installation** : il contient des chemins absolus propres à la machine (nvm, `$HOME`).
+> Commité, il serait cassé sur tout autre poste — `assertValidExplicitRoot` échoue
+> immédiatement sur une racine inexistante — et il neutraliserait l'échappatoire
+> `SUPERVISION_PER_WORKTREE` (ADR-019) en figeant la même racine dans tous les worktrees.
+> `supervision:link` **est** l'étape d'installation : on la rejoue après un clone, après un
+> changement de version de Node, et **dans chaque worktree** où l'on veut émettre.
+
+### Vérifier que c'est vraiment branché — `supervision:probe`
+
+```bash
+pnpm --dir products/mega-city supervision:probe .
+```
+
+Le banc de preuve : il lit le `.mcp.json` du projet et **lance la commande telle qu'elle y
+est déclarée**, puis fait un handshake MCP. Trois contrôles, dans cet ordre — l'entrée
+`supervision` est exploitable · la racine **déclarée** est bien celle du projet sondé
+(sinon les runs journaliseraient ailleurs, en silence) · le serveur expose **exactement**
+les 5 outils. Vert/rouge net, exit code 0/1, quelques secondes : jouable à la main comme
+dans un script, sur ce dépôt comme sur un projet cobaye.
+
+Il comble un trou précis : les tests unitaires prouvent que **le serveur** marche quand le
+harnais l'invoque lui-même — jamais que **le fichier généré** est exécutable (chemin
+`pnpm`, `--dir`, entrée `tsx`). Il est **read-only** : il n'appelle aucun outil, donc
+n'écrit rien sous `.supervision/` (invariant couvert par un test).
+
+> **Frontière de confiance.** Le probe **exécute une commande lue dans un fichier**. Ne
+> sonde donc qu'un projet dont tu assumes le `.mcp.json` — la commande est imprimée avant
+> d'être lancée, lis-la. L'environnement transmis est volontairement **minimal**
+> (l'allowlist par défaut du SDK MCP + le bloc `env` du fichier), jamais tout
+> `process.env` : c'est une garde anti-exfiltration, mais surtout la seule façon de sonder
+> dans un environnement **aussi pauvre** que celui du vrai client — sinon le banc raterait
+> exactement la panne qu'il existe pour attraper (le `pnpm` nu qui résout dans un shell et
+> échoue au PATH minimal d'une app GUI).
+
 ## Conformité prouvée — déroulé méthode jouet → validateur (AC1, fiche 0050)
 
 Le chemin nominal est la session Claude Desktop (skill `supervision-demo` + serveur MCP

@@ -66,15 +66,35 @@ describe('link-config (fiche 0094)', () => {
     expect(mergeMcpConfig('nope', PATHS).mcpServers).toBeDefined();
   });
 
-  it('appends .supervision/ once, and is a no-op when already present', () => {
-    expect(ensureSupervisionIgnored('')).toBe('.supervision/\n');
-    expect(ensureSupervisionIgnored('node_modules\n')).toBe('node_modules\n.supervision/\n');
-    expect(ensureSupervisionIgnored('.supervision/\n')).toBe('.supervision/\n');
-    expect(ensureSupervisionIgnored('a\n.supervision')).toBe('a\n.supervision');
+  // Le commentaire précède l'entrée /.mcp.json : un `.gitignore` doit rester lisible
+  // par l'humain qui l'ouvre six mois plus tard sans connaître l'ADR.
+  const MCP_LINES = '# Branchement de supervision : artefact local, régénéré par supervision:link (ADR-034)\n/.mcp.json\n';
+
+  it('ignore le journal ET le fichier de branchement, une seule fois chacun', () => {
+    expect(ensureSupervisionIgnored('')).toBe(`.supervision/\n${MCP_LINES}`);
+    expect(ensureSupervisionIgnored('node_modules\n')).toBe(`node_modules\n.supervision/\n${MCP_LINES}`);
+  });
+
+  it('est idempotent : rejouer supervision:link ne duplique aucune règle', () => {
+    const once = ensureSupervisionIgnored('node_modules\n');
+    expect(ensureSupervisionIgnored(once)).toBe(once);
+  });
+
+  it('respecte les formes déjà présentes (avec ou sans slash, ancrée ou non)', () => {
+    expect(ensureSupervisionIgnored('.supervision/\n/.mcp.json\n')).toBe('.supervision/\n/.mcp.json\n');
+    // `.mcp.json` non ancré est plus large que notre règle : on ne le double pas.
+    expect(ensureSupervisionIgnored('a\n.supervision\n.mcp.json\n')).toBe('a\n.supervision\n.mcp.json\n');
   });
 
   it('inserts a missing trailing newline before appending', () => {
-    expect(ensureSupervisionIgnored('node_modules')).toBe('node_modules\n.supervision/\n');
+    expect(ensureSupervisionIgnored('node_modules')).toBe(`node_modules\n.supervision/\n${MCP_LINES}`);
+  });
+
+  // Finding Codex P1 (PR #54) : la règle ADR-034 doit suivre CHAQUE projet branché,
+  // pas seulement vectorz — un `.mcp.json` généré pour un cobaye est tout aussi
+  // machine-spécifique, et rien n'empêchait de le commiter.
+  it('ignore le .mcp.json même quand le projet ignorait déjà .supervision/', () => {
+    expect(ensureSupervisionIgnored('.supervision/\n')).toBe(`.supervision/\n${MCP_LINES}`);
   });
 
   // revue Codex PR #51 — le piège `pnpm --dir` sur les chemins relatifs
