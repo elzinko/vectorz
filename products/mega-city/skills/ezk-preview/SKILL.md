@@ -133,8 +133,14 @@ gh pr comment --body "🔗 Démo : <url>"
 
 ## Intégration
 
-- **ezk-sprint** : c'est l'étape « 1 lien de démo par PR » — invoque ce skill
-  quand la feature est prête, juste avant le checkpoint.
+- **[`ezk-pr-pilot`](../ezk-pr-pilot/)** — **seul appelant câblé.** Il invoque ce
+  skill pour l'URL de démo d'une PR à valider (étape `run`, et table « URL de démo
+  partageable → `ezk-preview` ») ; composition actée par
+  l'[ADR-0009](../../docs/adr/0009-ezk-pr-pilot-orchestrateur-validation-prs.md).
+- **[`ezk-sprint`](../ezk-sprint/)** — **candidat, pas câblé.** Son étape PR (§8)
+  n'exige que le titre conventional-commit et le before/after média, sa table de
+  délégation ne cite pas ce skill, et sa DoD ne mentionne aucune URL de démo. « 1 lien
+  de démo par PR de sprint » reste une **proposition** — arbitrage PO, pas un fait.
 - **iamthelaw** : candidat à une règle `preview-url-per-PR` (enforcement niveau 1
   via l'agent `ezk-qa`).
 
