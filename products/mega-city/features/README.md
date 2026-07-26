@@ -100,7 +100,6 @@
 | 0054 | ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel) | feature | P2 |  | 💡 idea |  |
 | 0057 | ezk-challenge — panel de challenge adversarial réutilisable (relecteurs frais + gate) | feature | P2 |  | 💡 idea |  |
 | 0062 | article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère » | feature | P2 |  | 💡 idea |  |
-| 0064 | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 |  | 💡 idea |  |
 | 0065 | Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent | feature | P2 |  | 💡 idea |  |
 | 0066 | Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run) | feature | P2 |  | 💡 idea |  |
 | 0067 | ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat) | feature | P2 |  | 💡 idea |  |
@@ -110,6 +109,7 @@
 | 0092 | Décomposition légère du backlog — champs depends: et labels: (anti-JIRA) + avenant ADR-0017 | feature | P2 |  | 💡 idea |  |
 | 0098 | plan:head — descendre vers l'enfant prêt d'un épic placé dans le plan | feature | P2 |  | 💡 idea |  |
 | 0099 | Contrat d'émission — vérifier la STRUCTURE des directives, pas compter les mentions | chore | P2 |  | 💡 idea |  |
+| 0100 | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 |  | 💡 idea |  |
 | 0009 | webapp de config (édite les YAML profiles/bundles) | feature | P3 |  | 💡 idea |  |
 | 0033 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 |  | 💡 idea |  |
 | 0034 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | 💡 idea |  |

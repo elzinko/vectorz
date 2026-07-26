@@ -1,5 +1,5 @@
 ---
-id: 0064
+id: 0100
 title: Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible »)
 type: feature
 priority: P2
@@ -8,7 +8,7 @@ pr:
 created: 2026-07-16
 ---
 
-# 0064 — Sprint intake : DoR & santé du backlog
+# 0100 — Sprint intake : DoR & santé du backlog
 
 ## Contexte / Problème
 
@@ -112,7 +112,7 @@ reconstruite** au sprint suivant.
   (0063, fait évoluer la DoR/les règles).
 - Origine : session 2026-07-16 (premier self-host — 1ʳᵉ friction). Priorité P2 à confirmer au grooming.
 - 2026-07-22 — **ajout du sous-problème « réconciliation `done` ↔ PRs mergées »** (arbitrage
-  PO : étendre 0064 plutôt qu'une fiche dédiée — anti-doublon, 0064 possède déjà le moment
+  PO : étendre cette fiche plutôt qu'une fiche dédiée — anti-doublon, elle possède déjà le moment
   *intake*). Cross-réf : [0029](0029-propagation-maj-skills.md) (hook de drift des skills —
   concept voisin, sujet distinct : versions de skills, pas statut de fiche).
 - 2026-07-26 — **exigence PO (roadmap)** : au lancement d'`ezk-product-builder`, tant qu'il
@@ -131,7 +131,15 @@ reconstruite** au sprint suivant.
   par `review` (bras mécanique du contrôle #1) et par `ezk-pr-pilot` après un merge UI ;
   convention de branche `feat/<id>-<slug>` pour un rapprochement mécanique. La décision de
   frontière était fléchée `ezk-architect` : l'appel a été **interrompu par une erreur d'API**,
-  la décision a donc été tranchée et documentée directement dans l'ADR. **Reste ouvert dans
-  0064** : la DoR comme règle d'équipe, l'émission `backlog.health`, les seuils « temps de
+  la décision a donc été tranchée et documentée directement dans l'ADR. **Reste ouvert ici** :
+  la DoR comme règle d'équipe, l'émission `backlog.health`, les seuils « temps de
   groomer » — c'est pourquoi la fiche **reste `idea`** (le sous-problème réconciliation est le
   seul volet clos).
+- 2026-07-26 — **renumérotée `0064` → `0100`** (aucun changement de fond). Cette fiche portait
+  le même id que la fiche racine [0064 « une seule liste de features »](../../../features/0064-liste-unique-features-champ-product.md)
+  (P0, créée le 2026-07-26 précisément pour supprimer ces collisions). Id retenu =
+  `max(mega-city actifs + done) + 1` = 0100, **libre des deux côtés** — à l'inverse de
+  `max+1` côté racine (0065), déjà porté par [mc-0065](0065-sprint-composition-lot-coherent.md).
+  Références mises à jour : mc-0065, `done/0071`, ADR-0016, ADR-0018, `features/PLAN.md`.
+  Correctif **manuel et ponctuel** : la cause structurelle (deux listes numérotant chacune
+  depuis 0001) reste ouverte dans la fiche racine 0064.
