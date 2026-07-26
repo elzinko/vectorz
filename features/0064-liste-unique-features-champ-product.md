@@ -32,7 +32,15 @@ pièce, pas en théorie :
    « router vers la bonne liste » — trois mécanismes qui n'auraient aucune raison
    d'être avec une liste unique.
 
-3. **Une règle de désambiguïsation à la place d'une structure.** ADR-0017 A13 tranche
+3. **La preuve par l'absurde, faite le jour même.** Cette fiche porte l'id **0064** à la
+   racine — or `products/mega-city/features/0064-sprint-intake-sante-backlog-metriques.md`
+   (P2, 2026-07-16) existe déjà. **La collision s'est produite pendant la rédaction de la
+   fiche qui la dénonce**, alors même que son auteur en avait le problème en tête et venait
+   d'en documenter deux cas. Ce n'est pas une inattention : chaque liste numérote depuis
+   0001, donc la collision est **structurelle** — elle se reproduira à chaque fiche créée
+   des deux côtés, quelle que soit la vigilance.
+
+4. **Une règle de désambiguïsation à la place d'une structure.** ADR-0017 A13 tranche
    « le backlog le plus proche du cwd ; si l'ambiguïté demeure, **demander** ». Une règle
    qui doit poser une question à l'humain pour ranger une fiche est le symptôme, pas la
    solution.
