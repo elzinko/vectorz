@@ -78,7 +78,7 @@ assemblées ni câblées** dans la boucle vivante.
 3. le **pont** rétro → `rules/` de mega-city (le retour de règle écrit encore à l'ancienne
    adresse cop1 `iamthelaw/*.yaml`).
 
-C'est le job de la fiche [0063 ezk-retro](../../products/mega-city/features/0063-ezk-retro-ceremonie-auto-amelioration.md)
+C'est le job de la fiche [0063 ezk-retro](../../products/mega-city/features/done/0063-ezk-retro-ceremonie-auto-amelioration.md)
 (Sujet A). Le mesureur du Sujet B = fiche vectorz 0044.
 
 *Nuance sur ton souvenir : les 2 tours existent mais dans un ordre **déterministe** — le

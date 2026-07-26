@@ -1,6 +1,6 @@
 # Notes de lecture première main — sources du contrat de supervisabilité (2026-07-13)
 
-Statut : phase 1 de la fiche [0025](../../features/0025-article-contrat-supervisabilite.md).
+Statut : phase 1 de la fiche [0025](../../features/done/0025-article-contrat-supervisabilite.md).
 Lecture de première main des 4 sources les plus proches du
 [balayage prior-art](./2026-07-13-prior-art-contrat-supervisabilite.md) + contrôle des 2
 affirmations tierces. Toutes les citations ci-dessous ont été vérifiées dans le contenu
