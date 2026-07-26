@@ -84,6 +84,12 @@ CUR="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --shor
 
 HAS_REMOTE=0; [[ -n "$(git remote 2>/dev/null)" ]] && HAS_REMOTE=1
 HAS_GH=0; command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && HAS_GH=1
+# Un remote n'implique PAS des pull requests : un bare local (`file://`), un serveur git
+# perso ou un GitLab n'en ont aucune que `gh` puisse lire. Sans cette distinction, on
+# confond « je ne peux pas lire les PRs » (⇒ UNKNOWN, prudent) et « il n'y a pas de PRs
+# à lire » (⇒ rien à prouver), et tout dépôt à remote non-GitHub tombe en DIRTY perpétuel.
+HAS_PR_HOST=0
+[[ "$HAS_REMOTE" -eq 1 ]] && git remote -v 2>/dev/null | grep -qE 'github\.com|github\.' && HAS_PR_HOST=1
 
 # --- helpers d'accumulation ---------------------------------------------------
 # Deux bornes, car une seule ne suffit pas : celle par point empêche un point bavard de
@@ -190,14 +196,19 @@ P2_PR_OPEN=0; P2_REAL=0; P2_ABSORBED=0; P2_WT_PRUNABLE=0
 # une ligne par branche pour le gate, avec `unproven=` inline (contrat v1).
 PR_LIST=""; REAL_LIST=""; ABSORBED_LIST=""; P2_NOTE=""
 REAL_FACTS=""; ABSORBED_FACTS=""
-if [[ "$HAS_REMOTE" -eq 1 && "$HAS_GH" -eq 1 ]]; then
+P2_UNVERIFIABLE=0        # 1 = des PRs peuvent exister et on ne peut pas les lire
+if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
   PR_LIST="$(gh pr list --state open \
         --json number,title,headRefName,isDraft \
         --jq '.[] | "#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)"' \
         2>/dev/null)"
   [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '')"
+elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
+  # Seul cas réellement indécidable : l'hôte a des PRs, mais on n'a pas de quoi les lire.
+  P2_UNVERIFIABLE=1
+  P2_NOTE="remote GitHub mais gh indisponible/non authentifie — PRs NON verifiees"
 elif [[ "$HAS_REMOTE" -eq 1 ]]; then
-  P2_NOTE="remote present mais gh indisponible/non authentifie — PRs non verifiees"
+  P2_NOTE="remote non-GitHub — aucune PR a verifier ; on s'appuie sur les branches locales"
 else
   P2_NOTE="repo local-only (pas de remote) — pas de PRs ; on s'appuie sur les branches locales"
 fi
@@ -238,10 +249,10 @@ WT_PRUNE="$(git worktree prune --dry-run -v 2>/dev/null)"
 # Une PR ouverte ou une branche RÉELLE = du pending à ne pas perdre ⇒ DIRTY.
 # Une branche ABSORBÉE n'est PAS du pending (c'est la fausse alerte que la fiche 0076
 # a tuée) : elle est signalée pour purge, mais ne dégrade pas le verdict.
-if (( P2_PR_OPEN == 0 && P2_REAL == 0 )) && [[ -z "$P2_NOTE" || "$HAS_REMOTE" -eq 0 ]]; then
+if (( P2_UNVERIFIABLE == 1 )); then
+  P2_STATE="UNKNOWN"          # des PRs peuvent exister sans qu'on puisse les lire ⇒ pas de preuve
+elif (( P2_PR_OPEN == 0 && P2_REAL == 0 )); then
   P2_STATE="CLEAN"
-elif [[ -n "$P2_NOTE" && "$HAS_REMOTE" -eq 1 ]]; then
-  P2_STATE="UNKNOWN"          # remote présent mais PRs invérifiables ⇒ preuve absente
 else
   P2_STATE="DIRTY"
 fi
@@ -454,10 +465,12 @@ fi
 echo
 
 echo "## 2. PRs & branches en attente"
-if [[ "$HAS_REMOTE" -eq 1 && "$HAS_GH" -eq 1 ]]; then
-  if [[ -n "$PR_LIST" ]]; then echo "⚠ PRs ouvertes :"; echo "$PR_LIST" | sed 's/^/    #/;s/^    ##/    #/'; else echo "✓ aucune PR ouverte."; fi
+if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
+  if [[ -n "$PR_LIST" ]]; then echo "⚠ PRs ouvertes :"; echo "$PR_LIST" | sed 's/^/    /'; else echo "✓ aucune PR ouverte."; fi
+elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
+  echo "⚠ remote GitHub mais gh indisponible/non authentifié — PRs NON vérifiées, à voir à la main."
 elif [[ "$HAS_REMOTE" -eq 1 ]]; then
-  echo "ℹ remote présent mais gh indisponible/non authentifié — vérifie les PRs à la main."
+  echo "ℹ remote non-GitHub — aucune PR à vérifier ; on s'appuie sur les branches locales."
 else
   echo "ℹ repo local-only (pas de remote) — pas de PRs ; on s'appuie sur les branches locales."
 fi

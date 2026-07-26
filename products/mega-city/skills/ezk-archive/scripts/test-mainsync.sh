@@ -125,6 +125,26 @@ ok "stale_ref=1 est signalé"             "echo \"\$OUT\" | grep -q 'stale_ref=1
 ok "VERDICT: DIRTY (UNKNOWN ⇒ DIRTY : CLEAN uniquement sur preuve positive)" \
    "echo \"\$OUT\" | grep -q '^VERDICT: DIRTY'"
 
+echo "M8 — « remote » n'implique pas « pull requests » (le verdict ne doit pas dépendre de gh) :"
+# Cas vécu en CI : `gh` n'est pas authentifié sur les runners, et le portier en déduisait
+# « PRs invérifiables ⇒ UNKNOWN ⇒ DIRTY » — y compris pour un remote `file://` qui n'a
+# aucune PR. Le verdict devenait dépendant de l'outillage de la MACHINE, pas de l'état du dépôt.
+CASE=m8b; mk m8b
+git fetch -q origin
+OUT="$(bash "$CHECK" --gate --shipped none)"
+FULL="$(bash "$CHECK" --full --shipped none)"
+ok "remote file:// ⇒ P2 CLEAN (rien à prouver, pas d'indécidable)" \
+   "echo \"\$OUT\" | grep -q '^P2_PENDING: CLEAN'"
+ok "…et le verdict est CLEAN, que gh soit installé ou non" "echo \"\$OUT\" | grep -qx 'VERDICT: CLEAN'"
+ok "le rapport humain le dit sans ambiguïté"  "echo \"\$FULL\" | grep -q 'remote non-GitHub'"
+# Le seul cas réellement indécidable reste signalé : hôte à PRs + impossible de les lire.
+git remote set-url origin "https://github.com/exemple/inexistant-pour-le-test.git"
+OUT_GH="$(PATH=/usr/bin:/bin bash "$CHECK" --gate --shipped none)"   # PATH sans gh
+ok "remote GitHub + gh absent ⇒ P2 UNKNOWN (prudence : des PRs peuvent exister)" \
+   "echo \"\$OUT_GH\" | grep -q '^P2_PENDING: UNKNOWN'"
+ok "…donc VERDICT: DIRTY — jamais un CLEAN non prouvé" "echo \"\$OUT_GH\" | grep -q '^VERDICT: DIRTY'"
+ok "la raison est explicite dans les faits" "echo \"\$OUT_GH\" | grep -q 'gh indisponible'"
+
 echo "Read-only (le portier ne fetch jamais de lui-même) :"
 CASE=m8; mk m8
 upstream $'base\nupstream\n' "chore: origin avance"
