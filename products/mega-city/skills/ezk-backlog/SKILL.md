@@ -222,16 +222,30 @@ antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` d
 
 ### `next --ready-only` — LA prochaine fiche tirable (point d'entrée unique)
 
-Parcours le backlog trié (P0→P3 puis id) et renvoie la **première fiche éligible** :
+**Ordre de parcours (mc-0089) — PLAN.md d'abord.** Si un `features/PLAN.md` gouverne ce
+backlog, l'ordre de travail vient de **LUI**, pas du tri priorité : la priorité est un
+*seau* d'ex æquo, `PLAN.md` est la *séquence*. Pour obtenir l'ordre des ids **sans le lire
+à l'œil** (doctrine ADR-0001), un helper déterministe existe **dans le monorepo mega-city** :
+`pnpm --dir products/mega-city plan:order <chemin/vers/PLAN.md>` → les ids **dans l'ordre du
+document** (tous jalons confondus, quel que soit leur nom ; une entrée = puce commençant par
+son id **ou** portant un marqueur `build|audit|ship|groom`). **Best-effort — jamais fatal** :
+le helper vivant dans mega-city, dans **tout autre dépôt** où il est absent, **ne fais pas
+échouer `next`** — lis le `PLAN.md` directement (au jugement) ou, à défaut, repli sur
+`P0→P3 puis id`. Restreins aux ids **présents dans ce backlog** (un `PLAN.md` racine peut
+lister des ids `mc-` d'un autre backlog : hors de CE `next`, à router à part — limitation
+POC). **Sans `PLAN.md`** du tout : tri `P0→P3 puis id`.
+
+Parcours le backlog **dans cet ordre** et renvoie la **première fiche éligible** :
 `status: todo` **et** `ready:` posé.
 
 **Réponds toujours en deux parties** : (a) la fiche tirable (ou « aucune ») ET (b) la
-**tête bloquée** — les fiches **`status: todo` sans `ready:`** de priorité *supérieure*
-sautées (et rien d'autre : `idea`, `blocked`, `in-progress` et `type: epic` sont hors
-de ce signal — ils ne sont pas tirables par nature et ne se groome-gatent pas à
-l'intake). **Ne saute jamais silencieusement un `todo` de tête non-ready** : construire
-une P2 ready pendant qu'un `todo` P0 non-ready attend est une inversion de priorité
-que l'appelant doit arbitrer (groomer la tête d'abord, ou décision journalisée).
+**tête bloquée** — les fiches **`status: todo` sans `ready:`** qui la **précèdent dans
+l'ordre** (`PLAN.md` si présent, sinon la priorité) et sont sautées (et rien d'autre :
+`idea`, `blocked`, `in-progress` et `type: epic` sont hors de ce signal — pas tirables par
+nature, ne se groome-gatent pas à l'intake). **Ne saute jamais silencieusement un `todo`
+de tête non-ready** : construire une fiche ready pendant qu'un `todo` **plus haut dans le
+plan** attend est une inversion de séquence que l'appelant doit arbitrer (groomer la tête
+d'abord, ou décision journalisée).
 
 - Une fiche `type: epic` (ADR-0017) n'est **jamais tirable** : descends sur son prochain
   enfant ready (champ `epic:`), sinon passe à la fiche suivante.
