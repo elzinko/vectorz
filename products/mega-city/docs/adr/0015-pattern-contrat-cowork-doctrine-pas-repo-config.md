@@ -55,8 +55,10 @@ mega-city tout juste achevé (fiche 0024), qui a **unifié la source de vérité
 
 > **Errata (2026-07-26).** `validate.sh` — cité ci-dessus (§3) et dans le tableau de
 > l'option A — est un héritage de l'ancien repo autonome `claude-skills` et **n'a jamais
-> existé dans ce monorepo**. La gate mécanique réelle de mega-city, ce sont les
-> tests/typecheck (`pnpm --filter mega-city test`) + [`bin/check-links.sh`](../../bin/check-links.sh).
+> existé dans ce monorepo**. La gate mécanique réelle de mega-city, ce sont les tests **et**
+> le typecheck — deux commandes distinctes (`pnpm --filter mega-city test` **et**
+> `pnpm --filter mega-city typecheck`, comme dans `.github/workflows/ci.yml`) — plus
+> [`bin/check-links.sh`](../../bin/check-links.sh).
 > Le texte de la décision est laissé tel quel (trace historique) ;
 > cf. [fiche 0066](../../features/0066-tester-un-skill-avant-merge.md).
 
