@@ -158,6 +158,24 @@ ses 9 assertions d'origine**, + 3 assertions croisées gate↔full ; `test-check
 `test-mainsync` M1-M7 ; `test-handoff` H1-H8 ; `test-template-unicity` ; `test-regen-backlog`).
 `pnpm test` : 273 tests vitest passent.
 
+### Revue Codex (PR #56) — 6 findings P1 retenus
+
+| # | Défaut | Correction | Verrou |
+|---|---|---|---|
+| F5 | `blob_landed` prouvait un blob **n'importe où** en amont : un fichier local unique dont le contenu existe sous un autre nom était « absorbé », et `resync_safe=1` invitait à un `reset --hard` destructeur. Cas dégénéré banal : **tous les fichiers vides ont le même blob** | preuve **au chemin attendu** | M9, M10 |
+| F2 | le code retour de `gh pr list` était jeté : une panne réseau/droits rendait la liste vide ⇒ `P2 CLEAN` non prouvé | statut capturé ⇒ `UNKNOWN` | — |
+| F1 | le chemin inline CLEAN écrivait handoff + `.gitignore` + mémoire **sans regarder la sous-commande** : un `check` (dry-run) modifiait le dépôt | écriture conditionnée à `run`/`close` | `test-template-unicity` |
+| F4 | `handoff.sh add` est un read-modify-write : deux sessions parallèles (worktrees) pouvaient s'écraser | verrou atomique (`mkdir`), scope git-common-dir | H9 |
+| F3 | le préfixe d'id était **jeté** et le premier match global retenu — or **62 numéros existent des deux côtés** du monorepo | résolution par backlog (convention `bin/plan-head.ts`), refus si ambigu | G10 |
+| F7 | `stat -f %m` est du BSD ; sur GNU, `-f` = `--file-system` et imprime des valeurs mouvantes ⇒ assertion read-only flaky | détection de variante en amont | G7 |
+
+Un finding (fixture sans `-b main`) était déjà corrigé au moment de la revue.
+
+> **Ce que la revue apprend, au-delà des correctifs** : la règle « CLEAN uniquement sur
+> preuve positive » ne protège rien si les *preuves* sont trop lâches. F5 et F3 sont deux
+> preuves trop permissives sous une règle correcte — un raisonnement seul ne les voyait pas,
+> c'est le contrôle adverse qui les a sorties.
+
 ### Protocole de mesure (à figer pour que l'avant/après soit comparable)
 
 - **Tokens neufs** = Σ(`input_tokens` + `cache_creation_input_tokens` + `output_tokens`),

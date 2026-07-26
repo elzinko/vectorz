@@ -18,6 +18,15 @@ ok() { # $1=label $2=cmd (0=ok)
   if eval "$2"; then echo "  ok — $1"; else echo "  ÉCHEC — $1"; FAIL=1; fi
 }
 
+# mtime portable. `stat -f %m … || stat -c %Y …` était FAUX sur GNU coreutils, où `-f`
+# signifie `--file-system` : la commande y imprime des statistiques de système de fichiers
+# (blocs libres, inodes) avant d'échouer sur `%m`, le `||` ne se déclenche pas toujours, et
+# on compare des valeurs qui bougent toutes seules — assertion read-only flaky en CI
+# (finding Codex PR #56). On détecte la variante UNE fois, sur une sonde explicite.
+if stat -c %Y . >/dev/null 2>&1; then mtime() { stat -c %Y "$1"; }   # GNU coreutils
+else                                  mtime() { stat -f %m "$1"; }   # BSD / macOS
+fi
+
 # ── fixture : un repo discipliné, sans remote, sans branche en vol ────────────
 cd "$TMP"
 git init -q -b main repo && cd repo
@@ -71,10 +80,43 @@ echo "G4 — une fiche déclarée livrée mais restée en todo est détectée :"
 OUT4="$(bash "$CHECK" --gate --shipped 0043)"
 ok "points contient 3"                       "echo \"\$OUT4\" | grep -q '^VERDICT: DIRTY points=.*3'"
 ok "le fait cite la fiche et son statut"     "echo \"\$OUT4\" | grep -q '\[P3\] declared 0043 not shipped:.*status=todo'"
+# NB cette assertion vérifiait auparavant que le préfixe était JETÉ (« mc-0042 → 0042 »).
+# C'était précisément le bug relevé par Codex (PR #56) : le préfixe DÉSIGNE un backlog, il
+# ne décore pas le numéro. Ici la fixture n'a qu'un backlog racine, donc `mc-` ne résout
+# rien — et refuser de conclure vaut mieux que valider la fiche d'à côté (cf. G10).
 OUT4b="$(bash "$CHECK" --gate --shipped mc-0042)"
-ok "le préfixe alpha est toléré (mc-0042 → 0042)" "echo \"\$OUT4b\" | grep -qx 'VERDICT: CLEAN'"
+ok "un préfixe qui ne désigne aucun backlog ⇒ refus de conclure, pas un CLEAN" \
+   "echo \"\$OUT4b\" | grep -q 'prefixe .mc. non resolu' && echo \"\$OUT4b\" | grep -q '^VERDICT: DIRTY'"
 OUT4c="$(bash "$CHECK" --gate --shipped 9999)"
 ok "un id inconnu est signalé, pas ignoré"   "echo \"\$OUT4c\" | grep -q '\[P3\] declared 9999 introuvable'"
+
+echo "G10 — monorepo : le préfixe d'id doit désigner le BON backlog (finding Codex PR #56) :"
+# Les numéros ne sont pas uniques entre backlogs — dans ce dépôt, 62 numéros existent des
+# deux côtés. Jeter le préfixe et prendre le premier match global validait la mauvaise
+# fiche : `--shipped mc-0005` pouvait être « prouvé » par la fiche RACINE 0005.
+mkdir -p products/demo-produit/features/done
+echo '# Backlog produit' > products/demo-produit/features/README.md
+cat > products/demo-produit/features/0042-homonyme-pas-livree.md <<'EOF'
+---
+id: 0042
+title: même numéro, autre backlog, PAS livrée
+status: todo
+pr:
+---
+EOF
+git add products features && git commit -qm "fixture: second backlog avec un numéro homonyme"
+OUTA="$(bash "$CHECK" --gate --shipped dp-0042)"
+ok "dp-0042 vise le backlog demo-produit, pas la racine" \
+   "echo \"\$OUTA\" | grep -q 'declared dp-0042 not shipped:.*products/demo-produit'"
+ok "…et le verdict est DIRTY (la fiche homonyme n'est PAS livrée)" \
+   "echo \"\$OUTA\" | grep -q '^VERDICT: DIRTY points=.*3'"
+OUTB="$(bash "$CHECK" --gate --shipped 0042)"
+ok "0042 sans préfixe vise la racine, où la fiche EST livrée ⇒ CLEAN" \
+   "echo \"\$OUTB\" | grep -qx 'VERDICT: CLEAN'"
+OUTC="$(bash "$CHECK" --gate --shipped zz-0042)"
+ok "un préfixe non résolvable refuse de conclure au lieu de deviner" \
+   "echo \"\$OUTC\" | grep -q 'prefixe .zz. non resolu'"
+git rm -rq products && git commit -qm "fixture: retire le second backlog"
 
 echo "G2 — working tree sale :"
 echo scratch > untracked.txt
@@ -131,13 +173,15 @@ ok "--full et --gate s'accordent sur le nombre de branches réelles" \
 echo "G7 — strictement read-only :"
 BEFORE_STATUS="$(git status --porcelain | sort)"
 BEFORE_BRANCHES="$(git branch --format='%(refname:short)' | sort)"
-BEFORE_HANDOFF="$(stat -f %m .claude/handoff.md 2>/dev/null || stat -c %Y .claude/handoff.md)"
+BEFORE_HANDOFF="$(mtime .claude/handoff.md)"
 bash "$CHECK" --gate --shipped 0042 >/dev/null
 bash "$CHECK" --full --shipped 0042 >/dev/null
 ok "working tree inchangé"   "[ \"\$BEFORE_STATUS\" = \"\$(git status --porcelain | sort)\" ]"
 ok "branches inchangées"     "[ \"\$BEFORE_BRANCHES\" = \"\$(git branch --format='%(refname:short)' | sort)\" ]"
 ok "mtime de handoff.md inchangé (le portier ne le touche pas)" \
-   "[ \"\$BEFORE_HANDOFF\" = \"\$(stat -f %m .claude/handoff.md 2>/dev/null || stat -c %Y .claude/handoff.md)\" ]"
+   "[ \"\$BEFORE_HANDOFF\" = \"\$(mtime .claude/handoff.md)\" ]"
+ok "la sonde mtime renvoie bien un entier (sinon l'assertion ci-dessus ne prouve rien)" \
+   "echo \"\$BEFORE_HANDOFF\" | grep -qE '^[0-9]+\$'"
 ok "aucun FETCH_HEAD créé (le portier ne fetch jamais)" "[ ! -f .git/FETCH_HEAD ]"
 
 echo "G3 — option inconnue et hors dépôt :"

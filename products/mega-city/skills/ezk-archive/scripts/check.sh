@@ -164,14 +164,22 @@ classify_ref() { # $1=base $2=ref → "ABSORBEE" | "REELLE <fichiers-non-prouvé
   blob_landed() { # $1=blob $2=chemin-au-tip-de-la-ref → 0 si prouvé dans la base
     # fast-path : contenu exact au même chemin au tip de la base (couvre aussi le rename pur)
     [[ "$(git rev-parse "$_base:$2" 2>/dev/null)" == "$1" ]] && return 0
-    # sinon : un commit de la fenêtre post-fourche a touché ce blob ET le contient encore
-    # (le commit qui l'a RETIRÉ matche aussi --find-object — on l'exclut via ls-tree).
-    # NB pas de `grep -q` sur le pipe : son early-exit SIGPIPE ls-tree sous pipefail
-    # et fait rater un match réel sur un gros arbre.
+    # sinon : un commit de la fenêtre post-fourche a-t-il porté ce contenu AU MÊME CHEMIN ?
+    #
+    # ⚠ La preuve doit être PATH-PRESERVING (finding Codex PR #56). Chercher le blob
+    # « n'importe où dans l'arbre » suffisait à déclarer absorbé un fichier dont le contenu
+    # existe ailleurs sous un AUTRE nom — et deux fichiers VIDES partagent le même blob,
+    # donc n'importe quel fichier vide en amont « prouvait » n'importe quel fichier vide
+    # local. Sur MAINSYNC, ça produisait un `resync_safe=1` dont le reset --hard aurait
+    # supprimé un fichier local unique : une perte de données recommandée par l'outil.
+    #
+    # Vérifier le chemin exact règle au passage le cas du commit qui a RETIRÉ le blob
+    # (il matche `--find-object` mais `rev-parse <commit>:<chemin>` échoue), ce que
+    # l'ancien `ls-tree | grep` traitait de façon détournée.
     local c
     while IFS= read -r c; do
       [[ -z "$c" ]] && continue
-      [[ -n "$(git ls-tree -r "$c" 2>/dev/null | grep -F "$1")" ]] && return 0
+      [[ "$(git rev-parse "$c:$2" 2>/dev/null)" == "$1" ]] && return 0
     done < <(git log "$mb..$_base" --format=%H --find-object="$1" 2>/dev/null)
     return 1
   }
@@ -198,11 +206,20 @@ PR_LIST=""; REAL_LIST=""; ABSORBED_LIST=""; P2_NOTE=""
 REAL_FACTS=""; ABSORBED_FACTS=""
 P2_UNVERIFIABLE=0        # 1 = des PRs peuvent exister et on ne peut pas les lire
 if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
-  PR_LIST="$(gh pr list --state open \
+  # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56) : une panne
+  # réseau, un droit manquant ou un remote non résolvable rendent `gh pr list` vide en
+  # échec — indiscernable d'un « aucune PR ouverte » si on ne regarde que stdout. On
+  # aurait alors un CLEAN non prouvé, exactement ce que ce portier interdit.
+  if PR_LIST="$(gh pr list --state open \
         --json number,title,headRefName,isDraft \
         --jq '.[] | "#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)"' \
-        2>/dev/null)"
-  [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '')"
+        2>/dev/null)"; then
+    [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '')"
+  else
+    PR_LIST=""
+    P2_UNVERIFIABLE=1
+    P2_NOTE="gh pr list a ECHOUE (reseau / droits / remote non resolvable) — PRs NON verifiees"
+  fi
 elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
   # Seul cas réellement indécidable : l'hôte a des PRs, mais on n'a pas de quoi les lire.
   P2_UNVERIFIABLE=1
@@ -333,20 +350,54 @@ elif [[ "$SHIPPED" == "none" ]]; then
   P3_STATE="CLEAN"; P3_DECLARED="none"
 else
   P3_STATE="CLEAN"
+  # Les numéros ne sont PAS uniques dans un monorepo à plusieurs backlogs : 62 numéros
+  # existent des DEUX côtés ici (`features/0005-…` et `products/mega-city/features/0005-…`).
+  # Jeter le préfixe et prendre le premier match global validait donc potentiellement la
+  # MAUVAISE fiche — et déclarait CLEAN un backlog non réparé (finding Codex PR #56).
+  #
+  # Convention du dépôt (miroir de bin/plan-head.ts, ADR-0017 A13) : l'EMPLACEMENT fait le
+  # produit, le préfixe distingue l'id. Sans préfixe ⇒ backlog racine ; `xx-` ⇒ le backlog
+  # produit dont les initiales du nom donnent `xx` (mega-city → mc). Toute résolution
+  # ambiguë ou inconnue est refusée plutôt que devinée.
+  backlog_dir_for() { # $1=préfixe sans tiret ("" = racine) → chemin, ou "" si non résolu
+    local want="$1" d name init hits=""
+    if [[ -z "$want" ]]; then
+      git ls-files 'features/README.md' >/dev/null 2>&1 && [[ -f features/README.md ]] && { echo "features"; return; }
+      echo ""; return
+    fi
+    while IFS= read -r d; do
+      [[ -z "$d" ]] && continue
+      d="${d%/README.md}"
+      [[ "$d" == "features" ]] && continue                 # la racine n'a pas de préfixe
+      name="$(basename "$(dirname "$d")")"                 # products/<name>/features → <name>
+      init="$(printf '%s' "$name" | awk -F- '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')"
+      [[ "$init" == "$want" ]] && hits="$hits $d"
+    done < <(git ls-files '*features/README.md' 2>/dev/null)
+    set -- $hits
+    (( $# == 1 )) && { echo "$1"; return; }                # non ambigu uniquement
+    echo ""
+  }
   IFS=',' read -ra _IDS <<< "$SHIPPED"
   for raw in "${_IDS[@]}"; do
     id="$(printf '%s' "$raw" | tr -d '[:space:]')"
     [[ -z "$id" ]] && continue
-    num="${id##*-}"                      # tolère un préfixe alpha : mc-0097 → 0097
-    found="$(git ls-files "*features/done/${num}-*.md" 2>/dev/null | head -1)"
+    num="${id##*-}"
+    pfx=""; [[ "$id" == *-* ]] && pfx="${id%-*}"
+    dir="$(backlog_dir_for "$pfx")"
+    if [[ -z "$dir" ]]; then
+      P3_STATE="DIRTY"
+      add_fact P3 "declared $id : prefixe '${pfx:-<racine>}' non resolu en un backlog unique — id ambigu, verification impossible"
+      continue
+    fi
+    found="$(git ls-files "$dir/done/${num}-*.md" 2>/dev/null | head -1)"
     if [[ -z "$found" ]]; then
-      stray="$(git ls-files "*features/${num}-*.md" 2>/dev/null | head -1)"
+      stray="$(git ls-files "$dir/${num}-*.md" 2>/dev/null | head -1)"
       P3_STATE="DIRTY"
       if [[ -n "$stray" ]]; then
         st="$(grep -m1 '^status:' "$stray" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"
-        add_fact P3 "declared $id not shipped: found=$stray status=${st:-?} (attendu: features/done/ + status: shipped)"
+        add_fact P3 "declared $id not shipped: found=$stray status=${st:-?} (attendu: $dir/done/ + status: shipped)"
       else
-        add_fact P3 "declared $id introuvable dans le backlog"
+        add_fact P3 "declared $id introuvable dans $dir/"
       fi
     else
       st="$(grep -m1 '^status:' "$found" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"

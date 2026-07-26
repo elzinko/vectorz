@@ -40,6 +40,35 @@ ARCHIVE="$ROOT/.claude/handoff.archive.md"
 
 usage() { sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; }
 
+# `add` est un read-modify-write : on lit HEADER/REST, on compose un fichier temporaire,
+# puis on le `mv` en place. Deux sessions parallèles (le PO travaille en worktrees) peuvent
+# lire le MÊME instantané et le dernier `mv` écrase l'entrée de l'autre — une perte de
+# données dans le scénario même que la persistance du handoff est censée couvrir
+# (finding Codex PR #56). On sérialise donc le cycle complet.
+#
+# `mkdir` plutôt que `flock` : atomique sur tout POSIX, et présent partout — `flock` n'est
+# pas livré avec macOS. Le verrou porte sur le dépôt (git-common-dir) pour couvrir les
+# worktrees, qui partagent le fichier mais pas leur arborescence de travail.
+LOCK=""
+acquire_lock() {
+  local common tries=0
+  common="$(git -C "$ROOT" rev-parse --git-common-dir 2>/dev/null)"
+  [[ "$common" != /* ]] && common="$ROOT/$common"
+  LOCK="$common/ezk-handoff.lock"
+  while ! mkdir "$LOCK" 2>/dev/null; do
+    # Verrou périmé (session tuée avant de le rendre) : au-delà de 60 s, on le reprend.
+    if [[ -d "$LOCK" ]] && [[ -n "$(find "$LOCK" -maxdepth 0 -mmin +1 2>/dev/null)" ]]; then
+      rmdir "$LOCK" 2>/dev/null && continue
+    fi
+    tries=$((tries + 1))
+    if (( tries > 100 )); then                     # ~10 s
+      echo "✗ verrou du handoff occupé (${LOCK}) — rien écrit." >&2; exit 3
+    fi
+    sleep 0.1
+  done
+  trap 'rmdir "$LOCK" 2>/dev/null || true' EXIT INT TERM
+}
+
 ensure_gitignored() {
   # `.claude/handoff.md` est de l'ÉPHÉMÈRE PERSONNEL : jamais committé. On garantit
   # l'entrée .gitignore AVANT d'écrire, jamais après — sinon une session parallèle
@@ -85,6 +114,9 @@ case "${1:-help}" in
     if [[ -z "$TITLE" ]]; then echo "✗ handoff.sh add « <titre> » — titre manquant." >&2; exit 2; fi
     BODY="$(cat)"
     if [[ -z "${BODY//[[:space:]]/}" ]]; then echo "✗ corps vide sur stdin — rien écrit." >&2; exit 2; fi
+    # Verrou pris AVANT la lecture : lire puis verrouiller laisserait la fenêtre de course
+    # ouverte (deux sessions liraient le même instantané avant que l'une n'écrive).
+    acquire_lock
     ensure_gitignored
     ensure_file
 

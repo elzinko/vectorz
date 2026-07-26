@@ -93,19 +93,27 @@ Le portier est **read-only** et rend ~12 lignes sur une session propre.
 #### `VERDICT: CLEAN` → tu traites la clôture toi-même
 
 Les 4 points de contrôle sont **prouvés** propres. Il ne reste que les points d'écriture,
-qui ne demandent aucun jugement :
+qui ne demandent aucun jugement.
 
-1. `bash <skill>/scripts/handoff.sh carry` → les pendings **non-git** à reporter.
-2. **Mémoire projet** : propose les faits durables non-dérivables du repo (dates
-   relatives converties en absolues). Ne mémorise pas ce que le repo encode déjà.
-3. Rédige la note d'après [`references/handoff-template.md`](references/handoff-template.md),
-   puis écris-la :
-   ```bash
-   bash <skill>/scripts/handoff.sh add "<date> — <titre> — clôture ezk-archive" <<'EOF'
-   …
-   EOF
-   ```
-4. Rends la note + le verdict **✅ archivable**.
+> ⚠️ **`check` est un dry-run : il n'écrit RIEN.** Le verdict ne change pas la
+> sous-commande. Si l'utilisateur a demandé `check`, tu produis le rapport et la note
+> **dans le chat** — sans `handoff.sh add`, sans toucher `.gitignore`, sans mettre à jour
+> la mémoire. Seul `run`/`close` écrit. `handoff.sh carry` reste autorisé partout : il est
+> read-only.
+
+1. `bash <skill>/scripts/handoff.sh carry` → les pendings **non-git** à reporter *(read-only)*.
+2. Rédige la note d'après [`references/handoff-template.md`](references/handoff-template.md).
+3. **Si — et seulement si — la sous-commande est `run`/`close`** :
+   - **mémoire projet** : les faits durables non-dérivables du repo (dates relatives
+     converties en absolues) ; ne mémorise pas ce que le repo encode déjà ;
+   - persiste la note :
+     ```bash
+     bash <skill>/scripts/handoff.sh add "<date> — <titre> — clôture ezk-archive" <<'EOF'
+     …
+     EOF
+     ```
+4. Rends la note + le verdict **✅ archivable** — en disant, sur `check`, que rien n'a été
+   écrit et que `run` le ferait.
 
 #### `VERDICT: DIRTY points=…` → tu délègues, scopé
 
@@ -139,6 +147,8 @@ Puis **restitue la réponse de l'agent telle quelle**.
 - **Ne juge jamais toi-même** une branche RÉELLE (brouillon supersédé ou travail à
   récupérer ?) ni une divergence de `main` : c'est ce qui se délègue. Si tu te surprends
   à trancher un cas comme ceux-là dans la conversation principale, arrête-toi et délègue.
+- **`check` n'écrit jamais**, quel que soit le verdict : ni handoff, ni `.gitignore`, ni
+  mémoire. Un dry-run qui modifie le dépôt n'est plus un dry-run.
 - **Ne relis jamais `.claude/handoff.md`** : `handoff.sh carry` en rend la seule partie
   utile, bornée. Le lire en entier (20 Ko, deux fois par run) est ce que la fiche 0088 a
   supprimé — et c'est une violation directe de `rules/token-economy/read-once.md`.

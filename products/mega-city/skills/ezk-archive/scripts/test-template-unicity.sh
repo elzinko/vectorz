@@ -34,5 +34,12 @@ echo "Personne n'édite .claude/handoff.md à la main :"
 ok "SKILL.md passe par handoff.sh"           "grep -q 'handoff.sh' \"\$SKILL\""
 ok "l'agent passe par handoff.sh"            "grep -q 'handoff.sh' \"\$AGENT\""
 
+echo "Le contrat dry-run est écrit là où il s'applique (finding Codex PR #56) :"
+# Le chemin inline CLEAN écrivait le handoff sans regarder la sous-commande : un `check`
+# modifiait alors .gitignore, .claude/handoff.md et la mémoire. Un dry-run qui modifie le
+# dépôt n'est plus un dry-run — la garde doit rester VISIBLE dans le chemin concerné.
+ok "SKILL.md conditionne l'écriture à run/close" "grep -qE 'seulement si.*la sous-commande est' \"\$SKILL\""
+ok "SKILL.md dit que check n'écrit jamais"       "grep -qE 'check. n.écrit jamais' \"\$SKILL\""
+
 echo
 if [ "$FAIL" = 0 ]; then echo "test-template-unicity: TOUT VERT"; else echo "test-template-unicity: ÉCHECS"; exit 1; fi

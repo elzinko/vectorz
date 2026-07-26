@@ -143,6 +143,33 @@ des pendings *git* (via le gate — recalculés live, les recopier les périmera
 - La mesure « après » n'est valide qu'**après merge sur `main`** : `~/.claude/skills/ezk-archive`
   est un symlink vers l'arbre principal.
 
+## Précisions imposées par la revue (Codex, PR #56)
+
+La revue a produit 6 findings P1 retenus. Deux touchent la **substance de la décision** et
+sont consignés ici ; les autres sont des défauts d'implémentation corrigés dans la PR.
+
+**1. « Preuve de contenu » signifie « au même chemin ».** `blob_landed` cherchait le blob
+*n'importe où* dans un commit de la fenêtre. Suffisant pour les branches (fiche 0076, où le
+verdict ne déclenche qu'une suppression de branche récupérable par reflog), mais **pas** pour
+`MAINSYNC`, dont la conclusion `resync_safe=1` invite à un `reset --hard`. Un fichier local
+unique dont le contenu existe en amont **sous un autre nom** était déclaré absorbé — et le
+cas dégénéré est banal : **tous les fichiers vides partagent le même blob**. La preuve exige
+désormais que le contenu ait atterri **au chemin attendu**. Effet de bord heureux : cela
+remplace le `ls-tree | grep` qui servait à exclure le commit ayant *retiré* le blob.
+
+**2. Le préfixe d'un id désigne un backlog, il ne décore pas un numéro.** Dans ce monorepo,
+**62 numéros existent des deux côtés** (`features/0005-…` et
+`products/mega-city/features/0005-…`). Jeter le préfixe et retenir le premier match global
+pouvait donc prouver `CLEAN` sur la fiche voisine, exactement là où le préfixe servait à
+lever l'ambiguïté. La résolution suit maintenant la convention déjà posée par
+`bin/plan-head.ts` (ADR-0017 A13) — l'emplacement fait le produit, le préfixe distingue
+l'id — et **refuse de conclure** quand elle est ambiguë, plutôt que de deviner.
+
+Les deux corrections vont dans le même sens que la règle centrale de cet ADR : *CLEAN
+uniquement sur preuve positive*. Elles montrent aussi que la règle ne suffit pas si les
+preuves elles-mêmes sont trop lâches — c'est le contrôle adverse qui l'a révélé, pas le
+raisonnement initial.
+
 ## Alternatives écartées
 
 - **Garder la délégation systématique et n'alléger que le sous-agent.** Le plancher de

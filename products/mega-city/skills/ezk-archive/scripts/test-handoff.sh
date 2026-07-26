@@ -15,6 +15,12 @@ trap 'rm -rf "$TMP"' EXIT
 FAIL=0
 ok() { if eval "$2"; then echo "  ok — $1"; else echo "  ÉCHEC — $1"; FAIL=1; fi; }
 
+# mtime portable — voir la note de test-check-gate.sh : `stat -f` est du BSD, mais sur GNU
+# il signifie `--file-system` et imprime des stats mouvantes (finding Codex PR #56).
+if stat -c %Y . >/dev/null 2>&1; then mtime() { stat -c %Y "$1"; }   # GNU coreutils
+else                                  mtime() { stat -f %m "$1"; }   # BSD / macOS
+fi
+
 cd "$TMP" && git init -q -b main repo && cd repo
 git config user.email t@t && git config user.name t && git config commit.gpgsign false
 echo x > a.txt && git add . && git commit -qm base
@@ -54,7 +60,7 @@ ok "ne contient PAS celui de l'entrée 4"  "! echo \"\$CARRY\" | grep -q 'report
 ok "ne contient pas la section « Fait »"  "! echo \"\$CARRY\" | grep -q 'Fait cette session'"
 ok "borné à 40 lignes"                    "[ \"\$(echo \"\$CARRY\" | wc -l | tr -d ' ')\" -le 40 ]"
 ok "carry ne modifie rien (read-only)" \
-   "M1=\$(stat -f %m .claude/handoff.md 2>/dev/null || stat -c %Y .claude/handoff.md); bash \"\$HANDOFF\" carry >/dev/null; M2=\$(stat -f %m .claude/handoff.md 2>/dev/null || stat -c %Y .claude/handoff.md); [ \"\$M1\" = \"\$M2\" ]"
+   "M1=\$(mtime .claude/handoff.md); bash \"\$HANDOFF\" carry >/dev/null; M2=\$(mtime .claude/handoff.md); [ \"\$M1\" = \"\$M2\" ] && echo \"\$M1\" | grep -qE '^[0-9]+\$'"
 
 echo "H3 — carry sur fichier absent : silencieux, exit 0 :"
 mkdir -p "$TMP/vide" && cd "$TMP/vide" && git init -q -b main v && cd v
@@ -90,6 +96,24 @@ rm -f .claude/handoff.md .claude/handoff.archive.md
 for i in 1 2 3 4 5; do body $i | EZK_HANDOFF_KEEP=1 bash "$HANDOFF" add "2026-03-0$i — k$i" >/dev/null; done
 ok "KEEP=1 ⇒ une seule entrée vivante"  "[ \"\$(grep -c '^## ' .claude/handoff.md)\" = 1 ]"
 ok "les 4 autres sont archivées"        "[ \"\$(grep -c '^## ' .claude/handoff.archive.md)\" = 4 ]"
+
+echo "H9 — écritures CONCURRENTES : aucune entrée perdue (finding Codex PR #56) :"
+# `add` est un read-modify-write. Sans verrou, deux sessions parallèles — le cas du PO,
+# qui travaille en worktrees — lisent le même instantané et le dernier `mv` écrase l'entrée
+# de l'autre : perte de données dans le scénario même que la persistance doit couvrir.
+rm -f .claude/handoff.md .claude/handoff.archive.md
+for i in $(seq 1 8); do
+  ( body "$i" | bash "$HANDOFF" add "2026-04-0$i — concurrent $i" >/dev/null 2>&1 ) &
+done
+wait
+LIVE="$(grep -c '^## ' .claude/handoff.md 2>/dev/null || echo 0)"
+ARCH="$(grep -c '^## ' .claude/handoff.archive.md 2>/dev/null || echo 0)"
+ok "8 ajouts concurrents ⇒ 8 entrées au total (vivantes + archivées)" "[ \$(( LIVE + ARCH )) = 8 ]"
+ok "l'anneau tient malgré la concurrence (3 vivantes)"                "[ \"\$LIVE\" = 3 ]"
+ok "chaque entrée est intacte et distincte" \
+   "[ \"\$(cat .claude/handoff.md .claude/handoff.archive.md | grep -c 'concurrent ')\" = 8 ]"
+ok "aucun verrou laissé derrière" \
+   "[ ! -d \"\$(git rev-parse --git-common-dir)/ezk-handoff.lock\" ]"
 
 echo "H8 — refus des entrées vides et des verbes inconnus :"
 ok "corps vide ⇒ exit 2, rien écrit"   "! printf '   \n' | bash \"\$HANDOFF\" add 'titre' >/dev/null 2>&1"

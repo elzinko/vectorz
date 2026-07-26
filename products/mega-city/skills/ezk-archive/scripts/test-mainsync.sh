@@ -125,6 +125,39 @@ ok "stale_ref=1 est signalé"             "echo \"\$OUT\" | grep -q 'stale_ref=1
 ok "VERDICT: DIRTY (UNKNOWN ⇒ DIRTY : CLEAN uniquement sur preuve positive)" \
    "echo \"\$OUT\" | grep -q '^VERDICT: DIRTY'"
 
+echo "M9 — ⚠ la preuve doit être AU MÊME CHEMIN, sinon resync_safe détruit du travail :"
+# Finding Codex PR #56. Chercher le blob « n'importe où en amont » suffisait à déclarer
+# absorbé un fichier local dont le contenu existe ailleurs sous un AUTRE nom : un
+# `reset --hard` sur ce resync_safe=1 aurait supprimé le fichier local unique.
+CASE=m9; mk m9
+echo "contenu strictement identique" > local-seul.txt && git add local-seul.txt
+git commit -qm "feat: fichier local jamais livré"
+upstream_add() { # ajoute un fichier côté origin sans toucher a.txt
+  local d; d="$(mktemp -d)"
+  git clone -q "$TMP/$CASE/origin.git" "$d/u" >/dev/null 2>&1
+  ( cd "$d/u" && git config user.email t@t && git config user.name t && git config commit.gpgsign false
+    printf '%s' "$1" > "$2" && git add "$2" && git commit -qm "$3" && git push -q origin HEAD:main )
+  rm -rf "$d"
+}
+upstream_add "contenu strictement identique
+" "autre-nom.txt" "feat: même contenu, autre nom"
+git fetch -q origin
+OUT="$(bash "$CHECK" --gate --shipped none)"
+ok "le fichier local n'est PAS déclaré absorbé"      "echo \"\$OUT\" | grep -q '^MAINSYNC: DIVERGED_UNPROVEN'"
+ok "resync_safe n'est PAS émis (sinon reset --hard perdrait local-seul.txt)" \
+   "! echo \"\$OUT\" | grep -q 'resync_safe=1'"
+ok "le fichier menacé est nommé"                     "echo \"\$OUT\" | grep -q 'unproven=local-seul.txt'"
+
+echo "M10 — le cas dégénéré : deux fichiers VIDES partagent le même blob :"
+CASE=m10; mk m10
+: > vide-local.txt && git add vide-local.txt && git commit -qm "feat: fichier vide local"
+upstream_add "" "vide-upstream.txt" "chore: un autre fichier vide en amont"
+git fetch -q origin
+OUT="$(bash "$CHECK" --gate --shipped none)"
+ok "un fichier vide en amont ne prouve PAS un fichier vide local" \
+   "echo \"\$OUT\" | grep -q '^MAINSYNC: DIVERGED_UNPROVEN'"
+ok "unproven cite bien vide-local.txt"  "echo \"\$OUT\" | grep -q 'unproven=vide-local.txt'"
+
 echo "M8 — « remote » n'implique pas « pull requests » (le verdict ne doit pas dépendre de gh) :"
 # Cas vécu en CI : `gh` n'est pas authentifié sur les runners, et le portier en déduisait
 # « PRs invérifiables ⇒ UNKNOWN ⇒ DIRTY » — y compris pour un remote `file://` qui n'a
