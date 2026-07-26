@@ -4,9 +4,9 @@ title: ezk-product-builder n'émet aucun événement — ses checkpoints inter-s
 type: bug
 priority: P1
 epic:
-status: todo
+status: in-progress
 ready: 2026-07-26
-pr:
+pr: '#55'
 created: 2026-07-25
 ---
 
@@ -67,3 +67,16 @@ product-builders qui ne se comportent pas pareil sur l'émission est un piège e
 - Dépend de la fiche **0094** pour être *observable* — mais peut être écrite avant
   (c'est du markdown de skill).
 - Ferme l'étape 2 de la fiche racine **0030**.
+- **2026-07-26 — PR #55 mergée. La fiche reste `in-progress`, et c'est volontaire :**
+  les 5 critères sont tous **observationnels** (« une session réelle produit… »), et
+  cette session-ci a démarré avant le branchement de vectorz (#54), donc sans outils MCP
+  chargés. Ce qui restait à *écrire* est écrit ; ce qui reste est à *voir*. Même statut
+  que **0094**, pour la même raison — les deux se ferment ensemble à la première session
+  `ezk-product-builder` lancée sur vectorz après ce merge.
+- **Livré par #55** : la consigne d'émission (il ouvre le run, 5 gates ASCII alignés sur
+  sa table, 4 `escalate`, `run_finished` au seul ouvreur, distinction absorption /
+  **run orphelin**) + un contrat testé à trois ancrages contre la récidive.
+- **Suivi ouvert** : fiche **0099** (vérifier la structure des directives plutôt que
+  compter les mentions — finding Codex). Parenté avec **0066** : deux findings bloquants
+  de la revue étaient des bugs d'exécution dans du texte que rien ne compile
+  (`gate_id` accentué refusé par le runtime ; « 4 checkpoints » pour une table qui en a 5).
