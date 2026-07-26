@@ -6,9 +6,9 @@ priority: P0
 epic:
 depends: []
 labels: [enabler]
-status: todo
+status: shipped
 ready: 2026-07-26
-pr:
+pr: "#52"
 created: 2026-07-25
 ---
 
