@@ -100,6 +100,10 @@ bruit** :
   à l'appelant : le serveur n'accepte qu'un seul gate ouvert à la fois, et toi seul
   détiens ton `gate_event_id` — un gate laissé ouvert bloquerait tous les checkpoints
   suivants de l'appelant.
+  ⚠️ **Refus SANS appelant = run orphelin, pas absorption** (usage direct, l'humain
+  t'a lancé toi) : une session interrompue a laissé son run ouvert, et personne ne
+  pourra jamais le clore. Ne t'y greffe pas — **arrête-toi et demande** : reprendre, ou
+  abandonner (`run_finished {status: abandoned}`) puis ouvrir un run neuf.
 - **Au checkpoint (étape 9)** — c'est TON gate : `gate_reached {gate_id:
   "sprint-<slug>-checkpoint", outcome: ok|attention|failed, report_markdown: <ton résumé
   de clôture : livré · PR · tokens>}` **avant** de poser « on continue ? » — puis

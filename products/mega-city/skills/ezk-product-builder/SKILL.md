@@ -173,18 +173,28 @@ Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `esc
 `run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
 bruit** :
 
-- **Au lancement — UNE fois par session, pas à chaque tour de boucle** : `run_start
-  {method_name: "ezk-product-builder", method_version: <version du catalogue mega-city
-  (package.json), à défaut le SHA court>, seat: "human"}`. Contrairement à `ezk-sprint`
-  (qui s'absorbe quand il est appelé dans un run déjà ouvert), c'est **toi** qui ouvres
-  le run quand tu es la tête de chaîne. ⚠️ Ton étape 4 reboucle en (1) : n'y réémets
-  **pas** `run_start` — un run couvre toute la session, pas un sprint.
-- **Si `run_start` est refusé (« un run est déjà ouvert ») — tu es absorbé, toi aussi.**
-  Ce refus n'est pas une erreur : c'est le signal. Il arrive quand un appelant a déjà
-  ouvert le run, ou qu'une session précédente s'est interrompue en laissant le sien
-  ouvert (l'état est relu du **disque**). Dans ce cas : émets tes gates dans le run
-  existant, et **ne touche pas à `run_finished`** — il appartient à celui qui a ouvert.
-  Miroir exact de la règle d'absorption d'`ezk-sprint`.
+- **Au lancement d'un `build`/`once` — UNE fois par session, pas à chaque tour de
+  boucle** : `run_start {method_name: "ezk-product-builder", method_version: <version du
+  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+  Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un run déjà
+  ouvert), c'est **toi** qui ouvres le run quand tu es la tête de chaîne.
+  ⚠️ Deux pièges de portée : ton étape 4 reboucle en (1) — n'y réémets **pas**
+  `run_start`, un run couvre la session, pas un sprint ; et `help`/`status`/sans-argument
+  **n'ouvrent aucun run** (elles ne lancent rien, et n'ont pas de clôture où le refermer
+  — un run ouvert par une consultation piégerait le prochain vrai build).
+- **Si `run_start` est refusé (« un run est déjà ouvert »), deux cas — ne les confonds
+  pas.** L'état est relu du **disque**, donc un run peut survivre à la session qui l'a
+  ouvert :
+  - **Un appelant vivant te tient** (tu as été invoqué par une autre méthode) : c'est le
+    signal d'**absorption**. Émets tes gates dans son run, et **ne touche pas à
+    `run_finished`** — il appartient à celui qui a ouvert. Miroir exact d'`ezk-sprint`.
+  - **Personne ne te tient** (l'humain t'a lancé directement) : ce n'est **pas** une
+    absorption, c'est un **run orphelin** laissé par une session interrompue. Ne t'y
+    greffe pas : sans appelant, personne ne pourra jamais le clore, chaque session
+    suivante s'y ajouterait, et un gate resté ouvert bloquerait tous les checkpoints —
+    le journal se fige pour de bon. **Arrête-toi et demande** : reprendre ce run tel
+    quel, ou l'abandonner (`run_finished {status: abandoned}`) puis en ouvrir un neuf.
+    C'est une décision d'humain — clore le run d'autrui n'est jamais automatique.
 - **La règle d'absorption, vue de ton côté** : chaque `ezk-sprint` que tu lances reçoit
   ce même refus et émet ses gates (`sprint-<slug>-checkpoint`) **dans TON run**. Côté
   *run*, c'est mécanique. Côté ***gates*, ça ne l'est pas** : le serveur n'accepte

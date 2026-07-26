@@ -12,12 +12,18 @@
  * Les trois doivent concorder. Faire disparaître une skill émettrice demande donc de
  * mentir aux trois endroits dans le même commit — au lieu d'un seul oubli silencieux.
  *
- * LIMITE ASSUMÉE, à ne pas se cacher : le quadrant « n'émet pas ET n'est déclarée
- * nulle part » reste hors de portée — c'était l'état exact d'`ezk-product-builder`
- * du 17 au 26 juillet. Aucune donnée machine ne dit aujourd'hui « cette skill EST un
- * orchestrateur, donc elle DOIT émettre ». Un nouvel orchestrateur créé sans émission
- * passerait encore. C'est le job de la fiche 0068 (règle « method-map à jour ») et de
- * la revue humaine, pas de ce fichier — mieux vaut l'écrire que le laisser croire.
+ * DEUX LIMITES ASSUMÉES, à ne pas se cacher :
+ *  a. Le quadrant « n'émet pas ET n'est déclarée nulle part » reste hors de portée —
+ *     c'était l'état exact d'`ezk-product-builder` du 17 au 26 juillet. Aucune donnée
+ *     machine ne dit aujourd'hui « cette skill EST un orchestrateur, donc elle DOIT
+ *     émettre ». Un nouvel orchestrateur créé sans émission passerait encore. C'est le
+ *     job de la fiche 0068 (règle « method-map à jour ») et de la revue humaine.
+ *  b. Compter les occurrences est un PROXY, pas une vérification de directive (finding
+ *     Codex P2, PR #55) : retirer une consigne réelle tout en laissant le nom de
+ *     l'outil dans la prose environnante garde le test vert. Le seuil ≥2 ne tue que le
+ *     cas « il ne reste QUE la phrase de garde ». Vérifier la *structure* des
+ *     directives demande un parseur — fiche de suivi.
+ * Mieux vaut écrire ces deux trous que laisser croire à une couverture qu'on n'a pas.
  */
 import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
