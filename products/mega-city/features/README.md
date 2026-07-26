@@ -1,4 +1,4 @@
-# Backlog — mega-city
+# Backlog features & bugs — mega-city (méthode)
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
@@ -13,7 +13,7 @@
 | 0085 | Redéfinir ce que compte la quiescence — les sous-runs de l'orchestrateur, pas tout worktree git du dépôt | chore | P0 |  | ✅ shipped | #47 |
 | 0086 | Le journal remonte à l'arbre principal + le serveur annonce où il écrit (fin de la perte silencieuse en worktree) | feature | P0 |  | ✅ shipped | #46 |
 | 0089 | Ordonnancement — brancher PLAN.md sur l'intake (l'ordre suit la priorité, pas l'inverse) | feature | P0 |  | ✅ shipped | #52 |
-| 0094 | Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfooding n'émet rien aujourd'hui | feature | P0 |  | 🟠 in-progress |  |
+| 0094 | Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfooding n'émet rien aujourd'hui | feature | P0 |  | 🟠 in-progress | '#51 · #54' |
 | 0097 | Connecter l'ordre du plan à la vue cross-backlog — « la suite, toutes listes confondues » suit PLAN.md | feature | P0 |  | ✅ shipped | #53 |
 | 0002 | lawgiver capture — flywheel | feature | P1 |  | ✅ shipped | local (squash-merge) |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 |  | ✅ shipped | #6 |

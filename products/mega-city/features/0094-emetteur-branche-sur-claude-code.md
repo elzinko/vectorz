@@ -6,7 +6,7 @@ priority: P0
 epic:
 status: in-progress
 ready:
-pr:
+pr: '#51 · #54'
 created: 2026-07-25
 ---
 
@@ -103,7 +103,13 @@ de sa décision, à conserver ensemble :
       `.supervision/runs/<run_id>/` de l'**arbre principal**, y compris lancé **depuis un
       worktree** (preuve de la normalisation ADR-0019 en conditions réelles). *(Reste dû :
       la commande branche, mais un vrai run `ezk-sprint` depuis un worktree n'a pas encore
-      été rejoué.)*
+      été rejoué.)* **2026-07-26 (#54)** : vectorz est branché et le probe prouve
+      mécaniquement la chaîne, worktree compris (racine déclarée = worktree, journal
+      normalisé vers l'arbre principal). Ce qui reste n'est plus du développement mais
+      une **constatation** : Claude Code charge ses serveurs MCP à l'ouverture, donc la
+      1ʳᵉ session ouverte sur vectorz après ce merge émettra — il suffira de regarder.
+      **La fiche reste `in-progress` tant que ça n'a pas été vu**, pas parce qu'il reste
+      à faire.
 - [x] **`supervision:probe`** — un banc **automatisable** vérifie qu'un `.mcp.json` donné
       démarre *tel qu'il est écrit* et expose exactement les 5 outils. Ajouté le 2026-07-26 :
       le trou constaté est que les tests existants prouvent le **serveur**, jamais le
