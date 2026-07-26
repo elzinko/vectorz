@@ -2,7 +2,7 @@
 
 - Statut : **proposé**
 - Date : 2026-07-26
-- Amende : [ADR-0009 §2](0009-ezk-pr-pilot-orchestrateur-validation-prs.md) · Fiche : [0099](../features/0099-ezk-testbed-brique-boot-env-test.md)
+- Amende : [ADR-0009 §2](0009-ezk-pr-pilot-orchestrateur-validation-prs.md) · Fiche : [0102](../../features/0102-ezk-testbed-brique-boot-env-test.md)
 
 ## Contexte
 
@@ -39,7 +39,7 @@ partagée par quatre rôles.
 2. **Test d'autonomie (critère d'acceptation, pas intention).** Une brique doit fonctionner
    dans un repo où **aucun autre skill ezk n'est installé**. Si sa valeur exige un
    orchestrateur, ce n'est pas une brique.
-3. **Application immédiate** : `ezk-testbed` (fiche 0099) — `init` / `check` / `start` /
+3. **Application immédiate** : `ezk-testbed` (fiche 0102) — `init` / `check` / `start` /
    `stop` / `list`, cibles `pr <n>` · `branch <nom>` · `local`, recette choisie **par le
    projet**. `ezk-pr-pilot` gagne **une ligne** de délégation et **aucune** logique de boot ;
    `ezk-preview` **retire** son heuristique de port et délègue.

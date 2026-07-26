@@ -32,11 +32,11 @@ erreur), et 4 intégrations fantômes ont été constatées à l'audit. Par aill
 
 ## Notes
 **Remontée P2 → P1 le 2026-07-26** (arbitrage PO). Déclencheur : [ADR-0020](../docs/adr/0020-capacite-partagee-brique-autonome.md)
-grave la doctrine « briques autonomes **composables** » et la fiche [0099](0099-ezk-testbed-brique-boot-env-test.md)
+grave la doctrine « briques autonomes **composables** » et la fiche [0102](0102-ezk-testbed-brique-boot-env-test.md)
 crée `ezk-testbed`, que `ezk-pr-pilot`, `ezk-preview` et `ezk-sprint` doivent composer.
 Sans `composes:`, ces trois liens naissent **en prose** — un profil pourra binder
 `ezk-pr-pilot` sans `ezk-testbed` sans qu'aucun warning ne tombe, exactement le symptôme
-d'origine d'ADR-0012. À livrer **avant** 0099 si possible : la fiche annote alors ses
+d'origine d'ADR-0012. À livrer **avant** 0102 si possible : la fiche annote alors ses
 composants à la naissance au lieu d'un rattrapage.
 
 ADR-0012. Chantier structurel (domaine + loaders + tests) — après les quick wins

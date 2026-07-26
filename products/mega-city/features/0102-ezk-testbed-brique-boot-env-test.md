@@ -1,5 +1,5 @@
 ---
-id: 0099
+id: 0102
 title: "ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot"
 type: feature
 priority: P1
@@ -12,7 +12,7 @@ pr:
 created: 2026-07-26
 ---
 
-# 0099 — `ezk-testbed` : la brique qui démarre un environnement de test
+# 0102 — `ezk-testbed` : la brique qui démarre un environnement de test
 
 ## Contexte / Problème
 
@@ -211,3 +211,13 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 - **Contexte de liste** : fiche déposée dans le backlog **mega-city** (sujet = méthode).
   Si la fiche racine **0064** (liste unique via champ `product:`) est livrée avant, la
   migration est mécanique (ajout d'un champ), pas un déplacement.
+- **Constat à router vers la fiche racine 0064 et vers [mc-0090](0090-coherence-de-sprint.md)** —
+  cette fiche est née `0099`, a dû devenir `0102`, et `0100` aurait aussi collisionné.
+  Trois numéros brûlés en une journée, **à l'intérieur d'une seule liste**, parce que
+  quatre worktrees vivaient en parallèle et que chacun calculait `max(id)+1` contre son
+  arbre **local**. La proposition de 0064 (liste unique via champ `product:`) traite les
+  collisions **entre** les deux listes — elle n'aurait couvert **aucun** de ces trois cas.
+  Mitigation immédiate applicable tout de suite dans `ezk-backlog add` : calculer le max
+  contre `origin/main` **fetché** *et* toutes les branches non mergées, pas contre le
+  worktree courant. Un trou dans la numérotation est sans conséquence — un id est un
+  identifiant, pas un compteur.

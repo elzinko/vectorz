@@ -35,8 +35,8 @@
 11. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
 12. **mc-0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
 13. **mc-0044** — `composes:` : rendre la composition inter-skills mécanique (remontée P2→P1
-    le 2026-07-26) · `build` *(à faire avant mc-0099, sinon ses liens naissent en prose)*
-14. **mc-0099** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
+    le 2026-07-26) · `build` *(à faire avant mc-0102, sinon ses liens naissent en prose)*
+14. **mc-0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
     + ADR-0020 · `build` *(attend le dogfood samplerz `make preview-pr`, son repo)*
 
 ## ⏳ LATER — pas maintenant
