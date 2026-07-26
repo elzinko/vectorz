@@ -5,7 +5,9 @@
  *   pnpm --dir products/mega-city supervision:link <chemin-du-projet>
  *
  * Écrit/fusionne le `.mcp.json` du projet (préserve tout autre serveur MCP),
- * gitignore `.supervision/`, et imprime les étapes suivantes. Idempotent :
+ * gitignore `.supervision/` ET `/.mcp.json` (artefact local, ADR-034 — la règle
+ * suit chaque projet branché, pas seulement vectorz), et imprime les étapes
+ * suivantes. Idempotent :
  * rejouer met à jour les chemins sans rien casser. Ne touche JAMAIS à la config
  * du daemon (le côté LECTURE est un observateur externe — modèle à deux clés,
  * fiche 0082).
@@ -32,7 +34,7 @@ if (!arg || arg === '-h' || arg === '--help') {
   console.log('');
   console.log("Branche l'émetteur de supervision sur un projet (côté Claude Code) :");
   console.log('  · écrit/fusionne son .mcp.json (préserve les autres serveurs MCP)');
-  console.log('  · ajoute .supervision/ à son .gitignore');
+  console.log('  · ajoute .supervision/ et /.mcp.json à son .gitignore');
   process.exit(arg ? 0 : 2);
 }
 
@@ -88,7 +90,7 @@ console.log(`✓ ${projectRoot} ${alreadyLinked ? 'ré-branché (chemins mis à 
 console.log(
   `  · .mcp.json  → serveur « supervision » (${EXPECTED_SUPERVISION_TOOLS.length} outils : ${EXPECTED_SUPERVISION_TOOLS.join(', ')})`,
 );
-console.log('  · .gitignore → .supervision/');
+console.log('  · .gitignore → .supervision/ + /.mcp.json (artefact local, ADR-034)');
 console.log('');
 console.log('Étapes suivantes :');
 console.log(`  1. Rouvre Claude Code DANS ce projet :  cd "${projectRoot}" && claude`);

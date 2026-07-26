@@ -60,9 +60,14 @@ pas lui-même supervisé, un clone lance une commande.
 
 Quatre corollaires :
 
-1. **Aucun changement de code.** Le générateur reste tel quel : chemins absolus, `pnpm`
-   absolu avec repli nu, `SUPERVISION_PROJECT_ROOT` explicite. C'est correct *parce que*
-   le fichier est local — l'absolu est la forme juste d'un artefact d'installation.
+1. **Le générateur reste tel quel** sur la forme produite : chemins absolus, `pnpm` absolu
+   avec repli nu, `SUPERVISION_PROJECT_ROOT` explicite. C'est correct *parce que* le
+   fichier est local — l'absolu est la forme juste d'un artefact d'installation.
+   **Amendé le 2026-07-26 (finding Codex P1, PR #54)** : la décision étant une propriété
+   du *fichier*, pas du dépôt vectorz, `supervision:link` **installe la règle d'ignore
+   dans chaque projet qu'il branche** (`/.mcp.json`, à côté de `.supervision/`). Sans ça,
+   brancher un cobaye y laissait un `.mcp.json` machine-spécifique commitable — très
+   exactement le mal que cet ADR prétend empêcher, reproduit chez le voisin.
 2. **La racine reste explicite**, donc `provenance: 'explicit'`, puis normalisation
    worktree ADR-019 inchangée. On ne dépend jamais du cwd, ni de `CLAUDE_PROJECT_DIR`.
 3. **Le worktree redevient sain** : chaque worktree a *son* `.mcp.json` non versionné,
