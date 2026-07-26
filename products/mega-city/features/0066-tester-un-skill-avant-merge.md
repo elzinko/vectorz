@@ -69,10 +69,13 @@ Livrables candidats :
   0067 (test « golden events ») et l'ADR-032 (émission séparable).
 - Compose : `ezk-steward`, `verify`, `skill-creator`. Origine : cérémonie `ezk-retro`
   (dry-run 2026-07-16). Priorité P2 à confirmer.
-- **Porteur naturel du contrôle, plutôt qu'un test ad hoc** : la fiche
-  [0079](0079-restitutions-po-lisibles.md) prévoit déjà un test de contrat sur le **texte**
-  des skills, calqué sur
+- **Qui porte le contrôle.** Le critère d'acceptation ci-dessus (référence morte → gate
+  rouge, prouvé par sabotage) appartient à **cette fiche 0066** — c'est elle le porteur, pour
+  qu'il ne dépende d'aucun autre merge.
+- **Réutiliser plutôt qu'un test ad hoc, si l'occasion se présente.** Une **extension de la
+  fiche [0079](0079-restitutions-po-lisibles.md) encore en cours (branche non mergée, pas
+  visible sur `main`)** propose un test de contrat sur le **texte** des skills, calqué sur
   [`skill-emission-contract.test.ts`](../src/supervision/__tests__/skill-emission-contract.test.ts).
-  Les deux cas ci-dessus s'y rattachent — même mécanique (croiser le texte d'une skill avec
-  le réel), périmètre à élargir de « SKILL.md ↔ règle ↔ asset » à « SKILL.md ↔ chemins et
-  skills cités ».
+  Si elle atterrit, mutualiser : même mécanique (croiser le texte d'une skill avec le réel),
+  périmètre à élargir de « SKILL.md ↔ règle ↔ asset » à « SKILL.md ↔ chemins et skills cités ».
+  Si elle n'atterrit pas, 0066 implémente son propre test — la responsabilité reste ici.
