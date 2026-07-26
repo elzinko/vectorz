@@ -19,7 +19,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | skill | état | rôle |
 |---|---|---|
 | `ezk-ezk` | 📝 proposé (ADR-0007) | méta-skill : transforme une session en skill réutilisable (compose brainstorming + architecture + skill-creator ; range via `scripts/deploy.sh`) |
-| `ezk-archive` | 📥 importé (strangler-fig) | rituel de clôture de session : clôt proprement un repo pour ne rien perdre entre deux sessions (check/run via `scripts/check.sh`) |
+| `ezk-archive` | 📥 importé (strangler-fig), portier (0088, ADR-0021) | rituel de clôture de session : clôt proprement un repo pour ne rien perdre entre deux sessions. `scripts/check.sh` est un **portier** (verdict `CLEAN`/`DIRTY` — sur CLEAN la clôture est traitée inline, sur DIRTY déléguée au sous-agent scopé) ; `scripts/handoff.sh` range la note en anneau FIFO |
 | `ezk-product-builder` | 📝 proposé (ADR-0008) | couche product-owner : construit un produit en enchaînant des sprints (compose ezk-backlog + /product-brainstorming + ezk-sprint ; pure orchestration, aucun script) |
 | `ezk-commits` | 📥 importé (strangler-fig, pilote 0004) | messages Conventional Commits + hook `commit-msg` (`scripts/commit-msg`) — 1er skill rendu **bindable** (loader sous-dossiers) |
 | `ezk-backlog` | 📥 importé (0024, version #31) | backlog markdown versionné (add dédoublonnant + version + brainstorm) — satisfait la fiche 0022 |

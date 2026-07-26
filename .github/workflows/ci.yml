@@ -66,3 +66,12 @@ jobs:
 
       - name: Test (mega-city, standalone)
         run: pnpm --filter mega-city test
+
+      # DoD exécutables en bash (classification des branches post-squash, contrat du
+      # portier de clôture, garde anti-faux-positif main/origin-main, anneau FIFO du
+      # handoff, unicité du gabarit, régénération de l'index backlog). Ils existaient
+      # mais se lançaient à la main : rien ne garantissait qu'ils soient encore verts.
+      # Hermétiques comme les tests TS — fixtures jetables en mktemp -d, identité git
+      # locale, et `gh` non authentifié sur le runner est un cas géré (repo local-only).
+      - name: Test scripts (mega-city, bash)
+        run: pnpm --filter mega-city test:scripts

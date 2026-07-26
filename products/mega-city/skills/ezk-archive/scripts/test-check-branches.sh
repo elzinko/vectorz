@@ -59,7 +59,12 @@ git switch -q main
 N_NAIVE="$(git branch --no-merged main | wc -l | tr -d ' ')"
 ok "fixture : 6 branches no-merged au sens naïf (le mensonge est en place)" "[ \"$N_NAIVE\" = 6 ]"
 
-OUT="$(bash "$CHECK" main)"
+# `--full` : depuis le portier (fiche 0088), le mode par défaut est `--gate` (bloc
+# machine). Les assertions ci-dessous portent sur le rendu HUMAIN, inchangé.
+OUT="$(bash "$CHECK" --full main)"
+# ... et le gate doit dire la MÊME chose : une seule collecte, deux rendus. Cette
+# assertion croisée est ce qui empêche les deux vues de diverger silencieusement.
+GATE="$(bash "$CHECK" --gate main)"
 
 echo "Cas 1-3 (absorbées) :"
 ok "feat/absorbee classée ABSORBÉE"          "echo \"\$OUT\" | grep -A6 'ABSORBÉES' | grep -q 'feat/absorbee '"
@@ -76,6 +81,11 @@ ok "feat/revert-reel signalée RÉELLE (blob pré-fourche ≠ preuve)" \
 ok "feat/revert-reel PAS dans les absorbées" "! echo \"\$OUT\" | grep -A12 'ABSORBÉES' | grep -q 'feat/revert-reel'"
 ok "feat/blob-reutilise signalée RÉELLE (contenu dupliqué du vieil historique)" \
    "echo \"\$OUT\" | grep -A8 'NON livré' | grep -q 'feat/blob-reutilise'"
+
+echo "Cohérence gate ↔ full (une seule collecte, deux rendus) :"
+ok "le gate compte 3 réelles et 3 absorbées"  "echo \"\$GATE\" | grep -q 'branch_real=3 branch_absorbed=3'"
+ok "le gate cite les 3 réelles"               "for b in feat/reelle feat/revert-reel feat/blob-reutilise; do echo \"\$GATE\" | grep -q \"branch REAL \$b \" || exit 1; done"
+ok "le gate ne classe aucune réelle en ABSORBED" "! echo \"\$GATE\" | grep 'branch ABSORBED' | grep -qE 'feat/(reelle|revert-reel|blob-reutilise)'"
 
 echo "Read-only :"
 ok "le script n'a rien modifié (6 branches toujours là, working tree propre)" \

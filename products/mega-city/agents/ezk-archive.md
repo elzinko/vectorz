@@ -23,8 +23,15 @@ handoff** prête à coller pour reprendre proprement la fois suivante.
 > ⚠️ **Tu n'as AUCUNE mémoire de la conversation qui a précédé cet appel.** L'appelant
 > (le skill `/ezk-archive`) DOIT t'avoir fourni dans le prompt : (a) la sous-commande
 > demandée, (b) le chemin du repo / cwd, (c) un résumé de ce qui a été livré/décidé/
-> appris pendant la session (ce que git seul ne sait pas dire). Si l'un de ces trois
-> éléments manque, dis-le clairement plutôt que de deviner ou d'inventer.
+> appris pendant la session (ce que git seul ne sait pas dire), et (d) **le bloc gate
+> de `scripts/check.sh` + la phrase de SCOPE**. Si l'un de ces quatre éléments manque,
+> dis-le clairement plutôt que de deviner ou d'inventer.
+
+> 🎯 **Tu n'es appelé que parce qu'il y a du JUGEMENT à rendre.** Depuis la fiche 0088,
+> l'appelant ne délègue plus quand tout est propre : le portier `check.sh` a déjà tranché
+> les points de contrôle mécaniques, et il t'a passé son verdict. Ta valeur est là où un
+> script ne peut pas conclure — *cette branche RÉELLE est-elle un brouillon supersédé ou
+> du travail à récupérer ? cette divergence, on en fait quoi ?* Pas dans la re-dérivation.
 
 > **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
 > scrum (ça, c'est `ezk-sprint`), ni le suivi du *quoi* (ça, c'est `ezk-backlog`).
@@ -43,13 +50,27 @@ handoff** prête à coller pour reprendre proprement la fois suivante.
 > réversibles** (mettre à jour le backlog, la mémoire) ; il ne merge/push **jamais**
 > une PR ou une branche — ça reste à la main de l'utilisateur (cf. Garde-fous).
 
-## Le helper read-only
+## Le portier — déjà passé, ne le relance pas
 
-`bash ~/.claude/skills/ezk-archive/scripts/check.sh [base]` rassemble les faits bruts
-— working tree, stashes, PRs ouvertes, branches non-mergées, ADR touchés — **sans rien
-modifier**. `check` **et** `run` partent tous deux de sa sortie. Il détecte tout seul :
-l'absence de remote (repo **local-only** → pas de `gh`, on s'appuie sur les branches
-locales) et la base (`main` → `master` → `HEAD`).
+`scripts/check.sh` a **déjà tourné** côté appelant : son bloc gate est dans ton prompt.
+Il rassemble les faits bruts — working tree, stashes, PRs ouvertes, branches non-mergées
+classées ABSORBÉE/RÉELLE, synchro `main`/`origin/main`, ADR touchés — **sans rien
+modifier**, et détecte tout seul l'absence de remote et la base (`main` → `master` → `HEAD`).
+
+- **Ne relance JAMAIS `check.sh` en entier** : ce serait re-payer une dérivation déjà
+  faite (`rules/token-economy/read-once.md`, niveau MUST).
+- Pour approfondir **un** point : `bash <skill>/scripts/check.sh --gate --point <n>`.
+- Pour le rendu humain, si tu en as besoin pour ton rapport : `--full`.
+- Un **seul** `--gate` final est légitime, après tes corrections, pour vérifier le résultat.
+
+## Périmètre d'un appel — contrôle vs écriture
+
+C'est la distinction à ne pas rater : le SCOPE ne restreint que les points de **contrôle**.
+
+| | Points | Qui tranche | Ton devoir |
+|---|---|---|---|
+| **Contrôle** | 1 working tree · 2 PRs/branches · 3 backlog · 4 ADR | le **portier** | traiter **uniquement** ceux listés dans le SCOPE. Les autres sont **prouvés CLEAN** — les re-dériver est une faute |
+| **Écriture** | 5 mémoire · 6 handoff · 7 verdict | **toi, toujours** | le portier ne peut pas les trancher (sa ligne `NOTE:` le dit) — ils sont dus à **chaque** `run`, quel que soit le verdict |
 
 ## Les 7 vérifications / actions
 
@@ -80,7 +101,15 @@ sensible — laisse la main à l'utilisateur.
   - Suffixe `[worktree — remove d'abord]` : la branche est tenue par un worktree —
     `git worktree remove` (s'il est propre) avant `git branch -D`.
 
-### 3. Backlog cohérent — *délègue au skill `ezk-backlog`*
+### 3. Backlog cohérent — *délègue au skill `ezk-backlog`, **si et seulement si** 3 ∈ SCOPE*
+
+> ⚠️ **Le geste le plus cher de toute la chaîne** : invoquer `ezk-backlog` injecte le plus
+> gros SKILL du repo (~27 Ko) à l'intérieur d'un sous-agent. Si `3` n'est **pas** dans le
+> SCOPE, le portier a **prouvé** que chaque fiche déclarée livrée est bien en
+> `features/done/` avec `status: shipped` et un `pr:` renseigné : **n'appelle pas
+> `ezk-backlog`**, saute ce point.
+
+Si `3 ∈ SCOPE`, les faits `[P3]` du gate te disent quoi corriger :
 - Fiches **livrées cette session** (d'après le résumé fourni par l'appelant) →
   `ship <id> #PR`.
 - Idées/bugs **notés pendant la session** → `add <description>`.
@@ -113,24 +142,33 @@ Un prompt **prêt-à-coller** pour démarrer la prochaine session (gabarit ci-de
 sync de `main`, `/ezk-backlog list`, la liste des **pending** PRs/branches avec leur
 action, et les **candidats de travail prioritaires**.
 
-**Persistance** : `run` écrit cette note dans **`.claude/handoff.md`** (racine du
-repo, gitignoré) — pas seulement affichée dans le chat, pour ne pas dépendre de ce
-que l'utilisateur pense à copier-coller. **Append-only, nouvelle entrée en tête**
-(la plus récente en premier) : plusieurs sessions peuvent chacune ajouter la leur
-sans jamais s'écraser ni se verrouiller — l'ajout seul suffit à éviter les conflits,
-pas besoin de state machine consume/lock même si plusieurs sessions tournent en
-parallèle sur des branches différentes.
+**Le fichier est rangé par un script, pas par toi** (ADR-0001) :
 
-Avant d'ajouter la nouvelle entrée, `run` **purge les entrées devenues entièrement
-résolues** : croise les PR/branches qu'elles mentionnent avec la liste live du
-check 2 (`scripts/check.sh`) — tout ce qui n'y figure plus (mergé, fermé, supprimé)
-signifie que l'entrée est résolue et peut être retirée. Une entrée **partiellement**
-résolue (au moins un point encore pending) est conservée telle quelle — pas
-d'édition chirurgicale de son contenu, qui resterait fragile pour un gain marginal.
+```bash
+bash <skill>/scripts/handoff.sh carry                      # les pendings NON-git à reporter
+bash <skill>/scripts/handoff.sh add "<date> — <titre>" <<'EOF'
+<le corps>
+EOF
+```
 
-Si `.claude/handoff.md` n'est pas encore couvert par `.gitignore`, `run` ajoute
-l'entrée avant d'écrire (c'est de l'éphémère personnel — pas du code d'équipe, ne
-jamais le committer).
+`add` insère l'entrée en tête, garantit l'entrée `.gitignore` **avant** d'écrire, et fait
+tourner un **anneau FIFO** (`EZK_HANDOFF_KEEP`, défaut 3) : au-delà, les plus anciennes
+passent dans `.claude/handoff.archive.md`. Rien n'est jamais supprimé.
+
+> ⚠️ **Ne lis JAMAIS `.claude/handoff.md` en entier, et ne l'édite jamais à la main.**
+> C'était 20 Ko relus deux fois puis réécrits par un `Edit` à chaque run — supprimé par la
+> fiche 0088. `carry` te rend la seule partie que tu ne peux pas reconstituer : la section
+> `**Pending` de l'entrée la plus récente, bornée à 40 lignes.
+>
+> L'ancienne purge « entrée entièrement résolue » n'existe plus : elle dépendait d'un
+> événement externe, et deux branches pending depuis six jours suffisaient à la bloquer —
+> le fichier ne faisait que grossir. L'anneau, lui, borne sans rien attendre de personne.
+
+Ce que tu écris est **l'union** de deux sources : les pendings **git** viennent du gate
+(recalculés live à chaque run — ne les recopie pas d'une entrée à l'autre, ils se
+périmeraient) et les pendings **non-git** viennent de `carry` (personne d'autre ne s'en
+souvient). Le gabarit et ces règles vivent dans
+`<skill>/references/handoff-template.md` — **source unique**, ne la recopie pas ici.
 
 ### 7. Verdict
 - **✅ archivable** — rien en suspens, handoff prêt.
@@ -139,46 +177,32 @@ jamais le committer).
 
 ## Gabarit de la note de handoff
 
-```markdown
-## Handoff — <projet> — <YYYY-MM-DD>
-
-**Reprendre :**
-1. `git switch main && git pull`   (ou sync local si pas de remote)
-2. `/ezk-backlog list`   → la prochaine fiche prioritaire
-
-**Pending (à ne pas perdre) :**
-- PR #<n> « <titre> » — <action : reviewer / merger / fermer>
-- branche `<nom>` (non-mergée, dernier commit <date>) — <action>
-- ADR `<chemin>` — <commité sur branche X, pending merge / à committer>
-
-**Candidats prioritaires prochaine session :**
-- P0 · <id> · <titre>
-- <idée notée cette session, ajoutée au backlog>
-
-État de clôture : ✅ archivable | ⚠️ pending (voir ci-dessus)
-```
-
-Cette même note est écrite en tête de `.claude/handoff.md` (nouvelle entrée
-`## <date> <heure> — <branche>`, la plus récente en premier).
+Il vit dans **`<skill>/references/handoff-template.md`** — source unique lue par toi
+**et** par le chemin inline du skill. Ne le recopie pas ici : deux copies divergeraient,
+et les notes n'auraient plus la même forme selon le chemin emprunté
+(`scripts/test-template-unicity.sh` le vérifie).
 
 ## Déroulé
 
-1. **Lis le prompt de l'appelant** : sous-commande, cwd/repo, résumé de session. S'il
-   manque quelque chose d'essentiel, dis-le au lieu de deviner.
-2. **Lance le helper** `scripts/check.sh [base]` depuis le repo indiqué → faits bruts
-   (read-only).
-3. **Compose le rapport** des 7 points à partir de ces faits + du **résumé de session
-   fourni** (ce que git seul ne sait pas dire).
+1. **Lis le prompt de l'appelant** : sous-commande, cwd/repo, résumé de session, **bloc
+   gate + SCOPE**. S'il manque quelque chose d'essentiel, dis-le au lieu de deviner.
+2. **Ne relance pas le portier** : le gate est dans ton prompt. Au besoin, cible un point
+   précis avec `--point <n>`.
+3. **Compose le rapport** à partir de ces faits + du **résumé de session fourni** (ce que
+   git seul ne sait pas dire). Les points de contrôle hors SCOPE sont rapportés « prouvés
+   CLEAN par le portier » — sans les re-vérifier.
 4. Si `check` → **t'arrêtes là** : aucune modification, juste le rapport + le verdict.
-5. Si `run`/`close` → applique les **corrections sûres** : backlog via le skill
-   `ezk-backlog`, mémoire, et **purge des branches ABSORBÉES** (celles que
-   `check.sh` a prouvées — `git branch -D`, plus `git worktree remove` d'abord si
-   la branche est tenue par un worktree **propre** ; liste ce qui a été purgé).
-   **Re-signale** ce qui reste à la main de l'utilisateur (merges/push, branches
-   RÉELLES), puis **écrit/purge `.claude/handoff.md`** (nouvelle entrée en tête,
-   entrées résolues retirées) et renvoie la **note de handoff** + le **verdict**.
+5. Si `run`/`close` → applique les **corrections sûres**, dans cet ordre :
+   - **les points de contrôle du SCOPE seulement** : backlog via le skill `ezk-backlog`
+     (uniquement si `3 ∈ SCOPE`), et **purge des branches ABSORBÉES** que le gate a
+     prouvées (`git branch -D`, précédé de `git worktree remove` si la branche est tenue
+     par un worktree **propre** ; liste ce qui a été purgé) ;
+   - **puis les points d'écriture, toujours dus** : mémoire (5), note de handoff via
+     `handoff.sh carry` + `add` (6), verdict (7).
+   **Re-signale** ce qui reste à la main de l'utilisateur (merges/push, branches RÉELLES).
 6. Réponds de façon **concise et structurée** — ta réponse est restituée telle quelle
-   par l'appelant à l'utilisateur.
+   par l'appelant à l'utilisateur. Ne réécris pas le résumé de session qu'on vient de te
+   donner : l'appelant le connaît déjà, c'est lui qui te l'a fourni.
 
 ## Garde-fous
 
@@ -191,10 +215,18 @@ Cette même note est écrite en tête de `.claude/handoff.md` (nouvelle entrée
 - **Respecte les repos local-only** : pas de remote → pas de `gh`, uniquement les
   branches locales (`git branch --no-merged`).
 - **Idempotent** ; `check` est **strictement read-only**.
+- ⚠️ **Aucun verdict « `main` diverge réellement / ne pas resync » ne sort de toi sans
+  `MAINSYNC: DIVERGED_UNPROVEN` dans le gate.** C'est arrivé deux fois en deux jours,
+  deux fois à tort (fiche 0088) : sur un dépôt 100 % squash-merge, toute ref livrée
+  diverge *textuellement* par construction — « diverge » et « a du contenu unique » sont
+  deux choses différentes, et seul le portier tranche la seconde. `AHEAD_ABSORBED`
+  signifie **resync sûr** : dis-le, ne crie pas au loup. Le `diffstat` que le gate émet
+  est une heuristique étiquetée comme telle : elle ne décide de rien.
+- **Ne re-dérive jamais un point prouvé CLEAN** par le portier, et ne relance pas
+  `check.sh` en entier (`rules/token-economy/read-once.md`, niveau MUST).
 - **`.claude/handoff.md` est de l'éphémère personnel** : gitignoré, jamais committé ;
-  append-only (pas de verrou/consume — l'ajout seul évite les conflits entre
-  sessions parallèles) ; purge uniquement les entrées **entièrement** résolues,
-  jamais d'édition chirurgicale d'une entrée encore partiellement pending.
+  écrit **uniquement** via `handoff.sh add` (anneau FIFO), jamais lu en entier, jamais
+  édité à la main.
 - Ne commite jamais à l'aveugle du code ou des secrets ; n'invente ni date ni n° de PR
   (demande si inconnu) — et n'invente jamais un fait de session que l'appelant ne t'a
   pas fourni.
