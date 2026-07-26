@@ -28,6 +28,22 @@ function fail(message: string): never {
   process.exit(2);
 }
 
+/**
+ * Le fichier est-il dans l'index git du projet ? `git ls-files --error-unmatch`
+ * sort 0 si suivi, non-zéro sinon — y compris quand la cible n'est pas un dépôt
+ * git du tout, ce qui est le bon comportement (rien à détracker).
+ */
+function isTrackedByGit(root: string, relativePath: string): boolean {
+  try {
+    execFileSync('git', ['-C', root, 'ls-files', '--error-unmatch', relativePath], {
+      stdio: 'ignore',
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const arg = process.argv[2];
 if (!arg || arg === '-h' || arg === '--help') {
   console.log('usage : pnpm --dir products/mega-city supervision:link <chemin-du-projet>');
@@ -60,8 +76,25 @@ try {
 
 const paths = { pnpm, megaCityDir, serverEntry, projectRoot };
 
-// 1. .mcp.json — fusion non-destructive
+// 0. Refus si le .mcp.json de la cible est SUIVI par git (finding Codex P1, PR #54).
+// Un `.gitignore` ne s'applique jamais à un fichier déjà dans l'index : y ajouter
+// `/.mcp.json` ne détracke rien. On écrirait donc des chemins absolus de machine
+// dans un fichier suivi — commitable, cassé chez les autres — tout en ANNONÇANT
+// qu'il est ignoré. Le cas n'est pas exotique : versionner son `.mcp.json` est la
+// pratique normale pour partager un serveur MCP d'équipe. Mieux vaut refuser et
+// dire quoi faire que rassurer à tort (ADR-034).
 const mcpPath = join(projectRoot, '.mcp.json');
+if (isTrackedByGit(projectRoot, '.mcp.json')) {
+  fail(
+    `.mcp.json est SUIVI par git dans ce projet : ${mcpPath}\n` +
+      "  La règle d'ignore n'a aucun effet sur un fichier déjà indexé — le branchement\n" +
+      '  écrirait des chemins absolus de TA machine dans un fichier versionné.\n' +
+      '  Détracke-le, puis relance :\n' +
+      `    git -C "${projectRoot}" rm --cached .mcp.json\n` +
+      '  (ou versionne-le sciemment, mais alors ne branche pas la supervision ici.)',
+  );
+}
+
 let existing: unknown = {};
 if (existsSync(mcpPath)) {
   try {

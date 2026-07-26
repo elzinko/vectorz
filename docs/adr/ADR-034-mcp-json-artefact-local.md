@@ -68,6 +68,14 @@ Quatre corollaires :
    dans chaque projet qu'il branche** (`/.mcp.json`, à côté de `.supervision/`). Sans ça,
    brancher un cobaye y laissait un `.mcp.json` machine-spécifique commitable — très
    exactement le mal que cet ADR prétend empêcher, reproduit chez le voisin.
+   **Second amendement, même jour (2ᵉ passe Codex, P1)** : un `.gitignore` ne s'applique
+   **jamais** à un fichier déjà dans l'index. Là où un projet **versionne** son
+   `.mcp.json` — la pratique normale pour partager un serveur MCP d'équipe — poser la
+   règle ne détracke rien : on écrirait des chemins de machine dans un fichier suivi tout
+   en **annonçant** qu'il est ignoré. `supervision:link` **refuse donc de brancher** un
+   projet dont le `.mcp.json` est suivi, et indique le `git rm --cached`. La portée de
+   cet ADR s'arrête là : il décide du sort de **notre** artefact de branchement, il ne
+   prétend pas qu'un `.mcp.json` versionné soit une erreur en soi.
 2. **La racine reste explicite**, donc `provenance: 'explicit'`, puis normalisation
    worktree ADR-019 inchangée. On ne dépend jamais du cwd, ni de `CLAUDE_PROJECT_DIR`.
 3. **Le worktree redevient sain** : chaque worktree a *son* `.mcp.json` non versionné,
