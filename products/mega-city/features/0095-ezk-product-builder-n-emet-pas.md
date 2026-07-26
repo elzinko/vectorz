@@ -5,7 +5,7 @@ type: bug
 priority: P1
 epic:
 status: todo
-ready:
+ready: 2026-07-26
 pr:
 created: 2026-07-25
 ---
