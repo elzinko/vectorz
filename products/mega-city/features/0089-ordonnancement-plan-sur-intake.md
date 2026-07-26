@@ -6,8 +6,8 @@ priority: P0
 epic:
 depends: []
 labels: [enabler]
-status: idea
-ready:
+status: todo
+ready: 2026-07-26
 pr:
 created: 2026-07-25
 ---
@@ -53,6 +53,24 @@ manquant.
 - [ ] `review` liste les écarts entre `PLAN.md` et l'état réel.
 - [ ] `PLAN.md` reste curé (LLM rédige, PO arbitre), référencé par le README.
 - [ ] Le gate `ready` exige un `depends:` résolu (aval technique).
+
+## Décision de sprint (2026-07-26) — scope POC
+
+Gate `ready` validé par le PO (checkpoint `/ezk-product-builder`, la douleur venait d'être
+vécue en direct : le builder lancé nu tirait `0041` au lieu de la tête de plan `mc-0094`).
+
+**POC = le pain-killer d'abord** (POC-first) : rendre **l'intake conscient de `PLAN.md`**.
+- `next --ready-only` lit `features/PLAN.md`, calcule la **tête de plan** (1re fiche actionnable,
+  non-`shipped`, dans l'ordre de `PLAN.md`) et :
+  - la renvoie/pointe quand elle est `ready` ;
+  - **signale « tête bloquée »** (nomme la tête à groomer) au lieu de renvoyer silencieusement une
+    fiche `ready` de rang inférieur ;
+  - l'affiche à côté du gate `ready`.
+- Vaut pour l'usage racine **et** mega-city (skill `ezk-backlog` partagé).
+
+**Reste = polish (fiche complète, sprint ultérieur)** : proposition de placement à `add` (AC1),
+placement multi-rôle, `review` signale la dérive de `PLAN.md` (AC2), gate exige `depends:` résolu
+(AC4). Non bloquants pour tuer la douleur d'aujourd'hui.
 
 ## Notes
 

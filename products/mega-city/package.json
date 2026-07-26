@@ -9,7 +9,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lawgiver": "tsx bin/lawgiver.ts",
-    "supervision:link": "tsx bin/supervision-link.ts"
+    "supervision:link": "tsx bin/supervision-link.ts",
+    "plan:order": "tsx bin/plan-order.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
