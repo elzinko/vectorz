@@ -9,7 +9,8 @@
  * Réutilise `plan:order` (mc-0089) pour l'ordre et la résolution mc-/racine.
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { isAbsolute, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { type PlanCard, crossBacklogHead } from '../src/backlog/plan-head.js';
 import { parsePlanOrder } from '../src/backlog/plan-order.js';
 
@@ -65,11 +66,15 @@ if (arg === '-h' || arg === '--help') {
   process.exit(0);
 }
 
-// Racine du dépôt = dossier d'invocation (sous `pnpm --dir`, le cwd du script
-// est le package ; INIT_CWD garde l'endroit où la commande a été tapée).
-const root = process.env.INIT_CWD ?? process.cwd();
-const planArg = arg ?? 'features/PLAN.md';
-const planPath = isAbsolute(planArg) ? planArg : resolve(root, planArg);
+// Racine du dépôt dérivée de l'EMPLACEMENT du script (products/mega-city/bin/ →
+// 3 niveaux au-dessus), PAS du cwd : ainsi, lancé depuis products/mega-city, on
+// scanne quand même les bons backlogs (revue Codex #53). Le chemin du PLAN, lui,
+// reste résolu contre le dossier d'invocation (INIT_CWD) pour qu'un chemin
+// relatif vise le bon fichier.
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+const invokedFrom = process.env.INIT_CWD ?? process.cwd();
+const planArg = arg ?? join(root, 'features/PLAN.md');
+const planPath = isAbsolute(planArg) ? planArg : resolve(invokedFrom, planArg);
 if (!existsSync(planPath)) fail(`PLAN.md introuvable : ${planPath}`);
 
 const planIds = parsePlanOrder(readFileSync(planPath, 'utf8'));
