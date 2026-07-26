@@ -62,6 +62,23 @@ ok "borné à 40 lignes"                    "[ \"\$(echo \"\$CARRY\" | wc -l | t
 ok "carry ne modifie rien (read-only)" \
    "M1=\$(mtime .claude/handoff.md); bash \"\$HANDOFF\" carry >/dev/null; M2=\$(mtime .claude/handoff.md); [ \"\$M1\" = \"\$M2\" ] && echo \"\$M1\" | grep -qE '^[0-9]+\$'"
 
+echo "H10 — carry saute les entrées SANS section Pending (trouvé en dogfoodant) :"
+# Toutes les entrées n'ont pas de section Pending : une note courte de correction n'en a
+# pas. Si `carry` s'arrêtait à la première entrée, il rendait du vide et TOUS les reports
+# non-git de l'entrée précédente étaient perdus au tour suivant — dans le cas réel, deux
+# décisions PO en attente sur des branches, plus une fiche reportée.
+bash "$HANDOFF" add "2026-05-01 — note de correction sans section Pending" <<'EOF' >/dev/null
+**Résout** un point de l'entrée précédente. Rien d'autre à signaler.
+EOF
+CARRY2="$(bash "$HANDOFF" carry)"
+ok "carry remonte la section Pending la plus récente QUI EXISTE" \
+   "echo \"\$CARRY2\" | grep -q 'report non-git numéro 5'"
+ok "…et ne rend pas du vide à cause de l'entrée sans Pending" "[ -n \"\$CARRY2\" ]"
+ok "il ne remonte pas AUSSI une section plus ancienne (une seule section rendue)" \
+   "[ \"\$(echo \"\$CARRY2\" | grep -c '^\*\*Pending')\" = 1 ]"
+ok "il ne déborde pas sur le corps de l'entrée qui la contient" \
+   "! echo \"\$CARRY2\" | grep -q 'Fait cette session'"
+
 echo "H3 — carry sur fichier absent : silencieux, exit 0 :"
 mkdir -p "$TMP/vide" && cd "$TMP/vide" && git init -q -b main v && cd v
 git config user.email t@t && git config user.name t && git config commit.gpgsign false
@@ -73,11 +90,16 @@ ok "path crée le fichier avec son en-tête" \
 cd "$TMP/repo"
 
 echo "H4 — append-only : deux corps identiques font deux entrées :"
-BEFORE="$(grep -c '^## ' .claude/handoff.md)"
+# Assertion en DELTA, pas en total absolu : un total codé en dur se décale dès qu'un cas
+# est insété plus haut dans le fichier, et l'échec pointe alors le mauvais coupable.
+total_entries() { echo $(( $(grep -c '^## ' .claude/handoff.md 2>/dev/null || echo 0) \
+                         + $(grep -c '^## ' .claude/handoff.archive.md 2>/dev/null || echo 0) )); }
+BEFORE="$(total_entries)"
 body 9 | bash "$HANDOFF" add "2026-01-09 — doublon" >/dev/null
 body 9 | bash "$HANDOFF" add "2026-01-09 — doublon" >/dev/null
 ok "toujours 3 vivantes (l'anneau tient)"  "[ \"\$(grep -c '^## ' .claude/handoff.md)\" = 3 ]"
-ok "les deux ont bien été écrites (archive à 4)" "[ \"\$(grep -c '^## ' .claude/handoff.archive.md)\" = 4 ]"
+ok "les deux entrées identiques ont bien été écrites (+2, aucune fusion silencieuse)" \
+   "[ \$(( \$(total_entries) - BEFORE )) = 2 ]"
 
 echo "H6 — stationnaire : 20 ajouts de 60 lignes ne font pas grossir le fichier vivant :"
 for i in $(seq 1 20); do
