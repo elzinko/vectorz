@@ -22,7 +22,12 @@ ok() { if eval "$2"; then echo "  ok — $1"; else echo "  ÉCHEC — $1"; FAIL=
 mk() { # $1=nom → crée $TMP/$1/{origin.git,work} et cd dans work
   local n="$1"
   mkdir -p "$TMP/$n" && cd "$TMP/$n"
-  git init -q --bare origin.git
+  # `-b main` explicite : sans lui, le bare hérite de `init.defaultBranch` de la MACHINE
+  # (« master » par défaut, notamment sur les runners GitHub), son HEAD pointe une ref qui
+  # ne naîtra jamais, et le clone final ne sort aucune branche — la fixture teste alors
+  # un repo sans `main` et tous les cas tombent en MAINSYNC: NA. Le test doit être
+  # hermétique : il ne lit AUCUNE config git globale (cf. le commentaire de ci.yml).
+  git init -q --bare -b main origin.git
   git clone -q origin.git seed 2>/dev/null && cd seed   # 2>/dev/null : « cloned an empty repository »
   git config user.email t@t && git config user.name t && git config commit.gpgsign false
   printf 'base\n' > a.txt && git add . && git commit -qm "base"

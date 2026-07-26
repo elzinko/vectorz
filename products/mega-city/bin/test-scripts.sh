@@ -6,6 +6,14 @@
 # restent sous `pnpm test` (vitest) : ce runner ne couvre que les scripts shell.
 set -uo pipefail
 
+# HERMÉTICITÉ — on neutralise la config git de la MACHINE avant de lancer les suites.
+# Sans ça, un test qui dépend d'un réglage local (le cas vécu : `init.defaultBranch`, à
+# « main » sur le poste du dev mais « master » sur les runners GitHub) passe en local et
+# ne casse qu'en CI. Chaque fixture pose déjà sa propre identité git en LOCAL, donc rien
+# ici ne dépend d'une config utilisateur : le défaut doit se voir dès la machine du dev.
+export GIT_CONFIG_GLOBAL=/dev/null
+export GIT_CONFIG_SYSTEM=/dev/null
+
 MC="$(cd "$(dirname "$0")/.." && pwd)"
 SUITES=(
   "skills/ezk-archive/scripts/test-check-branches.sh"    # fiche 0076 — classification des branches
