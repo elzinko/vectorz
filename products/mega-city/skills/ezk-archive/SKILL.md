@@ -112,6 +112,15 @@ qui ne demandent aucun jugement.
      …
      EOF
      ```
+   - **8. Archive session** — si `SPRINT.md` existe à la racine **et** a du contenu réel
+     (pas un stub vide) :
+     - copier vers `docs/sessions/YYYY-MM-DD-<slug>.md` (créer `docs/sessions/` si besoin ;
+       en cas de collision de nom, suffixer `-2`, `-3`… — **ne jamais écraser**) ;
+     - proposer le commit : `docs(sessions): archive session YYYY-MM-DD <slug>`
+       (ne pas committer à l'aveugle — laisser la main à l'utilisateur) ;
+     - **laisser `SPRINT.md` en place** (scratch éphémère du sprint) ;
+     - le handoff **pointe** vers le chemin d'archive (`**Archive session :** …`) —
+       **ne duplique pas** le corps de `SPRINT.md` dans la note.
 4. Rends la note + le verdict **✅ archivable** — en disant, sur `check`, que rien n'a été
    écrit et que `run` le ferait.
 
@@ -127,7 +136,8 @@ et un prompt **autonome** contenant :
 
 > `SCOPE : traite les points de contrôle <liste>. Les autres points de contrôle sont`
 > `PROUVÉS CLEAN par le portier — les re-dériver est une faute (token-economy/read-once).`
-> `Les points d'écriture 5 (mémoire), 6 (handoff), 7 (verdict) sont TOUJOURS de ton ressort.`
+> `Les points d'écriture 5 (mémoire), 6 (handoff), 7 (verdict), 8 (archive session)`
+> `sont TOUJOURS de ton ressort.`
 
 Puis **restitue la réponse de l'agent telle quelle**.
 
@@ -138,9 +148,12 @@ Puis **restitue la réponse de l'agent telle quelle**.
   la note de handoff renvoie vers `list`.
 - **[`ezk-sprint`](../ezk-sprint/)** : complémentaire — le sprint *ouvre/déroule*,
   ezk-archive *clôt*. Typiquement invoqué **après** le checkpoint de fin de sprint.
+  À la clôture `run`/`close`, archive un snapshot de `SPRINT.md` dans
+  `docs/sessions/` (voir `docs/sessions/README.md` du projet).
 - **[`ezk-commits`](../ezk-commits/)** : tout commit produit suit les Conventional Commits.
 - **`ezk-product-builder`** : à ses pauses inter-sprint, il **rappelle** que
-  `/ezk-archive` est disponible — il ne réimplémente rien du handoff.
+  `/ezk-archive` est disponible — il ne réimplémente rien du handoff ni de
+  l'archive `docs/sessions/`.
 
 ## Garde-fous (skill)
 

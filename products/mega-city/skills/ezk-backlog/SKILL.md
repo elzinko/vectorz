@@ -66,7 +66,8 @@ backlog dans un fichier **non-commité** (scratch local à un worktree). Donc : 
 de suivi et son index sont **commités**, la référence vit sur `main`, et on lit « la
 prochaine feature » depuis là (visible depuis n'importe quel worktree). Un éventuel
 « sprint en cours » (genre `SPRINT.md`) peut rester éphémère par-branche — **mais la
-liste des features, elle, est sur main**.
+liste des features, elle, est sur main**. Les comptes-rendus de session **commités**
+vivent dans `docs/sessions/` (snapshot à la clôture via `ezk-archive run`).
 
 ## Layout par défaut
 

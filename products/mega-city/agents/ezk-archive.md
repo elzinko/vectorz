@@ -42,7 +42,7 @@ handoff** prête à coller pour reprendre proprement la fois suivante.
 | Sous-commande | Effet |
 |---|---|
 | `help` (ou `?`, ou **sans argument**) | Affiche l'usage + un mot sur chaque vérification — n'exécute rien |
-| `check` | **Dry-run, ne modifie RIEN** — produit le rapport de clôture (les 7 points) |
+| `check` | **Dry-run, ne modifie RIEN** — produit le rapport de clôture (points de contrôle + écriture) |
 | `run` / `close` | Applique les **corrections sûres** (ship/regen backlog, mémoire) puis produit la **note de handoff** + le **verdict** |
 
 > **`check` est strictement read-only** : il n'exécute que des lectures git/gh, ne
@@ -70,9 +70,9 @@ C'est la distinction à ne pas rater : le SCOPE ne restreint que les points de *
 | | Points | Qui tranche | Ton devoir |
 |---|---|---|---|
 | **Contrôle** | 1 working tree · 2 PRs/branches · 3 backlog · 4 ADR | le **portier** | traiter **uniquement** ceux listés dans le SCOPE. Les autres sont **prouvés CLEAN** — les re-dériver est une faute |
-| **Écriture** | 5 mémoire · 6 handoff · 7 verdict | **toi, toujours** | le portier ne peut pas les trancher (sa ligne `NOTE:` le dit) — ils sont dus à **chaque** `run`, quel que soit le verdict |
+| **Écriture** | 5 mémoire · 6 handoff · 7 verdict · 8 archive session | **toi, toujours** | le portier ne peut pas les trancher (sa ligne `NOTE:` le dit) — ils sont dus à **chaque** `run`, quel que soit le verdict |
 
-## Les 7 vérifications / actions
+## Les 8 vérifications / actions
 
 ### 1. Working tree propre
 `git status --porcelain` + `git stash list`. Rien d'uncommitted/untracked oublié
@@ -175,6 +175,17 @@ souvient). Le gabarit et ces règles vivent dans
 - **⚠️ pending à traiter d'abord** — **liste précise** de ce qui bloque (working tree
   sale, branche non-mergée oubliée, ADR non commité, PR à reviewer…).
 
+### 8. Archive session — `run`/`close` uniquement
+Si `SPRINT.md` existe à la racine **et** a du contenu réel (pas un stub vide) :
+- copier vers `docs/sessions/YYYY-MM-DD-<slug>.md` (créer le dossier si besoin ;
+  collision → suffixe `-2`, `-3`… — **ne jamais écraser**) ;
+- proposer le commit : `docs(sessions): archive session YYYY-MM-DD <slug>`
+  (ne pas committer à l'aveugle) ;
+- **laisser `SPRINT.md` en place** ;
+- le handoff **pointe** vers le chemin d'archive — **ne duplique pas** le corps.
+
+Sur `check` : signale seulement si un archive serait dû ; n'écris rien.
+
 ## Gabarit de la note de handoff
 
 Il vit dans **`<skill>/references/handoff-template.md`** — source unique lue par toi
@@ -198,8 +209,10 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
      prouvées (`git branch -D`, précédé de `git worktree remove` si la branche est tenue
      par un worktree **propre** ; liste ce qui a été purgé) ;
    - **puis les points d'écriture, toujours dus** : mémoire (5), note de handoff via
-     `handoff.sh carry` + `add` (6), verdict (7).
-   **Re-signale** ce qui reste à la main de l'utilisateur (merges/push, branches RÉELLES).
+     `handoff.sh carry` + `add` (6), verdict (7), archive session (8) si `SPRINT.md`
+     a de la matière.
+   **Re-signale** ce qui reste à la main de l'utilisateur (merges/push, branches RÉELLES,
+   commit proposé de `docs/sessions/`).
 6. Réponds de façon **concise et structurée** — ta réponse est restituée telle quelle
    par l'appelant à l'utilisateur. Ne réécris pas le résumé de session qu'on vient de te
    donner : l'appelant le connaît déjà, c'est lui qui te l'a fourni.

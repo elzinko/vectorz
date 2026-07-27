@@ -28,6 +28,8 @@ silencieusement, ce que `test-template-unicity.sh` interdit.
 - P0 · <id> · <titre>
 - <idée notée cette session, ajoutée au backlog>
 
+**Archive session :** `docs/sessions/<fichier>.md` (si snapshot pris à la clôture)
+
 État de clôture : ✅ archivable | ⚠️ pending (voir ci-dessus)
 ```
 
@@ -58,8 +60,10 @@ fichier sans jamais perdre un report.
 
 ### 3. Ce qui n'a pas sa place ici
 
-- **Les post-mortems.** Une entrée est une passation, pas un compte-rendu : ce qui a été
-  appris va en mémoire projet ou dans un ADR, pas ici (les entrées de 120 lignes de
+- **Les post-mortems / comptes-rendus de session.** Une entrée est une passation, pas un
+  journal : le récit détaillé (livré, décisions PO, notes de sprint) va dans
+  `docs/sessions/` (snapshot de `SPRINT.md` à la clôture), pas ici. Ce qui a été *appris*
+  de façon durable va en mémoire projet ou dans un ADR (les entrées de 120 lignes de
   juillet 2026 venaient de là).
 - **Ce que le repo encode déjà** : structure du code, historique git, fixes passés.
 - **Les dates relatives.** « hier », « la semaine dernière » ne veulent plus rien dire à

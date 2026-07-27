@@ -64,6 +64,9 @@ Périmètre: <borne tokens-temps>   Statut: en cours | en attente de validation
 ## Notes / décisions  (ADR courts)
 ```
 
+**Éphémère, non commité.** À la clôture de session, `/ezk-archive run` archive un
+snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
+
 ## La boucle de sprint — par feature
 
 Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
@@ -77,7 +80,8 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
 8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)). **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** (screenshots, ou courte vidéo/GIF si besoin) **dans la description de la PR** — pas seulement des fichiers orphelins dans le diff.
-9. **⛳ Checkpoint** — **STOP.** Résume + « on continue ? ».
+9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
+   puis résume + « on continue ? ».
 10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : CI verte ET revues de la PR lues et traitées** — reviewers humains **et bots** (Codex poste ses findings en commentaires inline ; une CI verte ne les couvre pas).
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
