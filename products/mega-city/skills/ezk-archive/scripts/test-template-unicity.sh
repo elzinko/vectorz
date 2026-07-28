@@ -40,6 +40,7 @@ echo "Le contrat dry-run est écrit là où il s'applique (finding Codex PR #56)
 # dépôt n'est plus un dry-run — la garde doit rester VISIBLE dans le chemin concerné.
 ok "SKILL.md conditionne l'écriture à run/close" "grep -qE 'seulement si.*la sous-commande est' \"\$SKILL\""
 ok "SKILL.md dit que check n'écrit jamais"       "grep -qE 'check. n.écrit jamais' \"\$SKILL\""
+ok "SKILL.md défaut = check (sans argument)"     "grep -qE 'Défaut = .check' \"\$SKILL\""
 
 echo
 if [ "$FAIL" = 0 ]; then echo "test-template-unicity: TOUT VERT"; else echo "test-template-unicity: ÉCHECS"; exit 1; fi

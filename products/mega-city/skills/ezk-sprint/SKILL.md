@@ -34,6 +34,42 @@ Trois invariants :
 
 ---
 
+## Trois chemins — trivial / standard / lourd
+
+La lenteur perçue est le **coût boucle LLM**, pas le bundle JS. À l'intake (étape 0),
+**choisis un chemin** et annonce-le dans `SPRINT.md` (`Chemin: trivial|standard|lourd`).
+Le contrat des gates **ne change pas** : on saute de la *cérémonie*, pas de la *preuve*
+quand la preuve s'applique.
+
+| Chemin | Quand (signaux) | Sous-agents | Gate locale (étape 5) | E2E (étape 6) | Archi / BDD / Revue |
+| --- | --- | --- | --- | --- | --- |
+| **trivial** | docs-only, typo, rename, ADR tampon, skill/markdown sans code runtime, 1 fichier ≤~30 lignes | **aucun** (porte les casquettes toi-même) | **tests unitaires / lint du package touché** si code ; **skip `act`+Docker** si aucun workflow / package compilé touché | **skip** s'il n'y a pas d'UI | skip archi, BDD formel, reviewer dédié — auto-revue courte OK |
+| **standard** | 1 feature POC, 1–3 packages, UI simple ou pas d'UI | délègue **tdd** (+ **qa** si UI ou DoD Gherkin utile) | **oui** — `ezk-ci` (`act`+Docker) | **oui** si UI | archi seulement si décision non triviale ; revue **ezk-reviewer** |
+| **lourd** | multi-packages, contrat public, sécurité, Docker/CI eux-mêmes, épic découpé | **toute** l'équipe (architect → qa → tdd → reviewer) | **oui** + attention accrue | **oui** si UI ; parcours critiques complets | archi **obligatoire** si frontière de module ; BDD Gherkin = DoD |
+
+### Règles de skip (non négociables)
+
+- **Jamais** sauter le **checkpoint** (étape 9) ni le **1 PR / feature**.
+- **Jamais** merger sans preuve locale adaptée au chemin (tests du périmètre touché au
+  minimum ; `act`+Docker dès que le chemin est `standard` ou `lourd`, ou dès qu'un
+  workflow / Dockerfile / script CI est modifié — même en trivial).
+- **E2E Playwright** : obligatoire s'il y a une **UI visible** (standard/lourd) ; interdit
+  de « compenser » un skip E2E par plus de revue texte.
+- En cas de doute entre trivial et standard → **standard**. En cas de doute entre
+  standard et lourd → **lourd**.
+- Si une gate échoue **2 fois** sur un chemin trivial → **escalade en standard** (et
+  stop & ask si ça bloque encore).
+
+### Annonce minimale (intake)
+
+```
+Chemin: trivial|standard|lourd
+Motif: <une ligne>
+Skip: <act|e2e|archi|bdd|reviewer-agent — liste ou « aucun »>
+```
+
+---
+
 ## Frontière d'autonomie — LA règle
 
 - **Autonome À L'INTÉRIEUR d'un sprint** : une fois la feature cadrée et validée, enchaîne sans redemander à chaque micro-action.
@@ -55,6 +91,7 @@ Maintiens un `SPRINT.md` à la racine du projet (crée-le s'il manque). Il **sur
 ```
 # Sprint N — <objectif>
 Périmètre: <borne tokens-temps>   Statut: en cours | en attente de validation
+Chemin: trivial | standard | lourd   Motif: <une ligne>
 
 ## Backlog  (1 ligne = 1 feature = 1 PR)
 - [ ] feat: <feature A>      <- en cours
@@ -69,16 +106,20 @@ snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
 
 ## La boucle de sprint — par feature
 
-Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
+Ordre strict. Délègue au sous-agent dédié **selon le chemin** (voir
+[Trois chemins](#trois-chemins--trivial--standard--lourd)). Saute une étape pour le
+trivial — mais **jamais** la gate locale adaptée au chemin (5), la validation E2E s'il
+y a une UI (6), ni le checkpoint (9).
 
-0. **Intake** — d'abord **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `todo`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
+0. **Intake** — d'abord choisis le **chemin** (trivial/standard/lourd) et note-le dans
+   `SPRINT.md`. Puis **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `todo`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
-3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
-4. **TDD POC** — délègue à **`ezk-tdd`** : red → green → refactor sur le cœur.
-5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
-6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
-7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
+3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable. Saute pour le trivial (DoD = checklist courte dans `SPRINT.md`).
+4. **TDD POC** — délègue à **`ezk-tdd`** : red → green → refactor sur le cœur. En trivial : implémente inline sans sous-agent.
+5. **Gate locale (pipeline)** — lance les tests **en local**, puis — **sauf chemin trivial sans touch CI/Docker** — le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte** (ou sans la gate allégée documentée du chemin trivial).
+6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel. Skip si pas d'UI.
+7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`) sauf chemin trivial (auto-revue courte). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
 8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)). **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** (screenshots, ou courte vidéo/GIF si besoin) **dans la description de la PR** — pas seulement des fichiers orphelins dans le diff.
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ».
@@ -129,9 +170,11 @@ gate est leur **trace contractuelle** (doc du kit :
 
 ## Definition of Done
 
-Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
-**E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte •
-(après validation) squash-mergée en conventional commit • branche supprimée.
+Scénarios BDD verts (ou checklist DoD en chemin trivial) • gate locale verte
+(`ezk-ci` / `act`+Docker en standard|lourd ; tests du périmètre en trivial sans touch CI) •
+**E2E Playwright vert** (si UI) • revue GO (code + sécurité ; auto-revue OK en trivial) •
+PR ouverte • (après validation) squash-mergée en conventional commit • branche
+supprimée.
 
 ## Workflow git
 

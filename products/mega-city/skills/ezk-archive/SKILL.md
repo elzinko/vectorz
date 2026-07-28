@@ -1,22 +1,24 @@
 ---
 name: ezk-archive
-argument-hint: "[help|check|run]"
+argument-hint: "[check|run|help]"
 description: >-
   Rituel de CLÔTURE de session avant archivage : clôt proprement un repo pour ne
   RIEN perdre entre deux sessions. A utiliser quand l'utilisateur veut « archiver
   / clôturer une session », « fermer proprement avant de partir », « ne rien
   perdre entre deux sessions », préparer un « handoff » pour la prochaine session,
   ou demande « on archive ? » « avant de fermer ». Pilotable par sous-commandes :
-  help, check (dry-run strictement read-only : produit le rapport de clôture),
-  run/close (applique les corrections sûres — ship/regen du backlog, mémoire — et
-  produit la note de handoff). Un script portier (`scripts/check.sh`) rend un
-  verdict CLEAN/DIRTY sur 4 points de contrôle : working tree + stashes, PRs &
-  branches non-mergées (crucial pour les repos sans remote), fiches déclarées
-  livrées, ADR de la session ; sur CLEAN la clôture est traitée directement, sur
-  DIRTY elle est déléguée au sous-agent, scopée aux points signalés. Produit
-  toujours la note de handoff persistée dans `.claude/handoff.md` (anneau FIFO)
-  et le verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de
-  clôture uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).
+  check (défaut — dry-run strictement read-only : produit le rapport de clôture ;
+  sur DIRTY, propose run sans l'exécuter), run/close (applique les corrections
+  sûres — ship/regen du backlog, mémoire — et produit la note de handoff), help.
+  Un script portier (`scripts/check.sh`) rend un verdict CLEAN/DIRTY sur 4 points
+  de contrôle : working tree + stashes, PRs & branches non-mergées (crucial pour
+  les repos sans remote), fiches déclarées livrées, ADR de la session ; sur CLEAN
+  la clôture est traitée directement, sur DIRTY elle est déléguée au sous-agent,
+  scopée aux points signalés. Pour `run`/`close` seulement : persiste la note de
+  handoff dans `.claude/handoff.md` (anneau FIFO) et le verdict archivable/pending ;
+  `check` produit le rapport dans le chat sans écriture. Ne
+  merge/push JAMAIS tout seul ; hygiène de clôture uniquement (pas du scrum/sprint
+  — ça, c'est ezk-sprint).
 ---
 
 # ezk-archive
@@ -50,9 +52,13 @@ délègue.
 
 | Sous-commande | Effet |
 |---|---|
-| `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + un mot sur chaque vérification |
-| `check` | **Dry-run, ne modifie RIEN** — produit le rapport de clôture |
+| `check` (ou **sans argument** / « on archive ? ») | **Dry-run, ne modifie RIEN** — produit le rapport de clôture. Sur `DIRTY`, **propose** `run` (ne l'exécute pas sans accord explicite). |
 | `run` / `close` | Applique les **corrections sûres** (ship/regen backlog, mémoire) puis produit la **note de handoff** + le **verdict** |
+| `help` (ou `?`) | Affiche ce tableau + un mot sur chaque vérification |
+
+> **Défaut = `check`** (programme refonte phase 3 / ROI archive). Le chemin lourd
+> `run` n'est plus le premier réflexe : on mesure d'abord (cible ≤28k tokens sur
+> CLEAN), on n'écrit qu'après.
 
 Deux échappatoires, quand le portier ne doit pas décider :
 
@@ -80,7 +86,7 @@ l'état git/gh**. Tu es la seule à l'avoir.
 bash <chemin-du-skill>/scripts/check.sh --gate --shipped <ids-livrés>
 ```
 
-`--shipped` prend les ids que tu viens de lister (`0089,mc-0097`), ou `none` si la
+`--shipped` prend les ids que tu viens de lister (`2089,2097`), ou `none` si la
 session n'a **rien** livré. **Ne l'omets jamais sans raison** : sans déclaration, le
 portier n'a aucune preuve, répond `P3_BACKLOG: UNKNOWN` et force la délégation complète.
 C'est voulu — c'est ce qui garantit qu'une session qui n'a *pas* tenu ses comptes reçoit

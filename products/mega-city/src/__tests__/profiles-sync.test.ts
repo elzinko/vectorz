@@ -13,10 +13,10 @@ const catalog = loadCatalog(repoRoot);
 const profiles = [...catalog.profiles.values()];
 
 describe('garde anti-désync profils ↔ catalogue', () => {
-  it('charge au moins les profils attendus (base, mobile, global, cop1-target, desktop)', () => {
+  it('charge au moins les profils attendus (base, mobile, daily, global, cop1-target, desktop)', () => {
     const ids = profiles.map((p) => p.id).sort();
     expect(ids).toEqual(
-      expect.arrayContaining(['base', 'cop1-target', 'desktop', 'global', 'mobile']),
+      expect.arrayContaining(['base', 'cop1-target', 'daily', 'desktop', 'global', 'mobile']),
     );
   });
 
@@ -35,6 +35,17 @@ describe('garde anti-désync profils ↔ catalogue', () => {
 describe('profils par hôte (fiche 0041)', () => {
   const cop1 = catalog.profiles.get('cop1-target');
   const desktop = catalog.profiles.get('desktop');
+  const daily = catalog.profiles.get('daily');
+
+  it('daily : boucle produit sans skills env rares (apk/device/preview/article/pr-pilot)', () => {
+    expect(daily).toBeDefined();
+    expect(daily?.skills).toEqual(
+      expect.arrayContaining(['ezk-product-builder', 'ezk-sprint', 'ezk-ci', 'ezk-backlog']),
+    );
+    for (const rare of ['ezk-apk', 'ezk-device', 'ezk-preview', 'ezk-article', 'ezk-pr-pilot']) {
+      expect(daily?.skills ?? []).not.toContain(rare);
+    }
+  });
 
   it("cop1-target : équipe feuille + ezk-pm, AUCUN orchestrateur de dev-loop (cop1 a sa boucle)", () => {
     expect(cop1).toBeDefined();

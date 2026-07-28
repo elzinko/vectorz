@@ -1,0 +1,41 @@
+# Profil daily — daily-driver **curated** (throughput solo).
+# Alternative légère à `global` (exhaustif) : on garde la boucle produit + sprint +
+# hygiène, on sort du chemin quotidien les skills à environnement rare
+# (apk / device / preview) et les skills « occasionnels » (article, pr-pilot).
+# Switchover recommandé : `pnpm lawgiver -- bind-global daily --link`
+# (voir profiles/README.md + docs/PROGRAMME-REFONTE.md phase 2).
+# `global` reste disponible quand il faut TOUT le toolbox.
+id: daily
+extends: [base]            # → hérite le socle (bundle base + ezk-archive)
+bundles: [base]
+agents:
+  - ezk-architect
+  - ezk-archive
+  - ezk-pm
+  - ezk-qa
+  - ezk-reviewer
+  - ezk-steward
+  - ezk-tdd
+skills:
+  # hygiène / org
+  - ezk-archive
+  - ezk-backlog
+  - ezk-commits
+  - ezk-ezk
+  - ezk-readme
+  - ezk-retro
+  # boucle produit
+  - ezk-product-builder
+  - ezk-sprint
+  # exécution courante
+  - ezk-ci
+  - ezk-docker
+  - ezk-npm-scripts
+  # conception / doc
+  - ezk-design-system
+  - ezk-diagram
+  # INTENTIONNELLEMENT ABSENTS du daily (restent dans `global`) :
+  #   ezk-apk, ezk-device, ezk-preview  — env mobile / preview rare
+  #   ezk-article                       — rédaction longue occasionnelle
+  #   ezk-pr-pilot                      — pilotage PR hors boucle sprint
+interactions: []
