@@ -37,3 +37,10 @@ schedule:
 supervision:
   watch_roots: []
   presumed_dead_after_min: 5
+
+# Époque 2 — dogfood vectorz = mega-city + Moniteur (pas BMAD).
+# `false` (défaut) : pipeline cop1 sans BMAD ; le CLI `orchestrator run` reste un
+# chemin pilote legacy qui exige `_bmad*` dans le *projet cible* (voir
+# docs/running-cop1-on-a-project.md). `true` = pilote BMAD explicite sur cobaye externe.
+workflow:
+  useBMAD: false

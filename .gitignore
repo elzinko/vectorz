@@ -26,16 +26,18 @@ build/
 # cop1 runtime data (execution artifacts, not source code)
 .cop1/
 
-# BMAD framework (reinstallable via bmad install, version in _bmad/_config/manifest.yaml)
-_bmad/core/
-_bmad/bmm/
-_bmad/bmb/
-_bmad/tea/
-# Keep _bmad/_config/ and _bmad/_memory/ tracked (project-specific customizations)
+# BMAD artefacts (époque 1) — hors dogfood mega-city. Historique : tag
+# epoch-1-bmad-final. Capacité future « BMAD émetteur » (fiche 2058 / ADR-032) =
+# code adapters (bmad-bridge…), pas ces dossiers trackés dans vectorz.
+_bmad/
+_bmad-output/
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Accidental nested git repos / scratch folders
+Sans titre/
 
 # Logs
 *.log

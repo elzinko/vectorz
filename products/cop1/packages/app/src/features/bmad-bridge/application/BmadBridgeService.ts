@@ -1,3 +1,12 @@
+/**
+ * FUTURE / 2058 + ADR-032 — thin adapter for « BMAD as external emitter ».
+ *
+ * Kept on purpose for a *target project* that still runs BMAD and needs
+ * supervisability hooks. NOT part of vectorz/mega-city dogfood (époque 2).
+ * Do not reintroduce tracked `_bmad*` into this repo; do not wire this into
+ * the Moniteur UI. Full pilot-graph removal is E4 (fiche 0039) — this port
+ * survives that cut as the separable emission adapter.
+ */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { parseDocument } from 'yaml';

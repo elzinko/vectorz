@@ -1,54 +1,47 @@
 ---
-title: cop1 — Documentation index
-generated: 2026-04-15 (document-project, adapted single-artefact mode)
-status: working — the deep artefact is `brownfield-snapshot.md`; this index is a shortcut.
+title: Vectorz — Documentation index
+generated: 2026-04-15 (document-project) · mis à jour 2026-07-28 (époque 2)
+status: working — époque 2 : Moniteur + mega-city ; BMAD en fin de vie.
 ---
 
-# cop1 — Documentation Index
+# Vectorz — Documentation Index
 
-> **Read first.** `docs/brownfield-snapshot.md` is the working deep document generated on 2026-04-15 to support an architecture confrontation session. Start there. Everything else here either feeds into it or is the authoritative source it summarizes.
+> **Époque 2.** Commencer par le [programme de refonte](./PROGRAMME-REFONTE.md) et
+> l'[audit du 2026-07-27](./audits/2026-07-27-transition-epoch-2.md).
+> Le snapshot brownfield avril 2026 reste une archive utile, pas le contrat d'onboarding.
 
-## Working documents (this scan)
+## Docs vivantes (époque 2)
 
-- [Brownfield Snapshot](./brownfield-snapshot.md) — identity, real package map, execution flows, ADR inventory, drift ledger, open confrontation points.
+- [Programme — Refonte époque 2](./PROGRAMME-REFONTE.md) — phases, checkboxes, journal
+- [Audit transition 2026-07-27](./audits/2026-07-27-transition-epoch-2.md)
+- [Inventaire BMAD runtime](./audits/2026-07-28-bmad-runtime-inventory.md)
+- [Mapping ids backlog 0064](./audits/2026-07-28-backlog-id-map.md)
+- [Getting Started](./GETTING_STARTED.md) — onboarding Vectorz (pas BMAD-first)
+- [README racine](../README.md)
+- [mega-city](../products/mega-city/README.md)
+- [Portfolio](../PORTFOLIO.md)
+
+## Working documents (scan historique)
+
+- [Brownfield Snapshot](./brownfield-snapshot.md) — identity, real package map, execution flows, ADR inventory, drift ledger, open confrontation points *(archive 2026-04)*.
 - [Capture 2026-07-13 — contrat de méthode & versions](./captures/2026-07-13-contrat-methode-et-versions.md) — pré-ADR : décisions D1–D6 (pas de hot-migration, adoption aux gates, contrat d'étape fail-safe, cop1 exige une méthode), repositionnement mega-city = implémentation de référence du contrat, dettes repérées, découpage en fiches/ADRs.
 - [Article — le contrat de supervisabilité](./articles/contrat-de-supervisabilite.md) — article de fond (fiche 0025), v2 accessible : récit, tour de contrôle, 5 clauses, squelette v0, siège d'autorité, voisins. Base citable des ADRs ; publication externe différée. La [v1 détaillée](./articles/contrat-de-supervisabilite-v1.md) (positionnement source par source, lignée, glossaire) reste la référence de profondeur.
 - [Notes de lecture — sources du contrat de supervisabilité](./captures/2026-07-13-notes-lecture-sources-contrat-supervisabilite.md) — phase 1 de la fiche 0025 : vérification première main de Rel(AI)Build, Agent Protocol, A2A v1.0, Faramesh + 2 affirmations tierces ; corrections appliquées au prior-art.
 - [Article — les fenêtres de mise à jour](./articles/fenetres-de-mise-a-jour.md) — article de fond (fiche 0026) : la clause 5 du contrat corrigée — un jalon n'est pas forcément un point stable ; l'éligibilité de mise à jour (`upgrade_ok`) est déclarée par la méthode, jamais déduite par le superviseur. Tournée première main : Temporal, Restate, Kubernetes, gh-ost, Erlang/OTP, blue-green/canary. Publication externe différée.
 - [Notes de lecture — fenêtres de mise à jour](./captures/2026-07-13-notes-lecture-fenetres-mise-a-jour.md) — phase 1 de la fiche 0026 : lecture première main des 6 systèmes qui mettent à jour pendant que ça travaille ; grille « qui déclare l'éligibilité », citations vérifiées + contre-vérifiées par grep.
 - [Guide — brancher une méthode existante](./brancher-une-methode-existante.md) — compagnon lisible de l'ADR-032 (gravé 2026-07-17) : la méthode parle elle-même, les deux groupes de messages, les trois branchements (consignes / **sidecar** / observation), l'exemple BMAD pas à pas, les pièges d'archi rencontrés et leurs solutions.
-- [Getting Started](./GETTING_STARTED.md) — current user-facing contract (V1-light as of 2026-04-14).
 - [Running cop1 on a project](./running-cop1-on-a-project.md) — practical run guide: auth setup, the run command, safety gates (evidence / verify / review-verdict), transient `claude.status` handling, observability, reset.
 
 ## Authoritative planning artefacts
 
-All live under `_bmad-output/planning-artifacts/`. Treat these as source-of-truth over any surface docs at the repo root.
+> **Époque 1 — hors tree.** Ancien corpus `_bmad-output/` (prd, epics, architecture,
+> planning-ADRs, sprint-status…). Purge 2026-07-28 (dogfood mega-city sans BMAD).
+> **Source :** tag git `epoch-1-bmad-final`. Inventaire :
+> [`audits/2026-07-28-bmad-runtime-inventory.md`](./audits/2026-07-28-bmad-runtime-inventory.md).
 
-### Product
-- [`prd.md`](../_bmad-output/planning-artifacts/prd.md) — 823 L, edited through 2026-04-14. CA1–CA16, 139 active FRs, NFR1–34.
-- [`epics.md`](../_bmad-output/planning-artifacts/epics.md) — 2645 L, epic/story catalog (E1–E12, EA1–EA11).
-- [`ux-design-brief.md`](../_bmad-output/planning-artifacts/ux-design-brief.md) — UI horizon (Sprint 10+).
-
-### Architecture
-- [`architecture.md`](../_bmad-output/planning-artifacts/architecture.md) — 1608 L. Main decisions doc. For the current state, read §ADR-006 onwards.
-- [`adr-010-iamthelaw-integration-consultation.md`](../_bmad-output/planning-artifacts/adr-010-iamthelaw-integration-consultation.md)
-- [`adr-011-cop1-distribution-and-autonomous-orchestration.md`](../_bmad-output/planning-artifacts/adr-011-cop1-distribution-and-autonomous-orchestration.md)
-- [`adr-012-multi-turn-bmad-interaction.md`](../_bmad-output/planning-artifacts/adr-012-multi-turn-bmad-interaction.md) — Agent SDK + LLM Supervisor.
-- [`adr-013-orchestrator-sprintrunner-separation.md`](../_bmad-output/planning-artifacts/adr-013-orchestrator-sprintrunner-separation.md) — 525 L. EA10 seam.
-- [`adr-014-supervisor-tool-interface.md`](../_bmad-output/planning-artifacts/adr-014-supervisor-tool-interface.md) — 1097 L. In-process MCP 6-tool catalog. **Most novel piece.**
-
-### Sprint Change Proposals (chronological)
-
-Listed in the snapshot §9. Latest two worth keeping warm:
-- `sprint-change-proposal-2026-04-14.md` (absent du dépôt — jamais commité) — PRD ↔ epics sync, EA4↔EA5 dep cycle break, EA11 reframe, NFR26–34 mapping, +E5-S13.
-- [`sprint-change-proposal-2026-04-14-readiness-fixes.md`](../_bmad-output/planning-artifacts/sprint-change-proposal-2026-04-14-readiness-fixes.md) — copy-paste epic patches.
-
-### Implementation state
-- [`sprint-status.yaml`](../_bmad-output/implementation-artifacts/sprint-status.yaml) — BMAD-owned, source-of-truth for story statuses (ADR-009).
-- [`epic-ea10-ea11-retro-2026-04-14.md`](../_bmad-output/implementation-artifacts/epic-ea10-ea11-retro-2026-04-14.md) — most recent retro. Closes V1-light. Reveals V1.1 gaps.
-- [`implementation-readiness-report-2026-04-14.md`](../_bmad-output/planning-artifacts/implementation-readiness-report-2026-04-14.md) — post-SCP readiness check.
-- [`supervisor-playbook-format.md`](../_bmad-output/planning-artifacts/supervisor-playbook-format.md) — playbook schema.
-- [`supervisor-playbook-reference.md`](../_bmad-output/planning-artifacts/supervisor-playbook-reference.md) — canonical reference playbook.
+```bash
+git show epoch-1-bmad-final:_bmad-output/planning-artifacts/architecture.md | less
+```
 
 ## Runtime artefacts (not docs)
 - [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — the minimal playbook the orchestrator loads by default.

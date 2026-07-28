@@ -57,19 +57,20 @@ export const ConfigSchema = z
     workflow: z
       .object({
         /**
-         * @deprecated Since 2026-04-14 (EA11-S2). `useBMAD=false` selects the legacy
-         * stub pipeline kept as a safety net. Scheduled for removal after EA10-S9
-         * integration test proves the orchestrator in production. A runtime warning
-         * is emitted at startup when `useBMAD=false`.
+         * BMAD pilot path (époque 1). Epoch-2 dogfood = mega-city + moniteur
+         * (ADR-028) — ignores this flag. Default `false` : ce repo n'avance plus
+         * via BMAD. `true` explicite = pilote legacy / cobaye externe (exige
+         * `_bmad*` installé dans le projet cible — inventory 2026-07-28).
+         * `false` mappe aussi au pipeline stub EA11-S2 (deprecated).
          */
         useBMAD: z
           .boolean()
-          .default(true)
+          .default(false)
           .describe(
-            'DEPRECATED (EA11-S2, 2026-04-14): false selects the legacy stub pipeline. Prefer true (default) and use the EA10 orchestrator when available.',
+            'BMAD pilot (deprecated). Default false — dogfood = mega-city. Set true only for an external BMAD target.',
           ),
       })
-      .default({ useBMAD: true }),
+      .default({ useBMAD: false }),
     blocage_rules: z.record(z.string(), z.string()).default({}),
     schedule: z
       .object({

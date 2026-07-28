@@ -18,7 +18,9 @@ Moved here on 2026-04-15 during the V1-light closure / V1.1 preparation cleanup.
 For the current, authoritative equivalents:
 - **Onboarding** → `docs/GETTING_STARTED.md`
 - **State of the product** → `docs/brownfield-snapshot.md`
-- **Roadmap / epics** → `_bmad-output/planning-artifacts/epics.md`
-- **Retro that closed V1-light** → `_bmad-output/implementation-artifacts/epic-ea10-ea11-retro-2026-04-14.md`
+- **Roadmap / epics (époque 1, hors tree)** → tag `epoch-1-bmad-final` :
+  `git show epoch-1-bmad-final:_bmad-output/planning-artifacts/epics.md`
+- **Retro that closed V1-light (époque 1)** → tag `epoch-1-bmad-final` :
+  `git show epoch-1-bmad-final:_bmad-output/implementation-artifacts/epic-ea10-ea11-retro-2026-04-14.md`
 
 Do not reintroduce the content of these files without a Sprint Change Proposal.

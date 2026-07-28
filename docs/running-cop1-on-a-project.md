@@ -1,5 +1,11 @@
 # Running cop1 on a project
 
+> **Époque 1 — pilote BMAD.** Ce guide décrit le CLI `orchestrator run` (BMAD +
+> `_bmad-output/sprint-status.yaml`). Ce n'est **plus** le chemin nominal de vectorz.
+> Dogfood époque 2 : [`products/mega-city/README.md`](../products/mega-city/README.md)
+> + Moniteur (ADR-028) + `supervision:link`. Voir
+> [`docs/PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
+
 How to point cop1 at a target project and let it drive an epic end-to-end
 (`create-story → dev-story → code-review`), with the safety gates that keep
 "done" honest. Written from the first real dogfood run (2026-06-22).
@@ -37,7 +43,7 @@ claude -p "say OK"        # must print OK
 export $(grep '^CLAUDE_CODE_OAUTH_TOKEN=' .env | xargs)
 
 COP1_MAX_TOKENS=500000 COP1_DEADLINE_MIN=30 COP1_MAX_USD_PER_SESSION=3 \
-  node packages/app/dist/cli/index.js orchestrator run \
+  node products/cop1/packages/app/dist/cli/index.js orchestrator run \
     --epic FEAT \
     --project-root /path/to/target-project \
     --abort-on-escalation
@@ -94,7 +100,7 @@ silent stall. A genuine hard error (auth, invalid request) is **not** retried.
 - **Decision log** — `.cop1/sprint-log-<date>.jsonl` (auto-decisions +
   `claude-status` events).
 - **Exchange history (Track 2)** — `.cop1/history/<epic>/<story>/…md`.
-- **Transcript** — `node packages/app/dist/cli/index.js transcript <sessionId>`.
+- **Transcript** — `node products/cop1/packages/app/dist/cli/index.js transcript <sessionId>`.
 
 ## 6. Reset a disposable test bed
 
