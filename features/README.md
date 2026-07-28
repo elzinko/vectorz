@@ -66,6 +66,7 @@
 | 2079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 | mega-city |  | 🔴 todo |  |
 | 2095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 | mega-city |  | ⛔ blocked | '#55' |
 | 2102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 | mega-city |  | ⛔ blocked |  |
+| 2103 | Harness dogfood E2E-LLM — acteur Claude Code + assertions déterministes (nightly / label dogfood) | feature | P1 | mega-city |  | 🔴 todo | '#62' |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | vectorz |  | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | vectorz |  | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 | vectorz |  | ✅ shipped | #32 |
@@ -80,7 +81,7 @@
 | 0025 | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 | vectorz |  | ✅ shipped | #57 |
 | 0026 | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 | vectorz |  | ✅ shipped | #59 |
 | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | vectorz | 0034 | ⛔ blocked |  |
-| 0039 | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | vectorz | 0034 | ⛔ blocked |  |
+| 0039 | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | vectorz | 0034 | 🔴 todo |  |
 | 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | vectorz | 0034 | 🔴 todo |  |
 | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 | vectorz |  | 🔴 todo |  |
 | 0060 | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 | vectorz |  | 🔴 todo |  |

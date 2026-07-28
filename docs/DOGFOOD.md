@@ -93,6 +93,11 @@ pnpm --dir products/mega-city exec tsx bin/lawgiver.ts bind-global daily --link
 consignes des skills + jugement fidélité/lisibilité dans l’UI Moniteur + mesure
 tokens archive CLEAN.
 
+**Futur (fiche [2103](../features/2103-ezk-testbed-llm-dogfood-harness.md)) :** harness
+E2E-LLM (acteur Claude Code headless + assertions déterministes, cadence nightly /
+label `dogfood`) pour rejouer le chemin 2094 sans monopoliser l’opérateur — **pas
+encore livré** ; le smoke §A et la checklist §D restent la référence.
+
 ---
 
 ## E. Après dogfood réussi

@@ -34,6 +34,7 @@ Les fiches `todo` passées au gate DoR (`ready:`), ordre P0→P3, puis produit, 
 | mega-city | 2079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 | 🔴 todo |  |
 | mega-city | 2095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 | ⛔ blocked | '#55' |
 | mega-city | 2102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 | ⛔ blocked |  |
+| mega-city | 2103 | Harness dogfood E2E-LLM — acteur Claude Code + assertions déterministes (nightly / label dogfood) | feature | P1 | 🔴 todo | '#62' |
 | vectorz | 0041 | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 | 🔴 todo |  |
 | vectorz | 0044 | Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A) | chore | P1 | 🔴 todo |  |
 | vectorz | 0050 | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 | 🔴 todo |  |
@@ -53,7 +54,6 @@ Les fiches `todo` passées au gate DoR (`ready:`), ordre P0→P3, puis produit, 
 | vectorz | 0022 | mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $) | feature | P2 | 🔴 todo |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo |  |
 | vectorz | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | ⛔ blocked |  |
-| vectorz | 0039 | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | ⛔ blocked |  |
 | vectorz | 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 🔴 todo |  |
 | vectorz | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 | 🔴 todo |  |
 | vectorz | 0060 | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 | 🔴 todo |  |
@@ -128,7 +128,7 @@ Les fiches `todo` passées au gate DoR (`ready:`), ordre P0→P3, puis produit, 
 
 | Produit | Total | 🔴 todo (ready) | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|-----------------|-----------|-----------|---------|---------|
-| vectorz | 33 | 14 (2) | 1 | 4 | 12 | 2 |
-| mega-city | 57 | 21 (1) | 1 | 5 | 29 | 1 |
+| vectorz | 33 | 14 (2) | 1 | 3 | 12 | 2 |
+| mega-city | 58 | 22 (1) | 1 | 5 | 29 | 1 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir `features/README.md`.
