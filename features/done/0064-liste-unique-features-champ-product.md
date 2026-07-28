@@ -1,0 +1,121 @@
+---
+id: 0064
+product: vectorz
+title: Une seule liste de features pour tout le monorepo (champ `product:`) — la double liste coûte plus qu'elle ne rapporte
+type: refactor
+priority: P0
+epic:
+status: shipped
+pr: '#62'
+created: 2026-07-26
+---
+
+# 0064 — Une seule liste de features (champ `product:`)
+
+## Contexte / Problème
+
+Le monorepo porte **deux** backlogs : `features/` (racine) et
+`products/mega-city/features/` (méthode). La séparation devait isoler deux domaines ;
+elle produit surtout du **conflit et de l'outillage de contournement**. Constats sur
+pièce, pas en théorie :
+
+1. **Collision d'ids.** Les deux listes numérotent à partir de 0001 : `0059` et `0061`
+   existent **des deux côtés**. Au `reconcile` du 2026-07-26, la PR #50 intitulée
+   « Moniteur lisible — … (0059, 0061) » était **ambiguë** : il a fallu ouvrir
+   `features/done/` pour savoir de quelles fiches on parlait. Un rapprochement
+   fiche↔PR censé être mécanique (ADR-0018) redevient du jugement.
+
+2. **De l'outillage payé pour lire à travers la coupure.** `plan:head` (fiche 2097,
+   livrée par #53 le 2026-07-26) **n'existe que** parce qu'un `PLAN.md` unique doit
+   mêler deux listes ; `2098` est déjà son follow-up (descente épic→enfant).
+   `PLAN.md` doit préfixer les ids méthode par `mc-`, et `next --ready-only` doit
+   « router vers la bonne liste » — trois mécanismes qui n'auraient aucune raison
+   d'être avec une liste unique.
+
+3. **La preuve par l'absurde, faite le jour même.** Cette fiche a été créée sous l'id
+   **0064** à la racine — alors que la liste méthode portait déjà un `0064` (« Sprint
+   intake — DoR & santé du backlog », P2, 2026-07-16). **La collision s'est produite
+   pendant la rédaction de la fiche qui la dénonce**, alors même que son auteur en avait le
+   problème en tête et venait d'en documenter deux cas. Ce n'est pas une inattention :
+   chaque liste numérote depuis 0001, donc la collision est **structurelle** — elle se
+   reproduira à chaque fiche créée des deux côtés, quelle que soit la vigilance.
+   *Suite (2026-07-26)* : la collision a été **levée à la main** en renumérotant la fiche
+   méthode en [2100](../features/2100-sprint-intake-sante-backlog-metriques.md)
+   — 8 fichiers touchés, dont **deux ADR** (0016, 0018) et un lien markdown qui aurait
+   cassé. Ce correctif **confirme** le constat au lieu de l'annuler : il a fallu un
+   arbitrage humain et une passe manuelle pour un simple numéro, et l'id `max+1` du côté
+   racine (0065) était lui-même déjà pris côté méthode.
+
+4. **Une règle de désambiguïsation à la place d'une structure.** ADR-0017 A13 tranche
+   « le backlog le plus proche du cwd ; si l'ambiguïté demeure, **demander** ». Une règle
+   qui doit poser une question à l'humain pour ranger une fiche est le symptôme, pas la
+   solution.
+
+**Pourquoi ça compte.** Le coût est récurrent et croissant : chaque nouvelle capacité de
+backlog (plan, reconcile, épics, `depends:`…) doit être pensée deux fois, ou être
+accompagnée de son adaptateur cross-liste. Et la valeur attendue de la séparation n'est
+pas au rendez-vous : elle se justifie quand des produits ont des **cycles de release** ou
+des **équipes** distincts. Ici : un opérateur, un monorepo, un `PLAN.md`.
+
+## Proposition
+
+Une **liste unique** à la racine (`features/`), et le produit devient une **donnée de la
+fiche**, pas une donnée de l'arborescence :
+
+- front-matter `product:` (ex. `vectorz` | `cop1` | `mega-city`) — **obligatoire**, au
+  même titre que `type` et `priority` ;
+- ids **continus sur l'ensemble** : plus jamais deux fiches avec le même numéro ;
+- `regen` groupe/filtre l'index par produit (colonne conditionnelle, comme `Version` et
+  `Épic` — ADR-0017 A12) ;
+- `PLAN.md` cite des ids nus (fin du préfixe `mc-`).
+
+**À trancher au grooming** (le panel adverse tranchera, cf. Notes) :
+
+- **stratégie de migration** — renuméroter la liste méthode (liens à réécrire, historique
+  git des fiches préservé par `git mv`) **ou** décaler en réservant une plage ; l'option
+  « garder les ids et distinguer par `product:` » est à écarter si elle laisse subsister
+  des doublons de numéro ;
+- **sort de `plan:head`/`plan:order`** — `plan:head` devient sans objet ; `plan:order`
+  reste utile (il donne la séquence). À retirer proprement, pas à laisser pourrir.
+
+## Critères d'acceptation
+
+- [x] Il n'existe plus qu'**une** liste de fiches actives ; `products/mega-city/features/`
+      ne contient plus de fiche (stub README + mapping offset +2000)
+- [x] Chaque fiche porte un `product:` renseigné ; l'index régénéré permet de lire le
+      backlog **par produit**
+- [x] **Aucun id en double** sur l'ensemble (actifs + `done/`) — vérifié (164 uniques)
+- [x] `PLAN.md` ne préfixe plus aucun id ; `next --ready-only` / `plan:head` sur liste unique
+- [x] `ezk-backlog` mis à jour (A13 supersédé pour vectorz) ; `plan:head` simplifié
+- [x] Les liens inter-fiches existants — migration mécanique + mapping documenté ;
+      scan prose PR #62 ; dette résiduelle acceptée (mapping JSON)
+
+## Livraison (2026-07-28, PR #62)
+
+Ship formel : liste unique opérationnelle, outillage regen/plan/portfolio/archive aligné,
+offset +2000 documenté, stub `products/mega-city/features/` en place. Les liens prose
+historiques (`mc-XXXX` dans vieux markdown) restent une dette non bloquante — le mapping
+JSON couvre la recherche mécanique.
+- [x] Gate locale ciblée (regen + plan-order/plan-head tests)
+
+## Notes / décisions
+
+- **P0 demandée par le PO le 2026-07-26** : « je trouve super relou d'avoir une liste de
+  feature par sous-projet… il n'en faudrait qu'une, ce serait plus simple et surtout on
+  aurait moins de conflit. Par contre ça oblige à déclarer le produit ».
+- **Décision structurante ⇒ panel adverse avant build** (`ezk-architect` + juge), comme
+  les autres décisions de structure. La fiche est `todo`, **pas `ready`** : le gate DoR
+  passe après le panel, qui doit trancher la stratégie de migration.
+- **Coût déjà payé, assumé** : `plan:head` (2097) a été livré le matin même du jour où
+  cette fiche est écrite, et deviendra sans objet ; `2098` (son follow-up) tombe avec
+  lui. Ce n'est pas une raison de conserver la double liste — c'est une raison de trancher
+  vite, avant d'en payer un troisième.
+- Fiche volontairement **rangée dans la liste racine** — celle qui survit.
+- 2026-07-26 — **collision d'id levée ponctuellement** (mc-0064 → 2100, cf. point 3).
+  `0064` et `0100` sont désormais **uniques sur l'ensemble** — mais la mesure faite à
+  l'occasion donne l'ampleur du reste : **62 ids sont portés des deux côtés** (tout
+  `0001`→`0063` sauf `0048`, actifs + `done/` confondus). Le « 0059 et 0061 » du point 1
+  n'était que les deux cas rencontrés, pas le compte. Aucune renumérotation de masse n'a
+  été faite : c'est la **stratégie de migration**, à trancher au grooming (le panel), pas
+  à improviser. Commande de contrôle :
+  `comm -12 <(ids features) <(ids products/mega-city/features)`.

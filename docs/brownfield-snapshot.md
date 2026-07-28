@@ -1,22 +1,20 @@
 ---
-title: cop1 — Brownfield Snapshot (working document)
-status: working / temporary — generated 2026-04-15 to feed an architecture confrontation session
+title: cop1 — Brownfield Snapshot (archive époque 1)
+status: **archive** — generated 2026-04-15 ; ne pas utiliser pour l'onboarding époque 2.
+  Voir [`GETTING_STARTED.md`](./GETTING_STARTED.md), [`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
 generated_by: document-project workflow (adapted single-artefact mode)
 authoritative_sources:
-  - _bmad-output/planning-artifacts/prd.md (823 L, last edit 2026-04-14)
-  - _bmad-output/planning-artifacts/architecture.md (1608 L, last update 2026-03-19)
-  - _bmad-output/planning-artifacts/adr-013-orchestrator-sprintrunner-separation.md (525 L)
-  - _bmad-output/planning-artifacts/adr-014-supervisor-tool-interface.md (1097 L)
-  - _bmad-output/implementation-artifacts/epic-ea10-ea11-retro-2026-04-14.md (289 L)
-  - _bmad-output/planning-artifacts/epics.md (2645 L)
-  - docs/GETTING_STARTED.md (up-to-date)
+  - tag `epoch-1-bmad-final` : `_bmad-output/planning-artifacts/` (hors tree depuis 2026-07-28)
+  - docs/GETTING_STARTED.md (époque 2, à jour)
 not_authoritative:
   - README.md, MVP_STATUS.md, ROADMAP.md, NEXT_SPRINT.md, QUICK_START.md (pre-pivot, stale — see §10)
 ---
 
-# cop1 — Brownfield Snapshot
+# cop1 — Brownfield Snapshot *(archive avril 2026)*
 
-> **Purpose.** This is a _working_ document produced on 2026-04-15 to feed an architecture confrontation session. It reports the **current state** of the code and the **gap** with planning artefacts, so that the next session can challenge the architecture against the user's evolving need. Do not treat it as long-term documentation — the authoritative planning sources listed above remain canonical.
+> **⚠ Archive époque 1.** Chemins `packages/` ci-dessous = layout cop1 pré-ADR-027.
+> Layout actuel : `products/cop1/packages/`. BMAD (`_bmad*`) purgé du tree — historique au
+> tag `epoch-1-bmad-final`. Dogfood vectorz = mega-city + Moniteur, pas ce snapshot.
 
 ---
 

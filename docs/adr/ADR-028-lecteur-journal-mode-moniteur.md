@@ -1,6 +1,8 @@
 # ADR-028 — Lecteur de journal `.supervision/runs/` en mode moniteur : projection serveur
 
-**Statut :** Proposé (2026-07-14) — issu d'une session `/architecture`, cadre la fiche **0031**
+**Statut :** **Accepté** (2026-07-28 — erratum tampon : shippé en prod via fiches 0031 /
+mission-control Moniteur ; le statut « Proposé » du 2026-07-14 est caduc).
+Issu d'une session `/architecture`, cadre la fiche **0031**
 (lecteur de journal dans la mission-control, mode moniteur D13).
 **Opérationnalise :** contrat **cop1/supervisability@0.1** (fiche 0027, package `journal-validator`)
 côté *lecture live* ; verrous **DP2** + décisions **D8/D9** de la fiche 0031.

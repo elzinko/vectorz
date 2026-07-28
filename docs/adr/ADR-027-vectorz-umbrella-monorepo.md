@@ -1,6 +1,9 @@
 # ADR-027 — Vectorz : umbrella neutre, cop1 & mega-city produits co-égaux (option E′)
 
-**Statut :** Proposé (2026-07-14) — **à relire par l'humain avant toute exécution.**
+**Statut :** Proposé (2026-07-14) — **exécuté en layout** (2026-07-28) : clone vectorz,
+`products/cop1/` + `products/mega-city/`, `package.json` name `vectorz`, workspace
+`products/cop1/packages/*`. Tag gel des originaux = planifié (ADR-027 AI-3) ; à relire PO
+pour tampon **Accepté** formel.
 **Déciders :** elzinko
 **Révise :** [ADR-025](ADR-025-monorepo-codev-cop1-megacity.md) — remplace sa Décision §1
 (« mega-city = workspace package du repo cop1, `mega-city/` à la racine ») par **E′ : umbrella

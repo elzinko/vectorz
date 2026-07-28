@@ -222,16 +222,28 @@ lot E3 gonflé mais supprime le risque d'indisponibilité et donne un rollback t
 ## Action items
 
 1. [x] Statuer le présent ADR (Proposé → Accepté — relecture PO 2026-07-15).
-2. [ ] Amender la fiche 0034 : D2/D6/D9 tranchées par ADR-029 ; corriger la note D9
-       (« réinstallable » trompeur) — *fait dans la même passe* ; ajouter les lots E
-       (E3, E4).
+2. [x] Amender la fiche 0034 : D2/D6/D9 tranchées par ADR-029 ; corriger la note D9
+       (« réinstallable » trompeur).
 3. [x] Créer les fiches : E3 (pilote natif — stories front-matter lecture-écriture,
        exécuteur générique, iamthelaw, tests fixtures natives, gate), E4
        (relogement/suppression/purge).
 4. [x] Arbitrage 0058/0059 : tranché (Décisions de relecture §1) ; reporter la note de
        re-scope sur la fiche mega-city 0058.
 5. [x] Registre de lecture `docs/adr/README.md` : créé (2026-07-15).
-6. [ ] Bannières : « révisé par ADR-029 » sur ADR-026 (avec la passe 0035) ; extraction
-       des décisions vivantes de `_bmad-output/planning-artifacts/` avant E4.
-7. [ ] Tags : `epoch-1-bmad-final` juste avant E4 ; `epoch-2-post-bmad` + section README
-       « Époques » + règle allowlist « zéro bmad » au merge d'E4.
+6. [~] Bannières : « révisé par ADR-029 » sur ADR-026 (0035 ✅) ; extraction
+       des décisions vivantes de `_bmad-output/planning-artifacts/` → N/A (corpus purgé
+       tree 2026-07-28, tag `epoch-1-bmad-final`).
+7. [x] Tags : `epoch-1-bmad-final` ✅ posé (578729d) ; `epoch-2-post-bmad` ✅ posé (E4 PR #62) ; allowlist « zéro bmad » en prod ✅ (`no-bmad-in-prod.test.ts`).
+
+### Avancement E4 (2026-07-28, PR #62)
+
+| Volet | Statut | Note |
+| --- | --- | --- |
+| *(a) Relogement* infra générique hors `bmad-orchestration/` | ✅ N/A | pilot graph retiré ; `AuthChecker` inlined transient classifier |
+| *(b) Suppression BMAD-spécifique* — backend pilote cop1 | ✅ fait | PR #62 E4 : `bmad-reader`, `bmad-orchestration`, `orchestrator/`, routes HTTP pilote, CLI stubs |
+| *(b) Suppression BMAD-spécifique* — artefacts `_bmad*` trackés | ✅ fait | commit `578729d`, gitignore, tag `epoch-1-bmad-final` |
+| *(b)* UI BMAD-in-moniteur | ✅ fait | OrchestratorRunView / Rules / Connexion retirés (`c05689f`) |
+| *(b)* défaut `useBMAD: false` | ✅ fait | ConfigSchema + cop1.config.example.yaml |
+| *(c) Purge références* docs vivants | [x] fait | GETTING_STARTED, programme, registre ADR, audits |
+| Tag `epoch-2-post-bmad` | ✅ posé | E4 code complete PR #62 |
+| Allowlist « zéro bmad » prod | ✅ fait | `tools/boundary/no-bmad-in-prod.test.ts` |

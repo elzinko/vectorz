@@ -33,10 +33,10 @@ mieux, car vérifiables — qu'une frontière de repo.
 
 ## Décision
 
-1. **mega-city devient un workspace package du repo cop1** (emplacement : `mega-city/` à la
-   racine, volontairement **hors de `packages/`** pour marquer la non-subordination — cop1-le-
-   produit vit dans `packages/`, mega-city est un co-locataire, pas un module de cop1).
-   L'import préserve l'historique git (`git subtree add` ou équivalent). Le repo standalone
+1. **mega-city devient un workspace package du repo cop1** (emplacement historique E :
+   `mega-city/` à la racine — **supersédé par ADR-027** : co-localisation sous
+   `products/mega-city/` et `products/cop1/packages/`, produits co-égaux). L'import
+   préserve l'historique git (`git subtree add` ou équivalent). Le repo standalone
    `~/git/bacasable/mega-city` est ensuite **gelé** avec un README pointeur (même sort que
    claude-skills, mega-city ADR-0006).
 2. **Versionnement d'ensemble pour l'instant** : une release = un tag du monorepo ; le tuple

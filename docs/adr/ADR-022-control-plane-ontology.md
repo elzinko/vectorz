@@ -1,8 +1,11 @@
 # ADR-022 — cop1 = control plane : ontologie & ports
 
-Statut : 🚧 **WIP / Brouillon** (2026-06-28) — capture *vivante* du brainstorming produit.
-**À challenger, pas une décision figée.** Ne rien implémenter sur cette seule base sans confirmation.
-Voir aussi : ADR-020 (DoDCheck), ADR-021 (frontière mega-city, *Proposé*), fiche `features/0020`.
+Statut : **Accepté (ontologie de référence)** — 2026-07-28 erratum tampon.
+Capture initiale 🚧 WIP (2026-06-28) ; les briques (Superviseur, ports, Profile…) ont
+été **opérationnalisées** par ADR-026→034 et le mode moniteur. Ce texte reste la
+carte d'ontologie ; les détails d'implémentation vivent dans les ADR ultérieurs.
+Ne pas relire comme un brouillon bloquant.
+Voir aussi : ADR-020 (DoDCheck), ADR-021 (frontière mega-city), fiche `features/0020`.
 
 ## Contexte
 

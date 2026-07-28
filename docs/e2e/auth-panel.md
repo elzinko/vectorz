@@ -1,4 +1,8 @@
-# E2E manuel reproductible — Panneau auth (🟢 + modèle)
+# E2E manuel reproductible — Panneau auth *(archive époque 1)*
+
+> **⚠ Obsolete UI.** L'onglet Connexion / `AuthPanel.tsx` a été retiré (PR #62 — audit
+> BMAD-in-monitor dead path). Le daemon expose encore `GET /api/auth/check` ; le Moniteur
+> époque 2 = onglet `moniteur` uniquement (`SupervisionView`). Conservé pour historique fiche 0003.
 
 Fiche backlog **0003** (partie auth). Validé le 2026-06-25 via Playwright contre le vrai
 daemon (appel Claude réel) : 🟢 *Connecté* + modèle `claude-sonnet-4-6`.
@@ -16,12 +20,12 @@ daemon (appel Claude réel) : 🟢 *Connecté* + modèle `claude-sonnet-4-6`.
 1. **Charger le token + démarrer le daemon** (port par défaut 4242) :
    ```sh
    export $(grep '^CLAUDE_CODE_OAUTH_TOKEN=' /Users/elzinko/git/bacasable/cop1/.env | xargs)
-   COP1_PROJECT_PATH="$PWD" node packages/app/dist/cli/daemon-entry.js --port 4242 &
+   COP1_PROJECT_PATH="$PWD" node products/cop1/packages/app/dist/cli/daemon-entry.js --port 4242 &
    ```
    Sanity : `curl -s localhost:4242/api/auth/check` doit renvoyer
    `{"ok":true,"model":"…","availability":"ok"}` (c'est l'appel Claude réel, 1 tour, sans outil).
 
-2. **Démarrer le web UI** : `cd packages/web && pnpm dev` (→ http://localhost:5173 ;
+2. **Démarrer le web UI** : `cd products/cop1/packages/web && pnpm dev` (→ http://localhost:5173 ;
    le proxy Vite cible 4242 par défaut depuis la fiche 0008).
 
 3. **Naviguer + tester** (navigateur ou Playwright) :

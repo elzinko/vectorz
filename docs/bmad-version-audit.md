@@ -1,17 +1,17 @@
 ---
-title: BMAD Version Audit — 6.0.0-Beta.8 vs upstream 6.3.0
+title: BMAD Version Audit — archive époque 1
 generated: 2026-04-15
-status: working — input for the next /bmad-bmm-create-architecture session
+status: **archive** — BMAD purgé du tree vectorz (2026-07-28, tag `epoch-1-bmad-final`).
+  Chemins `packages/` → `products/cop1/packages/`. Ne pas utiliser pour onboarding.
 authoritative_sources:
-  - _bmad/_config/manifest.yaml (installed versions)
-  - supervisor-playbook.md (declared pin)
-  - packages/app/src/composition/PipelineStepFactory.ts (commands invoked)
-  - https://github.com/bmad-code-org/BMAD-METHOD/releases (upstream)
+  - tag `epoch-1-bmad-final` : `_bmad/_config/manifest.yaml`
+  - products/cop1/supervisor-playbook.md
 ---
 
-# BMAD Version Audit
+# BMAD Version Audit *(archive avril 2026)*
 
-> **Purpose.** Before the `/bmad-bmm-create-architecture` session, quantify the gap between the BMAD install cop1 currently drives (`6.0.0-Beta.8`) and the upstream line, so the architecture session can take an explicit position on compatibility / upgrade strategy.
+> **Archive époque 1.** Cop1 ne dogfoode plus BMAD dans vectorz (ADR-029). Conservé pour
+> l'historique du pivot et la future fiche 2058 (émetteur externe).
 
 ---
 
