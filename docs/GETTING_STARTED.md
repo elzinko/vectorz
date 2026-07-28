@@ -36,7 +36,7 @@ docs/             — ADRs, audits, programme de refonte
 
 1. Lire [`products/mega-city/README.md`](../products/mega-city/README.md)
 2. Binder le profil **daily** (curated) :
-   `pnpm --dir products/mega-city lawgiver -- bind-global daily --link`
+   `pnpm --dir products/mega-city exec tsx bin/lawgiver.ts bind-global daily --link`
 3. Travailler avec `ezk-product-builder` / `ezk-sprint` (3 chemins : trivial/standard/lourd)
 4. Clôturer avec `/ezk-archive` (défaut = `check`)
 
@@ -49,6 +49,7 @@ docs/             — ADRs, audits, programme de refonte
 ## Docs vivantes
 
 - [Programme refonte](./PROGRAMME-REFONTE.md)
+- [Dogfood avant merge](./DOGFOOD.md) (smoke mécanique + checklist humaine)
 - [Audit transition 2026-07-27](./audits/2026-07-27-transition-epoch-2.md)
 - [Inventaire BMAD](./audits/2026-07-28-bmad-runtime-inventory.md)
 - [ADRs](./adr/)
