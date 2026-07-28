@@ -4,13 +4,8 @@ import type { WorkflowContext } from '../../workflow/domain/WorkflowContext.js';
 import type { WorkflowStep } from '../../workflow/domain/WorkflowStep.js';
 
 /**
- * @deprecated Since 2026-04-14 (EA11-S1). Thin `WorkflowStep` wrapper around the
- * legacy `PMAgent`. Superseded by BMAD-driven multi-turn sessions invoked through
- * `BMADSessionPort` (ADR-012). This wrapper remains as a safety-net fallback while
- * `config.workflow.useBMAD=false` is still supported (deprecated in EA11-S2).
- * Migration path: BMAD `create-story` / PM orchestration driven by
- * `SupervisorService` / `OrchestratorService` (EA10). Scheduled for removal once
- * EA10-S9 integration test passes in production.
+ * @deprecated Epoch-1 stub workflow step. Dogfood = mega-city (ezk-sprint) + Moniteur.
+ * Kept for WorkflowEngine unit tests only.
  */
 export class PMAgentWorkflowStep implements WorkflowStep {
   name = 'pm';

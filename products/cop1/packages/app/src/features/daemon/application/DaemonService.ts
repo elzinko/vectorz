@@ -1,9 +1,7 @@
 import { EventBus } from '@cop1/shared-kernel';
-import { BlockageService, SprintSessionService } from '@cop1/sprint-core';
+import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
-import { HttpOrchestratorAdapter } from '../../orchestrator/infrastructure/HttpOrchestratorAdapter.js';
-import { YamlSprintStatusAdapter } from '../../orchestrator/infrastructure/YamlSprintStatusAdapter.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
 import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalWatcherAdapter.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
@@ -32,66 +30,25 @@ export class DaemonService {
     this.httpServer = new HttpServer();
     this.pidManager = new PidFileManager(projectPath);
 
-    // B1 (load-bearing): the daemon owns the EventBus and bridges it to SSE, so
-    // a run's `orchestrator.*` / `session.*` events stream to `/events` for free.
     this.eventBus = options.eventBus ?? new EventBus();
     this.httpServer.setEventBus(this.eventBus);
 
-    // B2: in-process single-run adapter, sinking tagged events onto the daemon bus.
-    this.httpServer.setOrchestratorAdapter(new HttpOrchestratorAdapter(this.eventBus, projectPath));
-
-    this.httpServer.setSprintStatusProvider(() => {
-      const reader = new YamlSprintStatusAdapter(projectPath);
-      const sessionService = new SprintSessionService(projectPath);
-
-      const statuses = reader.getAllStatuses();
-      const stories: Record<string, string> = {};
-      for (const [id, status] of statuses) {
-        stories[id] = status;
-      }
-
-      return { stories, session: sessionService.check() };
-    });
-
-    // Wire the auth-check probe (Story A): GET /api/auth/check runs a cheap,
-    // single-turn SDK call inheriting the environment's Claude credentials.
     this.httpServer.setAuthChecker(() => checkAuth());
 
-    // fiche 0021 — wire the blockage API: GET /api/blocages +
-    // POST /api/blocages/:id/resolve. Shares the daemon's EventBus so that a
-    // STORY_UNBLOCKED emitted on resolve bridges to /events like every other event.
     const blockageService = new BlockageService(projectPath, this.eventBus);
     this.httpServer.setBlocageApiHandler(new BlocageApiHandler(blockageService));
 
-    // fiche 0031 (ADR-028) — mode moniteur : lecture live de
-    // .supervision/runs/ sur les watch-roots configurés. Chargement one-shot
-    // et tolérant de la config (cop1.config.yaml absent ⇒ supervision
-    // dormante, watch_roots=[]) : aucun fs.watch surprise sur le cwd tant que
-    // le projet n'a pas explicitement opté in.
     this.wireSupervision(projectPath);
   }
 
-  /**
-   * Instancie `SupervisionService` + `JournalWatcherAdapter` sur le même
-   * `EventBus` que le reste du daemon uniquement si `supervision.watch_roots`
-   * est non vide ; sinon reste dormant (aucun watcher démarré).
-   */
   private wireSupervision(projectPath: string): void {
     let watchRoots: string[] = [];
     let presumedDeadAfterMin = 5;
     try {
-      // skipRamValidation : le mode moniteur ne consomme que `supervision.*` ;
-      // le budget RAM (défaut 48GB > la RAM de la plupart des machines, dont
-      // les runners CI à 16GB) est une contrainte d'orchestration qui ne doit
-      // pas rendre la supervision silencieusement dormante (cf. fiche 0033).
-      // Même choix que orchestrator.ts et SprintRunner.ts.
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
       watchRoots = config.supervision?.watch_roots ?? [];
       presumedDeadAfterMin = config.supervision?.presumed_dead_after_min ?? 5;
     } catch {
-      // cop1.config.yaml absent ou invalide : supervision dormante par
-      // défaut, ce n'est jamais une raison de faire échouer le démarrage
-      // du daemon (le reste du daemon fonctionne sans config chargée).
       return;
     }
 

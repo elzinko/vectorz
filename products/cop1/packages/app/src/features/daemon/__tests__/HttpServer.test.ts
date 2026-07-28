@@ -3,11 +3,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
 import { BlockageService, RuleProposalService } from '@cop1/sprint-core';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
-import { RunAlreadyActiveError } from '../../orchestrator/infrastructure/HttpOrchestratorAdapter.js';
 import { HttpServer } from '../infrastructure/HttpServer.js';
-import type { OrchestratorAdapterPort } from '../infrastructure/HttpServer.js';
 
 describe('HttpServer', () => {
   let server: HttpServer;
@@ -279,146 +277,18 @@ describe('HttpServer', () => {
     }
   });
 
-  describe('Orchestrator API', () => {
-    let adapter: OrchestratorAdapterPort & {
-      startRun: ReturnType<typeof vi.fn>;
-      stop: ReturnType<typeof vi.fn>;
-    };
+  it('returns 404 for removed epoch-1 pilot routes (E4)', async () => {
+    await server.start(TEST_PORT);
 
-    beforeEach(() => {
-      adapter = {
-        startRun: vi.fn(() => ({ runId: 'run-abc' })),
-        stop: vi.fn(async () => {}),
-      };
-      server.setOrchestratorAdapter(adapter);
+    const sprintStatus = await fetch(`http://127.0.0.1:${TEST_PORT}/api/sprint/status`);
+    expect(sprintStatus.status).toBe(404);
+
+    const run = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ epic: 'EA1' }),
     });
-
-    it('POST /api/orchestrator/run returns 200 { runId }', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ epic: 'EA1', mode: 'normal' }),
-      });
-      expect(res.status).toBe(200);
-      const data = (await res.json()) as { runId: string };
-      expect(data.runId).toBe('run-abc');
-      expect(adapter.startRun).toHaveBeenCalledWith(
-        expect.objectContaining({ epic: 'EA1', mode: 'normal' }),
-      );
-    });
-
-    it('defaults mode to normal when omitted', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ epic: 'EA1' }),
-      });
-      expect(res.status).toBe(200);
-      expect(adapter.startRun).toHaveBeenCalledWith(
-        expect.objectContaining({ epic: 'EA1', mode: 'normal' }),
-      );
-    });
-
-    it('returns 409 when a run is already active', async () => {
-      adapter.startRun.mockImplementation(() => {
-        throw new RunAlreadyActiveError();
-      });
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ epic: 'EA1', mode: 'normal' }),
-      });
-      expect(res.status).toBe(409);
-    });
-
-    it('returns 400 when epic is missing', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'normal' }),
-      });
-      expect(res.status).toBe(400);
-      expect(adapter.startRun).not.toHaveBeenCalled();
-    });
-
-    it('returns 400 for an invalid mode', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ epic: 'EA1', mode: 'turbo' }),
-      });
-      expect(res.status).toBe(400);
-      expect(adapter.startRun).not.toHaveBeenCalled();
-    });
-
-    it('forwards caps to the adapter', async () => {
-      await server.start(TEST_PORT);
-
-      await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ epic: 'EA1', mode: 'normal', caps: { maxTokens: 500 } }),
-      });
-      expect(adapter.startRun).toHaveBeenCalledWith(
-        expect.objectContaining({ caps: { maxTokens: 500 } }),
-      );
-    });
-
-    it('returns 400 for a non-numeric cap and does not start a run', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ epic: 'EA1', mode: 'normal', caps: { maxTokens: 'abc' } }),
-      });
-      expect(res.status).toBe(400);
-      expect(adapter.startRun).not.toHaveBeenCalled();
-    });
-
-    it('POST /api/orchestrator/stop calls adapter.stop and returns 200 { ok }', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/orchestrator/stop`, {
-        method: 'POST',
-      });
-      expect(res.status).toBe(200);
-      const data = (await res.json()) as { ok: boolean };
-      expect(data.ok).toBe(true);
-      expect(adapter.stop).toHaveBeenCalled();
-    });
-
-    it('streams an orchestrator event emitted on the daemon bus to an /events subscriber', async () => {
-      const eventBus = new EventBus();
-      server.setEventBus(eventBus);
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/events`);
-      const reader = res.body?.getReader();
-      const decoder = new TextDecoder();
-      if (reader) {
-        await reader.read(); // :ok
-
-        eventBus.emit('orchestrator.command.started', { command: '/dev', runId: 'run-abc' });
-
-        const { value } = await reader.read();
-        const text = decoder.decode(value);
-        expect(text).toContain('orchestrator.command.started');
-        expect(text).toContain('run-abc');
-
-        reader.cancel();
-      }
-    });
+    expect(run.status).toBe(404);
   });
 
   describe('Blocage API (fiche 0021)', () => {

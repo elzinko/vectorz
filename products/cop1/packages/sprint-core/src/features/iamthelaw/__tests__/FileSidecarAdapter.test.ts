@@ -19,7 +19,7 @@ describe('FileSidecarAdapter', () => {
   });
 
   it('should create sidecar directory when missing and write content', () => {
-    const sidecarDir = join(testDir, '_bmad', '_memory', 'iamthelaw-sidecar');
+    const sidecarDir = join(testDir, '.cop1', 'iamthelaw-sidecar');
     expect(existsSync(sidecarDir)).toBe(false);
 
     adapter.write('# Test Content\n');
@@ -33,14 +33,14 @@ describe('FileSidecarAdapter', () => {
     adapter.write('First call');
     adapter.write('Second call');
 
-    const sidecarDir = join(testDir, '_bmad', '_memory', 'iamthelaw-sidecar');
+    const sidecarDir = join(testDir, '.cop1', 'iamthelaw-sidecar');
     expect(existsSync(sidecarDir)).toBe(true);
   });
 
   it('should write content atomically with no leftover .tmp file', () => {
     adapter.write('# Atomic Content\n');
 
-    const filePath = join(testDir, '_bmad', '_memory', 'iamthelaw-sidecar', 'rules.md');
+    const filePath = join(testDir, '.cop1', 'iamthelaw-sidecar', 'rules.md');
     expect(existsSync(filePath)).toBe(true);
     expect(readFileSync(filePath, 'utf-8')).toBe('# Atomic Content\n');
     expect(existsSync(`${filePath}.tmp`)).toBe(false);
@@ -50,7 +50,7 @@ describe('FileSidecarAdapter', () => {
     adapter.write('First version');
     adapter.write('Second version');
 
-    const filePath = join(testDir, '_bmad', '_memory', 'iamthelaw-sidecar', 'rules.md');
+    const filePath = join(testDir, '.cop1', 'iamthelaw-sidecar', 'rules.md');
     expect(readFileSync(filePath, 'utf-8')).toBe('Second version');
   });
 });

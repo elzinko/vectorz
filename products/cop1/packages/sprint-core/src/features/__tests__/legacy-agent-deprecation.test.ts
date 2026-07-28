@@ -18,9 +18,9 @@ const LEGACY_CLASSES: ReadonlyArray<{ file: string; className: string }> = [
   { file: 'workflow/infrastructure/steps/PMAgentStep.ts', className: 'PMAgentStep' },
 ];
 
-describe('EA11-S1 — Legacy cop1 agent classes deprecation guard', () => {
+describe('Epoch-1 legacy cop1 agent classes — deprecation guard', () => {
   it.each(LEGACY_CLASSES)(
-    '$className has class-level @deprecated JSDoc with required references',
+    '$className has class-level @deprecated JSDoc pointing to mega-city dogfood',
     ({ file, className }) => {
       const source = readFileSync(join(ROOT, file), 'utf8');
       const exportDecl = `export class ${className}`;
@@ -33,9 +33,7 @@ describe('EA11-S1 — Legacy cop1 agent classes deprecation guard', () => {
 
       const jsdoc = preamble.slice(lastBlock);
       expect(jsdoc).toContain('@deprecated');
-      expect(jsdoc).toContain('EA11-S1');
-      expect(jsdoc).toContain('ADR-012');
-      expect(jsdoc).toMatch(/EA10(-S9)?/);
+      expect(jsdoc).toMatch(/mega-city|ezk-sprint/i);
     },
   );
 });
