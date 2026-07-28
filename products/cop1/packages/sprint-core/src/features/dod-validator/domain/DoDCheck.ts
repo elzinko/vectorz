@@ -17,7 +17,7 @@
 export interface DoDContext {
   /** Project root the command ran against. */
   readonly projectRoot: string;
-  /** The BMAD command that just completed. */
+  /** The workflow command that just completed. */
   readonly command: string;
   /** Story being processed (logging/correlation + check scoping). */
   readonly storyKey: string;

@@ -15,19 +15,13 @@ export { QAAgentStep } from './features/workflow/infrastructure/steps/QAAgentSte
 /** @deprecated Use PMAgentWorkflowStep instead */
 export { PMAgentStep } from './features/workflow/infrastructure/steps/PMAgentStep.js';
 
-// BMAD Reader
-export { BMADReader } from './features/bmad-reader/application/BMADReader.js';
-export type { StoryMetadata } from './features/bmad-reader/domain/StoryMetadata.js';
-export { IntegrityError } from './features/bmad-reader/domain/errors/IntegrityError.js';
-
 // Story Status Tracker
 export { StoryStatusTracker } from './features/story-tracker/application/StoryStatusTracker.js';
 export { StoryStatus } from './features/story-tracker/domain/StoryStatus.js';
 export type { StoryStatusValue } from './features/story-tracker/domain/StoryStatus.js';
 export { InvalidTransitionError } from './features/story-tracker/domain/errors/InvalidTransitionError.js';
 export { YamlStatusStore } from './features/story-tracker/infrastructure/YamlStatusStore.js';
-// EA12-S4 (A6 pivot): BmadStatusReader + SprintStatusReaderPort removed.
-// File-level BMAD coupling now lives in `@cop1/app` orchestrator adapter only.
+// EA12-S4 (A6 pivot): legacy sprint-status readers removed in epoch 2 (E4).
 export { InMemoryStatusReader } from './features/story-tracker/infrastructure/InMemoryStatusReader.js';
 
 // Snapshot
@@ -96,8 +90,6 @@ export type {
 } from './features/sprint-dashboard/domain/SprintDashboardTypes.js';
 
 // Burndown — removed EA12-S7 (A7 pivot — aspirational feature, zero consumer).
-// V1.2 backlog: reintroduce with a cop1 command that consumes
-// /bmad-bmm-sprint-status output as its data source.
 
 // DoR Validator
 export { DORValidator } from './features/dor-validator/application/DORValidator.js';
@@ -197,115 +189,6 @@ export { ImprovementReviewService } from './features/improvement-review/applicat
 // Rule Auto-Apply
 export { RuleAutoApplyService } from './features/rule-auto-apply/application/RuleAutoApplyService.js';
 
-// BMAD Orchestration
-export type {
-  BMADCommandPort,
-  BMADCommandResult,
-} from './features/bmad-orchestration/domain/ports/BMADCommandPort.js';
-export { ClaudeCliAdapter } from './features/bmad-orchestration/infrastructure/ClaudeCliAdapter.js';
-export type {
-  ClaudeCliAdapterOptions,
-  ProcessSpawner,
-} from './features/bmad-orchestration/infrastructure/ClaudeCliAdapter.js';
-export { BMADCommandStep } from './features/bmad-orchestration/application/BMADCommandStep.js';
-export type {
-  BMADCommandStepOptions,
-  BudgetChecker,
-} from './features/bmad-orchestration/application/BMADCommandStep.js';
-export { BMADSessionStep } from './features/bmad-orchestration/application/BMADSessionStep.js';
-export type { BMADSessionStepOptions } from './features/bmad-orchestration/application/BMADSessionStep.js';
-export { StoryContextBuilder } from './features/bmad-orchestration/domain/StoryContextBuilder.js';
-export type { StoryContext } from './features/bmad-orchestration/domain/StoryContextBuilder.js';
-export { RetryPolicy } from './features/bmad-orchestration/domain/RetryPolicy.js';
-export type { RetryPolicyOptions } from './features/bmad-orchestration/domain/RetryPolicy.js';
-export { BMADTimeoutError } from './features/bmad-orchestration/domain/errors/BMADTimeoutError.js';
-export { BMADRetryExhaustedError } from './features/bmad-orchestration/domain/errors/BMADRetryExhaustedError.js';
-export { BudgetExhaustedError } from './features/bmad-orchestration/domain/errors/BudgetExhaustedError.js';
-export type {
-  SupervisorLLMPort,
-  SupervisorQuestion,
-  SupervisorQuestionContext,
-  SupervisorResponse,
-} from './features/bmad-orchestration/domain/ports/SupervisorLLMPort.js';
-export { buildSupervisorPrompt } from './features/bmad-orchestration/domain/SupervisorPromptBuilder.js';
-export {
-  DEFAULT_BMAD_PIPELINE_COMMANDS,
-  DEFAULT_ORCHESTRATOR_CYCLE,
-  defaultCommandsForPhase,
-} from './features/bmad-orchestration/domain/BmadCycle.js';
-export type {
-  BmadCyclePhase,
-  BmadPipelineCommand,
-} from './features/bmad-orchestration/domain/BmadCycle.js';
-export { CLAUDE_STATUS_EVENT } from './features/bmad-orchestration/domain/ClaudeAvailability.js';
-export type {
-  ClaudeAvailability,
-  ClaudeStatusEvent,
-} from './features/bmad-orchestration/domain/ClaudeAvailability.js';
-export {
-  DEFAULT_MODEL_TIER_CONFIG,
-  DefaultModelTierRouter,
-} from './features/bmad-orchestration/domain/ModelTierRouter.js';
-export type {
-  ModelTier,
-  ModelTierRouter,
-  ModelTierRule,
-  ModelTierRouterConfig,
-} from './features/bmad-orchestration/domain/ModelTierRouter.js';
-export { SupervisorTimeoutError } from './features/bmad-orchestration/domain/errors/SupervisorTimeoutError.js';
-export type {
-  BMADSessionPort,
-  BMADSessionContext,
-  SessionHandle,
-  SessionTurnResult,
-  QuestionHandler,
-} from './features/bmad-orchestration/domain/ports/BMADSessionPort.js';
-export { SupervisorRateLimitError } from './features/bmad-orchestration/domain/errors/SupervisorRateLimitError.js';
-export { AgentSdkSupervisorAdapter } from './features/bmad-orchestration/infrastructure/AgentSdkSupervisorAdapter.js';
-export type {
-  SupervisorQueryFunction,
-  SupervisorQueryMessage,
-  SupervisorQueryOptions,
-} from './features/bmad-orchestration/infrastructure/AgentSdkSupervisorAdapter.js';
-export { InMemorySupervisorAdapter } from './features/bmad-orchestration/infrastructure/InMemorySupervisorAdapter.js';
-export { AgentSdkSessionAdapter } from './features/bmad-orchestration/infrastructure/AgentSdkSessionAdapter.js';
-export type {
-  AgentSdkSessionAdapterOptions,
-  QueryFunction as SessionQueryFunction,
-} from './features/bmad-orchestration/infrastructure/AgentSdkSessionAdapter.js';
-export { InMemorySessionAdapter } from './features/bmad-orchestration/infrastructure/InMemorySessionAdapter.js';
-export { ClaudeResumeSessionAdapter } from './features/bmad-orchestration/infrastructure/ClaudeResumeSessionAdapter.js';
-export type {
-  ClaudeResumeSessionAdapterOptions,
-  ProcessSpawner as ClaudeResumeProcessSpawner,
-} from './features/bmad-orchestration/infrastructure/ClaudeResumeSessionAdapter.js';
-export {
-  SessionLogger,
-  deriveEpicId,
-} from './features/bmad-orchestration/application/SessionLogger.js';
-export type { SessionInteraction } from './features/bmad-orchestration/application/SessionLogger.js';
-export { SessionInteractionCollector } from './features/bmad-orchestration/application/SessionInteractionCollector.js';
-export { SessionHistoryReader } from './features/bmad-orchestration/application/SessionHistoryReader.js';
-export type { SessionHistoryFilter } from './features/bmad-orchestration/application/SessionHistoryReader.js';
-// EA11-S3 / S6 / S7 / S8 — history + supervisor context + transcript
-export { HistoryService } from './features/bmad-orchestration/application/HistoryService.js';
-export { SupervisorContextLoader } from './features/bmad-orchestration/application/SupervisorContextLoader.js';
-export type {
-  SupervisorContext,
-  SupervisorProjectMetadata,
-} from './features/bmad-orchestration/domain/SupervisorContext.js';
-export { SessionTranscriptGenerator } from './features/bmad-orchestration/application/SessionTranscriptGenerator.js';
-export { ExchangeHistoryReader } from './features/bmad-orchestration/infrastructure/ExchangeHistoryReader.js';
-export type { ExchangeFile } from './features/bmad-orchestration/infrastructure/ExchangeHistoryReader.js';
-export { ExchangeHistoryWriter } from './features/bmad-orchestration/infrastructure/ExchangeHistoryWriter.js';
-export { MetricsWriter } from './features/bmad-orchestration/infrastructure/MetricsWriter.js';
-export { GitignoreBootstrap } from './features/bmad-orchestration/infrastructure/GitignoreBootstrap.js';
-export type {
-  ExchangeFrontMatter,
-  ExchangeRecord,
-  MetricRecord,
-} from './features/bmad-orchestration/domain/HistoryRecords.js';
-// EA11-S3 — extracted services
 export { WorktreeService } from './features/dev-agent/application/WorktreeService.js';
 export type { WorktreePort } from './features/dev-agent/domain/ports/WorktreePort.js';
 export { StepByStepController } from './features/workflow/application/StepByStepController.js';
@@ -314,9 +197,6 @@ export type {
   StepByStepMode,
   StepByStepPort,
 } from './features/workflow/domain/ports/StepByStepPort.js';
-export { SupervisorService } from './features/bmad-orchestration/application/SupervisorService.js';
-export type { DeterministicPattern } from './features/bmad-orchestration/application/SupervisorService.js';
-
 // Budget — domaine seul (le service et le store dormants ont été supprimés, fiche 0036 / ADR-017)
 export type { BudgetStatus } from './features/budget/domain/BudgetStatus.js';
 export type { TokenConsumption } from './features/budget/domain/TokenConsumption.js';

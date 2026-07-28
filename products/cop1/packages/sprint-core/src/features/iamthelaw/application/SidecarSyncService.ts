@@ -2,7 +2,7 @@ import type { Rule, RuleSet } from '../domain/RuleSet.js';
 import type { RuleLoaderPort } from '../domain/ports/RuleLoaderPort.js';
 import type { SidecarSyncPort } from '../domain/ports/SidecarSyncPort.js';
 
-/** Service that syncs iamthelaw governance rules to BMAD sidecar memory as LLM-friendly markdown. */
+/** Service that syncs iamthelaw governance rules to the native sidecar as LLM-friendly markdown. */
 export class SidecarSyncService {
   constructor(
     private readonly loader: RuleLoaderPort,
