@@ -1,5 +1,6 @@
 ---
 id: 0002
+product: vectorz
 title: Fix emplacement du worktree en session concurrente
 type: bug
 priority: P1

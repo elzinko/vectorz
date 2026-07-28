@@ -1,5 +1,6 @@
 ---
 id: 0003
+product: vectorz
 title: E2E Playwright — panneau auth (🟢 + modèle)
 type: chore
 priority: P2

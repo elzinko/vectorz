@@ -1,5 +1,6 @@
 ---
 id: 0056
+product: vectorz
 title: Visualisation — onglet « qualité par PR » dans mission-control
 type: feature
 priority: P2

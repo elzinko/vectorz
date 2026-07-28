@@ -1,5 +1,6 @@
 ---
 id: 0012
+product: vectorz
 title: Rafraîchir brownfield-snapshot.md (ancien emplacement worktree agent/)
 type: chore
 priority: P3

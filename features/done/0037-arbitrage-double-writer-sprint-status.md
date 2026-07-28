@@ -1,5 +1,6 @@
 ---
 id: 0037
+product: vectorz
 title: Arbitrage double-writer sprint-status.yaml (porter la décision D7)
 type: chore
 priority: P1

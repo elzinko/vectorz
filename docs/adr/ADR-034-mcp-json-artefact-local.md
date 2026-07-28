@@ -1,12 +1,12 @@
 # ADR-034 — `.mcp.json` est un artefact d'installation LOCAL, pas une déclaration versionnée
 
 **Statut :** Proposé (2026-07-26, architecte) — fiche
-[0094](../../products/mega-city/features/0094-emetteur-branche-sur-claude-code.md).
-**Révise** la proposition de la fiche 0094 (« un `.mcp.json` **commité à la racine du
+[2094](../../features/2094-emetteur-branche-sur-claude-code.md).
+**Révise** la proposition de la fiche 2094 (« un `.mcp.json` **commité à la racine du
 dépôt** ») sur le seul point du versionnement. **Ne révise pas**
 [ADR-019](ADR-019-worktree-location.md) (normalisation worktree), ni
 [ADR-032](ADR-032-emission-adaptateur-separable.md) (l'émetteur reste dans la méthode),
-ni l'invariant anti-falsification de la fiche 0050.
+ni l'invariant anti-falsification de la fiche 2050.
 
 ## Contexte
 
@@ -16,7 +16,7 @@ décident du sort de ce fichier.
 
 **1. L'invariant est non négociable.** `SUPERVISION_PROJECT_ROOT` vient de la
 **configuration**, jamais d'un paramètre d'outil : le modèle ne choisit jamais où son
-journal s'écrit (fiche 0050 ; chemin vivant : `bin/supervision-mcp.ts` →
+journal s'écrit (fiche 2050 ; chemin vivant : `bin/supervision-mcp.ts` →
 `resolveSupervisionRoot`, `project-root.ts:155` — `mcp-server.ts` n'en garde qu'un
 ré-export de compatibilité, plus appelé qu'en test). Toute option doit le préserver.
 
@@ -158,7 +158,7 @@ local`, stocké dans `~/.claude.json`, prioritaire sur le scope projet à nom é
 dans la doc), et `.mcp.json` redevient commitable pour le reste. C'est l'option D, gratuite
 le jour venu, inutile aujourd'hui.
 
-**Question laissée ouverte.** La fiche 0094 demande un `supervision:probe`. Il devra
+**Question laissée ouverte.** La fiche 2094 demande un `supervision:probe`. Il devra
 vérifier le `.mcp.json` **local** de la machine, pas un fichier versionné — la cible du
 banc change avec cette décision.
 

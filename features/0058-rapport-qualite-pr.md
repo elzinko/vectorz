@@ -1,5 +1,6 @@
 ---
 id: 0058
+product: vectorz
 title: Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR
 type: feature
 priority: P2

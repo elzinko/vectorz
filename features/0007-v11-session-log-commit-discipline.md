@@ -1,5 +1,6 @@
 ---
 id: 0007
+product: vectorz
 title: Format de session log + discipline de commit (anchor réel)
 type: chore
 priority: P3

@@ -1,5 +1,6 @@
 ---
 id: 0014
+product: vectorz
 title: iamthelaw enforced — Rule.check → DoDCheck, advisory dans le prompt
 type: feature
 priority: P2

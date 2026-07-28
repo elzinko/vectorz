@@ -158,8 +158,8 @@ désormais que le contenu ait atterri **au chemin attendu**. Effet de bord heure
 remplace le `ls-tree | grep` qui servait à exclure le commit ayant *retiré* le blob.
 
 **2. Le préfixe d'un id désigne un backlog, il ne décore pas un numéro.** Dans ce monorepo,
-**62 numéros existent des deux côtés** (`features/0005-…` et
-`products/mega-city/features/0005-…`). Jeter le préfixe et retenir le premier match global
+**62 numéros existaient des deux côtés** (`features/0005-…` et
+`features/2005-…` côté méthode, désormais fusionnés). Jeter le préfixe et retenir le premier match global
 pouvait donc prouver `CLEAN` sur la fiche voisine, exactement là où le préfixe servait à
 lever l'ambiguïté. La résolution suit maintenant la convention déjà posée par
 `bin/plan-head.ts` (ADR-0017 A13) — l'emplacement fait le produit, le préfixe distingue

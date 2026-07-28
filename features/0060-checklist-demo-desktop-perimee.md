@@ -1,5 +1,6 @@
 ---
 id: 0060
+product: vectorz
 title: Les deux docs d'installation ont décroché de main (checklist démo + guide web UI)
 type: bug
 priority: P2

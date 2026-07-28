@@ -1,5 +1,6 @@
 ---
 id: 0044
+product: vectorz
 title: Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A)
 type: chore
 priority: P1

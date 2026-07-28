@@ -55,7 +55,7 @@ des lieux réel est écrit :
    (idempotent) — c'est **BMAD lui-même** qui documente la couture :
    `_bmad/_config/agents/bmm-dev.customize.yaml`:16-17 « *Add custom critical actions (appended
    after standard config loading)* ». `find _bmad -type f` = 27 fichiers (`_config/` + `_memory/`) :
-   **aucune source BMAD n'est vendorée en repo**. Cf. `products/mega-city/features/0058-bmad-contrat-supervisabilite.md`:52-56
+   **aucune source BMAD n'est vendorée en repo**. Cf. `features/2058-bmad-contrat-supervisabilite.md`:52-56
    (« v6 très modulaire … un vrai fork est rarement nécessaire »).
 2. **Le contrat a deux moitiés ; l'émission n'en porte qu'une.** L'autre — l'**arrêt au jalon** —
    est de la logique, pas de l'émission : capture:299-300 « `gate.reached` … OBLIGATOIRE ; **la
@@ -74,8 +74,8 @@ des lieux réel est écrit :
    l'intégration comme « un **choix du propriétaire de la méthode** », pas comme un chemin imposé.
 
 **Fiches structurantes que la v1 ignorait** (aucune occurrence de `0050` ni `0058` dans le texte) :
-`products/mega-city/features/0050-kit-emetteur-supervisabilite.md` (le kit livré) et
-`products/mega-city/features/0058-bmad-contrat-supervisabilite.md` (créée 2026-07-15, `todo`) — la
+`features/done/2050-kit-emetteur-supervisabilite.md` (le kit livré) et
+`features/2058-bmad-contrat-supervisabilite.md` (créée 2026-07-15, `todo`) — la
 **même expérience** que le spike 0048, plus mûre : échelle graduée adaptateur→overlay→fork (:25-34),
 prérequis dur « **ne démarre qu'après 0050 verte** » (:38-39), « **ADR au démarrage** : adaptateur
 vs overlay vs fork — tranché AVANT de coder » (:43), critère réel « passe le journal-validator »
@@ -402,7 +402,7 @@ contre un homme de paille ; cette table-ci compare des options réelles.)*
 2. **Dérive carte ↔ surface observable** — inhérente à l'absence de contrat côté surface (cf. « DIP-correct »).
 3. **La parade « golden events » de la v1 ne couvrait AUCUN des deux vecteurs qu'elle prétendait
    couvrir** :
-   - un golden test **compare une trace à une fixture** — `products/mega-city/features/0067-ezk-ezk-contract-aware-carte-emission.md`:33-35
+   - un golden test **compare une trace à une fixture** — `features/2067-ezk-ezk-contract-aware-carte-emission.md`:33-35
      « la trace `events.jsonl` produite **matche une fixture de référence** (types + ordre, payload en
      subset-match), en **dry-run sans effet de bord réel** » : il **ne peut structurellement pas
      constater que la méthode ne s'est pas arrêtée** ;
@@ -432,7 +432,7 @@ contre un homme de paille ; cette table-ci compare des options réelles.)*
        → kit) — aucun poste d'observation externe n'est requis. Le risque n°1 ne subsiste que pour
        l'éventuel recours au shim B (transition, dernier ressort).
 3. [x] **Réconcilié (2026-07-17)** : fiche vectorz **0048 fusionnée dans**
-       `products/mega-city/features/0058` (et supprimée du backlog racine) — **0058 = LA fiche
+       `features/2058-bmad-contrat-supervisabilite` (et supprimée du backlog racine) — **0058 = LA fiche
        sidecar**. 0050 + 0058 sont cités dans ce texte ; le prérequis « ne démarre qu'après 0050
        verte » est repris.
 4. [x] **Réglé par la fusion (2026-07-17)** : le critère vacuous de 0048 disparaît avec elle ; les

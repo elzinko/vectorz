@@ -1,5 +1,6 @@
 ---
 id: 0015
+product: vectorz
 title: StoryBudget par story + câblage DoDLimiter (enforcement budget fin)
 type: feature
 priority: P2

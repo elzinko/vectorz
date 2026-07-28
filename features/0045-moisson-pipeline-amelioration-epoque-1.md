@@ -1,5 +1,6 @@
 ---
 id: 0045
+product: vectorz
 title: Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse
 type: chore
 priority: P2 # arbitrée 2026-07-17 (review) : P2 — seule la part quality-intelligence/ceremony-engine/_bmad-output est menacée par L5/E4 ; contrainte d'ordre conservée (AC4)

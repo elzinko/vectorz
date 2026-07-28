@@ -1,5 +1,6 @@
 ---
 id: 0021
+product: vectorz
 title: câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale
 type: feature
 priority: P1

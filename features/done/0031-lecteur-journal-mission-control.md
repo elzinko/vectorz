@@ -1,5 +1,6 @@
 ---
 id: 0031
+product: vectorz
 title: Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur)
 type: feature
 priority: P1

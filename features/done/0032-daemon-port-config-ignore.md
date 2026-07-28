@@ -1,5 +1,6 @@
 ---
 id: 0032
+product: vectorz
 title: cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte)
 type: bug
 priority: P1

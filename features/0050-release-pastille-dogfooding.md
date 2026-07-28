@@ -1,5 +1,6 @@
 ---
 id: 0050
+product: vectorz
 title: Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok)
 type: feature
 priority: P1
@@ -80,10 +81,10 @@ self-hosting au quotidien ».
   0047 = la **réflexion** migration réflexive (P3, idea, vise ADR+article) ; mega-city
   0007 = invariants de règles ; capture 13/07 = la **doctrine**. Aucune fiche ne portait
   le canal + la pastille.
-- **Lien mega-city [0087](../products/mega-city/features/0087-plugin-claude-code-distribution.md)**
-  (distribuer le catalogue en plugin Claude Code) : **dépendance de conception**. 0087 a besoin
+- **Lien mega-city [2087](../features/2087-plugin-claude-code-distribution.md)**
+  (distribuer le catalogue en plugin Claude Code) : **dépendance de conception**. 2087 a besoin
   d'une version identifiable pour son `plugin.json` et pose frontalement la question laissée en
   réserve par ADR-023 (option D) / ADR-025 §2 — *version alignée sur le tag umbrella, ou version
   mega-city indépendante ?*. Si cette fiche définit **la** version figée de vectorz, 0087 s'y
-  branche au lieu d'en inventer une troisième. À instruire avant, ou au moins avec, 0087.
+  branche au lieu d'en inventer une troisième. À instruire avant, ou au moins avec, 2087.
 - `ready:` volontairement vide — gate DoR au PO (ADR-0016).

@@ -1,5 +1,6 @@
 ---
 id: 0018
+product: vectorz
 title: Câbler DoDLimiter (N rejets DoD → blocked + escalade)
 type: feature
 priority: P3

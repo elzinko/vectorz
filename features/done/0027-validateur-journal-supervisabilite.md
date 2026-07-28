@@ -1,5 +1,6 @@
 ---
 id: 0027
+product: vectorz
 title: Validateur de journal de supervisabilité — l'invariant devient exécutable
 type: feature
 priority: P1

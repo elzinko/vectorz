@@ -80,13 +80,12 @@ echo "G4 — une fiche déclarée livrée mais restée en todo est détectée :"
 OUT4="$(bash "$CHECK" --gate --shipped 0043)"
 ok "points contient 3"                       "echo \"\$OUT4\" | grep -q '^VERDICT: DIRTY points=.*3'"
 ok "le fait cite la fiche et son statut"     "echo \"\$OUT4\" | grep -q '\[P3\] declared 0043 not shipped:.*status=todo'"
-# NB cette assertion vérifiait auparavant que le préfixe était JETÉ (« mc-0042 → 0042 »).
-# C'était précisément le bug relevé par Codex (PR #56) : le préfixe DÉSIGNE un backlog, il
-# ne décore pas le numéro. Ici la fixture n'a qu'un backlog racine, donc `mc-` ne résout
-# rien — et refuser de conclure vaut mieux que valider la fiche d'à côté (cf. G10).
+# NB 0064 : préfixe `mc-` résout vers la liste unique `features/` avec offset +2000
+# (legacy). `mc-0042` cherche donc `2042`, absent de la fixture → introuvable, DIRTY.
+# On ne doit JAMAIS valider la fiche racine `0042` (CLEAN) par erreur de préfixe.
 OUT4b="$(bash "$CHECK" --gate --shipped mc-0042)"
-ok "un préfixe qui ne désigne aucun backlog ⇒ refus de conclure, pas un CLEAN" \
-   "echo \"\$OUT4b\" | grep -q 'prefixe .mc. non resolu' && echo \"\$OUT4b\" | grep -q '^VERDICT: DIRTY'"
+ok "mc-0042 (legacy) ne valide PAS la fiche racine 0042 — offset 2042 introuvable" \
+   "echo \"\$OUT4b\" | grep -q 'declared mc-0042 introuvable' && echo \"\$OUT4b\" | grep -q '^VERDICT: DIRTY'"
 OUT4c="$(bash "$CHECK" --gate --shipped 9999)"
 ok "un id inconnu est signalé, pas ignoré"   "echo \"\$OUT4c\" | grep -q '\[P3\] declared 9999 introuvable'"
 

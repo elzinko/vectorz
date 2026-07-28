@@ -42,7 +42,7 @@ pour plus tard.
 Les deux sujets finissent au même endroit :
 
 1. **Un juge de cohérence** — « cette règle en contredit-elle une autre ? un doublon ? »
-   C'est le *judgedread*. Déjà en idée : fiche [0008 chief-judge](../../products/mega-city/features/0008-chief-judge.md)
+   C'est le *judgedread*. Déjà en idée : fiche [2008 chief-judge](../../features/2008-chief-judge.md)
    + l'agent `ezk-steward` (gardien de LA LOI).
 2. **Rangé dans mega-city** — une règle dans `rules/` (10 catégories existent déjà), un
    `bundle`, ou le DoD/DoR.
@@ -68,8 +68,8 @@ assemblées ni câblées** dans la boucle vivante.
 | Round-robin 2 tours → consensus | ✅ **codé + testé** (« 2 tours × 3 agents ») | `RoundTableEngine` (ceremony-engine), `maxRounds=2` |
 | Rétro qui pond des propositions | 🟠 **codée mais orpheline** (jamais déclenchée) | `RetroCeremony` — `grep 'new RetroCeremony(' = vide` |
 | Règle mesurable liée à un **symptôme** | ✅ **codé** (blocage > 30 %, coverage < 80 %…) | `AutoRuleSuggestionService`, `improvementScore` |
-| Juge de cohérence (« judgedread ») | 🔴 **spécifié, pas codé** ; runtime = anti-doublon seul | fiches `0008` + `0034` ; `checkDuplicate` |
-| Atterrir dans DoR/DoD / règles mega-city | ✅ DoD/DoR codés + règles en `rules/` | `DoDCheck` (ADR-020) ; 53 règles migrées (fiche 0006) |
+| Juge de cohérence (« judgedread ») | 🔴 **spécifié, pas codé** ; runtime = anti-doublon seul | fiches `2008` + `0034` ; `checkDuplicate` |
+| Atterrir dans DoR/DoD / règles mega-city | ✅ DoD/DoR codés + règles en `rules/` | `DoDCheck` (ADR-020) ; 53 règles migrées (fiche 2006) |
 
 **Donc ce qui manque n'est pas la machinerie — ce sont 3 soudures :**
 
@@ -78,7 +78,7 @@ assemblées ni câblées** dans la boucle vivante.
 3. le **pont** rétro → `rules/` de mega-city (le retour de règle écrit encore à l'ancienne
    adresse cop1 `iamthelaw/*.yaml`).
 
-C'est le job de la fiche [0063 ezk-retro](../../products/mega-city/features/done/0063-ezk-retro-ceremonie-auto-amelioration.md)
+C'est le job de la fiche [2063 ezk-retro](../../features/done/2063-ezk-retro-ceremonie-auto-amelioration.md)
 (Sujet A). Le mesureur du Sujet B = fiche vectorz 0044.
 
 *Nuance sur ton souvenir : les 2 tours existent mais dans un ordre **déterministe** — le
@@ -168,7 +168,7 @@ self-hosting**, pas une phase d'amélioration en amont.
 **moteur** :
 
 1. **Self-héberge UN petit truc, sûr** (markdown only : un skill, une règle, une doc — p.ex.
-   la fiche 0063 `ezk-retro` elle-même) via `ezk-product-builder` sur vectorz. Mode **moniteur**
+   la fiche 2063 `ezk-retro` elle-même) via `ezk-product-builder` sur vectorz. Mode **moniteur**
    (toi au siège) → pas besoin des 2 stubs *pilote* du README.
 2. **La friction se ramasse en skill/règle** (`ezk-ezk` + Sujet A `ezk-retro`) — *ça*, c'est
    « améliorer la méthode », mais **nourri par du réel**.

@@ -1,5 +1,6 @@
 ---
 id: 0038
+product: vectorz
 title: E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD)
 type: feature
 priority: P2

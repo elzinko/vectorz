@@ -1,5 +1,6 @@
 ---
 id: 0017
+product: vectorz
 title: E2E Playwright — dark-mode cobaye (post-FEAT-S1)
 type: chore
 priority: P3

@@ -2,6 +2,10 @@
 
 - Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés
 - Date : 2026-07-17
+- **Erratum 2026-07-28 (fiche 0064 / PR #62)** : A13 (résolution multi-backlog par cwd) est
+  **supersédé pour vectorz**. Une seule liste `features/` à la racine ; le produit est le
+  champ `product:` ; ids méthode migrés en `XXXX+2000` (ex-`mc-XXXX`). Voir
+  `docs/audits/2026-07-28-backlog-id-map.md`.
 
 ## Contexte
 

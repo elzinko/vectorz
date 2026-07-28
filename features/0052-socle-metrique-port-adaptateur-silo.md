@@ -1,5 +1,6 @@
 ---
 id: 0052
+product: vectorz
 title: Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo
 type: feature
 priority: P1

@@ -1,5 +1,6 @@
 ---
 id: 0006
+product: vectorz
 title: V1.1 — DoD automatisée, iamthelaw et enforcement budget
 type: feature
 priority: P2

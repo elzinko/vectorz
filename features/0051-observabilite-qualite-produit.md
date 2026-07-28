@@ -1,5 +1,6 @@
 ---
 id: 0051
+product: vectorz
 title: Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)
 type: epic
 priority: P1

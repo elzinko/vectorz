@@ -1,5 +1,6 @@
 ---
 id: 0019
+product: vectorz
 title: Rendre `pnpm typecheck` robuste sur état stale (TS6310)
 type: chore
 priority: P3

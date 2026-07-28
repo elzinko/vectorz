@@ -1,5 +1,6 @@
 ---
 id: 0024
+product: vectorz
 title: résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022
 type: refactor
 priority: P2

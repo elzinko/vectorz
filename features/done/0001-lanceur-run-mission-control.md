@@ -1,5 +1,6 @@
 ---
 id: 0001
+product: vectorz
 title: Story B — lanceur de run + mission-control live
 type: feature
 priority: P1

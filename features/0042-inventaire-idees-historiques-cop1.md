@@ -1,5 +1,6 @@
 ---
 id: 0042
+product: vectorz
 title: Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox)
 type: feature
 priority: P3

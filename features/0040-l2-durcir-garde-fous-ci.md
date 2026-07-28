@@ -1,5 +1,6 @@
 ---
 id: 0040
+product: vectorz
 title: L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK)
 type: chore
 priority: P2

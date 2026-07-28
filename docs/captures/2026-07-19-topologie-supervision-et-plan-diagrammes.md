@@ -22,12 +22,12 @@ que plusieurs circulaient déjà dans les échanges.
 | Affirmation réfutée | Réalité constatée |
 |---|---|
 | Les fichiers matérialisés dans le projet cible portent un **en-tête « généré par mega-city @version » et un pin de version** | **Aucune occurrence dans le code.** `src/caps/claude-code.ts` écrit un en-tête sans version ; aucun numéro n'est émis nulle part. La phrase vient d'ADR-021 §Synchronisation, qui précise lui-même « Phasage (aucune implémentation dans cet ADR) », et vise un cap cop1 **qui n'existe pas** dans `src/caps/`. |
-| Le kit émetteur fait **~85 lignes** (script ~50 + consignes ~15 + hooks ~20) | Le kit livré fait **583 lignes** (`journal.ts` 127 + `mcp-server.ts` 158 + `runtime.ts` 241 + `upgrade-ok.ts` 57). Aucun « script d'append autonome » n'existe. Le chiffre ~85 désigne, dans la fiche mega-city 0050, le **coût d'adoption** — pas la taille du kit. |
-| Les **hooks** font partie du périmètre livré | Non : fiche mega-city 0077 en `todo`, sans PR. La fiche 0050 les sort explicitement en fiche de suite. |
+| Le kit émetteur fait **~85 lignes** (script ~50 + consignes ~15 + hooks ~20) | Le kit livré fait **583 lignes** (`journal.ts` 127 + `mcp-server.ts` 158 + `runtime.ts` 241 + `upgrade-ok.ts` 57). Aucun « script d'append autonome » n'existe. Le chiffre ~85 désigne, dans la fiche mega-city 2050, le **coût d'adoption** — pas la taille du kit. |
+| Les **hooks** font partie du périmètre livré | Non : fiche mega-city 2077 en `todo`, sans PR. La fiche 2050 les sort explicitement en fiche de suite. |
 | Plafond dur de **512 travaux supervisés** | C'est un plafond de **surveillance instantanée** (protection contre l'épuisement de descripteurs de fichiers). Au-delà, les travaux restent **découverts** et rattrapés par le rescan de 30 s. Ce n'est pas une limite de capacité — l'argument contre le mutualisé était surévalué. |
 | `.supervision/` est **gitignoré d'office** | C'est une **règle écrite** (fiche 0030, capture du 14/07), pas un état constaté : aucun `.gitignore` du dépôt ne contient `supervision`, et le kit n'écrit aucune entrée. |
 | Le lecteur de journal est **shippé** (fiche racine 0031, PR #2) | Le front-matter dit `shipped`, mais **les six critères d'acceptation sont non cochés**. Le dépôt a par ailleurs un piège documenté sur les numéros de PR pré-subtree — le « #2 » mérite vérification avant d'être cité comme preuve. |
-| Le MCP est une dépendance « optionnelle et différée » (ADR-021 point 6) | **Citation périmée** : la décision D12 (13/07) dit « le MCP émetteur est le chemin nominal pour Claude Desktop » ; la fiche 0050 le note « dé-parqué le 2026-07-14 » ; c'est l'étape 1 de la fiche 0030. |
+| Le MCP est une dépendance « optionnelle et différée » (ADR-021 point 6) | **Citation périmée** : la décision D12 (13/07) dit « le MCP émetteur est le chemin nominal pour Claude Desktop » ; la fiche 2050 le note « dé-parqué le 2026-07-14 » ; c'est l'étape 1 de la fiche 0030. |
 | « Le projet cible doit tourner même si mega-city est absent » (ADR-021) | ADR-021 dit cela de **cop1**, pas d'un projet cible quelconque — et **D5 révise** la formule : « cop1 exige UNE méthode valide implémentant le contrat ; config invalide ⇒ arrêt immédiat au démarrage ». |
 
 Deux lacunes de sourcing également relevées : **ADR-028** (lecteur de journal en mode
@@ -97,7 +97,7 @@ surveillés (conséquence de D1 : jamais de migration à chaud).
 - **Pas 3** — ne **pas** mutualiser le lanceur ni le siège.
 - **À refuser explicitement pour l'instant** : la topologie C. Rien n'existe, elle va à
   contre-courant de la doctrine (statique, versionné, zéro runtime partagé), et elle
-  suppose un registre de projets inexistant (cf. fiche mega-city 0082). Si le PO la veut,
+  suppose un registre de projets inexistant (cf. fiche mega-city 2082). Si le PO la veut,
   elle mérite **son propre ADR et son propre panel** — pas un glissement par accumulation
   de réglages.
 
@@ -109,7 +109,7 @@ surveillés (conséquence de D1 : jamais de migration à chaud).
 2. Ouvre-t-on le multi-projets **maintenant**, ou tient-on la borne écrite jusqu'à ce que
    la démo soit verte de bout en bout ?
 3. **Qui déclare** la liste des projets supervisés ? (invariant proposé : l'humain édite,
-   jamais le modèle, jamais une auto-découverte du disque — cf. fiche 0082)
+   jamais le modèle, jamais une auto-découverte du disque — cf. fiche 2082)
 4. Veut-on un **registre central** projet → version → méthode ? Il n'existe pas.
    (`portfolio.sh` est un faux ami : il agrège deux backlogs internes du dépôt, pas des
    projets clients — mais son motif est le bon germe.)
@@ -163,5 +163,5 @@ Captures : `2026-07-13-contrat-methode-et-versions.md` (D1, D2, D5, D11, D12, D1
 ADR : 021 (frontière d'intégration), 025 (monorepo), 027 (parapluie), **028** (lecteur en
 mode moniteur).
 Fiches : racine 0030 (MVP démo, en cours), 0031 (lecteur — statut à vérifier), 0038 (E3),
-0050 (release + pastille) ; mega-city 0050 (kit émetteur, livré), 0058 (2ᵉ méthode), 0077
-(hooks, à faire), 0078 (installation un-clic), **0082** (registre de supervision).
+0050 (release + pastille) ; mega-city 2050 (kit émetteur, livré), 2058 (2ᵉ méthode), 2077
+(hooks, à faire), 2078 (installation un-clic), **2082** (registre de supervision).

@@ -1,5 +1,6 @@
 ---
 id: 0059
+product: vectorz
 title: Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en cours, projet, ordre)
 type: feature
 priority: P1

@@ -1,5 +1,6 @@
 ---
 id: 0029
+product: vectorz
 title: Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace)
 type: chore
 priority: P3

@@ -1,5 +1,6 @@
 ---
 id: 0053
+product: vectorz
 title: Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu
 type: feature
 priority: P2

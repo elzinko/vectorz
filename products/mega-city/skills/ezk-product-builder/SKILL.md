@@ -94,6 +94,8 @@ automatiquement selon la section « Mode checkpoints » ci-dessous :
 > Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
 > disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
 > — tu ne l'invoques **jamais** toi-même, ça reste au choix de l'utilisateur.
+> Par défaut `ezk-archive` fait un **`check`** (dry-run) ; sur `DIRTY`, rappelle le protocole
+> **check → résumé → `run`** avant toute clôture réelle.
 > Si `SPRINT.md` contient des décisions journalisées (mode `--checkpoints auto`),
 > l'archive de session vers `docs/sessions/` se fait via `ezk-archive run`, pas ici.
 

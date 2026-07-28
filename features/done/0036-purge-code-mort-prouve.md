@@ -1,5 +1,6 @@
 ---
 id: 0036
+product: vectorz
 title: Purge du code mort prouvé + rescope 0022 AC3 (sous-ensemble sûr de L8)
 type: chore
 priority: P1

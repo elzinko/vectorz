@@ -1,5 +1,6 @@
 ---
 id: 0005
+product: vectorz
 title: Résorber les warnings biome
 type: chore
 priority: P3

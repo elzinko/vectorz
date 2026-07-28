@@ -1,5 +1,6 @@
 ---
 id: 0033
+product: vectorz
 title: Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique
 type: bug
 priority: P1

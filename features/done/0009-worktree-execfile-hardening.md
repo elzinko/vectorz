@@ -1,5 +1,6 @@
 ---
 id: 0009
+product: vectorz
 title: Durcir les appels git worktree (execFileSync, anti-injection shell)
 type: refactor
 priority: P2

@@ -1,5 +1,6 @@
 ---
 id: 0008
+product: vectorz
 title: Proxy Vite cible :3000 alors que le daemon écoute :4242
 type: bug
 priority: P2

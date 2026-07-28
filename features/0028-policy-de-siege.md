@@ -1,5 +1,6 @@
 ---
 id: 0028
+product: vectorz
 title: Policy de siège — l'auto-continue configurable sur signaux typés
 type: feature
 priority: P3

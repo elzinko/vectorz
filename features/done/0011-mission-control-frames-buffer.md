@@ -1,5 +1,6 @@
 ---
 id: 0011
+product: vectorz
 title: Buffer `frames` non borné dans la mission-control
 type: refactor
 priority: P3

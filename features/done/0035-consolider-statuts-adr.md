@@ -1,5 +1,6 @@
 ---
 id: 0035
+product: vectorz
 title: Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034)
 type: chore
 priority: P0

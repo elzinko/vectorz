@@ -1,10 +1,11 @@
 ---
 id: 0039
+product: vectorz
 title: E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque
 type: refactor
 priority: P2
 epic: 0034
-status: blocked
+status: done
 pr:
 created: 2026-07-16
 ---
@@ -52,12 +53,13 @@ mécanique) : 59 fichiers TS prod mentionnent BMAD — 25 dans les 4 unités sp�
 
 ## Critères d'acceptation
 
-- [ ] `grep -riE 'bmad' products/cop1/packages/*/src` (hors tests des features
+- [x] `grep -riE 'bmad' products/cop1/packages/*/src` (hors tests des features
       survivantes justifiés) = **zéro** ; règle CI allowlist verte et permanente
-- [ ] `_bmad/` et `_bmad-output/` absents du working tree ; décisions vivantes extraites
+      (`tools/boundary/no-bmad-in-prod.test.ts`)
+- [x] `_bmad/` et `_bmad-output/` absents du working tree ; décisions vivantes extraites
       avant suppression (aucun lien mort dans `docs/`)
-- [ ] Build + suite complète + CI verts ; le mode moniteur (démo) inchangé
-- [ ] Tags `epoch-1-bmad-final` (pré-retrait) et `epoch-2-post-bmad` (post-merge) posés ;
+- [x] Build + suite complète + CI verts ; le mode moniteur (démo) inchangé
+- [x] Tags `epoch-1-bmad-final` (pré-retrait) et `epoch-2-post-bmad` (post-merge E4 code) ;
       README « Époques » à jour ; registre docs/adr/README.md à jour
 - [ ] mega-city 0058/0059 : re-scope émission-side confirmé côté mega-city (note déjà
       posée sur 0058) — aucune fiche vivante ne référence les briques supprimées

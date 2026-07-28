@@ -1,7 +1,7 @@
 {
-  "name": "cop1",
+  "name": "vectorz",
   "version": "0.1.0",
-  "description": "Autonomous AI agents team working on your backlog",
+  "description": "Vectorz umbrella — Moniteur (cop1) + méthode mega-city (ezk-*)",
   "private": true,
   "type": "module",
   "author": "elzinko",

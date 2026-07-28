@@ -1,5 +1,6 @@
 ---
 id: 0004
+product: vectorz
 title: Sanitiser/tronquer le champ error de /api/auth/check
 type: bug
 priority: P2

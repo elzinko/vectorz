@@ -360,22 +360,37 @@ else
   # produit dont les initiales du nom donnent `xx` (mega-city → mc). Toute résolution
   # ambiguë ou inconnue est refusée plutôt que devinée.
   backlog_dir_for() { # $1=préfixe sans tiret ("" = racine) → chemin, ou "" si non résolu
-    local want="$1" d name init hits=""
-    if [[ -z "$want" ]]; then
+    # 0064 : liste unique à la racine. Préfixe `mc` (legacy) → features/ aussi
+    # (les ids méthode sont en 2xxx ; le numéro est ajusté par resolve_shipped_num).
+    local want="$1"
+    if [[ -z "$want" || "$want" == "mc" ]]; then
       git ls-files 'features/README.md' >/dev/null 2>&1 && [[ -f features/README.md ]] && { echo "features"; return; }
+      [[ -d features ]] && { echo "features"; return; }
       echo ""; return
     fi
+    # Autre préfixe produit (futur) : products/<name>/features si uniques
+    local d name init hits=""
     while IFS= read -r d; do
       [[ -z "$d" ]] && continue
       d="${d%/README.md}"
-      [[ "$d" == "features" ]] && continue                 # la racine n'a pas de préfixe
-      name="$(basename "$(dirname "$d")")"                 # products/<name>/features → <name>
+      [[ "$d" == "features" ]] && continue
+      name="$(basename "$(dirname "$d")")"
       init="$(printf '%s' "$name" | awk -F- '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')"
       [[ "$init" == "$want" ]] && hits="$hits $d"
     done < <(git ls-files '*features/README.md' 2>/dev/null)
     set -- $hits
-    (( $# == 1 )) && { echo "$1"; return; }                # non ambigu uniquement
+    (( $# == 1 )) && { echo "$1"; return; }
     echo ""
+  }
+
+  # Legacy mc-XXXX → fichier XXXX+2000 après migration 0064.
+  resolve_shipped_num() { # $1=pfx $2=num → num à chercher sur disque
+    local pfx="$1" num="$2"
+    if [[ "$pfx" == "mc" ]]; then
+      printf '%04d' $((10#$num + 2000))
+    else
+      echo "$num"
+    fi
   }
   IFS=',' read -ra _IDS <<< "$SHIPPED"
   for raw in "${_IDS[@]}"; do
@@ -389,9 +404,10 @@ else
       add_fact P3 "declared $id : prefixe '${pfx:-<racine>}' non resolu en un backlog unique — id ambigu, verification impossible"
       continue
     fi
-    found="$(git ls-files "$dir/done/${num}-*.md" 2>/dev/null | head -1)"
+    disk_num="$(resolve_shipped_num "$pfx" "$num")"
+    found="$(git ls-files "$dir/done/${disk_num}-*.md" 2>/dev/null | head -1)"
     if [[ -z "$found" ]]; then
-      stray="$(git ls-files "$dir/${num}-*.md" 2>/dev/null | head -1)"
+      stray="$(git ls-files "$dir/${disk_num}-*.md" 2>/dev/null | head -1)"
       P3_STATE="DIRTY"
       if [[ -n "$stray" ]]; then
         st="$(grep -m1 '^status:' "$stray" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"

@@ -1,5 +1,6 @@
 ---
 id: 0023
+product: vectorz
 title: exposer le model-tiering dans cop1.config.yaml (promesse ADR-015)
 type: chore
 priority: P2

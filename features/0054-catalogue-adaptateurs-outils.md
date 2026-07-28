@@ -1,5 +1,6 @@
 ---
 id: 0054
+product: vectorz
 title: Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue
 type: feature
 priority: P2

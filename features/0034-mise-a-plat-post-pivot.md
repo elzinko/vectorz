@@ -1,5 +1,6 @@
 ---
 id: 0034
+product: vectorz
 title: Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)
 type: epic
 priority: P0

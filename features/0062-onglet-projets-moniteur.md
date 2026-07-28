@@ -1,5 +1,6 @@
 ---
 id: 0062
+product: vectorz
 title: Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité
 type: feature
 priority: P2
