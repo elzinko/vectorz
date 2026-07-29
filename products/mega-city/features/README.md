@@ -47,7 +47,7 @@
 | 0095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | 🟠 in-progress | '#55' |
 | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 |  | ⛔ blocked |  |
 | 0103 | Les méthodes envoient un heartbeat — le Moniteur ne crie plus « silence » à tort | feature | P1 |  | ✅ shipped |  |
-| 0104 | Kit d’analyse de session — journal + Moniteur + transcript Claude Code en un rapport | feature | P1 |  | 🔴 todo |  |
+| 0104 | Kit d’analyse de session — journal + Moniteur + transcript Claude Code en un rapport | feature | P1 |  | ✅ shipped |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 |  | ✅ shipped |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 |  | 🔴 todo |  |
 | 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 |  | 🔴 todo |  |
@@ -120,4 +120,4 @@
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 0059 | 💡 idea |  |
 | 0093 | BacklogStore — port de persistance agnostique (md/git · GitHub · Jira…) — IDEA, sur trigger | feature | P3 |  | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0050, 0055, 0056, 0063, 0070, 0071, 0072, 0076, 0078, 0083, 0084, 0085, 0086, 0089, 0097, 0103.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0050, 0055, 0056, 0063, 0070, 0071, 0072, 0076, 0078, 0083, 0084, 0085, 0086, 0089, 0097, 0103, 0104.

@@ -12,6 +12,7 @@
     "lawgiver": "tsx bin/lawgiver.ts",
     "supervision:link": "tsx bin/supervision-link.ts",
     "supervision:probe": "tsx bin/supervision-probe.ts",
+    "supervision:analyze": "tsx bin/supervision-analyze.ts",
     "plan:order": "tsx bin/plan-order.ts",
     "plan:head": "tsx bin/plan-head.ts"
   },

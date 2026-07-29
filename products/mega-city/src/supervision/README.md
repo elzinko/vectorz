@@ -123,6 +123,23 @@ n'écrit rien sous `.supervision/` (invariant couvert par un test).
 > exactement la panne qu'il existe pour attraper (le `pnpm` nu qui résout dans un shell et
 > échoue au PATH minimal d'une app GUI).
 
+### Ne pas comprendre le Moniteur — `supervision:analyze` (fiche 0104)
+
+Depuis la **racine du projet supervisé** (ex. vectorz) :
+
+```bash
+pnpm --dir products/mega-city supervision:analyze .
+# ou chemin absolu — avec `pnpm --dir`, `.` / relatifs sont résolus via INIT_CWD
+```
+
+Croise le journal `.supervision/runs/` et les transcripts Claude Code
+(`~/.claude/projects/<slug>/*.jsonl`) → rapport markdown + JSON sous
+`docs/dogfood-reports/<stamp>/` (gitignored). Verdicts : `silence_explained`,
+`emission_gap`, `orphan_run`, etc. **Lecture seule**, pas de LLM.
+
+Options utiles : `--run <id>`, `--since 2h`, `--transcript <path>`, `--stdout`.
+Exit code **1** si un verdict « problème » (`silence_explained`, `emission_gap`, …)
+— pratique en script dogfood ; en interactif lire le rapport quand même.
 ## Conformité prouvée — déroulé méthode jouet → validateur (AC1, fiche 0050)
 
 Le chemin nominal est la session Claude Desktop (skill `supervision-demo` + serveur MCP
