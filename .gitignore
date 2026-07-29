@@ -55,6 +55,9 @@ coverage/
 # Dogfood / cobaye verification screenshots (throwaway)
 cobaye-*.png
 
+# Rapports dogfood guidés (captures + OK/KO) — locaux, jamais commités
+docs/dogfood-reports/
+
 # Temp
 tmp/
 temp/

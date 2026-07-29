@@ -43,4 +43,4 @@ grep -E '^VERDICT:' /tmp/vectorz-archive-gate.txt >/dev/null
 echo "-- daily profile présent"
 test -f "$MC/profiles/daily.yml"
 
-echo "OK dogfood-smoke (mécanique). Reste humain : Claude Code + MCP + Moniteur UI — docs/DOGFOOD.md §D"
+echo "OK dogfood-smoke (mécanique). Suite guidée (Moniteur + humain) : bash scripts/dogfood-guided.sh — docs/DOGFOOD.md"
