@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 /**
  * Capture Playwright du Moniteur (homepage = vue supervision).
  * Usage: node scripts/dogfood-screenshot.mjs <url> <fichier.png>
@@ -6,8 +8,6 @@
  * Exit 0 = OK, 2 = SKIP/échec (pas de faux vert).
  */
 import { chromium } from 'playwright';
-import { mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
 
 const url = process.argv[2] || 'http://localhost:5173/';
 const out = process.argv[3];
