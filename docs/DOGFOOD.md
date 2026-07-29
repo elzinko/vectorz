@@ -8,6 +8,17 @@ Historique / phases de la refonte (pas ce guide) :
 
 ---
 
+## Si tu es perdu
+
+1. Lance `bash scripts/dogfood-guided.sh` depuis la racine du repo.
+2. **Ne fais rien** tant que le script n’affiche pas 👉 — build, smoke et Moniteur
+   tournent seuls.
+3. Quand 👉 apparaît : lis l’instruction courte, fais l’action, appuie **Entrée**.
+4. En fin de run, ouvre le dossier de rapport affiché (`docs/dogfood-reports/…`)
+   et les PNG si capturés.
+
+---
+
 ## En 3 commandes (recommandé)
 
 Depuis la racine du repo, branche `refactor/epoch-2-harden-method` :

@@ -54,23 +54,29 @@ daemon_up() {
   [[ "$out" == running* ]]
 }
 
+# Exécute une commande ; préfixe timeout/gtimeout si disponible (macOS souvent sans).
+# Évite "${arr[@]}" vide sous set -u (bash 4.4+ / unbound variable).
+run_maybe_timeout() {
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 120 "$@"
+  elif command -v gtimeout >/dev/null 2>&1; then
+    gtimeout 120 "$@"
+  else
+    "$@"
+  fi
+}
+
 take_screenshot() {
   local label="$1" outfile="$2"
   if ! url_up "$MONITEUR_URL"; then
     record "screenshot:$label" SKIP "Moniteur injoignable ($MONITEUR_URL)"
     return 0
   fi
-  # Timeout : éviter un hang infini sur téléchargement Chromium
-  if command -v timeout >/dev/null 2>&1; then
-    TIMEOUT=(timeout 120)
-  elif command -v gtimeout >/dev/null 2>&1; then
-    TIMEOUT=(gtimeout 120)
-  else
-    TIMEOUT=()
-  fi
-  if "${TIMEOUT[@]}" npx --yes -p playwright node "$ROOT/scripts/dogfood-screenshot.mjs" \
+  log "Capture Playwright ($label)…"
+  if run_maybe_timeout npx --yes -p playwright node "$ROOT/scripts/dogfood-screenshot.mjs" \
     "$MONITEUR_URL" "$outfile" >>"$REPORT_DIR/steps.log" 2>&1; then
     record "screenshot:$label" OK "$outfile"
+    log "   Capture OK — ouvre le PNG : $outfile"
   else
     record "screenshot:$label" SKIP "Playwright indisponible ou page KO — voir steps.log"
   fi
@@ -169,12 +175,17 @@ write_reports() {
 # ─── 0. Intro ───────────────────────────────────────────────
 hr
 log "== dogfood-guided =="
+log ""
+log "Tu n'as rien à faire jusqu'à ce qu'on affiche 👉"
+log "Les étapes auto (build, smoke, Moniteur, captures) tournent seules."
+log "Quand 👉 apparaît : lis l'instruction, fais l'action, puis appuie Entrée."
+log ""
 log "Rapports : $REPORT_DIR"
 log "Doc      : docs/DOGFOOD.md"
 hr
 
 # ─── 1. Build check ─────────────────────────────────────────
-log "Étape 1/6 — build"
+log "Étape 1/6 — build (automatique)"
 if [[ -f "$DAEMON_CLI" ]] && [[ -d "$ROOT/products/cop1/packages/journal-validator/dist" ]]; then
   record "build" OK "artefacts CLI / journal-validator présents"
 else
@@ -189,9 +200,13 @@ else
 fi
 
 # ─── 2. Smoke mécanique ─────────────────────────────────────
-log "Étape 2/6 — smoke mécanique (sans Claude / sans UI)"
+log "Étape 2/6 — smoke mécanique (automatique, sans Claude / sans UI)"
 if bash "$ROOT/scripts/dogfood-smoke.sh" >>"$REPORT_DIR/smoke.log" 2>&1; then
   record "smoke" OK "scripts/dogfood-smoke.sh"
+  hr
+  log "Mécanique OK (link, probe, journal démo, validateur)."
+  log "Ensuite : on vérifie le Moniteur (auto + capture), puis Claude Code (toi)."
+  hr
 else
   record "smoke" KO "voir $REPORT_DIR/smoke.log"
   write_reports || true
@@ -199,7 +214,7 @@ else
 fi
 
 # ─── 3. Moniteur (daemon + web) ──────────────────────────────
-log "Étape 3/6 — Moniteur"
+log "Étape 3/6 — Moniteur (automatique si possible)"
 WE_STARTED_DAEMON=0
 
 if [[ ! -f "$ROOT/cop1.config.yaml" ]]; then
@@ -244,7 +259,7 @@ if url_up "$MONITEUR_URL"; then
 else
   record "web" SKIP "UI down — lance : pnpm --filter @cop1/web dev  → $MONITEUR_URL"
   if [[ "$NONINTERACTIVE" != "1" ]]; then
-    pause_human "Si besoin : démarre l'UI (\`pnpm --filter @cop1/web dev\`) et vérifie $MONITEUR_URL. Puis Entrée."
+    pause_human "Démarre l'UI Moniteur : \`pnpm --filter @cop1/web dev\` dans un autre terminal. Succès = $MONITEUR_URL s'ouvre dans le navigateur. Puis Entrée."
     if url_up "$MONITEUR_URL"; then
       record "web:retry" OK "$MONITEUR_URL répond"
     else
@@ -263,7 +278,7 @@ log "Étape 4/6 — intervention humaine (Claude Code)"
 if [[ "$NONINTERACTIVE" == "1" ]]; then
   record "humain:mcp" SKIP "non-interactif — pas de preuve MCP"
 else
-  pause_human "Ouvre Claude Code sur ce repo ($ROOT). Vérifie que le MCP « supervision » est connecté (outils visibles). Puis Entrée."
+  pause_human "Ouvre Claude Code sur ce repo ($ROOT). Succès = le MCP « supervision » est connecté (outils visibles dans Claude). Puis Entrée."
   record "humain:mcp" OK "opérateur a confirmé (Entrée)"
 fi
 
@@ -272,7 +287,7 @@ log "Étape 5/6 — /supervision-demo (ou sprint trivial)"
 if [[ "$NONINTERACTIVE" == "1" ]]; then
   record "humain:demo" SKIP "non-interactif — pas de démo LLM"
 else
-  pause_human "Dans Claude Code, tape /supervision-demo (ou lance un sprint trivial ezk-sprint). Attends la fin. Puis Entrée."
+  pause_human "Dans Claude Code, tape /supervision-demo (ou un sprint trivial ezk-sprint). Succès = la commande se termine sans erreur. Puis Entrée."
   record "humain:demo" OK "opérateur a confirmé (Entrée)"
 fi
 
@@ -296,13 +311,14 @@ fi
 take_screenshot "apres" "$REPORT_DIR/02-moniteur-apres.png"
 
 # ─── 6. Optionnel archive ────────────────────────────────────
-log "Étape 6/6 — optionnel archive (Entrée pour skip)"
+log "Étape 6/6 — optionnel archive"
 if [[ "$NONINTERACTIVE" == "1" ]]; then
   record "humain:archive" SKIP "non-interactif"
 else
   hr
-  log "👉 (Optionnel) Lance /ezk-archive (défaut = check). Sinon appuie Entrée pour ignorer."
-  read -r -p "   Entrée pour continuer… " _
+  log "👉 (Optionnel) Lance /ezk-archive dans Claude Code (défaut = check)."
+  log "   Succès = portier VERDICT: CLEAN. Sinon ignore."
+  read -r -p "   Appuie Entrée pour continuer (skip OK)… " _
   record "humain:archive" OK "opérateur a passé l'étape (manuel / skip)"
 fi
 
@@ -310,6 +326,9 @@ fi
 write_reports
 EXIT=$?
 
+hr
+log "Terminé. Ouvre le rapport et les PNG dans :"
+log "  $REPORT_DIR"
 if [[ "$WE_STARTED_DAEMON" == "1" ]]; then
   log "Note : daemon démarré par ce script — \`node products/cop1/packages/app/dist/cli/index.js stop\` pour l'arrêter."
 fi
