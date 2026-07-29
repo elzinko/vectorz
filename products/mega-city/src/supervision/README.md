@@ -140,6 +140,10 @@ Croise le journal `.supervision/runs/` et les transcripts Claude Code
 Options utiles : `--run <id>`, `--since 2h`, `--transcript <path>`, `--stdout`.
 Exit code **1** si un verdict « problème » (`silence_explained`, `emission_gap`, …)
 — pratique en script dogfood ; en interactif lire le rapport quand même.
+
+Skill mince (opt-in, hors profil `global`) : `/supervision-analyze` — même commande,
+reformule les verdicts. Le dogfood guidé l’enchaîne auto après la démo
+(`scripts/dogfood-guided.sh` étape analyze).
 ## Conformité prouvée — déroulé méthode jouet → validateur (AC1, fiche 0050)
 
 Le chemin nominal est la session Claude Desktop (skill `supervision-demo` + serveur MCP

@@ -30,7 +30,8 @@ Claude Code — sans fouiller à la main trois endroits.
    `mcp_without_journal`, `no_runs`, `no_transcript`.
 5. Doc : section dans `src/supervision/README.md` (pas de `docs/DOGFOOD.md` sur cette
    branche — pointer équivalent).
-6. Tests fixture dogfood 2026-07-29 (start seul → silence expliqué).
+6. Skill mince `supervision-analyze` + étape auto dans `scripts/dogfood-guided.sh`
+   (analyze le run le plus récent ; KO seulement si une démo fraîche a émis).
 
 ## Critères d'acceptation
 
