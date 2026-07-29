@@ -1,5 +1,8 @@
 # Programme — Refonte époque 2 (méthode Vectorz / mega-city)
 
+> **Pour tester que ça marche → [`docs/DOGFOOD.md`](./DOGFOOD.md)**  
+> (ce fichier = historique / phases de la refonte, pas le guide dogfood.)
+
 **Objectif :** rendre la méthode **fonctionnelle** pour un throughput solo :
 boucles LLM allégées, transition époque 1→2 **soldée**, identité et docs alignées
 sur le Moniteur + `products/`.
@@ -11,7 +14,7 @@ Légende checklist : `[ ]` à faire · `[~]` en cours · `[x]` fait
 
 ---
 
-## Chemin nominal (dogfood) — sans BMAD
+## Chemin nominal — sans BMAD
 
 Aujourd'hui on avance **ce** repo uniquement avec :
 
@@ -147,14 +150,14 @@ tracké ; défaut `useBMAD: false` ; design « BMAD émetteur » documenté comm
 | 2026-07-28 | `a52b63c` | ADR registre + E4 progress (029, 025/027 layout) |
 | 2026-07-28 | E4 | Backend pilote cop1 retiré ; allowlist zéro-bmad ; tag `epoch-2-post-bmad` |
 | 2026-07-28 | PR #62 | Fiche **2103** harness dogfood E2E-LLM (todo, non implémentée) — piste pour AC observationnels 2094 |
+| 2026-07-29 | PR #62 | Dogfood : entrée unique `docs/DOGFOOD.md` ; fiche 2103 clarifiée (MVP guided + Playwright, acteur LLM = v2) ; `scripts/dogfood-guided.sh` |
 
 ### Reste vraiment ouvert
 
 - Mesures tokens (sprint trivial vs standard, archive CLEAN ≤28k) — dogfood manuel (2088) ;
-  **pas** via jugement LLM — parser transcript/usage (hors harness 2103)
+  **pas** via jugement LLM — parser transcript/usage (hors acteur LLM 2103 v2)
 - Switchover `pnpm --filter mega-city lawgiver bind-global daily --link` — manuel opérateur
 - **E4 backend pilote cop1** — ✅ fait (0039 shipped PR #62)
 - Tag `epoch-2-post-bmad` — ✅ posé
-- **[2103](../features/2103-ezk-testbed-llm-dogfood-harness.md)** — harness dogfood E2E-LLM
-  (acteur Claude Code + assertions déterministes, cadence nightly / label `dogfood`) ;
-  fiche créée, **pas encore implémentée** — complète le dogfood humain §D / smoke mécanique
+- **[2103](../features/2103-ezk-testbed-llm-dogfood-harness.md)** — MVP guided/Playwright en cours
+  sur PR #62 ; **acteur LLM headless = v2** (nightly / label `dogfood`)

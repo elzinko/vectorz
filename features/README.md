@@ -66,7 +66,7 @@
 | 2079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 | mega-city |  | 🔴 todo |  |
 | 2095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 | mega-city |  | ⛔ blocked | '#55' |
 | 2102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 | mega-city |  | ⛔ blocked |  |
-| 2103 | Harness dogfood E2E-LLM — acteur Claude Code + assertions déterministes (nightly / label dogfood) | feature | P1 | mega-city |  | 🔴 todo | '#62' |
+| 2103 | Tests dogfood automatisés avec un agent + Playwright | feature | P1 | mega-city |  | 🔴 todo | '#62' |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | vectorz |  | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | vectorz |  | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 | vectorz |  | ✅ shipped | #32 |

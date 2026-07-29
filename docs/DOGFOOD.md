@@ -1,108 +1,89 @@
-# Dogfood époque 2 — avant merge PR #62
+# Dogfood — vérifier que ça marche (15–30 min)
 
-Recette **pratique** pour valider la chaîne méthode → émission → Moniteur
-**sans merger**. Préférer un **projet cobaye temporaire** (ou worktree) pour
-tout ce qui écrit sous `.supervision/` / `.mcp.json` ; le bind-global `daily`
-touche `~/.claude` (réversible en rebindant `global`).
+**Point d’entrée unique** pour tester la chaîne méthode → journal → Moniteur
+**avant merge** (PR #62), sans se perdre dans le programme de refonte.
 
-Réf. programme : [`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md) · fiches
-[2094](../features/2094-emetteur-branche-sur-claude-code.md) /
-[2095](../features/2095-ezk-product-builder-n-emet-pas.md) /
-[2088](../features/2088-ezk-archive-cout-cloture-session-disciplinee.md).
+Historique / phases de la refonte (pas ce guide) :
+[`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
 
 ---
 
-## A. Smoke mécanique (sans session Claude) — ~5 min
+## En 3 commandes (recommandé)
 
-Depuis la racine du clone sur `refactor/epoch-2-harden-method` :
+Depuis la racine du repo, branche `refactor/epoch-2-harden-method` :
+
+```bash
+pnpm install && pnpm build
+bash scripts/dogfood-guided.sh
+# Suivre les 👉 prompts (Entrée pour continuer après chaque action humaine)
+```
+
+Le script enchaîne le smoke automatique, tente le Moniteur + captures Playwright,
+te demande les étapes Claude Code **une par une**, puis écrit un rapport OK/KO.
+
+---
+
+## Qui fait quoi ?
+
+| Étape | Auto | Toi |
+| --- | --- | --- |
+| Install / build | ✅ (si tu lances les 3 commandes) | — |
+| Smoke mécanique (link, probe, journal démo, validateur) | ✅ `dogfood-smoke.sh` | — |
+| Démarrer daemon + UI Moniteur | ✅ si possible, sinon commandes exactes affichées | Lancer ce qui manque |
+| Captures d’écran Moniteur | ✅ Playwright si l’URL répond | — |
+| Ouvrir Claude Code + MCP + `/supervision-demo` | — | ✅ (le script attend Entrée) |
+| Vérifier `events.jsonl` + 2ᵉ capture | ✅ | Confirmer visuellement la carte run |
+
+---
+
+## Checklist visuelle (après le guided run)
+
+Regarde le rapport sous `docs/dogfood-reports/<horodatage>/` (gitignoré) ou le chemin
+affiché en fin de script :
+
+1. **Smoke** = OK dans le rapport.
+2. **Capture `01-moniteur-avant.png`** (ou SKIP si Moniteur down — pas un faux vert).
+3. Après `/supervision-demo` : un dossier `.supervision/runs/<id>/events.jsonl` existe.
+4. **Capture `02-moniteur-apres.png`** : une carte de run apparaît dans le Moniteur
+   (http://localhost:5173).
+5. (Optionnel) `/ezk-archive` → portier `VERDICT: CLEAN` — lié à la fiche 2088.
+
+Si une étape est KO, le rapport le dit. **Ne pas inventer un succès.**
+
+---
+
+## Smoke seul (~5 min, sans Claude ni UI)
 
 ```bash
 pnpm install && pnpm build
 bash scripts/dogfood-smoke.sh
 ```
 
-Couvre : bind projet jetable · `supervision:link` + `probe` · run démo journal ·
-validateur cop1 · portier archive `--gate`. **Ne prouve pas** qu’un vrai skill
-émet depuis Claude Code, ni l’UI Moniteur live.
+Prouve la mécanique. **Ne prouve pas** qu’un skill Claude Code émet, ni l’UI live.
 
 ---
 
-## B. Setup Moniteur (daemon + web)
+## Si le Moniteur n’est pas démarré
 
 ```bash
-# 1. Config locale (gitignorée) — watch le cobaye OU vectorz
-cp cop1.config.example.yaml cop1.config.yaml
-# éditer supervision.watch_roots: ["/chemin/absolu/du/projet-supervisé"]
+cp -n cop1.config.example.yaml cop1.config.yaml
+# Éditer supervision.watch_roots: ["/chemin/absolu/vers/vectorz"]
 
-# 2. Daemon
 node products/cop1/packages/app/dist/cli/index.js start
-node products/cop1/packages/app/dist/cli/index.js status   # doit répondre
+node products/cop1/packages/app/dist/cli/index.js status
 
-# 3. UI
-pnpm --filter @cop1/web dev   # → http://localhost:5173 (proxy → :4242)
-```
-
-Onglet **Moniteur** : runs sous `.supervision/runs/` du projet watché.
-
----
-
-## C. Cobaye temporaire (recommandé pour 2094/2095)
-
-```bash
-# Worktree optionnel de la PR (isole le checkout)
-git worktree add /tmp/vectorz-epoch2 refactor/epoch-2-harden-method
-
-# Cobaye jetable (écritures supervision isolées)
-COBAYE=/tmp/vectorz-cobaye-$$
-mkdir -p "$COBAYE" && git -C "$COBAYE" init -q
-git -C "$COBAYE" commit -q --allow-empty -m init
-
-# Depuis le clone/worktree vectorz :
-ROOT=/Users/elzinko/git/bacasable/vectorz   # ou /tmp/vectorz-epoch2
-pnpm --dir "$ROOT/products/mega-city" supervision:link "$COBAYE"
-pnpm --dir "$ROOT/products/mega-city" supervision:probe "$COBAYE"
-# Ajouter $COBAYE à supervision.watch_roots, relancer daemon
-```
-
-Pour tester la **méthode** (skills) : binder le profil sur le poste, puis ouvrir
-Claude Code **dans le dépôt vectorz** (ou un worktree de la branche) — c’est là
-que les skills `ezk-*` vivent après `bind-global`.
-
-```bash
-pnpm --dir products/mega-city exec tsx bin/lawgiver.ts bind-global daily --link
-# Revenir en arrière : bind-global global --link
+pnpm --filter @cop1/web dev   # → http://localhost:5173
 ```
 
 ---
 
-## D. Checklist humaine 30–45 min (vrai dogfood AC)
+## Après un dogfood réussi
 
-| # | Action | Critère de succès | Fiche |
-|---|---|---|---|
-| 1 | Claude Code ouvert sur vectorz (branche PR) ; MCP `supervision` connecté (5 outils) | Tools visibles ; `supervision:probe .` vert | 2094 |
-| 2 | Moniteur up (daemon + web) ; `watch_roots` = racine vectorz (arbre principal) | Onglet Moniteur charge | — |
-| 3 | `/supervision-demo` **ou** sprint **trivial** (`ezk-sprint` chemin trivial) | Nouveau dossier `.supervision/runs/<id>/events.jsonl` ; carte run dans Moniteur | 2094 |
-| 4 | (idéal) `/ezk-product-builder` court → 1 sprint trivial dedans | **Un** run `method_name: ezk-product-builder` ; sprint **n’ouvre pas** de 2ᵉ run ; gate checkpoint si arrêt | 2095 |
-| 5 | `/ezk-archive` (défaut = `check`) après session propre | Portier `VERDICT: CLEAN` **sans** gros sous-agent ; noter tokens neufs si possible | 2088 |
-| 6 | Optionnel : même sprint depuis un **worktree** | Journal dans l’**arbre principal** (normalisation ADR-019) | 2094 |
+1. Cocher / débloquer les AC observationnels dans les fiches 2094 / 2095 / 2088 si
+   vraiment vus.
+2. Une ligne dans le Journal de [`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
+3. **Ne pas merger** depuis ce guide — décision opérateur + CI verte.
 
-**Automatisable (déjà / smoke) :** link, probe, demo-run, validateur, tests
-`test:scripts` archive, CI lint/build/test.
-
-**Humain obligatoire :** session LLM qui **appelle** les outils MCP selon les
-consignes des skills + jugement fidélité/lisibilité dans l’UI Moniteur + mesure
-tokens archive CLEAN.
-
-**Futur (fiche [2103](../features/2103-ezk-testbed-llm-dogfood-harness.md)) :** harness
-E2E-LLM (acteur Claude Code headless + assertions déterministes, cadence nightly /
-label `dogfood`) pour rejouer le chemin 2094 sans monopoliser l’opérateur — **pas
-encore livré** ; le smoke §A et la checklist §D restent la référence.
-
----
-
-## E. Après dogfood réussi
-
-1. Cocher AC restants dans fiches 2094 / 2095 / 2088 → `ship` ou laisser `blocked`
-   si mesure tokens archive encore manquante.
-2. Noter mesures dans le Journal de [`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
-3. **Ne pas merger** depuis ce guide — décision opérateur / CI verte PR #62.
+Suite produit (acteur LLM headless, nightly) : fiche
+[2103](../features/2103-ezk-testbed-llm-dogfood-harness.md) — **v2**, pas requis pour
+le dogfood humain d’aujourd’hui.

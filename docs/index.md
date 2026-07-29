@@ -12,7 +12,8 @@ status: working — époque 2 : Moniteur + mega-city ; BMAD en fin de vie.
 
 ## Docs vivantes (époque 2)
 
-- [Programme — Refonte époque 2](./PROGRAMME-REFONTE.md) — phases, checkboxes, journal
+- [Dogfood — vérifier que ça marche](./DOGFOOD.md) — **entrée unique** pour tester (15–30 min)
+- [Programme — Refonte époque 2](./PROGRAMME-REFONTE.md) — historique / phases / journal
 - [Audit transition 2026-07-27](./audits/2026-07-27-transition-epoch-2.md)
 - [Inventaire BMAD runtime](./audits/2026-07-28-bmad-runtime-inventory.md)
 - [Mapping ids backlog 0064](./audits/2026-07-28-backlog-id-map.md)

@@ -1,7 +1,7 @@
 ---
 id: 2103
 product: mega-city
-title: "Harness dogfood E2E-LLM — acteur Claude Code + assertions déterministes (nightly / label dogfood)"
+title: "Tests dogfood automatisés avec un agent + Playwright"
 type: feature
 priority: P1
 epic:
@@ -13,111 +13,74 @@ pr: '#62'
 created: 2026-07-28
 ---
 
-# 2103 — Harness dogfood E2E-LLM (acteur + juge déterministe)
+# 2103 — Tests dogfood automatisés (agent + Playwright)
 
-## Contexte / Problème
+## Problème
 
-Le dogfood **humain** de l'époque 2 ([`docs/DOGFOOD.md`](../docs/DOGFOOD.md) §D) prouve la
-chaîne **méthode → émission MCP → `events.jsonl` → Moniteur** — exactement le trou
-observationnel des fiches [2094](2094-emetteur-branche-sur-claude-code.md) /
-[2095](2095-ezk-product-builder-n-emet-pas.md). Le smoke mécanique
-([`scripts/dogfood-smoke.sh`](../scripts/dogfood-smoke.sh)) couvre link / probe / demo-run /
-journal-validator **sans** session Claude Code : il ne charge jamais un vrai skill qui
-appelle les outils MCP.
+Aujourd’hui, pour savoir si la chaîne **méthode → journal → Moniteur** marche vraiment,
+il faut qu’un humain ouvre Claude Code, lance une démo, et regarde l’UI.
 
-Conséquence : les AC « un vrai `ezk-sprint` produit un journal » restent **parkés**
-(`blocked`) faute d'humain 30–45 min, ou de filet machine équivalent. Un E2E Playwright
-classique ne déclenche pas non plus `ezk-sprint` / consignes d'émission.
+Le smoke mécanique (`scripts/dogfood-smoke.sh`) vérifie déjà link / probe / journal
+**sans** Claude Code — utile, mais ça ne prouve pas qu’un vrai skill émet, ni que
+le Moniteur affiche un run.
 
-On a besoin d'un cran intermédiaire : **LLM-as-actor** (exécute un scénario figé) +
-**juge déterministe** (scripts, pas un second LLM) — cadence **nightly / label `dogfood`**,
-pas sur chaque PR.
+Résultat : les preuves « on voit un run dans le Moniteur » (liées à
+[2094](2094-emetteur-branche-sur-claude-code.md) / [2095](2095-ezk-product-builder-n-emet-pas.md))
+restent en attente d’une session manuelle 30–45 min.
 
-## Valeur
+## Idée
 
-- Débloque périodiquement les AC observationnels de **2094** (chemin sprint trivial /
-  `supervision-demo` → journal + API Moniteur) sans monopoliser l'opérateur.
-- Filet de confiance **produit** (méthode réelle + MCP), complémentaire au smoke
-  mécanique (filet pas cher) et au dogfood humain (1× sensation Moniteur).
-- Rapport machine (JSON + markdown) consommable en CI / revue.
-- Respecte la doctrine : **LLM rédige / agit aux bords ; le script range et juge**
-  ([ADR-0001](../products/mega-city/docs/adr/0001-monorepo-composable-coeur-deterministe.md),
-  [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md) — supervision
-  method-agnostic, on teste l'émetteur, on ne réinvente pas BMAD dans le moniteur).
+Un **guide dogfood** qui fait le maximum tout seul, et qui **demande clairement**
+à l’humain seulement quand c’est indispensable :
 
-## Proposition
+1. scripts automatiques (smoke, checks fichiers) ;
+2. **Playwright** pour ouvrir le Moniteur et prendre des captures ;
+3. plus tard (v2) : un agent LLM qui lance la démo à ta place.
 
-Harness **composable** (proche esprit [2102](2102-ezk-testbed-brique-boot-env-test.md) —
-banc isolé — mais métier distinct : *exercice LLM*, pas *boot d'env*).
+Le point d’entrée humain reste [`docs/DOGFOOD.md`](../docs/DOGFOOD.md).
 
-1. **Scénarios Gherkin** (style `ezk-qa` : Given / When / Then = DoD du harness), au
-   minimum le chemin **2094** :
-   - Given cobaye + MCP supervision branché (`supervision:link` / probe vert)
-   - When acteur LLM lance sprint **trivial** **ou** `/supervision-demo`
-   - Then `events.jsonl` présent, shapes attendues, journal-validator vert, run listable
-     via API Moniteur (daemon up)
-2. **Acteur** : Claude Code headless / CLI, MCP supervision connecté, prompt figé,
-   **budget max** tokens + outils (fail-fast si dépassement).
-3. **Assertions déterministes en premier** : `supervision:probe`, formes
-   `run.started` / gates / `run.finished` dans `events.jsonl`,
-   `@cop1/journal-validator`, éventuellement archive `check` → CLEAN/DIRTY attendu.
-4. **Juge LLM optionnel, secondaire** : lisibilité Moniteur (« la carte est-elle
-   lisible ? ») — **jamais** seul verdict de pass/fail.
-5. **Rapport** : artefact CI `dogfood-report.json` + `dogfood-report.md`.
-6. **Cadence** : workflow `nightly` **ou** label PR `dogfood` — **interdit** sur le chemin
-   critique de chaque push/PR (coût + flakiness).
+## Ce que ça fait
 
-### Hors périmètre (explicite)
+Trois couches, bien séparées :
 
-- **Ne remplace pas** la mesure tokens de [2088](2088-ezk-archive-cout-cloture-session-disciplinee.md)
-  par un jugement LLM. La facture se lit via **parser de transcripts / usage API**
-  (compteur de session) — sibling possible en AC séparé ou fiche dédiée, jamais « l'acteur
-  estime son coût ».
-- **2095** (product-builder multi-sprint) : candidat nightly **rare** / plus cher — hors
-  MVP de cette fiche (noter en extension).
-- Remplacer le dogfood humain §D pour la *sensation* Moniteur au merge — le harness
-  **complète**, il ne substitue pas le 1× opérateur.
+| Couche | Déjà là / à livrer | Rôle |
+| --- | --- | --- |
+| **1. Smoke mécanique** | ✅ `scripts/dogfood-smoke.sh` | Bind jetable, link, probe, journal démo, validateur — **sans** LLM ni UI |
+| **2. Checks Moniteur (Playwright)** | ✅ MVP : `scripts/dogfood-guided.sh` | Démarre / oriente le Moniteur, captures d’écran, rapport OK/KO, pauses humaines claires |
+| **3. Acteur LLM (optionnel)** | ❌ v2 | Claude Code headless qui lance `/supervision-demo` ou un sprint trivial, puis assertions scripts |
 
-## Critères d'acceptation
+La couche 2 aide **maintenant** (avant merge PR #62). La couche 3 ne bloque pas.
 
-- [ ] **AC1 — Gherkin 2094.** Au moins un scénario Given/When/Then versionné couvre :
-      cobaye + MCP → sprint trivial **ou** supervision-demo → `events.jsonl` + validation
-      journal + run visible API Moniteur (daemon). Style ezk-qa (scénario = DoD).
-- [ ] **AC2 — Acteur borné.** Lancement Claude Code headless/CLI avec MCP supervision ;
-      budget max tokens **et** max outils documenté ; dépassement = fail explicite (pas
-      timeout silencieux).
-- [ ] **AC3 — Juge déterministe d'abord.** Pass/fail dérivé uniquement de scripts
-      (probe, shapes `events.jsonl`, journal-validator, éventuellement portier archive).
-      Aucun verdissement possible par seul avis LLM.
-- [ ] **AC4 — Juge LLM optionnel.** S'il existe, son score est **secondaire** (annexe du
-      rapport) ; CI ne fail que sur le bras déterministe.
-- [ ] **AC5 — Rapport.** Chaque run produit `*.json` + `*.markdown` (ou `.md`) en artefact
-      CI : scénario, verdict, chemins journal, budget consommé, erreurs.
-- [ ] **AC6 — Cadence.** Workflow GitHub Actions `schedule` (nightly) **et/ou**
-      `pull_request` filtré sur label `dogfood` ; **absent** du `push`/`pull_request`
-      sans label (grep de contrôle sur `.github/workflows`).
-- [ ] **AC7 — Hors 2088.** Doc + commentaire workflow : la mesure ≤28k tokens archive
-      CLEAN reste un **parser transcript/usage**, pas ce harness ; pas de AC qui fasse
-      juger le coût par le LLM acteur.
-- [ ] **AC8 — Alignement ADR.** README du harness rappelle : LLM aux bords (rédige /
-      agit) ; script range + juge ; supervision method-agnostic (ADR-032) — on exerce
-      l'émetteur mega-city, pas un shim moniteur.
-- [ ] Gate locale verte sur le code du harness (typecheck/lint/tests) ; smoke mécanique
-      existant (`dogfood-smoke.sh`) **reste** le filet PR-cheap.
+## Ce que ça ne fait pas
 
-## Notes / décisions
+- Ne remplace pas le jugement « est-ce que la carte Moniteur est lisible ? » (1× humain).
+- Ne mesure pas les tokens archive ([2088](2088-ezk-archive-cout-cloture-session-disciplinee.md)) — ça reste un parser de usage, pas un avis LLM.
+- Ne tourne **pas** sur chaque push/PR (trop cher / trop flaky) : nightly ou label `dogfood` pour la v2.
+- Ne fusionne pas smoke et acteur LLM dans un seul script (coûts différents).
 
-- **Priorité P1** : filet qui sort 2094 du park observationnel sans bloquer chaque PR.
-  P2 si le PO préfère garder le dogfood 100 % humain jusqu'à merge #62 — à arbitrer au
-  `ready`.
-- **Frontière 2102** : `ezk-testbed` = démarrer un env isolé ; **2103** = y faire jouer un
-  acteur LLM + assertions. Composition naturelle (`testbed start` puis harness) si 2102
-  est livré ; MVP 2103 peut bootstraper via cobaye déjà documenté dans DOGFOOD.md.
-- **Smoke vs harness** : `dogfood-smoke.sh` = mécanique sans LLM ; 2103 = couche au-dessus.
-  Ne pas fusionner les deux scripts (coûts et flakiness différents).
-- **Flakiness assumée** : même prompt → chemins variables ; d'où nightly + budget + juge
-  déterministe. Quarantine / retry borné OK ; jamais « flaky = vert ».
-- Origine : arbitrage PO 2026-07-28 (« ok go ») après discussion E2E-LLM vs dogfood
-  manuel sur PR #62 / programme époque 2.
-- Statut `todo` **sans** `ready:` — DoR à passer au gate `ready 2103` avant tirage sprint
-  (dépendances Claude Code headless / secrets CI à constater accessibles).
+## Critères d’acceptation simples
+
+### MVP (cette PR / couche 1+2) — « je peux dogfooder en 15–30 min »
+
+- [x] **AC1 — Guide unique.** `docs/DOGFOOD.md` explique en français, étapes numérotées, ce qui est auto vs humain.
+- [x] **AC2 — Runner guidé.** `bash scripts/dogfood-guided.sh` : smoke + (si possible) captures Moniteur + pauses « appuie Entrée » + rapport OK/KO/PARTIAL.
+- [x] **AC3 — Visuel.** Capture homepage / vue supervision quand le serveur répond (`scripts/dogfood-screenshot.mjs`) ; sinon étape SKIP (pas de faux vert).
+- [x] **AC4 — Preuve fichier.** Après l’étape humaine, le script vérifie la présence / nouveauté d’un `events.jsonl` (ou dit KO clairement).
+- [x] **AC5 — Rapport.** Markdown + JSON sous `docs/dogfood-reports/` (gitignoré) — verdict PARTIAL si étapes humaines SKIP.
+
+### v2 (acteur LLM) — plus tard
+
+- [ ] **AC6 — Scénario figé.** Un scénario écrit (Given/When/Then) : MCP branché → démo/sprint trivial → journal + run listable API.
+- [ ] **AC7 — Acteur borné.** Claude Code headless/CLI, budget max tokens/outils, dépassement = fail explicite.
+- [ ] **AC8 — Juge = scripts.** Pass/fail uniquement via probe / shapes journal / validateur — pas un second LLM.
+- [ ] **AC9 — Cadence.** Nightly **ou** label PR `dogfood` ; absent du chemin critique de chaque PR.
+
+## Première version (MVP)
+
+1. Réécrire cette fiche + `docs/DOGFOOD.md` (entrée unique).
+2. Livrer `scripts/dogfood-guided.sh` (+ petite capture Playwright optionnelle).
+3. Garder `dogfood-smoke.sh` tel quel (filet pas cher).
+4. Reporter l’acteur LLM en **v2** (AC6–AC9).
+
+**Done (MVP) quand :** un solo PO/dev suit `docs/DOGFOOD.md`, lance le guided runner,
+obtient un rapport OK/KO honnête, et sait en 2 minutes ce qui reste à faire à la main.

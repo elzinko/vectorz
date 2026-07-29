@@ -48,8 +48,8 @@ docs/             — ADRs, audits, programme de refonte
 
 ## Docs vivantes
 
-- [Programme refonte](./PROGRAMME-REFONTE.md)
-- [Dogfood avant merge](./DOGFOOD.md) (smoke mécanique + checklist humaine)
+- [Dogfood — vérifier que ça marche](./DOGFOOD.md) ← **tester en 15–30 min**
+- [Programme refonte](./PROGRAMME-REFONTE.md) (historique / phases)
 - [Audit transition 2026-07-27](./audits/2026-07-27-transition-epoch-2.md)
 - [Inventaire BMAD](./audits/2026-07-28-bmad-runtime-inventory.md)
 - [ADRs](./adr/)
