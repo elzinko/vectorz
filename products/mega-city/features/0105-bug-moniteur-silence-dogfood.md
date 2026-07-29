@@ -65,4 +65,4 @@ product: mega-city
 4. Optionnel dogfood : binder ou documenter `supervision-demo` / script
    `bin/supervision-demo-run.ts` comme essai jouet sans sprint.
 
-Issue GitHub : à lier ici après création.
+Issue GitHub : https://github.com/elzinko/vectorz/issues/63
