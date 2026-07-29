@@ -30,13 +30,16 @@ absolu.
 2. Lis le markdown généré sous `docs/dogfood-reports/<stamp>/analyze-report.md`
    (ou stdout si `--stdout`).
 3. Reformule les **verdicts** en français clair pour l’humain :
-   - `silence_explained` → pas un bug lecteur : peu/pas d’émission après `run_start`
-     (manque heartbeat / gates / `run_finished`).
-   - `emission_gap` / `orphan_run` → run encore ouvert ; proposer `run_finished` ou
-     abandon propre.
+   - `silence_explained` → pas un bug lecteur : peu/pas d’événements après le
+     démarrage du run (manque signes de vie / jalons / clôture).
+   - `emission_gap` / `orphan_run` → run encore ouvert ; proposer une clôture propre
+     (`abandoned` / `success` / `failure`) ou abandon documenté.
    - `mcp_without_journal` → mauvaise racine / worktree (`SUPERVISION_PROJECT_ROOT`).
    - `healthy` → journal cohérent.
 4. **Ne dump pas** les prompts utilisateur. Pas de `--full` sauf demande explicite.
+
+> Tu ne pilotes **pas** les outils MCP de l’émetteur : tu lances uniquement le CLI
+> d’analyse. Les méthodes de prod (ezk-sprint, …) restent les seules à émettre.
 
 ## Ce que tu n’es pas
 
