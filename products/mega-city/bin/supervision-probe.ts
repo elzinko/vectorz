@@ -13,7 +13,7 @@
  * Trois contrôles, dans cet ordre : l'entrée `supervision` est exploitable ·
  * la racine DÉCLARÉE est bien celle du projet sondé (sinon « branché » ne
  * voudrait dire que « ça démarre », pendant que le journal partirait ailleurs) ·
- * la commande démarre et expose EXACTEMENT les 5 outils.
+ * la commande démarre et expose EXACTEMENT les outils du kit (probe.ts).
  *
  * FRONTIÈRE DE CONFIANCE (revue 2026-07-26, finding bloquant B1). Ce probe
  * **exécute une commande lue dans un fichier**. Deux conséquences assumées :
@@ -149,7 +149,7 @@ async function main(): Promise<void> {
     // cas d'usage phare de l'ADR-034 (revue 2026-07-26, W1).
     console.log(`✓ branché — racine déclarée → ${declaredRealPath}`);
     console.log(`  journal effectif : voir « [supervision] journal → … » ci-dessus`);
-    console.log(`  5 outils exposés : ${verdict.tools.join(', ')}`);
+    console.log(`  ${verdict.tools.length} outils exposés : ${verdict.tools.join(', ')}`);
   } finally {
     await transport.close().catch(() => {});
   }

@@ -156,6 +156,7 @@ describe('Rubrique C — cycle de vie du run', () => {
     expect(() => runtime.gateReached({ gate_id: 'g', outcome: 'ok' })).toThrow();
     expect(() => runtime.gateResumed({ gate_event_id: 'whatever' })).toThrow();
     expect(() => runtime.escalate({ type: 'blocked', detail: 'x' })).toThrow();
+    expect(() => runtime.heartbeat({ note: 'x' })).toThrow();
     expect(() => runtime.runFinished({ status: 'success' })).toThrow();
     expect(fs.existsSync(path.join(projectRoot, '.supervision'))).toBe(false);
   });
@@ -169,8 +170,32 @@ describe('Rubrique C — cycle de vie du run', () => {
     expect(() => runtime.gateReached({ gate_id: 'g', outcome: 'ok' })).toThrow();
     expect(() => runtime.gateResumed({ gate_event_id: 'x' })).toThrow();
     expect(() => runtime.escalate({ type: 'blocked', detail: 'x' })).toThrow();
+    expect(() => runtime.heartbeat()).toThrow();
 
     expect(readEvents(projectRoot, started.run_id)).toEqual(before);
+  });
+
+  it('heartbeat écrit un événement sur le run ouvert et réarme la vitalité côté journal', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+    const beat = runtime.heartbeat({ note: 'étape archi' });
+    expect(beat.run_id).toBe(started.run_id);
+    expect(typeof beat.event_id).toBe('string');
+
+    const events = readEvents(projectRoot, started.run_id);
+    expect(events).toHaveLength(2);
+    expect(events[1]).toMatchObject({ seq: 2, type: 'heartbeat', payload: { note: 'étape archi' } });
+
+    const silent = runtime.heartbeat();
+    expect(silent.run_id).toBe(started.run_id);
+    const after = readEvents(projectRoot, started.run_id);
+    expect(after).toHaveLength(3);
+    expect(after[2]).toMatchObject({ seq: 3, type: 'heartbeat', payload: {} });
+
+    const gate = runtime.gateReached({ gate_id: 'g1', outcome: 'ok' });
+    expect(() => runtime.heartbeat({ note: 'pendant gate' })).toThrow(/gate est ouvert/);
+    runtime.gateResumed({ gate_event_id: gate.gate_event_id });
+    runtime.heartbeat({ note: 'après resume' });
   });
 
   it('un nouveau run_start après run_finished ouvre un nouveau run distinct', () => {

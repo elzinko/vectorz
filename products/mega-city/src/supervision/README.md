@@ -13,8 +13,8 @@ Fiche : `features/0050-kit-emetteur-supervisabilite.md`.
   apprend à ignorer) ; veto → false only ; le forçage humain « malgré l'activité »
   relève du flux d'adoption (fiche 0050), le signal ne ment jamais.
 - `runtime.ts` — machine à états stateless (replay disque à chaque appel).
-- `mcp-server.ts` + `bin/supervision-mcp.ts` — serveur MCP stdio, **5 outils étroits**
-  (chemin nominal Claude Desktop, classe de conformité B).
+- `mcp-server.ts` + `bin/supervision-mcp.ts` — serveur MCP stdio, **6 outils étroits**
+  (chemin nominal Claude Desktop, classe de conformité B ; `heartbeat` = fiche 0103).
 
 ## Configurer dans Claude Desktop
 
@@ -64,7 +64,7 @@ effective et sa provenance (`[supervision] journal → … (racine …, normalis
 telle quelle)`) — c'est la ligne à lire pour savoir où va le journal. Échappatoire
 délibérée : `SUPERVISION_PER_WORKTREE=1` (ou `true`) rétablit un journal par worktree.
 
-Autoriser les 5 outils en « toujours autoriser » pour éviter la fatigue de popups.
+Autoriser les 6 outils en « toujours autoriser » pour éviter la fatigue de popups.
 Pour tester sans toucher aux méthodes de prod : skill **`supervision-demo`** (méthode
 jouet 2 gates).
 
@@ -106,7 +106,7 @@ Le banc de preuve : il lit le `.mcp.json` du projet et **lance la commande telle
 est déclarée**, puis fait un handshake MCP. Trois contrôles, dans cet ordre — l'entrée
 `supervision` est exploitable · la racine **déclarée** est bien celle du projet sondé
 (sinon les runs journaliseraient ailleurs, en silence) · le serveur expose **exactement**
-les 5 outils. Vert/rouge net, exit code 0/1, quelques secondes : jouable à la main comme
+les 6 outils. Vert/rouge net, exit code 0/1, quelques secondes : jouable à la main comme
 dans un script, sur ce dépôt comme sur un projet cobaye.
 
 Il comble un trou précis : les tests unitaires prouvent que **le serveur** marche quand le

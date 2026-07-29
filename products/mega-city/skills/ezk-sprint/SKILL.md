@@ -87,17 +87,23 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 
 Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `escalate`,
-`run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
+`heartbeat`, `run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
 bruit** :
 
 - **À l'intake (étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
   <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+- **Pendant le travail long (étapes 1–8, best-effort)** — fiche 0103 : appelle `heartbeat
+  {note: "<étape en cours, une ligne>"}` **au moins une fois par étape majeure** (ou toutes
+  les ~5–10 min d'activité utile). Sans ça le Moniteur passe en « Silence prolongé » alors
+  que tu travailles encore. Ce n'est **pas** un jalon : tu continues sans attendre de
+  réponse. Pas de heartbeat obligatoire en standby humain ni pendant un gate ouvert
+  (le silence y est voulu côté siège).
 - **Run déjà ouvert = tu es absorbé (P1, revue Codex #25)** : si un run de supervision est
   **déjà ouvert** — tu es appelé par `ezk-product-builder` ou `vz-product-builder` (qui
   ouvrent le leur au lancement), ou `run_start` répond « refusé : un run est déjà
   ouvert » — **n'ouvre PAS de run** : ce
   refus est le **signal d'absorption**, pas une erreur. Émets tes gates **dans le run de
-  l'appelant** (`gate_reached`/`gate_resumed`/`escalate` comme ci-dessous, `gate_id`
+  l'appelant** (`gate_reached`/`gate_resumed`/`escalate`/`heartbeat` comme ci-dessous, `gate_id`
   préfixé `sprint-<slug>-…`), et **laisse `run_finished` à celui qui a ouvert le run** —
   miroir exact de la règle d'absorption du checkpoint (un seul run, comme un seul
   « on continue ? »). **Résous ton propre gate** (`gate_resumed`) avant de rendre la main

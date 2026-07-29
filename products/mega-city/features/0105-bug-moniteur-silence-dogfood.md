@@ -60,9 +60,9 @@ product: mega-city
 1. **P0 UX immédiat** : clarifier dans le Moniteur / guide ce qu’est une carte run
    (jalons ≠ chaque outil Claude).
 2. **P1 fiche 0103** : outil MCP `heartbeat` + émission dans `ezk-sprint` (et builders).
+   → **shipped** (`features/done/0103-…`).
 3. **P1 fiche 0104** : `supervision:analyze` pour expliquer une session (journal +
    transcript + verdict).
-4. Optionnel dogfood : binder ou documenter `supervision-demo` / script
-   `bin/supervision-demo-run.ts` comme essai jouet sans sprint.
+4. Dogfood humain post-0103 : relancer Claude Code (6 outils), sprint avec heartbeats.
 
 Issue GitHub : https://github.com/elzinko/vectorz/issues/63

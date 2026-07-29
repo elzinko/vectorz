@@ -70,3 +70,4 @@ cop1.config.yaml
 # Ancré à la racine : l'ADR ne décide que du fichier de branchement du dépôt,
 # pas de tout `.mcp.json` à n'importe quelle profondeur.
 /.mcp.json
+docs/dogfood-reports/

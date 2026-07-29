@@ -200,6 +200,7 @@ describe('SupervisionView', () => {
     render(<SupervisionView />);
 
     expect(await screen.findByText(/classe B/i)).toBeTruthy();
+    expect(await screen.findByText(/heartbeat/i)).toBeTruthy();
   });
 
   it('never renders a piloting control (no button, no link, no input anywhere)', async () => {

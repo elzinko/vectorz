@@ -214,8 +214,9 @@ export function SupervisionView() {
         <div>
           <h2 className="mon__title">Runs supervisés</h2>
           <p className="mon__sub">
-            Lecture seule · classe B — chaque méthode déclare ce qu'elle fait, on la croit
-            sur parole.
+            Lecture seule · classe B — jalons méthode (start / heartbeat / gates / fin), pas
+            chaque action Claude Code. « Silence prolongé » = aucun événement depuis trop
+            longtemps pendant un run encore ouvert.
           </p>
         </div>
         {list.length > 0 && (

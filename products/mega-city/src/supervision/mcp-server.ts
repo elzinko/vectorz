@@ -1,8 +1,9 @@
 /**
  * `mcp-server.ts` — couche mince MCP stdio du kit émetteur de supervisabilité v0.1
- * (fiche 0050, §7). Exactement 5 outils, pas un de plus. Toute la logique (machine
- * à états, enveloppe, seq, upgrade_ok, confinement) vit dans `runtime.ts` ; ce
- * fichier ne fait que déclarer les schémas d'entrée et traduire runtime ↔ MCP.
+ * (fiche 0050, §7 + fiche 0103 heartbeat). Exactement 6 outils, pas un de plus.
+ * Toute la logique (machine à états, enveloppe, seq, upgrade_ok, confinement) vit
+ * dans `runtime.ts` ; ce fichier ne fait que déclarer les schémas d'entrée et
+ * traduire runtime ↔ MCP.
  *
  * `project_root` est lu UNE FOIS à l'init depuis `SUPERVISION_PROJECT_ROOT`
  * (fallback `process.cwd()`) — jamais un paramètre d'outil (D12 : la méthode ne
@@ -110,6 +111,24 @@ export function createSupervisionMcpServer(projectRoot: string): McpServer {
     (args) => {
       try {
         return toolOk(runtime.escalate(args));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+
+  server.registerTool(
+    'heartbeat',
+    {
+      description:
+        'Signe de vie pendant un run ouvert (entre deux jalons) — réarme le timer « Silence prolongé » du Moniteur. note optionnelle.',
+      inputSchema: {
+        note: z.string().optional(),
+      },
+    },
+    (args) => {
+      try {
+        return toolOk(runtime.heartbeat(args));
       } catch (error) {
         return toolError(error);
       }

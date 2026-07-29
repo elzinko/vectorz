@@ -8,7 +8,7 @@ description: >-
   du journal du contrat v0.1 : « teste le kit émetteur », « supervision-demo »,
   « émets un journal jouet », « run de démo supervisabilité ». Déroule
   run_start → travail simulé → gate 1 (STOP, attend) → gate 2 (STOP, attend) →
-  run_finished, en pilotant les 5 outils MCP de l'émetteur. N'est PAS une
+  run_finished, en pilotant les 6 outils MCP de l'émetteur (dont `heartbeat`). N'est PAS une
   méthode de travail réelle : c'est le banc d'essai du contrat, jetable.
 ---
 
@@ -27,8 +27,8 @@ l'émetteur, en simulant deux étapes de travail séparées par des gates.
 
 Le serveur MCP émetteur est configuré dans le client (Claude Desktop : entrée MCP
 lançant `pnpm exec tsx bin/supervision-mcp.ts` avec `SUPERVISION_PROJECT_ROOT`
-pointant sur la racine du projet supervisé). Si les 5 outils (`run_start`,
-`gate_reached`, `gate_resumed`, `escalate`, `run_finished`) ne sont pas visibles
+pointant sur la racine du projet supervisé). Si les 6 outils (`run_start`,
+`gate_reached`, `gate_resumed`, `escalate`, `heartbeat`, `run_finished`) ne sont pas visibles
 dans le contexte : **STOP** — explique la config manquante, n'émets rien.
 
 ## Le déroulé (strict, 2 gates)
@@ -36,15 +36,17 @@ dans le contexte : **STOP** — explique la config manquante, n'émets rien.
 1. **`run_start`** `{method_name: "supervision-demo", method_version: "0.1.0",
    seat: "human"}` — annonce le run. Montre à l'utilisateur le `run_id` retourné.
 2. **Étape 1 (travail simulé)** : produis 3-5 lignes sur le sujet donné en argument
-   (n'importe quoi de plausible — c'est un jouet). Si le sujet s'y prête, émets une
-   **`escalate`** `{type: "blocked", detail: …}` factice pour tester le signal
-   non-bloquant (et continue — une escalade n'arrête jamais).
+   (n'importe quoi de plausible — c'est un jouet). Émets un **`heartbeat`**
+   `{note: "étape 1 en cours"}` pendant ce travail (signe de vie Moniteur). Si le sujet
+   s'y prête, émets une **`escalate`** `{type: "blocked", detail: …}` factice pour tester
+   le signal non-bloquant (et continue — une escalade n'arrête jamais).
 3. **`gate_reached`** `{gate_id: "demo-gate-1", outcome: "ok", report_markdown: <ton
    résumé de l'étape 1>}` — puis **ARRÊTE-TOI VRAIMENT** : le résultat d'outil dit
    « STOP » ; termine ton tour et attends que l'humain réponde. C'est le cœur du
    contrat (stop-par-défaut au jalon).
 4. À la reprise humaine : **`gate_resumed`** (avec le `gate_event_id` que l'outil
-   t'a donné en 3), puis **étape 2** (encore 3-5 lignes), puis **`gate_reached`**
+   t'a donné en 3), puis **étape 2** (encore 3-5 lignes + un `heartbeat` `{note:
+   "étape 2"}`), puis **`gate_reached`**
    `{gate_id: "demo-gate-2", …}` — STOP à nouveau.
 5. À la 2ᵉ reprise : `gate_resumed` puis **`run_finished`** `{status: "success"}`.
    Termine en montrant où vit le journal

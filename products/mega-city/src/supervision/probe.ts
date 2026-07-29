@@ -6,12 +6,13 @@
  * coquille `bin/supervision-probe.ts`.
  */
 
-/** Les 5 outils du kit émetteur — ni plus, ni moins (fiche 0050, §7). */
+/** Les 6 outils du kit émetteur — ni plus, ni moins (fiche 0050 §7 + 0103 heartbeat). */
 export const EXPECTED_SUPERVISION_TOOLS = [
   'run_start',
   'gate_reached',
   'gate_resumed',
   'escalate',
+  'heartbeat',
   'run_finished',
 ] as const;
 
