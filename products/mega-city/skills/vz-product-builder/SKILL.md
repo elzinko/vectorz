@@ -71,8 +71,9 @@ classique et dis-le.
 L'autonomie sans journal est une boîte noire ; ici chaque décision laisse une trace :
 
 - `run_start` au lancement ; `run_finished` à la clôture.
-- **Pendant les sprints délégués** : `heartbeat {note}` de temps en temps (fiche 0103)
-  pour éviter le faux « Silence prolongé » du Moniteur — ce n'est pas un jalon.
+- **Pendant les sprints délégués** : `heartbeat {note}` au plus toutes les ~2–3 min
+  (jamais ≥ `presumed_dead_after_min`, défaut 5 min — fiche 0103) pour éviter le faux
+  « Silence prolongé » du Moniteur — ce n'est pas un jalon.
 - **Chaque décision de corpus = un gate** : `gate_reached {gate_id: <moment>, outcome,
   report_markdown: <le RAPPORT DU CORPUS — verdict, décompte, minoritaires>}` puis
   `gate_resumed` une fois la décision prise (self-reported : c'est TOI le point de

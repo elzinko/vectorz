@@ -163,12 +163,17 @@ L'intégration dans une méthode réelle (ezk-product-builder, ezk-sprint…) es
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 
 Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`,
-`escalate`, `run_finished`) sont disponibles dans le contexte — sinon saute
+`escalate`, `heartbeat`, `run_finished`) sont disponibles dans le contexte — sinon saute
 cette section sans bruit :
 
 - **Au lancement** : `run_start {method_name: "<ta-méthode>",
   method_version: "<sa-version>", seat: "human"}` (`method_version` est
   **requis** ; `seat` est optionnel, défaut `human`).
+- **Pendant le travail long (entre deux jalons)** — fiche 0103 : `heartbeat
+  {note: "<une ligne>"}` au moins à chaque étape majeure, et **au plus toutes les
+  ~2–3 min** (jamais ≥ le seuil Moniteur `presumed_dead_after_min`, défaut **5 min** —
+  sinon faux « Silence prolongé »). Ce n'est **pas** un jalon : tu continues. Pas de
+  heartbeat pendant un gate ouvert (silence voulu).
 - **À chaque point d'arrêt de ta méthode** (checkpoint, fin d'étape) :
   `gate_reached {gate_id: <nom-du-point>, outcome: ok|attention|failed,
   report_markdown: <ton résumé>}` **avant** de poser la question — puis

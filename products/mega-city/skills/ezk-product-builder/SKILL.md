@@ -185,9 +185,10 @@ bruit** :
   **n'ouvrent aucun run** (elles ne lancent rien, et n'ont pas de clôture où le refermer
   — un run ouvert par une consultation piégerait le prochain vrai build).
 - **Entre deux gates (pendant qu'un sprint tourne ou pendant ton propre travail
-  long)** — fiche 0103 : `heartbeat {note: "<une ligne>"}` de temps en temps (ex. début
-  de chaque sprint délégué, ou ~5–10 min). Ça évite le faux « Silence prolongé » du
-  Moniteur. Ce n'est pas un jalon : tu continues.
+  long)** — fiche 0103 : `heartbeat {note: "<une ligne>"}` au début de chaque sprint
+  délégué **et** au plus toutes les ~2–3 min d'activité utile (jamais ≥
+  `presumed_dead_after_min`, défaut **5 min**). Ça évite le faux « Silence prolongé »
+  du Moniteur. Ce n'est pas un jalon : tu continues.
 - **Si `run_start` est refusé (« un run est déjà ouvert »), deux cas — ne les confonds
   pas.** L'état est relu du **disque**, donc un run peut survivre à la session qui l'a
   ouvert :
