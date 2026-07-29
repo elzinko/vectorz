@@ -64,12 +64,16 @@ mode (l'autonomie exige une borne — pas de cap, pas d'auto).
 
 ## Override 3 — supervisabilité obligatoire (pas best-effort)
 
-Ce mode **refuse de démarrer** si les 5 outils du kit émetteur (`run_start`,
-`gate_reached`, `gate_resumed`, `escalate`, `run_finished` — mega-city fiche 0050) ne
-sont pas dans le contexte : replie-toi sur ezk-product-builder classique et dis-le.
+Ce mode **refuse de démarrer** si les 6 outils du kit émetteur (`run_start`,
+`gate_reached`, `gate_resumed`, `escalate`, `heartbeat`, `run_finished` — mega-city
+fiches 0050 + 0103) ne sont pas dans le contexte : replie-toi sur ezk-product-builder
+classique et dis-le.
 L'autonomie sans journal est une boîte noire ; ici chaque décision laisse une trace :
 
 - `run_start` au lancement ; `run_finished` à la clôture.
+- **Pendant les sprints délégués** : `heartbeat {note}` au plus toutes les ~2–3 min
+  (jamais ≥ `presumed_dead_after_min`, défaut 5 min — fiche 0103) pour éviter le faux
+  « Silence prolongé » du Moniteur — ce n'est pas un jalon.
 - **Chaque décision de corpus = un gate** : `gate_reached {gate_id: <moment>, outcome,
   report_markdown: <le RAPPORT DU CORPUS — verdict, décompte, minoritaires>}` puis
   `gate_resumed` une fois la décision prise (self-reported : c'est TOI le point de

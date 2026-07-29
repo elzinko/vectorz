@@ -78,7 +78,7 @@ afterEach(async () => {
 });
 
 describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
-  it('expose exactement les 5 outils attendus, ni plus ni moins', async () => {
+  it('expose exactement les outils attendus, ni plus ni moins', async () => {
     ({ client, transport } = await startClient(projectRoot));
 
     const { tools } = await client.listTools();
@@ -98,6 +98,12 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
     expect(startResult.isError).toBeFalsy();
     const { run_id: runId } = toolResultJson(startResult);
     expect(typeof runId).toBe('string');
+
+    const heartbeatResult = await client.callTool({
+      name: 'heartbeat',
+      arguments: { note: 'entre start et gate-1' },
+    });
+    expect(heartbeatResult.isError).toBeFalsy();
 
     const gateResult = await client.callTool({
       name: 'gate_reached',
@@ -136,13 +142,20 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
     expect(fs.existsSync(eventsPath)).toBe(true);
 
     const events = readEvents(projectRoot, runId);
-    expect(events).toHaveLength(5);
+    expect(events).toHaveLength(6);
 
     const types = events.map((e) => e.type);
-    expect(types).toEqual(['run.started', 'gate.reached', 'gate.resumed', 'escalation', 'run.finished']);
+    expect(types).toEqual([
+      'run.started',
+      'heartbeat',
+      'gate.reached',
+      'gate.resumed',
+      'escalation',
+      'run.finished',
+    ]);
 
     // seq strictement croissant sans trou, base 1
-    expect(events.map((e) => e.seq)).toEqual([1, 2, 3, 4, 5]);
+    expect(events.map((e) => e.seq)).toEqual([1, 2, 3, 4, 5, 6]);
 
     // run_id constant sur tout le journal
     for (const event of events) {
@@ -166,7 +179,7 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
     }
 
     // report_ref relatif, pointant vers un fichier md existant sous le dossier du run
-    const gateEvent = events[1] as { payload: { report_ref?: string } };
+    const gateEvent = events[2] as { payload: { report_ref?: string } };
     expect(gateEvent.payload.report_ref).toBeDefined();
     const reportRef = gateEvent.payload.report_ref as string;
     expect(path.isAbsolute(reportRef)).toBe(false);

@@ -15,6 +15,7 @@
 | 0089 | Ordonnancement — brancher PLAN.md sur l'intake (l'ordre suit la priorité, pas l'inverse) | feature | P0 |  | ✅ shipped | #52 |
 | 0094 | Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfooding n'émet rien aujourd'hui | feature | P0 |  | 🟠 in-progress | '#51 · #54' |
 | 0097 | Connecter l'ordre du plan à la vue cross-backlog — « la suite, toutes listes confondues » suit PLAN.md | feature | P0 |  | ✅ shipped | #53 |
+| 0105 | Bug dogfood — Moniteur « Silence prolongé » / produit inutilisable après run_start seul | bug | P0 |  | 🔴 todo |  |
 | 0002 | lawgiver capture — flywheel | feature | P1 |  | ✅ shipped | local (squash-merge) |
 | 0003 | cap claude-desktop — continuer à charger les skills | feature | P1 |  | ✅ shipped | #6 |
 | 0004 | migrer ezk-commits vers skills/ | chore | P1 |  | ✅ shipped | local (squash-merge) |
@@ -45,6 +46,8 @@
 | 0079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 |  | 🔴 todo |  |
 | 0095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | 🟠 in-progress | '#55' |
 | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 |  | ⛔ blocked |  |
+| 0103 | Les méthodes envoient un heartbeat — le Moniteur ne crie plus « silence » à tort | feature | P1 |  | ✅ shipped |  |
+| 0104 | Kit d’analyse de session — journal + Moniteur + transcript Claude Code en un rapport | feature | P1 |  | 🔴 todo |  |
 | 0005 | remote + licence (backup + base OSS) | chore | P2 |  | ✅ shipped |  |
 | 0007 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 |  | 🔴 todo |  |
 | 0014 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 |  | 🔴 todo |  |
@@ -117,4 +120,4 @@
 | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 0059 | 💡 idea |  |
 | 0093 | BacklogStore — port de persistance agnostique (md/git · GitHub · Jira…) — IDEA, sur trigger | feature | P3 |  | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0050, 0055, 0056, 0063, 0070, 0071, 0072, 0076, 0078, 0083, 0084, 0085, 0086, 0089, 0097.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0010, 0013, 0017, 0018, 0019, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0030, 0032, 0035, 0036, 0037, 0039, 0040, 0041, 0043, 0048, 0049, 0050, 0055, 0056, 0063, 0070, 0071, 0072, 0076, 0078, 0083, 0084, 0085, 0086, 0089, 0097, 0103.

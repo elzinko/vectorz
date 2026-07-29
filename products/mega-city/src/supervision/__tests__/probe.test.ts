@@ -76,13 +76,20 @@ describe('probe (fiche 0094) — coeur pur', () => {
   });
 
   describe('verdictFromObservedTools', () => {
-    it('verdict vert quand les outils observés sont exactement les 5 attendus (ordre indifférent)', () => {
-      const observed = ['run_finished', 'run_start', 'gate_reached', 'escalate', 'gate_resumed'];
+    it('verdict vert quand les outils observés sont exactement ceux attendus (ordre indifférent)', () => {
+      const observed = [
+        'run_finished',
+        'heartbeat',
+        'run_start',
+        'gate_reached',
+        'escalate',
+        'gate_resumed',
+      ];
       expect(verdictFromObservedTools(observed)).toEqual({ ok: true, tools: EXPECTED_SUPERVISION_TOOLS });
     });
 
     it('verdict rouge avec la liste des outils manquants', () => {
-      const observed = ['run_start', 'gate_reached', 'gate_resumed', 'escalate'];
+      const observed = ['run_start', 'gate_reached', 'gate_resumed', 'escalate', 'heartbeat'];
       expect(verdictFromObservedTools(observed)).toEqual({
         ok: false,
         missing: ['run_finished'],
@@ -102,7 +109,14 @@ describe('probe (fiche 0094) — coeur pur', () => {
     });
 
     it('verdict rouge combinant manquants et en trop', () => {
-      const observed = ['run_start', 'gate_reached', 'gate_resumed', 'escalate', 'emit_event'];
+      const observed = [
+        'run_start',
+        'gate_reached',
+        'gate_resumed',
+        'escalate',
+        'heartbeat',
+        'emit_event',
+      ];
       expect(verdictFromObservedTools(observed)).toEqual({
         ok: false,
         missing: ['run_finished'],
@@ -111,7 +125,7 @@ describe('probe (fiche 0094) — coeur pur', () => {
       });
     });
 
-    it('verdict ROUGE sur un doublon : les 5 noms sont là, mais ce ne sont pas 5 outils', () => {
+    it('verdict ROUGE sur un doublon : les noms attendus sont là, mais ce ne sont pas N outils distincts', () => {
       const observed = ['run_start', ...EXPECTED_SUPERVISION_TOOLS];
       expect(verdictFromObservedTools(observed)).toEqual({
         ok: false,

@@ -65,6 +65,11 @@ export interface RunFinishedArgs {
   status: 'success' | 'failure' | 'abandoned';
 }
 
+export interface HeartbeatArgs {
+  /** Note courte optionnelle (ex. étape en cours) — signe de vie entre deux jalons. */
+  note?: string;
+}
+
 interface OpenGate {
   gate_id: string;
   gate_event_id: string;
@@ -222,6 +227,25 @@ export class SupervisionRuntime {
     const escalationId = randomUUID();
     journal.append('escalation', { escalation_id: escalationId, type: args.type, detail: args.detail });
     return { escalation_id: escalationId };
+  }
+
+  /**
+   * Signe de vie pendant un run ouvert **hors gate** (fiche 0103 / contrat v0.1).
+   * Réarme le timer `presumed_dead` du Moniteur via un nouvel événement absorbé.
+   * Refusé si un gate est ouvert : le silence au jalon est voulu (ADR-028 / validateur).
+   */
+  heartbeat(args: HeartbeatArgs = {}): { run_id: string; event_id: string } {
+    const state = this.requireOpenRun('heartbeat');
+    if (state.openGate) {
+      throw new Error(
+        `heartbeat refusé : un gate est ouvert (gate_id=${state.openGate.gate_id}) — le silence au jalon est voulu ; attends gate_resumed`,
+      );
+    }
+    const journal = new Journal(state.runDir, state.runId);
+    const note =
+      typeof args.note === 'string' && args.note.trim().length > 0 ? args.note.trim() : undefined;
+    const event = journal.append('heartbeat', note !== undefined ? { note } : {});
+    return { run_id: state.runId, event_id: event.event_id };
   }
 
   runFinished(args: RunFinishedArgs): { run_id: string } {
