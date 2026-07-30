@@ -17,8 +17,6 @@
  * - Si trouvé et racine ∈ registre → méthode attendue transmise au runtime.
  * - Si aucun registre → comportement v1 inchangé.
  */
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { createSupervisionMcpServer } from '../src/supervision/mcp-server.js';
 import { formatRootAnnouncement, resolveSupervisionRoot } from '../src/supervision/project-root.js';
@@ -35,13 +33,14 @@ try {
 
 console.error(formatRootAnnouncement(resolvedRoot));
 
-// Fiche 0082 — découverte du registre siège (pas seulement sous la racine ancrée)
-const packagedSeatRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+// Fiche 0082 — découverte du registre siège (pas seulement sous la racine ancrée).
+// Ordre : SUPERVISION_REGISTRY_DIR (projets externes) → walk-up depuis l'ancre → cwd.
+// Pas de fallback « siège packagé » : ça casserait les bancs isolés (/tmp) et forcerait
+// un fail-fast contre le registre dogfood du monorepo (Codex P1 traité via env explicite).
 const registrySearchRoots = [
   ...(process.env.SUPERVISION_REGISTRY_DIR ? [process.env.SUPERVISION_REGISTRY_DIR] : []),
   resolvedRoot.root,
   process.cwd(),
-  packagedSeatRoot,
 ];
 
 let expectedMethod: string | undefined;
@@ -51,7 +50,7 @@ try {
     const entry = findProjectByRoot(located.registry, located.dir, resolvedRoot.root);
     if (entry === undefined) {
       console.error(
-        `[supervision] ERREUR : la racine ancrée "${resolvedRoot.root}" n'est pas dans le registre ${located.dir}/supervision.registry.yaml — ajoutez-la ou vérifiez SUPERVISION_PROJECT_ROOT.`,
+        `[supervision] ERREUR : la racine ancrée "${resolvedRoot.root}" n'est pas dans le registre ${located.dir}/supervision.registry.yaml — ajoutez-la ou vérifiez SUPERVISION_PROJECT_ROOT / SUPERVISION_REGISTRY_DIR.`,
       );
       process.exit(1);
     }
