@@ -1,0 +1,20 @@
+# supervision.registry.example.yaml — Exemple de registre multi-projets (fiche 0082)
+#
+# Copiez ce fichier vers supervision.registry.yaml et adaptez-le à vos projets.
+# Voir supervision.registry.yaml pour le registre actif de ce dépôt.
+
+projects:
+  # Projet supervisé dans ce dépôt (chemin relatif au registre)
+  - id: mon-projet
+    path: .
+    method: mega-city
+
+  # Projet externe (chemin absolu)
+  - id: autre-projet
+    path: /Users/moi/projets/autre-projet
+    method: bmad
+
+  # Sous-projet dans ce dépôt
+  - id: sous-projet
+    path: ./products/sous-projet
+    method: mega-city

@@ -67,6 +67,20 @@ export function projectRun(runDir: string): RunProjection {
   const started = events.find((e) => e.envelope.type === 'run.started');
   const { method, seat } = readMethodAndSeat(started?.envelope.payload);
 
+  // Fiche 0082 — annotation d'écart de méthode : si le payload `run.started`
+  // contient `_method_mismatch`, la méthode déclarée diffère de la méthode
+  // attendue selon le registre. On produit une Notice (jamais une violation).
+  const rawMismatch = started?.envelope.payload?._method_mismatch;
+  if (rawMismatch && typeof rawMismatch === 'object') {
+    const { declared, expected } = rawMismatch as Record<string, unknown>;
+    if (typeof declared === 'string' && typeof expected === 'string') {
+      notices.push({
+        code: 'registry.method_mismatch',
+        message: `Écart de méthode : déclarée "${declared}", attendue "${expected}" selon le registre (fiche 0082).`,
+      });
+    }
+  }
+
   return {
     runId,
     state,

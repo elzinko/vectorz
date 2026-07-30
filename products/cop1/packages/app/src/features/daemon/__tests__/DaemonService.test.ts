@@ -5,6 +5,7 @@ import { EventBus } from '@cop1/shared-kernel';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DaemonService } from '../application/DaemonService.js';
 import { PidFileManager } from '../infrastructure/PidFileManager.js';
+import { REGISTRY_FILENAME } from '../../supervision/infrastructure/registry.js';
 
 describe('DaemonService', () => {
   let testDir: string;
@@ -133,6 +134,65 @@ describe('DaemonService', () => {
       );
     } finally {
       await wired.stop();
+    }
+  });
+
+  it('dérive watch_roots depuis supervision.registry.yaml quand présent (fiche 0082)', async () => {
+    // Créer le registre avec le testDir comme racine du projet
+    writeFileSync(
+      join(testDir, REGISTRY_FILENAME),
+      [
+        'projects:',
+        `  - id: test-project`,
+        `    path: .`,
+        `    method: mega-city`,
+      ].join('\n'),
+    );
+
+    // Créer un run dans le répertoire supervisé (le testDir lui-même, chemin ".")
+    const runsDir = join(testDir, '.supervision', 'runs', 'run-from-registry');
+    mkdirSync(runsDir, { recursive: true });
+    writeFileSync(
+      join(runsDir, 'events.jsonl'),
+      `${JSON.stringify({
+        event_id: 'e1',
+        run_id: 'run-from-registry',
+        seq: 1,
+        ts: new Date().toISOString(),
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'mega-city', version: '1.0.0' }, seat: 'pilot' },
+      })}\n`,
+    );
+
+    // Le daemon doit découvrir ce run grâce au registre (sans cop1.config.yaml)
+    const registryDaemon = new DaemonService({ port: 14247, projectPath: testDir });
+    try {
+      await registryDaemon.start();
+
+      await vi.waitFor(
+        async () => {
+          const res = await fetch('http://127.0.0.1:14247/api/supervision/runs');
+          const data = (await res.json()) as Array<{ runId: string }>;
+          expect(data.some((snapshot) => snapshot.runId === 'run-from-registry')).toBe(true);
+        },
+        { timeout: 10000, interval: 30 },
+      );
+    } finally {
+      await registryDaemon.stop();
+    }
+  });
+
+  it('sans registre et sans config YAML → supervision dormante (non-régression v1)', async () => {
+    // Ni supervision.registry.yaml ni cop1.config.yaml → supervision dormante
+    const d = new DaemonService({ port: 14248, projectPath: testDir });
+    try {
+      await d.start();
+      const res = await fetch('http://127.0.0.1:14248/api/supervision/runs');
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    } finally {
+      await d.stop();
     }
   });
 

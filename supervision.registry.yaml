@@ -1,0 +1,17 @@
+# supervision.registry.yaml — Registre versionné de supervision (fiche 0082)
+#
+# Déclare QUOI superviser et AVEC QUELLE MÉTHODE.
+# Ne contient AUCUN chemin de journal (invariant anti-falsification, fiche 0154).
+# L'OÙ effectif reste toujours <racine>/.supervision/ — calculé côté serveur.
+#
+# `path` : chemin vers la racine du projet, relatif au répertoire de ce fichier
+#           (ou absolu). C'est un label de localisation, pas un chemin de journal.
+# `method` : nom de la méthode attendue (ex. mega-city, bmad).
+#
+# Lu UNE SEULE FOIS à l'initialisation (émetteur MCP + daemon moniteur).
+# Jamais paramètre d'outil.
+
+projects:
+  - id: vectorz
+    path: .
+    method: mega-city
