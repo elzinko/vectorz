@@ -7,7 +7,7 @@ product: vectorz
 epic:
 status: in-progress
 ready: 2026-07-30
-pr:
+pr: "#66"
 created: 2026-07-26
 ---
 
