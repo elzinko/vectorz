@@ -34,13 +34,12 @@ try {
 console.error(formatRootAnnouncement(resolvedRoot));
 
 // Fiche 0082 — découverte du registre siège (pas seulement sous la racine ancrée).
-// Ordre : SUPERVISION_REGISTRY_DIR (projets externes) → walk-up depuis l'ancre → cwd.
-// Pas de fallback « siège packagé » : ça casserait les bancs isolés (/tmp) et forcerait
-// un fail-fast contre le registre dogfood du monorepo (Codex P1 traité via env explicite).
+// Ordre : SUPERVISION_REGISTRY_DIR (projets externes) → walk-up depuis l'ancre.
+// Jamais depuis process.cwd() : le launcher (tsx depuis mega-city) vit dans le
+// monorepo et « découvrirait » le registre dogfood contre une ancre /tmp isolée.
 const registrySearchRoots = [
   ...(process.env.SUPERVISION_REGISTRY_DIR ? [process.env.SUPERVISION_REGISTRY_DIR] : []),
   resolvedRoot.root,
-  process.cwd(),
 ];
 
 let expectedMethod: string | undefined;
