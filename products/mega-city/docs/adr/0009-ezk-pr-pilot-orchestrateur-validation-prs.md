@@ -1,6 +1,7 @@
 # ADR 0009 — `ezk-pr-pilot` : orchestrateur de validation d'un stock de PRs + convention « Validation » découplée
 
-- Statut : **accepté**
+- Statut : **accepté** (amendé par [ADR-0022](0022-ezk-methode-trois-bandes-naming.md) :
+  nom préféré `ezk-pr` ; `init` Validation → à terme `ezk-backlog init`)
 - Date : 2026-07-06
 
 ## Contexte

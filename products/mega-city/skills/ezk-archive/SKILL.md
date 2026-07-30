@@ -42,6 +42,11 @@ délègue.
 > scrum (ça, c'est [`ezk-sprint`](../ezk-sprint/)), ni le suivi du *quoi* (ça, c'est
 > [`ezk-backlog`](../ezk-backlog/)). `ezk-sprint` **ouvre/déroule**, `ezk-backlog`
 > suit **le quoi**, **`ezk-archive` clôt**.
+>
+> **Bande (ADR-0022)** : **capacité**, pas orchestrateur. Sur le diagramme
+> [`ezk-methode-globale`](../../diagrams/ezk-methode-globale/), `archive` vit
+> avec backlog / sandbox / preview — pas dans la chaîne
+> product-builder → sprint → pr.
 
 ## Usage (sous-commandes)
 

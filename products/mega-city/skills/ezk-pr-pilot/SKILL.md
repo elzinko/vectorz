@@ -21,6 +21,11 @@ description: >-
 
 # ezk-pr-pilot
 
+> **Nom préféré : `ezk-pr`** (ADR-0022). Le dossier / invocation `ezk-pr-pilot`
+> reste l'alias jusqu'au rename mécanique. **Pas** `ezk-backlog` : backlog =
+> fiches (*quoi*) ; ici = stock de PRs (*comment* valider/merger). Intersection :
+> `ship` / reconcile autour du done — objets différents.
+
 Tu es le **chef d'orchestre de la validation** : face à un **stock de PRs
 ouvertes**, tu calcules l'**ordre de merge**, tu regroupes les tests en
 **sessions efficaces** (une session device pour N PRs mobiles, pas N sessions),
@@ -30,7 +35,9 @@ tu **démarres les bancs**, tu guides l'utilisateur **checklist en main**, tu
 > Né du rétrofit livestreamz 2026-07-06 (PRs #69–#79) : 8 PRs, 3 sessions de
 > test au lieu de 8, ordre de merge calculé par `git merge-tree`, et le constat
 > qu'aucun corps de PR n'était rejouable sans contexte → la convention
-> « Validation » (ADR-0009).
+> « Validation » (ADR-0009). **Intention ADR-0022** : l'installation de cette
+> convention migre vers `ezk-backlog init` (scaffold repo) ; `init` ici reste
+> supporté jusqu'à migration.
 
 ## Usage (sous-commandes)
 
@@ -39,7 +46,7 @@ tu **démarres les bancs**, tu guides l'utilisateur **checklist en main**, tu
 | Sous-commande | Effet |
 |---|---|
 | `help` (ou **sans argument**) | Ce tableau + l'état du stock (`gh pr list` ou branches locales) |
-| `init` | Installe la **convention « Validation »** dans le repo (cf. plus bas) |
+| `init` | Installe la **convention « Validation »** (cf. plus bas). **Dette ADR-0022** : à terme, même geste via `ezk-backlog init` |
 | `plan` | Analyse le stock → **ordre de merge**, conflits, **sessions de test groupées** |
 | `run [session|#PR]` | Déroule une session : bancs démarrés, URLs/démos, checklist pas-à-pas |
 | `report` | Poste dans chaque PR testée le résultat (✅/❌ par critère, signaux observés) |

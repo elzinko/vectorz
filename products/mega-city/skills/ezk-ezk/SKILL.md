@@ -30,9 +30,35 @@ le refaire chaque fois.
 > **Orchestrateur mince, pas une cathédrale.** `ezk-ezk` **compose** trois
 > compétences et **délègue le rangement mécanique à un seul script**. Il ne
 > réécrit ni le brainstorm produit, ni l'archi, ni la fabrique de skills.
-> C'est le même idiome que `ezk-archive` qui *appelle* `ezk-backlog` au lieu de
-> réimplémenter le suivi. (Ces skills sont invoqués par leur nom via le Skill
-> tool ; ils ne vivent pas encore dans `skills/` de mega-city — migration en cours.)
+> C'est le même idiome que la capacité `ezk-archive` qui *appelle* `ezk-backlog`
+> au lieu de réimplémenter le suivi.
+
+## Carte de la méthode (naming — ADR-0022)
+
+Quand tu **fabriques** un skill ezk, place-le dans **une** bande. Diagramme :
+[`diagrams/ezk-methode-globale/`](../../diagrams/ezk-methode-globale/).
+
+| Bande | Rôle | Exemples |
+|---|---|---|
+| **Orchestrateurs** | enchaînent plusieurs steps / un stock | `ezk-product-builder`, `ezk-sprint`, **`ezk-pr`** (ex-`ezk-pr-pilot`) |
+| **Rôles** | une feature, un métier | `ezk-pm`, `ezk-architect`, `ezk-dev`, `ezk-qa`, `ezk-reviewer` |
+| **Capacités** | briques composables (`ezk-caps-*` ou alias court) | `ezk-backlog`, `ezk-sandbox`, `ezk-preview`, `ezk-commits`, **`ezk-archive`** |
+
+Règles de nommage (préférences 2026-07-30) :
+
+1. **Pas de `-pilot`** — préférer `ezk-pr` à `ezk-pr-pilot`.
+2. **Capacités** : préfixe `ezk-caps-…` quand le risque de confusion avec un rôle
+   est réel ; alias court OK (`ezk-sandbox` ⇔ `ezk-caps-sandbox`).
+3. **Scaffold repo** (`features/`, convention Validation) → **`ezk-backlog init`**,
+   pas l'orchestrateur de stock PR.
+4. **`ezk-archive` = capacité** (hygiène de clôture), **pas** un 4ᵉ orchestrateur
+   après `pr`.
+5. **`ezk-backlog` ≠ `ezk-pr`** — backlog = *quoi* (fiches) ; pr = *comment*
+   valider/merger un **stock de PRs**. Intersection : `ship` / `reconcile` autour
+   du « done », objets différents.
+
+Test ADR-0020 : une capacité utilisée par ≥ 2 rôles **ne vit pas** dans un
+orchestrateur.
 
 ## Usage (sous-commandes)
 
@@ -164,9 +190,11 @@ SKILL.md**. Il ne touche **jamais** un fichier de l'utilisateur (invariant ADR-0
   `anthropic-skills:skill-creator` et `skill-creator:skill-creator` — et le cache
   est versionné ; **jamais de chemin en dur**).
 
-Même idiome que `ezk-archive` (appelle `ezk-backlog`, ne réimplémente pas le
-suivi) et `ezk-ci` (génère via `skill-creator` à partir du besoin). C'est
-**`skill-creator`** qui valide la `description` — pas `ezk-ezk`.
+Même idiome que `ezk-archive` (capacité de clôture qui appelle `ezk-backlog`,
+ne réimplémente pas le suivi) et `ezk-ci` (génère via `skill-creator` à partir
+du besoin). C'est **`skill-creator`** qui valide la `description` — pas
+`ezk-ezk`. Avant de nommer un nouveau skill, relis la
+[Carte de la méthode](#carte-de-la-méthode-naming--adr-0022).
 
 ## Garde-fous
 

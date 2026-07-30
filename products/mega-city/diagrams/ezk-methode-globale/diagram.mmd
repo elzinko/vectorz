@@ -1,0 +1,24 @@
+flowchart TB
+  subgraph O["1. Orchestrateurs"]
+    direction LR
+    PB["product-builder"] --> SP["sprint"] --> PR["pr"]
+  end
+
+  subgraph R["2. Roles — une feature"]
+    direction LR
+    PM["pm"] --> ARCH["architect"] --> DEV["dev"] --> QA["qa"] --> REV["reviewer"]
+  end
+
+  subgraph C["3. Capacites ezk-caps-*"]
+    direction LR
+    BL["backlog"]
+    SB["sandbox"]
+    PV["preview"]
+    CM["commits"]
+    AR["archive"]
+  end
+
+  SP -->|"orchestre"| R
+  PR -->|"consomme les PRs"| R
+  R -.->|"utilisent"| C
+  O -.->|"utilisent"| C
