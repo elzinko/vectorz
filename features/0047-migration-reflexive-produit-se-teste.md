@@ -3,6 +3,7 @@ id: 0047
 title: Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article)
 type: feature
 priority: P3
+product: vectorz
 status: idea
 pr:
 created: 2026-07-16

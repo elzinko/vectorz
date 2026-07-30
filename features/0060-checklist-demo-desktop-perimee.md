@@ -3,6 +3,7 @@ id: 0060
 title: Les deux docs d'installation ont décroché de main (checklist démo + guide web UI)
 type: bug
 priority: P2
+product: vectorz
 epic:
 status: todo
 ready:

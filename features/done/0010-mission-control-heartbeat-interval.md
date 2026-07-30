@@ -3,6 +3,7 @@ id: 0010
 title: Heartbeat mission-control — setInterval recréé à chaque frame SSE
 type: refactor
 priority: P3
+product: vectorz
 status: shipped
 pr: "#40"
 created: 2026-06-24

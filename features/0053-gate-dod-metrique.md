@@ -3,6 +3,7 @@ id: 0053
 title: Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu
 type: feature
 priority: P2
+product: vectorz
 epic: 0051
 status: idea
 ready:

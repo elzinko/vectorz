@@ -3,6 +3,7 @@ id: 0054
 title: Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue
 type: feature
 priority: P2
+product: vectorz
 epic: 0051
 status: idea
 ready:

@@ -88,6 +88,7 @@ id: 0002
 title: Échec de connexion mobile invisible (caméra tourne, zéro erreur)
 type: feature        # feature | bug | refactor | chore | epic
 priority: P0         # P0 | P1 | P2 | P3
+product:             # obligatoire dans ce monorepo — vectorz | mega-city | … (ADR-0017 A14)
 version:             # optionnel — jalon ciblé, ex. "V1.1" (vide si non pertinent)
 epic:                # optionnel — id de la fiche épic parente (type: epic) ; jamais d'épic → épic (ADR-0017)
 status: todo         # idea | todo | in-progress | blocked | shipped
@@ -142,15 +143,21 @@ qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
 Le but de la skill est la **discipline** (backlog commité, 1 fiche/sujet, statut unique en
 front-matter, dossier `done/`, 1 PR/feature), pas un dossier précis.
 
-## Multi-backlogs (monorepo) — quel backlog viser ?
+## Liste unique + champ `product:` (monorepo vectorz — ADR-0017 A14 / fiche 0064)
 
-Un monorepo peut porter plusieurs backlogs (ex. vectorz : `features/` racine +
-`products/mega-city/features/`). Règle (ADR-0017 A13) : **le backlog le plus proche du
-cwd** ; si l'ambiguïté demeure (cwd à la racine, sujet côté produit), **demander** —
-ne jamais deviner. Toutes les sous-commandes (`add`, `groom`, `ready`, `next`,
-`review`, `ship`, `regen`) opèrent sur le backlog ainsi résolu ; `regen` se lance avec
-la racine et le titre du backlog visé — ex. depuis la racine vectorz :
-`bash products/mega-city/bin/regen-backlog.sh . "Backlog features & bugs — vectorz (racine)"`.
+Ce monorepo a **une seule** liste : `features/` à la racine. Le produit n'est plus
+l'emplacement — c'est le champ front-matter **`product:`** (obligatoire ici :
+`vectorz` | `mega-city` | …). Ids **continus et uniques** sur l'ensemble (actifs +
+`done/`) ; `regen` warn si doublon. `PLAN.md` cite des ids nus (préfixe `mc-` legacy
+toléré). `regen` :
+
+```bash
+bash products/mega-city/bin/regen-backlog.sh . "Backlog features & bugs — vectorz"
+```
+
+Dans un **autre** repo qui aurait encore plusieurs dossiers de backlog, la règle
+historique A13 (cwd le plus proche / demander si ambigu) peut s'appliquer — ce n'est
+plus le cas de vectorz.
 
 ## Détail des sous-commandes
 
@@ -223,7 +230,7 @@ antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` d
 
 ### `next --ready-only` — LA prochaine fiche tirable (point d'entrée unique)
 
-**Ordre de parcours (mc-0089) — PLAN.md d'abord.** Si un `features/PLAN.md` gouverne ce
+**Ordre de parcours (0089) — PLAN.md d'abord.** Si un `features/PLAN.md` gouverne ce
 backlog, l'ordre de travail vient de **LUI**, pas du tri priorité : la priorité est un
 *seau* d'ex æquo, `PLAN.md` est la *séquence*. Pour obtenir l'ordre des ids **sans le lire
 à l'œil** (doctrine ADR-0001), un helper déterministe existe **dans le monorepo mega-city** :
@@ -232,9 +239,8 @@ document** (tous jalons confondus, quel que soit leur nom ; une entrée = puce c
 son id **ou** portant un marqueur `build|audit|ship|groom`). **Best-effort — jamais fatal** :
 le helper vivant dans mega-city, dans **tout autre dépôt** où il est absent, **ne fais pas
 échouer `next`** — lis le `PLAN.md` directement (au jugement) ou, à défaut, repli sur
-`P0→P3 puis id`. Restreins aux ids **présents dans ce backlog** (un `PLAN.md` racine peut
-lister des ids `mc-` d'un autre backlog : hors de CE `next`, à router à part — limitation
-POC). **Sans `PLAN.md`** du tout : tri `P0→P3 puis id`.
+`P0→P3 puis id`. Restreins aux ids **présents dans ce backlog**. **Sans `PLAN.md`**
+du tout : tri `P0→P3 puis id`.
 
 Parcours le backlog **dans cet ordre** et renvoie la **première fiche éligible** :
 `status: todo` **et** `ready:` posé.
@@ -255,14 +261,9 @@ d'abord, ou décision journalisée).
 - **Soupape PO** : l'opérateur peut décider de tirer une fiche non-ready — décision
   explicite, **journalisée** (note dans la fiche + scratch de sprint).
 
-**Cross-backlog — la tête tous backlogs confondus (mc-0097).** `next` opère sur UN backlog.
-Quand le `PLAN.md` maître mêle plusieurs listes (racine `features/` + méthode
-`products/mega-city/features/`, ids `mc-XXXX`), la vraie tête peut vivre sur l'autre liste.
-`pnpm --dir products/mega-city plan:head [chemin/PLAN.md]` donne la **tête réelle à travers
-les deux listes** : la 1re carte `todo`+`ready` du plan (avec sa liste), les **têtes bloquées**
-(todo sans ready qui précèdent), et les ids **introuvables** (signalés). L'intake du
-product-builder l'utilise pour router vers la bonne liste au lieu de ne voir que la sienne.
-Best-effort (helper mega-city) : hors monorepo, repli sur le `next` mono-liste ci-dessus.
+**`plan:head` (0097 → adapté 0064).** Sur la liste unique, `pnpm --dir products/mega-city
+plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
+`todo`+`ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
 ezk-sprint et ezk-product-builder passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).

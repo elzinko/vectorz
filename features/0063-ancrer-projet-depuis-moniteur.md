@@ -3,6 +3,7 @@ id: 0063
 title: Ancrer un projet depuis le Moniteur — bouton « ajouter projet » + sélection de dossier + install via le daemon (2 modes)
 type: feature
 priority: P2
+product: vectorz
 epic:
 status: idea
 ready:

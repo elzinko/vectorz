@@ -3,6 +3,7 @@ id: 0059
 title: Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en cours, projet, ordre)
 type: feature
 priority: P1
+product: vectorz
 epic:
 status: shipped
 ready:

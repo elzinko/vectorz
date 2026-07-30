@@ -41,11 +41,11 @@ standard, le contenu est ce que vous voulez.
 
 1. **Vous possédez la méthode** (skills maison, ex. mega-city) → les **consignes d'émission
    (~15 lignes) vivent DANS le skill** et appellent le kit. C'est le chemin canonique —
-   fiche [0050](../products/mega-city/features/done/0050-kit-emetteur-supervisabilite.md).
+   fiche [0050](../features/done/0154-kit-emetteur-supervisabilite.md).
 2. **Vous ne possédez pas la méthode** (ex. BMAD) → le **sidecar** (installateur) : des fiches
    de branchement + un moteur qui **injecte les consignes dans les prises officielles** de la
    méthode. Après installation, **c'est la méthode elle-même qui parle** — cas détaillé
-   ci-dessous, fiche [0058](../products/mega-city/features/0058-bmad-contrat-supervisabilite.md).
+   ci-dessous, fiche [0058](../features/0162-bmad-contrat-supervisabilite.md).
 3. **Dernier recours** (méthode sans aucune prise) → l'**observation externe** (shim de
    transition) : un boîtier qui regarde et raconte. Il ne produit que la moitié
    **observabilité** — il ne peut **ni freiner, ni dire « je reprends »** — et sa trace est
@@ -104,5 +104,5 @@ panel adverse** (4 lentilles + juge vérifiant chaque affirmation dans le code �
 - **La décision** : [ADR-032](adr/ADR-032-emission-adaptateur-separable.md) (gravé 2026-07-17) — et le [registre des ADR](adr/README.md).
 - **La carte vivante de la méthode** : [method-map](../products/mega-city/docs/method-map.md) (couche méthode / couche contrat).
 - **Le contrat de supervisabilité** (gelé, 2026-07-13) : [capture](captures/2026-07-13-contrat-methode-et-versions.md) — et l'[article de fond](articles/contrat-de-supervisabilite.md).
-- **Les fiches** : [0050](../products/mega-city/features/done/0050-kit-emetteur-supervisabilite.md) (kit émetteur, en cours) → [0058](../products/mega-city/features/0058-bmad-contrat-supervisabilite.md) (le sidecar BMAD).
+- **Les fiches** : [0050](../features/done/0154-kit-emetteur-supervisabilite.md) (kit émetteur, en cours) → [0058](../features/0162-bmad-contrat-supervisabilite.md) (le sidecar BMAD).
 - **Le récit du panel** : [capture 2026-07-16](captures/2026-07-16-panel-adverse-adr-032.md).

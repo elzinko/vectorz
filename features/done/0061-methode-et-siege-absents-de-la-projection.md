@@ -3,6 +3,7 @@ id: 0061
 title: La projection jette la méthode et le siège — impossible de savoir QUI a produit un run, ni avec quelle version
 type: bug
 priority: P1
+product: vectorz
 epic:
 status: shipped
 ready:

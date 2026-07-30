@@ -13,7 +13,7 @@ cd "$ROOT"
 
 SEP=$'\x1f'
 
-extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, ready, created, version, epic
+extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, ready, created, version, epic, product
   awk '
     function unquote(s) { gsub(/^"|"$/, "", s); return s }
     BEGIN { infm=0 }
@@ -29,8 +29,9 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, r
       if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
+      if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); product=unquote($0) }
     }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, ready, created, version, epic }
+    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, ready, created, version, epic, product }
   ' "$1"
 }
 
@@ -43,12 +44,12 @@ for f in features/[0-9]*.md features/done/[0-9]*.md; do
   case "$f" in features/done/*) done_ids="${done_ids} ${line%%${SEP}*}";; esac
 done
 
-# Intégrité épics (ADR-0017 A7) — warnings non bloquants sur stderr : référence pendante,
-# cible non-epic, sous-épic (2 niveaux max, ADR-0017 §5).
+# Intégrité épics (ADR-0017 A7) + unicité des ids (fiche 0064) — warnings non bloquants.
 printf '%s' "$rows" | awk -F"$SEP" '
   NF {
     nr++; rowid[nr]=$1; rowtype[nr]=$3; ref[nr]=$10
     if ($3 == "epic") isepic[$1]=1
+    seen[$1]++
   }
   END {
     for (i=1; i<=nr; i++) {
@@ -57,22 +58,27 @@ printf '%s' "$rows" | awk -F"$SEP" '
       if (ref[i] != "" && rowtype[i] == "epic")
         printf "warning: fiche %s — une épic ne référence pas d%sépic (2 niveaux max, ADR-0017)\n", rowid[i], "\047" | "cat 1>&2"
     }
+    for (id in seen)
+      if (seen[id] > 1)
+        printf "warning: id %s en double (%d fiches) — collision structurelle\n", id, seen[id] | "cat 1>&2"
   }'
 
-# Colonnes conditionnelles (ADR-0017 A12) : Version si au moins un `version:`, Épic si au moins un `epic:`.
+# Colonnes conditionnelles (ADR-0017 A12) : Version / Épic / Produit (0064).
 has_version="$(printf '%s' "$rows" | awk -F"$SEP" '$9 != "" { f=1 } END { print f+0 }')"
 has_epic_col="$(printf '%s' "$rows" | awk -F"$SEP" '$10 != "" { f=1 } END { print f+0 }')"
+has_product="$(printf '%s' "$rows" | awk -F"$SEP" '$11 != "" { f=1 } END { print f+0 }')"
 has_epics="$(printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic" { f=1 } END { print f+0 }')"
 
 cols='| # | Titre | Type | Prio |'
 dash='|---|-------|------|------|'
 if [ "$has_version" = 1 ]; then cols="${cols} Version |"; dash="${dash}---------|"; fi
 if [ "$has_epic_col" = 1 ]; then cols="${cols} Épic |"; dash="${dash}------|"; fi
+if [ "$has_product" = 1 ]; then cols="${cols} Produit |"; dash="${dash}---------|"; fi
 cols="${cols} Statut | PR |"
 dash="${dash}--------|----|"
 
-emit_row() { # $1..$10 = champs ; émet une ligne de table avec les colonnes actives
-  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$9" epic="${10}"
+emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes actives
+  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$9" epic="${10}" product="${11}"
   local st
   case "$status" in
     shipped) st='✅ shipped';;
@@ -86,6 +92,7 @@ emit_row() { # $1..$10 = champs ; émet une ligne de table avec les colonnes act
   local line="| $id | $title | $type | $prio |"
   if [ "$has_version" = 1 ]; then line="${line} ${version} |"; fi
   if [ "$has_epic_col" = 1 ]; then line="${line} ${epic} |"; fi
+  if [ "$has_product" = 1 ]; then line="${line} ${product} |"; fi
   echo "${line} $st | $pr |"
 }
 
@@ -104,8 +111,8 @@ emit_row() { # $1..$10 = champs ; émet une ligne de table avec les colonnes act
   echo "$cols"
   echo "$dash"
   printf '%s' "$rows" | awk -F"$SEP" '$5 != "idea" && $3 != "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-    while IFS="$SEP" read -r id title type prio status pr ready created version epic; do
-      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic"
+    while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
+      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product"
     done
 
   if [ "$has_epics" = 1 ]; then
@@ -115,8 +122,8 @@ emit_row() { # $1..$10 = champs ; émet une ligne de table avec les colonnes act
     echo "$cols"
     echo "$dash"
     printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic"
+      while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product"
       done
   fi
 
@@ -128,8 +135,8 @@ emit_row() { # $1..$10 = champs ; émet une ligne de table avec les colonnes act
     echo "$cols"
     echo "$dash"
     printf '%s\n' "$ideas" | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic"
+      while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product"
       done
   fi
   echo ''

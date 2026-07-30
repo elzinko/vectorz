@@ -3,7 +3,7 @@
 - Statut : **accepté** — décision de frontière, 2026-07-22 (sole-judge sur délégation PO ; l'appel `ezk-architect` a été interrompu par une erreur d'API, la décision est reprise et tranchée ici)
 - Date : 2026-07-22
 - Portée : skills mega-city `ezk-backlog`, `ezk-sprint`, `ezk-pr-pilot`
-- Liens : [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) (cycle de vie du backlog), fiche [0100](../../features/0100-sprint-intake-sante-backlog-metriques.md) (sprint intake / santé du backlog — **ex-0064**, renumérotée le 2026-07-26 pour lever la collision d'id avec la fiche racine 0064)
+- Liens : [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) (cycle de vie du backlog), fiche [0100](../../../../features/0100-sprint-intake-sante-backlog-metriques.md) (sprint intake / santé du backlog — **ex-0064**, renumérotée le 2026-07-26 pour lever la collision d'id avec la fiche racine 0064)
 
 ## Contexte
 

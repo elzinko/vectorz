@@ -1,6 +1,6 @@
 # ADR 0021 — La clôture délègue le *jugement*, pas la *rédaction* : un portier déterministe décide
 
-- Statut : **Accepté** — 2026-07-26 (fiche [0088](../../features/0088-ezk-archive-cout-cloture-session-disciplinee.md), arbitrage PO du 2026-07-26)
+- Statut : **Accepté** — 2026-07-26 (fiche [0088](../../../../features/0088-ezk-archive-cout-cloture-session-disciplinee.md), arbitrage PO du 2026-07-26)
 - Portée : `skills/ezk-archive/` (SKILL.md, `scripts/check.sh`, nouveau `scripts/handoff.sh`,
   nouveau `references/handoff-template.md`), `agents/ezk-archive.md`
 - Liens : [ADR-0001](0001-monorepo-composable-coeur-deterministe.md) §2 (cœur déterministe),

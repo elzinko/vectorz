@@ -126,4 +126,28 @@ echo "Cas E (lien PLAN.md conditionnel) :"
 check "lien PLAN.md émis quand PLAN.md existe"  "grep -qF '[PLAN.md](PLAN.md)' '$E/features/README.md'"
 check "aucun lien PLAN.md quand PLAN.md absent" "! grep -qF 'PLAN.md' '$A/features/README.md'"
 
+# ── Cas F : colonne Produit (fiche 0064) + warning id en double ─────────────────
+F="$TMP/f"
+fiche "$F/features" 0001 story-a 'type: feature
+priority: P1
+status: todo
+product: vectorz'
+fiche "$F/features" 0002 story-b 'type: feature
+priority: P2
+status: todo
+product: mega-city'
+out_f="$("$SCRIPT" "$F" "Backlog — test F" 2>"$TMP/f.err")"
+echo "Cas F (colonne Produit) :"
+check "colonne Produit présente"   "grep -q '| Produit |' '$F/features/README.md'"
+check "produit vectorz rendu"      "grep -q '^| 0001 .*| vectorz |' '$F/features/README.md'"
+check "produit mega-city rendu"    "grep -q '^| 0002 .*| mega-city |' '$F/features/README.md'"
+check "zéro warning (ids uniques)" "! test -s '$TMP/f.err'"
+
+# Collision volontaire : deux fichiers même id
+mkdir -p "$F/features/done"
+printf -- '---\nid: 0001\ntitle: doublon\ntype: feature\npriority: P3\nstatus: shipped\nproduct: vectorz\ncreated: 2026-07-30\n---\n' \
+  > "$F/features/done/0001-doublon.md"
+"$SCRIPT" "$F" "Backlog — test F-dup" >/dev/null 2>"$TMP/f-dup.err"
+check "warning id en double" "grep -q 'id 0001 en double' '$TMP/f-dup.err'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

@@ -80,11 +80,11 @@ echo "G4 — une fiche déclarée livrée mais restée en todo est détectée :"
 OUT4="$(bash "$CHECK" --gate --shipped 0043)"
 ok "points contient 3"                       "echo \"\$OUT4\" | grep -q '^VERDICT: DIRTY points=.*3'"
 ok "le fait cite la fiche et son statut"     "echo \"\$OUT4\" | grep -q '\[P3\] declared 0043 not shipped:.*status=todo'"
-# NB cette assertion vérifiait auparavant que le préfixe était JETÉ (« mc-0042 → 0042 »).
+# NB cette assertion vérifiait auparavant que le préfixe était JETÉ (« 0147 → 0042 »).
 # C'était précisément le bug relevé par Codex (PR #56) : le préfixe DÉSIGNE un backlog, il
 # ne décore pas le numéro. Ici la fixture n'a qu'un backlog racine, donc `mc-` ne résout
 # rien — et refuser de conclure vaut mieux que valider la fiche d'à côté (cf. G10).
-OUT4b="$(bash "$CHECK" --gate --shipped mc-0042)"
+OUT4b="$(bash "$CHECK" --gate --shipped 0147)"
 ok "un préfixe qui ne désigne aucun backlog ⇒ refus de conclure, pas un CLEAN" \
    "echo \"\$OUT4b\" | grep -q 'prefixe .mc. non resolu' && echo \"\$OUT4b\" | grep -q '^VERDICT: DIRTY'"
 OUT4c="$(bash "$CHECK" --gate --shipped 9999)"
@@ -93,7 +93,7 @@ ok "un id inconnu est signalé, pas ignoré"   "echo \"\$OUT4c\" | grep -q '\[P3
 echo "G10 — monorepo : le préfixe d'id doit désigner le BON backlog (finding Codex PR #56) :"
 # Les numéros ne sont pas uniques entre backlogs — dans ce dépôt, 62 numéros existent des
 # deux côtés. Jeter le préfixe et prendre le premier match global validait la mauvaise
-# fiche : `--shipped mc-0005` pouvait être « prouvé » par la fiche RACINE 0005.
+# fiche : `--shipped 0110` pouvait être « prouvé » par la fiche RACINE 0005.
 mkdir -p products/demo-produit/features/done
 echo '# Backlog produit' > products/demo-produit/features/README.md
 cat > products/demo-produit/features/0042-homonyme-pas-livree.md <<'EOF'

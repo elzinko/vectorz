@@ -3,6 +3,7 @@ id: 0057
 title: Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking]
 type: feature
 priority: P3
+product: vectorz
 epic: 0051
 status: idea
 ready:

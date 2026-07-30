@@ -3,6 +3,7 @@ id: 0003
 title: E2E Playwright — panneau auth (🟢 + modèle)
 type: chore
 priority: P2
+product: vectorz
 status: shipped
 pr: "#34"
 created: 2026-06-23

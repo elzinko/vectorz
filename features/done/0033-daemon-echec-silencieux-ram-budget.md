@@ -3,6 +3,7 @@ id: 0033
 title: Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique
 type: bug
 priority: P1
+product: vectorz
 status: shipped
 pr: "#16"
 created: 2026-07-15

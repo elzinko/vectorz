@@ -3,6 +3,7 @@ id: 0041
 title: Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs
 type: chore
 priority: P1
+product: vectorz
 status: todo
 ready: 2026-07-17
 pr:

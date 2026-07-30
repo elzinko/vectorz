@@ -3,6 +3,7 @@ id: 0056
 title: Visualisation — onglet « qualité par PR » dans mission-control
 type: feature
 priority: P2
+product: vectorz
 epic: 0051
 status: idea
 ready:

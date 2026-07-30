@@ -3,6 +3,7 @@ id: 0017
 title: E2E Playwright — dark-mode cobaye (post-FEAT-S1)
 type: chore
 priority: P3
+product: vectorz
 status: blocked
 pr:
 created: 2026-06-25

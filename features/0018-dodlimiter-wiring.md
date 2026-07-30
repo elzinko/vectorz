@@ -3,6 +3,7 @@ id: 0018
 title: Câbler DoDLimiter (N rejets DoD → blocked + escalade)
 type: feature
 priority: P3
+product: vectorz
 epic: 0034
 status: blocked
 pr:

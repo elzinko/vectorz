@@ -3,6 +3,7 @@ id: 0038
 title: E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD)
 type: feature
 priority: P2
+product: vectorz
 epic: 0034
 status: blocked
 pr:

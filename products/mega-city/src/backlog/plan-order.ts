@@ -1,6 +1,6 @@
 /**
  * Parse la séquence CURÉE de `features/PLAN.md` en liste d'ids ordonnée
- * (fiche mc-0089 — brancher l'intake du backlog sur l'ORDRE du plan, pas
+ * (fiche 0089 — brancher l'intake du backlog sur l'ORDRE du plan, pas
  * seulement sa priorité). Logique pure, sans I/O — la coquille est
  * `bin/plan-order.ts`.
  *
@@ -35,7 +35,7 @@ const LEADING_ID_RE = /^[\s*_`]*(mc-)?\d{4}/;
 /** Marqueur d'action d'une entrée de plan (contrat `plan`). */
 const MARKER_RE = /\b(?:build|audit|ship|groom)\b/i;
 
-/** Premier id de fiche sur une ligne : `mc-0094` ou `0062` (préfixe `mc-` optionnel). */
+/** Premier id de fiche sur une ligne : `0094` ou `0062` (préfixe `mc-` optionnel). */
 const ID_RE = /(mc-)?\d{4}/;
 
 export function parsePlanOrder(planMd: string): string[] {
@@ -45,7 +45,7 @@ export function parsePlanOrder(planMd: string): string[] {
   for (const line of planMd.split('\n')) {
     // Une entrée de plan est au NIVEAU RACINE (colonne 0). Une puce INDENTÉE est
     // un sous-item (dépendance, note sous une entrée) — pas une entrée ordonnée.
-    // On inspecte l'indentation AVANT de trimmer, sinon `groom mc-0017 later`
+    // On inspecte l'indentation AVANT de trimmer, sinon `groom 0122 later`
     // imbriqué serait pris pour une entrée de tête (revue Codex #52, 3e tour).
     if (/^\s/.test(line)) continue;
     const trimmed = line.trim();
@@ -59,7 +59,8 @@ export function parsePlanOrder(planMd: string): string[] {
     const match = content.match(ID_RE);
     if (!match) continue;
 
-    const id = match[0];
+    // Normalise `mc-0094` → `0094` (préfixe legacy, fiche 0064 liste unique).
+    const id = match[0].replace(/^mc-/, '');
     if (seen.has(id)) continue;
     seen.add(id);
     ids.push(id);

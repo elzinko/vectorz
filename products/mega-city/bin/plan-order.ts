@@ -1,6 +1,6 @@
 /**
  * plan-order — imprime la séquence d'ids ordonnée d'un `features/PLAN.md`
- * (fiche mc-0089), un id par ligne sur stdout.
+ * (fiche 0089), un id par ligne sur stdout.
  *
  *   pnpm --dir products/mega-city plan:order <chemin-du-PLAN.md>
  */

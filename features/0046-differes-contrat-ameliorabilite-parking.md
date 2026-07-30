@@ -3,6 +3,7 @@ id: 0046
 title: Différés du contrat d'améliorabilité — parking gated « après boucles réelles »
 type: chore
 priority: P3
+product: vectorz
 status: todo
 pr:
 created: 2026-07-16

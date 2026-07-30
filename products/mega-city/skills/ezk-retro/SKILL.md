@@ -78,7 +78,7 @@ et tombe dans **une** catégorie :
 
 ### 4. Juge de cohérence — *soudure 2*
 Chaque **règle** candidate passe devant le **juge de cohérence** (compose la fiche
-[0008 chief-judge](../../features/0008-chief-judge.md) / l'agent `ezk-steward`) :
+[0008 chief-judge](../../../../features/0113-chief-judge.md) / l'agent `ezk-steward`) :
 « cette règle **contredit-elle** une règle existante de `rules/` ? est-ce un **doublon** ? ».
 L'avis est **consultatif** — **le PO tranche**. Consigne l'avis (garder la trace).
 
@@ -113,7 +113,7 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 
 ## Ce que le skill compose (il ne réinvente rien)
 
-- **Juge de cohérence** : fiche [0008 chief-judge](../../features/0008-chief-judge.md) + agent `ezk-steward`.
+- **Juge de cohérence** : fiche [0008 chief-judge](../../../../features/0113-chief-judge.md) + agent `ezk-steward`.
 - **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
 - **Agents de la cérémonie** : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-tdd`, `ezk-pm`.

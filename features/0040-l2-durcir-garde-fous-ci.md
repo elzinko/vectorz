@@ -3,6 +3,7 @@ id: 0040
 title: L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK)
 type: chore
 priority: P2
+product: vectorz
 epic: 0034
 status: todo
 pr:
