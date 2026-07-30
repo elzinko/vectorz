@@ -6,7 +6,7 @@ priority: P1
 product: mega-city
 status: in-progress
 ready: 2026-07-30
-pr:
+pr: "#72"
 created: 2026-07-30
 ---
 
