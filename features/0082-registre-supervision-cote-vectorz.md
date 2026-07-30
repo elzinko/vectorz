@@ -3,10 +3,10 @@ id: 0082
 title: Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés)
 type: feature
 priority: P1
-product: mega-city
+product: vectorz
 epic:
-status: idea
-ready:
+status: todo
+ready: 2026-07-30
 pr:
 created: 2026-07-19
 ---
@@ -39,8 +39,9 @@ avec **la méthode choisie** (aujourd'hui mega-city, demain peut-être BMAD ou q
   ajouté quel projet, et quand. C'est en cela — et seulement en cela — que « en git » est
   **plus fort** que le réglage d'application.
 - **Fin de la double saisie** : une seule liste nourrit l'émission et la lecture.
-- **Prêt pour la suite** : multi-projets, et multi-méthodes (BMAD, fiche 0058) sans
-  toucher au contrat.
+- **Prêt pour la suite** : multi-projets, et multi-méthodes (BMAD, fiche 0162) sans
+  toucher au contrat. Débloque le NOW 0062/0063 (onglet Projets + ancrage depuis le
+  Moniteur).
 
 ## Proposition — le modèle à deux clés
 
@@ -61,35 +62,58 @@ modèle.
   version au jalon suivant, revue de PR).
 - **Deux renforts d'audit** (hors contrat, aucun nouvel outil) : contrôle d'appartenance
   au registre à l'initialisation de l'émetteur ; **marquage d'écart de méthode** au
-  démarrage d'un travail (méthode déclarée ↦ méthode attendue) — une annotation d'audit,
-  jamais un refus (la méthode s'auto-déclare, c'est le contrat).
+  démarrage d'un run (méthode déclarée ↦ méthode attendue) — une annotation d'audit,
+  jamais un refus (la méthode s'auto-déclare, c'est le contrat). **Prérequis 0061
+  shipped** (`method` / `seat` dans la projection).
 - **`supervision doctor`** : script **lecture seule** qui compare le registre à la
   configuration Desktop et **imprime ce qui manque** ; il ne touche jamais la
   configuration de l'application — l'humain applique.
-- **Dérivation** de la liste du moniteur depuis le registre.
+- **Dérivation** de `supervision.watch_roots` du moniteur depuis le registre
+  (point de branchement : `DaemonService.wireSupervision`).
 
-## Critères d'acceptation (à groomer)
+### Scope MVP (arbitrage grooming 2026-07-30)
+
+Inclus :
+
+1. Schéma + fichier registre versionné `{ id | path-label, method }` — **zéro** champ journal.
+2. `supervision doctor` (read-only).
+3. Émetteur : fail-fast si ancre hors registre ; marquage écart de méthode au `run_start`.
+4. Moniteur : `watch_roots` dérivé du registre au boot (remplace la liste YAML manuelle).
+5. Sans fichier registre → comportement v1 inchangé (rollback).
+
+Hors MVP (suites 0062/0063) : UI « ajouter un projet », install `.mcpb` depuis le Moniteur.
+
+`product:` basculé **mega-city → vectorz** (grooming) : le livrable est le registre +
+daemon/moniteur côté siège, pas une skill mega-city.
+
+## Critères d'acceptation
 
 - [ ] Un **fichier registre versionné** à la racine vectorz déclare les couples
-      {projet, méthode} — **aucun champ de chemin de journal**.
+      {projet, méthode} — **aucun champ de chemin de journal** (test unitaire / schéma).
 - [ ] **Interdits gravés** (même rang que « jamais d'outil d'émission générique »,
-      fiche 0050) : aucun sélecteur de projet en **paramètre d'outil**, ni en réglage
+      fiche 0154) : aucun sélecteur de projet en **paramètre d'outil**, ni en réglage
       multi-dossiers ; registre **lu à l'initialisation uniquement**.
 - [ ] `supervision doctor` : lecture seule, compare registre ↔ configuration Desktop,
-      imprime le manquant, ne modifie **jamais** la configuration de l'application.
+      imprime le manquant, ne modifie **jamais** la configuration de l'application
+      (test script + assertion no-write).
 - [ ] Émetteur : **fail-fast** si le dossier ancré n'est pas au registre ; **marquage**
-      de l'écart de méthode au démarrage d'un travail.
-- [ ] La liste de dossiers surveillés par le moniteur **dérive du registre** (fin de la
-      double saisie) — à vérifier sur pièce au grooming.
-- [ ] **Rollback trivial** : sans fichier registre, comportement v1 strictement inchangé.
+      de l'écart de méthode au démarrage d'un run (champ projection 0061).
+- [ ] Au boot du daemon, `supervision.watch_roots` est **dérivé du registre** quand le
+      fichier existe (fin de la double saisie) — `wireSupervision` est le seul appelant.
+- [ ] **Rollback trivial** : sans fichier registre, comportement v1 strictement inchangé
+      (test de non-régression).
 
 ## Notes / décisions
 
+- **Grooming DoR 2026-07-30** — slots problème / valeur / critères complets ; dépendance
+  0061 **shipped** (marquage méthode débloqué) ; scope MVP journalisé ci-dessus ; `ready:
+  2026-07-30`. Soupape : si le PO veut garder `product: mega-city`, rebasculer avant le
+  sprint de build — le fond (registre à la racine vectorz) ne change pas.
 - **Montée en P1 par le PO (2026-07-25).** Motif : « il faudrait pouvoir ajouter des
   projets » est devenu la demande directe du PO en découvrant le Moniteur. Le moment
   anticipé ci-dessous — « devrait précéder le passage à 2 projets supervisés » — est
   arrivé.
-- **P2 confirmée par le PO** (2026-07-19). Ne bloque ni 0058 (BMAD peut démarrer en v1
+- **P2 confirmée par le PO** (2026-07-19). Ne bloque ni 0162 (BMAD peut démarrer en v1
   pure) ni 0078 (le `.mcpb` reste le geste d'ancrage) — mais **devrait précéder** le
   passage à 2 projets supervisés simultanés, moment où la double saisie et l'absence
   d'attendu de méthode commencent à coûter.
@@ -107,10 +131,8 @@ modèle.
   ⇒ la « dérivation de la liste du moniteur depuis le registre » est donc bien un
   remplacement d'un `watch_roots` écrit à la main, et non d'un mécanisme dynamique
   existant. Le point de branchement est `wireSupervision` (un seul appelant).
-- **Prérequis technique identifié (2026-07-25)** : le « marquage d'écart de méthode »
-  (méthode déclarée ↦ méthode attendue) n'a aujourd'hui **rien à comparer** — la
-  projection ne porte ni `method` ni `seat` (fiche racine **0061**). 0061 devrait précéder
-  ce volet-là de la fiche.
+- **Prérequis 0061** : ~~devrait précéder le marquage~~ → **shipped** (PR #50) — le
+  marquage d'écart de méthode est dans le MVP.
 - **Contrat v0.1 non rouvert** : aucun nouvel outil, aucun champ d'enveloppe.
 - **`portfolio.sh` est un faux ami** : il agrège les backlogs internes du monorepo, pas
   des projets clients — mais son **motif** (script en lecture seule qui agrège des
@@ -118,9 +140,8 @@ modèle.
 - Issu d'un **panel architecte** (2026-07-19) : 3 options évaluées (statu quo mono-projet ;
   registre qui dessert une liste — écarté car il rendrait au modèle le choix du journal ;
   modèle à deux clés — retenu).
-- **Structurant côté invariant** → panel adverse recommandé au grooming (convention du repo).
-- Réfs : fiche 0050 (kit émetteur, shippé — invariant anti-falsification), 0058 (BMAD,
-  2ᵉ méthode), 0078 (`.mcpb`, la clé Desktop), ADR-021 (couplages interdits, doctrine
-  statique/versionné/zéro runtime partagé), ADR-0001 (le script range, l'humain décide).
-  *(Les références au moniteur — liste de dossiers surveillés — étaient à confirmer sur
-  pièce : **fait le 2026-07-25**, voir la note de vérification ci-dessus.)*
+- **Structurant côté invariant** → panel adverse recommandé au **démarrage du sprint de
+  build** (pas bloquant pour DoR / ready).
+- Réfs : fiche 0154 (kit émetteur, shippé — invariant anti-falsification), 0162 (BMAD,
+  2ᵉ méthode), 0078 (`.mcpb`, la clé Desktop), 0061 (method/seat projection, shipped),
+  ADR-021 (couplages interdits), ADR-0001 (le script range, l'humain décide).
