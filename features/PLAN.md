@@ -26,16 +26,16 @@
 
 ## ⏭️ NEXT — la méthode se tient + confort
 
-6. **0090** — cohérence de sprint : garde-fou anti-collision (3 worktrees en parallèle vu le 25/07) · `build`
-7. **0079** — graver « tout artefact lu par un humain est lisible » · `build`
-8. **0091** — mise à plat + glossaire du jargon du backlog · `build`
-9. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
-10. **0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `build`
-11. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
-12. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
-13. **0149** — `composes:` : rendre la composition inter-skills mécanique (remontée P2→P1
+7. **0090** — cohérence de sprint : garde-fou anti-collision (3 worktrees en parallèle vu le 25/07) · `build`
+8. **0079** — graver « tout artefact lu par un humain est lisible » · `build`
+9. **0091** — mise à plat + glossaire du jargon du backlog · `build`
+10. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
+11. **0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `build`
+12. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
+13. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
+14. **0149** — `composes:` : rendre la composition inter-skills mécanique (remontée P2→P1
     le 2026-07-26) · `build` *(à faire avant 0102, sinon ses liens naissent en prose)*
-14. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
+15. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
     + ADR-0020 · `build` *(attend le dogfood samplerz `make preview-pr`, son repo)*
 
 ## ⏳ LATER — pas maintenant
