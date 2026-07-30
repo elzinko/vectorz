@@ -36,7 +36,7 @@ Deux ingrédients ont fait la différence, et méritent d'être encodés :
 
 ## Destination (tranchée)
 
-**mega-city.** claude-skills est gelé depuis la migration du 2026-07-04 (fiche 0024) —
+**mega-city.** claude-skills est gelé depuis la migration du 2026-07-04 (fiche 0129) —
 mega-city est la seule home des skills. Le skill n'a rien à voir avec la supervision
 (cop1), mais mega-city héberge déjà la collection perso `ezk-*` (diagram, commits,
 backlog…) : un outil d'écriture y est à sa place. Hors de question de le mettre dans cop1
@@ -81,14 +81,14 @@ Skill `ezk-article` (candidat), pilotable par sous-commandes (help, new, revise,
 
 ## Notes / décisions
 
-- Origine : cop1 fiche 0025 (article contrat de supervisabilité), PRs cop1#57 — voir les
+- Origine : cop1 fiche 0130 (article contrat de supervisabilité), PRs cop1#57 — voir les
   deux versions côte à côte dans `cop1/docs/articles/` comme exemple canonique avant/après.
 - Le panel type et les prompts de lentilles peuvent être extraits de la session cop1 du
   2026-07-13 (transcript : cadrage persona → draft → panel 5 lentilles → contre-lecture).
 - À groomer : nom définitif (`ezk-article` vs `ezk-vulgarise`), et si la boucle qualité
   mérite d'être un skill séparé réutilisable (panel de relecture générique) composé par
   celui-ci.
-- **Amendement 2026-07-15 (préparé par la fiche 0052 ezk-marketing, revue adverse)** :
+- **Amendement 2026-07-15 (préparé par la fiche 0156 ezk-marketing, revue adverse)** :
   ajouter aux entrées un **« style-guide additionnel » optionnel**, injecté dans le
   brief (voix/leçons apprises — ex. l'artefact évolutif maintenu par ezk-marketing) ;
   les règles d'écriture du skill restent invariantes, le style-guide externe s'ajoute

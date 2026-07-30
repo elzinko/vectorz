@@ -30,7 +30,7 @@ volet **documentation/REX des migrations**, en série.
 
 Une **série** d'articles, un par méthode migrée :
 
-- **Article #1 : la migration BMAD** (fiche 0058) — le journal de migration tenu pendant
+- **Article #1 : la migration BMAD** (fiche 0162) — le journal de migration tenu pendant
   l'expérience en est le squelette. Angle candidat : l'échelle adaptateur→overlay→fork et
   ce que chaque cran révèle du contrat.
 - **Rédaction via `ezk-article` (0049)** : brief de persona demandé, panel de relecteurs

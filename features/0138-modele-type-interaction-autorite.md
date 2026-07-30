@@ -25,7 +25,7 @@ produit **3 projections depuis une source unique** :
 Facettes portées par ce modèle :
 - **Double-siège d'autorité** : l'« autorité » est un **siège** (un port), occupé par **l'humain**
   (mode interactif) ou par **le superviseur cop1** (mode autonome). Les workers sont agnostiques au
-  mode. cop1 l'implémente déjà (SupervisorService intercepte la question ; sa fiche 0021 rend
+  mode. cop1 l'implémente déjà (SupervisorService intercepte la question ; sa fiche 0126 rend
   l'escalade non-terminale = blocage résoluble).
 - **Boucle bornée à politiques sélectionnables** : nœud-boucle avec `arbiter`
   (dev|reviewer|humain|superviseur), `maxRounds`, `speed` — de la **donnée** qu'on flippe, pas du code.

@@ -16,7 +16,7 @@ Une fiche `status: idea` est capturée cheap, non groomée. La promouvoir en `to
 (Definition of Ready : problème / valeur / critères) est aujourd'hui manuel et informel. Deux
 voisins couvrent des bouts, mais pas le grooming lui-même : `product-brainstorming` est
 **divergent / sans état** (il explore un espace-problème, il ne vise pas une fiche précise ni
-n'écrit de transition), et `ezk-backlog add --brainstorm` (fiche 0022) cadre une fiche **à la
+n'écrit de transition), et `ezk-backlog add --brainstorm` (fiche 0127) cadre une fiche **à la
 création** — rien ne cadre la **promotion** d'une idea existante avec un **gate** DoR.
 
 ## Proposition
@@ -48,7 +48,7 @@ range (flip statut, regen, commit).
       n'est jamais tirable, descente sur son prochain enfant ready) ; point d'entrée UNIQUE appelé
       par ezk-sprint / ezk-product-builder, aucune logique de gate dupliquée en aval
 - [ ] Aucune duplication de la connaissance du format de fiche hors d'ezk-backlog (test de séparabilité)
-- [ ] Le challenge adversarial (fiche 0057) est composable comme étape optionnelle de `groom`
+- [ ] Le challenge adversarial (fiche 0161) est composable comme étape optionnelle de `groom`
 - [ ] Doc : quand groomer (avant de tirer) vs cadrer à la création (`add --brainstorm`, 0022)
 
 ## Notes
@@ -61,6 +61,6 @@ range (flip statut, regen, commit).
 - 2026-07-17 — promue `idea → todo` : la fiche passe son propre gate DoR (problème / valeur /
   critères remplis). Priorité P1 = demande opérateur « à faire tout de suite » (ADR-0016).
 - Compose : `product-brainstorming` (moteur divergent) + éventuellement le panel de challenge
-  (fiche 0057) pour confronter l'idée avant de la déclarer Ready.
+  (fiche 0161) pour confronter l'idée avant de la déclarer Ready.
 - Origine : discussion session 2026-07-15 (capture de 0052/0053/0054 en idea → « il faut
   groomer dessus »).

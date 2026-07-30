@@ -10,7 +10,7 @@ created: 2026-06-26
 ---
 
 ## Contexte / Problème
-Revue de la fiche 0002 (non-bloquants).
+Revue de la fiche 0107 (non-bloquants).
 - `resolveInsideRoot` (`src/io/capture.ts`) est un copier-coller de
   `resolveInsideProject` (`src/io/apply.ts`), à un message près → duplication DRY.
 - La sous-commande CLI `capture` de `bin/lawgiver.ts` (parsing `--content`, garde

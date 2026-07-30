@@ -103,7 +103,7 @@ reconstruite** au sprint suivant.
   ADR-0013). **Reste à cette fiche** (à groomer) : la DoR comme règle d'équipe dans
   `rules/` (évolutive via ezk-retro), l'**émission `backlog.health`** au journal de
   supervisabilité (point 4, moitié monitoring), les seuils « temps de groomer » (point 6).
-- **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../../../docs/adr/ADR-031-deux-axes-de-validation.md)
+- **Métriques de FLUX / santé du backlog** — distinctes des 2 axes d'[ADR-031](../docs/adr/ADR-031-deux-axes-de-validation.md)
   (Axe 1 « le produit tourne ? », Axe 2 « la méthode est bonne ? ») : ici c'est la santé du
   **backlog**, en amont du sprint.
 - **Non bloquant** pour construire une fiche **déjà prête** (ex. 0063) : ce sujet compte quand
@@ -126,7 +126,7 @@ reconstruite** au sprint suivant.
   le backlog fraîchement ordonnancé (`features/PLAN.md`, 2026-07-26) où le NOW est encore
   tout en `idea` — le builder doit donc l'aiguiller vers le grooming, pas tenter un sprint.
 - 2026-07-22 — **sous-problème réconciliation LIVRÉ** (décision + implémentation) : voir
-  [ADR-0018](../docs/adr/0123-reconciliation-done-etat-reel-des-prs.md). Brique unique
+  [ADR-0018](../products/mega-city/docs/adr/0018-reconciliation-done-etat-reel-des-prs.md). Brique unique
   `ezk-backlog reconcile` (croise fiches actives ↔ PRs mergées via `gh`, **propose** au PO,
   ne ship jamais seule, dégrade en local-only) ; appelée à l'intake (`ezk-sprint` étape 0),
   par `review` (bras mécanique du contrôle #1) et par `ezk-pr-pilot` après un merge UI ;
@@ -137,7 +137,7 @@ reconstruite** au sprint suivant.
   groomer » — c'est pourquoi la fiche **reste `idea`** (le sous-problème réconciliation est le
   seul volet clos).
 - 2026-07-26 — **renumérotée `0064` → `0100`** (aucun changement de fond). Cette fiche portait
-  le même id que la fiche racine [0064 « une seule liste de features »](../../../features/0064-liste-unique-features-champ-product.md)
+  le même id que la fiche racine [0064 « une seule liste de features »](0064-liste-unique-features-champ-product.md)
   (P0, créée le 2026-07-26 précisément pour supprimer ces collisions). Id retenu =
   `max(mega-city actifs + done) + 1` = 0100, **libre des deux côtés** — à l'inverse de
   `max+1` côté racine (0065), déjà porté par [0065](0065-sprint-composition-lot-coherent.md).

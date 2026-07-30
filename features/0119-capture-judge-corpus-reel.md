@@ -10,7 +10,7 @@ created: 2026-06-26
 ---
 
 ## Contexte / Problème
-Revue de la fiche 0002 (ADR-0004 §d). Au POC, l'orchestrateur `capture` appelle
+Revue de la fiche 0107 (ADR-0004 §d). Au POC, l'orchestrateur `capture` appelle
 `ports.judge(authored, [])` : le corpus est **toujours vide**, donc le juge ne peut
 pas détecter un doublon ni une incohérence avec le catalogue existant. L'avis reste
 consultatif (non bloquant) mais aveugle.

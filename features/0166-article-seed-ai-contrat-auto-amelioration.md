@@ -9,7 +9,7 @@ pr:
 created: 2026-07-16
 ---
 
-# 0062 — article « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère »
+# 0166 — article « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère »
 
 ## Contexte / Problème
 
@@ -25,7 +25,7 @@ une fois architecturé — deuxième volet du diptyque avec vectorz 0043 (self-h
 
 Article technique vulgarisé (persona à briefer par le PO) présentant le paradigme : des
 rétrospectives au double-loop learning, jusqu'au contrat formel sur le modèle du
-« contrat de supervisabilité » (précédent maison : fiche 0050, kit émetteur — mega-city
+« contrat de supervisabilité » (précédent maison : fiche 0154, kit émetteur — mega-city
 première méthode conforme à un contrat). Écriture via `ezk-article` (0049) quand il
 existera, sinon déroulé manuel (persona + panel de relecteurs frais).
 

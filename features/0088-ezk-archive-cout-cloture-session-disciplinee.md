@@ -142,7 +142,7 @@ Symptôme utilisateur direct, PO le 2026-07-25 : « *c'est un peu dur et cher* �
       dont l'union entrées vivantes + archivées = tout ce qui a été écrit (H1) et le
       caractère stationnaire du fichier (H6).
 
-## Réalisé (2026-07-26) — ADR [0021](../docs/adr/0126-cloture-portier-deterministe-ranger-rediger-juger.md)
+## Réalisé (2026-07-26) — ADR [0021](../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md)
 
 **Arbitrages PO** : ① l'invariant du skill est **reformulé** (« ne *juge* jamais lui-même »
 remplace « ne fait QUE déléguer ») ; ② portée = les 3 lots cœur (le `regen --check` de la

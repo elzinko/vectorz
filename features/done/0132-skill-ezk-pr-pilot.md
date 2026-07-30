@@ -19,7 +19,7 @@ sessions groupées) → run (bancs, checklists, signaux observables) → report 
 
 ## Proposition
 
-Skill `ezk-pr-pilot` (voir [ADR-0009](../../docs/adr/0114-ezk-pr-pilot-orchestrateur-validation-prs.md)) :
+Skill `ezk-pr-pilot` (voir [ADR-0009](../../products/mega-city/docs/adr/0009-ezk-pr-pilot-orchestrateur-validation-prs.md)) :
 `init` installe la convention « Validation » (template PR **mince** lié à
 `docs/PR_VALIDATION.md` ; template existant → **jamais écrasé**, section-lien
 agrégée) ; `plan` / `run` / `report` / `ship` consomment le stock en composant

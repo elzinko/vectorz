@@ -9,7 +9,7 @@ pr:
 created: 2026-07-16
 ---
 
-# 0061 — Contrat d'améliorabilité v0.1 (MVP B)
+# 0165 — Contrat d'améliorabilité v0.1 (MVP B)
 
 ## Contexte / Problème
 
@@ -46,7 +46,7 @@ capture cop1 §7) :
    GELÉES : mesureur, ledger, **script d'append**, banc, métriques, LA LOI — **définie
    précisément dans le registre** —, 4 STOP, le contrat. **Honnêteté v0.1** : la clause
    surfaces est de conformité **classe B (honor-system)** tant que le seul détecteur est
-   le miroir du mesureur (fiche MVP A) ; la garde CI de chemins gelés (fiche 0040) est
+   le miroir du mesureur (fiche MVP A) ; la garde CI de chemins gelés (fiche 0145) est
    une option d'arbitrage PO.
 3. **Kit émetteur** (~15 lignes, classe B, fichier séparé) : follow-through d'abord
    (lecture et commentaire du verdict du mesureur) ; pas d'outcomes frais → pas de

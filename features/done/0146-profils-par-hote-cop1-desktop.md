@@ -18,13 +18,13 @@ Le Profile est précisément l'outil fait pour ça (keystone, ADR-0001).
 
 ## Proposition
 - `profiles/cop1-target.yml` : bundles LOI (post-0006) + agents feuilles (architect, dev —
-  aujourd'hui ezk-tdd, fiche 0045 —, qa, reviewer) + **ezk-pm** + skills feuilles (commits,
+  aujourd'hui ezk-tdd, fiche 0150 —, qa, reviewer) + **ezk-pm** + skills feuilles (commits,
   ci, design-system, backlog…) — **sans** ezk-product-builder ni ezk-sprint (cop1 a sa
   propre boucle).
 - `profiles/desktop.yml` : builder + backlog + ezk-pm + skills de rédaction/organisation —
   sans ci/apk/device. (Le cadrage/brainstorm n'est pas bindable : il arrive par composition
   externe de product-management:product-brainstorming, cf. ADR-0012.)
-- Re-vérifier la fiche 0003 (cap claude-desktop) : possiblement déjà satisfaite par le bind
+- Re-vérifier la fiche 0108 (cap claude-desktop) : possiblement déjà satisfaite par le bind
   global `~/.claude` depuis le switchover — la clore ou la re-scoper.
 
 ## Critères d'acceptation
@@ -32,7 +32,7 @@ Le Profile est précisément l'outil fait pour ça (keystone, ADR-0001).
 - [~] dogfooding : un run cop1 voit les agents — **externe** (runtime cop1 + projet-cobaye, non exécutable dans ce repo). Le pass-through `settingSources:['project']` est en place côté matérialisation.
 - [x] `bind desktop <projet>` : builder + ezk-pm présents, ezk-ci/ezk-apk/ezk-device absents — vérifié (agent ezk-pm, builder+backlog+diagram+ezk, 0 env).
 - [x] `profiles/README.md` créé et documente les profils (base, mobile, global, cop1-target, desktop).
-- [x] fiche 0003 statuée → **shipped (#6)** : le cap claude-desktop a été livré (pas juste satisfait par le bind global).
+- [x] fiche 0108 statuée → **shipped (#6)** : le cap claude-desktop a été livré (pas juste satisfait par le bind global).
 
 ## Notes
 ADR-0011 §2. Livré via #7. Garde anti-désync née ici : `src/__tests__/profiles-sync.test.ts`

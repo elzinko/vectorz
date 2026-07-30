@@ -25,7 +25,7 @@ validation humaine. Jamais de SKILL.md en sortie.
 ## Critères d'acceptation
 - [ ] `scan` sur 3+ repos : le LLM ne lit que l'inventaire (vérifié sur transcript — aucun Read/Grep sur les repos scannés)
 - [ ] `propose` crée des fiches via ezk-backlog add (dédoublonnées), max 5, avec preuves citées
-- [ ] `propose` sans validation humaine explicite est REFUSÉ, y compris invoqué depuis un mode autonome (--checkpoints auto, fiche 0040)
+- [ ] `propose` sans validation humaine explicite est REFUSÉ, y compris invoqué depuis un mode autonome (--checkpoints auto, fiche 0145)
 - [ ] le playbook refuse de générer un skill et renvoie vers `ezk-ezk create`
 - [ ] re-scan : les fiches existantes sont rafraîchies, pas dupliquées
 

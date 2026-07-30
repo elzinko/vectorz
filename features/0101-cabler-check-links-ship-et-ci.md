@@ -54,8 +54,8 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
 
 ## Notes
 
-- Outil livré et vert : [`bin/check-links.sh`](../bin/check-links.sh),
-  [`bin/test-check-links.sh`](../bin/test-check-links.sh).
+- Outil livré et vert : [`bin/check-links.sh`](../products/mega-city/bin/check-links.sh),
+  [`bin/test-check-links.sh`](../products/mega-city/bin/test-check-links.sh).
 - Invocations : `bin/check-links.sh` (mega-city, périmètre par défaut `features/ docs/adr/`)
   et `bin/check-links.sh <racine-vectorz> features docs/adr docs/captures`.
 - Piège d'implémentation déjà payé : un test de schéma d'URL générique `^[a-z.]+:` avale

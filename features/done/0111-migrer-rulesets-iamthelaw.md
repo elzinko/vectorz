@@ -26,7 +26,7 @@ conventional-commits 2) :
   typé (porter `title`/`tags` en frontmatter si utiles) ;
 - 1 ruleset = 1 bundle `bundles/` ;
 - les 3 hooks rapatriés comme assets d'enforcement dans le catalogue (chemin déclaré par
-  `enforcement.hook.script` — couplé à la fiche 0011) ;
+  `enforcement.hook.script` — couplé à la fiche 0116) ;
 - réconcilier les 2 règles déjà réécrites (clean-code/no-dead-code, conventional-commits).
 
 **Ne migrent PAS** (ADR-0010 §3) : CLI/installeur, générateur ENTRY.md, module
@@ -36,12 +36,12 @@ import/export, target Cursor (abandonné), layout `.iamthelaw/`.
 - [ ] les 53 règles existent dans `rules/` avec frontmatter valide (id, kind, level, enforcements)
 - [ ] 10 bundles dans `bundles/`, chargés par `expand` sans erreur
 - [ ] les 3 hooks exécutables vivent dans le catalogue et `rules/conventional-commits.md` ne pointe plus dans le vide
-- [ ] le hook émis au bind pour chaque stage déclaré provient du script migré — fiche 0011 REQUISE pour tout bundle portant des hooks pre-commit/pre-push (sans elle, `collectHooks` émettrait le script commit-msg à ces stages : contenu activement faux)
+- [ ] le hook émis au bind pour chaque stage déclaré provient du script migré — fiche 0116 REQUISE pour tout bundle portant des hooks pre-commit/pre-push (sans elle, `collectHooks` émettrait le script commit-msg à ces stages : contenu activement faux)
 - [ ] `bind` d'un profil tirant ces bundles est déterministe (byte-for-byte)
-- [ ] `iamthelaw` d'origine intact (le gel/archivage = fiche 0035)
+- [ ] `iamthelaw` d'origine intact (le gel/archivage = fiche 0140)
 
 ## Notes
 ADR-0010. Bloque : 0035 (archivage) et 0016 (cap cop1). **Bloquée partiellement par 0011**
 (dériver le hook d'`enforcement.hook.script`) : les bundles typescript-2026 et ci-cd ne
 peuvent pas être bindés avec leurs hooks avant. Les modes TDD/testing alimentent aussi la
-fiche 0045 (ezk-dev, méthode en rules par profil).
+fiche 0150 (ezk-dev, méthode en rules par profil).

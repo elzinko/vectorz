@@ -19,7 +19,7 @@ Cap qui matérialise un profil en dossiers de skills importables (`<name>/SKILL.
 - [x] un profil produit des dossiers skills utilisables dans Claude Desktop (`<id>/SKILL.md`) —
       cap `src/caps/claude-desktop.ts`, atteignable via `bind <profile> <dir> claude-desktop`.
 - [x] aucune régression vs le chargement des skills actuel — `install.sh` supprimé (remplacé par le
-      cap global, fiche 0017) ; réf = cap global, dont la sortie reste byte-identique (helper partagé).
+      cap global, fiche 0122) ; réf = cap global, dont la sortie reste byte-identique (helper partagé).
 
 ## Notes de livraison (#6, ADR-0014)
 - Helper partagé `skillFolderFiles(resolved, prefix)` (`src/caps/skill-content.ts`) : global `prefix='skills'`, desktop `prefix=''`.

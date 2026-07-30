@@ -11,7 +11,7 @@ created: 2026-07-06
 
 ## Contexte / Problème
 Au lancement d'ezk-product-builder, l'opérateur ne voit pas d'un coup d'œil comment le
-skill va travailler : mode tokens actif, mode checkpoints (fiche 0040), règles/LOI en
+skill va travailler : mode tokens actif, mode checkpoints (fiche 0145), règles/LOI en
 vigueur (bundles bindés), agents disponibles et leurs modèles, état du backlog. Idée notée
 le 2026-07-06 (« il doit indiquer comment il travaille et avec quelles règles ») — mise de
 côté volontairement pour avancer sur 0132-0029 d'abord.

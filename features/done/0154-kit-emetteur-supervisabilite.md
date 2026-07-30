@@ -9,7 +9,7 @@ pr: "#35"
 created: 2026-07-14
 ---
 
-# 0050 — Kit émetteur de supervisabilité
+# 0154 — Kit émetteur de supervisabilité
 
 ## Contexte / Problème
 
@@ -80,7 +80,7 @@ Conformité prouvée par le **validateur de journal** (fiche cop1 0027) : une m�
   d'outil de `gate_reached` dit « STOP et attends » ; `report_ref` confiné realpath sous la
   racine projet. Sprint en cours = lib append + MCP + consignes (étapes 1-2 de cop1 0030) ;
   hooks classe A = suite de fiche, hors 1ʳᵉ PR.
-- Lien : fiche 0016 (cap cop1), fiche 0033 (siège échangeable).
+- Lien : fiche 0121 (cap cop1), fiche 0138 (siège échangeable).
 - **Incrément 2026-07-17** : consignes intégrées à `ezk-sprint` (AC « skill réelle » ✔ —
   la 1ʳᵉ méthode de prod parle). Restent avant clôture : **AC1 à dérouler** (méthode jouet
   `supervision-demo` → journal → validateur cop1 0027 vert — l'automatiser en test créerait

@@ -41,7 +41,7 @@ serveur `supervision` avec `SUPERVISION_PROJECT_ROOT` fixé — **jamais** un pa
 d'outil (invariant anti-falsification de la fiche 0050 : le modèle ne choisit jamais où
 son journal s'écrit).
 
-> **Révisé le 2026-07-26 par [ADR-034](../../../docs/adr/ADR-034-mcp-json-artefact-local.md)** :
+> **Révisé le 2026-07-26 par [ADR-034](../../docs/adr/ADR-034-mcp-json-artefact-local.md)** :
 > ce fichier est **local et gitignoré**, pas commité. Trois raisons vérifiées sur pièce —
 > il contient des chemins machine (nvm, `$HOME`) dans un dépôt public ; commité il
 > *fail-fast* sur tout autre poste (`assertValidExplicitRoot`) ; et il neutraliserait

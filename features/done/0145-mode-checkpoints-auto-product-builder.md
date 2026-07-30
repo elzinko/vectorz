@@ -22,7 +22,7 @@ et §3) — cop1 ne fera que l'activer.
    tables de checkpoint.
 2. En `auto` : les arrêts (a) prennent la 1re option de la table ; les arrêts (b) sont
    délégués (blocage technique → ezk-architect/ezk-reviewer ; cadrage → product-brainstorming ;
-   arbitrage → ezk-pm, fiche 0036) ; chaque décision est journalisée dans SPRINT.md
+   arbitrage → ezk-pm, fiche 0141) ; chaque décision est journalisée dans SPRINT.md
    (« Notes / décisions ») ; les 4 arrêts humains (ADR-0011 §3) restent des STOP durs.
    Repli de sûreté : si le délégataire (ezk-pm ou autre) est ABSENT du contexte bindé,
    l'arrêt concerné retombe en `ask` — jamais d'improvisation.
@@ -45,4 +45,4 @@ et §3) — cop1 ne fera que l'activer.
 ADR-0011. Analyse des 12 arrêts (5a/3b/4c) : mémoire projet du 2026-07-06. cop1 activera ce
 mode comme un prompt le ferait (aucun code fonctionnel côté cop1). L'alignement du nommage
 des modes tokens (lean|cap|full vs « plafond-dur/pleine-puissance ») est extrait en
-fiche 0038 (micro-chore indépendante).
+fiche 0143 (micro-chore indépendante).

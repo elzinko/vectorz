@@ -3,6 +3,12 @@
 
 Deterministic: colliding mega-city ids remap to 0106+ in ascending old-id order.
 Does NOT commit; uses `git mv` when available.
+
+Post-migration fallout (Codex PR #66) is fixed by `scripts/fix-0064-codex-fallout.py`:
+  - bare IDs in headings / « fiche NNNN » cross-refs
+  - relative links rebased from products/mega-city/features/ → features/
+  - pre-ship paths for 0094/0095 (active → done) for inbound ADR rewrites
+  - mega-city ADR filenames must NOT be remapped (only feature ids collide)
 """
 from __future__ import annotations
 
@@ -117,7 +123,9 @@ def main() -> None:
     for oid in mc_files:
         remap.setdefault(oid, oid)
 
-    # Ship 0094 / 0095 if still active (reconcile)
+    # Ship 0094 / 0095 if still active (reconcile).
+    # NOTE: also record the *active* path in path_moves (see fallout script) so
+    # inbound links like docs/adr → products/mega-city/features/0094-… rewrite.
     for ship_id, pr in (("0094", "#54"), ("0095", "#55")):
         p = mc_files.get(ship_id)
         if p and "done" not in p.parts:

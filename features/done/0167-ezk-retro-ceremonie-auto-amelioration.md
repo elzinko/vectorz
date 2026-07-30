@@ -9,7 +9,7 @@ pr: "#21"
 created: 2026-07-16
 ---
 
-# 0063 — ezk-retro — cérémonie d'auto-amélioration de la méthode
+# 0167 — ezk-retro — cérémonie d'auto-amélioration de la méthode
 
 ## Contexte / Problème
 
@@ -42,7 +42,7 @@ symptôme » atterrit proprement sans casser la cohérence de l'ensemble.
   (`…/sprint-core/…/auto-rule-suggestion`) — `blocageRate>0.3`→règle, `coverage<80`→règle,
   `dodRejectionRate>0.2`→`strengthen-dor-validation`, avec `reason` chiffré ; `improvementScore`.
 - **Juge de cohérence** : 🔴 **spécifié, pas codé** — fiche [0008 chief-judge](../0113-chief-judge.md)
-  (todo) + couche « Juge » de [0034](../0139-garde-fous-integrite-agents.md) ; au runtime,
+  (todo) + couche « Juge » de [0139](../0139-garde-fous-integrite-agents.md) ; au runtime,
   `RuleApplicationService.checkDuplicate` ne détecte que les **doublons**, pas les contradictions.
 - **DoD/DoR + stockage des règles** : ✅ `DoDCheck` (ADR-020), règles en `rules/`/`bundles/`
   (53 migrées, fiche done/0006).
@@ -68,7 +68,7 @@ manquantes autour de la machinerie qui existe déjà :
   mesurable**, et tombe dans l'une des catégories : `action` · `feature`/fiche backlog ·
   `spike` · **`règle`** (lint, principe d'archi, item de DoD/DoR, outil de contrôle,
   convention de communication). Pas de symptôme ou pas de mesure → pas de règle.
-- **Passage au juge de cohérence** (compose la fiche 0008 / `ezk-steward`) : « cette règle
+- **Passage au juge de cohérence** (compose la fiche 0113 / `ezk-steward`) : « cette règle
   contredit-elle une règle existante ? doublon ? » — avis, le PO trancherait.
 - **Rangement sous contrôle PO** : les propositions non-règles partent au backlog
   (`ezk-backlog`) ; les **règles validées** atterrissent dans `rules/`, un `bundle`, ou le
@@ -82,7 +82,7 @@ manquantes autour de la machinerie qui existe déjà :
       choisi selon le périmètre, et produit des propositions typées.
 - [ ] Chaque proposition de type `règle` porte un **symptôme** ET un **critère mesurable** ;
       le skill refuse d'en ranger une qui n'a pas les deux.
-- [ ] Les règles candidates passent par un **avis de cohérence** (fiche 0008 / ezk-steward)
+- [ ] Les règles candidates passent par un **avis de cohérence** (fiche 0113 / ezk-steward)
       avant rangement ; l'avis est consultatif, le PO tranche.
 - [ ] Le rangement respecte la structure existante (`rules/<cat>/`, `bundles/`, DoD) — pas
       de nouveau silo — et est **réversible** (retrait documenté).
@@ -96,7 +96,7 @@ manquantes autour de la machinerie qui existe déjà :
 - **Contrôle PO explicite pour l'instant** (2026-07-16) : aucune auto-application ; le
   versionnage des règles est différé (« on verra plus tard »).
 - Compose : [0008 chief-judge](../0113-chief-judge.md), `ezk-steward`, `rules/`, `bundles/`,
-  `ezk-backlog`. Voisin de 0034 (garde-fous intégrité agents) et 0028 (modèle typé
+  `ezk-backlog`. Voisin de 0139 (garde-fous intégrité agents) et 0133 (modèle typé
   interaction/autorité).
 - **Groomé `idea → todo` le 2026-07-16** (premier self-host : la méthode affûte son propre
   backlog). Décisions de grooming :

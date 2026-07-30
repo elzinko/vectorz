@@ -325,7 +325,7 @@ qu'à supposer.
   - **[0029](0134-propagation-maj-skills.md)** — propagation des MAJ *breaking* : traite les
     **données/schéma** là où 0087 traite le **code + la version**. Un plugin versionné donne
     à 0029 le `VERSION` qu'elle postule.
-  - **cop1 [0050](../../../features/0154-release-pastille-dogfooding.md)** — canal de release +
+  - **cop1 [0050](0050-release-pastille-dogfooding.md)** — canal de release +
     pastille de MAJ au niveau vectorz. **Dépendance de conception** : si 0050 définit la version
     figée de vectorz, 0087 s'y branche.
   - **racine 0062 / 0063** — le **front** de la distribution côté Moniteur : lister les projets

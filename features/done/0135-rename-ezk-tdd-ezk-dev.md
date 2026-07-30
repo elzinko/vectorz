@@ -9,7 +9,7 @@ pr:
 created: 2026-07-12
 ---
 
-> ⚠️ **Fusionnée dans [0045](../0150-ezk-dev-methode-tdd-en-rules.md) le 2026-07-17 (review) —
+> ⚠️ **Fusionnée dans [0150](../0150-ezk-dev-methode-tdd-en-rules.md) le 2026-07-17 (review) —
 > aucun code livré.** Déplacée dans `done/` comme fiche *absorbée*. Le rename
 > `ezk-tdd → ezk-dev` est **l'étape 1 littérale de 0045** (qui va plus loin : extraire la
 > méthode TDD en rule de profil). 0045 (créée 6 jours après) est la fiche vivante ; garder

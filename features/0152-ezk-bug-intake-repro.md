@@ -142,5 +142,5 @@ le « VALIDE une PR … dans la boucle ezk-sprint » de `ezk-qa`.
   2026-07-12.
 - **Groom 2026-07-18** : DoR revérifiée complète (problème, valeur désormais explicite,
   8 critères observables déjà présents) en vue du gate `ready` — candidate au run de
-  recette vz-product-builder (fiche 0060), build self-contained (skill authoring + tests,
+  recette vz-product-builder (fiche 0164), build self-contained (skill authoring + tests,
   aucun humain requis en cours de build). Statut/`ready:` inchangés (le gate reste au PO).

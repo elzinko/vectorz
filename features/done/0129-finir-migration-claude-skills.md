@@ -10,12 +10,12 @@ pr: local (squash-merge)
 created: 2026-07-03
 ---
 
-# 0024 — Finir la migration claude-skills → mega-city (strangler-fig)
+# 0129 — Finir la migration claude-skills → mega-city (strangler-fig)
 
 ## Contexte / Problème
 
 ADR-0006 a décidé d'absorber `claude-skills` comme **Catalogue 2** en strangler-fig. **L'infra est
-désormais prête** : `cap global ~/.claude` (fiche 0017 ✅) + `mode link vs copy` (fiche 0018 ✅) →
+désormais prête** : `cap global ~/.claude` (fiche 0122 ✅) + `mode link vs copy` (fiche 0123 ✅) →
 `bind --global <profile>` installe skills+agents en **symlink live** (comme le faisait `install.sh`).
 
 Mais la migration du **contenu** est ~33 % faite (4 skills, 1 agent) et il **n'existe pas de vue
@@ -28,17 +28,17 @@ per-skill (ex. 0019 ezk-design-system) restent la maille d'exécution ; celle-ci
 - `mega-city/agents/` : ezk-architect, ezk-qa, ezk-reviewer, ezk-steward, ezk-tdd (**tous**).
 - **Switchover fait** : `bind-global global --link` (profil dédié `global`, pas `base`) →
   `~/.claude/{skills,agents}` symlinke vers mega-city. A nécessité de compléter le mode link
-  pour qu'il symlinke AUSSI les agents (**fiche 0025**, trou de 0018).
+  pour qu'il symlinke AUSSI les agents (**fiche 0130**, trou de 0018).
 - **claude-skills gelé** (bandeau README lecture seule, PR #32 mergée).
 
 ## Proposition — checklist jusqu'au switchover
 
 **Skills restants (8)** — copier `SKILL.md` (+ helpers) dans `skills/`, adapter les refs :
 - [x] **ezk-backlog** — version claude-skills #31 (add dédoublonnant + regroupement + `version` +
-  cadrage brainstorm). **Satisfait la fiche 0022** → 0022 shippée au passage.
+  cadrage brainstorm). **Satisfait la fiche 0127** → 0022 shippée au passage.
 - [x] ezk-sprint  · [x] ezk-ci  · [x] ezk-preview  · [x] ezk-device  · [x] ezk-apk
 - [x] ezk-npm-scripts
-- [x] **ezk-design-system** — migré (copie fidèle SKILL.md + BRIEF.md) ; l'« étendre » reste la fiche 0019.
+- [x] **ezk-design-system** — migré (copie fidèle SKILL.md + BRIEF.md) ; l'« étendre » reste la fiche 0124.
 
 **Agents restants (4)** — copier `<agent>.md` dans `agents/` :
 - [x] ezk-architect · [x] ezk-tdd · [x] ezk-qa · [x] ezk-steward

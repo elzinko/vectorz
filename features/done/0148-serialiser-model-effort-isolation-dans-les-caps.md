@@ -11,7 +11,7 @@ created: 2026-07-12
 
 ## Contexte / Problème
 Repéré par une revue automatique (chatgpt-codex-connector) sur la PR #1, commentaire inline
-sur `src/loaders/catalog.ts:144` : la fiche 0039 (ex-0028) a ajouté `model`/`effort`/`isolation`
+sur `src/loaders/catalog.ts:144` : la fiche 0144 (ex-0028) a ajouté `model`/`effort`/`isolation`
 au frontmatter des agents et au loader (`readAgent`), mais **aucun des deux caps ne les
 réémet**. `agentFiles()` dans `src/caps/claude-code.ts:20-24` et `src/caps/claude-code-global.ts:19-23`
 écrit uniquement `agent.role.trim()`, sans reconstruire de frontmatter du tout. Résultat : un

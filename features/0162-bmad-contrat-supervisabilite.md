@@ -12,7 +12,7 @@ created: 2026-07-15
 ## Contexte / Problème
 
 Le contrat de supervisabilité v0.1 (gelé côté cop1, D12 : « l'émetteur canonique est fourni
-par la méthode ») n'a qu'**une** méthode émettrice : mega-city (fiche 0050, in-progress). Une
+par la méthode ») n'a qu'**une** méthode émettrice : mega-city (fiche 0154, in-progress). Une
 abstraction à un seul consommateur n'est pas prouvée — et mega-city ne peut pas révéler les
 biais du contrat puisqu'elle les partage (co-conçus : mêmes gates, mêmes hypothèses sur « une
 étape »). Il faut une méthode **étrangère**. BMAD-METHOD est le candidat idéal : phases

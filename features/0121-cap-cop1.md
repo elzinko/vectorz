@@ -21,7 +21,7 @@ Un `caps/cop1/` qui `materialize(resolved, projectDir) → WritePlan` (pur), cib
 que cop1 lit déjà :
 - **Phase 1 — règles** : profil → `iamthelaw/global.yaml` (+ scrum/architecture). Les
   `enforcements:[{type:'agent-check', agent}]` se mappent sur le `Rule.check` → DoDCheck de
-  cop1 (cop1 ADR-020 / fiche 0014). Plus petit incrément, réutilise l'existant des deux côtés.
+  cop1 (cop1 ADR-020 / fiche 0119). Plus petit incrément, réutilise l'existant des deux côtés.
 - **Phase 2 — équipe** : matérialiser agents/skills une fois le format de consommation cop1
   confirmé (sous-agents / skills `ezk-*`).
 
@@ -42,13 +42,13 @@ pas acté~~.
 - [ ] zéro import croisé : mega-city ne dépend pas de cop1, cop1 ne dépend pas de mega-city.
 
 ## Notes / décisions
-Dépend d'ADR-0005 (ce repo) + cop1 ADR-021. Voir aussi `caps/claude-desktop` (fiche 0003)
+Dépend d'ADR-0005 (ce repo) + cop1 ADR-021. Voir aussi `caps/claude-desktop` (fiche 0108)
 comme modèle de cap.
 
 MAJ 2026-07-06 (revue) : ADR-0010 confirme et facilite la Phase 1 — le dialecte
 `iamthelaw/*.yaml` survit au repo iamthelaw comme format de matérialisation de CE cap, et
 personne d'autre ne l'écrit aujourd'hui (couture libre). ADR-0011 re-scope la Phase 2 :
 l'équipe (agents/skills) atteint déjà cop1 par pass-through du cap claude-code
-(`settingSources:['project']`, cf. fiche 0041 cop1-target.yml) — la Phase 2 se limite donc
+(`settingSources:['project']`, cf. fiche 0146 cop1-target.yml) — la Phase 2 se limite donc
 aux compléments cop1-natifs éventuels (ex. mapping `Agent.model` → model-tiering,
-cop1 fiche 0023), à statuer quand le besoin est réel.
+cop1 fiche 0128), à statuer quand le besoin est réel.

@@ -15,7 +15,7 @@ La doctrine « compose, ne réinvente pas » vit en prose : les dépendances int
 invisibles à expand/bind (un profil peut binder ezk-product-builder sans ezk-sprint sans
 erreur), et 4 intégrations fantômes ont été constatées à l'audit. Par ailleurs le modèle
 `Skill {id, content}` ne représente ni `scripts/` ni le format dossier. ADR-0012.
-(Le bug avéré du flywheel capture→bind est extrait en fiche 0037, bug P1 découplé.)
+(Le bug avéré du flywheel capture→bind est extrait en fiche 0142, bug P1 découplé.)
 
 ## Proposition
 1. Frontmatter `composes:` / `composes-external:` sur les skills orchestratrices
@@ -32,7 +32,7 @@ erreur), et 4 intégrations fantômes ont été constatées à l'audit. Par aill
 - [ ] le diagramme Mermaid est régénéré par script et à jour dans skills/README.md
 
 ## Notes
-**Remontée P2 → P1 le 2026-07-26** (arbitrage PO). Déclencheur : [ADR-0020](../docs/adr/0125-capacite-partagee-brique-autonome.md)
+**Remontée P2 → P1 le 2026-07-26** (arbitrage PO). Déclencheur : [ADR-0020](../products/mega-city/docs/adr/0020-capacite-partagee-brique-autonome.md)
 grave la doctrine « briques autonomes **composables** » et la fiche [0102](0102-ezk-testbed-brique-boot-env-test.md)
 crée `ezk-testbed`, que `ezk-pr-pilot`, `ezk-preview` et `ezk-sprint` doivent composer.
 Sans `composes:`, ces trois liens naissent **en prose** — un profil pourra binder
@@ -41,7 +41,7 @@ d'origine d'ADR-0012. À livrer **avant** 0102 si possible : la fiche annote alo
 composants à la naissance au lieu d'un rattrapage.
 
 ADR-0012. Chantier structurel (domaine + loaders + tests) — après les quick wins
-0036/0028/0029. Le fix du flywheel capture→bind est la fiche 0037 (bug P1, découplé).
-ezk-recipy (fiche 0042) : ne l'annoter que si 0042 est déjà livrée, sinon l'annoter à sa
+0036/0028/0029. Le fix du flywheel capture→bind est la fiche 0142 (bug P1, découplé).
+ezk-recipy (fiche 0147) : ne l'annoter que si 0042 est déjà livrée, sinon l'annoter à sa
 création. La mutation « Skill = dossier » est celle qui impacte les caps : à signaler au
-gate de la fiche 0016.
+gate de la fiche 0121.

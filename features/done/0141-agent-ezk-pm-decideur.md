@@ -33,8 +33,8 @@ Créer `agents/ezk-pm.md` :
 - [ ] `agents/ezk-pm.md` routable (name + description), model/effort dans le frontmatter
 - [ ] sur un checkpoint réel d'ezk-product-builder, ezk-pm prend la 1re option de la table et la journalise
 - [ ] sur chacun des 4 cas humains, ezk-pm refuse explicitement et rend la main
-- [ ] ajouté à `profiles/global.yml` (et au futur `cop1-target.yml`, fiche 0041)
+- [ ] ajouté à `profiles/global.yml` (et au futur `cop1-target.yml`, fiche 0146)
 
 ## Notes
-ADR-0011 §2. Consommé par : fiche 0040 (mode auto du builder) et fiche cop1 0021 (déblocage
+ADR-0011 §2. Consommé par : fiche 0145 (mode auto du builder) et fiche cop1 0021 (déblocage
 nocturne). Nom `ezk-pm` choisi par l'opérateur (2026-07-06).

@@ -20,9 +20,9 @@ ignore (`catalog.ts:44-50`). Seuls les agents referment la boucle. C'est le méc
 central d'ADR-0004 (flywheel) qui est silencieusement inopérant pour 2 kinds sur 4.
 
 ## Proposition
-Fix minimal découplé (extrait de la fiche 0044) : DESTINATIONS écrit
+Fix minimal découplé (extrait de la fiche 0149) : DESTINATIONS écrit
 `skills/<id>/SKILL.md` ; `listFiles` devient récursif pour `rules/` (ou les rules à id
-slashé s'aplatissent — trancher avec la convention de la fiche 0006 qui va créer ~53 rules).
+slashé s'aplatissent — trancher avec la convention de la fiche 0111 qui va créer ~53 rules).
 Test round-trip capture→loadCatalog→bind pour les 4 kinds.
 
 ## Critères d'acceptation
@@ -32,6 +32,6 @@ Test round-trip capture→loadCatalog→bind pour les 4 kinds.
 - [ ] gate locale verte (93+ tests)
 
 ## Notes
-Découplé de la fiche 0044 (composes) sur recommandation de revue : bug avéré ≠ chantier
-structurel. Précédent de typage : fiche 0025 (défaut de couture → bug P1). La convention
+Découplé de la fiche 0149 (composes) sur recommandation de revue : bug avéré ≠ chantier
+structurel. Précédent de typage : fiche 0130 (défaut de couture → bug P1). La convention
 de chemin des rules doit être cohérente avec la migration 0006.

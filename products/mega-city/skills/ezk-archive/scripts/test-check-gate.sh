@@ -84,7 +84,9 @@ ok "le fait cite la fiche et son statut"     "echo \"\$OUT4\" | grep -q '\[P3\] 
 # C'était précisément le bug relevé par Codex (PR #56) : le préfixe DÉSIGNE un backlog, il
 # ne décore pas le numéro. Ici la fixture n'a qu'un backlog racine, donc `mc-` ne résout
 # rien — et refuser de conclure vaut mieux que valider la fiche d'à côté (cf. G10).
-OUT4b="$(bash "$CHECK" --gate --shipped 0147)"
+# Préfixe `mc-` (pas l'id nu) : sans backlog mega-city dans la fixture, on refuse
+# de conclure. La migration 0064 avait retiré le préfixe par erreur — le rétablir.
+OUT4b="$(bash "$CHECK" --gate --shipped mc-0147)"
 ok "un préfixe qui ne désigne aucun backlog ⇒ refus de conclure, pas un CLEAN" \
    "echo \"\$OUT4b\" | grep -q 'prefixe .mc. non resolu' && echo \"\$OUT4b\" | grep -q '^VERDICT: DIRTY'"
 OUT4c="$(bash "$CHECK" --gate --shipped 9999)"

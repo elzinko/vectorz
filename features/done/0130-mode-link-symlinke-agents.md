@@ -12,13 +12,13 @@ created: 2026-07-03
 
 ## Contexte / Problème
 
-Le mode `link` du cap global (fiche 0018) ne symlinke que les **skills**
+Le mode `link` du cap global (fiche 0123) ne symlinke que les **skills**
 (`skills/<id>/SKILL.md`) : dans `applyGlobalPlan`, la branche `mode === 'link'`
 ne traite que les fichiers finissant par `/SKILL.md` puis `return` — les
 **agents** (`agents/<id>.md`, pourtant présents dans le plan) sont ignorés.
-Or fiche 0017 et ADR-0006 exigent que le bind global matérialise l'équipe
+Or fiche 0122 et ADR-0006 exigent que le bind global matérialise l'équipe
 **complète** (skills **et** agents), comme le faisait `install.sh` de
-claude-skills. Conséquence : au switchover (fiche 0024), `~/.claude/skills/*`
+claude-skills. Conséquence : au switchover (fiche 0129), `~/.claude/skills/*`
 bascule vers mega-city mais `~/.claude/agents/*` resterait pointé vers
 claude-skills → single-source non atteint pour les agents.
 
@@ -45,5 +45,5 @@ aux skill-dirs, dans les deux modes :
 
 ## Notes
 
-Complète le **trou** de la fiche 0018 (livrée sans le volet agents). Prérequis
+Complète le **trou** de la fiche 0123 (livrée sans le volet agents). Prérequis
 au switchover complet de la fiche **0024** (`~/.claude/{skills,agents}` → mega-city).

@@ -19,10 +19,10 @@ d'id épinglé**), `effort:`, `isolation: worktree`, `skills:` (préchargement).
 ## Proposition
 1. Frontmatters (coût d'une erreur, pas prestige du rôle) :
    - ezk-architect : `model: opus`, `effort: high`
-   - ezk-pm (fiche 0036) : `model: opus`, `effort: high`
+   - ezk-pm (fiche 0141) : `model: opus`, `effort: high`
    - ezk-reviewer : `model: opus`, `effort: high` (gate à veto)
    - ezk-qa : `model: sonnet`, `effort: medium`
-   - ezk-tdd (→ ezk-dev, fiche 0045) : `model: sonnet`, `effort: medium`, `isolation: worktree`
+   - ezk-tdd (→ ezk-dev, fiche 0150) : `model: sonnet`, `effort: medium`, `isolation: worktree`
    - ezk-steward : `model: sonnet`, `effort: low`
 2. `docs/domain.ts` : `Agent.model?: string` / `Agent.effort?: string` (data composable,
    les caps la matérialisent).
@@ -38,4 +38,4 @@ d'id épinglé**), `effort:`, `isolation: worktree`, `skills:` (préchargement).
 ## Notes
 Le mode copy jette aujourd'hui les frontmatters (bug caps, chip du 2026-07-05) — en
 `--link` (bind global actuel) c'est effectif immédiatement. Le cap cop1 Phase 2 pourra
-mapper `Agent.model` sur le ModelTierRouter (cop1 fiche 0023).
+mapper `Agent.model` sur le ModelTierRouter (cop1 fiche 0128).

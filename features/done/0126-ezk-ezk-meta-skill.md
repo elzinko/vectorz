@@ -34,7 +34,7 @@ Une commande `ezk-ezk` (méta-skill = un skill qui crée des skills) qui :
 ## Notes
 - **Compose, ne réinvente pas** : s'appuie sur `skill-creator` (anthropic-skills) pour la mécanique de
   création/validation d'un skill ; orchestre par-dessus la récolte de sujets + brainstorm + archi.
-- **Destination** gouvernée par [ADR-0006](../../docs/adr/0111-absorber-claude-skills-catalogue2.md)
+- **Destination** gouvernée par [ADR-0006](../../products/mega-city/docs/adr/0006-absorber-claude-skills-catalogue2.md)
   (mega-city = write-target, claude-skills gelé/déprécié).
 - **Déploiement** s'appuiera sur **0017** (cap global `~/.claude`) ; la dispo *intra-session* d'un skill
   fraîchement ajouté est l'inconnue (le harness charge les skills au démarrage) → d'où le « si possible ».

@@ -74,7 +74,7 @@ des lieux réel est écrit :
    l'intégration comme « un **choix du propriétaire de la méthode** », pas comme un chemin imposé.
 
 **Fiches structurantes que la v1 ignorait** (aucune occurrence de `0050` ni `0058` dans le texte) :
-`products/mega-city/features/0050-kit-emetteur-supervisabilite.md` (le kit livré) et
+`features/done/0154-kit-emetteur-supervisabilite.md` (ex mega-city 0050, le kit livré) et
 `features/0162-bmad-contrat-supervisabilite.md` (créée 2026-07-15, `todo`) — la
 **même expérience** que le spike 0048, plus mûre : échelle graduée adaptateur→overlay→fork (:25-34),
 prérequis dur « **ne démarre qu'après 0050 verte** » (:38-39), « **ADR au démarrage** : adaptateur
@@ -432,8 +432,9 @@ contre un homme de paille ; cette table-ci compare des options réelles.)*
        → kit) — aucun poste d'observation externe n'est requis. Le risque n°1 ne subsiste que pour
        l'éventuel recours au shim B (transition, dernier ressort).
 3. [x] **Réconcilié (2026-07-17)** : fiche vectorz **0048 fusionnée dans**
-       `products/mega-city/features/0058` (et supprimée du backlog racine) — **0058 = LA fiche
-       sidecar**. 0050 + 0058 sont cités dans ce texte ; le prérequis « ne démarre qu'après 0050
+       `features/0162-bmad-contrat-supervisabilite.md` (ex mega-city 0058, et
+       supprimée du backlog racine) — **0058/0162 = LA fiche
+       sidecar**. 0050/0154 + 0058/0162 sont cités dans ce texte ; le prérequis « ne démarre qu'après 0050
        verte » est repris.
 4. [x] **Réglé par la fusion (2026-07-17)** : le critère vacuous de 0048 disparaît avec elle ; les
        critères réels de 0058 s'appliquent (run BMAD réel → `events.jsonl` **qui passe le

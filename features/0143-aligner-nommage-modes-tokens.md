@@ -24,5 +24,5 @@ datée dans l'ADR-0008 (amender, pas réécrire l'historique de l'ADR).
 - [ ] la description frontmatter et l'argument-hint utilisent les mêmes termes
 
 ## Notes
-Extraite de la fiche 0040 (revue du 2026-07-06 : drive-by sans lien fonctionnel avec le
+Extraite de la fiche 0145 (revue du 2026-07-06 : drive-by sans lien fonctionnel avec le
 mode auto). Micro-PR indépendante, faisable à tout moment.

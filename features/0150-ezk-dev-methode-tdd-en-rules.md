@@ -18,8 +18,8 @@ exactement ce que le domaine sait déjà exprimer.
 
 ## Proposition
 1. Renommer `agents/ezk-tdd.md` → `agents/ezk-dev.md` : rôle = implémenter une feature en
-   clean code, POC-first ; garde model/effort/isolation de la fiche 0039.
-2. Extraire la méthode en rules (rejoint la fiche 0006 — iamthelaw a déjà les rulesets
+   clean code, POC-first ; garde model/effort/isolation de la fiche 0144.
+2. Extraire la méthode en rules (rejoint la fiche 0111 — iamthelaw a déjà les rulesets
    `development` et `testing`) : ex. `testing/tdd-red-green-refactor` (SHOULD ou MUST selon
    bundle), `testing/bdd-scenarios-are-dod`.
 3. Le TDD devient une option DE PROFIL : un profil `poc-rapide` n'inclut pas la rule, un

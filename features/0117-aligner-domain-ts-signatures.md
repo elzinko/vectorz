@@ -10,7 +10,7 @@ created: 2026-06-26
 ---
 
 ## Contexte / Problème
-Revue de la fiche 0001 (finding F5). `docs/domain.ts` se présente comme « source
+Revue de la fiche 0106 (finding F5). `docs/domain.ts` se présente comme « source
 de vérité / contrat » mais déclare `expand(profile)` et `bind(profile, …)` sans
 le `catalog`/`rootDir` que prend l'implémentation réelle
 (`expand(profile, catalog)`, `bind(profileId, projectDir, host, rootDir)`).

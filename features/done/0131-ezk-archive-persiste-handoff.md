@@ -31,7 +31,7 @@ la liste live du check) ; une entrée partiellement pending est conservée telle
 
 ## Notes
 - Implémenté par `3dc21d7` (+ gitignore `6ce26f7`), livré sur la branche
-  `feat/design-system-extend`, **réconcilié sur `main`** avec la fiche 0019.
+  `feat/design-system-extend`, **réconcilié sur `main`** avec la fiche 0124.
 - **Fiche créée rétroactivement** (rattrapage backlog) : la feature a été livrée sans
   fiche ; ajoutée ici pour la traçabilité (1 feature = 1 fiche).
 - Même famille qu'`ezk-archive` (hygiène de clôture) ; ne déborde pas sur le scrum/sprint.
