@@ -43,7 +43,7 @@
 | 0076 | Hygiène de branches post-squash — classification déterministe absorbée/réelle + suppression aux deux chemins de merge | feature | P1 |  | mega-city | ✅ shipped | #31 |
 | 0077 | Kit émetteur — hooks Claude Code classe A (émission déterministe) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 0079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 |  | mega-city | 🔴 todo |  |
-| 0082 | Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés) | feature | P1 |  | vectorz | 🟠 in-progress | #70 |
+| 0082 | Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés) | feature | P1 |  | vectorz | ✅ shipped | #70 |
 | 0095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | mega-city | ✅ shipped | #55 |
 | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 |  | mega-city | ⛔ blocked |  |
 | 0103 | Les méthodes envoient un heartbeat — le Moniteur ne crie plus « silence » à tort | feature | P1 |  | mega-city | ✅ shipped |  |
@@ -185,4 +185,4 @@
 | 0138 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 |  | mega-city | 💡 idea |  |
 | 0139 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | mega-city | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0048, 0059, 0061, 0064, 0070, 0071, 0072, 0076, 0078, 0083, 0084, 0085, 0086, 0089, 0094, 0095, 0097, 0103, 0104, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0153, 0154, 0159, 0160, 0167.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0048, 0059, 0061, 0064, 0070, 0071, 0072, 0076, 0078, 0082, 0083, 0084, 0085, 0086, 0089, 0094, 0095, 0097, 0103, 0104, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0153, 0154, 0159, 0160, 0167.

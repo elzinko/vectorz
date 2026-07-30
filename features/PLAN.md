@@ -16,10 +16,10 @@
 
 ## ▶️ NOW — voir et gérer ses projets
 
-0. ~~**0064** — une seule liste de features (champ `product:`)~~ — **in-progress** (cette PR)
+0. ~~**0064** — une seule liste de features (champ `product:`)~~ — shipped #66 / #68
 1. ~~**0094** — brancher l'émetteur sur vectorz~~ — shipped #54
 2. ~~**0095** — faire émettre `ezk-product-builder`~~ — shipped #55
-3. **0082** — registre {projet · méthode} : la donnée « quels projets, quelle version » · `build` · **ready 2026-07-30**
+3. ~~**0082** — registre {projet · méthode}~~ — shipped #70
 4. **0062** — onglet « Projets » : liste par projet, cliquable → activité · `build`
 5. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build`
 
@@ -52,7 +52,8 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après 0064, la prochaine tête du NOW est **0082** (**ready 2026-07-30**) — tirable.
+(gate DoR). Après 0082 shipped (#70), la prochaine tête du NOW est **0062**
+(**idea** — groom/ready requis avant build).
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
