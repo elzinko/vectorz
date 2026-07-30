@@ -85,4 +85,25 @@ describe('projectRun — read-model de projection live (fiche 0031 / ADR-028)', 
     expect(projection.gates).toEqual([]);
     expect(projection.state).toBe('running');
   });
+
+  // Fiche 0082 — écart de méthode
+  it('un _method_mismatch dans run.started produit une Notice registry.method_mismatch (fiche 0082)', () => {
+    const misMatchDir = join(fixture('run-method-mismatch'), '2026-01-01T00-00-00-000Z-deadbeef');
+    const projection = projectRun(misMatchDir);
+
+    const notice = projection.notices.find((n) => n.code === 'registry.method_mismatch');
+    expect(notice).toBeDefined();
+    expect(notice!.message).toContain('bmad');
+    expect(notice!.message).toContain('mega-city');
+    // L'écart est une Notice, jamais une Violation : le run reste valide
+    expect(projection.violations).toHaveLength(0);
+    expect(projection.state).toBe('finished');
+  });
+
+  it('run.started sans _method_mismatch ne produit pas de Notice registry.method_mismatch (fiche 0082)', () => {
+    const projection = projectRun(realRunToyDir());
+
+    const notice = projection.notices.find((n) => n.code === 'registry.method_mismatch');
+    expect(notice).toBeUndefined();
+  });
 });

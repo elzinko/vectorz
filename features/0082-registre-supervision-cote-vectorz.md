@@ -5,9 +5,9 @@ type: feature
 priority: P1
 product: vectorz
 epic:
-status: todo
+status: in-progress
 ready: 2026-07-30
-pr:
+pr: "#70"
 created: 2026-07-19
 ---
 

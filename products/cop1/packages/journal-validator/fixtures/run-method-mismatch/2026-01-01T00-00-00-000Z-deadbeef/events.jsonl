@@ -1,0 +1,2 @@
+{"event_id":"aaaa-0001","run_id":"2026-01-01T00-00-00-000Z-deadbeef","seq":1,"ts":"2026-01-01T00:00:00.000Z","contract":"cop1/supervisability@0.1","type":"run.started","payload":{"method":{"name":"bmad","version":"0.0.1"},"seat":"human","_method_mismatch":{"declared":"bmad","expected":"mega-city"}}}
+{"event_id":"aaaa-0002","run_id":"2026-01-01T00-00-00-000Z-deadbeef","seq":2,"ts":"2026-01-01T00:00:01.000Z","contract":"cop1/supervisability@0.1","type":"run.finished","payload":{"status":"success"}}

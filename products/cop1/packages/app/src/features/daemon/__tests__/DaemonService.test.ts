@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { REGISTRY_FILENAME } from '../../supervision/infrastructure/registry.js';
 import { DaemonService } from '../application/DaemonService.js';
 import { PidFileManager } from '../infrastructure/PidFileManager.js';
 
@@ -133,6 +134,105 @@ describe('DaemonService', () => {
       );
     } finally {
       await wired.stop();
+    }
+  });
+
+  it('dérive watch_roots depuis supervision.registry.yaml quand présent (fiche 0082)', async () => {
+    // Créer le registre avec le testDir comme racine du projet
+    writeFileSync(
+      join(testDir, REGISTRY_FILENAME),
+      ['projects:', '  - id: test-project', '    path: .', '    method: mega-city'].join('\n'),
+    );
+
+    // Créer un run dans le répertoire supervisé (le testDir lui-même, chemin ".")
+    const runsDir = join(testDir, '.supervision', 'runs', 'run-from-registry');
+    mkdirSync(runsDir, { recursive: true });
+    writeFileSync(
+      join(runsDir, 'events.jsonl'),
+      `${JSON.stringify({
+        event_id: 'e1',
+        run_id: 'run-from-registry',
+        seq: 1,
+        ts: new Date().toISOString(),
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'mega-city', version: '1.0.0' }, seat: 'pilot' },
+      })}\n`,
+    );
+
+    // Le daemon doit découvrir ce run grâce au registre (sans cop1.config.yaml)
+    const registryDaemon = new DaemonService({ port: 14247, projectPath: testDir });
+    try {
+      await registryDaemon.start();
+
+      await vi.waitFor(
+        async () => {
+          const res = await fetch('http://127.0.0.1:14247/api/supervision/runs');
+          const data = (await res.json()) as Array<{ runId: string }>;
+          expect(data.some((snapshot) => snapshot.runId === 'run-from-registry')).toBe(true);
+        },
+        { timeout: 10000, interval: 30 },
+      );
+    } finally {
+      await registryDaemon.stop();
+    }
+  });
+
+  it('sans registre et sans config YAML → supervision dormante (non-régression v1)', async () => {
+    // Ni supervision.registry.yaml ni cop1.config.yaml → supervision dormante
+    const d = new DaemonService({ port: 14248, projectPath: testDir });
+    try {
+      await d.start();
+      const res = await fetch('http://127.0.0.1:14248/api/supervision/runs');
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    } finally {
+      await d.stop();
+    }
+  });
+
+  it('registre invalide → pas de fallback YAML watch_roots (fiche 0082 / Codex)', async () => {
+    writeFileSync(join(testDir, REGISTRY_FILENAME), 'projects: not-an-array\n');
+    writeFileSync(
+      join(testDir, 'cop1.config.yaml'),
+      [
+        'budget:',
+        '  sprint_max_tokens: 1000000',
+        '  alert_thresholds: [50, 80, 95]',
+        '  auto_pause: true',
+        'resources:',
+        '  ram_budget_night_gb: 99999',
+        '  ram_budget_day_gb: 99999',
+        'supervision:',
+        `  watch_roots: ["${testDir.replace(/\\/g, '/')}"]`,
+        '  presumed_dead_after_min: 5',
+        '',
+      ].join('\n'),
+    );
+    const runsDir = join(testDir, '.supervision', 'runs', 'run-stale');
+    mkdirSync(runsDir, { recursive: true });
+    writeFileSync(
+      join(runsDir, 'events.jsonl'),
+      `${JSON.stringify({
+        event_id: 'e1',
+        run_id: 'run-stale',
+        seq: 1,
+        ts: new Date().toISOString(),
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'mega-city', version: '1.0.0' }, seat: 'pilot' },
+      })}\n`,
+    );
+
+    const d = new DaemonService({ port: 14249, projectPath: testDir });
+    try {
+      await d.start();
+      const res = await fetch('http://127.0.0.1:14249/api/supervision/runs');
+      expect(res.status).toBe(200);
+      // Registre invalide ⇒ pas de watchers, même si YAML listait une racine
+      expect(await res.json()).toEqual([]);
+    } finally {
+      await d.stop();
     }
   });
 

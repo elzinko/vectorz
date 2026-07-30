@@ -158,7 +158,16 @@ function writeConfinedReport(
 }
 
 export class SupervisionRuntime {
-  constructor(private readonly projectRoot: string) {}
+  /**
+   * @param projectRoot Racine effective du projet supervisé.
+   * @param expectedMethod Méthode attendue selon le registre (fiche 0082). Si fournie et
+   *   différente du `method_name` passé à `runStart`, un champ `_method_mismatch` est
+   *   ajouté au payload `run.started` (annotation d'audit, jamais un refus).
+   */
+  constructor(
+    private readonly projectRoot: string,
+    private readonly expectedMethod?: string,
+  ) {}
 
   runStart(args: RunStartArgs): { run_id: string } {
     const state = findOpenRun(this.projectRoot);
@@ -168,9 +177,16 @@ export class SupervisionRuntime {
     const runId = generateRunId();
     const runDir = path.join(this.projectRoot, ...RUNS_DIR_SEGMENTS, runId);
     const journal = new Journal(runDir, runId);
+
+    const mismatch =
+      this.expectedMethod !== undefined && args.method_name !== this.expectedMethod
+        ? { declared: args.method_name, expected: this.expectedMethod }
+        : undefined;
+
     journal.append('run.started', {
       method: { name: args.method_name, version: args.method_version },
       seat: args.seat ?? 'human',
+      ...(mismatch !== undefined ? { _method_mismatch: mismatch } : {}),
     });
     return { run_id: runId };
   }

@@ -6,6 +6,7 @@ import { HttpOrchestratorAdapter } from '../../orchestrator/infrastructure/HttpO
 import { YamlSprintStatusAdapter } from '../../orchestrator/infrastructure/YamlSprintStatusAdapter.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
 import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalWatcherAdapter.js';
+import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
 import { checkAuth } from '../infrastructure/AuthChecker.js';
 import { HttpServer } from '../infrastructure/HttpServer.js';
@@ -73,26 +74,54 @@ export class DaemonService {
 
   /**
    * Instancie `SupervisionService` + `JournalWatcherAdapter` sur le même
-   * `EventBus` que le reste du daemon uniquement si `supervision.watch_roots`
-   * est non vide ; sinon reste dormant (aucun watcher démarré).
+   * `EventBus` que le reste du daemon uniquement si des watch-roots sont
+   * disponibles ; sinon reste dormant (aucun watcher démarré).
+   *
+   * Fiche 0082 — Registre de supervision :
+   * - Si `supervision.registry.yaml` est trouvé dans `projectPath`, les
+   *   `watch_roots` sont dérivées du registre (fin de la double saisie).
+   * - Sinon, retour au comportement v1 : `supervision.watch_roots` depuis YAML.
+   * - `presumed_dead_after_min` reste toujours lu depuis YAML si disponible.
    */
   private wireSupervision(projectPath: string): void {
     let watchRoots: string[] = [];
     let presumedDeadAfterMin = 5;
+
+    // Fiche 0082 — dérivation depuis le registre (prioritaire sur YAML).
+    // Un fichier présent mais invalide NE doit PAS retomber sur YAML (Codex P1) :
+    // on reste sans watchers plutôt que de surveiller une liste périmée.
+    let fromRegistry = false;
+    try {
+      const located = locateRegistry([projectPath]);
+      if (located !== null) {
+        watchRoots = resolveWatchRoots(located.registry, located.dir);
+        fromRegistry = true;
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(
+        `[daemon] supervision.registry.yaml invalide — watchers non démarrés : ${message}`,
+      );
+      fromRegistry = true;
+      watchRoots = [];
+    }
+
+    // Lecture de la config YAML pour presumed_dead_after_min (et watch_roots si pas de registre)
     try {
       // skipRamValidation : le mode moniteur ne consomme que `supervision.*` ;
       // le budget RAM (défaut 48GB > la RAM de la plupart des machines, dont
       // les runners CI à 16GB) est une contrainte d'orchestration qui ne doit
       // pas rendre la supervision silencieusement dormante (cf. fiche 0033).
-      // Même choix que orchestrator.ts et SprintRunner.ts.
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
-      watchRoots = config.supervision?.watch_roots ?? [];
+      if (!fromRegistry) {
+        watchRoots = config.supervision?.watch_roots ?? [];
+      }
       presumedDeadAfterMin = config.supervision?.presumed_dead_after_min ?? 5;
     } catch {
       // cop1.config.yaml absent ou invalide : supervision dormante par
       // défaut, ce n'est jamais une raison de faire échouer le démarrage
       // du daemon (le reste du daemon fonctionne sans config chargée).
-      return;
+      if (!fromRegistry) return;
     }
 
     if (watchRoots.length === 0) return;

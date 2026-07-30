@@ -34,9 +34,13 @@ function toolOk(payload: unknown) {
   return { content: [{ type: 'text' as const, text: JSON.stringify(payload) }] };
 }
 
-/** Construit le serveur MCP émetteur, câblé sur un `SupervisionRuntime` pour `projectRoot`. */
-export function createSupervisionMcpServer(projectRoot: string): McpServer {
-  const runtime = new SupervisionRuntime(projectRoot);
+/**
+ * Construit le serveur MCP émetteur, câblé sur un `SupervisionRuntime` pour `projectRoot`.
+ * @param projectRoot Racine effective du projet supervisé.
+ * @param expectedMethod Méthode attendue selon le registre (fiche 0082) — optionnelle.
+ */
+export function createSupervisionMcpServer(projectRoot: string, expectedMethod?: string): McpServer {
+  const runtime = new SupervisionRuntime(projectRoot, expectedMethod);
 
   const server = new McpServer({
     name: 'cop1-supervision-emitter',

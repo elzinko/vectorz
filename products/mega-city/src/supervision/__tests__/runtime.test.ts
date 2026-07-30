@@ -482,3 +482,45 @@ describe('Rubrique H — escalade', () => {
     expect(events[1]).toMatchObject({ payload: { type: 'blocked' } });
   });
 });
+
+// ---------------------------------------------------------------------------
+// Rubrique I — Registre de supervision (fiche 0082)
+// ---------------------------------------------------------------------------
+
+describe('Rubrique I — Registre (fiche 0082)', () => {
+  it('runStart sans expectedMethod ne pose pas _method_mismatch dans le payload', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'mega-city', method_version: '1.0.0' });
+
+    const events = readEvents(projectRoot, run_id);
+    expect(events[0]).toMatchObject({ type: 'run.started' });
+    expect((events[0] as Record<string, unknown>).payload).not.toHaveProperty('_method_mismatch');
+  });
+
+  it('runStart avec expectedMethod concordant ne pose pas _method_mismatch', () => {
+    const runtime = new SupervisionRuntime(projectRoot, 'mega-city');
+    const { run_id } = runtime.runStart({ method_name: 'mega-city', method_version: '1.0.0' });
+
+    const events = readEvents(projectRoot, run_id);
+    expect((events[0] as Record<string, unknown>).payload).not.toHaveProperty('_method_mismatch');
+  });
+
+  it('runStart avec expectedMethod divergent pose _method_mismatch dans le payload (annotation, pas refus)', () => {
+    const runtime = new SupervisionRuntime(projectRoot, 'mega-city');
+    // La méthode déclarée est différente de la méthode attendue — doit passer sans erreur
+    const { run_id } = runtime.runStart({ method_name: 'bmad', method_version: '1.0.0' });
+
+    const events = readEvents(projectRoot, run_id);
+    const payload = (events[0] as Record<string, unknown>).payload as Record<string, unknown>;
+    expect(payload._method_mismatch).toEqual({ declared: 'bmad', expected: 'mega-city' });
+  });
+
+  it('runStart avec mismatch : le run démarre quand même, gate_reached fonctionne ensuite', () => {
+    const runtime = new SupervisionRuntime(projectRoot, 'mega-city');
+    const { run_id } = runtime.runStart({ method_name: 'autre-methode', method_version: '0.0.1' });
+
+    expect(run_id).toBeTruthy();
+    // On peut continuer le run normalement (annotation d'audit, jamais un refus)
+    expect(() => runtime.gateReached({ gate_id: 'gate-1', outcome: 'ok' })).not.toThrow();
+  });
+});
