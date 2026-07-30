@@ -9,7 +9,7 @@
  * Lu UNE SEULE FOIS à l'init du daemon — jamais paramètre d'outil.
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { isAbsolute, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { parse } from 'yaml';
 
 export const REGISTRY_FILENAME = 'supervision.registry.yaml';
@@ -92,7 +92,43 @@ export function loadRegistry(registryDir: string): Registry | null {
  * Les chemins relatifs sont résolus par rapport au `registryDir`.
  */
 export function resolveWatchRoots(registry: Registry, registryDir: string): string[] {
-  return registry.projects.map((p) =>
-    isAbsolute(p.path) ? p.path : resolve(registryDir, p.path),
-  );
+  return registry.projects.map((p) => (isAbsolute(p.path) ? p.path : resolve(registryDir, p.path)));
+}
+
+/**
+ * Remonte depuis chaque `startDir` jusqu'à trouver `supervision.registry.yaml`.
+ * Retourne le dossier contenant le fichier, ou `null`.
+ */
+export function findRegistryDir(startDirs: readonly string[]): string | null {
+  const seen = new Set<string>();
+  for (const start of startDirs) {
+    let dir = resolve(start);
+    for (;;) {
+      if (!seen.has(dir)) {
+        seen.add(dir);
+        if (existsSync(join(dir, REGISTRY_FILENAME))) return dir;
+      }
+      const parent = dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  return null;
+}
+
+export interface LocatedRegistry {
+  dir: string;
+  registry: Registry;
+}
+
+/**
+ * Découvre puis charge le registre. `null` si absent.
+ * Propage les erreurs si le fichier existe mais est invalide.
+ */
+export function locateRegistry(startDirs: readonly string[]): LocatedRegistry | null {
+  const dir = findRegistryDir(startDirs);
+  if (dir === null) return null;
+  const registry = loadRegistry(dir);
+  if (registry === null) return null;
+  return { dir, registry };
 }

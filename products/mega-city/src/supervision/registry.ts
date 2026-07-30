@@ -99,6 +99,51 @@ export function loadRegistry(registryDir: string): Registry | null {
 }
 
 /**
+ * Remonte depuis chaque `startDir` jusqu'à trouver `supervision.registry.yaml`.
+ * Le registre vit au siège (racine vectorz) — un projet ancré ailleurs doit
+ * quand même le découvrir (walk-up, `SUPERVISION_REGISTRY_DIR`, ou siège packagé).
+ * Retourne le dossier contenant le fichier, ou `null` si aucun n'est trouvé.
+ */
+export function findRegistryDir(startDirs: readonly string[]): string | null {
+  const seen = new Set<string>();
+  for (const start of startDirs) {
+    let dir = path.resolve(start);
+    for (;;) {
+      if (!seen.has(dir)) {
+        seen.add(dir);
+        if (fs.existsSync(path.join(dir, REGISTRY_FILENAME))) return dir;
+      }
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  return null;
+}
+
+/**
+ * Résultat d'une découverte + charge du registre central.
+ * `dir` = dossier du fichier (base de résolution des `path` relatifs).
+ */
+export interface LocatedRegistry {
+  dir: string;
+  registry: Registry;
+}
+
+/**
+ * Découvre puis charge le registre. `null` si aucun fichier trouvé.
+ * Propage les erreurs de validation si le fichier existe mais est invalide
+ * (ne jamais traiter un registre cassé comme « absent »).
+ */
+export function locateRegistry(startDirs: readonly string[]): LocatedRegistry | null {
+  const dir = findRegistryDir(startDirs);
+  if (dir === null) return null;
+  const registry = loadRegistry(dir);
+  if (registry === null) return null;
+  return { dir, registry };
+}
+
+/**
  * Résout les racines de watch depuis les projets du registre.
  * Les chemins relatifs sont résolus par rapport au `registryDir`.
  */

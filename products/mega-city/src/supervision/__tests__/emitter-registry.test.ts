@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { findProjectByRoot, loadRegistry } from '../registry.js';
+import { findProjectByRoot, loadRegistry, locateRegistry } from '../registry.js';
 import { SupervisionRuntime } from '../runtime.js';
 
 let tmpDir: string;
@@ -66,6 +66,25 @@ projects:
     // La racine courante n'est pas dans le registre → fail-fast en prod
     expect(entry).toBeUndefined();
     // Le bin supervision-mcp.ts ferait process.exit(1) dans ce cas
+  });
+
+  it('découvre le registre siège par walk-up depuis un sous-projet (Codex P1)', () => {
+    writeRegistry(`
+projects:
+  - id: vectorz
+    path: .
+    method: mega-city
+  - id: client
+    path: apps/client
+    method: mega-city
+`);
+    const clientRoot = path.join(tmpDir, 'apps', 'client');
+    fs.mkdirSync(clientRoot, { recursive: true });
+
+    const located = locateRegistry([clientRoot]);
+    expect(located).not.toBeNull();
+    expect(located!.dir).toBe(tmpDir);
+    expect(findProjectByRoot(located!.registry, located!.dir, clientRoot)?.id).toBe('client');
   });
 
   it('avec registre valide → expectedMethod transmis au runtime (annotation mismatch)', () => {

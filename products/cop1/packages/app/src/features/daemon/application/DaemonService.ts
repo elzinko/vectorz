@@ -6,7 +6,7 @@ import { HttpOrchestratorAdapter } from '../../orchestrator/infrastructure/HttpO
 import { YamlSprintStatusAdapter } from '../../orchestrator/infrastructure/YamlSprintStatusAdapter.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
 import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalWatcherAdapter.js';
-import { loadRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
+import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
 import { checkAuth } from '../infrastructure/AuthChecker.js';
 import { HttpServer } from '../infrastructure/HttpServer.js';
@@ -87,16 +87,23 @@ export class DaemonService {
     let watchRoots: string[] = [];
     let presumedDeadAfterMin = 5;
 
-    // Fiche 0082 — tentative de dérivation depuis le registre (prioritaire sur YAML)
+    // Fiche 0082 — dérivation depuis le registre (prioritaire sur YAML).
+    // Un fichier présent mais invalide NE doit PAS retomber sur YAML (Codex P1) :
+    // on reste sans watchers plutôt que de surveiller une liste périmée.
     let fromRegistry = false;
     try {
-      const registry = loadRegistry(projectPath);
-      if (registry !== null) {
-        watchRoots = resolveWatchRoots(registry, projectPath);
+      const located = locateRegistry([projectPath]);
+      if (located !== null) {
+        watchRoots = resolveWatchRoots(located.registry, located.dir);
         fromRegistry = true;
       }
-    } catch {
-      // Registre invalide : log ignoré, on bascule sur YAML (rollback v1).
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(
+        `[daemon] supervision.registry.yaml invalide — watchers non démarrés : ${message}`,
+      );
+      fromRegistry = true;
+      watchRoots = [];
     }
 
     // Lecture de la config YAML pour presumed_dead_after_min (et watch_roots si pas de registre)
