@@ -5,7 +5,7 @@ type: refactor
 priority: P0
 product: vectorz
 epic:
-status: in-progress
+status: shipped
 ready: 2026-07-30
 pr: "#66"
 created: 2026-07-26
