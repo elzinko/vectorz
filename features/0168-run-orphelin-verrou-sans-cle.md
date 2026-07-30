@@ -7,7 +7,7 @@ epic:
 depends: ["0105"]
 labels: [supervision, dogfood, ux, contrat]
 status: todo
-ready:
+ready: 2026-07-30
 pr:
 created: 2026-07-30
 product: mega-city
@@ -70,23 +70,22 @@ l'information — un run silencieux depuis 20 min serait effacé du « en cours 
 c'est justement ce qu'on veut voir. À reconsidérer seulement si le volet 1 s'avère
 insuffisant en pratique.
 
-**À trancher au grooming** : un run abandonné par le siège doit-il être distinguable dans
-le journal d'un run abandonné par sa propre méthode (`abandoned_by: seat` vs `method`) ?
-Le Moniteur et `supervision:analyze` (0104) ne racontent pas la même histoire selon la
-réponse.
-
 ## Critères d'acceptation
 
 - [ ] Depuis le Moniteur, un run en « Silence prolongé » peut être abandonné par le siège
       humain, sans toucher au disque à la main.
 - [ ] Après cet abandon, un `run_start` sur le même projet réussit.
-- [ ] Le journal garde une trace de qui a abandonné (siège vs méthode) — ou l'ADR de
-      grooming justifie explicitement de ne pas distinguer.
+- [ ] Le journal distingue l'abandon siège vs méthode : payload `run.finished` avec
+      `status: "abandoned"` **et** `abandoned_by: "seat" | "method"` (Moniteur → `seat` ;
+      outil MCP `run_finished` → `method` par défaut).
 - [ ] Le message d'erreur `run_start refusé` nomme la méthode bloquante, l'âge du run et
       la marche à suivre (test sur le texte de l'erreur).
 - [ ] Aucun run n'est clôturé automatiquement : sans action humaine, le run reste ouvert
       et visible en silence prolongé.
 - [ ] Gate locale verte (typecheck/lint/tests) puis E2E Moniteur sur le bouton.
+- [ ] Hors scope : ne pas changer la règle d'absorption `ezk-sprint` dans un run déjà
+      ouvert — le déblocage siège suffit ; documenter le risque de pollution en note ADR
+      courte si on touche au message d'erreur.
 
 ## Notes / décisions
 
@@ -96,9 +95,14 @@ réponse.
 - Voisines : [0105](0105-bug-moniteur-silence-dogfood.md) (lisibilité de la carte run),
   [0103](done/0103-heartbeat-methodes-supervision.md) (heartbeat, shipped),
   [0104](done/0104-kit-analyse-session-supervision.md) (`supervision:analyze`).
-- `ezk-sprint` s'« absorbe » dans un run déjà ouvert (`src/supervision/README.md:221`) —
-  donc une méthode tombe dans le run orphelin d'une autre au lieu d'échouer. À vérifier au
-  grooming : est-ce un atténuateur, ou une seconde façon de polluer un journal étranger ?
+- **Groom 2026-07-30** — `abandoned_by: seat | method` : **oui, distinguer**. Le Moniteur
+  et `analyze` ne racontent pas la même histoire (siège qui déverrouille vs méthode qui
+  abandonne son propre run). Schéma actuel = `{ status }` seulement → étendre le payload.
+- **Groom 2026-07-30** — absorption dans un run ouvert : c'est une **seconde façon de
+  polluer** un journal étranger, pas un atténuateur fiable. **Hors scope 0168** (le bouton
+  siège + erreur actionnable débloquent) ; ne pas retoucher l'absorption ici.
+- **depends: [0105]** = même fil dogfood / issue #63, **pas un bloqueur de build** : 0168
+  est tirable sans ship de 0105 (UX « partiel » côté 0105).
 
 ## Issue GitHub
 
