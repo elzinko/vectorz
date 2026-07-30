@@ -3,6 +3,7 @@ id: 0005
 title: Résorber les warnings biome
 type: chore
 priority: P3
+product: vectorz
 status: shipped
 pr: "#45"
 created: 2026-06-23

@@ -3,6 +3,7 @@ id: 0039
 title: E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque
 type: refactor
 priority: P2
+product: vectorz
 epic: 0034
 status: blocked
 pr:

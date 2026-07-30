@@ -3,6 +3,7 @@ id: 0052
 title: Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo
 type: feature
 priority: P1
+product: vectorz
 epic: 0051
 status: todo
 ready:

@@ -3,6 +3,7 @@ id: 0026
 title: Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur
 type: feature
 priority: P2
+product: vectorz
 status: shipped
 pr: "#59"
 created: 2026-07-13

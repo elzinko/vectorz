@@ -42,7 +42,7 @@ pour plus tard.
 Les deux sujets finissent au même endroit :
 
 1. **Un juge de cohérence** — « cette règle en contredit-elle une autre ? un doublon ? »
-   C'est le *judgedread*. Déjà en idée : fiche [0008 chief-judge](../../products/mega-city/features/0008-chief-judge.md)
+   C'est le *judgedread*. Déjà en idée : fiche [0008 chief-judge](../../features/0113-chief-judge.md)
    + l'agent `ezk-steward` (gardien de LA LOI).
 2. **Rangé dans mega-city** — une règle dans `rules/` (10 catégories existent déjà), un
    `bundle`, ou le DoD/DoR.
@@ -78,7 +78,7 @@ assemblées ni câblées** dans la boucle vivante.
 3. le **pont** rétro → `rules/` de mega-city (le retour de règle écrit encore à l'ancienne
    adresse cop1 `iamthelaw/*.yaml`).
 
-C'est le job de la fiche [0063 ezk-retro](../../products/mega-city/features/done/0063-ezk-retro-ceremonie-auto-amelioration.md)
+C'est le job de la fiche [0063 ezk-retro](../../features/done/0167-ezk-retro-ceremonie-auto-amelioration.md)
 (Sujet A). Le mesureur du Sujet B = fiche vectorz 0044.
 
 *Nuance sur ton souvenir : les 2 tours existent mais dans un ordre **déterministe** — le

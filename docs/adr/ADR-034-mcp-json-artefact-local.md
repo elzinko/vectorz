@@ -1,7 +1,7 @@
 # ADR-034 — `.mcp.json` est un artefact d'installation LOCAL, pas une déclaration versionnée
 
 **Statut :** Proposé (2026-07-26, architecte) — fiche
-[0094](../../products/mega-city/features/0094-emetteur-branche-sur-claude-code.md).
+[0094](../../features/done/0094-emetteur-branche-sur-claude-code.md).
 **Révise** la proposition de la fiche 0094 (« un `.mcp.json` **commité à la racine du
 dépôt** ») sur le seul point du versionnement. **Ne révise pas**
 [ADR-019](ADR-019-worktree-location.md) (normalisation worktree), ni

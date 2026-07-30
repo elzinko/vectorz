@@ -1,17 +1,16 @@
 /**
- * Calcule la « tête réelle » du plan **à travers les deux backlogs** (fiche
- * mc-0097). Réutilise l'ordre donné par `parsePlanOrder` (mc-0089) ; ici on
- * traverse cet ordre en résolvant chaque id vers sa carte (produit + statut +
- * ready), quelle que soit la liste qui la porte.
+ * Calcule la « tête réelle » du plan sur la **liste unique** `features/`
+ * (fiche 0064 ; remplace le routage cross-liste 0097). Réutilise l'ordre
+ * donné par `parsePlanOrder` (0089) ; le `product:` vient du front-matter.
  *
- * Logique pure, sans I/O : la coquille `bin/plan-head.ts` construit l'index en
- * scannant les deux dossiers `features/` (actifs + `done/`).
+ * Logique pure, sans I/O : la coquille `bin/plan-head.ts` construit l'index
+ * en scannant `features/` (actifs + `done/`).
  */
 
 export interface PlanCard {
-  /** Id sous la forme du PLAN.md : `mc-0094` (méthode) ou `0062` (produit). */
+  /** Id nu à 4 chiffres (forme PLAN.md post-0064). */
   id: string;
-  /** Liste d'appartenance, informatif : `mega-city` ou `vectorz`. */
+  /** Produit déclaré en front-matter : `mega-city` | `vectorz` | … */
   product: string;
   /** `feature | bug | refactor | chore | epic`. Un `epic` n'est jamais tirable. */
   type: string;
@@ -20,17 +19,17 @@ export interface PlanCard {
 }
 
 export interface CrossBacklogHead {
-  /** 1re carte `todo` + `ready` dans l'ordre du plan, tous backlogs confondus. */
+  /** 1re carte `todo` + `ready` dans l'ordre du plan. */
   head: PlanCard | null;
   /** Cartes `todo` sans `ready:` qui PRÉCÈDENT la tête dans l'ordre — à groomer. */
   blockedAhead: PlanCard[];
-  /** Ids du plan introuvables dans les deux listes — signalés, jamais ignorés. */
+  /** Ids du plan introuvables dans `features/` — signalés, jamais ignorés. */
   unresolved: string[];
 }
 
 /**
  * @param planIds ids dans l'ordre du plan (sortie de `parsePlanOrder`).
- * @param index   id (forme PLAN.md) → carte résolue, tous backlogs confondus.
+ * @param index   id → carte résolue (product depuis le front-matter).
  */
 export function crossBacklogHead(
   planIds: string[],
@@ -60,7 +59,7 @@ export function crossBacklogHead(
       blockedAhead.push(card);
     }
     // idea | blocked | in-progress | shipped → ni tirable, ni signal de blocage
-    // à l'intake : on passe (miroir de la règle mc-0089).
+    // à l'intake : on passe (miroir de la règle 0089).
   }
 
   return { head, blockedAhead, unresolved };

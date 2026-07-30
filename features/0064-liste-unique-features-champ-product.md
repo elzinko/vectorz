@@ -3,10 +3,11 @@ id: 0064
 title: Une seule liste de features pour tout le monorepo (champ `product:`) — la double liste coûte plus qu'elle ne rapporte
 type: refactor
 priority: P0
+product: vectorz
 epic:
-status: todo
-ready:
-pr:
+status: in-progress
+ready: 2026-07-30
+pr: "#66"
 created: 2026-07-26
 ---
 
@@ -25,9 +26,9 @@ pièce, pas en théorie :
    `features/done/` pour savoir de quelles fiches on parlait. Un rapprochement
    fiche↔PR censé être mécanique (ADR-0018) redevient du jugement.
 
-2. **De l'outillage payé pour lire à travers la coupure.** `plan:head` (fiche mc-0097,
+2. **De l'outillage payé pour lire à travers la coupure.** `plan:head` (fiche 0097,
    livrée par #53 le 2026-07-26) **n'existe que** parce qu'un `PLAN.md` unique doit
-   mêler deux listes ; `mc-0098` est déjà son follow-up (descente épic→enfant).
+   mêler deux listes ; `0098` est déjà son follow-up (descente épic→enfant).
    `PLAN.md` doit préfixer les ids méthode par `mc-`, et `next --ready-only` doit
    « router vers la bonne liste » — trois mécanismes qui n'auraient aucune raison
    d'être avec une liste unique.
@@ -40,7 +41,7 @@ pièce, pas en théorie :
    chaque liste numérote depuis 0001, donc la collision est **structurelle** — elle se
    reproduira à chaque fiche créée des deux côtés, quelle que soit la vigilance.
    *Suite (2026-07-26)* : la collision a été **levée à la main** en renumérotant la fiche
-   méthode en [mc-0100](../products/mega-city/features/0100-sprint-intake-sante-backlog-metriques.md)
+   méthode en [0100](0100-sprint-intake-sante-backlog-metriques.md)
    — 8 fichiers touchés, dont **deux ADR** (0016, 0018) et un lien markdown qui aurait
    cassé. Ce correctif **confirme** le constat au lieu de l'annuler : il a fallu un
    arbitrage humain et une passe manuelle pour un simple numéro, et l'id `max+1` du côté
@@ -80,32 +81,42 @@ fiche**, pas une donnée de l'arborescence :
 
 ## Critères d'acceptation
 
-- [ ] Il n'existe plus qu'**une** liste de fiches actives ; `products/mega-city/features/`
-      ne contient plus de fiche (dossier retiré ou vidé, décision tracée)
-- [ ] Chaque fiche porte un `product:` renseigné ; l'index régénéré permet de lire le
-      backlog **par produit**
-- [ ] **Aucun id en double** sur l'ensemble (actifs + `done/`) — vérifié par le script,
-      pas à l'œil (doctrine ADR-0001)
-- [ ] `PLAN.md` ne préfixe plus aucun id ; `next --ready-only` ne route plus entre listes
-- [ ] `ezk-backlog` mis à jour (ADR-0017 A13 amendé : plus de résolution par cwd) ;
-      `plan:head` retiré ou justifié ; ADR (ou avenant ADR-0017) qui acte la décision
-- [ ] Les liens inter-fiches existants ne cassent pas (ou sont réécrits) — vérifié
-- [ ] Gate locale verte
+- [x] Il n'existe plus qu'**une** liste de fiches actives ; `products/mega-city/features/`
+      ne contient plus de fiche (dossier vidé + README stub)
+- [x] Chaque fiche porte un `product:` renseigné ; l'index régénéré permet de lire le
+      backlog **par produit** (colonne Produit)
+- [x] **Aucun id en double** sur l'ensemble (actifs + `done/`) — vérifié par le script
+      (warning `regen` + table `MIGRATION-0064-remap.json`)
+- [x] `PLAN.md` ne préfixe plus aucun id ; `next` / `plan:head` ne routent plus entre listes
+- [x] `ezk-backlog` mis à jour (ADR-0017 A14) ; `plan:head` adapté liste unique
+- [x] Les liens inter-fiches existants ne cassent pas (ou sont réécrits) — vérifié
+- [x] Gate locale verte
 
 ## Notes / décisions
 
 - **P0 demandée par le PO le 2026-07-26** : « je trouve super relou d'avoir une liste de
   feature par sous-projet… il n'en faudrait qu'une, ce serait plus simple et surtout on
   aurait moins de conflit. Par contre ça oblige à déclarer le produit ».
+- **2026-07-30 — Groom + ready (soupape PO « avance »).** Décisions de migration tranchées :
+
+  | Question | Décision |
+  |---|---|
+  | Où vivent les fiches ? | `features/` racine uniquement ; `products/mega-city/features/` vidé (+ README stub) |
+  | `product:` | obligatoire : `vectorz` (ex-racine) · `mega-city` (ex-méthode) |
+  | Collisions d'ids (62) | ids racine **inchangés** ; ids MC non-collisionnants **inchangés** ; collisions MC → `0106+` (ordre croissant des anciens ids) |
+  | `plan:head` | adapté à la liste unique (lit `product:` FM) ; plus de routage cross-liste / préfixe `mc-` |
+  | ADR | avenant ADR-0017 A13 (+ note sur 0048 won't-do invalidée par ce pivot) |
+
+  Gate `ready: 2026-07-30` posé après ce cadrage (DoR complète).
 - **Décision structurante ⇒ panel adverse avant build** (`ezk-architect` + juge), comme
-  les autres décisions de structure. La fiche est `todo`, **pas `ready`** : le gate DoR
-  passe après le panel, qui doit trancher la stratégie de migration.
-- **Coût déjà payé, assumé** : `plan:head` (mc-0097) a été livré le matin même du jour où
-  cette fiche est écrite, et deviendra sans objet ; `mc-0098` (son follow-up) tombe avec
+  les autres décisions de structure. Le 2026-07-30 le PO a autorisé l'avance : panel
+  allégé + décisions ci-dessus journalisées (pas de second tour adverse).
+- **Coût déjà payé, assumé** : `plan:head` (0097) a été livré le matin même du jour où
+  cette fiche est écrite, et deviendra sans objet ; `0098` (son follow-up) tombe avec
   lui. Ce n'est pas une raison de conserver la double liste — c'est une raison de trancher
   vite, avant d'en payer un troisième.
 - Fiche volontairement **rangée dans la liste racine** — celle qui survit.
-- 2026-07-26 — **collision d'id levée ponctuellement** (mc-0064 → mc-0100, cf. point 3).
+- 2026-07-26 — **collision d'id levée ponctuellement** (0064 → 0100, cf. point 3).
   `0064` et `0100` sont désormais **uniques sur l'ensemble** — mais la mesure faite à
   l'occasion donne l'ampleur du reste : **62 ids sont portés des deux côtés** (tout
   `0001`→`0063` sauf `0048`, actifs + `done/` confondus). Le « 0059 et 0061 » du point 1

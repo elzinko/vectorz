@@ -3,6 +3,7 @@ id: 0020
 title: AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local)
 type: feature
 priority: P2
+product: vectorz
 epic: 0034
 status: todo
 pr:

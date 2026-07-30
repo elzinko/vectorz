@@ -103,7 +103,7 @@ flowchart LR
 > **Le sidecar est un installateur, pas un observateur** : il injecte les consignes d'émission dans
 > les **prises officielles** de BMAD (`_bmad/_config/agents/*.customize.yaml`) — après quoi c'est
 > **BMAD lui-même** qui émet et **s'arrête aux jalons**. BMAD reste utilisable normalement, avec ou
-> sans vectorz. Fiche : subtree **[0058](../features/0058-bmad-contrat-supervisabilite.md)** (après 0050).
+> sans vectorz. Fiche : subtree **[0058](../../../features/0162-bmad-contrat-supervisabilite.md)** (après 0050).
 
 > ⚠️ **État réel** : la couche 1 (méthode) **existe**. Le **kit émetteur** existe —
 > `products/mega-city/src/supervision/` : journal JSONL, serveur MCP, runtime, 5 outils

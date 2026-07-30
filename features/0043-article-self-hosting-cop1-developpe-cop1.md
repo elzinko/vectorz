@@ -3,6 +3,7 @@ id: 0043
 title: article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI)
 type: feature
 priority: P2
+product: vectorz
 status: idea
 pr:
 created: 2026-07-16

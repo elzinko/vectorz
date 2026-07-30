@@ -3,6 +3,7 @@ id: 0022
 title: mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $)
 type: feature
 priority: P2
+product: vectorz
 status: todo
 pr:
 created: 2026-07-06

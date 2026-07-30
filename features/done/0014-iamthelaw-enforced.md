@@ -3,6 +3,7 @@ id: 0014
 title: iamthelaw enforced — Rule.check → DoDCheck, advisory dans le prompt
 type: feature
 priority: P2
+product: vectorz
 status: shipped
 pr: "#36"
 created: 2026-06-25

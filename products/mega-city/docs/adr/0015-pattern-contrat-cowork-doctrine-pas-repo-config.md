@@ -60,7 +60,7 @@ mega-city tout juste achevé (fiche 0024), qui a **unifié la source de vérité
 > `pnpm --filter mega-city typecheck`, comme dans `.github/workflows/ci.yml`) — plus
 > [`bin/check-links.sh`](../../bin/check-links.sh).
 > Le texte de la décision est laissé tel quel (trace historique) ;
-> cf. [fiche 0066](../../features/0066-tester-un-skill-avant-merge.md).
+> cf. [fiche 0066](../../../../features/0066-tester-un-skill-avant-merge.md).
 
 ## Options considérées
 

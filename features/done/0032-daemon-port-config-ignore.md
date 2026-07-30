@@ -3,6 +3,7 @@ id: 0032
 title: cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte)
 type: bug
 priority: P1
+product: vectorz
 status: shipped
 pr: "#15"
 created: 2026-07-15

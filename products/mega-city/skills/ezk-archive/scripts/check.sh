@@ -42,7 +42,7 @@ check.sh — portier de clôture ezk-archive (read-only)
   --gate            bloc machine (DÉFAUT) : VERDICT + compteurs + faits des points DIRTY
   --full            rapport humain lisible
   --base <ref>      base de comparaison (défaut : main → master → HEAD)
-  --shipped <ids>   ids de fiches livrées DÉCLARÉS par l'appelant (ex. 0089,mc-0097)
+  --shipped <ids>   ids de fiches livrées DÉCLARÉS par l'appelant (ex. 0089,0097)
                     « none » = déclaration explicite de « rien livré cette session ».
                     ABSENT ⇒ P3_BACKLOG: UNKNOWN ⇒ VERDICT: DIRTY (non-régression :
                     une session qui n'a pas tenu ses comptes ne peut pas déclarer,

@@ -3,6 +3,7 @@ id: 0030
 title: MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur)
 type: feature
 priority: P1
+product: vectorz
 status: in-progress
 pr:
 created: 2026-07-14

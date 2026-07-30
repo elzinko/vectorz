@@ -3,6 +3,7 @@ id: 0008
 title: Proxy Vite cible :3000 alors que le daemon écoute :4242
 type: bug
 priority: P2
+product: vectorz
 status: shipped
 pr: "#28"
 created: 2026-06-24

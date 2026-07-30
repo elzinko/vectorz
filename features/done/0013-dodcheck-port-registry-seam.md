@@ -3,6 +3,7 @@ id: 0013
 title: DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée)
 type: feature
 priority: P1
+product: vectorz
 status: shipped
 pr: "#33"
 created: 2026-06-25

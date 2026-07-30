@@ -3,6 +3,7 @@ id: 0025
 title: Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc
 type: feature
 priority: P2
+product: vectorz
 status: shipped
 pr: "#57"
 created: 2026-07-13

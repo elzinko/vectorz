@@ -80,7 +80,7 @@ l'état git/gh**. Tu es la seule à l'avoir.
 bash <chemin-du-skill>/scripts/check.sh --gate --shipped <ids-livrés>
 ```
 
-`--shipped` prend les ids que tu viens de lister (`0089,mc-0097`), ou `none` si la
+`--shipped` prend les ids que tu viens de lister (`0089,0097`), ou `none` si la
 session n'a **rien** livré. **Ne l'omets jamais sans raison** : sans déclaration, le
 portier n'a aucune preuve, répond `P3_BACKLOG: UNKNOWN` et force la délégation complète.
 C'est voulu — c'est ce qui garantit qu'une session qui n'a *pas* tenu ses comptes reçoit

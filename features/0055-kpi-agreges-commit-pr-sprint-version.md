@@ -3,6 +3,7 @@ id: 0055
 title: KPI agrégés — rollups commit → PR → sprint → version depuis le silo
 type: feature
 priority: P2
+product: vectorz
 epic: 0051
 status: idea
 ready:

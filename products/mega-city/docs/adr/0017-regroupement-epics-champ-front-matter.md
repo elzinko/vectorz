@@ -1,7 +1,28 @@
 # ADR 0017 — Regroupement en épics : champ front-matter `epic:`, pas de tags libres ni de dossiers
 
-- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés
+- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)**
 - Date : 2026-07-17
+
+## Amendement A14 — liste unique + champ `product:` (2026-07-30, fiche 0064)
+
+**Supersède A13** (résolution multi-backlog par cwd). Constat sur pièce : deux listes
+(`features/` racine + `products/mega-city/features/`) produisent des collisions d'ids
+structurelles (62 ids portés des deux côtés), un outillage de contournement
+(`plan:head` cross-liste, préfixe `mc-` dans `PLAN.md`), et une règle « demander si
+ambigu » qui est le symptôme, pas la solution. La fiche 0048 (*won't-do* du 2026-07-17
+parce qu'A13 avait tranché deux backlogs) retrouve son objet.
+
+**Décision :**
+
+1. **Une seule liste** à la racine du monorepo : `features/` (+ `done/`).
+2. **`product:` obligatoire** sur chaque fiche (`vectorz` | `mega-city` | …) — le produit
+   est une donnée de la fiche, pas de l'arborescence.
+3. **Ids continus et uniques** sur l'ensemble (actifs + `done/`) — `regen` warn si doublon.
+4. **`regen`** : colonne conditionnelle `Produit` (même mécanique A12 que Version/Épic).
+5. **`PLAN.md`** : ids nus (le préfixe `mc-` n'est plus requis ; toléré en legacy par
+   `plan:order`). `plan:head` lit la liste unique et le `product:` du front-matter.
+6. Migration 0064 : ids racine inchangés ; ids mega-city non-collisionnants inchangés ;
+   collisions mega-city → `0106+` (table `features/MIGRATION-0064-remap.json`).
 
 ## Contexte
 
