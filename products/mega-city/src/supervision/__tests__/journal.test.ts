@@ -170,14 +170,15 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
   it('tryReclaimWriteLock n’unlink pas si le lock a changé sous nos pieds (inode/contenu)', () => {
     fs.mkdirSync(runDir, { recursive: true });
     const lockPath = path.join(runDir, WRITE_LOCK_FILE);
-    fs.writeFileSync(lockPath, '999999999\n0\n');
-    const beforeIno = fs.statSync(lockPath).ino;
+    const deadContent = '999999999\n0\n';
+    fs.writeFileSync(lockPath, deadContent);
 
     const reclaimed = tryReclaimWriteLock(lockPath, Date.now(), () => {
       // Concurrent A : unlink + nouveau lock vivant entre observe et CAS.
+      // Sur certains FS (Linux tmp) l'inode peut être réutilisé — le contenu change.
       fs.unlinkSync(lockPath);
       fs.writeFileSync(lockPath, `${process.pid}\n${Date.now()}\n`);
-      expect(fs.statSync(lockPath).ino).not.toBe(beforeIno);
+      expect(fs.readFileSync(lockPath, 'utf8')).not.toBe(deadContent);
     });
 
     expect(reclaimed).toBe(false);
