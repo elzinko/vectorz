@@ -1,7 +1,6 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { DefaultModelTierRouter } from '@cop1/sprint-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigLoader } from '../application/ConfigLoader.js';
 import { ConfigValidationError } from '../domain/ConfigValidationError.js';
@@ -403,9 +402,9 @@ budget:
   });
 
   describe('workflow config', () => {
-    it('should default useBMAD to true when workflow section is absent', () => {
+    it('should default useBMAD to false when workflow section is absent', () => {
       const config = loader.load(testDir);
-      expect(config.workflow.useBMAD).toBe(true);
+      expect(config.workflow.useBMAD).toBe(false);
     });
 
     it('should respect explicit useBMAD: false from config file', () => {
@@ -432,14 +431,9 @@ workflow:
   });
 
   describe('model_tiering config (fiche 0023)', () => {
-    it('is undefined when absent → router uses the code defaults (backward-compatible)', () => {
+    it('is undefined when absent (backward-compatible)', () => {
       const config = loader.load(testDir);
       expect(config.model_tiering).toBeUndefined();
-      // DEFAULT_MODEL_TIER_CONFIG: create-story→opus, code-review→opus, fallback sonnet.
-      const router = new DefaultModelTierRouter(config.model_tiering);
-      expect(router.resolve('/bmad-bmm-create-story')).toBe('opus');
-      expect(router.resolve('/bmad-bmm-code-review')).toBe('opus');
-      expect(router.resolve('/bmad-bmm-dev-story')).toBe('sonnet');
     });
 
     it('overrides tiering rules from config without any code change', () => {
@@ -455,10 +449,11 @@ model_tiering:
       writeFileSync(join(testDir, 'cop1.config.yaml'), yaml);
 
       const config = loader.load(testDir);
-      const router = new DefaultModelTierRouter(config.model_tiering);
-      expect(router.resolve('/bmad-bmm-dev-story')).toBe('opus'); // overridden (was sonnet)
-      expect(router.resolve('/bmad-bmm-create-story')).toBe('haiku'); // overridden (was opus)
-      expect(router.resolve('/bmad-bmm-code-review')).toBe('haiku'); // fallback override
+      expect(config.model_tiering?.rules).toEqual([
+        { match: 'dev-story', tier: 'opus' },
+        { match: 'create-story', tier: 'haiku' },
+      ]);
+      expect(config.model_tiering?.fallback).toBe('haiku');
     });
 
     it('rejects a pinned model id (aliases opus/sonnet/haiku only)', () => {
@@ -491,8 +486,7 @@ model_tiering:
 
       const config = loader.load(testDir);
       expect(config.model_tiering?.rules).toEqual([]);
-      const router = new DefaultModelTierRouter(config.model_tiering);
-      expect(router.resolve('/bmad-bmm-create-story')).toBe('haiku'); // no rules → fallback
+      expect(config.model_tiering?.fallback).toBe('haiku');
     });
   });
 });

@@ -26,10 +26,12 @@ describe('App', () => {
     expect(screen.getByText(/aucun run surveillé/i)).toBeTruthy();
   });
 
-  it('fiche 0059 — the "cop1 pilots" surfaces (Run/Rules/Connexion) are no longer mounted', () => {
+  it('époque 2 — no BMAD-in-monitor piloting controls in the shell', () => {
     render(<App />);
     expect(screen.queryByRole('button', { name: 'Run' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Rules' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Connexion' })).toBeNull();
+    expect(screen.queryByRole('button', { name: /lancer/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /stop/i })).toBeNull();
   });
 });
