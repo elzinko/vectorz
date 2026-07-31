@@ -9,7 +9,7 @@ depends: []
 labels: [method]
 status: in-progress
 ready: 2026-07-26
-pr:
+pr: "#74"
 created: 2026-07-18
 ---
 
