@@ -4,7 +4,7 @@ title: Méthode ezk — 3 bandes + naming (ezk-pr, caps, archive=capacité)
 type: feature
 priority: P1
 product: mega-city
-status: in-progress
+status: shipped
 ready: 2026-07-30
 pr: "#72"
 created: 2026-07-30

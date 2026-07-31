@@ -54,7 +54,7 @@
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
 (gate DoR). Après 0168 shipped (#76), la prochaine tête du NOW est **0062**
-(idea — groom/ready). Optionnel hors sprint : `ship 0173 #72` (reconcile).
+(idea — groom/ready). ~~`ship 0173 #72`~~ — fait (reconcile 2026-07-31).
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
