@@ -7,7 +7,7 @@
   [ADR-0020](0020-capacite-partagee-brique-autonome.md) (option A : le rename
   `pr-pilot` → `pr` n'est plus rejeté *en soi* — il reste cosmétique tant que
   non exécuté, mais **souhaité** pour la clarté) ·
-  Fiche : [0173](../../../../features/0173-ezk-methode-trois-bandes-naming.md)
+  Fiche : [0173](../../../../features/done/0173-ezk-methode-trois-bandes-naming.md)
 - Diagramme : [`diagrams/ezk-methode-globale/`](../../diagrams/ezk-methode-globale/)
 
 ## Contexte
