@@ -27,7 +27,7 @@
 ## ⏭️ NEXT — la méthode se tient + confort
 
 7. **0090** — cohérence de sprint : garde-fou anti-collision (3 worktrees en parallèle vu le 25/07) · `build`
-8. **0079** — graver « tout artefact lu par un humain est lisible » · `build`
+8. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
 9. **0091** — mise à plat + glossaire du jargon du backlog · `build`
 10. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
 11. **0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `build`

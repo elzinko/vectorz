@@ -7,7 +7,7 @@ product: mega-city
 epic:
 depends: []
 labels: [method]
-status: in-progress
+status: shipped
 ready: 2026-07-26
 pr: "#74"
 created: 2026-07-18

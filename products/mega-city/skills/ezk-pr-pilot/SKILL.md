@@ -66,7 +66,10 @@ toucher le template) :
    sans mobile, pas de preview Vercel sans déploiement Vercel.
 2. **`.github/PULL_REQUEST_TEMPLATE.md`** — le squelette, depuis
    [`assets/PULL_REQUEST_TEMPLATE.thin.md`](assets/PULL_REQUEST_TEMPLATE.thin.md)
-   (symétrique de `PR_VALIDATION.template.md`), avec **deux cas** :
+   (symétrique de `PR_VALIDATION.template.md`). **Mode copy (cap)** : seul
+   `SKILL.md` est matérialisé — si l'asset est absent, **écrire le squelette
+   inline** (bloc « Squelette mince » ci-dessous ; mêmes 3 titres + Validation).
+   Deux cas d'installation :
    - Template **ABSENT** → **copier** le squelette mince (Summary + Lien fiche +
      Comment tester + matrice minimale + lien vers `docs/PR_VALIDATION.md`).
    - Template **EXISTANT** → **ne JAMAIS l'écraser ni le réécrire** : y
@@ -75,9 +78,71 @@ toucher le template) :
      Le fond reste dans la doc liée — c'est le découplage voulu.
 3. Commit `docs: PR Validation convention` (via `ezk-commits`).
 
-Garde-fou local optionnel (après rédaction du corps) :
-`bash skills/ezk-pr-pilot/scripts/check-pr-body.sh` (stdin ou fichier) — vérifie
-mécaniquement la présence de `## Summary` / `## Lien fiche` / `## Comment tester`.
+### Squelette mince (fallback inline — mode copy)
+
+En mode copy (cap), seul `SKILL.md` est matérialisé — l'asset
+`assets/PULL_REQUEST_TEMPLATE.thin.md` est souvent absent. **Utiliser le bloc
+ci-dessous tel quel** pour écrire `.github/PULL_REQUEST_TEMPLATE.md` (identique
+à l'asset catalogue ; ne pas se contenter des titres en prose).
+
+````markdown
+## Summary
+
+<!-- ≤ 5 lignes user-facing : ce que ça change et pourquoi.
+     Ouvre par « En clair ». Un tiers doit reformuler le besoin sans ouvrir le diff. -->
+
+## Lien fiche
+
+<!-- Chemin vers la fiche backlog, ex. `features/0079-restitutions-po-lisibles.md`.
+     L'id est déjà dans la branche `feat/<id>-<slug>`. -->
+
+## Comment tester
+
+<!-- Commandes littérales depuis un clone frais — OU preuves agent (screenshots
+     before/after) qui pointent vers des scripts npm / BDD **existants**.
+     Ne pas dupliquer le Gherkin de la fiche : orienter et renvoyer.
+     Voir docs/PR_VALIDATION.md pour la matrice et les signaux observables. -->
+
+```bash
+# ex. pnpm --dir products/mega-city test -- <chemin pertinent>
+```
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| CI | ⏳ |
+| Tests unitaires | ⏳ |
+| E2E navigateur | N.A. / ⏳ |
+| Before / after (UI) | N.A. / ⏳ |
+| Preview de déploiement | N.A. |
+
+Voir [docs/PR_VALIDATION.md](../docs/PR_VALIDATION.md).
+````
+
+### Garde-fou corps de PR (`check-pr-body`)
+
+Vérifie mécaniquement `## Summary` / `## Lien fiche` / `## Comment tester`.
+
+**Résolution du script** (dans l'ordre, premier trouvé gagne) :
+1. Dossier skill installé : `~/.claude/skills/ezk-pr-pilot/scripts/check-pr-body.sh`
+   (présent seulement si le skill a été déployé **avec** ses scripts — link/catalogue,
+   pas le mode copy SKILL-only).
+2. Monorepo vectorz : `products/mega-city/skills/ezk-pr-pilot/scripts/check-pr-body.sh`
+3. **Fallback inline** (stdin) si aucun fichier :
+
+```bash
+body=$(cat)   # ou : gh pr view N --json body -q .body
+missing=()
+for h in '## Summary' '## Lien fiche' '## Comment tester'; do
+  grep -qF "$h" <<<"$body" || missing+=("$h")
+done
+((${#missing[@]})) && { printf 'PR body incomplete — missing: %s\n' "${missing[*]}" >&2; exit 1; }
+echo "OK — Summary + Lien fiche + Comment tester présents"
+```
+
+Usage quand le script est dispo (le chemin résolu **est** le fichier `.sh`) :
+`bash <chemin-résolu>` (stdin ou fichier) — ne pas ré-appendre `/check-pr-body.sh`.
 
 ## `plan` — le cœur : ordonner et regrouper
 
