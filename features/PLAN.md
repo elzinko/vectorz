@@ -48,7 +48,7 @@
 - **Articles & promo** — 0043/0049 · 0156/0053/0069/0073/0074/0062 · epic 0163.
 - **Méthode avancée** — 0065→0068 / 0077 / 0080 / 0088 / 0092 / 0100 (dont le seuil de lot ready, voir ci-dessous).
 - **2ᵉ méthode / BMAD** — 0162.
-- **Archi historique en pause** — epic 0034 · 0024 · 0038/0039 (bloqués) + périphérie P3 (réserve).
+- **Archi historique** — epic 0034 · 0024 · 0038 (bloqué) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve).
 
 ## 🚦 Note — lancement autonome (autre session)
 
