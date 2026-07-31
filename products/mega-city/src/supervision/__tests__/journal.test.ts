@@ -134,8 +134,15 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
     expect(tryReclaimWriteLock(lockPath)).toBe(true);
     expect(fs.existsSync(lockPath)).toBe(false);
 
-    fs.writeFileSync(lockPath, 'not-a-lock');
-    expect(tryReclaimWriteLock(lockPath)).toBe(true);
+    // Contenu illisible mais frais → ne reclaim pas (fenêtre de publication)
+    fs.writeFileSync(lockPath, '');
+    expect(tryReclaimWriteLock(lockPath)).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+
+    // Contenu illisible et vieux → reclaim
+    const old = Date.now() - 10_000;
+    fs.utimesSync(lockPath, old / 1000, old / 1000);
+    expect(tryReclaimWriteLock(lockPath, Date.now())).toBe(true);
     expect(fs.existsSync(lockPath)).toBe(false);
   });
 

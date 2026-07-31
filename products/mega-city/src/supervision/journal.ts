@@ -44,8 +44,17 @@ export const WRITE_LOCK_FILE = '.write.lock';
 /** Âge max d'un verrou dont le PID est encore « vivant » avant reclaim forcé. */
 export const WRITE_LOCK_STALE_MS = 30_000;
 
+/**
+ * Fenêtre pendant laquelle un fichier de verrou « vide / illisible » n'est PAS
+ * récupéré — évite de voler un verrou en cours de publication atomique.
+ */
+export const WRITE_LOCK_FRESH_MS = 2_000;
+
 /** Attente max pour acquérir le verrou. */
 const WRITE_LOCK_WAIT_MS = 5_000;
+
+/** Verrous déjà tenus par CE process (réentrance Journal.append sous withOpenRunWrite). */
+const heldLocksByThisProcess = new Set<string>();
 
 /**
  * Lit les événements valides d'un journal. Tolérant à la corruption (M1, §7) : une
@@ -96,13 +105,26 @@ function isPidAlive(pid: number): boolean {
 }
 
 /**
- * Tente de récupérer un verrou orphelin : PID mort, contenu illisible, ou trop vieux.
- * Retourne true si le fichier a été supprimé (le caller peut retenter O_EXCL).
+ * Tente de récupérer un verrou orphelin : PID mort, contenu illisible *et* pas frais,
+ * ou trop vieux. Retourne true si le fichier a été supprimé.
  */
 export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()): boolean {
   if (!fs.existsSync(lockPath)) return false;
+  let ageMs = 0;
+  try {
+    ageMs = nowMs - fs.statSync(lockPath).mtimeMs;
+  } catch {
+    return false;
+  }
+
   try {
     const raw = fs.readFileSync(lockPath, 'utf8').trim();
+    if (raw.length === 0) {
+      // Fenêtre éventuelle / fichier corrompu : ne pas reclaim s'il est frais.
+      if (ageMs < WRITE_LOCK_FRESH_MS) return false;
+      fs.unlinkSync(lockPath);
+      return true;
+    }
     const [pidLine, tsLine] = raw.split('\n');
     const pid = Number(pidLine);
     const ts = Number(tsLine);
@@ -113,6 +135,7 @@ export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()
     fs.unlinkSync(lockPath);
     return true;
   } catch {
+    if (ageMs < WRITE_LOCK_FRESH_MS) return false;
     try {
       fs.unlinkSync(lockPath);
       return true;
@@ -122,42 +145,59 @@ export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()
   }
 }
 
-/**
- * Acquiert `.write.lock` (O_EXCL), exécute `fn`, libère. Relit toujours le seq
- * sous verrou côté `Journal.append`.
- */
-export function withRunWriteLock<T>(runDir: string, fn: () => T): T {
-  const lockPath = path.join(runDir, WRITE_LOCK_FILE);
-  const deadline = Date.now() + WRITE_LOCK_WAIT_MS;
-  let lockFd: number | undefined;
-
-  while (lockFd === undefined) {
-    try {
-      lockFd = fs.openSync(lockPath, 'wx');
-      fs.writeFileSync(lockFd, `${process.pid}\n${Date.now()}\n`, 'utf8');
-    } catch {
-      tryReclaimWriteLock(lockPath);
-      if (Date.now() >= deadline) {
-        throw new Error(
-          `journal: impossible d'acquérir ${WRITE_LOCK_FILE} sous ${runDir} (timeout ${WRITE_LOCK_WAIT_MS}ms)`,
-        );
-      }
-      sleepMs(20);
-    }
-  }
-
+/** Publication atomique : contenu écrit dans un tmp, puis `link` vers le chemin final. */
+function tryCreateLockExclusive(lockPath: string): boolean {
+  const tmp = `${lockPath}.${process.pid}.${randomUUID()}.tmp`;
   try {
-    return fn();
+    fs.writeFileSync(tmp, `${process.pid}\n${Date.now()}\n`, 'utf8');
+    try {
+      fs.linkSync(tmp, lockPath);
+      return true;
+    } catch {
+      return false;
+    }
   } finally {
     try {
-      fs.closeSync(lockFd);
+      fs.unlinkSync(tmp);
     } catch {
       // ignore
     }
+  }
+}
+
+/**
+ * Acquiert `.write.lock`, exécute `fn`, libère. Réentrant pour le même process
+ * (un `Journal.append` sous un `withRunWriteLock` déjà tenu ne deadlocks pas).
+ */
+export function withRunWriteLock<T>(runDir: string, fn: () => T): T {
+  const key = path.resolve(runDir);
+  if (heldLocksByThisProcess.has(key)) {
+    return fn();
+  }
+
+  const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+  fs.mkdirSync(runDir, { recursive: true });
+  const deadline = Date.now() + WRITE_LOCK_WAIT_MS;
+
+  while (!tryCreateLockExclusive(lockPath)) {
+    tryReclaimWriteLock(lockPath);
+    if (Date.now() >= deadline) {
+      throw new Error(
+        `journal: impossible d'acquérir ${WRITE_LOCK_FILE} sous ${runDir} (timeout ${WRITE_LOCK_WAIT_MS}ms)`,
+      );
+    }
+    sleepMs(20);
+  }
+
+  heldLocksByThisProcess.add(key);
+  try {
+    return fn();
+  } finally {
+    heldLocksByThisProcess.delete(key);
     try {
       fs.unlinkSync(lockPath);
     } catch {
-      // ignore — tryReclaimWriteLock récupérera un orphelin
+      // tryReclaimWriteLock récupérera un orphelin
     }
   }
 }

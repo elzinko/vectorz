@@ -651,6 +651,17 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
     expect(events.map((e) => e.seq)).toEqual([1, 2]);
   });
 
+  // Codex — check+append sous le même write lock : heartbeat après abandon refuse
+  it('J7c — heartbeat refuse après abandon (pas d’append post run.finished)', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    runtime.abandonRun(run_id);
+    expect(() => runtime.heartbeat({ note: 'trop tard' })).toThrow(/plus ouvert|aucun run ouvert/i);
+    const events = readEvents(projectRoot, run_id);
+    expect(events.filter((e) => e.type === 'heartbeat')).toHaveLength(0);
+    expect(events.filter((e) => e.type === 'run.finished')).toHaveLength(1);
+  });
+
   // J8 — AC5 : aucun run n'est clos automatiquement (pas de TTL)
   it("J8 — un run ouvert reste ouvert sans action externe (pas d'auto-abandon)", () => {
     const runtime = new SupervisionRuntime(projectRoot);
