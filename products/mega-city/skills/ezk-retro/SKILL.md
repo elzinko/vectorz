@@ -83,7 +83,15 @@ Chaque **règle** candidate passe devant le **juge de cohérence** (compose la f
 L'avis est **consultatif** — **le PO tranche**. Consigne l'avis (garder la trace).
 
 ### 5. Rangement sous contrôle PO — *soudure 3 : le pont*
-Rien n'est rangé sans le **feu vert du PO** (aucune auto-application) :
+Rien n'est rangé sans le **feu vert du PO** (aucune auto-application).
+
+**Lisibilité (règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md))** —
+toute restitution au PO (propositions, avis du juge, résumé de rangement) ouvre par un
+bloc **« En clair »** (≤ 3 phrases : symptôme vécu → proposition en mots simples → effet
+concret). Codes internes (`R1`, `DoR`, jargon inventé) hors ouverture — annexe/glossaire
+seulement. On écrit **au PO**, pas entre agents.
+
+Puis le rangement :
 - **non-règles** (`action`/`feature`/`spike`) → backlog via `/ezk-backlog add` (avec le
   symptôme et le critère en contexte) ;
 - **règles validées** → dans la **structure existante**, jamais un nouveau silo :
