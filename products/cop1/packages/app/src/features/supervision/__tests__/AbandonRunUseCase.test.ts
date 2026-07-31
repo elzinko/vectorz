@@ -29,7 +29,7 @@ function makeSnapshot(overrides: Partial<RunSnapshot> = {}): RunSnapshot {
   } as RunSnapshot;
 }
 
-const CONFIGURED_COMMAND = ['npx', 'mega-city', 'supervision:abandon'];
+const CONFIGURED_COMMAND = ['pnpm', '--dir', 'products/mega-city', 'supervision:abandon'];
 
 function makePort(outcome: Awaited<ReturnType<RunAbandonPort['abandon']>>): RunAbandonPort {
   return { abandon: vi.fn().mockResolvedValue(outcome) };
@@ -123,6 +123,48 @@ describe('AbandonRunUseCase — §A Politique D4', () => {
       expectedRunId: snapshot.runId,
     });
   });
+
+  it('single-flight : deux execute concurrents sur le même runDir → un seul spawn', async () => {
+    const snapshot = makeSnapshot({ state: 'running', liveness: 'presumed_dead' });
+    let resolvePort!: (v: { ok: true; runId: string }) => void;
+    const portPromise = new Promise<{ ok: true; runId: string }>((resolve) => {
+      resolvePort = resolve;
+    });
+    const abandon = vi.fn().mockReturnValue(portPromise);
+    const uc = new AbandonRunUseCase({
+      getSnapshot: (runDir) => (runDir === snapshot.runDir ? snapshot : undefined),
+      abandonPort: { abandon },
+      abandonCommand: CONFIGURED_COMMAND,
+    });
+
+    const p1 = uc.execute(snapshot.runDir);
+    const p2 = uc.execute(snapshot.runDir);
+    expect(abandon).toHaveBeenCalledTimes(1);
+
+    resolvePort({ ok: true, runId: snapshot.runId });
+    const [r1, r2] = await Promise.all([p1, p2]);
+    expect(r1).toEqual({ status: 200, runId: snapshot.runId });
+    expect(r2).toEqual({ status: 200, runId: snapshot.runId });
+    expect(abandon).toHaveBeenCalledTimes(1);
+  });
+
+  it('409 dormante cite le script pnpm réel (pas npx mega-city)', async () => {
+    const snapshot = makeSnapshot({ state: 'running', liveness: 'presumed_dead' });
+    const uc = new AbandonRunUseCase({
+      getSnapshot: (runDir) => (runDir === snapshot.runDir ? snapshot : undefined),
+      abandonPort: makePort({ ok: true, runId: snapshot.runId }),
+      abandonCommand: [],
+    });
+
+    const result = await uc.execute(snapshot.runDir);
+    expect(result.status).toBe(409);
+    if (result.status === 409) {
+      expect(result.error).toContain('pnpm');
+      expect(result.error).toContain('products/mega-city');
+      expect(result.error).toContain('supervision:abandon');
+      expect(result.error).not.toMatch(/npx.*mega-city/);
+    }
+  });
 });
 
 describe('AbandonRunUseCase — §C D6 : pas de mise à jour optimiste', () => {
@@ -160,15 +202,21 @@ describe('EmitterCliAbandonAdapter — §B Provenance D3', () => {
     };
 
     const adapter = new EmitterCliAbandonAdapter(
-      ['npx', 'mega-city', 'supervision:abandon'],
+      ['pnpm', '--dir', 'products/mega-city', 'supervision:abandon'],
       mockSpawn,
     );
 
     await adapter.abandon({ projectRoot: '/projet', expectedRunId: 'run-abc' });
 
     expect(spawnCalls).toHaveLength(1);
-    expect(spawnCalls[0]?.command).toBe('npx');
-    expect(spawnCalls[0]?.args).toEqual(['mega-city', 'supervision:abandon', '/projet', 'run-abc']);
+    expect(spawnCalls[0]?.command).toBe('pnpm');
+    expect(spawnCalls[0]?.args).toEqual([
+      '--dir',
+      'products/mega-city',
+      'supervision:abandon',
+      '/projet',
+      'run-abc',
+    ]);
   });
 
   it('retourne ok:false si la commande échoue (exitCode != 0)', async () => {
@@ -177,7 +225,10 @@ describe('EmitterCliAbandonAdapter — §B Provenance D3', () => {
     );
 
     const mockSpawn = async () => ({ exitCode: 1, stderr: 'run attendu ≠ run ouvert' });
-    const adapter = new EmitterCliAbandonAdapter(['npx', 'supervision:abandon'], mockSpawn);
+    const adapter = new EmitterCliAbandonAdapter(
+      ['pnpm', '--dir', 'products/mega-city', 'supervision:abandon'],
+      mockSpawn,
+    );
 
     const result = await adapter.abandon({ projectRoot: '/projet', expectedRunId: 'run-vieux' });
     expect(result.ok).toBe(false);

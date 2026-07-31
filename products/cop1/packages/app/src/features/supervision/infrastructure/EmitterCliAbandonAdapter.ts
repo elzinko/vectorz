@@ -56,7 +56,7 @@ export class EmitterCliAbandonAdapter implements RunAbandonPort {
 
   /**
    * @param abandonCommand Tableau `[commande, ...args_de_base]` depuis la config du siège.
-   *   Ex. : `["npx", "mega-city", "supervision:abandon"]`
+   *   Ex. : `["pnpm", "--dir", "products/mega-city", "supervision:abandon"]`
    * @param spawnFn Injectable pour tests (défaut : `spawn` natif avec timeout).
    */
   constructor(abandonCommand: string[], spawnFn: SpawnFn = defaultSpawn) {

@@ -83,7 +83,7 @@ Fonctionnalité: Abandon d'un run orphelin depuis le Moniteur (fiche 0168)
   @unit
   Scénario: D3 — la commande d'abandon est lue depuis la config de cop1, jamais depuis le .mcp.json du projet
     # ADR-035 D3 : frontière de confiance — le daemon n'exécute pas la config de sa cible.
-    Étant donné la config de cop1 définit abandon_command: ["npx", "mega-city", "supervision:abandon"]
+    Étant donné la config de cop1 définit abandon_command: ["pnpm", "--dir", "products/mega-city", "supervision:abandon"]
     Et le projet surveillé possède un ".mcp.json" contenant une commande différente
     Quand l'adaptateur résout la commande à spawn pour un abandon
     Alors la commande spawnée est celle de la config de cop1

@@ -7,6 +7,10 @@
  *   2. snapshot state='running' ET liveness='presumed_dead' (409 sinon)
  *   3. abandon_command configurée (409 + marche à suivre sinon)
  *
+ * Single-flight par `runDir` : deux POST concurrents (deux onglets) partagent
+ * la même promesse — un seul spawn vers le kit, pas de double `run.finished`
+ * ni de `seq` dupliqué (finding Codex P1, PR #76).
+ *
  * Pas de mise à jour optimiste du snapshot (ADR-035 D6) : c'est le watcher
  * qui referme la boucle après écriture sur disque.
  */
@@ -27,10 +31,16 @@ export interface AbandonRunUseCaseOptions {
   abandonCommand: string[];
 }
 
+/** Exemple copy-pastable — package privé sans bin ; script pnpm du monorepo. */
+export const ABANDON_COMMAND_EXAMPLE =
+  '["pnpm", "--dir", "products/mega-city", "supervision:abandon"]';
+
 export class AbandonRunUseCase {
   private readonly getSnapshot: (runDir: string) => RunSnapshot | undefined;
   private readonly abandonPort: RunAbandonPort;
   private readonly abandonCommand: string[];
+  /** Promesses d'abandon en cours, une par runDir (single-flight). */
+  private readonly inFlight = new Map<string, Promise<AbandonRunResult>>();
 
   constructor(options: AbandonRunUseCaseOptions) {
     this.getSnapshot = options.getSnapshot;
@@ -39,6 +49,17 @@ export class AbandonRunUseCase {
   }
 
   async execute(runDir: string): Promise<AbandonRunResult> {
+    const existing = this.inFlight.get(runDir);
+    if (existing) return existing;
+
+    const promise = this.executeExclusive(runDir).finally(() => {
+      this.inFlight.delete(runDir);
+    });
+    this.inFlight.set(runDir, promise);
+    return promise;
+  }
+
+  private async executeExclusive(runDir: string): Promise<AbandonRunResult> {
     // D4 §1 — runDir doit être une clé connue du serveur
     const snapshot = this.getSnapshot(runDir);
     if (!snapshot) {
@@ -58,10 +79,7 @@ export class AbandonRunUseCase {
     if (this.abandonCommand.length === 0) {
       return {
         status: 409,
-        error:
-          "La capacité d'abandon est dormante (abandon_command non configurée). " +
-          'Configurez supervision.abandon_command dans cop1.config.yaml. ' +
-          'Exemple : ["npx", "mega-city", "supervision:abandon"]',
+        error: `La capacité d'abandon est dormante (abandon_command non configurée). Configurez supervision.abandon_command dans cop1.config.yaml. Exemple : ${ABANDON_COMMAND_EXAMPLE}`,
       };
     }
 
