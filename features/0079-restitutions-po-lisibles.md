@@ -7,7 +7,7 @@ product: mega-city
 epic:
 depends: []
 labels: [method]
-status: todo
+status: in-progress
 ready: 2026-07-26
 pr:
 created: 2026-07-18
@@ -27,6 +27,11 @@ est **personnelle et hors méthode** : un autre agent, une autre machine, un aut
 opérateur ne l'héritent pas. Demande explicite du PO (2026-07-18) : « créer une feature
 pour que ce ne soit pas seulement consigné dans la mémoire, mais gravé dans les
 skills / agents ».
+
+> **2026-07-31 — mémoire doublée par la méthode.** La source de vérité est désormais
+> `rules/documentation-guidelines/human-facing-lisibility.md` + les skills câblés
+> (`ezk-sprint` / `ezk-retro` / `ezk-product-builder` / `ezk-pr-pilot`). La note locale
+> agent n'est plus normative.
 
 ## Valeur
 
@@ -79,11 +84,11 @@ Graver la consigne de restitution dans les artefacts de méthode qui la produise
 
 ## Critères d'acceptation
 
-- [ ] La règle existe dans `rules/` (symptôme + critère de retrait mesurable inclus).
-- [ ] Les 3 skills cités portent la consigne à leur étape de restitution (diff visible).
+- [x] La règle existe dans `rules/` (symptôme + critère de retrait mesurable inclus).
+- [x] Les 3 skills cités portent la consigne à leur étape de restitution (diff visible).
 - [ ] Test de lisibilité : la restitution type ne contient aucun code interne non défini
       (vérifiable en revue sur les 3 prochaines restitutions réelles).
-- [ ] La note de mémoire d'agent est marquée comme doublée par la méthode (la méthode
+- [x] La note de mémoire d'agent est marquée comme doublée par la méthode (la méthode
       devient la source de vérité).
 
 ### Spécifiques aux descriptions de PR (ajoutés le 2026-07-26)
@@ -91,19 +96,21 @@ Graver la consigne de restitution dans les artefacts de méthode qui la produise
 - [ ] **Test « #317 »** — sur les **3 prochaines PR ouvertes**, un tiers qui lit
       **uniquement la description** (diff fermé) reformule le besoin **en une phrase** :
       3/3. Sinon la description est insuffisante, la PR n'est pas relisable.
-- [ ] **Les trois blocs présents** — toute PR ouverte par `ezk-sprint` contient (i) un
+- [x] **Les trois blocs présents** — toute PR ouverte par `ezk-sprint` contient (i) un
       résumé **user-facing** de ≤ 5 lignes : ce que ça change et pourquoi, (ii) un **lien
       vers le chemin de la fiche** (`features/<id>-*.md`,
       `products/<produit>/features/<id>-*.md`, ou l'équivalent du projet — un `.feature`
       chez samplerz), (iii) un bloc **« Comment tester »** en commandes littérales.
       Contrôlable sans jugement : `gh pr view <n> --json body`.
-- [ ] **La fiche reste la source de vérité** — le corps de PR **ne duplique pas** les
+      *(Câblé dans l'étape PR + DoD + template + `check-pr-body.sh` — dogfood sur cette PR.)*
+- [x] **La fiche reste la source de vérité** — le corps de PR **ne duplique pas** les
       scénarios / le Gherkin : il oriente et renvoie. Corps ≤ ~2 000 caractères hors
       annexes — repère, pas couperet : la médiane vectorz mesurée est à 3 510, et #317
       réécrite (l'exemple à viser) tient en 1 868.
-- [ ] **Non-récidive mécanique** — retirer la consigne de l'étape PR d'`ezk-sprint` **fait
+- [x] **Non-récidive mécanique** — retirer la consigne de l'étape PR d'`ezk-sprint` **fait
       rougir** un test de contrat sur le texte des skills (leçon 0095 : un oubli est
       resté vert neuf jours).
+      *(Couvert par `human-facing-lisibility-contract.test.ts`.)*
 
 ## Notes
 
