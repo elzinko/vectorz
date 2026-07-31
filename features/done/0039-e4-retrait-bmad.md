@@ -5,8 +5,8 @@ type: refactor
 priority: P2
 product: vectorz
 epic: 0034
-status: blocked
-pr:
+status: shipped
+pr: "#81"
 created: 2026-07-16
 ---
 
@@ -53,14 +53,14 @@ mécanique) : 59 fichiers TS prod mentionnent BMAD — 25 dans les 4 unités sp�
 
 ## Critères d'acceptation
 
-- [ ] `grep -riE 'bmad' products/cop1/packages/*/src` (hors tests des features
+- [x] `grep -riE 'bmad' products/cop1/packages/*/src` (hors tests des features
       survivantes justifiés) = **zéro** ; règle CI allowlist verte et permanente
-- [ ] `_bmad/` et `_bmad-output/` absents du working tree ; décisions vivantes extraites
+- [x] `_bmad/` et `_bmad-output/` absents du working tree ; décisions vivantes extraites
       avant suppression (aucun lien mort dans `docs/`)
-- [ ] Build + suite complète + CI verts ; le mode moniteur (démo) inchangé
-- [ ] Tags `epoch-1-bmad-final` (pré-retrait) et `epoch-2-post-bmad` (post-merge) posés ;
+- [x] Build + suite complète + CI verts ; le mode moniteur (démo) inchangé
+- [x] Tags `epoch-1-bmad-final` (pré-retrait) et `epoch-2-post-bmad` (post-merge) posés ;
       README « Époques » à jour ; registre docs/adr/README.md à jour
-- [ ] mega-city 0058/0059 : re-scope émission-side confirmé côté mega-city (note déjà
+- [x] mega-city 0058/0059 : re-scope émission-side confirmé côté mega-city (note déjà
       posée sur 0058) — aucune fiche vivante ne référence les briques supprimées
 
 ## Notes / décisions
@@ -69,3 +69,8 @@ Fiche exigée par ADR-029 action item 3. Rollback documenté : revert de LA PR (
 1 PR/lot — si le lot est trop gros, sous-PRs (a)/(b)/(c) dans cet ordre, chacune
 revertable). Le supervisor-playbook verrouillé « BMAD 6.0.0-Beta.8 » meurt avec (b) sauf
 si E3 a créé son format natif.
+
+
+## Ship
+
+Shipped via [#81](https://github.com/elzinko/vectorz/pull/81) (narrow E4 rescue of #62). 0064 / dogfood already on main — not re-applied.
