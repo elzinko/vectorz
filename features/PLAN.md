@@ -20,7 +20,7 @@
 1. ~~**0094** — brancher l'émetteur sur vectorz~~ — shipped #54
 2. ~~**0095** — faire émettre `ezk-product-builder`~~ — shipped #55
 3. ~~**0082** — registre {projet · méthode}~~ — shipped #70
-4. **0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable) · `build` · **ready 2026-07-30** · P0 dogfood (#63 avec 0105)
+4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
 5. **0062** — onglet « Projets » : liste par projet, cliquable → activité · `build`
 6. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build`
 
@@ -53,8 +53,8 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après 0082 shipped (#70), la prochaine tête du NOW est **0168**
-(**ready 2026-07-30** — P0 dogfood / run orphelin). Puis **0062** (idea — groom/ready).
+(gate DoR). Après 0168 shipped (#76), la prochaine tête du NOW est **0062**
+(idea — groom/ready). Optionnel hors sprint : `ship 0173 #72` (reconcile).
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
