@@ -6,7 +6,7 @@ priority: P0
 epic:
 depends: ["0105"]
 labels: [supervision, dogfood, ux, contrat]
-status: in-progress
+status: shipped
 ready: 2026-07-30
 pr: "#76"
 created: 2026-07-30
