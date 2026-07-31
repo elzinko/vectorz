@@ -134,14 +134,9 @@ export class DaemonService {
     this.supervisionService = new SupervisionService({
       eventBus: this.eventBus,
       presumedDeadAfterMs: presumedDeadAfterMin * 60_000,
+      abandonCapable: abandonCommand.length > 0,
     });
-    const abandonCapable = abandonCommand.length > 0;
-    this.httpServer.setSupervisionProvider(() =>
-      (this.supervisionService?.getSnapshots() ?? []).map((s) => ({
-        ...s,
-        abandonCapable,
-      })),
-    );
+    this.httpServer.setSupervisionProvider(() => this.supervisionService?.getSnapshots() ?? []);
 
     // ADR-035 D2+D3 : adaptateur d'abandon câblé uniquement si abandon_command configurée
     const abandonPort =

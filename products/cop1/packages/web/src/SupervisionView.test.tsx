@@ -394,6 +394,27 @@ describe('SupervisionView', () => {
       expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
     });
 
+    it('SSE presumed_dead keeps abandonCapable — bouton apparaît sans F5', async () => {
+      stubFetch([
+        makeSnapshot({ state: 'running', liveness: 'alive', abandonCapable: true, lastEventSeq: 1 }),
+      ]);
+      render(<SupervisionView />);
+      await screen.findByText(/demo-methode/);
+      expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
+
+      await pushSse(
+        'supervision.run.updated',
+        makeSnapshot({
+          state: 'running',
+          liveness: 'presumed_dead',
+          abandonCapable: true,
+          lastEventSeq: 1,
+        }),
+      );
+
+      expect(await screen.findByRole('button', { name: /abandonner ce run/i })).toBeTruthy();
+    });
+
     // §E AC1 — clic → POST + état intermédiaire "abandon demandé"
     it('E3 — click POSTs /api/supervision/runs/abandon and shows "abandon demandé" state', async () => {
       const snap = makeSnapshot({
