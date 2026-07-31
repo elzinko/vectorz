@@ -128,7 +128,7 @@ describe('AbandonRunUseCase — §A Politique D4', () => {
 describe('AbandonRunUseCase — §C D6 : pas de mise à jour optimiste', () => {
   it('le snapshot en mémoire reste inchangé après un abandon réussi', async () => {
     const snapshot = makeSnapshot({ state: 'running', liveness: 'presumed_dead' });
-    let storedSnapshot = snapshot;
+    const storedSnapshot = snapshot;
     const port = makePort({ ok: true, runId: snapshot.runId });
 
     const uc = new AbandonRunUseCase({

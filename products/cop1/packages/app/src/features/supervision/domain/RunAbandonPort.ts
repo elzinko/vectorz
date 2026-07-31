@@ -3,9 +3,7 @@
  * Zéro connaissance de mega-city, de spawn, de chemins réels.
  * L'adaptateur `EmitterCliAbandonAdapter` satisfait cette interface.
  */
-export type AbandonOutcome =
-  | { ok: true; runId: string }
-  | { ok: false; reason: string };
+export type AbandonOutcome = { ok: true; runId: string } | { ok: false; reason: string };
 
 export interface RunAbandonPort {
   /**

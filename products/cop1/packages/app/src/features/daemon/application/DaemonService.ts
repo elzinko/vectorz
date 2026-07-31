@@ -141,7 +141,8 @@ export class DaemonService {
     if (abandonCommand.length > 0) {
       const abandonPort = new EmitterCliAbandonAdapter(abandonCommand);
       const abandonUseCase = new AbandonRunUseCase({
-        getSnapshot: (runDir) => this.supervisionService?.getSnapshots().find((s) => s.runDir === runDir),
+        getSnapshot: (runDir) =>
+          this.supervisionService?.getSnapshots().find((s) => s.runDir === runDir),
         abandonPort,
         abandonCommand,
       });
@@ -157,7 +158,8 @@ export class DaemonService {
     } else {
       // Capacité dormante — route répond 409 avec marche à suivre (D3)
       const dormantUseCase = new AbandonRunUseCase({
-        getSnapshot: (runDir) => this.supervisionService?.getSnapshots().find((s) => s.runDir === runDir),
+        getSnapshot: (runDir) =>
+          this.supervisionService?.getSnapshots().find((s) => s.runDir === runDir),
         abandonPort: {
           abandon: async () => ({ ok: false as const, reason: 'abandon_command non configurée' }),
         },

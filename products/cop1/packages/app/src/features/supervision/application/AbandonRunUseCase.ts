@@ -59,7 +59,7 @@ export class AbandonRunUseCase {
       return {
         status: 409,
         error:
-          'La capacité d\'abandon est dormante (abandon_command non configurée). ' +
+          "La capacité d'abandon est dormante (abandon_command non configurée). " +
           'Configurez supervision.abandon_command dans cop1.config.yaml. ' +
           'Exemple : ["npx", "mega-city", "supervision:abandon"]',
       };

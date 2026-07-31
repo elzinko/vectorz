@@ -41,12 +41,14 @@ export class EmitterCliAbandonAdapter implements RunAbandonPort {
    * @param spawnFn Injectable pour tests (défaut : `spawn` natif).
    */
   constructor(abandonCommand: string[], spawnFn: SpawnFn = defaultSpawn) {
-    if (abandonCommand.length === 0) {
-      throw new Error('EmitterCliAbandonAdapter : abandon_command est vide — instanciation incorrecte');
+    const cmd = abandonCommand[0];
+    if (cmd === undefined) {
+      throw new Error(
+        'EmitterCliAbandonAdapter : abandon_command est vide — instanciation incorrecte',
+      );
     }
-    const [cmd, ...rest] = abandonCommand;
-    this.command = cmd!;
-    this.baseArgs = rest;
+    this.command = cmd;
+    this.baseArgs = abandonCommand.slice(1);
     this.spawnFn = spawnFn;
   }
 
