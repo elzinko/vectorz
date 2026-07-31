@@ -58,11 +58,21 @@ product: mega-city
 ## Que faire (ordre)
 
 1. **P0 UX immédiat** : clarifier dans le Moniteur / guide ce qu’est une carte run
-   (jalons ≠ chaque outil Claude).
+   (jalons ≠ chaque outil Claude). → **partiel** (légende Moniteur livrée avec 0103).
 2. **P1 fiche 0103** : outil MCP `heartbeat` + émission dans `ezk-sprint` (et builders).
-   → **shipped** (`features/done/0103-…`).
+   → **shipped** (`features/done/0103-…`, PR #64).
 3. **P1 fiche 0104** : `supervision:analyze` pour expliquer une session (journal +
-   transcript + verdict).
+   transcript + verdict). → **shipped** (`features/done/0104-…`, PR #65).
 4. Dogfood humain post-0103 : relancer Claude Code (6 outils), sprint avec heartbeats.
+   → **fait** 2026-07-30 (`docs/dogfood-reports/20260730-152524/`, analyze `healthy` sur
+   le run demo ; orphelin d’hier clôturé `abandoned`).
+5. **Ship cette fiche (0105)** une fois les AC UX / dogfood clôturés côté produit.
+6. **Avec le ship de [0168](0168-run-orphelin-verrou-sans-cle.md)** (verrou orphelin) :
+   **fermer l’issue GitHub #63** — ne pas la fermer avant.
 
-Issue GitHub : https://github.com/elzinko/vectorz/issues/63
+## Issue GitHub
+
+- https://github.com/elzinko/vectorz/issues/63
+- **Règle de clôture** : laisser l’issue **ouverte** jusqu’au ship de **0105 et 0168**.
+  Au ship de la dernière des deux, `gh issue close 63` (commentaire de clôture pointant
+  les deux PRs / commits de ship).
