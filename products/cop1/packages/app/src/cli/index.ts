@@ -45,14 +45,18 @@ program
 
 program
   .command('init-bmad-bridge')
-  .description('Configure BMAD agents to load iamthelaw governance rules')
+  .description(
+    'Configure BMAD agents on an external project (2058 / ADR-032 — not vectorz dogfood)',
+  )
   .action(initBmadBridgeCommand);
 
-const sprint = program.command('sprint').description('Sprint management commands');
+const sprint = program
+  .command('sprint')
+  .description('Deprecated — use mega-city ezk-sprint (epoch 2)');
 
 sprint
   .command('run')
-  .description('Run a sprint on eligible stories')
+  .description('Removed in epoch 2 — use ezk-sprint (mega-city)')
   .option('--dry-run', 'List stories without executing')
   .option('--simulate', 'Run in isolated git worktree (no auto-merge)')
   .option('--filter <pattern>', 'Filter stories by ID pattern (e.g., E8-*)')
@@ -60,26 +64,23 @@ sprint
 
 sprint
   .command('status')
-  .description('Show sprint session and story statuses')
+  .description('Removed in epoch 2 — story status is features/*.md front-matter')
   .action(sprintStatusCommand);
 
 const orchestrator = program
   .command('orchestrator')
-  .description('Supervisor orchestrator commands (EA10)');
+  .description('Removed in epoch 2 — use mega-city + Moniteur');
 
 orchestrator
   .command('run')
-  .description('Run the supervisor orchestrator on a target epic')
+  .description('Removed in epoch 2 — BMAD pilot orchestrator')
   .requiredOption('--epic <id>', 'Target epic id (e.g. EA11)')
   .option('--playbook <path>', 'Path to supervisor playbook (default: ./supervisor-playbook.md)')
   .option('--step-by-step', 'Pause between commands for manual approval')
   .option('--abort-on-escalation', 'Stop cleanly when supervisor escalates')
   .option('--project-root <path>', 'Override project root (default: cwd)')
   .addOption(
-    new Option(
-      '--runner <default|stub>',
-      'Command runner to use — default (real BMAD session) or stub (dev/test escape hatch)',
-    )
+    new Option('--runner <default|stub>', 'Removed — epoch 1 pilot only')
       .choices(['default', 'stub'])
       .default('default')
       .hideHelp(),
@@ -90,7 +91,7 @@ orchestrator
 
 program
   .command('transcript <session-id>')
-  .description('Generate a human-readable markdown transcript for a BMAD session (EA11-S7)')
+  .description('Removed in epoch 2 — BMAD session transcripts were pilot-only')
   .option('--out <path>', 'Write transcript to a file instead of stdout')
   .action((sessionId: string, options: { out?: string }) => transcriptCommand(sessionId, options));
 

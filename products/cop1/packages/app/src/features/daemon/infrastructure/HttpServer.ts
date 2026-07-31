@@ -1,6 +1,5 @@
 import { type IncomingMessage, type Server, type ServerResponse, createServer } from 'node:http';
 import type { EventBus } from '@cop1/shared-kernel';
-import type { OrchestratorMode } from '../../orchestrator/application/OrchestratorService.js';
 import { COP1_VERSION, type HealthInfo } from '../domain/DaemonState.js';
 import type { AuthCheckResult } from './AuthChecker.js';
 
@@ -8,53 +7,9 @@ const MAX_BODY_SIZE = 10_240; // 10 KB
 const VALID_STATUSES = ['pending', 'approved', 'rejected', 'debated'] as const;
 type RuleProposalStatus = (typeof VALID_STATUSES)[number];
 
-const VALID_RUN_MODES = ['normal', 'abort-on-escalation'] as const;
-type RunLauncherMode = (typeof VALID_RUN_MODES)[number];
-
-interface RunCaps {
-  maxTokens?: number;
-  deadlineMin?: number;
-  maxUsdPerSession?: number;
-}
-const CAP_KEYS = ['maxTokens', 'deadlineMin', 'maxUsdPerSession'] as const;
-
-/**
- * Validates the optional `caps` from a run request. The web form sends numbers,
- * but a raw POST could send anything — each provided cap must be a strictly
- * positive finite number (else 400) so a string never silently coerces inside
- * `RunBudget`. Absent/null caps are fine (env defaults apply).
- */
-function parseCaps(raw: unknown): { ok: true; caps?: RunCaps } | { ok: false; error: string } {
-  if (raw === undefined || raw === null) return { ok: true };
-  if (typeof raw !== 'object') return { ok: false, error: 'caps must be an object' };
-  const out: RunCaps = {};
-  for (const key of CAP_KEYS) {
-    const value = (raw as Record<string, unknown>)[key];
-    if (value === undefined || value === null) continue;
-    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
-      return { ok: false, error: `Invalid caps.${key}: must be a positive number` };
-    }
-    out[key] = value;
-  }
-  return { ok: true, caps: Object.keys(out).length > 0 ? out : undefined };
-}
-
-/** Minimal port the daemon's run launcher depends on (in-process adapter satisfies it). */
-export interface OrchestratorAdapterPort {
-  startRun(opts: { epic: string; mode: OrchestratorMode; caps?: RunCaps }): { runId: string };
-  stop(): Promise<void>;
-}
-
-export type SprintStatusProvider = () => {
-  stories: Record<string, string>;
-  session: unknown;
-} | null;
-
 /**
  * fiche 0031 (ADR-028) — hydrate `GET /api/supervision/runs` au montage du
- * front (le SSE `/events` ne rejoue pas le passé). Miroir de
- * `SprintStatusProvider` : garde `HttpServer` sans dépendance concrète à la
- * feature `supervision`.
+ * front (le SSE `/events` ne rejoue pas le passé).
  */
 export type SupervisionProvider = () => unknown[];
 
@@ -77,8 +32,8 @@ export interface RuleProposalProvider {
 /**
  * Minimal request-handler port for the blocage API (fiche 0021). Structurally
  * satisfied by `BlocageApiHandler` — keeps HttpServer free of a concrete feature
- * dependency (mirrors the OrchestratorAdapterPort style). `handle` returns true
- * when it owns the route (the response has already been written).
+ * dependency. `handle` returns true when it owns the route (the response has
+ * already been written).
  */
 export interface BlocageApiPort {
   handle(req: IncomingMessage, res: ServerResponse): boolean;
@@ -96,18 +51,12 @@ export class HttpServer {
   private server: Server | null = null;
   private readonly startedAt: number = Date.now();
   private sseClients: Set<ServerResponse> = new Set();
-  private sprintStatusProvider: SprintStatusProvider | null = null;
   private supervisionProvider: SupervisionProvider | null = null;
   private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
-  private orchestratorAdapter: OrchestratorAdapterPort | null = null;
   private blocageApiHandler: BlocageApiPort | null = null;
   private runAbandonHandler: RunAbandonHandler | null = null;
   private eventBusWired = false;
-
-  setSprintStatusProvider(provider: SprintStatusProvider): void {
-    this.sprintStatusProvider = provider;
-  }
 
   setSupervisionProvider(provider: SupervisionProvider): void {
     this.supervisionProvider = provider;
@@ -119,10 +68,6 @@ export class HttpServer {
 
   setAuthChecker(checker: () => Promise<AuthCheckResult>): void {
     this.authChecker = checker;
-  }
-
-  setOrchestratorAdapter(adapter: OrchestratorAdapterPort): void {
-    this.orchestratorAdapter = adapter;
   }
 
   setBlocageApiHandler(handler: BlocageApiPort): void {
@@ -173,13 +118,6 @@ export class HttpServer {
       return;
     }
 
-    if (req.method === 'GET' && req.url === '/api/sprint/status') {
-      const data = this.sprintStatusProvider?.() ?? null;
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(data));
-      return;
-    }
-
     if (req.method === 'GET' && req.url === '/api/supervision/runs') {
       const data = this.supervisionProvider?.() ?? [];
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -221,16 +159,6 @@ export class HttpServer {
       return;
     }
 
-    if (req.method === 'POST' && req.url === '/api/orchestrator/run') {
-      this.handleOrchestratorRun(req, res);
-      return;
-    }
-
-    if (req.method === 'POST' && req.url === '/api/orchestrator/stop') {
-      void this.handleOrchestratorStop(res);
-      return;
-    }
-
     // ADR-035 D4 — abandon d'un run orphelin depuis le Moniteur
     if (req.method === 'POST' && req.url === '/api/supervision/runs/abandon') {
       void this.handleRunAbandon(req, res);
@@ -243,73 +171,9 @@ export class HttpServer {
       return;
     }
 
+    // E4 — epoch-1 pilot routes (/api/orchestrator/*, /api/sprint/status) removed → 404
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'not_found' }));
-  }
-
-  private handleOrchestratorRun(req: IncomingMessage, res: ServerResponse): void {
-    this.readJsonBody(req, res, (parsed) => {
-      const body = parsed as {
-        epic?: string;
-        mode?: string;
-        caps?: { maxTokens?: number; deadlineMin?: number; maxUsdPerSession?: number };
-      };
-      if (!body.epic) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'epic field is required' }));
-        return;
-      }
-      const mode = body.mode ?? 'normal';
-      if (!(VALID_RUN_MODES as readonly string[]).includes(mode)) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(
-          JSON.stringify({ error: `Invalid mode: must be one of ${VALID_RUN_MODES.join(', ')}` }),
-        );
-        return;
-      }
-      const capsParse = parseCaps(body.caps);
-      if (!capsParse.ok) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: capsParse.error }));
-        return;
-      }
-      if (!this.orchestratorAdapter) {
-        res.writeHead(503, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'orchestrator adapter not configured' }));
-        return;
-      }
-      try {
-        const { runId } = this.orchestratorAdapter.startRun({
-          epic: body.epic,
-          mode: mode as RunLauncherMode,
-          ...(capsParse.caps ? { caps: capsParse.caps } : {}),
-        });
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ runId }));
-      } catch (error) {
-        // Duck-typed to avoid a hard dependency on the adapter's error class.
-        if (error instanceof Error && error.name === 'RunAlreadyActiveError') {
-          res.writeHead(409, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: error.message }));
-          return;
-        }
-        const message = error instanceof Error ? error.message : String(error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: message }));
-      }
-    });
-  }
-
-  private async handleOrchestratorStop(res: ServerResponse): Promise<void> {
-    try {
-      await this.orchestratorAdapter?.stop();
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: true }));
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: message }));
-    }
   }
 
   /** Chunked JSON body parse with a MAX_BODY_SIZE guard (mirrors the PATCH path). */

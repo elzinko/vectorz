@@ -36,11 +36,13 @@ export interface Cop1Config {
   };
   workflow: {
     /**
-     * @deprecated Since 2026-04-14 (EA11-S2). Setting `useBMAD=false` selects the legacy
-     * stub pipeline (`DevAgentStep` / `ReviewerAgentStep` / `QAAgentStep` / `PMAgentStep`)
-     * kept as a safety-net fallback. The BMAD path (`useBMAD=true`, default) is the
-     * supported route. This flag is scheduled for removal once EA10 Supervisor
-     * Orchestrator (EA10-S9 integration test) is proven in production.
+     * BMAD **pilot** path (époque 1). Epoch-2 dogfood = mega-city + **moniteur**
+     * (ADR-028) — does not use this flag. Default `false`. When `true`,
+     * orchestrator requires `_bmad*` in the *target* project (external method /
+     * future emitter experiment — fiche 2058), not for advancing this repo.
+     *
+     * Historical note (EA11-S2): `false` also selected a legacy stub pipeline
+     * (Dev/Reviewer/QA/PM steps) — still wired, still deprecated.
      */
     useBMAD: boolean;
   };

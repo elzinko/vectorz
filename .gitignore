@@ -26,12 +26,9 @@ build/
 # cop1 runtime data (execution artifacts, not source code)
 .cop1/
 
-# BMAD framework (reinstallable via bmad install, version in _bmad/_config/manifest.yaml)
-_bmad/core/
-_bmad/bmm/
-_bmad/bmb/
-_bmad/tea/
-# Keep _bmad/_config/ and _bmad/_memory/ tracked (project-specific customizations)
+# Epoch-1 BMAD trees — history on tag `epoch-1-bmad-final`; not part of dogfood.
+_bmad/
+_bmad-output/
 
 # OS
 .DS_Store

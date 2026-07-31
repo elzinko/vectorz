@@ -14,9 +14,17 @@ pendante** (id absent du catalogue = silencieusement ignoré). D'où la **garde 
 |---|---|---|---|
 | **base** | socle hérité (`extends: [base]`) | LOI socle (clean-code, conventional-commits) + `ezk-archive` | — (jamais bindé seul) |
 | **mobile** | cible app mobile | reviewer + commits (+ règles mobile) | claude-code |
-| **global** | daily-driver **exhaustif** (tout le toolbox) | les 6 agents + tous les skills ezk-* | `bind-global … --link` → `~/.claude` |
+| **daily** | daily-driver **curated** (throughput solo) | 7 agents + boucle produit/sprint/ci — **sans** apk/device/preview/article/pr-pilot | `bind-global daily --link` → `~/.claude` **(recommandé)** |
+| **global** | daily-driver **exhaustif** (tout le toolbox) | les 7 agents + tous les skills ezk-* | `bind-global global --link` → `~/.claude` |
 | **cop1-target** | un projet que **cop1 pilote** | équipe FEUILLE + `ezk-pm` + skills feuilles, **sans orchestrateur** | claude-code (pass-through) |
 | **desktop** | session **Claude Desktop** pure | `ezk-pm` + builder + backlog + skills de rédaction/orga, **sans env d'exécution** | claude-desktop |
+
+### `daily` vs `global`
+
+- **`daily`** = chemin nominal solo (programme refonte phase 2) : moins de surface
+  d'appel → moins de tokens brûlés à « choisir le mauvais skill ».
+- **`global`** = catalogue complet quand tu as besoin d'apk / device / preview /
+  article / pr-pilot. Ne plus le binder par défaut.
 
 ### `cop1-target` — pourquoi « sans orchestrateur »
 cop1 (orchestrateur de dev autonome) a **déjà sa propre boucle** (Supervisor). Lui binder

@@ -1,20 +1,11 @@
 import type { Options, SDKMessage } from '@anthropic-ai/claude-agent-sdk';
-import { type ClaudeAvailability, RetryPolicy } from '@cop1/sprint-core';
+
+export type ClaudeAvailability = 'ok' | 'degraded' | 'unavailable';
 
 export interface AuthCheckResult {
-  /** True when Claude is reachable and the probe completed successfully. */
   readonly ok: boolean;
-  /** The active model (from the `system`/init message), or null if unknown. */
   readonly model: string | null;
-  /** Error detail when `ok` is false. Never contains the API key. */
   readonly error?: string;
-  /**
-   * Coarse Claude availability for the traffic-light panel:
-   * - `ok`          — probe succeeded.
-   * - `degraded`    — probe failed with a *transient* blockage (overloaded /
-   *   rate-limit / 5xx / network): Claude is up but momentarily unreachable.
-   * - `unavailable` — probe failed for a hard reason (auth, invalid request).
-   */
   readonly availability: ClaudeAvailability;
 }
 
@@ -24,41 +15,40 @@ export type AuthQueryFn = (params: {
   options?: Options;
 }) => AsyncIterable<SDKMessage>;
 
-/** Shared transient classifier (overloaded / 429 / 5xx / network → degraded). */
-const transientClassifier = new RetryPolicy();
+const TRANSIENT_PATTERNS = [
+  /\b429\b/,
+  /rate.?limit/i,
+  /\b5(?:00|02|03|04|29)\b/,
+  /service.?unavailable/i,
+  /overloaded/i,
+  /temporarily unavailable/i,
+  /timed?\s*out/i,
+  /ECONNRESET/i,
+  /ECONNREFUSED/i,
+  /ETIMEDOUT/i,
+  /ENOTFOUND/i,
+  /EAI_AGAIN/i,
+  /socket hang up/i,
+  /exited with code (?:130|137|139|134|143)\b/,
+];
 
-/** Maps a probe outcome to a coarse availability for the panel. */
-function availabilityFor(ok: boolean, error?: string): ClaudeAvailability {
-  if (ok) return 'ok';
-  return error && transientClassifier.isTransientError(error) ? 'degraded' : 'unavailable';
+function isTransientError(errorOutput: string): boolean {
+  return TRANSIENT_PATTERNS.some((pattern) => pattern.test(errorOutput));
 }
 
-/** Max length of the `error` field surfaced to the browser. */
+function availabilityFor(ok: boolean, error?: string): ClaudeAvailability {
+  if (ok) return 'ok';
+  return error && isTransientError(error) ? 'degraded' : 'unavailable';
+}
+
 const MAX_ERROR_LEN = 200;
 
-/**
- * Defense-in-depth for the `error` field returned to the browser (Story A review
- * follow-up): collapse whitespace to a single line, redact anything shaped like a
- * Claude OAuth/API token, and truncate to a bounded length. The probe already
- * never puts the credential in a message — this guards against a verbose SDK error
- * leaking internal detail or an unexpectedly long body. Availability is classified
- * from the RAW message (before sanitizing) so transient detection is unaffected.
- */
 export function sanitizeError(raw: string): string {
   const collapsed = raw.replace(/\s+/g, ' ').trim();
   const redacted = collapsed.replace(/sk-ant-[A-Za-z0-9_-]+/g, '[redacted]');
   return redacted.length > MAX_ERROR_LEN ? `${redacted.slice(0, MAX_ERROR_LEN)}…` : redacted;
 }
 
-/**
- * Cheap connectivity probe: a single-turn, tool-less SDK call. Reports whether
- * Claude is reachable, the active model — read from the `system`/init message
- * (`SDKSystemMessage.model`), NOT the `result` message which carries no `model`
- * field — and a coarse `availability` (a transient blockage shows as `degraded`,
- * not a hard `unavailable`). The API key / OAuth token is inherited from the
- * environment and is never surfaced in the result. Does its OWN dynamic import of
- * the SDK (it does not depend on the adapter's private loader).
- */
 export async function checkAuth(queryFn?: AuthQueryFn): Promise<AuthCheckResult> {
   let model: string | null = null;
   try {
@@ -70,11 +60,6 @@ export async function checkAuth(queryFn?: AuthQueryFn): Promise<AuthCheckResult>
         maxTurns: 1,
         allowedTools: [],
         systemPrompt: { type: 'preset', preset: 'claude_code' },
-        // Make the probe genuinely tool-less (Codex review): `allowedTools: []`
-        // only auto-approves nothing — unlisted tools still fall through to
-        // settings/permissionMode. Load NO filesystem settings so project/user
-        // MCP servers + hooks never start, and deny any tool defensively. A
-        // credential check must not execute side effects.
         settingSources: [],
         canUseTool: async (toolName: string) => ({
           behavior: 'deny' as const,

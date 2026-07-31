@@ -1,12 +1,10 @@
 import { SupervisionView } from './SupervisionView.js';
 
 /**
- * fiche 0059 — l'app est réduite à sa seule surface vivante : le Moniteur de
- * supervision (cop1 OBSERVE une méthode qu'il ne pilote pas). Les surfaces du
- * monde « cop1 PILOTE » (OrchestratorRunView = Run, RuleProposalsView = Rules,
- * AuthPanel = Connexion) restent dans le repo mais ne sont plus montées :
- * elles mélangeaient deux paradigmes dans un seul écran (constat PO 2026-07-25).
- * Réactivables en réintroduisant leurs onglets ici le jour où cop1 repilote.
+ * Moniteur only (ADR-028 / fiche 0059) — cop1 OBSERVE une méthode qu'il ne pilote pas.
+ *
+ * Surfaces époque-1 « méthode dans le moniteur » retirées 2026-07-28 (fiche 0059).
+ * Backend pilote retiré en E4 (fiche 0039 / ADR-029) — dogfood = mega-city + Moniteur.
  */
 function App() {
   return (
