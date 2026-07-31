@@ -12,6 +12,11 @@
  * `seq` est en base 1, strictement croissant, et RELU depuis le fichier à chaque
  * ouverture d'un `Journal` (jamais un compteur en mémoire qui repart de zéro) :
  * c'est ce qui garantit la continuité après redémarrage du serveur (rubrique G).
+ *
+ * Verrou d'écriture per-run (`.write.lock`, O_EXCL + PID/ts) : toutes les mutations
+ * (MCP heartbeat/run_finished, CLI abandon, …) sérialisent l'append et relisent
+ * `seq` sous verrou — pas de `seq` dupliqué entre processus (Codex P1 PR #76).
+ * Les verrous orphelins (processus mort / trop vieux) sont récupérés (Codex P2).
  */
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
@@ -32,6 +37,15 @@ export interface JournalEvent {
 
 /** Nom du fichier journal dans le dossier d'un run. */
 const EVENTS_FILE = 'events.jsonl';
+
+/** Verrou exclusif d'écriture — un seul append à la fois par run. */
+export const WRITE_LOCK_FILE = '.write.lock';
+
+/** Âge max d'un verrou dont le PID est encore « vivant » avant reclaim forcé. */
+export const WRITE_LOCK_STALE_MS = 30_000;
+
+/** Attente max pour acquérir le verrou. */
+const WRITE_LOCK_WAIT_MS = 5_000;
 
 /**
  * Lit les événements valides d'un journal. Tolérant à la corruption (M1, §7) : une
@@ -65,9 +79,93 @@ function readLastSeq(filePath: string): number {
   return events[events.length - 1].seq;
 }
 
+function sleepMs(ms: number): void {
+  const sab = new SharedArrayBuffer(4);
+  const ia = new Int32Array(sab);
+  Atomics.wait(ia, 0, 0, ms);
+}
+
+function isPidAlive(pid: number): boolean {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Tente de récupérer un verrou orphelin : PID mort, contenu illisible, ou trop vieux.
+ * Retourne true si le fichier a été supprimé (le caller peut retenter O_EXCL).
+ */
+export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()): boolean {
+  if (!fs.existsSync(lockPath)) return false;
+  try {
+    const raw = fs.readFileSync(lockPath, 'utf8').trim();
+    const [pidLine, tsLine] = raw.split('\n');
+    const pid = Number(pidLine);
+    const ts = Number(tsLine);
+    const ownerDead = !isPidAlive(pid);
+    const stale =
+      !Number.isFinite(ts) || nowMs - ts > WRITE_LOCK_STALE_MS || Number.isNaN(pid);
+    if (!ownerDead && !stale) return false;
+    fs.unlinkSync(lockPath);
+    return true;
+  } catch {
+    try {
+      fs.unlinkSync(lockPath);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
+/**
+ * Acquiert `.write.lock` (O_EXCL), exécute `fn`, libère. Relit toujours le seq
+ * sous verrou côté `Journal.append`.
+ */
+export function withRunWriteLock<T>(runDir: string, fn: () => T): T {
+  const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+  const deadline = Date.now() + WRITE_LOCK_WAIT_MS;
+  let lockFd: number | undefined;
+
+  while (lockFd === undefined) {
+    try {
+      lockFd = fs.openSync(lockPath, 'wx');
+      fs.writeFileSync(lockFd, `${process.pid}\n${Date.now()}\n`, 'utf8');
+    } catch {
+      tryReclaimWriteLock(lockPath);
+      if (Date.now() >= deadline) {
+        throw new Error(
+          `journal: impossible d'acquérir ${WRITE_LOCK_FILE} sous ${runDir} (timeout ${WRITE_LOCK_WAIT_MS}ms)`,
+        );
+      }
+      sleepMs(20);
+    }
+  }
+
+  try {
+    return fn();
+  } finally {
+    try {
+      fs.closeSync(lockFd);
+    } catch {
+      // ignore
+    }
+    try {
+      fs.unlinkSync(lockPath);
+    } catch {
+      // ignore — tryReclaimWriteLock récupérera un orphelin
+    }
+  }
+}
+
 /** Un writer append-only sur le journal d'UN run. Sans état partagé entre instances. */
 export class Journal {
   private readonly filePath: string;
+  private readonly runDir: string;
   private nextSeqValue: number;
 
   constructor(
@@ -75,6 +173,7 @@ export class Journal {
     private readonly runId: string,
   ) {
     fs.mkdirSync(runDir, { recursive: true });
+    this.runDir = runDir;
     this.filePath = path.join(runDir, EVENTS_FILE);
     this.nextSeqValue = readLastSeq(this.filePath) + 1;
   }
@@ -87,8 +186,8 @@ export class Journal {
   /**
    * Lecture littérale du §7 (« dernière ligne sans \n : ignorée ») : si le fichier
    * existe déjà et ne se termine PAS par `\n` (dernière écriture interrompue en
-   * cours d'append — crash mid-write, QUE le JSON de la queue soit complet ou non),
-   * cette queue incomplète est TRONQUÉE du fichier avant d'ajouter la nouvelle
+   * cours d'append — crash mid-write, QUE le JSON de la ligne soit complet ou non),
+   * cette ligne incomplète est TRONQUÉE du fichier avant d'ajouter la nouvelle
    * ligne — jamais refermée. Refermer par un simple `\n` ressusciterait une ligne
    * qu'`readJournalEvents` avait pourtant ignorée (seq non compté), produisant un
    * `seq` dupliqué et, si c'était un `gate.reached`, un gate fantôme (M1-edge).
@@ -108,20 +207,26 @@ export class Journal {
    * Écrit une ligne. L'enveloppe est calculée ici ; `payload` est nesté tel quel
    * (l'appelant ne peut donc jamais écraser `seq`/`event_id`/`run_id`/`contract`,
    * même s'il glisse ces noms de clés dans son propre payload).
+   *
+   * Sous verrou per-run : relit `seq` juste avant l'append pour rester correct
+   * face à un autre processus qui vient d'écrire.
    */
   append(type: string, payload: Record<string, unknown>): JournalEvent {
-    this.truncateTrailingIncompleteLine();
-    const event: JournalEvent = {
-      event_id: randomUUID(),
-      run_id: this.runId,
-      seq: this.nextSeqValue,
-      ts: new Date().toISOString(),
-      contract: CONTRACT_URI,
-      type,
-      payload,
-    };
-    fs.appendFileSync(this.filePath, `${JSON.stringify(event)}\n`, { encoding: 'utf8' });
-    this.nextSeqValue += 1;
-    return event;
+    return withRunWriteLock(this.runDir, () => {
+      this.nextSeqValue = readLastSeq(this.filePath) + 1;
+      this.truncateTrailingIncompleteLine();
+      const event: JournalEvent = {
+        event_id: randomUUID(),
+        run_id: this.runId,
+        seq: this.nextSeqValue,
+        ts: new Date().toISOString(),
+        contract: CONTRACT_URI,
+        type,
+        payload,
+      };
+      fs.appendFileSync(this.filePath, `${JSON.stringify(event)}\n`, { encoding: 'utf8' });
+      this.nextSeqValue += 1;
+      return event;
+    });
   }
 }

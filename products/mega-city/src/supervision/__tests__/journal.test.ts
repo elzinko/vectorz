@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { CONTRACT_URI, Journal } from '../journal.js';
+import { CONTRACT_URI, Journal, WRITE_LOCK_FILE, tryReclaimWriteLock } from '../journal.js';
 
 describe('Journal — enveloppe et append (rubrique B)', () => {
   let tmpDir: string;
@@ -113,8 +113,41 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
       expect(() => JSON.parse(line)).not.toThrow();
     }
   });
-});
 
+  it('deux Journal concurrents n’attribuent jamais le même seq (write lock)', () => {
+    const a = new Journal(runDir, 'run-1');
+    a.append('run.started', {});
+
+    const left = new Journal(runDir, 'run-1');
+    const right = new Journal(runDir, 'run-1');
+    // Les deux croient nextSeq=2 avant append ; sous verrou chacun relit.
+    const e1 = left.append('heartbeat', { who: 'left' });
+    const e2 = right.append('heartbeat', { who: 'right' });
+    expect(e1.seq).not.toBe(e2.seq);
+    expect([e1.seq, e2.seq].sort((x, y) => x - y)).toEqual([2, 3]);
+  });
+
+  it('tryReclaimWriteLock récupère un verrou orphelin (PID mort / contenu vide)', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    fs.writeFileSync(lockPath, '999999999\n0\n'); // PID improbable + ts ancien
+    expect(tryReclaimWriteLock(lockPath)).toBe(true);
+    expect(fs.existsSync(lockPath)).toBe(false);
+
+    fs.writeFileSync(lockPath, 'not-a-lock');
+    expect(tryReclaimWriteLock(lockPath)).toBe(true);
+    expect(fs.existsSync(lockPath)).toBe(false);
+  });
+
+  it('tryReclaimWriteLock ne vole pas un verrou frais de ce process', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    fs.writeFileSync(lockPath, `${process.pid}\n${Date.now()}\n`);
+    expect(tryReclaimWriteLock(lockPath)).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+    fs.unlinkSync(lockPath);
+  });
+});
 function readLines(runDir: string): Array<{
   event_id: string;
   run_id: string;

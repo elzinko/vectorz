@@ -351,8 +351,8 @@ export class SupervisionRuntime {
    * du Moniteur et le spawn, la commande refuse plutôt que de clôturer un run légitime.
    * Écrit toujours `abandoned_by: 'seat'` (c'est le siège qui commande).
    *
-   * Verrou exclusif `.abandon.lock` (O_EXCL) : deux processus CLI concurrents ne
-   * peuvent pas construire deux `Journal` sur le même last-seq (finding Codex P1).
+   * La sérialisation d'écriture (vs heartbeat / run_finished concurrents) est portée
+   * par `Journal.append` (`.write.lock` per-run) — pas un verrou abandon-only.
    */
   abandonRun(expectedRunId: string): { run_id: string } {
     const state = findOpenRun(this.projectRoot);
@@ -364,41 +364,9 @@ export class SupervisionRuntime {
         `abandon refusé : le run ouvert (${state.runId}) ne correspond pas au run attendu (${expectedRunId}) — clic sur carte périmée ?`,
       );
     }
-
-    const lockPath = path.join(state.runDir, '.abandon.lock');
-    let lockFd: number;
-    try {
-      lockFd = fs.openSync(lockPath, 'wx');
-    } catch {
-      throw new Error(
-        `abandon refusé : un abandon est déjà en cours sur run_id=${state.runId} (verrou ${path.basename(lockPath)})`,
-      );
-    }
-
-    try {
-      // Re-vérifie sous verrou : un concurrent a pu finir d'écrire run.finished
-      // entre findOpenRun et l'acquisition du lock.
-      const stillOpen = findOpenRun(this.projectRoot);
-      if (!stillOpen || stillOpen.runId !== expectedRunId) {
-        throw new Error(
-          `abandon refusé : le run ${expectedRunId} n'est plus ouvert (déjà clôturé entre-temps)`,
-        );
-      }
-      const journal = new Journal(stillOpen.runDir, stillOpen.runId);
-      journal.append('run.finished', { status: 'abandoned', abandoned_by: 'seat' });
-      return { run_id: stillOpen.runId };
-    } finally {
-      try {
-        fs.closeSync(lockFd);
-      } catch {
-        // ignore
-      }
-      try {
-        fs.unlinkSync(lockPath);
-      } catch {
-        // ignore — le verrou ne doit pas bloquer un prochain abandon si close a échoué
-      }
-    }
+    const journal = new Journal(state.runDir, state.runId);
+    journal.append('run.finished', { status: 'abandoned', abandoned_by: 'seat' });
+    return { run_id: state.runId };
   }
 
   private requireOpenRun(toolName: string): OpenRunState {

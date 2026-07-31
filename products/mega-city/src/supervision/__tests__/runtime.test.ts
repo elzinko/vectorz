@@ -651,26 +651,6 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
     expect(events.map((e) => e.seq)).toEqual([1, 2]);
   });
 
-  // Codex P1 — verrou exclusif : un second abandon concurrent refuse sans second run.finished
-  it('J7b — abandonRun concurrent refuse via .abandon.lock (pas de double run.finished)', () => {
-    const runtime = new SupervisionRuntime(projectRoot);
-    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
-    const runDir = path.join(projectRoot, '.supervision', 'runs', run_id);
-    const lockPath = path.join(runDir, '.abandon.lock');
-
-    // Simule un concurrent qui détient déjà le verrou
-    fs.writeFileSync(lockPath, '');
-
-    expect(() => runtime.abandonRun(run_id)).toThrow(/déjà en cours|verrou/i);
-
-    const events = readEvents(projectRoot, run_id);
-    expect(events.map((e) => e.type)).not.toContain('run.finished');
-
-    fs.unlinkSync(lockPath);
-    runtime.abandonRun(run_id);
-    expect(readEvents(projectRoot, run_id).map((e) => e.type)).toContain('run.finished');
-  });
-
   // J8 — AC5 : aucun run n'est clos automatiquement (pas de TTL)
   it("J8 — un run ouvert reste ouvert sans action externe (pas d'auto-abandon)", () => {
     const runtime = new SupervisionRuntime(projectRoot);
