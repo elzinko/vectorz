@@ -4,4 +4,4 @@ type: flowchart
 notes: >
   v3 : archive sous Capacités (plus sous Orchestrateurs). Complète
   0028-org-chart-roles. Naming : ezk-pr, ezk-caps-*, ezk-sandbox,
-  backlog init pour la convention Validation. ADR-0022.
+  Validation: pr-pilot init aujourd’hui, backlog init à terme. ADR-0022.
