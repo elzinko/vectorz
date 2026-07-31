@@ -78,10 +78,15 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
     // Mode copy ne matérialise que SKILL.md — fallback obligatoire.
     expect(body).toMatch(/Mode copy/);
     expect(body).toMatch(/écrire le squelette\s+inline|fallback inline/i);
+    // Template mince réellement embarqué (pas seulement des puces descriptives).
+    expect(body).toMatch(/````markdown[\s\S]*?## Summary[\s\S]*?## Lien fiche[\s\S]*?## Comment tester[\s\S]*?## Validation[\s\S]*?````/);
+    expect(body).toMatch(/\| CI \|/);
     // Résolution hors cwd mega-city.
     expect(body).toMatch(/~\/\.claude\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);
     expect(body).toMatch(/products\/mega-city\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);
     expect(body).toMatch(/Fallback inline/);
+    // Chemin résolu = fichier .sh (pas …/check-pr-body.sh en suffixe).
+    expect(body).toMatch(/bash <chemin-résolu>(?!\/check-pr-body)/);
   });
 
   it.each(restitutionSkills.map((p) => [p.split('/').slice(-2).join('/'), p] as const))(
