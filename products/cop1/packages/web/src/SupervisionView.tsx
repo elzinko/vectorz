@@ -44,6 +44,11 @@ interface RunSnapshot {
   tokens: { provenance: 'measured' | 'absent' };
   method?: MethodRef;
   seat?: string;
+  /**
+   * ADR-035 — provenance d'abandon depuis `run.finished` (`seat` | `method`).
+   * Affiché sur la carte finished (AC1 E2E).
+   */
+  abandonedBy?: 'seat' | 'method';
   projectRoot: string;
   runDir: string;
   liveness: 'alive' | 'presumed_dead';
@@ -323,6 +328,12 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
         {run.seat && (
           <span>
             <i className="run-card__k">siège</i> {run.seat}
+          </span>
+        )}
+        {(run.state === 'finished' || run.state === 'finished_at_gate') && run.abandonedBy && (
+          <span data-testid="abandoned-by">
+            <i className="run-card__k">abandon</i>{' '}
+            {run.abandonedBy === 'seat' ? 'par le siège' : 'par la méthode'}
           </span>
         )}
         <RunAge lastAbsorbedAt={run.lastAbsorbedAt} lastEventTs={run.lastEventTs} />
