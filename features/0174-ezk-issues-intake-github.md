@@ -41,8 +41,13 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 1. **Issues restent sur GH** — pas d'archivage / fermeture forcée à l'intake.
 2. **Analyse commentée** sur chaque issue éligible + labels **pipeline** + marqueur
    d'idempotence (commentaire machine-lisible et/ou `intake:analyzed`).
-3. **Bug facile à reproduire** → PR de **fix rapide opt-in** (délègue repro à [0152](0152-ezk-bug-intake-repro.md)) ;
+3. **Bug facile à reproduire** → PR de **fix rapide opt-in** ;
    **humain = merge / prod** (pas de merge auto, pas de deploy auto).
+   **Composition repro** — [0152](0152-ezk-bug-intake-repro.md) / `ezk-bug` **ne peut pas**
+   être délégué tel quel : son contrat actuel enchaîne toujours `ezk-backlog add` (fiche bug
+   commitée). Pour ce flux intake, il faut **au grooming** soit un **point d'entrée repro-only**
+   (repro + preuve **sans** `add` / sans commit backlog), soit une **création de fiche bug
+   explicitement opt-in** (humain / PR) — jamais de fiche sur `main` avant l'opt-in.
 4. **Suggestion de feature** → trackée **dans l'issue** (commentaire + labels) ;
    **PR md opt-in** possible (markdown de feature seulement, éventuellement un peu de grooming) —
    **validation = merge** ; jamais d'écriture directe sur `main`.
@@ -63,7 +68,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 - [ ] Bug facile → **peut** ouvrir une PR de fix ; aucun merge/deploy automatique.
 - [ ] Suggestion feature → trackée dans l'issue ; PR md opt-in possible ; **aucune** fiche sur `main` sans merge / OK humain.
 - [ ] Fiche créée suite à validation porte `github: <url>` ; issue labellisée / référencée en retour.
-- [ ] Composition : délègue repro à `ezk-bug` (0152) ; anti-doublon / cadrage via `ezk-backlog` quand une fiche est proposée.
+- [ ] Composition repro : **repro-only** (ou fiche bug **opt-in**) avant toute délégation à `ezk-bug` (0152) — le contrat actuel `ezk-bug` → `ezk-backlog add` ne doit **pas** committer de fiche avant opt-in humain ; anti-doublon / cadrage via `ezk-backlog` **seulement** quand une fiche est proposée (PR / merge).
 - [ ] Respect SoT [0172](0172-convention-sot-backlog-md.md) ; pas de conflit avec adaptateur push-only [0171](0171-adapter-github-issues-push-only.md).
 - [ ] Cadence via cop1 (nuit / matin sur demande) ; Moniteur lecture seule uniquement.
 - [ ] Notifs optionnelles après lot : « issues analysées » / éventuellement « fix à livrer ».
@@ -87,7 +92,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 | city-guided [0064](https://github.com/elzinko/city-guided/blob/main/features/0064-intake-issues-github.md) | Tracker **app / signal** (frontend) |
 | city-guided [ADR-0003](https://github.com/elzinko/city-guided/blob/main/docs/adr/ADR-0003-intake-issues-utilisateurs.md) | Décision produit (référence repo city-guided) |
 | city-guided [0025](https://github.com/elzinko/city-guided/blob/main/features/0025-bouton-feedback-github.md) | Émetteur des issues (chemin chaud) |
-| [0152](0152-ezk-bug-intake-repro.md) | Repro / cadrage bug (composition) |
+| [0152](0152-ezk-bug-intake-repro.md) | Repro / cadrage bug — composition via **repro-only** ou fiche opt-in (pas `add` silencieux) |
 | [0171](0171-adapter-github-issues-push-only.md) | Adaptateur fiche → issue (sens inverse) |
 | [0172](0172-convention-sot-backlog-md.md) | SoT backlog md |
 | [0170](0170-modele-extension-plugin-mega-city.md) | Modèle d'extension (frontière) |
@@ -99,3 +104,6 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 - Anti-doublon : **distinct** de 0152 (repro bug), 0171 (push export), 0172 (convention SoT) —
   cette fiche = **boucle d'admission / analyse / PR opt-in** sur issues utilisateurs.
 - Pas de fiche séparée rate-limit / anti-flood tant que non priorisé (voir hors-scope).
+- **Contrainte 0152 / `ezk-bug`** (revue Codex PR #77) : `ezk-bug` produit toujours une fiche via
+  `ezk-backlog add` (commit). L'intake différé **ne doit pas** réutiliser ce chemin tel quel ;
+  grooming = choisir repro-only **ou** fiche bug opt-in (voir proposition §3 + AC composition).
