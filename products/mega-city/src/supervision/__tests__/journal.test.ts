@@ -166,6 +166,25 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
     expect(fs.existsSync(lockPath)).toBe(true);
     fs.unlinkSync(lockPath);
   });
+
+  it('tryReclaimWriteLock n’unlink pas si le lock a changé sous nos pieds (inode/contenu)', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    fs.writeFileSync(lockPath, '999999999\n0\n');
+    const beforeIno = fs.statSync(lockPath).ino;
+
+    const reclaimed = tryReclaimWriteLock(lockPath, Date.now(), () => {
+      // Concurrent A : unlink + nouveau lock vivant entre observe et CAS.
+      fs.unlinkSync(lockPath);
+      fs.writeFileSync(lockPath, `${process.pid}\n${Date.now()}\n`);
+      expect(fs.statSync(lockPath).ino).not.toBe(beforeIno);
+    });
+
+    expect(reclaimed).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+    expect(fs.readFileSync(lockPath, 'utf8')).toContain(String(process.pid));
+    fs.unlinkSync(lockPath);
+  });
 });
 function readLines(runDir: string): Array<{
   event_id: string;
