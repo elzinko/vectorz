@@ -103,46 +103,60 @@ function isPidAlive(pid: number): boolean {
 
 /**
  * Tente de récupérer un verrou orphelin.
- * - PID propriétaire **vivant** → jamais reclaim (même si le lock a >30s : un
- *   `gateReached` peut rester longtemps dans la section critique).
- * - PID mort / illisible → reclaim (sauf fichier vide/illisible encore frais).
+ * - PID propriétaire **vivant** → jamais reclaim.
+ * - PID mort / illisible → reclaim **uniquement** si le fichier n'a pas changé
+ *   entre lecture et unlink (évite de supprimer le lock d'un concurrent qui vient
+ *   de le reprendre — Codex P1 « reclaim only the stale lock inode »).
+ *
+ * `afterObserve` (tests) : callback après snapshot initial, avant compare-and-delete.
  */
-export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()): boolean {
+export function tryReclaimWriteLock(
+  lockPath: string,
+  nowMs: number = Date.now(),
+  afterObserve?: () => void,
+): boolean {
   if (!fs.existsSync(lockPath)) return false;
   let ageMs = 0;
+  let beforeIno = 0;
+  let beforeContent = '';
   try {
-    ageMs = nowMs - fs.statSync(lockPath).mtimeMs;
+    const st = fs.statSync(lockPath);
+    ageMs = nowMs - st.mtimeMs;
+    beforeIno = st.ino;
+    beforeContent = fs.readFileSync(lockPath, 'utf8');
   } catch {
     return false;
   }
 
-  try {
-    const raw = fs.readFileSync(lockPath, 'utf8').trim();
-    if (raw.length === 0) {
-      if (ageMs < WRITE_LOCK_FRESH_MS) return false;
-      fs.unlinkSync(lockPath);
-      return true;
-    }
+  const raw = beforeContent.trim();
+  let shouldReclaim = false;
+  if (raw.length === 0) {
+    shouldReclaim = ageMs >= WRITE_LOCK_FRESH_MS;
+  } else {
     const [pidLine, tsLine] = raw.split('\n');
     const pid = Number(pidLine);
     const ts = Number(tsLine);
     if (Number.isNaN(pid) || !Number.isFinite(ts)) {
-      if (ageMs < WRITE_LOCK_FRESH_MS) return false;
-      fs.unlinkSync(lockPath);
-      return true;
+      shouldReclaim = ageMs >= WRITE_LOCK_FRESH_MS;
+    } else if (isPidAlive(pid)) {
+      return false;
+    } else {
+      shouldReclaim = true;
     }
-    // Propriétaire vivant : ne jamais expirer par timestamp seul (Codex P1).
-    if (isPidAlive(pid)) return false;
+  }
+  if (!shouldReclaim) return false;
+
+  afterObserve?.();
+
+  // Compare-and-delete : ne pas unlink si un concurrent a déjà remplacé le lock.
+  try {
+    const st = fs.statSync(lockPath);
+    const current = fs.readFileSync(lockPath, 'utf8');
+    if (st.ino !== beforeIno || current !== beforeContent) return false;
     fs.unlinkSync(lockPath);
     return true;
   } catch {
-    if (ageMs < WRITE_LOCK_FRESH_MS) return false;
-    try {
-      fs.unlinkSync(lockPath);
-      return true;
-    } catch {
-      return false;
-    }
+    return false;
   }
 }
 
