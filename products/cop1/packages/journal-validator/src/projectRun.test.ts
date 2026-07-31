@@ -1,4 +1,5 @@
-import { readdirSync } from 'node:fs';
+import { mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { projectRun } from './projectRun.js';
@@ -105,5 +106,37 @@ describe('projectRun — read-model de projection live (fiche 0031 / ADR-028)', 
 
     const notice = projection.notices.find((n) => n.code === 'registry.method_mismatch');
     expect(notice).toBeUndefined();
+  });
+
+  it('projette abandonedBy depuis run.finished {status:abandoned} (ADR-035)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'jv-abandon-'));
+    const lines = [
+      {
+        event_id: 'e1',
+        run_id: 'abandon-seat',
+        seq: 1,
+        ts: '2026-07-31T10:00:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'm' }, seat: 'human' },
+      },
+      {
+        event_id: 'e2',
+        run_id: 'abandon-seat',
+        seq: 2,
+        ts: '2026-07-31T10:01:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.finished',
+        payload: { status: 'abandoned', abandoned_by: 'seat' },
+      },
+    ];
+    writeFileSync(join(dir, 'events.jsonl'), `${lines.map((l) => JSON.stringify(l)).join('\n')}\n`);
+    try {
+      const projection = projectRun(dir);
+      expect(projection.state).toBe('finished');
+      expect(projection.abandonedBy).toBe('seat');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
