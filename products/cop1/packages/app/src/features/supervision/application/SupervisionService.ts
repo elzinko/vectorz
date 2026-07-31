@@ -9,6 +9,12 @@ export interface SupervisionServiceOptions {
   eventBus: EventBus;
   /** Seuil de silence (ms) en état `running` avant `presumed_dead` (D8). */
   presumedDeadAfterMs: number;
+  /**
+   * ADR-035 D3 — capacité d'abandon configurée côté siège.
+   * Porté dans chaque snapshot (GET + SSE) pour que le bouton Moniteur survive
+   * à la transition `alive → presumed_dead` via SSE.
+   */
+  abandonCapable?: boolean;
 }
 
 /**
@@ -25,12 +31,14 @@ export interface SupervisionServiceOptions {
 export class SupervisionService {
   private readonly eventBus: EventBus;
   private readonly presumedDeadAfterMs: number;
+  private readonly abandonCapable: boolean;
   private readonly snapshots = new Map<string, RunSnapshot>();
   private readonly deadTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(options: SupervisionServiceOptions) {
     this.eventBus = options.eventBus;
     this.presumedDeadAfterMs = options.presumedDeadAfterMs;
+    this.abandonCapable = options.abandonCapable === true;
   }
 
   /** Re-projette le run depuis le disque, met à jour la map, émet sur le bus. */
@@ -67,6 +75,7 @@ export class SupervisionService {
         liveness: 'alive',
         emissionClass: 'B',
         lastAbsorbedAt,
+        abandonCapable: this.abandonCapable,
       };
     } catch (error) {
       return {
@@ -86,6 +95,7 @@ export class SupervisionService {
         liveness: 'alive',
         emissionClass: 'B',
         lastAbsorbedAt,
+        abandonCapable: this.abandonCapable,
       };
     }
   }

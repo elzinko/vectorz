@@ -99,4 +99,9 @@ export interface RunProjection {
    */
   method?: MethodRef;
   seat?: string;
+  /**
+   * Provenance d'abandon depuis `run.finished` (ADR-035) — `seat` | `method` | absent.
+   * Présent uniquement si le run est `finished` avec `status: abandoned`.
+   */
+  abandonedBy?: 'seat' | 'method';
 }

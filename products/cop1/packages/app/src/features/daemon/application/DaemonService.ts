@@ -4,7 +4,9 @@ import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandl
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { HttpOrchestratorAdapter } from '../../orchestrator/infrastructure/HttpOrchestratorAdapter.js';
 import { YamlSprintStatusAdapter } from '../../orchestrator/infrastructure/YamlSprintStatusAdapter.js';
+import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
+import { EmitterCliAbandonAdapter } from '../../supervision/infrastructure/EmitterCliAbandonAdapter.js';
 import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalWatcherAdapter.js';
 import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
@@ -106,6 +108,8 @@ export class DaemonService {
       watchRoots = [];
     }
 
+    let abandonCommand: string[] = [];
+
     // Lecture de la config YAML pour presumed_dead_after_min (et watch_roots si pas de registre)
     try {
       // skipRamValidation : le mode moniteur ne consomme que `supervision.*` ;
@@ -117,6 +121,7 @@ export class DaemonService {
         watchRoots = config.supervision?.watch_roots ?? [];
       }
       presumedDeadAfterMin = config.supervision?.presumed_dead_after_min ?? 5;
+      abandonCommand = config.supervision?.abandon_command ?? [];
     } catch {
       // cop1.config.yaml absent ou invalide : supervision dormante par
       // défaut, ce n'est jamais une raison de faire échouer le démarrage
@@ -129,8 +134,32 @@ export class DaemonService {
     this.supervisionService = new SupervisionService({
       eventBus: this.eventBus,
       presumedDeadAfterMs: presumedDeadAfterMin * 60_000,
+      abandonCapable: abandonCommand.length > 0,
     });
     this.httpServer.setSupervisionProvider(() => this.supervisionService?.getSnapshots() ?? []);
+
+    // ADR-035 D2+D3 : adaptateur d'abandon câblé uniquement si abandon_command configurée
+    const abandonPort =
+      abandonCommand.length > 0
+        ? new EmitterCliAbandonAdapter(abandonCommand)
+        : {
+            abandon: async () => ({ ok: false as const, reason: 'abandon_command non configurée' }),
+          };
+    const abandonUseCase = new AbandonRunUseCase({
+      getSnapshot: (runDir) =>
+        this.supervisionService?.getSnapshots().find((s) => s.runDir === runDir),
+      abandonPort,
+      abandonCommand,
+    });
+    this.httpServer.setRunAbandonHandler({
+      execute: async (runDir) => {
+        const result = await abandonUseCase.execute(runDir);
+        if ('runId' in result) {
+          return { status: result.status, body: { ok: true, runId: result.runId } };
+        }
+        return { status: result.status, body: { error: result.error } };
+      },
+    });
 
     this.journalWatcher = new JournalWatcherAdapter(watchRoots, (root, runDir) => {
       this.supervisionService?.absorb(root, runDir);

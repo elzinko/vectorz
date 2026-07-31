@@ -27,4 +27,9 @@ export interface RunSnapshot extends RunProjection {
    * (semi-hostile, cf. `lastEventTs`), qui reste informatif uniquement.
    */
   lastAbsorbedAt?: string;
+  /**
+   * ADR-035 D3 — vrai si `supervision.abandon_command` est configurée côté siège.
+   * Absent/false ⇒ le bouton Moniteur reste caché (capacité dormante).
+   */
+  abandonCapable?: boolean;
 }

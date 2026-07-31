@@ -81,6 +81,19 @@ export function projectRun(runDir: string): RunProjection {
     }
   }
 
+  // ADR-035 — provenance d'abandon pour la carte finished (Codex / AC1 E2E).
+  // Premier `run.finished` uniquement (même ordre que reduceState) : un événement
+  // post_finished semi-hostile ne doit pas écraser ni inventer abandonedBy.
+  let abandonedBy: 'seat' | 'method' | undefined;
+  const finished = events.find((e) => e.envelope.type === 'run.finished');
+  if (finished?.envelope.payload) {
+    const status = finished.envelope.payload.status;
+    const by = finished.envelope.payload.abandoned_by;
+    if (status === 'abandoned' && (by === 'seat' || by === 'method')) {
+      abandonedBy = by;
+    }
+  }
+
   return {
     runId,
     state,
@@ -92,5 +105,6 @@ export function projectRun(runDir: string): RunProjection {
     tokens: { provenance: 'absent' },
     method,
     seat,
+    abandonedBy,
   };
 }

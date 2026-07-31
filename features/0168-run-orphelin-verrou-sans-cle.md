@@ -6,9 +6,9 @@ priority: P0
 epic:
 depends: ["0105"]
 labels: [supervision, dogfood, ux, contrat]
-status: todo
+status: in-progress
 ready: 2026-07-30
-pr:
+pr: "#76"
 created: 2026-07-30
 product: mega-city
 ---

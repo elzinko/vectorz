@@ -13,7 +13,7 @@ import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { computeUpgradeOk } from './upgrade-ok.js';
-import { Journal, readJournalEvents, type JournalEvent } from './journal.js';
+import { Journal, readJournalEvents, withRunWriteLock, type JournalEvent } from './journal.js';
 
 const RUNS_DIR_SEGMENTS = ['.supervision', 'runs'] as const;
 
@@ -63,6 +63,11 @@ export interface EscalateArgs {
 
 export interface RunFinishedArgs {
   status: 'success' | 'failure' | 'abandoned';
+  /** Provenance de l'abandon — obligatoire uniquement quand status === 'abandoned'.
+   * Défaut 'method' (la méthode abandonne son propre run).
+   * Écrit 'seat' par le chemin siège (bin/supervision-abandon via EmitterCliAbandonAdapter).
+   * ADR-035 D1. */
+  abandoned_by?: 'seat' | 'method';
 }
 
 export interface HeartbeatArgs {
@@ -157,6 +162,69 @@ function writeConfinedReport(
   return path.relative(projectRoot, filePath);
 }
 
+/**
+ * Formate une durée en ms en chaîne lisible (ex. "2 h 15 min", "45 min", "8 s").
+ * Pur : pas d'effet de bord.
+ */
+function formatAge(ms: number): string {
+  const sec = Math.floor(Math.abs(ms) / 1000);
+  const min = Math.floor(sec / 60);
+  const h = Math.floor(min / 60);
+  if (h > 0) return `${h} h ${min % 60} min`;
+  if (min > 0) return `${min} min`;
+  return `${sec} s`;
+}
+
+/**
+ * Produit un texte actionnable décrivant le run bloquant à partir de ses événements.
+ * Tolérant au journal semi-hostile (ADR-035 D7) : un `ts` illisible dégrade en
+ * « date inconnue » sans jamais throw.
+ */
+export function describeOpenRun(events: JournalEvent[]): string {
+  const started = events.find((e) => e.type === 'run.started');
+
+  const method = (() => {
+    const m = (started?.payload as Record<string, unknown> | undefined)?.method;
+    const name = (m as Record<string, unknown> | undefined)?.name;
+    const version = (m as Record<string, unknown> | undefined)?.version;
+    return typeof name === 'string' && name.length > 0
+      ? `${name}${typeof version === 'string' ? `@${version}` : ''}`
+      : 'méthode inconnue';
+  })();
+
+  const runAge = (() => {
+    try {
+      const ts = started?.ts != null ? new Date(started.ts as string) : null;
+      if (ts && !Number.isNaN(ts.getTime())) return formatAge(Date.now() - ts.getTime());
+    } catch {
+      /* dégrade */
+    }
+    return 'âge inconnu';
+  })();
+
+  const lastEvent = events.at(-1);
+  const lastEventDesc = (() => {
+    try {
+      const ts = lastEvent?.ts != null ? new Date(lastEvent.ts as string) : null;
+      if (ts && !Number.isNaN(ts.getTime())) {
+        return `${ts.toISOString()} (il y a ${formatAge(Date.now() - ts.getTime())})`;
+      }
+    } catch {
+      /* dégrade */
+    }
+    return 'date inconnue';
+  })();
+
+  const eventCount = events.length;
+
+  return [
+    `Méthode bloquante : ${method}`,
+    `Âge du run : ${runAge}`,
+    `Dernier événement : ${lastEventDesc} (${eventCount} événement(s) au total)`,
+    `Marche à suivre : abandonne ce run au Moniteur (bouton "Abandonner ce run" sur la carte "Silence prolongé"), ou appelle run_finished {status:"abandoned"} si c'est un orphelin de ta propre session.`,
+  ].join('\n');
+}
+
 export class SupervisionRuntime {
   /**
    * @param projectRoot Racine effective du projet supervisé.
@@ -172,7 +240,9 @@ export class SupervisionRuntime {
   runStart(args: RunStartArgs): { run_id: string } {
     const state = findOpenRun(this.projectRoot);
     if (state) {
-      throw new Error(`run_start refusé : un run est déjà ouvert (run_id=${state.runId})`);
+      const events = readJournalEvents(path.join(state.runDir, 'events.jsonl'));
+      const description = describeOpenRun(events);
+      throw new Error(`run_start refusé : un run est déjà ouvert (run_id=${state.runId})\n${description}`);
     }
     const runId = generateRunId();
     const runDir = path.join(this.projectRoot, ...RUNS_DIR_SEGMENTS, runId);
@@ -192,57 +262,61 @@ export class SupervisionRuntime {
   }
 
   gateReached(args: GateReachedArgs): { gate_event_id: string; message: string } {
-    const state = this.requireOpenRun('gate_reached');
-    if (state.openGate) {
-      throw new Error(
-        `gate_reached refusé : un gate est déjà ouvert (gate_id=${state.openGate.gate_id}), attendu gate_resumed`,
-      );
-    }
     assertSafeGateId(args.gate_id);
-    const journal = new Journal(state.runDir, state.runId);
-    const upgradeOk = computeUpgradeOk(this.projectRoot, args.upgrade_ok_veto === true);
+    return this.withOpenRunWrite('gate_reached', (state, journal) => {
+      if (state.openGate) {
+        throw new Error(
+          `gate_reached refusé : un gate est déjà ouvert (gate_id=${state.openGate.gate_id}), attendu gate_resumed`,
+        );
+      }
+      const upgradeOk = computeUpgradeOk(this.projectRoot, args.upgrade_ok_veto === true);
 
-    let reportRef: string | undefined;
-    if (args.report_markdown !== undefined) {
-      const seq = journal.peekNextSeq();
-      const fileName = `report-${args.gate_id}-${seq}.md`;
-      reportRef = writeConfinedReport(this.projectRoot, state.runDir, fileName, args.report_markdown);
-    }
+      let reportRef: string | undefined;
+      if (args.report_markdown !== undefined) {
+        const seq = journal.peekNextSeq();
+        const fileName = `report-${args.gate_id}-${seq}.md`;
+        reportRef = writeConfinedReport(this.projectRoot, state.runDir, fileName, args.report_markdown);
+      }
 
-    const event = journal.append('gate.reached', {
-      gate_id: args.gate_id,
-      outcome: args.outcome,
-      upgrade_ok: upgradeOk,
-      ...(reportRef !== undefined ? { report_ref: reportRef } : {}),
+      const event = journal.append('gate.reached', {
+        gate_id: args.gate_id,
+        outcome: args.outcome,
+        upgrade_ok: upgradeOk,
+        ...(reportRef !== undefined ? { report_ref: reportRef } : {}),
+      });
+
+      return {
+        gate_event_id: event.event_id,
+        message: 'STOP — arrête-toi et attends la décision du siège avant de continuer.',
+      };
     });
-
-    return {
-      gate_event_id: event.event_id,
-      message: 'STOP — arrête-toi et attends la décision du siège avant de continuer.',
-    };
   }
 
   gateResumed(args: GateResumedArgs): { event_id: string } {
-    const state = this.requireOpenRun('gate_resumed');
-    if (!state.openGate) {
-      throw new Error('gate_resumed refusé : aucun gate ouvert sur ce run');
-    }
-    if (args.gate_event_id !== state.openGate.gate_event_id) {
-      throw new Error(
-        `gate_resumed refusé : gate_event_id (${args.gate_event_id}) ne correspond pas au gate ouvert (${state.openGate.gate_event_id})`,
-      );
-    }
-    const journal = new Journal(state.runDir, state.runId);
-    const event = journal.append('gate.resumed', { gate_event_id: args.gate_event_id });
-    return { event_id: event.event_id };
+    return this.withOpenRunWrite('gate_resumed', (state, journal) => {
+      if (!state.openGate) {
+        throw new Error('gate_resumed refusé : aucun gate ouvert sur ce run');
+      }
+      if (args.gate_event_id !== state.openGate.gate_event_id) {
+        throw new Error(
+          `gate_resumed refusé : gate_event_id (${args.gate_event_id}) ne correspond pas au gate ouvert (${state.openGate.gate_event_id})`,
+        );
+      }
+      const event = journal.append('gate.resumed', { gate_event_id: args.gate_event_id });
+      return { event_id: event.event_id };
+    });
   }
 
   escalate(args: EscalateArgs): { escalation_id: string } {
-    const state = this.requireOpenRun('escalate');
-    const journal = new Journal(state.runDir, state.runId);
-    const escalationId = randomUUID();
-    journal.append('escalation', { escalation_id: escalationId, type: args.type, detail: args.detail });
-    return { escalation_id: escalationId };
+    return this.withOpenRunWrite('escalate', (_state, journal) => {
+      const escalationId = randomUUID();
+      journal.append('escalation', {
+        escalation_id: escalationId,
+        type: args.type,
+        detail: args.detail,
+      });
+      return { escalation_id: escalationId };
+    });
   }
 
   /**
@@ -251,31 +325,80 @@ export class SupervisionRuntime {
    * Refusé si un gate est ouvert : le silence au jalon est voulu (ADR-028 / validateur).
    */
   heartbeat(args: HeartbeatArgs = {}): { run_id: string; event_id: string } {
-    const state = this.requireOpenRun('heartbeat');
-    if (state.openGate) {
-      throw new Error(
-        `heartbeat refusé : un gate est ouvert (gate_id=${state.openGate.gate_id}) — le silence au jalon est voulu ; attends gate_resumed`,
-      );
-    }
-    const journal = new Journal(state.runDir, state.runId);
-    const note =
-      typeof args.note === 'string' && args.note.trim().length > 0 ? args.note.trim() : undefined;
-    const event = journal.append('heartbeat', note !== undefined ? { note } : {});
-    return { run_id: state.runId, event_id: event.event_id };
+    return this.withOpenRunWrite('heartbeat', (state, journal) => {
+      if (state.openGate) {
+        throw new Error(
+          `heartbeat refusé : un gate est ouvert (gate_id=${state.openGate.gate_id}) — le silence au jalon est voulu ; attends gate_resumed`,
+        );
+      }
+      const note =
+        typeof args.note === 'string' && args.note.trim().length > 0 ? args.note.trim() : undefined;
+      const event = journal.append('heartbeat', note !== undefined ? { note } : {});
+      return { run_id: state.runId, event_id: event.event_id };
+    });
   }
 
   runFinished(args: RunFinishedArgs): { run_id: string } {
-    const state = this.requireOpenRun('run_finished');
-    const journal = new Journal(state.runDir, state.runId);
-    journal.append('run.finished', { status: args.status });
-    return { run_id: state.runId };
+    return this.withOpenRunWrite('run_finished', (state, journal) => {
+      const payload: Record<string, unknown> = { status: args.status };
+      if (args.status === 'abandoned') {
+        payload.abandoned_by = args.abandoned_by ?? 'method';
+      }
+      journal.append('run.finished', payload);
+      return { run_id: state.runId };
+    });
   }
 
-  private requireOpenRun(toolName: string): OpenRunState {
-    const state = findOpenRun(this.projectRoot);
-    if (!state) {
+  /**
+   * Abandonne le run ouvert **uniquement si son `runId` correspond à `expectedRunId`**.
+   * ADR-035 D5 — garde anti-clic-périmé. Check + append dans la même section critique
+   * (write lock) pour qu'un heartbeat concurrent ne puisse pas écrire après `run.finished`.
+   */
+  abandonRun(expectedRunId: string): { run_id: string } {
+    return this.withOpenRunWrite(
+      'abandon',
+      (state, journal) => {
+        journal.append('run.finished', { status: 'abandoned', abandoned_by: 'seat' });
+        return { run_id: state.runId };
+      },
+      { expectedRunId },
+    );
+  }
+
+  /**
+   * Acquiert le write lock du run, **re-vérifie** qu'il est encore ouvert, puis mute.
+   * Empêche `heartbeat` / `run_finished` d'append après un `abandon` concurrent
+   * (finding Codex : check hors lock + append sous lock ⇒ `envelope.post_finished`).
+   */
+  private withOpenRunWrite<T>(
+    toolName: string,
+    mutate: (state: OpenRunState, journal: Journal) => T,
+    options: { expectedRunId?: string } = {},
+  ): T {
+    const provisional = findOpenRun(this.projectRoot);
+    if (!provisional) {
       throw new Error(`${toolName} refusé : aucun run ouvert (appelle run_start d'abord)`);
     }
-    return state;
+    if (options.expectedRunId !== undefined && provisional.runId !== options.expectedRunId) {
+      throw new Error(
+        `${toolName} refusé : le run ouvert (${provisional.runId}) ne correspond pas au run attendu (${options.expectedRunId}) — clic sur carte périmée ?`,
+      );
+    }
+
+    return withRunWriteLock(provisional.runDir, () => {
+      const state = findOpenRun(this.projectRoot);
+      if (!state || state.runDir !== provisional.runDir) {
+        throw new Error(
+          `${toolName} refusé : le run n'est plus ouvert (déjà terminé entre-temps)`,
+        );
+      }
+      if (options.expectedRunId !== undefined && state.runId !== options.expectedRunId) {
+        throw new Error(
+          `${toolName} refusé : le run ouvert (${state.runId}) ne correspond pas au run attendu (${options.expectedRunId}) — clic sur carte périmée ?`,
+        );
+      }
+      const journal = new Journal(state.runDir, state.runId);
+      return mutate(state, journal);
+    });
   }
 }

@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { CONTRACT_URI, Journal } from '../journal.js';
+import { CONTRACT_URI, Journal, WRITE_LOCK_FILE, tryReclaimWriteLock } from '../journal.js';
 
 describe('Journal — enveloppe et append (rubrique B)', () => {
   let tmpDir: string;
@@ -113,8 +113,80 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
       expect(() => JSON.parse(line)).not.toThrow();
     }
   });
-});
 
+  it('deux Journal concurrents n’attribuent jamais le même seq (write lock)', () => {
+    const a = new Journal(runDir, 'run-1');
+    a.append('run.started', {});
+
+    const left = new Journal(runDir, 'run-1');
+    const right = new Journal(runDir, 'run-1');
+    // Les deux croient nextSeq=2 avant append ; sous verrou chacun relit.
+    const e1 = left.append('heartbeat', { who: 'left' });
+    const e2 = right.append('heartbeat', { who: 'right' });
+    expect(e1.seq).not.toBe(e2.seq);
+    expect([e1.seq, e2.seq].sort((x, y) => x - y)).toEqual([2, 3]);
+  });
+
+  it('tryReclaimWriteLock récupère un verrou orphelin (PID mort / contenu vide)', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    fs.writeFileSync(lockPath, '999999999\n0\n'); // PID improbable + ts ancien
+    expect(tryReclaimWriteLock(lockPath)).toBe(true);
+    expect(fs.existsSync(lockPath)).toBe(false);
+
+    // Contenu illisible mais frais → ne reclaim pas (fenêtre de publication)
+    fs.writeFileSync(lockPath, '');
+    expect(tryReclaimWriteLock(lockPath)).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+
+    // Contenu illisible et vieux → reclaim
+    const old = Date.now() - 10_000;
+    fs.utimesSync(lockPath, old / 1000, old / 1000);
+    expect(tryReclaimWriteLock(lockPath, Date.now())).toBe(true);
+    expect(fs.existsSync(lockPath)).toBe(false);
+  });
+
+  it('tryReclaimWriteLock ne vole pas un verrou frais de ce process', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    fs.writeFileSync(lockPath, `${process.pid}\n${Date.now()}\n`);
+    expect(tryReclaimWriteLock(lockPath)).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+    fs.unlinkSync(lockPath);
+  });
+
+  it('tryReclaimWriteLock ne expire jamais un propriétaire vivant (même après 30s+)', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    const oldTs = Date.now() - 120_000;
+    fs.writeFileSync(lockPath, `${process.pid}\n${oldTs}\n`);
+    const old = oldTs / 1000;
+    fs.utimesSync(lockPath, old, old);
+    expect(tryReclaimWriteLock(lockPath, Date.now())).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+    fs.unlinkSync(lockPath);
+  });
+
+  it('tryReclaimWriteLock n’unlink pas si le lock a changé sous nos pieds (inode/contenu)', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    const deadContent = '999999999\n0\n';
+    fs.writeFileSync(lockPath, deadContent);
+
+    const reclaimed = tryReclaimWriteLock(lockPath, Date.now(), () => {
+      // Concurrent A : unlink + nouveau lock vivant entre observe et CAS.
+      // Sur certains FS (Linux tmp) l'inode peut être réutilisé — le contenu change.
+      fs.unlinkSync(lockPath);
+      fs.writeFileSync(lockPath, `${process.pid}\n${Date.now()}\n`);
+      expect(fs.readFileSync(lockPath, 'utf8')).not.toBe(deadContent);
+    });
+
+    expect(reclaimed).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+    expect(fs.readFileSync(lockPath, 'utf8')).toContain(String(process.pid));
+    fs.unlinkSync(lockPath);
+  });
+});
 function readLines(runDir: string): Array<{
   event_id: string;
   run_id: string;

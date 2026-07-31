@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SupervisionView } from './SupervisionView.js';
 
@@ -326,5 +326,218 @@ describe('SupervisionView', () => {
       expect(items.length).toBe(100);
     });
     expect(await screen.findByText(/et 50 de plus/)).toBeTruthy();
+  });
+
+  // ---------------------------------------------------------------------------
+  // Abandon run — fiche 0168 §E (AC1/AC5/AC6 E2E → couverts en RTL)
+  // Playwright Playwright SKIP : Docker/daemon indispo (voir SPRINT.md §E2E).
+  // ---------------------------------------------------------------------------
+
+  describe('Abandon run — fiche 0168 §E', () => {
+    /** Prépare fetch: 1er appel GET hydratation, 2e appel POST abandon. */
+    function stubAbandonFetch(
+      snapshot: Record<string, unknown>,
+      postResponse: { ok: boolean; status: number; body: unknown },
+    ): void {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn()
+          .mockResolvedValueOnce({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve([snapshot]),
+          })
+          .mockResolvedValueOnce({
+            ok: postResponse.ok,
+            status: postResponse.status,
+            json: () => Promise.resolve(postResponse.body),
+          }),
+      );
+    }
+
+    // §E AC1 — le bouton est visible UNIQUEMENT sur running + presumed_dead + capacité
+    it('E1 — shows "Abandonner ce run" button on running + presumed_dead card', async () => {
+      stubFetch([
+        makeSnapshot({ state: 'running', liveness: 'presumed_dead', abandonCapable: true }),
+      ]);
+      render(<SupervisionView />);
+      expect(await screen.findByRole('button', { name: /abandonner ce run/i })).toBeTruthy();
+    });
+
+    it('E1 — hides abandon button on running + alive card', async () => {
+      stubFetch([makeSnapshot({ state: 'running', liveness: 'alive', abandonCapable: true })]);
+      render(<SupervisionView />);
+      await screen.findByText(/demo-methode/);
+      expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
+    });
+
+    it('E1 — hides abandon button on at_gate card (silence voulu, jamais presumed_dead)', async () => {
+      stubFetch([makeSnapshot({ state: 'at_gate', liveness: 'alive', abandonCapable: true })]);
+      render(<SupervisionView />);
+      await screen.findByText(/demo-methode/);
+      expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
+    });
+
+    it('E1 — hides abandon button on finished card', async () => {
+      stubFetch([makeSnapshot({ state: 'finished', liveness: 'alive', abandonCapable: true })]);
+      render(<SupervisionView />);
+      await screen.findByText(/demo-methode/);
+      expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
+    });
+
+    it('AC6 — shows disabled abandon + config hint when abandonCapable is false', async () => {
+      stubFetch([
+        makeSnapshot({ state: 'running', liveness: 'presumed_dead', abandonCapable: false }),
+      ]);
+      render(<SupervisionView />);
+      await screen.findByText(/Silence prolongé/);
+      const btn = screen.getByRole('button', { name: /abandonner ce run/i });
+      expect((btn as HTMLButtonElement).disabled).toBe(true);
+      expect(screen.getByText(/capacité d'abandon dormante/i)).toBeTruthy();
+      expect(screen.getByText(/abandon_command/i)).toBeTruthy();
+    });
+
+    it('SSE presumed_dead keeps abandonCapable — bouton apparaît sans F5', async () => {
+      stubFetch([
+        makeSnapshot({ state: 'running', liveness: 'alive', abandonCapable: true, lastEventSeq: 1 }),
+      ]);
+      render(<SupervisionView />);
+      await screen.findByText(/demo-methode/);
+      expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
+
+      await pushSse(
+        'supervision.run.updated',
+        makeSnapshot({
+          state: 'running',
+          liveness: 'presumed_dead',
+          abandonCapable: true,
+          lastEventSeq: 1,
+        }),
+      );
+
+      expect(await screen.findByRole('button', { name: /abandonner ce run/i })).toBeTruthy();
+    });
+
+    // §E AC1 — clic → POST + état intermédiaire "abandon demandé"
+    it('E3 — click POSTs /api/supervision/runs/abandon and shows "abandon demandé" state', async () => {
+      const snap = makeSnapshot({
+        state: 'running',
+        liveness: 'presumed_dead',
+        abandonCapable: true,
+      });
+      stubAbandonFetch(snap, { ok: true, status: 200, body: {} });
+      render(<SupervisionView />);
+      const btn = await screen.findByRole('button', { name: /abandonner ce run/i });
+
+      fireEvent.click(btn);
+
+      expect(await screen.findByText(/abandon demandé/i)).toBeTruthy();
+      // Le bouton lui-même est remplacé par le message d'état (D6 — pas d'optimisme)
+      expect(screen.queryByRole('button', { name: /abandonner ce run/i })).toBeNull();
+    });
+
+    it('E3 — POST body contains the expected runDir', async () => {
+      const snap = makeSnapshot({
+        state: 'running',
+        liveness: 'presumed_dead',
+        abandonCapable: true,
+      });
+      stubAbandonFetch(snap, { ok: true, status: 200, body: {} });
+      render(<SupervisionView />);
+      const btn = await screen.findByRole('button', { name: /abandonner ce run/i });
+
+      fireEvent.click(btn);
+
+      await screen.findByText(/abandon demandé/i);
+      const calls = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls;
+      const postCall = calls.find((call) => call[0] === '/api/supervision/runs/abandon');
+      expect(postCall).toBeTruthy();
+      const bodyArg = JSON.parse((postCall?.[1] as { body: string }).body) as { runDir: string };
+      expect(bodyArg.runDir).toBe('/proj/.supervision/runs/run-1');
+    });
+
+    // §E D6 — pas de mise à jour optimiste : la carte ne passe PAS en "finished" avant SSE
+    it('D6 — no optimistic update: card stays in "abandon demandé" before SSE disk confirmation', async () => {
+      const snap = makeSnapshot({
+        state: 'running',
+        liveness: 'presumed_dead',
+        abandonCapable: true,
+      });
+      stubAbandonFetch(snap, { ok: true, status: 200, body: {} });
+      render(<SupervisionView />);
+      const btn = await screen.findByRole('button', { name: /abandonner ce run/i });
+
+      fireEvent.click(btn);
+
+      await screen.findByText(/abandon demandé/i);
+      // La carte n'affiche pas encore "Terminé" (le disque n'a pas encore confirmé)
+      expect(screen.queryByText(/^terminé$/i)).toBeNull();
+    });
+
+    // §E AC1 — la carte passe en "finished" quand le disque confirme via SSE, sans rechargement
+    it('E4 — card transitions to "finished" after disk confirmation via SSE (no page reload)', async () => {
+      const snap = makeSnapshot({
+        state: 'running',
+        liveness: 'presumed_dead',
+        abandonCapable: true,
+      });
+      stubAbandonFetch(snap, { ok: true, status: 200, body: {} });
+      render(<SupervisionView />);
+      const btn = await screen.findByRole('button', { name: /abandonner ce run/i });
+
+      fireEvent.click(btn);
+      await screen.findByText(/abandon demandé/i);
+
+      // Le watcher SSE confirme depuis le disque (avec abandoned_by pour AC1 E2E)
+      await pushSse(
+        'supervision.run.updated',
+        makeSnapshot({
+          state: 'finished',
+          liveness: 'alive',
+          lastEventSeq: 10,
+          abandonedBy: 'seat',
+        }),
+      );
+
+      expect(await screen.findByText(/terminé/i)).toBeTruthy();
+      expect(screen.queryByText(/abandon demandé/i)).toBeNull();
+      expect(screen.getByTestId('abandoned-by').textContent).toMatch(/par le siège/i);
+    });
+
+    // §E AC5 — sans clic, le run reste en "Silence prolongé" indéfiniment
+    it('E5 — without click, run stays "Silence prolongé" indefinitely (no auto-abandon)', async () => {
+      stubFetch([
+        makeSnapshot({ state: 'running', liveness: 'presumed_dead', abandonCapable: true }),
+      ]);
+      render(<SupervisionView />);
+
+      expect(await screen.findByText(/silence prolongé/i)).toBeTruthy();
+      expect(screen.queryByText(/abandon demandé/i)).toBeNull();
+      expect(screen.queryByText(/terminé/i)).toBeNull();
+      // Le bouton est présent mais n'a pas été cliqué
+      expect(screen.getByRole('button', { name: /abandonner ce run/i })).toBeTruthy();
+    });
+
+    // §E — POST 409 (ex. run non éligible) → message d'erreur affiché
+    it('E6 — POST 409 shows server error message on the card', async () => {
+      const snap = makeSnapshot({
+        state: 'running',
+        liveness: 'presumed_dead',
+        abandonCapable: true,
+      });
+      stubAbandonFetch(snap, {
+        ok: false,
+        status: 409,
+        body: { error: 'abandon_command non configurée' },
+      });
+      render(<SupervisionView />);
+      const btn = await screen.findByRole('button', { name: /abandonner ce run/i });
+
+      fireEvent.click(btn);
+
+      expect(await screen.findByText(/abandon_command non configurée/i)).toBeTruthy();
+      // Le bouton est ré-affiché pour permettre une nouvelle tentative
+      expect(screen.getByRole('button', { name: /abandonner ce run/i })).toBeTruthy();
+    });
   });
 });

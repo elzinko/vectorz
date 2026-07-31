@@ -524,3 +524,153 @@ describe('Rubrique I — Registre (fiche 0082)', () => {
     expect(() => runtime.gateReached({ gate_id: 'gate-1', outcome: 'ok' })).not.toThrow();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Rubrique J — Run orphelin : abandon, provenance, erreur actionnable (fiche 0168)
+// Référence normative : ADR-035-abandon-siege-run-orphelin.md
+// ---------------------------------------------------------------------------
+
+describe('Rubrique J — Run orphelin (fiche 0168)', () => {
+  // J1 — AC3 : run_finished abandoned sans abandoned_by → payload porte 'method' par défaut
+  it('J1 — runFinished abandoned sans abandoned_by → abandoned_by:method dans le payload', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    runtime.runFinished({ status: 'abandoned' });
+
+    const events = readEvents(projectRoot, run_id);
+    const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
+    expect(finished).toBeDefined();
+    expect((finished!.payload as Record<string, unknown>).status).toBe('abandoned');
+    expect((finished!.payload as Record<string, unknown>).abandoned_by).toBe('method');
+  });
+
+  // J2 — AC3 : run_finished abandoned avec abandoned_by:seat → payload porte 'seat'
+  it('J2 — runFinished abandoned avec abandoned_by:seat → abandoned_by:seat dans le payload', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    runtime.runFinished({ status: 'abandoned', abandoned_by: 'seat' });
+
+    const events = readEvents(projectRoot, run_id);
+    const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
+    expect(finished).toBeDefined();
+    expect((finished!.payload as Record<string, unknown>).abandoned_by).toBe('seat');
+  });
+
+  // J3 — AC3 : run_finished success → pas de abandoned_by dans le payload
+  it('J3 — runFinished success → pas de champ abandoned_by dans le payload', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    runtime.runFinished({ status: 'success' });
+
+    const events = readEvents(projectRoot, run_id);
+    const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
+    expect(finished).toBeDefined();
+    expect((finished!.payload as Record<string, unknown>)).not.toHaveProperty('abandoned_by');
+  });
+
+  // J4 — AC4 : run_start refusé porte la méthode, l'âge et la marche à suivre
+  it('J4 — runStart refusé porte méthode bloquante, âge du run, et marche à suivre', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+
+    let errorMsg = '';
+    try {
+      runtime.runStart({ method_name: 'autre', method_version: '0.0.1' });
+    } catch (e) {
+      errorMsg = e instanceof Error ? e.message : String(e);
+    }
+
+    expect(errorMsg).toContain('ezk-sprint');
+    expect(errorMsg).toMatch(/min|h|s/); // âge du run
+    expect(errorMsg).toMatch(/Moniteur|run_finished|abandonner/i); // marche à suivre
+  });
+
+  // J5 — AC4 : journal semi-hostile → dégrade en "date inconnue", ne crashe pas
+  it('J5 — runStart sur run semi-hostile (ts illisible) → refuse sans crash, indique date inconnue', () => {
+    // Écriture manuelle d'un run avec ts non-ISO
+    const runsDir = path.join(projectRoot, '.supervision', 'runs');
+    const runId = '2020-01-01T00-00-00-000Z-aaaabbbb';
+    const runDir = path.join(runsDir, runId);
+    fs.mkdirSync(runDir, { recursive: true });
+    const badEvent = JSON.stringify({
+      event_id: 'e1',
+      run_id: runId,
+      seq: 1,
+      ts: 'NOT_A_DATE',
+      contract: 'cop1/supervisability@0.1',
+      type: 'run.started',
+      payload: { method: { name: 'ezk-sprint', version: '1.0.0' }, seat: 'pilot' },
+    });
+    fs.writeFileSync(path.join(runDir, 'events.jsonl'), badEvent + '\n', 'utf8');
+
+    const runtime = new SupervisionRuntime(projectRoot);
+    let errorMsg = '';
+    let threw = false;
+    try {
+      runtime.runStart({ method_name: 'autre', method_version: '0.0.1' });
+    } catch (e) {
+      threw = true;
+      errorMsg = e instanceof Error ? e.message : String(e);
+    }
+
+    expect(threw).toBe(true);
+    expect(errorMsg).toContain('ezk-sprint'); // méthode toujours présente
+    expect(errorMsg).toMatch(/inconnue|inconnu/i); // âge/date dégradés
+    expect(errorMsg).toMatch(/Moniteur|run_finished|abandonner/i); // marche à suivre toujours présente
+  });
+
+  // J6 — D5 : abandonRun refuse si le run ouvert ≠ run attendu
+  it('J6 — abandonRun refuse si le run ouvert ne correspond pas au run attendu', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id: runA } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    runtime.runFinished({ status: 'success' });
+
+    const { run_id: runB } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    expect(runB).not.toBe(runA);
+
+    // On tente d'abandonner runA alors que runB est ouvert
+    expect(() => runtime.abandonRun(runA)).toThrow();
+    // Le journal de runB ne doit pas avoir de run.finished
+    const events = readEvents(projectRoot, runB);
+    expect(events.map((e) => e.type)).not.toContain('run.finished');
+  });
+
+  // J7 — D5 : abandonRun écrit run.finished abandoned seat quand le run correspond
+  it('J7 — abandonRun écrit run.finished abandoned_by:seat quand le run attendu correspond', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+
+    runtime.abandonRun(run_id);
+
+    const events = readEvents(projectRoot, run_id);
+    const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
+    expect(finished).toBeDefined();
+    expect((finished!.payload as Record<string, unknown>).status).toBe('abandoned');
+    expect((finished!.payload as Record<string, unknown>).abandoned_by).toBe('seat');
+    // seq strictement croissant
+    expect(events.map((e) => e.seq)).toEqual([1, 2]);
+  });
+
+  // Codex — check+append sous le même write lock : heartbeat après abandon refuse
+  it('J7c — heartbeat refuse après abandon (pas d’append post run.finished)', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
+    runtime.abandonRun(run_id);
+    expect(() => runtime.heartbeat({ note: 'trop tard' })).toThrow(/plus ouvert|aucun run ouvert/i);
+    const events = readEvents(projectRoot, run_id);
+    expect(events.filter((e) => e.type === 'heartbeat')).toHaveLength(0);
+    expect(events.filter((e) => e.type === 'run.finished')).toHaveLength(1);
+  });
+
+  // J8 — AC5 : aucun run n'est clos automatiquement (pas de TTL)
+  it("J8 — un run ouvert reste ouvert sans action externe (pas d'auto-abandon)", () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+
+    // Attendre un peu et vérifier que le run est toujours ouvert
+    const events = readEvents(projectRoot, run_id);
+    expect(events.map((e) => e.type)).not.toContain('run.finished');
+    // run_start refusé = le run est bien toujours ouvert
+    expect(() => runtime.runStart({ method_name: 'm', method_version: '1.0.0' })).toThrow();
+  });
+});

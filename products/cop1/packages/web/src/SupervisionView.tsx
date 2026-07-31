@@ -44,10 +44,17 @@ interface RunSnapshot {
   tokens: { provenance: 'measured' | 'absent' };
   method?: MethodRef;
   seat?: string;
+  /**
+   * ADR-035 — provenance d'abandon depuis `run.finished` (`seat` | `method`).
+   * Affiché sur la carte finished (AC1 E2E).
+   */
+  abandonedBy?: 'seat' | 'method';
   projectRoot: string;
   runDir: string;
   liveness: 'alive' | 'presumed_dead';
   emissionClass: 'B';
+  /** ADR-035 D3 — capacité d'abandon configurée côté siège. */
+  abandonCapable?: boolean;
 }
 
 interface SseFrame {
@@ -249,15 +256,58 @@ export function SupervisionView() {
 }
 
 /**
+ * ADR-035 D4+D6 — déclenche le POST abandon et gère les états locaux.
+ * Pas de mise à jour optimiste : l'état "abandon demandé" est affiché
+ * jusqu'à ce que le SSE supervision.run.updated referme la boucle.
+ */
+type AbandonState = 'idle' | 'pending' | 'requested' | 'error';
+
+async function postAbandon(runDir: string): Promise<{ ok: boolean; message?: string }> {
+  try {
+    const res = await fetch('/api/supervision/runs/abandon', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ runDir }),
+    });
+    const data = (await res.json()) as { error?: string };
+    if (!res.ok) {
+      return { ok: false, message: data.error ?? `Erreur ${res.status}` };
+    }
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : 'Erreur réseau' };
+  }
+}
+
+/**
  * finding 3 (revue FRONT 0031) : mémoïsée pour que le tick "il y a Xs" (isolé
  * dans `RunAge`) ne re-rende pas la carte entière chaque seconde.
  */
 const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
+  const [abandonState, setAbandonState] = useState<AbandonState>('idle');
+  const [abandonError, setAbandonError] = useState<string | null>(null);
+
   const look = STATE_LOOK[run.state];
   const dead = run.liveness === 'presumed_dead';
   const tone = dead ? 'stop' : look.tone;
   const openGate = run.state === 'at_gate' ? run.gates.find((g) => !g.resumedAt) : undefined;
   const pastGates = openGate ? run.gates.filter((g) => g !== openGate) : run.gates;
+
+  const canAbandon = dead && run.state === 'running' && run.abandonCapable === true;
+  const dormantAbandon = dead && run.state === 'running' && run.abandonCapable !== true;
+
+  async function handleAbandon() {
+    if (!canAbandon || abandonState === 'pending' || abandonState === 'requested') return;
+    setAbandonState('pending');
+    setAbandonError(null);
+    const result = await postAbandon(run.runDir);
+    if (result.ok) {
+      setAbandonState('requested');
+    } else {
+      setAbandonState('error');
+      setAbandonError(result.message ?? 'Abandon refusé');
+    }
+  }
 
   return (
     <div className={`run-card run-card--${tone}`}>
@@ -280,6 +330,12 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
             <i className="run-card__k">siège</i> {run.seat}
           </span>
         )}
+        {(run.state === 'finished' || run.state === 'finished_at_gate') && run.abandonedBy && (
+          <span data-testid="abandoned-by">
+            <i className="run-card__k">abandon</i>{' '}
+            {run.abandonedBy === 'seat' ? 'par le siège' : 'par la méthode'}
+          </span>
+        )}
         <RunAge lastAbsorbedAt={run.lastAbsorbedAt} lastEventTs={run.lastEventTs} />
         <span>
           <i className="run-card__k">tokens</i>{' '}
@@ -294,6 +350,45 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
         <p className="run-card__alert" role="alert">
           Aucun signe de vie depuis un moment alors que le run était en cours.
         </p>
+      )}
+
+      {canAbandon && (
+        <div className="run-card__abandon">
+          {abandonState === 'requested' ? (
+            <p className="run-card__abandon-pending" role="status">
+              ⏳ Abandon demandé — en attente de la confirmation disque…
+            </p>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="run-card__abandon-btn"
+                disabled={abandonState === 'pending'}
+                onClick={() => void handleAbandon()}
+              >
+                {abandonState === 'pending' ? 'En cours…' : 'Abandonner ce run'}
+              </button>
+              {abandonState === 'error' && abandonError && (
+                <p className="run-card__abandon-err" role="alert">
+                  {abandonError}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {dormantAbandon && (
+        <div className="run-card__abandon">
+          <button type="button" className="run-card__abandon-btn" disabled>
+            Abandonner ce run
+          </button>
+          <p className="run-card__abandon-hint" role="note">
+            Capacité d&apos;abandon dormante — configurez{' '}
+            <code>supervision.abandon_command</code> dans la config du siège (ex.{' '}
+            <code>["pnpm", "--dir", "products/mega-city", "supervision:abandon"]</code>).
+          </p>
+        </div>
       )}
 
       {openGate && (

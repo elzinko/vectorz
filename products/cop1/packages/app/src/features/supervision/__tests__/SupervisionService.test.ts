@@ -111,6 +111,34 @@ describe('SupervisionService', () => {
     expect(snapshot?.liveness).toBe('presumed_dead');
   });
 
+  it('ADR-035 — abandonCapable survit à la transition SSE presumed_dead', () => {
+    service.stop();
+    service = new SupervisionService({
+      eventBus,
+      presumedDeadAfterMs: PRESUMED_DEAD_AFTER_MS,
+      abandonCapable: true,
+    });
+    writeRun(testDir, [runStarted('run-1', 1, new Date().toISOString())]);
+
+    const absorbed = service.absorb(testDir, testDir);
+    expect(absorbed.abandonCapable).toBe(true);
+    expect(absorbed.liveness).toBe('alive');
+
+    const emitted: unknown[] = [];
+    eventBus.on('supervision.run.updated', (payload) => {
+      emitted.push(payload);
+    });
+
+    vi.advanceTimersByTime(PRESUMED_DEAD_AFTER_MS);
+
+    const dead = service.getSnapshots()[0];
+    expect(dead?.liveness).toBe('presumed_dead');
+    expect(dead?.abandonCapable).toBe(true);
+    const last = emitted[emitted.length - 1] as { abandonCapable?: boolean; liveness?: string };
+    expect(last.liveness).toBe('presumed_dead');
+    expect(last.abandonCapable).toBe(true);
+  });
+
   it("un ts déclaré illisible n'arme pas un timer NaN (pas de presumed_dead immédiat)", () => {
     writeRun(testDir, [runStarted('run-1', 1, 'ceci-nest-pas-une-date')]);
 
