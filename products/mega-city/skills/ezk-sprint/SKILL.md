@@ -79,9 +79,27 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
-8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/)). **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** (screenshots, ou courte vidéo/GIF si besoin) **dans la description de la PR** — pas seulement des fichiers orphelins dans le diff.
+8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement** ; le corps est ici). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) — trois blocs **littéraux** :
+
+   ```markdown
+   ## Summary
+   <!-- ≤5 lignes user-facing : ce que ça change et pourquoi. Ouvre « En clair ». -->
+
+   ## Lien fiche
+   <!-- chemin : features/<id>-*.md (ou équivalent projet) — l'id est dans la branche feat/<id>-<slug> -->
+
+   ## Comment tester
+   <!-- commandes littérales rejouables, OU preuves agent (screenshots) pointant vers
+        scripts npm / BDD déjà existants — ne PAS dupliquer le Gherkin de la fiche.
+        Voir docs/PR_VALIDATION.md si la convention est installée (ezk-pr-pilot init). -->
+   ```
+
+   Corps ≤ ~2 000 caractères hors annexes (repère). **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** **dans la description** — pas seulement des fichiers orphelins dans le diff. Squelette mince : [`ezk-pr-pilot` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr-pilot/assets/PULL_REQUEST_TEMPLATE.thin.md) (ADR-0009 : convention pour l'écriture, skill pour la consommation).
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
-   puis résume + « on continue ? ».
+   puis résume + « on continue ? ». Le résumé de clôture suit la règle
+   [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :
+   ouvre par **« En clair »** (≤ 3 phrases : livré / effet / suite), jargon interne hors
+   ouverture.
 10. **Squash-merge** — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : CI verte ET revues de la PR lues et traitées** — reviewers humains **et bots** (Codex poste ses findings en commentaires inline ; une CI verte ne les couvre pas).
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
@@ -137,7 +155,8 @@ gate est leur **trace contractuelle** (doc du kit :
 ## Definition of Done
 
 Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
-**E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte •
+**E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte **avec un
+corps relisable seul** (`## Summary` + `## Lien fiche` + `## Comment tester`) •
 (après validation) squash-mergée en conventional commit • branche supprimée.
 
 ## Workflow git

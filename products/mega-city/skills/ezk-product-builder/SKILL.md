@@ -81,7 +81,11 @@ de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **
 En `--checkpoints ask` (défaut) tu t'arrêtes à ces 4 moments (+ le garde-fou
 irréversible/sortant, cf. Garde-fous), toujours en présentant la problématique **puis**
 des options à choisir. En `--checkpoints auto`, ces moments sont pris/délégués
-automatiquement selon la section « Mode checkpoints » ci-dessous :
+automatiquement selon la section « Mode checkpoints » ci-dessous.
+
+**Lisibilité (règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md))** —
+chaque checkpoint suggestions-à-choix ouvre par **« En clair »** (≤ 3 phrases) avant le
+tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
 
 | Moment | Ce que tu présentes |
 |---|---|

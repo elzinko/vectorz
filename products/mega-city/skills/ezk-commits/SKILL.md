@@ -164,3 +164,8 @@ ci(github): add matrix test job for Python 3.11 and 3.12
 - `fix: Fixed the bug in the inbox that was causing the 530 error to appear` → trop long, trop verbeux
 - `feat: Ajout de la fonctionnalité` → description en français
 - `FEAT: add thing` → type en majuscules
+
+## Frontière
+
+Tu fournis le **titre** conventional-commit (et le hook). Tu **ne rédiges pas** le
+corps de PR — c'est l'étape PR d'`ezk-sprint` (règle `human-facing-lisibility`).
