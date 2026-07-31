@@ -64,14 +64,20 @@ toucher le template) :
    observables, règles spécifiques (rebuild natif, remise à zéro, artefacts
    régénérés…). **Adapter la matrice au repo** : pas de ligne émulateur/device
    sans mobile, pas de preview Vercel sans déploiement Vercel.
-2. **`.github/PULL_REQUEST_TEMPLATE.md`** — le squelette, avec **deux cas** :
-   - Template **ABSENT** → créer un squelette **mince** (matrice vide + bloc
-     « Comment tester » + lien vers `docs/PR_VALIDATION.md`).
+2. **`.github/PULL_REQUEST_TEMPLATE.md`** — le squelette, depuis
+   [`assets/PULL_REQUEST_TEMPLATE.thin.md`](assets/PULL_REQUEST_TEMPLATE.thin.md)
+   (symétrique de `PR_VALIDATION.template.md`), avec **deux cas** :
+   - Template **ABSENT** → **copier** le squelette mince (Summary + Lien fiche +
+     Comment tester + matrice minimale + lien vers `docs/PR_VALIDATION.md`).
    - Template **EXISTANT** → **ne JAMAIS l'écraser ni le réécrire** : y
      **agréger une courte section-lien** en fin de fichier
      (`## Validation — voir docs/PR_VALIDATION.md` + la matrice minimale).
      Le fond reste dans la doc liée — c'est le découplage voulu.
 3. Commit `docs: PR Validation convention` (via `ezk-commits`).
+
+Garde-fou local optionnel (après rédaction du corps) :
+`bash skills/ezk-pr-pilot/scripts/check-pr-body.sh` (stdin ou fichier) — vérifie
+mécaniquement la présence de `## Summary` / `## Lien fiche` / `## Comment tester`.
 
 ## `plan` — le cœur : ordonner et regrouper
 
