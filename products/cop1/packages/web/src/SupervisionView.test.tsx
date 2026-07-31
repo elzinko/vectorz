@@ -488,14 +488,20 @@ describe('SupervisionView', () => {
       fireEvent.click(btn);
       await screen.findByText(/abandon demandé/i);
 
-      // Le watcher SSE confirme depuis le disque
+      // Le watcher SSE confirme depuis le disque (avec abandoned_by pour AC1 E2E)
       await pushSse(
         'supervision.run.updated',
-        makeSnapshot({ state: 'finished', liveness: 'alive', lastEventSeq: 10 }),
+        makeSnapshot({
+          state: 'finished',
+          liveness: 'alive',
+          lastEventSeq: 10,
+          abandonedBy: 'seat',
+        }),
       );
 
       expect(await screen.findByText(/terminé/i)).toBeTruthy();
       expect(screen.queryByText(/abandon demandé/i)).toBeNull();
+      expect(screen.getByTestId('abandoned-by').textContent).toMatch(/par le siège/i);
     });
 
     // §E AC5 — sans clic, le run reste en "Silence prolongé" indéfiniment
