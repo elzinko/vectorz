@@ -98,8 +98,10 @@ export const ConfigSchema = z
       .object({
         watch_roots: z.array(z.string()).default([]),
         presumed_dead_after_min: z.number().positive().default(5),
+        /** ADR-035 D3 : commande CLI d'abandon (défaut [] = capacité dormante). */
+        abandon_command: z.array(z.string()).default([]),
       })
-      .default({ watch_roots: [], presumed_dead_after_min: 5 }),
+      .default({ watch_roots: [], presumed_dead_after_min: 5, abandon_command: [] }),
   })
   .refine(
     (data) => {

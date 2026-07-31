@@ -84,6 +84,14 @@ export interface BlocageApiPort {
   handle(req: IncomingMessage, res: ServerResponse): boolean;
 }
 
+/**
+ * ADR-035 D4 — Port minimal pour la route POST /api/supervision/runs/abandon.
+ * Garde HttpServer sans dépendance concrète à la feature supervision.
+ */
+export interface RunAbandonHandler {
+  execute(runDir: string): Promise<{ status: 200 | 202 | 404 | 409; body: unknown }>;
+}
+
 export class HttpServer {
   private server: Server | null = null;
   private readonly startedAt: number = Date.now();
@@ -94,6 +102,7 @@ export class HttpServer {
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private orchestratorAdapter: OrchestratorAdapterPort | null = null;
   private blocageApiHandler: BlocageApiPort | null = null;
+  private runAbandonHandler: RunAbandonHandler | null = null;
   private eventBusWired = false;
 
   setSprintStatusProvider(provider: SprintStatusProvider): void {
@@ -118,6 +127,11 @@ export class HttpServer {
 
   setBlocageApiHandler(handler: BlocageApiPort): void {
     this.blocageApiHandler = handler;
+  }
+
+  /** ADR-035 D4 — câblage de la route POST /api/supervision/runs/abandon. */
+  setRunAbandonHandler(handler: RunAbandonHandler): void {
+    this.runAbandonHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -214,6 +228,12 @@ export class HttpServer {
 
     if (req.method === 'POST' && req.url === '/api/orchestrator/stop') {
       void this.handleOrchestratorStop(res);
+      return;
+    }
+
+    // ADR-035 D4 — abandon d'un run orphelin depuis le Moniteur
+    if (req.method === 'POST' && req.url === '/api/supervision/runs/abandon') {
+      void this.handleRunAbandon(req, res);
       return;
     }
 
@@ -385,6 +405,28 @@ export class HttpServer {
           res.end(JSON.stringify({ error: message }));
         }
       }
+    });
+  }
+
+  private async handleRunAbandon(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    this.readJsonBody(req, res, (parsed) => {
+      const body = parsed as { runDir?: string };
+      if (!body.runDir || typeof body.runDir !== 'string') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'runDir field is required (string)' }));
+        return;
+      }
+
+      if (!this.runAbandonHandler) {
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'abandon handler not configured' }));
+        return;
+      }
+
+      void this.runAbandonHandler.execute(body.runDir).then(({ status, body: responseBody }) => {
+        res.writeHead(status, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(responseBody));
+      });
     });
   }
 

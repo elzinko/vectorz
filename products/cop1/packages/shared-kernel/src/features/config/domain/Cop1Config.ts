@@ -58,5 +58,7 @@ export interface Cop1Config {
   supervision?: {
     watch_roots: string[];
     presumed_dead_after_min: number;
+    /** ADR-035 D3 : commande CLI d'abandon (défaut [] = capacité dormante). */
+    abandon_command: string[];
   };
 }
