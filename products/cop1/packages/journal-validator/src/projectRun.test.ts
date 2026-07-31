@@ -139,4 +139,45 @@ describe('projectRun — read-model de projection live (fiche 0031 / ADR-028)', 
       rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  it('ignore un run.finished post_finished pour abandonedBy (premier terminal gagne)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'jv-abandon-post-'));
+    const lines = [
+      {
+        event_id: 'e1',
+        run_id: 'abandon-post',
+        seq: 1,
+        ts: '2026-07-31T10:00:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'm' }, seat: 'human' },
+      },
+      {
+        event_id: 'e2',
+        run_id: 'abandon-post',
+        seq: 2,
+        ts: '2026-07-31T10:01:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.finished',
+        payload: { status: 'success' },
+      },
+      {
+        event_id: 'e3',
+        run_id: 'abandon-post',
+        seq: 3,
+        ts: '2026-07-31T10:02:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.finished',
+        payload: { status: 'abandoned', abandoned_by: 'seat' },
+      },
+    ];
+    writeFileSync(join(dir, 'events.jsonl'), `${lines.map((l) => JSON.stringify(l)).join('\n')}\n`);
+    try {
+      const projection = projectRun(dir);
+      expect(projection.state).toBe('finished');
+      expect(projection.abandonedBy).toBeUndefined();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
