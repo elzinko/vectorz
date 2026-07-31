@@ -5,3 +5,4 @@ rules:
   - documentation-guidelines/contributing-guide
   - documentation-guidelines/changelog
   - documentation-guidelines/proven-outbound-references
+  - documentation-guidelines/human-facing-lisibility
