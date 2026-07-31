@@ -73,6 +73,17 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
     expect(body).toMatch(/PULL_REQUEST_TEMPLATE\.thin\.md/);
   });
 
+  it('ezk-pr-pilot documente fallback copy-mode + résolution check-pr-body (Codex P2)', () => {
+    const body = read(prPilotSkill);
+    // Mode copy ne matérialise que SKILL.md — fallback obligatoire.
+    expect(body).toMatch(/Mode copy/);
+    expect(body).toMatch(/écrire le squelette\s+inline|fallback inline/i);
+    // Résolution hors cwd mega-city.
+    expect(body).toMatch(/~\/\.claude\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);
+    expect(body).toMatch(/products\/mega-city\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);
+    expect(body).toMatch(/Fallback inline/);
+  });
+
   it.each(restitutionSkills.map((p) => [p.split('/').slice(-2).join('/'), p] as const))(
     '%s porte la consigne lisibilité à la restitution',
     (_label, path) => {
