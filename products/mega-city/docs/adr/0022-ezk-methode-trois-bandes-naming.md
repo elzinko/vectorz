@@ -8,7 +8,7 @@
   `pr-pilot` → `pr` n'est plus rejeté *en soi* — il reste cosmétique tant que
   non exécuté, mais **souhaité** pour la clarté) ·
   Fiche : [0173](../../../../features/0173-ezk-methode-trois-bandes-naming.md)
-- Diagramme : [`diagrams/ezk-methode-globale/`](../diagrams/ezk-methode-globale/)
+- Diagramme : [`diagrams/ezk-methode-globale/`](../../diagrams/ezk-methode-globale/)
 
 ## Contexte
 
@@ -23,8 +23,9 @@ Deux confusions récurrentes :
    pas un enchaînement de livraison.
 
 Par ailleurs : drop de `-pilot` ; préfixe `ezk-caps-*` ; boot d'env isolé =
-`ezk-sandbox` ; convention Validation mieux ancrée sur `ezk-backlog init`
-(scaffold repo) que sur l'orchestrateur de stock.
+`ezk-sandbox` ; convention Validation **mieux ancrée à terme** sur
+`ezk-backlog init` (scaffold repo) que sur l'orchestrateur de stock — **tant
+que non migré, `ezk-pr-pilot init` reste le chemin opérationnel**.
 
 ## Décision
 

@@ -49,8 +49,11 @@ Règles de nommage (préférences 2026-07-30) :
 1. **Pas de `-pilot`** — préférer `ezk-pr` à `ezk-pr-pilot`.
 2. **Capacités** : préfixe `ezk-caps-…` quand le risque de confusion avec un rôle
    est réel ; alias court OK (`ezk-sandbox` ⇔ `ezk-caps-sandbox`).
-3. **Scaffold repo** (`features/`, convention Validation) → **`ezk-backlog init`**,
-   pas l'orchestrateur de stock PR.
+3. **Scaffold repo** : `features/` / `done/` / index → **`ezk-backlog init`**.
+   Convention Validation (`docs/PR_VALIDATION.md` + template) → **aujourd'hui
+   `ezk-pr-pilot init`** (seul chemin implémenté). **À terme** : absorbée par
+   `ezk-backlog init` (ADR-0022) — ne pas router Validation vers backlog tant
+   que la migration n'est pas faite.
 4. **`ezk-archive` = capacité** (hygiène de clôture), **pas** un 4ᵉ orchestrateur
    après `pr`.
 5. **`ezk-backlog` ≠ `ezk-pr`** — backlog = *quoi* (fiches) ; pr = *comment*
