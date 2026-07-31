@@ -289,6 +289,7 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
   const pastGates = openGate ? run.gates.filter((g) => g !== openGate) : run.gates;
 
   const canAbandon = dead && run.state === 'running' && run.abandonCapable === true;
+  const dormantAbandon = dead && run.state === 'running' && run.abandonCapable !== true;
 
   async function handleAbandon() {
     if (!canAbandon || abandonState === 'pending' || abandonState === 'requested') return;
@@ -363,6 +364,19 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
               )}
             </>
           )}
+        </div>
+      )}
+
+      {dormantAbandon && (
+        <div className="run-card__abandon">
+          <button type="button" className="run-card__abandon-btn" disabled>
+            Abandonner ce run
+          </button>
+          <p className="run-card__abandon-hint" role="note">
+            Capacité d&apos;abandon dormante — configurez{' '}
+            <code>supervision.abandon_command</code> dans la config du siège (ex.{' '}
+            <code>["pnpm", "--dir", "products/mega-city", "supervision:abandon"]</code>).
+          </p>
         </div>
       )}
 

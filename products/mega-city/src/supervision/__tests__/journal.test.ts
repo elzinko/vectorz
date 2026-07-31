@@ -154,6 +154,18 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
     expect(fs.existsSync(lockPath)).toBe(true);
     fs.unlinkSync(lockPath);
   });
+
+  it('tryReclaimWriteLock ne expire jamais un propriétaire vivant (même après 30s+)', () => {
+    fs.mkdirSync(runDir, { recursive: true });
+    const lockPath = path.join(runDir, WRITE_LOCK_FILE);
+    const oldTs = Date.now() - 120_000;
+    fs.writeFileSync(lockPath, `${process.pid}\n${oldTs}\n`);
+    const old = oldTs / 1000;
+    fs.utimesSync(lockPath, old, old);
+    expect(tryReclaimWriteLock(lockPath, Date.now())).toBe(false);
+    expect(fs.existsSync(lockPath)).toBe(true);
+    fs.unlinkSync(lockPath);
+  });
 });
 function readLines(runDir: string): Array<{
   event_id: string;

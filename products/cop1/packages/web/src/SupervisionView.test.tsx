@@ -385,13 +385,16 @@ describe('SupervisionView', () => {
       expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
     });
 
-    it('AC6 — hides abandon button when abandonCapable is false (capacité dormante)', async () => {
+    it('AC6 — shows disabled abandon + config hint when abandonCapable is false', async () => {
       stubFetch([
         makeSnapshot({ state: 'running', liveness: 'presumed_dead', abandonCapable: false }),
       ]);
       render(<SupervisionView />);
       await screen.findByText(/Silence prolongé/);
-      expect(screen.queryByRole('button', { name: /abandonner/i })).toBeNull();
+      const btn = screen.getByRole('button', { name: /abandonner ce run/i });
+      expect((btn as HTMLButtonElement).disabled).toBe(true);
+      expect(screen.getByText(/capacité d'abandon dormante/i)).toBeTruthy();
+      expect(screen.getByText(/abandon_command/i)).toBeTruthy();
     });
 
     it('SSE presumed_dead keeps abandonCapable — bouton apparaît sans F5', async () => {

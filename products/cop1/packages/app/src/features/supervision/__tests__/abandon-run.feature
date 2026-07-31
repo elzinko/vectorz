@@ -132,12 +132,12 @@ Fonctionnalité: Abandon d'un run orphelin depuis le Moniteur (fiche 0168)
     Et ce bouton est absent sur les cartes dont l'état est "at_gate" ou "finished"
 
   @e2e
-  Scénario: AC6 E2E — le bouton est absent (ou désactivé avec raison) si abandon_command n'est pas configurée
-    # ADR-035 D3 : capacité dormante → pas de bouton actif sans config.
+  Scénario: AC6 E2E — le bouton est désactivé avec raison si abandon_command n'est pas configurée
+    # ADR-035 D3 : capacité dormante → bouton visible mais inactif + hint de config.
     Étant donné la config de cop1 ne contient pas de abandon_command configurée
     Et un run affiché avec la liveness "presumed_dead"
     Quand j'observe le panneau de ce run dans la mission-control
-    Alors aucun bouton d'abandon actif n'est présent
+    Alors un bouton "Abandonner ce run" est visible mais désactivé
     Et une indication explique pourquoi l'abandon n'est pas disponible (ex. "abandon_command non configurée")
 
   @e2e

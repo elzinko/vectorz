@@ -41,9 +41,6 @@ const EVENTS_FILE = 'events.jsonl';
 /** Verrou exclusif d'écriture — un seul append à la fois par run. */
 export const WRITE_LOCK_FILE = '.write.lock';
 
-/** Âge max d'un verrou dont le PID est encore « vivant » avant reclaim forcé. */
-export const WRITE_LOCK_STALE_MS = 30_000;
-
 /**
  * Fenêtre pendant laquelle un fichier de verrou « vide / illisible » n'est PAS
  * récupéré — évite de voler un verrou en cours de publication atomique.
@@ -105,8 +102,10 @@ function isPidAlive(pid: number): boolean {
 }
 
 /**
- * Tente de récupérer un verrou orphelin : PID mort, contenu illisible *et* pas frais,
- * ou trop vieux. Retourne true si le fichier a été supprimé.
+ * Tente de récupérer un verrou orphelin.
+ * - PID propriétaire **vivant** → jamais reclaim (même si le lock a >30s : un
+ *   `gateReached` peut rester longtemps dans la section critique).
+ * - PID mort / illisible → reclaim (sauf fichier vide/illisible encore frais).
  */
 export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()): boolean {
   if (!fs.existsSync(lockPath)) return false;
@@ -120,7 +119,6 @@ export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()
   try {
     const raw = fs.readFileSync(lockPath, 'utf8').trim();
     if (raw.length === 0) {
-      // Fenêtre éventuelle / fichier corrompu : ne pas reclaim s'il est frais.
       if (ageMs < WRITE_LOCK_FRESH_MS) return false;
       fs.unlinkSync(lockPath);
       return true;
@@ -128,10 +126,13 @@ export function tryReclaimWriteLock(lockPath: string, nowMs: number = Date.now()
     const [pidLine, tsLine] = raw.split('\n');
     const pid = Number(pidLine);
     const ts = Number(tsLine);
-    const ownerDead = !isPidAlive(pid);
-    const stale =
-      !Number.isFinite(ts) || nowMs - ts > WRITE_LOCK_STALE_MS || Number.isNaN(pid);
-    if (!ownerDead && !stale) return false;
+    if (Number.isNaN(pid) || !Number.isFinite(ts)) {
+      if (ageMs < WRITE_LOCK_FRESH_MS) return false;
+      fs.unlinkSync(lockPath);
+      return true;
+    }
+    // Propriétaire vivant : ne jamais expirer par timestamp seul (Codex P1).
+    if (isPidAlive(pid)) return false;
     fs.unlinkSync(lockPath);
     return true;
   } catch {
