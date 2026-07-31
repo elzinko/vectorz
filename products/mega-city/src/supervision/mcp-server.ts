@@ -142,9 +142,11 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
   server.registerTool(
     'run_finished',
     {
-      description: 'Clôture le run courant.',
+      description:
+        'Clôture le run courant. Si status="abandoned", abandoned_by est obligatoire (défaut: "method"). ADR-035 D1.',
       inputSchema: {
         status: z.enum(['success', 'failure', 'abandoned']),
+        abandoned_by: z.enum(['seat', 'method']).optional(),
       },
     },
     (args) => {

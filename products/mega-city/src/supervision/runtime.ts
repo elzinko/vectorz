@@ -63,6 +63,11 @@ export interface EscalateArgs {
 
 export interface RunFinishedArgs {
   status: 'success' | 'failure' | 'abandoned';
+  /** Provenance de l'abandon — obligatoire uniquement quand status === 'abandoned'.
+   * Défaut 'method' (la méthode abandonne son propre run).
+   * Écrit 'seat' par le chemin siège (bin/supervision-abandon via EmitterCliAbandonAdapter).
+   * ADR-035 D1. */
+  abandoned_by?: 'seat' | 'method';
 }
 
 export interface HeartbeatArgs {
@@ -157,6 +162,69 @@ function writeConfinedReport(
   return path.relative(projectRoot, filePath);
 }
 
+/**
+ * Formate une durée en ms en chaîne lisible (ex. "2 h 15 min", "45 min", "8 s").
+ * Pur : pas d'effet de bord.
+ */
+function formatAge(ms: number): string {
+  const sec = Math.floor(Math.abs(ms) / 1000);
+  const min = Math.floor(sec / 60);
+  const h = Math.floor(min / 60);
+  if (h > 0) return `${h} h ${min % 60} min`;
+  if (min > 0) return `${min} min`;
+  return `${sec} s`;
+}
+
+/**
+ * Produit un texte actionnable décrivant le run bloquant à partir de ses événements.
+ * Tolérant au journal semi-hostile (ADR-035 D7) : un `ts` illisible dégrade en
+ * « date inconnue » sans jamais throw.
+ */
+export function describeOpenRun(events: JournalEvent[]): string {
+  const started = events.find((e) => e.type === 'run.started');
+
+  const method = (() => {
+    const m = (started?.payload as Record<string, unknown> | undefined)?.method;
+    const name = (m as Record<string, unknown> | undefined)?.name;
+    const version = (m as Record<string, unknown> | undefined)?.version;
+    return typeof name === 'string' && name.length > 0
+      ? `${name}${typeof version === 'string' ? `@${version}` : ''}`
+      : 'méthode inconnue';
+  })();
+
+  const runAge = (() => {
+    try {
+      const ts = started?.ts != null ? new Date(started.ts as string) : null;
+      if (ts && !Number.isNaN(ts.getTime())) return formatAge(Date.now() - ts.getTime());
+    } catch {
+      /* dégrade */
+    }
+    return 'âge inconnu';
+  })();
+
+  const lastEvent = events.at(-1);
+  const lastEventDesc = (() => {
+    try {
+      const ts = lastEvent?.ts != null ? new Date(lastEvent.ts as string) : null;
+      if (ts && !Number.isNaN(ts.getTime())) {
+        return `${ts.toISOString()} (il y a ${formatAge(Date.now() - ts.getTime())})`;
+      }
+    } catch {
+      /* dégrade */
+    }
+    return 'date inconnue';
+  })();
+
+  const eventCount = events.length;
+
+  return [
+    `Méthode bloquante : ${method}`,
+    `Âge du run : ${runAge}`,
+    `Dernier événement : ${lastEventDesc} (${eventCount} événement(s) au total)`,
+    `Marche à suivre : abandonne ce run au Moniteur (bouton "Abandonner ce run" sur la carte "Silence prolongé"), ou appelle run_finished {status:"abandoned"} si c'est un orphelin de ta propre session.`,
+  ].join('\n');
+}
+
 export class SupervisionRuntime {
   /**
    * @param projectRoot Racine effective du projet supervisé.
@@ -172,7 +240,9 @@ export class SupervisionRuntime {
   runStart(args: RunStartArgs): { run_id: string } {
     const state = findOpenRun(this.projectRoot);
     if (state) {
-      throw new Error(`run_start refusé : un run est déjà ouvert (run_id=${state.runId})`);
+      const events = readJournalEvents(path.join(state.runDir, 'events.jsonl'));
+      const description = describeOpenRun(events);
+      throw new Error(`run_start refusé : un run est déjà ouvert (run_id=${state.runId})\n${description}`);
     }
     const runId = generateRunId();
     const runDir = path.join(this.projectRoot, ...RUNS_DIR_SEGMENTS, runId);
@@ -267,7 +337,32 @@ export class SupervisionRuntime {
   runFinished(args: RunFinishedArgs): { run_id: string } {
     const state = this.requireOpenRun('run_finished');
     const journal = new Journal(state.runDir, state.runId);
-    journal.append('run.finished', { status: args.status });
+    const payload: Record<string, unknown> = { status: args.status };
+    if (args.status === 'abandoned') {
+      payload.abandoned_by = args.abandoned_by ?? 'method';
+    }
+    journal.append('run.finished', payload);
+    return { run_id: state.runId };
+  }
+
+  /**
+   * Abandonne le run ouvert **uniquement si son `runId` correspond à `expectedRunId`**.
+   * ADR-035 D5 — garde anti-clic-périmé : si un run neuf a été ouvert entre le snapshot
+   * du Moniteur et le spawn, la commande refuse plutôt que de clôturer un run légitime.
+   * Écrit toujours `abandoned_by: 'seat'` (c'est le siège qui commande).
+   */
+  abandonRun(expectedRunId: string): { run_id: string } {
+    const state = findOpenRun(this.projectRoot);
+    if (!state) {
+      throw new Error(`abandon refusé : aucun run ouvert dans ${this.projectRoot}`);
+    }
+    if (state.runId !== expectedRunId) {
+      throw new Error(
+        `abandon refusé : le run ouvert (${state.runId}) ne correspond pas au run attendu (${expectedRunId}) — clic sur carte périmée ?`,
+      );
+    }
+    const journal = new Journal(state.runDir, state.runId);
+    journal.append('run.finished', { status: 'abandoned', abandoned_by: 'seat' });
     return { run_id: state.runId };
   }
 
