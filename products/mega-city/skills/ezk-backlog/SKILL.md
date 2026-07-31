@@ -25,6 +25,12 @@ description: >-
 
 # ezk-backlog
 
+> **Pas `ezk-pr`.** Ici = pile de **fiches** (*quoi* construire). `ezk-pr` =
+> stock de **PRs** (*comment* valider/merger). Intersection : `ship` /
+> `reconcile` autour du done — objets différents (ADR-0022). **Intention** :
+> `init` absorbe aussi la convention Validation (`docs/PR_VALIDATION.md` +
+> template) aujourd'hui encore sur `ezk-pr-pilot init`.
+
 Tu maintiens le **backlog d'un projet** en markdown versionné dans le repo : une liste
 de features/bugs **stable, ordonnée par priorité, et qui ne se perd jamais** — ni entre
 worktrees, ni entre sessions, ni quand une branche est abandonnée.
