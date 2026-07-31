@@ -272,3 +272,78 @@ Fonctionnalité: Kit émetteur de supervisabilité v0.1
     Quand j'appelle "gate_reached" sans fournir de veto
     Alors l'appel n'échoue pas et ne lève aucune exception
     Et l'événement "gate.reached" porte "upgrade_ok" à "false"
+
+  # ---------------------------------------------------------------------------
+  # Rubrique J — Run orphelin : abandon, provenance, erreur actionnable (fiche 0168)
+  # Référence normative : ADR-035-abandon-siege-run-orphelin.md
+  # ---------------------------------------------------------------------------
+
+  Scénario: AC3 — run_finished avec status abandoned via MCP porte abandoned_by method par défaut
+    # ADR-035 D1 : l'outil MCP run_finished, quand status=abandoned, doit inscrire
+    # abandoned_by:'method' si l'appelant ne fournit pas le champ.
+    Soit un run démarré via "run_start"
+    Quand j'appelle l'outil "run_finished" avec le statut "abandoned" sans fournir "abandoned_by"
+    Alors un événement "run.finished" est écrit en journal avec le statut "abandoned"
+    Et le payload de cet événement contient "abandoned_by" avec la valeur "method"
+
+  Scénario: AC3 — run_finished avec status abandoned accepte explicitement abandoned_by seat
+    # ADR-035 D1 : le chemin siège (bin/supervision-abandon) écrit abandoned_by:'seat'.
+    # Le MCP doit aussi l'accepter explicitement pour permettre l'adaptateur EmitterCliAbandonAdapter.
+    Soit un run démarré via "run_start"
+    Quand j'appelle l'outil "run_finished" avec le statut "abandoned" et "abandoned_by" égal à "seat"
+    Alors un événement "run.finished" est écrit en journal avec le statut "abandoned"
+    Et le payload de cet événement contient "abandoned_by" avec la valeur "seat"
+
+  Scénario: AC3 — abandoned_by est absent du payload quand status n'est pas abandoned
+    # ADR-035 D1 : abandoned_by est optionnel et réservé au statut abandoned.
+    # Il ne doit pas apparaître sur success ou failed pour rester additif.
+    Soit un run démarré via "run_start"
+    Quand j'appelle l'outil "run_finished" avec le statut "success"
+    Alors l'événement "run.finished" est écrit avec le statut "success"
+    Et le payload de cet événement ne contient pas de champ "abandoned_by"
+
+  Scénario: AC4 — run_start refusé porte la méthode bloquante, l'âge du run et la marche à suivre
+    # ADR-035 D7 : le message d'erreur doit permettre de décider sans lire le disque.
+    Soit un run déjà démarré via "run_start" avec la méthode "ezk-sprint" version "1.0.0"
+    Et ce run est ouvert depuis au moins une minute
+    Quand j'appelle à nouveau l'outil "run_start"
+    Alors l'appel est refusé avec une erreur
+    Et le texte de l'erreur mentionne le nom de la méthode bloquante "ezk-sprint"
+    Et le texte de l'erreur mentionne l'âge du run (ex. "X min" ou "X h")
+    Et le texte de l'erreur mentionne la date ou l'âge du dernier événement enregistré
+    Et le texte de l'erreur contient une marche à suivre (ex. "abandonner au Moniteur" ou "run_finished")
+
+  Scénario: AC4 — run_start refusé reste lisible même si le journal est semi-hostile
+    # ADR-035 D7 : un ts illisible ne doit jamais transformer le refus en crash.
+    # describeOpenRun doit dégrader en "date inconnue" plutôt que de throw.
+    Soit un run ouvert dont le "ts" du premier événement est une valeur non-ISO illisible
+    Quand j'appelle l'outil "run_start"
+    Alors l'appel est refusé avec une erreur (jamais un crash non géré)
+    Et le texte de l'erreur contient la méthode bloquante et la marche à suivre
+    Et le texte de l'erreur indique "date inconnue" ou équivalent pour les champs non lisibles
+
+  Scénario: D5 — bin/supervision-abandon refuse d'écrire si le run ouvert a changé depuis la demande
+    # ADR-035 D5 : garde expected_run_id — protège contre le clic sur une carte périmée.
+    # Un run neuf ouvert entre le snapshot du Moniteur et le spawn ne doit jamais être clos.
+    Soit un run A démarré puis terminé via "run_finished"
+    Et un run B nouveau immédiatement démarré via "run_start" (run_id différent de A)
+    Quand bin/supervision-abandon est invoqué avec le run_id de A comme run attendu
+    Alors la commande échoue sans écrire aucun événement dans le journal du run B
+    Et le journal du run B reste inchangé
+
+  Scénario: D5 — bin/supervision-abandon écrit run.finished abandoned quand le run attendu correspond
+    # ADR-035 D5 : chemin nominal du bin CLI — seul endroit où cop1 commande une écriture.
+    Soit un run ouvert avec un run_id connu
+    Quand bin/supervision-abandon est invoqué avec ce run_id comme run attendu
+    Alors un événement "run.finished" est écrit en journal avec le statut "abandoned"
+    Et le payload contient "abandoned_by" avec la valeur "seat"
+    Et la séquence seq du journal reste strictement croissante sans trou
+
+  Scénario: AC5 — aucun run n'est clos automatiquement par un mécanisme interne au kit
+    # ADR-035 D7 / AC5 : zéro TTL, zéro auto-abandon.
+    # Le kit n'a pas d'horloge de silence ; presumed_dead est décidé uniquement côté Moniteur.
+    Soit un run ouvert depuis un temps supérieur à tout seuil raisonnable de timeout
+    Et aucun appel externe n'est émis (ni run_finished, ni bin/supervision-abandon)
+    Quand on inspecte le journal après ce délai
+    Alors aucun événement "run.finished" n'a été écrit automatiquement
+    Et l'outil "run_start" est toujours refusé (le run reste ouvert)
