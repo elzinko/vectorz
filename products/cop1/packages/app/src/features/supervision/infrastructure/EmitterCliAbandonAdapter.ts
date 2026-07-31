@@ -8,6 +8,10 @@
 import { spawn } from 'node:child_process';
 import type { AbandonOutcome, RunAbandonPort } from '../domain/RunAbandonPort.js';
 
+/** Timeout par défaut du spawn d'abandon (30s — commande locale, pas un LLM). */
+export const ABANDON_SPAWN_TIMEOUT_MS = 30_000;
+const GRACEFUL_SHUTDOWN_MS = 2_000;
+
 export type SpawnFn = (
   command: string,
   args: string[],
@@ -18,15 +22,30 @@ const defaultSpawn: SpawnFn = (command, args, env) =>
   new Promise((resolve) => {
     const stderrChunks: Buffer[] = [];
     const child = spawn(command, args, { env, stdio: ['ignore', 'ignore', 'pipe'] });
+    let settled = false;
+    const settle = (exitCode: number, stderr: string) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      clearTimeout(killTimer);
+      resolve({ exitCode, stderr });
+    };
+
+    let killTimer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = setTimeout(() => {
+      child.kill('SIGTERM');
+      killTimer = setTimeout(() => {
+        child.kill('SIGKILL');
+        settle(1, `abandon_command timeout after ${ABANDON_SPAWN_TIMEOUT_MS}ms`);
+      }, GRACEFUL_SHUTDOWN_MS);
+    }, ABANDON_SPAWN_TIMEOUT_MS);
+
     child.stderr?.on('data', (chunk: Buffer) => stderrChunks.push(chunk));
     child.on('close', (code) => {
-      resolve({
-        exitCode: code ?? 1,
-        stderr: Buffer.concat(stderrChunks).toString('utf8').trim(),
-      });
+      settle(code ?? 1, Buffer.concat(stderrChunks).toString('utf8').trim());
     });
     child.on('error', (err) => {
-      resolve({ exitCode: 1, stderr: err.message });
+      settle(1, err.message);
     });
   });
 
@@ -38,7 +57,7 @@ export class EmitterCliAbandonAdapter implements RunAbandonPort {
   /**
    * @param abandonCommand Tableau `[commande, ...args_de_base]` depuis la config du siège.
    *   Ex. : `["npx", "mega-city", "supervision:abandon"]`
-   * @param spawnFn Injectable pour tests (défaut : `spawn` natif).
+   * @param spawnFn Injectable pour tests (défaut : `spawn` natif avec timeout).
    */
   constructor(abandonCommand: string[], spawnFn: SpawnFn = defaultSpawn) {
     const cmd = abandonCommand[0];

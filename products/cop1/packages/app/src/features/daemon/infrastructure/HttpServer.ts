@@ -423,10 +423,17 @@ export class HttpServer {
         return;
       }
 
-      void this.runAbandonHandler.execute(body.runDir).then(({ status, body: responseBody }) => {
-        res.writeHead(status, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(responseBody));
-      });
+      void this.runAbandonHandler
+        .execute(body.runDir)
+        .then(({ status, body: responseBody }) => {
+          res.writeHead(status, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(responseBody));
+        })
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : String(error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: message }));
+        });
     });
   }
 

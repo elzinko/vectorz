@@ -48,6 +48,8 @@ interface RunSnapshot {
   runDir: string;
   liveness: 'alive' | 'presumed_dead';
   emissionClass: 'B';
+  /** ADR-035 D3 — capacité d'abandon configurée côté siège. */
+  abandonCapable?: boolean;
 }
 
 interface SseFrame {
@@ -286,7 +288,7 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
   const openGate = run.state === 'at_gate' ? run.gates.find((g) => !g.resumedAt) : undefined;
   const pastGates = openGate ? run.gates.filter((g) => g !== openGate) : run.gates;
 
-  const canAbandon = dead && run.state === 'running';
+  const canAbandon = dead && run.state === 'running' && run.abandonCapable === true;
 
   async function handleAbandon() {
     if (!canAbandon || abandonState === 'pending' || abandonState === 'requested') return;

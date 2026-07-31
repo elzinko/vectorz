@@ -580,6 +580,47 @@ body {
   color: #94a3b8;
 }
 
+.run-card__abandon {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.run-card__abandon-btn {
+  appearance: none;
+  border: 1px solid #f87171;
+  background: transparent;
+  color: #fecaca;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.run-card__abandon-btn:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.run-card__abandon-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.run-card__abandon-pending {
+  margin: 0;
+  color: #fbbf24;
+  font-size: 0.85rem;
+}
+
+.run-card__abandon-err {
+  margin: 0;
+  color: #f87171;
+  font-size: 0.8rem;
+}
+
 /* run id — métadonnée secondaire (revue Codex) : lisible mais discret, tronqué
    pour ne pas dominer la carte ; chemin/valeur complète au survol (title). */
 .run-card__runid {
