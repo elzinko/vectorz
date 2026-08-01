@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Régénère l'index features/README.md depuis les front-matters (source de vérité).
+# Régénère l'index features/BACKLOG.md depuis les front-matters (source de vérité).
 # Déterministe : tri P0→P3 puis id ; aucun jugement. cf. ADR-0001 §2 (le script range).
+# Layout v2 (Skema) : README.md = guide humain curé ; BACKLOG.md = index généré.
 # Usage : regen-backlog.sh [racine-projet] [titre-index]   (fiche 0072 / ADR-0017 A13)
 #   défauts : racine = le produit mega-city (parent de bin/), titre = « Backlog — mega-city ».
-#   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz (racine)"
+#   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz"
 set -euo pipefail
 
 ROOT="${1:-"$(cd "$(dirname "$0")/.." && pwd)"}"
@@ -100,9 +101,9 @@ emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes act
   echo "# ${TITLE}"
   echo ''
   echo '> Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.'
-  echo '> 1 fiche / sujet · 1 PR / feature · backlog commité sur `main`. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.'
+  echo '> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.'
   # Lien vers la séquence décidée (PLAN.md, curée hors index) — ré-émis à chaque regen
-  # pour qu'il survive à la régénération du README (le contenu de PLAN.md n'est pas touché).
+  # pour qu'il survive à la régénération (le contenu de PLAN.md n'est pas touché).
   if [ -f features/PLAN.md ]; then
     echo ''
     echo '> 📋 Séquence décidée (curée, hors index) : [PLAN.md](PLAN.md).'
@@ -141,9 +142,9 @@ emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes act
   fi
   echo ''
   echo "> Livrées (\`done/\`) : $(echo "$done_ids" | tr ' ' '\n' | grep -v '^$' | sort | paste -sd ',' - | sed 's/,/, /g')."
-} > features/README.md
+} > features/BACKLOG.md
 
-echo "features/README.md régénéré ($(printf '%s' "$rows" | grep -c .) fiches)."
+echo "features/BACKLOG.md régénéré ($(printf '%s' "$rows" | grep -c .) fiches)."
 
 # Compteurs déterministes (ADR-0016 §5 / fiche 0071) — le script compte, le LLM juge.
 printf '%s' "$rows" | awk -F"$SEP" '

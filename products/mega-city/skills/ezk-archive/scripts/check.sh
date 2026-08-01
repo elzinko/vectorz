@@ -360,19 +360,26 @@ else
   # produit dont les initiales du nom donnent `xx` (mega-city → mc). Toute résolution
   # ambiguë ou inconnue est refusée plutôt que devinée.
   backlog_dir_for() { # $1=préfixe sans tiret ("" = racine) → chemin, ou "" si non résolu
-    local want="$1" d name init hits=""
+    # Layout v2+ : BACKLOG.md = index généré ; README.md = guide (ou index legacy v1).
+    local want="$1" d name init hits="" seen="|"
+    _has_root_backlog() {
+      { git ls-files 'features/BACKLOG.md' 2>/dev/null | grep -q . && [[ -f features/BACKLOG.md ]]; } \
+        || { git ls-files 'features/README.md' 2>/dev/null | grep -q . && [[ -f features/README.md ]]; }
+    }
     if [[ -z "$want" ]]; then
-      git ls-files 'features/README.md' >/dev/null 2>&1 && [[ -f features/README.md ]] && { echo "features"; return; }
+      _has_root_backlog && { echo "features"; return; }
       echo ""; return
     fi
     while IFS= read -r d; do
       [[ -z "$d" ]] && continue
-      d="${d%/README.md}"
+      d="${d%/BACKLOG.md}"; d="${d%/README.md}"
       [[ "$d" == "features" ]] && continue                 # la racine n'a pas de préfixe
+      [[ "$seen" == *"|$d|"* ]] && continue                # BACKLOG+README même dossier
+      seen="${seen}${d}|"
       name="$(basename "$(dirname "$d")")"                 # products/<name>/features → <name>
       init="$(printf '%s' "$name" | awk -F- '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')"
       [[ "$init" == "$want" ]] && hits="$hits $d"
-    done < <(git ls-files '*features/README.md' 2>/dev/null)
+    done < <(git ls-files '*features/BACKLOG.md' '*features/README.md' 2>/dev/null)
     set -- $hits
     (( $# == 1 )) && { echo "$1"; return; }                # non ambigu uniquement
     echo ""
