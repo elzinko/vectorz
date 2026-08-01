@@ -33,6 +33,9 @@ for _ in 1 2 3 4 5 6; do
   d="$parent"
 done
 
+# Copie vendored dans la skill (install skill-only, hors monorepo)
+candidates+=("$SKILL_DIR/scripts/regen-backlog.sh")
+
 # PATH
 if command -v regen-backlog.sh >/dev/null 2>&1; then
   candidates+=("$(command -v regen-backlog.sh)")
@@ -55,12 +58,14 @@ done
 cat >&2 <<EOF
 erreur: regen-backlog.sh introuvable pour ${ROOT}
 
-Install / découverte :
-  1. Monorepo vectorz : bash products/mega-city/bin/regen-backlog.sh <racine> "<titre>"
-  2. Copier le script dans <projet>/bin/regen-backlog.sh (chmod +x)
-  3. Ou exporter EZK_REGEN_BACKLOG=/chemin/absolu/regen-backlog.sh
-  4. Ou installer mega-city / ezk-backlog avec le bin du produit sur le PATH
+Install / découverte (ordre de résolution) :
+  1. EZK_REGEN_BACKLOG=/chemin/absolu/regen-backlog.sh
+  2. <projet>/products/mega-city/bin/regen-backlog.sh ou <projet>/bin/regen-backlog.sh
+  3. bin du produit relatif à la skill (monorepo)
+  4. <skill>/scripts/regen-backlog.sh (copie vendored — skill-only)
+  5. regen-backlog.sh sur le PATH
 
-Voir products/mega-city/skills/ezk-backlog/migrations/002-readme-vs-backlog.md
+Sans regen : init/apply-002 **échouent avant** toute mutation (pas de BACKLOG vide
+écrasant un index peuplé). Voir migrations/002-readme-vs-backlog.md
 EOF
 exit 1

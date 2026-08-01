@@ -40,15 +40,16 @@ check "STATUS=behind" "printf '%s' \"\$out_b\" | grep -q 'STATUS=behind'"
 check "INSTALLED=1" "printf '%s' \"\$out_b\" | grep -q 'INSTALLED=1'"
 check "PENDING contient 002" "printf '%s' \"\$out_b\" | grep -q '002-readme-vs-backlog'"
 
-# Cas C : apply-002 → ok
+# Cas C : apply-002 → ok + backup
 echo "Cas C (apply 002) :"
-# Copier regen dans une structure type monorepo pour le helper
 mkdir -p "$B/products/mega-city/bin"
 cp "$REGEN" "$B/products/mega-city/bin/regen-backlog.sh"
 bash "$APPLY" "$B" "Backlog — test C" >/dev/null
 check "BACKLOG.md créé" "test -s '$B/features/BACKLOG.md'"
 check "README a layout_version: 2" "grep -q '^layout_version: 2' '$B/features/README.md'"
 check "README n'est plus index auto" "! grep -q 'Index auto-généré' '$B/features/README.md'"
+check "backup .bak-skema-002" "test -f '$B/features/README.md.bak-skema-002'"
+check "backup contient Index auto" "grep -q 'Index auto-généré' '$B/features/README.md.bak-skema-002'"
 out_c="$("$CHECK" "$B")"
 check "STATUS=ok après migrate" "printf '%s' \"\$out_c\" | grep -q 'STATUS=ok'"
 check "INSTALLED=2" "printf '%s' \"\$out_c\" | grep -q 'INSTALLED=2'"
@@ -86,10 +87,10 @@ check "pas de BACKLOG.md" "! test -f '$E/features/BACKLOG.md'"
 check "message STATUS=behind" "printf '%s' \"\$out_e\" | grep -q 'STATUS=behind'"
 check "pointe apply-002" "printf '%s' \"\$out_e\" | grep -q 'apply-002-readme-vs-backlog'"
 
-# Cas F : README quelconque / BACKLOG seul ≠ INSTALLED=1
+# Cas F : README curé / tombstone sans marqueur → pas behind, pas de pending 002
 F="$TMP/ambiguous"
 mkdir -p "$F/features"
-echo '# Guide sans marqueur' > "$F/features/README.md"
+echo '# Guide sans marqueur (tombstone / curé)' > "$F/features/README.md"
 cat > "$F/features/BACKLOG.md" <<'EOF'
 # Backlog
 
@@ -99,10 +100,10 @@ cat > "$F/features/BACKLOG.md" <<'EOF'
 |---|-------|------|------|--------|----|
 EOF
 out_f="$("$CHECK" "$F")"
-echo "Cas F (pas d'inférence BACKLOG/README) :"
+echo "Cas F (curé sans marqueur → ok, pas migrate) :"
 check "INSTALLED=0" "printf '%s' \"\$out_f\" | grep -q 'INSTALLED=0'"
-check "STATUS=behind" "printf '%s' \"\$out_f\" | grep -q 'STATUS=behind'"
-check "PENDING 002" "printf '%s' \"\$out_f\" | grep -q '002-readme-vs-backlog'"
+check "STATUS=ok" "printf '%s' \"\$out_f\" | grep -q 'STATUS=ok'"
+check "PENDING=none" "printf '%s' \"\$out_f\" | grep -q 'PENDING=none'"
 
 # Cas G : resolve-regen via EZK_REGEN_BACKLOG (repo externe sans mega-city tree)
 G="$TMP/external"
@@ -111,7 +112,6 @@ cp "$REGEN" "$G/bin/regen-backlog.sh"
 chmod +x "$G/bin/regen-backlog.sh"
 printf -- '---\nid: 0001\ntitle: ext\ntype: feature\npriority: P2\nstatus: todo\ncreated: 2026-08-01\n---\n' \
   > "$G/features/0001-ext.md"
-# README v1 pour forcer scaffold
 cat > "$G/features/README.md" <<'EOF'
 # Backlog
 
@@ -121,5 +121,73 @@ echo "Cas G (EZK_REGEN_BACKLOG) :"
 EZK_REGEN_BACKLOG="$G/bin/regen-backlog.sh" bash "$APPLY" "$G" "Backlog — ext" >/dev/null
 check "migrate externe OK" "grep -q '^layout_version: 2' '$G/features/README.md'"
 check "BACKLOG regen externe" "grep -q '^| 0001 ' '$G/features/BACKLOG.md'"
+
+# Cas H : apply-002 refuse README curé / tombstone
+H="$TMP/tombstone"
+mkdir -p "$H/features" "$H/products/mega-city/bin"
+cp "$REGEN" "$H/products/mega-city/bin/regen-backlog.sh"
+cat > "$H/features/README.md" <<'EOF'
+# features/ (mega-city) — migrées
+
+Depuis la fiche 0064, tombstone curée — ne pas écraser.
+EOF
+echo "Cas H (refuse curated) :"
+set +e
+out_h="$(bash "$APPLY" "$H" "Backlog — H" 2>&1)"
+rc_h=$?
+set -e
+check "exit 1" "test '$rc_h' -eq 1"
+check "README intact" "grep -q 'tombstone curée' '$H/features/README.md'"
+check "pas de scaffold" "! grep -q 'layout_version' '$H/features/README.md'"
+check "message refuse" "printf '%s' \"\$out_h\" | grep -q 'pas un index v1'"
+
+# Cas I : init deux fois — BACKLOG peuplé non écrasé
+I="$TMP/init-twice"
+mkdir -p "$I"
+bash "$SKILL/init.sh" "$I" "Backlog — I" >/dev/null
+cat > "$I/features/BACKLOG.md" <<'EOF'
+# Backlog — I
+
+> Index auto-généré — ne pas éditer.
+
+| # | Titre | Type | Prio | Statut | PR |
+|---|-------|------|------|--------|----|
+| 0099 | keep-me | feature | P1 | 🔴 todo | |
+
+> Livrées (`done/`) : .
+EOF
+cp "$I/features/BACKLOG.md" "$I/features/BACKLOG.md.before"
+bash "$SKILL/init.sh" "$I" "Backlog — I" >/dev/null
+echo "Cas I (init ne clobber pas BACKLOG) :"
+check "BACKLOG inchangé" "diff -q '$I/features/BACKLOG.md' '$I/features/BACKLOG.md.before' >/dev/null"
+check "ligne keep-me" "grep -q 'keep-me' '$I/features/BACKLOG.md'"
+
+# Cas J : racine inexistante → missing, exit 0
+echo "Cas J (racine inexistante) :"
+set +e
+out_j="$("$CHECK" "/tmp/does-not-exist-skema-$$" 2>&1)"
+rc_j=$?
+set -e
+check "exit 0" "test '$rc_j' -eq 0"
+check "STATUS=missing" "printf '%s' \"\$out_j\" | grep -q 'STATUS=missing'"
+
+# Cas K : skill-vendored regen (pas de bin monorepo dans le projet)
+K="$TMP/skill-vendor"
+mkdir -p "$K/features"
+cat > "$K/features/README.md" <<'EOF'
+# Backlog
+
+> Index auto-généré — ne pas éditer.
+EOF
+printf -- '---\nid: 0002\ntitle: vendor\ntype: feature\npriority: P2\nstatus: todo\ncreated: 2026-08-01\n---\n' \
+  > "$K/features/0002-vendor.md"
+echo "Cas K (regen vendored skill) :"
+# Isoler : PATH minimal — resolve doit trouver <skill>/scripts/regen-backlog.sh
+# (SKILL reste dans le monorepo worktree, donc ../../bin existe aussi — OK,
+# le vendored est un fallback ; on vérifie surtout que apply marche sans
+# products/…/bin dans le projet cible.)
+env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$APPLY" "$K" "Backlog — vendor" >/dev/null
+check "migrate via skill regen" "grep -q '^layout_version: 2' '$K/features/README.md'"
+check "BACKLOG via skill regen" "grep -q '^| 0002 ' '$K/features/BACKLOG.md'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi

@@ -9,8 +9,11 @@ aux projets déjà intégrés — sans rescanner chaque repo à la main.
 | Élément | Où |
 |---|---|
 | Version **courante** de la skill | fichier `VERSION` (entier) + front-matter `layout_version` de `SKILL.md` |
-| Version **installée** dans un projet | front-matter `layout_version` de `features/README.md` ; absent + « Index auto-généré » ⇒ **1** (legacy) ; sinon **0** (inconnu / marqueur manquant) — ne pas inférer 1 depuis la seule présence d'un README ou `BACKLOG.md` |
+| Version **installée** dans un projet | front-matter `layout_version` de `features/README.md` ; absent + « Index auto-généré » ⇒ **1** (legacy) ; sinon **0** (inconnu / curé / tombstone) → `STATUS=ok PENDING=none` — ne pas proposer 002 sans preuve d'index v1 |
 | Étapes d'upgrade | `NNN-slug.md` ordonnés, + helpers shell optionnels |
+
+> **001** = layout historique (README = index) : pas de fichier `001-*.md` —
+> on démarre les migrations documentées à **002**.
 
 ## Règle d'or
 
