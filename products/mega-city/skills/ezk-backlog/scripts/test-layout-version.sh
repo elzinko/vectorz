@@ -171,7 +171,7 @@ set -e
 check "exit 0" "test '$rc_j' -eq 0"
 check "STATUS=missing" "printf '%s' \"\$out_j\" | grep -q 'STATUS=missing'"
 
-# Cas K : skill-vendored regen (pas de bin monorepo dans le projet)
+# Cas K : skill-vendored regen — skill copiée hors monorepo (hermétique)
 K="$TMP/skill-vendor"
 mkdir -p "$K/features"
 cat > "$K/features/README.md" <<'EOF'
@@ -181,13 +181,27 @@ cat > "$K/features/README.md" <<'EOF'
 EOF
 printf -- '---\nid: 0002\ntitle: vendor\ntype: feature\npriority: P2\nstatus: todo\ncreated: 2026-08-01\n---\n' \
   > "$K/features/0002-vendor.md"
+# Isoler la skill : SKILL_DIR/../.. ne doit plus résoudre vers le bin monorepo.
+SKILL_ISO="$TMP/skill-iso/ezk-backlog"
+mkdir -p "$TMP/skill-iso"
+cp -R "$SKILL" "$SKILL_ISO"
+APPLY_ISO="$SKILL_ISO/scripts/apply-002-readme-vs-backlog.sh"
+RESOLVE_ISO="$SKILL_ISO/scripts/resolve-regen-backlog.sh"
+VENDORED="$SKILL_ISO/scripts/regen-backlog.sh"
 echo "Cas K (regen vendored skill) :"
-# Isoler : PATH minimal — resolve doit trouver <skill>/scripts/regen-backlog.sh
-# (SKILL reste dans le monorepo worktree, donc ../../bin existe aussi — OK,
-# le vendored est un fallback ; on vérifie surtout que apply marche sans
-# products/…/bin dans le projet cible.)
-env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$APPLY" "$K" "Backlog — vendor" >/dev/null
+resolved_k="$(env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$RESOLVE_ISO" "$K")"
+check "resolve → copie vendored" "[[ \"\$resolved_k\" == \"$VENDORED\" ]]"
+env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$APPLY_ISO" "$K" "Backlog — vendor" >/dev/null
 check "migrate via skill regen" "grep -q '^layout_version: 2' '$K/features/README.md'"
 check "BACKLOG via skill regen" "grep -q '^| 0002 ' '$K/features/BACKLOG.md'"
+
+# Cas L : init sur racine inexistante → exit 1 + message clair
+echo "Cas L (init racine inexistante) :"
+set +e
+out_l="$(bash "$SKILL/init.sh" "/tmp/does-not-exist-init-skema-$$" 2>&1)"
+rc_l=$?
+set -e
+check "exit 1" "test '$rc_l' -eq 1"
+check "message racine inexistante" "printf '%s' \"\$out_l\" | grep -q 'racine inexistante'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi

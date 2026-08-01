@@ -3,11 +3,24 @@
 # Déterministe : tri P0→P3 puis id ; aucun jugement. cf. ADR-0001 §2 (le script range).
 # Layout v2 (Skema) : README.md = guide humain curé ; BACKLOG.md = index généré.
 # Usage : regen-backlog.sh [racine-projet] [titre-index]   (fiche 0072 / ADR-0017 A13)
-#   défauts : racine = le produit mega-city (parent de bin/), titre = « Backlog — mega-city ».
+#
+# Deux copies à garder alignées (corps identique après set -euo) :
+#   products/mega-city/bin/regen-backlog.sh  (source monorepo)
+#   skills/ezk-backlog/scripts/regen-backlog.sh  (vendored skill-only)
+#   Si $0 est sous …/bin/, défaut racine = parent du bin (produit mega-city) ;
+#   sinon racine **obligatoire** (pas de défaut vers le dossier skill).
 #   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz"
 set -euo pipefail
 
-ROOT="${1:-"$(cd "$(dirname "$0")/.." && pwd)"}"
+_SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [[ -n "${1:-}" ]]; then
+  ROOT="$1"
+elif [[ "$(basename "$_SCRIPT_DIR")" == "bin" ]]; then
+  ROOT="$(cd "$_SCRIPT_DIR/.." && pwd)"
+else
+  echo "erreur: racine-projet obligatoire (copie skill — pas de défaut produit)" >&2
+  exit 1
+fi
 TITLE="${2:-Backlog — mega-city}"
 cd "$ROOT"
 [ -d features ] || { echo "erreur: pas de dossier features/ dans ${ROOT}" >&2; exit 1; }

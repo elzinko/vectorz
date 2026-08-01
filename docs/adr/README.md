@@ -49,8 +49,9 @@ vit dans le front-matter des fiches.
 
 ## Backlog
 
-Le backlog vivant est [`features/README.md`](../../features/README.md) (index régénéré,
-fiches actives triées P0→P3, livrées dans `done/`). Épic directeur :
+Le backlog vivant est [`features/BACKLOG.md`](../../features/BACKLOG.md) (index régénéré ;
+guide humain dans [`features/README.md`](../../features/README.md)),
+fiches actives triées P0→P3, livrées dans `done/`. Épic directeur :
 [0034](../../features/0034-mise-a-plat-post-pivot.md) ; amont :
 [0035](../../features/done/0035-consolider-statuts-adr.md) (P0),
 [0036](../../features/done/0036-purge-code-mort-prouve.md),

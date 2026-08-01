@@ -359,13 +359,13 @@ else
   # produit, le préfixe distingue l'id. Sans préfixe ⇒ backlog racine ; `xx-` ⇒ le backlog
   # produit dont les initiales du nom donnent `xx` (mega-city → mc). Toute résolution
   # ambiguë ou inconnue est refusée plutôt que devinée.
+  # Layout v2+ : BACKLOG.md = index généré ; README.md = guide (ou index legacy v1).
+  _has_root_backlog() {
+    { git ls-files 'features/BACKLOG.md' 2>/dev/null | grep -q . && [[ -f features/BACKLOG.md ]]; } \
+      || { git ls-files 'features/README.md' 2>/dev/null | grep -q . && [[ -f features/README.md ]]; }
+  }
   backlog_dir_for() { # $1=préfixe sans tiret ("" = racine) → chemin, ou "" si non résolu
-    # Layout v2+ : BACKLOG.md = index généré ; README.md = guide (ou index legacy v1).
     local want="$1" d name init hits="" seen="|"
-    _has_root_backlog() {
-      { git ls-files 'features/BACKLOG.md' 2>/dev/null | grep -q . && [[ -f features/BACKLOG.md ]]; } \
-        || { git ls-files 'features/README.md' 2>/dev/null | grep -q . && [[ -f features/README.md ]]; }
-    }
     if [[ -z "$want" ]]; then
       _has_root_backlog && { echo "features"; return; }
       echo ""; return

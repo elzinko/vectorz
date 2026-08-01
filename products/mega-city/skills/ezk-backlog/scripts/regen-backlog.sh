@@ -4,8 +4,9 @@
 # Layout v2 (Skema) : README.md = guide humain curé ; BACKLOG.md = index généré.
 # Usage : regen-backlog.sh [racine-projet] [titre-index]   (fiche 0072 / ADR-0017 A13)
 #
-# Copie vendored dans la skill (skill-only installs). Source monorepo :
-#   products/mega-city/bin/regen-backlog.sh — garder les deux alignés.
+# Deux copies à garder alignées (corps identique après set -euo) :
+#   products/mega-city/bin/regen-backlog.sh  (source monorepo)
+#   skills/ezk-backlog/scripts/regen-backlog.sh  (vendored skill-only)
 #   Si $0 est sous …/bin/, défaut racine = parent du bin (produit mega-city) ;
 #   sinon racine **obligatoire** (pas de défaut vers le dossier skill).
 #   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz"

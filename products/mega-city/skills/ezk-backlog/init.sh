@@ -11,6 +11,10 @@ set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="${1:-.}"
+if [[ ! -d "$ROOT" ]]; then
+  echo "erreur: racine inexistante: $ROOT" >&2
+  exit 1
+fi
 ROOT="$(cd "$ROOT" && pwd)"
 TITLE="${2:-Backlog features & bugs}"
 FEATURES="$ROOT/features"

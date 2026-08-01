@@ -6,6 +6,7 @@
 set -euo pipefail
 
 SCRIPT="$(cd "$(dirname "$0")" && pwd)/regen-backlog.sh"
+VENDOR="$(cd "$(dirname "$0")/../skills/ezk-backlog/scripts" && pwd)/regen-backlog.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 FAIL=0
@@ -13,6 +14,11 @@ FAIL=0
 check() { # $1=label $2=cmd-ok(0)/ko(1)
   if eval "$2"; then echo "  ok — $1"; else echo "  ÉCHEC — $1"; FAIL=1; fi
 }
+
+# Garde anti-dérive : bin/ et copie skill doivent être byte-identiques
+# (en-tête + corps — une seule source de vérité fonctionnelle).
+echo "Garde anti-dérive (bin ↔ skill) :"
+check "regen-backlog.sh bin ≡ skill" "diff -q '$SCRIPT' '$VENDOR' >/dev/null"
 
 fiche() { # $1=dir $2=id $3=slug $4=front-matter-extra (lignes YAML)
   mkdir -p "$1"
