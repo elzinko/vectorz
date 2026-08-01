@@ -186,6 +186,7 @@
 | 0172 | Convention SoT backlog — fiches md = maître ; GitHub = export (hygiène process) | chore | P2 |  | mega-city | 💡 idea |  |
 | 0174 | ezk-issues — intake GitHub (analyse, PR fix/feature md opt-in, coût local) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0175 | article — Skema : versionner une skill LLM avec des migrations markdown | feature | P2 |  | mega-city | 💡 idea |  |
+| 0177 | Pack de pratiques projet — capacités portables indépendantes du skill/LLM driver | feature | P2 |  | mega-city | 💡 idea |  |
 | 0178 | ezk-checks — recette manuelle déclenchable (Playwright → features/checks/) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0179 | Incubation de skills en rétro — opt-in sprint + mesure (pas un jeu formel) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
