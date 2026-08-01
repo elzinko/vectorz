@@ -1,4 +1,4 @@
-# Backlog features & bugs — vectorz
+# Backlog — mega-city
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
@@ -95,7 +95,7 @@
 | 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 0034 | vectorz | 🔴 todo |  |
 | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 🔴 todo |  |
 | 0048 | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 |  | mega-city | ✅ shipped |  |
-| 0060 | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 |  | vectorz | 🟠 in-progress |  |
+| 0060 | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 |  | vectorz | ✅ shipped | #107 |
 | 0062 | Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité | feature | P2 |  | vectorz | ✅ shipped | #95 |
 | 0063 | Ancrer un projet depuis le Moniteur — bouton « ajouter projet » + sélection de dossier + install via le daemon (2 modes) | feature | P2 |  | vectorz | ✅ shipped | #97 |
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | mega-city | ✅ shipped | #30 |
@@ -186,6 +186,8 @@
 | 0172 | Convention SoT backlog — fiches md = maître ; GitHub = export (hygiène process) | chore | P2 |  | mega-city | 💡 idea |  |
 | 0174 | ezk-issues — intake GitHub (analyse, PR fix/feature md opt-in, coût local) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0175 | article — Skema : versionner une skill LLM avec des migrations markdown | feature | P2 |  | mega-city | 💡 idea |  |
+| 0178 | ezk-checks — recette manuelle déclenchable (Playwright → features/checks/) | feature | P2 |  | mega-city | 💡 idea |  |
+| 0179 | Incubation de skills en rétro — opt-in sprint + mesure (pas un jeu formel) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
