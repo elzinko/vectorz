@@ -3,7 +3,7 @@ id: 0180
 title: Idées sans numéro — fiche datename à la capture, id numérique à l'intake sprint
 type: feature
 priority: P2
-product: mega-city
+product: vectorz
 status: idea
 ready:
 pr:
@@ -13,6 +13,11 @@ created: 2026-08-01
 # 0180 — Idées sans numéro (mint id à l'intake)
 
 ## Contexte / Problème
+
+**Surface monorepo** : `product: vectorz` — la fiche vit dans le backlog
+`features/` du monorepo (convention lifecycle / ownership des fiches).
+**Implémentation** : le comportement change dans la skill `ezk-backlog`
+(owner mega-city / claude-skills), pas dans un autre produit applicatif.
 
 Aujourd'hui toute capture (`ezk-backlog add`, même en `status: idea`) **brûle un id
 numérique** (`max+1`, 4 chiffres). Conséquences :
@@ -60,17 +65,24 @@ système actuel l'exige tant que la feature n'est pas livrée.
 
 ## Notes / décisions
 
+- **Oui, c'est ezk-backlog** — follow-up de capacité (comportement `add` /
+  intake sprint + mutex), **pas** le layout Skema v2.
 - **Hors PR #87 / hors layout Skema v2** — ne pas implémenter sur
-  `feat/0175-skema-layout-v2`. Mauvaise scope : #87 = README curé + BACKLOG
-  généré + migrations Skema (safety mid-review).
-- **Candidat migration Skema layout v3** (plus tard) — si le layout backlog
-  évolue pour supporter les fiches numberless, le faire via Skema, pas en
-  piggyback sur v2.
+  `feat/0175-skema-layout-v2` ni en drive-by sur #87. Mauvaise scope : #87 =
+  README curé + `BACKLOG.md` + migrations mécaniques Skema (safety mid-review).
+  **0180** = lifecycle d'identité des fiches (idées datename → mint id à
+  l'intake sprint) + concurrence mutex — plus large qu'un changement de layout.
+- **Après merge de #87** — candidat prochaine évolution backlog :
+  *ezk-backlog id lifecycle* (libellé préféré). « Skema layout v3 » reste
+  optionnel seulement si une migration de fichiers numberless est nécessaire ;
+  ne pas piggyback sur v2.
+- **product: vectorz** — ownership de la fiche / surface `features/` monorepo ;
+  le code skill reste côté mega-city (`ezk-backlog`).
 - Croisement : [0175](0175-article-skema-skill-schema-migrations.md) (Skema /
   migrations de layout), [0177](0177-pack-pratiques-projet-portables.md)
   (Praxis / pratiques projet portables) — **pas des doublons** : 0175 = article
   + mécanisme de migration de layout ; 0177 = binding de pratiques au projet ;
-  **0180 = lifecycle d'identité des fiches idée**.
+  **0180 = lifecycle d'identité des fiches idée** (capacité ezk-backlog).
 - Anti-doublon vs existant : [0172](0172-convention-sot-backlog-md.md) (SoT md vs
   GitHub) et [0174](0174-ezk-issues-intake-github.md) (intake GH) touchent le
   process backlog mais **pas** le report du mint d'id. [0064](done/0064-liste-unique-features-champ-product.md)
