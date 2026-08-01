@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DoD exécutable — Skema check-layout-version + apply-001 (fixtures jetables).
+# DoD exécutable — Skema check-layout-version + apply-002 (fixtures jetables).
 set -euo pipefail
 
 SKILL="$(cd "$(dirname "$0")/.." && pwd)"
@@ -37,6 +37,7 @@ printf -- '---\nid: 0001\ntitle: demo\ntype: feature\npriority: P1\nstatus: todo
 out_b="$("$CHECK" "$B")"
 echo "Cas B (legacy behind) :"
 check "STATUS=behind" "printf '%s' \"\$out_b\" | grep -q 'STATUS=behind'"
+check "INSTALLED=1" "printf '%s' \"\$out_b\" | grep -q 'INSTALLED=1'"
 check "PENDING contient 002" "printf '%s' \"\$out_b\" | grep -q '002-readme-vs-backlog'"
 
 # Cas C : apply-002 → ok
@@ -63,5 +64,62 @@ check "done/ présent" "test -d '$D/features/done'"
 check "template présent" "test -f '$D/features/feature-template.md'"
 out_d="$("$CHECK" "$D")"
 check "init → STATUS=ok" "printf '%s' \"\$out_d\" | grep -q 'STATUS=ok'"
+
+# Cas E : init refuse half-migrate v1 (pas de BACKLOG créé, exit 2)
+E="$TMP/v1-init"
+mkdir -p "$E/features"
+cat > "$E/features/README.md" <<'EOF'
+# Backlog — legacy
+
+> Index auto-généré — ne pas éditer.
+
+| # | Titre |
+|---|-------|
+EOF
+echo "Cas E (init refuse v1) :"
+set +e
+out_e="$(bash "$SKILL/init.sh" "$E" "Backlog — E" 2>&1)"
+rc_e=$?
+set -e
+check "exit 2" "test '$rc_e' -eq 2"
+check "pas de BACKLOG.md" "! test -f '$E/features/BACKLOG.md'"
+check "message STATUS=behind" "printf '%s' \"\$out_e\" | grep -q 'STATUS=behind'"
+check "pointe apply-002" "printf '%s' \"\$out_e\" | grep -q 'apply-002-readme-vs-backlog'"
+
+# Cas F : README quelconque / BACKLOG seul ≠ INSTALLED=1
+F="$TMP/ambiguous"
+mkdir -p "$F/features"
+echo '# Guide sans marqueur' > "$F/features/README.md"
+cat > "$F/features/BACKLOG.md" <<'EOF'
+# Backlog
+
+> Index auto-généré — ne pas éditer.
+
+| # | Titre | Type | Prio | Statut | PR |
+|---|-------|------|------|--------|----|
+EOF
+out_f="$("$CHECK" "$F")"
+echo "Cas F (pas d'inférence BACKLOG/README) :"
+check "INSTALLED=0" "printf '%s' \"\$out_f\" | grep -q 'INSTALLED=0'"
+check "STATUS=behind" "printf '%s' \"\$out_f\" | grep -q 'STATUS=behind'"
+check "PENDING 002" "printf '%s' \"\$out_f\" | grep -q '002-readme-vs-backlog'"
+
+# Cas G : resolve-regen via EZK_REGEN_BACKLOG (repo externe sans mega-city tree)
+G="$TMP/external"
+mkdir -p "$G/features" "$G/bin"
+cp "$REGEN" "$G/bin/regen-backlog.sh"
+chmod +x "$G/bin/regen-backlog.sh"
+printf -- '---\nid: 0001\ntitle: ext\ntype: feature\npriority: P2\nstatus: todo\ncreated: 2026-08-01\n---\n' \
+  > "$G/features/0001-ext.md"
+# README v1 pour forcer scaffold
+cat > "$G/features/README.md" <<'EOF'
+# Backlog
+
+> Index auto-généré — ne pas éditer.
+EOF
+echo "Cas G (EZK_REGEN_BACKLOG) :"
+EZK_REGEN_BACKLOG="$G/bin/regen-backlog.sh" bash "$APPLY" "$G" "Backlog — ext" >/dev/null
+check "migrate externe OK" "grep -q '^layout_version: 2' '$G/features/README.md'"
+check "BACKLOG regen externe" "grep -q '^| 0001 ' '$G/features/BACKLOG.md'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi

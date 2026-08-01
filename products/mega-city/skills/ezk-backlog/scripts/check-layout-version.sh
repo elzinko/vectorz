@@ -4,6 +4,13 @@
 # Sortie machine (une ligne) :
 #   CURRENT=<n> INSTALLED=<n|0> PENDING=<csv|none> STATUS=ok|behind|ahead|missing
 # Exit 0 toujours (sauf usage) — le statut passe par stdout (comme ezk-archive gate).
+#
+# Détection INSTALLED (ordre) :
+#   1. front-matter layout_version de features/README.md
+#   2. legacy v1 : README contient « Index auto-généré » → INSTALLED=1
+#   3. sinon 0 (inconnu / marqueur manquant) → STATUS=behind si CURRENT>0
+# Ne PAS inférer 1 uniquement parce qu'un README ou BACKLOG.md existe
+# (évite de masquer un half-migrate / marqueur absent).
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,7 +19,6 @@ ROOT="$(cd "$ROOT" && pwd)"
 
 CURRENT="$(tr -d '[:space:]' < "$SKILL_DIR/migrations/VERSION")"
 README="$ROOT/features/README.md"
-BACKLOG="$ROOT/features/BACKLOG.md"
 
 if [[ ! -d "$ROOT/features" ]]; then
   echo "CURRENT=${CURRENT} INSTALLED=0 PENDING=none STATUS=missing"
@@ -33,16 +39,14 @@ if [[ -f "$README" ]]; then
   ' "$README")"
 fi
 
-# Legacy v1 : index généré dans README, pas de marqueur → traité comme 1
-if [[ "$INSTALLED" -eq 0 ]]; then
-  if [[ -f "$README" ]] && grep -q 'Index auto-généré' "$README" 2>/dev/null; then
-    INSTALLED=1
-  elif [[ -f "$BACKLOG" ]]; then
-    # BACKLOG présent sans marqueur : probablement v2 partiel — forcer check
-    INSTALLED=1
-  elif [[ -f "$README" ]]; then
-    INSTALLED=1
-  fi
+# Legacy v1 : index généré dans README, pas de marqueur → traité comme 1.
+# Sinon laisser 0 (inconnu / marqueur manquant) → STATUS=behind si CURRENT>0.
+# Ne pas inférer INSTALLED=1 depuis BACKLOG.md ou un README quelconque
+# (évite de masquer un half-migrate ; propose-then-apply).
+if [[ "$INSTALLED" -eq 0 ]] \
+  && [[ -f "$README" ]] \
+  && grep -q 'Index auto-généré' "$README" 2>/dev/null; then
+  INSTALLED=1
 fi
 
 PENDING=""

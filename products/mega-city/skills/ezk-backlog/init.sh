@@ -4,6 +4,9 @@
 # Crée features/ + done/ + README curé (layout_version courant) + BACKLOG.md vide
 # + feature-template.md. Idempotent : n'écrase pas un roadmap/ existant ni un
 # features/ déjà peuplé (sauf regen de BACKLOG si demandé).
+#
+# Skema : refuse de half-migrer un layout v1 (README « Index auto-généré ») —
+# propose apply-002 après OK utilisateur (pas de split-brain README+BACKLOG).
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -11,6 +14,20 @@ ROOT="${1:-.}"
 ROOT="$(cd "$ROOT" && pwd)"
 TITLE="${2:-Backlog features & bugs}"
 FEATURES="$ROOT/features"
+CHECK="$SKILL_DIR/scripts/check-layout-version.sh"
+RESOLVE="$SKILL_DIR/scripts/resolve-regen-backlog.sh"
+SKILL_VERSION="$(tr -d '[:space:]' < "$SKILL_DIR/migrations/VERSION")"
+
+installed_layout() {
+  # Lit layout_version réel du projet (via check) — pas le VERSION skill.
+  local out
+  out="$("$CHECK" "$ROOT" 2>/dev/null || true)"
+  if [[ "$out" =~ INSTALLED=([0-9]+) ]]; then
+    echo "${BASH_REMATCH[1]}"
+  else
+    echo 0
+  fi
+}
 
 if [[ -d "$ROOT/roadmap" ]]; then
   echo "convention roadmap/ détectée — rien créé (épouser l'existant)."
@@ -19,12 +36,26 @@ fi
 
 mkdir -p "$FEATURES/done"
 
+# Legacy v1 : ne pas créer BACKLOG à côté d'un index README — propose migration.
+if [[ -f "$FEATURES/README.md" ]] && grep -q 'Index auto-généré' "$FEATURES/README.md" 2>/dev/null; then
+  out="$("$CHECK" "$ROOT")"
+  echo "$out"
+  cat <<EOF
+init: layout v1 détecté (features/README.md = index auto-généré).
+STATUS=behind — ne crée PAS BACKLOG.md (évite un split-brain README+BACKLOG).
+
+Après OK utilisateur, appliquer la migration 002 :
+  bash ${SKILL_DIR}/scripts/apply-002-readme-vs-backlog.sh ${ROOT} "${TITLE}"
+
+Doc : ${SKILL_DIR}/migrations/002-readme-vs-backlog.md
+EOF
+  exit 2
+fi
+
 # README curé (layout courant)
 if [[ ! -f "$FEATURES/README.md" ]]; then
   cp "$SKILL_DIR/templates/features-README.md" "$FEATURES/README.md"
-  echo "créé features/README.md (guide, layout_version courant)"
-elif grep -q 'Index auto-généré' "$FEATURES/README.md" 2>/dev/null; then
-  echo "warning: features/README.md ressemble à un index v1 — lance la migration 002" >&2
+  echo "créé features/README.md (guide, layout_version=${SKILL_VERSION})"
 fi
 
 # Template fiche
@@ -64,20 +95,20 @@ EOF
 fi
 
 # BACKLOG.md — généré (vide ou regen si fiches présentes)
-REGEN=""
-if [[ -x "$ROOT/products/mega-city/bin/regen-backlog.sh" ]]; then
-  REGEN="$ROOT/products/mega-city/bin/regen-backlog.sh"
-elif [[ -x "$ROOT/bin/regen-backlog.sh" ]]; then
-  REGEN="$ROOT/bin/regen-backlog.sh"
-else
-  CANDIDATE="$(cd "$SKILL_DIR/../.." && pwd)/bin/regen-backlog.sh"
-  [[ -x "$CANDIDATE" ]] && REGEN="$CANDIDATE"
+has_fiches=0
+if compgen -G "$FEATURES/[0-9]*.md" > /dev/null \
+  || compgen -G "$FEATURES/done/[0-9]*.md" > /dev/null; then
+  has_fiches=1
 fi
 
-if [[ -n "$REGEN" ]] && { compgen -G "$FEATURES/[0-9]*.md" > /dev/null \
-   || compgen -G "$FEATURES/done/[0-9]*.md" > /dev/null; }; then
-  bash "$REGEN" "$ROOT" "$TITLE"
-else
+if [[ "$has_fiches" -eq 1 ]]; then
+  if REGEN="$("$RESOLVE" "$ROOT")"; then
+    bash "$REGEN" "$ROOT" "$TITLE"
+  else
+    echo "init: fiches présentes mais regen-backlog.sh introuvable — BACKLOG non écrit." >&2
+    exit 1
+  fi
+elif [[ ! -f "$FEATURES/BACKLOG.md" ]]; then
   cat > "$FEATURES/BACKLOG.md" <<EOF
 # ${TITLE}
 
@@ -91,4 +122,5 @@ EOF
   echo "créé features/BACKLOG.md (vide)"
 fi
 
-echo "init backlog OK → ${FEATURES} (layout_version=$(tr -d '[:space:]' < "$SKILL_DIR/migrations/VERSION"))"
+ACTUAL="$(installed_layout)"
+echo "init backlog OK → ${FEATURES} (layout_version=${ACTUAL} ; skill CURRENT=${SKILL_VERSION})"

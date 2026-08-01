@@ -9,7 +9,7 @@ aux projets déjà intégrés — sans rescanner chaque repo à la main.
 | Élément | Où |
 |---|---|
 | Version **courante** de la skill | fichier `VERSION` (entier) + front-matter `layout_version` de `SKILL.md` |
-| Version **installée** dans un projet | front-matter `layout_version` de `features/README.md` (absent ⇒ **1**, legacy) |
+| Version **installée** dans un projet | front-matter `layout_version` de `features/README.md` ; absent + « Index auto-généré » ⇒ **1** (legacy) ; sinon **0** (inconnu / marqueur manquant) — ne pas inférer 1 depuis la seule présence d'un README ou `BACKLOG.md` |
 | Étapes d'upgrade | `NNN-slug.md` ordonnés, + helpers shell optionnels |
 
 ## Règle d'or
