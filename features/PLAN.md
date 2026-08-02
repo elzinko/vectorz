@@ -11,6 +11,8 @@
 
 ## 🧹 Hygiène préalable (rapide)
 
+- **P0** `build` **0176** — interdit `git config --global user.*` pour l’identité
+  agent ; commits cop1 = local / one-shot only ([#86](https://github.com/elzinko/vectorz/issues/86)).
 - ~~`ship` **0059** · **0061** (vectorz)~~ — fait (vérifié au `reconcile` du 2026-07-26).
 - ~~`ship` **0094** · **0095** (mega-city)~~ — fait au `reconcile` 2026-07-30 (#54, #55).
 - `audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le
