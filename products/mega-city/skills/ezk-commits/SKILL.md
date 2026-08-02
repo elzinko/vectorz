@@ -165,6 +165,30 @@ ci(github): add matrix test job for Python 3.11 and 3.12
 - `feat: Ajout de la fonctionnalité` → description en français
 - `FEAT: add thing` → type en majuscules
 
+## Identité git pour les commits automatisés (agents / cop1)
+
+> **Règle non négociable (0176)** : le `~/.gitconfig` global appartient **toujours**
+> à l'humain. Un agent/script ne doit **jamais** faire :
+>
+> ```bash
+> # ❌ INTERDIT
+> git config --global user.name "..."
+> git config --global user.email "..."
+> ```
+
+### Patterns autorisés
+
+| Scope | Commande |
+|---|---|
+| **One-shot** (**défaut**) | `git -c user.name="cop1 CI" -c user.email="ci@cop1.local" commit …` |
+| **Variables d'env** | `GIT_AUTHOR_NAME="cop1 CI" GIT_AUTHOR_EMAIL="ci@cop1.local" GIT_COMMITTER_NAME="cop1 CI" GIT_COMMITTER_EMAIL="ci@cop1.local" git commit …` |
+| **Local au repo/worktree** (exception) | `git config user.name "cop1 CI"` *(sans `--global`)* **uniquement** dans un worktree jetable de PR auto |
+
+Préférer one-shot / env : un `git config` local écrit dans le `.git/config` du checkout
+courant — si l'agent se trompe de dossier, il détourne l'identité humaine sur tout le
+repo, plus discrètement qu'une pollution globale. Le scope local reste OK pour la
+traçabilité cop1 sur une PR de nuit, **jamais** sur le checkout principal de l'humain.
+
 ## Frontière
 
 Tu fournis le **titre** conventional-commit (et le hook). Tu **ne rédiges pas** le
