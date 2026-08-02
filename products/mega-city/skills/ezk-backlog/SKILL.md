@@ -1,5 +1,6 @@
 ---
 name: ezk-backlog
+layout_version: 2
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
@@ -35,6 +36,26 @@ Tu maintiens le **backlog d'un projet** en markdown versionné dans le repo : un
 de features/bugs **stable, ordonnée par priorité, et qui ne se perd jamais** — ni entre
 worktrees, ni entre sessions, ni quand une branche est abandonnée.
 
+## Préflight Skema (layout version) — à chaque commande
+
+Avant `list` / `next` / `add` / `groom` / `ready` / `plan` / `review` /
+`reconcile` / `ship` / `regen` (et après `init` pour confirmer) :
+
+```bash
+bash <skill>/scripts/check-layout-version.sh .
+# → CURRENT=… INSTALLED=… PENDING=… STATUS=ok|behind|ahead|missing
+```
+
+- `STATUS=behind` → **propose** les migrations listées dans `PENDING` (lis
+  `migrations/<id>.md`, résume, demande OK). N'applique **rien** sans accord.
+  Helper mécanique pour 002 : `scripts/apply-002-readme-vs-backlog.sh`.
+- `STATUS=ok` / `ahead` → continue normalement.
+- `STATUS=missing` → enchaîne sur `init` si l'utilisateur veut un backlog.
+
+Pattern réutilisable : **Skema** (*Skill Schema Migrations*) — voir
+`migrations/README.md`. Version courante = `migrations/VERSION` (= `layout_version`
+du front-matter de cette skill).
+
 ## Usage (sous-commandes)
 
 `/ezk-backlog [sous-commande] [args]` — ou en langage naturel (« c'est quoi la suite ? »).
@@ -42,17 +63,17 @@ worktrees, ni entre sessions, ni quand une branche est abandonnée.
 | Sous-commande | Effet |
 |---|---|
 | `help` (ou **sans argument**) | Affiche ce tableau d'usage + l'état du backlog s'il existe |
-| `init` | Initialise le suivi : `features/` + `done/` + index (helper `init.sh`) |
+| `init` | Initialise le suivi : `features/` + `done/` + README curé + `BACKLOG.md` (helper `init.sh`) |
 | `list` / `next` | Charge le backlog **trié par priorité** (P0→P3) en contexte de session |
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
 | `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change ni statut ni `ready:` |
 | `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert pose `ready: <date>` (+ flip `idea→todo` le cas échéant) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-builder (`next` seul reste l'alias de `list`) |
-| `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé, référencé par le README) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
+| `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
 | `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index |
-| `regen` | Régénère l'index depuis le front-matter des fiches |
+| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
 > si un backlog existe, son état trié par priorité. Sans sous-commande reconnue → traite la
@@ -61,9 +82,10 @@ worktrees, ni entre sessions, ni quand une branche est abandonnée.
 ## Comment ça s'« installe » dans un projet
 
 La **skill elle-même est globale** : installée une seule fois dans `~/.claude/skills/`
-(via le `install.sh` du repo claude-skills), elle est dispo dans **tous** tes projets.
+(via le `install.sh` / cap global du repo), elle est dispo dans **tous** tes projets.
 Tu ne « l'installes » donc pas par projet — ce qui se crée **par projet**, c'est la
-**structure de suivi**, scaffoldée par `init` à la première invocation.
+**structure de suivi**, scaffoldée par `init` à la première invocation. Les upgrades
+de layout passent par **Skema** (migrations proposées, pas un rescan manuel).
 
 ## Invariant n°1 — le backlog vit sur `main`, commité
 
@@ -75,15 +97,18 @@ prochaine feature » depuis là (visible depuis n'importe quel worktree). Un év
 liste des features, elle, est sur main**. Les comptes-rendus de session **commités**
 vivent dans `docs/sessions/` (snapshot à la clôture via `ezk-archive run`).
 
-## Layout par défaut
+## Layout par défaut (v2)
 
 ```
 features/
-  README.md            # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
+  README.md            # guide humain CURÉ (marque layout_version) — pas l'index
+  BACKLOG.md           # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
+  PLAN.md              # séquence décidée (curée) — NOW = prochaines N cartes
   0001-slug.md         # features/bugs ACTIFS (idea / todo / in-progress / blocked), id 4 chiffres
   0002-autre-slug.md
   done/                # fiches LIVRÉES (déplacées ici quand status: shipped)
     0000-vieux-slug.md
+  feature-template.md
 ```
 
 Chaque fiche commence par un **front-matter YAML = source de vérité** :
@@ -104,11 +129,13 @@ created: 2026-06-23
 ---
 ```
 
-Puis le corps libre (cf. `feature-template.md`) : Contexte/Problème, Proposition, Critères
-d'acceptation (cases à cocher), Notes. Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+Puis le corps libre (cf. `feature-template.md` / `templates/feature-template.md`) :
+Contexte/Problème, Proposition, Critères d'acceptation (cases à cocher), Notes.
+Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
 
-> **Une seule source de vérité** : le **front-matter** de chaque fiche. L'index `README.md`
-> est **régénéré** (`regen`) — on ne l'édite jamais à la main (ça tue la double-saisie statut).
+> **Une seule source de vérité** : le **front-matter** de chaque fiche. L'index
+> `BACKLOG.md` est **régénéré** (`regen`) — on ne l'édite jamais à la main.
+> `README.md` est le **guide** du dossier (curé) ; il porte `layout_version`.
 
 ## Le statut `idea` — le cran « pas encore groomé » (Definition of Ready)
 
@@ -134,8 +161,9 @@ qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
 1. **Détecter une convention existante** (`roadmap/`, `docs/specs/`, `.lifefindsaway/`,
    GitHub Issues…). Si oui → l'épouser, **ne rien créer**.
 2. Sinon, **scaffolder** via le helper de cette skill, à la racine du projet :
-   `bash <skill>/init.sh` (crée `features/` + `features/done/` + `README.md` index vide +
-   `feature-template.md`). Idempotent (n'écrase pas un `roadmap/` existant).
+   `bash <skill>/init.sh` (crée `features/` + `features/done/` + `README.md` guide
+   avec `layout_version` courant + `BACKLOG.md` + `feature-template.md`).
+   Idempotent (n'écrase pas un `roadmap/` existant).
 3. Commit `chore(features): init backlog`. Confirmer le chemin créé.
 
 ## Épouser une convention existante (NE PAS churner)
@@ -351,14 +379,16 @@ détection ne bascule rien seule ; l'arbitrage reste au PO).
 
 Le problème : `priority` ne donne que des **buckets** (P0→P3) et `ready:` n'est qu'un **gate**
 booléen. La **séquence** effectivement décidée en `review`/planning (« d'abord 0043, puis 0017,
-puis les bugs admin, puis la CI… ») ne vivait nulle part → perdue entre sessions. `plan` la
+puis les bugs admin… ») ne vivait nulle part → perdue entre sessions. `plan` la
 **fige** dans un fichier dédié.
 
 - **Fichier** : `features/PLAN.md` — **curé** (le LLM rédige, le PO arbitre), **commité** sur
   `main` (comme le backlog). Son **contenu n'est jamais régénéré** par `regen` (ce n'est pas un
   index dérivé du front-matter, c'est une décision). En revanche le **lien** vers `PLAN.md`
-  dans `features/README.md` est **émis par `regen`** (quand `PLAN.md` existe) — il survit donc
-  à la régénération de l'index, sans édition manuelle du README (interdite).
+  dans `features/BACKLOG.md` est **émis par `regen`** (quand `PLAN.md` existe).
+- **Horizon** : la section **NOW** = les **prochaines N cartes** (court, actionnable) — pas
+  une encyclopédie de tout le stock. NEXT / plus loin peut exister, mais rester mince ;
+  le détail vit dans les fiches.
 - **Contenu** : une liste **ordonnée** d'entrées `‹id› — ‹intention en une ligne› ‹marqueur›`
   où le marqueur ∈ {`build` | `audit` | `ship` | `groom`} ; regroupées en **jalons** nommés si
   utile (ex. « A — finir 0005 », « B — bugs nav »). Daté en tête (« décidé le AAAA-MM-JJ »).
@@ -375,8 +405,8 @@ puis les bugs admin, puis la CI… ») ne vivait nulle part → perdue entre ses
 Délègue au script **paramétré** de mega-city : `products/mega-city/bin/regen-backlog.sh
 [racine] [titre]` depuis la racine du repo — il n'existe **pas** de `bin/` à la racine,
 le script vit dans le produit (fiche 0072 — le MÊME script sert tous les backlogs, plus
-d'« adaptation » manuelle). Il reconstruit
-la table depuis le front-matter de **toutes** les fiches : colonnes
+d'« adaptation » manuelle). Il reconstruit `features/BACKLOG.md`
+depuis le front-matter de **toutes** les fiches : colonnes
 `# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id, plus deux
 **colonnes conditionnelles** (ADR-0017 A12) : `Version` si au moins un `version:`,
 `Épic` si au moins un `epic:`. Sections à part, hors tri actionnable P0→P3 :
@@ -386,6 +416,7 @@ ready, épics, création médiane des `todo`) — `review` les lit tels quels, l
 recompte jamais (ADR-0001 / ADR-0016 §5) — et des **warnings d'intégrité** non
 bloquants sur stderr (A7) : `epic:` pendant, cible non-épic, sous-épic (2 niveaux max).
 DoD exécutable du script : `bin/test-regen-backlog.sh`.
+**Ne touche jamais** à `features/README.md` (guide curé).
 
 ## Intégration
 
@@ -405,7 +436,8 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
   (décision explicite journalisée). Seul `ready <id>` pose le champ.
 - Une **direction non mûre** = `status: idea`, pas un `todo` creux (ne pas polluer l'actionnable ; groomer au moment de la tirer).
 - **Avant tout `add` : anti-doublon obligatoire** — 1 sujet = 1 fiche ; regrouper plutôt que multiplier ; jamais de fiche creuse (cadrer via `product-brainstorming` si flou).
-- Ne pas éditer l'index à la main (toujours `regen`).
+- Ne pas éditer `BACKLOG.md` à la main (toujours `regen`) ; ne pas laisser `regen` écraser le guide `README.md`.
+- Préflight Skema : si `STATUS=behind`, **proposer** la migration — ne pas muter sans OK.
 - Ne pas créer `features/` si le repo a déjà une convention → l'épouser.
 - Le backlog est commité sur `main` ; un scratch de sprint peut rester par-branche.
 - `reconcile` **propose**, il ne **ship** jamais tout seul (arbitrage PO) ; sans remote/`gh`

@@ -6,6 +6,7 @@
 set -euo pipefail
 
 SCRIPT="$(cd "$(dirname "$0")" && pwd)/regen-backlog.sh"
+VENDOR="$(cd "$(dirname "$0")/../skills/ezk-backlog/scripts" && pwd)/regen-backlog.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 FAIL=0
@@ -13,6 +14,11 @@ FAIL=0
 check() { # $1=label $2=cmd-ok(0)/ko(1)
   if eval "$2"; then echo "  ok — $1"; else echo "  ÉCHEC — $1"; FAIL=1; fi
 }
+
+# Garde anti-dérive : bin/ et copie skill doivent être byte-identiques
+# (en-tête + corps — une seule source de vérité fonctionnelle).
+echo "Garde anti-dérive (bin ↔ skill) :"
+check "regen-backlog.sh bin ≡ skill" "diff -q '$SCRIPT' '$VENDOR' >/dev/null"
 
 fiche() { # $1=dir $2=id $3=slug $4=front-matter-extra (lignes YAML)
   mkdir -p "$1"
@@ -34,11 +40,11 @@ status: shipped
 pr: "#1"'
 out_a="$("$SCRIPT" "$A" "Backlog — test A" 2>"$TMP/a.err")"
 echo "Cas A (non cassant) :"
-check "titre paramétré"            "head -1 '$A/features/README.md' | grep -q '^# Backlog — test A$'"
-check "pas de colonne Version"     "! grep -q '| Version |' '$A/features/README.md'"
-check "pas de colonne Épic"        "! grep -q '| Épic |' '$A/features/README.md'"
-check "pas de section Épics"       "! grep -q '## 🧭 Épics' '$A/features/README.md'"
-check "section Idées présente"     "grep -q '## 💡 Idées' '$A/features/README.md'"
+check "titre paramétré"            "head -1 '$A/features/BACKLOG.md' | grep -q '^# Backlog — test A$'"
+check "pas de colonne Version"     "! grep -q '| Version |' '$A/features/BACKLOG.md'"
+check "pas de colonne Épic"        "! grep -q '| Épic |' '$A/features/BACKLOG.md'"
+check "pas de section Épics"       "! grep -q '## 🧭 Épics' '$A/features/BACKLOG.md'"
+check "section Idées présente"     "grep -q '## 💡 Idées' '$A/features/BACKLOG.md'"
 check "zéro warning"               "! test -s '$TMP/a.err'"
 check "stats émises"               "printf '%s' \"\$out_a\" | grep -q 'stats: total=3'"
 
@@ -62,7 +68,7 @@ status: shipped
 epic: 0010
 pr: "#2"'
 "$SCRIPT" "$B" "Backlog — test B" >/dev/null 2>"$TMP/b.err"
-idx="$B/features/README.md"
+idx="$B/features/BACKLOG.md"
 echo "Cas B (colonnes + section Épics) :"
 check "colonne Version présente"   "grep -q '| Version |' '$idx'"
 check "colonne Épic présente"      "grep -q '| Épic |' '$idx'"
@@ -97,7 +103,7 @@ echo "Cas C (warnings intégrité) :"
 check "warning réf pendante (0021→9999)"    "grep -q 'fiche 0021 — epic: 9999 introuvable' '$TMP/c.err'"
 check "warning cible non-epic (0022→0021)"  "grep -q 'fiche 0022 — epic: 0021 introuvable ou non-epic' '$TMP/c.err'"
 check "warning sous-épic (0023)"            "grep -q 'fiche 0023 — une épic ne référence pas' '$TMP/c.err'"
-check "warnings NON bloquants (index écrit)" "test -s '$C/features/README.md'"
+check "warnings NON bloquants (index écrit)" "test -s '$C/features/BACKLOG.md'"
 
 # ── Cas D : défauts (racine = parent de bin/, titre mega-city) — hermétique ──────
 # (revue Codex PR #30 : ne JAMAIS régénérer le vrai index depuis le banc — copie du
@@ -110,9 +116,9 @@ priority: P2
 status: todo'
 echo "Cas D (défauts, hermétique) :"
 check "sans args → racine = parent de bin/ (fixture)" \
-  "cd '$TMP' && bash '$D/bin/regen-backlog.sh' >/dev/null 2>&1 && test -s '$D/features/README.md'"
+  "cd '$TMP' && bash '$D/bin/regen-backlog.sh' >/dev/null 2>&1 && test -s '$D/features/BACKLOG.md'"
 check "titre par défaut mega-city" \
-  "head -1 '$D/features/README.md' | grep -q '^# Backlog — mega-city$'"
+  "head -1 '$D/features/BACKLOG.md' | grep -q '^# Backlog — mega-city$'"
 
 echo ''
 # ── Cas E : lien PLAN.md émis seulement si features/PLAN.md existe (PR #43 / ADR-0018) ─
@@ -123,8 +129,8 @@ status: todo'
 : > "$E/features/PLAN.md"   # PLAN.md présent (fichier de séquence curé, hors index)
 "$SCRIPT" "$E" "Backlog — test E" >/dev/null 2>&1
 echo "Cas E (lien PLAN.md conditionnel) :"
-check "lien PLAN.md émis quand PLAN.md existe"  "grep -qF '[PLAN.md](PLAN.md)' '$E/features/README.md'"
-check "aucun lien PLAN.md quand PLAN.md absent" "! grep -qF 'PLAN.md' '$A/features/README.md'"
+check "lien PLAN.md émis quand PLAN.md existe"  "grep -qF '[PLAN.md](PLAN.md)' '$E/features/BACKLOG.md'"
+check "aucun lien PLAN.md quand PLAN.md absent" "! grep -qF 'PLAN.md' '$A/features/BACKLOG.md'"
 
 # ── Cas F : colonne Produit (fiche 0064) + warning id en double ─────────────────
 F="$TMP/f"
@@ -138,9 +144,9 @@ status: todo
 product: mega-city'
 out_f="$("$SCRIPT" "$F" "Backlog — test F" 2>"$TMP/f.err")"
 echo "Cas F (colonne Produit) :"
-check "colonne Produit présente"   "grep -q '| Produit |' '$F/features/README.md'"
-check "produit vectorz rendu"      "grep -q '^| 0001 .*| vectorz |' '$F/features/README.md'"
-check "produit mega-city rendu"    "grep -q '^| 0002 .*| mega-city |' '$F/features/README.md'"
+check "colonne Produit présente"   "grep -q '| Produit |' '$F/features/BACKLOG.md'"
+check "produit vectorz rendu"      "grep -q '^| 0001 .*| vectorz |' '$F/features/BACKLOG.md'"
+check "produit mega-city rendu"    "grep -q '^| 0002 .*| mega-city |' '$F/features/BACKLOG.md'"
 check "zéro warning (ids uniques)" "! test -s '$TMP/f.err'"
 
 # Collision volontaire : deux fichiers même id

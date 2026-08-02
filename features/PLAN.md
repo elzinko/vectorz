@@ -4,8 +4,10 @@
 > liste unique, ids nus, champ `product:`). Ceci est l'**ORDRE**, pas la priorité
 > (la priorité `P0→P3` reste le *bucket d'importance* dans chaque fiche ; ici c'est
 > *quoi d'abord*, vu les dépendances et la valeur visible).
+> **NOW** = les prochaines N cartes (horizon court) — pas une encyclopédie du stock.
 > Source de vérité du **statut** = le front-matter des fiches ; ce fichier est **curé**,
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
+> Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
 ## 🧹 Hygiène préalable (rapide)
 

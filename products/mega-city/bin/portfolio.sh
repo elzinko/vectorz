@@ -72,7 +72,7 @@ emit_table() {
   echo '> **Vue de LECTURE auto-générée** (`products/mega-city/bin/portfolio.sh`) par-dessus les'
   echo '> deux backlogs, qui restent séparés (ADR-0017 A13) : `features/` (vectorz/cop1) et'
   echo '> `products/mega-city/features/` (méthode). **Ne pas éditer à la main.** Source de vérité ='
-  echo '> le front-matter de chaque fiche ; chaque backlog garde son index propre (`README.md`).'
+  echo '> le front-matter de chaque fiche ; chaque backlog garde son index propre (`BACKLOG.md`).'
   echo ''
 
   echo '## 🎯 Tirables maintenant (`ready`, tous backlogs confondus)'
@@ -130,7 +130,7 @@ emit_table() {
           st[p"/todo"]+0, ready[p]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, epic[p]+0 }
     }'
   echo ''
-  echo '> Ne compte pas les fiches livrées (`done/`) — voir chaque `README.md` de backlog pour l’historique.'
+  echo '> Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.'
 } > "$OUT"
 
 echo "${OUT} régénéré."
