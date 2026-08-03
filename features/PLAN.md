@@ -11,8 +11,8 @@
 
 ## 🧹 Hygiène préalable (rapide)
 
-- **P0** `build` **0181** — méthode ezk : Opus 4.8 (+ spare sonnet) + restitutions
-  « En clair » sur toutes les commandes / skills (suite de #91 archive) · `build`
+- ~~**P0** `build` **0181** — méthode ezk : Opus 4.8 (+ spare sonnet) + restitutions
+  « En clair »~~ — shipped #92.
 - ~~**P0** `build` **0176** — interdit `git config --global user.*` pour l’identité
   agent ; commits cop1 = local / one-shot only ([#86](https://github.com/elzinko/vectorz/issues/86))~~ — shipped #89.
 - ~~`ship` **0059** · **0061** (vectorz)~~ — fait (vérifié au `reconcile` du 2026-07-26).
@@ -27,7 +27,7 @@
 2. ~~**0095** — faire émettre `ezk-product-builder`~~ — shipped #55
 3. ~~**0082** — registre {projet · méthode}~~ — shipped #70
 4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
-5. **0181** — Opus 4.8 + restitutions lisibles (toute la méthode) · `build` ← **tête**
+5. ~~**0181** — Opus 4.8 + restitutions lisibles~~ — shipped #92
 6. **0062** — onglet « Projets » : liste par projet, cliquable → activité · `build`
 7. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build`
 
@@ -60,9 +60,8 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après 0176 shipped (#89), la tête hygiène/NOW est **0181** (ready —
-Opus 4.8 + restitutions lisibles ; amorce archive #91). Ensuite **0062** (idea —
-groom). Têtes `todo` non-ready : **0022**, **0060**.
+(gate DoR). Après 0181 shipped (#92), la prochaine tête NOW est **0062** (idea — groom/ready).
+Têtes `todo` non-ready : **0022**, **0060**.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
