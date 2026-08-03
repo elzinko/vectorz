@@ -29,8 +29,8 @@
 /** Une ligne de liste markdown : `- …`, `* …`, ou `N. …`. */
 const LIST_ITEM_RE = /^(?:[-*]|\d+\.)\s+/;
 
-/** L'item commence par un id (après d'éventuelles emphases `*` `_` `` ` ``). */
-const LEADING_ID_RE = /^[\s*_`]*(mc-)?\d{4}/;
+/** L'item commence par un id (après d'éventuelles emphases / strikethrough). */
+const LEADING_ID_RE = /^[\s*_`~]*(mc-)?\d{4}/;
 
 /** Marqueur d'action d'une entrée de plan (contrat `plan`). */
 const MARKER_RE = /\b(?:build|audit|ship|groom)\b/i;
