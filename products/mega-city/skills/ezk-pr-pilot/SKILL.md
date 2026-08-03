@@ -32,6 +32,10 @@ ouvertes**, tu calcules l'**ordre de merge**, tu regroupes les tests en
 tu **démarres les bancs**, tu guides l'utilisateur **checklist en main**, tu
 **reportes les résultats dans chaque PR**, et tu **merges au vert**.
 
+**Restitution** (`plan` / `run` / `report`) : ouvre par **« En clair »** (≤ 3 phrases)
+avant ordres de merge et tableaux — règle
+[`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
+
 > Né du rétrofit livestreamz 2026-07-06 (PRs #69–#79) : 8 PRs, 3 sessions de
 > test au lieu de 8, ordre de merge calculé par `git merge-tree`, et le constat
 > qu'aucun corps de PR n'était rejouable sans contexte → la convention

@@ -70,24 +70,22 @@ describe('loadCatalog (données réelles du repo)', () => {
   it('lit les réglages d\'exécution model/effort/isolation du frontmatter (fiche 0039)', () => {
     const catalog = loadCatalog(repoRoot);
 
-    // architecte : cerveau coûteux, réflexion poussée
-    const architect = catalog.agents.get('ezk-architect');
-    expect(architect?.model).toBe('opus');
-    expect(architect?.effort).toBe('high');
+    // jugement / PO : opus + spare sonnet (fiche 0181)
+    for (const id of ['ezk-architect', 'ezk-reviewer', 'ezk-pm', 'ezk-archive'] as const) {
+      const agent = catalog.agents.get(id);
+      expect(agent?.model, id).toBe('opus');
+      expect(agent?.model_spare, id).toBe('sonnet');
+    }
+    expect(catalog.agents.get('ezk-architect')?.effort).toBe('high');
+    expect(catalog.agents.get('ezk-archive')?.effort).toBe('medium');
 
-    // dev (ezk-tdd) : modèle standard + worktree isolé
+    // mécanique : sonnet (dérogation motivée 0181)
     const tdd = catalog.agents.get('ezk-tdd');
     expect(tdd?.model).toBe('sonnet');
     expect(tdd?.effort).toBe('medium');
     expect(tdd?.isolation).toBe('worktree');
+    expect(catalog.agents.get('ezk-qa')?.model).toBe('sonnet');
 
-    // ezk-archive : opus + secours sonnet (lisibilité clôture)
-    const archive = catalog.agents.get('ezk-archive');
-    expect(archive?.model).toBe('opus');
-    expect(archive?.model_spare).toBe('sonnet');
-    expect(archive?.effort).toBe('medium');
-
-    // absence tolérée : un agent sans ces champs ne les porte pas (optionnels)
     const steward = catalog.agents.get('ezk-steward');
     expect(steward?.isolation).toBeUndefined();
     expect(steward?.effort).toBe('low');
