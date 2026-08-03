@@ -38,22 +38,23 @@ peut que recopier ce qu'on lui écrit. On délègue **uniquement** pour le **jug
 
 ### Modèle (Claude Code) + secours
 
-Les skills / agents mega-city sont **orientés Claude Code** (alias host-natifs), pas
+Les skills / agents mega-city sont **orientés Claude Code** (ids host-natifs), pas
 Cursor/Grok. Frontmatter de l'agent :
 
 | Champ | Valeur | Rôle |
 |---|---|---|
-| `model` | `opus` | Jugement de clôture (famille Opus côté Claude Code, ex. 4.8 — **pas** un pin Opus 5) |
-| `model_spare` | `sonnet` | Secours si l'hôte n'a pas / refuse `opus` |
+| `model` | `claude-opus-4-8` | Pin Opus **4.8** — **interdit** l'alias `opus` (peut dériver vers Opus 5) |
+| `model_spare` | `sonnet` | Secours si l'hôte n'a pas / refuse 4.8 |
 | `effort` | `medium` | |
 
 Quand tu délègues :
 
-1. **Préfère** `model` du frontmatter (Claude Code le honore nativement).
-2. Si l'hôte **refuse** opus → relance avec `model_spare` (`sonnet`) et dis-le en une ligne.
-3. **Hôte Cursor** (outil Task) : mappe `opus` → slug Claude Opus **4.8** du catalogue
-   Cursor s'il est listé ; sinon `model_spare` → Sonnet. N'utilise Grok / autres familles
-   **que** si l'humain le demande explicitement (hors défaut méthode).
+1. **Préfère** `model` du frontmatter (`claude-opus-4-8`).
+2. Si l'hôte **refuse** 4.8 → relance avec `model_spare` (`sonnet`) et dis-le en une ligne.
+3. **Ne substitue jamais** Opus 5 / `claude-opus-5` / alias `opus`.
+4. **Hôte Cursor** (outil Task) : mappe vers `claude-opus-4-8-thinking-high` (ou
+   équivalent 4.8 du catalogue) ; sinon `model_spare` → Sonnet. N'utilise Grok /
+   autres familles **que** si l'humain le demande explicitement.
 
 > **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
 > scrum (ça, c'est [`ezk-sprint`](../ezk-sprint/)), ni le suivi du *quoi* (ça, c'est

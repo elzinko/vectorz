@@ -70,10 +70,10 @@ describe('loadCatalog (données réelles du repo)', () => {
   it('lit les réglages d\'exécution model/effort/isolation du frontmatter (fiche 0039)', () => {
     const catalog = loadCatalog(repoRoot);
 
-    // jugement / PO : opus + spare sonnet (fiche 0181)
+    // jugement / PO : pin Opus 4.8 + spare sonnet (0181 — jamais alias opus → Opus 5)
     for (const id of ['ezk-architect', 'ezk-reviewer', 'ezk-pm', 'ezk-archive'] as const) {
       const agent = catalog.agents.get(id);
-      expect(agent?.model, id).toBe('opus');
+      expect(agent?.model, id).toBe('claude-opus-4-8');
       expect(agent?.model_spare, id).toBe('sonnet');
     }
     expect(catalog.agents.get('ezk-architect')?.effort).toBe('high');

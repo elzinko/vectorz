@@ -7,16 +7,26 @@ Cursor n'est qu'un hôte de délégation éventuel.
 
 | Rôle | Agents | `model` | `model_spare` |
 |---|---|---|---|
-| Jugement / restitution PO | `ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive` | `opus` (famille Opus 4.8 côté Claude Code — **pas** pin Opus 5) | `sonnet` |
+| Jugement / restitution PO | `ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive` | **`claude-opus-4-8`** (pin — **jamais** l'alias `opus`, qui peut dériver vers Opus 5) | `sonnet` |
 | Mécanique / exécution | `ezk-tdd`, `ezk-qa`, `ezk-steward` | `sonnet` | — (pas de spare obligatoire) |
+
+> **Pourquoi le pin.** Les alias Claude Code (`opus`, `sonnet`, …) suivent la
+> version *recommandée* et bougent dans le temps. Pour rester sur Opus **4.8** et
+> **éviter Opus 5**, le frontmatter porte l'id complet `claude-opus-4-8`
+> ([model-config](https://code.claude.com/docs/en/model-config)).
 
 Quand l'appelant délègue :
 
-1. Préférer `model` du frontmatter.
-2. Si l'hôte refuse opus → `model_spare` (`sonnet`) + le dire en une ligne.
-3. **Cursor Task** : mappe `opus` → slug Claude Opus **4.8** du catalogue Cursor ;
-   sinon spare → Sonnet. **Grok / autres familles** uniquement sur demande humaine
-   explicite.
+1. Préférer `model` du frontmatter (`claude-opus-4-8`).
+2. Si l'hôte refuse 4.8 → `model_spare` (`sonnet`) + le dire en une ligne.
+3. **Ne jamais** substituer Opus 5 / `claude-opus-5` / alias `opus` « pour dépanner ».
+4. **Cursor Task** : mappe vers le slug catalogue **`claude-opus-4-8-thinking-high`**
+   (ou équivalent 4.8 listé) ; sinon spare → Sonnet. **Grok / autres familles**
+   uniquement sur demande humaine explicite.
+
+Option host (Claude Code) si tu veux aussi figer l'alias session :
+`export ANTHROPIC_DEFAULT_OPUS_MODEL='claude-opus-4-8'` — ne remplace pas le pin
+frontmatter des agents, mais évite qu'un `opus` ailleurs remonte en 5.
 
 ## Lisibilité (« En clair »)
 
@@ -41,5 +51,5 @@ Règle MUST :
 
 ## Hors scope / suite
 
-Balayer d'éventuels skills satellites non listés ; ADR formel de versionnage modèle
-si le pin Opus 4.8 vs « famille opus » doit être gelé côté Claude Code.
+Balayer d'éventuels skills satellites non listés ; remonter le pin si Anthropic
+retire 4.8 (alors décision PO explicite — pas un saut silencieux vers 5).

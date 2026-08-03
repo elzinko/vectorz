@@ -192,8 +192,9 @@ Si un sous-agent n'est pas installé, porte la casquette toi-même, mais garde l
 ### Modèle des sous-agents (fiche 0181)
 
 Honore le frontmatter de chaque agent (`model` / `model_spare`) :
-jugement/PO (`ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive`) → **`opus`**
-(+ spare `sonnet`) ; mécanique (`ezk-tdd`, `ezk-qa`, `ezk-steward`) → **`sonnet`**.
-Hôte Cursor : mappe `opus` → slug Claude Opus **4.8** du catalogue ; sinon spare.
+jugement/PO (`ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive`) →
+**`claude-opus-4-8`** (+ spare `sonnet`) — **jamais** l'alias `opus` ni Opus 5 ;
+mécanique (`ezk-tdd`, `ezk-qa`, `ezk-steward`) → **`sonnet`**.
+Hôte Cursor : slug **`claude-opus-4-8-thinking-high`** (ou 4.8 listé) ; sinon spare.
 Grok / autres familles **seulement** si l'humain le demande. Détail :
 [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).

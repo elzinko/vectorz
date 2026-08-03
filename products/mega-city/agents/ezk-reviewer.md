@@ -1,6 +1,6 @@
 ---
 id: ezk-reviewer
-model: opus
+model: claude-opus-4-8
 model_spare: sonnet
 effort: high
 competences:

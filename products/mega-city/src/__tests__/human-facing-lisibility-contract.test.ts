@@ -123,12 +123,14 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
     expect(body).toMatch(/\/ezk-backlog list/);
   });
 
-  it('doc politique modèles 0181 existe et ancre opus + spare + En clair', () => {
+  it('doc politique modèles 0181 pinne claude-opus-4-8 (pas alias opus / Opus 5)', () => {
     expect(existsSync(modelPolicyDoc), 'ezk-model-and-lisibility.md absent').toBe(true);
     const body = read(modelPolicyDoc);
     expect(body).toMatch(/model_spare/);
-    expect(body).toMatch(/opus/);
+    expect(body).toMatch(/claude-opus-4-8/);
     expect(body).toMatch(/En clair/);
-    expect(body).toMatch(/4\.8/);
+    expect(body).toMatch(/éviter Opus 5|jamais.*Opus 5|pas.*Opus 5/i);
+    // L'alias nu `opus` ne doit plus être le défaut recommandé comme model:
+    expect(body).not.toMatch(/\|\s*`opus`\s*\|/);
   });
 });
