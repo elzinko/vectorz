@@ -33,7 +33,16 @@ const restitutionSkills = [
   join(megaCityDir, 'skills', 'ezk-retro', 'SKILL.md'),
   join(megaCityDir, 'skills', 'ezk-product-builder', 'SKILL.md'),
   sprintSkill,
+  join(megaCityDir, 'skills', 'ezk-archive', 'SKILL.md'),
 ] as const;
+
+const archiveHandoffTemplate = join(
+  megaCityDir,
+  'skills',
+  'ezk-archive',
+  'references',
+  'handoff-template.md',
+);
 
 function read(path: string): string {
   return readFileSync(path, 'utf8');
@@ -97,4 +106,15 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
       expect(body).toMatch(/human-facing-lisibility/);
     },
   );
+
+  it('ezk-archive handoff template ouvre par En clair + baseline Reprendre', () => {
+    expect(existsSync(archiveHandoffTemplate), 'handoff-template absent').toBe(true);
+    const body = read(archiveHandoffTemplate);
+    expect(body).toMatch(/\*\*En clair :\*\*/);
+    expect(body).toMatch(/\*\*À faire \(toi\) :\*\*/);
+    expect(body).toMatch(/human-facing-lisibility/);
+    // Codex #91 P2 : ne pas omettre le démarrage de session suivante.
+    expect(body).toMatch(/git switch main && git pull/);
+    expect(body).toMatch(/\/ezk-backlog list/);
+  });
 });

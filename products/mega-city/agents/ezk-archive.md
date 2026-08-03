@@ -9,7 +9,11 @@ description: >-
   (help/check/run), le chemin du repo, et un résumé de ce qui a été livré/décidé/
   appris pendant la session — n'a AUCUNE mémoire de la conversation qui a précédé
   l'appel.
-model: sonnet
+# Alias Claude Code (hôte natif des skills mega-city) — jamais d'id Cursor/Grok ici.
+# opus = famille Opus courante côté Claude Code (ex. 4.8), pas un pin Opus 5.
+model: opus
+# Secours si l'hôte refuse / n'a pas opus : l'appelant utilise model_spare (skill).
+model_spare: sonnet
 effort: medium
 color: cyan
 ---
@@ -213,9 +217,15 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
      a de la matière.
    **Re-signale** ce qui reste à la main de l'utilisateur (merges/push, branches RÉELLES,
    commit proposé de `docs/sessions/`).
-6. Réponds de façon **concise et structurée** — ta réponse est restituée telle quelle
-   par l'appelant à l'utilisateur. Ne réécris pas le résumé de session qu'on vient de te
-   donner : l'appelant le connaît déjà, c'est lui qui te l'a fourni.
+6. Réponds pour un **humain pressé** (règle `human-facing-lisibility`) :
+   - **Ouvre** par **« En clair »** (≤ 3 phrases : livré / ce que toi tu dois faire /
+     bruit restant) — **avant** tout tableau ou jargon gate.
+   - Puis le corps du gabarit [`handoff-template.md`](../skills/ezk-archive/references/handoff-template.md)
+     (sections du template — ne le recopier pas ici).
+   - **Pas** de dump P1–P8 en ouverture ; le détail gate va en annexe courte **seulement**
+     s'il change une décision humaine.
+   - Ne réécris pas le résumé de session qu'on vient de te donner.
+   Ta réponse est restituée telle quelle par l'appelant.
 
 ## Garde-fous
 

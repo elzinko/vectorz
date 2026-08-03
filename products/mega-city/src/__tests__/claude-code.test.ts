@@ -48,15 +48,24 @@ describe('claudeCodeCap.materialize (plan pur, sans FS)', () => {
     expect(agentFile?.content).not.toContain('---');
   });
 
-  it('réémet model/effort/isolation dans le frontmatter du fichier agent généré (fiche 0043)', () => {
+  it('réémet model/effort/isolation/model_spare dans le frontmatter du fichier agent généré (fiche 0043)', () => {
     const tuned: ResolvedProfile = {
       ...resolved,
-      agents: [{ ...resolved.agents[0], model: 'opus', effort: 'high', isolation: 'worktree' }],
+      agents: [
+        {
+          ...resolved.agents[0],
+          model: 'opus',
+          model_spare: 'sonnet',
+          effort: 'high',
+          isolation: 'worktree',
+        },
+      ],
     };
     const plan = claudeCodeCap.materialize(tuned, '/tmp/projet');
     const agentFile = find(plan, '.claude/agents/ezk-reviewer.md');
     expect(agentFile?.content).toContain('name: ezk-reviewer');
     expect(agentFile?.content).toContain('model: opus');
+    expect(agentFile?.content).toContain('model_spare: sonnet');
     expect(agentFile?.content).toContain('effort: high');
     expect(agentFile?.content).toContain('isolation: worktree');
     expect(agentFile?.content).toContain('Reviewer senior');
