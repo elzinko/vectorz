@@ -9,8 +9,9 @@ enforcements:
 ---
 
 - Scope: **every artefact a human reads** — PR description, backlog fiche, capture,
-  retro write-up, product-builder checkpoint, sprint closure summary. Not internal
-  scratch (`SPRINT.md`, draft ADR notes).
+  retro write-up, product-builder checkpoint, sprint closure summary,
+  **ezk-archive handoff / rapport de clôture**. Not internal scratch (`SPRINT.md`,
+  draft ADR notes).
 - Open with an **« En clair »** block: the essential in **≤ 3 sentences**, BEFORE detail.
 - Trame: lived symptom → proposal in plain words → concrete effect for the reader.
 - Internal codes and invented jargon (`R1`, `DoR`, « verrou », « borne anti-veto »…)

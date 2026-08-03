@@ -5,32 +5,40 @@ Ce gabarit est lu par **les deux chemins** de clôture — le chemin inline du s
 le dupliquer dans `SKILL.md` ou dans `agents/ezk-archive.md` les ferait diverger
 silencieusement, ce que `test-template-unicity.sh` interdit.
 
+Règle d'écriture : [`human-facing-lisibility`](../../../rules/documentation-guidelines/human-facing-lisibility.md)
+— ouvrir par **« En clair »**, jargon gate (`REAL`, `ABSORBED`, `stash@{N}`…) en bas
+seulement, jamais dans l'ouverture.
+
 ---
 
 ## Le corps à produire
 
 ```markdown
-**Fait cette session :**
-- **<id>** (PR #<n>) — <ce qui a été livré, en une ou deux lignes utiles à la reprise>
-- <décision structurante prise, et son *pourquoi*>
+**En clair :**
+- <≤ 1 phrase : ce qui a été livré cette session, avec id + n° PR si pertinent>
+- <≤ 1 phrase : ce que **toi** (humain) dois faire maintenant — ou « rien, session propre »>
+- <≤ 1 phrase : le bruit restant (branches / stashes) — ou « aucun pendings git »>
 
-**Reprendre :**
-1. `git switch main && git pull`   (ou sync local si pas de remote)
-2. `/ezk-backlog list`   → la prochaine fiche prioritaire
+**Fait cette session :**
+- **<id>** (PR #<n>) — <une ligne utile à la reprise>
+- <décision structurante, et son *pourquoi*, si utile>
+
+**À faire (toi) :**
+1. <action concrète, commandes littérales si besoin>
+2. …
 
 **Pending (à ne pas perdre) :**
-- PR #<n> « <titre> » — <action : reviewer / merger / fermer>
-- branche `<nom>` (contenu non prouvé dans main) — <action>
-- ADR `<chemin>` — <commité sur branche X, pending merge / à committer>
-- <pending NON-git reporté : billing, décision PO en attente, nettoyage manuel…>
+- <pending NON-git reporté : billing, décision PO, todo hors repo…>
+- <si besoin : branche / PR encore ouverte — une ligne, sans jargon gate>
+- (rien)   ← si vraiment vide : écris cette ligne (obligatoire pour la rotation)
 
 **Candidats prioritaires prochaine session :**
-- P0 · <id> · <titre>
-- <idée notée cette session, ajoutée au backlog>
+- <id> · <titre court> — <pourquoi maintenant>
+- …
 
-**Archive session :** `docs/sessions/<fichier>.md` (si snapshot pris à la clôture)
+**Archive session :** `docs/sessions/<fichier>.md` (si snapshot pris)
 
-État de clôture : ✅ archivable | ⚠️ pending (voir ci-dessus)
+État de clôture : ✅ archivable | ⚠️ pending (voir « À faire »)
 ```
 
 ---
@@ -52,22 +60,20 @@ résolus depuis — tu devras alors les trier à la main plutôt que de les reco
 
 | Source | D'où elle vient | Faut-il la recopier ? |
 |---|---|---|
-| Pending **git** (PRs ouvertes, branches réelles, ADR non mergés) | les lignes `[P2]`/`[P4]` de `check.sh` | **Non** — recalculé à chaque run depuis la source de vérité live ; le recopier le périme |
+| Pending **git** (PRs ouvertes, branches réelles, ADR non mergés) | les lignes `[P2]`/`[P4]` de `check.sh` | **Non** — recalculé à chaque run depuis la source de vérité live ; le recopier le périme. Mets l'essentiel en **« À faire (toi) »** en français. |
 | Pending **non-git** (billing, décision PO attendue, nettoyage manuel, todo hors repo) | `handoff.sh carry` | **Oui** — personne d'autre ne s'en souvient |
 
-Écris **l'union** des deux. C'est ce qui permet à l'anneau FIFO de faire tourner le
-fichier sans jamais perdre un report.
+Écris **l'union** des deux dans `**Pending`**. Les actions prioritaires pour l'humain
+vont d'abord dans **« À faire (toi) »** (lisibles), le détail reportable dans Pending.
 
 ### 3. Ce qui n'a pas sa place ici
 
 - **Les post-mortems / comptes-rendus de session.** Une entrée est une passation, pas un
-  journal : le récit détaillé (livré, décisions PO, notes de sprint) va dans
-  `docs/sessions/` (snapshot de `SPRINT.md` à la clôture), pas ici. Ce qui a été *appris*
-  de façon durable va en mémoire projet ou dans un ADR (les entrées de 120 lignes de
-  juillet 2026 venaient de là).
+  journal : le récit détaillé va dans `docs/sessions/` (snapshot de `SPRINT.md`), pas ici.
+- **Les tableaux P1–P8 / dumps du portier.** Le gate vit dans le prompt du juge ; le
+  humain lit « En clair » + « À faire ».
 - **Ce que le repo encode déjà** : structure du code, historique git, fixes passés.
-- **Les dates relatives.** « hier », « la semaine dernière » ne veulent plus rien dire à
-  la relecture — écris la date absolue.
+- **Les dates relatives.** « hier », « la semaine dernière » → date absolue.
 
 ---
 

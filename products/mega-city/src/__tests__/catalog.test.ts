@@ -81,10 +81,17 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(tdd?.effort).toBe('medium');
     expect(tdd?.isolation).toBe('worktree');
 
+    // ezk-archive : opus + secours sonnet (lisibilité clôture)
+    const archive = catalog.agents.get('ezk-archive');
+    expect(archive?.model).toBe('opus');
+    expect(archive?.model_spare).toBe('sonnet');
+    expect(archive?.effort).toBe('medium');
+
     // absence tolérée : un agent sans ces champs ne les porte pas (optionnels)
     const steward = catalog.agents.get('ezk-steward');
     expect(steward?.isolation).toBeUndefined();
     expect(steward?.effort).toBe('low');
+    expect(steward?.model_spare).toBeUndefined();
   });
 
   it('charge bundles et profiles depuis le YAML', () => {

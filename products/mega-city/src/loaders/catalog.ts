@@ -140,6 +140,7 @@ function readAgent(file: string): Agent | undefined {
     competences: data.competences ?? [],
     interactions: data.interactions ?? [],
     ...(typeof data.model === 'string' ? { model: data.model } : {}),
+    ...(typeof data.model_spare === 'string' ? { model_spare: data.model_spare } : {}),
     ...(typeof data.effort === 'string' ? { effort: data.effort } : {}),
     ...(typeof data.isolation === 'string' ? { isolation: data.isolation } : {}),
   };

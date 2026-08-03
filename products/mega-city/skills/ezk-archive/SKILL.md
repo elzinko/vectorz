@@ -31,12 +31,29 @@ par clôture (fiche mega-city 0088). Le partage, en trois verbes, suit ADR-0001 
 | **Rédiger** | **cette session** | le récit de ce qui a été livré, les faits durables, les candidats — elle seule a la matière |
 | **Juger** | le **sous-agent** | cette branche RÉELLE est-elle un brouillon supersédé ou du travail à récupérer ? cette divergence, on en fait quoi ? |
 
-Le sous-agent (`~/.claude/agents/ezk-archive.md` — `model: sonnet`, `effort: medium`)
-n'a **aucune mémoire de la conversation**. Lui déléguer la *rédaction* n'achète donc pas
-un meilleur rédacteur : il ne peut que recopier ce qu'on vient de lui écrire, et on paie
-son prompt d'entrée **et** sa sortie. Le modèle/effort figés n'ont de valeur que là où la
-qualité dépend du modèle — le **jugement**. C'est pour ça, et seulement pour ça, qu'on
-délègue.
+Le sous-agent (`~/.claude/agents/ezk-archive.md`) n'a **aucune mémoire de la
+conversation**. Lui déléguer la *rédaction* n'achète pas un meilleur rédacteur : il ne
+peut que recopier ce qu'on lui écrit. On délègue **uniquement** pour le **jugement**
+(branches RÉELLES, stashes ambigus).
+
+### Modèle (Claude Code) + secours
+
+Les skills / agents mega-city sont **orientés Claude Code** (alias host-natifs), pas
+Cursor/Grok. Frontmatter de l'agent :
+
+| Champ | Valeur | Rôle |
+|---|---|---|
+| `model` | `opus` | Jugement de clôture (famille Opus côté Claude Code, ex. 4.8 — **pas** un pin Opus 5) |
+| `model_spare` | `sonnet` | Secours si l'hôte n'a pas / refuse `opus` |
+| `effort` | `medium` | |
+
+Quand tu délègues :
+
+1. **Préfère** `model` du frontmatter (Claude Code le honore nativement).
+2. Si l'hôte **refuse** opus → relance avec `model_spare` (`sonnet`) et dis-le en une ligne.
+3. **Hôte Cursor** (outil Task) : mappe `opus` → slug Claude Opus **4.8** du catalogue
+   Cursor s'il est listé ; sinon `model_spare` → Sonnet. N'utilise Grok / autres familles
+   **que** si l'humain le demande explicitement (hors défaut méthode).
 
 > **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
 > scrum (ça, c'est [`ezk-sprint`](../ezk-sprint/)), ni le suivi du *quoi* (ça, c'est
@@ -107,7 +124,9 @@ qui ne demandent aucun jugement.
 > read-only.
 
 1. `bash <skill>/scripts/handoff.sh carry` → les pendings **non-git** à reporter *(read-only)*.
-2. Rédige la note d'après [`references/handoff-template.md`](references/handoff-template.md).
+2. Rédige la note d'après [`references/handoff-template.md`](references/handoff-template.md)
+   — **ouvre par « En clair »** (règle
+   [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md)).
 3. **Si — et seulement si — la sous-commande est `run`/`close`** :
    - **mémoire projet** : les faits durables non-dérivables du repo (dates relatives
      converties en absolues) ; ne mémorise pas ce que le repo encode déjà ;
@@ -126,12 +145,13 @@ qui ne demandent aucun jugement.
      - **laisser `SPRINT.md` en place** (scratch éphémère du sprint) ;
      - le handoff **pointe** vers le chemin d'archive (`**Archive session :** …`) —
        **ne duplique pas** le corps de `SPRINT.md` dans la note.
-4. Rends la note + le verdict **✅ archivable** — en disant, sur `check`, que rien n'a été
-   écrit et que `run` le ferait.
+4. Rends la note + le verdict **✅ archivable** — **En clair d'abord** (≤ 3 phrases),
+   puis le corps gabarit. Sur `check`, dis que rien n'a été écrit et que `run` le ferait.
 
 #### `VERDICT: DIRTY points=…` → tu délègues, scopé
 
 Appelle l'outil **Agent** avec `subagent_type: "ezk-archive"`, `run_in_background: false`,
+en honorant le frontmatter `model` / `model_spare` (section Modèle ci-dessus),
 et un prompt **autonome** contenant :
 
 - la sous-commande (`check` ou `run`) et le chemin du repo (cwd) ;
@@ -143,8 +163,11 @@ et un prompt **autonome** contenant :
 > `PROUVÉS CLEAN par le portier — les re-dériver est une faute (token-economy/read-once).`
 > `Les points d'écriture 5 (mémoire), 6 (handoff), 7 (verdict), 8 (archive session)`
 > `sont TOUJOURS de ton ressort.`
+> `Restitution : ouvre par « En clair » (≤ 3 phrases) avant tout tableau —`
+> `human-facing-lisibility.`
 
-Puis **restitue la réponse de l'agent telle quelle**.
+Puis **restitue la réponse de l'agent telle quelle** (elle doit déjà ouvrir par En clair ;
+si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle le reste).
 
 ## Intégration
 
