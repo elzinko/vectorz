@@ -182,12 +182,12 @@ ci(github): add matrix test job for Python 3.11 and 3.12
 |---|---|
 | **One-shot** (**défaut**) | `git -c user.name="cop1 CI" -c user.email="ci@cop1.local" commit …` |
 | **Variables d'env** | `GIT_AUTHOR_NAME="cop1 CI" GIT_AUTHOR_EMAIL="ci@cop1.local" GIT_COMMITTER_NAME="cop1 CI" GIT_COMMITTER_EMAIL="ci@cop1.local" git commit …` |
-| **Local au repo/worktree** (exception) | `git config user.name "cop1 CI"` *(sans `--global`)* **uniquement** dans un worktree jetable de PR auto |
+| **Par worktree** (exception rare) | d'abord `git config extensions.worktreeConfig true`, puis `git config --worktree user.name "cop1 CI"` *(et `user.email`)* dans **ce** worktree uniquement |
 
-Préférer one-shot / env : un `git config` local écrit dans le `.git/config` du checkout
-courant — si l'agent se trompe de dossier, il détourne l'identité humaine sur tout le
-repo, plus discrètement qu'une pollution globale. Le scope local reste OK pour la
-traçabilité cop1 sur une PR de nuit, **jamais** sur le checkout principal de l'humain.
+**Ne pas** utiliser `git config user.*` / `git config --local user.*` : dans un worktree
+lié, ça écrit le `.git/config` **partagé** du dépôt et pollue le checkout humain + tous
+les worktrees frères. One-shot / env restent le défaut pour la traçabilité cop1 sur une
+PR de nuit.
 
 ## Frontière
 

@@ -7,8 +7,8 @@ import { describe, expect, it } from 'vitest';
  * Scénario 4 (0176) — smoke : zéro écriture d'identité via `git config … --global … user.*`
  * dans les sources / skills / workflows du monorepo.
  *
- * AUTORISÉ : `git config user.*` sans `--global` (scope local/worktree) ;
- *            `git -c user.*` / `GIT_AUTHOR_*` one-shot.
+ * AUTORISÉ : `git -c user.*` / `GIT_AUTHOR_*` one-shot ; `git config --worktree`
+ *            (avec extensions.worktreeConfig).
  * Contre-exemples documentés (❌ / INTERDIT) dans les skills : allowlistés.
  */
 
@@ -23,20 +23,30 @@ const SCAN_DIRS = [
 
 const EXCLUDED_DIRS = new Set(['node_modules', 'dist', '.git']);
 
-/** Ligne qui configure user.name|email avec flag CLI --global (flags intercalés OK). */
-function lineLooksForbidden(line: string): boolean {
-  if (!/\bgit\s+config\b/.test(line)) return false;
-  if (!/\buser\.(name|email)\b/.test(line)) return false;
-  // Ignorer la prose « sans --global » / « without --global ».
-  const stripped = line
+/** Joint les continuations shell `\` en une seule commande logique. */
+function normalizeContinuedLines(content: string): string {
+  return content.replace(/\\\r?\n/g, ' ');
+}
+
+/**
+ * Détecte une config user.name|email avec flag CLI --global, y compris
+ * `git -C … config --global user.email` et flags intercalés / ordre libre.
+ */
+function commandLooksForbidden(command: string): boolean {
+  // Prose « sans --global » / « without --global ».
+  const stripped = command
     .replace(/sans\s+`?--global`?/gi, '')
     .replace(/without\s+`?--global`?/gi, '');
+
+  // `git` … `config` (tokens possibles entre les deux : -C path, -c …, etc.)
+  if (!/\bgit\b[\s\S]{0,200}?\bconfig\b/.test(stripped)) return false;
+  if (!/\buser\.(name|email)\b/.test(stripped)) return false;
   return /\s--global\b/.test(stripped) || /`?--global`?\s+user\./.test(stripped);
 }
 
 /** Contre-exemple documenté (ban) — pas une instruction à exécuter. */
-function isDocumentedBanExample(line: string, nearbyContext: string): boolean {
-  if (/❌|INTERDIT/.test(line)) return true;
+function isDocumentedBanExample(fragment: string, nearbyContext: string): boolean {
+  if (/❌|INTERDIT/.test(fragment)) return true;
   return /❌|INTERDIT/.test(nearbyContext);
 }
 
@@ -71,6 +81,47 @@ interface Offender {
   content: string;
 }
 
+/**
+ * Scanne le contenu normalisé (continuations `\` jointes). Le numéro de ligne
+ * pointe la 1ʳᵉ ligne physique de la région fautive (best-effort).
+ */
+function scanContent(content: string, relFile: string): Offender[] {
+  const normalized = normalizeContinuedLines(content);
+  const physical = content.split('\n');
+  const logical = normalized.split('\n');
+  const offenders: Offender[] = [];
+
+  // Map logical line index → approximate physical line (1-based).
+  // After joining `\`, logical has fewer lines; use a running offset.
+  let physIdx = 0;
+  for (let i = 0; i < logical.length; i++) {
+    const line = logical[i];
+    const startPhys = physIdx;
+    // Advance physIdx by how many physical lines this logical line consumed.
+    let remaining = line;
+    while (physIdx < physical.length) {
+      const phys = physical[physIdx].replace(/\\\s*$/, '');
+      physIdx += 1;
+      if (remaining.startsWith(phys)) {
+        remaining = remaining.slice(phys.length).replace(/^\s+/, '');
+        if (remaining.length === 0) break;
+      } else {
+        break;
+      }
+    }
+
+    if (!commandLooksForbidden(line)) continue;
+    const nearby = logical.slice(Math.max(0, i - 4), i + 1).join('\n');
+    if (isDocumentedBanExample(line, nearby)) continue;
+    offenders.push({
+      file: relFile,
+      line: startPhys + 1,
+      content: line.trim().slice(0, 200),
+    });
+  }
+  return offenders;
+}
+
 function scanDirs(dirs: string[], root = ROOT): { files: string[]; offenders: Offender[] } {
   const files: string[] = [];
   const offenders: Offender[] = [];
@@ -83,35 +134,34 @@ function scanDirs(dirs: string[], root = ROOT): { files: string[]; offenders: Of
       } catch {
         continue;
       }
-      const lines = content.split('\n');
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (!lineLooksForbidden(line)) continue;
-        const nearby = lines.slice(Math.max(0, i - 4), i + 1).join('\n');
-        if (isDocumentedBanExample(line, nearby)) continue;
-        offenders.push({
-          file: relative(root, filePath).replaceAll('\\', '/'),
-          line: i + 1,
-          content: line.trim(),
-        });
-      }
+      const rel = relative(root, filePath).replaceAll('\\', '/');
+      offenders.push(...scanContent(content, rel));
     }
   }
   return { files, offenders };
 }
 
 describe('0176 — git config --global user.* est interdit dans les sources', () => {
-  it('détecte le pattern même avec flags intercalés ou --global après user.*', () => {
-    expect(lineLooksForbidden('git config --global user.email "x"')).toBe(true);
-    expect(lineLooksForbidden('git config --global --replace-all user.email "x"')).toBe(true);
-    expect(lineLooksForbidden('git config user.email --global "x"')).toBe(true);
-    expect(lineLooksForbidden('git config user.email "x"')).toBe(false);
-    expect(lineLooksForbidden('git config --global core.hooksPath .githooks')).toBe(false);
+  it('détecte le pattern même avec flags intercalés, git -C, ou --global après user.*', () => {
+    expect(commandLooksForbidden('git config --global user.email "x"')).toBe(true);
+    expect(commandLooksForbidden('git config --global --replace-all user.email "x"')).toBe(true);
+    expect(commandLooksForbidden('git config user.email --global "x"')).toBe(true);
+    expect(commandLooksForbidden('git -C "$repo" config --global user.email "x"')).toBe(true);
+    expect(commandLooksForbidden('git config user.email "x"')).toBe(false);
+    expect(commandLooksForbidden('git config --global core.hooksPath .githooks')).toBe(false);
+    expect(commandLooksForbidden('git config --worktree user.email "x"')).toBe(false);
     expect(
-      lineLooksForbidden(
+      commandLooksForbidden(
         '| Local | `git config user.name "cop1 CI"` *(sans `--global`)* dans worktree |',
       ),
     ).toBe(false);
+  });
+
+  it('détecte une commande coupée par des backslash de continuation', () => {
+    const multi = ['git config \\', '--global \\', 'user.email "ci@cop1.local"', ''].join('\n');
+    const found = scanContent(multi, 'evil.sh');
+    expect(found.length).toBeGreaterThan(0);
+    expect(found[0].content).toMatch(/user\.email/);
   });
 
   it('allowliste les contre-exemples documentés (❌ / INTERDIT)', () => {

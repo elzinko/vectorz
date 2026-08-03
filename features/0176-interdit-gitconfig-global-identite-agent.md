@@ -50,11 +50,11 @@ Issue : [elzinko/vectorz#86](https://github.com/elzinko/vectorz/issues/86).
 - [x] Cause racine de l'incident documentée dans #86 (ou « agents ad-hoc hors repo »).
 - [x] Aucun chemin produit ne fait `git config --global user.name|email`.
 - [x] Les commits d'une PR auto de nuit peuvent encore être attribués à `cop1`
-      (local ou one-shot) — traçabilité conservée *(aucun chemin produit n'a été
-      retiré ; skill documente encore local/one-shot — pas de PR nuit live dans ce sprint)*.
+      (one-shot / env / `--worktree`) — traçabilité conservée *(Codex P1 : ne plus
+      recommander `git config --local` — partage le `.git/config` entre worktrees)*.
 - [x] Le `~/.gitconfig` global n'est **jamais** modifié par cop1 / skills / agents
       pour `user.name` / `user.email`.
-- [x] Skill ou doc courte : « identité agent = local | one-shot ; global = humain ».
+- [x] Skill ou doc courte : « identité agent = one-shot | env | --worktree ; global = humain ».
 
 ## Scénarios Gherkin (Definition of Done)
 
@@ -78,7 +78,9 @@ Feature: Interdiction de modifier l'identité git globale depuis les agents/skil
     And la skill documente le pattern one-shot autorisé :
       "git -c user.name=… -c user.email=… commit"
       ou "GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL (+ COMMITTER)"
-    And la skill précise que "git config user.*" sans --global (scope local/worktree) est autorisé
+    And la skill précise que `git config --local user.*` est **interdit**
+      (config partagée entre worktrees) et que `--worktree` (+ extensions.worktreeConfig)
+      est l'exception rare autorisée
 
   # ── Scénario 3 : Traçabilité cop1 conservée (non-régression) ─────────────────
   Scenario: Attribution cop1 conservée pour les PR automatiques de nuit
@@ -114,6 +116,8 @@ Feature: Interdiction de modifier l'identité git globale depuis les agents/skil
 - Smoke test `tools/boundary/no-global-gitconfig-identity.test.ts` ajouté (scénario 4) :
   échoue si un fichier source (hors tests) introduit le pattern interdit.
 - Guard documenté dans `products/mega-city/skills/ezk-commits/SKILL.md` (symlinké
-  depuis `~/.claude/skills/ezk-commits`).
+  depuis `~/.claude/skills/ezk-commits`). **Codex #89** : `--local` retiré des
+  patterns recommandés (pollue tous les worktrees) ; exception = `--worktree` ;
+  smoke normalise les continuations `\` et détecte `git -C … config --global`.
 - Hors scope : changer l'identité humaine globale ; rewrite de commits historiques
   hors incident muti déjà traité.
