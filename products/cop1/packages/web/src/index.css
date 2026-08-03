@@ -67,6 +67,114 @@ body {
   border-bottom-color: #60a5fa;
 }
 
+/* fiche 0062 — portefeuille projets */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.project-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.project-card:hover {
+  border-color: #60a5fa;
+  background: #243044;
+}
+
+.project-card__main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.project-card__name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.project-card__status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.25rem;
+  background: #334155;
+  color: #cbd5e1;
+}
+
+.project-card__status--waiting {
+  background: #78350f;
+  color: #fde68a;
+}
+
+.project-card__status--active {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+.project-card__status--idle {
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+.project-card__status--inactive {
+  background: #334155;
+  color: #94a3b8;
+}
+
+.project-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.project-card__loc {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #64748b;
+}
+
+.project-card__foot {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.mon__filter {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.mon__filter-clear {
+  margin-left: 0.5rem;
+  background: none;
+  border: 1px solid #475569;
+  color: #60a5fa;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.mon__filter-clear:hover {
+  border-color: #60a5fa;
+}
+
 .grid {
   display: grid;
   gap: 1.5rem;

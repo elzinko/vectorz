@@ -69,6 +69,29 @@ describe('HttpServer', () => {
     });
   });
 
+  describe('GET /api/supervision/projects (fiche 0062)', () => {
+    it("renvoie [] quand aucun provider n'est configuré", async () => {
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/projects`);
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    });
+
+    it('renvoie le registre exposé par le provider', async () => {
+      const project = {
+        id: 'vectorz',
+        path: '.',
+        method: 'mega-city',
+        projectRoot: '/tmp/vectorz',
+      };
+      server.setProjectsProvider(() => [project]);
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/projects`);
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([project]);
+    });
+  });
+
   it('should stop cleanly', async () => {
     await server.start(TEST_PORT);
     expect(server.listening).toBe(true);

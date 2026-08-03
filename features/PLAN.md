@@ -60,8 +60,7 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après 0181 shipped (#92), la prochaine tête NOW est **0062** (idea — groom/ready).
-Têtes `todo` non-ready : **0022**, **0060**.
+(gate DoR). Après pin Opus 4.8 (#94), tête NOW **0062** (ready 2026-08-03, in-progress).
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à

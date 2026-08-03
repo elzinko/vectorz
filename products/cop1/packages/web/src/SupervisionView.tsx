@@ -157,13 +157,22 @@ function sortRank(run: RunSnapshot): number {
   return STATE_RANK[run.state];
 }
 
+interface SupervisionViewProps {
+  /** fiche 0062 — filtre optionnel sur un projectRoot. */
+  filterProjectRoot?: string | null;
+  onClearFilter?: () => void;
+}
+
 /**
  * Mode moniteur (fiche 0031, ADR-028) : panneau STRICTEMENT read-only affichant
  * les runs surveillés depuis `.supervision/runs/`. Hydrate via
  * `GET /api/supervision/runs` puis applique les deltas `supervision.run.updated`
  * du SSE `/events`. Aucune requête d'écriture n'est jamais émise (verrou DP2).
  */
-export function SupervisionView() {
+export function SupervisionView({
+  filterProjectRoot = null,
+  onClearFilter,
+}: SupervisionViewProps) {
   const [runs, setRuns] = useState<Map<string, RunSnapshot>>(() => new Map());
 
   useEffect(() => {
@@ -207,24 +216,41 @@ export function SupervisionView() {
     };
   }, []);
 
-  const list = Array.from(runs.values()).sort((a, b) => {
+  const all = Array.from(runs.values()).sort((a, b) => {
     const byRank = sortRank(a) - sortRank(b);
     if (byRank !== 0) return byRank;
     return (b.lastAbsorbedAt ?? '').localeCompare(a.lastAbsorbedAt ?? '');
   });
 
+  const list = filterProjectRoot
+    ? all.filter((r) => r.projectRoot === filterProjectRoot)
+    : all;
+
   const waiting = list.filter((r) => r.state === 'at_gate').length;
+  const filterLabel = filterProjectRoot ? projectName(filterProjectRoot) : null;
 
   return (
     <div className="mon">
       <div className="mon__head">
         <div>
-          <h2 className="mon__title">Runs supervisés</h2>
+          <h2 className="mon__title">
+            {filterLabel ? `Runs · ${filterLabel}` : 'Runs supervisés'}
+          </h2>
           <p className="mon__sub">
             Lecture seule · classe B — jalons méthode (start / heartbeat / gates / fin), pas
             chaque action Claude Code. « Silence prolongé » = aucun événement depuis trop
             longtemps pendant un run encore ouvert.
           </p>
+          {filterLabel && (
+            <p className="mon__filter">
+              Filtre projet : <code>{filterProjectRoot}</code>{' '}
+              {onClearFilter && (
+                <button type="button" className="mon__filter-clear" onClick={onClearFilter}>
+                  Voir tous les runs
+                </button>
+              )}
+            </p>
+          )}
         </div>
         {list.length > 0 && (
           <div className="mon__count">
@@ -240,10 +266,13 @@ export function SupervisionView() {
       {list.length === 0 && (
         <div className="mon__empty">
           <div className="mon__empty-dot" aria-hidden="true" />
-          <p className="mon__empty-title">Aucun run surveillé</p>
+          <p className="mon__empty-title">
+            {filterLabel ? 'Aucun run pour ce projet' : 'Aucun run surveillé'}
+          </p>
           <p className="mon__empty-hint">
-            Lance une méthode instrumentée dans un projet surveillé : sa première carte
-            apparaîtra ici, en direct.
+            {filterLabel
+              ? 'Ce projet est déclaré mais n’a pas encore d’activité observée.'
+              : 'Lance une méthode instrumentée dans un projet surveillé : sa première carte apparaîtra ici, en direct.'}
           </p>
         </div>
       )}
