@@ -5,7 +5,7 @@ type: feature
 priority: P0
 product: mega-city
 epic:
-status: todo
+status: in-progress
 ready: 2026-08-03
 pr:
 created: 2026-08-03
@@ -51,20 +51,21 @@ Amorce déjà livrée (PR #91) : ezk-archive (gabarit En clair, `model: opus` +
 
 ## Critères d'acceptation
 
-- [ ] Inventaire agents/skills publié (tableau dans Notes ou ADR court).
-- [ ] Agents de jugement / restitution PO : `model: opus` + `model_spare: sonnet`
+- [x] Inventaire agents/skills publié (tableau dans Notes ou ADR court).
+- [x] Agents de jugement / restitution PO : `model: opus` + `model_spare: sonnet`
       (sauf dérogation motivée sonnet-only).
-- [ ] Skills listés en POC ouvrent leurs restitutions par « En clair » et citent
+- [x] Skills listés en POC ouvrent leurs restitutions par « En clair » et citent
       `human-facing-lisibility`.
-- [ ] Contrat vitest étendu : régression si on retire En clair / model_spare sur
+- [x] Contrat vitest étendu : régression si on retire En clair / model_spare sur
       les cibles POC.
-- [ ] Doc skill (ou ADR) : mapping Cursor Task (`opus` → slug Claude Opus 4.8 ;
+- [x] Doc skill (ou ADR) : mapping Cursor Task (`opus` → slug Claude Opus 4.8 ;
       spare → sonnet ; Grok seulement sur demande humaine).
-- [ ] Gate locale verte (tests mega-city + scripts unicity concernés).
+- [x] Gate locale verte (tests mega-city + scripts unicity concernés).
 
 ## Notes / décisions
 
-- Amorce : PR #91 (`fix/ezk-archive-lisibilite-modele`) — archive seulement.
-- PLAN : tête d'hygiène / NOW — tirer **avant** 0062.
-- Hors scope : changer les modèles Cursor par défaut de la session parente ;
-  rewriter tous les ADR historiques.
+- Amorce : PR #91 — archive (`ezk-archive` opus + spare + gabarit En clair).
+- Inventaire + politique : `products/mega-city/docs/ezk-model-and-lisibility.md`.
+- Dérogation sonnet : `ezk-tdd`, `ezk-qa`, `ezk-steward` (mécanique / bas effort).
+- PLAN : tête hygiène/NOW — tirée avant 0062.
+- Hors scope : pin exact Opus 5 ; modèles par défaut de la session Cursor parente.

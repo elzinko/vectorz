@@ -27,6 +27,12 @@ on vient de dérouler à la main un « brainstorm → archi → rédaction du sk
 déploiement », et on veut le **productiser** une fois, proprement, plutôt que de
 le refaire chaque fois.
 
+**Restitution** (`harvest` / `create` / `deploy`) : ouvre par **« En clair »**
+(≤ 3 phrases) — règle
+[`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
+Politique modèles + inventaire :
+[`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
+
 > **Orchestrateur mince, pas une cathédrale.** `ezk-ezk` **compose** trois
 > compétences et **délègue le rangement mécanique à un seul script**. Il ne
 > réécrit ni le brainstorm produit, ni l'archi, ni la fabrique de skills.

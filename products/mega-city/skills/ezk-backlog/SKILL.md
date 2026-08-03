@@ -36,6 +36,14 @@ Tu maintiens le **backlog d'un projet** en markdown versionné dans le repo : un
 de features/bugs **stable, ordonnée par priorité, et qui ne se perd jamais** — ni entre
 worktrees, ni entre sessions, ni quand une branche est abandonnée.
 
+## Restitution humaine (MUST)
+
+Toute réponse à l'humain (`list`, `next`, `review`, `reconcile`, `plan`, `help` avec
+état) ouvre par **« En clair »** (≤ 3 phrases : où on en est / quoi faire / suite),
+avant tables ou jargon (`DoR`, `ready:`, ids seuls). Règle
+[`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
+Voir aussi [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
+
 ## Préflight Skema (layout version) — à chaque commande
 
 Avant `list` / `next` / `add` / `groom` / `ready` / `plan` / `review` /

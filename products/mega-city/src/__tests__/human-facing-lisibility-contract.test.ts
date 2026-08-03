@@ -34,7 +34,12 @@ const restitutionSkills = [
   join(megaCityDir, 'skills', 'ezk-product-builder', 'SKILL.md'),
   sprintSkill,
   join(megaCityDir, 'skills', 'ezk-archive', 'SKILL.md'),
+  join(megaCityDir, 'skills', 'ezk-backlog', 'SKILL.md'),
+  prPilotSkill,
+  join(megaCityDir, 'skills', 'ezk-ezk', 'SKILL.md'),
 ] as const;
+
+const modelPolicyDoc = join(megaCityDir, 'docs', 'ezk-model-and-lisibility.md');
 
 const archiveHandoffTemplate = join(
   megaCityDir,
@@ -116,5 +121,14 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
     // Codex #91 P2 : ne pas omettre le démarrage de session suivante.
     expect(body).toMatch(/git switch main && git pull/);
     expect(body).toMatch(/\/ezk-backlog list/);
+  });
+
+  it('doc politique modèles 0181 existe et ancre opus + spare + En clair', () => {
+    expect(existsSync(modelPolicyDoc), 'ezk-model-and-lisibility.md absent').toBe(true);
+    const body = read(modelPolicyDoc);
+    expect(body).toMatch(/model_spare/);
+    expect(body).toMatch(/opus/);
+    expect(body).toMatch(/En clair/);
+    expect(body).toMatch(/4\.8/);
   });
 });
