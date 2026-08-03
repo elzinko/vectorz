@@ -1,3 +1,4 @@
+import { isAbsolute, resolve } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
 import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
@@ -9,7 +10,7 @@ import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalW
 import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
 import { checkAuth } from '../infrastructure/AuthChecker.js';
-import { HttpServer } from '../infrastructure/HttpServer.js';
+import { HttpServer, type SupervisionProjectDto } from '../infrastructure/HttpServer.js';
 import { PidFileManager } from '../infrastructure/PidFileManager.js';
 
 export interface DaemonOptions {
@@ -58,6 +59,7 @@ export class DaemonService {
   private wireSupervision(projectPath: string): void {
     let watchRoots: string[] = [];
     let presumedDeadAfterMin = 5;
+    let registryProjects: SupervisionProjectDto[] = [];
 
     // Fiche 0082 — dérivation depuis le registre (prioritaire sur YAML).
     // Un fichier présent mais invalide NE doit PAS retomber sur YAML (Codex P1) :
@@ -68,6 +70,12 @@ export class DaemonService {
       if (located !== null) {
         watchRoots = resolveWatchRoots(located.registry, located.dir);
         fromRegistry = true;
+        registryProjects = located.registry.projects.map((p) => ({
+          id: p.id,
+          path: p.path,
+          method: p.method,
+          projectRoot: isAbsolute(p.path) ? p.path : resolve(located.dir, p.path),
+        }));
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -77,6 +85,9 @@ export class DaemonService {
       fromRegistry = true;
       watchRoots = [];
     }
+
+    // fiche 0062 — exposer le registre même si les watchers restent dormants
+    this.httpServer.setProjectsProvider(() => registryProjects);
 
     let abandonCommand: string[] = [];
 

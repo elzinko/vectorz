@@ -5,8 +5,8 @@ type: feature
 priority: P2
 product: vectorz
 epic:
-status: idea
-ready:
+status: in-progress
+ready: 2026-08-03
 pr:
 created: 2026-07-26
 ---
@@ -33,24 +33,25 @@ chaque projet **cliquable** pour entrer dedans et suivre son activité.
 ## Proposition
 
 Un onglet/vue **« Projets »**, à côté du flux de runs actuel, en **lecture seule** (verrou
-DP2 préservé — aucune écriture). Une carte/ligne par projet :
+DP2 préservé — aucune écriture). Une ligne par projet :
 
-- **méthode + version** installée (déjà projetée depuis `run.started`, fiche 0061 shippée) ;
+- **méthode + version** (version depuis le dernier run observé ; méthode depuis le
+  registre 0082, sinon depuis le run) ;
 - **localisation** (chemin du projet) ;
-- **statut** dérivé de ce qui est déjà lu (a un run en attente / actif récemment / inactif) ;
+- **statut** dérivé : en attente / actif / récent / inactif ;
 - **clic → activité du projet** : filtre le Moniteur sur les runs de ce projet.
 
-**Source de données** : le **registre 0082** (QUOI + méthode, versionné) pour la liste
-« officielle » des projets ; à défaut de registre, dériver la liste des projets **observés**
-depuis les `projectRoot` des runs déjà lus (dégradation gracieuse tant que 0082 n'existe pas).
+**Source de données** : `GET /api/supervision/projects` (registre 0082) + runs déjà
+lus ; sans registre, liste dérivée des `projectRoot` observés (dégradation gracieuse).
 
-## Critères d'acceptation (à groomer)
+## Critères d'acceptation
 
-- [ ] Une vue liste les projets supervisés avec méthode+version, localisation, statut.
-- [ ] Cliquer un projet filtre l'activité (ses runs) — navigation projet → runs.
-- [ ] Fonctionne **sans** le registre 0082 (liste dérivée des runs observés), et **mieux**
-      avec (liste déclarée, projets sans run encore visibles).
-- [ ] Aucune écriture émise (lecture seule, DP2).
+- [x] Onglets **Projets** / **Activité** dans le shell Moniteur (pas de contrôles pilote).
+- [x] Vue Projets : pour chaque entrée, méthode (± version), localisation, statut dérivé.
+- [x] Clic sur un projet → onglet Activité filtré sur les runs de ce `projectRoot`.
+- [x] Sans registre : projets dérivés des runs ; avec registre : projets déclarés visibles
+      même sans run.
+- [x] Aucune écriture émise depuis la vue Projets (lecture seule, DP2).
 
 ## Notes
 
@@ -58,4 +59,4 @@ depuis les `projectRoot` des runs déjà lus (dégradation gracieuse tant que 00
   pendant *écriture*. 0082 = la donnée, 0062 = la voir, 0063 = en ajouter.
 - Complémentaire de 0022 (afficher le déjà-collecté) : même surface, autre granularité
   (projet, pas run).
-- **P2 par défaut** — à re-situer par le PO (fiche `idea`, priorité indicative).
+- Groomé 2026-08-03 (sprint simplifié post-0181) — DoR problème / valeur / AC OK.

@@ -13,6 +13,16 @@ type RuleProposalStatus = (typeof VALID_STATUSES)[number];
  */
 export type SupervisionProvider = () => unknown[];
 
+/** fiche 0062 — projets déclarés dans le registre (lecture seule). */
+export interface SupervisionProjectDto {
+  id: string;
+  path: string;
+  method: string;
+  projectRoot: string;
+}
+
+export type ProjectsProvider = () => SupervisionProjectDto[];
+
 export interface RuleProposalRecord {
   ruleId: string;
   type: string;
@@ -52,6 +62,7 @@ export class HttpServer {
   private readonly startedAt: number = Date.now();
   private sseClients: Set<ServerResponse> = new Set();
   private supervisionProvider: SupervisionProvider | null = null;
+  private projectsProvider: ProjectsProvider | null = null;
   private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private blocageApiHandler: BlocageApiPort | null = null;
@@ -60,6 +71,11 @@ export class HttpServer {
 
   setSupervisionProvider(provider: SupervisionProvider): void {
     this.supervisionProvider = provider;
+  }
+
+  /** fiche 0062 — liste registre (vide si absent). */
+  setProjectsProvider(provider: ProjectsProvider): void {
+    this.projectsProvider = provider;
   }
 
   setRuleProposalProvider(provider: RuleProposalProvider): void {
@@ -120,6 +136,13 @@ export class HttpServer {
 
     if (req.method === 'GET' && req.url === '/api/supervision/runs') {
       const data = this.supervisionProvider?.() ?? [];
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+      return;
+    }
+
+    if (req.method === 'GET' && req.url === '/api/supervision/projects') {
+      const data = this.projectsProvider?.() ?? [];
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(data));
       return;
