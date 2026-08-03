@@ -5,8 +5,8 @@ type: feature
 priority: P2
 product: vectorz
 epic:
-status: idea
-ready:
+status: in-progress
+ready: 2026-08-03
 pr:
 created: 2026-07-26
 ---
@@ -26,47 +26,31 @@ qui ancre un projet, jamais le modèle. Le geste d'ancrage a juste besoin d'une 
 - Le superviseur (déjà un logiciel qui tourne) **pilote l'install**, au lieu que l'utilisateur
   assemble `.mcp.json` + `watch_roots` à la main.
 
-## Proposition
+## Proposition (POC 2026-08-03)
 
-Un bouton **« Ajouter un projet »** dans le Moniteur. À l'activation :
+Bouton **« Ajouter un projet »** dans l'onglet Projets (0062).
 
-1. **Sélection du dossier** du projet. ⚠️ **Vrai défi technique** : une web UI seule ne peut
-   ni ouvrir un dialog dossier natif OSX, ni obtenir un chemin absolu (bac à sable navigateur).
-   Le **daemon** (backend) doit exposer le geste — options à instruire : dialog natif via un
-   helper côté daemon, saisie/collage du chemin, ou glisser-déposer. À trancher au grooming.
-2. **Choix du mode d'install** (voir ci-dessous), puis le **daemon** exécute :
-   - le lien d'émission (le mécanisme de `supervision:link`/0094, réutilisé — pas réimplémenté) ;
-   - l'ajout aux `supervision.watch_roots` s'il y a monitoring.
-3. Le projet **apparaît dans l'écran Projets (0062)** et devient surveillé.
+1. **Chemin** — collage d'un chemin absolu (pas de dialog OSX natif en web : tranché
+   pour le POC ; dialog natif = suite).
+2. **Mode** :
+   - **Méthode seule** → spawn `bind_command` (lawgiver bind) — pas de MCP, pas de registre.
+   - **Supervisé** → spawn `link_command` (`supervision:link`) + `registry_add_command`
+     (`supervision:registry-add`) — redémarrage daemon requis pour les watchers.
+3. Le daemon **ne réimplémente pas** link : il spawn les CLIs siège (même pattern qu'ADR-035).
 
-### Les deux modes d'install (axe 3, PO 2026-07-26)
+## Critères d'acceptation
 
-| Mode | Ce qu'on installe | Pour |
-|---|---|---|
-| **Méthode seule** | skills/agents (le catalogue) — **pas** de MCP, pas de watch | développer avec ezk-*, sans surveiller |
-| **Supervisé** | méthode **+** `.mcp.json` **+** watch du daemon | + voir dans le Moniteur |
-
-Le mode « méthode seule » est **déjà supporté par les skills** (clause « si les outils MCP
-sont dispo — sinon saute sans bruit ») : la méthode n'a **pas besoin** du MCP pour exister.
-
-## Critères d'acceptation (à groomer)
-
-- [ ] Un bouton « Ajouter un projet » déclenche une sélection de dossier (mécanisme tranché
-      au grooming), puis l'install via le daemon.
-- [ ] Les deux modes (méthode seule / supervisé) sont proposés et produisent le bon état.
-- [ ] Après ancrage supervisé, le projet apparaît dans l'écran Projets (0062) et ses runs
-      remontent au Moniteur.
-- [ ] La CLI `supervision:link` (0094) reste le **socle** : le bouton l'appelle côté daemon,
-      il ne la duplique pas.
-- [ ] L'ancrage reste un geste **humain** (invariant 0050/0082) — le modèle ne l'actionne pas.
+- [x] Formulaire « Ajouter un projet » (chemin absolu + mode + id/méthode) déclenche
+      `POST /api/supervision/projects/anchor` (geste humain UI).
+- [x] Mode **méthode seule** : spawn `bind_command` ; pas d'entrée registre / pas de link.
+- [x] Mode **supervisé** : spawn link + registry-add ; projet visible dans Projets ;
+      message de redémarrage daemon pour activer le watch.
+- [x] `supervision:link` / `supervision:registry-add` restent le socle — le daemon spawn,
+      ne duplique pas la logique.
+- [x] Capacité dormante si commandes absentes de `cop1.config.yaml` (409 + marche à suivre).
 
 ## Notes
 
-- Pendant *écriture* de la fiche **0062** (lister) ; ensemble ils forment la « gestion des
-  projets » dans le Moniteur, mais **shippables séparément** (0062 = lecture seule d'abord).
-- S'appuie sur **0094** (le mécanisme de link) et **0082** (le registre). Le picker de dossier
-  et les 2 modes sont les vrais morceaux neufs.
-- **Lien fort avec 0087** : les *emballages* (plugin / `.mcpb` / dossier projet) et le
-  *versionnage par projet* sont traités là ; 0063 est l'**UI d'ancrage**, pas la doctrine
-  d'install.
-- **P2 par défaut** — à re-situer par le PO (fiche `idea`, priorité indicative).
+- Pendant *écriture* de **0062** (lister) ; shippables séparément.
+- Dialog dossier OSX natif reporté (suite) — POC = collage chemin.
+- Groomé 2026-08-03 — DoR problème / valeur / AC OK.

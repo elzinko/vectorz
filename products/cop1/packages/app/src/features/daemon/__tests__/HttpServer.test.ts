@@ -92,6 +92,35 @@ describe('HttpServer', () => {
     });
   });
 
+  describe('POST /api/supervision/projects/anchor (fiche 0063)', () => {
+    it('503 si handler absent', async () => {
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/projects/anchor`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectRoot: '/tmp', mode: 'supervised' }),
+      });
+      expect(res.status).toBe(503);
+    });
+
+    it('délègue au handler configuré', async () => {
+      server.setProjectAnchorHandler({
+        execute: async () => ({
+          status: 200,
+          body: { ok: true, mode: 'method-only', daemonRestartRequired: false },
+        }),
+      });
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/projects/anchor`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectRoot: '/tmp/x', mode: 'method-only' }),
+      });
+      expect(res.status).toBe(200);
+      expect(await res.json()).toMatchObject({ ok: true, mode: 'method-only' });
+    });
+  });
+
   it('should stop cleanly', async () => {
     await server.start(TEST_PORT);
     expect(server.listening).toBe(true);

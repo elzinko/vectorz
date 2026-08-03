@@ -4,8 +4,10 @@ import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
+import { AnchorProjectUseCase } from '../../supervision/application/AnchorProjectUseCase.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
 import { EmitterCliAbandonAdapter } from '../../supervision/infrastructure/EmitterCliAbandonAdapter.js';
+import { EmitterCliAnchorAdapter } from '../../supervision/infrastructure/EmitterCliAnchorAdapter.js';
 import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalWatcherAdapter.js';
 import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
@@ -55,27 +57,24 @@ export class DaemonService {
    *   `watch_roots` sont dérivées du registre (fin de la double saisie).
    * - Sinon, retour au comportement v1 : `supervision.watch_roots` depuis YAML.
    * - `presumed_dead_after_min` reste toujours lu depuis YAML si disponible.
+   *
+   * Fiche 0063 — l'ancrage (POST) et la liste projets (GET) restent câblés même
+   * sans watchers, pour pouvoir ajouter un premier projet depuis le Moniteur.
    */
   private wireSupervision(projectPath: string): void {
     let watchRoots: string[] = [];
     let presumedDeadAfterMin = 5;
-    let registryProjects: SupervisionProjectDto[] = [];
-
-    // Fiche 0082 — dérivation depuis le registre (prioritaire sur YAML).
-    // Un fichier présent mais invalide NE doit PAS retomber sur YAML (Codex P1) :
-    // on reste sans watchers plutôt que de surveiller une liste périmée.
     let fromRegistry = false;
+    let abandonCommand: string[] = [];
+    let linkCommand: string[] = [];
+    let registryAddCommand: string[] = [];
+    let bindCommand: string[] = [];
+
     try {
       const located = locateRegistry([projectPath]);
       if (located !== null) {
         watchRoots = resolveWatchRoots(located.registry, located.dir);
         fromRegistry = true;
-        registryProjects = located.registry.projects.map((p) => ({
-          id: p.id,
-          path: p.path,
-          method: p.method,
-          projectRoot: isAbsolute(p.path) ? p.path : resolve(located.dir, p.path),
-        }));
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -86,29 +85,25 @@ export class DaemonService {
       watchRoots = [];
     }
 
-    // fiche 0062 — exposer le registre même si les watchers restent dormants
-    this.httpServer.setProjectsProvider(() => registryProjects);
+    // fiche 0062/0063 — relecture à chaque GET (après registry-add sans restart)
+    this.httpServer.setProjectsProvider(() => this.readRegistryProjects(projectPath));
 
-    let abandonCommand: string[] = [];
-
-    // Lecture de la config YAML pour presumed_dead_after_min (et watch_roots si pas de registre)
     try {
-      // skipRamValidation : le mode moniteur ne consomme que `supervision.*` ;
-      // le budget RAM (défaut 48GB > la RAM de la plupart des machines, dont
-      // les runners CI à 16GB) est une contrainte d'orchestration qui ne doit
-      // pas rendre la supervision silencieusement dormante (cf. fiche 0033).
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
       if (!fromRegistry) {
         watchRoots = config.supervision?.watch_roots ?? [];
       }
       presumedDeadAfterMin = config.supervision?.presumed_dead_after_min ?? 5;
       abandonCommand = config.supervision?.abandon_command ?? [];
+      linkCommand = config.supervision?.link_command ?? [];
+      registryAddCommand = config.supervision?.registry_add_command ?? [];
+      bindCommand = config.supervision?.bind_command ?? [];
     } catch {
-      // cop1.config.yaml absent ou invalide : supervision dormante par
-      // défaut, ce n'est jamais une raison de faire échouer le démarrage
-      // du daemon (le reste du daemon fonctionne sans config chargée).
+      this.wireAnchorHandler(bindCommand, linkCommand, registryAddCommand);
       if (!fromRegistry) return;
     }
+
+    this.wireAnchorHandler(bindCommand, linkCommand, registryAddCommand);
 
     if (watchRoots.length === 0) return;
 
@@ -119,7 +114,6 @@ export class DaemonService {
     });
     this.httpServer.setSupervisionProvider(() => this.supervisionService?.getSnapshots() ?? []);
 
-    // ADR-035 D2+D3 : adaptateur d'abandon câblé uniquement si abandon_command configurée
     const abandonPort =
       abandonCommand.length > 0
         ? new EmitterCliAbandonAdapter(abandonCommand)
@@ -146,6 +140,55 @@ export class DaemonService {
       this.supervisionService?.absorb(root, runDir);
     });
     this.journalWatcher.start();
+  }
+
+  private readRegistryProjects(projectPath: string): SupervisionProjectDto[] {
+    try {
+      const located = locateRegistry([projectPath]);
+      if (located === null) return [];
+      return located.registry.projects.map((p) => ({
+        id: p.id,
+        path: p.path,
+        method: p.method,
+        projectRoot: isAbsolute(p.path) ? p.path : resolve(located.dir, p.path),
+      }));
+    } catch {
+      return [];
+    }
+  }
+
+  private wireAnchorHandler(
+    bindCommand: string[],
+    linkCommand: string[],
+    registryAddCommand: string[],
+  ): void {
+    const port = new EmitterCliAnchorAdapter(bindCommand, linkCommand, registryAddCommand);
+    const useCase = new AnchorProjectUseCase({
+      port,
+      bindConfigured: bindCommand.length > 0,
+      linkConfigured: linkCommand.length > 0,
+      registryAddConfigured: registryAddCommand.length > 0,
+    });
+    this.httpServer.setProjectAnchorHandler({
+      execute: async (body) => {
+        const result = await useCase.execute(
+          (body && typeof body === 'object' ? body : {}) as Record<string, unknown>,
+        );
+        if (result.status === 200) {
+          return {
+            status: 200,
+            body: {
+              ok: true,
+              mode: result.mode,
+              projectRoot: result.projectRoot,
+              id: result.id,
+              daemonRestartRequired: result.daemonRestartRequired,
+            },
+          };
+        }
+        return { status: result.status, body: { error: result.error } };
+      },
+    });
   }
 
   async start(): Promise<void> {

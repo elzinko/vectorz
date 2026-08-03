@@ -57,6 +57,11 @@ export interface RunAbandonHandler {
   execute(runDir: string): Promise<{ status: 200 | 202 | 404 | 409; body: unknown }>;
 }
 
+/** fiche 0063 — ancrage projet (geste humain depuis le Moniteur). */
+export interface ProjectAnchorHandler {
+  execute(body: unknown): Promise<{ status: 200 | 400 | 409; body: unknown }>;
+}
+
 export class HttpServer {
   private server: Server | null = null;
   private readonly startedAt: number = Date.now();
@@ -67,6 +72,7 @@ export class HttpServer {
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private blocageApiHandler: BlocageApiPort | null = null;
   private runAbandonHandler: RunAbandonHandler | null = null;
+  private projectAnchorHandler: ProjectAnchorHandler | null = null;
   private eventBusWired = false;
 
   setSupervisionProvider(provider: SupervisionProvider): void {
@@ -93,6 +99,11 @@ export class HttpServer {
   /** ADR-035 D4 — câblage de la route POST /api/supervision/runs/abandon. */
   setRunAbandonHandler(handler: RunAbandonHandler): void {
     this.runAbandonHandler = handler;
+  }
+
+  /** fiche 0063 — POST /api/supervision/projects/anchor. */
+  setProjectAnchorHandler(handler: ProjectAnchorHandler): void {
+    this.projectAnchorHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -185,6 +196,12 @@ export class HttpServer {
     // ADR-035 D4 — abandon d'un run orphelin depuis le Moniteur
     if (req.method === 'POST' && req.url === '/api/supervision/runs/abandon') {
       void this.handleRunAbandon(req, res);
+      return;
+    }
+
+    // fiche 0063 — ancrage projet (geste humain)
+    if (req.method === 'POST' && req.url === '/api/supervision/projects/anchor') {
+      void this.handleProjectAnchor(req, res);
       return;
     }
 
@@ -312,6 +329,27 @@ export class HttpServer {
 
       void this.runAbandonHandler
         .execute(body.runDir)
+        .then(({ status, body: responseBody }) => {
+          res.writeHead(status, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(responseBody));
+        })
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : String(error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: message }));
+        });
+    });
+  }
+
+  private async handleProjectAnchor(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    this.readJsonBody(req, res, (parsed) => {
+      if (!this.projectAnchorHandler) {
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'anchor handler not configured' }));
+        return;
+      }
+      void this.projectAnchorHandler
+        .execute(parsed)
         .then(({ status, body: responseBody }) => {
           res.writeHead(status, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(responseBody));

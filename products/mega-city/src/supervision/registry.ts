@@ -10,7 +10,7 @@
  */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { parse } from 'yaml';
+import { parse, stringify } from 'yaml';
 
 export const REGISTRY_FILENAME = 'supervision.registry.yaml';
 
@@ -169,4 +169,61 @@ export function findProjectByRoot(
       : path.resolve(registryDir, p.path);
     return resolved === normalizedRoot;
   });
+}
+
+/**
+ * fiche 0063 — chemin à stocker dans le registre : relatif au siège si possible,
+ * sinon absolu.
+ */
+export function pathLabelForRegistry(registryDir: string, absoluteRoot: string): string {
+  const abs = path.resolve(absoluteRoot);
+  const rel = path.relative(path.resolve(registryDir), abs);
+  if (rel === '') return '.';
+  if (!rel.startsWith(`..${path.sep}`) && rel !== '..' && !path.isAbsolute(rel)) {
+    return rel;
+  }
+  return abs;
+}
+
+/**
+ * fiche 0063 — ajoute un projet au registre (écriture humaine / CLI siège).
+ * Refuse les doublons d'`id` ou de racine résolue. Recrée le YAML (commentaires
+ * du fichier perdu — acceptable pour le POC).
+ */
+export function appendRegistryProject(
+  registryDir: string,
+  project: RegistryProject,
+  writeFile: (filePath: string, content: string) => void = (filePath, content) => {
+    fs.writeFileSync(filePath, content, 'utf-8');
+  },
+): Registry {
+  const existing = loadRegistry(registryDir) ?? { projects: [] };
+  const labelPath = project.path.trim();
+  const resolvedNew = path.isAbsolute(labelPath)
+    ? path.resolve(labelPath)
+    : path.resolve(registryDir, labelPath);
+
+  for (const p of existing.projects) {
+    if (p.id === project.id.trim()) {
+      throw new Error(`projet déjà présent dans le registre (id=${p.id})`);
+    }
+    const resolved = path.isAbsolute(p.path)
+      ? path.resolve(p.path)
+      : path.resolve(registryDir, p.path);
+    if (resolved === resolvedNew) {
+      throw new Error(`projet déjà présent dans le registre (path=${p.path})`);
+    }
+  }
+
+  const nextProject: RegistryProject = {
+    id: project.id.trim(),
+    path: labelPath,
+    method: project.method.trim(),
+  };
+  const next: Registry = { projects: [...existing.projects, nextProject] };
+  writeFile(
+    path.join(registryDir, REGISTRY_FILENAME),
+    `${stringify(next).trimEnd()}\n`,
+  );
+  return next;
 }
