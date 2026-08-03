@@ -24,8 +24,9 @@ seulement, jamais dans l'ouverture.
 - <décision structurante, et son *pourquoi*, si utile>
 
 **À faire (toi) :**
-1. <action concrète, commandes littérales si besoin>
-2. …
+1. `git switch main && git pull`   ← **toujours** (même session « propre »)
+2. `/ezk-backlog list`   ← **toujours** (choisir la priorité courante)
+3. <actions exceptionnelles s'il y en a — sinon omets cette ligne>
 
 **Pending (à ne pas perdre) :**
 - <pending NON-git reporté : billing, décision PO, todo hors repo…>
@@ -65,6 +66,10 @@ résolus depuis — tu devras alors les trier à la main plutôt que de les reco
 
 Écris **l'union** des deux dans `**Pending`**. Les actions prioritaires pour l'humain
 vont d'abord dans **« À faire (toi) »** (lisibles), le détail reportable dans Pending.
+
+> **Baseline obligatoire** dans « À faire (toi) » : les deux commandes
+> `git switch main && git pull` et `/ezk-backlog list` — même quand il n'y a
+> **aucune** action exceptionnelle. Ne pas les remplacer par « rien à faire ».
 
 ### 3. Ce qui n'a pas sa place ici
 

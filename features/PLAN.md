@@ -11,6 +11,8 @@
 
 ## 🧹 Hygiène préalable (rapide)
 
+- **P0** `build` **0181** — méthode ezk : Opus 4.8 (+ spare sonnet) + restitutions
+  « En clair » sur toutes les commandes / skills (suite de #91 archive) · `build`
 - ~~**P0** `build` **0176** — interdit `git config --global user.*` pour l’identité
   agent ; commits cop1 = local / one-shot only ([#86](https://github.com/elzinko/vectorz/issues/86))~~ — shipped #89.
 - ~~`ship` **0059** · **0061** (vectorz)~~ — fait (vérifié au `reconcile` du 2026-07-26).
@@ -25,21 +27,22 @@
 2. ~~**0095** — faire émettre `ezk-product-builder`~~ — shipped #55
 3. ~~**0082** — registre {projet · méthode}~~ — shipped #70
 4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
-5. **0062** — onglet « Projets » : liste par projet, cliquable → activité · `build`
-6. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build`
+5. **0181** — Opus 4.8 + restitutions lisibles (toute la méthode) · `build` ← **tête**
+6. **0062** — onglet « Projets » : liste par projet, cliquable → activité · `build`
+7. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build`
 
 ## ⏭️ NEXT — la méthode se tient + confort
 
-7. **0090** — cohérence de sprint : garde-fou anti-collision (3 worktrees en parallèle vu le 25/07) · `build`
-8. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
-9. **0091** — mise à plat + glossaire du jargon du backlog · `build`
-10. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
-11. **0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `build`
-12. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
-13. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
-14. **0149** — `composes:` : rendre la composition inter-skills mécanique (remontée P2→P1
+8. **0090** — cohérence de sprint : garde-fou anti-collision (3 worktrees en parallèle vu le 25/07) · `build`
+9. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
+10. **0091** — mise à plat + glossaire du jargon du backlog · `build`
+11. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
+12. **0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `build`
+13. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
+14. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
+15. **0149** — `composes:` : rendre la composition inter-skills mécanique (remontée P2→P1
     le 2026-07-26) · `build` *(à faire avant 0102, sinon ses liens naissent en prose)*
-15. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
+16. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
     + ADR-0020 · `build` *(attend le dogfood samplerz `make preview-pr`, son repo)*
 
 ## ⏳ LATER — pas maintenant
@@ -57,8 +60,9 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après 0176 shipped (#89), la prochaine tête du NOW est **0062**
-(idea — groom/ready). Têtes `todo` non-ready avant 0041 : **0022**, **0060**.
+(gate DoR). Après 0176 shipped (#89), la tête hygiène/NOW est **0181** (ready —
+Opus 4.8 + restitutions lisibles ; amorce archive #91). Ensuite **0062** (idea —
+groom). Têtes `todo` non-ready : **0022**, **0060**.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à

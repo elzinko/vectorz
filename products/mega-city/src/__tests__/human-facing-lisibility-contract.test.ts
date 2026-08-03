@@ -107,11 +107,14 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
     },
   );
 
-  it('ezk-archive handoff template ouvre par En clair + section À faire', () => {
+  it('ezk-archive handoff template ouvre par En clair + baseline Reprendre', () => {
     expect(existsSync(archiveHandoffTemplate), 'handoff-template absent').toBe(true);
     const body = read(archiveHandoffTemplate);
     expect(body).toMatch(/\*\*En clair :\*\*/);
     expect(body).toMatch(/\*\*À faire \(toi\) :\*\*/);
     expect(body).toMatch(/human-facing-lisibility/);
+    // Codex #91 P2 : ne pas omettre le démarrage de session suivante.
+    expect(body).toMatch(/git switch main && git pull/);
+    expect(body).toMatch(/\/ezk-backlog list/);
   });
 });
