@@ -54,7 +54,7 @@ describe('claudeCodeCap.materialize (plan pur, sans FS)', () => {
       agents: [
         {
           ...resolved.agents[0],
-          model: 'opus',
+          model: 'claude-opus-4-8',
           model_spare: 'sonnet',
           effort: 'high',
           isolation: 'worktree',
@@ -64,7 +64,7 @@ describe('claudeCodeCap.materialize (plan pur, sans FS)', () => {
     const plan = claudeCodeCap.materialize(tuned, '/tmp/projet');
     const agentFile = find(plan, '.claude/agents/ezk-reviewer.md');
     expect(agentFile?.content).toContain('name: ezk-reviewer');
-    expect(agentFile?.content).toContain('model: opus');
+    expect(agentFile?.content).toContain('model: claude-opus-4-8');
     expect(agentFile?.content).toContain('model_spare: sonnet');
     expect(agentFile?.content).toContain('effort: high');
     expect(agentFile?.content).toContain('isolation: worktree');

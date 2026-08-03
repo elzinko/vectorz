@@ -9,10 +9,10 @@ description: >-
   (help/check/run), le chemin du repo, et un résumé de ce qui a été livré/décidé/
   appris pendant la session — n'a AUCUNE mémoire de la conversation qui a précédé
   l'appel.
-# Alias Claude Code (hôte natif des skills mega-city) — jamais d'id Cursor/Grok ici.
-# opus = famille Opus courante côté Claude Code (ex. 4.8), pas un pin Opus 5.
-model: opus
-# Secours si l'hôte refuse / n'a pas opus : l'appelant utilise model_spare (skill).
+# Alias Claude Code — PIN versionné (pas l'alias `opus`, qui peut dériver vers Opus 5).
+# Docs : https://code.claude.com/docs/en/model-config
+model: claude-opus-4-8
+# Secours si l'hôte refuse / n'a pas 4.8 : l'appelant utilise model_spare (skill).
 model_spare: sonnet
 effort: medium
 color: cyan

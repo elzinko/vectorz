@@ -71,10 +71,11 @@ export interface Agent {
   role: string;           // la prose du rôle (markdown — ce que le LLM lit)
   competences: string[];  // ids de Skills  — AJOUTABLES en cours de projet (via capture)
   interactions: string[]; // ids de Rules   — « comment je collabore » (AJOUTABLES via capture)
-  // Réglages d'exécution (host natif). Alias uniquement, jamais d'id épinglé (fiche 0039).
-  model?: string;         // 'opus' | 'sonnet' | 'haiku' | 'fable' | 'inherit' — défaut host = inherit
+  // Réglages d'exécution (host natif). Alias OU id versionné (pin).
+  // Préférer le pin pour Opus : `claude-opus-4-8` — l'alias `opus` peut dériver vers Opus 5.
+  model?: string;         // 'claude-opus-4-8' | 'sonnet' | 'haiku' | 'fable' | 'inherit' | …
   /** Secours si l'hôte refuse `model` — lu par le skill appelant (ex. ezk-archive). */
-  model_spare?: string;   // même vocabulaire d'alias que `model`
+  model_spare?: string;   // même vocabulaire que `model` (souvent 'sonnet')
   effort?: string;        // 'low' | 'medium' | 'high' | 'xhigh' | 'max'
   isolation?: string;     // 'worktree' — exécute l'agent dans un git worktree isolé
 }
