@@ -29,7 +29,7 @@
 4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
 5. ~~**0181** — Opus 4.8 + restitutions lisibles~~ — shipped #92
 6. ~~**0062** — onglet « Projets » : liste par projet, cliquable → activité · `ship`~~ — shipped #95
-7. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build`
+7. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build` *(in-progress)*
 
 ## ⏭️ NEXT — la méthode se tient + confort
 

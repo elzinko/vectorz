@@ -37,3 +37,9 @@ schedule:
 supervision:
   watch_roots: []
   presumed_dead_after_min: 5
+  # ADR-035 — abandon orphelin (optionnel)
+  # abandon_command: ["pnpm", "--dir", "products/mega-city", "supervision:abandon"]
+  # fiche 0063 — ancrage depuis le Moniteur (optionnel ; défaut = capacité dormante)
+  # link_command: ["pnpm", "--dir", "products/mega-city", "supervision:link"]
+  # registry_add_command: ["pnpm", "--dir", "products/mega-city", "supervision:registry-add"]
+  # bind_command: ["pnpm", "--dir", "products/mega-city", "lawgiver", "bind", "default"]

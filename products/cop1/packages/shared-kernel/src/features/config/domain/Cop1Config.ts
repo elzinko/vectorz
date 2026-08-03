@@ -62,5 +62,11 @@ export interface Cop1Config {
     presumed_dead_after_min: number;
     /** ADR-035 D3 : commande CLI d'abandon (défaut [] = capacité dormante). */
     abandon_command: string[];
+    /** fiche 0063 — spawn supervision:link. */
+    link_command: string[];
+    /** fiche 0063 — spawn supervision:registry-add. */
+    registry_add_command: string[];
+    /** fiche 0063 — spawn lawgiver bind (méthode seule). */
+    bind_command: string[];
   };
 }

@@ -101,8 +101,21 @@ export const ConfigSchema = z
         presumed_dead_after_min: z.number().positive().default(5),
         /** ADR-035 D3 : commande CLI d'abandon (défaut [] = capacité dormante). */
         abandon_command: z.array(z.string()).default([]),
+        /** fiche 0063 : spawn supervision:link (défaut [] = dormant). */
+        link_command: z.array(z.string()).default([]),
+        /** fiche 0063 : spawn supervision:registry-add (défaut [] = dormant). */
+        registry_add_command: z.array(z.string()).default([]),
+        /** fiche 0063 : spawn lawgiver bind (mode méthode seule ; défaut [] = dormant). */
+        bind_command: z.array(z.string()).default([]),
       })
-      .default({ watch_roots: [], presumed_dead_after_min: 5, abandon_command: [] }),
+      .default({
+        watch_roots: [],
+        presumed_dead_after_min: 5,
+        abandon_command: [],
+        link_command: [],
+        registry_add_command: [],
+        bind_command: [],
+      }),
   })
   .refine(
     (data) => {

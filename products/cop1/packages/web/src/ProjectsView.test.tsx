@@ -1,14 +1,14 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProjectsView } from './ProjectsView.js';
 
-describe('ProjectsView (fiche 0062)', () => {
+describe('ProjectsView (fiche 0062 + 0063)', () => {
   beforeEach(() => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockImplementation((url: string) => {
-        if (url === '/api/supervision/projects') {
+      vi.fn().mockImplementation((url: string, init?: RequestInit) => {
+        if (url === '/api/supervision/projects' && (!init || init.method === undefined || init.method === 'GET')) {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -36,6 +36,18 @@ describe('ProjectsView (fiche 0062)', () => {
               ]),
           });
         }
+        if (url === '/api/supervision/projects/anchor' && init?.method === 'POST') {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () =>
+              Promise.resolve({
+                ok: true,
+                id: 'nouveau',
+                daemonRestartRequired: true,
+              }),
+          });
+        }
         return Promise.resolve({ ok: false, json: () => Promise.resolve([]) });
       }),
     );
@@ -59,17 +71,24 @@ describe('ProjectsView (fiche 0062)', () => {
     expect(onOpen).toHaveBeenCalledWith('/repo/vectorz');
   });
 
-  it('n’émet aucun POST (lecture seule)', async () => {
+  it('fiche 0063 — formulaire POST anchor puis message de redémarrage', async () => {
+    const user = userEvent.setup();
     render(<ProjectsView onOpenProject={vi.fn()} />);
-    await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalled();
+    expect(await screen.findByText(/Ajouter un projet/i)).toBeTruthy();
+
+    await user.type(screen.getByPlaceholderText(/\/Users\//), '/tmp/nouveau-projet');
+    await user.click(screen.getByRole('button', { name: /Ajouter le projet/i }));
+
+    expect(await screen.findByText(/ancré/i)).toBeTruthy();
+    expect(screen.getByText(/Redémarre le daemon/i)).toBeTruthy();
+
+    const post = vi.mocked(globalThis.fetch).mock.calls.find(
+      ([url, init]) => url === '/api/supervision/projects/anchor' && init?.method === 'POST',
+    );
+    expect(post).toBeTruthy();
+    expect(JSON.parse(String(post?.[1]?.body))).toMatchObject({
+      projectRoot: '/tmp/nouveau-projet',
+      mode: 'supervised',
     });
-    const calls = vi.mocked(globalThis.fetch).mock.calls;
-    for (const [url, init] of calls) {
-      expect(url).toMatch(/^\/api\/supervision\/(projects|runs)$/);
-      expect(init && typeof init === 'object' && 'method' in init ? init.method : 'GET').toBe(
-        'GET',
-      );
-    }
   });
 });

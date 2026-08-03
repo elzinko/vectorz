@@ -9,8 +9,10 @@ import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   REGISTRY_FILENAME,
+  appendRegistryProject,
   findProjectByRoot,
   loadRegistry,
+  pathLabelForRegistry,
   resolveWatchRoots,
 } from '../registry.js';
 
@@ -210,5 +212,31 @@ describe('findProjectByRoot', () => {
     };
     const result = findProjectByRoot(registry, '/ignored', '/abs/path');
     expect(result).toEqual({ id: 'x', path: '/abs/path', method: 'bmad' });
+  });
+});
+
+describe('appendRegistryProject (fiche 0063)', () => {
+  it('ajoute un projet et refuse les doublons id', () => {
+    writeRegistry(`
+projects:
+  - id: vectorz
+    path: .
+    method: mega-city
+`);
+    const next = appendRegistryProject(tmpDir, {
+      id: 'autre',
+      path: '/tmp/autre',
+      method: 'mega-city',
+    });
+    expect(next.projects).toHaveLength(2);
+    expect(() =>
+      appendRegistryProject(tmpDir, { id: 'vectorz', path: '/tmp/x', method: 'mega-city' }),
+    ).toThrow(/déjà présent/);
+  });
+
+  it('pathLabelForRegistry préfère un relatif sous le siège', () => {
+    expect(pathLabelForRegistry('/repo', '/repo')).toBe('.');
+    expect(pathLabelForRegistry('/repo', '/repo/apps/foo')).toBe('apps/foo');
+    expect(pathLabelForRegistry('/repo', '/elsewhere')).toBe('/elsewhere');
   });
 });
