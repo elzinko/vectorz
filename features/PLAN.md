@@ -29,7 +29,7 @@
 4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
 5. ~~**0181** — Opus 4.8 + restitutions lisibles~~ — shipped #92
 6. ~~**0062** — onglet « Projets » : liste par projet, cliquable → activité · `ship`~~ — shipped #95
-7. **0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `build` *(in-progress)*
+7. ~~**0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `ship`~~ — shipped #97
 
 ## ⏭️ NEXT — la méthode se tient + confort
 
@@ -60,7 +60,7 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après **0062** shipped (#95), tête NOW **0063** (idea — groom/ready).
+(gate DoR). Après **0063** shipped (#97), prochaine tête NOW/NEXT **0090** (idea — groom/ready).
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
