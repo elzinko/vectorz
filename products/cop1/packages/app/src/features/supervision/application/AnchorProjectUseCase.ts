@@ -6,8 +6,7 @@ import { existsSync } from 'node:fs';
 import { basename, isAbsolute, resolve } from 'node:path';
 import type { AnchorMode, AnchorRequest, ProjectAnchorPort } from '../domain/ProjectAnchorPort.js';
 
-export const LINK_COMMAND_EXAMPLE =
-  '["pnpm", "--dir", "products/mega-city", "supervision:link"]';
+export const LINK_COMMAND_EXAMPLE = '["pnpm", "--dir", "products/mega-city", "supervision:link"]';
 export const REGISTRY_ADD_COMMAND_EXAMPLE =
   '["pnpm", "--dir", "products/mega-city", "supervision:registry-add"]';
 export const BIND_COMMAND_EXAMPLE =
