@@ -94,7 +94,7 @@
 | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 🔴 todo |  |
 | 0048 | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 |  | mega-city | ✅ shipped |  |
 | 0060 | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 |  | vectorz | 🔴 todo |  |
-| 0062 | Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité | feature | P2 |  | vectorz | 🟠 in-progress |  |
+| 0062 | Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité | feature | P2 |  | vectorz | ✅ shipped | #95 |
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | mega-city | ✅ shipped | #30 |
 | 0078 | Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb) | feature | P2 |  | mega-city | ✅ shipped | #41 |
 | 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | mega-city | 🔴 todo |  |
@@ -195,4 +195,4 @@
 | 0138 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 |  | mega-city | 💡 idea |  |
 | 0139 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | mega-city | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0048, 0059, 0061, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0094, 0095, 0097, 0103, 0104, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0048, 0059, 0061, 0062, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0094, 0095, 0097, 0103, 0104, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181.
