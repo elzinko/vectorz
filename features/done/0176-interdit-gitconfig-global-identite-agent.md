@@ -4,9 +4,9 @@ title: Interdit gitconfig global pour l'identité agent — commits cop1 locaux 
 type: feature
 priority: P0
 product: cop1
-status: in-progress
+status: shipped
 ready: 2026-08-02
-pr:
+pr: "#89"
 github: "#86"
 created: 2026-08-01
 ---
