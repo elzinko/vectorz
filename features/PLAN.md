@@ -11,8 +11,8 @@
 
 ## 🧹 Hygiène préalable (rapide)
 
-- **P0** `build` **0176** — interdit `git config --global user.*` pour l’identité
-  agent ; commits cop1 = local / one-shot only ([#86](https://github.com/elzinko/vectorz/issues/86)).
+- ~~**P0** `build` **0176** — interdit `git config --global user.*` pour l’identité
+  agent ; commits cop1 = local / one-shot only ([#86](https://github.com/elzinko/vectorz/issues/86))~~ — shipped #89.
 - ~~`ship` **0059** · **0061** (vectorz)~~ — fait (vérifié au `reconcile` du 2026-07-26).
 - ~~`ship` **0094** · **0095** (mega-city)~~ — fait au `reconcile` 2026-07-30 (#54, #55).
 - `audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le
@@ -57,8 +57,8 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). Après 0168 shipped (#76), la prochaine tête du NOW est **0062**
-(idea — groom/ready). ~~`ship 0173 #72`~~ — fait (reconcile 2026-07-31).
+(gate DoR). Après 0176 shipped (#89), la prochaine tête du NOW est **0062**
+(idea — groom/ready). Têtes `todo` non-ready avant 0041 : **0022**, **0060**.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à
