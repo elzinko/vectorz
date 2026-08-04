@@ -7,9 +7,9 @@ product: vectorz
 epic:
 depends: ["0039"]
 labels: [hygiene, docs, epoch-2]
-status: todo
+status: in-progress
 ready: 2026-08-05
-pr:
+pr: "#101"
 created: 2026-08-05
 ---
 
