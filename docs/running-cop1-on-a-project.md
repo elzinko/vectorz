@@ -1,105 +1,92 @@
-# Running cop1 on a project
+# Running cop1 on a project (epoch 2)
 
-How to point cop1 at a target project and let it drive an epic end-to-end
-(`create-story → dev-story → code-review`), with the safety gates that keep
-"done" honest. Written from the first real dogfood run (2026-06-22).
+How to supervise agent work on a target project with **cop1 + mega-city**, not the removed
+BMAD orchestrator pilot. Updated 2026-08 (fiche 0182).
 
 ## 1. Prerequisites
 
-- **A built cop1** — `pnpm install && pnpm build` at the repo root.
-- **Claude auth** — cop1 drives the Claude Agent SDK, which needs credentials in
-  the environment. Use a Claude Max OAuth token (`claude setup-token` →
-  `sk-ant-oat01-…`) or `ANTHROPIC_API_KEY`.
-- **SDK ≥ 0.3.x** — older `0.1.x` is broken for cop1's session path (a
-  `canUseTool` bug throws `400 "tool_use ids must be unique"` on the first
-  tool turn). The repo now pins `^0.3.185`; don't downgrade.
-- **A target project** with a BMAD install (`_bmad/`, `.claude/commands/`), a
-  `supervisor-playbook.md`, and `_bmad-output/implementation-artifacts/sprint-status.yaml`.
+- **Built tree** — `pnpm install && pnpm build` at the repo root.
+- **Claude auth** — credentials for Claude Code / Agent SDK (`ANTHROPIC_API_KEY` or OAuth).
+- **Backlog on `main`** — `features/` committed on the default branch (see `ezk-backlog`).
+- **Optional** — `cop1.config.yaml` in the project (from `cop1 init`).
 
-### Auth setup (the gotcha)
+### Auth setup
 
-cop1 does **not** auto-load `.env`. Put the token on a **single line** (a
-pasted token wrapped across lines is silently truncated → 401), then export it
-into the shell before running:
+cop1 does **not** auto-load `.env`. Export tokens into the shell before runs:
 
 ```bash
-# .env  (single line, no wrapping)
-CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-xxxxxxxx...
-
-# load it, then verify auth works before any run:
-export $(grep '^CLAUDE_CODE_OAUTH_TOKEN=' .env | xargs)
-claude -p "say OK"        # must print OK
+export ANTHROPIC_API_KEY=sk-ant-...
+# or
+export CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-...
+claude -p "say OK"   # must succeed before any agent session
 ```
 
-## 2. Run an epic
+## 2. Typical dogfood loop (vectorz)
+
+1. **`ezk-start`** — opening guard: dirty tree, worktrees, fiches `in-progress`, handoff, PLAN head.
+2. **`ezk-sprint`** — pick next ready fiche from `PLAN.md`, branch `feat/<id>-<slug>`, implement, PR, CI, ship fiche.
+3. **`cop1 start`** — run the supervision daemon while the Moniteor watches runs/journal.
+4. **`ezk-archive`** — close the session (handoff, optional session log in `docs/sessions/`).
+
+Backlog rules: one fiche = one PR ; ship = separate docs PR after merge (`ezk-backlog ship`).
+
+## 3. Start the supervision daemon
 
 ```bash
-export $(grep '^CLAUDE_CODE_OAUTH_TOKEN=' .env | xargs)
-
-COP1_MAX_TOKENS=500000 COP1_DEADLINE_MIN=30 COP1_MAX_USD_PER_SESSION=3 \
-  node packages/app/dist/cli/index.js orchestrator run \
-    --epic FEAT \
-    --project-root /path/to/target-project \
-    --abort-on-escalation
+node products/cop1/packages/app/dist/cli/index.js start
+# optional: --port 4242
 ```
 
-Exit codes: `0` clean · `2` runtime error · `3` aborted (budget / escalation).
+- Health: `cop1 health` (JSON)
+- Lifecycle: `cop1 status`, `cop1 stop`
+- Supervision API: Moniteor / `GET /api/supervision/runs` (see [ADR-028](adr/ADR-028-control-plane-ontology.md))
 
-### Controls
+Artifacts under `.cop1/` (journal, metrics, history) follow the supervisability contract — the method emits; cop1 observes and gates.
 
-| Env / flag | Effect |
+## 4. What keeps "done" honest (epoch 2)
+
+| Gate | Where |
 |---|---|
-| `COP1_MAX_TOKENS` | Token ceiling for the whole run; checked between commands. |
-| `COP1_DEADLINE_MIN` | Wall-clock deadline (minutes); checked between commands. |
-| `COP1_MAX_USD_PER_SESSION` | Per-session SDK cost cap (`maxBudgetUsd`). |
-| `COP1_WORKTREE_ISOLATION=1` | Run each story in its own git worktree (off by default). |
-| `--abort-on-escalation` | Stop cleanly and mark the story `blocked` on supervisor escalation. |
-| `--step-by-step` | Pause for continue/skip/abort between commands. |
-| `.cop1/abort` (file) | **Kill-switch**: create this file in the project root to stop the run between commands. |
+| Definition of Ready | `ezk-backlog ready <id>` before a fiche is tirable |
+| Sprint coherence | `ezk-start` alert before parallel sprints |
+| Code quality | CI on each feature PR (lint · build · test) |
+| Supervision | Journal messages + Moniteor run state |
+| Ship | Fiche → `features/done/` only after merge + explicit `ship` |
 
-## 3. What keeps "done" honest
+The removed BMAD runner gates (evidence / verify / review-verdict on `sprint-status.yaml`) applied to epoch 1 only. Story state now lives in fiche front-matter + git.
 
-Per `(story, command)` the runner runs: **select → execute → verify → advance**.
-A story only advances when the work is real:
+## 5. External project with BMAD (not vectorz dogfood)
 
-- **Evidence gate** — a code-producing command (`dev-story`) must actually
-  change source files (via `git status`, ignoring `_bmad-output/` and `.cop1/`).
-  If the session only printed a plan, the runner sends a corrective
-  "implement now" continuation; if still nothing changed, the story is
-  **blocked**, not marked done.
-- **Verification gate** — runs the project's tests/lint/build before advancing.
-  (Placeholder scripts pass trivially — give the target real `test`/`lint`.)
-- **Review-verdict gate** — an explicit blocking `code-review` verdict
-  (e.g. `Verdict: FAIL`, "changes requested", "not implemented") blocks the
-  story instead of advancing to `done`. Approved/ambiguous reviews advance.
-
-## 4. When Claude is temporarily blocked
-
-A transient blockage (overloaded `529`, rate-limit `429`, `5xx`, network) is
-**retried with exponential backoff** inside the session adapter instead of
-failing the story. The run surfaces it as a `claude.status` signal:
-
-- `degraded` — a transient error occurred and the session is retrying;
-- `unavailable` — retries exhausted (Claude effectively unreachable);
-- `ok` — recovered after a retry.
-
-These are logged to `.cop1/sprint-log-<date>.jsonl` (`event: "claude-status"`)
-and printed to the console, so a temporary blockage is visible rather than a
-silent stall. A genuine hard error (auth, invalid request) is **not** retried.
-
-## 5. Observe a run
-
-- **Status ledger** — `_bmad-output/implementation-artifacts/sprint-status.yaml`
-  (and each story body's `## Status:` line).
-- **Decision log** — `.cop1/sprint-log-<date>.jsonl` (auto-decisions +
-  `claude-status` events).
-- **Exchange history (Track 2)** — `.cop1/history/<epic>/<story>/…md`.
-- **Transcript** — `node packages/app/dist/cli/index.js transcript <sessionId>`.
-
-## 6. Reset a disposable test bed
-
-For a reusable cobaye project, keep the blank state in git and reset between runs:
+Use the sidecar installer — **do not** follow the archived playbook as the main path:
 
 ```bash
-git checkout -- . && git clean -fdq src && rm -rf .cop1
+cop1 init-bmad-bridge
 ```
+
+Guide: [`brancher-une-methode-existante.md`](brancher-une-methode-existante.md). Full contract: fiche [0162](../features/0162-bmad-contrat-supervisabilite.md).
+
+Archived epoch-1 playbook: [`docs/archive/epoch-1-bmad/supervisor-playbook.md`](archive/epoch-1-bmad/supervisor-playbook.md).
+
+## 6. Observe a run
+
+- **Moniteor** — open the web UI (when running) for runs, journal tail, gates.
+- **Journal** — `.cop1/events.jsonl` (and related tracks per project config).
+- **Backlog state** — `features/BACKLOG.md`, `features/PLAN.md`.
+
+`cop1 transcript` was epoch-1 only — removed; use journal + session archive instead.
+
+## 7. Reset a disposable test bed
+
+```bash
+git checkout -- . && git clean -fdq
+rm -rf .cop1
+```
+
+## 8. Removed commands (epoch 1)
+
+If invoked, these print an epoch-2 hint and exit non-zero:
+
+- `cop1 orchestrator run --epic …`
+- `cop1 sprint run` / `cop1 sprint status`
+
+Use `ezk-sprint` and fiche front-matter instead.

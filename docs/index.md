@@ -17,8 +17,8 @@ status: working — the deep artefact is `brownfield-snapshot.md`; this index is
 - [Article — les fenêtres de mise à jour](./articles/fenetres-de-mise-a-jour.md) — article de fond (fiche 0026) : la clause 5 du contrat corrigée — un jalon n'est pas forcément un point stable ; l'éligibilité de mise à jour (`upgrade_ok`) est déclarée par la méthode, jamais déduite par le superviseur. Tournée première main : Temporal, Restate, Kubernetes, gh-ost, Erlang/OTP, blue-green/canary. Publication externe différée.
 - [Notes de lecture — fenêtres de mise à jour](./captures/2026-07-13-notes-lecture-fenetres-mise-a-jour.md) — phase 1 de la fiche 0026 : lecture première main des 6 systèmes qui mettent à jour pendant que ça travaille ; grille « qui déclare l'éligibilité », citations vérifiées + contre-vérifiées par grep.
 - [Guide — brancher une méthode existante](./brancher-une-methode-existante.md) — compagnon lisible de l'ADR-032 (gravé 2026-07-17) : la méthode parle elle-même, les deux groupes de messages, les trois branchements (consignes / **sidecar** / observation), l'exemple BMAD pas à pas, les pièges d'archi rencontrés et leurs solutions.
-- [Getting Started](./GETTING_STARTED.md) — current user-facing contract (V1-light as of 2026-04-14).
-- [Running cop1 on a project](./running-cop1-on-a-project.md) — practical run guide: auth setup, the run command, safety gates (evidence / verify / review-verdict), transient `claude.status` handling, observability, reset.
+- [Getting Started](./GETTING_STARTED.md) — epoch-2 onboarding (mega-city + cop1 supervision).
+- [Running cop1 on a project](./running-cop1-on-a-project.md) — dogfood loop: ezk-start → ezk-sprint, daemon, journal.
 
 ## Authoritative planning artefacts
 
@@ -51,8 +51,14 @@ Listed in the snapshot §9. Latest two worth keeping warm:
 - [`supervisor-playbook-reference.md`](../_bmad-output/planning-artifacts/supervisor-playbook-reference.md) — canonical reference playbook.
 
 ## Runtime artefacts (not docs)
-- [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — the minimal playbook the orchestrator loads by default.
-- [`cop1.config.example.yaml`](../cop1.config.example.yaml) — gabarit versionné ; le `cop1.config.yaml` réel est gitignoré, local à chaque poste. Runtime config (pre-pivot, mostly dormant — see snapshot §10.4).
+- [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — **deprecated stub** ; epoch-1 BMAD playbook archived under [`docs/archive/epoch-1-bmad/`](./archive/epoch-1-bmad/README.md).
+- [`cop1.config.example.yaml`](../cop1.config.example.yaml) — gabarit versionné ; le `cop1.config.yaml` réel est gitignoré, local à chaque poste.
+
+## Epoch-1 BMAD archive
+
+Pilot-era BMAD docs (orchestrator playbook, version audit) — **not** the vectorz dogfood path since E4 (0039):
+
+- [`docs/archive/epoch-1-bmad/`](./archive/epoch-1-bmad/README.md) — playbook + `bmad-version-audit.md` (was at repo root / `docs/`).
 
 ## Pre-Phase-A archive
 
