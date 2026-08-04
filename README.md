@@ -1,30 +1,24 @@
-# cop1 / Morpheus
+# cop1 / vectorz / mega-city
 
-> Autonomous AI-agents orchestration system for solo developers.
-> *Pendant que tu rêves, le code se construit.*
+> Autonomous AI-agent development with human supervision — local-first, commit-disciplined.
 
-Local-first CLI that drives Claude Code + BMAD installations in a target project: agents pick up stories from a BMAD backlog and advance them (create-story → dev-story → code-review → QA → retro) with transcript + step-by-step gates, producing committable artefacts.
+**Epoch 2 (current).** Dogfood on this repo uses **mega-city** skills (`ezk-backlog`, `ezk-sprint`, `ezk-start`, `ezk-archive`) plus the **cop1** supervision daemon and Moniteur. The epoch-1 BMAD orchestrator pilot was removed from prod (E4 / [ADR-029](docs/adr/ADR-029-emancipation-bmad-politique-archivage.md), fiche [0039](features/done/0039-e4-retrait-bmad.md)).
 
-## Status
-
-**V1-light MVP closed 2026-04-14** — `cop1 orchestrator run --epic <id>` drives an epic end-to-end with transcripts (`cop1 transcript <sessionId>`). Two stubs (`commit_anchor`, `BMADCommandRunner`) remain before unassisted dogfooding — see V1.1 scope in the retro below.
-
-## Self-hosting
-
-The stated horizon: **cop1 developing cop1**. Unassisted dogfooding (above) is the first step; the next is *self-hosting* — the point where a story about cop1's own codebase is picked up end-to-end (create-story → dev-story → code-review → QA → retro) by the system, on its own repo, producing a committable artefact. The agent-orchestrator equivalent of a compiler compiling itself.
+BMAD on **another** project stays supported as an optional sidecar via `cop1 init-bmad-bridge` ([ADR-032](docs/adr/ADR-032-emission-adaptateur-separable.md) — fiche [0162](features/0162-bmad-contrat-supervisabilite.md) for the full contract).
 
 ## Start here
 
 - **Onboarding** → [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)
-- **State of the system (snapshot 2026-04-15)** → [`docs/brownfield-snapshot.md`](docs/brownfield-snapshot.md)
-- **Doc index (PRD / architecture / ADRs / epics / SCPs)** → [`docs/index.md`](docs/index.md)
-- **Latest retro closing V1-light** → [`_bmad-output/implementation-artifacts/epic-ea10-ea11-retro-2026-04-14.md`](_bmad-output/implementation-artifacts/epic-ea10-ea11-retro-2026-04-14.md)
+- **Supervision on a project** → [`docs/running-cop1-on-a-project.md`](docs/running-cop1-on-a-project.md)
+- **Backlog & sprints (dogfood method)** → [`products/mega-city/skills/ezk-backlog/SKILL.md`](products/mega-city/skills/ezk-backlog/SKILL.md), [`ezk-sprint`](products/mega-city/skills/ezk-sprint/SKILL.md)
+- **Doc index** → [`docs/index.md`](docs/index.md)
+- **Brownfield snapshot** → [`docs/brownfield-snapshot.md`](docs/brownfield-snapshot.md)
 
 ## Stack
 
 Node ≥ 20 · pnpm ≥ 9 · TypeScript 5.7 (strict + `noUncheckedIndexedAccess`) · Vitest · Biome · Claude Agent SDK.
 
-Monorepo — 8 packages, feature-first hexagonal. Dependency graph in the brownfield snapshot §3.
+Monorepo — cop1 packages (supervision), mega-city (skills catalog), shared tooling. See the brownfield snapshot for the package map.
 
 ## Scripts
 
@@ -32,12 +26,12 @@ Monorepo — 8 packages, feature-first hexagonal. Dependency graph in the brownf
 pnpm install
 pnpm build        # tsc -b across compiled packages
 pnpm typecheck    # = pnpm build (tsc -b is the type-check; composite refs must emit)
-pnpm test         # vitest — ~850 tests
+pnpm test         # vitest
 pnpm lint         # biome check .
 pnpm lint:fix
 ```
 
-No CI, no pre-commit hooks — the agents are the quality gate. Run the three checks before every commit.
+Run typecheck, lint, and tests before every commit.
 
 ## License
 
