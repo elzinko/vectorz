@@ -7,8 +7,8 @@ product: mega-city
 epic:
 depends: []
 labels: [enabler, r&d]
-status: idea
-ready:
+status: in-progress
+ready: 2026-08-03
 pr:
 created: 2026-07-25
 ---
@@ -35,7 +35,7 @@ au démarrage, inspecte working tree + `git worktree list`, repère les sprints 
 git (premier push gagne = compare-and-swap). **Bail à heartbeat** : une session LLM meurt en
 silence ⇒ un mutex interbloque ; claim périmé (pas de battement > TTL) = réclamable, reprise
 journalisée. Hooks début/fin (intake pose, ship/archive relâche ; option hook `SessionStart`).
-Override humain via la tâche 1.
+Override humain via la tâche 1. **Hors scope de ce sprint** (attend 0092 pour la forme du claim).
 
 ## Sous-tâche (article, après livraison)
 
@@ -43,12 +43,15 @@ Override humain via la tâche 1.
   pourquoi un mutex ne marche pas (mort silencieuse), pourquoi un bail advisoire sur git est le
   bon compromis. APRÈS 0090 dogfoodé (construire → prouver → écrire), via `ezk-article`.
 
-## Critères d'acceptation
+## Critères d'acceptation (POC = tâche 1)
 
-- [ ] Ouvrir une session avec un sprint en vol → alerte + choix explicite (tâche 1).
-- [ ] Deux tirages concurrents sur la même tête → un seul obtient le claim (tâche 2).
-- [ ] Claim sans heartbeat > TTL réclamable, reprise journalisée (tâche 2).
-- [ ] État de claim **partagé** (commité), jamais dans un `SPRINT.md` par branche.
+- [x] Skill `ezk-start` avec portier `scripts/check.sh` (read-only) : working tree, worktrees,
+      fiches `in-progress`, handoff carry, tête PLAN.
+- [x] `VERDICT: CLEAR` ou `VERDICT: ALERT` — exit 0 toujours (verdict sur stdout, comme archive).
+- [x] Sur ALERT : le skill présente des choix explicites (rejoindre / interrompre journalisé) —
+      aucun démarrage silencieux d'un nouveau sprint.
+- [x] Enregistré dans le catalogue + profil `base` (symétrique d'`ezk-archive`).
+- [x] Mention dans l'intake d'`ezk-sprint` (étape 0).
 
 ## Notes
 
@@ -57,3 +60,4 @@ Override humain via la tâche 1.
 - **Advisoire** : pas de Paxos. Le vrai risque solo = *oublier* un sprint en vol → la tâche 1
   couvre 90 % ; le bail (tâche 2) paie surtout pour des flottes automatisées.
 - La forme exacte du claim en front-matter s'appuie sur `0092` (champs partagés).
+- Groomé 2026-08-03 — POC borné à la tâche 1.
