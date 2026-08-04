@@ -33,7 +33,7 @@
 
 ## ⏭️ NEXT — la méthode se tient + confort
 
-8. **0090** — cohérence de sprint : garde-fou d'ouverture `ezk-start` (tâche 1 POC en cours) · `build`
+8. ~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-start` (tâche 1 POC) · `ship`~~ — shipped #99
 9. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
 10. **0091** — mise à plat + glossaire du jargon du backlog · `build`
 11. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
@@ -60,7 +60,7 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). **0090** tâche 1 (`ezk-start`) livrée sur branche `feat/0090-ezk-start-garde-fou` — POC garde-fou d'ouverture ; tâche 2 (claim/heartbeat) hors scope.
+(gate DoR). **Tête NOW** : **0091** (glossaire backlog) — **0090** tâche 1 (`ezk-start`) shipped #99 ; tâche 2 (claim/heartbeat) reste dans la fiche pour une passe ultérieure.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à

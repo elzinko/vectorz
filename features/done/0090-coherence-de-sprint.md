@@ -7,9 +7,9 @@ product: mega-city
 epic:
 depends: []
 labels: [enabler, r&d]
-status: in-progress
+status: shipped
 ready: 2026-08-03
-pr:
+pr: "#99"
 created: 2026-07-25
 ---
 
