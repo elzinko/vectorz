@@ -1,4 +1,4 @@
-# Backlog — mega-city
+# Backlog features & bugs — vectorz
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
@@ -15,6 +15,7 @@
 | 0086 | Le journal remonte à l'arbre principal + le serveur annonce où il écrit (fin de la perte silencieuse en worktree) | feature | P0 |  | mega-city | ✅ shipped | #46 |
 | 0089 | Ordonnancement — brancher PLAN.md sur l'intake (l'ordre suit la priorité, pas l'inverse) | feature | P0 |  | mega-city | ✅ shipped | #52 |
 | 0090 | Cohérence de sprint — garde-fou d'ouverture (lecture) + verrou de sprint adapté LLM (écriture) | feature | P0 |  | mega-city | ✅ shipped | #99 |
+| 0091 | Mise à plat du backlog — carte lisible + glossaire du jargon (dogfood du format) | chore | P0 |  | mega-city | 🔴 todo |  |
 | 0094 | Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfooding n'émet rien aujourd'hui | feature | P0 |  | mega-city | ✅ shipped | #54 |
 | 0097 | Connecter l'ordre du plan à la vue cross-backlog — « la suite, toutes listes confondues » suit PLAN.md | feature | P0 |  | mega-city | ✅ shipped | #53 |
 | 0105 | Bug dogfood — Moniteur « Silence prolongé » / produit inutilisable après run_start seul | bug | P0 |  | mega-city | 🔴 todo |  |
@@ -139,7 +140,7 @@
 | 0120 | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 |  | mega-city | 🔴 todo |  |
 | 0143 | aligner le nommage des modes tokens du product-builder (lean\|cap\|full partout) | chore | P3 |  | mega-city | 🔴 todo |  |
 | 0151 | ezk-product-builder — briefing au démarrage (comment je travaille, avec quelles règles) | feature | P3 |  | mega-city | 🔴 todo |  |
-| 0182 | E4 bis — docs vivants post-BMAD (complément 0039) | chore | P3 |  | vectorz | 🟠 in-progress | #101 |
+| 0182 | E4 bis — docs vivants post-BMAD (complément 0039) | chore | P3 |  | vectorz | ✅ shipped | #101 |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready, ADR-0017)
 
@@ -153,7 +154,6 @@
 
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
-| 0091 | Mise à plat du backlog — carte lisible + glossaire du jargon (dogfood du format) | chore | P0 |  | mega-city | 💡 idea |  |
 | 0081 | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | mega-city | 💡 idea |  |
 | 0087 | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
 | 0133 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 |  | mega-city | 💡 idea |  |
