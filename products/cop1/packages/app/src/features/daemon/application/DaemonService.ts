@@ -122,8 +122,8 @@ export class DaemonService {
     });
     this.runHistoryService = new RunHistoryService({ watchRoots, tokenBudget });
     this.httpServer.setSupervisionProvider(() => this.supervisionService?.getSnapshots() ?? []);
-    this.httpServer.setHistoryProvider(({ limit, projectRoot }) =>
-      this.runHistoryService?.list(projectRoot, limit) ?? [],
+    this.httpServer.setHistoryProvider(
+      ({ limit, projectRoot }) => this.runHistoryService?.list(projectRoot, limit) ?? [],
     );
 
     const abandonPort =

@@ -2,8 +2,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { RunHistoryService } from './RunHistoryService.js';
 import { SprintLogTokenReader } from '../infrastructure/SprintLogTokenReader.js';
+import { RunHistoryService } from './RunHistoryService.js';
 
 describe('RunHistoryService (fiche 0022)', () => {
   it('liste les runs triés par startedAt desc avec issue et durée', () => {

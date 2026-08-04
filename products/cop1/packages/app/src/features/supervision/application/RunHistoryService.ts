@@ -1,6 +1,6 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { projectRun, type RunProjection } from '@cop1/journal-validator';
+import { type RunProjection, projectRun } from '@cop1/journal-validator';
 import {
   SprintLogTokenReader,
   type TokenBudgetHints,

@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { JSONLReader, type LogEntry } from '@cop1/observability';
 import type { TokenMeasure } from '@cop1/journal-validator';
+import { JSONLReader, type LogEntry } from '@cop1/observability';
 
 export interface TokenBudgetHints {
   sprintMaxTokens?: number;
@@ -67,12 +67,12 @@ export class SprintLogTokenReader {
     const days = enumerateDays(startDay, endDay);
 
     const onDisk = new Set(
-      readdirSync(logDir).filter((name) => name.startsWith('sprint-log-') && name.endsWith('.jsonl')),
+      readdirSync(logDir).filter(
+        (name) => name.startsWith('sprint-log-') && name.endsWith('.jsonl'),
+      ),
     );
 
-    return days
-      .map((day) => `sprint-log-${day}.jsonl`)
-      .filter((name) => onDisk.has(name));
+    return days.map((day) => `sprint-log-${day}.jsonl`).filter((name) => onDisk.has(name));
   }
 }
 
@@ -83,14 +83,10 @@ function readTokenCount(entry: LogEntry): number | undefined {
 
 function estimateUsd(total: number, budget: TokenBudgetHints): number | undefined {
   const { sprintMaxTokens, maxUsdPerSession } = budget;
-  if (
-    maxUsdPerSession === undefined ||
-    sprintMaxTokens === undefined ||
-    sprintMaxTokens <= 0
-  ) {
+  if (maxUsdPerSession === undefined || sprintMaxTokens === undefined || sprintMaxTokens <= 0) {
     return undefined;
   }
-  return Math.round(((total / sprintMaxTokens) * maxUsdPerSession) * 100) / 100;
+  return Math.round((total / sprintMaxTokens) * maxUsdPerSession * 100) / 100;
 }
 
 function enumerateDays(startDay: string, endDay: string): string[] {
