@@ -19,6 +19,8 @@ ne se perd pas entre worktrees ni entre sessions.
 | [`PLAN.md`](PLAN.md) | Séquence décidée (curée) — horizon **NOW** = prochaines N cartes |
 | [`done/`](done/) | Fiches **livrées** (`status: shipped`) |
 | [`feature-template.md`](feature-template.md) | Gabarit pour une nouvelle fiche |
+| [`../docs/backlog-carte.md`](../docs/backlog-carte.md) | **Carte lisible** — état du stock en ≤ 2 min (PR, plan, compteurs) |
+| [`../docs/glossaire-jargon-ezk.md`](../docs/glossaire-jargon-ezk.md) | **Glossaire** — jargon interne traduit + verdict garder/traduire/supprimer |
 
 ## Comment travailler
 

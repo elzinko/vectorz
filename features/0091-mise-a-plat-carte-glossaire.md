@@ -7,8 +7,8 @@ product: mega-city
 epic:
 depends: [0079]
 labels: []
-status: idea
-ready:
+status: todo
+ready: 2026-08-05
 pr:
 created: 2026-07-25
 ---
@@ -36,8 +36,9 @@ interne → sens simple + verdict).
 
 ## Critères d'acceptation
 
-- [ ] Carte + glossaire commités ; les deux passent la règle de lisibilité (`0079`).
-- [ ] Le glossaire couvre les termes du commentaire PR #37 et des captures récentes.
+- [x] [`docs/backlog-carte.md`](../docs/backlog-carte.md) commitée — ouvre par « En clair », PR ouvertes + plan + compteurs.
+- [x] [`docs/glossaire-jargon-ezk.md`](../docs/glossaire-jargon-ezk.md) commité — termes PR #37 + captures récentes, verdict par entrée.
+- [x] Les deux passent la règle de lisibilité (`0079`) ; liens depuis [`features/README.md`](README.md).
 
 ## Notes
 
