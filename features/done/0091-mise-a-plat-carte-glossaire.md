@@ -7,9 +7,9 @@ product: mega-city
 epic:
 depends: [0079]
 labels: []
-status: todo
+status: shipped
 ready: 2026-08-05
-pr:
+pr: "#103"
 created: 2026-07-25
 ---
 
