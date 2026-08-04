@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { readEnvelopes } from './reader.js';
 import { reduceState } from './reduceState.js';
-import type { MethodRef, Notice, RunProjection, Violation } from './types.js';
+import type { MethodRef, Notice, RunIssue, RunProjection, Violation } from './types.js';
 
 /**
  * Extraction TOLÉRANTE de la méthode + du siège depuis le payload de
@@ -65,7 +65,15 @@ export function projectRun(runDir: string): RunProjection {
   const runId = events[0]?.envelope.run_id ?? basename(runDir);
 
   const started = events.find((e) => e.envelope.type === 'run.started');
+  const startedAt = started?.envelope.ts;
   const { method, seat } = readMethodAndSeat(started?.envelope.payload);
+
+  let currentNote: string | undefined;
+  for (const entry of events) {
+    if (entry.envelope.type !== 'heartbeat') continue;
+    const note = entry.envelope.payload?.note;
+    if (typeof note === 'string' && note.length > 0) currentNote = note;
+  }
 
   // Fiche 0082 — annotation d'écart de méthode : si le payload `run.started`
   // contient `_method_mismatch`, la méthode déclarée diffère de la méthode
@@ -85,12 +93,18 @@ export function projectRun(runDir: string): RunProjection {
   // Premier `run.finished` uniquement (même ordre que reduceState) : un événement
   // post_finished semi-hostile ne doit pas écraser ni inventer abandonedBy.
   let abandonedBy: 'seat' | 'method' | undefined;
+  let endedAt: string | undefined;
+  let issue: RunIssue | undefined;
   const finished = events.find((e) => e.envelope.type === 'run.finished');
   if (finished?.envelope.payload) {
+    endedAt = finished.envelope.ts;
     const status = finished.envelope.payload.status;
     const by = finished.envelope.payload.abandoned_by;
     if (status === 'abandoned' && (by === 'seat' || by === 'method')) {
       abandonedBy = by;
+    }
+    if (status === 'success' || status === 'failure' || status === 'abandoned') {
+      issue = status;
     }
   }
 
@@ -99,6 +113,10 @@ export function projectRun(runDir: string): RunProjection {
     state,
     lastEventTs,
     lastEventSeq,
+    startedAt,
+    endedAt,
+    issue,
+    currentNote,
     gates,
     violations,
     notices,

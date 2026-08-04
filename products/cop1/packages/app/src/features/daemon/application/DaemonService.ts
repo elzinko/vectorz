@@ -5,6 +5,7 @@ import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandl
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
 import { AnchorProjectUseCase } from '../../supervision/application/AnchorProjectUseCase.js';
+import { RunHistoryService } from '../../supervision/application/RunHistoryService.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
 import { EmitterCliAbandonAdapter } from '../../supervision/infrastructure/EmitterCliAbandonAdapter.js';
 import { EmitterCliAnchorAdapter } from '../../supervision/infrastructure/EmitterCliAnchorAdapter.js';
@@ -28,6 +29,7 @@ export class DaemonService {
   private readonly port: number;
   private readonly eventBus: EventBus;
   private supervisionService: SupervisionService | null = null;
+  private runHistoryService: RunHistoryService | null = null;
   private journalWatcher: JournalWatcherAdapter | null = null;
 
   constructor(options: DaemonOptions = {}) {
@@ -69,6 +71,7 @@ export class DaemonService {
     let linkCommand: string[] = [];
     let registryAddCommand: string[] = [];
     let bindCommand: string[] = [];
+    let tokenBudget = {};
 
     try {
       const located = locateRegistry([projectPath]);
@@ -98,6 +101,10 @@ export class DaemonService {
       linkCommand = config.supervision?.link_command ?? [];
       registryAddCommand = config.supervision?.registry_add_command ?? [];
       bindCommand = config.supervision?.bind_command ?? [];
+      tokenBudget = {
+        sprintMaxTokens: config.budget?.sprint_max_tokens,
+        maxUsdPerSession: config.budget?.max_usd_per_session,
+      };
     } catch {
       this.wireAnchorHandler(bindCommand, linkCommand, registryAddCommand);
       if (!fromRegistry) return;
@@ -111,8 +118,13 @@ export class DaemonService {
       eventBus: this.eventBus,
       presumedDeadAfterMs: presumedDeadAfterMin * 60_000,
       abandonCapable: abandonCommand.length > 0,
+      tokenBudget,
     });
+    this.runHistoryService = new RunHistoryService({ watchRoots, tokenBudget });
     this.httpServer.setSupervisionProvider(() => this.supervisionService?.getSnapshots() ?? []);
+    this.httpServer.setHistoryProvider(
+      ({ limit, projectRoot }) => this.runHistoryService?.list(projectRoot, limit) ?? [],
+    );
 
     const abandonPort =
       abandonCommand.length > 0

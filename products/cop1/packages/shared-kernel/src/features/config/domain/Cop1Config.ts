@@ -1,5 +1,7 @@
 export interface BudgetConfig {
   sprint_max_tokens: number;
+  /** fiche 0022 — plafond $ session pour estimer le coût affiché (optionnel). */
+  max_usd_per_session?: number;
   alert_thresholds: number[];
   auto_pause: boolean;
 }

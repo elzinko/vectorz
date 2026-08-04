@@ -81,17 +81,36 @@ export interface MethodRef {
   version?: string;
 }
 
+/** Issue terminalisée d'un run (fiche 0022) — dérivée de `run.finished.payload.status`. */
+export type RunIssue = 'success' | 'failure' | 'abandoned';
+
+/** Mesure tokens (D9) — `total`/`usd` uniquement si une source fiable les fournit. */
+export interface TokenMeasure {
+  provenance: 'measured' | 'absent';
+  total?: number;
+  /** Estimation proportionnelle au plafond session si configuré côté siège (fiche 0022). */
+  usd?: number;
+}
+
 /** Read-model d'affichage d'un run (mode moniteur) — jamais de champ "phase". */
 export interface RunProjection {
   runId: string;
   state: RunState;
   lastEventTs?: string;
   lastEventSeq?: number;
+  /** Horodatage `run.started` (fiche 0022). */
+  startedAt?: string;
+  /** Horodatage du premier `run.finished` terminal (fiche 0022). */
+  endedAt?: string;
+  /** Issue depuis `run.finished` quand le run est terminal (fiche 0022). */
+  issue?: RunIssue;
+  /** Dernière note `heartbeat.payload.note` — agent/activité courante (fiche 0022). */
+  currentNote?: string;
   gates: GateProjection[];
   violations: Violation[];
   notices: Notice[];
   /** D9 : jamais auto-déclaré — 'absent' tant qu'aucune mesure runtime n'existe. */
-  tokens: { provenance: 'measured' | 'absent' };
+  tokens: TokenMeasure;
   /**
    * Méthode + siège déclarés par `run.started` (fiche 0061). `undefined` si le
    * journal ne les porte pas (ou les porte mal-formés) : l'absence est affichée

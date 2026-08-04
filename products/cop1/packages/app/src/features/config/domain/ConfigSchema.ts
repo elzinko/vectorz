@@ -80,6 +80,8 @@ export const ConfigSchema = z
     budget: z
       .object({
         sprint_max_tokens: z.number().int().positive(),
+        /** fiche 0022 — plafond $ session pour estimer le coût affiché (optionnel). */
+        max_usd_per_session: z.number().positive().optional(),
         alert_thresholds: z
           .array(z.number().min(0).max(100))
           .refine((arr) => arr.every((v, i) => i === 0 || v > (arr[i - 1] ?? -1)), {

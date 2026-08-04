@@ -4,8 +4,9 @@ title: mission-control — afficher ce qui est déjà collecté (heure, durée, 
 type: feature
 priority: P2
 product: vectorz
-status: todo
-pr:
+status: in-progress
+ready: 2026-08-05
+pr: 105
 created: 2026-07-06
 ---
 
@@ -36,9 +37,9 @@ web pointent sur des API inexistantes (404).
    panel 0034, 2026-07-15).
 
 ## Critères d'acceptation
-- [ ] un run affiche heure de départ, durée live, agent courant
-- [ ] l'historique liste les N derniers runs avec issue et coût tokens
-- [ ] les tokens par run (et $ si configuré) sont visibles depuis les données déjà collectées
+- [x] un run affiche heure de départ, durée live, agent courant
+- [x] l'historique liste les N derniers runs avec issue et coût tokens
+- [x] les tokens par run (et $ si configuré) sont visibles depuis les données déjà collectées
 - [x] plus aucun onglet ne pointe sur une API inexistante (onglets retirés — `App.tsx`)
 
 ## Notes / décisions

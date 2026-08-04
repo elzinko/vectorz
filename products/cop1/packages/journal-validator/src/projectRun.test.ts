@@ -17,6 +17,20 @@ function realRunToyDir(): string {
 }
 
 describe('projectRun — read-model de projection live (fiche 0031 / ADR-028)', () => {
+  it('projette startedAt, endedAt et issue depuis run.started/finished (fiche 0022)', () => {
+    const projection = projectRun(realRunToyDir());
+
+    expect(projection.startedAt).toBe('2026-07-14T12:31:23.163Z');
+    expect(projection.endedAt).toBe('2026-07-14T12:31:23.299Z');
+    expect(projection.issue).toBe('success');
+  });
+
+  it('projette la dernière note heartbeat comme currentNote (fiche 0022)', () => {
+    const projection = projectRun(fixture('violation-post-gate'));
+
+    expect(projection.currentNote).toContain('activité sans reprise');
+  });
+
   it('projette runId, state, gates et tokens (jamais de champ phase)', () => {
     const projection = projectRun(realRunToyDir());
 
