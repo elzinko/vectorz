@@ -19,7 +19,7 @@
 - ~~`ship` **0094** · **0095** (mega-city)~~ — fait au `reconcile` 2026-07-30 (#54, #55).
 - `audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le
   2026-07-25, probablement à clore ou re-scoper.
-- **0182** — E4 bis : docs vivants post-BMAD (hygiène P3, complément 0039) · `build`
+- ~~**0182** — E4 bis : docs vivants post-BMAD (hygiène P3, complément 0039) · `ship`~~ — shipped #101
 
 ## ▶️ NOW — voir et gérer ses projets
 
