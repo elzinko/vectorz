@@ -6,7 +6,7 @@ priority: P2
 product: vectorz
 status: in-progress
 ready: 2026-08-05
-pr:
+pr: 105
 created: 2026-07-06
 ---
 
