@@ -1,7 +1,14 @@
 import { memo, type ReactNode, useEffect, useState } from 'react';
 
 type RunState = 'launched' | 'running' | 'at_gate' | 'finished' | 'finished_at_gate' | 'aborted';
+type RunIssue = 'success' | 'failure' | 'abandoned';
 type ResumeOrigin = 'command' | 'self_reported';
+
+interface TokenMeasure {
+  provenance: 'measured' | 'absent';
+  total?: number;
+  usd?: number;
+}
 
 interface MethodRef {
   name: string;
@@ -37,11 +44,15 @@ interface RunSnapshot {
   state: RunState;
   lastEventTs?: string;
   lastEventSeq?: number;
+  startedAt?: string;
+  endedAt?: string;
+  issue?: RunIssue;
+  currentNote?: string;
   lastAbsorbedAt?: string;
   gates: GateProjection[];
   violations: Violation[];
   notices: Notice[];
-  tokens: { provenance: 'measured' | 'absent' };
+  tokens: TokenMeasure;
   method?: MethodRef;
   seat?: string;
   /**
@@ -55,6 +66,12 @@ interface RunSnapshot {
   emissionClass: 'B';
   /** ADR-035 D3 — capacité d'abandon configurée côté siège. */
   abandonCapable?: boolean;
+}
+
+interface RunHistoryEntry extends RunSnapshot {
+  projectRoot: string;
+  runDir: string;
+  durationMs?: number;
 }
 
 interface SseFrame {
@@ -93,6 +110,13 @@ const STATE_RANK: Record<RunState, number> = {
 
 /** POC : plafond d'affichage pour les listes (gates/violations) du journal. */
 const MAX_LIST_ITEMS = 100;
+const HISTORY_LIMIT = 20;
+
+const ISSUE_LABEL: Record<RunIssue, string> = {
+  success: 'terminé',
+  failure: 'échec',
+  abandoned: 'abandonné',
+};
 
 /** fiche 0022/0031 — "il y a Xs" (même patron que le heartbeat existant). */
 function formatAge(ms: number): string {
@@ -100,6 +124,33 @@ function formatAge(ms: number): string {
   if (s < 60) return `${s}s`;
   const m = Math.floor(s / 60);
   return m < 60 ? `${m}min ${s % 60}s` : `${Math.floor(m / 60)}h ${m % 60}min`;
+}
+
+function formatDateTime(iso?: string): string | null {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function formatTokenLine(tokens: TokenMeasure): string {
+  if (tokens.provenance !== 'measured' || tokens.total === undefined) return 'non mesurés';
+  const parts = [`${tokens.total.toLocaleString('fr-FR')} tokens`];
+  if (tokens.usd !== undefined) parts.push(`~${tokens.usd.toFixed(2)} $`);
+  return parts.join(' · ');
+}
+
+function currentAgentLabel(run: Pick<RunSnapshot, 'method' | 'currentNote'>): string | null {
+  const method = run.method?.name ?? null;
+  if (run.currentNote) {
+    return method ? `${method} — ${run.currentNote}` : run.currentNote;
+  }
+  return method;
 }
 
 /** Nom court du projet supervisé (dernier segment du chemin). */
@@ -280,6 +331,8 @@ export function SupervisionView({
       {list.map((run) => (
         <RunCard key={run.runDir} run={run} />
       ))}
+
+      <RunHistoryPanel filterProjectRoot={filterProjectRoot} />
     </div>
   );
 }
@@ -365,10 +418,20 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
             {run.abandonedBy === 'seat' ? 'par le siège' : 'par la méthode'}
           </span>
         )}
+        {formatDateTime(run.startedAt) && (
+          <span data-testid="run-started-at">
+            <i className="run-card__k">démarré</i> {formatDateTime(run.startedAt)}
+          </span>
+        )}
+        <RunDuration startedAt={run.startedAt} endedAt={run.endedAt} />
+        {run.currentNote && (
+          <span data-testid="run-current-agent">
+            <i className="run-card__k">agent</i> {currentAgentLabel(run)}
+          </span>
+        )}
         <RunAge lastAbsorbedAt={run.lastAbsorbedAt} lastEventTs={run.lastEventTs} />
         <span>
-          <i className="run-card__k">tokens</i>{' '}
-          {run.tokens.provenance === 'measured' ? 'mesurés' : 'non mesurés'}
+          <i className="run-card__k">tokens</i> {formatTokenLine(run.tokens)}
         </span>
         <span className="run-card__runid" title={run.runId}>
           <i className="run-card__k">run</i> <code>{run.runId}</code>
@@ -503,6 +566,95 @@ function RunAge({
     <span>
       <i className="run-card__k">vu</i> il y a {formatAge(ageMs)}
     </span>
+  );
+}
+
+/** fiche 0022 — durée depuis `startedAt` (live si le run est encore ouvert). */
+function RunDuration({ startedAt, endedAt }: { startedAt?: string; endedAt?: string }) {
+  const [, forceTick] = useState(0);
+  useEffect(() => {
+    if (endedAt) return;
+    const interval = setInterval(() => forceTick((n) => n + 1), 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [endedAt]);
+
+  if (!startedAt) return null;
+  const start = Date.parse(startedAt);
+  const end = Date.parse(endedAt ?? new Date().toISOString());
+  if (Number.isNaN(start) || Number.isNaN(end) || end < start) return null;
+
+  return (
+    <span data-testid="run-duration">
+      <i className="run-card__k">durée</i> {formatAge(end - start)}
+    </span>
+  );
+}
+
+function isRunHistoryEntry(value: unknown): value is RunHistoryEntry {
+  return isRunSnapshot(value);
+}
+
+function RunHistoryPanel({ filterProjectRoot }: { filterProjectRoot?: string | null }) {
+  const [entries, setEntries] = useState<RunHistoryEntry[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const params = new URLSearchParams({ limit: String(HISTORY_LIMIT) });
+    if (filterProjectRoot) params.set('projectRoot', filterProjectRoot);
+
+    fetch(`/api/supervision/history?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data: unknown) => {
+        if (cancelled || !Array.isArray(data)) return;
+        setEntries(data.filter(isRunHistoryEntry));
+      })
+      .catch(() => {
+        // POC : silencieux
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [filterProjectRoot]);
+
+  return (
+    <section className="mon-history" aria-labelledby="mon-history-title">
+      <div className="mon-history__head">
+        <h3 id="mon-history-title" className="mon-history__title">
+          Historique récent
+        </h3>
+        <p className="mon-history__sub">
+          {HISTORY_LIMIT} derniers runs lus depuis le disque — issue et coût tokens quand mesurés.
+        </p>
+      </div>
+
+      {entries.length === 0 ? (
+        <p className="mon-history__empty">Aucun run passé trouvé sur les projets surveillés.</p>
+      ) : (
+        <ul className="mon-history__list">
+          {entries.map((entry) => (
+            <li key={entry.runDir} className="mon-history__item">
+              <div className="mon-history__row">
+                <span className="mon-history__method">
+                  {entry.method?.name ?? 'méthode non déclarée'}
+                </span>
+                <span className="mon-history__project">{projectName(entry.projectRoot)}</span>
+              </div>
+              <div className="mon-history__meta">
+                {formatDateTime(entry.startedAt) && (
+                  <span>{formatDateTime(entry.startedAt)}</span>
+                )}
+                {entry.durationMs !== undefined && <span>{formatAge(entry.durationMs)}</span>}
+                {entry.issue && <span>{ISSUE_LABEL[entry.issue]}</span>}
+                <span>{formatTokenLine(entry.tokens)}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 

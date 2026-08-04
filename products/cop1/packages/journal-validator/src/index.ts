@@ -7,8 +7,10 @@ export type {
   GateProjection,
   Notice,
   ResumeOrigin,
+  RunIssue,
   RunProjection,
   RunState,
+  TokenMeasure,
   ValidationResult,
   Violation,
 } from './types.js';

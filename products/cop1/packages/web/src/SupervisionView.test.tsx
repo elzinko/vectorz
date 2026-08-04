@@ -41,10 +41,14 @@ function makeSnapshot(overrides: Record<string, unknown> = {}): Record<string, u
   };
 }
 
-function stubFetch(runs: unknown[]): void {
+function stubFetch(runs: unknown[], history: unknown[] = []): void {
   vi.stubGlobal(
     'fetch',
-    vi.fn().mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve(runs) }),
+    vi.fn().mockImplementation((url: RequestInfo | URL) => {
+      const path = typeof url === 'string' ? url : url.toString();
+      const payload = path.includes('/history') ? history : runs;
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(payload) });
+    }),
   );
 }
 
@@ -173,6 +177,52 @@ describe('SupervisionView', () => {
     render(<SupervisionView />);
 
     expect(await screen.findByText(/non mesurés/i)).toBeTruthy();
+  });
+
+  it('shows measured token totals and optional usd (fiche 0022)', async () => {
+    stubFetch([makeSnapshot({ tokens: { provenance: 'measured', total: 1234, usd: 0.5 } })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/1[\s\u202f]?234 tokens/i)).toBeTruthy();
+    expect(await screen.findByText(/0,50 \$|0\.50 \$/i)).toBeTruthy();
+  });
+
+  it('shows start time, live duration and current agent (fiche 0022)', async () => {
+    stubFetch([
+      makeSnapshot({
+        startedAt: '2026-07-14T12:31:23.163Z',
+        currentNote: 'TDD en cours',
+        method: { name: 'ezk-sprint', version: '1.0.0' },
+      }),
+    ]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByTestId('run-started-at')).toBeTruthy();
+    expect(await screen.findByTestId('run-duration')).toBeTruthy();
+    expect(await screen.findByText(/ezk-sprint — TDD en cours/i)).toBeTruthy();
+  });
+
+  it('loads run history from GET /api/supervision/history (fiche 0022)', async () => {
+    stubFetch(
+      [],
+      [
+        makeSnapshot({
+          method: { name: 'hist-methode' },
+          startedAt: '2026-01-01T10:00:00.000Z',
+          durationMs: 60_000,
+          issue: 'success',
+          tokens: { provenance: 'measured', total: 42 },
+        }),
+      ],
+    );
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/historique récent/i)).toBeTruthy();
+    expect(await screen.findByText(/hist-methode/i)).toBeTruthy();
+    expect(await screen.findByText(/terminé/i)).toBeTruthy();
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('/api/supervision/history'),
+    );
   });
 
   it('renders a violation message while keeping the run readable', async () => {
@@ -341,17 +391,28 @@ describe('SupervisionView', () => {
     ): void {
       vi.stubGlobal(
         'fetch',
-        vi.fn()
-          .mockResolvedValueOnce({
+        vi.fn().mockImplementation((url: RequestInfo | URL, init?: RequestInit) => {
+          const path = typeof url === 'string' ? url : url.toString();
+          if (path.includes('/history')) {
+            return Promise.resolve({
+              ok: true,
+              status: 200,
+              json: () => Promise.resolve([]),
+            });
+          }
+          if (init?.method === 'POST' && path.includes('/abandon')) {
+            return Promise.resolve({
+              ok: postResponse.ok,
+              status: postResponse.status,
+              json: () => Promise.resolve(postResponse.body),
+            });
+          }
+          return Promise.resolve({
             ok: true,
             status: 200,
             json: () => Promise.resolve([snapshot]),
-          })
-          .mockResolvedValueOnce({
-            ok: postResponse.ok,
-            status: postResponse.status,
-            json: () => Promise.resolve(postResponse.body),
-          }),
+          });
+        }),
       );
     }
 

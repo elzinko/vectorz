@@ -13,6 +13,9 @@ type RuleProposalStatus = (typeof VALID_STATUSES)[number];
  */
 export type SupervisionProvider = () => unknown[];
 
+/** fiche 0022 — historique des runs terminés / passés (lecture disque). */
+export type HistoryProvider = (query: { limit: number; projectRoot?: string }) => unknown[];
+
 /** fiche 0062 — projets déclarés dans le registre (lecture seule). */
 export interface SupervisionProjectDto {
   id: string;
@@ -67,6 +70,7 @@ export class HttpServer {
   private readonly startedAt: number = Date.now();
   private sseClients: Set<ServerResponse> = new Set();
   private supervisionProvider: SupervisionProvider | null = null;
+  private historyProvider: HistoryProvider | null = null;
   private projectsProvider: ProjectsProvider | null = null;
   private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
@@ -77,6 +81,11 @@ export class HttpServer {
 
   setSupervisionProvider(provider: SupervisionProvider): void {
     this.supervisionProvider = provider;
+  }
+
+  /** fiche 0022 — GET /api/supervision/history */
+  setHistoryProvider(provider: HistoryProvider): void {
+    this.historyProvider = provider;
   }
 
   /** fiche 0062 — liste registre (vide si absent). */
@@ -142,6 +151,19 @@ export class HttpServer {
       };
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(health));
+      return;
+    }
+
+    if (req.method === 'GET' && req.url?.startsWith('/api/supervision/history')) {
+      const url = new URL(req.url, 'http://127.0.0.1');
+      const limitRaw = url.searchParams.get('limit');
+      const limitParsed = limitRaw ? Number.parseInt(limitRaw, 10) : 20;
+      const limit =
+        Number.isFinite(limitParsed) && limitParsed > 0 ? Math.min(limitParsed, 100) : 20;
+      const projectRoot = url.searchParams.get('projectRoot') ?? undefined;
+      const data = this.historyProvider?.({ limit, projectRoot }) ?? [];
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
       return;
     }
 

@@ -69,6 +69,27 @@ describe('HttpServer', () => {
     });
   });
 
+  describe('GET /api/supervision/history (fiche 0022)', () => {
+    it("renvoie [] quand aucun provider n'est configuré", async () => {
+      await server.start(TEST_PORT);
+      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/supervision/history`);
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    });
+
+    it('passe limit et projectRoot au provider', async () => {
+      server.setHistoryProvider(({ limit, projectRoot }) => [
+        { runId: 'r1', limit, projectRoot: projectRoot ?? null },
+      ]);
+      await server.start(TEST_PORT);
+      const res = await fetch(
+        `http://127.0.0.1:${TEST_PORT}/api/supervision/history?limit=5&projectRoot=%2Fproj`,
+      );
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([{ runId: 'r1', limit: 5, projectRoot: '/proj' }]);
+    });
+  });
+
   describe('GET /api/supervision/projects (fiche 0062)', () => {
     it("renvoie [] quand aucun provider n'est configuré", async () => {
       await server.start(TEST_PORT);

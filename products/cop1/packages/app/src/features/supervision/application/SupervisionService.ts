@@ -2,6 +2,10 @@ import { basename } from 'node:path';
 import { projectRun } from '@cop1/journal-validator';
 import type { EventBus } from '@cop1/shared-kernel';
 import type { RunSnapshot } from '../domain/RunSnapshot.js';
+import {
+  SprintLogTokenReader,
+  type TokenBudgetHints,
+} from '../infrastructure/SprintLogTokenReader.js';
 
 const SUPERVISION_RUN_UPDATED = 'supervision.run.updated';
 
@@ -15,6 +19,9 @@ export interface SupervisionServiceOptions {
    * à la transition `alive → presumed_dead` via SSE.
    */
   abandonCapable?: boolean;
+  /** fiche 0022 — agrégation tokens sprint-log + estimation $. */
+  tokenBudget?: TokenBudgetHints;
+  tokenReader?: SprintLogTokenReader;
 }
 
 /**
@@ -32,6 +39,8 @@ export class SupervisionService {
   private readonly eventBus: EventBus;
   private readonly presumedDeadAfterMs: number;
   private readonly abandonCapable: boolean;
+  private readonly tokenBudget: TokenBudgetHints;
+  private readonly tokenReader: SprintLogTokenReader;
   private readonly snapshots = new Map<string, RunSnapshot>();
   private readonly deadTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -39,6 +48,8 @@ export class SupervisionService {
     this.eventBus = options.eventBus;
     this.presumedDeadAfterMs = options.presumedDeadAfterMs;
     this.abandonCapable = options.abandonCapable === true;
+    this.tokenBudget = options.tokenBudget ?? {};
+    this.tokenReader = options.tokenReader ?? new SprintLogTokenReader();
   }
 
   /** Re-projette le run depuis le disque, met à jour la map, émet sur le bus. */
@@ -68,8 +79,18 @@ export class SupervisionService {
     const lastAbsorbedAt = new Date().toISOString();
     try {
       const projection = projectRun(runDir);
+      const tokens =
+        projection.tokens.provenance === 'measured'
+          ? projection.tokens
+          : this.tokenReader.measureForWindow(
+              projectRoot,
+              projection.startedAt,
+              projection.endedAt,
+              this.tokenBudget,
+            );
       return {
         ...projection,
+        tokens,
         projectRoot,
         runDir,
         liveness: 'alive',
