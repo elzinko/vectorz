@@ -37,7 +37,7 @@
 8. ~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-start` (tâche 1 POC) · `ship`~~ — shipped #99
 9. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
 10. ~~**0091** — mise à plat + glossaire du jargon du backlog · `ship`~~ — shipped #103
-11. **0022** — Moniteur : afficher heure/durée/historique déjà collectés · `build`
+11. ~~**0022** — Moniteur : afficher heure/durée/historique déjà collectés · `ship`~~ — shipped #105
 12. **0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `build`
 13. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
 14. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
