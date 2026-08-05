@@ -4,9 +4,9 @@ title: mission-control — afficher ce qui est déjà collecté (heure, durée, 
 type: feature
 priority: P2
 product: vectorz
-status: in-progress
+status: shipped
 ready: 2026-08-05
-pr: 105
+pr: "#105"
 created: 2026-07-06
 ---
 
