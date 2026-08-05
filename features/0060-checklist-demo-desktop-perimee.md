@@ -5,8 +5,8 @@ type: bug
 priority: P2
 product: vectorz
 epic:
-status: todo
-ready:
+status: in-progress
+ready: 2026-08-05
 pr:
 created: 2026-07-25
 ---

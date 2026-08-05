@@ -33,7 +33,7 @@ not_authoritative:
 ## 2. Repository Shape
 
 ```
-/Users/elzinko/git/bacasable/cop1
+/Users/elzinko/git/bacasable/cop1  # historique 2026-04-15 (pré-pivot monorepo vectorz)
 ├── packages/                    # pnpm workspace — 8 packages (see §3)
 │   ├── shared-kernel/           # EventBus, ports, shared types
 │   ├── observability/           # StructuredLogger, LoggerBridge

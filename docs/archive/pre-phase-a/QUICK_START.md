@@ -1,9 +1,12 @@
 # cop1 - Quick Start 🚀
 
+> **Historique (2026-04-15, dépôt standalone cop1 avant pivot monorepo vectorz)** —
+> chemins absolus ci-dessous conservés tels quels à titre d'archive.
+
 ## Installation rapide
 
 ```bash
-cd /Users/elzinko/git/bacasable/cop1
+cd /Users/elzinko/git/bacasable/cop1  # historique 2026-04-15
 
 # 1. Installer les dépendances
 pnpm install
