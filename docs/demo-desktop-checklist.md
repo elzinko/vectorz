@@ -36,6 +36,12 @@ rencontrés pendant le replay ont été corrigés dans le texte (voir encadrés
       particulier `products/cop1/packages/app/dist/cli/index.js` et
       `products/cop1/packages/journal-validator/dist/cli.js` existent.
 
+      > ⚠️ **Piège rencontré au replay** : si `pnpm build` échoue avec
+      > `Cannot find module '@cop1/journal-validator'`, c'est que `node_modules`
+      > date d'avant l'ajout du paquet — relancer **`pnpm install`** puis
+      > **`pnpm build`**. Un `dist/` ancien (build omis ou raté) provoque aussi
+      > `{"error":"not_found"}` sur `/api/supervision/runs` à l'étape 4 (voir § 4).
+
 - [ ] **Versions** : Node ≥ 20 (`node -v`), pnpm ≥ 10 (`pnpm -v`). Le repo
       pointe déjà les versions exactes dans `package.json`/`.tool-versions` si
       présents — s'y aligner en cas de doute.
@@ -73,40 +79,49 @@ variable d'environnement `SUPERVISION_PROJECT_ROOT`. Ce n'est **jamais** un
 paramètre passé par un outil : la méthode qui tourne dans Desktop ne peut pas
 se désigner un autre projet à la volée (D12).
 
-- [ ] Ouvrir la config MCP de Claude Desktop et ajouter une entrée
-      `supervision` (bloc repris tel quel de
-      `products/mega-city/src/supervision/README.md`) :
-      ```json
-      {
-        "mcpServers": {
-          "supervision": {
-            "command": "pnpm",
-            "args": ["exec", "tsx", "/chemin/absolu/vers/vectorz/products/mega-city/bin/supervision-mcp.ts"],
-            "env": { "SUPERVISION_PROJECT_ROOT": "/chemin/absolu/du/projet/supervisé" }
-          }
-        }
-      }
-      ```
-      - `args[1]` : chemin **absolu** vers `products/mega-city/bin/supervision-mcp.ts`
-        dans le clone `vectorz`.
-      - `env.SUPERVISION_PROJECT_ROOT` : chemin **absolu** vers
-        `$PROJET_SUPERVISE` (celui de l'étape 2). Doit exister — sinon le
-        serveur refuse de démarrer (fail-fast, message explicite).
+> **Chemin nominal : le paquet `.mcpb`** (fiche 0078). Le câblage JSON manuel
+> est le **chemin de secours** — documenté dans
+> `products/mega-city/src/supervision/README.md` (source de vérité unique :
+> ce bloc a déjà divergé une fois, PR #41 ; ne pas le dupliquer ici).
 
-- [ ] Redémarrer Claude Desktop pour charger la config.
+### 3a. Chemin nominal — paquet `.mcpb`
+
+- [ ] Construire le paquet depuis la **racine** du clone `vectorz` :
+      ```bash
+      bash products/mega-city/bin/build-mcpb.sh
+      ```
+      Résultat attendu : `OK → …/products/mega-city/dist/vectorz-supervision.mcpb`.
+
+- [ ] **Double-cliquer** le fichier `.mcpb` → Claude Desktop ouvre la carte
+      d'installation.
+
+- [ ] Choisir le dossier du **projet supervisé** (`$PROJET_SUPERVISE`, étape 2)
+      dans le sélecteur « Projet à superviser » (`project_root`).
+
+- [ ] Terminer l'installation et **redémarrer Claude Desktop** si demandé.
+
+### 3b. Chemin de secours — câblage JSON manuel
+
+- [ ] Si l'installation par paquet n'est pas possible : suivre le bloc JSON de
+      `products/mega-city/src/supervision/README.md` § « Configurer dans Claude
+      Desktop » (secours). Remplacer les chemins absolus (`pnpm`, `mega-city`,
+      `$PROJET_SUPERVISE`) ; redémarrer Desktop.
+
+### 3c. Allow-list et vérification (commun aux deux chemins)
 
 - [ ] Dans Desktop, ouvrir les réglages de l'entrée MCP `supervision` et
-      passer les **5 outils** en « toujours autoriser » (allow-list), pour
+      passer les **6 outils** en « toujours autoriser » (allow-list), pour
       éviter la fatigue de popups pendant la démo : `run_start`,
-      `gate_reached`, `gate_resumed`, `escalate`, `run_finished`. Emplacement
-      Desktop : icône outils (🔧) en bas de la fenêtre de conversation → nom
-      du serveur `supervision` → bascule chaque outil sur « Always Allow ».
+      `gate_reached`, `gate_resumed`, `escalate`, `heartbeat`, `run_finished`.
+      Emplacement Desktop : icône outils (🔧) en bas de la fenêtre de
+      conversation → nom du serveur `supervision` → bascule chaque outil sur
+      « Always Allow ».
 
 - [ ] **Vérification** : démarrer une conversation Desktop dans le projet
       supervisé et demander la liste des outils MCP disponibles. Résultat
       attendu : exactement `run_start`, `gate_reached`, `gate_resumed`,
-      `escalate`, `run_finished` apparaissent — pas un de plus (le kit est
-      volontairement à 5 outils étroits).
+      `escalate`, `heartbeat`, `run_finished` apparaissent — pas un de plus (le
+      kit est volontairement à 6 outils étroits).
 
 ---
 
@@ -173,9 +188,14 @@ et pas ailleurs, que `supervision.watch_roots` doit être configuré.
       ```bash
       curl -s http://127.0.0.1:4242/api/supervision/runs
       ```
-      → `[]` (aucun run pour l'instant, mais la route répond — si elle
-      répondait `404`/vide sans provider, `watch_roots` n'a pas été pris en
-      compte : relire la config).
+      → `[]` (aucun run pour l'instant, mais la route répond).
+
+      > ⚠️ **Piège rencontré au replay** : si la route répond
+      > `{"error":"not_found"}` (et **non** `[]`), le **binaire daemon est
+      > périmé** — un `dist/` antérieur à la route supervision, pas un problème
+      > de `watch_roots`. Remède : `pnpm install && pnpm build` à la racine
+      > `vectorz`, puis relancer le daemon. Si la route répond `404`/vide sans
+      > provider, `watch_roots` n'a pas été pris en compte : relire la config.
 
 - [ ] Lancer la web UI (depuis `products/cop1/packages/web` du clone
       `vectorz`) :

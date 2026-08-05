@@ -1,5 +1,8 @@
 # cop1 MVP - Status Report ✅
 
+> **Historique (2026-04-15, dépôt standalone cop1 avant pivot monorepo vectorz)** —
+> chemins absolus ci-dessous conservés tels quels à titre d'archive.
+
 ## 🎉 MVP Completed!
 
 Le MVP de **cop1** (votre équipe d'agents IA autonomes) est maintenant fonctionnel !
@@ -90,7 +93,7 @@ cop1/
 ### 1. Installer les dépendances
 
 ```bash
-cd /Users/elzinko/git/bacasable/cop1
+cd /Users/elzinko/git/bacasable/cop1  # historique 2026-04-15
 pnpm install
 ```
 
