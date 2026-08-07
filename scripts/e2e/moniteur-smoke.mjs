@@ -29,12 +29,17 @@ try {
 
   // Parcours critique 2 — bascule d'onglets
   await activite.click();
-  await page.getByRole('heading', { level: 2, name: /Activité|Runs|supervision/i }).waitFor({
-    state: 'visible',
-  }).catch(async () => {
-    // Titre Activité peut varier — au minimum le nav marque l'onglet courant
-    await page.locator('button.tab.active', { hasText: 'Activité' }).waitFor({ state: 'visible' });
-  });
+  await page
+    .getByRole('heading', { level: 2, name: /Activité|Runs|supervision/i })
+    .waitFor({
+      state: 'visible',
+    })
+    .catch(async () => {
+      // Titre Activité peut varier — au minimum le nav marque l'onglet courant
+      await page
+        .locator('button.tab.active', { hasText: 'Activité' })
+        .waitFor({ state: 'visible' });
+    });
 
   await projets.click();
   await page.getByRole('heading', { level: 2, name: /Projets/i }).waitFor({ state: 'visible' });
@@ -64,9 +69,7 @@ try {
   const historyItems = page.locator('.mon-history__item');
   await page.waitForTimeout(800);
   const countVisible = (await countEl.count()) > 0;
-  const n = countVisible
-    ? Number.parseInt((await countEl.first().textContent()) || '0', 10)
-    : 0;
+  const n = countVisible ? Number.parseInt((await countEl.first().textContent()) || '0', 10) : 0;
   const historyN = await historyItems.count();
   if (n < 1 && historyN < 1) {
     throw new Error(
@@ -74,7 +77,9 @@ try {
     );
   }
 
-  console.log(`moniteur-smoke OK — ${baseUrl} (apiRuns=${runs.length}, ui=${n}, history=${historyN})`);
+  console.log(
+    `moniteur-smoke OK — ${baseUrl} (apiRuns=${runs.length}, ui=${n}, history=${historyN})`,
+  );
 } catch (err) {
   console.error(`moniteur-smoke KO: ${err?.message || err}`);
   process.exit(1);
