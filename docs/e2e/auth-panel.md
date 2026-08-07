@@ -7,8 +7,8 @@
 Fiche backlog **0003** (partie auth). Validé le 2026-06-25 via Playwright contre le vrai
 daemon (appel Claude réel) : 🟢 *Connecté* + modèle `claude-sonnet-4-6`.
 
-> La partie **dark-mode cobaye** est suivie séparément dans la fiche **0017** (banc de
-> test jetable — fiche 0041, jamais reconstruit post-pivot).
+> Banc cobaye + smoke Moniteur : fiche **0041** / `docs/e2e/moniteur-smoke.md`.
+> Dark-mode : fiche **0017** (scénario client, hors scope 0041).
 
 ## Pré-requis
 - Build à jour : depuis la racine `vectorz`, `pnpm install && pnpm build`.

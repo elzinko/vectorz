@@ -54,21 +54,22 @@ Transverse :
 
 ## Critères d'acceptation
 
-- [ ] Le cobaye pré-seedé existe (état vierge + fixtures) avec son rituel de reset documenté
-- [ ] Un smoke e2e **Pareto** (parcours critiques seulement) tourne **vert en < N s**,
+- [x] Le cobaye pré-seedé existe (état vierge + fixtures) avec son rituel de reset documenté
+- [x] Un smoke e2e **Pareto** (parcours critiques seulement) tourne **vert en < N s**,
       en local (une commande) et en CI
-- [ ] Un dev qui casse un parcours critique voit la CI rougir (test de sabotage → revert)
-- [ ] Voie manuelle : `docs/e2e/` décrit comment lancer l'app et valider visuellement en < 2 min
-- [ ] Gate locale verte ; aucune dépendance à BMAD (`_bmad/`, `_bmad-output/` non requis)
+- [x] Un dev qui casse un parcours critique voit la CI rougir (test de sabotage → revert)
+- [x] Voie manuelle : `docs/e2e/` décrit comment lancer l'app et valider visuellement en < 2 min
+- [x] Gate locale verte ; aucune dépendance à BMAD (`_bmad/`, `_bmad-output/` non requis)
 
 ## Notes / décisions
 
 - **Priorité P1** (PO, 2026-07-16) : filet de sécurité dev jugé structurant à avoir tôt —
   la *voie rapide* est réalisable **avant** le pilote natif complet (0038), d'où P1 malgré
   l'articulation avec un chantier P2.
-- **Articulation 0017** : gardée **séparée** pour l'instant (décision de fold reportée) ;
-  le scénario dark-mode de 0017 est le **candidat naturel comme premier parcours** du banc.
-  À trancher quand 0041 est tirée : fondre 0017 dedans, ou la laisser comme scénario client.
+- **Articulation 0017** : **laissée séparée** (décision 2026-08-07 à l'ouverture de 0041) —
+  scénario client dark-mode, pas fondu dans le smoke Pareto Moniteur.
+- **Livré (voie rapide)** : `cobaye/` + `pnpm cobaye:smoke` (dogfood mécanique + Playwright
+  Moniteur + preuve de porte URL morte) + job CI `cobaye smoke (0041)` + `docs/e2e/moniteur-smoke.md`.
 - **Articulation 0038** : la voie « cop1 construit la feature » est la preuve de sortie
   d'E3 — coordonner à l'ouverture de 0038 pour ne pas dupliquer les fixtures natives.
 - Portée « Pareto » assumée : on ne vise **pas** l'exhaustivité ; couvrir peu, vite, et

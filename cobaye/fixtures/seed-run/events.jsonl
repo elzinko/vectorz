@@ -1,0 +1,2 @@
+{"event_id":"e1","run_id":"cobaye-seed-run","seq":1,"ts":"2026-08-07T12:00:00.000Z","contract":"cop1/supervisability@0.1","type":"run.started","payload":{"method":{"name":"cobaye-smoke","version":"0.1.0"},"seat":"pilot"}}
+{"event_id":"e2","run_id":"cobaye-seed-run","seq":2,"ts":"2026-08-07T12:00:01.000Z","contract":"cop1/supervisability@0.1","type":"heartbeat","payload":{"note":"seed banc 0041"}}
