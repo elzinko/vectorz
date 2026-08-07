@@ -1,4 +1,4 @@
-# Backlog — mega-city
+# Backlog features & bugs — vectorz
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
