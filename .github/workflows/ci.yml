@@ -75,3 +75,35 @@ jobs:
       # locale, et `gh` non authentifié sur le runner est un cas géré (repo local-only).
       - name: Test scripts (mega-city, bash)
         run: pnpm --filter mega-city test:scripts
+
+  # Fiche 0041 — banc cobaye Pareto (mécanique dogfood + Moniteur Playwright).
+  # Job séparé : Playwright/Chromium n'alourdit pas le chemin lint·build·test.
+  cobaye-smoke:
+    name: cobaye smoke (0041)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Build (web)
+        run: pnpm --filter @cop1/web build
+
+      - name: Cobaye smoke
+        run: pnpm cobaye:smoke

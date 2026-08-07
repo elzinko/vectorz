@@ -15,12 +15,15 @@
     "lint": "biome check --error-on-warnings .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "clean": "pnpm -r clean && rm -rf node_modules"
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "cobaye:reset": "bash cobaye/reset.sh",
+    "cobaye:smoke": "bash scripts/cobaye-smoke.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
     "@types/node": "^22.10.0",
     "@vitest/coverage-v8": "^2.1.0",
+    "playwright": "1.52.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"
   },
