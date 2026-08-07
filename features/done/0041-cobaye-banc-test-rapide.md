@@ -4,9 +4,9 @@ title: Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les 
 type: chore
 priority: P1
 product: vectorz
-status: todo
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#113"
 created: 2026-07-16
 ---
 

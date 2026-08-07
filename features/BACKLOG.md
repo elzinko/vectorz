@@ -36,7 +36,7 @@
 | 0033 | Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique | bug | P1 |  | vectorz | ✅ shipped | #16 |
 | 0036 | Purge du code mort prouvé + rescope 0022 AC3 (sous-ensemble sûr de L8) | chore | P1 | 0034 | vectorz | ✅ shipped | #13 |
 | 0037 | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | 0034 | vectorz | ✅ shipped | #14 |
-| 0041 | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 |  | vectorz | 🔴 todo |  |
+| 0041 | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 |  | vectorz | ✅ shipped | #113 |
 | 0044 | Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A) | chore | P1 |  | vectorz | 🔴 todo |  |
 | 0050 | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 🔴 todo |  |
 | 0052 | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 0051 | vectorz | 🔴 todo |  |
@@ -200,4 +200,4 @@
 | 0138 | Modèle typé interaction/autorité → run / draw / document (substrat génératif) | feature | P3 |  | mega-city | 💡 idea |  |
 | 0139 | Garde-fous d'intégrité/qualité des agents (advisory + enforced) | feature | P3 |  | mega-city | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0103, 0104, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0103, 0104, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182.
