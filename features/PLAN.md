@@ -39,7 +39,7 @@
 10. ~~**0091** — mise à plat + glossaire du jargon du backlog · `ship`~~ — shipped #103
 11. ~~**0022** — Moniteur : afficher heure/durée/historique déjà collectés · `ship`~~ — shipped #105
 12. ~~**0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `ship`~~ — shipped #107
-13. **0041** — cobaye : banc de test rapide pour sécuriser les devs · `build`
+13. ~~0041~~ — cobaye : banc de test rapide pour sécuriser les devs · ship #113
 14. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
 15. **0149** — `composes:` : rendre la composition inter-skills mécanique (remontée P2→P1
     le 2026-07-26) · `build` *(à faire avant 0102, sinon ses liens naissent en prose)*
