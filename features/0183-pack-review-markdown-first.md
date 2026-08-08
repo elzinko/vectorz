@@ -85,8 +85,7 @@ review = manifeste agrégateur (SRP). Ne pas rouvrir 0093 (BacklogStore hexagona
 ## Notes / décisions
 
 - **2026-08-08** — Initiative « reporting méthode » (PO). Arbitrage
-  [ezk-pm](cd903ec4-0096-41b2-bf40-85d6b59bebc4) +
-  [ezk-architect](94e980d5-a6c9-4344-a5ed-806a3a4113a6) : **2 fiches sans épic**
+  ezk-pm + ezk-architect (session 2026-08-08) : **2 fiches sans épic**
   (0183 keystone + 0184 webapp) ; promouvoir en épic au 2ᵉ émetteur VCS (YAGNI).
   Chemin `features/reviews/` (pas fusion avec `features/checks/`).
 - **Sous-fiches futures** (notes, pas créées) : (3) boutons provisioning/démo UI,

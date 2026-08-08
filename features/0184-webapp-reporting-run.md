@@ -66,8 +66,7 @@ Règles dures :
 - **2026-08-08** — Enfant de l'initiative reporting ; `depends` de fait :
   **0183** (contrat SoT), **0178** (reste-à-tester), **0102** (boutons preview —
   blocked → lot 2 non tirable avant déblocage). Voir arbitrage
-  [ezk-pm](cd903ec4-0096-41b2-bf40-85d6b59bebc4) /
-  [ezk-architect](94e980d5-a6c9-4344-a5ed-806a3a4113a6).
+  ezk-pm + ezk-architect (session 2026-08-08).
 - **Hôte** : réutiliser `@cop1/web` (défaut) — pas 0114 (webapp config profiles,
   icebox, autre sujet).
 - **0161** ezk-challenge = panel adversarial de *production* d'artefacts — orthogonal
