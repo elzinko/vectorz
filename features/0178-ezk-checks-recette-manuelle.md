@@ -50,3 +50,6 @@ POC : skill déployé (2026-08-01) ; dogfood sur city-guided PR #91 / 0056-B
 - Déclenchement : `/ezk-checks` ou langage naturel (« fais une recette de … »)
 - Reload : `/reload-skills` après deploy
 - City-guided : convention documentée dans `features/CONVENTIONS.md`
+- **2026-08-08** — Composé par le pack de review **0183** (section « À tester »
+  pointe vers `features/checks/<id>/`). Checks ≠ REVIEW : recette vs manifeste
+  agrégateur. Webapp reporting **0184** affiche cette section.

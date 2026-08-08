@@ -23,6 +23,11 @@ ne couvre cette surface : les métriques iront dans le journal (0052) et dans mi
 
 ## Proposition
 
+> **2026-08-08 (initiative reporting)** : cette fiche est un **adaptateur / émetteur**
+> du pack de review markdown (**0183** = SoT). Le commentaire GitHub n'est **pas** la
+> source de vérité — il *projette* le `features/reviews/<id>/REVIEW.md` (et lit
+> `.quality/`). Ne pas construire 0058 comme SoT avant/sans 0183.
+
 Un **commentaire GitHub automatique par PR**, composé de :
 
 - les **métriques exigées par la méthode** (lues depuis le journal `.quality/` / les vues 0055),
