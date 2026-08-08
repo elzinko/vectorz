@@ -205,25 +205,75 @@ P2_PR_OPEN=0; P2_REAL=0; P2_ABSORBED=0; P2_WT_PRUNABLE=0
 PR_LIST=""; REAL_LIST=""; ABSORBED_LIST=""; P2_NOTE=""
 REAL_FACTS=""; ABSORBED_FACTS=""
 P2_UNVERIFIABLE=0        # 1 = des PRs peuvent exister et on ne peut pas les lire
-if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
-  # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56) : une panne
-  # réseau, un droit manquant ou un remote non résolvable rendent `gh pr list` vide en
-  # échec — indiscernable d'un « aucune PR ouverte » si on ne regarde que stdout. On
-  # aurait alors un CLEAN non prouvé, exactement ce que ce portier interdit.
-  if PR_LIST="$(gh pr list --state open \
-        --json number,title,headRefName,isDraft \
-        --jq '.[] | "#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)"' \
+# headRefName → numéro PR (fiche 0185) : TSV en mémoire (pas de tableau asso — bash 3).
+# Jointure nominale (nom de branche == headRefName), pas une preuve de contenu/SHA.
+PR_HEAD_MAP_TSV=""
+
+# Remplit PR_LIST + PR_HEAD_MAP_TSV depuis un TSV : headRefName<TAB>number<TAB>title[<TAB>draft]
+# (fixture hermétique — pas de jq système).
+ingest_pr_tsv() {
+  local tsv="$1" line head num title draft
+  PR_LIST=""
+  PR_HEAD_MAP_TSV=""
+  P2_PR_OPEN=0
+  [[ -z "$tsv" ]] && return 0
+  while IFS=$'\t' read -r head num title draft || [[ -n "$head" ]]; do
+    [[ -z "$head" || -z "$num" ]] && continue
+    PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV}${head}"$'\t'"${num}"$'\n'
+    if [[ "$draft" == "true" || "$draft" == "1" ]]; then
+      PR_LIST="${PR_LIST}#${num} ${head} — ${title} [draft]"$'\n'
+    else
+      PR_LIST="${PR_LIST}#${num} ${head} — ${title}"$'\n'
+    fi
+  done <<< "$tsv"
+  PR_LIST="${PR_LIST%$'\n'}"
+  PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV%$'\n'}"
+  [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '' || true)"
+  return 0
+}
+
+pr_number_for_head() { # $1=branch name → stdout number or empty
+  local head="$1"
+  [[ -n "$PR_HEAD_MAP_TSV" ]] || return 0
+  printf '%s\n' "$PR_HEAD_MAP_TSV" | awk -F '\t' -v h="$head" '$1 == h { print $2; exit }'
+}
+
+if [[ "${EZK_ARCHIVE_TEST:-}" == "1" && -n "${EZK_ARCHIVE_TEST_PRS:-}" ]]; then
+  # Fixture hermétique (fiche 0185) — exige EZK_ARCHIVE_TEST=1 (pas un override prod silencieux).
+  # Format TSV : headRefName<TAB>number<TAB>title[<TAB>draft] — sans jq système.
+  ingest_pr_tsv "$EZK_ARCHIVE_TEST_PRS"
+  P2_NOTE="FIXTURE EZK_ARCHIVE_TEST=1 — donnees PR NON reelles (gh non consulte)"
+elif [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
+  # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56).
+  # jq EMBARQUÉ de `gh` (--jq / gojq) — JAMAIS de `jq` système (sinon faux CLEAN
+  # silencieux si jq absent : finding revue 0185 / PR #117).
+  _pr_bundle=""
+  if _pr_bundle="$(gh pr list --state open --json number,title,headRefName,isDraft \
+        --jq '.[] | "LIST\t#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)", "MAP\t\(.headRefName)\t\(.number)"' \
         2>/dev/null)"; then
-    [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '')"
+    PR_LIST=""
+    PR_HEAD_MAP_TSV=""
+    P2_PR_OPEN=0
+    while IFS=$'\t' read -r kind a b c || [[ -n "$kind" ]]; do
+      [[ -z "$kind" ]] && continue
+      case "$kind" in
+        LIST) PR_LIST="${PR_LIST}${a}"$'\n' ;;
+        MAP)  PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV}${a}"$'\t'"${b}"$'\n' ;;
+      esac
+    done <<< "$_pr_bundle"
+    PR_LIST="${PR_LIST%$'\n'}"
+    PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV%$'\n'}"
+    [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '' || true)"
   else
     PR_LIST=""
+    PR_HEAD_MAP_TSV=""
     P2_UNVERIFIABLE=1
     P2_NOTE="gh pr list a ECHOUE (reseau / droits / remote non resolvable) — PRs NON verifiees"
   fi
 elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
   # Seul cas réellement indécidable : l'hôte a des PRs, mais on n'a pas de quoi les lire.
   P2_UNVERIFIABLE=1
-  P2_NOTE="remote GitHub mais gh indisponible/non authentifie — PRs NON verifiees"
+  P2_NOTE="remote GitHub mais gh indisponible/non authentifie — PRs NON verifiees — NE PAS proposer d'ouvrir une PR sans verif humaine"
 elif [[ "$HAS_REMOTE" -eq 1 ]]; then
   P2_NOTE="remote non-GitHub — aucune PR a verifier ; on s'appuie sur les branches locales"
 else
@@ -248,13 +298,19 @@ if [[ -n "$UNMERGED" ]]; then
       ABSORBED_FACTS="${ABSORBED_FACTS}branch ABSORBED $b $last${wtflag} safe_delete=1"$'\n'
     else
       P2_REAL=$(( P2_REAL + 1 ))
-      REAL_LIST="${REAL_LIST}    $b${wtmark} — $last"$'\n'
+      pr_n="$(pr_number_for_head "$b")"
+      pr_human=""; pr_fact=""
+      if [[ -n "$pr_n" ]]; then
+        pr_human=" → PR #$pr_n"
+        pr_fact=" pr=#$pr_n"
+      fi
+      REAL_LIST="${REAL_LIST}    $b${wtmark}${pr_human} — $last"$'\n'
       unproven_csv=""
       [[ "$verdict" != "REELLE" ]] && {
         REAL_LIST="${REAL_LIST}        non prouvé dans $BASE :${verdict#REELLE}"$'\n'
         unproven_csv=" unproven=$(echo ${verdict#REELLE} | tr ' ' ',')"
       }
-      REAL_FACTS="${REAL_FACTS}branch REAL $b $last${wtflag}${unproven_csv}"$'\n'
+      REAL_FACTS="${REAL_FACTS}branch REAL $b $last${wtflag}${pr_fact}${unproven_csv}"$'\n'
     fi
   done <<< "$UNMERGED"
 fi
@@ -526,7 +582,7 @@ echo "## 2. PRs & branches en attente"
 if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
   if [[ -n "$PR_LIST" ]]; then echo "⚠ PRs ouvertes :"; echo "$PR_LIST" | sed 's/^/    /'; else echo "✓ aucune PR ouverte."; fi
 elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
-  echo "⚠ remote GitHub mais gh indisponible/non authentifié — PRs NON vérifiées, à voir à la main."
+  echo "⚠ remote GitHub mais gh indisponible/non authentifié — PRs NON vérifiées, à voir à la main (ne pas proposer d'ouvrir une PR sans vérif)."
 elif [[ "$HAS_REMOTE" -eq 1 ]]; then
   echo "ℹ remote non-GitHub — aucune PR à vérifier ; on s'appuie sur les branches locales."
 else

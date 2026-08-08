@@ -99,6 +99,12 @@ sensible — laisse la main à l'utilisateur.
     flaguée RÉELLE peut être un brouillon dont la version revue/renumérotée est
     dans main — c'est un **jugement** à rendre sur pièces (diff), jamais une
     suppression silencieuse.
+  - **Annotation `pr=#N` (fiche 0185)** : si le fait gate porte `pr=#N` (ou le
+    rendu humain `→ PR #N`), une PR **est déjà ouverte** sur cette tête —
+    **interdit** de proposer « ouvrir une PR ». Actions : revue / merge / fermeture
+    de **cette** PR, pas une nouvelle.
+  - Si le gate dit `P2_PENDING: UNKNOWN` (gh KO) : **interdit** de proposer
+    d'ouvrir une PR ; demander vérif humaine (`gh pr list`) avant toute reco PR.
   - **ABSORBÉES** (contenu prouvé dans l'historique de la base) = résidu
     squash-merge, **suppression sûre** (`git branch -D`, récupérable via reflog).
     Ne les liste PAS en pending — c'est précisément la fausse alerte à tuer.
