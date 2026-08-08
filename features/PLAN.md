@@ -49,7 +49,7 @@
     *(P1 mega-city — après 0041 pour dogfood cobaye ; compose 0178 / reclasse 0058)*
 18. **0184** — webapp reporting de run (lecteur REVIEW.md, ≠ Moniteur) · `groom`
     *(P2 vectorz — gated 0183 ; lot 2 boutons gated 0102)*
-19. **0185** — ezk-archive croise branches RÉELLES ↔ PRs ouvertes · `build`
+19. ~~0185~~ — ezk-archive croise branches RÉELLES ↔ PRs ouvertes · ship #117
     *(P1 mega-city — filet anti « ouvrir une PR déjà ouverte », cas #116)*
 
 ## ⏳ LATER — pas maintenant

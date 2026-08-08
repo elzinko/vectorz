@@ -4,9 +4,9 @@ title: ezk-archive — croiser branches RÉELLES et PRs ouvertes (ne plus propos
 type: feature
 priority: P1
 product: mega-city
-status: todo
+status: shipped
 ready: 2026-08-08
-pr:
+pr: "#117"
 created: 2026-08-08
 ---
 
