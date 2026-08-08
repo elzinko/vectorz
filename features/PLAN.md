@@ -45,6 +45,10 @@
     le 2026-07-26) · `build` *(à faire avant 0102, sinon ses liens naissent en prose)*
 16. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
     + ADR-0020 · `build` *(attend le dogfood samplerz `make preview-pr`, son repo)*
+17. **0183** — pack de review markdown-first (SoT restitution ; GitHub = rendu) · `groom`
+    *(P1 mega-city — après 0041 pour dogfood cobaye ; compose 0178 / reclasse 0058)*
+18. **0184** — webapp reporting de run (lecteur REVIEW.md, ≠ Moniteur) · `groom`
+    *(P2 vectorz — gated 0183 ; lot 2 boutons gated 0102)*
 
 ## ⏳ LATER — pas maintenant
 
