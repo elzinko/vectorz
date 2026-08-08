@@ -206,17 +206,28 @@ PR_LIST=""; REAL_LIST=""; ABSORBED_LIST=""; P2_NOTE=""
 REAL_FACTS=""; ABSORBED_FACTS=""
 P2_UNVERIFIABLE=0        # 1 = des PRs peuvent exister et on ne peut pas les lire
 # headRefName → numéro PR (fiche 0185) : TSV en mémoire (pas de tableau asso — bash 3).
+# Jointure nominale (nom de branche == headRefName), pas une preuve de contenu/SHA.
 PR_HEAD_MAP_TSV=""
 
-# Remplit PR_LIST + PR_HEAD_MAP_TSV depuis un JSON gh (`[{number,title,headRefName,isDraft},…]`).
-ingest_pr_json() {
-  local json="$1"
+# Remplit PR_LIST + PR_HEAD_MAP_TSV depuis un TSV : headRefName<TAB>number<TAB>title[<TAB>draft]
+# (fixture hermétique — pas de jq système).
+ingest_pr_tsv() {
+  local tsv="$1" line head num title draft
   PR_LIST=""
   PR_HEAD_MAP_TSV=""
   P2_PR_OPEN=0
-  [[ -z "$json" || "$json" == "[]" ]] && return 0
-  PR_LIST="$(printf '%s' "$json" | jq -r '.[] | "#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)"' 2>/dev/null || true)"
-  PR_HEAD_MAP_TSV="$(printf '%s' "$json" | jq -r '.[] | "\(.headRefName)\t\(.number)"' 2>/dev/null || true)"
+  [[ -z "$tsv" ]] && return 0
+  while IFS=$'\t' read -r head num title draft || [[ -n "$head" ]]; do
+    [[ -z "$head" || -z "$num" ]] && continue
+    PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV}${head}"$'\t'"${num}"$'\n'
+    if [[ "$draft" == "true" || "$draft" == "1" ]]; then
+      PR_LIST="${PR_LIST}#${num} ${head} — ${title} [draft]"$'\n'
+    else
+      PR_LIST="${PR_LIST}#${num} ${head} — ${title}"$'\n'
+    fi
+  done <<< "$tsv"
+  PR_LIST="${PR_LIST%$'\n'}"
+  PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV%$'\n'}"
   [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '' || true)"
   return 0
 }
@@ -227,19 +238,35 @@ pr_number_for_head() { # $1=branch name → stdout number or empty
   printf '%s\n' "$PR_HEAD_MAP_TSV" | awk -F '\t' -v h="$head" '$1 == h { print $2; exit }'
 }
 
-if [[ -n "${EZK_ARCHIVE_TEST_PRS:-}" ]]; then
-  # Fixture hermétique (fiche 0185) — pas d'appel réseau.
-  ingest_pr_json "$EZK_ARCHIVE_TEST_PRS"
+if [[ "${EZK_ARCHIVE_TEST:-}" == "1" && -n "${EZK_ARCHIVE_TEST_PRS:-}" ]]; then
+  # Fixture hermétique (fiche 0185) — exige EZK_ARCHIVE_TEST=1 (pas un override prod silencieux).
+  # Format TSV : headRefName<TAB>number<TAB>title[<TAB>draft] — sans jq système.
+  ingest_pr_tsv "$EZK_ARCHIVE_TEST_PRS"
+  P2_NOTE="FIXTURE EZK_ARCHIVE_TEST=1 — donnees PR NON reelles (gh non consulte)"
 elif [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
-  # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56) : une panne
-  # réseau, un droit manquant ou un remote non résolvable rendent `gh pr list` vide en
-  # échec — indiscernable d'un « aucune PR ouverte » si on ne regarde que stdout. On
-  # aurait alors un CLEAN non prouvé, exactement ce que ce portier interdit.
-  _pr_json=""
-  if _pr_json="$(gh pr list --state open --json number,title,headRefName,isDraft 2>/dev/null)"; then
-    ingest_pr_json "$_pr_json"
+  # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56).
+  # jq EMBARQUÉ de `gh` (--jq / gojq) — JAMAIS de `jq` système (sinon faux CLEAN
+  # silencieux si jq absent : finding revue 0185 / PR #117).
+  _pr_bundle=""
+  if _pr_bundle="$(gh pr list --state open --json number,title,headRefName,isDraft \
+        --jq '.[] | "LIST\t#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)", "MAP\t\(.headRefName)\t\(.number)"' \
+        2>/dev/null)"; then
+    PR_LIST=""
+    PR_HEAD_MAP_TSV=""
+    P2_PR_OPEN=0
+    while IFS=$'\t' read -r kind a b c || [[ -n "$kind" ]]; do
+      [[ -z "$kind" ]] && continue
+      case "$kind" in
+        LIST) PR_LIST="${PR_LIST}${a}"$'\n' ;;
+        MAP)  PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV}${a}"$'\t'"${b}"$'\n' ;;
+      esac
+    done <<< "$_pr_bundle"
+    PR_LIST="${PR_LIST%$'\n'}"
+    PR_HEAD_MAP_TSV="${PR_HEAD_MAP_TSV%$'\n'}"
+    [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '' || true)"
   else
     PR_LIST=""
+    PR_HEAD_MAP_TSV=""
     P2_UNVERIFIABLE=1
     P2_NOTE="gh pr list a ECHOUE (reseau / droits / remote non resolvable) — PRs NON verifiees"
   fi

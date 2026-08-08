@@ -55,5 +55,6 @@ de vérité fiable) ; `reconcile` backlog (déjà ADR-0018).
 
 - **2026-08-08** — déclenché après archive qui a raté #116 (gh UNKNOWN en sandbox +
   oubli `gh pr list` au triage conversationnel).
-- Injection test only — pas un backdoor prod : si `EZK_ARCHIVE_TEST_PRS` est set, on
-  n'appelle pas `gh pr list` (fixture).
+- Injection test : `EZK_ARCHIVE_TEST=1` **et** `EZK_ARCHIVE_TEST_PRS` (TSV
+  `head\tnum\ttitle`) — la variable de données seule est **ignorée** (anti-backdoor).
+  Chemin live : `gh … --jq` embarqué, **pas** de `jq` système.

@@ -87,15 +87,19 @@ ok "le gate compte 3 réelles et 3 absorbées"  "echo \"\$GATE\" | grep -q 'bran
 ok "le gate cite les 3 réelles"               "for b in feat/reelle feat/revert-reel feat/blob-reutilise; do echo \"\$GATE\" | grep -q \"branch REAL \$b \" || exit 1; done"
 ok "le gate ne classe aucune réelle en ABSORBED" "! echo \"\$GATE\" | grep 'branch ABSORBED' | grep -qE 'feat/(reelle|revert-reel|blob-reutilise)'"
 
-echo "Fiche 0185 — jointure branche RÉELLE ↔ PR ouverte (injection EZK_ARCHIVE_TEST_PRS) :"
-GATE_PR="$(EZK_ARCHIVE_TEST_PRS='[{"number":42,"title":"deja ouverte","headRefName":"feat/reelle","isDraft":false}]' bash "$CHECK" --gate main)"
-FULL_PR="$(EZK_ARCHIVE_TEST_PRS='[{"number":42,"title":"deja ouverte","headRefName":"feat/reelle","isDraft":false}]' bash "$CHECK" --full main)"
+echo "Fiche 0185 — jointure branche RÉELLE ↔ PR ouverte (injection EZK_ARCHIVE_TEST) :"
+GATE_PR="$(EZK_ARCHIVE_TEST=1 EZK_ARCHIVE_TEST_PRS=$'feat/reelle\t42\tdeja ouverte' bash "$CHECK" --gate main)"
+FULL_PR="$(EZK_ARCHIVE_TEST=1 EZK_ARCHIVE_TEST_PRS=$'feat/reelle\t42\tdeja ouverte' bash "$CHECK" --full main)"
 ok "gate annote pr=#42 sur feat/reelle" \
    "echo \"\$GATE_PR\" | grep -q 'branch REAL feat/reelle .* pr=#42'"
 ok "full affiche → PR #42 sur feat/reelle" \
    "echo \"\$FULL_PR\" | grep -q 'feat/reelle → PR #42'"
 ok "les autres réelles restent sans pr=" \
    "! echo \"\$GATE_PR\" | grep 'branch REAL feat/revert-reel' | grep -q 'pr=#'"
+ok "fixture laisse une note visible (anti faux CLEAN silencieux)" \
+   "echo \"\$GATE_PR\" | grep -q 'FIXTURE EZK_ARCHIVE_TEST=1'"
+ok "sans EZK_ARCHIVE_TEST=1 la variable seule est ignoree (anti-backdoor)" \
+   "! EZK_ARCHIVE_TEST_PRS=$'feat/reelle\t99\tx' bash \"$CHECK\" --gate main | grep -q 'pr=#99'"
 
 echo "Read-only :"
 ok "le script n'a rien modifié (6 branches toujours là, working tree propre)" \
