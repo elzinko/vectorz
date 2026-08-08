@@ -200,3 +200,8 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 - **Toujours fournir le résumé de session** au sous-agent quand tu délègues : sans lui,
   il ne voit que l'état git, pas ce qui a été décidé/appris/livré.
 - **Ne merge/push rien toi-même** ; ça reste à l'utilisateur de trancher.
+- **PRs déjà ouvertes (fiche 0185)** : si un fait gate `branch REAL … pr=#N` (ou
+  rendu `→ PR #N`) existe, **ne propose jamais** d'ouvrir une nouvelle PR sur
+  cette branche — pointe vers `#N`. Si `P2_PENDING: UNKNOWN` (gh indisponible),
+  **ne propose pas** non plus d'ouvrir une PR : demande une vérif `gh pr list`
+  à l'humain d'abord.

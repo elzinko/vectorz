@@ -205,16 +205,39 @@ P2_PR_OPEN=0; P2_REAL=0; P2_ABSORBED=0; P2_WT_PRUNABLE=0
 PR_LIST=""; REAL_LIST=""; ABSORBED_LIST=""; P2_NOTE=""
 REAL_FACTS=""; ABSORBED_FACTS=""
 P2_UNVERIFIABLE=0        # 1 = des PRs peuvent exister et on ne peut pas les lire
-if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
+# headRefName → numéro PR (fiche 0185) : TSV en mémoire (pas de tableau asso — bash 3).
+PR_HEAD_MAP_TSV=""
+
+# Remplit PR_LIST + PR_HEAD_MAP_TSV depuis un JSON gh (`[{number,title,headRefName,isDraft},…]`).
+ingest_pr_json() {
+  local json="$1"
+  PR_LIST=""
+  PR_HEAD_MAP_TSV=""
+  P2_PR_OPEN=0
+  [[ -z "$json" || "$json" == "[]" ]] && return 0
+  PR_LIST="$(printf '%s' "$json" | jq -r '.[] | "#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)"' 2>/dev/null || true)"
+  PR_HEAD_MAP_TSV="$(printf '%s' "$json" | jq -r '.[] | "\(.headRefName)\t\(.number)"' 2>/dev/null || true)"
+  [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '' || true)"
+  return 0
+}
+
+pr_number_for_head() { # $1=branch name → stdout number or empty
+  local head="$1"
+  [[ -n "$PR_HEAD_MAP_TSV" ]] || return 0
+  printf '%s\n' "$PR_HEAD_MAP_TSV" | awk -F '\t' -v h="$head" '$1 == h { print $2; exit }'
+}
+
+if [[ -n "${EZK_ARCHIVE_TEST_PRS:-}" ]]; then
+  # Fixture hermétique (fiche 0185) — pas d'appel réseau.
+  ingest_pr_json "$EZK_ARCHIVE_TEST_PRS"
+elif [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
   # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56) : une panne
   # réseau, un droit manquant ou un remote non résolvable rendent `gh pr list` vide en
   # échec — indiscernable d'un « aucune PR ouverte » si on ne regarde que stdout. On
   # aurait alors un CLEAN non prouvé, exactement ce que ce portier interdit.
-  if PR_LIST="$(gh pr list --state open \
-        --json number,title,headRefName,isDraft \
-        --jq '.[] | "#\(.number) \(.headRefName) — \(.title)\(if .isDraft then " [draft]" else "" end)"' \
-        2>/dev/null)"; then
-    [[ -n "$PR_LIST" ]] && P2_PR_OPEN="$(printf '%s' "$PR_LIST" | grep -c '')"
+  _pr_json=""
+  if _pr_json="$(gh pr list --state open --json number,title,headRefName,isDraft 2>/dev/null)"; then
+    ingest_pr_json "$_pr_json"
   else
     PR_LIST=""
     P2_UNVERIFIABLE=1
@@ -223,7 +246,7 @@ if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
 elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
   # Seul cas réellement indécidable : l'hôte a des PRs, mais on n'a pas de quoi les lire.
   P2_UNVERIFIABLE=1
-  P2_NOTE="remote GitHub mais gh indisponible/non authentifie — PRs NON verifiees"
+  P2_NOTE="remote GitHub mais gh indisponible/non authentifie — PRs NON verifiees — NE PAS proposer d'ouvrir une PR sans verif humaine"
 elif [[ "$HAS_REMOTE" -eq 1 ]]; then
   P2_NOTE="remote non-GitHub — aucune PR a verifier ; on s'appuie sur les branches locales"
 else
@@ -248,13 +271,19 @@ if [[ -n "$UNMERGED" ]]; then
       ABSORBED_FACTS="${ABSORBED_FACTS}branch ABSORBED $b $last${wtflag} safe_delete=1"$'\n'
     else
       P2_REAL=$(( P2_REAL + 1 ))
-      REAL_LIST="${REAL_LIST}    $b${wtmark} — $last"$'\n'
+      pr_n="$(pr_number_for_head "$b")"
+      pr_human=""; pr_fact=""
+      if [[ -n "$pr_n" ]]; then
+        pr_human=" → PR #$pr_n"
+        pr_fact=" pr=#$pr_n"
+      fi
+      REAL_LIST="${REAL_LIST}    $b${wtmark}${pr_human} — $last"$'\n'
       unproven_csv=""
       [[ "$verdict" != "REELLE" ]] && {
         REAL_LIST="${REAL_LIST}        non prouvé dans $BASE :${verdict#REELLE}"$'\n'
         unproven_csv=" unproven=$(echo ${verdict#REELLE} | tr ' ' ',')"
       }
-      REAL_FACTS="${REAL_FACTS}branch REAL $b $last${wtflag}${unproven_csv}"$'\n'
+      REAL_FACTS="${REAL_FACTS}branch REAL $b $last${wtflag}${pr_fact}${unproven_csv}"$'\n'
     fi
   done <<< "$UNMERGED"
 fi
@@ -526,7 +555,7 @@ echo "## 2. PRs & branches en attente"
 if [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
   if [[ -n "$PR_LIST" ]]; then echo "⚠ PRs ouvertes :"; echo "$PR_LIST" | sed 's/^/    /'; else echo "✓ aucune PR ouverte."; fi
 elif [[ "$HAS_PR_HOST" -eq 1 ]]; then
-  echo "⚠ remote GitHub mais gh indisponible/non authentifié — PRs NON vérifiées, à voir à la main."
+  echo "⚠ remote GitHub mais gh indisponible/non authentifié — PRs NON vérifiées, à voir à la main (ne pas proposer d'ouvrir une PR sans vérif)."
 elif [[ "$HAS_REMOTE" -eq 1 ]]; then
   echo "ℹ remote non-GitHub — aucune PR à vérifier ; on s'appuie sur les branches locales."
 else
