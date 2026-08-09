@@ -1,4 +1,5 @@
 ---
+composes: [ezk-backlog, ezk-ci, ezk-commits, ezk-start, ezk-preview]
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
   produit en mode sprint ou en POC, demande de developper, implementer ou

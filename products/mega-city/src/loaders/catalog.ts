@@ -9,11 +9,19 @@
  *   - `kind` absent ⇒ 'disposition' (ADR-0002).
  *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
-import { readdirSync, readFileSync, existsSync, realpathSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
-import type { Agent, Bundle, Enforcement, Profile, Rule, RuleKind, Skill } from '../domain/model.js';
+import type {
+  Agent,
+  Bundle,
+  Enforcement,
+  Profile,
+  Rule,
+  RuleKind,
+  Skill,
+} from '../domain/model.js';
 
 export interface Catalog {
   rules: Map<string, Rule>;
@@ -109,7 +117,10 @@ function resolveHookScript(enforcement: Enforcement, rootDir: string): Enforceme
       `chemin de hook non sûr (symlink hors dépôt refusé) : ${JSON.stringify(enforcement.hook.script)}`,
     );
   }
-  return { ...enforcement, hook: { ...enforcement.hook, script: readFileSync(scriptPath, 'utf8') } };
+  return {
+    ...enforcement,
+    hook: { ...enforcement.hook, script: readFileSync(scriptPath, 'utf8') },
+  };
 }
 
 function readRule(file: string, rootDir: string): Rule | undefined {
@@ -146,16 +157,32 @@ function readAgent(file: string): Agent | undefined {
   };
 }
 
-/** Skills : id = `name` du frontmatter, à défaut `id`, à défaut le nom du dossier. */
+/** Un tableau de strings, sinon `undefined` (frontmatter mal formé → toléré, ADR-0025). */
+function stringArray(value: unknown): string[] | undefined {
+  return Array.isArray(value) && value.every((v) => typeof v === 'string') ? value : undefined;
+}
+
+/**
+ * Skills : id = `name` du frontmatter, à défaut `id`, à défaut le nom du dossier.
+ *
+ * ADR-0025 : `composes:` / `composes-external:` (kebab en YAML → camelCase en TS)
+ * portent les dépendances inter-skills MÉCANIQUES. Absents ⇒ champ non posé
+ * (rétro-compat totale, un skill sans composition se charge comme avant). Chaque
+ * id composé passe par `assertSafeId` — même garde-fou de frontière que le reste
+ * du loader (F1) : un id composé devient potentiellement un chemin de sortie.
+ */
 function readSkill(file: string, fallbackId: string): Skill {
   const { data, content } = matter(readFileSync(file, 'utf8'));
   const id =
-    typeof data.name === 'string'
-      ? data.name
-      : typeof data.id === 'string'
-        ? data.id
-        : fallbackId;
-  return { id, content: content.trim() };
+    typeof data.name === 'string' ? data.name : typeof data.id === 'string' ? data.id : fallbackId;
+  const composes = stringArray(data.composes)?.map(assertSafeId);
+  const composesExternal = stringArray(data['composes-external'])?.map(assertSafeId);
+  return {
+    id,
+    content: content.trim(),
+    ...(composes ? { composes } : {}),
+    ...(composesExternal ? { composesExternal } : {}),
+  };
 }
 
 const SKILL_FILE = 'SKILL.md';

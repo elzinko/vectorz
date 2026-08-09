@@ -1,4 +1,6 @@
 #!/usr/bin/env tsx
+import { homedir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
 /**
  * lawgiver — CLI du moteur déterministe (ADR-0003 / ADR-0004).
  *
@@ -12,13 +14,14 @@
  * appel LLM réel — ADR-0004 §2).
  */
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve, join } from 'node:path';
-import { homedir } from 'node:os';
 import { bind } from '../src/core/bind.js';
-import { applyPlan, applyGlobalPlan } from '../src/io/apply.js';
 import { planCapture } from '../src/core/capture.js';
-import { applyCapture } from '../src/io/capture.js';
+import { checkComposition } from '../src/core/composition.js';
+import { expandProfile } from '../src/core/expand.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
+import { applyGlobalPlan, applyPlan } from '../src/io/apply.js';
+import { applyCapture } from '../src/io/capture.js';
+import { loadCatalog } from '../src/loaders/catalog.js';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -56,9 +59,33 @@ function runBindGlobal(profile: string, link: boolean): void {
   console.log(
     `lawgiver: bind-global '${profile}' → ${root} [claude-code-global] (${mode}) : ${plan.files.length} fichier(s).`,
   );
+  reportComposition(profile);
 }
 
-const CAPTURE_KINDS: ReadonlyArray<LearningEntry['kind']> = ['rule', 'skill', 'agent', 'interaction'];
+/**
+ * ADR-0025 — diagnostic NON BLOQUANT : le bind a déjà réussi ci-dessus. `bind()`
+ * reste pur et ne retourne pas le profil résolu ; on refait ici le load+expand
+ * (bon marché, déterministe) pour éviter de changer sa signature — le bord
+ * (CLI) rend visible ce que le cœur calcule, il ne le recalcule pas autrement.
+ */
+function reportComposition(profileId: string): void {
+  const catalog = loadCatalog(repoRoot);
+  const profile = catalog.profiles.get(profileId);
+  if (!profile) return;
+  const resolved = expandProfile(profile, catalog);
+  for (const { from, missing } of checkComposition(resolved, catalog)) {
+    console.error(
+      `⚠️  composition : « ${from} » compose « ${missing} » mais ce composant est absent du profil bindé`,
+    );
+  }
+}
+
+const CAPTURE_KINDS: ReadonlyArray<LearningEntry['kind']> = [
+  'rule',
+  'skill',
+  'agent',
+  'interaction',
+];
 
 function isCaptureKind(value: string): value is LearningEntry['kind'] {
   return (CAPTURE_KINDS as readonly string[]).includes(value);
@@ -72,8 +99,12 @@ function runCapture(target: string, kind: string, content: string, forAgentId?: 
   if (!isCaptureKind(kind)) usage();
   const plan = planCapture(target, kind, content, today(), '', forAgentId);
   applyCapture(plan, repoRoot);
-  const wired = plan.agentWiring ? ` + ${plan.agentWiring.agentPath} (${plan.agentWiring.listField})` : '';
-  console.log(`lawgiver: capture ${kind} '${target}' → ${plan.artifact.path} + journal${wired} + commit.`);
+  const wired = plan.agentWiring
+    ? ` + ${plan.agentWiring.agentPath} (${plan.agentWiring.listField})`
+    : '';
+  console.log(
+    `lawgiver: capture ${kind} '${target}' → ${plan.artifact.path} + journal${wired} + commit.`,
+  );
 }
 
 function parseFlag(args: string[], flag: string): string | undefined {

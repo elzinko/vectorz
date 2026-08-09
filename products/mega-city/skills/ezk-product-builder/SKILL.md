@@ -1,5 +1,7 @@
 ---
 name: ezk-product-builder
+composes: [ezk-backlog, ezk-sprint]
+composes-external: [product-brainstorming, architecture]
 argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des

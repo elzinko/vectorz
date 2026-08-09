@@ -63,6 +63,10 @@ export interface Bundle {
 export interface Skill {
   id: string;             // 'ezk-commits'
   content: string;        // le playbook (markdown)
+  /** ADR-0025 — ids de skills INTERNES requis (doivent être présents à la résolution du profil). */
+  composes?: string[];
+  /** ADR-0025 — refs EXTERNES (`skill-creator`, `product-brainstorming`…) : documentées, jamais warnées. */
+  composesExternal?: string[];
 }
 
 /** Un rôle. Fichier MARKDOWN (rôle) + frontmatter (les listes ci-dessous = DATA composable). */
