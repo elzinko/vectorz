@@ -1,5 +1,5 @@
 ---
-id: 0186
+id: 0190
 title: composes — tier « delegates: » (composition optionnelle, jamais warnée)
 type: feature
 priority: P2
