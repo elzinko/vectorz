@@ -6,6 +6,7 @@ priority: P1
 product: mega-city
 labels: [enabler]
 status: todo
+ready: 2026-08-09
 pr:
 created: 2026-07-06
 ---

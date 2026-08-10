@@ -43,3 +43,17 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 > Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr-pilot` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-start` (fiche 0090) = **19 skills** au profil `global`, + 6 agents.
 > Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée) · `supervision-analyze` (post-mortem journal + transcript — fiche 0104, opt-in) · `vz-product-builder` (overlay AUTONOME du product-builder à corpus de reviewers, fiche 0060 — opt-in explicite, jamais bindé par défaut : l'autonomie se choisit).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
+
+## Graphe de composition (`composes:`)
+
+<!-- composes-graph:begin -->
+```mermaid
+flowchart LR
+    ezk-product-builder --> ezk-backlog
+    ezk-product-builder --> ezk-sprint
+    ezk-sprint --> ezk-backlog
+    ezk-sprint --> ezk-ci
+    ezk-sprint --> ezk-commits
+    ezk-sprint --> ezk-start
+```
+<!-- composes-graph:end -->
