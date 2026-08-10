@@ -3,9 +3,6 @@
 **Point d’entrée unique** pour tester la chaîne méthode → journal → Moniteur
 sans se perdre dans le programme de refonte.
 
-Historique / phases (si présent sur la branche) :
-[`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
-
 ---
 
 ## Si tu es perdu
@@ -65,7 +62,7 @@ affiché en fin de script :
 3. Après `/supervision-demo` : un dossier `.supervision/runs/<id>/events.jsonl` existe.
 4. **Capture `02-moniteur-apres.png`** : une carte de run apparaît dans le Moniteur
    (http://localhost:5173).
-5. (Optionnel) `/ezk-archive` → portier `VERDICT: CLEAN` — lié à la fiche 2088.
+5. (Optionnel) `/ezk-archive` → portier `VERDICT: CLEAN` — lié à la fiche [0088](../features/0088-ezk-archive-cout-cloture-session-disciplinee.md).
 
 Si une étape est KO, le rapport le dit. **Ne pas inventer un succès.**
 
@@ -98,11 +95,12 @@ pnpm --filter @cop1/web dev   # → http://localhost:5173
 
 ## Après un dogfood réussi
 
-1. Cocher / débloquer les AC observationnels dans les fiches 2094 / 2095 / 2088 si
-   vraiment vus.
-2. Une ligne dans le Journal de [`PROGRAMME-REFONTE.md`](./PROGRAMME-REFONTE.md).
-3. **Ne pas merger** depuis ce guide — décision opérateur + CI verte.
+1. Cocher / débloquer les AC observationnels dans les fiches
+   [0094](../features/done/0094-emetteur-branche-sur-claude-code.md) /
+   [0095](../features/done/0095-ezk-product-builder-n-emet-pas.md) /
+   [0088](../features/0088-ezk-archive-cout-cloture-session-disciplinee.md)
+   si vraiment vus (0094 / 0095 sont déjà `shipped`).
+2. **Ne pas merger** depuis ce guide — décision opérateur + CI verte.
 
-Suite produit (acteur LLM headless, nightly) : fiche
-[2103](../features/2103-ezk-testbed-llm-dogfood-harness.md) — **v2**, pas requis pour
-le dogfood humain d’aujourd’hui.
+Suite produit (acteur LLM headless, nightly) : un **testbed LLM dogfood** headless est
+une piste **v2**, pas requise pour le dogfood humain d’aujourd’hui.

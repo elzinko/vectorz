@@ -50,7 +50,7 @@ node products/cop1/packages/app/dist/cli/index.js status
 node products/cop1/packages/app/dist/cli/index.js stop
 ```
 
-The daemon exposes health and supervision APIs consumed by Moniteor. Runs emit to `.cop1/` (journal, metrics) per the supervisability contract ([ADR-028](adr/ADR-028-control-plane-ontology.md)).
+The daemon exposes health and supervision APIs consumed by Moniteor. Runs emit to `.cop1/` (journal, metrics) per the supervisability contract ([ADR-022](adr/ADR-022-control-plane-ontology.md)).
 
 ### 4. Removed epoch-1 commands
 
