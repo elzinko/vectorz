@@ -220,7 +220,7 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 - **Contexte de liste** : fiche déposée dans le backlog **mega-city** (sujet = méthode).
   Si la fiche racine **0064** (liste unique via champ `product:`) est livrée avant, la
   migration est mécanique (ajout d'un champ), pas un déplacement.
-- **Constat à router vers la fiche racine 0064 et vers [0090](0090-coherence-de-sprint.md)** —
+- **Constat à router vers la fiche racine 0064 et vers [0090](done/0090-coherence-de-sprint.md)** —
   cette fiche est née `0099`, a dû devenir `0102`, et `0100` aurait aussi collisionné.
   Trois numéros brûlés en une journée, **à l'intérieur d'une seule liste**, parce que
   quatre worktrees vivaient en parallèle et que chacun calculait `max(id)+1` contre son

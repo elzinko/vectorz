@@ -137,7 +137,7 @@ reconstruite** au sprint suivant.
   groomer » — c'est pourquoi la fiche **reste `idea`** (le sous-problème réconciliation est le
   seul volet clos).
 - 2026-07-26 — **renumérotée `0064` → `0100`** (aucun changement de fond). Cette fiche portait
-  le même id que la fiche racine [0064 « une seule liste de features »](0064-liste-unique-features-champ-product.md)
+  le même id que la fiche racine [0064 « une seule liste de features »](done/0064-liste-unique-features-champ-product.md)
   (P0, créée le 2026-07-26 précisément pour supprimer ces collisions). Id retenu =
   `max(mega-city actifs + done) + 1` = 0100, **libre des deux côtés** — à l'inverse de
   `max+1` côté racine (0065), déjà porté par [0065](0065-sprint-composition-lot-coherent.md).

@@ -29,7 +29,7 @@ Les briques amont existent déjà — il manque le maillon du milieu :
   §1, plan LIVRAISON) : **D1** pas de migration à chaud, jamais · **D2** adoption aux
   frontières de jalon · **D11** l'éligibilité de MAJ appartient à la méthode
   (`adopt_version` seulement si `upgrade_ok`).
-- 🟡 **Banc cobaye** ([0041](0041-cobaye-banc-test-rapide.md), ready) : le banc qui
+- 🟡 **Banc cobaye** ([0041](done/0041-cobaye-banc-test-rapide.md), ready) : le banc qui
   consommera ces versions figées.
 - ❌ **Le canal de release + la pastille** : cette fiche.
 

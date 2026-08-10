@@ -74,7 +74,7 @@ Livrables candidats :
   rouge, prouvé par sabotage) appartient à **cette fiche 0066** — c'est elle le porteur, pour
   qu'il ne dépende d'aucun autre merge.
 - **Réutiliser plutôt qu'un test ad hoc, si l'occasion se présente.** Une **extension de la
-  fiche [0079](0079-restitutions-po-lisibles.md) encore en cours (branche non mergée, pas
+  fiche [0079](done/0079-restitutions-po-lisibles.md) encore en cours (branche non mergée, pas
   visible sur `main`)** propose un test de contrat sur le **texte** des skills, calqué sur
   [`skill-emission-contract.test.ts`](../products/mega-city/src/supervision/__tests__/skill-emission-contract.test.ts).
   Si elle atterrit, mutualiser : même mécanique (croiser le texte d'une skill avec le réel),

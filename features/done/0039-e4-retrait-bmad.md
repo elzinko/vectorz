@@ -12,7 +12,7 @@ created: 2026-07-16
 
 # 0039 — E4 : retrait de BMAD, l'époque 2 est physique
 
-> **Gate d'entrée (dure, ADR-029)** : la fiche [0038](0038-e3-pilote-natif.md) est
+> **Gate d'entrée (dure, ADR-029)** : la fiche [0038](../0038-e3-pilote-natif.md) est
 > shippée — un run pilote vert zéro-BMAD existe. **Strictement post-démo** (la
 > suppression code casse le build du daemon via la chaîne d'import). Ne pas tirer avant.
 >
@@ -21,7 +21,7 @@ created: 2026-07-16
 
 ## Contexte / Problème
 
-[ADR-029](../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md) (Accepté),
+[ADR-029](../../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md) (Accepté),
 Décision 1 §E4. Le remplaçant est construit et prouvé (0038) — on retire. **Trois natures
 de travail** (panel ADR-029 : « tri + relogement + purge », PAS une suppression
 mécanique) : 59 fichiers TS prod mentionnent BMAD — 25 dans les 4 unités spécifiques,

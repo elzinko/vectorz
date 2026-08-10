@@ -44,7 +44,7 @@ Lifecycle d'identité en deux temps :
    sprint, ou à la promotion `ready` / bascule `idea → todo` actionnable
    (point unique à figer au grooming).
 3. **Mutex / single-writer** — un verrou (bail git, file lock, ou claim documenté
-   dans le style [0090](0090-coherence-de-sprint.md)) pour qu'un seul processus
+   dans le style [0090](done/0090-coherence-de-sprint.md)) pour qu'un seul processus
    à la fois mint un id (`max+1` sur base fetchée + branches non mergées).
 
 Ironie assumée : **cette fiche-ci porte encore un numéro (0180)** parce que le

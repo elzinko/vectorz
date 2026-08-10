@@ -29,7 +29,7 @@ lint + build + test racine, couverture `@cop1/web`, steps standalone mega-city
 2. **Allowlist des imports `@anthropic-ai/claude-agent-sdk`** : test qui borne la liste
    des fichiers autorisés à importer le SDK (état actuel = les adapters de session,
    ADR-026) — durcie ensuite par E1/L6 (0020) et étendue « zéro bmad » par E4
-   ([0039](0039-e4-retrait-bmad.md) §5).
+   ([0039](done/0039-e4-retrait-bmad.md) §5).
 3. **NE PAS faire** (déjà là ou différé, cf. panel PR #10) : jobs `--filter` build par
    produit (mega-city n'a pas de script build ; `cop1` est le nom du package racine) ;
    check « config générée par bind committée » (différé à L9 — personne n'écrit encore
