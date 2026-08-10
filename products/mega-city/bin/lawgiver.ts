@@ -41,6 +41,7 @@ function runBind(profile: string, projectDir: string, host: HostId, force: boole
   console.log(
     `lawgiver: bind '${profile}' → ${absoluteProject} [${host}] : ${files} fichier(s), ${hooks} hook(s).`,
   );
+  reportComposition(profile);
 }
 
 /**
