@@ -32,7 +32,10 @@ function collect(root: string): Map<string, PlanCard> {
   for (const sub of [base, join(base, 'done')]) {
     if (!existsSync(sub)) continue;
     for (const file of readdirSync(sub)) {
-      const idMatch = file.match(/^(\d{4})-.*\.md$/);
+      // Deux formats d'id coexistent (fiche 0180) : historique `0094-slug.md`
+      // (4 chiffres, séparateur `-`) et horodaté `20260810143052123_slug.md`
+      // (17 chiffres, séparateur `_`). `\d{4,}` + `[-_]` accepte les deux.
+      const idMatch = file.match(/^(\d{4,})[-_].*\.md$/);
       if (!idMatch) continue;
       const text = readFileSync(join(sub, file), 'utf8');
       const id = idMatch[1];

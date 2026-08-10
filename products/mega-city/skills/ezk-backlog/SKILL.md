@@ -112,8 +112,8 @@ features/
   README.md            # guide humain CURÉ (marque layout_version) — pas l'index
   BACKLOG.md           # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
   PLAN.md              # séquence décidée (curée) — NOW = prochaines N cartes
-  0001-slug.md         # features/bugs ACTIFS (idea / todo / in-progress / blocked), id 4 chiffres
-  0002-autre-slug.md
+  20260810143052123_slug.md   # fiches ACTIVES (idea / todo / in-progress / blocked) — id horodaté AAAAMMDDHHMMSSmmm (fiche 0180)
+  0002-autre-slug.md          # format historique 4 chiffres — toujours valide (bascule en avant, pas de renommage)
   done/                # fiches LIVRÉES (déplacées ici quand status: shipped)
     0000-vieux-slug.md
   feature-template.md
@@ -233,10 +233,15 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    - `priority` ∈ {P0…P3} — **demande si absente**, ne l'invente jamais. Profite de l'ajout pour
      **proposer un re-classement** des priorités si la nouvelle fiche change l'ordre relatif (sans l'imposer).
    - `version` *(optionnel)* — si l'utilisateur cible un jalon (ex. `V1.1`), renseigne `version:` ; sinon laisse vide.
-5. **Création.** Seulement maintenant : `id` = max(actifs + done) + 1 (4 chiffres) ; `slug` kebab court ;
-   fiche depuis `feature-template.md`, front-matter rempli (`status: todo` — ou `idea` si non-groomé,
-   cf. étape 1 ; `created` = date du jour — demande-la si inconnue, ne l'invente pas). Puis `regen`.
-   Commit `docs(features): add <id> <slug>`.
+5. **Création.** Seulement maintenant : `id` = **horodatage `AAAAMMDDHHMMSSmmm`** (17 chiffres, ms)
+   obtenu via **`<skill>/scripts/mint-id.sh`** — **jamais `max+1`** (il collisionne à coup sûr entre
+   branches/sessions parallèles ; le timestamp se génère sans coordination, fiche 0180). `slug`
+   kebab court ; nom de fichier **`<id>_<slug>.md`** (underscore = séparateur id ↔ slug ; le slug
+   reste en tirets). Fiche depuis `feature-template.md`, front-matter rempli (`id:` = le timestamp
+   complet ; `status: todo` — ou `idea` si non-groomé, cf. étape 1 ; `created` = date du jour —
+   demande-la si inconnue, ne l'invente pas). Puis `regen`. Commit `docs(features): add <id> <slug>`.
+   *(Fiches historiques en `0001-slug.md` : inchangées, jamais renommées — les deux formats
+   coexistent, l'outillage tolère 4 ou 17 chiffres.)*
 
 ### `groom <id>` — faire mûrir UNE fiche vers la DoR (ADR-0016, fiche 0056)
 
@@ -352,7 +357,8 @@ sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged*
    ne le tirer qu'au besoin via `gh pr view <n> --json body` pour les candidats ambigus).
    **Rapproche** chaque PR mergée d'une fiche :
    - **mécanique** quand la branche porte l'id : convention `feat/<id>-<slug>` (ADR-0018) →
-     l'id est dans `headRefName`. Match déterministe.
+     l'id est dans `headRefName` (préfixe `\d+` avant le 1er tiret — 4 chiffres *ou* timestamp
+     17 chiffres, fiche 0180). Match déterministe.
    - **jugement LLM** en repli (branches legacy sans id) : titre **et corps** de PR vs titre
      de fiche. Proposition seulement, jamais un match affirmé.
 3. Sortie = **propositions numérotées** « fiche <id> semble mergée par PR #<n> (<branche>) →

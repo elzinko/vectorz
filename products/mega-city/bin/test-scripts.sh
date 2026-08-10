@@ -22,6 +22,7 @@ SUITES=(
   "skills/ezk-archive/scripts/test-handoff.sh"           # fiche 0088 — anneau FIFO du handoff
   "skills/ezk-archive/scripts/test-template-unicity.sh"  # fiche 0088 — gabarit non dupliqué
   "bin/test-regen-backlog.sh"                            # ezk-backlog — régénération de l'index
+  "skills/ezk-backlog/scripts/test-mint-id.sh"           # ezk-backlog — id horodaté (fiche 0180)
   "skills/ezk-backlog/scripts/test-layout-version.sh"    # ezk-backlog — Skema layout version
 )
 

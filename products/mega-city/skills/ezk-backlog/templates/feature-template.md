@@ -1,5 +1,5 @@
 ---
-id: 0000
+id: 0000 # 'add' le remplace par un horodatage AAAAMMDDHHMMSSmmm (scripts/mint-id.sh, fiche 0180) ; nom de fichier <id>_<slug>.md
 title: <titre court et parlant>
 type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
