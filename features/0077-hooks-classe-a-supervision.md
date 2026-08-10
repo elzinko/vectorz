@@ -61,3 +61,8 @@ compte le plus (démarrage, gate, reprise, fin).
   0060). Statut/`ready:` inchangés (le gate reste au PO).
 - Réfs : fiche 0050 (Notes 2026-07-14 et 2026-07-17), capture cop1
   `docs/captures/2026-07-13-contrat-methode-et-versions.md` §7 (classes de conformité).
+- **Couture partagée ([ADR-036](../docs/adr/ADR-036-transport-emission-separable-du-runtime.md), 2026-08-10)** :
+  ces hooks (classe A, déterministe) et un futur **transport CLI shell-host (classe B, appelé par le
+  LLM)** sont **frères** sur la même couture d'émission — même noyau `runtime.ts`, déclencheur
+  différent. Cette fiche **reste « hooks classe A »** (ne pas élargir son scope) ; le CLI se situe
+  **à côté**, nommé par ADR-036 (le MCP n'est qu'un transport parmi ces trois).
