@@ -52,6 +52,15 @@ status: todo
 pr:
 ---
 EOF
+# fiche HORODATÉE livrée (nom <id>_<slug>.md, fiche 0180) — le gate doit la reconnaître en done/
+cat > features/done/20260810143052123_fiche-horodatee.md <<'EOF'
+---
+id: 20260810143052123
+title: fiche horodatée livrée
+status: shipped
+pr: "#124"
+---
+EOF
 echo hello > a.txt
 git add . && git commit -qm "base"
 
@@ -64,6 +73,11 @@ ok "les 4 points sont CLEAN"                 "[ \"\$(echo \"\$OUT\" | grep -cE '
 ok "MAINSYNC: NA (pas de remote)"            "echo \"\$OUT\" | grep -q '^MAINSYNC: NA'"
 ok "le bloc est terminé par --- END ---"     "echo \"\$OUT\" | tail -1 | grep -q -- '--- END ---'"
 ok "exit 0 sur CLEAN"                        "bash \"\$CHECK\" --gate --shipped 0042 >/dev/null"
+
+echo "G1b — fiche HORODATÉE shippée (nom <id>_<slug>.md, fiche 0180) reconnue CLEAN :"
+OUThz="$(bash "$CHECK" --gate --shipped 20260810143052123)"
+ok "VERDICT: CLEAN sur id horodaté"          "echo \"\$OUThz\" | grep -qx 'VERDICT: CLEAN'"
+ok "P3_BACKLOG: CLEAN (fiche _slug vue en done/)" "echo \"\$OUThz\" | grep -q '^P3_BACKLOG: CLEAN'"
 
 echo "G5 (LE garde-fou) — sans --shipped, aucune preuve ⇒ jamais CLEAN :"
 OUT5="$(bash "$CHECK" --gate)"

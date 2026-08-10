@@ -452,9 +452,10 @@ else
       add_fact P3 "declared $id : prefixe '${pfx:-<racine>}' non resolu en un backlog unique — id ambigu, verification impossible"
       continue
     fi
-    found="$(git ls-files "$dir/done/${num}-*.md" 2>/dev/null | head -1)"
+    # nom de fichier : `<num>-<slug>` (legacy) OU `<num>_<slug>` (horodaté, fiche 0180) → [-_]
+    found="$(git ls-files "$dir/done/${num}[-_]*.md" 2>/dev/null | head -1)"
     if [[ -z "$found" ]]; then
-      stray="$(git ls-files "$dir/${num}-*.md" 2>/dev/null | head -1)"
+      stray="$(git ls-files "$dir/${num}[-_]*.md" 2>/dev/null | head -1)"
       P3_STATE="DIRTY"
       if [[ -n "$stray" ]]; then
         st="$(grep -m1 '^status:' "$stray" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"
