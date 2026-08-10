@@ -54,7 +54,6 @@ flowchart LR
     ezk-sprint --> ezk-backlog
     ezk-sprint --> ezk-ci
     ezk-sprint --> ezk-commits
-    ezk-sprint --> ezk-preview
     ezk-sprint --> ezk-start
 ```
 <!-- composes-graph:end -->
