@@ -15,8 +15,8 @@ fail() { echo "  ✗ $1"; FAIL=$((FAIL + 1)); }
 id="$("$MINT")"
 [[ "$id" =~ ^[0-9]{17}$ ]] || fail "format ≠ 17 chiffres : '$id'"
 
-today="$(date +%Y%m%d)"
-[[ "${id:0:8}" == "$today" ]] || fail "préfixe ≠ jour courant : ${id:0:8} ≠ $today"
+today="$(date -u +%Y%m%d)"   # l'id est minté en UTC (finding Codex) — comparer en UTC
+[[ "${id:0:8}" == "$today" ]] || fail "préfixe ≠ jour UTC courant : ${id:0:8} ≠ $today"
 
 # 5 mints successifs : tous bien formés, jamais décroissants (le temps avance).
 prev=""

@@ -1,6 +1,6 @@
 ---
-# id : horodatage AAAAMMDDHHMMSSmmm posé par `add` (scripts/mint-id.sh) — nom de fichier <id>_<slug>.md
-id: 0000
+# id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
+id: "0000"
 title: <titre court et parlant>
 type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3

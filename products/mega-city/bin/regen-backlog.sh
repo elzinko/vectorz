@@ -33,7 +33,7 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, r
     BEGIN { infm=0 }
     /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
     infm==1 {
-      if ($0 ~ /^id:/)       { sub(/^id:[[:space:]]*/, "");       id=$0 }
+      if ($0 ~ /^id:/)       { sub(/^id:[[:space:]]*/, "");       id=unquote($0) }
       if ($0 ~ /^title:/)    { sub(/^title:[[:space:]]*/, "");    title=unquote($0) }
       if ($0 ~ /^type:/)     { sub(/^type:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); type=$0 }
       if ($0 ~ /^priority:/) { sub(/^priority:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); prio=$0 }

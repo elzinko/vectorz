@@ -237,8 +237,9 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    obtenu via **`<skill>/scripts/mint-id.sh`** — **jamais `max+1`** (il collisionne à coup sûr entre
    branches/sessions parallèles ; le timestamp se génère sans coordination, fiche 0180). `slug`
    kebab court ; nom de fichier **`<id>_<slug>.md`** (underscore = séparateur id ↔ slug ; le slug
-   reste en tirets). Fiche depuis `feature-template.md`, front-matter rempli (`id:` = le timestamp
-   complet ; `status: todo` — ou `idea` si non-groomé, cf. étape 1 ; `created` = date du jour —
+   reste en tirets). Fiche depuis `feature-template.md`, front-matter rempli (**`id: "<timestamp>"`
+   entre guillemets** — 17 chiffres > `Number.MAX_SAFE_INTEGER` : non quoté, un parser YAML JS le
+   corromprait en nombre ; `status: todo` — ou `idea` si non-groomé, cf. étape 1 ; `created` = date du jour —
    demande-la si inconnue, ne l'invente pas). Puis `regen`. Commit `docs(features): add <id> <slug>`.
    *(Fiches historiques en `0001-slug.md` : inchangées, jamais renommées — les deux formats
    coexistent, l'outillage tolère 4 ou 17 chiffres.)*

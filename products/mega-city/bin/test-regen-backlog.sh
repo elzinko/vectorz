@@ -156,4 +156,14 @@ printf -- '---\nid: 0001\ntitle: doublon\ntype: feature\npriority: P3\nstatus: s
 "$SCRIPT" "$F" "Backlog — test F-dup" >/dev/null 2>"$TMP/f-dup.err"
 check "warning id en double" "grep -q 'id 0001 en double' '$TMP/f-dup.err'"
 
+# ── Cas G : id horodaté QUOTÉ (fiche 0180) → index dé-quoté (17 chiffres > MAX_SAFE_INTEGER) ──
+G="$TMP/g"; mkdir -p "$G/features/done"
+printf -- '---\nid: "20260810143052123"\ntitle: fiche horodatee quotee\ntype: feature\npriority: P2\nstatus: todo\nproduct: vectorz\ncreated: 2026-08-10\n---\n' \
+  > "$G/features/20260810143052123_horodatee.md"
+"$SCRIPT" "$G" "Backlog — test G" >/dev/null 2>"$TMP/g.err"
+echo "Cas G (id horodaté quoté) :"
+check "id 17 chiffres dé-quoté dans l'index" "grep -qE '^\| 20260810143052123 \|' '$G/features/BACKLOG.md'"
+check "aucun guillemet résiduel sur l'id"    "! grep -q '\"20260810143052123\"' '$G/features/BACKLOG.md'"
+check "zéro warning (id quoté)"              "! test -s '$TMP/g.err'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi
