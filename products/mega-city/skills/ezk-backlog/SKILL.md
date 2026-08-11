@@ -233,9 +233,13 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    - `priority` ∈ {P0…P3} — **demande si absente**, ne l'invente jamais. Profite de l'ajout pour
      **proposer un re-classement** des priorités si la nouvelle fiche change l'ordre relatif (sans l'imposer).
    - `version` *(optionnel)* — si l'utilisateur cible un jalon (ex. `V1.1`), renseigne `version:` ; sinon laisse vide.
-5. **Création.** Seulement maintenant : `id` = **horodatage `AAAAMMDDHHMMSSmmm`** (17 chiffres, ms)
-   obtenu via **`<skill>/scripts/mint-id.sh`** — **jamais `max+1`** (il collisionne à coup sûr entre
-   branches/sessions parallèles ; le timestamp se génère sans coordination, fiche 0180). `slug`
+5. **Création.** Seulement maintenant : `id` = **horodatage `AAAAMMDDHHMMSSmmm`** (17 chiffres, ms, UTC),
+   généré **inline** — aucune dépendance de script : en install globale *copy-mode* seul `SKILL.md` est
+   déployé (`skillFolderFiles`), donc `add` porte lui-même la commande :
+   `python3 -c 'import time; t=time.time(); print(time.strftime("%Y%m%d%H%M%S", time.gmtime(t)) + "%03d" % (int(t*1000)%1000))'`
+   — **jamais `max+1`** (collisionne à coup sûr entre branches/sessions parallèles ; le timestamp se
+   génère sans coordination, fiche 0180). *(Impl. de référence avec fallbacks `date`/`gdate`/`perl`,
+   pour l'usage scripté dans le monorepo : `skills/ezk-backlog/scripts/mint-id.sh`.)* `slug`
    kebab court ; nom de fichier **`<id>_<slug>.md`** (underscore = séparateur id ↔ slug ; le slug
    reste en tirets). Fiche depuis `feature-template.md`, front-matter rempli (**`id: "<timestamp>"`
    entre guillemets** — 17 chiffres > `Number.MAX_SAFE_INTEGER` : non quoté, un parser YAML JS le
