@@ -105,4 +105,15 @@ describe('crossBacklogHead (fiche 0097)', () => {
     const r = crossBacklogHead([], new Map());
     expect(r).toEqual({ head: null, blockedAhead: [], unresolved: [] });
   });
+
+  it('traite un id HORODATÉ (17 chiffres, fiche 0180) comme une tête normale, aux côtés du legacy', () => {
+    const planIds = ['20260810143052123', '0041'];
+    const index = indexOf(
+      card('20260810143052123', 'vectorz', 'todo', true),
+      card('0041', 'vectorz', 'todo', true),
+    );
+    const r = crossBacklogHead(planIds, index);
+    expect(r.head).toEqual(card('20260810143052123', 'vectorz', 'todo', true));
+    expect(r.unresolved).toEqual([]);
+  });
 });

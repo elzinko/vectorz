@@ -87,7 +87,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    <!-- ≤5 lignes user-facing : ce que ça change et pourquoi. Ouvre « En clair ». -->
 
    ## Lien fiche
-   <!-- chemin : features/<id>-*.md (ou équivalent projet) — l'id est dans la branche feat/<id>-<slug> -->
+   <!-- chemin : features/<id>_*.md (legacy `<id>-*.md`) — l'id est dans la branche feat/<id>-<slug> -->
 
    ## Comment tester
    <!-- commandes littérales rejouables, OU preuves agent (screenshots) pointant vers

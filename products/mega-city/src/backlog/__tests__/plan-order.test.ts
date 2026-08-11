@@ -72,6 +72,15 @@ describe('parsePlanOrder (fiche 0089)', () => {
     expect(parsePlanOrder(md)).toEqual(['0094', '0062', '0082']);
   });
 
+  it('capture un id HORODATÉ 17 chiffres EN ENTIER, coexistant avec le legacy 4 chiffres (fiche 0180)', () => {
+    // \d{4,} gourmand : sans lui, `2026` serait pris pour l’id complet (troncature).
+    const md = [
+      '1. **20260810143052123** — fiche horodatée · `build`',
+      '2. 0094 — legacy 4 chiffres',
+    ].join('\n');
+    expect(parsePlanOrder(md)).toEqual(['20260810143052123', '0094']);
+  });
+
   it('renvoie [] sur une entrée vide, sans throw', () => {
     expect(parsePlanOrder('')).toEqual([]);
   });
