@@ -95,12 +95,11 @@ pnpm --filter @cop1/web dev   # → http://localhost:5173
 
 ## Après un dogfood réussi
 
-1. Cocher / débloquer les AC observationnels dans les fiches
-   [0094](../features/done/0094-emetteur-branche-sur-claude-code.md) /
-   [0095](../features/done/0095-ezk-product-builder-n-emet-pas.md) /
-   [0088](../features/0088-ezk-archive-cout-cloture-session-disciplinee.md)
-   si vraiment vus (0094 / 0095 sont déjà `shipped`).
+1. Si une fiche du backlog attend une **preuve observationnelle** (visible au Moniteur,
+   pas en test unitaire), cocher/débloquer ses AC une fois vraiment vues — actuellement
+   [0088](../features/0088-ezk-archive-cout-cloture-session-disciplinee.md).
 2. **Ne pas merger** depuis ce guide — décision opérateur + CI verte.
 
-Suite produit (acteur LLM headless, nightly) : un **testbed LLM dogfood** headless est
-une piste **v2**, pas requise pour le dogfood humain d’aujourd’hui.
+Suite produit (acteur LLM headless, nightly) : fiche
+[0186](../features/0186-harnais-dogfood-llm-headless.md) — **v2**, pas requise pour le
+dogfood humain d’aujourd’hui.
