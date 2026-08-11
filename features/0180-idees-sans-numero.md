@@ -1,6 +1,6 @@
 ---
 id: 0180
-title: Fiches datées — id AAAAMMDDHHMMSS à la capture (fin de max+1)
+title: Fiches datées — id AAAAMMDDHHMMSSmmm (17 ch., ms, UTC) à la capture, fin de max+1
 type: feature
 priority: P2
 product: vectorz
@@ -42,22 +42,24 @@ par une autre branche » ([0173](done/0173-ezk-methode-trois-bandes-naming.md)).
 
 ## Décision (2026-08-10)
 
-**L'id EST un horodatage `AAAAMMDDHHMMSS`, généré localement à la capture.** On
-supprime `max+1`. Un timestamp se génère **sans voir les autres branches** → plus
+**L'id EST un horodatage `AAAAMMDDHHMMSSmmm` (17 chiffres, à la milliseconde, en UTC),
+généré localement à la capture.** On supprime `max+1`. Un timestamp se génère **sans voir les autres branches** → plus
 de coordination, plus de mint tardif, plus de verrou. Le slug parlant reste la
 **poignée humaine** (« la fiche `archive-croise` ») ; le timestamp est la
 **plomberie** qui trie et désambiguïse, jamais prononcée.
 
 Ce que ça change vraiment : on passe d'une **collision certaine** — `max+1` sur deux
 branches parties du même `main` collisionne même à des heures d'écart — à une
-**collision seulement si même seconde**, cas rare (≈ 4 fiches/jour) et sans cascade.
+**collision seulement en cas de même milliseconde** (17 chiffres), cas négligeable et sans cascade.
 
 ## Format
 
-- **Nom de fichier** : `AAAAMMDDHHMMSS_slug-parlant.md`. L'underscore sépare
+- **Nom de fichier** : `AAAAMMDDHHMMSSmmm_slug-parlant.md`. L'underscore sépare
   id ↔ slug ; les tirets vivent **dans** le slug → split trivial (`cut -d_ -f1`),
   et on reste aligné sur les branches `feat/<id>-slug` en tirets (ADR-0018).
-- **Front-matter `id:`** = le timestamp complet (source de vérité).
+- **Front-matter `id:`** = le timestamp complet, **entre guillemets** (`id: "<ts>"`) :
+  17 chiffres > `Number.MAX_SAFE_INTEGER`, non quoté un parser YAML JS le corromprait
+  en nombre. Les lecteurs (regen, portfolio, gate d'ouverture) le dé-quotent. Source de vérité.
 - **Tri** : l'ordre lexicographique du nom = ordre chronologique (format fixe,
   left-padded). Bonus « je vois le sujet **et** quand » directement dans l'arbo.
 - **Granularité — millisecondes (tranché 2026-08-10).** `id = AAAAMMDDHHMMSSmmm`
@@ -87,11 +89,12 @@ ne sont pas renommées (voir Migration).
 
 ## Critères d'acceptation
 
-- [ ] `add` génère un id `AAAAMMDDHHMMSS` (front-matter `id:` + préfixe du nom de
-      fichier) — **plus aucun appel à `max+1`** (`ezk-backlog` `add`, étape 5).
+- [ ] `add` génère un id `AAAAMMDDHHMMSSmmm` (17 chiffres, ms, UTC) — front-matter
+      `id:` **quoté** + préfixe du nom de fichier ; **plus aucun appel à `max+1`**
+      (`ezk-backlog` `add`, étape 5).
 - [ ] Deux sessions concurrentes d'un même projet ne collisionnent pas dans le cas
-      nominal ; le résiduel « même seconde » est traité par entropie (millis /
-      suffixe), **documenté comme non couvert** par un check d'existence.
+      nominal ; le résiduel « même milliseconde » relève de l'entropie du timestamp,
+      **documenté comme non couvert** par un check d'existence.
 - [ ] Bascule en avant : les fiches `00XX` existantes restent **inchangées**
       (branches `feat/00XX-…`, PR, `reconcile`, `PLAN` intacts) — pas de big-bang.
 - [ ] `regen` trie et liste les deux formats sans warning d'unicité erroné ; ordre
