@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 epic:
 status: todo
-ready:
+ready: 2026-08-12
 pr:
 created: 2026-07-26
 ---
@@ -28,6 +28,15 @@ Les 45 sont réparés et `products/mega-city/bin/check-links.sh` (+ `test-check-
 ni la CI, ni `ezk-backlog ship`. En l'état, la cause n° 2 re-produira des liens cassés
 au prochain ship et personne ne le verra — exactement le motif de 0095 (« un contrat
 qui ne rougit pas n'est pas un contrat »).
+
+## Valeur
+
+Tant que l'appel est manuel, la cause n° 2 (`ship` → `done/`) re-casse des liens à
+**chaque livraison** et personne ne le voit avant la session suivante : dette d'hygiène
+récurrente, doc de backlog qui **ment** (liens morts vers des fiches introuvables), et un
+outil livré (`check-links.sh`) qui **ne protège de rien** tant qu'un humain doit penser à
+le lancer. Le câbler transforme une discipline optionnelle en **filet inconditionnel** —
+même logique fail-closed que la DoD (0095).
 
 ## Proposition
 
@@ -51,11 +60,18 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
       (`features docs/adr docs/captures`, plus les guides de `docs/` qui citent des fiches).
 - [ ] Un `ship` suivi de la gate ne laisse passer aucun lien entrant orphelin.
 - [ ] `test-check-links.sh` reste vert et tourne dans la même gate.
+- [ ] Les archives **gelées par conception** (`docs/archive/pre-phase-a/` : snapshots
+      pré-pivot qui pointent volontairement l'ancienne structure) sont **exclues** du
+      périmètre — sinon la gate ne peut jamais être verte (constaté le 2026-08-12).
 
 ## Notes
 
 - Outil livré et vert : [`bin/check-links.sh`](../products/mega-city/bin/check-links.sh),
   [`bin/test-check-links.sh`](../products/mega-city/bin/test-check-links.sh).
+- **Re-mesuré le 2026-08-12** (session hygiène, PR #129) : 27 liens cassés dans `features/`
+  (même cause n° 2) **+ une 2ᵉ classe dans `docs/`** (résidus BMAD `_bmad-output` dans
+  `index.md`, renumérotation d'ADR) — tous réparés à la main. Confirme que le manuel ne
+  tient pas : la gate reste le seul remède durable.
 - Invocations : `bin/check-links.sh` (mega-city, périmètre par défaut `features/ docs/adr/`)
   et `bin/check-links.sh <racine-vectorz> features docs/adr docs/captures`.
 - Piège d'implémentation déjà payé : un test de schéma d'URL générique `^[a-z.]+:` avale
