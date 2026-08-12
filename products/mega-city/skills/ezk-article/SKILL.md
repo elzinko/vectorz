@@ -71,6 +71,14 @@ invariantes, ne les remplace jamais.
 - Un `approach=` ne dispense **pas** du brief ponctuel s'il manque un élément : les
   deux se composent, le brief ponctuel gagne en cas de conflit.
 
+> **Limite connue (installation copy-mode)** : les fichiers `approaches/*.md` sont lus
+> quand le skill est installé **par symlink** (mode dev — `~/.claude` pointe vers ce dépôt).
+> En installation **copy-mode** (lawgiver `bind-global` copy, cap Claude Desktop), la
+> matérialisation ne copie aujourd'hui **que `SKILL.md`** — le dossier `approaches/` n'est
+> pas encore livré, donc `approach=<nom>` n'y trouverait rien. Étendre la matérialisation
+> aux assets auxiliaires est un chantier à part (même contrainte que le mint inline
+> d'`ezk-backlog`) — suivi hors de cette fiche.
+
 ## Règles d'écriture (le style guide du skill — invariant)
 
 - **Thèse en épigraphe** : une phrase qui dit ce que l'article défend.
