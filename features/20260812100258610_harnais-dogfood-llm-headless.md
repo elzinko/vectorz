@@ -46,7 +46,8 @@ avec un verdict **OK/KO déterministe** sur l'émission réelle.
 
 - [ ] Un run **headless** (zéro interaction humaine) produit un `.supervision/runs/<id>/events.jsonl` non vide.
 - [ ] `supervision:analyze` (0104) rend un verdict `healthy` sur ce run.
-- [ ] Lançable en **une commande / un job nightly**, sortie **OK/KO** déterministe (pas de faux vert : Moniteur down ⇒ **SKIP explicite**, pas OK).
+- [ ] **Dernier maillon asserté** : le run est **ingéré et affiché par le Moniteur** (carte visible via `GET /api/supervision/runs` / l'UI) — sinon **KO**. C'est ce que le manuel prouve à l'œil (captures `01/02`) ; le harnais doit l'asserter, pas le sauter.
+- [ ] Lançable en **une commande / un job nightly**, sortie **OK/KO** déterministe : un Moniteur indisponible **fait échouer** le job (jamais un faux vert par SKIP silencieux sur le dernier maillon).
 - [ ] Gate locale verte (typecheck/lint/tests).
 
 ## Notes / décisions
