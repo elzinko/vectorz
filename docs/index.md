@@ -16,7 +16,7 @@ status: living doc map (epoch 2) — les artefacts BMAD d'époque-1 sont archiv�
 
 ## Design records
 
-- [Index des ADR](./adr/README.md) — journal de décisions (ADR-018 → 030), **source de vérité** de l'architecture époque-2.
+- [Index des ADR](./adr/README.md) — journal de décisions (registre complet), **source de vérité** de l'architecture époque-2.
 - [Brownfield Snapshot](./brownfield-snapshot.md) — snapshot d'architecture profond du 2026-04-15 (session de confrontation pré-pivot) : **historique** — pour l'état courant, lire les ADR.
 
 ## Articles & notes de lecture
