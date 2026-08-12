@@ -38,15 +38,15 @@ Trois pistes, non exclusives :
 
 - **B — ADR terse + article dérivé** : l'ADR reste un registre court ; les ADR
   « à forte valeur pédagogique » **débouchent sur un article séparé** via
-  [`ezk-article`](../../products/mega-city/skills/ezk-article/) (persona + panel).
+  [`ezk-article`](../products/mega-city/skills/ezk-article/) (persona + panel).
   - ➕ Chaque artefact garde sa fonction ; l'article a son cadrage propre.
   - ➖ Deux docs à garder cohérents ; tous les ADR ne méritent pas un article.
 
 - **C — Une règle, pas un format** : ajouter dans
-  [`rules/documentation-guidelines/`](../../products/mega-city/rules/documentation-guidelines/)
+  [`rules/documentation-guidelines/`](../products/mega-city/rules/documentation-guidelines/)
   une règle « ADR lisible » (lisible par un dev neuf, concis, intéressant, **conclut
   sur des choix**) — sans imposer le format article complet. Voisine de
-  [`human-facing-lisibility.md`](../../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md).
+  [`human-facing-lisibility.md`](../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md).
   - ➕ Léger, exécutable, ne fige pas la forme.
   - ➖ Ne capture pas l'ambition « article » quand elle a du sens.
 
