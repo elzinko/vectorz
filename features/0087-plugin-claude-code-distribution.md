@@ -322,7 +322,7 @@ qu'à supposer.
 - **Fiches liées** :
   - **[0078](done/0078-mcpb-install-un-clic-supervision.md)** — l'autre volet packaging (`.mcpb`,
     Claude Desktop). Même question ouverte de distribution ; cf. §Incertitude 5.
-  - **[0029](0134-propagation-maj-skills.md)** — propagation des MAJ *breaking* : traite les
+  - **[0186](0186-skema-versioning-migrations-skills-deployees.md)** — propagation des MAJ *breaking* : traite les
     **données/schéma** là où 0087 traite le **code + la version**. Un plugin versionné donne
     à 0029 le `VERSION` qu'elle postule.
   - **cop1 [0050](0050-release-pastille-dogfooding.md)** — canal de release +

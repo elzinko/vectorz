@@ -184,7 +184,6 @@
 | 0099 | Contrat d'émission — vérifier la STRUCTURE des directives, pas compter les mentions | chore | P2 |  | mega-city | 💡 idea |  |
 | 0100 | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 |  | mega-city | 💡 idea |  |
 | 0125 | explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno) | feature | P2 |  | mega-city | 💡 idea |  |
-| 0134 | Propager les maj *breaking* d'un skill aux projets (pull + hook de drift + migrations datées) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0136 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0155 | ezk-cowork — scaffold + audit du pattern « contrat cowork » (bootstrap mince / guide servi par l'app) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0158 | ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel) | feature | P2 |  | mega-city | 💡 idea |  |
@@ -199,7 +198,7 @@
 | 0179 | Incubation de skills en rétro — opt-in sprint + mesure (pas un jeu formel) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0180 | Fiches datées — id AAAAMMDDHHMMSSmmm (17 ch., ms, UTC) à la capture, fin de max+1 | feature | P2 |  | vectorz | 💡 idea |  |
 | 0184 | Webapp de reporting de run — features livrées façon PR + preview/démo local + reste-à-tester | feature | P2 |  | vectorz | 💡 idea |  |
-| 0186 | Généraliser Skema — versioning + migrations des skills déployées (registre de bind) | feature | P2 |  | mega-city | 💡 idea |  |
+| 0186 | Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0188 | ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0189 | ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable) | bug | P2 |  | mega-city | 💡 idea |  |
 | 20260812104022228 | Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change | feature | P2 |  | mega-city | 💡 idea |  |

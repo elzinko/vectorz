@@ -54,7 +54,7 @@
 
 ## ⏳ LATER — pas maintenant
 
-- ⚠️ **Distribution / publication** — 0087 · 0050 · 0078 · 0096 · 0134.
+- ⚠️ **Distribution / publication** — 0087 · 0050 · 0078 · 0096 · 0186.
   **NE PAS PUBLIER : pas prêt (décision PO 2026-07-26).** L'ADR de versionnage et la
   question « méthode dans le projet, façon BMAD » s'instruiront quand *le PO* décidera
   d'ouvrir à d'autres.
