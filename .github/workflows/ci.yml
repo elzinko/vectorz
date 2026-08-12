@@ -1,13 +1,15 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
+  # PR-only gate (no redundant re-run on push:main — the PR already validated it).
+  # Docs-only changes (markdown anywhere) skip CI entirely: a run fires only when a
+  # non-.md file changed, so backlog/ADR/session grooming costs zero Actions minutes.
   pull_request:
     branches: [main]
+    paths-ignore: ['**/*.md']
   workflow_dispatch:
 
-# One run per ref; a new push cancels the previous in-flight run to save minutes.
+# One run per PR ref; pushing new commits cancels the previous in-flight run to save minutes.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -80,6 +82,12 @@ jobs:
   # Job séparé : Playwright/Chromium n'alourdit pas le chemin lint·build·test.
   cobaye-smoke:
     name: cobaye smoke (0041)
+    # Gated (fiche 0055 frugalité) : Playwright/Chromium refait install+build avant le
+    # smoke, c'est le job le plus lourd. Il ne part QUE sur déclenchement manuel
+    # (workflow_dispatch) ou si la PR porte le label `smoke-test` — pas sur chaque PR.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.pull_request.labels.*.name, 'smoke-test')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
