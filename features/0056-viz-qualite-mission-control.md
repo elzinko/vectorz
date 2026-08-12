@@ -16,7 +16,7 @@ created: 2026-07-22
 ## Contexte / Problème
 
 Demande PO : « visualiser ces KPI dans une interface ». mission-control
-([0022](0022-observabilite-mission-control-donnees-deja-collectees.md)) affiche déjà les runs —
+([0022](done/0022-observabilite-mission-control-donnees-deja-collectees.md)) affiche déjà les runs —
 **foyer naturel** d'un onglet qualité. Attention : 0022 pose « **aucune nouvelle collecte** » →
 cet onglet **compose sa coquille web** mais est une feature **séparée** (il lit des données que
 0052/0055 ont produites).

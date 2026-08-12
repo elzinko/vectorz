@@ -17,7 +17,7 @@ created: 2026-08-05
 
 ## Contexte / Problème
 
-La fiche [0039](done/0039-e4-retrait-bmad.md) (E4, shipped #81) a retiré BMAD du graphe
+La fiche [0039](0039-e4-retrait-bmad.md) (E4, shipped #81) a retiré BMAD du graphe
 prod cop1, mais plusieurs **docs d'onboarding encore lus en premier** décrivent l'époque 1
 (orchestrator BMAD, playbook, sprint-status.yaml, stubs V1-light). Un nouveau contributeur
 ou agent suit encore le mauvais chemin. `docs/bmad-version-audit.md` et

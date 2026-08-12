@@ -126,7 +126,7 @@ ADR-021 frontière, ADR-026 seam exécuteur, ADR-032 émission adaptateur sépar
 - **[0024](0024-resorber-peripherie-pre-pivot.md)** — **moissonner la liste des capteurs** du
   relicat (Sonar/couverture/statique/arch-drift) **avant** suppression ; ajouter le cross-ref
   vers cet épic.
-- **[0022](0022-observabilite-mission-control-donnees-deja-collectees.md)** — l'onglet qualité
+- **[0022](done/0022-observabilite-mission-control-donnees-deja-collectees.md)** — l'onglet qualité
   (0056) **compose sa coquille web** mais est une **nouvelle collecte** (0022 dit « aucune
   nouvelle collecte ») → feature **séparée**, pas une extension de 0022.
 - **[0046](0046-differes-contrat-ameliorabilite-parking.md)** — l'agent d'analyse (0057)

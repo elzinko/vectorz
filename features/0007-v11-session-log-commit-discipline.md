@@ -45,7 +45,7 @@ désormais **caduques** et retirées du périmètre :
 - ~~ADR-009 à rédiger~~ — planning-ADR **statué caduc** par ADR-029 (Décision 2 : les
   planning-ADRs ne sont pas des ADR vivants ; ADR-005/009 déjà actés caducs).
 - ~~D1 pin de version BMAD~~ — **contredit par ADR-029** : BMAD est retiré en E4
-  (fiches [0038](0038-e3-pilote-natif.md)/[0039](0039-e4-retrait-bmad.md)), pinner sa
+  (fiches [0038](0038-e3-pilote-natif.md)/[0039](done/0039-e4-retrait-bmad.md)), pinner sa
   version n'a plus d'objet. Le volet « à re-scoper avec D9 après L5/L6 » de l'épic 0034
   tombe avec.
 

@@ -21,7 +21,7 @@ product: mega-city
 contient ce que son auteur a imaginé — et personne n'écrit une fixture « run laissé
 ouvert parce que la session est morte », parce qu'on écrit des fixtures de runs bien
 formés. C'est exactement pour ça que [0105](0105-bug-moniteur-silence-dogfood.md) et
-[0168](0168-run-orphelin-verrou-sans-cle.md) ont échappé à toute la suite existante :
+[0168](done/0168-run-orphelin-verrou-sans-cle.md) ont échappé à toute la suite existante :
 le runtime était testé (verrou, `seq`, confinement), le serveur MCP était testé
 (`src/supervision/__tests__/mcp-server.e2e.test.ts`), et le produit était pourtant
 inutilisable. Ces deux défauts ne sont pas des bugs de fonction, ce sont des **trous
@@ -169,7 +169,7 @@ Matériau disponible : `0105`, `0168`, le journal
 
 ## Notes / décisions
 
-- **Prérequis dur : [0168](0168-run-orphelin-verrou-sans-cle.md).** Sans clé pour le
+- **Prérequis dur : [0168](done/0168-run-orphelin-verrou-sans-cle.md).** Sans clé pour le
   verrou run-unique, un harnais autonome qui plante laisse un orphelin et bloque toutes
   les exécutions suivantes. `dogfood-guided.sh` **contourne déjà** le problème à l'étape
   5b (« évite KO à cause d'orphans anciens hors démo ») — le contournement est là, le

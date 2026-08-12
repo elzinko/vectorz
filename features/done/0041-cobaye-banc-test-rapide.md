@@ -28,9 +28,9 @@ vierge en git + rituel de reset), l'« empirical shakedown » (`real-run-report`
 jouet `EX1` Say-Hello/Add-Goodbye), les fixtures `orchestrator-e2e.test.ts` +
 `fixtures/test-story.md` + `fake-claude.mjs`, et `docs/e2e/`.
 
-**Ce n'est pas** : la fiche [0038](0038-e3-pilote-natif.md) (E3) qui construit le *moteur*
+**Ce n'est pas** : la fiche [0038](../0038-e3-pilote-natif.md) (E3) qui construit le *moteur*
 pilote natif — 0041 est le **banc qui l'exerce** (sa preuve de sortie) ; ni la fiche
-[0017](0017-e2e-darkmode-cobaye.md) qui est *un scénario* dark-mode (candidat à devenir le
+[0017](../0017-e2e-darkmode-cobaye.md) qui est *un scénario* dark-mode (candidat à devenir le
 premier scénario du banc, cf. Notes).
 
 ## Proposition (principe Pareto — léger d'abord)

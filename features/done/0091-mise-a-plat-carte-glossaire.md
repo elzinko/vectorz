@@ -36,9 +36,9 @@ interne → sens simple + verdict).
 
 ## Critères d'acceptation
 
-- [x] [`docs/backlog-carte.md`](../docs/backlog-carte.md) commitée — ouvre par « En clair », PR ouvertes + plan + compteurs.
-- [x] [`docs/glossaire-jargon-ezk.md`](../docs/glossaire-jargon-ezk.md) commité — termes PR #37 + captures récentes, verdict par entrée.
-- [x] Les deux passent la règle de lisibilité (`0079`) ; liens depuis [`features/README.md`](README.md).
+- [x] [`docs/backlog-carte.md`](../../docs/backlog-carte.md) commitée — ouvre par « En clair », PR ouvertes + plan + compteurs.
+- [x] [`docs/glossaire-jargon-ezk.md`](../../docs/glossaire-jargon-ezk.md) commité — termes PR #37 + captures récentes, verdict par entrée.
+- [x] Les deux passent la règle de lisibilité (`0079`) ; liens depuis [`features/README.md`](../README.md).
 
 ## Notes
 
