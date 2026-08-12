@@ -164,6 +164,9 @@
 | 0157 | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 |  | mega-city | 💡 idea |  |
 | 0170 | Concevoir le modèle d'extension / plugin mega-city (panel architecte) — avant tout adaptateur outillage | feature | P1 |  | mega-city | 💡 idea |  |
 | 0183 | Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres | feature | P1 |  | mega-city | 💡 idea |  |
+| 20260812104022237 | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 |  | mega-city | 💡 idea |  |
+| 20260812104022240 | Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM | feature | P1 |  | mega-city | 💡 idea |  |
+| 20260812104022246 | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | 0053 | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | 0054 | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 0051 | vectorz | 💡 idea |  |
@@ -199,6 +202,10 @@
 | 0186 | Généraliser Skema — versioning + migrations des skills déployées (registre de bind) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0188 | ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0189 | ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable) | bug | P2 |  | mega-city | 💡 idea |  |
+| 20260812104022228 | Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260812104022231 | DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260812104022234 | Agent marketing analyste — copy qui vend, benchmark concurrents, métriques, A/B | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260812104022243 | groom appelle aussi engineering:architecture (+ product-brainstorming) — par défaut, ou forcé par paramètre | feature | P2 |  | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
