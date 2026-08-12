@@ -1,15 +1,19 @@
 name: CI
 
 on:
-  # PR-only gate (no redundant re-run on push:main — the PR already validated it).
   # Docs-only changes (markdown anywhere) skip CI entirely: a run fires only when a
   # non-.md file changed, so backlog/ADR/session grooming costs zero Actions minutes.
+  # push:main keeps a green-main signal after each CODE merge (docs merges skip it too),
+  # while pull_request is the pre-merge gate — both run on GitHub, only .md-only is spared.
+  push:
+    branches: [main]
+    paths-ignore: ['**/*.md']
   pull_request:
     branches: [main]
     paths-ignore: ['**/*.md']
   workflow_dispatch:
 
-# One run per PR ref; pushing new commits cancels the previous in-flight run to save minutes.
+# One run per ref; pushing new commits cancels the previous in-flight run to save minutes.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
