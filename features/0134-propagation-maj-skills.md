@@ -34,9 +34,11 @@ Migrations*, cf. article [0175](0175-article-skema-skill-schema-migrations.md)),
 
 - Toute création / modification / suppression d'un artefact mega-city qui **casse** un
   **contrat consommé par-projet** (statut, champ de front-matter, structure de dossier,
-  nom de script/commande…) **émet une migration** : entrée markdown **ordonnée + datée**,
-  façon Flyway, avec sa section « revert ». Le déclencheur est le caractère **breaking**,
-  pas la simple modification.
+  nom de script/commande…) **émet une migration** : entrée markdown **ordonnée**
+  (`NNN-slug.md`, exactement le format `migrations/` déjà livré par `ezk-backlog`, ex.
+  `002-…`), avec sa section « revert ». L'ordre vient du **numéro** (pas d'une date dans le
+  nom) ; l'horodatage éventuel va dans le corps. Le déclencheur est le caractère
+  **breaking**, pas la simple modification.
 - Un ajout / changement **non-breaking** (ex. `status: idea`, nouveau champ optionnel) =
   **0 migration**. La règle est donc **unique et décidable par un gate** : migration ⇔
   rupture de contrat.
@@ -58,6 +60,13 @@ Migrations*, cf. article [0175](0175-article-skema-skill-schema-migrations.md)),
   migration en attente), le préflight **refuse quand même** — l'outil est en retard sur les
   données, agir corromprait un schéma plus récent — jusqu'à ce que la version de l'outil
   rattrape. `ahead` n'est donc **pas** un état de fonctionnement normal.
+- **Cas `missing` = adoption explicite, pas « continue »** : un projet **déjà lié** mais
+  **sans marqueur de version** (bind historique d'avant Skema — cf. 0186 : les binds actuels
+  n'enregistrent aucune version) doit être **distingué d'un artefact non installé** (celui-là
+  n'a pas de préflight du tout). Pour le legacy sans marqueur, le préflight **n'agit pas à
+  l'aveugle** : il déclenche une **adoption/bootstrap** — écrire le marqueur à la version
+  courante (baseline) si le schéma réel est à jour, sinon rejouer les migrations depuis
+  l'origine — jamais un `continue` sur schéma inconnu.
 - **SessionStart hook** (bash/node pur, **zéro LLM**) : signal **global** « N migrations en
   attente » en system-reminder → le LLM ne dépense des tokens **que si** l'utilisateur
   déclenche `migrate`.
@@ -71,12 +80,13 @@ Migrations*, cf. article [0175](0175-article-skema-skill-schema-migrations.md)),
 **Portée** : mécanisme **transverse mega-city** — tous les artefacts, toutes les commandes ezk.
 
 ## Critères d'acceptation
-- [ ] Format de migration défini (markdown daté + revert) — réutilise le format `migrations/` d'ezk-backlog.
+- [ ] Format de migration défini : **`NNN-slug.md` ordonné** (le format `migrations/` déjà livré par ezk-backlog, ex. `002-…`) + section revert. Ordonnancement par **numéro**, pas par date dans le nom (cohérent avec le précédent) ; horodatage optionnel dans le corps.
 - [ ] **Émission** : un changement de contrat **breaking** sur un artefact mega-city (skill/agent/rule/cap/hook) produit une migration, proposée ou rappelée — jamais oubliée silencieusement ; un changement non-breaking n'en produit pas.
 - [ ] `VERSION`/`layout_version` porté par l'artefact, incrémenté avec chaque migration.
 - [ ] Marqueur des migrations appliquées, par-projet.
 - [ ] **Préflight par-commande** : chaque commande `ezk-*` vérifie les migrations en attente (primitive `check-layout-version.sh`) et alerte/refuse avant d'agir — pas seulement le SessionStart hook.
 - [ ] **Cas `ahead` traité** : quand l'outil est en retard sur des données déjà migrées, le préflight refuse (schéma plus récent) au lieu de continuer.
+- [ ] **Cas `missing` traité** : projet legacy lié sans marqueur → adoption/bootstrap explicite (baseline ou rejeu depuis l'origine), distinct d'un artefact non installé ; jamais de `continue` à l'aveugle.
 - [ ] Hook de détection de drift **cheap** (sans LLM) qui remonte le signal global.
 - [ ] Commande `migrate` (pull) déclenchée par l'utilisateur.
 - [ ] Doc rollback = `git revert` (natif).
