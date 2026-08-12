@@ -15,7 +15,10 @@ cd "$ROOT"
 SEP=$'\x1f'
 OUT="PORTFOLIO.md"
 
-# extract $1=file $2=product → id,title,type,prio,status,pr,ready,created,version,epic,PRODUCT
+# extract $1=file $2=product-par-défaut → id,title,type,prio,status,pr,ready,created,version,epic,PRODUCT
+# Le produit vient du front-matter `product:` (liste unifiée `features/`, ADR-0017 A14) ; le
+# $2 (dossier) n'est qu'un fallback si le champ manque. Sinon toute fiche mega-city de la
+# liste racine était comptée vectorz (retour Codex #128).
 extract() {
   awk -v product="$2" '
     function unquote(s) { gsub(/^"|"$/, "", s); return s }
@@ -32,9 +35,10 @@ extract() {
       if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
+      if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); fmproduct=unquote($0) }
     }
     END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", \
-          id, title, type, prio, status, pr, ready, created, version, epic, product }
+          id, title, type, prio, status, pr, ready, created, version, epic, (fmproduct != "" ? fmproduct : product) }
   ' "$1" "$1"
 }
 

@@ -1,5 +1,5 @@
 ---
-id: 20260812100109940
+id: "20260812100109940"
 title: ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md
 type: chore
 priority: P2
