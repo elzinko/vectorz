@@ -39,7 +39,7 @@ node products/cop1/packages/app/dist/cli/index.js start
 
 - Health: `cop1 health` (JSON)
 - Lifecycle: `cop1 status`, `cop1 stop`
-- Supervision API: Moniteor / `GET /api/supervision/runs` (see [ADR-022](adr/ADR-022-control-plane-ontology.md))
+- Supervision API: Moniteor / `GET /api/supervision/runs` (see [ADR-028](adr/ADR-028-lecteur-journal-mode-moniteur.md))
 
 Artifacts under `.cop1/` (journal, metrics, history) follow the supervisability contract — the method emits; cop1 observes and gates.
 
