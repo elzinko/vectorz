@@ -64,9 +64,14 @@ mode (l'autonomie exige une borne — pas de cap, pas d'auto).
 
 ## Override 3 — supervisabilité obligatoire (pas best-effort)
 
-Ce mode **refuse de démarrer** si les 6 outils du kit émetteur (`run_start`,
+Ce mode **refuse de démarrer s'il ne peut pas émettre son journal** — c'est-à-dire si
+**aucun transport** du kit émetteur n'est opérant : ni les 6 outils MCP (`run_start`,
 `gate_reached`, `gate_resumed`, `escalate`, `heartbeat`, `run_finished` — mega-city
-fiches 0050 + 0103) ne sont pas dans le contexte : replie-toi sur ezk-product-builder
+fiches 0050 + 0103), ni un CLI/hook équivalent qui écrit le journal (ADR-036). Le
+garde-fou porte sur la **capacité d'émettre**, pas sur la présence du MCP : sur un hôte
+no-shell (Claude Desktop), le MCP est le seul canal, donc l'exiger y reste correct ; sur
+un hôte à shell, un CLI/hook opérant satisfait la redevabilité (exiger le MCP y serait un
+faux négatif). Si **aucun** transport ne peut écrire → replie-toi sur ezk-product-builder
 classique et dis-le.
 L'autonomie sans journal est une boîte noire ; ici chaque décision laisse une trace :
 

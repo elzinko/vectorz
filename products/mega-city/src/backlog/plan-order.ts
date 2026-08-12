@@ -30,13 +30,18 @@
 const LIST_ITEM_RE = /^(?:[-*]|\d+\.)\s+/;
 
 /** L'item commence par un id (après d'éventuelles emphases / strikethrough). */
-const LEADING_ID_RE = /^[\s*_`~]*(mc-)?\d{4}/;
+const LEADING_ID_RE = /^[\s*_`~]*(mc-)?\d{4,}/;
 
 /** Marqueur d'action d'une entrée de plan (contrat `plan`). */
 const MARKER_RE = /\b(?:build|audit|ship|groom)\b/i;
 
-/** Premier id de fiche sur une ligne : `0094` ou `0062` (préfixe `mc-` optionnel). */
-const ID_RE = /(mc-)?\d{4}/;
+/**
+ * Premier id de fiche sur une ligne. Deux formats coexistent (fiche 0180) :
+ * l'historique 4 chiffres (`0094`) et l'horodaté `AAAAMMDDHHMMSSmmm` 17 chiffres
+ * (`20260810143052123`). `\d{4,}` capture les deux — gourmand, il prend TOUS les
+ * chiffres consécutifs (sinon `2026` serait pris pour l'id complet). Préfixe
+ * `mc-` optionnel (legacy). */
+const ID_RE = /(mc-)?\d{4,}/;
 
 export function parsePlanOrder(planMd: string): string[] {
   const ids: string[] = [];

@@ -101,5 +101,5 @@ pnpm --filter @cop1/web dev   # → http://localhost:5173
 2. **Ne pas merger** depuis ce guide — décision opérateur + CI verte.
 
 Suite produit (acteur LLM headless, nightly) : fiche
-[0186](../features/0186-harnais-dogfood-llm-headless.md) — **v2**, pas requise pour le
-dogfood humain d’aujourd’hui.
+[testbed dogfood LLM headless](../features/20260812100258610_harnais-dogfood-llm-headless.md)
+— **v2**, pas requise pour le dogfood humain d’aujourd’hui.

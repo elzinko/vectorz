@@ -70,7 +70,8 @@ if [[ ! -f "$FEATURES/feature-template.md" ]]; then
     # Fallback minimal si le template n'est pas encore dans la skill
     cat > "$FEATURES/feature-template.md" <<'EOF'
 ---
-id: 0000
+# id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
+id: "0000"
 title: <titre court et parlant>
 type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3

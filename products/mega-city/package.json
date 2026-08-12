@@ -17,7 +17,8 @@
     "supervision:abandon": "tsx bin/supervision-abandon.ts",
     "supervision:registry-add": "tsx bin/supervision-registry-add.ts",
     "plan:order": "tsx bin/plan-order.ts",
-    "plan:head": "tsx bin/plan-head.ts"
+    "plan:head": "tsx bin/plan-head.ts",
+    "composes:graph": "tsx bin/regen-composes-graph.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",

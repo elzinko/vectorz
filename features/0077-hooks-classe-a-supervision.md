@@ -30,8 +30,10 @@ compte le plus (démarrage, gate, reprise, fin).
 
 - Hooks Claude Code (config `settings.json` du projet supervisé) qui émettent les
   événements du contrat v0.1 aux moments mécaniques (fin de tour au gate, reprise).
-- Réutilise la lib `src/supervision/journal.ts` (aucune logique dupliquée) ;
-  matérialisation vers les projets via cap/bind comme le reste du kit.
+- Passe par le noyau **`SupervisionRuntime`** (`src/supervision/runtime.ts`), **jamais `journal.ts`
+  en direct** : le runtime porte les invariants (un seul gate ouvert, matching du resume, refus
+  d'append après `run.finished`) qu'un append brut ne garantit pas (ADR-036) ; `journal.ts` reste
+  interne au noyau. Matérialisation vers les projets via cap/bind comme le reste du kit.
 - Documenter la complémentarité classe A (hooks) / classe B (MCP + consignes) dans
   `src/supervision/README.md`.
 
@@ -40,9 +42,10 @@ compte le plus (démarrage, gate, reprise, fin).
 - [ ] Un hook Claude Code émet un événement du contrat **sans aucune action du LLM** :
       sur un tour où le LLM n'émet rien, l'événement apparaît quand même dans
       `<projet>/.supervision/runs/<run_id>/events.jsonl`.
-- [ ] **Zéro duplication de l'enveloppe** : le hook passe par `src/supervision/journal.ts`
-      (unique émetteur) ; vérifiable en revue — aucun calcul d'`event_id`/`seq`/`ts` dans
-      le hook.
+- [ ] **Zéro duplication + invariants runtime** : le hook passe par **`SupervisionRuntime`**
+      (qui encapsule `journal.ts`), **pas** `journal.ts` en direct ; vérifiable en revue — aucun
+      calcul d'`event_id`/`seq`/`ts` ni append direct dans le hook, et les invariants runtime
+      (gate unique, matching resume, no-append-après-`run.finished`) tiennent.
 - [ ] Le journal produit par la voie hook **passe le validateur** cop1 (mêmes invariants
       que la classe B — un run mixte hooks + MCP reste valide).
 - [ ] `src/supervision/README.md` documente **quand choisir A vs B** (déterministe des
@@ -61,3 +64,8 @@ compte le plus (démarrage, gate, reprise, fin).
   0060). Statut/`ready:` inchangés (le gate reste au PO).
 - Réfs : fiche 0050 (Notes 2026-07-14 et 2026-07-17), capture cop1
   `docs/captures/2026-07-13-contrat-methode-et-versions.md` §7 (classes de conformité).
+- **Couture partagée ([ADR-036](../docs/adr/ADR-036-transport-emission-separable-du-runtime.md), 2026-08-10)** :
+  ces hooks (classe A, déterministe) et un futur **transport CLI shell-host (classe B, appelé par le
+  LLM)** sont **frères** sur la même couture d'émission — même noyau `runtime.ts`, déclencheur
+  différent. Cette fiche **reste « hooks classe A »** (ne pas élargir son scope) ; le CLI se situe
+  **à côté**, nommé par ADR-036 (le MCP n'est qu'un transport parmi ces trois).

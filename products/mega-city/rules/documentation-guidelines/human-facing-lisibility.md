@@ -26,8 +26,9 @@ Every PR body produced by `ezk-sprint` (étape PR) MUST be readable **with the d
 closed**, and MUST contain these three blocks (literal headings):
 
 1. **`## Summary`** — user-facing, ≤ 5 lines: what changes and why (open « En clair »).
-2. **`## Lien fiche`** — path to the backlog fiche (`features/<id>-*.md`,
-   `products/<produit>/features/<id>-*.md`, or the project's equivalent).
+2. **`## Lien fiche`** — path to the backlog fiche (`features/<id>_*.md`, legacy
+   `features/<id>-*.md`, `products/<produit>/features/<id>_*.md`, or the project's
+   equivalent). The id prefix is `<id>` then `_` (horodaté, fiche 0180) or `-` (legacy).
 3. **`## Comment tester`** — literal replayable commands, **or** agent-run evidence
    (screenshots / before-after) that points at existing npm/BDD scripts. Do **not**
    duplicate Gherkin from the fiche; orient and link. Target ≤ ~2 000 chars outside

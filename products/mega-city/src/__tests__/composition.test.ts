@@ -1,0 +1,76 @@
+/**
+ * checkComposition — ADR-0025 : la doctrine « compose, ne réinvente pas » vivait
+ * en prose seule ; `expand`/`resolve` ignorait silencieusement les refs absentes.
+ * Ce checker PUR détecte les trous, transitivement, sans jamais warner les refs
+ * externes documentées (`composesExternal`).
+ */
+import { describe, expect, it } from 'vitest';
+import { checkComposition } from '../core/composition.js';
+import type { ResolvedProfile, Skill } from '../domain/model.js';
+import type { Catalog } from '../loaders/catalog.js';
+
+function skill(id: string, composes?: string[], composesExternal?: string[]): Skill {
+  return {
+    id,
+    content: `# ${id}`,
+    ...(composes ? { composes } : {}),
+    ...(composesExternal ? { composesExternal } : {}),
+  };
+}
+
+function catalogOf(skills: Skill[]): Catalog {
+  return {
+    rules: new Map(),
+    agents: new Map(),
+    skills: new Map(skills.map((s) => [s.id, s])),
+    bundles: new Map(),
+    profiles: new Map(),
+  };
+}
+
+function resolvedOf(skills: Skill[]): ResolvedProfile {
+  return { rules: [], agents: [], skills };
+}
+
+describe('checkComposition', () => {
+  it('critère 1 : signale une dépendance composée absente du profil résolu', () => {
+    const a = skill('A', ['B']);
+    const catalog = catalogOf([a]); // B absent du catalogue ET du profil
+    const resolved = resolvedOf([a]);
+    expect(checkComposition(resolved, catalog)).toEqual([{ from: 'A', missing: 'B' }]);
+  });
+
+  it('critère 1 (transitif) : A→B présents, B→C absent → warning porté par B', () => {
+    const a = skill('A', ['B']);
+    const b = skill('B', ['C']);
+    const catalog = catalogOf([a, b]); // C absent du catalogue ET du profil
+    const resolved = resolvedOf([a, b]);
+    expect(checkComposition(resolved, catalog)).toEqual([{ from: 'B', missing: 'C' }]);
+  });
+
+  it('critère 2 : composesExternal ne déclenche jamais de warning', () => {
+    const a = skill('A', undefined, ['skill-creator', 'product-brainstorming']);
+    const catalog = catalogOf([a]);
+    const resolved = resolvedOf([a]);
+    expect(checkComposition(resolved, catalog)).toEqual([]);
+  });
+
+  it('cas sain : toutes les dépendances composées sont présentes → []', () => {
+    const a = skill('A', ['B']);
+    const b = skill('B');
+    const catalog = catalogOf([a, b]);
+    const resolved = resolvedOf([a, b]);
+    expect(checkComposition(resolved, catalog)).toEqual([]);
+  });
+
+  it('déduplique et trie stablement par (from, missing)', () => {
+    const a = skill('A', ['B', 'B']);
+    const c = skill('C', ['B']);
+    const catalog = catalogOf([a, c]);
+    const resolved = resolvedOf([c, a]); // ordre inversé en entrée
+    expect(checkComposition(resolved, catalog)).toEqual([
+      { from: 'A', missing: 'B' },
+      { from: 'C', missing: 'B' },
+    ]);
+  });
+});

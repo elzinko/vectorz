@@ -1,5 +1,5 @@
 ---
-id: 0186
+id: "20260812100258610"
 title: "testbed dogfood LLM headless — rejouer la chaîne méthode→journal→Moniteur sans humain (nightly)"
 type: feature
 priority: P3
@@ -13,7 +13,7 @@ pr:
 created: 2026-08-11
 ---
 
-# 0186 — testbed dogfood LLM headless (harnais nightly)
+# 20260812100258610 — testbed dogfood LLM headless (harnais nightly)
 
 ## Contexte / Problème
 
@@ -59,3 +59,6 @@ avec un verdict **OK/KO déterministe** sur l'émission réelle.
   À **groomer** au moment de la tirer.
 - **Dédoublonnage** : proche de 0102/0104/0169 mais distinct (couche *acteur LLM headless*,
   ni boot d'env, ni analyse) — à confirmer par le PO en `review`.
+- **Id horodaté** (schéma fiche 0180, `mint-id.sh`) — 1ʳᵉ fiche du dépôt à l'adopter :
+  créée d'abord en `0186`, renumérotée à la clôture pour sortir de la collision
+  multi-branches (0186 était déjà pris sur `main` + PRs #123/#120).
