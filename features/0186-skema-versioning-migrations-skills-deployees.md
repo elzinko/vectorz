@@ -169,6 +169,29 @@ par-commande).
   (tag umbrella vs version mega-city indépendante). Si 0087 aboutit, ce `VERSION` devient
   celui du plugin et `/plugin update` remplace le « pull » esquissé ici pour le **code**
   (Skema garde la charge des **migrations de données**). À re-groomer après 0087.
+- **Arbitrage déploiement local vs cloud (grooming 2026-08-12)** — deux axes **orthogonaux**
+  souvent confondus : (1) **où vit le CODE** de l'artefact — symlink global (`~/.claude` →
+  vectorz, *link mode* [0123]/[0130]) vs copie committée par-projet (*copy mode*) ; (2)
+  **comment migrent les DONNÉES** du projet — c'est Skema (cette fiche). Point de vigilance :
+  **la migration est de la donnée projet, pas du code → elle existe dans les deux modes de
+  déploiement à l'identique**, elle ne départage donc **pas** link vs copy (copier les skills
+  dans le repo ne dispense d'aucune migration).
+- **Vrai discriminant = portée cloud** : un environnement Anthropic cloud **clone le repo** et
+  ne voit **jamais** les symlinks `~/.claude` → seul le **committé** y arrive. Posture
+  recommandée (à valider au design) :
+  - **code des skills = reste global/symlink** pour le loop d'auteur (source unique,
+    edit-once-live-everywhere — [0018]) ; ne pas vendoriser N copies d'une logique éditée en continu ;
+  - **le projet committe (petit, data-like, cloud-friendly)** : le **lock Skema**
+    `{artefact: version}` (le registre de bind ci-dessus) **+** le **pack de pratiques portable**
+    ([0177](0177-pack-pratiques-projet-portables.md)) pointé depuis le README, lu par n'importe
+    quel driver LLM (cloud compris) ;
+  - **cloud à l'échelle = plugin/marketplace ([0087](0087-plugin-claude-code-distribution.md))** :
+    **un** artefact versionné tiré par local ET cloud (`/plugin update`), **pas** N copies — la
+    copie-par-projet (*copy mode*) réintroduit le « push vers N repos » que la règle **pull, pas
+    push** rejette ; **copy mode = fallback** pour un repo délibérément gelé/autonome (livrable, cobaye).
+  - **Reste à trancher (ADR, couplé [0087](0087-plugin-claude-code-distribution.md))** :
+    **plugin** (propre, une source, à packager) vs **copy mode** (immédiat mais dérive N copies)
+    pour la brique cloud.
 - **Complément de [0018 — coquille I/O link vs copy]** : 0018 propage le **code** live via
   symlink ; Skema gère les **données/schéma**.
 - **Prérequis conceptuel de l'article [0187](0187-article-llm-skills-migration.md)** —
