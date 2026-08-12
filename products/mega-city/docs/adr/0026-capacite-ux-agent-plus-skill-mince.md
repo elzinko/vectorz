@@ -1,4 +1,4 @@
-# ADR 0025 — capacite UX : un agent `ezk-ux` (role design) + un skill MINCE `ezk-ux` pilote par un MOTEUR DE REGLES UX (profils composables + extract)
+# ADR 0026 — capacite UX : un agent `ezk-ux` (role design) + un skill MINCE `ezk-ux` pilote par un MOTEUR DE REGLES UX (profils composables + extract)
 
 - Statut : **proposé** (révisé le 2026-08-09 après la passe de preuve sur elzinko — retour PO : moteur de regles + profils + extract)
 - Date : 2026-08-09
