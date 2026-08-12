@@ -40,15 +40,15 @@ cf. 0156 critère 5 et contre-exemple ezk-readme).
 ## Frontière (anti-doublon vérifié 2026-08-10)
 
 - **≠ [[0156]] ezk-marketing (promotion)** : 0156 = orchestrateur OUTBOUND
-  (articles d'épopée via ezk-article, canaux via postiz, divulgation). 0188 =
+  (articles d'épopée via ezk-article, canaux via postiz, divulgation). Cette fiche =
   ANALYSTE inbound : qualité du wording, concurrence, prix, mesure, expériences.
   0156 avait explicitement repoussé « mesure/attribution » en post-v1 → ça vit
-  ICI. Composition naturelle : l'analyste (0188) juge/mesure, le promoteur
+  ICI. Composition naturelle : l'analyste (cette fiche) juge/mesure, le promoteur
   (0156) diffuse. Renommage éventuel au grooming (ezk-marketing-analyst vs
   ezk-promo) pour lever l'ambiguïté du nom.
-- **≠ [[0157]] ezk-landing** : 0157 produit l'artefact site ; 0188 le juge et
+- **≠ [[0157]] ezk-landing** : 0157 produit l'artefact site ; cette fiche le juge et
   le mesure.
-- **≠ ezk-article** : rédaction longue-forme avec panel — 0188 peut le
+- **≠ ezk-article** : rédaction longue-forme avec panel — cette fiche peut le
   composer pour la relecture, pas le réimplémenter.
 
 ## Proposition
