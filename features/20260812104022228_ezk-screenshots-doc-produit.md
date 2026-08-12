@@ -1,5 +1,5 @@
 ---
-id: 0186
+id: "20260812104022228"
 title: Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change
 type: feature
 priority: P2 # provisoire — posée à la capture (PO à confirmer au grooming)
@@ -11,7 +11,7 @@ pr:
 created: 2026-08-10
 ---
 
-# 0186 — ezk-screenshots : captures du produit → doc/site à jour
+# ezk-screenshots — captures du produit → doc/site à jour
 
 ## Contexte / Problème
 

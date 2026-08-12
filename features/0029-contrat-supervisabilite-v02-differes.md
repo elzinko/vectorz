@@ -30,6 +30,12 @@ par le panel design, à ne rouvrir qu'**après au moins un run réel sous v0.1**
 - **Typage de l'autorité dans le schéma** (`authority` sur `gate.reached`, `resumed_by`,
   `seat.changed`) + journalisation de la délégation ask→auto du point de décision méthode —
   avis minoritaire de la revue 2026-07-14 (§6.1), à re-poser après 3 runs réels.
+- **Nommage « supervisabilité » vs « observabilité »** ([ADR-036](../docs/adr/ADR-036-transport-emission-separable-du-runtime.md)) :
+  promouvoir le format (events.jsonl typé, contrat
+  `cop1/supervisability@0.1`, gate fail-safe + quiescence + escalade) comme famille **« supervisabilité »**
+  — distincte de l'observabilité-modèle passive (OTel-GenAI, LangSmith), dont le différenciateur est le
+  **gate** (stop-par-défaut). Nom public candidat : « Supervisability Journal » / « Gate Journal ».
+  Branding = arbitrage PO/marketing. À trancher en v0.2.
 
 ## Proposition
 

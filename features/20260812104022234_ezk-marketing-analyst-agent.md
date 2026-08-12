@@ -1,5 +1,5 @@
 ---
-id: 0188
+id: "20260812104022234"
 title: Agent marketing analyste — copy qui vend, benchmark concurrents, métriques, A/B
 type: feature
 priority: P2 # provisoire — posée à la capture (PO à confirmer ; siblings 0156/0157 = P1)
@@ -11,7 +11,7 @@ pr:
 created: 2026-08-10
 ---
 
-# 0188 — Agent marketing analyste (+ skills/capacités associées)
+# Agent marketing analyste (+ skills/capacités associées)
 
 ## Contexte / Problème
 
@@ -58,7 +58,7 @@ cf. 0156 critère 5 et contre-exemple ezk-readme).
   **capacités composées**, pas un monolithe :
   - copy-review par produit (compose le panel d'ezk-article OU une lentille
     dédiée « conversion » ; style-guide par produit — voir celui de 0156) ;
-  - visual-review : compose le navigateur/preview (et [[0186]] screenshots)
+  - visual-review : compose le navigateur/preview (et [[20260812104022228]] screenshots)
     pour juger la page RENDUE, pas le source ;
   - benchmark concurrents : recherche web + fiche concurrents datée par
     produit (append-only, comme le journal 0156) ;
@@ -88,7 +88,7 @@ cf. 0156 critère 5 et contre-exemple ezk-readme).
   manuel (benchmark produits sampling/slicing, formulations « gratuit »
   FR, grille de prix à la carte, licences protectrices type VCV Rack
   GPLv3+plugins payants) + ses livrables. À récupérer pour le grooming.
-- Liens : [[0156]] · [[0157]] · [[0186]] · [[0187]] · samplerz
+- Liens : [[0156]] · [[0157]] · [[20260812104022228]] · [[20260812104022231]] · samplerz
   `plugin_marketplace_model` (le modèle de prix que cet agent aidera à
   benchmarker/mesurer).
 - « Gros sujet complexe » (PO) — probablement une ÉPIC au grooming : agent de

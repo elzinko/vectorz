@@ -102,7 +102,7 @@ scan_in_progress() {
     id="$(awk '
       BEGIN { infm=0 }
       /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-      infm==1 && $0 ~ /^id:/ { sub(/^id:[[:space:]]*/, ""); print; exit }
+      infm==1 && $0 ~ /^id:/ { sub(/^id:[[:space:]]*/, ""); gsub(/^"|"$/, ""); print; exit }
     ' "$f")"
     title="$(awk '
       BEGIN { infm=0 }

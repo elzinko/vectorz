@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { fileURLToPath } from 'node:url';
-import { dirname, join, relative, resolve } from 'node:path';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { assertSafeId, loadCatalog } from '../loaders/catalog.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -67,7 +67,7 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(agent?.role).toContain('Reviewer senior');
   });
 
-  it('lit les réglages d\'exécution model/effort/isolation du frontmatter (fiche 0039)', () => {
+  it("lit les réglages d'exécution model/effort/isolation du frontmatter (fiche 0039)", () => {
     const catalog = loadCatalog(repoRoot);
 
     // jugement / PO : pin Opus 4.8 + spare sonnet (0181 — jamais alias opus → Opus 5)
@@ -109,6 +109,59 @@ describe('loadCatalog (données réelles du repo)', () => {
     const skill = catalog.skills.get('ezk-commits');
     expect(skill).toBeDefined();
     expect(skill?.content).toContain('Conventional Commits');
+  });
+});
+
+describe('loadCatalog — frontmatter composes/composes-external (ADR-0025, fiche 0149)', () => {
+  let root: string;
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'lawgiver-composes-'));
+  });
+  afterEach(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  function writeSkill(dir: string, frontmatter: string): void {
+    mkdirSync(join(root, 'skills', dir), { recursive: true });
+    writeFileSync(join(root, 'skills', dir, 'SKILL.md'), `---\n${frontmatter}\n---\n\ncorps\n`);
+  }
+
+  it('parse composes: et composes-external: (kebab → camelCase)', () => {
+    writeSkill(
+      'orchestrator',
+      [
+        'name: orchestrator',
+        'composes:',
+        '  - a',
+        '  - b',
+        'composes-external:',
+        '  - skill-creator',
+      ].join('\n'),
+    );
+    const catalog = loadCatalog(root);
+    const skill = catalog.skills.get('orchestrator');
+    expect(skill?.composes).toEqual(['a', 'b']);
+    expect(skill?.composesExternal).toEqual(['skill-creator']);
+  });
+
+  it("n'ajoute pas les champs quand composes/composes-external sont absents (rétro-compat)", () => {
+    writeSkill('plain', 'name: plain');
+    const catalog = loadCatalog(root);
+    const skill = catalog.skills.get('plain');
+    expect(skill).toEqual({ id: 'plain', content: 'corps' });
+    expect(skill).not.toHaveProperty('composes');
+    expect(skill).not.toHaveProperty('composesExternal');
+  });
+
+  it("ignore composes si ce n'est pas un tableau de strings", () => {
+    writeSkill('malformed', ['name: malformed', 'composes: notAnArray'].join('\n'));
+    const catalog = loadCatalog(root);
+    expect(catalog.skills.get('malformed')?.composes).toBeUndefined();
+  });
+
+  it('rejette un id composé non sûr (assertSafeId, défense frontière)', () => {
+    writeSkill('evil', ['name: evil', 'composes:', '  - ../../etc/passwd'].join('\n'));
+    expect(() => loadCatalog(root)).toThrow(/non sûr/);
   });
 });
 

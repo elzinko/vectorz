@@ -1,5 +1,5 @@
 ---
-id: 0187
+id: "20260812104022231"
 title: DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming
 type: feature
 priority: P2 # provisoire — posée à la capture (PO à confirmer au grooming)
@@ -11,7 +11,7 @@ pr:
 created: 2026-08-10
 ---
 
-# 0187 — DoR : balayage des surfaces produit au grooming
+# DoR — balayage des surfaces produit au grooming
 
 ## Contexte / Problème
 
@@ -60,7 +60,7 @@ slot DoR à 30 secondes aurait évité fiche par fiche.
 
 ## Notes / décisions
 
-- Lien : [[0186]] (ezk-screenshots — l'outillage d'UNE surface ; la présente
+- Lien : [[20260812104022228]] (ezk-screenshots — l'outillage d'UNE surface ; la présente
   fiche est la RÈGLE méthode qui décide *quand* on s'en sert).
 - Anti-bruit : le slot doit rester un **balayage à 30 s** (oui/non/comment par
   surface), pas une étude d'impact — sinon il sera sauté.
