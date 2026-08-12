@@ -72,6 +72,9 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
   (même cause n° 2) **+ une 2ᵉ classe dans `docs/`** (résidus BMAD `_bmad-output` dans
   `index.md`, renumérotation d'ADR) — tous réparés à la main. Confirme que le manuel ne
   tient pas : la gate reste le seul remède durable.
+- **Baseline vérifiée verte le 2026-08-12** : `check-links.sh . features docs/adr docs/captures`
+  = 0 cassé (les 3 liens de profondeur relative de la fiche `0188` réparés dans cette PR) —
+  la gate peut donc être câblée sans rougir sur l'existant.
 - Invocations : `bin/check-links.sh` (mega-city, périmètre par défaut `features/ docs/adr/`)
   et `bin/check-links.sh <racine-vectorz> features docs/adr docs/captures`.
 - Piège d'implémentation déjà payé : un test de schéma d'URL générique `^[a-z.]+:` avale
