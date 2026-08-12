@@ -59,6 +59,17 @@ export interface Bundle {
 // CATALOGUE 2 — L'ÉQUIPE (agents + skills)  [ claude-skills ]
 // ════════════════════════════════════════════════════════════════
 
+/**
+ * Un fichier AUXILIAIRE du dossier d'un skill (hors `SKILL.md`) — ex. `approaches/x.md`,
+ * `scripts/y.sh`, `references/`, `templates/`. ADR-0027 : porté par le domaine pour que la
+ * matérialisation copy-mode soit ÉQUIVALENTE au symlink-mode (qui expose le dossier entier).
+ */
+export interface SkillAsset {
+  path: string;           // RELATIF au dossier du skill, séparateurs POSIX ('approaches/x.md')
+  content: string;        // contenu VERBATIM (utf8) — non normalisé (fidélité byte des scripts)
+  executable?: boolean;   // bit d'exécution de la source → mode 0o755 à la matérialisation
+}
+
 /** Une capacité / un playbook. Fichier MARKDOWN (corps = mode opératoire). Host-agnostique. */
 export interface Skill {
   id: string;             // 'ezk-commits'
@@ -67,6 +78,8 @@ export interface Skill {
   composes?: string[];
   /** ADR-0025 — refs EXTERNES (`skill-creator`, `product-brainstorming`…) : documentées, jamais warnées. */
   composesExternal?: string[];
+  /** ADR-0027 — fichiers auxiliaires du dossier (hors `SKILL.md`). Absent ⇒ dossier sans asset. */
+  assets?: SkillAsset[];
 }
 
 /** Un rôle. Fichier MARKDOWN (rôle) + frontmatter (les listes ci-dessous = DATA composable). */

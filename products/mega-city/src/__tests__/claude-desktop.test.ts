@@ -46,6 +46,18 @@ describe('claudeDesktopCap.materialize (plan pur, sans FS)', () => {
     expect(run).toThrow(/non sûr/i);
   });
 
+  it('emporte les assets du dossier sous <id>/<rel> (ADR-0027)', () => {
+    const plan = claudeDesktopCap.materialize(
+      profile([
+        { id: 'ezk-article', content: 'x', assets: [{ path: 'approaches/a.md', content: 'a\n' }] },
+      ]),
+      '/fake/desktop',
+    );
+    expect(plan.files).toHaveLength(2);
+    expect(paths(plan)).toContain('ezk-article/SKILL.md');
+    expect(paths(plan)).toContain('ezk-article/approaches/a.md');
+  });
+
   it('trie stablement les fichiers par path (déterminisme)', () => {
     const plan = claudeDesktopCap.materialize(
       profile([

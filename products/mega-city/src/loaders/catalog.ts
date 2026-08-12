@@ -9,7 +9,7 @@
  *   - `kind` absent ⇒ 'disposition' (ADR-0002).
  *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
-import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
@@ -21,6 +21,7 @@ import type {
   Rule,
   RuleKind,
   Skill,
+  SkillAsset,
 } from '../domain/model.js';
 
 export interface Catalog {
@@ -171,21 +172,59 @@ function stringArray(value: unknown): string[] | undefined {
  * id composé passe par `assertSafeId` — même garde-fou de frontière que le reste
  * du loader (F1) : un id composé devient potentiellement un chemin de sortie.
  */
-function readSkill(file: string, fallbackId: string): Skill {
+function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
   const { data, content } = matter(readFileSync(file, 'utf8'));
   const id =
     typeof data.name === 'string' ? data.name : typeof data.id === 'string' ? data.id : fallbackId;
   const composes = stringArray(data.composes)?.map(assertSafeId);
   const composesExternal = stringArray(data['composes-external'])?.map(assertSafeId);
+  const assets = readSkillAssets(skillDir);
   return {
     id,
     content: content.trim(),
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),
+    ...(assets.length > 0 ? { assets } : {}),
   };
 }
 
 const SKILL_FILE = 'SKILL.md';
+
+/**
+ * Fichiers auxiliaires d'un dossier de skill (ADR-0027), triés par chemin relatif POSIX
+ * (déterminisme, F4). Descend récursivement mais N'EMBARQUE que des fichiers RÉGULIERS :
+ *   - `SKILL.md` (racine) exclu — déjà porté par `content` ;
+ *   - dotfiles / dot-dossiers (`.DS_Store`…) sautés → le plan reste déterministe vis-à-vis
+ *     du CONTENU versionné, pas de l'état du FS local ;
+ *   - symlinks (et toute entrée non-fichier) IGNORÉS — même garantie anti-exfiltration que
+ *     `resolveHookScript` : un lien commité pointant hors dépôt ne peut pas embarquer de
+ *     contenu externe (on n'ouvre jamais un lien), sans le double-pass realpath.
+ * `path` en séparateurs POSIX (contrat des chemins de plan) ; `assertSafeId` maintient
+ * l'invariant anti-traversal (F1) même si `readdir` ne produit pas de segment dangereux.
+ * `content` VERBATIM (utf8) — non normalisé, contrairement au `SKILL.md` (fidélité byte).
+ */
+function readSkillAssets(skillDir: string): SkillAsset[] {
+  const assets: SkillAsset[] = [];
+  const walk = (dir: string, prefix: string): void => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name.startsWith('.')) continue; // dotfiles/dot-dossiers : hors périmètre versionné
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full, rel);
+      } else if (entry.isFile()) {
+        if (rel === SKILL_FILE) continue; // le playbook lui-même vit dans `content`
+        assertSafeId(rel);
+        const executable = (statSync(full).mode & 0o111) !== 0;
+        assets.push({ path: rel, content: readFileSync(full, 'utf8'), ...(executable ? { executable } : {}) });
+      }
+      // sinon (symlink, socket…) : ignoré (défense anti-exfiltration).
+    }
+  };
+  walk(skillDir, '');
+  // Tri par unités de code (locale-indépendant, comme `listFiles`) → déterminisme (F4).
+  return assets.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+}
 
 /**
  * Skills = sous-dossiers `skills/<name>/SKILL.md` (convention mega-city, cf.
@@ -198,9 +237,9 @@ function loadSkills(skillsRoot: string): Map<string, Skill> {
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .sort()
-    .map((name) => ({ name, file: join(skillsRoot, name, SKILL_FILE) }))
-    .filter(({ file }) => existsSync(file))
-    .map(({ name, file }) => readSkill(file, name));
+    .map((name) => ({ name, dir: join(skillsRoot, name) }))
+    .filter(({ dir }) => existsSync(join(dir, SKILL_FILE)))
+    .map(({ name, dir }) => readSkill(join(dir, SKILL_FILE), name, dir));
   return indexById(items);
 }
 
