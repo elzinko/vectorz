@@ -41,7 +41,7 @@ Panel archi+dev+PM (2026-08-10) : décliner, `composes:` reste requis-seulement,
 - [ ] un skill avec `delegates: [X]`, X absent du profil bindé → **AUCUN warning** (ni bind global ni par-projet)
 - [ ] un skill avec `composes: [Y]`, Y absent → warning toujours émis (comportement 0149 inchangé)
 - [ ] le graphe distingue visuellement `composes:` (plein) et `delegates:` (pointillé), régénéré par script et à jour
-- [ ] ezk-sprint déclare ezk-codex + ezk-preview en `delegates:` → plus de faux warning au bind de `daily`
+- [ ] ezk-sprint déclare ezk-codex + ezk-preview en `delegates:` → plus de faux warning au bind de `daily` ; **et la délégation est RÉELLE** — référencée dans le corps du SKILL.md (avec fallback si absent), pas juste deux lignes de frontmatter, sinon le graphe annonce une **intégration fantôme** (le mal même que la composition mécanique doit prévenir — retour Codex #125)
 
 ## Notes
 
