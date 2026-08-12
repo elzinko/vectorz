@@ -57,6 +57,20 @@ lecteurs frais**. Ces deux ingrédients sont non négociables.
    l'artefact évolutif maintenu par `ezk-marketing`) : il **s'ajoute par-dessus**
    les règles d'écriture ci-dessous, il ne les remplace jamais.
 
+## Approches réutilisables (`approaches/`)
+
+Un **brief de style récurrent** (voix + audience + arc + densité technique propres à
+un porteur ou un projet) se range dans `approaches/<nom>.md` — une **approche par
+projet, stockée dans la méthode** pour être rejouée ailleurs. C'est le point 4
+« style-guide additionnel » sous forme persistée : il **s'ajoute** aux règles
+invariantes, ne les remplace jamais.
+
+- L'invoquer : `/ezk-article new … approach=<nom>` (ou « … avec l'approche <nom> »).
+- En créer une : capturer le brief validé du demandeur dans `approaches/<nom>.md`
+  (voir l'exemple `vectorz-grand-public-vulgarise.md`).
+- Un `approach=` ne dispense **pas** du brief ponctuel s'il manque un élément : les
+  deux se composent, le brief ponctuel gagne en cas de conflit.
+
 ## Règles d'écriture (le style guide du skill — invariant)
 
 - **Thèse en épigraphe** : une phrase qui dit ce que l'article défend.
