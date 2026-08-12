@@ -50,7 +50,7 @@ Trois caps existent (`src/caps/registry.ts`) ; ajouter un hôte = un module + un
 3. **Le mode `--link` propage en continu.** C'est un **confort d'auteur** (j'édite un skill,
    il est live partout) qui devient un **risque de consommateur** : pas de figeage, pas de
    fenêtre de MAJ, une modif en cours de rédaction est immédiatement active ailleurs.
-   C'est exactement la tension que 0029 avait repérée côté *données* ; ici c'est le *code*.
+   C'est exactement la tension que 0186 avait repérée côté *données* ; ici c'est le *code*.
 4. **Pas d'activation/désactivation du bloc.** Le bind global est tout-ou-rien dans `~/.claude` ;
    il n'y a pas de « ce projet-ci n'utilise pas l'équipe ezk ».
 
@@ -324,7 +324,7 @@ qu'à supposer.
     Claude Desktop). Même question ouverte de distribution ; cf. §Incertitude 5.
   - **[0186](0186-skema-versioning-migrations-skills-deployees.md)** — propagation des MAJ *breaking* : traite les
     **données/schéma** là où 0087 traite le **code + la version**. Un plugin versionné donne
-    à 0029 le `VERSION` qu'elle postule.
+    à 0186 le `VERSION` qu'elle postule.
   - **cop1 [0050](0050-release-pastille-dogfooding.md)** — canal de release +
     pastille de MAJ au niveau vectorz. **Dépendance de conception** : si 0050 définit la version
     figée de vectorz, 0087 s'y branche.
