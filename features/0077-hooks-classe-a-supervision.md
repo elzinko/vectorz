@@ -30,8 +30,10 @@ compte le plus (démarrage, gate, reprise, fin).
 
 - Hooks Claude Code (config `settings.json` du projet supervisé) qui émettent les
   événements du contrat v0.1 aux moments mécaniques (fin de tour au gate, reprise).
-- Réutilise la lib `src/supervision/journal.ts` (aucune logique dupliquée) ;
-  matérialisation vers les projets via cap/bind comme le reste du kit.
+- Passe par le noyau **`SupervisionRuntime`** (`src/supervision/runtime.ts`), **jamais `journal.ts`
+  en direct** : le runtime porte les invariants (un seul gate ouvert, matching du resume, refus
+  d'append après `run.finished`) qu'un append brut ne garantit pas (ADR-036) ; `journal.ts` reste
+  interne au noyau. Matérialisation vers les projets via cap/bind comme le reste du kit.
 - Documenter la complémentarité classe A (hooks) / classe B (MCP + consignes) dans
   `src/supervision/README.md`.
 
@@ -40,9 +42,10 @@ compte le plus (démarrage, gate, reprise, fin).
 - [ ] Un hook Claude Code émet un événement du contrat **sans aucune action du LLM** :
       sur un tour où le LLM n'émet rien, l'événement apparaît quand même dans
       `<projet>/.supervision/runs/<run_id>/events.jsonl`.
-- [ ] **Zéro duplication de l'enveloppe** : le hook passe par `src/supervision/journal.ts`
-      (unique émetteur) ; vérifiable en revue — aucun calcul d'`event_id`/`seq`/`ts` dans
-      le hook.
+- [ ] **Zéro duplication + invariants runtime** : le hook passe par **`SupervisionRuntime`**
+      (qui encapsule `journal.ts`), **pas** `journal.ts` en direct ; vérifiable en revue — aucun
+      calcul d'`event_id`/`seq`/`ts` ni append direct dans le hook, et les invariants runtime
+      (gate unique, matching resume, no-append-après-`run.finished`) tiennent.
 - [ ] Le journal produit par la voie hook **passe le validateur** cop1 (mêmes invariants
       que la classe B — un run mixte hooks + MCP reste valide).
 - [ ] `src/supervision/README.md` documente **quand choisir A vs B** (déterministe des
