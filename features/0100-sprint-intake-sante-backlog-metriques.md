@@ -114,7 +114,7 @@ reconstruite** au sprint suivant.
 - Origine : session 2026-07-16 (premier self-host — 1ʳᵉ friction). Priorité P2 à confirmer au grooming.
 - 2026-07-22 — **ajout du sous-problème « réconciliation `done` ↔ PRs mergées »** (arbitrage
   PO : étendre cette fiche plutôt qu'une fiche dédiée — anti-doublon, elle possède déjà le moment
-  *intake*). Cross-réf : [0029](0134-propagation-maj-skills.md) (hook de drift des skills —
+  *intake*). Cross-réf : [0186](0186-skema-versioning-migrations-skills-deployees.md) (hook de drift des skills —
   concept voisin, sujet distinct : versions de skills, pas statut de fiche).
 - 2026-07-26 — **exigence PO (roadmap)** : au lancement d'`ezk-product-builder`, tant qu'il
   n'y a **pas un nombre suffisant** de fiches `ready` — **pas seulement zéro** — s'arrêter et
