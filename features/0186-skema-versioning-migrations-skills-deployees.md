@@ -83,3 +83,11 @@ Frontière déterministe (ADR-0001) : le LLM **propose/juge**, le script **range
   (ex. `gmail-cleanerz`).
 - Surface potentiellement gelée une fois posée (le manifeste devient un contrat) —
   à trancher au design.
+- **⚠️ Doublon assumé avec [0134](0134-propagation-maj-skills.md)** : 0134 spécifie le
+  **même mécanisme Skema** (émission de migrations à chaque changement + préflight
+  par-commande, `VERSION`/`migrations` par-artefact, manifeste de version par-projet).
+  0186 et 0134 sont **deux fiches *idea* pour le même sujet** — à **consolider ou
+  dé-chevaucher explicitement au grooming** (fusionner en une seule, ou répartir
+  l'**émission** d'un côté et la **consommation/versioning** de l'autre). Ne **pas** les
+  groomer indépendamment : risque de deux implémentations incompatibles. (Renvoi réciproque
+  du lien posé côté 0134.)
