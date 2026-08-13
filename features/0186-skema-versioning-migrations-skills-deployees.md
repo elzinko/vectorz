@@ -195,9 +195,13 @@ par-commande).
       ce que la règle rejette, c'est un **push central** skill → N repos, **pas** la
       matérialisation copiée en soi.
   - **Reste à trancher (ADR, couplé [0087](0087-plugin-claude-code-distribution.md))** : plugin
-    vs copy mode pour la brique cloud, sur le **vrai** critère — **une source partagée**
-    (`/plugin update`) vs **N copies matérialisées** (chacune pull-ant/pinnant sa version) — et
-    non sur un faux axe push/pull.
+    vs copy mode pour la brique cloud. Attention aux **faux axes** : ce n'est ni push/pull, ni
+    « une copie vs N copies » — **les deux matérialisent des copies** (un plugin est copié à
+    l'installation et n'évolue qu'au `/plugin update` ; `vectorz init` committe une copie
+    versionnée par-projet). Le **vrai** critère = le **périmètre de stockage & de mise à jour** :
+    **géré centralement** (registre/marketplace, `/plugin update` propage la version à tous les
+    installs) vs **committé dans le projet** (la copie vit dans le repo, versionnée avec lui,
+    mise à jour par-projet).
 - **Complément de [0018 — coquille I/O link vs copy]** : 0018 propage le **code** live via
   symlink ; Skema gère les **données/schéma**.
 - **Prérequis conceptuel de l'article [0187](0187-article-llm-skills-migration.md)** —
