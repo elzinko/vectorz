@@ -4,6 +4,7 @@ title: ezk-challenge — panel de challenge adversarial réutilisable (relecteur
 type: feature
 priority: P2
 product: mega-city
+epic: "20260813131737959"
 status: idea
 pr:
 created: 2026-07-15

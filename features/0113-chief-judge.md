@@ -4,6 +4,7 @@ title: chief-judge — juge de cohérence (avis, non bloquant)
 type: feature
 priority: P3
 product: mega-city
+epic: "20260813131737959"
 status: todo
 pr:
 created: 2026-06-26
