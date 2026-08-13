@@ -144,3 +144,18 @@ le « VALIDE une PR … dans la boucle ezk-sprint » de `ezk-qa`.
   8 critères observables déjà présents) en vue du gate `ready` — candidate au run de
   recette vz-product-builder (fiche 0164), build self-contained (skill authoring + tests,
   aucun humain requis en cours de build). Statut/`ready:` inchangés (le gate reste au PO).
+- **Trigger réel 2026-08-13 (évidence terrain, non-breaking pour la DoR)** : bug MUTI
+  `sweetModular` « le changement de canal MIDI est ignoré » (repo **muti**,
+  `features/0026-midi-channel-switch-ignored.md`). Intake fait **à la main** — repro
+  reconstruite, cause racine tracée (`useTracking.js:842` lit un ref jamais rafraîchi car Vue
+  déballe le ref passé en prop), **test de non-régression exigé après coup** : exactement le
+  geste que cette fiche doit rendre systématique. Deux précisions à intégrer **au build** (pas
+  un nouveau design) : (a) le besoin « un front-matter pour dire *bug* vs *feature* » est **déjà
+  couvert par `type:`** — `ezk-bug` n'ajoute **pas un champ**, il ajoute un **gabarit de corps**
+  (repro + attendu/obtenu + preuve, déjà dans les critères) ; ranger ce gabarit dans
+  `ezk-backlog/templates/bug-template.md` (ezk-backlog reste propriétaire des formats, `ezk-bug`
+  sélectionne) ; (b) trancher **sévérité vs priorité** — un axe (priorité seule + ligne
+  « sévérité » dans le corps, **défaut proposé**) ou deux (champ `severity:`) ? À décider par
+  `ezk-architect` à l'intake (l'ADR reste un **artefact de build**, cf. §Notes ci-dessus).
+  Voisin : [[0186]] (un gabarit qui *impose* une structure gagne à s'appuyer sur un **validateur
+  de conformité** — cf. la note 2026-08-13 de 0186).
