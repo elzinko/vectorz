@@ -38,9 +38,49 @@ Question PO (session 2026-07-16, premier self-host) : la règle actuelle est str
   cohérence** (les fiches liées), **pas** via une PR obèse. La cohérence se juge au niveau du
   sprint, la revue atomique au niveau de la PR.
 
+## Mise à jour 2026-08-13 — le grain de *merge* (relance PO) → ADR-037
+
+**Cas daté (session 2026-08-13).** Le PO relance depuis l'angle **opérationnel** :
+« quand `ezk-product-builder` / `ezk-sprint` tournent beaucoup, on se retrouve avec
+**plusieurs PR** — dur à gérer, tester et surtout **merger** (merges successifs). Un mode
+`--sequence=pr-by-feature|1-pr` créant **une seule PR à plusieurs commits organisés par
+feature**, avec les **corps de fiche de PR agrégés** et une **procédure de test agrégée**
+en fin (en plus des procédures par PR), serait-il judicieux ? »
+
+**Ce que la relance ajoute à 0065 (angle neuf).** 0065 posait la granularité *sprint ↔ PR*
+côté **revue** (garder la PR atomique, porter la cohérence au niveau du sprint). La relance
+isole un **second axe** distinct : le **grain de merge** — le *nombre de fois qu'on touche
+`main`*. Dans ce repo, chaque merge tire des frictions réelles (collisions d'ids horodatés,
+~45 liens cassés / ship, `main` qui décale et force à rebaser les suivantes) : réduire le
+**nombre** de merges a une valeur propre, indépendante de la qualité de revue.
+
+**Décision d'architecture : [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)** (Proposé, 2026-08-13).
+- Sépare **grain de revue** (feature, atomique — inchangé) et **grain de merge** (levier de
+  livraison décidé par l'orchestrateur).
+- Nouveau levier `--delivery=per-feature|per-epic|batched` (noms à acter) sur
+  **`ezk-product-builder`** — pas `ezk-sprint`, dont l'invariant « jamais 2 features dans
+  *sa* PR » reste **intact** : il produit la matière, l'orchestrateur assemble au checkpoint
+  inter-sprint.
+- Mode agrégé = **1 `rebase-merge`** (PAS squash — sinon les N features s'écrasent en un
+  commit fourre-tout et on perd la traçabilité voulue), **réservé aux lots cohérents** (même
+  `epic:`). C'est exactement le « bundling autorisé quand les fiches sont inséparables /
+  couplées » que 0065 tolérait déjà — **pas** la « PR obèse » qu'elle refusait pour des fiches
+  indépendantes : la tension est **levée**, pas contredite.
+- **`ezk-pr-pilot` = épine dorsale réutilisée** (sa branche d'intégration + son train de merge
+  existent déjà), pas réimplémentée.
+
 ## Critères d'acceptation
 
-- [ ] À définir au grooming (promotion `idea → todo`).
+Cadre posé par [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) ; à confirmer au grooming (promotion `idea → todo`) :
+
+- [ ] `ezk-product-builder` expose `--delivery=per-feature|per-epic|batched` (noms à acter) ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression)
+- [ ] Mode agrégé : une **branche d'intégration** porte N commits conventional (≥ 1 / feature), **1 seule PR** ouverte, merge en **`rebase-merge`** (commits par feature préservés sur `main`, jamais un squash fourre-tout)
+- [ ] Corps de PR agrégé = **sommaire** (table `feature | fiche | statut gate`) + **une section par feature** (bloc thin `## Summary` / `## Lien fiche` / `## Comment tester` réutilisé) + **`## Tout valider en une passe`** ; les « Comment tester » par feature sont **conservés**
+- [ ] `ezk-pr-pilot` (branche d'intégration + train de merge) **réutilisé**, pas réimplémenté
+- [ ] `check-pr-body.sh` tolère la **répétition** des 3 titres sous des sections par feature
+- [ ] Déclencheur du regroupement tranché (`epic:` auto vs opt-in explicite vs seuil de N) + plafond éventuel de features / PR — **arbitrage PO**
+- [ ] Panel adverse passé avant de graver ADR-037 (Proposé → Accepté)
+- [ ] Gate locale verte (tests + liens markdown)
 
 ## Notes / décisions
 
