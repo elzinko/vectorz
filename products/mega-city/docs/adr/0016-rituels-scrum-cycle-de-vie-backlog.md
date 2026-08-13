@@ -2,6 +2,12 @@
 
 - Statut : **accepté** — panel adverse du 2026-07-17 (relecteurs architecture / dev / scrum + juge) : GO unanime, 13 amendements A1-A13 intégrés dans ce texte et ADR-0017 (cf. § Panel adverse)
 - Date : 2026-07-17
+- **Révision 2026-08-13 ([ADR-0028](0028-product-builder-auto-groom-ready.md)) :** l'invariant
+  **A5** (« le gate ready n'est jamais auto-tamponné », STOP humain systématique) est **révisé,
+  pas abrogé**. En `--checkpoints auto`, `ezk-product-builder` **groome désormais vers la DoR de
+  façon autonome** au lieu de s'arrêter à vide ; l'option **`--check-ready`** règle le tampon
+  final (`true` défaut = STOP humain, A5 préservé ; `false` = auto-tampon sur concurrence
+  `ezk-pm`, plancher outcome-testable, blocage réel → skip). Voir ADR-0028.
 
 ## Contexte
 
