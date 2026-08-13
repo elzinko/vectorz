@@ -183,12 +183,18 @@ par-commande).
 - **Sliver « validateur de CONFORMITÉ » (question PO 2026-08-13, non couvert ci-dessus)** :
   Skema versionne l'**évolution** (quelle version de schéma, migrations) mais **ne valide pas la
   conformité d'une fiche à l'instant t**. Aujourd'hui aucun check n'**échoue** sur un
-  front-matter malformé (`type`/`priority`/`status` hors-enum, `product:` manquant, `id`
-  dupliqué) — seulement les **warnings non-bloquants** de `regen-backlog.sh` (stderr). Manque
-  distinct des migrations : un **validateur** (schéma déclaré → gate qui échoue), branchable en
-  **préflight ezk-backlog** et en **gate CI (`ezk-ci`)**, sortie machine comme
-  `check-layout-version.sh`. Piste cheap : **promouvoir les warnings d'intégrité de regen en
-  gate** + ajouter les enums/obligatoires. Cas concret trouvé le 2026-08-13 : le
+  front-matter malformé (`type`/`priority`/`status` hors-enum, `id` dupliqué, champ
+  **conditionnellement** obligatoire manquant) — seulement les **warnings non-bloquants** de
+  `regen-backlog.sh` (stderr). Manque distinct des migrations : un **validateur** (schéma
+  déclaré → gate qui échoue), branchable en **préflight ezk-backlog** et en **gate CI
+  (`ezk-ci`)**, sortie machine comme `check-layout-version.sh`. Piste cheap : **promouvoir les
+  warnings d'intégrité de regen en gate** + ajouter les enums. **Attention aux champs
+  conditionnels** : `product:` n'est obligatoire **que dans un monorepo** (vectorz) — dans un
+  backlog mono-produit autonome, son absence est **valide** (`init.sh` : « obligatoire dans un
+  monorepo — sinon omettre » ; `SKILL.md` ne l'exige que pour vectorz). Le validateur doit donc
+  **conditionner** cette obligation au layout/config monorepo, sinon il rejetterait à tort les
+  projets autonomes qu'ezk-backlog prend en charge (via le préflight / `ezk-ci`). Cas concret
+  trouvé le 2026-08-13 : le
   `features/README.md` de **muti** n'a **pas** de `layout_version` en front-matter mais contient
   « Index auto-généré » → `check-layout-version.sh` le lit `INSTALLED=1` (legacy) alors que muti
   est **déjà en layout v2** (README guide + BACKLOG.md séparés) : incohérence qu'un contrôle de
