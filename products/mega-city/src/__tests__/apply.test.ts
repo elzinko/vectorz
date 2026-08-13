@@ -8,6 +8,7 @@ import {
   readFileSync,
   writeFileSync,
   statSync,
+  chmodSync,
   existsSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -87,5 +88,18 @@ describe('applyPlan (coquille I/O, projet jouet)', () => {
     const escape = { files: [{ path: '../escape.md', content: 'pwned' }], hooks: [] };
     expect(() => applyPlan(escape, projectDir)).toThrow(/hors du projet/);
     expect(existsSync(join(projectDir, '..', 'escape.md'))).toBe(false);
+  });
+
+  it("réinitialise les permissions quand un asset redevient non-exécutable (finding Codex #138)", () => {
+    const rel = '.claude/skills/s/scripts/run.sh';
+    const target = join(projectDir, rel);
+    // État antérieur : le fichier existe et est exécutable (0755).
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, 'old');
+    chmodSync(target, 0o755);
+    // Ré-application in-place : le plan porte le même chemin en mode NON-exécutable EXPLICITE.
+    applyPlan({ files: [{ path: rel, content: 'new', mode: 0o644 }], hooks: [] }, projectDir);
+    expect(readFileSync(target, 'utf8')).toBe('new');
+    expect(statSync(target).mode & 0o111).toBe(0); // plus aucun bit +x résiduel
   });
 });

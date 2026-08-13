@@ -16,6 +16,7 @@ import { assertSafeId } from '../loaders/catalog.js';
 import type { FileWrite, ResolvedProfile } from '../domain/model.js';
 
 const EXECUTABLE = 0o755;
+const NON_EXECUTABLE = 0o644;
 
 /**
  * `<prefix>/<id>/<rel>`, sûr même quand `prefix` est vide (jamais de slash en tête).
@@ -43,7 +44,10 @@ export function skillFolderFiles(resolved: ResolvedProfile, prefix: string): Fil
       const assets: FileWrite[] = (skill.assets ?? []).map((asset) => ({
         path: skillFilePath(prefix, skill.id, asset.path),
         content: asset.content, // VERBATIM — pas de normalisation (ADR-0027)
-        ...(asset.executable ? { mode: EXECUTABLE } : {}),
+        // Mode TOUJOURS explicite : sans lui, une ré-application in-place (cap desktop /
+        // projet via applyPlan, sans rm préalable) laisserait survivre un ancien bit +x
+        // quand l'asset redevient non-exécutable (finding Codex PR #138).
+        mode: asset.executable ? EXECUTABLE : NON_EXECUTABLE,
       }));
       return [doc, ...assets];
     });

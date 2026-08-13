@@ -27,9 +27,9 @@ describe('skillFolderFiles — assets de dossier (ADR-0027)', () => {
     const byPath = Object.fromEntries(files.map((f) => [f.path, f]));
     // SKILL.md : normalisé (trim + \n)
     expect(byPath['skills/ezk-article/SKILL.md'].content).toBe('playbook\n');
-    // asset markdown : VERBATIM (pas de trim ni \n forcé), pas de mode
+    // asset markdown : VERBATIM (pas de trim ni \n forcé), mode NON-exécutable explicite
     expect(byPath['skills/ezk-article/approaches/vectorz.md'].content).toBe('# approche\n');
-    expect(byPath['skills/ezk-article/approaches/vectorz.md'].mode).toBeUndefined();
+    expect(byPath['skills/ezk-article/approaches/vectorz.md'].mode).toBe(0o644);
     // asset exécutable : VERBATIM + mode 0o755
     expect(byPath['skills/ezk-article/scripts/run.sh'].content).toBe('#!/bin/sh\necho hi');
     expect(byPath['skills/ezk-article/scripts/run.sh'].mode).toBe(0o755);

@@ -143,6 +143,21 @@ describe('applyGlobalPlan (coquille I/O NON-DESTRUCTIVE, racine factice)', () =>
     expect(existsSync(join(root, 'skills/s/approaches/a.md'))).toBe(true);
   });
 
+  it('copy : un skill à id SLASHÉ (skills/foo/bar) matérialise SON dossier, sans troncature (finding Codex #138)', () => {
+    const plan: WritePlan = {
+      files: [
+        { path: 'skills/foo/bar/SKILL.md', content: '# bar\n' },
+        { path: 'skills/foo/bar/approaches/x.md', content: 'x', mode: 0o644 },
+      ],
+      hooks: [],
+    };
+    applyGlobalPlan(plan, root);
+    expect(existsSync(join(root, 'skills/foo/bar/SKILL.md'))).toBe(true);
+    expect(existsSync(join(root, 'skills/foo/bar/approaches/x.md'))).toBe(true);
+    // Le dossier géré est skills/foo/bar (pas skills/foo) → 2e passage idempotent.
+    expect(() => applyGlobalPlan(plan, root)).not.toThrow();
+  });
+
   it('copy : refuse un fichier ÉTRANGER dans un skill-dir même quand le plan porte des assets', () => {
     const dir = join(root, 'skills/s');
     mkdirSync(dir, { recursive: true });

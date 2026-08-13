@@ -47,7 +47,10 @@ n'est donc **pas équivalent** au symlink-mode — objectif visé par cet ADR : 
 
 3. **Cap** (`src/caps/skill-content.ts`) — `skillFolderFiles` émet, pour chaque skill à
    `content` non vide, `SKILL.md` **plus** un `FileWrite` par asset à
-   `<prefix>/<id>/<asset.path>`, `mode: 0o755` si `executable`. **Double garde-fou** : `id` ET
+   `<prefix>/<id>/<asset.path>`, avec un `mode` **toujours explicite** (`0o755` si
+   `executable`, sinon `0o644`) — sans lui, une ré-application in-place (`applyPlan`, sans
+   `rm` préalable) laisserait survivre un ancien bit `+x` quand l'asset redevient
+   non-exécutable (finding Codex PR #138). **Double garde-fou** : `id` ET
    `asset.path` passent par `assertSafeId` au moment où ils deviennent un chemin de sortie —
    `assertSafeId` accepte le `/` interne, donc `approaches/x.md` est validé tel quel, `..`/
    absolu/antislash refusés. Le cap reste **pur** (l'I/O — `stat`, lecture — est faite en amont
@@ -56,6 +59,9 @@ n'est donc **pas équivalent** au symlink-mode — objectif visé par cet ADR : 
 4. **Coquille I/O** (`src/io/apply.ts`, `applyGlobalPlan`) — un skill n'est plus « un fichier »
    mais **un dossier multi-fichiers**. Le plan global est **groupé par dossier de skill**
    (`skills/<id>`), les agents inchangés :
+   - le dossier de skill est dérivé du **`dirname` du `SKILL.md`** (jamais en tronquant l'id à
+     2 segments) : un id **slashé** (`assertSafeId` l'autorise → `skills/foo/bar/SKILL.md`)
+     reste correctement isolé (finding Codex PR #138) ;
    - garde **non-destructive** élargie : `assertManagedSkillDir` connaît désormais l'**ensemble
      des noms de premier niveau gérés** pour ce dossier (`SKILL.md`, `approaches`, `scripts`…),
      dérivé du plan. Un fichier **étranger** (hors de cet ensemble) dans un dossier de skill →

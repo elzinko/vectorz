@@ -139,20 +139,32 @@ function isAgentFile(path: string): boolean {
   return path.startsWith('agents/') && path.endsWith('.md');
 }
 
-/** Le dossier de skill `skills/<id>` d'un chemin de plan (2 premiers segments). */
-function skillDirOf(path: string): string {
-  const [root, id] = path.split('/');
-  return `${root}/${id}`;
+const SKILL_DOC = 'SKILL.md';
+
+/** Un chemin de plan qui EST le doc d'un skill (`.../SKILL.md`) — marque son dossier. */
+function isSkillDoc(path: string): boolean {
+  return path === SKILL_DOC || path.endsWith(`/${SKILL_DOC}`);
 }
 
-/** Groupe les FileWrite de skills par dossier `skills/<id>` (préserve l'ordre d'apparition). */
+/**
+ * Groupe les FileWrite de skills par dossier `skills/<id>`, où `<id>` PEUT contenir des `/`
+ * (assertSafeId l'autorise). Le dossier est dérivé du `SKILL.md` (son `dirname`), JAMAIS en
+ * tronquant à 2 segments : un id slashé (`skills/foo/bar/SKILL.md`) casserait sinon (finding
+ * Codex PR #138). Chaque autre fichier est rattaché au dossier de skill le PLUS LONG qui le
+ * préfixe (désambiguïse un skill imbriqué dans un autre). Un asset sans `SKILL.md` associé
+ * (impossible via `skillFolderFiles`) est ignoré.
+ */
 function groupBySkillDir(files: FileWrite[]): Map<string, FileWrite[]> {
-  const groups = new Map<string, FileWrite[]>();
+  const dirs = files
+    .filter((file) => isSkillDoc(file.path))
+    .map((file) => dirname(file.path))
+    .sort((a, b) => b.length - a.length); // plus long d'abord → longest-prefix match
+  const groups = new Map<string, FileWrite[]>(dirs.map((dir) => [dir, [] as FileWrite[]]));
   for (const file of files) {
-    const dir = skillDirOf(file.path);
-    const bucket = groups.get(dir);
-    if (bucket) bucket.push(file);
-    else groups.set(dir, [file]);
+    const owner = dirs.find(
+      (dir) => file.path === `${dir}/${SKILL_DOC}` || file.path.startsWith(`${dir}/`),
+    );
+    if (owner) groups.get(owner)?.push(file);
   }
   return groups;
 }
