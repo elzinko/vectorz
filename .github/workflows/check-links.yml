@@ -1,0 +1,32 @@
+name: check-links
+
+# Le workflow CI principal (ci.yml) skippe **/*.md par frugalité (fiche 0055) : une PR
+# doc-only ne le déclenche donc PAS — et c'est justement là que les liens cassent (une
+# fiche descendue dans done/ par `ship`, une profondeur relative fausse). Ce workflow
+# featherweight attrape ces PR-là : bash PUR, aucun `pnpm install`, ~quelques secondes,
+# coût Actions négligeable. Fiche 0101 — « un contrôle que personne ne lance ne protège de rien ».
+on:
+  pull_request:
+    branches: [main]
+    paths: ['**/*.md']
+  push:
+    branches: [main]
+    paths: ['**/*.md']
+  workflow_dispatch:
+
+concurrency:
+  group: check-links-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-links:
+    name: liens markdown relatifs (mega-city + vectorz)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Source de vérité unique : le même script tourne aussi dans la gate locale/CI
+      # (`pnpm --filter mega-city test:scripts`). Ici, sans install, pour couvrir le md-only.
+      - name: check-links (2 racines)
+        run: bash products/mega-city/bin/test-links-repo.sh

@@ -4,8 +4,8 @@
 - Portée : `skills/ezk-archive/` (SKILL.md, `scripts/check.sh`, nouveau `scripts/handoff.sh`,
   nouveau `references/handoff-template.md`), `agents/ezk-archive.md`
 - Liens : [ADR-0001](0001-monorepo-composable-coeur-deterministe.md) §2 (cœur déterministe),
-  fiche [0076](../../features/done/0076-hygiene-branches-post-squash.md) (classification
-  des branches post-squash), fiche [0026](../../features/done/0026-ezk-archive-persiste-handoff.md)
+  fiche [0076](../../../../features/done/0076-hygiene-branches-post-squash.md) (classification
+  des branches post-squash), fiche [0131](../../../../features/done/0131-ezk-archive-persiste-handoff.md)
   (persistance du handoff, non régressée), `rules/token-economy/read-once.md`
 
 ## Contexte

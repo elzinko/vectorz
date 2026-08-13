@@ -25,6 +25,8 @@ SUITES=(
   "bin/test-ezk-help.sh"                                 # /ezk-help — index de commandes généré (fiche 20260816131704335)
   "skills/ezk-backlog/scripts/test-mint-id.sh"           # ezk-backlog — id horodaté (fiche 0180)
   "skills/ezk-backlog/scripts/test-layout-version.sh"    # ezk-backlog — Skema layout version
+  "bin/test-check-links.sh"                              # fiche 0101 — sabotage du vérificateur de liens
+  "bin/test-links-repo.sh"                               # fiche 0101 — liens réels du repo (mega-city + racine vectorz)
 )
 
 FAILED=()
