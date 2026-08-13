@@ -5,9 +5,9 @@ type: chore
 priority: P3
 product: mega-city
 epic:
-status: todo
+status: shipped
 ready: 2026-08-13
-pr:
+pr: "#147"
 created: 2026-08-13
 ---
 
