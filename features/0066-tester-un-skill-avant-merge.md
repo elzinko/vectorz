@@ -68,8 +68,10 @@ Livrables candidats :
 ## Notes / décisions
 
 - **Mesure 2026-08-13 (audit de rationalisation)** : **3 skills sur 23** ont un test shell local
-  (`scripts/test-*.sh` — `ezk-archive`, `ezk-backlog`, `ezk-start`, lancés par `test:scripts`), en
-  plus du niveau 1 (audit statique `ezk-steward`) et de la gate de contrat (`src/…`). Ce qui
+  (`scripts/test-*.sh` — `ezk-archive`, `ezk-backlog`, `ezk-start`) — dont **2/23 seulement câblés
+  dans la gate** (`test:scripts` liste ezk-archive + ezk-backlog ; `ezk-start/scripts/test-check-gate.sh`
+  existe mais **n'est pas câblé**), en plus du niveau 1 (audit statique `ezk-steward`) et de la gate
+  de contrat (`src/…`). Ce qui
   **manque, c'est le niveau 2 « exercer le skill »** (golden / dry-run end-to-end) : **0/23** pour
   cette catégorie — ce que cette fiche porte. Rattachée à l'épic [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md).
 - Un skill **de méthode** a un critère en plus : **émet-il les events du contrat ?** → voir
