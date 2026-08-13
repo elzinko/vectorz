@@ -115,9 +115,7 @@ scan_in_progress() {
   done
 }
 scan_in_progress "features"
-if [[ -d products/mega-city/features ]]; then
-  scan_in_progress "products/mega-city/features"
-fi
+# Liste unique `features/` depuis 0064 (ADR-0017 A14) — plus de backlog séparé mega-city à scanner.
 
 if (( ${#INPROG[@]} > 0 )); then
   P3="ALERT"

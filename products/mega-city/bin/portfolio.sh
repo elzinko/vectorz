@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Génère une VUE PORTFOLIO transverse (racine vectorz + mega-city) → PORTFOLIO.md à la racine.
+# Génère une VUE PORTFOLIO transverse (par produit) → PORTFOLIO.md à la racine.
 # Lecture seule sur les front-matters (source de vérité) — ne modifie aucun backlog.
-# Deux backlogs restent séparés (ADR-0017 A13) ; ceci est la vue de lecture par-dessus.
+# Liste UNIQUE `features/` depuis la fiche 0064 (ADR-0017 A14) ; le produit vient du champ
+# `product:` de chaque fiche. Cette vue regroupe / trie / compte les fiches par produit.
 # Doctrine ADR-0001 : le script agrège/trie, le LLM juge. NE PAS éditer PORTFOLIO.md à la main.
 #
 # Usage : portfolio.sh [racine-vectorz]   (défaut : parent de products/, déduit de bin/)
@@ -10,7 +11,6 @@ set -euo pipefail
 ROOT="${1:-"$(cd "$(dirname "$0")/../../.." && pwd)"}"
 cd "$ROOT"
 [ -d features ] || { echo "erreur: pas de features/ à la racine ${ROOT}" >&2; exit 1; }
-[ -d products/mega-city/features ] || { echo "erreur: pas de products/mega-city/features/" >&2; exit 1; }
 
 SEP=$'\x1f'
 OUT="PORTFOLIO.md"
@@ -47,10 +47,6 @@ for f in features/[0-9]*.md; do
   [ -e "$f" ] || continue
   rows="${rows}$(extract "$f" "vectorz")"$'\n'
 done
-for f in products/mega-city/features/[0-9]*.md; do
-  [ -e "$f" ] || continue
-  rows="${rows}$(extract "$f" "mega-city")"$'\n'
-done
 
 st_label() {
   case "$1" in
@@ -71,12 +67,12 @@ emit_table() {
 }
 
 {
-  echo "# 🗂️ Portfolio Vectorz — vue transverse des deux backlogs"
+  echo "# 🗂️ Portfolio Vectorz — vue transverse par produit"
   echo ''
-  echo '> **Vue de LECTURE auto-générée** (`products/mega-city/bin/portfolio.sh`) par-dessus les'
-  echo '> deux backlogs, qui restent séparés (ADR-0017 A13) : `features/` (vectorz/cop1) et'
-  echo '> `products/mega-city/features/` (méthode). **Ne pas éditer à la main.** Source de vérité ='
-  echo '> le front-matter de chaque fiche ; chaque backlog garde son index propre (`BACKLOG.md`).'
+  echo '> **Vue de LECTURE auto-générée** (`products/mega-city/bin/portfolio.sh`) par-dessus le'
+  echo '> backlog **unique** `features/` (liste unifiée depuis la fiche 0064, ADR-0017 A14),'
+  echo '> regroupé par `product:` (vectorz / cop1 / mega-city). **Ne pas éditer à la main.**'
+  echo '> Source de vérité = le front-matter de chaque fiche ; index du backlog = `features/BACKLOG.md`.'
   echo ''
 
   echo '## 🎯 Tirables maintenant (`ready`, tous backlogs confondus)'
