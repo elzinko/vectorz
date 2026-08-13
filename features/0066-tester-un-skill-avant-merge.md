@@ -4,6 +4,7 @@ title: Tester un skill/agent avant merge — process maison (golden tests + DoR/
 type: feature
 priority: P2
 product: mega-city
+epic: "20260813131737959"
 status: idea
 pr:
 created: 2026-07-16
@@ -66,6 +67,10 @@ Livrables candidats :
 
 ## Notes / décisions
 
+- **Mesure 2026-08-13 (audit de rationalisation)** : **0 skill sur 23** n'a de test local
+  (`tests/` ou `*.test.*`). Le niveau 1 (audit statique `ezk-steward`) et la gate de contrat
+  (`src/…`) existent, mais le **niveau 2 (exercer le skill)** reste totalement non outillé —
+  ce que cette fiche porte. Rattachée à l'épic [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md).
 - Un skill **de méthode** a un critère en plus : **émet-il les events du contrat ?** → voir
   0067 (test « golden events ») et l'ADR-032 (émission séparable).
 - Compose : `ezk-steward`, `verify`, `skill-creator`. Origine : cérémonie `ezk-retro`
