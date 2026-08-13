@@ -46,16 +46,19 @@ export function measure(
   const fiches = source.listDoneFiches();
 
   const prEvents: OutcomeMeasuredEvent[] = prs.map((pr, index) => {
-    // Signal « reprise post-merge » (AC4) : une PR plus récente de la même
-    // baseline qui retouche les mêmes fichiers/fiche sous la fenêtre X.
-    const requalified = prs
-      .slice(index + 1)
-      .some((later) =>
+    // Signal « reprise post-merge » (AC4) : une AUTRE PR de la baseline, plus
+    // récente et dans la fenêtre, qui retouche les mêmes fichiers/fiche.
+    // Ordre-INDÉPENDANT : le port RepoSource ne garantit aucun tri (le stub et
+    // `gh pr list` ordonnent à l'inverse) — on compare à toutes les autres et
+    // reprisePostMerge filtre déjà la direction (deltaDays >= 0).
+    const requalified = prs.some(
+      (other, j) =>
+        j !== index &&
         reprisePostMerge(
           { files: pr.files, ficheId: pr.ficheId, mergedAt: pr.mergedAt },
-          { files: later.files, ficheId: later.ficheId, mergedAt: later.mergedAt },
+          { files: other.files, ficheId: other.ficheId, mergedAt: other.mergedAt },
         ),
-      );
+    );
     return {
       event: 'outcome.measured',
       ts: nowIso(),

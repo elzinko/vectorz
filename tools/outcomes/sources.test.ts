@@ -1,5 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { AGENT_BRANCH_PATTERN, StubSource, classifyCommitMessage } from './sources.js';
+import {
+  AGENT_BRANCH_PATTERN,
+  StubSource,
+  classifyCommitMessage,
+  ficheIdFromBranch,
+} from './sources.js';
+
+describe('ficheIdFromBranch', () => {
+  it('extrait un id legacy 4 chiffres', () => {
+    expect(ficheIdFromBranch('feat/0044-mesureur-outcomes')).toBe('0044');
+    expect(ficheIdFromBranch('fix/0002-bug')).toBe('0002');
+  });
+
+  it('extrait un id horodaté 17 chiffres', () => {
+    expect(ficheIdFromBranch('feat/20260813131259846-slug')).toBe('20260813131259846');
+  });
+
+  it('retourne undefined si la branche ne porte pas d’id', () => {
+    expect(ficheIdFromBranch('claude/zen-kalam-942a21')).toBeUndefined();
+    expect(ficheIdFromBranch('docs/foo')).toBeUndefined();
+    expect(ficheIdFromBranch('main')).toBeUndefined();
+  });
+});
 
 describe('AGENT_BRANCH_PATTERN', () => {
   it('matche les préfixes de branche connus', () => {

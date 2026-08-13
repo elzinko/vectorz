@@ -60,6 +60,24 @@ export interface RepoSource {
 export const AGENT_BRANCH_PATTERN = /^(claude|feat|fix|docs|chore|refactor)\//;
 
 /**
+ * PROVISOIRE — id de fiche extrait du nom de branche `<type>/<id>-<slug>`
+ * (convention `feat/<id>-<slug>`, ADR-0018). id = 4 chiffres (legacy) ou 17
+ * (horodaté, fiche 0180). `undefined` si la branche ne porte pas d'id.
+ * Fonction PURE.
+ */
+export function ficheIdFromBranch(branch: string): string | undefined {
+  const tail = branch.includes('/') ? branch.slice(branch.indexOf('/') + 1) : branch;
+  return /^(\d{17}|\d{4})(?:[-_]|$)/.exec(tail)?.[1];
+}
+
+/**
+ * PROVISOIRE — plafond de scan pour COMPTER les PRs (gh n'a pas de count natif ;
+ * on liste puis on mesure la longueur). Au-delà, le compte est tronqué — nommé
+ * pour rendre la limite explicite plutôt que magique.
+ */
+export const COUNT_SCAN_LIMIT = 1000;
+
+/**
  * PROVISOIRE — classification d'un message de commit, fonction PURE.
  * `authorType` s'appuie sur le trailer `Co-authored-by: Claude …` (convention
  * effective de ce repo, cf. instructions de commit) faute de signal git
@@ -146,6 +164,7 @@ export class GhGitSource implements RepoSource {
         number: pr.number,
         branch: pr.headRefName,
         mergedAt: pr.mergedAt,
+        ficheId: ficheIdFromBranch(pr.headRefName),
         files: detail.files.map((f) => f.path),
         commits,
       };
@@ -153,11 +172,37 @@ export class GhGitSource implements RepoSource {
   }
 
   countMergedAgentPrs(): number {
-    return this.fetchMergedPrs(1000).length;
+    // Léger : un seul `gh pr list` (headRefName seul), SANS `gh pr view` par PR.
+    const raw = this.gh([
+      'pr',
+      'list',
+      '--state',
+      'merged',
+      '--limit',
+      String(COUNT_SCAN_LIMIT),
+      '--json',
+      'headRefName',
+    ]);
+    const list = JSON.parse(raw) as { headRefName: string }[];
+    return list.filter((pr) => AGENT_BRANCH_PATTERN.test(pr.headRefName)).length;
   }
 
   listMergedAgentPrs(limit: number): MergedPr[] {
     return this.fetchMergedPrs(limit);
+  }
+
+  private git(args: string[]): string {
+    return execFileSync('git', args, { cwd: this.repoRoot, encoding: 'utf8' }).trim();
+  }
+
+  /**
+   * Date de merge (PROVISOIRE) = date du dernier commit git touchant la fiche
+   * dans `done/` (= le `ship`), proxy du squash-merge. La fiche 0044 spécifie
+   * « created → squash-merge (git) » : on reste côté git, sans appel réseau.
+   */
+  private ficheMergedAt(relPath: string): string | undefined {
+    const out = this.git(['log', '-1', '--format=%cI', '--', relPath]);
+    return out || undefined;
   }
 
   listDoneFiches(): DoneFiche[] {
@@ -166,13 +211,19 @@ export class GhGitSource implements RepoSource {
     return readdirSync(doneDir)
       .filter((f) => f.endsWith('.md'))
       .map((f) => {
+        const relPath = join('features', 'done', f);
         const content = readFileSync(join(doneDir, f), 'utf8');
-        const id = /^id:\s*(\S+)/m.exec(content)?.[1] ?? f;
+        const id = /^id:\s*"?(\S+?)"?\s*$/m.exec(content)?.[1] ?? f;
         const created = /^created:\s*(\S+)/m.exec(content)?.[1] ?? '';
-        return { id, path: join('features', 'done', f), created };
+        return { id, path: relPath, created, mergedAt: this.ficheMergedAt(relPath) };
       });
   }
 
+  /**
+   * PROVISOIRE — présence détectée en LECTURE SEULE ; la CONFORMITÉ au schéma
+   * du journal n'est PAS encore évaluée (`conforms: true` = placeholder assumé).
+   * La validation réelle relève d'une surface gelée du contrat (fiche gated ADR-030).
+   */
   listSupervisionRuns(): SupervisionRun[] {
     const runsDir = join(this.repoRoot, '.supervision', 'runs');
     if (!existsSync(runsDir)) return [];

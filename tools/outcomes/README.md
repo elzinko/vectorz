@@ -42,9 +42,24 @@ Toute modification ultérieure passe par le panel + le PO (ADR-030).
   `metrics.ts`) : **3 jours**. Un correctif sur les mêmes fichiers OU la même
   fiche sous cette fenêtre requalifie le cas comme reproduit
   (`reprisePostMerge`). Seuil PO provisoire.
+- **`temps_de_cycle`** (`tempsDeCycle`) : jours entre le front-matter `created`
+  d'une fiche et son **squash-merge**, ce dernier approché **côté git** par la
+  date du dernier commit touchant la fiche dans `features/done/` (le `ship`) —
+  `ficheMergedAt` dans `sources.ts`, aucun appel réseau. Proxy provisoire.
+- **id de fiche depuis la branche** (`ficheIdFromBranch` dans `sources.ts`) :
+  extrait de `headRefName` selon la convention `feat/<id>-<slug>` (ADR-0018 ;
+  id 4 ou 17 chiffres). Alimente la requalification `reprisePostMerge` par
+  « même fiche », pas seulement « mêmes fichiers ».
+- **Ordre de baseline** : le port `RepoSource` **ne garantit aucun tri**
+  (`StubSource` et `gh pr list` ordonnent à l'inverse) ; `measure()` est
+  ordre-**indépendant** — il compare chaque PR à toutes les autres et laisse
+  `reprisePostMerge` filtrer la direction (`deltaDays >= 0`).
+- **Conformité des runs `.supervision`** (`listSupervisionRuns`) : **placeholder
+  assumé** — présence détectée en lecture seule, `conforms: true` non vérifié.
+  La validation réelle du schéma relève d'une surface gelée (fiche gated ADR-030).
 - **Transport `.improvement/outcomes.jsonl`** : format d'event et dossier
   **PROVISOIRES** (ADR-030 Décision A2 non tranchée) — ne jamais les présenter
-  comme gelés.
+  comme gelés. Le fichier est **gitignoré** (donnée runtime régénérable).
 
 ## Hors scope de ce sprint (déporté, gated ADR-030)
 

@@ -135,4 +135,61 @@ describe('measure — signal reprise_post_merge (AC4) intégré à la baseline',
     const first = result.events.find((e) => e.subject.pr === 1);
     expect(first?.metrics.reprise_post_merge).toBe(true);
   });
+
+  it('indépendant de l’ordre : baseline récent→ancien (comme `gh pr list`)', () => {
+    // PR 2 (correctif, plus récent) listée AVANT PR 1 (originale) — l'ordre que
+    // renvoie gh. Régression du finding « ordre de baseline non garanti ».
+    const source = new StubSource(
+      [
+        {
+          number: 2,
+          branch: 'fix/a',
+          mergedAt: '2026-08-02T00:00:00Z',
+          files: ['x.ts'],
+          commits: [],
+        },
+        {
+          number: 1,
+          branch: 'feat/a',
+          mergedAt: '2026-08-01T00:00:00Z',
+          files: ['x.ts'],
+          commits: [],
+        },
+      ],
+      [],
+      [],
+    );
+    const result = measure(source, root);
+    const original = result.events.find((e) => e.subject.pr === 1);
+    const correctif = result.events.find((e) => e.subject.pr === 2);
+    expect(original?.metrics.reprise_post_merge).toBe(true); // requalifiée par PR 2
+    expect(correctif?.metrics.reprise_post_merge).toBe(false); // rien de plus récent
+  });
+
+  it('requalifie via la MÊME fiche (ficheId), pas seulement les mêmes fichiers', () => {
+    const source = new StubSource(
+      [
+        {
+          number: 10,
+          branch: 'feat/0044-a',
+          mergedAt: '2026-08-01T00:00:00Z',
+          files: ['a.ts'],
+          ficheId: '0044',
+          commits: [],
+        },
+        {
+          number: 11,
+          branch: 'fix/0044-b',
+          mergedAt: '2026-08-02T00:00:00Z',
+          files: ['b.ts'],
+          ficheId: '0044',
+          commits: [],
+        },
+      ],
+      [],
+      [],
+    );
+    const result = measure(source, root);
+    expect(result.events.find((e) => e.subject.pr === 10)?.metrics.reprise_post_merge).toBe(true);
+  });
 });
