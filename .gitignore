@@ -68,3 +68,8 @@ cop1.config.yaml
 # pas de tout `.mcp.json` à n'importe quelle profondeur.
 /.mcp.json
 docs/dogfood-reports/
+
+# Ledger d'outcomes (fiche 0044) — données runtime append-only régénérées par le
+# mesureur déterministe (tools/outcomes). Non versionné : reproductible depuis git/gh.
+# NB transport PROVISOIRE tant qu'ADR-030 (A2) n'est pas ratifié.
+/.improvement/
