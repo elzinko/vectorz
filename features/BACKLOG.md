@@ -81,7 +81,7 @@
 | 0191 | Lisibilité qui tient — templates LLM-adaptés + renfort au moment d'écrire (dès la description de PR) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 20260812134515706 | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | ⛔ blocked |  |
-| 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | 🔴 todo |  |
+| 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -230,4 +230,4 @@
 | 20260812100258610 | testbed dogfood LLM headless — rejouer la chaîne méthode→journal→Moniteur sans humain (nightly) | feature | P3 |  | mega-city | 💡 idea |  |
 | 20260813122619707 | Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu) | bug | P3 |  | mega-city | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0044, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0103, 0104, 0105, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0149, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182, 0185, 20260813170548417.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0044, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0103, 0104, 0105, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0149, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182, 0185, 20260813170548417, 20260813200137369.
