@@ -26,16 +26,19 @@ Toute modification ultérieure passe par le panel + le PO (ADR-030).
   Proxy faute de mieux — dans ce repo tout est produit par agents.
 - **Point de handoff** (`findHandoffIndex` dans `metrics.ts`) : le dernier
   commit d'auteur `agent` dans la liste des commits d'une PR.
-- **Classification auteur agent/humain** (`classifyCommitMessage` dans
-  `sources.ts`) : un commit est `agent` s'il porte le trailer
-  `Co-authored-by: Claude …` (convention effective des commits de ce repo).
-  Limite connue et documentée : tous les commits locaux de ce repo partagent
-  la même identité git (`Thomas Couderc`, cf. test boundary 0176) — il n'existe
-  **aucun signal git natif** distinguant auteur agent/humain ; le trailer est
-  le seul proxy disponible.
-- **« PR sans retouche »** (`prSansRetouche`) : aucun commit post-handoff
-  substantiel, où *substantiel* exclut explicitement les commits de **rebase**,
-  de **formatage**, et les **commits de merge**.
+- **Classification auteur** (`classifyCommitMessage` dans `sources.ts`) : un
+  commit est `agent` s'il porte le trailer `Co-authored-by: Claude …`, sinon
+  **`unknown`** — **jamais `human`**. L'absence de trailer ne prouve PAS un auteur
+  humain : dans ce repo tout est produit par agents, l'identité git est unique
+  (`Thomas Couderc`, test boundary 0176) et le trailer n'est pas systématique
+  (des commits d'agent en sont dépourvus). Il n'existe **aucun signal git natif**
+  fiable ; c'est un **constat d'inventaire** (AC1), pas une lacune corrigeable ici.
+- **« PR sans retouche »** (`prSansRetouche`) → `boolean | null`, **jamais `false`** :
+  - `true` = rien de substantiel après le dernier commit agent (rebase, formatage
+    et merge exclus) ;
+  - `null` = **indéterminable** — aucun commit agent identifié, OU des commits
+    substantiels d'auteur `unknown` suivent le handoff (on ne peut pas confirmer
+    une retouche *humaine* faute de signal). Renvoyer `false` serait mentir.
 - **N — taille de la baseline** (`DEFAULT_BASELINE_SIZE` dans `measure.ts`) :
   **30** PRs d'agents mergées les plus récentes. Seuil PO provisoire.
 - **X — fenêtre de reprise post-merge** (`REPRISE_WINDOW_DAYS` dans
@@ -43,9 +46,16 @@ Toute modification ultérieure passe par le panel + le PO (ADR-030).
   fiche sous cette fenêtre requalifie le cas comme reproduit
   (`reprisePostMerge`). Seuil PO provisoire.
 - **`temps_de_cycle`** (`tempsDeCycle`) : jours entre le front-matter `created`
-  d'une fiche et son **squash-merge**, ce dernier approché **côté git** par la
-  date du dernier commit touchant la fiche dans `features/done/` (le `ship`) —
-  `ficheMergedAt` dans `sources.ts`, aucun appel réseau. Proxy provisoire.
+  d'une fiche et son **ship**, ce dernier approché **côté git** par la date du
+  commit qui a **ajouté** la fiche à `features/done/` (`git log --diff-filter=A`),
+  et NON le dernier commit qui l'a touchée — une édition post-ship (refactor de
+  layout, correction de doc) gonflerait le cycle. `ficheMergedAt` dans `sources.ts`,
+  aucun appel réseau. Proxy provisoire.
+- **Reclassification persistée** (`eventKey` dans `ledger.ts`) : la clé de dédup
+  inclut la **valeur des métriques** (hors `ts`). Une re-mesure à état constant
+  reste idempotente (AC6), mais un changement d'outcome (ex. `reprise` `false→true`
+  quand un correctif merge après coup) s'append — le **dernier** event d'un sujet
+  fait foi.
 - **id de fiche depuis la branche** (`ficheIdFromBranch` dans `sources.ts`) :
   extrait de `headRefName` selon la convention `feat/<id>-<slug>` (ADR-0018 ;
   id 4 ou 17 chiffres). Alimente la requalification `reprisePostMerge` par
@@ -68,14 +78,18 @@ garde calendaire, verdicts `verified|retired` mécaniques, second fichier
 `lifecycle.jsonl`, mécanisme de preuve externe. Voir la fiche
 `20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md`.
 
-## Usage (POC)
+## Usage
 
-```ts
-import { GhGitSource } from './sources.js';
-import { measure } from './measure.js';
+Point d'entrée exécutable (`cli.ts`, résout la racine via `git rev-parse`) :
 
-const source = new GhGitSource(process.cwd());
-const result = measure(source, process.cwd());
-console.log(result.inventory);
-console.log(`${result.ledger.written} events écrits, ${result.ledger.skippedDuplicates} doublons ignorés`);
+```bash
+pnpm outcomes:measure
 ```
+
+Produit l'inventaire (AC1) puis la baseline `.improvement/outcomes.jsonl` (AC2,
+append-only, idempotent) et imprime `{ inventory, ledger }`. La baseline **sur-scanne**
+puis filtre les PRs d'agents avant de tronquer à N (`DEFAULT_BASELINE_SIZE`), pour
+renvoyer réellement « les N dernières PRs d'agents » même quand des PRs non-agent
+s'intercalent.
+
+En bibliothèque : `measure(new GhGitSource(root), root, { baselineSize })`.

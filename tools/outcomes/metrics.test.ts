@@ -29,17 +29,18 @@ describe('findHandoffIndex', () => {
   });
 
   it('retourne -1 si aucun commit agent', () => {
-    expect(findHandoffIndex([commit({ sha: 'h1', message: 'x', authorType: 'human' })])).toBe(-1);
+    expect(findHandoffIndex([commit({ sha: 'h1', message: 'x', authorType: 'unknown' })])).toBe(-1);
   });
 });
 
 describe('prSansRetouche — AC3, fixtures représentatives de PRs réelles', () => {
-  it('(a) commit humain substantiel post-handoff ⇒ false', () => {
+  it('(a) commit substantiel d’auteur indéterminé post-handoff ⇒ null (non confirmable)', () => {
     const commits = [
       commit({ sha: 'a1', message: 'feat(outcomes): implémente X', authorType: 'agent' }),
-      commit({ sha: 'h1', message: 'fix: corrige le bug trouvé en revue', authorType: 'human' }),
+      commit({ sha: 'h1', message: 'fix: corrige le bug trouvé en revue', authorType: 'unknown' }),
     ];
-    expect(prSansRetouche(commits)).toBe(false);
+    // On ne peut PAS confirmer une retouche humaine faute de signal (finding Codex #3).
+    expect(prSansRetouche(commits)).toBeNull();
   });
 
   it('(b) seulement rebase/format/merge post-handoff ⇒ true', () => {
@@ -48,28 +49,36 @@ describe('prSansRetouche — AC3, fixtures représentatives de PRs réelles', ()
       commit({
         sha: 'h1',
         message: 'chore: rebase onto main',
-        authorType: 'human',
+        authorType: 'unknown',
         isRebase: true,
       }),
       commit({
         sha: 'h2',
         message: 'style: run biome format',
-        authorType: 'human',
+        authorType: 'unknown',
         isFormatting: true,
       }),
       commit({
         sha: 'h3',
         message: 'Merge pull request #99 from feat/x',
-        authorType: 'human',
+        authorType: 'unknown',
         isMergeCommit: true,
       }),
     ];
     expect(prSansRetouche(commits)).toBe(true);
   });
 
-  it('aucune retouche quand le dernier commit est déjà agent', () => {
+  it('aucune retouche quand le dernier commit est déjà agent ⇒ true', () => {
     const commits = [commit({ sha: 'a1', message: 'feat: solo', authorType: 'agent' })];
     expect(prSansRetouche(commits)).toBe(true);
+  });
+
+  it('aucun commit agent identifié ⇒ null (handoff introuvable, finding Codex #3)', () => {
+    const commits = [
+      commit({ sha: 'x1', message: 'feat: sans trailer', authorType: 'unknown' }),
+      commit({ sha: 'x2', message: 'fix: sans trailer non plus', authorType: 'unknown' }),
+    ];
+    expect(prSansRetouche(commits)).toBeNull();
   });
 });
 

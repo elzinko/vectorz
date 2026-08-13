@@ -21,14 +21,22 @@ export function findHandoffIndex(commits: readonly PrCommit[]): number {
 }
 
 /**
- * AC3 — « PR sans retouche » : aucun commit humain SUBSTANTIEL après le
- * handoff. Exclut explicitement rebase, formatage et commits de merge.
+ * AC3 — « PR sans retouche » : aucun commit SUBSTANTIEL après le handoff
+ * (rebase, formatage et merge exclus). Retourne `boolean | null` :
+ *  - `null` (INDÉTERMINABLE) si aucun commit agent n'est identifié (pas de
+ *    handoff localisable), OU s'il existe des commits substantiels post-handoff
+ *    d'auteur `unknown` — on ne peut PAS confirmer une retouche humaine faute de
+ *    signal d'auteur fiable (identité git unique, trailer non systématique, 0176) ;
+ *  - `true` si rien de substantiel ne suit le dernier commit agent.
+ * On ne renvoie jamais `false` : « retouche humaine » n'est pas confirmable ici.
  */
-export function prSansRetouche(commits: readonly PrCommit[]): boolean {
+export function prSansRetouche(commits: readonly PrCommit[]): boolean | null {
   const handoffIndex = findHandoffIndex(commits);
+  if (handoffIndex === -1) return null; // aucun commit agent identifié
   const postHandoff = commits.slice(handoffIndex + 1);
   const retouches = postHandoff.filter((c) => !c.isRebase && !c.isFormatting && !c.isMergeCommit);
-  return retouches.length === 0;
+  if (retouches.length === 0) return true;
+  return null; // commits substantiels d'auteur indéterminé → non confirmable
 }
 
 /** AC: temps_de_cycle = jours entre front-matter `created` et le squash-merge. */

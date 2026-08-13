@@ -74,4 +74,15 @@ describe('appendOutcomeEvents — AC6 idempotence', () => {
     const lines = readFileSync(ledgerPath(root), 'utf8').trim().split('\n');
     expect(lines).toHaveLength(2);
   });
+
+  it('persiste une reclassification : même sujet, métriques changées ⇒ nouvel event (finding Codex #1)', () => {
+    // Une reprise post-merge est découverte APRÈS la mesure initiale.
+    appendOutcomeEvents(root, [{ ...event({ pr: 1 }), metrics: { reprise_post_merge: false } }]);
+    const r = appendOutcomeEvents(root, [
+      { ...event({ pr: 1 }), metrics: { reprise_post_merge: true } },
+    ]);
+    expect(r).toEqual({ written: 1, skippedDuplicates: 0 });
+    const lines = readFileSync(ledgerPath(root), 'utf8').trim().split('\n');
+    expect(lines).toHaveLength(2); // false puis true, les deux conservés (le dernier fait foi)
+  });
 });

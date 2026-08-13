@@ -10,7 +10,10 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 export interface CommitClassification {
-  authorType: 'agent' | 'human';
+  // `unknown` (et non `human`) : l'ABSENCE de trailer ne prouve pas un auteur
+  // humain — dans ce repo tout est produit par agents et l'identité git est
+  // unique (0176). Seul le trailer confirme `agent` ; le reste est indéterminé.
+  authorType: 'agent' | 'unknown';
   isMergeCommit: boolean;
   isRebase: boolean;
   isFormatting: boolean;
@@ -91,9 +94,9 @@ export function classifyCommitMessage(message: string): CommitClassification {
     /^style(\(.+\))?:/i.test(firstLine) ||
     /^chore\(format\)/i.test(firstLine) ||
     /\bformat(ting)?\b/i.test(firstLine);
-  const authorType: 'agent' | 'human' = /co-authored-by:\s*claude/i.test(message)
+  const authorType: 'agent' | 'unknown' = /co-authored-by:\s*claude/i.test(message)
     ? 'agent'
-    : 'human';
+    : 'unknown';
   return { authorType, isMergeCommit, isRebase, isFormatting };
 }
 
@@ -135,18 +138,21 @@ export class GhGitSource implements RepoSource {
   }
 
   private fetchMergedPrs(limit: number): MergedPr[] {
+    // Sur-scanne puis FILTRE puis tronque : `gh --limit N` compte les PRs
+    // AVANT le filtre agent ; l'appliquer d'abord renverrait < N PRs d'agents
+    // dès qu'une PR non-agent s'intercale. On veut « N dernières PRs d'agents ».
     const raw = this.gh([
       'pr',
       'list',
       '--state',
       'merged',
       '--limit',
-      String(limit),
+      String(COUNT_SCAN_LIMIT),
       '--json',
       'number,headRefName,mergedAt',
     ]);
     const list = JSON.parse(raw) as { number: number; headRefName: string; mergedAt: string }[];
-    const agentPrs = list.filter((pr) => AGENT_BRANCH_PATTERN.test(pr.headRefName));
+    const agentPrs = list.filter((pr) => AGENT_BRANCH_PATTERN.test(pr.headRefName)).slice(0, limit);
 
     return agentPrs.map((pr) => {
       const detailRaw = this.gh(['pr', 'view', String(pr.number), '--json', 'files,commits']);
@@ -196,13 +202,21 @@ export class GhGitSource implements RepoSource {
   }
 
   /**
-   * Date de merge (PROVISOIRE) = date du dernier commit git touchant la fiche
-   * dans `done/` (= le `ship`), proxy du squash-merge. La fiche 0044 spécifie
+   * Date de merge (PROVISOIRE) = date du commit qui a AJOUTÉ la fiche à `done/`
+   * (le `ship` = `git mv`), proxy du squash-merge. On prend l'ajout (`--diff-filter=A`),
+   * PAS le dernier commit touchant le fichier : une édition post-ship (refactor de
+   * layout, correction de doc) gonflerait le temps de cycle. La fiche 0044 spécifie
    * « created → squash-merge (git) » : on reste côté git, sans appel réseau.
    */
   private ficheMergedAt(relPath: string): string | undefined {
-    const out = this.git(['log', '-1', '--format=%cI', '--', relPath]);
-    return out || undefined;
+    const added = this.git(['log', '--diff-filter=A', '--format=%cI', '--', relPath])
+      .split('\n')
+      .filter(Boolean);
+    // `git log` liste du plus récent au plus ancien ; l'ajout à `done/` est le
+    // plus ancien de la liste (un seul en pratique). Repli sur le dernier commit
+    // si aucun ajout n'est trouvé (historique tronqué / shallow clone).
+    const shipDate = added.at(-1) ?? this.git(['log', '-1', '--format=%cI', '--', relPath]);
+    return shipDate || undefined;
   }
 
   listDoneFiches(): DoneFiche[] {

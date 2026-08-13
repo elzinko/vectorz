@@ -27,9 +27,26 @@ export function ledgerPath(rootDir: string): string {
   return join(rootDir, IMPROVEMENT_DIR, LEDGER_FILENAME);
 }
 
-/** Clé stable de dédup = event + sujet (pas les métriques : une seule mesure par sujet). */
-export function eventKey(event: Pick<OutcomeMeasuredEvent, 'event' | 'subject'>): string {
-  return `${event.event}:pr=${event.subject.pr ?? ''}:fiche=${event.subject.fiche ?? ''}`;
+/** Sérialisation stable (clés triées) des métriques, pour une clé déterministe. */
+function stableMetrics(metrics: Record<string, unknown>): string {
+  const sorted: Record<string, unknown> = {};
+  for (const k of Object.keys(metrics).sort()) sorted[k] = metrics[k];
+  return JSON.stringify(sorted);
+}
+
+/**
+ * Clé de dédup = event + sujet + **valeur des métriques** (hors `ts`). Inclure les
+ * métriques est délibéré : une reprise post-merge n'est découverte qu'APRÈS la mesure
+ * initiale (`reprise=false` → `true`) ; une clé sujet-seule traiterait la nouvelle
+ * mesure comme un doublon et ne persisterait jamais la reclassification. Ici, une
+ * re-mesure à état constant reste dédupliquée (idempotence AC6), mais un changement
+ * d'outcome s'append (le dernier event du sujet fait foi).
+ */
+export function eventKey(
+  event: Pick<OutcomeMeasuredEvent, 'event' | 'subject' | 'metrics'>,
+): string {
+  const subj = `pr=${event.subject.pr ?? ''}:fiche=${event.subject.fiche ?? ''}`;
+  return `${event.event}:${subj}:${stableMetrics(event.metrics)}`;
 }
 
 function readExistingKeys(path: string): Set<string> {

@@ -44,9 +44,9 @@ describe('classifyCommitMessage', () => {
     expect(c.authorType).toBe('agent');
   });
 
-  it('classe un commit sans trailer comme humain', () => {
+  it('classe un commit sans trailer comme « unknown » (pas « human ») — finding Codex #3', () => {
     const c = classifyCommitMessage('fix typo directement en éditant le fichier');
-    expect(c.authorType).toBe('human');
+    expect(c.authorType).toBe('unknown');
   });
 
   it('détecte un commit de merge', () => {
