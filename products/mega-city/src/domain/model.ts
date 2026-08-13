@@ -19,6 +19,7 @@ export type {
   Rule,
   RuleKind,
   Skill,
+  SkillAsset,
 } from '../../docs/domain.js';
 
 export type { FileWrite, HookWrite, WriteIntent, WritePlan } from './plan.js';

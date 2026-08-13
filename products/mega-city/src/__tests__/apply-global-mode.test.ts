@@ -114,6 +114,62 @@ describe('applyGlobalPlan — mode link vs copy (fiche 0018)', () => {
     expect(lstatSync(join(root, 'skills/ezk-commits')).isSymbolicLink()).toBe(true);
   });
 
+  // ── Assets de dossier (ADR-0027) ──────────────────────────────────────────
+  it('mode link : les assets viennent à travers le lien du dossier (un seul symlink)', () => {
+    // Source catalogue : SKILL.md + un asset réel.
+    writeFileSync(join(catalogRoot, 'skills/ezk-commits/note.md'), 'asset source\n');
+    const plan: WritePlan = {
+      files: [
+        { path: 'skills/ezk-commits/SKILL.md', content: '# figé\n' },
+        { path: 'skills/ezk-commits/note.md', content: '# figé note\n' },
+      ],
+      hooks: [],
+    };
+    applyGlobalPlan(plan, root, { mode: 'link', catalogRoot });
+    const skillDir = join(root, 'skills/ezk-commits');
+    expect(lstatSync(skillDir).isSymbolicLink()).toBe(true);
+    // À travers le lien on lit le contenu SOURCE (live-update), pas celui du plan.
+    expect(readFileSync(join(skillDir, 'note.md'), 'utf8')).toBe('asset source\n');
+  });
+
+  it('mode link : un id SLASHÉ symlinke skills/foo/bar (pas skills/foo) — finding Codex #138', () => {
+    const src = join(catalogRoot, 'skills/foo/bar');
+    mkdirSync(src, { recursive: true });
+    writeFileSync(join(src, 'SKILL.md'), '# bar source\n');
+    const plan: WritePlan = {
+      files: [{ path: 'skills/foo/bar/SKILL.md', content: '# figé\n' }],
+      hooks: [],
+    };
+    applyGlobalPlan(plan, root, { mode: 'link', catalogRoot });
+    // C'est skills/foo/bar qui est le lien vers la source — skills/foo reste un dossier réel.
+    expect(lstatSync(join(root, 'skills/foo/bar')).isSymbolicLink()).toBe(true);
+    expect(realpathSync(join(root, 'skills/foo/bar'))).toBe(realpathSync(src));
+    expect(lstatSync(join(root, 'skills/foo')).isSymbolicLink()).toBe(false);
+  });
+
+  it('bascule link → copy : un asset trié AVANT SKILL.md n’écrit pas à travers le lien (source protégée)', () => {
+    // 'approaches/x.md' < 'SKILL.md' en localeCompare → l'asset serait traité en premier ;
+    // sans le retrait préalable du symlink, writeRaw écrirait dans la SOURCE du catalogue.
+    mkdirSync(join(catalogRoot, 'skills/ezk-commits/approaches'), { recursive: true });
+    const source = join(catalogRoot, 'skills/ezk-commits/approaches/x.md');
+    writeFileSync(source, 'SOURCE INTACTE\n');
+    const plan: WritePlan = {
+      files: [
+        { path: 'skills/ezk-commits/approaches/x.md', content: 'CONTENU FIGÉ\n' },
+        { path: 'skills/ezk-commits/SKILL.md', content: '# figé\n' },
+      ].sort((a, b) => a.path.localeCompare(b.path)),
+      hooks: [],
+    };
+    applyGlobalPlan(plan, root, { mode: 'link', catalogRoot }); // lien d'abord
+    applyGlobalPlan(plan, root); // bascule copy
+    // La source du catalogue n'a PAS été écrite à travers l'ancien lien.
+    expect(readFileSync(source, 'utf8')).toBe('SOURCE INTACTE\n');
+    // La cible copie porte bien le contenu figé, en dossier réel (plus un lien).
+    const target = join(root, 'skills/ezk-commits');
+    expect(lstatSync(target).isSymbolicLink()).toBe(false);
+    expect(readFileSync(join(target, 'approaches/x.md'), 'utf8')).toBe('CONTENU FIGÉ\n');
+  });
+
   // — Agents (fiche 0025) : le mode link doit AUSSI symlinker les agents, pas seulement
   //   les skills, pour que ~/.claude/agents/ pointe vers mega-city au switchover.
   it('mode link : crée un symlink de l’agent-fichier vers la source du catalogue', () => {

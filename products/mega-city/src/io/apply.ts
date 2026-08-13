@@ -127,32 +127,75 @@ export function applyPlan(plan: WritePlan, projectDir: string, options: ApplyOpt
 }
 
 /** Le nom de fichier canonique d'une skill matérialisée par le cap global. */
-const SKILL_FILE = 'SKILL.md';
-
-/** Discrimine les deux formes du plan global : skill-dir vs agent-fichier. */
-function isSkillFile(path: string): boolean {
-  return path.endsWith(`/${SKILL_FILE}`);
+/**
+ * Discrimine les deux formes du plan global : arbre des skills (`skills/<id>/...`, un dossier
+ * multi-fichiers depuis ADR-0027) vs agent-fichier (`agents/<id>.md`).
+ */
+function isUnderSkills(path: string): boolean {
+  return path.startsWith('skills/');
 }
 
 function isAgentFile(path: string): boolean {
   return path.startsWith('agents/') && path.endsWith('.md');
 }
 
+const SKILL_DOC = 'SKILL.md';
+
+/** Un chemin de plan qui EST le doc d'un skill (`.../SKILL.md`) — marque son dossier. */
+function isSkillDoc(path: string): boolean {
+  return path === SKILL_DOC || path.endsWith(`/${SKILL_DOC}`);
+}
+
 /**
- * Garde NON-DESTRUCTIVE pour le cap global (invariant ADR-0006/0010, cf. deploy.sh) :
- * dans `~/.claude/skills`, lawgiver ne gère QUE des dossiers de skill dont l'unique
- * contenu est `SKILL.md`. Si le dossier cible préexiste mais contient autre chose
- * (un vrai artefact utilisateur), on REFUSE de l'écraser — jamais de `rm -rf` aveugle.
- * Un dossier neuf, ou un dossier ne contenant que `SKILL.md` (déjà géré), est accepté
- * → l'écriture est alors idempotente.
+ * Groupe les FileWrite de skills par dossier `skills/<id>`, où `<id>` PEUT contenir des `/`
+ * (assertSafeId l'autorise). Le dossier est dérivé du `SKILL.md` (son `dirname`), JAMAIS en
+ * tronquant à 2 segments : un id slashé (`skills/foo/bar/SKILL.md`) casserait sinon (finding
+ * Codex PR #138). Chaque autre fichier est rattaché au dossier de skill le PLUS LONG qui le
+ * préfixe (désambiguïse un skill imbriqué dans un autre). Un asset sans `SKILL.md` associé
+ * (impossible via `skillFolderFiles`) est ignoré.
  */
-function assertManagedSkillDir(root: string, skillFilePath: string): void {
-  const skillDir = resolveInsideProject(root, dirname(skillFilePath));
+function groupBySkillDir(files: FileWrite[]): Map<string, FileWrite[]> {
+  const dirs = files
+    .filter((file) => isSkillDoc(file.path))
+    .map((file) => dirname(file.path))
+    .sort((a, b) => b.length - a.length); // plus long d'abord → longest-prefix match
+  const groups = new Map<string, FileWrite[]>(dirs.map((dir) => [dir, [] as FileWrite[]]));
+  for (const file of files) {
+    const owner = dirs.find(
+      (dir) => file.path === `${dir}/${SKILL_DOC}` || file.path.startsWith(`${dir}/`),
+    );
+    if (owner) groups.get(owner)?.push(file);
+  }
+  return groups;
+}
+
+/**
+ * Noms de premier niveau GÉRÉS d'un dossier de skill = premier segment (sous `dirRel`) de
+ * chaque fichier du plan pour ce dossier : `SKILL.md`, `approaches`, `scripts`… Sert à la
+ * garde non-destructive (tout AUTRE nom présent sur disque = étranger, donc refusé).
+ */
+function managedTopNames(dirRel: string, files: FileWrite[]): Set<string> {
+  const prefix = `${dirRel}/`;
+  const names = new Set<string>();
+  for (const file of files) names.add(file.path.slice(prefix.length).split('/')[0]);
+  return names;
+}
+
+/**
+ * Garde NON-DESTRUCTIVE pour le cap global (invariant ADR-0006/0010, cf. deploy.sh ;
+ * assets ADR-0027) : dans `~/.claude/skills`, lawgiver ne gère QUE des dossiers de skill
+ * dont les entrées de premier niveau sont celles du plan (`SKILL.md` + `approaches`,
+ * `scripts`… = `managed`). Si le dossier cible préexiste mais contient AUTRE chose (un
+ * vrai artefact utilisateur), on REFUSE de l'écraser — jamais de `rm -rf` aveugle. Un
+ * dossier neuf, ou un dossier ne contenant QUE du géré, est accepté → écriture idempotente.
+ */
+function assertManagedSkillDir(root: string, dirRel: string, managed: Set<string>): void {
+  const skillDir = resolveInsideProject(root, dirRel);
   if (!existsSync(skillDir)) return;
   if (!statSync(skillDir).isDirectory()) {
     throw new Error(`refus non-destructif : ${JSON.stringify(skillDir)} n'est pas un dossier.`);
   }
-  const foreign = readdirSync(skillDir).filter((name) => name !== SKILL_FILE);
+  const foreign = readdirSync(skillDir).filter((name) => !managed.has(name));
   if (foreign.length > 0) {
     throw new Error(
       `refus non-destructif : ${JSON.stringify(skillDir)} contient des fichiers ` +
@@ -173,26 +216,21 @@ export interface GlobalApplyOptions {
   catalogRoot?: string;
 }
 
-/** Le segment `skills/<id>` d'un chemin de plan `skills/<id>/SKILL.md`. */
-function skillDirRelative(skillFilePath: string): string {
-  return dirname(skillFilePath); // ex. 'skills/ezk-commits'
-}
-
 /**
- * Vérifie qu'une entrée cible est REMPLAÇABLE de façon non-destructive (mirror de
- * `link_or_copy`/deploy.sh) : soit inexistante, soit notre propre symlink, soit un
- * skill-dir déjà géré (contenant SKILL.md). Sinon (vrai fichier/dossier utilisateur
- * étranger) : refus. `assertManagedSkillDir` couvre déjà le cas skill-dir géré ; ici
- * on n'ajoute que la tolérance du symlink (notre propre entrée en mode link).
+ * Vérifie qu'un dossier de skill cible est REMPLAÇABLE de façon non-destructive (mirror de
+ * `link_or_copy`/deploy.sh) : soit inexistant, soit notre propre symlink, soit un skill-dir
+ * déjà géré (n'ayant au premier niveau que du `managed`). Sinon (vrai dossier utilisateur
+ * étranger) : refus. `assertManagedSkillDir` couvre déjà le cas skill-dir géré ; ici on
+ * n'ajoute que la tolérance du symlink (notre propre entrée en mode link).
  */
-function assertReplaceableEntry(root: string, skillFilePath: string): void {
-  const target = resolveInsideProject(root, skillDirRelative(skillFilePath));
+function assertReplaceableSkillDir(root: string, dirRel: string, managed: Set<string>): void {
+  const target = resolveInsideProject(root, dirRel);
   if (existsSync(target) && lstatSync(target).isSymbolicLink()) return; // notre propre lien.
-  assertManagedSkillDir(root, skillFilePath);
+  assertManagedSkillDir(root, dirRel, managed);
 }
 
 /**
- * Pendant agent de `assertReplaceableEntry` : un agent est un FICHIER
+ * Pendant agent de `assertReplaceableSkillDir` : un agent est un FICHIER
  * `agents/<id>.md` (pas un dossier). Remplaçable de façon non-destructive s'il
  * est inexistant ou n'est qu'un symlink (le nôtre, ou l'ancien de claude-skills
  * qu'on bascule). Un vrai fichier utilisateur préexistant → refus (jamais écrasé).
@@ -221,11 +259,14 @@ function isSymlink(path: string): boolean {
   }
 }
 
-/** Matérialise un skill par symlink `<root>/skills/<id>` → `<catalogRoot>/skills/<id>`. */
-function linkSkill(root: string, catalogRoot: string, skillFilePath: string): void {
-  const relative = skillDirRelative(skillFilePath); // 'skills/<id>'
-  const target = resolveInsideProject(root, relative);
-  const source = resolve(catalogRoot, relative);
+/**
+ * Matérialise un skill par symlink `<root>/skills/<id>` → `<catalogRoot>/skills/<id>`.
+ * Le lien porte le dossier ENTIER : ses assets (`approaches/`, `scripts/`…) viennent
+ * gratuitement à travers le lien (live-update), sans FileWrite par asset (ADR-0027).
+ */
+function linkSkillDir(root: string, catalogRoot: string, dirRel: string): void {
+  const target = resolveInsideProject(root, dirRel);
+  const source = resolve(catalogRoot, dirRel);
   removeManagedEntry(target);
   mkdirSync(dirname(target), { recursive: true });
   symlinkSync(source, target);
@@ -258,32 +299,38 @@ export function applyGlobalPlan(
   options: GlobalApplyOptions = {},
 ): void {
   const mode = options.mode ?? 'copy';
+  // Un skill = un DOSSIER multi-fichiers (ADR-0027) : on groupe le plan par `skills/<id>`.
+  const skillDirs = groupBySkillDir(plan.files.filter((file) => isUnderSkills(file.path)));
+  const agentFiles = plan.files.filter((file) => isAgentFile(file.path));
+
   // Garde non-destructive AVANT toute écriture, pour les DEUX formes (skills + agents).
-  for (const file of plan.files) {
-    if (isSkillFile(file.path)) assertReplaceableEntry(root, file.path);
-    else if (isAgentFile(file.path)) assertReplaceableAgent(root, file.path);
+  for (const [dirRel, files] of skillDirs) {
+    assertReplaceableSkillDir(root, dirRel, managedTopNames(dirRel, files));
   }
+  for (const file of agentFiles) assertReplaceableAgent(root, file.path);
+
   if (mode === 'link') {
     const catalogRoot = options.catalogRoot;
     if (!catalogRoot) {
       throw new Error("mode 'link' : catalogRoot (racine du catalogue) est requis.");
     }
-    for (const file of plan.files) {
-      if (isSkillFile(file.path)) linkSkill(root, catalogRoot, file.path);
-      else if (isAgentFile(file.path)) linkAgent(root, catalogRoot, file.path);
-    }
+    for (const dirRel of skillDirs.keys()) linkSkillDir(root, catalogRoot, dirRel);
+    for (const file of agentFiles) linkAgent(root, catalogRoot, file.path);
     return;
   }
-  for (const file of plan.files) {
-    // bascule link → copy : retire d'abord notre symlink pour écrire un contenu figé
-    // (sinon writeRaw écrirait À TRAVERS le lien, dans la source du catalogue).
-    if (isSkillFile(file.path)) {
-      const skillDir = resolveInsideProject(root, skillDirRelative(file.path));
-      if (isSymlink(skillDir)) rmSync(skillDir, { force: true });
-    } else if (isAgentFile(file.path)) {
-      const agentFile = resolveInsideProject(root, file.path);
-      if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
-    }
+
+  // copy : REMPLACEMENT ATOMIQUE de notre entrée gérée par le contenu figé du plan. Retirer
+  // d'abord notre symlink/dossier géré évite (a) d'écrire À TRAVERS un lien (bascule
+  // link → copy : un asset trié avant SKILL.md irait sinon dans la source du catalogue) et
+  // (b) de laisser traîner un asset retiré de la source. Non-destructif : la garde ci-dessus
+  // a prouvé que l'entrée est la nôtre.
+  for (const [dirRel, files] of skillDirs) {
+    removeManagedEntry(resolveInsideProject(root, dirRel));
+    for (const file of files) applyFile(root, file);
+  }
+  for (const file of agentFiles) {
+    const agentFile = resolveInsideProject(root, file.path);
+    if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
     applyFile(root, file);
   }
 }

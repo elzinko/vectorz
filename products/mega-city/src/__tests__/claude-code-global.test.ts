@@ -74,6 +74,25 @@ describe('claudeCodeGlobalCap.materialize (plan pur, sans FS)', () => {
     expect(() => claudeCodeGlobalCap.materialize(unsafe, '/fake/.claude')).toThrow(/non sûr/i);
   });
 
+  it('emporte les assets sous skills/<id>/<rel>, mode 0o755 si exécutable (ADR-0027)', () => {
+    const withAssets: ResolvedProfile = {
+      ...resolved,
+      skills: [
+        {
+          id: 'ezk-article',
+          content: 'x',
+          assets: [
+            { path: 'approaches/a.md', content: 'a\n' },
+            { path: 'scripts/run.sh', content: '#!/bin/sh\n', executable: true },
+          ],
+        },
+      ],
+    };
+    const plan = claudeCodeGlobalCap.materialize(withAssets, '/fake/.claude');
+    expect(find(plan, 'skills/ezk-article/approaches/a.md')?.content).toBe('a\n');
+    expect(find(plan, 'skills/ezk-article/scripts/run.sh')?.mode).toBe(0o755);
+  });
+
   it('trie stablement les fichiers du plan par path (déterminisme)', () => {
     const plan = claudeCodeGlobalCap.materialize(resolved, '/fake/.claude');
     const paths = plan.files.map((f) => f.path);

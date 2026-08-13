@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -109,6 +109,82 @@ describe('loadCatalog (données réelles du repo)', () => {
     const skill = catalog.skills.get('ezk-commits');
     expect(skill).toBeDefined();
     expect(skill?.content).toContain('Conventional Commits');
+  });
+
+  it('charge les assets réels du dossier (ezk-article → approaches/, ADR-0027)', () => {
+    const catalog = loadCatalog(repoRoot);
+    const article = catalog.skills.get('ezk-article');
+    expect(article?.assets?.map((a) => a.path)).toContain(
+      'approaches/vectorz-grand-public-vulgarise.md',
+    );
+    // un script réel versionné 100755 (ezk-backlog/scripts/mint-id.sh) porte le bit +x
+    const backlog = catalog.skills.get('ezk-backlog');
+    const script = backlog?.assets?.find((a) => a.path === 'scripts/mint-id.sh');
+    expect(script?.executable).toBe(true);
+  });
+});
+
+describe('loadCatalog — assets de dossier de skill (ADR-0027)', () => {
+  let root: string;
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'lawgiver-assets-'));
+  });
+  afterEach(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  function writeSkill(name: string): string {
+    const dir = join(root, 'skills', name);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'SKILL.md'), `---\nname: ${name}\n---\n\ncorps\n`);
+    return dir;
+  }
+
+  it('collecte les fichiers auxiliaires (récursif), triés, hors SKILL.md, VERBATIM', () => {
+    const dir = writeSkill('ezk-article');
+    mkdirSync(join(dir, 'approaches'), { recursive: true });
+    writeFileSync(join(dir, 'approaches', 'vectorz.md'), '# vectorz\n');
+    writeFileSync(join(dir, 'NOTES.md'), 'notes sans newline finale'); // doit rester verbatim
+    const skill = loadCatalog(root).skills.get('ezk-article');
+    expect(skill?.assets?.map((a) => a.path)).toEqual(['NOTES.md', 'approaches/vectorz.md']);
+    expect(skill?.assets?.find((a) => a.path === 'NOTES.md')?.content).toBe('notes sans newline finale');
+    expect(skill?.assets?.some((a) => a.path === 'SKILL.md')).toBe(false);
+  });
+
+  it("porte le bit d'exécution des scripts (executable: true), absent sinon", () => {
+    const dir = writeSkill('ezk-scripts');
+    mkdirSync(join(dir, 'scripts'), { recursive: true });
+    const script = join(dir, 'scripts', 'run.sh');
+    writeFileSync(script, '#!/bin/sh\necho hi\n');
+    chmodSync(script, 0o755);
+    writeFileSync(join(dir, 'scripts', 'lib.txt'), 'data');
+    const skill = loadCatalog(root).skills.get('ezk-scripts');
+    expect(skill?.assets?.find((a) => a.path === 'scripts/run.sh')?.executable).toBe(true);
+    expect(skill?.assets?.find((a) => a.path === 'scripts/lib.txt')).not.toHaveProperty('executable');
+  });
+
+  it('ignore dotfiles et symlinks (déterminisme + anti-exfiltration, même garde que resolveHookScript)', () => {
+    const dir = writeSkill('ezk-safe');
+    writeFileSync(join(dir, '.DS_Store'), 'junk');
+    mkdirSync(join(dir, '.hidden'), { recursive: true });
+    writeFileSync(join(dir, '.hidden', 'x.md'), 'hidden');
+    const secretDir = mkdtempSync(join(tmpdir(), 'lawgiver-secret-'));
+    const secret = join(secretDir, 'secret.md');
+    writeFileSync(secret, 'CECI NE DOIT JAMAIS ÊTRE EMBARQUÉ');
+    try {
+      symlinkSync(secret, join(dir, 'leak.md')); // lien commité vers hors-dépôt
+      const skill = loadCatalog(root).skills.get('ezk-safe');
+      expect(skill?.assets ?? []).toEqual([]); // dotfiles + symlink écartés
+    } finally {
+      rmSync(secretDir, { recursive: true, force: true });
+    }
+  });
+
+  it("n'ajoute pas le champ assets quand le dossier n'a que SKILL.md (rétro-compat)", () => {
+    writeSkill('plain');
+    const skill = loadCatalog(root).skills.get('plain');
+    expect(skill).toEqual({ id: 'plain', content: 'corps' });
+    expect(skill).not.toHaveProperty('assets');
   });
 });
 

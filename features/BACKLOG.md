@@ -206,6 +206,8 @@
 | 20260812104022231 | DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260812104022234 | Agent marketing analyste — copy qui vend, benchmark concurrents, métriques, A/B | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260812104022243 | groom appelle aussi engineering:architecture (+ product-brainstorming) — par défaut, ou forcé par paramètre | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260813095351680 | bind-global copy non idempotent pour les agents (2e passage refusé) | bug | P2 |  | mega-city | 💡 idea |  |
+| 20260813095351681 | Cap projet claude-code — skills en forme dossier pour porter les assets | feature | P2 |  | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
