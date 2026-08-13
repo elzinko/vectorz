@@ -34,6 +34,15 @@ function nowIso(): string {
 /**
  * AC2 — construit un event `outcome.measured` par sujet de la baseline (les
  * N dernières PRs d'agents mergées + les fiches done/), zéro-LLM, déterministe.
+ *
+ * LIMITE CONNUE (reclassification hors fenêtre, Codex #P1) : l'émission ne porte
+ * que sur les **N dernières** PRs. Si une PR sort de cette fenêtre AVANT que son
+ * correctif ne soit mesuré, aucun nouvel event `reprise_post_merge: true` n'est
+ * émis pour elle (le ledger conserve son `false`). C'est inhérent à une baseline
+ * « snapshot des N derniers » : le suivi persistant d'une obligation dans le temps
+ * relève du **chien de garde calendaire**, déporté dans la fiche gated ADR-030
+ * (20260813131259846). Dans la fenêtre, la reclassification est bien persistée
+ * (clé de dédup incluant les métriques, cf. `ledger.ts`).
  */
 export function measure(
   source: RepoSource,

@@ -90,10 +90,14 @@ export function classifyCommitMessage(message: string): CommitClassification {
   const firstLine = message.split('\n')[0] ?? '';
   const isMergeCommit = /^Merge (pull request|branch)/i.test(firstLine);
   const isRebase = /\brebase\b/i.test(message) || /^(fixup|squash)!/i.test(firstLine);
+  // Détection RESTREINTE aux commits DE formatage (préfixe conventionnel ou action
+  // explicite) — pas au simple mot « format » : « fix: preserve the legacy output
+  // format » est une retouche substantielle, pas un commit de formatage (Codex #P2).
   const isFormatting =
-    /^style(\(.+\))?:/i.test(firstLine) ||
+    /^(style|format)(\(.+\))?:/i.test(firstLine) ||
     /^chore\(format\)/i.test(firstLine) ||
-    /\bformat(ting)?\b/i.test(firstLine);
+    /\b(run|apply|auto)[ -]?format(ting)?\b/i.test(firstLine) ||
+    /\b(biome|prettier)\b/i.test(firstLine);
   const authorType: 'agent' | 'unknown' = /co-authored-by:\s*claude/i.test(message)
     ? 'agent'
     : 'unknown';

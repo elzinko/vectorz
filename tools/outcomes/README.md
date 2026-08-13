@@ -55,7 +55,9 @@ Toute modification ultérieure passe par le panel + le PO (ADR-030).
   inclut la **valeur des métriques** (hors `ts`). Une re-mesure à état constant
   reste idempotente (AC6), mais un changement d'outcome (ex. `reprise` `false→true`
   quand un correctif merge après coup) s'append — le **dernier** event d'un sujet
-  fait foi.
+  fait foi. **Limite connue** : l'émission ne couvre que les N derniers ; une PR
+  sortie de la fenêtre avant que son correctif soit mesuré n'est pas reclassée
+  (suivi persistant = chien de garde déporté, fiche gated ADR-030).
 - **id de fiche depuis la branche** (`ficheIdFromBranch` dans `sources.ts`) :
   extrait de `headRefName` selon la convention `feat/<id>-<slug>` (ADR-0018 ;
   id 4 ou 17 chiffres). Alimente la requalification `reprisePostMerge` par

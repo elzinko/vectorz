@@ -62,6 +62,12 @@ describe('classifyCommitMessage', () => {
     expect(classifyCommitMessage('style: run biome format').isFormatting).toBe(true);
     expect(classifyCommitMessage('chore(format): apply prettier').isFormatting).toBe(true);
   });
+
+  it('ne prend PAS un commit substantiel mentionnant « format » pour du formatage — Codex #P2', () => {
+    const c = classifyCommitMessage('fix: preserve the legacy output format');
+    expect(c.isFormatting).toBe(false);
+    // Conséquence : ce commit compte comme retouche substantielle (pas exclu).
+  });
 });
 
 describe('StubSource', () => {
