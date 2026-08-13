@@ -4,9 +4,9 @@ title: Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (
 type: chore
 priority: P1
 product: vectorz
-status: todo
+status: shipped
 ready: 2026-07-17
-pr:
+pr: "#145"
 created: 2026-07-16
 ---
 
