@@ -152,9 +152,16 @@ le « VALIDE une PR … dans la boucle ezk-sprint » de `ezk-qa`.
   geste que cette fiche doit rendre systématique. Deux précisions à intégrer **au build** (pas
   un nouveau design) : (a) le besoin « un front-matter pour dire *bug* vs *feature* » est **déjà
   couvert par `type:`** — `ezk-bug` n'ajoute **pas un champ**, il ajoute un **gabarit de corps**
-  (repro + attendu/obtenu + preuve, déjà dans les critères) ; ranger ce gabarit dans
-  `ezk-backlog/templates/bug-template.md` (ezk-backlog reste propriétaire des formats, `ezk-bug`
-  sélectionne) ; (b) trancher **sévérité vs priorité** — un axe (priorité seule + ligne
+  (repro + attendu/obtenu + preuve, déjà dans les critères) ; **où** ranger ce gabarit est
+  contraint par le mode d'install : en **copy-mode global** (lawgiver par défaut / cap Claude
+  Desktop), `skillFolderFiles()` ne matérialise que `<skill>/SKILL.md` — un
+  `ezk-backlog/templates/bug-template.md` **auxiliaire serait absent au runtime** (limite déjà
+  documentée dans `ezk-article/SKILL.md`, et raison pour laquelle `ezk-backlog` porte sa frappe
+  d'id **inline** dans son SKILL.md). Donc : soit **embarquer le gabarit inline** dans le SKILL
+  (portable partout, défaut recommandé), soit le garder en fichier auxiliaire **si** la
+  matérialisation est étendue pour le déployer — à trancher au build ; dans les deux cas
+  `ezk-backlog` reste propriétaire du format, `ezk-bug` le sélectionne ; (b) trancher
+  **sévérité vs priorité** — un axe (priorité seule + ligne
   « sévérité » dans le corps, **défaut proposé**) ou deux (champ `severity:`) ? À décider par
   `ezk-architect` à l'intake (l'ADR reste un **artefact de build**, cf. §Notes ci-dessus).
   Voisin : [[0186]] (un gabarit qui *impose* une structure gagne à s'appuyer sur un **validateur
