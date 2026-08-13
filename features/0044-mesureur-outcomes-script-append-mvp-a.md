@@ -12,6 +12,17 @@ created: 2026-07-16
 
 # 0044 — Mesureur d'outcomes métier + script d'append (MVP A du contrat d'améliorabilité)
 
+> **Scope recadré le 2026-08-13 (décision PO « MVP mesureur nu »).** Ce sprint livre le
+> **mesureur nu, sans dépendance de décision** : inventaire des données disponibles +
+> baseline rétroactive `.improvement/outcomes.jsonl` (métriques `temps_de_cycle` et
+> `pr_sans_retouche`). Les **surfaces gelées** (validateur noyau, miroir tamper-évident,
+> chien de garde calendaire, mécanisme de preuve externe, verdicts mécaniques, second
+> fichier `lifecycle.jsonl`) sont **déportées** dans
+> [`20260813131259846`](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md),
+> **bloquée tant qu'ADR-030 n'est pas ratifié** (transport A2 + preuve externe = panel + PO).
+> Les descriptions ci-dessous restent le cahier des charges d'ensemble ; seul le périmètre
+> des **Critères d'acceptation** ci-dessous fait foi pour CE sprint.
+
 ## Contexte / Problème
 
 Toute boucle d'auto-amélioration sans évaluateur digne de confiance produit du Goodhart,
@@ -89,18 +100,17 @@ l'existence de runs conformes, toujours en LECTURE SEULE (gel v0.1 non rouvert).
 Le mesureur se paie seul, boucle ou pas : il survivrait au retrait de la clause de
 moisson (critère de maintien éventuel = arbitrage PO).
 
-## Critères d'acceptation
+## Critères d'acceptation (périmètre de CE sprint — MVP mesureur nu)
 
 - [ ] Inventaire publié des données réellement disponibles pour la baseline (PRs d'agents mergées, fiches done/, runs .supervision conformes s'il en existe)
 - [ ] Baseline rétroactive publiée sur les N dernières PRs d'agents mergées + fiches done/ (`.improvement/outcomes.jsonl` produit)
 - [ ] Le point de handoff est défini opérationnellement et testé sur PRs réelles ; la définition de « PR sans retouche » exclut explicitement rebase/formatage/merge commits (testée sur cas réels)
 - [ ] Le signal « reprise post-merge » requalifie un cas reproduit (correctif sans casse CI sous X jours)
-- [ ] Deux fichiers à writer unique sous `.improvement/` ; aucune écriture dans `.supervision/` (lecture seule vérifiable) ; append par script uniquement
-- [ ] Le script d'append rejette les 3 violations noyau sur fixtures (application sans approbation prouvée, surface gelée, 2 essais simultanés)
-- [ ] Le miroir hors de l'arbre détecte une altération simulée du ledger (divergence ⇒ incident)
-- [ ] Le chien de garde émet `improvement.overdue`/`proposal.expired` sur cas reproduits (borne calendaire)
-- [ ] Le verdict `verified|retired` d'un cas de test est rendu par le mesureur (comparaison mécanique), jamais fourni par l'émetteur
+- [ ] `outcomes.jsonl` est append-only, à **writer unique** (le mesureur) ; **aucune écriture** dans `.supervision/` (lecture seule vérifiable) ; append par script uniquement
+- [ ] Mesureur **déterministe zéro-LLM** ; réexécution idempotente (pas de doublons d'événements)
 - [ ] Gate locale verte (typecheck/lint/tests)
+
+> **Déportés dans [`20260813131259846`](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md)** (gated ADR-030) : script d'append validateur noyau (3 violations), miroir tamper-évident hors arbre, chien de garde calendaire, verdicts `verified|retired` mécaniques, second fichier `lifecycle.jsonl`.
 
 ## Notes / décisions
 
