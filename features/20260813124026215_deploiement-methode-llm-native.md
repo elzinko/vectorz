@@ -1,5 +1,5 @@
 ---
-id: 0186
+id: "20260813124026215"
 title: Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)
 type: feature
 product: mega-city
@@ -12,7 +12,7 @@ pr:
 created: 2026-08-10
 ---
 
-# 0186 — Déploiement d'une méthode LLM-native dans un projet (épic de cadrage)
+# 20260813124026215 — Déploiement d'une méthode LLM-native dans un projet (épic de cadrage)
 
 > **Épic de cadrage, pas une implémentation.** Cette fiche **relie** un archipel de
 > fiches existantes en une seule vision, ajoute l'angle qui leur manque, et **prescrit un
@@ -172,9 +172,10 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
 
 ## Notes / décisions
 
-- **Id 0186 provisoire** : prochain libre au moment de la création (max = 0185). À
-  reconfirmer au `regen-backlog` / merge (index régénéré à l'outil, jamais édité à la main —
-  [`PR_VALIDATION`](../docs/PR_VALIDATION.md) §6).
+- **Id horodaté `20260813124026215`** (schéma `AAAAMMDDHHMMSSmmm`, fiche 0180) : re-minté
+  au traitement de la PR car l'id provisoire `0186` (schéma legacy `max+1`) collisionnait
+  avec `0186-skema-versioning-migrations-skills-deployees` déjà sur `main`. Index régénéré à
+  l'outil, jamais édité à la main ([`PR_VALIDATION`](../docs/PR_VALIDATION.md) §6).
 - `product: mega-city` (méthode). Le monitoring (cop1) est **référencé**, pas dupliqué.
 - **`status: idea`** : exploration / cadrage. Panel + grooming **avant** `ready`.
 - Déclencheur tracé côté consommateur : PR #82 / #84 / #86 de `google-mcp-multi-account`
