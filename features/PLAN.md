@@ -60,8 +60,9 @@
   d'ouvrir à d'autres.
 - **Observabilité qualité** (epic 0051) — 0052/0053/0054/0055/0056/0058 : mesurer la qualité par PR.
 - **Rationalisation & cohérence de la méthode** (épic `20260813131737959`) — audit 2026-08-13
-  → nommage/catalogue (rename `ezk-pr-pilot`→`ezk-pr`), fold-in `vz-product-builder`, assainir les
-  refs, carte des rôles (retro/steward/0057) ; regroupe 0066/0101/0161/0113. *Séquence & prio à arbitrer PO.*
+  → nommage/catalogue (rename `ezk-pr-pilot`→`ezk-pr`), assainir les refs, carte des rôles
+  (retro/steward/0057, dans `method-map.md`) ; regroupe 0066/0101/0161/0113. *Séquence & prio à arbitrer PO.*
+  *(vz-product-builder = 0164, décision overlay déjà prise — hors épic.)*
 - **Articles & promo** — 0043/0049 · 0156/0053/0069/0073/0074/0062 · epic 0163.
 - **Méthode avancée** — 0065→0068 / 0077 / 0080 / 0088 / 0092 / 0100 (dont le seuil de lot ready, voir ci-dessous).
 - **2ᵉ méthode / BMAD** — 0162.
