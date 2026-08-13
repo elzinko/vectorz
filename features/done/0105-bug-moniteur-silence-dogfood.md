@@ -6,9 +6,9 @@ priority: P0
 epic:
 depends: ["0103", "0104"]
 labels: [supervision, dogfood, ux]
-status: todo
+status: shipped
 ready:
-pr:
+pr: "resolved-by 0103+0104"
 created: 2026-07-29
 product: mega-city
 ---
@@ -76,3 +76,17 @@ product: mega-city
 - **Règle de clôture** : laisser l’issue **ouverte** jusqu’au ship de **0105 et 0168**.
   Au ship de la dernière des deux, `gh issue close 63` (commentaire de clôture pointant
   les deux PRs / commits de ship).
+
+## Résolution (2026-08-13) — vérifiée
+
+**Résolu par ses dépendances `0103` (heartbeat des méthodes) + `0104` (kit d'analyse de
+session), toutes deux shippées.** `0103` a été créé explicitement pour ce symptôme (même
+dogfood 2026-07-29 / issue #63) : les méthodes émettent un `heartbeat` entre les jalons, le
+Moniteur ne bascule plus en « Silence prolongé » à tort, et la phrase UX clarifie « jalons ≠
+chaque action Claude Code ». `0104` explique tout silence résiduel post-mortem (`silence_explained`).
+
+**Preuve vivante (dogfooding)** : `pnpm --dir products/mega-city supervision:analyze .` sur la
+session 2026-08-13 (un `run_start` suivi de ~5 h d'activité avec heartbeats mais sans jalon
+continu — le scénario exact de ce bug) rend le verdict **`healthy`** (« start + activité + fin »),
+pas `silence_explained` ni `orphan_run`. Le mécanisme de 0103 empêche bien le faux positif.
+
