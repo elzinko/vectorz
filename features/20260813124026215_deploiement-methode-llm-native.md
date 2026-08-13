@@ -77,6 +77,14 @@ PR** comme premier livrable visible, et le **monitoring** comme plugin du même 
   à trancher, cf. 0177). Ce fichier gouverne les pratiques du projet.
 - C'est exactement la direction de [0177](0177-pack-pratiques-projet-portables.md) ; cette fiche en fait le **cœur d'un
   installeur**, pas juste un pattern isolé.
+- **⚠️ Question ouverte — découvrabilité hors Claude (à trancher au grooming).** L'objectif
+  affiché (§ *Le problème*) est que la méthode s'applique **quel que soit le pilote** ; or une
+  ancre uniquement dans `CLAUDE.md` n'est **pas lue** par un harness non-Claude, qui ne
+  découvrirait donc pas le point d'entrée déporté. Trois pistes à arbitrer : **(a)** restreindre
+  explicitement le périmètre à Claude (et amender le § *Le problème*) ; **(b)** garder l'ancre
+  **générique projet-README** de [0177](0177-pack-pratiques-projet-portables.md) ; **(c)** faire générer par l'`init`
+  le **fichier d'instructions natif de chaque harness supporté**. *(Tension relevée par la
+  revue Codex — cf. critères d'acceptation.)*
 
 ### C. Un système de plugins (addons activables)
 
@@ -110,12 +118,15 @@ PR** comme premier livrable visible, et le **monitoring** comme plugin du même 
 
 ## À étudier en priorité — le fork BMAD
 
-L'utilisateur possède un fork : **`elzinko/BMAD-METHOD`**, et le repo vendore déjà
-`_bmad/_config/`. Avant de concevoir notre installeur, **étudier comment bmad installe des
-modules / expansion packs en mode LLM** :
+L'utilisateur possède un fork : **`elzinko/BMAD-METHOD`**. ⚠️ Le tree `_bmad/` **n'est pas
+vendoré dans ce repo** : il est gitignoré (`.gitignore` : « Epoch-1 BMAD trees — history on
+tag `epoch-1-bmad-final`; not part of dogfood ») et n'existe que sur le tag archivé
+**`epoch-1-bmad-final`**. Pour l'étude, se référer au **fork** ou à ce **tag**, pas à l'arbre
+courant. Avant de concevoir notre installeur, **étudier comment bmad installe des modules /
+expansion packs en mode LLM** :
 
 - ses **prises officielles** (`_bmad/_config/agents/*.customize.yaml` : *critical actions*,
-  memories, menu…) ;
+  memories, menu… — à lire dans le **fork** / le tag `epoch-1-bmad-final`) ;
 - son mécanisme de **modules installables** / overlay ;
 - l'échelle **adaptateur → overlay → fork jetable** (déjà notée en [0162](0162-bmad-contrat-supervisabilite.md)).
 
@@ -140,6 +151,9 @@ Claude Code officiel comme références.
       [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md)) devient un plugin de l'installeur.
 - [ ] **Frontières écrites** : distribution globale ([0087](0087-plugin-claude-code-distribution.md)) vs ancrage par
       projet (cette fiche) vs store agnostique ([0093](0093-backlogstore-port-agnostique.md), **YAGNI** jusqu'au trigger).
+- [ ] **Découvrabilité hors Claude tranchée** (cf. §B) : soit périmètre **Claude-only**
+      assumé (et § *Le problème* aligné), soit ancrage **lu par tout harness** — ancre
+      projet-README ([0177](0177-pack-pratiques-projet-portables.md)) et/ou fichier d'instructions natif par harness.
 - [ ] **MVP identifié** : le plus petit `init` utile (hypothèse : plugin GitHub =
       `.github/PULL_REQUEST_TEMPLATE.md` + lien `CLAUDE.md` + point d'entrée méthode).
 
