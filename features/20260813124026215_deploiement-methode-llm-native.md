@@ -1,7 +1,7 @@
 ---
 id: "20260813124026215"
 title: Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)
-type: feature
+type: epic
 product: mega-city
 priority: P1
 epic:
