@@ -185,13 +185,19 @@ par-commande).
     `{artefact: version}` (le registre de bind ci-dessus) **+** le **pack de pratiques portable**
     ([0177](0177-pack-pratiques-projet-portables.md)) pointé depuis le README, lu par n'importe
     quel driver LLM (cloud compris) ;
-  - **cloud à l'échelle = plugin/marketplace ([0087](0087-plugin-claude-code-distribution.md))** :
-    **un** artefact versionné tiré par local ET cloud (`/plugin update`), **pas** N copies — la
-    copie-par-projet (*copy mode*) réintroduit le « push vers N repos » que la règle **pull, pas
-    push** rejette ; **copy mode = fallback** pour un repo délibérément gelé/autonome (livrable, cobaye).
-  - **Reste à trancher (ADR, couplé [0087](0087-plugin-claude-code-distribution.md))** :
-    **plugin** (propre, une source, à packager) vs **copy mode** (immédiat mais dérive N copies)
-    pour la brique cloud.
+  - **cloud = matérialiser le CODE dans l'env cloud**, via deux options — **distinctes de la
+    *direction* de mise à jour** (matérialiser ≠ pousser : une copie n'est **pas** un « push ») :
+    - **(a) plugin/marketplace ([0087](0087-plugin-claude-code-distribution.md))** — **une**
+      source versionnée tirée par local ET cloud (`/plugin update`) ;
+    - **(b) copie committée par-projet (*copy mode*)** — le code vit dans le repo, mis à jour
+      par un **installeur/updater pull-based par-projet** (pattern `vectorz init` / BMAD décrit
+      en [0087](0087-plugin-claude-code-distribution.md)). Ceci **respecte** « pull, pas push » :
+      ce que la règle rejette, c'est un **push central** skill → N repos, **pas** la
+      matérialisation copiée en soi.
+  - **Reste à trancher (ADR, couplé [0087](0087-plugin-claude-code-distribution.md))** : plugin
+    vs copy mode pour la brique cloud, sur le **vrai** critère — **une source partagée**
+    (`/plugin update`) vs **N copies matérialisées** (chacune pull-ant/pinnant sa version) — et
+    non sur un faux axe push/pull.
 - **Complément de [0018 — coquille I/O link vs copy]** : 0018 propage le **code** live via
   symlink ; Skema gère les **données/schéma**.
 - **Prérequis conceptuel de l'article [0187](0187-article-llm-skills-migration.md)** —
