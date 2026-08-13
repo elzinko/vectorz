@@ -2,7 +2,7 @@
 name: ezk-product-builder
 composes: [ezk-backlog, ezk-sprint]
 composes-external: [product-brainstorming, architecture]
-argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto]"
+argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -37,7 +37,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-builder [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto]`
+`/ezk-product-builder [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -46,7 +46,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 | `once` | Construit **une seule** feature (un sprint) puis s'arrête au checkpoint inter-sprint |
 | `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
 
-`--tokens` règle la **vigilance tokens** ; `--checkpoints` règle **quand tu t'arrêtes pour demander** (cf. plus bas). Défauts : `lean`, `ask`.
+`--tokens` règle la **vigilance tokens** ; `--checkpoints` règle **quand tu t'arrêtes pour demander** ; `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming (cf. plus bas). Défauts : `lean`, `ask`, `true`.
 
 ## La boucle
 
@@ -93,7 +93,7 @@ tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
 |---|---|
 | **Inter-sprint** | ✅ *‹feature› livrée (tests verts, mergée).* → `[Sprint suivant : ‹fiche N+1›]` · `[Polir ‹feature›]` · `[Idéer de nouvelles features]` · `[Stop]` |
 | **Idéation** (backlog vide / fiche vague) | *Plus de fiche claire / ‹fiche› est vague.* → `[Brainstormer pour la cadrer]` · `[Construire telle quelle]` · `[Tu donnes la prochaine idée]` |
-| **Aucune fiche ready** (ADR-0016) | 🚧 *Zéro fiche tirable — DoR pré-remplies pour les fiches de tête.* → `[Valider la DoR de ‹fiche› (gate ready)]` · `[Tirer ‹fiche› non-ready (soupape PO, journalisée)]` · `[Groomer une autre fiche]` |
+| **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — en `--check-ready false`, le tampon est pris sur concurrence `ezk-pm` sans cet arrêt. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Continuer]` · `[Passer en mode lean]` · `[Pause]` |
 
@@ -132,8 +132,10 @@ Mutable à chaud (option `[Passer en auto]` / `[Repasser en ask]` proposée à u
 - **`auto`** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
   les décisions techniques (au décideur **`ezk-pm`** et aux agents de rôle), tu
   **journalises** chaque décision dans `SPRINT.md` (`## Notes / décisions`), et tu ne
-  t'arrêtes QUE sur les **4 décisions humaines** (+ la validation du gate `ready`
-  au checkpoint « aucune fiche ready », ADR-0016).
+  t'arrêtes QUE sur les **4 décisions humaines** — **plus** la validation du gate `ready`
+  **uniquement si `--check-ready true`** (défaut) ; en **`--check-ready false`** ce stop
+  **disparaît**, le tampon `ready` passe par la concurrence `ezk-pm` (ADR-0016 révisé par
+  [ADR-0028](../../docs/adr/0028-product-builder-auto-groom-ready.md)).
 
 En `auto`, chaque moment d'arrêt se résout ainsi :
 
@@ -142,7 +144,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Inter-sprint** | prends la 1re option (sprint suivant) — **à condition** que `--tokens cap` soit actif (le plafond borne le coût) ; sinon reste `ask`. Journalise. |
 | **Idéation — fiche vague** | délègue à `product-management:product-brainstorming` pour cadrer, puis construis. Journalise. |
 | **Idéation — backlog vide** | **STOP humain** — inventer la direction produit n'est jamais automatisable. |
-| **Aucune fiche ready** | prépare le groom des fiches de tête (DoR pré-remplies via `product-brainstorming`), puis **STOP humain** pour valider le gate `ready` — le gate n'est jamais auto-tamponné (ADR-0016 A5). |
+| **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-tdd`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--check-ready`** : `true` (défaut) → **STOP humain** pour tamponner ; `false` → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
 | **Dérive tokens** | dégrade en `lean` (jamais plus cher). Une **augmentation** de budget = **STOP humain**. |
@@ -159,6 +161,58 @@ est dans le profil `global` ; vérifie sa présence avant de compter dessus.)
 **Le décideur, c'est `ezk-pm`** : en `auto` tu lui confies les arbitrages de checkpoint —
 tu composes son jugement, tu ne le réimplémentes pas (même doctrine que pour les 3 autres
 compétences).
+
+## Mode ready — configurable (`--check-ready`)
+
+Règle **qui pose le tampon `ready`** une fois qu'une fiche a été **auto-groomée** vers la DoR
+(cf. § suivant). Adossé à [ADR-0028](../../docs/adr/0028-product-builder-auto-groom-ready.md),
+qui **révise** l'invariant A5 d'ADR-0016. Défaut : `true`.
+
+- **`true` (défaut)** — après auto-grooming, **STOP humain** : tu présentes la fiche groomée et
+  l'humain **tamponne** `ready` (`ezk-backlog ready <id>`). Le gate humain d'A5 est **préservé**.
+- **`false`** — le PO a **pré-autorisé** le lot (il a regardé le backlog et validé l'avancement).
+  Tu poses `ready` **toi-même**, MAIS **seulement sur concurrence indépendante d'`ezk-pm`** : tu
+  lui confies « la DoR de ‹fiche› est-elle atteinte ? » et il concourt (ou non). **Jamais un
+  auto-tampon solo.** Puis tu construis, sans STOP pour le gate.
+
+**Pourquoi c'est sûr (anti-Goodhart).** Le gate humain mélangeait (a) *DoR complète* [mécanique,
+délégable] et (b) *ça vaut le coup* [humain]. `--check-ready false` = le PO a déjà tranché (b) en
+sélectionnant le lot ; la machine ne fait que (a), avec `ezk-pm` comme second regard. **La
+sélection du lot reste à l'humain — la machine ne décide jamais *quoi* construire.**
+
+## Auto-groom vers la DoR — la boucle autonome (ADR-0028)
+
+Quand la fiche de tête n'est **pas** `ready`, tu la **groomes toi-même** au lieu de t'arrêter —
+en **composant** (tu ne réimplémentes rien) :
+
+1. **Cadrage** — `product-brainstorming` : dérive problème / valeur / **critères d'acceptation
+   vérifiables** depuis les **grands axes** fournis par le PO.
+2. **Structure** — `ezk-architect` si une décision de conception non triviale bloque la DoR.
+3. **Faisabilité** — `ezk-architect` (jugement de faisabilité structurelle, **en lecture seule,
+   sans écrire de code**) si « est-ce constructible » est le trou de la DoR. **PAS `ezk-tdd`
+   avant le gate** : il écrit tests + code de prod en worktree isolé — l'implémentation reste
+   **exclusivement** dans `ezk-sprint` (sinon du code orphelin hors sprint/PR).
+4. **Arbitrage PO du périmètre** — `ezk-pm` pour trancher une option / un seuil **dans** le lot
+   pré-autorisé (il REFUSE les 4 décisions humaines).
+
+Tu itères jusqu'à DoR atteinte, puis tu appliques `--check-ready`. Écris le grooming dans la fiche
+(`ezk-backlog groom`) ; **jamais** le tampon `ready` sans passer par la règle `--check-ready`.
+
+**⛔ Plancher outcome-testable (garde-fou n°1).** Une fiche doit contenir — ou permettre de dériver
+proprement — **au moins un critère de succès vérifiable**. En dessous, **tu n'inventes pas** la
+direction produit : **skip + journal (`SPRINT.md`) + surface** à l'humain. C'est ça, « peu d'axes
+mais suffisant » : *suffisant = un outcome testable atteignable*.
+
+**↪️ Blocage réel → skip (pas STOP dur, pas invention).** Si la DoR ne peut **pas** être atteinte à
+cause d'un **blocage réel** — dépendance externe qui **ne répond pas / inaccessible** (repo/service/
+secret/CI absent), **conflit stratégique** (contredit un ADR accepté ou une autre fiche), ou une
+**décision humaine requise** — tu **skippes vers la prochaine fiche tirable** en **journalisant**
+pourquoi. Si **tout** le stock tirable skippe → **STOP humain** (« rien de constructible, voici
+pourquoi chaque fiche a été skippée »), jamais une boucle folle.
+
+**Les 4 STOP humains restent absolus** (irréversible/sortant · hausse de budget · direction produit
+sur backlog vide · exigences contradictoires) — l'auto-groom et l'auto-tampon ne les contournent
+jamais.
 
 ## Frontière & délégation — compose, ne réimplémente rien
 
