@@ -30,7 +30,8 @@ la machine ne fait plus que (a).
 
 1. **Auto-groom vers la DoR** : le builder groome la fiche de tête en composant
    `product-brainstorming` (dériver problème/valeur/critères des grands axes), `ezk-architect`
-   (structure), `ezk-tdd` (faisabilité), `ezk-pm` (arbitrage PO du périmètre).
+   (structure **et faisabilité en lecture seule** — pas `ezk-tdd` avant le gate),
+   `ezk-pm` (arbitrage PO du périmètre).
 2. **Option `--check-ready true|false`** : `true` (défaut) = STOP humain pour tamponner (A5
    préservé) ; `false` = auto-tampon **sur concurrence indépendante d'`ezk-pm`** (jamais solo).
 3. **Plancher outcome-testable** : pas de critère vérifiable dérivable → **skip + journal +

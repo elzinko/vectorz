@@ -30,8 +30,9 @@ que la méthode peut faire seule.
 
 En `--checkpoints auto`, `ezk-product-builder` **groome désormais la fiche de tête vers la
 DoR de façon autonome** (délègue `product-brainstorming` pour dériver problème/valeur/critères
-depuis les grands axes, `ezk-architect` pour la structure, `ezk-tdd` pour un spike de
-faisabilité, `ezk-pm` pour les micro-arbitrages PO du périmètre pré-autorisé) — au lieu de
+depuis les grands axes, `ezk-architect` pour la structure **et le jugement de faisabilité en
+lecture seule** — jamais `ezk-tdd` avant le gate, l'implémentation reste exclusivement dans
+`ezk-sprint` —, `ezk-pm` pour les micro-arbitrages PO du périmètre pré-autorisé) — au lieu de
 s'arrêter à vide. Le tampon final est réglé par une **nouvelle option `--check-ready true|false`** :
 
 | | Tampon `ready` | Garde-fou |

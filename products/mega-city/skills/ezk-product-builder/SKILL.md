@@ -132,8 +132,10 @@ Mutable à chaud (option `[Passer en auto]` / `[Repasser en ask]` proposée à u
 - **`auto`** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
   les décisions techniques (au décideur **`ezk-pm`** et aux agents de rôle), tu
   **journalises** chaque décision dans `SPRINT.md` (`## Notes / décisions`), et tu ne
-  t'arrêtes QUE sur les **4 décisions humaines** (+ la validation du gate `ready`
-  au checkpoint « aucune fiche ready », ADR-0016).
+  t'arrêtes QUE sur les **4 décisions humaines** — **plus** la validation du gate `ready`
+  **uniquement si `--check-ready true`** (défaut) ; en **`--check-ready false`** ce stop
+  **disparaît**, le tampon `ready` passe par la concurrence `ezk-pm` (ADR-0016 révisé par
+  [ADR-0028](../../docs/adr/0028-product-builder-auto-groom-ready.md)).
 
 En `auto`, chaque moment d'arrêt se résout ainsi :
 
@@ -186,7 +188,10 @@ en **composant** (tu ne réimplémentes rien) :
 1. **Cadrage** — `product-brainstorming` : dérive problème / valeur / **critères d'acceptation
    vérifiables** depuis les **grands axes** fournis par le PO.
 2. **Structure** — `ezk-architect` si une décision de conception non triviale bloque la DoR.
-3. **Faisabilité** — `ezk-tdd` pour un spike si « est-ce constructible » est le trou de la DoR.
+3. **Faisabilité** — `ezk-architect` (jugement de faisabilité structurelle, **en lecture seule,
+   sans écrire de code**) si « est-ce constructible » est le trou de la DoR. **PAS `ezk-tdd`
+   avant le gate** : il écrit tests + code de prod en worktree isolé — l'implémentation reste
+   **exclusivement** dans `ezk-sprint` (sinon du code orphelin hors sprint/PR).
 4. **Arbitrage PO du périmètre** — `ezk-pm` pour trancher une option / un seuil **dans** le lot
    pré-autorisé (il REFUSE les 4 décisions humaines).
 
