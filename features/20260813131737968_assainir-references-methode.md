@@ -33,13 +33,17 @@ exactement le trou prouvé par la fiche [0066](0066-tester-un-skill-avant-merge.
 - 🟡 **Graphe `composes:` sous-peuplé** — seuls `ezk-product-builder/SKILL.md:3` et `ezk-sprint/SKILL.md:2`
   déclarent `composes:` ; le graphe Mermaid **généré** (`skills/README.md:49-59` via `src/core/composes-graph.ts`)
   rate donc des couplages réels décrits en prose : `ezk-pr-pilot`→preview/device/apk/backlog/commits,
-  `ezk-sprint`→**ezk-codex** (étape 10), `ezk-retro`→backlog, `vz`→product-builder/sprint.
+  `ezk-sprint`→**ezk-codex** (étape 10, **délégué-si-présent**), `ezk-retro`→backlog, `vz`→product-builder/sprint.
 
 ## Proposition
 
 1. Remplacer les réf `install.sh` par le vrai geste de déploiement (`lawgiver bind-global`).
 2. Re-pointer toutes les réf « fiche NNNN » en prose vers les ids racine courants (ou liens relatifs).
-3. **Peupler `composes:`** (et `composes-external:`) sur chaque skill composant → le graphe généré dit vrai.
+3. **Peupler la composition en CLASSANT chaque arête** (⚠️ ne PAS tout mettre en `composes:`) :
+   `composes:` = dépendance **requise** ; `delegates:` = couplage **optionnel / dégradable-si-absent**
+   (fiche [0190](0190-composes-delegates-tier-optionnel.md)) ; `composes-external:` = hors-catalogue
+   (ADR-0025). Ex. : `ezk-sprint`→`ezk-codex` est **optionnel** (le profil `daily` l'omet) → `delegates:`,
+   sinon faux warning de bind. **Se coordonner avec 0190**, ne pas le réinventer.
 4. **Rendre ça testable** (le vrai livrable) : un test de contrat qui échoue si un chemin/skill/fiche
    cité dans un `SKILL.md` ne résout pas — calqué sur `skill-emission-contract.test.ts`, périmètre
    porté par [0066](0066-tester-un-skill-avant-merge.md).
@@ -47,11 +51,13 @@ exactement le trou prouvé par la fiche [0066](0066-tester-un-skill-avant-merge.
 ## Critères d'acceptation (brouillon — DoR au grooming)
 
 - [ ] 0 réf `install.sh` résiduelle ; réf « fiche NNNN » re-mappées.
-- [ ] `composes:` renseigné sur tous les composants ; graphe généré cohérent avec la prose.
+- [ ] Chaque arête **classée** (`composes:` requis / `delegates:` optionnel–[0190] / `composes-external:`) ; graphe cohérent avec la prose, **0 faux warning** de bind (profil `daily`).
 - [ ] Une réf morte introduite volontairement **fait rougir** une gate (critère sabotage 0066).
 
 ## Notes
 
 - Bras d'enforcement `check-links` = fiche [0101](0101-cabler-check-links-ship-et-ci.md)
-  (4 liens cassés mesurés 2026-08-13). Mécanisme `composes:` = fiche [0149](done/0149-formaliser-composes-inter-skills.md) (shippé).
+  (4 liens cassés mesurés 2026-08-13). Mécanisme `composes:` = fiche [0149](done/0149-formaliser-composes-inter-skills.md) (shippé) ;
+  **tier optionnel `delegates:`** = fiche [0190](0190-composes-delegates-tier-optionnel.md) — cette
+  fille s'y **coordonne**, ne le réinvente pas.
 - Coordonner avec la fille A (le rename `ezk-pr` déplace des réf).

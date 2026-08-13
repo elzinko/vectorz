@@ -89,7 +89,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 
 ## Critères d'acceptation (épic)
 
-- [ ] Les 4 nouvelles filles (A/B/C/E) sont groomées et priorisées **par le PO**.
+- [ ] Les 3 nouvelles filles (A/C/E) sont groomées et priorisées **par le PO**.
 - [ ] Le triangle retro/steward/0057 est documenté en **un seul endroit** (fille E livrée).
 - [ ] Une **référence morte** (chemin/skill/fiche) fait **rougir une gate** (critère 0066).
 - [ ] `check-links` est **vert** (0 lien cassé) et **lancé automatiquement** (0101).
