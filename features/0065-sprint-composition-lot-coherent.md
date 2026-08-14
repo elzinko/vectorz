@@ -69,16 +69,35 @@ isole un **second axe** distinct : le **grain de merge** — le *nombre de fois 
 - **`ezk-pr-pilot` = épine dorsale réutilisée** (sa branche d'intégration + son train de merge
   existent déjà), pas réimplémentée.
 
+## Grooming 2026-08-13 — arbitrages PO tranchés
+
+Les 3 arbitrages PO ouverts sont **tranchés** (session 2026-08-13), tous sur la reco d'archi :
+
+1. **Déclencheur du regroupement = `epic:` auto + opt-in explicite.** Les fiches partageant un
+   même `epic:` (marqueur de cohérence existant, ADR-0017) se regroupent **automatiquement** en
+   mode agrégé ; un **opt-in explicite** permet de désigner un lot cohérent **hors épic** (ex.
+   `ADR + son article`). **Pas de seuil de N** — il regrouperait des fiches indépendantes, soit
+   la « PR obèse » que 0065 refuse.
+2. **Nom du levier = `--delivery=per-feature|per-epic|batched`** (sur `ezk-product-builder`).
+   « delivery » nomme l'axe réel (stratégie de livraison/merge). `per-feature` = défaut inchangé ;
+   `per-epic` = regroupement auto par épic ; `batched` = lot désigné explicitement.
+3. **Plafond = warning souple (~5-6 features/PR), non bloquant.** Au-delà, alerter « lot
+   volumineux, revue lourde — confirmer ? » sans forcer le split (ni plafond dur arbitraire, ni
+   absence de garde-fou).
+
+DoR désormais complète (problème / valeur / critères + arbitrages levés). Reste avant *Accepté*
+de l'ADR : **panel adverse** sur [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md).
+
 ## Critères d'acceptation
 
 Cadre posé par [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) ; à confirmer au grooming (promotion `idea → todo`) :
 
-- [ ] `ezk-product-builder` expose `--delivery=per-feature|per-epic|batched` (noms à acter) ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression)
+- [ ] `ezk-product-builder` expose `--delivery=per-feature|per-epic|batched` ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression)
 - [ ] Mode agrégé : une **branche d'intégration** porte N commits conventional (≥ 1 / feature), **1 seule PR** ouverte, merge en **`rebase-merge`** (commits par feature préservés sur `main`, jamais un squash fourre-tout)
 - [ ] Corps de PR agrégé = **sommaire** (table `feature | fiche | statut gate`) + **une section par feature** (bloc thin `## Summary` / `## Lien fiche` / `## Comment tester` réutilisé) + **`## Tout valider en une passe`** ; les « Comment tester » par feature sont **conservés**
 - [ ] `ezk-pr-pilot` (branche d'intégration + train de merge) **réutilisé**, pas réimplémenté
 - [ ] `check-pr-body.sh` tolère la **répétition** des 3 titres sous des sections par feature
-- [ ] Déclencheur du regroupement tranché (`epic:` auto vs opt-in explicite vs seuil de N) + plafond éventuel de features / PR — **arbitrage PO**
+- [ ] Regroupement déclenché par **`epic:` auto + opt-in explicite** (pas de seuil aveugle) ; **warning souple ~5-6 features/PR** (non bloquant) — *arbitrages PO tranchés le 2026-08-13 (cf. section Grooming)*
 - [ ] Panel adverse passé avant de graver ADR-037 (Proposé → Accepté)
 - [ ] Gate locale verte (tests + liens markdown)
 
