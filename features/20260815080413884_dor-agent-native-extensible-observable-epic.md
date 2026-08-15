@@ -54,12 +54,13 @@ mécanisme d'extension (allumés par projet), pas des exigences universelles.
 | [[20260812104022231]] | 1er slot d'extension concret : « surfaces produit impactées » (doc/site/release notes) | idea |
 | [[20260812104022243]] | `groom` appelle aussi `engineering:architecture` — extension du moteur de grooming | idea |
 
-**Action non-fiche (à faire) :** amender [ADR-0016] avec la thèse « DoR = INVEST − cérémonie
-+ 2 slots agent-era » (révision de doc, pas un ADR neuf ; le gate DoR est déjà son objet).
+**Action non-fiche — FAIT (2026-08-15, cette PR) :** ADR-0016 amendé avec la thèse « DoR =
+INVEST − cérémonie + 2 slots agent-era » (révision de doc, pas un ADR neuf ; le gate DoR est
+déjà son objet).
 
 ## Critères d'acceptation (épic)
 
-- [ ] ADR-0016 amendé : la thèse est gravée (ce qu'on garde d'INVEST, ce qu'on jette, pourquoi).
+- [x] ADR-0016 amendé : la thèse est gravée (ce qu'on garde d'INVEST, ce qu'on jette, pourquoi) — fait dans cette PR.
 - [ ] Un projet peut déclarer ≥1 slot DoR supplémentaire, exigé par le gate `ready`.
 - [ ] `backlog.health {total, ready, not_ready}` émis au journal de supervision + garde d'intake.
 - [ ] Chaque enfant passe son propre gate `ready` (panel adverse au gate) avant d'être tiré.
