@@ -4,7 +4,8 @@ title: Sprint composition — un sprint peut porter un lot cohérent de fiches ;
 type: feature
 priority: P2
 product: mega-city
-status: idea
+status: todo
+ready: 2026-08-13
 pr:
 created: 2026-07-16
 ---
@@ -69,17 +70,49 @@ isole un **second axe** distinct : le **grain de merge** — le *nombre de fois 
 - **`ezk-pr-pilot` = épine dorsale réutilisée** (sa branche d'intégration + son train de merge
   existent déjà), pas réimplémentée.
 
+## Grooming 2026-08-13 — arbitrages PO tranchés
+
+Les 3 arbitrages PO ouverts sont **tranchés** (session 2026-08-13), tous sur la reco d'archi :
+
+1. **Déclencheur du regroupement = `epic:` auto + opt-in explicite.** Les fiches partageant un
+   même `epic:` (marqueur de cohérence existant, ADR-0017) se regroupent **automatiquement** en
+   mode agrégé ; un **opt-in explicite** permet de désigner un lot cohérent **hors épic** (ex.
+   `ADR + son article`). **Pas de seuil de N** — il regrouperait des fiches indépendantes, soit
+   la « PR obèse » que 0065 refuse.
+2. **Nom du levier = `--delivery=per-feature|per-epic|batched`** (sur `ezk-product-builder`).
+   « delivery » nomme l'axe réel (stratégie de livraison/merge). `per-feature` = défaut inchangé ;
+   `per-epic` = regroupement auto par épic ; `batched` = lot désigné explicitement.
+3. **Plafond = warning souple (~5-6 features/PR), non bloquant.** Au-delà, alerter « lot
+   volumineux, revue lourde — confirmer ? » sans forcer le split (ni plafond dur arbitraire, ni
+   absence de garde-fou).
+
+DoR désormais complète (problème / valeur / critères + arbitrages levés). Reste avant *Accepté*
+de l'ADR : **panel adverse** sur [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md).
+
+## Révision 2026-08-13 (post-panel) — pivot vers la version réduite
+
+Le **panel adverse est passé** ([capture](../docs/captures/2026-08-13-panel-adverse-adr-037.md)) et a
+**écarté le mode agrégé** (rebase-merge / PR-unique) : exécutant orphelin (aucun skill ne peut héberger
+l'assemblage sans violer la frontière ADR-0001), prémisse « frictions par-merge » fausse aux ⅔
+(collisions d'ids réglées par 0180, liens = contenu), réutilisation `ezk-pr-pilot` nominale.
+
+**ADR-037 révisé (Accepté, version réduite)** : le flag `--delivery=per-feature|per-epic` **décide** la
+stratégie, `ezk-pr-pilot` **exécute** le train de merge (**N PR conservées**, **squash unique**).
+Conséquence sur cette fiche : les critères du mode agrégé (branche d'intégration-comme-livraison,
+rebase-merge, corps de PR agrégé, `check-pr-body.sh`) **tombent** ; le déclencheur (`epic:` auto +
+opt-in) et le nom `--delivery` **restent** ; `batched` / plafond **disparaissent**. Critères ci-dessous
+mis à jour.
+
 ## Critères d'acceptation
 
-Cadre posé par [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) ; à confirmer au grooming (promotion `idea → todo`) :
+Cadre posé par [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) **révisé (version réduite, post-panel)** :
 
-- [ ] `ezk-product-builder` expose `--delivery=per-feature|per-epic|batched` (noms à acter) ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression)
-- [ ] Mode agrégé : une **branche d'intégration** porte N commits conventional (≥ 1 / feature), **1 seule PR** ouverte, merge en **`rebase-merge`** (commits par feature préservés sur `main`, jamais un squash fourre-tout)
-- [ ] Corps de PR agrégé = **sommaire** (table `feature | fiche | statut gate`) + **une section par feature** (bloc thin `## Summary` / `## Lien fiche` / `## Comment tester` réutilisé) + **`## Tout valider en une passe`** ; les « Comment tester » par feature sont **conservés**
-- [ ] `ezk-pr-pilot` (branche d'intégration + train de merge) **réutilisé**, pas réimplémenté
-- [ ] `check-pr-body.sh` tolère la **répétition** des 3 titres sous des sections par feature
-- [ ] Déclencheur du regroupement tranché (`epic:` auto vs opt-in explicite vs seuil de N) + plafond éventuel de features / PR — **arbitrage PO**
-- [ ] Panel adverse passé avant de graver ADR-037 (Proposé → Accepté)
+- [ ] `ezk-product-builder` expose `--delivery=per-feature|per-epic` ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression). Le flag **décide**, il n'exécute **aucun** git (frontière ADR-0001).
+- [ ] `per-epic` = **lot coordonné** : les fiches d'un même `epic:` gardent **N PR** (revue / CI / revert atomiques), livrées via le **train de merge** d'`ezk-pr-pilot` — `plan` (ordre) → **branche d'intégration = tester en une passe** → `ship` en **cascade** (squash-merge PR par PR, CI re-verte)
+- [ ] **Aucun mode agrégé** : pas de `rebase-merge`, pas de PR unique — **squash reste la seule politique** de merge (invariant `ezk-sprint` intact, `check-pr-body.sh` inchangé)
+- [ ] Déclencheur = **`epic:` auto + opt-in explicite** (pas de seuil) — *arbitrages tranchés le 2026-08-13* ; `batched` / plafond **abandonnés** (plus de PR agrégée à borner)
+- [ ] **Prérequis** : re-chiffrer la friction par-merge **résiduelle post-0180** (rebases de `main` en cascade réellement observés) — si négligeable, `per-epic` se réduit au test groupé + `ship` ordonné
+- [ ] Panel adverse **passé** ✅ (2026-08-13) → ADR-037 **Accepté** (version réduite)
 - [ ] Gate locale verte (tests + liens markdown)
 
 ## Notes / décisions

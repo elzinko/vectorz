@@ -1,10 +1,10 @@
 ---
 id: 0133
 title: ADR + diagramme — carte rôles dev → skills/agents ezk-*
-type: feature        # feature | bug | refactor | chore
-priority: P1         # P0 | P1 | P2 | P3
+type: feature
+priority: P1
 product: mega-city
-status: idea         # idea | todo | in-progress | blocked | shipped
+status: idea
 pr:
 created: 2026-07-12
 ---

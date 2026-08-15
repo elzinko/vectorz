@@ -103,6 +103,7 @@
 | 0060 | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 |  | vectorz | ✅ shipped | #107 |
 | 0062 | Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité | feature | P2 |  | vectorz | ✅ shipped | #95 |
 | 0063 | Ancrer un projet depuis le Moniteur — bouton « ajouter projet » + sélection de dossier + install via le daemon (2 modes) | feature | P2 |  | vectorz | ✅ shipped | #97 |
+| 0065 | Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | mega-city | ✅ shipped | #30 |
 | 0078 | Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb) | feature | P2 |  | mega-city | ✅ shipped | #41 |
 | 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | mega-city | 🔴 todo |  |
@@ -181,7 +182,6 @@
 | 0055 | KPI agrégés — rollups commit → PR → sprint → version depuis le silo | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | 0056 | Visualisation — onglet « qualité par PR » dans mission-control | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | 0058 | Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR | feature | P2 | 0051 | vectorz | 💡 idea |  |
-| 0065 | Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent | feature | P2 |  | mega-city | 💡 idea |  |
 | 0066 | Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run) | feature | P2 | 20260813131737959 | mega-city | 💡 idea |  |
 | 0067 | ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0068 | Règle enforced — la carte de la méthode (method-map) à jour à chaque modif de méthode | feature | P2 |  | mega-city | 💡 idea |  |
@@ -218,6 +218,7 @@
 | 20260813131737962 | Nommage & catalogue — aligner sur ADR-0022 (rename ezk-pr-pilot→ezk-pr, ranger vz-/supervision-) + README table scannable | refactor | P2 | 20260813131737959 | mega-city | 💡 idea |  |
 | 20260813131737968 | Assainir les références de la méthode — install.sh mort, rot de numérotation, graphe composes: sous-peuplé | chore | P2 | 20260813131737959 | mega-city | 💡 idea |  |
 | 20260813131737971 | Carte des rôles d'analyse — documenter retro / steward / 0057 (+ trancher le juge unique) en un seul endroit | feature | P2 | 20260813131737959 | mega-city | 💡 idea |  |
+| 20260813171020902 | Accélérer & fiabiliser le cycle de revue — alternative locale à Codex + métriques (temps, blocages) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260815080414006 | DoR extensible par projet — base 3+1 + manifeste de slots par repo, lu par groom/ready | feature | P2 | 20260815080413884 | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |

@@ -6,7 +6,7 @@ priority: P1
 product: mega-city
 labels: [enabler, lisibilite]
 status: todo
-ready:
+ready: 2026-08-14
 pr:
 created: 2026-08-11
 ---
@@ -72,3 +72,10 @@ pas une nouvelle règle. Commencer par **la description de PR** (le cas le plus 
 - Déclencheur daté : réécriture de la PR #125 (2026-08-11) — corps opaque malgré la règle, PO l'a flaggé ;
   correctif qui a marché = section « si tu arrives frais » + glossaire + En clair « aucun code ».
 - **Priorité P1 = proposition** (lisibilité = risque de churn, récurrent) — à confirmer/ajuster par le PO au gate.
+
+## Ready — scope MVP (auto-groom 2026-08-14, product-builder --check-ready false)
+
+- `ready: 2026-08-14` posé par **auto-tampon sur concurrence ezk-pm** (garde-fou ADR-0028) — pas de STOP humain sur le gate.
+- **Scope MVP IN** : AC1 (template PR LLM-adapté à l'étape d'écriture) + AC2 (inlining au moment de générer) + AC3 (vérif prose testable, 3/3 reformulation).
+- **Déporté** en fiches filles à créer au build : AC4 (étude prior-art BMAD), AC5 (article `ezk-article`).
+- Cadré ezk-pm : la vérif prose (AC3) peut exiger un avis `ezk-architect` (test de contrat vs lentille reviewer) — sans remettre en cause le ready.
