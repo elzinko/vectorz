@@ -4,6 +4,7 @@ title: Sprint intake — DoR & santé du backlog (combien de features prêtes/pa
 type: feature
 priority: P2
 product: mega-city
+epic: "20260815080413884"
 status: idea
 pr:
 created: 2026-07-16

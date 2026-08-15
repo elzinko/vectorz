@@ -160,6 +160,7 @@
 | 20260813124026215 | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad) | epic | P1 |  | mega-city | 💡 idea |  |
 | 0163 | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | epic | P2 |  | mega-city | 🔴 todo |  |
 | 20260813131737959 | Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic) | epic | P2 |  | mega-city | 🔴 todo |  |
+| 20260815080413884 | DoR agent-native — extensible par projet + readiness observable (épic) | epic | P2 |  | mega-city | 🔴 todo |  |
 
 ## 💡 Idées (non groomées)
 
@@ -189,7 +190,7 @@
 | 0092 | Décomposition légère du backlog — champs depends: et labels: (anti-JIRA) + avenant ADR-0017 | feature | P2 |  | mega-city | 💡 idea |  |
 | 0098 | plan:head — descendre vers l'enfant prêt d'un épic placé dans le plan | feature | P2 |  | mega-city | 💡 idea |  |
 | 0099 | Contrat d'émission — vérifier la STRUCTURE des directives, pas compter les mentions | chore | P2 |  | mega-city | 💡 idea |  |
-| 0100 | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 |  | mega-city | 💡 idea |  |
+| 0100 | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 | 20260815080413884 | mega-city | 💡 idea |  |
 | 0125 | explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0136 | ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0155 | ezk-cowork — scaffold + audit du pattern « contrat cowork » (bootstrap mince / guide servi par l'app) | feature | P2 |  | mega-city | 💡 idea |  |
@@ -209,14 +210,15 @@
 | 0188 | ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0189 | ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable) | bug | P2 |  | mega-city | 💡 idea |  |
 | 20260812104022228 | Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change | feature | P2 |  | mega-city | 💡 idea |  |
-| 20260812104022231 | DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260812104022231 | DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming | feature | P2 | 20260815080413884 | mega-city | 💡 idea |  |
 | 20260812104022234 | Agent marketing analyste — copy qui vend, benchmark concurrents, métriques, A/B | feature | P2 |  | mega-city | 💡 idea |  |
-| 20260812104022243 | groom appelle aussi engineering:architecture (+ product-brainstorming) — par défaut, ou forcé par paramètre | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260812104022243 | groom appelle aussi engineering:architecture (+ product-brainstorming) — par défaut, ou forcé par paramètre | feature | P2 | 20260815080413884 | mega-city | 💡 idea |  |
 | 20260813095351680 | bind-global copy non idempotent pour les agents (2e passage refusé) | bug | P2 |  | mega-city | 💡 idea |  |
 | 20260813095351681 | Cap projet claude-code — skills en forme dossier pour porter les assets | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260813131737962 | Nommage & catalogue — aligner sur ADR-0022 (rename ezk-pr-pilot→ezk-pr, ranger vz-/supervision-) + README table scannable | refactor | P2 | 20260813131737959 | mega-city | 💡 idea |  |
 | 20260813131737968 | Assainir les références de la méthode — install.sh mort, rot de numérotation, graphe composes: sous-peuplé | chore | P2 | 20260813131737959 | mega-city | 💡 idea |  |
 | 20260813131737971 | Carte des rôles d'analyse — documenter retro / steward / 0057 (+ trancher le juge unique) en un seul endroit | feature | P2 | 20260813131737959 | mega-city | 💡 idea |  |
+| 20260815080414006 | DoR extensible par projet — base 3+1 + manifeste de slots par repo, lu par groom/ready | feature | P2 | 20260815080413884 | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
