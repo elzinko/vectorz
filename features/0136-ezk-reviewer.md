@@ -1,10 +1,10 @@
 ---
 id: 0136
 title: ezk-reviewer — rôle Reviewer composant code-review + coordination reviewers externes (cumulables)
-type: feature        # feature | bug | refactor | chore
-priority: P2         # P0 | P1 | P2 | P3
+type: feature
+priority: P2
 product: mega-city
-status: idea         # idea | todo | in-progress | blocked | shipped
+status: idea
 pr:
 created: 2026-07-12
 ---
