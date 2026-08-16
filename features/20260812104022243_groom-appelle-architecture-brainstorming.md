@@ -4,7 +4,7 @@ title: "groom appelle aussi engineering:architecture (+ product-brainstorming) â
 type: feature
 priority: P2 # choisie par le PO (session 2026-08-12)
 product: mega-city
-epic:
+epic: "20260815080413884"
 status: idea
 ready:
 pr:

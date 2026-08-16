@@ -8,6 +8,21 @@
   façon autonome** au lieu de s'arrêter à vide ; l'option **`--check-ready`** règle le tampon
   final (`true` défaut = STOP humain, A5 préservé ; `false` = auto-tampon sur concurrence
   `ezk-pm`, plancher outcome-testable, blocage réel → skip). Voir ADR-0028.
+- **Révision 2026-08-15 (clarification de doctrine, sans changement de mécanique — épic
+  `20260815080413884`) :** la DoR maison est explicitée comme **« INVEST moins la
+  cérémonie »**. On garde les deux propriétés INVEST qui survivent au passage
+  équipe-humaine → agents : **Valuable** (slot *valeur*) et **Testable** (slot *critères* +
+  plancher outcome-testable d'ADR-0028). On écarte **Independent / Negotiable / Estimable /
+  Small** comme exigences universelles : ce sont des coûts de **coordination d'équipe
+  humaine** (parallélisation, négociation de scope, estimation en points, découpe sprint)
+  qu'une passe d'agent absorbe ou rend sans objet. Deux d'entre elles **re-gagnent** de la
+  valeur en monde agent, mais **reformulées et optionnelles par projet** (jamais au socle) :
+  *Independent → sûreté de concurrence* (« constructible dans un worktree isolé sans
+  collisionner avec ce qui est en vol ») et *Estimable → prédictibilité* (baseline de
+  coût-token par classe de fiche, pour une équipe mûre sur sujets récurrents ; opt-in). Le
+  mécanisme d'extension par projet et ces slots optionnels sont portés par l'épic
+  `20260815080413884` ; cette révision **grave la thèse** — elle ne change ni le gate
+  `ready` ni les 3+1 slots de base.
 
 ## Contexte
 
