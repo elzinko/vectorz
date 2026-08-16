@@ -7,7 +7,7 @@ product: mega-city
 epic: "20260816131703334"
 labels: [doc, decouvrabilite, enabler]
 status: todo
-ready:
+ready: 2026-08-16
 pr:
 created: 2026-08-16
 ---
