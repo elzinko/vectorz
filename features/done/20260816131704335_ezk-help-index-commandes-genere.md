@@ -6,9 +6,9 @@ priority: P1
 product: mega-city
 epic: "20260816131703334"
 labels: [doc, decouvrabilite, enabler]
-status: todo
+status: shipped
 ready: 2026-08-16
-pr:
+pr: "#151"
 created: 2026-08-16
 ---
 
