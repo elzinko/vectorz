@@ -53,8 +53,10 @@ un fichier utilisateur).
 
 - **(A) Canal `commands:` complet** — le vrai « comme les skills ». Toucher
   `model` / `catalog` / `expand` / `bind` / `apply` + tests, ajouter `commands:` à
-  `global.yml`. Reproductible partout via `bind-global`. **Recommandé** si tu prévois
-  d'autres slash-commands ezk à terme.
+  `global.yml`. Reproductible partout via `bind-global`. Utile si d'autres slash-commands
+  ezk viennent — **mais à séquencer après la décision plugin/extension** ([[0087]] / [[0170]],
+  voir « Cohérence » ci-dessous) : un plugin Claude Code embarque déjà un dossier `commands/`,
+  au risque de rendre ce canal redondant.
 - **(B) Ne rien généraliser** — assumer `/ezk-help` comme une **commodité locale**, copiée
   à la main et documentée comme telle. Zéro code. Convient si `/ezk-help` reste la seule
   slash-command.
@@ -88,3 +90,25 @@ un fichier utilisateur).
   user », à respecter pour `commands:`).
 - Rattachement **lâche** à l'épic [[20260816131703334]] (découvrabilité) via `/ezk-help`,
   mais **hors périmètre** de l'épic (l'épic = *générer la doc* ; ici = *infra de déploiement*).
+
+## Cohérence avec le backlog à venir (mini-review du 2026-08-16)
+
+- **Séquencement (le point dur)** — [[0170]] (P1, « concevoir le modèle d'extension/plugin
+  **AVANT** tout adaptateur outillage ») et [[0087]] (P1, distribuer le catalogue en **plugin
+  Claude Code** + marketplace). Un plugin Claude Code embarque déjà `commands/`. **⇒ l'option A
+  est gated derrière 0170/0087** : ne pas coder un canal lawgiver `commands:` avant de savoir
+  si la voie plugin le rend redondant. Tant que ce n'est pas tranché, **B ou C** est le choix
+  cohérent.
+- **Recouvrement** — [[0186]] (P2, Skema généralisé : versioning + **registre de bind** de
+  *tout* artefact mega-city). Une commande n'est qu'un artefact bindable de plus : si 0186 se
+  fait, aligner A dessus plutôt que coder un canal ad hoc. Même thème « distinguer le géré du
+  user » que [[20260813095351680]] (garde non-destructive), à respecter pour `commands:`.
+- **Jumelle `/ezk-help`** — [[20260816140607355]] (P2, *dans* l'épic découvrabilité) exploite
+  le **script** `ezk:help` pour générer les compteurs `skills/README` ; cette fiche-ci déploie
+  la **slash-command**. Aucun recouvrement — les deux filles de `/ezk-help` se complètent
+  (l'une génère, l'autre distribue).
+- **Priorité** — P2 cohérente : au niveau des sœurs « mécanique de déploiement » (0186,
+  20260813095351680) et **sous** les P1 stratégiques (0087, 0170) qui doivent trancher d'abord.
+- **Pas d'épic (constat)** — la famille distribution/déploiement (0087, 0170, 0186,
+  [[20260813124026215]], cette fiche, 20260813095351680) est **éclatée en fiches isolées** ;
+  un épic « distribution & déploiement » pourrait les regrouper — décision PO, hors scope ici.
