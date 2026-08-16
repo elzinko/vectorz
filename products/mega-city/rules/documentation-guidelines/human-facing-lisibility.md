@@ -20,21 +20,31 @@ enforcements:
 - Write **to the human addressed**, not between agents. Prefer a short map over an
   exhaustive dossier.
 
-### Cas corps de PR (frère structurel de `development/pr-before-after-media`)
+### Cas corps de PR — la fiche est le document, la PR en est le rendu (ADR-0029)
 
-Every PR body produced by `ezk-sprint` (étape PR) MUST be readable **with the diff
-closed**, and MUST contain these three blocks (literal headings):
+La **fiche `features/<id>_*.md` est la source unique** ; le **corps de PR en est le RENDU**,
+pas un second résumé. Interdit : rédiger un `## Summary` parallèle qui re-raconte la fiche —
+c'est la dérive que ça a produite (muti #79 : Summary réécrit ≠ fiche, PO « pas compris »).
 
-1. **`## Summary`** — user-facing, ≤ 5 lines: what changes and why (open « En clair »).
-2. **`## Lien fiche`** — path to the backlog fiche (`features/<id>_*.md`, legacy
-   `features/<id>-*.md`, `products/<produit>/features/<id>_*.md`, or the project's
-   equivalent). The id prefix is `<id>` then `_` (horodaté, fiche 0180) or `-` (legacy).
-3. **`## Comment tester`** — literal replayable commands, **or** agent-run evidence
-   (screenshots / before-after) that points at existing npm/BDD scripts. Do **not**
-   duplicate Gherkin from the fiche; orient and link. Target ≤ ~2 000 chars outside
-   annexes (repère, not a hard cut).
+Le corps de PR produit par `ezk-sprint` (étape PR) DOIT être lisible **diff fermé** et être le
+**rendu de la fiche** :
 
-Origin: retro 2026-07-18 (PO restitution unreadable) + samplerz #317 (PR body opaque
-until rewrite). Measure (removability): 0 « pas compris » claims from the PO on a
-human-facing artefact for 5 consecutive sprints; and on the next 3 open PRs, a third
+1. **Le contenu de la fiche, tel quel** — son ouverture **« En clair »** puis ses sections
+   (Contexte / Proposition / Critères / **Comment vérifier**). On **recopie la fiche**, on ne
+   réécrit pas ; la fiche ouvre par « En clair » (règle ci-dessus) → la PR en hérite.
+2. **La provenance** — un lien/chemin vers la fiche (`features/<id>_*.md`, legacy
+   `features/<id>-*.md`, `products/<produit>/features/<id>_*.md`). L'id est aussi dans la
+   branche `feat/<id>-<slug>`.
+3. **La matrice « Validation »** appendue sous le rendu — **seul bloc propre à la PR** (statut
+   CI / tests / E2E, dynamique ; convention ADR-0009). Du statut, pas de la prose.
+
+« Comment vérifier » (commandes rejouables / signaux observables) vit **dans la fiche**, pas
+inventé dans la PR. **Sur divergence, la fiche gagne** : re-rendre le corps depuis la fiche,
+jamais l'inverse. Repère ≤ ~2 000 caractères hors annexes/matrice.
+
+Origin: retro 2026-07-18 (PO restitution unreadable) + samplerz #317 (PR body opaque until
+rewrite) + muti #79 2026-08-16 (`## Summary` mince réécrit → diverge de la fiche, PO « pas
+compris » → [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) : la
+fiche est le document, la PR le rend). Measure (removability): 0 « pas compris » claims from the
+PO on a human-facing artefact for 5 consecutive sprints; and on the next 3 open PRs, a third
 party reading **only** the description reformulates the need in one sentence (3/3).
