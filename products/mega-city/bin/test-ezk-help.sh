@@ -40,6 +40,37 @@ after="$(run)"
 check "retiré → disparaît + compte revenu à 2" \
   '! echo "$after" | grep -q "ezk-gamma" && echo "$after" | grep -q "2 skills"'
 
+echo "Parsing description — scalaire plain multi-lignes ET bloc plié (>-) recollés :"
+# Reproduit le P0 : une description en scalaire plain (valeur 1re ligne + suite indentée)
+# était tronquée. On asserte que la DERNIÈRE partie survit dans le détail.
+mkdir -p "$TMP/ezk-plain"
+cat > "$TMP/ezk-plain/SKILL.md" <<'SK'
+---
+name: ezk-plain
+description: Debut en scalaire simple sur la premiere ligne
+  puis une suite indentee qui doit etre recollee jusqu-au FINPLAIN
+argument-hint: "[help]"
+---
+# doc
+SK
+mkdir -p "$TMP/ezk-folded"
+cat > "$TMP/ezk-folded/SKILL.md" <<'SK'
+---
+name: ezk-folded
+description: >-
+  Premiere ligne d-un bloc plie.
+  Deuxieme ligne qui va jusqu-au FINFOLDED.
+argument-hint: "[help]"
+---
+# doc
+SK
+check "scalaire plain multi-lignes : dernière partie recollée (détail)" 'run ezk-plain | grep -q "FINPLAIN"'
+check "bloc plié >- : dernière partie recollée (détail)" 'run ezk-folded | grep -q "FINFOLDED"'
+rm -rf "$TMP/ezk-plain" "$TMP/ezk-folded"
+
+echo "Sécurité — traversée de chemin refusée :"
+check "un nom avec ../ → refusé (exit non nul)" '! run "../foo" >/dev/null 2>&1'
+
 echo "Terrain — le vrai catalogue mega-city :"
 real="$(pnpm exec tsx "$CLI" 2>&1)"
 check "liste le vrai catalogue (ezk-backlog présent)" 'echo "$real" | grep -q "ezk-backlog"'

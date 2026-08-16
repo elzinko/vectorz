@@ -18,31 +18,42 @@ export interface SkillInfo {
   summary: string;
 }
 
-/** Parse minimal du front-matter YAML (scalaires + blocs pliés `>-`/`|`). Suffit ici. */
+/**
+ * Parse minimal du front-matter YAML. Recolle TOUTE continuation indentée d'une valeur —
+ * scalaire « plain » multi-lignes (valeur sur la 1ʳᵉ ligne + suite indentée) COMME bloc
+ * plié `>-`/`|`. (Le bug initial ne collectait que pour `>-`/`|`, tronquant les descriptions
+ * en scalaire plain comme celles d'`ezk-commits`/`ezk-sprint`.) Suffit pour ce catalogue.
+ */
 function parseFrontmatter(md: string): Record<string, string> {
   const lines = md.split('\n');
   if (lines[0]?.trim() !== '---') return {};
   const out: Record<string, string> = {};
-  for (let i = 1; i < lines.length; i += 1) {
-    const line = lines[i] ?? '';
-    if (line.trim() === '---') break;
-    const m = /^([a-zA-Z_-]+):\s*(.*)$/.exec(line);
-    if (!m) continue;
-    let val = (m[2] ?? '').trim();
-    if (val === '>-' || val === '>' || val === '|' || val === '|-') {
-      // Bloc plié : collecte les lignes plus indentées jusqu'à la prochaine clé de tête.
-      const buf: string[] = [];
-      let j = i + 1;
-      for (; j < lines.length; j += 1) {
-        const l = lines[j] ?? '';
-        if (l.trim() === '---') break;
-        if (/^\S/.test(l) && l.trim() !== '') break;
-        buf.push(l.trim());
-      }
-      val = buf.join(' ').trim();
-      i = j - 1;
+  let i = 1;
+  while (i < lines.length && lines[i]?.trim() !== '---') {
+    const m = /^([A-Za-z_-]+):\s?(.*)$/.exec(lines[i] ?? '');
+    if (!m) {
+      i += 1;
+      continue;
     }
-    out[m[1] as string] = val.replace(/^["']|["']$/g, '');
+    const inline = (m[2] ?? '').trim();
+    const folded = /^[|>][+-]?$/.test(inline);
+    const parts: string[] = folded || inline === '' ? [] : [inline];
+    i += 1;
+    // Continuation : lignes indentées, jusqu'à la prochaine clé de tête ou `---`.
+    // Une ligne vide clôt un scalaire plain, mais est tolérée dans un bloc plié.
+    while (i < lines.length) {
+      const l = lines[i] ?? '';
+      if (l.trim() === '---' || /^[A-Za-z_-]+:/.test(l)) break;
+      if (l.trim() === '') {
+        if (!folded) break;
+        i += 1;
+        continue;
+      }
+      if (!/^\s/.test(l)) break;
+      parts.push(l.trim());
+      i += 1;
+    }
+    out[m[1] as string] = parts.join(' ').replace(/^["']|["']$/g, '').trim();
   }
   return out;
 }
@@ -74,6 +85,8 @@ export function skillDetail(
   skillsDir: string,
   name: string,
 ): { name: string; argHint: string; description: string } | null {
+  // Borne au catalogue : pas de traversée de chemin (`../`, séparateurs).
+  if (/[/\\]|\.\./.test(name)) return null;
   const skillMd = join(skillsDir, name, 'SKILL.md');
   if (!existsSync(skillMd)) return null;
   const fm = parseFrontmatter(readFileSync(skillMd, 'utf8'));
