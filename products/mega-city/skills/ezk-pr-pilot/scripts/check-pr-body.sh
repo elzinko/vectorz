@@ -30,6 +30,15 @@ if ! grep -qF '## Comment vérifier' <<<"$body" && ! grep -qF '## Comment tester
   missing+=('## Comment vérifier (ou legacy ## Comment tester)')
 fi
 
+# 4. Template NON rendu (Codex P1 round 2) : présence des sections ≠ contenu réel. Un template
+#    dont on n'a remplacé QUE le chemin de provenance garde ses sentinelles de placeholder
+#    (`<recopié de la fiche>`, H1 `# <id> — <titre>`, marqueur « coller son contenu tel quel »,
+#    `<titre>`). Un vrai rendu de fiche les a toutes remplacées → on les rejette.
+if grep -qE '<recopié de la fiche|coller son contenu tel quel|<titre>' <<<"$body" \
+   || grep -qE '^# <id>' <<<"$body"; then
+  missing+=('corps = squelette de template non rendu (placeholders présents) — recopier la fiche')
+fi
+
 if ((${#missing[@]})); then
   echo "PR body incomplet (ADR-0029 — le corps rend la fiche) — manque :" >&2
   printf '  - %s\n' "${missing[@]}" >&2
