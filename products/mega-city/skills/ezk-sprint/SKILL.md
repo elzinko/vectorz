@@ -148,7 +148,8 @@ gate est leur **trace contractuelle** (doc du kit :
 
 Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
 **E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte **avec un
-corps relisable seul** (`## Summary` + `## Lien fiche` + `## Comment tester`) •
+corps relisable seul = rendu de la fiche** (« En clair » + sections + `## Comment vérifier`
++ provenance `features/<id>_*.md` + matrice `## Validation` — [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) ; **pas** de Summary parallèle, `## Summary` proscrit) •
 (après validation) squash-mergée en conventional commit • branche supprimée.
 
 ## Workflow git

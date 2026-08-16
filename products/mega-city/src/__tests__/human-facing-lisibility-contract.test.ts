@@ -1,10 +1,12 @@
 /**
- * Non-récidive fiche 0079 : le corps de PR relisable (Summary + Lien fiche +
- * Comment tester) doit rester câblé — skill ↔ règle ↔ asset template.
+ * Non-récidive fiche 0079 + ADR-0029 : le corps de PR est le **rendu de la fiche**
+ * (En clair + sections + « Comment vérifier » + provenance + matrice Validation) —
+ * skill ↔ règle ↔ asset template. PLUS de triade mince Summary/Lien fiche/Comment tester.
  *
  * Leçon 0095 : un oubli de consigne est resté vert neuf jours faute de test sur
- * le *contenu* des SKILL.md. Retirer la consigne de l'étape PR d'`ezk-sprint`
- * (ou l'asset mince, ou le cas PR de la règle) DOIT faire rougir ce fichier.
+ * le *contenu* des SKILL.md. Retirer le contrat « rendu de la fiche » de l'étape PR
+ * ou de la DoD d'`ezk-sprint`, de l'asset, ou du cas PR de la règle DOIT faire rougir
+ * ce fichier. Réintroduire un `## Summary` parallèle aussi.
  */
 import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
@@ -53,33 +55,44 @@ function read(path: string): string {
   return readFileSync(path, 'utf8');
 }
 
-describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
-  it('la règle MUST existe avec le cas corps de PR', () => {
+describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => {
+  it('la règle MUST porte le cas corps de PR = rendu de la fiche (ADR-0029)', () => {
     expect(existsSync(lisibilityRule), 'règle human-facing-lisibility absente').toBe(true);
     const body = read(lisibilityRule);
     expect(body).toMatch(/level:\s*MUST/);
     expect(body).toMatch(/ezk-reviewer/);
-    expect(body).toMatch(/## Summary/);
-    expect(body).toMatch(/## Lien fiche/);
-    expect(body).toMatch(/## Comment tester/);
+    expect(body).toMatch(/ADR-0029/);
+    expect(body).toMatch(/rendu de la fiche/i);
+    expect(body).toMatch(/Comment vérifier/);
+    expect(body).toMatch(/Validation/);
+    // Non-récidive : le Summary mince n'est plus un bloc requis — il est explicitement interdit.
+    expect(body).toMatch(/Interdit[\s\S]*?## Summary/);
   });
 
-  it("ezk-sprint étape PR + DoD exigent les trois blocs littéraux", () => {
+  it("ezk-sprint étape PR + DoD exigent le rendu de la fiche (ADR-0029), pas la triade mince", () => {
     const body = read(sprintSkill);
-    expect(body).toMatch(/## Summary/);
-    expect(body).toMatch(/## Lien fiche/);
-    expect(body).toMatch(/## Comment tester/);
+    expect(body).toMatch(/rendu de la fiche/i);
+    expect(body).toMatch(/## Comment vérifier/);
+    expect(body).toMatch(/## Validation/);
+    expect(body).toMatch(/ADR-0029/);
     expect(body).toMatch(/corps relisable seul/);
     expect(body).toMatch(/human-facing-lisibility/);
+    // Non-récidive : plus de `## Summary` parallèle réintroduit comme contrat.
+    expect(body).toMatch(/Summary\s+parallèle/);
   });
 
-  it('asset PULL_REQUEST_TEMPLATE.thin.md matérialise le squelette mince', () => {
+  it('asset PULL_REQUEST_TEMPLATE.thin.md matérialise le rendu de la fiche (ADR-0029)', () => {
     expect(existsSync(thinTemplate), 'asset thin template absent').toBe(true);
     const body = read(thinTemplate);
-    expect(body).toMatch(/^## Summary/m);
-    expect(body).toMatch(/^## Lien fiche/m);
-    expect(body).toMatch(/^## Comment tester/m);
+    expect(body).toMatch(/Rendu de la fiche/);
+    expect(body).toMatch(/En clair/);
+    expect(body).toMatch(/^## Comment vérifier/m);
+    expect(body).toMatch(/^## Validation/m);
     expect(body).toMatch(/PR_VALIDATION\.md/);
+    expect(body).toMatch(/ADR-0029/);
+    // Non-récidive : l'ancienne triade mince ne doit plus être le squelette de l'asset.
+    expect(body).not.toMatch(/^## Summary/m);
+    expect(body).not.toMatch(/^## Lien fiche/m);
   });
 
   it('ezk-pr-pilot init référence le thin asset (plus seulement de la prose)', () => {
@@ -91,9 +104,9 @@ describe('contrat lisibilité artefacts humains (fiche 0079)', () => {
     const body = read(prPilotSkill);
     // Mode copy ne matérialise que SKILL.md — fallback obligatoire.
     expect(body).toMatch(/Mode copy/);
-    expect(body).toMatch(/écrire le squelette\s+inline|fallback inline/i);
-    // Template mince réellement embarqué (pas seulement des puces descriptives).
-    expect(body).toMatch(/````markdown[\s\S]*?## Summary[\s\S]*?## Lien fiche[\s\S]*?## Comment tester[\s\S]*?## Validation[\s\S]*?````/);
+    expect(body).toMatch(/gabarit inline|fallback inline/i);
+    // Gabarit de rendu réellement embarqué (rendu de la fiche + Validation, pas la triade mince).
+    expect(body).toMatch(/````markdown[\s\S]*?En clair[\s\S]*?## Comment vérifier[\s\S]*?## Validation[\s\S]*?````/);
     expect(body).toMatch(/\| CI \|/);
     // Résolution hors cwd mega-city.
     expect(body).toMatch(/~\/\.claude\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);

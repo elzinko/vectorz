@@ -2,6 +2,8 @@
      parallèle. Règle human-facing-lisibility / ADR-0029. Ne rien rédiger ici : recopier la
      fiche ; sur divergence, la fiche gagne → re-rendre. (Nom de fichier « thin » = legacy.) -->
 
+> 🗎 **Rendu de la fiche** `features/<id>_<slug>.md` — source unique (ADR-0029). ⚠️ **Remplacer par le chemin réel** : le placeholder `<id>_<slug>` est rejeté par `check-pr-body` (un corps non lié ne passe pas).
+
 <!-- ▼▼▼ RENDU DE LA FICHE — coller son contenu tel quel (En clair + sections) ▼▼▼ -->
 
 # <id> — <titre>

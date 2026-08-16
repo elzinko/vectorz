@@ -18,9 +18,11 @@ missing=()
 # 1. Ouverture « En clair » (le rendu de la fiche en hérite — règle human-facing-lisibility).
 grep -qiF 'En clair' <<<"$body" || missing+=('ouverture « En clair »')
 
-# 2. Provenance : un chemin de fiche `features/<id>…md` OU le titre legacy « ## Lien fiche ».
-if ! grep -qE 'features/[^[:space:]]+\.md' <<<"$body" && ! grep -qF '## Lien fiche' <<<"$body"; then
-  missing+=('provenance fiche (chemin features/<id>_*.md ou ## Lien fiche)')
+# 2. Provenance : un chemin CONCRET vers la fiche source (`features/…md`) — ou l'ADR source
+#    (`docs/adr/…md`) pour un PR de méthode. La classe [A-Za-z0-9._/-] REJETTE le placeholder
+#    `features/<id>_*.md` (< > *) : un template non rempli ne peut plus passer (Codex P1).
+if ! grep -qE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body"; then
+  missing+=('provenance : chemin CONCRET de fiche (features/<id>_<slug>.md) — pas le placeholder')
 fi
 
 # 3. « Comment vérifier » (nouveau) — accepte le legacy « Comment tester ».

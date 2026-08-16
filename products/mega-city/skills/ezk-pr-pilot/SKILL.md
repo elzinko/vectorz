@@ -95,6 +95,8 @@ ci-dessous tel quel** pour écrire `.github/PULL_REQUEST_TEMPLATE.md`.
 ````markdown
 <!-- Corps de PR = RENDU de la fiche (ne rien rédiger ici ; sur divergence, la fiche gagne). -->
 
+> 🗎 **Rendu de la fiche** `features/<id>_<slug>.md` — source unique (ADR-0029). ⚠️ Remplacer par le **chemin réel** : le placeholder `<id>_<slug>` est **rejeté** par `check-pr-body` (empêche un corps non lié de passer).
+
 <!-- ▼ Rendu de la fiche : coller son contenu tel quel ▼ -->
 
 # <id> — <titre>
@@ -135,7 +137,8 @@ Voir [docs/PR_VALIDATION.md](../docs/PR_VALIDATION.md).
 ### Garde-fou corps de PR (`check-pr-body`)
 
 Vérifie mécaniquement que le corps **rend la fiche** (ADR-0029) : ouverture **« En clair »** +
-**provenance** (chemin `features/<id>…md` ou `## Lien fiche` legacy) + **`## Comment vérifier`**
+**provenance** = **chemin CONCRET** `features/<id>_<slug>.md` (ou `docs/adr/…` pour un PR de
+méthode) — le placeholder `<id>_*` est **rejeté** (Codex P1) + **`## Comment vérifier`**
 (accepte le legacy `## Comment tester`).
 
 **Résolution du script** (dans l'ordre, premier trouvé gagne) :
@@ -149,7 +152,7 @@ Vérifie mécaniquement que le corps **rend la fiche** (ADR-0029) : ouverture **
 body=$(cat)   # ou : gh pr view N --json body -q .body
 missing=()
 grep -qiF 'En clair' <<<"$body" || missing+=('En clair')
-grep -qE 'features/[^[:space:]]+\.md' <<<"$body" || grep -qF '## Lien fiche' <<<"$body" || missing+=('provenance fiche')
+grep -qE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body" || missing+=('provenance fiche (chemin concret)')
 grep -qF '## Comment vérifier' <<<"$body" || grep -qF '## Comment tester' <<<"$body" || missing+=('## Comment vérifier')
 ((${#missing[@]})) && { printf 'PR body incomplet (ADR-0029) — manque: %s\n' "${missing[*]}" >&2; exit 1; }
 echo "OK — En clair + provenance fiche + Comment vérifier présents"
