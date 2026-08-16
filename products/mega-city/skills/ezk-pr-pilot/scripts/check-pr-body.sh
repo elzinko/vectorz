@@ -31,12 +31,12 @@ if ! grep -qF '## Comment vérifier' <<<"$body" && ! grep -qF '## Comment tester
 fi
 
 # 4. Template NON rendu (Codex P1 round 2) : présence des sections ≠ contenu réel. Un template
-#    dont on n'a remplacé QUE le chemin de provenance garde ses sentinelles de placeholder
-#    (`<recopié de la fiche>`, H1 `# <id> — <titre>`, marqueur « coller son contenu tel quel »,
-#    `<titre>`). Un vrai rendu de fiche les a toutes remplacées → on les rejette.
-if grep -qE '<recopié de la fiche|coller son contenu tel quel|<titre>' <<<"$body" \
-   || grep -qE '^# <id>' <<<"$body"; then
-  missing+=('corps = squelette de template non rendu (placeholders présents) — recopier la fiche')
+#    dont on n'a remplacé QUE le chemin de provenance garde ses placeholders de CONTENU
+#    (`<recopié de la fiche>`, H1 `# <id> — <titre>`, `<titre>`) — un vrai rendu les a remplacés.
+#    On ne vise QUE le contenu à remplacer : les commentaires-guides `<!-- … -->` (ex. « coller
+#    son contenu tel quel ») peuvent légitimement rester dans un corps rendu (Codex P1 round 3).
+if grep -qE '<recopié de la fiche|<titre>' <<<"$body" || grep -qE '^# <id>' <<<"$body"; then
+  missing+=('corps = squelette de template non rendu (placeholders de contenu présents) — recopier la fiche')
 fi
 
 if ((${#missing[@]})); then

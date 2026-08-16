@@ -139,10 +139,11 @@ Voir [docs/PR_VALIDATION.md](../docs/PR_VALIDATION.md).
 Vérifie mécaniquement que le corps **rend la fiche** (ADR-0029) : ouverture **« En clair »** +
 **provenance** = **chemin CONCRET** `features/<id>_<slug>.md` (ou `docs/adr/…` pour un PR de
 méthode) — le placeholder `<id>_*` est **rejeté** (Codex P1) + **`## Comment vérifier`**
-(accepte le legacy `## Comment tester`). Rejette aussi un **template non rendu** (sentinelles de
-placeholder encore présentes : `<recopié de la fiche>`, `# <id> — <titre>`, `<titre>`, marqueur
-« coller son contenu tel quel ») — sinon un corps où seul le chemin est rempli passerait alors
-que le fond reste des placeholders (Codex P1 round 2).
+(accepte le legacy `## Comment tester`). Rejette aussi un **template non rendu** — sentinelles de
+**placeholder de contenu** (`<recopié de la fiche>`, H1 `# <id> — <titre>`, `<titre>`) — sinon un
+corps où seul le chemin est rempli passerait alors que le fond reste des placeholders (Codex P1
+round 2). On ne vise **que le contenu à remplacer** : les commentaires-guides `<!-- … -->`
+peuvent légitimement rester dans un corps rendu (Codex P1 round 3).
 
 **Résolution du script** (dans l'ordre, premier trouvé gagne) :
 1. Dossier skill installé : `~/.claude/skills/ezk-pr-pilot/scripts/check-pr-body.sh`
@@ -157,7 +158,7 @@ missing=()
 grep -qiF 'En clair' <<<"$body" || missing+=('En clair')
 grep -qE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body" || missing+=('provenance fiche (chemin concret)')
 grep -qF '## Comment vérifier' <<<"$body" || grep -qF '## Comment tester' <<<"$body" || missing+=('## Comment vérifier')
-{ grep -qE '<recopié de la fiche|coller son contenu tel quel|<titre>' <<<"$body" || grep -qE '^# <id>' <<<"$body"; } && missing+=('template non rendu (placeholders)')
+{ grep -qE '<recopié de la fiche|<titre>' <<<"$body" || grep -qE '^# <id>' <<<"$body"; } && missing+=('template non rendu (placeholders contenu)')
 ((${#missing[@]})) && { printf 'PR body incomplet (ADR-0029) — manque: %s\n' "${missing[*]}" >&2; exit 1; }
 echo "OK — En clair + provenance fiche + Comment vérifier présents"
 ```
