@@ -27,11 +27,14 @@ missing=()
 # 1. Ouverture « En clair » VISIBLE (Codex #152 P1 : ne pas la satisfaire via un commentaire-guide).
 grep -qiF 'En clair' <<<"$body" || missing+=('ouverture « En clair » (visible, pas dans un commentaire)')
 
-# 2. Provenance : un chemin CONCRET vers la fiche source (`features/…md`) — ou l'ADR source
-#    (`docs/adr/…md`) pour un PR de méthode. La classe [A-Za-z0-9._/-] REJETTE le placeholder
-#    `features/<id>_<slug>.md` (< > *) ; le placeholder lui-même est re-rejeté en 5 (Codex #152 P2 :
-#    un chemin de fiche LIÉ cité ailleurs ne doit pas couvrir une provenance restée en placeholder).
-if ! grep -qE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body"; then
+# 2. Provenance = le PREMIER chemin concret du corps = la LIGNE DE PROVENANCE en tête du rendu
+#    (template : `> 🗎 Rendu de la fiche <path>`), AVANT la prose. `features/…md` (fiche) ou
+#    `docs/adr/…md` (PR de méthode). La classe [A-Za-z0-9._/-] REJETTE le placeholder
+#    `features/<id>_<slug>.md` (< > *) ; le placeholder est re-rejeté en 5 (Codex #152 P2).
+#    On CLASSE fiche-vs-ADR d'après CETTE ligne — pas d'après un lien de fiche cité plus bas dans
+#    la prose (Codex #152 P1 « classify from provenance » : un ADR peut lier des features/done/*.md).
+prov=$(grep -oE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body" | head -1)
+if [[ -z "$prov" ]]; then
   missing+=('provenance : chemin CONCRET de fiche (features/<id>_<slug>.md) — pas le placeholder')
 fi
 
@@ -43,10 +46,11 @@ fi
 # 4. Schéma du RENDU (Codex #152 P1 « validate the complete rendered-body schema ») : le sentinel de
 #    template (5) attrape le squelette NON MODIFIÉ, mais PAS un corps TRONQUÉ dont on aurait SUPPRIMÉ
 #    des sections. On exige donc EXPLICITEMENT la matrice « Validation » (seul bloc propre à la PR,
-#    ADR-0029 pt 4 — présente dans TOUT rendu, fiche comme ADR) et, pour un rendu de FICHE, ses
-#    sections narratives. Un rendu d'ADR (provenance docs/adr, pas de features/…) n'exige que Validation.
+#    ADR-0029 pt 4 — présente dans TOUT rendu, fiche comme ADR) ; et, SI la provenance est une FICHE
+#    (pas un ADR), ses sections narratives. La classification vient de $prov (la ligne de provenance),
+#    jamais d'un lien de fiche dans la prose (Codex #152 P1 « classify from provenance field »).
 grep -qE '^## Validation' <<<"$body" || missing+=('## Validation (matrice de statut — ADR-0029 pt 4)')
-if grep -qE 'features/[A-Za-z0-9._/-]+\.md' <<<"$body"; then
+if [[ "$prov" == features/* ]]; then
   for h in '## Contexte' '## Proposition' '## Critères'; do
     grep -qF "$h" <<<"$body" || missing+=("section de fiche manquante : « ${h}… » (rendu tronqué)")
   done

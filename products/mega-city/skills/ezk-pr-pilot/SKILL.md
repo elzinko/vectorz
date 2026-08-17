@@ -154,14 +154,19 @@ les commentaires-guides `<!-- … -->` peuvent légitimement rester dans un corp
 3. **Fallback inline** (stdin) si aucun fichier :
 
 ```bash
-body=$(cat)   # ou : gh pr view N --json body -q .body
+body=$(perl -0pe 's/<!--.*?-->//gs' <<<"$(cat)")   # strippe d'abord les commentaires-guides (Codex P1)
 missing=()
-grep -qiF 'En clair' <<<"$body" || missing+=('En clair')
-grep -qE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body" || missing+=('provenance fiche (chemin concret)')
+grep -qiF 'En clair' <<<"$body" || missing+=('En clair (visible)')
+prov=$(grep -oE '(features|docs/adr)/[A-Za-z0-9._/-]+\.md' <<<"$body" | head -1)   # LIGNE de provenance (pas un lien de la prose)
+[[ -n "$prov" ]] || missing+=('provenance fiche (chemin concret)')
 grep -qF '## Comment vérifier' <<<"$body" || grep -qF '## Comment tester' <<<"$body" || missing+=('## Comment vérifier')
-{ grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié' <<<"$body" || grep -qE '^# <id>' <<<"$body"; } && missing+=('template non rendu (placeholders contenu)')
+grep -qE '^## Validation' <<<"$body" || missing+=('## Validation')
+if [[ "$prov" == features/* ]]; then   # rendu de FICHE → sections narratives (ADR → Validation seule)
+  for h in '## Contexte' '## Proposition' '## Critères'; do grep -qF "$h" <<<"$body" || missing+=("section fiche $h…"); done
+fi
+{ grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié|<id>_<slug>' <<<"$body" || grep -qE '^# <id>' <<<"$body"; } && missing+=('template non rendu (placeholders contenu)')
 ((${#missing[@]})) && { printf 'PR body incomplet (ADR-0029) — manque: %s\n' "${missing[*]}" >&2; exit 1; }
-echo "OK — En clair + provenance fiche + Comment vérifier présents"
+echo "OK — En clair + provenance + sections + Comment vérifier + Validation présents"
 ```
 
 Usage quand le script est dispo (le chemin résolu **est** le fichier `.sh`) :
