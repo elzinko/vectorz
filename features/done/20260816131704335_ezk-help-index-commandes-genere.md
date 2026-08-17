@@ -14,7 +14,7 @@ created: 2026-08-16
 
 # /ezk-help — index de commandes généré
 
-> Fille de l'épic [Rationalisation doc + découvrabilité](20260816131703334_doc-decouvrabilite-rationalisation.md),
+> Fille de l'épic [Rationalisation doc + découvrabilité](../20260816131703334_doc-decouvrabilite-rationalisation.md),
 > **Phase 1 (Générer)**. Déclencheur daté : le PO a demandé « quelle est la commande pour X »
 > et a proposé un `/ezk-help` — le besoin de découvrabilité est prouvé par l'usage (2026-08-16).
 

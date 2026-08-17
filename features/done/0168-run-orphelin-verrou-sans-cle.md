@@ -27,7 +27,7 @@ d'erreur, comprenne le modèle, et clôture à la main le run **de quelqu'un d'a
 ### Symptôme observé (2026-07-30, repo vectorz)
 
 1. Le run `ezk-sprint` `2026-07-29T12-48-47-648Z-2a4f2f22` est ouvert depuis la veille
-   12:48, avec **1 seul événement** (`run.started`) — l'orphelin décrit en [0105](../0105-bug-moniteur-silence-dogfood.md).
+   12:48, avec **1 seul événement** (`run.started`) — l'orphelin décrit en [0105](0105-bug-moniteur-silence-dogfood.md).
 2. Session suivante, `/supervision-demo` appelle `run_start` →
    `run_start refusé : un run est déjà ouvert (run_id=…)`.
 3. **Aucun outil de reprise ni de nettoyage** dans les 6 outils MCP : la démo est
@@ -92,7 +92,7 @@ insuffisant en pratique.
 - Verrou : `products/mega-city/src/supervision/runtime.ts:164-167` (`findOpenRun`).
 - Découvert en tentant `/supervision-demo` le 2026-07-30 ; le run orphelin était celui
   servant de preuve disque à 0105.
-- Voisines : [0105](../0105-bug-moniteur-silence-dogfood.md) (lisibilité de la carte run),
+- Voisines : [0105](0105-bug-moniteur-silence-dogfood.md) (lisibilité de la carte run),
   [0103](0103-heartbeat-methodes-supervision.md) (heartbeat, shipped),
   [0104](0104-kit-analyse-session-supervision.md) (`supervision:analyze`).
 - **Groom 2026-07-30** — `abandoned_by: seat | method` : **oui, distinguer**. Le Moniteur
@@ -106,7 +106,7 @@ insuffisant en pratique.
 
 ## Issue GitHub
 
-- https://github.com/elzinko/vectorz/issues/63 — même fil que [0105](../0105-bug-moniteur-silence-dogfood.md)
+- https://github.com/elzinko/vectorz/issues/63 — même fil que [0105](0105-bug-moniteur-silence-dogfood.md)
   (dogfood Moniteur / silence / orphelin).
 - **Règle de clôture** : laisser l’issue **ouverte** jusqu’au ship de **0105 et 0168**.
   Au ship de la dernière des deux, fermer #63 avec un commentaire pointant les deux ships.

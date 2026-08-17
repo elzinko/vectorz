@@ -18,7 +18,7 @@ created: 2026-07-16
 > `pr_sans_retouche`). Les **surfaces gelées** (validateur noyau, miroir tamper-évident,
 > chien de garde calendaire, mécanisme de preuve externe, verdicts mécaniques, second
 > fichier `lifecycle.jsonl`) sont **déportées** dans
-> [`20260813131259846`](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md),
+> [`20260813131259846`](../20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md),
 > **bloquée tant qu'ADR-030 n'est pas ratifié** (transport A2 + preuve externe = panel + PO).
 > Les descriptions ci-dessous restent le cahier des charges d'ensemble ; seul le périmètre
 > des **Critères d'acceptation** ci-dessous fait foi pour CE sprint.
@@ -110,7 +110,7 @@ moisson (critère de maintien éventuel = arbitrage PO).
 - [ ] Mesureur **déterministe zéro-LLM** ; réexécution idempotente (pas de doublons d'événements)
 - [ ] Gate locale verte (typecheck/lint/tests)
 
-> **Déportés dans [`20260813131259846`](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md)** (gated ADR-030) : script d'append validateur noyau (3 violations), miroir tamper-évident hors arbre, chien de garde calendaire, verdicts `verified|retired` mécaniques, second fichier `lifecycle.jsonl`.
+> **Déportés dans [`20260813131259846`](../20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md)** (gated ADR-030) : script d'append validateur noyau (3 violations), miroir tamper-évident hors arbre, chien de garde calendaire, verdicts `verified|retired` mécaniques, second fichier `lifecycle.jsonl`.
 
 ## Notes / décisions
 

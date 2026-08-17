@@ -37,7 +37,7 @@ détectée par quoi que ce soit. La première est dans [`ezk-steward`](../produc
 Les deux textes sont corrigés. Ce qui reste ouvert, c'est le **contrôle** : rien n'a rougi, et
 rien ne rougirait à la prochaine dérive. Même motif que la fiche
 [0095](done/0095-ezk-product-builder-n-emet-pas.md) (une consigne partie neuf jours en silence) et
-que la fiche [0101](0101-cabler-check-links-ship-et-ci.md) (« un contrôle que personne ne lance
+que la fiche [0101](done/0101-cabler-check-links-ship-et-ci.md) (« un contrôle que personne ne lance
 ne protège de rien »). Ça confirme la thèse de cette fiche par l'exemple : l'audit statique est
 un **jugement d'agent**, pas une gate — il rate ce qu'il ne pense pas à regarder, y compris sur
 lui-même.

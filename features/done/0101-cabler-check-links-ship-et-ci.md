@@ -5,9 +5,9 @@ type: chore
 priority: P2
 product: mega-city
 epic: "20260813131737959"
-status: todo
+status: shipped
 ready: 2026-08-12
-pr:
+pr: local (main)
 created: 2026-07-26
 ---
 
@@ -32,7 +32,7 @@ qui ne rougit pas n'est pas un contrat »).
 > **Re-mesure 2026-08-13 (audit de rationalisation)** : `check-links` = **4 liens cassés**
 > (ADR `0019` l.6-7, `0021` l.7-8 → fiches `done/`), toujours **pas câblé**. La cause n° 2 a
 > déjà re-produit des liens morts — la fiche est confirmée par l'exemple. Rattachée à l'épic
-> [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md).
+> [20260813131737959](../20260813131737959_rationalisation-coherence-methode-epic.md).
 
 ## Valeur
 
@@ -71,8 +71,8 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
 
 ## Notes
 
-- Outil livré et vert : [`bin/check-links.sh`](../products/mega-city/bin/check-links.sh),
-  [`bin/test-check-links.sh`](../products/mega-city/bin/test-check-links.sh).
+- Outil livré et vert : [`bin/check-links.sh`](../../products/mega-city/bin/check-links.sh),
+  [`bin/test-check-links.sh`](../../products/mega-city/bin/test-check-links.sh).
 - **Re-mesuré le 2026-08-12** (session hygiène, PR #129) : 27 liens cassés dans `features/`
   (même cause n° 2) **+ une 2ᵉ classe dans `docs/`** (résidus BMAD `_bmad-output` dans
   `index.md`, renumérotation d'ADR) — tous réparés à la main. Confirme que le manuel ne
@@ -85,5 +85,5 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
 - Piège d'implémentation déjà payé : un test de schéma d'URL générique `^[a-z.]+:` avale
   `types.ts:75` et rend le contrôle aveugle. La liste des schémas est explicite à dessein,
   et le cas G du test couvre la forme NUE (sans `/` avant le `:`), seule discriminante.
-- Voisin thématique : [0068 règle « method-map à jour »](0068-regle-method-map-a-jour.md)
+- Voisin thématique : [0068 règle « method-map à jour »](../0068-regle-method-map-a-jour.md)
   — même famille (un artefact humain qui se périme sans que rien ne rougisse).

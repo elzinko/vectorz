@@ -58,7 +58,7 @@ exactement le trou prouvé par la fiche [0066](0066-tester-un-skill-avant-merge.
 
 ## Notes
 
-- Bras d'enforcement `check-links` = fiche [0101](0101-cabler-check-links-ship-et-ci.md)
+- Bras d'enforcement `check-links` = fiche [0101](done/0101-cabler-check-links-ship-et-ci.md)
   (4 liens cassés mesurés 2026-08-13). Mécanisme `composes:` = fiche [0149](done/0149-formaliser-composes-inter-skills.md) (shippé) ;
   **tier optionnel `delegates:`** = fiche [0190](0190-composes-delegates-tier-optionnel.md) — cette
   fille s'y **coordonne**, ne le réinvente pas.

@@ -20,7 +20,7 @@ product: mega-city
 **Les tests écrits vérifient des réponses à des questions déjà posées.** Une fixture
 contient ce que son auteur a imaginé — et personne n'écrit une fixture « run laissé
 ouvert parce que la session est morte », parce qu'on écrit des fixtures de runs bien
-formés. C'est exactement pour ça que [0105](0105-bug-moniteur-silence-dogfood.md) et
+formés. C'est exactement pour ça que [0105](done/0105-bug-moniteur-silence-dogfood.md) et
 [0168](done/0168-run-orphelin-verrou-sans-cle.md) ont échappé à toute la suite existante :
 le runtime était testé (verrou, `seq`, confinement), le serveur MCP était testé
 (`src/supervision/__tests__/mcp-server.e2e.test.ts`), et le produit était pourtant
@@ -178,7 +178,7 @@ Matériau disponible : `0105`, `0168`, le journal
   aucun verdict rendu sur un run abandonné (« Runs : 2 », 1 verdict) ; le tableau des
   appels MCP ne distingue pas un appel réussi d'un appel refusé.
 - Voisines : [0099](0099-contrat-emission-verifier-directives.md) (vérifier les
-  directives d'émission), [0105](0105-bug-moniteur-silence-dogfood.md),
+  directives d'émission), [0105](done/0105-bug-moniteur-silence-dogfood.md),
   [0104](done/0104-kit-analyse-session-supervision.md).
 - Répartition des étages assumée : unit (runtime) et intégration (serveur MCP) existent ;
   le trou déterministe le plus rentable est un **E2E Moniteur sur fixture** — il permet

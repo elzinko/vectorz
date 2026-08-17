@@ -16,13 +16,13 @@ created: 2026-08-13
 ## Contexte / Problème
 
 En `--checkpoints auto`, `ezk-product-builder` **calait immédiatement** dès qu'aucune fiche
-n'était `ready` : l'invariant A5 d'[ADR-0016](../products/mega-city/docs/adr/0016-rituels-scrum-cycle-de-vie-backlog.md)
+n'était `ready` : l'invariant A5 d'[ADR-0016](../../products/mega-city/docs/adr/0016-rituels-scrum-cycle-de-vie-backlog.md)
 imposait un **STOP humain** systématique pour tamponner le gate (« jamais auto-tamponné »).
 Résultat : sur un backlog où rien n'est ready (cas courant), la méthode n'avançait pas.
 Le PO donne les **grands axes** d'une fiche et veut que la méthode soit **opérationnelle
 ensuite** — pas qu'elle s'arrête à chaque fiche non encore rédigée `ready`.
 
-## Proposition (décidée — [ADR-0028](../products/mega-city/docs/adr/0028-product-builder-auto-groom-ready.md))
+## Proposition (décidée — [ADR-0028](../../products/mega-city/docs/adr/0028-product-builder-auto-groom-ready.md))
 
 Reframe : le gate humain mêlait **(a) DoR complète** [mécanique, délégable] et **(b) ça vaut
 le coup** [humain]. `--check-ready false` = le PO a déjà tranché (b) en sélectionnant le lot →

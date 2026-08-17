@@ -67,7 +67,7 @@ product: mega-city
    → **fait** 2026-07-30 (`docs/dogfood-reports/20260730-152524/`, analyze `healthy` sur
    le run demo ; orphelin d’hier clôturé `abandoned`).
 5. **Ship cette fiche (0105)** une fois les AC UX / dogfood clôturés côté produit.
-6. **Avec le ship de [0168](done/0168-run-orphelin-verrou-sans-cle.md)** (verrou orphelin) :
+6. **Avec le ship de [0168](0168-run-orphelin-verrou-sans-cle.md)** (verrou orphelin) :
    **fermer l’issue GitHub #63** — ne pas la fermer avant.
 
 ## Issue GitHub

@@ -5,7 +5,7 @@
 # Le vérificateur lui-même est prouvé par sabotage dans `bin/test-check-links.sh`.
 #
 # Deux périmètres, tous deux vérifiés verts à l'écriture (2026-08-13) :
-#   1. mega-city           → `check-links.sh` (défaut : features/ docs/adr/ du produit) ;
+#   1. mega-city           → `check-links.sh <mc> docs/adr` (features/ tombstoné, fiche 0064) ;
 #   2. racine vectorz      → `check-links.sh <root> features docs/adr docs/captures`.
 # Déterministe, read-only. Aucun `pnpm install` requis : bash pur (utilisable tel quel en CI).
 set -uo pipefail
@@ -14,8 +14,8 @@ MC="$(cd "$(dirname "$0")/.." && pwd)"       # products/mega-city
 ROOT="$(cd "$MC/../.." && pwd)"              # racine du repo (vectorz)
 fail=0
 
-echo "── mega-city (features/ docs/adr/)"
-bash "$MC/bin/check-links.sh" || fail=1
+echo "── mega-city (docs/adr/ — features/ tombstoné, 0064)"
+bash "$MC/bin/check-links.sh" "$MC" docs/adr || fail=1
 
 echo "── racine vectorz (features docs/adr docs/captures)"
 bash "$MC/bin/check-links.sh" "$ROOT" features docs/adr docs/captures || fail=1

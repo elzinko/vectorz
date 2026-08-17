@@ -15,7 +15,7 @@ created: 2026-08-13
 
 ## Contexte / Problème
 
-La fiche [0064](done/0064-liste-unique-features-champ-product.md) (✅ shippée, PR #66) a
+La fiche [0064](0064-liste-unique-features-champ-product.md) (✅ shippée, PR #66) a
 unifié les deux backlogs en une seule liste `features/` à la racine, avec un champ
 `product:`. Son critère de fin gardait volontairement `products/mega-city/features/`
 comme **tombstone** : dossier vidé + `README.md` stub qui redirige + `done/.gitkeep`.

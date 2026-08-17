@@ -118,7 +118,7 @@ ADR-021 frontière, ADR-026 seam exécuteur, ADR-032 émission adaptateur sépar
 
 **Fiches / ADR impactés (arbitrage PO — non modifiés unilatéralement)** :
 
-- **[0044](0044-mesureur-outcomes-script-append-mvp-a.md)** — le silo `.improvement/` est le
+- **[0044](done/0044-mesureur-outcomes-script-append-mvp-a.md)** — le silo `.improvement/` est le
   **foyer** de ces mesures. Mais ajouter des **métriques produit** (couverture, Sonar…) est un
   **nouveau type d'événement / une nouvelle source** → touche « **métriques = surface gelée** »
   → **PO + panel** avant gel. *Décision à trancher : même silo (nouvel event `quality.measured`)

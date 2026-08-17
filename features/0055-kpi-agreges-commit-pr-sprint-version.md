@@ -44,5 +44,5 @@ Zéro infra serveur ; reproductible (re-run = même résultat sur le même silo)
 - Le mapping sprint/version → fiches/tags s'appuie sur le front-matter du backlog + git (pas de
   nouvelle saisie).
 - Dépend du silo de [0052](0052-socle-metrique-port-adaptateur-silo.md) /
-  [0044](0044-mesureur-outcomes-script-append-mvp-a.md). Alimente
+  [0044](done/0044-mesureur-outcomes-script-append-mvp-a.md). Alimente
   [0056](0056-viz-qualite-mission-control.md).

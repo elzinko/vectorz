@@ -27,7 +27,7 @@ n'a rien à analyser.
 Un **agent spécialisé** qui lit les **vues KPI** (0055) + le silo dans le temps et produit des
 **propositions** `type: amelioration` (seuils, règles, outils à ajouter/retirer), **routées** au
 PO via **ezk-retro** + le contrat d'améliorabilité — **jamais** auto-appliquées. Le **verdict**
-(l'amélioration a-t-elle payé ?) est rendu par le **mesureur tiers** ([0044](0044-mesureur-outcomes-script-append-mvp-a.md)),
+(l'amélioration a-t-elle payé ?) est rendu par le **mesureur tiers** ([0044](done/0044-mesureur-outcomes-script-append-mvp-a.md)),
 pas par l'agent.
 
 ## Critères d'acceptation

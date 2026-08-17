@@ -24,7 +24,7 @@ Q2-différé ; port lu par le moniteur). Les points qui restent au PO sont regro
 - Les règles hexagonales de mega-city (`rules/hexagonal/` : `adapter-location`,
   `dependency-inversion`, `wiring-at-edge`), [ADR-021](ADR-021-megacity-integration-boundary.md)
   (frontière), [ADR-026](ADR-026-agent-executor-seam.md) (seam).
-- Le **mesureur [0044](../../features/0044-mesureur-outcomes-script-append-mvp-a.md)** +
+- Le **mesureur [0044](../../features/done/0044-mesureur-outcomes-script-append-mvp-a.md)** +
   [ADR-031](ADR-031-deux-axes-de-validation.md) — le silo de mesures est le **foyer** ; les
   métriques produit **nourrissent** l'Axe 2 (qualité de méthode), elles ne le remplacent pas.
 **Ne révise pas :** le gel supervisabilité v0.1 ; ADR-030 (composé, non rouvert).

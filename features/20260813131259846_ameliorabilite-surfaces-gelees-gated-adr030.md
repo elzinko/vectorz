@@ -12,7 +12,7 @@ created: 2026-08-13
 
 # 20260813131259846 — Surfaces gelées du contrat d'améliorabilité (gated ADR-030)
 
-> **Scission de [0044](0044-mesureur-outcomes-script-append-mvp-a.md)** (recadrage
+> **Scission de [0044](done/0044-mesureur-outcomes-script-append-mvp-a.md)** (recadrage
 > 2026-08-13, décision PO « MVP mesureur nu »). 0044 livre le mesureur nu (inventaire +
 > baseline `outcomes.jsonl`, zéro dépendance de décision). Cette fiche porte le reste :
 > les **surfaces gelées** dont le transport et le mécanisme de preuve dépendent d'une
@@ -59,5 +59,5 @@ fiche. → **Cette fiche ne peut pas passer `ready` tant qu'ADR-030 n'est pas ra
   et le mécanisme de preuve externe. Sans elle, `ready` refusé.
 - Surfaces **gelées** : mesureur, ledger, miroir, script d'append, définitions de métriques —
   toute modification ultérieure = PO après panel.
-- Dépend du socle livré par [0044](0044-mesureur-outcomes-script-append-mvp-a.md) (le
+- Dépend du socle livré par [0044](done/0044-mesureur-outcomes-script-append-mvp-a.md) (le
   mesureur nu et `outcomes.jsonl` existent déjà quand cette fiche démarre).

@@ -66,7 +66,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 | Fille | Chantier | Prio |
 |---|---|---|
 | [0066](0066-tester-un-skill-avant-merge.md) | Tester un skill avant merge (golden + sabotage) — **0/23 exercés end-to-end ; 3/23 ont un test shell, mesuré 2026-08-13** | P2 |
-| [0101](0101-cabler-check-links-ship-et-ci.md) | Câbler `check-links` — **4 liens cassés, mesurés 2026-08-13** | P2 |
+| [0101](done/0101-cabler-check-links-ship-et-ci.md) | Câbler `check-links` — **4 liens cassés, mesurés 2026-08-13** | P2 |
 | [0161](0161-ezk-challenge-panel.md) | Extraire `ezk-challenge` (panel réutilisé dans 3 skills) | P2 |
 | [0113](0113-chief-judge.md) | `chief-judge` — juge de cohérence (le juge unique de la fille E) | P3 |
 
