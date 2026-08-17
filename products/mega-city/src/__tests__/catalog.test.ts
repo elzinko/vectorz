@@ -64,7 +64,7 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(agent?.id).toBe('ezk-reviewer');
     expect(agent?.competences).toEqual(['ezk-ci']);
     expect(agent?.interactions).toEqual(['clean-code/no-dead-code']);
-    expect(agent?.role).toContain('Reviewer senior');
+    expect(agent?.role).toMatch(/reviewer senior/i); // insensible à la casse : l'agent réécrit dit « reviewer senior en posture adverse »
   });
 
   it("lit les réglages d'exécution model/effort/isolation du frontmatter (fiche 0039)", () => {
