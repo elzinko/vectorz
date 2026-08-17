@@ -80,22 +80,13 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
-8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement** ; le corps est ici). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) — trois blocs **littéraux** :
+8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement**). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) : **le corps de PR est le RENDU de la fiche** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)), **pas** un résumé parallèle. Concrètement :
 
-   ```markdown
-   ## Summary
-   <!-- ≤5 lignes user-facing : ce que ça change et pourquoi. Ouvre « En clair ». -->
+   - **Recopier la fiche** dans le corps : son ouverture **« En clair »** puis ses sections (Contexte / Proposition / Critères / **Comment vérifier**). Ne **rien** réécrire à côté — si le texte manque de clarté, corriger **la fiche**, puis re-rendre.
+   - Ajouter la **provenance** (chemin `features/<id>_*.md`, legacy `<id>-*.md` ; l'id est dans la branche `feat/<id>-<slug>`) et, en bas, la **matrice « Validation »** (statut CI/tests/E2E — **seul** bloc propre à la PR ; convention ADR-0009).
+   - **Sur divergence, la fiche gagne** : re-rendre le corps depuis la fiche, jamais l'inverse. Repère ≤ ~2 000 caractères hors annexes/matrice.
 
-   ## Lien fiche
-   <!-- chemin : features/<id>_*.md (legacy `<id>-*.md`) — l'id est dans la branche feat/<id>-<slug> -->
-
-   ## Comment tester
-   <!-- commandes littérales rejouables, OU preuves agent (screenshots) pointant vers
-        scripts npm / BDD déjà existants — ne PAS dupliquer le Gherkin de la fiche.
-        Voir docs/PR_VALIDATION.md si la convention est installée (ezk-pr-pilot init). -->
-   ```
-
-   Corps ≤ ~2 000 caractères hors annexes (repère). **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** **dans la description** — pas seulement des fichiers orphelins dans le diff. Squelette mince : [`ezk-pr-pilot` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr-pilot/assets/PULL_REQUEST_TEMPLATE.thin.md) (ADR-0009 : convention pour l'écriture, skill pour la consommation).
+   **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** **dans la description** — pas des fichiers orphelins dans le diff ; la fiche étant le document, ces liens vivent dans sa section **Comment vérifier**. Gabarit du rendu : [`ezk-pr-pilot` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr-pilot/assets/PULL_REQUEST_TEMPLATE.thin.md) (nom « thin » legacy — c'est désormais le **rendu fiche + Validation** ; ADR-0009 pour la matrice, ADR-0029 pour le rendu).
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ». Le résumé de clôture suit la règle
    [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :
@@ -157,7 +148,8 @@ gate est leur **trace contractuelle** (doc du kit :
 
 Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
 **E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte **avec un
-corps relisable seul** (`## Summary` + `## Lien fiche` + `## Comment tester`) •
+corps relisable seul = rendu de la fiche** (« En clair » + sections + `## Comment vérifier`
++ provenance `features/<id>_*.md` + matrice `## Validation` — [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) ; **pas** de Summary parallèle, `## Summary` proscrit) •
 (après validation) squash-mergée en conventional commit • branche supprimée.
 
 ## Workflow git

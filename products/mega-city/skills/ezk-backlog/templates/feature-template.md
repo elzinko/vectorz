@@ -14,6 +14,11 @@ created: <YYYY-MM-DD>
 
 # <id> — <titre>
 
+**En clair.** <L'essentiel en ≤ 3 phrases, AVANT le détail : symptôme vécu → proposition en
+mots simples → effet concret pour le lecteur. Sans jargon interne. Règle
+`human-facing-lisibility` — cette fiche EST le document ; le corps de PR en sera le **rendu**
+(ADR-0029), donc écris-la pour être lue telle quelle.>
+
 ## Contexte / Problème
 
 <Ce qui ne va pas ou ce qu'on veut, et pourquoi ça compte. Pour un bug : symptôme
@@ -27,6 +32,17 @@ observé + reproduction.>
 
 - [ ] <comportement observable et vérifiable>
 - [ ] <…>
+
+## Comment vérifier
+
+<Comment un tiers constate que c'est fait : commandes littérales rejouables depuis un clone
+frais, OU preuves agent (screenshots / before-after) pointant vers des scripts npm / BDD
+**existants**. C'est ce que la PR affichera **tel quel** (rendu de la fiche + matrice
+Validation) — ne pas le réécrire côté PR. Ne pas recopier le Gherkin : orienter et lier.>
+
+```bash
+# ex. pnpm --dir <pkg> test -- <chemin pertinent>
+```
 
 ## Notes / décisions
 

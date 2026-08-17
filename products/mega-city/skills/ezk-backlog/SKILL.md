@@ -137,9 +137,18 @@ created: 2026-06-23
 ---
 ```
 
-Puis le corps libre (cf. `feature-template.md` / `templates/feature-template.md`) :
-Contexte/Problème, Proposition, Critères d'acceptation (cases à cocher), Notes.
+Puis le corps (cf. `templates/feature-template.md`) : **ouvre par « En clair »** (règle
+`human-facing-lisibility`), puis Contexte/Problème, Proposition, Critères d'acceptation
+(cases à cocher), **`## Comment vérifier`**, Notes. Le corps de PR **rendra cette fiche telle
+quelle** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)) —
+écris-la pour être lue seule.
 Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+
+> ⚠️ **Garantis « En clair » + `## Comment vérifier` sur la fiche créée, même si le
+> `feature-template.md` local du projet est antérieur à ADR-0029.** `init` **préserve** le
+> template existant d'un projet déjà initialisé (il ne le ré-écrit pas) — donc ne t'y fie pas :
+> ajoute ces deux sections à la fiche, template à jour ou non. *(Rafraîchir le template local
+> lui-même reste un chantier séparé — cf. réponse Codex PR #152.)*
 
 > **Une seule source de vérité** : le **front-matter** de chaque fiche. L'index
 > `BACKLOG.md` est **régénéré** (`regen`) — on ne l'édite jamais à la main.

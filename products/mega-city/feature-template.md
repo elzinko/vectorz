@@ -10,11 +10,19 @@ pr:
 created: 2026-06-26
 ---
 
+**En clair.** <≤ 3 phrases sans jargon : symptôme vécu → proposition simple → effet concret.
+Cette fiche EST le document ; le corps de PR en sera le rendu (ADR-0029).>
+
 ## Contexte / Problème
 
 ## Proposition
 
 ## Critères d'acceptation
 - [ ]
+
+## Comment vérifier
+
+<Commandes rejouables OU preuves agent pointant des scripts existants — ce que la PR affichera
+tel quel, ne pas réécrire côté PR.>
 
 ## Notes

@@ -85,6 +85,9 @@ created: <YYYY-MM-DD>
 
 # <id> — <titre>
 
+**En clair.** <≤ 3 phrases sans jargon : symptôme vécu → proposition simple → effet concret.
+Cette fiche EST le document ; le corps de PR en sera le rendu (ADR-0029).>
+
 ## Contexte / Problème
 
 ## Proposition
@@ -92,6 +95,11 @@ created: <YYYY-MM-DD>
 ## Critères d'acceptation
 
 - [ ]
+
+## Comment vérifier
+
+<Commandes rejouables OU preuves agent pointant des scripts existants. C'est ce que la PR
+affichera tel quel — ne pas réécrire côté PR.>
 
 ## Notes / décisions
 EOF

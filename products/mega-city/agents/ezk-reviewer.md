@@ -11,7 +11,7 @@ description: >-
   (quota GitHub épuisé, repo privé). Compose /code-review, /security-review, /simplify, et
   valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas :
   il juge, motive, et bloque.
-model: opus
+model: claude-opus-4-8
 model_spare: sonnet
 effort: high
 color: red
