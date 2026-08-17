@@ -5,9 +5,9 @@ type: feature
 priority: P1
 product: mega-city
 labels: [enabler, lisibilite]
-status: todo
+status: shipped
 ready: 2026-08-14
-pr:
+pr: local (main f196fe0)
 created: 2026-08-11
 ---
 
