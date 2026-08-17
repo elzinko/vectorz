@@ -63,6 +63,31 @@ pas une nouvelle règle. Commencer par **la description de PR** (le cas le plus 
 - [ ] **[article]** rédiger un article « Templates de réponse adaptés aux LLM » (structure ouverte, barre
       newcomer, renfort au bon moment) — via `ezk-article`, persona = dev/PM qui arrive sur un projet
 
+## Comment vérifier
+
+Depuis `products/mega-city` :
+
+```bash
+pnpm test -- src/__tests__/check-pr-body.test.ts src/__tests__/human-facing-lisibility-contract.test.ts
+```
+
+- le **template de fiche** porte l'ouverture « Si tu arrives frais » + une section `## Glossaire`
+  conditionnelle (`skills/ezk-backlog/templates/feature-template.md`) ;
+- `check-pr-body.sh` (et son fallback inline) **rejette** un corps de PR qui rend ces blocs en
+  laissant leurs placeholders non remplis (test de comportement) ;
+- la règle `human-facing-lisibility` **référence** la lentille « nouveau venu »
+  (`docs/newcomer-readability-lens.md`) qui opérationnalise la mesure 3/3.
+
+## Livré (2026-08-17, re-cadré sous ADR-0029)
+
+Le corps de PR étant devenu le **rendu de la fiche** (ADR-0029, #152), l'onboarding pour un lecteur
+neuf vit dans le **template de fiche** — pas dans un template de PR parallèle (AC1 d'origine, rendu
+obsolète). Livré : ouverture « Si tu arrives frais » + `## Glossaire` conditionnel dans le template,
+rendus par `ezk-sprint`/`ezk-pr-pilot`, gardés déterministiquement par `check-pr-body` (placeholders
+d'onboarding non remplis rejetés) **et** par la lentille reviewer « nouveau venu »
+(`docs/newcomer-readability-lens.md`) qui opérationnalise la mesure 3/3 (AC3). **Déportés** en fiches
+filles : **AC4** (étude prior-art BMAD), **AC5** (article `ezk-article`).
+
 ## Notes
 
 - **N'est pas 0079** (shippée) : 0079 grave la *règle* + la *voix* + le contrat des 3 blocs. Ici on vise

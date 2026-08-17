@@ -10,6 +10,8 @@
 
 **En clair.** <l'ouverture de la fiche, recopiée telle quelle>
 
+**Si tu arrives frais.** <si la fiche la porte : le vocabulaire projet minimal pour lire cette fiche sans contexte ; sinon retire cette ligne>
+
 ## Contexte / Problème
 
 <recopié de la fiche>
@@ -26,6 +28,10 @@
 
 <recopié de la fiche : commandes rejouables / preuves agent pointant des scripts existants.
 Les liens before/after d'UI vivent ICI (donc dans la fiche), pas inventés côté PR.>
+
+## Glossaire
+
+<si la fiche la porte : une entrée par terme (obligatoire si la fiche emploie du jargon interne) ; sinon retire toute la section>
 
 <!-- ▲▲▲ FIN DU RENDU DE LA FICHE ▲▲▲ -->
 

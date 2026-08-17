@@ -59,11 +59,13 @@ fi
 # 5. Template NON rendu (Codex P1 rounds 2-4 + P2 provenance) : présence des sections ≠ contenu réel.
 #    Un template dont on n'a remplacé QUE le chemin (ou tout SAUF le En clair) garde des placeholders
 #    de CONTENU. On les couvre TOUS : ouverture (`<…ouverture de la fiche, recopiée…>`), sections
-#    (`<recopié de la fiche>`), H1 (`# <id> — <titre>`, `<titre>`) et la provenance placeholder
-#    `<id>_<slug>` (Codex #152 P2). Un vrai rendu les a remplacés.
-if grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié|<id>_<slug>' <<<"$body" \
+#    (`<recopié de la fiche>`), H1 (`# <id> — <titre>`, `<titre>`), la provenance placeholder
+#    `<id>_<slug>` (Codex #152 P2) ET les placeholders d'onboarding du template de fiche (fiche 0191)
+#    — l'ouverture « Si tu arrives frais » et la section conditionnelle « ## Glossaire » — laissés
+#    non remplis. Un vrai rendu les a remplacés (ou a retiré la section « ## Glossaire » si sans objet).
+if grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié|<id>_<slug>|vocabulaire projet minimal pour lire|obligatoire si la fiche emploie du jargon interne' <<<"$body" \
    || grep -qE '^# <id>' <<<"$body"; then
-  missing+=('corps = squelette de template non rendu (placeholders de contenu présents) — recopier la fiche')
+  missing+=('corps = squelette de template non rendu (placeholders présents, dont onboarding « Si tu arrives frais » / « ## Glossaire ») — recopier la fiche, remplir ou retirer')
 fi
 
 if ((${#missing[@]})); then

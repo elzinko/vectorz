@@ -51,6 +51,24 @@ const archiveHandoffTemplate = join(
   'handoff-template.md',
 );
 
+const featureTemplate = join(
+  megaCityDir,
+  'skills',
+  'ezk-backlog',
+  'templates',
+  'feature-template.md',
+);
+
+const newcomerLens = join(megaCityDir, 'docs', 'newcomer-readability-lens.md');
+
+const checkPrBodyScript = join(
+  megaCityDir,
+  'skills',
+  'ezk-pr-pilot',
+  'scripts',
+  'check-pr-body.sh',
+);
+
 function read(path: string): string {
   return readFileSync(path, 'utf8');
 }
@@ -145,5 +163,45 @@ describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => 
     expect(body).toMatch(/éviter Opus 5|jamais.*Opus 5|pas.*Opus 5/i);
     // L'alias nu `opus` ne doit plus être le défaut recommandé comme model:
     expect(body).not.toMatch(/\|\s*`opus`\s*\|/);
+  });
+
+  it("template de fiche porte l'onboarding « Si tu arrives frais » + « ## Glossaire » conditionnel (fiche 0191)", () => {
+    expect(existsSync(featureTemplate), 'feature-template.md absent').toBe(true);
+    const body = read(featureTemplate);
+    expect(body).toMatch(/Si tu arrives frais/);
+    expect(body).toMatch(/^## Glossaire/m);
+    // Le placeholder d'onboarding porte l'ancre que check-pr-body rejette s'il reste non rempli.
+    expect(body).toMatch(/vocabulaire projet minimal pour lire/);
+  });
+
+  it('la règle référence la lentille « nouveau venu » qui opérationnalise le 3/3 (fiche 0191)', () => {
+    expect(existsSync(newcomerLens), 'newcomer-readability-lens.md absent').toBe(true);
+    expect(read(lisibilityRule)).toMatch(/newcomer-readability-lens/);
+    const lens = read(newcomerLens);
+    expect(lens).toMatch(/En clair/); // la lentille est elle-même un artefact humain
+    expect(lens).toMatch(/3\/3/);
+    expect(lens).toMatch(/Glossaire/);
+    expect(lens).toMatch(/NO-GO/);
+  });
+
+  it("étape PR (ezk-sprint) + rendu (ezk-pr-pilot) exigent l'onboarding quand la fiche le porte (fiche 0191)", () => {
+    expect(read(sprintSkill)).toMatch(/Si tu arrives frais/);
+    const pilot = read(prPilotSkill);
+    expect(pilot).toMatch(/Si tu arrives frais/);
+    expect(pilot).toMatch(/## Glossaire/);
+    // La garde check-pr-body (script + fallback inline) couvre les placeholders d'onboarding.
+    expect(pilot).toMatch(/obligatoire si la fiche emploie du jargon interne/);
+  });
+
+  it("la garde onboarding est portée à l'identique par le script ET le fallback inline (0191, revue P2)", () => {
+    // Les deux copies de check-pr-body (script exécutable + bloc inline copy-mode dans le SKILL,
+    // jamais exécuté) peuvent diverger en silence. Ce contrat exige que chacune porte les DEUX
+    // ancres d'onboarding — un dev qui édite l'une sans l'autre fait rougir ce test.
+    const scriptSrc = read(checkPrBodyScript);
+    const pilotSrc = read(prPilotSkill);
+    for (const src of [scriptSrc, pilotSrc]) {
+      expect(src).toMatch(/vocabulaire projet minimal pour lire/);
+      expect(src).toMatch(/obligatoire si la fiche emploie du jargon interne/);
+    }
   });
 });

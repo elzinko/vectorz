@@ -48,3 +48,15 @@ compris » → [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le
 fiche est le document, la PR le rend). Measure (removability): 0 « pas compris » claims from the
 PO on a human-facing artefact for 5 consecutive sprints; and on the next 3 open PRs, a third
 party reading **only** the description reformulates the need in one sentence (3/3).
+
+### Lentille « nouveau venu » — opérationnalise la mesure 3/3 (fiche 0191)
+
+La mesure ci-dessus (un tiers reformule le besoin en une phrase, 3/3) est un **jugement
+sémantique** qu'un contrôle déterministe ne peut pas rendre. `ezk-reviewer` l'applique via la
+lentille [`newcomer-readability-lens`](../../docs/newcomer-readability-lens.md) : lire le corps
+rendu **seul** et reformuler le besoin en une phrase ; **NO-GO** si un terme interne non défini
+(hors `## Glossaire`) ou l'absence de vocabulaire pour un lecteur neuf (ouverture « Si tu arrives
+frais ») l'en empêche. La part mécanisable — placeholders d'onboarding laissés non remplis dans le
+rendu — est gardée par `check-pr-body` ; la lentille couvre l'opacité qu'un script ne voit pas. Le
+template de fiche porte les deux blocs (`skills/ezk-backlog/templates/feature-template.md`), la PR
+les **rend** quand la fiche les a.

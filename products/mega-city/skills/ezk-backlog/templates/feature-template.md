@@ -19,6 +19,10 @@ mots simples → effet concret pour le lecteur. Sans jargon interne. Règle
 `human-facing-lisibility` — cette fiche EST le document ; le corps de PR en sera le **rendu**
 (ADR-0029), donc écris-la pour être lue telle quelle.>
 
+**Si tu arrives frais.** <1–2 lignes : le vocabulaire projet minimal pour lire cette fiche sans
+contexte — ce qu'est le composant/produit concerné et le(s) terme(s)-clé(s). Retire cette ligne si
+la fiche n'introduit aucun terme spécifique.>
+
 ## Contexte / Problème
 
 <Ce qui ne va pas ou ce qu'on veut, et pourquoi ça compte. Pour un bug : symptôme
@@ -43,6 +47,14 @@ Validation) — ne pas le réécrire côté PR. Ne pas recopier le Gherkin : ori
 ```bash
 # ex. pnpm --dir <pkg> test -- <chemin pertinent>
 ```
+
+## Glossaire
+
+<CONDITIONNEL : obligatoire si la fiche emploie du jargon interne, un sigle ou un terme inventé
+(règle `human-facing-lisibility` : le jargon ne porte jamais le sens hors glossaire). Retire toute
+la section si la fiche n'emploie aucun jargon. Une entrée par terme, définie une fois.>
+
+- `<terme>` — <définition en clair, une phrase>
 
 ## Notes / décisions
 

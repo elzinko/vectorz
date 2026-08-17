@@ -88,7 +88,7 @@ toucher le template) :
 
 Le corps de PR est le **rendu de la fiche** (source unique `features/<id>_*.md`,
 [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)) : on **recopie la
-fiche** (En clair + sections + Comment vérifier), puis on appende la matrice **Validation**
+fiche** (En clair [+ **« Si tu arrives frais »** si présent] + sections + Comment vérifier [+ **`## Glossaire`** si présent]), puis on appende la matrice **Validation**
 (seul bloc propre à la PR). En mode copy (cap), l'asset est souvent absent — **utiliser le bloc
 ci-dessous tel quel** pour écrire `.github/PULL_REQUEST_TEMPLATE.md`.
 
@@ -102,6 +102,8 @@ ci-dessous tel quel** pour écrire `.github/PULL_REQUEST_TEMPLATE.md`.
 # <id> — <titre>
 
 **En clair.** <ouverture de la fiche, recopiée>
+
+**Si tu arrives frais.** <si la fiche la porte : le vocabulaire projet minimal pour lire cette fiche sans contexte ; sinon retire cette ligne>
 
 ## Contexte / Problème
 
@@ -118,6 +120,10 @@ ci-dessous tel quel** pour écrire `.github/PULL_REQUEST_TEMPLATE.md`.
 ## Comment vérifier
 
 <recopié de la fiche : commandes rejouables / preuves agent ; liens before/after d'UI ICI>
+
+## Glossaire
+
+<si la fiche la porte : une entrée par terme (obligatoire si la fiche emploie du jargon interne) ; sinon retire toute la section>
 
 <!-- ▲ Fin du rendu de la fiche ▲ -->
 
@@ -164,7 +170,7 @@ grep -qE '^## Validation' <<<"$body" || missing+=('## Validation')
 if [[ "$prov" == features/* ]]; then   # rendu de FICHE → sections narratives (ADR → Validation seule)
   for h in '## Contexte' '## Proposition' '## Critères'; do grep -qF "$h" <<<"$body" || missing+=("section fiche $h…"); done
 fi
-{ grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié|<id>_<slug>' <<<"$body" || grep -qE '^# <id>' <<<"$body"; } && missing+=('template non rendu (placeholders contenu)')
+{ grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié|<id>_<slug>|vocabulaire projet minimal pour lire|obligatoire si la fiche emploie du jargon interne' <<<"$body" || grep -qE '^# <id>' <<<"$body"; } && missing+=('template non rendu (placeholders contenu, dont onboarding 0191)')
 ((${#missing[@]})) && { printf 'PR body incomplet (ADR-0029) — manque: %s\n' "${missing[*]}" >&2; exit 1; }
 echo "OK — En clair + provenance + sections + Comment vérifier + Validation présents"
 ```

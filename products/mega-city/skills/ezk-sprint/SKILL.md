@@ -82,7 +82,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
 8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement**). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) : **le corps de PR est le RENDU de la fiche** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)), **pas** un résumé parallèle. Concrètement :
 
-   - **Recopier la fiche** dans le corps : son ouverture **« En clair »** puis ses sections (Contexte / Proposition / Critères / **Comment vérifier**). Ne **rien** réécrire à côté — si le texte manque de clarté, corriger **la fiche**, puis re-rendre.
+   - **Recopier la fiche** dans le corps : son ouverture **« En clair »** (+ **« Si tu arrives frais »** si la fiche la porte — le vocabulaire projet pour un lecteur neuf) puis ses sections (Contexte / Proposition / Critères / **Comment vérifier**, et **`## Glossaire`** si la fiche en porte un). Ne **rien** réécrire à côté — si le texte manque de clarté, corriger **la fiche**, puis re-rendre.
    - Ajouter la **provenance** (chemin `features/<id>_*.md`, legacy `<id>-*.md` ; l'id est dans la branche `feat/<id>-<slug>`) et, en bas, la **matrice « Validation »** (statut CI/tests/E2E — **seul** bloc propre à la PR ; convention ADR-0009).
    - **Sur divergence, la fiche gagne** : re-rendre le corps depuis la fiche, jamais l'inverse. Repère ≤ ~2 000 caractères hors annexes/matrice.
 
