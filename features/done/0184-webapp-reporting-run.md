@@ -4,9 +4,9 @@ title: Webapp de reporting de run — features livrées façon PR + preview/dém
 type: feature
 priority: P2
 product: vectorz
-status: todo
+status: shipped
 ready: 2026-08-17
-pr:
+pr: local (main 51d8bf0)
 created: 2026-08-08
 ---
 

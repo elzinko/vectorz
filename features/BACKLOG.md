@@ -130,6 +130,7 @@
 | 0152 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0162 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0167 | ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules) | feature | P2 |  | mega-city | ✅ shipped | #21 |
+| 0184 | Webapp de reporting de run — features livrées façon PR + preview/démo local + reste-à-tester | feature | P2 |  | vectorz | ✅ shipped | local (main 51d8bf0) |
 | 0190 | composes — tier « delegates: » (composition optionnelle, jamais warnée) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 |  | mega-city | 🔴 todo |  |
 | 20260816140607355 | Compteurs & table skills/README générés (câbler /ezk-help, fin de la dérive) | feature | P2 | 20260816131703334 | mega-city | 🔴 todo |  |
@@ -209,7 +210,6 @@
 | 0178 | ezk-checks — recette manuelle déclenchable (Playwright → features/checks/) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0179 | Incubation de skills en rétro — opt-in sprint + mesure (pas un jeu formel) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0180 | Fiches datées — id AAAAMMDDHHMMSSmmm (17 ch., ms, UTC) à la capture, fin de max+1 | feature | P2 |  | vectorz | 💡 idea |  |
-| 0184 | Webapp de reporting de run — features livrées façon PR + preview/démo local + reste-à-tester | feature | P2 |  | vectorz | 💡 idea |  |
 | 0186 | Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0188 | ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0189 | ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable) | bug | P2 |  | mega-city | 💡 idea |  |
@@ -240,4 +240,4 @@
 | 20260812100258610 | testbed dogfood LLM headless — rejouer la chaîne méthode→journal→Moniteur sans humain (nightly) | feature | P3 |  | mega-city | 💡 idea |  |
 | 20260813122619707 | Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu) | bug | P3 |  | mega-city | 💡 idea |  |
 
-> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0044, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0101, 0103, 0104, 0105, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0149, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182, 0183, 0185, 0191, 20260813170548417, 20260813200137369, 20260816131704335.
+> Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0044, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0101, 0103, 0104, 0105, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0149, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182, 0183, 0184, 0185, 0191, 20260813170548417, 20260813200137369, 20260816131704335.
