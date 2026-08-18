@@ -4,8 +4,8 @@ title: Pack de review markdown-first — artefact de restitution dans le code (S
 type: feature
 priority: P1
 product: mega-city
-status: idea
-ready:
+status: todo
+ready: 2026-08-17
 pr:
 created: 2026-08-08
 ---
@@ -70,20 +70,36 @@ review = manifeste agrégateur (SRP). Ne pas rouvrir 0093 (BacklogStore hexagona
 
 ## Critères d'acceptation
 
-- [ ] Contrat du pack documenté (`method-review@0.1` : chemins + FM + sections),
-      référencé depuis ezk-sprint / ezk-pr-pilot / `docs/PR_VALIDATION.md`
-- [ ] Un sprint réel produit un `features/reviews/<id>/REVIEW.md` committé sur la
+- [x] Contrat du pack documenté (`method-review@0.1` : chemins + FM + sections),
+      référencé depuis `docs/PR_VALIDATION.md` ✅ — *pointeurs `ezk-sprint`/`ezk-pr-pilot` = follow-up léger (cf. Notes 2026-08-17 build)*
+- [x] Un sprint réel produit un `features/reviews/<id>/REVIEW.md` committé sur la
       branche feature (dogfood possible sur cobaye 0041, sans attendre 0038)
-- [ ] Le pack porte : livré / matrice validation / rendus / à-tester (lien 0178) /
+- [x] Le pack porte : livré / matrice validation / rendus / à-tester (lien 0178) /
       provisioning — qualité lue depuis `.quality/` si présent
-- [ ] Agnosticisme prouvé par **≥2 rendus** : markdown seul (diff) **+** un 2ᵉ
+- [x] Agnosticisme prouvé par **≥2 rendus** : markdown seul (diff) **+** un 2ᵉ
       (commentaire GitHub **ou** webapp 0184)
-- [ ] Aucun rendu n'est SoT ; aucun compte externe **obligatoire** pour lire le pack
-- [ ] 0058 reclassé « adaptateur » (note dans la fiche + cross-link)
-- [ ] Gate locale verte (typecheck/lint/tests)
+- [x] Aucun rendu n'est SoT ; aucun compte externe **obligatoire** pour lire le pack
+- [x] 0058 reclassé « adaptateur » (note dans la fiche + cross-link)
+- [x] Gate locale verte (typecheck/lint/tests)
 
 ## Notes / décisions
 
+- **2026-08-17** — **Tampon `ready`** (idea→todo). Auto-groom `ezk-product-builder`
+  (build, `--check-ready false` sur poussée explicite du PO à l'autonomie ;
+  concurrence indépendante **ezk-pm = GO** — DoR atteinte : 7 AC testables, MVP
+  borné markdown-only + 1 rendu GitHub, faisable, non-goals explicites). Tête **P1**
+  curatée **PLAN NEXT #17** (précond. « après 0041 » satisfaite, #113). Build confié à
+  `ezk-sprint`. ADR-036 à graver au build (panel adverse).
+- **2026-08-17 (build)** — Livré par `ezk-sprint` (branche `feat/0183-pack-review-markdown-first`).
+  ADR gravé = **ADR-038** (« reporting vs monitoring » — 036/037 étaient déjà pris). Cœur
+  `products/mega-city/src/review/` : contrat `method-review@0.1`, `render` pur (7 sections,
+  agrège par référence), ports `ReviewSource`/`ReviewEmitter`, émetteurs `markdown-file`
+  (toujours actif) + `github-comment` (2ᵉ rendu, zéro IO/`gh`), CLI `review:emit`, template.
+  Dogfood : `features/reviews/0183-pack-review-markdown-first/REVIEW.md`. Revue **ezk-reviewer =
+  GO** ; **P1 corrigé** = garde de confinement de chemin (anti path-traversal) + test négatif.
+  Gate : typecheck 0 · vitest 422 · `test:scripts` 11 suites (0 lien cassé). **Follow-up léger** :
+  référencer le contrat depuis les `SKILL.md` `ezk-sprint`/`ezk-pr-pilot` (AC1 : `PR_VALIDATION.md`
+  fait ; pointeurs skills déportés pour ne pas élargir le sprint).
 - **2026-08-08** — Initiative « reporting méthode » (PO). Arbitrage
   ezk-pm + ezk-architect (session 2026-08-08) : **2 fiches sans épic**
   (0183 keystone + 0184 webapp) ; promouvoir en épic au 2ᵉ émetteur VCS (YAGNI).

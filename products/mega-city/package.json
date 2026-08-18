@@ -17,6 +17,7 @@
     "supervision:analyze": "tsx bin/supervision-analyze.ts",
     "supervision:abandon": "tsx bin/supervision-abandon.ts",
     "supervision:registry-add": "tsx bin/supervision-registry-add.ts",
+    "review:emit": "tsx bin/review-emit.ts",
     "plan:order": "tsx bin/plan-order.ts",
     "plan:head": "tsx bin/plan-head.ts",
     "composes:graph": "tsx bin/regen-composes-graph.ts"

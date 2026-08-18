@@ -5,6 +5,12 @@
 > Installée par `ezk-pr-pilot init` — **adapter la matrice aux modalités qui
 > existent vraiment dans ce repo** (supprimer les lignes sans objet).
 
+> **Compose le pack de review markdown-first** (fiche 0183, contrat
+> `method-review@0.1`, [ADR-038](adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md)) :
+> la section « Matrice de validation » de tout `REVIEW.md`
+> (`features/reviews/<id>-slug/REVIEW.md`) **référence** cette matrice — elle ne
+> la recopie pas. Implémentation : `products/mega-city/src/review/`.
+
 **Le principe : une PR doit être testable par quelqu'un qui n'a pas le contexte.**
 Pas « testé ✅ », mais *quoi* a été testé, *comment* le rejouer, *quoi* reste,
 et *quel signal observable* dit pass/fail.

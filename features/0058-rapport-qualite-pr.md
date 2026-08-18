@@ -51,6 +51,15 @@ existantes (template PR ezk-sprint, `report` d'ezk-pr-pilot) — ne réinvente p
 
 ## Notes / décisions
 
+- **2026-08-17 — reclassée « adaptateur » (pas SoT), confirmée au build de 0183.**
+  Le contrat `method-review@0.1` ([0183](0183-pack-review-markdown-first.md),
+  [ADR-038](../docs/adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md))
+  grave `features/reviews/<id>/REVIEW.md` comme SoT ; l'implémentation de
+  référence vit dans `products/mega-city/src/review/` (`emitters/github-comment.ts`
+  projette déjà un `ReviewPack` en corps de commentaire — la même famille que ce
+  que 0058 propose en version « riche »). Cette fiche reste l'**émetteur GitHub
+  riche** (métriques + delta + captures) à construire **au-dessus** du pack, pas
+  une source concurrente.
 - **Séquencement (proposition PO à confirmer au plan)** : à tirer **avant** le gate 0053 —
   bloquer des PRs avant que les devs **voient** les métriques serait le mauvais ordre d'adoption
   (visibilité avant punition).
