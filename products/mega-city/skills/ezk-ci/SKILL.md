@@ -33,6 +33,7 @@ feedback rapide (30-60 s avec cache, vs 3-8 min en cloud).
 | `list` | `act -l` — liste les jobs (si « Could not parse » → ajoute `workflow_dispatch:`) |
 | `dryrun` | `act --dryrun` — parse sans exécuter (rapide, sûr) |
 | `run [job]` (**défaut** pour une demande en langage naturel) | `act workflow_dispatch -j <job>` (un job ciblé, à privilégier) ou la pipeline complète, après l'arbre de décision |
+| `native [branche]` | **Mode dégradé SANS Docker** : rejoue les commandes réelles du job de validation (lint + tests + build) directement sur l'hôte. Quand l'image runner ne se pull pas / quota Actions épuisé. Pas un substitut release. Voir section dédiée. |
 | `bootstrap` | Pose le setup local minimal (`.actrc`, `.secrets.example` / `.vars.example`) puis `act -l` (cas c) |
 | `conso [repo]` | Restitue la **conso Actions** : minutes du mois (billing du compte), runs récents et top workflows/jobs coûteux |
 | `frugal [repo]` | Audit **parcimonie** des workflows : spending limit, déclencheurs, `concurrency`, gates du lourd — propose des diffs concrets |
@@ -69,6 +70,36 @@ La variante légère casse `actions/setup-node@v6` avec un `command not found`
 cryptique. **Stratégie** : défaut slim (couvre ~80 % des cas), opt-in full
 quand on a besoin des jobs Build/Package. Pré-télécharge la full avec
 `act --pull` ou une cible dédiée si nécessaire.
+
+### Mode dégradé — `native`, sans Docker du tout (l'échappatoire)
+
+L'image full (~6 GB) **ne se pull pas toujours** : réseau instable → `unexpected
+EOF` en plein download (Docker reprend les couches finies mais recommence celle qui
+a été coupée) ; **Apple Silicon** → sans `--platform linux/amd64` il pull l'arm64,
+inutilisable par `act`. Résultat vécu (muti, 2026-08-13) : 3 pulls ratés, `act`
+totalement bloqué alors qu'il fallait juste valider 5 features.
+
+Or les étapes qui **valident réellement** une feature — lint, tests, build — sont
+**OS-agnostiques** et n'ont pas besoin du conteneur. D'où le **mode dégradé assumé** :
+rejouer les commandes réelles du job de validation **directement sur l'hôte**.
+
+- **Quand** : l'image runner ne se télécharge pas, OU quota Actions épuisé, OU on veut
+  juste un garde-fou de 10 s avant un merge. **Pas** pour un release (voir plus bas).
+- **Comment** : lis le job de validation du workflow (souvent `ci.yml > build`) et
+  rejoue ses steps `run:` sur l'hôte, dans l'ordre, verdict vert/rouge **par étape**.
+  Saute ce qui est spécifique au runner : `actions/checkout`, `setup-node`,
+  `actions/cache`, `apt-get install` (deps système déjà là en local), `upload-artifact`.
+- **Implémentation de référence (muti)** : sous-commande `pnpm ci:local native [branche]`
+  dans `scripts/ci-local.sh` — garde-fou working-tree, checkout+restore de branche
+  optionnel, `--no-install`, verdict par étape (fiche muti 0032). La séquence est
+  **hardcodée** en miroir du job `build` (commentaire de synchro vers `ci.yml`) : parser
+  le YAML serait fragile (env, actions, substitutions), et c'est cohérent avec le style
+  du script (les invocations `act` y sont déjà codées par workflow).
+
+> **Frontière honnête** : `native` ne reproduit PAS l'isolation d'env conteneur, l'OS
+> runner exact, l'étape `apt`/deps système, `setup-node`, ni les artefacts. C'est un
+> **garde-fou avant merge**, pas un substitut à la CI cloud pour un release. À dire à
+> l'utilisateur à chaque fois qu'on retombe dessus.
 
 ### `.actrc` de référence (à la racine du repo)
 
