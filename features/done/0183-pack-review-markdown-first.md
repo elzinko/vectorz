@@ -4,9 +4,9 @@ title: Pack de review markdown-first — artefact de restitution dans le code (S
 type: feature
 priority: P1
 product: mega-city
-status: todo
+status: shipped
 ready: 2026-08-17
-pr:
+pr: local (main c45102b)
 created: 2026-08-08
 ---
 
