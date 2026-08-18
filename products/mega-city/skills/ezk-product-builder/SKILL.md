@@ -1,8 +1,8 @@
 ---
 name: ezk-product-builder
-composes: [ezk-backlog, ezk-sprint]
+composes: [ezk-backlog, ezk-sprint, ezk-pr-pilot]
 composes-external: [product-brainstorming, architecture]
-argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false]"
+argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -37,7 +37,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-builder [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false]`
+`/ezk-product-builder [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -46,7 +46,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 | `once` | Construit **une seule** feature (un sprint) puis s'arrête au checkpoint inter-sprint |
 | `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
 
-`--tokens` règle la **vigilance tokens** ; `--checkpoints` règle **quand tu t'arrêtes pour demander** ; `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming (cf. plus bas). Défauts : `lean`, `ask`, `true`.
+`--tokens` règle la **vigilance tokens** ; `--checkpoints` règle **quand tu t'arrêtes pour demander** ; `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming ; `--delivery` règle le **grain de livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas). Défauts : `lean`, `ask`, `true`, `per-feature`.
 
 ## La boucle
 
@@ -74,6 +74,14 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
    accord. En `--checkpoints auto` : voir la section « Mode checkpoints » — tu tiens
    l'**unique** checkpoint de la feature (`ezk-sprint` te remonte sa clôture au lieu de
    re-demander « on continue ? » à l'humain).
+   **Grain de livraison (`--delivery`, cf. § dédié)** : en `per-feature` (défaut) la PR du
+   sprint est livrée **au fil de l'eau** — son squash-merge suit son cours normal (statu quo
+   strict : c'est `ezk-sprint` qui merge, **pas toi**). En `per-epic`, tu **ne
+   shippes pas** isolément une fiche appartenant à un lot cohérent (même `epic:`, ou lot
+   désigné en opt-in) : tu **laisses sa PR ouverte**, poursuis le lot, puis, le lot complet,
+   **confies la livraison coordonnée à `ezk-pr-pilot`** (`plan` → branche d'intégration = test
+   groupé → `ship` en cascade). Tu **décides** le grain ; `ezk-pr-pilot` **exécute** le git
+   (frontière ADR-0001).
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.
@@ -180,6 +188,38 @@ délégable] et (b) *ça vaut le coup* [humain]. `--check-ready false` = le PO a
 sélectionnant le lot ; la machine ne fait que (a), avec `ezk-pm` comme second regard. **La
 sélection du lot reste à l'humain — la machine ne décide jamais *quoi* construire.**
 
+## Mode livraison — configurable (`--delivery`)
+
+Règle **comment un lot cohérent de fiches est livré** (mergé) : au fil de l'eau, ou de façon
+coordonnée. Adossé à [ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)
+(version réduite, panel adverse passé). Défaut : `per-feature`. **Le flag DÉCIDE — il n'exécute
+aucun git** (frontière ADR-0001 : c'est `ezk-pr-pilot` qui range). **Sépare le grain de *livraison*
+du grain de *revue*** : la **PR reste l'unité de revue/merge** dans les deux modes.
+
+- **`per-feature` (défaut)** — **statu quo strict** : chaque sprint ouvre **1 PR** et la
+  **squash-merge** au checkpoint inter-sprint, au fil de l'eau. Invariant `ezk-sprint`
+  (« 1 feature = 1 branche = 1 PR = 1 squash-merge ») **intact**.
+- **`per-epic`** — livraison **coordonnée** d'un lot cohérent, **N PR conservées** (revue, CI
+  et revert **atomiques** par feature préservés — **pas** de PR obèse, **pas** de `rebase-merge`,
+  **squash reste la seule politique**). Tu **ne shippes pas** au fil de l'eau les fiches du lot :
+  tu laisses leurs PR ouvertes, puis, le lot complet, tu **confies** à **`ezk-pr-pilot`** son
+  train de merge existant : `plan` (ordre) → **branche d'intégration** = tester le lot en **une
+  passe** (jetable, conditionnée `merge-tree` propre) → `ship` en **cascade** (squash-merge PR
+  par PR, CI re-verte, `ezk-backlog ship` par fiche).
+
+**Déclencheur = `epic:` auto + opt-in explicite** (arbitrages 0065 tranchés le 2026-08-13) :
+les fiches partageant un même `epic:` (ADR-0017) se coordonnent **automatiquement** en `per-epic` ;
+un **opt-in explicite** permet de désigner un lot cohérent **hors épic** (ex. `ADR + son article`)
+en nommant les fiches au checkpoint. **Pas de seuil de N**, **pas de mode `batched`/plafond** —
+ils regrouperaient des fiches indépendantes, soit la « PR obèse » que 0065 refuse.
+
+> **Ce que `per-epic` n'apporte PAS.** Mesuré post-0180 (session 4-fiches du 2026-08-17 : ships
+> indépendants séquentiels, **zéro rebase en cascade** observé ; frictions vives = liens cassés,
+> **fonction du contenu** — déjà gatées par `check-links`/0101 —, pas du nombre de merges). Donc
+> `per-epic` **ne réduit pas** le coût par-merge : sa valeur est la **coordination** — tester un
+> lot cohérent en une passe et le livrer dans l'ordre (ADR-037 : « si négligeable, `per-epic` se
+> réduit au test groupé + `ship` ordonné »).
+
 ## Auto-groom vers la DoR — la boucle autonome (ADR-0028)
 
 Quand la fiche de tête n'est **pas** `ready`, tu la **groomes toi-même** au lieu de t'arrêter —
@@ -223,6 +263,7 @@ jamais.
 | `engineering:architecture` | trancher une structure non triviale | si l'archi le justifie (sinon laisse `ezk-sprint`/`ezk-architect`) |
 | **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--checkpoints auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
 | **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
+| **`ezk-pr-pilot`** | le **train de merge** : test groupé + `ship` en cascade d'un lot | en `--delivery per-epic`, tu lui **confies** la livraison coordonnée (il exécute le git ; toi tu décides le grain) |
 | `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |
 
 Tu ne **ranges** rien toi-même (git, fichiers) : ce sont les compétences composées qui rangent

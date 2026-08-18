@@ -6,7 +6,7 @@
   - [ADR-029](ADR-029-emancipation-bmad-politique-archivage.md) et son extension « la fiche est le document, la PR en est le rendu » (fiche 0191) — **même posture SoT-in-repo / rendu-projeté**, transposée à l'artefact de review.
   - [ADR-032](ADR-032-emission-adaptateur-separable.md) — une carte d'émission **enregistre**, n'**applique** rien : ici l'émetteur **écrit un manifeste**, il ne pousse aucune PR de force.
   - [ADR-033](ADR-033-port-metrique-qualite-produit.md) — les métriques qualité sont **lues** via un port, jamais réécrites : le pack **agrège par référence**, jamais par copie.
-- **Fiches** : [0183](../../features/0183-pack-review-markdown-first.md) (keystone), 0184 (webapp — **hors MVP**), 0058 (reclassé **adaptateur** du pack), 0178 (`features/checks/`, composé par référence).
+- **Fiches** : [0183](../../features/done/0183-pack-review-markdown-first.md) (keystone), 0184 (webapp — **hors MVP**), 0058 (reclassé **adaptateur** du pack), 0178 (`features/checks/`, composé par référence).
 - **Déciders** : PO (Thomas) ; passe adverse lean intégrée (ci-dessous, pas de fan-out panel).
 
 ## Contexte

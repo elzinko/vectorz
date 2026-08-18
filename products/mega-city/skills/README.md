@@ -50,6 +50,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 ```mermaid
 flowchart LR
     ezk-product-builder --> ezk-backlog
+    ezk-product-builder --> ezk-pr-pilot
     ezk-product-builder --> ezk-sprint
     ezk-sprint --> ezk-backlog
     ezk-sprint --> ezk-ci

@@ -4,7 +4,7 @@ title: Sprint composition — un sprint peut porter un lot cohérent de fiches ;
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: in-progress
 ready: 2026-08-13
 pr:
 created: 2026-07-16
@@ -107,13 +107,40 @@ mis à jour.
 
 Cadre posé par [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) **révisé (version réduite, post-panel)** :
 
-- [ ] `ezk-product-builder` expose `--delivery=per-feature|per-epic` ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression). Le flag **décide**, il n'exécute **aucun** git (frontière ADR-0001).
-- [ ] `per-epic` = **lot coordonné** : les fiches d'un même `epic:` gardent **N PR** (revue / CI / revert atomiques), livrées via le **train de merge** d'`ezk-pr-pilot` — `plan` (ordre) → **branche d'intégration = tester en une passe** → `ship` en **cascade** (squash-merge PR par PR, CI re-verte)
-- [ ] **Aucun mode agrégé** : pas de `rebase-merge`, pas de PR unique — **squash reste la seule politique** de merge (invariant `ezk-sprint` intact, `check-pr-body.sh` inchangé)
-- [ ] Déclencheur = **`epic:` auto + opt-in explicite** (pas de seuil) — *arbitrages tranchés le 2026-08-13* ; `batched` / plafond **abandonnés** (plus de PR agrégée à borner)
-- [ ] **Prérequis** : re-chiffrer la friction par-merge **résiduelle post-0180** (rebases de `main` en cascade réellement observés) — si négligeable, `per-epic` se réduit au test groupé + `ship` ordonné
-- [ ] Panel adverse **passé** ✅ (2026-08-13) → ADR-037 **Accepté** (version réduite)
-- [ ] Gate locale verte (tests + liens markdown)
+- [x] `ezk-product-builder` expose `--delivery=per-feature|per-epic` ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression). Le flag **décide**, il n'exécute **aucun** git (frontière ADR-0001). → *frontmatter `argument-hint` + Usage + § « Mode livraison » + défaut `per-feature`.*
+- [x] `per-epic` = **lot coordonné** : les fiches d'un même `epic:` gardent **N PR** (revue / CI / revert atomiques), livrées via le **train de merge** d'`ezk-pr-pilot` — `plan` (ordre) → **branche d'intégration = tester en une passe** → `ship` en **cascade** (squash-merge PR par PR, CI re-verte). → *câblé au checkpoint inter-sprint (§ « La boucle » étape 4) + note « chemin de première classe » dans `ezk-pr-pilot`.*
+- [x] **Aucun mode agrégé** : pas de `rebase-merge`, pas de PR unique — **squash reste la seule politique** de merge (invariant `ezk-sprint` intact, `check-pr-body.sh` inchangé)
+- [x] Déclencheur = **`epic:` auto + opt-in explicite** (pas de seuil) — *arbitrages tranchés le 2026-08-13* ; `batched` / plafond **abandonnés** (plus de PR agrégée à borner)
+- [x] **Prérequis** : re-chiffrer la friction par-merge **résiduelle post-0180** (rebases de `main` en cascade réellement observés) — **observé nul** sur la session disponible (échantillon à PR *indépendantes*, cf. § « Réalisé ») ⇒ `per-epic` se réduit au **test groupé + `ship` ordonné**
+- [x] Panel adverse **passé** ✅ (2026-08-13) → ADR-037 **Accepté** (version réduite)
+- [x] Gate locale verte (tests + liens markdown) — vitest **422/422** (45 fichiers) · `test:scripts` **11 suites vertes** (dont `check-links` : 0 lien cassé, 2 racines)
+
+## Réalisé (2026-08-18) — sprint `/ezk-product-builder build`
+
+Implémenté en **doctrine de skill** : le flag `--delivery` est **interprété par le LLM**, comme
+`--tokens` / `--checkpoints` / `--check-ready` — **aucun code/CLI à parser**, donc pas de TDD ni
+d'archi neuve (ADR-037 déjà accepté).
+
+| Lot | Fichier | Contenu |
+|---|---|---|
+| **Flag & mode** | `ezk-product-builder/SKILL.md` | `--delivery=per-feature\|per-epic` (`argument-hint` + `composes: ezk-pr-pilot` + Usage + défaut `per-feature`) ; nouvelle **§ « Mode livraison »** ; **câblage au checkpoint inter-sprint** (§ « La boucle » étape 4) ; ligne **délégation** `ezk-pr-pilot` |
+| **Train de merge** | `ezk-pr-pilot/SKILL.md` | note **« chemin de première classe — livraison `per-epic` »** : le train existant (`plan` → branche d'intégration → `ship` cascade) est **durci** comme chemin déclenché par `per-epic`, **pas réécrit** (squash-only, N PR, `check-pr-body.sh` inchangé) |
+
+**Mesure du prérequis (friction par-merge résiduelle post-0180)** — *mesuré, pas estimé* :
+- **0180** (id horodaté, fin de `max+1`) mergé le **2026-08-12** (PR #124, squash `4f81c29`).
+- **Session 4-fiches du 2026-08-17** (`0183`+`0184`+`0191`+`0101`, product-builder) : les 4 PR ont
+  été **shippées indépendamment, en séquence**, **zéro rebase de `main` en cascade** relevé (archive
+  de session + log `main`).
+- Les frictions **encore vives** sont **fonction du contenu**, pas du nombre de merges : liens cassés
+  (25 réparés au ship de 0101 — 18 accumulés + 7 recassés par le ship lui-même), désormais **gatés**
+  par `check-links` (0101 shippée). Les collisions d'ids sont réglées à la racine (0180).
+- **Conclusion** : la friction par-merge *proportionnelle au nombre de merges* **n'a pas été observée** sur l'échantillon disponible — et un lot à **PR indépendantes** (le cas mesuré) ne peut de toute façon **pas** l'exhiber : elle n'apparaît qu'entre PR **partageant des fichiers** (le cas `per-epic` coordonné), justement ce que le **train de merge** d'`ezk-pr-pilot` gère (CI re-verte entre deux PR liées).
+  → conformément à ADR-037, **`per-epic` se réduit au test groupé + `ship` ordonné** ; sa valeur est
+  la **coordination** d'un lot cohérent (tester en une passe, livrer dans l'ordre), **pas** la
+  réduction du coût par-merge.
+
+**Frontière tenue** : le flag **décide** (aucun git côté `ezk-product-builder`) ; `ezk-pr-pilot`
+**exécute** (ADR-0001). Invariant `ezk-sprint` « 1 feature = 1 PR = 1 squash-merge » **intact**.
 
 ## Notes / décisions
 

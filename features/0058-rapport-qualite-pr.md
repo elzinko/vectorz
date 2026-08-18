@@ -52,7 +52,7 @@ existantes (template PR ezk-sprint, `report` d'ezk-pr-pilot) — ne réinvente p
 ## Notes / décisions
 
 - **2026-08-17 — reclassée « adaptateur » (pas SoT), confirmée au build de 0183.**
-  Le contrat `method-review@0.1` ([0183](0183-pack-review-markdown-first.md),
+  Le contrat `method-review@0.1` ([0183](done/0183-pack-review-markdown-first.md),
   [ADR-038](../docs/adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md))
   grave `features/reviews/<id>/REVIEW.md` comme SoT ; l'implémentation de
   référence vit dans `products/mega-city/src/review/` (`emitters/github-comment.ts`

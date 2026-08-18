@@ -32,6 +32,14 @@ ouvertes**, tu calcules l'**ordre de merge**, tu regroupes les tests en
 tu **démarres les bancs**, tu guides l'utilisateur **checklist en main**, tu
 **reportes les résultats dans chaque PR**, et tu **merges au vert**.
 
+> **Chemin de première classe — livraison `per-epic`.** Quand `ezk-product-builder` tourne en
+> `--delivery=per-epic` ([ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)),
+> il te **confie** la livraison coordonnée d'un **lot cohérent** (fiches d'un même `epic:`, ou lot
+> désigné en opt-in) : tu reçois leurs **N PR ouvertes** et tu déroules ton train **existant** —
+> `plan` (ordre) → **branche d'intégration** (test groupé, jetable, `merge-tree` propre) → `ship`
+> en **cascade** (squash-merge PR par PR, CI re-verte). **Durcissement, pas réécriture** : une seule
+> politique (**squash**), N PR conservées, invariant `ezk-sprint` intact — `check-pr-body.sh` inchangé.
+
 **Restitution** (`plan` / `run` / `report`) : ouvre par **« En clair »** (≤ 3 phrases)
 avant ordres de merge et tableaux — règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
