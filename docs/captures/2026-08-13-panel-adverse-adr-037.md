@@ -52,7 +52,7 @@ agrégé abandonné.
 
 **Arbitrage PO (2026-08-13) : réviser vers la version réduite.** ADR-037 réécrit en conséquence
 (statut Accepté, version réduite) ; le mode agrégé consigné en *Alternatives écartées* ; fiche
-[0065](../../features/0065-sprint-composition-lot-coherent.md) répercutée.
+[0065](../../features/done/0065-sprint-composition-lot-coherent.md) répercutée.
 
 *Leçon méthode : le panel a attrapé un défaut bloquant (exécutant orphelin) invisible à l'auteur
 de l'ADR — 3 lentilles = 3 classes de défauts vues par quelqu'un d'autre.*

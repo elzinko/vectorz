@@ -141,7 +141,7 @@ reconstruite** au sprint suivant.
   le même id que la fiche racine [0064 « une seule liste de features »](done/0064-liste-unique-features-champ-product.md)
   (P0, créée le 2026-07-26 précisément pour supprimer ces collisions). Id retenu =
   `max(mega-city actifs + done) + 1` = 0100, **libre des deux côtés** — à l'inverse de
-  `max+1` côté racine (0065), déjà porté par [0065](0065-sprint-composition-lot-coherent.md).
+  `max+1` côté racine (0065), déjà porté par [0065](done/0065-sprint-composition-lot-coherent.md).
   Références mises à jour : 0065, `done/0071`, ADR-0016, ADR-0018, `features/PLAN.md`.
   Correctif **manuel et ponctuel** : la cause structurelle (deux listes numérotant chacune
   depuis 0001) reste ouverte dans la fiche racine 0064.

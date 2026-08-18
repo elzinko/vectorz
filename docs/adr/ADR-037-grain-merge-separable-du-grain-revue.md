@@ -2,7 +2,7 @@
 
 - **Statut** : Accepté (2026-08-13) — *version réduite, post-panel adverse*
 - **Compose** (sans les rouvrir) : [ADR-018](ADR-018-worktree-isolation.md) (une branche par feature), [ADR-017](ADR-017-budget-killswitch.md) (épic = champ front-matter), invariant `ezk-sprint` « 1 feature = 1 branche = 1 PR = 1 squash-merge » ([SKILL.md:32](../../products/mega-city/skills/ezk-sprint/SKILL.md))
-- **Fiches** : [0065](../../features/0065-sprint-composition-lot-coherent.md) (sprint composition / mode `--delivery`)
+- **Fiches** : [0065](../../features/done/0065-sprint-composition-lot-coherent.md) (sprint composition / mode `--delivery`)
 - **Déciders** : PO (Thomas) ; **panel adverse passé le 2026-08-13** ([capture](../captures/2026-08-13-panel-adverse-adr-037.md))
 
 > **Révision 2026-08-13 (panel adverse).** La 1ʳᵉ version proposait un **mode agrégé** (N features
@@ -36,7 +36,7 @@ Reste un manque réel : rien ne **coordonne** la livraison d'un **lot cohérent*
   - 🔴 **Exécutant orphelin** : aucun skill ne peut héberger l'assemblage linéaire + `rebase-merge` sans violer sa frontière (`ezk-product-builder` ne touche pas au git ; `ezk-sprint` ne merge plus ; le `ship` d'`ezk-pr-pilot` est **squash-only**). La mécanique n'a **aucun siège** — le « on ne réimplémente rien » est contredit (assembleur net-neuf).
   - **Prémisse fausse aux ⅔** : collisions d'ids (réglées, 0180) et liens cassés = fonction du **contenu**, pas du merge — agréger les **concentre**, ne les supprime pas.
   - **Réutilisation `ezk-pr-pilot` nominale** : sa branche d'intégration est un merge **jetable pour tester**, pas un historique linéaire de livraison.
-  - **Orthogonalité surclamée** : Codex/`code-review` relit le **diff agrégé** → régression de revue (tout-ou-rien, gros diff), à rebours de l'objectif de [0065](../../features/0065-sprint-composition-lot-coherent.md).
+  - **Orthogonalité surclamée** : Codex/`code-review` relit le **diff agrégé** → régression de revue (tout-ou-rien, gros diff), à rebours de l'objectif de [0065](../../features/done/0065-sprint-composition-lot-coherent.md).
 - **Statu quo strict (pas de flag)** : ne coordonne pas la livraison d'un lot cohérent — le manque réel identifié.
 - **Stacked PRs** : outillage `gh` mauvais + ne supprime pas les frictions par-merge (chaque PR de la pile merge séparément).
 

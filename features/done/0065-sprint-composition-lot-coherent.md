@@ -28,7 +28,7 @@ Question PO (session 2026-07-16, premier self-host) : la règle actuelle est str
 À groomer. Piste (distinguer deux niveaux qu'on confond aujourd'hui) :
 
 - **Sprint ≠ PR.** Un **sprint** peut grouper **un lot cohérent** de fiches vers un **but de
-  sprint** (c'est la sortie du planning — fiche [0100](0100-sprint-intake-sante-backlog-metriques.md)).
+  sprint** (c'est la sortie du planning — fiche [0100](../0100-sprint-intake-sante-backlog-metriques.md)).
   La **PR** reste l'unité de revue/merge.
 - **Défaut : petite PR = 1 incrément livrable cohérent** (souvent 1 fiche) — meilleure revue,
   revert propre, une raison de changer.
@@ -55,7 +55,7 @@ isole un **second axe** distinct : le **grain de merge** — le *nombre de fois 
 ~45 liens cassés / ship, `main` qui décale et force à rebaser les suivantes) : réduire le
 **nombre** de merges a une valeur propre, indépendante de la qualité de revue.
 
-**Décision d'architecture : [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)** (Proposé, 2026-08-13).
+**Décision d'architecture : [ADR-037](../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)** (Proposé, 2026-08-13).
 - Sépare **grain de revue** (feature, atomique — inchangé) et **grain de merge** (levier de
   livraison décidé par l'orchestrateur).
 - Nouveau levier `--delivery=per-feature|per-epic|batched` (noms à acter) sur
@@ -87,11 +87,11 @@ Les 3 arbitrages PO ouverts sont **tranchés** (session 2026-08-13), tous sur la
    absence de garde-fou).
 
 DoR désormais complète (problème / valeur / critères + arbitrages levés). Reste avant *Accepté*
-de l'ADR : **panel adverse** sur [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md).
+de l'ADR : **panel adverse** sur [ADR-037](../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md).
 
 ## Révision 2026-08-13 (post-panel) — pivot vers la version réduite
 
-Le **panel adverse est passé** ([capture](../docs/captures/2026-08-13-panel-adverse-adr-037.md)) et a
+Le **panel adverse est passé** ([capture](../../docs/captures/2026-08-13-panel-adverse-adr-037.md)) et a
 **écarté le mode agrégé** (rebase-merge / PR-unique) : exécutant orphelin (aucun skill ne peut héberger
 l'assemblage sans violer la frontière ADR-0001), prémisse « frictions par-merge » fausse aux ⅔
 (collisions d'ids réglées par 0180, liens = contenu), réutilisation `ezk-pr-pilot` nominale.
@@ -105,7 +105,7 @@ mis à jour.
 
 ## Critères d'acceptation
 
-Cadre posé par [ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) **révisé (version réduite, post-panel)** :
+Cadre posé par [ADR-037](../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) **révisé (version réduite, post-panel)** :
 
 - [x] `ezk-product-builder` expose `--delivery=per-feature|per-epic` ; défaut `per-feature` = comportement actuel **inchangé** (aucune régression). Le flag **décide**, il n'exécute **aucun** git (frontière ADR-0001). → *frontmatter `argument-hint` + Usage + § « Mode livraison » + défaut `per-feature`.*
 - [x] `per-epic` = **lot coordonné** : les fiches d'un même `epic:` gardent **N PR** (revue / CI / revert atomiques), livrées via le **train de merge** d'`ezk-pr-pilot` — `plan` (ordre) → **branche d'intégration = tester en une passe** → `ship` en **cascade** (squash-merge PR par PR, CI re-verte). → *câblé au checkpoint inter-sprint (§ « La boucle » étape 4) + note « chemin de première classe » dans `ezk-pr-pilot`.*
@@ -147,8 +147,8 @@ d'archi neuve (ADR-037 déjà accepté).
 - **Auto-démonstration** : les fiches **0063 (ezk-retro) + 0100 (intake/santé, ex-0064) + 0065 (ce
   sujet)** forment justement un **lot cohérent** (« améliorer la méthode ») — le cas exact
   décrit par le PO. Elles sont d'ailleurs capturées ensemble (PR #20).
-- Relie [0100](0100-sprint-intake-sante-backlog-metriques.md) (le « lot » = sortie du sprint
-  planning) et [0063](done/0167-ezk-retro-ceremonie-auto-amelioration.md) (la règle de composition
+- Relie [0100](../0100-sprint-intake-sante-backlog-metriques.md) (le « lot » = sortie du sprint
+  planning) et [0063](0167-ezk-retro-ceremonie-auto-amelioration.md) (la règle de composition
   est une **règle d'équipe évolutive** — donc gérable par `ezk-retro`).
 - À trancher au grooming : la formule de règle (« 1 PR = 1 incrément livrable cohérent :
   souvent 1 fiche, parfois un couple ») et **où** l'inscrire (rule mega-city `rules/` vs
