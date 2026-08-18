@@ -4,9 +4,9 @@ title: Sprint composition — un sprint peut porter un lot cohérent de fiches ;
 type: feature
 priority: P2
 product: mega-city
-status: in-progress
+status: shipped
 ready: 2026-08-13
-pr:
+pr: local (squash-merge c969569)
 created: 2026-07-16
 ---
 
