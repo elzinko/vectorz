@@ -4,8 +4,8 @@ title: Webapp de reporting de run — features livrées façon PR + preview/dém
 type: feature
 priority: P2
 product: vectorz
-status: idea
-ready:
+status: todo
+ready: 2026-08-17
 pr:
 created: 2026-08-08
 ---
@@ -52,17 +52,27 @@ Règles dures :
 
 ## Critères d'acceptation
 
-- [ ] Vue « Reporting » accessible, clairement séparée du Moniteur (libellé / nav)
-- [ ] Liste au moins un pack `REVIEW.md` réel (dogfood 0183 + cobaye 0041) en carte
-      façon PR (résumé + rendus + à-tester)
-- [ ] Aucune écriture d'artefact depuis l'UI ; zéro nouvelle collecte inventée
-- [ ] Lot 2 : bouton preview/provision **délègue** à 0102 / ezk-preview (skip / N.A.
-      documenté tant que 0102 blocked)
-- [ ] Mode démo : compose 0050 ou N.A. explicite si 0050 non tirée
-- [ ] Gate locale verte puis E2E UI (smoke Pareto, pas exhaustif)
+- [x] Vue « Reporting » accessible, clairement séparée du Moniteur (libellé / nav)
+- [x] Liste au moins un pack `REVIEW.md` réel (dogfood 0183) en carte façon PR
+      (résumé + rendus + à-tester) — *cobaye 0041 : dès qu'un pack y sera produit*
+- [x] Aucune écriture d'artefact depuis l'UI ; zéro nouvelle collecte inventée
+      (parseur pur + glob lecture seule ; revue ezk-reviewer a prouvé l'invariant)
+- [x] Lot 2 : bouton preview/provision — **N.A. documenté** (Lot 2 hors scope, gated
+      0102 blocked)
+- [x] Mode démo — **N.A. documenté** (Lot 2 hors scope, 0050 non tirée)
+- [x] Gate locale verte puis E2E UI (smoke Pareto) — typecheck 0 · vitest 54/54 ·
+      smoke navigateur (pack 0183 rendu en carte réelle)
 
 ## Notes / décisions
 
+- **2026-08-17 (build, Lot 1)** — Livré par `ezk-sprint` (branche
+  `feat/0184-webapp-reporting-run`). Tampon `ready` sur concurrence **ezk-pm** (GO, MVP =
+  Lot 1 seul), tête PLAN NEXT #18 **dé-gatée par 0183** shippé. Onglet **Reporting** dans
+  `@cop1/web` : parseur pur `reviewPack.ts` (front-matter + sections `## `, respecte les
+  blocs de code), loader glob Vite `?raw` `reviewPacks.ts`, vue `ReportingView.tsx` (carte
+  façon PR, lecture seule). Revue **ezk-reviewer = GO** ; P1 (garde de non-régression du
+  glob) + P2 (parseur fence-aware) corrigés. **Lot 2 (boutons preview/démo) hors scope** —
+  gated 0102 (blocked) → AC4/AC5 = N.A. documenté. **Polish CSS différé** (POC-first).
 - **2026-08-08** — Enfant de l'initiative reporting ; `depends` de fait :
   **0183** (contrat SoT), **0178** (reste-à-tester), **0102** (boutons preview —
   blocked → lot 2 non tirable avant déblocage). Voir arbitrage

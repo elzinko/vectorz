@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { ProjectsView } from './ProjectsView.js';
+import { ReportingView } from './ReportingView.js';
+import { reviewPacks } from './reviewPacks.js';
 import { SupervisionView } from './SupervisionView.js';
 
-type TabId = 'projets' | 'activite';
+type TabId = 'projets' | 'activite' | 'reporting';
 
 /**
  * Moniteur (ADR-028 / fiche 0059) + portefeuille projets (fiche 0062).
@@ -47,16 +49,24 @@ function App() {
           >
             Activité
           </button>
+          <button
+            type="button"
+            className={`tab${tab === 'reporting' ? ' active' : ''}`}
+            aria-current={tab === 'reporting' ? 'page' : undefined}
+            onClick={() => setTab('reporting')}
+          >
+            Reporting
+          </button>
         </nav>
 
-        {tab === 'projets' ? (
-          <ProjectsView onOpenProject={openProject} />
-        ) : (
+        {tab === 'projets' && <ProjectsView onOpenProject={openProject} />}
+        {tab === 'activite' && (
           <SupervisionView
             filterProjectRoot={filterProjectRoot}
             onClearFilter={() => setFilterProjectRoot(null)}
           />
         )}
+        {tab === 'reporting' && <ReportingView packs={reviewPacks} />}
       </div>
     </div>
   );
