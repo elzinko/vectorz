@@ -1,6 +1,6 @@
 ---
 name: ezk-ci
-argument-hint: "[help|check|list|dryrun|run|bootstrap|conso|frugal]"
+argument-hint: "[help|check|list|dryrun|run|native|bootstrap|conso|frugal]"
 description: >-
   Validate GitHub Actions pipelines locally with act + Docker before pushing or
   committing, AND watch/cap the cloud-side GHA consumption of private repos. Use
@@ -51,7 +51,11 @@ Détecte la situation du projet et route :
 | **(c)** | des `.github/workflows/*.yml` existent mais aucun setup local | **bootstrap** (section dédiée) |
 | **(d)** | pas de GitHub Actions du tout | skill non applicable — sors et dis-le |
 
-## Pré-requis
+## Pré-requis (modes `act` — `list`/`dryrun`/`run`/`bootstrap`)
+
+> Le mode dégradé **`native`** s'en **exempte délibérément** : c'est justement
+> l'échappatoire quand Docker ou `act` manquent (voir « Mode dégradé — `native` »
+> plus bas). Ces pré-requis ne concernent que les modes qui pilotent `act`.
 
 - **Docker lancé** (`docker info` doit répondre).
 - **`act` installé** (`act --version` ; sinon `brew install act` sur macOS, ou
