@@ -32,7 +32,7 @@ détectée par quoi que ce soit. La première est dans [`ezk-steward`](../produc
 | Ce que le texte affirmait | Le réel |
 |---|---|
 | [`ezk-steward`](../products/mega-city/agents/ezk-steward.md) ligne 15 + sa `description:` — « lance `./scripts/validate.sh` » | le script n'existe **nulle part** dans le repo ; héritage de l'ancien repo autonome `claude-skills`. Le gate réel est `pnpm --filter mega-city test` / `typecheck` + [`bin/check-links.sh`](../products/mega-city/bin/check-links.sh) |
-| [`ezk-preview`](../products/mega-city/skills/ezk-preview/SKILL.md) ligne 136 — « c'est l'étape "1 lien de démo par PR" d'ezk-sprint » | [`ezk-sprint`](../products/mega-city/skills/ezk-sprint/SKILL.md) ne l'invoque **jamais** (son étape PR n'exige que le titre conventional-commit et le before/after). Le seul appelant câblé est [`ezk-pr-pilot`](../products/mega-city/skills/ezk-pr-pilot/SKILL.md) |
+| [`ezk-preview`](../products/mega-city/skills/ezk-preview/SKILL.md) ligne 136 — « c'est l'étape "1 lien de démo par PR" d'ezk-sprint » | [`ezk-sprint`](../products/mega-city/skills/ezk-sprint/SKILL.md) ne l'invoque **jamais** (son étape PR n'exige que le titre conventional-commit et le before/after). Le seul appelant câblé est [`ezk-pr`](../products/mega-city/skills/ezk-pr/SKILL.md) |
 
 Les deux textes sont corrigés. Ce qui reste ouvert, c'est le **contrôle** : rien n'a rougi, et
 rien ne rougirait à la prochaine dérive. Même motif que la fiche

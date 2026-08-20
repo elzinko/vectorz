@@ -33,7 +33,7 @@ exactement le trou prouvé par la fiche [0066](0066-tester-un-skill-avant-merge.
   « 0060 » pour vz (aujourd'hui 0164 ; 0060 = un bug) ; « 0008 » pour chief-judge (aujourd'hui [0113](0113-chief-judge.md)).
 - 🟡 **Graphe `composes:` sous-peuplé** — seuls `ezk-product-builder/SKILL.md:3` et `ezk-sprint/SKILL.md:2`
   déclarent `composes:` ; le graphe Mermaid **généré** (`skills/README.md:49-59` via `src/core/composes-graph.ts`)
-  rate donc des couplages réels décrits en prose : `ezk-pr-pilot`→preview/device/apk/backlog/commits,
+  rate donc des couplages réels décrits en prose : `ezk-pr`→preview/device/apk/backlog/commits,
   `ezk-sprint`→**ezk-codex** (étape 10, **délégué-si-présent**), `ezk-retro`→backlog, `vz`→product-builder/sprint.
 
 ## Proposition

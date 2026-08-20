@@ -1,7 +1,7 @@
 ---
-roles: [ezk-pm, ezk-architect, ezk-tdd]
+roles: [ezk-pm, ezk-architect, ezk-dev]
 name: ezk-product-builder
-composes: [ezk-backlog, ezk-sprint, ezk-pr-pilot]
+composes: [ezk-backlog, ezk-sprint, ezk-pr]
 composes-external: [product-brainstorming, architecture]
 argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]"
 description: >-
@@ -80,8 +80,8 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
    strict : c'est `ezk-sprint` qui merge, **pas toi**). En `per-epic`, tu **ne
    shippes pas** isolément une fiche appartenant à un lot cohérent (même `epic:`, ou lot
    désigné en opt-in) : tu **laisses sa PR ouverte**, poursuis le lot, puis, le lot complet,
-   **confies la livraison coordonnée à `ezk-pr-pilot`** (`plan` → branche d'intégration = test
-   groupé → `ship` en cascade). Tu **décides** le grain ; `ezk-pr-pilot` **exécute** le git
+   **confies la livraison coordonnée à `ezk-pr`** (`plan` → branche d'intégration = test
+   groupé → `ship` en cascade). Tu **décides** le grain ; `ezk-pr` **exécute** le git
    (frontière ADR-0001).
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
@@ -153,7 +153,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Inter-sprint** | prends la 1re option (sprint suivant) — **à condition** que `--tokens cap` soit actif (le plafond borne le coût) ; sinon reste `ask`. Journalise. |
 | **Idéation — fiche vague** | délègue à `product-management:product-brainstorming` pour cadrer, puis construis. Journalise. |
 | **Idéation — backlog vide** | **STOP humain** — inventer la direction produit n'est jamais automatisable. |
-| **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-tdd`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--check-ready`** : `true` (défaut) → **STOP humain** pour tamponner ; `false` → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
+| **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-dev`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--check-ready`** : `true` (défaut) → **STOP humain** pour tamponner ; `false` → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
 | **Dérive tokens** | dégrade en `lean` (jamais plus cher). Une **augmentation** de budget = **STOP humain**. |
@@ -194,7 +194,7 @@ sélection du lot reste à l'humain — la machine ne décide jamais *quoi* cons
 Règle **comment un lot cohérent de fiches est livré** (mergé) : au fil de l'eau, ou de façon
 coordonnée. Adossé à [ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)
 (version réduite, panel adverse passé). Défaut : `per-feature`. **Le flag DÉCIDE — il n'exécute
-aucun git** (frontière ADR-0001 : c'est `ezk-pr-pilot` qui range). **Sépare le grain de *livraison*
+aucun git** (frontière ADR-0001 : c'est `ezk-pr` qui range). **Sépare le grain de *livraison*
 du grain de *revue*** : la **PR reste l'unité de revue/merge** dans les deux modes.
 
 - **`per-feature` (défaut)** — **statu quo strict** : chaque sprint ouvre **1 PR** et la
@@ -203,7 +203,7 @@ du grain de *revue*** : la **PR reste l'unité de revue/merge** dans les deux mo
 - **`per-epic`** — livraison **coordonnée** d'un lot cohérent, **N PR conservées** (revue, CI
   et revert **atomiques** par feature préservés — **pas** de PR obèse, **pas** de `rebase-merge`,
   **squash reste la seule politique**). Tu **ne shippes pas** au fil de l'eau les fiches du lot :
-  tu laisses leurs PR ouvertes, puis, le lot complet, tu **confies** à **`ezk-pr-pilot`** son
+  tu laisses leurs PR ouvertes, puis, le lot complet, tu **confies** à **`ezk-pr`** son
   train de merge existant : `plan` (ordre) → **branche d'intégration** = tester le lot en **une
   passe** (jetable, conditionnée `merge-tree` propre) → `ship` en **cascade** (squash-merge PR
   par PR, CI re-verte, `ezk-backlog ship` par fiche).
@@ -230,7 +230,7 @@ en **composant** (tu ne réimplémentes rien) :
    vérifiables** depuis les **grands axes** fournis par le PO.
 2. **Structure** — `ezk-architect` si une décision de conception non triviale bloque la DoR.
 3. **Faisabilité** — `ezk-architect` (jugement de faisabilité structurelle, **en lecture seule,
-   sans écrire de code**) si « est-ce constructible » est le trou de la DoR. **PAS `ezk-tdd`
+   sans écrire de code**) si « est-ce constructible » est le trou de la DoR. **PAS `ezk-dev`
    avant le gate** : il écrit tests + code de prod en worktree isolé — l'implémentation reste
    **exclusivement** dans `ezk-sprint` (sinon du code orphelin hors sprint/PR).
 4. **Arbitrage PO du périmètre** — `ezk-pm` pour trancher une option / un seuil **dans** le lot
@@ -264,7 +264,7 @@ jamais.
 | `engineering:architecture` | trancher une structure non triviale | si l'archi le justifie (sinon laisse `ezk-sprint`/`ezk-architect`) |
 | **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--checkpoints auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
 | **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
-| **`ezk-pr-pilot`** | le **train de merge** : test groupé + `ship` en cascade d'un lot | en `--delivery per-epic`, tu lui **confies** la livraison coordonnée (il exécute le git ; toi tu décides le grain) |
+| **`ezk-pr`** | le **train de merge** : test groupé + `ship` en cascade d'un lot | en `--delivery per-epic`, tu lui **confies** la livraison coordonnée (il exécute le git ; toi tu décides le grain) |
 | `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |
 
 Tu ne **ranges** rien toi-même (git, fichiers) : ce sont les compétences composées qui rangent

@@ -10,7 +10,7 @@
 Le passage d'une fiche à `status: shipped` (déplacée dans `features/done/`) est une
 **commande explicite** — `ezk-backlog ship <id> #PR`. Elle n'est appelée que sur **deux
 chemins** : `ezk-sprint` étape 10 (`skills/ezk-sprint/SKILL.md:81`) et `ezk-pr-pilot ship`
-(`skills/ezk-pr-pilot/SKILL.md:110`). **Dès que la PR est mergée autrement** — le PO clique
+(`skills/ezk-pr/SKILL.md:110`). **Dès que la PR est mergée autrement** — le PO clique
 « Squash & merge » dans l'UI GitHub, un reviewer humain merge, un autre outil merge —
 **personne n'appelle `ship`** : la fiche reste `todo`/`in-progress` alors que le code est
 sur `main`.

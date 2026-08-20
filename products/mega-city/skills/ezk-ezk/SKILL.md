@@ -40,25 +40,38 @@ Politique modèles + inventaire :
 > C'est le même idiome que la capacité `ezk-archive` qui *appelle* `ezk-backlog`
 > au lieu de réimplémenter le suivi.
 
-## Carte de la méthode (naming — ADR-0022)
+## Carte de la méthode (naming — ADR-0020)
 
 Quand tu **fabriques** un skill ezk, place-le dans **une** bande. Diagramme :
 [`diagrams/ezk-methode-globale/`](../../diagrams/ezk-methode-globale/).
 
-| Bande | Rôle | Exemples |
+**Quatre bandes.** La ligne de partage qui compte : les trois premières bandes
+portent la **méthode** (ce qu'on fait et dans quel ordre), la quatrième porte
+l'**outillage** (avec quoi on le fait). Une capacité d'outillage ne connaît pas
+le sprint ; c'est ce qui la rend réutilisable hors de la méthode.
+
+| Bande | La question | Exemples |
 |---|---|---|
-| **Orchestrateurs** | enchaînent plusieurs steps / un stock | `ezk-product-builder`, `ezk-sprint`, **`ezk-pr`** (ex-`ezk-pr-pilot`) |
-| **Rôles** | une feature, un métier | `ezk-pm`, `ezk-architect`, `ezk-dev`, `ezk-qa`, `ezk-reviewer` |
-| **Capacités** | briques composables (`ezk-caps-*` ou alias court) | `ezk-backlog`, `ezk-sandbox`, `ezk-preview`, `ezk-commits`, **`ezk-archive`** |
+| **Cérémonies** | *quand & dans quel ordre* | `ezk-product-builder`, `ezk-sprint`, `ezk-pr`, `ezk-retro` |
+| **Rôles** (agents) | *qui décide / qui juge* | `ezk-pm`, `ezk-architect`, `ezk-dev`, `ezk-qa`, `ezk-reviewer`, `ezk-steward` |
+| **Artefacts & rituels de méthode** | *quoi — l'état du produit* | `ezk-backlog`, `ezk-commits`, `ezk-archive`, `ezk-start` |
+| **Outillage & pratiques techno** | *avec quoi — la technique* | `ezk-ci`, `ezk-docker`, `ezk-npm-scripts`, `ezk-device`, `ezk-apk`, `ezk-preview`, `ezk-diagram`, `ezk-readme`, `ezk-article`, `ezk-design-system` |
 
-Règles de nommage (préférences 2026-07-30) :
+> **Test mécanique** (le graphe le dit à ta place) : un skill que **aucune
+> cérémonie ne compose** (`composes:`) appartient à la bande outillage. Régénère
+> avec `pnpm composes:graph` et regarde qui reste isolé.
 
-1. **Pas de `-pilot`** — préférer `ezk-pr` à `ezk-pr-pilot`.
+Règles de nommage (ADR-0020, rename exécuté le 2026-08-20) :
+
+1. **Pas de `-pilot`** — `ezk-pr` (ex-`ezk-pr-pilot`). De même `ezk-dev`
+   (ex-`ezk-tdd`) : la bande Rôles nomme le **métier**, pas la technique.
 2. **Capacités** : préfixe `ezk-caps-…` quand le risque de confusion avec un rôle
-   est réel ; alias court OK (`ezk-sandbox` ⇔ `ezk-caps-sandbox`).
+   est réel ; alias court OK. ⚠️ `ezk-sandbox` / `ezk-caps-sandbox` est un nom
+   **réservé, pas encore construit** (fiche 0102) — ne l'utilise pas comme
+   exemple d'existant.
 3. **Scaffold repo** : `features/` / `done/` / index → **`ezk-backlog init`**.
    Convention Validation (`docs/PR_VALIDATION.md` + template) → **aujourd'hui
-   `ezk-pr-pilot init`** (seul chemin implémenté). **À terme** : absorbée par
+   `ezk-pr init`** (seul chemin implémenté). **À terme** : absorbée par
    `ezk-backlog init` (ADR-0022) — ne pas router Validation vers backlog tant
    que la migration n'est pas faite.
 4. **`ezk-archive` = capacité** (hygiène de clôture), **pas** un 4ᵉ orchestrateur

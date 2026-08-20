@@ -15,7 +15,7 @@ agents:
   - ezk-qa
   - ezk-reviewer
   - ezk-steward
-  - ezk-tdd
+  - ezk-dev
 skills:
   # hygiène / org
   - ezk-archive
@@ -38,5 +38,5 @@ skills:
   # INTENTIONNELLEMENT ABSENTS du daily (restent dans `global`) :
   #   ezk-apk, ezk-device, ezk-preview  — env mobile / preview rare
   #   ezk-article                       — rédaction longue occasionnelle
-  #   ezk-pr-pilot                      — pilotage PR hors boucle sprint
+  #   ezk-pr                      — pilotage PR hors boucle sprint
 interactions: []

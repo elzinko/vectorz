@@ -39,9 +39,9 @@ describe('profils par hôte (fiche 0041)', () => {
   it("cop1-target : équipe feuille + ezk-pm, AUCUN orchestrateur de dev-loop (cop1 a sa boucle)", () => {
     expect(cop1).toBeDefined();
     expect(cop1?.agents).toEqual(
-      expect.arrayContaining(['ezk-architect', 'ezk-tdd', 'ezk-qa', 'ezk-reviewer', 'ezk-pm']),
+      expect.arrayContaining(['ezk-architect', 'ezk-dev', 'ezk-qa', 'ezk-reviewer', 'ezk-pm']),
     );
-    for (const orch of ['ezk-product-builder', 'ezk-sprint', 'ezk-pr-pilot', 'ezk-ezk']) {
+    for (const orch of ['ezk-product-builder', 'ezk-sprint', 'ezk-pr', 'ezk-ezk']) {
       expect(cop1?.skills ?? []).not.toContain(orch);
     }
   });

@@ -133,7 +133,7 @@ gh pr comment --body "🔗 Démo : <url>"
 
 ## Intégration
 
-- **[`ezk-pr-pilot`](../ezk-pr-pilot/)** — **seul appelant câblé.** Il invoque ce
+- **[`ezk-pr`](../ezk-pr/)** — **seul appelant câblé.** Il invoque ce
   skill pour l'URL de démo d'une PR à valider (étape `run`, et table « URL de démo
   partageable → `ezk-preview` ») ; composition actée par
   l'[ADR-0009](../../docs/adr/0009-ezk-pr-pilot-orchestrateur-validation-prs.md).

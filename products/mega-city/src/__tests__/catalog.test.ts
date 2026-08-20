@@ -80,7 +80,7 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(catalog.agents.get('ezk-archive')?.effort).toBe('medium');
 
     // mécanique : sonnet (dérogation motivée 0181)
-    const tdd = catalog.agents.get('ezk-tdd');
+    const tdd = catalog.agents.get('ezk-dev');
     expect(tdd?.model).toBe('sonnet');
     expect(tdd?.effort).toBe('medium');
     expect(tdd?.isolation).toBe('worktree');

@@ -8,7 +8,7 @@ Cursor n'est qu'un hôte de délégation éventuel.
 | Rôle | Agents | `model` | `model_spare` |
 |---|---|---|---|
 | Jugement / restitution PO | `ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive` | **`claude-opus-4-8`** (pin — **jamais** l'alias `opus`, qui peut dériver vers Opus 5) | `sonnet` |
-| Mécanique / exécution | `ezk-tdd`, `ezk-qa`, `ezk-steward` | `sonnet` | — (pas de spare obligatoire) |
+| Mécanique / exécution | `ezk-dev`, `ezk-qa`, `ezk-steward` | `sonnet` | — (pas de spare obligatoire) |
 
 > **Pourquoi le pin.** Les alias Claude Code (`opus`, `sonnet`, …) suivent la
 > version *recommandée* et bougent dans le temps. Pour rester sur Opus **4.8** et
@@ -45,7 +45,7 @@ Règle MUST :
 | `ezk-sprint` | oui (checkpoint) | + délégation modèles |
 | `ezk-backlog` | oui | section Restitution |
 | `ezk-product-builder` | oui | checkpoints |
-| `ezk-pr-pilot` | oui | plan/run/report |
+| `ezk-pr` | oui | plan/run/report |
 | `ezk-retro` | oui | déjà |
 | `ezk-ezk` | oui | harvest/create/deploy |
 

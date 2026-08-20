@@ -183,7 +183,7 @@ Toujours finir par :
 
 - **`ezk-sprint`** (étape 10 « avant de merger ») **délègue** l'adressage des
   findings Codex à `ezk-codex fix` au lieu de le re-décrire.
-- **`ezk-pr` / `ezk-pr-pilot`** (`ship`) l'appelle avant le squash-merge : PR verte
+- **`ezk-pr` / `ezk-pr`** (`ship`) l'appelle avant le squash-merge : PR verte
   **et** Codex clair, puis merge côté `pr`.
 - **`ezk-commits`** — pour la forme du message conventional.
 

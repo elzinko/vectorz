@@ -164,7 +164,7 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
 - **`ezk-architect`** — le modèle d'extension, le cycle install / remove, l'empreinte projet
   (réutiliser le pattern **panel adverse + juge** qui a durci [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md)).
 - **`ezk-pm`** — périmètre, découpage en fiches enfants, priorité, MVP, ce qu'on parque.
-- **dev / QA** (`ezk-tdd` / `ezk-qa`) — faisabilité de l'installeur, scénario cobaye « skill
+- **dev / QA** (`ezk-dev` / `ezk-qa`) — faisabilité de l'installeur, scénario cobaye « skill
   A puis skill B sur le même projet → mêmes pratiques lues » (repris de [0177](0177-pack-pratiques-projet-portables.md)).
 
 ## Anti-doublon (par intention)

@@ -20,7 +20,7 @@ created: 2026-07-20
 | Brique | Où, dans le repo | Volume |
 |---|---|---|
 | Skills | `products/mega-city/skills/<id>/SKILL.md` | 20 dossiers, dont **18 dans `profiles/global.yml`** |
-| Agents | `products/mega-city/agents/*.md` | **7** (ezk-architect, ezk-archive, ezk-pm, ezk-qa, ezk-reviewer, ezk-steward, ezk-tdd) |
+| Agents | `products/mega-city/agents/*.md` | **7** (ezk-architect, ezk-archive, ezk-pm, ezk-qa, ezk-reviewer, ezk-steward, ezk-dev) |
 | Rules / bundles | `rules/` + `bundles/*.yml` | 10 familles de règles, 12 bundles |
 | Hooks **git** | `hooks/{commit-msg,pre-commit,pre-push}.sh` | 3 |
 | Serveur MCP | `bin/supervision-mcp.ts` + `src/supervision/mcp-server.ts` | 1 (émetteur de supervisabilité, fiche 0050 shippée) |

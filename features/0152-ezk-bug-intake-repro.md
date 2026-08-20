@@ -60,7 +60,7 @@ Un skill `ezk-bug` (glue) qui **COMPOSE**, ne réimplémente rien :
 
 **Placement organigramme ([[0028]])** : helper d'**intake/cadrage du front PO/BA**, en amont du
 backlog, **délégué par `ezk-backlog add`** exactement comme `product-brainstorming` l'est pour une
-feature vague. **Ce n'est PAS** une couche management orthogonale : `ezk-pr-pilot` (stock de PRs) et
+feature vague. **Ce n'est PAS** une couche management orthogonale : `ezk-pr` (stock de PRs) et
 `ezk-archive` (clôture de session) sont des **gestionnaires de stock/cycle de vie** — un **type de nœud
 différent** d'un helper de cadrage par-invocation déclenché par `add`.
 

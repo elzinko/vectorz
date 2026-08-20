@@ -35,13 +35,13 @@ Ajouter à `docs/method-map.md` une **couche « rôles »** montrant **deux stra
   QA (`ezk-qa`) → Reviewer (`ezk-reviewer`/`code-review`, cf. 0031) → Scrum master
   (`ezk-sprint`) → Product Owner multi-sprints (`ezk-product-builder`).
 - **Couches de management orthogonales** (hors chaîne de valeur) : integration/release
-  manager sur un stock de PRs (`ezk-pr-pilot`), clôture de session (`ezk-archive`).
+  manager sur un stock de PRs (`ezk-pr`), clôture de session (`ezk-archive`).
 
 Distinguer explicitement **rôle** vs **capacité** (TDD, rules… = capacités mobilisées
 par un rôle — aligné avec le domaine mega-city).
 
 **Clé de voûte** : cette fiche fige le **vocabulaire des rôles**, donc elle éclaire 0045
-(qui absorbe l'ancienne 0030 `ezk-tdd`→`ezk-dev`) et 0031 (`ezk-reviewer`). Recommandé
+(qui absorbe l'ancienne 0030 `ezk-dev`→`ezk-dev`) et 0031 (`ezk-reviewer`). Recommandé
 **avant** eux, mais non bloquant : 0045 s'appuie déjà sur le modèle de domaine mega-city.
 
 ## Critères d'acceptation
