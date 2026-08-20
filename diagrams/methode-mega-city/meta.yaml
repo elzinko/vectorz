@@ -1,0 +1,14 @@
+title: "La méthode mega-city en une carte (colonne vertébrale + carte dynamique)"
+date: 2026-08-19
+type: flowchart
+links:
+  readme: README.md
+  interactive: carte-interactive.html
+  method_map: ../../products/mega-city/docs/method-map.md
+share: "liens mermaid.live (édition) et mermaid.ink (image) dans README.md"
+note: >-
+  Deux vues d'un même sujet. La colonne vertébrale (Mermaid, ci-contre, rendue par
+  GitHub) montre COMMENT la méthode s'assemble. La carte dynamique interactive
+  (carte-interactive.html, publiée en Artifact) montre l'EXHAUSTIF : les 23 commandes
+  avec leurs sous-commandes, les 7 capabilities, et tous les liens de composition —
+  survol pour voir les connexions, clic pour ouvrir le dossier d'un nœud.
