@@ -170,5 +170,14 @@ LA LOI (`rules/testing/`), pas dans le nom de l'agent.
 - **−** Les fiches archivées et les ADR emploient l'ancien nom : c'est assumé et signalé par
   le nota de lecture en tête. Un lecteur qui grep `ezk-pr-pilot` trouve de l'histoire, pas du
   code mort.
-- **⚠️ À surveiller** : les skills déployés en global (`~/.claude/skills`, symlinks) pointent
-  encore l'ancien chemin tant qu'un `bind-global` n'a pas été rejoué.
+- **⚠️ Le re-bind ne suffit PAS à nettoyer** (relevé par la revue Codex, 2026-08-20) :
+  `applyGlobalPlan` (`src/io/apply.ts:296-335`) n'itère que le **nouveau** plan. Rejouer
+  `bind-global` installe donc bien `ezk-pr` et `ezk-dev`, mais **laisse en place** les
+  anciennes entrées `~/.claude/skills/ezk-pr-pilot` et `~/.claude/agents/ezk-tdd.md` — d'où
+  un catalogue global où les DEUX noms coexistent, exactement la confusion qu'on supprime.
+  Le retrait doit être **gardé** (vérifier que l'entrée est bien gérée, même invariant que
+  `assertReplaceableSkillDir`) : jamais un `rm -rf` aveugle, qui détruirait une
+  personnalisation utilisateur, ni une purge des entrées hors-plan, qui effacerait les skills
+  volontairement omis d'un profil curated (`daily`). Le correctif propre — **durcir le binder
+  pour gérer les renommages** — reste à faire : fiche
+  [`20260813131737962`](../../../../features/20260813131737962_nommage-catalogue-adr0022.md).
