@@ -1,4 +1,5 @@
 <title>La méthode mega-city</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
@@ -377,7 +378,7 @@ var CLUSTERS = [
 var SKILLS = {
   "ezk-backlog":{sub:"help·init·list·add·groom·ready·next·plan·review·reconcile·ship·regen",
     role:"Le backlog markdown = source de vérité. Fiches idea → todo → in-progress → shipped, jamais perdues entre worktrees ni sessions."},
-  "ezk-product-builder":{sub:"build·once·status · --tokens --checkpoints --delivery",
+  "ezk-product-builder":{sub:"build·once·status · --tokens --checkpoints --check-ready --delivery",
     role:"Couche product-owner autonome&nbsp;: enchaîne les sprints. Orchestrateur mince qui compose le quoi, l'idéation et le build.",
     comp:["ezk-backlog","ezk-sprint","ezk-pm","ezk-pr-pilot","ezk-archive"], ext:["product-brainstorming"]},
   "vz-product-builder":{sub:"build·once·status · --tokens",
@@ -572,11 +573,14 @@ function edgePath(A,B){
   return "M"+ax+","+ay+" C"+c1x+","+c1y+" "+c2x+","+c2y+" "+bx+","+by;
 }
 function clearWires(){ while(svg.lastChild && svg.lastChild.tagName!=="defs") svg.removeChild(svg.lastChild); }
+// Un nœud masqué par la recherche n'a plus de rectangle : le relier tracerait un
+// fil parti de (0,0) en travers de la vue filtrée.
+function shown(el){ return !!el && el.getClientRects().length > 0; }
 function drawEdges(list, withHeads){
   clearWires();
   list.forEach(function(e){
     var A=NODE[e.a]&&NODE[e.a].el, B=NODE[e.b]&&NODE[e.b].el;
-    if(!A||!B)return;
+    if(!shown(A)||!shown(B))return;
     var p=document.createElementNS("http://www.w3.org/2000/svg","path");
     p.setAttribute("d",edgePath(A,B));
     if(withHeads)p.setAttribute("marker-end","url(#ah)");
