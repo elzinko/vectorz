@@ -1,5 +1,4 @@
 ---
-composes: [ezk-backlog]
 name: ezk-start
 argument-hint: "[help|check|run]"
 description: >-
