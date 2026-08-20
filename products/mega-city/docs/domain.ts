@@ -78,6 +78,13 @@ export interface Skill {
   composes?: string[];
   /** ADR-0025 — refs EXTERNES (`skill-creator`, `product-brainstorming`…) : documentées, jamais warnées. */
   composesExternal?: string[];
+  /**
+   * ADR-0020 (amendement 2026-08-20) — ids d'AGENTS que cet orchestrateur convoque.
+   * `composes` dit « quelles briques j'utilise » ; `roles` dit « quels rôles je fais venir ».
+   * C'était la relation centrale du scrum (le sprint convoque l'équipe) et la seule qu'aucun
+   * champ ne portait : elle ne vivait qu'en prose.
+   */
+  roles?: string[];
   /** ADR-0027 — fichiers auxiliaires du dossier (hors `SKILL.md`). Absent ⇒ dossier sans asset. */
   assets?: SkillAsset[];
 }
