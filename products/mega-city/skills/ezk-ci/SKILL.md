@@ -87,12 +87,23 @@ Or les étapes qui **valident réellement** une feature — lint, tests, build �
 **OS-agnostiques** et n'ont pas besoin du conteneur. D'où le **mode dégradé assumé** :
 rejouer les commandes réelles du job de validation **directement sur l'hôte**.
 
+- **Confiance — préalable OBLIGATOIRE** : `native` rejoue du code **contrôlé par la
+  branche** (scripts de package inclus) **directement sur l'hôte, sans isolation** — avec
+  accès à ton `$HOME`, ton agent SSH, ton keychain, tes secrets ambiants. Ne le lance
+  **que sur du code de confiance** (ta propre branche). Sur une **PR/branche non fiable**,
+  **demande une confirmation explicite AVANT** de rejouer quoi que ce soit — divulguer
+  l'absence d'isolation *après coup* n'empêche ni l'exfiltration ni la modification.
 - **Quand** : l'image runner ne se télécharge pas, OU quota Actions épuisé, OU on veut
   juste un garde-fou de 10 s avant un merge. **Pas** pour un release (voir plus bas).
 - **Comment** : lis le job de validation du workflow (souvent `ci.yml > build`) et
   rejoue ses steps `run:` sur l'hôte, dans l'ordre, verdict vert/rouge **par étape**.
   Saute ce qui est spécifique au runner : `actions/checkout`, `setup-node`,
   `actions/cache`, `apt-get install` (deps système déjà là en local), `upload-artifact`.
+- **Argument `[branche]`** : sans argument, `native` rejoue sur le **working tree courant**.
+  Avec `[branche]`, **honore-la** — garde-fou working-tree propre (refuse si sale) →
+  `git checkout <branche>` → rejoue → **restaure** la branche d'origine (`git checkout -`).
+  Sans ce checkout tu validerais la **mauvaise révision** (vert trompeur) ; ne l'annonce
+  pas dans l'usage sans l'appliquer (c'est le comportement de l'impl de référence muti).
 - **Implémentation de référence (muti)** : sous-commande `pnpm ci:local native [branche]`
   dans `scripts/ci-local.sh` — garde-fou working-tree, checkout+restore de branche
   optionnel, `--no-install`, verdict par étape (fiche muti 0032). La séquence est
