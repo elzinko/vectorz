@@ -376,24 +376,24 @@ var CLUSTERS = [
 ];
 
 var SKILLS = {
-  "ezk-backlog":{sub:"help·init·list·add·groom·ready·next·plan·review·reconcile·ship·regen",
+  "ezk-backlog":{comp:["ezk-commits"], sub:"help·init·list·add·groom·ready·next·plan·review·reconcile·ship·regen",
     role:"Le backlog markdown = source de vérité. Fiches idea → todo → in-progress → shipped, jamais perdues entre worktrees ni sessions."},
   "ezk-product-builder":{sub:"build·once·status · --tokens --checkpoints --check-ready --delivery",
     role:"Couche product-owner autonome&nbsp;: enchaîne les sprints. Orchestrateur mince qui compose le quoi, l'idéation et le build.",
-    comp:["ezk-backlog","ezk-sprint","ezk-pm","ezk-pr-pilot","ezk-archive"], ext:["product-brainstorming"]},
+    comp:["ezk-backlog","ezk-sprint","ezk-pr-pilot"], conv:["ezk-pm","ezk-architect","ezk-tdd"], ext:["product-brainstorming"]},
   "vz-product-builder":{sub:"build·once·status · --tokens",
     role:"Variante autonome (overlay&nbsp;: n'écrase pas ezk-product-builder). Même doctrine product-owner, pour un run non supervisé.",
-    comp:["ezk-product-builder","ezk-backlog","ezk-sprint"]},
+    comp:["ezk-backlog","ezk-sprint"]},
 
   "ezk-sprint":{sub:"BDD → TDD → gate → archi → revue → PR",
     role:"Orchestrateur du sprint&nbsp;: 1 fiche = 1 PR. Convoque l'équipe scrum, tout validé en local, squash-merge en conventional commit.",
-    conv:["ezk-qa","ezk-tdd","ezk-architect","ezk-reviewer","ezk-steward"],
-    comp:["ezk-ci","ezk-commits","ezk-codex","ezk-backlog","ezk-preview"], pipe:true},
+    conv:["ezk-architect","ezk-tdd","ezk-qa","ezk-reviewer"],
+    comp:["ezk-backlog","ezk-ci","ezk-commits","ezk-start"], pipe:true},
   "ezk-ci":{sub:"help·check·list·dryrun·run·bootstrap·conso·frugal",
     role:"Valide la CI GitHub Actions en local (act + Docker) avant de pousser, et surveille/plafonne la conso cloud des repos privés."},
   "ezk-commits":{sub:"help·commit·hook·check",
     role:"Aide à écrire des Conventional Commits et pose un hook commit-msg. La brique de commit que les autres composent."},
-  "ezk-codex":{sub:"help·fix·check · [PR]",
+  "ezk-codex":{comp:["ezk-commits"], sub:"help·fix·check · [PR]",
     role:"Adresse les retours du reviewer Codex sur une PR de bout en bout&nbsp;: récupère, classe P0/P1/P2, corrige ou décline, re-déclenche la revue."},
 
   "ezk-pr-pilot":{sub:"help·init·plan·run·report·ship · [#PR]",
@@ -409,18 +409,18 @@ var SKILLS = {
   "ezk-start":{sub:"help·check·run",
     role:"Garde-fou d'ouverture de session&nbsp;: inspecte le dépôt en lecture seule (working tree, worktrees, fiches in-progress, handoff) avant de démarrer."},
   "ezk-archive-skill":{name:"ezk-archive", sub:"help·check·run",
-    role:"Rituel de clôture de session. Rend un verdict CLEAN/DIRTY, produit la note de handoff, et délègue au sous-agent ezk-archive.",
-    comp:["ezk-archive"]},
+    role:"Rituel de clôture de session. Rend un verdict CLEAN/DIRTY, produit la note de handoff, et délègue au sous-agent ezk-archive. Utilise ezk-backlog s'il est là — best-effort, non requis.",
+    conv:["ezk-archive"]},
 
-  "ezk-retro":{sub:"help·run·impose·retire",
+  "ezk-retro":{comp:["ezk-backlog"], sub:"help·run·impose·retire",
     role:"Cérémonie d'auto-amélioration de la méthode, déclenchée par l'humain. Propose des règles typées (symptôme + mesure) qui retournent dans LA LOI.",
     proposes:["LOI"]},
-  "ezk-ezk":{sub:"help·harvest·create·deploy",
+  "ezk-ezk":{comp:["ezk-backlog"], sub:"help·harvest·create·deploy",
     role:"Méta-skill&nbsp;: transforme une discussion de session en un skill réutilisable — récolte, crée, déploie.", makes:["EQUIPE"]},
 
-  "ezk-readme":{sub:"help·create·audit",
+  "ezk-readme":{comp:["ezk-backlog"], sub:"help·create·audit",
     role:"Crée ou audite le README — le point d'entrée du repo&nbsp;: pitch, badges adossés au réel, quickstart, indirections."},
-  "ezk-article":{sub:"help·new·revise·panel",
+  "ezk-article":{comp:["ezk-diagram"], sub:"help·new·revise·panel",
     role:"Écrit/réécrit un article technique vulgarisé avec cadrage de persona et une boucle de relecture par panel de relecteurs frais."},
   "ezk-diagram":{sub:"help·add·list·edit·rm·dup·publish",
     role:"Transforme une description en prose en un diagramme versionné (Mermaid + image), itéré verbalement. La commande qui a produit cette carte.",
@@ -457,24 +457,49 @@ E("PO","ezk-retro","déclenche"); E("PO","ezk-archive-skill","clôt");
 E("LOI","PROFILES","compose"); E("EQUIPE","PROFILES","compose");
 E("PROFILES","BIND","bind"); E("BIND","CAPS","matérialise");
 E("LOI","ezk-sprint","guide");
-// product-builder
-["ezk-backlog","ezk-sprint","ezk-pm","ezk-pr-pilot","ezk-archive"].forEach(function(t){E("ezk-product-builder",t,"compose");});
+// ── COMPOSITION — recopié du graphe GÉNÉRÉ (`pnpm composes:graph` →
+//    skills/README.md, bloc managé). Cette liste doit rester le MIROIR du
+//    frontmatter `composes:`, jamais une opinion : toute arête ajoutée ici sans
+//    déclaration correspondante est une invention. À terme, générer ce bloc.
+[
+  ["ezk-article","ezk-diagram"],
+  ["ezk-backlog","ezk-commits"],
+  ["ezk-codex","ezk-commits"],
+  ["ezk-diagram","ezk-commits"],
+  ["ezk-ezk","ezk-backlog"],
+  ["ezk-pr-pilot","ezk-apk"],
+  ["ezk-pr-pilot","ezk-backlog"],
+  ["ezk-pr-pilot","ezk-commits"],
+  ["ezk-pr-pilot","ezk-device"],
+  ["ezk-pr-pilot","ezk-preview"],
+  ["ezk-product-builder","ezk-backlog"],
+  ["ezk-product-builder","ezk-pr-pilot"],
+  ["ezk-product-builder","ezk-sprint"],
+  ["ezk-readme","ezk-backlog"],
+  ["ezk-retro","ezk-backlog"],
+  ["ezk-sprint","ezk-backlog"],
+  ["ezk-sprint","ezk-ci"],
+  ["ezk-sprint","ezk-commits"],
+  ["ezk-sprint","ezk-start"],
+  ["vz-product-builder","ezk-backlog"],
+  ["vz-product-builder","ezk-sprint"]
+].forEach(function(p){E(p[0],p[1],"compose");});
+
+// ── CONVOCATION DE RÔLES — frontmatter `roles:` des orchestrateurs
+["ezk-architect","ezk-tdd","ezk-qa","ezk-reviewer"].forEach(function(t){E("ezk-sprint",t,"convoque");});
+["ezk-pm","ezk-architect","ezk-tdd"].forEach(function(t){E("ezk-product-builder",t,"convoque");});
+E("ezk-archive-skill","ezk-archive","délègue");            // roles: [ezk-archive]
+
+// ── COMPÉTENCES & INTERACTIONS — frontmatter des agents
+E("ezk-pm","ezk-backlog","compétence");                     // competences:
+E("ezk-reviewer","ezk-ci","compétence");                    // competences:
+E("ezk-archive","ezk-backlog","compétence");                // competences:
+E("ezk-reviewer","LOI","interaction");                      // interactions: clean-code/no-dead-code
+
+// ── RELATIONS DE MÉTHODE (prose assumée, hors graphe machine)
 E("vz-product-builder","ezk-product-builder","overlay");
-// sprint
-["ezk-qa","ezk-tdd","ezk-architect","ezk-reviewer","ezk-steward"].forEach(function(t){E("ezk-sprint",t,"convoque");});
-["ezk-ci","ezk-commits","ezk-codex","ezk-backlog","ezk-preview"].forEach(function(t){E("ezk-sprint",t,"compose");});
-// pr-pilot
-["ezk-preview","ezk-device","ezk-apk","ezk-backlog","ezk-commits"].forEach(function(t){E("ezk-pr-pilot",t,"compose");});
-// misc
-E("ezk-archive-skill","ezk-archive","délègue");
-E("ezk-diagram","ezk-commits","délègue");
 E("ezk-retro","LOI","propose des règles");
 E("ezk-ezk","EQUIPE","produit des skills");
-E("ezk-start","ezk-backlog","inspecte avant");
-// agent competences / interactions
-E("ezk-pm","ezk-backlog","compétence");
-E("ezk-reviewer","ezk-ci","compétence");
-E("ezk-reviewer","LOI","interaction");
 
 /* ============ build indexes ============ */
 var NODE = {}; // id -> {id,name,kind,group,el}
