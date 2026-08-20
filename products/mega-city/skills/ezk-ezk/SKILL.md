@@ -1,4 +1,5 @@
 ---
+composes: [ezk-backlog]
 name: ezk-ezk
 argument-hint: "[help|harvest|create|deploy]"
 description: >-

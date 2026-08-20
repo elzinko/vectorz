@@ -1,4 +1,6 @@
 ---
+composes: [ezk-backlog, ezk-sprint]
+composes-external: [product-brainstorming]
 name: vz-product-builder
 argument-hint: "[build|once|status] [--tokens lean|cap|full]"
 description: >-

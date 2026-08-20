@@ -1,4 +1,5 @@
 ---
+composes: [ezk-backlog]
 name: ezk-retro
 argument-hint: "[help|run|impose|retire]"
 description: >-

@@ -1,4 +1,6 @@
 ---
+composes: [ezk-backlog]
+roles: [ezk-archive]
 name: ezk-archive
 argument-hint: "[help|check|run]"
 description: >-

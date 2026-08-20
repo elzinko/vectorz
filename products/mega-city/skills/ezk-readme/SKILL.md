@@ -1,4 +1,5 @@
 ---
+composes: [ezk-backlog]
 name: ezk-readme
 argument-hint: "[help|create|audit]"
 description: >-

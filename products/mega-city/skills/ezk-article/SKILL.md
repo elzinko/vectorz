@@ -1,4 +1,5 @@
 ---
+composes: [ezk-diagram]
 name: ezk-article
 argument-hint: "[help|new|revise|panel]"
 description: >-
