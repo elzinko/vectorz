@@ -54,11 +54,8 @@ flowchart LR
     ezk-codex --> ezk-commits
     ezk-diagram --> ezk-commits
     ezk-ezk --> ezk-backlog
-    ezk-pr --> ezk-apk
     ezk-pr --> ezk-backlog
     ezk-pr --> ezk-commits
-    ezk-pr --> ezk-device
-    ezk-pr --> ezk-preview
     ezk-product-builder --> ezk-backlog
     ezk-product-builder --> ezk-pr
     ezk-product-builder --> ezk-sprint
@@ -69,6 +66,7 @@ flowchart LR
     ezk-sprint --> ezk-commits
     ezk-sprint --> ezk-start
     vz-product-builder --> ezk-backlog
+    vz-product-builder --> ezk-product-builder
     vz-product-builder --> ezk-sprint
 ```
 <!-- composes-graph:end -->

@@ -16,7 +16,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bind } from '../src/core/bind.js';
 import { planCapture } from '../src/core/capture.js';
-import { checkComposition } from '../src/core/composition.js';
+import { checkComposition, checkRoles } from '../src/core/composition.js';
 import { expandProfile } from '../src/core/expand.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
 import { applyGlobalPlan, applyPlan } from '../src/io/apply.js';
@@ -77,6 +77,11 @@ function reportComposition(profileId: string): void {
   for (const { from, missing } of checkComposition(resolved, catalog)) {
     console.error(
       `⚠️  composition : « ${from} » compose « ${missing} » mais ce composant est absent du profil bindé`,
+    );
+  }
+  for (const { from, missing } of checkRoles(resolved, catalog)) {
+    console.error(
+      `⚠️  rôles : « ${from} » convoque l'agent « ${missing} » mais il est absent du profil bindé`,
     );
   }
 }

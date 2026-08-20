@@ -178,12 +178,15 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
     typeof data.name === 'string' ? data.name : typeof data.id === 'string' ? data.id : fallbackId;
   const composes = stringArray(data.composes)?.map(assertSafeId);
   const composesExternal = stringArray(data['composes-external'])?.map(assertSafeId);
+  // ADR-0020 (amendement) : agents convoqués. Même garde-fou de frontière que `composes`.
+  const roles = stringArray(data.roles)?.map(assertSafeId);
   const assets = readSkillAssets(skillDir);
   return {
     id,
     content: content.trim(),
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),
+    ...(roles ? { roles } : {}),
     ...(assets.length > 0 ? { assets } : {}),
   };
 }
