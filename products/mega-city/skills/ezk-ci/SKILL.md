@@ -100,10 +100,13 @@ rejouer les commandes réelles du job de validation **directement sur l'hôte**.
   Saute ce qui est spécifique au runner : `actions/checkout`, `setup-node`,
   `actions/cache`, `apt-get install` (deps système déjà là en local), `upload-artifact`.
 - **Argument `[branche]`** : sans argument, `native` rejoue sur le **working tree courant**.
-  Avec `[branche]`, **honore-la** — garde-fou working-tree propre (refuse si sale) →
-  `git checkout <branche>` → rejoue → **restaure** la branche d'origine (`git checkout -`).
-  Sans ce checkout tu validerais la **mauvaise révision** (vert trompeur) ; ne l'annonce
-  pas dans l'usage sans l'appliquer (c'est le comportement de l'impl de référence muti).
+  Avec `[branche]`, **isole dans un worktree jetable** — `git worktree add <tmp> <branche>`
+  → rejoue **dedans** → `git worktree remove <tmp>` (quoi qu'il arrive). Plus robuste qu'un
+  `git checkout` + `git checkout -` : si un step rejoué modifie un fichier suivi, le retour
+  échoue ou ramène ces changements dans ta branche, et un replay avorté sauterait le
+  nettoyage — la restauration n'est alors **pas garantie**. Le worktree garantit isolation
+  **et** restauration. Sans checkout du tout tu validerais la **mauvaise révision** (vert
+  trompeur) — ne l'annonce pas dans l'usage sans l'appliquer.
 - **Implémentation de référence (muti)** : sous-commande `pnpm ci:local native [branche]`
   dans `scripts/ci-local.sh` — garde-fou working-tree, checkout+restore de branche
   optionnel, `--no-install`, verdict par étape (fiche muti 0032). La séquence est
