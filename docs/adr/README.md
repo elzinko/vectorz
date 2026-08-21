@@ -44,6 +44,34 @@ La règle est **tenue mécaniquement**, pas seulement écrite : `bin/test-adr-id
 deux fois. Les 15 collisions héritées sont explicitement tolérées — et cette liste ne doit
 jamais s'allonger.
 
+### Pourquoi PAS un id horodaté, comme les fiches
+
+Les fiches de backlog ont soldé leur propre collision en passant à un id horodaté
+(`AAAAMMDDHHMMSSmmm`, fiche 0180). La question se pose donc légitimement ici. Réponse :
+**c'est le même symptôme, pas le même arbitrage**, et deux mesures le décident.
+
+| | Fiches | ADR |
+|---|---|---|
+| Volume | des centaines, plusieurs par session | **38** en toute la vie du projet, sur 21 jours |
+| Mode de citation | surtout des **liens** | **1 502 renvois sur 1 593 sont de la prose nue** (« voir ADR-0022 », « ADR-025 §5 ») ; 91 seulement sont des liens |
+| Coût d'une renumérotation tardive | élevé — la fiche est déjà référencée | quasi nul — un ADR de dix minutes n'a aucun renvoi entrant |
+
+La ligne du milieu est décisive : **94 % des renvois à un ADR sont lus par un humain, dans
+une phrase.** `ADR-20260821143052123 §5` est illisible. Un numéro d'ADR est un nom propre
+qu'on prononce ; un id de fiche est une clé qu'on clique.
+
+D'où la doctrine, différente à dessein :
+
+- **Fiches → PRÉVENIR.** Le timestamp rend la collision impossible, parce que la réparer
+  après coup coûte cher.
+- **ADR → DÉTECTER.** La gate transforme une collision silencieuse en échec bruyant au
+  merge, parce que la réparer à chaud ne coûte rien.
+
+**Le cas concurrent est donc couvert, mais par détection.** Deux branches peuvent prendre le
+même `--next` sans se voir — c'est arrivé plusieurs fois pour les fiches, et le journal
+montre des jours à 2-3 ADR créés. Si ça arrive : la gate rougit au merge, et **on renumérote
+le plus RÉCENT** (celui qui n'est encore cité nulle part), jamais l'ancien.
+
 ---
 
 ## Séquence `docs/adr/` (immuable — ADR-025 §5 : bannière, jamais de suppression)
