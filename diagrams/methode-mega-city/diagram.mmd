@@ -14,7 +14,9 @@ flowchart TB
 
     subgraph ASM["🔗 L'ASSEMBLAGE"]
         direction TB
-        KEY["🔑 profiles/ · keystone"] -->|bind déterministe| CAPS["caps/host · forme native<br/>Code · Desktop · Cursor · cop1"]
+        KEY["🔑 profiles/ · keystone"] -->|résolu par| BIND["⚙️ bind · calcule un plan<br/>(pur : n'écrit rien)"]
+        CAPS["caps/host · le moule de l'hôte<br/>Code · Desktop · Cursor · cop1"] -->|fournit le moule à| BIND
+        BIND -->|plan d'écriture| APPLY["io/apply · le seul qui écrit"]
     end
 
     subgraph FLOW["🏃 LE FLUX · 1 fiche = 1 PR"]
@@ -51,5 +53,5 @@ flowchart TB
     class R,B loi;
     class AG,SK eq;
     class BL,PB,SP,SHIP,START,ARCH,RETRO flow;
-    class KEY,CAPS asm;
+    class KEY,CAPS,BIND,APPLY asm;
     class PO po;

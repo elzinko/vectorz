@@ -27,11 +27,13 @@ Les liens porteurs : le sprint **convoque les agents**, la loi **guide** le spri
 > leurs sous-commandes, les 7 capabilities, tous les liens de composition — vit dans la **carte
 > dynamique interactive** (l'artefact HTML compagnon).
 
-> ⚠️ **v1 — trois défauts connus** (audit du 2026-08-20, détail dans `description.md`) :
-> les liens sont surtout **inférés de la prose** (7 arêtes réellement déclarées via
-> `composes:`, une quarantaine dessinées) ; **`bind → caps/host` est faux** comme séquence
-> (le bind *utilise* un cap, ADR-0003) ; **les rôles ne sont pas dans le graphe**
-> (`composes:` ne relie que skill→skill). À corriger avant d'en faire la carte de référence.
+> **Sur l'assemblage** : `bind` n'est pas l'étape avant `caps/host` — il l'**utilise**.
+> C'est une fonction pure qui lit le profil, prend le moule de ton hôte, et rend un plan
+> d'écriture ; `io/apply` est le seul à toucher au disque (ADR-0003).
+>
+> **Sur les liens** : les flèches de composition sont le **miroir** du graphe généré depuis
+> les fichiers (`pnpm composes:graph`) — plus une lecture de la prose. Les trois défauts de
+> la v1 sont corrigés ; le détail est dans `description.md`.
 
 
 ```mermaid
@@ -51,7 +53,9 @@ flowchart TB
 
     subgraph ASM["🔗 L'ASSEMBLAGE"]
         direction TB
-        KEY["🔑 profiles/ · keystone"] -->|bind déterministe| CAPS["caps/host · forme native<br/>Code · Desktop · Cursor · cop1"]
+        KEY["🔑 profiles/ · keystone"] -->|résolu par| BIND["⚙️ bind · calcule un plan<br/>(pur : n'écrit rien)"]
+        CAPS["caps/host · le moule de l'hôte<br/>Code · Desktop · Cursor · cop1"] -->|fournit le moule à| BIND
+        BIND -->|plan d'écriture| APPLY["io/apply · le seul qui écrit"]
     end
 
     subgraph FLOW["🏃 LE FLUX · 1 fiche = 1 PR"]
@@ -88,11 +92,11 @@ flowchart TB
     class R,B loi;
     class AG,SK eq;
     class BL,PB,SP,SHIP,START,ARCH,RETRO flow;
-    class KEY,CAPS asm;
+    class KEY,CAPS,BIND,APPLY asm;
     class PO po;
 
 ```
 
-**Vues partageables** · [Éditer sur mermaid.live](https://mermaid.live/edit#pako:eNqNVc1u20YQfpXB5hCnoeofSU4jtwYkW7ENMxAtyWgD0YcVOZQWWu7Su0vFbhSgQNMCPQVpgwQwCvTSFjUK9JQiPUdv4hdoH6HdpfyjBDXMi5Y7830z38xw9IREMkZSIwmXj6MhVQa6jVAAAASthV5I_vnp9z8haMHZVy8hnp5GLEYPBlTFCJxCSpkIycGdUBQYnfcHimZD8Fs7vZCcnbz6-6_nsFHv1v3W1n4TluHdW_Dr1hySgwJjn5gpjAyT4iK6fdq9kKico160MDX9bcBRQyTTTGra56hDcgCl0vpE4UDJPMMJNP6L2s9FfA4q7jUs4JFBEes7F2FRxB9k3dxzil_8ciXlFZfy7el3e_s7QfMGWde3eiGhAxSmSOEeqOkbjvrTvlpct8lPTw2KCDXcBSYMKuo49Bx1Z7cXEj1inBckK2WrO6UiRg345aj0kaPLOD3uSznSMJTalOhASG3YYY76Wp31zkMn9OVr8G_XO53mw4Zf37qJuN3mowL5AjIlE3Ze5xEeayMFnnekz0Rs58WgSplg2uAENupBpxeSiGZ60aZrcYlUKYKgho3RKdqQMVrDJuqRkZk9buRKS2VPkcyWrxX2wG997vJ7_jX4TXjg739hccuQsGiI8BksQ9C-gcyG71h-OHG17tNoxOXAMnEEbWQ0crmyGCmcffs9GBlLd2CilCk5UKi1e9dDlmUYz0UMGo7751eOO1MyziNT6ueMx-hUooiGdPqHQLDjrjPFhHlvOoJeSCy6MFpQY3PTRezOfgfUoDtQFQ2ZOykc5zjPs71jmc5-_Ab0YU71sJSiGuBF6nPODd911jCFEwga7iWeniqZc5xAJ3AXNIcxKjNx1B_0qdOtt7tO_cmvTr02duO8ewsyH6vL3OrtjW3n9vqZ3R_W08kYu9GI-PSNgYUhFbFMkssvut3stlvFdD5zGIVGSYug6fSUMzmLUHj7rR2XcbFOcGJHu7A09_7HELScIWNc2nlu-HPXnIrIVWamNZixiLE8zHEC9a0rgT8urU8GOYtd5WaA7Z0CoqanlLMUxdUgrnQFjo6pMHYSE54fXfE4x2c500WRJq6Sc1naHc7thOGkKNiV2hVoJa1ssItmtnInbl_P6hZxqvUmJsAlg4RxXru1jGX6CfW0UXKE9rWyRBMvklyq2q0kSdbeQ-LhDNivVMtL9y-A91cqS0t4DdD-SZ3HXF2tliuXMSvV8kp8DZTqdIas3KtWVy-DlsuV5Wr1GmQmbxhyZik9ZrEZ1srZ0dpczaDtNWzRrvJDfcvr7AIezl02fC9oeJ3Asy31XOc920iv6JKtwpz_bvORZ5erFTlnCFqQybVQEI-kqFLKYlIjT6xHSMwQUwxJDUISY0JzbkISiqfEIzQ3snMsIlIzKkeP5FlMDW4yOlA0LS6f_gtfbMLP) · [Image PNG (mermaid.ink)](https://mermaid.ink/img/pako:eNqNVc1u20YQfpXB5hCnoeofSU4jtwYkW7ENMxAtyWgD0YcVOZQWWu7Su0vFbhSgQNMCPQVpgwQwCvTSFjUK9JQiPUdv4hdoH6HdpfyjBDXMi5Y7830z38xw9IREMkZSIwmXj6MhVQa6jVAAAASthV5I_vnp9z8haMHZVy8hnp5GLEYPBlTFCJxCSpkIycGdUBQYnfcHimZD8Fs7vZCcnbz6-6_nsFHv1v3W1n4TluHdW_Dr1hySgwJjn5gpjAyT4iK6fdq9kKico160MDX9bcBRQyTTTGra56hDcgCl0vpE4UDJPMMJNP6L2s9FfA4q7jUs4JFBEes7F2FRxB9k3dxzil_8ciXlFZfy7el3e_s7QfMGWde3eiGhAxSmSOEeqOkbjvrTvlpct8lPTw2KCDXcBSYMKuo49Bx1Z7cXEj1inBckK2WrO6UiRg345aj0kaPLOD3uSznSMJTalOhASG3YYY76Wp31zkMn9OVr8G_XO53mw4Zf37qJuN3mowL5AjIlE3Ze5xEeayMFnnekz0Rs58WgSplg2uAENupBpxeSiGZ60aZrcYlUKYKgho3RKdqQMVrDJuqRkZk9buRKS2VPkcyWrxX2wG997vJ7_jX4TXjg739hccuQsGiI8BksQ9C-gcyG71h-OHG17tNoxOXAMnEEbWQ0crmyGCmcffs9GBlLd2CilCk5UKi1e9dDlmUYz0UMGo7751eOO1MyziNT6ueMx-hUooiGdPqHQLDjrjPFhHlvOoJeSCy6MFpQY3PTRezOfgfUoDtQFQ2ZOykc5zjPs71jmc5-_Ab0YU71sJSiGuBF6nPODd911jCFEwga7iWeniqZc5xAJ3AXNIcxKjNx1B_0qdOtt7tO_cmvTr02duO8ewsyH6vL3OrtjW3n9vqZ3R_W08kYu9GI-PSNgYUhFbFMkssvut3stlvFdD5zGIVGSYug6fSUMzmLUHj7rR2XcbFOcGJHu7A09_7HELScIWNc2nlu-HPXnIrIVWamNZixiLE8zHEC9a0rgT8urU8GOYtd5WaA7Z0CoqanlLMUxdUgrnQFjo6pMHYSE54fXfE4x2c500WRJq6Sc1naHc7thOGkKNiV2hVoJa1ssItmtnInbl_P6hZxqvUmJsAlg4RxXru1jGX6CfW0UXKE9rWyRBMvklyq2q0kSdbeQ-LhDNivVMtL9y-A91cqS0t4DdD-SZ3HXF2tliuXMSvV8kp8DZTqdIas3KtWVy-DlsuV5Wr1GmQmbxhyZik9ZrEZ1srZ0dpczaDtNWzRrvJDfcvr7AIezl02fC9oeJ3Asy31XOc920iv6JKtwpz_bvORZ5erFTlnCFqQybVQEI-kqFLKYlIjT6xHSMwQUwxJDUISY0JzbkISiqfEIzQ3snMsIlIzKkeP5FlMDW4yOlA0LS6f_gtfbMLP)
+**Vues partageables** · [Éditer sur mermaid.live](https://mermaid.live/edit#pako:eNqNVV1vG0UU_StX24eksCYftlvqQiU7cZMoW7y1U0Hl7cN456498nhmMx9pQ10JiYLEU1WoWlEhwQMgIiSeispz95_kD8BPgJm1k7gVUfzi3Zl7zj333DuzD4NUUgwaQcbl_XRElIG9ViIAAOLOcj8J_vnx9z8h7sDxF8-AFkcpoxjCkCiKwAlMCBNJcO9yIkqMtoOhIvkIos5OPwmOXz7_-68nsNHca0adrTttWIM3ryFquu0kuFdi3I8yhalhUpxkd79uPwmU5ahXHEwVvw05akjlJJeaDDjqJLgHlcqNqcKhkjbHKbT-yzqwgs5B5bqGZXxgUFB9-SQtCvqO6vZtX_HTX85IXveSl4pvbt_ZidsXUN3c6icBGaIwpYSroIpXHPVHA7Vyw4kvjgyKFDW8D0wYVMRz6AXq3m4_CfSYcV6SrFdd3RMiKGrAz8eV9zxdzsnhQMqxhpHUpkKGQmrD9i3qc-ts9m75Qp-9gGip2eu1b7Wi5tZFittt3y2RTyFXMmNzn8d4qI0UeNKR4khLbiEnagqtnU82_TR876ZhwAR1kJTw1HIEKyDnRPh6lnOroAFiqThKFTOgGIrLC7I2mnGvnwQpyfWKq9kxcYSJdFRuKJdGxSuDnm1DUnT7m6jHRubuccMqLZVPL_O1udpMWiWYOSUqfipVn-Z1bz7WaQU6E2gVTqEZx5FzhckVkuf8cCZJo-WwbxmUoec25GbU-dT7-uRLiNpwM7rzmWNZg4ylI4SPYQ3i7gXa04o8y3cv_YwMSDrmcjjXY2Q69r4wigSOv_4WjKTSPzBRyZUcKtTav-sRy3OkCxnjluf--bnnzpWkNjWVgWWconcURToixR8CwR1TnSsmzFtTHfeTwKHLTQdqbW76jHuz_yEx6B-ISkfMPyk8sLjIs73jmI5_-Ar0viV6VJmgGuKJ9IXgVuT7ZpjrVdzyL7Q4Uq7RU-jFfoFYOEBlpp76nT719prdPV_9y1999dq4m_LNa5D2QJ1qa3Y3tn3Yi8du0l2kL-PAj2HKi1cGlkdEUJllp2Pdbe91O-WpeuwxCo2SDkEmxRFncpahjI46O15xeQ3i1B3Jcqd9-3824k45uYxL4-7IaGGZE5F6Z2a1xjMWcSD3rRvvrTOJP6jcmA4to965GWB7J56fecLZBMXZJN66EkcOiPBnLOP2wZmIOT63TJcmTb2TCyrdt4e7CcNpadgZ70q0kq5scBfk7FMx9d-ZmW8pJ1pvYgZcMsgY541La1glH5JQGyXH6F5rqyQLU8mlalzKsuz6W0jcnwEHtXp19doJ8Np6bXUVzwG6j-s855Ur9WrtNGetXl2n50CJnsyQtav1-pXTpNVqba1ePweZywumnO1U7jNqRo1q_uD6gmfQDVvOtLP80NwKe7uA-wuLrSiMW2EvDl1LQ9_50DUyLLvkXFiI323fDd19HrrLNfTXqKt3ISbuQC6vJyIIgwmqCWE0aAQPXUQSmBFOMAkakAQUM2K5SYJEPArCgFgje4ciDRpGWQwDm1NicJORoSKTcvHRv9LOBm4=) · [Image PNG (mermaid.ink)](https://mermaid.ink/img/pako:eNqNVV1vG0UU_StX24eksCYftlvqQiU7cZMoW7y1U0Hl7cN456498nhmMx9pQ10JiYLEU1WoWlEhwQMgIiSeispz95_kD8BPgJm1k7gVUfzi3Zl7zj333DuzD4NUUgwaQcbl_XRElIG9ViIAAOLOcj8J_vnx9z8h7sDxF8-AFkcpoxjCkCiKwAlMCBNJcO9yIkqMtoOhIvkIos5OPwmOXz7_-68nsNHca0adrTttWIM3ryFquu0kuFdi3I8yhalhUpxkd79uPwmU5ahXHEwVvw05akjlJJeaDDjqJLgHlcqNqcKhkjbHKbT-yzqwgs5B5bqGZXxgUFB9-SQtCvqO6vZtX_HTX85IXveSl4pvbt_ZidsXUN3c6icBGaIwpYSroIpXHPVHA7Vyw4kvjgyKFDW8D0wYVMRz6AXq3m4_CfSYcV6SrFdd3RMiKGrAz8eV9zxdzsnhQMqxhpHUpkKGQmrD9i3qc-ts9m75Qp-9gGip2eu1b7Wi5tZFittt3y2RTyFXMmNzn8d4qI0UeNKR4khLbiEnagqtnU82_TR876ZhwAR1kJTw1HIEKyDnRPh6lnOroAFiqThKFTOgGIrLC7I2mnGvnwQpyfWKq9kxcYSJdFRuKJdGxSuDnm1DUnT7m6jHRubuccMqLZVPL_O1udpMWiWYOSUqfipVn-Z1bz7WaQU6E2gVTqEZx5FzhckVkuf8cCZJo-WwbxmUoec25GbU-dT7-uRLiNpwM7rzmWNZg4ylI4SPYQ3i7gXa04o8y3cv_YwMSDrmcjjXY2Q69r4wigSOv_4WjKTSPzBRyZUcKtTav-sRy3OkCxnjluf--bnnzpWkNjWVgWWconcURToixR8CwR1TnSsmzFtTHfeTwKHLTQdqbW76jHuz_yEx6B-ISkfMPyk8sLjIs73jmI5_-Ar0viV6VJmgGuKJ9IXgVuT7ZpjrVdzyL7Q4Uq7RU-jFfoFYOEBlpp76nT719prdPV_9y1999dq4m_LNa5D2QJ1qa3Y3tn3Yi8du0l2kL-PAj2HKi1cGlkdEUJllp2Pdbe91O-WpeuwxCo2SDkEmxRFncpahjI46O15xeQ3i1B3Jcqd9-3824k45uYxL4-7IaGGZE5F6Z2a1xjMWcSD3rRvvrTOJP6jcmA4to965GWB7J56fecLZBMXZJN66EkcOiPBnLOP2wZmIOT63TJcmTb2TCyrdt4e7CcNpadgZ70q0kq5scBfk7FMx9d-ZmW8pJ1pvYgZcMsgY541La1glH5JQGyXH6F5rqyQLU8mlalzKsuz6W0jcnwEHtXp19doJ8Np6bXUVzwG6j-s855Ur9WrtNGetXl2n50CJnsyQtav1-pXTpNVqba1ePweZywumnO1U7jNqRo1q_uD6gmfQDVvOtLP80NwKe7uA-wuLrSiMW2EvDl1LQ9_50DUyLLvkXFiI323fDd19HrrLNfTXqKt3ISbuQC6vJyIIgwmqCWE0aAQPXUQSmBFOMAkakAQUM2K5SYJEPArCgFgje4ciDRpGWQwDm1NicJORoSKTcvHRv9LOBm4=)
 
 <sub>Les liens mermaid.live/mermaid.ink encodent le diagramme dans l’URL (service externe) — pratique pour partager/éditer vite ; la vue sans service tiers reste ce README rendu par GitHub.</sub>

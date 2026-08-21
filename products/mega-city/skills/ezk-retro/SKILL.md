@@ -32,6 +32,12 @@ rangé (et peut en retirer). C'est le pendant *déclenché-par-l'humain* de l'au
 **mesurée** (Sujet B, le contrat d'améliorabilité — ADR-030, qui se déclenche sur des
 chiffres). **Ici, c'est l'humain qui décide quand, et le PO qui tranche quoi.**
 
+
+> **Pourquoi pas de `roles:` dans le frontmatter.** La cérémonie réunit les **agents bindés
+> du profil** (§ Panel), pas une liste figée : elle s'adapte à ce qui est installé. Déclarer
+> une équipe fixe contredirait ce comportement et ferait warner tout profil curated qui omet
+> un agent à dessein. `roles:` est réservé aux convocations **inconditionnelles**.
+
 ## Usage (sous-commandes)
 
 `/ezk-retro [sous-commande] [args]` — ou en langage naturel (« lance une rétro sur… »).

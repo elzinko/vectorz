@@ -330,8 +330,8 @@ var SPINE = [
   {id:"LOI", ic:"⚖️", k:"LA LOI", grp:"law", d:"rules/ + bundles/"},
   {id:"EQUIPE", ic:"👥", k:"L'ÉQUIPE", grp:"cap", d:"7 agents · 23 skills"},
   {id:"PROFILES", ic:"🔑", k:"profiles/", grp:"asm", d:"keystone : compose tout"},
-  {id:"BIND", ic:"⚙️", k:"bind", grp:"asm", d:"déterministe (bin/)"},
-  {id:"CAPS", ic:"🖥️", k:"caps/host", grp:"asm", d:"Code · Desktop · Cursor · cop1"}
+  {id:"CAPS", ic:"🖥️", k:"caps/host", grp:"asm", d:"le moule de ton hôte"},
+  {id:"BIND", ic:"⚙️", k:"bind", grp:"asm", d:"assemble, puis io/apply écrit"}
 ];
 var SPINE_DOS = {
   PO:{role:"L'humain product-owner. Point d'entrée de tout&nbsp;: rien ne se lance sans lui. Il décide, tranche, et garde la main — quatre décisions lui restent réservées (irréversible/sortant, budget, idée produit, exigences contradictoires)."},
@@ -340,8 +340,8 @@ var SPINE_DOS = {
   EQUIPE:{role:"Le catalogue 2. Sept rôles (agents, chacun avec ses compétences et interactions) et vingt-trois commandes (skills, des playbooks indépendants de l'hôte). Voir les deux sections ci-dessous."},
   PROFILES:{role:"La clé de voûte. Un profil compose la loi (bundles) et l'équipe (agents + skills) en un tout cohérent — base, daily, desktop, mobile, global, cop1-target.",
        extra:[{h:"profils",chips:["base","daily","desktop","mobile","global","cop1-target"]}]},
-  BIND:{role:"Le moteur déterministe (bin/). Il matérialise un profil dans la forme native de chaque hôte. Le LLM ne range jamais&nbsp;: le bind, lui, est un script — toujours pareil, testable."},
-  CAPS:{role:"La forme native par hôte&nbsp;: caps/&lt;host&gt;/ adapte la méthode à chaque LLM — Claude Code, Claude Desktop, Cursor, cop1… La même méthode, matérialisée là où on l'utilise."}
+  BIND:{role:"Le moteur déterministe. Il <b>ne suit pas</b> le cap&nbsp;: il l'<b>utilise</b>. `bind` est une fonction <b>pure</b> — elle lit le profil, choisit le moule de l'hôte dans un registre, et rend un <b>plan d'écriture</b> sans toucher au disque. C'est `io/apply` qui écrit, et lui seul (ADR-0003). Le LLM ne range jamais&nbsp;; le script, si — toujours pareil, testable."},
+  CAPS:{role:"Le <b>moule</b> de chaque hôte&nbsp;: un module par LLM (Claude Code, Desktop, Cursor, cop1…) qui sait la forme native attendue. Ce n'est <b>pas l'étape d'après le bind</b> — c'est un composant que le bind choisit dans un registre et consomme. L'image&nbsp;: le bind est la recette, le cap est le moule adapté à ton four, io/apply est la cuisson."}
 };
 
 // 7 agents (capabilities) — model / effort / color from frontmatter
@@ -454,7 +454,7 @@ function E(a,b,k){EDGES.push({a:a,b:b,k:k});}
 E("PO","ezk-backlog","pilote"); E("PO","ezk-product-builder","lance");
 E("PO","ezk-retro","déclenche"); E("PO","ezk-archive-skill","clôt");
 E("LOI","PROFILES","compose"); E("EQUIPE","PROFILES","compose");
-E("PROFILES","BIND","bind"); E("BIND","CAPS","matérialise");
+E("PROFILES","BIND","résolu par"); E("CAPS","BIND","fournit le moule");
 E("LOI","ezk-sprint","guide");
 // ── COMPOSITION — recopié du graphe GÉNÉRÉ (`pnpm composes:graph` →
 //    skills/README.md, bloc managé). Cette liste doit rester le MIROIR du
@@ -484,8 +484,7 @@ E("LOI","ezk-sprint","guide");
 
 // ── CONVOCATION DE RÔLES — frontmatter `roles:` des orchestrateurs
 ["ezk-architect","ezk-tdd","ezk-qa","ezk-reviewer"].forEach(function(t){E("ezk-sprint",t,"convoque");});
-["ezk-pm","ezk-architect","ezk-tdd"].forEach(function(t){E("ezk-product-builder",t,"convoque");});
-E("ezk-archive-skill","ezk-archive","délègue");            // roles: [ezk-archive]
+["ezk-pm"].forEach(function(t){E("ezk-product-builder",t,"convoque");});
 
 // ── COMPÉTENCES & INTERACTIONS — frontmatter des agents
 E("ezk-pm","ezk-backlog","compétence");                     // competences:
@@ -497,6 +496,9 @@ E("ezk-reviewer","LOI","interaction");                      // interactions: cle
 E("vz-product-builder","ezk-product-builder","overlay");
 E("ezk-retro","LOI","propose des règles");
 E("ezk-ezk","EQUIPE","produit des skills");
+// archive → son agent : délégation CONDITIONNELLE (directe sur CLEAN, agent sur DIRTY)
+// et base.yml pose agents: [] à dessein → prose, PAS une déclaration `roles:`.
+E("ezk-archive-skill","ezk-archive","délègue si DIRTY");
 
 /* ============ build indexes ============ */
 var NODE = {}; // id -> {id,name,kind,group,el}
