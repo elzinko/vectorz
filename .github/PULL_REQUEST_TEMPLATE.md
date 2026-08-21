@@ -1,25 +1,43 @@
-## Summary
+<!-- Corps de PR = RENDU de la fiche (source unique `features/<id>_*.md`), PAS un résumé
+     parallèle. Règle human-facing-lisibility / ADR-0029. Ne rien rédiger ici : recopier la
+     fiche ; sur divergence, la fiche gagne → re-rendre. (Nom de fichier « thin » = legacy.) -->
 
-<!-- ≤ 5 lignes user-facing : ce que ça change et pourquoi.
-     Ouvre par « En clair ». Un tiers doit reformuler le besoin sans ouvrir le diff. -->
+> 🗎 **Rendu de la fiche** `features/<id>_<slug>.md` — source unique (ADR-0029). ⚠️ **Remplacer par le chemin réel** : le placeholder `<id>_<slug>` est rejeté par `check-pr-body` (un corps non lié ne passe pas).
 
-## Lien fiche
+<!-- ▼▼▼ RENDU DE LA FICHE — coller son contenu tel quel (En clair + sections) ▼▼▼ -->
 
-<!-- Chemin vers la fiche backlog, ex. `features/0079-restitutions-po-lisibles.md`.
-     L'id est déjà dans la branche `feat/<id>-<slug>`. -->
+# <id> — <titre>
 
-## Comment tester
+**En clair.** <l'ouverture de la fiche, recopiée telle quelle>
 
-<!-- Commandes littérales depuis un clone frais — OU preuves agent (screenshots
-     before/after) qui pointent vers des scripts npm / BDD **existants**.
-     Ne pas dupliquer le Gherkin de la fiche : orienter et renvoyer.
-     Voir docs/PR_VALIDATION.md pour la matrice et les signaux observables. -->
+**Si tu arrives frais.** <si la fiche la porte : le vocabulaire projet minimal pour lire cette fiche sans contexte ; sinon retire cette ligne>
 
-```bash
-# ex. pnpm --dir products/mega-city test -- <chemin pertinent>
-```
+## Contexte / Problème
+
+<recopié de la fiche>
+
+## Proposition
+
+<recopié de la fiche>
+
+## Critères d'acceptation
+
+- [ ] <recopié de la fiche>
+
+## Comment vérifier
+
+<recopié de la fiche : commandes rejouables / preuves agent pointant des scripts existants.
+Les liens before/after d'UI vivent ICI (donc dans la fiche), pas inventés côté PR.>
+
+## Glossaire
+
+<si la fiche la porte : une entrée par terme (obligatoire si la fiche emploie du jargon interne) ; sinon retire toute la section>
+
+<!-- ▲▲▲ FIN DU RENDU DE LA FICHE ▲▲▲ -->
 
 ## Validation
+
+<!-- SEUL bloc propre à la PR : statut dynamique (CI/tests/E2E), pas de la prose. Conv. ADR-0009. -->
 
 | Modalité | Statut |
 |---|---|

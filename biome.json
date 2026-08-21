@@ -38,8 +38,7 @@
       "dist",
       "coverage",
       "*.tsbuildinfo",
-      "_bmad",
-      "_bmad-output",
+      ".claude",
       "pnpm-lock.yaml",
       "products/cop1/packages/web",
       "products/mega-city"
