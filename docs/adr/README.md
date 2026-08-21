@@ -10,6 +10,84 @@ code) ; *époque 2* = Vectorz — cop1 supervise (clairances, budget, gates, jou
 méthode vit dans mega-city (skills, LA LOI) et le backlog natif `features/*.md`.
 Bascule : ADR-029 (E1→E4, tags `epoch-1-bmad-final` / `epoch-2-post-bmad`).
 
+## ⚠️ Numérotation — une seule séquence pour les DEUX dossiers
+
+Le dépôt tient **deux** séries d'ADR, pour deux objets distincts :
+
+| Dossier | Objet | Graphie |
+|---|---|---|
+| `docs/adr/` | l'ombrelle vectorz (cop1, packaging, monorepo…) | `ADR-025-slug.md` |
+| `products/mega-city/docs/adr/` | la méthode `ezk-*` | `0025-slug.md` |
+
+Elles ont numéroté chacune depuis 1, **sans se voir**. Résultat mesuré le 2026-08-21 : les
+numéros **015 à 029 désignent quinze couples de sujets sans rapport**. « ADR-020 » veut dire
+*dod-completion-gate* ou *capacité partagée* selon le dossier. C'est le même mal que les
+fiches ont soldé en passant aux ids horodatés — les ADR ne l'avaient jamais soldé.
+
+**Ce passé est gelé, pas réparé.** Les ADR sont immuables (ADR-025 §5) et ces numéros sont
+cités environ 1 600 fois : renuméroter casserait bien plus que ça ne répare. Une convention
+implicite les distingue déjà à l'écrit — **4 chiffres** (`ADR-0022`) pour la méthode,
+**3 chiffres** (`ADR-022`) pour l'ombrelle — et les renvois croisés sont qualifiés en prose
+(« cop1 `ADR-021` », « mega-city ADR-0006 »). Garder cette double discipline pour tout ce
+qui existe déjà.
+
+**Pour l'avenir, la règle est simple : les deux dossiers partagent UNE séquence.** Un
+nouvel ADR — quel que soit son dossier — prend le premier numéro libre **des deux côtés**.
+Un numéro ne désigne alors plus qu'un seul sujet.
+
+```bash
+bash products/mega-city/bin/check-adr-ids.sh . --next
+```
+
+La règle est **tenue mécaniquement**, pas seulement écrite : `bin/test-adr-ids-repo.sh`
+(dans `pnpm --dir products/mega-city test:scripts`) rougit si un numéro neuf est attribué
+deux fois. Les 15 collisions héritées sont explicitement tolérées — et cette liste ne doit
+jamais s'allonger.
+
+### Pourquoi PAS un id horodaté, comme les fiches
+
+Les fiches de backlog ont soldé leur propre collision en passant à un id horodaté
+(`AAAAMMDDHHMMSSmmm`, fiche 0180). La question se pose donc légitimement ici. Réponse :
+**c'est le même symptôme, pas le même arbitrage**, et deux mesures le décident.
+
+| | Fiches | ADR |
+|---|---|---|
+| Volume | des centaines, plusieurs par session | **38** en toute la vie du projet, sur 21 jours |
+| Mode de citation | surtout des **liens** | **1 502 renvois sur 1 593 sont de la prose nue** (« voir ADR-0022 », « ADR-025 §5 ») ; 91 seulement sont des liens |
+| Coût d'une renumérotation tardive | élevé — la fiche est déjà référencée | quasi nul — un ADR de dix minutes n'a aucun renvoi entrant |
+
+La ligne du milieu est décisive : **94 % des renvois à un ADR sont lus par un humain, dans
+une phrase.** `ADR-20260821143052123 §5` est illisible. Un numéro d'ADR est un nom propre
+qu'on prononce ; un id de fiche est une clé qu'on clique.
+
+D'où la doctrine, différente à dessein :
+
+- **Fiches → PRÉVENIR.** Le timestamp rend la collision impossible, parce que la réparer
+  après coup coûte cher.
+- **ADR → DÉTECTER.** La gate transforme une collision silencieuse en échec bruyant au
+  merge, parce que la réparer à chaud ne coûte rien.
+
+**Le cas concurrent : ce qui est couvert, et ce qui ne l'est pas.** Deux branches peuvent
+prendre le même `--next` sans se voir — le journal montre des jours à 2-3 ADR créés. Soyons
+précis sur ce que la gate garantit, parce que la formulation initiale promettait trop
+(relevé par la revue Codex, PR #160) :
+
+| Situation | Attrapé ? | Par quoi |
+|---|---|---|
+| Une PR ajoute un numéro déjà pris sur `main` | ✅ **avant le merge** | GitHub évalue la PR sur la **fusion** avec `main` : le doublon est visible dans le checkout |
+| Idem, mais la PR a été validée **avant** que l'autre ne merge, et n'est pas re-jouée | ❌ | rien ne force une PR verte à se re-valider quand `main` avance (pas de branch protection : plan Free) |
+| Deux PR mergées coup sur coup avec le même numéro | ✅ **juste après** | le déclencheur `push` sur `main` du même workflow → **`main` passe au rouge** |
+
+Autrement dit : **la prévention n'est pas atteignable** avec l'outillage disponible (ni file
+d'attente de merge, ni « branche à jour obligatoire »). Ce qui est garanti, c'est qu'une
+collision **ne peut pas dormir** : elle rougit `main` dans la minute.
+
+**Conduite à tenir quand ça arrive** : renuméroter l'ADR **le plus RÉCENT** — celui qui
+n'est encore cité nulle part — jamais l'ancien. Le coût est proche de zéro, et c'est
+précisément le pari assumé du choix « détecter plutôt que prévenir » ci-dessus.
+
+---
+
 ## Séquence `docs/adr/` (immuable — ADR-025 §5 : bannière, jamais de suppression)
 
 | ADR | Titre court | Statut | Verdict époque 2 | Action |

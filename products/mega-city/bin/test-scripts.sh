@@ -27,6 +27,8 @@ SUITES=(
   "skills/ezk-backlog/scripts/test-layout-version.sh"    # ezk-backlog — Skema layout version
   "bin/test-check-links.sh"                              # fiche 0101 — sabotage du vérificateur de liens
   "bin/test-links-repo.sh"                               # fiche 0101 — liens réels du repo (mega-city + racine vectorz)
+  "bin/test-check-adr-ids.sh"                            # sabotage du garde-fou de numérotation des ADR
+  "bin/test-adr-ids-repo.sh"                             # numéros d'ADR réels du repo (aucune NOUVELLE collision)
 )
 
 FAILED=()
