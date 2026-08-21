@@ -84,6 +84,7 @@
 | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | ⛔ blocked |  |
 | 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
 | 20260816131704335 | /ezk-help — index de commandes ezk généré depuis les frontmatter | feature | P1 | 20260816131703334 | mega-city | ✅ shipped | #151 |
+| 20260821163346490 | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 20260821163346487 | mega-city | 🔴 todo |  |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -165,6 +166,7 @@
 | 0051 | Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic) | epic | P1 |  | vectorz | 🔴 todo |  |
 | 20260813124026215 | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad) | epic | P1 |  | mega-city | 💡 idea |  |
 | 20260816131703334 | Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro) | epic | P1 |  | mega-city | 🔴 todo |  |
+| 20260821163346487 | Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau | epic | P1 |  | mega-city | 💡 idea |  |
 | 0163 | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | epic | P2 |  | mega-city | 🔴 todo |  |
 | 20260813131737959 | Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic) | epic | P2 |  | mega-city | 🔴 todo |  |
 | 20260815080413884 | DoR agent-native — extensible par projet + readiness observable (épic) | epic | P2 |  | mega-city | 🔴 todo |  |
@@ -181,6 +183,7 @@
 | 20260812104022237 | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260812104022240 | Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260812104022246 | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
+| 20260821163346493 | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | 0053 | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | 0054 | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 0051 | vectorz | 💡 idea |  |
@@ -228,6 +231,9 @@
 | 20260817113353538 | Étude prior-art BMAD (templates + elicitation) — ce qui se transpose à une méthode LLM-native | chore | P2 |  | mega-city | 💡 idea |  |
 | 20260817113353676 | Article « Templates de réponse adaptés aux LLM » (via ezk-article) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260818185931307 | Capability de vente LemonSqueezy (checkout + licence + entitlement) — récoltée de muti, réutilisable | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260821163346496 | Définir ce qu'on valide et dans quel ordre (l'unité de revue de la carte) | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
+| 20260821163346498 | Montrer sur la carte ce qui est revu, en cours, ou jamais vérifié (+ date) | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
+| 20260821163346501 | Corriger un lien faux depuis la carte, et que ça retombe dans les fichiers | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
@@ -240,5 +246,6 @@
 | 0187 | ezk-article — « LLM skills migration » (versionner et migrer des skills LLM en markdown) | feature | P3 |  | mega-city | 💡 idea |  |
 | 20260812100258610 | testbed dogfood LLM headless — rejouer la chaîne méthode→journal→Moniteur sans humain (nightly) | feature | P3 |  | mega-city | 💡 idea |  |
 | 20260813122619707 | Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu) | bug | P3 |  | mega-city | 💡 idea |  |
+| 20260821163346503 | La méthode s'auto-évalue : sa cohérence, et la fidélité de sa représentation | feature | P3 | 20260821163346487 | mega-city | 💡 idea |  |
 
 > Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0044, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0065, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0101, 0103, 0104, 0105, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0149, 0153, 0154, 0159, 0160, 0167, 0168, 0173, 0176, 0181, 0182, 0183, 0184, 0185, 0191, 20260813170548417, 20260813200137369, 20260816131704335.
