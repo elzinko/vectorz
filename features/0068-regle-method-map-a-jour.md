@@ -4,6 +4,7 @@ title: Règle enforced — la carte de la méthode (method-map) à jour à chaqu
 type: feature
 priority: P2
 product: mega-city
+epic: "20260821163346487"
 status: idea
 pr:
 created: 2026-07-16

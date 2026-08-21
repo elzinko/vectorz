@@ -79,7 +79,14 @@ Si l'un des trois n'est pas traçable, l'épic n'est pas fini.
 - **Frère, pas doublon** de l'épic *Rationalisation & cohérence de la méthode*
   (`20260813131737959`) : celui-là porte sur **la méthode**, celui-ci sur **la fidélité
   de sa représentation**. Se lisent ensemble, ne se fusionnent pas.
-- **Candidat au rattachement** : la fiche `0068` (« la carte à jour à chaque modif de
-  méthode ») traite de la **fraîcheur**, qui est une facette de la fiabilité.
-  Rattachement à arbitrer par le PO.
+- **Rattachée le 2026-08-21 (décision PO)** : la fiche `0068` (« la carte à jour à chaque
+  modif de méthode ») — la **fraîcheur** est une facette de la fiabilité.
+- **Pièce d'audit rattachée (2026-08-21)** : [l'audit complet de la méthode du
+  2026-08-20](../docs/audits/2026-08-20-audit-methode-mega-city.html) — 29 décisions
+  d'architecture passées au crible, 11 contradictions, sécurité, historique. Versionné
+  dans le repo (l'artefact claude.ai reste la vue publiée privée). Lisible en local :
+  `pnpm ezk:map` puis ouvrir `/docs/audits/2026-08-20-audit-methode-mega-city.html`.
+- **MAJ 2026-08-21** : 2 filles ajoutées après la première lecture PO — `0068` (ci-dessus)
+  et « la carte ne montre pas LA LOI de l'intérieur » (symptôme : le PO a cherché le
+  concept de composition/règles activables sur la carte et ne l'a pas trouvé).
 - Outil d'ouverture livré le 2026-08-21 : `pnpm ezk:map` (racine ou `products/mega-city`).
