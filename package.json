@@ -18,7 +18,8 @@
     "clean": "pnpm -r clean && rm -rf node_modules",
     "cobaye:reset": "bash cobaye/reset.sh",
     "cobaye:smoke": "bash scripts/cobaye-smoke.sh",
-    "outcomes:measure": "pnpm --dir products/mega-city exec tsx ../../tools/outcomes/cli.ts"
+    "outcomes:measure": "pnpm --dir products/mega-city exec tsx ../../tools/outcomes/cli.ts",
+    "ezk:map": "pnpm --dir products/mega-city ezk:map"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",

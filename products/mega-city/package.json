@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "lawgiver": "tsx bin/lawgiver.ts",
     "ezk:help": "tsx bin/ezk-help.ts",
+    "ezk:map": "tsx bin/ezk-map.ts",
     "supervision:link": "tsx bin/supervision-link.ts",
     "supervision:doctor": "tsx bin/supervision-doctor.ts",
     "supervision:probe": "tsx bin/supervision-probe.ts",
