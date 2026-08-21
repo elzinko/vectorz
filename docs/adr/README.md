@@ -10,6 +10,42 @@ code) ; *époque 2* = Vectorz — cop1 supervise (clairances, budget, gates, jou
 méthode vit dans mega-city (skills, LA LOI) et le backlog natif `features/*.md`.
 Bascule : ADR-029 (E1→E4, tags `epoch-1-bmad-final` / `epoch-2-post-bmad`).
 
+## ⚠️ Numérotation — une seule séquence pour les DEUX dossiers
+
+Le dépôt tient **deux** séries d'ADR, pour deux objets distincts :
+
+| Dossier | Objet | Graphie |
+|---|---|---|
+| `docs/adr/` | l'ombrelle vectorz (cop1, packaging, monorepo…) | `ADR-025-slug.md` |
+| `products/mega-city/docs/adr/` | la méthode `ezk-*` | `0025-slug.md` |
+
+Elles ont numéroté chacune depuis 1, **sans se voir**. Résultat mesuré le 2026-08-21 : les
+numéros **015 à 029 désignent quinze couples de sujets sans rapport**. « ADR-020 » veut dire
+*dod-completion-gate* ou *capacité partagée* selon le dossier. C'est le même mal que les
+fiches ont soldé en passant aux ids horodatés — les ADR ne l'avaient jamais soldé.
+
+**Ce passé est gelé, pas réparé.** Les ADR sont immuables (ADR-025 §5) et ces numéros sont
+cités environ 1 600 fois : renuméroter casserait bien plus que ça ne répare. Une convention
+implicite les distingue déjà à l'écrit — **4 chiffres** (`ADR-0022`) pour la méthode,
+**3 chiffres** (`ADR-022`) pour l'ombrelle — et les renvois croisés sont qualifiés en prose
+(« cop1 `ADR-021` », « mega-city ADR-0006 »). Garder cette double discipline pour tout ce
+qui existe déjà.
+
+**Pour l'avenir, la règle est simple : les deux dossiers partagent UNE séquence.** Un
+nouvel ADR — quel que soit son dossier — prend le premier numéro libre **des deux côtés**.
+Un numéro ne désigne alors plus qu'un seul sujet.
+
+```bash
+bash products/mega-city/bin/check-adr-ids.sh . --next
+```
+
+La règle est **tenue mécaniquement**, pas seulement écrite : `bin/test-adr-ids-repo.sh`
+(dans `pnpm --dir products/mega-city test:scripts`) rougit si un numéro neuf est attribué
+deux fois. Les 15 collisions héritées sont explicitement tolérées — et cette liste ne doit
+jamais s'allonger.
+
+---
+
 ## Séquence `docs/adr/` (immuable — ADR-025 §5 : bannière, jamais de suppression)
 
 | ADR | Titre court | Statut | Verdict époque 2 | Action |
