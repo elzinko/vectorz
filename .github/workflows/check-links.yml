@@ -5,6 +5,13 @@ name: check-links
 # fiche descendue dans done/ par `ship`, une profondeur relative fausse). Ce workflow
 # featherweight attrape ces PR-là : bash PUR, aucun `pnpm install`, ~quelques secondes,
 # coût Actions négligeable. Fiche 0101 — « un contrôle que personne ne lance ne protège de rien ».
+#
+# Il porte DEUX garde-fous markdown-only, pour la même raison :
+#   1. liens relatifs cassés ;
+#   2. numéros d'ADR attribués deux fois (PR #160).
+# Le second est arrivé ici par un retour Codex qui a mis le doigt sur l'ironie : un ADR
+# neuf est un fichier `.md`, donc `ci.yml` l'ignore — le garde-fou serait resté AVEUGLE
+# au cas exact pour lequel il existe. Deux étapes dans UN job : pas de runner en plus.
 on:
   pull_request:
     branches: [main]
@@ -20,13 +27,18 @@ concurrency:
 
 jobs:
   check-links:
-    name: liens markdown relatifs (mega-city + vectorz)
+    name: garde-fous markdown (liens relatifs + numéros d'ADR)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Source de vérité unique : le même script tourne aussi dans la gate locale/CI
-      # (`pnpm --filter mega-city test:scripts`). Ici, sans install, pour couvrir le md-only.
+      # Source de vérité unique : les mêmes scripts tournent aussi dans la gate locale/CI
+      # (`pnpm --dir products/mega-city test:scripts`). Ici, sans install, pour couvrir le md-only.
       - name: check-links (2 racines)
         run: bash products/mega-city/bin/test-links-repo.sh
+
+      # Un ADR neuf = un fichier .md → seul CE workflow se déclenche. C'est donc ICI, et
+      # nulle part ailleurs, que la collision de numéro peut être attrapée avant le merge.
+      - name: numéros d'ADR (aucune collision neuve)
+        run: bash products/mega-city/bin/test-adr-ids-repo.sh

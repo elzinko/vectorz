@@ -50,15 +50,21 @@ LEGACY="015 016 017 018 019 020 021 022 023 024 025 026 027 028 029"
 # ── Extraction des numéros (normalisés sur 3 chiffres, la forme commune) ─────────
 # L'ombrelle nomme `ADR-025-slug.md`, la méthode `0025-slug.md` : on compare les NOMBRES,
 # pas les graphies, sinon la collision passe inaperçue (c'est ainsi qu'elle a prospéré).
-numbers_in() {
+raw_numbers_in() {
   find "$1" -maxdepth 1 -name '*.md' ! -name 'README.md' -print 2>/dev/null \
     | sed 's|.*/||' \
     | grep -oE '^(ADR-)?[0-9]+' \
     | grep -oE '[0-9]+$' \
     | sed 's/^0*//' \
     | awk 'NF {printf "%03d\n", $1}' \
-    | sort -u
+    | sort
 }
+numbers_in() { raw_numbers_in "$1" | uniq; }
+
+# Doublons DANS un même dossier (`ADR-040-a.md` + `ADR-040-b.md`). Sans ce contrôle, le
+# `uniq` ci-dessus les écrase et l'intersection inter-dossiers ne voit rien : deux ADR
+# frères porteraient le même numéro sans que rien ne bronche. Retour Codex, PR #160.
+dupes_in() { raw_numbers_in "$1" | uniq -d; }
 
 umbrella=$(numbers_in "$UMBRELLA_DIR")
 method=$(numbers_in "$METHOD_DIR")
@@ -75,6 +81,8 @@ fi
 
 # ── Vérification ────────────────────────────────────────────────────────────────
 new=0
+
+# (a) même numéro des DEUX côtés
 for n in $both; do
   case " $LEGACY " in
     *" $n "*) continue ;;   # collision héritée, gelée : on la laisse
@@ -83,6 +91,16 @@ for n in $both; do
   m=$(find "$METHOD_DIR"   -maxdepth 1 -name "*${n}-*.md" | head -1 | sed 's|.*/||')
   printf '%s\tombrelle: %s\tméthode: %s\n' "$n" "${u:-?}" "${m:-?}"
   new=$((new + 1))
+done
+
+# (b) même numéro DEUX FOIS dans le MÊME dossier — jamais hérité (aucun cas au 2026-08-21),
+#     donc jamais toléré : deux ADR frères sous un seul numéro, c'est la même maladie en pire.
+for dir in "$UMBRELLA_DIR" "$METHOD_DIR"; do
+  for n in $(dupes_in "$dir"); do
+    files=$(find "$dir" -maxdepth 1 -name "*${n}-*.md" | sed 's|.*/||' | sort | tr '\n' ' ')
+    printf '%s\tmême dossier (%s): %s\n' "$n" "$dir" "$files"
+    new=$((new + 1))
+  done
 done
 
 legacy_count=$(printf '%s\n' "$both" | awk 'NF' | wc -l | tr -d ' ')

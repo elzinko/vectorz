@@ -5,7 +5,9 @@
 # libre des DEUX côtés · F `--next` saute un trou déjà pris d'un seul côté · G dossier
 # d'ADR absent → code 2 · H les graphies `ADR-025-x.md` et `0025-x.md` sont comparées
 # comme le MÊME nombre (c'est par là que la collision a prospéré) · I le README n'est
-# jamais compté comme un ADR.
+# jamais compté comme un ADR · J deux ADR du MÊME dossier sous un même numéro (retour
+# Codex PR #160 : le `uniq` inter-dossiers les écrasait) · K y compris dans la plage
+# héritée — un doublon interne n'est jamais toléré, il n'en existait aucun au gel.
 set -uo pipefail
 
 SCRIPT="$(cd "$(dirname "$0")" && pwd)/check-adr-ids.sh"
@@ -70,6 +72,18 @@ check "H — 'ADR-045-x.md' et '0045-x.md' collisionnent bien" \
 # ── I : le README n'est pas un ADR ──────────────────────────────────────────────
 I=$(repo i); : > "$I/docs/adr/README.md"; : > "$I/products/mega-city/docs/adr/README.md"
 check "I — aucun README compté : code 0" "bash '$SCRIPT' '$I' >/dev/null 2>&1"
+
+# ── J : deux ADR du MÊME dossier sous un même numéro → rouge ───────────────────
+J=$(repo j); : > "$J/docs/adr/ADR-040-a.md"; : > "$J/docs/adr/ADR-040-b.md"
+check "J — doublon dans un seul dossier détecté : code 1" "! bash '$SCRIPT' '$J' >/dev/null 2>&1"
+J_OUT=$(bash "$SCRIPT" "$J" 2>/dev/null || true)
+check "J — les deux fichiers fautifs sont nommés" \
+      "grep -q 'ADR-040-a.md' <<<\"\$J_OUT\" && grep -q 'ADR-040-b.md' <<<\"\$J_OUT\""
+
+# ── K : un doublon interne n'est PAS couvert par la tolérance héritée ──────────
+K=$(repo k); method "$K" 0020; : > "$K/products/mega-city/docs/adr/0020-autre.md"
+check "K — doublon interne dans la plage héritée : code 1 quand même" \
+      "! bash '$SCRIPT' '$K' >/dev/null 2>&1"
 
 if [ "$FAIL" -eq 0 ]; then echo "✅ test-check-adr-ids — TOUT VERT"; else echo "❌ test-check-adr-ids — ÉCHECS"; fi
 exit "$FAIL"
