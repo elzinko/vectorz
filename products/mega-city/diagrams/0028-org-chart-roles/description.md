@@ -15,7 +15,7 @@ enchaîne les features.
 
 ## Couches de management (orthogonales à la chaîne de valeur)
 
-Un **integration / release manager** (`ezk-pr-pilot`) teste-puis-merge un stock de PRs. La **clôture de
+Un **integration / release manager** (`ezk-pr`) teste-puis-merge un stock de PRs. La **clôture de
 session** (`ezk-archive`) range proprement entre deux sessions.
 
 ## Rôle vs capacité

@@ -19,8 +19,8 @@ Pas toutes les flèches — juste « qui enchaîne », « qui fait la feature »
 
 ## Noms (préférences 2026-07-30)
 
-- `ezk-pr-pilot` → **`ezk-pr`** (drop `-pilot`) : consomme un **stock de PRs**.
-- Convention Validation : **aujourd'hui** `ezk-pr-pilot init` ; **à terme**
+- `ezk-pr` → **`ezk-pr`** (drop `-pilot`) : consomme un **stock de PRs**.
+- Convention Validation : **aujourd'hui** `ezk-pr init` ; **à terme**
   `ezk-backlog init` (scaffold repo). `ezk-pr` garde `plan|run|report|ship`.
 - Boot d'env isolé : **`ezk-sandbox`** (alias de `ezk-caps-sandbox`), pas un rôle.
 - Préfixe capacités : **`ezk-caps-…`** pour ne plus confondre avec les rôles.

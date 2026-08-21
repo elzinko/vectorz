@@ -13,7 +13,7 @@ le reviewer contrôle le diff. Le scrum master (`ezk-sprint`) orchestre ce défi
 UNE feature ; au-dessus, le product-builder enchaîne les features, sprint après sprint.
 
 À côté, deux fonctions de **management** qui ne produisent pas de code : le release
-manager (`ezk-pr-pilot`) qui teste puis merge le stock de PRs, et la clôture de session
+manager (`ezk-pr`) qui teste puis merge le stock de PRs, et la clôture de session
 (`ezk-archive`) qui range tout entre deux sessions de travail.
 
 Enfin, la distinction **rôle vs capacité** : TDD, règles (« la loi ») et diagrammes
@@ -33,7 +33,7 @@ flowchart TB
   end
   subgraph MGMT["Couches de management (orthogonales)"]
     direction LR
-    IRM["Integration / release manager<br/>ezk-pr-pilot"]
+    IRM["Integration / release manager<br/>ezk-pr"]
     CLO["Cloture de session<br/>ezk-archive"]
   end
   subgraph CAP["Capacites (mobilisees par un role, pas des roles)"]

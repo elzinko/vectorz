@@ -39,7 +39,7 @@ Règles de posture (héritées d'ADR-033) : le commentaire est une **vitrine, pa
 c'est le **mesureur tiers (ou un lecteur)** qui poste, jamais la méthode auditée ; et le **gate DoD ne
 lit jamais le commentaire** (il lit le journal). Techniquement : token CI standard avec
 permission d'écrire les commentaires de PR — **zéro compte externe**. Compose les conventions
-existantes (template PR ezk-sprint, `report` d'ezk-pr-pilot) — ne réinvente pas le posteur.
+existantes (template PR ezk-sprint, `report` d'ezk-pr) — ne réinvente pas le posteur.
 
 ## Critères d'acceptation
 

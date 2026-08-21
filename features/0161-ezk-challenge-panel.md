@@ -64,4 +64,4 @@ Extraire une **primitive MINCE** `ezk-challenge` (nom candidat) que d'autres ski
 - Substrats voisins qui partagent le shape (à ne pas réimplémenter) : `deep-research`
   (adversarially verify), skill `verify`, pattern adversarial-verify des workflows.
 - Origine : discussion session 2026-07-15. Lié à 0049 (qui flague déjà l'extraction du panel)
-  et à 0031. Frontière « composer, pas réimplémenter » (idiome ezk-ezk / ezk-pr-pilot).
+  et à 0031. Frontière « composer, pas réimplémenter » (idiome ezk-ezk / ezk-pr).

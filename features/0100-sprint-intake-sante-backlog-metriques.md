@@ -35,7 +35,7 @@ prochaine fiche prioritaire »*. Manque toute la couche **amont d'un vrai début
 Sous-problème découvert en revue de la chaîne de skills : le passage d'une fiche à
 `status: shipped` (déplacement dans `done/`) est une **commande explicite** (sous-commande
 `ship <id> [#PR]` d'`ezk-backlog`). Elle n'est appelée **que** sur deux chemins :
-`ezk-sprint` étape 10 (`SKILL.md:81`) et `ezk-pr-pilot ship` (`SKILL.md:110`). **Dès que la
+`ezk-sprint` étape 10 (`SKILL.md:81`) et `ezk-pr ship` (`SKILL.md:110`). **Dès que la
 PR est mergée autrement** — PO qui clique « Squash & merge » dans l'UI GitHub, reviewer
 humain, merge par un autre outil — **personne n'appelle `ship`** : la fiche reste `todo`/
 `in-progress` alors que le code est sur `main`. Le `status` est un **cache** de la vraie
@@ -89,7 +89,7 @@ reconstruite** au sprint suivant.
 - [x] Comportement **local-only** défini : pas de `gh`/remote ⇒ `reconcile` le dit et retombe
       sur le jugement LLM + le filet `ezk-archive` (documenté, pas d'erreur).
 - [x] Frontière respectée : `reconcile` **propose**, `ezk-backlog ship` **exécute** — brique
-      unique, appelée par intake / review / ezk-pr-pilot, aucune bascule réimplémentée ailleurs.
+      unique, appelée par intake / review / ezk-pr, aucune bascule réimplémentée ailleurs.
 
 ## Notes / décisions
 
@@ -130,7 +130,7 @@ reconstruite** au sprint suivant.
   [ADR-0018](../products/mega-city/docs/adr/0018-reconciliation-done-etat-reel-des-prs.md). Brique unique
   `ezk-backlog reconcile` (croise fiches actives ↔ PRs mergées via `gh`, **propose** au PO,
   ne ship jamais seule, dégrade en local-only) ; appelée à l'intake (`ezk-sprint` étape 0),
-  par `review` (bras mécanique du contrôle #1) et par `ezk-pr-pilot` après un merge UI ;
+  par `review` (bras mécanique du contrôle #1) et par `ezk-pr` après un merge UI ;
   convention de branche `feat/<id>-<slug>` pour un rapprochement mécanique. La décision de
   frontière était fléchée `ezk-architect` : l'appel a été **interrompu par une erreur d'API**,
   la décision a donc été tranchée et documentée directement dans l'ADR. **Reste ouvert ici** :

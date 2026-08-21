@@ -67,11 +67,11 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     expect(resolved.agents.map((a) => a.id)).toEqual([
       'ezk-architect',
       'ezk-archive',
+      'ezk-dev',
       'ezk-pm',
       'ezk-qa',
       'ezk-reviewer',
       'ezk-steward',
-      'ezk-tdd',
     ]);
   });
 
@@ -91,7 +91,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
       'ezk-docker',
       'ezk-ezk',
       'ezk-npm-scripts',
-      'ezk-pr-pilot',
+      'ezk-pr',
       'ezk-preview',
       'ezk-product-builder',
       'ezk-readme',

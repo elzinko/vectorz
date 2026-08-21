@@ -50,7 +50,7 @@
 | 0079 | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 |  | mega-city | ✅ shipped | #74 |
 | 0082 | Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés) | feature | P1 |  | vectorz | ✅ shipped | #70 |
 | 0095 | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | mega-city | ✅ shipped | #55 |
-| 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot | feature | P1 |  | mega-city | ⛔ blocked |  |
+| 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 |  | mega-city | ⛔ blocked |  |
 | 0103 | Les méthodes envoient un heartbeat — le Moniteur ne crie plus « silence » à tort | feature | P1 |  | mega-city | ✅ shipped |  |
 | 0104 | Kit d’analyse de session — journal + Moniteur + transcript Claude Code en un rapport | feature | P1 |  | mega-city | ✅ shipped |  |
 | 0107 | lawgiver capture — flywheel | feature | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
@@ -62,7 +62,7 @@
 | 0124 | migrer + étendre ezk-design-system (design system UI/UX consultable + requêtable) | feature | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0129 | Migration claude-skills → mega-city — finir le strangler-fig (skills + agents restants → switchover) | chore | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0130 | cap global mode link — symlinker AUSSI les agents (pas seulement les skills) | bug | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
-| 0132 | ezk-pr-pilot : orchestrateur du test-puis-merge d'un stock de PRs (+ convention Validation) | feature | P1 |  | mega-city | ✅ shipped | merge local feat/skill-ezk-pr-pilot |
+| 0132 | ezk-pr : orchestrateur du test-puis-merge d'un stock de PRs (+ convention Validation) | feature | P1 |  | mega-city | ✅ shipped | merge local feat/skill-ezk-pr-pilot |
 | 0141 | agent ezk-pm — le décideur product-owner (jour ET nuit) | feature | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0142 | flywheel cassé — capture écrit des skills/rules que loadCatalog ne relit jamais | bug | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0144 | frontmatter tuning des agents — model, effort, isolation | chore | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
@@ -120,7 +120,7 @@
 | 0127 | ezk-backlog add — proposer un brainstorm pour façonner une fiche vague | feature | P2 |  | mega-city | ✅ shipped | local (via migration ezk-backlog #31, fiche 0024) |
 | 0128 | ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship) | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0131 | ezk-archive persiste la note de handoff dans .claude/handoff.md | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
-| 0135 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 |  | mega-city | ✅ shipped |  |
+| 0135 | Renommer l'agent ezk-dev → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 |  | mega-city | ✅ shipped |  |
 | 0137 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 |  | mega-city | ✅ shipped | #3 |
 | 0140 | geler puis archiver le repo iamthelaw (post-migration) | chore | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0146 | profils par hôte — cop1-target.yml et desktop.yml | feature | P2 |  | mega-city | ✅ shipped | #7 |

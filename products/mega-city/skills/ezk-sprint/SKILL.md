@@ -1,5 +1,5 @@
 ---
-roles: [ezk-architect, ezk-tdd, ezk-qa, ezk-reviewer]
+roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits, ezk-start]
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
@@ -22,7 +22,7 @@ rôle dédiés (installés via `install.sh` de ce repo) :
 | Rôle | Sous-agent | Quand |
 | --- | --- | --- |
 | Architecte | `ezk-architect` | décision de conception non triviale (clean arch / SOLID / ADR) |
-| Dev | `ezk-tdd` | implémentation du cœur en red-green-refactor |
+| Dev | `ezk-dev` | implémentation du cœur en red-green-refactor |
 | QA / E2E | `ezk-qa` | scénarios Gherkin (= DoD) **et** validation navigateur via **Playwright MCP** |
 | Reviewer | `ezk-reviewer` | revue correctness / sécurité / perf, verdict GO/NO-GO |
 
@@ -77,7 +77,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
-4. **TDD POC** — délègue à **`ezk-tdd`** : red → green → refactor sur le cœur.
+4. **TDD POC** — délègue à **`ezk-dev`** : red → green → refactor sur le cœur.
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
@@ -87,7 +87,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    - Ajouter la **provenance** (chemin `features/<id>_*.md`, legacy `<id>-*.md` ; l'id est dans la branche `feat/<id>-<slug>`) et, en bas, la **matrice « Validation »** (statut CI/tests/E2E — **seul** bloc propre à la PR ; convention ADR-0009).
    - **Sur divergence, la fiche gagne** : re-rendre le corps depuis la fiche, jamais l'inverse. Repère ≤ ~2 000 caractères hors annexes/matrice.
 
-   **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** **dans la description** — pas des fichiers orphelins dans le diff ; la fiche étant le document, ces liens vivent dans sa section **Comment vérifier**. Gabarit du rendu : [`ezk-pr-pilot` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr-pilot/assets/PULL_REQUEST_TEMPLATE.thin.md) (nom « thin » legacy — c'est désormais le **rendu fiche + Validation** ; ADR-0009 pour la matrice, ADR-0029 pour le rendu).
+   **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** **dans la description** — pas des fichiers orphelins dans le diff ; la fiche étant le document, ces liens vivent dans sa section **Comment vérifier**. Gabarit du rendu : [`ezk-pr` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr/assets/PULL_REQUEST_TEMPLATE.thin.md) (nom « thin » legacy — c'est désormais le **rendu fiche + Validation** ; ADR-0009 pour la matrice, ADR-0029 pour le rendu).
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ». Le résumé de clôture suit la règle
    [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :
@@ -174,7 +174,7 @@ les états. Tant que le POC n'est pas validé, on ne dépense pas de tokens sur 
 | Quelle fiche construire / marquer livré | skill `ezk-backlog` (`reconcile` puis `next --ready-only` à l'intake, `ship` au merge) |
 | Décision d'archi / SOLID / ADR | sous-agent `ezk-architect` |
 | Scénarios BDD (Gherkin = DoD) | sous-agent `ezk-qa` |
-| Implémentation TDD | sous-agent `ezk-tdd` |
+| Implémentation TDD | sous-agent `ezk-dev` |
 | Gate CI locale (`act` + Docker) | skill `ezk-ci` (fallback `act` inline) |
 | Validation E2E navigateur (PR) | sous-agent `ezk-qa` → **Playwright MCP** |
 | Revue code / sécurité / clean code | sous-agent `ezk-reviewer` (`/code-review`, `/security-review`, `/simplify`) |
@@ -188,7 +188,7 @@ Si un sous-agent n'est pas installé, porte la casquette toi-même, mais garde l
 Honore le frontmatter de chaque agent (`model` / `model_spare`) :
 jugement/PO (`ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive`) →
 **`claude-opus-4-8`** (+ spare `sonnet`) — **jamais** l'alias `opus` ni Opus 5 ;
-mécanique (`ezk-tdd`, `ezk-qa`, `ezk-steward`) → **`sonnet`**.
+mécanique (`ezk-dev`, `ezk-qa`, `ezk-steward`) → **`sonnet`**.
 Hôte Cursor : slug **`claude-opus-4-8-thinking-high`** (ou 4.8 listé) ; sinon spare.
 Grok / autres familles **seulement** si l'humain le demande. Détail :
 [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).

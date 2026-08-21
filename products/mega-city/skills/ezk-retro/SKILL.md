@@ -9,10 +9,10 @@ description: >-
   récurrente, « transformer un symptôme en règle mesurable », ajouter un principe
   d'archi / un item de DoD-DoR / une convention, ou faire le point après une PR ou
   un sprint qui a coincé. Déroule une cérémonie en ROUND-ROBIN (2 tours) entre les
-  agents de l'équipe (ezk-architect, ezk-qa, ezk-reviewer, ezk-tdd, ezk-pm) qui
+  agents de l'équipe (ezk-architect, ezk-qa, ezk-reviewer, ezk-dev, ezk-pm) qui
   tombent d'accord sur des propositions RATTACHÉES À UN SYMPTÔME et MESURABLES
   (action, feature, spike, ou RÈGLE) — via les agents bindés du profil
-  (ezk-architect, ezk-qa, ezk-tdd, ezk-pm) —, les passe à un JUGE DE COHÉRENCE (chief-judge
+  (ezk-architect, ezk-qa, ezk-dev, ezk-pm) —, les passe à un JUGE DE COHÉRENCE (chief-judge
   / ezk-steward : doublons ? contradictions avec les règles existantes ?), puis
   range SOUS CONTRÔLE DU PO : les non-règles vers ezk-backlog, les règles validées
   vers rules/ · bundles/ · DoD (toujours réversibles). Pilotable par sous-commandes :
@@ -62,7 +62,7 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 
 ### 2. Cérémonie en round-robin (2 tours) — *soudure 1 : le déclencheur*
 Réunis les **agents bindés** du profil (`global.yml`) — par défaut `ezk-architect`, `ezk-qa`,
-`ezk-tdd`, `ezk-pm`, **spawnés comme sous-agents** (Task/Agent), **un appel par lentille et
+`ezk-dev`, `ezk-pm`, **spawnés comme sous-agents** (Task/Agent), **un appel par lentille et
 par tour** (`ezk-reviewer` rejoindra la liste **quand il sera bindé** — fiche 0031 ; ne le
 référence pas tant qu'il n'est pas dans `global.yml`). **Deux tours :**
 - **Tour 1 — chacun observe et propose**, indépendamment, à travers sa lentille (archi, QA,
@@ -131,7 +131,7 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 - **Juge de cohérence** : fiche [0008 chief-judge](../../../../features/0113-chief-judge.md) + agent `ezk-steward`.
 - **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
-- **Agents de la cérémonie** : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-tdd`, `ezk-pm`.
+- **Agents de la cérémonie** : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-dev`, `ezk-pm`.
 
 ## Quand l'utiliser / quand NE PAS
 

@@ -31,7 +31,7 @@ description: >-
 > stock de **PRs** (*comment* valider/merger). Intersection : `ship` /
 > `reconcile` autour du done — objets différents (ADR-0022). **Intention** :
 > `init` absorbe aussi la convention Validation (`docs/PR_VALIDATION.md` +
-> template) aujourd'hui encore sur `ezk-pr-pilot init`.
+> template) aujourd'hui encore sur `ezk-pr init`.
 
 Tu maintiens le **backlog d'un projet** en markdown versionné dans le repo : une liste
 de features/bugs **stable, ordonnée par priorité, et qui ne se perd jamais** — ni entre
@@ -358,7 +358,7 @@ modification de fiche sans son accord explicite (jamais d'auto-suppression).
 ### `reconcile` — le statut des fiches ↔ l'état réel des PRs mergées (ADR-0018)
 
 **Le problème.** `ship` est la **seule** commande qui passe une fiche à `shipped` — et elle
-n'est appelée que par `ezk-sprint` (étape 10) et `ezk-pr-pilot` (`ship`). Dès qu'une PR est
+n'est appelée que par `ezk-sprint` (étape 10) et `ezk-pr` (`ship`). Dès qu'une PR est
 mergée **autrement** (le PO clique « Squash & merge » dans l'UI GitHub, un reviewer humain
 merge), personne n'appelle `ship` : la fiche reste `todo`/`in-progress` alors que le code est
 sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged* de la PR), et
@@ -385,7 +385,7 @@ sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged*
 de `review` + le filet `ezk-archive`. C'est un **mode**, pas une panne.
 
 **Qui l'appelle** (ADR-0018) : `ezk-sprint` à l'intake (avant `next`, primaire) ; `review`
-(bras mécanique du contrôle #1) ; `ezk-pr-pilot` après un squash fait depuis l'UI GitHub.
+(bras mécanique du contrôle #1) ; `ezk-pr` après un squash fait depuis l'UI GitHub.
 Une seule brique, plusieurs appelants — aucun ne réimplémente le croisement.
 
 ### `ship <id> [#PR]` — la transition « livrée » (cible de `reconcile`)
@@ -454,7 +454,7 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
   hors-`ship` avant d'en tirer une, ADR-0018) ; à la clôture, `ship`. ezk-backlog = le
   **quoi/où**, ezk-sprint = le **comment**. Convention de branche partagée : `feat/<id>-<slug>`
   (l'id rend le rapprochement fiche↔PR mécanique pour `reconcile`).
-- **ezk-pr-pilot** : après un squash fait depuis l'UI GitHub, `reconcile` puis `ship` — sinon
+- **ezk-pr** : après un squash fait depuis l'UI GitHub, `reconcile` puis `ship` — sinon
   la fiche reste orpheline du merge (ADR-0018).
 - **ezk-commits** : commits `chore(features): …` / `docs(features): …` ; 1 PR/feature.
 

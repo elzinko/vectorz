@@ -34,6 +34,13 @@ exactement ce que le domaine sait déjà exprimer.
 - [ ] ezk-sprint référence ezk-dev et la boucle tourne inchangée
 
 ## Notes
+
+> **Étape 1 FAITE le 2026-08-20** (PR #158, ADR-0020 amendé) : `agents/ezk-tdd.md` →
+> `agents/ezk-dev.md` est exécuté, références et profils suivis. **Le reste de la fiche
+> tient** : la méthode (TDD) vit toujours DANS l'agent, elle n'est pas encore extraite en
+> `rules/` — c'est-à-dire que l'objet même de cette fiche (séparer le rôle de la méthode)
+> reste entier. Ne pas clôturer sur le seul rename.
+
 **Absorbe la fiche [0030](done/0135-rename-ezk-tdd-ezk-dev.md)** (2026-07-17, review) : son
 rename `ezk-tdd → ezk-dev` est l'étape 1 ci-dessus ; 0030 est clôturée dans `done/` pour ne
 pas doublonner.
@@ -41,5 +48,5 @@ pas doublonner.
 ADR-0011 (répartition rôles/méthode) + ADR-0010 (source des rules). Le futur
 « ezk-dev-dispatcher » (devs parallèles sans conflit) est explicitement REPORTÉ : linéaire
 pour l'instant ; les briques existent déjà (isolation worktree par agent, worktree par story
-côté cop1, ordre de merge par ezk-pr-pilot) — à re-évaluer comme option d'ezk-product-builder
+côté cop1, ordre de merge par ezk-pr) — à re-évaluer comme option d'ezk-product-builder
 quand le besoin sera réel.

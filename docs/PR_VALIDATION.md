@@ -2,7 +2,7 @@
 
 > Référencée par `.github/PULL_REQUEST_TEMPLATE.md` (le template ne porte que le
 > squelette ; le fond vit ici et peut évoluer sans toucher le template).
-> Installée par `ezk-pr-pilot init` — **adapter la matrice aux modalités qui
+> Installée par `ezk-pr init` — **adapter la matrice aux modalités qui
 > existent vraiment dans ce repo** (supprimer les lignes sans objet).
 
 > **Compose le pack de review markdown-first** (fiche 0183, contrat

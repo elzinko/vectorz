@@ -1,7 +1,22 @@
 # ADR 0022 — Clarifier les 3 bandes + naming (`ezk-pr`, caps, archive)
 
-- Statut : **proposé**
+- Statut : **superseded** — absorbé par [ADR-0020](0020-capacite-partagee-brique-autonome.md)
+  le 2026-08-20 (fusion décidée par le PO)
 - Date : 2026-07-30
+
+> ⚠️ **Ne pas s'appuyer sur cette fiche.** Sa décision vit désormais dans l'*Amendement du
+> 2026-08-20* d'[ADR-0020](0020-capacite-partagee-brique-autonome.md), qui la **révise sur
+> deux points** : les **3 bandes deviennent 4** (la bande « Capacités » est scindée en
+> *artefacts de méthode* et *outillage techno*), et le **rename est exécuté** au lieu de
+> rester une préférence — `ezk-pr-pilot` → `ezk-pr`, `ezk-tdd` → `ezk-dev`.
+>
+> Cette fiche entrait en **contradiction frontale** avec ADR-0020, qui rejetait ce même
+> rename ; c'est ce conflit non tranché qui a fait vivre pendant trois semaines des noms
+> fantômes (`ezk-dev`, `ezk-sandbox`) dans `ezk-ezk` et dans les diagrammes. Conservée pour
+> l'histoire, jamais supprimée (règle d'immuabilité, ADR-025 §5 racine).
+>
+> ⚠️ `ezk-sandbox` / `ezk-caps-*` (§3 ci-dessous) reste un nom **réservé, non construit**
+> (fiche 0102, `blocked`).
 - Amende : [ADR-0009](0009-ezk-pr-pilot-orchestrateur-validation-prs.md) (où vit
   `init` Validation ; nom préféré `ezk-pr`) ·
   [ADR-0020](0020-capacite-partagee-brique-autonome.md) (option A : le rename

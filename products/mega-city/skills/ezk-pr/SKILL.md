@@ -1,6 +1,6 @@
 ---
 composes: [ezk-backlog, ezk-commits]
-name: ezk-pr-pilot
+name: ezk-pr
 argument-hint: "[help|init|plan|run|report|ship] [#PR…]"
 description: >-
   Chef d'orchestre du TEST-PUIS-MERGE d'un STOCK de PRs ouvertes. A utiliser
@@ -20,9 +20,9 @@ description: >-
   (qui PRODUIT une PR) : lui CONSOMME le stock. Une seule instance par repo.
 ---
 
-# ezk-pr-pilot
+# ezk-pr
 
-> **Nom préféré : `ezk-pr`** (ADR-0022). Le dossier / invocation `ezk-pr-pilot`
+> **Nom préféré : `ezk-pr`** (ADR-0022). Le dossier / invocation `ezk-pr`
 > reste l'alias jusqu'au rename mécanique. **Pas** `ezk-backlog` : backlog =
 > fiches (*quoi*) ; ici = stock de PRs (*comment* valider/merger). Intersection :
 > `ship` / reconcile autour du done — objets différents.
@@ -54,7 +54,7 @@ avant ordres de merge et tableaux — règle
 
 ## Usage (sous-commandes)
 
-`/ezk-pr-pilot [sous-commande] [#PR…]`
+`/ezk-pr [sous-commande] [#PR…]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -162,10 +162,10 @@ que le fond reste des placeholders (Codex P1 rounds 2-4). On ne vise **que le co
 les commentaires-guides `<!-- … -->` peuvent légitimement rester dans un corps rendu (Codex P1 round 3).
 
 **Résolution du script** (dans l'ordre, premier trouvé gagne) :
-1. Dossier skill installé : `~/.claude/skills/ezk-pr-pilot/scripts/check-pr-body.sh`
+1. Dossier skill installé : `~/.claude/skills/ezk-pr/scripts/check-pr-body.sh`
    (présent seulement si le skill a été déployé **avec** ses scripts — link/catalogue,
    pas le mode copy SKILL-only).
-2. Monorepo vectorz : `products/mega-city/skills/ezk-pr-pilot/scripts/check-pr-body.sh`
+2. Monorepo vectorz : `products/mega-city/skills/ezk-pr/scripts/check-pr-body.sh`
 3. **Fallback inline** (stdin) si aucun fichier :
 
 ```bash

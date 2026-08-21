@@ -17,11 +17,11 @@ const here = dirname(fileURLToPath(import.meta.url));
 const megaCityDir = resolve(here, '../..'); // products/mega-city (from src/__tests__)
 
 const sprintSkill = join(megaCityDir, 'skills', 'ezk-sprint', 'SKILL.md');
-const prPilotSkill = join(megaCityDir, 'skills', 'ezk-pr-pilot', 'SKILL.md');
+const prPilotSkill = join(megaCityDir, 'skills', 'ezk-pr', 'SKILL.md');
 const thinTemplate = join(
   megaCityDir,
   'skills',
-  'ezk-pr-pilot',
+  'ezk-pr',
   'assets',
   'PULL_REQUEST_TEMPLATE.thin.md',
 );
@@ -64,7 +64,7 @@ const newcomerLens = join(megaCityDir, 'docs', 'newcomer-readability-lens.md');
 const checkPrBodyScript = join(
   megaCityDir,
   'skills',
-  'ezk-pr-pilot',
+  'ezk-pr',
   'scripts',
   'check-pr-body.sh',
 );
@@ -113,12 +113,12 @@ describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => 
     expect(body).not.toMatch(/^## Lien fiche/m);
   });
 
-  it('ezk-pr-pilot init référence le thin asset (plus seulement de la prose)', () => {
+  it('ezk-pr init référence le thin asset (plus seulement de la prose)', () => {
     const body = read(prPilotSkill);
     expect(body).toMatch(/PULL_REQUEST_TEMPLATE\.thin\.md/);
   });
 
-  it('ezk-pr-pilot documente fallback copy-mode + résolution check-pr-body (Codex P2)', () => {
+  it('ezk-pr documente fallback copy-mode + résolution check-pr-body (Codex P2)', () => {
     const body = read(prPilotSkill);
     // Mode copy ne matérialise que SKILL.md — fallback obligatoire.
     expect(body).toMatch(/Mode copy/);
@@ -127,8 +127,8 @@ describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => 
     expect(body).toMatch(/````markdown[\s\S]*?En clair[\s\S]*?## Comment vérifier[\s\S]*?## Validation[\s\S]*?````/);
     expect(body).toMatch(/\| CI \|/);
     // Résolution hors cwd mega-city.
-    expect(body).toMatch(/~\/\.claude\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);
-    expect(body).toMatch(/products\/mega-city\/skills\/ezk-pr-pilot\/scripts\/check-pr-body\.sh/);
+    expect(body).toMatch(/~\/\.claude\/skills\/ezk-pr\/scripts\/check-pr-body\.sh/);
+    expect(body).toMatch(/products\/mega-city\/skills\/ezk-pr\/scripts\/check-pr-body\.sh/);
     expect(body).toMatch(/Fallback inline/);
     // Chemin résolu = fichier .sh (pas …/check-pr-body.sh en suffixe).
     expect(body).toMatch(/bash <chemin-résolu>(?!\/check-pr-body)/);
@@ -184,7 +184,7 @@ describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => 
     expect(lens).toMatch(/NO-GO/);
   });
 
-  it("étape PR (ezk-sprint) + rendu (ezk-pr-pilot) exigent l'onboarding quand la fiche le porte (fiche 0191)", () => {
+  it("étape PR (ezk-sprint) + rendu (ezk-pr) exigent l'onboarding quand la fiche le porte (fiche 0191)", () => {
     expect(read(sprintSkill)).toMatch(/Si tu arrives frais/);
     const pilot = read(prPilotSkill);
     expect(pilot).toMatch(/Si tu arrives frais/);

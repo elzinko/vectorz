@@ -90,7 +90,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 ## Critères d'acceptation (épic)
 
 - [ ] Les 3 nouvelles filles (A/C/E) sont groomées et priorisées **par le PO**.
-- [ ] **Résultats livrés (pas seulement groomés)** : `ezk-pr-pilot` renommé `ezk-pr` avec **0 résidu**
+- [ ] **Résultats livrés (pas seulement groomés)** : `ezk-pr` renommé `ezk-pr` avec **0 résidu**
       (fille A) ; réf mortes assainies — 3× `install.sh`, rot de numérotation, arêtes `composes:`/`delegates:` classées (fille C).
 - [ ] Le triangle retro/steward/0057 est documenté en **un seul endroit** (fille E livrée).
 - [ ] Une **référence morte** (chemin/skill/fiche) fait **rougir une gate** (critère 0066).

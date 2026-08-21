@@ -19,7 +19,7 @@ created: 2026-08-01
 Après une preview locale (PR / tranche), l'humain ou l'agent fait une **recette manuelle**
 (naviguer, cliquer, screenshots, noter pass/fail) — aujourd'hui ad hoc. On veut une
 **capacité ezk déclenchable à la main** pour éprouver le pattern **avant** de l'intégrer
-à un orchestrateur (ezk-sprint / ezk-pr-pilot).
+à un orchestrateur (ezk-sprint / ezk-pr).
 
 Distinct de :
 - **ezk-qa** (agent sprint : Gherkin + E2E DoD)

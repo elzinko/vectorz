@@ -1,6 +1,6 @@
 ---
 id: 0102
-title: "ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr-pilot"
+title: "ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr"
 type: feature
 priority: P1
 product: mega-city
@@ -29,7 +29,7 @@ chaque fois — par un humain ou par un agent.
 
 | Qui | Ce qu'il fait aujourd'hui |
 |---|---|
-| `ezk-pr-pilot run` | « démarre les bancs » — bancs **génériques**, aucun contrat projet |
+| `ezk-pr run` | « démarre les bancs » — bancs **génériques**, aucun contrat projet |
 | `ezk-preview` **cas B** | commence par *« lance l'app en local (ou demande à la lancer) »*, puis **devine le port** (3000 / 5173 / 8080 / 4321 / 8000) |
 | `ezk-sprint` étape 6 | délègue à `ezk-qa`, qui « lance l'app » — sans savoir comment |
 | `verify` / `run` | même trou |
@@ -53,7 +53,7 @@ moitié exigée par les règles ; **aucun skill ne la consomme**.
 
 Samplerz porte une fiche **P0** (`features/backlog/pr_local_stack_testable.feature`, PR de
 grooming #318) : une commande = stack de CETTE PR + état neuf + open. Sa recommandation de
-grooming était **« étendre `ezk-pr-pilot` »**. Cette fiche la corrige sur un point : le
+grooming était **« étendre `ezk-pr` »**. Cette fiche la corrige sur un point : le
 besoin est plus large que les PRs, et le loger dans un orchestrateur casse l'autonomie des
 briques (voir ci-dessous).
 
@@ -64,7 +64,7 @@ briques (voir ci-dessous).
   (`profiles/README.md:23`, test `profiles-sync.test.ts:44`).
 - **Les autres briques maigrissent.** `ezk-preview` **retire** son heuristique de port :
   deviner → lire. Moins de prose load-bearing (doctrine ADR-0001).
-- **`ezk-pr-pilot` ne grossit pas** : il gagne **une ligne** dans sa table « je délègue à »,
+- **`ezk-pr` ne grossit pas** : il gagne **une ligne** dans sa table « je délègue à »,
   au même titre que `ezk-preview` / `ezk-device` / `ezk-backlog`.
 - **Samplerz** obtient sa P0 sans que la méthode lui impose Docker ni sa politique de session.
 - **city-guided** cesse d'être un pattern orphelin : son `pr|branch × node|docker` devient
@@ -80,8 +80,8 @@ briques (voir ci-dessous).
 
 | | Option | Pourquoi non |
 |---|---|---|
-| **A** | Renommer `ezk-pr-pilot` → `ezk-pr` + y loger le contrat | Le renommage touche ~12 fichiers + une liste figée dans `expand.test.ts:93`, pour zéro changement de comportement. Et loger la capacité dans l'orchestrateur casse l'autonomie des briques. Renommage = décision cosmétique **séparable**, hors périmètre. |
-| **B′** | B **en deux temps** : contrat d'abord dans `ezk-pr-pilot`, extraction plus tard sur preuve | Écarté après arbitrage PO (2026-07-26, doctrine « briques autonomes composables ») : construit délibérément la mauvaise forme pour la défaire ensuite, et coûte **plus** de prose dans `ezk-pr-pilot` que la délégation directe. |
+| **A** | Renommer `ezk-pr` → `ezk-pr` + y loger le contrat | Le renommage touche ~12 fichiers + une liste figée dans `expand.test.ts:93`, pour zéro changement de comportement. Et loger la capacité dans l'orchestrateur casse l'autonomie des briques. Renommage = décision cosmétique **séparable**, hors périmètre. |
+| **B′** | B **en deux temps** : contrat d'abord dans `ezk-pr`, extraction plus tard sur preuve | Écarté après arbitrage PO (2026-07-26, doctrine « briques autonomes composables ») : construit délibérément la mauvaise forme pour la défaire ensuite, et coûte **plus** de prose dans `ezk-pr` que la délégation directe. |
 | **C** | Statu quo (gap 100 % projet-local) | Deux projets sur trois ont déjà écrit l'adaptateur à la main, séparément ; quatre rôles de la méthode ont le besoin. Ce n'est pas un gap samplerz. |
 | **D** | Mettre ça dans `ezk-docker` ou `ezk-preview` | `ezk-docker` : docker n'est **qu'une recette** — un projet en mode node n'a pas à charger docker. `ezk-preview` : son métier est de **partager vers l'extérieur** (tunnel, Vercel, tailnet, règles de sécurité sur les credentials) ; démarrer en local isolé est un autre métier, avec un autre profil de risque. Fusionner ferait une brique grasse. |
 
@@ -106,7 +106,7 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 
 | Axe | Valeurs | Qui décide |
 |---|---|---|
-| **Cible** — *quoi démarrer* | `pr <n>` · `branch <nom>` · `local` | l'appelant (humain, `ezk-pr-pilot`, `ezk-sprint`…) |
+| **Cible** — *quoi démarrer* | `pr <n>` · `branch <nom>` · `local` | l'appelant (humain, `ezk-pr`, `ezk-sprint`…) |
 | **Recette** — *comment démarrer* | `node` · `docker` · `make` · deploy provider · … | **le projet**, jamais la méthode |
 
 > ⚠️ **Vocabulaire.** Ces « recettes » n'ont **rien à voir** avec `caps/`, qui désigne dans
@@ -127,14 +127,14 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 `development/use-project-scripts` : l'interface **est** `package.json` / `Makefile`.
 `init` n'impose **aucun format de config** — il exige que les 4 slots soient trouvables en
 **un** endroit, et que la commande littérale soit recopiée là où un relecteur la lira
-(corps de PR quand la convention `ezk-pr-pilot` est en place ; README sinon).
+(corps de PR quand la convention `ezk-pr` est en place ; README sinon).
 
 ## Frontières (aucun recouvrement)
 
 | Besoin | Brique | Ce qu'elle ne fait PAS |
 |---|---|---|
 | Démarrer / arrêter un env de test isolé pour une cible | **`ezk-testbed`** | ne merge rien, ne planifie rien, **n'expose rien sur Internet** |
-| Ordonner / tester / merger un **stock de PRs** | `ezk-pr-pilot` | ne démarre plus d'env « à sa façon » — **délègue** (une ligne) |
+| Ordonner / tester / merger un **stock de PRs** | `ezk-pr` | ne démarre plus d'env « à sa façon » — **délègue** (une ligne) |
 | **URL partageable** vers l'extérieur | `ezk-preview` | ne démarre plus la stack — **retire son heuristique de port**, consomme l'URL rendue par `ezk-testbed` |
 | Bras `compose` sûr (`-p`, teardown, blast-radius) | `ezk-docker` | ne connaît ni cible, ni état neuf — c'est **une recette possible**, invoquée par le projet |
 | Pipeline GitHub Actions en local | `ezk-ci` | rien à voir (frontière déjà écrite dans `ezk-docker`) |
@@ -151,7 +151,7 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 ## Critères d'acceptation
 
 - [ ] **AC1 — brique autonome.** `ezk-testbed start` fonctionne dans un repo qui n'a **ni**
-      `ezk-pr-pilot`, **ni** backlog, **ni** aucun autre skill ezk installé — la seule
+      `ezk-pr`, **ni** backlog, **ni** aucun autre skill ezk installé — la seule
       exigence est la déclaration du projet. Vérifiable sur un repo jetable ne contenant que
       la déclaration.
 - [ ] **AC2 — la méthode lit, elle ne devine plus.** `ezk-testbed start` exécute la commande
@@ -166,14 +166,14 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
       `init` refuse une déclaration dont le slot « état de départ » est vide, et **accepte
       « sans objet » explicite**. Grep de contrôle : aucun `SKILL.md` de mega-city ne
       contient `samplerz_session` ni `cityguided_`.
-- [ ] **AC5 — composition, pas duplication.** `ezk-pr-pilot` gagne **une ligne** de
+- [ ] **AC5 — composition, pas duplication.** `ezk-pr` gagne **une ligne** de
       délégation dans sa table « Frontière & délégation » et **aucune** logique de boot ;
       `ezk-sprint` / `ezk-qa` pointent vers `ezk-testbed` pour l'étape E2E. Aucun
       `SKILL.md` ne réimplémente `start`/`stop`.
 - [ ] **AC6 — la méthode reste décrite.** Dans la **même PR** (règle « carte vivante ») :
       `skills/README.md` (nouvelle ligne de catalogue), `profiles/global.yml` +
       `expand.test.ts` (19 skills), `docs/method-map.md`, org-chart 0028, et **ADR-0020**
-      passé de `proposé` à `accepté`. Au passage, `ezk-pr-pilot` — aujourd'hui **absent**
+      passé de `proposé` à `accepté`. Au passage, `ezk-pr` — aujourd'hui **absent**
       de la couche 1 de `method-map.md` — y figure.
 
 ## Dépendances externes
@@ -188,7 +188,7 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
 
 1. **Samplerz livre son adaptateur** (`make preview-pr` + politique session vide) — sa P0,
    son repo, indépendant de cette fiche.
-2. **Cette fiche** — `ezk-testbed` + ADR-0020 + les deux délégations (`ezk-pr-pilot`,
+2. **Cette fiche** — `ezk-testbed` + ADR-0020 + les deux délégations (`ezk-pr`,
    `ezk-preview`). Doit atterrir **après** le 1, pour être écrite contre une commande qui
    existe vraiment.
 3. **city-guided** déclare ses deux cibles → c'est le second dogfood, celui qui prouve que
@@ -207,13 +207,13 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
   un builder autonome à tirer 0102 prématurément. `blocked` la rend non-tirable jusqu'à ce
   que le prérequis samplerz soit constaté livré — le PO repassera `blocked → todo` à ce
   moment.
-- **Renommage `ezk-pr-pilot` → `ezk-pr` : hors périmètre**, explicitement. Décision
+- **Renommage `ezk-pr` → `ezk-pr` : hors périmètre**, explicitement. Décision
   cosmétique, à trancher dans sa propre PR — jamais couplée à un changement de frontière
   (sinon la revue mélange « est-ce le bon découpage ? » et « est-ce le bon mot ? »).
-  Après ce split, `ezk-pr-pilot` reste le nom juste : c'est un pilote de **stock**.
+  Après ce split, `ezk-pr` reste le nom juste : c'est un pilote de **stock**.
 - **Risque connu — `composes` n'existe pas encore.** ADR-0012 est **proposé**, fiche
   **0044** `todo` : aucun `SKILL.md` ne porte de champ `composes:`. La composition
-  `ezk-pr-pilot → ezk-testbed` sera donc en **prose**, invisible à `expand`/`bind` — un
+  `ezk-pr → ezk-testbed` sera donc en **prose**, invisible à `expand`/`bind` — un
   profil pourrait binder l'un sans l'autre sans erreur. **Pas bloquant** (les 18 skills
   actuels sont dans le même cas), mais la doctrine « briques autonomes **composables** »
   rend 0044 nettement plus utile qu'avant : bon moment pour la tirer.

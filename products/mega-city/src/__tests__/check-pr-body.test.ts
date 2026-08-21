@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const script = resolve(here, '../../skills/ezk-pr-pilot/scripts/check-pr-body.sh');
+const script = resolve(here, '../../skills/ezk-pr/scripts/check-pr-body.sh');
 
 function check(body: string): { code: number; err: string } {
   try {

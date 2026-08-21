@@ -41,5 +41,5 @@ ezk-preview, ezk-device/ezk-apk, verify/run, ezk-backlog, ezk-commits.
 - Né en session livestreamz (worktree fervent-borg) — la version manuelle du plan
   vit dans les commentaires « 🧪 Plan de test » des PRs livestreamz #69–#78 et la
   convention dans sa PR #79.
-- Symlink `~/.claude/skills/ezk-pr-pilot` à poser après retour du checkout principal
+- Symlink `~/.claude/skills/ezk-pr` à poser après retour du checkout principal
   sur une branche contenant le skill (déploiement non-destructif, cf. ezk-ezk).

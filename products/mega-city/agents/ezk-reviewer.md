@@ -6,7 +6,7 @@ description: >-
   d'une feature (branche `feat/<id>-<slug>` vs `main`, ou une PR ouverte) et il cherche
   activement à le CASSER — correctness, sécurité, perf, contrats/API, clean code & SOLID,
   et surtout la qualité RÉELLE des tests — puis rend un verdict GO/NO-GO bloquant. Tourne
-  sur un modèle DIFFÉRENT du dev (ezk-tdd = Sonnet → reviewer = Opus) pour une seconde
+  sur un modèle DIFFÉRENT du dev (ezk-dev = Sonnet → reviewer = Opus) pour une seconde
   opinion indépendante : il REMPLACE la revue Codex quand la CI cloud est indisponible
   (quota GitHub épuisé, repo privé). Compose /code-review, /security-review, /simplify, et
   valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas :
@@ -94,7 +94,7 @@ Tests : <couverture réelle du changement : oui / partielle / absente>
 Gate locale (act) : <verte / non lancée / rouge>
 ```
 
-Tu **ne développes pas** : tu confies les corrections au dev (`ezk-tdd`). Un **NO-GO bloque la
+Tu **ne développes pas** : tu confies les corrections au dev (`ezk-dev`). Un **NO-GO bloque la
 PR** jusqu'à traitement.
 
 <!--

@@ -31,7 +31,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-apk` | 📥 importé (0024) | build d'un APK/IPA de preview sur EAS + lien d'install |
 | `ezk-npm-scripts` | 📥 importé (0024) | hygiène des scripts npm/pnpm/turbo d'un monorepo |
 | `ezk-design-system` | 📥 importé (0024) | design system minimal (tokens + atomes + styleguide vivant) — l'« étendre » reste la fiche 0019 |
-| `ezk-pr-pilot` | 📦 nouveau (ADR-0009, fiche 0027) | orchestre le **test-puis-merge d'un stock de PRs** : `init` (convention Validation — template mince lié à `docs/PR_VALIDATION.md`, jamais écrasé), `plan` (ordre de merge par merge-tree, sessions groupées), `run`/`report`/`ship` (compose ezk-preview, ezk-device/apk, verify, ezk-backlog) |
+| `ezk-pr` | 📦 nouveau (ADR-0009, fiche 0027) | orchestre le **test-puis-merge d'un stock de PRs** : `init` (convention Validation — template mince lié à `docs/PR_VALIDATION.md`, jamais écrasé), `plan` (ordre de merge par merge-tree, sessions groupées), `run`/`report`/`ship` (compose ezk-preview, ezk-device/apk, verify, ezk-backlog) |
 | `ezk-diagram` | 📦 nouveau | prose → diagramme **Mermaid** versionné (triplet `diagrams/<slug>/`) + vues partageables : `README.md` rendu nativement par GitHub & liens mermaid.live/ink (`scripts/render.sh` + `publish.sh`) |
 | `ezk-docker` | 📦 récupéré (commit orphelin) | pilote une **stack Docker** locale de test/dev via le socket (`up`/`ps`/`logs`/`down`/`nuke`), conventions blast-radius (stacks préfixées, teardown obligatoire) — frontière nette vs `ezk-ci` |
 | `ezk-readme` | 📦 récupéré (commit orphelin) | crée/audite **le README** d'un projet (pitch, badges adossés au réel, quickstart, indirections vers les sources de vérité) ; `create` / `audit` (rapport + diff, jamais d'écrasement) |
@@ -39,8 +39,8 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-article` | 📦 nouveau (fiche 0049) | écrit/réécrit un **article technique vulgarisé** : brief de persona demandé au demandeur, règles d'écriture encodées, **panel de 5 relecteurs frais** (lecteur cible, essais techniques, copy-editor, fidélité aux sources, références) + contre-lecture à froid = gate de publication ; `revise` versionne côte à côte (`<slug>-vN.md`) |
 | `ezk-codex` | 📦 nouveau (ADR-0024) | **adresse les retours Codex d'une PR** de bout en bout : `fix` (récupère findings inline+reviews, corrige ou **décline** les faux positifs + 👎, commit scopé, push, re-déclenche `@codex review`, **sonde de verdict bornée**) · `check` (lecture seule). Garde-fou de tête : **stand-down** anti-collision (PR mergée / branche pilotée ailleurs / commits d'une autre session). Composé par `ezk-sprint` (étape 10) + `ezk-pr` (`ship`) ; **ne merge pas** |
 
-> **Agents** (`../agents/`) : `ezk-architect`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-tdd` (6, tous bindés par le profil `global`).
-> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr-pilot` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-start` (fiche 0090) = **19 skills** au profil `global`, + 6 agents.
+> **Agents** (`../agents/`) : `ezk-architect`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-dev` (6, tous bindés par le profil `global`).
+> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-start` (fiche 0090) = **19 skills** au profil `global`, + 6 agents.
 > Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée) · `supervision-analyze` (post-mortem journal + transcript — fiche 0104, opt-in) · `vz-product-builder` (overlay AUTONOME du product-builder à corpus de reviewers, fiche 0060 — opt-in explicite, jamais bindé par défaut : l'autonomie se choisit).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
 
@@ -54,10 +54,10 @@ flowchart LR
     ezk-codex --> ezk-commits
     ezk-diagram --> ezk-commits
     ezk-ezk --> ezk-backlog
-    ezk-pr-pilot --> ezk-backlog
-    ezk-pr-pilot --> ezk-commits
+    ezk-pr --> ezk-backlog
+    ezk-pr --> ezk-commits
     ezk-product-builder --> ezk-backlog
-    ezk-product-builder --> ezk-pr-pilot
+    ezk-product-builder --> ezk-pr
     ezk-product-builder --> ezk-sprint
     ezk-readme --> ezk-backlog
     ezk-retro --> ezk-backlog
