@@ -62,7 +62,7 @@
 | 0124 | migrer + étendre ezk-design-system (design system UI/UX consultable + requêtable) | feature | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0129 | Migration claude-skills → mega-city — finir le strangler-fig (skills + agents restants → switchover) | chore | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0130 | cap global mode link — symlinker AUSSI les agents (pas seulement les skills) | bug | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
-| 0132 | ezk-pr : orchestrateur du test-puis-merge d'un stock de PRs (+ convention Validation) | feature | P1 |  | mega-city | ✅ shipped | merge local feat/skill-ezk-pr-pilot |
+| 0132 | ezk-pr-pilot : orchestrateur du test-puis-merge d'un stock de PRs (+ convention Validation) | feature | P1 |  | mega-city | ✅ shipped | merge local feat/skill-ezk-pr-pilot |
 | 0141 | agent ezk-pm — le décideur product-owner (jour ET nuit) | feature | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0142 | flywheel cassé — capture écrit des skills/rules que loadCatalog ne relit jamais | bug | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0144 | frontmatter tuning des agents — model, effort, isolation | chore | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
@@ -120,7 +120,7 @@
 | 0127 | ezk-backlog add — proposer un brainstorm pour façonner une fiche vague | feature | P2 |  | mega-city | ✅ shipped | local (via migration ezk-backlog #31, fiche 0024) |
 | 0128 | ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship) | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0131 | ezk-archive persiste la note de handoff dans .claude/handoff.md | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
-| 0135 | Renommer l'agent ezk-dev → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 |  | mega-city | ✅ shipped |  |
+| 0135 | Renommer l'agent ezk-tdd → ezk-dev (TDD = capacité du dev, pas un rôle) | refactor | P2 |  | mega-city | ✅ shipped |  |
 | 0137 | ezk-diagram — prose → diagramme versionné (as-code + image), autorat verbal | feature | P2 |  | mega-city | ✅ shipped | #3 |
 | 0140 | geler puis archiver le repo iamthelaw (post-migration) | chore | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0146 | profils par hôte — cop1-target.yml et desktop.yml | feature | P2 |  | mega-city | ✅ shipped | #7 |
@@ -213,9 +213,6 @@
 | 0186 | Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0188 | ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0189 | ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable) | bug | P2 |  | mega-city | 💡 idea |  |
-| 0192 | Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change | feature | P2 |  | mega-city | 💡 idea |  |
-| 0193 | DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming | feature | P2 |  | mega-city | 💡 idea |  |
-| 0194 | Agent marketing analyste — copy qui vend, benchmark concurrents, métriques, A/B | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260812104022228 | Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260812104022231 | DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming | feature | P2 | 20260815080413884 | mega-city | 💡 idea |  |
 | 20260812104022234 | Agent marketing analyste — copy qui vend, benchmark concurrents, métriques, A/B | feature | P2 |  | mega-city | 💡 idea |  |
