@@ -39,6 +39,15 @@ jobs:
         run: bash products/mega-city/bin/test-links-repo.sh
 
       # Un ADR neuf = un fichier .md → seul CE workflow se déclenche. C'est donc ICI, et
-      # nulle part ailleurs, que la collision de numéro peut être attrapée avant le merge.
+      # nulle part ailleurs, que la collision de numéro peut être attrapée.
+      #
+      # Portée exacte (revue Codex, PR #160) — ne pas surestimer ce que ça garantit :
+      #   · sur une PR, GitHub évalue la FUSION avec main → un numéro déjà pris sur main
+      #     est vu AVANT le merge ;
+      #   · MAIS une PR verte n'est pas re-jouée quand main avance (pas de branch
+      #     protection : plan Free). Deux PR parties du même point peuvent donc passer.
+      #   · Le filet est alors le déclencheur `push` sur main ci-dessus : la collision
+      #     rougit main dans la minute. Prévention impossible sans file d'attente de
+      #     merge ; la garantie tenue est qu'une collision NE DORT PAS.
       - name: numéros d'ADR (aucune collision neuve)
         run: bash products/mega-city/bin/test-adr-ids-repo.sh

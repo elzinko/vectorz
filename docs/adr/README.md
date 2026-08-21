@@ -67,10 +67,24 @@ D'où la doctrine, différente à dessein :
 - **ADR → DÉTECTER.** La gate transforme une collision silencieuse en échec bruyant au
   merge, parce que la réparer à chaud ne coûte rien.
 
-**Le cas concurrent est donc couvert, mais par détection.** Deux branches peuvent prendre le
-même `--next` sans se voir — c'est arrivé plusieurs fois pour les fiches, et le journal
-montre des jours à 2-3 ADR créés. Si ça arrive : la gate rougit au merge, et **on renumérote
-le plus RÉCENT** (celui qui n'est encore cité nulle part), jamais l'ancien.
+**Le cas concurrent : ce qui est couvert, et ce qui ne l'est pas.** Deux branches peuvent
+prendre le même `--next` sans se voir — le journal montre des jours à 2-3 ADR créés. Soyons
+précis sur ce que la gate garantit, parce que la formulation initiale promettait trop
+(relevé par la revue Codex, PR #160) :
+
+| Situation | Attrapé ? | Par quoi |
+|---|---|---|
+| Une PR ajoute un numéro déjà pris sur `main` | ✅ **avant le merge** | GitHub évalue la PR sur la **fusion** avec `main` : le doublon est visible dans le checkout |
+| Idem, mais la PR a été validée **avant** que l'autre ne merge, et n'est pas re-jouée | ❌ | rien ne force une PR verte à se re-valider quand `main` avance (pas de branch protection : plan Free) |
+| Deux PR mergées coup sur coup avec le même numéro | ✅ **juste après** | le déclencheur `push` sur `main` du même workflow → **`main` passe au rouge** |
+
+Autrement dit : **la prévention n'est pas atteignable** avec l'outillage disponible (ni file
+d'attente de merge, ni « branche à jour obligatoire »). Ce qui est garanti, c'est qu'une
+collision **ne peut pas dormir** : elle rougit `main` dans la minute.
+
+**Conduite à tenir quand ça arrive** : renuméroter l'ADR **le plus RÉCENT** — celui qui
+n'est encore cité nulle part — jamais l'ancien. Le coût est proche de zéro, et c'est
+précisément le pari assumé du choix « détecter plutôt que prévenir » ci-dessus.
 
 ---
 

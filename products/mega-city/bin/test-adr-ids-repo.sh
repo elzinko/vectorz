@@ -21,7 +21,13 @@ if bash "$MC/bin/check-adr-ids.sh" "$ROOT"; then
 else
   echo
   echo "❌ test-adr-ids-repo — un numéro d'ADR désigne deux sujets différents."
-  echo "   Renuméroter l'ADR NEUF (jamais l'ancien : ils sont immuables et massivement cités)."
+  echo
+  echo "   Si tu vois ça sur MAIN : deux PR ont pris le même numéro sans se voir."
+  echo "   C'est le cas concurrent assumé (docs/adr/README.md) — la prévention n'est pas"
+  echo "   atteignable sans file d'attente de merge ; la garantie est qu'il ne dort pas."
+  echo
+  echo "   Conduite à tenir : renuméroter l'ADR **le plus RÉCENT** — celui qui n'est encore"
+  echo "   cité nulle part. Jamais l'ancien : ils sont immuables et massivement cités."
   echo "   Prochain numéro libre des deux côtés :"
   echo "     bash products/mega-city/bin/check-adr-ids.sh . --next"
   exit 1
