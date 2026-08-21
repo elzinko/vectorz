@@ -1,4 +1,5 @@
 ---
+composes: [ezk-commits]
 name: ezk-backlog
 layout_version: 2
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen]"

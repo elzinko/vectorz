@@ -1,4 +1,5 @@
 ---
+competences: [ezk-backlog]
 name: ezk-archive
 description: >-
   Rituel de CLÔTURE de session avant archivage — clôt proprement un repo pour ne

@@ -1,4 +1,5 @@
 ---
+composes: [ezk-backlog, ezk-commits]
 name: ezk-pr-pilot
 argument-hint: "[help|init|plan|run|report|ship] [#PR…]"
 description: >-

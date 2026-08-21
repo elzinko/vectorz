@@ -1,0 +1,57 @@
+flowchart TB
+    PO(["🫵 PO — décide, garde la main"])
+
+    subgraph LOI["⚖️ CATALOGUE 1 · LA LOI"]
+        direction TB
+        R["rules/ · règles composables"] -->|regroupe| B["bundles/ · groupes (extends)"]
+    end
+
+    subgraph EQ["👥 CATALOGUE 2 · L'ÉQUIPE"]
+        direction TB
+        AG["agents/ · 7 rôles<br/>compétences + interactions"]
+        SK["skills/ · 23 commandes ezk-*<br/>playbooks host-agnostiques"]
+    end
+
+    subgraph ASM["🔗 L'ASSEMBLAGE"]
+        direction TB
+        KEY["🔑 profiles/ · keystone"] -->|résolu par| BIND["⚙️ bind · calcule un plan<br/>(pur : n'écrit rien)"]
+        CAPS["caps/host · le moule de l'hôte<br/>Code · Desktop · Cursor · cop1"] -->|fournit le moule à| BIND
+        BIND -->|plan d'écriture| APPLY["io/apply · le seul qui écrit"]
+    end
+
+    subgraph FLOW["🏃 LE FLUX · 1 fiche = 1 PR"]
+        direction TB
+        BL["📚 ezk-backlog · le stock<br/>idea → todo → in-progress → shipped"]
+        PB["🤖 ezk-product-builder · enchaîne les sprints"]
+        SP["ezk-sprint · BDD → TDD → gate → archi → revue"]
+        SHIP["✅ squash-merge → ship"]
+        BL -->|tire| PB -->|déroule| SP -->|au vert| SHIP
+    end
+
+    START["🚦 ezk-start · ouvre"]
+    ARCH["🗄️ ezk-archive · clôt (handoff)"]
+    RETRO["🔄 ezk-retro · améliore"]
+
+    LOI -->|compose| KEY
+    EQ -->|compose| KEY
+    PO -->|pilote| BL
+    PO -->|lance| PB
+    SP -->|convoque| AG
+    LOI -.->|guide| SP
+    SHIP -->|réalimente| BL
+    START -.->|avant le flux| BL
+    SHIP -->|puis clôt| ARCH
+    PO -->|déclenche| RETRO
+    RETRO -->|propose des règles| LOI
+
+    classDef loi fill:#1e3a8a,stroke:#1e40af,color:#fff;
+    classDef eq fill:#b45309,stroke:#92400e,color:#fff;
+    classDef flow fill:#166534,stroke:#14532d,color:#fff;
+    classDef asm fill:#475569,stroke:#334155,color:#fff;
+    classDef po fill:#166534,stroke:#14532d,color:#fff,stroke-width:3px;
+
+    class R,B loi;
+    class AG,SK eq;
+    class BL,PB,SP,SHIP,START,ARCH,RETRO flow;
+    class KEY,CAPS,BIND,APPLY asm;
+    class PO po;

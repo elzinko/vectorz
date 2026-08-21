@@ -1,4 +1,5 @@
 ---
+roles: [ezk-architect, ezk-tdd, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits, ezk-start]
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un

@@ -1,0 +1,772 @@
+<title>La méthode mega-city</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#e9edf4; --grid:#dde3ee;
+  --panel:#ffffff; --panel-2:#f4f6fb; --panel-3:#eef1f8;
+  --ink:#141a24; --ink-soft:#48566b; --ink-faint:#7b899e;
+  --line:#d6ddea; --line-soft:#e6ebf3;
+  --accent:#a9741a; --accent-bright:#c8912b;
+  --law:#2f6fd0; --cmd:#a9741a; --cap:#7a49cf; --flow:#1c9a5f; --asm:#5a6a82;
+  --shadow:0 1px 2px rgba(20,26,36,.06), 0 8px 24px rgba(20,26,36,.07);
+  --shadow-lg:0 12px 40px rgba(20,26,36,.16);
+  --wire:#c8912b;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0c1019; --grid:#161d2b;
+    --panel:#141b28; --panel-2:#1a2231; --panel-3:#20293b;
+    --ink:#e8edf6; --ink-soft:#a6b2c6; --ink-faint:#6c7a91;
+    --line:#28324700; --line:#273147; --line-soft:#1e2637;
+    --accent:#e8b54d; --accent-bright:#f4ca6e;
+    --law:#6aa1f0; --cmd:#e8b54d; --cap:#a78bfa; --flow:#43cd88; --asm:#8ea0ba;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    --shadow-lg:0 18px 50px rgba(0,0,0,.55);
+    --wire:#e8b54d;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0c1019; --grid:#161d2b;
+  --panel:#141b28; --panel-2:#1a2231; --panel-3:#20293b;
+  --ink:#e8edf6; --ink-soft:#a6b2c6; --ink-faint:#6c7a91;
+  --line:#273147; --line-soft:#1e2637;
+  --accent:#e8b54d; --accent-bright:#f4ca6e;
+  --law:#6aa1f0; --cmd:#e8b54d; --cap:#a78bfa; --flow:#43cd88; --asm:#8ea0ba;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  --shadow-lg:0 18px 50px rgba(0,0,0,.55);
+  --wire:#e8b54d;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  font-size:15px; line-height:1.55;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:44px 44px; background-position:-1px -1px;
+}
+.wrap{max-width:1280px; margin:0 auto; padding:0 20px}
+a{color:inherit}
+h1,h2,h3{margin:0; text-wrap:balance}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+/* ---------- header ---------- */
+header{
+  position:sticky; top:0; z-index:40;
+  background:color-mix(in srgb,var(--ground) 86%,transparent);
+  backdrop-filter:saturate(1.3) blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.head-in{display:flex; align-items:center; gap:16px; padding:14px 20px; flex-wrap:wrap; max-width:1280px; margin:0 auto}
+.badge{
+  width:42px;height:42px;flex:none;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(150deg,var(--accent-bright),var(--accent));
+  color:#1a1305; font-size:22px; box-shadow:var(--shadow); border:1px solid rgba(0,0,0,.15);
+}
+.title-block{display:flex; flex-direction:column; gap:1px; margin-right:auto}
+.eyebrow{
+  font-family:"Chakra Petch",sans-serif; font-weight:600; letter-spacing:.28em;
+  font-size:10.5px; text-transform:uppercase; color:var(--ink-faint);
+}
+h1{font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:22px; letter-spacing:.01em; line-height:1.05}
+.title-block .sub{font-size:12.5px; color:var(--ink-soft)}
+.toolbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.search{
+  display:flex; align-items:center; gap:7px; background:var(--panel); border:1px solid var(--line);
+  border-radius:8px; padding:6px 10px; box-shadow:var(--shadow);
+}
+.search input{border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;width:150px;outline:none}
+.search svg{color:var(--ink-faint)}
+button.tb{
+  font:inherit; font-size:12.5px; cursor:pointer; color:var(--ink-soft);
+  background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:7px 11px;
+  box-shadow:var(--shadow); display:inline-flex; align-items:center; gap:7px; transition:.15s;
+}
+button.tb:hover{color:var(--ink); border-color:var(--ink-faint)}
+button.tb[aria-pressed="true"]{border-color:var(--accent); color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+
+/* ---------- intro ---------- */
+.intro{padding:26px 0 6px}
+.thesis{font-size:18px; line-height:1.5; max-width:66ch; color:var(--ink)}
+.thesis b{color:var(--accent); font-weight:600}
+.legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px}
+.legend .lg{display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--ink-soft)}
+.legend .sw{width:11px;height:11px;border-radius:3px;flex:none}
+
+/* ---------- spine ---------- */
+.spine-sec{padding:20px 0 6px}
+.sec-label{
+  font-family:"Chakra Petch",sans-serif; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  font-size:11px; color:var(--ink-faint); margin-bottom:12px; display:flex; align-items:center; gap:10px;
+}
+.sec-label::after{content:"";height:1px;flex:1;background:var(--line)}
+.spine{
+  display:flex; align-items:stretch; gap:0; overflow-x:auto; padding-bottom:8px;
+  scrollbar-width:thin;
+}
+.spine .grp{display:flex; align-items:center; gap:10px}
+.arrow{color:var(--ink-faint); flex:none; padding:0 4px; font-size:18px}
+.sblock{
+  --c:var(--asm);
+  position:relative; min-width:132px; background:var(--panel); border:1px solid var(--line);
+  border-radius:11px; padding:12px 13px; cursor:pointer; box-shadow:var(--shadow); transition:.16s;
+  border-top:2px solid var(--c);
+}
+.sblock:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg); border-color:var(--c)}
+.sblock .k{font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em; display:flex; align-items:center; gap:7px}
+.sblock .d{font-size:11px; color:var(--ink-faint); margin-top:3px; line-height:1.4}
+.sblock .ic{font-size:14px}
+.stack{display:flex; flex-direction:column; gap:9px}
+
+/* ---------- board + wires ---------- */
+.board{position:relative}
+#wires{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:5; overflow:visible}
+#wires path{fill:none; stroke:var(--wire); stroke-width:1.6; opacity:.9; stroke-linecap:round}
+.section{padding:18px 0 8px; position:relative; z-index:1}
+.grid{display:grid; gap:12px}
+.cards{grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
+.cluster{margin-bottom:6px}
+.cluster > .cl-h{
+  font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:12px; letter-spacing:.04em;
+  color:var(--ink-soft); margin:14px 0 9px; display:flex; align-items:center; gap:9px;
+}
+.cluster > .cl-h .n{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:20px; padding:1px 8px}
+
+/* node card */
+.node{
+  --c:var(--cmd);
+  text-align:left; font:inherit; color:var(--ink); cursor:pointer;
+  background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--c);
+  border-radius:11px; padding:12px 13px 13px; box-shadow:var(--shadow);
+  transition:transform .15s, box-shadow .15s, border-color .15s, opacity .2s;
+  position:relative; display:flex; flex-direction:column; gap:7px; min-height:96px;
+}
+.node:hover{transform:translateY(-3px); box-shadow:var(--shadow-lg)}
+.node:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.node .nm{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13.5px; color:var(--ink); letter-spacing:-.01em; display:flex; align-items:center; gap:8px; word-break:break-word}
+.node .nm .tag{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 20%,transparent)}
+.node .role{font-size:12.5px; color:var(--ink-soft); line-height:1.42}
+.subs{display:flex; flex-wrap:wrap; gap:4px; margin-top:auto}
+.sub{
+  font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--ink-soft);
+  background:var(--panel-2); border:1px solid var(--line-soft); border-radius:5px; padding:1px 6px; line-height:1.6;
+}
+.node .meta{display:flex; align-items:center; gap:8px; font-size:10.5px; color:var(--ink-faint); flex-wrap:wrap}
+.node .meta .pill{border:1px solid var(--line); border-radius:20px; padding:0 8px; display:inline-flex; align-items:center; gap:5px}
+.node.agent{--c:var(--cap); min-height:120px}
+.node.agent .nm{color:var(--ink)}
+
+/* highlight states */
+.board.focusing .node:not(.hot):not(.lit),
+.board.focusing .sblock:not(.hot):not(.lit){opacity:.28; filter:saturate(.5)}
+.node.hot{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent), var(--shadow-lg)}
+.sblock.hot{box-shadow:0 0 0 2px var(--accent), var(--shadow-lg)}
+.node.lit{border-color:var(--c)}
+.node.lit::after,.sblock.lit::after{
+  content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+  box-shadow:0 0 0 1.5px color-mix(in srgb,var(--wire) 60%,transparent);
+}
+
+/* ---------- dossier ---------- */
+.scrim{position:fixed; inset:0; background:rgba(8,11,18,.5); opacity:0; pointer-events:none; transition:.22s; z-index:60}
+.scrim.on{opacity:1; pointer-events:auto}
+.dossier{
+  position:fixed; top:0; right:0; height:100%; width:min(420px,94vw);
+  background:var(--panel); border-left:1px solid var(--line); box-shadow:var(--shadow-lg);
+  transform:translateX(100%); transition:transform .26s cubic-bezier(.3,.7,.2,1); z-index:70;
+  display:flex; flex-direction:column;
+}
+.dossier.on{transform:none}
+.dos-top{padding:18px 20px 14px; border-bottom:1px solid var(--line); position:relative}
+.dos-kind{font-family:"Chakra Petch",sans-serif; font-weight:600; letter-spacing:.2em; text-transform:uppercase; font-size:10px; color:var(--c,var(--accent))}
+.dos-name{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:19px; margin-top:5px; word-break:break-word; display:flex; align-items:center; gap:9px}
+.dos-name .tag{width:11px;height:11px;border-radius:50%;background:var(--c,var(--accent));flex:none}
+.dos-close{position:absolute; top:14px; right:14px; width:32px;height:32px;border-radius:8px; border:1px solid var(--line); background:var(--panel-2); color:var(--ink-soft); cursor:pointer; font-size:17px; display:grid; place-items:center}
+.dos-close:hover{color:var(--ink); border-color:var(--ink-faint)}
+.dos-body{padding:16px 20px 30px; overflow-y:auto; display:flex; flex-direction:column; gap:16px}
+.dos-role{font-size:14.5px; color:var(--ink); line-height:1.5}
+.dblock h4{
+  font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); margin-bottom:8px; display:flex; align-items:center; gap:8px;
+}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; cursor:pointer; color:var(--ink);
+  background:var(--panel-2); border:1px solid var(--line); border-radius:7px; padding:4px 9px;
+  display:inline-flex; align-items:center; gap:6px; transition:.14s;
+}
+.chip:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-1px)}
+.chip.static{cursor:default}
+.chip.static:hover{transform:none; border-color:var(--line); color:var(--ink)}
+.chip .tag{width:8px;height:8px;border-radius:50%;flex:none}
+.rel-note{font-size:11.5px;color:var(--ink-faint)}
+.pipe{display:flex; flex-direction:column; gap:0}
+.pstep{display:flex; gap:11px; align-items:flex-start; padding:7px 0; position:relative}
+.pstep:not(:last-child)::before{content:"";position:absolute;left:11px;top:26px;bottom:-7px;width:1.5px;background:var(--line)}
+.pnum{width:23px;height:23px;flex:none;border-radius:50%;background:var(--panel-3);border:1px solid var(--line);display:grid;place-items:center;font-family:"Chakra Petch",sans-serif;font-size:11px;font-weight:600;color:var(--ink-soft);z-index:1}
+.pstep b{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600}
+.pstep .pd{font-size:11.5px;color:var(--ink-faint)}
+.pstep .who{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--cap);cursor:pointer}
+.pstep .who:hover{text-decoration:underline}
+
+/* ---------- footer ---------- */
+footer{margin-top:26px; border-top:1px solid var(--line); padding:22px 0 40px}
+.gold-rule{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px;
+  display:grid; grid-template-columns:1fr 1fr; gap:14px; box-shadow:var(--shadow); max-width:720px;
+}
+.gold-rule .gr-h{grid-column:1/-1; font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+.grcell{border-left:3px solid var(--c); padding-left:11px}
+.grcell .t{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13px}
+.grcell .s{font-size:12px; color:var(--ink-soft); margin-top:2px}
+.foot-note{font-size:12px; color:var(--ink-faint); margin-top:16px; max-width:70ch}
+.foot-note code{font-family:"IBM Plex Mono",monospace; background:var(--panel-2); border:1px solid var(--line-soft); border-radius:5px; padding:1px 6px; font-size:11px}
+
+@media (max-width:720px){
+  .gold-rule{grid-template-columns:1fr}
+  h1{font-size:19px}
+  .thesis{font-size:16px}
+  .head-in{gap:10px}
+  body{background-size:36px 36px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important; animation:none!important}
+}
+</style>
+
+<header>
+  <div class="head-in">
+    <div class="badge" aria-hidden="true">⚖️</div>
+    <div class="title-block">
+      <span class="eyebrow">Mega-City One · I&nbsp;AM&nbsp;THE&nbsp;LAW</span>
+      <h1>La méthode mega-city</h1>
+      <span class="sub">Carte vivante · 23 commandes · 7 capabilities · la loi</span>
+    </div>
+    <div class="toolbar">
+      <label class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="chercher une commande…" aria-label="Chercher">
+      </label>
+      <button class="tb" id="wiresBtn" aria-pressed="false" title="Afficher tous les liens">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M6.8 7.4 10.6 16M17.2 7.4 13.4 16"/></svg>
+        Liens
+      </button>
+      <button class="tb" id="themeBtn" title="Basculer le thème" aria-label="Basculer le thème">
+        <span id="themeIcon">◐</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <p class="thesis">Des <b>Juges</b> (agents) appliquent <b>la loi</b> (règles) pour des projets, sur n'importe quel LLM. Cette carte montre l'ensemble de la méthode&nbsp;: ses <b>commandes</b>, ses <b>capabilities</b>, et les <b>liens</b> qui les font tenir. Survolez une carte pour voir ses connexions, cliquez-la pour ouvrir son dossier.</p>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section class="spine-sec">
+    <div class="sec-label">L'assemblage — comment tout tient ensemble</div>
+    <div class="spine" id="spine"></div>
+  </section>
+
+  <div class="board" id="board">
+    <svg id="wires" aria-hidden="true"><defs>
+      <marker id="ah" markerWidth="7" markerHeight="7" refX="5.4" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--wire)"/></marker>
+    </defs></svg>
+
+    <section class="section">
+      <div class="sec-label">Les capabilities — 7 juges (agents)</div>
+      <div class="grid cards" id="agents"></div>
+    </section>
+
+    <section class="section">
+      <div class="sec-label">Les commandes — 23 skills <span class="mono" style="font-size:11px;color:var(--ink-faint);letter-spacing:0">ezk-*</span></div>
+      <div id="clusters"></div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="gold-rule" id="goldRule">
+      <div class="gr-h">La règle d'or — leçon <span class="mono" style="text-transform:none">lifefindsaway</span></div>
+      <div class="grcell" style="--c:var(--cap)"><div class="t">Le LLM rédige &amp; juge</div><div class="s">Contenu, avis, décisions. Non déterministe — et c'est voulu&nbsp;: consultatif.</div></div>
+      <div class="grcell" style="--c:var(--flow)"><div class="t">Le script range</div><div class="s">Append, journal, commit, bind. Déterministe — toujours pareil, testable.</div></div>
+    </div>
+    <p class="foot-note">Cette carte est la vue <b>dynamique</b> de la méthode. La colonne vertébrale versionnée (Mermaid rendu par GitHub + explication lecteur) vit dans <code>diagrams/methode-mega-city/</code>, produite par la commande <code>ezk-diagram</code> — celle-là même qui a servi à faire ce diagramme.</p>
+  </footer>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="dossier" id="dossier" role="dialog" aria-modal="false" aria-labelledby="dosName">
+  <div class="dos-top">
+    <div class="dos-kind" id="dosKind">Commande</div>
+    <div class="dos-name" id="dosName"><span class="tag"></span><span id="dosNameTxt"></span></div>
+    <button class="dos-close" id="dosClose" aria-label="Fermer">✕</button>
+  </div>
+  <div class="dos-body" id="dosBody"></div>
+</aside>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ DATA — source: frontmatter des skills/agents + method-map ============ */
+var GROUPS = {
+  law:{c:"var(--law)", label:"La loi"},
+  cmd:{c:"var(--cmd)", label:"Commande"},
+  cap:{c:"var(--cap)", label:"Capability"},
+  flow:{c:"var(--flow)", label:"Flux / PO"},
+  asm:{c:"var(--asm)", label:"Assemblage"}
+};
+
+// spine blocks (the assembly model)
+var SPINE = [
+  {id:"PO", ic:"🫵", k:"PO", grp:"flow", d:"décide, garde la main"},
+  {id:"LOI", ic:"⚖️", k:"LA LOI", grp:"law", d:"rules/ + bundles/"},
+  {id:"EQUIPE", ic:"👥", k:"L'ÉQUIPE", grp:"cap", d:"7 agents · 23 skills"},
+  {id:"PROFILES", ic:"🔑", k:"profiles/", grp:"asm", d:"keystone : compose tout"},
+  {id:"CAPS", ic:"🖥️", k:"caps/host", grp:"asm", d:"le moule de ton hôte"},
+  {id:"BIND", ic:"⚙️", k:"bind", grp:"asm", d:"assemble, puis io/apply écrit"}
+];
+var SPINE_DOS = {
+  PO:{role:"L'humain product-owner. Point d'entrée de tout&nbsp;: rien ne se lance sans lui. Il décide, tranche, et garde la main — quatre décisions lui restent réservées (irréversible/sortant, budget, idée produit, exigences contradictoires)."},
+  LOI:{role:"Le catalogue 1. Des règles minimales et composables (rules/) regroupées en bundles (mécanisme extends). C'est le référentiel qui guide le travail&nbsp;: Definition of Done, clean code, archi hexagonale, économie de tokens…",
+       extra:[{h:"10 domaines de règles",chips:["architecture","ci-cd","clean-code","conventional-commits","development","documentation-guidelines","hexagonal","testing","token-economy","typescript-2026"]}]},
+  EQUIPE:{role:"Le catalogue 2. Sept rôles (agents, chacun avec ses compétences et interactions) et vingt-trois commandes (skills, des playbooks indépendants de l'hôte). Voir les deux sections ci-dessous."},
+  PROFILES:{role:"La clé de voûte. Un profil compose la loi (bundles) et l'équipe (agents + skills) en un tout cohérent — base, daily, desktop, mobile, global, cop1-target.",
+       extra:[{h:"profils",chips:["base","daily","desktop","mobile","global","cop1-target"]}]},
+  BIND:{role:"Le moteur déterministe. Il <b>ne suit pas</b> le cap&nbsp;: il l'<b>utilise</b>. `bind` est une fonction <b>pure</b> — elle lit le profil, choisit le moule de l'hôte dans un registre, et rend un <b>plan d'écriture</b> sans toucher au disque. C'est `io/apply` qui écrit, et lui seul (ADR-0003). Le LLM ne range jamais&nbsp;; le script, si — toujours pareil, testable."},
+  CAPS:{role:"Le <b>moule</b> de chaque hôte&nbsp;: un module par LLM (Claude Code, Desktop, Cursor, cop1…) qui sait la forme native attendue. Ce n'est <b>pas l'étape d'après le bind</b> — c'est un composant que le bind choisit dans un registre et consomme. L'image&nbsp;: le bind est la recette, le cap est le moule adapté à ton four, io/apply est la cuisson."}
+};
+
+// 7 agents (capabilities) — model / effort / color from frontmatter
+var AGENTS = [
+  {id:"ezk-architect", dot:"#3b82f6", model:"opus-4.8", effort:"high",
+   role:"Décide une conception non triviale (frontières, structure, dépendances) et grave un ADR court. Ne code pas — il décide.", stage:"Archi"},
+  {id:"ezk-tdd", dot:"#22c55e", model:"sonnet", effort:"medium",
+   role:"Implémente le cœur d'une feature en red → green → refactor. Vise un POC qui marche, clean code. S'arrête au vert.", stage:"TDD", note:"isolation worktree"},
+  {id:"ezk-qa", dot:"#c084fc", model:"sonnet", effort:"medium",
+   role:"Écrit les scénarios d'acceptation BDD (Gherkin) = la Definition of Done, puis valide la PR de bout en bout en pilotant l'app (Playwright).", stage:"BDD"},
+  {id:"ezk-reviewer", dot:"#ef4444", model:"opus-4.8", effort:"high",
+   role:"Reviewer adverse qui cherche à casser le diff (correctness, sécu, perf, tests). Verdict GO/NO-GO bloquant, sur un modèle différent du dev.", stage:"Revue",
+   comp:["ezk-ci"], inter:["clean-code/no-dead-code"]},
+  {id:"ezk-steward", dot:"#eab308", model:"sonnet", effort:"low",
+   role:"Gardien de la librairie de skills&nbsp;: gate mécanique (tests, typecheck, liens) puis jugement de ce qu'un linter ne voit pas. Verdict GO/NO-GO."},
+  {id:"ezk-pm", dot:"#a855f7", model:"opus-4.8", effort:"high",
+   role:"Product-owner décideur&nbsp;: tranche les checkpoints à la place de l'opérateur d'après la fiche et LA LOI. Refuse les 4 décisions humaines.",
+   comp:["ezk-backlog"]},
+  {id:"ezk-archive", dot:"#22d3ee", model:"opus-4.8", effort:"medium",
+   role:"Rituel de clôture de session&nbsp;: working tree, PRs/branches, backlog, ADR, mémoire, note de handoff. Pour ne rien perdre entre deux sessions."}
+];
+
+// 23 skills grouped
+var CLUSTERS = [
+  {h:"Piloter le produit — le QUOI", ids:["ezk-backlog","ezk-product-builder","vz-product-builder"]},
+  {h:"Construire — le sprint", ids:["ezk-sprint","ezk-ci","ezk-commits","ezk-codex"]},
+  {h:"Livrer — les PRs & démos", ids:["ezk-pr-pilot","ezk-preview","ezk-device","ezk-apk"]},
+  {h:"Cycle de vie de session", ids:["ezk-start","ezk-archive-skill"]},
+  {h:"Améliorer la méthode", ids:["ezk-retro","ezk-ezk"]},
+  {h:"Documenter & visualiser", ids:["ezk-readme","ezk-article","ezk-diagram","ezk-design-system"]},
+  {h:"Outillage & supervision", ids:["ezk-docker","ezk-npm-scripts","supervision-analyze","supervision-demo"]}
+];
+
+var SKILLS = {
+  "ezk-backlog":{comp:["ezk-commits"], sub:"help·init·list·add·groom·ready·next·plan·review·reconcile·ship·regen",
+    role:"Le backlog markdown = source de vérité. Fiches idea → todo → in-progress → shipped, jamais perdues entre worktrees ni sessions."},
+  "ezk-product-builder":{sub:"build·once·status · --tokens --checkpoints --check-ready --delivery",
+    role:"Couche product-owner autonome&nbsp;: enchaîne les sprints. Orchestrateur mince qui compose le quoi, l'idéation et le build.",
+    comp:["ezk-backlog","ezk-sprint","ezk-pr-pilot"], conv:["ezk-pm","ezk-architect","ezk-tdd"], ext:["product-brainstorming"]},
+  "vz-product-builder":{sub:"build·once·status · --tokens",
+    role:"Variante autonome (overlay&nbsp;: n'écrase pas ezk-product-builder). Même doctrine product-owner, pour un run non supervisé.",
+    comp:["ezk-product-builder","ezk-backlog","ezk-sprint"]},
+
+  "ezk-sprint":{sub:"BDD → TDD → gate → archi → revue → PR",
+    role:"Orchestrateur du sprint&nbsp;: 1 fiche = 1 PR. Convoque l'équipe scrum, tout validé en local, squash-merge en conventional commit.",
+    conv:["ezk-architect","ezk-tdd","ezk-qa","ezk-reviewer"],
+    comp:["ezk-backlog","ezk-ci","ezk-commits","ezk-start"], pipe:true},
+  "ezk-ci":{sub:"help·check·list·dryrun·run·bootstrap·conso·frugal",
+    role:"Valide la CI GitHub Actions en local (act + Docker) avant de pousser, et surveille/plafonne la conso cloud des repos privés."},
+  "ezk-commits":{sub:"help·commit·hook·check",
+    role:"Aide à écrire des Conventional Commits et pose un hook commit-msg. La brique de commit que les autres composent."},
+  "ezk-codex":{comp:["ezk-commits"], sub:"help·fix·check · [PR]",
+    role:"Adresse les retours du reviewer Codex sur une PR de bout en bout&nbsp;: récupère, classe P0/P1/P2, corrige ou décline, re-déclenche la revue."},
+
+  "ezk-pr-pilot":{comp:["ezk-backlog","ezk-commits"], sub:"help·init·plan·run·report·ship · [#PR]",
+    role:"Chef d'orchestre du test-puis-merge d'un stock de PRs&nbsp;: ordre de merge, sessions de test groupées, rapport dans chaque PR. Selon la PR, il dégaine aussi preview/device/apk — usage conditionnel, donc hors <code>composes</code>."},
+  "ezk-preview":{sub:"help·vercel·public·private·comment",
+    role:"Produit une URL de démo partageable pour une branche / un worktree en cours."},
+  "ezk-device":{sub:"help·check·setup·tcpip·connect·run",
+    role:"Build, installe et teste une app Android sur un téléphone physique distant (hors LAN), en tunnelant adb via Tailscale."},
+  "ezk-apk":{sub:"help·build·link·status·check·setup",
+    role:"Build un APK (ou IPA) de preview installable via Expo EAS et rend un lien + QR — même en 4G."},
+
+  "ezk-start":{sub:"help·check·run",
+    role:"Garde-fou d'ouverture de session&nbsp;: inspecte le dépôt en lecture seule (working tree, worktrees, fiches in-progress, handoff) avant de démarrer."},
+  "ezk-archive-skill":{name:"ezk-archive", sub:"help·check·run",
+    role:"Rituel de clôture de session. Rend un verdict CLEAN/DIRTY, produit la note de handoff, et délègue au sous-agent ezk-archive. Utilise ezk-backlog s'il est là — best-effort, non requis.",
+    conv:["ezk-archive"]},
+
+  "ezk-retro":{comp:["ezk-backlog"], sub:"help·run·impose·retire",
+    role:"Cérémonie d'auto-amélioration de la méthode, déclenchée par l'humain. Propose des règles typées (symptôme + mesure) qui retournent dans LA LOI.",
+    proposes:["LOI"]},
+  "ezk-ezk":{comp:["ezk-backlog"], sub:"help·harvest·create·deploy",
+    role:"Méta-skill&nbsp;: transforme une discussion de session en un skill réutilisable — récolte, crée, déploie.", makes:["EQUIPE"]},
+
+  "ezk-readme":{comp:["ezk-backlog"], sub:"help·create·audit",
+    role:"Crée ou audite le README — le point d'entrée du repo&nbsp;: pitch, badges adossés au réel, quickstart, indirections."},
+  "ezk-article":{comp:["ezk-diagram"], sub:"help·new·revise·panel",
+    role:"Écrit/réécrit un article technique vulgarisé avec cadrage de persona et une boucle de relecture par panel de relecteurs frais."},
+  "ezk-diagram":{sub:"help·add·list·edit·rm·dup·publish",
+    role:"Transforme une description en prose en un diagramme versionné (Mermaid + image), itéré verbalement. La commande qui a produit cette carte.",
+    comp:["ezk-commits"]},
+  "ezk-design-system":{sub:"tokens · composants · styleguide",
+    role:"Crée et fait respecter un design system léger (tokens + composants canoniques + styleguide vivant) dans un projet web."},
+
+  "ezk-docker":{sub:"help·check·up·ps·logs·down·nuke",
+    role:"Pilote une stack Docker locale pour tester/développer, directement via le socket Docker — sans code sur mesure."},
+  "ezk-npm-scripts":{sub:"help·audit·fix·init·convention",
+    role:"Garantit des scripts npm/pnpm/turbo cohérents dans un monorepo&nbsp;: chaque package a ses commandes, la racine les centralise."},
+  "supervision-analyze":{sub:"[chemin-projet=.]",
+    role:"Post-mortem Moniteur / supervision&nbsp;: quand un run semble figé ou qu'on ne comprend pas ce qui a été émis."},
+  "supervision-demo":{sub:"[sujet-du-run-jouet]",
+    role:"Méthode jouet à 2 gates pour éprouver le kit émetteur de supervisabilité depuis une vraie session — sans toucher aux skills de prod."}
+};
+
+var SPRINT_PIPE = [
+  {n:1, t:"intake", d:"la prochaine fiche prête", who:"ezk-backlog"},
+  {n:2, t:"BDD", d:"scénarios d'acceptation (Gherkin)", who:"ezk-qa"},
+  {n:3, t:"TDD", d:"red → green → refactor", who:"ezk-tdd"},
+  {n:4, t:"gate", d:"tests · lint · CI locale", who:"ezk-ci"},
+  {n:5, t:"archi", d:"décision + ADR (si non trivial)", who:"ezk-architect"},
+  {n:6, t:"revue", d:"adverse, GO/NO-GO", who:"ezk-reviewer"},
+  {n:7, t:"PR", d:"squash-merge (conventional)", who:"ezk-commits"}
+];
+
+/* ============ EDGES (from -> to, kind) ============ */
+var EDGES = [];
+function E(a,b,k){EDGES.push({a:a,b:b,k:k});}
+// spine assembly
+E("PO","ezk-backlog","pilote"); E("PO","ezk-product-builder","lance");
+E("PO","ezk-retro","déclenche"); E("PO","ezk-archive-skill","clôt");
+E("LOI","PROFILES","compose"); E("EQUIPE","PROFILES","compose");
+E("PROFILES","BIND","résolu par"); E("CAPS","BIND","fournit le moule");
+E("LOI","ezk-sprint","guide");
+// ── COMPOSITION — recopié du graphe GÉNÉRÉ (`pnpm composes:graph` →
+//    skills/README.md, bloc managé). Cette liste doit rester le MIROIR du
+//    frontmatter `composes:`, jamais une opinion : toute arête ajoutée ici sans
+//    déclaration correspondante est une invention. À terme, générer ce bloc.
+[
+  ["ezk-article","ezk-diagram"],
+  ["ezk-backlog","ezk-commits"],
+  ["ezk-codex","ezk-commits"],
+  ["ezk-diagram","ezk-commits"],
+  ["ezk-ezk","ezk-backlog"],
+  ["ezk-pr-pilot","ezk-backlog"],
+  ["ezk-pr-pilot","ezk-commits"],
+  ["ezk-product-builder","ezk-backlog"],
+  ["ezk-product-builder","ezk-pr-pilot"],
+  ["ezk-product-builder","ezk-sprint"],
+  ["ezk-readme","ezk-backlog"],
+  ["ezk-retro","ezk-backlog"],
+  ["ezk-sprint","ezk-backlog"],
+  ["ezk-sprint","ezk-ci"],
+  ["ezk-sprint","ezk-commits"],
+  ["ezk-sprint","ezk-start"],
+  ["vz-product-builder","ezk-backlog"],
+  ["vz-product-builder","ezk-product-builder"],
+  ["vz-product-builder","ezk-sprint"]
+].forEach(function(p){E(p[0],p[1],"compose");});
+
+// ── CONVOCATION DE RÔLES — frontmatter `roles:` des orchestrateurs
+["ezk-architect","ezk-tdd","ezk-qa","ezk-reviewer"].forEach(function(t){E("ezk-sprint",t,"convoque");});
+["ezk-pm"].forEach(function(t){E("ezk-product-builder",t,"convoque");});
+
+// ── COMPÉTENCES & INTERACTIONS — frontmatter des agents
+E("ezk-pm","ezk-backlog","compétence");                     // competences:
+E("ezk-reviewer","ezk-ci","compétence");                    // competences:
+E("ezk-archive","ezk-backlog","compétence");                // competences:
+E("ezk-reviewer","LOI","interaction");                      // interactions: clean-code/no-dead-code
+
+// ── RELATIONS DE MÉTHODE (prose assumée, hors graphe machine)
+E("vz-product-builder","ezk-product-builder","overlay");
+E("ezk-retro","LOI","propose des règles");
+E("ezk-ezk","EQUIPE","produit des skills");
+// archive → son agent : délégation CONDITIONNELLE (directe sur CLEAN, agent sur DIRTY)
+// et base.yml pose agents: [] à dessein → prose, PAS une déclaration `roles:`.
+E("ezk-archive-skill","ezk-archive","délègue si DIRTY");
+
+/* ============ build indexes ============ */
+var NODE = {}; // id -> {id,name,kind,group,el}
+function reg(id,name,kind,group){NODE[id]={id:id,name:name||id,kind:kind,group:group,el:null};}
+SPINE.forEach(function(s){reg(s.id,s.k,"spine",s.grp);});
+AGENTS.forEach(function(a){reg(a.id,a.id,"agent","cap");});
+Object.keys(SKILLS).forEach(function(id){reg(id, SKILLS[id].name||id, "skill","cmd");});
+
+// adjacency
+var ADJ = {};
+EDGES.forEach(function(e){
+  (ADJ[e.a]=ADJ[e.a]||[]).push(e);
+  (ADJ[e.b]=ADJ[e.b]||[]).push(e);
+});
+
+/* ============ render ============ */
+var $=function(s,r){return (r||document).querySelector(s);};
+function el(tag,cls,html){var n=document.createElement(tag); if(cls)n.className=cls; if(html!=null)n.innerHTML=html; return n;}
+
+// legend
+(function(){
+  var L=$("#legend");
+  [["law","La loi"],["cap","Capabilities (agents)"],["cmd","Commandes (skills)"],["flow","Flux / PO"],["asm","Assemblage"]].forEach(function(p){
+    var d=el("span","lg"); var sw=el("span","sw"); sw.style.background="var(--"+p[0]+")"; d.appendChild(sw); d.appendChild(document.createTextNode(p[1])); L.appendChild(d);
+  });
+})();
+
+// spine
+(function(){
+  var S=$("#spine");
+  SPINE.forEach(function(s,i){
+    if(i>0){var g=el("span","arrow","→"); S.appendChild(g);}
+    var b=el("button","sblock"); b.style.setProperty("--c",GROUPS[s.grp].c);
+    b.dataset.id=s.id; b.setAttribute("aria-label",s.k);
+    b.innerHTML='<div class="k"><span class="ic">'+s.ic+'</span>'+s.k+'</div><div class="d">'+s.d+'</div>';
+    S.appendChild(b);
+    NODE[s.id].el=b;
+  });
+})();
+
+// agents
+(function(){
+  var G=$("#agents");
+  AGENTS.forEach(function(a){
+    var b=el("button","node agent"); b.dataset.id=a.id;
+    var caps=(a.comp?a.comp.length:0)+(a.inter?a.inter.length:0);
+    b.innerHTML=
+      '<div class="nm"><span class="tag" style="background:'+a.dot+';box-shadow:0 0 0 3px '+a.dot+'33"></span>'+a.id+'</div>'+
+      '<div class="role">'+a.role+'</div>'+
+      '<div class="meta">'+
+        '<span class="pill">🧠 '+a.model+'</span>'+
+        '<span class="pill">effort '+a.effort+'</span>'+
+        (a.stage?'<span class="pill" style="color:var(--flow)">étape '+a.stage+'</span>':'')+
+      '</div>';
+    G.appendChild(b); NODE[a.id].el=b;
+  });
+})();
+
+// clusters
+(function(){
+  var C=$("#clusters");
+  CLUSTERS.forEach(function(cl){
+    var box=el("div","cluster");
+    box.appendChild(el("div","cl-h",cl.h+'<span class="n">'+cl.ids.length+'</span>'));
+    var grid=el("div","grid cards");
+    cl.ids.forEach(function(id){
+      var s=SKILLS[id]; if(!s)return;
+      var b=el("button","node"); b.dataset.id=id;
+      var subs=(s.sub||"").split("·").map(function(x){return x.trim();}).filter(Boolean);
+      var subHtml=subs.map(function(x){return '<span class="sub">'+x+'</span>';}).join("");
+      b.innerHTML=
+        '<div class="nm"><span class="tag"></span>'+(s.name||id)+'</div>'+
+        '<div class="role">'+s.role+'</div>'+
+        '<div class="subs">'+subHtml+'</div>';
+      grid.appendChild(b); NODE[id].el=b;
+    });
+    box.appendChild(grid); C.appendChild(box);
+  });
+})();
+
+/* ============ wires ============ */
+var board=$("#board"), svg=$("#wires");
+function ctr(el){
+  var r=el.getBoundingClientRect(), br=board.getBoundingClientRect();
+  return {x:r.left-br.left+r.width/2, y:r.top-br.top+r.height/2, w:r.width, h:r.height,
+          l:r.left-br.left, t:r.top-br.top, r_:r.right-br.left, b_:r.bottom-br.top};
+}
+function edgePath(A,B){
+  // anchor on nearest vertical edge; smooth cubic
+  var a=ctr(A), b=ctr(B);
+  var ax=a.x, ay=a.y, bx=b.x, by=b.y;
+  // exit from bottom/top depending on direction, but simplest: connect centers with vertical-biased curve
+  var dx=bx-ax, dy=by-ay;
+  var c1x=ax, c1y=ay+dy*0.42, c2x=bx, c2y=by-dy*0.42;
+  if(Math.abs(dx)>Math.abs(dy)){ c1x=ax+dx*0.42; c1y=ay; c2x=bx-dx*0.42; c2y=by; }
+  return "M"+ax+","+ay+" C"+c1x+","+c1y+" "+c2x+","+c2y+" "+bx+","+by;
+}
+function clearWires(){ while(svg.lastChild && svg.lastChild.tagName!=="defs") svg.removeChild(svg.lastChild); }
+// Un nœud masqué par la recherche n'a plus de rectangle : le relier tracerait un
+// fil parti de (0,0) en travers de la vue filtrée.
+function shown(el){ return !!el && el.getClientRects().length > 0; }
+function drawEdges(list, withHeads){
+  clearWires();
+  list.forEach(function(e){
+    var A=NODE[e.a]&&NODE[e.a].el, B=NODE[e.b]&&NODE[e.b].el;
+    if(!shown(A)||!shown(B))return;
+    var p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",edgePath(A,B));
+    if(withHeads)p.setAttribute("marker-end","url(#ah)");
+    svg.appendChild(p);
+  });
+}
+
+var showAll=false, pinned=null;
+
+function relatedEdges(id){ return (ADJ[id]||[]); }
+function focusNode(id){
+  board.classList.add("focusing");
+  Object.keys(NODE).forEach(function(k){var n=NODE[k]; if(n.el){n.el.classList.remove("hot","lit");}});
+  var self=NODE[id]; if(self&&self.el)self.el.classList.add("hot");
+  var es=relatedEdges(id);
+  es.forEach(function(e){
+    var other=e.a===id?e.b:e.a;
+    var n=NODE[other]; if(n&&n.el)n.el.classList.add("lit");
+  });
+  drawEdges(es,true);
+}
+function clearFocus(){
+  board.classList.remove("focusing");
+  Object.keys(NODE).forEach(function(k){var n=NODE[k]; if(n.el)n.el.classList.remove("hot","lit");});
+  if(showAll){ drawEdges(EDGES,false); } else { clearWires(); }
+}
+
+/* ============ dossier ============ */
+var scrim=$("#scrim"), dossier=$("#dossier"), dosBody=$("#dosBody");
+function chip(id, kindColor){
+  var n=NODE[id];
+  var name = n? n.name : id;
+  var col = n? ("var(--"+n.group+")") : "var(--accent)";
+  return '<button class="chip" data-goto="'+id+'"><span class="tag" style="background:'+col+'"></span>'+name+'</button>';
+}
+function staticChip(txt){ return '<span class="chip static">'+txt+'</span>'; }
+
+function relBlock(title, arr, icon){
+  if(!arr||!arr.length)return "";
+  var chips=arr.map(function(id){return chip(id);}).join("");
+  return '<div class="dblock"><h4>'+icon+' '+title+'</h4><div class="chips">'+chips+'</div></div>';
+}
+function whoComposesMe(id){
+  var out=[];
+  EDGES.forEach(function(e){ if(e.b===id && (e.k==="compose"||e.k==="convoque"||e.k==="overlay")) out.push(e.a); });
+  return out;
+}
+
+function openDossier(id){
+  var n=NODE[id]; if(!n)return;
+  pinned=id;
+  dossier.style.setProperty("--c", "var(--"+n.group+")");
+  $("#dosName").querySelector(".tag").style.background="var(--"+n.group+")";
+  $("#dosNameTxt").textContent=n.name;
+  var body="", kind="", role="", extra="";
+
+  if(n.kind==="spine"){
+    kind=GROUPS[n.group].label;
+    var sd=SPINE_DOS[id]; role=sd.role;
+    if(sd.extra){ sd.extra.forEach(function(x){ extra+='<div class="dblock"><h4>▸ '+x.h+'</h4><div class="chips">'+x.chips.map(staticChip).join("")+'</div></div>'; }); }
+  } else if(n.kind==="agent"){
+    kind="Capability · agent";
+    var a=null; AGENTS.forEach(function(x){if(x.id===id)a=x;});
+    role=a.role;
+    extra+='<div class="dblock"><h4>⚙︎ Exécution</h4><div class="chips">'+
+      staticChip("modèle "+a.model)+staticChip("effort "+a.effort)+(a.stage?staticChip("étape sprint · "+a.stage):"")+(a.note?staticChip(a.note):"")+'</div></div>';
+    extra+=relBlock("Compétences (skills qu'il invoque)", a.comp, "🧩");
+    if(a.inter&&a.inter.length){ extra+='<div class="dblock"><h4>🔗 Interactions (règles)</h4><div class="chips">'+a.inter.map(staticChip).join("")+'</div></div>'; }
+    var convBy=[]; EDGES.forEach(function(e){ if(e.b===id&&e.k==="convoque")convBy.push(e.a); if(e.b===id&&e.k==="compose")convBy.push(e.a); });
+    extra+=relBlock("Convoqué par", convBy, "◂");
+  } else { // skill
+    kind="Commande · skill";
+    var s=SKILLS[id]; role=s.role;
+    extra+='<div class="dblock"><h4>⌨︎ Sous-commandes</h4><div class="chips">'+
+      (s.sub||"").split("·").map(function(x){return x.trim();}).filter(Boolean).map(staticChip).join("")+'</div></div>';
+    if(s.pipe){
+      var steps=SPRINT_PIPE.map(function(p){
+        return '<div class="pstep"><span class="pnum">'+p.n+'</span><div><b>'+p.t+'</b> <span class="pd">— '+p.d+'</span><br><span class="who" data-goto="'+p.who+'">'+p.who+'</span></div></div>';
+      }).join("");
+      extra+='<div class="dblock"><h4>🏃 Le pipeline du sprint</h4><div class="pipe">'+steps+'</div></div>';
+    }
+    extra+=relBlock("Convoque (agents)", s.conv, "👥");
+    extra+=relBlock("Compose (skills)", s.comp, "🧩");
+    if(s.ext){ extra+='<div class="dblock"><h4>↗ Externe</h4><div class="chips">'+s.ext.map(staticChip).join("")+'</div></div>'; }
+    if(s.proposes){ extra+=relBlock("Alimente", s.proposes, "→"); }
+    if(s.makes){ extra+=relBlock("Produit", s.makes, "→"); }
+    var comps=whoComposesMe(id);
+    extra+=relBlock("Composé / convoqué par", comps, "◂");
+  }
+
+  $("#dosKind").textContent=kind;
+  dosBody.innerHTML='<div class="dos-role">'+role+'</div>'+extra;
+  scrim.classList.add("on"); dossier.classList.add("on");
+  focusNode(id);
+}
+function closeDossier(){
+  pinned=null; scrim.classList.remove("on"); dossier.classList.remove("on"); clearFocus();
+}
+
+/* ============ events ============ */
+function idFromEvent(t){ var b=t.closest?t.closest("[data-id]"):null; return b?b.dataset.id:null; }
+board.addEventListener("mouseover",function(ev){
+  if(pinned)return; var id=idFromEvent(ev.target); if(id)focusNode(id);
+});
+$("#spine").addEventListener("mouseover",function(ev){ if(pinned)return; var id=idFromEvent(ev.target); if(id)focusNode(id); });
+document.addEventListener("mouseout",function(ev){
+  if(pinned)return;
+  var to=ev.relatedTarget;
+  if(to && (board.contains(to)||$("#spine").contains(to)) && idFromEvent(to)) return;
+  if(!showAll) clearFocus(); else { board.classList.remove("focusing"); Object.keys(NODE).forEach(function(k){if(NODE[k].el)NODE[k].el.classList.remove("hot","lit");}); drawEdges(EDGES,false); }
+});
+function onActivate(ev){ var id=idFromEvent(ev.target); if(id){ ev.preventDefault(); openDossier(id); } }
+board.addEventListener("click",onActivate);
+$("#spine").addEventListener("click",onActivate);
+board.addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" "){ onActivate(ev); } });
+$("#spine").addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" "){ onActivate(ev); } });
+
+dosBody.addEventListener("click",function(ev){
+  var g=ev.target.closest("[data-goto]"); if(g){ openDossier(g.dataset.goto); dosBody.scrollTop=0; }
+});
+$("#dosClose").addEventListener("click",closeDossier);
+scrim.addEventListener("click",closeDossier);
+document.addEventListener("keydown",function(ev){ if(ev.key==="Escape")closeDossier(); });
+
+// give nodes tabindex for keyboard
+Object.keys(NODE).forEach(function(k){ var n=NODE[k]; if(n.el && n.el.tagName!=="BUTTON"){ n.el.tabIndex=0; } });
+
+// wires toggle
+$("#wiresBtn").addEventListener("click",function(){
+  showAll=!showAll; this.setAttribute("aria-pressed",showAll?"true":"false");
+  if(showAll){ drawEdges(EDGES,false); } else if(!pinned){ clearWires(); }
+});
+
+// search
+$("#q").addEventListener("input",function(){
+  var v=this.value.trim().toLowerCase();
+  Object.keys(SKILLS).forEach(function(id){
+    var n=NODE[id]; if(!n||!n.el)return;
+    var s=SKILLS[id];
+    var hit=!v || id.toLowerCase().indexOf(v)>=0 || (s.role||"").toLowerCase().indexOf(v)>=0 || (s.sub||"").toLowerCase().indexOf(v)>=0;
+    n.el.style.display=hit?"":"none";
+  });
+  // hide empty clusters
+  document.querySelectorAll(".cluster").forEach(function(cl){
+    var any=cl.querySelectorAll('.node:not([style*="display: none"])').length;
+    cl.style.display=any?"":"none";
+  });
+  if(showAll)drawEdges(EDGES,false);
+});
+
+// theme toggle
+var themeBtn=$("#themeBtn"), themeIcon=$("#themeIcon");
+function sysDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches; }
+function curDark(){ var t=document.documentElement.getAttribute("data-theme"); return t?t==="dark":sysDark(); }
+function setTheme(d){ document.documentElement.setAttribute("data-theme",d?"dark":"light"); themeIcon.textContent=d?"☾":"☀"; redraw(); }
+themeBtn.addEventListener("click",function(){ setTheme(!curDark()); });
+themeIcon.textContent=curDark()?"☾":"☀";
+
+// redraw on resize/scroll when wires visible
+function redraw(){ if(pinned)focusNode(pinned); else if(showAll)drawEdges(EDGES,false); }
+var rt; window.addEventListener("resize",function(){ clearTimeout(rt); rt=setTimeout(redraw,120); });
+window.addEventListener("scroll",function(){ if(pinned||showAll)redraw(); },{passive:true});
+
+})();
+</script>

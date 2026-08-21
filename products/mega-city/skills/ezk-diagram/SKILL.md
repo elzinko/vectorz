@@ -1,4 +1,5 @@
 ---
+composes: [ezk-commits]
 name: ezk-diagram
 argument-hint: "[help|add|list|edit|rm|dup|publish]"
 description: >-

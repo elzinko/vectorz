@@ -1,4 +1,5 @@
 ---
+composes: [ezk-commits]
 name: ezk-codex
 argument-hint: "[help|fix|check] [PR]"
 description: >-

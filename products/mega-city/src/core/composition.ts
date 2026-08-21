@@ -50,3 +50,31 @@ export function checkComposition(
 
   return [...warnings.values()].sort(byFromThenMissing);
 }
+
+/**
+ * checkRoles — même contrat que checkComposition, pour la relation `roles:`
+ * (ADR-0020, amendement du 2026-08-20). PUR et DÉTERMINISTE.
+ *
+ * `composes` relie skill → skill ; `roles` relie un orchestrateur → les AGENTS
+ * qu'il convoque. Sans ce contrôle, un profil peut binder `ezk-sprint` sans
+ * `ezk-qa` ni `ezk-reviewer` : la boucle scrum est amputée de ses juges, en
+ * silence. Pas de fermeture transitive ici — un agent ne convoque personne.
+ *
+ * Diagnostic NON bloquant, comme la composition : c'est un révélateur de trou
+ * de profil, pas une exception.
+ */
+export function checkRoles(resolved: ResolvedProfile, catalog: Catalog): CompositionWarning[] {
+  const agents = new Set(resolved.agents.map((a) => a.id));
+  const warnings = new Map<string, CompositionWarning>();
+
+  for (const skill of resolved.skills) {
+    // relire le catalogue : le skill résolu peut être une projection sans `roles`
+    for (const role of catalog.skills.get(skill.id)?.roles ?? []) {
+      if (!agents.has(role)) {
+        warnings.set(`${skill.id}\0${role}`, { from: skill.id, missing: role });
+      }
+    }
+  }
+
+  return [...warnings.values()].sort(byFromThenMissing);
+}

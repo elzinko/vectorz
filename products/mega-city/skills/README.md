@@ -49,12 +49,24 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 <!-- composes-graph:begin -->
 ```mermaid
 flowchart LR
+    ezk-article --> ezk-diagram
+    ezk-backlog --> ezk-commits
+    ezk-codex --> ezk-commits
+    ezk-diagram --> ezk-commits
+    ezk-ezk --> ezk-backlog
+    ezk-pr-pilot --> ezk-backlog
+    ezk-pr-pilot --> ezk-commits
     ezk-product-builder --> ezk-backlog
     ezk-product-builder --> ezk-pr-pilot
     ezk-product-builder --> ezk-sprint
+    ezk-readme --> ezk-backlog
+    ezk-retro --> ezk-backlog
     ezk-sprint --> ezk-backlog
     ezk-sprint --> ezk-ci
     ezk-sprint --> ezk-commits
     ezk-sprint --> ezk-start
+    vz-product-builder --> ezk-backlog
+    vz-product-builder --> ezk-product-builder
+    vz-product-builder --> ezk-sprint
 ```
 <!-- composes-graph:end -->
