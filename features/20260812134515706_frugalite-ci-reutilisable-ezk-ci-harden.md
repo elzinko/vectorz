@@ -6,7 +6,7 @@ priority: P1
 product: mega-city
 labels: [enabler, ci, cost]
 status: todo
-ready:
+ready: 2026-08-21
 pr:
 created: 2026-08-12
 ---
@@ -29,6 +29,14 @@ privés montre un coût **ultra-concentré**, sur des stacks **totalement diffé
 `0159` (shipped, PR #34) a livré le volet **mesurer + proposer** (`conso` / `frugal`). Il **s'arrête
 à proposer des diffs** — il ne configure pas les repos. Le manque restant : un chemin qui **applique**
 les patterns manquants, **par repo**, de façon réutilisable et prouvée.
+
+## Valeur
+
+Le coût CI est **concentré et récurrent** : chaque repo privé re-paie la même poignée de réglages
+manquants, à la main, quand quelqu'un y pense. `0159` a rendu le diagnostic automatique mais laisse
+l'application manuelle. Ce chaînon **applique** la recette, par repo, de façon idempotente et prouvée —
+on cesse de re-bricoler les mêmes `paths-ignore` / gates sur chaque projet, et on arrête de découvrir
+l'épuisement du quota après coup.
 
 ## Proposition
 
@@ -62,9 +70,28 @@ compile (leçon panels-adverses).
 - [ ] **Différé explicite** : le workflow réutilisable partagé (Option A) reste hors scope tant
       que < 2 repos même-stack le réclament.
 
+## Comment vérifier
+
+1. **Idempotence** : sur un repo déjà frugal (ex. `samplerz`), `ezk-ci harden` en mode audit ne
+   propose rien et n'écrit rien ; un second run ne casse pas la conf.
+2. **Application prouvée** : sur `muti`, `harden` ajoute le `paths-ignore` `.md` manquant ; sur
+   `city-guided`, il gate le job `e2e`. Vérifier le diff produit **après confirmation** uniquement.
+3. **Lecture seule en audit** : le mode audit n'écrit aucun fichier (`git status` propre après un audit).
+4. **Recettes testables** : les templates paramétrés ont une DoD exécutable (pas de prose seule).
+5. Gate locale verte (tests du skill + lint).
+
 ## Notes
 
 - **Suite de #0159** (mesurer/proposer, shipped) → cette fiche = **appliquer/généraliser**.
 - Preuve d'audit conservée ci-dessus (runs ~30j, hétérogénéité des stacks) = la donnée qui tranche A vs B.
 - Le pattern **skip-docs** est agnostique à la stack (généralise trivialement) ; **gate-du-lourd** et
   **workflow partagé** sont stack-spécifiques → c'est ce qui condamne A comme forme générale.
+- **Dépendances externes (constatées).** La preuve « ≥ 2 repos réels » vise deux repos hors monorepo,
+  tous deux présents localement : dépendance `muti` — accès constaté le 2026-08-21
+  (`/Users/elzinko/git/bacasable/muti`) ; dépendance `city-guided` — accès constaté le 2026-08-21
+  (`/Users/elzinko/git/bacasable/city-guided`). Repli si un repo devient inaccessible au build :
+  prouver le mécanisme sur des **fixtures de workflow internes** au monorepo, la preuve sur repos réels
+  passant en recette manuelle différée (ne bloque pas la DoR).
+- **Groom 2026-08-21** : DoR complétée — valeur explicitée, section « Comment vérifier » ajoutée,
+  slot **dépendances externes** traité (accès muti/city-guided constaté ce jour + repli fixtures).
+  Statut/`ready:` inchangés (gate au PO).

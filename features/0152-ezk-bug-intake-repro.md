@@ -5,6 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 status: todo
+ready: 2026-08-21
 pr:
 created: 2026-07-12
 ---
@@ -110,6 +111,20 @@ le « VALIDE une PR … dans la boucle ezk-sprint » de `ezk-qa`.
       reste **glue mince** (ne gonfle ni `ezk-qa` ni `ezk-backlog`).
 - [ ] Skill authoré/déployé selon la convention du repo (dossier `skills/ezk-bug/`, SKILL.md, deploy).
 
+## Comment vérifier
+
+Les critères ci-dessus sont des **tests d'acceptation**. Recette à l'intake du sprint :
+
+1. Donner à `ezk-bug` un rapport brut (« c'est cassé, le bouton X ne fait rien ») ; vérifier qu'il
+   produit une fiche `type: bug` **via `ezk-backlog add`** (pas d'écriture directe du backlog).
+2. Rejouer les **4 cas** de la DoD : (a) symptôme volontairement absent → `reproduit: non` ;
+   (b) harnais/env indisponible → fiche + `hors-portée` ; (c) repro `partiel` ; (d) le timeout coupe
+   et produit quand même une fiche.
+3. Vérifier que la repro passe par le **Playwright MCP partagé** (chargé via `ToolSearch`), pas par du
+   pilotage d'app dupliqué, et **sans** mode repro ajouté à `ezk-qa`.
+4. Vérifier qu'`ezk-backlog add` d'un **bug vague** propose/délègue à `ezk-bug` (miroir feature→brainstorming).
+5. Gate locale verte (tests du skill + lint) selon la convention du repo.
+
 ## Dépendances / articulation
 - **[[0028]]** (carte des rôles) : ajoute `ezk-bug` **au front d'intake PO/BA, à côté de
   `product-brainstorming`** (cadrage côté bug) — **pas** une couche orthogonale type pr-pilot/archive.
@@ -166,3 +181,7 @@ le « VALIDE une PR … dans la boucle ezk-sprint » de `ezk-qa`.
   `ezk-architect` à l'intake (l'ADR reste un **artefact de build**, cf. §Notes ci-dessus).
   Voisin : [[0186]] (un gabarit qui *impose* une structure gagne à s'appuyer sur un **validateur
   de conformité** — cf. la note 2026-08-13 de 0186).
+- **Groom 2026-08-21** : DoR re-vérifiée **complète** (problème, valeur, 8 critères observables, décision
+  rôle-vs-capacité tranchée) ; ajout d'une section « Comment vérifier » explicite. Deux points restent
+  **au build** (gabarit inline vs fichier ; sévérité vs priorité) et n'empêchent pas la DoR. Aucune
+  dépendance externe. Candidate au gate `ready` (tampon au PO). Build self-contained (skill + tests).
