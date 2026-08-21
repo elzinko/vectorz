@@ -1,5 +1,5 @@
 ---
-roles: [ezk-pm, ezk-architect, ezk-dev]
+roles: [ezk-pm]
 name: ezk-product-builder
 composes: [ezk-backlog, ezk-sprint, ezk-pr]
 composes-external: [product-brainstorming, architecture]

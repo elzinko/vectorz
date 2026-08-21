@@ -37,24 +37,43 @@ proposant de nouvelles règles — qui retournent dans LA LOI. La boucle se refe
 Couleurs : **bleu = la loi**, **ambre = l'équipe (commandes + rôles)**, **vert = le flux / le PO**,
 **gris = l'assemblage (keystone, bind, hôtes)**.
 
-## Limites connues — v1, à corriger (audit du 2026-08-20)
+## Les trois défauts de la v1 — corrigés (2026-08-20/21)
 
-Cette première carte est **utile mais pas encore exacte**. Trois défauts identifiés, à traiter
-avant de la considérer comme la carte de référence :
+La première version de cette carte était **utile mais pas exacte**. Les trois défauts
+identifiés à l'audit ont été traités ; ils sont conservés ici parce qu'ils expliquent la
+forme actuelle.
 
-1. **Les liens sont majoritairement inférés, pas déclarés.** Le graphe réellement
-   machine-lisible (frontmatter `composes:`, ADR-0025) compte **7 arêtes** sur 2 skills ;
-   la carte en dessine une quarantaine. Le reste vient de ma lecture de la prose des
-   `SKILL.md` et de `method-map.md`. C'est exactement la « prose load-bearing » que
-   ADR-0012/0025 voulaient supprimer.
-2. **`bind → caps/host` est faux comme séquence.** ADR-0003 : `bind` est une fonction pure
-   qui **utilise** un `Cap` (un module par hôte, choisi via un registre) et retourne un plan
-   d'écriture ; c'est `io/apply.ts` qui écrit. Le cap n'est pas l'étape d'après le bind,
-   il est *dedans*.
-3. **Les rôles ne sont pas dans le graphe.** `composes:` relie skill→skill uniquement.
-   La relation la plus importante d'une méthode scrum — *le sprint convoque l'équipe* —
-   n'est déclarée nulle part ; elle n'existe qu'en prose.
+1. **Les liens étaient inférés, pas déclarés.** Le graphe machine-lisible ne comptait que
+   **7 arêtes** sur 2 skills, quand la carte en dessinait une quarantaine — le reste venait
+   de ma lecture de la prose. C'était très exactement la « prose load-bearing » que
+   ADR-0025 voulait supprimer.
+   **→ Corrigé** : tout le catalogue est annoté, et les arêtes de composition de la carte
+   sont désormais le **miroir exact** du bloc généré par `pnpm composes:graph`, vérifié par
+   comparaison automatique. Une arête ajoutée à la main sans déclaration correspondante est
+   une invention, et se voit.
 
-Corollaire : la carte mélange des liens de natures différentes (utilise-comme-brique,
-convoque-un-rôle, est-guidé-par-une-règle, précède) sous une seule flèche. C'est la raison
-principale pour laquelle la logique des liens est difficile à lire.
+2. **`bind → caps/host` était faux comme séquence.** ADR-0003 : `bind` est une fonction
+   **pure** qui *utilise* un `Cap` (un module par hôte, choisi dans un registre) et retourne
+   un **plan d'écriture** ; c'est `io/apply.ts` qui écrit, et lui seul. Le cap n'est pas
+   l'étape d'après le bind — c'est un composant qu'il consomme.
+   **→ Corrigé** : le moule précède l'assemblage, les flèches disent « fournit le moule à »
+   et « résolu par », et `io/apply` apparaît comme le seul à écrire.
+
+3. **Les rôles n'étaient pas dans le graphe.** `composes:` ne relie que skill→skill ; la
+   relation centrale du scrum — *le sprint convoque l'équipe* — n'était déclarée nulle part.
+   **→ Corrigé** : le champ `roles:` existe, il est **lu, vérifié et testé** (ADR-0020
+   amendé). Un profil qui binde `ezk-sprint` sans ses juges est désormais signalé.
+
+**La règle apprise en chemin**, au prix de trois erreurs successives : `composes:` et
+`roles:` déclarent l'**inconditionnel**. Un besoin occasionnel — `ezk-pr` qui dégaine
+`device`/`apk` pour une PR mobile, `ezk-archive` qui n'appelle son agent que si le dépôt est
+sale — se documente en prose. Le déclarer comme requis fabrique de fausses alertes dans le
+vérificateur.
+
+## Ce qui reste
+
+- **Le bloc d'arêtes de la carte est recopié, pas généré.** Il peut donc re-diverger. Le
+  contrôle de miroir l'attrape, mais la vraie sortie est de le générer.
+- **Quatre cartes de la méthode coexistent** (`docs/method-map.md`,
+  `diagrams/ezk-methode-globale/`, `diagrams/0028-org-chart-roles/`, celle-ci). Aucune n'est
+  générée, donc toutes dérivent. À consolider.

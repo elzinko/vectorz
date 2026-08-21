@@ -20,8 +20,10 @@ Les liens porteurs : le sprint **convoque les agents**, la loi **guide** le spri
 > leurs sous-commandes, les 7 capabilities, tous les liens de composition — vit dans la **carte
 > dynamique interactive** (l'artefact HTML compagnon).
 
-> ⚠️ **v1 — trois défauts connus** (audit du 2026-08-20, détail dans `description.md`) :
-> les liens sont surtout **inférés de la prose** (7 arêtes réellement déclarées via
-> `composes:`, une quarantaine dessinées) ; **`bind → caps/host` est faux** comme séquence
-> (le bind *utilise* un cap, ADR-0003) ; **les rôles ne sont pas dans le graphe**
-> (`composes:` ne relie que skill→skill). À corriger avant d'en faire la carte de référence.
+> **Sur l'assemblage** : `bind` n'est pas l'étape avant `caps/host` — il l'**utilise**.
+> C'est une fonction pure qui lit le profil, prend le moule de ton hôte, et rend un plan
+> d'écriture ; `io/apply` est le seul à toucher au disque (ADR-0003).
+>
+> **Sur les liens** : les flèches de composition sont le **miroir** du graphe généré depuis
+> les fichiers (`pnpm composes:graph`) — plus une lecture de la prose. Les trois défauts de
+> la v1 sont corrigés ; le détail est dans `description.md`.
