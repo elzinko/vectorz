@@ -11,8 +11,10 @@ Les fiches `todo` passées au gate DoR (`ready:`), dans l’ordre de tirage (P0�
 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
-| mega-city | 0101 | Câbler check-links.sh — un contrôle que personne ne lance ne protège de rien | chore | P2 | 🔴 todo |  |
-| mega-city | 20260813170548417 | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 | 🔴 todo |  |
+| mega-city | 0169 | Oracle de journal `analyze --expect` — rendre une session testable (brique 1, ex-explorateur LLM) | feature | P1 | 🔴 todo |  |
+| mega-city | 20260812134515706 | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 | 🔴 todo |  |
+| mega-city | 0152 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | 🔴 todo |  |
+| mega-city | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 | 🔴 todo |  |
 
 ## 🟠 En cours (`in-progress`)
 
@@ -33,15 +35,13 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | ⛔ blocked |  |
 | mega-city | 0156 | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 | 🔴 todo |  |
 | mega-city | 0165 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 | 🔴 todo |  |
-| mega-city | 0169 | Explorateur LLM par PR — parcourir l'app pour trouver les trous, et proposer la fiche | feature | P1 | 🔴 todo |  |
-| mega-city | 0191 | Lisibilité qui tient — templates LLM-adaptés + renfort au moment d'écrire (dès la description de PR) | feature | P1 | 🔴 todo |  |
+| mega-city | 0169 | Oracle de journal `analyze --expect` — rendre une session testable (brique 1, ex-explorateur LLM) | feature | P1 | 🔴 todo |  |
 | mega-city | 20260812134515706 | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 | 🔴 todo |  |
 | vectorz | 0050 | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 | 🔴 todo |  |
 | vectorz | 0052 | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 🔴 todo |  |
 | vectorz | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 | ⛔ blocked |  |
 | mega-city | 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 | 🔴 todo |  |
 | mega-city | 0096 | build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient | bug | P2 | 🔴 todo |  |
-| mega-city | 0101 | Câbler check-links.sh — un contrôle que personne ne lance ne protège de rien | chore | P2 | 🔴 todo |  |
 | mega-city | 0112 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 | 🔴 todo |  |
 | mega-city | 0119 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 | 🔴 todo |  |
 | mega-city | 0121 | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 | ⛔ blocked |  |
@@ -51,6 +51,9 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0162 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 | 🔴 todo |  |
 | mega-city | 0190 | composes — tier « delegates: » (composition optionnelle, jamais warnée) | feature | P2 | 🔴 todo |  |
 | mega-city | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 | 🔴 todo |  |
+| mega-city | 20260816140607355 | Compteurs & table skills/README générés (câbler /ezk-help, fin de la dérive) | feature | P2 | 🔴 todo |  |
+| mega-city | 20260816151112162 | Canal commands: dans lawgiver — déployer les slash-commands comme les skills | feature | P2 | 🔴 todo |  |
+| mega-city | 20260821210633457 | Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169) | feature | P2 | 🔴 todo |  |
 | vectorz | 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 🔴 todo |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo |  |
 | vectorz | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | ⛔ blocked |  |
@@ -63,7 +66,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0143 | aligner le nommage des modes tokens du product-builder (lean\|cap\|full partout) | chore | P3 | 🔴 todo |  |
 | mega-city | 0151 | ezk-product-builder — briefing au démarrage (comment je travaille, avec quelles règles) | feature | P3 | 🔴 todo |  |
 | mega-city | 20260813122510737 | ezk-backlog init.sh — le marqueur layout_version doit primer sur la détection legacy « Index auto-généré » | bug | P3 | 🔴 todo |  |
-| mega-city | 20260813170548417 | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 | 🔴 todo |  |
 | vectorz | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 | 🔴 todo |  |
 | vectorz | 0017 | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 | ⛔ blocked |  |
 | vectorz | 0018 | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | ⛔ blocked |  |
@@ -77,9 +79,11 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 |------|---|-------|------|------|--------|----|
 | vectorz | 0034 | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | epic | P0 | 🔴 todo |  |
 | mega-city | 20260813124026215 | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad) | epic | P1 | 💡 idea |  |
+| mega-city | 20260816131703334 | Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro) | epic | P1 | 🔴 todo |  |
 | vectorz | 0051 | Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic) | epic | P1 | 🔴 todo |  |
 | mega-city | 0163 | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | epic | P2 | 🔴 todo |  |
 | mega-city | 20260813131737959 | Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic) | epic | P2 | 🔴 todo |  |
+| mega-city | 20260815080413884 | DoR agent-native — extensible par projet + readiness observable (épic) | epic | P2 | 🔴 todo |  |
 
 ## 💡 Idées (non groomées, hors flux P0→P3)
 
@@ -90,11 +94,9 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0133 | ADR + diagramme — carte rôles dev → skills/agents ezk-* | feature | P1 | 💡 idea |  |
 | mega-city | 0157 | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 | 💡 idea |  |
 | mega-city | 0170 | Concevoir le modèle d'extension / plugin mega-city (panel architecte) — avant tout adaptateur outillage | feature | P1 | 💡 idea |  |
-| mega-city | 0183 | Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres | feature | P1 | 💡 idea |  |
 | mega-city | 20260812104022237 | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 | 💡 idea |  |
 | mega-city | 20260812104022240 | Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM | feature | P1 | 💡 idea |  |
 | mega-city | 20260812104022246 | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 | 💡 idea |  |
-| mega-city | 0065 | Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent | feature | P2 | 💡 idea |  |
 | mega-city | 0066 | Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run) | feature | P2 | 💡 idea |  |
 | mega-city | 0067 | ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat) | feature | P2 | 💡 idea |  |
 | mega-city | 0068 | Règle enforced — la carte de la méthode (method-map) à jour à chaque modif de méthode | feature | P2 | 💡 idea |  |
@@ -126,9 +128,16 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260812104022243 | groom appelle aussi engineering:architecture (+ product-brainstorming) — par défaut, ou forcé par paramètre | feature | P2 | 💡 idea |  |
 | mega-city | 20260813095351680 | bind-global copy non idempotent pour les agents (2e passage refusé) | bug | P2 | 💡 idea |  |
 | mega-city | 20260813095351681 | Cap projet claude-code — skills en forme dossier pour porter les assets | feature | P2 | 💡 idea |  |
-| mega-city | 20260813131737962 | Nommage & catalogue — aligner sur ADR-0022 (rename ezk-pr→ezk-pr, ranger vz-/supervision-) + README table scannable | refactor | P2 | 💡 idea |  |
+| mega-city | 20260813131737962 | Nommage & catalogue — aligner sur ADR-0022 (rename ezk-pr-pilot→ezk-pr, ranger vz-/supervision-) + README table scannable | refactor | P2 | 💡 idea |  |
 | mega-city | 20260813131737968 | Assainir les références de la méthode — install.sh mort, rot de numérotation, graphe composes: sous-peuplé | chore | P2 | 💡 idea |  |
 | mega-city | 20260813131737971 | Carte des rôles d'analyse — documenter retro / steward / 0057 (+ trancher le juge unique) en un seul endroit | feature | P2 | 💡 idea |  |
+| mega-city | 20260813171020902 | Accélérer & fiabiliser le cycle de revue — alternative locale à Codex + métriques (temps, blocages) | feature | P2 | 💡 idea |  |
+| mega-city | 20260815080414006 | DoR extensible par projet — base 3+1 + manifeste de slots par repo, lu par groom/ready | feature | P2 | 💡 idea |  |
+| mega-city | 20260816194833618 | Santé des dépendances côté ezk — audit local activable par profil (alternative frugale à Dependabot) | feature | P2 | 💡 idea |  |
+| mega-city | 20260817113353538 | Étude prior-art BMAD (templates + elicitation) — ce qui se transpose à une méthode LLM-native | chore | P2 | 💡 idea |  |
+| mega-city | 20260817113353676 | Article « Templates de réponse adaptés aux LLM » (via ezk-article) | feature | P2 | 💡 idea |  |
+| mega-city | 20260818185931307 | Capability de vente LemonSqueezy (checkout + licence + entitlement) — récoltée de muti, réutilisable | feature | P2 | 💡 idea |  |
+| mega-city | 20260821210633522 | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 | 💡 idea |  |
 | vectorz | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 | 💡 idea |  |
 | vectorz | 0053 | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 💡 idea |  |
 | vectorz | 0054 | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 💡 idea |  |
@@ -136,7 +145,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | vectorz | 0056 | Visualisation — onglet « qualité par PR » dans mission-control | feature | P2 | 💡 idea |  |
 | vectorz | 0058 | Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR | feature | P2 | 💡 idea |  |
 | vectorz | 0180 | Fiches datées — id AAAAMMDDHHMMSSmmm (17 ch., ms, UTC) à la capture, fin de max+1 | feature | P2 | 💡 idea |  |
-| vectorz | 0184 | Webapp de reporting de run — features livrées façon PR + preview/démo local + reste-à-tester | feature | P2 | 💡 idea |  |
 | mega-city | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 💡 idea |  |
 | mega-city | 0093 | BacklogStore — port de persistance agnostique (md/git · GitHub · Jira…) — IDEA, sur trigger | feature | P3 | 💡 idea |  |
 | mega-city | 0114 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 💡 idea |  |
@@ -154,7 +162,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔴 todo (ready) | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|-----------------|-----------|-----------|---------|---------|
-| vectorz | 29 | 10 (0) | 1 | 4 | 12 | 2 |
-| mega-city | 85 | 26 (2) | 2 | 2 | 52 | 3 |
+| vectorz | 28 | 10 (0) | 1 | 4 | 11 | 2 |
+| mega-city | 92 | 26 (4) | 2 | 2 | 57 | 5 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

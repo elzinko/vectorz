@@ -75,7 +75,7 @@
 | 0160 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 |  | mega-city | ✅ shipped | #26 |
 | 0164 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 |  | mega-city | 🟠 in-progress |  |
 | 0165 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 🔴 todo |  |
-| 0169 | Explorateur LLM par PR — parcourir l'app pour trouver les trous, et proposer la fiche | feature | P1 |  | mega-city | 🔴 todo |  |
+| 0169 | Oracle de journal `analyze --expect` — rendre une session testable (brique 1, ex-explorateur LLM) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 0173 | Méthode ezk — 3 bandes + naming (ezk-pr, caps, archive=capacité) | feature | P1 |  | mega-city | ✅ shipped | #72 |
 | 0183 | Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres | feature | P1 |  | mega-city | ✅ shipped | local (main c45102b) |
 | 0185 | ezk-archive — croiser branches RÉELLES et PRs ouvertes (ne plus proposer d'ouvrir une PR déjà ouverte) | feature | P1 |  | mega-city | ✅ shipped | #117 |
@@ -135,6 +135,7 @@
 | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 |  | mega-city | 🔴 todo |  |
 | 20260816140607355 | Compteurs & table skills/README générés (câbler /ezk-help, fin de la dérive) | feature | P2 | 20260816131703334 | mega-city | 🔴 todo |  |
 | 20260816151112162 | Canal commands: dans lawgiver — déployer les slash-commands comme les skills | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260821210633457 | Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -228,6 +229,7 @@
 | 20260817113353538 | Étude prior-art BMAD (templates + elicitation) — ce qui se transpose à une méthode LLM-native | chore | P2 |  | mega-city | 💡 idea |  |
 | 20260817113353676 | Article « Templates de réponse adaptés aux LLM » (via ezk-article) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260818185931307 | Capability de vente LemonSqueezy (checkout + licence + entitlement) — récoltée de muti, réutilisable | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260821210633522 | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 |  | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
