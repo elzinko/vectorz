@@ -21,7 +21,8 @@
     "review:emit": "tsx bin/review-emit.ts",
     "plan:order": "tsx bin/plan-order.ts",
     "plan:head": "tsx bin/plan-head.ts",
-    "composes:graph": "tsx bin/regen-composes-graph.ts"
+    "composes:graph": "tsx bin/regen-composes-graph.ts",
+    "graph:check": "tsx bin/ezk-graph.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
