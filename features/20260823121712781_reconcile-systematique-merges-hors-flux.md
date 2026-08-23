@@ -45,7 +45,8 @@ rendre **systématique**.
 
 - [ ] Un merge fait via **GitHub UI** (sans `ship`) est **détecté** sans lancement manuel.
 - [ ] Le contrôle **propose** les `ship` manqués (ne bascule rien seul).
-- [ ] Branché sur un point systématique (clôture de session **et/ou** post-merge).
+- [ ] Le **déclencheur post-merge est présent** (obligatoire — c'est lui qui couvre le merge UI
+      post-archivage) ; le gate de clôture `ezk-archive` n'est qu'un **complément optionnel**.
 - [ ] Silencieux/inoffensif quand il n'y a rien à réconcilier.
 
 ## Comment vérifier

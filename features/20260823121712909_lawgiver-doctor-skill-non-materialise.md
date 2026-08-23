@@ -35,12 +35,21 @@ signale.
   **partagée** : elle peut contenir des skills **installés par l'utilisateur ou tiers**, hors profil, qui
   ne sont **pas** des orphelins. La détection d'orphelins se limite donc à ce que lawgiver **a lui-même
   posé** (marqueur / manifeste des liens managés — à définir au grooming), sinon faux positifs.
-- **Lecture seule** (diagnostic). Un **`--fix`** optionnel et explicite rejoue le bind.
+
+> **Deux modes de matérialisation (retour Codex #164)** : `bind-global` **copie par défaut** de vrais
+> dossiers de skills (`runBindGlobal`), `--link` pose des **symlinks**. Le doctor doit reconnaître **les
+> deux** (dossier copié managé **ou** symlink) — sinon, en mode copy, il rapporterait chaque skill copié
+> comme « manquant ». Le `--fix` doit être **explicite sur le mode** (copy vs link), sinon il rejoue le
+> même bind sans résoudre la divergence.
+
+- **Lecture seule** (diagnostic). Un **`--fix`** optionnel et **explicite sur le mode** (copy vs link)
+  rejoue le bind.
 - Composable en **gate** (avant une session, ou après un bind) pour que l'écart ne reste jamais silencieux.
 
 ## Critères d'acceptation (à groomer)
 
-- [ ] `lawgiver doctor global` **liste** les skills du profil **non matérialisés** dans `~/.claude`.
+- [ ] `lawgiver doctor global` **liste** les skills du profil **non matérialisés** dans `~/.claude`
+      (absents en **copie** comme en **lien** — les deux modes de `bind-global`).
 - [ ] Détecte les **liens morts** et les **orphelins gérés par lawgiver** (les skills tiers/user hors
       profil ne sont **pas** signalés comme orphelins).
 - [ ] **Lecture seule** par défaut ; `--fix` séparé et explicite.

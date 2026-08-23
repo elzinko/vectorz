@@ -35,7 +35,12 @@ un validateur**, où `ready` devient une **colonne** à part entière — plus u
 - **Un validateur** (gate CI / pré-commit) **refuse** toute fiche dont `status` ∉ liste.
 - **`ready` devient une colonne** : `Backlog → Ready → En cours → Revue → Livré`. Le tampon DoR = « la fiche
   entre dans *Ready* », et **le champ date `ready:` disparaît** (la date vient de git — cf. [[20260823121712716]]).
-- **Migration** des fiches existantes (convertir les `ready:` en colonne, retirer le champ) sans perte.
+- **Migration** des fiches existantes (convertir les `ready:` en colonne, retirer le champ). ⚠ **Cas
+  `blocked` + `ready`** (retour Codex #164) : `0102` est `status: blocked` **et** `ready: 2026-07-26` —
+  or `Bloqué` et `Ready` seraient deux colonnes **exclusives**, donc une fiche ne peut pas être dans les
+  deux, et l'éligibilité au déblocage (déjà passée par la DoR) doit survivre. La migration n'est « sans
+  perte » **qu'à condition** de trancher : (a) `blocked` reste un **attribut orthogonal** (un flag, pas
+  une colonne), ou (b) une représentation dédiée aux items *bloqués-mais-mûrs*. **À décider au grooming.**
 - **Ce qu'on ne fait PAS** : transitions autorisées, rôles, permissions, objets sprint. Juste valeurs validées.
 
 ## Critères d'acceptation (à groomer)
@@ -43,7 +48,8 @@ un validateur**, où `ready` devient une **colonne** à part entière — plus u
 - [ ] La liste des statuts vit dans **un schéma éditable** (pas en dur dans les scripts).
 - [ ] Un validateur **rejette** un `status` hors-liste (testé, rouge→vert).
 - [ ] `ready` est une **colonne** ; le champ date `ready:` est **retiré** du front-matter.
-- [ ] Migration des fiches actives + `done/` sans perte de sens.
+- [ ] Migration des fiches actives + `done/` **sans perte** — y compris les items `blocked` **et**
+      `ready` (cf. `0102`), via un `blocked` orthogonal ou une représentation dédiée.
 - [ ] Markdown reste la **source** ; aucun moteur de workflow introduit.
 
 ## Comment vérifier
