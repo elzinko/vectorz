@@ -11,20 +11,20 @@
  */
 import type { Catalog } from '../loaders/catalog.js';
 
-export type Etage = 'methode' | 'branchements' | 'librairie';
-export type Famille = 'hote-llm' | 'github' | 'observabilite' | 'techno' | 'plugin';
+export type Etage = 'methode' | 'modules' | 'librairie';
+export type Famille = 'hote-llm' | 'github' | 'observabilite' | 'techno' | 'overlay';
 export type BandeMethode = 'ceremonies' | 'artefacts';
 
 export interface Placement {
   etage: Etage;
-  famille?: Famille; // seulement pour l'étage branchements
+  famille?: Famille; // seulement pour l'étage modules
 }
 
 /** Forme brute du YAML (avant validation). */
 export interface TaxonomieDoc {
   etages: {
     methode?: { skills?: string[]; agents?: string[] };
-    branchements?: { familles?: Record<string, { skills?: string[]; agents?: string[] }> };
+    modules?: { familles?: Record<string, { skills?: string[]; agents?: string[] }> };
     librairie?: { skills?: string[]; agents?: string[] };
   };
   bandes?: Record<string, string[]>;
@@ -37,7 +37,7 @@ export interface Taxonomie {
   bandes: Record<BandeMethode, string[]>;
 }
 
-const FAMILLES: readonly Famille[] = ['hote-llm', 'github', 'observabilite', 'techno', 'plugin'];
+const FAMILLES: readonly Famille[] = ['hote-llm', 'github', 'observabilite', 'techno', 'overlay'];
 const BANDES_METHODE: readonly BandeMethode[] = ['ceremonies', 'artefacts'];
 
 export function validateTaxonomie(catalog: Catalog, doc: TaxonomieDoc): Taxonomie {
@@ -67,14 +67,14 @@ export function validateTaxonomie(catalog: Catalog, doc: TaxonomieDoc): Taxonomi
   simple('methode', doc.etages.methode);
   simple('librairie', doc.etages.librairie);
 
-  const familles = doc.etages.branchements?.familles ?? {};
+  const familles = doc.etages.modules?.familles ?? {};
   for (const [famille, bloc] of Object.entries(familles)) {
     if (!FAMILLES.includes(famille as Famille)) {
       throw new Error(`taxonomie.yml : famille inconnue « ${famille} » (${FAMILLES.join('|')})`);
     }
-    const placement: Placement = { etage: 'branchements', famille: famille as Famille };
-    for (const id of bloc?.skills ?? []) place('skill', id, placement, `branchements/${famille}`);
-    for (const id of bloc?.agents ?? []) place('agent', id, placement, `branchements/${famille}`);
+    const placement: Placement = { etage: 'modules', famille: famille as Famille };
+    for (const id of bloc?.skills ?? []) place('skill', id, placement, `modules/${famille}`);
+    for (const id of bloc?.agents ?? []) place('agent', id, placement, `modules/${famille}`);
   }
 
   // COMPLÉTUDE : tout le catalogue est rangé — c'est le « tu verras » du lot 2.

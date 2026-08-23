@@ -32,8 +32,8 @@ export interface MapSkill {
   id: string;
   description: string;
   usage: string; // `argument-hint:` du frontmatter — les sous-commandes, verbatim
-  etage: Etage; // ADR-0039 — méthode | branchements | librairie
-  famille?: Famille; // pour l'étage branchements (hote-llm, github, observabilite, techno, plugin)
+  etage: Etage; // ADR-0039 — méthode | modules | librairie
+  famille?: Famille; // pour l'étage modules (hote-llm, github, observabilite, techno, overlay)
   bande?: Bande; // interne à l'étage méthode uniquement
   composes: string[]; // skills internes que je compose
   composesExternal: string[]; // refs hors catalogue (documentées, jamais warnées — ADR-0025)

@@ -254,7 +254,7 @@ body{
   <div class="intro">
     <p>Trois étages. <b>Le moteur</b> (règles · bundles · profils · bind) ne connaît pas scrum — il compose
     et matérialise. <b>La méthode</b> (cérémonies, rôles, artefacts) est une instance construite avec lui.
-    <b>Les branchements</b> (GitHub, sessions LLM, supervision, outillage) s'y attachent sans en faire partie.
+    <b>Les modules</b> (GitHub, sessions LLM, supervision, outillage, overlays) s'y activent sans en faire partie.
     Cette carte n'est <b>pas dessinée à la main</b> : tout est compilé depuis les fichiers du dépôt.
     Cliquez une carte pour ouvrir son dossier et voir ses liens réels.</p>
     <div class="legend" id="legend"></div>
@@ -293,21 +293,21 @@ body{
   <div class="section">
     <div class="eyebrow">La méthode · Artefacts &amp; rituels</div>
     <h2>Quoi — l'état du produit</h2>
-    <p class="lead">Le backlog (les fiches) et l'ouverture du chantier : la mémoire de la méthode. Les commits et la clôture de session ont rejoint les branchements (décision PO, ADR-0039).</p>
+    <p class="lead">Le backlog (les fiches) et l'ouverture du chantier : la mémoire de la méthode. Les commits et la clôture de session ont rejoint les modules (décision PO, ADR-0039).</p>
     <div class="grid" id="band-artefacts"></div>
   </div>
 
   <div class="section">
-    <div class="eyebrow">Les branchements — hors méthode, activables</div>
-    <h2>Ce que la méthode branche sans en faire partie</h2>
-    <p class="lead">Cinq familles : <b>hôte LLM</b> (sessions), <b>GitHub</b> (revue Codex), <b>observabilité</b> (supervision), <b>techno</b> (outillage qui ignore tout du scrum), et les <b>plugins/overlays</b> — <code>vz-product-builder</code> est le premier (ADR-0039). La famille est sur chaque carte.</p>
-    <div class="grid" id="branchements"></div>
+    <div class="eyebrow">Les modules — hors méthode, activables</div>
+    <h2>Ce que la méthode active sans en faire partie</h2>
+    <p class="lead">Cinq familles : <b>hôte LLM</b> (sessions), <b>GitHub</b> (revue Codex), <b>observabilité</b> (supervision), <b>techno</b> (outillage qui ignore tout du scrum), et les <b>overlays</b> (la surcharge déclarative, ADR-0039) — <code>vz-product-builder</code> est le premier. La famille est sur chaque carte. « Modules » : le mot de BMAD pour les composants activables (PO 2026-08-24).</p>
+    <div class="grid" id="modules"></div>
   </div>
 
   <div class="section">
     <div class="eyebrow">La librairie — la fabrique de la méthode</div>
     <h2>Ce qui fabrique et garde le catalogue</h2>
-    <p class="lead">La méta-couche : <code>ezk-ezk</code> crée les skills, <code>ezk-steward</code> audite la cohérence du dépôt. Hors méthode, hors branchements — c'est l'atelier.</p>
+    <p class="lead">La méta-couche : <code>ezk-ezk</code> crée les skills et son <code>audit</code> convoque <code>ezk-steward</code>, le gardien. Hors méthode, hors modules — c'est l'atelier.</p>
     <div class="grid" id="librairie"></div>
   </div>
 
@@ -379,14 +379,14 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 58,
+  "rules": 59,
   "agents": 7,
   "skills": 22,
   "bundles": 12,
   "profiles": 6
  },
  "liens": {
-  "total": 184,
+  "total": 186,
   "casses": 0
  },
  "orphans": [
@@ -622,7 +622,6 @@ window.EZK = {
   "ceremonies": [
    "ezk-product-build",
    "ezk-sprint",
-   "ezk-pr",
    "ezk-retro"
   ],
   "artefacts": [
@@ -635,7 +634,7 @@ window.EZK = {
    "id": "ezk-apk",
    "description": "Build an installable preview APK (or IPA) on Expo EAS and hand the user an install link + QR, to demo or try a mobile (Expo / React Native) PR on a real device — including over 4G, with no adb, USB, Tailscale or debugging. Use whenever the user wants to \"share a build\", \"send me an APK\", \"test this PR on my phone\", \"install the app to try a feature\", \"give me a QR to install\", or demo a mobile branch to a tester or stakeholder. Walks through the EXPO_TOKEN setup, the eas preview profile, building, and returning the install link. Crucially covers the pnpm-monorepo gotchas that break EAS release builds while leaving debug builds working (expo-asset, node-linker=hoisted, building workspace TS deps), and validating the release compile locally first to avoid burning EAS queue time.",
    "usage": "[help|build|link|status|check|setup]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -649,7 +648,7 @@ window.EZK = {
    "id": "ezk-archive",
    "description": "Rituel de CLÔTURE de session avant archivage : clôt proprement un repo pour ne RIEN perdre entre deux sessions. A utiliser quand l'utilisateur veut « archiver / clôturer une session », « fermer proprement avant de partir », « ne rien perdre entre deux sessions », préparer un « handoff » pour la prochaine session, ou demande « on archive ? » « avant de fermer ». Pilotable par sous-commandes : help, check (dry-run strictement read-only : produit le rapport de clôture), run/close (applique les corrections sûres — ship/regen du backlog, mémoire — et produit la note de handoff). Un script portier (`scripts/check.sh`) rend un verdict CLEAN/DIRTY sur 4 points de contrôle : working tree + stashes, PRs & branches non-mergées (crucial pour les repos sans remote), fiches déclarées livrées, ADR de la session ; sur CLEAN la clôture est traitée directement, sur DIRTY elle est déléguée au sous-agent, scopée aux points signalés. Produit toujours la note de handoff persistée dans `.claude/handoff.md` (anneau FIFO) et le verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de clôture uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).",
    "usage": "[help|check|run]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "hote-llm",
    "composes": [],
    "composesExternal": [],
@@ -665,7 +664,7 @@ window.EZK = {
    "id": "ezk-article",
    "description": "Écrit ou réécrit un ARTICLE TECHNIQUE VULGARISÉ (blog, doc d'archi grand public, README long) avec un cadrage de persona explicite et une boucle de relecture par PANEL de relecteurs frais. A utiliser quand l'utilisateur veut « écrire / rédiger un article », « vulgariser » un sujet technique, réécrire un article existant pour le rendre lisible, faire relire un texte par un panel, ou publier un billet de blog technique accessible. Pilotable par sous-commandes : help, new (matière + brief persona → article), revise (vN → vN+1, versions côte à côte conservées), panel (la boucle de relecture seule, sur un texte existant). Demande TOUJOURS le brief de persona/audience au demandeur s'il est absent (jamais de défaut silencieux) ; panel de 5 lentilles SANS contexte de session (lecteur cible zéro-contexte, juge essais techniques, copy-editor, fidélité aux sources, accessibilité des références) puis contre-lecture finale à froid comme gate de publication. N'EST PAS un outil de doc de référence/spec (structure imposée par le domaine), ni le promoteur de l'article (ça, c'est ezk-marketing).",
    "usage": "[help|new|revise|panel]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [
     "ezk-diagram"
@@ -708,7 +707,7 @@ window.EZK = {
    "id": "ezk-ci",
    "description": "Validate GitHub Actions pipelines locally with act + Docker before pushing or committing, AND watch/cap the cloud-side GHA consumption of private repos. Use whenever the user asks to run CI locally, mentions GitHub Actions billing exhaustion (spending limit, billing exceeded, out of GHA minutes), asks how many Actions minutes a repo burns or which workflows cost the most, wants to cap spending on a private repo, makes a repo private (key cost moment), wants a frugal CI (paths-ignore, concurrency, gated heavy jobs), reports a workflow failure they want to debug without burning runner minutes, edits a file under .github/workflows/, or needs to test a .yml workflow. Also covers macOS jobs that must run on the host because Docker has no macOS image, and a bootstrap path for projects with no local CI setup yet.",
    "usage": "[help|check|list|dryrun|run|native|bootstrap|conso|frugal]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -726,7 +725,7 @@ window.EZK = {
    "id": "ezk-codex",
    "description": "Adresse les retours du reviewer Codex sur une PR, de bout en bout, sans les retaper à la main. A utiliser quand l'utilisateur veut « fix les retours codex », « adresse / traite les commentaires Codex de la PR X », « Codex a commenté ma PR », « corrige ce que Codex a relevé », ou après un `@codex review` qui a laissé des findings. Pilotable par sous-commandes : help, fix (la boucle complète : récupère les findings inline + reviews, écarte le cas 👍 « RAS », les classe P0/P1/P2 + file:line, pour chacun CORRIGE ou DÉCLINE avec raison postée + 👎, commit conventional scopé, push, re-déclenche `@codex review`, attend le verdict de façon BORNÉE, rapporte), check (lit le verdict Codex courant sans rien écrire). Garde-fou de tête : STAND-DOWN avant toute écriture (PR déjà mergée/fermée, branche pilotée par un autre worktree, commits d'une autre session apparus) → ne rien pousser, rapporter, rendre la main. Cross-repo (samplerz, muti… tout repo GitHub avec Codex branché). N'EST PAS le merge (ça reste `ezk-pr ship` / décision explicite) ni la revue initiale (le premier `@codex review` avant-merge reste décrit par `ezk-sprint`) ; `ezk-sprint` et `ezk-pr` la COMPOSENT au lieu de re-décrire le handling Codex.",
    "usage": "[help|fix|check] [PR]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "github",
    "composes": [
     "ezk-commits"
@@ -742,7 +741,7 @@ window.EZK = {
    "id": "ezk-commits",
    "description": "Help write Conventional Commits messages and set up a commit-msg hook. Use when the user wants to commit code, asks for help with commit message format, mentions \"conventional commit\", or wants to enforce commit format in a project. Also triggers after implementing a feature or fix when the user asks to create a commit.",
    "usage": "[help|commit|hook|check]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -765,7 +764,7 @@ window.EZK = {
    "id": "ezk-design-system",
    "description": "Create and ENFORCE a lightweight design system (tokens + canonical components + living styleguide) in any web project, and keep every UI change coherent with it. Use when the user mentions \"design system\", \"cohérence visuelle\", \"system design\" (UI sense), \"atomes\", \"librairie de composants\", \"styleguide\", \"storybook\", asks why the UI looks inconsistent, or whenever ANY task adds/modifies UI (buttons, colors, spacing, CSS) in a project that has a docs/design-system.md — read it FIRST and apply its rules. MVP-grade by design: three files, no build system, no heavy tooling — works for vanilla JS/CSS apps served by any backend (Python, Node…). Nomme et rend CONSULTABLE/REQUÊTABLE le vocabulaire complet — Token, Variant, Slot, Pattern, Breakpoint — sur une page /design vivante.",
    "usage": "",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -781,7 +780,7 @@ window.EZK = {
    "id": "ezk-device",
    "description": "Build, install and live-test an Android app on a PHYSICAL phone that is NOT on the same Wi-Fi/LAN as the computer, by tunnelling adb over a Tailscale mesh VPN. Use this whenever the user wants to run, install, deploy, sideload or test an Android app on a real device remotely — e.g. \"test the app on my phone\", \"I'm away from my desk / travelling and want to try the build\", \"adb won't connect over the network\", \"install the APK on my Android over 4G\", \"debug on my phone from here\" — or any time the phone and the dev machine are on different networks. Walks the user through installing the tools (Tailscale, adb), enabling Android wireless/USB debugging, finding the IP/port/code on the phone, and connecting reliably. Also covers the LAN-only WebRTC caveat (why a public tunnel like ngrok is NOT enough and a mesh VPN is the right tool).",
    "usage": "[help|check|setup|tcpip|connect|run]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -795,7 +794,7 @@ window.EZK = {
    "id": "ezk-diagram",
    "description": "Transforme une DESCRIPTION EN PROSE en un diagramme VERSIONNÉ (Mermaid + image), itéré VERBALEMENT — sans jamais écrire de Mermaid à la main. A utiliser quand l'utilisateur veut « faire un schéma / un diagramme », « visualiser une archi / un flux / un organigramme / une machine à états », décrire une structure avec ses mots et obtenir un diagramme, réviser/corriger un diagramme existant en langage naturel, ou versionner / retrouver / dupliquer / supprimer un diagramme entre sessions. Pilotable par sous-commandes : help, add, list, edit, rm, dup, publish. Stocke un artefact versionné par diagramme dans `diagrams/\u003cslug>/` : la prose (source), le diagram-as-code (Mermaid généré), l'image (SVG rendue), une explication LECTEUR (« Ce que montre ce diagramme », assemblée dans le README publié), + un meta. Le LLM synthétise le Mermaid depuis la prose (capacité native, ZÉRO service externe) ; le rendu image est LOCAL (mermaid-cli/`mmdc`). Descriptif d'abord : le diagramme EST l'artefact (comprendre/documenter). N'EST PAS un éditeur Mermaid manuel, ni un service de dessin en ligne, ni un moteur d'exécution — juste « je décris, ça se dessine, je valide, ça se versionne ».",
    "usage": "[help|add|list|edit|rm|dup|publish]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [
     "ezk-commits"
@@ -816,7 +815,7 @@ window.EZK = {
    "id": "ezk-docker",
    "description": "Pilot a local Docker stack for TESTING or DEV — spin up, monitor, tear down — directly via the Docker socket (docker compose CLI), with no bespoke code. Use whenever the user wants to \"lance/monte une stack docker\", start an app's services to test against, bring up a throwaway environment (db, redis, api…), watch container logs or status, or destroy a test stack cleanly. Enforces blast-radius conventions: project-prefixed stacks, mandatory teardown, never a global prune. NOT for CI pipelines (that is ezk-ci, act + Docker), NOT for building/pushing images to a registry, NOT for production orchestration.",
    "usage": "[help|check|up|ps|logs|down|nuke]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -850,7 +849,7 @@ window.EZK = {
    "id": "ezk-npm-scripts",
    "description": "Garantit que les scripts npm/pnpm/turbo d'un monorepo sont cohérents : chaque package enfant possède ses commandes, et le package.json RACINE les CENTRALISE sous des noms hiérarchiques clairs (verbe:cible[:sous-cible]) qui délèguent via --filter / turbo, pour qu'on lance tous les cas d'usage depuis la racine sans retaper --filter. A utiliser quand l'utilisateur veut « centraliser/nettoyer/ harmoniser les scripts », demande « pourquoi je dois taper --filter @scope/pkg », veut « toutes les commandes accessibles depuis le root », auditer/vérifier que les scripts du monorepo sont cohérents, ou s'assurer qu'un cas d'usage (dev:mobile:android, build:desktop, ci:local…) est piloté depuis la racine. Pilotable par sous-commandes : help, audit, fix, init, convention. AUDIT d'abord (rapport, ne modifie rien), fix opt-in (diff + confirmation). Référence de convention : le monorepo `muti`. NE force PAS le même set sur chaque package (une crate Rust ≠ une app Vite ≠ des docs) : vocabulaire partagé appliqué là où ça a du sens. Respecte le runner en place (turbo vs pnpm -r). Une seule responsabilité (hygiène des scripts) : s'intègre à ezk-ci et ezk-commits sans déborder sur CI/release/versioning.",
    "usage": "[help|audit|fix|init|convention]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -866,8 +865,8 @@ window.EZK = {
    "id": "ezk-pr",
    "description": "Chef d'orchestre du TEST-PUIS-MERGE d'un STOCK de PRs ouvertes. A utiliser quand l'utilisateur a plusieurs PRs à valider et demande « comment je les teste / les enchaîne / les merge », « dans quel ordre », « fais-moi un plan de test des PRs », « qu'est-ce qui reste à tester sur quelle PR », veut regrouper les tests device en une seule session, obtenir pour chaque PR le banc à démarrer et l'URL de démo, ou reporter dans chaque PR ce qui a été validé. Pilotable par sous-commandes : help, init (installe la convention « Validation » dans un repo — template PR mince + doc liée, sans jamais écraser un template existant), plan (analyse le stock : ordre de merge par dépendances/merge-tree, conflits, sessions de test groupées), run (déroule une session : démarre les bancs, tend URLs/checklists pas-à-pas), report (poste les résultats en commentaire des PRs), ship (squash-merge au vert + ezk-backlog ship). COMPOSE ezk-preview, ezk-device/ezk-apk, verify/run, ezk-backlog, ezk-commits — il ne réimplémente rien. N'est PAS ezk-sprint (qui PRODUIT une PR) : lui CONSOMME le stock. Une seule instance par repo.",
    "usage": "[help|init|plan|run|report|ship] [#PR…]",
-   "etage": "methode",
-   "bande": "ceremonies",
+   "etage": "modules",
+   "famille": "github",
    "composes": [
     "ezk-backlog",
     "ezk-commits"
@@ -885,7 +884,7 @@ window.EZK = {
    "id": "ezk-preview",
    "description": "Produce a shareable demo/preview URL for a work-in-progress feature (a branch or worktree). Use when the user asks for a demo link, a test or preview URL, a way to show a feature to someone, mentions \"lien de démo\", \"URL de test\", \"montre la feature\", \"accéder depuis mon téléphone\", \"démo privée\", or when a PR is ready and needs a preview. Picks a Vercel preview deploy when the app is deployable and Vercel-linked; opens a Cloudflare tunnel (cloudflared) to the local dev server for public sharing; or uses tailscale serve for a PRIVATE demo (own phone, peers in the tailnet, apps holding credentials or lacking auth — never expose those publicly). Returns the URL (QR code for phones) and can post it as a PR comment. For testing on a physical device over adb, use ezk-device instead.",
    "usage": "[help|vercel|public|private|comment]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [],
    "composesExternal": [],
@@ -927,7 +926,7 @@ window.EZK = {
    "id": "ezk-readme",
    "description": "Crée ou audite le README d'un projet — le point d'entrée névralgique du repo : pitch en une ligne, badges adossés à une réalité (CI/release), quickstart, et des INDIRECTIONS vers les sources de vérité plutôt que des infos volatiles à maintenir, en descendant du général au particulier. A utiliser dès que l'utilisateur mentionne un README manquant, à écrire, refaire, améliorer, relire ou auditer (« il manque un README », « écris/refais le readme », « c'est quoi ce README », « le README est faux/périmé »), qu'un repo public n'a pas de README à la racine, qu'une fiche backlog de type readme/documentation d'accueil est tirée, ou en fin de sprint quand la porte d'entrée du repo ne reflète plus le projet. Pilotable par sous-commandes : help, create (génère depuis l'analyse du repo), audit (rapport + diff proposé, jamais d'écrasement direct).",
    "usage": "[help|create|audit]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "techno",
    "composes": [
     "ezk-backlog"
@@ -988,7 +987,7 @@ window.EZK = {
    "id": "supervision-analyze",
    "description": "Post-mortem Moniteur / supervision : quand le Moniteur dit « Silence prolongé », qu’un run semble figé, ou qu’on ne comprend pas ce qui a été émis. Lance le kit d’analyse déterministe (journal `.supervision/runs` + transcript Claude Code) — pas de LLM. Déclencheurs : « pourquoi silence Moniteur », « analyze supervision », « moniteur confus », « supervision:analyze », « post-mortem run ».",
    "usage": "[chemin-projet=.]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "observabilite",
    "composes": [],
    "composesExternal": [],
@@ -1000,7 +999,7 @@ window.EZK = {
    "id": "supervision-demo",
    "description": "Méthode JOUET à 2 gates pour éprouver le kit émetteur de supervisabilité (fiche 0050) depuis une session Claude Desktop réelle — SANS toucher aux skills de méthode de prod (ezk-*). A utiliser quand on veut tester l'émission du journal du contrat v0.1 : « teste le kit émetteur », « supervision-demo », « émets un journal jouet », « run de démo supervisabilité ». Déroule run_start → travail simulé → gate 1 (STOP, attend) → gate 2 (STOP, attend) → run_finished, en pilotant les 6 outils MCP de l'émetteur (dont `heartbeat`). N'est PAS une méthode de travail réelle : c'est le banc d'essai du contrat, jetable.",
    "usage": "[sujet-du-run-jouet]",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "observabilite",
    "composes": [],
    "composesExternal": [],
@@ -1012,8 +1011,8 @@ window.EZK = {
    "id": "vz-product-builder",
    "description": "Variante AUTONOME du product-builder (préfixe vz-, OVERLAY : n'écrase ni ne modifie ezk-product-build) : même doctrine product-owner — compose ezk-backlog (le quoi), product-brainstorming (cadrer) et ezk-sprint (le comment) — mais les checkpoints ne s'arrêtent plus vers l'humain : le builder convoque LUI-MÊME un corpus de reviewers (panel multi-lentilles + contradicteurs + synthèse) selon une échelle de coût à 3 crans, journalise chaque décision via le kit émetteur de supervisabilité, et ne s'arrête vers l'humain QUE sur les 4 STOP humains. A utiliser quand l'utilisateur veut « avancer sans que je réponde aux questions », « product builder autonome », « vz-product-builder », « mode corpus ». Refuse de démarrer sans le kit émetteur (l'autonomie sans journal = boîte noire).",
    "usage": "[build|once|status] [--tokens lean|cap|full]",
-   "etage": "branchements",
-   "famille": "plugin",
+   "etage": "modules",
+   "famille": "overlay",
    "composes": [
     "ezk-backlog",
     "ezk-product-build",
@@ -1048,7 +1047,7 @@ window.EZK = {
   "ezk-archive": {
    "id": "ezk-archive",
    "description": "Rituel de CLÔTURE de session avant archivage — clôt proprement un repo pour ne rien perdre entre deux sessions (working tree, PRs/branches en attente, backlog, ADR, mémoire, note de handoff persistée). Invoqué via le skill `/ezk-archive`, qui lui délègue systématiquement pour figer le modèle/effort indépendamment du modèle de la session en cours. Reçoit dans le prompt la sous-commande (help/check/run), le chemin du repo, et un résumé de ce qui a été livré/décidé/ appris pendant la session — n'a AUCUNE mémoire de la conversation qui a précédé l'appel.",
-   "etage": "branchements",
+   "etage": "modules",
    "famille": "hote-llm",
    "model": "claude-opus-4-8",
    "effort": "medium",
@@ -1422,6 +1421,19 @@ window.EZK = {
    ],
    "bundles": [
     "conventional-commits"
+   ],
+   "agents": []
+  },
+  "development/adversarial-review-before-merge": {
+   "id": "development/adversarial-review-before-merge",
+   "title": "Toute livraison passe une revue adverse avant merge",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "development"
    ],
    "agents": []
   },
@@ -1906,6 +1918,7 @@ window.EZK = {
    "id": "development",
    "extends": [],
    "rules": [
+    "development/adversarial-review-before-merge",
     "development/handle-blockers",
     "development/local-first-feedback",
     "development/playwright-mcp-usage",
@@ -2254,8 +2267,8 @@ window.EZK = {
       (meta.length?'<div class="meta">'+meta.join('')+'</div>':'')+'</div>';
   };
   /* ADR-0039 : les trois étages viennent de taxonomie.yml, compilés dans les données. */
-  const FAMILLE_LABEL = {'hote-llm':'hôte LLM','github':'GitHub','observabilite':'observabilité','techno':'techno','plugin':'plugin/overlay'};
-  const ETAGE_LABEL = {methode:'méthode', branchements:'branchement', librairie:'librairie'};
+  const FAMILLE_LABEL = {'hote-llm':'hôte LLM','github':'GitHub','observabilite':'observabilité','techno':'techno','overlay':'overlay'};
+  const ETAGE_LABEL = {methode:'méthode', modules:'module', librairie:'librairie'};
   const agentCard = (id) => {
     const a = D.agents[id];
     const meta = [];
@@ -2310,15 +2323,15 @@ window.EZK = {
   $('band-agents').innerHTML     = Object.keys(D.agents).filter((id) => D.agents[id].etage === 'methode').map(agentCard).join('');
   $('profiles').innerHTML        = Object.keys(D.profiles).map(profileCard).join('');
 
-  /* Branchements : skills + agents de l'étage, groupés par famille (ordre stable). */
-  const FAMILLE_ORDER = ['hote-llm','github','observabilite','plugin','techno'];
+  /* Modules : skills + agents de l'étage, groupés par famille (ordre stable). */
+  const FAMILLE_ORDER = ['hote-llm','github','observabilite','overlay','techno'];
   const byFamille = (a, b) =>
     FAMILLE_ORDER.indexOf(a.famille) - FAMILLE_ORDER.indexOf(b.famille) || a.id.localeCompare(b.id);
   const brancards = [
-    ...Object.values(D.skills).filter((s) => s.etage === 'branchements').map((s) => ({...s, kind:'skill'})),
-    ...Object.values(D.agents).filter((a) => a.etage === 'branchements').map((a) => ({...a, kind:'agent'})),
+    ...Object.values(D.skills).filter((s) => s.etage === 'modules').map((s) => ({...s, kind:'skill'})),
+    ...Object.values(D.agents).filter((a) => a.etage === 'modules').map((a) => ({...a, kind:'agent'})),
   ].sort(byFamille);
-  $('branchements').innerHTML = brancards.map((e) => e.kind === 'skill' ? skillCard(e.id) : agentCard(e.id)).join('');
+  $('modules').innerHTML = brancards.map((e) => e.kind === 'skill' ? skillCard(e.id) : agentCard(e.id)).join('');
 
   $('librairie').innerHTML =
     Object.keys(D.skills).filter((id) => D.skills[id].etage === 'librairie').map(skillCard).join('') +
@@ -2516,10 +2529,10 @@ window.EZK = {
       'Un <b>moment du scrum</b> (grooming, planning, rétro…). Elle n\'est PAS une commande : elle est <b>implémentée par</b> une ou plusieurs commandes/sous-commandes — c\'est la table de correspondance scrum ↔ ezk, vérifiée à la compilation. Le grooming, par exemple, EST la sous-commande groom du backlog.',
     ], '<button class="chip" data-open="ceremonie:grooming"><span class="sw" style="background:var(--flow)"></span>grooming</button><span>→ implémenté par ezk-backlog:groom</span>'),
     rel('Les trois étages', '(taxonomie.yml)', [
-      '<b>La méthode</b> = l\'instance scrum (cérémonies, rôles, artefacts). <b>Les branchements</b> = les prises électriques : des outils que la méthode peut activer sans qu\'ils fassent partie du scrum — les sessions LLM (hôte), la revue GitHub (codex), la supervision, l\'outillage techno, et les plugins/overlays. <b>La librairie</b> = l\'atelier qui fabrique et garde le catalogue lui-même.',
+      '<b>La méthode</b> = l\'instance scrum (cérémonies, rôles, artefacts). <b>Les modules</b> = les prises électriques : des composants que la méthode peut activer sans qu\'ils fassent partie du scrum — les sessions LLM (hôte), GitHub (codex, la gestion de PRs), la supervision, l\'outillage techno, et les overlays. Le mot vient de BMAD. <b>La librairie</b> = l\'atelier qui fabrique et garde le catalogue lui-même.',
       'Chaque brique a exactement un étage — c\'est vérifié à la compilation, un oubli fait échouer la CI.',
-    ], chip('skill','ezk-codex')+'<span>= branchement GitHub, activable, hors scrum</span>'),
-    rel('Un plugin', '(overlay, ADR-0039)', [
+    ], chip('skill','ezk-codex')+'<span>= module GitHub, activable, hors scrum</span>'),
+    rel('Un overlay', '(ADR-0039)', [
       'Une brique qui <b>charge la doctrine d\'une autre et la surcharge</b> par déclaration, sans rien modifier. vz-product-builder charge ezk-product-build et remplace ses arrêts-humains par un corpus de reviewers.',
     ], chip('skill','vz-product-builder')),
     rel('LA LOI arrive par deux chemins', null, [

@@ -133,3 +133,17 @@ vocabulaire (lot 3 du plan : débaptiser « scrum master », séparer DoD/critè
   pas retirer un ancien nom, churn record, doublon avec l'agent. Rejeté (panel A-1,
   C-1/C-2) ; remplacé par la doc croisée (lot 4 du plan).
 - **Généraliser les profils maintenant** — aucun cas réel ne le tire. Différé (§5).
+
+## Amendement du 2026-08-24 (PO) — « modules », « overlay », et ezk-pr reclassé
+
+1. **L'étage « branchements » est renommé « modules »** — vérification faite chez BMAD
+   (docs.bmad-method.org) : leur mot pour les composants installables/partageables est
+   *module* (avec marketplace). « Plugin » aurait collisionné avec les plugins Claude
+   Code (distribution, fiche 0087). La famille « plugin » est renommée **« overlay »**,
+   libérant le mot pour son sens précis du §4 (la surcharge déclarative).
+2. **`ezk-pr` quitte l'étage méthode → module famille GitHub.** Argument PO : la pull
+   request est un MÉCANISME GitHub, pas une cérémonie — on peut demander une revue
+   adverse sur une branche sans PR. La preuve interne : le flux nominal squash-merge à
+   l'étape 10 du sprint sans passer par ezk-pr (constat panel B-3). La cérémonie de
+   livraison reste portée par le sprint ; ezk-pr gère le STOCK de PRs quand GitHub est là.
+3. Rappels du même jour (déjà amendés au §3) : `ezk-start` absorbé par `ezk-sprint:check`.

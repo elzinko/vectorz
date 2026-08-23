@@ -7,8 +7,8 @@
 #
 # Les trois étages (+ la fabrique) :
 #   methode      — l'instance scrum : cérémonies, rôles, artefacts (bandes internes ADR-0020)
-#   branchements — hors méthode, activables ; par famille : hote-llm, github,
-#                  observabilite, techno, plugin (overlay au sens ADR-0039)
+#   modules      — hors méthode, activables (« modules » à la BMAD, PO 2026-08-24) ;
+#                  par famille : hote-llm, github, observabilite, techno, overlay
 #   librairie    — la fabrique de la méthode elle-même (méta)
 # (Le MOTEUR — rules/bundles/profiles/bind — n'a pas de skills : c'est le code et
 #  les objets qu'il compose ; il est documenté par ADR-0039, pas listé ici.)
@@ -17,13 +17,12 @@
 # un outillage ») · archive → hôte LLM (skill ET agent exécutant) · start → méthode
 # (« une étape liée au sprint ») · backlog → méthode (artefact) · codex → GitHub ·
 # supervision-* → observabilité · ezk-ezk + steward → librairie · vz-product-builder
-# → plugin (premier overlay vivant).
+# → overlay (le premier vivant) · ezk-pr → module github (2026-08-24).
 
 etages:
   methode:
     skills:
       - ezk-backlog
-      - ezk-pr
       - ezk-product-build
       - ezk-retro
       - ezk-sprint
@@ -33,13 +32,13 @@ etages:
       - ezk-pm
       - ezk-qa
       - ezk-reviewer
-  branchements:
+  modules:
     familles:
       hote-llm:
         skills: [ezk-archive]
         agents: [ezk-archive]
       github:
-        skills: [ezk-codex]
+        skills: [ezk-codex, ezk-pr]  # la PR est un mécanisme GitHub, pas une cérémonie (PO 2026-08-24)
       observabilite:
         skills: [supervision-analyze, supervision-demo]
       techno:
@@ -55,15 +54,15 @@ etages:
           - ezk-npm-scripts
           - ezk-preview
           - ezk-readme
-      plugin:
+      overlay:
         skills: [vz-product-builder]
   librairie:
     skills: [ezk-ezk]
     agents: [ezk-steward]
 
 # Bandes INTERNES à l'étage méthode (ADR-0020, amendée par ADR-0039 : l'ex-bande
-# « Outillage » est promue famille de branchements ; commits et archive quittent
+# « Outillage » est promue famille de modules ; commits et archive quittent
 # l'étage méthode sur décision PO). L'ordre est l'ordre du flux.
 bandes:
-  ceremonies: [ezk-product-build, ezk-sprint, ezk-pr, ezk-retro]
+  ceremonies: [ezk-product-build, ezk-sprint, ezk-retro]
   artefacts: [ezk-backlog]
