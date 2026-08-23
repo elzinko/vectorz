@@ -29,10 +29,14 @@ rendre **systématique**.
 
 ## Proposition
 
-- **Systématiser `reconcile`** à un point de passage qu'on ne saute pas :
-  - à la **clôture de session** (gate `ezk-archive`), et/ou
-  - en **rappel post-merge** (hook / petit job CI sur `main` qui liste les fiches dont la PR est mergée
-    mais `status ≠ shipped`).
+- **Systématiser `reconcile`** à un point de passage qu'on ne saute pas. Deux mécanismes, **de portée
+  différente** :
+  - **Requis pour le scénario GitHub-UI** : un **déclencheur post-merge** (hook / petit job CI sur `main`
+    qui liste les fiches dont la PR est mergée mais `status ≠ shipped`). C'est le **seul** qui couvre le
+    cas « la session est archivée **après** l'ouverture de la PR, puis le merge UI a lieu plus tard » —
+    le gate de clôture, déjà passé, ne re-détecte alors rien (retour Codex #164).
+  - **Complément** : le gate de **clôture de session** (`ezk-archive`) rattrape les merges faits
+    **pendant** la session. Utile, mais **insuffisant seul**.
 - Reste une **proposition** : `reconcile` détecte, **`ship` exécute après accord** (invariant préservé —
   jamais de bascule silencieuse).
 - Dégrade sans erreur si pas de remote/`gh` (mode local-only, ADR-0018).

@@ -33,6 +33,13 @@ front-matter, l'historique **depuis git**.
   daté (`docs(features): ready 0169`, `docs(features): ship …`). Sortie = **liste datée des décisions**.
   La date **sort de la fiche** ; git en est la source immuable.
 
+> **Limite à trancher au grooming (retour Codex #164)** : le repo **squash-merge et supprime** les
+> branches. Les transitions committées **sur une feature branch** (ex. *En cours*, *Revue*) sont donc
+> **aplaties** par le squash → invisibles de `history <id>`. L'historique git ne capture fidèlement que
+> les transitions **committées sur `main`** (typiquement `ready`/`ship`, faits par `ezk-backlog`).
+> Options à arbitrer : (a) n'autoriser les transitions de statut que **sur `main`** (commits dédiés) ;
+> (b) accepter que seules celles-là sont tracées ; (c) une source d'historique complémentaire.
+
 ## Critères d'acceptation (à groomer)
 
 - [ ] Un **board kanban** markdown est généré depuis le front-matter (colonnes = schéma).

@@ -30,14 +30,19 @@ signale.
 ## Proposition
 
 - **`lawgiver doctor <profile>`** : compare la **liste du profil** aux **liens matérialisés** dans la cible
-  (`~/.claude`) → rapporte les **manquants**, les **orphelins** (liens sans entrée) et les **liens morts**.
+  (`~/.claude`) → rapporte les **manquants** et les **liens morts**, plus les **orphelins** mais
+  **restreints aux liens gérés par lawgiver** (retour Codex #164). `~/.claude/skills` est une cible
+  **partagée** : elle peut contenir des skills **installés par l'utilisateur ou tiers**, hors profil, qui
+  ne sont **pas** des orphelins. La détection d'orphelins se limite donc à ce que lawgiver **a lui-même
+  posé** (marqueur / manifeste des liens managés — à définir au grooming), sinon faux positifs.
 - **Lecture seule** (diagnostic). Un **`--fix`** optionnel et explicite rejoue le bind.
 - Composable en **gate** (avant une session, ou après un bind) pour que l'écart ne reste jamais silencieux.
 
 ## Critères d'acceptation (à groomer)
 
 - [ ] `lawgiver doctor global` **liste** les skills du profil **non matérialisés** dans `~/.claude`.
-- [ ] Détecte aussi les **liens orphelins** et les **liens morts**.
+- [ ] Détecte les **liens morts** et les **orphelins gérés par lawgiver** (les skills tiers/user hors
+      profil ne sont **pas** signalés comme orphelins).
 - [ ] **Lecture seule** par défaut ; `--fix` séparé et explicite.
 - [ ] Sortie exploitable en gate (code retour non-nul si divergence).
 
