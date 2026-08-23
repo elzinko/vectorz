@@ -14,13 +14,16 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildMapDataBlock, upsertMapDataBlock } from '../src/core/map-data.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
+import { loadMethodDoc } from '../src/loaders/method.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = resolve(megaCity, '..', '..'); // racine vectorz
 const mapPath = join(repoRoot, 'diagrams', 'methode-mega-city', 'carte-interactive.html');
 
 const catalog = loadCatalog(megaCity);
-const block = buildMapDataBlock(catalog);
+// La méthode (ceremonies.yml) est validée contre le catalogue DANS buildMapData —
+// une référence fausse fait échouer cette régénération (garde-fou du panel).
+const block = buildMapDataBlock(catalog, loadMethodDoc(megaCity));
 const before = readFileSync(mapPath, 'utf8');
 const after = upsertMapDataBlock(before, block);
 

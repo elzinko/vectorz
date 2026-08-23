@@ -12,6 +12,7 @@
  * disque au bloc régénéré — carte périmée ⇒ CI rouge.
  */
 import type { Catalog } from '../loaders/catalog.js';
+import { type MethodDoc, validateMethod } from './ceremonies.js';
 import { validateGraph } from './graph.js';
 
 export const MAP_DATA_BEGIN = '/*ezk-map-data:begin*/';
@@ -95,6 +96,8 @@ export interface MapData {
   counts: { rules: number; agents: number; skills: number; bundles: number; profiles: number };
   liens: { total: number; casses: number };
   orphans: { kind: string; id: string }[];
+  /** La carte totale de la méthode scrum (method/ceremonies.yml), VALIDÉE — lot 1. */
+  method?: MethodDoc;
   bandes: Record<Bande, string[]>;
   skills: Record<string, MapSkill>;
   agents: Record<string, MapAgent>;
@@ -106,7 +109,7 @@ export interface MapData {
 const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
 
 /** Compile les données de la carte. Tout est trié → sortie stable (F4). */
-export function buildMapData(catalog: Catalog): MapData {
+export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
   const report = validateGraph(catalog);
 
   // Index inverses — calculés une fois, jamais devinés par la carte.
@@ -239,6 +242,8 @@ export function buildMapData(catalog: Catalog): MapData {
     },
     liens: { total: report.edgeCount, casses: report.broken.length },
     orphans: report.orphans.map(({ kind, id }) => ({ kind, id })),
+    // Validée ICI : une référence fausse dans ceremonies.yml fait échouer la compilation.
+    ...(method ? { method: validateMethod(catalog, method) } : {}),
     bandes,
     skills,
     agents,
@@ -249,9 +254,9 @@ export function buildMapData(catalog: Catalog): MapData {
 }
 
 /** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans le HTML de la carte. */
-export function buildMapDataBlock(catalog: Catalog): string {
+export function buildMapDataBlock(catalog: Catalog, method?: MethodDoc): string {
   // `<` échappé en < : une description contenant `</script>` ne peut pas fermer la balise.
-  const json = JSON.stringify(buildMapData(catalog), null, 1).replace(/</g, '\\u003c');
+  const json = JSON.stringify(buildMapData(catalog, method), null, 1).replace(/</g, '\\u003c');
   return `${MAP_DATA_BEGIN}\nwindow.EZK = ${json};\n${MAP_DATA_END}`;
 }
 

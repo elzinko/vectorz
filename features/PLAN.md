@@ -1,5 +1,13 @@
 # PLAN — séquence de travail (vectorz)
 
+## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
+
+> **Une méthode LLM-native digne de confiance pour voir et piloter ses produits** :
+> la carte dit vrai (compilée des fichiers), le backlog dit l'état réel, et chaque
+> cérémonie a un responsable clair — humain ou agent.
+> *(Premier Product Goal du dépôt — posé par le lot 1 du plan « trois étages » ;
+> le Scrum Guide en fait l'engagement du Product Backlog.)*
+
 > Décidé le **2026-07-26** (roadmap PO) ; **mis à jour 2026-07-30** (fiche 0064 —
 > liste unique, ids nus, champ `product:`). Ceci est l'**ORDRE**, pas la priorité
 > (la priorité `P0→P3` reste le *bucket d'importance* dans chaque fiche ; ici c'est
