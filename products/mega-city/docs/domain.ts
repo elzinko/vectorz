@@ -75,6 +75,7 @@ export interface SkillAsset {
 export interface Skill {
   id: string; // 'ezk-commits'
   description?: string; // OPTIONNEL — le déclencheur humain du frontmatter (affiché par la carte / ezk-help)
+  argumentHint?: string; // OPTIONNEL — `argument-hint:` du frontmatter : les sous-commandes ('[help|add|…]')
   content: string; // le playbook (markdown)
   /** ADR-0025 — ids de skills INTERNES requis (doivent être présents à la résolution du profil). */
   composes?: string[];

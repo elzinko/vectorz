@@ -186,6 +186,7 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
   return {
     id,
     ...(typeof data.description === 'string' ? { description: data.description } : {}),
+    ...(typeof data['argument-hint'] === 'string' ? { argumentHint: data['argument-hint'] } : {}),
     content: content.trim(),
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),

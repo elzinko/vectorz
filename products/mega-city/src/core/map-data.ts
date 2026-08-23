@@ -45,6 +45,7 @@ export type Bande = keyof typeof BANDES | 'hors-bande';
 export interface MapSkill {
   id: string;
   description: string;
+  usage: string; // `argument-hint:` du frontmatter — les sous-commandes, verbatim
   bande: Bande;
   composes: string[]; // skills internes que je compose
   composesExternal: string[]; // refs hors catalogue (documentées, jamais warnées — ADR-0025)
@@ -152,6 +153,7 @@ export function buildMapData(catalog: Catalog): MapData {
     skills[id] = {
       id,
       description: s.description ?? '',
+      usage: s.argumentHint ?? '',
       bande: bandeOf(id),
       composes: sorted(s.composes ?? []),
       composesExternal: sorted(s.composesExternal ?? []),
