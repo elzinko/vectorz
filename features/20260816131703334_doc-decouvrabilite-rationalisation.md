@@ -58,7 +58,7 @@ Registre `docs/adr/` (le joyau) · `rules/` (58 fichiers, frontmatter homogène 
 
 ## Notes
 
-- **Supersède l'antipattern de [0068](0068-regle-method-map-a-jour.md)** (« garder la method-map à jour à la main ») :
+- **Supersède l'antipattern de 0068** (« garder la method-map à jour à la main ») :
   une carte tenue à la main dérive par construction → on la **génère**.
 - Voisines : [[0079]] (lisibilité — règle), [[0091]] (glossaire jargon), [[0133]] (carte des rôles method-map),
   [[0177]] (pack pratiques portables), [[0087]] (distribution/publication — LATER).

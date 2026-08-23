@@ -85,5 +85,5 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
 - Piège d'implémentation déjà payé : un test de schéma d'URL générique `^[a-z.]+:` avale
   `types.ts:75` et rend le contrôle aveugle. La liste des schémas est explicite à dessein,
   et le cas G du test couvre la forme NUE (sans `/` avant le `:`), seule discriminante.
-- Voisin thématique : [0068 règle « method-map à jour »](../0068-regle-method-map-a-jour.md)
+- Voisin thématique : 0068 règle « method-map à jour »
   — même famille (un artefact humain qui se périme sans que rien ne rougisse).

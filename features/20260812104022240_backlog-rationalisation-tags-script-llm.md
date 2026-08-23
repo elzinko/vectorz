@@ -57,8 +57,10 @@ script↔LLM, forme de la « sanitarisation ») **et `/product-management:produc
 
 ## Notes / décisions
 
-- Dépend probablement de [[0092]] (labels/depends = les tags). Étend l'esprit de `0071`
-  (review, shipped). **Distinct** de `0065` (lui = granularité sprint/PR, pas
-  organisation du stock).
+- **Absorbe `0092`** (fermée le 2026-08-23, paquet 1) : `depends:` existait déjà dans
+  les fiches ; le reliquat — un champ `labels:`/tags — est LE cœur de cette fiche.
+  Registre : `docs/captures/2026-08-23-fermetures-backlog-paquet1.md`. Étend l'esprit
+  de `0071` (review, shipped). **Distinct** de `0065` (lui = granularité sprint/PR,
+  pas organisation du stock).
 - Voisin de méthode : [[20260812104022237]] (owner de PR, même session).
 - Origine : session 2026-08-12.

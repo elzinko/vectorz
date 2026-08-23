@@ -47,3 +47,6 @@ Article technique vulgarisé (via `ezk-article` / 0153) qui :
 - Anti-doublon : voisin de 0047 (migration réflexive produit) et 0172 (SoT
   backlog) — angle distinct : **versionner la skill**, pas le produit ni le SoT GH.
 - Dépendance souple : 0153 (ezk-article) — non bloquant.
+- **Absorbe `0187`** (fermée le 2026-08-23, paquet 1 — doublon exact) : l'angle
+  « LLM skills migration » se traite ICI. Registre :
+  `docs/captures/2026-08-23-fermetures-backlog-paquet1.md`.

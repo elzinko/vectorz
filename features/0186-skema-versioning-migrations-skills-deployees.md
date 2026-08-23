@@ -158,7 +158,7 @@ par-commande).
 
 - **Nommage** : ce mécanisme **EST Skema** (*Skill Schema Migrations*) — voir l'article
   [0175](0175-article-skema-skill-schema-migrations.md), l'article compagnon
-  [0187](0187-article-llm-skills-migration.md) et le précédent d'unification du backlog [0064].
+  0187 et le précédent d'unification du backlog [0064].
 - **Consolidation (2026-08-12)** : fusionne l'ancienne fiche **0134** (« propager les maj
   *breaking* d'un skill aux projets », créée 2026-07-12). Les deux décrivaient le même
   mécanisme Skema ; 0134 apportait le détail **émission** (déclencheur breaking) et
@@ -204,7 +204,7 @@ par-commande).
     mise à jour par-projet).
 - **Complément de [0018 — coquille I/O link vs copy]** : 0018 propage le **code** live via
   symlink ; Skema gère les **données/schéma**.
-- **Prérequis conceptuel de l'article [0187](0187-article-llm-skills-migration.md)** —
+- **Prérequis conceptuel de l'article 0187** —
   l'écrire en parallèle force à clarifier le design ici.
 - Premier client naturel du registre : le bind des skills ezk dans un produit (ex.
   `gmail-cleanerz`).

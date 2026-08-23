@@ -42,7 +42,7 @@ ou le court-circuiter en local).
 
 ## Prior art & candidats-regroupement (à trancher au grooming)
 
-- **[0136](0136-ezk-reviewer.md)** (`ezk-reviewer`) — le **rôle** reviewer local + coordination
+- **0136** (`ezk-reviewer`) — le **rôle** reviewer local + coordination
   avec un reviewer externe (cumul/complément/attente). **Recouvre le volet « revue locale »** ;
   ce sujet-ci ajoute la **friction (blocage)** et les **métriques**. Fort candidat regroupement.
 - **`ezk-codex`** (skill) — gère les retours Codex et **attend le verdict de façon bornée** :

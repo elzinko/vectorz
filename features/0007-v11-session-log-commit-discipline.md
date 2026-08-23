@@ -50,6 +50,6 @@ désormais **caduques** et retirées du périmètre :
   tombe avec.
 
 Reste le **volet vivant** ci-dessus (format session log + discipline de commit), auquel
-se rattache l'item #11 de l'inventaire [0042](0042-inventaire-idees-historiques-cop1.md).
+se rattache l'item #11 de l'inventaire 0042.
 Cadrage à froid conseillé (session `ezk-architect`) si le format session log s'avère non
 trivial. Le volet « format session log » reste adjacent à D7 (double-writer, L3 de l'épic).

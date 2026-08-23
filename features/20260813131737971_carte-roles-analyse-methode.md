@@ -28,7 +28,7 @@ seul endroit.
   [0057](0057-agent-analyse-methode.md) (KPI, Sujet B) sont **3 rôles disjoints** — mais nulle part
   décrits ensemble, d'où le soupçon de doublon (qui est infondé, cf. épic parent).
 - 🟡 **Juge à deux noms** : `skills/ezk-retro/SKILL.md:81,124` traitent « fiche 0008 chief-judge »
-  et l'agent `ezk-steward` comme interchangeables pour le juge de cohérence. Or [0113](0113-chief-judge.md)
+  et l'agent `ezk-steward` comme interchangeables pour le juge de cohérence. Or 0113
   (`chief-judge`) est un juge dédié **non construit** (absent de `agents/`) et `ezk-steward` audite
   la **librairie**, pas la rétro. « Qui juge ? » est ambigu.
 - 🟡 `ezk-retro/SKILL.md:14,60,127` — `ezk-reviewer` est listé comme agent de cérémonie **et**
@@ -40,7 +40,7 @@ seul endroit.
    « rôles d'analyse »** posant les 3 rôles : *retro = symptôme humain · steward = conformité de
    la librairie · 0057 = chiffres, alimente retro*. **PAS un doc/diagramme séparé** — la fiche
    [0133](0133-adr-carte-roles-skills.md) impose la **carte unique** (règle
-   [0068](0068-regle-method-map-a-jour.md)) ; un artefact séparé divergerait. Réutilisable comme
+   0068) ; un artefact séparé divergerait. Réutilisable comme
    réponse canonique à « ça fait doublon ? ».
 2. **Trancher le juge unique** : garder `ezk-steward` comme juge de cohérence de la rétro et
    réduire `chief-judge` (0113) à un alias/fiche, **ou** construire `chief-judge` — mais un seul
@@ -56,7 +56,7 @@ seul endroit.
 
 ## Notes
 
-- Rattache [0113](0113-chief-judge.md) (le juge) et référence [0057](0057-agent-analyse-methode.md) (le nord KPI).
+- Rattache 0113 (le juge) et référence [0057](0057-agent-analyse-methode.md) (le nord KPI).
 - **S'inscrit dans [0133](0133-adr-carte-roles-skills.md)** (même `method-map.md` vivant) : 0133
   ajoute la strate *chaîne de valeur* (PO→Archi→Dev→QA…), cette fille ajoute la strate *analyse*
   (retro/steward/0057). Couches distinctes, **une seule carte** — jamais deux qui divergent.
