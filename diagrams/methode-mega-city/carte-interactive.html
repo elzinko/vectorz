@@ -243,12 +243,12 @@ body{
   </div>
 
   <div class="section">
-    <div class="eyebrow">Le cycle d'une feature — la méthode scrum d'abord</div>
+    <div class="eyebrow">Le cycle d'une feature — inspiré de Scrum</div>
     <h2>Comment une idée devient du code mergé</h2>
     <p class="lead">Cinq temps. Dans chaque temps : l'<b>étape</b> (la cérémonie qui la porte) et les <b>acteurs</b> (les juges convoqués). Les cartes citées sont réelles : cliquez-les.</p>
     <div class="cycle" id="cycle"></div>
     <p class="lead" style="margin-top:2px">À part du cycle : la <b>clôture de session</b> (<code>ezk-archive</code>) n'est pas un rituel scrum — c'est l'hygiène de l'hôte LLM, jouée à chaque fin de session, où qu'on soit dans le cycle.</p>
-    <p class="lead" style="margin-top:2px">Deux trous que cette vue révèle (chantier taxonomie) : le <b>Daily Scrum</b> n'a pas d'équivalent, et <b>« Toi » (le PO humain)</b> n'existe pas comme objet du modèle — les chips grises en pointillé sont éditoriales, pas compilées.</p>
+    <p class="lead" style="margin-top:2px">Honnêteté du vocabulaire (panel adverse du 2026-08-23) : <b>≈</b> = adapté de Scrum, <b>≠</b> = faux ami. Le « sprint » maison est un <b>run mono-fiche</b> sans timebox, le <b>Daily Scrum</b> n'a pas d'équivalent, et <b>« Toi » (le PO humain)</b> n'existe pas comme objet du modèle — les chips en pointillé sont éditoriales, pas compilées.</p>
   </div>
 
   <div class="section">
@@ -1976,10 +1976,10 @@ window.EZK = {
      les afficher rend le trou visible au lieu de le cacher. ── */
   const CYCLE = [
     {n:1, t:'La fiche', scrum:'Product Backlog', p:'Le PO capture le besoin, la fiche mûrit jusqu’à « ready ».', etape:['ezk-backlog'], acteurs:[], humains:['Toi (PO)']},
-    {n:2, t:'Le tirage', scrum:'Sprint Planning', p:'La prochaine fiche prête est tirée ; en mode auto, ezk-pm décide à ta place.', etape:['ezk-product-builder'], acteurs:['ezk-pm'], humains:['Toi (PO)']},
-    {n:3, t:'Le sprint', scrum:'Sprint', p:'La boucle BDD/TDD construit la feature en convoquant les juges.', etape:['ezk-sprint'], acteurs:['ezk-architect','ezk-dev','ezk-qa','ezk-reviewer'], humains:[]},
-    {n:4, t:'La validation', scrum:'Sprint Review', p:'La PR est testée puis squash-mergée ; les retours de revue sont adressés.', etape:['ezk-pr','ezk-codex'], acteurs:[], humains:['Toi (PO)','Codex (bot)']},
-    {n:5, t:'La rétro', scrum:'Sprint Retrospective', p:'Après un ou plusieurs sprints : l’équipe inspecte la méthode elle-même.', etape:['ezk-retro'], acteurs:[], humains:['Toi (PO)']},
+    {n:2, t:'Le tirage', scrum:'≈ Sprint Planning', p:'La prochaine fiche prête est tirée ; en mode auto, ezk-pm décide à ta place.', etape:['ezk-product-builder'], acteurs:['ezk-pm'], humains:['Toi (PO)']},
+    {n:3, t:'Le run', scrum:'≈ Sprint (une fiche)', p:'La boucle BDD/TDD construit UNE feature en convoquant les juges.', etape:['ezk-sprint'], acteurs:['ezk-architect','ezk-dev','ezk-qa','ezk-reviewer'], humains:[]},
+    {n:4, t:'La livraison', scrum:'release gate — ≠ Sprint Review', p:'Gate + revue, puis squash-merge — dans le flux nominal, par le sprint lui-même ; ezk-pr pilote le stock de PRs en attente.', etape:['ezk-pr','ezk-codex'], acteurs:[], humains:['Toi (PO)','Codex (bot)']},
+    {n:5, t:'La rétro', scrum:'≈ Rétrospective (à la demande)', p:'Après un ou plusieurs runs : l’équipe inspecte la méthode elle-même.', etape:['ezk-retro'], acteurs:[], humains:['Toi (PO)']},
   ];
   const stepGroup = (label, kind, ids) => {
     const chips = ids.filter((id) => (kind==='skill'?D.skills:D.agents)[id]).map((id) => chip(kind,id)).join('');

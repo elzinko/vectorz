@@ -1,6 +1,6 @@
 ---
 id: "20260823124042571"
-title: Taxonomie — séparer scrum / hôte LLM / librairie, et poser une nomenclature des skills
+title: Taxonomie & vocabulaire — réparer les arêtes, compléter les 4 bandes, étiqueter honnête (plan post-panel)
 type: refactor
 priority: P1
 product: mega-city
@@ -14,62 +14,67 @@ created: 2026-08-23
 
 ## En clair
 
-Les 4 bandes officielles ne suffisent pas : 5 commandes restent « hors bande » et
-deux commandes de la bande méthode (`ezk-start`, `ezk-archive`) ne sont pas du scrum.
-La coupure qui manque : **scrum** vs **hôte LLM** vs **la librairie elle-même**.
-Cette fiche propose la nouvelle taxonomie, une règle de nommage dans LA LOI, et la
-première fusion concrète (`ezk-session`). Décision structurante → panel adverse avant exécution.
+La version initiale de cette fiche (2 nouvelles bandes + fusion `ezk-session` + règle de
+nommage bloquante) a été **démolie par le panel adverse du 2026-08-23** — trois attaquants
+indépendants, verdicts convergents. Ce qui survit est plus petit et mieux ordonné :
+réparer d'abord les liens `composes:` manquants, compléter les 4 bandes existantes,
+puis rendre le vocabulaire Scrum honnête — **sans aucun rename de skill**.
 
-> Priorité P1 **proposée**, à confirmer par le PO.
+> Priorité P1 confirmée (le PO a délégué le choix, 2026-08-23). Panel tenu le
+> 2026-08-23 — capture complète : `docs/captures/2026-08-23-panel-adverse-refonte-taxonomie.md`.
 
-## Contexte / problème
+## Ce que le panel a écarté (et pourquoi, en une ligne)
 
-Constat porté par la carte compilée (retour PO du 2026-08-23) :
+- **Fusion `ezk-session`** : inexécutable (le binder ne sait pas retirer un skill
+  renommé — dépend de la fiche `20260813131737962`, encore `idea`), churn record
+  (~110 fichiers), doublon sémantique avec l'AGENT ezk-archive, gain nul mesurable.
+  Remplacée par une doc croisée (2 phrases par SKILL.md).
+- **Les 2 nouvelles bandes** : la prémisse était fausse (`ezk-sprint` COMPOSE
+  `ezk-start` → c'est de la méthode par le critère mécanique d'ADR-0020), et à
+  6 bandes le critère mécanique meurt. 3ᵉ refonte en 24 jours = ré-ouvrir une
+  décision jamais testée.
+- **`bande:` en frontmatter** : ré-éparpille ce que le compilateur vient de
+  centraliser. L'option retenue : un YAML unique (la table actuelle, déplacée).
+- **Règle de nommage bloquante** : naissait violée par ses propres exemples ;
+  reformulée en règle descriptive enseignée à la création.
 
-- Les 4 bandes d'ADR-0020 §1 ne citent pas `ezk-codex`, `ezk-ezk`, `supervision-analyze`,
-  `supervision-demo`, `vz-product-builder` — ils s'affichent « hors bande ».
-- `ezk-start` et `ezk-archive` sont rangés en « Artefacts & rituels de méthode », mais
-  archiver une **session** n'est pas un rituel agile : c'est une contrainte de l'hôte LLM
-  (les sessions se ferment, le contexte se perd). Même chose pour l'ouverture (`ezk-start`).
-- `ezk-steward` (gardien de la librairie) et `ezk-ezk` (fabrique de skills) ne servent pas
-  la méthode agile d'un produit : ils servent **le catalogue lui-même**.
-- L'agent `ezk-archive` s'affiche parmi les « juges » alors que c'est un **exécutant**
-  technique (sous-agent de délégation, pinning de modèle) — pas un rôle scrum.
-- Aucune nomenclature de nommage des skills n'existe (constat PO). Les renames d'ADR-0020
-  (`ezk-pr`, `ezk-dev`) ont corrigé des cas, pas posé la règle.
+## Étapes retenues (chacune : petite, réversible, livrée seule)
 
-Ce que la fiche ne rouvre PAS : « pourquoi `ezk-commits` reste un skill au lieu d'une
-compétence par agent » — ADR-0020 y répond déjà (capacité partagée = brique autonome ;
-`ezk-commits` est composé par 5 skills, le fondre dans chaque agent le dupliquerait 5 fois).
+1. **Réparer les arêtes `composes:` manquantes** (XS). `ezk-codex` est composé par
+   `ezk-sprint` (étape 10) et `ezk-pr` (ship) d'après leur prose — aucun ne le déclare.
+   Balayer les autres écarts prose/frontmatter. Puis `graph:check` + `map:data`.
+   *On apprend : ce que dit vraiment le critère mécanique.*
+2. **Compléter les 4 bandes existantes** (XS). Les 5 hors-bande (`ezk-codex`,
+   `ezk-ezk`, `supervision-*`, `vz-product-builder`) rangés dans les 4 bandes par
+   arbitrage PO éclairé par l'étape 1 ; la table sort de `map-data.ts` vers un YAML
+   unique lu par le compilateur ; une ligne d'amendement ADR-0020.
+   *On apprend : le « problème de taxonomie » survit-il à une carte propre ?*
+3. **Vocabulaire honnête, zéro rename** (S). Sur la carte : étiquettes Scrum marquées
+   (`≈` adapté, `≠` faux ami), étape 4 = « livraison (release gate) », bandeau
+   « inspiré de Scrum ». Dans la prose : le persona « scrum master » d'`ezk-sprint`
+   débaptisé (il exécute et juge — un SM sert et établit) ; « DoD » réservé à la gate
+   uniforme, « critères d'acceptation » pour le Gherkin ; un **Product Goal** en une
+   ligne en tête de `features/PLAN.md`.
+   *On apprend : la confusion baisse-t-elle sans churn ?*
+4. **Doc croisée start ↔ archive** (XS). Deux phrases dans chaque SKILL.md.
+   *On apprend : la confusion visée par la fusion existe-t-elle encore ?*
+5. **Règle de nommage descriptive** (S). Rédigée pour que le catalogue ACTUEL passe ;
+   enseignée au point de création (chemin ezk-ezk / skill-creator) ; steward la
+   vérifie en conseil, pas en blocage.
 
-## Proposition
-
-1. **Deux bandes de plus** (amendement d'ADR-0020) :
-   - **Sessions & hôte LLM** — l'hygiène de l'hôte, pas du scrum : `ezk-start`,
-     `ezk-archive`, `supervision-*`. C'est la couche « déployer et faire tourner la
-     méthode dans Claude/Cursor », pas la méthode.
-   - **La librairie** — le catalogue qui se fabrique et se garde lui-même : `ezk-ezk`,
-     (rôle) `ezk-steward`.
-2. **Fusion `ezk-session`** : `ezk-start` + `ezk-archive` deviennent les sous-commandes
-   `start` / `close` d'un seul skill `ezk-session`. Un skill, un cycle de vie.
-3. **Règle de nommage dans LA LOI** (`rules/…`, enforced par `ezk-steward`) :
-   préfixe `ezk-`, un nom = un objet de sa bande (cérémonie → verbe de rituel ;
-   capacité → l'outil ; rôle → le métier), pas de doublon sémantique.
-4. **Clarifier product-builder** : le rôle décideur existe déjà (agent `ezk-pm`) ;
-   le skill est la cérémonie. Option de renommage (`ezk-product-build`) à trancher
-   dans la même passe de nomenclature. `ezk-codex` se range en capacité de méthode
-   (adressage de revue) ou d'outillage — à trancher au panel.
-5. La carte lit la taxonomie depuis les fichiers (aujourd'hui la table d'ADR-0020
-   est recopiée dans `map-data.ts` — la déplacer vers un frontmatter `bande:` ou un
-   YAML unique pour qu'elle soit dérivée, pas recopiée).
+Hors de cette fiche : bundles orphelins → fiche `20260823124042708` ; board
+d'avancement → fiche `20260823124042842`.
 
 ## Critères d'acceptation
 
-- [ ] Panel adverse tenu sur la taxonomie (attaquants + juge), verdict capturé.
-- [ ] ADR-0020 amendé (ou nouvel ADR) : bandes actées, tableau à jour.
-- [ ] `pnpm graph:check` et la carte n'affichent plus aucun skill « hors bande ».
-- [ ] `ezk-session` existe avec `start`/`close` ; les anciens noms redirigent ou sont retirés.
-- [ ] La règle de nommage existe dans `rules/` et `ezk-steward` la vérifie.
+- [ ] Les arêtes déclarées reflètent la prose (zéro écart connu prose/frontmatter).
+- [ ] `graph:check` vert ; la carte n'affiche plus aucun skill « hors bande ».
+- [ ] La taxonomie vit dans UN fichier data (YAML), plus dans le code du compilateur.
+- [ ] ADR-0020 amendé d'une ligne (rangement des 5, critère mécanique intact).
+- [ ] Les cinq mots trompeurs relevés par le panel (Sprint, Scrum Master,
+      Sprint Review, DoD, équipe) sont soit étiquetés `≈/≠`, soit reformulés en prose.
+- [ ] `features/PLAN.md` ouvre sur un Product Goal d'une ligne.
+- [ ] La règle de nommage existe et le catalogue actuel la passe sans exception.
 
 ## Comment vérifier
 
@@ -79,9 +84,13 @@ pnpm --dir products/mega-city map:data && git diff --stat diagrams/
 pnpm --dir products/mega-city test
 ```
 
-La carte (`pnpm ezk:map`) ne doit plus montrer d'entrée « sans bande officielle ».
+Et sur la carte (`pnpm ezk:map`) : plus d'entrée « sans bande officielle », étiquettes
+Scrum marquées, étape 4 « livraison ».
 
 ## Notes
 
-Origine : retour PO sur la carte compilée (session 2026-08-23, PR #162). Lignée :
-ADR-0020 (amendement 4 bandes), ADR-0022 (superseded), renames `ezk-pr`/`ezk-dev`.
+Origine : retours PO des 2026-08-23 sur la carte compilée (PR #162). Panel adverse du
+2026-08-23 (A architecte / B puriste Scrum / C pragmatiste YAGNI), capture verbatim :
+`docs/captures/2026-08-23-panel-adverse-refonte-taxonomie.md`. Lignée : ADR-0020
+(4 bandes + critère mécanique), ADR-0022 (superseded), ADR-0016 (rituels),
+Scrum Guide 2020 (scrumguides.org).

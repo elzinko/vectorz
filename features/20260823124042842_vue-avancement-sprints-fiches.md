@@ -20,8 +20,16 @@ en cours — possiblement plusieurs —, futurs), et un diagramme dynamique du p
 scrum où l'on **voit les fiches posées sur les étapes**. Vue macro d'abord, détail
 par étape au clic. Grosse évolution, prototype exigeant côté UX/UI.
 
-> Priorité P2 **proposée**, à confirmer par le PO. Statut `idea` : à groomer
-> (notamment le prérequis « sprint = objet de données », ci-dessous).
+> Priorité P2 **confirmée** (le PO a délégué le choix, 2026-08-23). Statut `idea` :
+> à groomer.
+>
+> **Verdict du panel adverse (2026-08-23)** : le lot 1 n'est PAS sprint-as-data
+> (risque « 4ᵉ système scrum », ADR-0013) — c'est le **board lot 0**, compilé depuis
+> le frontmatter EXISTANT (fiches × priorité × statut), zéro objet nouveau, même
+> invariant de test que la carte. Sprint-as-data ne se décide qu'après, si le board
+> prouve le manque — pièce au dossier : `SPRINT.md` singleton déjà corrompu par
+> l'entrelacement de deux chantiers (constat du panel, rapport B-6). Capture :
+> `docs/captures/2026-08-23-panel-adverse-refonte-taxonomie.md`.
 
 ## Contexte / problème
 

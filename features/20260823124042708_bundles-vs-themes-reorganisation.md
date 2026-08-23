@@ -21,7 +21,14 @@ dossier entier `hexagonal/`. Cette fiche fixe le modèle cible : **thème = le d
 (rangement), **bundle = un pack choisi** (composition). Pas d'urgence : le PO a dit
 « on peut laisser vivre » — la fiche capture la cible pour quand la douleur montera.
 
-> Priorité P2 **proposée**, à confirmer par le PO.
+> Priorité P2 **confirmée** (le PO a délégué le choix, 2026-08-23).
+>
+> **Verdict du panel adverse (2026-08-23)** : périmètre RÉDUIT. Maintenant : supprimer
+> uniquement les 2 bundles orphelins (`documentation-guidelines`, `hexagonal` — zéro
+> consommateur). Le reste (suppression des 8 miroirs, sucre `theme:` dans `expand`)
+> attend une douleur prouvée : `cop1-target` consomme les 8 miroirs, et `expand`
+> ignore silencieusement les références inconnues — une migration ratée perdrait de
+> LA LOI sans bruit. Capture : `docs/captures/2026-08-23-panel-adverse-refonte-taxonomie.md`.
 
 ## Contexte / problème (mesuré le 2026-08-23)
 
