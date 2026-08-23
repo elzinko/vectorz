@@ -6,7 +6,7 @@
 # Les consignes de skill (~15 lignes) sont hors Gherkin (revue documentaire).
 
 Fonctionnalité: Kit émetteur de supervisabilité v0.1
-  En tant que méthode instrumentée (ezk-product-builder / ezk-sprint via mega-city)
+  En tant que méthode instrumentée (ezk-product-build / ezk-sprint via mega-city)
   Je veux émettre un journal d'événements append-only conforme au contrat
   Afin qu'un superviseur externe (cop1 ou tout autre) puisse suivre et piloter mes runs
   sans connaître mon métier.
@@ -20,12 +20,12 @@ Fonctionnalité: Kit émetteur de supervisabilité v0.1
   # ---------------------------------------------------------------------------
 
   Scénario: Run nominal complet du premier événement à la clôture
-    Quand j'appelle l'outil "run_start" avec la méthode "ezk-product-builder" version "0.1.0" et le siège "pilot"
+    Quand j'appelle l'outil "run_start" avec la méthode "ezk-product-build" version "0.1.0" et le siège "pilot"
     Alors un dossier ".supervision/runs/<run_id>/" est créé sous la racine du projet
     Et le fichier "events.jsonl" de ce dossier contient exactement une ligne
     Et cette ligne est un événement de type "run.started" avec pour payload
       | champ            | valeur                                    |
-      | method.name      | ezk-product-builder                       |
+      | method.name      | ezk-product-build                       |
       | method.version   | 0.1.0                                     |
       | seat             | pilot                                      |
     Et cet événement "run.started" est le premier du journal

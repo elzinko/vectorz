@@ -70,7 +70,7 @@ invariant testé, pas une promesse.
 **Un plugin mega-city est un OVERLAY déclaratif : une brique qui CHARGE la doctrine
 d'une brique du catalogue et la SURCHARGE par déclaration, sans modifier ni le
 catalogue ni le moteur.** Premier exemple vivant : `vz-product-builder` — il charge
-`ezk-product-builder` et le surcharge en 3 points (corpus de reviewers à la place des
+`ezk-product-build` et le surcharge en 3 points (corpus de reviewers à la place des
 checkpoints humains, budget `cap`, supervision obligatoire), zéro skill `ezk-*` modifié.
 
 Références (repris / écarté) :

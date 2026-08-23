@@ -177,7 +177,7 @@ Résultat observé (2026-07-18) : journal de **7 événements** (`run.started`, 
 
 ## Template de consignes d'émission (à intégrer dans une skill de méthode)
 
-L'intégration dans une méthode réelle (ezk-product-builder, ezk-sprint…) est un
+L'intégration dans une méthode réelle (ezk-product-build, ezk-sprint…) est un
 **choix du propriétaire de la méthode** — coller/adapter ce bloc dans la SKILL.md :
 
 ```markdown
@@ -219,7 +219,7 @@ l'inscrire ici.
 | Skill | Depuis | Rôle dans la chaîne d'un run |
 |---|---|---|
 | `ezk-sprint` | 2026-07-17 | **s'absorbe** : si un run est déjà ouvert, il émet ses gates dedans et ne clôt pas le run |
-| `ezk-product-builder` | 2026-07-26 | **ouvre le run** quand il est la tête de chaîne ; `run_finished` lui revient (fiche 0095) |
+| `ezk-product-build` | 2026-07-26 | **ouvre le run** quand il est la tête de chaîne ; `run_finished` lui revient (fiche 0095) |
 | `vz-product-builder` | 2026-07-18 | ouvre le run ; émission **obligatoire** (mode autonome — sans journal, c'est une boîte noire) |
 | `supervision-demo` | 2026-07-18 | méthode **jouet** à plat, ne compose aucun émetteur (banc d'essai) |
 

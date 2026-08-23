@@ -40,7 +40,7 @@ Trois invariants :
 
 - **Autonome À L'INTÉRIEUR d'un sprint** : une fois la feature cadrée et validée, enchaîne sans redemander à chaque micro-action.
 - **Checkpoint OBLIGATOIRE ENTRE les sprints** : à la clôture, **STOP**. Résume (livré / estimation tokens / sprint suivant) puis demande « On continue ? ».
-  - **Absorption quand tu es appelé par `ezk-product-builder`** : le product-owner tient déjà SON propre checkpoint inter-sprint. Dans ce cas, **ne re-demande pas** « On continue ? » à l'humain — remonte ton résumé de clôture à l'appelant et laisse-le tenir l'unique checkpoint (un seul « on continue ? » par feature, pas deux). Tu restes maître du checkpoint uniquement en usage direct (hors builder).
+  - **Absorption quand tu es appelé par `ezk-product-build`** : le product-owner tient déjà SON propre checkpoint inter-sprint. Dans ce cas, **ne re-demande pas** « On continue ? » à l'humain — remonte ton résumé de clôture à l'appelant et laisse-le tenir l'unique checkpoint (un seul « on continue ? » par feature, pas deux). Tu restes maître du checkpoint uniquement en usage direct (hors builder).
 - **Stop & ask immédiat** dès que : exigence ambiguë/contradictoire ; une gate échoue **2 fois de suite** ; **scope creep** ; action **irréversible/sortante** (déploiement, `git push --force`, suppression, secret manquant) ; la **consommation de tokens dérape**.
 
 ## Budget tokens
@@ -111,7 +111,7 @@ bruit** :
   obligatoire en standby humain ni pendant un gate ouvert (le silence y est voulu côté
   siège).
 - **Run déjà ouvert = tu es absorbé (P1, revue Codex #25)** : si un run de supervision est
-  **déjà ouvert** — tu es appelé par `ezk-product-builder` ou `vz-product-builder` (qui
+  **déjà ouvert** — tu es appelé par `ezk-product-build` ou `vz-product-builder` (qui
   ouvrent le leur au lancement), ou `run_start` répond « refusé : un run est déjà
   ouvert » — **n'ouvre PAS de run** : ce
   refus est le **signal d'absorption**, pas une erreur. Émets tes gates **dans le run de
@@ -131,7 +131,7 @@ bruit** :
   de clôture : livré · PR · tokens>}` **avant** de poser « on continue ? » — puis
   arrête-toi et attends la réponse (ce que tu fais déjà). `outcome` : `ok` si la DoD est
   verte, `attention` si livré avec réserves, `failed` si le sprint n'a pas abouti.
-- **À la reprise** (accord reçu — de l'humain, ou d'`ezk-product-builder` si tu es
+- **À la reprise** (accord reçu — de l'humain, ou d'`ezk-product-build` si tu es
   absorbé) : `gate_resumed {gate_event_id: <id renvoyé par le résultat d'outil du
   gate_reached>}`.
 - **Sur un « stop & ask »** (blocage, gate locale rouge 2×, scope creep, action

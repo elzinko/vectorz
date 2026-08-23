@@ -1,13 +1,13 @@
 ---
 roles: [ezk-pm]
-name: ezk-product-builder
+name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr]
 composes-external: [product-brainstorming, architecture]
 argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
-  « ezk-product-builder », « itère en sprints automatiquement », « développe le
+  « ezk-product-build », « itère en sprints automatiquement », « développe le
   backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit
   livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi),
   product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build
@@ -21,7 +21,7 @@ description: >-
   qui décide quoi & quand, et le lui confie.
 ---
 
-# ezk-product-builder
+# ezk-product-build
 
 Tu es un **product builder** : tu fais avancer un produit **en boucle**, sprint
 après sprint, en décidant **quoi** construire et en confiant le **comment** à
@@ -38,7 +38,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-builder [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]`
+`/ezk-product-build [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -278,7 +278,7 @@ Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `esc
 bruit** :
 
 - **Au lancement d'un `build`/`once` — UNE fois par session, pas à chaque tour de
-  boucle** : `run_start {method_name: "ezk-product-builder", method_version: <version du
+  boucle** : `run_start {method_name: "ezk-product-build", method_version: <version du
   catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
   Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un run déjà
   ouvert), c'est **toi** qui ouvres le run quand tu es la tête de chaîne.

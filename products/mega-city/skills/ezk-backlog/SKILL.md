@@ -77,7 +77,7 @@ du front-matter de cette skill).
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
 | `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change ni statut ni `ready:` |
 | `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert pose `ready: <date>` (+ flip `idea→todo` le cas échéant) + regen + commit |
-| `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-builder (`next` seul reste l'alias de `list`) |
+| `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
@@ -319,7 +319,7 @@ d'abord, ou décision journalisée).
 - Une fiche `type: epic` (ADR-0017) n'est **jamais tirable** : descends sur son prochain
   enfant ready (champ `epic:`), sinon passe à la fiche suivante.
 - Aucune fiche éligible → dis-le et **propose le groom de la fiche de tête** ; en run
-  autonome, c'est le checkpoint bloquant « aucune fiche ready » d'ezk-product-builder.
+  autonome, c'est le checkpoint bloquant « aucune fiche ready » d'ezk-product-build.
 - **Soupape PO** : l'opérateur peut décider de tirer une fiche non-ready — décision
   explicite, **journalisée** (note dans la fiche + scratch de sprint).
 
@@ -327,7 +327,7 @@ d'abord, ou décision journalisée).
 plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
 `todo`+`ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
-ezk-sprint et ezk-product-builder passent par **ici** : aucune logique de gate
+ezk-sprint et ezk-product-build passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).
 
 ### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0071)

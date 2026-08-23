@@ -26,7 +26,7 @@ skills:
   - ezk-readme
   - ezk-retro
   # boucle produit
-  - ezk-product-builder
+  - ezk-product-build
   - ezk-sprint
   # exécution courante
   - ezk-ci

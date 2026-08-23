@@ -1,7 +1,7 @@
 # Checklist démo Desktop — un manager supervisé de bout en bout
 
 Fiche `features/0030-mvp-demo-desktop.md`, étape 0. Prépare et rejoue la démo
-« mode moniteur pur » : un manager (ex. ezk-product-builder) tourne dans Claude
+« mode moniteur pur » : un manager (ex. ezk-product-build) tourne dans Claude
 Desktop, émet le journal du contrat de supervisabilité v0.1
 (`products/mega-city/src/supervision/`), cop1 le surveille en lecture seule
 dans l'onglet Moniteur de sa web UI.

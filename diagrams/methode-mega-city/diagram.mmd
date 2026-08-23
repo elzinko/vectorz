@@ -22,7 +22,7 @@ flowchart TB
     subgraph FLOW["🏃 LE FLUX · 1 fiche = 1 PR"]
         direction TB
         BL["📚 ezk-backlog · le stock<br/>idea → todo → in-progress → shipped"]
-        PB["🤖 ezk-product-builder · enchaîne les sprints"]
+        PB["🤖 ezk-product-build · enchaîne les sprints"]
         SP["ezk-sprint · BDD → TDD → gate → archi → revue"]
         SHIP["✅ squash-merge → ship"]
         BL -->|tire| PB -->|déroule| SP -->|au vert| SHIP

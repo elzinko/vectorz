@@ -17,3 +17,6 @@
 renames:
   - { ancien: ezk-pr-pilot, nouveau: ezk-pr, kind: skill, date: 2026-08-20 }
   - { ancien: ezk-tdd, nouveau: ezk-dev, kind: agent, date: 2026-08-20 }
+  # Split cérémonie/rôle (lot 3.2 du plan « trois étages ») : le skill = l'action
+  # (build), le rôle PO reste l'agent ezk-pm. Premier rename exécuté AVEC le filet.
+  - { ancien: ezk-product-builder, nouveau: ezk-product-build, kind: skill, date: 2026-08-23 }

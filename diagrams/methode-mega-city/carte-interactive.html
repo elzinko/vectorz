@@ -423,7 +423,7 @@ window.EZK = {
      "ezk-backlog:next",
      "ezk-backlog:plan",
      "ezk-sprint",
-     "ezk-product-builder"
+     "ezk-product-build"
     ],
     "note": "Éclaté : le QUOI = `next --ready-only` (une fiche, pop mécanique) ; l'ORDRE = `plan` (PLAN.md) ; le COMMENT = les étapes 0-2 du sprint (intake, cadrage, archi). Pas de sélection multiple négociée — du réapprovisionnement kanban de qualité."
    },
@@ -544,7 +544,7 @@ window.EZK = {
     "implemente_par": [
      "humain",
      "agent:ezk-pm",
-     "ezk-product-builder"
+     "ezk-product-build"
     ],
     "note": "L'humain arbitre toujours (4 décisions réservées) ; `ezk-pm` décide par délégation ; la couche product-builder orchestre. « Toi » n'est pas encore un objet du modèle — constat pour la refonte."
    },
@@ -577,7 +577,7 @@ window.EZK = {
  },
  "bandes": {
   "ceremonies": [
-   "ezk-product-builder",
+   "ezk-product-build",
    "ezk-sprint",
    "ezk-pr",
    "ezk-retro"
@@ -649,7 +649,7 @@ window.EZK = {
    "composedBy": [
     "ezk-ezk",
     "ezk-pr",
-    "ezk-product-builder",
+    "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
     "ezk-sprint",
@@ -831,7 +831,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [
-    "ezk-product-builder"
+    "ezk-product-build"
    ],
    "profiles": [
     "global"
@@ -852,9 +852,9 @@ window.EZK = {
     "global"
    ]
   },
-  "ezk-product-builder": {
-   "id": "ezk-product-builder",
-   "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-builder », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Mode checkpoints configurable (ask par défaut | auto : prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines). Vigilance tokens configurable (lean par défaut | plafond-dur | pleine-puissance). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
+  "ezk-product-build": {
+   "id": "ezk-product-build",
+   "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-build », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Mode checkpoints configurable (ask par défaut | auto : prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines). Vigilance tokens configurable (lean par défaut | plafond-dur | pleine-puissance). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
    "usage": "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]",
    "etage": "methode",
    "bande": "ceremonies",
@@ -933,7 +933,7 @@ window.EZK = {
     "ezk-reviewer"
    ],
    "composedBy": [
-    "ezk-product-builder",
+    "ezk-product-build",
     "vz-product-builder"
    ],
    "profiles": [
@@ -985,13 +985,13 @@ window.EZK = {
   },
   "vz-product-builder": {
    "id": "vz-product-builder",
-   "description": "Variante AUTONOME du product-builder (préfixe vz-, OVERLAY : n'écrase ni ne modifie ezk-product-builder) : même doctrine product-owner — compose ezk-backlog (le quoi), product-brainstorming (cadrer) et ezk-sprint (le comment) — mais les checkpoints ne s'arrêtent plus vers l'humain : le builder convoque LUI-MÊME un corpus de reviewers (panel multi-lentilles + contradicteurs + synthèse) selon une échelle de coût à 3 crans, journalise chaque décision via le kit émetteur de supervisabilité, et ne s'arrête vers l'humain QUE sur les 4 STOP humains. A utiliser quand l'utilisateur veut « avancer sans que je réponde aux questions », « product builder autonome », « vz-product-builder », « mode corpus ». Refuse de démarrer sans le kit émetteur (l'autonomie sans journal = boîte noire).",
+   "description": "Variante AUTONOME du product-builder (préfixe vz-, OVERLAY : n'écrase ni ne modifie ezk-product-build) : même doctrine product-owner — compose ezk-backlog (le quoi), product-brainstorming (cadrer) et ezk-sprint (le comment) — mais les checkpoints ne s'arrêtent plus vers l'humain : le builder convoque LUI-MÊME un corpus de reviewers (panel multi-lentilles + contradicteurs + synthèse) selon une échelle de coût à 3 crans, journalise chaque décision via le kit émetteur de supervisabilité, et ne s'arrête vers l'humain QUE sur les 4 STOP humains. A utiliser quand l'utilisateur veut « avancer sans que je réponde aux questions », « product builder autonome », « vz-product-builder », « mode corpus ». Refuse de démarrer sans le kit émetteur (l'autonomie sans journal = boîte noire).",
    "usage": "[build|once|status] [--tokens lean|cap|full]",
    "etage": "branchements",
    "famille": "plugin",
    "composes": [
     "ezk-backlog",
-    "ezk-product-builder",
+    "ezk-product-build",
     "ezk-sprint"
    ],
    "composesExternal": [
@@ -1056,7 +1056,7 @@ window.EZK = {
   },
   "ezk-pm": {
    "id": "ezk-pm",
-   "description": "Product-owner décideur de l'équipe ezk. A utiliser quand un checkpoint ou un arbitrage produit doit être tranché À LA PLACE de l'opérateur — « on continue ? », choisir la prochaine fiche, arbitrer un blocage (option A/B), parquer un scope creep, dégrader le mode tokens — notamment depuis ezk-product-builder en mode checkpoints auto, ou pour débloquer un run autonome (cop1). Décide d'après la fiche backlog, ses critères d'acceptation et LA LOI ; journalise chaque décision dans SPRINT.md ; REFUSE les 4 décisions humaines (irréversible/sortant, augmentation de budget, idée produit, exigences contradictoires). Ne déroule pas le sprint : il tranche.",
+   "description": "Product-owner décideur de l'équipe ezk. A utiliser quand un checkpoint ou un arbitrage produit doit être tranché À LA PLACE de l'opérateur — « on continue ? », choisir la prochaine fiche, arbitrer un blocage (option A/B), parquer un scope creep, dégrader le mode tokens — notamment depuis ezk-product-build en mode checkpoints auto, ou pour débloquer un run autonome (cop1). Décide d'après la fiche backlog, ses critères d'acceptation et LA LOI ; journalise chaque décision dans SPRINT.md ; REFUSE les 4 décisions humaines (irréversible/sortant, augmentation de budget, idée produit, exigences contradictoires). Ne déroule pas le sprint : il tranche.",
    "etage": "methode",
    "model": "claude-opus-4-8",
    "effort": "high",
@@ -1065,7 +1065,7 @@ window.EZK = {
    ],
    "interactions": [],
    "convokedBy": [
-    "ezk-product-builder"
+    "ezk-product-build"
    ],
    "profiles": [
     "cop1-target",
@@ -2046,7 +2046,7 @@ window.EZK = {
     "ezk-docker",
     "ezk-ezk",
     "ezk-npm-scripts",
-    "ezk-product-builder",
+    "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
     "ezk-sprint",
@@ -2069,7 +2069,7 @@ window.EZK = {
     "ezk-backlog",
     "ezk-diagram",
     "ezk-ezk",
-    "ezk-product-builder"
+    "ezk-product-build"
    ],
    "interactions": []
   },
@@ -2106,7 +2106,7 @@ window.EZK = {
     "ezk-npm-scripts",
     "ezk-pr",
     "ezk-preview",
-    "ezk-product-builder",
+    "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
     "ezk-sprint",
@@ -2186,7 +2186,7 @@ window.EZK = {
      les afficher rend le trou visible au lieu de le cacher. ── */
   const CYCLE = [
     {n:1, t:'La fiche', scrum:'Product Backlog', p:'Le PO capture le besoin, la fiche mûrit jusqu’à « ready ».', etape:['ezk-backlog'], acteurs:[], humains:['Toi (PO)']},
-    {n:2, t:'Le tirage', scrum:'≈ Sprint Planning', p:'La prochaine fiche prête est tirée ; en mode auto, ezk-pm décide à ta place.', etape:['ezk-product-builder'], acteurs:['ezk-pm'], humains:['Toi (PO)']},
+    {n:2, t:'Le tirage', scrum:'≈ Sprint Planning', p:'La prochaine fiche prête est tirée ; en mode auto, ezk-pm décide à ta place.', etape:['ezk-product-build'], acteurs:['ezk-pm'], humains:['Toi (PO)']},
     {n:3, t:'Le run', scrum:'≈ Sprint (une fiche)', p:'La boucle BDD/TDD construit UNE feature en convoquant les juges.', etape:['ezk-sprint'], acteurs:['ezk-architect','ezk-dev','ezk-qa','ezk-reviewer'], humains:[]},
     {n:4, t:'La livraison', scrum:'release gate — ≠ Sprint Review', p:'Gate + revue, puis squash-merge — dans le flux nominal, par le sprint lui-même ; ezk-pr pilote le stock de PRs en attente.', etape:['ezk-pr','ezk-codex'], acteurs:[], humains:['Toi (PO)','Codex (bot)']},
     {n:5, t:'La rétro', scrum:'≈ Rétrospective (à la demande)', p:'Après un ou plusieurs runs : l’équipe inspecte la méthode elle-même.', etape:['ezk-retro'], acteurs:[], humains:['Toi (PO)']},

@@ -93,7 +93,7 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
 
     const startResult = await client.callTool({
       name: 'run_start',
-      arguments: { method_name: 'ezk-product-builder', method_version: '0.1.0', seat: 'pilot' },
+      arguments: { method_name: 'ezk-product-build', method_version: '0.1.0', seat: 'pilot' },
     });
     expect(startResult.isError).toBeFalsy();
     const { run_id: runId } = toolResultJson(startResult);
@@ -195,14 +195,14 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
 
     const first = await client.callTool({
       name: 'run_start',
-      arguments: { method_name: 'ezk-product-builder', method_version: '0.1.0' },
+      arguments: { method_name: 'ezk-product-build', method_version: '0.1.0' },
     });
     expect(first.isError).toBeFalsy();
     const { run_id: runId } = toolResultJson(first);
 
     const second = await client.callTool({
       name: 'run_start',
-      arguments: { method_name: 'ezk-product-builder', method_version: '0.1.0' },
+      arguments: { method_name: 'ezk-product-build', method_version: '0.1.0' },
     });
     expect(second.isError).toBe(true);
     expect(toolResultText(second)).toMatch(/déjà ouvert/);

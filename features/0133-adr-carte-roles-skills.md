@@ -33,7 +33,7 @@ Ajouter à `docs/method-map.md` une **couche « rôles »** montrant **deux stra
 - **Rôles de la chaîne de valeur** : PO/BA (`ezk-backlog` + `product-brainstorming`) →
   Architecte (`ezk-architect`) → Dev (`ezk-dev`, cf. 0030 ; TDD = *capacité*, pas rôle) →
   QA (`ezk-qa`) → Reviewer (`ezk-reviewer`/`code-review`, cf. 0031) → Scrum master
-  (`ezk-sprint`) → Product Owner multi-sprints (`ezk-product-builder`).
+  (`ezk-sprint`) → Product Owner multi-sprints (`ezk-product-build`).
 - **Couches de management orthogonales** (hors chaîne de valeur) : integration/release
   manager sur un stock de PRs (`ezk-pr`), clôture de session (`ezk-archive`).
 

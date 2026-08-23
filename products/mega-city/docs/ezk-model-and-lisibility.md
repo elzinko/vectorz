@@ -44,7 +44,7 @@ Règle MUST :
 | `ezk-archive` | oui (gabarit + skill) | amorce #91 |
 | `ezk-sprint` | oui (checkpoint) | + délégation modèles |
 | `ezk-backlog` | oui | section Restitution |
-| `ezk-product-builder` | oui | checkpoints |
+| `ezk-product-build` | oui | checkpoints |
 | `ezk-pr` | oui | plan/run/report |
 | `ezk-retro` | oui | déjà |
 | `ezk-ezk` | oui | harvest/create/deploy |

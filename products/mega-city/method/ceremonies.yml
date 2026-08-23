@@ -47,7 +47,7 @@ elements:
     nom: Le tirage
     scrum: Sprint Planning
     etat: adapte
-    implemente_par: [ezk-backlog:next, ezk-backlog:plan, ezk-sprint, ezk-product-builder]
+    implemente_par: [ezk-backlog:next, ezk-backlog:plan, ezk-sprint, ezk-product-build]
     note: >-
       Éclaté : le QUOI = `next --ready-only` (une fiche, pop mécanique) ; l'ORDRE =
       `plan` (PLAN.md) ; le COMMENT = les étapes 0-2 du sprint (intake, cadrage, archi).
@@ -166,7 +166,7 @@ elements:
     nom: Product Owner
     scrum: Product Owner
     etat: fidele
-    implemente_par: [humain, "agent:ezk-pm", ezk-product-builder]
+    implemente_par: [humain, "agent:ezk-pm", ezk-product-build]
     note: >-
       L'humain arbitre toujours (4 décisions réservées) ; `ezk-pm` décide par
       délégation ; la couche product-builder orchestre. « Toi » n'est pas encore un

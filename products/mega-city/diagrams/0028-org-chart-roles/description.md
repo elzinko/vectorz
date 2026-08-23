@@ -10,7 +10,7 @@ Un **PO / BA** cadre le besoin et tient le backlog (`ezk-backlog` + `product-bra
 main à l'**Architecte** (`ezk-architect`) qui tranche la structure. Le **Dev** (`ezk-dev`) implémente — le
 TDD est une **capacité** qu'il mobilise, pas un rôle. La **QA** (`ezk-qa`) écrit les scénarios et valide. Le
 **Reviewer** (`ezk-reviewer` / `code-review`) passe le diff au crible. Le **Scrum master** (`ezk-sprint`)
-orchestre le sprint d'une feature. Au-dessus, un **Product Owner multi-sprints** (`ezk-product-builder`)
+orchestre le sprint d'une feature. Au-dessus, un **Product Owner multi-sprints** (`ezk-product-build`)
 enchaîne les features.
 
 ## Couches de management (orthogonales à la chaîne de valeur)

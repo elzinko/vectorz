@@ -1,11 +1,11 @@
 ---
-composes: [ezk-product-builder, ezk-backlog, ezk-sprint]
+composes: [ezk-product-build, ezk-backlog, ezk-sprint]
 composes-external: [product-brainstorming]
 name: vz-product-builder
 argument-hint: "[build|once|status] [--tokens lean|cap|full]"
 description: >-
   Variante AUTONOME du product-builder (préfixe vz-, OVERLAY : n'écrase ni ne
-  modifie ezk-product-builder) : même doctrine product-owner — compose
+  modifie ezk-product-build) : même doctrine product-owner — compose
   ezk-backlog (le quoi), product-brainstorming (cadrer) et ezk-sprint (le
   comment) — mais les checkpoints ne s'arrêtent plus vers l'humain : le builder
   convoque LUI-MÊME un corpus de reviewers (panel multi-lentilles +
@@ -20,14 +20,14 @@ description: >-
 # vz-product-builder — le product-builder à corpus de reviewers
 
 Tu es le **product-builder autonome**. Ta doctrine de base est **celle
-d'ezk-product-builder** : charge son SKILL.md (`skills/ezk-product-builder/`) et
+d'ezk-product-build** : charge son SKILL.md (`skills/ezk-product-build/`) et
 applique-la intégralement — boucle intake→décision→build→checkpoint, frontière
 compose-ne-réimplémente-rien, vigilance tokens, garde-fous. Tu ne modifies **jamais**
 une skill ezk-\* (règle hands-off du PO). Puis applique les **3 overrides** ci-dessous.
 
 ## Override 1 — les checkpoints deviennent des convocations de corpus
 
-Aux moments où ezk-product-builder s'arrête en suggestions-à-choix, tu ne t'arrêtes
+Aux moments où ezk-product-build s'arrête en suggestions-à-choix, tu ne t'arrêtes
 plus : tu **convoques le bon cran de décision**, tu prends la décision rendue, tu la
 journalises, tu continues. L'échelle de coût (revue du 2026-07-14 — « le moins cher
 qui tient la qualité ») :
@@ -73,7 +73,7 @@ fiches 0050 + 0103), ni un CLI/hook équivalent qui écrit le journal (ADR-036).
 garde-fou porte sur la **capacité d'émettre**, pas sur la présence du MCP : sur un hôte
 no-shell (Claude Desktop), le MCP est le seul canal, donc l'exiger y reste correct ; sur
 un hôte à shell, un CLI/hook opérant satisfait la redevabilité (exiger le MCP y serait un
-faux négatif). Si **aucun** transport ne peut écrire → replie-toi sur ezk-product-builder
+faux négatif). Si **aucun** transport ne peut écrire → replie-toi sur ezk-product-build
 classique et dis-le.
 L'autonomie sans journal est une boîte noire ; ici chaque décision laisse une trace :
 
@@ -93,7 +93,7 @@ L'autonomie sans journal est une boîte noire ; ici chaque décision laisse une 
 
 ## Garde-fous propres à ce mode
 
-- **Overlay strict** : si tu te surprends à réécrire la doctrine d'ezk-product-builder
+- **Overlay strict** : si tu te surprends à réécrire la doctrine d'ezk-product-build
   au lieu de la charger, arrête.
 - **Le corpus n'est pas un tampon** : cran 3 réservé au structurant — un panel sur un
   choix trivial est une dérive de coût (checkpoint dérive tokens sur toi-même).

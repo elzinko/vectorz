@@ -26,7 +26,7 @@ au lieu d'interrompre l'humain. Contraintes posées par le PO :
 
 ## Proposition
 
-`skills/vz-product-builder/SKILL.md` : charge la doctrine d'ezk-product-builder telle
+`skills/vz-product-builder/SKILL.md` : charge la doctrine d'ezk-product-build telle
 quelle, puis applique 3 overrides — (1) checkpoints → convocations de corpus selon
 l'échelle solo / ezk-pm / panel ; (2) les 4 STOP humains + garde-fou merge inchangés ;
 (3) **supervisabilité obligatoire** : le mode refuse de démarrer sans le kit émetteur
@@ -44,7 +44,7 @@ contrat** (critère de la fiche 0154).
 - [ ] Un checkpoint « structurant » convoque un vrai panel (≥3 lentilles + ≥1 contradicteur)
       et la synthèse tranche (pas de « les deux se valent ») — idem, joué pendant le run
       de la recette (le corpus cran-3 se déclenche sur une décision structurante réelle).
-- [x] ezk-product-builder est chargé, jamais modifié (diff ezk-* vide) — **vérifié
+- [x] ezk-product-build est chargé, jamais modifié (diff ezk-* vide) — **vérifié
       mécaniquement** : le commit introduisant le skill (`71d32a5`) touche 0 fichier
       `ezk-*` (uniquement `skills/vz-product-builder/SKILL.md` + fiche + index), et le
       garde-fou « overlay strict » est encodé dans le SKILL.md.

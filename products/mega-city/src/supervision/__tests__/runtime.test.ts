@@ -55,7 +55,7 @@ describe('Rubrique A — Run nominal complet', () => {
     const runtime = new SupervisionRuntime(projectRoot);
 
     const started = runtime.runStart({
-      method_name: 'ezk-product-builder',
+      method_name: 'ezk-product-build',
       method_version: '0.1.0',
       seat: 'pilot',
     });
@@ -66,7 +66,7 @@ describe('Rubrique A — Run nominal complet', () => {
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({
       type: 'run.started',
-      payload: { method: { name: 'ezk-product-builder', version: '0.1.0' }, seat: 'pilot' },
+      payload: { method: { name: 'ezk-product-build', version: '0.1.0' }, seat: 'pilot' },
     });
 
     const reached = runtime.gateReached({

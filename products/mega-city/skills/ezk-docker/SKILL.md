@@ -20,7 +20,7 @@ Un agent qui a un shell parle déjà au socket : ce skill n'ajoute pas d'outil, 
 **procédure sûre et les conventions** pour ne pas transformer « je teste vite un truc » en
 « j'ai flingué les containers d'un autre projet ».
 
-Portable tel quel : cop1 (a `Bash`), ezk-product-builder (Claude Desktop/Code), toi en interactif.
+Portable tel quel : cop1 (a `Bash`), ezk-product-build (Claude Desktop/Code), toi en interactif.
 
 ## Frontière (lis ça avant de déclencher)
 

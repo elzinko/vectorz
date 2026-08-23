@@ -23,7 +23,7 @@ déterministe), le **script range** (append, journal, commit, bind — toujours 
 
 **Le flux de travail** (vert) : c'est ce qui se passe quand on développe. Le **backlog**
 (`ezk-backlog`) est le stock de fiches, source de vérité, qui avance par états
-(idea → todo → in-progress → shipped). Le **product-builder** (`ezk-product-builder`) enchaîne les
+(idea → todo → in-progress → shipped). Le **product-builder** (`ezk-product-build`) enchaîne les
 sprints de façon autonome. Chaque **sprint** (`ezk-sprint`) transforme **une fiche en une PR** :
 BDD → TDD → gate (tests/CI locale) → archi → revue → squash-merge. Au **ship**, la fiche repart
 enrichie dans le backlog.

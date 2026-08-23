@@ -24,7 +24,7 @@ etages:
     skills:
       - ezk-backlog
       - ezk-pr
-      - ezk-product-builder
+      - ezk-product-build
       - ezk-retro
       - ezk-sprint
       - ezk-start
@@ -66,5 +66,5 @@ etages:
 # « Outillage » est promue famille de branchements ; commits et archive quittent
 # l'étage méthode sur décision PO). L'ordre est l'ordre du flux.
 bandes:
-  ceremonies: [ezk-product-builder, ezk-sprint, ezk-pr, ezk-retro]
+  ceremonies: [ezk-product-build, ezk-sprint, ezk-pr, ezk-retro]
   artefacts: [ezk-backlog, ezk-start]

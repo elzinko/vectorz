@@ -22,7 +22,7 @@ La ventilation montre que le coût ne vient pas d'abord du *travail* :
 - d'où un run à **9 outils qui coûte déjà 210 k**, soit 86 % d'un run à 29 outils.
 
 **Réduire le nombre de vérifications ne suffit donc pas.** Sur une session disciplinée —
-et `ezk-product-builder` ferme chaque sprint au fil de l'eau — 5 des 7 points répondent
+et `ezk-product-build` ferme chaque sprint au fil de l'eau — 5 des 7 points répondent
 « rien à faire » *par construction*, et le seul verdict produit le 2026-07-25 était un
 **faux positif** (« `main` diverge réellement ») dont la réfutation a coûté 6 commandes de
 plus. Deuxième occurrence en deux jours.

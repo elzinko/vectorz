@@ -32,7 +32,7 @@ confondus.
 ## Proposition
 
 Skill `ezk-marketing` : **orchestrateur de promotion produit** — il COMPOSE des
-capacités existantes et n'en réimplémente aucune (doctrine ezk-product-builder).
+capacités existantes et n'en réimplémente aucune (doctrine ezk-product-build).
 Capacités composées : **ezk-article (0049)** pour l'écriture, **postiz** (plugin déjà
 disponible) pour la publication/scheduling réseaux. Volets — chacun PROPOSÉ au user,
 jamais imposé :

@@ -15,7 +15,7 @@ created: 2026-07-14
 
 Décisions DP1–DP8 de la revue de groupe du 2026-07-14
 (`docs/captures/2026-07-14-revue-groupe-deux-sieges.md`), actées par le PO. Objectif :
-l'usage réel le plus court — un manager (ezk-product-builder) tourne dans Claude Desktop,
+l'usage réel le plus court — un manager (ezk-product-build) tourne dans Claude Desktop,
 émet le journal du contrat v0.1, cop1 monitore. **Mode moniteur pur** : zéro executor,
 zéro siège cop1, zéro `commands.jsonl` (différés post-3-runs, DP7).
 
@@ -27,7 +27,7 @@ Fiche-épic : porte l'étape 0 + le déroulé de démo ; les étapes 1-4 vivent 
 |---|---|---|---|
 | 0 | Checklist setup Desktop (cette fiche) | S | config MCP par projet (`project_root` fixé à l'**init du serveur**, jamais paramètre d'outil), allowlist « toujours autoriser » des 5 outils, daemon cop1 lancé, watch-roots configurés |
 | 1 | MCP émetteur minimal (5 outils étroits, enveloppe calculée **serveur**) | S/M | mega-city 0050 (+ 0029 dé-parquée) |
-| 2 | Consignes d'émission dans ezk-product-builder (~15 lignes, checkpoint = gate) | S | mega-city 0050 |
+| 2 | Consignes d'émission dans ezk-product-build (~15 lignes, checkpoint = gate) | S | mega-city 0050 |
 | 3 | Validateur 0027, scope réduit — parallèle, jamais bloquant, **vert exigé dans la démo** | S/M | fiche 0027 |
 | 4 | Lecteur `.supervision/runs/` dans la mission-control | M/L | fiche 0031 |
 
@@ -36,7 +36,7 @@ vit dans l'**arbre principal** du projet supervisé, gitignoré d'office.
 
 **Déroulé de démo (minute-par-minute — toute étape non écrite est réputée manquante)** :
 
-1. Le soir : lancement d'ezk-product-builder dans Claude Desktop sur un vrai sujet ;
+1. Le soir : lancement d'ezk-product-build dans Claude Desktop sur un vrai sujet ;
    `run_start` → `events.jsonl` naît dans `<projet>/.supervision/runs/<run_id>/`.
 2. La mission-control (daemon déjà lancé, étape 0) affiche le run **live** :
    `launched → running → at_gate`, badge « classe B — best-effort », tokens

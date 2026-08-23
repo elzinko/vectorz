@@ -1,6 +1,6 @@
 ---
 id: 0151
-title: ezk-product-builder — briefing au démarrage (comment je travaille, avec quelles règles)
+title: ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles)
 type: feature
 priority: P3
 product: mega-city
@@ -10,7 +10,7 @@ created: 2026-07-06
 ---
 
 ## Contexte / Problème
-Au lancement d'ezk-product-builder, l'opérateur ne voit pas d'un coup d'œil comment le
+Au lancement d'ezk-product-build, l'opérateur ne voit pas d'un coup d'œil comment le
 skill va travailler : mode tokens actif, mode checkpoints (fiche 0145), règles/LOI en
 vigueur (bundles bindés), agents disponibles et leurs modèles, état du backlog. Idée notée
 le 2026-07-06 (« il doit indiquer comment il travaille et avec quelles règles ») — mise de

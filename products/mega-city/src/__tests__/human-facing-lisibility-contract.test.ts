@@ -33,7 +33,7 @@ const lisibilityRule = join(
 );
 const restitutionSkills = [
   join(megaCityDir, 'skills', 'ezk-retro', 'SKILL.md'),
-  join(megaCityDir, 'skills', 'ezk-product-builder', 'SKILL.md'),
+  join(megaCityDir, 'skills', 'ezk-product-build', 'SKILL.md'),
   sprintSkill,
   join(megaCityDir, 'skills', 'ezk-archive', 'SKILL.md'),
   join(megaCityDir, 'skills', 'ezk-backlog', 'SKILL.md'),

@@ -93,7 +93,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
       'ezk-npm-scripts',
       'ezk-pr',
       'ezk-preview',
-      'ezk-product-builder',
+      'ezk-product-build',
       'ezk-readme',
       'ezk-retro',
       'ezk-sprint',

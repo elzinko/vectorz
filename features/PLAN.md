@@ -33,7 +33,7 @@
 
 0. ~~**0064** — une seule liste de features (champ `product:`)~~ — shipped #66 / #68
 1. ~~**0094** — brancher l'émetteur sur vectorz~~ — shipped #54
-2. ~~**0095** — faire émettre `ezk-product-builder`~~ — shipped #55
+2. ~~**0095** — faire émettre `ezk-product-build`~~ — shipped #55
 3. ~~**0082** — registre {projet · méthode}~~ — shipped #70
 4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
 5. ~~**0181** — Opus 4.8 + restitutions lisibles~~ — shipped #92
@@ -78,7 +78,7 @@
 
 ## 🚦 Note — lancement autonome (autre session)
 
-Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
+Pour qu'`ezk-product-build` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
 (gate DoR). **Tête NOW** : **0022** (Moniteur heure/durée/historique) — **0091** carte + glossaire shipped #103 ; tâche 2 (claim/heartbeat) de 0090 reste dans la fiche pour une passe ultérieure.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
