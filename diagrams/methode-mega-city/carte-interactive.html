@@ -235,10 +235,11 @@ body{
 <div class="wrap">
 
   <div class="intro">
-    <p>Des <b>Juges</b> (agents) appliquent <b>la loi</b> (règles) pour livrer des features, sur n'importe quel LLM.
-    Cette carte n'est <b>pas dessinée à la main</b> : chaque carte, chaque lien vient des fichiers du dépôt,
-    compilés par <b>le même moteur que la méthode</b>. Cliquez n'importe quelle carte pour ouvrir son dossier
-    et voir ses liens réels.</p>
+    <p>Trois étages. <b>Le moteur</b> (règles · bundles · profils · bind) ne connaît pas scrum — il compose
+    et matérialise. <b>La méthode</b> (cérémonies, rôles, artefacts) est une instance construite avec lui.
+    <b>Les branchements</b> (GitHub, sessions LLM, supervision, outillage) s'y attachent sans en faire partie.
+    Cette carte n'est <b>pas dessinée à la main</b> : tout est compilé depuis les fichiers du dépôt.
+    Cliquez une carte pour ouvrir son dossier et voir ses liens réels.</p>
     <div class="legend" id="legend"></div>
   </div>
 
@@ -2018,13 +2019,18 @@ window.EZK = {
       '<h3>'+esc(id)+'</h3><p>'+esc(firstSentence(s.description)||'—')+'</p>'+
       (meta.length?'<div class="meta">'+meta.join('')+'</div>':'')+'</div>';
   };
+  /* Mal-rangés connus, en attendant l'ADR « trois étages » (lot 2 du plan de refonte). */
+  const MISPLACED = {
+    'ezk-archive': 'mal rangé — exécutant de clôture (hôte LLM), pas un rôle scrum',
+  };
   const agentCard = (id) => {
     const a = D.agents[id];
     const meta = [];
+    if(MISPLACED[id]) meta.push('<span class="tag" style="color:var(--warn);border-color:var(--warn)">⚠ mal rangé</span>');
     if(a.model) meta.push('<span class="tag">'+esc(a.model)+'</span>');
     if(a.effort) meta.push('<span class="tag">effort '+esc(a.effort)+'</span>');
     if(a.convokedBy.length) meta.push('<span class="tag">convoqué par '+a.convokedBy.length+'</span>');
-    return '<div class="card c-cap" tabindex="0" data-open="agent:'+esc(id)+'" data-search="'+esc((id+' '+a.description).toLowerCase())+'">'+
+    return '<div class="card '+(MISPLACED[id]?'c-warn':'c-cap')+'" tabindex="0" data-open="agent:'+esc(id)+'" data-search="'+esc((id+' '+a.description).toLowerCase())+'">'+
       '<h3>'+esc(id)+'</h3><p>'+esc(firstSentence(a.description)||'—')+'</p>'+
       (meta.length?'<div class="meta">'+meta.join('')+'</div>':'')+'</div>';
   };
@@ -2057,15 +2063,24 @@ window.EZK = {
       (b.profiles.length?' · cité par '+esc(b.profiles.join(', ')):' · cité par aucun profil')+'</div>'+rows+'</div>';
   }).join('');
 
-  /* ── le bruit ── */
-  const noise = [];
-  for(const id of D.bandes['hors-bande']) noise.push(
-    '<div class="card c-warn" tabindex="0" data-open="skill:'+esc(id)+'" data-search="'+esc(id.toLowerCase())+'">'+
-    '<h3>'+esc(id)+'</h3><p>Commande sans bande officielle — aucun ADR ne l’a rangée.</p></div>');
-  for(const o of D.orphans.filter((o) => o.kind !== 'profile')) noise.push(
-    '<div class="card c-warn" tabindex="0" data-open="'+esc(o.kind)+':'+esc(o.id)+'" data-search="'+esc(o.id.toLowerCase())+'">'+
-    '<h3>'+esc(o.id)+'</h3><p>'+esc(KIND[o.kind]?KIND[o.kind].label:o.kind)+' que rien ne cite (orphelin).</p></div>');
-  $('noise').innerHTML = noise.join('') || '<p class="d-empty">Rien à signaler.</p>';
+  /* ── le bruit — DÉDOUBLONNÉ : un même id hors-bande ET orphelin = UNE carte, plusieurs raisons ── */
+  const noiseMap = new Map();
+  const addNoise = (kind, id, reason) => {
+    const key = kind + ':' + id;
+    const entry = noiseMap.get(key) ?? { kind, id, reasons: [] };
+    entry.reasons.push(reason);
+    noiseMap.set(key, entry);
+  };
+  for(const id of D.bandes['hors-bande'])
+    addNoise('skill', id, 'sans bande officielle (aucun ADR ne l’a rangée)');
+  for(const o of D.orphans.filter((o) => o.kind !== 'profile'))
+    addNoise(o.kind, o.id, o.kind === 'bundle'
+      ? 'bundle que AUCUN profil ne cite'
+      : 'orpheline — rien ne la cite');
+  $('noise').innerHTML = [...noiseMap.values()].map((e) =>
+    '<div class="card c-warn" tabindex="0" data-open="'+esc(e.kind)+':'+esc(e.id)+'" data-search="'+esc(e.id.toLowerCase())+'">'+
+    '<h3>'+esc(e.id)+'</h3><p>'+esc(KIND[e.kind]?KIND[e.kind].label:e.kind)+' — '+esc(e.reasons.join(' · '))+'.</p></div>'
+  ).join('') || '<p class="d-empty">Rien à signaler.</p>';
 
   /* ── dossier ── */
   const overlay = $('overlay'), panel = $('dossier');
@@ -2101,6 +2116,7 @@ window.EZK = {
     if(kind === 'agent'){
       const a = D.agents[id];
       let h = '<p class="d-desc">'+esc(a.description||'(pas de description)')+'</p>';
+      if(MISPLACED[id]) h += '<div class="d-note" style="border-left-color:var(--warn)">⚠ '+esc(MISPLACED[id])+' — reclassement prévu par l’ADR « trois étages ».</div>';
       const rt = [];
       if(a.model) rt.push('<span class="tag">modèle '+esc(a.model)+'</span>');
       if(a.effort) rt.push('<span class="tag">effort '+esc(a.effort)+'</span>');
