@@ -248,6 +248,7 @@ body{
     <p class="lead">Cinq temps. Dans chaque temps : l'<b>étape</b> (la cérémonie qui la porte) et les <b>acteurs</b> (les juges convoqués). Les cartes citées sont réelles : cliquez-les.</p>
     <div class="cycle" id="cycle"></div>
     <p class="lead" style="margin-top:2px">À part du cycle : la <b>clôture de session</b> (<code>ezk-archive</code>) n'est pas un rituel scrum — c'est l'hygiène de l'hôte LLM, jouée à chaque fin de session, où qu'on soit dans le cycle.</p>
+    <p class="lead" style="margin-top:2px">Deux trous que cette vue révèle (chantier taxonomie) : le <b>Daily Scrum</b> n'a pas d'équivalent, et <b>« Toi » (le PO humain)</b> n'existe pas comme objet du modèle — les chips grises en pointillé sont éditoriales, pas compilées.</p>
   </div>
 
   <div class="section">
@@ -260,7 +261,7 @@ body{
   <div class="section">
     <div class="eyebrow">Bande 2 · Rôles</div>
     <h2>Qui décide, qui juge</h2>
-    <p class="lead">Les 7 juges (agents). Chacun porte ses <b>compétences</b> (commandes qu'il sait utiliser) et ses <b>règles d'interaction</b>.</p>
+    <p class="lead">Les 7 agents. Chacun porte ses <b>compétences</b> (commandes qu'il sait utiliser) et ses <b>règles d'interaction</b>. Nuance : <code>ezk-archive</code> figure ici parce que c'est techniquement un agent (sous-agent d'exécution de la clôture, modèle épinglé) — <b>pas un juge scrum</b>. Son reclassement est au chantier taxonomie.</p>
     <div class="grid" id="band-agents"></div>
   </div>
 
@@ -376,28 +377,28 @@ window.EZK = {
  ],
  "bandes": {
   "ceremonies": [
-   "ezk-pr",
    "ezk-product-builder",
-   "ezk-retro",
-   "ezk-sprint"
+   "ezk-sprint",
+   "ezk-pr",
+   "ezk-retro"
   ],
   "artefacts": [
-   "ezk-archive",
    "ezk-backlog",
    "ezk-commits",
+   "ezk-archive",
    "ezk-start"
   ],
   "outillage": [
-   "ezk-apk",
-   "ezk-article",
    "ezk-ci",
-   "ezk-design-system",
-   "ezk-device",
-   "ezk-diagram",
    "ezk-docker",
    "ezk-npm-scripts",
+   "ezk-device",
+   "ezk-apk",
    "ezk-preview",
-   "ezk-readme"
+   "ezk-diagram",
+   "ezk-readme",
+   "ezk-article",
+   "ezk-design-system"
   ],
   "hors-bande": [
    "ezk-codex",
@@ -1970,21 +1971,29 @@ window.EZK = {
   const chip = (kind, id, extra) =>
     '<button class="chip" data-open="'+kind+':'+esc(id)+'"><span class="sw" style="background:'+KIND[kind].color+'"></span>'+esc(id)+(extra||'')+'</button>';
 
-  /* ── le cycle (storyboard éditorial : les cartes citées sont réelles) ── */
+  /* ── le cycle (storyboard éditorial : les cartes citées sont réelles).
+     `humains` = acteurs RÉELS mais absents du modèle (chips grises, non cliquables) :
+     les afficher rend le trou visible au lieu de le cacher. ── */
   const CYCLE = [
-    {n:1, t:'La fiche', p:'Le PO capture le besoin, la fiche mûrit jusqu’à « ready ».', etape:['ezk-backlog'], acteurs:[]},
-    {n:2, t:'Le tirage', p:'Le product-owner (couche ezk-product-builder) tire la prochaine fiche prête.', etape:['ezk-product-builder'], acteurs:['ezk-pm']},
-    {n:3, t:'Le sprint', p:'La boucle BDD/TDD construit la feature en convoquant les juges.', etape:['ezk-sprint'], acteurs:['ezk-architect','ezk-dev','ezk-qa','ezk-reviewer']},
-    {n:4, t:'La validation', p:'La PR est testée puis squash-mergée ; les retours de revue sont adressés.', etape:['ezk-pr','ezk-codex'], acteurs:[]},
-    {n:5, t:'La rétro', p:'Après un ou plusieurs sprints : l’équipe inspecte la méthode elle-même et capture les leçons.', etape:['ezk-retro'], acteurs:[]},
+    {n:1, t:'La fiche', scrum:'Product Backlog', p:'Le PO capture le besoin, la fiche mûrit jusqu’à « ready ».', etape:['ezk-backlog'], acteurs:[], humains:['Toi (PO)']},
+    {n:2, t:'Le tirage', scrum:'Sprint Planning', p:'La prochaine fiche prête est tirée ; en mode auto, ezk-pm décide à ta place.', etape:['ezk-product-builder'], acteurs:['ezk-pm'], humains:['Toi (PO)']},
+    {n:3, t:'Le sprint', scrum:'Sprint', p:'La boucle BDD/TDD construit la feature en convoquant les juges.', etape:['ezk-sprint'], acteurs:['ezk-architect','ezk-dev','ezk-qa','ezk-reviewer'], humains:[]},
+    {n:4, t:'La validation', scrum:'Sprint Review', p:'La PR est testée puis squash-mergée ; les retours de revue sont adressés.', etape:['ezk-pr','ezk-codex'], acteurs:[], humains:['Toi (PO)','Codex (bot)']},
+    {n:5, t:'La rétro', scrum:'Sprint Retrospective', p:'Après un ou plusieurs sprints : l’équipe inspecte la méthode elle-même.', etape:['ezk-retro'], acteurs:[], humains:['Toi (PO)']},
   ];
   const stepGroup = (label, kind, ids) => {
     const chips = ids.filter((id) => (kind==='skill'?D.skills:D.agents)[id]).map((id) => chip(kind,id)).join('');
     return chips ? '<div class="meta"><span class="tag">'+label+'</span>'+chips+'</div>' : '';
   };
+  const humanGroup = (names) => names.length
+    ? '<div class="meta"><span class="tag">humains</span>'+names.map((x) =>
+        '<span class="chip" style="cursor:default;border-style:dashed">'+esc(x)+'</span>').join('')+'</div>'
+    : '';
   $('cycle').innerHTML = CYCLE.map((s) =>
-    '<div class="step"><span class="n">'+s.n+'</span><h3>'+esc(s.t)+'</h3><p>'+esc(s.p)+'</p>'+
-    stepGroup('étape','skill',s.etape)+stepGroup('acteurs','agent',s.acteurs)+
+    '<div class="step"><span class="n">'+s.n+'</span><h3>'+esc(s.t)+'</h3>'+
+    '<div style="margin:-1px 0 6px"><span class="tag">'+esc(s.scrum)+'</span></div>'+
+    '<p>'+esc(s.p)+'</p>'+
+    stepGroup('étape','skill',s.etape)+stepGroup('acteurs','agent',s.acteurs)+humanGroup(s.humains)+
     '<span class="arrow">→</span></div>'
   ).join('');
 

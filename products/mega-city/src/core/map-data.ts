@@ -220,13 +220,14 @@ export function buildMapData(catalog: Catalog): MapData {
     };
   }
 
+  // Bandes officielles : dans l'ORDRE DU TABLEAU d'ADR-0020 (pour les cérémonies,
+  // c'est l'ordre du flux scrum — pas l'alphabet). Hors-bande : tri alphabétique.
   const bandes: Record<Bande, string[]> = {
-    ceremonies: [],
-    artefacts: [],
-    outillage: [],
-    'hors-bande': [],
+    ceremonies: BANDES.ceremonies.filter((id) => id in skills),
+    artefacts: BANDES.artefacts.filter((id) => id in skills),
+    outillage: BANDES.outillage.filter((id) => id in skills),
+    'hors-bande': Object.keys(skills).filter((id) => skills[id].bande === 'hors-bande'),
   };
-  for (const id of Object.keys(skills)) bandes[skills[id].bande].push(id);
 
   return {
     counts: {
