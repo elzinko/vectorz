@@ -1,7 +1,8 @@
 ---
 composes: [ezk-backlog]
+roles: [ezk-steward]
 name: ezk-ezk
-argument-hint: "[help|harvest|create|deploy]"
+argument-hint: "[help|harvest|create|deploy|audit]"
 description: >-
   Méta-skill qui transforme une discussion de session en un skill réutilisable.
   A utiliser quand l'utilisateur veut « créer un skill », « ezk-ezk »,
@@ -13,6 +14,7 @@ description: >-
   valider / packager le SKILL.md) — il ne réimplémente aucun des trois. Pilotable
   par sous-commandes : help, harvest (récolte ≤3 sujets du contexte de session +
   champ libre), create (brainstorm → archi → skill-creator, après validation),
+  audit (convoque l'agent ezk-steward : gate mécanique + jugement du catalogue),
   deploy (range via scripts/deploy.sh : crée le dossier + symlink non-destructif,
   destination par défaut mega-city skills/). Frontière ADR-0001 : le LLM
   rédige/juge via les sous-skills, le script range. N'est PAS la fabrique de
@@ -94,6 +96,7 @@ orchestrateur.
 | `harvest` | **Récolte ≤ 3 sujets** par introspection du contexte de session courant + champ libre ; 1 seul candidat → confirmation. Ne génère rien |
 | `create` (**défaut** en langage naturel) | Déroule le flux complet : harvest → résumé + questions (boucle de validation) → compose les sous-skills → produit le contenu du SKILL.md → demande la destination |
 | `deploy` | Range le skill validé via `scripts/deploy.sh` (dossier + symlink non-destructif + ligne de catalogue) puis émet le verdict de disponibilité + le fallback `/reload-skills` |
+| `audit` | **Convoque l'agent [`ezk-steward`](../../agents/ezk-steward.md)** (le gardien) : gate mécanique du repo puis jugement de cohérence du catalogue, verdict GO/NO-GO. ezk-ezk est le CLI de la librairie ; steward reste l'exécutant (modèle/effort épinglés) — décision PO 2026-08-24 |
 
 > **Help** : invoquée sans sous-commande (ou `help`/`?`), affiche ce tableau. Une
 > demande en langage naturel route vers `create`. Sous-commande non reconnue →
