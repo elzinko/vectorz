@@ -1,0 +1,19 @@
+# Registre des RENOMMAGES exécutés du catalogue — consommé par le binder global
+# (applyGlobalPlan) pour RETIRER proprement l'entrée de l'ANCIEN nom au re-bind.
+#
+# Pourquoi : le re-bind n'itère que le NOUVEAU plan — sans ce registre, l'ancien
+# nom reste installé à côté du nouveau (résidu constaté le 2026-08-20 :
+# ~/.claude/skills/ezk-pr-pilot, ~/.claude/agents/ezk-tdd.md). Fiche d'origine :
+# 20260813131737962 (volet binder, extrait et livré le 2026-08-23).
+#
+# Le retrait est GARDÉ (jamais un rm -rf aveugle) :
+#   - symlink → la nôtre, retirée ;
+#   - dossier réel → retiré SEULEMENT si ses entrées ⊆ celles du skill renommé
+#     dans le catalogue (un dossier utilisateur homonyme contient autre chose) ;
+#   - fichier agent réel → JAMAIS retiré (signalé, retrait manuel).
+# Jamais de purge hors-registre : un skill omis d'un profil (ex. daily) n'est pas
+# un résidu de renommage.
+
+renames:
+  - { ancien: ezk-pr-pilot, nouveau: ezk-pr, kind: skill, date: 2026-08-20 }
+  - { ancien: ezk-tdd, nouveau: ezk-dev, kind: agent, date: 2026-08-20 }
