@@ -84,6 +84,8 @@
 | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | ⛔ blocked |  |
 | 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
 | 20260816131704335 | /ezk-help — index de commandes ezk généré depuis les frontmatter | feature | P1 | 20260816131703334 | mega-city | ✅ shipped | #151 |
+| 20260823121712652 | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 |  | mega-city | 🔴 todo |  |
+| 20260823121712781 | reconcile systématique — ne plus rater un ship après un squash-merge fait hors du flux (GitHub UI) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -136,6 +138,9 @@
 | 20260816140607355 | Compteurs & table skills/README générés (câbler /ezk-help, fin de la dérive) | feature | P2 | 20260816131703334 | mega-city | 🔴 todo |  |
 | 20260816151112162 | Canal commands: dans lawgiver — déployer les slash-commands comme les skills | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260821210633457 | Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169) | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260823121712716 | Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche) | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260823121712844 | Durcir regen-backlog — refuser une racine par défaut nichée sous un autre backlog (fin du piège products/mega-city) | bug | P2 |  | mega-city | 🔴 todo |  |
+| 20260823121712909 | lawgiver doctor — détecter un skill du profil non matérialisé dans ~/.claude (le bug /ezk-pr introuvable) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -230,6 +235,7 @@
 | 20260817113353676 | Article « Templates de réponse adaptés aux LLM » (via ezk-article) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260818185931307 | Capability de vente LemonSqueezy (checkout + licence + entitlement) — récoltée de muti, réutilisable | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260821210633522 | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260822200213110 | Règle — une page (vitrine/landing/capture) construite par un skill utilise des screenshots réels de l'app, jamais des visuels générés | feature | P2 |  | mega-city | 💡 idea |  |
 | 0042 | Inventaire — idées historiques cop1 réutilisables dans le paradigme vectorz (icebox) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
