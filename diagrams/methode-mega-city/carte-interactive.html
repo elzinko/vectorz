@@ -207,6 +207,22 @@ body{
 .d-group{margin:7px 0 0; padding:8px 10px; background:var(--panel-2); border:1px solid var(--line-soft); border-radius:8px}
 .d-group .g-head{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink); margin-bottom:6px; display:flex; gap:6px; align-items:center}
 
+/* ── onglet « le domaine, en clair » ────────────────── */
+.domaine{
+  position:fixed; inset:0; z-index:55; background:var(--ground); overflow-y:auto;
+  display:none; padding:0 0 60px;
+}
+.domaine.on{display:block}
+.domaine .wrap{max-width:860px}
+.d-rel{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:16px 20px; margin-top:14px; box-shadow:var(--shadow);
+}
+.d-rel h3{font-family:"Chakra Petch",sans-serif; font-size:16px; margin:0 0 6px}
+.d-rel h3 .mot{color:var(--accent-bright); font-family:"IBM Plex Mono",monospace; font-size:14px}
+.d-rel p{margin:0 0 8px; font-size:14.5px; max-width:70ch}
+.d-rel .ex{display:flex; gap:6px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:var(--ink-faint)}
+
 /* ── divers ─────────────────────────────────────────── */
 .noise-list{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
 .foot{
@@ -228,6 +244,7 @@ body{
     <div class="spacer"></div>
     <div class="proof" id="proof" title="Données compilées depuis les fichiers du dépôt — regen : pnpm --dir products/mega-city map:data"><span class="dot"></span><span id="proof-text">…</span></div>
     <input class="search" id="search" type="search" placeholder="chercher (id, description)…" aria-label="Chercher dans la carte">
+    <button class="theme-btn" id="open-domaine" style="width:auto;padding:0 12px;font-size:13px" title="Comprendre les relations du domaine">🧭 le domaine</button>
     <button class="theme-btn" id="theme" title="Basculer clair / sombre" aria-label="Basculer le thème">◐</button>
   </div>
 </div>
@@ -260,8 +277,10 @@ body{
     une sous-commande, un agent, ou toi. Chaque référence est <b>vérifiée contre le catalogue</b>
     à la compilation : cette liste ne peut pas mentir. Cliquez une carte pour le détail.</p>
     <div class="grid" id="ceremonies-list"></div>
-    <div class="eyebrow" style="margin-top:26px">La méthode · Artefacts &amp; rôles scrum</div>
-    <div class="grid" id="ceremonies-af" style="margin-top:14px"></div>
+    <div class="eyebrow" style="margin-top:26px">La méthode · Artefacts scrum</div>
+    <div class="grid" id="ceremonies-artefacts" style="margin-top:14px"></div>
+    <div class="eyebrow" style="margin-top:26px">La méthode · Rôles scrum</div>
+    <div class="grid" id="ceremonies-roles" style="margin-top:14px"></div>
   </div>
 
   <div class="section">
@@ -317,6 +336,23 @@ body{
     <span>source : catalogue mega-city (rules/ · agents/ · skills/ · bundles/ · profiles/)</span>
     <span>régénérer : <b>pnpm --dir products/mega-city map:data</b></span>
     <span>valider les liens : <b>pnpm --dir products/mega-city graph:check</b></span>
+  </div>
+</div>
+
+<div class="domaine" id="domaine" role="dialog" aria-label="Le domaine, en clair">
+  <div class="topbar"><div class="topbar-in">
+    <div class="badge">🧭</div>
+    <div class="brand"><div class="over">La carte, mode d'emploi</div><h1>Le domaine, en clair</h1></div>
+    <div class="spacer"></div>
+    <button class="theme-btn" id="close-domaine" aria-label="Revenir à la carte">✕</button>
+  </div></div>
+  <div class="wrap">
+    <div class="intro" style="margin-top:24px">
+      <p>Pas de diagramme d'objets ici : chaque relation du domaine, expliquée en une phrase
+      d'humain, avec un <b>exemple réel et cliquable</b> tiré des fichiers. Cliquer un exemple
+      ouvre son dossier par-dessus cette page.</p>
+    </div>
+    <div id="domaine-corps"></div>
   </div>
 </div>
 
@@ -2278,8 +2314,9 @@ window.EZK = {
       (e.implemente_par.length?'<div class="meta">'+e.implemente_par.map(refChip).join('')+'</div>':'')+
       '</div>';
   };
-  $('ceremonies-list').innerHTML = methodEls.filter((e) => e.type === 'ceremonie').map(ceremonyCard).join('');
-  $('ceremonies-af').innerHTML   = methodEls.filter((e) => e.type !== 'ceremonie').map(ceremonyCard).join('');
+  $('ceremonies-list').innerHTML      = methodEls.filter((e) => e.type === 'ceremonie').map(ceremonyCard).join('');
+  $('ceremonies-artefacts').innerHTML = methodEls.filter((e) => e.type === 'artefact').map(ceremonyCard).join('');
+  $('ceremonies-roles').innerHTML     = methodEls.filter((e) => e.type === 'role').map(ceremonyCard).join('');
 
   $('band-artefacts').innerHTML  = D.bandes.artefacts.map(skillCard).join('');
   $('band-agents').innerHTML     = Object.keys(D.agents).filter((id) => D.agents[id].etage === 'methode').map(agentCard).join('');
@@ -2371,8 +2408,8 @@ window.EZK = {
       h += sec('Compose → (commandes utilisées)', s.composes.map((x) => chip('skill',x)));
       if(s.composesExternal.length) h += sec('Compose (hors catalogue)', s.composesExternal.map((x) => '<span class="chip" style="cursor:default">'+esc(x)+'</span>'));
       h += sec('Convoque → (juges)', s.roles.map((x) => chip('agent',x)));
-      h += sec('← Composée par', s.composedBy.map((x) => chip('skill',x)), 'aucune cérémonie ne la compose');
-      h += sec('Embarquée par (profils)', s.profiles.map((x) => chip('profile',x)), 'aucun profil ne l’embarque');
+      h += sec('← Composée par', s.composedBy.map((x) => chip('skill',x)), 'aucune commande ne la compose');
+      h += sec('Installée par (profils)', s.profiles.map((x) => chip('profile',x)), 'aucun profil ne l’installe');
       const viaJuges = s.roles.map((aid) => {
         const a = D.agents[aid]; if(!a || !a.interactions.length) return '';
         return '<div class="d-group"><div class="g-head"><span class="sw" style="background:var(--cap);width:7px;height:7px;border-radius:2px"></span>via '+esc(aid)+'</div><div class="chips">'+a.interactions.map((r) => chip('rule',r)).join('')+'</div></div>';
@@ -2390,10 +2427,10 @@ window.EZK = {
       if(a.model) rt.push('<span class="tag">modèle '+esc(a.model)+'</span>');
       if(a.effort) rt.push('<span class="tag">effort '+esc(a.effort)+'</span>');
       if(rt.length) h += '<div class="d-sec"><div class="chips">'+rt.join('')+'</div></div>';
-      h += sec('Compétences → (commandes)', a.competences.map((x) => D.skills[x]?chip('skill',x):'<span class="chip" style="cursor:default">'+esc(x)+'</span>'));
+      h += sec('Compétences → (commandes qu’il sait utiliser)', a.competences.map((x) => D.skills[x]?chip('skill',x):'<span class="chip" style="cursor:default">'+esc(x)+'</span>'), 'aucune déclarée — trou connu : les frontmatter d’agents ne listent pas encore leurs compétences');
       h += sec('Règles d’interaction →', a.interactions.map((x) => chip('rule',x)));
-      h += sec('← Convoqué par (cérémonies)', a.convokedBy.map((x) => chip('skill',x)), 'aucune cérémonie ne le convoque');
-      h += sec('Embarqué par (profils)', a.profiles.map((x) => chip('profile',x)));
+      h += sec('← Convoqué par (commandes)', a.convokedBy.map((x) => chip('skill',x)), 'aucune commande ne le convoque');
+      h += sec('Installé par (profils)', a.profiles.map((x) => chip('profile',x)));
       return h;
     }
     if(kind === 'rule'){
@@ -2458,6 +2495,54 @@ window.EZK = {
     if(e.key !== 'Enter') return;
     const t = e.target.closest && e.target.closest('.card[data-open]');
     if(t){ const [k, ...r] = t.dataset.open.split(':'); openDossier(k, r.join(':')); }
+  });
+
+  /* ── l'onglet « le domaine, en clair » ── */
+  const rel = (titre, mot, corps, exemples) =>
+    '<div class="d-rel"><h3>'+titre+(mot?' <span class="mot">'+esc(mot)+'</span>':'')+'</h3>'+
+    corps.map((p) => '<p>'+p+'</p>').join('')+
+    (exemples?'<div class="ex"><span>exemple :</span>'+exemples+'</div>':'')+'</div>';
+  $('domaine-corps').innerHTML = [
+    rel('Une règle', 'rule', [
+      'Une <b>consigne de travail</b> : une contrainte que tout le monde doit respecter (MUST), devrait (SHOULD) ou peut (MAY). Elle ne fait rien toute seule — elle se lit.',
+    ], chip('rule','clean-code/no-dead-code')),
+    rel('Un bundle', 'bundle', [
+      'Un <b>classeur de règles</b> : un paquet nommé qu\'on embarque d\'un bloc au lieu de citer les règles une à une.',
+    ], chip('bundle','architecture')+'<span>= 9 règles d\'architecture en un mot</span>'),
+    rel('Un profil', 'profile', [
+      'Le <b>bon de commande d\'une cible</b>. Il dit : « cette cible travaille avec CES règles (bundles), CES rôles (agents) et CES commandes (skills) ». La cible n\'est pas toujours un projet : ton POSTE (profils daily/global → ~/.claude) et tes sessions Desktop en ont un.',
+      '« <b>Installé par</b> » sur une carte veut dire : ces profils l\'embarquent dans leur bon de commande. Ex. : ezk-archive est installé par « base » (le socle hérité par tous), donc partout.',
+    ], chip('profile','daily')+chip('profile','base')),
+    rel('bind', '(le moteur)', [
+      'Le <b>livreur</b>. Il lit le bon de commande (profil) et installe les fichiers chez la cible (~/.claude/skills, ~/.claude/agents). C\'est du script pur — aucun LLM dedans. Depuis le lot 3, il sait aussi <b>retirer un ancien nom</b> après un renommage (registre renames.yml).',
+    ], null),
+    rel('Une commande', 'skill', [
+      'Un <b>outil avec son mode d\'emploi</b> (un playbook + des sous-commandes). Deux liens sortants : elle <b>compose →</b> d\'autres commandes (les utilise comme briques — le sprint compose le backlog), et elle <b>convoque →</b> des rôles (fait venir les agents — le sprint convoque dev, qa, architecte, reviewer).',
+      'Nuance importante : la commande n\'est pas l\'artefact. <b>ezk-backlog</b> est l\'outil qui GÈRE le Product Backlog ; le Product Backlog lui-même, ce sont les fiches (features/*.md). Comme git n\'est pas le dépôt.',
+    ], chip('skill','ezk-sprint')+chip('skill','ezk-backlog')),
+    rel('Un rôle', 'agent', [
+      'Un <b>métier incarné</b> (un sous-agent LLM avec son modèle et son niveau d\'effort). Ses <b>compétences</b> = les commandes qu\'il SAIT utiliser (champ déclaré — aujourd\'hui presque vide partout : trou connu, à combler). Ses <b>règles d\'interaction</b> = comment il collabore.',
+      'La différence avec « installé par (profils) » : les compétences disent ce qu\'il sait FAIRE ; les profils disent OÙ il est installé. Un menuisier sait se servir d\'un rabot (compétence) ; il est embauché sur tel chantier (profil).',
+    ], chip('agent','ezk-dev')+chip('agent','ezk-pm')),
+    rel('Une cérémonie', '(ceremonies.yml)', [
+      'Un <b>moment du scrum</b> (grooming, planning, rétro…). Elle n\'est PAS une commande : elle est <b>implémentée par</b> une ou plusieurs commandes/sous-commandes — c\'est la table de correspondance scrum ↔ ezk, vérifiée à la compilation. Le grooming, par exemple, EST la sous-commande groom du backlog.',
+    ], '<button class="chip" data-open="ceremonie:grooming"><span class="sw" style="background:var(--flow)"></span>grooming</button><span>→ implémenté par ezk-backlog:groom</span>'),
+    rel('Les trois étages', '(taxonomie.yml)', [
+      '<b>La méthode</b> = l\'instance scrum (cérémonies, rôles, artefacts). <b>Les branchements</b> = les prises électriques : des outils que la méthode peut activer sans qu\'ils fassent partie du scrum — les sessions LLM (hôte), la revue GitHub (codex), la supervision, l\'outillage techno, et les plugins/overlays. <b>La librairie</b> = l\'atelier qui fabrique et garde le catalogue lui-même.',
+      'Chaque brique a exactement un étage — c\'est vérifié à la compilation, un oubli fait échouer la CI.',
+    ], chip('skill','ezk-codex')+'<span>= branchement GitHub, activable, hors scrum</span>'),
+    rel('Un plugin', '(overlay, ADR-0039)', [
+      'Une brique qui <b>charge la doctrine d\'une autre et la surcharge</b> par déclaration, sans rien modifier. vz-product-builder charge ezk-product-build et remplace ses arrêts-humains par un corpus de reviewers.',
+    ], chip('skill','vz-product-builder')),
+    rel('LA LOI arrive par deux chemins', null, [
+      'Les règles ne s\'accrochent jamais à une commande. Elles arrivent : (1) par le <b>profil</b> — ses bundles s\'appliquent à toute la cible ; (2) par les <b>rôles</b> — leurs règles d\'interaction les suivent partout où ils sont convoqués.',
+    ], null),
+  ].join('');
+  const domaine = $('domaine');
+  $('open-domaine').addEventListener('click', () => { domaine.classList.add('on'); });
+  $('close-domaine').addEventListener('click', () => { domaine.classList.remove('on'); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && !panel.classList.contains('on')) domaine.classList.remove('on');
   });
 
   /* ── recherche ── */
