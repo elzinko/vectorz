@@ -1,4 +1,4 @@
-# Gabarit — choix sur ALERT (ezk-start)
+# Gabarit — choix sur ALERT (ezk-sprint:check)
 
 Source unique pour la restitution quand le portier rend `VERDICT: ALERT`.
 Ne pas dupliquer dans `SKILL.md`.
@@ -24,7 +24,7 @@ Règle : [`human-facing-lisibility`](../../../rules/documentation-guidelines/hum
 | Choix | Quand | Action |
 |---|---|---|
 | **Rejoindre** | Le sprint signalé est le tien ou tu veux le reprendre | Basculer sur le worktree/branche/fiche indiquée ; ne pas tirer une nouvelle fiche |
-| **Interrompre journalisé** | L'autre session est abandonnée ou tu assumes l'override | `/ezk-archive run` sur l'autre session, ou note PO dans handoff/`SPRINT.md` ; puis relancer `/ezk-start check` |
+| **Interrompre journalisé** | L'autre session est abandonnée ou tu assumes l'override | `/ezk-archive run` sur l'autre session, ou note PO dans handoff/`SPRINT.md` ; puis relancer `/ezk-sprint check` |
 
 **Contexte lu (best-effort) :**
 - Handoff pending : <N lignes ou « absent »>

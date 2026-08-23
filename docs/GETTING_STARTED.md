@@ -1,6 +1,6 @@
 # Getting Started with vectorz (epoch 2)
 
-> **Status (2026-08):** Dogfood method = **mega-city** (`ezk-backlog`, `ezk-sprint`, `ezk-start`, `ezk-archive`). Supervision = **cop1** daemon + Moniteur. The epoch-1 BMAD orchestrator (`cop1 orchestrator run`) was removed from prod — those CLI commands now print an epoch-2 hint.
+> **Status (2026-08):** Dogfood method = **mega-city** (`ezk-backlog`, `ezk-sprint`, `ezk-sprint:check`, `ezk-archive`). Supervision = **cop1** daemon + Moniteur. The epoch-1 BMAD orchestrator (`cop1 orchestrator run`) was removed from prod — those CLI commands now print an epoch-2 hint.
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ pnpm typecheck
 | Layer | Role | Entry points |
 |---|---|---|
 | **Backlog** | Features, plan, ship | `features/` + skill `ezk-backlog` |
-| **Sprint** | Build one fiche end-to-end | skill `ezk-sprint` (intake starts with `ezk-start`) |
+| **Sprint** | Build one fiche end-to-end | skill `ezk-sprint` (intake starts with `ezk-sprint:check`) |
 | **Supervision** | Journal, runs, gates | `cop1 start` → Moniteur UI / API |
 | **External BMAD** | Optional sidecar on another repo | `cop1 init-bmad-bridge` — not vectorz dogfood |
 
@@ -33,7 +33,7 @@ pnpm typecheck
 - Sequence in `features/PLAN.md` ; index in `features/BACKLOG.md` (regenerated).
 - Read the skill: [`products/mega-city/skills/ezk-backlog/SKILL.md`](../products/mega-city/skills/ezk-backlog/SKILL.md).
 
-### 2. Sprint intake (ezk-start → ezk-sprint)
+### 2. Sprint intake (ezk-sprint:check → ezk-sprint)
 
 Before a sprint, run the opening guard (read-only): worktrees, fiches `in-progress`, handoff, PLAN head.
 

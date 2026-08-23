@@ -23,7 +23,7 @@ claude -p "say OK"   # must succeed before any agent session
 
 ## 2. Typical dogfood loop (vectorz)
 
-1. **`ezk-start`** — opening guard: dirty tree, worktrees, fiches `in-progress`, handoff, PLAN head.
+1. **`ezk-sprint:check`** — opening guard: dirty tree, worktrees, fiches `in-progress`, handoff, PLAN head.
 2. **`ezk-sprint`** — pick next ready fiche from `PLAN.md`, branch `feat/<id>-<slug>`, implement, PR, CI, ship fiche.
 3. **`cop1 start`** — run the supervision daemon while the Moniteor watches runs/journal.
 4. **`ezk-archive`** — close the session (handoff, optional session log in `docs/sessions/`).
@@ -48,7 +48,7 @@ Artifacts under `.cop1/` (journal, metrics, history) follow the supervisability 
 | Gate | Where |
 |---|---|
 | Definition of Ready | `ezk-backlog ready <id>` before a fiche is tirable |
-| Sprint coherence | `ezk-start` alert before parallel sprints |
+| Sprint coherence | `ezk-sprint:check` alert before parallel sprints |
 | Code quality | CI on each feature PR (lint · build · test) |
 | Supervision | Journal messages + Moniteor run state |
 | Ship | Fiche → `features/done/` only after merge + explicit `ship` |

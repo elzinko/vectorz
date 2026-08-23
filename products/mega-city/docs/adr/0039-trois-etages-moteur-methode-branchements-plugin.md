@@ -56,12 +56,14 @@ invariant testé, pas une promesse.
 - `ezk-archive` (skill ET agent exécutant) → branchement **hôte LLM** (l'archivage est
   une contrainte des sessions LLM, pas un rituel agile).
 - `ezk-start` → **méthode** (« une étape liée au sprint ») ; `ezk-backlog` → méthode.
+  *Amendement 2026-08-24 (PO)* : `ezk-start` est **absorbé** par `ezk-sprint` — l'ouverture
+  devient la sous-commande `check`, la boucle devient `run` (fiche d'absorption au backlog).
 - `ezk-codex` → branchement **GitHub** ; `supervision-*` → branchement **observabilité**.
 - `ezk-ezk` + `ezk-steward` → **librairie**.
 - `vz-product-builder` → branchement **plugin** (§4).
 - Conséquence sur ADR-0020 : l'ex-bande « Outillage » est **promue** famille de
   branchements ; les bandes restantes de la méthode = Cérémonies, Rôles (les agents
-  méthode), Artefacts (`ezk-backlog`, `ezk-start`). Aucune bande nouvelle.
+  méthode), Artefacts (`ezk-backlog` ; `ezk-start` jusqu'à son absorption du 2026-08-24). Aucune bande nouvelle.
 - Les rôles hors-méthode à venir (ex. `ezk-writer`, rédaction d'articles) se rangent en
   branchement — affichés « en dehors » de la méthode, comme demandé.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DoD exécutable — contrat du gate ezk-start (fiche 0090 tâche 1).
+# DoD exécutable — contrat du gate ezk-sprint:check (fiche 0090 tâche 1).
 set -euo pipefail
 
 CHECK="$(cd "$(dirname "$0")" && pwd)/check.sh"

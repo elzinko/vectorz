@@ -54,7 +54,7 @@ le sprint ; c'est ce qui la rend réutilisable hors de la méthode.
 |---|---|---|
 | **Cérémonies** | *quand & dans quel ordre* | `ezk-product-build`, `ezk-sprint`, `ezk-pr`, `ezk-retro` |
 | **Rôles** (agents) | *qui décide / qui juge* | `ezk-pm`, `ezk-architect`, `ezk-dev`, `ezk-qa`, `ezk-reviewer`, `ezk-steward` |
-| **Artefacts & rituels de méthode** | *quoi — l'état du produit* | `ezk-backlog`, `ezk-commits`, `ezk-archive`, `ezk-start` |
+| **Artefacts & rituels de méthode** | *quoi — l'état du produit* | `ezk-backlog`, `ezk-commits`, `ezk-archive`, `ezk-sprint:check` |
 | **Outillage & pratiques techno** | *avec quoi — la technique* | `ezk-ci`, `ezk-docker`, `ezk-npm-scripts`, `ezk-device`, `ezk-apk`, `ezk-preview`, `ezk-diagram`, `ezk-readme`, `ezk-article`, `ezk-design-system` |
 
 > **Test mécanique** (le graphe le dit à ta place) : un skill que **aucune

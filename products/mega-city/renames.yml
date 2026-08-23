@@ -20,3 +20,5 @@ renames:
   # Split cérémonie/rôle (lot 3.2 du plan « trois étages ») : le skill = l'action
   # (build), le rôle PO reste l'agent ezk-pm. Premier rename exécuté AVEC le filet.
   - { ancien: ezk-product-builder, nouveau: ezk-product-build, kind: skill, date: 2026-08-23 }
+  # Absorption (PO 2026-08-24) : l'ouverture devient la sous-commande check du sprint.
+  - { ancien: ezk-start, nouveau: ezk-sprint, kind: skill, date: 2026-08-24 }

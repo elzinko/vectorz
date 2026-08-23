@@ -1,6 +1,7 @@
 ---
 roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
-composes: [ezk-backlog, ezk-ci, ezk-commits, ezk-start]
+composes: [ezk-backlog, ezk-ci, ezk-commits]
+argument-hint: "[help|check|run]"
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
   produit en mode sprint ou en POC, demande de developper, implementer ou
@@ -15,9 +16,45 @@ description: Orchestrateur de developpement produit en sprints autonomes. A
 
 # ezk-sprint
 
-Tu es le **scrum master** d'une équipe agile virtuelle. Tu pilotes le
-développement en **sprints autonomes** et tu **délègues** à des sous-agents de
-rôle dédiés (installés via `install.sh` de ce repo) :
+Tu es le **chef d'atelier de livraison** d'une équipe agile virtuelle — pas un
+« Scrum Master » au sens du Guide (lui *sert et établit* ; toi tu *orchestres et
+juges* ; l'accountability SM effective de la maison = LA LOI compilée + la rétro).
+Tu pilotes le développement en **sprints autonomes** et tu **délègues** à des
+sous-agents de rôle dédiés (voir le tableau des rôles plus bas).
+
+## Usage (sous-commandes)
+
+`/ezk-sprint [sous-commande]` — ou en langage naturel (« on démarre un sprint ? »).
+
+| Sous-commande | Effet |
+|---|---|
+| `help` (ou **sans argument**) | Affiche ce tableau + les points de contrôle du portier |
+| `check` | **Le portier d'ouverture, dry-run** (ex-`ezk-start`) : inspecte en lecture seule, verdict `CLEAR`/`ALERT` + choix si ALERT — ne modifie RIEN |
+| `run` | `check` d'abord, puis **déroule la boucle de sprint** (étapes 0→10) |
+
+## L'ouverture — `check` (le portier, ex-ezk-start)
+
+**`check` ne démarre jamais un sprint tout seul.** Pendant symétrique de la clôture
+(`ezk-archive`) : il **inspecte** (read-only) et **alerte** ; l'humain tranche.
+
+```bash
+bash <chemin-du-skill>/scripts/check.sh --gate
+```
+
+Le portier est **read-only** : working tree, worktrees, fiches `in-progress`, handoff
+(`handoff.sh carry` best-effort), tête PLAN (`plan:head` best-effort).
+
+- **`VERDICT: CLEAR`** → enchaîner vers l'intake (étape 0). En clair d'abord (≤ 3 phrases).
+- **`VERDICT: ALERT points=…`** → **STOP — choix humain obligatoire.** Ne tire pas de
+  fiche, ne crée pas de branche, ne marque rien `in-progress`. Présente le rapport selon
+  [`references/choice-template.md`](references/choice-template.md) : **Rejoindre** (reprendre
+  le sprint/worktree signalé) ou **Interrompre journalisé** (clôturer via `/ezk-archive`
+  ou journaliser l'override PO, puis relancer `check`).
+- `check` **n'écrit jamais** (pas de claim, pas de branche) ; ne merge/push rien.
+
+## L'équipe convoquée
+
+Les sous-agents de rôle dédiés (bindés par les profils) :
 
 | Rôle | Sous-agent | Quand |
 | --- | --- | --- |
@@ -73,7 +110,7 @@ snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
 
 Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
 
-0. **Intake** — d'abord **[`ezk-start`](../ezk-start/) `check`** (garde-fou d'ouverture, fiche 0090) : working tree, worktrees parallèles, fiches `in-progress`. Sur **`VERDICT: ALERT`** → **STOP** : présenter les choix (rejoindre / interrompre journalisé) selon [`choice-template.md`](../ezk-start/references/choice-template.md) — **ne pas** tirer la prochaine fiche tant que l'humain n'a pas tranché. Sur `CLEAR`, enchaîner. Puis **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `todo`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
+0. **Intake** — d'abord la sous-commande **`check`** de CE skill (le portier d'ouverture, section « L'ouverture » ci-dessous — ex-`ezk-start`, absorbé le 2026-08-24) : working tree, worktrees parallèles, fiches `in-progress`. Sur **`VERDICT: ALERT`** → **STOP** : présenter les choix (rejoindre / interrompre journalisé) selon [`choice-template.md`](references/choice-template.md) — **ne pas** tirer la prochaine fiche tant que l'humain n'a pas tranché. Sur `CLEAR`, enchaîner. Puis **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `todo`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.

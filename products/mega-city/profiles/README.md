@@ -12,7 +12,7 @@ pendante** (id absent du catalogue = silencieusement ignoré). D'où la **garde 
 
 | Profil | Rôle | Équipe / skills | Hôte typique |
 |---|---|---|---|
-| **base** | socle hérité (`extends: [base]`) | LOI socle (clean-code, conventional-commits) + `ezk-archive` + `ezk-start` | — (jamais bindé seul) |
+| **base** | socle hérité (`extends: [base]`) | LOI socle (clean-code, conventional-commits) + `ezk-archive` (l'ouverture = `ezk-sprint:check` depuis 2026-08-24) | — (jamais bindé seul) |
 | **mobile** | cible app mobile | reviewer + commits (+ règles mobile) | claude-code |
 | **daily** | daily-driver **curated** (throughput solo) | 7 agents + boucle produit/sprint/ci — **sans** apk/device/preview/article/pr-pilot | `bind-global daily --link` → `~/.claude` **(recommandé)** |
 | **global** | daily-driver **exhaustif** (tout le toolbox) | les 7 agents + tous les skills ezk-* | `bind-global global --link` → `~/.claude` |

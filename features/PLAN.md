@@ -42,7 +42,7 @@
 
 ## ⏭️ NEXT — la méthode se tient + confort
 
-8. ~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-start` (tâche 1 POC) · `ship`~~ — shipped #99
+8. ~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-sprint:check` (ex-ezk-start) (tâche 1 POC) · `ship`~~ — shipped #99
 9. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
 10. ~~**0091** — mise à plat + glossaire du jargon du backlog · `ship`~~ — shipped #103
 11. ~~**0022** — Moniteur : afficher heure/durée/historique déjà collectés · `ship`~~ — shipped #105

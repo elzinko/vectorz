@@ -20,7 +20,6 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 |---|---|---|
 | `ezk-ezk` | 📝 proposé (ADR-0007) | méta-skill : transforme une session en skill réutilisable (compose brainstorming + architecture + skill-creator ; range via `scripts/deploy.sh`) |
 | `ezk-archive` | 📥 importé (strangler-fig), portier (0088, ADR-0021) | rituel de clôture de session : clôt proprement un repo pour ne rien perdre entre deux sessions. `scripts/check.sh` est un **portier** (verdict `CLEAN`/`DIRTY` — sur CLEAN la clôture est traitée inline, sur DIRTY déléguée au sous-agent scopé) ; `scripts/handoff.sh` range la note en anneau FIFO |
-| `ezk-start` | 📦 nouveau (fiche 0090 tâche 1) | garde-fou d'**ouverture** de session (symétrique d'archive) : working tree, worktrees parallèles, fiches `in-progress`, handoff + tête PLAN. Portier read-only (`VERDICT: CLEAR`/`ALERT`) — sur ALERT choix explicite (rejoindre / interrompre journalisé), jamais de démarrage silencieux de sprint |
 | `ezk-product-build` | 📝 proposé (ADR-0008) | couche product-owner : construit un produit en enchaînant des sprints (compose ezk-backlog + /product-brainstorming + ezk-sprint ; pure orchestration, aucun script) |
 | `ezk-commits` | 📥 importé (strangler-fig, pilote 0004) | messages Conventional Commits + hook `commit-msg` (`scripts/commit-msg`) — 1er skill rendu **bindable** (loader sous-dossiers) |
 | `ezk-backlog` | 📥 importé (0024, version #31) | backlog markdown versionné (add dédoublonnant + version + brainstorm) — satisfait la fiche 0022 |
@@ -40,7 +39,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-codex` | 📦 nouveau (ADR-0024) | **adresse les retours Codex d'une PR** de bout en bout : `fix` (récupère findings inline+reviews, corrige ou **décline** les faux positifs + 👎, commit scopé, push, re-déclenche `@codex review`, **sonde de verdict bornée**) · `check` (lecture seule). Garde-fou de tête : **stand-down** anti-collision (PR mergée / branche pilotée ailleurs / commits d'une autre session). **Aucune composition inconditionnelle** : invoquée à la demande quand le bot Codex est branché (`ezk-sprint` étape 10 le dit « si branché, sinon ne l'attends pas » ; `ezk-reviewer` le remplace) — un branchement GitHub, pas un maillon du flux ; **ne merge pas** |
 
 > **Agents** (`../agents/`) : `ezk-architect`, `ezk-archive`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-dev` (7, tous bindés par le profil `global`).
-> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-start` (fiche 0090) + `ezk-codex` (ADR-0024) = **20 skills** au profil `global`, + 7 agents.
+> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-codex` (ADR-0024) = **19 skills** au profil `global` (+ l'ex-`ezk-start`, fiche 0090, absorbé par `ezk-sprint:check` le 2026-08-24), + 7 agents.
 > Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée) · `supervision-analyze` (post-mortem journal + transcript — fiche 0104, opt-in) · `vz-product-builder` (overlay AUTONOME du product-builder à corpus de reviewers, fiche 0060 — opt-in explicite, jamais bindé par défaut : l'autonomie se choisit).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
 
@@ -64,7 +63,6 @@ flowchart LR
     ezk-sprint --> ezk-backlog
     ezk-sprint --> ezk-ci
     ezk-sprint --> ezk-commits
-    ezk-sprint --> ezk-start
     vz-product-builder --> ezk-backlog
     vz-product-builder --> ezk-product-build
     vz-product-builder --> ezk-sprint

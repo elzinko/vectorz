@@ -69,10 +69,10 @@ elements:
     nom: Le run (« sprint » maison)
     scrum: Sprint (le conteneur)
     etat: adapte
-    implemente_par: [ezk-sprint, ezk-start:check, ezk-archive:run]
+    implemente_par: [ezk-sprint:run, ezk-sprint:check, ezk-archive:run]
     note: >-
       Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du
-      Guide. Ouverture par `ezk-start:check`, clôture de session par `ezk-archive:run`
+      Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run`
       (hygiène d'hôte, hors scrum).
 
   - id: review

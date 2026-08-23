@@ -30,7 +30,7 @@ enrichie dans le backlog.
 
 **Les liens qui comptent** : le sprint **convoque les agents** de l'équipe (architecte, dev TDD,
 QA, reviewer) ; LA LOI **guide** le sprint ; le ship **réalimente** le backlog. Autour du flux, trois
-cérémonies de cycle de vie : `ezk-start` **ouvre** la session (garde-fou en lecture seule),
+cérémonies de cycle de vie : `ezk-sprint:check` **ouvre** la session (garde-fou en lecture seule),
 `ezk-archive` la **clôt** sans rien perdre (handoff), et `ezk-retro` **améliore la méthode** en
 proposant de nouvelles règles — qui retournent dans LA LOI. La boucle se referme.
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# ezk-start — LE PORTIER D'OUVERTURE : diagnostics de démarrage READ-ONLY (fiche 0090 tâche 1).
+# ezk-sprint:check — LE PORTIER D'OUVERTURE : diagnostics de démarrage READ-ONLY (fiche 0090 tâche 1).
 #
 # Symétrique d'ezk-archive/scripts/check.sh, mais pour OUVRIR une session :
-#   --gate (défaut) : bloc machine borné pour le skill `/ezk-start`
+#   --gate (défaut) : bloc machine borné pour le skill `/ezk-sprint:check`
 #   --full          : rapport humain lisible
 #
 # CONTRAT DU GATE v0 :
@@ -24,7 +24,7 @@ MODE="gate"
 ROOT=""
 usage() {
   cat <<'USAGE'
-check.sh — portier d'ouverture ezk-start (read-only, fiche 0090)
+check.sh — portier d'ouverture ezk-sprint:check (read-only, fiche 0090)
 
   --gate            bloc machine (DÉFAUT) : VERDICT + faits ALERT
   --full            rapport humain lisible
@@ -153,7 +153,7 @@ fi
 
 # --- render -------------------------------------------------------------------
 if [[ "$MODE" == "gate" ]]; then
-  echo "# ezk-start gate v0"
+  echo "# ezk-sprint:check gate v0"
   echo "VERDICT: ${VERDICT}"
   echo "REPO: ${REPO}"
   echo "BRANCH: ${CUR}   WORKTREE: ${WT}   SIBLING_WORKTREES: $((WT_COUNT > 0 ? WT_COUNT - 1 : 0))"
@@ -170,7 +170,7 @@ if [[ "$MODE" == "gate" ]]; then
 fi
 
 # --full
-echo "# ezk-start — rapport d'ouverture"
+echo "# ezk-sprint:check — rapport d'ouverture"
 echo
 echo "**Verdict :** ${VERDICT}"
 echo "- Repo : \`${REPO}\`"

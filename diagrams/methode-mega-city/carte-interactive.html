@@ -374,12 +374,12 @@ window.EZK = {
  "counts": {
   "rules": 58,
   "agents": 7,
-  "skills": 23,
+  "skills": 22,
   "bundles": 12,
   "profiles": 6
  },
  "liens": {
-  "total": 187,
+  "total": 183,
   "casses": 0
  },
  "orphans": [
@@ -479,11 +479,11 @@ window.EZK = {
     "scrum": "Sprint (le conteneur)",
     "etat": "adapte",
     "implemente_par": [
-     "ezk-sprint",
-     "ezk-start:check",
+     "ezk-sprint:run",
+     "ezk-sprint:check",
      "ezk-archive:run"
     ],
-    "note": "Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du Guide. Ouverture par `ezk-start:check`, clôture de session par `ezk-archive:run` (hygiène d'hôte, hors scrum)."
+    "note": "Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run` (hygiène d'hôte, hors scrum)."
    },
    {
     "id": "review",
@@ -619,8 +619,7 @@ window.EZK = {
    "ezk-retro"
   ],
   "artefacts": [
-   "ezk-backlog",
-   "ezk-start"
+   "ezk-backlog"
   ],
   "hors-bande": []
  },
@@ -952,14 +951,13 @@ window.EZK = {
   "ezk-sprint": {
    "id": "ezk-sprint",
    "description": "Orchestrateur de developpement produit en sprints autonomes. A utiliser quand l'utilisateur veut construire ou iterer une feature ou un produit en mode sprint ou en POC, demande de developper, implementer ou iterer automatiquement, ou evoque une equipe agile (scrum master, architecte, dev, QA, reviewer). Deroule une boucle BDD/TDD vers clean code, clean arch et SOLID, valide TOUT en local d'abord (tests, pipeline act/Docker via ezk-ci, E2E navigateur via Playwright), revue, une PR par feature, squash-merge en conventional commit. Autonome a l'interieur d'un sprint mais s'arrete et demande validation entre chaque sprint, et alerte sur tout blocage ou derive de tokens. POC fonctionnel d'abord, polissage visuel ensuite.",
-   "usage": "",
+   "usage": "[help|check|run]",
    "etage": "methode",
    "bande": "ceremonies",
    "composes": [
     "ezk-backlog",
     "ezk-ci",
-    "ezk-commits",
-    "ezk-start"
+    "ezk-commits"
    ],
    "composesExternal": [],
    "roles": [
@@ -973,24 +971,6 @@ window.EZK = {
     "vz-product-builder"
    ],
    "profiles": [
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-start": {
-   "id": "ezk-start",
-   "description": "Garde-fou d'OUVERTURE de session avant de démarrer un sprint : inspecte le dépôt en lecture seule (working tree, worktrees parallèles, fiches in-progress, handoff, tête PLAN) et rend un verdict CLEAR ou ALERT. À utiliser quand l'utilisateur veut « démarrer un sprint », « on commence ? », « lancer ezk-sprint », ou avant l'intake d'une nouvelle feature. Sur ALERT : s'arrête et présente des choix explicites (rejoindre le sprint en vol / interrompre journalisé) — jamais de démarrage silencieux. Symétrique d'ezk-archive (clôture) ; ne merge/push/claim JAMAIS. Sous-commandes : help, check (dry-run read-only), run (check + présentation des choix si ALERT).",
-   "usage": "[help|check|run]",
-   "etage": "methode",
-   "bande": "artefacts",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "base",
     "daily",
     "global"
    ]
@@ -2016,8 +1996,7 @@ window.EZK = {
    ],
    "agents": [],
    "skills": [
-    "ezk-archive",
-    "ezk-start"
+    "ezk-archive"
    ],
    "interactions": []
   },
@@ -2085,8 +2064,7 @@ window.EZK = {
     "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
-    "ezk-sprint",
-    "ezk-start"
+    "ezk-sprint"
    ],
    "interactions": []
   },
@@ -2145,8 +2123,7 @@ window.EZK = {
     "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
-    "ezk-sprint",
-    "ezk-start"
+    "ezk-sprint"
    ],
    "interactions": []
   },

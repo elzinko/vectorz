@@ -97,8 +97,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
       'ezk-readme',
       'ezk-retro',
       'ezk-sprint',
-      'ezk-start',
-    ]);
+          ]);
   });
 
   it('n\'altère pas base : le socle reste minimal (mobile reste curated)', () => {
@@ -107,7 +106,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     if (!base) throw new Error('profil base introuvable');
     const resolved = expandProfile(base, catalog);
     expect(resolved.agents.map((a) => a.id)).toEqual([]);
-    expect(resolved.skills.map((s) => s.id)).toEqual(['ezk-archive', 'ezk-start']);
+    expect(resolved.skills.map((s) => s.id)).toEqual(['ezk-archive']);
   });
 });
 

@@ -27,7 +27,6 @@ etages:
       - ezk-product-build
       - ezk-retro
       - ezk-sprint
-      - ezk-start
     agents:
       - ezk-architect
       - ezk-dev
@@ -67,4 +66,4 @@ etages:
 # l'étage méthode sur décision PO). L'ordre est l'ordre du flux.
 bandes:
   ceremonies: [ezk-product-build, ezk-sprint, ezk-pr, ezk-retro]
-  artefacts: [ezk-backlog, ezk-start]
+  artefacts: [ezk-backlog]
