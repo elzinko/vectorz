@@ -82,7 +82,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
   si priorisé (pas de 2ᵉ fiche idea pour l'instant).
 - **Rate-limit API** (création d'issues côté app) — autre fiche technique **au besoin** ;
   ne pas mélanger avec l'intake LLM. Noté ici seulement.
-- Packaging plugin / modèle d'extension ([0170](0170-modele-extension-plugin-mega-city.md)) —
+- Packaging plugin / modèle d'extension ([0170](done/0170-modele-extension-plugin-mega-city.md)) —
   bloquant pour un adaptateur *dans* le cœur ezk-backlog ; l'intake reste une skill hors cœur.
 
 ## Liens
@@ -95,7 +95,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 | [0152](0152-ezk-bug-intake-repro.md) | Repro / cadrage bug — composition via **repro-only** ou fiche opt-in (pas `add` silencieux) |
 | [0171](0171-adapter-github-issues-push-only.md) | Adaptateur fiche → issue (sens inverse) |
 | [0172](0172-convention-sot-backlog-md.md) | SoT backlog md |
-| [0170](0170-modele-extension-plugin-mega-city.md) | Modèle d'extension (frontière) |
+| [0170](done/0170-modele-extension-plugin-mega-city.md) | Modèle d'extension (frontière) |
 
 ## Notes / décisions
 

@@ -12,16 +12,17 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { validateMethod } from '../core/ceremonies.js';
 import {
-  BANDES,
   MAP_DATA_BEGIN,
   MAP_DATA_END,
   buildMapData,
   buildMapDataBlock,
   upsertMapDataBlock,
 } from '../core/map-data.js';
+import { validateTaxonomie } from '../core/taxonomie.js';
 import type { Catalog } from '../loaders/catalog.js';
 import { loadCatalog } from '../loaders/catalog.js';
 import { loadMethodDoc } from '../loaders/method.js';
+import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const megaCity = resolve(here, '../..'); // products/mega-city
@@ -46,18 +47,30 @@ function extractBlock(text: string): string {
 describe('carte-interactive.html — données à jour (fidélité par construction)', () => {
   it('le bloc régénéré en mémoire est identique au bloc présent sur disque', () => {
     const catalog = loadCatalog(megaCity);
-    const expected = buildMapDataBlock(catalog, loadMethodDoc(megaCity));
+    const expected = buildMapDataBlock(
+      catalog,
+      loadMethodDoc(megaCity),
+      loadTaxonomieDoc(megaCity),
+    );
     const actual = extractBlock(readFileSync(mapPath, 'utf8'));
     expect(actual).toBe(expected);
   });
 
-  it('chaque skill du catalogue a une bande (les 4 officielles, ou hors-bande visible)', () => {
-    const data = buildMapData(loadCatalog(megaCity));
-    const shelved = Object.values(data.bandes).flat().sort();
-    expect(shelved).toEqual(Object.keys(data.skills).sort());
-    // Les bandes officielles (ADR-0020 §1) ne citent que des skills existants.
-    for (const ids of Object.values(BANDES)) {
-      for (const id of ids) expect(data.skills[id], `bande ADR-0020 cite ${id}`).toBeDefined();
+  it('ADR-0039 — chaque skill et chaque agent a un étage, et hors-bande est vide', () => {
+    const catalog = loadCatalog(megaCity);
+    const data = buildMapData(catalog, undefined, loadTaxonomieDoc(megaCity));
+    for (const s of Object.values(data.skills)) {
+      expect(s.etage, `skill ${s.id} sans étage`).toBeDefined();
+    }
+    for (const a of Object.values(data.agents)) {
+      expect(a.etage, `agent ${a.id} sans étage`).toBeDefined();
+    }
+    // La complétude est garantie par validateTaxonomie ; ici on fige la conséquence
+    // visible : plus aucun skill méthode oublié des bandes.
+    expect(data.bandes['hors-bande']).toEqual([]);
+    // Les bandes ne contiennent que des skills de l'étage méthode.
+    for (const ids of [data.bandes.ceremonies, data.bandes.artefacts]) {
+      for (const id of ids) expect(data.skills[id].etage).toBe('methode');
     }
   });
 
@@ -124,6 +137,48 @@ describe('validateMethod — la liste des cérémonies est vérifiée contre le 
     expect(() => validateMethod(tiny(), { elements: [el({ implemente_par: [] })] })).toThrow(
       /sans implémenteur/,
     );
+  });
+
+  it('taxonomie.yml — les pièges jettent (complétude, ids inconnus, doublons, bandes)', () => {
+    const cat = tiny(); // ezk-backlog, ezk-sprint (skills) + ezk-pm (agent)
+    const ok = {
+      etages: {
+        methode: { skills: ['ezk-backlog', 'ezk-sprint'], agents: ['ezk-pm'] },
+      },
+      bandes: { ceremonies: ['ezk-sprint'], artefacts: ['ezk-backlog'] },
+    };
+    expect(validateTaxonomie(cat, ok).skills['ezk-sprint'].etage).toBe('methode');
+    // un skill du catalogue sans étage → complétude violée
+    expect(() =>
+      validateTaxonomie(cat, {
+        etages: { methode: { skills: ['ezk-backlog'], agents: ['ezk-pm'] } },
+      }),
+    ).toThrow(/sans étage/);
+    // id inconnu du catalogue
+    expect(() =>
+      validateTaxonomie(cat, {
+        etages: { methode: { skills: ['ghost', 'ezk-backlog', 'ezk-sprint'], agents: ['ezk-pm'] } },
+      }),
+    ).toThrow(/inconnu/);
+    // rangé deux fois
+    expect(() =>
+      validateTaxonomie(cat, {
+        etages: {
+          methode: { skills: ['ezk-backlog', 'ezk-sprint'], agents: ['ezk-pm'] },
+          librairie: { skills: ['ezk-sprint'] },
+        },
+      }),
+    ).toThrow(/deux fois/);
+    // une bande citant un skill hors étage méthode
+    expect(() =>
+      validateTaxonomie(cat, {
+        etages: {
+          methode: { skills: ['ezk-backlog'], agents: ['ezk-pm'] },
+          librairie: { skills: ['ezk-sprint'] },
+        },
+        bandes: { ceremonies: ['ezk-sprint'] },
+      }),
+    ).toThrow(/pas un skill de l'étage méthode/);
   });
 
   it('le document RÉEL est valide et porte bien les trous annoncés (daily, product-goal)', () => {

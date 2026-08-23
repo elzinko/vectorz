@@ -15,15 +15,16 @@ import { fileURLToPath } from 'node:url';
 import { buildMapDataBlock, upsertMapDataBlock } from '../src/core/map-data.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
 import { loadMethodDoc } from '../src/loaders/method.js';
+import { loadTaxonomieDoc } from '../src/loaders/taxonomie.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = resolve(megaCity, '..', '..'); // racine vectorz
 const mapPath = join(repoRoot, 'diagrams', 'methode-mega-city', 'carte-interactive.html');
 
 const catalog = loadCatalog(megaCity);
-// La méthode (ceremonies.yml) est validée contre le catalogue DANS buildMapData —
-// une référence fausse fait échouer cette régénération (garde-fou du panel).
-const block = buildMapDataBlock(catalog, loadMethodDoc(megaCity));
+// ceremonies.yml ET taxonomie.yml sont validés contre le catalogue DANS buildMapData —
+// référence fausse ou catalogue incomplètement rangé = échec de cette régénération.
+const block = buildMapDataBlock(catalog, loadMethodDoc(megaCity), loadTaxonomieDoc(megaCity));
 const before = readFileSync(mapPath, 'utf8');
 const after = upsertMapDataBlock(before, block);
 

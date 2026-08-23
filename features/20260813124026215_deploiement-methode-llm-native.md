@@ -47,7 +47,7 @@ source de vérité…) sont appliquées **au petit bonheur**.
 
 | Fiche / doc | Ce qu'elle couvre | Ce qui manque encore |
 |---|---|---|
-| [0170](0170-modele-extension-plugin-mega-city.md) (P1) | **Modèle d'extension / plugin** mega-city : ADR + panel architecte, réf. **BMAD overlay** + **plugin Claude Code officiel** | La vision produit qui **motive** et **priorise** l'ADR |
+| [0170](done/0170-modele-extension-plugin-mega-city.md) (P1) | **Modèle d'extension / plugin** mega-city : ADR + panel architecte, réf. **BMAD overlay** + **plugin Claude Code officiel** | La vision produit qui **motive** et **priorise** l'ADR |
 | [0087](0087-plugin-claude-code-distribution.md) | **Distribuer** le catalogue de skills en plugin Claude Code | Le lien avec l'ancrage **par projet** (pas que la distribution globale) |
 | [0177](0177-pack-pratiques-projet-portables.md) (P2) | **Pack de pratiques projet portable** : lien indirect README → répertoire déporté versionné, lu par **tout** LLM | Le **cycle install / retrait** + le **plugin GitHub** + le **monitoring** |
 | [0172](0172-convention-sot-backlog-md.md) | **Backlog markdown = source de vérité**, GitHub = export | Le raccord avec la **description de PR** |
@@ -90,7 +90,7 @@ PR** comme premier livrable visible, et le **monitoring** comme plugin du même 
 
 - La méthode de base + des **plugins** optionnels qu'on active par projet.
 - Deux plugins nommés dès maintenant : **GitHub** (§D) et **Monitoring** (§E).
-- Sujet déjà ouvert par [0170](0170-modele-extension-plugin-mega-city.md) — qui doit produire l'ADR du modèle
+- Sujet déjà ouvert par [0170](done/0170-modele-extension-plugin-mega-city.md) — qui doit produire l'ADR du modèle
   d'extension **avant** tout code d'adaptateur.
 
 ### D. La description de PR = une convention OUVERTE
@@ -132,7 +132,7 @@ expansion packs en mode LLM** :
 
 Objectif : **reprendre le mécanisme d'installation LLM-native de bmad** (répertoires,
 overlay, config), en **écartant** ce qui ne colle pas à mega-city. **Ne pas copier** — cf.
-la consigne du panel de [0170](0170-modele-extension-plugin-mega-city.md), qui cite déjà bmad **et** le plugin
+la consigne du panel de [0170](done/0170-modele-extension-plugin-mega-city.md), qui cite déjà bmad **et** le plugin
 Claude Code officiel comme références.
 
 ## Critères d'acceptation (cadrage — le « à groomer à fond »)
@@ -171,7 +171,7 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
 
 *Pas* un remplacement — un **chapeau**. Distinctions :
 
-- [0170](0170-modele-extension-plugin-mega-city.md) produit **l'ADR technique** du modèle de plugin ; ici = la **vision
+- [0170](done/0170-modele-extension-plugin-mega-city.md) produit **l'ADR technique** du modèle de plugin ; ici = la **vision
   produit** qui le motive, le priorise et le relie au reste. 0170 reste la fiche qui grave la
   décision d'extension.
 - [0177](0177-pack-pratiques-projet-portables.md) définit **le pack de pratiques portable** (le *quoi* déposé) ; ici = **le

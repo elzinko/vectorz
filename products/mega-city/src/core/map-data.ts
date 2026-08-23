@@ -14,40 +14,27 @@
 import type { Catalog } from '../loaders/catalog.js';
 import { type MethodDoc, validateMethod } from './ceremonies.js';
 import { validateGraph } from './graph.js';
+import { type Etage, type Famille, type TaxonomieDoc, validateTaxonomie } from './taxonomie.js';
 
 export const MAP_DATA_BEGIN = '/*ezk-map-data:begin*/';
 export const MAP_DATA_END = '/*ezk-map-data:end*/';
 
 /**
- * Les QUATRE BANDES officielles — recopiées d'ADR-0020 (amendement 2026-08-20, §1).
- * La bande « Rôles » = les agents (pas listée ici : ce sont tous les agents du catalogue).
- * Un skill absent de cette table n'a JAMAIS reçu de bande par ADR : la carte le range
- * dans « hors bande » au lieu de décider à sa place — le bruit doit se voir, pas se lisser.
+ * ADR-0039 : la classification vit dans `taxonomie.yml` (les trois étages + les bandes
+ * internes à l'étage méthode), validée en COMPLÉTUDE — plus aucune table recopiée ici.
+ * `hors-bande` ne peut plus contenir que des skills de l'étage méthode oubliés des
+ * bandes : le bruit reste visible s'il apparaît, mais il n'a plus le droit d'exister
+ * par construction pour les autres étages.
  */
-export const BANDES: Record<'ceremonies' | 'artefacts' | 'outillage', readonly string[]> = {
-  ceremonies: ['ezk-product-builder', 'ezk-sprint', 'ezk-pr', 'ezk-retro'],
-  artefacts: ['ezk-backlog', 'ezk-commits', 'ezk-archive', 'ezk-start'],
-  outillage: [
-    'ezk-ci',
-    'ezk-docker',
-    'ezk-npm-scripts',
-    'ezk-device',
-    'ezk-apk',
-    'ezk-preview',
-    'ezk-diagram',
-    'ezk-readme',
-    'ezk-article',
-    'ezk-design-system',
-  ],
-};
-
-export type Bande = keyof typeof BANDES | 'hors-bande';
+export type Bande = 'ceremonies' | 'artefacts' | 'hors-bande';
 
 export interface MapSkill {
   id: string;
   description: string;
   usage: string; // `argument-hint:` du frontmatter — les sous-commandes, verbatim
-  bande: Bande;
+  etage: Etage; // ADR-0039 — méthode | branchements | librairie
+  famille?: Famille; // pour l'étage branchements (hote-llm, github, observabilite, techno, plugin)
+  bande?: Bande; // interne à l'étage méthode uniquement
   composes: string[]; // skills internes que je compose
   composesExternal: string[]; // refs hors catalogue (documentées, jamais warnées — ADR-0025)
   roles: string[]; // agents que je convoque
@@ -58,6 +45,8 @@ export interface MapSkill {
 export interface MapAgent {
   id: string;
   description: string;
+  etage: Etage; // ADR-0039
+  famille?: Famille;
   model: string;
   effort: string;
   competences: string[]; // skills
@@ -108,9 +97,20 @@ export interface MapData {
 
 const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
 
-/** Compile les données de la carte. Tout est trié → sortie stable (F4). */
-export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
+/**
+ * Compile les données de la carte. Tout est trié → sortie stable (F4).
+ * `method` (ceremonies.yml) et `taxonomie` (taxonomie.yml) sont VALIDÉS ici — une
+ * référence fausse ou un catalogue incomplètement rangé fait échouer la compilation.
+ * Sans `taxonomie` (tests unitaires ciblés uniquement), repli dégénéré : tout en
+ * étage méthode, hors-bande — le bord (regen) passe TOUJOURS le document réel.
+ */
+export function buildMapData(
+  catalog: Catalog,
+  method?: MethodDoc,
+  taxonomie?: TaxonomieDoc,
+): MapData {
   const report = validateGraph(catalog);
+  const taxo = taxonomie ? validateTaxonomie(catalog, taxonomie) : undefined;
 
   // Index inverses — calculés une fois, jamais devinés par la carte.
   const composedBy = new Map<string, Set<string>>();
@@ -142,9 +142,14 @@ export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
     for (const b of p.bundles) add(bundleProfiles, b, p.id);
   }
 
-  const bandeOf = (skillId: string): Bande => {
-    for (const bande of ['ceremonies', 'artefacts', 'outillage'] as const) {
-      if (BANDES[bande].includes(skillId)) return bande;
+  // Placement d'une brique : depuis la taxonomie validée ; repli dégénéré sinon.
+  const placeSkill = (id: string) => taxo?.skills[id] ?? { etage: 'methode' as const };
+  const placeAgent = (id: string) => taxo?.agents[id] ?? { etage: 'methode' as const };
+  const bandeOf = (skillId: string): Bande | undefined => {
+    if (placeSkill(skillId).etage !== 'methode') return undefined; // bande = interne à la méthode
+    if (!taxo) return 'hors-bande';
+    for (const bande of ['ceremonies', 'artefacts'] as const) {
+      if (taxo.bandes[bande].includes(skillId)) return bande;
     }
     return 'hors-bande';
   };
@@ -153,11 +158,15 @@ export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
   for (const id of sorted(catalog.skills.keys())) {
     const s = catalog.skills.get(id);
     if (!s) continue;
+    const place = placeSkill(id);
+    const bande = bandeOf(id);
     skills[id] = {
       id,
       description: s.description ?? '',
       usage: s.argumentHint ?? '',
-      bande: bandeOf(id),
+      etage: place.etage,
+      ...(place.famille ? { famille: place.famille } : {}),
+      ...(bande ? { bande } : {}),
       composes: sorted(s.composes ?? []),
       composesExternal: sorted(s.composesExternal ?? []),
       roles: sorted(s.roles ?? []),
@@ -170,9 +179,12 @@ export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
   for (const id of sorted(catalog.agents.keys())) {
     const a = catalog.agents.get(id);
     if (!a) continue;
+    const place = placeAgent(id);
     agents[id] = {
       id,
       description: a.description ?? '',
+      etage: place.etage,
+      ...(place.famille ? { famille: place.famille } : {}),
       model: a.model ?? '',
       effort: a.effort ?? '',
       competences: sorted(a.competences),
@@ -223,12 +235,11 @@ export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
     };
   }
 
-  // Bandes officielles : dans l'ORDRE DU TABLEAU d'ADR-0020 (pour les cérémonies,
-  // c'est l'ordre du flux scrum — pas l'alphabet). Hors-bande : tri alphabétique.
+  // Bandes internes à l'étage méthode, dans l'ordre du document (= ordre du flux).
+  // `hors-bande` = skills méthode oubliés des bandes — doit rester vide par construction.
   const bandes: Record<Bande, string[]> = {
-    ceremonies: BANDES.ceremonies.filter((id) => id in skills),
-    artefacts: BANDES.artefacts.filter((id) => id in skills),
-    outillage: BANDES.outillage.filter((id) => id in skills),
+    ceremonies: taxo?.bandes.ceremonies ?? [],
+    artefacts: taxo?.bandes.artefacts ?? [],
     'hors-bande': Object.keys(skills).filter((id) => skills[id].bande === 'hors-bande'),
   };
 
@@ -254,9 +265,16 @@ export function buildMapData(catalog: Catalog, method?: MethodDoc): MapData {
 }
 
 /** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans le HTML de la carte. */
-export function buildMapDataBlock(catalog: Catalog, method?: MethodDoc): string {
+export function buildMapDataBlock(
+  catalog: Catalog,
+  method?: MethodDoc,
+  taxonomie?: TaxonomieDoc,
+): string {
   // `<` échappé en < : une description contenant `</script>` ne peut pas fermer la balise.
-  const json = JSON.stringify(buildMapData(catalog, method), null, 1).replace(/</g, '\\u003c');
+  const json = JSON.stringify(buildMapData(catalog, method, taxonomie), null, 1).replace(
+    /</g,
+    '\\u003c',
+  );
   return `${MAP_DATA_BEGIN}\nwindow.EZK = ${json};\n${MAP_DATA_END}`;
 }
 

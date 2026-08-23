@@ -38,7 +38,7 @@ Peut vivre comme amendement doc de 0170/0171 ou ADR process dédié — à tranc
 
 - [ ] Règle SoT publiée (ADR ou section skill) et référencée depuis ezk-backlog
 - [ ] Exemple « anti-pattern » (critères seulement dans l'issue) + correctif attendu
-- [ ] Lien croisé vers [0170](0170-modele-extension-plugin-mega-city.md) et
+- [ ] Lien croisé vers [0170](done/0170-modele-extension-plugin-mega-city.md) et
       [0171](0171-adapter-github-issues-push-only.md)
 
 ## Notes / décisions

@@ -33,7 +33,7 @@ Ce n'est **pas** :
 
 ## Proposition
 
-Implémenter l'adaptateur **selon le modèle tranché par [0170](0170-modele-extension-plugin-mega-city.md)**
+Implémenter l'adaptateur **selon le modèle tranché par [0170](done/0170-modele-extension-plugin-mega-city.md)**
 (dépendance bloquante — panel + ADR d'abord).
 
 Comportement cible (à confirmer / affiner dans l'ADR 0170) :
@@ -55,7 +55,7 @@ Références d'extension (à lire au design, via 0170) :
 
 ## Critères d'acceptation
 
-- [ ] [0170](0170-modele-extension-plugin-mega-city.md) shipped (ADR d'extension disponible)
+- [ ] [0170](done/0170-modele-extension-plugin-mega-city.md) shipped (ADR d'extension disponible)
 - [ ] Core ezk-backlog (`add` / `ready` / `ship` / `regen`) **zéro** import/`gh` obligatoire
 - [ ] Activation opt-in documentée ; projet sans config = comportement inchangé
 - [ ] Sens de sync = local → GH ; pas d'écrasement silencieux du front-matter local

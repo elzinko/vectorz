@@ -6,9 +6,9 @@ product: mega-city
 priority: P1
 epic:
 depends: []
-status: idea
+status: shipped
 ready:
-pr:
+pr: "#162"
 created: 2026-07-30
 ---
 
@@ -20,11 +20,11 @@ On veut brancher des capacités **optionnelles** (ex. projection GitHub Issues, 
 outillage externe) **sans coupler le core** ezk-backlog / mega-city à GitHub, Jira, etc.
 Aujourd'hui il n'existe pas de **contrat d'extension** explicite : ni « où s'injecte un
 adaptateur », ni « ce qui reste agnostique », ni la frontière avec le **packaging**
-(fiche [0087](0087-plugin-claude-code-distribution.md) —
+(fiche [0087](../0087-plugin-claude-code-distribution.md) —
 distribuer le catalogue en plugin Claude Code).
 
 Sans ADR, on risque soit un BacklogStore hexagonal prématuré
-([0093](0093-backlogstore-port-agnostique.md) — **YAGNI**,
+([0093](../0093-backlogstore-port-agnostique.md) — **YAGNI**,
 panel 2026-07-25), soit des hooks collés au hasard dans les skills.
 
 ## Proposition
@@ -35,7 +35,7 @@ d'extension **le plus adapté à mega-city**, en s'inspirant (sans copier) de :
 1. **BMAD v6 — prises natives / overlay** — `_bmad/_config/agents/*.customize.yaml`
    (memories, critical_actions, menu…) ; modules installables ; échelle
    adaptateur → overlay → fork jetable (cf. fiche
-   [0162](0162-bmad-contrat-supervisabilite.md)).
+   [0162](../0162-bmad-contrat-supervisabilite.md)).
 2. **Plugin Claude Code officiel GitHub** — référence concrète de packaging / slots :
    - marketplace : [`anthropics/claude-plugins-official`](https://github.com/anthropics/claude-plugins-official)
    - plugin `github` : `.claude-plugin/plugin.json` + `.mcp.json` (MCP server, pas backlog)
@@ -64,9 +64,17 @@ Questions à trancher dans l'ADR (non exhaustif) :
 
 ## Notes / décisions
 
-- `product: mega-city` — liste unique livrée ([0064](done/0064-liste-unique-features-champ-product.md) / #66) ;
+- `product: mega-city` — liste unique livrée ([0064](0064-liste-unique-features-champ-product.md) / #66) ;
   champ supporté par template + `regen-backlog.sh` + skill ezk-backlog.
 - Ids **0170+** (post-0064 ; max main était 0167).
 - BMAD supervisabilité : fiche renumérotée **0162** (ex-0058).
 - Statut `idea` : grooming + panel avant `ready`.
 - Doublon possible avec la PR ouverte [#71](https://github.com/elzinko/vectorz/pull/71) — à rebaser / alléger une fois ce commit sur main.
+
+## Livraison (2026-08-23)
+
+Livrée par **ADR-0039** (`products/mega-city/docs/adr/0039-trois-etages-moteur-methode-branchements-plugin.md`),
+lot 2 du plan « trois étages ». Panels tenus (adverse + critique d'architecte). L'ADR
+cite BMAD et le plugin Claude Code officiel (repris/écarté), trace la frontière
+0087 / adaptateurs / 0093, et définit le plugin = overlay déclaratif
+(`vz-product-builder` premier exemple). La dépendance bloquante de 0171 est levée.
