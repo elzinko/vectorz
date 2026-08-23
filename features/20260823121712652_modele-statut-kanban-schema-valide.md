@@ -41,6 +41,11 @@ un validateur**, où `ready` devient une **colonne** à part entière — plus u
   deux, et l'éligibilité au déblocage (déjà passée par la DoR) doit survivre. La migration n'est « sans
   perte » **qu'à condition** de trancher : (a) `blocked` reste un **attribut orthogonal** (un flag, pas
   une colonne), ou (b) une représentation dédiée aux items *bloqués-mais-mûrs*. **À décider au grooming.**
+- **Préserver les dates `ready:` historiques** (retour Codex #164) : dériver la date de la colonne
+  *Ready* **uniquement de git** l'altère — ex. `20260812134515706` porte `ready: 2026-08-21`, mais le
+  commit qui l'a livrée (`ede1224`, squash-merge) est daté du 2026-08-22. Retirer le champ ferait donc
+  **mentir** `history`. Avant de supprimer `ready:`, **importer les dates legacy** (ou inscrire un
+  événement historique équivalent) — sinon la migration n'est pas « sans perte ».
 - **Ce qu'on ne fait PAS** : transitions autorisées, rôles, permissions, objets sprint. Juste valeurs validées.
 
 ## Critères d'acceptation (à groomer)
@@ -48,8 +53,9 @@ un validateur**, où `ready` devient une **colonne** à part entière — plus u
 - [ ] La liste des statuts vit dans **un schéma éditable** (pas en dur dans les scripts).
 - [ ] Un validateur **rejette** un `status` hors-liste (testé, rouge→vert).
 - [ ] `ready` est une **colonne** ; le champ date `ready:` est **retiré** du front-matter.
-- [ ] Migration des fiches actives + `done/` **sans perte** — y compris les items `blocked` **et**
-      `ready` (cf. `0102`), via un `blocked` orthogonal ou une représentation dédiée.
+- [ ] Migration des fiches actives + `done/` **sans perte** — items `blocked` **et** `ready` (cf. `0102`)
+      via un `blocked` orthogonal ou une représentation dédiée, **et** dates `ready:` historiques
+      **préservées** (pas dérivées à tort du squash-merge, cf. `20260812134515706`).
 - [ ] Markdown reste la **source** ; aucun moteur de workflow introduit.
 
 ## Comment vérifier
