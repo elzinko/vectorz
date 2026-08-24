@@ -17,6 +17,15 @@
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
+## ▶️ NOW bis — refonte de la méthode (post-PR #162, séquence du 2026-08-24)
+
+1. **20260824061247344** — le reliquat exécutable de la refonte « trois étages »
+   (2 bundles orphelins · vocab DoD · lot 4b requalifs · compétences agents) · `build`
+2. **20260823124042842** — vue d'avancement, lot 0 : le board compilé (le flux,
+   après la structure) · `groom` puis `build`
+3. Options PO au fil de l'eau (rename ezk-pm, Daily-si-douleur, 2ᵉ overlay) —
+   listées dans la fiche 1, à trancher quand tirées.
+
 ## 🧹 Hygiène préalable (rapide)
 
 - ~~**P0** `build` **0181** — méthode ezk : Opus 4.8 (+ spare sonnet) + restitutions

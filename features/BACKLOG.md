@@ -88,6 +88,7 @@
 | 20260821163346490 | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 20260821163346487 | mega-city | 🔴 todo |  |
 | 20260823220100308 | Le binder retire proprement un ancien nom (retrait gardé) — le débloqueur des renames | feature | P1 |  | mega-city | ✅ shipped | #162 |
 | 20260823220100443 | Split cérémonie/rôle — le skill devient ezk-product-build, le rôle PO reste l'agent ezk-pm | refactor | P1 |  | mega-city | ✅ shipped | #162 |
+| 20260824061247344 | Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO) | refactor | P1 |  | mega-city | 🔴 todo |  |
 | 0003 | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | 0004 | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | 0006 | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
