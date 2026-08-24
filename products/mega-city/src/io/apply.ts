@@ -264,21 +264,24 @@ function assertReplaceableAgent(root: string, agentFilePath: string): void {
 
 /**
  * Retrait GARDÉ d'un ANCIEN nom après renommage (fiche 20260813131737962, volet binder,
- * livré 2026-08-23) : le re-bind n'itère que le nouveau plan, ce retrait nettoie l'ancien —
- * mais SEULEMENT si l'entrée est à nous, même invariant d'appartenance que les gardes :
- *   - symlink → notre entrée (précédent d'assertReplaceableSkillDir) : retirée ;
- *   - skill-dir réel → retiré ssi ses entrées de premier niveau ⊆ celles du skill RENOMMÉ
- *     dans le catalogue (proxy du plan d'origine — un dossier utilisateur homonyme
- *     contient autre chose) ; sans catalogRoot : refus prudent ;
- *   - agent-fichier réel → JAMAIS retiré (miroir d'assertReplaceableAgent).
+ * livré 2026-08-23 ; DURCI le 2026-08-24 après revue adverse). Le re-bind n'itère que le
+ * nouveau plan ; ce retrait nettoie l'ancien — mais SEULEMENT ce qu'on peut PROUVER à nous :
+ *   - **symlink** → notre entrée en mode `link` (le cas réel de l'utilisateur, `--link`) :
+ *     retirée. Sûr : un symlink au nom de l'ancien skill EST notre matérialisation.
+ *   - **entrée RÉELLE** (dossier ou fichier) → JAMAIS de `rm -rf`, on SIGNALE (residu).
+ *
+ * Pourquoi le durcissement : l'ancien skill a QUITTÉ le catalogue, donc après coup on ne
+ * peut plus prouver qu'un dossier réel à l'ancien nom est le nôtre. L'ancienne preuve
+ * (« entrées ⊆ celles du NOUVEAU skill ») supprimait par erreur un dossier utilisateur
+ * homonyme ne contenant qu'un `SKILL.md` — le nom qu'on vient justement de LIBÉRER
+ * (revue adverse code, finding 1). Data-loss dans le vrai `~/.claude` : proscrit.
+ * Conséquence assumée : en mode `copy`, l'ancien dossier réel n'est pas auto-nettoyé —
+ * il est signalé pour retrait manuel. (Piste future : un marqueur `.ezk-managed` écrit à
+ * la matérialisation copy prouverait l'appartenance sans risque — hors périmètre ici.)
  * Jamais de purge hors-registre : un skill omis d'un profil (ex. `daily`) n'est PAS un
  * résidu de renommage. Un refus n'est jamais bloquant : signalé dans le bilan.
  */
-function retireRenamedEntry(
-  root: string,
-  entry: RenameEntry,
-  catalogRoot?: string,
-): 'retire' | 'residu' | 'absent' {
+function retireRenamedEntry(root: string, entry: RenameEntry): 'retire' | 'residu' | 'absent' {
   const rel = entry.kind === 'skill' ? `skills/${entry.ancien}` : `agents/${entry.ancien}.md`;
   const target = resolveInsideProject(root, rel);
   if (isSymlink(target)) {
@@ -286,27 +289,16 @@ function retireRenamedEntry(
     return 'retire';
   }
   if (!existsSync(target)) return 'absent';
-  if (entry.kind === 'agent') return 'residu'; // vrai fichier : jamais retiré d'office.
-  if (!statSync(target).isDirectory() || !catalogRoot) return 'residu';
-  const proxyDir = resolve(catalogRoot, 'skills', entry.nouveau);
-  if (!existsSync(proxyDir)) return 'residu';
-  const managed = new Set(readdirSync(proxyDir));
-  const foreign = readdirSync(target).filter((name) => !managed.has(name));
-  if (foreign.length > 0) return 'residu';
-  rmSync(target, { recursive: true, force: true });
-  return 'retire';
+  // Entrée RÉELLE : appartenance non prouvable → jamais de rm, signalée pour retrait manuel.
+  return 'residu';
 }
 
 /** Applique le retrait gardé sur tout le registre et rend le bilan. */
-function retireRenamedEntries(
-  root: string,
-  renames: RenameEntry[],
-  catalogRoot?: string,
-): GlobalApplyReport {
+function retireRenamedEntries(root: string, renames: RenameEntry[]): GlobalApplyReport {
   const report: GlobalApplyReport = { retires: [], residus: [] };
   for (const entry of renames) {
     const rel = entry.kind === 'skill' ? `skills/${entry.ancien}` : `agents/${entry.ancien}.md`;
-    const verdict = retireRenamedEntry(root, entry, catalogRoot);
+    const verdict = retireRenamedEntry(root, entry);
     if (verdict === 'retire') report.retires.push(rel);
     if (verdict === 'residu') report.residus.push(rel);
   }
@@ -384,7 +376,7 @@ export function applyGlobalPlan(
     }
     for (const dirRel of skillDirs.keys()) linkSkillDir(root, catalogRoot, dirRel);
     for (const file of agentFiles) linkAgent(root, catalogRoot, file.path);
-    return retireRenamedEntries(root, options.renames ?? [], catalogRoot);
+    return retireRenamedEntries(root, options.renames ?? []);
   }
 
   // copy : REMPLACEMENT ATOMIQUE de notre entrée gérée par le contenu figé du plan. Retirer
@@ -401,5 +393,5 @@ export function applyGlobalPlan(
     if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
     applyFile(root, file);
   }
-  return retireRenamedEntries(root, options.renames ?? [], options.catalogRoot);
+  return retireRenamedEntries(root, options.renames ?? []);
 }

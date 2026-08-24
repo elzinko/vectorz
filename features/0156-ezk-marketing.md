@@ -160,7 +160,10 @@ toute modification du triplet invalide la validation.
 
 ## Absorption (paquet 2, 2026-08-24)
 
-**Absorbe `20260812104022234`** (agent marketing analyste, fermée) — ses 4 capacités (spec PO du
-2026-08-10) deviennent des critères de CET orchestrateur : copy par produit FR/EN · juger le RENDU
-réel de la page · benchmark concurrents (« le wording fait-il vendre ? ») · stratégies marketing
-orientées dev → demandes actionnables. Registre : docs/captures/2026-08-24-fermetures-backlog-paquet2.md.
+**Absorbe `20260812104022234`** (agent marketing analyste, fermée) — ses **7** capacités (spec PO
+du 2026-08-10) deviennent des critères de CET orchestrateur, AUCUNE perdue (revue adverse 2026-08-24) :
+1. copy par produit FR/EN · 2. juger le RENDU réel de la page · 3. benchmark concurrents · 4. stratégies
+marketing orientées dev → demandes actionnables · **5. proposer de l'A/B testing (→ demandes de features)** ·
+**6. lire les métriques post-livraison (suivi grosse maille)** · **7. inventorier les outils existants
+(PostHog/Vercel/Search Console…) et proposer leur intégration**. Les points 5-7 (analytics/inbound) NE
+sont PLUS « post-v1 non harvesté » : critères de v1. Registre : docs/captures/2026-08-24-fermetures-backlog-paquet2.md.

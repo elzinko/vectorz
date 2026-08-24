@@ -47,8 +47,9 @@ décrète pas — être composé par une cérémonie ne suffit pas à être de l
 l'éparpillement est la panne, pas la solution). Le compilateur de la carte
 (`src/core/taxonomie.ts`) VALIDE en **complétude** : chaque skill et chaque agent du
 catalogue a exactement un étage ; id inconnu, doublon, oubli, ou bande citant un skill
-hors-méthode ⇒ échec de régénération, CI rouge. « Chaque brique rangée » est un
-invariant testé, pas une promesse.
+hors-méthode ⇒ échec de régénération, CI rouge. La **complétude** du rangement est un invariant testé
+(aucune brique sans étage) ; le **placement** d'une brique dans TEL étage reste un arbitrage
+ÉDITORIAL (PO), pas une propriété testée mécaniquement (revue adverse 2026-08-24).
 
 ### 3. Rangements actés (PO, 2026-08-23) — amende la table d'ADR-0020
 

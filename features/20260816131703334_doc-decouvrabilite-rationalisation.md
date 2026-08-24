@@ -60,6 +60,6 @@ Registre `docs/adr/` (le joyau) · `rules/` (58 fichiers, frontmatter homogène 
 
 - **Supersède l'antipattern de 0068** (« garder la method-map à jour à la main ») :
   une carte tenue à la main dérive par construction → on la **génère**.
-- Voisines : [[0079]] (lisibilité — règle), [[0091]] (glossaire jargon), [[0133]] (carte des rôles method-map),
+- Voisines : [[0079]] (lisibilité — règle), [[0091]] (glossaire jargon), [[0133]] (fermée 2026-08-24 — la carte des rôles = le graphe compilé),
   [[0177]] (pack pratiques portables), [[0087]] (distribution/publication — LATER).
 - Filles à ce jour : `/ezk-help` (Phase 1). Les autres phases → fiches filles à groomer au fil de l'eau.

@@ -80,9 +80,9 @@ elements:
     nom: La livraison (release gate)
     scrum: Sprint Review
     etat: adapte
-    implemente_par: [ezk-sprint, ezk-pr:ship]
+    implemente_par: [ezk-sprint]
     note: >-
-      Ce n'est PAS une Sprint Review (pas d'inspection avec parties prenantes) : gate +
+      Portée par le SPRINT (ezk-pr est un module GitHub OPTIONNEL, hors implémenteur). Ce n'est PAS une Sprint Review (pas d'inspection avec parties prenantes) : gate +
       revue adverse + squash-merge (étapes 6/7/9-10 du sprint). La seule « review »
       réelle est le checkpoint inter-sprint où l'humain inspecte le livré.
 
@@ -124,7 +124,7 @@ elements:
     nom: L'increment
     scrum: Increment
     etat: adapte
-    implemente_par: [ezk-sprint, ezk-pr:ship]
+    implemente_par: [ezk-sprint]
     note: >-
       La PR squash-mergée sur main (étapes 8-10 du sprint) ; livraison groupée possible
       par ezk-pr. Jamais nommé « Increment » dans la maison — le mot manque, pas la chose.

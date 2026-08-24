@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type { RenameEntry } from '../io/apply.js';
+import { assertSafeId } from './catalog.js';
 
 export function loadRenames(rootDir: string): RenameEntry[] {
   const path = join(rootDir, 'renames.yml');
@@ -24,6 +25,9 @@ export function loadRenames(rootDir: string): RenameEntry[] {
     ) {
       throw new Error(`renames.yml : entrée ${i} mal formée (ancien/nouveau/kind requis)`);
     }
-    return { ancien: e.ancien, nouveau: e.nouveau, kind: e.kind };
+    // Défense en profondeur (même garde que catalog.ts) : `ancien`/`nouveau` deviennent
+    // des segments de chemin (`skills/<ancien>`, `resolve(catalog, 'skills', <nouveau>)`).
+    // Un id en traversée (`../..`) est refusé avant tout accès disque.
+    return { ancien: assertSafeId(e.ancien), nouveau: assertSafeId(e.nouveau), kind: e.kind };
   });
 }

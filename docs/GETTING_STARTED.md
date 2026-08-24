@@ -2,6 +2,10 @@
 
 > **Status (2026-08):** Dogfood method = **mega-city** (`ezk-backlog`, `ezk-sprint`, `ezk-sprint:check`, `ezk-archive`). Supervision = **cop1** daemon + Moniteur. The epoch-1 BMAD orchestrator (`cop1 orchestrator run`) was removed from prod — those CLI commands now print an epoch-2 hint.
 
+## Comprendre la méthode (avant de lancer)
+
+`pnpm ezk:map` ouvre la **carte interactive** (3 étages moteur / méthode / modules, toutes les cérémonies scrum, onglet 🧭 « le domaine »). Jargon `ezk-*` traduit dans [`glossaire-jargon-ezk.md`](glossaire-jargon-ezk.md).
+
 ## Prerequisites
 
 - Node.js >= 20

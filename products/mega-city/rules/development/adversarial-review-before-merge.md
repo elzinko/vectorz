@@ -21,3 +21,9 @@ enforcements:
   findings se traitent en plus, jamais à la place.
 - Origine : décision PO du 2026-08-24 — « la revue est une règle de développement
   (DoD), pas une habitude » ; l'exécutant de l'enforcement est l'agent `ezk-reviewer`.
+- **Portée honnête de l'enforcement** (revue adverse 2026-08-24) : `agent-check` est un
+  contrôle de **niveau 1** — l'agent `ezk-reviewer` LIT cette règle et rend son verdict.
+  Ce n'est PAS un verrou git déterministe (niveau 2 = `type: hook`, non posé ici). « Bloquant »
+  veut donc dire : le reviewer refuse le GO, pas que le `git merge` est empêché mécaniquement.
+  Le filet déterministe réel reste la **gate locale** (build + tests verts) avant merge.
+  Durcir en `hook` pré-merge est possible plus tard si le besoin d'un blocage dur apparaît.

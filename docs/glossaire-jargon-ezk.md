@@ -105,3 +105,16 @@ Termes du débat sur le guide d'installation — **décision PO suspendue** au m
    appliquer le verdict (traduire ou supprimer).
 3. **Mise à jour** — lors d'une revue backlog (`ezk-backlog review`) ou d'une rétro qui
    invente un nouveau sigle : ajouter une ligne avec verdict.
+
+## Vocabulaire de la refonte « trois étages » (ADR-0039, 2026-08-24)
+
+| Terme | En clair |
+|---|---|
+| **moteur** | La mécanique générique : règles + bundles + profils + `bind`. Ne connaît pas scrum. |
+| **méthode** | L'instance scrum construite avec le moteur : cérémonies, rôles, artefacts. |
+| **module** | Un outil qui se branche autour de la méthode sans en faire partie (GitHub, sessions, supervision, techno, overlay). Mot emprunté à BMAD. |
+| **overlay** | Un module qui charge la doctrine d'une brique et la surcharge par déclaration, sans la modifier (ex. `vz-product-builder`). |
+| **librairie** | L'atelier qui fabrique et garde le catalogue lui-même (`ezk-ezk`, `ezk-steward`). |
+| **étage** | L'axe de *nature* d'une brique : moteur / méthode / module / librairie (fichier `taxonomie.yml`). |
+| **bind** | Le « livreur » : lit un profil (bon de commande) et installe les fichiers chez la cible (`~/.claude`, un projet, une session). |
+| **profil** | Le bon de commande d'une cible : quelles règles + rôles + commandes elle embarque. |

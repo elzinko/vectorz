@@ -1,8 +1,10 @@
 # cop1 / vectorz / mega-city
 
 > Autonomous AI-agent development with human supervision — local-first, commit-disciplined.
+>
+> **Comprendre la méthode en 10 min** : `pnpm ezk:map` ouvre la [carte interactive](diagrams/methode-mega-city/carte-interactive.html) (moteur / méthode / modules, onglet 🧭 « le domaine ») ; jargon traduit dans le [glossaire](docs/glossaire-jargon-ezk.md).
 
-**Epoch 2 (current).** Dogfood on this repo uses **mega-city** skills (`ezk-backlog`, `ezk-sprint`, `ezk-start`, `ezk-archive`) plus the **cop1** supervision daemon and Moniteur. The epoch-1 BMAD orchestrator pilot was removed from prod (E4 / [ADR-029](docs/adr/ADR-029-emancipation-bmad-politique-archivage.md), fiche [0039](features/done/0039-e4-retrait-bmad.md)).
+**Epoch 2 (current).** Dogfood on this repo uses **mega-city** skills (`ezk-backlog`, `ezk-sprint`, `ezk-archive`) plus the **cop1** supervision daemon and Moniteur. The epoch-1 BMAD orchestrator pilot was removed from prod (E4 / [ADR-029](docs/adr/ADR-029-emancipation-bmad-politique-archivage.md), fiche [0039](features/done/0039-e4-retrait-bmad.md)).
 
 BMAD on **another** project stays supported as an optional sidecar via `cop1 init-bmad-bridge` ([ADR-032](docs/adr/ADR-032-emission-adaptateur-separable.md) — fiche [0162](features/0162-bmad-contrat-supervisabilite.md) for the full contract).
 

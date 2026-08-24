@@ -6,8 +6,8 @@
  * verdict du panel adverse du 2026-08-23). La validation exige la COMPLÉTUDE : chaque
  * skill et chaque agent du catalogue a exactement UN étage ; un oubli, un id inconnu,
  * un doublon, ou une bande citant un skill hors-méthode ⇒ on JETTE (régénération en
- * échec, CI rouge). « Chaque brique rangée dans son étage » est un invariant, pas
- * une promesse.
+ * échec, CI rouge). NB : c'est la COMPLÉTUDE qui est testée (aucune brique sans étage),
+ * pas la JUSTESSE du placement — ranger ezk-ci en « techno » reste un arbitrage éditorial.
  */
 import type { Catalog } from '../loaders/catalog.js';
 

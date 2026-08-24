@@ -2,19 +2,19 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 /**
- * Retrait GARDÉ des anciens noms au re-bind (fiche 20260813131737962, volet binder,
- * livré 2026-08-23 — le débloqueur de tout renommage, lot 3 du plan « trois étages »).
- *
- * Le scénario cible : bind → rename du catalogue → re-bind AVEC le registre renames
- * ⇒ l'ANCIEN nom est retiré ; les entrées ÉTRANGÈRES (perso utilisateur) et les skills
- * simplement OMIS du profil sont préservés. Racine FACTICE — jamais le vrai ~/.claude.
+ * Retrait GARDÉ des anciens noms au re-bind (fiche 20260813131737962, volet binder ;
+ * DURCI le 2026-08-24 après revue adverse). Invariant de sûreté : on ne fait JAMAIS de
+ * `rm -rf` sur une entrée RÉELLE — seulement sur NOS symlinks (mode `--link`). Un
+ * dossier utilisateur homonyme du nom qu'on vient de libérer NE DOIT JAMAIS être détruit,
+ * même s'il ne contient qu'un `SKILL.md` (le trou de la V1). Racine FACTICE — jamais le
+ * vrai ~/.claude.
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { WritePlan } from '../domain/plan.js';
 import { applyGlobalPlan } from '../io/apply.js';
 
 let root: string; // ~/.claude factice
-let catalogRoot: string; // catalogue factice (source des skills)
+let catalogRoot: string; // catalogue factice (source des skills, mode link)
 
 const planWith = (skillId: string): WritePlan => ({
   files: [{ path: `skills/${skillId}/SKILL.md`, content: `---\nname: ${skillId}\n---\ncorps` }],
@@ -24,7 +24,6 @@ const planWith = (skillId: string): WritePlan => ({
 beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), 'lawgiver-renames-root-'));
   catalogRoot = mkdtempSync(join(tmpdir(), 'lawgiver-renames-cat-'));
-  // Le catalogue APRÈS rename : skills/nouveau/ existe (proxy d'appartenance du retrait).
   mkdirSync(join(catalogRoot, 'skills', 'nouveau'), { recursive: true });
   writeFileSync(join(catalogRoot, 'skills', 'nouveau', 'SKILL.md'), '---\nname: nouveau\n---\n');
 });
@@ -36,33 +35,34 @@ afterEach(() => {
 describe('applyGlobalPlan — retrait gardé des anciens noms (renames.yml)', () => {
   const RENAME = { ancien: 'ancien', nouveau: 'nouveau', kind: 'skill' as const };
 
-  it('bind → rename → re-bind : le dossier de l’ANCIEN nom est retiré (copy)', () => {
-    applyGlobalPlan(planWith('ancien'), root); // le monde d'avant le rename
-    expect(existsSync(join(root, 'skills', 'ancien', 'SKILL.md'))).toBe(true);
+  it('mode link : le SYMLINK de l’ancien nom est retiré (le cas réel de l’utilisateur)', () => {
+    mkdirSync(join(root, 'skills'), { recursive: true });
+    symlinkSync(join(catalogRoot, 'skills', 'nouveau'), join(root, 'skills', 'ancien'));
     const report = applyGlobalPlan(planWith('nouveau'), root, {
+      mode: 'link',
       catalogRoot,
       renames: [RENAME],
     });
-    expect(existsSync(join(root, 'skills', 'ancien'))).toBe(false); // nettoyé
-    expect(existsSync(join(root, 'skills', 'nouveau', 'SKILL.md'))).toBe(true);
+    expect(existsSync(join(root, 'skills', 'ancien'))).toBe(false); // symlink nettoyé
     expect(report.retires).toEqual(['skills/ancien']);
     expect(report.residus).toEqual([]);
   });
 
-  it('un symlink de l’ancien nom (mode link) est retiré', () => {
-    mkdirSync(join(root, 'skills'), { recursive: true });
-    symlinkSync(join(catalogRoot, 'skills', 'nouveau'), join(root, 'skills', 'ancien'));
+  it('SÛRETÉ — un dossier RÉEL de l’ancien nom n’est JAMAIS supprimé (mode copy)', () => {
+    applyGlobalPlan(planWith('ancien'), root); // le monde d'avant le rename (copie réelle)
+    expect(existsSync(join(root, 'skills', 'ancien', 'SKILL.md'))).toBe(true);
     const report = applyGlobalPlan(planWith('nouveau'), root, { catalogRoot, renames: [RENAME] });
-    expect(existsSync(join(root, 'skills', 'ancien'))).toBe(false);
-    expect(report.retires).toEqual(['skills/ancien']);
+    expect(existsSync(join(root, 'skills', 'ancien'))).toBe(true); // PRÉSERVÉ, pas rm -rf
+    expect(report.residus).toEqual(['skills/ancien']); // signalé pour retrait manuel
+    expect(report.retires).toEqual([]);
   });
 
-  it('un dossier utilisateur HOMONYME (contenu étranger) est PRÉSERVÉ et signalé', () => {
+  it('SÛRETÉ (le trou de la V1) — un homonyme utilisateur ne contenant QUE SKILL.md survit', () => {
+    // L'utilisateur a créé SON propre skill au nom que la méthode vient de libérer.
     mkdirSync(join(root, 'skills', 'ancien'), { recursive: true });
-    writeFileSync(join(root, 'skills', 'ancien', 'SKILL.md'), 'perso');
-    writeFileSync(join(root, 'skills', 'ancien', 'mes-notes.txt'), 'à moi'); // étranger
+    writeFileSync(join(root, 'skills', 'ancien', 'SKILL.md'), '# mon skill à moi');
     const report = applyGlobalPlan(planWith('nouveau'), root, { catalogRoot, renames: [RENAME] });
-    expect(existsSync(join(root, 'skills', 'ancien', 'mes-notes.txt'))).toBe(true); // intact
+    expect(existsSync(join(root, 'skills', 'ancien', 'SKILL.md'))).toBe(true); // INTACT
     expect(report.residus).toEqual(['skills/ancien']);
     expect(report.retires).toEqual([]);
   });
@@ -85,16 +85,16 @@ describe('applyGlobalPlan — retrait gardé des anciens noms (renames.yml)', ()
   });
 
   it('JAMAIS de purge hors-registre : un skill omis du profil reste en place', () => {
-    applyGlobalPlan(planWith('omis-expres'), root); // installé par un bind précédent (ex. global)
+    applyGlobalPlan(planWith('omis-expres'), root);
     const report = applyGlobalPlan(planWith('nouveau'), root, { catalogRoot, renames: [RENAME] });
     expect(existsSync(join(root, 'skills', 'omis-expres', 'SKILL.md'))).toBe(true); // intact
-    expect(report.retires).toEqual([]); // 'ancien' n'existait pas → rien
+    expect(report.retires).toEqual([]); // 'ancien' absent → rien
+    expect(report.residus).toEqual([]);
   });
 
-  it('sans catalogRoot, un dossier réel de l’ancien nom est refusé prudemment (résidu)', () => {
-    applyGlobalPlan(planWith('ancien'), root);
-    const report = applyGlobalPlan(planWith('nouveau'), root, { renames: [RENAME] });
-    expect(existsSync(join(root, 'skills', 'ancien'))).toBe(true); // pas de preuve → pas de retrait
-    expect(report.residus).toEqual(['skills/ancien']);
+  it('ancien nom absent → ni retiré ni résidu', () => {
+    const report = applyGlobalPlan(planWith('nouveau'), root, { catalogRoot, renames: [RENAME] });
+    expect(report.retires).toEqual([]);
+    expect(report.residus).toEqual([]);
   });
 });

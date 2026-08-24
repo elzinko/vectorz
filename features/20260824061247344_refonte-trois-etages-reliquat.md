@@ -7,12 +7,18 @@ product: mega-city
 version:
 epic:
 status: todo
-ready: 2026-08-24
+ready:
 pr:
 created: 2026-08-24
 ---
 
 ## En clair
+
+> ⚠️ **ready RÉVOQUÉ le 2026-08-24** (revue adverse) : cette fiche empile 5 tâches
+> hétérogènes et son point 3 exige l'arbitrage PO en cours de route — donc PAS tirable
+> telle quelle (« ready » = tirable sans redemander). C'est le **suivi du reliquat**, à
+> SCINDER : chaque point devient sa fiche tirable au moment de le faire. La seule fiche
+> vraiment ready aujourd'hui = `20260823124042842` (le board).
 
 La refonte de la méthode (plan « trois étages », approuvé le 2026-08-23) a livré ses
 lots 0-3 et deux paquets de nettoyage sur la PR #162. Cette fiche est **la mémoire
