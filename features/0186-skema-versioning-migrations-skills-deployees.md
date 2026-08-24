@@ -11,6 +11,14 @@ pr:
 created: 2026-08-09
 ---
 
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **moteur** (le registre écrit au `bind`, le
+> `VERSION` sur artefacts, le préflight par commande = machinerie générique scrum-agnostique), avec
+> **émission** déléguée à la **librairie** (`ezk-ezk`/`ezk-steward`, ADR-0039 §6). **Absorbe** la moitié
+> « pack versionné committé + pointeur README any-driver » de [0177](0177-pack-pratiques-projet-portables.md)
+> (devient propriétaire du versioning). À faire au grooming : **scinder** le sliver « validateur de
+> conformité » (gate enums/`id` dupliqué) en fiche dédiée ; trancher le **couplage 0087** (d'où vient
+> `VERSION` : umbrella plugin vs version mega-city). Garder distinct de l'article 0175.
+
 # 0186 — Skema généralisé : versioning + migrations de tout artefact mega-city
 
 > **Fiche consolidée le 2026-08-12** : fusionne l'ancienne **0134** (« propager les maj

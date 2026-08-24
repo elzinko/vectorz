@@ -4,10 +4,18 @@ title: cap cop1 — matérialiser un profil en config native cop1
 type: feature
 priority: P2
 product: mega-city
-status: blocked
+status: todo
 pr:
 created: 2026-06-26
 ---
+
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **Débloquée** (`blocked`→`todo`) : le blocage
+> historique (« schéma mega-city pas figé ») est **obsolète** — le schéma est stabilisé et shippé
+> par la refonte trois-étages. Étage **moteur** (`caps`/`bind`, cible de bind `cop1` ; ADR-0039 §5).
+> Scope réduit à la **Phase 1** (`caps/cop1/materialize` → `iamthelaw/global.yaml`) ; la Phase 2 est
+> quasi caduque (pass-through cop1 déjà livré, fiche 0146). La fiche 0117 (aligner `domain.ts`, P3)
+> = nettoyage cosmétique **non bloquant**. Priorité **P2 inchangée** — à remonter si cop1 est un
+> besoin réel maintenant (arbitrage PO).
 
 ## Contexte / Problème
 cop1 (orchestrateur de dev autonome, agents via Claude SDK) est déjà listé comme `HostId`

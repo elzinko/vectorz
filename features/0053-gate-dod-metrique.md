@@ -11,6 +11,12 @@ pr:
 created: 2026-07-22
 ---
 
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **Gardée distincte** de 0100 : gate de **sortie**
+> (DoD, refuse une PR) ≠ garde d'**entrée** (0100 = DoR, refuse un sprint). Étage **méthode** (la règle
+> DoD est une policy scrum) qui **consomme le module observabilité** (la mesure = adaptateur produit).
+> Reste dans l'épic qualité 0051. Passerelle à documenter (pas fusionner) : partage avec 0100 le motif
+> « règle lit une métrique vs un seuil » (Rules port).
+
 # 0053 — Gate DoD adossé à une métrique
 
 ## Contexte / Problème

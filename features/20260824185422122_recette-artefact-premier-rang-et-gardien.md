@@ -93,6 +93,9 @@ Cette fiche définit **l'OBJET** (format recette + livre + gardien). Les autres 
 - **repos froids** → `ezk-recipy` ([fiche 0147](0147-ezk-recipy-mvp.md)) ;
 - **cas d'usage** : `ezk-cowork` ([fiche 0155](0155-ezk-cowork-scaffold-audit-contrat-cowork.md)) et
   [recette-site 540](20260821172716540_recette-site-produit-regles-activables.md).
+- **cas d'usage (absorbé le 2026-08-24, lot 4b)** : « pack de pratiques projet »
+  ([0177](0177-pack-pratiques-projet-portables.md)) — recette de pratiques ; sa moitié versioning
+  part à [0186](0186-skema-versioning-migrations-skills-deployees.md).
 
 Pas de doublon : eux produisent/consomment, **celle-ci définit**.
 

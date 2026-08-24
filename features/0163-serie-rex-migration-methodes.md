@@ -9,6 +9,14 @@ pr:
 created: 2026-07-15
 ---
 
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **module** (production de contenu, **hors
+> méthode** ; ADR-0039 §3 : la rédaction d'articles se range en branchement). Reste un **épic vivant**
+> (garde ses filles), **sibling** de l'épic marketing
+> [`20260824060737115`](20260824060737115_epic-marketing-et-site.md) — REX technique ≠ promo, pas de
+> fusion. Suite à faire : reparenter les articles orphelins sous cet épic. NB corps périmé : les filles
+> portent `epic: 0163`, pas `0059`. Famille de module exacte (techno vs amender l'ADR pour « contenu »)
+> = arbitrage différé.
+
 > **Épic non-buildable** (ADR-0017) — ne pas tirer directement : c'est le **conteneur de la
 > série d'articles REX**. Tirer ses articles-enfants (champ `epic: 0059`) quand ils sont
 > groomés. Passée `type: epic` le 2026-07-17 (review) : une « série » EST un épic.

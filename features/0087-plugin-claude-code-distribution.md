@@ -11,6 +11,16 @@ pr:
 created: 2026-07-20
 ---
 
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **À réécrire au grooming** (pas maintenant).
+> Rôle post-refonte = **DISTRIBUER** le catalogue vers un hôte (packaging). Frontière tranchée par
+> ADR-0039 §4 : « plugin Claude Code » = distribution ; **overlay** = extension interne (ex.
+> `vz-product-builder`/0164) — 0087 ne traite QUE le packaging. Étage **moteur** (ajoute un cap
+> `claude-code-plugin` ; elle ne classe rien, elle distribue les étages). Chiffres de skills **corrigés**
+> ci-dessous (22/19). À faire au grooming : rapatrier §Incertitude 6+7 (ancrage projet) vers l'épic
+> 20260813124026215 ; brancher « un plugin, ou un par profil ? » sur ADR-0039 §5 (cibles de bind) ;
+> nouvelle question — un overlay voyage-t-il dans le paquet ? §Versionnage (Incertitude 1) reste
+> ouverte, non touchée par la refonte.
+
 # 0087 — Le catalogue vectorz distribué comme plugin Claude Code
 
 ## Contexte / Problème
@@ -19,7 +29,7 @@ created: 2026-07-20
 
 | Brique | Où, dans le repo | Volume |
 |---|---|---|
-| Skills | `products/mega-city/skills/<id>/SKILL.md` | 20 dossiers, dont **18 dans `profiles/global.yml`** |
+| Skills | `products/mega-city/skills/<id>/SKILL.md` | 22 dossiers, dont **19 dans `profiles/global.yml`** |
 | Agents | `products/mega-city/agents/*.md` | **7** (ezk-architect, ezk-archive, ezk-pm, ezk-qa, ezk-reviewer, ezk-steward, ezk-dev) |
 | Rules / bundles | `rules/` + `bundles/*.yml` | 10 familles de règles, 12 bundles |
 | Hooks **git** | `hooks/{commit-msg,pre-commit,pre-push}.sh` | 3 |
@@ -288,7 +298,7 @@ qu'à supposer.
 - [ ] Cap `claude-code-plugin` : `materialize` **pur**, testé unitairement sur le `WritePlan`
       (méthode ADR-0014), entrée dans `registry.ts`.
 - [ ] Le plugin produit passe l'agent **`plugin-validator`** (marketplace `claude-plugins-official`).
-- [ ] Sur une machine **vierge de tout `bind`** : `/plugin install …` puis les 18 skills, les
+- [ ] Sur une machine **vierge de tout `bind`** : `/plugin install …` puis les 19 skills, les
       7 agents **et** les outils MCP de supervision sont disponibles — constaté, pas déduit.
 - [ ] Une modification de catalogue mergée sur `main` → nouvelle version → `/plugin update`
       la ramène ; la version installée est **lisible** côté consommateur.

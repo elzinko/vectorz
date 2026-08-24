@@ -11,6 +11,11 @@ pr:
 created: 2026-07-24
 ---
 
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **Bornée** : cette fiche = **émetteur GitHub riche**
+> (vitrine PR) **au-dessus** du pack review 0183 (source de vérité = `REVIEW.md`) et de 0052 (rapport
+> minimal). Elle **projette**, elle n'est **jamais** la source. Étage **module** famille github, alimenté
+> par l'observabilité. Zéro recouvrement avec 0100. Reste dans l'épic 0051.
+
 # 0058 — Rapport qualité de PR
 
 ## Contexte / Problème
