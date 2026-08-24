@@ -243,6 +243,7 @@
 | 20260821210633522 | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260822200213110 | Règle — une page (vitrine/landing/capture) construite par un skill utilise des screenshots réels de l'app, jamais des visuels générés | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260823124042708 | LA LOI — distinguer thèmes (namespaces) et bundles (packs curated), désenchevêtrer hexagonal | refactor | P2 |  | mega-city | 💡 idea |  |
+| 20260824141336516 | Recette « mise en place de la CI » pour un projet type muti (app desktop + web de vente) — build local (act) et/ou GitHub | feature | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
