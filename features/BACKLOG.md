@@ -122,7 +122,7 @@
 | 0110 | remote + licence (backup + base OSS) | chore | P2 |  | mega-city | ✅ shipped |  |
 | 0112 | dogfooding — 2 invariants d'évolutivité en règles iamthelaw | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0119 | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 |  | mega-city | 🔴 todo |  |
-| 0121 | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 |  | mega-city | ⛔ blocked |  |
+| 0121 | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0126 | ezk-ezk — méta-skill : créer un skill depuis la session (brainstorm → archi → déploiement) | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
 | 0127 | ezk-backlog add — proposer un brainstorm pour façonner une fiche vague | feature | P2 |  | mega-city | ✅ shipped | local (via migration ezk-backlog #31, fiche 0024) |
 | 0128 | ezk-product-builder — couche product-owner autonome (idée → backlog → ezk-sprint → ship) | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge) |
@@ -196,6 +196,7 @@
 | 20260824111001836 | La règle de clarté doit atteindre TOUT ce qui sort de la méthode (base + sorties de chat), pas rester orpheline | refactor | P1 |  | mega-city | 💡 idea |  |
 | 20260824122629794 | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260824122629925 | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
+| 20260824204751403 | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P1 |  | mega-city | 💡 idea |  |
 | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | 0053 | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | 0054 | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 0051 | vectorz | 💡 idea |  |
@@ -246,7 +247,6 @@
 | 20260824141336516 | Recette « mise en place de la CI » pour un projet type muti (app desktop + web de vente) — build local (act) et/ou GitHub | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260824163426298 | Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map » | refactor | P2 |  | mega-city | 💡 idea |  |
 | 20260824185422122 | « Recette » comme artefact de premier rang + gardien (ezk-cuisinier) — instancier le pattern steward, ne rien inventer | feature | P2 |  | mega-city | 💡 idea |  |
-| 20260824204751403 | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |

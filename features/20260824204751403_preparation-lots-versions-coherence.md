@@ -2,7 +2,7 @@
 id: "20260824204751403"
 title: Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint
 type: feature
-priority: P2
+priority: P1
 product: mega-city
 epic:
 status: idea
@@ -105,6 +105,8 @@ version/milestone + cohérence de lot**, et renvoyer au reste :
 ## Notes / décisions
 
 - Capturée en `idea` (non groomée) à la demande PO — matière à méditer, pas à tirer telle quelle.
-- `priority: P2` **proposée** (idea exploratoire, alignée sur `0055`/`0065`/la vue `…842`) —
-  à monter en P1 si le PO la juge aussi structurante que la rationalisation `…240`.
+- `priority: P1` — **confirmée PO** (2026-08-24) : structurante au même titre que la
+  rationalisation `…240`.
+- **Foyer** : fiche-chapeau **autonome** (arbitré 2026-08-24) — le delta version/milestone +
+  cohérence de lot n'est nommé par aucune voisine ; le fondre dans `0100` ou `…240` le diluerait.
 - `product: mega-city` (la méthode ezk vit dans mega-city).
