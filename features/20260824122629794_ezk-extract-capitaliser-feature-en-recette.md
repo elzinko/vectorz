@@ -31,10 +31,14 @@ Les briques de la méthode qui serviront — le vocabulaire que tu ne te rappell
 - **skill (capability)** = un outil + son mode d'emploi (playbook). Un skill peut
   **composer** des rules (mécanisme `composes:`, ADR-0025).
 - **profil** = le bon de commande d'une cible : quelles rules + agents + skills.
-- **« recette »** = **PAS un objet de premier rang aujourd'hui**. La forme la plus
-  proche : un **skill dont le playbook EST la liste de tâches**, qui **compose les
-  rules** à respecter et **référence le profil**. (C'est déjà l'approche de la fiche
-  `20260821172716540` « recette site produit » : un skill à règles activables.)
+- **« recette »** = **nature d'objet à trancher au panel** — NE PAS pré-décider ici.
+  La définition de l'objet (et de son gardien) est portée par la **fiche-chapeau**
+  [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md).
+  Deux options en débat : **(A)** objet de premier rang + gardien (pattern steward,
+  thèse du chapeau) ; **(B)** simple **skill dont le playbook EST la liste de tâches**,
+  qui **compose les rules** et **référence le profil** (approche de la fiche
+  `20260821172716540` « recette site produit »). **Cette fiche-ci est le producteur par
+  extraction — valable quelle que soit l'issue A/B**, elle ne tranche pas l'objet.
 - **`ezk-ezk harvest/create`** = transforme une **discussion de session** en skill —
   mais depuis la CONVERSATION, pas en scannant un projet existant.
 - **`ezk-recipy`** (fiche `0147`, **todo, non implémentée**) = entonnoir qui scanne des
