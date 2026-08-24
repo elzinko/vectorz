@@ -75,7 +75,7 @@
 | 0160 | ezk-backlog groom/ready — promouvoir une idea vers Definition of Ready (gate) | feature | P1 |  | mega-city | ✅ shipped | #26 |
 | 0164 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 |  | mega-city | 🟠 in-progress |  |
 | 0165 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 🔴 todo |  |
-| 0169 | Explorateur LLM par PR — parcourir l'app pour trouver les trous, et proposer la fiche | feature | P1 |  | mega-city | 🔴 todo |  |
+| 0169 | Oracle de journal `analyze --expect` — rendre une session testable (brique 1, ex-explorateur LLM) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 0170 | Concevoir le modèle d'extension / plugin mega-city (panel architecte) — avant tout adaptateur outillage | feature | P1 |  | mega-city | ✅ shipped | #162 |
 | 0173 | Méthode ezk — 3 bandes + naming (ezk-pr, caps, archive=capacité) | feature | P1 |  | mega-city | ✅ shipped | #72 |
 | 0183 | Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres | feature | P1 |  | mega-city | ✅ shipped | local (main c45102b) |
@@ -86,6 +86,8 @@
 | 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
 | 20260816131704335 | /ezk-help — index de commandes ezk généré depuis les frontmatter | feature | P1 | 20260816131703334 | mega-city | ✅ shipped | #151 |
 | 20260821163346490 | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 20260821163346487 | mega-city | 🔴 todo |  |
+| 20260823121712652 | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 |  | mega-city | 🔴 todo |  |
+| 20260823121712781 | reconcile systématique — ne plus rater un ship après un squash-merge fait hors du flux (GitHub UI) | feature | P1 |  | mega-city | 🔴 todo |  |
 | 20260823220100308 | Le binder retire proprement un ancien nom (retrait gardé) — le débloqueur des renames | feature | P1 |  | mega-city | ✅ shipped | #162 |
 | 20260823220100443 | Split cérémonie/rôle — le skill devient ezk-product-build, le rôle PO reste l'agent ezk-pm | refactor | P1 |  | mega-city | ✅ shipped | #162 |
 | 20260824061247344 | Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO) | refactor | P1 |  | mega-city | 🔴 todo |  |
@@ -138,6 +140,10 @@
 | 0190 | composes — tier « delegates: » (composition optionnelle, jamais warnée) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 |  | mega-city | 🔴 todo |  |
 | 20260816151112162 | Canal commands: dans lawgiver — déployer les slash-commands comme les skills | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260821210633457 | Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169) | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260823121712716 | Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche) | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260823121712844 | Durcir regen-backlog — refuser une racine par défaut nichée sous un autre backlog (fin du piège products/mega-city) | bug | P2 |  | mega-city | 🔴 todo |  |
+| 20260823121712909 | lawgiver doctor — détecter un skill du profil non matérialisé dans ~/.claude (le bug /ezk-pr introuvable) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260823124042842 | Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
@@ -230,7 +236,10 @@
 | 20260821163346496 | Définir ce qu'on valide et dans quel ordre (l'unité de revue de la carte) | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
 | 20260821163346498 | Montrer sur la carte ce qui est revu, en cours, ou jamais vérifié (+ date) | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
 | 20260821163346501 | Corriger un lien faux depuis la carte, et que ça retombe dans les fichiers | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
+| 20260821171238990 | Capability launchpad (landing + waitlist + tracking) — récoltée de city-guided, réutilisable pour valider un produit | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260821172716540 | Recette « site produit » — un skill + des règles activables (cas samplerz) | feature | P2 | 20260824060737115 | mega-city | 💡 idea |  |
+| 20260821210633522 | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260822200213110 | Règle — une page (vitrine/landing/capture) construite par un skill utilise des screenshots réels de l'app, jamais des visuels générés | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260823124042708 | LA LOI — distinguer thèmes (namespaces) et bundles (packs curated), désenchevêtrer hexagonal | refactor | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
