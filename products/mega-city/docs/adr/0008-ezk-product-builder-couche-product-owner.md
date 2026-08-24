@@ -1,4 +1,4 @@
-# ADR 0008 — `ezk-product-builder` : couche product-owner mince au-dessus d'`ezk-sprint`
+# ADR 0008 — `ezk-product-build` : couche product-owner mince au-dessus d'`ezk-sprint`
 
 - Statut : **proposé**
 - Date : 2026-06-28
@@ -9,11 +9,11 @@ Fiche 0023 : automatiser le déroulé produit complet (idée → backlog → bui
 Risque n°1 : **recloner `ezk-sprint`** — qui fait déjà le build d'une feature (équipe scrum,
 BDD/TDD/CI/PR/squash, POC-d'abord) — exactement le piège « compose, ne réinvente pas »
 (ADR-0006, ezk-ezk). `ezk-sprint` **consomme** une fiche ; il ne décide **pas** quoi construire
-ni n'**idée** le backlog. C'est ce trou que `ezk-product-builder` comble.
+ni n'**idée** le backlog. C'est ce trou que `ezk-product-build` comble.
 
 ## Décision
 
-1. **Couche PRODUCT-OWNER mince, pas un nouveau moteur.** `ezk-product-builder` **compose** :
+1. **Couche PRODUCT-OWNER mince, pas un nouveau moteur.** `ezk-product-build` **compose** :
    - `ezk-backlog` (le quoi/où),
    - `/product-brainstorming` (idéer / cadrer une fiche vague — réutilise la capacité 0022),
    - `ezk-sprint` (le comment : build d'une feature). Il n'en réimplémente **aucun**.

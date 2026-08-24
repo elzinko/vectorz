@@ -29,8 +29,8 @@ export type EnforcementType = 'prompt' | 'agent-check' | 'hook'; // niveau 0 / 1
 /** Comment une règle est garantie. */
 export interface Enforcement {
   type: EnforcementType;
-  agent?: string;                            // agent-check → id d'un Agent. SEUL lien inter-catalogue.
-  hook?: { stage: string; script: string };  // hook → script déterministe (git hook), bloquant.
+  agent?: string; // agent-check → id d'un Agent. SEUL lien inter-catalogue.
+  hook?: { stage: string; script: string }; // hook → script déterministe (git hook), bloquant.
   // `script` en frontmatter = CHEMIN (ex. 'hooks/commit-msg.sh') ; le loader (catalog.ts,
   // fiche 0011) le résout en CONTENU avant que le catalogue n'atteigne bind/cap (purs).
 }
@@ -40,19 +40,20 @@ export type RuleKind = 'disposition' | 'interaction';
 
 /** Unité minimale et composable de « comment travailler ». Fichier MARKDOWN + frontmatter. */
 export interface Rule {
-  id: string;             // 'clean-code/no-dead-code'
-  kind: RuleKind;         // 'disposition' (défaut) | 'interaction' ; le tag = la couture de promotion (ADR-0002)
+  id: string; // 'clean-code/no-dead-code'
+  kind: RuleKind; // 'disposition' (défaut) | 'interaction' ; le tag = la couture de promotion (ADR-0002)
   level: Level;
-  content: string;        // la disposition (corps markdown — ce que le LLM lit)
+  title?: string; // OPTIONNEL — libellé humain du frontmatter (la carte l'affiche ; l'id reste la clé)
+  content: string; // la disposition (corps markdown — ce que le LLM lit)
   enforcements?: Enforcement[];
-  participants?: string[];// OPTIONNEL — ids d'Agents, seulement pour kind='interaction'. Latent (ADR-0002).
+  participants?: string[]; // OPTIONNEL — ids d'Agents, seulement pour kind='interaction'. Latent (ADR-0002).
 }
 
 /** Groupe nommé et composable de règles. Fichier YAML (zéro prose → surtout pas du markdown). */
 export interface Bundle {
-  id: string;             // 'base', 'clean-code', 'mobile'
-  extends?: string[];     // ids d'autres Bundles → composition
-  rules: string[];        // ids de Rules
+  id: string; // 'base', 'clean-code', 'mobile'
+  extends?: string[]; // ids d'autres Bundles → composition
+  rules: string[]; // ids de Rules
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -65,15 +66,17 @@ export interface Bundle {
  * matérialisation copy-mode soit ÉQUIVALENTE au symlink-mode (qui expose le dossier entier).
  */
 export interface SkillAsset {
-  path: string;           // RELATIF au dossier du skill, séparateurs POSIX ('approaches/x.md')
-  content: string;        // contenu VERBATIM (utf8) — non normalisé (fidélité byte des scripts)
-  executable?: boolean;   // bit d'exécution de la source → mode 0o755 à la matérialisation
+  path: string; // RELATIF au dossier du skill, séparateurs POSIX ('approaches/x.md')
+  content: string; // contenu VERBATIM (utf8) — non normalisé (fidélité byte des scripts)
+  executable?: boolean; // bit d'exécution de la source → mode 0o755 à la matérialisation
 }
 
 /** Une capacité / un playbook. Fichier MARKDOWN (corps = mode opératoire). Host-agnostique. */
 export interface Skill {
-  id: string;             // 'ezk-commits'
-  content: string;        // le playbook (markdown)
+  id: string; // 'ezk-commits'
+  description?: string; // OPTIONNEL — le déclencheur humain du frontmatter (affiché par la carte / ezk-help)
+  argumentHint?: string; // OPTIONNEL — `argument-hint:` du frontmatter : les sous-commandes ('[help|add|…]')
+  content: string; // le playbook (markdown)
   /** ADR-0025 — ids de skills INTERNES requis (doivent être présents à la résolution du profil). */
   composes?: string[];
   /** ADR-0025 — refs EXTERNES (`skill-creator`, `product-brainstorming`…) : documentées, jamais warnées. */
@@ -91,17 +94,18 @@ export interface Skill {
 
 /** Un rôle. Fichier MARKDOWN (rôle) + frontmatter (les listes ci-dessous = DATA composable). */
 export interface Agent {
-  id: string;             // 'ezk-reviewer'
-  role: string;           // la prose du rôle (markdown — ce que le LLM lit)
-  competences: string[];  // ids de Skills  — AJOUTABLES en cours de projet (via capture)
+  id: string; // 'ezk-reviewer'
+  description?: string; // OPTIONNEL — le déclencheur humain du frontmatter (affiché par la carte)
+  role: string; // la prose du rôle (markdown — ce que le LLM lit)
+  competences: string[]; // ids de Skills  — AJOUTABLES en cours de projet (via capture)
   interactions: string[]; // ids de Rules   — « comment je collabore » (AJOUTABLES via capture)
   // Réglages d'exécution (host natif). Alias OU id versionné (pin).
   // Préférer le pin pour Opus : `claude-opus-4-8` — l'alias `opus` peut dériver vers Opus 5.
-  model?: string;         // 'claude-opus-4-8' | 'sonnet' | 'haiku' | 'fable' | 'inherit' | …
+  model?: string; // 'claude-opus-4-8' | 'sonnet' | 'haiku' | 'fable' | 'inherit' | …
   /** Secours si l'hôte refuse `model` — lu par le skill appelant (ex. ezk-archive). */
-  model_spare?: string;   // même vocabulaire que `model` (souvent 'sonnet')
-  effort?: string;        // 'low' | 'medium' | 'high' | 'xhigh' | 'max'
-  isolation?: string;     // 'worktree' — exécute l'agent dans un git worktree isolé
+  model_spare?: string; // même vocabulaire que `model` (souvent 'sonnet')
+  effort?: string; // 'low' | 'medium' | 'high' | 'xhigh' | 'max'
+  isolation?: string; // 'worktree' — exécute l'agent dans un git worktree isolé
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -110,12 +114,12 @@ export interface Agent {
 
 /** « Comment ce (sous-)projet travaille ». Fichier YAML. Chargé d'un coup au démarrage de session. */
 export interface Profile {
-  id: string;             // 'mobile', 'webapp', 'website'
-  extends?: string[];     // composer d'autres Profiles
-  bundles: string[];      // → règles
-  agents: string[];       // → l'équipe
-  skills: string[];       // → compétences directes du projet
-  interactions?: string[];// → règles d'interaction entre agents
+  id: string; // 'mobile', 'webapp', 'website'
+  extends?: string[]; // composer d'autres Profiles
+  bundles: string[]; // → règles
+  agents: string[]; // → l'équipe
+  skills: string[]; // → compétences directes du projet
+  interactions?: string[]; // → règles d'interaction entre agents
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -163,8 +167,8 @@ export declare function bind(profile: Profile, projectDir: string, host: HostId)
 
 /** Une ligne du journal append-only = la mémoire du flywheel. */
 export interface LearningEntry {
-  date: string;           // passé en paramètre (pas de Date.now côté script reproductible)
-  target: string;         // l'id touché (agent / bundle / profile)
+  date: string; // passé en paramètre (pas de Date.now côté script reproductible)
+  target: string; // l'id touché (agent / bundle / profile)
   kind: 'rule' | 'skill' | 'agent' | 'interaction';
   summary: string;
   commit?: string;
@@ -177,7 +181,7 @@ export interface LearningEntry {
  * Le LLM ne RANGE jamais (ce qui a tué lifefindsaway). Il rédige et conseille ; le moteur range.
  */
 export interface CapturePorts {
-  author(brief: string): Promise<string>;                                    // BORD LLM — génère le markdown
+  author(brief: string): Promise<string>; // BORD LLM — génère le markdown
   judge(candidate: string, corpus: Rule[]): Promise<{ ok: boolean; notes: string }>; // BORD LLM — avis, ne bloque pas
 }
 export declare function capture(

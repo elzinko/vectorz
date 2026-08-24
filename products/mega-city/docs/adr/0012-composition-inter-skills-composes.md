@@ -8,7 +8,7 @@
 La doctrine « orchestrateur mince, compose ne réinvente pas » (ADR-0007/0008) repose
 entièrement sur des références inter-skills — mais elles vivent en **prose** dans les
 playbooks, interprétées par le LLM à l'exécution. Audit du 2026-07-05 : ces dépendances sont
-invisibles à `expand`/`bind` (un Profile peut binder ezk-product-builder **sans** ezk-sprint
+invisibles à `expand`/`bind` (un Profile peut binder ezk-product-build **sans** ezk-sprint
 sans aucune erreur), l'invariant ADR-0002 « référencer par id » ne leur est pas appliqué, et
 au moins 4 intégrations déclarées d'un seul côté se sont révélées fantômes. C'est exactement
 la prose load-bearing que la leçon `lifefindsaway` (ADR-0001) interdit. Contrairement à

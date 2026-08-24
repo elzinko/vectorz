@@ -8,7 +8,7 @@
 La doctrine « compose, ne réinvente pas » vit en **prose**. Les dépendances
 inter-skills sont **invisibles** à `expand`/`bind` : `expand.ts` (`resolve()`) **ignore
 silencieusement** toute référence absente du catalogue. Un profil peut donc binder
-`ezk-product-builder` **sans** `ezk-sprint` sans qu'aucun signal ne tombe — exactement
+`ezk-product-build` **sans** `ezk-sprint` sans qu'aucun signal ne tombe — exactement
 les 4 « intégrations fantômes » constatées à l'audit.
 
 ## Décision

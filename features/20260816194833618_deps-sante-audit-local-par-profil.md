@@ -62,7 +62,7 @@ se défend.
 
 - **Piège** : « lancer régulièrement » **via GitHub Actions** = reconsommer des minutes.
   Version zéro-coût = **à la demande**, ou un **rappel** dans le rituel d'ouverture
-  (`ezk-start`). Un cron local ne tourne que si la machine est allumée.
+  (`ezk-sprint:check`). Un cron local ne tourne que si la machine est allumée.
 - **Voisines** : [[20260812134515706]] (étendre `ezk-ci` d'un `harden`/`apply` — mêmes
   « recettes appliquées par repo ») · [[0177]] (capacités portables par projet) ·
   [[0170]] / [[0087]] (modèle d'extension + distribution plugin — le catalogue des

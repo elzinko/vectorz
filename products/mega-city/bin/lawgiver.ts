@@ -22,6 +22,7 @@ import type { HostId, LearningEntry } from '../src/domain/model.js';
 import { applyGlobalPlan, applyPlan } from '../src/io/apply.js';
 import { applyCapture } from '../src/io/capture.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
+import { loadRenames } from '../src/loaders/renames.js';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -56,10 +57,19 @@ function runBindGlobal(profile: string, link: boolean): void {
   const root = join(homedir(), '.claude');
   const plan = bind(profile, root, 'claude-code-global', repoRoot);
   const mode = link ? 'link' : 'copy';
-  applyGlobalPlan(plan, root, { mode, catalogRoot: repoRoot });
+  // Registre des renommages (renames.yml) : le re-bind retire proprement les ANCIENS noms.
+  const report = applyGlobalPlan(plan, root, {
+    mode,
+    catalogRoot: repoRoot,
+    renames: loadRenames(repoRoot),
+  });
   console.log(
     `lawgiver: bind-global '${profile}' → ${root} [claude-code-global] (${mode}) : ${plan.files.length} fichier(s).`,
   );
+  for (const rel of report.retires) console.log(`  🧹 renommage nettoyé : ${rel} retiré.`);
+  for (const rel of report.residus) {
+    console.warn(`  ⚠️ résidu de renommage NON géré, laissé en place : ${rel} (retrait manuel).`);
+  }
   reportComposition(profile);
 }
 

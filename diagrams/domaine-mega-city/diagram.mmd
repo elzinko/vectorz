@@ -1,0 +1,21 @@
+flowchart LR
+  subgraph LOI["LA LOI"]
+    R["Règle<br/>une consigne"] -->|rangée dans| B["Bundle<br/>un classeur de règles"]
+  end
+  subgraph EQUIPE["L'ÉQUIPE"]
+    S["Commande (skill)<br/>un outil + sous-commandes"] -->|convoque| A["Rôle (agent)<br/>un métier incarné"]
+  end
+  CER["Cérémonie scrum<br/>grooming, planning, rétro…"] -->|implémentée par| S
+  A -->|applique| R
+  P["Profil<br/>le bon de commande d'une cible"] -->|choisit| B
+  P -->|choisit| A
+  P -->|choisit| S
+  BIND["bind<br/>le livreur (moteur)"] -->|lit| P
+  BIND -->|installe chez| CIBLE["La cible<br/>poste · projet · session"]
+
+  classDef loi fill:#dbe7fa,stroke:#2f6fd0,color:#141a24
+  classDef equipe fill:#f6e8c8,stroke:#a9741a,color:#141a24
+  classDef moteur fill:#d9f2e4,stroke:#1c9a5f,color:#141a24
+  class R,B loi
+  class S,A equipe
+  class P,BIND,CIBLE moteur

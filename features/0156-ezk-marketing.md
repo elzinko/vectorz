@@ -4,6 +4,7 @@ title: ezk-marketing — orchestrateur de promotion produit (articles d'épopée
 type: feature
 priority: P1
 product: mega-city
+epic: "20260824060737115"
 status: todo
 pr:
 created: 2026-07-15
@@ -32,7 +33,7 @@ confondus.
 ## Proposition
 
 Skill `ezk-marketing` : **orchestrateur de promotion produit** — il COMPOSE des
-capacités existantes et n'en réimplémente aucune (doctrine ezk-product-builder).
+capacités existantes et n'en réimplémente aucune (doctrine ezk-product-build).
 Capacités composées : **ezk-article (0049)** pour l'écriture, **postiz** (plugin déjà
 disponible) pour la publication/scheduling réseaux. Volets — chacun PROPOSÉ au user,
 jamais imposé :
@@ -155,3 +156,14 @@ toute modification du triplet invalide la validation.
 - Anti-doublon vérifié : 0049 = COMPOSÉE (pas dupliquée) ; checklists muti = MATIÈRE
   (pas une skill) ; fiche samplerz `website_showcase` = le QUOI produit du site.
 - realizator (`~/git/bacasable/realizator`, standby) = génération vidéo future.
+
+
+## Absorption (paquet 2, 2026-08-24)
+
+**Absorbe `20260812104022234`** (agent marketing analyste, fermée) — ses **7** capacités (spec PO
+du 2026-08-10) deviennent des critères de CET orchestrateur, AUCUNE perdue (revue adverse 2026-08-24) :
+1. copy par produit FR/EN · 2. juger le RENDU réel de la page · 3. benchmark concurrents · 4. stratégies
+marketing orientées dev → demandes actionnables · **5. proposer de l'A/B testing (→ demandes de features)** ·
+**6. lire les métriques post-livraison (suivi grosse maille)** · **7. inventorier les outils existants
+(PostHog/Vercel/Search Console…) et proposer leur intégration**. Les points 5-7 (analytics/inbound) NE
+sont PLUS « post-v1 non harvesté » : critères de v1. Registre : docs/captures/2026-08-24-fermetures-backlog-paquet2.md.

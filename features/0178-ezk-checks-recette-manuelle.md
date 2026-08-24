@@ -4,6 +4,7 @@ title: ezk-checks — recette manuelle déclenchable (Playwright → features/ch
 type: feature
 priority: P2
 product: mega-city
+depends: ["0102"]
 version:
 epic:
 status: idea

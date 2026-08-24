@@ -135,6 +135,7 @@ function readRule(file: string, rootDir: string): Rule | undefined {
     id: data.id,
     kind,
     level: data.level,
+    ...(typeof data.title === 'string' ? { title: data.title } : {}),
     content: content.trim(),
     enforcements,
     participants: data.participants,
@@ -148,6 +149,7 @@ function readAgent(file: string): Agent | undefined {
   if (typeof id !== 'string') return undefined;
   return {
     id,
+    ...(typeof data.description === 'string' ? { description: data.description } : {}),
     role: content.trim(),
     competences: data.competences ?? [],
     interactions: data.interactions ?? [],
@@ -183,6 +185,8 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
   const assets = readSkillAssets(skillDir);
   return {
     id,
+    ...(typeof data.description === 'string' ? { description: data.description } : {}),
+    ...(typeof data['argument-hint'] === 'string' ? { argumentHint: data['argument-hint'] } : {}),
     content: content.trim(),
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),
@@ -219,7 +223,11 @@ function readSkillAssets(skillDir: string): SkillAsset[] {
         if (rel === SKILL_FILE) continue; // le playbook lui-même vit dans `content`
         assertSafeId(rel);
         const executable = (statSync(full).mode & 0o111) !== 0;
-        assets.push({ path: rel, content: readFileSync(full, 'utf8'), ...(executable ? { executable } : {}) });
+        assets.push({
+          path: rel,
+          content: readFileSync(full, 'utf8'),
+          ...(executable ? { executable } : {}),
+        });
       }
       // sinon (symlink, socket…) : ignoré (défense anti-exfiltration).
     }

@@ -33,7 +33,7 @@ Ce n'est **pas** :
 
 ## Proposition
 
-Implémenter l'adaptateur **selon le modèle tranché par [0170](0170-modele-extension-plugin-mega-city.md)**
+Implémenter l'adaptateur **selon le modèle tranché par [0170](done/0170-modele-extension-plugin-mega-city.md)**
 (dépendance bloquante — panel + ADR d'abord).
 
 Comportement cible (à confirmer / affiner dans l'ADR 0170) :
@@ -55,7 +55,7 @@ Références d'extension (à lire au design, via 0170) :
 
 ## Critères d'acceptation
 
-- [ ] [0170](0170-modele-extension-plugin-mega-city.md) shipped (ADR d'extension disponible)
+- [ ] [0170](done/0170-modele-extension-plugin-mega-city.md) shipped (ADR d'extension disponible)
 - [ ] Core ezk-backlog (`add` / `ready` / `ship` / `regen`) **zéro** import/`gh` obligatoire
 - [ ] Activation opt-in documentée ; projet sans config = comportement inchangé
 - [ ] Sens de sync = local → GH ; pas d'écrasement silencieux du front-matter local
@@ -69,3 +69,8 @@ Références d'extension (à lire au design, via 0170) :
 - `product: mega-city` — liste unique livrée (0064 / #66).
 - Si le trigger de 0093 est atteint plus tard, cet adaptateur devient un *candidat* de
   second backend — pas une raison de construire 0093 maintenant.
+
+
+> **Doctrine SoT actée (paquet 2, 2026-08-24)** : la fiche `0172` est fermée — son contenu
+> (markdown maître, GitHub en simple export, sync local→externe only) est ACTÉ par l'ADR-0039.
+> Cette fiche implémente cette doctrine, elle ne la re-décide pas.

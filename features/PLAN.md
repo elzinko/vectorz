@@ -1,5 +1,13 @@
 # PLAN — séquence de travail (vectorz)
 
+## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
+
+> **Une méthode LLM-native digne de confiance pour voir et piloter ses produits** :
+> la carte dit vrai (compilée des fichiers), le backlog dit l'état réel, et chaque
+> cérémonie a un responsable clair — humain ou agent.
+> *(Premier Product Goal du dépôt — posé par le lot 1 du plan « trois étages » ;
+> le Scrum Guide en fait l'engagement du Product Backlog.)*
+
 > Décidé le **2026-07-26** (roadmap PO) ; **mis à jour 2026-07-30** (fiche 0064 —
 > liste unique, ids nus, champ `product:`). Ceci est l'**ORDRE**, pas la priorité
 > (la priorité `P0→P3` reste le *bucket d'importance* dans chaque fiche ; ici c'est
@@ -8,6 +16,15 @@
 > Source de vérité du **statut** = le front-matter des fiches ; ce fichier est **curé**,
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
+
+## ▶️ NOW bis — refonte de la méthode (post-PR #162, séquence du 2026-08-24)
+
+1. **20260824061247344** — le reliquat exécutable de la refonte « trois étages »
+   (2 bundles orphelins · vocab DoD · lot 4b requalifs · compétences agents) · `build`
+2. **20260823124042842** — vue d'avancement, lot 0 : le board compilé (le flux,
+   après la structure) · `groom` puis `build`
+3. Options PO au fil de l'eau (rename ezk-pm, Daily-si-douleur, 2ᵉ overlay) —
+   listées dans la fiche 1, à trancher quand tirées.
 
 ## 🧹 Hygiène préalable (rapide)
 
@@ -25,7 +42,7 @@
 
 0. ~~**0064** — une seule liste de features (champ `product:`)~~ — shipped #66 / #68
 1. ~~**0094** — brancher l'émetteur sur vectorz~~ — shipped #54
-2. ~~**0095** — faire émettre `ezk-product-builder`~~ — shipped #55
+2. ~~**0095** — faire émettre `ezk-product-build`~~ — shipped #55
 3. ~~**0082** — registre {projet · méthode}~~ — shipped #70
 4. ~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76
 5. ~~**0181** — Opus 4.8 + restitutions lisibles~~ — shipped #92
@@ -34,21 +51,19 @@
 
 ## ⏭️ NEXT — la méthode se tient + confort
 
-8. ~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-start` (tâche 1 POC) · `ship`~~ — shipped #99
+8. ~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-sprint:check` (ex-ezk-start) (tâche 1 POC) · `ship`~~ — shipped #99
 9. ~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74
 10. ~~**0091** — mise à plat + glossaire du jargon du backlog · `ship`~~ — shipped #103
 11. ~~**0022** — Moniteur : afficher heure/durée/historique déjà collectés · `ship`~~ — shipped #105
 12. ~~**0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `ship`~~ — shipped #107
 13. ~~0041~~ — cobaye : banc de test rapide pour sécuriser les devs · ship #113
-14. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
+14. ~~**0089** — finir l'ordonnancement (brancher PLAN sur l'intake)~~ — shipped #52 (constat réconciliation 2026-08-24 : la ligne n'avait jamais été rayée)
 15. ~~**0149** — `composes:` : rendre la composition inter-skills mécanique~~ — shipped #121
     *(suite : tier optionnel `delegates:` = fiche 0190)*
 16. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
     + ADR-0020 · `build` *(attend le dogfood samplerz `make preview-pr`, son repo)*
-17. **0183** — pack de review markdown-first (SoT restitution ; GitHub = rendu) · `groom`
-    *(P1 mega-city — après 0041 pour dogfood cobaye ; compose 0178 / reclasse 0058)*
-18. **0184** — webapp reporting de run (lecteur REVIEW.md, ≠ Moniteur) · `groom`
-    *(P2 vectorz — gated 0183 ; lot 2 boutons gated 0102)*
+17. ~~**0183** — pack de review markdown-first~~ — shipped (main c45102b, sprint 0044)
+18. ~~**0184** — webapp reporting de run (lot 1)~~ — shipped (main 51d8bf0 ; lot 2 boutons gated 0102)
 19. ~~0185~~ — ezk-archive croise branches RÉELLES ↔ PRs ouvertes · ship #117
     *(P1 mega-city — filet anti « ouvrir une PR déjà ouverte », cas #116)*
 
@@ -70,8 +85,8 @@
 
 ## 🚦 Note — lancement autonome (autre session)
 
-Pour qu'`ezk-product-builder` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). **Tête NOW** : **0022** (Moniteur heure/durée/historique) — **0091** carte + glossaire shipped #103 ; tâche 2 (claim/heartbeat) de 0090 reste dans la fiche pour une passe ultérieure.
+Pour qu'`ezk-product-build` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
+(gate DoR). **Tête NOW (2026-08-24)** : **20260824061247344** (reliquat refonte, ready) puis **20260823124042842** (board lot 0, ready). ~~0022~~ shipped #105 ; tâche 2 (claim/heartbeat) de 0090 reste dans sa fiche pour une passe ultérieure.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à

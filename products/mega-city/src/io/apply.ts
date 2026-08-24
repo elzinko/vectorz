@@ -214,6 +214,23 @@ export interface GlobalApplyOptions {
   mode?: 'copy' | 'link';
   /** Racine du repo mega-city (source des skills) — REQUISE en mode `link`. */
   catalogRoot?: string;
+  /** Registre des renommages exécutés (renames.yml) : les ANCIENS noms à retirer, gardés. */
+  renames?: RenameEntry[];
+}
+
+/** Un renommage EXÉCUTÉ du catalogue (registre renames.yml) — l'ancien nom est à retirer. */
+export interface RenameEntry {
+  ancien: string;
+  nouveau: string;
+  kind: 'skill' | 'agent';
+}
+
+/** Bilan du retrait gardé des anciens noms — rendu par applyGlobalPlan. */
+export interface GlobalApplyReport {
+  /** Anciennes entrées effectivement retirées (chemins relatifs à la racine). */
+  retires: string[];
+  /** Résidus REFUSÉS (entrée étrangère → laissée en place, retrait manuel). */
+  residus: string[];
 }
 
 /**
@@ -243,6 +260,49 @@ function assertReplaceableAgent(root: string, agentFilePath: string): void {
     `refus non-destructif : ${JSON.stringify(target)} est un vrai fichier ` +
       "non géré par lawgiver. Retire-le à la main ou choisis un autre id.",
   );
+}
+
+/**
+ * Retrait GARDÉ d'un ANCIEN nom après renommage (fiche 20260813131737962, volet binder,
+ * livré 2026-08-23 ; DURCI le 2026-08-24 après revue adverse). Le re-bind n'itère que le
+ * nouveau plan ; ce retrait nettoie l'ancien — mais SEULEMENT ce qu'on peut PROUVER à nous :
+ *   - **symlink** → notre entrée en mode `link` (le cas réel de l'utilisateur, `--link`) :
+ *     retirée. Sûr : un symlink au nom de l'ancien skill EST notre matérialisation.
+ *   - **entrée RÉELLE** (dossier ou fichier) → JAMAIS de `rm -rf`, on SIGNALE (residu).
+ *
+ * Pourquoi le durcissement : l'ancien skill a QUITTÉ le catalogue, donc après coup on ne
+ * peut plus prouver qu'un dossier réel à l'ancien nom est le nôtre. L'ancienne preuve
+ * (« entrées ⊆ celles du NOUVEAU skill ») supprimait par erreur un dossier utilisateur
+ * homonyme ne contenant qu'un `SKILL.md` — le nom qu'on vient justement de LIBÉRER
+ * (revue adverse code, finding 1). Data-loss dans le vrai `~/.claude` : proscrit.
+ * Conséquence assumée : en mode `copy`, l'ancien dossier réel n'est pas auto-nettoyé —
+ * il est signalé pour retrait manuel. (Piste future : un marqueur `.ezk-managed` écrit à
+ * la matérialisation copy prouverait l'appartenance sans risque — hors périmètre ici.)
+ * Jamais de purge hors-registre : un skill omis d'un profil (ex. `daily`) n'est PAS un
+ * résidu de renommage. Un refus n'est jamais bloquant : signalé dans le bilan.
+ */
+function retireRenamedEntry(root: string, entry: RenameEntry): 'retire' | 'residu' | 'absent' {
+  const rel = entry.kind === 'skill' ? `skills/${entry.ancien}` : `agents/${entry.ancien}.md`;
+  const target = resolveInsideProject(root, rel);
+  if (isSymlink(target)) {
+    rmSync(target, { force: true });
+    return 'retire';
+  }
+  if (!existsSync(target)) return 'absent';
+  // Entrée RÉELLE : appartenance non prouvable → jamais de rm, signalée pour retrait manuel.
+  return 'residu';
+}
+
+/** Applique le retrait gardé sur tout le registre et rend le bilan. */
+function retireRenamedEntries(root: string, renames: RenameEntry[]): GlobalApplyReport {
+  const report: GlobalApplyReport = { retires: [], residus: [] };
+  for (const entry of renames) {
+    const rel = entry.kind === 'skill' ? `skills/${entry.ancien}` : `agents/${entry.ancien}.md`;
+    const verdict = retireRenamedEntry(root, entry);
+    if (verdict === 'retire') report.retires.push(rel);
+    if (verdict === 'residu') report.residus.push(rel);
+  }
+  return report;
 }
 
 /** Retire notre propre entrée (symlink ou skill-dir géré) pour la re-matérialiser. */
@@ -297,7 +357,7 @@ export function applyGlobalPlan(
   plan: WritePlan,
   root: string,
   options: GlobalApplyOptions = {},
-): void {
+): GlobalApplyReport {
   const mode = options.mode ?? 'copy';
   // Un skill = un DOSSIER multi-fichiers (ADR-0027) : on groupe le plan par `skills/<id>`.
   const skillDirs = groupBySkillDir(plan.files.filter((file) => isUnderSkills(file.path)));
@@ -316,7 +376,7 @@ export function applyGlobalPlan(
     }
     for (const dirRel of skillDirs.keys()) linkSkillDir(root, catalogRoot, dirRel);
     for (const file of agentFiles) linkAgent(root, catalogRoot, file.path);
-    return;
+    return retireRenamedEntries(root, options.renames ?? []);
   }
 
   // copy : REMPLACEMENT ATOMIQUE de notre entrée gérée par le contenu figé du plan. Retirer
@@ -333,4 +393,5 @@ export function applyGlobalPlan(
     if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
     applyFile(root, file);
   }
+  return retireRenamedEntries(root, options.renames ?? []);
 }

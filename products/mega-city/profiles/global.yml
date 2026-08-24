@@ -39,9 +39,8 @@ skills:
   - ezk-npm-scripts
   - ezk-pr
   - ezk-preview
-  - ezk-product-builder
+  - ezk-product-build
   - ezk-readme
   - ezk-retro
   - ezk-sprint
-  - ezk-start
 interactions: []           # → règles d'interaction entre agents

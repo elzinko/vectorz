@@ -23,7 +23,7 @@ pouvait supprimer *toutes* les consignes réelles et rester vert.
 
 **Mais compter reste un proxy** (finding Codex P2 sur la PR #55, reproduction fournie) :
 
-> retirer la directive de clôture `run_finished {status: …}` d'`ezk-product-builder`
+> retirer la directive de clôture `run_finished {status: …}` d'`ezk-product-build`
 > laisse encore le nom dans la phrase de garde **et** dans la discussion sur
 > l'absorption — le seuil ≥2 est satisfait, le test reste vert, et la skill ne dit plus
 > comment clore son run.

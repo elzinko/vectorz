@@ -21,7 +21,7 @@ jusqu'au travail livré.
 
 Les liens porteurs : le sprint **convoque les agents**, la loi **guide** le sprint, et la
 **rétro** propose de nouvelles règles qui **retournent dans la loi** — la boucle se referme.
-`ezk-start` ouvre la session, `ezk-archive` la clôt sans rien perdre.
+`ezk-sprint:check` ouvre la session, `ezk-archive` la clôt sans rien perdre.
 
 > Cette carte est la **colonne vertébrale** (simple). Le détail exhaustif — les 23 commandes avec
 > leurs sous-commandes, les 7 capabilities, tous les liens de composition — vit dans la **carte
@@ -61,13 +61,13 @@ flowchart TB
     subgraph FLOW["🏃 LE FLUX · 1 fiche = 1 PR"]
         direction TB
         BL["📚 ezk-backlog · le stock<br/>idea → todo → in-progress → shipped"]
-        PB["🤖 ezk-product-builder · enchaîne les sprints"]
+        PB["🤖 ezk-product-build · enchaîne les sprints"]
         SP["ezk-sprint · BDD → TDD → gate → archi → revue"]
         SHIP["✅ squash-merge → ship"]
         BL -->|tire| PB -->|déroule| SP -->|au vert| SHIP
     end
 
-    START["🚦 ezk-start · ouvre"]
+    START["🚦 ezk-sprint:check · ouvre"]
     ARCH["🗄️ ezk-archive · clôt (handoff)"]
     RETRO["🔄 ezk-retro · améliore"]
 

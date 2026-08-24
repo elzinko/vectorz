@@ -58,8 +58,8 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 | Fille | Chantier | Prio proposée |
 |---|---|---|
 | [A](20260813131737962_nommage-catalogue-adr0022.md) | Nommage & catalogue : rename `ezk-pr-pilot`→`ezk-pr`, ranger `vz-`/`supervision-` (ADR-0022), README table scannable | P2 |
-| [C](20260813131737968_assainir-references-methode.md) | Assainir les références : `install.sh` mort, rot de numérotation, graphe `composes:` sous-peuplé | P2 |
-| [E](20260813131737971_carte-roles-analyse-methode.md) | Carte des rôles d'analyse (retro/steward/0057) + juge unique — **étend le `method-map.md` vivant ([0133](0133-adr-carte-roles-skills.md)), pas un artefact séparé** | P2 |
+| C | Assainir les références : `install.sh` mort, rot de numérotation, graphe `composes:` sous-peuplé | P2 |
+| [E](20260813131737971_carte-roles-analyse-methode.md) | Carte des rôles d'analyse (retro/steward/0057) + juge unique — **étend le `method-map.md` vivant (0133), pas un artefact séparé** | P2 |
 
 **Fiches existantes rattachées** (déjà au backlog, regroupées ici) :
 
@@ -68,11 +68,11 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 | [0066](0066-tester-un-skill-avant-merge.md) | Tester un skill avant merge (golden + sabotage) — **0/23 exercés end-to-end ; 3/23 ont un test shell, mesuré 2026-08-13** | P2 |
 | [0101](done/0101-cabler-check-links-ship-et-ci.md) | Câbler `check-links` — **4 liens cassés, mesurés 2026-08-13** | P2 |
 | [0161](0161-ezk-challenge-panel.md) | Extraire `ezk-challenge` (panel réutilisé dans 3 skills) | P2 |
-| [0113](0113-chief-judge.md) | `chief-judge` — juge de cohérence (le juge unique de la fille E) | P3 |
+| 0113 | `chief-judge` — juge de cohérence (le juge unique de la fille E) | P3 |
 
 **Fiches voisines (NON rattachées — objet distinct)** :
 - [0057](0057-agent-analyse-methode.md) — reste dans l'épic [0051](0051-observabilite-qualite-produit.md) (analyse KPI, le *nord*).
-- [0139](0139-garde-fous-integrite-agents.md) — intégrité des agents (advisory+enforced), cousin.
+- 0139 — intégrité des agents (advisory+enforced), cousin.
 - [20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md) — rationaliser le **stock de fiches** (≠ la *méthode*). Cet épic **dogfoode** son intention (regrouper sous un épic).
 - [0164](0164-vz-product-builder-corpus-reviewers.md) — `vz-product-builder` : la décision **overlay est DÉJÀ prise par le PO** (in-progress, « ne pas toucher `ezk-*` »). L'épic **ne rouvre pas** ce choix (retour Codex #144) ; le dédoublonnage du panel = [0161](0161-ezk-challenge-panel.md).
 
@@ -80,7 +80,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 
 - **Tester** : déjà — la gate mécanique (`catalog`/`skill-emission-contract`/`check-links`) ;
   à faire — **exercer** chaque skill ([0066](0066-tester-un-skill-avant-merge.md), 0/23 en golden/dry-run ; 3/23 ont un test shell)
-  et rendre les **refs vérifiables** (fille [C](20260813131737968_assainir-references-methode.md),
+  et rendre les **refs vérifiables** (fille C,
   critère « sabotage »).
 - **Visualiser** : déjà — `ezk-diagram` + [`diagrams/ezk-methode-globale/`](../products/mega-city/diagrams/ezk-methode-globale/) ;
   à fiabiliser — le **graphe `composes:`** généré (fille C, aujourd'hui il ment) ; à produire — la
@@ -110,3 +110,12 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 - **Priorités = propositions** — l'ordre relatif et l'entrée dans `PLAN.md` sont **arbitrés PO**.
 - Panel : lentilles archi + QA + PM, findings avec `fichier:ligne`. Faux positifs de refs mortes
   écartés (regex trop large) — seul `install.sh` confirmé (fille C).
+
+## MAJ 2026-08-24 — état réel après la refonte « trois étages » (PR #162)
+
+Le corps ci-dessus date de l'audit du 2026-08-13 et cite des choses désormais mortes :
+les « 4 bandes »/ADR-0022 (remplacées par les ÉTAGES d'ADR-0039 + taxonomie.yml),
+`install.sh` (remplacé par bind-global), chief-judge (fermée — ezk-steward est le juge).
+Filles : `…962` recadrée (reste la table README), `…968` fermée (graphe compilé livré),
+`…971` toujours vivante (carte des rôles d'ANALYSE). Le solde de cet épic est porté par
+la fiche `20260824061247344` (lot 4b) — cet épic se clôturera quand elle sera vidée.

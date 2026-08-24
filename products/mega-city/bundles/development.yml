@@ -6,5 +6,6 @@ rules:
   - development/test-philosophy
   - development/use-project-scripts
   - development/quality-guardrails
+  - development/adversarial-review-before-merge
   - development/pr-before-after-media
   - development/playwright-mcp-usage

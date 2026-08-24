@@ -68,8 +68,8 @@ Livrables candidats :
 ## Notes / décisions
 
 - **Mesure 2026-08-13 (audit de rationalisation)** : **3 skills sur 23** ont un test shell local
-  (`scripts/test-*.sh` — `ezk-archive`, `ezk-backlog`, `ezk-start`) — dont **2/23 seulement câblés
-  dans la gate** (`test:scripts` liste ezk-archive + ezk-backlog ; `ezk-start/scripts/test-check-gate.sh`
+  (`scripts/test-*.sh` — `ezk-archive`, `ezk-backlog`, `ezk-sprint:check`) — dont **2/23 seulement câblés
+  dans la gate** (`test:scripts` liste ezk-archive + ezk-backlog ; `ezk-sprint:check/scripts/test-check-gate.sh`
   existe mais **n'est pas câblé**), en plus du niveau 1 (audit statique `ezk-steward`) et de la gate
   de contrat (`src/…`). Ce qui
   **manque, c'est le niveau 2 « exercer le skill »** (golden / dry-run end-to-end) : **0/23** pour
@@ -88,3 +88,15 @@ Livrables candidats :
   Si elle atterrit, mutualiser : même mécanique (croiser le texte d'une skill avec le réel),
   périmètre à élargir de « SKILL.md ↔ règle ↔ asset » à « SKILL.md ↔ chemins et skills cités ».
   Si elle n'atterrit pas, 0066 implémente son propre test — la responsabilité reste ici.
+
+
+## Absorptions (paquet 2, 2026-08-24)
+
+- **Absorbe `0139`** (garde-fous d'intégrité des agents, fermée) : les invariants vérifiables
+  en 3 couches — contrat de sortie structuré par finding (`{decision: applied|rejected, evidence}`,
+  aucun abandon silencieux), evidence-gate (un `applied` doit toucher le file:line), juge LLM de la
+  substance des rejets — deviennent des critères d'éprouvage de CETTE fiche.
+- **Absorbe `0179`** (incubation en rétro, fermée) : le pattern léger « proposer une capacité à
+  éprouver pendant le sprint suivant, la mesurer en fin de sprint, tracer au CR rétro » est le
+  MODE D'ENTRÉE des skills candidats dans le banc d'essai décrit ici.
+  Registre : docs/captures/2026-08-24-fermetures-backlog-paquet2.md.

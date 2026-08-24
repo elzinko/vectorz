@@ -4,7 +4,7 @@
 - Date : 2026-07-17
 - **Révision 2026-08-13 ([ADR-0028](0028-product-builder-auto-groom-ready.md)) :** l'invariant
   **A5** (« le gate ready n'est jamais auto-tamponné », STOP humain systématique) est **révisé,
-  pas abrogé**. En `--checkpoints auto`, `ezk-product-builder` **groome désormais vers la DoR de
+  pas abrogé**. En `--checkpoints auto`, `ezk-product-build` **groome désormais vers la DoR de
   façon autonome** au lieu de s'arrêter à vide ; l'option **`--check-ready`** règle le tampon
   final (`true` défaut = STOP humain, A5 préservé ; `false` = auto-tampon sur concurrence
   `ezk-pm`, plancher outcome-testable, blocage réel → skip). Voir ADR-0028.
@@ -111,7 +111,7 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
    - *Pourquoi* : un but de sprint en une ligne (journalisé dans le scratch de sprint).
    - *Quoi* : tirage **du haut du backlog ordonné** via le **point d'entrée unique**
      `ezk-backlog next --ready-only` (A6) — première fiche éligible (ready,
-     non-épic) ; ezk-sprint et ezk-product-builder l'**appellent** sans réimplémenter
+     non-épic) ; ezk-sprint et ezk-product-build l'**appellent** sans réimplémenter
      la logique du gate. Capacité = budget tokens / temps de la session.
    - *Comment* : `ezk-sprint` déroule (BDD → TDD → gates → PR).
    - **Une fiche `type: epic` n'est jamais tirable** (A2) : le tirage descend sur son
@@ -120,7 +120,7 @@ invariant n°1 d'ezk-backlog (backlog markdown commité sur `main`).
      fiche non-ready reste possible sur décision explicite **journalisée** — le gate
      est un arbitrage, pas un automatisme. En run autonome, zéro fiche ready +
      arbitrage produit requis = **checkpoint bloquant « aucune fiche ready »**
-     d'ezk-product-builder, DoR pré-remplies à valider (A5).
+     d'ezk-product-build, DoR pré-remplies à valider (A5).
 
 4. **`review` = le sanity check global (fiche 0071), à cadence bornée (A4)** :
    **complet** après tout pivot structurant (ADR accepté qui invalide des fiches) et
@@ -190,7 +190,7 @@ testable : le mapping §1 est le référentiel que l'auto-amélioration peut aud
 boucle inspect-adapt comprise (Sprint Review, Rétrospective).
 
 **Plus dur / à surveiller** — la discipline de cadence repose sur les playbooks
-d'`ezk-sprint`/`ezk-product-builder` (câblés via le seul point d'entrée
+d'`ezk-sprint`/`ezk-product-build` (câblés via le seul point d'entrée
 `next --ready-only`, pas de logique dupliquée) ; le gate bloquant peut mettre un run
 autonome en impasse → sortie propre par le checkpoint « aucune fiche ready » (A5) ;
 risque de sur-groomer des `idea` qu'on ne tirera jamais (règle : groomer au tirage) ;
@@ -214,6 +214,6 @@ d'ordre intra-bucket nommée. (**A7, A8, A12, A13** → ADR-0017.)
    implémenté dans le playbook ezk-backlog (PR #26).
 3. [x] Fiche 0071 (`review` full/delta + compteurs côté script) : implémenté (PR #26).
 4. [x] Cadence câblée : intake ezk-sprint = `next --ready-only` + delta-review ;
-   ezk-product-builder = checkpoint « aucune fiche ready » + review complet
+   ezk-product-build = checkpoint « aucune fiche ready » + review complet
    tous les 5 sprints (PR #26).
 5. [ ] Épics : ADR-0017 + fiche 0072 (phase 2).

@@ -10,7 +10,7 @@ status: living doc map (epoch 2) — les artefacts BMAD d'époque-1 sont archiv�
 ## Onboarding & run
 
 - [Getting Started](./GETTING_STARTED.md) — epoch-2 onboarding (mega-city + cop1 supervision).
-- [Running cop1 on a project](./running-cop1-on-a-project.md) — dogfood loop: ezk-start → ezk-sprint, daemon, journal.
+- [Running cop1 on a project](./running-cop1-on-a-project.md) — dogfood loop: ezk-sprint:check → ezk-sprint, daemon, journal.
 - [Dogfood — vérifier que ça marche](./DOGFOOD.md) — la chaîne méthode → journal → Moniteur, prouvée en 15–30 min.
 - [Guide — brancher une méthode existante](./brancher-une-methode-existante.md) — compagnon lisible de l'ADR-032 (gravé 2026-07-17) : la méthode parle elle-même, les deux groupes de messages, les trois branchements (consignes / **sidecar** / observation), l'exemple BMAD pas à pas, les pièges d'archi rencontrés et leurs solutions.
 

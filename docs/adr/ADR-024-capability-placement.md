@@ -25,7 +25,7 @@ Trois constats :
 - « Lancer une stack de test » **ne porte aucun invariant superviseur** — c'est `docker compose up`
   avec un `emit()` autour. Générique, pas politique.
 - Les agents dev ont **déjà `Bash`** → **déjà `docker` via le socket**. La capacité existe déjà pour eux.
-- La capacité doit servir **aussi** `ezk-product-builder` (skill Desktop) et l'interactif, qui **n'ont
+- La capacité doit servir **aussi** `ezk-product-build` (skill Desktop) et l'interactif, qui **n'ont
   aucun accès au code cop1**. Un outil `toolCatalog` ne sert **que** cop1.
 
 ## Décision
@@ -39,7 +39,7 @@ Bash brut  <  Skill  <  Commande  <  outil toolCatalog (code)
 
 **Test décisif** — la capability porte-t-elle un invariant que le *superviseur* doit **garantir** ?
 - **Non** (cas courant Docker : tester / monitorer / détruire) → **Skill** (`ezk-docker`, mega-city),
-  adossé au socket/CLI. Portable **cop1 + ezk-product-builder + interactif**.
+  adossé au socket/CLI. Portable **cop1 + ezk-product-build + interactif**.
 - **Oui** (ex. « toute story obtient une stack isolée, **garantie détruite** même au crash, comptée au
   budget, avec télémétrie ») → outil `toolCatalog` dédié, **miroir de `cleanup_worktree`** — mais
   **seulement le wrapper d'enforcement**, et via un ADR dédié.

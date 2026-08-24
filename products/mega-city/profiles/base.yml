@@ -6,5 +6,5 @@ id: base
 extends: []
 bundles: [base]            # → règles communes (clean-code, conventional-commits)
 agents: []                 # → pas d'équipe au socle ; chaque profil ajoute la sienne
-skills: [ezk-archive, ezk-start]  # → clôture + garde-fou d'ouverture (transverse)
+skills: [ezk-archive]  # → clôture (l'ouverture vit dans ezk-sprint:check depuis 2026-08-24)
 interactions: []           # → règles d'interaction entre agents

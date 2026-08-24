@@ -10,7 +10,7 @@ bundles: [base]            # → law socle ; Desktop n'exécute pas de code, la 
 agents:
   - ezk-pm                 # le décideur product-owner (les rôles dev-exécutants n'ont pas leur place ici)
 skills:
-  - ezk-product-builder    # décider quoi & quand (compose le backlog ; l'exécution reste hors Desktop)
+  - ezk-product-build    # décider quoi & quand (compose le backlog ; l'exécution reste hors Desktop)
   - ezk-backlog            # organiser les features/bugs
   - ezk-diagram            # visualiser (prose → diagramme versionné)
   - ezk-ezk                # capitaliser une session en skill (rédaction/méta)

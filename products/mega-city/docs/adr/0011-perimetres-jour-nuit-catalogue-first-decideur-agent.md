@@ -5,7 +5,7 @@
 
 ## Contexte
 
-ezk-product-builder/ezk-sprint (session interactive) et cop1 (orchestrateur nocturne headless)
+ezk-product-build/ezk-sprint (session interactive) et cop1 (orchestrateur nocturne headless)
 font fonctionnellement le même travail — piloter des features en boucle — avec deux cerveaux
 distincts. Analyse du 2026-07-06 :
 
@@ -31,7 +31,7 @@ interactive, et dupliquerait la logique de décision.
    comme un prompt le ferait. Corollaire : toute feature envisagée « dans cop1 » doit d'abord
    être formulée comme skill/agent/rule ; cop1 n'en garde que le déclencheur.
 2. **Répartition des rôles** :
-   - *skills orchestratrices* (ezk-product-builder, ezk-sprint) : la boucle fonctionnelle,
+   - *skills orchestratrices* (ezk-product-build, ezk-sprint) : la boucle fonctionnelle,
      en contexte principal d'une session interactive (jour) ;
    - *agents feuilles* (ezk-architect, ezk-dev — aujourd'hui ezk-tdd, renommage fiche
      0045 —, ezk-qa, ezk-reviewer) : l'exécution, partagés jour/nuit (cop1 les voit via
@@ -57,7 +57,7 @@ interactive, et dupliquerait la logique de décision.
 
 ## Conséquences
 
-**Plus facile** — ezk-product-builder reste une skill, utilisable telle quelle dans Claude
+**Plus facile** — ezk-product-build reste une skill, utilisable telle quelle dans Claude
 Desktop ; le mode auto fonctionne sans cop1 ; cop1 garde une valeur nette que la session ne
 peut pas offrir (nuit, budget transverse, parallélisme, monitoring, survie) ; un seul cerveau
 de décision gouverné par mega-city.
@@ -71,7 +71,7 @@ d'augmentation de budget.
 
 - **Le mode autonome comme feature cop1** — indisponible en interactif, duplique la décision,
   viole ADR-022 (cœur aveugle au métier). Rejeté.
-- **ezk-product-builder devenu agent** (techniquement possible depuis v2.1.172) — perd la
+- **ezk-product-build devenu agent** (techniquement possible depuis v2.1.172) — perd la
   visibilité interactive (checkpoints, mutation à chaud) qui est sa raison d'être de jour.
   Rejeté : on extrait le *décideur* (ezk-pm), pas l'orchestrateur.
 - **Un EscalationPort immédiat côté cop1** — YAGNI, les coutures existent. Différé.

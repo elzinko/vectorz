@@ -19,14 +19,13 @@ agents:
 skills:
   # hygiène / org
   - ezk-archive
-  - ezk-start
   - ezk-backlog
   - ezk-commits
   - ezk-ezk
   - ezk-readme
   - ezk-retro
   # boucle produit
-  - ezk-product-builder
+  - ezk-product-build
   - ezk-sprint
   # exécution courante
   - ezk-ci

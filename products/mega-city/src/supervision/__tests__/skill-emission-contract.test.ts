@@ -1,6 +1,6 @@
 /**
  * Non-récidive fiche 0095 : le template d'émission de supervisabilité (fiche 0050) a
- * été appliqué à `ezk-sprint` puis OUBLIÉ sur `ezk-product-builder` pendant des
+ * été appliqué à `ezk-sprint` puis OUBLIÉ sur `ezk-product-build` pendant des
  * semaines, sans que rien ne le détecte.
  *
  * CE QUE CE TEST COUVRE — et ce qu'il ne couvre pas (revue 2026-07-26, finding B2).
@@ -14,7 +14,7 @@
  *
  * DEUX LIMITES ASSUMÉES, à ne pas se cacher :
  *  a. Le quadrant « n'émet pas ET n'est déclarée nulle part » reste hors de portée —
- *     c'était l'état exact d'`ezk-product-builder` du 17 au 26 juillet. Aucune donnée
+ *     c'était l'état exact d'`ezk-product-build` du 17 au 26 juillet. Aucune donnée
  *     machine ne dit aujourd'hui « cette skill EST un orchestrateur, donc elle DOIT
  *     émettre ». Un nouvel orchestrateur créé sans émission passerait encore. C'est le
  *     job de la fiche 0068 (règle « method-map à jour ») et de la revue humaine.
@@ -40,7 +40,7 @@ interface EmittingSkill {
   id: string;
   /**
    * `true` pour les skills qui ÉNONCENT elles-mêmes la règle d'absorption.
-   * `ezk-sprint` l'énonce côté « je peux être absorbé », `ezk-product-builder` côté
+   * `ezk-sprint` l'énonce côté « je peux être absorbé », `ezk-product-build` côté
    * « j'ouvre le run, et voici la symétrie ».
    */
   requiresAbsorptionRule: boolean;
@@ -59,11 +59,11 @@ interface EmittingSkill {
  */
 const EMITTING_SKILLS: ReadonlyArray<EmittingSkill> = [
   { id: 'ezk-sprint', requiresAbsorptionRule: true },
-  { id: 'ezk-product-builder', requiresAbsorptionRule: true },
+  { id: 'ezk-product-build', requiresAbsorptionRule: true },
   {
     id: 'vz-product-builder',
     requiresAbsorptionRule: false,
-    doctrineParReference: { skillId: 'ezk-product-builder', motif: /applique-la intégralement/i },
+    doctrineParReference: { skillId: 'ezk-product-build', motif: /applique-la intégralement/i },
   },
   // Méthode jouet, à plat : elle ne compose aucun émetteur, donc rien à absorber.
   { id: 'supervision-demo', requiresAbsorptionRule: false },

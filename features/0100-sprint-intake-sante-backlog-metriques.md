@@ -98,7 +98,7 @@ reconstruite** au sprint suivant.
   bloquant (`ready <id>` pose `ready:` — fiche 0056) ; compteurs de santé émis par le
   script `regen` (total / statuts / todo-ready / création médiane — point 3, moitié
   « résultat du prompt ») ; garde « pas de sprint possible » = checkpoint bloquant
-  « aucune fiche ready » d'ezk-product-builder (point 5) ; priorisation + tirage via
+  « aucune fiche ready » d'ezk-product-build (point 5) ; priorisation + tirage via
   `next --ready-only` et `review` (points 1-2). Le « à trancher » (skill `ezk-planning`
   dédié ?) est **tranché** : sous-commandes d'ezk-backlog (ADR-0016 option B, gate
   ADR-0013). **Reste à cette fiche** (à groomer) : la DoR comme règle d'équipe dans
@@ -117,7 +117,7 @@ reconstruite** au sprint suivant.
   PO : étendre cette fiche plutôt qu'une fiche dédiée — anti-doublon, elle possède déjà le moment
   *intake*). Cross-réf : [0186](0186-skema-versioning-migrations-skills-deployees.md) (hook de drift des skills —
   concept voisin, sujet distinct : versions de skills, pas statut de fiche).
-- 2026-07-26 — **exigence PO (roadmap)** : au lancement d'`ezk-product-builder`, tant qu'il
+- 2026-07-26 — **exigence PO (roadmap)** : au lancement d'`ezk-product-build`, tant qu'il
   n'y a **pas un nombre suffisant** de fiches `ready` — **pas seulement zéro** — s'arrêter et
   **proposer une session de grooming** pour constituer un lot tirable, plutôt que de démarrer
   un sprint à vide. C'est le **seuil de lot** (point 6, « temps de groomer ») + la garde

@@ -41,14 +41,14 @@ describe('profils par hôte (fiche 0041)', () => {
     expect(cop1?.agents).toEqual(
       expect.arrayContaining(['ezk-architect', 'ezk-dev', 'ezk-qa', 'ezk-reviewer', 'ezk-pm']),
     );
-    for (const orch of ['ezk-product-builder', 'ezk-sprint', 'ezk-pr', 'ezk-ezk']) {
+    for (const orch of ['ezk-product-build', 'ezk-sprint', 'ezk-pr', 'ezk-ezk']) {
       expect(cop1?.skills ?? []).not.toContain(orch);
     }
   });
 
   it("desktop : builder + backlog + ezk-pm, PAS de skills à environnement d'exécution", () => {
     expect(desktop).toBeDefined();
-    expect(desktop?.skills).toEqual(expect.arrayContaining(['ezk-product-builder', 'ezk-backlog']));
+    expect(desktop?.skills).toEqual(expect.arrayContaining(['ezk-product-build', 'ezk-backlog']));
     expect(desktop?.agents ?? []).toContain('ezk-pm');
     for (const env of ['ezk-ci', 'ezk-apk', 'ezk-device']) {
       expect(desktop?.skills ?? []).not.toContain(env);

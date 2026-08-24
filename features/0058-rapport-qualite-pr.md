@@ -67,3 +67,9 @@ existantes (template PR ezk-sprint, `report` d'ezk-pr) — ne réinvente pas le 
   0052**. Cette fiche couvre le **rapport riche** (plusieurs métriques + delta, résumé testé,
   captures).
 - Dépend de [0052](0052-socle-metrique-port-adaptateur-silo.md) (le journal doit exister).
+
+
+> **Absorbe le volet métriques de `20260813171020902`** (cycle de revue local, fermée au paquet 2) :
+> compter/mesurer les revues adverses (verdicts GO/NO-GO, findings, récidives) fait partie du
+> rapport qualité de PR. Le cycle de revue lui-même est couvert par la règle LOI
+> development/adversarial-review-before-merge + l'agent ezk-reviewer.

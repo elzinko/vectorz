@@ -15,7 +15,7 @@ created: 2026-07-25
 
 ## Contexte / Problème
 
-Mesuré le **2026-07-25**, à la clôture d'une session `/ezk-product-builder build` qui avait
+Mesuré le **2026-07-25**, à la clôture d'une session `/ezk-product-build build` qui avait
 livré 4 fiches (PRs #45-#48) : `/ezk-archive run` a consommé **~130 000 tokens**, **~8
 minutes**, **27 appels d'outils** (dont 1 commande en échec et 1 suppression bloquée par le
 classifieur) — pour un bénéfice net proche de zéro, voire négatif :

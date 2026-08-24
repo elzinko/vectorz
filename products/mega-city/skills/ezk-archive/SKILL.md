@@ -180,7 +180,7 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
   À la clôture `run`/`close`, archive un snapshot de `SPRINT.md` dans
   `docs/sessions/` (voir `docs/sessions/README.md` du projet).
 - **[`ezk-commits`](../ezk-commits/)** : tout commit produit suit les Conventional Commits.
-- **`ezk-product-builder`** : à ses pauses inter-sprint, il **rappelle** que
+- **`ezk-product-build`** : à ses pauses inter-sprint, il **rappelle** que
   `/ezk-archive` est disponible — il ne réimplémente rien du handoff ni de
   l'archive `docs/sessions/`.
 

@@ -1,0 +1,68 @@
+# La taxonomie du catalogue — LES TROIS ÉTAGES (ADR-0039, lot 2 du plan, PO 2026-08-23).
+#
+# UN SEUL fichier de classification (verdict du panel adverse : jamais de frontmatter
+# éparpillé). Le compilateur de la carte VALIDE ce document : chaque skill et chaque
+# agent du catalogue DOIT avoir un étage — un oubli, un id inconnu ou un doublon fait
+# échouer la régénération.
+#
+# Les trois étages (+ la fabrique) :
+#   methode      — l'instance scrum : cérémonies, rôles, artefacts (bandes internes ADR-0020)
+#   modules      — hors méthode, activables (« modules » à la BMAD, PO 2026-08-24) ;
+#                  par famille : hote-llm, github, observabilite, techno, overlay
+#   librairie    — la fabrique de la méthode elle-même (méta)
+# (Le MOTEUR — rules/bundles/profiles/bind — n'a pas de skills : c'est le code et
+#  les objets qu'il compose ; il est documenté par ADR-0039, pas listé ici.)
+#
+# Rangements actés par le PO le 2026-08-23 : commits → techno (« la partie commit est
+# un outillage ») · archive → hôte LLM (skill ET agent exécutant) · start → méthode
+# (« une étape liée au sprint ») · backlog → méthode (artefact) · codex → GitHub ·
+# supervision-* → observabilité · ezk-ezk + steward → librairie · vz-product-builder
+# → overlay (le premier vivant) · ezk-pr → module github (2026-08-24).
+
+etages:
+  methode:
+    skills:
+      - ezk-backlog
+      - ezk-product-build
+      - ezk-retro
+      - ezk-sprint
+    agents:
+      - ezk-architect
+      - ezk-dev
+      - ezk-pm
+      - ezk-qa
+      - ezk-reviewer
+  modules:
+    familles:
+      hote-llm:
+        skills: [ezk-archive]
+        agents: [ezk-archive]
+      github:
+        skills: [ezk-codex, ezk-pr]  # la PR est un mécanisme GitHub, pas une cérémonie (PO 2026-08-24)
+      observabilite:
+        skills: [supervision-analyze, supervision-demo]
+      techno:
+        skills:
+          - ezk-apk
+          - ezk-article
+          - ezk-ci
+          - ezk-commits
+          - ezk-design-system
+          - ezk-device
+          - ezk-diagram
+          - ezk-docker
+          - ezk-npm-scripts
+          - ezk-preview
+          - ezk-readme
+      overlay:
+        skills: [vz-product-builder]
+  librairie:
+    skills: [ezk-ezk]
+    agents: [ezk-steward]
+
+# Bandes INTERNES à l'étage méthode (ADR-0020, amendée par ADR-0039 : l'ex-bande
+# « Outillage » est promue famille de modules ; commits et archive quittent
+# l'étage méthode sur décision PO). L'ordre est l'ordre du flux.
+bandes:
+  ceremonies: [ezk-product-build, ezk-sprint, ezk-retro]
+  artefacts: [ezk-backlog]

@@ -32,3 +32,7 @@ validation humaine. Jamais de SKILL.md en sortie.
 ## Notes
 ADR-0013. Premières cibles déjà sourcées par le run 0 : ezk-release, ezk-gate,
 ezk-branch-sweep, ezk-doc-drift (preuves en mémoire projet, audit 2026-07-05).
+
+> **MAJ 2026-08-24 (doctrine PO du 2026-08-22)** : le gate « preuve dans ≥ 2 repos »
+> d'ADR-0013 est désormais une QUESTION à instruire (« pourquoi pas maintenant ? »), pas
+> un interdit — le PO sait anticiper ce qui va servir. Amendement porté dans ADR-0013.

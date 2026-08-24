@@ -1,0 +1,337 @@
+<title>Audit mega-city</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#f2f0ec; --panel:#fffefc; --panel-2:#f7f5f1; --panel-3:#efece6;
+  --ink:#1b1a17; --ink-soft:#514d45; --ink-faint:#847e73;
+  --line:#ddd8ce; --line-soft:#e9e5dd;
+  --ok:#1a7a4c; --warn:#9a6a08; --bad:#b3301f; --dup:#6d4bb8; --old:#6b6560;
+  --ok-bg:#e4f2ea; --warn-bg:#f8efd9; --bad-bg:#f8e5e1; --dup-bg:#ede7f9; --old-bg:#eceae7;
+  --accent:#8a5a12;
+  --shadow:0 1px 2px rgba(27,26,23,.05), 0 6px 18px rgba(27,26,23,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#14140f; --panel:#1c1c17; --panel-2:#232219; --panel-3:#2b2a20;
+    --ink:#efece4; --ink-soft:#b3ada0; --ink-faint:#7d776c;
+    --line:#33322a; --line-soft:#262620;
+    --ok:#5cc98d; --warn:#e0b34d; --bad:#f08070; --dup:#b39bf0; --old:#9b958c;
+    --ok-bg:#16301f; --warn-bg:#332a11; --bad-bg:#3a1d17; --dup-bg:#28204a; --old-bg:#26251f;
+    --accent:#e0b34d;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#14140f; --panel:#1c1c17; --panel-2:#232219; --panel-3:#2b2a20;
+  --ink:#efece4; --ink-soft:#b3ada0; --ink-faint:#7d776c;
+  --line:#33322a; --line-soft:#262620;
+  --ok:#5cc98d; --warn:#e0b34d; --bad:#f08070; --dup:#b39bf0; --old:#9b958c;
+  --ok-bg:#16301f; --warn-bg:#332a11; --bad-bg:#3a1d17; --dup-bg:#28204a; --old-bg:#26251f;
+  --accent:#e0b34d;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15px; line-height:1.6;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 22px}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Chakra Petch",sans-serif}
+.mono{font-family:"IBM Plex Mono",monospace}
+code{font-family:"IBM Plex Mono",monospace; font-size:.88em; background:var(--panel-2); border:1px solid var(--line-soft); border-radius:4px; padding:.5px 5px}
+
+header{border-bottom:2px solid var(--ink); background:var(--panel)}
+.head{display:flex; align-items:flex-end; gap:18px; padding:30px 22px 20px; max-width:1080px; margin:0 auto; flex-wrap:wrap}
+.eyebrow{font-family:"Chakra Petch",sans-serif; font-weight:600; letter-spacing:.26em; text-transform:uppercase; font-size:10px; color:var(--ink-faint)}
+h1{font-size:33px; font-weight:700; line-height:1; letter-spacing:-.01em}
+.head .meta{margin-left:auto; font-size:11.5px; color:var(--ink-faint); text-align:right; line-height:1.5}
+button.tb{font:inherit; font-size:12px; cursor:pointer; color:var(--ink-soft); background:var(--panel-2); border:1px solid var(--line); border-radius:7px; padding:6px 10px}
+button.tb:hover{color:var(--ink); border-color:var(--ink-faint)}
+
+section{padding:34px 0 4px}
+h2{font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); display:flex; align-items:center; gap:12px; margin-bottom:16px}
+h2::after{content:""; height:1px; flex:1; background:var(--line)}
+h3{font-size:17px; font-weight:600; margin:22px 0 8px}
+p{margin:0 0 12px}
+.lede{font-size:17px; line-height:1.55; max-width:64ch}
+
+/* verdict cards */
+.verdicts{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:14px}
+.vc{background:var(--panel); border:1px solid var(--line); border-top:3px solid var(--c); border-radius:11px; padding:15px 16px; box-shadow:var(--shadow)}
+.vc .q{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-family:"Chakra Petch",sans-serif; font-weight:600}
+.vc .a{font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:20px; color:var(--c); margin:5px 0 7px; line-height:1.15}
+.vc .d{font-size:13px; color:var(--ink-soft); line-height:1.5}
+
+/* callout */
+.callout{background:var(--bad-bg); border:1px solid var(--bad); border-left:4px solid var(--bad); border-radius:9px; padding:15px 17px; margin:16px 0}
+.callout.warn{background:var(--warn-bg); border-color:var(--warn); border-left-color:var(--warn)}
+.callout .t{font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:14px; margin-bottom:6px}
+.callout p{margin:0; font-size:13.5px; line-height:1.55}
+.callout p + p{margin-top:8px}
+
+/* table */
+.tw{overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--panel); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; font-size:13px}
+th{text-align:left; font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); padding:11px 13px; border-bottom:1px solid var(--line); white-space:nowrap; background:var(--panel-2)}
+td{padding:10px 13px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.id{font-family:"IBM Plex Mono",monospace; font-weight:600; white-space:nowrap}
+.chip{display:inline-block; font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:20px; white-space:nowrap; background:var(--b); color:var(--c); border:1px solid var(--c)}
+.v-ok{--c:var(--ok); --b:var(--ok-bg)} .v-warn{--c:var(--warn); --b:var(--warn-bg)}
+.v-bad{--c:var(--bad); --b:var(--bad-bg)} .v-dup{--c:var(--dup); --b:var(--dup-bg)}
+.v-old{--c:var(--old); --b:var(--old-bg)}
+.filters{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+.filters button{font:inherit; font-family:"Chakra Petch",sans-serif; font-weight:600; font-size:11px; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; padding:5px 11px; border-radius:20px; border:1px solid var(--line); background:var(--panel); color:var(--ink-soft)}
+.filters button[aria-pressed="true"]{background:var(--ink); color:var(--ground); border-color:var(--ink)}
+.note{font-size:12px; color:var(--ink-faint); margin-top:9px}
+
+/* lists */
+.items{display:flex; flex-direction:column; gap:11px}
+.item{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--c); border-radius:9px; padding:13px 15px; box-shadow:var(--shadow)}
+.item .h{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:5px}
+.item .n{font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:14.5px}
+.item .b{font-size:13.5px; color:var(--ink-soft); line-height:1.55}
+.item .b strong{color:var(--ink)}
+.i-bad{--c:var(--bad)} .i-warn{--c:var(--warn)} .i-old{--c:var(--old)} .i-ok{--c:var(--ok)}
+
+/* steps */
+ol.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px}
+ol.steps li{counter-increment:s; position:relative; padding-left:42px; font-size:14px; line-height:1.55}
+ol.steps li::before{content:counter(s); position:absolute; left:0; top:-1px; width:27px; height:27px; border-radius:50%; background:var(--ink); color:var(--ground); font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:13px; display:grid; place-items:center}
+ol.steps li b{font-family:"Chakra Petch",sans-serif}
+
+footer{margin-top:40px; border-top:1px solid var(--line); padding:20px 0 46px; font-size:12px; color:var(--ink-faint)}
+@media (max-width:640px){ h1{font-size:25px} .head .meta{margin-left:0; text-align:left} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+
+<header>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Vectorz · mega-city</div>
+      <h1>Audit de la méthode</h1>
+    </div>
+    <div class="meta">
+      20 août 2026<br>29 ADR · 23 skills · 7 agents<br>651 commits
+      <div style="margin-top:8px"><button class="tb" id="themeBtn">◐ thème</button></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section>
+  <p class="lede">Trois questions posées, trois réponses courtes — le détail suit. <strong>L'hypothèse de départ (« les vieux ADR concernent d'anciens projets ») n'est pas confirmée</strong> : le problème n'est pas l'âge des décisions, c'est qu'elles se contredisent entre elles et que personne ne les applique.</p>
+
+  <div class="verdicts">
+    <div class="vc" style="--c:var(--warn)">
+      <div class="q">① Les ADR sont-ils à refondre ?</div>
+      <div class="a">Oui, mais pas à jeter</div>
+      <div class="d"><b>29 → 22.</b> Un seul est obsolète. Le vrai mal : <b>11 contradictions</b>, dont une qui casse un artefact vivant.</div>
+    </div>
+    <div class="vc" style="--c:var(--bad)">
+      <div class="q">② Le code doit-il être nettoyé ?</div>
+      <div class="a">Oui — 3 choses cassées</div>
+      <div class="d">La gate locale rend un <b>faux rouge</b> sur toute machine de dev. Et <b>91 fichiers TS ne sont pas lintés du tout</b>.</div>
+    </div>
+    <div class="vc" style="--c:var(--ok)">
+      <div class="q">③ L'historique doit-il être nettoyé ?</div>
+      <div class="a">Ne le réécris pas</div>
+      <div class="d">Zéro secret, 4,58 Mio packés, <b>199/200 commits conformes</b>. Tout le gain s'obtient sans réécrire.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>① Les 29 ADR — état réel</h2>
+
+  <div class="callout warn">
+    <div class="t">Correction d'un chiffre que j'avais donné</div>
+    <p>J'avais annoncé « 18 proposé / 8 accepté / 1 sans statut ». Le compte exact est <b>19 proposé / 10 accepté / 0 sans statut</b> : mon comptage ratait <b>quatre formats de frontmatter différents</b> pour « accepté », et l'ADR-0002 a bien un statut, écrit en anglais.</p>
+    <p>Ce détail est lui-même un symptôme : <b>le statut d'un ADR n'est pas une donnée machine-lisible</b> dans ce dépôt. Et <code>docs/adr/</code> côté mega-city n'a aucun index, contrairement à celui de la racine.</p>
+  </div>
+
+  <div class="filters" id="filters">
+    <button data-f="all" aria-pressed="true">Tout (29)</button>
+    <button data-f="v-ok" aria-pressed="false">Vivant (17)</button>
+    <button data-f="v-warn" aria-pressed="false">Non appliqué (6)</button>
+    <button data-f="v-dup" aria-pressed="false">Doublon (1)</button>
+    <button data-f="v-bad" aria-pressed="false">Contredit (1)</button>
+    <button data-f="v-old" aria-pressed="false">Obsolète (1)</button>
+  </div>
+
+  <div class="tw">
+    <table id="adrTable">
+      <thead><tr><th>ADR</th><th>Sujet</th><th>Verdict</th><th>Ce qui le prouve</th></tr></thead>
+      <tbody>
+        <tr data-v="v-ok"><td class="id">0001</td><td>Monorepo composable, cœur déterministe</td><td><span class="chip v-ok">vivant</span></td><td>L'ADR le plus cité (35 fichiers). ⚠️ Son §1 « monorepo plat » est faux aujourd'hui</td></tr>
+        <tr data-v="v-ok"><td class="id">0002</td><td>Interaction = Rule discriminée</td><td><span class="chip v-ok">vivant</span></td><td>Dans le domaine — mais <b>0 règle</b> <code>kind: interaction</code> sur 58 : couture jamais exercée</td></tr>
+        <tr data-v="v-ok"><td class="id">0003</td><td><code>bind</code> plan pur + coquille I/O</td><td><span class="chip v-ok">vivant</span></td><td><code>src/core/bind.ts</code> pur, <code>io/apply.ts</code> seule I/O. 21 réfs</td></tr>
+        <tr data-v="v-ok"><td class="id">0004</td><td><code>capture</code> + journal append-only</td><td><span class="chip v-ok">vivant</span></td><td>Code livré — mais <b>le flywheel n'a jamais tourné</b> : le journal contient 1 ligne d'exemple</td></tr>
+        <tr data-v="v-ok"><td class="id">0005</td><td>Export statique, MCP différé</td><td><span class="chip v-ok">vivant</span></td><td>3 caps au registre. À fusionner dans 0011 qui l'amende déjà</td></tr>
+        <tr data-v="v-old"><td class="id">0006</td><td>Absorber <code>claude-skills</code></td><td><span class="chip v-old">obsolète</span></td><td>Le dépôt source n'existe plus sur disque ; migration terminée. <b>49 réfs mortes</b> subsistent</td></tr>
+        <tr data-v="v-ok"><td class="id">0007</td><td><code>ezk-ezk</code> méta-skill mince</td><td><span class="chip v-ok">vivant</span></td><td>Skill + script de déploiement livrés</td></tr>
+        <tr data-v="v-ok"><td class="id">0008</td><td><code>ezk-product-builder</code></td><td><span class="chip v-ok">vivant</span></td><td>Tous les modes présents dans le skill ; fiche shippée</td></tr>
+        <tr data-v="v-bad"><td class="id">0009</td><td><code>ezk-pr-pilot</code> + convention Validation</td><td><span class="chip v-bad">contredit</span></td><td>Par 0029 — et <b>le conflit casse un artefact vivant</b> (voir C2 ci-dessous)</td></tr>
+        <tr data-v="v-ok"><td class="id">0010</td><td>Sunset <code>iamthelaw</code></td><td><span class="chip v-ok">vivant</span></td><td>C'est l'ADR qui a <i>tué</i> le repo en gardant le format — lequel est en production</td></tr>
+        <tr data-v="v-ok"><td class="id">0011</td><td>Périmètres jour/nuit, <code>ezk-pm</code></td><td><span class="chip v-ok">vivant</span></td><td>Doctrine gravée dans un test. cop1 est vivant. ⚠️ réf pourrie « fiche 0045 »</td></tr>
+        <tr data-v="v-dup"><td class="id">0012</td><td>Composition inter-skills</td><td><span class="chip v-dup">doublon</span></td><td>Même objet que 0025 — <b>et décrit une architecture qui n'existe pas</b> (la résolution n'est ni dans <code>expand</code> ni dans <code>bind</code>)</td></tr>
+        <tr data-v="v-warn"><td class="id">0013</td><td><code>ezk-recipy</code> entonnoir de sourcing</td><td><span class="chip v-warn">non appliqué</span></td><td>Pas de skill, absent des profils. Mais la <i>doctrine</i> est citée 10×</td></tr>
+        <tr data-v="v-ok"><td class="id">0014</td><td>Cap <code>claude-desktop</code></td><td><span class="chip v-ok">vivant</span></td><td>Cap livré. ⚠️ son §4 est levé par 0027 sans bandeau de supersession</td></tr>
+        <tr data-v="v-warn"><td class="id">0015</td><td>Pattern « contrat cowork »</td><td><span class="chip v-warn">non appliqué</span></td><td>1 seule réf externe ; s'appuie sur un script que son propre errata dit inexistant</td></tr>
+        <tr data-v="v-ok"><td class="id">0016</td><td>Rituels scrum du backlog</td><td><span class="chip v-ok">vivant</span></td><td>25 réfs ; 12 sous-commandes + gate DoR livrés</td></tr>
+        <tr data-v="v-ok"><td class="id">0017</td><td>Épics : champs <code>epic:</code> / <code>product:</code></td><td><span class="chip v-ok">vivant</span></td><td><b>119/119</b> fiches portent <code>product:</code>, <b>0 doublon d'id</b>. Mais <code>epic:</code> n'est rempli que 25 fois</td></tr>
+        <tr data-v="v-ok"><td class="id">0018</td><td><code>ezk-backlog reconcile</code></td><td><span class="chip v-ok">vivant</span></td><td>Sous-commande + section dédiée ; 11 réfs</td></tr>
+        <tr data-v="v-ok"><td class="id">0019</td><td>Normalisation de la racine</td><td><span class="chip v-ok">vivant</span></td><td>Code + tests livrés, fiche dans <code>done/</code> — <b>mais le statut dit encore « Proposé »</b></td></tr>
+        <tr data-v="v-ok"><td class="id">0020</td><td>Capacité partagée = brique autonome</td><td><span class="chip v-ok">vivant</span></td><td>Doctrine citée par 4 ADR. ⚠️ son §3 (<code>ezk-testbed</code>) jamais construit</td></tr>
+        <tr data-v="v-ok"><td class="id">0021</td><td>Clôture : portier déterministe</td><td><span class="chip v-ok">vivant</span></td><td>Scripts + tests livrés. ⚠️ la cause qu'il désigne (pas de champ <code>tools:</code> sur les agents) n'est pas corrigée</td></tr>
+        <tr data-v="v-warn"><td class="id">0022</td><td>3 bandes + naming</td><td><span class="chip v-warn">non appliqué</span></td><td>La doctrine a atterri, <b>les 3 mécaniques non</b> : ni <code>ezk-pr</code>, ni <code>ezk-sandbox</code>, ni l'absorption de Validation</td></tr>
+        <tr data-v="v-warn"><td class="id">0023</td><td>Connexion Claude Max</td><td><span class="chip v-warn">non appliqué</span></td><td><b>0 référence</b> dans tout le dépôt, 0 skill, 0 fiche. + collision de nom sur « lawgiver »</td></tr>
+        <tr data-v="v-ok"><td class="id">0024</td><td><code>ezk-codex</code></td><td><span class="chip v-ok">vivant</span></td><td>Skill livré</td></tr>
+        <tr data-v="v-ok"><td class="id">0025</td><td><code>composes:</code> mécanique</td><td><span class="chip v-ok">vivant</span></td><td>Checker + générateur + bloc managé livrés. <b>Annotation portée de 2/23 à 20/23 le 20/08</b></td></tr>
+        <tr data-v="v-warn"><td class="id">0026</td><td>Capacité UX : agent + skill mince</td><td><span class="chip v-warn">non appliqué</span></td><td><b>0 référence</b>, 0 skill, 0 agent, 0 fiche, pas de bundle design</td></tr>
+        <tr data-v="v-ok"><td class="id">0027</td><td>Assets de skill</td><td><span class="chip v-ok">vivant</span></td><td>Domaine + loader + caps + I/O ; 12 dossiers portent des assets</td></tr>
+        <tr data-v="v-ok"><td class="id">0028</td><td>Auto-groom DoR</td><td><span class="chip v-ok">vivant</span></td><td>Livré ; bandeau de révision posé dans 0016</td></tr>
+        <tr data-v="v-ok"><td class="id">0029</td><td>La fiche est le document</td><td><span class="chip v-ok">vivant</span></td><td>Garde-fou + 2 tests. ⚠️ <b>l'artefact installé le contredit</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Aucun ADR n'est « projet mort ». 0006 et 0010 sont les ADR qui ont <i>organisé</i> la mort de <code>claude-skills</code> et <code>iamthelaw</code> — et leur produit (le catalogue, le format de règles) tourne en production.</p>
+</section>
+
+<section>
+  <h2>Les 11 contradictions — la vraie maladie</h2>
+
+  <div class="callout">
+    <div class="t">C2 — la seule qui casse quelque chose d'utilisable</div>
+    <p>Le template de PR installé (<code>.github/PULL_REQUEST_TEMPLATE.md</code>) commence par <code>## Summary</code>. Or <code>ezk-sprint</code> déclare <code>## Summary</code> <b>« proscrit »</b>, et le propre vérificateur du dépôt (<code>check-pr-body.sh</code>) <b>rejetterait ce template</b> : il exige une ouverture « En clair » <i>visible</i>, alors qu'elle n'y figure que dans un commentaire HTML.</p>
+    <p>L'asset source, lui, est à jour. <b>C'est la copie installée à la racine qui n'a jamais été régénérée.</b> Fix : une copie de fichier.</p>
+  </div>
+
+  <div class="items">
+    <div class="item i-warn"><div class="h"><span class="n">C1 · C5</span><span class="chip v-warn">naming jamais exécuté</span></div>
+      <div class="b">0020 <b>rejette</b> le rename <code>ezk-pr-pilot → ezk-pr</code> ; 0022 le déclare <b>« nom préféré »</b>. Idem <code>ezk-testbed</code> vs <code>ezk-sandbox</code>. Les deux ADR sont « proposé », aucun des noms n'existe. <strong>Fusionner 0022 dans 0020 supprime les deux d'un coup.</strong></div></div>
+    <div class="item i-dup" style="--c:var(--dup)"><div class="h"><span class="n">C3</span><span class="chip v-dup">architecture fantôme</span></div>
+      <div class="b">0012 place la résolution de <code>composes</code> dans <code>expand</code> + <code>bind</code>. Le code tranche pour 0025 : <code>expand.ts</code> ne contient <b>aucune</b> occurrence de <code>composes</code>. <strong>0012 décrit un système qui n'existe pas.</strong></div></div>
+    <div class="item i-warn"><div class="h"><span class="n">C4</span><span class="chip v-warn">4 ADR pour un objet</span></div>
+      <div class="b">« Un skill, c'est quoi ? » — 0007 dit dossier + scripts, 0014 dit <code>{id, content}</code> sans scripts, 0012 exige le remodelage, 0025 le diffère, <b>0027 le livre</b>. Et 0014 ne porte aucun bandeau de supersession.</div></div>
+    <div class="item i-warn"><div class="h"><span class="n">C7</span><span class="chip v-warn">la forme du dépôt a changé</span></div>
+      <div class="b">0001 et 0003 décrivent un « monorepo plat, un seul <code>package.json</code> ». La réalité est un workspace pnpm à deux produits — décidé par un ADR <b>de la racine</b> dont aucun ADR mega-city ne porte la trace.</div></div>
+    <div class="item i-warn"><div class="h"><span class="n">C6 · C8 · C9 · C10 · C11</span><span class="chip v-warn">dettes documentées, jamais soldées</span></div>
+      <div class="b">Où vit <code>init</code> Validation (annoncé migré, toujours en place) · comment cop1 consomme le catalogue (0011 s'auto-déclare amendement, 0005 n'en sait rien) · <b>collision de nom sur « lawgiver »</b> (déjà pris par la CLI) · <code>ezk-dev</code> annoncé depuis 0011 mais l'agent s'appelle toujours <code>ezk-tdd</code>, avec un lien de fiche pourri · 0016 dont le corps contredit son propre bandeau de révision.</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Le plan de refonte — 29 → 22</h2>
+  <p>Contrainte à respecter : <b>les ADR de ce dépôt sont immuables</b> (décision de la racine). On ne supprime donc rien physiquement — on pose un statut <code>Superseded by</code> et on déplace dans <code>docs/adr/superseded/</code>.</p>
+
+  <div class="items">
+    <div class="item i-old"><div class="h"><span class="n">Archiver — 4</span></div>
+      <div class="b"><code>0006</code> (migration terminée) · <code>0012</code> (doublon + archi fantôme) · <code>0023</code> et <code>0026</code> (zéro référence, zéro implémentation, zéro fiche — <b>à ré-ouvrir par une fiche backlog, pas par un ADR</b>)</div></div>
+    <div class="item i-warn"><div class="h"><span class="n">Fusionner — 3 disparitions</span></div>
+      <div class="b"><code>0015 → 0013</code> · <code>0022 → 0020</code> (supprime C1 et C5) · <code>0005 → 0011</code> (qui l'amende déjà)</div></div>
+    <div class="item i-bad"><div class="h"><span class="n">Réécrire — 6</span></div>
+      <div class="b">Poser les bandeaux et back-refs manquants sur <code>0001</code>, <code>0003</code>, <code>0009</code>, <code>0014</code>, <code>0011</code>, <code>0016</code> — et <b>corriger les statuts qui mentent</b> : <code>0019</code> est « Proposé » alors qu'il est livré et sa fiche archivée.</div></div>
+    <div class="item i-ok"><div class="h"><span class="n">Ratifier tel quel — 10</span></div>
+      <div class="b"><code>0002 0003 0004 0007 0008 0010 0011 0013 0014 0019</code> — tous prouvés par du code. Deux réserves à inscrire : la couture <i>interaction</i> (0 instance) et le journal du flywheel (jamais alimenté).</div></div>
+  </div>
+  <p class="note">Corpus final : <b>22 ADR, dont 20 « accepté »</b>. Deux restent « proposé » en connaissance de cause.</p>
+</section>
+
+<section>
+  <h2>② Le code — ce qui est cassé</h2>
+
+  <div class="callout">
+    <div class="t">Le finding le plus coûteux : ta gate locale ment</div>
+    <p><code>pnpm lint</code> <b>échoue (exit 1)</b> à la racine, à cause d'un unique fichier — <code>.claude/settings.local.json</code> — que Biome n'ignore pas alors que git l'ignore.</p>
+    <p>La CI est verte parce que ce fichier n'existe pas sur le runner. Mais la <b>gate hôte</b> — seule voie de validation viable puisque Docker est injoignable ici — rend un <b>faux rouge sur toute machine de dev</b>. C'est le pire type de défaut : il entraîne à ignorer la gate.</p>
+  </div>
+
+  <div class="items">
+    <div class="item i-bad"><div class="h"><span class="n">Cassé</span><span class="chip v-bad">agir maintenant</span></div>
+      <div class="b"><b>Deux scripts dont l'invocation par défaut échoue</b> — <code>check-links.sh</code> et <code>regen-backlog.sh</code> pointent tous deux vers un <code>features/</code> supprimé en PR #147.<br>
+      <b>Un paquet cop1 qui casse sur Node 20</b> — <code>quality-intelligence</code> expose un <code>.ts</code> brut derrière un spécificateur <code>.js</code> ; ça ne marche ici que grâce au type-stripping de Node 22, alors que le paquet déclare supporter Node ≥ 20. Invisible aux tests.<br>
+      <b><code>PORTFOLIO.md</code> périmé</b> — son générateur a <b>zéro appelant</b> : ni script npm, ni CI, ni skill. Il affiche une fiche en « todo » que le backlog donne « shipped ».</div></div>
+    <div class="item i-warn"><div class="h"><span class="n">Angle mort</span><span class="chip v-warn">91 fichiers</span></div>
+      <div class="b"><b>mega-city n'est pas linté du tout.</b> <code>biome.json</code> l'exclut, et son <code>package.json</code> n'a aucun script <code>lint</code>. Le cœur de la méthode est la seule partie du dépôt sans linter.</div></div>
+    <div class="item i-old"><div class="h"><span class="n">Mort — à supprimer</span></div>
+      <div class="b">Un formateur cop1 orphelin (109 l., 0 consommateur) · 2 scripts de migration one-shot déjà livrés · 2 entrées <code>biome.json</code> vers des dossiers <code>_bmad</code> inexistants · 10 <code>export</code> gratuits que <code>noUnusedLocals</code> n'attrape pas.</div></div>
+    <div class="item i-warn"><div class="h"><span class="n">Duplication qui a déjà divergé</span></div>
+      <div class="b">La liste des templates qualité existe <b>deux fois</b> dans cop1 — <b>4 entrées d'un côté, 3 de l'autre</b>. Et <code>regen-backlog.sh</code> est dupliqué à l'identique (170 l.) avec un commentaire « à garder alignées » que rien ne vérifie.</div></div>
+  </div>
+
+  <h3>Sécurité — la priorité est l'inverse de ce que GitHub affiche</h3>
+  <p>GitHub annonce 61 vulnérabilités, dont 3 critiques. Le tri change complètement la lecture :</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Groupe</th><th>Nb</th><th>Nature</th><th>Réellement exposé ?</th></tr></thead>
+      <tbody>
+        <tr><td>Outillage de test (vitest, jsdom, playwright, vite…)</td><td class="mono">43</td><td><span class="chip v-old">dev</span></td><td>Non — <b>les 2 critiques sont ici</b>, sur <code>vitest --ui</code>, que le dépôt ne lance jamais</td></tr>
+        <tr><td><code>ajv → fast-uri</code></td><td class="mono">3</td><td><span class="chip v-bad">prod</span></td><td><b>Oui</b> — l'SDK valide ses schémas</td></tr>
+        <tr><td><code>gray-matter → js-yaml</code></td><td class="mono">1</td><td><span class="chip v-bad">prod</span></td><td><b>Oui</b> — parse le frontmatter de chaque fiche (entrée locale de confiance)</td></tr>
+        <tr><td><code>hono</code>, <code>express-rate-limit → ip-address</code></td><td class="mono">11</td><td><span class="chip v-warn">prod</span></td><td>Non — transport HTTP de l'SDK, or mega-city n'importe que <b>stdio</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Traduction : <b>un bump de <code>@modelcontextprotocol/sdk</code> et <code>gray-matter</code> couvre toute l'exposition réelle.</b> Le reste est de l'outillage de test, à traiter en lot de routine — pas dans l'urgence que suggère le badge « 3 critiques ».</p>
+</section>
+
+<section>
+  <h2>③ L'historique — ne le réécris pas</h2>
+  <div class="verdicts">
+    <div class="vc" style="--c:var(--ok)"><div class="q">Secrets</div><div class="a">Aucun</div><div class="d">0 hit sur 15 motifs. Les 20 occurrences de <code>sk-ant-</code> sont des préfixes de doc — la plus longue fait 25 caractères, une vraie clé en fait 100+.</div></div>
+    <div class="vc" style="--c:var(--ok)"><div class="q">Poids</div><div class="a">4,58 Mio</div><div class="d">Zéro binaire, zéro <code>node_modules</code>. Le plus gros objet de toute l'histoire est un markdown de 178 Ko.</div></div>
+    <div class="vc" style="--c:var(--ok)"><div class="q">Qualité</div><div class="a">199/200</div><div class="d">Commits conformes aux Conventional Commits. 0,8 % de merges, un seul <code>WIP</code> dans 651 commits.</div></div>
+  </div>
+  <p style="margin-top:18px">Une réécriture casserait 3 PR ouvertes, 32 branches, 70 tags et tous les clones — pour un gain nul. <b>Le « 38 Mo » alarmant est un faux problème : la moitié est <code>.git/cursor</code>, un artefact de l'IDE, pas de l'historique.</b></p>
+
+  <h3>En revanche, du vrai ménage — sans rien réécrire</h3>
+  <ol class="steps">
+    <li><b>Supprimer <code>.git/cursor</code></b> — 18 Mo, soit 47 % du poids. Artefact d'IDE, aucun rapport avec git.</li>
+    <li><b>Lancer <code>git gc</code></b> — 2 719 objets épars pesant 14 Mo contre 4,58 Mio packés. Ramène <code>.git/objects</code> de 19 Mo à ~5 Mo.</li>
+    <li><b>Supprimer 22 branches distantes orphelines</b> — PR mergée, branche survivante : le piège <code>--delete-branch</code> depuis un worktree, enfin chiffré.</li>
+    <li><b>Ranger le local</b> — 10 branches mergées, 1 worktree périmé (PR #129), 1 stash d'une campagne déjà livrée.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Par quoi commencer</h2>
+  <ol class="steps">
+    <li><b>Réparer la gate</b> — ajouter <code>.claude</code> aux ignores de Biome. Une ligne, et <code>pnpm lint</code> cesse de mentir à chaque dev.</li>
+    <li><b>Régénérer le template de PR</b> depuis son asset source. Une copie de fichier, et le dépôt cesse de violer sa propre règle.</li>
+    <li><b>Bumper <code>@modelcontextprotocol/sdk</code> et <code>gray-matter</code></b> — couvre 100 % de l'exposition prod réelle.</li>
+    <li><b>Trancher la taxonomie</b> — fusionner 0022 dans 0020 en 4 bandes (cérémonies / rôles / artefacts de méthode / outillage). C'est le préalable qui débloque le champ <code>roles:</code>, aujourd'hui posé mais volontairement inerte.</li>
+    <li><b>Puis la refonte ADR</b> — archiver 4, fusionner 3, réécrire 6, ratifier 10.</li>
+  </ol>
+</section>
+
+<footer>
+  Audit mené le 20 août 2026 sur la branche <code>claude/mega-city-dynamic-diagram-f92719</code>. Chaque verdict est adossé à une commande ou à un chemin de fichier vérifié. Les mesures de tests (422 verts côté mega-city, 661 côté racine) et de sécurité ont été relancées, pas reprises d'une note antérieure.
+</footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var btns=document.querySelectorAll('#filters button');
+  var rows=document.querySelectorAll('#adrTable tbody tr');
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.setAttribute('aria-pressed','false');});
+      b.setAttribute('aria-pressed','true');
+      var f=b.dataset.f;
+      rows.forEach(function(r){ r.style.display=(f==='all'||r.dataset.v===f)?'':'none'; });
+    });
+  });
+  var tb=document.getElementById('themeBtn');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;}
+  function cur(){var t=document.documentElement.getAttribute('data-theme');return t?t==='dark':sysDark();}
+  tb.addEventListener('click',function(){
+    document.documentElement.setAttribute('data-theme',cur()?'light':'dark');
+  });
+})();
+</script>

@@ -93,12 +93,11 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
       'ezk-npm-scripts',
       'ezk-pr',
       'ezk-preview',
-      'ezk-product-builder',
+      'ezk-product-build',
       'ezk-readme',
       'ezk-retro',
       'ezk-sprint',
-      'ezk-start',
-    ]);
+          ]);
   });
 
   it('n\'altère pas base : le socle reste minimal (mobile reste curated)', () => {
@@ -107,7 +106,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     if (!base) throw new Error('profil base introuvable');
     const resolved = expandProfile(base, catalog);
     expect(resolved.agents.map((a) => a.id)).toEqual([]);
-    expect(resolved.skills.map((s) => s.id)).toEqual(['ezk-archive', 'ezk-start']);
+    expect(resolved.skills.map((s) => s.id)).toEqual(['ezk-archive']);
   });
 });
 
@@ -125,12 +124,12 @@ const MIGRATED_BUNDLES = [
 ];
 
 describe('expandProfile — 10 bundles migrés depuis iamthelaw (fiche 0006)', () => {
-  it('charge les 10 bundles sans erreur et résout les 58 règles (53 iamthelaw + no-dead-code + proven-outbound-references + verification-budget + pr-before-after-media + human-facing-lisibility)', () => {
+  it('charge les 10 bundles sans erreur et résout les 59 règles (53 iamthelaw + no-dead-code + proven-outbound-references + verification-budget + pr-before-after-media + human-facing-lisibility + adversarial-review-before-merge)', () => {
     const catalog = loadCatalog(repoRoot);
     const profile = { id: 'iamthelaw-full', bundles: MIGRATED_BUNDLES, agents: [], skills: [] };
     const resolved = expandProfile(profile, catalog);
-    expect(resolved.rules).toHaveLength(58);
+    expect(resolved.rules).toHaveLength(59);
     // pas de doublon d'id malgré 10 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(58);
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(59);
   });
 });

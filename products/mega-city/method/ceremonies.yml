@@ -1,0 +1,195 @@
+# La carte TOTALE de la méthode scrum — implémentée ET à implémenter (lot 1 du plan
+# « trois étages », décision PO du 2026-08-23).
+#
+# Chaque élément du Scrum Guide 2020 (cérémonies, artefacts, rôles) est listé ici avec
+# son ÉTAT réel et QUI l'implémente. C'est la donnée que la carte interactive affiche.
+#
+# GARDE-FOU (panel adverse 2026-08-23) : ce fichier ne peut pas devenir une deuxième
+# vérité qui dérive — chaque `implemente_par` est VALIDÉ contre le catalogue réel par
+# le compilateur (`validateMethod`) : skill inexistant, sous-commande inconnue de
+# l'`argument-hint`, ou agent inexistant = ÉCHEC de la régénération (CI rouge).
+#
+# Grammaire des références :
+#   ezk-backlog          → le skill entier (doit exister)
+#   ezk-backlog:groom    → une sous-commande (doit figurer dans l'argument-hint du skill)
+#   agent:ezk-pm         → un agent (doit exister)
+#   humain               → l'opérateur PO (toujours valide — pas encore un objet du modèle)
+#
+# États : fidele (✅ conforme à l'esprit du Guide) · adapte (🟠 le mot est gardé, le
+# sens diffère — la note dit comment) · assume (⚪ écart choisi, acté par verdict) ·
+# a-implementer (❌ absent — chantier ouvert).
+# Vérité terrain : exploration du 2026-08-23 + Scrum Guide 2020 (scrumguides.org).
+
+elements:
+  # ── Cérémonies ──────────────────────────────────────────────
+  - id: grooming
+    type: ceremonie
+    nom: Grooming / Refinement
+    scrum: Product Backlog Refinement
+    etat: fidele
+    implemente_par: [ezk-backlog:groom, ezk-backlog:review]
+    note: >-
+      Activité continue : le groom se fait au tirage d'une fiche (ADR-0016), la passe
+      globale par `review`. La Definition of Ready est le cran de sortie.
+
+  - id: gate-ready
+    type: ceremonie
+    nom: Gate « ready » (DoR)
+    scrum: — (cran maison, hors Guide)
+    etat: fidele
+    implemente_par: [ezk-backlog:ready]
+    note: >-
+      Le gate bloquant qui promeut une fiche en « tirable » : problème / valeur /
+      critères vérifiés, date posée en front-matter. Maison, assumé (ADR-0016).
+
+  - id: planning
+    type: ceremonie
+    nom: Le tirage
+    scrum: Sprint Planning
+    etat: adapte
+    implemente_par: [ezk-backlog:next, ezk-backlog:plan, ezk-sprint, ezk-product-build]
+    note: >-
+      Éclaté : le QUOI = `next --ready-only` (une fiche, pop mécanique) ; l'ORDRE =
+      `plan` (PLAN.md) ; le COMMENT = les étapes 0-2 du sprint (intake, cadrage, archi).
+      Pas de sélection multiple négociée — du réapprovisionnement kanban de qualité.
+
+  - id: daily
+    type: ceremonie
+    nom: Daily Scrum
+    scrum: Daily Scrum
+    etat: a-implementer
+    implemente_par: []
+    note: >-
+      Aucun équivalent. Absence ASSUMÉE pour l'instant (panel 2026-08-23 : aucune
+      douleur documentée) — seul analogue : le heartbeat de supervision. Si une douleur
+      se documente, une fiche dédiée s'ouvre.
+
+  - id: sprint
+    type: ceremonie
+    nom: Le run (« sprint » maison)
+    scrum: Sprint (le conteneur)
+    etat: adapte
+    implemente_par: [ezk-sprint:run, ezk-sprint:check, ezk-archive:run]
+    note: >-
+      Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du
+      Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run`
+      (hygiène d'hôte, hors scrum).
+
+  - id: review
+    type: ceremonie
+    nom: La livraison (release gate)
+    scrum: Sprint Review
+    etat: adapte
+    implemente_par: [ezk-sprint]
+    note: >-
+      Portée par le SPRINT (ezk-pr est un module GitHub OPTIONNEL, hors implémenteur). Ce n'est PAS une Sprint Review (pas d'inspection avec parties prenantes) : gate +
+      revue adverse + squash-merge (étapes 6/7/9-10 du sprint). La seule « review »
+      réelle est le checkpoint inter-sprint où l'humain inspecte le livré.
+
+  - id: retro
+    type: ceremonie
+    nom: La rétro
+    scrum: Sprint Retrospective
+    etat: fidele
+    implemente_par: [ezk-retro:run]
+    note: >-
+      Round-robin des agents → propositions typées (symptôme + mesure) → juge de
+      cohérence → rangement sous contrôle PO. À la demande (après un ou plusieurs
+      runs), pas à cadence fixe — écart connu, toléré.
+
+  # ── Artefacts ───────────────────────────────────────────────
+  - id: product-backlog
+    type: artefact
+    nom: Product Backlog
+    scrum: Product Backlog
+    etat: fidele
+    implemente_par: [ezk-backlog]
+    note: >-
+      `features/*.md` commités sur main, front-matter = source de vérité, index
+      régénéré (BACKLOG.md). La fiche est le Product Backlog Item.
+
+  - id: sprint-backlog
+    type: artefact
+    nom: Sprint Backlog
+    scrum: Sprint Backlog
+    etat: adapte
+    implemente_par: [ezk-sprint]
+    note: >-
+      Dégénéré : `SPRINT.md` éphémère, un seul item (le run est mono-fiche). Le panel a
+      constaté sa corruption par l'entrelacement de chantiers — pièce au dossier de la
+      vue d'avancement.
+
+  - id: increment
+    type: artefact
+    nom: L'increment
+    scrum: Increment
+    etat: adapte
+    implemente_par: [ezk-sprint]
+    note: >-
+      La PR squash-mergée sur main (étapes 8-10 du sprint) ; livraison groupée possible
+      par ezk-pr. Jamais nommé « Increment » dans la maison — le mot manque, pas la chose.
+
+  - id: dod
+    type: artefact
+    nom: Definition of Done
+    scrum: Definition of Done
+    etat: adapte
+    implemente_par: [ezk-sprint]
+    note: >-
+      Deux sens mélangés aujourd'hui (panel B-4) : les scénarios Gherkin (= critères
+      d'acceptation par fiche) et la checklist de sortie (gate verte, E2E, revue GO).
+      La séparation des mots est au lot vocabulaire du plan.
+
+  - id: product-goal
+    type: artefact
+    nom: Product Goal
+    scrum: Product Goal
+    etat: a-implementer
+    implemente_par: []
+    note: >-
+      Zéro occurrence dans le dépôt avant le 2026-08-23. Premier pas posé : une ligne
+      en tête de `features/PLAN.md` (brouillon à valider/réécrire par le PO).
+
+  - id: sprint-goal
+    type: artefact
+    nom: Sprint Goal
+    scrum: Sprint Goal
+    etat: assume
+    implemente_par: []
+    note: >-
+      Assumé ≡ la fiche tirée (le run est mono-fiche, son but EST la fiche) — verdict
+      du panel du 2026-08-23 (B-5). Pas de chantier tant que le run reste mono-fiche.
+
+  # ── Rôles ───────────────────────────────────────────────────
+  - id: po
+    type: role
+    nom: Product Owner
+    scrum: Product Owner
+    etat: fidele
+    implemente_par: [humain, "agent:ezk-pm", ezk-product-build]
+    note: >-
+      L'humain arbitre toujours (4 décisions réservées) ; `ezk-pm` décide par
+      délégation ; la couche product-builder orchestre. « Toi » n'est pas encore un
+      objet du modèle — constat pour la refonte.
+
+  - id: sm
+    type: role
+    nom: Scrum Master
+    scrum: Scrum Master
+    etat: adapte
+    implemente_par: [ezk-sprint]
+    note: >-
+      Porté par le SKILL ezk-sprint (« tu es le scrum master ») qui exécute et juge —
+      le contraire du SM du Guide (servir, établir). Débaptisage prévu au lot
+      vocabulaire ; le SM effectif = LA LOI compilée + la rétro.
+
+  - id: developers
+    type: role
+    nom: Developers
+    scrum: Developers
+    etat: adapte
+    implemente_par: ["agent:ezk-architect", "agent:ezk-dev", "agent:ezk-qa", "agent:ezk-reviewer"]
+    note: >-
+      Éclatés en 4 juges spécialisés convoqués par le sprint — pas une équipe
+      auto-gérée, un pipeline à rôles. La vraie valeur : la seconde opinion
+      inter-modèles (dev et reviewer sur des modèles différents).

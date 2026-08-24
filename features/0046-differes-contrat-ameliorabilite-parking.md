@@ -27,7 +27,7 @@ Fiche parking façon 0029/0042. Items, chacun avec son gate :
    rejoue `.improvement/*.jsonl` (les deux fichiers + le miroir), violations typées,
    fixtures. *Gate : après 3 cycles vécus (invariants figés sur du vécu). Son branchement
    CI = condition de passage v0.2 du contrat.*
-2. **Double émission** : deuxième émetteur conforme (checkpoint ezk-product-builder,
+2. **Double émission** : deuxième émetteur conforme (checkpoint ezk-product-build,
    puis pilote natif 0038) — preuve exécutable de méthode-agnosticité. *Gate : critère
    de sortie à ajouter à la fiche 0038 à son tirage ; jamais une dépendance du MVP.*
 3. **Métrologie tokens du budget méta (≤10 %)** : le seuil en tokens est invérifiable en

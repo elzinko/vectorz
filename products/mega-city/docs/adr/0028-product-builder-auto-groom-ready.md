@@ -8,7 +8,7 @@
 
 [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) a fait du gate `ready` (DoR) un
 **gate bloquant** et de son invariant **A5** un **STOP humain** : quand aucune fiche n'est
-tirable, `ezk-product-builder --checkpoints auto` **pré-remplit** les DoR mais **s'arrête et
+tirable, `ezk-product-build --checkpoints auto` **pré-remplit** les DoR mais **s'arrête et
 attend que l'humain tamponne** — *« le gate ready n'est jamais auto-tamponné »*.
 
 Douleur constatée (session 2026-08-13) : sur un backlog où **rien n'est `ready`** (cas
@@ -28,7 +28,7 @@ que la méthode peut faire seule.
 
 ## Décision
 
-En `--checkpoints auto`, `ezk-product-builder` **groome désormais la fiche de tête vers la
+En `--checkpoints auto`, `ezk-product-build` **groome désormais la fiche de tête vers la
 DoR de façon autonome** (délègue `product-brainstorming` pour dériver problème/valeur/critères
 depuis les grands axes, `ezk-architect` pour la structure **et le jugement de faisabilité en
 lecture seule** — jamais `ezk-tdd` avant le gate, l'implémentation reste exclusivement dans
@@ -89,7 +89,7 @@ d'inventer. Le PO garde le contrôle de **(b)** par la sélection du lot ; il d�
 
 ## Action Items
 
-1. [ ] `ezk-product-builder/SKILL.md` : option `--check-ready`, boucle d'auto-groom déléguée,
+1. [ ] `ezk-product-build/SKILL.md` : option `--check-ready`, boucle d'auto-groom déléguée,
    skip+journal, plancher outcome-testable, concurrence `ezk-pm` pour l'auto-tampon.
 2. [ ] Note de révision dans [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) (A5).
 3. [ ] Fiche backlog de suivi (implémentation + éventuel durcissement du plancher).

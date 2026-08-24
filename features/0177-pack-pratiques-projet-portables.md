@@ -72,9 +72,9 @@ scopes.
   - [0106](done/0106-lawgiver-bind-cap-claude-code.md) / [0115](done/0115-bind-merge-au-lieu-decraser.md) /
     [0122](done/0122-cap-global-home-claude.md) — *matérialisent* agents/skills/rules
     dans un harness ; ici = contrat de *pratiques projet* lisible par tout LLM.
-  - [0150](0150-ezk-dev-methode-tdd-en-rules.md) — méthode TDD en *rule de profil*
+  - 0150 — méthode TDD en *rule de profil*
     (composition mega-city), pas un pack projet déporté.
-  - [0170](0170-modele-extension-plugin-mega-city.md) — modèle d'extension /
+  - [0170](done/0170-modele-extension-plugin-mega-city.md) — modèle d'extension /
     plugin (ADR), pas le binding de pratiques.
   - [0173](done/0173-ezk-methode-trois-bandes-naming.md) — naming méthode /
     caps / archive ; orthogonal.

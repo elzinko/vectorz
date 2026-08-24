@@ -23,7 +23,7 @@ flowchart TB
     subgraph BL["📚 Backlog · ezk-backlog"]
         F["fiches : 💡idea → 🔴todo → 🟠in-progress → ✅shipped"]
     end
-    PB["🤖 ezk-product-builder<br/>enchaîne les sprints (autonome)"]
+    PB["🤖 ezk-product-build<br/>enchaîne les sprints (autonome)"]
     subgraph SP["🏃 Sprint · ezk-sprint — 1 fiche = 1 PR"]
         direction TB
         S1["1 · intake : prochaine fiche prête"] --> S2["2 · BDD : scénarios d'acceptation"]
@@ -45,7 +45,7 @@ flowchart TB
     ARCH -->|ship/regen du stock · purge des résidus prouvés| BL
 ```
 
-**Acteurs** : le **PO** (déclenche, tranche) · les **skills** `ezk-product-builder` (chaîne),
+**Acteurs** : le **PO** (déclenche, tranche) · les **skills** `ezk-product-build` (chaîne),
 `ezk-sprint` (1 fiche → 1 PR), `ezk-backlog` (le stock), `ezk-retro` (améliore),
 `ezk-archive` (clôt sans rien perdre) · **LA LOI** (`rules/`) qui guide et se fait enrichir.
 
@@ -109,7 +109,7 @@ flowchart LR
 > `products/mega-city/src/supervision/` : journal JSONL, serveur MCP, runtime, 5 outils
 > (fiche 0050). **`ezk-sprint` porte désormais les consignes d'émission** (2026-07-17 —
 > classe B : émission best-effort quand les outils MCP sont présents, silencieuse sinon).
-> **`ezk-product-builder` les porte aussi depuis le 2026-07-26** (fiche 0095 — il **ouvre**
+> **`ezk-product-build` les porte aussi depuis le 2026-07-26** (fiche 0095 — il **ouvre**
 > le run quand il est la tête de chaîne, l'`ezk-sprint` qu'il lance s'y absorbe ; la liste
 > faisant foi est le tableau « Méthodes réelles intégrées » de
 > `src/supervision/README.md`, croisé par un test).
