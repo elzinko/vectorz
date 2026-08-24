@@ -53,3 +53,8 @@ idée du **coût** (combien de décisions pour couvrir la carte).
 
 Faire une passe réelle sur trois unités et chronométrer. Si une unité demande de tout
 relire pour être tranchée, la découpe est mauvaise.
+
+> **MAJ 2026-08-24** : les « bandes » citées ci-dessus n'existent plus comme axe
+> principal — la carte est désormais organisée par ÉTAGES (ADR-0039) et sections
+> compilées (cérémonies, modules, librairie, LOI, profils). L'unité de revue candidate
+> naturelle = LA SECTION compilée (chacune a sa source de données et son invariant).

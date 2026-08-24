@@ -57,15 +57,13 @@
 11. ~~**0022** — Moniteur : afficher heure/durée/historique déjà collectés · `ship`~~ — shipped #105
 12. ~~**0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `ship`~~ — shipped #107
 13. ~~0041~~ — cobaye : banc de test rapide pour sécuriser les devs · ship #113
-14. **0089** — finir l'ordonnancement (brancher PLAN sur l'intake — amorcé par ce fichier) · `build`
+14. ~~**0089** — finir l'ordonnancement (brancher PLAN sur l'intake)~~ — shipped #52 (constat réconciliation 2026-08-24 : la ligne n'avait jamais été rayée)
 15. ~~**0149** — `composes:` : rendre la composition inter-skills mécanique~~ — shipped #121
     *(suite : tier optionnel `delegates:` = fiche 0190)*
 16. **0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)
     + ADR-0020 · `build` *(attend le dogfood samplerz `make preview-pr`, son repo)*
-17. **0183** — pack de review markdown-first (SoT restitution ; GitHub = rendu) · `groom`
-    *(P1 mega-city — après 0041 pour dogfood cobaye ; compose 0178 / reclasse 0058)*
-18. **0184** — webapp reporting de run (lecteur REVIEW.md, ≠ Moniteur) · `groom`
-    *(P2 vectorz — gated 0183 ; lot 2 boutons gated 0102)*
+17. ~~**0183** — pack de review markdown-first~~ — shipped (main c45102b, sprint 0044)
+18. ~~**0184** — webapp reporting de run (lot 1)~~ — shipped (main 51d8bf0 ; lot 2 boutons gated 0102)
 19. ~~0185~~ — ezk-archive croise branches RÉELLES ↔ PRs ouvertes · ship #117
     *(P1 mega-city — filet anti « ouvrir une PR déjà ouverte », cas #116)*
 
@@ -88,7 +86,7 @@
 ## 🚦 Note — lancement autonome (autre session)
 
 Pour qu'`ezk-product-build` / `ezk-sprint` **tire** une fiche, elle doit être **`ready`**
-(gate DoR). **Tête NOW** : **0022** (Moniteur heure/durée/historique) — **0091** carte + glossaire shipped #103 ; tâche 2 (claim/heartbeat) de 0090 reste dans la fiche pour une passe ultérieure.
+(gate DoR). **Tête NOW (2026-08-24)** : **20260824061247344** (reliquat refonte, ready) puis **20260823124042842** (board lot 0, ready). ~~0022~~ shipped #105 ; tâche 2 (claim/heartbeat) de 0090 reste dans sa fiche pour une passe ultérieure.
 
 Comportement attendu au lancement (déjà en place — checkpoint « aucune fiche ready »,
 0100 point 5) : le builder **s'arrête et propose un grooming** au lieu de démarrer à

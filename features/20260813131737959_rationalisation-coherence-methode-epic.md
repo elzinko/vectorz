@@ -110,3 +110,12 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 - **Priorités = propositions** — l'ordre relatif et l'entrée dans `PLAN.md` sont **arbitrés PO**.
 - Panel : lentilles archi + QA + PM, findings avec `fichier:ligne`. Faux positifs de refs mortes
   écartés (regex trop large) — seul `install.sh` confirmé (fille C).
+
+## MAJ 2026-08-24 — état réel après la refonte « trois étages » (PR #162)
+
+Le corps ci-dessus date de l'audit du 2026-08-13 et cite des choses désormais mortes :
+les « 4 bandes »/ADR-0022 (remplacées par les ÉTAGES d'ADR-0039 + taxonomie.yml),
+`install.sh` (remplacé par bind-global), chief-judge (fermée — ezk-steward est le juge).
+Filles : `…962` recadrée (reste la table README), `…968` fermée (graphe compilé livré),
+`…971` toujours vivante (carte des rôles d'ANALYSE). Le solde de cet épic est porté par
+la fiche `20260824061247344` (lot 4b) — cet épic se clôturera quand elle sera vidée.

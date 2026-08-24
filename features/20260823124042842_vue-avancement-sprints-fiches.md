@@ -6,8 +6,8 @@ priority: P2
 product: mega-city
 version:
 epic:
-status: idea
-ready:
+status: todo
+ready: 2026-08-24
 pr:
 created: 2026-08-23
 ---
@@ -20,8 +20,8 @@ en cours — possiblement plusieurs —, futurs), et un diagramme dynamique du p
 scrum où l'on **voit les fiches posées sur les étapes**. Vue macro d'abord, détail
 par étape au clic. Grosse évolution, prototype exigeant côté UX/UI.
 
-> Priorité P2 **confirmée** (le PO a délégué le choix, 2026-08-23). Statut `idea` :
-> à groomer.
+> Priorité P2 **confirmée** (2026-08-23). **Groomée et READY le 2026-08-24** sur le
+> périmètre lot 0 (voir la section Grooming) — tirable par le prochain sprint.
 >
 > **Verdict du panel adverse (2026-08-23)** : le lot 1 n'est PAS sprint-as-data
 > (risque « 4ᵉ système scrum », ADR-0013) — c'est le **board lot 0**, compilé depuis
@@ -56,20 +56,35 @@ erreurs de la première.
    des fiches, plan, graphe) — rien n'est dessiné à la main. `map-data`/`graph` sont
    la fondation ; cette vue ajoute un compilateur « avancement ».
 
-**Prérequis révélé — le sprint n'est pas un objet de données.** Le backlog donne déjà
-features, priorités, statuts (frontmatter). Mais rien ne dit « la fiche X appartient au
-sprint N » : `SPRINT.md` est un scratch éphémère et `docs/sessions/` des archives prose.
-Pour la frise, il faut un artefact **sprint versionné** (id, dates, fiches embarquées,
-état) — probablement le vrai premier lot de cette fiche.
+**Constat (recadré par le panel puis le grooming)** : le sprint n'est pas un objet de
+données (`SPRINT.md` éphémère, `docs/sessions/` en prose) — mais ce N'EST PAS le premier
+lot : le board lot 0 se construit sans lui, et c'est l'USAGE du board qui dira si cet
+objet mérite d'exister (critère dédié dans la DoR ci-dessous).
 
-## Critères d'acceptation
+## Grooming du 2026-08-24 — DoR posée sur le LOT 0 uniquement
 
-- [ ] Grooming fait : périmètre du lot 1 tranché (sprint-as-data d'abord ?).
-- [ ] Un objet sprint versionné existe et est rempli par les rituels existants
-      (sans double saisie : les cérémonies l'alimentent).
-- [ ] La vue affiche les fiches par priorité/statut, filtrables.
-- [ ] Le diagramme du process montre les fiches sur leurs étapes ; macro → détail au clic.
-- [ ] Zéro donnée écrite à la main dans la vue (même invariant de test que la carte).
+**Problème** : rien ne montre le flux (où en sont les fiches) — il faut lire trois
+fichiers de tête. **Valeur** : le PO voit l'avancement d'un coup d'œil, et le board
+révélera par l'usage quelle donnée manque VRAIMENT (avant d'inventer un objet sprint).
+**Périmètre lot 0, fermé** : le board compilé depuis le frontmatter EXISTANT — fiches ×
+priorité × statut × étage (taxonomie) × épic, avec filtres — servi par `pnpm ezk:map`
+(nouvelle carte `diagrams/avancement/`), compilateur + invariant de test « données
+disque ≡ régénérées », zéro objet nouveau, zéro saisie à la main.
+**Hors lot 0 (gated, décision après usage)** : la frise des sprints, le diagramme du
+process avec fiches posées, et TOUT objet sprint-as-data (verdict panel — pièce B-6 au
+dossier).
+
+## Critères d'acceptation (lot 0)
+
+- [ ] `pnpm ezk:map avancement` ouvre le board : toutes les fiches actives, triées
+      priorité puis statut, filtrables (statut, étage, épic, produit).
+- [ ] Chaque carte du board cite id + titre + statut + priorité + épic — cliquer ouvre
+      le fichier source (lien direct servi par ezk-map).
+- [ ] Les données sont compilées (`avancement-data`, même patron que map-data) ; le
+      test d'invariant rougit si le backlog change sans régénérer.
+- [ ] Zéro donnée écrite à la main dans la vue.
+- [ ] Une section « ce que le board ne sait PAS montrer » liste les manques constatés —
+      c'est ELLE qui instruira (ou pas) le sprint-as-data.
 
 ## Comment vérifier
 

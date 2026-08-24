@@ -56,3 +56,11 @@ la validation humaine avant `propose` n'est jamais contournable, même en mode a
   Rejeté.
 - **LLM qui lit les repos entiers** — rédhibitoire en tokens sur 17+ projets. Rejeté :
   l'inventaire script est la condition d'existence du skill.
+
+## Amendement du 2026-08-24 (décision PO du 2026-08-22)
+
+Le point 3 du gate (« preuve dans ≥ 2 repos ou ≥ 3 occurrences datées ») cesse d'être
+un INTERDIT : c'est une **question à instruire** — « pourquoi pas maintenant ? » — dont
+la réponse se journalise dans la fiche. Motif PO : « je suis en mesure de savoir ce qui
+va me servir en avance ». Les points (b) non-couvert-par-l'existant et (c) rituel
+récurrent restent des critères pleins ; le cap de 5 propositions par run reste.

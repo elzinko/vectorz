@@ -52,7 +52,10 @@ ezk-reviewer) · backlog 131→114 actives (2 paquets, registres dans docs/captu
 
 ## Options ouvertes (PO décide quand il veut — désormais SÛRES grâce au binder)
 
-- Renommer l'agent `ezk-pm` → `ezk-product-builder` (paire acteur/action complète).
+- ~~Renommer l'agent `ezk-pm`~~ — **tranché le 2026-08-24 : on GARDE `ezk-pm`.** En scrum le
+  rôle s'appelle Product OWNER — « product-builder » n'est pas plus fidèle ; « pm » se lit
+  owner/manager sans mentir. Pas d'alias non plus : aucun mécanisme d'alias d'agent n'existe,
+  et la table des cérémonies fait déjà le mapping PO → agent:ezk-pm (le besoin est couvert).
 - Un Daily minimal — seulement si une douleur se documente (panel).
 - Formaliser les overlays (dossier + règle du jeu) — au DEUXIÈME overlay (ADR-0039 §4).
 - Le mini-chantier « profil d'agent » (généralisation §5) — quand un cas réel le tire.
