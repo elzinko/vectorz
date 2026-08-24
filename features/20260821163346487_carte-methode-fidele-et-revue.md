@@ -91,4 +91,6 @@ Si l'un des trois n'est pas traçable, l'épic n'est pas fini.
 - **MAJ 2026-08-21** : 2 filles ajoutées après la première lecture PO — `0068` (ci-dessus)
   et « la carte ne montre pas LA LOI de l'intérieur » (symptôme : le PO a cherché le
   concept de composition/règles activables sur la carte et ne l'a pas trouvé).
+- **Paquet 2 (2026-08-24)** : `0133` et `0138` fermées — la « carte des rôles » et le « modèle typé »
+  qu'elles demandaient SONT le graphe compilé + la carte (graph.ts, map-data, taxonomie/cérémonies).
 - Outil d'ouverture livré le 2026-08-21 : `pnpm ezk:map` (racine ou `products/mega-city`).

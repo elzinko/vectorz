@@ -124,7 +124,7 @@ ne sont pas renommées (voir Migration).
 - Croisement : [0175](0175-article-skema-skill-schema-migrations.md) (Skema /
   migrations de layout), [0177](0177-pack-pratiques-projet-portables.md)
   (pratiques projet portables) — **pas des doublons**. Anti-doublon vs
-  [0172](0172-convention-sot-backlog-md.md) (SoT md vs GitHub) et
+  0172 (SoT md vs GitHub) et
   [0174](0174-ezk-issues-intake-github.md) (intake GH) : process backlog, mais pas
   la génération d'id.
 - Priorité **P2** — alignée sur les fiches process backlog voisines (0172, 0174).

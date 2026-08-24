@@ -23,7 +23,7 @@ ou **coût contrôlé** (lot matin + notifs), sans :
 
 - fermer / archiver systématiquement l'issue ;
 - polluer le backlog `features/*.md` par ajout silencieux sur `main` ;
-- confondre le cycle **signal** (GitHub) et le cycle **travail** (markdown — SoT, cf. [0172](0172-convention-sot-backlog-md.md)).
+- confondre le cycle **signal** (GitHub) et le cycle **travail** (markdown — SoT, cf. 0172).
 
 **Positionnement** : GitHub + Copilot pourront un jour faire un job similaire ; mega-city
 vise le **même résultat à coût ~0 / contrôlé**. Contexte stratégique, pas dépendance.
@@ -69,7 +69,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 - [ ] Suggestion feature → trackée dans l'issue ; PR md opt-in possible ; **aucune** fiche sur `main` sans merge / OK humain.
 - [ ] Fiche créée suite à validation porte `github: <url>` ; issue labellisée / référencée en retour.
 - [ ] Composition repro : **repro-only** (ou fiche bug **opt-in**) avant toute délégation à `ezk-bug` (0152) — le contrat actuel `ezk-bug` → `ezk-backlog add` ne doit **pas** committer de fiche avant opt-in humain ; anti-doublon / cadrage via `ezk-backlog` **seulement** quand une fiche est proposée (PR / merge).
-- [ ] Respect SoT [0172](0172-convention-sot-backlog-md.md) ; pas de conflit avec adaptateur push-only [0171](0171-adapter-github-issues-push-only.md).
+- [ ] Respect SoT 0172 ; pas de conflit avec adaptateur push-only [0171](0171-adapter-github-issues-push-only.md).
 - [ ] Cadence via cop1 (nuit / matin sur demande) ; Moniteur lecture seule uniquement.
 - [ ] Notifs optionnelles après lot : « issues analysées » / éventuellement « fix à livrer ».
 
@@ -94,7 +94,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 | city-guided [0025](https://github.com/elzinko/city-guided/blob/main/features/0025-bouton-feedback-github.md) | Émetteur des issues (chemin chaud) |
 | [0152](0152-ezk-bug-intake-repro.md) | Repro / cadrage bug — composition via **repro-only** ou fiche opt-in (pas `add` silencieux) |
 | [0171](0171-adapter-github-issues-push-only.md) | Adaptateur fiche → issue (sens inverse) |
-| [0172](0172-convention-sot-backlog-md.md) | SoT backlog md |
+| 0172 | SoT backlog md |
 | [0170](done/0170-modele-extension-plugin-mega-city.md) | Modèle d'extension (frontière) |
 
 ## Notes / décisions

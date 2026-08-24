@@ -4,6 +4,7 @@ title: ezk-marketing — orchestrateur de promotion produit (articles d'épopée
 type: feature
 priority: P1
 product: mega-city
+epic: "20260824060737115"
 status: todo
 pr:
 created: 2026-07-15
@@ -155,3 +156,11 @@ toute modification du triplet invalide la validation.
 - Anti-doublon vérifié : 0049 = COMPOSÉE (pas dupliquée) ; checklists muti = MATIÈRE
   (pas une skill) ; fiche samplerz `website_showcase` = le QUOI produit du site.
 - realizator (`~/git/bacasable/realizator`, standby) = génération vidéo future.
+
+
+## Absorption (paquet 2, 2026-08-24)
+
+**Absorbe `20260812104022234`** (agent marketing analyste, fermée) — ses 4 capacités (spec PO du
+2026-08-10) deviennent des critères de CET orchestrateur : copy par produit FR/EN · juger le RENDU
+réel de la page · benchmark concurrents (« le wording fait-il vendre ? ») · stratégies marketing
+orientées dev → demandes actionnables. Registre : docs/captures/2026-08-24-fermetures-backlog-paquet2.md.

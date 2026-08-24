@@ -69,3 +69,8 @@ Références d'extension (à lire au design, via 0170) :
 - `product: mega-city` — liste unique livrée (0064 / #66).
 - Si le trigger de 0093 est atteint plus tard, cet adaptateur devient un *candidat* de
   second backend — pas une raison de construire 0093 maintenant.
+
+
+> **Doctrine SoT actée (paquet 2, 2026-08-24)** : la fiche `0172` est fermée — son contenu
+> (markdown maître, GitHub en simple export, sync local→externe only) est ACTÉ par l'ADR-0039.
+> Cette fiche implémente cette doctrine, elle ne la re-décide pas.

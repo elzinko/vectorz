@@ -50,7 +50,7 @@ source de vérité…) sont appliquées **au petit bonheur**.
 | [0170](done/0170-modele-extension-plugin-mega-city.md) (P1) | **Modèle d'extension / plugin** mega-city : ADR + panel architecte, réf. **BMAD overlay** + **plugin Claude Code officiel** | La vision produit qui **motive** et **priorise** l'ADR |
 | [0087](0087-plugin-claude-code-distribution.md) | **Distribuer** le catalogue de skills en plugin Claude Code | Le lien avec l'ancrage **par projet** (pas que la distribution globale) |
 | [0177](0177-pack-pratiques-projet-portables.md) (P2) | **Pack de pratiques projet portable** : lien indirect README → répertoire déporté versionné, lu par **tout** LLM | Le **cycle install / retrait** + le **plugin GitHub** + le **monitoring** |
-| [0172](0172-convention-sot-backlog-md.md) | **Backlog markdown = source de vérité**, GitHub = export | Le raccord avec la **description de PR** |
+| 0172 | **Backlog markdown = source de vérité**, GitHub = export | Le raccord avec la **description de PR** |
 | [0171](0171-adapter-github-issues-push-only.md) · [0174](0174-ezk-issues-intake-github.md) | **Adaptateur GitHub** (Issues push-only, intake) | Le **template de PR** déployé qui pointe vers la fiche markdown |
 | [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md) · [0162](0162-bmad-contrat-supervisabilite.md) · [0154](done/0154-kit-emetteur-supervisabilite.md) | **Monitoring / supervision** branché en **sidecar** (cas BMAD) + kit émetteur | Le **déploiement du monitoring comme plugin** par le même installeur |
 
@@ -103,7 +103,7 @@ PR** comme premier livrable visible, et le **monitoring** comme plugin du même 
   **`.github/PULL_REQUEST_TEMPLATE.md`** dans le projet. Ce template **pointe vers la fiche
   markdown** de la feature — la description de PR devient le **reflet** de la fiche, pas un
   texte réécrit à la main.
-- S'appuie sur [0172](0172-convention-sot-backlog-md.md) (fiche = source de vérité), [0171](0171-adapter-github-issues-push-only.md)
+- S'appuie sur 0172 (fiche = source de vérité), [0171](0171-adapter-github-issues-push-only.md)
   (adaptateur GitHub) et la convention [`docs/PR_VALIDATION.md`](../docs/PR_VALIDATION.md) déjà en place.
 
 ### E. Le monitoring comme plugin déployable
@@ -178,7 +178,7 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
   cycle qui l'installe / le retire** et les **plugins** autour.
 - [0087](0087-plugin-claude-code-distribution.md) = **distribution globale** de la méthode ; ici = **ancrage par
   projet**. Frontière à graver (critère ci-dessus).
-- [0172](0172-convention-sot-backlog-md.md) / [0171](0171-adapter-github-issues-push-only.md) / [0174](0174-ezk-issues-intake-github.md) = briques GitHub / backlog ;
+- 0172 / [0171](0171-adapter-github-issues-push-only.md) / [0174](0174-ezk-issues-intake-github.md) = briques GitHub / backlog ;
   ici = **le plugin qui les déploie** + la **convention PR ouverte** au-dessus.
 - [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md) / [0162](0162-bmad-contrat-supervisabilite.md) /
   [0154](done/0154-kit-emetteur-supervisabilite.md) = **monitoring** déjà conçu ; ici = **le rendre déployable comme

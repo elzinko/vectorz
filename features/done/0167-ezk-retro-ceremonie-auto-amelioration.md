@@ -42,7 +42,7 @@ symptôme » atterrit proprement sans casser la cohérence de l'ensemble.
   (`…/sprint-core/…/auto-rule-suggestion`) — `blocageRate>0.3`→règle, `coverage<80`→règle,
   `dodRejectionRate>0.2`→`strengthen-dor-validation`, avec `reason` chiffré ; `improvementScore`.
 - **Juge de cohérence** : 🔴 **spécifié, pas codé** — fiche 0008 chief-judge
-  (todo) + couche « Juge » de [0139](../0139-garde-fous-integrite-agents.md) ; au runtime,
+  (todo) + couche « Juge » de 0139 ; au runtime,
   `RuleApplicationService.checkDuplicate` ne détecte que les **doublons**, pas les contradictions.
 - **DoD/DoR + stockage des règles** : ✅ `DoDCheck` (ADR-020), règles en `rules/`/`bundles/`
   (53 migrées, fiche done/0006).

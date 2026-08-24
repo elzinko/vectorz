@@ -39,7 +39,7 @@ seul endroit.
 1. **Étendre `docs/method-map.md`** (la carte **vivante** livrée en PR #22) d'une **strate
    « rôles d'analyse »** posant les 3 rôles : *retro = symptôme humain · steward = conformité de
    la librairie · 0057 = chiffres, alimente retro*. **PAS un doc/diagramme séparé** — la fiche
-   [0133](0133-adr-carte-roles-skills.md) impose la **carte unique** (règle
+   0133 impose la **carte unique** (règle
    0068) ; un artefact séparé divergerait. Réutilisable comme
    réponse canonique à « ça fait doublon ? ».
 2. **Trancher le juge unique** : garder `ezk-steward` comme juge de cohérence de la rétro et
@@ -57,7 +57,7 @@ seul endroit.
 ## Notes
 
 - Rattache 0113 (le juge) et référence [0057](0057-agent-analyse-methode.md) (le nord KPI).
-- **S'inscrit dans [0133](0133-adr-carte-roles-skills.md)** (même `method-map.md` vivant) : 0133
+- **S'inscrit dans 0133** (même `method-map.md` vivant) : 0133
   ajoute la strate *chaîne de valeur* (PO→Archi→Dev→QA…), cette fille ajoute la strate *analyse*
   (retro/steward/0057). Couches distinctes, **une seule carte** — jamais deux qui divergent.
 - C'est la fille qui **répond directement** à la question d'origine de l'épic (pas de nouvelle skill,

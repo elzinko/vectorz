@@ -59,7 +59,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 |---|---|---|
 | [A](20260813131737962_nommage-catalogue-adr0022.md) | Nommage & catalogue : rename `ezk-pr-pilot`→`ezk-pr`, ranger `vz-`/`supervision-` (ADR-0022), README table scannable | P2 |
 | C | Assainir les références : `install.sh` mort, rot de numérotation, graphe `composes:` sous-peuplé | P2 |
-| [E](20260813131737971_carte-roles-analyse-methode.md) | Carte des rôles d'analyse (retro/steward/0057) + juge unique — **étend le `method-map.md` vivant ([0133](0133-adr-carte-roles-skills.md)), pas un artefact séparé** | P2 |
+| [E](20260813131737971_carte-roles-analyse-methode.md) | Carte des rôles d'analyse (retro/steward/0057) + juge unique — **étend le `method-map.md` vivant (0133), pas un artefact séparé** | P2 |
 
 **Fiches existantes rattachées** (déjà au backlog, regroupées ici) :
 
@@ -72,7 +72,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 
 **Fiches voisines (NON rattachées — objet distinct)** :
 - [0057](0057-agent-analyse-methode.md) — reste dans l'épic [0051](0051-observabilite-qualite-produit.md) (analyse KPI, le *nord*).
-- [0139](0139-garde-fous-integrite-agents.md) — intégrité des agents (advisory+enforced), cousin.
+- 0139 — intégrité des agents (advisory+enforced), cousin.
 - [20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md) — rationaliser le **stock de fiches** (≠ la *méthode*). Cet épic **dogfoode** son intention (regrouper sous un épic).
 - [0164](0164-vz-product-builder-corpus-reviewers.md) — `vz-product-builder` : la décision **overlay est DÉJÀ prise par le PO** (in-progress, « ne pas toucher `ezk-*` »). L'épic **ne rouvre pas** ce choix (retour Codex #144) ; le dédoublonnage du panel = [0161](0161-ezk-challenge-panel.md).
 

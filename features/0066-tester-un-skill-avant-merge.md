@@ -88,3 +88,15 @@ Livrables candidats :
   Si elle atterrit, mutualiser : même mécanique (croiser le texte d'une skill avec le réel),
   périmètre à élargir de « SKILL.md ↔ règle ↔ asset » à « SKILL.md ↔ chemins et skills cités ».
   Si elle n'atterrit pas, 0066 implémente son propre test — la responsabilité reste ici.
+
+
+## Absorptions (paquet 2, 2026-08-24)
+
+- **Absorbe `0139`** (garde-fous d'intégrité des agents, fermée) : les invariants vérifiables
+  en 3 couches — contrat de sortie structuré par finding (`{decision: applied|rejected, evidence}`,
+  aucun abandon silencieux), evidence-gate (un `applied` doit toucher le file:line), juge LLM de la
+  substance des rejets — deviennent des critères d'éprouvage de CETTE fiche.
+- **Absorbe `0179`** (incubation en rétro, fermée) : le pattern léger « proposer une capacité à
+  éprouver pendant le sprint suivant, la mesurer en fin de sprint, tracer au CR rétro » est le
+  MODE D'ENTRÉE des skills candidats dans le banc d'essai décrit ici.
+  Registre : docs/captures/2026-08-24-fermetures-backlog-paquet2.md.
