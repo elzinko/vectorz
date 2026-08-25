@@ -20,6 +20,7 @@ const F = (over: Partial<Fiche>): Fiche => ({
   epic: '',
   product: 'mega-city',
   pr: '',
+  labels: [],
   done: false,
   file: 'features/0001-x.md',
   ...over,

@@ -21,6 +21,7 @@ export interface Fiche {
   epic: string; // id de l'épic parent, ou ''
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
+  labels: string[]; // tags libres du front-matter (`labels: [bmad, …]`), [] si absent
   done: boolean; // vit dans features/done/ (livrée)
   file: string; // chemin relatif à la racine du repo (ex. `features/0094-slug.md`)
 }
@@ -29,6 +30,16 @@ export interface Fiche {
 function readField(text: string, field: string): string {
   const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
   return m ? m[1].replace(/[ \t]*#.*$/, '').trim().replace(/^["']|["']$/g, '') : '';
+}
+
+/** Lit un champ liste EN LIGNE du front-matter (`labels: [a, b]`) → tableau (vide si absent). */
+function readListField(text: string, field: string): string[] {
+  const m = text.match(new RegExp(`^${field}:[ \\t]*\\[(.*)\\][ \\t]*$`, 'm'));
+  if (!m) return [];
+  return m[1]
+    .split(',')
+    .map((s) => s.trim().replace(/^["']|["']$/g, ''))
+    .filter(Boolean);
 }
 
 /** Les deux formats d'id coexistent (fiche 0180) : `0094-slug.md` et `20260810143052123_slug.md`. */
@@ -57,6 +68,7 @@ export function loadFiches(rootDir: string): Fiche[] {
         epic: readField(text, 'epic'),
         product: readField(text, 'product') || '—',
         pr: readField(text, 'pr'),
+        labels: readListField(text, 'labels'),
         done,
         file: `features/${done ? 'done/' : ''}${filename}`,
       });

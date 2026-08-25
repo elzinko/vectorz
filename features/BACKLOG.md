@@ -148,6 +148,7 @@
 | 20260823124042842 | Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs | feature | P2 |  | mega-city | ✅ shipped | main@7f0f12d |
 | 20260824185422122 | « Recette » comme artefact de premier rang + gardien (ezk-chef) — instancier le pattern steward, ne rien inventer | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260825123700998 | Doctrine de composition des features — fusion, épic ou division : quand et comment | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260825160456259 | Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help) | feature | P2 | 20260816131703334 | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -251,6 +252,7 @@
 | 20260824141336516 | Recette « mise en place de la CI » pour un projet type muti (app desktop + web de vente) — build local (act) et/ou GitHub | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260824163426298 | Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map » | refactor | P2 |  | mega-city | 💡 idea |  |
 | 20260825024356665 | Comparateur `analyze --expect` en sous-séquence — tolérer les events non déclarés (sessions live, briques 2/3) | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260825161522791 | Elicitation — boucle de raffinement structurée dans groom (à la BMAD advanced-elicitation) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260825182327490 | Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
