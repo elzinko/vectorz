@@ -207,5 +207,6 @@ Ce qu'on **n'imite pas** volontairement : le pipeline documentaire long (4 phase
 - **Ne copie pas BMAD en entier** : son pipeline long et son « OS » non appliqué sont ses faiblesses,
   et ton cœur déterministe (ADR-0001) est meilleur que tout ce qu'il a.
 
-**Ce qu'il te reste à faire** : arbitrer la priorité des 3 fiches (elles sont en P2, à toi de dire si
-le « et maintenant ? » passe P1), puis les groomer quand tu voudras les tirer. Le reste est déjà rangé.
+**Ce qu'il te reste à faire** : arbitrer les priorités — les **2 fiches neuves** (« et maintenant ? » et
+elicitation) sont en **P2**, la fiche **graphe compilé** (`20260821204737357`) est déjà en **P1**. À toi de
+dire si le « et maintenant ? » doit monter. Puis groomer quand tu voudras les tirer. Le reste est déjà rangé.
