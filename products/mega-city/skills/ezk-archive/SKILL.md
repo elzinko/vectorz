@@ -91,6 +91,21 @@ par les deux chemins** (`scripts/test-template-unicity.sh` interdit de le dupliq
 
 ## Le portier décide
 
+> **Ce que tu AFFICHES à l'humain — 3 réponses, zéro jargon.** Il lance `run` pour archiver ;
+> il n'a **pas** le gate en tête. Ne recrache **jamais** son vocabulaire (`DIRTY`, `P1`/`P2`,
+> `REAL`, `PENDING`, « clôture inline », coûts en tokens) dans le chat — traduis **tout** en
+> français simple. Ton message répond à **trois questions, dans cet ordre** :
+>
+> 1. **Ton travail est-il sauvé ?** (poussé sur `main`, ou reste-t-il quelque chose)
+> 2. **Peux-tu archiver ?** (oui / non — et quoi faire d'abord si non)
+> 3. **Qu'est-ce qui traîne, et est-ce grave ?** — chaque point en une phrase : *quel* fichier ou
+>    branche, *d'où* il vient, *est-ce urgent*. Jamais « `P2_PENDING: DIRTY` », toujours
+>    « une PR du bot dependabot attend, pas urgent ».
+>
+> Le jargon du gate reste dans ton **raisonnement**, jamais à l'écran. Une personne qui découvre
+> le sujet doit comprendre du premier coup (règle
+> [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md)).
+
 ### 1. Compose le résumé de session
 
 5-15 lignes : fiches/PRs livrées **avec leurs ids**, décisions ADR, faits notables
