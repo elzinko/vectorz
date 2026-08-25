@@ -25,7 +25,8 @@
     "graph:check": "tsx bin/ezk-graph.ts",
     "map:data": "tsx bin/regen-map-data.ts",
     "avancement": "tsx bin/avancement.ts",
-    "avancement:regen": "tsx bin/regen-avancement.ts"
+    "avancement:regen": "tsx bin/regen-avancement.ts",
+    "plan-view:regen": "tsx bin/regen-plan-view.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",

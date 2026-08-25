@@ -100,11 +100,78 @@
   section.manques h2 { font-size: 1rem; margin: 0 0 10px; }
   section.manques ul { margin: 0; padding-left: 20px; color: var(--muted); line-height: 1.6; }
   section.manques li strong { color: var(--text); }
+
+  /* --- Onglets Board / Plan (fiche 20260825213807501) --- */
+  .onglets { display: flex; gap: 4px; margin: 0 0 20px; border-bottom: 1px solid var(--border); }
+  .onglet {
+    background: none; border: 1px solid transparent; border-bottom: none;
+    color: var(--muted); font: inherit; font-size: 0.95rem; padding: 8px 16px;
+    border-radius: 8px 8px 0 0; cursor: pointer; margin-bottom: -1px;
+  }
+  .onglet:hover { color: var(--text); }
+  .onglet[aria-selected="true"] {
+    color: var(--text); background: var(--panel);
+    border-color: var(--border); border-bottom-color: var(--panel); font-weight: 600;
+  }
+  .onglet:focus-visible { outline: 2px solid var(--p2); outline-offset: 2px; }
+  [role="tabpanel"][hidden] { display: none; }
+
+  /* Encart pédagogique de l'onglet Plan */
+  .encart {
+    margin: 0 0 24px; padding: 16px 18px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 8px; max-width: 82ch;
+  }
+  .encart h2 { font-size: 1rem; margin: 0 0 10px; }
+  .encart .rappel { margin: 0 0 14px; color: var(--muted); line-height: 1.6; }
+  .encart .rappel b { color: var(--text); }
+  .encart .signal { display: flex; flex-direction: column; gap: 10px; }
+  .encart .ligne-signal { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .encart .lab { font-size: 0.8rem; color: var(--muted); min-width: 15ch; }
+  .encart .rien { color: var(--muted); font-size: 0.85rem; }
+  .encart .mini {
+    display: inline-flex; gap: 8px; align-items: baseline;
+    background: var(--bg); border: 1px solid var(--border);
+    border-left: 3px solid var(--prio-color, var(--p3));
+    border-radius: 6px; padding: 5px 10px; text-decoration: none; color: var(--text);
+  }
+  .encart .mini:hover { border-color: #4a5262; }
+  .encart .mini .id { font-family: ui-monospace, monospace; font-size: 0.72rem; color: var(--muted); }
+  .encart .mini .t { font-size: 0.85rem; }
+  .plan-outils { margin: 0 0 16px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .plan-outils label { display: inline-flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--muted); cursor: pointer; }
+  .plan-compteur { color: var(--muted); font-size: 0.85rem; }
+
+  /* Couloirs = sections de PLAN.md */
+  .couloir { margin: 0 0 26px; }
+  .couloir > h3 {
+    font-size: 1.02rem; margin: 0 0 2px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .couloir > .compte { color: var(--muted); font-size: 0.78rem; margin: 4px 0 10px; }
+  .plan-ligne { margin: 12px 0 16px; }
+  .plan-ligne .intention { color: var(--muted); font-size: 0.85rem; margin: 0 0 8px; line-height: 1.4; }
+  .plan-ligne .intention .mk {
+    font-family: ui-monospace, monospace; font-size: 0.68rem; text-transform: uppercase;
+    border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; margin-right: 8px; color: var(--text);
+  }
+  a.carte.livree, .carte.livree { opacity: 0.45; }
+  .carte.introuvable { border-left-color: var(--muted) !important; border-style: dashed; }
+  .carte.introuvable .titre { color: var(--muted); font-style: italic; }
+  #vue-plan.masquer-livrees .carte.livree { display: none; }
+  #vue-plan.masquer-livrees .plan-ligne.tout-livre { display: none; }
+  .plan-vide { color: var(--muted); padding: 24px; text-align: center; border: 1px dashed var(--border); border-radius: 8px; }
 </style>
 </head>
 <body>
 
-<h1>Board d'avancement</h1>
+<h1>Avancement — vectorz</h1>
+
+<div class="onglets" role="tablist" aria-label="Vues du backlog">
+  <button class="onglet" id="onglet-board" role="tab" aria-selected="true" aria-controls="vue-board">Board</button>
+  <button class="onglet" id="onglet-plan" role="tab" aria-selected="false" aria-controls="vue-plan" tabindex="-1">Plan</button>
+</div>
+
+<div id="vue-board" role="tabpanel" aria-labelledby="onglet-board" tabindex="0">
 <p class="en-clair">
   En clair : ce board montre où en sont les fiches actives du backlog, compilées
   depuis leur front-matter — rien n'est saisi à la main ici. Priorité d'abord,
@@ -154,18 +221,28 @@
       lui-même (les fiches livrées sortent des actives).</li>
   </ul>
 </section>
+</div><!-- /vue-board -->
+
+<div id="vue-plan" role="tabpanel" aria-labelledby="onglet-plan" tabindex="0" hidden>
+  <section class="encart" id="plan-encart"><!-- rempli par le script plan (window.EZK_PLAN) --></section>
+  <div class="plan-outils">
+    <label><input type="checkbox" id="plan-hide-shipped" /> Masquer les fiches livrées</label>
+    <span class="plan-compteur" id="plan-compteur"></span>
+  </div>
+  <div id="plan-couloirs"></div>
+</div><!-- /vue-plan -->
 
 <script>
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 110,
-  "todo": 53,
+  "todo": 54,
   "blocked": 5,
   "in-progress": 3,
   "idea": 76
  },
- "tirables": 6,
+ "tirables": 7,
  "actives": [
   {
    "id": "0030",
@@ -1598,6 +1675,19 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md"
   },
   {
+   "id": "20260825213807501",
+   "title": "Vue « Plan » dans le board — l'ordre décidé du travail + la prochaine fiche tirable (rendre PLAN.md, sans objet sprint)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "todo",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260825213807501_vue-plan-ordre-travail.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2041,6 +2131,1319 @@ window.EZK_AVANCEMENT = {
 /*ezk-avancement-data:end*/
 </script>
 <script>
+/*ezk-plan-data:begin*/
+window.EZK_PLAN = {
+ "lanes": [
+  {
+   "label": "▶️ NOW bis — refonte de la méthode (post-PR #162, séquence du 2026-08-24)",
+   "level": 2,
+   "rows": [
+    {
+     "text": "**20260824061247344** — le reliquat exécutable de la refonte « trois étages »",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260824061247344",
+       "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260823124042842** — vue d'avancement, lot 0 : le board compilé (le flux,",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260823124042842",
+       "title": "Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "main@7f0f12d",
+       "file": "features/done/20260823124042842_vue-avancement-sprints-fiches.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "↪️ Après le refactoring (post-4a/4b) — sujets ouverts le 2026-08-25",
+   "level": 3,
+   "rows": [
+    {
+     "text": "**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (worktrees × sessions ×",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260825141012293",
+       "title": "ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260825141012293_ezk-sessions-cockpit.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du domaine hors",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0067",
+       "title": "ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0067-ezk-ezk-contract-aware-carte-emission.md",
+       "found": true
+      },
+      {
+       "id": "0066",
+       "title": "Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "20260813131737959",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0066-tester-un-skill-avant-merge.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260812104022246** — composition comportementale des skills (+ directive `ezk-archive`",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260812104022246",
+       "title": "Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés)",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260812104022246_composition-comportementale-skills-ezk.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260825182327490** — pattern « livrable lisible » : template + extracteur + rendu · `groom`",
+     "marker": "groom",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260825182327490",
+       "title": "Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260824163426298** — consolider preview/device/testbed, épic (surface unifiée + compétences",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260824163426298",
+       "title": "Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map »",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/20260824163426298_consolider-device-preview-testbed.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "🧹 Hygiène préalable (rapide)",
+   "level": 2,
+   "rows": [
+    {
+     "text": "~~**P0** `build` **0181** — méthode ezk : Opus 4.8 (+ spare sonnet) + restitutions",
+     "marker": "build",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0181",
+       "title": "Méthode ezk — Opus 4.8 par défaut + restitutions lisibles sur toutes les commandes",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0181-ezk-opus-et-restitutions-lisibles.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**P0** `build` **0176** — interdit `git config --global user.*` pour l’identité",
+     "marker": "build",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0176",
+       "title": "Interdit gitconfig global pour l'identité agent — commits cop1 locaux / one-shot only",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "cop1",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0176-interdit-gitconfig-global-identite-agent.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~`ship` **0059** · **0061** (vectorz)~~ — fait (vérifié au `reconcile` du 2026-07-26).",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0059",
+       "title": "Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en cours, projet, ordre)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0059-moniteur-carte-de-run-lisible.md",
+       "found": true
+      },
+      {
+       "id": "0061",
+       "title": "La projection jette la méthode et le siège — impossible de savoir QUI a produit un run, ni avec quelle version",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "bug",
+       "pr": "",
+       "file": "features/done/0061-methode-et-siege-absents-de-la-projection.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~`ship` **0094** · **0095** (mega-city)~~ — fait au `reconcile` 2026-07-30 (#54, #55).",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0094",
+       "title": "Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfooding n'émet rien aujourd'hui",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0094-emetteur-branche-sur-claude-code.md",
+       "found": true
+      },
+      {
+       "id": "0095",
+       "title": "ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "bug",
+       "pr": "",
+       "file": "features/done/0095-ezk-product-builder-n-emet-pas.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le",
+     "marker": "audit",
+     "struck": false,
+     "cards": [
+      {
+       "id": "0030",
+       "title": "MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur)",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0030-mvp-demo-desktop.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0182** — E4 bis : docs vivants post-BMAD (hygiène P3, complément 0039) · `ship`~~ — shipped #101",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0182",
+       "title": "E4 bis — docs vivants post-BMAD (complément 0039)",
+       "status": "shipped",
+       "priority": "P3",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "chore",
+       "pr": "",
+       "file": "features/done/0182-e4-bis-purge-docs-post-bmad.md",
+       "found": true
+      },
+      {
+       "id": "0039",
+       "title": "E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0034",
+       "product": "vectorz",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/done/0039-e4-retrait-bmad.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "▶️ NOW — voir et gérer ses projets",
+   "level": 2,
+   "rows": [
+    {
+     "text": "~~**0064** — une seule liste de features (champ `product:`)~~ — shipped #66 / #68",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0064",
+       "title": "Une seule liste de features pour tout le monorepo (champ `product:`) — la double liste coûte plus qu'elle ne rapporte",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/done/0064-liste-unique-features-champ-product.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0094** — brancher l'émetteur sur vectorz~~ — shipped #54",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0094",
+       "title": "Brancher l'émetteur sur Claude Code (.mcp.json du dépôt) — le dogfooding n'émet rien aujourd'hui",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0094-emetteur-branche-sur-claude-code.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0095** — faire émettre `ezk-product-build`~~ — shipped #55",
+     "marker": "build",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0095",
+       "title": "ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "bug",
+       "pr": "",
+       "file": "features/done/0095-ezk-product-builder-n-emet-pas.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0082** — registre {projet · méthode}~~ — shipped #70",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0082",
+       "title": "Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0082-registre-supervision-cote-vectorz.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0168** — run orphelin = verrou sans clé (bouton abandon siège + erreur actionnable)~~ — shipped #76",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0168",
+       "title": "Run orphelin = verrou sans clé — un run jamais clôturé bloque toute émission, sans action de déblocage",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "bug",
+       "pr": "",
+       "file": "features/done/0168-run-orphelin-verrou-sans-cle.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0181** — Opus 4.8 + restitutions lisibles~~ — shipped #92",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0181",
+       "title": "Méthode ezk — Opus 4.8 par défaut + restitutions lisibles sur toutes les commandes",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0181-ezk-opus-et-restitutions-lisibles.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0062** — onglet « Projets » : liste par projet, cliquable → activité · `ship`~~ — shipped #95",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0062",
+       "title": "Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0062-onglet-projets-moniteur.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0063** — « ajouter un projet » depuis le Moniteur (dossier + install, 2 modes) · `ship`~~ — shipped #97",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0063",
+       "title": "Ancrer un projet depuis le Moniteur — bouton « ajouter projet » + sélection de dossier + install via le daemon (2 modes)",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0063-ancrer-projet-depuis-moniteur.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "⏭️ NEXT — la méthode se tient + confort",
+   "level": 2,
+   "rows": [
+    {
+     "text": "~~**0090** — cohérence de sprint : garde-fou d'ouverture `ezk-sprint:check` (ex-ezk-start) (tâche 1 POC) · `ship`~~ — shipped #99",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0090",
+       "title": "Cohérence de sprint — garde-fou d'ouverture (lecture) + verrou de sprint adapté LLM (écriture)",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0090-coherence-de-sprint.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0079** — graver « tout artefact lu par un humain est lisible »~~ — shipped #74",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0079",
+       "title": "Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0079-restitutions-po-lisibles.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0091** — mise à plat + glossaire du jargon du backlog · `ship`~~ — shipped #103",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0091",
+       "title": "Mise à plat du backlog — carte lisible + glossaire du jargon (dogfood du format)",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "chore",
+       "pr": "",
+       "file": "features/done/0091-mise-a-plat-carte-glossaire.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0022** — Moniteur : afficher heure/durée/historique déjà collectés · `ship`~~ — shipped #105",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0022",
+       "title": "mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $)",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0022-observabilite-mission-control-donnees-deja-collectees.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0060** — réparer les deux docs d'install périmés (checklist + guide web UI) · `ship`~~ — shipped #107",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0060",
+       "title": "Les deux docs d'installation ont décroché de main (checklist démo + guide web UI)",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "bug",
+       "pr": "",
+       "file": "features/done/0060-checklist-demo-desktop-perimee.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~0041~~ — cobaye : banc de test rapide pour sécuriser les devs · ship #113",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0041",
+       "title": "Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "chore",
+       "pr": "",
+       "file": "features/done/0041-cobaye-banc-test-rapide.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0089** — finir l'ordonnancement (brancher PLAN sur l'intake)~~ — shipped #52 (constat réconciliation 2026-08-24 : la ligne n'avait jamais été rayée)",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0089",
+       "title": "Ordonnancement — brancher PLAN.md sur l'intake (l'ordre suit la priorité, pas l'inverse)",
+       "status": "shipped",
+       "priority": "P0",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0089-ordonnancement-plan-sur-intake.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0149** — `composes:` : rendre la composition inter-skills mécanique~~ — shipped #121",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0149",
+       "title": "formaliser la composition inter-skills (composes)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0149-formaliser-composes-inter-skills.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**0102** — `ezk-testbed` : brique « démarrer un env de test » (PR · branche · local)",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0102",
+       "title": "ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr",
+       "status": "blocked",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0102-ezk-testbed-brique-boot-env-test.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0183** — pack de review markdown-first~~ — shipped (main c45102b, sprint 0044)",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0183",
+       "title": "Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "local (main c45102b)",
+       "file": "features/done/0183-pack-review-markdown-first.md",
+       "found": true
+      },
+      {
+       "id": "0044",
+       "title": "Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "chore",
+       "pr": "",
+       "file": "features/done/0044-mesureur-outcomes-script-append-mvp-a.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**0184** — webapp reporting de run (lot 1)~~ — shipped (main 51d8bf0 ; lot 2 boutons gated 0102)",
+     "marker": null,
+     "struck": true,
+     "cards": [
+      {
+       "id": "0184",
+       "title": "Webapp de reporting de run — features livrées façon PR + preview/démo local + reste-à-tester",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "local (main 51d8bf0)",
+       "file": "features/done/0184-webapp-reporting-run.md",
+       "found": true
+      },
+      {
+       "id": "0102",
+       "title": "ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr",
+       "status": "blocked",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0102-ezk-testbed-brique-boot-env-test.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~0185~~ — ezk-archive croise branches RÉELLES ↔ PRs ouvertes · ship #117",
+     "marker": "ship",
+     "struck": true,
+     "cards": [
+      {
+       "id": "0185",
+       "title": "ezk-archive — croiser branches RÉELLES et PRs ouvertes (ne plus proposer d'ouvrir une PR déjà ouverte)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0185-archive-croise-pr-branches.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "⏳ LATER — pas maintenant",
+   "level": 2,
+   "rows": [
+    {
+     "text": "⚠️ **Distribution / publication** — 0087 · 0050 · 0078 · 0096 · 0186.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0087",
+       "title": "Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage)",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0087-plugin-claude-code-distribution.md",
+       "found": true
+      },
+      {
+       "id": "0050",
+       "title": "Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0050-release-pastille-dogfooding.md",
+       "found": true
+      },
+      {
+       "id": "0078",
+       "title": "Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb)",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0078-mcpb-install-un-clic-supervision.md",
+       "found": true
+      },
+      {
+       "id": "0096",
+       "title": "build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient",
+       "status": "todo",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "bug",
+       "pr": "",
+       "file": "features/0096-mcpb-version-en-dur.md",
+       "found": true
+      },
+      {
+       "id": "0186",
+       "title": "Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0186-skema-versioning-migrations-skills-deployees.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**Observabilité qualité** (epic 0051) — 0052/0053/0054/0055/0056/0058 : mesurer la qualité par PR.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0051",
+       "title": "Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "epic",
+       "pr": "",
+       "file": "features/0051-observabilite-qualite-produit.md",
+       "found": true
+      },
+      {
+       "id": "0052",
+       "title": "Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0052-socle-metrique-port-adaptateur-silo.md",
+       "found": true
+      },
+      {
+       "id": "0053",
+       "title": "Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0053-gate-dod-metrique.md",
+       "found": true
+      },
+      {
+       "id": "0054",
+       "title": "Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0054-catalogue-adaptateurs-outils.md",
+       "found": true
+      },
+      {
+       "id": "0055",
+       "title": "KPI agrégés — rollups commit → PR → sprint → version depuis le silo",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0055-kpi-agreges-commit-pr-sprint-version.md",
+       "found": true
+      },
+      {
+       "id": "0056",
+       "title": "Visualisation — onglet « qualité par PR » dans mission-control",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0056-viz-qualite-mission-control.md",
+       "found": true
+      },
+      {
+       "id": "0058",
+       "title": "Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0058-rapport-qualite-pr.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**Rationalisation & cohérence de la méthode** (épic `20260813131737959`) — audit 2026-08-13",
+     "marker": "audit",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260813131737959",
+       "title": "Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic)",
+       "status": "todo",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "epic",
+       "pr": "",
+       "file": "features/20260813131737959_rationalisation-coherence-methode-epic.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**Articles & promo** — 0043/0049 · 0156/0053/0069/0073/0074/0062 · epic 0163.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0043",
+       "title": "article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0043-article-self-hosting-cop1-developpe-cop1.md",
+       "found": true
+      },
+      {
+       "id": "0049",
+       "title": "article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD)",
+       "status": "idea",
+       "priority": "P3",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0049-article-brancher-methode-pattern-sidecar.md",
+       "found": true
+      },
+      {
+       "id": "0156",
+       "title": "ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "20260824060737115",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0156-ezk-marketing.md",
+       "found": true
+      },
+      {
+       "id": "0053",
+       "title": "Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0051",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0053-gate-dod-metrique.md",
+       "found": true
+      },
+      {
+       "id": "0069",
+       "title": "article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0069-article-emission-events-claude-desktop-code.md",
+       "found": true
+      },
+      {
+       "id": "0073",
+       "title": "article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0163",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0073-article-direction-scrum-auto-amelioration.md",
+       "found": true
+      },
+      {
+       "id": "0074",
+       "title": "article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve)",
+       "status": "idea",
+       "priority": "P3",
+       "ready": false,
+       "epic": "0163",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0074-article-loi-pareto-dynamique.md",
+       "found": true
+      },
+      {
+       "id": "0062",
+       "title": "Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/0062-onglet-projets-moniteur.md",
+       "found": true
+      },
+      {
+       "id": "0163",
+       "title": "série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité",
+       "status": "todo",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "epic",
+       "pr": "",
+       "file": "features/0163-serie-rex-migration-methodes.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**Méthode avancée** — 0065→0068 / 0077 / 0080 / 0088 / 0092 / 0100 (dont le seuil de lot ready, voir ci-dessous).",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0065",
+       "title": "Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "local (squash-merge c969569)",
+       "file": "features/done/0065-sprint-composition-lot-coherent.md",
+       "found": true
+      },
+      {
+       "id": "0068",
+       "title": "",
+       "status": "",
+       "priority": "",
+       "ready": false,
+       "epic": "",
+       "product": "",
+       "type": "",
+       "pr": "",
+       "file": "",
+       "found": false
+      },
+      {
+       "id": "0077",
+       "title": "Kit émetteur — hooks Claude Code classe A (émission déterministe)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0077-hooks-classe-a-supervision.md",
+       "found": true
+      },
+      {
+       "id": "0080",
+       "title": "ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR)",
+       "status": "todo",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0080-ezk-retro-compte-rendu-standard.md",
+       "found": true
+      },
+      {
+       "id": "0088",
+       "title": "ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné)",
+       "status": "in-progress",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "chore",
+       "pr": "",
+       "file": "features/0088-ezk-archive-cout-cloture-session-disciplinee.md",
+       "found": true
+      },
+      {
+       "id": "0092",
+       "title": "",
+       "status": "",
+       "priority": "",
+       "ready": false,
+       "epic": "",
+       "product": "",
+       "type": "",
+       "pr": "",
+       "file": "",
+       "found": false
+      },
+      {
+       "id": "0100",
+       "title": "Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible »)",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "20260815080413884",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0100-sprint-intake-sante-backlog-metriques.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**2ᵉ méthode / BMAD** — 0162.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0162",
+       "title": "adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable)",
+       "status": "todo",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0162-bmad-contrat-supervisabilite.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**Archi historique** — epic 0034 · 0024 · 0038 (bloqué) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve).",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0034",
+       "title": "Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)",
+       "status": "todo",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "epic",
+       "pr": "",
+       "file": "features/0034-mise-a-plat-post-pivot.md",
+       "found": true
+      },
+      {
+       "id": "0024",
+       "title": "résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022",
+       "status": "todo",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0034",
+       "product": "vectorz",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/0024-resorber-peripherie-pre-pivot.md",
+       "found": true
+      },
+      {
+       "id": "0038",
+       "title": "E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD)",
+       "status": "blocked",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0034",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0038-e3-pilote-natif.md",
+       "found": true
+      },
+      {
+       "id": "0039",
+       "title": "E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": false,
+       "epic": "0034",
+       "product": "vectorz",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/done/0039-e4-retrait-bmad.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "head": null,
+ "blockedAhead": [
+  {
+   "id": "20260824061247344",
+   "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
+   "status": "todo",
+   "priority": "P1",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
+   "found": true
+  },
+  {
+   "id": "20260825141012293",
+   "title": "ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map",
+   "status": "todo",
+   "priority": "P1",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825141012293_ezk-sessions-cockpit.md",
+   "found": true
+  }
+ ],
+ "unresolved": [
+  "0068",
+  "0092"
+ ],
+ "counts": {
+  "entries": 40,
+  "cards": 73,
+  "resolved": 71,
+  "shipped": 33,
+  "unresolved": 2
+ }
+};
+/*ezk-plan-data:end*/
+</script>
+<script>
 (function () {
   var data = window.EZK_AVANCEMENT || { actives: [], epics: [], filtres: { statuts: [], priorites: [], produits: [], labels: [] } };
   var actives = data.actives || [];
@@ -2158,6 +3561,167 @@ window.EZK_AVANCEMENT = {
     s.addEventListener('change', render);
   });
   render();
+})();
+</script>
+
+<script>
+// Onglet « Plan » (fiche 20260825213807501) : rend window.EZK_PLAN, compilé depuis
+// features/PLAN.md + les fiches. Même discipline anti-XSS que le board : DOM par
+// éléments + textContent, JAMAIS innerHTML sur du texte de fiche ou de plan.
+(function () {
+  var plan = window.EZK_PLAN || { lanes: [], head: null, blockedAhead: [], unresolved: [], counts: {} };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function slug(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9_-]/g, '-'); }
+  function prioVar(p) { return 'var(--p' + slug(p ? String(p).replace('P', '') : '3') + ')'; }
+  // Nettoie l'emphase markdown pour l'affichage de l'intention (texte simple, pas de rendu MD).
+  function cleanText(s) { return String(s == null ? '' : s).replace(/[*~`]+/g, ''); }
+
+  // --- Bascule d'onglets, accessible (ARIA tablist + flèches clavier) ---
+  var tabBoard = document.getElementById('onglet-board');
+  var tabPlan = document.getElementById('onglet-plan');
+  var panBoard = document.getElementById('vue-board');
+  var panPlan = document.getElementById('vue-plan');
+  function activer(tab, focus) {
+    var toPlan = tab === tabPlan;
+    tabPlan.setAttribute('aria-selected', String(toPlan));
+    tabBoard.setAttribute('aria-selected', String(!toPlan));
+    tabPlan.tabIndex = toPlan ? 0 : -1;
+    tabBoard.tabIndex = toPlan ? -1 : 0;
+    panPlan.hidden = !toPlan;
+    panBoard.hidden = toPlan;
+    if (focus) tab.focus();
+  }
+  tabBoard.addEventListener('click', function () { activer(tabBoard, false); });
+  tabPlan.addEventListener('click', function () { activer(tabPlan, false); });
+  [tabBoard, tabPlan].forEach(function (t) {
+    t.addEventListener('keydown', function (ev) {
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') {
+        ev.preventDefault();
+        activer(t === tabBoard ? tabPlan : tabBoard, true);
+      }
+    });
+  });
+
+  // --- Cartes (réutilisent le design du board) ---
+  function planCarte(c) {
+    if (!c.found) {
+      var d = el('div', 'carte introuvable');
+      d.style.setProperty('--prio-color', 'var(--p3)');
+      d.appendChild(el('div', 'id', c.id));
+      d.appendChild(el('div', 'titre', 'introuvable dans features/'));
+      return d;
+    }
+    var a = document.createElement('a');
+    a.className = 'carte' + (c.status === 'shipped' ? ' livree' : '');
+    a.href = '../../' + c.file;
+    a.style.setProperty('--prio-color', prioVar(c.priority));
+    a.appendChild(el('div', 'id', c.id));
+    a.appendChild(el('div', 'titre', c.title));
+    var badges = el('div', 'badges');
+    badges.appendChild(el('span', 'badge statut-' + slug(c.status), c.status));
+    badges.appendChild(el('span', 'badge prio-' + slug(c.priority || 'P3'), c.priority || '—'));
+    if (c.ready) badges.appendChild(el('span', 'badge', 'ready'));
+    if (c.epic) badges.appendChild(el('span', 'badge', '⤷ ' + c.epic));
+    a.appendChild(badges);
+    return a;
+  }
+  function miniCarte(c) {
+    if (!c.found) return el('span', 'rien', c.id + ' (introuvable)');
+    var a = document.createElement('a');
+    a.className = 'mini';
+    a.href = '../../' + c.file;
+    a.style.setProperty('--prio-color', prioVar(c.priority));
+    a.appendChild(el('span', 'id', c.id));
+    a.appendChild(el('span', 't', c.title));
+    return a;
+  }
+
+  // --- Encart pédagogique ---
+  var encart = document.getElementById('plan-encart');
+  if (encart) {
+    encart.appendChild(el('h2', null, 'Le plan — l’ordre décidé du travail'));
+    var rappel = el('p', 'rappel');
+    rappel.appendChild(document.createTextNode('En clair : le '));
+    rappel.appendChild(el('b', null, 'backlog'));
+    rappel.appendChild(document.createTextNode(' liste tout le stock, trié par priorité. Le '));
+    rappel.appendChild(el('b', null, 'plan'));
+    rappel.appendChild(document.createTextNode(' (ci-dessous) est l’ordre décidé à la main, section par section. Le '));
+    rappel.appendChild(el('b', null, 'prochain sprint'));
+    rappel.appendChild(document.createTextNode(' pioche la première fiche todo + ready du plan.'));
+    encart.appendChild(rappel);
+
+    var signal = el('div', 'signal');
+    var l1 = el('div', 'ligne-signal');
+    l1.appendChild(el('span', 'lab', 'Prochaine fiche tirable'));
+    l1.appendChild(plan.head ? miniCarte(plan.head) : el('span', 'rien', 'aucune — aucune fiche todo + ready dans l’ordre du plan'));
+    signal.appendChild(l1);
+
+    var l2 = el('div', 'ligne-signal');
+    l2.appendChild(el('span', 'lab', 'À groomer avant elle'));
+    if (plan.blockedAhead && plan.blockedAhead.length) {
+      plan.blockedAhead.forEach(function (c) { l2.appendChild(miniCarte(c)); });
+    } else {
+      l2.appendChild(el('span', 'rien', '— rien ne bloque la tête'));
+    }
+    signal.appendChild(l2);
+
+    if (plan.unresolved && plan.unresolved.length) {
+      var l3 = el('div', 'ligne-signal');
+      l3.appendChild(el('span', 'lab', 'Ids du plan introuvables'));
+      l3.appendChild(el('span', 'rien', plan.unresolved.join(', ')));
+      signal.appendChild(l3);
+    }
+    encart.appendChild(signal);
+  }
+
+  // --- Couloirs (une section de PLAN.md = un couloir) ---
+  var couloirs = document.getElementById('plan-couloirs');
+  (plan.lanes || []).forEach(function (lane) {
+    var sec = el('section', 'couloir');
+    sec.appendChild(el('h3', null, lane.label));
+    var nCards = 0, nShipped = 0;
+    lane.rows.forEach(function (row) {
+      row.cards.forEach(function (c) { nCards++; if (c.found && c.status === 'shipped') nShipped++; });
+    });
+    sec.appendChild(el('div', 'compte', lane.rows.length + ' entrée(s) · ' + nCards + ' fiche(s)' + (nShipped ? ' · ' + nShipped + ' livrée(s)' : '')));
+    lane.rows.forEach(function (row) {
+      var toutLivre = row.cards.length > 0 && row.cards.every(function (c) { return c.found && c.status === 'shipped'; });
+      var ligne = el('div', 'plan-ligne' + (toutLivre ? ' tout-livre' : ''));
+      var intention = el('p', 'intention');
+      if (row.marker) intention.appendChild(el('span', 'mk', row.marker));
+      intention.appendChild(document.createTextNode(cleanText(row.text)));
+      ligne.appendChild(intention);
+      var grille = el('div', 'grille');
+      row.cards.forEach(function (c) { grille.appendChild(planCarte(c)); });
+      ligne.appendChild(grille);
+      sec.appendChild(ligne);
+    });
+    couloirs.appendChild(sec);
+  });
+  if (!(plan.lanes && plan.lanes.length)) {
+    couloirs.appendChild(el('div', 'plan-vide', 'PLAN.md ne contient aucune entrée — lance `pnpm --dir products/mega-city plan-view:regen`.'));
+  }
+
+  var cpt = document.getElementById('plan-compteur');
+  var cc = plan.counts || {};
+  if (cpt) {
+    cpt.textContent = (cc.entries || 0) + ' entrée(s) · ' + (cc.resolved || 0) + ' fiche(s) résolue(s) · ' +
+      (cc.shipped || 0) + ' livrée(s) · ' + (cc.unresolved || 0) + ' introuvable(s).';
+  }
+
+  // --- Masquer/afficher les livrées ---
+  var hide = document.getElementById('plan-hide-shipped');
+  if (hide) {
+    hide.addEventListener('change', function () {
+      panPlan.classList.toggle('masquer-livrees', hide.checked);
+    });
+  }
 })();
 </script>
 </body>
