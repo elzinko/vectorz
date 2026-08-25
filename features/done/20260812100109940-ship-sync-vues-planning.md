@@ -5,9 +5,9 @@ type: chore
 priority: P2
 product: mega-city
 labels: [process, lisibilite]
-status: todo
+status: shipped
 ready: 2026-08-21
-pr:
+pr: "#173"
 created: 2026-08-12
 ---
 

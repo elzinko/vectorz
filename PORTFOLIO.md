@@ -12,7 +12,6 @@ Les fiches `todo` passées au gate DoR (`ready:`), dans l’ordre de tirage (P0�
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
 | mega-city | 0152 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | 🔴 todo |  |
-| mega-city | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 | 🔴 todo |  |
 | mega-city | 20260824185422122 | « Recette » comme artefact de premier rang + gardien (ezk-chef) — instancier le pattern steward, ne rien inventer | feature | P2 | 🔴 todo |  |
 | mega-city | 20260825123700998 | Doctrine de composition des features — fusion, épic ou division : quand et comment | feature | P2 | 🔴 todo |  |
 
@@ -52,7 +51,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0152 | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | 🔴 todo |  |
 | mega-city | 0162 | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 | 🔴 todo |  |
 | mega-city | 0190 | composes — tier « delegates: » (composition optionnelle, jamais warnée) | feature | P2 | 🔴 todo |  |
-| mega-city | 20260812100109940 | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 | 🔴 todo |  |
 | mega-city | 20260816151112162 | Canal commands: dans lawgiver — déployer les slash-commands comme les skills | feature | P2 | 🔴 todo |  |
 | mega-city | 20260821210633457 | Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169) | feature | P2 | 🔴 todo |  |
 | mega-city | 20260823121712716 | Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche) | feature | P2 | 🔴 todo |  |
@@ -178,6 +176,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔴 todo (ready) | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|-----------------|-----------|-----------|---------|---------|
 | vectorz | 27 | 10 (0) | 1 | 4 | 10 | 2 |
-| mega-city | 108 | 34 (4) | 2 | 1 | 64 | 7 |
+| mega-city | 107 | 33 (3) | 2 | 1 | 64 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
