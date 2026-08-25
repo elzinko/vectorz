@@ -126,3 +126,64 @@ ${cartes}
 </html>
 `;
 }
+
+// --- Navigation DANS une carte (fiche 20260825232147620) : injectée à la volée par le
+//     serveur, sans toucher les fichiers sources. Retour au menu + saut vers une autre carte.
+
+/**
+ * La barre de navigation flottante : « ← Cartes » + un déroulant de toutes les cartes (la
+ * courante repérée). Position fixe + z-index élevé ⇒ flotte par-dessus sans perturber la
+ * mise en page de la carte. Classe préfixée `ezknav` pour ne pas heurter le CSS des cartes.
+ */
+export function renderNavBar(items: DiagramEntry[], currentSlug: string): string {
+  const options = items
+    .map((d) => {
+      const sel = d.slug === currentSlug ? ' selected' : '';
+      return `<option value="/diagrams/${escapeHtml(d.slug)}/${escapeHtml(d.entry)}"${sel}>${escapeHtml(d.title)}</option>`;
+    })
+    .join('');
+  return `<style>
+  .ezknav{position:fixed;top:12px;right:12px;z-index:2147483647;display:flex;gap:8px;align-items:center;
+    background:rgba(23,26,33,.92);border:1px solid #2a2f3a;border-radius:8px;padding:6px 10px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.82rem;
+    box-shadow:0 4px 16px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+  .ezknav a{color:#e7e9ee;text-decoration:none;padding:2px 8px;border:1px solid #2a2f3a;border-radius:6px;white-space:nowrap;}
+  .ezknav a:hover{border-color:#4a5262;}
+  .ezknav select{background:#0f1115;color:#e7e9ee;border:1px solid #2a2f3a;border-radius:6px;padding:3px 6px;max-width:44vw;font:inherit;cursor:pointer;}
+</style>
+<nav class="ezknav" aria-label="Navigation des cartes">
+  <a href="/">← Cartes</a>
+  <select onchange="if(this.value)location.href=this.value" aria-label="Aller à une autre carte">${options}</select>
+</nav>`;
+}
+
+/** Injecte `nav` juste avant la dernière `</body>` d'un HTML (append si absente). */
+export function injectNavIntoHtml(html: string, nav: string): string {
+  const idx = html.lastIndexOf('</body>');
+  if (idx === -1) return html + nav;
+  return html.slice(0, idx) + nav + html.slice(idx);
+}
+
+/**
+ * Enveloppe une carte SVG dans une page HTML : la barre `nav` + l'image (via `rawUrl`, qui
+ * pointe le SVG brut, servi avec `?raw`). Le SVG lui-même n'est pas modifié.
+ */
+export function renderSvgWrapper(rawUrl: string, nav: string, title: string): string {
+  return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>${escapeHtml(title)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  html, body { margin: 0; height: 100%; background: #0f1115; }
+  .ezkmap-img { display: block; width: 100%; height: 100vh; object-fit: contain; padding: 16px; box-sizing: border-box; }
+</style>
+</head>
+<body>
+${nav}
+<img class="ezkmap-img" src="${escapeHtml(rawUrl)}" alt="${escapeHtml(title)}" />
+</body>
+</html>
+`;
+}

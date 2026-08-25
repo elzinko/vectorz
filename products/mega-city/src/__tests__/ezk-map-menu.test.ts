@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 import {
   type DiagramEntry,
   FEATURED_SLUG,
+  injectNavIntoHtml,
   orderDiagrams,
   readMetaTitle,
   renderMenuHtml,
+  renderNavBar,
+  renderSvgWrapper,
 } from '../core/ezk-map-menu.js';
 
 describe('readMetaTitle (fiche 20260825152954193)', () => {
@@ -98,5 +101,56 @@ describe('renderMenuHtml', () => {
 
   it('rend un état vide propre si aucune carte', () => {
     expect(renderMenuHtml([])).toContain('Aucune carte');
+  });
+});
+
+describe('navigation dans une carte (fiche 20260825232147620)', () => {
+  const items: DiagramEntry[] = [
+    { slug: 'avancement', entry: 'board.html', title: "Board d'avancement" },
+    { slug: 'domaine-mega-city', entry: 'diagram.svg', title: 'Le domaine' },
+  ];
+
+  describe('renderNavBar', () => {
+    it('rend « ← Cartes » (retour menu) et un déroulant de toutes les cartes', () => {
+      const nav = renderNavBar(items, 'avancement');
+      expect(nav).toContain('href="/"');
+      expect(nav).toContain('← Cartes');
+      expect(nav).toContain('<option value="/diagrams/avancement/board.html"');
+      expect(nav).toContain('<option value="/diagrams/domaine-mega-city/diagram.svg"');
+    });
+
+    it('repère la carte courante (option selected)', () => {
+      const nav = renderNavBar(items, 'domaine-mega-city');
+      expect(nav).toMatch(/value="\/diagrams\/domaine-mega-city\/diagram\.svg" selected/);
+      // une seule option sélectionnée
+      expect(nav.match(/ selected/g)).toHaveLength(1);
+    });
+
+    it('échappe les titres (anti-injection)', () => {
+      const nav = renderNavBar([{ slug: 's', entry: 'e.html', title: '<img onerror=x>' }], 's');
+      expect(nav).not.toContain('<img onerror');
+      expect(nav).toContain('&lt;img onerror');
+    });
+  });
+
+  describe('injectNavIntoHtml', () => {
+    it('insère la nav juste avant la dernière </body>', () => {
+      const out = injectNavIntoHtml('<body><h1>carte</h1></body>', '<nav>NAV</nav>');
+      expect(out).toBe('<body><h1>carte</h1><nav>NAV</nav></body>');
+    });
+
+    it('appende si aucune </body> (dégradation propre)', () => {
+      expect(injectNavIntoHtml('<svg>...</svg>', 'NAV')).toBe('<svg>...</svg>NAV');
+    });
+  });
+
+  describe('renderSvgWrapper', () => {
+    it('enveloppe le SVG : nav + image pointant le brut, titre échappé', () => {
+      const html = renderSvgWrapper('/diagrams/x/y.svg?raw', '<nav>NAV</nav>', 'Titre <b>');
+      expect(html).toContain('<nav>NAV</nav>');
+      expect(html).toContain('src="/diagrams/x/y.svg?raw"');
+      expect(html).toContain('Titre &lt;b&gt;');
+      expect(html).not.toContain('Titre <b>');
+    });
   });
 });
