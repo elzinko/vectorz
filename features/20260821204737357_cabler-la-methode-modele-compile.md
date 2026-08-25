@@ -151,3 +151,8 @@ retouche manuelle.
 - Le modèle typé était **déjà prévu** : `ezk-diagram` (note « rampe vers un modèle typé »),
   `domain.ts` (schéma), `bind` (build). Ce chantier ne crée pas un concept — il **relie**
   trois pièces existantes.
+- **Confirmé par le benchmark (2026-08-25)** — le rapport
+  [BMAD vs ezk](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 5) montre la cible
+  concrète : BMAD **compile** ses manifests (`agent-manifest.csv`, `bmad-help.csv`, empreintes SHA-256)
+  en une couche de build séparée, alors qu'ezk a le **schéma** (`domain.ts`) sans **instance**. C'est le
+  seul point où BMAD gagne franchement côté modèle — un argument de plus pour ce chantier.

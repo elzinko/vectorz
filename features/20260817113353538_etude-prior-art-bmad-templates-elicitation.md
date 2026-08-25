@@ -47,3 +47,10 @@ la méthode ezk (LLM-native), ce qui ne se transpose pas, et pourquoi. Réf. [[0
 ## Notes / décisions
 
 - Fille de [[0191]] ; à groomer avant build.
+- **Findings du benchmark (2026-08-25)** — l'analyse « transposable / non-transposable » demandée par
+  cette fiche est **largement livrée** par le rapport
+  [BMAD vs ezk](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 2 & 3) : le trésor
+  transposable = la **boucle d'elicitation** (50 méthodes, propose 5, applique, re-propose), pas les
+  gabarits documentaires ; le build actionnable est parti en fiche fille [[20260825161522791]]. Reste à
+  cette fiche : trancher si on adopte aussi une **bibliothèque de templates par livrable** (PRD/archi/story)
+  ou si la fiche-unique d'ezk (ADR-0029) suffit.
