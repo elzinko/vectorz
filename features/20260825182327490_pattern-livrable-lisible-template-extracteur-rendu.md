@@ -68,6 +68,9 @@ artefact + gardien » = instance du pattern steward — voir [20260824185422122]
   [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) ; exposer l'état
   des autres sessions est, lui, le job du cockpit
   [20260825141012293](20260825141012293_ezk-sessions-cockpit.md).
+- **S'inspirer de BMAD** (rappel PO 2026-08-25) : avant de figer le format des templates/validateurs,
+  regarder ce que **BMAD a déjà implémenté** (templates + validateurs + elicitation) — cf. l'étude
+  prior-art [20260817113353538](20260817113353538_etude-prior-art-bmad-templates-elicitation.md).
 
 ## Critères d'acceptation (brouillon)
 
