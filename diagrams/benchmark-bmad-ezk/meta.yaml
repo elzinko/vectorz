@@ -1,0 +1,13 @@
+title: "Benchmark BMAD vs ezk — comparaison au niveau code"
+date: 2026-08-25
+type: benchmark
+links:
+  entry: benchmark.html
+  rapport: ../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md
+  artifact: "https://claude.ai/code/artifact/b98e9406-f96f-46c2-bf96-0435fc2a0bb6"
+note: >-
+  Comparaison des deux méthodes agiles pilotées par LLM (BMAD-METHOD 6.0.4 vs ezk) sur
+  8 dimensions, sourcée sur la lecture des deux codebases + un run BMAD réel. Verdict :
+  garder le socle ezk (cœur déterministe ADR-0001), voler 3 affordances (next-step,
+  elicitation, graphe compilé). Servie par `pnpm ezk:map benchmark-bmad-ezk`. Le rapport
+  complet (texte) vit dans docs/benchmarks/ ; cette page en est la vue lisible.

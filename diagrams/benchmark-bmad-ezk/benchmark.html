@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>BMAD vs ezk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --surface-2:#f6f8fa;
+  --ink:#1b1f27; --ink-soft:#55606f; --ink-faint:#8792a1;
+  --line:#dde3ea; --line-strong:#c6cfd9;
+  --bmad:#b26a1f; --bmad-tint:#f7eede; --bmad-ink:#8a4f12;
+  --ezk:#1f7a86; --ezk-tint:#e2f0f2; --ezk-ink:#125e69;
+  --steal:#2f8f5a; --steal-tint:#e6f2ea; --steal-ink:#1f6a41;
+  --accent:var(--ezk);
+  --shadow:0 1px 2px rgba(20,30,45,.05),0 6px 20px rgba(20,30,45,.06);
+  --font-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --font-body:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111419; --surface:#181c22; --surface-2:#1e232b;
+  --ink:#e8ecf1; --ink-soft:#a9b3c0; --ink-faint:#727e8d;
+  --line:#2a313a; --line-strong:#3a434e;
+  --bmad:#d8993f; --bmad-tint:#2a2216; --bmad-ink:#e6b264;
+  --ezk:#46b4c1; --ezk-tint:#132529; --ezk-ink:#69c8d3;
+  --steal:#59b67f; --steal-tint:#15281e; --steal-ink:#7fce9d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#111419; --surface:#181c22; --surface-2:#1e232b;
+  --ink:#e8ecf1; --ink-soft:#a9b3c0; --ink-faint:#727e8d;
+  --line:#2a313a; --line-strong:#3a434e;
+  --bmad:#d8993f; --bmad-tint:#2a2216; --bmad-ink:#e6b264;
+  --ezk:#46b4c1; --ezk-tint:#132529; --ezk-ink:#69c8d3;
+  --steal:#59b67f; --steal-tint:#15281e; --steal-ink:#7fce9d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-body); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1040px; margin:0 auto; padding:clamp(20px,4vw,56px) clamp(16px,4vw,40px) 80px;}
+.prose{max-width:68ch}
+h1,h2,h3{font-family:var(--font-display); text-wrap:balance; line-height:1.12; margin:0;}
+a{color:var(--ezk-ink); text-underline-offset:2px}
+code,.mono{font-family:var(--font-mono); font-size:.86em}
+.eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint);}
+
+/* header */
+header.masthead{border-bottom:2px solid var(--ink); padding-bottom:26px; margin-bottom:34px;}
+h1{font-size:clamp(38px,7vw,68px); font-weight:600; letter-spacing:-.015em; margin:.28em 0 .12em;}
+h1 .vs{font-style:italic; font-weight:400; color:var(--ink-faint); padding:0 .12em;}
+.thesis{font-size:clamp(17px,2.4vw,21px); color:var(--ink-soft); max-width:60ch; margin:.2em 0 0;}
+.topbar{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;}
+.legend{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:20px;}
+.chip{display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:12.5px; padding:5px 11px; border-radius:999px; border:1px solid var(--line-strong); background:var(--surface);}
+.dot{width:9px; height:9px; border-radius:50%; flex:none}
+.dot.b{background:var(--bmad)} .dot.e{background:var(--ezk)} .dot.s{background:var(--steal)}
+.toggle{font-family:var(--font-mono); font-size:12px; letter-spacing:.06em; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line-strong); border-radius:999px; padding:7px 13px; cursor:pointer;}
+.toggle:hover{border-color:var(--accent); color:var(--ink)}
+
+/* enclair */
+.enclair{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:12px; padding:22px 24px; box-shadow:var(--shadow); margin:0 0 40px;}
+.enclair .lbl{font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:500}
+.enclair p{margin:.5em 0 0}
+
+section{margin:0 0 46px}
+h2.sec{font-size:clamp(22px,3.4vw,30px); font-weight:600; letter-spacing:-.01em; margin-bottom:6px;}
+.sec-sub{color:var(--ink-soft); margin:0 0 22px; max-width:64ch}
+.kicker{font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:10px}
+
+/* scorecard */
+.card-shell{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+.tablewrap{overflow-x:auto}
+table.score{border-collapse:collapse; width:100%; min-width:640px; font-size:14.5px}
+table.score th,table.score td{text-align:left; padding:13px 16px; border-bottom:1px solid var(--line); vertical-align:top}
+table.score thead th{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:500; background:var(--surface-2)}
+table.score tbody tr:last-child td{border-bottom:none}
+table.score td.dim{font-weight:600; width:23%}
+.win{display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:12px; font-weight:500; padding:3px 9px; border-radius:6px; white-space:nowrap}
+.win.b{background:var(--bmad-tint); color:var(--bmad-ink)}
+.win.e{background:var(--ezk-tint); color:var(--ezk-ink)}
+.win.t{background:var(--surface-2); color:var(--ink-faint)}
+.steal-tag{font-family:var(--font-mono); font-size:11.5px; color:var(--steal-ink); background:var(--steal-tint); padding:3px 8px; border-radius:6px; white-space:nowrap}
+.steal-no{color:var(--ink-faint)}
+
+/* steal cards */
+.steal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.steal-card{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--steal); border-radius:12px; padding:20px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px}
+.steal-card .rank{font-family:var(--font-display); font-size:34px; font-weight:600; color:var(--steal); line-height:1}
+.steal-card h3{font-size:18px; font-weight:600}
+.steal-card p{margin:0; font-size:14.5px; color:var(--ink-soft)}
+.steal-card .ficheref{margin-top:auto; padding-top:10px; font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint)}
+
+/* pipeline */
+.flow{display:flex; flex-direction:column; gap:14px}
+.flow-row{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow)}
+.flow-row.b{border-left:4px solid var(--bmad)}
+.flow-row.e{border-left:4px solid var(--ezk)}
+.flow-name{font-family:var(--font-mono); font-size:12px; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px; font-weight:500}
+.flow-row.b .flow-name{color:var(--bmad-ink)} .flow-row.e .flow-name{color:var(--ezk-ink)}
+.steps{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.step{font-size:13px; padding:7px 12px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line)}
+.step.hl-b{background:var(--bmad-tint); border-color:transparent; color:var(--bmad-ink); font-weight:500}
+.step.hl-e{background:var(--ezk-tint); border-color:transparent; color:var(--ezk-ink); font-weight:500}
+.arrow{color:var(--ink-faint); font-family:var(--font-mono)}
+.flow-cap{color:var(--ink-soft); font-size:14px; margin:16px 0 0; max-width:66ch}
+
+/* dimensions */
+.dims{display:flex; flex-direction:column; gap:18px}
+.dim{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+.dim-head{display:flex; align-items:baseline; gap:12px; padding:16px 20px 12px; flex-wrap:wrap}
+.dim-num{font-family:var(--font-mono); font-size:12px; color:var(--ink-faint)}
+.dim-head h3{font-size:19px; font-weight:600}
+.dim-head .trig{font-family:var(--font-mono); font-size:11px; color:var(--accent); background:var(--surface-2); padding:2px 8px; border-radius:6px}
+.split{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line)}
+.pane{background:var(--surface); padding:16px 20px}
+.pane .side{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; margin-bottom:7px; display:flex; align-items:center; gap:7px}
+.pane.b .side{color:var(--bmad-ink)} .pane.e .side{color:var(--ezk-ink)}
+.pane p{margin:0; font-size:14px; color:var(--ink-soft)}
+.pane .path{font-family:var(--font-mono); font-size:12px; color:var(--ink-faint)}
+.verdict-bar{display:flex; align-items:center; gap:12px; padding:12px 20px; border-top:1px solid var(--line); background:var(--surface-2); flex-wrap:wrap}
+.verdict-bar .v-lbl{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint)}
+.verdict-bar .v-txt{font-size:13.5px; color:var(--ink)}
+
+/* lists */
+ul.clean{list-style:none; padding:0; margin:0; display:grid; gap:11px}
+ul.clean li{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:13px 16px; font-size:14.5px; display:flex; gap:11px; align-items:flex-start}
+ul.clean li b{color:var(--ink)}
+ul.clean .mk{color:var(--ezk); font-weight:700; flex:none}
+
+/* meta / footer */
+.meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:8px}
+.meta div{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:14px 16px}
+.meta .k{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:5px}
+.meta .val{font-size:13.5px; color:var(--ink)}
+.limits{font-size:13.5px; color:var(--ink-soft); margin-top:18px; border-left:3px solid var(--line-strong); padding-left:14px}
+footer{margin-top:56px; padding-top:22px; border-top:1px solid var(--line); font-family:var(--font-mono); font-size:12px; color:var(--ink-faint); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+
+.closing{background:linear-gradient(180deg,var(--surface),var(--surface-2)); border:1px solid var(--line); border-radius:14px; padding:26px 26px; box-shadow:var(--shadow)}
+.closing h2{font-size:24px; font-weight:600; margin-bottom:8px}
+.closing .punch{font-family:var(--font-display); font-size:20px; font-weight:600; color:var(--ink); margin:0 0 14px; text-wrap:balance}
+.closing ul{margin:0; padding-left:20px} .closing li{margin:.4em 0; color:var(--ink-soft)} .closing li b{color:var(--ink)}
+
+@media (max-width:680px){
+  .steal-grid{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){
+  .dim,.steal-card,ul.clean li{transition:transform .18s ease, border-color .18s ease}
+  .steal-card:hover{transform:translateY(-2px); border-color:var(--steal)}
+}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="topbar">
+      <span class="eyebrow">Benchmark · niveau code · 2026-08-25</span>
+      <button class="toggle" id="themeToggle" aria-label="Basculer le thème">◐ thème</button>
+    </div>
+    <h1>BMAD <span class="vs">vs</span> ezk</h1>
+    <p class="thesis">Deux méthodes agiles pilotées par LLM, un pari opposé sur qui tient le volant. Comparaison au niveau du code, verdict, et ce qui vaut la peine d'être volé.</p>
+    <div class="legend">
+      <span class="chip"><span class="dot b"></span>BMAD — le LLM interprète</span>
+      <span class="chip"><span class="dot e"></span>ezk — le LLM aux bords</span>
+      <span class="chip"><span class="dot s"></span>à voler</span>
+    </div>
+  </header>
+
+  <div class="enclair">
+    <span class="lbl">En clair</span>
+    <p>BMAD met tout dans des <b>instructions en prose</b> et laisse le <b>LLM tout interpréter</b> ; un compilateur assemble les fragments. ezk fait l'inverse : un <b>cœur déterministe</b> (scripts + git) range tout, le <b>LLM ne fait que rédiger et juger</b>. Résultat : BMAD est plus riche à l'usage (menus, elicitation, « et après ? »), ezk est plus sûr et moins cher. On ne doit pas devenir BMAD — mais <b>trois de ses mécanismes valent le vol</b>.</p>
+  </div>
+
+  <section>
+    <span class="kicker">Le verdict en une page</span>
+    <h2 class="sec">Qui gagne, dimension par dimension</h2>
+    <p class="sec-sub">Huit dimensions. Pour chacune : l'avantage, et si le mécanisme se transpose à ezk.</p>
+    <div class="card-shell tablewrap">
+      <table class="score">
+        <thead><tr><th>Dimension</th><th>Avantage</th><th>Pourquoi</th><th>À voler ?</th></tr></thead>
+        <tbody>
+          <tr><td class="dim">Découvrabilité / « et après ? »</td><td><span class="win b">BMAD</span></td><td>Menu numéroté + routeur <code>/bmad-help</code> + « Next Steps » en fin d'étape</td><td><span class="steal-tag">Oui — fiche …259</span></td></tr>
+          <tr><td class="dim">Elicitation (raffinement guidé)</td><td><span class="win b">BMAD</span></td><td>50 méthodes, en propose 5, applique, re-propose</td><td><span class="steal-tag">Oui — fiche …791</span></td></tr>
+          <tr><td class="dim">Templates de livrables</td><td><span class="win b">BMAD</span></td><td>PRD, archi, story… templatés ; ezk n'a que la fiche</td><td><span class="steal-tag">Partiel — …162</span></td></tr>
+          <tr><td class="dim">Modèle / graphe compilé</td><td><span class="win b">BMAD</span></td><td>Manifests CSV compilés ; ezk a le schéma, pas l'instance</td><td><span class="steal-tag">Oui — fiche …357</span></td></tr>
+          <tr><td class="dim">Orchestration</td><td><span class="win t">nul</span></td><td>Choix différents : « OS » unique vs chaîne d'agents typés</td><td><span class="steal-no">non</span></td></tr>
+          <tr><td class="dim">Sûreté / cœur</td><td><span class="win e">ezk</span></td><td>Cœur déterministe testé ; BMAD n'est que du prompt non appliqué</td><td><span class="steal-no">—</span></td></tr>
+          <tr><td class="dim">Coût (tokens / temps)</td><td><span class="win e">ezk</span></td><td>Fichiers plats + scripts vs persona + « OS » rechargés à chaque tour</td><td><span class="steal-no">—</span></td></tr>
+          <tr><td class="dim">Personnalisation</td><td><span class="win e">ezk</span></td><td>Règles/profils utilisés vs prises BMAD inutilisées à 100 %</td><td><span class="steal-no">—</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <span class="kicker">La priorité</span>
+    <h2 class="sec">Les 3 mécanismes à voler</h2>
+    <p class="sec-sub">Classés par valeur. Le premier est le plus attendu et le moins cher.</p>
+    <div class="steal-grid">
+      <div class="steal-card">
+        <div class="rank">1</div>
+        <h3>Le « et maintenant ? »</h3>
+        <p>Un bloc en fin de commande qui propose les 1-3 commandes suivantes, en contexte. Le manque le plus net côté ezk.</p>
+        <div class="ficheref">→ fiche neuve 20260825160456259</div>
+      </div>
+      <div class="steal-card">
+        <div class="rank">2</div>
+        <h3>La boucle d'elicitation</h3>
+        <p>Le vrai trésor de BMAD : propose → tu choisis → applique → re-propose. Transposable au <code>groom</code> d'ezk.</p>
+        <div class="ficheref">→ fiche neuve 20260825161522791</div>
+      </div>
+      <div class="steal-card">
+        <div class="rank">3</div>
+        <h3>Le graphe compilé</h3>
+        <p>ezk a le schéma (<code>domain.ts</code>) mais pas l'instance interrogeable. BMAD montre la cible.</p>
+        <div class="ficheref">→ fiche existante 20260821204737357</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="kicker">Le pari de fond</span>
+    <h2 class="sec">Les deux méthodes en une image</h2>
+    <div class="flow">
+      <div class="flow-row b">
+        <div class="flow-name">BMAD — le LLM est l'interpréteur</div>
+        <div class="steps">
+          <span class="step">Sources YAML</span><span class="arrow">→</span>
+          <span class="step hl-b">compilateur Node</span><span class="arrow">→</span>
+          <span class="step">fragments MD/XML + manifests</span><span class="arrow">→</span>
+          <span class="step hl-b">le LLM suit workflow.xml</span><span class="arrow">→</span>
+          <span class="step">PRD · stories · sprint-status</span>
+        </div>
+      </div>
+      <div class="flow-row e">
+        <div class="flow-name">ezk — le LLM aux bords seulement</div>
+        <div class="steps">
+          <span class="step">fichiers plats + frontmatter</span><span class="arrow">→</span>
+          <span class="step hl-e">scripts déterministes</span><span class="arrow">→</span>
+          <span class="step">index / graphe régénérés</span><span class="arrow">→</span>
+          <span class="step hl-e">le LLM rédige &amp; juge</span><span class="arrow">→</span>
+          <span class="step">fiches + PR (la fiche EST le document)</span>
+        </div>
+      </div>
+    </div>
+    <p class="flow-cap">La différence de fond : chez BMAD rien n'exécute vraiment le workflow — le LLM obéit (ou pas) à « n'saute JAMAIS une étape ». ezk pose la règle inverse (ADR-0001) : le cœur déterministe est ce qui doit toujours marcher, le LLM n'est jamais load-bearing.</p>
+  </section>
+
+  <section>
+    <span class="kicker">Le détail sourcé</span>
+    <h2 class="sec">Comparaison dimension par dimension</h2>
+    <p class="sec-sub">Chaque carte : ce que fait BMAD (à gauche), ce que fait ezk (à droite), le verdict.</p>
+    <div class="dims" id="dims"></div>
+  </section>
+
+  <section>
+    <span class="kicker">L'autre plateau de la balance</span>
+    <h2 class="sec">Ce que ezk fait déjà mieux</h2>
+    <ul class="clean">
+      <li><span class="mk">✓</span><span><b>Le cœur déterministe (ADR-0001).</b> La meilleure décision d'archi des deux. Rien de critique ne dépend d'un prompt.</span></li>
+      <li><span class="mk">✓</span><span><b>Tout est fichier plat.</b> Markdown + frontmatter + YAML, portable sur n'importe quel hôte via <code>bind</code>.</span></li>
+      <li><span class="mk">✓</span><span><b>Source unique + projections régénérées.</b> Index, graphe, carte, help sont générés et CI-vérifiés — pas de dérive manuelle.</span></li>
+      <li><span class="mk">✓</span><span><b>Lisibilité imposée.</b> La règle « En clair » (MUST, avec agent qui l'applique) n'a aucun équivalent chez BMAD.</span></li>
+      <li><span class="mk">✓</span><span><b>Délégation consciente du modèle.</b> Opus pour juger, Sonnet pour la mécanique, isolation en worktree.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="kicker">Méthodo &amp; honnêteté</span>
+    <h2 class="sec">Sources, versions, limites</h2>
+    <div class="meta">
+      <div><div class="k">BMAD — code lu</div><div class="val">bmad-method@6.0.4 (cache npx)</div></div>
+      <div><div class="k">BMAD — installé</div><div class="val">6.0.0-Beta.8 (3 projets)</div></div>
+      <div><div class="k">BMAD — run réel</div><div class="val">banc d'essai jetable (cop1-cobaye)</div></div>
+      <div><div class="k">ezk</div><div class="val">mega-city @ b4bbde8</div></div>
+    </div>
+    <p class="limits">Comparaison <b>statique</b> (lecture de code), pas un run A/B chronométré. Léger écart de version BMAD (source 6.0.4 vs installé Beta.8), signalé où ça compte. Le « run réel » BMAD est un banc d'essai jetable, pas le pipeline complet. Chiffres ezk issus des frontmatter — <code>regen</code> fait foi en cas d'écart.</p>
+  </section>
+
+  <div class="closing">
+    <h2>Ce que ça veut dire pour toi</h2>
+    <p class="punch">Garde le socle d'ezk, vole trois affordances à BMAD.</p>
+    <ul>
+      <li><b>Ta demande n°1 est validée et fichée</b> : le « et maintenant ? » est le manque le plus net, et le moins cher à combler.</li>
+      <li><b>Ta demande n°2 a une réponse claire</b> : le trésor n'est pas les templates, c'est l'<b>elicitation</b> — à transposer au <code>groom</code>.</li>
+      <li><b>Ne copie pas BMAD en entier</b> : son pipeline long et son « OS » non appliqué sont ses faiblesses ; ton cœur déterministe est meilleur.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span>Benchmark BMAD vs ezk · 2026-08-25</span>
+    <span>rapport complet : docs/benchmarks/2026-08-25-bmad-vs-ezk.md</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeToggle');
+  btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var next = cur==='dark' ? 'light' : (cur==='light' ? 'dark' : (matchMedia('(prefers-color-scheme: dark)').matches ? 'light':'dark'));
+    root.setAttribute('data-theme',next);
+  });
+
+  var dims=[
+    {n:'01',t:'Découvrabilité & « et après ? »',trig:'déclencheur n°1',
+     b:'Menu numéroté à l\'activation (LLM), routeur global <code>/bmad-help</code> qui lit le catalogue, et « Next Steps » imprimés en fin de workflow.',
+     bp:'src/core/tasks/help.md · activation-steps.txt',
+     e:'<code>/ezk-help</code> = index plat généré. Fin de sprint = STOP en prose. La suite est <i>tirée</i> au prochain intake, jamais <i>proposée</i>.',
+     ep:'bin/ezk-help.ts · ezk-sprint step 9',
+     v:'BMAD gagne nettement — c\'est le trou que tu as ressenti.', vc:'b'},
+    {n:'02',t:'Templates & elicitation',trig:'déclencheur n°2',
+     b:'Templates <code>{{mustache}}</code> + boucle <code>advanced-elicitation</code> : 50 méthodes, en propose 5, applique, re-propose jusqu\'à sortie.',
+     bp:'advanced-elicitation/workflow.xml · methods.csv',
+     e:'Pas d\'elicitation. <code>groom</code> délègue à un brainstorm libre. Un seul template (la fiche), mais la fiche EST le document (ADR-0029).',
+     ep:'skills/ezk-backlog/templates/feature-template.md',
+     v:'BMAD gagne sur le mécanisme ; ezk gagne sur la lisibilité imposée.', vc:'b'},
+    {n:'03',t:'Structure des agents',trig:null,
+     b:'Agent = <code>.agent.yaml</code> compilé en XML. Chaque item de menu porte un handler (workflow/exec/tmpl). 10 agents en 6.0.4.',
+     bp:'tools/cli/lib/agent/compiler.js',
+     e:'Agent = <code>.md</code> : rôle + compétences + boutons d\'exécution (<code>model</code>/<code>effort</code>/<code>isolation</code>). 7 agents.',
+     ep:'products/mega-city/agents/*.md',
+     v:'Différent, pas mieux/moins bien. Le model-aware d\'ezk est même un cran au-dessus.', vc:'t'},
+    {n:'04',t:'Orchestration & « OS »',trig:null,
+     b:'Un prompt de ~230 lignes, <code>workflow.xml</code>, « the CORE OS » : lire en entier, exécuter dans l\'ordre exact, sauver après chaque balise.',
+     bp:'src/core/tasks/workflow.xml',
+     e:'Boucle <code>ezk-sprint run</code> 0→10, chaque étape déléguée à un agent typé ; gates réellement lancés (tests, CI, E2E).',
+     ep:'skills/ezk-sprint/SKILL.md',
+     v:'Choix différents : interpréteur unique verbeux vs chaîne d\'agents avec gates outillés.', vc:'t'},
+    {n:'05',t:'Modèle & graphe compilé',trig:null,
+     b:'Installeur Node qui compile les manifests (<code>bmad-help.csv</code>, empreintes SHA-256) — une vraie couche de build.',
+     bp:'tools/cli/ · _bmad/_config/*.csv',
+     e:'Le schéma existe (<code>domain.ts</code>) mais aucune instance : le graphe est redérivé à la volée ; beaucoup de liens vivent en prose fragile.',
+     ep:'docs/domain.ts · src/loaders/catalog.ts',
+     v:'BMAD gagne sur ce point précis : l\'objet compilé interrogeable qu\'ezk n\'a pas encore.', vc:'b'},
+    {n:'06',t:'Sûreté : qui garantit ?',trig:null,
+     b:'Rien n\'est appliqué par du code. La justesse dépend du LLM qui honore « NEVER skip a step ». Compilateur lui-même buggé (persona injectée dans le CSV).',
+     bp:'&lt;mandate&gt; dans workflow.xml',
+     e:'ADR-0001 : le cœur déterministe (scripts + git) fait tout ce qui doit marcher ; tri, compteurs, gates, merges = scripts testés.',
+     ep:'docs/adr/0001-*.md',
+     v:'ezk gagne franchement — le pari le plus important, fait dans le bon sens.', vc:'e'},
+    {n:'07',t:'Coût (tokens & temps)',trig:null,
+     b:'Lourd par conception : activation + persona + menu à chaque tour, <code>workflow.xml</code> rechargé, « when in doubt LOAD IT ». « C\'est long », confirmé.',
+     bp:'discover_inputs (FULL_LOAD)',
+     e:'Léger : fichiers plats, scripts, délégation par modèle (Sonnet pour la mécanique). Pas d\'« OS » rechargé.',
+     ep:'lawgiver + regen scripts',
+     v:'ezk gagne.', vc:'e'},
+    {n:'08',t:'Personnalisation sans forker',trig:null,
+     b:'Prises <code>*.customize.yaml</code> qui surchargent un agent sans toucher la source… <b>inutilisées à 100 %</b> dans nos 3 installs.',
+     bp:'_config/agents/*.customize.yaml',
+     e:'Règles + profils, <b>réellement utilisés</b> et CI-vérifiés (chaque brique doit avoir un étage, sinon rouge).',
+     ep:'rules/ · profiles/ · ADR-0039',
+     v:'ezk gagne — non par le mécanisme, mais parce que le sien vit vraiment.', vc:'e'}
+  ];
+  var wm={b:'BMAD',e:'ezk',t:'égalité'};
+  var host=document.getElementById('dims');
+  host.innerHTML=dims.map(function(d){
+    var trig=d.trig?'<span class="trig">'+d.trig+'</span>':'';
+    return '<div class="dim">'+
+      '<div class="dim-head"><span class="dim-num">'+d.n+'</span><h3>'+d.t+'</h3>'+trig+'</div>'+
+      '<div class="split">'+
+        '<div class="pane b"><div class="side"><span class="dot b"></span>BMAD</div><p>'+d.b+'</p><p class="path">'+d.bp+'</p></div>'+
+        '<div class="pane e"><div class="side"><span class="dot e"></span>ezk</div><p>'+d.e+'</p><p class="path">'+d.ep+'</p></div>'+
+      '</div>'+
+      '<div class="verdict-bar"><span class="v-lbl">Verdict</span><span class="win '+d.vc+'">'+wm[d.vc]+'</span><span class="v-txt">'+d.v+'</span></div>'+
+    '</div>';
+  }).join('');
+})();
+</script>
+</body>
+</html>
