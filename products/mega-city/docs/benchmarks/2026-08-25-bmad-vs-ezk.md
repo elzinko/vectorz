@@ -30,10 +30,10 @@ Chaque ligne : qui fait le travail, qui s'en sort le mieux, et ce qui se transpo
 
 | Dimension | BMAD | ezk | Avantage | À voler ? |
 |---|---|---|---|---|
-| **Découvrabilité / « et maintenant ? »** | menu numéroté à l'activation + routeur global `/bmad-help` + « Next Steps » en fin d'étape | `/ezk-help` (index plat généré), sinon prose ; rien en fin de commande | **BMAD** | **Oui** (fiche `…259`) |
-| **Elicitation (raffinement guidé)** | boucle `advanced-elicitation` : 50 méthodes, propose 5, applique, re-propose | absente ; `groom` délègue à un brainstorm libre | **BMAD** | **Oui** (fiche `…794` neuve) |
-| **Templates de livrables** | PRD, archi, story, epic… templatés avec instructions embarquées | 1 seul vrai template (la fiche) + ADR | **BMAD** | Partiel (enrichit `…162`) |
-| **Modèle / graphe** | manifests CSV compilés (`bmad-help.csv`, `agent-manifest.csv`, SHA-256) | schéma typé `domain.ts` **mais aucune instance compilée** ; graphe dérivé à la volée | **BMAD** (sur ce point précis) | **Oui** (fiche `…357` existante) |
+| **Découvrabilité / « et maintenant ? »** | menu numéroté à l'activation + routeur global `/bmad-help` + « Next Steps » en fin d'étape | `/ezk-help` (index plat généré), sinon prose ; rien en fin de commande | **BMAD** | **Oui** — [20260825160456259](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md) |
+| **Elicitation (raffinement guidé)** | boucle `advanced-elicitation` : 50 méthodes, propose 5, applique, re-propose | absente ; `groom` délègue à un brainstorm libre | **BMAD** | **Oui** — [20260825161522791](../../../../features/20260825161522791_elicitation-raffinement-structure-groom.md) |
+| **Templates de livrables** | PRD, archi, story, epic… templatés avec instructions embarquées | 1 seul vrai template (la fiche) + ADR | **BMAD** | Partiel — [20260817113353538](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
+| **Modèle / graphe** | manifests CSV compilés (`bmad-help.csv`, `agent-manifest.csv`, SHA-256) | schéma typé `domain.ts` **mais aucune instance compilée** ; graphe dérivé à la volée | **BMAD** (sur ce point précis) | **Oui** — [20260821204737357](../../../../features/20260821204737357_cabler-la-methode-modele-compile.md) |
 | **Orchestration** | 4 phases longues, un « OS » `workflow.xml` interprété par le LLM | boucle sprint 0→10, étapes déléguées à des agents typés | Nul (choix différents) | Non |
 | **Sûreté / cœur** | tout est un prompt **non appliqué** (« NEVER skip a step ») | cœur déterministe testé (ADR-0001) ; LLM jamais load-bearing | **ezk** | — |
 | **Coût (tokens / temps)** | lourd : persona + menu + `workflow.xml` rechargés à chaque tour | léger : fichiers plats, scripts, délégation par modèle | **ezk** | — |
@@ -156,9 +156,9 @@ Les recommandations sont **déjà rangées dans le backlog** (dédoublonnées co
 | Reco | Statut backlog |
 |---|---|
 | **« Et maintenant ? »** en fin de commande | Fiche **neuve** [`20260825160456259`](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md) (idée #1) |
-| **Boucle d'elicitation** dans `groom` | Fiche **neuve** (voir capture de session) |
-| **Bibliothèque de templates + étude prior-art** | **Enrichit** l'étude existante `20260817113353538` |
-| **Graphe compilé** (instance, pas vues) | **Existe déjà**, argumenté : `20260821204737357` |
+| **Boucle d'elicitation** dans `groom` | Fiche **neuve** [`20260825161522791`](../../../../features/20260825161522791_elicitation-raffinement-structure-groom.md) |
+| **Bibliothèque de templates + étude prior-art** | **Enrichit** l'étude existante [`20260817113353538`](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
+| **Graphe compilé** (instance, pas vues) | **Existe déjà**, argumenté : [`20260821204737357`](../../../../features/20260821204737357_cabler-la-methode-modele-compile.md) |
 
 Ce qu'on **n'imite pas** volontairement : le pipeline documentaire long (4 phases), l'« OS »
 `workflow.xml` non appliqué, les prises de personnalisation (le canal règles/profils d'ezk fait mieux).

@@ -47,7 +47,7 @@ Le trou : ezk n'a **aucune boucle d'elicitation** — le seul affichage d'option
 2. Dans `groom`, après une passe, **proposer 3-4 techniques** (menu court), en appliquer une, **remontrer**
    la section améliorée, demander validation, **re-proposer** — jusqu'à sortie explicite.
 3. Rester **composable** : le catalogue est une donnée (liste), la boucle une convention de `groom` ; le
-   panel de challenge existant (fiche 0057/0161) peut être une technique parmi d'autres.
+   panel de challenge existant (fiche [[0161]]) peut être une technique parmi d'autres.
 
 Frontière (ADR-0001) : le LLM rédige/juge dans la boucle ; aucun script load-bearing. C'est une **convention
 de raffinement**, pas un nouvel outil.
@@ -75,6 +75,6 @@ itérative, au lieu d'un unique échange libre. Sabotage : sortir au 1er tour ne
 - **Source** : benchmark BMAD vs ezk du 2026-08-25 — voir
   [le rapport](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 2). Désigné comme la reco n°2.
 - **Voisines** : [[20260817113353538]] (étude prior-art templates + elicitation — dont ce build est la suite
-  actionnable), [[20260825160456259]] (affordance next-step, reco n°1), [[0057]]/[[0161]] (panel de challenge, technique candidate).
+  actionnable), [[20260825160456259]] (affordance next-step, reco n°1), [[0161]] (panel de challenge, technique candidate).
 - **P2 = proposition** ; à confirmer/ajuster au grooming (choix du catalogue, où brancher exactement dans `groom`).
 - `status: idea` : direction issue du benchmark, à groomer avant build (choix de portée MVP).
