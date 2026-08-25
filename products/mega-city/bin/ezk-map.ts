@@ -14,12 +14,18 @@
  * ZÉRO dépendance (`node:http` + `node:fs`), écoute UNIQUEMENT sur la boucle locale :
  * rien n'est exposé au réseau. Le script RANGE, il ne juge pas (ADR-0001 §2).
  */
-import { createReadStream, existsSync, readdirSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { spawn } from 'node:child_process';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  type DiagramEntry,
+  orderDiagrams,
+  readMetaTitle,
+  renderMenuHtml,
+} from '../src/core/ezk-map-menu.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz
@@ -39,16 +45,21 @@ const MIME: Record<string, string> = {
 };
 
 /** Cartes disponibles : un dossier de `diagrams/` porteur d'un `.html` ou d'un `.svg`. */
-function listDiagrams(): { slug: string; entry: string }[] {
+function listDiagrams(): DiagramEntry[] {
   if (!existsSync(DIAGRAMS)) return [];
   return readdirSync(DIAGRAMS)
     .filter((d) => statSync(join(DIAGRAMS, d)).isDirectory())
     .map((slug) => {
-      const files = readdirSync(join(DIAGRAMS, slug));
+      const dir = join(DIAGRAMS, slug);
+      const files = readdirSync(dir);
       // une page interactive prime sur l'image : c'est la vue la plus riche
       const entry =
         files.find((f) => f.endsWith('.html')) ?? files.find((f) => f.endsWith('.svg')) ?? '';
-      return { slug, entry };
+      // titre lisible pour le menu : balayage du meta.yaml (title: ou titre:), repli slug
+      const metaPath = join(dir, 'meta.yaml');
+      const title =
+        (existsSync(metaPath) ? readMetaTitle(readFileSync(metaPath, 'utf8')) : null) ?? slug;
+      return { slug, entry, title };
     })
     .filter((d) => d.entry !== '')
     .sort((a, b) => a.slug.localeCompare(b.slug));
@@ -68,15 +79,20 @@ if (args.includes('--list') || args.includes('-l')) {
   for (const { slug, entry } of diagrams) {
     console.log(`  ${slug === DEFAULT_SLUG ? '*' : ' '} ${slug.padEnd(34)} ${entry}`);
   }
-  console.log('\n* = celle ouverte par défaut.  Usage : pnpm ezk:map <slug>');
+  console.log(
+    '\n* = carte mise en avant (tête du menu).' +
+      '\nMenu des cartes : pnpm ezk:map   ·   Carte directe : pnpm ezk:map <slug>',
+  );
   process.exit(0);
 }
 
-const slug = args[0] ?? DEFAULT_SLUG;
-const found = diagrams.find((d) => d.slug === slug);
-if (!found) {
+// Sans slug → on ouvre la PAGE D'ACCUEIL (le menu des cartes). Avec un slug → cette carte
+// directement (comportement inchangé). Fiche 20260825152954193.
+const explicitSlug = args[0];
+const found = explicitSlug ? diagrams.find((d) => d.slug === explicitSlug) : undefined;
+if (explicitSlug && !found) {
   fail(
-    `Carte « ${slug} » introuvable.\n` +
+    `Carte « ${explicitSlug} » introuvable.\n` +
       `Disponibles : ${diagrams.map((d) => d.slug).join(', ') || '(aucune)'}\n` +
       `Astuce : pnpm ezk:map --list`,
   );
@@ -86,6 +102,18 @@ const START_PORT = Number(process.env.EZK_MAP_PORT ?? 4173);
 
 const server = createServer((req, res) => {
   const url = new URL(req.url ?? '/', 'http://127.0.0.1');
+
+  // Page d'accueil : le menu des cartes (fiche 20260825152954193). Rendu à la volée depuis
+  // `diagrams/` — un lien par carte, méthode en tête, sans relancer le serveur.
+  if (url.pathname === '/' || url.pathname === '') {
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+    });
+    res.end(renderMenuHtml(orderDiagrams(diagrams)));
+    return;
+  }
+
   const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, '');
   const target = resolve(REPO_ROOT, rel);
 
@@ -114,8 +142,12 @@ function listen(port: number, attemptsLeft: number): void {
     fail(`Impossible d'ouvrir un port (dernier essai ${port}) : ${err.message}`);
   });
   server.listen(port, '127.0.0.1', () => {
-    const target = `http://127.0.0.1:${port}/diagrams/${slug}/${found?.entry}`;
-    console.log(`\n  📍 ${slug}\n     ${target}\n`);
+    // Sans slug explicite : on ouvre le menu (`/`). Avec : la carte directement.
+    const target = found
+      ? `http://127.0.0.1:${port}/diagrams/${found.slug}/${found.entry}`
+      : `http://127.0.0.1:${port}/`;
+    const label = found ? found.slug : 'menu des cartes';
+    console.log(`\n  📍 ${label}\n     ${target}\n`);
     console.log('     Ctrl-C pour arrêter.\n');
     // Ouverture best-effort : si la plateforme ne suit pas, l'URL ci-dessus suffit.
     const opener =
