@@ -81,7 +81,7 @@ du front-matter de cette skill).
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
-| `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index |
+| `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index **et les vues** (`PORTFOLIO.md` généré + `PLAN.md` curé) ; filet `check-planning-views` |
 | `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
@@ -398,8 +398,15 @@ C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'impo
 2. `git mv` la fiche de `features/` vers `features/done/` — c'est ce déplacement qui la sort
    du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
    candidate, elle ne peut pas être re-tirée).
-3. `regen` : l'index est reconstruit, la fiche apparaît dans la ligne « Livrées (`done/`) ».
-4. Commit `docs(features): ship <id> #<PR>` (via `ezk-commits`).
+3. **`regen` — l'index ET les vues dérivées** (fiche 20260812100109940) :
+   - `regen` reconstruit l'index `features/BACKLOG.md` (la fiche passe en « Livrées `done/` ») ;
+   - **régénère `PORTFOLIO.md`** — `bash products/mega-city/bin/portfolio.sh <racine>` — vue générée
+     au même titre que l'index ; sinon la fiche livrée y reste affichée `todo` (ADR-0001 : le script range) ;
+   - **cure `PLAN.md`** (curé, jamais régénéré) : barre l'entrée de la fiche
+     (`~~…~~ — shipped #<n>`) — **proposé à l'humain**, `PLAN` est une décision, pas un index.
+4. **Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
+   fiche `shipped` encore présentée comme à faire dans `PORTFOLIO.md` / `PLAN.md`. Doit être vert avant de committer.
+5. Commit `docs(features): ship <id> #<PR>` (via `ezk-commits`).
 
 `ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
 détection ne bascule rien seule ; l'arbitrage reste au PO).
