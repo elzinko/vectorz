@@ -18,9 +18,10 @@ created: 2026-08-25
 **En clair.** Le menu d'accueil `ezk:map` (fiche 20260825152954193) permet d'ouvrir une carte
 d'un clic. Mais **une fois dans une carte**, pour revenir au menu il n'y a que le bouton
 « Précédent » du navigateur, et pour changer de carte il faut revenir puis re-cliquer. Cette
-fiche ajoute une **petite barre de navigation flottante sur chaque carte** : un lien
-**« ← Cartes »** (retour au menu) et un **menu déroulant** pour **sauter directement** à une
-autre carte — sur **toutes** les cartes, les interactives (HTML) comme les images (SVG).
+fiche ajoute un **petit bouton repliable** dans le coin de chaque carte : **replié, il ne
+masque rien** (un simple « ☰ ») ; **au clic**, il ouvre un panneau avec **« ← Retour au
+menu »** et la **liste des cartes** pour **sauter directement** à une autre — sur **toutes**
+les cartes, les interactives (HTML) comme les images (SVG).
 
 **Si tu arrives frais.** *Carte* = une page de `diagrams/<slug>/`, servie par `ezk:map`
 (un serveur local qui sert les fichiers du dépôt). Certaines cartes sont des pages HTML
@@ -58,9 +59,10 @@ périmètre — c'est un autre objet.
 
 ## Critères d'acceptation
 
-- [ ] Sur une carte **HTML** (`pnpm ezk:map avancement`), une barre flottante montre
-      **« ← Cartes »** et un **menu déroulant** des cartes ; la carte reste lisible (la barre
-      ne casse pas sa mise en page).
+- [ ] **Replié par défaut** : un petit bouton `☰` dans le coin qui **ne masque aucun
+      contrôle** de la carte ; **au clic**, un panneau s'ouvre (« ← Retour au menu » + liste).
+- [ ] Sur une carte **HTML** (`pnpm ezk:map avancement`), le bouton montre, une fois ouvert,
+      **« ← Retour au menu »** et la **liste des cartes** ; la carte reste lisible.
 - [ ] Sur une carte **SVG** (`pnpm ezk:map domaine-mega-city`), la même barre est présente,
       et l'image s'affiche ; le SVG brut reste servi via `?raw`.
 - [ ] **« ← Cartes »** ramène au menu (`/`) ; **choisir une autre carte** dans le déroulant y
@@ -91,3 +93,10 @@ déroulant change de carte ; « ← Cartes » revient au menu.
 - Injection à la volée (pas d'édition disque) : cohérent avec le rôle du serveur (ADR-0001)
   et ça garde l'invariant du board intact.
 - `?raw` garde le SVG brut disponible (pour l'enveloppe, et tout autre usage image).
+- **Repliable (retour PO 2026-08-25)** : une barre toujours ouverte recouvrait des zones de la
+  carte interactive. Corrigé en `<details>` natif (ouverture au clic, accessible, zéro JS) —
+  replié = un « ☰ » discret ; ça supprime aussi le `onchange` inline (surface en moins).
+- **Dette connue (revue adverse, P1, non bloquant)** : le **câblage du serveur** (sélection de
+  branche, bypass `?raw`, ordre du garde-fou de traversée) n'a pas de test d'intégration — les
+  3 fonctions pures, elles, sont couvertes. Cohérent avec l'existant (la route `/` et le
+  garde-fou n'en ont pas non plus). À fermer par un test serveur léger si on durcit.

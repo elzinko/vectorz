@@ -111,19 +111,20 @@ describe('navigation dans une carte (fiche 20260825232147620)', () => {
   ];
 
   describe('renderNavBar', () => {
-    it('rend « ← Cartes » (retour menu) et un déroulant de toutes les cartes', () => {
+    it('est repliable (<details> + bouton) et rend « ← Retour au menu » + un lien par carte', () => {
       const nav = renderNavBar(items, 'avancement');
-      expect(nav).toContain('href="/"');
-      expect(nav).toContain('← Cartes');
-      expect(nav).toContain('<option value="/diagrams/avancement/board.html"');
-      expect(nav).toContain('<option value="/diagrams/domaine-mega-city/diagram.svg"');
+      expect(nav).toContain('<details class="ezknav"');
+      expect(nav).toContain('<summary'); // le petit bouton qui ouvre
+      expect(nav).toContain('href="/"'); // retour au menu
+      expect(nav).toContain('← Retour au menu');
+      expect(nav).toContain('<a href="/diagrams/avancement/board.html"');
+      expect(nav).toContain('<a href="/diagrams/domaine-mega-city/diagram.svg"');
     });
 
-    it('repère la carte courante (option selected)', () => {
+    it('repère la carte courante (aria-current), une seule', () => {
       const nav = renderNavBar(items, 'domaine-mega-city');
-      expect(nav).toMatch(/value="\/diagrams\/domaine-mega-city\/diagram\.svg" selected/);
-      // une seule option sélectionnée
-      expect(nav.match(/ selected/g)).toHaveLength(1);
+      expect(nav).toMatch(/href="\/diagrams\/domaine-mega-city\/diagram\.svg" aria-current="page"/);
+      expect(nav.match(/aria-current="page"/g)).toHaveLength(1);
     });
 
     it('échappe les titres (anti-injection)', () => {
