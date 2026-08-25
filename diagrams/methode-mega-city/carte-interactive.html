@@ -704,7 +704,7 @@ window.EZK = {
   "ezk-ci": {
    "id": "ezk-ci",
    "description": "Validate GitHub Actions pipelines locally with act + Docker before pushing or committing, AND watch/cap the cloud-side GHA consumption of private repos. Use whenever the user asks to run CI locally, mentions GitHub Actions billing exhaustion (spending limit, billing exceeded, out of GHA minutes), asks how many Actions minutes a repo burns or which workflows cost the most, wants to cap spending on a private repo, makes a repo private (key cost moment), wants a frugal CI (paths-ignore, concurrency, gated heavy jobs), reports a workflow failure they want to debug without burning runner minutes, edits a file under .github/workflows/, or needs to test a .yml workflow. Also covers macOS jobs that must run on the host because Docker has no macOS image, and a bootstrap path for projects with no local CI setup yet.",
-   "usage": "[help|check|list|dryrun|run|native|bootstrap|conso|frugal]",
+   "usage": "[help|check|list|dryrun|run|native|bootstrap|conso|frugal|harden]",
    "etage": "modules",
    "famille": "techno",
    "composes": [],

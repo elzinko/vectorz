@@ -1,6 +1,6 @@
 ---
 name: ezk-ci
-argument-hint: "[help|check|list|dryrun|run|native|bootstrap|conso|frugal]"
+argument-hint: "[help|check|list|dryrun|run|native|bootstrap|conso|frugal|harden]"
 description: >-
   Validate GitHub Actions pipelines locally with act + Docker before pushing or
   committing, AND watch/cap the cloud-side GHA consumption of private repos. Use
@@ -37,6 +37,7 @@ feedback rapide (30-60 s avec cache, vs 3-8 min en cloud).
 | `bootstrap` | Pose le setup local minimal (`.actrc`, `.secrets.example` / `.vars.example`) puis `act -l` (cas c) |
 | `conso [repo]` | Restitue la **conso Actions** : minutes du mois (billing du compte), runs récents et top workflows/jobs coûteux |
 | `frugal [repo]` | Audit **parcimonie** des workflows : spending limit, déclencheurs, `concurrency`, gates du lourd — propose des diffs concrets |
+| `harden [workflow.yml]` | **Applique** les patterns de frugalité manquants (POC : skip-docs `paths-ignore`), pas seulement les proposer. Idempotent ; **lecture seule** en audit, écrit avec `--apply`. Suite de `frugal` : `frugal` propose, `harden` pose. |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau. Une demande en langage naturel lance `run` après l'arbre de décision ci-dessous. Sous-commande non reconnue → traite la demande en prose (la skill reste pilotable naturellement).
 
@@ -297,6 +298,37 @@ quasiment pas ; ils viennent de la CI vectorz et du savoir déjà encodé ici) :
 
 - **`timeout-minutes` partout** : le safeguard anti-runaway ci-dessus (leçon à 720 min) —
   même esprit, côté cloud.
+
+### `harden` — appliquer la frugalité, pas seulement la proposer
+
+`conso` **mesure**, `frugal` **propose** des diffs (fiche 0159, shipped). `harden` est le
+bras qui **pose** : il audite un workflow et **applique** les patterns manquants, de façon
+**idempotente**.
+
+**Frontière ADR-0001.** Le **déterministe** vit dans `products/mega-city/src/ci/harden.ts`
+(détecter un pattern manquant, l'appliquer en **fusionnant** — sans jamais écraser un
+`paths-ignore` existant — via la lib `yaml` ; le rendu peut légèrement normaliser le style YAML). Le **jugement** — quels patterns proposer à CE repo — reste ici, côté skill.
+
+**POC (pattern `skip-docs`)** : ajoute `paths-ignore: ['**.md', 'docs/**']` sur le
+déclencheur `pull_request` quand il manque — le pattern le plus agnostique à la stack. La
+structure est prévue pour d'autres patterns (`concurrency`, `timeout-minutes`…) sans changer
+l'API.
+
+```bash
+# Audit (LECTURE SEULE) — liste les patterns manquants, n'écrit rien :
+tsx bin/ezk-ci-harden.ts <chemin/vers/workflow.yml>
+
+# Application — écrit le fichier (idempotent : un re-run ne change plus rien) :
+tsx bin/ezk-ci-harden.ts <chemin/vers/workflow.yml> --apply
+```
+
+- **Lecture seule en audit** : sans `--apply`, aucun fichier n'est modifié.
+- **Idempotent** : relancer `--apply` sur un workflow déjà frugal ne fait rien.
+- **Preuve** : fixtures internes + tests dans `src/ci/__tests__/harden.test.ts`.
+- **Repos réels** (`muti`, `city-guided`) : preuve différée en **recette manuelle** — ne pas
+  ouvrir de PR sur des repos tiers en mode autonome (action sortante).
+- **Forme `on:` map requise** : `on: [push, pull_request]` (liste) est **signalé** mais non posé
+  automatiquement (POC — passe `on` en map pour appliquer).
 
 ## Workflow d'usage
 
