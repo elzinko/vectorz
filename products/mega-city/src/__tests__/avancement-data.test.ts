@@ -21,6 +21,7 @@ const F = (over: Partial<Fiche>): Fiche => ({
   product: 'mega-city',
   pr: '',
   done: false,
+  file: 'features/0001-x.md',
   ...over,
 });
 

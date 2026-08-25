@@ -1,0 +1,46 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+/**
+ * board.html — le board d'avancement est FIDÈLE PAR CONSTRUCTION (même patron que
+ * map-data.test.ts pour la carte interactive, épic « carte fidèle »).
+ *
+ * Le bloc de données régénéré en mémoire depuis le backlog réel doit être EXACTEMENT
+ * le bloc présent dans `diagrams/avancement/board.html`. Backlog modifié sans relancer
+ * `pnpm avancement:regen` ⇒ ce test rougit — le board ne peut pas dériver des fichiers
+ * en silence (fiche 20260823124042842, lot 0).
+ */
+import { describe, expect, it } from 'vitest';
+import {
+  AVANCEMENT_DATA_BEGIN,
+  AVANCEMENT_DATA_END,
+  buildAvancementDataBlock,
+  upsertAvancementDataBlock,
+} from '../core/avancement-data.js';
+import { loadFiches } from '../loaders/fiches.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const megaCity = resolve(here, '../..'); // products/mega-city
+const repoRoot = resolve(megaCity, '..', '..'); // racine vectorz
+const boardPath = join(repoRoot, 'diagrams', 'avancement', 'board.html');
+
+function extractBlock(text: string): string {
+  const beginIdx = text.indexOf(AVANCEMENT_DATA_BEGIN);
+  const endIdx = text.indexOf(AVANCEMENT_DATA_END);
+  if (beginIdx === -1 || endIdx === -1) {
+    throw new Error('bloc ezk-avancement-data absent de board.html — lancer `pnpm avancement:regen`');
+  }
+  return text.slice(beginIdx, endIdx + AVANCEMENT_DATA_END.length);
+}
+
+describe('diagrams/avancement/board.html — données à jour (fidélité par construction)', () => {
+  it('le bloc régénéré en mémoire est identique au bloc présent sur disque', () => {
+    const expected = buildAvancementDataBlock(loadFiches(repoRoot));
+    const actual = extractBlock(readFileSync(boardPath, 'utf8'));
+    expect(actual).toBe(expected);
+  });
+
+  it('upsertAvancementDataBlock refuse un HTML sans marqueurs (erreur franche, pas d’append)', () => {
+    expect(() => upsertAvancementDataBlock('<title>x</title>', 'bloc')).toThrow(/marqueurs/);
+  });
+});

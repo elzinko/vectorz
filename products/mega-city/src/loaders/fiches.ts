@@ -22,6 +22,7 @@ export interface Fiche {
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
   done: boolean; // vit dans features/done/ (livrée)
+  file: string; // chemin relatif à la racine du repo (ex. `features/0094-slug.md`)
 }
 
 /** Lit un champ scalaire du front-matter, commentaire `# …` retiré, brut (non typé). */
@@ -42,10 +43,10 @@ export function loadFiches(rootDir: string): Fiche[] {
     [join(base, 'done'), true],
   ] as const) {
     if (!existsSync(sub)) continue;
-    for (const file of readdirSync(sub).sort()) {
-      const idMatch = file.match(FICHE_FILE);
+    for (const filename of readdirSync(sub).sort()) {
+      const idMatch = filename.match(FICHE_FILE);
       if (!idMatch) continue;
-      const text = readFileSync(join(sub, file), 'utf8');
+      const text = readFileSync(join(sub, filename), 'utf8');
       fiches.push({
         id: idMatch[1],
         title: readField(text, 'title'),
@@ -57,6 +58,7 @@ export function loadFiches(rootDir: string): Fiche[] {
         product: readField(text, 'product') || '—',
         pr: readField(text, 'pr'),
         done,
+        file: `features/${done ? 'done/' : ''}${filename}`,
       });
     }
   }
