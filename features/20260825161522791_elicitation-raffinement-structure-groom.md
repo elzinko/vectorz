@@ -4,6 +4,7 @@ title: "Elicitation — boucle de raffinement structurée dans groom (à la BMAD
 type: feature
 priority: P2
 product: mega-city
+labels: [bmad, elicitation]
 epic:
 status: idea
 ready:

@@ -28,6 +28,7 @@ export interface BoardFiche {
   epic: string;
   product: string;
   pr: string;
+  labels: string[];
   file: string; // chemin relatif à la racine du repo — la vue en fait un lien cliquable
 }
 
@@ -48,7 +49,7 @@ export interface AvancementData {
   /** Épics avec leurs enfants actifs. */
   epics: BoardEpic[];
   /** Valeurs distinctes pour les filtres de la vue (statuts, priorités, produits, épics). */
-  filtres: { statuts: string[]; priorites: string[]; produits: string[] };
+  filtres: { statuts: string[]; priorites: string[]; produits: string[]; labels: string[] };
 }
 
 const toBoard = (f: Fiche): BoardFiche => ({
@@ -61,6 +62,7 @@ const toBoard = (f: Fiche): BoardFiche => ({
   epic: f.epic,
   product: f.product,
   pr: f.pr,
+  labels: f.labels,
   file: f.file,
 });
 
@@ -111,6 +113,7 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
       statuts: uniq(actives.map((f) => f.status)),
       priorites: uniq(actives.map((f) => f.priority)),
       produits: uniq(actives.map((f) => f.product)),
+      labels: uniq(actives.reduce<string[]>((acc, f) => acc.concat(f.labels), [])),
     },
   };
 }

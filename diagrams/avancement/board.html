@@ -83,6 +83,7 @@
   .badge.statut-blocked { color: var(--blocked); border-color: var(--blocked); }
   .badge.statut-idea { color: var(--idea); border-color: var(--idea); }
   .badge.statut-shipped { color: var(--shipped); border-color: var(--shipped); }
+  .badge.tag { color: var(--muted); border-color: var(--muted); }
   .badge.prio-P0 { color: var(--p0); border-color: var(--p0); }
   .badge.prio-P1 { color: var(--p1); border-color: var(--p1); }
   .badge.prio-P2 { color: var(--p2); border-color: var(--p2); }
@@ -123,6 +124,9 @@
   <label>Produit
     <select id="f-produit"><option value="">Tous</option></select>
   </label>
+  <label>Label
+    <select id="f-label"><option value="">Tous</option></select>
+  </label>
 </div>
 
 <p class="compteur" id="compteur"></p>
@@ -156,10 +160,10 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 110,
-  "todo": 51,
+  "todo": 52,
   "blocked": 5,
   "in-progress": 3,
-  "idea": 74
+  "idea": 75
  },
  "tirables": 6,
  "actives": [
@@ -173,6 +177,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0030-mvp-demo-desktop.md"
   },
   {
@@ -185,6 +190,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0050-release-pastille-dogfooding.md"
   },
   {
@@ -197,6 +203,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0052-socle-metrique-port-adaptateur-silo.md"
   },
   {
@@ -209,6 +216,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0069-article-emission-events-claude-desktop-code.md"
   },
   {
@@ -221,6 +229,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0077-hooks-classe-a-supervision.md"
   },
   {
@@ -233,6 +242,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0081-carnet-preparation-retro.md"
   },
   {
@@ -245,6 +255,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0087-plugin-claude-code-distribution.md"
   },
   {
@@ -257,6 +268,10 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "method",
+    "enabler"
+   ],
    "file": "features/0102-ezk-testbed-brique-boot-env-test.md"
   },
   {
@@ -269,6 +284,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260824060737115",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0156-ezk-marketing.md"
   },
   {
@@ -281,6 +297,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260824060737115",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0157-ezk-landing-pages.md"
   },
   {
@@ -293,6 +310,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0164-vz-product-builder-corpus-reviewers.md"
   },
   {
@@ -305,6 +323,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0165-contrat-ameliorabilite-v01-mvp-b.md"
   },
   {
@@ -317,6 +336,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260812104022237_owner-session-responsable-pr.md"
   },
   {
@@ -329,6 +349,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260812104022240_backlog-rationalisation-tags-script-llm.md"
   },
   {
@@ -341,6 +362,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260812104022246_composition-comportementale-skills-ezk.md"
   },
   {
@@ -353,6 +375,11 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "enabler",
+    "ci",
+    "cost"
+   ],
    "file": "features/20260812134515706_frugalite-ci-reutilisable-ezk-ci-harden.md"
   },
   {
@@ -365,6 +392,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md"
   },
   {
@@ -377,6 +405,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821163346490_assemblage-ne-montre-pas-composition.md"
   },
   {
@@ -389,6 +418,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821163346493_carte-provenance-prouvee.md"
   },
   {
@@ -401,6 +431,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md"
   },
   {
@@ -413,6 +444,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821204737357_cabler-la-methode-modele-compile.md"
   },
   {
@@ -425,6 +457,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260823121712652_modele-statut-kanban-schema-valide.md"
   },
   {
@@ -437,6 +470,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260823121712781_reconcile-systematique-merges-hors-flux.md"
   },
   {
@@ -449,6 +483,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824061247344_refonte-trois-etages-reliquat.md"
   },
   {
@@ -461,6 +496,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824111001836_regle-clarte-atteint-tout-output-ezk.md"
   },
   {
@@ -473,6 +509,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md"
   },
   {
@@ -485,6 +522,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824122629925_onglet-faq-comment-faire.md"
   },
   {
@@ -497,6 +535,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824204751403_preparation-lots-versions-coherence.md"
   },
   {
@@ -509,6 +548,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260825141012293_ezk-sessions-cockpit.md"
   },
   {
@@ -521,6 +561,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0034",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0020-agent-session-port.md"
   },
   {
@@ -533,6 +574,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0034",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0024-resorber-peripherie-pre-pivot.md"
   },
   {
@@ -545,6 +587,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0034",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0038-e3-pilote-natif.md"
   },
   {
@@ -557,6 +600,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0034",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0040-l2-durcir-garde-fous-ci.md"
   },
   {
@@ -569,6 +613,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0043-article-self-hosting-cop1-developpe-cop1.md"
   },
   {
@@ -581,6 +626,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0045-moisson-pipeline-amelioration-epoque-1.md"
   },
   {
@@ -593,6 +639,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0053-gate-dod-metrique.md"
   },
   {
@@ -605,6 +652,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0054-catalogue-adaptateurs-outils.md"
   },
   {
@@ -617,6 +665,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0055-kpi-agreges-commit-pr-sprint-version.md"
   },
   {
@@ -629,6 +678,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0056-viz-qualite-mission-control.md"
   },
   {
@@ -641,6 +691,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0058-rapport-qualite-pr.md"
   },
   {
@@ -653,6 +704,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260813131737959",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0066-tester-un-skill-avant-merge.md"
   },
   {
@@ -665,6 +717,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0067-ezk-ezk-contract-aware-carte-emission.md"
   },
   {
@@ -677,6 +730,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0163",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0073-article-direction-scrum-auto-amelioration.md"
   },
   {
@@ -689,6 +743,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0075-ezk-article-persona-rules-curation.md"
   },
   {
@@ -701,6 +756,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0080-ezk-retro-compte-rendu-standard.md"
   },
   {
@@ -713,6 +769,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0088-ezk-archive-cout-cloture-session-disciplinee.md"
   },
   {
@@ -725,6 +782,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0096-mcpb-version-en-dur.md"
   },
   {
@@ -737,6 +795,10 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "enabler",
+    "follow-up"
+   ],
    "file": "features/0098-plan-head-descente-epic-enfant.md"
   },
   {
@@ -749,6 +811,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0099-contrat-emission-verifier-directives.md"
   },
   {
@@ -761,6 +824,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260815080413884",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0100-sprint-intake-sante-backlog-metriques.md"
   },
   {
@@ -773,6 +837,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0112-dogfooding-invariants.md"
   },
   {
@@ -785,6 +850,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0119-capture-judge-corpus-reel.md"
   },
   {
@@ -797,6 +863,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0121-cap-cop1.md"
   },
   {
@@ -809,6 +876,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0125-domaine-stack-toolchain.md"
   },
   {
@@ -821,6 +889,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0147-ezk-recipy-mvp.md"
   },
   {
@@ -833,6 +902,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0152-ezk-bug-intake-repro.md"
   },
   {
@@ -845,6 +915,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0155-ezk-cowork-scaffold-audit-contrat-cowork.md"
   },
   {
@@ -857,6 +928,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0158-ezk-dns-ionos.md"
   },
   {
@@ -869,6 +941,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260813131737959",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0161-ezk-challenge-panel.md"
   },
   {
@@ -881,6 +954,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0162-bmad-contrat-supervisabilite.md"
   },
   {
@@ -893,6 +967,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0166-article-seed-ai-contrat-auto-amelioration.md"
   },
   {
@@ -905,6 +980,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0171-adapter-github-issues-push-only.md"
   },
   {
@@ -917,6 +993,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0174-ezk-issues-intake-github.md"
   },
   {
@@ -929,6 +1006,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0175-article-skema-skill-schema-migrations.md"
   },
   {
@@ -941,6 +1019,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0177-pack-pratiques-projet-portables.md"
   },
   {
@@ -953,6 +1032,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0178-ezk-checks-recette-manuelle.md"
   },
   {
@@ -965,6 +1045,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0180-idees-sans-numero.md"
   },
   {
@@ -977,6 +1058,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0186-skema-versioning-migrations-skills-deployees.md"
   },
   {
@@ -989,6 +1071,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0188-adr-lisibles-comme-articles.md"
   },
   {
@@ -1001,6 +1084,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0189-handoff-durable-session-ephemere.md"
   },
   {
@@ -1013,6 +1097,9 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "enabler"
+   ],
    "file": "features/0190-composes-delegates-tier-optionnel.md"
   },
   {
@@ -1025,6 +1112,10 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "process",
+    "lisibilite"
+   ],
    "file": "features/20260812100109940-ship-sync-vues-planning.md"
   },
   {
@@ -1037,6 +1128,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260812104022228_ezk-screenshots-doc-produit.md"
   },
   {
@@ -1049,6 +1141,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260815080413884",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260812104022231_dor-balayage-surfaces-produit.md"
   },
   {
@@ -1061,6 +1154,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260815080413884",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260812104022243_groom-appelle-architecture-brainstorming.md"
   },
   {
@@ -1073,6 +1167,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260813095351680_bind-global-copy-idempotence-agents.md"
   },
   {
@@ -1085,6 +1180,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260813095351681_cap-projet-claude-code-skills-dossier-assets.md"
   },
   {
@@ -1097,6 +1193,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260813131737959",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260813131737962_nommage-catalogue-adr0022.md"
   },
   {
@@ -1109,6 +1206,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260813131737959",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260813131737971_carte-roles-analyse-methode.md"
   },
   {
@@ -1121,6 +1219,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260815080413884",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260815080414006_dor-extensible-par-projet.md"
   },
   {
@@ -1133,6 +1232,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260816151112162_lawgiver-canal-commands-slash.md"
   },
   {
@@ -1145,6 +1245,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260816194833618_deps-sante-audit-local-par-profil.md"
   },
   {
@@ -1157,6 +1258,11 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "bmad",
+    "lisibilite",
+    "doc"
+   ],
    "file": "features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md"
   },
   {
@@ -1169,6 +1275,10 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "article",
+    "lisibilite"
+   ],
    "file": "features/20260817113353676_article-templates-reponse-llm.md"
   },
   {
@@ -1181,6 +1291,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260818185931307_capability-vente-lemonsqueezy.md"
   },
   {
@@ -1193,6 +1304,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821163346496_carte-unites-de-revue.md"
   },
   {
@@ -1205,6 +1317,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821163346498_carte-etat-de-revue-visible.md"
   },
   {
@@ -1217,6 +1330,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821163346501_carte-corriger-un-lien-faux.md"
   },
   {
@@ -1229,6 +1343,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821171238990_capability-launchpad-landing-waitlist.md"
   },
   {
@@ -1241,6 +1356,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260824060737115",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821172716540_recette-site-produit-regles-activables.md"
   },
   {
@@ -1253,6 +1369,12 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "supervision",
+    "test",
+    "llm",
+    "dogfood"
+   ],
    "file": "features/20260821210633457_explorateur-llm-pilote-siege-exploration-pr.md"
   },
   {
@@ -1265,6 +1387,11 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "article",
+    "supervision",
+    "dogfood"
+   ],
    "file": "features/20260821210633522_article-llm-pose-questions-tests-non-ecrites.md"
   },
   {
@@ -1277,6 +1404,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260822200213110_regle-page-vitrine-screenshots-reels.md"
   },
   {
@@ -1289,6 +1417,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260823121712716_vues-generees-board-kanban-history-git.md"
   },
   {
@@ -1301,6 +1430,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260823121712844_durcir-regen-backlog-racine-nichee.md"
   },
   {
@@ -1313,6 +1443,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260823121712909_lawgiver-doctor-skill-non-materialise.md"
   },
   {
@@ -1325,6 +1456,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260823124042708_bundles-vs-themes-reorganisation.md"
   },
   {
@@ -1337,6 +1469,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824141336516_recette-mise-en-place-ci-type-muti.md"
   },
   {
@@ -1349,6 +1482,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824163426298_consolider-device-preview-testbed.md"
   },
   {
@@ -1361,6 +1495,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260824185422122_recette-artefact-premier-rang-et-gardien.md"
   },
   {
@@ -1373,6 +1508,11 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "supervision",
+    "test",
+    "llm"
+   ],
    "file": "features/20260825024356665_expect-sous-sequence-sessions-live.md"
   },
   {
@@ -1385,7 +1525,44 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "backlog",
+    "methode",
+    "doctrine"
+   ],
    "file": "features/20260825123700998_doctrine-composition-features.md"
+  },
+  {
+   "id": "20260825160456259",
+   "title": "Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "todo",
+   "ready": false,
+   "epic": "20260816131703334",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "bmad",
+    "decouvrabilite"
+   ],
+   "file": "features/20260825160456259_next-step-affordance-commandes-suivantes.md"
+  },
+  {
+   "id": "20260825161522791",
+   "title": "Elicitation — boucle de raffinement structurée dans groom (à la BMAD advanced-elicitation)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "bmad",
+    "elicitation"
+   ],
+   "file": "features/20260825161522791_elicitation-raffinement-structure-groom.md"
   },
   {
    "id": "0007",
@@ -1397,6 +1574,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0007-v11-session-log-commit-discipline.md"
   },
   {
@@ -1409,6 +1587,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0017-e2e-darkmode-cobaye.md"
   },
   {
@@ -1421,6 +1600,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0034",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0018-dodlimiter-wiring.md"
   },
   {
@@ -1433,6 +1613,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0028-policy-de-siege.md"
   },
   {
@@ -1445,6 +1626,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0029-contrat-supervisabilite-v02-differes.md"
   },
   {
@@ -1457,6 +1639,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0046-differes-contrat-ameliorabilite-parking.md"
   },
   {
@@ -1469,6 +1652,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0047-migration-reflexive-produit-se-teste.md"
   },
   {
@@ -1481,6 +1665,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0049-article-brancher-methode-pattern-sidecar.md"
   },
   {
@@ -1493,6 +1678,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0051",
    "product": "vectorz",
    "pr": "",
+   "labels": [],
    "file": "features/0057-agent-analyse-methode.md"
   },
   {
@@ -1505,6 +1691,7 @@ window.EZK_AVANCEMENT = {
    "epic": "0163",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0074-article-loi-pareto-dynamique.md"
   },
   {
@@ -1517,6 +1704,10 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "r&d",
+    "article"
+   ],
    "file": "features/0093-backlogstore-port-agnostique.md"
   },
   {
@@ -1529,6 +1720,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0114-webapp-config.md"
   },
   {
@@ -1541,6 +1733,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0116-cap-derive-hook-depuis-enforcement.md"
   },
   {
@@ -1553,6 +1746,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0117-aligner-domain-ts-signatures.md"
   },
   {
@@ -1565,6 +1759,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0120-io-dette-dry-cli-coverage.md"
   },
   {
@@ -1577,6 +1772,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0143-aligner-nommage-modes-tokens.md"
   },
   {
@@ -1589,6 +1785,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/0151-product-builder-briefing-demarrage.md"
   },
   {
@@ -1601,6 +1798,11 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "method",
+    "testbed",
+    "supervision"
+   ],
    "file": "features/20260812100258610_harnais-dogfood-llm-headless.md"
   },
   {
@@ -1613,6 +1815,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260813122510737_init-layout-version-prime-sur-detection-legacy.md"
   },
   {
@@ -1625,6 +1828,7 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260813122619707_robustesse-groupage-skill-dir-materialisation.md"
   },
   {
@@ -1637,6 +1841,7 @@ window.EZK_AVANCEMENT = {
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
+   "labels": [],
    "file": "features/20260821163346503_methode-auto-evaluation-validite.md"
   },
   {
@@ -1649,6 +1854,10 @@ window.EZK_AVANCEMENT = {
    "epic": "",
    "product": "mega-city",
    "pr": "",
+   "labels": [
+    "ezk-map",
+    "ux"
+   ],
    "file": "features/20260825152954193_ezk-map-page-accueil-menu-cartes.md"
   }
  ],
@@ -1720,7 +1929,9 @@ window.EZK_AVANCEMENT = {
    "id": "20260816131703334",
    "title": "Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro)",
    "status": "todo",
-   "children": []
+   "children": [
+    "20260825160456259"
+   ]
   },
   {
    "id": "20260821163346487",
@@ -1763,6 +1974,31 @@ window.EZK_AVANCEMENT = {
   "produits": [
    "mega-city",
    "vectorz"
+  ],
+  "labels": [
+   "article",
+   "backlog",
+   "bmad",
+   "ci",
+   "cost",
+   "decouvrabilite",
+   "doc",
+   "doctrine",
+   "dogfood",
+   "elicitation",
+   "enabler",
+   "ezk-map",
+   "follow-up",
+   "lisibilite",
+   "llm",
+   "method",
+   "methode",
+   "process",
+   "r&d",
+   "supervision",
+   "test",
+   "testbed",
+   "ux"
   ]
  }
 };
@@ -1770,7 +2006,7 @@ window.EZK_AVANCEMENT = {
 </script>
 <script>
 (function () {
-  var data = window.EZK_AVANCEMENT || { actives: [], epics: [], filtres: { statuts: [], priorites: [], produits: [] } };
+  var data = window.EZK_AVANCEMENT || { actives: [], epics: [], filtres: { statuts: [], priorites: [], produits: [], labels: [] } };
   var actives = data.actives || [];
 
   // Rang de tri d'affichage — même ordre que STATUTS/PRIOS côté cœur (avancement-data.ts).
@@ -1798,6 +2034,7 @@ window.EZK_AVANCEMENT = {
   var selType = document.getElementById('f-type');
   var selEpic = document.getElementById('f-epic');
   var selProduit = document.getElementById('f-produit');
+  var selLabel = document.getElementById('f-label');
 
   fillSelect(selStatut, (data.filtres && data.filtres.statuts) || uniq(actives.map(function (f) { return f.status; })));
   fillSelect(selType, uniq(actives.map(function (f) { return f.type; })));
@@ -1810,6 +2047,7 @@ window.EZK_AVANCEMENT = {
     selEpic.appendChild(opt);
   });
   fillSelect(selProduit, (data.filtres && data.filtres.produits) || uniq(actives.map(function (f) { return f.product; })));
+  fillSelect(selLabel, (data.filtres && data.filtres.labels) || uniq(actives.reduce(function (acc, f) { return acc.concat(f.labels || []); }, [])));
 
   var grille = document.getElementById('grille');
   var compteur = document.getElementById('compteur');
@@ -1837,6 +2075,7 @@ window.EZK_AVANCEMENT = {
     badges.appendChild(el('span', 'badge prio-' + slug(f.priority || 'P3'), f.priority || '—'));
     badges.appendChild(el('span', 'badge', f.type));
     if (f.epic) badges.appendChild(el('span', 'badge', '⤷ ' + f.epic));
+    (f.labels || []).forEach(function (l) { badges.appendChild(el('span', 'badge tag', '#' + l)); });
     a.appendChild(badges);
     return a;
   }
@@ -1846,12 +2085,14 @@ window.EZK_AVANCEMENT = {
     var fType = selType.value;
     var fEpic = selEpic.value;
     var fProduit = selProduit.value;
+    var fLabel = selLabel.value;
 
     var filtered = actives.filter(function (f) {
       return (!fStatut || f.status === fStatut) &&
         (!fType || f.type === fType) &&
         (!fEpic || f.epic === fEpic) &&
-        (!fProduit || f.product === fProduit);
+        (!fProduit || f.product === fProduit) &&
+        (!fLabel || (f.labels || []).indexOf(fLabel) !== -1);
     });
 
     // Tri d'affichage priorité puis statut (présentation seule, la donnée compilée
@@ -1877,7 +2118,7 @@ window.EZK_AVANCEMENT = {
       (data.tirables || 0) + ' tirable(s), ' + ((data.epics || []).length) + ' épic(s).';
   }
 
-  [selStatut, selType, selEpic, selProduit].forEach(function (s) {
+  [selStatut, selType, selEpic, selProduit, selLabel].forEach(function (s) {
     s.addEventListener('change', render);
   });
   render();

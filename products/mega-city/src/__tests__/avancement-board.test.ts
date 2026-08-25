@@ -14,10 +14,11 @@ import { describe, expect, it } from 'vitest';
 import {
   AVANCEMENT_DATA_BEGIN,
   AVANCEMENT_DATA_END,
+  buildAvancementData,
   buildAvancementDataBlock,
   upsertAvancementDataBlock,
 } from '../core/avancement-data.js';
-import { loadFiches } from '../loaders/fiches.js';
+import { type Fiche, loadFiches } from '../loaders/fiches.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const megaCity = resolve(here, '../..'); // products/mega-city
@@ -50,5 +51,25 @@ describe('diagrams/avancement/board.html — données à jour (fidélité par co
     // jamais concaténées dans innerHTML — sinon un titre `<img onerror=…>` s’exécuterait.
     expect(html).toMatch(/\.textContent\s*=/);
     expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\bf\.(title|status|type|epic|id)\b/);
+  });
+
+  it('les labels du front-matter alimentent BoardFiche.labels et filtres.labels (filtre par tag)', () => {
+    const mk = (id: string, labels: string[]): Fiche => ({
+      id,
+      title: 't' + id,
+      type: 'feature',
+      priority: 'P2',
+      status: 'todo',
+      ready: false,
+      epic: '',
+      product: 'mega-city',
+      pr: '',
+      labels,
+      done: false,
+      file: `features/${id}.md`,
+    });
+    const data = buildAvancementData([mk('1', ['bmad', 'x']), mk('2', ['bmad'])]);
+    expect(data.actives[0].labels).toContain('bmad');
+    expect(data.filtres.labels).toEqual(['bmad', 'x']); // uniq + trié, dédupliqué
   });
 });
