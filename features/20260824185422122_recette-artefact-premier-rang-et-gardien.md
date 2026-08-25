@@ -41,6 +41,12 @@ Le méta-pattern, déjà présent trois fois dans ton système :
 « Recette » ne fait que **réinstancier ce trio** pour une nouvelle famille. C'est ce qui
 dé-risque tout : pas de concept neuf gratuit (doctrine respectée).
 
+> **⟳ Note nom (2026-08-25, PO)** : « ezk-cuisinier » (français) détonne avec les skills `ezk-*`
+> (anglais/neutres). Préférer l'**anglais** — mais ⚠️ « cooker » = l'**appareil** de cuisson en
+> anglais, pas la personne : le cuisinier se dit **`cook`** ou **`chef`**. Candidats : **`ezk-cook`**
+> ou **`ezk-chef`**. À trancher au grooming, avec la décision « gardien distinct vs `ezk-steward`
+> étendu ».
+
 ## Les décisions d'archi
 
 ### D1 — Format de l'artefact recette + du livre

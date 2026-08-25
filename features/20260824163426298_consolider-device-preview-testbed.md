@@ -83,3 +83,7 @@ Repenser device + preview + testbed comme **une seule brique cohérente**, proba
   checkout git-first, `gh` en raccourci).
 - **Faux ami** : `ezk-recipy` (0147) = scanner de repos froids, **pas** les « recettes de démarrage »
   du testbed — ne pas confondre.
+- **Cas d'usage de la doctrine des épics** : ce sujet (cœur `testbed` + adaptateurs `preview`/`device`)
+  est l'exemple concret « fusion vs épic vs division » à trancher — voir la fiche doctrine
+  [20260825123700998](20260825123700998_doctrine-composition-features.md). Le grooming de la doctrine
+  et celui de ce sujet s'éclairent mutuellement.

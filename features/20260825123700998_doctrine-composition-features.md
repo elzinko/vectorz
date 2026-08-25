@@ -50,6 +50,12 @@ division d'une brique. À chaque fois le choix fusion / épic / division a été
    les tenir). Pertinent quand une fiche empile des sujets **hétérogènes** (cf. lot 4b : la
    refonte trois-étages avait été scindée car elle empilait cinq tâches).
 
+> **Premier cas concret à trancher** : device + preview + testbed
+> ([20260824163426298](20260824163426298_consolider-device-preview-testbed.md)) — plusieurs fiches
+> liées (0102, `ezk-preview`, `ezk-device`) qui répondent au même besoin (faire tourner/essayer un
+> travail en cours). Fusion en une fiche, ou épic « cœur testbed + adaptateurs » ? C'est l'exemple
+> qui rendra cette doctrine décidable.
+
 ## Questions à trancher (grooming)
 
 - **Définition de l'épic** : conteneur de fiches-enfants (le `epic:` actuel) vs « grosse fiche à
