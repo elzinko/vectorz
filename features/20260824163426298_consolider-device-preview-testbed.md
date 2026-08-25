@@ -65,6 +65,32 @@ Repenser device + preview + testbed comme **une seule brique cohérente**, proba
 
 À définir au grooming avec l'architecte (idea — pas encore actionnable).
 
+## À groomer aussi — une surface unifiée + des compétences composables d'agents (PO 2026-08-25)
+
+**Idée PO.** Plutôt que **deux commandes séparées** (`ezk-preview` pour le web, `ezk-device`
+pour le téléphone), viser **une seule** commande `ezk-preview` avec une **option de mode** :
+`web` / `device` (app mobile) / `desktop`. Derrière la commande : **un agent de base** (le rôle
+« faire tourner et montrer un travail en cours ») **augmenté** par des **compétences composables**
+selon le mode — la compétence *web*, *device* ou *desktop* — regroupables en **profils**. On part
+d'un socle qu'on enrichit ; on ne duplique pas des agents entiers.
+
+**À vérifier au grooming — le mécanisme existe probablement déjà.** vectorz a un système de
+**capacités (« cap ») + profils/bundles**, composé par le moteur `bind` / `extends`
+(`products/mega-city/bin/README.md`), qui liste **déjà `agent`** parmi les types composables
+(`kind = rule | skill | agent | interaction`). La composition *comportementale* des skills est
+traitée par [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md).
+
+**Question centrale à trancher (avec `ezk-architect`).** Peut-on appliquer **ce même mécanisme aux
+agents** — composer *un agent socle + compétences web/device/desktop* via profils — exactement
+comme on le fait pour un skill ou une règle ? Intuition PO : « l'ajout de compétences est le même
+geste pour un agent, un skill ou une règle ». Si oui, `ezk-preview` (à modes) et `ezk-device`
+deviennent **le même agent** équipé de compétences différentes, pas deux skills concurrentes.
+
+Voir aussi : [0177](0177-pack-pratiques-projet-portables.md) (capacités portables, indépendantes
+du driver LLM) et la doctrine [20260825123700998](20260825123700998_doctrine-composition-features.md)
+(fusion vs épic vs division — pour trancher `ezk-preview` + `ezk-device` : une skill fusionnée à
+modes, ou un socle + adaptateurs).
+
 ## Notes / décisions
 
 - **Priorité P2 provisoire** — à confirmer par le PO au grooming (0102 est P1 ; ce re-cadrage
