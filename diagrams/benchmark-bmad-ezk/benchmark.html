@@ -88,6 +88,7 @@ table.score td.dim{font-weight:600; width:23%}
 .win.e{background:var(--ezk-tint); color:var(--ezk-ink)}
 .win.t{background:var(--surface-2); color:var(--ink-faint)}
 .steal-tag{font-family:var(--font-mono); font-size:11.5px; color:var(--steal-ink); background:var(--steal-tint); padding:3px 8px; border-radius:6px; white-space:nowrap}
+.steal-tag a{color:inherit; text-decoration:underline}
 .steal-no{color:var(--ink-faint)}
 
 /* steal cards */
@@ -189,10 +190,10 @@ footer{margin-top:56px; padding-top:22px; border-top:1px solid var(--line); font
       <table class="score">
         <thead><tr><th>Dimension</th><th>Avantage</th><th>Pourquoi</th><th>À voler ?</th></tr></thead>
         <tbody>
-          <tr><td class="dim">Découvrabilité / « et après ? »</td><td><span class="win b">BMAD</span></td><td>Menu numéroté + routeur <code>/bmad-help</code> + « Next Steps » en fin d'étape</td><td><span class="steal-tag">Oui — fiche …259</span></td></tr>
-          <tr><td class="dim">Elicitation (raffinement guidé)</td><td><span class="win b">BMAD</span></td><td>50 méthodes, en propose 5, applique, re-propose</td><td><span class="steal-tag">Oui — fiche …791</span></td></tr>
-          <tr><td class="dim">Templates de livrables</td><td><span class="win b">BMAD</span></td><td>PRD, archi, story… templatés ; ezk n'a que la fiche</td><td><span class="steal-tag">Partiel — …162</span></td></tr>
-          <tr><td class="dim">Modèle / graphe compilé</td><td><span class="win b">BMAD</span></td><td>Manifests CSV compilés ; ezk a le schéma, pas l'instance</td><td><span class="steal-tag">Oui — fiche …357</span></td></tr>
+          <tr><td class="dim">Découvrabilité / « et après ? »</td><td><span class="win b">BMAD</span></td><td>Menu numéroté + routeur <code>/bmad-help</code> + « Next Steps » en fin d'étape</td><td><span class="steal-tag">Oui — <a href="../../features/20260825160456259_next-step-affordance-commandes-suivantes.md">20260825160456259</a></span></td></tr>
+          <tr><td class="dim">Elicitation (raffinement guidé)</td><td><span class="win b">BMAD</span></td><td>50 méthodes, en propose 5, applique, re-propose</td><td><span class="steal-tag">Oui — <a href="../../features/20260825161522791_elicitation-raffinement-structure-groom.md">20260825161522791</a></span></td></tr>
+          <tr><td class="dim">Templates de livrables</td><td><span class="win b">BMAD</span></td><td>PRD, archi, story… templatés ; ezk n'a que la fiche</td><td><span class="steal-tag">Partiel — <a href="../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md">20260817113353538</a></span></td></tr>
+          <tr><td class="dim">Modèle / graphe compilé</td><td><span class="win b">BMAD</span></td><td>Manifests CSV compilés ; ezk a le schéma, pas l'instance</td><td><span class="steal-tag">Oui — <a href="../../features/20260821204737357_cabler-la-methode-modele-compile.md">20260821204737357</a></span></td></tr>
           <tr><td class="dim">Orchestration</td><td><span class="win t">nul</span></td><td>Choix différents : « OS » unique vs chaîne d'agents typés</td><td><span class="steal-no">non</span></td></tr>
           <tr><td class="dim">Sûreté / cœur</td><td><span class="win e">ezk</span></td><td>Cœur déterministe testé ; BMAD n'est que du prompt non appliqué</td><td><span class="steal-no">—</span></td></tr>
           <tr><td class="dim">Coût (tokens / temps)</td><td><span class="win e">ezk</span></td><td>Fichiers plats + scripts vs persona + « OS » rechargés à chaque tour</td><td><span class="steal-no">—</span></td></tr>
