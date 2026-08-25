@@ -5,9 +5,9 @@ type: feature
 priority: P1
 product: mega-city
 labels: [enabler, ci, cost]
-status: todo
+status: shipped
 ready: 2026-08-21
-pr:
+pr: "#171"
 created: 2026-08-12
 ---
 
