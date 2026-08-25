@@ -40,14 +40,21 @@ main** cette fois (réponses `…/comments/<id>/replies` + `resolveReviewThread`
 
 ## Proposition
 
-1. **Étendre l'étape 2** : pour **chaque** finding traité — corrigé **ou** décliné — deux gestes de
-   clôture du fil :
-   - **répondre en fil** en citant le **commit de correction** (corrigé) ou la **raison** (décliné) ;
-   - **marquer le fil `resolved`** via GraphQL `resolveReviewThread(threadId)` (threadIds via
-     `pullRequest.reviewThreads`).
-2. **Étendre l'étape 6 (rapport)** : l'état « prêt à merger » exige **0 fil non résolu** parmi les
+1. **Clore chaque fil traité** — corrigé **ou** décliné — par deux gestes : **répondre en fil**
+   (citer le commit de correction, ou la raison du déclin) et **marquer le fil `resolved`** via
+   GraphQL `resolveReviewThread(threadId)`.
+   **Séquencement (retour Codex #168)** : pour un finding **corrigé**, ces deux gestes viennent
+   **après que la correction est commitée ET poussée** (près des étapes 4-5 du playbook), **pas** à
+   l'étape 2 — sinon la réponse citerait un commit inexistant, et un fil résolu trop tôt resterait
+   « resolved » même si le push échoue. Pour un **décliné** (aucun commit), reply + resolve se font au
+   moment de la décision.
+2. **Ne traiter que les fils NON résolus** (retour Codex #168) : à l'intake (étape 1), sélectionner les
+   fils `isResolved:false` via `pullRequest.reviewThreads` — pas « tous les commentaires filtrés par
+   auteur ». Sinon un `fix` **relancé** re-traite des fils déjà résolus (réponses en double, fixes
+   re-considérés).
+3. **Étendre l'étape 6 (rapport)** : l'état « prêt à merger » exige **0 fil non résolu** parmi les
    traités (contrôle explicite).
-3. **(Suivi déjà noté par le skill)** extraire les parties mécaniques en `scripts/` **testés**
+4. **(Suivi déjà noté par le skill)** extraire les parties mécaniques en `scripts/` **testés**
    (`reply-thread.sh`, `resolve-thread.sh`), façon `ezk-archive/scripts/` — la section « Suivi » du
    SKILL.md prévoit déjà cette extraction ; cette fiche la motive.
 
@@ -57,6 +64,8 @@ main** cette fois (réponses `…/comments/<id>/replies` + `resolveReviewThread`
       marqué **`resolved`** — contrôle : `reviewThreads` ne renvoie **aucun** `isResolved:false` parmi les traités
 - [ ] `SKILL.md` décrit reply **+ resolve** pour **tous** les traités, pas seulement les déclines
 - [ ] la résolution passe par GraphQL `resolveReviewThread` (les threadIds récupérés via `reviewThreads`)
+- [ ] pour un finding **corrigé**, reply + resolve n'ont lieu **qu'après** commit **et** push réussis (pas de citation d'un commit inexistant, pas de fil résolu avant un push qui échoue)
+- [ ] un `fix` **relancé** après une passe réussie **ne re-traite pas** les fils déjà résolus (intake filtré `isResolved:false`) — aucune réponse en double
 - [ ] (option) helper(s) `scripts/` testé(s) pour reply + resolve, appelés par le playbook
 
 ## Comment vérifier
