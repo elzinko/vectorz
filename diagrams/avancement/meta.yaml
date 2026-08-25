@@ -1,0 +1,13 @@
+title: "Board d'avancement — les fiches actives triées priorité × statut"
+date: 2026-08-24
+type: board
+links:
+  entry: board.html
+  fiche: ../../features/20260823124042842_vue-avancement-sprints-fiches.md
+  compilateur: ../../products/mega-city/src/core/avancement-data.ts
+  regen: "pnpm --dir products/mega-city avancement:regen"
+note: >-
+  Lot 0 uniquement (fiche 20260823124042842) : le board compilé depuis le
+  front-matter des fiches — zéro objet nouveau, zéro saisie à la main. La frise
+  des sprints et le diagramme du process scrum sont le lot 1, gelés (verdict
+  panel adverse 2026-08-23).

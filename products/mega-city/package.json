@@ -23,7 +23,9 @@
     "plan:head": "tsx bin/plan-head.ts",
     "composes:graph": "tsx bin/regen-composes-graph.ts",
     "graph:check": "tsx bin/ezk-graph.ts",
-    "map:data": "tsx bin/regen-map-data.ts"
+    "map:data": "tsx bin/regen-map-data.ts",
+    "avancement": "tsx bin/avancement.ts",
+    "avancement:regen": "tsx bin/regen-avancement.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
