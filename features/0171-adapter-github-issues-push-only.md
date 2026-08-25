@@ -63,6 +63,23 @@ Références d'extension (à lire au design, via 0170) :
 - [ ] Doc : SoT = fiche ; issue = projection ; lien vers 0170 / 0087 / 0093 pour les frontières
 - [ ] Gate locale verte
 
+## Vocabulaire & affichage (échange PO 2026-08-25)
+
+Le plugin doit **afficher** trois objets, avec le mapping ezk ↔ GitHub ↔ scrum :
+
+| ezk (SoT locale) | GitHub | scrum |
+|---|---|---|
+| **sprint** | milestone | sprint |
+| **feature** (fiche) | issue | user story |
+| **version / tag** | Release (tag) | version |
+
+- ⚠️ **Renommage à considérer (refacto, plus tard)** : « feature » ↔ « user story ». Le terme scrum est
+  « user story » ; `type: feature` pourrait devenir ambigu. À trancher plus tard — touche tout le backlog.
+- **Synchro bidirectionnelle = le risque** (soulevé PO) : c'est précisément ce que cette fiche **évite**.
+  **Push-only**, local → GitHub, jamais l'inverse ; le champ `github:` lie la fiche à son issue (lien, pas maître).
+- **Statuts `merged`/`split`** ([[20260812104022240]]) : à projeter aussi (issue fermée « fusionnée dans #X »).
+- Métas de la fiche à exporter (`schema`, `generated_by`, `version` cible, sprint) : voir [[20260823121712652]].
+
 ## Notes / décisions
 
 - `depends: [0170]` — ne pas coder tant que le modèle d'extension n'est pas tranché.

@@ -72,8 +72,13 @@ une fiche → elle apparaît dans la colonne *Ready* du board.
 - **Statuts `merged` / `split`** (échange PO 2026-08-25) : fusionner/splitter des fiches produit des états
   **terminaux** — les fiches absorbées passent `merged`/`split`, avec back-références vers la résultante.
   À intégrer comme valeurs validées par le schéma. Geste porté par [[20260812104022240]].
-- **Trois « versions » à ne pas fondre** (échange PO 2026-08-25) : (1) la **version de format/méthode** —
-  quel schéma/outil a produit/valide la fiche (déjà instanciée dans le pack de review `method {name, version}`,
-  cf. `0183`) ; (2) la **version cible** de la fiche (le champ `version:`, aujourd'hui non lu) ; (3) les
-  **métadonnées de génération** — aujourd'hui seuls `created` + `id` (horodaté) existent ; branche/worktree/llm
-  vivent mieux sur les artefacts de run/review (`0183`, supervision) que sur chaque fiche.
+- **Quatre « métas » à ne pas fondre** (échange PO 2026-08-25, nommage validé) :
+  - **`schema`** — version du **format** de la fiche (ce qu'elle doit contenir). Précédent : le pack de
+    review `0183` porte déjà `schema: method-review@0.1`. Indépendant de qui l'a produite.
+  - **`generated_by`** — le **producteur** : `{ skill, skill_version, model, effort }`. L'`id` horodaté
+    donne déjà le **quand** ; on n'ajoute PAS llm/branche/worktree. Précédent : `method {name, version}` du pack `0183`.
+  - **`version`** (cible) — la **version/tag** visée (le champ `version:`, aujourd'hui non lu).
+  - **sprint / milestone** — la **boîte de temps**, dimension SÉPARÉE de la version. Export GitHub : voir
+    [[0171]] (sprint→milestone, feature→issue, version→Release, en **push-only**).
+  - Piège : `schema` (format) ≠ `generated_by` (producteur) — une fiche de `schema v2` peut être produite
+    par n'importe quel skill/modèle.
