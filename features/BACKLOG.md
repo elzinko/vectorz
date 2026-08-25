@@ -150,6 +150,7 @@
 | 20260825123700998 | Doctrine de composition des features — fusion, épic ou division : quand et comment | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260825160456259 | Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help) | feature | P2 | 20260816131703334 | mega-city | 🔴 todo |  |
 | 20260825202444647 | ezk-codex fix — répondre en fil ET résoudre TOUS les fils traités (pas seulement décliner) | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260825213807501 | Vue « Plan / prochain sprint » — rendre PLAN.md dans le board (suite scopée de 20260823124042842, sans objet sprint) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
