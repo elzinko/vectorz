@@ -42,7 +42,7 @@ pour plus tard.
 Les deux sujets finissent au même endroit :
 
 1. **Un juge de cohérence** — « cette règle en contredit-elle une autre ? un doublon ? »
-   C'est le *judgedread*. Déjà en idée : fiche [0008 chief-judge](../../features/0113-chief-judge.md)
+   C'est le *judgedread*. Déjà en idée : fiche 0008/0113 « chief-judge » (retirée par la refonte trois-étages, PR #162)
    + l'agent `ezk-steward` (gardien de LA LOI).
 2. **Rangé dans mega-city** — une règle dans `rules/` (10 catégories existent déjà), un
    `bundle`, ou le DoD/DoR.
