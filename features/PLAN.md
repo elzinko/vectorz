@@ -26,6 +26,20 @@
 3. Options PO au fil de l'eau (rename ezk-pm, Daily-si-douleur, 2ᵉ overlay) —
    listées dans la fiche 1, à trancher quand tirées.
 
+### ↪️ Après le refactoring (post-4a/4b) — sujets ouverts le 2026-08-25
+
+Une fois **20260824061247344** fini (lots **4a/4b** de la refonte trois étages), tirer dans cet ordre :
+
+- **20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (worktrees × sessions ×
+  branches ; onglet `ezk:map sessions` ; colonne supprimable) · **P1** · `groom` → `build`
+- **0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du domaine hors
+  **DoR/DoD de skill** (option A actée PO 2026-08-25) · `groom` → `build`
+- **20260812104022246** — composition comportementale des skills (+ directive `ezk-archive`
+  session-only + idée map « règles composées par skill ») · `groom` (archi)
+- **20260825182327490** — pattern « livrable lisible » : template + extracteur + rendu · `groom`
+- **20260824163426298** — consolider preview/device/testbed, épic (surface unifiée + compétences
+  composables d'agents) · `groom` (archi)
+
 ## 🧹 Hygiène préalable (rapide)
 
 - ~~**P0** `build` **0181** — méthode ezk : Opus 4.8 (+ spare sonnet) + restitutions
