@@ -1777,27 +1777,43 @@ window.EZK_AVANCEMENT = {
 
   fillSelect(selStatut, (data.filtres && data.filtres.statuts) || uniq(actives.map(function (f) { return f.status; })));
   fillSelect(selType, uniq(actives.map(function (f) { return f.type; })));
-  fillSelect(selEpic, uniq(actives.map(function (f) { return f.epic; })));
+  var epicTitre = {};
+  (data.epics || []).forEach(function (e) { epicTitre[e.id] = e.title; });
+  uniq(actives.map(function (f) { return f.epic; })).forEach(function (id) {
+    var opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = epicTitre[id] ? (id + ' — ' + epicTitre[id]) : id;
+    selEpic.appendChild(opt);
+  });
   fillSelect(selProduit, (data.filtres && data.filtres.produits) || uniq(actives.map(function (f) { return f.product; })));
 
   var grille = document.getElementById('grille');
   var compteur = document.getElementById('compteur');
 
+  // Sécurité (revue P0) : on construit le DOM par éléments + textContent, JAMAIS
+  // innerHTML avec des données de fiche (titre, statut… = texte libre du front-matter).
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  // Valeur mise en NOM DE CLASSE CSS → slug (jamais de texte libre brut en classe).
+  function slug(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9_-]/g, '-'); }
+
   function carteHtml(f) {
     var a = document.createElement('a');
     a.className = 'carte';
     a.href = '../../' + f.file;
-    a.style.setProperty('--prio-color', 'var(--p' + (f.priority ? f.priority.replace('P', '') : '3') + ')');
-    var epicTag = f.epic ? '<span class="badge">⤷ ' + f.epic + '</span>' : '';
-    a.innerHTML =
-      '<div class="id">' + f.id + '</div>' +
-      '<div class="titre">' + f.title + '</div>' +
-      '<div class="badges">' +
-        '<span class="badge statut-' + f.status + '">' + f.status + '</span>' +
-        '<span class="badge prio-' + (f.priority || 'P3') + '">' + (f.priority || '—') + '</span>' +
-        '<span class="badge">' + f.type + '</span>' +
-        epicTag +
-      '</div>';
+    a.style.setProperty('--prio-color', 'var(--p' + slug(f.priority ? f.priority.replace('P', '') : '3') + ')');
+    a.appendChild(el('div', 'id', f.id));
+    a.appendChild(el('div', 'titre', f.title));
+    var badges = el('div', 'badges');
+    badges.appendChild(el('span', 'badge statut-' + slug(f.status), f.status));
+    badges.appendChild(el('span', 'badge prio-' + slug(f.priority || 'P3'), f.priority || '—'));
+    badges.appendChild(el('span', 'badge', f.type));
+    if (f.epic) badges.appendChild(el('span', 'badge', '⤷ ' + f.epic));
+    a.appendChild(badges);
     return a;
   }
 

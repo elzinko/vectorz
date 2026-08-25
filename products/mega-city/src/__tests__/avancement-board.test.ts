@@ -43,4 +43,12 @@ describe('diagrams/avancement/board.html — données à jour (fidélité par co
   it('upsertAvancementDataBlock refuse un HTML sans marqueurs (erreur franche, pas d’append)', () => {
     expect(() => upsertAvancementDataBlock('<title>x</title>', 'bloc')).toThrow(/marqueurs/);
   });
+
+  it('le rendu des cartes n’injecte jamais une donnée de fiche via innerHTML (anti-XSS, revue P0)', () => {
+    const html = readFileSync(boardPath, 'utf8');
+    // Les données de fiche (texte libre du front-matter) doivent être posées via textContent,
+    // jamais concaténées dans innerHTML — sinon un titre `<img onerror=…>` s’exécuterait.
+    expect(html).toMatch(/\.textContent\s*=/);
+    expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\bf\.(title|status|type|epic|id)\b/);
+  });
 });

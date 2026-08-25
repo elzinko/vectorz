@@ -122,7 +122,10 @@ export const AVANCEMENT_DATA_END = '/*ezk-avancement-data:end*/';
 
 /** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans board.html. */
 export function buildAvancementDataBlock(fiches: Fiche[]): string {
-  // `<` échappé en < : un titre contenant `</script>` ne peut pas fermer la balise.
+  // `<` échappé en < : protège la SOURCE (un titre
+  // contenant `</script>` ne peut pas fermer la balise <script> qui porte le bloc). Le
+  // RENDU est protégé séparément — board.html pose les données via textContent, jamais
+  // innerHTML (revue P0). Les deux protections sont nécessaires et distinctes.
   const json = JSON.stringify(buildAvancementData(fiches), null, 1).replace(/</g, '\\u003c');
   return `${AVANCEMENT_DATA_BEGIN}\nwindow.EZK_AVANCEMENT = ${json};\n${AVANCEMENT_DATA_END}`;
 }
