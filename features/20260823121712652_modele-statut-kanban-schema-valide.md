@@ -69,3 +69,11 @@ une fiche → elle apparaît dans la colonne *Ready* du board.
   repo = colonnes flexibles), [[20260823121712716]] (les vues générées : board + historique git).
 - Issu de l'échange PO du 2026-08-23 (le champ `ready:` daté jugé bancal ; préférence pour des colonnes
   validées). **Non ready** — à groomer/architecturer avant de tirer (format du schéma, stratégie de migration).
+- **Statuts `merged` / `split`** (échange PO 2026-08-25) : fusionner/splitter des fiches produit des états
+  **terminaux** — les fiches absorbées passent `merged`/`split`, avec back-références vers la résultante.
+  À intégrer comme valeurs validées par le schéma. Geste porté par [[20260812104022240]].
+- **Trois « versions » à ne pas fondre** (échange PO 2026-08-25) : (1) la **version de format/méthode** —
+  quel schéma/outil a produit/valide la fiche (déjà instanciée dans le pack de review `method {name, version}`,
+  cf. `0183`) ; (2) la **version cible** de la fiche (le champ `version:`, aujourd'hui non lu) ; (3) les
+  **métadonnées de génération** — aujourd'hui seuls `created` + `id` (horodaté) existent ; branche/worktree/llm
+  vivent mieux sur les artefacts de run/review (`0183`, supervision) que sur chaque fiche.

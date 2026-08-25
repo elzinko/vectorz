@@ -55,6 +55,20 @@ script↔LLM, forme de la « sanitarisation ») **et `/product-management:produc
 
 - [ ] (à définir au grooming — DoR)
 
+## Direction PO (2026-08-25) — la fusion/split garde la provenance
+
+Geste voulu : quand un **sujet est recoupé par plusieurs fiches**, le LLM **propose** de les
+**fusionner dans une NOUVELLE fiche** qui intègre tout ; les anciennes passent à un statut disant
+qu'elles ont été **absorbées**, sans perdre l'historique. Symétrique pour le split.
+
+- **Nouveaux statuts** `merged` / `split` (« merged / splitted » selon le PO) — à ajouter à la liste
+  validée par schéma : **couplé à** [[20260823121712652]] (modèle de statut kanban).
+- **Back-références dans les deux sens** : la/les fiche(s) **résultante(s)** citent la/les **initiale(s)** ;
+  les initiales (`merged`/`split`) pointent la résultante.
+- **Invariant** : le LLM **propose** ; le PO arbitre ; un **script** applique (statuts + index) — ADR-0001.
+- **Modèle interne d'abord** (décision PO 2026-08-25) : intégrer ces concepts dans la méthode locale ;
+  export vers GitHub plus tard (comme pour les PR — cf. [[0174]] `ezk-issues`).
+
 ## Notes / décisions
 
 - **Absorbe `0092`** (fermée le 2026-08-23, paquet 1) : `depends:` existait déjà dans
