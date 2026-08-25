@@ -61,6 +61,13 @@ artefact + gardien » = instance du pattern steward — voir [20260824185422122]
   réponses de synthèse) ?
 - Le format d'un template (sections + consigne) — assez cadré pour aider, assez souple pour ne pas
   brider la clarté.
+- **La PERTINENCE fait partie du template, pas seulement la structure** (retour PO 2026-08-25) : le
+  template porte le **périmètre** de ce qu'on montre selon le contexte. Cas fondateur — le handoff
+  `ezk-archive` ne restitue QUE la session courante : les autres sessions sont **nommées**, jamais
+  déroulées (leur pending est du bruit). La règle comportementale correspondante vit dans
+  [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) ; exposer l'état
+  des autres sessions est, lui, le job du cockpit
+  [20260825141012293](20260825141012293_ezk-sessions-cockpit.md).
 
 ## Critères d'acceptation (brouillon)
 

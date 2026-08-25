@@ -49,6 +49,10 @@ Pistes :
   skills : c'est probablement lui qui poserait ces directives).
 - **Cas d'usage moteur** : [[20260812104022243]] (③ — groom force l'appel archi+brainstorm)
   est une **instance** de ce mécanisme.
+- **2e cas d'usage (PO 2026-08-25)** : une directive « **`ezk-archive` ne restitue QUE la session
+  courante** » — ne pas afficher le pending des autres worktrees/sessions (les **nommer** suffit),
+  tissée dans le **bundle d'archivage**. Règle de sortie voisine : [[20260824111001836]] ; le cockpit
+  [[20260825141012293]] EXPOSE déjà l'état des autres sessions, donc l'archivage n'a pas à le dupliquer.
 
 **À groomer avec `/engineering:architecture`** (frontière `composes:`↔`rules/`↔`ezk-ezk`,
 forme de la directive) **et `/product-management:product-brainstorming`** (le vrai besoin
@@ -64,4 +68,8 @@ et ses cas).
   **comportementale**. Voisins : `rules/` (iamthelaw), [[0075]] (persona/format),
   instance concrète [[20260812104022243]] (③). Générateur concerné : `ezk-ezk`.
 - Solution **non tranchée** (demande PO) → architecte.
+- **Idée map (PO 2026-08-25)** : la carte de la méthode (`ezk:map`, qui liste les skills dont
+  `ezk-archive`) pourrait **afficher, par skill/agent, les directives/règles composées** — rendre
+  visible « ce qui est tissé » à l'exécution, très parlant pour comprendre le comportement réel.
+  Recoupe l'onglet sessions de [[20260825141012293]].
 - Origine : session 2026-08-12.
