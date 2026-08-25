@@ -61,6 +61,28 @@ Détecte la situation du projet et route :
 - **`act` installé** (`act --version` ; sinon `brew install act` sur macOS, ou
   le script curl de nektos/act).
 
+## Pré-vol automatique (AVANT tout mode `act` — le garde-fou)
+
+Ne lance **jamais** `list`/`dryrun`/`run`/`bootstrap` sans ce pré-vol : il remplace
+l'échec cryptique par un **message clair**, et propose toujours la **bascule `native`**.
+
+1. **Docker installé ?** `docker --version`. Sinon → **STOP + warning** : « Docker n'est pas
+   installé. Installe Docker Desktop (https://www.docker.com/products/docker-desktop), puis
+   relance — ou lance `native` (sans Docker). »
+2. **Docker démarré ?** `docker info` doit répondre. Sinon → **STOP + warning** : « Docker est
+   installé mais **pas démarré**. Ouvre Docker Desktop, attends qu'il soit prêt, puis relance
+   — ou lance `native`. »
+3. **`act` installé ?** `act --version`. Sinon → warning « installe act (`brew install act`) — ou `native`. »
+4. **Après un run qui échoue sur `exec: "node": not found`** (act issue #107) : ce n'est **pas**
+   un bug du code — c'est l'**image runner**. Deux gestes : purge les containers act
+   (`docker rm -f $(docker ps -aq -f name=act-)`) puis relance ; si ça persiste, passe à l'image
+   **full** (`catthehacker/ubuntu:full-22.04`) pour les jobs `setup-node`. Sur **Apple Silicon**,
+   l'émulation `amd64` reste parfois capricieuse (node introuvable même en full) → **`native`
+   est alors le repli fiable et suffisant** (il rejoue lint/tests/build sur l'hôte).
+
+> Le mode **`native` n'a AUCUN de ces pré-requis** : c'est l'échappatoire assumée quand Docker
+> ou `act` coincent. Quand le pré-vol échoue, **propose-le d'emblée** plutôt que d'insister sur `act`.
+
 ## Savoir-clé — les pièges non-évidents
 
 ### Image slim vs full (le piège principal)
