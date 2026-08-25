@@ -6,9 +6,9 @@ priority: P1
 epic:
 depends: ["0168"]
 labels: [supervision, test, llm, dogfood]
-status: todo
+status: shipped
 ready: 2026-08-21
-pr:
+pr: main@1f4a0da
 created: 2026-07-30
 product: mega-city
 ---

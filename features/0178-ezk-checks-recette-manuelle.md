@@ -38,6 +38,29 @@ Skill **`ezk-checks`** dans le catalogue mega-city :
 POC : skill déployé (2026-08-01) ; dogfood sur city-guided PR #91 / 0056-B
 → artefact `features/checks/0056-admin-pois-refonte-ux/`.
 
+## Question ouverte (grooming) — où vit la capacité de validation ?
+
+> Soulevée par le PO le 2026-08-24, au dédoublonnage du cluster « recette ».
+
+La « recette de validation » suit le **même pattern à trois étages** que la recette de
+démarrage (voir la fiche-chapeau
+[`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md), D3) :
+
+- l'**artefact** produit (le `CHECK.md` rempli) = **donnée** → `features/checks/` ;
+- l'**action de valider** (piloter Playwright, cliquer, screenshoter) = **outil** (ce skill) ;
+- le **jugement** (pass/fail, « bon pour merger ») = **compétence d'un rôle** → `ezk-qa`.
+
+Donc « la validation est-elle une compétence ou une action d'agent ? » n'est **pas binaire** :
+c'est les deux, à deux étages. **Orientation proposée (à trancher au panel)** : garder
+`ezk-checks` comme **skill-outil mince** (une responsabilité : produire le `CHECK.md`), et
+**déclarer la validation en `competences:` de `ezk-qa`**, qui compose l'outil quand il le juge
+utile. L'outil *fait*, le rôle *juge* — `ezk-checks` et `ezk-qa` ne sont pas concurrents.
+S'inscrit dans le chantier « déclarer les compétences des agents » (reliquat trois-étages).
+
+Alternative à peser : **fondre** `ezk-checks` dans `ezk-qa` (tout devient action de l'agent) —
+plus simple, mais on perd le « déclenchable à la main, hors sprint » qui est la raison d'être
+de cette fiche. Le panel tranche.
+
 ## Critères d'acceptation (brouillon)
 
 - [ ] Skill listé dans `skills/README.md` catalogue mega-city

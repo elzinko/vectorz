@@ -144,7 +144,11 @@ describe('Rubrique C — cycle de vie du run', () => {
     const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
     const before = readEvents(projectRoot, started.run_id);
 
-    expect(() => runtime.runStart({ method_name: 'm', method_version: '1.0.0' })).toThrow();
+    // Message exact figé (fiche 0169, verrou run-unique de 0168) : run_id du run bloquant inclus,
+    // pour qu'un oracle CI puisse le distinguer d'un autre refus (gate déjà ouvert, run terminé...).
+    expect(() => runtime.runStart({ method_name: 'm', method_version: '1.0.0' })).toThrow(
+      new RegExp(`^run_start refusé : un run est déjà ouvert \\(run_id=${started.run_id}\\)`),
+    );
 
     const runsDir = path.join(projectRoot, '.supervision', 'runs');
     expect(fs.readdirSync(runsDir)).toEqual([started.run_id]);

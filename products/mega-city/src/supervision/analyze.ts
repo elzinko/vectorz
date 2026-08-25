@@ -34,7 +34,14 @@ export interface McpToolCall {
 
 export interface RunSummary {
   runId: string;
-  events: Array<{ seq: number; ts: string; type: string; payloadSummary: string }>;
+  events: Array<{
+    seq: number;
+    ts: string;
+    type: string;
+    payloadSummary: string;
+    /** Payload brut (fiche 0169) : nécessaire à l'oracle `--expect` pour contraindre gate_id/status/outcome. */
+    payload: Record<string, unknown>;
+  }>;
   methodName?: string;
   finished: boolean;
   open: boolean;
@@ -118,6 +125,7 @@ export function summarizeRun(projectRoot: string, runId: string): RunSummary {
       ts: e.ts,
       type: e.type,
       payloadSummary: summarizePayload(e.payload),
+      payload: e.payload,
     })),
     methodName,
     finished,

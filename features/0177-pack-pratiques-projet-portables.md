@@ -10,6 +10,14 @@ pr:
 created: 2026-08-01
 ---
 
+> **⛔ ABSORBÉE le 2026-08-24 (lot 4b) — ne pas tirer.** Doublon de la recette-chapeau
+> [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md) : un « pack de
+> pratiques projet » = un **cas d'usage de l'objet recette** (artefact-donnée qui compose des rules +
+> référence un profil + pointe un exemple), pas un objet neuf. Piste **overlay écartée** (ADR-0039 §4 :
+> un overlay surcharge une brique du catalogue ; 0177 n'en surcharge aucune). La moitié **versioning +
+> pointeur README any-driver** part vers [`0186`](0186-skema-versioning-migrations-skills-deployees.md).
+> Résidu propre ≈ nul. **Fermeture physique** (déplacer en `done/` ou supprimer) à confirmer par le PO.
+
 # 0177 — Pack de pratiques projet (capacités portables)
 
 ## Contexte / Problème

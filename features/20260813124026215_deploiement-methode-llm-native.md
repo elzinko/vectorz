@@ -12,6 +12,16 @@ pr:
 created: 2026-08-10
 ---
 
+> **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **À réécrire au grooming** (rétréci). Deux objectifs
+> sont **déjà faits** par ADR-0039 : le modèle d'extension (**overlay**, §4 ; fiche 0170 shippée) et les
+> frontières distribution(0087)/ancrage(ici)/store(0093). Vocabulaire à rebaser : « plugin/addon
+> activable » → étage **modules** (familles github/hote-llm/observabilite/techno/overlay, activation
+> explicite). ⚠️ Réf **`0172` fantôme** (×4 : lignes 53/106/142/181) — aucune fiche ; le concept « backlog
+> md = source de vérité » est acté par ADR-0039 §4, à y renvoyer au grooming. Reçoit l'**ancrage projet**
+> rapatrié de 0087 (§Incertitude 6+7). Étage **méthode + moteur** (ancrer = nouvelle cible de bind par
+> projet, §5). Cœur non périmé : cycle `init`/`remove`, empreinte `CLAUDE.md`, convention PR ouverte,
+> étude BMAD.
+
 # 20260813124026215 — Déploiement d'une méthode LLM-native dans un projet (épic de cadrage)
 
 > **Épic de cadrage, pas une implémentation.** Cette fiche **relie** un archipel de
