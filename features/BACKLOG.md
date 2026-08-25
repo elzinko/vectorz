@@ -253,6 +253,7 @@
 | 20260824163426298 | Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map » | refactor | P2 |  | mega-city | 💡 idea |  |
 | 20260825024356665 | Comparateur `analyze --expect` en sous-séquence — tolérer les events non déclarés (sessions live, briques 2/3) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260825161522791 | Elicitation — boucle de raffinement structurée dans groom (à la BMAD advanced-elicitation) | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260825182327490 | Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport) | feature | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
