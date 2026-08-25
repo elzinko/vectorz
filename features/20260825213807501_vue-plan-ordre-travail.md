@@ -194,3 +194,11 @@ Preuve agent attendue au sprint : capture de l'onglet « Plan » (couloirs par s
   `src/__tests__/avancement-board.test.ts`, `src/backlog/plan-order.ts` + `plan-head.ts`
   (fondations), `diagrams/avancement/board.html` (cible), verdict panel
   `docs/captures/2026-08-23-panel-adverse-refonte-taxonomie.md`.
+- **Revue adverse (ezk-reviewer) : GO** — gate rejouée indépendamment (typecheck, 496 tests,
+  regen idempotent), zéro bloquant, XSS clos (textContent + href relatif + `<` échappé).
+- **Limites connues de l'extraction d'ids (P2, fail-safe — un faux id remonte en
+  « introuvables », jamais collé à une carte)** : (1) une **année nue** sur une puce racine
+  (`- objectif 2026`) serait prise pour un id — aujourd'hui absente du vrai PLAN.md ; (2) un
+  token de 4 chiffres borné (PR `#1234`, fragment de SHA) est capté quelle que soit sa nature
+  — seul cas gênant : collision exacte avec un id legacy existant, très improbable (PRs à 3
+  chiffres, SHA non alignés). À durcir le jour où un PR à 4 chiffres entre dans PLAN.md.
