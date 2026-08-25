@@ -248,6 +248,7 @@
 | 20260824163426298 | Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map » | refactor | P2 |  | mega-city | 💡 idea |  |
 | 20260824185422122 | « Recette » comme artefact de premier rang + gardien (ezk-cuisinier) — instancier le pattern steward, ne rien inventer | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260825024356665 | Comparateur `analyze --expect` en sous-séquence — tolérer les events non déclarés (sessions live, briques 2/3) | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260825123700998 | Doctrine de composition des features — fusion, épic ou division : quand et comment | feature | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
