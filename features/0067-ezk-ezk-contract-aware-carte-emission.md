@@ -45,6 +45,11 @@ logique au contrat) mais **générer la carte d'émission comme artefact SÉPAR�
   trancher le pattern d'émission AVANT de l'implémenter évite de coder deux fois l'émission.
 - Compose `ezk-ezk`. Dépend de **ADR-032** (vectorz). Lié 0066 (test golden events).
   Origine : cérémonie `ezk-retro` (dry-run 2026-07-16).
+- **Gate de structure à la génération (PO 2026-08-25, option A)** : `ezk-ezk` ne sort pas un objet du
+  domaine qui ne passe pas la **DoR/DoD de skill** de [[0066]] (déclencheurs, ≥1 Gherkin par
+  sous-commande, audit `ezk-steward` vert) — au-delà du seul test golden-events. **0066 = le
+  validateur, 0067 = le générateur qui l'invoque.** C'est la réponse au besoin « garantir une
+  structure minimale à la création d'un objet du domaine (à la BMAD) ».
 - **Re-cadrage 2026-07-17 (ADR-032 direction (i) actée par le PO)** : pour une méthode qu'on
   **possède**, l'émetteur canonique vit **dans** la méthode — `ezk-ezk` contract-aware génère donc
   d'abord les **consignes d'émission dans le skill** (appel du kit 0050, chemin A) ; la « carte

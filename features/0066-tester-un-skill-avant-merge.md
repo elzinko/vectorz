@@ -78,6 +78,11 @@ Livrables candidats :
   0067 (test « golden events ») et l'ADR-032 (émission séparable).
 - Compose : `ezk-steward`, `verify`, `skill-creator`. Origine : cérémonie `ezk-retro`
   (dry-run 2026-07-16). Priorité P2 à confirmer.
+- **Gate de structure branché sur la génération (PO 2026-08-25, option A)** : cette DoR/DoD de skill
+  est le **validateur de structure** que le générateur [0067](0067-ezk-ezk-contract-aware-carte-emission.md)
+  (`ezk-ezk`) applique à la création — un objet du domaine créé par ezk-ezk ne sort pas sans passer
+  cette DoR. **0066 = le validateur, 0067 = le générateur.** Répond au besoin PO « garantir une
+  structure minimale à la création (à la BMAD) ».
 - **Qui porte le contrôle.** Le critère d'acceptation ci-dessus (référence morte → gate
   rouge, prouvé par sabotage) appartient à **cette fiche 0066** — c'est elle le porteur, pour
   qu'il ne dépende d'aucun autre merge.
