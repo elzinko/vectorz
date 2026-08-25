@@ -1,168 +1,177 @@
 ---
 id: "20260824185422122"
-title: « Recette » comme artefact de premier rang + gardien (ezk-cuisinier) — instancier le pattern steward, ne rien inventer
+title: « Recette » comme artefact de premier rang + gardien (ezk-chef) — instancier le pattern steward, ne rien inventer
 type: feature
-priority: P2 # posée par défaut — PO à confirmer au grooming (P1 si construction prochaine session)
+priority: P2 # confirmé au grooming (P1 si construction planifiée)
 product: mega-city
 version:
 epic:
 depends: []
-status: idea
-ready:
+status: todo
+ready: 2026-08-25
 pr:
 created: 2026-08-24
 ---
 
 ## En clair
 
-Tu veux **capitaliser** ce que tu fais et réutilises dans tes projets, sous forme de
-**recettes**. Décision prise : la recette est un **artefact de premier rang**, et le
-**« livre de recettes »** est son **index**. Un **gardien** (façon `iamthelaw`) veille à ce
-que les recettes soient correctement inscrites.
+Tu veux **capitaliser** ce que tu réutilises entre projets, sous forme de **recettes**. La
+recette est un **artefact de premier rang** ; le **« livre de recettes »** est son **index**.
+Un **gardien** — nommé **`ezk-chef`** — veille à ce que chaque recette soit bien formée.
 
-La bonne nouvelle : **ce n'est pas un nouveau pattern.** C'est l'assemblage de **trois
-mécanismes que tu as déjà** — un artefact + son index (comme le backlog), des rules +
-`enforcements:`, et un rôle gardien (comme `ezk-steward` pour les skills). Rien à inventer.
-Tout à **instancier**.
+Rien de neuf à inventer. C'est l'assemblage de **trois mécanismes déjà en place** : un artefact +
+son index (comme le backlog), des rules reliées à qui les vérifie (`enforcements:`), et un rôle
+gardien (comme `ezk-steward` pour les skills). On **instancie**, on ne crée pas de concept.
 
-Ce sujet est de l'**outillage de capitalisation**, **hors méthode scrum** (proche dev / archi).
+**Grooming du 2026-08-25 (panel `ezk-architect`) : tout est tranché.** Cette fiche est prête à
+construire — à ton OK. C'est de l'**outillage de capitalisation**, hors méthode scrum (proche archi).
 
 ## Le pattern (la découverte)
 
-`ezk-steward` est au catalogue de skills ce que **« ezk-cuisinier »** serait aux recettes :
-un gardien qui vérifie qu'un artefact d'une **famille** est bien formé.
-
-Le méta-pattern, déjà présent trois fois dans ton système :
+`ezk-steward` est au catalogue de skills ce que **`ezk-chef`** est aux recettes : un gardien qui
+vérifie qu'un artefact d'une **famille** est bien formé. Le méta-pattern est déjà présent trois fois :
 
 - une **famille d'artefacts + un index régénéré** — le backlog (fiches + `BACKLOG.md`) ;
 - des **rules** (`rules/`, MAY/SHOULD/MUST) reliées à qui les vérifie (`enforcements:`) ;
 - un **rôle gardien** — `ezk-steward` (skills), `ezk-reviewer` (code), `iamthelaw` (LA LOI).
 
-« Recette » ne fait que **réinstancier ce trio** pour une nouvelle famille. C'est ce qui
-dé-risque tout : pas de concept neuf gratuit (doctrine respectée).
+« Recette » ne fait que **réinstancier ce trio** pour une nouvelle famille. Pas de concept neuf
+gratuit : doctrine respectée.
 
-> **⟳ Note nom (2026-08-25, PO)** : « ezk-cuisinier » (français) détonne avec les skills `ezk-*`
-> (anglais/neutres). Préférer l'**anglais** — mais ⚠️ « cooker » = l'**appareil** de cuisson en
-> anglais, pas la personne : le cuisinier se dit **`cook`** ou **`chef`**. Candidats : **`ezk-cook`**
-> ou **`ezk-chef`**. À trancher au grooming, avec la décision « gardien distinct vs `ezk-steward`
-> étendu ».
+## Décisions (grooming 2026-08-25)
 
-## Les décisions d'archi
+### D1 — Gardien = rôle DISTINCT `ezk-chef` (pas une extension de `ezk-steward`)
 
-### D1 — Format de l'artefact recette + du livre
+`ezk-steward` garde **le repo de skills** : sa gate, ce sont les tests/typecheck de mega-city +
+`check-links`, et son jugement porte sur les `description:` déclencheuses, les chevauchements de
+skills, le README. « Une recette pointe un exemple réel, compose des rules, ne stocke pas de code »
+est une **autre famille**, avec une **autre gate** (pointeurs `fichier:ligne` valides, champs
+présents). Les fusionner donnerait à `ezk-steward` **deux raisons de changer** — on l'évite.
 
-- **La recette = une fiche markdown** (front-matter + corps), dans son propre dossier
-  (`recipes/` à trancher). Champs pressentis :
-  - ce qu'elle **fabrique** ;
-  - la **liste de tâches** (le playbook) ;
-  - les **rules qu'elle compose** (`composes:`) ;
-  - le **profil** référencé ;
-  - un **pointeur vers un exemple réel** (`fichier:ligne`) — **jamais le code copié**
-    (doctrine [ADR-0013](../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md), « entonnoir, jamais fabrique ») ;
-  - **statut** + **provenance**.
-- **Le livre de recettes = un index régénéré par script** (comme `BACKLOG.md` via `regen`).
-  **Le LLM ne range jamais** (ADR-0001) : le script écrit l'index.
+→ Un agent gardien **mince**, une responsabilité : `products/mega-city/agents/ezk-chef.md`.
+Nom `ezk-chef` (arbitrage PO 2026-08-25) : anglais/neutre comme les `ezk-*`, « l'autorité qui
+valide » — et « cook**er** » désignerait l'appareil, pas la personne.
 
-### D2 — Le gardien (ezk-cuisinier)
+### D2 — Format = on clone le trio du backlog (fiche + index + `regen`)
 
-Instance du pattern steward. Deux formes, à trancher au grooming :
+La recette **réutilise la mécanique backlog telle quelle**. Rien à réinventer.
 
-- **(a)** un **rôle distinct** « ezk-cuisinier » — responsabilité unique : les recettes ;
-- **(b)** **étendre `ezk-steward`** (qui garde déjà le catalogue) aux recettes.
+- **La recette = une fiche markdown** dans `recipes/`, avec un **front-matter YAML** (aujourd'hui
+  absent des deux exemples — c'est ce qui manque) et un **corps normalisé** (déjà porté par les deux
+  exemples). Champs du front-matter, miroir de la fiche backlog :
 
-Ses **rules ne sont pas informatiques** : « une recette pointe vers un exemple réel »,
-« elle liste des tâches + compose des rules + référence un profil », « jamais de code
-stocké ». Elles forment un **bundle « recette bien formée »**, relié au gardien via
-`enforcements:` (même idiome que `pr-before-after-media` → `ezk-reviewer`).
+  | champ | rôle |
+  |---|---|
+  | `id` | id horodaté minté (même anti-collision que le backlog) |
+  | `title` | titre lisible |
+  | `makes` | ce qu'elle **fabrique**, une ligne |
+  | `source` | racine de l'implémentation prouvée (`~/git/…`) |
+  | `composes` | rules composées (idiome ADR-0012/0025) |
+  | `profile` | profil référencé (optionnel) |
+  | `status` | `draft` / `ready` / … (source de vérité) |
+  | `home` | `central` ou `project` (voir D4) |
+  | `created` / `updated` | dates |
 
-**Inclinaison** : un rôle **mince**, tranché au grooming. Ne pas dupliquer `ezk-steward`
-sans raison ; le nom « cuisinier » est OK s'il porte une responsabilité claire et distincte.
+- Le **corps** (déjà présent dans les exemples) : `## En clair`, sections numérotées, une section
+  **« Fichiers de référence (entonnoir — pointer, jamais copier) »** avec des pointeurs
+  `fichier:ligne`, un `## Statut de cette recette`.
+- **Le livre = `recipes/RECIPES.md`**, régénéré par **`scripts/regen-recipes.sh`** calqué sur
+  `regen-backlog.sh` (tri déterministe, bandeau « ne pas éditer à la main »). **Le LLM ne range
+  jamais** : le script écrit l'index (ADR-0001).
 
-### D3 — Placement dans la carte (4 bandes, ADR-0020)
+### D3 — Producteur = aucun skill neuf
 
-Ça résout le « je ne sais pas où placer ça ». **La carte classe des skills, pas des données.**
+Le geste « produire une recette » est **déjà couvert** : `ezk-ezk harvest` (session courante) et
+`ezk-extract` / [fiche 794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
+(feature désignée). On **n'ajoute pas** de skill producteur, et surtout **pas** sous le nom
+`ezk-recipy` — faux ami déjà pris ([fiche 0147](0147-ezk-recipy-mvp.md) = scanner de repos
+**froids**, pas les recettes de démarrage).
+
+Pas de sous-commandes multi-niveaux (`ezk-ezk recipy add`) pour l'instant : la grammaire est plate.
+Si une **famille** de verbes (`add/list/rm/regen`) apparaît un jour, elle appartiendra au **gardien
++ son `regen`** (façon `ezk-backlog`), pas à `ezk-ezk`. YAGNI.
+
+### D4 — Où vit une recette = index central qui POINTE ; fichier central par défaut
+
+L'archi non négociable : **le livre (l'index) est TOUJOURS central et POINTE, jamais ne copie** —
+doctrine entonnoir ([ADR-0013](../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md))
+appliquée à la localisation. Du coup, l'emplacement du **fichier** devient un réglage réversible
+(champ `home`), sans toucher au livre.
+
+- **Par défaut : central `vectorz/recipes/`** (arbitrage PO 2026-08-25). C'est déjà le cas des deux
+  exemples, le plus simple à outiller. Position provisoire, réversible.
+- **Bascule vers `home: project`** quand une recette est **fortement couplée au code d'un dépôt
+  vivant** — même raisonnement que le contrat cowork (« le guide vit dans l'app », ADR-0015). Elle
+  naît près du code, le livre central l'indexe par pointeur.
+
+### D5 — Placement dans la carte (4 bandes, ADR-0020, inchangé)
+
+La carte classe des **skills**, pas des données.
 
 - **L'artefact recette = de la donnée** (comme les fiches) → **pas dans une bande**.
-- **Le producteur** (ezk-ezk recipy / ezk-recipy) → bande **Outillage** (« avec quoi »).
-- **Le gardien** (ezk-cuisinier / ezk-steward étendu) → bande **Rôles** (« qui juge »).
+- **Le producteur** (`ezk-ezk harvest` / `ezk-extract`) → bande **Outillage** (« avec quoi »).
+- **Le gardien** (`ezk-chef`) → bande **Rôles** (« qui juge »).
 
-Le mécanisme s'étale donc sur **2 bandes + 1 type de donnée**. Cohérent avec « hors méthode
-scrum ».
+## Le bundle de rules « recette bien formée »
 
-### D4 — Frontière avec l'existant (anti-doublon)
+Dans `rules/recipe/`, relié au gardien via `enforcements:` (même idiome que
+`pr-before-after-media` → `ezk-reviewer`). Chaque rule pointe `agent: ezk-chef`.
 
-Cette fiche définit **l'OBJET** (format recette + livre + gardien). Les autres fiches
-**produisent** ou **consomment** :
+| rule | niveau | ce qu'elle vérifie |
+|---|---|---|
+| `recipe/points-to-real-example` | **MUST** | une section « Fichiers de référence » avec ≥1 pointeur `fichier:ligne` ; la racine `source:` existe |
+| `recipe/no-stored-code` | **MUST** | aucun code recopié qui duplique la source — pointeurs only (ADR-0013) |
+| `recipe/valid-frontmatter` | **MUST** | front-matter YAML valide ; champs requis présents (`id/title/makes/source/status`) |
+| `recipe/indexed` | **MUST** (mécanique) | présente dans l'index régénéré — vérifié par le **script**, pas le LLM (ADR-0001) |
+| `recipe/lists-tasks-and-composes` | **SHOULD** | playbook (liste de tâches) + `composes:` + profil référencé |
+| `recipe/plain-language-first` | **SHOULD** | une section « En clair » en tête |
+
+Les trois premières + `indexed` = la gate dure ; les deux SHOULD relèvent du jugement du gardien.
+
+## Frontière anti-doublon (aucun recouvrement)
+
+Cette fiche définit **l'OBJET** (format recette + livre + gardien). Les autres **produisent** ou
+**consomment** :
 
 - **session courante** → `ezk-ezk harvest` ;
-- **feature désignée** → `ezk-ezk recipy`/`extract` ([fiche 794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)) ;
-- **repos froids** → `ezk-recipy` ([fiche 0147](0147-ezk-recipy-mvp.md)) ;
-- **cas d'usage** : `ezk-cowork` ([fiche 0155](0155-ezk-cowork-scaffold-audit-contrat-cowork.md)) et
-  [recette-site 540](20260821172716540_recette-site-produit-regles-activables.md).
-- **cas d'usage (absorbé le 2026-08-24, lot 4b)** : « pack de pratiques projet »
-  ([0177](0177-pack-pratiques-projet-portables.md)) — recette de pratiques ; sa moitié versioning
-  part à [0186](0186-skema-versioning-migrations-skills-deployees.md).
+- **feature désignée** → `ezk-extract` ([794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)) ;
+- **repos froids** → `ezk-recipy` ([0147](0147-ezk-recipy-mvp.md)) ;
+- **cas d'usage** : `ezk-cowork` ([0155](0155-ezk-cowork-scaffold-audit-contrat-cowork.md)),
+  [recette-site 540](20260821172716540_recette-site-produit-regles-activables.md), et « pack de
+  pratiques projet » ([0177](0177-pack-pratiques-projet-portables.md)).
 
-Pas de doublon : eux produisent/consomment, **celle-ci définit**.
+Eux produisent/consomment, **celle-ci définit**. Pas de doublon.
 
-## L'alternative écartée
+## Alternative écartée
 
-**Option B — « recette = juste un skill dont le playbook est la liste de tâches »** (ta
-doctrine actuelle, fiche 794). Écartée : la recette est de la **donnée réutilisable
-transverse** (un exemple pointé, des tâches, des rules), pas un outil. La traiter comme un
-skill mélange l'outil et son produit. Et le pattern steward existe déjà pour garder une
-famille d'artefacts-données.
+**« recette = juste un skill dont le playbook est la liste de tâches »** (doctrine 794). Écartée :
+la recette est de la **donnée réutilisable transverse** (un exemple pointé, des tâches, des rules),
+pas un outil. La traiter comme un skill mélange l'outil et son produit. Le pattern steward existe
+déjà pour garder une famille d'artefacts-données.
 
-**Risque de A à surveiller** : un type d'artefact neuf a un coût. **Antidote** : réutiliser
-au maximum la mécanique backlog (fiche + index + `regen`) plutôt que d'en réinventer une.
+## Critères d'acceptation (DoR — tous tranchés)
 
-## Débat ouvert — où vit une recette ? (central vs projet)
+- [x] Gardien décidé : rôle distinct **`ezk-chef`**, responsabilité unique (D1).
+- [x] Format tranché : fiche + front-matter + corps gabarit ; livre `recipes/RECIPES.md` régénéré (D2).
+- [x] Producteur tranché : aucun skill neuf ; `ezk-recipy` **non** réutilisé (D3).
+- [x] Emplacement tranché : central provisoire, index qui pointe, `home` réversible (D4).
+- [x] Bundle de rules « recette bien formée » défini, relié à `ezk-chef` via `enforcements:`.
+- [x] **Zéro code stocké** dans une recette (pointeur vers exemple réel — ADR-0013).
+- [x] Frontière écrite avec 794 / 0147 / 0155 / 540 / 0177 (aucun doublon).
 
-**La tension** (soulevée le 2026-08-24). Une recette doit-elle vivre dans un dépôt central
-(`vectorz/recipes/`) ou **dans le projet qui la développe** ?
+## Plan de construction (à ton OK — ne pas construire avant)
 
-- **Pour le central** : une seule bibliothèque, découvrable, réutilisable entre projets.
-- **Pour le projet** : cohérence avec le **contrat cowork lui-même** — le guide vit **dans l'app**,
-  pas dans un dépôt central. Par le même raisonnement, une recette née dans un projet pourrait y rester.
-
-**Les deux coexistent déjà, ce qui prouve la tension** :
-- `vectorz/recipes/plan-distribution-app.md` décrit **samplerz** mais vit dans **vectorz**.
-- `pasteriz/recipy/cowork-project.md` vit **dans pasteriz**.
-
-**Position actuelle du PO** : « pour le moment, dans `vectorz/recipes/` » — à revisiter au grooming.
-Piste : une recette pourrait **naître dans son projet** (près du code qu'elle décrit) et être
-**indexée** centralement (le « livre de recettes » pointe, ne copie pas). À trancher avec le format (D1).
-
-## Questions ouvertes (grooming)
-
-- [ ] Gardien : **rôle distinct `ezk-cuisinier`** vs **extension `ezk-steward`** ?
-- [ ] **Format exact** des champs de la fiche recette + du livre/index + dossier (`recipes/` ?).
-- [ ] Producteur : **`ezk-ezk recipy`** (sous-commande) vs **`ezk-recipy`** (skill) — « à méditer » (PO).
-- [ ] Le **bundle de rules** « recette bien formée » + son `enforcements:`.
-- [ ] **Gate ADR-0013** : PO le déclare non bloquant (« je sais anticiper ») — finir de le neutraliser au build.
-- [ ] Sous-commandes **multi-niveaux** (`ezk-ezk recipy add`) : nouvelle grammaire à valider (aujourd'hui tout est plat) — ne l'introduire que si une **famille** de verbes le justifie.
-- [ ] **Où vit une recette** : central (`vectorz/recipes/`) vs projet qui la développe — voir le débat ci-dessus. Position actuelle : central, provisoire.
-- [ ] **Élicitation par auth forte** : recette capturée (`vectorz/recipes/elicitation-authentification-forte.md`) — source `google-mcp-multi-account` (ADR-0001/0005). À relier au gardien et au geste sensible de pasteriz.
-
-## Critères d'acceptation (brouillon — DoR au grooming)
-
-- [ ] Décision tranchée : format recette (champs) + livre/index + placement carte.
-- [ ] Gardien décidé (rôle distinct vs steward étendu) avec responsabilité unique.
-- [ ] Bundle de rules « recette bien formée » relié au gardien via `enforcements:`.
-- [ ] **Zéro code stocké** dans une recette (pointeur vers exemple réel — ADR-0013).
-- [ ] Frontière écrite avec 794 / 0147 / 0155 / 540 (aucun doublon).
-
-## Comment reprendre (prompt à relancer)
-
-```
-Ouvre la fiche vectorz features/20260824185422122_recette-artefact-premier-rang-et-gardien.md.
-Elle capture la décision d'archi « recette = artefact de premier rang + gardien (ezk-cuisinier),
-instance du pattern steward — rien à inventer ». Groome-la : tranche les questions ouvertes
-(gardien distinct vs ezk-steward étendu ; format exact des champs recette + livre/index + dossier ;
-producteur ezk-ezk recipy vs ezk-recipy), puis propose le plan de construction. Ne construis pas
-sans mon ok. Respecte la doctrine : skill/rôle mince, une responsabilité, le LLM ne range jamais
-(script — ADR-0001), pas de concept neuf gratuit, gate ADR-0013 non bloquant.
-```
+1. **Figer le gabarit** de recette (front-matter D2 + corps), en normalisant par-dessus les 2 exemples.
+2. **Écrire le bundle `rules/recipe/*.md`** avec `enforcements:` → `ezk-chef`.
+3. **Créer l'agent** `products/mega-city/agents/ezk-chef.md` : instance mince du pattern steward —
+   gate mécanique (lancer `regen-recipes.sh`, vérifier pointeurs + champs, `check-links` sur
+   `recipes/`), puis jugement des SHOULD ; verdict GO/NO-GO.
+4. **Écrire `scripts/regen-recipes.sh`** : clone de `regen-backlog.sh` → `recipes/RECIPES.md`.
+5. **Rétro-normaliser les 2 recettes existantes** (`plan-distribution-app.md`,
+   `elicitation-authentification-forte.md`) : ajouter leur front-matter, générer le livre.
+6. **Écrire la frontière anti-doublon** dans la fiche et **neutraliser la gate ADR-0013**
+   (déclarée non bloquante par le PO).
+7. *(différé)* activer la bascule `home: project` **si** le critère de D4 se déclenche.
 
 ## Lignée / références
 
@@ -170,6 +179,9 @@ sans mon ok. Respecte la doctrine : skill/rôle mince, une responsabilité, le L
 - Doctrine recipy : [ADR-0013](../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md) (entonnoir, jamais fabrique).
 - Nommage / carte 4 bandes : ADR-0020.
 - Frontière déterministe : ADR-0001 (le LLM ne range jamais).
-- Producteurs & cas : fiches 794, 0147, 0155, 540.
+- Producteurs & cas : fiches 794, 0147, 0155, 540, 0177.
 - Gardiens existants (le pattern) : `ezk-steward`, `ezk-reviewer`, `iamthelaw`.
-- Origine : session du 2026-08-24 (brainstorm pasteriz → le pattern cowork a fait émerger le besoin d'un objet « recette »).
+- Recette « élicitation par auth forte » déjà capturée : `recipes/elicitation-authentification-forte.md`
+  (source `~/git/google-mcp-multi-account/`) — à normaliser à l'étape 5.
+- Origine : session du 2026-08-24 (brainstorm pasteriz → le pattern cowork a fait émerger « recette »).
+- Grooming : 2026-08-25, panel `ezk-architect` (décisions D1–D5).

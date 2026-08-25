@@ -8,8 +8,8 @@ version:
 epic:
 depends: []
 labels: [backlog, methode, doctrine]
-status: idea
-ready:
+status: todo
+ready: 2026-08-25
 pr:
 created: 2026-08-25
 ---
@@ -18,80 +18,165 @@ created: 2026-08-25
 
 ## En clair
 
-Quand deux fiches se recoupent, ou qu'une fiche grossit trop, on a **trois gestes possibles**
-et **aucune règle claire** pour choisir : **fusionner** (deux fiches → une seule, ses sujets
-devenant des sections à l'intérieur), **regrouper sous un épic** (les fiches restent distinctes,
-un conteneur les chapeaute), ou **diviser** (une grosse fiche → plusieurs). Cette fiche pose la
-**doctrine** — quel geste dans quel cas, et ce qu'est vraiment un épic. Elle ne construit pas
-d'outil : elle donne les **règles de décision** que l'outil de rationalisation du backlog
-appliquera.
+Quand deux fiches se recoupent, ou qu'une fiche grossit trop, on a **trois gestes** : **fusionner**
+(deux fiches → une, les sujets deviennent des sections), **mettre en épic** (les fiches restent
+distinctes sous un conteneur), ou **diviser** (une grosse fiche → plusieurs). Jusqu'ici on tranchait
+au jugé. Cette fiche pose la **doctrine** — et **une seule question suffit à choisir**.
+
+**Grooming du 2026-08-25 (panel `ezk-architect`) : doctrine tranchée.** Elle ne construit pas
+d'outil ; elle donne les **règles de décision** que l'outil de rationalisation appliquera. Appliquée
+au cas testbed, elle rend un verdict net : **c'est un épic** (voir plus bas).
 
 ## Contexte / Problème
 
-Besoin PO (2026-08-25) : *« une épic, c'est une grosse feature avec trop de choses dedans. Si
-deux fiches ont des sujets similaires, on peut les regrouper, puis on verra comment découper.
-Est-ce qu'un regroupement en épic est la bonne stratégie, ou faut-il fusionner en une fiche en
-séparant les sujets dedans ? Comment gère-t-on efficacement la composition (fusion) et la
-séparation (division) d'une fiche ? »*
+Besoin PO (2026-08-25) : *« une épic, c'est une grosse feature avec trop de choses dedans. Si deux
+fiches ont des sujets similaires, on peut les regrouper… Est-ce qu'un regroupement en épic est la
+bonne stratégie, ou faut-il fusionner en une fiche ? Comment gère-t-on la composition et la
+séparation d'une fiche ? »*
 
-Aujourd'hui ces gestes se font **au jugé**, sans critère écrit. La session du 2026-08-25 en a
-fait trois sans doctrine : dédoublonnage « recette » (fusion vers une fiche-chapeau, faux amis
-laissés distincts), lot 4b (requalification + une fiche absorbée), et une fiche suite créée par
-division d'une brique. À chaque fois le choix fusion / épic / division a été tranché à la main.
+La session du 2026-08-25 a fait trois gestes sans doctrine : dédoublonnage « recette » (fusion),
+lot 4b (une fiche absorbée), une fiche suite (division). À chaque fois le choix a été tranché à la
+main. La doctrine ci-dessous rend ce choix **décidable**.
 
-## Les trois gestes (à cadrer)
+## La doctrine (tranchée)
 
-1. **Fusion** — deux fiches → **une seule**, les sujets devenant des **sections** internes.
-   Pertinent quand les sujets sont **indissociables** (même livraison, même PR).
-2. **Épic** — les fiches restent **distinctes et tirables séparément** ; un **conteneur**
-   (`type: epic`) les chapeaute. Pertinent quand les sujets se livrent **séparément** mais
-   partagent un but. Un épic n'est **pas tirable** directement (on descend vers l'enfant prêt).
-3. **Division** — une fiche trop grosse → **plusieurs fiches** (+ éventuellement un épic pour
-   les tenir). Pertinent quand une fiche empile des sujets **hétérogènes** (cf. lot 4b : la
-   refonte trois-étages avait été scindée car elle empilait cinq tâches).
+### D1 — La sémantique de l'épic (une seule)
 
-> **Premier cas concret à trancher** : device + preview + testbed
-> ([20260824163426298](20260824163426298_consolider-device-preview-testbed.md)) — plusieurs fiches
-> liées (0102, `ezk-preview`, `ezk-device`) qui répondent au même besoin (faire tourner/essayer un
-> travail en cours). Fusion en une fiche, ou épic « cœur testbed + adaptateurs » ? C'est l'exemple
-> qui rendra cette doctrine décidable.
+Un épic est un **conteneur de fiches-enfants distinctes et tirables séparément** : le couple déjà en
+place, `type: epic` sur le conteneur, `epic: <id>` sur chaque enfant. L'épic **n'a pas** de critères
+d'acceptation propres, pas de code, pas de PR.
 
-## Questions à trancher (grooming)
+Ce qu'un épic **n'est pas** :
 
-- **Définition de l'épic** : conteneur de fiches-enfants (le `epic:` actuel) vs « grosse fiche à
-  découper ». Trancher une seule sémantique.
-- **Critère fusion vs épic** : indissociable (même PR) → fusion ; séparable → épic. Le rendre
-  décidable (un gate ? une question posée au grooming ?).
-- **Critère de division** : à partir de quand une fiche est « trop grosse » — nombre de sujets,
-  de critères d'acceptation, hétérogénéité des étages (ADR-0039) ?
-- **Mécanique** : les champs `epic:` (lien enfant→conteneur), `depends:`, `labels:` (fiche 0092,
-  modèle de données des tags), et l'outil de rationalisation (fiche 20260812104022240). Cette
-  doctrine dit **quoi faire** ; l'outil dit **comment le faire en masse**.
-- **Réversibilité** : peut-on « défusionner » / sortir un enfant d'un épic proprement (git = substrat) ?
-- **Affichage** : le board d'avancement **exclut aujourd'hui les épics de ses cartes** (finding
-  Codex P2 sur la [PR #166](https://github.com/elzinko/vectorz/pull/166)). La doctrine doit dire
-  si/comment un épic paraît dans une vue d'avancement (une carte ? une section ? le cumul de ses enfants ?).
+- **Pas** « une grosse fiche pleine de choses ». Ça, c'est le **déclencheur d'une division**.
+  L'épic naît *après* la découpe, comme conteneur.
+- **Pas tirable** directement. On ne « prend » jamais un épic ; on descend vers l'enfant prêt.
 
-## Critères d'acceptation (brouillon — à groomer)
+*C'est déjà ce que fait le board* : il sort les `type: epic` de la liste des fiches actives.
+Choisir cette sémantique, c'est épouser l'existant — zéro objet neuf.
 
-- [ ] Une règle décidable « fusion vs épic vs division » écrite (dans `rules/` ou le playbook backlog).
-- [ ] La sémantique de l'épic tranchée et documentée (une seule définition).
-- [ ] La frontière avec l'outil de rationalisation (20260812104022240) écrite : doctrine vs outil.
-- [ ] Le traitement des épics par le board d'avancement décidé (finding Codex P2).
+### D2 — La règle décidable (fusion vs épic vs division)
 
-## Anti-doublon
+**Une seule question au grooming : « Combien de PR pour tout livrer, et ont-elles un but commun ? »**
 
-- Fiche **20260812104022240** « Rationalisation du backlog — regrouper/splitter via tags » =
-  l'**outil** (script + analyse LLM). **Cette fiche-ci = la doctrine** qu'il applique ; distinctes.
-- Fiche `0071` `review` (shipped) — sanity-check doublons/regroupement par jugement LLM.
-- Fiche `0092` — champs `labels:` / `depends:` (le modèle de données des tags).
+```
+Deux fiches se recoupent, ou une fiche grossit
+        │
+  « Combien de PR pour tout livrer, et un but commun ? »
+        │
+        ├─ 1 PR, indissociable ......... FUSION
+        │                                (une fiche ; les sujets deviennent des sections)
+        │
+        ├─ N PR, but commun ............ ÉPIC
+        │                                (N enfants distincts + un conteneur type: epic)
+        │
+        └─ N PR, buts distincts ........ FICHES INDÉPENDANTES
+                                         (ni fusion ni épic — de simples voisines)
+
+Une fiche empile des sujets livrables séparément → DIVISION, puis on re-pose la question.
+```
+
+Le critère est **la PR**, pas le ressenti : une PR = indissociable = fusion. Décidable sans hésiter.
+
+### D3 — Le critère de division (« trop grosse »)
+
+**Un test, pas un seuil** : une fiche est trop grosse quand **on peut en livrer une moitié dans une
+PR mergeable et utile toute seule**. Si oui, elle est divisible.
+
+Signaux qui invitent à poser le test (des indices, ils ne tranchent pas) :
+
+- un **« et »** dans le titre qui joint des sujets sans rapport (« device **et** preview **et** testbed ») ;
+- plusieurs **étages** de la refonte trois-étages (ADR-0039) touchés dans une même fiche ;
+- beaucoup de critères d'acceptation qui se rangent en **groupes livrables séparément** (~5+ est un
+  indice, mais c'est l'**indépendance** qui compte, pas le nombre).
+
+Les seuils numériques restent des indices soumis à l'arbitrage PO.
+
+### D4 — Les épics au board d'avancement (réponse au finding Codex P2)
+
+L'épic **ne devient pas une carte** dans la liste des fiches tirables — l'y injecter fausserait le
+compte des tirables et le tri par priorité. Il reste dans **sa propre section**, qui gagne un
+**cumul de l'avancement des enfants** : « 3 enfants — 1 livré / 1 en cours / 1 todo », plus un ratio.
+
+Le statut de l'épic est **calculé, jamais saisi** : tous les enfants livrés → épic livré ; au moins
+un enfant actif → épic en cours. Le cumul se calcule dans `avancement-data.ts` (on enrichit
+l'objet épic de compteurs par statut) — **pas de champ tenu à la main** (ADR-0001).
+
+Ça répond au finding Codex P2 sur la [PR #166](https://github.com/elzinko/vectorz/pull/166)
+(aujourd'hui l'épic n'affiche aucun avancement) sans casser l'invariant « le LLM ne range jamais ».
+
+### D5 — Réversibilité (git = substrat)
+
+Chaque geste est réversible parce que les relations sont des **champs de front-matter** et les
+fusions du **markdown** :
+
+- **Sortir un enfant d'un épic** : vider son champ `epic:`, régénérer l'index. Un seul champ bouge.
+  Si l'épic tombe à zéro enfant, on le retire.
+- **Défusionner** : rejouer une **division** (nouvelles fiches, ids horodatés neufs) ; le contenu
+  d'origine reste dans `git log`. La division est l'inverse de la fusion.
+- **Traçabilité de la fusion** (le seul geste un peu « lossy ») : noter l'id de la fiche absorbée
+  dans la survivante (comme lot 4b : « 0177 absorbée »). Le tombstone reste lisible sans fouiller git.
+
+## Frontière doctrine ↔ outil (à garder nette)
+
+- **Cette fiche = la doctrine.** Elle dit **quel geste** dans quel cas (l'arbre D2). Elle se
+  matérialise dans `rules/` (ou le playbook backlog).
+- **[20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md) = l'outil.**
+  Il applique ces règles **en masse** (clusters sur `labels:` / `depends:` ; sanitation LLM des faux
+  positifs). Il **consomme** cette doctrine comme sa fonction de décision ; il ne la redéfinit pas.
+- Modèle de données des tags = fiche `0092` (`labels:` / `depends:`). La doctrine s'y adosse, ne
+  réinvente aucun champ. Sanity-check doublons/regroupement = fiche `0071` `review` (shipped).
+
+## Application au cas testbed (le 1er cas concret)
+
+**Verdict : ÉPIC « cœur testbed + adaptateurs preview/device » — pas une skill fusionnée.**
+
+On applique D2. Les trois se livrent-ils en **une seule PR indissociable** ? Non :
+
+- **0102 `ezk-testbed`** (le cœur « démarrer l'env selon la recette ») se livre seul et sert seul —
+  il a déjà 4 consommateurs (`ezk-pr run`, `ezk-preview` cas B, `ezk-sprint` étape 6, `verify`/`run`) ;
+- **`ezk-preview`** (surface URL) et **`ezk-device`** (surface téléphone/adb) se posent **par-dessus**,
+  chacune livrable à son rythme.
+
+But commun ? Oui — « voir / tester tourner un travail en cours ». **N PR + but commun → épic.**
+
+Conséquences (à construire à ton OK) : créer un conteneur `type: epic` ; **débloquer 0102** et le
+rattacher comme **enfant-cœur** (il n'est pas absorbé, il devient la première brique) ;
+`ezk-preview` et `ezk-device` = enfants-adaptateurs.
+
+**La « commande unique à modes » du PO n'est pas contradictoire — elle est orthogonale.** Une seule
+commande `ezk-preview` (modes web / device / desktop) via socle d'agent + compétences composables,
+c'est du **packaging / UX de la surface** (combien de commandes l'utilisateur tape). La doctrine
+tranche le **backlog** (combien de livrables distincts). On peut avoir un **épic à enfants distincts**
+*dont* les surfaces sont exposées **derrière une commande unique**. Les deux ne s'opposent pas.
+
+> **Reste ouvert (arbitrage PO au build)** : preview et device sont deux adaptateurs minces. S'ils se
+> livrent dans **la même PR** → les fusionner en un enfant « surfaces » → épic à **2 enfants**. S'ils
+> se livrent sur des calendriers indépendants → **3 enfants**. À trancher selon la finesse réelle des
+> adaptateurs. Le verdict « épic » ne dépend pas de ce choix.
+
+## Critères d'acceptation (build — à ton OK)
+
+- [ ] La règle décidable D2 écrite dans `rules/` (ou le playbook backlog), avec l'arbre de décision.
+- [ ] La sémantique de l'épic (D1) documentée — une seule définition.
+- [ ] Le board affiche le cumul des enfants d'un épic (D4) — calculé, pas saisi (finding Codex P2 clos).
+- [ ] La frontière doctrine ↔ outil ([20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md)) écrite.
+- [ ] Le cas testbed matérialisé en épic (conteneur + 0102 débloqué en enfant-cœur).
 
 ## Comment vérifier
 
-Au grooming : la règle de décision fusion/épic/division existe et tranche les trois cas réels de
-la session du 2026-08-25 (recette, lot 4b, fiche suite) sans hésitation.
+La règle D2 tranche sans hésiter les trois cas réels de la session du 2026-08-25 (recette = fusion,
+lot 4b = division + absorption, fiche suite = division) et le cas testbed (= épic).
+
+## Anti-doublon
+
+- Fiche **20260812104022240** « Rationalisation du backlog » = l'**outil**. **Cette fiche = la
+  doctrine** qu'il applique. Distinctes.
+- Fiche `0071` `review` (shipped) — sanity-check doublons/regroupement par jugement LLM.
+- Fiche `0092` — champs `labels:` / `depends:` (le modèle de données des tags).
 
 ## Notes
 
 Origine : demande PO du 2026-08-25 (`/ezk-backlog add`), née du finding Codex P2 sur le board
 (#166) et des trois gestes de composition faits à la main pendant la mise à plat du backlog.
+Grooming : 2026-08-25, panel `ezk-architect` (décisions D1–D5 + verdict testbed).

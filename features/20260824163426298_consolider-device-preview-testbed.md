@@ -109,7 +109,12 @@ modes, ou un socle + adaptateurs).
   checkout git-first, `gh` en raccourci).
 - **Faux ami** : `ezk-recipy` (0147) = scanner de repos froids, **pas** les « recettes de démarrage »
   du testbed — ne pas confondre.
-- **Cas d'usage de la doctrine des épics** : ce sujet (cœur `testbed` + adaptateurs `preview`/`device`)
-  est l'exemple concret « fusion vs épic vs division » à trancher — voir la fiche doctrine
-  [20260825123700998](20260825123700998_doctrine-composition-features.md). Le grooming de la doctrine
-  et celui de ce sujet s'éclairent mutuellement.
+- **Verdict de la doctrine des épics (2026-08-25)** : ce sujet est un **ÉPIC** « cœur `testbed` (0102)
+  + adaptateurs `preview`/`device` », **pas** une skill fusionnée. Les trois se livrent en plusieurs
+  PR pour un but commun (« voir/tester tourner un travail en cours ») → épic. La « commande unique à
+  modes » reste possible : c'est du **packaging**, orthogonal au découpage backlog. Reste ouvert au
+  build : preview + device = **2 enfants** (fusionnés en « surfaces ») ou **3 enfants** (séparés),
+  selon qu'ils se livrent dans la même PR. Doctrine :
+  [20260825123700998](20260825123700998_doctrine-composition-features.md).
+- **À construire (à l'OK PO)** : créer le conteneur `type: epic`, **débloquer 0102** et le rattacher
+  comme enfant-cœur, `ezk-preview` / `ezk-device` en enfants-adaptateurs.
