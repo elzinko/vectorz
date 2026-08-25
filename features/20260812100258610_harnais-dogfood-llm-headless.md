@@ -55,7 +55,7 @@ avec un verdict **OK/KO déterministe** sur l'émission réelle.
 - **Origine** : `docs/DOGFOOD.md` §« Suite produit » (ex-réf fantôme `2103`, jamais créée).
 - **Voisines** : [0102](0102-ezk-testbed-brique-boot-env-test.md) (brique boot env — **composée**),
   [0104](done/0104-kit-analyse-session-supervision.md) (kit analyse session — d'où vient `DOGFOOD.md`),
-  [0169](0169-explorateur-llm-par-pr.md) (explorateur LLM par PR — angle complémentaire sur les trous fonctionnels).
+  [0169](done/0169-explorateur-llm-par-pr.md) (explorateur LLM par PR — angle complémentaire sur les trous fonctionnels).
 - **Priorité P3 / `idea`** : pas requis pour le dogfood humain d'aujourd'hui — c'est la v2.
   À **groomer** au moment de la tirer.
 - **Dédoublonnage** : proche de 0102/0104/0169 mais distinct (couche *acteur LLM headless*,

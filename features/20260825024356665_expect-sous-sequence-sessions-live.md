@@ -18,7 +18,7 @@ created: 2026-08-25
 
 ## En clair
 
-L'oracle `supervision:analyze --expect` (fiche [0169](0169-explorateur-llm-par-pr.md), shippé) compare
+L'oracle `supervision:analyze --expect` (fiche [0169](done/0169-explorateur-llm-par-pr.md), shippé) compare
 aujourd'hui un journal à un scénario en mode **strict** : le scénario doit énumérer **chaque** event,
 dans l'ordre exact. C'est parfait pour des journaux **contrôlés** (fixtures, tests déterministes) — le
 socle. Mais dès qu'on veut asserter sur une **session live** (le rôle des briques 2/3 : pilote de siège,
@@ -66,6 +66,6 @@ intercalés) → code retour 0 ; réordonner un jalon → code retour non-nul.
 
 ## Notes / décisions
 
-- Lignée : suite directe de [0169](0169-explorateur-llm-par-pr.md) (comparateur strict, socle).
+- Lignée : suite directe de [0169](done/0169-explorateur-llm-par-pr.md) (comparateur strict, socle).
   À tirer quand les **briques 2/3** ([[20260821210633457]]) créent le besoin de tester des sessions live.
 - Origine : P1 #3 de la revue adverse ezk-reviewer du 2026-08-25.

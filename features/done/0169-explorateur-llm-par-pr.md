@@ -25,14 +25,14 @@ par PR) sont dans [[20260821210633457]] ; l'article dans [[20260821210633522]].
 ## Contexte / Problème
 
 **Les tests écrits vérifient des réponses à des questions déjà posées.** C'est pour ça que
-[0105](done/0105-bug-moniteur-silence-dogfood.md) et
-[0168](done/0168-run-orphelin-verrou-sans-cle.md) ont échappé à toute la suite : le runtime était
+[0105](0105-bug-moniteur-silence-dogfood.md) et
+[0168](0168-run-orphelin-verrou-sans-cle.md) ont échappé à toute la suite : le runtime était
 testé, le serveur MCP était testé, et le produit était pourtant inutilisable. Ces défauts sont des
 **trous entre les pièces** — un trou ne se teste pas, il se rencontre.
 
 Pour outiller la détection, il faut d'abord un **oracle** : quelque chose qui sait dire « ce journal
 de session ne correspond pas à ce qu'on attendait ». `supervision:analyze`
-([0104](done/0104-kit-analyse-session-supervision.md)) parse déjà le journal, croise les transcripts
+([0104](0104-kit-analyse-session-supervision.md)) parse déjà le journal, croise les transcripts
 et rend un verdict — mais un verdict de cohérence *intrinsèque* (« start + activité + fin »), pas une
 comparaison à un attendu.
 
@@ -82,7 +82,7 @@ toujours.
 
 ## Notes / décisions
 
-- **Prérequis dur : [0168](done/0168-run-orphelin-verrou-sans-cle.md)** — **shippé** (verrou run-unique
+- **Prérequis dur : [0168](0168-run-orphelin-verrou-sans-cle.md)** — **shippé** (verrou run-unique
   débloquable). Prérequis satisfait.
 - **Scindée le 2026-08-21** (décision PO « garder le 1er bout ») : briques 2 (pilote de siège) et 3
   (explorateur par PR) → [[20260821210633457]] ; volet article → [[20260821210633522]]. Le nom de
