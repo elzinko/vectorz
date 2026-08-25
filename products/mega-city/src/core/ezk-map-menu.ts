@@ -27,7 +27,10 @@ export const FEATURED_SLUG = 'methode-mega-city';
  * appelant).
  */
 export function readMetaTitle(metaYaml: string): string | null {
-  const m = metaYaml.match(/^[ \t]*(?:title|titre)[ \t]*:[ \t]*(.+?)[ \t]*$/im);
+  // Ancré en COLONNE 0 : une clé de premier niveau YAML n'est jamais indentée. Sans cet
+  // ancrage, une sous-clé `title:`/`titre:` d'un autre bloc serait captée par erreur (revue
+  // adverse, P2). Si les deux clés coexistent, la 1re ligne l'emporte (ordre du fichier).
+  const m = metaYaml.match(/^(?:title|titre)[ \t]*:[ \t]*(.+?)[ \t]*$/im);
   if (!m) return null;
   const value = m[1].replace(/^["']|["']$/g, '').trim();
   return value || null;
@@ -61,8 +64,10 @@ export function renderMenuHtml(items: DiagramEntry[]): string {
     items.length === 0
       ? '<p class="vide">Aucune carte dans <code>diagrams/</code>.</p>'
       : items
-          .map((d, i) => {
-            const featured = i === 0;
+          .map((d) => {
+            // « featured » par IDENTITÉ (la carte méthode), pas par position : si la méthode
+            // est absente, aucune carte ne porte le badge « méthode » à tort (revue adverse, P2).
+            const featured = d.slug === FEATURED_SLUG;
             const href = `/diagrams/${escapeHtml(d.slug)}/${escapeHtml(d.entry)}`;
             const tag = featured ? '<span class="tag">méthode</span>' : '';
             return `  <a class="carte${featured ? ' featured' : ''}" href="${href}">

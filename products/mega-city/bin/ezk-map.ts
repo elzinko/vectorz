@@ -101,36 +101,45 @@ if (explicitSlug && !found) {
 const START_PORT = Number(process.env.EZK_MAP_PORT ?? 4173);
 
 const server = createServer((req, res) => {
-  const url = new URL(req.url ?? '/', 'http://127.0.0.1');
+  // Garde-fou : une requête malformée (URL invalide comme `//`, %-encoding cassé comme
+  // `%ZZ`) jette de façon SYNCHRONE dans ce callback — sans ce try, l'exception n'est
+  // capturée par personne et le process MEURT. La feature promet « naviguer sans relancer
+  // le serveur » : il ne doit mourir sur AUCUNE requête (revue adverse, P1).
+  try {
+    const url = new URL(req.url ?? '/', 'http://127.0.0.1');
 
-  // Page d'accueil : le menu des cartes (fiche 20260825152954193). Rendu à la volée depuis
-  // `diagrams/` — un lien par carte, méthode en tête, sans relancer le serveur.
-  if (url.pathname === '/' || url.pathname === '') {
+    // Page d'accueil : le menu des cartes (fiche 20260825152954193). Rendu à la volée depuis
+    // `diagrams/` — un lien par carte, méthode en tête, sans relancer le serveur.
+    if (url.pathname === '/' || url.pathname === '') {
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+      });
+      res.end(renderMenuHtml(orderDiagrams(diagrams)));
+      return;
+    }
+
+    const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, '');
+    const target = resolve(REPO_ROOT, rel);
+
+    // Garde-fou de traversée : on ne sort JAMAIS de la racine du dépôt.
+    if (target !== REPO_ROOT && !target.startsWith(REPO_ROOT + sep)) {
+      res.writeHead(403).end('403');
+      return;
+    }
+    if (!existsSync(target) || statSync(target).isDirectory()) {
+      res.writeHead(404).end('404');
+      return;
+    }
     res.writeHead(200, {
-      'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'no-store',
+      'Content-Type': MIME[extname(target).toLowerCase()] ?? 'application/octet-stream',
+      'Cache-Control': 'no-store', // on itère sur la carte : jamais de version périmée
     });
-    res.end(renderMenuHtml(orderDiagrams(diagrams)));
-    return;
+    createReadStream(target).pipe(res);
+  } catch {
+    // URL invalide / %-encoding cassé → 400, jamais un crash.
+    res.writeHead(400).end('400');
   }
-
-  const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, '');
-  const target = resolve(REPO_ROOT, rel);
-
-  // Garde-fou de traversée : on ne sort JAMAIS de la racine du dépôt.
-  if (target !== REPO_ROOT && !target.startsWith(REPO_ROOT + sep)) {
-    res.writeHead(403).end('403');
-    return;
-  }
-  if (!existsSync(target) || statSync(target).isDirectory()) {
-    res.writeHead(404).end('404');
-    return;
-  }
-  res.writeHead(200, {
-    'Content-Type': MIME[extname(target).toLowerCase()] ?? 'application/octet-stream',
-    'Cache-Control': 'no-store', // on itère sur la carte : jamais de version périmée
-  });
-  createReadStream(target).pipe(res);
 });
 
 function listen(port: number, attemptsLeft: number): void {

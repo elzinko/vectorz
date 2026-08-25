@@ -28,8 +28,12 @@ describe('readMetaTitle (fiche 20260825152954193)', () => {
     expect(readMetaTitle('links:\n  entry: board.html\n  fiche: ../x.md')).toBeNull();
   });
 
-  it('tolère les guillemets simples et les espaces', () => {
-    expect(readMetaTitle("  title:   'Titre espacé'  ")).toBe('Titre espacé');
+  it('tolère les guillemets simples et les espaces internes', () => {
+    expect(readMetaTitle("title:   'Titre espacé'  ")).toBe('Titre espacé');
+  });
+
+  it('IGNORE une clé title/titre indentée (sous-clé d’un autre bloc, pas un titre de 1er niveau)', () => {
+    expect(readMetaTitle('links:\n  title: piège indenté\n')).toBeNull();
   });
 });
 
@@ -68,11 +72,20 @@ describe('renderMenuHtml', () => {
     expect(html).toContain("Board d'avancement");
   });
 
-  it('met en avant la 1re carte (featured)', () => {
+  it('met en avant la carte méthode (par identité, pas par position)', () => {
     const html = renderMenuHtml(items);
     expect(html).toMatch(/class="carte featured"/);
-    // Une seule carte featured (la tête).
+    // Une seule carte featured (la méthode).
     expect(html.match(/carte featured/g)).toHaveLength(1);
+  });
+
+  it('ne met AUCUNE carte en avant si la méthode est absente (pas de badge trompeur)', () => {
+    const html = renderMenuHtml([
+      { slug: 'avancement', entry: 'board.html', title: 'Board' },
+      { slug: 'qualite-deploiement', entry: 'd.svg', title: 'Qualité' },
+    ]);
+    expect(html).not.toContain('carte featured');
+    expect(html).not.toContain('méthode</span>');
   });
 
   it('échappe le texte de titre (anti-injection HTML)', () => {
