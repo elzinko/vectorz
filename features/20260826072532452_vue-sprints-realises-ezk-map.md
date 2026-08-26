@@ -96,9 +96,9 @@ et affiche), le mode dégradé pour les anciens, le test d'invariant.
    parsing du corps en prose (fragile — écarté par le constat ci-dessus).
 2. **Producteur** : la convention s'ancre dans **`ezk-archive`** (recommandé — il est
    déjà le générateur des comptes-rendus).
-3. **Découpage** : 1a (source) peut devenir une **fiche sœur** si l'archi juge que
-   toucher `ezk-archive` mérite son propre incrément — à trancher au sprint, sans casser
-   le « 3 fiches sans épic » décidé par le PO.
+3. **Découpage** : 1a (la source) **a désormais sa fiche sœur** —
+   [`ezk-archive` émet un compte-rendu structuré](20260826121429274_ezk-archive-compte-rendu-structure.md)
+   (créée le 2026-08-26, arbitrage symétrie). Cette vue (1b) la **consomme**.
 4. **Anciens comptes-rendus** : mode dégradé **(recommandé)** vs rétro-fit.
 
 ## Dépendances
