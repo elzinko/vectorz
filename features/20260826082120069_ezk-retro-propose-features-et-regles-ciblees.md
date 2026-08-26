@@ -79,8 +79,9 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
 
 - Rejouer une rétro sur une friction **structurelle** → au moins une proposition
   **`feature`** en sort.
-- Décider une règle ciblée « agent `ezk-dev` » → vérifier qu'elle est **rattachée au
-  bundle de `ezk-dev`**, pas au silo global.
+- Décider une règle ciblée « agent `ezk-dev` » → vérifier qu'elle est portée par le
+  **lien explicite agent→règle** et **absente des bundles profile-global** (sinon
+  `expandProfile` l'appliquerait à tous les consommateurs du bundle).
 - Ouvrir la capture : les **cases d'acceptation sont vides** tant que le PO n'a pas tranché.
 
 ## Notes / décisions

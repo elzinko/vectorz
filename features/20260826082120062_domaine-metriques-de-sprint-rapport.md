@@ -57,8 +57,9 @@ clôture d'un sprint :
    - **tokens consommés** — via la télémétrie de supervision / le domaine budget ;
    - **KPI scrum** — fiches livrées, vélocité, blocages, retouches de PR, nombre de
      tours de revue.
-2. **Écrit** un **rapport de sprint versionné et commité** (emplacement à trancher au
-   groom : `docs/sprints/` ou `.improvement/`), ouvrant par « En clair ».
+2. **Écrit** un **rapport de sprint versionné et commité**, dans un **répertoire tracké**
+   (ex. `docs/sprints/`) — **pas** `.improvement/`, gitignoré à la racine (données runtime
+   régénérables, non versionnées). Emplacement exact à trancher au groom. Ouvre par « En clair ».
 3. **Valide** le rapport avec un **validateur** (sur le modèle de `journal-validator`) :
    un rapport incomplet ou incohérent est refusé.
 
@@ -101,5 +102,5 @@ valider. Le déclenchement « sur preuve chiffrée » est le Sujet B (ADR-030), 
 - **Frontière** : PAS l'auto-amélioration déclenchée par métrique (Sujet B / ADR-030).
 - **Voisins** : épic 0051 (qualité produit), 0055 (KPI agrégés commit→PR→sprint→version),
   0100 (sprint intake — santé du backlog à l'entrée).
-- **À groomer (DoR) au tirage** : emplacement exact du rapport, liste finale des KPI,
-  source précise des tokens (supervision vs budget).
+- **À groomer (DoR) au tirage** : emplacement exact du rapport (**répertoire tracké**,
+  pas `.improvement/`), liste finale des KPI, source précise des tokens (supervision vs budget).
