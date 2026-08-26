@@ -1,7 +1,24 @@
 # ADR 0017 — Regroupement en épics : champ front-matter `epic:`, pas de tags libres ni de dossiers
 
-- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)**
+- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)** ; **A8 supersédé par A15 (2026-08-26, fiche 20260825123700998)**
 - Date : 2026-07-17
+
+## Amendement A15 — statut d'épic DÉRIVÉ au board (2026-08-26, fiche 20260825123700998)
+
+**Supersède A8** (« son statut est curé à la main, non dérivé des enfants ; dériver serait de
+l'outillage prématuré »). La refonte trois-étages du board (ADR-0039) a rendu ce calcul ni
+prématuré ni coûteux : `diagrams/avancement/board.html` compile déjà l'état des fiches. Décision
+tranchée au **grooming panel `ezk-architect` du 2026-08-25** (D4 de la doctrine de composition,
+`docs/backlog-composition-doctrine.md`).
+
+- **Le statut d'un épic est désormais DÉRIVÉ de ses enfants, au niveau du board** — jamais écrit
+  dans le front-matter (ADR-0001 : le module calcule, le board affiche). Règle : tous les enfants
+  livrés (`done/`) → `shipped` ; au moins un enfant livré **ou** engagé (`todo`/`in-progress`/
+  `blocked`) → `in-progress` ; que des `idea` → `idea` ; **aucun enfant → le statut saisi reste le
+  fallback**. Calcul dans `src/core/avancement-data.ts` (`deriveEpicStatus` + `childCounts`).
+- **La contrepartie A8** (`review` signale les incohérences épic-statut/enfants) **devient
+  caduque** : l'incohérence ne peut plus exister, le statut étant recalculé à chaque `regen`.
+- **À ratifier par le PO** — amendement posé en autonomie sur la base du grooming panel.
 
 ## Amendement A14 — liste unique + champ `product:` (2026-07-30, fiche 0064)
 
@@ -51,10 +68,9 @@ actuel ignore les champs inconnus (ajout non cassant, vérifié le 2026-07-17).
    actionnable — `regen` la présente dans une **section à part** (comme les `idea`),
    le gate DoR ne s'applique pas à elle, et le tirage (`next --ready-only`,
    ADR-0016 §3) descend sur son prochain enfant ready, sinon passe à la fiche
-   suivante. **Son statut est curé à la main, non dérivé des enfants** (A8 — dériver
-   serait de l'outillage prématuré, clause ADR-0013) ; en contrepartie `review`
-   signale les incohérences : épic `shipped` avec enfants actifs, épic en `todo`
-   dont tous les enfants sont livrés.
+   suivante. **Son statut est DÉRIVÉ des enfants au niveau du board** (A8 **supersédé par
+   A15**, 2026-08-26 : dériver n'est plus prématuré, cf. ADR-0039 ; le champ saisi reste le
+   fallback zéro-enfant). Calcul dans `src/core/avancement-data.ts` (`deriveEpicStatus`).
 
 2. **Le lien enfant → épic est un champ front-matter optionnel `epic: <id>`.** C'est
    l'esprit du tag (une métadonnée, zéro déplacement de fichier) mais en **relation

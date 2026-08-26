@@ -199,6 +199,8 @@
 <p class="compteur" id="compteur"></p>
 <div class="grille" id="grille"></div>
 
+<section class="manques" id="epics-rollup"></section>
+
 <section class="manques">
   <h2>Ce que le board ne sait PAS montrer</h2>
   <ul>
@@ -1913,19 +1915,24 @@ window.EZK_AVANCEMENT = {
   {
    "id": "0034",
    "title": "Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)",
-   "status": "todo",
+   "status": "in-progress",
    "children": [
     "0018",
     "0020",
     "0024",
     "0038",
     "0040"
-   ]
+   ],
+   "childCounts": {
+    "blocked": 2,
+    "todo": 3,
+    "shipped": 4
+   }
   },
   {
    "id": "0051",
    "title": "Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)",
-   "status": "todo",
+   "status": "in-progress",
    "children": [
     "0052",
     "0053",
@@ -1934,57 +1941,76 @@ window.EZK_AVANCEMENT = {
     "0056",
     "0057",
     "0058"
-   ]
+   ],
+   "childCounts": {
+    "todo": 1,
+    "idea": 6
+   }
   },
   {
    "id": "0163",
    "title": "série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité",
-   "status": "todo",
+   "status": "idea",
    "children": [
     "0073",
     "0074"
-   ]
+   ],
+   "childCounts": {
+    "idea": 2
+   }
   },
   {
    "id": "20260813124026215",
    "title": "Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)",
    "status": "idea",
-   "children": []
+   "children": [],
+   "childCounts": {}
   },
   {
    "id": "20260813131737959",
    "title": "Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic)",
-   "status": "todo",
+   "status": "in-progress",
    "children": [
     "0066",
     "0161",
     "20260813131737962",
     "20260813131737971"
-   ]
+   ],
+   "childCounts": {
+    "idea": 4,
+    "shipped": 1
+   }
   },
   {
    "id": "20260815080413884",
    "title": "DoR agent-native — extensible par projet + readiness observable (épic)",
-   "status": "todo",
+   "status": "idea",
    "children": [
     "0100",
     "20260812104022231",
     "20260812104022243",
     "20260815080414006"
-   ]
+   ],
+   "childCounts": {
+    "idea": 4
+   }
   },
   {
    "id": "20260816131703334",
    "title": "Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro)",
-   "status": "todo",
+   "status": "in-progress",
    "children": [
     "20260825160456259"
-   ]
+   ],
+   "childCounts": {
+    "shipped": 1,
+    "todo": 1
+   }
   },
   {
    "id": "20260821163346487",
    "title": "Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau",
-   "status": "idea",
+   "status": "in-progress",
    "children": [
     "20260821163346490",
     "20260821163346493",
@@ -1994,17 +2020,25 @@ window.EZK_AVANCEMENT = {
     "20260821163346503",
     "20260821172716537",
     "20260821204737357"
-   ]
+   ],
+   "childCounts": {
+    "todo": 1,
+    "idea": 7
+   }
   },
   {
    "id": "20260824060737115",
    "title": "Épic — Marketing & site (orchestrateur, landing, recette site)",
-   "status": "todo",
+   "status": "in-progress",
    "children": [
     "0156",
     "0157",
     "20260821172716540"
-   ]
+   ],
+   "childCounts": {
+    "todo": 1,
+    "idea": 2
+   }
   }
  ],
  "filtres": {
@@ -3481,6 +3515,35 @@ window.EZK_PLAN = {
     s.addEventListener('change', render);
   });
   render();
+})();
+</script>
+
+<script>
+// Épics — avancement cumulé des enfants (fiche 20260825123700998, D4).
+// DOM + textContent, JAMAIS innerHTML sur du texte de fiche (même discipline que le board).
+(function renderEpics() {
+  var box = document.getElementById('epics-rollup');
+  if (!box) return;
+  var epics = (window.EZK_AVANCEMENT && window.EZK_AVANCEMENT.epics) || [];
+  if (!epics.length) return;
+  var h = document.createElement('h2');
+  h.textContent = 'Épics — avancement cumulé des enfants';
+  box.appendChild(h);
+  var ul = document.createElement('ul');
+  epics.forEach(function (e) {
+    var counts = e.childCounts || {};
+    var total = Object.keys(counts).reduce(function (n, k) { return n + counts[k]; }, 0);
+    var parts = Object.keys(counts).sort().map(function (k) { return counts[k] + ' ' + k; });
+    var li = document.createElement('li');
+    var strong = document.createElement('strong');
+    strong.textContent = '[' + e.status + '] ' + e.title;
+    var span = document.createElement('span');
+    span.textContent = ' — ' + total + ' enfant(s)' + (parts.length ? ' : ' + parts.join(' · ') : '');
+    li.appendChild(strong);
+    li.appendChild(span);
+    ul.appendChild(li);
+  });
+  box.appendChild(ul);
 })();
 </script>
 
