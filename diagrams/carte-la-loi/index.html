@@ -11,44 +11,53 @@
   #status.error { background: #fdecea; color: #611a15; }
   #status code { background: rgba(0,0,0,0.08); padding: 0 4px; border-radius: 3px; }
   #search { width: 100%; max-width: 460px; padding: 0.4rem 0.6rem; font-size: 1rem; margin-bottom: 1rem; }
-  .columns { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start; }
-  .column { flex: 1 1 260px; min-width: 240px; }
+  /* Layout : les colonnes à gauche, un panneau de détail COLLANT à droite (toujours visible). */
+  .layout { display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+  .columns { flex: 1 1 520px; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start; min-width: 280px; }
+  .column { flex: 1 1 240px; min-width: 220px; }
   .column h2 { font-size: 1rem; border-bottom: 2px solid #ddd; padding-bottom: 0.25rem; }
   .node { border: 1px solid #ddd; border-radius: 6px; padding: 0.4rem 0.6rem; margin-bottom: 0.4rem; cursor: pointer; }
   .node.hidden { display: none; }
   .node .id { font-weight: 600; }
   .node .prov { font-size: 0.8rem; color: #555; word-break: break-all; }
   .node.selected { border-color: #3366cc; background: #eef3ff; }
-  details.detail { margin-top: 1.5rem; border: 1px solid #ccc; border-radius: 6px; padding: 0.6rem 0.8rem; }
-  details.detail ul { margin: 0.3rem 0 0.6rem 1.2rem; }
+  .detail-panel {
+    position: sticky; top: 1rem; flex: 0 0 300px; align-self: flex-start;
+    max-height: calc(100vh - 2rem); overflow: auto;
+    border: 1px solid #ccc; border-radius: 6px; padding: 0.6rem 0.9rem; background: #fafafa;
+  }
+  .detail-panel h2 { font-size: 1rem; margin: 0 0 0.4rem; }
+  .detail-panel ul { margin: 0.2rem 0 0.6rem 1.2rem; padding: 0; }
   .empty { color: #777; font-style: italic; }
-  .hint { color: #555; font-size: 0.9rem; }
+  @media (max-width: 720px) { .detail-panel { position: static; flex-basis: 100%; max-height: none; } }
 </style>
 </head>
 <body>
   <h1>LA LOI — règles, bundles, profils</h1>
-  <p>Lu en direct de <code>.ezk/graph.compiled.json</code> (ADR-0040). Clique un <strong>profil</strong> pour voir « qui active quoi » (héritage compris), une <strong>règle</strong> pour voir quel agent la garde.</p>
+  <p>Lu en direct de <code>.ezk/graph.compiled.json</code> (ADR-0040). Clique un <strong>profil</strong> pour voir « qui active quoi » (héritage compris), une <strong>règle</strong> pour voir quel agent la garde, un <strong>bundle</strong> pour ses règles.</p>
   <input id="search" type="search" placeholder="Chercher (ex. règles, composition, mvp-first, clean-code)…" />
   <div id="status"></div>
   <div id="content" style="display:none">
-    <div class="columns">
-      <div class="column">
-        <h2>Profils</h2>
-        <div id="col-profile"></div>
+    <div class="layout">
+      <div class="columns">
+        <div class="column">
+          <h2>Profils</h2>
+          <div id="col-profile"></div>
+        </div>
+        <div class="column">
+          <h2>Bundles</h2>
+          <div id="col-bundle"></div>
+        </div>
+        <div class="column">
+          <h2>Règles</h2>
+          <div id="col-rule"></div>
+        </div>
       </div>
-      <div class="column">
-        <h2>Bundles</h2>
-        <div id="col-bundle"></div>
-      </div>
-      <div class="column">
-        <h2>Règles</h2>
-        <div id="col-rule"></div>
-      </div>
+      <aside class="detail-panel">
+        <h2 id="detail-title">Détail</h2>
+        <div id="detail-body" class="empty">Clique un profil, un bundle ou une règle ci-contre.</div>
+      </aside>
     </div>
-    <details class="detail" id="detail" open>
-      <summary>Détail — clique un nœud ci-dessus</summary>
-      <div id="detail-body" class="empty">Aucun nœud sélectionné.</div>
-    </details>
   </div>
 
 <script>
@@ -123,7 +132,6 @@
     el.className = kind;
     el.textContent = '';
     el.append(document.createTextNode(text));
-    // `codes` = suffixe optionnel {avant, code, apres} rendu en <code> sans innerHTML.
     if (codes) {
       el.append(document.createTextNode(codes.avant || ' '));
       const c = document.createElement('code');
@@ -194,25 +202,24 @@
 
   function renderDetail(loi, kind, id) {
     const body = document.getElementById('detail-body');
-    const summary = document.querySelector('#detail summary');
+    const title = document.getElementById('detail-title');
     body.className = '';
     body.textContent = '';
     if (kind === 'profile') {
-      summary.textContent = `Profil « ${id} » — qui active quoi (héritage compris)`;
+      title.textContent = `Profil « ${id} » — qui active quoi (héritage compris)`;
       const wa = whoActivates(loi, id);
       appendSection(body, 'Bundles', wa.bundles);
       appendSection(body, 'Règles (via ces bundles)', wa.rules);
       appendSection(body, 'Agents', wa.agents);
       appendSection(body, 'Skills', wa.skills);
     } else if (kind === 'rule') {
-      summary.textContent = `Règle « ${id} » — qui la garde ?`;
+      title.textContent = `Règle « ${id} » — qui la garde ?`;
       appendSection(body, 'Agents qui la gardent (enforces)', enforcingAgents(loi, id));
       appendSection(body, 'Provenance', [provenancePath('rule', id)]);
     } else if (kind === 'bundle') {
-      summary.textContent = `Bundle « ${id} » — ses règles (héritage compris)`;
+      title.textContent = `Bundle « ${id} » — ses règles (héritage compris)`;
       appendSection(body, 'Règles', bundleRules(loi, id));
     }
-    document.getElementById('detail').open = true;
   }
 
   function wireSelection(loi) {
