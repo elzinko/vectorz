@@ -26,6 +26,55 @@ gardien (comme `ezk-steward` pour les skills). On **instancie**, on ne crée pas
 **Grooming du 2026-08-25 (panel `ezk-architect`) : tout est tranché.** Cette fiche est prête à
 construire — à ton OK. C'est de l'**outillage de capitalisation**, hors méthode scrum (proche archi).
 
+## MAJ 2026-08-26 — apport PO : l'analogie « cuisine » + CLI d'abord (à plier dans le gabarit, étape 1)
+
+> Non destructif. Le design **D1–D5 reste tranché**. Ceci **enrichit le gabarit de corps** (D2)
+> avant construction : le PO **nomme les rubriques** par une analogie de cuisine et ajoute un
+> principe d'outillage. À intégrer au gabarit à l'**étape 1** du plan de construction.
+
+**En clair.** Le corps normalisé de D2 gagne des **rubriques nommées** par l'analogie cuisine.
+L'analogie rend explicites deux choses que le gabarit noyait : ce qu'il faut **avoir** (comptes,
+secrets) vs les **outils** qui exécutent, et les **gestes manuels** vs les étapes automatiques.
+
+| analogie (PO) | rubrique de recette | contenu |
+|---|---|---|
+| **Ingrédients** | Prérequis / front-matter | comptes, **secrets**, variables (ex. compte R2, `R2_PUBLIC_URL`, token Vercel, nom de domaine) |
+| **Ustensiles** | Outils | les **CLI** qui font le travail (`wrangler`, `vercel`, `gh`, `cloudflared`) — voir « CLI d'abord » |
+| **Préliminaires** | Gestes manuels | ce qui **ne s'automatise pas** : créer le compte, valider un paiement — marqués ⚙️ dans la checklist |
+| **Le concept** | Mécanisme + schéma | l'**archi** en un schéma texte (déjà prévu par D2) |
+| **Exemples pour goûter** | Référence | l'implémentation prouvée (`source:`) + un run d'exemple |
+| **Les étapes** | Playbook | la suite **tâche-après-tâche** (déjà prévu par D2) |
+
+La **checklist « rien d'oublié »** et son **En clair** restent (D2 inchangé). L'analogie ne
+remplace pas le format : elle **nomme** ses cases pour qu'une recette se lise comme une recette.
+
+**Principe d'outillage — CLI d'abord (les ustensiles).** Une recette pilote les fournisseurs
+**par leur CLI**, jamais par des clics : Cloudflare via `wrangler`, Vercel via `vercel`, GitHub
+via `gh`. Les secrets se **récupèrent et se câblent par la CLI** (`gh auth token`, `wrangler
+secret put`, `vercel env`), pas par copier-coller manuel. Un geste sans CLI = un **préliminaire**
+marqué ⚙️.
+
+**Le format doit rester améliorable.** Aujourd'hui la « recette bien formée » est gardée par
+**`ezk-chef` + le bundle `rules/recipe/*`** (jugement + présence), pas par un **schéma déclaré
+que la machine vérifie seule**. Le PO veut faire **évoluer le format par itérations** — d'où une
+idée sœur à instruire : un **schéma markdown déclaratif + validateur mécanique**, transverse
+(fiches, ADR, recettes). Fiche
+[`20260826112620281`](20260826112620281_schema-markdown-declaratif-validateur.md).
+
+**Cobaye naturel = le cas R2 / Vercel / domaines.** La chaîne « créer un R2 + déployer un site
+Vercel + rattacher les domaines **dev / staging / prod** » est le premier vrai cas. R2 + site +
+endpoint de téléchargement sont **déjà** capturés à la main dans
+[`recipes/plan-distribution-app.md`](../recipes/plan-distribution-app.md) (méthode muti). Le
+**rattachement multi-environnements des domaines** n'y est **pas encore** : c'est le trou à
+combler quand on tirera la construction.
+
+> **Précision PO 2026-08-26.** Le rattachement passe par l'**API IONOS** (le registrar des
+> domaines), pas par Vercel en direct. **Préliminaire ⚙️ par projet** : aller sur le compte
+> du domaine IONOS, **s'inscrire à l'API**, récupérer les **clés** ; **joindre la doc API
+> IONOS** à la recette. Puis **étapes automatiques** via l'API : pointer `dev` / `staging` /
+> `prod` vers le déploiement Vercel. Bel exemple de l'analogie : un **préliminaire** manuel
+> (⚙️), un **ustensile** (l'API/CLI IONOS), des **étapes** scriptées.
+
 ## Le pattern (la découverte)
 
 `ezk-steward` est au catalogue de skills ce que **`ezk-chef`** est aux recettes : un gardien qui

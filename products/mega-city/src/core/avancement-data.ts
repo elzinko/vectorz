@@ -16,7 +16,15 @@ export const STATUTS: readonly string[] = [
   'idea',
   'shipped',
 ];
-const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
+/** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
+export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
+
+/**
+ * `type` de fiche — jusqu'ici documenté seulement en commentaire, dupliqué à 5 endroits
+ * (fiches.ts, plan-head.ts, ezk-backlog/init.sh, SKILL.md, feature-template.md).
+ * Centralisé ici (aux côtés de STATUTS/PRIOS) pour devenir la source unique — fiche 652/281.
+ */
+export const TYPES: readonly string[] = ['feature', 'bug', 'refactor', 'chore', 'epic'];
 
 export interface BoardFiche {
   id: string;

@@ -23,7 +23,10 @@
     "plan:head": "tsx bin/plan-head.ts",
     "composes:graph": "tsx bin/regen-composes-graph.ts",
     "graph:check": "tsx bin/ezk-graph.ts",
+    "graph:compile": "tsx bin/graph-compile.ts",
+    "graph:query": "tsx bin/graph-query.ts",
     "map:data": "tsx bin/regen-map-data.ts",
+    "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",
     "avancement:regen": "tsx bin/regen-avancement.ts",
     "plan-view:regen": "tsx bin/regen-plan-view.ts"

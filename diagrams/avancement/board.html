@@ -241,11 +241,30 @@ window.EZK_AVANCEMENT = {
   "shipped": 117,
   "todo": 48,
   "blocked": 5,
-  "in-progress": 3,
-  "idea": 76
+  "in-progress": 5,
+  "idea": 78
  },
  "tirables": 1,
  "actives": [
+  {
+   "id": "20260826122532943",
+   "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
+   "type": "feature",
+   "priority": "P0",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "architecture",
+    "format",
+    "moteur",
+    "fondation",
+    "bmad"
+   ],
+   "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md"
+  },
   {
    "id": "0030",
    "title": "MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur)",
@@ -501,7 +520,7 @@ window.EZK_AVANCEMENT = {
    "title": "Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend",
    "type": "feature",
    "priority": "P1",
-   "status": "idea",
+   "status": "in-progress",
    "ready": false,
    "epic": "20260821163346487",
    "product": "mega-city",
@@ -514,7 +533,7 @@ window.EZK_AVANCEMENT = {
    "title": "Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "in-progress",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -612,6 +631,19 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260825141012293_ezk-sessions-cockpit.md"
+  },
+  {
+   "id": "20260826082120062",
+   "title": "Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur",
+   "type": "feature",
+   "priority": "P1",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "vectorz",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826082120062_domaine-metriques-de-sprint-rapport.md"
   },
   {
    "id": "0020",
@@ -1614,6 +1646,19 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md"
   },
   {
+   "id": "20260826082120069",
+   "title": "ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -1892,6 +1937,24 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260821163346503_methode-auto-evaluation-validite.md"
+  },
+  {
+   "id": "20260826112620281",
+   "title": "Schéma markdown déclaratif + validateur mécanique — format de fiche/recette vérifiable et versionnable",
+   "type": "feature",
+   "priority": "P3",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "format",
+    "validation",
+    "methode",
+    "outillage"
+   ],
+   "file": "features/20260826112620281_schema-markdown-declaratif-validateur.md"
   }
  ],
  "epics": [
@@ -2006,7 +2069,8 @@ window.EZK_AVANCEMENT = {
    ],
    "childCounts": {
     "todo": 1,
-    "idea": 7
+    "idea": 6,
+    "in-progress": 1
    }
   },
   {
@@ -2032,6 +2096,7 @@ window.EZK_AVANCEMENT = {
    "todo"
   ],
   "priorites": [
+   "P0",
    "P1",
    "P2",
    "P3"
@@ -2041,6 +2106,7 @@ window.EZK_AVANCEMENT = {
    "vectorz"
   ],
   "labels": [
+   "architecture",
    "article",
    "bmad",
    "decouvrabilite",
@@ -2051,15 +2117,20 @@ window.EZK_AVANCEMENT = {
    "enabler",
    "ezk-codex",
    "follow-up",
+   "fondation",
+   "format",
    "lisibilite",
    "llm",
    "method",
    "methode",
+   "moteur",
+   "outillage",
    "r&d",
    "supervision",
    "template",
    "test",
-   "testbed"
+   "testbed",
+   "validation"
   ]
  }
 };

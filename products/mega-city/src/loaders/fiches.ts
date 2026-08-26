@@ -26,8 +26,12 @@ export interface Fiche {
   file: string; // chemin relatif à la racine du repo (ex. `features/0094-slug.md`)
 }
 
-/** Lit un champ scalaire du front-matter, commentaire `# …` retiré, brut (non typé). */
-function readField(text: string, field: string): string {
+/**
+ * Lit un champ scalaire du front-matter, commentaire `# …` retiré, brut (non typé).
+ * Exporté pour le validateur de conformité (fiche 652/281) : même lecture, pas de
+ * second parseur de front-matter.
+ */
+export function readField(text: string, field: string): string {
   const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
   return m ? m[1].replace(/[ \t]*#.*$/, '').trim().replace(/^["']|["']$/g, '') : '';
 }
