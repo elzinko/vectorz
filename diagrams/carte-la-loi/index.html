@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>LA LOI — règles, bundles, profils</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 1.5rem; color: #1a1a1a; }
+  h1 { font-size: 1.3rem; }
+  #status { padding: 0.75rem 1rem; border-radius: 6px; margin: 1rem 0; }
+  #status.ok { background: #e6f4ea; color: #1e4620; }
+  #status.error { background: #fdecea; color: #611a15; }
+  #status code { background: rgba(0,0,0,0.08); padding: 0 4px; border-radius: 3px; }
+  #search { width: 100%; max-width: 460px; padding: 0.4rem 0.6rem; font-size: 1rem; margin-bottom: 1rem; }
+  .columns { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start; }
+  .column { flex: 1 1 260px; min-width: 240px; }
+  .column h2 { font-size: 1rem; border-bottom: 2px solid #ddd; padding-bottom: 0.25rem; }
+  .node { border: 1px solid #ddd; border-radius: 6px; padding: 0.4rem 0.6rem; margin-bottom: 0.4rem; cursor: pointer; }
+  .node.hidden { display: none; }
+  .node .id { font-weight: 600; }
+  .node .prov { font-size: 0.8rem; color: #555; word-break: break-all; }
+  .node.selected { border-color: #3366cc; background: #eef3ff; }
+  details.detail { margin-top: 1.5rem; border: 1px solid #ccc; border-radius: 6px; padding: 0.6rem 0.8rem; }
+  details.detail ul { margin: 0.3rem 0 0.6rem 1.2rem; }
+  .empty { color: #777; font-style: italic; }
+  .hint { color: #555; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+  <h1>LA LOI — règles, bundles, profils</h1>
+  <p>Lu en direct de <code>.ezk/graph.compiled.json</code> (ADR-0040). Clique un <strong>profil</strong> pour voir « qui active quoi » (héritage compris), une <strong>règle</strong> pour voir quel agent la garde.</p>
+  <input id="search" type="search" placeholder="Chercher (ex. règles, composition, mvp-first, clean-code)…" />
+  <div id="status"></div>
+  <div id="content" style="display:none">
+    <div class="columns">
+      <div class="column">
+        <h2>Profils</h2>
+        <div id="col-profile"></div>
+      </div>
+      <div class="column">
+        <h2>Bundles</h2>
+        <div id="col-bundle"></div>
+      </div>
+      <div class="column">
+        <h2>Règles</h2>
+        <div id="col-rule"></div>
+      </div>
+    </div>
+    <details class="detail" id="detail" open>
+      <summary>Détail — clique un nœud ci-dessus</summary>
+      <div id="detail-body" class="empty">Aucun nœud sélectionné.</div>
+    </details>
+  </div>
+
+<script>
+  // Reflet EXACT de products/mega-city/src/core/loi-view.ts (D3) — la logique est testée
+  // côté TS ; cette page statique ne peut pas importer le module, elle le miroite à
+  // l'identique. Dette assumée (ADR-0041) : une divergence casserait la carte en silence.
+  const LOI_KINDS = new Set(['rule', 'bundle', 'profile']);
+  // Synonymes FR pour que la recherche des concepts de la fiche aboutisse (AC1).
+  const KIND_FR = { rule: 'règle règles', bundle: 'bundle bundles composition', profile: 'profil profils composition' };
+
+  function provenancePath(kind, id) {
+    const root = 'products/mega-city';
+    if (kind === 'rule') return `${root}/rules/${id}.md`;
+    if (kind === 'bundle') return `${root}/bundles/${id}.yml`;
+    if (kind === 'profile') return `${root}/profiles/${id}.yml`;
+    return '';
+  }
+
+  function extractLoi(graph) {
+    return {
+      nodes: graph.nodes.filter((n) => LOI_KINDS.has(n.kind)),
+      edges: graph.edges.filter((e) => LOI_KINDS.has(e.fromKind) || LOI_KINDS.has(e.toKind)),
+    };
+  }
+
+  function ancestors(loi, startId, link) {
+    const seen = new Set();
+    const stack = [startId];
+    while (stack.length) {
+      const cur = stack.pop();
+      for (const e of loi.edges) {
+        if (e.link === link && e.from === cur && !seen.has(e.to)) {
+          seen.add(e.to);
+          stack.push(e.to);
+        }
+      }
+    }
+    return seen;
+  }
+
+  // « Qui active quoi » pour un profil — HÉRITAGE COMPRIS (profile-extends + bundle-extends).
+  function whoActivates(loi, profileId) {
+    const profiles = new Set([profileId, ...ancestors(loi, profileId, 'profile-extends')]);
+    const collectTo = (link) => {
+      const out = new Set();
+      for (const e of loi.edges) if (e.link === link && profiles.has(e.from)) out.add(e.to);
+      return [...out].sort();
+    };
+    const directBundles = collectTo('profile-bundle');
+    const allBundles = new Set(directBundles);
+    for (const b of directBundles) for (const p of ancestors(loi, b, 'bundle-extends')) allBundles.add(p);
+    const rules = new Set();
+    for (const e of loi.edges) if (e.link === 'bundle-rule' && allBundles.has(e.from)) rules.add(e.to);
+    return { bundles: [...allBundles].sort(), rules: [...rules].sort(), agents: collectTo('profile-agent'), skills: collectTo('profile-skill') };
+  }
+
+  function bundleRules(loi, bundleId) {
+    const bundles = new Set([bundleId, ...ancestors(loi, bundleId, 'bundle-extends')]);
+    const rules = new Set();
+    for (const e of loi.edges) if (e.link === 'bundle-rule' && bundles.has(e.from)) rules.add(e.to);
+    return [...rules].sort();
+  }
+
+  function enforcingAgents(loi, ruleId) {
+    const out = new Set();
+    for (const e of loi.edges) if (e.link === 'enforces' && e.from === ruleId) out.add(e.to);
+    return [...out].sort();
+  }
+
+  function setStatus(kind, text, codes) {
+    const el = document.getElementById('status');
+    el.className = kind;
+    el.textContent = '';
+    el.append(document.createTextNode(text));
+    // `codes` = suffixe optionnel {avant, code, apres} rendu en <code> sans innerHTML.
+    if (codes) {
+      el.append(document.createTextNode(codes.avant || ' '));
+      const c = document.createElement('code');
+      c.textContent = codes.code;
+      el.append(c, document.createTextNode(codes.apres || ''));
+    }
+  }
+
+  function renderNode(node) {
+    const div = document.createElement('div');
+    div.className = 'node';
+    div.dataset.kind = node.kind;
+    div.dataset.id = node.id;
+    const idDiv = document.createElement('div');
+    idDiv.className = 'id';
+    idDiv.textContent = node.id; // textContent : pas d'injection HTML (revue P2)
+    const prov = document.createElement('div');
+    prov.className = 'prov';
+    prov.textContent = provenancePath(node.kind, node.id);
+    div.append(idDiv, prov);
+    div.dataset.hay = `${node.kind} ${KIND_FR[node.kind] || ''} ${node.id} ${prov.textContent}`.toLowerCase();
+    return div;
+  }
+
+  function renderColumns(loi) {
+    for (const kind of ['profile', 'bundle', 'rule']) {
+      const col = document.getElementById(`col-${kind}`);
+      col.textContent = '';
+      loi.nodes
+        .filter((n) => n.kind === kind)
+        .sort((a, b) => a.id.localeCompare(b.id))
+        .forEach((n) => col.appendChild(renderNode(n)));
+    }
+  }
+
+  function wireSearch() {
+    const input = document.getElementById('search');
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      document.querySelectorAll('.node').forEach((el) => {
+        el.classList.toggle('hidden', q !== '' && !el.dataset.hay.includes(q));
+      });
+    });
+  }
+
+  // Une section « Titre (N) » + liste, tout en textContent (aucun innerHTML).
+  function appendSection(parent, title, items) {
+    const p = document.createElement('p');
+    const strong = document.createElement('strong');
+    strong.textContent = title;
+    p.append(strong, document.createTextNode(` (${items.length})`));
+    parent.append(p);
+    const ul = document.createElement('ul');
+    if (!items.length) {
+      const li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = '(aucun)';
+      ul.append(li);
+    } else {
+      for (const it of items) {
+        const li = document.createElement('li');
+        li.textContent = it;
+        ul.append(li);
+      }
+    }
+    parent.append(ul);
+  }
+
+  function renderDetail(loi, kind, id) {
+    const body = document.getElementById('detail-body');
+    const summary = document.querySelector('#detail summary');
+    body.className = '';
+    body.textContent = '';
+    if (kind === 'profile') {
+      summary.textContent = `Profil « ${id} » — qui active quoi (héritage compris)`;
+      const wa = whoActivates(loi, id);
+      appendSection(body, 'Bundles', wa.bundles);
+      appendSection(body, 'Règles (via ces bundles)', wa.rules);
+      appendSection(body, 'Agents', wa.agents);
+      appendSection(body, 'Skills', wa.skills);
+    } else if (kind === 'rule') {
+      summary.textContent = `Règle « ${id} » — qui la garde ?`;
+      appendSection(body, 'Agents qui la gardent (enforces)', enforcingAgents(loi, id));
+      appendSection(body, 'Provenance', [provenancePath('rule', id)]);
+    } else if (kind === 'bundle') {
+      summary.textContent = `Bundle « ${id} » — ses règles (héritage compris)`;
+      appendSection(body, 'Règles', bundleRules(loi, id));
+    }
+    document.getElementById('detail').open = true;
+  }
+
+  function wireSelection(loi) {
+    document.querySelector('.columns').addEventListener('click', (ev) => {
+      const node = ev.target.closest('.node');
+      if (!node) return;
+      document.querySelectorAll('.node.selected').forEach((n) => n.classList.remove('selected'));
+      node.classList.add('selected');
+      renderDetail(loi, node.dataset.kind, node.dataset.id);
+    });
+  }
+
+  async function main() {
+    setStatus('ok', 'Chargement de ', { code: '.ezk/graph.compiled.json', apres: '…' });
+    let graph;
+    try {
+      const res = await fetch('/.ezk/graph.compiled.json');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      graph = await res.json();
+    } catch (err) {
+      setStatus(
+        'error',
+        `⚠️ Graphe non à jour ou introuvable (${err.message}). Lance `,
+        { code: 'pnpm --dir products/mega-city graph:compile', apres: ', puis recharge cette page.' },
+      );
+      return;
+    }
+
+    const loi = extractLoi(graph);
+    setStatus('ok', `Graphe chargé : ${loi.nodes.length} nœuds LOI (règles/bundles/profils), ${loi.edges.length} liens qui les touchent.`);
+    document.getElementById('content').style.display = '';
+    renderColumns(loi);
+    wireSearch();
+    wireSelection(loi);
+  }
+
+  main();
+</script>
+</body>
+</html>
