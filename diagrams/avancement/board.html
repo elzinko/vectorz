@@ -3603,6 +3603,11 @@ window.EZK_PLAN = {
     var a = document.createElement('a');
     a.className = 'carte';
     a.href = '../../' + f.file;
+    a.addEventListener('click', function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return; // laisse ouvrir la source en nouvel onglet
+      ev.preventDefault();
+      openFiche(f);
+    });
     a.style.setProperty('--prio-color', 'var(--p' + slug(f.priority ? f.priority.replace('P', '') : '3') + ')');
     a.appendChild(el('div', 'id', f.id));
     a.appendChild(el('div', 'titre', f.title));
@@ -3652,6 +3657,102 @@ window.EZK_PLAN = {
     }
     compteur.textContent = filtered.length + ' fiche(s) sur ' + actives.length + ' active(s) — ' +
       (data.tirables || 0) + ' tirable(s), ' + ((data.epics || []).length) + ' épic(s).';
+  }
+
+  // --- Détail d'une fiche au clic (fiche 20260826225817193) ---
+  // Le clic sur une carte ouvre un panneau LISIBLE au lieu de naviguer vers le .md brut.
+  // Rendu du corps en DOM + textContent, JAMAIS innerHTML sur du texte de fiche (anti-XSS).
+  var overlay = el('div', 'fiche-overlay');
+  var modal = el('div', 'fiche-modal');
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  var mStyle = document.createElement('style');
+  mStyle.textContent =
+    '.fiche-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:100;padding:4vh 3vw;overflow:auto}' +
+    '.fiche-overlay.open{display:block}' +
+    '.fiche-modal{max-width:780px;margin:0 auto;background:var(--panel,#171a21);border:1px solid var(--line,#2a2f3a);border-radius:12px;padding:18px 22px;box-shadow:0 24px 70px rgba(0,0,0,.55)}' +
+    '.fiche-modal .fiche-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}' +
+    '.fiche-modal h2.fiche-titre{font-size:1.15rem;margin:0;flex:1}' +
+    '.fiche-modal .fiche-close{border:1px solid var(--line,#2a2f3a);background:transparent;color:inherit;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;flex:none}' +
+    '.fiche-modal .fiche-meta{margin:2px 0 8px}' +
+    '.fiche-modal .fiche-src{font-size:.8rem;margin-bottom:10px;display:inline-block}' +
+    '.fiche-modal .fiche-body{border-top:1px solid var(--line,#2a2f3a);padding-top:10px;line-height:1.55;overflow-wrap:anywhere}' +
+    '.fiche-modal .fiche-body h3{font-size:1rem;margin:14px 0 4px}' +
+    '.fiche-modal .fiche-body ul{margin:4px 0 4px 1.2rem;padding:0}' +
+    '.fiche-modal .fiche-body p{margin:6px 0}' +
+    '.fiche-modal .fiche-body pre{background:var(--bg,#0f1115);border:1px solid var(--line,#2a2f3a);border-radius:8px;padding:8px 10px;overflow:auto;font-size:.82rem}' +
+    '.fiche-modal .fiche-loading{color:#9aa0aa;font-style:italic}';
+  document.head.appendChild(mStyle);
+
+  function closeFiche() { overlay.classList.remove('open'); modal.textContent = ''; }
+  overlay.addEventListener('click', function (ev) { if (ev.target === overlay) closeFiche(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeFiche(); });
+
+  // markdown → DOM, block-level, en textContent (titres, paragraphes, listes, code).
+  function stripInline(s) { return String(s).replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]+/g, ''); }
+  function renderMarkdown(container, md) {
+    var body = md.replace(/^---\n[\s\S]*?\n---\n?/, ''); // retire le front-matter YAML
+    var lines = body.split('\n');
+    var ul = null, codeEl = null;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (/^```/.test(line)) {
+        if (codeEl) { codeEl = null; } else { var pre = el('pre'); codeEl = document.createElement('code'); pre.appendChild(codeEl); container.appendChild(pre); }
+        continue;
+      }
+      if (codeEl) { codeEl.textContent += (codeEl.textContent ? '\n' : '') + line; continue; }
+      var h = line.match(/^(#{1,6})\s+(.*)/);
+      if (h) { ul = null; container.appendChild(el('h3', null, stripInline(h[2]))); continue; }
+      var li = line.match(/^\s*[-*]\s+(.*)/);
+      if (li) { if (!ul) { ul = el('ul'); container.appendChild(ul); } ul.appendChild(el('li', null, stripInline(li[1]))); continue; }
+      if (line.trim() === '') { ul = null; continue; }
+      ul = null; container.appendChild(el('p', null, stripInline(line.replace(/^>\s?/, ''))));
+    }
+  }
+
+  function openFiche(f) {
+    modal.textContent = '';
+    var head = el('div', 'fiche-head');
+    head.appendChild(el('h2', 'fiche-titre', f.title));
+    var close = el('button', 'fiche-close', '✕');
+    close.setAttribute('aria-label', 'Fermer');
+    close.addEventListener('click', closeFiche);
+    head.appendChild(close);
+    modal.appendChild(head);
+
+    var meta = el('div', 'fiche-meta badges');
+    meta.appendChild(el('span', 'badge', f.id));
+    meta.appendChild(el('span', 'badge statut-' + slug(f.status), f.status));
+    meta.appendChild(el('span', 'badge prio-' + slug(f.priority || 'P3'), f.priority || '—'));
+    meta.appendChild(el('span', 'badge', f.type));
+    if (f.epic) meta.appendChild(el('span', 'badge', '⤷ ' + f.epic));
+    if (f.pr) meta.appendChild(el('span', 'badge', f.pr));
+    modal.appendChild(meta);
+
+    var src = document.createElement('a');
+    src.className = 'fiche-src';
+    src.href = '../../' + f.file;
+    src.target = '_blank';
+    src.rel = 'noopener';
+    src.textContent = '↗ ouvrir le fichier (' + f.file + ')';
+    modal.appendChild(src);
+
+    var bodyEl = el('div', 'fiche-body');
+    bodyEl.appendChild(el('p', 'fiche-loading', 'Chargement…'));
+    modal.appendChild(bodyEl);
+    overlay.classList.add('open');
+    modal.scrollTop = 0;
+
+    fetch('../../' + f.file).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function (md) {
+      bodyEl.textContent = '';
+      renderMarkdown(bodyEl, md);
+    }).catch(function (e) {
+      bodyEl.textContent = '';
+      bodyEl.appendChild(el('p', 'fiche-loading', 'Impossible de charger la fiche (' + e.message + '). Ouvre le fichier via le lien ci-dessus.'));
+    });
   }
 
   [selStatut, selType, selEpic, selProduit, selLabel].forEach(function (s) {
