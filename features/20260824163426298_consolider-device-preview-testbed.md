@@ -87,7 +87,7 @@ geste pour un agent, un skill ou une règle ». Si oui, `ezk-preview` (à modes)
 deviennent **le même agent** équipé de compétences différentes, pas deux skills concurrentes.
 
 Voir aussi : [0177](0177-pack-pratiques-projet-portables.md) (capacités portables, indépendantes
-du driver LLM) et la doctrine [20260825123700998](20260825123700998_doctrine-composition-features.md)
+du driver LLM) et la doctrine [20260825123700998](done/20260825123700998_doctrine-composition-features.md)
 (fusion vs épic vs division — pour trancher `ezk-preview` + `ezk-device` : une skill fusionnée à
 modes, ou un socle + adaptateurs).
 
@@ -115,6 +115,6 @@ modes, ou un socle + adaptateurs).
   modes » reste possible : c'est du **packaging**, orthogonal au découpage backlog. Reste ouvert au
   build : preview + device = **2 enfants** (fusionnés en « surfaces ») ou **3 enfants** (séparés),
   selon qu'ils se livrent dans la même PR. Doctrine :
-  [20260825123700998](20260825123700998_doctrine-composition-features.md).
+  [20260825123700998](done/20260825123700998_doctrine-composition-features.md).
 - **À construire (à l'OK PO)** : créer le conteneur `type: epic`, **débloquer 0102** et le rattacher
   comme enfant-cœur, `ezk-preview` / `ezk-device` en enfants-adaptateurs.

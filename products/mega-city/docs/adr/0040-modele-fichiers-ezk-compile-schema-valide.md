@@ -183,7 +183,7 @@ De la fiche **652** (nommage validé PO 2026-08-25) :
 - **Migrer** les liens de prose structurels → ids (chantier one-shot, outillable).
 
 **À revisiter**
-- **Couplage [0087](0087-plugin-claude-code-distribution.md)** : d'où vient `VERSION` (tag umbrella
+- **Couplage [0087](../../../../features/0087-plugin-claude-code-distribution.md)** : d'où vient `VERSION` (tag umbrella
   vs version mega-city) — Skema porte les migrations de **données**, 0087 tranche le **code**.
 - `schema_version` **par fiche** (D3-B) si le besoin de schémas coexistants se matérialise.
 

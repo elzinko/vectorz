@@ -109,4 +109,4 @@ Cette fiche pose **l'OUTILLAGE généralisé** (le trio). Les voisines couvrent 
 Origine : retour PO du 2026-08-25 (le rapport `ezk-archive` illisible, corrigé ponctuellement — d'où
 l'envie de généraliser). Ce cluster (cette fiche + `0079`/`836`/`676`/`538`/`246` + `0191`) est un
 **candidat au regroupement en épic** — à décider avec la doctrine des épics
-([20260825123700998](20260825123700998_doctrine-composition-features.md)).
+([20260825123700998](done/20260825123700998_doctrine-composition-features.md)).
