@@ -35,8 +35,11 @@ export interface BoardFiche {
 export interface BoardEpic {
   id: string;
   title: string;
+  /** Statut CALCULÉ depuis les enfants (jamais saisi) — fiche 20260825123700998 (D4). */
   status: string;
   children: string[]; // ids des fiches actives portant epic == cet id
+  /** Cumul par statut sur TOUS les enfants (actifs + livrés) : « shipped: 1, todo: 2… ». */
+  childCounts: Record<string, number>;
 }
 
 export interface AvancementData {
@@ -72,6 +75,26 @@ const prioRank = (p: string): number => {
   return i === -1 ? PRIOS.length : i;
 };
 
+/**
+ * Statut d'un épic, CALCULÉ depuis ses enfants (D4, fiche 20260825123700998 ; ADR-0017 A15) :
+ * tous les enfants livrés (`done/`) → `shipped` ; au moins un livré OU engagé
+ * (todo/in-progress/blocked) → `in-progress` ; que des `idea` → `idea` ; aucun enfant → le
+ * statut saisi (fallback). Le « tout livré » s'appuie sur `done/` (le dossier), pas sur la
+ * chaîne 'shipped' — robuste à un statut de provenance `merged`/`split`. Jamais saisi (ADR-0001).
+ */
+function deriveEpicStatus(
+  childCounts: Record<string, number>,
+  doneCount: number,
+  fallback: string,
+): string {
+  const total = Object.values(childCounts).reduce((a, b) => a + b, 0);
+  if (total === 0) return fallback;
+  if (doneCount === total) return 'shipped';
+  const engaged =
+    (childCounts.todo ?? 0) + (childCounts['in-progress'] ?? 0) + (childCounts.blocked ?? 0);
+  return doneCount > 0 || engaged > 0 ? 'in-progress' : 'idea';
+}
+
 /** Compile le board. Tout est trié → sortie stable (F4). */
 export function buildAvancementData(fiches: Fiche[]): AvancementData {
   const counts: Record<string, number> = {};
@@ -85,23 +108,37 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
 
   const tirables = actives.filter((f) => f.status === 'todo' && f.ready).length;
 
-  // Épics (actifs) et leurs enfants actifs.
+  // Enfants par épic : compteurs par statut sur TOUS les enfants (actifs + livrés, D4),
+  // et liste des enfants ACTIFS pour l'affichage détaillé.
   const activeChildrenByEpic = new Map<string, string[]>();
+  const childCountsByEpic = new Map<string, Record<string, number>>();
+  const doneCountByEpic = new Map<string, number>();
   for (const f of fiches) {
-    if (f.done || f.type === 'epic' || !f.epic) continue;
-    const list = activeChildrenByEpic.get(f.epic) ?? [];
-    list.push(f.id);
-    activeChildrenByEpic.set(f.epic, list);
+    if (f.type === 'epic' || !f.epic) continue;
+    const rec = childCountsByEpic.get(f.epic) ?? {};
+    rec[f.status] = (rec[f.status] ?? 0) + 1;
+    childCountsByEpic.set(f.epic, rec);
+    if (f.done) {
+      doneCountByEpic.set(f.epic, (doneCountByEpic.get(f.epic) ?? 0) + 1);
+    } else {
+      const list = activeChildrenByEpic.get(f.epic) ?? [];
+      list.push(f.id);
+      activeChildrenByEpic.set(f.epic, list);
+    }
   }
   const epics: BoardEpic[] = fiches
     .filter((f) => !f.done && f.type === 'epic')
     .sort((a, b) => (a.id < b.id ? -1 : 1))
-    .map((e) => ({
-      id: e.id,
-      title: e.title,
-      status: e.status,
-      children: (activeChildrenByEpic.get(e.id) ?? []).sort(),
-    }));
+    .map((e) => {
+      const childCounts = childCountsByEpic.get(e.id) ?? {};
+      return {
+        id: e.id,
+        title: e.title,
+        status: deriveEpicStatus(childCounts, doneCountByEpic.get(e.id) ?? 0, e.status),
+        children: (activeChildrenByEpic.get(e.id) ?? []).sort(),
+        childCounts,
+      };
+    });
 
   const uniq = (xs: string[]): string[] => [...new Set(xs.filter(Boolean))].sort();
   return {
