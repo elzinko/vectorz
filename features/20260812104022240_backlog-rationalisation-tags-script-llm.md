@@ -37,8 +37,11 @@ plat en restructurant, mergeant, splittant »), décrit comme **structurant** po
 - `review` (fiche `0071`, **shipped**) fait déjà un sanity-check doublons / regroupement
   **par intention** — mais en pur jugement LLM, sans tags ni pré-groupement rapide, et à
   cadence bornée (tous les 5 sprints). C'est de l'hygiène, pas une restructuration délibérée.
-- Le champ front-matter **`labels:`** — le modèle de données des tags dont le mode script a
-  besoin — **n'existe pas encore** (c'est le cœur restant de cette fiche, cf. Notes : absorbe `0092`).
+- Le champ front-matter **`labels:`** — le modèle de données des tags du mode script — **existe
+  déjà** : parsé par `products/mega-city/src/loaders/fiches.ts` dans chaque `Fiche`, et **17 fiches
+  actives le peuplent** (ex. `[bmad, lisibilite, doc]`). Le reliquat n'est pas de le **créer** mais
+  de le **formaliser** (template + SKILL) et de **backfiller** les ≈122 fiches sans tag. `depends:`
+  apparaît dans des fiches mais **n'est pas encore parsé** par le loader.
 - Manque : un **geste de rationalisation outillé et rapide**, avec **deux moteurs** (le PO les
   nomme) : un **mode script** (mécanique, sur tags) pour pré-grouper, **et** un **mode analyse
   LLM** pour réconcilier les **faux positifs/négatifs** du script.
@@ -99,9 +102,11 @@ Tranché avec le PO (Thomas) : le geste est une **nouvelle sous-commande
 - [ ] Chaque **fusion** proposée nomme les fiches **sources** et la **résultante**, et décrit la
   provenance (sources → `merged`, back-références dans les deux sens). Idem split → `split`.
   *(Application effective des statuts gated sur [[20260823121712652]].)*
-- [ ] `--scope`, `--focus`, `--mode` supportées et documentées. `--mode llm` tourne **sans**
-  `labels:`. `--mode script` / `both` sans `labels:` → message de **dégradation** (pas de crash),
-  repli sur `llm`.
+- [ ] `--scope`, `--focus`, `--mode` supportées et documentées. **Les trois modes tournent**, quel
+  que soit le taux de tags. `--mode script` regroupe sur les `labels:` présents + heuristiques ; sur
+  les fiches **sans tag**, il rend un clustering **partiel** et **affiche sa couverture**
+  (« N/139 fiches taguées ») — **jamais de crash, jamais de bascule silencieuse** vers `llm`.
+  `--mode llm` n'utilise pas les tags ; `both` = script puis llm.
 - [ ] Pour chaque proposition, la sortie indique le **geste d'application** (`ship`, futur
   `merge` / `split`) **sans l'exécuter**.
 - [ ] Frontière avec `review` écrite dans le SKILL : `review` **renvoie** vers `aggregate` au-delà
@@ -113,8 +118,8 @@ Tranché avec le PO (Thomas) : le geste est une **nouvelle sous-commande
 - Lancer `ezk-backlog aggregate` sur le backlog vectorz (≈136 fiches actives). Attendu : rapport
   « En clair » + propositions numérotées ; `git status` propre (rien de modifié).
 - `ezk-backlog aggregate --scope mega-city` → ne remonte que les fiches `product: mega-city`.
-- `ezk-backlog aggregate --mode script` **sans** champ `labels:` → message de dégradation clair,
-  repli `llm`, zéro crash.
+- `ezk-backlog aggregate --mode script` sur un stock **partiellement tagué** (17/139) → clustering
+  partiel + ligne de **couverture** affichée, zéro crash, aucune bascule vers `llm`.
 - `grep -n aggregate products/mega-city/skills/ezk-backlog/SKILL.md` → l'entrée d'usage existe ;
   `ezk-help` la liste.
 
@@ -124,8 +129,11 @@ Tranché avec le PO (Thomas) : le geste est une **nouvelle sous-commande
   statut kanban validé par schéma, todo P1). Sans lui, `aggregate` **propose** fusions et splits,
   mais **appliquer** les statuts d'absorption attend cette fiche. Le moteur de **proposition** LLM
   n'en dépend pas → **cœur buildable maintenant**.
-- **Champ `labels:`** (moteur `script`) → cœur restant de cette fiche (absorbe `0092`). Sans lui,
-  seul `--mode llm` tourne. Le livrer ici **ou** en fiche fille : arbitrage à l'étape Archi.
+- **Tags `labels:`** (moteur `script`) → le champ **existe et est parsé** (17/139 fiches taguées).
+  Ce n'est plus un champ à créer mais un **enabler de couverture** : formaliser `labels:` (template +
+  SKILL) puis **backfiller** les ≈122 fiches sans tag (ici ou en fiche fille — arbitrage Archi). Le
+  mode `script` est donc **buildable maintenant** sur les tags existants ; sa **qualité** monte avec
+  le backfill. (Outiller `depends:`, non parsé aujourd'hui, est un enabler optionnel distinct.)
 
 ## Direction PO (2026-08-25) — la fusion/split garde la provenance
 
@@ -143,8 +151,9 @@ qu'elles ont été **absorbées**, sans perdre l'historique. Symétrique pour le
 
 ## Notes / décisions
 
-- **Absorbe `0092`** (fermée le 2026-08-23, paquet 1) : `depends:` existait déjà dans
-  les fiches ; le reliquat — un champ `labels:`/tags — est LE cœur de cette fiche.
+- **Absorbe `0092`** (fermée le 2026-08-23, paquet 1) : `depends:` et `labels:` existent déjà côté
+  fiches (et `labels:` est parsé par le loader). Le reliquat n'est plus le **champ** mais le **geste**
+  de rationalisation qui l'exploite + le **backfill** des tags.
   Registre : `docs/captures/2026-08-23-fermetures-backlog-paquet1.md`. Étend l'esprit
   de `0071` (review, shipped). **Distinct** de `0065` (lui = granularité sprint/PR,
   pas organisation du stock).
