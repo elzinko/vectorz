@@ -43,14 +43,6 @@ mesurer ensuite si les règles adoptées servent (et les retirer sinon).
 3. Livrée **via PR** avec le rangement des règles adoptées (une PR par rétro).
 4. Modèle de référence : `docs/captures/2026-07-18-retro-cinq-sprints.md` (la première,
    rédigée à la main — devient le gabarit).
-5. **Deux sections ajoutées au gabarit (demande PO 2026-08-26)** :
-   - **« Décisions & actions à mener »** — la liste typée de ce qui sort de la rétro
-     (`feature` / `règle` / `action` / `spike`), chacune avec sa cible et sa case
-     d'acceptation PO. Rend enfin visibles les **décisions de créer des features**,
-     aujourd'hui absentes du rapport (se coordonne avec la fiche 20260826082120069).
-   - **« Suivi des décisions passées »** — pour chaque décision d'une rétro précédente,
-     son **résultat** (tenue / non tenue / à retirer) au regard de son critère mesurable.
-     Ferme la boucle « construire → prouver → retirer ».
 
 ## Critères d'acceptation
 
@@ -61,14 +53,9 @@ mesurer ensuite si les règles adoptées servent (et les retirer sinon).
 - [ ] Le tableau « Décisions du PO » reflète les décisions réelles (jamais pré-rempli —
       garde-fou : c'est l'erreur commise puis corrigée le 2026-07-18).
 - [ ] La capture est liée depuis la PR de rangement (traçabilité règle ↔ débat).
-- [ ] La capture liste les **features/fiches créées** par la rétro (traçabilité action → fiche).
-- [ ] La capture rappelle les **décisions de la rétro précédente et leur résultat** (suivi).
 
 ## Notes
 
 - **Priorité P2 proposée** (à confirmer par le PO).
 - Origine : rétro 2026-07-18, demande directe du PO. S'articule avec 0079 (la voix) ;
   0080 porte le support/artefact.
-- **Enrichi le 2026-08-26** (demande PO) : le gabarit gagne « Décisions & actions à mener »
-  (dont les features) + « Suivi des décisions passées ». Se coordonne avec la fiche
-  20260826082120069 (ezk-retro propose des features + des règles ciblées).

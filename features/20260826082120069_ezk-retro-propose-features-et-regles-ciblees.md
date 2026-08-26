@@ -98,12 +98,18 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
 - **Trio rétro voisin** : 0079 (voix, shippée), 0080 (compte-rendu — **enrichi en parallèle**
   pour rendre les décisions visibles), 0081 (carnet de préparation, idea).
 - **Frontière** : ne touche pas au déclenchement par métrique (Sujet B / ADR-030).
-- **⚠️ Coordination inter-sessions (2026-08-26)** : une session active en parallèle
-  (branche `claude/ezb-backlog-ab3b3f`, « feat UI retro/sprints ») traite le **même sujet**
-  — « ajout de règles à la volée : skill / rétro → suggestion → validation » — et porte une
-  fiche « vue rétros — actions mesurables depuis les captures » (`20260826072532537`).
-  **À dédoublonner/converger** avec cette fiche avant construction. Cette session a aussi
-  **groomé 0080** de son côté (commit `c59a8e2`) → conflit à coordonner (voir la PR #176).
+- **⚠️ Coordination inter-sessions (2026-08-26)** — trois sessions se recoupent :
+  - **`claude/ezb-backlog-ab3b3f`** (« feat UI retro/sprints ») : vues `ezk:map` + « ajout de
+    règles à la volée (rétro → suggestion → validation) » — **même sujet** que cette fiche ;
+    a **groomé 0080** (extractibilité). **0080 lui est laissé** (sa version est plus complète).
+    **Apport à ne pas perdre, à porter vers son 0080** : une section « **Suivi des décisions
+    passées** » (résultat trans-rétro — la règle/action de la rétro précédente a-t-elle
+    tenu ?), absente de son groom.
+  - **« vectorz - Q recettes + moteur »** : le **moteur ezk / format des fichiers**. À traiter
+    **en premier** (prérequis) — le ciblage `agent / skill / LLM → règle` de cette fiche en
+    dépend (cf. Proposition §2 et la fiche `20260821204737357`, « câbler la méthode compilée »).
+  - **cette session** : métriques de sprint + cette fiche (la cérémonie).
+  **À dédoublonner/converger** avant construction ; **séquencer le moteur d'abord**.
 - **À groomer (DoR) au tirage** : la grammaire exacte des cibles, **la relation skill →
   règle à créer** (absente du modèle aujourd'hui, cf. `domain.ts`), l'ordre elicitation ↔
   round-robin, la dépendance au modèle compilé.
