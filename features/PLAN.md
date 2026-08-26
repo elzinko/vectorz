@@ -17,28 +17,39 @@
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
-## ▶️ NOW bis — refonte de la méthode (post-PR #162, séquence du 2026-08-24)
+## ▶️ NOW — post-ADR-0040 (réaligné le 2026-08-26)
 
-1. **20260824061247344** — le reliquat exécutable de la refonte « trois étages »
-   (2 bundles orphelins · vocab DoD · lot 4b requalifs · compétences agents) · `build`
-2. **20260823124042842** — vue d'avancement, lot 0 : le board compilé (le flux,
-   après la structure) · `groom` puis `build`
-3. Options PO au fil de l'eau (rename ezk-pm, Daily-si-douleur, 2ᵉ overlay) —
-   listées dans la fiche 1, à trancher quand tirées.
+> Réalignement PO du **2026-08-26** : l'ancienne tête « vue d'avancement »
+> (`20260823124042842`) est **livrée** → retirée. **ADR-0040** (modèle de fichiers
+> compilé + validé) est acté comme la **fondation** du moment. Tête décidée : la
+> **carte-loi** (prête, et elle consomme le graphe compilé).
 
-### ↪️ Après le refactoring (post-4a/4b) — sujets ouverts le 2026-08-25
+**🔩 Fondation — en cours (session « moteur »), à finir / coordonner :**
+- **20260821204737357** — câbler la méthode par un modèle compilé (le graphe) · in-progress
+- **20260823121712652** — statut validé par schéma (le validateur) · in-progress
+  *(items d'ADR-0040, arrêtés au budget — ne pas les reprendre sans coordination)*
 
-Une fois **20260824061247344** fini (lots **4a/4b** de la refonte trois étages), tirer dans cet ordre :
+**Séquence à tirer :**
+1. **20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui
+   active quoi ») en lisant le graphe compilé · **ready** · `build` — 1er consommateur
+   visible du graphe, il *prouve* la fondation.
+2. **20260824061247344** — reliquat de la refonte « trois étages » (lot 4b · vocab DoD ·
+   compétences agents) · `groom` → `build`.
+3. **20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet
+   `ezk:map sessions` ; colonne supprimable) · **P1** · `groom` → `build`.
 
-- **20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (worktrees × sessions ×
-  branches ; onglet `ezk:map sessions` ; colonne supprimable) · **P1** · `groom` → `build`
-- **0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du domaine hors
-  **DoR/DoD de skill** (option A actée PO 2026-08-25) · `groom` → `build`
-- **20260812104022246** — composition comportementale des skills (+ directive `ezk-archive`
+⚠️ **En cours ailleurs — ne pas doublonner** : **20260812104022240** (ezk-backlog
+aggregate, readyé via #177) — probablement pris par une autre session.
+
+### ↪️ NEXT — après la séquence NOW
+
+- **0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du
+  domaine hors **DoR/DoD de skill** (option A actée PO 2026-08-25) · `groom` → `build`
+- **20260812104022246** — composition comportementale des skills (directive `ezk-archive`
   session-only + idée map « règles composées par skill ») · `groom` (archi)
 - **20260825182327490** — pattern « livrable lisible » : template + extracteur + rendu · `groom`
-- **20260824163426298** — consolider preview/device/testbed, épic (surface unifiée + compétences
-  composables d'agents) · `groom` (archi)
+- **20260824163426298** — consolider preview/device/testbed, épic (surface unifiée +
+  compétences composables d'agents) · `groom` (archi)
 
 ## 🧹 Hygiène préalable (rapide)
 
