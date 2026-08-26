@@ -43,8 +43,13 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
    retomber par défaut sur une règle. Le biais « discipline d'abord » reste un garde-fou,
    pas un couvercle : le jugement se fait au cas par cas et se **trace**.
 2. **Une règle porte une cible** : `global` (`rules/`), `agent:<nom>`, ou `skill:<nom>`.
-   Le rangement respecte la cible — une règle « agent `ezk-dev` » atterrit dans le
-   **bundle composé par cet agent**, pas dans le silo global par défaut.
+   ⚠️ **Le mécanisme de ciblage est à définir, pas à présupposer.** Router une règle via
+   un `bundle` ne préserve **pas** la portée : un bundle sélectionné est étendu à **tout le
+   profil** (`products/mega-city/src/core/expand.ts:65-79`). Aujourd'hui un agent lie ses
+   règles via `Agent.interactions`, et un **skill n'a aucune relation de règle**
+   (`products/mega-city/docs/domain.ts:74-102`). Cibler `agent:<nom>` / `skill:<nom>`
+   suppose donc de **matérialiser des liens explicites agent/skill → règle** — c'est le
+   cœur du travail de conception de cette fiche.
 3. **Tout passe par le rapport, pour ton acceptation** : chaque proposition typée
    (`feature` / `règle` / `action` / `spike`) figure dans la capture avec une case
    d'acceptation PO (⏳ → ✅/❌), **jamais pré-remplie**.
@@ -55,7 +60,9 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
   qu'un jet unique ;
 - le **modèle compilé** de la méthode (fiche 20260821204737357) pour un ciblage
   déterministe règle → agent / skill ;
-- le mécanisme de **bundles** existant (`products/mega-city/bundles/`, 12 bundles).
+- le mécanisme de **bundles** existant (`products/mega-city/bundles/`, 12 bundles) **pour
+  la portée globale** — le ciblage fin agent/skill exige en plus une **nouvelle relation
+  agent/skill → règle** (voir Proposition §2).
 
 ## Critères d'acceptation
 
@@ -63,8 +70,8 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
 - [ ] Une proposition de règle **porte une cible** : `global` / `agent:<nom>` / `skill:<nom>`.
 - [ ] Le rapport **liste chaque proposition avec un statut d'acceptation PO** (⏳/✅/❌),
       jamais pré-rempli.
-- [ ] Le rangement **respecte la cible** : une règle « agent X » est rattachée au bundle de
-      X, pas au silo global.
+- [ ] Le rangement **respecte la cible** via un **lien explicite agent/skill → règle**
+      (pas via un bundle, qui est global au profil) : une règle « agent X » ne concerne que X.
 - [ ] La **réversibilité** est conservée (une règle ciblée reste retirable via `retire`).
 - [ ] Gate locale verte.
 
@@ -86,5 +93,6 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
 - **Trio rétro voisin** : 0079 (voix, shippée), 0080 (compte-rendu — **enrichi en parallèle**
   pour rendre les décisions visibles), 0081 (carnet de préparation, idea).
 - **Frontière** : ne touche pas au déclenchement par métrique (Sujet B / ADR-030).
-- **À groomer (DoR) au tirage** : la grammaire exacte des cibles, l'ordre elicitation ↔
+- **À groomer (DoR) au tirage** : la grammaire exacte des cibles, **la relation skill →
+  règle à créer** (absente du modèle aujourd'hui, cf. `domain.ts`), l'ordre elicitation ↔
   round-robin, la dépendance au modèle compilé.

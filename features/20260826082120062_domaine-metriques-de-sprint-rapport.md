@@ -36,9 +36,15 @@ Du code mort existe déjà, mais rien n'est branché :
   (temps de cycle, PR-sans-retouche), pas au grain sprint, et **sans tokens ni durée**.
 
 Ce chantier est un **axe distinct** de l'épic 0051 (observabilité qualité **produit**).
-0051 mesure le **logiciel fabriqué** (couverture, sécu). Ici on mesure **l'usage de la
-méthode** — la performance du sprint lui-même. C'est l'Axe 2 de l'ADR-031 (« la méthode
-est-elle bonne ? »), pas l'Axe 1 (« le produit tourne-t-il ? »).
+0051 mesure le **logiciel fabriqué** (couverture, sécu). Ici on mesure **l'usage réel de
+la méthode** — la performance du sprint tel qu'il s'est déroulé.
+
+C'est de la **télémétrie d'usage réel** (self-hosting), du même registre que le mesureur
+d'outcomes (`tools/outcomes`, famille du contrat d'améliorabilité — ADR-030), **mais sans
+le déclenchement sur seuils** (ça, c'est le Sujet B, hors périmètre — voir plus bas).
+**Ce n'est PAS** l'un des deux axes de test de l'ADR-031 : ceux-ci évaluent une
+*configuration* de méthode sur des **tâches golden** synthétiques (oracle objectif,
+baseline gelée, runs répétés, variance), pas l'usage réel d'un sprint.
 
 ## Proposition
 
