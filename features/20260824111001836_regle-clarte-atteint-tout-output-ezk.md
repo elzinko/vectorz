@@ -64,6 +64,20 @@ Deux problèmes distincts, donc : **(A) câblage** (la règle n'atteint personne
 3. **Ne pas créer de doublon** : un seul texte de règle, enrichi — pas une « règle de
    clarté agent » distincte de la « règle de clarté artefact ».
 
+### Cas concret ajouté — la clause « titre + lien » (demande PO 2026-08-26)
+
+Un **enrichissement de contenu** à porter en même temps que le câblage : la règle doit
+exiger que **toute citation d'une fiche (ou entité à id) se fasse par son titre + un lien
+cliquable, jamais par l'id nu**. Un id (`0080`, `20260826072532537`, `#175`) est un code
+interne : illisible et non navigable pour le lecteur. C'est déjà interdit *en creux*
+(« pas de code interne comme porteur de sens ») — on le rend **explicite et vérifiable**.
+Format : un lien markdown — **titre court entre crochets**, puis **le chemin du fichier de la
+fiche entre parenthèses** ; l'id peut suivre le titre, jamais le remplacer.
+
+**Décision PO du 2026-08-26** : inscrire cette clause **aux deux endroits** — le texte de la
+règle (le moteur) **et** `CLAUDE.md` (pour le chat) — au titre des gestes A (câblage) et B
+(portée chat) ci-dessus.
+
 ## Critères d'acceptation
 
 - [ ] `human-facing-lisibility` est dans `base` ; `pnpm --dir products/mega-city graph:check`
@@ -71,6 +85,8 @@ Deux problèmes distincts, donc : **(A) câblage** (la règle n'atteint personne
 - [ ] Le `Scope:` de la règle nomme explicitement les sorties de chat et le résumé de session.
 - [ ] La règle référence le mécanisme d'application côté chat (output-style / CLAUDE.md) —
       pas juste une injonction sans levier.
+- [ ] La règle porte la clause explicite « fiche = titre + lien, jamais l'id nu » ;
+      `CLAUDE.md` la reprend pour le chat.
 - [ ] Zéro nouvelle règle créée (enrichissement de l'existante uniquement).
 
 ## Comment vérifier

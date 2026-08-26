@@ -82,11 +82,13 @@
 | 0183 | Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres | feature | P1 |  | mega-city | ✅ shipped | local (main c45102b) |
 | 0185 | ezk-archive — croiser branches RÉELLES et PRs ouvertes (ne plus proposer d'ouvrir une PR déjà ouverte) | feature | P1 |  | mega-city | ✅ shipped | #117 |
 | 0191 | Lisibilité qui tient — templates LLM-adaptés + renfort au moment d'écrire (dès la description de PR) | feature | P1 |  | mega-city | ✅ shipped | local (main f196fe0) |
+| 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 |  | mega-city | 🔴 todo |  |
 | 20260812134515706 | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 |  | mega-city | ✅ shipped | #171 |
 | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | ⛔ blocked |  |
 | 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
 | 20260816131704335 | /ezk-help — index de commandes ezk généré depuis les frontmatter | feature | P1 | 20260816131703334 | mega-city | ✅ shipped | #151 |
 | 20260821163346490 | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 20260821163346487 | mega-city | 🔴 todo |  |
+| 20260821172716537 | La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit) | feature | P1 | 20260821163346487 | mega-city | 🔴 todo |  |
 | 20260821204737357 | Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend | feature | P1 | 20260821163346487 | mega-city | 🟠 in-progress |  |
 | 20260823121712652 | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 |  | mega-city | 🟠 in-progress |  |
 | 20260823121712781 | reconcile systématique — ne plus rater un ship après un squash-merge fait hors du flux (GitHub UI) | feature | P1 |  | mega-city | 🔴 todo |  |
@@ -118,7 +120,7 @@
 | 0065 | Sprint composition — un sprint peut porter un lot cohérent de fiches ; granularité PR = incrément livrable cohérent | feature | P2 |  | mega-city | ✅ shipped | local (squash-merge c969569) |
 | 0072 | épics — type epic + champ front-matter epic + rendu regen groupé (ADR-0017) | feature | P2 |  | mega-city | ✅ shipped | #30 |
 | 0078 | Émetteur de supervisabilité — install un-clic Claude Desktop (bundle .mcpb) | feature | P2 |  | mega-city | ✅ shipped | #41 |
-| 0080 | ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR) | feature | P2 |  | mega-city | 🔴 todo |  |
+| 0080 | ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0088 | ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné) | chore | P2 |  | mega-city | 🟠 in-progress |  |
 | 0096 | build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient | bug | P2 |  | mega-city | 🔴 todo |  |
 | 0101 | Câbler check-links.sh — un contrôle que personne ne lance ne protège de rien | chore | P2 | 20260813131737959 | mega-city | ✅ shipped | local (main) |
@@ -200,10 +202,8 @@
 | 0087 | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
 | 0157 | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 | 20260824060737115 | mega-city | 💡 idea |  |
 | 20260812104022237 | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 |  | mega-city | 💡 idea |  |
-| 20260812104022240 | Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260812104022246 | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260821163346493 | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
-| 20260821172716537 | La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | 20260824111001836 | La règle de clarté doit atteindre TOUT ce qui sort de la méthode (base + sorties de chat), pas rester orpheline | refactor | P1 |  | mega-city | 💡 idea |  |
 | 20260824122629794 | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260824122629925 | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
@@ -261,7 +261,11 @@
 | 20260825024356665 | Comparateur `analyze --expect` en sous-séquence — tolérer les events non déclarés (sessions live, briques 2/3) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260825161522791 | Elicitation — boucle de raffinement structurée dans groom (à la BMAD advanced-elicitation) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260825182327490 | Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport) | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260826072532452 | Vue « sprints réalisés » dans ezk:map — chaque sprint et son détail (PR, fiches, actions), extrait des comptes-rendus | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260826072532537 | Vue « rétrospectives » dans ezk:map — chaque rétro et ses actions mesurables, extraites des captures | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260826072532622 | Revue & validation des fiches dans ezk:map — pouce 👍/👎 (verdict versionné, partagé entre sessions) | feature | P2 |  | mega-city | 💡 idea |  |
 | 20260826082120069 | ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport | feature | P2 |  | mega-city | 💡 idea |  |
+| 20260826121429274 | ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints | feature | P2 |  | mega-city | 💡 idea |  |
 | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0049 | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | 0057 | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
