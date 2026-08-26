@@ -25,6 +25,7 @@
 | 0168 | Run orphelin = verrou sans clé — un run jamais clôturé bloque toute émission, sans action de déblocage | bug | P0 |  | mega-city | ✅ shipped | #76 |
 | 0176 | Interdit gitconfig global pour l'identité agent — commits cop1 locaux / one-shot only | feature | P0 |  | cop1 | ✅ shipped | #89 |
 | 0181 | Méthode ezk — Opus 4.8 par défaut + restitutions lisibles sur toutes les commandes | feature | P0 |  | mega-city | ✅ shipped | #92 |
+| 20260826122532943 | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 |  | mega-city | 🔴 todo |  |
 | 0001 | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | 0002 | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | 0013 | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -266,5 +267,6 @@
 | 20260812100258610 | testbed dogfood LLM headless — rejouer la chaîne méthode→journal→Moniteur sans humain (nightly) | feature | P3 |  | mega-city | 💡 idea |  |
 | 20260813122619707 | Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu) | bug | P3 |  | mega-city | 💡 idea |  |
 | 20260821163346503 | La méthode s'auto-évalue : sa cohérence, et la fidélité de sa représentation | feature | P3 | 20260821163346487 | mega-city | 💡 idea |  |
+| 20260826112620281 | Schéma markdown déclaratif + validateur mécanique — format de fiche/recette vérifiable et versionnable | feature | P3 |  | mega-city | 💡 idea |  |
 
 > Livrées (`done/`) : 0001, 0002, 0003, 0004, 0005, 0006, 0008, 0009, 0010, 0011, 0012, 0013, 0014, 0015, 0016, 0019, 0021, 0022, 0023, 0025, 0026, 0027, 0031, 0032, 0033, 0035, 0036, 0037, 0039, 0041, 0044, 0048, 0059, 0060, 0061, 0062, 0063, 0064, 0065, 0070, 0071, 0072, 0076, 0078, 0079, 0082, 0083, 0084, 0085, 0086, 0089, 0090, 0091, 0094, 0095, 0097, 0101, 0103, 0104, 0105, 0106, 0107, 0108, 0109, 0110, 0111, 0115, 0118, 0122, 0123, 0124, 0126, 0127, 0128, 0129, 0130, 0131, 0132, 0135, 0137, 0140, 0141, 0142, 0144, 0145, 0146, 0148, 0149, 0152, 0153, 0154, 0159, 0160, 0167, 0168, 0169, 0170, 0173, 0176, 0181, 0182, 0183, 0184, 0185, 0191, 20260812100109940, 20260812134515706, 20260813170548417, 20260813200137369, 20260816131704335, 20260823124042842, 20260823220100308, 20260823220100443, 20260825123700998, 20260825152954193, 20260825213807501, 20260825232147620.
