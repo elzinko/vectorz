@@ -121,7 +121,7 @@ fusions du **markdown** :
 
 - **Cette fiche = la doctrine.** Elle dit **quel geste** dans quel cas (l'arbre D2). Elle se
   matérialise dans `rules/` (ou le playbook backlog).
-- **[20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md) = l'outil.**
+- **[20260812104022240](../20260812104022240_backlog-rationalisation-tags-script-llm.md) = l'outil.**
   Il applique ces règles **en masse** (clusters sur `labels:` / `depends:` ; sanitation LLM des faux
   positifs). Il **consomme** cette doctrine comme sa fonction de décision ; il ne la redéfinit pas.
 - Modèle de données des tags = fiche `0092` (`labels:` / `depends:`). La doctrine s'y adosse, ne
@@ -160,7 +160,7 @@ tranche le **backlog** (combien de livrables distincts). On peut avoir un **épi
 - [ ] La règle décidable D2 écrite dans `rules/` (ou le playbook backlog), avec l'arbre de décision.
 - [ ] La sémantique de l'épic (D1) documentée — une seule définition.
 - [ ] Le board affiche le cumul des enfants d'un épic (D4) — calculé, pas saisi (finding Codex P2 clos).
-- [ ] La frontière doctrine ↔ outil ([20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md)) écrite.
+- [ ] La frontière doctrine ↔ outil ([20260812104022240](../20260812104022240_backlog-rationalisation-tags-script-llm.md)) écrite.
 - [ ] Le cas testbed matérialisé en épic (conteneur + 0102 débloqué en enfant-cœur).
 
 ## Comment vérifier
