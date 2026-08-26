@@ -81,6 +81,7 @@
 | 0183 | Pack de review markdown-first — artefact de restitution dans le code (SoT) ; GitHub PR = un rendu parmi d'autres | feature | P1 |  | mega-city | ✅ shipped | local (main c45102b) |
 | 0185 | ezk-archive — croiser branches RÉELLES et PRs ouvertes (ne plus proposer d'ouvrir une PR déjà ouverte) | feature | P1 |  | mega-city | ✅ shipped | #117 |
 | 0191 | Lisibilité qui tient — templates LLM-adaptés + renfort au moment d'écrire (dès la description de PR) | feature | P1 |  | mega-city | ✅ shipped | local (main f196fe0) |
+| 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 |  | mega-city | 🔴 todo |  |
 | 20260812134515706 | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 |  | mega-city | ✅ shipped | #171 |
 | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | ⛔ blocked |  |
 | 20260813200137369 | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
@@ -196,7 +197,6 @@
 | 0087 | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
 | 0157 | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 | 20260824060737115 | mega-city | 💡 idea |  |
 | 20260812104022237 | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 |  | mega-city | 💡 idea |  |
-| 20260812104022240 | Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260812104022246 | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | 20260821163346493 | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | 20260821172716537 | La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
