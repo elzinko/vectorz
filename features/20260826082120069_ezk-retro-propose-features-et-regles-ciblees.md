@@ -50,6 +50,10 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
    (`products/mega-city/docs/domain.ts:74-102`). Cibler `agent:<nom>` / `skill:<nom>`
    suppose donc de **matérialiser des liens explicites agent/skill → règle** — c'est le
    cœur du travail de conception de cette fiche.
+   **4ᵉ cible à considérer (demande PO 2026-08-26)** : le **LLM qui traite les retours**
+   lui-même — ajouter une règle à son **comportement de traitement** (ex. output-style,
+   consignes de traitement des reviews/réponses), pas seulement aux process ezk
+   (agents/skills). Cible partagée avec la session parallèle (voir Notes).
 3. **Tout passe par le rapport, pour ton acceptation** : chaque proposition typée
    (`feature` / `règle` / `action` / `spike`) figure dans la capture avec une case
    d'acceptation PO (⏳ → ✅/❌), **jamais pré-remplie**.
@@ -94,6 +98,12 @@ Faire évoluer la skill `ezk-retro` (temps 3 « sortie typée » + temps 5 « ra
 - **Trio rétro voisin** : 0079 (voix, shippée), 0080 (compte-rendu — **enrichi en parallèle**
   pour rendre les décisions visibles), 0081 (carnet de préparation, idea).
 - **Frontière** : ne touche pas au déclenchement par métrique (Sujet B / ADR-030).
+- **⚠️ Coordination inter-sessions (2026-08-26)** : une session active en parallèle
+  (branche `claude/ezb-backlog-ab3b3f`, « feat UI retro/sprints ») traite le **même sujet**
+  — « ajout de règles à la volée : skill / rétro → suggestion → validation » — et porte une
+  fiche « vue rétros — actions mesurables depuis les captures » (`20260826072532537`).
+  **À dédoublonner/converger** avec cette fiche avant construction. Cette session a aussi
+  **groomé 0080** de son côté (commit `c59a8e2`) → conflit à coordonner (voir la PR #176).
 - **À groomer (DoR) au tirage** : la grammaire exacte des cibles, **la relation skill →
   règle à créer** (absente du modèle aujourd'hui, cf. `domain.ts`), l'ordre elicitation ↔
   round-robin, la dépendance au modèle compilé.

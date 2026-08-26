@@ -57,6 +57,14 @@ clôture d'un sprint :
    - **tokens consommés** — via la télémétrie de supervision / le domaine budget ;
    - **KPI scrum** — fiches livrées, vélocité, blocages, retouches de PR, nombre de
      tours de revue.
+
+   **Ventilation par étape (best-effort)** : idéalement, répartir **durée et tokens par
+   étape du sprint** (BDD, archi, TDD, gate, revue, PR) pour voir **où va le coût** et
+   repérer ce qui est (in)efficient — la revue, par exemple, domine souvent. **Si** ce
+   rattachement fin est trop coûteux à instrumenter, se rabattre sur le total du sprint et
+   le **dire** dans le rapport (jamais de granularité silencieusement fausse). *NB : la
+   ventilation par étape hérite du prérequis P1 ci-dessous, en plus exigeant encore (il
+   faut un id d'étape, pas seulement un id de sprint).*
 2. **Écrit** un **rapport de sprint versionné et commité**, dans un **répertoire tracké**
    (ex. `docs/sprints/`) — **pas** `.improvement/`, gitignoré à la racine (données runtime
    régénérables, non versionnées). Emplacement exact à trancher au groom. Ouvre par « En clair ».
@@ -74,6 +82,9 @@ valider. Le déclenchement « sur preuve chiffrée » est le Sujet B (ADR-030), 
 
 - [ ] À la clôture d'un sprint, un **rapport de sprint** est produit et commité, contenant
       **durée + tokens + KPI scrum**.
+- [ ] **Si faisable à coût raisonnable**, le rapport **ventile durée/tokens par étape**
+      (BDD / archi / TDD / gate / revue / PR) ; sinon il donne le total du sprint et
+      **signale** l'absence de ventilation.
 - [ ] Les chiffres sont calculés par un **composant déterministe** (rejouable), jamais
       rédigés à la main.
 - [ ] Le **validateur** refuse un rapport incomplet/incohérent (champ manquant, total
