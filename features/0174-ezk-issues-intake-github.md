@@ -43,7 +43,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
    d'idempotence (commentaire machine-lisible et/ou `intake:analyzed`).
 3. **Bug facile à reproduire** → PR de **fix rapide opt-in** ;
    **humain = merge / prod** (pas de merge auto, pas de deploy auto).
-   **Composition repro** — [0152](0152-ezk-bug-intake-repro.md) / `ezk-bug` **ne peut pas**
+   **Composition repro** — [0152](done/0152-ezk-bug-intake-repro.md) / `ezk-bug` **ne peut pas**
    être délégué tel quel : son contrat actuel enchaîne toujours `ezk-backlog add` (fiche bug
    commitée). Pour ce flux intake, il faut **au grooming** soit un **point d'entrée repro-only**
    (repro + preuve **sans** `add` / sans commit backlog), soit une **création de fiche bug
@@ -92,7 +92,7 @@ Skill catalogue **`ezk-issues`** (nom à confirmer) qui **compose** et ne réimp
 | city-guided [0064](https://github.com/elzinko/city-guided/blob/main/features/0064-intake-issues-github.md) | Tracker **app / signal** (frontend) |
 | city-guided [ADR-0003](https://github.com/elzinko/city-guided/blob/main/docs/adr/ADR-0003-intake-issues-utilisateurs.md) | Décision produit (référence repo city-guided) |
 | city-guided [0025](https://github.com/elzinko/city-guided/blob/main/features/0025-bouton-feedback-github.md) | Émetteur des issues (chemin chaud) |
-| [0152](0152-ezk-bug-intake-repro.md) | Repro / cadrage bug — composition via **repro-only** ou fiche opt-in (pas `add` silencieux) |
+| [0152](done/0152-ezk-bug-intake-repro.md) | Repro / cadrage bug — composition via **repro-only** ou fiche opt-in (pas `add` silencieux) |
 | [0171](0171-adapter-github-issues-push-only.md) | Adaptateur fiche → issue (sens inverse) |
 | 0172 | SoT backlog md |
 | [0170](done/0170-modele-extension-plugin-mega-city.md) | Modèle d'extension (frontière) |
