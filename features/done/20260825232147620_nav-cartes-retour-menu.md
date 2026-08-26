@@ -7,9 +7,9 @@ product: mega-city
 version:
 epic:
 labels: [ezk-map, ux]
-status: todo
+status: shipped
 ready: 2026-08-25
-pr:
+pr: "#172"
 created: 2026-08-25
 ---
 
