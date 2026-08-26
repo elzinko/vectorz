@@ -8,9 +8,9 @@ version:
 epic:
 depends: []
 labels: [backlog, methode, doctrine]
-status: todo
+status: shipped
 ready: 2026-08-25
-pr:
+pr: "#175"
 created: 2026-08-25
 ---
 
