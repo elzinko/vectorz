@@ -73,3 +73,8 @@ docs/dogfood-reports/
 # mesureur déterministe (tools/outcomes). Non versionné : reproductible depuis git/gh.
 # NB transport PROVISOIRE tant qu'ADR-030 (A2) n'est pas ratifié.
 /.improvement/
+
+# Graphe compilé de la méthode (fiche 357, ADR-0040 D5) — ARTEFACT DE BUILD, régénéré
+# à la demande par `pnpm --dir products/mega-city graph:compile`. Jamais commité :
+# reproductible depuis les frontmatter du repo.
+/.ezk/
