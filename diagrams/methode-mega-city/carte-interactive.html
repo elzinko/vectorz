@@ -381,15 +381,19 @@ window.EZK = {
  "counts": {
   "rules": 59,
   "agents": 7,
-  "skills": 22,
+  "skills": 23,
   "bundles": 12,
   "profiles": 6
  },
  "liens": {
-  "total": 186,
+  "total": 187,
   "casses": 0
  },
  "orphans": [
+  {
+   "kind": "skill",
+   "id": "ezk-bug"
+  },
   {
    "kind": "skill",
    "id": "supervision-analyze"
@@ -620,7 +624,8 @@ window.EZK = {
   "ceremonies": [
    "ezk-product-build",
    "ezk-sprint",
-   "ezk-retro"
+   "ezk-retro",
+   "ezk-bug"
   ],
   "artefacts": [
    "ezk-backlog"
@@ -686,6 +691,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [
+    "ezk-bug",
     "ezk-ezk",
     "ezk-pr",
     "ezk-product-build",
@@ -700,6 +706,22 @@ window.EZK = {
     "desktop",
     "global"
    ]
+  },
+  "ezk-bug": {
+   "id": "ezk-bug",
+   "description": "Skill d'intake/cadrage d'un BUG signalé : transforme un rapport brut (« c'est cassé ») en fiche `type: bug` reproductible et exploitable (procédure, attendu/ obtenu, preuve), puis la file via `ezk-backlog add`. A utiliser quand l'utilisateur SIGNALE un bug à cadrer, veut « transformer ce bug en fiche », « reproduire et documenter un bug », « faire l'intake d'un bug », ou quand `ezk-backlog add` rencontre un bug vague à confirmer. COMPOSE le Playwright MCP partagé (pilotage de l'app + screenshot-preuve, chargé via ToolSearch — le MÊME que `ezk-qa`, pas emprunté à son rôle) pour la repro, et `ezk-backlog add` (anti-doublon + cadrage) pour le filing. Repro BORNÉE (timeout / max-tentatives) ; un harnais indisponible produit QUAND MÊME une fiche (`hors-portée`). N'EST PAS la validation d'une PR ni la rédaction de Gherkin (ça, c'est `ezk-qa`, en avant dans la boucle ezk-sprint) : `ezk-bug` confirme EN ARRIÈRE un symptôme signalé, en amont du backlog. Glue mince : ne gonfle ni `ezk-qa` ni `ezk-backlog`.",
+   "usage": "[help|intake]",
+   "etage": "methode",
+   "bande": "ceremonies",
+   "composes": [
+    "ezk-backlog"
+   ],
+   "composesExternal": [
+    "product-brainstorming"
+   ],
+   "roles": [],
+   "composedBy": [],
+   "profiles": []
   },
   "ezk-ci": {
    "id": "ezk-ci",

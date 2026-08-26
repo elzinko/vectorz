@@ -50,6 +50,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 flowchart LR
     ezk-article --> ezk-diagram
     ezk-backlog --> ezk-commits
+    ezk-bug --> ezk-backlog
     ezk-codex --> ezk-commits
     ezk-diagram --> ezk-commits
     ezk-ezk --> ezk-backlog
