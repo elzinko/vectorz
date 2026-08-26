@@ -4,9 +4,9 @@ title: ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright 
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: shipped
 ready: 2026-08-21
-pr:
+pr: "#174"
 created: 2026-07-12
 ---
 
