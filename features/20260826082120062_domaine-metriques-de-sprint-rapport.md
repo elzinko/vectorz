@@ -100,6 +100,16 @@ valider. Le déclenchement « sur preuve chiffrée » est le Sujet B (ADR-030), 
 - **Ancrages** : étend `tools/outcomes` (done/0044) ; réutilise le domaine budget tokens ;
   croquis `SprintEndReportService` (mort).
 - **Frontière** : PAS l'auto-amélioration déclenchée par métrique (Sujet B / ADR-030).
+- **⚠️ Prérequis de conception (P1, relevé par Codex sur #176)** : les deux sources de
+  tokens envisagées **ne savent pas rattacher les tokens à un sprint**. La supervision
+  ouvre **un seul run par session** de product-build, pas un par sprint
+  (`products/mega-city/skills/ezk-product-build/SKILL.md:280-287`, `:307-314`) ; et les
+  événements `TokenConsumption` du domaine budget sont keyés par **date**, sans id de
+  sprint (`products/cop1/packages/sprint-core/src/features/budget/domain/ports/BudgetStorePort.ts`,
+  `TokenConsumption.ts`). Deux sprints dans une même session (ou le même jour) verraient
+  donc leurs tokens **confondus**. À résoudre AVANT d'accepter la métrique tokens :
+  persister des **frontières de sprint**, ou poser un **id de sprint** sur les événements
+  de tokens.
 - **Voisins** : épic 0051 (qualité produit), 0055 (KPI agrégés commit→PR→sprint→version),
   0100 (sprint intake — santé du backlog à l'entrée).
 - **À groomer (DoR) au tirage** : emplacement exact du rapport (**répertoire tracké**,
