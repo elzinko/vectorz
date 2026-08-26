@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateFicheFrontMatter } from '../fiche-validator.js';
+import { findDuplicateIds, validateFicheFrontMatter } from '../fiche-validator.js';
 
 const fm = (fields: Record<string, string>) =>
   `---\n${Object.entries(fields)
@@ -61,5 +61,36 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
     const text = fm({ ...VALID_FIELDS, type: 'gadget' });
     const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
     expect(anomalies).toContainEqual(expect.objectContaining({ field: 'type' }));
+  });
+});
+
+describe('findDuplicateIds (contrôle inter-fichiers — fléau des ids en double)', () => {
+  it('ids uniques → aucune anomalie', () => {
+    expect(
+      findDuplicateIds([
+        { file: 'a.md', id: '1' },
+        { file: 'b.md', id: '2' },
+      ]),
+    ).toEqual([]);
+  });
+
+  it('id dupliqué → une anomalie par fiche concernée (champ id)', () => {
+    const anomalies = findDuplicateIds([
+      { file: 'b.md', id: '1' },
+      { file: 'a.md', id: '1' },
+      { file: 'c.md', id: '2' },
+    ]);
+    expect(anomalies).toHaveLength(2);
+    expect(anomalies.every((a) => a.field === 'id')).toBe(true);
+    expect(anomalies.map((a) => a.file).sort()).toEqual(['a.md', 'b.md']);
+  });
+
+  it('id vide ignoré (déjà signalé « champ requis absent »)', () => {
+    expect(
+      findDuplicateIds([
+        { file: 'a.md', id: '' },
+        { file: 'b.md', id: '' },
+      ]),
+    ).toEqual([]);
   });
 });

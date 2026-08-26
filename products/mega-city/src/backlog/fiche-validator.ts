@@ -70,3 +70,32 @@ export function validateFicheFrontMatter(
 
   return anomalies;
 }
+
+/**
+ * Détecte les ids en double sur l'ENSEMBLE des fiches (contrôle inter-fichiers, pur).
+ * Le fléau historique du dépôt : deux fiches mintées avec le même id. Un id vide est
+ * ignoré ici (déjà signalé « champ requis absent » par validateFicheFrontMatter).
+ */
+export function findDuplicateIds(
+  entries: ReadonlyArray<{ file: string; id: string }>,
+): FicheAnomaly[] {
+  const byId = new Map<string, string[]>();
+  for (const { file, id } of entries) {
+    if (id === '') continue;
+    byId.set(id, [...(byId.get(id) ?? []), file]);
+  }
+  const anomalies: FicheAnomaly[] = [];
+  for (const [id, files] of byId) {
+    if (files.length > 1) {
+      const sorted = [...files].sort();
+      for (const file of sorted) {
+        anomalies.push({
+          file,
+          field: 'id',
+          message: `id dupliqué : "${id}" (${sorted.length} fiches : ${sorted.join(', ')})`,
+        });
+      }
+    }
+  }
+  return anomalies;
+}
