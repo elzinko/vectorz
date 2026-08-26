@@ -1,6 +1,6 @@
 # ADR 0017 — Regroupement en épics : champ front-matter `epic:`, pas de tags libres ni de dossiers
 
-- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)** ; **A8 supersédé par A15 (2026-08-26, fiche 20260825123700998)**
+- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)** ; **A8 supersédé par A15 (2026-08-26, fiche 20260825123700998, ratifié PO)**
 - Date : 2026-07-17
 
 ## Amendement A15 — statut d'épic DÉRIVÉ au board (2026-08-26, fiche 20260825123700998)
@@ -18,7 +18,8 @@ tranchée au **grooming panel `ezk-architect` du 2026-08-25** (D4 de la doctrine
   fallback**. Calcul dans `src/core/avancement-data.ts` (`deriveEpicStatus` + `childCounts`).
 - **La contrepartie A8** (`review` signale les incohérences épic-statut/enfants) **devient
   caduque** : l'incohérence ne peut plus exister, le statut étant recalculé à chaque `regen`.
-- **À ratifier par le PO** — amendement posé en autonomie sur la base du grooming panel.
+- **Ratifié par le PO le 2026-08-26** — amendement posé en autonomie sur la base du grooming
+  panel, confirmé par le PO. **Intégré.**
 
 ## Amendement A14 — liste unique + champ `product:` (2026-07-30, fiche 0064)
 
