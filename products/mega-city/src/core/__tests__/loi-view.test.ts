@@ -3,8 +3,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { bundleRules, enforcingAgents, extractLoi, provenancePath, whoActivates } from '../loi-view.js';
-import type { LoiGraph } from '../loi-view.js';
+import { bundleRules, enforcingAgents, extractLoi, nodeDetail, provenancePath, sourcePath, whoActivates } from '../loi-view.js';
+import type { DetailRef, DetailSection, LoiGraph } from '../loi-view.js';
 import type { CompiledGraph } from '../compiled-graph.js';
 
 // Racine du dépôt (vectorz) : .../products/mega-city/src/core/__tests__ → 5 niveaux au-dessus.
@@ -143,5 +143,31 @@ describe('enforcingAgents & bundleRules — les liens règle→agent (enforces) 
   it('réel : le bundle base porte ses règles', () => {
     const loi = extractLoi(loadRealCompiledGraph());
     expect(bundleRules(loi, 'base')).toContain('clean-code/no-dead-code');
+  });
+});
+
+describe('nodeDetail & sourcePath — navigation inter-nœuds, agents/skills compris (retour PO 2026-08-27)', () => {
+  const refKey = (r: DetailRef): string => `${r.kind}:${r.id}`;
+  const allRefs = (sections: DetailSection[]): Set<string> =>
+    new Set(sections.flatMap((s) => s.nodes.map(refKey)));
+
+  it('sourcePath couvre agents et skills (chemin de la « page » du nœud)', () => {
+    expect(sourcePath('agent', 'ezk-reviewer')).toBe('products/mega-city/agents/ezk-reviewer.md');
+    expect(sourcePath('skill', 'ezk-backlog')).toBe('products/mega-city/skills/ezk-backlog/SKILL.md');
+  });
+
+  it("détail d'un agent : ses règles gardées via enforces (rule→agent inversé)", () => {
+    const refs = allRefs(nodeDetail(loadRealCompiledGraph(), 'agent', 'ezk-reviewer'));
+    expect(refs.has('rule:clean-code/no-dead-code')).toBe(true);
+  });
+
+  it("détail d'une règle : les agents qui la gardent (enforces)", () => {
+    const refs = allRefs(nodeDetail(loadRealCompiledGraph(), 'rule', 'clean-code/no-dead-code'));
+    expect(refs.has('agent:ezk-reviewer')).toBe(true);
+  });
+
+  it("détail d'un profil : héritage propagé (mobile → bundle base)", () => {
+    const refs = allRefs(nodeDetail(loadRealCompiledGraph(), 'profile', 'mobile'));
+    expect(refs.has('bundle:base')).toBe(true);
   });
 });

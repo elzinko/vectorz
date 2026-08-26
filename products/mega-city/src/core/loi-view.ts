@@ -4,9 +4,9 @@
  * `diagrams/carte-la-loi/` qui fait `fetch('/.ezk/graph.compiled.json')` (D2).
  *
  * POURQUOI (fiche 20260821172716537, ADR-0041) : le graphe compilé (ADR-0040) porte déjà
- * tous les nœuds/liens de la LOI, noyés dans agent(7)/skill(23). Ce module ne fait que
- * DÉCOUPER le sous-graphe utile (« qui active quoi » pour un profil) et donner, par
- * convention (D3), le chemin source de chaque nœud — jamais un 2ᵉ compilateur.
+ * tous les nœuds/liens de la LOI, noyés dans agent(7)/skill(23). Ce module DÉCOUPE le
+ * sous-graphe utile (« qui active quoi »), donne le chemin source de chaque nœud (D3), et
+ * — pour la navigation de la carte — expose le DÉTAIL relationnel de n'importe quel nœud.
  */
 import type { CompiledGraph, CompiledNode } from './compiled-graph.js';
 import type { Edge, NodeKind } from './graph.js';
@@ -28,9 +28,7 @@ export interface LoiGraph {
 /**
  * Extrait le sous-graphe LOI du graphe compilé complet :
  *   - nodes : uniquement rule/bundle/profile ;
- *   - edges : toute arête dont AU MOINS une extrémité est rule/bundle/profile (inclut
- *     donc `profile→agent`/`profile→skill` et l'héritage `profile-extends`/`bundle-extends`,
- *     tous nécessaires pour répondre « qui active quoi »).
+ *   - edges : toute arête dont AU MOINS une extrémité est rule/bundle/profile.
  */
 export function extractLoi(graph: CompiledGraph): LoiGraph {
   return {
@@ -42,12 +40,15 @@ export function extractLoi(graph: CompiledGraph): LoiGraph {
 const MEGA_CITY_ROOT = 'products/mega-city';
 
 /**
- * Provenance fichier par convention (D3, ADR-0041) — chemin relatif à la racine du dépôt.
+ * Chemin source par convention (D3, ADR-0041) — relatif à la racine du dépôt — pour
+ * N'IMPORTE quel type de nœud (agents/skills inclus, pour les liens de navigation).
  *   rule    a/b → products/mega-city/rules/a/b.md
  *   bundle  x   → products/mega-city/bundles/x.yml
  *   profile p   → products/mega-city/profiles/p.yml
+ *   agent   a   → products/mega-city/agents/a.md
+ *   skill   s   → products/mega-city/skills/s/SKILL.md
  */
-export function provenancePath(kind: LoiNodeKind, id: string): string {
+export function sourcePath(kind: NodeKind, id: string): string {
   switch (kind) {
     case 'rule':
       return `${MEGA_CITY_ROOT}/rules/${id}.md`;
@@ -55,7 +56,18 @@ export function provenancePath(kind: LoiNodeKind, id: string): string {
       return `${MEGA_CITY_ROOT}/bundles/${id}.yml`;
     case 'profile':
       return `${MEGA_CITY_ROOT}/profiles/${id}.yml`;
+    case 'agent':
+      return `${MEGA_CITY_ROOT}/agents/${id}.md`;
+    case 'skill':
+      return `${MEGA_CITY_ROOT}/skills/${id}/SKILL.md`;
+    default:
+      return '';
   }
+}
+
+/** Provenance d'un nœud LOI (compat historique) — délègue à `sourcePath`. */
+export function provenancePath(kind: LoiNodeKind, id: string): string {
+  return sourcePath(kind, id);
 }
 
 /**
@@ -89,11 +101,9 @@ export interface WhoActivates {
 }
 
 /**
- * « Qui active quoi » pour un profil — HÉRITAGE COMPRIS (le trou du POC initial, corrigé
- * après revue adverse le 2026-08-26). Un profil qui `profile-extends` un parent active
- * AUSSI les bundles/agents/skills du parent ; un bundle qui `bundle-extends` un autre
- * hérite de ses règles. Sans cette fermeture, `mobile` (qui étend `base`) apparaissait sans
- * le bundle `base` ni ses règles — réponse fausse à la question-titre de la fiche.
+ * « Qui active quoi » pour un profil — HÉRITAGE COMPRIS (corrigé après revue adverse le
+ * 2026-08-26). Un profil qui `profile-extends` un parent active AUSSI ses bundles/agents/
+ * skills ; un bundle qui `bundle-extends` un autre hérite de ses règles.
  */
 export function whoActivates(loi: LoiGraph, profileId: string): WhoActivates {
   const profiles = new Set<string>([profileId, ...ancestors(loi, profileId, 'profile-extends')]);
@@ -138,4 +148,73 @@ export function enforcingAgents(loi: LoiGraph, ruleId: string): string[] {
     if (e.link === 'enforces' && e.from === ruleId) out.add(e.to);
   }
   return [...out].sort();
+}
+
+/** Une référence typée vers un nœud, cliquable dans le panneau de détail. */
+export interface DetailRef {
+  kind: NodeKind;
+  id: string;
+}
+
+/** Une section « libellé + nœuds liés » du panneau de détail. */
+export interface DetailSection {
+  label: string;
+  nodes: DetailRef[];
+}
+
+/**
+ * Le DÉTAIL relationnel d'un nœud, pour la navigation de la carte (clic → sous-nœuds
+ * cliquables). Couvre les 5 types du graphe — agents/skills inclus, ce que le POC ne
+ * montrait pas (retour PO 2026-08-27). Lit le graphe COMPLET (pas seulement le sous-graphe
+ * LOI) : les liens `competences`/`interactions`/`composes` touchent agents et skills.
+ */
+export function nodeDetail(graph: CompiledGraph, kind: NodeKind, id: string): DetailSection[] {
+  const edges = graph.edges;
+  const outTo = (link: string, from: string): string[] =>
+    edges.filter((e) => e.link === link && e.from === from).map((e) => e.to);
+  const inFrom = (link: string, to: string): string[] =>
+    edges.filter((e) => e.link === link && e.to === to).map((e) => e.from);
+  const sec = (label: string, nodeKind: NodeKind, ids: string[]): DetailSection => ({
+    label,
+    nodes: [...new Set(ids)].sort().map((nid) => ({ kind: nodeKind, id: nid })),
+  });
+
+  switch (kind) {
+    case 'profile': {
+      const wa = whoActivates(graph, id);
+      return [
+        sec('Hérite de', 'profile', [...ancestors(graph, id, 'profile-extends')]),
+        sec('Bundles', 'bundle', wa.bundles),
+        sec('Règles (via ces bundles)', 'rule', wa.rules),
+        sec('Agents', 'agent', wa.agents),
+        sec('Skills', 'skill', wa.skills),
+      ];
+    }
+    case 'bundle':
+      return [
+        sec('Étend', 'bundle', outTo('bundle-extends', id)),
+        sec('Règles', 'rule', bundleRules(graph, id)),
+        sec('Activé par les profils', 'profile', inFrom('profile-bundle', id)),
+      ];
+    case 'rule':
+      return [
+        sec('Dans les bundles', 'bundle', inFrom('bundle-rule', id)),
+        sec('Gardée par (enforces)', 'agent', outTo('enforces', id)),
+      ];
+    case 'agent':
+      return [
+        sec('Garde les règles (enforces)', 'rule', inFrom('enforces', id)),
+        sec('Compétences (skills)', 'skill', outTo('competences', id)),
+        sec('Règles ciblées (interactions)', 'rule', outTo('interactions', id)),
+        sec('Activé par les profils', 'profile', inFrom('profile-agent', id)),
+      ];
+    case 'skill':
+      return [
+        sec('Compose', 'skill', outTo('composes', id)),
+        sec('Utilisé par les agents (compétence)', 'agent', inFrom('competences', id)),
+        sec('Activé par les profils', 'profile', inFrom('profile-skill', id)),
+      ];
+    default:
+      return [];
+  }
 }
