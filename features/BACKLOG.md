@@ -153,6 +153,8 @@
 | 20260825160456259 | Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help) | feature | P2 | 20260816131703334 | mega-city | 🔴 todo |  |
 | 20260825202444647 | ezk-codex fix — répondre en fil ET résoudre TOUS les fils traités (pas seulement décliner) | feature | P2 |  | mega-city | 🔴 todo |  |
 | 20260825213807501 | Vue « Plan » dans le board — l'ordre décidé du travail + la prochaine fiche tirable (rendre PLAN.md, sans objet sprint) | feature | P2 |  | mega-city | ✅ shipped | #169 |
+| 20260826173005368 | Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills | refactor | P2 |  | mega-city | 🔴 todo |  |
+| 20260826173221323 | Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet | refactor | P2 | 20260813124026215 | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |

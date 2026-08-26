@@ -159,6 +159,10 @@ par-commande).
       qu'avec `--apply` (règle d'or respectée).
 - [ ] **Migration de démonstration** met à jour un front-matter d'artefact dans un projet client
       (cas reproduit).
+- [ ] **Banc de test des migrations** : un **projet fixture vierge, évolutif** (réutilise le `cobaye/`
+      du monorepo, **pas** un nouveau repo) rejoue au moins une migration **breaking** de bout en bout
+      — `bind` → drift détecté → `upgrade --apply` → schéma à jour — **sans LLM**, et vérifie
+      l'**isolation** (une version déployée reste stable tant que le préflight n'a pas migré).
 - [ ] **Doc rollback** = `git revert` (natif).
 - [ ] Gate locale verte (typecheck/lint/tests).
 
@@ -248,3 +252,12 @@ par-commande).
   balance avec le coût (+1 champ, +1 axe) — Skema fait déjà l'évolution au niveau dossier, ce qui
   suffit tant que toutes les fiches d'un dossier partagent un schéma. À trancher au design de
   cette fiche.
+- **Stratégie de test (session 2026-08-26)** : valider les migrations sur un **projet fixture vierge
+  qu'on fait évoluer au fil de l'eau** — le faire grandir migration après migration, **dans le
+  monorepo** (réutiliser `cobaye/`, ne pas créer un nouveau repo). Il sert deux vérifications :
+  (1) une migration **breaking** s'applique proprement de bout en bout (`bind` → drift → `upgrade
+  --apply`) ; (2) l'**isolation** tient (une version déployée reste stable tant qu'on ne migre pas).
+  **Réserve PO explicite** : garder un fixture **minimal** (le plus petit projet qui prouve la
+  migration), pas un banc exhaustif — ne pas se compliquer la vie tant que le besoin réel n'excède
+  pas ça. Cousin mais autre objet : [0102](0102-ezk-testbed-brique-boot-env-test.md) (environnement
+  de test isolé d'une PR/branche).
