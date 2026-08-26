@@ -172,6 +172,7 @@
 | 20260813122510737 | ezk-backlog init.sh — le marqueur layout_version doit primer sur la détection legacy « Index auto-généré » | bug | P3 |  | mega-city | 🔴 todo |  |
 | 20260813170548417 | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 |  | mega-city | ✅ shipped | #147 |
 | 20260825152954193 | Page d'accueil ezk:map — un menu des cartes (naviguer sans relancer le serveur) | feature | P3 |  | mega-city | ✅ shipped | #170 |
+| 20260825232147620 | Barre de navigation sur chaque carte ezk:map — revenir au menu + sauter à une autre carte | feature | P3 |  | mega-city | 🔴 todo |  |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready, ADR-0017)
 

@@ -22,9 +22,12 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   type DiagramEntry,
+  injectNavIntoHtml,
   orderDiagrams,
   readMetaTitle,
   renderMenuHtml,
+  renderNavBar,
+  renderSvgWrapper,
 } from '../src/core/ezk-map-menu.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -131,6 +134,30 @@ const server = createServer((req, res) => {
       res.writeHead(404).end('404');
       return;
     }
+
+    // Navigation DANS une carte (fiche 20260825232147620) : pour une carte `.html`/`.svg`
+    // sous `diagrams/`, on injecte une barre (retour menu + saut vers une autre carte) À LA
+    // VOLÉE — le fichier sur disque n'est jamais modifié. `?raw` court-circuite (sert le
+    // fichier tel quel) : c'est ce que l'enveloppe SVG charge dans son `<img>`.
+    const relParts = rel.split(/[/\\]/);
+    const ext = extname(target).toLowerCase();
+    if (
+      !url.searchParams.has('raw') &&
+      relParts[0] === 'diagrams' &&
+      (ext === '.html' || ext === '.svg')
+    ) {
+      const slug = relParts[1] ?? '';
+      const nav = renderNavBar(diagrams, slug);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      if (ext === '.html') {
+        res.end(injectNavIntoHtml(readFileSync(target, 'utf8'), nav));
+      } else {
+        const title = diagrams.find((d) => d.slug === slug)?.title ?? slug;
+        res.end(renderSvgWrapper(`${url.pathname}?raw`, nav, title));
+      }
+      return;
+    }
+
     res.writeHead(200, {
       'Content-Type': MIME[extname(target).toLowerCase()] ?? 'application/octet-stream',
       'Cache-Control': 'no-store', // on itère sur la carte : jamais de version périmée
