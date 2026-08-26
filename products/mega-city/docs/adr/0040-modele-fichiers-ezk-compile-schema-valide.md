@@ -191,6 +191,12 @@ De la fiche **652** (nommage validé PO 2026-08-25) :
 
 Panel `ezk-architect` **tenu** le 2026-08-26 (GO-avec-amendements) ; **ratifié PO le 2026-08-26**.
 
+> **Avancement 2026-08-26 (session product-build)** : items **2, 3, 4 livrés** — graphe compilé
+> (`graph:compile` / `graph:query`, un id inconnu = échec) ; validateur `fiches:check` (warning par
+> défaut · `--strict` bloquant · détection d'ids dupliqués · **gate corpus** dans la suite de tests).
+> Tout en **local** (main **non poussé**). Restent : **5** (migration refs prose→id), **6** (Skema
+> généralisé), **7** (vocabulaire en alias), **8** (frontière recettes).
+
 1. [x] **Ratification PO** de cet ADR amendé → statut *accepté* (2026-08-26).
 2. [ ] **Graphe compilé SEUL** (357) : un `pnpm` lit les frontmatter **existants** (aucun rename) et
       émet une **instance typée** ; **artefact non-versionné**, régénéré à la demande / CI ; la webapp
