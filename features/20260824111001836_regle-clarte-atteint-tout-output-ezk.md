@@ -71,8 +71,8 @@ exiger que **toute citation d'une fiche (ou entité à id) se fasse par son titr
 cliquable, jamais par l'id nu**. Un id (`0080`, `20260826072532537`, `#175`) est un code
 interne : illisible et non navigable pour le lecteur. C'est déjà interdit *en creux*
 (« pas de code interne comme porteur de sens ») — on le rend **explicite et vérifiable**.
-Format : `[titre court](chemin/vers/la/fiche.md)` ; l'id peut suivre le titre, jamais le
-remplacer.
+Format : un lien markdown — **titre court entre crochets**, puis **le chemin du fichier de la
+fiche entre parenthèses** ; l'id peut suivre le titre, jamais le remplacer.
 
 **Décision PO du 2026-08-26** : inscrire cette clause **aux deux endroits** — le texte de la
 règle (le moteur) **et** `CLAUDE.md` (pour le chat) — au titre des gestes A (câblage) et B
