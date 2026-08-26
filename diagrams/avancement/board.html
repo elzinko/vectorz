@@ -239,12 +239,12 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 117,
-  "todo": 48,
+  "todo": 50,
   "blocked": 5,
   "in-progress": 5,
-  "idea": 78
+  "idea": 80
  },
- "tirables": 1,
+ "tirables": 3,
  "actives": [
   {
    "id": "20260826122532943",
@@ -439,11 +439,11 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260812104022240",
-   "title": "Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM",
+   "title": "ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM",
    "type": "feature",
    "priority": "P1",
-   "status": "idea",
-   "ready": false,
+   "status": "todo",
+   "ready": true,
    "epic": "",
    "product": "mega-city",
    "pr": "",
@@ -507,8 +507,8 @@ window.EZK_AVANCEMENT = {
    "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
    "type": "feature",
    "priority": "P1",
-   "status": "idea",
-   "ready": false,
+   "status": "todo",
+   "ready": true,
    "epic": "20260821163346487",
    "product": "mega-city",
    "pr": "",
@@ -842,7 +842,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "0080",
-   "title": "ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR)",
+   "title": "ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)",
    "type": "feature",
    "priority": "P2",
    "status": "todo",
@@ -1646,6 +1646,45 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md"
   },
   {
+   "id": "20260826072532452",
+   "title": "Vue « sprints réalisés » dans ezk:map — chaque sprint et son détail (PR, fiches, actions), extrait des comptes-rendus",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826072532452_vue-sprints-realises-ezk-map.md"
+  },
+  {
+   "id": "20260826072532537",
+   "title": "Vue « rétrospectives » dans ezk:map — chaque rétro et ses actions mesurables, extraites des captures",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826072532537_vue-retros-actions-ezk-map.md"
+  },
+  {
+   "id": "20260826072532622",
+   "title": "Revue & validation des fiches dans ezk:map — pouce 👍/👎 (verdict versionné, partagé entre sessions)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826072532622_revue-fiches-pouce-ezk-map.md"
+  },
+  {
    "id": "20260826082120069",
    "title": "ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport",
    "type": "feature",
@@ -1657,6 +1696,19 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md"
+  },
+  {
+   "id": "20260826121429274",
+   "title": "ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826121429274_ezk-archive-compte-rendu-structure.md"
   },
   {
    "id": "0007",
@@ -2068,8 +2120,8 @@ window.EZK_AVANCEMENT = {
     "20260821204737357"
    ],
    "childCounts": {
-    "todo": 1,
-    "idea": 6,
+    "todo": 2,
+    "idea": 5,
     "in-progress": 1
    }
   },
@@ -2141,11 +2193,71 @@ window.EZK_AVANCEMENT = {
 window.EZK_PLAN = {
  "lanes": [
   {
-   "label": "▶️ NOW bis — refonte de la méthode (post-PR #162, séquence du 2026-08-24)",
+   "label": "▶️ NOW — post-ADR-0040 (réaligné le 2026-08-26)",
    "level": 2,
    "rows": [
     {
-     "text": "**20260824061247344** — le reliquat exécutable de la refonte « trois étages »",
+     "text": "**20260821204737357** — câbler la méthode par un modèle compilé (le graphe) · in-progress",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260821204737357",
+       "title": "Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260821204737357_cabler-la-methode-modele-compile.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260823121712652** — statut validé par schéma (le validateur) · in-progress",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260823121712652",
+       "title": "Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260823121712652_modele-statut-kanban-schema-valide.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260821172716537",
+       "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": true,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260824061247344** — reliquat de la refonte « trois étages » (lot 4b · vocab DoD ·",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2165,33 +2277,7 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260823124042842** — vue d'avancement, lot 0 : le board compilé (le flux,",
-     "marker": null,
-     "struck": false,
-     "cards": [
-      {
-       "id": "20260823124042842",
-       "title": "Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs",
-       "status": "shipped",
-       "priority": "P2",
-       "ready": true,
-       "epic": "",
-       "product": "mega-city",
-       "type": "feature",
-       "pr": "main@7f0f12d",
-       "file": "features/done/20260823124042842_vue-avancement-sprints-fiches.md",
-       "found": true
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "label": "↪️ Après le refactoring (post-4a/4b) — sujets ouverts le 2026-08-25",
-   "level": 3,
-   "rows": [
-    {
-     "text": "**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (worktrees × sessions ×",
+     "text": "**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2209,9 +2295,15 @@ window.EZK_PLAN = {
        "found": true
       }
      ]
-    },
+    }
+   ]
+  },
+  {
+   "label": "↪️ NEXT — après la séquence NOW",
+   "level": 3,
+   "rows": [
     {
-     "text": "**0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du domaine hors",
+     "text": "**0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2244,7 +2336,7 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260812104022246** — composition comportementale des skills (+ directive `ezk-archive`",
+     "text": "**20260812104022246** — composition comportementale des skills (directive `ezk-archive`",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2284,7 +2376,7 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260824163426298** — consolider preview/device/testbed, épic (surface unifiée + compétences",
+     "text": "**20260824163426298** — consolider preview/device/testbed, épic (surface unifiée +",
      "marker": null,
      "struck": false,
      "cards": [
@@ -3272,7 +3364,7 @@ window.EZK_PLAN = {
       },
       {
        "id": "0080",
-       "title": "ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR)",
+       "title": "ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)",
        "status": "todo",
        "priority": "P2",
        "ready": false,
@@ -3406,44 +3498,29 @@ window.EZK_PLAN = {
    ]
   }
  ],
- "head": null,
- "blockedAhead": [
-  {
-   "id": "20260824061247344",
-   "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
-   "status": "todo",
-   "priority": "P1",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "refactor",
-   "pr": "",
-   "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
-   "found": true
-  },
-  {
-   "id": "20260825141012293",
-   "title": "ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map",
-   "status": "todo",
-   "priority": "P1",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "feature",
-   "pr": "",
-   "file": "features/20260825141012293_ezk-sessions-cockpit.md",
-   "found": true
-  }
- ],
+ "head": {
+  "id": "20260821172716537",
+  "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
+  "status": "todo",
+  "priority": "P1",
+  "ready": true,
+  "epic": "20260821163346487",
+  "product": "mega-city",
+  "type": "feature",
+  "pr": "",
+  "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md",
+  "found": true
+ },
+ "blockedAhead": [],
  "unresolved": [
   "0068",
   "0092"
  ],
  "counts": {
-  "entries": 40,
-  "cards": 73,
-  "resolved": 71,
-  "shipped": 33,
+  "entries": 42,
+  "cards": 75,
+  "resolved": 73,
+  "shipped": 32,
   "unresolved": 2
  }
 };
