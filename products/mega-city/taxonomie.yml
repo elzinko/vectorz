@@ -23,6 +23,7 @@ etages:
   methode:
     skills:
       - ezk-backlog
+      - ezk-bug
       - ezk-product-build
       - ezk-retro
       - ezk-sprint
@@ -64,5 +65,5 @@ etages:
 # « Outillage » est promue famille de modules ; commits et archive quittent
 # l'étage méthode sur décision PO). L'ordre est l'ordre du flux.
 bandes:
-  ceremonies: [ezk-product-build, ezk-sprint, ezk-retro]
+  ceremonies: [ezk-product-build, ezk-sprint, ezk-retro, ezk-bug]
   artefacts: [ezk-backlog]
