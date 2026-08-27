@@ -147,12 +147,12 @@ export function renderNavBar(items: DiagramEntry[], currentSlug: string): string
   return `<style>
   .ezknav-wrap{position:fixed;top:10px;right:10px;z-index:2147483647;display:flex;gap:6px;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.82rem;}
-  .ezknav-home,.ezknav>summary{width:34px;height:34px;box-sizing:border-box;cursor:pointer;
+  .ezknav-home,.ezknav-theme,.ezknav>summary{width:34px;height:34px;box-sizing:border-box;cursor:pointer;font-family:inherit;
     display:flex;align-items:center;justify-content:center;font-size:1rem;color:#e7e9ee;text-decoration:none;
     background:rgba(23,26,33,.82);border:1px solid #2a2f3a;border-radius:8px;user-select:none;
     box-shadow:0 2px 10px rgba(0,0,0,.30);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:.7;transition:opacity .12s;}
   .ezknav-home{font-size:1.15rem;}
-  .ezknav-home:hover,.ezknav>summary:hover,.ezknav[open]>summary{opacity:1;border-color:#4a5262;}
+  .ezknav-home:hover,.ezknav-theme:hover,.ezknav>summary:hover,.ezknav[open]>summary{opacity:1;border-color:#4a5262;}
   .ezknav{position:relative;}
   .ezknav>summary{list-style:none;}
   .ezknav>summary::-webkit-details-marker{display:none;}
@@ -174,7 +174,9 @@ export function renderNavBar(items: DiagramEntry[], currentSlug: string): string
       <div class="ezknav-liste">${liens}</div>
     </div>
   </details>
-</div>`;
+  <button class="ezknav-theme" id="ezknav-theme" type="button" title="Basculer clair / sombre" aria-label="Basculer le thème">☾</button>
+</div>
+<script>/*ezknav-theme*/(function(){var r=document.documentElement,b=document.getElementById('ezknav-theme');if(!b)return;function eff(){var d=r.getAttribute('data-theme');if(d)return d;return (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}function sync(){b.textContent=eff()==='dark'?'☀':'☾';}try{var s=localStorage.getItem('ezk-theme');if(s)r.setAttribute('data-theme',s);}catch(e){}sync();b.addEventListener('click',function(){var n=eff()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('ezk-theme',n);}catch(e){}sync();});})();</script>`;
 }
 
 /** Injecte `nav` juste avant la dernière `</body>` d'un HTML (append si absente). */
@@ -196,7 +198,10 @@ export function renderSvgWrapper(rawUrl: string, nav: string, title: string): st
 <title>${escapeHtml(title)}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  html, body { margin: 0; height: 100%; background: #0f1115; }
+  :root { --ezk-ground: #e9edf4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ezk-ground: #0c1019; } }
+  :root[data-theme="dark"] { --ezk-ground: #0c1019; }
+  html, body { margin: 0; height: 100%; background: var(--ezk-ground); }
   .ezkmap-img { display: block; width: 100%; height: 100vh; object-fit: contain; padding: 16px; box-sizing: border-box; }
 </style>
 </head>
