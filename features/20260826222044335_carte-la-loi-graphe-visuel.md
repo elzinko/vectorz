@@ -14,7 +14,7 @@ created: 2026-08-27
 
 ## En clair
 
-La carte « LA LOI » (livrée par la fiche [20260821172716537](20260821172716537_carte-ne-montre-pas-la-loi.md), PR #179) montre les règles, bundles et profils en **colonnes**, et leurs liens en **listes** (au clic sur un nœud, dans un panneau latéral). Elle ne **dessine** pas encore les liens comme des **traits** entre les nœuds, à la manière de `diagrams/methode-mega-city/carte-interactive.html`. Cette fiche = passer de « listes au clic » à un **graphe visuel** (nœuds reliés par des arêtes).
+La carte « LA LOI » (livrée par la fiche [20260821172716537](done/20260821172716537_carte-ne-montre-pas-la-loi.md), PR #179) montre les règles, bundles et profils en **colonnes**, et leurs liens en **listes** (au clic sur un nœud, dans un panneau latéral). Elle ne **dessine** pas encore les liens comme des **traits** entre les nœuds, à la manière de `diagrams/methode-mega-city/carte-interactive.html`. Cette fiche = passer de « listes au clic » à un **graphe visuel** (nœuds reliés par des arêtes).
 
 ## Contexte / Problème
 
@@ -44,5 +44,5 @@ pnpm --dir products/mega-city exec tsx bin/ezk-map.ts carte-la-loi
 
 ## Notes
 
-- Suite directe de [20260821172716537](20260821172716537_carte-ne-montre-pas-la-loi.md) (PR #179) et d'[ADR-0041](../products/mega-city/docs/adr/0041-carte-la-loi-lecteur-runtime-graphe-compile.md).
+- Suite directe de [20260821172716537](done/20260821172716537_carte-ne-montre-pas-la-loi.md) (PR #179) et d'[ADR-0041](../products/mega-city/docs/adr/0041-carte-la-loi-lecteur-runtime-graphe-compile.md).
 - Le **panneau de détail collant** (voir le détail au clic) a déjà été livré dans la PR #179 — il ne reste que le **graphe dessiné** ici.
