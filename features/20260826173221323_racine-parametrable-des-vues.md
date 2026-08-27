@@ -27,8 +27,9 @@ d'environnement. C'est le **premier déblocage** de l'ancrage de la méthode par
 - Le **cœur est déjà propre** : `loadFiches(rootDir)` prend la racine **en paramètre**
   (`products/mega-city/src/loaders/fiches.ts:53`).
 - Mais les **binaires des vues figent la racine** via `import.meta.url` — donc toujours le dépôt
-  vectorz : `bin/regen-avancement.ts:19`, `bin/regen-map-data.ts:20`, `bin/ezk-map.ts:33`,
-  `bin/plan-head.ts:64`, `bin/check-fiches.ts:19`.
+  vectorz : `bin/regen-avancement.ts:19`, `bin/regen-map-data.ts:20`, `bin/regen-plan-view.ts:20`,
+  `bin/ezk-map.ts:33`, `bin/check-fiches.ts:19`. (`bin/plan-head.ts:64` **affiche** le plan mais ne
+  régénère PAS l'onglet Plan — c'est `regen-plan-view.ts` qui produit la vue ; retour Codex 2026-08-27.)
 - Conséquence : board / map / plan / avancement ne peuvent afficher que les fiches **de vectorz**.
   Un projet hôte ne peut pas voir les siennes — ce qui rend l'install-par-projet inutile côté vues.
 - **Verrou indépendant de la grande décision d'archi** (options 0-4 de l'épic
@@ -50,8 +51,9 @@ d'environnement. C'est le **premier déblocage** de l'ancrage de la méthode par
 
 ## Critères d'acceptation
 
-- [ ] Les 5 bins (`avancement` / `regen-avancement` / `regen-map-data` / `ezk-map` / `plan-head` /
-      `check-fiches`) acceptent une **racine explicite** (arg > env `EZK_ROOT` > défaut actuel).
+- [ ] Les bins des vues (`avancement` / `regen-avancement` / `regen-map-data` / **`regen-plan-view`** /
+      `ezk-map` / `check-fiches`) acceptent une **racine explicite** (arg > env `EZK_ROOT` > défaut actuel).
+      `regen-plan-view` inclus : il régénère **l'onglet Plan** ; `plan-head` ne fait qu'**afficher**, il ne régénère aucune vue.
 - [ ] Depuis un autre dossier, désigner un projet hôte fait afficher **les fiches DE ce projet**
       (pas celles de vectorz).
 - [ ] **Sans** argument ni env : comportement **inchangé** (test de non-régression).
