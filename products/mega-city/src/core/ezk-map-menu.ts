@@ -145,13 +145,17 @@ export function renderNavBar(items: DiagramEntry[], currentSlug: string): string
     })
     .join('');
   return `<style>
-  .ezknav{position:fixed;top:10px;right:10px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.82rem;}
-  .ezknav>summary{list-style:none;cursor:pointer;width:34px;height:34px;box-sizing:border-box;
-    display:flex;align-items:center;justify-content:center;font-size:1rem;color:#e7e9ee;
+  .ezknav-wrap{position:fixed;top:10px;right:10px;z-index:2147483647;display:flex;gap:6px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.82rem;}
+  .ezknav-home,.ezknav>summary{width:34px;height:34px;box-sizing:border-box;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:1rem;color:#e7e9ee;text-decoration:none;
     background:rgba(23,26,33,.82);border:1px solid #2a2f3a;border-radius:8px;user-select:none;
     box-shadow:0 2px 10px rgba(0,0,0,.30);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:.7;transition:opacity .12s;}
+  .ezknav-home{font-size:1.15rem;}
+  .ezknav-home:hover,.ezknav>summary:hover,.ezknav[open]>summary{opacity:1;border-color:#4a5262;}
+  .ezknav{position:relative;}
+  .ezknav>summary{list-style:none;}
   .ezknav>summary::-webkit-details-marker{display:none;}
-  .ezknav>summary:hover,.ezknav[open]>summary{opacity:1;border-color:#4a5262;}
   .ezknav-panel{position:absolute;top:40px;right:0;min-width:230px;max-width:min(80vw,360px);
     background:rgba(23,26,33,.98);border:1px solid #2a2f3a;border-radius:8px;padding:6px;
     box-shadow:0 8px 28px rgba(0,0,0,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
@@ -161,13 +165,16 @@ export function renderNavBar(items: DiagramEntry[], currentSlug: string): string
   .ezknav-retour{color:#9aa2b1;border-bottom:1px solid #2a2f3a;margin-bottom:4px;padding-bottom:8px;}
   .ezknav-liste a[aria-current]{color:#5b9bd5;font-weight:600;}
 </style>
-<details class="ezknav">
-  <summary title="Cartes" aria-label="Ouvrir le menu des cartes">☰</summary>
-  <div class="ezknav-panel">
-    <a class="ezknav-retour" href="/">← Retour au menu</a>
-    <div class="ezknav-liste">${liens}</div>
-  </div>
-</details>`;
+<div class="ezknav-wrap">
+  <a class="ezknav-home" href="/" title="Menu principal" aria-label="Retour au menu principal">⌂</a>
+  <details class="ezknav">
+    <summary title="Autres cartes" aria-label="Ouvrir la liste des cartes">☰</summary>
+    <div class="ezknav-panel">
+      <a class="ezknav-retour" href="/">← Retour au menu</a>
+      <div class="ezknav-liste">${liens}</div>
+    </div>
+  </details>
+</div>`;
 }
 
 /** Injecte `nav` juste avant la dernière `</body>` d'un HTML (append si absente). */

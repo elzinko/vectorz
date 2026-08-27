@@ -5,21 +5,41 @@
 <title>Board d'avancement — vectorz</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
+  /* Clair par défaut (lisibilité), sombre selon le système ou la bascule (retour PO). */
   :root {
-    --bg: #0f1115;
-    --panel: #171a21;
-    --border: #2a2f3a;
-    --text: #e7e9ee;
-    --muted: #9aa2b1;
-    --p0: #e5484d;
-    --p1: #f5a524;
-    --p2: #5b9bd5;
-    --p3: #6b7280;
-    --todo: #6b7280;
-    --in-progress: #f5a524;
-    --blocked: #e5484d;
-    --idea: #8a6fd8;
-    --shipped: #34a853;
+    color-scheme: light dark;
+    --bg: #f5f6f8;
+    --panel: #ffffff;
+    --border: #d8dce4;
+    --text: #1b1e25;
+    --muted: #59616f;
+    --p0: #cf3b40;
+    --p1: #b6740f;
+    --p2: #3a76ad;
+    --p3: #6f7684;
+    --todo: #6f7684;
+    --in-progress: #b6740f;
+    --blocked: #cf3b40;
+    --idea: #7458cf;
+    --shipped: #2c8f4c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+      --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
+      --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+    --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
+    --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+  }
+  .theme-btn {
+    position: fixed; top: 10px; left: 10px; z-index: 1000;
+    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--panel); color: var(--text); cursor: pointer; font-size: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,.18);
   }
   * { box-sizing: border-box; }
   body {
@@ -163,6 +183,17 @@
 </style>
 </head>
 <body>
+<button id="theme-btn" class="theme-btn" title="Basculer clair / sombre" aria-label="Basculer le thème">☾</button>
+<script>
+(function () {
+  var root = document.documentElement, btn = document.getElementById('theme-btn');
+  function isDark() { var d = root.getAttribute('data-theme'); if (d) return d === 'dark'; return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches); }
+  function sync() { btn.textContent = isDark() ? '☀' : '☾'; }
+  try { var s = localStorage.getItem('ezk-board-theme'); if (s) root.setAttribute('data-theme', s); } catch (e) {}
+  sync();
+  btn.addEventListener('click', function () { var next = isDark() ? 'light' : 'dark'; root.setAttribute('data-theme', next); try { localStorage.setItem('ezk-board-theme', next); } catch (e) {} sync(); });
+})();
+</script>
 
 <h1>Avancement — vectorz</h1>
 
@@ -239,12 +270,12 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 117,
-  "todo": 50,
+  "todo": 51,
   "blocked": 5,
   "in-progress": 5,
   "idea": 80
  },
- "tirables": 3,
+ "tirables": 4,
  "actives": [
   {
    "id": "20260826122532943",
@@ -1711,6 +1742,19 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260826121429274_ezk-archive-compte-rendu-structure.md"
   },
   {
+   "id": "20260826225817193",
+   "title": "Board d'avancement — cliquer une fiche ouvre son détail lisible (au lieu du .md brut)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "todo",
+   "ready": true,
+   "epic": "20260821163346487",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826225817193_board-clic-fiche-detail.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2117,10 +2161,11 @@ window.EZK_AVANCEMENT = {
     "20260821163346501",
     "20260821163346503",
     "20260821172716537",
-    "20260821204737357"
+    "20260821204737357",
+    "20260826225817193"
    ],
    "childCounts": {
-    "todo": 2,
+    "todo": 3,
     "idea": 5,
     "in-progress": 1
    }
@@ -3589,6 +3634,11 @@ window.EZK_PLAN = {
     var a = document.createElement('a');
     a.className = 'carte';
     a.href = '../../' + f.file;
+    a.addEventListener('click', function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return; // laisse ouvrir la source en nouvel onglet
+      ev.preventDefault();
+      openFiche(f);
+    });
     a.style.setProperty('--prio-color', 'var(--p' + slug(f.priority ? f.priority.replace('P', '') : '3') + ')');
     a.appendChild(el('div', 'id', f.id));
     a.appendChild(el('div', 'titre', f.title));
@@ -3638,6 +3688,112 @@ window.EZK_PLAN = {
     }
     compteur.textContent = filtered.length + ' fiche(s) sur ' + actives.length + ' active(s) — ' +
       (data.tirables || 0) + ' tirable(s), ' + ((data.epics || []).length) + ' épic(s).';
+  }
+
+  // --- Détail d'une fiche au clic (fiche 20260826225817193) ---
+  // Le clic sur une carte ouvre un panneau LISIBLE au lieu de naviguer vers le .md brut.
+  // Rendu du corps en DOM + textContent, JAMAIS innerHTML sur du texte de fiche (anti-XSS).
+  var overlay = el('div', 'fiche-overlay');
+  var modal = el('div', 'fiche-modal');
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  var mStyle = document.createElement('style');
+  mStyle.textContent =
+    '.fiche-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:100;padding:3vh 3vw;overflow:auto}' +
+    '.fiche-overlay.open{display:block}' +
+    '.fiche-modal{max-width:min(1080px,94vw);margin:0 auto;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:20px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45)}' +
+    '.fiche-modal .fiche-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}' +
+    '.fiche-modal h2.fiche-titre{font-size:1.2rem;margin:0;flex:1}' +
+    '.fiche-modal .fiche-close{border:1px solid var(--border);background:transparent;color:inherit;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;flex:none}' +
+    '.fiche-modal .fiche-meta{margin:2px 0 8px}' +
+    '.fiche-modal .fiche-src{font-size:.8rem;margin-bottom:10px;display:inline-block;color:var(--p2)}' +
+    '.fiche-modal .fiche-body{border-top:1px solid var(--border);padding-top:12px;line-height:1.6;overflow-wrap:anywhere}' +
+    '.fiche-modal .fiche-body h3{font-size:1.02rem;margin:16px 0 4px}' +
+    '.fiche-modal .fiche-body ul{margin:4px 0 6px 1.2rem;padding:0}' +
+    '.fiche-modal .fiche-body p{margin:7px 0}' +
+    '.fiche-modal .fiche-body pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;overflow:auto;font-size:.82rem}' +
+    '.fiche-modal .fiche-loading{color:var(--muted);font-style:italic}';
+  document.head.appendChild(mStyle);
+
+  function closeFiche() { overlay.classList.remove('open'); modal.textContent = ''; }
+  overlay.addEventListener('click', function (ev) { if (ev.target === overlay) closeFiche(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeFiche(); });
+
+  // Miroir EXACT de products/mega-city/src/core/markdown-lite.ts (parseur PUR + testé) — la
+  // page statique ne peut pas importer le module ; dette assumée (comme la carte LA LOI).
+  // Rendu des blocs en DOM + textContent UNIQUEMENT (anti-XSS). CRLF-safe.
+  function stripInline(s) { return String(s).replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, ''); }
+  function parseBlocks(md) {
+    var lines = String(md).replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '').split(/\r?\n/);
+    var blocks = [], code = null;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (/^```/.test(line)) { if (code) { blocks.push({ kind: 'code', text: code.join('\n') }); code = null; } else { code = []; } continue; }
+      if (code) { code.push(line); continue; }
+      var h = line.match(/^#{1,6}\s+(.*)/);
+      if (h) { blocks.push({ kind: 'h', text: stripInline(h[1]) }); continue; }
+      var li = line.match(/^\s*[-*]\s+(.*)/);
+      if (li) { blocks.push({ kind: 'li', text: stripInline(li[1]) }); continue; }
+      if (line.trim() === '') continue;
+      blocks.push({ kind: 'p', text: stripInline(line.replace(/^>\s?/, '')) });
+    }
+    if (code) blocks.push({ kind: 'code', text: code.join('\n') });
+    return blocks;
+  }
+  function renderBlocks(container, md) {
+    var ul = null;
+    parseBlocks(md).forEach(function (b) {
+      if (b.kind === 'li') { if (!ul) { ul = el('ul'); container.appendChild(ul); } ul.appendChild(el('li', null, b.text)); return; }
+      ul = null;
+      if (b.kind === 'h') container.appendChild(el('h3', null, b.text));
+      else if (b.kind === 'code') { var pre = el('pre'); pre.appendChild(el('code', null, b.text)); container.appendChild(pre); }
+      else container.appendChild(el('p', null, b.text));
+    });
+  }
+
+  function openFiche(f) {
+    modal.textContent = '';
+    var head = el('div', 'fiche-head');
+    head.appendChild(el('h2', 'fiche-titre', f.title));
+    var close = el('button', 'fiche-close', '✕');
+    close.setAttribute('aria-label', 'Fermer');
+    close.addEventListener('click', closeFiche);
+    head.appendChild(close);
+    modal.appendChild(head);
+
+    var meta = el('div', 'fiche-meta badges');
+    meta.appendChild(el('span', 'badge', f.id));
+    meta.appendChild(el('span', 'badge statut-' + slug(f.status), f.status));
+    meta.appendChild(el('span', 'badge prio-' + slug(f.priority || 'P3'), f.priority || '—'));
+    meta.appendChild(el('span', 'badge', f.type));
+    if (f.epic) meta.appendChild(el('span', 'badge', '⤷ ' + f.epic));
+    if (f.pr) meta.appendChild(el('span', 'badge', f.pr));
+    modal.appendChild(meta);
+
+    var src = document.createElement('a');
+    src.className = 'fiche-src';
+    src.href = '../../' + f.file;
+    src.target = '_blank';
+    src.rel = 'noopener';
+    src.textContent = '↗ ouvrir le fichier (' + f.file + ')';
+    modal.appendChild(src);
+
+    var bodyEl = el('div', 'fiche-body');
+    bodyEl.appendChild(el('p', 'fiche-loading', 'Chargement…'));
+    modal.appendChild(bodyEl);
+    overlay.classList.add('open');
+    modal.scrollTop = 0;
+
+    fetch('../../' + f.file).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function (md) {
+      bodyEl.textContent = '';
+      renderBlocks(bodyEl, md);
+    }).catch(function (e) {
+      bodyEl.textContent = '';
+      bodyEl.appendChild(el('p', 'fiche-loading', 'Impossible de charger la fiche (' + e.message + '). Ouvre le fichier via le lien ci-dessus.'));
+    });
   }
 
   [selStatut, selType, selEpic, selProduit, selLabel].forEach(function (s) {
