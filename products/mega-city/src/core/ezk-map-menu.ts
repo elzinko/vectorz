@@ -83,38 +83,61 @@ export function renderMenuHtml(items: DiagramEntry[]): string {
 <meta charset="utf-8" />
 <title>ezk:map — les cartes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-  :root {
-    --bg: #0f1115; --panel: #171a21; --border: #2a2f3a;
-    --text: #e7e9ee; --muted: #9aa2b1; --accent: #5b9bd5;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg); color: var(--text); padding: 32px;
-  }
-  h1 { font-size: 1.5rem; margin: 0 0 6px; }
-  .en-clair { color: var(--muted); margin: 0 0 24px; max-width: 72ch; line-height: 1.5; }
-  .grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
-  a.carte {
-    display: block; background: var(--panel); border: 1px solid var(--border);
-    border-left: 4px solid var(--border); border-radius: 8px; padding: 16px 18px;
-    text-decoration: none; color: var(--text); transition: border-color 0.1s, transform 0.1s;
-  }
-  a.carte:hover { border-color: #4a5262; transform: translateY(-1px); }
-  a.carte.featured { border-left-color: var(--accent); }
-  .carte .titre { font-weight: 600; line-height: 1.3; margin: 0 0 6px; }
-  .carte .slug { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--muted); }
-  .tag {
-    display: inline-block; font-size: 0.68rem; color: var(--accent);
-    border: 1px solid var(--accent); border-radius: 999px; padding: 1px 8px;
-    margin-left: 8px; vertical-align: middle; font-weight: 500;
-  }
-  .vide { color: var(--muted); }
+  /* Design system commun (repris de diagrams/methode-mega-city/carte-interactive.html). */
+  :root{ --ground:#e9edf4; --grid:#dde3ee; --panel:#ffffff;
+    --ink:#141a24; --ink-soft:#48566b; --ink-faint:#7b899e; --line:#d6ddea;
+    --accent:#2f6fd0; --shadow:0 1px 2px rgba(20,26,36,.06), 0 8px 24px rgba(20,26,36,.07); }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --ground:#0c1019; --grid:#161d2b; --panel:#141b28;
+    --ink:#e8edf6; --ink-soft:#a6b2c6; --ink-faint:#6c7a91; --line:#273147;
+    --accent:#6aa1f0; --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35); } }
+  :root[data-theme="dark"]{
+    --ground:#0c1019; --grid:#161d2b; --panel:#141b28;
+    --ink:#e8edf6; --ink-soft:#a6b2c6; --ink-faint:#6c7a91; --line:#273147;
+    --accent:#6aa1f0; --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35); }
+  *{box-sizing:border-box}
+  body{ margin:0; background:var(--ground); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; font-size:15px; line-height:1.55;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; }
+  .topbar{ position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--ground) 86%, transparent); border-bottom:1px solid var(--line); }
+  .topbar-in{ max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;gap:14px;align-items:center; }
+  .badge{ width:40px;height:40px;border-radius:9px;flex:none;
+    background:linear-gradient(160deg,var(--accent),#7aa8e6); display:grid;place-items:center;font-size:20px;box-shadow:var(--shadow); }
+  .brand h1{ font-family:"Chakra Petch",sans-serif;font-size:19px;margin:0;letter-spacing:.02em; }
+  .brand .over{ font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase; }
+  .spacer{flex:1}
+  .theme-btn{ border:1px solid var(--line);background:var(--panel);border-radius:8px;width:36px;height:36px;
+    cursor:pointer;font-size:15px;color:var(--ink); }
+  .theme-btn:focus-visible{outline:2px solid var(--accent)}
+  .wrap{ max-width:1180px;margin:0 auto;padding:0 20px 60px; }
+  .en-clair{ color:var(--ink-soft);margin:22px 0;max-width:72ch;line-height:1.55; }
+  .grille{ display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px; }
+  a.carte{ display:block;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--line);
+    border-radius:12px;padding:16px 18px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);
+    transition:border-color .12s,transform .12s; }
+  a.carte:hover{ border-color:var(--accent);transform:translateY(-1px); }
+  a.carte.featured{ border-left-color:var(--accent); }
+  .carte .titre{ font-weight:600;line-height:1.3;margin:0 0 6px; }
+  .carte .slug{ font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-faint); }
+  .tag{ display:inline-block;font-size:.68rem;color:var(--accent);border:1px solid var(--accent);
+    border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle;font-weight:500; }
+  .vide{ color:var(--ink-soft); }
 </style>
 </head>
 <body>
-<h1>ezk:map — les cartes</h1>
+<header class="topbar"><div class="topbar-in">
+  <div class="badge">🗺️</div>
+  <div class="brand"><div class="over">ezk:map</div><h1>Les cartes</h1></div>
+  <div class="spacer"></div>
+  <button id="theme-btn" class="theme-btn" type="button" title="Basculer clair / sombre" aria-label="Basculer le thème">☾</button>
+</div></header>
+<div class="wrap">
 <p class="en-clair">
   En clair : toutes les cartes du dépôt, à portée de clic. Cliquer en ouvre une ;
   « Précédent » du navigateur ramène ici — sans relancer le serveur.
@@ -122,6 +145,8 @@ export function renderMenuHtml(items: DiagramEntry[]): string {
 <div class="grille">
 ${cartes}
 </div>
+</div>
+<script>/*ezkmenu-theme*/(function(){var r=document.documentElement,b=document.getElementById('theme-btn');function eff(){var d=r.getAttribute('data-theme');if(d)return d;return (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}function sync(){b.textContent=eff()==='dark'?'☀':'☾';}try{var s=localStorage.getItem('ezk-theme');if(s)r.setAttribute('data-theme',s);}catch(e){}sync();b.addEventListener('click',function(){var n=eff()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('ezk-theme',n);}catch(e){}sync();});})();</script>
 </body>
 </html>
 `;
@@ -147,12 +172,12 @@ export function renderNavBar(items: DiagramEntry[], currentSlug: string): string
   return `<style>
   .ezknav-wrap{position:fixed;top:10px;right:10px;z-index:2147483647;display:flex;gap:6px;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.82rem;}
-  .ezknav-home,.ezknav>summary{width:34px;height:34px;box-sizing:border-box;cursor:pointer;
+  .ezknav-home,.ezknav-theme,.ezknav>summary{width:34px;height:34px;box-sizing:border-box;cursor:pointer;font-family:inherit;
     display:flex;align-items:center;justify-content:center;font-size:1rem;color:#e7e9ee;text-decoration:none;
     background:rgba(23,26,33,.82);border:1px solid #2a2f3a;border-radius:8px;user-select:none;
     box-shadow:0 2px 10px rgba(0,0,0,.30);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:.7;transition:opacity .12s;}
   .ezknav-home{font-size:1.15rem;}
-  .ezknav-home:hover,.ezknav>summary:hover,.ezknav[open]>summary{opacity:1;border-color:#4a5262;}
+  .ezknav-home:hover,.ezknav-theme:hover,.ezknav>summary:hover,.ezknav[open]>summary{opacity:1;border-color:#4a5262;}
   .ezknav{position:relative;}
   .ezknav>summary{list-style:none;}
   .ezknav>summary::-webkit-details-marker{display:none;}
@@ -174,7 +199,9 @@ export function renderNavBar(items: DiagramEntry[], currentSlug: string): string
       <div class="ezknav-liste">${liens}</div>
     </div>
   </details>
-</div>`;
+  <button class="ezknav-theme" id="ezknav-theme" type="button" title="Basculer clair / sombre" aria-label="Basculer le thème">☾</button>
+</div>
+<script>/*ezknav-theme*/(function(){var r=document.documentElement,b=document.getElementById('ezknav-theme');if(!b)return;function eff(){var d=r.getAttribute('data-theme');if(d)return d;return (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}function sync(){b.textContent=eff()==='dark'?'☀':'☾';}try{var s=localStorage.getItem('ezk-theme');if(s)r.setAttribute('data-theme',s);}catch(e){}sync();b.addEventListener('click',function(){var n=eff()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('ezk-theme',n);}catch(e){}sync();});})();</script>`;
 }
 
 /** Injecte `nav` juste avant la dernière `</body>` d'un HTML (append si absente). */
@@ -196,7 +223,10 @@ export function renderSvgWrapper(rawUrl: string, nav: string, title: string): st
 <title>${escapeHtml(title)}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  html, body { margin: 0; height: 100%; background: #0f1115; }
+  :root { --ezk-ground: #e9edf4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ezk-ground: #0c1019; } }
+  :root[data-theme="dark"] { --ezk-ground: #0c1019; }
+  html, body { margin: 0; height: 100%; background: var(--ezk-ground); }
   .ezkmap-img { display: block; width: 100%; height: 100vh; object-fit: contain; padding: 16px; box-sizing: border-box; }
 </style>
 </head>
