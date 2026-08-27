@@ -256,7 +256,7 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 119,
-  "todo": 49,
+  "todo": 51,
   "blocked": 5,
   "in-progress": 5,
   "idea": 81
@@ -1715,6 +1715,32 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260826121429274_ezk-archive-compte-rendu-structure.md"
   },
   {
+   "id": "20260826173005368",
+   "title": "Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826173005368_renommer-ezk-map.md"
+  },
+  {
+   "id": "20260826173221323",
+   "title": "Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "todo",
+   "ready": false,
+   "epic": "20260813124026215",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826173221323_racine-parametrable-des-vues.md"
+  },
+  {
    "id": "20260826222044335",
    "title": "Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic",
    "type": "feature",
@@ -2077,9 +2103,13 @@ window.EZK_AVANCEMENT = {
   {
    "id": "20260813124026215",
    "title": "Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)",
-   "status": "idea",
-   "children": [],
-   "childCounts": {}
+   "status": "in-progress",
+   "children": [
+    "20260826173221323"
+   ],
+   "childCounts": {
+    "todo": 1
+   }
   },
   {
    "id": "20260813131737959",
@@ -2262,14 +2292,14 @@ window.EZK_PLAN = {
       {
        "id": "20260821172716537",
        "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
-       "status": "todo",
+       "status": "shipped",
        "priority": "P1",
        "ready": true,
        "epic": "20260821163346487",
        "product": "mega-city",
        "type": "feature",
        "pr": "",
-       "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md",
+       "file": "features/done/20260821172716537_carte-ne-montre-pas-la-loi.md",
        "found": true
       }
      ]
@@ -3516,20 +3546,35 @@ window.EZK_PLAN = {
    ]
   }
  ],
- "head": {
-  "id": "20260821172716537",
-  "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
-  "status": "todo",
-  "priority": "P1",
-  "ready": true,
-  "epic": "20260821163346487",
-  "product": "mega-city",
-  "type": "feature",
-  "pr": "",
-  "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md",
-  "found": true
- },
- "blockedAhead": [],
+ "head": null,
+ "blockedAhead": [
+  {
+   "id": "20260824061247344",
+   "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
+   "status": "todo",
+   "priority": "P1",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
+   "found": true
+  },
+  {
+   "id": "20260825141012293",
+   "title": "ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map",
+   "status": "todo",
+   "priority": "P1",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825141012293_ezk-sessions-cockpit.md",
+   "found": true
+  }
+ ],
  "unresolved": [
   "0068",
   "0092"
@@ -3538,7 +3583,7 @@ window.EZK_PLAN = {
   "entries": 42,
   "cards": 75,
   "resolved": 73,
-  "shipped": 32,
+  "shipped": 33,
   "unresolved": 2
  }
 };

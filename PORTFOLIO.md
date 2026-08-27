@@ -60,6 +60,8 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260824185422122 | « Recette » comme artefact de premier rang + gardien (ezk-chef) — instancier le pattern steward, ne rien inventer | feature | P2 | 🔴 todo |  |
 | mega-city | 20260825160456259 | Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help) | feature | P2 | 🔴 todo |  |
 | mega-city | 20260825202444647 | ezk-codex fix — répondre en fil ET résoudre TOUS les fils traités (pas seulement décliner) | feature | P2 | 🔴 todo |  |
+| mega-city | 20260826173005368 | Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills | refactor | P2 | 🔴 todo |  |
+| mega-city | 20260826173221323 | Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet | refactor | P2 | 🔴 todo |  |
 | vectorz | 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 🔴 todo |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 🔴 todo |  |
 | vectorz | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | ⛔ blocked |  |
@@ -181,6 +183,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔴 todo (ready) | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|-----------------|-----------|-----------|---------|---------|
 | vectorz | 28 | 10 (0) | 1 | 4 | 11 | 2 |
-| mega-city | 112 | 32 (2) | 4 | 1 | 68 | 7 |
+| mega-city | 114 | 34 (2) | 4 | 1 | 68 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

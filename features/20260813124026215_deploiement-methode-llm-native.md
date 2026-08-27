@@ -204,3 +204,21 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
 - **`status: idea`** : exploration / cadrage. Panel + grooming **avant** `ready`.
 - Déclencheur tracé côté consommateur : PR #82 / #84 / #86 de `google-mcp-multi-account`
   (la #86 a servi de cas de reformulation manuelle).
+- **Session archi 2026-08-26 (versionnage / isolation des sessions) — apports à intégrer au grooming :**
+  - **Verrou concret, non listé plus haut** : les **vues** (board, map, plan, avancement) figent leur
+    racine via `import.meta.url` → elles lisent toujours les fiches de **vectorz**, jamais celles d'un
+    **projet hôte** (`bin/regen-avancement.ts:19`, `regen-map-data.ts:20`, `ezk-map.ts:33`,
+    `plan-head.ts:64`, `check-fiches.ts:19`). Le **cœur est déjà propre** (`loadFiches(rootDir)` prend
+    la racine en paramètre). **Déblocage n°1 = racine de données paramétrable (argument/env) dans ces
+    ~5 bins** — c'est LUI, pas l'emballage, qui permet « installer la méthode dans un projet et y voir
+    **les fiches du projet** ». Fille naturelle à sortir au grooming : **« racine paramétrable des
+    vues »** (adjacent mais distinct de `20260823121712844`, qui ne durcit que `regen-backlog`).
+  - **Options d'ancrage (curseur couplage → isolation)** : 0 statu quo (liens live) · 1 épingler le
+    lien sur un tag figé · 2 copie par projet façon BMAD · **3 (reco) store versionné + pointeur
+    `.vectorz` par projet + données dans le projet** (modèle pnpm : une copie du moteur **par version**,
+    pas par projet) · 4 plugin + npm (distribution externe, couplée [0087](0087-plugin-claude-code-distribution.md),
+    rangée LATER). Complète l'arbitrage link/copy déjà noté en [0186](0186-skema-versioning-migrations-skills-deployees.md).
+  - **Motivation renforcée — casser une session en cours** : `~/.claude` est en **liens symboliques
+    live** vers le checkout principal (constaté 2026-08-26). Modifier la méthode pendant qu'une **autre
+    session** s'en sert (ex. `muti`) peut la casser — surtout les **scripts rejoués** en cours de flux —
+    au moment où l'on **répercute dans le principal**. L'install-par-projet **figée** est le vrai correctif.

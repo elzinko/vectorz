@@ -24,7 +24,7 @@ lisibles. Cette fiche l'**ouvre** : voir les règles, les bundles, les profils, 
 active quoi**.
 
 > **Groomé le 2026-08-26 — grosse simplification.** Avant, il fallait construire un
-> compilateur qui lise les `.yml` à la main. Depuis, l'[ADR-0040](../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)
+> compilateur qui lise les `.yml` à la main. Depuis, l'[ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)
 > a livré `graph:compile`, qui **compile déjà toute la LOI** en un graphe typé. La carte
 > n'a plus qu'à **le lire**. Statut laissé `idea` — le gate `ready` promeut.
 
@@ -87,7 +87,7 @@ frontmatter (le graphe ne le porte pas encore) — il apparaîtra tout seul quan
 - **Interne, livrée** : `graph:compile` (ADR-0040) — expose les nœuds LOI et leurs liens.
   Déjà sur `main`. **Pas** de dépendance externe (tout est dans le monorepo) — slot DoR
   conditionnel non requis.
-- **Épic parent** : [Épic — La carte de la méthode : fidèle aux fichiers](20260821163346487_carte-methode-fidele-et-revue.md).
+- **Épic parent** : [Épic — La carte de la méthode : fidèle aux fichiers](../20260821163346487_carte-methode-fidele-et-revue.md).
 
 ## Critères d'acceptation
 

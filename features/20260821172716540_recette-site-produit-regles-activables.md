@@ -35,7 +35,7 @@ Demande PO du 2026-08-21, cas concret **samplerz** : page d'attente (façon byhe
 le domaine public ; vrai site sur `dev.samplerz.fr` (staging, non indexé) ; règle
 screenshots ; besoin récurrent pressenti. Et une gêne : le concept de composition existe
 mais la carte ne le montre pas — voir la fiche sœur
-[la carte ne montre pas LA LOI](20260821172716537_carte-ne-montre-pas-la-loi.md).
+[la carte ne montre pas LA LOI](done/20260821172716537_carte-ne-montre-pas-la-loi.md).
 
 ⚠️ **La valeur immédiate ne dépend PAS de cette fiche** : la page d'attente + le noindex
 du staging se livrent **dans le repo samplerz** (chantier `website_showcase` + PR
