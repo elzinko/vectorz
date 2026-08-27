@@ -45,12 +45,16 @@ describe('diagrams/avancement/board.html — données à jour (fidélité par co
     expect(() => upsertAvancementDataBlock('<title>x</title>', 'bloc')).toThrow(/marqueurs/);
   });
 
-  it('le rendu des cartes n’injecte jamais une donnée de fiche via innerHTML (anti-XSS, revue P0)', () => {
+  it('le rendu (cartes ET modale) n’injecte jamais du texte de fiche via innerHTML (anti-XSS)', () => {
     const html = readFileSync(boardPath, 'utf8');
-    // Les données de fiche (texte libre du front-matter) doivent être posées via textContent,
-    // jamais concaténées dans innerHTML — sinon un titre `<img onerror=…>` s’exécuterait.
+    // Tout texte issu d'une fiche (front-matter OU corps .md fetché) doit être posé via
+    // textContent, jamais concaténé dans innerHTML — sinon un `<img onerror=…>` s’exécuterait.
     expect(html).toMatch(/\.textContent\s*=/);
+    // Chemin des cartes (données de fiche du bloc généré).
     expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\bf\.(title|status|type|epic|id)\b/);
+    // Chemin de la modale (corps `.md` fetché) — revue 2026-08-27, le chemin le plus risqué.
+    expect(html).not.toMatch(/\bbodyEl\.innerHTML\s*=/);
+    expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\b(md|parseBlocks|renderBlocks|stripInline)\b/);
   });
 
   it('les labels du front-matter alimentent BoardFiche.labels et filtres.labels (filtre par tag)', () => {

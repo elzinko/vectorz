@@ -4,32 +4,49 @@
 <meta charset="utf-8" />
 <title>Board d'avancement — vectorz</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+  /* Clair par défaut (lisibilité), sombre selon le système ou la bascule (retour PO). */
   :root {
-    --bg: #0f1115;
-    --panel: #171a21;
-    --border: #2a2f3a;
-    --text: #e7e9ee;
-    --muted: #9aa2b1;
-    --p0: #e5484d;
-    --p1: #f5a524;
-    --p2: #5b9bd5;
-    --p3: #6b7280;
-    --todo: #6b7280;
-    --in-progress: #f5a524;
-    --blocked: #e5484d;
-    --idea: #8a6fd8;
-    --shipped: #34a853;
+    color-scheme: light dark;
+    --bg: #f5f6f8;
+    --panel: #ffffff;
+    --border: #d8dce4;
+    --text: #1b1e25;
+    --muted: #59616f;
+    --p0: #cf3b40;
+    --p1: #b6740f;
+    --p2: #3a76ad;
+    --p3: #6f7684;
+    --todo: #6f7684;
+    --in-progress: #b6740f;
+    --blocked: #cf3b40;
+    --idea: #7458cf;
+    --shipped: #2c8f4c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+      --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
+      --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+    --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
+    --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
     color: var(--text);
     padding: 24px;
   }
-  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  h1 { font-family: "Chakra Petch", sans-serif; font-size: 1.5rem; margin: 0 0 4px; letter-spacing: .01em; }
   .en-clair { color: var(--muted); margin: 0 0 20px; max-width: 70ch; }
   .filtres {
     display: flex;
@@ -238,13 +255,13 @@
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
-  "shipped": 117,
-  "todo": 48,
+  "shipped": 119,
+  "todo": 51,
   "blocked": 5,
   "in-progress": 5,
-  "idea": 78
+  "idea": 81
  },
- "tirables": 1,
+ "tirables": 2,
  "actives": [
   {
    "id": "20260826122532943",
@@ -439,11 +456,11 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260812104022240",
-   "title": "Rationalisation du backlog — regrouper/splitter (épics/stories) via tags : mode script + mode analyse LLM",
+   "title": "ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM",
    "type": "feature",
    "priority": "P1",
-   "status": "idea",
-   "ready": false,
+   "status": "todo",
+   "ready": true,
    "epic": "",
    "product": "mega-city",
    "pr": "",
@@ -501,19 +518,6 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260821163346493_carte-provenance-prouvee.md"
-  },
-  {
-   "id": "20260821172716537",
-   "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
-   "type": "feature",
-   "priority": "P1",
-   "status": "idea",
-   "ready": false,
-   "epic": "20260821163346487",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md"
   },
   {
    "id": "20260821204737357",
@@ -842,7 +846,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "0080",
-   "title": "ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR)",
+   "title": "ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)",
    "type": "feature",
    "priority": "P2",
    "status": "todo",
@@ -1646,6 +1650,45 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md"
   },
   {
+   "id": "20260826072532452",
+   "title": "Vue « sprints réalisés » dans ezk:map — chaque sprint et son détail (PR, fiches, actions), extrait des comptes-rendus",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826072532452_vue-sprints-realises-ezk-map.md"
+  },
+  {
+   "id": "20260826072532537",
+   "title": "Vue « rétrospectives » dans ezk:map — chaque rétro et ses actions mesurables, extraites des captures",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826072532537_vue-retros-actions-ezk-map.md"
+  },
+  {
+   "id": "20260826072532622",
+   "title": "Revue & validation des fiches dans ezk:map — pouce 👍/👎 (verdict versionné, partagé entre sessions)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826072532622_revue-fiches-pouce-ezk-map.md"
+  },
+  {
    "id": "20260826082120069",
    "title": "ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport",
    "type": "feature",
@@ -1657,6 +1700,58 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md"
+  },
+  {
+   "id": "20260826121429274",
+   "title": "ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826121429274_ezk-archive-compte-rendu-structure.md"
+  },
+  {
+   "id": "20260826173005368",
+   "title": "Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826173005368_renommer-ezk-map.md"
+  },
+  {
+   "id": "20260826173221323",
+   "title": "Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "todo",
+   "ready": false,
+   "epic": "20260813124026215",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826173221323_racine-parametrable-des-vues.md"
+  },
+  {
+   "id": "20260826222044335",
+   "title": "Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "20260821163346487",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260826222044335_carte-la-loi-graphe-visuel.md"
   },
   {
    "id": "0007",
@@ -2008,9 +2103,13 @@ window.EZK_AVANCEMENT = {
   {
    "id": "20260813124026215",
    "title": "Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)",
-   "status": "idea",
-   "children": [],
-   "childCounts": {}
+   "status": "in-progress",
+   "children": [
+    "20260826173221323"
+   ],
+   "childCounts": {
+    "todo": 1
+   }
   },
   {
    "id": "20260813131737959",
@@ -2064,12 +2163,13 @@ window.EZK_AVANCEMENT = {
     "20260821163346498",
     "20260821163346501",
     "20260821163346503",
-    "20260821172716537",
-    "20260821204737357"
+    "20260821204737357",
+    "20260826222044335"
    ],
    "childCounts": {
     "todo": 1,
     "idea": 6,
+    "shipped": 2,
     "in-progress": 1
    }
   },
@@ -2141,11 +2241,71 @@ window.EZK_AVANCEMENT = {
 window.EZK_PLAN = {
  "lanes": [
   {
-   "label": "▶️ NOW bis — refonte de la méthode (post-PR #162, séquence du 2026-08-24)",
+   "label": "▶️ NOW — post-ADR-0040 (réaligné le 2026-08-26)",
    "level": 2,
    "rows": [
     {
-     "text": "**20260824061247344** — le reliquat exécutable de la refonte « trois étages »",
+     "text": "**20260821204737357** — câbler la méthode par un modèle compilé (le graphe) · in-progress",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260821204737357",
+       "title": "Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260821204737357_cabler-la-methode-modele-compile.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260823121712652** — statut validé par schéma (le validateur) · in-progress",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260823121712652",
+       "title": "Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260823121712652_modele-statut-kanban-schema-valide.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260821172716537",
+       "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
+       "status": "todo",
+       "priority": "P1",
+       "ready": true,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "**20260824061247344** — reliquat de la refonte « trois étages » (lot 4b · vocab DoD ·",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2165,33 +2325,7 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260823124042842** — vue d'avancement, lot 0 : le board compilé (le flux,",
-     "marker": null,
-     "struck": false,
-     "cards": [
-      {
-       "id": "20260823124042842",
-       "title": "Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs",
-       "status": "shipped",
-       "priority": "P2",
-       "ready": true,
-       "epic": "",
-       "product": "mega-city",
-       "type": "feature",
-       "pr": "main@7f0f12d",
-       "file": "features/done/20260823124042842_vue-avancement-sprints-fiches.md",
-       "found": true
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "label": "↪️ Après le refactoring (post-4a/4b) — sujets ouverts le 2026-08-25",
-   "level": 3,
-   "rows": [
-    {
-     "text": "**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (worktrees × sessions ×",
+     "text": "**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2209,9 +2343,15 @@ window.EZK_PLAN = {
        "found": true
       }
      ]
-    },
+    }
+   ]
+  },
+  {
+   "label": "↪️ NEXT — après la séquence NOW",
+   "level": 3,
+   "rows": [
     {
-     "text": "**0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du domaine hors",
+     "text": "**0067 + 0066** — gate de structure à la génération : `ezk-ezk` ne sort pas un objet du",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2244,7 +2384,7 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260812104022246** — composition comportementale des skills (+ directive `ezk-archive`",
+     "text": "**20260812104022246** — composition comportementale des skills (directive `ezk-archive`",
      "marker": null,
      "struck": false,
      "cards": [
@@ -2284,7 +2424,7 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260824163426298** — consolider preview/device/testbed, épic (surface unifiée + compétences",
+     "text": "**20260824163426298** — consolider preview/device/testbed, épic (surface unifiée +",
      "marker": null,
      "struck": false,
      "cards": [
@@ -3272,7 +3412,7 @@ window.EZK_PLAN = {
       },
       {
        "id": "0080",
-       "title": "ezk-retro — compte rendu markdown standard de cérémonie (capture versionnée, décisions PO tracées, via PR)",
+       "title": "ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)",
        "status": "todo",
        "priority": "P2",
        "ready": false,
@@ -3406,44 +3546,29 @@ window.EZK_PLAN = {
    ]
   }
  ],
- "head": null,
- "blockedAhead": [
-  {
-   "id": "20260824061247344",
-   "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
-   "status": "todo",
-   "priority": "P1",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "refactor",
-   "pr": "",
-   "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
-   "found": true
-  },
-  {
-   "id": "20260825141012293",
-   "title": "ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map",
-   "status": "todo",
-   "priority": "P1",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "feature",
-   "pr": "",
-   "file": "features/20260825141012293_ezk-sessions-cockpit.md",
-   "found": true
-  }
- ],
+ "head": {
+  "id": "20260821172716537",
+  "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
+  "status": "todo",
+  "priority": "P1",
+  "ready": true,
+  "epic": "20260821163346487",
+  "product": "mega-city",
+  "type": "feature",
+  "pr": "",
+  "file": "features/20260821172716537_carte-ne-montre-pas-la-loi.md",
+  "found": true
+ },
+ "blockedAhead": [],
  "unresolved": [
   "0068",
   "0092"
  ],
  "counts": {
-  "entries": 40,
-  "cards": 73,
-  "resolved": 71,
-  "shipped": 33,
+  "entries": 42,
+  "cards": 75,
+  "resolved": 73,
+  "shipped": 32,
   "unresolved": 2
  }
 };
@@ -3512,6 +3637,11 @@ window.EZK_PLAN = {
     var a = document.createElement('a');
     a.className = 'carte';
     a.href = '../../' + f.file;
+    a.addEventListener('click', function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return; // laisse ouvrir la source en nouvel onglet
+      ev.preventDefault();
+      openFiche(f);
+    });
     a.style.setProperty('--prio-color', 'var(--p' + slug(f.priority ? f.priority.replace('P', '') : '3') + ')');
     a.appendChild(el('div', 'id', f.id));
     a.appendChild(el('div', 'titre', f.title));
@@ -3561,6 +3691,112 @@ window.EZK_PLAN = {
     }
     compteur.textContent = filtered.length + ' fiche(s) sur ' + actives.length + ' active(s) — ' +
       (data.tirables || 0) + ' tirable(s), ' + ((data.epics || []).length) + ' épic(s).';
+  }
+
+  // --- Détail d'une fiche au clic (fiche 20260826225817193) ---
+  // Le clic sur une carte ouvre un panneau LISIBLE au lieu de naviguer vers le .md brut.
+  // Rendu du corps en DOM + textContent, JAMAIS innerHTML sur du texte de fiche (anti-XSS).
+  var overlay = el('div', 'fiche-overlay');
+  var modal = el('div', 'fiche-modal');
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  var mStyle = document.createElement('style');
+  mStyle.textContent =
+    '.fiche-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:100;padding:3vh 3vw;overflow:auto}' +
+    '.fiche-overlay.open{display:block}' +
+    '.fiche-modal{max-width:min(1080px,94vw);margin:0 auto;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:20px 26px;box-shadow:0 24px 70px rgba(0,0,0,.45)}' +
+    '.fiche-modal .fiche-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}' +
+    '.fiche-modal h2.fiche-titre{font-size:1.2rem;margin:0;flex:1}' +
+    '.fiche-modal .fiche-close{border:1px solid var(--border);background:transparent;color:inherit;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;flex:none}' +
+    '.fiche-modal .fiche-meta{margin:2px 0 8px}' +
+    '.fiche-modal .fiche-src{font-size:.8rem;margin-bottom:10px;display:inline-block;color:var(--p2)}' +
+    '.fiche-modal .fiche-body{border-top:1px solid var(--border);padding-top:12px;line-height:1.6;overflow-wrap:anywhere}' +
+    '.fiche-modal .fiche-body h3{font-size:1.02rem;margin:16px 0 4px}' +
+    '.fiche-modal .fiche-body ul{margin:4px 0 6px 1.2rem;padding:0}' +
+    '.fiche-modal .fiche-body p{margin:7px 0}' +
+    '.fiche-modal .fiche-body pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;overflow:auto;font-size:.82rem}' +
+    '.fiche-modal .fiche-loading{color:var(--muted);font-style:italic}';
+  document.head.appendChild(mStyle);
+
+  function closeFiche() { overlay.classList.remove('open'); modal.textContent = ''; }
+  overlay.addEventListener('click', function (ev) { if (ev.target === overlay) closeFiche(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeFiche(); });
+
+  // Miroir EXACT de products/mega-city/src/core/markdown-lite.ts (parseur PUR + testé) — la
+  // page statique ne peut pas importer le module ; dette assumée (comme la carte LA LOI).
+  // Rendu des blocs en DOM + textContent UNIQUEMENT (anti-XSS). CRLF-safe.
+  function stripInline(s) { return String(s).replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, ''); }
+  function parseBlocks(md) {
+    var lines = String(md).replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '').split(/\r?\n/);
+    var blocks = [], code = null;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (/^```/.test(line)) { if (code) { blocks.push({ kind: 'code', text: code.join('\n') }); code = null; } else { code = []; } continue; }
+      if (code) { code.push(line); continue; }
+      var h = line.match(/^#{1,6}\s+(.*)/);
+      if (h) { blocks.push({ kind: 'h', text: stripInline(h[1]) }); continue; }
+      var li = line.match(/^\s*[-*]\s+(.*)/);
+      if (li) { blocks.push({ kind: 'li', text: stripInline(li[1]) }); continue; }
+      if (line.trim() === '') continue;
+      blocks.push({ kind: 'p', text: stripInline(line.replace(/^>\s?/, '')) });
+    }
+    if (code) blocks.push({ kind: 'code', text: code.join('\n') });
+    return blocks;
+  }
+  function renderBlocks(container, md) {
+    var ul = null;
+    parseBlocks(md).forEach(function (b) {
+      if (b.kind === 'li') { if (!ul) { ul = el('ul'); container.appendChild(ul); } ul.appendChild(el('li', null, b.text)); return; }
+      ul = null;
+      if (b.kind === 'h') container.appendChild(el('h3', null, b.text));
+      else if (b.kind === 'code') { var pre = el('pre'); pre.appendChild(el('code', null, b.text)); container.appendChild(pre); }
+      else container.appendChild(el('p', null, b.text));
+    });
+  }
+
+  function openFiche(f) {
+    modal.textContent = '';
+    var head = el('div', 'fiche-head');
+    head.appendChild(el('h2', 'fiche-titre', f.title));
+    var close = el('button', 'fiche-close', '✕');
+    close.setAttribute('aria-label', 'Fermer');
+    close.addEventListener('click', closeFiche);
+    head.appendChild(close);
+    modal.appendChild(head);
+
+    var meta = el('div', 'fiche-meta badges');
+    meta.appendChild(el('span', 'badge', f.id));
+    meta.appendChild(el('span', 'badge statut-' + slug(f.status), f.status));
+    meta.appendChild(el('span', 'badge prio-' + slug(f.priority || 'P3'), f.priority || '—'));
+    meta.appendChild(el('span', 'badge', f.type));
+    if (f.epic) meta.appendChild(el('span', 'badge', '⤷ ' + f.epic));
+    if (f.pr) meta.appendChild(el('span', 'badge', f.pr));
+    modal.appendChild(meta);
+
+    var src = document.createElement('a');
+    src.className = 'fiche-src';
+    src.href = '../../' + f.file;
+    src.target = '_blank';
+    src.rel = 'noopener';
+    src.textContent = '↗ ouvrir le fichier (' + f.file + ')';
+    modal.appendChild(src);
+
+    var bodyEl = el('div', 'fiche-body');
+    bodyEl.appendChild(el('p', 'fiche-loading', 'Chargement…'));
+    modal.appendChild(bodyEl);
+    overlay.classList.add('open');
+    modal.scrollTop = 0;
+
+    fetch('../../' + f.file).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function (md) {
+      bodyEl.textContent = '';
+      renderBlocks(bodyEl, md);
+    }).catch(function (e) {
+      bodyEl.textContent = '';
+      bodyEl.appendChild(el('p', 'fiche-loading', 'Impossible de charger la fiche (' + e.message + '). Ouvre le fichier via le lien ci-dessus.'));
+    });
   }
 
   [selStatut, selType, selEpic, selProduit, selLabel].forEach(function (s) {
