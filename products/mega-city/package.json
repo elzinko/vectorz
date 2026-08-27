@@ -5,7 +5,7 @@
   "type": "module",
   "description": "mega-city — moteur lawgiver bind (POC déterministe, ADR-0003)",
   "scripts": {
-    "test": "vitest run",
+    "test": "tsx bin/graph-compile.ts && vitest run",
     "test:watch": "vitest",
     "test:scripts": "bash bin/test-scripts.sh",
     "typecheck": "tsc --noEmit",
