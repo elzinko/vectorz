@@ -1,0 +1,10 @@
+title: "LA LOI — règles, bundles, profils (qui active quoi)"
+date: 2026-08-26
+type: interactive
+links:
+  fiche: ../../features/20260821172716537_carte-ne-montre-pas-la-loi.md
+  interactive: index.html
+note: >-
+  Lit directement `.ezk/graph.compiled.json` (ADR-0040) au chargement — ne recompile
+  jamais au bord (doctrine D5). Si l'artefact est absent, la page l'affiche clairement
+  plutôt que de compiler en silence : `pnpm --dir products/mega-city graph:compile`.

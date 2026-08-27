@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LA LOI — règles, bundles, profils</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Design system repris de diagrams/methode-mega-city/carte-interactive.html */
+  :root{
+    --ground:#e9edf4; --grid:#dde3ee;
+    --panel:#ffffff; --panel-2:#f4f6fb; --panel-3:#eef1f8;
+    --ink:#141a24; --ink-soft:#48566b; --ink-faint:#7b899e;
+    --line:#d6ddea; --line-soft:#e6ebf3;
+    --accent:#a9741a; --accent-bright:#c8912b;
+    --law:#2f6fd0;
+    --ok-bg:#e6f4ea; --ok-ink:#1e4620; --warn-bg:#fdecea; --warn-ink:#611a15;
+    --shadow:0 1px 2px rgba(20,26,36,.06), 0 8px 24px rgba(20,26,36,.07);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0c1019; --grid:#161d2b;
+      --panel:#141b28; --panel-2:#1a2231; --panel-3:#20293b;
+      --ink:#e8edf6; --ink-soft:#a6b2c6; --ink-faint:#6c7a91;
+      --line:#273147; --line-soft:#1e2637;
+      --accent:#e8b54d; --accent-bright:#f4ca6e;
+      --law:#6aa1f0;
+      --ok-bg:#13291c; --ok-ink:#7fe0a1; --warn-bg:#331715; --warn-ink:#ff9c92;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0c1019; --grid:#161d2b;
+    --panel:#141b28; --panel-2:#1a2231; --panel-3:#20293b;
+    --ink:#e8edf6; --ink-soft:#a6b2c6; --ink-faint:#6c7a91;
+    --line:#273147; --line-soft:#1e2637;
+    --accent:#e8b54d; --accent-bright:#f4ca6e;
+    --law:#6aa1f0;
+    --ok-bg:#13291c; --ok-ink:#7fe0a1; --warn-bg:#331715; --warn-ink:#ff9c92;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; font-size:15px; line-height:1.55;
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:44px 44px;
+  }
+  .wrap{max-width:1200px; margin:0 auto; padding:0 20px 60px}
+
+  .topbar{position:sticky; top:0; z-index:40; backdrop-filter:blur(10px); background:color-mix(in srgb, var(--ground) 86%, transparent); border-bottom:1px solid var(--line-soft);}
+  .topbar-in{max-width:1200px; margin:0 auto; padding:12px 20px; display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+  .badge{width:40px; height:40px; border-radius:9px; flex:none; background:linear-gradient(160deg, var(--law), #7aa8e6); display:grid; place-items:center; font-size:20px; box-shadow:var(--shadow)}
+  .brand h1{font-family:"Chakra Petch",sans-serif; font-size:19px; margin:0; letter-spacing:.02em}
+  .brand .over{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.22em; color:var(--ink-faint); text-transform:uppercase}
+  .spacer{flex:1}
+  .search{border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:7px 12px; font:inherit; font-size:13px; color:var(--ink); width:230px}
+  .search:focus{outline:2px solid var(--law); outline-offset:1px}
+  .theme-btn{border:1px solid var(--line); background:var(--panel); border-radius:8px; width:36px; height:36px; cursor:pointer; font-size:15px; color:var(--ink)}
+  .theme-btn:focus-visible{outline:2px solid var(--law)}
+
+  #status{padding:0.7rem 1rem; border-radius:10px; margin:18px 0; border:1px solid var(--line); box-shadow:var(--shadow)}
+  #status.ok{background:var(--ok-bg); color:var(--ok-ink)}
+  #status.error{background:var(--warn-bg); color:var(--warn-ink)}
+  #status code, #detail-source, .node .prov{font-family:"IBM Plex Mono",monospace}
+  #status code{background:rgba(127,127,127,.15); padding:0 4px; border-radius:3px}
+
+  .layout{display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap}
+  .columns{flex:1 1 520px; display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; min-width:280px}
+  .column{flex:1 1 240px; min-width:220px}
+  .column h2{font-family:"Chakra Petch",sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); border-bottom:1px solid var(--line); padding-bottom:6px; margin:0 0 10px}
+  .node{border:1px solid var(--line); border-radius:10px; padding:8px 11px; margin-bottom:8px; background:var(--panel); box-shadow:var(--shadow); cursor:pointer; transition:border-color .12s, transform .12s}
+  .node:hover{border-color:var(--law); transform:translateY(-1px)}
+  .node.hidden{display:none}
+  .node .id{font-weight:600; font-size:13.5px}
+  .node .prov{font-size:11px; color:var(--ink-faint); word-break:break-all; margin-top:2px}
+  .node.selected{border-color:var(--law); box-shadow:0 0 0 1px var(--law), var(--shadow); background:color-mix(in srgb, var(--law) 8%, var(--panel))}
+
+  .detail-panel{position:sticky; top:76px; flex:0 0 330px; align-self:flex-start; max-height:calc(100vh - 92px); overflow:auto; border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--panel); box-shadow:var(--shadow)}
+  .detail-head{display:flex; margin-bottom:8px}
+  #back{font:inherit; font-size:12.5px; padding:4px 10px; border:1px solid var(--line); border-radius:8px; background:var(--panel-2); color:var(--ink); cursor:pointer}
+  #back:hover:not(:disabled){border-color:var(--law)}
+  #back:disabled{opacity:.4; cursor:default}
+  .detail-panel h2{font-family:"Chakra Petch",sans-serif; font-size:15px; margin:0 0 3px}
+  #detail-source{font-size:11.5px; color:var(--ink-faint); word-break:break-all; margin-bottom:10px}
+  #detail-source a{color:var(--law)}
+  .detail-panel p{margin:10px 0 3px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft)}
+  .detail-panel ul{margin:0; padding:0; list-style:none}
+  .detail-panel li{margin:3px 0}
+  .navlink{font:inherit; font-size:13.5px; text-align:left; color:var(--law); background:none; border:none; padding:0; cursor:pointer; word-break:break-all}
+  .navlink:hover{text-decoration:underline}
+  .empty{color:var(--ink-faint); font-style:italic; font-size:12.5px}
+  @media (max-width:720px){ .detail-panel{position:static; flex-basis:100%; max-height:none} }
+</style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <div class="badge">⚖️</div>
+    <div class="brand"><div class="over">carte de la méthode</div><h1>LA LOI</h1></div>
+    <div class="spacer"></div>
+    <input id="search" class="search" type="search" placeholder="Chercher (règles, composition, mvp-first…)" />
+    <button id="theme-btn" class="theme-btn" title="Basculer clair / sombre" aria-label="Basculer le thème">☾</button>
+  </div></header>
+
+  <div class="wrap">
+    <div id="status"></div>
+    <div id="content" style="display:none">
+      <div class="layout">
+        <div class="columns">
+          <div class="column"><h2>Profils</h2><div id="col-profile"></div></div>
+          <div class="column"><h2>Bundles</h2><div id="col-bundle"></div></div>
+          <div class="column"><h2>Règles</h2><div id="col-rule"></div></div>
+        </div>
+        <aside class="detail-panel">
+          <div class="detail-head"><button id="back" disabled>← Retour</button></div>
+          <h2 id="detail-title">Détail</h2>
+          <div id="detail-source"></div>
+          <div id="detail-body" class="empty">Clique un profil, un bundle ou une règle. Dans le panneau, les liens sont cliquables (jusqu'aux agents & skills).</div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Reflet EXACT de products/mega-city/src/core/loi-view.ts (D3, ADR-0041) — la logique est
+  // testée côté TS (13 tests) ; cette page statique la miroite à l'identique (dette assumée).
+  const LOI_KINDS = new Set(['rule', 'bundle', 'profile']);
+  const KIND_FR = { rule: 'règle règles', bundle: 'bundle bundles composition', profile: 'profil profils composition' };
+  const KIND_LABEL = { profile: 'Profil', bundle: 'Bundle', rule: 'Règle', agent: 'Agent', skill: 'Skill' };
+
+  function sourcePath(kind, id) {
+    const r = 'products/mega-city';
+    if (kind === 'rule') return `${r}/rules/${id}.md`;
+    if (kind === 'bundle') return `${r}/bundles/${id}.yml`;
+    if (kind === 'profile') return `${r}/profiles/${id}.yml`;
+    if (kind === 'agent') return `${r}/agents/${id}.md`;
+    if (kind === 'skill') return `${r}/skills/${id}/SKILL.md`;
+    return '';
+  }
+
+  function ancestors(edges, startId, link) {
+    const seen = new Set();
+    const stack = [startId];
+    while (stack.length) {
+      const cur = stack.pop();
+      for (const e of edges) if (e.link === link && e.from === cur && !seen.has(e.to)) { seen.add(e.to); stack.push(e.to); }
+    }
+    return seen;
+  }
+
+  function whoActivates(edges, profileId) {
+    const profiles = new Set([profileId, ...ancestors(edges, profileId, 'profile-extends')]);
+    const collectTo = (link) => {
+      const out = new Set();
+      for (const e of edges) if (e.link === link && profiles.has(e.from)) out.add(e.to);
+      return [...out].sort();
+    };
+    const direct = collectTo('profile-bundle');
+    const allB = new Set(direct);
+    for (const b of direct) for (const p of ancestors(edges, b, 'bundle-extends')) allB.add(p);
+    const rules = new Set();
+    for (const e of edges) if (e.link === 'bundle-rule' && allB.has(e.from)) rules.add(e.to);
+    return { bundles: [...allB].sort(), rules: [...rules].sort(), agents: collectTo('profile-agent'), skills: collectTo('profile-skill') };
+  }
+
+  function bundleRules(edges, bundleId) {
+    const bundles = new Set([bundleId, ...ancestors(edges, bundleId, 'bundle-extends')]);
+    const rules = new Set();
+    for (const e of edges) if (e.link === 'bundle-rule' && bundles.has(e.from)) rules.add(e.to);
+    return [...rules].sort();
+  }
+
+  function nodeDetail(edges, kind, id) {
+    const outTo = (link, from) => edges.filter((e) => e.link === link && e.from === from).map((e) => e.to);
+    const inFrom = (link, to) => edges.filter((e) => e.link === link && e.to === to).map((e) => e.from);
+    const sec = (label, k, ids) => ({ label, nodes: [...new Set(ids)].sort().map((i) => ({ kind: k, id: i })) });
+    if (kind === 'profile') {
+      const wa = whoActivates(edges, id);
+      return [
+        sec('Hérite de', 'profile', [...ancestors(edges, id, 'profile-extends')]),
+        sec('Bundles', 'bundle', wa.bundles),
+        sec('Règles (via ces bundles)', 'rule', wa.rules),
+        sec('Agents', 'agent', wa.agents),
+        sec('Skills', 'skill', wa.skills),
+      ];
+    }
+    if (kind === 'bundle') return [
+      sec('Étend', 'bundle', outTo('bundle-extends', id)),
+      sec('Règles', 'rule', bundleRules(edges, id)),
+      sec('Activé par les profils', 'profile', inFrom('profile-bundle', id)),
+    ];
+    if (kind === 'rule') return [
+      sec('Dans les bundles', 'bundle', inFrom('bundle-rule', id)),
+      sec('Gardée par (enforces)', 'agent', outTo('enforces', id)),
+    ];
+    if (kind === 'agent') return [
+      sec('Garde les règles (enforces)', 'rule', inFrom('enforces', id)),
+      sec('Compétences (skills)', 'skill', outTo('competences', id)),
+      sec('Règles ciblées (interactions)', 'rule', outTo('interactions', id)),
+      sec('Activé par les profils', 'profile', inFrom('profile-agent', id)),
+    ];
+    if (kind === 'skill') return [
+      sec('Compose', 'skill', outTo('composes', id)),
+      sec('Utilisé par les agents (compétence)', 'agent', inFrom('competences', id)),
+      sec('Activé par les profils', 'profile', inFrom('profile-skill', id)),
+    ];
+    return [];
+  }
+
+  // ── état + rendu ────────────────────────────────────────────────────────────
+  let EDGES = [];
+  const history = [];
+
+  function setStatus(kind, text, codes) {
+    const el = document.getElementById('status');
+    el.className = kind;
+    el.textContent = '';
+    el.append(document.createTextNode(text));
+    if (codes) {
+      el.append(document.createTextNode(codes.avant || ' '));
+      const c = document.createElement('code');
+      c.textContent = codes.code;
+      el.append(c, document.createTextNode(codes.apres || ''));
+    }
+  }
+
+  function renderNode(node) {
+    const div = document.createElement('div');
+    div.className = 'node';
+    div.dataset.kind = node.kind;
+    div.dataset.id = node.id;
+    const idDiv = document.createElement('div');
+    idDiv.className = 'id';
+    idDiv.textContent = node.id;
+    const prov = document.createElement('div');
+    prov.className = 'prov';
+    prov.textContent = sourcePath(node.kind, node.id);
+    div.append(idDiv, prov);
+    div.dataset.hay = `${node.kind} ${KIND_FR[node.kind] || ''} ${node.id} ${prov.textContent}`.toLowerCase();
+    return div;
+  }
+
+  function renderColumns(nodes) {
+    for (const kind of ['profile', 'bundle', 'rule']) {
+      const col = document.getElementById(`col-${kind}`);
+      col.textContent = '';
+      nodes.filter((n) => n.kind === kind).sort((a, b) => a.id.localeCompare(b.id)).forEach((n) => col.appendChild(renderNode(n)));
+    }
+  }
+
+  function wireSearch() {
+    const input = document.getElementById('search');
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      document.querySelectorAll('.node').forEach((el) => el.classList.toggle('hidden', q !== '' && !el.dataset.hay.includes(q)));
+    });
+  }
+
+  function renderDetail(kind, id) {
+    document.getElementById('detail-title').textContent = `${KIND_LABEL[kind] || kind} « ${id} »`;
+    const src = document.getElementById('detail-source');
+    src.textContent = '';
+    const a = document.createElement('a');
+    a.href = '/' + sourcePath(kind, id);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = sourcePath(kind, id);
+    src.append(document.createTextNode('↗ '), a);
+    const body = document.getElementById('detail-body');
+    body.className = '';
+    body.textContent = '';
+    for (const section of nodeDetail(EDGES, kind, id)) {
+      const p = document.createElement('p');
+      p.textContent = `${section.label} (${section.nodes.length})`;
+      body.append(p);
+      if (!section.nodes.length) {
+        const em = document.createElement('div');
+        em.className = 'empty';
+        em.textContent = '(aucun)';
+        body.append(em);
+        continue;
+      }
+      const ul = document.createElement('ul');
+      for (const n of section.nodes) {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.className = 'navlink';
+        btn.textContent = n.id;
+        btn.dataset.kind = n.kind;
+        btn.dataset.id = n.id;
+        li.append(btn);
+        ul.append(li);
+      }
+      body.append(ul);
+    }
+  }
+
+  function highlightColumn(cur) {
+    document.querySelectorAll('.node.selected').forEach((n) => n.classList.remove('selected'));
+    const el = document.querySelector(`#col-${cur.kind} .node[data-id="${CSS.escape(cur.id)}"]`);
+    if (el) el.classList.add('selected');
+  }
+
+  function renderCurrent() {
+    const cur = history[history.length - 1];
+    renderDetail(cur.kind, cur.id);
+    highlightColumn(cur);
+    document.getElementById('back').disabled = history.length <= 1;
+  }
+
+  function navigate(kind, id) { history.push({ kind, id }); renderCurrent(); }
+  function back() { if (history.length > 1) { history.pop(); renderCurrent(); } }
+
+  function wireInteractions() {
+    document.querySelector('.columns').addEventListener('click', (ev) => {
+      const node = ev.target.closest('.node');
+      if (!node) return;
+      history.length = 0;
+      navigate(node.dataset.kind, node.dataset.id);
+    });
+    document.getElementById('detail-body').addEventListener('click', (ev) => {
+      const b = ev.target.closest('.navlink');
+      if (!b) return;
+      navigate(b.dataset.kind, b.dataset.id);
+    });
+    document.getElementById('back').addEventListener('click', back);
+  }
+
+  function wireTheme() {
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-btn');
+    const sync = () => { const d = root.getAttribute('data-theme'); btn.textContent = d === 'dark' ? '☀' : '☾'; };
+    try { const saved = localStorage.getItem('ezk-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+    sync();
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('ezk-theme', next); } catch (e) {}
+      sync();
+    });
+  }
+
+  async function main() {
+    wireTheme();
+    setStatus('ok', 'Chargement de ', { code: '.ezk/graph.compiled.json', apres: '…' });
+    let graph;
+    try {
+      const res = await fetch('/.ezk/graph.compiled.json');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      graph = await res.json();
+    } catch (err) {
+      setStatus('error', `⚠️ Graphe non à jour ou introuvable (${err.message}). Lance `, { code: 'pnpm --dir products/mega-city graph:compile', apres: ', puis recharge cette page.' });
+      return;
+    }
+    EDGES = graph.edges;
+    const loiNodes = graph.nodes.filter((n) => LOI_KINDS.has(n.kind));
+    const loiEdges = graph.edges.filter((e) => LOI_KINDS.has(e.fromKind) || LOI_KINDS.has(e.toKind));
+    setStatus('ok', `Graphe chargé : ${loiNodes.length} nœuds LOI (règles/bundles/profils), ${loiEdges.length} liens qui les touchent.`);
+    document.getElementById('content').style.display = '';
+    renderColumns(loiNodes);
+    wireSearch();
+    wireInteractions();
+  }
+
+  main();
+</script>
+</body>
+</html>
