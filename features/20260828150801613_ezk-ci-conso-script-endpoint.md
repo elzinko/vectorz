@@ -9,7 +9,7 @@ epic:
 depends: []
 labels: [ezk-ci, ci, outillage, billing]
 status: todo
-ready:
+ready: 2026-08-29
 pr:
 created: 2026-08-28
 ---
