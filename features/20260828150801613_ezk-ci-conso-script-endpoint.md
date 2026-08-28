@@ -41,6 +41,25 @@ résultat. Cette fiche fige la récupération dans un **script déterministe** e
    reproductible, coûteux, et contraire à l'ADR-0001 (« le cœur déterministe compte, le LLM
    juge »). Le même besoin reviendra à chaque revue de conso.
 
+## Valeur (pourquoi ça compte)
+
+- **`conso` est CASSÉ aujourd'hui** (410) : on ne peut plus lire la conso depuis la commande.
+  Ce n'est pas du polissage, c'est la **réparation** d'un outil qui sert à décider quoi rendre
+  frugal (les repos privés qui pèsent sur le quota).
+- **Une commande → un chiffre reproductible.** Chaque revue de conso (récurrente) devient un
+  `run`, pas une reconstruction `gh` + `jq` à la main : moins de tokens, zéro divergence entre
+  deux mesures (ADR-0001).
+- **Rend le chiffre actionnable.** Sans la colonne visibilité, on croit qu'un repo **public**
+  (vectorz, 879 min) « coûte » alors qu'il est gratuit — et on rate le vrai poste (les privés).
+
+## Dépendances externes
+
+- **API billing GitHub** (`/users/<u>/settings/billing/usage`) — service externe, hors monorepo.
+  **Accès constaté le 2026-08-28** : `gh api /users/elzinko/settings/billing/usage?year=2026&month=8`
+  a renvoyé un `usageItems` non vide (le token `gh` courant a le scope nécessaire).
+- **`gh` CLI authentifié** — présent et utilisé en session ; repli prévu si le scope billing
+  venait à manquer (cf. critère « dégradation propre »).
+
 ## Proposition
 
 - **Un script déterministe** (ex. `products/mega-city/bin/ci-conso.sh`, ou le cœur de
@@ -52,6 +71,20 @@ résultat. Cette fiche fige la récupération dans un **script déterministe** e
 - **Distinguer public/privé** : `gh api /repos/<owner>/<repo> --jq .visibility`. Seuls les
   privés pèsent sur le quota Free ; l'afficher évite le contresens « vectorz brûle 879 min »
   (vrai, mais gratuit car public).
+
+## Décisions d'archi à trancher (au sprint)
+
+- **Où vit le script ?** `products/mega-city/bin/ci-conso.sh` (dispo en tournant dans le
+  monorepo) VS logique **inline dans `SKILL.md`** (portable en install *copy-mode*, où seul
+  `SKILL.md` est déployé — cf. piège `add`/mint-id). La conso lit du billing **niveau compte**
+  (repo-agnostique), donc elle peut tourner depuis n'importe où avec `gh` ; un script testé
+  reste plus robuste qu'un inline. À trancher à l'étape archi.
+- **Granularité.** `/usage` ne rend que des **agrégats MENSUELS** (date = 1er du mois). Le
+  « minutes du mois » marche ; mais « depuis le 25 » (fin) exige l'**API runs**
+  (`/repos/<o>/<r>/actions/runs?created=>=DATE` + timing). Scope par défaut = **mensuel par
+  repo** ; le détail par runs = **option** (ne pas sur-scoper le 1ᵉʳ incrément).
+- **Coût public/privé.** Une visibilité par repo = **N appels** `gh api /repos/…` ; OK pour
+  quelques repos, à limiter/cacher si la liste grossit.
 
 ## Critères d'acceptation
 
@@ -82,3 +115,6 @@ Attendu : une table de conso par repo (mois courant), colonne public/privé, et 
 - Découvert en marge d'une revue de conso le 2026-08-28. Au passage : **vectorz est public** →
   Actions gratuit ; le quota Free ne pèse que sur les privés (muti / samplerz / city-guided).
 - Priorité **P0 posée par le PO** (2026-08-28).
+- **Groomée le 2026-08-29** — DoR complète : problème · valeur · critères vérifiables ·
+  dépendance externe **constatée**. `ready:` **non posé** : c'est le gate `ready <id>` qui le
+  pose. Reste au sprint : trancher les 3 décisions d'archi ci-dessus (étape archi).
