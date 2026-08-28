@@ -87,6 +87,18 @@ describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => 
     expect(body).toMatch(/Interdit[\s\S]*?## Summary/);
   });
 
+  it('la règle + ezk-backlog exigent des listes de fiches CLIQUABLES (lien par id → fichier)', () => {
+    // Non-récidive (Thomas 2026-08-28 « je ne m'en sors pas ») : un `list` sans liens
+    // n'est pas ouvrable. Retirer l'exigence « entrée cliquable » de la règle générique
+    // OU du SKILL ezk-backlog DOIT faire rougir ce test.
+    const rule = read(lisibilityRule);
+    expect(rule).toMatch(/clickable/i);
+    expect(rule).toMatch(/relative to the current directory/i);
+    const backlog = read(join(megaCityDir, 'skills', 'ezk-backlog', 'SKILL.md'));
+    expect(backlog).toMatch(/cliquable/i);
+    expect(backlog).toMatch(/relatif au répertoire courant/i);
+  });
+
   it("ezk-sprint étape PR + DoD exigent le rendu de la fiche (ADR-0029), pas la triade mince", () => {
     const body = read(sprintSkill);
     expect(body).toMatch(/rendu de la fiche/i);

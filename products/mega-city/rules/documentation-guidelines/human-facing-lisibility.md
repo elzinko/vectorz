@@ -19,6 +19,12 @@ enforcements:
   only, and define them once.
 - Write **to the human addressed**, not between agents. Prefer a short map over an
   exhaustive dossier.
+- **Lists of file-backed items** (backlog fiches, PRs, diagrams, captures): make **every
+  entry clickable** — a markdown link on the **id** pointing to the item's source file,
+  path **relative to the current directory** (`[0050](features/0050-slug.md)`, `done/…`
+  for shipped). The title stays in clear next to it. Without the link the reader must
+  guess the path to open the file — exactly what breaks piloting (Thomas, 2026-08-28:
+  « je ne m'en sors pas » sur un `list` sans liens).
 
 ### Cas corps de PR — la fiche est le document, la PR en est le rendu (ADR-0029)
 

@@ -45,6 +45,14 @@ avant tables ou jargon (`DoR`, `ready:`, ids seuls). Règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
 Voir aussi [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
 
+**Fiche cliquable (MUST).** Dès que `list` / `next` / `review` / `reconcile` / `plan`
+énumèrent des fiches, **l'id de chaque fiche est un lien** vers son fichier — lien
+markdown, chemin **relatif au répertoire courant** (`[0050](features/0050-slug.md)`,
+`features/done/…` pour les livrées). Sans ce lien, l'humain ne peut pas ouvrir la fiche
+depuis la liste (règle
+[`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md),
+puce « Lists of file-backed items »).
+
 ## Préflight Skema (layout version) — à chaque commande
 
 Avant `list` / `next` / `add` / `groom` / `ready` / `plan` / `review` /
