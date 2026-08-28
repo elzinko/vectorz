@@ -1,103 +1,112 @@
-# Recette — Brancher un domaine + environnements (prod/staging/dev) sur Vercel, DNS chez IONOS
+# Recette — Brancher un domaine + environnements (prod / staging / dev) sur Vercel, DNS chez IONOS
 
-> Mettre `ton-domaine.fr` en **production** sur Vercel, plus des sous-domaines
-> **`staging.`** et **`dev.`** qui montrent des versions de test — le DNS restant
-> géré chez **IONOS**. Méthode appliquée à samplerz.
+> **Générique** — n'importe quel domaine. Providers : **Vercel** (hébergement) + **IONOS**
+> (registrar / DNS). Mettre un domaine en **production** sur Vercel, plus des sous-domaines
+> **`staging.`** et **`dev.`** qui suivent des branches de test, le DNS restant géré chez
+> IONOS.
 >
-> **Composée d'une brique** : les enregistrements DNS peuvent être posés à la main
-> (UI IONOS) **ou** via la brique [`dns-ionos-mcp`](./dns-ionos-mcp.md) (ton agent les
-> crée pour toi).
+> **Composée de briques** :
+> - poser les enregistrements DNS → brique [`dns-ionos-mcp`](./dns-ionos-mcp.md) (ou à la main) ;
+> - faire différer prod et preview (ex. page d'attente en prod) → recette
+>   [`page-attente-marketing`](./page-attente-marketing.md).
 
 ## Quand l'utiliser
 
-Ton site est déployé sur Vercel et tu veux ton vrai nom de domaine dessus — avec, en
-prime, des adresses séparées pour tester (`staging`, `dev`) sans toucher à la prod.
+Un site déployé sur Vercel, à mettre sur ton vrai domaine — avec des adresses séparées
+pour tester (`staging`, `dev`) sans toucher à la prod.
 
 ## Le principe — Vercel commande, IONOS exécute
 
-Vercel te **dit** quels enregistrements créer. IONOS est l'endroit **où** tu les crées
-(ta zone DNS). Et chaque adresse pointe vers une **branche Git** → un environnement.
+Vercel **dit** quels enregistrements DNS créer. IONOS est **où** tu les crées (ta zone).
+Chaque adresse se **rattache** ensuite à une cible Vercel.
+
+Vercel n'a que **deux cibles** pour un domaine :
+
+| Cible Vercel | Ce qu'elle suit | Variables d'env utilisées |
+|---|---|---|
+| **Production** | la branche de prod (`main`) | celles de *Production* |
+| **Preview** | **une branche Git** que tu choisis | celles de *Preview* |
+
+C'est la cible — et donc les variables d'env de cet environnement — qui décide **quel
+contenu** s'affiche. Exemple : une variable `COMING_SOON` posée seulement en *Production*
+fait que l'apex montre la page d'attente, pendant que les previews montrent le vrai site
+(voir [`page-attente-marketing`](./page-attente-marketing.md)).
+
+## Le mapping (à adapter)
 
 ```
-Vercel (dit quoi créer) ─→ IONOS (zone DNS : tu crées les A/CNAME)
-                                        │
-        domaine.fr / www  ─→ branche main    → Production
-        staging.domaine.fr ─→ branche staging → Preview (vrai site de test)
-        dev.domaine.fr     ─→ branche dev     → Preview (vrai site de test)
+apex + www          ─→ Production   (branche main)      → version de prod
+staging.<domaine>   ─→ Preview      (branche staging)   → contenu de cette branche
+dev.<domaine>       ─→ Preview      (branche dev)       → contenu de cette branche
 ```
 
-| Adresse | Environnement Vercel | Branche Git | Ce qui s'affiche |
-|---|---|---|---|
-| `domaine.fr` + `www` | **Production** | `main` | la prod (ici : page d'attente) |
-| `staging.domaine.fr` | **Preview** | `staging` | le vrai site (test) |
-| `dev.domaine.fr` | **Preview** | `dev` | le vrai site (dev) |
+| Adresse | Cible Vercel | Branche suivie |
+|---|---|---|
+| `<domaine>` + `www` | Production | `main` |
+| `staging.<domaine>` | Preview | `staging` |
+| `dev.<domaine>` | Preview | `dev` |
 
-> **Pourquoi des branches ?** Le vrai site ne s'affiche que **sans** la variable
-> `VITE_COMING_SOON` (voir [`page-attente-marketing`](./page-attente-marketing.md)).
-> Cette variable n'est posée qu'en **Production**. Donc pour voir le vrai site, il faut
-> un environnement **Preview** = une branche autre que `main`.
+> Un sous-domaine peut aussi être rattaché à la **Production** (il reflète alors la prod)
+> plutôt qu'à une branche. Choisis Preview pour **tester une branche**, Production pour
+> **miroiter la prod**.
 
-## Prérequis — les branches Git
+## Prérequis (fondations — sans elles rien ne se déploie)
 
-Les branches `staging` et `dev` doivent **exister**, créées depuis `main` :
+1. **Projet Vercel lié au repo GitHub** — Settings → Git → Connect. Sans ce lien, aucune
+   branche ne déclenche de déploiement. C'est la base de tout.
+2. **Root Directory** — si le site vit dans un **sous-dossier** d'un monorepo (ex.
+   `website/`), règle **Settings → Build & Deployment → Root Directory** sur ce dossier.
+   Sinon Vercel build la **racine** du repo → le build échoue (souvent
+   `vite: command not found`, car les dépendances du site ne sont pas là).
+3. **Les branches existent**, créées depuis `main` :
+   ```bash
+   git push origin origin/main:refs/heads/staging
+   git push origin origin/main:refs/heads/dev
+   ```
+   Un push sur l'une d'elles déclenche son déploiement Preview.
 
-```bash
-git push origin origin/main:refs/heads/staging
-git push origin origin/main:refs/heads/dev
-```
+## Étapes — le domaine racine (apex + `www`)
 
-Vercel les déploie alors automatiquement en Preview (donc : vrai site).
-
-## Étapes — le domaine racine (`domaine.fr` + `www`)
-
-1. **Vercel** → projet → **Settings → Domains → Add** `domaine.fr`.
-2. Vercel affiche **deux enregistrements** à créer (exemple samplerz) :
-   - `A` · nom `@` · valeur `216.198.79.1`
-   - `CNAME` · nom `www` · valeur `xxxxxxxx.vercel-dns-017.com`
-3. **IONOS** → zone DNS du domaine → crée/modifie ces deux enregistrements.
-   **Copie** les valeurs depuis Vercel (bouton 📋) — un caractère faux = cassé.
+1. **Vercel** → projet → **Settings → Domains → Add** `<domaine>`.
+2. Vercel affiche **deux enregistrements** à créer :
+   - `A` · nom `@` · valeur `216.198.79.1` (IP Vercel standard)
+   - `CNAME` · nom `www` · valeur `<hash>.vercel-dns-###.com` (propre à ton domaine)
+3. **IONOS** → zone DNS → crée/modifie ces deux enregistrements. **Copie** les valeurs
+   depuis Vercel (un caractère faux = cassé).
 
 ⚠️ **Deux pièges IONOS au niveau racine :**
-- IONOS met souvent **déjà** un `A` sur `@` (page de parking). **Modifie-le**, n'en
-  ajoute pas un deuxième (deux `A` sur `@` = conflit).
-- **NE TOUCHE PAS** aux lignes marquées **« Mail »** (`MX`, `TXT` SPF, `_dmarc`,
-  `_domainkey` DKIM, `autodiscover`) : c'est ta messagerie `@domaine.fr`. Les
-  supprimer = tes emails cassés.
+- IONOS pose souvent **déjà** un `A` sur `@` (parking). **Modifie-le**, n'en ajoute pas
+  un second (deux `A` sur `@` = conflit).
+- **NE TOUCHE PAS** aux lignes **« Mail »** (`MX`, `TXT` SPF, `_dmarc`, `_domainkey`
+  DKIM, `autodiscover`) : c'est ta messagerie `@<domaine>`. Les supprimer = emails cassés.
 
 ## Étapes — les sous-domaines (`staging`, `dev`)
 
-1. **Créer le sous-domaine dans IONOS** (étape à part, avant tout enregistrement) :
-   `https://my.ionos.fr/domain/details/<domaine>/subdomain/add` → ajoute `staging`,
-   puis `dev`.
-2. **Vercel** → Settings → Domains → **Add** `staging.domaine.fr` →
-   choisis **« a specific Git branch »** → tape `staging`.
-   ⚠️ **Pas « Production »** (sinon il montrerait la page d'attente).
-   Recommence pour `dev.domaine.fr` → branche `dev`.
-3. Vercel affiche le **CNAME** à créer pour chaque sous-domaine (souvent
-   `cname.vercel-dns.com`).
+1. **Créer le sous-domaine chez IONOS** (étape distincte, avant tout enregistrement) :
+   `https://my.ionos.fr/domain/details/<domaine>/subdomain/add` → ajoute `staging`, puis `dev`.
+2. **Vercel** → Settings → Domains → **Add** `staging.<domaine>` → choisis
+   **« a specific Git branch »** → `staging`. Recommence : `dev.<domaine>` → `dev`.
+3. Vercel affiche le **CNAME** à créer pour chaque (souvent `cname.vercel-dns.com`).
 4. **IONOS** → dans la zone du sous-domaine → crée le `CNAME` → valeur Vercel copiée.
 
-> **Raccourci agent** : au lieu des clics IONOS (étapes 1, 3-4 côté DNS), tu peux
-> demander à l'agent de poser les enregistrements via la brique
-> [`dns-ionos-mcp`](./dns-ionos-mcp.md) : *« ajoute un CNAME `staging` →
-> `cname.vercel-dns.com` sur `domaine.fr` »*.
+> **Raccourci agent** : au lieu des clics DNS IONOS, demande à l'agent de poser les
+> enregistrements via [`dns-ionos-mcp`](./dns-ionos-mcp.md) — *« ajoute un CNAME
+> `staging` → `cname.vercel-dns.com` sur `<domaine>` »*.
 
 ## Vérifier
 
-- Vercel passe de **« Invalid Configuration » à vert** tout seul. Compte de quelques
-  minutes à **~1 h** (propagation DNS).
-- Le **HTTPS** est posé automatiquement par Vercel.
-- Ouvre `staging.domaine.fr` → tu dois voir le **vrai site**, pas la page d'attente.
+- Vercel passe de **« Invalid Configuration » à vert** seul (propagation : minutes → ~1 h).
+- **HTTPS** posé automatiquement.
+- Ouvre `staging.<domaine>` → la version de la branche `staging` (ex. le vrai site).
 
 ## Pièges
 
-- **Sous-domaine assigné à « Production »** au lieu d'une branche → il montre la prod
-  (page d'attente), pas le vrai site. Assigne à `staging` / `dev`.
-- **Créer le sous-domaine IONOS est une étape distincte** (`subdomain/add`) **avant**
-  d'ajouter son CNAME. Sans ça, l'enregistrement n'a nulle part où vivre.
-- **Copier, ne pas retaper** les valeurs Vercel (A et surtout les CNAME en hash).
-- **Propagation lente** : ce n'est pas cassé, c'est le DNS qui met du temps. Vercel
-  valide seul ensuite.
-- **Enregistrements « Mail » IONOS** : jamais touchés (voir plus haut).
-- **Jour du lancement** : retirer `VITE_COMING_SOON` de la Production fait passer
-  `domaine.fr` de la page d'attente au vrai site (cf. recette page d'attente).
+- **Projet non lié à GitHub** → les branches ne déploient pas. Prérequis n°1.
+- **Root Directory oublié** sur un monorepo → build échoue (`vite: command not found`,
+  exit 127). Règle-le sur le dossier du site.
+- **Sous-domaine mal ciblé** : « Production » alors que tu voulais une branche (ou
+  l'inverse) → mauvais contenu affiché.
+- **Créer le sous-domaine IONOS** est une étape distincte (`subdomain/add`) **avant** le CNAME.
+- **Copier, pas retaper** les valeurs Vercel (surtout les CNAME en hash).
+- **Propagation lente** : pas cassé, juste le DNS. Vercel valide seul ensuite.
+- **Enregistrements « Mail » IONOS** : jamais touchés.
