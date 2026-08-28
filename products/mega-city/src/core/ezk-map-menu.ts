@@ -70,6 +70,7 @@ export interface MenuSection {
 /** Les sections de l'accueil, dans l'ordre d'affichage — Pilotage d'abord (fiche 20260828165644452). */
 const MENU_SECTIONS: ReadonlyArray<{ categorie: string; label: string }> = [
   { categorie: 'pilotage', label: 'Pilotage' },
+  { categorie: 'methode', label: 'Méthode ezk' },
   { categorie: 'archi', label: "Diagrammes d'archi" },
   { categorie: 'autres', label: 'Autres' },
 ];

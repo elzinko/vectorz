@@ -96,6 +96,20 @@ describe('groupDiagrams (fiche 20260828165644452)', () => {
     expect(sections.map((s) => s.label)).toEqual(['Pilotage', "Diagrammes d'archi", 'Autres']);
   });
 
+  it('insère la section « Méthode ezk » entre pilotage et archi (LA LOI, carte interactive)', () => {
+    const sections = groupDiagrams([
+      mk('domaine-mega-city', 'archi'),
+      mk('carte-la-loi', 'methode'),
+      mk('avancement', 'pilotage'),
+    ]);
+    expect(sections.map((s) => s.categorie)).toEqual(['pilotage', 'methode', 'archi']);
+    expect(sections.map((s) => s.label)).toEqual([
+      'Pilotage',
+      'Méthode ezk',
+      "Diagrammes d'archi",
+    ]);
+  });
+
   it('met la carte méthode en TÊTE de la section archi', () => {
     const archi = groupDiagrams([
       mk('domaine-mega-city', 'archi'),
