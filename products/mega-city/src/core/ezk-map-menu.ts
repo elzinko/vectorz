@@ -15,6 +15,8 @@ export interface DiagramEntry {
   entry: string;
   /** Titre lisible (du `meta.yaml`), ou le slug en secours. */
   title: string;
+  /** Section d'accueil (`pilotage | archi | autres`) — du `meta.yaml`, défaut « autres ». */
+  categorie?: string;
 }
 
 /** La carte mise en avant en tête du menu (la colonne vertébrale de la méthode). */
@@ -46,6 +48,57 @@ export function orderDiagrams(
   return [...head, ...rest];
 }
 
+/**
+ * Lit le champ `categorie:` d'un `meta.yaml` par BALAYAGE DE LIGNE (comme `readMetaTitle`,
+ * zéro dépendance). Ancré en COLONNE 0 (clé de 1er niveau) ; valeur normalisée en minuscules.
+ * Renvoie null si absent ⇒ l'appelant retombe sur « autres ». Fiche 20260828165644452.
+ */
+export function readMetaCategorie(metaYaml: string): string | null {
+  const m = metaYaml.match(/^categorie[ \t]*:[ \t]*(.+?)[ \t]*$/im);
+  if (!m) return null;
+  const value = m[1].replace(/^["']|["']$/g, '').trim().toLowerCase();
+  return value || null;
+}
+
+/** Une section de l'accueil : un titre + les cartes qui lui appartiennent. */
+export interface MenuSection {
+  categorie: string;
+  label: string;
+  items: DiagramEntry[];
+}
+
+/** Les sections de l'accueil, dans l'ordre d'affichage — Pilotage d'abord (fiche 20260828165644452). */
+const MENU_SECTIONS: ReadonlyArray<{ categorie: string; label: string }> = [
+  { categorie: 'pilotage', label: 'Pilotage' },
+  { categorie: 'archi', label: "Diagrammes d'archi" },
+  { categorie: 'autres', label: 'Autres' },
+];
+
+/**
+ * Range les cartes en sections ordonnées (pilotage → archi → autres). La catégorie vient du
+ * champ `categorie:` du meta.yaml ; toute valeur absente ou inconnue retombe sur « autres ».
+ * La carte méthode reste en TÊTE de sa section (featured, via `orderDiagrams`). Une section
+ * sans carte est OMISE (pas de titre orphelin).
+ */
+export function groupDiagrams(
+  items: DiagramEntry[],
+  featured: string = FEATURED_SLUG,
+): MenuSection[] {
+  const known = new Set(MENU_SECTIONS.map((s) => s.categorie));
+  const bucketOf = (d: DiagramEntry): string => {
+    const c = (d.categorie ?? '').toLowerCase();
+    return known.has(c) ? c : 'autres';
+  };
+  return MENU_SECTIONS.map(({ categorie, label }) => ({
+    categorie,
+    label,
+    items: orderDiagrams(
+      items.filter((d) => bucketOf(d) === categorie),
+      featured,
+    ),
+  })).filter((s) => s.items.length > 0);
+}
+
 /** Échappe le texte libre destiné à du HTML (titre de meta.yaml = semi-fiable). */
 function escapeHtml(s: string): string {
   return s
@@ -60,21 +113,31 @@ function escapeHtml(s: string): string {
  * est mise en avant. Mêmes tokens visuels que le board (cohérence « même system design »).
  */
 export function renderMenuHtml(items: DiagramEntry[]): string {
-  const cartes =
-    items.length === 0
+  // Cartes rangées en SECTIONS (pilotage → archi → autres, fiche 20260828165644452).
+  const sections = groupDiagrams(items);
+  const carteHtml = (d: DiagramEntry): string => {
+    // « featured » par IDENTITÉ (la carte méthode), pas par position : si la méthode
+    // est absente, aucune carte ne porte le badge « méthode » à tort (revue adverse, P2).
+    const featured = d.slug === FEATURED_SLUG;
+    const href = `/diagrams/${escapeHtml(d.slug)}/${escapeHtml(d.entry)}`;
+    const tag = featured ? '<span class="tag">méthode</span>' : '';
+    return `      <a class="carte${featured ? ' featured' : ''}" href="${href}">
+        <div class="titre">${escapeHtml(d.title)}${tag}</div>
+        <div class="slug">${escapeHtml(d.slug)}</div>
+      </a>`;
+  };
+  const corps =
+    sections.length === 0
       ? '<p class="vide">Aucune carte dans <code>diagrams/</code>.</p>'
-      : items
-          .map((d) => {
-            // « featured » par IDENTITÉ (la carte méthode), pas par position : si la méthode
-            // est absente, aucune carte ne porte le badge « méthode » à tort (revue adverse, P2).
-            const featured = d.slug === FEATURED_SLUG;
-            const href = `/diagrams/${escapeHtml(d.slug)}/${escapeHtml(d.entry)}`;
-            const tag = featured ? '<span class="tag">méthode</span>' : '';
-            return `  <a class="carte${featured ? ' featured' : ''}" href="${href}">
-    <div class="titre">${escapeHtml(d.title)}${tag}</div>
-    <div class="slug">${escapeHtml(d.slug)}</div>
-  </a>`;
-          })
+      : sections
+          .map(
+            (s) => `  <section class="section-cartes">
+    <h2 class="section-titre">${escapeHtml(s.label)}</h2>
+    <div class="grille">
+${s.items.map(carteHtml).join('\n')}
+    </div>
+  </section>`,
+          )
           .join('\n');
 
   return `<!doctype html>
@@ -118,6 +181,8 @@ export function renderMenuHtml(items: DiagramEntry[]): string {
   .wrap{ max-width:1180px;margin:0 auto;padding:0 20px 60px; }
   .en-clair{ color:var(--ink-soft);margin:22px 0;max-width:72ch;line-height:1.55; }
   .grille{ display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px; }
+  .section-cartes{ margin:26px 0 0; }
+  .section-titre{ font-family:"Chakra Petch",sans-serif;font-size:1.05rem;margin:0 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line);color:var(--ink); }
   a.carte{ display:block;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--line);
     border-radius:12px;padding:16px 18px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);
     transition:border-color .12s,transform .12s; }
@@ -142,9 +207,7 @@ export function renderMenuHtml(items: DiagramEntry[]): string {
   En clair : toutes les cartes du dépôt, à portée de clic. Cliquer en ouvre une ;
   « Précédent » du navigateur ramène ici — sans relancer le serveur.
 </p>
-<div class="grille">
-${cartes}
-</div>
+${corps}
 </div>
 <script>/*ezkmenu-theme*/(function(){var r=document.documentElement,b=document.getElementById('theme-btn');function eff(){var d=r.getAttribute('data-theme');if(d)return d;return (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}function sync(){b.textContent=eff()==='dark'?'☀':'☾';}try{var s=localStorage.getItem('ezk-theme');if(s)r.setAttribute('data-theme',s);}catch(e){}sync();b.addEventListener('click',function(){var n=eff()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('ezk-theme',n);}catch(e){}sync();});})();</script>
 </body>

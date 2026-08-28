@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   type DiagramEntry,
   FEATURED_SLUG,
+  groupDiagrams,
   injectNavIntoHtml,
   orderDiagrams,
+  readMetaCategorie,
   readMetaTitle,
   renderMenuHtml,
   renderNavBar,
@@ -61,6 +63,62 @@ describe('orderDiagrams', () => {
   });
 });
 
+describe('readMetaCategorie (fiche 20260828165644452)', () => {
+  it('lit le champ `categorie:` (minuscule, guillemets/espaces tolérés)', () => {
+    expect(readMetaCategorie('title: X\ncategorie: Pilotage\n')).toBe('pilotage');
+    expect(readMetaCategorie("categorie:  'archi' ")).toBe('archi');
+  });
+
+  it('renvoie null si absent (⇒ « autres » côté appelant)', () => {
+    expect(readMetaCategorie('title: X\ntype: board')).toBeNull();
+  });
+
+  it('IGNORE une clé `categorie:` indentée (sous-bloc, pas 1er niveau)', () => {
+    expect(readMetaCategorie('links:\n  categorie: piège\n')).toBeNull();
+  });
+});
+
+describe('groupDiagrams (fiche 20260828165644452)', () => {
+  const mk = (slug: string, categorie?: string): DiagramEntry => ({
+    slug,
+    entry: 'x.html',
+    title: slug,
+    categorie,
+  });
+
+  it('range en sections ordonnées pilotage → archi → autres', () => {
+    const sections = groupDiagrams([
+      mk('benchmark-bmad-ezk'), // pas de categorie → autres
+      mk('avancement', 'pilotage'),
+      mk('domaine-mega-city', 'archi'),
+    ]);
+    expect(sections.map((s) => s.categorie)).toEqual(['pilotage', 'archi', 'autres']);
+    expect(sections.map((s) => s.label)).toEqual(['Pilotage', "Diagrammes d'archi", 'Autres']);
+  });
+
+  it('met la carte méthode en TÊTE de la section archi', () => {
+    const archi = groupDiagrams([
+      mk('domaine-mega-city', 'archi'),
+      mk(FEATURED_SLUG, 'archi'),
+      mk('carte-la-loi', 'archi'),
+    ]).find((s) => s.categorie === 'archi');
+    expect(archi?.items[0].slug).toBe(FEATURED_SLUG);
+  });
+
+  it('une categorie inconnue ou absente retombe sur « autres »', () => {
+    const sections = groupDiagrams([mk('a', 'zzz'), mk('b')]);
+    expect(sections).toHaveLength(1);
+    expect(sections[0].categorie).toBe('autres');
+    expect(sections[0].items.map((d) => d.slug)).toEqual(['a', 'b']);
+  });
+
+  it('omet les sections vides (pas de titre orphelin)', () => {
+    expect(groupDiagrams([mk('avancement', 'pilotage')]).map((s) => s.categorie)).toEqual([
+      'pilotage',
+    ]);
+  });
+});
+
 describe('renderMenuHtml', () => {
   const items: DiagramEntry[] = [
     { slug: 'methode-mega-city', entry: 'methode.svg', title: 'La méthode en une carte' },
@@ -101,6 +159,18 @@ describe('renderMenuHtml', () => {
 
   it('rend un état vide propre si aucune carte', () => {
     expect(renderMenuHtml([])).toContain('Aucune carte');
+  });
+
+  it('rend les cartes en sections titrées (pilotage en tête)', () => {
+    const html = renderMenuHtml([
+      { slug: 'domaine-mega-city', entry: 'd.svg', title: 'Domaine', categorie: 'archi' },
+      { slug: 'avancement', entry: 'board.html', title: 'Board', categorie: 'pilotage' },
+    ]);
+    expect(html).toContain('class="section-titre"');
+    expect(html).toContain('Pilotage');
+    expect(html).toContain("Diagrammes d'archi");
+    // Pilotage précède Archi dans le HTML (section en tête).
+    expect(html.indexOf('Pilotage')).toBeLessThan(html.indexOf("Diagrammes d'archi"));
   });
 });
 
