@@ -46,10 +46,15 @@ avant tables ou jargon (`DoR`, `ready:`, ids seuls). Règle
 Voir aussi [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
 
 **Fiche cliquable (MUST).** Dès que `list` / `next` / `review` / `reconcile` / `plan`
-énumèrent des fiches, **l'id de chaque fiche est un lien** vers son fichier — lien
-markdown, chemin **relatif au répertoire courant** (`[0050](features/0050-slug.md)`,
-`features/done/…` pour les livrées). Sans ce lien, l'humain ne peut pas ouvrir la fiche
-depuis la liste (règle
+énumèrent des fiches, **l'id de chaque fiche est un lien** vers son fichier. Le chemin se
+résout **là où l'humain lit** :
+- **restitution en chat/CLI** (transitoire, lue depuis le terminal) → **relatif au cwd** :
+  depuis la racine du projet, `[0050](features/0050-slug.md)` ;
+- **index généré `features/BACKLOG.md`** (artefact markdown committé, lu comme document) →
+  **relatif à ce fichier** : `[0050](0050-slug.md)`, `[0000](done/0000-slug.md)` (jamais
+  `features/…`, qui résoudrait `features/features/…`). C'est `regen` qui émet ces liens —
+  l'index ne s'édite pas à la main.
+Sans ce lien, l'humain ne peut pas ouvrir la fiche depuis la liste (règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md),
 puce « Lists of file-backed items »).
 
