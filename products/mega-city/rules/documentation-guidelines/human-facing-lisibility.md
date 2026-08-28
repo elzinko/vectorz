@@ -19,6 +19,18 @@ enforcements:
   only, and define them once.
 - Write **to the human addressed**, not between agents. Prefer a short map over an
   exhaustive dossier.
+- **Lists of file-backed items** (backlog fiches, PRs, diagrams, captures): make **every
+  entry clickable** — a markdown link on the **id** pointing to the item's source file; the
+  title stays in clear next to it. **Resolve the path against where the reader reads it:**
+  - a **transient CLI/chat answer** is read from the shell → path **relative to the current
+    working directory** (from the repo root: `[0050](features/0050-slug.md)`);
+  - a **committed Markdown artefact** (a generated index like `features/BACKLOG.md`, a PR
+    body, a fiche) is read as a document → path **relative to that file's own directory**
+    (inside `features/BACKLOG.md`: `[0050](0050-slug.md)`, `[0000](done/0000-slug.md)` — never
+    `features/…`, which would resolve as `features/features/…`).
+  A generator that forbids hand-editing its index (`regen-backlog.sh`) MUST emit these links
+  itself. Without the link the reader must guess the path to open the file — exactly what
+  breaks piloting (Thomas, 2026-08-28: « je ne m'en sors pas » sur un `list` sans liens).
 
 ### Cas corps de PR — la fiche est le document, la PR en est le rendu (ADR-0029)
 

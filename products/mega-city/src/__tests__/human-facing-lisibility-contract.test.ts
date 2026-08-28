@@ -87,6 +87,23 @@ describe('contrat lisibilité artefacts humains (fiche 0079 + ADR-0029)', () => 
     expect(body).toMatch(/Interdit[\s\S]*?## Summary/);
   });
 
+  it('la règle + ezk-backlog exigent des listes CLIQUABLES, résolues selon le lecteur (transient cwd vs document)', () => {
+    // Non-récidive (Thomas 2026-08-28 « je ne m'en sors pas ») + revue Codex #184 : le lien
+    // se résout depuis le shell (restitution transitoire) OU depuis le fichier committé
+    // (index généré, corps de PR). Retirer l'exigence « cliquable », la distinction de
+    // résolution, OU l'obligation faite au générateur d'émettre les liens fait rougir ici.
+    const rule = read(lisibilityRule);
+    expect(rule).toMatch(/clickable/i);
+    // \s+ : la règle markdown peut couper ces phrases sur un retour à la ligne.
+    expect(rule).toMatch(/relative to the current\s+working directory/i);
+    expect(rule).toMatch(/relative to that file's own\s+directory/i);
+    expect(rule).toMatch(/regen-backlog/);
+    const backlog = read(join(megaCityDir, 'skills', 'ezk-backlog', 'SKILL.md'));
+    expect(backlog).toMatch(/cliquable/i);
+    expect(backlog).toMatch(/relatif au cwd/i);
+    expect(backlog).toMatch(/relatif à ce fichier/i);
+  });
+
   it("ezk-sprint étape PR + DoD exigent le rendu de la fiche (ADR-0029), pas la triade mince", () => {
     const body = read(sprintSkill);
     expect(body).toMatch(/rendu de la fiche/i);
