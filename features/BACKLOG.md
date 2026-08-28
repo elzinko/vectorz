@@ -158,6 +158,8 @@
 | 20260826173005368 | Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills | refactor | P2 |  | mega-city | 🔴 todo |  |
 | 20260826173221323 | Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet | refactor | P2 | 20260813124026215 | mega-city | 🔴 todo |  |
 | 20260826225817193 | Board d'avancement — cliquer une fiche ouvre son détail lisible (au lieu du .md brut) | feature | P2 | 20260821163346487 | mega-city | ✅ shipped | #181 |
+| 20260828165644386 | Vue « écart plan » — fiches hors plan + fiches ajoutées depuis la dernière décision de plan | feature | P2 |  | mega-city | 🔴 todo |  |
+| 20260828165644452 | Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête | feature | P2 |  | mega-city | 🔴 todo |  |
 | 0005 | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | 0010 | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
