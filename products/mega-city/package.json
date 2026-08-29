@@ -29,7 +29,8 @@
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",
     "avancement:regen": "tsx bin/regen-avancement.ts",
-    "plan-view:regen": "tsx bin/regen-plan-view.ts"
+    "plan-view:regen": "tsx bin/regen-plan-view.ts",
+    "ci:conso": "tsx bin/ci-conso.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
