@@ -6,8 +6,8 @@ priority: P2
 product: mega-city
 version:
 epic:
-status: idea
-ready:
+status: todo
+ready: 2026-08-30
 pr:
 created: 2026-08-23
 ---
@@ -29,6 +29,45 @@ dossier entier `hexagonal/`. Cette fiche fixe le modèle cible : **thème = le d
 > attend une douleur prouvée : `cop1-target` consomme les 8 miroirs, et `expand`
 > ignore silencieusement les références inconnues — une migration ratée perdrait de
 > LA LOI sans bruit. Capture : `docs/captures/2026-08-23-panel-adverse-refonte-taxonomie.md`.
+
+## ▶️ NOW tirable — supprimer les 2 bundles orphelins (grooming 2026-08-30)
+
+Cette fiche mélange une **cible large** (retirer les 10 miroirs, un ADR, désenchevêtrer
+hexagonal) et une **tranche petite déjà approuvée**. Le grooming isole la tranche NOW,
+seule tirable aujourd'hui. Elle correspond au **point 1** de la fiche-conteneur
+[`20260824061247344`](20260824061247344_refonte-trois-etages-reliquat.md) (« reliquat
+trois étages »), qui renvoie ici.
+
+**Vérifié le 2026-08-30** : les deux bundles `bundles/documentation-guidelines.yml` et
+`bundles/hexagonal.yml` ne sont cités par **aucun profil** (base, global, daily, desktop,
+mobile, cop1-target) ni **aucun autre bundle**. Zéro consommateur — la seule occurrence de
+leur id est leur propre déclaration. Suppression sûre et réversible (git).
+
+**Ce qu'on touche / ce qu'on ne touche pas** : on supprime les deux **fichiers bundle**
+(la grappe). Les **règles** sous `rules/documentation-guidelines/` et `rules/hexagonal/`
+restent — elles sont citées directement ailleurs (ex. `documentation-guidelines/human-facing-lisibility`
+est LA règle « En clair », référencée partout). Un thème sans bundle miroir reste un thème.
+
+### Critères d'acceptation (tranche NOW uniquement)
+
+- [ ] `products/mega-city/bundles/documentation-guidelines.yml` supprimé.
+- [ ] `products/mega-city/bundles/hexagonal.yml` supprimé.
+- [ ] Les dossiers `rules/documentation-guidelines/` et `rules/hexagonal/` **inchangés**.
+- [ ] `pnpm --dir products/mega-city graph:check` vert (**aucun lien cassé**). Les règles
+      des thèmes `documentation-guidelines/` et `hexagonal/` deviennent des orphelins de
+      graphe (info, pas erreur) : plus aucun pack ne les regroupe. C'est **attendu** — aucun
+      profil ne les recevait via ces bundles, donc **rien de bindé ne change**.
+- [ ] `pnpm --dir products/mega-city test` **et** `pnpm --dir products/mega-city test:scripts` verts
+      (dont `expand.test.ts` mis à jour : 8 bundles, 48 règles).
+- [ ] Vues générées régénérées (board avancement + plan-delta, carte map-data) — tests de
+      fidélité par construction verts.
+
+### Reste de la fiche = différé (gardé, pas tirable)
+
+Les 8 miroirs, le sucre `theme:` dans `expand`, le désenchevêtrement hexagonal et l'ADR
+cible **restent capturés ci-dessous** et **hors** de la tranche NOW : le PO a dit « on peut
+laisser vivre », `cop1-target` consomme les 8 miroirs, et `expand` ignore en silence une
+référence inconnue — donc on attend une douleur prouvée avant d'y toucher.
 
 ## Contexte / problème (mesuré le 2026-08-23)
 
