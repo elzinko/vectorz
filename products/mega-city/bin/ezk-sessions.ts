@@ -10,8 +10,9 @@
  * produit ne coûte AUCUN appel IA (ADR-0001) — seul l'encart recommandations est un avis,
  * ici déterministe (pas d'appel LLM dans ce POC).
  */
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { existsSync, readdirSync, statSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -20,6 +21,7 @@ import {
   buildSessionsData,
   deriveSessionSlug,
 } from '../src/core/sessions-data.js';
+import { renderSessionsHtml } from '../src/core/sessions-html.js';
 
 /** `git worktree list --porcelain` → une entrée par bloc séparé par une ligne vide. */
 function collectWorktrees(): WorktreeInput[] {
@@ -171,10 +173,62 @@ function renderRecommendations(data: ReturnType<typeof buildSessionsData>): void
   }
 }
 
+/**
+ * Serveur local (ADR-0043) : recalcule `collect()` + `buildSessionsData` + `renderSessionsHtml`
+ * À CHAQUE requête — la page n'est jamais écrite sur disque. Patron recopié de `bin/ezk-map.ts`
+ * (repli de port, ouverture navigateur best-effort) : dette assumée pour ne pas toucher un
+ * fichier partagé (ADR-0043 D3).
+ */
+function runMapServer(): void {
+  const envPort = Number(process.env.EZK_SESSIONS_PORT);
+  // EZK_SESSIONS_PORT non numérique → NaN ferait ouvrir un port aléatoire silencieux (revue P2).
+  const START_PORT = Number.isInteger(envPort) && envPort > 0 ? envPort : 4174;
+
+  const server = createServer((_req, res) => {
+    try {
+      const html = renderSessionsHtml(buildSessionsData(collect()));
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(html);
+    } catch (err) {
+      res.writeHead(500).end(`500 : ${(err as Error).message}`);
+    }
+  });
+
+  function listen(port: number, attemptsLeft: number): void {
+    server.once('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE' && attemptsLeft > 0) {
+        listen(port + 1, attemptsLeft - 1);
+        return;
+      }
+      console.error(`Impossible d'ouvrir un port (dernier essai ${port}) : ${err.message}`);
+      process.exit(1);
+    });
+    server.listen(port, '127.0.0.1', () => {
+      const target = `http://127.0.0.1:${port}/`;
+      console.log(`\n  📍 ezk-sessions map\n     ${target}\n`);
+      console.log('     Ctrl-C pour arrêter.\n');
+      const opener =
+        process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
+      spawn(opener, [target], { stdio: 'ignore', detached: true }).on('error', () => {
+        /* pas d'ouvreur : l'URL est déjà affichée */
+      });
+    });
+  }
+
+  listen(START_PORT, 20);
+  process.on('SIGINT', () => {
+    server.close(() => process.exit(0));
+  });
+}
+
 function main(): void {
   const cmd = process.argv[2];
+  if (cmd === 'map') {
+    runMapServer();
+    return;
+  }
   if (cmd !== 'state') {
-    console.error('Usage : ezk-sessions state');
+    console.error('Usage : ezk-sessions state|map');
     process.exit(1);
   }
   const data = buildSessionsData(collect());
