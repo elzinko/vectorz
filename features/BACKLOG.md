@@ -181,6 +181,7 @@
 | [20260813170548417](done/20260813170548417_supprimer-tombstone-mega-city-features.md) | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 |  | mega-city | ✅ shipped | #147 |
 | [20260825152954193](done/20260825152954193_ezk-map-page-accueil-menu-cartes.md) | Page d'accueil ezk:map — un menu des cartes (naviguer sans relancer le serveur) | feature | P3 |  | mega-city | ✅ shipped | #170 |
 | [20260825232147620](done/20260825232147620_nav-cartes-retour-menu.md) | Barre de navigation sur chaque carte ezk:map — revenir au menu + sauter à une autre carte | feature | P3 |  | mega-city | ✅ shipped | #172 |
+| [20260829140259165](20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md) | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 |  | mega-city | ⛔ blocked |  |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready, ADR-0017)
 
@@ -200,6 +201,8 @@
 
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
+| [20260824122629794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P0 |  | mega-city | 💡 idea |  |
+| [20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md) | « Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros | feature | P0 |  | mega-city | 💡 idea |  |
 | [0081](0081-carnet-preparation-retro.md) | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | mega-city | 💡 idea |  |
 | [0087](0087-plugin-claude-code-distribution.md) | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
 | [0157](0157-ezk-landing-pages.md) | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 | 20260824060737115 | mega-city | 💡 idea |  |
@@ -207,10 +210,10 @@
 | [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260821163346493](20260821163346493_carte-provenance-prouvee.md) | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | [20260824111001836](20260824111001836_regle-clarte-atteint-tout-output-ezk.md) | La règle de clarté doit atteindre TOUT ce qui sort de la méthode (base + sorties de chat), pas rester orpheline | refactor | P1 |  | mega-city | 💡 idea |  |
-| [20260824122629794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260824122629925](20260824122629925_onglet-faq-comment-faire.md) | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260824204751403](20260824204751403_preparation-lots-versions-coherence.md) | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260826082120062](20260826082120062_domaine-metriques-de-sprint-rapport.md) | Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur | feature | P1 |  | vectorz | 💡 idea |  |
+| [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md) | Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre | chore | P1 |  | mega-city | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | [0054](0054-catalogue-adaptateurs-outils.md) | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 0051 | vectorz | 💡 idea |  |
