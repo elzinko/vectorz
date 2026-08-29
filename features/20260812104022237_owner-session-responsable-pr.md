@@ -13,6 +13,13 @@ created: 2026-08-12
 
 # Owner d'une PR — quelle session/branche en a la responsabilité
 
+> **⛔ Absorbée le 2026-08-28 dans le cockpit de sessions [[20260825141012293]]** (décision PO).
+> Le cockpit répond à ce besoin : il affiche session × branche × PR et **alerte quand deux
+> sessions touchent le même fichier** (advisory, pas de verrou exclusif). La question
+> « exclusif vs advisory » laissée ouverte ici est tranchée par **ADR-0042**
+> (`products/mega-city/docs/adr/0042-concurrence-inter-sessions-advisory-visibilite.md`) :
+> **advisory**. Cette fiche reste comme trace ; à clore quand le cockpit ship.
+
 ## Contexte / Problème
 
 Besoin PO (session 2026-08-12) : depuis une **PR** (ou une feature), pouvoir savoir

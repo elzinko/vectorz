@@ -218,16 +218,26 @@ spending limit posé ? déclencheurs frugaux ? lourd gaté ? `timeout-minutes` p
 
 ### `conso` — mesurer (minutes du mois, top coûteux)
 
+**Chemin capitalisé (déterministe, ADR-0001)** — un script agrège la conso par repo,
+avec la colonne **public/privé** (seuls les privés pèsent sur le quota) et la part
+facturée. Le LLM LIT sa sortie, il ne recompte pas :
+
 ```bash
-# Minutes Actions du mois — choisis la PAIRE selon le propriétaire du repo (compte
-# user OU org), puis essaie legacy et « enhanced billing » : selon le plan, l'un
-# des deux répond (l'autre rend 404/410 — normal, pas une panne).
-# Repo d'un compte USER :
-gh api /users/<user>/settings/billing/actions        # legacy → total_minutes_used, included_minutes
-gh api /users/<user>/settings/billing/usage          # enhanced billing (comptes migrés)
-# Repo d'une ORG :
-gh api /orgs/<org>/settings/billing/actions          # legacy
-gh api /organizations/<org>/settings/billing/usage   # enhanced billing (orgs migrées)
+pnpm --dir products/mega-city ci:conso            # mois courant (UTC)
+pnpm --dir products/mega-city ci:conso 2026-08    # un mois précis
+```
+
+Il lit l'endpoint COURANT `/users/<u>/settings/billing/usage`. Cœur pur/testé :
+`src/core/ci-conso.ts` (+ `src/__tests__/ci-conso.test.ts`). Fiche 20260828150801613.
+
+Sous le capot / vérification manuelle :
+
+```bash
+# /settings/billing/actions = LEGACY : repond 410 « moved » sur les comptes migres (2026).
+# Endpoint courant = /settings/billing/usage (usageItems : par repo x sku x minutes x netAmount).
+gh api '/users/<user>/settings/billing/usage?year=2026&month=8'          # compte USER
+gh api '/organizations/<org>/settings/billing/usage?year=2026&month=8'   # ORG
+gh api /repos/<owner>/<repo> --jq .visibility   # public = Actions gratuit ; prive = compte le quota
 
 # Qui coûte : runs récents avec durées, à agréger par workflow.
 gh run list --limit 50 --json workflowName,status,createdAt,updatedAt,databaseId
