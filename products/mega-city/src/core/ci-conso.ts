@@ -96,6 +96,12 @@ export function formatConsoReport(report: ConsoReport, period: string): string {
     );
   }
   lines.push(`total : ${report.totalMinutes} min · net facturé $${report.totalNetUsd.toFixed(2)}`);
-  lines.push('note : seuls les repos PRIVÉS comptent contre le quota Free (public = gratuit/illimité).');
+  // Qualifié (retour Codex #186, comment 6) : un public sur GROS runner peut être facturé
+  // (colonne coût ci-dessus) — ne pas affirmer « public = gratuit » sans réserve, sinon le
+  // pied contredit une ligne « $X.XX public ».
+  lines.push(
+    'note : seuls les repos PRIVÉS comptent contre le quota Free (public = gratuit sur les ' +
+      'runners STANDARD ; un gros runner billable apparaît en coût ci-dessus).',
+  );
   return lines.join('\n');
 }
