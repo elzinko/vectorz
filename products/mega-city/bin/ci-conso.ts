@@ -13,6 +13,7 @@ import {
   type UsageItem,
   aggregateActionsUsage,
   formatConsoReport,
+  isActionsMinutes,
 } from '../src/core/ci-conso.js';
 
 function fail(msg: string): never {
@@ -69,19 +70,19 @@ function main(): void {
   }
 
   // 3) visibilité par repo (best-effort, N appels ; public = Actions gratuit)
-  const repos = [
-    ...new Set(
-      items
-        .filter((i) => i.product === 'actions' && i.unitType === 'Minutes')
-        .map((i) => i.repositoryName),
-    ),
-  ];
+  // Même prédicat (casse tolérante) que l'agrégation — sinon un repo compté resterait « ? »
+  // en visibilité (retour Codex #186, cohérence des deux filtres).
+  const repos = [...new Set(items.filter(isActionsMinutes).map((i) => i.repositoryName))];
   const visibility: Record<string, string> = {};
   for (const repo of repos) {
+    // `repositoryName` est nu en live (`vectorz`) → /repos/<login>/<repo> ; mais s'il venait
+    // en `owner/repo` (doc « enhanced billing »), l'utiliser tel quel évite un /repos/login/owner/repo
+    // qui 404 (retour Codex #186). Robuste aux deux formes.
+    const path = repo.includes('/') ? `/repos/${repo}` : `/repos/${login}/${repo}`;
     try {
-      visibility[repo] = (ghApi(`/repos/${login}/${repo}`) as { visibility?: string }).visibility ?? '?';
+      visibility[repo] = (ghApi(path) as { visibility?: string }).visibility ?? '?';
     } catch {
-      visibility[repo] = '?'; // repo sous une org, supprimé, ou droits manquants — non bloquant
+      visibility[repo] = '?'; // repo supprimé, droits manquants — non bloquant
     }
   }
 

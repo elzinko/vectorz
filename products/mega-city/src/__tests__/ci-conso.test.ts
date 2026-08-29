@@ -68,6 +68,17 @@ describe('ci-conso — agrégation déterministe (fiche 20260828150801613)', () 
     expect(out).toMatch(/total : 1703 min/);
   });
 
+  it('coût suit netUsd : un repo public FACTURÉ (gros runners) montre le montant, pas "gratuit" (Codex #186)', () => {
+    const items: UsageItem[] = [
+      { product: 'actions', sku: 'Actions macOS 3-core', quantity: 100, unitType: 'Minutes', netAmount: 6.2, repositoryName: 'oss-heavy' },
+    ];
+    const out = formatConsoReport(aggregateActionsUsage(items, { 'oss-heavy': 'public' }), '2026-08');
+    // Sur la LIGNE du repo (la note de bas contient « gratuit » à dessein) : le montant, pas « gratuit ».
+    const row = out.split('\n').find((l) => l.includes('oss-heavy')) ?? '';
+    expect(row).toMatch(/\$6\.20/);
+    expect(row).not.toMatch(/gratuit/);
+  });
+
   it('backlog vide → rapport vide, pas d’erreur', () => {
     const r = aggregateActionsUsage([], {});
     expect(r.rows).toEqual([]);

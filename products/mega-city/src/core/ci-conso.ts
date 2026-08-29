@@ -82,8 +82,15 @@ export function formatConsoReport(report: ConsoReport, period: string): string {
   lines.push(`Conso GitHub Actions — ${period}`);
   lines.push('minutes  coût     visibilité  repo');
   for (const r of report.rows) {
-    // Un repo public = Actions gratuit/illimité → jamais un coût, quelle que soit la conso.
-    const cost = r.visibility === 'public' ? 'gratuit' : `$${r.netUsd.toFixed(2)}`;
+    // Le coût SUIT netUsd, jamais la seule visibilité (retour Codex #186) : un repo public
+    // sur gros runners billables peut avoir netAmount > 0 — afficher « gratuit » le masquerait
+    // et contredirait le total. « gratuit » réservé au public à net nul (runners standard).
+    const cost =
+      r.netUsd > 0
+        ? `$${r.netUsd.toFixed(2)}`
+        : r.visibility === 'public'
+          ? 'gratuit'
+          : '$0.00';
     lines.push(
       `${String(r.minutes).padStart(7)}  ${cost.padEnd(7)}  ${r.visibility.padEnd(10)} ${r.repo}`,
     );
