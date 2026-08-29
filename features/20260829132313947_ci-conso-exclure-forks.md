@@ -40,6 +40,10 @@ minutes », puisqu'ils ne consomment aucun quota.
   **écarte** les forks de la table, ou les **regroupe** sous une ligne « N forks (gratuits) ».
 - Garder l'info sans la perdre : un total « forks masqués : N » en pied.
 
+- **Liste d'exclusion manuelle `.conso-ignore`** (racine, un repo par ligne, `#` = commentaire) :
+  écarte AUSSI des repos qui ne sont **pas** des forks (un repo qu'on ne veut simplement pas voir).
+  `--no-forks` gère l'automatique (les forks), `.conso-ignore` l'exception manuelle — les deux se composent.
+
 ## Comment vérifier
 
 ```bash
