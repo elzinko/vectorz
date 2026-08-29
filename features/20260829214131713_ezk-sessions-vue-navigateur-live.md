@@ -37,27 +37,31 @@ boucle). La vue se calcule **en direct**, à l'ouverture.
   transpose pas aux données live/machine-locales → **décision d'archi requise** (déléguée à
   `ezk-architect`, ADR court) : vue live servie vs onglet map, sans committer d'état vivant.
 
-## Critères d'acceptation (à finaliser selon l'ADR archi)
+## Critères d'acceptation (finalisés — ADR-0043)
 
-- [ ] Une commande ouvre dans le navigateur une page rendant l'état **live** des sessions :
-      même contenu que `ezk-sessions state` (tableau + encart recommandations + collisions,
-      fichiers chauds mis en avant).
-- [ ] La page **réutilise le collecteur** de la fiche parente — aucune duplication de logique.
-- [ ] **Aucun état de session vivant n'est committé** dans le dépôt (pas de churn, pas de faux
-      conflit inter-sessions). Si un fichier est généré, il est **gitignoré** ou éphémère.
-- [ ] Serveur **local uniquement** (boucle locale), zéro dépendance réseau, comme `ezk-map`.
-- [ ] Découvrable : accessible depuis le menu de la map **ou** via une commande claire
-      (`pnpm ezk:sessions map` / `pnpm ezk:map sessions`), selon l'ADR.
-- [ ] Tests sur le rendu HTML (le tableau reflète les lignes du collecteur).
+- [ ] `pnpm --dir products/mega-city ezk:sessions map` ouvre dans le navigateur une page
+      rendant l'état **live** : même contenu que `ezk-sessions state` (tableau +
+      recommandations + collisions, fichiers chauds mis en avant).
+- [ ] La page part de `collect()` + `buildSessionsData` du **même binaire** — aucune
+      duplication, `state` et `map` sur la même donnée.
+- [ ] Le rendu est une **fonction pure** `renderSessionsHtml(data: SessionsData): string`
+      dans `src/core/sessions-html.ts`, sans I/O.
+- [ ] La page est **calculée à chaque requête** et servie **en mémoire** : **aucun fichier
+      d'état écrit** (pas de `diagrams/sessions/`, rien à gitignorer). Dépôt propre après ouverture.
+- [ ] Serveur **local uniquement** (`127.0.0.1`), repli de port sur `EADDRINUSE`, ouverture
+      navigateur best-effort, zéro dépendance réseau.
+- [ ] `bin/ezk-map.ts` reste **inchangé** ; ses tests (`ezk-map-menu.test.ts`) passent toujours.
+- [ ] Tests sur `renderSessionsHtml` : le HTML reflète les lignes du collecteur (dont
+      collision et fichier chaud).
+- [ ] Sur ce repo multi-worktrees, la page affiche la session courante **active** et signale
+      la collision réelle.
 
 ## Comment vérifier
 
 ```bash
-# selon l'ADR : soit
-pnpm --dir products/mega-city ezk:sessions map
-# soit
-pnpm --dir products/mega-city ezk:map sessions
-pnpm --dir products/mega-city test
+pnpm --dir products/mega-city ezk:sessions map    # ouvre la page live dans le navigateur
+pnpm --dir products/mega-city test                # dont renderSessionsHtml
+git status                                          # dépôt propre : aucun fichier d'état écrit
 ```
 
 Sur ce repo multi-worktrees, la page doit afficher la session courante **active** et signaler
@@ -68,6 +72,8 @@ fichier d'état committé).
 
 - **Réutilise** `src/core/sessions-data.ts` (pur) + la collecte I/O de `bin/ezk-sessions.ts` —
   extraire la collecte dans un module partagé si besoin (single source of truth).
-- **Décision d'archi déléguée à `ezk-architect`** (2026-08-29) : comment servir une vue live
-  sans committer d'état, avec ou sans intégration à `bin/ezk-map.ts` (fichier partagé, à ne pas
-  casser). L'ADR fixe l'approche et les critères ci-dessus.
+- **Décision d'archi prise** (ADR-0043, 2026-08-29) : sous-commande `ezk:sessions map`, vue
+  **calculée en direct + servie en mémoire** (jamais committée). `bin/ezk-map.ts` inchangé
+  (option B écartée : casse son métier « fichiers statiques » ; option C regen gitignoré
+  écartée : snapshot périmé). Dette assumée : ~40 lignes de patron serveur recopiées d'ezk-map
+  (extraction d'un helper partagé différée pour ne pas risquer le fichier partagé).
