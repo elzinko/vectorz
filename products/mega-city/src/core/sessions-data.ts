@@ -33,6 +33,8 @@ export interface CollectedInputs {
   uncommittedByPath: Record<string, string[]>;
   /** mtime (epoch ms) du `.jsonl` de session le plus récent, par worktree — absent si aucun trouvé. */
   lastSessionMtimeByPath: Record<string, number | undefined>;
+  /** État PR par branche (« #123 OPEN »), collecté en une seule passe `gh` — absent = « — ». */
+  prStateByBranch?: Record<string, string>;
   /** Horodatage de référence pour juger l'activité (défaut : `Date.now()`). */
   now?: number;
   /** Seuil « actif » en minutes (défaut : 30). */
@@ -58,6 +60,8 @@ export interface SessionRow {
   sessionActivity: 'active' | 'dormant';
   merged: boolean;
   uncommitted: string[];
+  /** État PR (« #123 OPEN ») ou « — » ; collecté en une passe (best-effort `gh`), pas par ligne. */
+  pr: string;
   deletable: boolean;
   deletableReason: string;
   collisionsWith: Collision[];
@@ -67,9 +71,14 @@ export interface SessionsData {
   rows: SessionRow[];
 }
 
-/** `~/.claude/projects/<slug>` : le chemin absolu du worktree, `/` → `-`. */
+/**
+ * `~/.claude/projects/<slug>` : le chemin absolu du worktree encodé par Claude Code,
+ * qui remplace `/` **ET** `.` par `-`. Le `.` est crucial : les worktrees vivent sous
+ * `.claude/worktrees/` (ADR-019), donc oublier le `.` cible le mauvais dossier et voit
+ * TOUTE session comme dormante — faux « supprimable » sur un worktree vivant (P0, revue).
+ */
 export function deriveSessionSlug(worktreePath: string): string {
-  return worktreePath.replace(/\//g, '-');
+  return worktreePath.replace(/[/.]/g, '-');
 }
 
 /** Fichiers chauds (décisions 2026-08-28 + ADR-0042) : index backlog, PLAN.md, une fiche en cours. */
@@ -104,11 +113,17 @@ function deriveDeletable(
   if (uncommitted.length > 0) {
     return { deletable: false, deletableReason: 'travail non sauvé — garder' };
   }
+  if (detached) {
+    // HEAD détaché = pas de branche : impossible de prouver que le commit est dans `main`.
+    // Le retirer pourrait rendre un commit inatteignable. Le cockpit éclaire, il ne détruit
+    // pas (ADR-0042) → on garde et on demande une vérification manuelle.
+    return {
+      deletable: false,
+      deletableReason: 'HEAD détaché — vérifier que le commit est dans main avant de retirer',
+    };
+  }
   if (merged) {
     return { deletable: true, deletableReason: 'dormant, propre, branche déjà fusionnée dans main' };
-  }
-  if (detached) {
-    return { deletable: true, deletableReason: 'dormant, propre, HEAD détaché' };
   }
   return { deletable: false, deletableReason: 'dormant mais branche non fusionnée — garder' };
 }
@@ -127,7 +142,10 @@ export function buildSessionsData(input: CollectedInputs): SessionsData {
   const rows: SessionRow[] = input.worktrees.map((wt) => {
     const uncommitted = input.uncommittedByPath[wt.path] ?? [];
     const activity = deriveActivity(input.lastSessionMtimeByPath[wt.path], now, thresholdMinutes);
-    const merged = Boolean(wt.detached) || mergedSet.has(wt.branch);
+    // `merged` = la BRANCHE est dans main. Un HEAD détaché n'a pas de branche : ne pas le
+    // conflater ici (sinon fausse raison « déjà fusionnée » — P1, revue). Le cas détaché
+    // est traité à part dans deriveDeletable.
+    const merged = mergedSet.has(wt.branch);
     const { deletable, deletableReason } = deriveDeletable(
       activity,
       uncommitted,
@@ -141,6 +159,7 @@ export function buildSessionsData(input: CollectedInputs): SessionsData {
       sessionActivity: activity,
       merged,
       uncommitted,
+      pr: input.prStateByBranch?.[wt.branch] ?? '—',
       deletable,
       deletableReason,
       collisionsWith: [], // rempli ci-dessous

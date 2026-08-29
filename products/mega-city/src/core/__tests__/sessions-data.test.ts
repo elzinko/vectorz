@@ -18,6 +18,15 @@ describe('deriveSessionSlug (fiche 20260825141012293)', () => {
   it('remplace chaque "/" du chemin worktree par "-" (patron ~/.claude/projects/<slug>)', () => {
     expect(deriveSessionSlug('/Users/elzinko/git/vectorz')).toBe('-Users-elzinko-git-vectorz');
   });
+
+  // Régression P0 (revue) : les worktrees vivent sous `.claude/worktrees/`. Si le `.` n'est
+  // pas remplacé, le slug cible le mauvais dossier → toute session vue « dormante » → faux
+  // « supprimable » sur un worktree vivant. Le `.claude` doit produire un DOUBLE tiret (`/` + `.`).
+  it('remplace AUSSI les "." (cas .claude/worktrees) — sinon slug faux', () => {
+    expect(deriveSessionSlug('/Users/elzinko/git/vectorz/.claude/worktrees/foo-abc')).toBe(
+      '-Users-elzinko-git-vectorz--claude-worktrees-foo-abc',
+    );
+  });
 });
 
 describe('buildSessionsData — sujet dérivé du préfixe de branche', () => {
@@ -101,7 +110,11 @@ describe('buildSessionsData — supprimable (ADR-0042)', () => {
     expect(data.rows[0].deletableReason).toMatch(/mergée|fusionnée/);
   });
 
-  it('dormant + propre + branche détachée → supprimable', () => {
+  // P1 (revue) : un HEAD détaché n'a pas de branche, donc on ne peut pas prouver que son
+  // commit est dans main. Le marquer supprimable (ou l'afficher « déjà fusionnée ») pourrait
+  // rendre un commit inatteignable. → garder, avec une raison qui demande une vérif manuelle,
+  // et `merged` NE DOIT PAS être vrai (il alimente l'onglet map).
+  it('dormant + propre + HEAD détaché → garder (raison explicite), merged=false', () => {
     const data = buildSessionsData(
       input({
         worktrees: [{ path: '/wt/a', branch: '', detached: true }],
@@ -109,7 +122,9 @@ describe('buildSessionsData — supprimable (ADR-0042)', () => {
         now,
       }),
     );
-    expect(data.rows[0].deletable).toBe(true);
+    expect(data.rows[0].deletable).toBe(false);
+    expect(data.rows[0].deletableReason).toMatch(/détaché/);
+    expect(data.rows[0].merged).toBe(false);
   });
 
   it('dormant + NON commité → JAMAIS supprimable, "travail non sauvé"', () => {
@@ -147,6 +162,22 @@ describe('buildSessionsData — supprimable (ADR-0042)', () => {
       }),
     );
     expect(data.rows[0].deletable).toBe(false);
+  });
+});
+
+describe('buildSessionsData — état PR (prStateByBranch, collecté en une passe)', () => {
+  it('reporte l’état PR de la branche, « — » si absent', () => {
+    const data = buildSessionsData(
+      input({
+        worktrees: [
+          { path: '/wt/a', branch: 'feat/x' },
+          { path: '/wt/b', branch: 'feat/y' },
+        ],
+        prStateByBranch: { 'feat/x': '#42 OPEN' },
+      }),
+    );
+    expect(data.rows.find((r) => r.path === '/wt/a')?.pr).toBe('#42 OPEN');
+    expect(data.rows.find((r) => r.path === '/wt/b')?.pr).toBe('—');
   });
 });
 
@@ -222,6 +253,11 @@ describe('buildSessionsData — collisions (intersection de fichiers non commit�
     expect(data.rows.every((r) => r.collisionsWith.length === 0)).toBe(true);
   });
 
+  // Limite POC documentée : le modèle produit UNE ligne par worktree (git worktree list n'a
+  // jamais deux entrées de même path). Ce test prouve que l'algorithme d'intersection gère des
+  // paires de même path (utile si l'appelant injecte deux vues du même répertoire), mais deux
+  // sessions VIVANTES dans un seul répertoire ne sont pas distinguées (mtime pris au max) —
+  // suite possible : compter les .jsonl récents distincts par worktree.
   it('même répertoire (même path) = tout en collision — cas physique de l’ADR-0042', () => {
     const data = buildSessionsData(
       input({
