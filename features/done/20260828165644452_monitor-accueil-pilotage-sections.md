@@ -8,9 +8,9 @@ version:
 epic:
 depends: []
 labels: [ezk-map, ux, pilotage]
-status: todo
+status: shipped
 ready: 2026-08-29
-pr:
+pr: "#185"
 created: 2026-08-28
 ---
 

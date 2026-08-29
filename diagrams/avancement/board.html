@@ -268,14 +268,27 @@
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
-  "shipped": 119,
-  "todo": 54,
+  "shipped": 121,
+  "todo": 52,
   "blocked": 5,
   "in-progress": 5,
-  "idea": 81
+  "idea": 83
  },
- "tirables": 5,
+ "tirables": 3,
  "actives": [
+  {
+   "id": "20260824122629794",
+   "title": "Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore",
+   "type": "feature",
+   "priority": "P0",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md"
+  },
   {
    "id": "20260826122532943",
    "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
@@ -312,6 +325,19 @@ window.EZK_AVANCEMENT = {
     "billing"
    ],
    "file": "features/20260828150801613_ezk-ci-conso-script-endpoint.md"
+  },
+  {
+   "id": "20260829123707100",
+   "title": "« Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros",
+   "type": "feature",
+   "priority": "P0",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260829123707100_labo-de-cuisine-journal-difficultes.md"
   },
   {
    "id": "0030",
@@ -616,19 +642,6 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260824111001836_regle-clarte-atteint-tout-output-ezk.md"
   },
   {
-   "id": "20260824122629794",
-   "title": "Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore",
-   "type": "feature",
-   "priority": "P1",
-   "status": "idea",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "file": "features/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md"
-  },
-  {
    "id": "20260824122629925",
    "title": "Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO",
    "type": "feature",
@@ -679,6 +692,19 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260826082120062_domaine-metriques-de-sprint-rapport.md"
+  },
+  {
+   "id": "20260829123707200",
+   "title": "Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre",
+   "type": "chore",
+   "priority": "P1",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260829123707200_reunifier-tagger-cluster-recette.md"
   },
   {
    "id": "0020",
@@ -1785,40 +1811,6 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260826222044335_carte-la-loi-graphe-visuel.md"
   },
   {
-   "id": "20260828165644386",
-   "title": "Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan",
-   "type": "feature",
-   "priority": "P2",
-   "status": "todo",
-   "ready": true,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [
-    "ezk-map",
-    "plan",
-    "pilotage"
-   ],
-   "file": "features/20260828165644386_vue-ecart-plan-delta.md"
-  },
-  {
-   "id": "20260828165644452",
-   "title": "Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête",
-   "type": "feature",
-   "priority": "P2",
-   "status": "todo",
-   "ready": true,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [
-    "ezk-map",
-    "ux",
-    "pilotage"
-   ],
-   "file": "features/20260828165644452_monitor-accueil-pilotage-sections.md"
-  },
-  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2284,7 +2276,6 @@ window.EZK_AVANCEMENT = {
    "enabler",
    "ezk-ci",
    "ezk-codex",
-   "ezk-map",
    "follow-up",
    "fondation",
    "format",
@@ -2294,14 +2285,11 @@ window.EZK_AVANCEMENT = {
    "methode",
    "moteur",
    "outillage",
-   "pilotage",
-   "plan",
    "r&d",
    "supervision",
    "template",
    "test",
    "testbed",
-   "ux",
    "validation"
   ]
  }
@@ -3667,20 +3655,20 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
-   "id": "20260828165644452",
-   "title": "Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête",
-   "status": "todo",
-   "priority": "P2",
+   "id": "20260829123707200",
+   "title": "Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre",
+   "status": "idea",
+   "priority": "P1",
    "inPlan": false,
-   "file": "features/20260828165644452_monitor-accueil-pilotage-sections.md"
+   "file": "features/20260829123707200_reunifier-tagger-cluster-recette.md"
   },
   {
-   "id": "20260828165644386",
-   "title": "Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan",
-   "status": "todo",
-   "priority": "P2",
+   "id": "20260829123707100",
+   "title": "« Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros",
+   "status": "idea",
+   "priority": "P0",
    "inPlan": false,
-   "file": "features/20260828165644386_vue-ecart-plan-delta.md"
+   "file": "features/20260829123707100_labo-de-cuisine-journal-difficultes.md"
   },
   {
    "id": "20260828150801613",
@@ -3787,7 +3775,7 @@ window.EZK_PLAN_DELTA = {
    "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md"
   }
  ],
- "offPlanCount": 40,
+ "offPlanCount": 38,
  "n": 15
 };
 /*ezk-plan-delta:end*/
