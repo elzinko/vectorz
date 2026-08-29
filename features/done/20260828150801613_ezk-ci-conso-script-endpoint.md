@@ -25,7 +25,7 @@ résultat. Cette fiche fige la récupération dans un **script déterministe** e
 ## Si tu arrives frais
 
 - **`ezk-ci conso`** = la sous-commande qui restitue la consommation GitHub Actions (minutes du
-  mois, top repos). Livrée par la fiche [0159](done/0159-ezk-ci-conso-gha.md).
+  mois, top repos). Livrée par la fiche [0159](0159-ezk-ci-conso-gha.md).
 - **GitHub Actions** = les serveurs cloud qui exécutent la CI. **Gratuit et illimité sur un repo
   public** ; sur un repo **privé**, ça consomme un quota (2000 min/mois en plan Free).
 - **Endpoint billing** = l'URL de l'API GitHub qui rend les chiffres de consommation.
@@ -110,7 +110,7 @@ Attendu : une table de conso par repo (mois courant), colonne public/privé, et 
 
 ## Notes
 
-- Suite de [0159](done/0159-ezk-ci-conso-gha.md) (qui a créé `conso`) : ici on **répare** (l'API
+- Suite de [0159](0159-ezk-ci-conso-gha.md) (qui a créé `conso`) : ici on **répare** (l'API
   a bougé sous la commande) et on **capitalise** (script déterministe, ADR-0001).
 - Découvert en marge d'une revue de conso le 2026-08-28. Au passage : **vectorz est public** →
   Actions gratuit ; le quota Free ne pèse que sur les privés (muti / samplerz / city-guided).

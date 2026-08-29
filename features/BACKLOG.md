@@ -183,6 +183,7 @@
 | [20260813170548417](done/20260813170548417_supprimer-tombstone-mega-city-features.md) | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 |  | mega-city | ✅ shipped | #147 |
 | [20260825152954193](done/20260825152954193_ezk-map-page-accueil-menu-cartes.md) | Page d'accueil ezk:map — un menu des cartes (naviguer sans relancer le serveur) | feature | P3 |  | mega-city | ✅ shipped | #170 |
 | [20260825232147620](done/20260825232147620_nav-cartes-retour-menu.md) | Barre de navigation sur chaque carte ezk:map — revenir au menu + sauter à une autre carte | feature | P3 |  | mega-city | ✅ shipped | #172 |
+| [20260829140259165](20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md) | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 |  | mega-city | ⛔ blocked |  |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready, ADR-0017)
 
