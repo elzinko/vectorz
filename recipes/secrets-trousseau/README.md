@@ -2,12 +2,16 @@
 
 > **Générique.** Ranger des secrets (clés d'API, tokens) dans le **trousseau macOS**,
 > pour que l'agent (Claude) les **lise au moment d'agir sans qu'ils passent jamais par le
-> chat**, et que **toi seul** ouvres l'accès. Trois petits scripts : `set`, `get`, `list`.
+> chat**, et que **toi seul** ouvres l'accès. Quatre petits scripts : `set`, `set-ionos`,
+> `get`, `list`.
 >
 > **Composée** : pour une authentification *vraiment* forte — Touch ID + consentement
 > **signé et lié à l'action** — voir la recette avancée
 > [`elicitation-authentification-forte`](../elicitation-authentification-forte.md).
 > Celle-ci est la version **simple et pragmatique** (trousseau natif macOS).
+>
+> **Éprouvée** le 2026-08-29 : dépôt de la clé API IONOS, lecture par l'agent, `POST` de
+> 2 CNAME sur l'API IONOS DNS (HTTP 201).
 
 ## En clair
 
@@ -21,22 +25,19 @@ sans jamais l'afficher. Chaque commande passe sous tes yeux : c'est ton « accè
 `<projet>-<provider>-<type>` — ex. `samplerz-ionos-api`, `livestreamz-vercel-token`.
 Un nom = un secret. **L'agent suggère le nom, tu valides.**
 
-## Les 3 commandes
+## Les commandes
 
 | Commande | Rôle |
 |---|---|
-| `ezk-secret-set <service>` | te demande le secret (saisie **masquée**), le range chiffré |
+| `ezk-secret-set <service>` | range un secret **en un morceau** (saisie **masquée**) |
+| `ezk-secret-set-ionos [service]` | clé **en deux morceaux** : demande **préfixe** + **secret**, pose le point tout seul |
 | `ezk-secret-get <service>` | le lit — ⚠️ **à capturer dans une variable, jamais afficher** |
 | `ezk-secret-list [motif]` | liste les **noms** rangés (jamais les valeurs) |
 
 ## Comment l'agent l'utilise (le flux « sur demande »)
 
-1. **Dépôt** (une fois) — l'agent t'ouvre un terminal où tu saisis le secret (il ne touche
-   jamais le chat) :
-   ```bash
-   osascript -e 'tell application "Terminal" to activate' \
-             -e 'tell application "Terminal" to do script "ezk-secret-set samplerz-ionos-api"'
-   ```
+1. **Dépôt** (une fois) — tu saisis le secret dans un terminal, il ne touche jamais le chat.
+   L'agent peut t'ouvrir ce terminal (voir plus bas), ou tu lances la commande toi-même.
 2. **Usage** — l'agent lit dans une **variable** et s'en sert, sans l'afficher :
    ```bash
    KEY=$(ezk-secret-get samplerz-ionos-api)
@@ -46,47 +47,61 @@ Un nom = un secret. **L'agent suggère le nom, tu valides.**
 
 ## Authentification à la lecture
 
-Les scripts rangent le secret avec `-T ''` (aucune application pré-autorisée) : le **but**
-est que **chaque lecture** déclenche la **validation du trousseau** (Touch ID ou mot de
-passe de session).
+⚠️ **Constat vécu (2026-08-29) : le trousseau natif ne protège PAS la lecture.**
+Le CLI `security` est traité comme « de confiance » : lire un secret
+(`security find-generic-password`) **ne déclenche aucun popup**, même stocké avec `-T ''`.
+Le secret est **chiffré au repos**, mais n'importe quelle commande peut le lire sans validation.
 
-⚠️ **À vérifier sur ta machine.** Lance `ezk-secret-get <service>` et regarde si un popup
-apparaît. Selon la version de macOS, l'outil `security` peut être traité comme « de
-confiance » et lire **sans** popup. Si tu veux une garantie forte (biométrie **liée à
-l'action**, consentement signé), passe par le helper Touch ID de
-[`elicitation-authentification-forte`](../elicitation-authentification-forte.md).
+Pour une **vraie authentification forte** (à **chaque lecture**), il faut sortir du CLI :
+- **mot de passe** — un trousseau **dédié verrouillé** (redemande un mot de passe à chaque `get`) ;
+- **Touch ID** — un helper biométrique (Secure Enclave) = la recette
+  [`elicitation-authentification-forte`](../elicitation-authentification-forte.md).
+
+En attendant, le « sur demande » vient des **permissions de l'agent** : tu vois et approuves
+chaque commande qui lit le secret.
 
 ## Cas IONOS (préfixe public + secret)
 
-IONOS te donne **deux** valeurs à la création : un **préfixe public** et un **secret**.
-La clé d'API = **`préfixe.secret`** (collés par un point) — c'est ce qui va dans l'en-tête
-`X-API-Key`. Range la **clé complète** :
+IONOS donne **deux** valeurs à la création : un **préfixe public** et un **secret**. La clé
+d'API = **`préfixe.secret`** (un point entre les deux) → en-tête `X-API-Key`.
+
+**Le plus sûr** : `ezk-secret-set-ionos` — il demande les deux séparément et **pose le point
+tout seul** (le point oublié au collage donne un `400 "Invalid API key format"`, vécu). Puis :
 ```bash
-ezk-secret-set samplerz-ionos-api
-# puis colle : <préfixe>.<secret>
+KEY=$(ezk-secret-get samplerz-ionos-api)
+curl -H "X-API-Key: $KEY" https://api.hosting.ionos.com/dns/v1/zones/<zoneId>/records
 ```
+
+## L'agent t'ouvre le terminal de saisie (optionnel)
+
+```bash
+osascript -e 'tell application "Terminal" to activate' \
+          -e 'tell application "Terminal" to do script "ezk-secret-set-ionos"'
+```
+⚠️ **Piège vécu** : la 1ʳᵉ fois, macOS demande d'**autoriser l'automatisation de Terminal**.
+Sans validation dans les ~2 min, l'AppleEvent expire (`erreur -1712`). Accorde-la dans
+**Réglages → Confidentialité et sécurité → Automatisation**, ou lance la commande toi-même.
 
 ## Installation
 
 ```bash
 mkdir -p ~/.local/bin
-cp ezk-secret-set ezk-secret-get ezk-secret-list ~/.local/bin/
+cp ezk-secret-set ezk-secret-set-ionos ezk-secret-get ezk-secret-list ~/.local/bin/
 chmod +x ~/.local/bin/ezk-secret-*
-# ~/.local/bin doit être dans ton PATH (ajoute-le à ~/.zshrc si besoin) —
-# sinon l'agent ne pourra pas appeler les commandes.
+# ~/.local/bin doit être dans ton PATH (sinon l'agent ne peut pas appeler les commandes).
 ```
 
 ## Pièges
 
-- **Sortie en hexadécimal** à la lecture = un caractère parasite s'est collé avec le secret
-  (copier-coller depuis une page web). Refais `ezk-secret-set` proprement.
-- **Jamais** le secret en argument (`security … -w <valeur>`) : il resterait dans
-  l'historique du shell. Les scripts lisent en `read -rs` masqué.
-- **Jamais** afficher `ezk-secret-get` : toujours le capturer dans une variable.
-- Le **préfixe IONOS** est public, mais on range la clé entière pour simplifier l'en-tête.
+- **`400 "Invalid API key format"`** = clé IONOS **sans le point** (une seule valeur, ou point
+  oublié au collage). Utilise `ezk-secret-set-ionos`.
+- **Sortie en hexadécimal** à la lecture = caractère parasite collé avec le secret → re-range
+  proprement (les helpers nettoient déjà vers `[0-9a-zA-Z._-]`).
+- **AppleEvent `-1712`** = autorisation d'automatisation Terminal manquante (voir plus haut).
+- **Jamais** le secret en argument en clair ; **jamais** afficher `ezk-secret-get` (capture-le).
+- Le **trousseau natif ne protège pas la lecture** (voir §Authentification).
 
 ## Statut
 
-Capturée le 2026-08-29 (session samplerz : besoin de ranger la clé API IONOS proprement).
-Version simple du pattern ; la version forte reste
-[`elicitation-authentification-forte`](../elicitation-authentification-forte.md).
+Capturée **et éprouvée** le 2026-08-29 (session samplerz). Version simple ; la version forte
+reste [`elicitation-authentification-forte`](../elicitation-authentification-forte.md).
