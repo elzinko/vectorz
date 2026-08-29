@@ -39,6 +39,16 @@ describe('ci-conso — agrégation déterministe (fiche 20260828150801613)', () 
     expect(isActionsMinutes(FIXTURE[4])).toBe(false); // codespaces
   });
 
+  it('casse tolérante : la casse de la DOC GitHub ("Actions"/"minutes") est AUSSI comptée', () => {
+    // Non-régression du P2 de revue : si le code n'acceptait que "actions"/"Minutes", un
+    // changement de casse côté GitHub viderait le rapport en silence (« 0 min »).
+    const r = aggregateActionsUsage(
+      [{ product: 'Actions', sku: 'Actions Linux', quantity: 10, unitType: 'minutes', netAmount: 0, repositoryName: 'x' }],
+      {},
+    );
+    expect(r.rows).toEqual([{ repo: 'x', minutes: 10, netUsd: 0, visibility: '?' }]);
+  });
+
   it('visibilité inconnue → "?" (pas de crash, best-effort)', () => {
     const r = aggregateActionsUsage(FIXTURE, {}); // aucune visibilité fournie
     expect(r.rows.every((row) => row.visibility === '?')).toBe(true);

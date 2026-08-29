@@ -39,7 +39,10 @@ export interface ConsoReport {
  * Codespaces et Packages — seules les minutes de runner pèsent sur le quota Actions.
  */
 export function isActionsMinutes(item: UsageItem): boolean {
-  return item.product === 'actions' && item.unitType === 'Minutes';
+  // Casse TOLÉRANTE (revue adverse, P2) : l'API live rend "actions"/"Minutes", mais la
+  // DOC GitHub écrit "Actions"/"minutes". Comparer en minuscules évite un rapport vide EN
+  // SILENCE si GitHub normalise un jour la casse — le mensonge « 0 min » que la fiche combat.
+  return item.product?.toLowerCase() === 'actions' && item.unitType?.toLowerCase() === 'minutes';
 }
 
 /**

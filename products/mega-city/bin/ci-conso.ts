@@ -30,10 +30,11 @@ function resolvePeriod(arg: string | undefined): { year: number; month: number; 
   if (arg) {
     const m = /^(\d{4})-(\d{1,2})$/.exec(arg);
     if (!m) fail(`période invalide « ${arg} » — attendu YYYY-MM (ex. 2026-08)`);
-    const year = Number(m![1]);
-    const month = Number(m![2]);
+    // `fail` est `never` → TS a déjà narrow `m` en non-null ici (nit de revue : plus de `!`).
+    const year = Number(m[1]);
+    const month = Number(m[2]);
     if (month < 1 || month > 12) fail(`mois hors bornes dans « ${arg} »`);
-    return { year, month, label: `${m![1]}-${String(month).padStart(2, '0')}` };
+    return { year, month, label: `${m[1]}-${String(month).padStart(2, '0')}` };
   }
   const now = new Date();
   const year = now.getUTCFullYear();
