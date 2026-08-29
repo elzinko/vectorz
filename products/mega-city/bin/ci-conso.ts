@@ -55,13 +55,19 @@ function main(): void {
   }
   if (!login) fail('impossible de résoudre le login `gh` (réponse /user sans .login).');
 
-  // 2) la conso du mois (endpoint migré ; l'ancien /billing/actions répond 410)
+  // 2) la conso du mois (endpoint migré ; l'ancien /billing/actions répond 410).
+  //    --paginate --slurp : le billing usage peut s'étaler sur PLUSIEURS pages ; sans ça on ne
+  //    lirait que la 1re → repos/minutes/coûts des pages suivantes omis EN SILENCE (Codex #186).
+  //    Avec --slurp, gh renvoie un TABLEAU d'objets-page → on aplatit leurs usageItems.
   let items: UsageItem[];
   try {
-    const data = ghApi(`/users/${login}/settings/billing/usage?year=${year}&month=${month}`) as {
-      usageItems?: UsageItem[];
-    };
-    items = data.usageItems ?? [];
+    const out = execFileSync(
+      'gh',
+      ['api', '--paginate', '--slurp', `/users/${login}/settings/billing/usage?year=${year}&month=${month}`],
+      { encoding: 'utf8' },
+    );
+    const pages = JSON.parse(out) as { usageItems?: UsageItem[] }[];
+    items = pages.flatMap((p) => p.usageItems ?? []);
   } catch {
     console.error(`ci-conso : API billing inaccessible — /users/${login}/settings/billing/usage`);
     console.error('  → le token `gh` a-t-il le scope billing ? (sinon `gh auth refresh -s read:billing`)');
