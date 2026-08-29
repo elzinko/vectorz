@@ -10,7 +10,8 @@ const daemonTarget = `http://localhost:${daemonPort}`;
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,
+    // Respecte le port assigné (PORT — ex. preview autoPort) ; 5173 par défaut en dev direct.
+    port: process.env.PORT ? Number(process.env.PORT) : 5173,
     proxy: {
       '/api': {
         target: daemonTarget,
