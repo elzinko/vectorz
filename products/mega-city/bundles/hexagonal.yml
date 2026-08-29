@@ -1,7 +1,0 @@
-id: hexagonal
-rules:
-  - hexagonal/domain-isolation
-  - hexagonal/dependency-inversion
-  - hexagonal/adapter-location
-  - hexagonal/wiring-at-edge
-  - hexagonal/shared-libs-no-config

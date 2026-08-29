@@ -382,14 +382,58 @@ window.EZK = {
   "rules": 60,
   "agents": 7,
   "skills": 23,
-  "bundles": 12,
+  "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 187,
+  "total": 176,
   "casses": 0
  },
  "orphans": [
+  {
+   "kind": "rule",
+   "id": "documentation-guidelines/changelog"
+  },
+  {
+   "kind": "rule",
+   "id": "documentation-guidelines/contributing-guide"
+  },
+  {
+   "kind": "rule",
+   "id": "documentation-guidelines/human-facing-lisibility"
+  },
+  {
+   "kind": "rule",
+   "id": "documentation-guidelines/proven-outbound-references"
+  },
+  {
+   "kind": "rule",
+   "id": "documentation-guidelines/readme-structure"
+  },
+  {
+   "kind": "rule",
+   "id": "documentation-guidelines/user-guide"
+  },
+  {
+   "kind": "rule",
+   "id": "hexagonal/adapter-location"
+  },
+  {
+   "kind": "rule",
+   "id": "hexagonal/dependency-inversion"
+  },
+  {
+   "kind": "rule",
+   "id": "hexagonal/domain-isolation"
+  },
+  {
+   "kind": "rule",
+   "id": "hexagonal/shared-libs-no-config"
+  },
+  {
+   "kind": "rule",
+   "id": "hexagonal/wiring-at-edge"
+  },
   {
    "kind": "rule",
    "id": "ux/no-layout-shift"
@@ -409,14 +453,6 @@ window.EZK = {
   {
    "kind": "skill",
    "id": "vz-product-builder"
-  },
-  {
-   "kind": "bundle",
-   "id": "documentation-guidelines"
-  },
-  {
-   "kind": "bundle",
-   "id": "hexagonal"
   },
   {
    "kind": "profile",
@@ -1559,9 +1595,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [],
-   "bundles": [
-    "documentation-guidelines"
-   ],
+   "bundles": [],
    "agents": []
   },
   "documentation-guidelines/contributing-guide": {
@@ -1570,9 +1604,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "SHOULD",
    "enforcements": [],
-   "bundles": [
-    "documentation-guidelines"
-   ],
+   "bundles": [],
    "agents": []
   },
   "documentation-guidelines/human-facing-lisibility": {
@@ -1583,9 +1615,7 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [
-    "documentation-guidelines"
-   ],
+   "bundles": [],
    "agents": []
   },
   "documentation-guidelines/proven-outbound-references": {
@@ -1594,9 +1624,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [],
-   "bundles": [
-    "documentation-guidelines"
-   ],
+   "bundles": [],
    "agents": []
   },
   "documentation-guidelines/readme-structure": {
@@ -1607,9 +1635,7 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [
-    "documentation-guidelines"
-   ],
+   "bundles": [],
    "agents": []
   },
   "documentation-guidelines/user-guide": {
@@ -1618,9 +1644,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "SHOULD",
    "enforcements": [],
-   "bundles": [
-    "documentation-guidelines"
-   ],
+   "bundles": [],
    "agents": []
   },
   "hexagonal/adapter-location": {
@@ -1629,9 +1653,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [],
-   "bundles": [
-    "hexagonal"
-   ],
+   "bundles": [],
    "agents": []
   },
   "hexagonal/dependency-inversion": {
@@ -1640,9 +1662,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [],
-   "bundles": [
-    "hexagonal"
-   ],
+   "bundles": [],
    "agents": []
   },
   "hexagonal/domain-isolation": {
@@ -1653,9 +1673,7 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [
-    "hexagonal"
-   ],
+   "bundles": [],
    "agents": []
   },
   "hexagonal/shared-libs-no-config": {
@@ -1664,9 +1682,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "SHOULD",
    "enforcements": [],
-   "bundles": [
-    "hexagonal"
-   ],
+   "bundles": [],
    "agents": []
   },
   "hexagonal/wiring-at-edge": {
@@ -1675,9 +1691,7 @@ window.EZK = {
    "kind": "disposition",
    "level": "SHOULD",
    "enforcements": [],
-   "bundles": [
-    "hexagonal"
-   ],
+   "bundles": [],
    "agents": []
   },
   "testing/mobile-first-testing": {
@@ -1966,31 +1980,6 @@ window.EZK = {
    "profiles": [
     "cop1-target"
    ]
-  },
-  "documentation-guidelines": {
-   "id": "documentation-guidelines",
-   "extends": [],
-   "rules": [
-    "documentation-guidelines/changelog",
-    "documentation-guidelines/contributing-guide",
-    "documentation-guidelines/human-facing-lisibility",
-    "documentation-guidelines/proven-outbound-references",
-    "documentation-guidelines/readme-structure",
-    "documentation-guidelines/user-guide"
-   ],
-   "profiles": []
-  },
-  "hexagonal": {
-   "id": "hexagonal",
-   "extends": [],
-   "rules": [
-    "hexagonal/adapter-location",
-    "hexagonal/dependency-inversion",
-    "hexagonal/domain-isolation",
-    "hexagonal/shared-libs-no-config",
-    "hexagonal/wiring-at-edge"
-   ],
-   "profiles": []
   },
   "mobile": {
    "id": "mobile",

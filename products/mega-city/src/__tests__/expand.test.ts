@@ -110,26 +110,28 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
   });
 });
 
+// Ex-migration iamthelaw (fiche 0006) : 10 bundles à l'origine. Les 2 bundles miroirs
+// orphelins `documentation-guidelines` et `hexagonal` (zéro profil consommateur) ont été
+// supprimés le 2026-08-30 (fiche 20260823124042708) — leurs thèmes de règles restent, mais
+// il n'existe plus de pack qui les regroupe. Restent 8 bundles réellement présents.
 const MIGRATED_BUNDLES = [
   'architecture',
   'ci-cd',
   'clean-code',
   'conventional-commits',
   'development',
-  'documentation-guidelines',
-  'hexagonal',
   'testing',
   'token-economy',
   'typescript-2026',
 ];
 
-describe('expandProfile — 10 bundles migrés depuis iamthelaw (fiche 0006)', () => {
-  it('charge les 10 bundles sans erreur et résout les 59 règles (53 iamthelaw + no-dead-code + proven-outbound-references + verification-budget + pr-before-after-media + human-facing-lisibility + adversarial-review-before-merge)', () => {
+describe('expandProfile — 8 bundles migrés depuis iamthelaw (fiche 0006, -2 orphelins 2026-08-30)', () => {
+  it('charge les 8 bundles sans erreur et résout 48 règles distinctes (59 d’origine − 6 documentation-guidelines − 5 hexagonal)', () => {
     const catalog = loadCatalog(repoRoot);
     const profile = { id: 'iamthelaw-full', bundles: MIGRATED_BUNDLES, agents: [], skills: [] };
     const resolved = expandProfile(profile, catalog);
-    expect(resolved.rules).toHaveLength(59);
-    // pas de doublon d'id malgré 10 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(59);
+    expect(resolved.rules).toHaveLength(48);
+    // pas de doublon d'id malgré 8 bundles distincts
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(48);
   });
 });
