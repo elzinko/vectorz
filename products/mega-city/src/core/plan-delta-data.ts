@@ -4,10 +4,10 @@
  * créées, chacune badgée « dans le plan » / « hors plan », + un compteur des fiches
  * ACTIVES (hors idées) absentes du plan.
  *
- * « Dans le plan » = l'id apparaît N'IMPORTE OÙ dans PLAN.md — on réutilise
- * `parsePlanSections` (qui capte TOUS les ids d'une ligne), pas `parsePlanOrder` (1er id
- * seulement), sinon un id cité en 2ᵉ position d'une ligne multi-ids serait « hors plan »
- * à tort.
+ * « Dans le plan » = l'id apparaît N'IMPORTE OÙ dans PLAN.md — on scanne TOUT le document
+ * (puces de section ET paquets multi-ids ET notes en prose, comme l'avertissement « ne pas
+ * doublonner »), pas seulement les entrées de liste. Un id cité où que ce soit compte comme
+ * « connu du plan » (revue Codex PR #185).
  *
  * « Les N dernières créées » : l'id EST la date de création (fiche 0180), donc trier par
  * id décroissant suffit — pas besoin de dater le plan (décision PO au grooming). Les ids
@@ -17,7 +17,6 @@
  * Isolé de `plan-view-data` (bloc + marqueurs disjoints) pour NE PAS toucher la vue Plan
  * livrée. La coquille est `bin/regen-plan-delta.ts`.
  */
-import { parsePlanSections } from '../backlog/plan-sections.js';
 import type { Fiche } from '../loaders/fiches.js';
 
 /** Fenêtre par défaut : les 15 dernières fiches créées (réglable). */
@@ -46,9 +45,20 @@ export interface PlanDelta {
   n: number;
 }
 
-/** Tous les ids cités par `PLAN.md` (toutes sections, toutes positions d'une ligne). */
+// Extraction d'ids sur TOUT le document (fix revue Codex PR #185) : la promesse est « l'id
+// cité n'importe où dans PLAN.md », notes en prose comprises. Même logique de tokens que
+// plan-sections : on neutralise d'abord les dates ISO (sinon l'année `2026` passe pour un id
+// 4 chiffres), puis on ne capte que les ids de longueur réelle (4 ou 17 chiffres) bornés par
+// des non-chiffres (immunise contre les fragments de SHA).
+const ISO_DATE_RE = /\d{4}-\d{2}-\d{2}/g;
+const ID_TOKEN_RE = /(?<!\d)(?:mc-)?(\d{17}|\d{4})(?!\d)/g;
+
+/** Tous les ids cités par `PLAN.md`, où qu'ils soient (puces, notes en prose, multi-ids). */
 export function planIds(planMd: string): Set<string> {
-  return new Set(parsePlanSections(planMd).flatMap((s) => s.entries.flatMap((e) => e.ids)));
+  const ids = new Set<string>();
+  const scrubbed = planMd.replace(ISO_DATE_RE, ' ');
+  for (const m of scrubbed.matchAll(ID_TOKEN_RE)) ids.add(m[1]);
+  return ids;
 }
 
 /** Compile l'écart plan ↔ backlog. Tout dérivé de `planMd` + `fiches` → sortie stable. */

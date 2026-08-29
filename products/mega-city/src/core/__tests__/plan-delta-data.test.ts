@@ -30,6 +30,24 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
     expect(delta.recent.find((c) => c.id === '0099')?.inPlan).toBe(false); // absent du plan
   });
 
+  it('« dans le plan » capte un id cité HORS puce — note en prose (revue Codex #185)', () => {
+    const plan = [
+      '## ▶️ NOW',
+      '⚠️ **En cours ailleurs — ne pas doublonner** : **20260812104022240** (aggregate).',
+    ].join('\n');
+    const delta = buildPlanDelta(plan, [f({ id: '20260812104022240', status: 'todo' })]);
+    expect(delta.recent[0].inPlan).toBe(true); // cité dans une note, pas une puce
+    expect(delta.offPlanCount).toBe(0); // donc PAS compté hors plan
+  });
+
+  it('planIds ignore les dates et fragments de SHA (pas de faux ids)', () => {
+    // « 2026 » (année) et « 45102 » (fragment de SHA c45102b) ne sont pas des ids.
+    const plan = '## X\n- note du 2026-08-29, commit c45102b — 0087 réel.';
+    const delta = buildPlanDelta(plan, [f({ id: '0087' }), f({ id: '2026' })]);
+    expect(delta.recent.find((c) => c.id === '0087')?.inPlan).toBe(true);
+    expect(delta.recent.find((c) => c.id === '2026')?.inPlan).toBe(false);
+  });
+
   it('recent = les N dernières par id (desc), fenêtre réglable', () => {
     const fiches = [
       '20260810000000001',
