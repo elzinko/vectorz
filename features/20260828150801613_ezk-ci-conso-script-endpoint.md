@@ -88,13 +88,13 @@ résultat. Cette fiche fige la récupération dans un **script déterministe** e
 
 ## Critères d'acceptation
 
-- [ ] `ezk-ci conso` **ne tape plus** `/settings/billing/actions` ; il lit
+- [x] `ezk-ci conso` **ne tape plus** `/settings/billing/actions` ; il lit
       `/settings/billing/usage` et rend un chiffre non vide pour le mois courant.
-- [ ] Sortie **déterministe** : minutes par repo, colonne **public/privé**, part facturée,
+- [x] Sortie **déterministe** : minutes par repo, colonne **public/privé**, part facturée,
       total — la même commande rejouée donne la même table (aucun `jq` ad hoc côté LLM).
-- [ ] **Dégradation propre** si l'API billing est inaccessible (message clair, pas de crash).
-- [ ] Un **test** (fixture d'un `usageItems` d'exemple) verrouille le parsing/agrégation.
-- [ ] La doc d'`ezk-ci` (SKILL) cite l'endpoint courant et le repli.
+- [x] **Dégradation propre** si l'API billing est inaccessible (message clair, pas de crash).
+- [x] Un **test** (fixture d'un `usageItems` d'exemple) verrouille le parsing/agrégation.
+- [x] La doc d'`ezk-ci` (SKILL) cite l'endpoint courant et le repli.
 
 ## Comment vérifier
 

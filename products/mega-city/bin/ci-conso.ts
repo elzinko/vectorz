@@ -1,0 +1,99 @@
+/**
+ * ci-conso (CLI) — récupère la conso GitHub Actions du mois via `gh` et l'affiche.
+ * Le cœur d'agrégation PUR (et testé) vit dans src/core/ci-conso.ts ; ICI = le bord I/O.
+ *
+ * Usage : pnpm --dir products/mega-city ci:conso [YYYY-MM]   (défaut : mois courant, UTC)
+ *
+ * Fiche 20260828150801613 — l'ancien endpoint /settings/billing/actions répond 410 (migré) ;
+ * on lit /settings/billing/usage (« enhanced billing platform »). Dégradation propre si l'API
+ * est inaccessible (message clair, exit ≠ 0, jamais de stacktrace nue).
+ */
+import { execFileSync } from 'node:child_process';
+import {
+  type UsageItem,
+  aggregateActionsUsage,
+  formatConsoReport,
+  isActionsMinutes,
+} from '../src/core/ci-conso.js';
+
+function fail(msg: string): never {
+  console.error(`ci-conso : ${msg}`);
+  process.exit(1);
+}
+
+/** Appelle `gh api <path>` et parse le JSON. Jamais de shell interpolé (execFileSync). */
+function ghApi(path: string): unknown {
+  const out = execFileSync('gh', ['api', path], { encoding: 'utf8' });
+  return JSON.parse(out);
+}
+
+function resolvePeriod(arg: string | undefined): { year: number; month: number; label: string } {
+  if (arg) {
+    const m = /^(\d{4})-(\d{1,2})$/.exec(arg);
+    if (!m) fail(`période invalide « ${arg} » — attendu YYYY-MM (ex. 2026-08)`);
+    // `fail` est `never` → TS a déjà narrow `m` en non-null ici (nit de revue : plus de `!`).
+    const year = Number(m[1]);
+    const month = Number(m[2]);
+    if (month < 1 || month > 12) fail(`mois hors bornes dans « ${arg} »`);
+    return { year, month, label: `${m[1]}-${String(month).padStart(2, '0')}` };
+  }
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth() + 1;
+  return { year, month, label: `${year}-${String(month).padStart(2, '0')}` };
+}
+
+function main(): void {
+  const { year, month, label } = resolvePeriod(process.argv[2]);
+
+  // 1) l'utilisateur authentifié (le billing est niveau compte)
+  let login: string;
+  try {
+    login = (ghApi('user') as { login?: string }).login ?? '';
+  } catch {
+    fail('`gh` non authentifié — lance `gh auth login`.');
+  }
+  if (!login) fail('impossible de résoudre le login `gh` (réponse /user sans .login).');
+
+  // 2) la conso du mois (endpoint migré ; l'ancien /billing/actions répond 410).
+  //    --paginate --slurp : le billing usage peut s'étaler sur PLUSIEURS pages ; sans ça on ne
+  //    lirait que la 1re → repos/minutes/coûts des pages suivantes omis EN SILENCE (Codex #186).
+  //    Avec --slurp, gh renvoie un TABLEAU d'objets-page → on aplatit leurs usageItems.
+  let items: UsageItem[];
+  try {
+    const out = execFileSync(
+      'gh',
+      ['api', '--paginate', '--slurp', `/users/${login}/settings/billing/usage?year=${year}&month=${month}`],
+      { encoding: 'utf8' },
+    );
+    const pages = JSON.parse(out) as { usageItems?: UsageItem[] }[];
+    items = pages.flatMap((p) => p.usageItems ?? []);
+  } catch {
+    console.error(`ci-conso : API billing inaccessible — /users/${login}/settings/billing/usage`);
+    console.error('  → le token `gh` a-t-il le scope billing ? (sinon `gh auth refresh -s read:billing`)');
+    console.error('  → l\'ancien /settings/billing/actions est mort (410) : ne pas y revenir.');
+    process.exit(1);
+  }
+
+  // 3) visibilité par repo (best-effort, N appels ; public = Actions gratuit)
+  // Même prédicat (casse tolérante) que l'agrégation — sinon un repo compté resterait « ? »
+  // en visibilité (retour Codex #186, cohérence des deux filtres).
+  const repos = [...new Set(items.filter(isActionsMinutes).map((i) => i.repositoryName))];
+  const visibility: Record<string, string> = {};
+  for (const repo of repos) {
+    // `repositoryName` est nu en live (`vectorz`) → /repos/<login>/<repo> ; mais s'il venait
+    // en `owner/repo` (doc « enhanced billing »), l'utiliser tel quel évite un /repos/login/owner/repo
+    // qui 404 (retour Codex #186). Robuste aux deux formes.
+    const path = repo.includes('/') ? `/repos/${repo}` : `/repos/${login}/${repo}`;
+    try {
+      visibility[repo] = (ghApi(path) as { visibility?: string }).visibility ?? '?';
+    } catch {
+      visibility[repo] = '?'; // repo supprimé, droits manquants — non bloquant
+    }
+  }
+
+  // 4) agrégation déterministe (cœur pur) + rendu
+  console.log(formatConsoReport(aggregateActionsUsage(items, visibility), label));
+}
+
+main();
