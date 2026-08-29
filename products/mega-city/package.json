@@ -31,7 +31,8 @@
     "avancement:regen": "tsx bin/regen-avancement.ts",
     "plan-view:regen": "tsx bin/regen-plan-view.ts",
     "plan-delta:regen": "tsx bin/regen-plan-delta.ts",
-    "ci:conso": "tsx bin/ci-conso.ts"
+    "ci:conso": "tsx bin/ci-conso.ts",
+    "ezk:sessions": "tsx bin/ezk-sessions.ts"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
