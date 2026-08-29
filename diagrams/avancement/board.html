@@ -158,6 +158,18 @@
   .plan-outils label { display: inline-flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--muted); cursor: pointer; }
   .plan-compteur { color: var(--muted); font-size: 0.85rem; }
 
+  /* Encart « ce qui a bougé » (écart plan, fiche 20260828165644386) */
+  .delta-compteur { font-size: 0.9rem; color: var(--muted); margin: 2px 0 12px; line-height: 1.5; }
+  .delta-compteur b { color: var(--text); }
+  .delta-liste { display: flex; flex-direction: column; gap: 6px; }
+  .delta-item { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .delta-badge {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.02em;
+    border-radius: 4px; padding: 1px 7px; border: 1px solid var(--border); color: var(--muted);
+  }
+  .delta-badge.hors { color: var(--p0); border-color: var(--p0); font-weight: 600; }
+  .delta-item .st { font-size: 0.72rem; color: var(--muted); }
+
   /* Couloirs = sections de PLAN.md */
   .couloir { margin: 0 0 26px; }
   .couloir > h3 {
@@ -244,6 +256,7 @@
 
 <div id="vue-plan" role="tabpanel" aria-labelledby="onglet-plan" tabindex="0" hidden>
   <section class="encart" id="plan-encart"><!-- rempli par le script plan (window.EZK_PLAN) --></section>
+  <section class="encart" id="plan-delta-encart"><!-- rempli par le script delta (window.EZK_PLAN_DELTA) --></section>
   <div class="plan-outils">
     <label><input type="checkbox" id="plan-hide-shipped" /> Masquer les fiches livrées</label>
     <span class="plan-compteur" id="plan-compteur"></span>
@@ -256,12 +269,12 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 119,
-  "todo": 52,
+  "todo": 54,
   "blocked": 5,
   "in-progress": 5,
   "idea": 81
  },
- "tirables": 3,
+ "tirables": 5,
  "actives": [
   {
    "id": "20260826122532943",
@@ -1772,6 +1785,40 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260826222044335_carte-la-loi-graphe-visuel.md"
   },
   {
+   "id": "20260828165644386",
+   "title": "Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan",
+   "type": "feature",
+   "priority": "P2",
+   "status": "todo",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-map",
+    "plan",
+    "pilotage"
+   ],
+   "file": "features/20260828165644386_vue-ecart-plan-delta.md"
+  },
+  {
+   "id": "20260828165644452",
+   "title": "Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête",
+   "type": "feature",
+   "priority": "P2",
+   "status": "todo",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-map",
+    "ux",
+    "pilotage"
+   ],
+   "file": "features/20260828165644452_monitor-accueil-pilotage-sections.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2237,6 +2284,7 @@ window.EZK_AVANCEMENT = {
    "enabler",
    "ezk-ci",
    "ezk-codex",
+   "ezk-map",
    "follow-up",
    "fondation",
    "format",
@@ -2246,11 +2294,14 @@ window.EZK_AVANCEMENT = {
    "methode",
    "moteur",
    "outillage",
+   "pilotage",
+   "plan",
    "r&d",
    "supervision",
    "template",
    "test",
    "testbed",
+   "ux",
    "validation"
   ]
  }
@@ -3610,6 +3661,137 @@ window.EZK_PLAN = {
 };
 /*ezk-plan-data:end*/
 </script>
+
+<script>
+/*ezk-plan-delta:begin*/
+window.EZK_PLAN_DELTA = {
+ "recent": [
+  {
+   "id": "20260828165644452",
+   "title": "Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête",
+   "status": "todo",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260828165644452_monitor-accueil-pilotage-sections.md"
+  },
+  {
+   "id": "20260828165644386",
+   "title": "Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan",
+   "status": "todo",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260828165644386_vue-ecart-plan-delta.md"
+  },
+  {
+   "id": "20260828150801613",
+   "title": "ezk-ci conso — script déterministe + réparer l'endpoint billing migré (410 → /usage)",
+   "status": "todo",
+   "priority": "P0",
+   "inPlan": false,
+   "file": "features/20260828150801613_ezk-ci-conso-script-endpoint.md"
+  },
+  {
+   "id": "20260826222044335",
+   "title": "Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826222044335_carte-la-loi-graphe-visuel.md"
+  },
+  {
+   "id": "20260826173221323",
+   "title": "Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet",
+   "status": "todo",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826173221323_racine-parametrable-des-vues.md"
+  },
+  {
+   "id": "20260826173005368",
+   "title": "Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills",
+   "status": "todo",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826173005368_renommer-ezk-map.md"
+  },
+  {
+   "id": "20260826122532943",
+   "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
+   "status": "todo",
+   "priority": "P0",
+   "inPlan": false,
+   "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md"
+  },
+  {
+   "id": "20260826121429274",
+   "title": "ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826121429274_ezk-archive-compte-rendu-structure.md"
+  },
+  {
+   "id": "20260826112620281",
+   "title": "Schéma markdown déclaratif + validateur mécanique — format de fiche/recette vérifiable et versionnable",
+   "status": "idea",
+   "priority": "P3",
+   "inPlan": false,
+   "file": "features/20260826112620281_schema-markdown-declaratif-validateur.md"
+  },
+  {
+   "id": "20260826082120069",
+   "title": "ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md"
+  },
+  {
+   "id": "20260826082120062",
+   "title": "Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur",
+   "status": "idea",
+   "priority": "P1",
+   "inPlan": false,
+   "file": "features/20260826082120062_domaine-metriques-de-sprint-rapport.md"
+  },
+  {
+   "id": "20260826072532622",
+   "title": "Revue & validation des fiches dans ezk:map — pouce 👍/👎 (verdict versionné, partagé entre sessions)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826072532622_revue-fiches-pouce-ezk-map.md"
+  },
+  {
+   "id": "20260826072532537",
+   "title": "Vue « rétrospectives » dans ezk:map — chaque rétro et ses actions mesurables, extraites des captures",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826072532537_vue-retros-actions-ezk-map.md"
+  },
+  {
+   "id": "20260826072532452",
+   "title": "Vue « sprints réalisés » dans ezk:map — chaque sprint et son détail (PR, fiches, actions), extrait des comptes-rendus",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260826072532452_vue-sprints-realises-ezk-map.md"
+  },
+  {
+   "id": "20260825202444647",
+   "title": "ezk-codex fix — répondre en fil ET résoudre TOUS les fils traités (pas seulement décliner)",
+   "status": "todo",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md"
+  }
+ ],
+ "offPlanCount": 40,
+ "n": 15
+};
+/*ezk-plan-delta:end*/
+</script>
 <script>
 (function () {
   var data = window.EZK_AVANCEMENT || { actives: [], epics: [], filtres: { statuts: [], priorites: [], produits: [], labels: [] } };
@@ -4029,6 +4211,54 @@ window.EZK_PLAN = {
       panPlan.classList.toggle('masquer-livrees', hide.checked);
     });
   }
+})();
+</script>
+
+<script>
+// Encart « ce qui a bougé » (fiche 20260828165644386) : rend window.EZK_PLAN_DELTA,
+// compilé depuis features/PLAN.md + les fiches. Même discipline anti-XSS que le board :
+// DOM par éléments + textContent, JAMAIS innerHTML sur du texte de fiche.
+(function () {
+  var delta = window.EZK_PLAN_DELTA || { recent: [], offPlanCount: 0, n: 0 };
+  var box = document.getElementById('plan-delta-encart');
+  if (!box) return;
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function slug(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9_-]/g, '-'); }
+  function prioVar(p) { return 'var(--p' + slug(p ? String(p).replace('P', '') : '3') + ')'; }
+
+  box.appendChild(el('h2', null, 'Ce qui a bougé depuis le plan'));
+
+  var cpt = el('p', 'delta-compteur');
+  cpt.appendChild(document.createTextNode('Hors plan : '));
+  cpt.appendChild(el('b', null, String(delta.offPlanCount)));
+  cpt.appendChild(document.createTextNode(' fiche(s) active(s) (idées non comptées). Ci-dessous, les ' + (delta.n || 0) + ' dernières créées :'));
+  box.appendChild(cpt);
+
+  var liste = el('div', 'delta-liste');
+  (delta.recent || []).forEach(function (c) {
+    var item = el('div', 'delta-item');
+    var a = document.createElement('a');
+    a.className = 'mini';
+    a.href = '../../' + c.file;
+    a.style.setProperty('--prio-color', prioVar(c.priority));
+    a.appendChild(el('span', 'id', c.id));
+    a.appendChild(el('span', 't', c.title));
+    item.appendChild(a);
+    item.appendChild(el('span', 'delta-badge ' + (c.inPlan ? 'dans' : 'hors'), c.inPlan ? 'dans le plan' : 'hors plan'));
+    item.appendChild(el('span', 'st', c.priority || '—'));
+    item.appendChild(el('span', 'st', c.status));
+    liste.appendChild(item);
+  });
+  if (!(delta.recent && delta.recent.length)) {
+    liste.appendChild(el('span', 'rien', 'Aucune fiche active récente.'));
+  }
+  box.appendChild(liste);
 })();
 </script>
 </body>

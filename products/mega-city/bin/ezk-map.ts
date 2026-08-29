@@ -23,7 +23,7 @@ import { fileURLToPath } from 'node:url';
 import {
   type DiagramEntry,
   injectNavIntoHtml,
-  orderDiagrams,
+  readMetaCategorie,
   readMetaTitle,
   renderMenuHtml,
   renderNavBar,
@@ -60,9 +60,10 @@ function listDiagrams(): DiagramEntry[] {
         files.find((f) => f.endsWith('.html')) ?? files.find((f) => f.endsWith('.svg')) ?? '';
       // titre lisible pour le menu : balayage du meta.yaml (title: ou titre:), repli slug
       const metaPath = join(dir, 'meta.yaml');
-      const title =
-        (existsSync(metaPath) ? readMetaTitle(readFileSync(metaPath, 'utf8')) : null) ?? slug;
-      return { slug, entry, title };
+      const meta = existsSync(metaPath) ? readFileSync(metaPath, 'utf8') : '';
+      const title = readMetaTitle(meta) ?? slug;
+      const categorie = readMetaCategorie(meta) ?? 'autres';
+      return { slug, entry, title, categorie };
     })
     .filter((d) => d.entry !== '')
     .sort((a, b) => a.slug.localeCompare(b.slug));
@@ -118,7 +119,7 @@ const server = createServer((req, res) => {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'no-store',
       });
-      res.end(renderMenuHtml(orderDiagrams(diagrams)));
+      res.end(renderMenuHtml(diagrams));
       return;
     }
 

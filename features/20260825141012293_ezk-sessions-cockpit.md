@@ -20,7 +20,8 @@ Quand on travaille avec **plusieurs sessions Claude Code en parallèle**, on per
 des dossiers de travail (worktrees) restent sur le disque après qu'on a archivé la session,
 des branches s'accumulent alors qu'elles sont déjà fusionnées, et on ne sait plus **qui
 travaille sur quoi**. Cette fiche propose un outil, `/ezk-sessions state`, qui affiche un
-**tableau clair** de l'état courant et **dit quoi nettoyer**.
+**tableau clair** de l'état courant, **dit quoi nettoyer**, et **alerte quand deux sessions risquent de se
+percuter** (elles ont touché le même fichier).
 
 Le tableau croise trois sources et **sort d'un script** (donc **sans coût IA** pour les
 données) : les dossiers de travail git, les sessions Claude Code (archivée ou active), et
@@ -69,6 +70,40 @@ patron** : un `bin/regen-sessions-data.ts` (les mêmes données que la CLI) affi
 `pnpm ezk:map sessions`. La CLI et l'onglet **partagent le même collecteur** — une seule
 source de vérité.
 
+## Pilotage & collision — décisions du 2026-08-28 (brainstorm PO)
+
+Le cockpit n'est pas qu'un outil d'hygiène. Sa **première valeur**, c'est d'éviter que deux
+sessions se percutent. Décisions actées (cadre : ADR-0042 —
+`products/mega-city/docs/adr/0042-concurrence-inter-sessions-advisory-visibilite.md`) :
+
+**1. L'alarme n°1 = l'intersection des fichiers touchés.** Deux sessions ne se gênent que si
+elles visent le **même fichier**. Le détecteur croise les fichiers **non commités** de chaque
+worktree (`git status` par worktree) ; une intersection non vide = collision imminente.
+Fichiers **chauds** à surveiller en priorité (partagés) : l'index du backlog, `PLAN.md`, une
+fiche en cours d'édition. Cas physique : deux sessions dans le **même répertoire** (même
+working tree) = tout est en collision.
+
+**2. Un worktree qui dort n'est pas « jetable ».** Croiser « session vivante ? » avec « working
+tree propre ? ». Dormant + **propre** + branche fusionnée → supprimable. Dormant + **non
+commité** → ⚠ **travail non sauvé, à GARDER** : ne jamais suggérer de le supprimer. Le cockpit
+éclaire, il ne détruit pas. *(Corrige le penchant « nettoyage » de l'esquisse ci-dessus.)*
+
+**3. Le type sprint / métier est une étiquette d'affichage, pas un garde-fou.** On le dérive du
+**préfixe de branche** (`feat/…` = sprint) ; un marqueur `.ezk-session` **optionnel** (non
+commité, dans `.gitignore`) enrichit le sujet libre. Absence de marqueur = « non précisé »,
+toléré. La sécurité ne repose **pas** dessus — elle repose sur l'intersection (point 1).
+
+**4. Visibilité plutôt qu'interdiction.** Pour les sessions **que tu supervises**, le cockpit
+**avertit**, il n'interdit rien (advisory). Le garde-fou **bloquant** est réservé aux **runs
+autonomes** (`ezk-product-build` en mode auto, cop1) : là, avant de démarrer un sprint, la
+skill vérifie l'intersection et s'arrête (ou délègue à `ezk-pm`) si collision. Un seul
+détecteur, deux réactions selon le contexte.
+
+**5. Absorbe le besoin « Owner de PR » ([[20260812104022237]]).** « Qui tient cette PR » était
+une fiche à part (P1, idea). Le cockpit y répond : il affiche déjà session × branche × PR, et
+l'alarme d'intersection traite « deux sessions, même objet ». Décision PO 2026-08-28 : advisory,
+pas de verrou exclusif. La fiche owner-PR est **absorbée ici**.
+
 ## Critères d'acceptation (esquisse — non ready)
 
 - [ ] `/ezk-sessions state` affiche un tableau **dossier de travail · branche · session
@@ -81,6 +116,13 @@ source de vérité.
 - [ ] La **même donnée** s'affiche en onglet de la map : `pnpm ezk:map sessions`, sur le
       modèle de `pnpm ezk:map avancement`.
 - [ ] Option `--llm=claude` (défaut) ; l'architecture reste ouverte à d'autres outils plus tard.
+- [ ] Le tableau **signale les collisions** : deux worktrees dont les fichiers non commités
+      s'intersectent, avec le(s) fichier(s) en cause ; les fichiers chauds (index backlog,
+      `PLAN.md`, fiche en cours) sont mis en avant.
+- [ ] Un worktree **dormant avec des changements non commités** est marqué « travail non sauvé
+      — garder », **jamais** proposé à la suppression.
+- [ ] Le **type** (sprint / métier) est dérivé du préfixe de branche ; l'absence de marqueur
+      `.ezk-session` affiche « non précisé », sans erreur.
 
 ## Comment vérifier
 
