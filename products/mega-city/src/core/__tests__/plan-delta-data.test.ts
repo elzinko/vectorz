@@ -40,12 +40,14 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
     expect(delta.offPlanCount).toBe(0); // donc PAS compté hors plan
   });
 
-  it('planIds ignore les dates et fragments de SHA (pas de faux ids)', () => {
-    // « 2026 » (année) et « 45102 » (fragment de SHA c45102b) ne sont pas des ids.
-    const plan = '## X\n- note du 2026-08-29, commit c45102b — 0087 réel.';
-    const delta = buildPlanDelta(plan, [f({ id: '0087' }), f({ id: '2026' })]);
+  it('planIds ignore dates et SHA — dont 4 chiffres entre lettres hex (revue Codex #185)', () => {
+    // « 2026 » (année), « 45102 » (SHA c45102b, 5 chiffres) et surtout « 0017 » (SHA a0017b,
+    // 4 chiffres NOYÉS entre lettres hex) ne sont pas des ids ; seul l'id en prose l'est.
+    const plan = '## X\n- note du 2026-08-29, commits c45102b et a0017b — 0087 réel.';
+    const delta = buildPlanDelta(plan, [f({ id: '0087' }), f({ id: '2026' }), f({ id: '0017' })]);
     expect(delta.recent.find((c) => c.id === '0087')?.inPlan).toBe(true);
     expect(delta.recent.find((c) => c.id === '2026')?.inPlan).toBe(false);
+    expect(delta.recent.find((c) => c.id === '0017')?.inPlan).toBe(false); // SHA a0017b, pas la fiche
   });
 
   it('planIds exclut les numéros d’ADR (ADR-0040 ≠ fiche 0040) — revue Codex #185', () => {
