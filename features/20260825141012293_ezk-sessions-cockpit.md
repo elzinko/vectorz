@@ -6,8 +6,8 @@ priority: P1
 product: mega-city
 version:
 epic:
-status: todo
-ready:
+status: in-progress
+ready: 2026-08-29
 pr:
 created: 2026-08-25
 ---
@@ -150,3 +150,25 @@ pas de verrou exclusif. La fiche owner-PR est **absorbée ici**.
   (`list_sessions`), `git worktree list` / `git branch`.
 - **Suite naturelle** : une fois l'état visible, une sous-commande de **nettoyage assisté**
   (proposer les `git worktree remove` / `git branch -d` sûrs) — hors périmètre `state`.
+
+## Grooming — 2026-08-29 (auto, ezk-product-build)
+
+Les deux frontières laissées ouvertes au grooming sont tranchées ; DoR atteinte.
+
+- **Frontière `bin/supervision-*.ts` → distincte, aucune duplication.** Ces scripts
+  (`supervision-analyze`, `-doctor`, `-registry-add`…) lisent le **journal de supervision**
+  (les runs/gates émis par les agents ezk). Ils ne croisent PAS worktree git × session
+  Claude Code. Le collecteur `sessions` est une source de données différente. Rien à
+  réutiliser côté supervision ; le patron à reprendre est celui de l'onglet **avancement**
+  (`bin/regen-avancement.ts` + `bin/ezk-map.ts`).
+- **Faisabilité « zéro IA » confirmée.** Les sessions Claude Code sont sur disque en clair :
+  `~/.claude/projects/<slug-du-projet>/<uuid>.jsonl` (une session = un fichier). Un script
+  déterministe les lit sans appel LLM — le critère d'acceptation « zéro appel IA » tient.
+  **Seul point à nailer à l'étape archi du sprint** : le titre humain et l'état
+  archivée/active ne sont pas forcément dans le `.jsonl` brut (le MCP `ccd_session_mgmt` les
+  gère) ; vérifier qu'ils sont dans un fichier lisible du store, sinon dériver l'état
+  « active » du `mtime` du `.jsonl` et le sujet du préfixe de branche (déjà prévu, point 3).
+
+**État DoR** : critères d'acceptation testables ✅ · périmètre borné au sous-commande `state`
+✅ · décisions de conception actées (brainstorm PO 2026-08-28 + ADR-0042) ✅ · faisabilité
+confirmée ✅. **Tampon `ready` en attente du PO** (mode `--check-ready true`).
