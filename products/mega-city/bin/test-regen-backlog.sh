@@ -47,6 +47,8 @@ check "pas de section Épics"       "! grep -q '## 🧭 Épics' '$A/features/BAC
 check "section Idées présente"     "grep -q '## 💡 Idées' '$A/features/BACKLOG.md'"
 check "zéro warning"               "! test -s '$TMP/a.err'"
 check "stats émises"               "printf '%s' \"\$out_a\" | grep -q 'stats: total=3'"
+check "résumé Livrées cliquable (done/)" \
+  "grep '^> Livrées' '$A/features/BACKLOG.md' | grep -qF '[0000](done/0000-vieux.md)'"
 
 # ── Cas B : épics + version → colonnes, section, exclusion du tableau actionnable ─
 B="$TMP/b"
@@ -74,12 +76,19 @@ check "colonne Version présente"   "grep -q '| Version |' '$idx'"
 check "colonne Épic présente"      "grep -q '| Épic |' '$idx'"
 check "section Épics présente"     "grep -q '## 🧭 Épics' '$idx'"
 check "épic 0010 HORS tableau actionnable" \
-  "! awk '/^## /{exit} {print}' '$idx' | grep -q '^| 0010 '"
+  "! awk '/^## /{exit} {print}' '$idx' | grep -q '^| \[0010\]'"
 check "épic 0010 dans la section Épics" \
-  "sed -n '/## 🧭 Épics/,/## 💡/p' '$idx' | grep -q '^| 0010 '"
-check "enfant 0011 porte la réf 0010"  "grep -q '^| 0011 .*| 0010 |' '$idx'"
-check "version V1.1 rendue"            "grep -q '^| 0012 .*| V1.1 |' '$idx'"
+  "sed -n '/## 🧭 Épics/,/## 💡/p' '$idx' | grep -q '^| \[0010\]'"
+check "enfant 0011 porte la réf 0010"  "grep -q '^| \[0011\].*| 0010 |' '$idx'"
+check "version V1.1 rendue"            "grep -q '^| \[0012\].*| V1.1 |' '$idx'"
 check "zéro warning (refs valides)"    "! test -s '$TMP/b.err'"
+# Liens cliquables (règle human-facing-lisibility, revue Codex #184) : relatifs au doc.
+check "id actif → lien vers sa fiche (relatif au doc)" \
+  "grep -qF '| [0011](0011-enfant-a.md) |' '$idx'"
+check "id livré → lien vers done/ (relatif au doc)" \
+  "grep -qF '[0009](done/0009-enfant-livre.md)' '$idx'"
+check "AUCUN lien préfixé features/ (résolution document-relative)" \
+  "! grep -qF '](features/' '$idx'"
 
 # ── Cas C : intégrité — réf pendante, cible non-epic, sous-épic ───────────────────
 C="$TMP/c"
@@ -145,8 +154,8 @@ product: mega-city'
 out_f="$("$SCRIPT" "$F" "Backlog — test F" 2>"$TMP/f.err")"
 echo "Cas F (colonne Produit) :"
 check "colonne Produit présente"   "grep -q '| Produit |' '$F/features/BACKLOG.md'"
-check "produit vectorz rendu"      "grep -q '^| 0001 .*| vectorz |' '$F/features/BACKLOG.md'"
-check "produit mega-city rendu"    "grep -q '^| 0002 .*| mega-city |' '$F/features/BACKLOG.md'"
+check "produit vectorz rendu"      "grep -q '^| \[0001\].*| vectorz |' '$F/features/BACKLOG.md'"
+check "produit mega-city rendu"    "grep -q '^| \[0002\].*| mega-city |' '$F/features/BACKLOG.md'"
 check "zéro warning (ids uniques)" "! test -s '$TMP/f.err'"
 
 # Collision volontaire : deux fichiers même id
@@ -162,7 +171,7 @@ printf -- '---\nid: "20260810143052123"\ntitle: fiche horodatee quotee\ntype: fe
   > "$G/features/20260810143052123_horodatee.md"
 "$SCRIPT" "$G" "Backlog — test G" >/dev/null 2>"$TMP/g.err"
 echo "Cas G (id horodaté quoté) :"
-check "id 17 chiffres dé-quoté dans l'index" "grep -qE '^\| 20260810143052123 \|' '$G/features/BACKLOG.md'"
+check "id 17 chiffres dé-quoté dans l'index" "grep -qE '^\| \[20260810143052123\]\(' '$G/features/BACKLOG.md'"
 check "aucun guillemet résiduel sur l'id"    "! grep -q '\"20260810143052123\"' '$G/features/BACKLOG.md'"
 check "zéro warning (id quoté)"              "! test -s '$TMP/g.err'"
 

@@ -120,7 +120,7 @@ EOF
 echo "Cas G (EZK_REGEN_BACKLOG) :"
 EZK_REGEN_BACKLOG="$G/bin/regen-backlog.sh" bash "$APPLY" "$G" "Backlog — ext" >/dev/null
 check "migrate externe OK" "grep -q '^layout_version: 2' '$G/features/README.md'"
-check "BACKLOG regen externe" "grep -q '^| 0001 ' '$G/features/BACKLOG.md'"
+check "BACKLOG regen externe" "grep -q '^| \[0001\]' '$G/features/BACKLOG.md'"
 
 # Cas H : apply-002 refuse README curé / tombstone
 H="$TMP/tombstone"
@@ -193,7 +193,7 @@ resolved_k="$(env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$RESOLVE_ISO" "$K")
 check "resolve → copie vendored" "[[ \"\$resolved_k\" == \"$VENDORED\" ]]"
 env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$APPLY_ISO" "$K" "Backlog — vendor" >/dev/null
 check "migrate via skill regen" "grep -q '^layout_version: 2' '$K/features/README.md'"
-check "BACKLOG via skill regen" "grep -q '^| 0002 ' '$K/features/BACKLOG.md'"
+check "BACKLOG via skill regen" "grep -q '^| \[0002\]' '$K/features/BACKLOG.md'"
 
 # Cas L : init sur racine inexistante → exit 1 + message clair
 echo "Cas L (init racine inexistante) :"

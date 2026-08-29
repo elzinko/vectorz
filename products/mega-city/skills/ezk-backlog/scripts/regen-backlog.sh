@@ -50,12 +50,13 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, r
 }
 
 rows=""
-done_ids=""
 for f in features/[0-9]*.md features/done/[0-9]*.md; do
   [ -e "$f" ] || continue
   line="$(extract "$f")"
-  rows="${rows}${line}"$'\n'
-  case "$f" in features/done/*) done_ids="${done_ids} ${line%%${SEP}*}";; esac
+  # 12e champ = chemin de la fiche RELATIF à features/ (donc relatif à features/BACKLOG.md,
+  # le document généré). Lien document-relative : `0050-slug.md`, `done/0000-slug.md` —
+  # PAS `features/…` (qui, DANS BACKLOG.md, résoudrait `features/features/…`, revue Codex #184).
+  rows="${rows}${line}${SEP}${f#features/}"$'\n'
 done
 
 # Intégrité épics (ADR-0017 A7) + unicité des ids (fiche 0064) — warnings non bloquants.
@@ -91,8 +92,8 @@ if [ "$has_product" = 1 ]; then cols="${cols} Produit |"; dash="${dash}---------
 cols="${cols} Statut | PR |"
 dash="${dash}--------|----|"
 
-emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes actives
-  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$9" epic="${10}" product="${11}"
+emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de table
+  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$9" epic="${10}" product="${11}" rel="${12}"
   local st
   case "$status" in
     shipped) st='✅ shipped';;
@@ -103,7 +104,10 @@ emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes act
   esac
   title="${title//|/\\|}"
   pr="${pr//|/\\|}"
-  local line="| $id | $title | $type | $prio |"
+  # Id CLIQUABLE vers la fiche (règle human-facing-lisibility) — lien relatif au doc BACKLOG.md.
+  local id_cell="$id"
+  [ -n "$rel" ] && id_cell="[$id]($rel)"
+  local line="| $id_cell | $title | $type | $prio |"
   if [ "$has_version" = 1 ]; then line="${line} ${version} |"; fi
   if [ "$has_epic_col" = 1 ]; then line="${line} ${epic} |"; fi
   if [ "$has_product" = 1 ]; then line="${line} ${product} |"; fi
@@ -125,8 +129,8 @@ emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes act
   echo "$cols"
   echo "$dash"
   printf '%s' "$rows" | awk -F"$SEP" '$5 != "idea" && $3 != "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-    while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
-      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product"
+    while IFS="$SEP" read -r id title type prio status pr ready created version epic product rel; do
+      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
     done
 
   if [ "$has_epics" = 1 ]; then
@@ -136,8 +140,8 @@ emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes act
     echo "$cols"
     echo "$dash"
     printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product"
+      while IFS="$SEP" read -r id title type prio status pr ready created version epic product rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
 
@@ -149,12 +153,14 @@ emit_row() { # $1..$11 = champs ; émet une ligne de table avec les colonnes act
     echo "$cols"
     echo "$dash"
     printf '%s\n' "$ideas" | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product"
+      while IFS="$SEP" read -r id title type prio status pr ready created version epic product rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
   echo ''
-  echo "> Livrées (\`done/\`) : $(echo "$done_ids" | tr ' ' '\n' | grep -v '^$' | sort | paste -sd ',' - | sed 's/,/, /g')."
+  # Livrées : ids CLIQUABLES vers done/<fiche> (lien relatif au doc BACKLOG.md), triés par id.
+  done_summary="$(printf '%s' "$rows" | awk -F"$SEP" '$12 ~ /^done\//{ print $1 "\t" $12 }' | sort -k1,1 | awk -F'\t' 'NF{ printf "%s[%s](%s)", sep, $1, $2; sep=", " }')"
+  echo "> Livrées (\`done/\`) : ${done_summary}."
 } > features/BACKLOG.md
 
 echo "features/BACKLOG.md régénéré ($(printf '%s' "$rows" | grep -c .) fiches)."
