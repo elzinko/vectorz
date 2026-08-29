@@ -379,7 +379,7 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 59,
+  "rules": 60,
   "agents": 7,
   "skills": 23,
   "bundles": 12,
@@ -390,6 +390,10 @@ window.EZK = {
   "casses": 0
  },
  "orphans": [
+  {
+   "kind": "rule",
+   "id": "ux/no-layout-shift"
+  },
   {
    "kind": "skill",
    "id": "ezk-bug"
@@ -1856,6 +1860,17 @@ window.EZK = {
    "bundles": [
     "typescript-2026"
    ],
+   "agents": []
+  },
+  "ux/no-layout-shift": {
+   "id": "ux/no-layout-shift",
+   "title": "Réserver l'espace des éléments optionnels",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "prompt"
+   ],
+   "bundles": [],
    "agents": []
   }
  },
