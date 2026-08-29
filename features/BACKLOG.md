@@ -159,6 +159,8 @@
 | [20260826173005368](20260826173005368_renommer-ezk-map.md) | Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills | refactor | P2 |  | mega-city | 🔴 todo |  |
 | [20260826173221323](20260826173221323_racine-parametrable-des-vues.md) | Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet | refactor | P2 | 20260813124026215 | mega-city | 🔴 todo |  |
 | [20260826225817193](done/20260826225817193_board-clic-fiche-detail.md) | Board d'avancement — cliquer une fiche ouvre son détail lisible (au lieu du .md brut) | feature | P2 | 20260821163346487 | mega-city | ✅ shipped | #181 |
+| [20260828165644386](20260828165644386_vue-ecart-plan-delta.md) | Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan | feature | P2 |  | mega-city | 🔴 todo |  |
+| [20260828165644452](20260828165644452_monitor-accueil-pilotage-sections.md) | Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête | feature | P2 |  | mega-city | 🔴 todo |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
