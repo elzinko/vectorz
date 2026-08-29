@@ -27,7 +27,7 @@ function renderTableRow(row: SessionRow): string {
       <td>${escapeHtml(row.path)}</td>
       <td>${escapeHtml(row.branch || '(détaché)')}</td>
       <td>${escapeHtml(row.subject)}</td>
-      <td class="activity-${row.sessionActivity}">${escapeHtml(row.sessionActivity)}</td>
+      <td class="activity-${escapeHtml(row.sessionActivity)}">${escapeHtml(row.sessionActivity)}</td>
       <td>${escapeHtml(row.pr)}</td>
       <td>${supprimable}</td>
     </tr>`;

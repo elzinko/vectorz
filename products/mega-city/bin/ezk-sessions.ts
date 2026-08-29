@@ -180,7 +180,9 @@ function renderRecommendations(data: ReturnType<typeof buildSessionsData>): void
  * fichier partagé (ADR-0043 D3).
  */
 function runMapServer(): void {
-  const START_PORT = Number(process.env.EZK_SESSIONS_PORT ?? 4174);
+  const envPort = Number(process.env.EZK_SESSIONS_PORT);
+  // EZK_SESSIONS_PORT non numérique → NaN ferait ouvrir un port aléatoire silencieux (revue P2).
+  const START_PORT = Number.isInteger(envPort) && envPort > 0 ? envPort : 4174;
 
   const server = createServer((_req, res) => {
     try {
