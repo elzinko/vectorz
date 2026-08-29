@@ -46,12 +46,14 @@ export interface PlanDelta {
 }
 
 // Extraction d'ids sur TOUT le document (fix revue Codex PR #185) : la promesse est « l'id
-// cité n'importe où dans PLAN.md », notes en prose comprises. Même logique de tokens que
-// plan-sections : on neutralise d'abord les dates ISO (sinon l'année `2026` passe pour un id
-// 4 chiffres), puis on ne capte que les ids de longueur réelle (4 ou 17 chiffres) bornés par
-// des non-chiffres (immunise contre les fragments de SHA).
+// cité n'importe où dans PLAN.md », notes en prose comprises. On neutralise d'abord les dates
+// ISO (sinon l'année `2026` passe pour un id 4 chiffres), puis on ne capte que les ids de
+// longueur réelle (4 ou 17 chiffres) bornés par des non-chiffres (immunise contre les
+// fragments de SHA). Le lookbehind `(?<![A-Za-z]-)` exclut les namespaces NON-fiche comme
+// `ADR-0040` (≠ la fiche 0040) : sinon citer un ADR marquerait une fiche homonyme « dans le
+// plan » à tort (revue Codex #185, 2ᵉ passe). Le préfixe legacy `mc-`, lui, EST une fiche.
 const ISO_DATE_RE = /\d{4}-\d{2}-\d{2}/g;
-const ID_TOKEN_RE = /(?<!\d)(?:mc-)?(\d{17}|\d{4})(?!\d)/g;
+const ID_TOKEN_RE = /(?<!\d)(?<![A-Za-z]-)(?:mc-)?(\d{17}|\d{4})(?!\d)/g;
 
 /** Tous les ids cités par `PLAN.md`, où qu'ils soient (puces, notes en prose, multi-ids). */
 export function planIds(planMd: string): Set<string> {

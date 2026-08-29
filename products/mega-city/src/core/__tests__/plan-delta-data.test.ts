@@ -48,6 +48,18 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
     expect(delta.recent.find((c) => c.id === '2026')?.inPlan).toBe(false);
   });
 
+  it('planIds exclut les numéros d’ADR (ADR-0040 ≠ fiche 0040) — revue Codex #185', () => {
+    // « ADR-0040 » cité dans le plan ne doit PAS marquer la fiche homonyme 0040 « dans le plan ».
+    const plan = '## ▶️ NOW\n- **20260821204737357** — câbler le graphe (ADR-0040) · `build`';
+    const delta = buildPlanDelta(plan, [f({ id: '0040', status: 'todo' })]);
+    expect(delta.recent[0].inPlan).toBe(false);
+    expect(delta.offPlanCount).toBe(1);
+    // Contrôle : un vrai id en prose reste capté.
+    expect(buildPlanDelta('- fiche 0040 planifiée', [f({ id: '0040' })]).recent[0].inPlan).toBe(
+      true,
+    );
+  });
+
   it('recent = les N dernières par id (desc), fenêtre réglable', () => {
     const fiches = [
       '20260810000000001',
