@@ -2,7 +2,7 @@
 id: "20260824122629794"
 title: Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore
 type: feature
-priority: P1
+priority: P0
 product: mega-city
 version:
 epic:
