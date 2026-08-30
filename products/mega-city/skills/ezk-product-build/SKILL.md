@@ -53,8 +53,9 @@ les vitesses toi-même, tu **valides à chaque checkpoint**. `auto` (**défaut**
 pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready` si `--check-ready true`).
 
 **`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints livrés**. **`--once`** = raccourci
-de `--max-sprints 1` (un seul sprint — ex-sous-commande `once`). Sans borne, la boucle va jusqu'à un
-checkpoint ou l'**épuisement du backlog tirable**.
+de `--max-sprints 1` (un seul sprint). **Rétro-compat** : l'ancienne sous-commande **`once` reste acceptée**
+et **mappe sur `--once`** (= `--max-sprints 1`) — un `once` hérité reste **borné à un sprint**, il **ne tombe
+pas** dans le `run` auto. Sans borne, la boucle va jusqu'à un checkpoint ou l'**épuisement du backlog tirable**.
 
 **Réglages avancés** — `--tokens` règle **comment la boîte roule** (indépendant du `--mode`, cf. § dédié) ;
 `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming ; `--delivery` règle le **grain de
@@ -186,7 +187,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-dev`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--check-ready`** : `true` (défaut) → **STOP humain** pour tamponner ; `false` → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
-| **Dérive / plafond tokens** | en `lean`, dégrade (jamais plus cher) ; en `cap`, **arrête au point sûr et demande** (augmenter / terminer l'en-cours / stop). Une **augmentation** de budget = **STOP humain**, dans les deux cas. |
+| **Dérive / plafond tokens** | en `cap`, **arrête au point sûr et demande** (augmenter / terminer l'en-cours / stop). En `lean` (défaut) — **déjà le moins cher, rien à dégrader** — si la dérive **persiste** au-delà du seuil : **surface + STOP humain**, jamais de burn illimité en silence. Une **augmentation** de budget = **STOP humain** dans les deux cas. |
 | **Action sortante / secret** (transversal, hors des 4 moments) | **STOP humain** — jamais automatisé, dans les deux modes (cf. ci-dessous). |
 
 **Les 4 STOP humains — jamais automatisés** (ADR-0011 §3) : action irréversible/sortante
