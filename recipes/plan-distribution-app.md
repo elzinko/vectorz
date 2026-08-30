@@ -1,3 +1,15 @@
+---
+id: "20260830104013793"
+title: Distribution d'app desktop via bucket objet public (Cloudflare R2) + endpoint de téléchargement
+makes: Un mécanisme de distribution app gratuite/Pro (binaires hors GitHub, servis via R2 + endpoint /api/downloads)
+source: ~/git/bacasable/muti
+composes: []
+status: ready
+home: central
+created: 2026-08-24
+updated: 2026-08-30
+---
+
 # Plan — construction, déploiement et distribution de l'app samplerz
 
 > **Document vivant.** Mis à jour au fil de la construction et des corrections.
@@ -125,6 +137,16 @@ vite, en réutilisant des briques éprouvées.
 → Cette section est le **germe** de la future **fiche de feature vectorz** : le
 mécanisme ezk (mega-city) qui, à partir de cette recette, crée une fiche dans
 n'importe quel projet ezk et en pilote l'implémentation *sans rien oublier*.
+
+## Fichiers de référence (entonnoir — pointer, jamais copier)
+
+Racine : **`~/git/bacasable/muti`**
+
+- `apps/website/api/downloads.js` — endpoint 302 vers R2
+- `apps/website/src/pages/Download.vue` — front `/download`
+- `scripts/upload-desktop-to-r2.mjs` — script d'upload manuel
+- `.github/workflows/cd.yml` — upload R2 en CI (release)
+- `.github/workflows/cleanup.yml` — purge des vieux binaires
 
 ## 6. Journal du plan
 

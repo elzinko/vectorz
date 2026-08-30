@@ -16,7 +16,7 @@
 # Rangements actés par le PO le 2026-08-23 : commits → techno (« la partie commit est
 # un outillage ») · archive → hôte LLM (skill ET agent exécutant) · start → méthode
 # (« une étape liée au sprint ») · backlog → méthode (artefact) · codex → GitHub ·
-# supervision-* → observabilité · ezk-ezk + steward → librairie · vz-product-builder
+# supervision-* → observabilité · ezk-ezk + steward + chef → librairie · vz-product-builder
 # → overlay (le premier vivant) · ezk-pr → module github (2026-08-24).
 
 etages:
@@ -59,7 +59,7 @@ etages:
         skills: [vz-product-builder]
   librairie:
     skills: [ezk-ezk]
-    agents: [ezk-steward]
+    agents: [ezk-steward, ezk-chef]
 
 # Bandes INTERNES à l'étage méthode (ADR-0020, amendée par ADR-0039 : l'ex-bande
 # « Outillage » est promue famille de modules ; commits et archive quittent

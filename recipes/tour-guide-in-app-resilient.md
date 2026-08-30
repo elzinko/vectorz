@@ -1,3 +1,15 @@
+---
+id: "20260830104013889"
+title: Tour guidé in-app résilient au refactoring (Driver.js + registre data-testid)
+makes: Un tour d'onboarding (Driver.js) qui cible des data-testid stables, avec un test qui casse si une cible disparaît du DOM
+source: # implémentation de référence partielle (interim HelpModal.vue seulement) — voir Statut
+composes: []
+status: draft # pattern décrit, implémentation de référence pas encore livrée dans muti (voir Statut)
+home: central
+created: 2026-08-28
+updated: 2026-08-30
+---
+
 # Recette — tour guidé in-app résilient au refactoring (Driver.js)
 
 > **Document vivant.** Recette ezk réutilisable : construire un tour d'onboarding guidé
@@ -98,3 +110,20 @@ test, câbler les déclencheurs.
 
 - **2026-08-28** — création. Germe : fiche muti `0030` (retour PO : « testé et résilient au
   refactoring, au maximum »). Implémentation de référence à venir dans muti.
+
+## Fichiers de référence (entonnoir — pointer, jamais copier)
+
+Racine : **`~/git/bacasable/muti`**
+
+- `HelpModal.vue` (PR #133) — point d'entrée intérimaire (déclencheurs `?` + flag
+  `localStorage muti.help.seen`) que le vrai tour réutilisera
+- Fiche `0030` — exigence « testé & résilient au refactoring »
+
+## Statut de cette recette
+
+Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
+[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+**`status: draft`** : le **pattern** (registre `data-testid` + Driver.js + double filet de
+test) est décrit, mais l'implémentation de référence n'est **pas encore livrée** dans muti —
+seul un point d'entrée intérimaire (`HelpModal.vue`) existe. `source:` laissé vide plutôt que
+pointer une implémentation qui n'existe pas. À repasser `ready` quand le tour 0030 est livré.

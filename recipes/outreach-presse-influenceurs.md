@@ -1,3 +1,15 @@
+---
+id: "20260830104013623"
+title: Outreach presse & influenceurs (produit indie, sans budget)
+makes: Une méthode réutilisable pour faire connaître un produit indie (presse, forums, réseaux, influenceurs) sans budget pub
+source: ~/git/bacasable/muti
+composes: []
+status: draft # pointeurs fichier existants, sans `fichier:ligne` (doc narratif, pas du code) — voir Statut
+home: central
+created: 2026-08-27
+updated: 2026-08-30
+---
+
 # Recette — outreach presse & influenceurs (produit indie, sans budget)
 
 > **Document vivant.** Méthode réutilisable pour faire connaître un produit (app, plugin,
@@ -83,3 +95,19 @@ Automatiser la **recherche** et le **tracking** = OK. Automatiser **l'envoi d'em
 tiers = **danger** (spam, RGPD, réputation). Tout envoi doit rester **personnalisé** et
 **consenti** ; un envoi de masse non sollicité brûle les contacts et la marque. La
 personnalisation n'est pas une option — c'est ce qui fait la différence entre outreach et spam.
+
+## Fichiers de référence (entonnoir — pointer, jamais copier)
+
+Racine : **`~/git/bacasable/muti`**
+
+- `docs/marketing/outreach.md` — journal d'envoi presse FR
+- `docs/marketing/beta-outreach.md` — outreach bêta
+- `docs/marketing/contacts/` — annuaire de contacts
+
+## Statut de cette recette
+
+Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
+[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+**`status: draft`** : les pointeurs ci-dessus sont réels (fichiers muti existants), mais sans
+`fichier:ligne` précis — c'est un journal/doc narratif, pas du code à une ligne donnée. Signalé
+plutôt qu'inventer une ligne.

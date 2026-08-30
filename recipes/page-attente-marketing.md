@@ -1,3 +1,15 @@
+---
+id: "20260830104013705"
+title: Mailing list sur une page d'attente (coming-soon)
+makes: Une page d'attente qui remplace le site en prod et collecte des emails (RGPD, honeypot), sans casser staging
+source: # source ambiguë (muti / livestreamz / samplerz cités) — non tranchée, voir Statut
+composes: [vercel-kv-database, brancher-domaine-vercel]
+status: draft # source ambiguë entre 3 projets — signalé, non inventé (voir Statut)
+home: central
+created: 2026-08-27
+updated: 2026-08-30
+---
+
 # Recette — Mailing list sur une page d'attente (coming-soon)
 
 > Ajouter à un site **Vue + Vite sur Vercel** une page d'attente « coming soon » qui
@@ -81,3 +93,12 @@ d'endroit pour tester le vrai site.
   une arrow function (« is not a constructor »).
 - Voir aussi les pièges de la brique [`Base KV Vercel`](./vercel-kv-database.md)
   (créer ≠ connecter, deux nommages de variables…).
+
+## Statut de cette recette
+
+Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
+[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+**`status: draft`** : la recette cite « muti / livestreamz », mais liste des fichiers
+(`src/views/ComingSoonView.vue`, `api/notify.js`…) sans dire **lequel des 3 projets** cités
+(muti, livestreamz, samplerz) est la racine `source:` à pointer — trop ambigu pour un `source:`
+honnête sans deviner. Signalé au PO pour trancher la racine avant de passer `ready`.

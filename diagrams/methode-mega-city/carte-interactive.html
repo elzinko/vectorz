@@ -379,14 +379,14 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 60,
-  "agents": 7,
+  "rules": 66,
+  "agents": 8,
   "skills": 23,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 176,
+  "total": 182,
   "casses": 0
  },
  "orphans": [
@@ -433,6 +433,30 @@ window.EZK = {
   {
    "kind": "rule",
    "id": "hexagonal/wiring-at-edge"
+  },
+  {
+   "kind": "rule",
+   "id": "recipe/indexed"
+  },
+  {
+   "kind": "rule",
+   "id": "recipe/lists-tasks-and-composes"
+  },
+  {
+   "kind": "rule",
+   "id": "recipe/no-stored-code"
+  },
+  {
+   "kind": "rule",
+   "id": "recipe/plain-language-first"
+  },
+  {
+   "kind": "rule",
+   "id": "recipe/points-to-real-example"
+  },
+  {
+   "kind": "rule",
+   "id": "recipe/valid-frontmatter"
   },
   {
    "kind": "rule",
@@ -1121,6 +1145,17 @@ window.EZK = {
     "global"
    ]
   },
+  "ezk-chef": {
+   "id": "ezk-chef",
+   "description": "Gardien de la famille « recette » (recipes/*.md). A utiliser pour verifier qu'une recette est bien formee avant/apres normalisation ou ajout — front-matter valide, pointeur fichier:ligne vers une implementation reelle, zero code recopie, presence dans le livre recipes/RECIPES.md. Lance d'abord la gate mecanique (regen-recipes.sh, champs front-matter, check-links sur recipes/), puis juge les deux SHOULD (playbook + composes, En clair en tete). Rend un verdict GO/NO-GO. Pas un role scrum.",
+   "etage": "librairie",
+   "model": "sonnet",
+   "effort": "low",
+   "competences": [],
+   "interactions": [],
+   "convokedBy": [],
+   "profiles": []
+  },
   "ezk-dev": {
    "id": "ezk-dev",
    "description": "Developpeur TDD, a utiliser dans la boucle ezk-sprint a l'etape TDD POC, pour implementer le coeur d'une feature en red-green-refactor. Vise un POC fonctionnel (ca marche) en clean code, pas le polissage visuel. S'arrete des que les tests sont verts et renvoie un resume concis.",
@@ -1691,6 +1726,72 @@ window.EZK = {
    "kind": "disposition",
    "level": "SHOULD",
    "enforcements": [],
+   "bundles": [],
+   "agents": []
+  },
+  "recipe/indexed": {
+   "id": "recipe/indexed",
+   "title": "Une recette est indexée dans le livre",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
+  "recipe/lists-tasks-and-composes": {
+   "id": "recipe/lists-tasks-and-composes",
+   "title": "Playbook + composes + profil référencé",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
+  "recipe/no-stored-code": {
+   "id": "recipe/no-stored-code",
+   "title": "Aucun code recopié dans une recette",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
+  "recipe/plain-language-first": {
+   "id": "recipe/plain-language-first",
+   "title": "« En clair » en tête de recette",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
+  "recipe/points-to-real-example": {
+   "id": "recipe/points-to-real-example",
+   "title": "Une recette pointe un exemple réel",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
+  "recipe/valid-frontmatter": {
+   "id": "recipe/valid-frontmatter",
+   "title": "Front-matter de recette valide",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
    "bundles": [],
    "agents": []
   },
