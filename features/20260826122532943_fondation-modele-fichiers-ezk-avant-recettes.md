@@ -66,7 +66,7 @@ mot pour mot la « structuration des fichiers markdown et le fonctionnement glob
 n'a **aucun schéma vérifiable** contre lequel évoluer.
 
 **Décision de séquence :** la recette devient le **premier consommateur** du modèle. `ezk-chef`
-et l'extraction ([794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md))
+et l'extraction ([794](done/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md))
 **attendent** que la fondation ait livré, au minimum, le **graphe compilé** et le **contrat de
 schéma**.
 

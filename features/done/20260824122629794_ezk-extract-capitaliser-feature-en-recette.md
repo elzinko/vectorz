@@ -7,9 +7,9 @@ product: mega-city
 version:
 epic:
 depends: []
-status: todo
+status: shipped
 ready: 2026-08-30
-pr:
+pr: "#194"
 created: 2026-08-24
 ---
 
@@ -33,7 +33,7 @@ Les briques de la méthode qui serviront — le vocabulaire que tu ne te rappell
 - **profil** = le bon de commande d'une cible : quelles rules + agents + skills.
 - **« recette »** = **nature d'objet à trancher au panel** — NE PAS pré-décider ici.
   La définition de l'objet (et de son gardien) est portée par la **fiche-chapeau**
-  [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md).
+  [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md).
   Deux options en débat : **(A)** objet de premier rang + gardien (pattern steward,
   thèse du chapeau) ; **(B)** simple **skill dont le playbook EST la liste de tâches**,
   qui **compose les rules** et **référence le profil** (approche de la fiche
@@ -63,7 +63,7 @@ son type), ou reste-t-elle **un skill qui compose des rules** (pas de nouveau co
 
 ## Grooming du 2026-08-24 — le design concret (PO)
 
-**Le PO a déjà créé la 1ʳᵉ recette à la main** : [`recipes/plan-distribution-app.md`](../recipes/plan-distribution-app.md)
+**Le PO a déjà créé la 1ʳᵉ recette à la main** : [`recipes/plan-distribution-app.md`](../../recipes/plan-distribution-app.md)
 (distribution d'app via R2, extraite de `muti`). Le dossier **`recipes/` existe déjà à la
 racine de vectorz**. Cette fiche formalise le mécanisme qui GÉNÉRERAIT ces recettes au lieu
 de les écrire à la main — la §5 de ce doc s'appelle elle-même « le germe de la fiche vectorz ».
@@ -96,10 +96,10 @@ produit à règles activables). L'extraction proposée ici est **distincte** : f
 
 ## ▶️ Groomé 2026-08-30 — l'objet est tranché (#192), reste le producteur
 
-**Le débat A/B est clos.** La fiche-chapeau [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)
+**Le débat A/B est clos.** La fiche-chapeau [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md)
 a été **construite et shippée (PR #192, 2026-08-30)** : la recette est un **artefact de
 premier rang** (option A), avec son gardien **`ezk-chef`**, son gabarit
-[`recipes/RECIPE_TEMPLATE.md`](../recipes/RECIPE_TEMPLATE.md), son bundle `rules/recipe/*`
+[`recipes/RECIPE_TEMPLATE.md`](../../recipes/RECIPE_TEMPLATE.md), son bundle `rules/recipe/*`
 et son livre régénéré `recipes/RECIPES.md`. Donc, **plus de panel à tenir** sur l'objet :
 
 - **Objet** : tranché → artefact de premier rang (pas « skill qui compose »). ✅

@@ -22,7 +22,7 @@ une feature produit.
 
 ## Les fiches qui gravitent
 
-- [`20260824122629794`](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) —
+- [`20260824122629794`](done/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) —
   feature codée → recette (**l'extraction**), P0.
 - [`0147`](0147-ezk-recipy-mvp.md) — `ezk-recipy` : scanner des repos froids → proposer des
   idées de skills (sourcing).

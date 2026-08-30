@@ -131,7 +131,7 @@ La recette **réutilise la mécanique backlog telle quelle**. Rien à réinvente
 ### D3 — Producteur = aucun skill neuf
 
 Le geste « produire une recette » est **déjà couvert** : `ezk-ezk harvest` (session courante) et
-`ezk-extract` / [fiche 794](../20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
+`ezk-extract` / [fiche 794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
 (feature désignée). On **n'ajoute pas** de skill producteur, et surtout **pas** sous le nom
 `ezk-recipy` — faux ami déjà pris ([fiche 0147](../0147-ezk-recipy-mvp.md) = scanner de repos
 **froids**, pas les recettes de démarrage).
@@ -183,7 +183,7 @@ Cette fiche définit **l'OBJET** (format recette + livre + gardien). Les autres 
 **consomment** :
 
 - **session courante** → `ezk-ezk harvest` ;
-- **feature désignée** → `ezk-extract` ([794](../20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)) ;
+- **feature désignée** → `ezk-extract` ([794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)) ;
 - **repos froids** → `ezk-recipy` ([0147](../0147-ezk-recipy-mvp.md)) ;
 - **cas d'usage** : `ezk-cowork` ([0155](../0155-ezk-cowork-scaffold-audit-contrat-cowork.md)),
   [recette-site 540](../20260821172716540_recette-site-produit-regles-activables.md), et « pack de

@@ -55,7 +55,7 @@ un nom conventional qui rend le tout **retrouvable et rapprochable** de la featu
   qui fabriquera **ezk-chef**. `ezk-ezk` est plutôt l'outil pour **créer des commandes** dans
   l'esprit ezk (formats/types du domaine mega-city) ; le nom `ezk-ezk extract` **n'est pas
   acquis**. À concevoir avant de coder.
-- Alimente : [`20260824122629794`](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
+- Alimente : [`20260824122629794`](done/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
   (feature → recette) et le futur **ezk-chef**.
 - Doctrine : ADR-0013 (une recette **propose**, ne fabrique jamais de code seule).
 - Sœur : [`20260829123707200`](20260829123707200_reunifier-tagger-cluster-recette.md)
