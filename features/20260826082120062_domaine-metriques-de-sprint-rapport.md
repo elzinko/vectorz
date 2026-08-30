@@ -3,10 +3,10 @@ id: "20260826082120062"
 title: Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur
 type: feature
 priority: P1
-product: vectorz
+product: mega-city
 epic:
-status: idea
-ready:
+status: todo
+ready: 2026-08-30
 pr:
 created: 2026-08-26
 ---
@@ -20,6 +20,47 @@ qui note tout seul le **temps passé**, les **tokens consommés** et les **KPI s
 (fiches livrées, blocages, retouches, tours de revue). Un **validateur** garantit que
 le rapport est complet et cohérent. On produit et on range — **rien ne se déclenche
 tout seul** (le déclenchement par la métrique, c'est un autre sujet, l'ADR-030).
+
+## ▶️ Groomé 2026-08-30 (DoR levée par ezk-architect) — le MVP
+
+Le verrou de conception (« les tokens ne savent pas à quel sprint ils appartiennent »)
+**se dissout côté lecture**. On n'instrumente rien de neuf :
+
+- Le journal de supervision écrit un `ts` ISO par événement et **un** gate
+  `sprint-<slug>-checkpoint` par sprint. Les **frontières de sprint sont déjà là**, horodatées.
+- Les transcripts Claude Code (`~/.claude/projects/…/*.jsonl`) portent les **tokens par
+  message** (`message.usage`), horodatés. `supervision/analyze.ts` lit **déjà** journal +
+  transcripts en une timeline fusionnée.
+- Rattacher durée/tokens à un sprint = **une jointure par fenêtre de temps** entre ces deux
+  sources. Un lecteur pur, déterministe. Zéro modification des émetteurs.
+
+**Ce qu'on construit maintenant (MVP, aucune donnée manquante) :**
+
+1. Un domaine `products/mega-city/src/sprint-metrics/` (domain pur / ports / adapters /
+   validator) qui **réutilise** `supervision/journal.ts` + `supervision/analyze.ts`.
+2. **Durée au grain sprint** (solide, horodatages du journal).
+3. **Tokens au grain sprint best-effort** (fenêtrage des `message.usage` du transcript entre
+   les frontières), **étiqueté comme tel** ; **repli honnête au grain session** si le
+   fenêtrage est bancal — jamais de granularité silencieusement fausse.
+4. **KPI solides** : fiches livrées (ids), retouches PR (réutilise `tools/outcomes`),
+   blocages (événements `escalate{blocked}` du journal fenêtrés).
+5. **Rapport versionné** `docs/sprints/<AAAA-MM-JJ>-sprint-<slug>.{md,json}` (répertoire
+   **tracké**, pas `.improvement/` gitignoré). Le `.md` ouvre par « En clair », rendu depuis
+   le `.json` (source de vérité).
+6. **Validateur** `validateSprintReport(json)` calqué sur `journal-validator` : refuse un
+   rapport tronqué/incohérent (champ manquant, `somme(étapes) ≠ total`, count ≠ len(ids)).
+
+**Différé (best-effort ou hors coût MVP) :** ventilation par étape (le journal n'a qu'un
+gate par sprint, pas un par étape → total + mention) ; tours de revue (seulement si l'adaptateur
+`gh` est trivial) ; câblage du domaine budget cop1 (orphelin, inutile ici) ; tout seuil (Sujet B).
+
+### ⚖️ 2 arbitrages produit à confirmer au tampon (l'architecte ne les a pas inventés)
+
+- **`product:`** — reco **`mega-city`** (le domaine ne peut pas vivre sans les lecteurs
+  journal+transcript qui y sont ; ancrer à la racine forcerait un import racine→intérieur d'un
+  produit). La fiche proposait `vectorz`. *Front-matter passé à `mega-city` sous réserve de ton OK.*
+- **Vélocité** — le modèle de fiche **n'a aucun point d'estimation**. Reco : **retirer la
+  vélocité-points du MVP**, garder « fiches livrées ». (Introduire des points = chantier produit séparé.)
 
 ## Contexte / Problème
 
@@ -123,5 +164,8 @@ valider. Le déclenchement « sur preuve chiffrée » est le Sujet B (ADR-030), 
   de tokens.
 - **Voisins** : épic 0051 (qualité produit), 0055 (KPI agrégés commit→PR→sprint→version),
   0100 (sprint intake — santé du backlog à l'entrée).
-- **À groomer (DoR) au tirage** : emplacement exact du rapport (**répertoire tracké**,
-  pas `.improvement/`), liste finale des KPI, source précise des tokens (supervision vs budget).
+- **DoR levée le 2026-08-30** (ezk-architect, voir section « ▶️ Groomé » en tête) :
+  emplacement = `docs/sprints/` (tracké) ; source tokens = **transcripts Claude Code**
+  fenêtrés par les gates `sprint-<slug>` (le domaine budget cop1 est orphelin, écarté) ;
+  KPI MVP = fiches livrées + retouches PR + blocages. Restent 2 confirmations produit au
+  tampon : `product:` (→ `mega-city`) et le sort de la vélocité (→ retirée du MVP).
