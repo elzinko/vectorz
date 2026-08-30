@@ -114,8 +114,8 @@ courte par galère : { **le symptôme** (ce qui a coincé) · **le geste d'inter
 (Vercel, IONOS, DNS…) · **le pourquoi** }. **Seulement si utile pour reproduire** — repris
 du garde-fou d'`ezk-retro` : rien à retenir → on n'écrit rien (pas de gate qui juge
 l'utilité, c'est du jugement). C'est cette section qu'`ezk-archive` fige dans
-`docs/sessions/` à la clôture, et que consommera plus tard `ezk-chef extract`
-(hors périmètre ici).
+`docs/sessions/` à la clôture, et que consomme `ezk-chef extract` pour amorcer un
+brouillon de recette (PR #196).
 
 ## La boucle de sprint — par feature
 
