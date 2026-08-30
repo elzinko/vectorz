@@ -158,8 +158,14 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 ## Mode `--mode` — la boîte de vitesses (`manuel` | `auto`)
 
 Règle **qui passe les vitesses** : toi à chaque checkpoint (`manuel`), ou la boîte pour toi
-(`auto`). **Défaut : `auto`.** `manuel` garde **`ask` comme alias** (rétro-compat). Mutable à
+(`auto`). **Défaut : `auto`.** `manuel` garde **`ask` comme alias**. Mutable à
 chaud (option `[Passer en auto]` / `[Repasser en manuel]` proposée à un checkpoint).
+
+> **Rétro-compat — l'ancien flag `--checkpoints ask|auto` reste accepté.** Il **mappe** sur
+> `--mode` : `ask`→`manuel`, `auto`→`auto`. Une invocation historique **`--checkpoints ask`
+> sélectionne donc toujours le mode `manuel`** (elle s'arrête à chaque checkpoint) — elle **ne
+> bascule pas** silencieusement en `auto` sous prétexte que c'est le nouveau défaut. N'utilise
+> `--checkpoints` que pour lire une commande héritée ; écris `--mode` pour toute nouvelle.
 
 - **`manuel`** (alias `ask`) — tu t'arrêtes en suggestions-à-choix à **chaque** moment d'arrêt.
 - **`auto` (défaut)** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
