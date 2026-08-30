@@ -381,7 +381,7 @@ window.EZK = {
  "counts": {
   "rules": 66,
   "agents": 8,
-  "skills": 23,
+  "skills": 24,
   "bundles": 10,
   "profiles": 6
  },
@@ -465,6 +465,10 @@ window.EZK = {
   {
    "kind": "skill",
    "id": "ezk-bug"
+  },
+  {
+   "kind": "skill",
+   "id": "ezk-chef"
   },
   {
    "kind": "skill",
@@ -783,6 +787,17 @@ window.EZK = {
    "composesExternal": [
     "product-brainstorming"
    ],
+   "roles": [],
+   "composedBy": [],
+   "profiles": []
+  },
+  "ezk-chef": {
+   "id": "ezk-chef",
+   "description": "Hub de la famille d'artefacts « recette » (recipes/*.md) — le point d'entrée verbes pour tout ce qui touche une recette. A utiliser quand l'utilisateur veut « fais-en une recette », « capitalise cette feature en recette », « extrais une recette depuis la fiche X », « ezk-chef », « vérifie / valide cette recette », « range le livre des recettes », ou liste ce qui existe déjà comme recette. Pilotable par sous-commandes : help, check (délègue le jugement à l'agent `ezk-chef` — gate mécanique + verdict GO/NO-GO), extract (produit un BROUILLON de recette `status: draft` depuis une fiche déjà shippée — cœur de ce sprint ; extraction depuis une implémentation de référence d'un autre projet : à venir), regen/list (réécrit `recipes/RECIPES.md` via `regen-recipes.sh`). Orchestrateur MINCE, façon `ezk-backlog` : il ne réimplémente pas le jugement de l'agent `ezk-chef` (déjà livré) ni le régénérateur du livre (déjà livré) — il les COMPOSE et ajoute la partie mécanique manquante (`extract`). N'EST PAS `ezk-ezk` (qui fabrique des *skills*, pas des recettes) ; `ezk-chef scan` (sourcer des repos froids, fiche 0147) est différé.",
+   "usage": "[help|check|extract|regen|list]",
+   "etage": "librairie",
+   "composes": [],
+   "composesExternal": [],
    "roles": [],
    "composedBy": [],
    "profiles": []

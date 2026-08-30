@@ -25,6 +25,7 @@
 | [0168](done/0168-run-orphelin-verrou-sans-cle.md) | Run orphelin = verrou sans clé — un run jamais clôturé bloque toute émission, sans action de déblocage | bug | P0 |  | mega-city | ✅ shipped | #76 |
 | [0176](done/0176-interdit-gitconfig-global-identite-agent.md) | Interdit gitconfig global pour l'identité agent — commits cop1 locaux / one-shot only | feature | P0 |  | cop1 | ✅ shipped | #89 |
 | [0181](done/0181-ezk-opus-et-restitutions-lisibles.md) | Méthode ezk — Opus 4.8 par défaut + restitutions lisibles sur toutes les commandes | feature | P0 |  | mega-city | ✅ shipped | #92 |
+| [20260824122629794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P0 |  | mega-city | 🔴 todo |  |
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 |  | mega-city | 🔴 todo |  |
 | [20260828150801613](done/20260828150801613_ezk-ci-conso-script-endpoint.md) | ezk-ci conso — script déterministe + réparer l'endpoint billing migré (410 → /usage) | feature | P0 |  | mega-city | ✅ shipped | #186 |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
@@ -206,7 +207,6 @@
 
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
-| [20260824122629794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P0 |  | mega-city | 💡 idea |  |
 | [20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md) | « Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros | feature | P0 |  | mega-city | 💡 idea |  |
 | [0081](0081-carnet-preparation-retro.md) | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | mega-city | 💡 idea |  |
 | [0087](0087-plugin-claude-code-distribution.md) | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
