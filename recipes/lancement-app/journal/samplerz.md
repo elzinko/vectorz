@@ -35,6 +35,14 @@ boutique LS (produit test prêt, passage live à faire).
   fonctions Vercel figent l'env au déploiement).
 - **Projet Vercel non lié dans le checkout.** `vercel env ls` échoue tant qu'on
   n'a pas fait `vercel link --project samplerz`. → lier d'abord.
+- **`VITE_COMING_SOON` est figée au BUILD, par environnement.** Code : `=== 'true'`
+  → défaut = `false` (absente = vrai site). Posée sur Production ET Preview →
+  `dev`/`staging` (branches Preview) héritaient de la page d'attente. Fix propre :
+  garder la variable sur **Production seulement** ; dev/staging rebuild sans →
+  vrai site. Piège : retirer un seul périmètre (`vercel env rm … preview`)
+  supprime l'entrée COMBINÉE → repose Production. Un `vercel redeploy` des
+  déploiements dev/staging **repointe** leurs domaines vers les nouveaux builds.
+  (dev/staging restent derrière le login Vercel = Deployment Protection, séparé.)
 - **`timeout` absent sur macOS.** Utiliser `gtimeout` (coreutils) ou rien.
 - **Lecture d'un secret du trousseau** peut (ou non selon la version macOS)
   déclencher une validation Touch ID / mot de passe — c'est voulu. Toujours
