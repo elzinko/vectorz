@@ -16,7 +16,7 @@ Ce README documente le **format tel qu'il existe** pour deux lecteurs :
 docs/sessions/AAAA-MM-JJ-<slug>.md
 ```
 
-- La date est celle de la session (ouverture ou clôture, au choix — pas une contrainte).
+- La date est celle de la session.
 - Le `<slug>` résume le sujet. Souvent `sprint-<id>-<desc>` quand la session a livré une
   fiche, parfois juste un thème (`ezk-map-carte-loi-board-design`).
 - Collision de nom → suffixe `-2`, `-3`… On **n'écrase jamais** un récit existant.
@@ -106,8 +106,9 @@ Exemple, tiré de [`2026-08-29-samplerz-cablage-domaine.md`](2026-08-29-samplerz
 ```
 
 `ezk-sprint` remplit cette section **au fil de l'eau** dans le `SPRINT.md` du sprint.
-`ezk-archive` la **reprend telle quelle** dans le récit à la clôture. Plus tard,
-`ezk-chef extract` viendra la lire (hors périmètre pour l'instant).
+`ezk-archive` la **reprend telle quelle** dans le récit à la clôture. En aval,
+`ezk-chef extract` la **lit déjà** pour nourrir les préliminaires d'un brouillon de
+recette : il repère les récits par leur entête `fiches:` (PR #196).
 
 ## Comment un récit est créé
 
