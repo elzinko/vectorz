@@ -7,9 +7,9 @@ product: mega-city
 version:
 epic:
 depends: []
-status: todo
+status: shipped
 ready: 2026-08-25
-pr:
+pr: "#192"
 created: 2026-08-24
 ---
 
