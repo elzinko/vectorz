@@ -105,6 +105,32 @@ if [ -z "$PLAYBOOK" ] && [ -z "$PLAYBOOK_VERIF" ]; then
   PLAYBOOK="1. TODO(jugement) — aucune liste détectée dans Proposition/Comment vérifier ; rédiger le playbook à la main."
 fi
 
+# ── labo (#195) : récits docs/sessions/*.md dont l'entête `fiches:` référence FICHE_ID ────
+# Verse la section « Galères & gestes (labo) » dans les Préliminaires, avec un pointeur vers
+# le récit source (entonnoir ADR-0013 — jamais de code recopié). Tri déterministe (glob trié).
+labo_sessions() {
+  local id="$1" f header
+  [ -d docs/sessions ] || return 0
+  for f in docs/sessions/*.md; do
+    [ -e "$f" ] || continue
+    header="$(awk '/^fiches:/ { print; exit }' "$f")"
+    printf '%s' "$header" | grep -Eq "(^|[^0-9])${id}([^0-9]|\$)" && printf '%s\n' "$f"
+  done | LC_ALL=C sort
+}
+
+PRELIM_LABO=""
+while IFS= read -r sess; do
+  [ -n "$sess" ] || continue
+  labo_body="$(section "$sess" "Galères & gestes (labo)")"
+  [ -n "$labo_body" ] || continue
+  PRELIM_LABO="${PRELIM_LABO}Source : \`${sess}\` (\`fiches:\` référence ${FICHE_ID}).
+
+${labo_body}
+
+"
+done <<< "$(labo_sessions "$FICHE_ID")"
+PRELIM_LABO="${PRELIM_LABO%$'\n\n'}"
+
 NEW_ID="$(bash "$MINT_ID")"
 TODAY="$(date -u +%Y-%m-%d)"
 DEST="recipes/${SLUG}.md"
@@ -143,7 +169,11 @@ SOURCE_NOTE="TODO(jugement) — racine de l'implémentation non dérivable méca
   echo
   echo '## Préliminaires (gestes manuels ⚙️)'
   echo
-  echo 'TODO(jugement) — ce qui ne s’automatise pas.'
+  if [ -n "$PRELIM_LABO" ]; then
+    printf '%s\n' "$PRELIM_LABO"
+  else
+    echo 'TODO(jugement) — ce qui ne s’automatise pas.'
+  fi
   echo
   echo '## Le concept (mécanisme + schéma)'
   echo

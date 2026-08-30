@@ -131,4 +131,65 @@ out_f="$("$SCRIPT" 0152 "$F")"
 check "recette créée depuis une fiche à tiret" "test -s '$F/$out_f'"
 check "slug correct (tiret retiré)"            "[[ '$out_f' == recipes/fiche-legacy.md ]]"
 
+# ── Cas G : récit labo référençant l'id → geste versé, TODO Préliminaires remplacé ────────
+G="$TMP/g"
+fixture_root "$G"
+fiche_shippee "$G" "20260830000000104" "avec-labo"
+mkdir -p "$G/docs/sessions"
+cat > "$G/docs/sessions/2026-08-30-avec-labo.md" <<'EOF'
+fiches: 20260830000000104
+
+# Sprint — test : avec labo
+
+## Galères & gestes (labo)
+
+- **Root Directory Vercel oublié (monorepo)**
+  Geste : Settings → **Root Directory** → renseigner le sous-dossier avant tout déploiement.
+EOF
+out_g="$("$SCRIPT" 20260830000000104 "$G")"
+dest_g="$G/$out_g"
+echo "Cas G (avec récit labo) :"
+check "geste du labo versé en Préliminaires"  "grep -q 'Root Directory Vercel oublié' '$dest_g'"
+check "pointeur vers le récit source"         "grep -q 'docs/sessions/2026-08-30-avec-labo.md' '$dest_g'"
+check "plus de TODO(jugement) vide en Préliminaires" \
+  "! awk '/^## Préliminaires/{p=1;next} /^## /{p=0} p' '$dest_g' | grep -q 'ce qui ne s’automatise pas'"
+
+# ── Cas H : aucun récit labo pour l'id → comportement inchangé (TODO reste) ───────────────
+H="$TMP/h"
+fixture_root "$H"
+fiche_shippee "$H" "20260830000000105" "sans-labo"
+mkdir -p "$H/docs/sessions"
+cat > "$H/docs/sessions/2026-08-30-autre.md" <<'EOF'
+fiches: 99999999999999999
+
+## Galères & gestes (labo)
+
+- **Geste sans rapport avec la fiche testée.**
+EOF
+out_h="$("$SCRIPT" 20260830000000105 "$H")"
+dest_h="$H/$out_h"
+echo "Cas H (sans récit labo pour l'id) :"
+check "TODO(jugement) Préliminaires conservé (dégradation propre)" \
+  "grep -q 'TODO(jugement) — ce qui ne s’automatise pas.' '$dest_h'"
+check "aucun contenu du récit non lié n'est versé" "! grep -q 'sans rapport avec la fiche testée' '$dest_h'"
+
+# ── Cas I : borne anti-sous-chaîne — un id SUPERCHAÎNE ne doit PAS matcher (garde du grep) ──
+I="$TMP/i"
+fixture_root "$I"
+fiche_shippee "$I" "20260830000000106" "borne"
+mkdir -p "$I/docs/sessions"
+cat > "$I/docs/sessions/2026-08-30-superchaine.md" <<'EOF'
+fiches: 202608300000001069
+
+## Galères & gestes (labo)
+
+- **Geste d'une fiche dont l'id est une SUPERCHAINE (l'id testé + un chiffre).**
+EOF
+out_i="$("$SCRIPT" 20260830000000106 "$I")"
+dest_i="$I/$out_i"
+echo "Cas I (borne anti-sous-chaîne) :"
+check "un id superchaîne (…106 vs …1069) n'est PAS versé" "! grep -q 'SUPERCHAINE' '$dest_i'"
+check "TODO Préliminaires conservé (rien versé à tort)" \
+  "grep -q 'TODO(jugement) — ce qui ne s’automatise pas.' '$dest_i'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-ezk-chef-extract: TOUT VERT'; else echo 'test-ezk-chef-extract: ÉCHECS' >&2; exit 1; fi
