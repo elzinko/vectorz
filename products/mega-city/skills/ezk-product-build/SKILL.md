@@ -3,7 +3,7 @@ roles: [ezk-pm]
 name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr]
 composes-external: [product-brainstorming, architecture]
-argument-hint: "[help|build|once|status] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]"
+argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -13,10 +13,12 @@ description: >-
   product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build
   d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente
   AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments :
-  inter-sprint, blocage, dérive tokens, idéation. Mode checkpoints configurable
-  (ask par défaut | auto : prend les décisions recommandées et délègue à ezk-pm,
-  ne s'arrêtant que sur les 4 décisions humaines). Vigilance tokens configurable
-  (lean par défaut | plafond-dur | pleine-puissance). N'EST PAS le scrum master
+  inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de
+  vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne
+  s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque
+  checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens
+  en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance).
+  N'EST PAS le scrum master
   qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus
   qui décide quoi & quand, et le lui confie.
 ---
@@ -38,16 +40,26 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--tokens lean|cap|full] [--checkpoints ask|auto] [--check-ready true|false] [--delivery per-feature|per-epic]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic]`
 
 | Sous-commande | Effet |
 |---|---|
-| `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes tokens & checkpoints courants — ne lance rien |
-| `build` (**défaut**) | Lance la **boucle autonome** : enchaîne les sprints jusqu'à un checkpoint |
-| `once` | Construit **une seule** feature (un sprint) puis s'arrête au checkpoint inter-sprint |
+| `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes courants — ne lance rien |
+| `run` (**défaut**, alias `build`) | Lance la **boucle** : enchaîne les sprints jusqu'à un checkpoint ou `--max-sprints` |
 | `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
 
-`--tokens` règle la **vigilance tokens** ; `--checkpoints` règle **quand tu t'arrêtes pour demander** ; `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming ; `--delivery` règle le **grain de livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas). Défauts : `lean`, `ask`, `true`, `per-feature`.
+**Le levier principal, c'est `--mode` — une boîte de vitesses.** `manuel` (alias `ask`) : tu passes
+les vitesses toi-même, tu **valides à chaque checkpoint**. `auto` (**défaut**) : la boîte enchaîne
+pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready` si `--check-ready true`).
+
+**`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints livrés**. **`--once`** = raccourci
+de `--max-sprints 1` (un seul sprint — ex-sous-commande `once`). Sans borne, la boucle va jusqu'à un
+checkpoint ou l'**épuisement du backlog tirable**.
+
+**Réglages avancés** — `--tokens` règle **comment la boîte roule** (indépendant du `--mode`, cf. § dédié) ;
+`--check-ready` règle **qui pose le tampon `ready`** après auto-grooming ; `--delivery` règle le **grain de
+livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas). Défauts : `--mode auto`,
+`--tokens lean`, `--check-ready true`, `--delivery per-feature`.
 
 ## La boucle
 
@@ -70,11 +82,12 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
    ensuite (c'est beau). Tests **locaux** d'abord, puis CI (testable en local via
    `act`/`ezk-ci`). **1 PR/feature**, squash + conventional commit. Tu ne touches
    pas au git toi-même : `ezk-sprint` (et `ezk-commits`) rangent.
-4. **Checkpoint inter-sprint** — en `--checkpoints ask` (défaut) : STOP, résume
+4. **Checkpoint inter-sprint** — en `--mode manuel` : STOP, résume
    (livré / tokens / suite) en **suggestions-à-choix**, boucle en (1) seulement après
-   accord. En `--checkpoints auto` : voir la section « Mode checkpoints » — tu tiens
-   l'**unique** checkpoint de la feature (`ezk-sprint` te remonte sa clôture au lieu de
-   re-demander « on continue ? » à l'humain).
+   accord. En `--mode auto` (défaut) : voir la section « Mode `--mode` » — tu enchaînes le
+   **sprint suivant** (dans la limite de `--max-sprints`) et tu tiens l'**unique** checkpoint
+   de la feature (`ezk-sprint` te remonte sa clôture au lieu de re-demander « on continue ? »
+   à l'humain).
    **Grain de livraison (`--delivery`, cf. § dédié)** : en `per-feature` (défaut) la PR du
    sprint est livrée **au fil de l'eau** — son squash-merge suit son cours normal (statu quo
    strict : c'est `ezk-sprint` qui merge, **pas toi**). En `per-epic`, tu **ne
@@ -89,10 +102,10 @@ de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **
 
 ## Modèle d'interaction — suggestions-à-choix + problématique
 
-En `--checkpoints ask` (défaut) tu t'arrêtes à ces 4 moments (+ le garde-fou
+En `--mode manuel` tu t'arrêtes à ces 4 moments (+ le garde-fou
 irréversible/sortant, cf. Garde-fous), toujours en présentant la problématique **puis**
-des options à choisir. En `--checkpoints auto`, ces moments sont pris/délégués
-automatiquement selon la section « Mode checkpoints » ci-dessous.
+des options à choisir. En `--mode auto` (**défaut**), ces moments sont pris/délégués
+automatiquement selon la section « Mode `--mode` » ci-dessous.
 
 **Lisibilité (règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md))** —
 chaque checkpoint suggestions-à-choix ouvre par **« En clair »** (≤ 3 phrases) avant le
@@ -104,22 +117,33 @@ tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
 | **Idéation** (backlog vide / fiche vague) | *Plus de fiche claire / ‹fiche› est vague.* → `[Brainstormer pour la cadrer]` · `[Construire telle quelle]` · `[Tu donnes la prochaine idée]` |
 | **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — en `--check-ready false`, le tampon est pris sur concurrence `ezk-pm` sans cet arrêt. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
-| **Dérive tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Continuer]` · `[Passer en mode lean]` · `[Pause]` |
+| **Dérive / plafond tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Augmenter le budget & continuer]` · `[Terminer l'en-cours puis stop]` · `[Stop net]` · `[Passer en `lean`]` — au **plafond `cap`**, l'arrêt se fait au **point sûr** le plus proche (jamais un sprint laissé à moitié) ; « augmenter le budget » est une **décision humaine** (cf. les 4 STOP). |
 
 > Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
 > disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
 > — tu ne l'invoques **jamais** toi-même, ça reste au choix de l'utilisateur.
-> Si `SPRINT.md` contient des décisions journalisées (mode `--checkpoints auto`),
+> Si `SPRINT.md` contient des décisions journalisées (mode `--mode auto`),
 > l'archive de session vers `docs/sessions/` se fait via `ezk-archive run`, pas ici.
 
-## Vigilance tokens — mode configurable (`--tokens`)
+## Vigilance tokens — réglage avancé (`--tokens`)
 
-Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'où un mode :
+Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'où un réglage :
 
-- **`lean` (défaut)** — délégation **simple** ; tu **préviens AVANT** tout fan-out
-  multi-agents coûteux, et tu déclenches le checkpoint « dérive tokens » au-delà d'un
+> **Indépendant du `--mode`.** `--mode` règle *qui passe les vitesses* ; `--tokens` règle
+> *comment la boîte roule*. Les deux se combinent librement — `auto --tokens lean` = conduit
+> seule mais **frugale et séquentielle**, `auto --tokens full` = conduit seule et **fan-out
+> libre**. Défaut : `lean`.
+
+- **`lean` (défaut)** — délégation **simple et séquentielle** ; tu **préviens AVANT** tout
+  fan-out multi-agents coûteux, et tu déclenches le checkpoint « dérive tokens » au-delà d'un
   seuil souple par sprint. Tu privilégies le moins cher qui tient la qualité.
-- **`cap`** (plafond-dur) — budget par sprint ; tu **t'arrêtes net** et demandes si tu l'atteins.
+- **`cap`** (arrête-et-demande) — dès que la conso d'un sprint **dérape au-delà d'un seuil**
+  (jugé, **pas un chiffre figé** — un `--budget` numérique attend une vraie jauge de dépense,
+  cf. la fiche « fenêtre de contexte »), tu **t'arrêtes au point sûr le plus proche** (jamais un
+  sprint laissé à moitié) et tu **poses la question** : `[Augmenter le budget & continuer]` ·
+  `[Terminer l'en-cours puis stop]` · `[Stop net]`. **Augmenter le budget = décision humaine**
+  (un des 4 STOP) : même en `--mode auto`, toucher ce seuil **rend la main à l'humain**, jamais
+  un redémarrage silencieux.
 - **`full`** (pleine-puissance) — multi-agents libre quand ça sert la qualité (mode « ultracode ») ;
   l'utilisateur surveille lui-même la conso.
 
@@ -131,14 +155,14 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 > peut rendre toute l'investigation sans objet.
 > Règles : `token-economy/verification-budget`, `token-economy/checkpoint-before-cost`.
 
-## Mode checkpoints — configurable (`--checkpoints`)
+## Mode `--mode` — la boîte de vitesses (`manuel` | `auto`)
 
-Règle **quand tu t'arrêtes pour demander à l'humain**. Calqué sur `--tokens`. Défaut : `ask`.
-Mutable à chaud (option `[Passer en auto]` / `[Repasser en ask]` proposée à un checkpoint).
+Règle **qui passe les vitesses** : toi à chaque checkpoint (`manuel`), ou la boîte pour toi
+(`auto`). **Défaut : `auto`.** `manuel` garde **`ask` comme alias** (rétro-compat). Mutable à
+chaud (option `[Passer en auto]` / `[Repasser en manuel]` proposée à un checkpoint).
 
-- **`ask` (défaut)** — comportement inchangé : tu t'arrêtes en suggestions-à-choix à
-  chaque moment d'arrêt.
-- **`auto`** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
+- **`manuel`** (alias `ask`) — tu t'arrêtes en suggestions-à-choix à **chaque** moment d'arrêt.
+- **`auto` (défaut)** — tu prends toi-même les décisions **auto-recommandables**, tu **délègues**
   les décisions techniques (au décideur **`ezk-pm`** et aux agents de rôle), tu
   **journalises** chaque décision dans `SPRINT.md` (`## Notes / décisions`), et tu ne
   t'arrêtes QUE sur les **4 décisions humaines** — **plus** la validation du gate `ready`
@@ -150,13 +174,13 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 
 | Moment | En `auto` |
 |---|---|
-| **Inter-sprint** | prends la 1re option (sprint suivant) — **à condition** que `--tokens cap` soit actif (le plafond borne le coût) ; sinon reste `ask`. Journalise. |
+| **Inter-sprint** | enchaîne le **sprint suivant**, dans la limite de **`--max-sprints`** (sans borne : jusqu'au prochain checkpoint ou l'épuisement du backlog tirable). La discipline de coût vient de `--tokens` (indépendant) + des 4 STOP. Journalise. |
 | **Idéation — fiche vague** | délègue à `product-management:product-brainstorming` pour cadrer, puis construis. Journalise. |
 | **Idéation — backlog vide** | **STOP humain** — inventer la direction produit n'est jamais automatisable. |
 | **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-dev`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--check-ready`** : `true` (défaut) → **STOP humain** pour tamponner ; `false` → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
-| **Dérive tokens** | dégrade en `lean` (jamais plus cher). Une **augmentation** de budget = **STOP humain**. |
+| **Dérive / plafond tokens** | en `lean`, dégrade (jamais plus cher) ; en `cap`, **arrête au point sûr et demande** (augmenter / terminer l'en-cours / stop). Une **augmentation** de budget = **STOP humain**, dans les deux cas. |
 | **Action sortante / secret** (transversal, hors des 4 moments) | **STOP humain** — jamais automatisé, dans les deux modes (cf. ci-dessous). |
 
 **Les 4 STOP humains — jamais automatisés** (ADR-0011 §3) : action irréversible/sortante
@@ -164,7 +188,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 tokens · idée produit sur backlog vide · exigences contradictoires.
 
 **Repli de sûreté** : si le délégataire (`ezk-pm` ou l'agent de rôle) est **absent du
-contexte bindé**, l'arrêt délégable retombe en `ask` — jamais d'improvisation. (`ezk-pm`
+contexte bindé**, l'arrêt délégable retombe en `manuel` — jamais d'improvisation. (`ezk-pm`
 est dans le profil `global` ; vérifie sa présence avant de compter dessus.)
 
 **Le décideur, c'est `ezk-pm`** : en `auto` tu lui confies les arbitrages de checkpoint —
@@ -262,7 +286,7 @@ jamais.
 | `ezk-backlog` | le **quoi/où** (fiches, priorités, ship) | `list` à l'intake, `ship` quand `ezk-sprint` a mergé |
 | `product-management:product-brainstorming` | cadrer une fiche vague / idéer | à l'étape idéation seulement |
 | `engineering:architecture` | trancher une structure non triviale | si l'archi le justifie (sinon laisse `ezk-sprint`/`ezk-architect`) |
-| **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--checkpoints auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
+| **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--mode auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
 | **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
 | **`ezk-pr`** | le **train de merge** : test groupé + `ship` en cascade d'un lot | en `--delivery per-epic`, tu lui **confies** la livraison coordonnée (il exécute le git ; toi tu décides le grain) |
 | `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |
@@ -277,7 +301,7 @@ Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `esc
 `heartbeat`, `run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
 bruit** :
 
-- **Au lancement d'un `build`/`once` — UNE fois par session, pas à chaque tour de
+- **Au lancement d'un `run` (y compris `--once`) — UNE fois par session, pas à chaque tour de
   boucle** : `run_start {method_name: "ezk-product-build", method_version: <version du
   catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
   Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un run déjà
@@ -315,7 +339,7 @@ bruit** :
 - **À chacun des 5 moments** de ta table « Modèle d'interaction » : `gate_reached
   {gate_id: <inter-sprint | ideation | aucune-fiche-ready | blocage | derive-tokens>,
   outcome: ok|attention|failed, report_markdown: <ton résumé : livré · tokens · options
-  posées>}` **avant** de présenter les suggestions-à-choix (mode `ask`) ou de
+  posées>}` **avant** de présenter les suggestions-à-choix (mode `manuel`) ou de
   déléguer/journaliser (mode `auto`) — puis arrête-toi ou continue comme tu le fais
   déjà. `outcome` : `ok` en marche normale, `attention` sur dérive tokens ou tête
   bloquée, `failed` sur blocage non résolu.
@@ -326,7 +350,7 @@ bruit** :
   `gate_resumed {gate_event_id: <id renvoyé par le gate_reached correspondant>}`.
 - **Sur chacun des 4 STOP humains** (action irréversible/sortante · augmentation de
   budget tokens · idée produit sur backlog vide · exigences contradictoires — les
-  décisions que tu **refuses** de prendre, cf. « Mode checkpoints ») : `escalate
+  décisions que tu **refuses** de prendre, cf. « Mode `--mode` ») : `escalate
   {type: authority, detail: <une ligne>}` — le signal part, tu poses la question, tu
   attends. Ce n'est jamais un arrêt de plus que celui que tu fais déjà.
 - **À la clôture** (choix `[Stop]`, ou fin de boucle) : `run_finished {status:
@@ -342,19 +366,20 @@ mécanique, pas négociable. Tes checkpoints restent des checkpoints — le gate
 > **Pourquoi `vz-product-builder`, lui, refuse de démarrer sans ces outils** (Override
 > 3 de sa SKILL.md) **alors que ce mode-ci reste best-effort** : ce n'est pas un oubli,
 > c'est le mode autonome — sans journal, son autonomie serait une boîte noire. Ici, un
-> humain reste aux checkpoints **par défaut** ; l'émission enrichit le suivi mais n'est
-> pas le seul garde-fou. Nuance à connaître : en `--checkpoints auto --tokens cap`,
-> cette justification s'affaiblit — l'humain n'est plus au four à chaque arrêt, et
-> l'émission redevient la principale trace de ce qui a été décidé.
+> humain peut rester aux checkpoints (`--mode manuel`) ; l'émission enrichit le suivi mais
+> n'est pas le seul garde-fou. Nuance à connaître, **d'autant que `--mode auto` est désormais
+> le défaut** : l'humain n'est plus au four à chaque arrêt, et l'émission redevient la
+> principale trace de ce qui a été décidé. → **fiche dédiée** : gérer la fenêtre de contexte
+> sur un run long **et** rendre cette trace *requise* (plus best-effort) quand le défaut est `auto`.
 
 ## Garde-fous
 
 - **Compose, ne réimplémente rien** : ni le backlog, ni le sprint, ni le brainstorm. Si tu
   réécris l'un des trois, **arrête** et appelle la compétence.
 - **Product-owner ≠ scrum master** : tu décides quoi/quand, `ezk-sprint` fait le comment.
-- **Autonome entre les checkpoints** ; en `--checkpoints ask`, **suggestions-à-choix** aux
-  4 moments ; en `auto`, décisions recommandées prises/déléguées et journalisées. **Dans
-  les deux modes**, jamais de décision irréversible/sortante (deploy, push --force,
+- **Autonome entre les checkpoints** ; en `--mode manuel`, **suggestions-à-choix** aux
+  4 moments ; en `--mode auto` (défaut), décisions recommandées prises/déléguées et journalisées.
+  **Dans les deux modes**, jamais de décision irréversible/sortante (deploy, push --force,
   suppression, secret) ni les 3 autres décisions humaines sans demander — c'est le 5e arrêt
   dur, non négociable.
 - **POC d'abord, polish ensuite** : pas de peaufinage visuel d'une feature non validée.
