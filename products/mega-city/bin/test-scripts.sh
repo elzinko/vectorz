@@ -31,6 +31,7 @@ SUITES=(
   "bin/test-links-repo.sh"                               # fiche 0101 — liens réels du repo (mega-city + racine vectorz)
   "bin/test-check-adr-ids.sh"                            # sabotage du garde-fou de numérotation des ADR
   "bin/test-adr-ids-repo.sh"                             # numéros d'ADR réels du repo (aucune NOUVELLE collision)
+  "bin/test-labo-cuisine.sh"                             # fiche 20260829123707100 — labo de cuisine (capture galères en session)
 )
 
 FAILED=()

@@ -28,6 +28,7 @@
 | [20260824122629794](done/20260824122629794_ezk-extract-capitaliser-feature-en-recette.md) | Capitaliser une feature déjà codée en « recette » réutilisable (tâches + rules/profils) — l'extraction n'existe PAS encore | feature | P0 |  | mega-city | ✅ shipped | #194 |
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 |  | mega-city | 🔴 todo |  |
 | [20260828150801613](done/20260828150801613_ezk-ci-conso-script-endpoint.md) | ezk-ci conso — script déterministe + réparer l'endpoint billing migré (410 → /usage) | feature | P0 |  | mega-city | ✅ shipped | #186 |
+| [20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md) | « Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros | feature | P0 |  | mega-city | 🔴 todo |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -209,7 +210,6 @@
 
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
-| [20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md) | « Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros | feature | P0 |  | mega-city | 💡 idea |  |
 | [0081](0081-carnet-preparation-retro.md) | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | mega-city | 💡 idea |  |
 | [0087](0087-plugin-claude-code-distribution.md) | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
 | [0157](0157-ezk-landing-pages.md) | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 | 20260824060737115 | mega-city | 💡 idea |  |
