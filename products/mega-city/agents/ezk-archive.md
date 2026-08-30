@@ -190,6 +190,14 @@ souvient). Le gabarit et ces règles vivent dans
 Si `SPRINT.md` existe à la racine **et** a du contenu réel (pas un stub vide) :
 - copier vers `docs/sessions/YYYY-MM-DD-<slug>.md` (créer le dossier si besoin ;
   collision → suffixe `-2`, `-3`… — **ne jamais écraser**) ;
+- **entête `fiches: <id>[,<id>]`** en tête du récit (première ligne, avant le titre) :
+  le ou les ids de fiche backlog travaillés dans la session — c'est ce qui rend le récit
+  **rapprochable** de sa/ses feature(s) (`grep -rl <id> docs/sessions/`,
+  `git log --grep=<id>`, convention `feat/<id>-<slug>` — ADR-0018) ;
+- si `SPRINT.md` porte une section **`## Galères & gestes (labo)`** avec du contenu (pas
+  vide) : la **reprendre telle quelle** dans le récit sous le même titre
+  `## Galères & gestes (labo)` — la clôture est le moment où « corrigé + validé » est vrai
+  par construction ; section vide ou absente → ne rien ajouter (même garde-fou qu'`ezk-retro`) ;
 - proposer le commit : `docs(sessions): archive session YYYY-MM-DD <slug>`
   (ne pas committer à l'aveugle) ;
 - **laisser `SPRINT.md` en place** ;
