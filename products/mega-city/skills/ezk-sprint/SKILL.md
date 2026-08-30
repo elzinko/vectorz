@@ -101,10 +101,21 @@ Périmètre: <borne tokens-temps>   Statut: en cours | en attente de validation
 
 ## Definition of Done
 ## Notes / décisions  (ADR courts)
+
+## Galères & gestes (labo)
 ```
 
 **Éphémère, non commité.** À la clôture de session, `/ezk-archive run` archive un
 snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
+
+**`## Galères & gestes (labo)`** — remplie **au fil de l'eau**, seulement quand une
+galère est **corrigée + validée** (jamais une fausse piste, jamais en cours). Une entrée
+courte par galère : { **le symptôme** (ce qui a coincé) · **le geste d'interface / le fix**
+(Vercel, IONOS, DNS…) · **le pourquoi** }. **Seulement si utile pour reproduire** — repris
+du garde-fou d'`ezk-retro` : rien à retenir → on n'écrit rien (pas de gate qui juge
+l'utilité, c'est du jugement). C'est cette section qu'`ezk-archive` fige dans
+`docs/sessions/` à la clôture, et que consommera plus tard `ezk-chef extract`
+(hors périmètre ici).
 
 ## La boucle de sprint — par feature
 
