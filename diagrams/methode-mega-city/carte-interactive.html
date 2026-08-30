@@ -379,17 +379,21 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 66,
+  "rules": 67,
   "agents": 8,
   "skills": 24,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 182,
+  "total": 183,
   "casses": 0
  },
  "orphans": [
+  {
+   "kind": "rule",
+   "id": "development/yaml-emission-via-lib"
+  },
   {
    "kind": "rule",
    "id": "documentation-guidelines/changelog"
@@ -1637,6 +1641,17 @@ window.EZK = {
    "bundles": [
     "development"
    ],
+   "agents": []
+  },
+  "development/yaml-emission-via-lib": {
+   "id": "development/yaml-emission-via-lib",
+   "title": "Le front-matter généré est émis par la lib YAML, jamais par concaténation",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
    "agents": []
   },
   "documentation-guidelines/changelog": {

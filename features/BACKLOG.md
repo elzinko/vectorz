@@ -221,6 +221,7 @@
 | [20260824122629925](20260824122629925_onglet-faq-comment-faire.md) | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260824204751403](20260824204751403_preparation-lots-versions-coherence.md) | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md) | Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre | chore | P1 |  | mega-city | 💡 idea |  |
+| [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P1 |  | mega-city | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
 | [0054](0054-catalogue-adaptateurs-outils.md) | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 | 0051 | vectorz | 💡 idea |  |
@@ -279,6 +280,8 @@
 | [20260826121429274](20260826121429274_ezk-archive-compte-rendu-structure.md) | ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260826222044335](20260826222044335_carte-la-loi-graphe-visuel.md) | Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic | feature | P2 | 20260821163346487 | mega-city | 💡 idea |  |
 | [20260830114318159](20260830114318159_ezk-ezk-option-passer-par-fiche.md) | ezk-ezk — option configurable « passer par la méthode » (proposer une fiche au lieu de créer un skill direct) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260830194601307](20260830194601307_front-matter-emis-par-lib-yaml.md) | front-matter généré émis + validé par la lib YAML (jamais par concaténation) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260830194601376](20260830194601376_spike-degiter-vues-outillage.md) | SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions) | chore | P2 |  | mega-city | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0049](0049-article-brancher-methode-pattern-sidecar.md) | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0057](0057-agent-analyse-methode.md) | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |

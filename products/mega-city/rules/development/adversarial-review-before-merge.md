@@ -19,6 +19,12 @@ enforcements:
   (module GitHub) — une branche locale suffit : la règle porte sur le diff, pas sur
   l'outil qui le présente. Quand un bot de revue externe (Codex) est branché, ses
   findings se traitent en plus, jamais à la place.
+- **Trace mesurable de conformité** (ajout rétro 2026-08-30) : le verdict **GO/NO-GO** de la
+  revue adverse est **consigné** — commentaire de PR, ou `SPRINT.md` en flux local — pour
+  **100 % des merges** sur `main`. La règle décrivait le mécanisme ; la trace le rend
+  *vérifiable* : sans elle, « toute livraison passe une revue » n'est pas mesurable. Symptôme :
+  session du 2026-08-30, Codex non configuré → `ezk-reviewer` a porté 6 revues et trouvé de
+  vrais findings à chaque PR, mais rien n'obligeait à en garder une trace.
 - Origine : décision PO du 2026-08-24 — « la revue est une règle de développement
   (DoD), pas une habitude » ; l'exécutant de l'enforcement est l'agent `ezk-reviewer`.
 - **Portée honnête de l'enforcement** (revue adverse 2026-08-24) : `agent-check` est un
