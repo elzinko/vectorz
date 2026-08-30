@@ -60,9 +60,11 @@ check "chemin imprimé pointe recipes/"        "[[ '$out_a' == recipes/*.md ]]"
 check "fichier de recette créé"               "test -s '$dest_a'"
 check "status: draft dans le front-matter"    "grep -q '^status: draft$' '$dest_a'"
 check "id minté horodaté (17 chiffres)"       "grep -Eq '^id: \"[0-9]{17}\"$' '$dest_a'"
-check "titre repris de la fiche"              "grep -q '^title: Titre de test — feature-test$' '$dest_a'"
+check "titre repris de la fiche (quoté)"      "grep -q '^title: \"Titre de test — feature-test\"$' '$dest_a'"
 check "section En clair recopiée"             "grep -q 'résumé en clair de la fiche de test' '$dest_a'"
-check "source pointeur (jamais de code copié)" "grep -q '^source: TODO(jugement)' '$dest_a'"
+check "source pointeur (jamais de code copié)" "grep -q '^source: \"TODO(jugement)' '$dest_a'"
+check "makes: quoté (YAML valide — pas de : nu)"  "grep -q '^makes: \"' '$dest_a'"
+check "source: quoté (YAML valide — # littéral)"  "grep -q '^source: \"' '$dest_a'"
 check "PR repris en note pointeur"            "grep -q 'PR #999' '$dest_a'"
 check "playbook amorcé depuis Proposition"    "grep -q 'Première étape de la proposition' '$dest_a'"
 check "playbook amorcé depuis Comment vérifier" "grep -q 'Lancer la commande X' '$dest_a'"
@@ -98,5 +100,35 @@ out2="$("$SCRIPT" 20260830000000103 "$D")"
 snap2="$(strip_volatile "$D/$out2")"
 echo "Cas D (déterminisme, hors id/dates) :"
 check "même contenu dérivé à deux passes" "[ \"\$snap1\" = \"\$snap2\" ]"
+
+# ── Cas E : id non numérique → refus (défense en profondeur, pas de ../ hors done/) ───────
+E="$TMP/e"
+fixture_root "$E"
+echo "Cas E (id non numérique) :"
+check "refuse un id non numérique (../ path)" "! '$SCRIPT' '../foo' '$E' >/dev/null 2>&1"
+
+# ── Cas F : séparateur legacy '-' (fiche 0152-…) reconnu ──────────────────────────────────
+F="$TMP/f"
+fixture_root "$F"
+cat > "$F/features/done/0152-fiche-legacy.md" <<'EOF'
+---
+id: "0152"
+title: Legacy dash — 0152
+status: shipped
+pr: "#12"
+---
+
+## En clair
+
+Fiche legacy à séparateur tiret.
+
+## Proposition
+
+1. Étape legacy.
+EOF
+echo "Cas F (séparateur legacy -) :"
+out_f="$("$SCRIPT" 0152 "$F")"
+check "recette créée depuis une fiche à tiret" "test -s '$F/$out_f'"
+check "slug correct (tiret retiré)"            "[[ '$out_f' == recipes/fiche-legacy.md ]]"
 
 if [ "$FAIL" = 0 ]; then echo 'test-ezk-chef-extract: TOUT VERT'; else echo 'test-ezk-chef-extract: ÉCHECS' >&2; exit 1; fi

@@ -22,6 +22,10 @@ usage() { echo "Usage: $(basename "$0") <id-fiche-shippée> [racine-vectorz]" >&
 
 FICHE_ID="${1:-}"
 if [[ -z "$FICHE_ID" ]]; then usage; exit 1; fi
+if [[ ! "$FICHE_ID" =~ ^[0-9]+$ ]]; then
+  echo "erreur: id de fiche invalide « ${FICHE_ID} » (attendu : chiffres uniquement)" >&2
+  exit 1
+fi
 
 if [[ -n "${2:-}" ]]; then
   ROOT="$2"
@@ -34,7 +38,8 @@ cd "$ROOT"
 [ -f "recipes/$TEMPLATE_REL" ] || { echo "erreur: recipes/$TEMPLATE_REL introuvable" >&2; exit 1; }
 
 shopt -s nullglob
-matches=(features/done/"${FICHE_ID}"_*.md)
+# Séparateur `_` (ids horodatés récents) ET `-` (fiches legacy type 0147-…).
+matches=(features/done/"${FICHE_ID}"_*.md features/done/"${FICHE_ID}"-*.md)
 shopt -u nullglob
 if [ ${#matches[@]} -eq 0 ]; then
   echo "erreur: aucune fiche shippée features/done/${FICHE_ID}_*.md" >&2
@@ -46,7 +51,8 @@ if [ ${#matches[@]} -gt 1 ]; then
 fi
 FICHE="${matches[0]}"
 FICHE_BASENAME="$(basename "$FICHE")"
-SLUG="${FICHE_BASENAME#"${FICHE_ID}"_}"
+SLUG="${FICHE_BASENAME#"${FICHE_ID}"}"   # retire l'id en tête
+SLUG="${SLUG#[-_]}"                        # retire le séparateur (_ récent ou - legacy)
 SLUG="${SLUG%.md}"
 
 # ── front-matter mécanique (même idiome que regen-recipes.sh : awk, pas un parseur YAML) ──
@@ -112,9 +118,9 @@ SOURCE_NOTE="TODO(jugement) — racine de l'implémentation non dérivable méca
 {
   echo '---'
   echo "id: \"${NEW_ID}\""
-  echo "title: ${TITLE}"
-  echo 'makes: TODO(jugement) — une ligne : ce que cette recette fabrique'
-  echo "source: ${SOURCE_NOTE}"
+  echo "title: \"${TITLE//\"/\'}\""
+  echo 'makes: "TODO(jugement) — ce que cette recette fabrique (une ligne)"'
+  echo "source: \"${SOURCE_NOTE}\""
   echo 'composes: [] # TODO(jugement) — rules composées (idiome ADR-0012/0025)'
   echo 'profile: # TODO(jugement) — profil référencé, si pertinent'
   echo 'status: draft'
