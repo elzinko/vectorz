@@ -115,7 +115,7 @@ labo_sessions() {
     [ -e "$f" ] || continue
     header="$(awk '/^fiches:/ { print; exit }' "$f")"
     printf '%s' "$header" | grep -Eq "(^|[^0-9])${id}([^0-9]|\$)" && printf '%s\n' "$f"
-  done | sort
+  done | LC_ALL=C sort
 }
 
 PRELIM_LABO=""

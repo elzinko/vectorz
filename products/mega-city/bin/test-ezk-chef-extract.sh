@@ -173,4 +173,23 @@ check "TODO(jugement) Préliminaires conservé (dégradation propre)" \
   "grep -q 'TODO(jugement) — ce qui ne s’automatise pas.' '$dest_h'"
 check "aucun contenu du récit non lié n'est versé" "! grep -q 'sans rapport avec la fiche testée' '$dest_h'"
 
+# ── Cas I : borne anti-sous-chaîne — un id SUPERCHAÎNE ne doit PAS matcher (garde du grep) ──
+I="$TMP/i"
+fixture_root "$I"
+fiche_shippee "$I" "20260830000000106" "borne"
+mkdir -p "$I/docs/sessions"
+cat > "$I/docs/sessions/2026-08-30-superchaine.md" <<'EOF'
+fiches: 202608300000001069
+
+## Galères & gestes (labo)
+
+- **Geste d'une fiche dont l'id est une SUPERCHAINE (l'id testé + un chiffre).**
+EOF
+out_i="$("$SCRIPT" 20260830000000106 "$I")"
+dest_i="$I/$out_i"
+echo "Cas I (borne anti-sous-chaîne) :"
+check "un id superchaîne (…106 vs …1069) n'est PAS versé" "! grep -q 'SUPERCHAINE' '$dest_i'"
+check "TODO Préliminaires conservé (rien versé à tort)" \
+  "grep -q 'TODO(jugement) — ce qui ne s’automatise pas.' '$dest_i'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-ezk-chef-extract: TOUT VERT'; else echo 'test-ezk-chef-extract: ÉCHECS' >&2; exit 1; fi
