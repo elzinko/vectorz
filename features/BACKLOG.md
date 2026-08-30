@@ -169,6 +169,7 @@
 | [20260828165644452](done/20260828165644452_monitor-accueil-pilotage-sections.md) | Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête | feature | P2 |  | mega-city | ✅ shipped | #185 |
 | [20260830094601309](20260830094601309_product-build-auto-fenetre-contexte.md) | Mode auto — gérer la fenêtre de contexte sur un run long (+ trace de supervision requise) | feature | P2 |  | mega-city | 🔴 todo |  |
 | [20260830110131158](20260830110131158_revue-adverse-skippable-flag.md) | Revue adverse skippable par flag — --review adverse\|skip (ezk-product-build → ezk-sprint) | feature | P2 |  | mega-city | 🔴 todo |  |
+| [20260830225021794](20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md) | ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué | refactor | P2 |  | mega-city | 🔴 todo |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🔴 todo |  |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
