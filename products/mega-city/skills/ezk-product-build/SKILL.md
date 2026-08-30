@@ -45,17 +45,28 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 | Sous-commande | Effet |
 |---|---|
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes courants — ne lance rien |
-| `run` (**défaut**, alias `build`) | Lance la **boucle** : enchaîne les sprints jusqu'à un checkpoint ou `--max-sprints` |
+| `run` (**action par défaut**, alias `build`) | Lance la **boucle** : enchaîne les sprints jusqu'à un checkpoint ou `--max-sprints` |
 | `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
+
+> **Invocation nue = `help`, jamais un lancement.** `/ezk-product-build` **sans argument affiche ce
+> tableau et ne lance rien** — un défaut `auto` ne doit pas démarrer une boucle autonome depuis une
+> commande vide. `run` est l'action **par défaut quand tu demandes de construire** (`run` explicite, ou
+> une demande en langage naturel « construis-moi… ») ; `--mode auto` ne règle que le comportement
+> **une fois la boucle lancée**.
 
 **Le levier principal, c'est `--mode` — une boîte de vitesses.** `manuel` (alias `ask`) : tu passes
 les vitesses toi-même, tu **valides à chaque checkpoint**. `auto` (**défaut**) : la boîte enchaîne
 pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready` si `--check-ready true`).
 
-**`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints livrés**. **`--once`** = raccourci
+**`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints construits** — comptés à
+l'**exécution/complétion** d'un sprint, **pas à sa livraison** (merge). **`--once`** = raccourci
 de `--max-sprints 1` (un seul sprint). **Rétro-compat** : l'ancienne sous-commande **`once` reste acceptée**
 et **mappe sur `--once`** (= `--max-sprints 1`) — un `once` hérité reste **borné à un sprint**, il **ne tombe
-pas** dans le `run` auto. Sans borne, la boucle va jusqu'à un checkpoint ou l'**épuisement du backlog tirable**.
+pas** dans le `run` auto. **En `--delivery per-epic`** (livraison différée, PR laissées ouvertes jusqu'au
+lot complet), la borne compte quand même les sprints **construits** : l'atteindre **arrête la boucle** et
+**laisse les PR du lot ouvertes** — livraison coordonnée par `ezk-pr` quand le lot est complet, sinon état
+partiel **journalisé** (`SPRINT.md`). Sans borne, la boucle va jusqu'à un checkpoint ou l'**épuisement du
+backlog tirable**.
 
 **Réglages avancés** — `--tokens` règle **comment la boîte roule** (indépendant du `--mode`, cf. § dédié) ;
 `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming ; `--delivery` règle le **grain de
