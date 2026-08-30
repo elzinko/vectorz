@@ -35,6 +35,9 @@ fiches: 20260829123707100
 Tout en haut, **avant le titre**, une ligne `fiches: <id>[,<id>]`. Elle liste le ou les
 ids de fiche backlog travaillés dans la session.
 
+Une session **sans fiche** (non-feature, clôturée en `--shipped none`) n'a **pas** cet
+entête : on ne l'ajoute que s'il y a un id réel, jamais inventé.
+
 C'est ce qui rend le récit **rapprochable de sa feature**. On retrouve tout par l'id :
 
 ```bash
@@ -116,7 +119,8 @@ Tu ne crées pas ces fichiers à la main. Le flux normal est :
 
 1. Pendant le sprint, `ezk-sprint` tient un `SPRINT.md` éphémère à la racine
    (voir [`skills/ezk-sprint/SKILL.md`](../../products/mega-city/skills/ezk-sprint/SKILL.md)).
-2. À la clôture, `/ezk-archive run` en fige un instantané ici, ajoute l'entête `fiches:`,
+2. À la clôture, `/ezk-archive run` en fige un instantané ici, ajoute l'entête `fiches:`
+   quand la session a travaillé des fiches (sinon pas d'entête),
    et propose le commit `docs(sessions): archive session AAAA-MM-JJ <slug>`
    (voir [`skills/ezk-archive/SKILL.md`](../../products/mega-city/skills/ezk-archive/SKILL.md)).
 

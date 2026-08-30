@@ -156,10 +156,13 @@ qui ne demandent aucun jugement.
      (pas un stub vide) :
      - copier vers `docs/sessions/YYYY-MM-DD-<slug>.md` (créer `docs/sessions/` si besoin ;
        en cas de collision de nom, suffixer `-2`, `-3`… — **ne jamais écraser**) ;
-     - **entête `fiches: <id>[,<id>]`** en tête du récit (première ligne, avant le titre) :
-       le ou les ids de fiche backlog travaillés dans la session — c'est ce qui rend le
-       récit **rapprochable** de sa/ses feature(s) (`grep -rl <id> docs/sessions/`,
-       `git log --grep=<id>`, convention `feat/<id>-<slug>` — ADR-0018) ;
+     - **si la session a travaillé une ou plusieurs fiches** : **entête `fiches: <id>[,<id>]`**
+       en tête du récit (première ligne, avant le titre) — le ou les ids de fiche backlog
+       travaillés dans la session, c'est ce qui rend le récit **rapprochable** de sa/ses
+       feature(s) (`grep -rl <id> docs/sessions/`, `git log --grep=<id>`, convention
+       `feat/<id>-<slug>` — ADR-0018) ; **session sans fiche** (non-feature, `--shipped
+       none`) → **pas d'entête**, ne jamais inventer d'id (même interdiction que le reste
+       des faits de session) ;
      - si `SPRINT.md` porte une section **`## Galères & gestes (labo)`** avec du contenu
        (pas vide) : la **reprendre telle quelle** dans le récit sous le même titre
        `## Galères & gestes (labo)` — c'est le moment où « corrigé + validé » est vrai
