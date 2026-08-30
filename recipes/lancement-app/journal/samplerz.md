@@ -12,7 +12,7 @@
 | `R2_PUBLIC_URL` sur Vercel | ❌ **manque** (Production) | **le poser** depuis le `.env` du main |
 | Endpoint `/api/downloads` + front sans lien GitHub | ✅ codé (PR #378) | merger #378 (gardée exprès comme cobaye) |
 | Upload R2 **auto en CI** | 🟠 différé de #378 | à refaire propre |
-| Boutique Lemon Squeezy | ❌ pas de compte/clé | compte + clé API (geste humain), puis produits via API |
+| Boutique Lemon Squeezy | 🟠 **test prêt** : compte + boutique (456214) + produit « Samplerz Pro License v1.x » 29 € publié, mais `test_mode` | passer en **live** (produit + clé live) ; tester le parcours achat→licence→app en test d'abord |
 | Domaine `samplerz.fr` | ✅ sur Vercel (previews vertes) | dev/staging = 404 (dépend du sprint CI/CD muti, backlog vectorz) |
 | Gating free/Pro dans l'app | ✅ loops #381 + stems #384 ; s'allume à la vraie licence | validation clé Pro (dépend LS) |
 
@@ -42,5 +42,12 @@ marcher. Tout le reste de la valeur (encaisser) dépend de la boutique LS.
   (PR #378). Gardée non mergée (cobaye). `R2_PUBLIC_URL` Vercel resté à poser.
 - **2026-08-29** — domaine `samplerz.fr` sur Vercel (previews vertes).
 - **2026-08-30** — audit complet : confirmé que le seul trou infra du
-  téléchargement = `R2_PUBLIC_URL` sur Vercel. Aucune clé Lemon Squeezy encore
-  rangée. Création de cette recette + catalogue + journal.
+  téléchargement = `R2_PUBLIC_URL` sur Vercel. Création de cette recette +
+  catalogue + journal.
+- **2026-08-30** — clé Lemon Squeezy rangée (`lemonsqueezy-api`, clé de **test**,
+  1035 car., rangée via presse-papier car trop longue pour la saisie masquée).
+  Inspection API OK : compte Thomas Couderc, boutique samplerz `456214`, produit
+  « Samplerz Pro License v1.x » 29 € **publié en test**. Piège trousseau : la 1ʳᵉ
+  lecture doit être autorisée depuis le terminal de l'utilisateur (« Toujours
+  autoriser »), sinon la lecture headless de l'agent reste bloquée sans dialogue
+  visible. Reste : parcours achat→licence→validation app (en test), puis live.

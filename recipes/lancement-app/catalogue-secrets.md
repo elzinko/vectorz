@@ -48,12 +48,16 @@ Deux axes à ne pas confondre :
   et live sont **probablement DEUX clés distinctes** (la clé encode le mode, façon
   Stripe). Vérif empirique : `GET /v1/user` + `GET /v1/stores`, lire `test_mode`.
 
-Rangement recommandé : `lemonsqueezy-api-test` / `lemonsqueezy-api-live` (si deux
-clés). `store_id` par app → tableau ci-dessous, colonne dédiée.
+**Confirmé empiriquement (2026-08-30)** : test et live sont bien séparés. La clé
+rangée `lemonsqueezy-api` est une clé de **TEST** (elle voit des produits
+`test_mode=true`). Compte connecté : **Thomas Couderc** (thomas.couderc@gmail.com).
+Rangement : garder `lemonsqueezy-api` (= test) ; ajouter `lemonsqueezy-api-live`
+le jour du passage en vente réelle. `store_id` par app → tableau ci-dessous.
 
-| App | `store_id` LS | Produits (IDs) | Mode |
-|---|---|---|---|
-| samplerz | _(à renseigner)_ | _(à renseigner)_ | test d'abord |
+| App | `store_id` LS | Domaine LS | Produit (id) | Mode |
+|---|---|---|---|---|
+| samplerz | `456214` | samplerz.lemonsqueezy.com | « Samplerz Pro License v1.x » `1303495`, 29 €, published | **test** |
+| muti | `280899` | muti.lemonsqueezy.com | _(non inspecté)_ | — |
 
 ## Gabarit — nouvelle app
 
