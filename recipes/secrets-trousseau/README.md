@@ -30,9 +30,28 @@ Un nom = un secret. **L'agent suggère le nom, tu valides.**
 | Commande | Rôle |
 |---|---|
 | `ezk-secret-set <service>` | range un secret **en un morceau** (saisie **masquée**) |
+| `ezk-secret-set --clip <service>` | range depuis le **presse-papier** — pour les clés **LONGUES** (JWT Lemon Squeezy…) que la saisie masquée tronque |
 | `ezk-secret-set-ionos [service]` | clé **en deux morceaux** : demande **préfixe** + **secret**, pose le point tout seul |
 | `ezk-secret-get <service>` | le lit — ⚠️ **à capturer dans une variable, jamais afficher** |
+| `ezk-secret-check <service>` | **vérifie sans révéler** : longueur + aperçu masqué (2 premiers … 2 derniers, si ≥ 12) + empreinte SHA-256 |
 | `ezk-secret-list [motif]` | liste les **noms** rangés (jamais les valeurs) |
+
+### Clés longues (JWT) — le piège du collage
+
+La saisie masquée (`read` sur une ligne de terminal) **tronque** au-delà d'une
+longueur (mode canonique, ~1024 caractères) et peut capturer un caractère
+invisible du collage → **clé corrompue** (souvent : ressort en **hexadécimal** à
+la lecture). Pour une clé longue (Lemon Squeezy, JWT), utilise `--clip` :
+
+```bash
+# la clé est déjà copiée dans le presse-papier
+ezk-secret-set --clip lemonsqueezy-api
+ezk-secret-check lemonsqueezy-api   # longueur cohérente = OK
+```
+
+⚠️ Compromis `--clip` : la valeur transite une fraction de seconde comme argument
+de `security` (visible à `ps` sur TA machine). Acceptable en local ; garde la
+saisie masquée pour les secrets courts.
 
 ## Comment l'agent l'utilise (le flux « sur demande »)
 
@@ -47,18 +66,29 @@ Un nom = un secret. **L'agent suggère le nom, tu valides.**
 
 ## Authentification à la lecture
 
-⚠️ **Constat vécu (2026-08-29) : le trousseau natif ne protège PAS la lecture.**
-Le CLI `security` est traité comme « de confiance » : lire un secret
-(`security find-generic-password`) **ne déclenche aucun popup**, même stocké avec `-T ''`.
-Le secret est **chiffré au repos**, mais n'importe quelle commande peut le lire sans validation.
+⚠️ **Constat révisé (2026-08-30) : la lecture d'un secret rangé `-T ''` DÉCLENCHE
+un popup macOS.** Test reproductible : entrée créée avec `-T ''`, puis
+`security find-generic-password -w` → **dialogue d'autorisation** (« security veut
+utiliser des informations confidentielles… »). Ce dialogue **bloque** une lecture
+**automatisée** (une session headless attend indéfiniment).
 
-Pour une **vraie authentification forte** (à **chaque lecture**), il faut sortir du CLI :
-- **mot de passe** — un trousseau **dédié verrouillé** (redemande un mot de passe à chaque `get`) ;
-- **Touch ID** — un helper biométrique (Secure Enclave) = la recette
+Comportement exact, par **entrée** (chaque item a sa propre ACL) :
+- **1ʳᵉ lecture** → popup. Tu choisis :
+  - **Autoriser** (une fois) → lecture OK cette fois, re-popup la prochaine.
+  - **Toujours autoriser** → ajoute `security` à l'ACL de CETTE entrée → lectures
+    **silencieuses** ensuite (c'est probablement pourquoi la clé IONOS ne
+    promptait plus le 2026-08-29 : « Toujours autoriser » avait été cliqué).
+
+Conséquence pour l'agent : **la 1ʳᵉ lecture doit être déclenchée par TOI** (tu
+lances `ezk-secret-check <service>` ou `ezk-secret-get`, tu cliques dans le
+dialogue). Après « Toujours autoriser », l'agent peut lire sans blocage.
+
+Compromis à choisir :
+- **Sécurité max** : « Autoriser » à chaque fois (validation par lecture) — mais
+  l'agent ne peut pas lire en autonomie (il faut ton clic à chaque appel).
+- **Fluide** : « Toujours autoriser » une fois par clé — l'agent lit ensuite seul.
+- **Vraie auth forte** (Touch ID, consentement signé par action) : la recette
   [`elicitation-authentification-forte`](../elicitation-authentification-forte.md).
-
-En attendant, le « sur demande » vient des **permissions de l'agent** : tu vois et approuves
-chaque commande qui lit le secret.
 
 ## Cas IONOS (préfixe public + secret)
 
@@ -86,7 +116,7 @@ Sans validation dans les ~2 min, l'AppleEvent expire (`erreur -1712`). Accorde-l
 
 ```bash
 mkdir -p ~/.local/bin
-cp ezk-secret-set ezk-secret-set-ionos ezk-secret-get ezk-secret-list ~/.local/bin/
+cp ezk-secret-set ezk-secret-set-ionos ezk-secret-get ezk-secret-list ezk-secret-check ~/.local/bin/
 chmod +x ~/.local/bin/ezk-secret-*
 # ~/.local/bin doit être dans ton PATH (sinon l'agent ne peut pas appeler les commandes).
 ```
