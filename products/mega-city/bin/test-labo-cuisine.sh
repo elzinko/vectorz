@@ -14,6 +14,7 @@ check() { if eval "$2"; then echo "  ok — $1"; else echo "  ÉCHEC — $1"; FA
 
 SPRINT_SKILL="$MC/skills/ezk-sprint/SKILL.md"
 ARCHIVE_SKILL="$MC/skills/ezk-archive/SKILL.md"
+ARCHIVE_AGENT="$MC/agents/ezk-archive.md"
 DEMO="$ROOT/docs/sessions/2026-08-29-samplerz-cablage-domaine.md"
 FICHE_ID="20260829123707100"
 
@@ -28,6 +29,13 @@ check "le rituel de clôture cite la section labo à archiver" \
   'grep -qF "Galères & gestes (labo)" "$ARCHIVE_SKILL"'
 check "le rituel de clôture cite le champ d'\''entête \`fiches:\`" \
   'grep -qF "fiches:" "$ARCHIVE_SKILL"'
+
+echo "AC2bis — l'AGENT ezk-archive est à parité avec le SKILL (chemin délégué DIRTY) :"
+check "l'agent ezk-archive existe" '[ -f "$ARCHIVE_AGENT" ]'
+check "l'agent cite le champ d'\''entête \`fiches:\`" \
+  'grep -qF "fiches:" "$ARCHIVE_AGENT"'
+check "l'agent cite la section labo à archiver" \
+  'grep -qF "Galères & gestes (labo)" "$ARCHIVE_AGENT"'
 
 echo "AC3 — l'entrée demo réelle (samplerz 2026-08-29) existe et porte la matière :"
 check "le récit demo existe" '[ -f "$DEMO" ]'
