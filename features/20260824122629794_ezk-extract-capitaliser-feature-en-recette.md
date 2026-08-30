@@ -33,7 +33,7 @@ Les briques de la méthode qui serviront — le vocabulaire que tu ne te rappell
 - **profil** = le bon de commande d'une cible : quelles rules + agents + skills.
 - **« recette »** = **nature d'objet à trancher au panel** — NE PAS pré-décider ici.
   La définition de l'objet (et de son gardien) est portée par la **fiche-chapeau**
-  [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md).
+  [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md).
   Deux options en débat : **(A)** objet de premier rang + gardien (pattern steward,
   thèse du chapeau) ; **(B)** simple **skill dont le playbook EST la liste de tâches**,
   qui **compose les rules** et **référence le profil** (approche de la fiche
@@ -93,6 +93,47 @@ voir » — arbitrage PO à confirmer au panel ; la racine vectorz est l'état a
 **Anti-doublon / voisinage** : `0147` (ezk-recipy = sourcing de skills depuis repos froids)
 · `0178` (ezk-checks = recette manuelle déclenchable) · `20260821172716540` (recette site
 produit à règles activables). L'extraction proposée ici est **distincte** : fiche/impl → recette.
+
+## ▶️ Groomé 2026-08-30 — l'objet est tranché (#192), reste le producteur
+
+**Le débat A/B est clos.** La fiche-chapeau [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)
+a été **construite et shippée (PR #192, 2026-08-30)** : la recette est un **artefact de
+premier rang** (option A), avec son gardien **`ezk-chef`**, son gabarit
+[`recipes/RECIPE_TEMPLATE.md`](../recipes/RECIPE_TEMPLATE.md), son bundle `rules/recipe/*`
+et son livre régénéré `recipes/RECIPES.md`. Donc, **plus de panel à tenir** sur l'objet :
+
+- **Objet** : tranché → artefact de premier rang (pas « skill qui compose »). ✅
+- **Stockage** : tranché → `recipes/` racine (le livre pointe, D4). ✅
+- **Format** : tranché → `RECIPE_TEMPLATE.md` (rubriques cuisine + front-matter). ✅
+- **Producteur** : **`ezk-chef extract`** — une **sous-commande du hub recette** `ezk-chef`,
+  PAS un `ezk-*` séparé, ni `ezk-ezk` (qui fabrique des *skills*). **Décision PO 2026-08-30** :
+  `ezk-chef` devient le **hub de la famille recette** (comme `ezk-backlog` l'est des fiches) —
+  `check` (garder) · `extract` (produire, cette fiche) · `scan` (sourcer, ex-`ezk-recipy` /
+  fiche 0147) · `regen`/`list` (le livre). Cohérent avec **D3 de #192** : « une famille de
+  verbes appartient au **gardien + son regen**, façon `ezk-backlog` ». On **arrête** de créer
+  `ezk-extract` et `ezk-recipy` comme outils `ezk-*` séparés (moins de marques, une porte).
+
+**Implication structurante (le vrai chantier de cette fiche)** : `ezk-chef` est aujourd'hui un
+**agent** (livré #192). Le porter en hub lui ajoute un **skill `ezk-chef`** (les verbes) qui
+**délègue le jugement à l'agent** — exactement comme `ezk-backlog` (skill) et `ezk-reviewer`
+(agent) coexistent. `extract` est la 1ʳᵉ sous-commande à construire ; `scan` suit (fiche 0147).
+
+### MVP proposé
+
+`ezk-chef extract` produit un **brouillon de recette** (fichier markdown depuis
+`RECIPE_TEMPLATE.md`, `status: draft`) — un **entonnoir** : sortie révocable, jamais de code
+auto-écrit (ADR-0013). **Deux sources**, la (b) en cœur du MVP :
+
+- **(b) depuis une fiche `shipped` (+ sa PR)** — la voie la plus propre (« bien faire la
+  fiche, c'est déjà écrire la recette ») : lit la fiche `features/done/<id>_*.md`, en dérive
+  l'ossature de la recette (En clair, playbook depuis Proposition/Comment vérifier, `source:`
+  depuis la PR, `composes:` proposé). **Cœur du MVP.**
+- **(a) depuis une implémentation de référence** (chemin d'un autre projet) — best-effort :
+  pointe la racine `source:` et amorce la checklist ; l'analyse fine du code est **différée**
+  si trop coûteuse (le dire dans le brouillon, jamais inventer).
+
+Le brouillon passe ensuite la gate d'**`ezk-chef`** (déjà livrée par #192) → l'humain le
+finalise `ready`. **Le LLM ne range jamais** : `regen-recipes.sh` (livré) réécrit le livre.
 
 ## Critères d'acceptation (enrichis au grooming du 2026-08-24)
 

@@ -46,7 +46,7 @@ le pattern rend la lisibilité **structurelle**, pas réparée après coup.
 ## Proposition (à groomer)
 
 Poser le pattern « livrable lisible » comme un **trio instanciable** (même esprit que « recette =
-artefact + gardien » = instance du pattern steward — voir [20260824185422122](20260824185422122_recette-artefact-premier-rang-et-gardien.md)) :
+artefact + gardien » = instance du pattern steward — voir [20260824185422122](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)) :
 
 - **Template** : un fichier `*-template.md` par livrable, listant les sections **et** une consigne
   courte « quoi mettre / quoi bannir » par section. Source unique (comme `handoff-template.md`).

@@ -9,6 +9,18 @@ pr:
 created: 2026-07-06
 ---
 
+> **MAJ 2026-08-30 (décision PO — consolidation « famille recette »)** : on **retire le nom
+> `ezk-recipy` comme outil `ezk-*` séparé**. Le scanner de repos froids devient une
+> **sous-commande du hub recette** : **`ezk-chef scan`** (aux côtés de `ezk-chef check`
+> déjà livré #192, `ezk-chef extract` = fiche 794). Motif : limiter la prolifération de
+> `ezk-*`, une seule porte par famille (comme `ezk-backlog`). ⚠️ **Nuance à trancher au
+> build** : cette fiche source aujourd'hui des **skills** (« propose des fiches de skills »),
+> or `ezk-chef` est le gardien des **recettes**. À settler : `ezk-chef scan` propose-t-il des
+> **recettes** (cohérent avec le hub), des **skills** (le rôle historique de 0147), ou **les
+> deux** (le scan trouve un pattern réutilisable, on choisit sa forme) ? Ne pas résoudre en
+> silence — c'est un arbitrage produit. Le reste de la fiche (gate ADR-0013, cap, read-only)
+> reste valable quelle que soit l'issue.
+
 ## Contexte / Problème
 Le flywheel n'a qu'un canal chaud (ezk-ezk harvest = la session courante). Les rituels
 fossilisés dans les repos froids (release.sh dupliqué, doctrines GHA réécrites, hooks

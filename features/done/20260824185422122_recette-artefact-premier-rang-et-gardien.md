@@ -59,12 +59,12 @@ marqué ⚙️.
 que la machine vérifie seule**. Le PO veut faire **évoluer le format par itérations** — d'où une
 idée sœur à instruire : un **schéma markdown déclaratif + validateur mécanique**, transverse
 (fiches, ADR, recettes). Fiche
-[`20260826112620281`](20260826112620281_schema-markdown-declaratif-validateur.md).
+[`20260826112620281`](../20260826112620281_schema-markdown-declaratif-validateur.md).
 
 **Cobaye naturel = le cas R2 / Vercel / domaines.** La chaîne « créer un R2 + déployer un site
 Vercel + rattacher les domaines **dev / staging / prod** » est le premier vrai cas. R2 + site +
 endpoint de téléchargement sont **déjà** capturés à la main dans
-[`recipes/plan-distribution-app.md`](../recipes/plan-distribution-app.md) (méthode muti). Le
+[`recipes/plan-distribution-app.md`](../../recipes/plan-distribution-app.md) (méthode muti). Le
 **rattachement multi-environnements des domaines** n'y est **pas encore** : c'est le trou à
 combler quand on tirera la construction.
 
@@ -131,9 +131,9 @@ La recette **réutilise la mécanique backlog telle quelle**. Rien à réinvente
 ### D3 — Producteur = aucun skill neuf
 
 Le geste « produire une recette » est **déjà couvert** : `ezk-ezk harvest` (session courante) et
-`ezk-extract` / [fiche 794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
+`ezk-extract` / [fiche 794](../20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
 (feature désignée). On **n'ajoute pas** de skill producteur, et surtout **pas** sous le nom
-`ezk-recipy` — faux ami déjà pris ([fiche 0147](0147-ezk-recipy-mvp.md) = scanner de repos
+`ezk-recipy` — faux ami déjà pris ([fiche 0147](../0147-ezk-recipy-mvp.md) = scanner de repos
 **froids**, pas les recettes de démarrage).
 
 Pas de sous-commandes multi-niveaux (`ezk-ezk recipy add`) pour l'instant : la grammaire est plate.
@@ -143,7 +143,7 @@ Si une **famille** de verbes (`add/list/rm/regen`) apparaît un jour, elle appar
 ### D4 — Où vit une recette = index central qui POINTE ; fichier central par défaut
 
 L'archi non négociable : **le livre (l'index) est TOUJOURS central et POINTE, jamais ne copie** —
-doctrine entonnoir ([ADR-0013](../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md))
+doctrine entonnoir ([ADR-0013](../../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md))
 appliquée à la localisation. Du coup, l'emplacement du **fichier** devient un réglage réversible
 (champ `home`), sans toucher au livre.
 
@@ -183,11 +183,11 @@ Cette fiche définit **l'OBJET** (format recette + livre + gardien). Les autres 
 **consomment** :
 
 - **session courante** → `ezk-ezk harvest` ;
-- **feature désignée** → `ezk-extract` ([794](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)) ;
-- **repos froids** → `ezk-recipy` ([0147](0147-ezk-recipy-mvp.md)) ;
-- **cas d'usage** : `ezk-cowork` ([0155](0155-ezk-cowork-scaffold-audit-contrat-cowork.md)),
-  [recette-site 540](20260821172716540_recette-site-produit-regles-activables.md), et « pack de
-  pratiques projet » ([0177](0177-pack-pratiques-projet-portables.md)).
+- **feature désignée** → `ezk-extract` ([794](../20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)) ;
+- **repos froids** → `ezk-recipy` ([0147](../0147-ezk-recipy-mvp.md)) ;
+- **cas d'usage** : `ezk-cowork` ([0155](../0155-ezk-cowork-scaffold-audit-contrat-cowork.md)),
+  [recette-site 540](../20260821172716540_recette-site-produit-regles-activables.md), et « pack de
+  pratiques projet » ([0177](../0177-pack-pratiques-projet-portables.md)).
 
 Eux produisent/consomment, **celle-ci définit**. Pas de doublon.
 
@@ -225,7 +225,7 @@ déjà pour garder une famille d'artefacts-données.
 ## Lignée / références
 
 - Doctrine cowork : ADR-0015 (« contrat cowork »).
-- Doctrine recipy : [ADR-0013](../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md) (entonnoir, jamais fabrique).
+- Doctrine recipy : [ADR-0013](../../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md) (entonnoir, jamais fabrique).
 - Nommage / carte 4 bandes : ADR-0020.
 - Frontière déterministe : ADR-0001 (le LLM ne range jamais).
 - Producteurs & cas : fiches 794, 0147, 0155, 540, 0177.

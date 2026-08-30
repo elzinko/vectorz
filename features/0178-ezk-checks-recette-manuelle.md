@@ -44,7 +44,7 @@ POC : skill déployé (2026-08-01) ; dogfood sur city-guided PR #91 / 0056-B
 
 La « recette de validation » suit le **même pattern à trois étages** que la recette de
 démarrage (voir la fiche-chapeau
-[`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md), D3) :
+[`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md), D3) :
 
 - l'**artefact** produit (le `CHECK.md` rempli) = **donnée** → `features/checks/` ;
 - l'**action de valider** (piloter Playwright, cliquer, screenshoter) = **outil** (ce skill) ;

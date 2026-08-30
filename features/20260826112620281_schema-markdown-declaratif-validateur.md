@@ -50,7 +50,7 @@ vérifier seule. Cette fiche propose ce chaînon manquant : un **schéma markdow
 ## Frontière (anti-doublon)
 
 - **Distinct de** la rule `recipe/valid-frontmatter` du chapeau
-  [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md) :
+  [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md) :
   celle-ci vérifie **une** recette, jugée par le gardien. Ici = le **mécanisme générique**
   (schéma déclaré + validateur), transverse aux familles.
 - **⚠ Recouvre** le **sliver « validateur de conformité »** que

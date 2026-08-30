@@ -59,7 +59,7 @@ mot pour mot la « structuration des fichiers markdown et le fonctionnement glob
 ## Pourquoi AVANT les recettes
 
 `ezk-chef` (fiche
-[chapeau recette](20260824185422122_recette-artefact-premier-rang-et-gardien.md)) va instancier
+[chapeau recette](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)) va instancier
 **le même motif une 4ᵉ fois** — une famille d'artefacts + un index + un gardien + une validation —
 **à la main**. Sans modèle compilé ni schéma déclaré, on **grave un 6ᵉ dialecte de lien** et un
 **3ᵉ validateur maison**, et le format de recette qu'on veut « faire évoluer sans rien casser »

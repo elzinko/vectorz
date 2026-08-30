@@ -11,7 +11,7 @@ created: 2026-08-01
 ---
 
 > **⛔ ABSORBÉE le 2026-08-24 (lot 4b) — ne pas tirer.** Doublon de la recette-chapeau
-> [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md) : un « pack de
+> [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md) : un « pack de
 > pratiques projet » = un **cas d'usage de l'objet recette** (artefact-donnée qui compose des rules +
 > référence un profil + pointe un exemple), pas un objet neuf. Piste **overlay écartée** (ADR-0039 §4 :
 > un overlay surcharge une brique du catalogue ; 0177 n'en surcharge aucune). La moitié **versioning +
