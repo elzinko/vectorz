@@ -97,6 +97,7 @@
 | [20260823220100443](done/20260823220100443_split-ezk-product-build.md) | Split cérémonie/rôle — le skill devient ezk-product-build, le rôle PO reste l'agent ezk-pm | refactor | P1 |  | mega-city | ✅ shipped | #162 |
 | [20260824061247344](20260824061247344_refonte-trois-etages-reliquat.md) | Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO) | refactor | P1 |  | mega-city | 🔴 todo |  |
 | [20260825141012293](done/20260825141012293_ezk-sessions-cockpit.md) | ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map | feature | P1 |  | mega-city | ✅ shipped | #188 |
+| [20260826082120062](20260826082120062_domaine-metriques-de-sprint-rapport.md) | Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur | feature | P1 |  | mega-city | 🔴 todo |  |
 | [20260829214131713](done/20260829214131713_ezk-sessions-vue-navigateur-live.md) | ezk-sessions — vue navigateur de l'état des sessions (live, machine-locale) | feature | P1 |  | mega-city | ✅ shipped | #189 |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
@@ -151,7 +152,7 @@
 | [20260823121712716](20260823121712716_vues-generees-board-kanban-history-git.md) | Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche) | feature | P2 |  | mega-city | 🔴 todo |  |
 | [20260823121712844](20260823121712844_durcir-regen-backlog-racine-nichee.md) | Durcir regen-backlog — refuser une racine par défaut nichée sous un autre backlog (fin du piège products/mega-city) | bug | P2 |  | mega-city | 🔴 todo |  |
 | [20260823121712909](20260823121712909_lawgiver-doctor-skill-non-materialise.md) | lawgiver doctor — détecter un skill du profil non matérialisé dans ~/.claude (le bug /ezk-pr introuvable) | feature | P2 |  | mega-city | 🔴 todo |  |
-| [20260823124042708](done/20260823124042708_bundles-vs-themes-reorganisation.md) | LA LOI — distinguer thèmes (namespaces) et bundles (packs curated), désenchevêtrer hexagonal | refactor | P2 |  | mega-city | ✅ shipped | #190 |
+| [20260823124042708](done/20260823124042708_bundles-vs-themes-reorganisation.md) | LA LOI — distinguer thèmes (namespaces) et bundles (packs curated), désenchevêtrer hexagonal | refactor | P2 |  | mega-city | 🔴 todo |  |
 | [20260823124042842](done/20260823124042842_vue-avancement-sprints-fiches.md) | Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs | feature | P2 |  | mega-city | ✅ shipped | main@7f0f12d |
 | [20260824185422122](20260824185422122_recette-artefact-premier-rang-et-gardien.md) | « Recette » comme artefact de premier rang + gardien (ezk-chef) — instancier le pattern steward, ne rien inventer | feature | P2 |  | mega-city | 🔴 todo |  |
 | [20260825123700998](done/20260825123700998_doctrine-composition-features.md) | Doctrine de composition des features — fusion, épic ou division : quand et comment | feature | P2 |  | mega-city | ✅ shipped | #175 |
@@ -216,7 +217,6 @@
 | [20260824111001836](20260824111001836_regle-clarte-atteint-tout-output-ezk.md) | La règle de clarté doit atteindre TOUT ce qui sort de la méthode (base + sorties de chat), pas rester orpheline | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20260824122629925](20260824122629925_onglet-faq-comment-faire.md) | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260824204751403](20260824204751403_preparation-lots-versions-coherence.md) | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P1 |  | mega-city | 💡 idea |  |
-| [20260826082120062](20260826082120062_domaine-metriques-de-sprint-rapport.md) | Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur | feature | P1 |  | vectorz | 💡 idea |  |
 | [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md) | Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre | chore | P1 |  | mega-city | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
