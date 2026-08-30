@@ -89,4 +89,20 @@ describe('validateSprintReport', () => {
     expect(result.notices.some((n) => n.code === 'steps.not_ventilated')).toBe(true);
     expect(result.code).toBe(0);
   });
+
+  it('ne PLANTE pas quand une section requise vaut null : violation + code 1 (jamais une exception)', () => {
+    for (const field of ['sprint', 'window', 'duration', 'tokens'] as const) {
+      const broken = { ...completeReport, [field]: null };
+      const result = validateSprintReport(writeReport(broken));
+      expect(result.code).toBe(1);
+      expect(result.violations.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('refuse un rapport où tokens.totalTokens ≠ input+output', () => {
+    const broken = { ...completeReport, tokens: { ...completeReport.tokens, totalTokens: 99_999 } };
+    const result = validateSprintReport(writeReport(broken));
+    expect(result.code).toBe(1);
+    expect(result.violations.some((v) => v.code === 'tokens.sum_mismatch')).toBe(true);
+  });
 });

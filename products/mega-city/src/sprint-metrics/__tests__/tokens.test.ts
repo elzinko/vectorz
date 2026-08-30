@@ -20,6 +20,17 @@ describe('attributeTokens', () => {
     });
   });
 
+  it('borne semi-ouverte (startTs, endTs] : un usage pile sur le checkpoint de DÉBUT est exclu, celui de FIN inclus', () => {
+    // La frontière partagée entre deux sprints (endTs du précédent = startTs du suivant)
+    // ne doit compter QUE pour le sprint qui se termine — sinon double comptage silencieux.
+    const events = [
+      { ts: window.startTs, sessionId: 's1', inputTokens: 1000, outputTokens: 1000 }, // pile sur startTs → exclu
+      { ts: window.endTs, sessionId: 's1', inputTokens: 7, outputTokens: 3 }, // pile sur endTs → inclus
+    ];
+    const result = attributeTokens(events, window);
+    expect(result).toEqual({ grain: 'sprint', inputTokens: 7, outputTokens: 3, totalTokens: 10 });
+  });
+
   it('repli grain session (somme du run entier) et étiquette la note quand la fenêtre est vide', () => {
     const events = [
       { ts: '2026-08-30T07:00:00.000Z', sessionId: 's1', inputTokens: 10, outputTokens: 5 },

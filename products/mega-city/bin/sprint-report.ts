@@ -36,6 +36,13 @@ function main(): void {
   const argv = process.argv.slice(2);
   if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h') usage();
   const slug = argv[0];
+  // Le slug entre dans un nom de fichier (`<day>-sprint-<slug>.json`) : le contraindre
+  // à un jeu sûr évite qu'un `../` écrive hors de docs/sprints/ (même garde que les
+  // gate_id dans supervision/runtime.ts).
+  if (!/^[A-Za-z0-9._-]+$/.test(slug)) {
+    console.error(`slug invalide : "${slug}" (attendu : lettres, chiffres, ., _, -)`);
+    usage();
+  }
   let repoRoot = repoRootDefault;
   let projectRoot = megaCityRoot;
   let product = 'mega-city';

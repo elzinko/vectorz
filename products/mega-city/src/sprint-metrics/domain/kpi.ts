@@ -11,7 +11,7 @@ export function summarizeShippedFeatures(
   window: { startTs: string; endTs: string },
 ): ShippedFeaturesSummary {
   const ids = fiches
-    .filter((f) => f.mergedAt !== undefined && f.mergedAt >= window.startTs && f.mergedAt <= window.endTs)
+    .filter((f) => f.mergedAt !== undefined && f.mergedAt > window.startTs && f.mergedAt <= window.endTs)
     .map((f) => f.id)
     .sort();
   return { count: ids.length, ids };
@@ -28,7 +28,7 @@ export function summarizeBlockages(
   window: { startTs: string; endTs: string },
 ): BlockagesSummary {
   const events = escalations
-    .filter((e) => e.ts >= window.startTs && e.ts <= window.endTs)
+    .filter((e) => e.ts > window.startTs && e.ts <= window.endTs)
     .map((e) => ({ ts: e.ts, detail: e.detail }))
     .sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
   return { count: events.length, events };
@@ -77,7 +77,7 @@ export function summarizePrRetouches(
   prs: readonly MergedPrLike[],
   window: { startTs: string; endTs: string },
 ): PrRetouchesSummary {
-  const inWindow = prs.filter((pr) => pr.mergedAt >= window.startTs && pr.mergedAt <= window.endTs);
+  const inWindow = prs.filter((pr) => pr.mergedAt > window.startTs && pr.mergedAt <= window.endTs);
   let sansRetouche = 0;
   let indetermine = 0;
   for (const pr of inWindow) {
