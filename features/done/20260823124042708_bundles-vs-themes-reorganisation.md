@@ -6,9 +6,9 @@ priority: P2
 product: mega-city
 version:
 epic:
-status: todo
+status: shipped
 ready: 2026-08-30
-pr:
+pr: "#190"
 created: 2026-08-23
 ---
 
