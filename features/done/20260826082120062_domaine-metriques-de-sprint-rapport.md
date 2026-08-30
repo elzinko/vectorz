@@ -5,9 +5,9 @@ type: feature
 priority: P1
 product: mega-city
 epic:
-status: todo
+status: shipped
 ready: 2026-08-30
-pr:
+pr: "#191"
 created: 2026-08-26
 ---
 
