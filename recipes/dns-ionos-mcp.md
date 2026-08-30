@@ -1,3 +1,15 @@
+---
+id: "20260830104013460"
+title: Gérer les DNS IONOS via leur serveur MCP
+makes: Un accès agent (lecture/écriture) aux enregistrements DNS d'un domaine IONOS, via un token scope Domains only
+source: # aucune implémentation prouvée pointée — configuration MCP + procédure IONOS, pas de code (voir Statut)
+composes: []
+status: draft # pas de `source:` honnête — recette de configuration, signalé (voir Statut)
+home: central
+created: 2026-08-29
+updated: 2026-08-30
+---
+
 # Recette (brique) — Gérer les DNS IONOS via leur MCP
 
 > **Brique réutilisable.** Piloter les enregistrements DNS d'un domaine **IONOS**
@@ -107,3 +119,11 @@ Dans une session interactive, demande à l'agent : **« liste les enregistrement
 - **Session non-interactive** (cron, CI, agent headless) : un MCP branché par OAuth
   interactif peut être absent. Pour ces contextes, prévois le token en variable
   d'environnement du runner.
+
+## Statut de cette recette
+
+Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
+[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+**`status: draft`** : recette de **configuration** (créer un token, brancher un serveur MCP
+tiers) — aucune implémentation de code à pointer, `source:` laissé vide plutôt qu'inventé.
+Signalé au PO.

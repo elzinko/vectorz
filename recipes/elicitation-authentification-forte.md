@@ -1,3 +1,15 @@
+---
+id: "20260830104013541"
+title: Élicitation par authentification forte (l'agent demande, l'humain authentifie)
+makes: Un flux d'élicitation où l'agent demande un accès et un humain l'ouvre par preuve de présence (Touch ID), consentement signé et expirant
+source: ~/git/google-mcp-multi-account/
+composes: []
+status: ready
+home: central
+created: 2026-08-24
+updated: 2026-08-30
+---
+
 # Recette — Élicitation par authentification forte (l'agent demande, l'humain authentifie)
 
 > **Document vivant.** Matière d'une future fiche vectorz — une « recette » ezk réutilisable.

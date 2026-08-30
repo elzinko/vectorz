@@ -1,3 +1,15 @@
+---
+id: "20260830104013981"
+title: Base de données KV sur Vercel (Upstash Redis)
+makes: Un store clé-valeur Redis (Upstash) branché à un projet Vercel, avec un adaptateur tolérant les 2 nommages de variables
+source: # code inline (adaptateur), pas de racine pointée — déroge à ADR-0013, voir Statut
+composes: []
+status: draft # code stocké inline (déroge no-stored-code) + source non pointée — signalé, non bloquant (voir Statut)
+home: central
+created: 2026-08-27
+updated: 2026-08-30
+---
+
 # Recette (brique) — Base de données KV sur Vercel (Upstash Redis)
 
 > **Brique réutilisable.** Créer un store clé-valeur Redis (Vercel KV, propulsé par
@@ -75,3 +87,17 @@ par ex. le set `waitlist:emails` se remplit à chaque écriture.
 - **L'UI Vercel bouge** : libellés « KV » / « Upstash » / « Marketplace » selon la
   version. L'important : une base **Redis (Upstash) connectée au projet**.
 - **Redéploiement obligatoire** après avoir posé/changé les variables.
+
+## Statut de cette recette
+
+Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
+[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+**`status: draft`**, deux écarts connus, **signalés au PO plutôt que corrigés d'office** (la
+consigne de normalisation n'est pas une réécriture) :
+- **Code inline** dans « Le code (adaptateur réutilisable) » : déroge à la doctrine entonnoir
+  (`recipe/no-stored-code`, ADR-0013). Cette rule est jugée par `ezk-chef`, **pas bloquante
+  mécaniquement** (arbitrage PO, fiche 20260824185422122 §« Frontière anti-doublon »).
+- **`source:` non pointée** : le code de cette page est générique (pas issu d'un projet
+  identifié) — rien à pointer sans inventer une racine.
+À une prochaine passe : extraire l'adaptateur dans un vrai fichier source (samplerz ou un
+gabarit dédié) et remplacer le code inline par un pointeur.

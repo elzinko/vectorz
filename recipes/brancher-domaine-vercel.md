@@ -1,3 +1,15 @@
+---
+id: "20260830104013372"
+title: Brancher un domaine + environnements (prod / staging / dev) sur Vercel, DNS chez IONOS
+makes: Un domaine et ses sous-domaines staging/dev posés sur Vercel, DNS géré chez IONOS, alias posés par la CI par tag
+source: # aucune implémentation prouvée pointée — playbook dashboard, pas de code (voir Statut)
+composes: [dns-ionos-mcp, page-attente-marketing]
+status: draft # pas de `source:` honnête — playbook manuel, signalé (voir Statut)
+home: central
+created: 2026-08-29
+updated: 2026-08-30
+---
+
 # Recette — Brancher un domaine + environnements (prod / staging / dev) sur Vercel, DNS chez IONOS
 
 > **Générique** — n'importe quel domaine. Providers : **Vercel** + **IONOS**. Mettre un
@@ -77,3 +89,13 @@ C'est la **CI** (voir recette « CI type muti ») qui déploie puis fait `vercel
 - **Copier, pas retaper** les valeurs Vercel.
 - **« Invalid » tant que la CI n'a pas déployé** le sous-domaine : normal, l'alias n'existe pas encore.
 - **Enregistrements « Mail » IONOS** : jamais touchés.
+
+## Statut de cette recette
+
+Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
+[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+**`status: draft`** : c'est un **playbook dashboard** (Vercel/IONOS, clics guidés), pas une
+implémentation de code — aucun `source:` honnête à pointer sans inventer. La recette « CI type
+muti » qu'elle cite (déploiement par tags + alias) n'existe pas encore comme fiche séparée.
+Signalé au PO plutôt qu'un `source:` inventé.
+
