@@ -19,12 +19,13 @@ Audit du **2026-08-30**.
 | `R2_ACCESS_KEY_ID` | ✅ | — | ✅ | — | CI upload binaires → R2 |
 | `R2_SECRET_ACCESS_KEY` | ✅ | — | ✅ | — | CI upload binaires → R2 |
 | `R2_BUCKET_NAME` | ✅ | — | ✅ | — | CI upload binaires → R2 |
-| `R2_PUBLIC_URL` | ✅ | — | — | ⚙️ **manque** | fonction site `/api/downloads` (302 vers R2) |
+| `R2_PUBLIC_URL` | ✅ | — | — | ✅ (corrigé 2026-08-30 : URL publique `pub-*.r2.dev`, pas l'endpoint S3) | fonction site `/api/downloads` (302 vers R2) |
 | IONOS API | — | ✅ `samplerz-ionos-api` | — | — | DNS domaine (recette IONOS) |
 | Lemon Squeezy API | — | ⚙️ `lemonsqueezy-api` (à ranger) | — | — | inspection + création produits (API REST) |
 
-**Le seul trou côté infra** : `R2_PUBLIC_URL` sur Vercel (Production). Valeur
-disponible dans le `.env` du main. Voir [`journal/samplerz.md`](journal/samplerz.md).
+**Téléchargement : ✅ réparé (2026-08-30)** — #378 mergée + `R2_PUBLIC_URL`
+corrigé sur Vercel (pointait vers l'endpoint S3, pas l'URL publique). Détail et
+piège dans [`journal/samplerz.md`](journal/samplerz.md).
 
 **Projet Vercel** : `samplerz` (équipe `thomas-coudercs-projects`) →
 `https://www.samplerz.fr`. À **lier** avant toute opération env :
