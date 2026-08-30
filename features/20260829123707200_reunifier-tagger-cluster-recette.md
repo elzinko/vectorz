@@ -29,7 +29,7 @@ une feature produit.
 - [`20260824141336516`](20260824141336516_recette-mise-en-place-ci-type-muti.md) — recette
   « mise en place CI, façon muti ».
 - `20260821172716540` — recette « site produit à règles activables ».
-- [`20260829123707100`](20260829123707100_labo-de-cuisine-journal-difficultes.md) — **labo
+- [`20260829123707100`](done/20260829123707100_labo-de-cuisine-journal-difficultes.md) — **labo
   de cuisine** (journal des difficultés) — nouvelle.
 - ADR-0013 — doctrine « entonnoir, jamais de fabrique ».
 
