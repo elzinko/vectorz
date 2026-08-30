@@ -58,7 +58,7 @@ etages:
       overlay:
         skills: [vz-product-builder]
   librairie:
-    skills: [ezk-ezk]
+    skills: [ezk-ezk, ezk-chef]
     agents: [ezk-steward, ezk-chef]
 
 # Bandes INTERNES à l'étage méthode (ADR-0020, amendée par ADR-0039 : l'ex-bande
