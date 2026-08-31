@@ -5,11 +5,18 @@ type: chore
 priority: P2
 product: mega-city
 epic:
-status: in-progress
+status: shipped
 ready: 2026-07-26
-pr:
+pr: "#56"
 created: 2026-07-25
 ---
+
+> **Livrée (décision PO, 2026-08-31).** Le gros œuvre est mergé dans `main` : ADR-0021
+> (portier déterministe) + `check.sh` restructuré + garde anti-faux-positif, revue Codex
+> PR #56 traitée (6 findings). 5 des 6 critères sont cochés. Le **seul** critère restant
+> — mesurer 2 clôtures réelles post-merge (cible ≤ 28 000 tokens / ≤ 6 outils) — est un
+> **suivi de mesure**, pas du code manquant. La fiche est rangée en `done/` ; la mesure
+> pourra être consignée ici à l'occasion sans rouvrir un chantier.
 
 # 0088 — La clôture coûte 65× ce qu'elle rapporte quand la session a tenu ses comptes
 
