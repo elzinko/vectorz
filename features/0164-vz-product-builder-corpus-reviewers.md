@@ -96,6 +96,22 @@ Protocole, depuis un client MCP configuré (Claude Desktop ou équivalent) :
   d'exigences → refusée par ezk-pm, réservée au PO. Corpus cran-3 en session : refusé
   (lean + non journalisable ici).
 
+## Statut du 2026-08-31 — PAS absorbée par ezk-product-build (garde en pause)
+
+Question posée : le mode `--mode auto` d'ezk-product-build (qui délègue les checkpoints à
+`ezk-pm`) rend-il cette fiche caduque ? **Non.** Les deux résolvent « avancer sans que le PO
+réponde », mais **par des mécaniques différentes** :
+
+- ezk-product-build auto → **un seul décideur** (`ezk-pm`) tranche le checkpoint.
+- vz-product-builder → **un corpus adverse** (panel multi-lentilles + contradicteurs, cran-3
+  composant `0057 ezk-challenge`) tranche à la place d'une voix unique.
+
+La valeur propre (revue adverse au point de décision, pas un juge solo) subsiste. Et le skill
+`vz-product-builder/SKILL.md` **est déjà mergé** dans `main`. Ce qui reste n'est donc **pas** du
+code à écrire : c'est la **preuve vécue** (AC1-AC3) qui exige une session outillée MCP jamais
+jouée. → Fiche **maintenue `in-progress`, en pause** jusqu'à cette session. Re-scoper pour
+shipper sans le run reste une décision PO (exigences).
+
 ## Suivi (dette connue)
 
 - Depuis la création de cette fiche, `main` a extrait **0057 `ezk-challenge`** — la

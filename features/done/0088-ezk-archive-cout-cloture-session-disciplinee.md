@@ -5,11 +5,18 @@ type: chore
 priority: P2
 product: mega-city
 epic:
-status: in-progress
+status: shipped
 ready: 2026-07-26
-pr:
+pr: "#56"
 created: 2026-07-25
 ---
+
+> **Livrée (décision PO, 2026-08-31).** Le gros œuvre est mergé dans `main` : ADR-0021
+> (portier déterministe) + `check.sh` restructuré + garde anti-faux-positif, revue Codex
+> PR #56 traitée (6 findings). 5 des 6 critères sont cochés. Le **seul** critère restant
+> — mesurer 2 clôtures réelles post-merge (cible ≤ 28 000 tokens / ≤ 6 outils) — est un
+> **suivi de mesure**, pas du code manquant. La fiche est rangée en `done/` ; la mesure
+> pourra être consignée ici à l'occasion sans rouvrir un chantier.
 
 # 0088 — La clôture coûte 65× ce qu'elle rapporte quand la session a tenu ses comptes
 
@@ -142,7 +149,7 @@ Symptôme utilisateur direct, PO le 2026-07-25 : « *c'est un peu dur et cher* �
       dont l'union entrées vivantes + archivées = tout ce qui a été écrit (H1) et le
       caractère stationnaire du fichier (H6).
 
-## Réalisé (2026-07-26) — ADR [0021](../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md)
+## Réalisé (2026-07-26) — ADR [0021](../../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md)
 
 **Arbitrages PO** : ① l'invariant du skill est **reformulé** (« ne *juge* jamais lui-même »
 remplace « ne fait QUE déléguer ») ; ② portée = les 3 lots cœur (le `regen --check` de la
@@ -188,7 +195,7 @@ Un finding (fixture sans `-b main`) était déjà corrigé au moment de la revue
 
 ## Notes
 
-- **Ne pas confondre avec la fiche [0026](done/0131-ezk-archive-persiste-handoff.md)**
+- **Ne pas confondre avec la fiche [0026](0131-ezk-archive-persiste-handoff.md)**
   (livrée) : elle a *créé* la persistance du handoff ; celle-ci porte son **coût**.
 - Le PO a demandé cette fiche explicitement plutôt que de re-discuter le sujet à chaque
   clôture (2026-07-25).

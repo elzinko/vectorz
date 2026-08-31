@@ -62,7 +62,7 @@ affiché en fin de script :
 3. Après `/supervision-demo` : un dossier `.supervision/runs/<id>/events.jsonl` existe.
 4. **Capture `02-moniteur-apres.png`** : une carte de run apparaît dans le Moniteur
    (http://localhost:5173).
-5. (Optionnel) `/ezk-archive` → portier `VERDICT: CLEAN` — lié à la fiche [0088](../features/0088-ezk-archive-cout-cloture-session-disciplinee.md).
+5. (Optionnel) `/ezk-archive` → portier `VERDICT: CLEAN` — lié à la fiche [0088](../features/done/0088-ezk-archive-cout-cloture-session-disciplinee.md).
 
 Si une étape est KO, le rapport le dit. **Ne pas inventer un succès.**
 
@@ -97,7 +97,7 @@ pnpm --filter @cop1/web dev   # → http://localhost:5173
 
 1. Si une fiche du backlog attend une **preuve observationnelle** (visible au Moniteur,
    pas en test unitaire), cocher/débloquer ses AC une fois vraiment vues — actuellement
-   [0088](../features/0088-ezk-archive-cout-cloture-session-disciplinee.md).
+   [0088](../features/done/0088-ezk-archive-cout-cloture-session-disciplinee.md).
 2. **Ne pas merger** depuis ce guide — décision opérateur + CI verte.
 
 Suite produit (acteur LLM headless, nightly) : fiche
