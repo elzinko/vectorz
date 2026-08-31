@@ -42,27 +42,33 @@ dépendances distinctes).
 
 ## Proposition
 
-Faire évoluer la skill `ezk-retro` (temps 2 « cérémonie » + temps 3 « sortie typée ») :
+Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 3 « sortie typée »
++ temps 5 « rangement ») :
 
-1. **Invoquer `ezk-chef suggest`** pendant la cérémonie : les agents reçoivent les
-   candidats-recettes du sprint (fiche voisine
+1. **Invoquer `ezk-chef suggest` dès le temps 1** (collecte des signaux), **en amont du garde-fou
+   « pas de symptôme → pas de rétro »** (`ezk-retro/SKILL.md:57-61`). Un candidat-recette détecté
+   **est** un signal : sans lui au temps 1, l'early-return couperait la rétro avant même d'avoir
+   regardé le sprint. Les agents reçoivent les candidats (fiche voisine
    [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
 2. **Juger la pertinence** : les agents décident au cas par cas. Ce n'est pas parce que
-   `suggest` propose qu'on crée.
-3. **Créer une fiche « créer la recette X »** quand c'est retenu : une fiche `feature` normale
-   via `ezk-backlog add` (pointeurs vers la fiche source + les galères), rangée au backlog pour
-   le **sprint suivant**.
-4. **Passer par ton acceptation** : la fiche-recette figure dans le rapport de rétro avec ta
-   case (⏳ → ✅ / ❌), et son entrée en sprint suit ton mode (auto / manuel).
+   `suggest` propose qu'on retient.
+3. **Proposer d'abord, ne pas créer tout de suite** : chaque candidat retenu figure dans le
+   **rapport de rétro** avec ta case d'acceptation (⏳ → ✅ / ❌), **jamais pré-remplie**.
+4. **Créer la fiche « créer la recette X » seulement après ton ✅** : `ezk-backlog add` n'est
+   appelé qu'**une fois le candidat accepté** (temps 5 « rangement sous contrôle PO »,
+   `ezk-retro/SKILL.md:92-103`). Un candidat ⏳ ou ❌ ne crée **rien** au backlog. La fiche créée
+   part au sprint suivant selon ton mode (auto / manuel).
 
 ## Critères d'acceptation
 
-- [ ] La cérémonie `ezk-retro` peut **invoquer `ezk-chef suggest`** et afficher les candidats.
-- [ ] Un candidat retenu produit une **fiche `feature` « créer la recette X »** via
-      `ezk-backlog add`, avec pointeurs vers la fiche source + les galères.
-- [ ] Un candidat **non retenu** ne crée rien (la rétro juge, pas l'outil).
-- [ ] La fiche-recette figure au **rapport de rétro** avec ta case d'acceptation, **jamais
-      pré-remplie**.
+- [ ] `ezk-chef suggest` est invoqué **au temps 1** (collecte des signaux), **avant** le garde-fou
+      « pas de symptôme » : un sprint sans symptôme verbal mais avec une galère capitalisable
+      produit quand même des candidats.
+- [ ] Un candidat figure d'abord au **rapport de rétro** avec ta case d'acceptation (⏳),
+      **jamais pré-remplie**.
+- [ ] `ezk-backlog add` n'est appelé **qu'après ton ✅** : un candidat ⏳ ou ❌ ne crée **aucune**
+      fiche au backlog (garde-fou « rien rangé sans feu vert PO »).
+- [ ] La fiche créée porte des **pointeurs** vers la fiche source + les galères.
 - [ ] La recette n'est **pas** produite pendant la rétro (le sprint N+1 la développe).
 - [ ] Gate locale verte (typecheck / lint / tests).
 
