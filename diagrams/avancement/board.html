@@ -268,13 +268,13 @@
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
-  "shipped": 130,
-  "todo": 51,
+  "shipped": 131,
+  "todo": 54,
   "blocked": 6,
-  "in-progress": 5,
+  "in-progress": 4,
   "idea": 86
  },
- "tirables": 1,
+ "tirables": 2,
  "actives": [
   {
    "id": "20260826122532943",
@@ -294,6 +294,32 @@ window.EZK_AVANCEMENT = {
     "bmad"
    ],
    "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md"
+  },
+  {
+   "id": "20260831075615809",
+   "title": "ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir",
+   "type": "feature",
+   "priority": "P0",
+   "status": "todo",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md"
+  },
+  {
+   "id": "20260831075615969",
+   "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
+   "type": "feature",
+   "priority": "P0",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
   },
   {
    "id": "0030",
@@ -856,19 +882,6 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/0080-ezk-retro-compte-rendu-standard.md"
-  },
-  {
-   "id": "0088",
-   "title": "ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné)",
-   "type": "chore",
-   "priority": "P2",
-   "status": "in-progress",
-   "ready": true,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "file": "features/0088-ezk-archive-cout-cloture-session-disciplinee.md"
   },
   {
    "id": "0096",
@@ -1791,6 +1804,19 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260830194601376_spike-degiter-vues-outillage.md"
+  },
+  {
+   "id": "20260830225021794",
+   "title": "ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md"
   },
   {
    "id": "0007",
@@ -3523,14 +3549,14 @@ window.EZK_PLAN = {
       {
        "id": "0088",
        "title": "ezk-archive — ne pas re-vérifier ce que la session appelante a déjà fait (coût de clôture disproportionné)",
-       "status": "in-progress",
+       "status": "shipped",
        "priority": "P2",
        "ready": true,
        "epic": "",
        "product": "mega-city",
        "type": "chore",
        "pr": "",
-       "file": "features/0088-ezk-archive-cout-cloture-session-disciplinee.md",
+       "file": "features/done/0088-ezk-archive-cout-cloture-session-disciplinee.md",
        "found": true
       },
       {
@@ -3667,7 +3693,7 @@ window.EZK_PLAN = {
   "entries": 42,
   "cards": 75,
   "resolved": 73,
-  "shipped": 34,
+  "shipped": 35,
   "unresolved": 2
  }
 };
@@ -3678,6 +3704,30 @@ window.EZK_PLAN = {
 /*ezk-plan-delta:begin*/
 window.EZK_PLAN_DELTA = {
  "recent": [
+  {
+   "id": "20260831075615969",
+   "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
+   "status": "todo",
+   "priority": "P0",
+   "inPlan": false,
+   "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
+  },
+  {
+   "id": "20260831075615809",
+   "title": "ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir",
+   "status": "todo",
+   "priority": "P0",
+   "inPlan": false,
+   "file": "features/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md"
+  },
+  {
+   "id": "20260830225021794",
+   "title": "ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué",
+   "status": "todo",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md"
+  },
   {
    "id": "20260830194601376",
    "title": "SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions)",
@@ -3773,33 +3823,9 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260826222044335_carte-la-loi-graphe-visuel.md"
-  },
-  {
-   "id": "20260826173221323",
-   "title": "Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet",
-   "status": "todo",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260826173221323_racine-parametrable-des-vues.md"
-  },
-  {
-   "id": "20260826173005368",
-   "title": "Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills",
-   "status": "todo",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260826173005368_renommer-ezk-map.md"
-  },
-  {
-   "id": "20260826122532943",
-   "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
-   "status": "todo",
-   "priority": "P0",
-   "inPlan": false,
-   "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md"
   }
  ],
- "offPlanCount": 39,
+ "offPlanCount": 42,
  "n": 15
 };
 /*ezk-plan-delta:end*/
