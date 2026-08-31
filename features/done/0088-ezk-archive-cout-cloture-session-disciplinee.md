@@ -149,7 +149,7 @@ Symptôme utilisateur direct, PO le 2026-07-25 : « *c'est un peu dur et cher* �
       dont l'union entrées vivantes + archivées = tout ce qui a été écrit (H1) et le
       caractère stationnaire du fichier (H6).
 
-## Réalisé (2026-07-26) — ADR [0021](../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md)
+## Réalisé (2026-07-26) — ADR [0021](../../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md)
 
 **Arbitrages PO** : ① l'invariant du skill est **reformulé** (« ne *juge* jamais lui-même »
 remplace « ne fait QUE déléguer ») ; ② portée = les 3 lots cœur (le `regen --check` de la
@@ -195,7 +195,7 @@ Un finding (fixture sans `-b main`) était déjà corrigé au moment de la revue
 
 ## Notes
 
-- **Ne pas confondre avec la fiche [0026](done/0131-ezk-archive-persiste-handoff.md)**
+- **Ne pas confondre avec la fiche [0026](0131-ezk-archive-persiste-handoff.md)**
   (livrée) : elle a *créé* la persistance du handoff ; celle-ci porte son **coût**.
 - Le PO a demandé cette fiche explicitement plutôt que de re-discuter le sujet à chaque
   clôture (2026-07-25).
