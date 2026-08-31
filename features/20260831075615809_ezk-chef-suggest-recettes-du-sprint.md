@@ -64,9 +64,12 @@ Ajouter à `ezk-chef` une sous-commande **`suggest <sprint>`** (lecture seule, a
      auto-retenu** (jamais de faux positif « les deux features »). L'attribution par entrée dans
      le labo est l'**option B** en réserve (fiche labo `20260829123707100`), à construire si le
      multi-feature devient fréquent.
-3. **Sortie** : pour chaque fiche livrée portant une galère « résolue + validée + utile »
-   (Symptôme / Geste / Pourquoi) **et attribuée sans ambiguïté**, un candidat
-   `{ ficheId, motif, pointeurs }`. Zéro candidat si rien ne ressort — pas de bruit.
+3. **Sortie** : la source des candidats, ce sont **les galères** (via leur attribution à une fiche),
+   **pas la liste « fiches livrées » du rapport** — au checkpoint la fiche du sprint courant n'est
+   pas encore mergée, donc elle n'y figure pas. Pour chaque **galère « résolue + validée + utile »
+   (Symptôme / Geste / Pourquoi) attribuée sans ambiguïté** à une fiche, un candidat
+   `{ ficheId, motif, pointeurs }`. Le rapport (retouches, blocages) sert aux **signaux de
+   méthode**, pas à filtrer les recettes. Zéro candidat si rien ne ressort — pas de bruit.
 4. **Inerte** (ADR-0013) : `suggest` **propose**, ne crée aucune fiche, ne recopie aucun code.
    La décision et la création appartiennent à la rétro.
 5. **Invoquée par la rétro**, jamais en autonomie : un service que la cérémonie demande à

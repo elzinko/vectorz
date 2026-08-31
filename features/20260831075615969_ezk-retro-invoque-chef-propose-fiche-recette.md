@@ -45,15 +45,27 @@ dépendances distinctes).
 Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 3 « sortie typée »
 + temps 5 « rangement ») :
 
-1. **Produire les artefacts du sprint courant, PUIS invoquer `ezk-chef suggest`, dès le temps 1**
-   (collecte des signaux), **en amont du garde-fou « pas de symptôme → pas de rétro »**
-   (`ezk-retro/SKILL.md:57-61`). Séquencement (option A) : au checkpoint de fin de sprint, les
-   galères sont encore dans le `SPRINT.md` non commité et le rapport n'est pas généré. La rétro
-   **matérialise donc d'abord** ces artefacts — générer le rapport (`sprint:report`) et **figer
-   les galères** du `SPRINT.md` courant dans `docs/sessions/` (le geste de clôture `ezk-archive`,
-   avancé ici) — **avant** d'appeler `suggest`, qui lit alors des artefacts frais (fiche voisine
-   [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)). Un
-   candidat-recette détecté **est** un signal : sans lui au temps 1, l'early-return couperait la
+1. **Uniquement quand le périmètre de la rétro est un sprint** — `ezk-retro run` accepte aussi une
+   PR, une friction, « la méthode » (`ezk-retro/SKILL.md:47-50`) : ces périmètres **sautent** cette
+   étape (pas de sprint à rapporter). En périmètre sprint : **produire les artefacts, PUIS invoquer
+   `ezk-chef suggest`, dès le temps 1** (collecte des signaux), **en amont du garde-fou « pas de
+   symptôme → pas de rétro »** (`ezk-retro/SKILL.md:57-61`). Séquencement (option A) : au checkpoint,
+   les galères sont encore dans le `SPRINT.md` non commité et le rapport n'est pas généré ; la rétro
+   **matérialise d'abord** ces artefacts (rapport via `sprint:report`, galères figées dans
+   `docs/sessions/`) avant d'appeler `suggest`, qui lit alors des artefacts frais (fiche voisine
+   [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
+
+   **Deux garde-fous d'implémentation (à trancher au développement) :**
+   - **Source des candidats = les galères attribuées, PAS la liste « fiches livrées » du rapport.**
+     Au checkpoint, la fiche du sprint n'est pas encore mergée (`ezk-sprint` ne merge qu'à
+     l'étape 10), donc `summarizeShippedFeatures` l'exclurait. Le rapport sert aux **signaux de
+     méthode** (retouches, blocages) ; les candidats-recettes viennent des galères, qui portent
+     l'id de fiche.
+   - **Snapshot idempotent avec `ezk-archive`.** Figer les galères tôt ne doit pas créer un doublon
+     quand la clôture `ezk-archive` refige le `SPRINT.md` (`ezk-archive/SKILL.md:155-174`) — un
+     marqueur « galères déjà figées », ou le retrait de ce passage à la clôture.
+
+   Un candidat-recette détecté **est** un signal : sans lui au temps 1, l'early-return couperait la
    rétro avant même d'avoir regardé le sprint.
 2. **Juger la pertinence** : les agents décident au cas par cas. Ce n'est pas parce que
    `suggest` propose qu'on retient.
