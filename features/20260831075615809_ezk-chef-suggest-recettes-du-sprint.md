@@ -44,12 +44,15 @@ Entrées et moment différents — ne pas les confondre.
 
 Ajouter à `ezk-chef` une sous-commande **`suggest <sprint>`** (lecture seule, aucun effet de bord) :
 
-1. **Entrée = un sprint désigné explicitement.** La rétro passe l'identifiant du sprint courant
-   (slug ou chemin du rapport `docs/sprints/<date>-sprint-<slug>.json`) — jamais « le dernier »
-   deviné. `suggest` lit alors ce rapport (`sprint-report@0.1` : ids des fiches livrées,
-   retouches, blocages) **et** les récits de session correspondants (galères, via
-   `docs/sessions/`). Plusieurs rapports coexistent (replay, historique) : **sans identifiant
-   explicite, `suggest` refuse plutôt que de deviner**.
+1. **Entrée = les artefacts concrets du sprint, passés par la rétro.** La rétro ne passe pas
+   qu'un slug : elle transmet **les chemins** qu'elle vient de produire — le rapport
+   (`docs/sprints/<date>-sprint-<slug>.json`, `sprint-report@0.1` : retouches, blocages) **et**
+   les récits de session figés pour ce sprint (`docs/sessions/…`, porteurs des galères).
+   `suggest` **ne résout ni ne devine** quels récits appartiennent au sprint : `sprint-report@0.1`
+   ne porte pas les chemins de session, et un récit n'a qu'un nom libre + un entête `fiches:` — la
+   liaison sprint→sessions est **fournie par le producteur** (la rétro), jamais reconstruite en
+   parcourant l'historique. Sans artefacts explicitement transmis, `suggest` **refuse plutôt que
+   de deviner**.
    **Prérequis de fraîcheur (séquencement, option A) :** au checkpoint de fin de sprint, les
    galères vivent encore dans le `SPRINT.md` non commité et le rapport n'est pas encore généré.
    C'est la **rétro qui produit ces artefacts juste avant** d'appeler `suggest` (voir la fiche
