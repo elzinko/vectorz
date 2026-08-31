@@ -45,11 +45,28 @@ dépendances distinctes).
 Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 3 « sortie typée »
 + temps 5 « rangement ») :
 
-1. **Invoquer `ezk-chef suggest` dès le temps 1** (collecte des signaux), **en amont du garde-fou
-   « pas de symptôme → pas de rétro »** (`ezk-retro/SKILL.md:57-61`). Un candidat-recette détecté
-   **est** un signal : sans lui au temps 1, l'early-return couperait la rétro avant même d'avoir
-   regardé le sprint. Les agents reçoivent les candidats (fiche voisine
+1. **Uniquement quand le périmètre de la rétro est un sprint** — `ezk-retro run` accepte aussi une
+   PR, une friction, « la méthode » (`ezk-retro/SKILL.md:47-50`) : ces périmètres **sautent** cette
+   étape (pas de sprint à rapporter). En périmètre sprint : **produire les artefacts, PUIS invoquer
+   `ezk-chef suggest`, dès le temps 1** (collecte des signaux), **en amont du garde-fou « pas de
+   symptôme → pas de rétro »** (`ezk-retro/SKILL.md:57-61`). Séquencement (option A) : au checkpoint,
+   les galères sont encore dans le `SPRINT.md` non commité et le rapport n'est pas généré ; la rétro
+   **matérialise d'abord** ces artefacts (rapport via `sprint:report`, galères figées dans
+   `docs/sessions/`) avant d'appeler `suggest`, qui lit alors des artefacts frais (fiche voisine
    [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
+
+   **Deux garde-fous d'implémentation (à trancher au développement) :**
+   - **Source des candidats = les galères attribuées, PAS la liste « fiches livrées » du rapport.**
+     Au checkpoint, la fiche du sprint n'est pas encore mergée (`ezk-sprint` ne merge qu'à
+     l'étape 10), donc `summarizeShippedFeatures` l'exclurait. Le rapport sert aux **signaux de
+     méthode** (retouches, blocages) ; les candidats-recettes viennent des galères, qui portent
+     l'id de fiche.
+   - **Snapshot idempotent avec `ezk-archive`.** Figer les galères tôt ne doit pas créer un doublon
+     quand la clôture `ezk-archive` refige le `SPRINT.md` (`ezk-archive/SKILL.md:155-174`) — un
+     marqueur « galères déjà figées », ou le retrait de ce passage à la clôture.
+
+   Un candidat-recette détecté **est** un signal : sans lui au temps 1, l'early-return couperait la
+   rétro avant même d'avoir regardé le sprint.
 2. **Juger la pertinence** : les agents décident au cas par cas. Ce n'est pas parce que
    `suggest` propose qu'on retient.
 3. **Proposer d'abord, ne pas créer tout de suite** : chaque candidat retenu figure dans le
@@ -61,9 +78,10 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
 
 ## Critères d'acceptation
 
-- [ ] `ezk-chef suggest` est invoqué **au temps 1** (collecte des signaux), **avant** le garde-fou
-      « pas de symptôme » : un sprint sans symptôme verbal mais avec une galère capitalisable
-      produit quand même des candidats.
+- [ ] Au temps 1, la rétro **produit d'abord les artefacts du sprint courant** (rapport +
+      galères figées dans `docs/sessions/`) **puis** invoque `ezk-chef suggest`, **avant** le
+      garde-fou « pas de symptôme » : un sprint sans symptôme verbal mais avec une galère
+      capitalisable produit quand même des candidats — et `suggest` ne lit jamais du vide.
 - [ ] Un candidat figure d'abord au **rapport de rétro** avec ta case d'acceptation (⏳),
       **jamais pré-remplie**.
 - [ ] `ezk-backlog add` n'est appelé **qu'après ton ✅** : un candidat ⏳ ou ❌ ne crée **aucune**
