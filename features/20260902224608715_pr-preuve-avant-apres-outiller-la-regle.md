@@ -7,7 +7,7 @@ product: mega-city
 version:
 epic:
 status: todo
-ready:
+ready: 2026-09-03
 pr:
 created: 2026-09-03
 ---
