@@ -105,6 +105,8 @@
 | [20260829214131713](done/20260829214131713_ezk-sessions-vue-navigateur-live.md) | ezk-sessions — vue navigateur de l'état des sessions (live, machine-locale) | feature | P1 |  | mega-city | ✅ shipped | #189 |
 | [20260830184917144](done/20260830184917144_ezk-chef-extract-lit-le-labo.md) | ezk-chef extract lit le « labo » — remplir les TODO(jugement) depuis docs/sessions | feature | P1 |  | mega-city | ✅ shipped | #196 |
 | [20260902224608715](done/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md) | Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto | feature | P1 |  | mega-city | ✅ shipped | #207 |
+| [20260903134906920](20260903134906920_cli-ezk-point-d-entree-unique.md) | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 |  | mega-city | 🔴 todo |  |
+| [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 🔴 todo |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -287,6 +289,7 @@
 | [20260830194601307](20260830194601307_front-matter-emis-par-lib-yaml.md) | front-matter généré émis + validé par la lib YAML (jamais par concaténation) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830194601376](20260830194601376_spike-degiter-vues-outillage.md) | SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions) | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260902224043892](20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md) | Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété | chore | P2 |  | mega-city | 💡 idea |  |
+| [20260903134908019](20260903134908019_cli-ezk-complet-publie.md) | CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0049](0049-article-brancher-methode-pattern-sidecar.md) | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0057](0057-agent-analyse-methode.md) | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
