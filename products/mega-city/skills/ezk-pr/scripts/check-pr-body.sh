@@ -119,9 +119,11 @@ if [[ -n "$changed_files" ]]; then
         missing+=('Before / after (UI) : « N.A. » sans raison — attendu « N.A. — <raison> »')
       fi
     elif [[ "$value" == *http* || "$value" == *'!['* ]]; then
-      : # liens présents — OK
+      : # liens dans la cellule — OK
+    elif grep -qiE '(before|avant)[^|]*\.(png|jpe?g|gif|webp|mp4)' <<<"$body" && grep -qiE '(after|apr[eè]s)[^|]*\.(png|jpe?g|gif|webp|mp4)' <<<"$body"; then
+      : # ✅ dans la matrice + les deux liens dans le corps (« Comment vérifier », rendu par pr-evidence.sh render) — OK
     else
-      missing+=("Before / after (UI) : chemin d'interface touché (${first_ui}) mais ligne ⏳ / absente — liens avant+après ou N.A. — <raison> (règle development/pr-before-after-media)")
+      missing+=("Before / after (UI) : chemin d'interface touché (${first_ui}) — la ligne dit « ${value} » mais le corps ne porte pas de lien avant ET après (liens dans « Comment vérifier » ou dans la cellule, ou N.A. — <raison>)")
     fi
   fi
 fi

@@ -80,6 +80,21 @@ out_e="$(body '⏳' | "$SCRIPT" --changed-files "$list_e")"; rc_e=$?
 echo "Cas e (aucun chemin d'interface — un .tsx sous __tests__) :"
 check "code de sortie 0" "[ $rc_e -eq 0 ]"
 
+# ── Cas f : ✅ dans la matrice + les deux liens dans « Comment vérifier » → OK ───
+# C'est le rendu que produit `pr-evidence.sh render` (bloc collé dans la fiche, donc dans le
+# corps) : la matrice dit ✅, les liens vivent dans « Comment vérifier » — pas dans la cellule.
+bloc_f='| carte | ![carte avant](https://github.com/o/r/blob/abc/docs/pr-evidence/1/carte-before.png?raw=true) | ![carte après](https://github.com/o/r/blob/abc/docs/pr-evidence/1/carte-after.png?raw=true) |'
+body_f() { body '✅ liens dans « Comment vérifier »' | awk -v bloc="$bloc_f" '/^## Validation/ { print bloc; print "" } { print }'; }
+out_f="$(body_f | "$SCRIPT" --changed-files "$list_b")"; rc_f=$?
+echo "Cas f (✅ + liens avant/après dans le corps, hors cellule) :"
+check "code de sortie 0" "[ $rc_f -eq 0 ]"
+
+# ── Cas g : ✅ dans la matrice mais AUCUN lien dans le corps → refusé ────────────
+err_g="$(body '✅ liens dans « Comment vérifier »' | "$SCRIPT" --changed-files "$list_b" 2>&1 1>/dev/null)"; rc_g=$?
+echo "Cas g (✅ sans aucun lien dans le corps) :"
+check "code de sortie ≠ 0"               "[ $rc_g -ne 0 ]"
+check "message nomme « Before / after »"  "printf '%s' \"\$err_g\" | grep -qF 'Before / after'"
+
 echo
 if [ "$FAIL" -eq 0 ]; then echo "check-pr-body : tous les cas passent."; else echo "check-pr-body : ÉCHEC."; fi
 exit "$FAIL"
