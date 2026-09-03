@@ -287,6 +287,7 @@
 | [20260830194601307](20260830194601307_front-matter-emis-par-lib-yaml.md) | front-matter généré émis + validé par la lib YAML (jamais par concaténation) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830194601376](20260830194601376_spike-degiter-vues-outillage.md) | SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions) | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260902224043892](20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md) | Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété | chore | P2 |  | mega-city | 💡 idea |  |
+| [20260903085150321](20260903085150321_nommage-commandes-scrum-safe.md) | Aligner le vocabulaire des commandes sur Scrum/SAFe (doctrine de nommage — dont ezk-product-build → train/increment) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0049](0049-article-brancher-methode-pattern-sidecar.md) | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0057](0057-agent-analyse-methode.md) | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
