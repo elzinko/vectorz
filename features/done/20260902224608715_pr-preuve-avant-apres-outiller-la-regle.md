@@ -116,7 +116,7 @@ rendu) et passe la ligne « Before / after (UI) » à ✅. Sinon la ligne devien
 **D. Le contrôle.** `ezk-reviewer` reçoit une lentille explicite : « diff d'interface sans
 paire avant/après liée ⇒ finding P1, P0 si la fiche exigeait `before-after` ».
 `check-pr-body.sh` refuse un corps dont la ligne « Before / after » reste `⏳` alors que le
-diff touche des chemins d'interface. Et la règle entre dans la LOI déployée (option tranchée à
+diff touche des chemins d'interface. Et la règle entre dans le bundle `base` de la LOI (option tranchée à
 l'étape Archi, voir Notes).
 
 Hors POC, dit franchement : les apps de bureau (Tauri, Electron) ne se capturent pas par URL ;
@@ -139,8 +139,11 @@ que la règle autorise restent manuels.
       lentille figure dans son prompt et un essai à blanc sur une PR d'`ezk:map` la déclenche.
 - [ ] `check-pr-body.sh` refuse un corps « Before / after = ⏳ » sur un diff d'interface ; un
       test bash le prouve dans `pnpm --filter mega-city test:scripts`.
-- [ ] La règle `development/pr-before-after-media` figure dans la LOI déployée
-      (`~/.claude/ENTRY.md` après `lawgiver bind-global`), selon l'option tranchée en Archi.
+- [ ] La règle `development/pr-before-after-media` figure dans le bundle `base` et dans le
+      graphe compilé (`graph:compile`, test `loi-view`), selon l'option tranchée en Archi.
+      ⚠ Corrigé le 2026-09-03 : la version initiale parlait de `~/.claude/ENTRY.md` après
+      `lawgiver bind-global` ; ce fichier n'existe pas et `bind-global` ne compile aucune règle
+      (voir [[20260903134909124]]).
 - [ ] Mesure de sortie (rétro) : sur les 10 PR d'interface suivantes de vectorz, 10/10 portent
       la paire ou un N.A. motivé.
 - [ ] Gate locale verte : `pnpm build`, `pnpm test`, `pnpm --filter mega-city test:scripts`,
@@ -189,7 +192,8 @@ lien règle → bundle `base` que cette fiche ajoute à la LOI.
 ## Glossaire
 
 - `LA LOI` — le catalogue de règles de mega-city (`products/mega-city/rules/`), compilé en
-  `ENTRY.md` pour les agents par `lawgiver bind`.
+  `.iamthelaw/ENTRY.md` d'un PROJET par `lawgiver bind <profil> <projet>` ; le déploiement global
+  (`bind-global`) ne porte que skills et agents, pas la loi (voir [[20260903134909124]]).
 - `bundle` / `profil` — un bundle est un lot de règles ; un profil est ce qu'un poste installe
   (règles, agents, skills).
 - `matrice Validation` — le tableau en bas de chaque PR (convention ADR-0009) : CI, tests,

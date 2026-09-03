@@ -269,10 +269,10 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 132,
-  "todo": 54,
+  "todo": 56,
   "blocked": 6,
   "in-progress": 4,
-  "idea": 87
+  "idea": 89
  },
  "tirables": 2,
  "actives": [
@@ -674,6 +674,32 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260830194601233_ship-transactionnel-liens-vues.md"
+  },
+  {
+   "id": "20260903134906920",
+   "title": "CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)",
+   "type": "feature",
+   "priority": "P1",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260903134906920_cli-ezk-point-d-entree-unique.md"
+  },
+  {
+   "id": "20260903134909124",
+   "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
+   "type": "bug",
+   "priority": "P1",
+   "status": "todo",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md"
   },
   {
    "id": "0020",
@@ -1832,6 +1858,36 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md"
   },
   {
+   "id": "20260903085150321",
+   "title": "Aligner le vocabulaire des commandes sur Scrum/SAFe (doctrine de nommage — dont ezk-product-build → train/increment)",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "nommage",
+    "methode",
+    "doctrine"
+   ],
+   "file": "features/20260903085150321_nommage-commandes-scrum-safe.md"
+  },
+  {
+   "id": "20260903134908019",
+   "title": "CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard)",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260903134908019_cli-ezk-complet-publie.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2346,6 +2402,7 @@ window.EZK_AVANCEMENT = {
    "ci",
    "decouvrabilite",
    "doc",
+   "doctrine",
    "dogfood",
    "dx",
    "elicitation",
@@ -2360,6 +2417,7 @@ window.EZK_AVANCEMENT = {
    "method",
    "methode",
    "moteur",
+   "nommage",
    "outillage",
    "r&d",
    "supervision",
@@ -3738,6 +3796,38 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260903134909124",
+   "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
+   "status": "todo",
+   "priority": "P1",
+   "inPlan": false,
+   "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md"
+  },
+  {
+   "id": "20260903134908019",
+   "title": "CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260903134908019_cli-ezk-complet-publie.md"
+  },
+  {
+   "id": "20260903134906920",
+   "title": "CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)",
+   "status": "todo",
+   "priority": "P1",
+   "inPlan": false,
+   "file": "features/20260903134906920_cli-ezk-point-d-entree-unique.md"
+  },
+  {
+   "id": "20260903085150321",
+   "title": "Aligner le vocabulaire des commandes sur Scrum/SAFe (doctrine de nommage — dont ezk-product-build → train/increment)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260903085150321_nommage-commandes-scrum-safe.md"
+  },
+  {
    "id": "20260902224043892",
    "title": "Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété",
    "status": "idea",
@@ -3824,41 +3914,9 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260830110131158_revue-adverse-skippable-flag.md"
-  },
-  {
-   "id": "20260830094601309",
-   "title": "Mode auto — gérer la fenêtre de contexte sur un run long (+ trace de supervision requise)",
-   "status": "todo",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830094601309_product-build-auto-fenetre-contexte.md"
-  },
-  {
-   "id": "20260829140259165",
-   "title": "Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux",
-   "status": "blocked",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md"
-  },
-  {
-   "id": "20260829132313947",
-   "title": "ezk-ci conso — exclure les forks (repos clonés) de la conso",
-   "status": "idea",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260829132313947_ci-conso-exclure-forks.md"
-  },
-  {
-   "id": "20260829123707200",
-   "title": "Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260829123707200_reunifier-tagger-cluster-recette.md"
   }
  ],
- "offPlanCount": 42,
+ "offPlanCount": 44,
  "n": 15
 };
 /*ezk-plan-delta:end*/
