@@ -22,12 +22,12 @@
     "ezk:map": "pnpm --dir products/mega-city ezk:map"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
-    "@types/node": "^22.10.0",
-    "@vitest/coverage-v8": "^2.1.0",
-    "playwright": "1.52.0",
-    "typescript": "^5.7.0",
-    "vitest": "^2.1.0"
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.20.1",
+    "@vitest/coverage-v8": "^3.2.6",
+    "playwright": "^1.55.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.6"
   },
   "engines": {
     "node": ">=20.0.0",
