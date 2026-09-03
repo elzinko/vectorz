@@ -12,12 +12,12 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.259",
     "@cop1/observability": "workspace:*",
     "@cop1/quality-intelligence": "workspace:*",
     "@cop1/shared-kernel": "workspace:*",
-    "@anthropic-ai/claude-agent-sdk": "^0.3.185",
-    "yaml": "^2.8.3",
-    "zod": "^4.3.6"
+    "yaml": "^2.9.0",
+    "zod": "^4.5.4"
   },
   "scripts": {
     "build": "tsc",
