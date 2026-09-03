@@ -6,9 +6,9 @@ priority: P1 # provisoire — demandée par le PO le 2026-09-03, à confirmer
 product: mega-city
 version:
 epic:
-status: in-progress
+status: shipped
 ready: 2026-09-03
-pr:
+pr: "#207"
 evidence: before-after # dogfood : le diff touche diagrams/methode-mega-city/carte-interactive.html (la règle entre dans le bundle base)
 created: 2026-09-03
 ---
