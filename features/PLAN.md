@@ -29,14 +29,21 @@
 - **20260823121712652** — statut validé par schéma (le validateur) · in-progress
   *(items d'ADR-0040, arrêtés au budget — ne pas les reprendre sans coordination)*
 
+> **Réalignement PO du 2026-09-03** : la carte-loi et le cockpit de sessions sont **livrés**
+> → barrés. Nouvelle tête : **la preuve avant/après dans les PR** (fiche `ready`, P1) — la
+> règle `pr-before-after-media` existe depuis juillet mais 0 PR sur 90 la respecte (mesure du
+> 2026-09-03, fiche 20260902224608715).
+
 **Séquence à tirer :**
-1. **20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui
-   active quoi ») en lisant le graphe compilé · **ready** · `build` — 1er consommateur
-   visible du graphe, il *prouve* la fondation.
+1. **20260902224608715** — preuve avant/après dans les PR : outiller la règle existante
+   (champ `evidence:` sur la fiche, script `pr-evidence.sh` main ↔ branche, étape 8
+   d'ezk-sprint, lentille ezk-reviewer + check-pr-body) · **ready** · **P1** · `build`.
 2. **20260824061247344** — reliquat de la refonte « trois étages » (lot 4b · vocab DoD ·
    compétences agents) · `groom` → `build`.
-3. **20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet
-   `ezk:map sessions` ; colonne supprimable) · **P1** · `groom` → `build`.
+- ~~**20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui
+  active quoi ») en lisant le graphe compilé · `build`~~ — shipped #179.
+- ~~**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet
+  `ezk:map sessions` ; colonne supprimable) · **P1**~~ — shipped #188.
 
 ⚠️ **En cours ailleurs — ne pas doublonner** : **20260812104022240** (ezk-backlog
 aggregate, readyé via #177) — probablement pris par une autre session.

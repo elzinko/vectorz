@@ -58,3 +58,7 @@ l'app depuis la branche → capture un JEU NOMMÉ de vues (viewport stable,
   (cf. fiche samplerz `website_showcase`) : la tranche « screenshots » du site
   samplerz peut se faire à la main via ezk-qa/Playwright, et CE skill est le
   harvest de ce geste.
+- **2026-09-03** — La brique « capturer une vue de l'app lancée » est construite en premier
+  par [[20260902224608715]] (preuve avant/après en PR : une vue, deux refs `main` ↔ branche,
+  dépôt `docs/pr-evidence/`). Cette fiche la **réutilise** et l'étend (jeu nommé, manifeste,
+  dépôt doc/site) — ne pas la reconstruire.
