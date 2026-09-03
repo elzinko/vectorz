@@ -11,7 +11,7 @@
  * Mode WARNING seulement : produit une liste d'anomalies, ne lance jamais, ne bloque
  * jamais. La bascule bloquante (exit ≠ 0, préflight/CI) est hors périmètre (D2).
  */
-import { PRIOS, STATUTS, TYPES } from '../core/avancement-data.js';
+import { EVIDENCE, PRIOS, STATUTS, TYPES } from '../core/avancement-data.js';
 import { readField } from '../loaders/fiches.js';
 
 export interface FicheAnomaly {
@@ -31,6 +31,7 @@ const ENUM_FIELDS: ReadonlyArray<{ field: string; values: readonly string[] }> =
   { field: 'type', values: TYPES },
   { field: 'priority', values: PRIOS },
   { field: 'status', values: STATUTS },
+  { field: 'evidence', values: EVIDENCE },
 ];
 
 /** Valide le front-matter d'UNE fiche. Retourne [] si conforme. */

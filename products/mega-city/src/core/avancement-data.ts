@@ -26,6 +26,13 @@ export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
  */
 export const TYPES: readonly string[] = ['feature', 'bug', 'refactor', 'chore', 'epic'];
 
+/**
+ * `evidence` — champ OPTIONNEL de fiche (fiche 20260902224608715, ADR-0045) : la preuve
+ * avant/après en PR est exigée (`before-after`), décidée par le diff (`auto`, défaut
+ * si absent) ou motivée absente (`none # raison`).
+ */
+export const EVIDENCE: readonly string[] = ['before-after', 'auto', 'none'];
+
 export interface BoardFiche {
   id: string;
   title: string;

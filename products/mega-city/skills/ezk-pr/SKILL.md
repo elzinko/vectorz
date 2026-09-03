@@ -187,6 +187,8 @@ echo "OK — En clair + provenance + sections + Comment vérifier + Validation p
 Usage quand le script est dispo (le chemin résolu **est** le fichier `.sh`) :
 `bash <chemin-résolu>` (stdin ou fichier) — ne pas ré-appendre `/check-pr-body.sh`.
 
+Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git diff --name-only main...HEAD`) : sur un chemin d'interface, la ligne « Before / after (UI) » ne peut plus rester `⏳` — il faut des liens ou `N.A. — <raison>` (ADR-0045).
+
 ## `plan` — le cœur : ordonner et regrouper
 
 1. **Inventaire** : `gh pr list --state open` (repo **sans remote** → branches

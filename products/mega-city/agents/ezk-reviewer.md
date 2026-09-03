@@ -56,6 +56,11 @@ l'ouverture.
    - **Tests** : couvrent-ils **vraiment** le changement, ou sont-ils tautologiques / mockés au
      point de ne rien prouver ? **Un fix de bug sans test de non-régression = NO-GO** (un bug
      doit repartir avec la garde qui l'aurait attrapé).
+   - **Preuve d'écran** (règle `development/pr-before-after-media`, ADR-0045) : un diff touchant
+     `*.vue|tsx|jsx|svelte|css|scss|html` hors tests **sans** paire avant/après liée dans le corps
+     (section « Comment vérifier » / ligne « Before / after (UI) ») → **P1** ; **P0** si la fiche
+     déclare `evidence: before-after`. `N.A. — <raison>` est accepté quand le diff n'a pas d'écran.
+     Vérifie sur pièce : `git diff --name-only main...HEAD` puis le corps.
 4. **Chaque finding = un scénario d'échec concret** : *entrée / état → sortie fausse ou crash*,
    avec `fichier:ligne`. Pas de « ce serait mieux si » sans conséquence démontrable. Si tu n'es
    pas sûr, écris **« à vérifier »**, pas « bug » — un faux positif érode la confiance dans la

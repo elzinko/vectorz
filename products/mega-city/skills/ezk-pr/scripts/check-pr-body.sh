@@ -13,8 +13,17 @@
 #   gh pr view N --json body -q .body | bash check-pr-body.sh
 set -euo pipefail
 
-if [[ $# -ge 1 && -f "$1" ]]; then
-  raw=$(cat "$1")
+changed_files=""
+body_path=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --changed-files) changed_files="${2:-}"; shift 2 ;;
+    *) body_path="$1"; shift ;;
+  esac
+done
+
+if [[ -n "$body_path" && -f "$body_path" ]]; then
+  raw=$(cat "$body_path")
 else
   raw=$(cat)
 fi
@@ -66,6 +75,55 @@ fi
 if grep -qE '<recopié de la fiche|<titre>|ouverture de la fiche, recopié|<id>_<slug>|vocabulaire projet minimal pour lire|obligatoire si la fiche emploie du jargon interne' <<<"$body" \
    || grep -qE '^# <id>' <<<"$body"; then
   missing+=('corps = squelette de template non rendu (placeholders présents, dont onboarding « Si tu arrives frais » / « ## Glossaire ») — recopier la fiche, remplir ou retirer')
+fi
+
+# 6. --changed-files (ADR-0045, fiche 20260902224608715) : un chemin d'interface touché
+#    exige une ligne « Before / after (UI) » non-⏳ (liens ou N.A. motivé). Garder alignée
+#    avec `is_ui_path` de bin/pr-evidence.sh — dupliquée ici, le script reste autonome
+#    en mode copy (skillFolderFiles ne déploie pas bin/).
+is_ui_path() {
+  local path="$1"
+  case "$path" in
+    */__tests__/*|*/tests/*|*/test/*|*/e2e/*|*/spec/*) return 1 ;;
+  esac
+  local base="${path##*/}"
+  case "$base" in
+    *.test.*|*.spec.*) return 1 ;;
+  esac
+  case "$path" in
+    *.vue|*.tsx|*.jsx|*.svelte|*.css|*.scss|*.html) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+if [[ -n "$changed_files" ]]; then
+  first_ui=""
+  while IFS= read -r p; do
+    [[ -n "$p" ]] || continue
+    if is_ui_path "$p"; then first_ui="$p"; break; fi
+  done < "$changed_files"
+
+  if [[ -n "$first_ui" ]]; then
+    line=$(grep -E '^\|.*Before / after \(UI\).*\|' <<<"$body" | head -1)
+    value=$(awk -F'\\|' -v label='Before / after (UI)' '
+      { for (i=1;i<=NF;i++) {
+          cell=$i; gsub(/^[ \t]+|[ \t]+$/, "", cell)
+          if (cell == label && (i+1)<=NF) { print $(i+1); exit }
+        } }' <<<"$line")
+    value=$(printf '%s' "$value" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')
+
+    if [[ -z "$line" || -z "$value" || "$value" == *'⏳'* ]]; then
+      missing+=("Before / after (UI) : chemin d'interface touché (${first_ui}) mais ligne ⏳ / absente — liens avant+après ou N.A. — <raison> (règle development/pr-before-after-media)")
+    elif [[ "$value" == N.A.* ]]; then
+      if [[ ! "$value" =~ N\.A\.[[:space:]]*—[[:space:]]*.+ ]]; then
+        missing+=('Before / after (UI) : « N.A. » sans raison — attendu « N.A. — <raison> »')
+      fi
+    elif [[ "$value" == *http* || "$value" == *'!['* ]]; then
+      : # liens présents — OK
+    else
+      missing+=("Before / after (UI) : chemin d'interface touché (${first_ui}) mais ligne ⏳ / absente — liens avant+après ou N.A. — <raison> (règle development/pr-before-after-media)")
+    fi
+  fi
 fi
 
 if ((${#missing[@]})); then

@@ -16,7 +16,7 @@ Tu es le QA/BA de l'équipe, garant du BDD **et** de la validation E2E réelle.
 ## 2. Validation E2E d'une PR (Playwright MCP)
 Ne te contente pas des tests unitaires — vérifie l'app **réelle** :
 1. Lance l'app en local (`/run` si dispo, sinon la commande du projet).
-2. Charge les outils **Playwright MCP** via `ToolSearch` (requête « playwright ») puis pilote le navigateur : `navigate` vers l'URL locale, exécute les **parcours critiques** (clics, formulaires), prends un **snapshot** + un **screenshot** comme preuve.
+2. Charge les outils **Playwright MCP** via `ToolSearch` (requête « playwright ») puis pilote le navigateur : `navigate` vers l'URL locale, exécute les **parcours critiques** (clics, formulaires), prends un **snapshot** + un **screenshot** comme preuve. Pour la preuve d'écran d'une fiche `evidence: before-after|auto`, réutilise `products/mega-city/bin/pr-evidence.sh capture` (même viewport, même nommage) au lieu d'un screenshot ad hoc — une seule brique (ADR-0045).
 3. Vérifie : aucune erreur console, parcours nominal OK, états vides/erreur gérés, pas de régression visuelle évidente.
 4. Rapporte vert/rouge **par scénario** et joins la preuve (chemin du screenshot).
 

@@ -3,3 +3,4 @@ id: base
 rules:
   - clean-code/no-dead-code
   - conventional-commits/format
+  - development/pr-before-after-media

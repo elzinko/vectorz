@@ -6,9 +6,10 @@ priority: P1 # provisoire — demandée par le PO le 2026-09-03, à confirmer
 product: mega-city
 version:
 epic:
-status: todo
+status: in-progress
 ready: 2026-09-03
 pr:
+evidence: before-after # dogfood : le diff touche diagrams/methode-mega-city/carte-interactive.html (la règle entre dans le bundle base)
 created: 2026-09-03
 ---
 
@@ -153,17 +154,37 @@ Depuis un clone frais, une fois la fiche construite :
 pnpm install --frozen-lockfile
 pnpm exec playwright install chromium                      # une fois par poste
 pnpm --dir products/mega-city fiches:check --strict         # le champ evidence: passe
-git switch -c feat/demo-evidence                            # puis un diff d'interface factice :
-#   changer un libellé visible dans diagrams/avancement/board.html (coquille maintenue à la
-#   main ; seul son bloc de données est régénéré par avancement:regen)
-pnpm --dir products/mega-city ezk:map &                     # sert les cartes sur http://127.0.0.1:4173
-bash products/mega-city/bin/pr-evidence.sh 20260902224608715 --url http://127.0.0.1:4173/   # ou l'URL de la carte avancement
-ls docs/pr-evidence/20260902224608715/                      # <vue>-before.png  <vue>-after.png
-pnpm --filter mega-city test:scripts                        # dont le test de check-pr-body
+pnpm --filter mega-city test:scripts                        # dont test-pr-evidence (23 cas) et test-check-pr-body (13 cas)
+# Run réel sur une carte : servir la carte de la branche (après) et celle de main (avant)
+python3 -m http.server 4181 --directory . &                 # après = ce worktree
+mkdir -p /tmp/avant/diagrams/methode-mega-city && git show main:diagrams/methode-mega-city/carte-interactive.html > /tmp/avant/diagrams/methode-mega-city/carte-interactive.html
+python3 -m http.server 4182 --directory /tmp/avant &        # avant = main
+E=products/mega-city/bin/pr-evidence.sh; U=/diagrams/methode-mega-city/carte-interactive.html
+bash $E capture 20260902224608715 --view carte-methode --phase after  --url http://127.0.0.1:4181$U
+bash $E capture 20260902224608715 --view carte-methode --phase before --url http://127.0.0.1:4182$U
+git add docs/pr-evidence/20260902224608715/*.png && git commit -m "docs(pr-evidence): captures"
+bash $E render 20260902224608715                            # → bloc markdown à coller ici, liens par SHA
+git diff --name-only main...HEAD | bash $E decide --evidence auto   # → capture (carte-interactive.html est un chemin d'interface)
 ```
 
 Puis ouvrir la PR : les deux images s'affichent dans « Comment vérifier », la ligne
 « Before / after (UI) » est à ✅, et `ezk-reviewer` ne lève aucun finding sur ce point.
+
+Vues à capturer (convention lue par l'étape 8 d'ezk-sprint) :
+
+- vue carte-methode : /diagrams/methode-mega-city/carte-interactive.html (mobile 390×844)
+- vue carte-methode-desktop : /diagrams/methode-mega-city/carte-interactive.html (desktop 1280×800)
+
+**Preuve du run réel (dogfood, 2026-09-03).** Les quatre images ci-dessous sont sorties du
+script lui-même, avec le vrai Chromium : avant = la carte sur `main`, après = la carte sur la
+branche. La différence se lit dans l'en-tête : « 183 liens » avant, « 184 liens » après, le
+lien règle → bundle `base` que cette fiche ajoute à la LOI.
+
+**Avant / après** (règle `development/pr-before-after-media`)
+| Vue | Avant | Après |
+|---|---|---|
+| carte-methode | ![carte-methode avant](https://github.com/elzinko/vectorz/blob/68029797e6fa3adfc8428c2fab85071b9cb26ae8/docs/pr-evidence/20260902224608715/carte-methode-before.png?raw=true) | ![carte-methode après](https://github.com/elzinko/vectorz/blob/68029797e6fa3adfc8428c2fab85071b9cb26ae8/docs/pr-evidence/20260902224608715/carte-methode-after.png?raw=true) |
+| carte-methode-desktop | ![carte-methode-desktop avant](https://github.com/elzinko/vectorz/blob/68029797e6fa3adfc8428c2fab85071b9cb26ae8/docs/pr-evidence/20260902224608715/carte-methode-desktop-before.png?raw=true) | ![carte-methode-desktop après](https://github.com/elzinko/vectorz/blob/68029797e6fa3adfc8428c2fab85071b9cb26ae8/docs/pr-evidence/20260902224608715/carte-methode-desktop-after.png?raw=true) |
 
 ## Glossaire
 
@@ -204,6 +225,9 @@ Puis ouvrir la PR : les deux images s'affichent dans « Comment vérifier », la
   3. *Dépôts privés* (samplerz, muti) : vérifier au POC qu'un lien `blob/<sha>?raw=true`
      s'affiche pour un membre ; sinon repli = commentaire de PR avec téléversement manuel,
      dit tel quel dans la matrice.
+- **Lien par SHA après squash** : le SHA lié est celui d'un commit de branche. GitHub garde
+  ces objets servis via la PR après le squash, mais ce n'est pas garanti à vie : à vérifier à la
+  première PR mergée (comme l'affichage sur dépôt privé) ; sinon re-rendre sur `main`.
 - **Dépendances externes** : aucune pour le POC (dogfood sur les cartes `ezk:map` de vectorz).
   samplerz et muti sont les consommateurs suivants, hors critères de cette fiche.
 - **À porter en rétro** : cette règle est un cas d'école « règle MUST déclarée, jamais

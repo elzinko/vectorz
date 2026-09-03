@@ -62,6 +62,34 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
     const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
     expect(anomalies).toContainEqual(expect.objectContaining({ field: 'type' }));
   });
+
+  it('evidence: before-after → aucune anomalie (champ optionnel, valeur valide)', () => {
+    const text = fm({ ...VALID_FIELDS, evidence: 'before-after' });
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    expect(anomalies.find((a) => a.field === 'evidence')).toBeUndefined();
+  });
+
+  it("evidence: none avec commentaire de raison → aucune anomalie (readField strippe le commentaire)", () => {
+    const text = fm({ ...VALID_FIELDS, evidence: "none # pas d'écran" });
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    expect(anomalies.find((a) => a.field === 'evidence')).toBeUndefined();
+  });
+
+  it('evidence hors-enum → une anomalie nommant la valeur et les trois valeurs admises', () => {
+    const text = fm({ ...VALID_FIELDS, evidence: 'peut-etre' });
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    const anomaly = anomalies.find((a) => a.field === 'evidence');
+    expect(anomaly?.message).toContain('peut-etre');
+    expect(anomaly?.message).toContain('before-after');
+    expect(anomaly?.message).toContain('auto');
+    expect(anomaly?.message).toContain('none');
+  });
+
+  it('evidence absent → aucune anomalie (champ optionnel)', () => {
+    const text = fm(VALID_FIELDS); // pas de evidence:
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    expect(anomalies.find((a) => a.field === 'evidence')).toBeUndefined();
+  });
 });
 
 describe('findDuplicateIds (contrôle inter-fichiers — fléau des ids en double)', () => {
