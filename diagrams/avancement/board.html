@@ -269,12 +269,12 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 131,
-  "todo": 54,
+  "todo": 55,
   "blocked": 6,
   "in-progress": 4,
   "idea": 86
  },
- "tirables": 2,
+ "tirables": 3,
  "actives": [
   {
    "id": "20260826122532943",
@@ -674,6 +674,19 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260830194601233_ship-transactionnel-liens-vues.md"
+  },
+  {
+   "id": "20260902224608715",
+   "title": "Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto",
+   "type": "feature",
+   "priority": "P1",
+   "status": "todo",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md"
   },
   {
    "id": "0020",
@@ -2408,21 +2421,21 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui",
+     "text": "**20260902224608715** — preuve avant/après dans les PR : outiller la règle existante",
      "marker": null,
      "struck": false,
      "cards": [
       {
-       "id": "20260821172716537",
-       "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
-       "status": "shipped",
+       "id": "20260902224608715",
+       "title": "Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto",
+       "status": "todo",
        "priority": "P1",
        "ready": true,
-       "epic": "20260821163346487",
+       "epic": "",
        "product": "mega-city",
        "type": "feature",
        "pr": "",
-       "file": "features/done/20260821172716537_carte-ne-montre-pas-la-loi.md",
+       "file": "features/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md",
        "found": true
       }
      ]
@@ -2448,9 +2461,29 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet",
+     "text": "~~**20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui",
      "marker": null,
-     "struck": false,
+     "struck": true,
+     "cards": [
+      {
+       "id": "20260821172716537",
+       "title": "La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit)",
+       "status": "shipped",
+       "priority": "P1",
+       "ready": true,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/done/20260821172716537_carte-ne-montre-pas-la-loi.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "~~**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet",
+     "marker": null,
+     "struck": true,
      "cards": [
       {
        "id": "20260825141012293",
@@ -3669,30 +3702,28 @@ window.EZK_PLAN = {
    ]
   }
  ],
- "head": null,
- "blockedAhead": [
-  {
-   "id": "20260824061247344",
-   "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
-   "status": "todo",
-   "priority": "P1",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "refactor",
-   "pr": "",
-   "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
-   "found": true
-  }
- ],
+ "head": {
+  "id": "20260902224608715",
+  "title": "Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto",
+  "status": "todo",
+  "priority": "P1",
+  "ready": true,
+  "epic": "",
+  "product": "mega-city",
+  "type": "feature",
+  "pr": "",
+  "file": "features/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md",
+  "found": true
+ },
+ "blockedAhead": [],
  "unresolved": [
   "0068",
   "0092"
  ],
  "counts": {
-  "entries": 42,
-  "cards": 75,
-  "resolved": 73,
+  "entries": 43,
+  "cards": 76,
+  "resolved": 74,
   "shipped": 35,
   "unresolved": 2
  }
@@ -3704,6 +3735,14 @@ window.EZK_PLAN = {
 /*ezk-plan-delta:begin*/
 window.EZK_PLAN_DELTA = {
  "recent": [
+  {
+   "id": "20260902224608715",
+   "title": "Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto",
+   "status": "todo",
+   "priority": "P1",
+   "inPlan": true,
+   "file": "features/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md"
+  },
   {
    "id": "20260831075615969",
    "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
@@ -3815,14 +3854,6 @@ window.EZK_PLAN_DELTA = {
    "priority": "P1",
    "inPlan": false,
    "file": "features/20260829123707200_reunifier-tagger-cluster-recette.md"
-  },
-  {
-   "id": "20260826222044335",
-   "title": "Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260826222044335_carte-la-loi-graphe-visuel.md"
   }
  ],
  "offPlanCount": 42,
