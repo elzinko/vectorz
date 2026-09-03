@@ -144,6 +144,11 @@ describe('enforcingAgents & bundleRules — les liens règle→agent (enforces) 
     const loi = extractLoi(loadRealCompiledGraph());
     expect(bundleRules(loi, 'base')).toContain('clean-code/no-dead-code');
   });
+
+  it('réel : le bundle base porte development/pr-before-after-media (ADR-0045, fiche 20260902224608715)', () => {
+    const loi = extractLoi(loadRealCompiledGraph());
+    expect(bundleRules(loi, 'base')).toContain('development/pr-before-after-media');
+  });
 });
 
 describe('nodeDetail & sourcePath — navigation inter-nœuds, agents/skills compris (retour PO 2026-08-27)', () => {

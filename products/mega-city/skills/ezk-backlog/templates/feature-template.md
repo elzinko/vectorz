@@ -9,6 +9,7 @@ epic: # optionnel — id de la fiche épic parente (type: epic)
 status: todo # idea | todo | in-progress | blocked | shipped
 ready: # YYYY-MM-DD — posée par le gate `ready <id>` ; vide = non groomée
 pr: # ex. "#123" quand une PR existe
+evidence: # before-after | auto | none — preuve d'écran avant/après en PR (règle development/pr-before-after-media) ; vide = auto
 created: <YYYY-MM-DD>
 ---
 

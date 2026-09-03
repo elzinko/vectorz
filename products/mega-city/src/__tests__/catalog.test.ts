@@ -97,6 +97,7 @@ describe('loadCatalog (données réelles du repo)', () => {
     expect(catalog.bundles.get('base')?.rules).toEqual([
       'clean-code/no-dead-code',
       'conventional-commits/format',
+      'development/pr-before-after-media',
     ]);
     expect(catalog.bundles.get('mobile')?.extends).toEqual(['base']);
     expect(catalog.profiles.get('mobile')?.bundles).toEqual(['mobile']);

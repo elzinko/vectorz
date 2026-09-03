@@ -135,7 +135,15 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    - Ajouter la **provenance** (chemin `features/<id>_*.md`, legacy `<id>-*.md` ; l'id est dans la branche `feat/<id>-<slug>`) et, en bas, la **matrice « Validation »** (statut CI/tests/E2E — **seul** bloc propre à la PR ; convention ADR-0009).
    - **Sur divergence, la fiche gagne** : re-rendre le corps depuis la fiche, jamais l'inverse. Repère ≤ ~2 000 caractères hors annexes/matrice.
 
-   **Before/after obligatoire** dès qu'il y a une UI visible (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md)) : liens **avant** et **après** **dans la description** — pas des fichiers orphelins dans le diff ; la fiche étant le document, ces liens vivent dans sa section **Comment vérifier**. Gabarit du rendu : [`ezk-pr` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr/assets/PULL_REQUEST_TEMPLATE.thin.md) (nom « thin » legacy — c'est désormais le **rendu fiche + Validation** ; ADR-0009 pour la matrice, ADR-0029 pour le rendu).
+   **Before/after — procédure** (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md), [ADR-0045](../../docs/adr/0045-pr-preuve-avant-apres-outillage-loi.md)) :
+
+   1. Lis `evidence:` dans la fiche (vide = `auto`).
+   2. Décide : `git diff --name-only main...HEAD | bash products/mega-city/bin/pr-evidence.sh decide --evidence <valeur>` → `capture` ou `N.A. — <raison>`.
+   3. Sur `capture` : pour chaque vue listée dans « Comment vérifier » de la fiche (convention : une ligne `- vue <nom> : <URL ou route>`), capture l'**après** sur l'app de la branche (`pr-evidence.sh capture <id> --view <nom> --phase after --url …`). Puis l'**avant** sur la base : `git worktree add /tmp/ezk-base-<id> main`, démarre l'app de ce worktree sur un second port, `capture … --phase before --url …`, retire le worktree.
+   4. Commit scopé des PNG (`git add docs/pr-evidence/<id>/*.png`), puis `pr-evidence.sh render <id>` : colle le bloc dans « Comment vérifier » de la fiche (donc dans le corps rendu) et mets la ligne « Before / after (UI) » de la matrice à ✅. Sur `N.A. — <raison>` : recopie la raison dans la matrice, aucune capture.
+   5. Avant d'ouvrir la PR : `git diff --name-only main...HEAD > /tmp/changed && bash <chemin>/check-pr-body.sh --changed-files /tmp/changed < corps.md`.
+
+   Apps de bureau (Tauri, Electron) : `evidence: none # <raison>` ou capture manuelle. Gabarit du rendu : [`ezk-pr` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr/assets/PULL_REQUEST_TEMPLATE.thin.md).
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ». Le résumé de clôture suit la règle
    [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :

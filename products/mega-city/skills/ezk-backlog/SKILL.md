@@ -256,6 +256,9 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    - `priority` ∈ {P0…P3} — **demande si absente**, ne l'invente jamais. Profite de l'ajout pour
      **proposer un re-classement** des priorités si la nouvelle fiche change l'ordre relatif (sans l'imposer).
    - `version` *(optionnel)* — si l'utilisateur cible un jalon (ex. `V1.1`), renseigne `version:` ; sinon laisse vide.
+   - `evidence` *(optionnel)* — si la demande touche un **écran**, demande `before-after`
+     (paire exigée) ou laisse `auto` (décidé par le diff à la PR) ; `none # raison` pour un
+     sujet sans écran.
 5. **Création.** Seulement maintenant : `id` = **horodatage `AAAAMMDDHHMMSSmmm`** (17 chiffres, ms, UTC),
    généré **inline** — aucune dépendance de script : en install globale *copy-mode* seul `SKILL.md` est
    déployé (`skillFolderFiles`), donc `add` porte lui-même la commande :
@@ -275,8 +278,9 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
 
 1. Charge la fiche ; identifie les slots **DoR** manquants — **problème** (contexte réel,
    reproduction si bug), **valeur** (pourquoi ça compte), **critères d'acceptation**
-   (observables, vérifiables), et — si la fiche en référence — **dépendances externes**
-   (repo hors monorepo, service, secret : chacune **constatée** accessible, avec une
+   (observables, vérifiables), **évidence d'écran** (`evidence:` — si la demande touche un
+   écran, `before-after` ou `auto` motivé), et — si la fiche en référence — **dépendances
+   externes** (repo hors monorepo, service, secret : chacune **constatée** accessible, avec une
    ligne datée « dépendance <nom> — accès constaté le AAAA-MM-JJ » dans la fiche ;
    rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié).
 2. Session de raffinement **ciblée** sur ces slots via

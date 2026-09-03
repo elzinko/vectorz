@@ -20,6 +20,7 @@ describe('expandProfile(mobile)', () => {
     expect(resolved.rules.map((r) => r.id)).toEqual([
       'clean-code/no-dead-code',
       'conventional-commits/format',
+      'development/pr-before-after-media',
     ]);
   });
 
@@ -45,6 +46,7 @@ describe('expandProfile(mobile)', () => {
     expect(resolved.rules.map((r) => r.id)).toEqual([
       'clean-code/no-dead-code',
       'conventional-commits/format',
+      'development/pr-before-after-media',
     ]);
     expect(resolved.agents.map((a) => a.id)).toEqual(['ezk-reviewer']);
   });
