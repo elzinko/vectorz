@@ -35,11 +35,12 @@
 > 2026-09-03, fiche 20260902224608715).
 
 **Séquence à tirer :**
-1. **20260902224608715** — preuve avant/après dans les PR : outiller la règle existante
-   (champ `evidence:` sur la fiche, script `pr-evidence.sh` main ↔ branche, étape 8
-   d'ezk-sprint, lentille ezk-reviewer + check-pr-body) · **ready** · **P1** · `build`.
-2. **20260824061247344** — reliquat de la refonte « trois étages » (lot 4b · vocab DoD ·
+1. **20260824061247344** — reliquat de la refonte « trois étages » (lot 4b · vocab DoD ·
    compétences agents) · `groom` → `build`.
+- ~~**20260902224608715** — preuve avant/après dans les PR : outiller la règle existante
+  (champ `evidence:` sur la fiche, script `pr-evidence.sh` main ↔ branche, étape 8
+  d'ezk-sprint, lentille ezk-reviewer + check-pr-body) · **P1**~~ — shipped #207
+  (2026-09-03, sprint 1 : revue GO, dogfood réel sur la carte méthode).
 - ~~**20260821172716537** — carte-loi : ouvrir LA LOI (règles / bundles / profils + « qui
   active quoi ») en lisant le graphe compilé · `build`~~ — shipped #179.
 - ~~**20260825141012293** — ezk-sessions : cockpit de pilotage des sessions (onglet
