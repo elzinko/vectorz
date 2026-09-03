@@ -228,6 +228,12 @@ lien règle → bundle `base` que cette fiche ajoute à la LOI.
 - **Lien par SHA après squash** : le SHA lié est celui d'un commit de branche. GitHub garde
   ces objets servis via la PR après le squash, mais ce n'est pas garanti à vie : à vérifier à la
   première PR mergée (comme l'affichage sur dépôt privé) ; sinon re-rendre sur `main`.
+- **Revue adverse du 2026-09-03 (ezk-reviewer) : GO, aucun P0.** Trois P2 traités dans le
+  sprint (message clair sur `--changed-files` absent ; test d'alignement des deux copies
+  d'`is_ui_path` ; procédure de l'étape 8 en liste numérotée). Un P2 différé : le contrôle
+  « ✅ + liens dans le corps » de `check-pr-body.sh` cherche un lien avant et un lien après
+  n'importe où dans le corps, pas par vue signalée — acceptable en POC (il refuse le cas courant
+  « aucun lien »), à resserrer quand une PR multi-vues le justifiera.
 - **Dépendances externes** : aucune pour le POC (dogfood sur les cartes `ezk:map` de vectorz).
   samplerz et muti sont les consommateurs suivants, hors critères de cette fiche.
 - **À porter en rétro** : cette règle est un cas d'école « règle MUST déclarée, jamais

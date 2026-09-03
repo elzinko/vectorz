@@ -97,6 +97,10 @@ is_ui_path() {
 }
 
 if [[ -n "$changed_files" ]]; then
+  if [[ ! -f "$changed_files" ]]; then
+    echo "erreur: --changed-files : fichier introuvable : $changed_files (attendu : la sortie de \`git diff --name-only main...HEAD\`, un chemin par ligne)" >&2
+    exit 2
+  fi
   first_ui=""
   while IFS= read -r p; do
     [[ -n "$p" ]] || continue

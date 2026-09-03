@@ -95,6 +95,23 @@ echo "Cas g (✅ sans aucun lien dans le corps) :"
 check "code de sortie ≠ 0"               "[ $rc_g -ne 0 ]"
 check "message nomme « Before / after »"  "printf '%s' \"\$err_g\" | grep -qF 'Before / after'"
 
+# ── Cas h : les deux copies d'is_ui_path (check-pr-body.sh ↔ bin/pr-evidence.sh) restent
+# identiques — dupliquées à dessein (mode copy ne déploie pas bin/), donc gardées alignées
+# par CE test (revue adverse 2026-09-03, P2).
+EVIDENCE="$(cd "$(dirname "$0")/../../../bin" && pwd)/pr-evidence.sh"
+fn_a="$(sed -n '/^is_ui_path() {/,/^}/p' "$SCRIPT")"
+fn_b="$(sed -n '/^is_ui_path() {/,/^}/p' "$EVIDENCE")"
+echo "Cas h (is_ui_path identique dans les deux scripts) :"
+check "fonction présente dans check-pr-body.sh" "[ -n \"\$fn_a\" ]"
+check "fonction présente dans pr-evidence.sh"   "[ -n \"\$fn_b\" ]"
+check "les deux corps sont identiques"           "[ \"\$fn_a\" = \"\$fn_b\" ]"
+
+# ── Cas i : --changed-files vers un fichier absent → erreur claire, exit 2 ────────
+err_i="$(body '⏳' | "$SCRIPT" --changed-files "$TMP/n-existe-pas" 2>&1 1>/dev/null)"; rc_i=$?
+echo "Cas i (--changed-files introuvable) :"
+check "code de sortie 2"                  "[ $rc_i -eq 2 ]"
+check "message nomme --changed-files"     "printf '%s' \"\$err_i\" | grep -qF -- '--changed-files'"
+
 echo
 if [ "$FAIL" -eq 0 ]; then echo "check-pr-body : tous les cas passent."; else echo "check-pr-body : ÉCHEC."; fi
 exit "$FAIL"
