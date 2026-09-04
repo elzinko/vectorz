@@ -46,9 +46,14 @@ while IFS= read -r -d '' f; do
   [[ "$(fm_field "$f" status)" == "todo" ]] || continue
   if [[ -n "$(fm_field "$f" ready)" ]]; then tgt=ready; n_ready=$((n_ready + 1)); else tgt=idea; n_idea=$((n_idea + 1)); fi
   if [[ "$APPLY" -eq 1 ]]; then
-    # Remplace la 1re ligne `^status: todo` du front-matter. Portable BSD/GNU (temp + mv).
+    # Réécrit UNIQUEMENT la 1re ligne `status:` du front-matter (1er bloc `---`) — jamais un
+    # `status: todo` qui figurerait dans le CORPS (exemple, payload). Portable BSD/GNU (temp + mv).
     tmp="$(mktemp)"
-    sed "s/^status:[[:space:]]*todo.*$/status: $tgt/" "$f" > "$tmp" && mv "$tmp" "$f"
+    awk -v tgt="$tgt" '
+      /^---[[:space:]]*$/ { fm++ }
+      fm==1 && !done && /^status:/ { $0 = "status: " tgt; done=1 }
+      { print }
+    ' "$f" > "$tmp" && mv "$tmp" "$f"
   else
     echo "  $(basename "$f") : todo → $tgt"
   fi

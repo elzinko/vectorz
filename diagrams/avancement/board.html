@@ -21,6 +21,7 @@
     --p2: #3a76ad;
     --p3: #6f7684;
     --todo: #6f7684;
+    --ready: #2f6fed;
     --in-progress: #b6740f;
     --blocked: #cf3b40;
     --idea: #7458cf;
@@ -30,13 +31,13 @@
     :root:not([data-theme="light"]) {
       --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
       --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
-      --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+      --todo: #6b7280; --ready: #5b9bd5; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
     }
   }
   :root[data-theme="dark"] {
     --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
     --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
-    --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+    --todo: #6b7280; --ready: #5b9bd5; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
   }
   * { box-sizing: border-box; }
   body {
@@ -96,6 +97,7 @@
     color: var(--muted);
   }
   .badge.statut-todo { color: var(--todo); border-color: var(--todo); }
+  .badge.statut-ready { color: var(--ready); border-color: var(--ready); }
   .badge.statut-in-progress { color: var(--in-progress); border-color: var(--in-progress); }
   .badge.statut-blocked { color: var(--blocked); border-color: var(--blocked); }
   .badge.statut-idea { color: var(--idea); border-color: var(--idea); }
@@ -4055,7 +4057,7 @@ window.EZK_PLAN_DELTA = {
   var actives = data.actives || [];
 
   // Rang de tri d'affichage — même ordre que STATUTS/PRIOS côté cœur (avancement-data.ts).
-  var STATUT_RANK = ['todo', 'in-progress', 'blocked', 'idea', 'shipped'];
+  var STATUT_RANK = ['idea', 'ready', 'in-progress', 'blocked', 'shipped'];
   var PRIO_RANK = ['P0', 'P1', 'P2', 'P3'];
   var rankIn = function (arr, v) {
     var i = arr.indexOf(v);
