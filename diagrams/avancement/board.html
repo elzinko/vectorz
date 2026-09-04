@@ -269,7 +269,7 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 132,
-  "idea": 143,
+  "idea": 148,
   "blocked": 6,
   "in-progress": 4,
   "ready": 2
@@ -1716,7 +1716,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260826121429274",
-   "title": "ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints",
+   "title": "⟳ ABSORBÉE (→ 20260904091853974) — ezk-archive émet un compte-rendu de session structuré (prérequis de la vue sprints)",
    "type": "feature",
    "priority": "P2",
    "status": "idea",
@@ -1845,6 +1845,19 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md"
   },
   {
+   "id": "20260901173549334",
+   "title": "ezk multi-client : cap Cursor + modèle & effort configurables par hôte",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md"
+  },
+  {
    "id": "20260902224043892",
    "title": "Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété",
    "type": "chore",
@@ -1886,6 +1899,41 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260903134908019_cli-ezk-complet-publie.md"
+  },
+  {
+   "id": "20260904091853948",
+   "title": "ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-archive",
+    "methode",
+    "cout"
+   ],
+   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md"
+  },
+  {
+   "id": "20260904091853974",
+   "title": "Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "journal",
+    "ezk-chef",
+    "retro",
+    "methode"
+   ],
+   "file": "features/20260904091853974_journal-difficultes-artefact-independant.md"
   },
   {
    "id": "0007",
@@ -2240,6 +2288,32 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260830110131298_supervision-ezk-plugin-separable.md"
+  },
+  {
+   "id": "20260904074824499",
+   "title": "Renommer les commandes ezk-* → mc-* (mega-city)",
+   "type": "chore",
+   "priority": "P3",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260904074824499_renommer-ezk-vers-mc.md"
+  },
+  {
+   "id": "20260904080827072",
+   "title": "admin ezk : partagé multi-projets vs une app par projet — ports, isolation",
+   "type": "chore",
+   "priority": "P3",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md"
   }
  ],
  "epics": [
@@ -2397,6 +2471,7 @@ window.EZK_AVANCEMENT = {
    "article",
    "bmad",
    "ci",
+   "cout",
    "decouvrabilite",
    "doc",
    "doctrine",
@@ -2404,11 +2479,14 @@ window.EZK_AVANCEMENT = {
    "dx",
    "elicitation",
    "enabler",
+   "ezk-archive",
+   "ezk-chef",
    "ezk-ci",
    "ezk-codex",
    "follow-up",
    "fondation",
    "format",
+   "journal",
    "lisibilite",
    "llm",
    "method",
@@ -2417,6 +2495,7 @@ window.EZK_AVANCEMENT = {
    "nommage",
    "outillage",
    "r&d",
+   "retro",
    "supervision",
    "template",
    "test",
@@ -3845,6 +3924,38 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260904091853974",
+   "title": "Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260904091853974_journal-difficultes-artefact-independant.md"
+  },
+  {
+   "id": "20260904091853948",
+   "title": "ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md"
+  },
+  {
+   "id": "20260904080827072",
+   "title": "admin ezk : partagé multi-projets vs une app par projet — ports, isolation",
+   "status": "idea",
+   "priority": "P3",
+   "inPlan": false,
+   "file": "features/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md"
+  },
+  {
+   "id": "20260904074824499",
+   "title": "Renommer les commandes ezk-* → mc-* (mega-city)",
+   "status": "idea",
+   "priority": "P3",
+   "inPlan": false,
+   "file": "features/20260904074824499_renommer-ezk-vers-mc.md"
+  },
+  {
    "id": "20260903134909124",
    "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
    "status": "idea",
@@ -3885,6 +3996,14 @@ window.EZK_PLAN_DELTA = {
    "file": "features/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md"
   },
   {
+   "id": "20260901173549334",
+   "title": "ezk multi-client : cap Cursor + modèle & effort configurables par hôte",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md"
+  },
+  {
    "id": "20260831075615969",
    "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
    "status": "idea",
@@ -3923,46 +4042,6 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260830194601307_front-matter-emis-par-lib-yaml.md"
-  },
-  {
-   "id": "20260830194601233",
-   "title": "ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260830194601233_ship-transactionnel-liens-vues.md"
-  },
-  {
-   "id": "20260830114318159",
-   "title": "ezk-ezk — option configurable « passer par la méthode » (proposer une fiche au lieu de créer un skill direct)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830114318159_ezk-ezk-option-passer-par-fiche.md"
-  },
-  {
-   "id": "20260830110131298",
-   "title": "Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039)",
-   "status": "idea",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260830110131298_supervision-ezk-plugin-separable.md"
-  },
-  {
-   "id": "20260830110131228",
-   "title": "Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040)",
-   "status": "idea",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260830110131228_schema-etapes-skill-configurables.md"
-  },
-  {
-   "id": "20260830110131158",
-   "title": "Revue adverse skippable par flag — --review adverse|skip (ezk-product-build → ezk-sprint)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830110131158_revue-adverse-skippable-flag.md"
   }
  ],
  "offPlanCount": 5,
