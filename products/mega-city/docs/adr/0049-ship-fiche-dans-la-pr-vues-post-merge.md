@@ -23,11 +23,15 @@ commit de la branche**, après le GO de revue. Le squash-merge fait tout atterri
 - **Récurrence datée (session muti 2026-09-01/02)** : PR #171 mergée, `ship` de `20260830194321545`
   jamais atterri (bloqué worktree→`main`, fini « en vol » sur une branche non poussée). Code sur
   `main`, fiche restée `todo`.
-- **On ne peut PAS différer la régénération des vues au post-merge** : dans ce dépôt, presque toutes
-  les vues générées sont **gatées par la CI** — `BACKLOG.md` par `check-links`, `PORTFOLIO.md` +
-  `PLAN.md` par `check-planning-views`, `board.html` par un **test d'égalité exacte** (mega-city
-  vitest). Dès qu'une fiche bouge, la CI **exige** ces vues à jour **dans la PR** (relevés Codex,
-  PR #210). Un modèle « vues post-merge » échouerait la CI.
+- **On ne peut PAS différer la régénération des vues au post-merge.** Il faut distinguer deux niveaux
+  d'exigence (relevés Codex, PR #210) :
+  - **Gaté par la CI exécutable** (fait rougir la PR si périmé) : `board.html` par un **test d'égalité
+    exacte** (mega-city vitest) et `BACKLOG.md` par `check-links` (workflow markdown). Dès qu'une fiche
+    bouge, la CI **exige** ces deux-là à jour **dans la PR** — un modèle « post-merge » échouerait la CI.
+  - **Tenu cohérent par le contrat `ship`** (procédural, pas un workflow) : `PORTFOLIO.md` + la curation
+    de `PLAN.md` via `check-planning-views` — c'est une **étape du `ship`** dans `SKILL.md`, **pas**
+    branché dans `ci.yml`. Sous ce modèle où le ship vit dans la PR, ces vues y sont régénérées de toute
+    façon ; les brancher aussi en CI serait une amélioration (non requise par cet ADR).
 
 ## Décision
 
@@ -79,9 +83,11 @@ vues** puis rejouer les gates. C'est le prix — modéré et déterministe — d
 
 - **Statu quo (ship séparé sur `main` post-merge)** : c'est la cause du décrochage et du blocage
   worktree — rejeté.
-- **Différer les vues au post-merge** (une 1ʳᵉ version de cet ADR) : **impossible** ici — la CI gate
-  les vues (`board.html` à l'égalité exacte, `check-links`, `check-planning-views`). Une fiche déplacée
-  sans régénérer ses vues **rougit la CI** (relevés Codex PR #210). Rejeté.
+- **Différer les vues au post-merge** (une 1ʳᵉ version de cet ADR) : **impossible** ici — la CI
+  exécutable gate `board.html` (égalité exacte) et `BACKLOG.md` (`check-links`). Une fiche déplacée sans
+  régénérer ces vues **rougit la CI** (relevés Codex PR #210). Rejeté. *(PORTFOLIO/PLAN ne rougiraient
+  pas la CI aujourd'hui — `check-planning-views` est procédural — mais sous « tout dans la PR » ils sont
+  régénérés de toute façon.)*
 - **Relâcher les tests de vues** pour rendre le post-merge viable : plus gros chantier, et on
   **affaiblirait des filets** utiles (le test d'égalité attrape « fiche déplacée, vue oubliée »).
   Écarté au profit de « tout dans la PR ».
