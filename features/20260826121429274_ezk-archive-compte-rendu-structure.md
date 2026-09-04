@@ -1,6 +1,6 @@
 ---
 id: "20260826121429274"
-title: ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints
+title: "⟳ ABSORBÉE (→ 20260904091853974) — ezk-archive émet un compte-rendu de session structuré (prérequis de la vue sprints)"
 type: feature
 priority: P2
 product: mega-city
@@ -13,6 +13,12 @@ created: 2026-08-26
 ---
 
 # `ezk-archive` émet un compte-rendu de session structuré
+
+> **⟳ Absorbée le 2026-09-04 dans [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md)**
+> (« Journal des difficultés — artefact indépendant »). Le format structuré du récit de session
+> (en-tête PR / fiches / actions, prérequis des vues) y est traité comme une facette du même
+> chantier. **Fiche conservée comme redirection** — à retirer formellement au grooming de la
+> fiche cible. **Ne pas la tirer.**
 
 ## En clair
 
