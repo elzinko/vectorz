@@ -11,8 +11,9 @@ Aujourd'hui, ranger une fiche en « done » est un geste **séparé** du merge d
 Deux dégâts : une fenêtre où le code est mergé mais la fiche dit encore « todo », et — depuis un
 worktree — l'**impossibilité** de committer ce ship sur `main` quand il est pris. On décide de
 **coupler** : le ship de la fiche **vit dans la PR** (dernier commit de la branche, après le GO de
-revue), et les **vues générées** (`BACKLOG.md`, cartes) se **régénèrent sur `main` après le merge**,
-par un déclencheur — jamais dans la PR.
+revue) — avec les **vues gatées** (`BACKLOG.md`, `PORTFOLIO.md`, curation de `PLAN.md`), que la CI
+exige cohérentes. Seules les **vues d'affichage lourdes** sous `diagrams/` (board, cartes, graphe,
+non gatées) se **régénèrent sur `main` après le merge**, par un déclencheur.
 
 ## Contexte
 
@@ -33,19 +34,20 @@ GO de revue et **juste avant** le squash-merge : `git mv features/<id>_… → d
 statut atomiquement**. Une session en worktree en est capable : elle commit sur **sa** branche, pas
 sur `main`.
 
-**2 — Distinguer l'INDEX porteur de liens des VUES d'affichage.** Tous les artefacts générés ne se
-traitent pas pareil (raffiné après relevé Codex sur cette PR) :
+**2 — La ligne de partage est le GATE, pas le type de fichier.** Un artefact généré voyage avec le
+ship **si et seulement si un gate CI en exige la cohérence** (raffiné après relevés Codex sur cette PR) :
 
-- **`BACKLOG.md` (index porteur de liens) voyage AVEC le ship, dans la PR.** Il **lie chaque fiche par
-  son chemin**, et le gate `check-links` scanne `features/`. Si le `git mv` vers `done/` part sans que
-  `BACKLOG.md` soit régénéré, le lien pointe vers l'ancien chemin et le gate rougit
-  (`products/mega-city/bin/check-links.sh` sur `features/BACKLOG.md`). Donc sa régénération fait partie
-  du **commit de ship** (brique 1). Il peut entrer en **conflit** entre PR parallèles, mais le conflit
-  est **déterministe** — re-lancer `regen` le résout, et le déclencheur post-merge le re-dérive.
-- **Les vues d'affichage lourdes (board, cartes, graphe — sous `diagrams/`, HORS du gate de liens
-  `features/`) ne voyagent PAS dans la PR.** Les committer par branche ferait **conflit systématique**
-  entre PR parallèles. Elles se **régénèrent sur `main` après le merge**, par un déclencheur (hook ou
-  petit job CI) — pure re-dérivation, **sans conflit** car sérialisée sur `main`.
+- **Vues GATÉES → dans le commit de ship (brique 1).** Ce sont exactement celles que `ezk-backlog ship`
+  régénère déjà et que la CI contrôle : `BACKLOG.md` (gate `check-links` — le `git mv` vers `done/`
+  casse sinon le lien de l'index), `PORTFOLIO.md` (gate `check-planning-views` — sinon la fiche livrée
+  y reste affichée « à faire »), et la **curation de `PLAN.md`** (même gate). Les committer dans la PR
+  **est obligatoire** : sans eux, `check-links` / `check-planning-views` rougissent. Elles peuvent
+  entrer en **conflit** entre PR parallèles, mais le conflit est **déterministe** — re-lancer
+  `ship`/`regen` le résout.
+- **Vues d'affichage NON gatées → post-merge.** Le board, les cartes et le graphe (sous `diagrams/`,
+  qu'aucun gate ne contrôle) ne voyagent **pas** dans la PR : les committer par branche ferait
+  **conflit systématique**. Elles se **régénèrent sur `main` après le merge**, par un déclencheur —
+  pure re-dérivation, **sans conflit** car sérialisée sur `main`.
 
 **3 — `reconcile` reste le filet, pas la norme.** Il couvre le seul cas restant : un merge fait
 **100 % hors flux** (UI GitHub, sans le commit de ship de l'étape 1). Il **propose**, `ship` exécute
@@ -59,12 +61,14 @@ traitent pas pareil (raffiné après relevé Codex sur cette PR) :
 - **Contrainte d'ordre** : sur la branche, la fiche lit « shipped » **avant** le merge (état
   provisoire). Le commit de ship est donc le **dernier** de la branche, ajouté **après** le GO ; un
   NO-GO de revue ⇒ on le retire. Ordre imposé : **valider → shipper → merger**.
-- **Dépendance dure** : le déclencheur post-merge des **vues d'affichage** (board/cartes/graphe) est
-  **obligatoire** — sans lui, elles décrochent sur `main`. `BACKLOG.md`, lui, voyage avec le ship (il
-  est gaté par les liens). C'est l'objet de la fiche `20260823121712781`.
+- **Dépendance dure** : le déclencheur post-merge des **vues d'affichage** (board/cartes/graphe sous
+  `diagrams/`) est **obligatoire** — sans lui, elles décrochent sur `main`. Les vues **gatées**
+  (`BACKLOG.md`, `PORTFOLIO.md`, curation de `PLAN.md`), elles, voyagent avec le ship. C'est l'objet de
+  la fiche `20260823121712781`.
 - **Frontière** : `ezk-sprint` (étape 10) et `ezk-backlog` (`ship`) portent le commit-dans-la-branche —
-  `git mv` + statut + **régénération de `BACKLOG.md`** ; le déclencheur post-merge des vues d'affichage
-  est porté par `20260823121712781`.
+  `git mv` + statut + **régénération des vues gatées** (`BACKLOG.md`, `PORTFOLIO.md`, `PLAN.md`), ce que
+  le contrat `ship` fait déjà (`check-planning-views` inclus) ; le déclencheur post-merge des vues
+  d'affichage `diagrams/` est porté par `20260823121712781`.
 
 ## Alternatives écartées
 

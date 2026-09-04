@@ -38,22 +38,24 @@ post-merge** : le déclencheur qui régénère les vues et rattrape les oublis.
 Le modèle a **trois briques** ; cette fiche implémente la 2 et la 3.
 
 1. **Ship dans la PR** *(porté par `ezk-sprint` étape 10 + `ezk-backlog ship`, hors de cette fiche)* :
-   `git mv` vers `done/` + `status: shipped` + `pr: #N` + **régénération de `BACKLOG.md`** (l'index
-   porteur de liens, gaté par `check-links`), comme **dernier commit de la branche**, après le GO de
-   revue. Le squash-merge fait atterrir code + statut **atomiquement**, liens valides.
+   `git mv` vers `done/` + `status: shipped` + `pr: #N` + **régénération des vues gatées**
+   (`BACKLOG.md` pour `check-links`, `PORTFOLIO.md` + curation de `PLAN.md` pour `check-planning-views`),
+   comme **dernier commit de la branche**, après le GO de revue. Le squash-merge fait atterrir code +
+   statut **atomiquement**, gates verts.
 2. **Déclencheur post-merge des vues d'affichage** *(cœur de cette fiche)* : un hook/petit job sur
    `main` qui, après chaque merge, **régénère le board + les cartes + le graphe** (sous `diagrams/`,
-   HORS du gate de liens `features/`). Ces vues **ne voyagent pas** dans les PR (touchées par chaque
+   qu'**aucun gate ne contrôle**). Ces vues **ne voyagent pas** dans les PR (touchées par chaque
    fiche → conflits systématiques). Pure re-dérivation, sérialisée sur `main`, **sans conflit**.
-   `BACKLOG.md`, lui, est déjà à jour (brique 1).
+   Les vues gatées, elles, sont déjà à jour (brique 1).
 3. **`reconcile` = filet** : couvre le seul cas restant — un merge **100 % hors flux** (UI GitHub sans
    le commit de ship). Il **propose**, `ship` exécute (invariant ADR-0018).
 
 ## Critères d'acceptation (à groomer)
 
 - [ ] Après un merge, les **vues d'affichage** (board/cartes/graphe sous `diagrams/`) sont
-      **régénérées sur `main`** sans geste manuel ni conflit inter-PR. `BACKLOG.md` est déjà cohérent
-      (rangé dans le commit de ship, liens valides pour `check-links`).
+      **régénérées sur `main`** sans geste manuel ni conflit inter-PR. Les **vues gatées** (`BACKLOG.md`,
+      `PORTFOLIO.md`, `PLAN.md`) sont déjà cohérentes (rangées dans le commit de ship, `check-links` +
+      `check-planning-views` verts).
 - [ ] Un merge fait **hors flux** (UI GitHub, sans commit de ship) est **détecté** et **proposé** au
       `ship` sans lancement manuel.
 - [ ] Le contrôle **propose**, ne bascule **rien** seul (ADR-0018).
