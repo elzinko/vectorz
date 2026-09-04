@@ -39,7 +39,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0165 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 | 🔴 todo |  |
 | mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔴 todo |  |
 | mega-city | 20260821163346490 | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 🔴 todo |  |
-| mega-city | 20260823121712781 | Atterrissage atomique du ship — la fiche rangée dans la PR, les vues régénérées post-merge | feature | P1 | 🔴 todo |  |
+| mega-city | 20260823121712781 | Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge | feature | P1 | 🔴 todo |  |
 | mega-city | 20260824061247344 | Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO) | refactor | P1 | 🔴 todo |  |
 | mega-city | 20260903134906920 | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 | 🔴 todo |  |
 | mega-city | 20260903134909124 | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 | 🔴 todo |  |
