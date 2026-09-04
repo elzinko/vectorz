@@ -32,24 +32,30 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
 
 ## Proposition (cadrée par ADR-0049)
 
-1. **Ship complet dans la PR** *(porté par `ezk-sprint` étape 10 + `ezk-backlog ship`, hors de cette
-   fiche)* : `git mv` vers `done/` + `status: shipped` + `pr: #N` + **régénération de toutes les vues**
-   (`BACKLOG.md`, `PORTFOLIO.md`, curation de `PLAN.md`, `board.html`), dernier commit après le GO.
+1. **Ship complet dans la PR** *(porté par `ezk-sprint` étape 10 + `ezk-backlog ship`)* : `git mv` vers
+   `done/` + `status: shipped` + `pr: #N` + **régénération de toutes les vues** (`BACKLOG.md`,
+   `PORTFOLIO.md`, curation de `PLAN.md`, `board.html`), dernier commit après le GO. ⚠️ Le contrat
+   `ship` actuel ne régénère **pas** `board.html` : **l'étendre** (ajouter `avancement:regen` +
+   `plan-delta:regen`) fait partie de cette fiche.
 2. **Filet `reconcile`** *(cœur de cette fiche)* : détecter un merge **100 % hors flux** (UI GitHub,
    sans commit de ship) et **proposer** le `ship` manqué, sans lancement manuel. Il **propose**, `ship`
    exécute (invariant ADR-0018).
-3. **Re-`regen` au conflit de merge** *(cœur de cette fiche)* : deux PR de ship touchent les mêmes vues
-   → conflit au 2ᵉ merge. Comme les merges sont **sérialisés** (jamais deux à la fois) et les vues
-   **déterministes**, la résolution est mécanique : re-lancer `regen`/`ship` re-dérive la vue depuis les
-   front-matter à jour. Outiller ce geste (helper ou doc de résolution), pas d'arbitrage au jugement.
+3. **Merge `main` puis re-`regen` au conflit** *(cœur de cette fiche)* : deux PR de ship touchent les
+   mêmes vues → conflit au 2ᵉ merge. Comme les merges sont **sérialisés** (jamais deux à la fois) et
+   les vues **déterministes**, la résolution est mécanique, **dans cet ordre** : (1) **merger `main`**
+   dans la branche — sinon on ne voit pas la fiche déplacée par la 1ʳᵉ PR et un `regen` seul re-produit
+   des vues périmées ; (2) **re-régénérer toutes les vues** + rejouer les gates. Outiller ce geste
+   (helper ou doc), pas d'arbitrage au jugement.
 
 ## Critères d'acceptation (à groomer)
 
 - [ ] Un merge fait **hors flux** (UI GitHub, sans commit de ship) est **détecté** et **proposé** au
       `ship` sans lancement manuel.
 - [ ] Le contrôle **propose**, ne bascule **rien** seul (ADR-0018).
-- [ ] Un conflit de vues au merge se résout par **re-`regen`** déterministe (documenté/outillé), sans
-      édition manuelle des vues générées.
+- [ ] Un conflit de vues au merge se résout par **merge de `main` PUIS re-`regen`** déterministe
+      (documenté/outillé), sans édition manuelle des vues générées.
+- [ ] Le contrat `ezk-backlog ship` (+ `ezk-sprint` étape 10) est **étendu** pour régénérer aussi
+      `board.html` (aujourd'hui il ne fait que BACKLOG/PORTFOLIO/PLAN).
 - [ ] Silencieux/inoffensif quand il n'y a rien à réconcilier.
 - [ ] Point d'ancrage tranché au grooming : hook local, job CI, ou étape `ezk-pr` ?
 

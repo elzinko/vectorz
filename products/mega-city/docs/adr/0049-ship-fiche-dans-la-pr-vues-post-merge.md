@@ -36,7 +36,11 @@ commit de la branche**, après le GO de revue. Le squash-merge fait tout atterri
 `status: shipped`, `pr: #N`, **et la régénération de toutes les vues dérivées** (`BACKLOG.md`,
 `PORTFOLIO.md`, curation de `PLAN.md`, `board.html`). Le squash-merge fait atterrir **code + statut +
 vues, atomiquement**. Une session en worktree en est capable : elle commit sur **sa** branche, pas sur
-`main`. C'est ce que `ezk-backlog ship` fait déjà — on le déplace juste **avant** le merge, dans la PR.
+`main`. ⚠️ Aujourd'hui `ezk-backlog ship` régénère `BACKLOG.md` + `PORTFOLIO.md` et cure `PLAN.md`, mais
+**pas** `board.html` (`SKILL.md`, étape 3 du `ship`). L'étape 10 doit donc être **étendue** pour
+régénérer **toute** vue dérivée d'une fiche — board inclus — **et déplacée avant** le merge, dans la
+PR. Cette extension du contrat `ship`/`sprint` fait partie de l'**implémentation** de cet ADR (fiche
+`20260823121712781`), pas d'un acquis.
 
 **2 — Pas de « vues post-merge ».** On abandonne la distinction gatées/non-gatées : la CI gate en
 pratique toutes les vues dérivées d'une fiche, donc elles sont **toutes** cohérentes dans la PR. Rien
@@ -45,8 +49,11 @@ n'est différé.
 **3 — Les conflits de vues sont déterministes et sérialisés au merge.** Chaque PR vit dans un worktree
 **isolé** et travaille seule. Deux PR ne se mergent **jamais exactement en même temps** (verrou local
 et côté GitHub) : les conflits sur les vues générées se présentent **un à un, au merge**. Résolution
-**mécanique**, jamais « intelligente » : re-lancer `regen`/`ship` re-dérive la vue depuis les
-front-matter à jour. C'est le prix — modéré et déterministe — de l'atterrissage atomique.
+**mécanique**, jamais « intelligente », en **deux temps dans cet ordre** : (1) **merger `main`** dans
+la branche — sinon la 2ᵉ PR ne voit pas encore la fiche déplacée par la 1ʳᵉ, et un `regen` seul
+re-produirait des vues **périmées** (voire écraserait le 1ᵉʳ ship) ; (2) **re-régénérer toutes les
+vues** puis rejouer les gates. C'est le prix — modéré et déterministe — de l'atterrissage atomique.
+*(Éprouvé sur cette PR même : `main` a avancé, il a fallu merger `main` puis tout régénérer.)*
 
 **4 — `reconcile` reste le filet, pas la norme.** Il couvre le seul cas restant : un merge fait
 **100 % hors flux** (UI GitHub, sans le commit de ship de l'étape 1). Il **propose**, `ship` exécute
