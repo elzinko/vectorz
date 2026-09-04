@@ -33,10 +33,19 @@ GO de revue et **juste avant** le squash-merge : `git mv features/<id>_… → d
 statut atomiquement**. Une session en worktree en est capable : elle commit sur **sa** branche, pas
 sur `main`.
 
-**2 — Les vues générées ne voyagent PAS dans la PR.** `BACKLOG.md` et les cartes/board sont touchés
-par **chaque** fiche : les committer par branche ferait **conflit systématique** entre PR parallèles.
-Elles se **régénèrent sur `main` après le merge**, par un déclencheur (hook post-merge ou petit job
-CI) — pure re-dérivation depuis les front-matter, **sans conflit** car sérialisée sur une seule ligne.
+**2 — Distinguer l'INDEX porteur de liens des VUES d'affichage.** Tous les artefacts générés ne se
+traitent pas pareil (raffiné après relevé Codex sur cette PR) :
+
+- **`BACKLOG.md` (index porteur de liens) voyage AVEC le ship, dans la PR.** Il **lie chaque fiche par
+  son chemin**, et le gate `check-links` scanne `features/`. Si le `git mv` vers `done/` part sans que
+  `BACKLOG.md` soit régénéré, le lien pointe vers l'ancien chemin et le gate rougit
+  (`products/mega-city/bin/check-links.sh` sur `features/BACKLOG.md`). Donc sa régénération fait partie
+  du **commit de ship** (brique 1). Il peut entrer en **conflit** entre PR parallèles, mais le conflit
+  est **déterministe** — re-lancer `regen` le résout, et le déclencheur post-merge le re-dérive.
+- **Les vues d'affichage lourdes (board, cartes, graphe — sous `diagrams/`, HORS du gate de liens
+  `features/`) ne voyagent PAS dans la PR.** Les committer par branche ferait **conflit systématique**
+  entre PR parallèles. Elles se **régénèrent sur `main` après le merge**, par un déclencheur (hook ou
+  petit job CI) — pure re-dérivation, **sans conflit** car sérialisée sur `main`.
 
 **3 — `reconcile` reste le filet, pas la norme.** Il couvre le seul cas restant : un merge fait
 **100 % hors flux** (UI GitHub, sans le commit de ship de l'étape 1). Il **propose**, `ship` exécute
@@ -50,14 +59,20 @@ CI) — pure re-dérivation depuis les front-matter, **sans conflit** car séria
 - **Contrainte d'ordre** : sur la branche, la fiche lit « shipped » **avant** le merge (état
   provisoire). Le commit de ship est donc le **dernier** de la branche, ajouté **après** le GO ; un
   NO-GO de revue ⇒ on le retire. Ordre imposé : **valider → shipper → merger**.
-- **Dépendance dure** : le déclencheur post-merge des vues (point 2) est **obligatoire** — sans lui,
-  `BACKLOG.md`/cartes décrochent sur `main`. C'est l'objet de la fiche `20260823121712781`.
-- **Frontière** : `ezk-sprint` (étape 10) et `ezk-backlog` (`ship`) portent le commit-dans-la-branche ;
-  le déclencheur post-merge des vues est porté par `20260823121712781`.
+- **Dépendance dure** : le déclencheur post-merge des **vues d'affichage** (board/cartes/graphe) est
+  **obligatoire** — sans lui, elles décrochent sur `main`. `BACKLOG.md`, lui, voyage avec le ship (il
+  est gaté par les liens). C'est l'objet de la fiche `20260823121712781`.
+- **Frontière** : `ezk-sprint` (étape 10) et `ezk-backlog` (`ship`) portent le commit-dans-la-branche —
+  `git mv` + statut + **régénération de `BACKLOG.md`** ; le déclencheur post-merge des vues d'affichage
+  est porté par `20260823121712781`.
 
 ## Alternatives écartées
 
 - **Statu quo (ship séparé sur `main` post-merge)** : c'est la cause du décrochage et du blocage
   worktree — rejeté.
-- **Tout committer dans la PR, vues comprises** : conflits d'index systématiques entre PR parallèles
-  (`BACKLOG.md` touché par chaque fiche) — on échangerait un problème contre un pire.
+- **Committer AUSSI les vues d'affichage lourdes dans la PR** : conflits d'index systématiques entre PR
+  parallèles (board/cartes touchés par chaque fiche) — on échangerait un problème contre un pire. On
+  ne garde dans la PR que `BACKLOG.md`, contraint par le gate de liens.
+- **Exempter `BACKLOG.md` du gate `check-links`** (le laisser décrocher sur la branche, re-dérivé
+  post-merge) : possible, mais on **affaiblirait un filet** qui attrape justement « fiche déplacée,
+  index oublié ». On préfère faire voyager `BACKLOG.md` avec le ship et **garder le gate intact**.
