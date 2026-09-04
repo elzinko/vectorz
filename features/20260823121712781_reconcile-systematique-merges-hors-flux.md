@@ -35,8 +35,10 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
 1. **Ship complet dans la PR** *(porté par `ezk-sprint` étape 10 + `ezk-backlog ship`)* : `git mv` vers
    `done/` + `status: shipped` + `pr: #N` + **régénération de toutes les vues** (`BACKLOG.md`,
    `PORTFOLIO.md`, curation de `PLAN.md`, `board.html`), dernier commit après le GO. ⚠️ Le contrat
-   `ship` actuel ne régénère **pas** `board.html` : **l'étendre** (ajouter `avancement:regen` +
-   `plan-delta:regen`) fait partie de cette fiche.
+   `ship` actuel ne régénère **pas** `board.html` : **l'étendre** pour régénérer **toute** vue dérivée
+   d'une fiche fait partie de cette fiche — les 3 blocs board (`avancement:regen`, `plan-delta:regen`,
+   `plan-view:regen`) **et tout futur bloc**. **Garde-fou définitif** : les tests d'égalité exacte
+   mega-city doivent être verts — on ne s'appuie pas sur une liste de commandes à tenir à jour.
 2. **Filet `reconcile`** *(cœur de cette fiche)* : détecter un merge **100 % hors flux** (UI GitHub,
    sans commit de ship) et **proposer** le `ship` manqué, sans lancement manuel. Il **propose**, `ship`
    exécute (invariant ADR-0018).
