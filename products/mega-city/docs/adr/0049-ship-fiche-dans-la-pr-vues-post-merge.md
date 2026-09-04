@@ -23,15 +23,14 @@ commit de la branche**, après le GO de revue. Le squash-merge fait tout atterri
 - **Récurrence datée (session muti 2026-09-01/02)** : PR #171 mergée, `ship` de `20260830194321545`
   jamais atterri (bloqué worktree→`main`, fini « en vol » sur une branche non poussée). Code sur
   `main`, fiche restée `todo`.
-- **On ne peut PAS différer la régénération des vues au post-merge.** Il faut distinguer deux niveaux
-  d'exigence (relevés Codex, PR #210) :
-  - **Gaté par la CI exécutable** (fait rougir la PR si périmé) : `board.html` par un **test d'égalité
-    exacte** (mega-city vitest) et `BACKLOG.md` par `check-links` (workflow markdown). Dès qu'une fiche
-    bouge, la CI **exige** ces deux-là à jour **dans la PR** — un modèle « post-merge » échouerait la CI.
-  - **Tenu cohérent par le contrat `ship`** (procédural, pas un workflow) : `PORTFOLIO.md` + la curation
-    de `PLAN.md` via `check-planning-views` — c'est une **étape du `ship`** dans `SKILL.md`, **pas**
-    branché dans `ci.yml`. Sous ce modèle où le ship vit dans la PR, ces vues y sont régénérées de toute
-    façon ; les brancher aussi en CI serait une amélioration (non requise par cet ADR).
+- **Différer la régénération des vues au post-merge est fragile** : la cohérence des vues doit être
+  garantie **dans la PR**, et le seul mécanisme fiable pour ça est le **contrat `ship`** (il régénère
+  tout). La CI ne fait qu'un **filet partiel** (relevés Codex, PR #210) : `check-links` attrape un
+  `BACKLOG.md` périmé, le test d'égalité mega-city attrape un `board.html` périmé **mais seulement si
+  la PR touche du code** (`paths-ignore: ['**/*.md']` skippe les PR 100 % markdown) ; `PORTFOLIO.md` +
+  `PLAN.md` ne sont tenus que par l'étape `check-planning-views` **du `ship`** (procédurale, absente de
+  `ci.yml`). Conclusion : on ne peut pas s'appuyer sur la CI pour garder les vues à jour — c'est le
+  ship, dans la PR, qui doit le faire.
 
 ## Décision
 
@@ -46,9 +45,13 @@ régénérer **toute** vue dérivée d'une fiche — board inclus — **et dépl
 PR. Cette extension du contrat `ship`/`sprint` fait partie de l'**implémentation** de cet ADR (fiche
 `20260823121712781`), pas d'un acquis.
 
-**2 — Pas de « vues post-merge ».** On abandonne la distinction gatées/non-gatées : la CI gate en
-pratique toutes les vues dérivées d'une fiche, donc elles sont **toutes** cohérentes dans la PR. Rien
-n'est différé.
+**2 — Pas de « vues post-merge ».** La garantie **primaire** est le **contrat `ship`** : il régénère
+**toutes** les vues dérivées dans la PR, donc elles y sont cohérentes **par construction** — pas par la
+grâce d'un gate. La CI n'est qu'un **filet conditionnel** : `check-links` attrape un `BACKLOG.md`
+périmé, et le test d'égalité du board attrape un `board.html` périmé **quand la PR touche du code**
+(le workflow mega-city est skippé sur une PR 100 % markdown via `paths-ignore`). On ne s'appuie donc
+**pas** sur « la CI gate tout » ; on s'appuie sur le contrat `ship`, la CI restant un backstop utile
+mais partiel. Rien n'est différé au post-merge.
 
 **3 — Les conflits de vues sont déterministes et sérialisés au merge.** Chaque PR vit dans un worktree
 **isolé** et travaille seule. Deux PR ne se mergent **jamais exactement en même temps** (verrou local
@@ -83,11 +86,11 @@ vues** puis rejouer les gates. C'est le prix — modéré et déterministe — d
 
 - **Statu quo (ship séparé sur `main` post-merge)** : c'est la cause du décrochage et du blocage
   worktree — rejeté.
-- **Différer les vues au post-merge** (une 1ʳᵉ version de cet ADR) : **impossible** ici — la CI
-  exécutable gate `board.html` (égalité exacte) et `BACKLOG.md` (`check-links`). Une fiche déplacée sans
-  régénérer ces vues **rougit la CI** (relevés Codex PR #210). Rejeté. *(PORTFOLIO/PLAN ne rougiraient
-  pas la CI aujourd'hui — `check-planning-views` est procédural — mais sous « tout dans la PR » ils sont
-  régénérés de toute façon.)*
+- **Différer les vues au post-merge** (une 1ʳᵉ version de cet ADR) : **rejeté** — la cohérence des vues
+  doit être garantie *dans* la PR, et rien de fiable ne le fait en post-merge sans déclencheur dédié.
+  La CI ne suffit pas comme garant (backstop **partiel** : `check-links` sur BACKLOG, égalité board
+  **seulement si la PR touche du code**, PORTFOLIO/PLAN non gatés en CI — relevés Codex PR #210). Le
+  garant, c'est le contrat `ship` dans la PR.
 - **Relâcher les tests de vues** pour rendre le post-merge viable : plus gros chantier, et on
   **affaiblirait des filets** utiles (le test d'égalité attrape « fiche déplacée, vue oubliée »).
   Écarté au profit de « tout dans la PR ».
