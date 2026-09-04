@@ -1,4 +1,4 @@
-# ADR-0047 — Le ship complet vit dans la PR (fiche + toutes ses vues)
+# ADR-0049 — Le ship complet vit dans la PR (fiche + toutes ses vues)
 
 - Statut : **Proposé** (2026-09-03)
 - Fiche : `../../../../features/20260823121712781_reconcile-systematique-merges-hors-flux.md`

@@ -14,7 +14,7 @@ created: 2026-08-23
 
 ## En clair
 
-Le modèle est tranché par l'**ADR-0047** : le ship complet (fiche → `done/` + statut + **toutes** ses
+Le modèle est tranché par l'**ADR-0049** : le ship complet (fiche → `done/` + statut + **toutes** ses
 vues régénérées) voyage **dans la PR**, comme dernier commit. Cette fiche porte les **deux briques
 restantes** : le **filet `reconcile`** (rattraper un merge fait hors flux) et le geste **déterministe
 de re-`regen`** quand deux ships se disputent une vue générée au merge.
@@ -27,10 +27,10 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
   jamais atterri (bloqué worktree→`main`, fini « en vol » sur une branche non poussée).
 - Symptôme antérieur (échange PO 2026-08-23) : « parfois je squash-merge sur GitHub et on rate les
   `ship` ».
-- ADR-0047 met le ship **dans la PR**. Restent deux angles morts : le merge **hors flux** (pas de
+- ADR-0049 met le ship **dans la PR**. Restent deux angles morts : le merge **hors flux** (pas de
   commit de ship du tout), et le **conflit de vues** entre deux PR de ship parallèles.
 
-## Proposition (cadrée par ADR-0047)
+## Proposition (cadrée par ADR-0049)
 
 1. **Ship complet dans la PR** *(porté par `ezk-sprint` étape 10 + `ezk-backlog ship`, hors de cette
    fiche)* : `git mv` vers `done/` + `status: shipped` + `pr: #N` + **régénération de toutes les vues**
@@ -62,7 +62,7 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
 
 ## Notes / voisins
 
-- **ADR-0047** — le cadre : ship complet (fiche + toutes ses vues) dans la PR ; cette fiche = filet
+- **ADR-0049** — le cadre : ship complet (fiche + toutes ses vues) dans la PR ; cette fiche = filet
   `reconcile` + re-`regen` au conflit.
 - Voisins : [[0185]] (ezk-archive croise branches réelles ↔ PR ouvertes), [[20260812100109940]]
   (sync des vues de planning au `ship`), `ezk-backlog reconcile` (la brique composée).
