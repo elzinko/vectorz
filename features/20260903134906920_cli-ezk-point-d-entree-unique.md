@@ -6,7 +6,7 @@ priority: P1 # provisoire — direction actée par le PO le 2026-09-03 (nom `ezk
 product: mega-city
 version:
 epic:
-status: todo
+status: idea
 ready:
 pr:
 evidence: none # outil de terminal, aucun écran

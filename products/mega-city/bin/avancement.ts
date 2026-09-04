@@ -39,7 +39,7 @@ for (const f of data.actives) {
     prio = f.priority;
     console.log(`\n  ${prio || '(sans prio)'}`);
   }
-  const tag = f.status === 'todo' && f.ready ? '✓' : f.status === 'blocked' ? '⛔' : ' ';
+  const tag = f.status === 'ready' ? '✓' : f.status === 'blocked' ? '⛔' : ' ';
   const ep = f.epic ? ` ⤷${f.epic}` : '';
   console.log(`    ${tag} ${f.id}  ${f.status.padEnd(11)} ${f.title.slice(0, 66)}${ep}`);
 }

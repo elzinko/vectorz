@@ -6,7 +6,7 @@ priority: P1 # provisoire — trou de méthode constaté le 2026-09-03 ; rang à
 product: mega-city
 version:
 epic:
-status: todo
+status: idea
 ready:
 pr:
 evidence: none # méthode, aucun écran

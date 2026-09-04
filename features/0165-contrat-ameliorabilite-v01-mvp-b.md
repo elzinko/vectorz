@@ -4,7 +4,7 @@ title: Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit ém
 type: feature
 priority: P1 # arbitrée 2026-07-17 (review) : P1 confirmée (jumeau MVP B de racine 0044, P1) — gated derrière 0044 (MVP A, prérequis absolu)
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-07-16
 ---

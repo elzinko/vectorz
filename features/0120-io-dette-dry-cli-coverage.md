@@ -4,7 +4,7 @@ title: dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture
 type: refactor
 priority: P3
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-06-26
 ---

@@ -5,7 +5,7 @@ type: bug
 priority: P3
 product: mega-city
 epic:
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-13

@@ -4,7 +4,7 @@ title: Policy de siège — l'auto-continue configurable sur signaux typés
 type: feature
 priority: P3
 product: vectorz
-status: todo
+status: idea
 pr:
 created: 2026-07-14
 ---

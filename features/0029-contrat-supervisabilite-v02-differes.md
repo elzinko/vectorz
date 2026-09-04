@@ -4,7 +4,7 @@ title: Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-pi
 type: chore
 priority: P3
 product: vectorz
-status: todo
+status: idea
 pr:
 created: 2026-07-14
 ---

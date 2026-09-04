@@ -48,7 +48,7 @@ cat > features/0043-fiche-en-cours.md <<'EOF'
 ---
 id: 0043
 title: une fiche pas encore livrée
-status: todo
+status: idea
 pr:
 ---
 EOF
@@ -90,10 +90,10 @@ OUT5b="$(bash "$CHECK" --gate --shipped none)"
 ok "--shipped none ⇒ P3 CLEAN et declared=none" \
    "echo \"\$OUT5b\" | grep -q '^P3_BACKLOG: CLEAN declared=none'"
 
-echo "G4 — une fiche déclarée livrée mais restée en todo est détectée :"
+echo "G4 — une fiche déclarée livrée mais restée en idea est détectée :"
 OUT4="$(bash "$CHECK" --gate --shipped 0043)"
 ok "points contient 3"                       "echo \"\$OUT4\" | grep -q '^VERDICT: DIRTY points=.*3'"
-ok "le fait cite la fiche et son statut"     "echo \"\$OUT4\" | grep -q '\[P3\] declared 0043 not shipped:.*status=todo'"
+ok "le fait cite la fiche et son statut"     "echo \"\$OUT4\" | grep -q '\[P3\] declared 0043 not shipped:.*status=idea'"
 # NB cette assertion vérifiait auparavant que le préfixe était JETÉ (« 0147 → 0042 »).
 # C'était précisément le bug relevé par Codex (PR #56) : le préfixe DÉSIGNE un backlog, il
 # ne décore pas le numéro. Ici la fixture n'a qu'un backlog racine, donc `mc-` ne résout
@@ -116,7 +116,7 @@ cat > products/demo-produit/features/0042-homonyme-pas-livree.md <<'EOF'
 ---
 id: 0042
 title: même numéro, autre backlog, PAS livrée
-status: todo
+status: idea
 pr:
 ---
 EOF

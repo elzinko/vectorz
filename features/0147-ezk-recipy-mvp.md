@@ -4,7 +4,7 @@ title: ezk-recipy — scanner les repos froids et proposer des fiches de skills
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-07-06
 ---

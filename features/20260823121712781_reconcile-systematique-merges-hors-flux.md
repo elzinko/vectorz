@@ -4,7 +4,7 @@ title: "reconcile systématique — ne plus rater un ship après un squash-merge
 type: feature
 priority: P1
 product: mega-city
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-23

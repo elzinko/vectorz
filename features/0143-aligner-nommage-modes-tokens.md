@@ -4,7 +4,7 @@ title: aligner le nommage des modes tokens du product-builder (lean|cap|full par
 type: chore
 priority: P3
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-07-06
 ---

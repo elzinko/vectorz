@@ -8,7 +8,7 @@ version:
 epic:
 depends: []
 labels: [architecture, format, moteur, fondation, bmad]
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-26

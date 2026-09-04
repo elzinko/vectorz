@@ -6,7 +6,7 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
 product: # obligatoire dans un monorepo — sinon omettre
 epic: # optionnel — id de la fiche épic parente (type: epic)
-status: todo # idea | todo | in-progress | blocked | shipped
+status: idea # idea | ready | in-progress | blocked | shipped
 ready: # YYYY-MM-DD — posée par le gate `ready <id>` ; vide = non groomée
 pr: # ex. "#123" quand une PR existe
 evidence: # before-after | auto | none — preuve d'écran avant/après en PR (règle development/pr-before-after-media) ; vide = auto

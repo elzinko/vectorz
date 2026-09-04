@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 version:
 epic:
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-13

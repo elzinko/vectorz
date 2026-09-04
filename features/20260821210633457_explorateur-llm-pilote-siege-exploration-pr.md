@@ -7,7 +7,7 @@ product: mega-city
 epic:
 depends: ["0169"]
 labels: [supervision, test, llm, dogfood]
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-21

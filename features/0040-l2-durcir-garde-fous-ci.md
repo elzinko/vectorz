@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: vectorz
 epic: 0034
-status: todo
+status: idea
 pr:
 created: 2026-07-16
 ---

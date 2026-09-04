@@ -4,7 +4,7 @@ title: aligner les signatures de domain.ts sur l'implémentation (expand/bind)
 type: chore
 priority: P3
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-06-26
 ---

@@ -21,7 +21,7 @@ cat > features/0043-todo.md <<'EOF'
 ---
 id: 0043
 title: une fiche todo
-status: todo
+status: idea
 ---
 EOF
 echo hello > a.txt

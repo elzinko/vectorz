@@ -11,7 +11,7 @@ const VALID_FIELDS = {
   title: 'Une fiche valide',
   type: 'feature',
   priority: 'P1',
-  status: 'todo',
+  status: 'idea',
 };
 
 describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)', () => {

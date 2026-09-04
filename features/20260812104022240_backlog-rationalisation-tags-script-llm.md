@@ -6,7 +6,7 @@ priority: P1 # choisie par le PO (session 2026-08-12)
 product: mega-city
 epic:
 version:
-status: todo
+status: ready
 ready: 2026-08-26
 pr:
 created: 2026-08-12

@@ -5,7 +5,7 @@ type: epic
 priority: P1
 product: vectorz
 epic:
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-07-22

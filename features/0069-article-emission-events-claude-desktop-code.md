@@ -4,7 +4,7 @@ title: article — émettre des events en restant fidèle au fonctionnement de C
 type: feature
 priority: P1
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-07-15
 ---
