@@ -4,7 +4,7 @@ title: "Ship atomique dans la PR — filet reconcile + re-regen au conflit de me
 type: feature
 priority: P1
 product: mega-city
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-23

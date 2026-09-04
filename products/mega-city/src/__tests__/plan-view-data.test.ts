@@ -17,7 +17,7 @@ const fiche = (over: Partial<Fiche> & { id: string }): Fiche => ({
   title: over.title ?? `titre ${over.id}`,
   type: over.type ?? 'feature',
   priority: over.priority ?? 'P2',
-  status: over.status ?? 'todo',
+  status: over.status ?? 'idea',
   ready: over.ready ?? false,
   epic: over.epic ?? '',
   product: over.product ?? 'mega-city',
@@ -36,8 +36,8 @@ const PLAN = [
 ].join('\n');
 
 const FICHES = [
-  fiche({ id: '0002', status: 'todo', ready: false }),
-  fiche({ id: '0001', status: 'todo', ready: true, title: 'La tête tirable' }),
+  fiche({ id: '0002', status: 'idea', ready: false }),
+  fiche({ id: '0001', status: 'ready', ready: true, title: 'La tête tirable' }),
   fiche({ id: '0003', status: 'shipped', ready: true }),
   // 0404 volontairement ABSENT → doit remonter en unresolved.
 ];
@@ -95,7 +95,7 @@ describe('bloc géré window.EZK_PLAN (marqueurs disjoints d’avancement)', () 
   });
 
   it('échappe `<` dans les données (protège la balise <script> porteuse)', () => {
-    const withTag = [fiche({ id: '0001', title: 'titre </script> piégé', status: 'todo', ready: true })];
+    const withTag = [fiche({ id: '0001', title: 'titre </script> piégé', status: 'ready', ready: true })];
     const block = buildPlanViewDataBlock('## NOW\n- **0001** — x', withTag);
     expect(block).not.toContain('</script>');
     expect(block).toContain('\\u003c');
@@ -116,7 +116,7 @@ describe('smoke sur le vrai features/PLAN.md', () => {
     if (data.head) {
       expect(data.head.found).toBe(true);
       expect(data.head.ready).toBe(true);
-      expect(data.head.status).toBe('todo');
+      expect(data.head.status).toBe('ready');
     }
   });
 });

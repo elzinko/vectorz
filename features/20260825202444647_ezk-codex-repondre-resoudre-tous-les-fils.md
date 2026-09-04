@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 labels: [ezk-codex, dx]
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-25

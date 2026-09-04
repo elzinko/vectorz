@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 labels: [bmad, decouvrabilite]
 epic: "20260816131703334"
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-25

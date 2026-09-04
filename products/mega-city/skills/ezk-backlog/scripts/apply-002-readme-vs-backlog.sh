@@ -54,6 +54,9 @@ else
     echo "sauvegarde → $bak"
   fi
   cp "$TEMPLATE" "$README"
+  # 002 vise layout_version: 2 — forcer le marqueur même si le template courant est plus récent
+  # (init, lui, reste au courant en copiant le template tel quel).
+  tmp="$(mktemp)"; sed 's/^layout_version:.*/layout_version: 2/' "$README" > "$tmp" && mv "$tmp" "$README"
   echo "README curé écrit → $README"
 fi
 

@@ -4,7 +4,7 @@ title: capture — charger un vrai corpus pour judge (détection de doublon)
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-06-26
 ---

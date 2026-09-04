@@ -4,7 +4,7 @@ title: "Durcir regen-backlog — refuser une racine par défaut nichée sous un 
 type: bug
 priority: P2
 product: mega-city
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-23

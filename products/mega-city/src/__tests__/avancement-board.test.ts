@@ -63,7 +63,7 @@ describe('diagrams/avancement/board.html — données à jour (fidélité par co
       title: 't' + id,
       type: 'feature',
       priority: 'P2',
-      status: 'todo',
+      status: 'idea',
       ready: false,
       epic: '',
       product: 'mega-city',

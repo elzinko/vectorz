@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 epic:
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-07-18

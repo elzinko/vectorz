@@ -23,7 +23,7 @@ describe('findStalePlanEntries (PLAN.md curé)', () => {
 
   it('ne signale pas une fiche encore réellement à faire', () => {
     const plan = `## NOW\n1. **0152** — ezk-bug · \`build\`\n`;
-    expect(findStalePlanEntries(plan, new Map([['0152', 'todo']]))).toEqual([]);
+    expect(findStalePlanEntries(plan, new Map([['0152', 'idea']]))).toEqual([]);
   });
 });
 
@@ -31,8 +31,8 @@ describe('findStalePortfolioEntries (PORTFOLIO.md généré)', () => {
   const row = (id: string, statut: string) =>
     `| mega-city | ${id} | Titre | chore | P2 | ${statut} |  |`;
 
-  it('signale une fiche shipped affichée 🔴 todo', () => {
-    const portfolio = `# Portfolio\n\n${row('20260812100109940', '🔴 todo')}\n`;
+  it('signale une fiche shipped affichée 🔵 ready', () => {
+    const portfolio = `# Portfolio\n\n${row('20260812100109940', '🔵 ready')}\n`;
     const stale = findStalePortfolioEntries(portfolio, shipped(['20260812100109940']));
     expect(stale.map((s) => s.id)).toEqual(['20260812100109940']);
   });
@@ -50,7 +50,7 @@ describe('findStalePortfolioEntries (PORTFOLIO.md généré)', () => {
 
 describe('findStalePlanningViews (filet combiné)', () => {
   it('agrège les incohérences de PORTFOLIO et de PLAN', () => {
-    const portfolio = `| mega-city | 20260812100109940 | T | chore | P2 | 🔴 todo |  |`;
+    const portfolio = `| mega-city | 20260812100109940 | T | chore | P2 | 🔵 ready |  |`;
     const plan = `## NOW\n1. **0152** — ezk-bug · \`build\`\n`;
     const status = new Map<string, string>([
       ['20260812100109940', 'shipped'],
@@ -63,7 +63,7 @@ describe('findStalePlanningViews (filet combiné)', () => {
 
 describe('fmField (front-matter en texte)', () => {
   it('garde un id legacy à zéro initial (0018, pas d’octal)', () => {
-    expect(fmField('---\nid: 0018\nstatus: todo\n---\ncorps', 'id')).toBe('0018');
+    expect(fmField('---\nid: 0018\nstatus: idea\n---\ncorps', 'id')).toBe('0018');
   });
 
   it('retire un commentaire inline', () => {
@@ -71,7 +71,7 @@ describe('fmField (front-matter en texte)', () => {
   });
 
   it('ne lit que le front-matter, même si le corps contient ---', () => {
-    const fm = '---\nid: "20260812100109940"\nstatus: shipped\n---\n\n## Notes\n---\nstatus: todo\n';
+    const fm = '---\nid: "20260812100109940"\nstatus: shipped\n---\n\n## Notes\n---\nstatus: idea\n';
     expect(fmField(fm, 'status')).toBe('shipped');
   });
 

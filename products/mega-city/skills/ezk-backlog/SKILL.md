@@ -1,7 +1,7 @@
 ---
 composes: [ezk-commits]
 name: ezk-backlog
-layout_version: 2
+layout_version: 3
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
@@ -89,7 +89,7 @@ du front-matter de cette skill).
 | `list` / `next` | Charge le backlog **trié par priorité** (P0→P3) en contexte de session |
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
 | `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change ni statut ni `ready:` |
-| `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert pose `ready: <date>` (+ flip `idea→todo` le cas échéant) + regen + commit |
+| `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert passe la fiche en `status: ready` + pose `ready: <date>` + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
@@ -126,7 +126,7 @@ features/
   README.md            # guide humain CURÉ (marque layout_version) — pas l'index
   BACKLOG.md           # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
   PLAN.md              # séquence décidée (curée) — NOW = prochaines N cartes
-  20260810143052123_slug.md   # fiches ACTIVES (idea / todo / in-progress / blocked) — id horodaté AAAAMMDDHHMMSSmmm (fiche 0180)
+  20260810143052123_slug.md   # fiches ACTIVES (idea / ready / in-progress / blocked) — id horodaté AAAAMMDDHHMMSSmmm (fiche 0180)
   0002-autre-slug.md          # format historique 4 chiffres — toujours valide (bascule en avant, pas de renommage)
   done/                # fiches LIVRÉES (déplacées ici quand status: shipped)
     0000-vieux-slug.md
@@ -144,7 +144,7 @@ priority: P0         # P0 | P1 | P2 | P3
 product:             # obligatoire dans ce monorepo — vectorz | mega-city | … (ADR-0017 A14)
 version:             # optionnel — jalon ciblé, ex. "V1.1" (vide si non pertinent)
 epic:                # optionnel — id de la fiche épic parente (type: epic) ; jamais d'épic → épic (ADR-0017)
-status: todo         # idea | todo | in-progress | blocked | shipped
+status: idea         # idea | ready | in-progress | blocked | shipped
 ready:               # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non-ready
 pr:                  # ex. "#118" quand une PR existe
 created: 2026-06-23
@@ -156,7 +156,7 @@ Puis le corps (cf. `templates/feature-template.md`) : **ouvre par « En clair »
 (cases à cocher), **`## Comment vérifier`**, Notes. Le corps de PR **rendra cette fiche telle
 quelle** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)) —
 écris-la pour être lue seule.
-Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped.
 
 > ⚠️ **Garantis « En clair » + `## Comment vérifier` sur la fiche créée, même si le
 > `feature-template.md` local du projet est antérieur à ADR-0029.** `init` **préserve** le
@@ -171,17 +171,17 @@ Statuts : 💡 idea · 🔴 todo · 🟠 in-progress · ⛔ blocked · ✅ shipp
 ## Le statut `idea` — le cran « pas encore groomé » (Definition of Ready)
 
 Tout ce qui arrive n'est pas une fiche **actionnable**. Une **direction**, une **question**
-ouverte, une intuition à explorer = `status: idea` (pas `todo`). C'est le cran de
+ouverte, une intuition à explorer = `status: idea` (pas encore `ready`). C'est le cran de
 raffinement **d'avant le backlog** (l'« Icebox » Scrum / la colonne *Triage* de GitHub
 Projects) : capturé **cheap** pour ne rien perdre, **sans polluer** la liste de travail
 P0→P3. Le **grooming** (`groom <id>`, moteur `product-brainstorming`) le fait mûrir,
-et le **gate `ready <id>`** le promeut en `todo` **ready** quand on le tire — c'est là
+et le **gate `ready <id>`** le promeut en `ready` quand on le tire — c'est là
 qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
 
 - `list` / `regen` **trient les `idea` à part**, sous l'actionnable (comme `blocked`) —
   ils ne comptent pas dans le flux P0→P3.
 - `add` : si la demande est une **direction non mûre** plutôt qu'une fiche prête, crée-la
-  directement en `status: idea` (au lieu de forcer un `todo` creux **ou** de tout
+  directement en `status: idea` (au lieu de forcer une fiche `ready` creuse **ou** de tout
   brainstormer à froid maintenant). La priorité **situe** l'idée — on la demande, on ne
   l'invente pas.
 - Volontairement **MVP** : un cran `question`/`spike` distinct est **différé** — un `idea`
@@ -238,7 +238,7 @@ Avant de créer quoi que ce soit, **protéger la cohérence du backlog** (l'ordr
 sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-joue pas) :
 
 1. **Clarté d'abord.** Si la demande est vague (une ligne floue, ni problème ni valeur claire),
-   ne crée PAS une fiche `todo` creuse. Deux issues : soit **cadrer** en invoquant
+   ne la marque PAS `ready` sans l'avoir cadrée. Deux issues : soit **cadrer** en invoquant
    **`product-management:product-brainstorming`** (problème réel, valeur, critères d'acceptation)
    puis revenir avec une description nette ; soit, si l'utilisateur veut juste **la garder**
    sans la cadrer maintenant, la **capturer telle quelle en `status: idea`** (le grooming
@@ -269,7 +269,7 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    kebab court ; nom de fichier **`<id>_<slug>.md`** (underscore = séparateur id ↔ slug ; le slug
    reste en tirets). Fiche depuis `feature-template.md`, front-matter rempli (**`id: "<timestamp>"`
    entre guillemets** — 17 chiffres > `Number.MAX_SAFE_INTEGER` : non quoté, un parser YAML JS le
-   corromprait en nombre ; `status: todo` — ou `idea` si non-groomé, cf. étape 1 ; `created` = date du jour —
+   corromprait en nombre ; `status: idea` (le gate `ready` le promeut plus tard, cf. étape 1) ; `created` = date du jour —
    demande-la si inconnue, ne l'invente pas). Puis `regen`. Commit `docs(features): add <id> <slug>`.
    *(Fiches historiques en `0001-slug.md` : inchangées, jamais renommées — les deux formats
    coexistent, l'outillage tolère 4 ou 17 chiffres.)*
@@ -299,11 +299,11 @@ d'`add` (étape 1).
    **conditionnel** dépendances externes (exigé seulement si la fiche référence un
    repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »).
    **Un slot manque → REFUS motivé** (dis précisément quoi groomer) ; ne touche à rien.
-2. Au vert : pose `ready: <YYYY-MM-DD>` dans le front-matter (date du jour — demande-la
-   si inconnue), flip `idea → todo` le cas échéant, `regen`, commit
+2. Au vert : passe la fiche en `status: ready` et pose `ready: <YYYY-MM-DD>` dans le
+   front-matter (date du jour — demande-la si inconnue), `regen`, commit
    `docs(features): ready <id>`.
 
-Règles (ADR-0016 §2) : un `todo` né via `add` n'est **pas présumé ready** (pas de champ
+Règles (ADR-0016 §2) : une fiche née via `add` (`idea`) n'est **pas présumée ready** (pas de champ
 `ready:` = non tirable sans passage ici) ; **aucun grandfathering** des fiches
 antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` devenu faux.
 
@@ -322,14 +322,14 @@ le helper vivant dans mega-city, dans **tout autre dépôt** où il est absent, 
 du tout : tri `P0→P3 puis id`.
 
 Parcours le backlog **dans cet ordre** et renvoie la **première fiche éligible** :
-`status: todo` **et** `ready:` posé.
+`status: ready`.
 
 **Réponds toujours en deux parties** : (a) la fiche tirable (ou « aucune ») ET (b) la
-**tête bloquée** — les fiches **`status: todo` sans `ready:`** qui la **précèdent dans
+**tête bloquée** — les fiches **`status: idea`** qui la **précèdent dans
 l'ordre** (`PLAN.md` si présent, sinon la priorité) et sont sautées (et rien d'autre :
-`idea`, `blocked`, `in-progress` et `type: epic` sont hors de ce signal — pas tirables par
-nature, ne se groome-gatent pas à l'intake). **Ne saute jamais silencieusement un `todo`
-de tête non-ready** : construire une fiche ready pendant qu'un `todo` **plus haut dans le
+`blocked`, `in-progress` et `type: epic` sont hors de ce signal — pas tirables par
+nature, ne se groome-gatent pas à l'intake). **Ne saute jamais silencieusement une `idea`
+de tête** : construire une fiche `ready` pendant qu'une `idea` **plus haut dans le
 plan** attend est une inversion de séquence que l'appelant doit arbitrer (groomer la tête
 d'abord, ou décision journalisée).
 
@@ -342,7 +342,7 @@ d'abord, ou décision journalisée).
 
 **`plan:head` (0097 → adapté 0064).** Sur la liste unique, `pnpm --dir products/mega-city
 plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
-`todo`+`ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
+`ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
 ezk-sprint et ezk-product-build passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).
@@ -362,13 +362,13 @@ Contrôles (jugement LLM) :
    contrôle (croiser les PRs mergées), en plus du jugement LLM (ADR-0018).
 2. **Doublons / regroupements** par intention (même moteur que l'anti-doublon d'`add`).
 3. **Cohérence de l'ordre** P0→P3 sur l'ensemble (l'ordre relatif, pas juste les buckets).
-4. **Staleness** — vieux `todo` jamais tirés → proposer rétrogradation en `idea` ou clôture.
+4. **Staleness** — vieux `ready` jamais tirés → proposer rétrogradation en `idea` ou clôture.
 5. **Cohérence épic/enfants** (ADR-0017) — épic `shipped` avec enfants actifs, épic
-   `todo` aux enfants tous livrés, épic fourre-tout sans objectif livrable.
+   `in-progress` aux enfants tous livrés, épic fourre-tout sans objectif livrable.
 6. **Révocation** — `ready:` devenus faux (le contexte a bougé depuis le gate).
 
 Les **compteurs viennent du script** (`regen`, doctrine ADR-0001 — ne les recompte
-jamais à la main) : fiches par statut, `todo` ready, création médiane des `todo`.
+jamais à la main) : fiches par statut, `ready`, création médiane des `ready`.
 Sortie = **rapport + propositions numérotées** ; l'arbitrage est au **PO** — aucune
 modification de fiche sans son accord explicite (jamais d'auto-suppression).
 
@@ -377,7 +377,7 @@ modification de fiche sans son accord explicite (jamais d'auto-suppression).
 **Le problème.** `ship` est la **seule** commande qui passe une fiche à `shipped` — et elle
 n'est appelée que par `ezk-sprint` (étape 10) et `ezk-pr` (`ship`). Dès qu'une PR est
 mergée **autrement** (le PO clique « Squash & merge » dans l'UI GitHub, un reviewer humain
-merge), personne n'appelle `ship` : la fiche reste `todo`/`in-progress` alors que le code est
+merge), personne n'appelle `ship` : la fiche reste `ready`/`in-progress` alors que le code est
 sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged* de la PR), et
 `reconcile` est son **rafraîchissement** — à cadence bornée, jamais sur `list`/`next`.
 
@@ -418,7 +418,7 @@ C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'impo
 3. **`regen` — l'index ET les vues dérivées** (fiche 20260812100109940) :
    - `regen` reconstruit l'index `features/BACKLOG.md` (la fiche passe en « Livrées `done/` ») ;
    - **régénère `PORTFOLIO.md`** — `bash products/mega-city/bin/portfolio.sh <racine>` — vue générée
-     au même titre que l'index ; sinon la fiche livrée y reste affichée `todo` (ADR-0001 : le script range) ;
+     au même titre que l'index ; sinon la fiche livrée y reste affichée `ready` (ADR-0001 : le script range) ;
    - **cure `PLAN.md`** (curé, jamais régénéré) : barre l'entrée de la fiche
      (`~~…~~ — shipped #<n>`) — **proposé à l'humain**, `PLAN` est une décision, pas un index.
 4. **Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
@@ -464,8 +464,8 @@ depuis le front-matter de **toutes** les fiches : colonnes
 **colonnes conditionnelles** (ADR-0017 A12) : `Version` si au moins un `version:`,
 `Épic` si au moins un `epic:`. Sections à part, hors tri actionnable P0→P3 :
 « 🧭 Épics » (les `type: epic`, jamais tirables) et « 💡 Idées (non groomées) ».
-Le script émet aussi sur stdout les **compteurs déterministes** (par statut, `todo`
-ready, épics, création médiane des `todo`) — `review` les lit tels quels, le LLM ne
+Le script émet aussi sur stdout les **compteurs déterministes** (par statut, `ready`,
+épics, création médiane des `ready`) — `review` les lit tels quels, le LLM ne
 recompte jamais (ADR-0001 / ADR-0016 §5) — et des **warnings d'intégrité** non
 bloquants sur stderr (A7) : `epic:` pendant, cible non-épic, sous-épic (2 niveaux max).
 DoD exécutable du script : `bin/test-regen-backlog.sh`.
@@ -487,7 +487,7 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
 - Ne jamais inventer une priorité, une date ou un n° de PR : demander si inconnu.
 - Gate DoR **bloquant** : pas de tirage d'une fiche sans `ready:` — sauf soupape PO
   (décision explicite journalisée). Seul `ready <id>` pose le champ.
-- Une **direction non mûre** = `status: idea`, pas un `todo` creux (ne pas polluer l'actionnable ; groomer au moment de la tirer).
+- Une **direction non mûre** = `status: idea`, pas une fiche `ready` creuse (ne pas polluer l'actionnable ; groomer au moment de la tirer).
 - **Avant tout `add` : anti-doublon obligatoire** — 1 sujet = 1 fiche ; regrouper plutôt que multiplier ; jamais de fiche creuse (cadrer via `product-brainstorming` si flou).
 - Ne pas éditer `BACKLOG.md` à la main (toujours `regen`) ; ne pas laisser `regen` écraser le guide `README.md`.
 - Préflight Skema : si `STATUS=behind`, **proposer** la migration — ne pas muter sans OK.
