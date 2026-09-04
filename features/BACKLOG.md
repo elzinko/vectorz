@@ -185,7 +185,7 @@
 | [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260821163346490](20260821163346490_assemblage-ne-montre-pas-composition.md) | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | [20260821163346493](20260821163346493_carte-provenance-prouvee.md) | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
-| [20260823121712781](20260823121712781_reconcile-systematique-merges-hors-flux.md) | reconcile systématique — ne plus rater un ship après un squash-merge fait hors du flux (GitHub UI) | feature | P1 |  | mega-city | 💡 idea |  |
+| [20260823121712781](20260823121712781_reconcile-systematique-merges-hors-flux.md) | Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260824061247344](20260824061247344_refonte-trois-etages-reliquat.md) | Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO) | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20260824111001836](20260824111001836_regle-clarte-atteint-tout-output-ezk.md) | La règle de clarté doit atteindre TOUT ce qui sort de la méthode (base + sorties de chat), pas rester orpheline | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20260824122629925](20260824122629925_onglet-faq-comment-faire.md) | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
