@@ -78,8 +78,10 @@ l'exécution pour le modèle).
   tout client. Rien à décider : c'est déjà le mécanisme.
 - **Agents, Claude Code** → **inchangé**. Lien de la source (vivant ; modèle = frontmatter
   source = **ta config**). Zéro churn, zéro risque.
-- **Agents, Cursor** → sortie **générée** : le rôle (depuis la source unique) + le modèle
-  Cursor **écrit depuis `models.cursor.yml`**. Le re-déploiement resynchronise.
+- **Agents, Cursor** → **révisé (Amendement 2026-09-04) : pointeur mince** — frontmatter avec le
+  slug Cursor **écrit depuis `models.cursor.yml`** + corps « charge le rôle depuis
+  `.vectorz/mega-city` » (pas de copie du rôle). *(D3 initial disait « sortie générée » ; voir
+  Amendement.)*
 
 ### D4 — La mise à jour gère le fan-out
 
@@ -144,7 +146,7 @@ flowchart TB
   YML --> DEP
 
   DEP -->|"Claude : lien vivant"| CC["~/.claude/agents/&lt;id&gt;.md<br/>= LIEN vers la source<br/>modèle = frontmatter (ta config)"]
-  DEP -->|"Cursor : généré"| CU[".cursor/agents/&lt;id&gt;.md<br/>= rôle + modèle Cursor écrit<br/>artefact resynchronisé au re-deploy"]
+  DEP -->|"Cursor : pointeur"| CU[".cursor/agents/&lt;id&gt;.md<br/>= pointeur : slug Cursor + charge le rôle<br/>depuis .vectorz/mega-city (pas de copie)"]
 
   SK["skills/ (source unique)"] -->|"lien, tout client"| SKO["~/.claude/skills + .cursor/skills<br/>zéro copie"]
 
@@ -158,8 +160,8 @@ flowchart TB
 
 *Ce que montre ce schéma : en haut (vert), la source écrite une fois — le rôle et le yaml des
 modèles. Au centre, le déploiement assemble. À gauche (bleu), Claude reçoit un **lien vivant**
-(zéro copie, ta config inchangée). À droite (ambre), Cursor reçoit un fichier **généré** (le
-rôle + son modèle écrit), resynchronisé au re-déploiement. En bas, les skills : un **lien** dans
+(zéro copie, ta config inchangée). À droite (ambre), Cursor reçoit un **pointeur mince** (slug
+Cursor écrit + « charge le rôle depuis `.vectorz/mega-city` », pas de copie). En bas, les skills : un **lien** dans
 chaque client, zéro copie. Nulle part on n'édite une sortie à la main.*
 
 ## Conséquences
@@ -171,10 +173,12 @@ chaque client, zéro copie. Nulle part on n'édite une sortie à la main.*
 - **Modèle par client réel et correct** : écrit là où le client le lit (avant le LLM).
 - **Aligné BMAD** (DRY à la source) et sur les modes `link`/`copy` **déjà présents**.
 
-**Négatives / assumé**
-- Les **7 corps de rôle** sont recopiés **au repos** dans la sortie Cursor. Artefact de build,
-  court, resynchronisé au re-déploiement. Si ça gêne vraiment → alternative **(B)** (pointeur).
-- Un **rôle édité** demande un **re-déploiement** Cursor (Claude reste vivant).
+**Négatives / assumé** *(mis à jour par l'amendement 2026-09-04 : pointeur, pas copie)*
+- **Indirection à l'exécution** : le subagent Cursor charge le rôle depuis `.vectorz/mega-city`
+  via le pointeur. Le rôle **n'est pas recopié** ; une édition du rôle est prise **à chaud**
+  (comme le lien Claude), **sans re-déploiement**. Un re-bind ne reste nécessaire que pour un
+  **changement de modèle** (`models.cursor.yml`) ou de **roster** d'agents. Fiabilité de
+  l'indirection **validée au POC** (2026-09-04).
 - **Deux sources de modèle** : le frontmatter Claude et `models.cursor.yml`. Assumé — chacune
   est **unique pour son client**.
 
@@ -186,6 +190,7 @@ chaque client, zéro copie. Nulle part on n'édite une sortie à la main.*
 2. [ ] `agentContent(agent, resolved, host)` — **structurel, pas « mineur »** (amendement panel) :
    Cursor met l'effort dans le **nom du slug** (`claude-opus-4-8-thinking-high`, vérifié au POC) et n'a pas les clés `model_spare`
    / `effort` / `isolation`. Branche Cursor dédiée ([`src/caps/agent-content.ts`](../../src/caps/agent-content.ts)).
-3. [ ] Cap `cursor` : skills liées, agents générés (rôle + modèle écrit), LOI en `.cursor/rules`.
+3. [ ] Cap `cursor` : skills liées, agents en **pointeur** (frontmatter slug Cursor + « charge le
+   rôle depuis `.vectorz/mega-city` »), LOI en `.cursor/rules`.
 4. [ ] (Futur, hors périmètre) injection runtime façon BMAD pour des valeurs **projet** (nom,
    langue) — jamais pour le modèle.

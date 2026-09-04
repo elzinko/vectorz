@@ -93,22 +93,25 @@ ce qu'on refuse : Fable 5 / Opus 5 trop gourmands).
 
 - [ ] `lawgiver bind <profil> <projet> cursor` produit une install Cursor fonctionnelle
       (agents/skills lisibles par Cursor) — cap `cursor` enregistré, plus d'« Hôte inconnu ».
-- [ ] Aucun `claude-opus-4-8` recopié à l'aveugle dans une cible non-Claude-Code
-      (`grep 'claude-opus-4-8' <sortie cursor>` = 0, hors note explicative assumée).
-- [ ] Le modèle + l'effort se règlent **par hôte** : un preset à l'install, une table éditable
-      après, un re-bind qui reflète le changement — **sans toucher le frontmatter** des agents.
+- [ ] Aucun `claude-opus-4-8` **dialecte Claude** recopié dans une cible non-Claude-Code — le
+      slug Cursor valide `claude-opus-4-8-thinking-high` étant EXCLU :
+      `grep -RE 'claude-opus-4-8([^-]|$)' <sortie cursor>` = 0.
+- [ ] Le modèle + l'effort se règlent **par hôte** via **un seul `models.cursor.yml`** éditable ;
+      un re-bind reflète le changement — **sans toucher le frontmatter** des agents. (Ni presets
+      ni flag `--models` : parqués, ADR-0047 D5.)
 - [ ] Le pin Claude Code (0181) reste honoré à l'identique (non-régression).
-- [ ] Le choix (hôtes configurés + preset modèle) est **persisté** (manifeste) et relu au re-bind.
+- [ ] Le `models.cursor.yml` **EST** l'état persistant, relu au re-bind — **pas de manifeste
+      séparé** (parqué, ADR-0047 D5).
 - [ ] Tests : la résolution `(hôte, agent) → {model, effort}` est **pure et testée** ; le cap
       `cursor` a son test de plan déterministe (sur le modèle de `claude-code.test.ts`).
 - [ ] Cursor honore le modèle + l'effort **par agent** : les agents sont matérialisés en
       **subagents** `.cursor/agents/*.md`, frontmatter `model: "claude-opus-4-8-thinking-high"`
       (slug Cursor exact, effort dans le nom ; POC 2026-09-03) issu de la table. Un slug **hors
       liste blanche** doit **faire échouer le build** (sinon Cursor retombe en silence sur le parent).
-- [ ] **Zéro duplication du contenu** (ADR-0048) : skills **liées** (zéro copie) ; le rôle d'un
-      agent s'écrit à **un seul endroit** ; seule la sortie Cursor le régénère (artefact de
-      build). Preuve : éditer un rôle **une fois** se répercute partout après re-deploy — jamais
-      deux éditions à la main.
+- [ ] **Zéro duplication du contenu** (ADR-0048, amendé) : skills **liées** ; le rôle d'un agent
+      vit à **un seul endroit** (`.vectorz/mega-city`), Cursor le charge via un **pointeur** (pas
+      de copie du rôle). Preuve : éditer un rôle **une fois** suffit — Claude via le lien, Cursor
+      via le pointeur ; jamais deux éditions à la main.
 - [ ] Les configs par client sont **livrées pré-remplies** : Claude = la config connue ;
       Cursor = un défaut auto ; l'install ne pose aucune question pour démarrer.
 
@@ -116,8 +119,9 @@ ce qu'on refuse : Fable 5 / Opus 5 trop gourmands).
 
 **Deux briques, tirables séparément.** L'ADR-0047 les a nommées.
 
-- **Brique 1 — cap `cursor`.** La plus autonome. Le spike de format Cursor est **fait**
-  (2026-09-03). Elle ne dépend d'**aucune** décision réservée. On commence par elle.
+- **Brique 1 — cap `cursor`.** Le spike de format Cursor est **fait** (2026-09-03). **Prérequis
+  avant de coder** (ADR-0047) : trancher la **précédence de l'interop `.claude/agents`** — le POC
+  a confirmé que Cursor lit AUSSI ce dossier. Interop décidée → c'est la première brique à livrer.
 - **Brique 2 — résolution modèle/effort par hôte.** Les arbitrages produit sont tranchés
   (PO, 2026-09-03 — voir Notes) ; reste la validation technique en panel. C'est aussi l'infra
   que le cap cop1 réutiliserait ([`0121`](0121-cap-cop1.md)).
@@ -130,8 +134,9 @@ Reco : deux fiches filles, **brique 1 d'abord**.
 # 1. cap cursor enregistré (échoue aujourd'hui avec « Hôte inconnu »)
 cd products/mega-city && pnpm lawgiver bind global /tmp/essai-cursor cursor
 
-# 2. rien d'un id Claude-Code-only recopié tel quel dans la sortie Cursor
-grep -R 'claude-opus-4-8' /tmp/essai-cursor && echo "FUITE" || echo "OK: pas de fuite"
+# 2. rien du dialecte Claude 'claude-opus-4-8' recopié tel quel — le slug Cursor valide
+#    'claude-opus-4-8-thinking-high' est EXCLU par le ([^-]|$) final
+grep -RE 'claude-opus-4-8([^-]|$)' /tmp/essai-cursor && echo "FUITE" || echo "OK: pas de fuite"
 
 # 3. gate mega-city (le cap + la résolution doivent passer les 2 suites)
 cd products/mega-city && pnpm build && pnpm test && pnpm test:scripts
@@ -158,8 +163,8 @@ cd products/mega-city && pnpm build && pnpm test && pnpm test:scripts
 - **Groomé le 2026-09-02** : valeur explicitée, critères durcis, spike Cursor posé en
   prérequis, découpage proposé. La fiche reste `idea` (le grooming ne promeut pas).
 - **Avant `ready`** : arbitrages tranchés **et** dépendance Cursor **constatée** (spike fait).
-  La DoR est atteinte — la fiche est **éligible au gate `ready`**. Reste, côté build, la
-  validation technique en panel (structurante). La **brique 1** peut démarrer.
+  La DoR est atteinte — la fiche est **éligible au gate `ready`**. Restent, côté build : trancher
+  l'**interop `.claude/agents`** (prérequis brique 1, ADR-0047) + la validation en panel.
 - **Statut `todo` sans `ready`** : décidée et actionnable. Le gate `ready` peut maintenant
   passer (dépendance externe constatée) — laissé au PO / au prochain tirage.
 - **Dépendance externe constatée le 2026-09-03** (spike) : formats natifs Cursor figés — skills
