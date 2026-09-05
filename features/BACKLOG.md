@@ -1,4 +1,4 @@
-# Backlog — mega-city
+# Backlog features & bugs — vectorz
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped.
@@ -284,6 +284,7 @@
 | [20260903134908019](20260903134908019_cli-ezk-complet-publie.md) | CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) | ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md) | Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260905134937885](20260905134937885_revue-locale-vs-codex-mesure.md) | Revue adverse locale vs Codex — mesurer avant d'arbitrer (peut-on sortir la PR du chemin ?) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0007](0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0028](0028-policy-de-siege.md) | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 |  | vectorz | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
