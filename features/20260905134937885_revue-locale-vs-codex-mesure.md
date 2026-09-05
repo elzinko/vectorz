@@ -16,8 +16,10 @@ created: 2026-09-05
 
 Question ouverte, à trancher **par la mesure**, pas au ressenti. On veut savoir si la
 revue adverse locale (`ezk-reviewer`, plusieurs passes en parallèle) peut **égaler ou
-compléter** les retours de Codex, au point de rendre la PR GitHub **optionnelle**. Un
-premier test à l'aveugle existe déjà (2026-09-05) ; il sert de baseline. Rien ne se
+compléter** les retours de Codex. Attention : remplacer **Codex** touche le grain de
+*revue* ; retirer la **PR** touche le grain de *merge* (fixé par l'ADR-037) — deux
+décisions distinctes. Un premier test à l'aveugle existe déjà (2026-09-05) ; il sert de
+baseline. Rien ne se
 décide avant d'avoir mesuré **performance ET efficience**.
 
 ## Contexte / problème
@@ -26,8 +28,11 @@ La revue de référence sur les PR vectorz est aujourd'hui **Codex** (revue auto
 l'ouverture d'une PR). Elle est de bonne qualité, mais elle impose une PR GitHub. Donc
 l'exposition du code, une latence, et une dépendance à un service externe.
 
-On aimerait **accélérer et sécuriser** : revue 100 % locale, lancée en parallèle, sans
-PR obligatoire.
+On aimerait **accélérer et sécuriser** : revue 100 % locale, lancée en parallèle. Cela
+retire la dépendance à **Codex** (le grain de *revue*). Retirer la **PR** elle-même est un
+autre sujet : l'**ADR-037** fait de la PR l'unité atomique de merge, de CI et de revert.
+Ce chantier porte sur le grain de *revue* ; toucher au grain de *merge* imposerait de
+**revisiter ADR-037** (décision séparée, pas un corollaire).
 
 Deux inconnues bloquent la décision :
 
@@ -51,6 +56,10 @@ aux findings Codex de l'époque.
 - Coût : **~100 000 jetons par PR et par passe**.
 - Conclusion provisoire : angles morts **différents** de Codex → les deux sont
   **complémentaires**, pas interchangeables.
+- ⚠️ **Biais à corriger** : ces 9/17 prennent **Codex comme référence**. Un protocole
+  honnête bâtit d'abord un **oracle indépendant** — l'**union adjugée** des défauts des
+  deux relecteurs, faux positifs inclus — puis mesure le rappel de *chacun* contre cet
+  oracle. Sinon « local + Codex » gagne par construction (retour Codex sur cette fiche).
 
 ## Proposition (pistes à instruire, non figées)
 
@@ -86,7 +95,14 @@ recompte pas à la main). C'est **lui**, le « format exploitable par script en 
 La séparation lisible / machine se fait donc par **niveaux** (verdict unitaire hybride +
 index généré), pas par deux fichiers à chaque revue.
 
-Emplacement pressenti : `docs/reviews/<date>-<pr-ou-branche>-<reviewer>.md` (à confirmer).
+**Réutiliser l'existant, ne pas créer un second store (retour Codex).** Un pack de revue
+markdown-first est **déjà** défini par l'**ADR-038** : `features/reviews/<id>/REVIEW.md`,
+contrat `method-review@0.1`, port `ReviewEmitter`. Le verdict adverse doit **étendre ce
+pack** — une section verdict, ou un émetteur qui écrit les données machine dans le
+front-matter du `REVIEW.md` — plutôt qu'ouvrir un `docs/reviews/` concurrent (qui
+scinderait découverte et outillage). L'option C ci-dessus décrit donc **le format d'une
+entrée du pack existant**, pas un nouveau namespace ; l'index agrégé se branche sur
+`features/reviews/`.
 
 ## Critères d'acceptation (à compléter au grooming)
 
@@ -95,6 +111,11 @@ Emplacement pressenti : `docs/reviews/<date>-<pr-ou-branche>-<reviewer>.md` (à 
 - [ ] Les verdicts de revue locale sont **archivés** de façon exploitable et versionnée.
 - [ ] Une métrique chiffrée **départage** local seul / local durci / local + Codex, sur
       performance **et** efficience.
+- [ ] Le protocole s'appuie sur un **oracle indépendant** (union adjugée des deux
+      relecteurs), pas sur Codex comme référence.
+- [ ] L'archivage **étend le pack ADR-038** (`features/reviews/`), sans store concurrent.
+- [ ] La décision « retirer la **PR** » (grain de merge, ADR-037) est traitée **à part** de
+      « remplacer Codex » (grain de revue).
 - [ ] Une **recommandation de workflow** est actée : quand PR + Codex, quand local seul.
 
 ## Comment vérifier
@@ -123,3 +144,7 @@ Emplacement pressenti : `docs/reviews/<date>-<pr-ou-branche>-<reviewer>.md` (à 
 - Tension à garder en tête : **sans PR GitHub, pas de Codex** (Codex est une app GitHub
   branchée sur les PR). vectorz est déjà **public**, donc l'argument « confidentialité »
   vaut surtout pour les repos privés.
+- Décisions d'archi à respecter : **ADR-037** (la PR = unité atomique de merge/CI/revert),
+  **ADR-038** (pack de revue markdown-first `features/reviews/`).
+- Retours Codex sur cette fiche (PR #213, 2026-09-05) **intégrés** : oracle indépendant,
+  séparer revue/merge (ADR-037), réutiliser le pack (ADR-038).
