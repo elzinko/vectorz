@@ -294,6 +294,7 @@
 | [20260903134908019](20260903134908019_cli-ezk-complet-publie.md) | CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) | ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md) | Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260905134937885](20260905134937885_revue-locale-vs-codex-mesure.md) | Revue adverse locale vs Codex — mesurer avant d'arbitrer (peut-on sortir la PR du chemin ?) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0049](0049-article-brancher-methode-pattern-sidecar.md) | article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD) | feature | P3 |  | vectorz | 💡 idea |  |
 | [0057](0057-agent-analyse-methode.md) | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 | 0051 | vectorz | 💡 idea |  |
