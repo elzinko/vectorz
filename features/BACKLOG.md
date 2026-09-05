@@ -194,6 +194,7 @@
 | [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20260903134906920](20260903134906920_cli-ezk-point-d-entree-unique.md) | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 💡 idea |  |
+| [20260905184644566](20260905184644566_product-build-trois-vitesses-auto-ne-bloque-pas.md) | ezk-product-build : 3 vitesses (manuel\|auto\|yolo), --check-ready = filtre, auto/yolo ne bloquent jamais | feature | P1 |  | mega-city | 💡 idea |  |
 | [0020](0020-agent-session-port.md) | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 0034 | vectorz | 💡 idea |  |
 | [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 0034 | vectorz | 💡 idea |  |
 | [0040](0040-l2-durcir-garde-fous-ci.md) | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 0034 | vectorz | 💡 idea |  |

@@ -145,3 +145,13 @@ reconstruite** au sprint suivant.
   Références mises à jour : 0065, `done/0071`, ADR-0016, ADR-0018, `features/PLAN.md`.
   Correctif **manuel et ponctuel** : la cause structurelle (deux listes numérotant chacune
   depuis 0001) reste ouverte dans la fiche racine 0064.
+- 2026-09-05 — **cette fiche EST la « passe de planning » du mode `auto`** décidée en
+  [ADR-0050](../products/mega-city/docs/adr/0050-product-build-trois-vitesses-auto-ne-bloque-pas.md).
+  Le redesign des vitesses d'`ezk-product-build` (fiche
+  [20260905184644566](20260905184644566_product-build-trois-vitesses-auto-ne-bloque-pas.md))
+  a reconfirmé que **le planning n'est pas un skill neuf** (`ezk-planning` tranché non, note du
+  2026-07-17) mais **le volet encore ouvert d'ici** : santé du backlog, **seuil de lot**
+  (« assez de fiches prêtes ? »), garde d'intake. En `auto`, ce planning est présenté à
+  l'entrée du run comme **rendez-vous non bloquant** (l'humain ajuste s'il est là, sinon
+  `ezk-pm` valide + journalise). En `yolo`, il est **sauté**. À grooming, tenir compte de ce
+  point d'entrée quand on cadre le seuil de lot et l'émission `backlog.health`.
