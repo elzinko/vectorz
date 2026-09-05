@@ -66,3 +66,24 @@ des idées.
   naturel de collecte.
 - Anti-doublon vérifié (2026-07-18) : 0080 = la sortie de la cérémonie, 0063 (shippée) =
   la cérémonie elle-même ; rien ne portait la collecte amont continue.
+
+## Réconciliation (2026-09-05, run nocturne)
+
+En clair : la couche « capture continue » de cette fiche est **déjà livrée**, sous un autre
+nom. Le « labo de cuisine » (fiche `done/20260829123707100`, **PR #195**) fait déposer à
+chaque session ses galères dans `## Galères & gestes (labo)`, que `ezk-archive` fige à la
+clôture dans `docs/sessions/`. **La note anti-doublon du 2026-07-18 (« rien ne portait la
+collecte amont continue ») est donc PÉRIMÉE.**
+
+Reliquat réel non construit = la seule **consommation côté rétro** : `ezk-retro` temps 1 ne
+lit toujours que la session en cours (`skills/ezk-retro/SKILL.md:57-62`). Personne ne lit le
+labo accumulé **entre** sessions pour la rétro, ni ne marque une note « traitée / écartée avec
+raison », ni ne la purge.
+
+⚠️ **À dédoublonner avant tout `ready`** : la fiche `20260831075615969` (P0, idea) branche
+déjà `ezk-retro` temps 1 sur les galères de `docs/sessions/`, mais côté candidats-recettes
+(ezk-chef suggest), pas côté hygiène « la rétro n'oublie plus rien ».
+
+Verdict grooming nocturne : **pas-ready**. Statut laissé `idea`. Décision PO au réveil :
+re-cadrer le scope au reliquat de consommation, ou absorber dans `20260831075615969`. Aucun
+tampon posé.

@@ -112,3 +112,11 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
   pas la rétro (réglage séparé — « qui lance la rétro, et quand ») ; ne touche pas au Sujet B /
   ADR-030.
 - Doctrine : ADR-0013 (la recette propose, ne fabrique pas de code seule).
+- **Grooming 2026-09-05 (run nocturne, PO absent)** — verdict **`pas-ready` : bloquée dure par
+  `20260831075615809` (`ezk-chef suggest`)**. Vérifié en code (grep `skills/bin/src`) : la
+  sous-commande `suggest` **n'existe pas encore** (skill ezk-chef = `help/check/extract/regen/list`),
+  et 809 est `ready` mais **non shippée** (`pr:` vide). Sur le **fond**, la fiche est
+  quasi DoR-complète (critères testables déjà présents, briques rapport `sprint:report` +
+  galères `docs/sessions/` réelles). **Action au réveil : prioriser 809, PAS tamponner 969** —
+  dès que 809 ship, 969 se tire telle quelle. Ordre imposé : **809 → 969**. Statut laissé
+  `idea` (aucun tampon posé, décision d'ordre réservée au PO).
