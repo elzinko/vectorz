@@ -4,7 +4,7 @@ title: Canal de release + pastille de MAJ — dogfooding sûr (version figée pa
 type: feature
 priority: P1
 product: vectorz
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-07-18

@@ -4,7 +4,7 @@ title: DoR agent-native — extensible par projet + readiness observable (épic)
 type: epic
 priority: P2
 product: mega-city
-status: todo
+status: idea
 created: 2026-08-15
 ---
 

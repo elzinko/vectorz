@@ -7,7 +7,7 @@ const f = (over: Partial<Fiche> & { id: string }): Fiche => ({
   title: `T-${over.id}`,
   type: 'feature',
   priority: 'P2',
-  status: 'todo',
+  status: 'ready',
   ready: false,
   epic: '',
   product: 'mega-city',
@@ -35,7 +35,7 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
       '## ▶️ NOW',
       '⚠️ **En cours ailleurs — ne pas doublonner** : **20260812104022240** (aggregate).',
     ].join('\n');
-    const delta = buildPlanDelta(plan, [f({ id: '20260812104022240', status: 'todo' })]);
+    const delta = buildPlanDelta(plan, [f({ id: '20260812104022240', status: 'ready' })]);
     expect(delta.recent[0].inPlan).toBe(true); // cité dans une note, pas une puce
     expect(delta.offPlanCount).toBe(0); // donc PAS compté hors plan
   });
@@ -53,7 +53,7 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
   it('planIds exclut les numéros d’ADR (ADR-0040 ≠ fiche 0040) — revue Codex #185', () => {
     // « ADR-0040 » cité dans le plan ne doit PAS marquer la fiche homonyme 0040 « dans le plan ».
     const plan = '## ▶️ NOW\n- **20260821204737357** — câbler le graphe (ADR-0040) · `build`';
-    const delta = buildPlanDelta(plan, [f({ id: '0040', status: 'todo' })]);
+    const delta = buildPlanDelta(plan, [f({ id: '0040', status: 'ready' })]);
     expect(delta.recent[0].inPlan).toBe(false);
     expect(delta.offPlanCount).toBe(1);
     // Contrôle : un vrai id en prose reste capté.
@@ -78,7 +78,7 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
     const fiches = [
       f({ id: '20260829000000009', status: 'idea' }),
       f({ id: '20260829000000008', status: 'shipped', done: true }),
-      f({ id: '20260829000000007', status: 'todo' }),
+      f({ id: '20260829000000007', status: 'ready' }),
     ];
     const ids = buildPlanDelta('', fiches).recent.map((c) => c.id);
     expect(ids).toContain('20260829000000009'); // idée récente = un arrivant
@@ -89,8 +89,8 @@ describe('buildPlanDelta (fiche 20260828165644386 — vue écart-plan)', () => {
   it('offPlanCount = actionnables hors plan (todo/in-progress/blocked), idées EXCLUES', () => {
     const plan = ['## ▶️ NOW', '1. **0100** — dans le plan · `build`'].join('\n');
     const fiches = [
-      f({ id: '0100', status: 'todo' }), // dans le plan → pas compté
-      f({ id: '0201', status: 'todo' }), // hors plan, actionnable → +1
+      f({ id: '0100', status: 'ready' }), // dans le plan → pas compté
+      f({ id: '0201', status: 'ready' }), // hors plan, actionnable → +1
       f({ id: '0202', status: 'in-progress' }), // hors plan, actionnable → +1
       f({ id: '0203', status: 'blocked' }), // hors plan, actionnable → +1
       f({ id: '0204', status: 'idea' }), // hors plan mais IDÉE → pas compté

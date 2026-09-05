@@ -4,7 +4,7 @@ title: ezk-product-build — briefing au démarrage (comment je travaille, avec 
 type: feature
 priority: P3
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-07-06
 ---

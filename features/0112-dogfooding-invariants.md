@@ -4,7 +4,7 @@ title: dogfooding — 2 invariants d'évolutivité en règles iamthelaw
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-06-26
 ---

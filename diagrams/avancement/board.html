@@ -21,6 +21,7 @@
     --p2: #3a76ad;
     --p3: #6f7684;
     --todo: #6f7684;
+    --ready: #2f6fed;
     --in-progress: #b6740f;
     --blocked: #cf3b40;
     --idea: #7458cf;
@@ -30,13 +31,13 @@
     :root:not([data-theme="light"]) {
       --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
       --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
-      --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+      --todo: #6b7280; --ready: #5b9bd5; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
     }
   }
   :root[data-theme="dark"] {
     --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
     --p0: #e5484d; --p1: #f5a524; --p2: #5b9bd5; --p3: #6b7280;
-    --todo: #6b7280; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
+    --todo: #6b7280; --ready: #5b9bd5; --in-progress: #f5a524; --blocked: #e5484d; --idea: #8a6fd8; --shipped: #34a853;
   }
   * { box-sizing: border-box; }
   body {
@@ -96,6 +97,7 @@
     color: var(--muted);
   }
   .badge.statut-todo { color: var(--todo); border-color: var(--todo); }
+  .badge.statut-ready { color: var(--ready); border-color: var(--ready); }
   .badge.statut-in-progress { color: var(--in-progress); border-color: var(--in-progress); }
   .badge.statut-blocked { color: var(--blocked); border-color: var(--blocked); }
   .badge.statut-idea { color: var(--idea); border-color: var(--idea); }
@@ -269,10 +271,10 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 132,
-  "todo": 56,
+  "idea": 148,
   "blocked": 6,
   "in-progress": 4,
-  "idea": 89
+  "ready": 2
  },
  "tirables": 2,
  "actives": [
@@ -281,7 +283,7 @@ window.EZK_AVANCEMENT = {
    "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
    "type": "feature",
    "priority": "P0",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -300,7 +302,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir",
    "type": "feature",
    "priority": "P0",
-   "status": "todo",
+   "status": "ready",
    "ready": true,
    "epic": "",
    "product": "mega-city",
@@ -313,7 +315,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
    "type": "feature",
    "priority": "P0",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -339,7 +341,7 @@ window.EZK_AVANCEMENT = {
    "title": "Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok)",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "vectorz",
@@ -352,7 +354,7 @@ window.EZK_AVANCEMENT = {
    "title": "Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "0051",
    "product": "vectorz",
@@ -365,7 +367,7 @@ window.EZK_AVANCEMENT = {
    "title": "article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -378,7 +380,7 @@ window.EZK_AVANCEMENT = {
    "title": "Kit émetteur — hooks Claude Code classe A (émission déterministe)",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -433,7 +435,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos)",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "20260824060737115",
    "product": "mega-city",
@@ -472,7 +474,7 @@ window.EZK_AVANCEMENT = {
    "title": "Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B)",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -498,7 +500,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "ready",
    "ready": true,
    "epic": "",
    "product": "mega-city",
@@ -537,7 +539,7 @@ window.EZK_AVANCEMENT = {
    "title": "La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO)",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "20260821163346487",
    "product": "mega-city",
@@ -586,10 +588,10 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260823121712781",
-   "title": "reconcile systématique — ne plus rater un ship après un squash-merge fait hors du flux (GitHub UI)",
+   "title": "Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -602,7 +604,7 @@ window.EZK_AVANCEMENT = {
    "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
    "type": "refactor",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -680,7 +682,7 @@ window.EZK_AVANCEMENT = {
    "title": "CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)",
    "type": "feature",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -693,7 +695,7 @@ window.EZK_AVANCEMENT = {
    "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
    "type": "bug",
    "priority": "P1",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -706,7 +708,7 @@ window.EZK_AVANCEMENT = {
    "title": "AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "0034",
    "product": "vectorz",
@@ -719,7 +721,7 @@ window.EZK_AVANCEMENT = {
    "title": "résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022",
    "type": "refactor",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "0034",
    "product": "vectorz",
@@ -745,7 +747,7 @@ window.EZK_AVANCEMENT = {
    "title": "L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK)",
    "type": "chore",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "0034",
    "product": "vectorz",
@@ -771,7 +773,7 @@ window.EZK_AVANCEMENT = {
    "title": "Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse",
    "type": "chore",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "vectorz",
@@ -901,7 +903,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -914,7 +916,7 @@ window.EZK_AVANCEMENT = {
    "title": "build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient",
    "type": "bug",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -969,7 +971,7 @@ window.EZK_AVANCEMENT = {
    "title": "dogfooding — 2 invariants d'évolutivité en règles iamthelaw",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -982,7 +984,7 @@ window.EZK_AVANCEMENT = {
    "title": "capture — charger un vrai corpus pour judge (détection de doublon)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -995,7 +997,7 @@ window.EZK_AVANCEMENT = {
    "title": "cap cop1 — matérialiser un profil en config native cop1",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1021,7 +1023,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-recipy — scanner les repos froids et proposer des fiches de skills",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1073,7 +1075,7 @@ window.EZK_AVANCEMENT = {
    "title": "adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1216,7 +1218,7 @@ window.EZK_AVANCEMENT = {
    "title": "composes — tier « delegates: » (composition optionnelle, jamais warnée)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1335,7 +1337,7 @@ window.EZK_AVANCEMENT = {
    "title": "Canal commands: dans lawgiver — déployer les slash-commands comme les skills",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1472,7 +1474,7 @@ window.EZK_AVANCEMENT = {
    "title": "Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1520,7 +1522,7 @@ window.EZK_AVANCEMENT = {
    "title": "Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1533,7 +1535,7 @@ window.EZK_AVANCEMENT = {
    "title": "Durcir regen-backlog — refuser une racine par défaut nichée sous un autre backlog (fin du piège products/mega-city)",
    "type": "bug",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1546,7 +1548,7 @@ window.EZK_AVANCEMENT = {
    "title": "lawgiver doctor — détecter un skill du profil non matérialisé dans ~/.claude (le bug /ezk-pr introuvable)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1602,7 +1604,7 @@ window.EZK_AVANCEMENT = {
    "title": "Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "20260816131703334",
    "product": "mega-city",
@@ -1651,7 +1653,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-codex fix — répondre en fil ET résoudre TOUS les fils traités (pas seulement décliner)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1716,7 +1718,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260826121429274",
-   "title": "ezk-archive émet un compte-rendu de session structuré (frontmatter par sprint — PR, fiches, actions), prérequis de la vue sprints",
+   "title": "⟳ ABSORBÉE (→ 20260904091853974) — ezk-archive émet un compte-rendu de session structuré (prérequis de la vue sprints)",
    "type": "feature",
    "priority": "P2",
    "status": "idea",
@@ -1732,7 +1734,7 @@ window.EZK_AVANCEMENT = {
    "title": "Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills",
    "type": "refactor",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1745,7 +1747,7 @@ window.EZK_AVANCEMENT = {
    "title": "Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet",
    "type": "refactor",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "20260813124026215",
    "product": "mega-city",
@@ -1771,7 +1773,7 @@ window.EZK_AVANCEMENT = {
    "title": "Mode auto — gérer la fenêtre de contexte sur un run long (+ trace de supervision requise)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1784,7 +1786,7 @@ window.EZK_AVANCEMENT = {
    "title": "Revue adverse skippable par flag — --review adverse|skip (ezk-product-build → ezk-sprint)",
    "type": "feature",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -1836,13 +1838,26 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué",
    "type": "refactor",
    "priority": "P2",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
    "pr": "",
    "labels": [],
    "file": "features/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md"
+  },
+  {
+   "id": "20260901173549334",
+   "title": "ezk multi-client : cap Cursor + modèle & effort configurables par hôte",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md"
   },
   {
    "id": "20260902224043892",
@@ -1888,11 +1903,46 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260903134908019_cli-ezk-complet-publie.md"
   },
   {
+   "id": "20260904091853948",
+   "title": "ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)",
+   "type": "refactor",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-archive",
+    "methode",
+    "cout"
+   ],
+   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md"
+  },
+  {
+   "id": "20260904091853974",
+   "title": "Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "journal",
+    "ezk-chef",
+    "retro",
+    "methode"
+   ],
+   "file": "features/20260904091853974_journal-difficultes-artefact-independant.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "vectorz",
@@ -1931,7 +1981,7 @@ window.EZK_AVANCEMENT = {
    "title": "Policy de siège — l'auto-continue configurable sur signaux typés",
    "type": "feature",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "vectorz",
@@ -1944,7 +1994,7 @@ window.EZK_AVANCEMENT = {
    "title": "Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace)",
    "type": "chore",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "vectorz",
@@ -1957,7 +2007,7 @@ window.EZK_AVANCEMENT = {
    "title": "Différés du contrat d'améliorabilité — parking gated « après boucles réelles »",
    "type": "chore",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "vectorz",
@@ -2051,7 +2101,7 @@ window.EZK_AVANCEMENT = {
    "title": "cap — dériver le hook du champ enforcement.hook.script (au lieu du hardcode)",
    "type": "refactor",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -2064,7 +2114,7 @@ window.EZK_AVANCEMENT = {
    "title": "aligner les signatures de domain.ts sur l'implémentation (expand/bind)",
    "type": "chore",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -2077,7 +2127,7 @@ window.EZK_AVANCEMENT = {
    "title": "dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture",
    "type": "refactor",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -2090,7 +2140,7 @@ window.EZK_AVANCEMENT = {
    "title": "aligner le nommage des modes tokens du product-builder (lean|cap|full partout)",
    "type": "chore",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -2103,7 +2153,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles)",
    "type": "feature",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -2133,7 +2183,7 @@ window.EZK_AVANCEMENT = {
    "title": "ezk-backlog init.sh — le marqueur layout_version doit primer sur la détection legacy « Index auto-généré »",
    "type": "bug",
    "priority": "P3",
-   "status": "todo",
+   "status": "idea",
    "ready": false,
    "epic": "",
    "product": "mega-city",
@@ -2240,6 +2290,32 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260830110131298_supervision-ezk-plugin-separable.md"
+  },
+  {
+   "id": "20260904074824499",
+   "title": "Renommer les commandes ezk-* → mc-* (mega-city)",
+   "type": "chore",
+   "priority": "P3",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260904074824499_renommer-ezk-vers-mc.md"
+  },
+  {
+   "id": "20260904080827072",
+   "title": "admin ezk : partagé multi-projets vs une app par projet — ports, isolation",
+   "type": "chore",
+   "priority": "P3",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md"
   }
  ],
  "epics": [
@@ -2256,14 +2332,14 @@ window.EZK_AVANCEMENT = {
    ],
    "childCounts": {
     "blocked": 2,
-    "todo": 3,
+    "idea": 3,
     "shipped": 4
    }
   },
   {
    "id": "0051",
    "title": "Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)",
-   "status": "in-progress",
+   "status": "idea",
    "children": [
     "0052",
     "0053",
@@ -2274,8 +2350,7 @@ window.EZK_AVANCEMENT = {
     "0058"
    ],
    "childCounts": {
-    "todo": 1,
-    "idea": 6
+    "idea": 7
    }
   },
   {
@@ -2293,12 +2368,12 @@ window.EZK_AVANCEMENT = {
   {
    "id": "20260813124026215",
    "title": "Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)",
-   "status": "in-progress",
+   "status": "idea",
    "children": [
     "20260826173221323"
    ],
    "childCounts": {
-    "todo": 1
+    "idea": 1
    }
   },
   {
@@ -2339,7 +2414,7 @@ window.EZK_AVANCEMENT = {
    ],
    "childCounts": {
     "shipped": 1,
-    "todo": 1
+    "idea": 1
    }
   },
   {
@@ -2357,8 +2432,7 @@ window.EZK_AVANCEMENT = {
     "20260826222044335"
    ],
    "childCounts": {
-    "todo": 1,
-    "idea": 6,
+    "idea": 7,
     "shipped": 2,
     "in-progress": 1
    }
@@ -2366,15 +2440,14 @@ window.EZK_AVANCEMENT = {
   {
    "id": "20260824060737115",
    "title": "Épic — Marketing & site (orchestrateur, landing, recette site)",
-   "status": "in-progress",
+   "status": "idea",
    "children": [
     "0156",
     "0157",
     "20260821172716540"
    ],
    "childCounts": {
-    "todo": 1,
-    "idea": 2
+    "idea": 3
    }
   }
  ],
@@ -2383,7 +2456,7 @@ window.EZK_AVANCEMENT = {
    "blocked",
    "idea",
    "in-progress",
-   "todo"
+   "ready"
   ],
   "priorites": [
    "P0",
@@ -2400,6 +2473,7 @@ window.EZK_AVANCEMENT = {
    "article",
    "bmad",
    "ci",
+   "cout",
    "decouvrabilite",
    "doc",
    "doctrine",
@@ -2407,11 +2481,14 @@ window.EZK_AVANCEMENT = {
    "dx",
    "elicitation",
    "enabler",
+   "ezk-archive",
+   "ezk-chef",
    "ezk-ci",
    "ezk-codex",
    "follow-up",
    "fondation",
    "format",
+   "journal",
    "lisibilite",
    "llm",
    "method",
@@ -2420,6 +2497,7 @@ window.EZK_AVANCEMENT = {
    "nommage",
    "outillage",
    "r&d",
+   "retro",
    "supervision",
    "template",
    "test",
@@ -2486,7 +2564,7 @@ window.EZK_PLAN = {
       {
        "id": "20260824061247344",
        "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "",
@@ -3287,7 +3365,7 @@ window.EZK_PLAN = {
       {
        "id": "0050",
        "title": "Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "",
@@ -3313,7 +3391,7 @@ window.EZK_PLAN = {
       {
        "id": "0096",
        "title": "build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient",
-       "status": "todo",
+       "status": "idea",
        "priority": "P2",
        "ready": false,
        "epic": "",
@@ -3346,7 +3424,7 @@ window.EZK_PLAN = {
       {
        "id": "0051",
        "title": "Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "",
@@ -3359,7 +3437,7 @@ window.EZK_PLAN = {
       {
        "id": "0052",
        "title": "Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "0051",
@@ -3444,7 +3522,7 @@ window.EZK_PLAN = {
       {
        "id": "20260813131737959",
        "title": "Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P2",
        "ready": false,
        "epic": "",
@@ -3490,7 +3568,7 @@ window.EZK_PLAN = {
       {
        "id": "0156",
        "title": "ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "20260824060737115",
@@ -3516,7 +3594,7 @@ window.EZK_PLAN = {
       {
        "id": "0069",
        "title": "article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "",
@@ -3568,7 +3646,7 @@ window.EZK_PLAN = {
       {
        "id": "0163",
        "title": "série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité",
-       "status": "todo",
+       "status": "idea",
        "priority": "P2",
        "ready": false,
        "epic": "",
@@ -3614,7 +3692,7 @@ window.EZK_PLAN = {
       {
        "id": "0077",
        "title": "Kit émetteur — hooks Claude Code classe A (émission déterministe)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P1",
        "ready": false,
        "epic": "",
@@ -3627,7 +3705,7 @@ window.EZK_PLAN = {
       {
        "id": "0080",
        "title": "ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P2",
        "ready": false,
        "epic": "",
@@ -3686,7 +3764,7 @@ window.EZK_PLAN = {
       {
        "id": "0162",
        "title": "adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P2",
        "ready": false,
        "epic": "",
@@ -3706,7 +3784,7 @@ window.EZK_PLAN = {
       {
        "id": "0034",
        "title": "Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)",
-       "status": "todo",
+       "status": "idea",
        "priority": "P0",
        "ready": false,
        "epic": "",
@@ -3719,7 +3797,7 @@ window.EZK_PLAN = {
       {
        "id": "0024",
        "title": "résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022",
-       "status": "todo",
+       "status": "idea",
        "priority": "P2",
        "ready": false,
        "epic": "0034",
@@ -3765,7 +3843,7 @@ window.EZK_PLAN = {
   {
    "id": "20260824061247344",
    "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
-   "status": "todo",
+   "status": "idea",
    "priority": "P1",
    "ready": false,
    "epic": "",
@@ -3773,6 +3851,58 @@ window.EZK_PLAN = {
    "type": "refactor",
    "pr": "",
    "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
+   "found": true
+  },
+  {
+   "id": "0067",
+   "title": "ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat)",
+   "status": "idea",
+   "priority": "P2",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/0067-ezk-ezk-contract-aware-carte-emission.md",
+   "found": true
+  },
+  {
+   "id": "20260812104022246",
+   "title": "Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés)",
+   "status": "idea",
+   "priority": "P1",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260812104022246_composition-comportementale-skills-ezk.md",
+   "found": true
+  },
+  {
+   "id": "20260825182327490",
+   "title": "Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport)",
+   "status": "idea",
+   "priority": "P2",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md",
+   "found": true
+  },
+  {
+   "id": "20260824163426298",
+   "title": "Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map »",
+   "status": "idea",
+   "priority": "P2",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/20260824163426298_consolider-device-preview-testbed.md",
    "found": true
   }
  ],
@@ -3796,9 +3926,41 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260904091853974",
+   "title": "Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260904091853974_journal-difficultes-artefact-independant.md"
+  },
+  {
+   "id": "20260904091853948",
+   "title": "ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md"
+  },
+  {
+   "id": "20260904080827072",
+   "title": "admin ezk : partagé multi-projets vs une app par projet — ports, isolation",
+   "status": "idea",
+   "priority": "P3",
+   "inPlan": false,
+   "file": "features/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md"
+  },
+  {
+   "id": "20260904074824499",
+   "title": "Renommer les commandes ezk-* → mc-* (mega-city)",
+   "status": "idea",
+   "priority": "P3",
+   "inPlan": false,
+   "file": "features/20260904074824499_renommer-ezk-vers-mc.md"
+  },
+  {
    "id": "20260903134909124",
    "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
-   "status": "todo",
+   "status": "idea",
    "priority": "P1",
    "inPlan": false,
    "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md"
@@ -3814,7 +3976,7 @@ window.EZK_PLAN_DELTA = {
   {
    "id": "20260903134906920",
    "title": "CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)",
-   "status": "todo",
+   "status": "idea",
    "priority": "P1",
    "inPlan": false,
    "file": "features/20260903134906920_cli-ezk-point-d-entree-unique.md"
@@ -3836,9 +3998,17 @@ window.EZK_PLAN_DELTA = {
    "file": "features/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md"
   },
   {
+   "id": "20260901173549334",
+   "title": "ezk multi-client : cap Cursor + modèle & effort configurables par hôte",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md"
+  },
+  {
    "id": "20260831075615969",
    "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
-   "status": "todo",
+   "status": "idea",
    "priority": "P0",
    "inPlan": false,
    "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
@@ -3846,7 +4016,7 @@ window.EZK_PLAN_DELTA = {
   {
    "id": "20260831075615809",
    "title": "ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir",
-   "status": "todo",
+   "status": "ready",
    "priority": "P0",
    "inPlan": false,
    "file": "features/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md"
@@ -3854,7 +4024,7 @@ window.EZK_PLAN_DELTA = {
   {
    "id": "20260830225021794",
    "title": "ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué",
-   "status": "todo",
+   "status": "idea",
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md"
@@ -3874,49 +4044,9 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260830194601307_front-matter-emis-par-lib-yaml.md"
-  },
-  {
-   "id": "20260830194601233",
-   "title": "ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260830194601233_ship-transactionnel-liens-vues.md"
-  },
-  {
-   "id": "20260830114318159",
-   "title": "ezk-ezk — option configurable « passer par la méthode » (proposer une fiche au lieu de créer un skill direct)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830114318159_ezk-ezk-option-passer-par-fiche.md"
-  },
-  {
-   "id": "20260830110131298",
-   "title": "Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039)",
-   "status": "idea",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260830110131298_supervision-ezk-plugin-separable.md"
-  },
-  {
-   "id": "20260830110131228",
-   "title": "Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040)",
-   "status": "idea",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260830110131228_schema-etapes-skill-configurables.md"
-  },
-  {
-   "id": "20260830110131158",
-   "title": "Revue adverse skippable par flag — --review adverse|skip (ezk-product-build → ezk-sprint)",
-   "status": "todo",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830110131158_revue-adverse-skippable-flag.md"
   }
  ],
- "offPlanCount": 44,
+ "offPlanCount": 5,
  "n": 15
 };
 /*ezk-plan-delta:end*/
@@ -3927,7 +4057,7 @@ window.EZK_PLAN_DELTA = {
   var actives = data.actives || [];
 
   // Rang de tri d'affichage — même ordre que STATUTS/PRIOS côté cœur (avancement-data.ts).
-  var STATUT_RANK = ['todo', 'in-progress', 'blocked', 'idea', 'shipped'];
+  var STATUT_RANK = ['idea', 'ready', 'in-progress', 'blocked', 'shipped'];
   var PRIO_RANK = ['P0', 'P1', 'P2', 'P3'];
   var rankIn = function (arr, v) {
     var i = arr.indexOf(v);

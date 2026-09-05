@@ -8,12 +8,19 @@
  */
 import type { Fiche } from '../loaders/fiches.js';
 
-/** L'ordre de statut du flux (idea = hors flux, à part). */
+/**
+ * L'ordre de statut du flux : `idea` (pas encore prête) → `ready` (groomée, tirable) →
+ * `shipped` (livrée). `in-progress` / `blocked` sont des signaux orthogonaux (posés à la
+ * main). Le statut `todo` a été RETIRÉ le 2026-09-04 (panel adverse, capture
+ * `docs/captures/2026-09-04-panel-adverse-objet-sprint.md`) : une fiche non prête est une
+ * `idea`, une fiche prête est `ready` — plus d'état ambigu au milieu. « doing » (en cours)
+ * reste DÉRIVÉ de la branche `feat/<id>`, jamais un statut committé.
+ */
 export const STATUTS: readonly string[] = [
-  'todo',
+  'idea',
+  'ready',
   'in-progress',
   'blocked',
-  'idea',
   'shipped',
 ];
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
@@ -60,7 +67,7 @@ export interface BoardEpic {
 export interface AvancementData {
   /** Compteurs par statut sur TOUTES les fiches (actives + livrées). */
   counts: Record<string, number>;
-  /** Nombre de fiches TIRABLES (todo + ready, hors épic). */
+  /** Nombre de fiches TIRABLES (status `ready`, hors épic). */
   tirables: number;
   /** Fiches ACTIVES (hors `done/`, hors épic), triées priorité puis id. */
   actives: BoardFiche[];
@@ -93,7 +100,7 @@ const prioRank = (p: string): number => {
 /**
  * Statut d'un épic, CALCULÉ depuis ses enfants (D4, fiche 20260825123700998 ; ADR-0017 A15) :
  * tous les enfants livrés (`done/`) → `shipped` ; au moins un livré OU engagé
- * (todo/in-progress/blocked) → `in-progress` ; que des `idea` → `idea` ; aucun enfant → le
+ * (ready/in-progress/blocked) → `in-progress` ; que des `idea` → `idea` ; aucun enfant → le
  * statut saisi (fallback). Le « tout livré » s'appuie sur `done/` (le dossier), pas sur la
  * chaîne 'shipped' — robuste à un statut de provenance `merged`/`split`. Jamais saisi (ADR-0001).
  */
@@ -106,7 +113,7 @@ function deriveEpicStatus(
   if (total === 0) return fallback;
   if (doneCount === total) return 'shipped';
   const engaged =
-    (childCounts.todo ?? 0) + (childCounts['in-progress'] ?? 0) + (childCounts.blocked ?? 0);
+    (childCounts.ready ?? 0) + (childCounts['in-progress'] ?? 0) + (childCounts.blocked ?? 0);
   return doneCount > 0 || engaged > 0 ? 'in-progress' : 'idea';
 }
 
@@ -121,7 +128,7 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
     .sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || (a.id < b.id ? -1 : 1))
     .map(toBoard);
 
-  const tirables = actives.filter((f) => f.status === 'todo' && f.ready).length;
+  const tirables = actives.filter((f) => f.status === 'ready').length;
 
   // Enfants par épic : compteurs par statut sur TOUS les enfants (actifs + livrés, D4),
   // et liste des enfants ACTIFS pour l'affichage détaillé.

@@ -15,7 +15,7 @@ const F = (over: Partial<Fiche>): Fiche => ({
   title: 'X',
   type: 'feature',
   priority: 'P2',
-  status: 'todo',
+  status: 'idea',
   ready: false,
   epic: '',
   product: 'mega-city',
@@ -35,17 +35,17 @@ describe('buildAvancementData — logique du board', () => {
       F({ id: '0009', type: 'epic', priority: '', title: 'Épic' }),
       F({ id: '0008', status: 'shipped', done: true }),
     ]);
-    expect(data.counts).toEqual({ todo: 4, shipped: 1 });
+    expect(data.counts).toEqual({ idea: 4, shipped: 1 });
     // actives = non-done, non-épic ; triées P0(0001,0002) puis P3(0003)
     expect(data.actives.map((f) => f.id)).toEqual(['0001', '0002', '0003']);
   });
 
   it('compte les tirables (todo + ready, hors épic)', () => {
     const data = buildAvancementData([
-      F({ id: '0001', status: 'todo', ready: true }),
-      F({ id: '0002', status: 'todo', ready: false }),
+      F({ id: '0001', status: 'ready', ready: true }),
+      F({ id: '0002', status: 'idea', ready: false }),
       F({ id: '0003', status: 'idea', ready: true }), // idea → pas tirable
-      F({ id: '0004', type: 'epic', status: 'todo', ready: true }), // épic → jamais tirable
+      F({ id: '0004', type: 'epic', status: 'ready', ready: true }), // épic → jamais tirable
     ]);
     expect(data.tirables).toBe(1);
   });
@@ -63,11 +63,11 @@ describe('buildAvancementData — logique du board', () => {
 
   it('expose des filtres dédupliqués (statuts, priorités, produits)', () => {
     const data = buildAvancementData([
-      F({ id: '0001', status: 'todo', priority: 'P0', product: 'mega-city' }),
+      F({ id: '0001', status: 'ready', priority: 'P0', product: 'mega-city' }),
       F({ id: '0002', status: 'blocked', priority: 'P0', product: 'vectorz' }),
     ]);
     expect(data.filtres.priorites).toEqual(['P0']);
-    expect(data.filtres.statuts.sort()).toEqual(['blocked', 'todo']);
+    expect(data.filtres.statuts.sort()).toEqual(['blocked', 'ready']);
     expect(data.filtres.produits.sort()).toEqual(['mega-city', 'vectorz']);
   });
 });

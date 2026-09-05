@@ -4,7 +4,7 @@ title: cap cop1 — matérialiser un profil en config native cop1
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-06-26
 ---

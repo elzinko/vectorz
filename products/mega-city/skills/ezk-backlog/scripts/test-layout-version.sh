@@ -19,7 +19,7 @@ echo "Cas A (missing) :"
 mkdir -p "$TMP/empty"
 out_a="$("$CHECK" "$TMP/empty")"
 check "STATUS=missing" "printf '%s' \"\$out_a\" | grep -q 'STATUS=missing'"
-check "CURRENT=2" "printf '%s' \"\$out_a\" | grep -q 'CURRENT=2'"
+check "CURRENT=3" "printf '%s' \"\$out_a\" | grep -q 'CURRENT=3'"
 
 # Cas B : legacy README index généré → behind, pending 002
 B="$TMP/legacy"
@@ -32,7 +32,7 @@ cat > "$B/features/README.md" <<'EOF'
 | # | Titre |
 |---|-------|
 EOF
-printf -- '---\nid: 0001\ntitle: demo\ntype: feature\npriority: P1\nstatus: todo\ncreated: 2026-08-01\n---\n' \
+printf -- '---\nid: 0001\ntitle: demo\ntype: feature\npriority: P1\nstatus: idea\ncreated: 2026-08-01\n---\n' \
   > "$B/features/0001-demo.md"
 out_b="$("$CHECK" "$B")"
 echo "Cas B (legacy behind) :"
@@ -51,7 +51,7 @@ check "README n'est plus index auto" "! grep -q 'Index auto-généré' '$B/featu
 check "backup .bak-skema-002" "test -f '$B/features/README.md.bak-skema-002'"
 check "backup contient Index auto" "grep -q 'Index auto-généré' '$B/features/README.md.bak-skema-002'"
 out_c="$("$CHECK" "$B")"
-check "STATUS=ok après migrate" "printf '%s' \"\$out_c\" | grep -q 'STATUS=ok'"
+check "STATUS=behind après migrate" "printf '%s' \"\$out_c\" | grep -q 'STATUS=behind'"
 check "INSTALLED=2" "printf '%s' \"\$out_c\" | grep -q 'INSTALLED=2'"
 
 # Cas D : init sur projet vierge
@@ -59,7 +59,7 @@ D="$TMP/fresh"
 mkdir -p "$D"
 bash "$SKILL/init.sh" "$D" "Backlog — fresh" >/dev/null
 echo "Cas D (init) :"
-check "README curé" "grep -q '^layout_version: 2' '$D/features/README.md'"
+check "README curé" "grep -q '^layout_version: 3' '$D/features/README.md'"
 check "BACKLOG.md présent" "test -f '$D/features/BACKLOG.md'"
 check "done/ présent" "test -d '$D/features/done'"
 check "template présent" "test -f '$D/features/feature-template.md'"
@@ -110,7 +110,7 @@ G="$TMP/external"
 mkdir -p "$G/features" "$G/bin"
 cp "$REGEN" "$G/bin/regen-backlog.sh"
 chmod +x "$G/bin/regen-backlog.sh"
-printf -- '---\nid: 0001\ntitle: ext\ntype: feature\npriority: P2\nstatus: todo\ncreated: 2026-08-01\n---\n' \
+printf -- '---\nid: 0001\ntitle: ext\ntype: feature\npriority: P2\nstatus: idea\ncreated: 2026-08-01\n---\n' \
   > "$G/features/0001-ext.md"
 cat > "$G/features/README.md" <<'EOF'
 # Backlog
@@ -152,7 +152,7 @@ cat > "$I/features/BACKLOG.md" <<'EOF'
 
 | # | Titre | Type | Prio | Statut | PR |
 |---|-------|------|------|--------|----|
-| 0099 | keep-me | feature | P1 | 🔴 todo | |
+| 0099 | keep-me | feature | P1 | 💡 idea | |
 
 > Livrées (`done/`) : .
 EOF
@@ -179,7 +179,7 @@ cat > "$K/features/README.md" <<'EOF'
 
 > Index auto-généré — ne pas éditer.
 EOF
-printf -- '---\nid: 0002\ntitle: vendor\ntype: feature\npriority: P2\nstatus: todo\ncreated: 2026-08-01\n---\n' \
+printf -- '---\nid: 0002\ntitle: vendor\ntype: feature\npriority: P2\nstatus: idea\ncreated: 2026-08-01\n---\n' \
   > "$K/features/0002-vendor.md"
 # Isoler la skill : SKILL_DIR/../.. ne doit plus résoudre vers le bin monorepo.
 SKILL_ISO="$TMP/skill-iso/ezk-backlog"

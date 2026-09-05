@@ -5,7 +5,7 @@ type: epic
 priority: P1
 product: mega-city
 labels: [doc, decouvrabilite, oss, enabler]
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-16

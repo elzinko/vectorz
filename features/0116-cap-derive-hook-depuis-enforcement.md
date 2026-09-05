@@ -4,7 +4,7 @@ title: cap — dériver le hook du champ enforcement.hook.script (au lieu du har
 type: refactor
 priority: P3
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-06-26
 ---

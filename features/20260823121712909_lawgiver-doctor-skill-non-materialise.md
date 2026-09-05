@@ -4,7 +4,7 @@ title: "lawgiver doctor — détecter un skill du profil non matérialisé dans 
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: idea
 ready:
 pr:
 created: 2026-08-23

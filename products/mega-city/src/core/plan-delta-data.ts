@@ -23,7 +23,7 @@ import type { Fiche } from '../loaders/fiches.js';
 export const DEFAULT_DELTA_N = 15;
 
 /** Statuts « actionnables » (dans le flux P0→P3) — les idées en sont hors. */
-const ACTIONABLE = new Set(['todo', 'in-progress', 'blocked']);
+const ACTIONABLE = new Set(['ready', 'in-progress', 'blocked']);
 
 /** Une fiche récente, badgée selon sa présence dans le plan. */
 export interface DeltaCard {

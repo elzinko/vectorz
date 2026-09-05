@@ -51,7 +51,7 @@ done
 st_label() {
   case "$1" in
     shipped) echo '✅ shipped';; in-progress) echo '🟠 in-progress';;
-    blocked) echo '⛔ blocked';; idea) echo '💡 idea';; *) echo '🔴 todo';;
+    blocked) echo '⛔ blocked';; ready) echo '🔵 ready';; idea) echo '💡 idea';; *) echo "❓ $1";;
   esac
 }
 
@@ -77,9 +77,9 @@ emit_table() {
 
   echo '## 🎯 Tirables maintenant (`ready`, tous backlogs confondus)'
   echo ''
-  echo 'Les fiches `todo` passées au gate DoR (`ready:`), dans l’ordre de tirage (P0→P3, puis produit, puis id).'
+  echo 'Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produit, puis id).'
   echo ''
-  readies="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="todo" && $7!="" && $3!="epic"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  readies="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $3!="epic"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
   if [ -n "$readies" ]; then printf '%s\n' "$readies" | emit_table; else echo '_Aucune fiche ready — flux gelé, groomer une tête de file._'; fi
   echo ''
 
@@ -89,11 +89,11 @@ emit_table() {
   if [ -n "$inprog" ]; then printf '%s\n' "$inprog" | emit_table; else echo '_Rien en cours._'; fi
   echo ''
 
-  echo '## 📋 Actionnable (todo + blocked, hors idées et épics)'
+  echo '## 📋 Actionnable (ready + blocked, hors idées et épics)'
   echo ''
   echo 'Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir la fiche).'
   echo ''
-  printf '%s' "$rows" | awk -F"$SEP" '($5=="todo" || $5=="blocked") && $3!="epic"' \
+  printf '%s' "$rows" | awk -F"$SEP" '($5=="ready" || $5=="blocked") && $3!="epic"' \
     | sort -t"$SEP" -k4,4 -k11,11 -k1,1 | emit_table
   echo ''
 
@@ -119,15 +119,14 @@ emit_table() {
       p=$11; tot[p]++; totall++
       if ($3=="epic") { epic[p]++; next }
       st[p"/"$5]++
-      if ($5=="todo" && $7!="") ready[p]++
     }
     END {
-      printf "| Produit | Total | 🔴 todo (ready) | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |\n"
-      printf "|---------|-------|-----------------|-----------|-----------|---------|---------|\n"
+      printf "| Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |\n"
+      printf "|---------|-------|----------|-----------|-----------|---------|---------|\n"
       split("vectorz mega-city", order, " ")
       for (i=1;i<=2;i++){ p=order[i];
-        printf "| %s | %d | %d (%d) | %d | %d | %d | %d |\n", p, tot[p]+0, \
-          st[p"/todo"]+0, ready[p]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, epic[p]+0 }
+        printf "| %s | %d | %d | %d | %d | %d | %d |\n", p, tot[p]+0, \
+          st[p"/ready"]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, epic[p]+0 }
     }'
   echo ''
   echo '> Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.'

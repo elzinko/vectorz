@@ -4,7 +4,7 @@ title: Format de session log + discipline de commit (anchor réel)
 type: chore
 priority: P3
 product: vectorz
-status: todo
+status: idea
 pr:
 created: 2026-06-23
 ---

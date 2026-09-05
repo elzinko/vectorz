@@ -30,7 +30,7 @@ fiche() { # $1=dir $2=id $3=slug $4=front-matter-extra (lignes YAML)
 A="$TMP/a"
 fiche "$A/features"      0001 story 'type: feature
 priority: P1
-status: todo'
+status: idea'
 fiche "$A/features"      0002 idee  'type: chore
 priority: P2
 status: idea'
@@ -54,16 +54,16 @@ check "résumé Livrées cliquable (done/)" \
 B="$TMP/b"
 fiche "$B/features"      0010 epic-pivot 'type: epic
 priority: P0
-status: todo'
+status: idea'
 fiche "$B/features"      0011 enfant-a 'type: feature
 priority: P1
-status: todo
+status: idea
 ready: 2026-07-17
 epic: 0010'
 fiche "$B/features"      0012 jalon 'type: chore
 priority: P2
 version: V1.1
-status: todo'
+status: idea'
 fiche "$B/features/done" 0009 enfant-livre 'type: feature
 priority: P1
 status: shipped
@@ -94,18 +94,18 @@ check "AUCUN lien préfixé features/ (résolution document-relative)" \
 C="$TMP/c"
 fiche "$C/features" 0020 epic-ok 'type: epic
 priority: P1
-status: todo'
+status: idea'
 fiche "$C/features" 0021 pendante 'type: feature
 priority: P1
-status: todo
+status: idea
 epic: 9999'
 fiche "$C/features" 0022 vers-non-epic 'type: feature
 priority: P2
-status: todo
+status: idea
 epic: 0021'
 fiche "$C/features" 0023 sous-epic 'type: epic
 priority: P2
-status: todo
+status: idea
 epic: 0020'
 "$SCRIPT" "$C" "Backlog — test C" >/dev/null 2>"$TMP/c.err"
 echo "Cas C (warnings intégrité) :"
@@ -122,7 +122,7 @@ mkdir -p "$D/bin"
 cp "$SCRIPT" "$D/bin/regen-backlog.sh"
 fiche "$D/features" 0030 defaut 'type: feature
 priority: P2
-status: todo'
+status: idea'
 echo "Cas D (défauts, hermétique) :"
 check "sans args → racine = parent de bin/ (fixture)" \
   "cd '$TMP' && bash '$D/bin/regen-backlog.sh' >/dev/null 2>&1 && test -s '$D/features/BACKLOG.md'"
@@ -134,7 +134,7 @@ echo ''
 E="$TMP/e"
 fiche "$E/features" 0001 story 'type: feature
 priority: P1
-status: todo'
+status: idea'
 : > "$E/features/PLAN.md"   # PLAN.md présent (fichier de séquence curé, hors index)
 "$SCRIPT" "$E" "Backlog — test E" >/dev/null 2>&1
 echo "Cas E (lien PLAN.md conditionnel) :"
@@ -145,11 +145,11 @@ check "aucun lien PLAN.md quand PLAN.md absent" "! grep -qF 'PLAN.md' '$A/featur
 F="$TMP/f"
 fiche "$F/features" 0001 story-a 'type: feature
 priority: P1
-status: todo
+status: idea
 product: vectorz'
 fiche "$F/features" 0002 story-b 'type: feature
 priority: P2
-status: todo
+status: idea
 product: mega-city'
 out_f="$("$SCRIPT" "$F" "Backlog — test F" 2>"$TMP/f.err")"
 echo "Cas F (colonne Produit) :"
@@ -167,7 +167,7 @@ check "warning id en double" "grep -q 'id 0001 en double' '$TMP/f-dup.err'"
 
 # ── Cas G : id horodaté QUOTÉ (fiche 0180) → index dé-quoté (17 chiffres > MAX_SAFE_INTEGER) ──
 G="$TMP/g"; mkdir -p "$G/features/done"
-printf -- '---\nid: "20260810143052123"\ntitle: fiche horodatee quotee\ntype: feature\npriority: P2\nstatus: todo\nproduct: vectorz\ncreated: 2026-08-10\n---\n' \
+printf -- '---\nid: "20260810143052123"\ntitle: fiche horodatee quotee\ntype: feature\npriority: P2\nstatus: idea\nproduct: vectorz\ncreated: 2026-08-10\n---\n' \
   > "$G/features/20260810143052123_horodatee.md"
 "$SCRIPT" "$G" "Backlog — test G" >/dev/null 2>"$TMP/g.err"
 echo "Cas G (id horodaté quoté) :"

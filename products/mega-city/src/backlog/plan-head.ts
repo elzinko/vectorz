@@ -19,9 +19,9 @@ export interface PlanCard {
 }
 
 export interface CrossBacklogHead {
-  /** 1re carte `todo` + `ready` dans l'ordre du plan. */
+  /** 1re carte `ready` dans l'ordre du plan. */
   head: PlanCard | null;
-  /** Cartes `todo` sans `ready:` qui PRÉCÈDENT la tête dans l'ordre — à groomer. */
+  /** Cartes `idea` (pas encore prêtes) qui PRÉCÈDENT la tête dans l'ordre — à groomer. */
   blockedAhead: PlanCard[];
   /** Ids du plan introuvables dans `features/` — signalés, jamais ignorés. */
   unresolved: string[];
@@ -51,14 +51,14 @@ export function crossBacklogHead(
     // choisit ni comme tête ni comme blocage (revue Codex #53).
     if (card.type === 'epic') continue;
     if (head) continue; // tête déjà trouvée : on ne scanne plus que les introuvables
-    if (card.status === 'todo' && card.ready) {
+    if (card.status === 'ready') {
       head = card;
       continue;
     }
-    if (card.status === 'todo' && !card.ready) {
+    if (card.status === 'idea') {
       blockedAhead.push(card);
     }
-    // idea | blocked | in-progress | shipped → ni tirable, ni signal de blocage
+    // blocked | in-progress | shipped → ni tirable, ni signal de blocage
     // à l'intake : on passe (miroir de la règle 0089).
   }
 

@@ -4,7 +4,7 @@ title: adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice 
 type: feature
 priority: P2
 product: mega-city
-status: todo
+status: idea
 pr:
 created: 2026-07-15
 ---
