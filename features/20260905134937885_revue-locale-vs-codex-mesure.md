@@ -98,11 +98,21 @@ index généré), pas par deux fichiers à chaque revue.
 **Réutiliser l'existant, ne pas créer un second store (retour Codex).** Un pack de revue
 markdown-first est **déjà** défini par l'**ADR-038** : `features/reviews/<id>/REVIEW.md`,
 contrat `method-review@0.1`, port `ReviewEmitter`. Le verdict adverse doit **étendre ce
-pack** — une section verdict, ou un émetteur qui écrit les données machine dans le
-front-matter du `REVIEW.md` — plutôt qu'ouvrir un `docs/reviews/` concurrent (qui
-scinderait découverte et outillage). L'option C ci-dessus décrit donc **le format d'une
-entrée du pack existant**, pas un nouveau namespace ; l'index agrégé se branche sur
-`features/reviews/`.
+pack**, pas ouvrir un `docs/reviews/` concurrent. Deux précisions imposées par la revue :
+
+- **Une entrée par run, jamais d'écrasement.** L'émetteur actuel dérive le chemin de la
+  seule fiche/branche et écrit en `writeFileSync` : chaque revue **écrase** la précédente.
+  Pour comparer *dans le temps* (baseline, local durci, passes parallèles, Codex), il faut
+  une **dimension reviewer × run** stable dans le namespace du pack — un fichier par run,
+  pas un `REVIEW.md` unique.
+- **Champs verdict structurés dans le contrat, pas une section libre.** Comme l'index ne
+  lit que le **front-matter**, une « section verdict » en prose laisserait coût, durée,
+  sévérité et findings inaccessibles. Il faut donc une **extension versionnée du contrat**
+  (`method-review@0.2` : verdict, coût, durée, findings structurés), pas une alternative en
+  texte libre.
+
+L'option C ci-dessus décrit donc **le format d'une entrée du pack étendu** ; l'index agrégé
+se branche sur `features/reviews/`.
 
 ## Critères d'acceptation (à compléter au grooming)
 
@@ -113,7 +123,10 @@ entrée du pack existant**, pas un nouveau namespace ; l'index agrégé se branc
       performance **et** efficience.
 - [ ] Le protocole s'appuie sur un **oracle indépendant** (union adjugée des deux
       relecteurs), pas sur Codex comme référence.
-- [ ] L'archivage **étend le pack ADR-038** (`features/reviews/`), sans store concurrent.
+- [ ] L'archivage **étend le pack ADR-038** (`features/reviews/`) : **une entrée par
+      (reviewer × run)** sans écrasement, via une **extension de contrat versionnée**
+      (`method-review@0.2` : verdict, coût, durée, findings) — pas de store concurrent ni de
+      section en prose.
 - [ ] La décision « retirer la **PR** » (grain de merge, ADR-037) est traitée **à part** de
       « remplacer Codex » (grain de revue).
 - [ ] Une **recommandation de workflow** est actée : quand PR + Codex, quand local seul.
