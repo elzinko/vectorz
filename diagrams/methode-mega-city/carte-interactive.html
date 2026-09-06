@@ -379,17 +379,33 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 67,
+  "rules": 72,
   "agents": 8,
   "skills": 24,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 184,
+  "total": 189,
   "casses": 0
  },
  "orphans": [
+  {
+   "kind": "rule",
+   "id": "development/command-reproducibility"
+  },
+  {
+   "kind": "rule",
+   "id": "development/merge-when-absent-default"
+  },
+  {
+   "kind": "rule",
+   "id": "development/run-freshness-origin-main"
+  },
+  {
+   "kind": "rule",
+   "id": "development/worktree-secondary-inline-harvest"
+  },
   {
    "kind": "rule",
    "id": "development/yaml-emission-via-lib"
@@ -461,6 +477,10 @@ window.EZK = {
   {
    "kind": "rule",
    "id": "recipe/valid-frontmatter"
+  },
+  {
+   "kind": "rule",
+   "id": "testing/manual-validation-camera-gesture"
   },
   {
    "kind": "rule",
@@ -1551,6 +1571,17 @@ window.EZK = {
    ],
    "agents": []
   },
+  "development/command-reproducibility": {
+   "id": "development/command-reproducibility",
+   "title": "Une instruction inline oriente le QUOI, jamais le COMMENT d'une commande",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
   "development/handle-blockers": {
    "id": "development/handle-blockers",
    "title": "Stop and Inform on Blockers",
@@ -1571,6 +1602,17 @@ window.EZK = {
    "bundles": [
     "development"
    ],
+   "agents": []
+  },
+  "development/merge-when-absent-default": {
+   "id": "development/merge-when-absent-default",
+   "title": "En mode auto, une fiche verte se merge — le merge n'est pas un STOP",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
    "agents": []
   },
   "development/playwright-mcp-usage": {
@@ -1611,6 +1653,17 @@ window.EZK = {
    ],
    "agents": []
   },
+  "development/run-freshness-origin-main": {
+   "id": "development/run-freshness-origin-main",
+   "title": "Un run part d'un origin/main frais, jamais du main local",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
   "development/test-philosophy": {
    "id": "development/test-philosophy",
    "title": "Testing Philosophy",
@@ -1642,6 +1695,17 @@ window.EZK = {
    "bundles": [
     "development"
    ],
+   "agents": []
+  },
+  "development/worktree-secondary-inline-harvest": {
+   "id": "development/worktree-secondary-inline-harvest",
+   "title": "En worktree secondaire, délégation inline ou moisson vérifiée",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
    "agents": []
   },
   "development/yaml-emission-via-lib": {
@@ -1820,6 +1884,17 @@ window.EZK = {
    "title": "Front-matter de recette valide",
    "kind": "disposition",
    "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [],
+   "agents": []
+  },
+  "testing/manual-validation-camera-gesture": {
+   "id": "testing/manual-validation-camera-gesture",
+   "title": "« Validé » ≠ « tests verts » pour une fiche caméra ou geste",
+   "kind": "disposition",
+   "level": "SHOULD",
    "enforcements": [
     "agent-check"
    ],

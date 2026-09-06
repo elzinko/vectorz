@@ -194,6 +194,7 @@
 | [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20260903134906920](20260903134906920_cli-ezk-point-d-entree-unique.md) | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 💡 idea |  |
+| [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 |  | mega-city | 💡 idea |  |
 | [0020](0020-agent-session-port.md) | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 0034 | vectorz | 💡 idea |  |
 | [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 0034 | vectorz | 💡 idea |  |
 | [0040](0040-l2-durcir-garde-fous-ci.md) | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 0034 | vectorz | 💡 idea |  |
@@ -285,6 +286,11 @@
 | [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) | ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md) | Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260905134937885](20260905134937885_revue-locale-vs-codex-mesure.md) | Revue adverse locale vs Codex — mesurer avant d'arbitrer (peut-on sortir la PR du chemin ?) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260906122942555](20260906122942555_preflight-contexte-de-run.md) | Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation) | chore | P2 |  | mega-city | 💡 idea |  |
+| [20260906122942662](20260906122942662_echo-du-contrat-avant-run-auto.md) | Écho du contrat avant un run auto (opérateur absent) | chore | P2 |  | mega-city | 💡 idea |  |
+| [20260906122942715](20260906122942715_grain-de-livraison-lot-empile.md) | Grain de livraison « lot empilé » — 1 PR, N commits propres pour fiches dépendantes | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260906122942770](20260906122942770_spike-isolation-worktree-avant-harvest.md) | SPIKE — pourquoi l'isolation worktree, avant de figer la moisson | chore | P2 |  | mega-city | 💡 idea |  |
+| [20260906122942825](20260906122942825_spike-cout-gate-fraicheur-offline.md) | SPIKE — coût du gate de fraîcheur offline / sans remote | chore | P2 |  | mega-city | 💡 idea |  |
 | [0007](0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0028](0028-policy-de-siege.md) | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 |  | vectorz | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
