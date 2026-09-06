@@ -53,7 +53,7 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
    les galères sont encore dans le `SPRINT.md` non commité et le rapport n'est pas généré ; la rétro
    **matérialise d'abord** ces artefacts (rapport via `sprint:report`, galères figées dans
    `docs/sessions/`) avant d'appeler `suggest`, qui lit alors des artefacts frais (fiche voisine
-   [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
+   [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
 
    **Deux garde-fous d'implémentation (à trancher au développement) :**
    - **Source des candidats = les galères attribuées, PAS la liste « fiches livrées » du rapport.**
@@ -104,7 +104,7 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
   ezk-architect / pm / reviewer / dev, 2 tours + affinages PO).
 - **P0** demandée par le PO.
 - **Compose** : `0167` (la cérémonie, shippée) ; fiche voisine
-  [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)
+  [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)
   (`ezk-chef suggest`) ; `ezk-backlog add` (création de fiche). **Voisine** de
   [20260826082120069](20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md) (même
   temps 3, volet ciblage des règles — distincte, à composer, pas à fusionner).
