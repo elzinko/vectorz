@@ -46,11 +46,20 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
     return { violations, notices, code: 1 };
   }
 
-  let report: Record<string, unknown>;
+  let parsed: unknown;
   try {
-    report = JSON.parse(raw) as Record<string, unknown>;
+    parsed = JSON.parse(raw);
   } catch {
     violations.push({ code: 'report.invalid_json', message: `JSON invalide : "${jsonPath}"` });
+    return { violations, notices, code: 1 };
+  }
+
+  // Racine null / non-objet (JSON valide `null`, `42`, `[]`, `"x"`) : refus franc plutôt que de
+  // planter au premier `field in report` — le validateur doit ENCAISSER un rapport corrompu, pas
+  // lever une exception (retour Codex PR #214, corollaire du crash sur `null`).
+  const report = asObject(parsed);
+  if (report === null) {
+    violations.push({ code: 'report.not_object', message: `Rapport non-objet (attendu un objet JSON) : "${jsonPath}"` });
     return { violations, notices, code: 1 };
   }
 

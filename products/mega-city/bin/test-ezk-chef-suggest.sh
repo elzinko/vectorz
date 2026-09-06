@@ -98,13 +98,13 @@ check "code de sortie ≠ 0"          "[[ \$rc_f -ne 0 ]]"
 check "message : récits en .md"     "grep -qi 'récits de session attendus en .md' /tmp/ezk-chef-suggest-f.$$"
 rm -f "/tmp/ezk-chef-suggest-f.$$"
 
-echo "Cas G (rapport tronqué → refus de forme, pas de crash) :"
-printf '%s' '{"schema":"sprint-report@0.1"}' > "$TMP/truncated.json"
+echo "Cas G (rapport partiel : discriminateur + kpi vide, sections manquantes → refus de forme) :"
+printf '%s' '{"schema":"sprint-report@0.1","sprint":{"slug":"x"},"generatedAt":"2026-01-01T00:00:00.000Z","window":{"startTs":"2026-01-01T00:00:00.000Z","endTs":"2026-01-02T00:00:00.000Z"},"kpi":{}}' > "$TMP/partiel.json"
 set +e
-(cd "$MC" && npx tsx bin/ezk-chef-suggest.ts "$TMP/truncated.json" "$A/session.md" >/tmp/ezk-chef-suggest-g.$$ 2>&1); rc_g=$?
+(cd "$MC" && npx tsx bin/ezk-chef-suggest.ts "$TMP/partiel.json" "$A/session.md" >/tmp/ezk-chef-suggest-g.$$ 2>&1); rc_g=$?
 set -e
 check "code de sortie ≠ 0"          "[[ \$rc_g -ne 0 ]]"
-check "message : forme invalide"    "grep -qi 'forme invalide' /tmp/ezk-chef-suggest-g.$$"
+check "message : rapport invalide"  "grep -qi 'rapport de sprint invalide' /tmp/ezk-chef-suggest-g.$$"
 rm -f "/tmp/ezk-chef-suggest-g.$$"
 
 if [[ $FAIL -eq 0 ]]; then
