@@ -13,6 +13,10 @@ enforcements:
 
 - **En `--mode auto`, une fiche à gate verte + revue GO se merge (squash).** Le défaut du mode
   autonome est de livrer au fil de l'eau, une PR par fiche, comme le fait le merge per-feature.
+- **« Revue GO » = le verdict de la revue adverse**, pas la simple absence d'erreur CI. Cette règle
+  s'appuie entièrement sur [development/adversarial-review-before-merge](./adversarial-review-before-merge.md) :
+  gate verte **sans** verdict adverse consigné ne suffit **jamais** à merger. « Gate verte + revue GO »
+  se lit toujours dans cet ordre — la revue reste un préalable, jamais un STOP contourné.
 - **Merger une PR verte n'est PAS un des 4 STOP.** C'est réversible (revert). Les 4 décisions
   humaines restent : irréversible/sortant, augmentation de budget, idée produit, exigences
   contradictoires. Le merge d'une fiche verte n'en fait pas partie.
