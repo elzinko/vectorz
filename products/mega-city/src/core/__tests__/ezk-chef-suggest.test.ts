@@ -49,6 +49,18 @@ const NO_HEADER_SESSION = `# Sprint sans entête fiches
   Symptôme : x. Geste : y. Pourquoi : z.
 `;
 
+// Format léger documenté : le titre en gras peut être suivi des détails SUR LA MÊME LIGNE,
+// et la puce peut utiliser un autre marqueur markdown (`*`, `+`).
+const INLINE_DETAILS_SESSION = `fiches: 20260901120000000
+
+# Sprint — détails en ligne
+
+## Galères & gestes (labo)
+
+- **Build failure** — Symptôme : build KO. Geste : Root Directory. Pourquoi : monorepo.
+* **Marqueur étoile** — Symptôme : a. Geste : b. Pourquoi : c.
+`;
+
 describe('parseSessionMarkdown', () => {
   it('lit l’entête fiches: et les galères de la section labo', () => {
     const parsed = parseSessionMarkdown(MONO_FEATURE_SESSION, 'docs/sessions/mono.md');
@@ -70,6 +82,11 @@ describe('parseSessionMarkdown', () => {
   it('lit plusieurs ids sur l’entête fiches:', () => {
     const parsed = parseSessionMarkdown(MULTI_FEATURE_SESSION, 'docs/sessions/multi.md');
     expect(parsed.ficheIds).toEqual(['111', '222']);
+  });
+
+  it('reconnaît les entrées labo avec détails en ligne et marqueurs -/*', () => {
+    const parsed = parseSessionMarkdown(INLINE_DETAILS_SESSION, 'docs/sessions/inline.md');
+    expect(parsed.galeres.map((g) => g.title)).toEqual(['Build failure', 'Marqueur étoile']);
   });
 });
 

@@ -38,11 +38,15 @@ function extractSection(content: string, name: string): string | undefined {
   return body.join('\n').trim();
 }
 
-/** Découpe la section labo en galères : chaque puce top-level `- **titre**` est une entrée. */
+/**
+ * Découpe la section labo en galères : chaque puce top-level (`-`, `*` ou `+`) qui COMMENCE par un
+ * titre en gras `**titre**` est une entrée. Les détails (symptôme/geste/raison) peuvent suivre sur
+ * la même ligne (`- **Titre** — Symptôme : …`) ou sur des lignes indentées juste en dessous.
+ */
 function parseGaleres(sectionBody: string | undefined): GalereEntry[] {
   if (!sectionBody) return [];
   const galeres: GalereEntry[] = [];
-  const bulletRe = /^- \*\*(.+?)\*\*\s*$/gm;
+  const bulletRe = /^[-*+][ \t]+\*\*(.+?)\*\*/gm;
   let match: RegExpExecArray | null;
   while ((match = bulletRe.exec(sectionBody)) !== null) {
     galeres.push({ title: match[1].trim() });

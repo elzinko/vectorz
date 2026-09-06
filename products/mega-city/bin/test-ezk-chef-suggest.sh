@@ -90,6 +90,23 @@ run "$A/report.json" "$A/session.md" >/dev/null
 after="$(find "$A" -type f | LC_ALL=C sort)"
 check "aucun fichier créé/modifié" "[[ \"\$before\" == \"\$after\" ]]"
 
+echo "Cas F (deux rapports .json → refus d'ambiguïté) :"
+set +e
+(cd "$MC" && npx tsx bin/ezk-chef-suggest.ts "$A/report.json" "$A/report.json" "$A/session.md" >/tmp/ezk-chef-suggest-f.$$ 2>&1); rc_f=$?
+set -e
+check "code de sortie ≠ 0"          "[[ \$rc_f -ne 0 ]]"
+check "message : récits en .md"     "grep -qi 'récits de session attendus en .md' /tmp/ezk-chef-suggest-f.$$"
+rm -f "/tmp/ezk-chef-suggest-f.$$"
+
+echo "Cas G (rapport tronqué → refus de forme, pas de crash) :"
+printf '%s' '{"schema":"sprint-report@0.1"}' > "$TMP/truncated.json"
+set +e
+(cd "$MC" && npx tsx bin/ezk-chef-suggest.ts "$TMP/truncated.json" "$A/session.md" >/tmp/ezk-chef-suggest-g.$$ 2>&1); rc_g=$?
+set -e
+check "code de sortie ≠ 0"          "[[ \$rc_g -ne 0 ]]"
+check "message : forme invalide"    "grep -qi 'forme invalide' /tmp/ezk-chef-suggest-g.$$"
+rm -f "/tmp/ezk-chef-suggest-g.$$"
+
 if [[ $FAIL -eq 0 ]]; then
   echo "test-ezk-chef-suggest.sh : OK"
 else
