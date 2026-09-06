@@ -386,26 +386,10 @@ window.EZK = {
   "profiles": 6
  },
  "liens": {
-  "total": 189,
+  "total": 194,
   "casses": 0
  },
  "orphans": [
-  {
-   "kind": "rule",
-   "id": "development/command-reproducibility"
-  },
-  {
-   "kind": "rule",
-   "id": "development/merge-when-absent-default"
-  },
-  {
-   "kind": "rule",
-   "id": "development/run-freshness-origin-main"
-  },
-  {
-   "kind": "rule",
-   "id": "development/worktree-secondary-inline-harvest"
-  },
   {
    "kind": "rule",
    "id": "development/yaml-emission-via-lib"
@@ -477,10 +461,6 @@ window.EZK = {
   {
    "kind": "rule",
    "id": "recipe/valid-frontmatter"
-  },
-  {
-   "kind": "rule",
-   "id": "testing/manual-validation-camera-gesture"
   },
   {
    "kind": "rule",
@@ -1579,7 +1559,9 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [],
+   "bundles": [
+    "development"
+   ],
    "agents": []
   },
   "development/handle-blockers": {
@@ -1612,7 +1594,9 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [],
+   "bundles": [
+    "development"
+   ],
    "agents": []
   },
   "development/playwright-mcp-usage": {
@@ -1661,7 +1645,9 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [],
+   "bundles": [
+    "development"
+   ],
    "agents": []
   },
   "development/test-philosophy": {
@@ -1705,7 +1691,9 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [],
+   "bundles": [
+    "development"
+   ],
    "agents": []
   },
   "development/yaml-emission-via-lib": {
@@ -1898,7 +1886,9 @@ window.EZK = {
    "enforcements": [
     "agent-check"
    ],
-   "bundles": [],
+   "bundles": [
+    "testing"
+   ],
    "agents": []
   },
   "testing/mobile-first-testing": {
@@ -2176,14 +2166,18 @@ window.EZK = {
    "extends": [],
    "rules": [
     "development/adversarial-review-before-merge",
+    "development/command-reproducibility",
     "development/handle-blockers",
     "development/local-first-feedback",
+    "development/merge-when-absent-default",
     "development/playwright-mcp-usage",
     "development/pr-before-after-media",
     "development/quality-guardrails",
+    "development/run-freshness-origin-main",
     "development/test-philosophy",
     "development/use-project-scripts",
-    "development/workaround-traceability"
+    "development/workaround-traceability",
+    "development/worktree-secondary-inline-harvest"
    ],
    "profiles": [
     "cop1-target"
@@ -2203,6 +2197,7 @@ window.EZK = {
    "id": "testing",
    "extends": [],
    "rules": [
+    "testing/manual-validation-camera-gesture",
     "testing/mobile-first-testing",
     "testing/mobile-interactions",
     "testing/playwright-workflow",

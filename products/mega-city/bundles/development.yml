@@ -9,3 +9,7 @@ rules:
   - development/adversarial-review-before-merge
   - development/pr-before-after-media
   - development/playwright-mcp-usage
+  - development/run-freshness-origin-main
+  - development/command-reproducibility
+  - development/merge-when-absent-default
+  - development/worktree-secondary-inline-harvest
