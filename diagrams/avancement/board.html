@@ -271,7 +271,7 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 132,
-  "idea": 149,
+  "idea": 155,
   "blocked": 6,
   "in-progress": 4,
   "ready": 2
@@ -702,6 +702,23 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md"
+  },
+  {
+   "id": "20260906122942607",
+   "title": "RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens)",
+   "type": "chore",
+   "priority": "P1",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "methode",
+    "retro-2026-09-05",
+    "run-report"
+   ],
+   "file": "features/20260906122942607_run-report-synthese-fin-de-run.md"
   },
   {
    "id": "0020",
@@ -1951,6 +1968,93 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260905134937885_revue-locale-vs-codex-mesure.md"
   },
   {
+   "id": "20260906122942555",
+   "title": "Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation)",
+   "type": "chore",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "methode",
+    "retro-2026-09-05",
+    "run-intake"
+   ],
+   "file": "features/20260906122942555_preflight-contexte-de-run.md"
+  },
+  {
+   "id": "20260906122942662",
+   "title": "Écho du contrat avant un run auto (opérateur absent)",
+   "type": "chore",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "methode",
+    "retro-2026-09-05",
+    "run-intake"
+   ],
+   "file": "features/20260906122942662_echo-du-contrat-avant-run-auto.md"
+  },
+  {
+   "id": "20260906122942715",
+   "title": "Grain de livraison « lot empilé » — 1 PR, N commits propres pour fiches dépendantes",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "methode",
+    "retro-2026-09-05",
+    "ezk-pr"
+   ],
+   "file": "features/20260906122942715_grain-de-livraison-lot-empile.md"
+  },
+  {
+   "id": "20260906122942770",
+   "title": "SPIKE — pourquoi l'isolation worktree, avant de figer la moisson",
+   "type": "chore",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "methode",
+    "retro-2026-09-05",
+    "spike",
+    "worktree"
+   ],
+   "file": "features/20260906122942770_spike-isolation-worktree-avant-harvest.md"
+  },
+  {
+   "id": "20260906122942825",
+   "title": "SPIKE — coût du gate de fraîcheur offline / sans remote",
+   "type": "chore",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "methode",
+    "retro-2026-09-05",
+    "spike",
+    "run-intake"
+   ],
+   "file": "features/20260906122942825_spike-cout-gate-fraicheur-offline.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2498,6 +2602,7 @@ window.EZK_AVANCEMENT = {
    "ezk-chef",
    "ezk-ci",
    "ezk-codex",
+   "ezk-pr",
    "follow-up",
    "fondation",
    "format",
@@ -2511,11 +2616,16 @@ window.EZK_AVANCEMENT = {
    "outillage",
    "r&d",
    "retro",
+   "retro-2026-09-05",
+   "run-intake",
+   "run-report",
+   "spike",
    "supervision",
    "template",
    "test",
    "testbed",
-   "validation"
+   "validation",
+   "worktree"
   ]
  }
 };
@@ -3939,6 +4049,54 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260906122942825",
+   "title": "SPIKE — coût du gate de fraîcheur offline / sans remote",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260906122942825_spike-cout-gate-fraicheur-offline.md"
+  },
+  {
+   "id": "20260906122942770",
+   "title": "SPIKE — pourquoi l'isolation worktree, avant de figer la moisson",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260906122942770_spike-isolation-worktree-avant-harvest.md"
+  },
+  {
+   "id": "20260906122942715",
+   "title": "Grain de livraison « lot empilé » — 1 PR, N commits propres pour fiches dépendantes",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260906122942715_grain-de-livraison-lot-empile.md"
+  },
+  {
+   "id": "20260906122942662",
+   "title": "Écho du contrat avant un run auto (opérateur absent)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260906122942662_echo-du-contrat-avant-run-auto.md"
+  },
+  {
+   "id": "20260906122942607",
+   "title": "RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens)",
+   "status": "idea",
+   "priority": "P1",
+   "inPlan": false,
+   "file": "features/20260906122942607_run-report-synthese-fin-de-run.md"
+  },
+  {
+   "id": "20260906122942555",
+   "title": "Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260906122942555_preflight-contexte-de-run.md"
+  },
+  {
    "id": "20260905134937885",
    "title": "Revue adverse locale vs Codex — mesurer avant d'arbitrer (peut-on sortir la PR du chemin ?)",
    "status": "idea",
@@ -4009,54 +4167,6 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260903085150321_nommage-commandes-scrum-safe.md"
-  },
-  {
-   "id": "20260902224043892",
-   "title": "Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md"
-  },
-  {
-   "id": "20260901173549334",
-   "title": "ezk multi-client : cap Cursor + modèle & effort configurables par hôte",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md"
-  },
-  {
-   "id": "20260831075615969",
-   "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
-   "status": "idea",
-   "priority": "P0",
-   "inPlan": false,
-   "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
-  },
-  {
-   "id": "20260831075615809",
-   "title": "ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir",
-   "status": "ready",
-   "priority": "P0",
-   "inPlan": false,
-   "file": "features/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md"
-  },
-  {
-   "id": "20260830225021794",
-   "title": "ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md"
-  },
-  {
-   "id": "20260830194601376",
-   "title": "SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260830194601376_spike-degiter-vues-outillage.md"
   }
  ],
  "offPlanCount": 5,

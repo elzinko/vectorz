@@ -379,14 +379,14 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 67,
+  "rules": 72,
   "agents": 8,
   "skills": 24,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 184,
+  "total": 194,
   "casses": 0
  },
  "orphans": [
@@ -1551,6 +1551,19 @@ window.EZK = {
    ],
    "agents": []
   },
+  "development/command-reproducibility": {
+   "id": "development/command-reproducibility",
+   "title": "Une instruction inline oriente le QUOI, jamais le COMMENT d'une commande",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "development"
+   ],
+   "agents": []
+  },
   "development/handle-blockers": {
    "id": "development/handle-blockers",
    "title": "Stop and Inform on Blockers",
@@ -1568,6 +1581,19 @@ window.EZK = {
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [],
+   "bundles": [
+    "development"
+   ],
+   "agents": []
+  },
+  "development/merge-when-absent-default": {
+   "id": "development/merge-when-absent-default",
+   "title": "En mode auto, une fiche verte se merge — le merge n'est pas un STOP",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
    "bundles": [
     "development"
    ],
@@ -1611,6 +1637,19 @@ window.EZK = {
    ],
    "agents": []
   },
+  "development/run-freshness-origin-main": {
+   "id": "development/run-freshness-origin-main",
+   "title": "Un run part d'un origin/main frais, jamais du main local",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "development"
+   ],
+   "agents": []
+  },
   "development/test-philosophy": {
    "id": "development/test-philosophy",
    "title": "Testing Philosophy",
@@ -1639,6 +1678,19 @@ window.EZK = {
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [],
+   "bundles": [
+    "development"
+   ],
+   "agents": []
+  },
+  "development/worktree-secondary-inline-harvest": {
+   "id": "development/worktree-secondary-inline-harvest",
+   "title": "En worktree secondaire, délégation inline ou moisson vérifiée",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
    "bundles": [
     "development"
    ],
@@ -1824,6 +1876,19 @@ window.EZK = {
     "agent-check"
    ],
    "bundles": [],
+   "agents": []
+  },
+  "testing/manual-validation-camera-gesture": {
+   "id": "testing/manual-validation-camera-gesture",
+   "title": "« Validé » ≠ « tests verts » pour une fiche caméra ou geste",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "testing"
+   ],
    "agents": []
   },
   "testing/mobile-first-testing": {
@@ -2101,14 +2166,18 @@ window.EZK = {
    "extends": [],
    "rules": [
     "development/adversarial-review-before-merge",
+    "development/command-reproducibility",
     "development/handle-blockers",
     "development/local-first-feedback",
+    "development/merge-when-absent-default",
     "development/playwright-mcp-usage",
     "development/pr-before-after-media",
     "development/quality-guardrails",
+    "development/run-freshness-origin-main",
     "development/test-philosophy",
     "development/use-project-scripts",
-    "development/workaround-traceability"
+    "development/workaround-traceability",
+    "development/worktree-secondary-inline-harvest"
    ],
    "profiles": [
     "cop1-target"
@@ -2128,6 +2197,7 @@ window.EZK = {
    "id": "testing",
    "extends": [],
    "rules": [
+    "testing/manual-validation-camera-gesture",
     "testing/mobile-first-testing",
     "testing/mobile-interactions",
     "testing/playwright-workflow",
