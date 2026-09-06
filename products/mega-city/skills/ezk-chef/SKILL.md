@@ -1,23 +1,26 @@
 ---
 name: ezk-chef
-argument-hint: "[help|check|extract|regen|list]"
+argument-hint: "[help|check|extract|suggest|regen|list]"
 description: >-
   Hub de la famille d'artefacts « recette » (recipes/*.md) — le point d'entrée
   verbes pour tout ce qui touche une recette. A utiliser quand l'utilisateur
   veut « fais-en une recette », « capitalise cette feature en recette »,
   « extrais une recette depuis la fiche X », « ezk-chef », « vérifie / valide
-  cette recette », « range le livre des recettes », ou liste ce qui existe
-  déjà comme recette. Pilotable par sous-commandes : help, check (délègue le
-  jugement à l'agent `ezk-chef` — gate mécanique + verdict GO/NO-GO), extract
-  (produit un BROUILLON de recette `status: draft` depuis une fiche déjà
-  shippée — cœur de ce sprint ; extraction depuis une implémentation de
-  référence d'un autre projet : à venir), regen/list (réécrit
-  `recipes/RECIPES.md` via `regen-recipes.sh`). Orchestrateur MINCE, façon
-  `ezk-backlog` : il ne réimplémente pas le jugement de l'agent `ezk-chef`
-  (déjà livré) ni le régénérateur du livre (déjà livré) — il les COMPOSE et
-  ajoute la partie mécanique manquante (`extract`). N'EST PAS `ezk-ezk` (qui
-  fabrique des *skills*, pas des recettes) ; `ezk-chef scan` (sourcer des repos
-  froids, fiche 0147) est différé.
+  cette recette », « détecter les candidats-recette d'un sprint qui vient de
+  finir », « range le livre des recettes », ou liste ce qui existe déjà comme
+  recette. Pilotable par sous-commandes : help, check (délègue le jugement à
+  l'agent `ezk-chef` — gate mécanique + verdict GO/NO-GO), extract (produit un
+  BROUILLON de recette `status: draft` depuis une fiche déjà shippée ;
+  extraction depuis une implémentation de référence d'un autre projet : à
+  venir), suggest (lecture seule : lit le rapport + les récits d'un sprint
+  fini et PROPOSE des candidats-recette, sans rien créer — invoquée par la
+  rétro), regen/list (réécrit `recipes/RECIPES.md` via `regen-recipes.sh`).
+  Orchestrateur MINCE, façon `ezk-backlog` : il ne réimplémente pas le
+  jugement de l'agent `ezk-chef` (déjà livré) ni le régénérateur du livre
+  (déjà livré) — il les COMPOSE et ajoute la partie mécanique manquante
+  (`extract`, `suggest`). N'EST PAS `ezk-ezk` (qui fabrique des *skills*, pas
+  des recettes) ; `ezk-chef scan` (sourcer des repos froids, fiche 0147) est
+  différé.
 ---
 
 # ezk-chef
@@ -41,6 +44,7 @@ pilote, l'agent tranche.
 | `help` (ou **sans argument**) | Affiche ce tableau |
 | `check [<fichier-ou-id>]` | **Délègue à l'agent `ezk-chef`** : gate mécanique (`regen-recipes.sh`, `check-links.sh`, front-matter) puis jugement (zéro code stocké, playbook + composes, En clair en tête) → verdict GO/NO-GO |
 | `extract <id-fiche-shippée>` | Produit un **brouillon** `recipes/<slug>.md` (`status: draft`) depuis une fiche `features/done/<id>_*.md` — mécanique via `bin/ezk-chef-extract.sh`, jugement laissé en `TODO(jugement)` explicites. Source (a) — impl de référence d'un autre projet — **à venir**, non construite ici. |
+| `suggest <rapport.json> <récit.md>...` | **Lecture seule.** Lit le rapport de sprint + les récits de session **passés explicitement en chemins**, et affiche les candidats-recette (`ficheId` + motif + pointeurs) — n'écrit rien, ne crée aucune fiche |
 | `regen` / `list` | Réécrit `recipes/RECIPES.md` depuis le front-matter de chaque recette (`bin/regen-recipes.sh`) — c'est aussi la façon de **lister** les recettes existantes |
 
 ## `check` — déléguer le jugement
@@ -97,6 +101,34 @@ n'est **pas construit** dans ce MVP — trop coûteux à bien faire mécaniqueme
 voie (b) couvre le besoin immédiat. Quand elle sera construite, elle prendra un chemin de
 projet en argument et pointera sa racine dans `source:`, sans jamais recopier de code
 (même doctrine ADR-0013).
+
+## `suggest` — détecter les candidats-recette d'un sprint (fiche 20260831075615809)
+
+**Lecture seule (ADR-0013) : `suggest` propose, ne crée aucune fiche, ne recopie aucun
+code.** Invoquée par la **rétro**, jamais en autonomie — comme elle invoque déjà
+`ezk-backlog add`.
+
+```bash
+npx tsx products/mega-city/bin/ezk-chef-suggest.ts <rapport-sprint.json> <récit-session.md>...
+```
+
+- **Entrée = des chemins fournis explicitement par l'appelant.** `suggest` ne devine ni le
+  sprint ni les sessions qui lui appartiennent : sans rapport (ou sans récit), il **refuse**
+  plutôt que de deviner. La rétro les produit juste avant d'appeler `suggest` (checkpoint de
+  fin de sprint, séquencement décrit dans la fiche voisine).
+- **Attribution galère → fiche, déterministe.** Un récit **mono-feature** (entête `fiches:`
+  à un seul id) verse ses galères à cette fiche. Un récit **multi-feature** reste **ambigu**
+  et ne produit **aucun** candidat (option d'attribution par entrée : réservée, fiche labo
+  `20260829123707100`).
+- **Source des candidats = les galères** de la section « Galères & gestes (labo) »
+  (`docs/sessions/README.md`), pas la liste `kpi.shippedFeatures` du rapport (au checkpoint,
+  la fiche du sprint courant n'y figure pas encore). Zéro galère exploitable → zéro candidat.
+- Cœur pur et testé sur fixtures : `products/mega-city/src/core/ezk-chef-suggest.ts`
+  (`parseSessionMarkdown`, `detectCandidates`), zéro I/O. Le bord (`bin/ezk-chef-suggest.ts`)
+  lit les fichiers, refuse franc, affiche — n'écrit jamais.
+- **Frontière avec `ezk-chef scan`** (ex-`ezk-recipy` / `0147`, **différé**) : `scan` sonde
+  des **repos froids** (externes, dormants) ; `suggest` regarde le **sprint chaud** qui vient
+  de finir, via les artefacts que la rétro vient de produire. Entrées et moment différents.
 
 ## `regen` / `list` — le livre (déjà livré, mince ici)
 

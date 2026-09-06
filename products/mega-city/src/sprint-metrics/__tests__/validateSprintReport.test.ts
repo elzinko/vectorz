@@ -99,6 +99,30 @@ describe('validateSprintReport', () => {
     }
   });
 
+  it('ne PLANTE pas quand la RACINE est null / non-objet : violation + code 1 (jamais une exception)', () => {
+    for (const root of [null, 42, 'x', []] as unknown[]) {
+      const result = validateSprintReport(writeReport(root));
+      expect(result.code).toBe(1);
+      expect(result.violations.some((v) => v.code === 'report.not_object')).toBe(true);
+    }
+  });
+
+  it('refuse un discriminateur schema inattendu même quand la forme est complète', () => {
+    const broken = { ...completeReport, schema: 'unrelated@1' };
+    const result = validateSprintReport(writeReport(broken));
+    expect(result.code).toBe(1);
+    expect(result.violations.some((v) => v.code === 'report.wrong_schema')).toBe(true);
+  });
+
+  it('ne PLANTE pas quand une section KPI imbriquée vaut null : violation + code 1', () => {
+    for (const child of ['shippedFeatures', 'blockages', 'prRetouches'] as const) {
+      const broken = { ...completeReport, kpi: { ...completeReport.kpi, [child]: null } };
+      const result = validateSprintReport(writeReport(broken));
+      expect(result.code).toBe(1);
+      expect(result.violations.length).toBeGreaterThan(0);
+    }
+  });
+
   it('refuse un rapport où tokens.totalTokens ≠ input+output', () => {
     const broken = { ...completeReport, tokens: { ...completeReport.tokens, totalTokens: 99_999 } };
     const result = validateSprintReport(writeReport(broken));

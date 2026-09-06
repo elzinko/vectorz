@@ -5,9 +5,9 @@ type: feature
 priority: P0
 product: mega-city
 epic:
-status: ready
+status: shipped
 ready: 2026-08-31
-pr:
+pr: "#214"
 created: 2026-08-31
 ---
 
@@ -19,7 +19,7 @@ created: 2026-08-31
 Cette fiche ajoute une sous-commande **`ezk-chef suggest`** : elle lit le sprint qui vient de
 finir (fiches livrées + galères notées) et répond « recette possible sur la fiche X ». Elle ne
 crée rien — elle **informe**. C'est la **rétro** qui l'invoque, et qui décide ensuite (fiche
-voisine [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
+voisine [20260831075615969](../20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
 
 ## Contexte / Problème
 
@@ -36,7 +36,7 @@ candidats-recettes :
 Manque le maillon « détection » : lire le sprint et proposer des candidats. Aujourd'hui personne
 ne le fait ; la matière dort.
 
-Frontière avec le cousin [0147](0147-ezk-recipy-mvp.md) (`ezk-recipy` / `scan`) : lui sonde des
+Frontière avec le cousin [0147](../0147-ezk-recipy-mvp.md) (`ezk-recipy` / `scan`) : lui sonde des
 **repos froids** (externes, dormants). `suggest` regarde le sprint **chaud** qui vient de finir.
 Entrées et moment différents — ne pas les confondre.
 
@@ -56,7 +56,7 @@ Ajouter à `ezk-chef` une sous-commande **`suggest <sprint>`** (lecture seule, a
    **Prérequis de fraîcheur (séquencement, option A) :** au checkpoint de fin de sprint, les
    galères vivent encore dans le `SPRINT.md` non commité et le rapport n'est pas encore généré.
    C'est la **rétro qui produit ces artefacts juste avant** d'appeler `suggest` (voir la fiche
-   voisine [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
+   voisine [20260831075615969](../20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
    `suggest` lit donc des artefacts **frais et stables** — jamais le `SPRINT.md` live, et jamais
    « du vide » parce que la clôture n'a pas encore eu lieu.
 2. **Attribution galère → feature (déterministe, sinon pas de candidat).**
@@ -113,12 +113,12 @@ d'améliorabilité (Sujet B / ADR-030) : un seul moteur, plusieurs appelants.
   brainstorming du 2026-08-31 (panel ezk-architect / pm / reviewer / dev, 2 tours).
 - **P0** demandée par le PO.
 - **Voisine** :
-  [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) — la
+  [20260831075615969](../20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) — la
   rétro invoque `suggest` et décide. Membre du **cluster recette** (voir
-  [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md)).
+  [20260829123707200](../20260829123707200_reunifier-tagger-cluster-recette.md)).
 - **Compose** : le rapport de sprint (fiche `20260826082120062`, shippée), le labo
-  ([20260829123707100](done/20260829123707100_labo-de-cuisine-journal-difficultes.md), shippée),
+  ([20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md), shippée),
   `ezk-chef extract` (livré). **Dépendances déjà satisfaites.**
 - **Frontière** : ne déclenche pas la rétro (réglage séparé) ; ne construit pas la recette
-  (sprint N+1) ; pas de scan de repos froids ([0147](0147-ezk-recipy-mvp.md)).
+  (sprint N+1) ; pas de scan de repos froids ([0147](../0147-ezk-recipy-mvp.md)).
 - Doctrine : ADR-0013 (une recette propose, ne fabrique pas de code seule).
