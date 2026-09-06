@@ -128,12 +128,15 @@ const MIGRATED_BUNDLES = [
 ];
 
 describe('expandProfile — 8 bundles migrés depuis iamthelaw (fiche 0006, -2 orphelins 2026-08-30)', () => {
-  it('charge les 8 bundles sans erreur et résout 48 règles distinctes (59 d’origine − 6 documentation-guidelines − 5 hexagonal)', () => {
+  it('charge les 8 bundles sans erreur et résout 53 règles distinctes (48 + 5 règles rétro 2026-09-05)', () => {
     const catalog = loadCatalog(repoRoot);
     const profile = { id: 'iamthelaw-full', bundles: MIGRATED_BUNDLES, agents: [], skills: [] };
     const resolved = expandProfile(profile, catalog);
-    expect(resolved.rules).toHaveLength(48);
+    // +5 le 2026-09-05 : 4 règles development + 1 règle testing déposées par la rétro méthode
+    // (run-freshness-origin-main, command-reproducibility, merge-when-absent-default,
+    //  worktree-secondary-inline-harvest, manual-validation-camera-gesture).
+    expect(resolved.rules).toHaveLength(53);
     // pas de doublon d'id malgré 8 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(48);
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(53);
   });
 });

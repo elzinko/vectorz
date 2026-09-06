@@ -4,3 +4,4 @@ rules:
   - testing/mobile-interactions
   - testing/visual-validation
   - testing/playwright-workflow
+  - testing/manual-validation-camera-gesture
