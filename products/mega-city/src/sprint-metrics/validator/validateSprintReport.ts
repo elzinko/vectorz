@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { SPRINT_REPORT_SCHEMA } from '../domain/types.js';
 
 export interface Violation {
   code: string;
@@ -70,6 +71,16 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
   }
   if (violations.length > 0) return { violations, notices, code: 1 };
 
+  // Discriminateur : la VALEUR du schéma, pas seulement sa présence. Un fichier bien formé mais
+  // tagué pour un autre schéma n'est pas un rapport de sprint (retour Codex PR #214).
+  if (report.schema !== SPRINT_REPORT_SCHEMA) {
+    violations.push({
+      code: 'report.wrong_schema',
+      message: `Schéma inattendu : "${String(report.schema)}" (attendu "${SPRINT_REPORT_SCHEMA}")`,
+    });
+    return { violations, notices, code: 1 };
+  }
+
   const sprint = asObject(report.sprint);
   if (!sprint || typeof sprint.slug !== 'string' || sprint.slug.length === 0) {
     violations.push({ code: 'report.missing_field', message: 'Champ manquant/invalide : "sprint.slug"' });
@@ -108,9 +119,11 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
     }
   }
 
-  const kpi = report.kpi as Record<string, unknown> | undefined;
-  const shippedFeatures = kpi?.shippedFeatures as Record<string, unknown> | undefined;
-  if (shippedFeatures === undefined || typeof shippedFeatures.count !== 'number' || !Array.isArray(shippedFeatures.ids)) {
+  // Enfants KPI normalisés via asObject : une section imbriquée à `null` (ex. `shippedFeatures:null`)
+  // doit rendre une violation, jamais planter au déréférencement (retour Codex PR #214).
+  const kpi = asObject(report.kpi);
+  const shippedFeatures = asObject(kpi?.shippedFeatures);
+  if (shippedFeatures === null || typeof shippedFeatures.count !== 'number' || !Array.isArray(shippedFeatures.ids)) {
     violations.push({ code: 'report.missing_field', message: 'Champ manquant : "kpi.shippedFeatures"' });
   } else if (shippedFeatures.count !== shippedFeatures.ids.length) {
     violations.push({
@@ -119,8 +132,8 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
     });
   }
 
-  const blockages = kpi?.blockages as Record<string, unknown> | undefined;
-  if (blockages === undefined || typeof blockages.count !== 'number' || !Array.isArray(blockages.events)) {
+  const blockages = asObject(kpi?.blockages);
+  if (blockages === null || typeof blockages.count !== 'number' || !Array.isArray(blockages.events)) {
     violations.push({ code: 'report.missing_field', message: 'Champ manquant : "kpi.blockages"' });
   } else if (blockages.count !== blockages.events.length) {
     violations.push({
@@ -129,9 +142,9 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
     });
   }
 
-  const prRetouches = kpi?.prRetouches as Record<string, unknown> | undefined;
+  const prRetouches = asObject(kpi?.prRetouches);
   if (
-    prRetouches === undefined ||
+    prRetouches === null ||
     typeof prRetouches.total !== 'number' ||
     typeof prRetouches.sansRetouche !== 'number' ||
     typeof prRetouches.indetermine !== 'number'

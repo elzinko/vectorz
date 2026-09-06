@@ -107,6 +107,15 @@ check "code de sortie ≠ 0"          "[[ \$rc_g -ne 0 ]]"
 check "message : rapport invalide"  "grep -qi 'rapport de sprint invalide' /tmp/ezk-chef-suggest-g.$$"
 rm -f "/tmp/ezk-chef-suggest-g.$$"
 
+echo "Cas H (schéma inattendu mais forme complète → refus, pas d'émission) :"
+printf '%s' '{"schema":"unrelated@1","sprint":{"slug":"x"},"generatedAt":"2026-01-01T00:00:00.000Z","window":{"startTs":"2026-01-01T00:00:00.000Z","endTs":"2026-01-02T00:00:00.000Z"},"duration":{"ms":1,"grain":"sprint"},"tokens":{"grain":"sprint","inputTokens":1,"outputTokens":1,"totalTokens":2},"kpi":{"shippedFeatures":{"count":0,"ids":[]},"blockages":{"count":0,"events":[]},"prRetouches":{"total":0,"sansRetouche":0,"indetermine":0}},"steps":{"ventilated":false,"note":"x"}}' > "$TMP/wrongschema.json"
+set +e
+(cd "$MC" && npx tsx bin/ezk-chef-suggest.ts "$TMP/wrongschema.json" "$A/session.md" >/tmp/ezk-chef-suggest-h.$$ 2>&1); rc_h=$?
+set -e
+check "code de sortie ≠ 0"          "[[ \$rc_h -ne 0 ]]"
+check "message : rapport invalide"  "grep -qi 'rapport de sprint invalide' /tmp/ezk-chef-suggest-h.$$"
+rm -f "/tmp/ezk-chef-suggest-h.$$"
+
 if [[ $FAIL -eq 0 ]]; then
   echo "test-ezk-chef-suggest.sh : OK"
 else
