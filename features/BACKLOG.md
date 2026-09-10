@@ -1,7 +1,7 @@
 # Backlog features & bugs — vectorz
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
-> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped · 🗑️ superseded.
 
 > 📋 Séquence décidée (curée, hors index) : [PLAN.md](PLAN.md).
 
@@ -34,7 +34,7 @@
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
 | [0021](done/0021-cabler-boucle-blocage.md) | câbler la boucle blocage (services existants) — l'escalade cesse d'être terminale | feature | P1 |  | vectorz | ✅ shipped | #50 |
 | [0027](done/0027-validateur-journal-supervisabilite.md) | Validateur de journal de supervisabilité — l'invariant devient exécutable | feature | P1 |  | vectorz | ✅ shipped | #62 |
-| [0030](0030-mvp-demo-desktop.md) | MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur) | feature | P1 |  | vectorz | 🟠 in-progress |  |
+| [0030](done/0030-mvp-demo-desktop.md) | MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur) | feature | P1 |  | vectorz | 🗑️ superseded | superseded — dépassé par Moniteur/Projets/Sessions |
 | [0031](done/0031-lecteur-journal-mission-control.md) | Lecteur de journal .supervision/runs/ dans la mission-control (mode moniteur) | feature | P1 |  | vectorz | ✅ shipped | #2 |
 | [0032](done/0032-daemon-port-config-ignore.md) | cop1 start ignore daemon.port de cop1.config.yaml (seul --port compte) | bug | P1 |  | vectorz | ✅ shipped | #15 |
 | [0033](done/0033-daemon-echec-silencieux-ram-budget.md) | Échec silencieux du daemon quand ram_budget_* dépasse la RAM physique | bug | P1 |  | vectorz | ✅ shipped | #16 |
@@ -106,7 +106,7 @@
 | [0023](done/0023-exposer-model-tiering-config.md) | exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 |  | vectorz | ✅ shipped | #52 |
 | [0025](done/0025-article-contrat-supervisabilite.md) | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 |  | vectorz | ✅ shipped | #57 |
 | [0026](done/0026-article-fenetres-de-mise-a-jour.md) | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 |  | vectorz | ✅ shipped | #59 |
-| [0038](0038-e3-pilote-natif.md) | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | 0034 | vectorz | ⛔ blocked |  |
+| [0038](done/0038-e3-pilote-natif.md) | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | 0034 | vectorz | 🗑️ superseded | superseded — pilote retiré (0039, PR 81) |
 | [0039](done/0039-e4-retrait-bmad.md) | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | 0034 | vectorz | ✅ shipped | #81 |
 | [0048](done/0048-champ-product-ezk-backlog.md) | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 |  | mega-city | ✅ shipped |  |
 | [0060](done/0060-checklist-demo-desktop-perimee.md) | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 |  | vectorz | ✅ shipped | #107 |
@@ -145,8 +145,8 @@
 | [0011](done/0011-mission-control-frames-buffer.md) | Buffer `frames` non borné dans la mission-control | refactor | P3 |  | vectorz | ✅ shipped | #41 |
 | [0012](done/0012-refresh-brownfield-snapshot.md) | Rafraîchir brownfield-snapshot.md (ancien emplacement worktree agent/) | chore | P3 |  | vectorz | ✅ shipped | #43 |
 | [0016](done/0016-dod-violations-mission-control.md) | Surfaçage des violations DoD dans la mission-control (web) | feature | P3 |  | vectorz | ✅ shipped | #44 |
-| [0017](0017-e2e-darkmode-cobaye.md) | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 |  | vectorz | ⛔ blocked |  |
-| [0018](0018-dodlimiter-wiring.md) | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | 0034 | vectorz | ⛔ blocked |  |
+| [0017](done/0017-e2e-darkmode-cobaye.md) | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — cobaye 0041 (déc. 2026-08-07) |
+| [0018](done/0018-dodlimiter-wiring.md) | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | 0034 | vectorz | 🗑️ superseded | superseded — mode pilote retiré |
 | [0019](done/0019-typecheck-stale-state-robustness.md) | Rendre `pnpm typecheck` robuste sur état stale (TS6310) | chore | P3 |  | vectorz | ✅ shipped | #49 |
 | [0182](done/0182-e4-bis-purge-docs-post-bmad.md) | E4 bis — docs vivants post-BMAD (complément 0039) | chore | P3 |  | vectorz | ✅ shipped | #101 |
 | [20260813170548417](done/20260813170548417_supprimer-tombstone-mega-city-features.md) | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 |  | mega-city | ✅ shipped | #147 |

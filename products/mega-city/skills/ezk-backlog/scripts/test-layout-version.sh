@@ -19,7 +19,7 @@ echo "Cas A (missing) :"
 mkdir -p "$TMP/empty"
 out_a="$("$CHECK" "$TMP/empty")"
 check "STATUS=missing" "printf '%s' \"\$out_a\" | grep -q 'STATUS=missing'"
-check "CURRENT=3" "printf '%s' \"\$out_a\" | grep -q 'CURRENT=3'"
+check "CURRENT=4" "printf '%s' \"\$out_a\" | grep -q 'CURRENT=4'"
 
 # Cas B : legacy README index généré → behind, pending 002
 B="$TMP/legacy"
@@ -59,7 +59,7 @@ D="$TMP/fresh"
 mkdir -p "$D"
 bash "$SKILL/init.sh" "$D" "Backlog — fresh" >/dev/null
 echo "Cas D (init) :"
-check "README curé" "grep -q '^layout_version: 3' '$D/features/README.md'"
+check "README curé" "grep -q '^layout_version: 4' '$D/features/README.md'"
 check "BACKLOG.md présent" "test -f '$D/features/BACKLOG.md'"
 check "done/ présent" "test -d '$D/features/done'"
 check "template présent" "test -f '$D/features/feature-template.md'"

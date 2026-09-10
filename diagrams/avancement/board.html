@@ -271,12 +271,13 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 134,
-  "idea": 157,
-  "blocked": 6,
-  "in-progress": 4,
-  "ready": 1
+  "idea": 159,
+  "superseded": 4,
+  "blocked": 3,
+  "in-progress": 3,
+  "ready": 2
  },
- "tirables": 1,
+ "tirables": 2,
  "actives": [
   {
    "id": "20260826122532943",
@@ -309,19 +310,6 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
-  },
-  {
-   "id": "0030",
-   "title": "MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur)",
-   "type": "feature",
-   "priority": "P1",
-   "status": "in-progress",
-   "ready": false,
-   "epic": "",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0030-mvp-demo-desktop.md"
   },
   {
    "id": "0050",
@@ -732,19 +720,6 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/0024-resorber-peripherie-pre-pivot.md"
-  },
-  {
-   "id": "0038",
-   "title": "E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD)",
-   "type": "feature",
-   "priority": "P2",
-   "status": "blocked",
-   "ready": false,
-   "epic": "0034",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0038-e3-pilote-natif.md"
   },
   {
    "id": "0040",
@@ -2073,6 +2048,38 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260906135450000_recette-emulateur-android-test-device.md"
   },
   {
+   "id": "20260910152227744",
+   "title": "Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "20260910155608287",
+   "product": "vectorz",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md"
+  },
+  {
+   "id": "20260910165637000",
+   "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
+   "type": "feature",
+   "priority": "P2",
+   "status": "ready",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-method",
+    "qa",
+    "bug-hunting",
+    "testbed",
+    "scout"
+   ],
+   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2084,32 +2091,6 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/0007-v11-session-log-commit-discipline.md"
-  },
-  {
-   "id": "0017",
-   "title": "E2E Playwright — dark-mode cobaye (post-FEAT-S1)",
-   "type": "chore",
-   "priority": "P3",
-   "status": "blocked",
-   "ready": false,
-   "epic": "",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0017-e2e-darkmode-cobaye.md"
-  },
-  {
-   "id": "0018",
-   "title": "Câbler DoDLimiter (N rejets DoD → blocked + escalade)",
-   "type": "feature",
-   "priority": "P3",
-   "status": "blocked",
-   "ready": false,
-   "epic": "0034",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0018-dodlimiter-wiring.md"
   },
   {
    "id": "0028",
@@ -2459,14 +2440,12 @@ window.EZK_AVANCEMENT = {
    "title": "Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)",
    "status": "in-progress",
    "children": [
-    "0018",
     "0020",
     "0024",
-    "0038",
     "0040"
    ],
    "childCounts": {
-    "blocked": 2,
+    "superseded": 2,
     "idea": 3,
     "shipped": 4
    }
@@ -2584,6 +2563,17 @@ window.EZK_AVANCEMENT = {
    "childCounts": {
     "idea": 3
    }
+  },
+  {
+   "id": "20260910155608287",
+   "title": "Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)",
+   "status": "idea",
+   "children": [
+    "20260910152227744"
+   ],
+   "childCounts": {
+    "idea": 1
+   }
   }
  ],
  "filtres": {
@@ -2608,6 +2598,7 @@ window.EZK_AVANCEMENT = {
    "architecture",
    "article",
    "bmad",
+   "bug-hunting",
    "ci",
    "cout",
    "decouvrabilite",
@@ -2621,6 +2612,7 @@ window.EZK_AVANCEMENT = {
    "ezk-chef",
    "ezk-ci",
    "ezk-codex",
+   "ezk-method",
    "ezk-pr",
    "follow-up",
    "fondation",
@@ -2633,12 +2625,14 @@ window.EZK_AVANCEMENT = {
    "moteur",
    "nommage",
    "outillage",
+   "qa",
    "r&d",
    "recette",
    "retro",
    "retro-2026-09-05",
    "run-intake",
    "run-report",
+   "scout",
    "spike",
    "supervision",
    "template",
@@ -2991,21 +2985,21 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "`audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le",
+     "text": "~~`audit` **0030** (MVP démo Desktop)~~ — **clôturée `superseded`** (2026-09-10) : livrée par",
      "marker": "audit",
-     "struck": false,
+     "struck": true,
      "cards": [
       {
        "id": "0030",
        "title": "MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur)",
-       "status": "in-progress",
+       "status": "superseded",
        "priority": "P1",
        "ready": false,
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
-       "file": "features/0030-mvp-demo-desktop.md",
+       "pr": "superseded — dépassé par Moniteur/Projets/Sessions",
+       "file": "features/done/0030-mvp-demo-desktop.md",
        "found": true
       }
      ]
@@ -3920,9 +3914,9 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "**Archi historique** — epic 0034 · 0024 · 0038 (bloqué) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve).",
+     "text": "**Archi historique** — epic 0034 · 0024 ; ~~0038~~ **`superseded`** (pilote retiré, 0039 #81) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve). *(0017 · 0018 aussi `superseded` le 2026-09-10.)*",
      "marker": null,
-     "struck": false,
+     "struck": true,
      "cards": [
       {
        "id": "0034",
@@ -3953,14 +3947,14 @@ window.EZK_PLAN = {
       {
        "id": "0038",
        "title": "E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD)",
-       "status": "blocked",
+       "status": "superseded",
        "priority": "P2",
        "ready": false,
        "epic": "0034",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
-       "file": "features/0038-e3-pilote-natif.md",
+       "pr": "superseded — pilote retiré (0039, PR 81)",
+       "file": "features/done/0038-e3-pilote-natif.md",
        "found": true
       },
       {
@@ -3974,6 +3968,32 @@ window.EZK_PLAN = {
        "type": "refactor",
        "pr": "",
        "file": "features/done/0039-e4-retrait-bmad.md",
+       "found": true
+      },
+      {
+       "id": "0017",
+       "title": "E2E Playwright — dark-mode cobaye (post-FEAT-S1)",
+       "status": "superseded",
+       "priority": "P3",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "chore",
+       "pr": "superseded — cobaye 0041 (déc. 2026-08-07)",
+       "file": "features/done/0017-e2e-darkmode-cobaye.md",
+       "found": true
+      },
+      {
+       "id": "0018",
+       "title": "Câbler DoDLimiter (N rejets DoD → blocked + escalade)",
+       "status": "superseded",
+       "priority": "P3",
+       "ready": false,
+       "epic": "0034",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "superseded — mode pilote retiré",
+       "file": "features/done/0018-dodlimiter-wiring.md",
        "found": true
       }
      ]
@@ -4055,8 +4075,8 @@ window.EZK_PLAN = {
  ],
  "counts": {
   "entries": 43,
-  "cards": 76,
-  "resolved": 74,
+  "cards": 78,
+  "resolved": 76,
   "shipped": 36,
   "unresolved": 2
  }
@@ -4068,6 +4088,30 @@ window.EZK_PLAN = {
 /*ezk-plan-delta:begin*/
 window.EZK_PLAN_DELTA = {
  "recent": [
+  {
+   "id": "20260910165637000",
+   "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
+   "status": "ready",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
+  },
+  {
+   "id": "20260910155608287",
+   "title": "Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md"
+  },
+  {
+   "id": "20260910152227744",
+   "title": "Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md"
+  },
   {
    "id": "20260906135450000",
    "title": "Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus)",
@@ -4163,33 +4207,9 @@ window.EZK_PLAN_DELTA = {
    "priority": "P3",
    "inPlan": false,
    "file": "features/20260904074824499_renommer-ezk-vers-mc.md"
-  },
-  {
-   "id": "20260903134909124",
-   "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md"
-  },
-  {
-   "id": "20260903134908019",
-   "title": "CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260903134908019_cli-ezk-complet-publie.md"
-  },
-  {
-   "id": "20260903134906920",
-   "title": "CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260903134906920_cli-ezk-point-d-entree-unique.md"
   }
  ],
- "offPlanCount": 4,
+ "offPlanCount": 3,
  "n": 15
 };
 /*ezk-plan-delta:end*/

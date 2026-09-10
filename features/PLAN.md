@@ -67,8 +67,8 @@ aggregate, readyé via #177) — probablement pris par une autre session.
   agent ; commits cop1 = local / one-shot only ([#86](https://github.com/elzinko/vectorz/issues/86))~~ — shipped #89.
 - ~~`ship` **0059** · **0061** (vectorz)~~ — fait (vérifié au `reconcile` du 2026-07-26).
 - ~~`ship` **0094** · **0095** (mega-city)~~ — fait au `reconcile` 2026-07-30 (#54, #55).
-- `audit` **0030** (MVP démo Desktop, in-progress) — le circuit démo tourne depuis le
-  2026-07-25, probablement à clore ou re-scoper.
+- ~~`audit` **0030** (MVP démo Desktop)~~ — **clôturée `superseded`** (2026-09-10) : livrée par
+  0027/0031/0094, dépassée par les vues Moniteur / Projets / Sessions.
 - ~~**0182** — E4 bis : docs vivants post-BMAD (hygiène P3, complément 0039) · `ship`~~ — shipped #101
 
 ## ▶️ NOW — voir et gérer ses projets
@@ -114,7 +114,7 @@ aggregate, readyé via #177) — probablement pris par une autre session.
 - **Articles & promo** — 0043/0049 · 0156/0053/0069/0073/0074/0062 · epic 0163.
 - **Méthode avancée** — 0065→0068 / 0077 / 0080 / 0088 / 0092 / 0100 (dont le seuil de lot ready, voir ci-dessous).
 - **2ᵉ méthode / BMAD** — 0162.
-- **Archi historique** — epic 0034 · 0024 · 0038 (bloqué) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve).
+- **Archi historique** — epic 0034 · 0024 ; ~~0038~~ **`superseded`** (pilote retiré, 0039 #81) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve). *(0017 · 0018 aussi `superseded` le 2026-09-10.)*
 
 ## 🚦 Note — lancement autonome (autre session)
 

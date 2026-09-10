@@ -27,6 +27,7 @@ mode explicite `--apply` sur un helper purement mécanique).
 |---|---|---|
 | 002 | [`002-readme-vs-backlog.md`](002-readme-vs-backlog.md) | README curé + `BACKLOG.md` généré (layout v1 → v2) |
 | 003 | [`003-statuts-colonnes.md`](003-statuts-colonnes.md) | retrait du statut `todo` → scindé en `idea` / `ready` (layout v2 → v3) |
+| 004 | [`004-statut-superseded.md`](004-statut-superseded.md) | statut terminal `superseded` (clôture d'une fiche obsolète, additive — layout v3 → v4) |
 
 Les fichiers `NNN-*.md` sont numérotés par la **version cible** (`002` ⇒ amène à
 `layout_version: 2`). Pending = `NNN > INSTALLED` et `NNN <= CURRENT`.

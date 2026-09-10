@@ -5,12 +5,17 @@ type: feature
 priority: P3
 product: vectorz
 epic: 0034
-status: blocked
-pr:
+status: superseded
+pr: superseded — mode pilote retiré
 created: 2026-06-25
 ---
 
 # 0018 — Câbler DoDLimiter (N rejets DoD → blocked + escalade)
+
+> **🗑️ Clôturée le 2026-09-10 — `superseded`.** Rouage du mode pilote, lui-même retiré. La
+> boucle de retry par story (son pré-requis) n'a jamais été construite et l'orchestrateur a été
+> supprimé. `DoDLimiter.ts` reste orphelin (candidat au code mort). L'escalade/blocage a été
+> livrée autrement (0021, #50). Sans objet post-pivot.
 
 ## Contexte / Problème
 

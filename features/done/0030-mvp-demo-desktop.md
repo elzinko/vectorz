@@ -4,12 +4,18 @@ title: MVP démo Desktop — un manager supervisé de bout en bout (mode moniteu
 type: feature
 priority: P1
 product: vectorz
-status: in-progress
-pr:
+status: superseded
+pr: superseded — dépassé par Moniteur/Projets/Sessions
 created: 2026-07-14
 ---
 
 # 0030 — MVP démo Desktop : un manager supervisé de bout en bout
+
+> **🗑️ Clôturée le 2026-09-10 — `superseded`.** Tous les livrables concrets sont shippés :
+> validateur de journal (0027), lecteur `.supervision/runs/` (0031), émission depuis Claude
+> Desktop (0094). Le circuit démo tourne ; la fiche-épic « rejouer une démo » est dépassée par
+> les vues Moniteur / Projets (#95) / Sessions (#188). Rien à construire — clôturée sans
+> nouvelle livraison (audit backlog 2026-09-10).
 
 ## Contexte / Problème
 

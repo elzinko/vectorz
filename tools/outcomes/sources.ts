@@ -226,15 +226,21 @@ export class GhGitSource implements RepoSource {
   listDoneFiches(): DoneFiche[] {
     const doneDir = join(this.repoRoot, 'features', 'done');
     if (!existsSync(doneDir)) return [];
-    return readdirSync(doneDir)
-      .filter((f) => f.endsWith('.md'))
-      .map((f) => {
-        const relPath = join('features', 'done', f);
-        const content = readFileSync(join(doneDir, f), 'utf8');
-        const id = /^id:\s*"?(\S+?)"?\s*$/m.exec(content)?.[1] ?? f;
-        const created = /^created:\s*(\S+)/m.exec(content)?.[1] ?? '';
-        return { id, path: relPath, created, mergedAt: this.ficheMergedAt(relPath) };
-      });
+    const fiches: DoneFiche[] = [];
+    for (const f of readdirSync(doneDir)) {
+      if (!f.endsWith('.md')) continue;
+      const relPath = join('features', 'done', f);
+      const content = readFileSync(join(doneDir, f), 'utf8');
+      // Vélocité/outcomes = fiches réellement LIVRÉES. Une fiche `superseded` (clôturée sans
+      // livraison) vit aussi dans done/ mais ne compte pas — idem sprint-metrics, et futurs
+      // `merged`/`split`. Sinon `outcomes:measure` appendrait un temps de cycle bidon (Codex P1).
+      const status = /^status:\s*"?([^"\s#]+)/m.exec(content)?.[1] ?? '';
+      if (status !== 'shipped') continue;
+      const id = /^id:\s*"?(\S+?)"?\s*$/m.exec(content)?.[1] ?? f;
+      const created = /^created:\s*(\S+)/m.exec(content)?.[1] ?? '';
+      fiches.push({ id, path: relPath, created, mergedAt: this.ficheMergedAt(relPath) });
+    }
+    return fiches;
   }
 
   /**
