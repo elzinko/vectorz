@@ -2,7 +2,7 @@
 composes: [ezk-commits]
 name: ezk-backlog
 layout_version: 4
-argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen]"
+argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
   jamais les perdre entre worktrees ni entre sessions. A utiliser quand
@@ -15,7 +15,7 @@ description: >-
   hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, ou voir
   l'état du backlog.
   Pilotable par sous-commandes : help, init, list, add, groom, ready, next,
-  plan, review, reconcile, ship, regen. A la
+  plan, review, reconcile, ship, regen, aggregate. A la
   première invocation dans un projet, INITIALISE la structure (dossier features/,
   sous-dossier done/, fichier de suivi index) ; ensuite charge le backlog trié
   par priorité en contexte de session. Format léger : une fiche markdown par
@@ -96,6 +96,7 @@ du front-matter de cette skill).
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
 | `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index **et les vues** (`PORTFOLIO.md` généré + `PLAN.md` curé) ; filet `check-planning-views` |
 | `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches |
+| `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
 > si un backlog existe, son état trié par priorité. Sans sous-commande reconnue → traite la
@@ -347,6 +348,36 @@ plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
 ezk-sprint et ezk-product-build passent par **ici** : aucune logique de gate
 réimplémentée en aval (test de séparabilité).
 
+### `aggregate [options]` — le grand ménage à la demande (fiche 20260812104022240, ADR-0051)
+
+Distinct de `review` (hygiène périodique, cadence bornée) : `aggregate` est le geste de
+**restructuration délibéré**, lancé quand le stock a gonflé. Il **propose** ; le PO
+**tranche** ; un geste séparé **applique** — jamais d'auto-modification (ADR-0001).
+
+```bash
+pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn|epic:<id>>] \
+  [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>]
+```
+
+- `--scope` restreint la passe : `all` (défaut, tout le stock actif), un `<produit>`,
+  un seau de priorité `Pn`, ou `epic:<id>` (les enfants d'un épic).
+- `--focus` cible l'affichage sur un type de remaniement (`merge`, `split`, `epics`,
+  `dedup`, `reprioritize`) ; sans arg, tout est montré. `split`/`reprioritize` ne sont
+  **pas produits** par le moteur `script` aujourd'hui — le dit sans planter.
+- `--mode` choisit le moteur :
+  - **`script`** (défaut) — clustering **mécanique et déterministe** sur `labels:`
+    partagés (multi-appartenance), enfants d'un même `epic:`, et 1er mot du titre.
+    Rend toujours sa **couverture** (« N/M fiches taguées ») : jamais de crash sur
+    des fiches sans tag, jamais de bascule silencieuse.
+  - **`llm`** — saute le clustering déterministe ; le jugement par intention (faux
+    positifs/négatifs du script, épics et splits proposés) reste à faire via le
+    playbook — pas encore implémenté par ce cœur.
+  - **`both`** — exécute `script` puis annonce que la passe `llm` reste à faire.
+- Chaque proposition nomme le **geste d'application** (`ship`, futur `merge`/`split`)
+  **sans l'exécuter**. Les statuts `merged`/`split` avec provenance sont **gated** sur
+  [[20260823121712652]] — en attendant, `aggregate` propose, `ship` reste le seul geste
+  qui exécute.
+
 ### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0071)
 
 Deux modes, à **cadence bornée** :
@@ -361,6 +392,10 @@ Contrôles (jugement LLM) :
    postérieur qui contredit) ? **Appelle `reconcile`** pour le bras *mécanique* de ce
    contrôle (croiser les PRs mergées), en plus du jugement LLM (ADR-0018).
 2. **Doublons / regroupements** par intention (même moteur que l'anti-doublon d'`add`).
+   **Frontière avec `aggregate`** : au-delà de **40 fiches actives**, `review` **n'essaie
+   pas** de dédoublonner en profondeur — il émet « stock actif = M (>40) → lance
+   `aggregate` » et **s'arrête là** sur ce contrôle. Le dédoublonnage profond du stock
+   entier appartient à `aggregate` (clustering outillé), pas au sanity-check périodique.
 3. **Cohérence de l'ordre** P0→P3 sur l'ensemble (l'ordre relatif, pas juste les buckets).
 4. **Staleness** — vieux `ready` jamais tirés → proposer rétrogradation en `idea` ou clôture.
 5. **Cohérence épic/enfants** (ADR-0017) — épic `shipped` avec enfants actifs, épic

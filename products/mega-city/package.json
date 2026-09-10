@@ -28,6 +28,7 @@
     "map:data": "tsx bin/regen-map-data.ts",
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",
+    "backlog:aggregate": "tsx bin/backlog-aggregate.ts",
     "avancement:regen": "tsx bin/regen-avancement.ts",
     "plan-view:regen": "tsx bin/regen-plan-view.ts",
     "plan-delta:regen": "tsx bin/regen-plan-delta.ts",

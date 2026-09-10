@@ -73,7 +73,7 @@ l'historique KPI existera (épic [0051](0051-observabilite-qualite-produit.md)).
 **Fiches voisines (NON rattachées — objet distinct)** :
 - [0057](0057-agent-analyse-methode.md) — reste dans l'épic [0051](0051-observabilite-qualite-produit.md) (analyse KPI, le *nord*).
 - 0139 — intégrité des agents (advisory+enforced), cousin.
-- [20260812104022240](20260812104022240_backlog-rationalisation-tags-script-llm.md) — rationaliser le **stock de fiches** (≠ la *méthode*). Cet épic **dogfoode** son intention (regrouper sous un épic).
+- [20260812104022240](done/20260812104022240_backlog-rationalisation-tags-script-llm.md) — rationaliser le **stock de fiches** (≠ la *méthode*). Cet épic **dogfoode** son intention (regrouper sous un épic).
 - [0164](0164-vz-product-builder-corpus-reviewers.md) — `vz-product-builder` : la décision **overlay est DÉJÀ prise par le PO** (in-progress, « ne pas toucher `ezk-*` »). L'épic **ne rouvre pas** ce choix (retour Codex #144) ; le dédoublonnage du panel = [0161](0161-ezk-challenge-panel.md).
 
 ## Tester & visualiser la méthode (réponse aux 2 questions PO)
