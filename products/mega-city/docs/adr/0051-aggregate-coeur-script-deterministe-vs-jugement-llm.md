@@ -3,7 +3,7 @@
 **Statut :** Proposé
 **Date :** 2026-09-11
 **Déciders :** PO (Thomas)
-**Décidé par :** ezk-architect (étape Archi du sprint, fiche [`20260812104022240`](../../../../features/20260812104022240_backlog-rationalisation-tags-script-llm.md))
+**Décidé par :** ezk-architect (étape Archi du sprint, fiche [`20260812104022240`](../../../../features/done/20260812104022240_backlog-rationalisation-tags-script-llm.md))
 **Portée :** ce ADR grave DEUX coutures de la sous-commande `ezk-backlog aggregate` — (1) où
 passe la frontière code-déterministe ↔ jugement-LLM, et (2) qui, de `review` ou `aggregate`,
 possède le dédoublonnage profond. Il ne traite PAS l'**application** des fusions/splits (statuts
