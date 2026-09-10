@@ -6,13 +6,17 @@ priority: P1 # choisie par le PO (session 2026-08-12)
 product: mega-city
 epic:
 version:
-status: ready
+status: shipped
 ready: 2026-08-26
-pr:
+pr: "#223"
 created: 2026-08-12
 ---
 
 # ezk-backlog aggregate — rationaliser le backlog, vite
+
+> **✅ Cœur « propose » livré via #223 (2026-09-10).** Le moteur `script` (clustering déterministe)
+> + le bin lecture seule sont en place. L'APPLIQUER (statuts `merged`/`split`) et le moteur `llm`
+> sont suivis par la fiche `20260910231201744` (gated sur `20260823121712652`).
 
 ## En clair
 
