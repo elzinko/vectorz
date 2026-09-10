@@ -50,8 +50,15 @@ Une couche projet-local, **un seul mécanisme**, discriminée par `enforcements[
 
 - [ ] Un projet déclare dans `.vectorz/` une règle **locale** ; elle est **composée** dans le prompt
   des agents QUAND ils tournent dans ce projet, et **absente** ailleurs (scope étanche).
-- [ ] Une règle `MUST` **sans** gate exécutable résolvable est **refusée au load** (erreur), pas
-  silencieusement dégradée.
+- [ ] Une règle `MUST` **sans enforcement résolvable est refusée au load** (erreur), pas
+  silencieusement dégradée — où un **enforcement** est soit un **gate exécutable** (invariant
+  machine, ex. import-linter), soit une **revue a posteriori** liée (règle de codage-JUGEMENT,
+  ex. hexagonal, vérifiée sur la PR). Les deux types comptent.
+- [ ] **Migration (finding Codex P1 PR #219)** : les règles `MUST` **existantes** sans enforcement
+  (ex. `products/mega-city/rules/hexagonal/*`, `development/local-first-feedback.md`) ne deviennent
+  **PAS inchargeables d'un coup**. Un chemin de migration est livré AVANT d'activer le méta-gate
+  strict : grandfathering daté, **ou** reclassification `MUST → SHOULD/GUIDE`, **ou** binding vers
+  une revue a posteriori. Le méta-gate strict ne s'active **qu'une fois le corpus migré**.
 - [ ] Une règle locale **ne peut pas DESSERRER** un `MUST` global (durcir OUI, desserrer → erreur au load).
 - [ ] Le loader **émet** le chemin résolu (`git rev-parse --show-toplevel`) + le SHA, et le **jeu
   EFFECTIF** composé (pas le déclaré).
