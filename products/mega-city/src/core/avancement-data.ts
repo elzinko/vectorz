@@ -15,6 +15,14 @@ import type { Fiche } from '../loaders/fiches.js';
  * `docs/captures/2026-09-04-panel-adverse-objet-sprint.md`) : une fiche non prête est une
  * `idea`, une fiche prête est `ready` — plus d'état ambigu au milieu. « doing » (en cours)
  * reste DÉRIVÉ de la branche `feat/<id>`, jamais un statut committé.
+ *
+ * `superseded` = statut TERMINAL « clôturée sans livraison » : une fiche rendue caduque
+ * (obsolète après un pivot, ou dépassée par du travail déjà livré ailleurs). Elle sort du
+ * stock actif (elle part dans `features/done/`) SANS compter comme livrée — les métriques de
+ * sprint ne comptent que `shipped` (cf. `sprint-metrics/adapters/repoSource.ts`). C'est le
+ * cran « annulé/obsolète » que la chaîne `idea→ready→shipped` n'offrait pas (migration Skema
+ * 004 ; famille des statuts terminaux non-`shipped`, à compléter par `merged`/`split` côté
+ * fiche 20260823121712652).
  */
 export const STATUTS: readonly string[] = [
   'idea',
@@ -22,6 +30,7 @@ export const STATUTS: readonly string[] = [
   'in-progress',
   'blocked',
   'shipped',
+  'superseded',
 ];
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
 export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];

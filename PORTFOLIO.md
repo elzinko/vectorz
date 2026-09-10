@@ -21,7 +21,6 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 | mega-city | 0164 | vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*) | feature | P1 | 🟠 in-progress |  |
 | mega-city | 20260821204737357 | Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend | feature | P1 | 🟠 in-progress |  |
 | mega-city | 20260823121712652 | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 | 🟠 in-progress |  |
-| vectorz | 0030 | MVP démo Desktop — un manager supervisé de bout en bout (mode moniteur pur) | feature | P1 | 🟠 in-progress |  |
 
 ## 📋 Actionnable (ready + blocked, hors idées et épics)
 
@@ -33,10 +32,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
 | vectorz | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 | ⛔ blocked |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
-| vectorz | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | ⛔ blocked |  |
 | mega-city | 20260829140259165 | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 | ⛔ blocked |  |
-| vectorz | 0017 | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 | ⛔ blocked |  |
-| vectorz | 0018 | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | ⛔ blocked |  |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready)
 
@@ -211,7 +207,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
-| vectorz | 30 | 0 | 1 | 4 | 22 | 3 |
+| vectorz | 26 | 0 | 0 | 1 | 22 | 3 |
 | mega-city | 141 | 2 | 3 | 2 | 127 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

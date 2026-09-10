@@ -5,12 +5,17 @@ type: feature
 priority: P2
 product: vectorz
 epic: 0034
-status: blocked
-pr:
+status: superseded
+pr: superseded — pilote retiré (0039, PR 81)
 created: 2026-07-16
 ---
 
 # 0038 — E3 : le pilote tourne sur fiches natives
+
+> **🗑️ Clôturée le 2026-09-10 — `superseded`.** Reliquat pré-pivot. Le pilote cop1 a été
+> *retiré* en époque 2 (la commande `orchestrator run` est un stub déprécié), pas porté en
+> natif : `OrchestratorService` n'existe plus. E4 (0039) a été shippée (#81) sans passer par E3.
+> Les gates d'entrée (0020 idea, ADR-022 WIP) n'ont jamais été franchies. Sans objet.
 
 > **Gates d'entrée** : E1 fait (= fiche 0020 / lot L6 de 0034, post-démo) ; ADR-022
 > révisé (L4, fenêtre DP8). Ne pas tirer avant. **Gate de sortie = gate d'entrée d'E4
@@ -22,7 +27,7 @@ created: 2026-07-16
 
 ## Contexte / Problème
 
-[ADR-029](../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md) (Accepté) : le
+[ADR-029](../../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md) (Accepté) : le
 pilote change de carburant — les stories BMAD (`_bmad-output/`) sont remplacées par le
 backlog natif `features/*.md`, et l'exécuteur BMAD par un exécuteur générique. Ordre
 cardinal : **construire, prouver, puis retirer** — cette fiche construit et prouve ;
@@ -31,7 +36,7 @@ la 0039 retire.
 ## Proposition (les 4 volets d'ADR-029 §E3 + liste de reprise de 0037)
 
 1. **Stories natives** — le Method port lit `features/*.md`. Reprise complète (constat
-   [0037](done/0037-arbitrage-double-writer-sprint-status.md), vérifié en code) :
+   [0037](0037-arbitrage-double-writer-sprint-status.md), vérifié en code) :
    - *Statuts* : mapping BMAD → front-matter natif (`rewriteStoryStatus`, table à définir).
    - *Écriture en retour* : port promu lecture-écriture — reprendre les **5 sites**
      `persistStatus` (`OrchestratorService.ts:362`, appels l.150/206/284/299/305) + le

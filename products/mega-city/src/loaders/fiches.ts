@@ -16,7 +16,7 @@ export interface Fiche {
   title: string;
   type: string; // feature | bug | refactor | chore | epic
   priority: string; // P0 | P1 | P2 | P3 | '' (épics/idées sans prio)
-  status: string; // idea | todo | in-progress | blocked | shipped
+  status: string; // idea | ready | in-progress | blocked | shipped | superseded
   ready: boolean; // le champ `ready:` est-il posé ?
   epic: string; // id de l'épic parent, ou ''
   product: string; // vectorz | mega-city | …

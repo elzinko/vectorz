@@ -38,8 +38,9 @@ export function fmField(content: string, field: string): string {
 }
 
 /**
- * Entrées de `PLAN.md` (curé) présentant comme À FAIRE une fiche déjà `shipped`.
- * Une ligne barrée (`~~…~~`) est réputée déjà curée → jamais signalée.
+ * Entrées de `PLAN.md` (curé) présentant comme À FAIRE une fiche déjà TERMINALE
+ * (`shipped` livrée, ou `superseded` clôturée sans livraison). Une ligne barrée
+ * (`~~…~~`) est réputée déjà curée → jamais signalée.
  */
 export function findStalePlanEntries(
   planMd: string,
@@ -53,7 +54,8 @@ export function findStalePlanEntries(
     for (const entry of section.entries) {
       if (entry.struck || !entry.marker) continue; // curée, ou sans action annoncée
       for (const id of entry.ids) {
-        if (statusById.get(id) === 'shipped') {
+        const st = statusById.get(id);
+        if (st === 'shipped' || st === 'superseded') {
           stale.push({ id, view: 'PLAN', shown: entry.marker, where: section.label });
         }
       }
@@ -63,8 +65,9 @@ export function findStalePlanEntries(
 }
 
 /**
- * Lignes de `PORTFOLIO.md` (généré) affichant une fiche `shipped` avec un statut
- * autre que « shipped » — signe que la vue n'a pas été régénérée après un `ship`.
+ * Lignes de `PORTFOLIO.md` (généré) affichant une fiche TERMINALE (`shipped` livrée,
+ * ou `superseded` clôturée) avec un statut qui ne le reflète pas — signe que la vue
+ * n'a pas été régénérée après un `ship`/une clôture.
  */
 export function findStalePortfolioEntries(
   portfolioMd: string,
@@ -79,7 +82,8 @@ export function findStalePortfolioEntries(
     const id = cells[2] ?? '';
     const shown = cells[6] ?? '';
     if (!VALID_ID.test(id)) continue; // en-tête, séparateur, ou ligne hors données
-    if (statusById.get(id) === 'shipped' && !shown.includes('shipped')) {
+    const st = statusById.get(id);
+    if ((st === 'shipped' || st === 'superseded') && !shown.includes(st)) {
       stale.push({ id, view: 'PORTFOLIO', shown, where: 'section actionnable' });
     }
   }

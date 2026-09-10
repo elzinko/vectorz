@@ -77,7 +77,7 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
 product: # obligatoire dans un monorepo — sinon omettre
 epic:
-status: idea # idea | ready | in-progress | blocked | shipped
+status: idea # idea | ready | in-progress | blocked | shipped | superseded
 ready:
 pr:
 created: <YYYY-MM-DD>
