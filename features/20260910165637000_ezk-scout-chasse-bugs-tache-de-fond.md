@@ -19,11 +19,13 @@ created: 2026-09-10
 ## En clair
 
 On veut un outil qu'un agent lance pour **chercher des bugs tout seul, en tâche de
-fond**, dans une app qui tourne. Il **trouve** et **fiche** — il ne corrige
-jamais. Chaque trouvaille devient une fiche de bug complète : description claire,
+fond**, dans une app qui tourne. Il **trouve** et **rapporte** — il ne corrige
+jamais, et il **ne crée pas de fiche tout seul**. Chaque trouvaille est un
+**brouillon de fiche** complet dans un **rapport** : description claire,
 reproduction, gravité, et en option une **capture d'écran** (bug de rendu) et une
-**localisation** dans le code (`fichier:ligne`). Quelqu'un d'autre décide ensuite
-quoi corriger.
+**localisation** dans le code (`fichier:ligne`). Un humain valide le rapport ;
+**alors seulement** les fiches retenues entrent au backlog. Quelqu'un décide
+ensuite quoi corriger.
 
 L'idée vient d'un run samplerz (2026-09-10) : le prompt « ezk-product-build …
 fais-en le maximum, si bloqué teste via la webapp/l'émulateur, crée des fiches
@@ -62,9 +64,11 @@ polish ensuite.
 
 Ce qu'elle fait :
 
-- **Sonde bornée, en tâche de fond**, une app qui tourne : soit la **webapp** via
-  un serveur de dev **isolé**, soit un **émulateur Android** (compose la recette
-  émulateur, fiche `20260906135450000`).
+- **Sonde bornée, en tâche de fond**, une app qui tourne : la **webapp** via un
+  serveur de dev **isolé** (compose `0102 ezk-testbed`). Le chemin **émulateur
+  Android** est **conditionné** à l'arrivée sur `main` d'une recette émulateur —
+  elle existe en local mais n'est pas encore poussée (cf. Notes) ; ne pas s'y
+  raccrocher en dur avant.
 - **Isole l'état** de l'app avant de piloter (répertoire d'état en tmp :
   prefs / session / credential / cache), pour ne jamais toucher l'état réel de
   l'utilisateur. C'est la première leçon du run samplerz.
@@ -73,12 +77,14 @@ Ce qu'elle fait :
   rendu** (visuels → capture), écarts **UX / accessibilité**.
 - **FIND-ONLY — invariant dur** : ne modifie **jamais** le code produit. La sortie
   est faite de fiches, pas de diffs.
-- **Propose une fiche par trouvaille** via `ezk-backlog add`, en mode
-  **proposition en attente d'arbitrage humain** — jamais appliquée ni tirée
-  seule (invariant `review`/`reconcile` : détecter propose, l'humain arbitre).
-  C'est la MÊME politique que la carte explorateur `20260821210633457` (on
-  s'aligne pour ne pas avoir deux contrats contradictoires — retour Codex). Une
-  fiche riche :
+- **Rapporte un brouillon de fiche par trouvaille** — PAS de création autonome.
+  ⚠ `ezk-backlog add` **crée ET committe** une carte (SKILL.md ezk-backlog) : ce
+  n'est donc pas une « proposition ». La passe **n'appelle jamais `add` seule** ;
+  elle rend un **rapport** de brouillons, l'humain arbitre, et `add` n'est invoqué
+  **qu'après approbation** (le gate est AVANT `add`). C'est la politique de la
+  carte explorateur `20260821210633457` (« aucune carte sans arbitrage humain ») —
+  on s'aligne pour ne pas avoir deux contrats contradictoires (retour Codex).
+  Chaque brouillon est riche :
   - description « En clair » + **reproduction** exacte (requête / étapes) ;
   - **gravité** + type/priorité suggérés ;
   - **capture d'écran optionnelle** — pour un bug de rendu (compose le mécanisme
@@ -97,9 +103,11 @@ Ce qu'elle fait :
 - [ ] Elle ne modifie **jamais** le code produit (find-only, vérifiable — p. ex.
       `git diff` du code produit reste vide après une passe).
 - [ ] Elle isole l'état de l'app avant de piloter (compose la recette d'isolation).
-- [ ] Chaque trouvaille devient une fiche `ezk-backlog` **proposée** (pas tirée
-      seule) portant : description + reproduction + gravité + capture optionnelle
-      (bug de rendu) + localisation optionnelle (`fichier:ligne`).
+- [ ] Chaque trouvaille est un **brouillon de fiche** dans un rapport, portant :
+      description + reproduction + gravité + capture optionnelle (bug de rendu) +
+      localisation optionnelle (`fichier:ligne`). **Aucune carte n'est créée ni
+      committée par la passe** ; `ezk-backlog add` n'est invoqué qu'**après**
+      validation humaine du rapport.
 - [ ] La passe est **bornée** (budget/temps) et rend un **résumé** en fin.
 - [ ] Elle **compose** `ezk-backlog`, l'env de test isolé (`0102 ezk-testbed`) et
       le mécanisme de captures (`20260812104022228`) — sans les réimplémenter.
@@ -123,9 +131,10 @@ Ce qu'elle fait :
 - **Bout en bout** : sur une app de démonstration avec un défaut connu, la passe
   produit **au moins une fiche** `ezk-backlog` proposée, avec repro rejouable ;
   si c'est un bug de rendu, la fiche porte une capture.
-- **Proposition, pas tirage** : les fiches créées naissent en proposition
-  (non tirables sans arbitrage humain) — vérifier qu'un `next --ready-only` ne les
-  sort pas directement.
+- **Pas de création autonome** : après une passe, **aucune nouvelle carte
+  committée** dans le backlog cible (`git status`/`git log` propres côté
+  `features/`) ; le livrable est un **rapport** de brouillons. `ezk-backlog add`
+  n'apparaît qu'**après** validation humaine.
 
 ## Notes / décisions
 
