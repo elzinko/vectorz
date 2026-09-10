@@ -110,6 +110,9 @@ a_rc 0; a_out "samplerz-ionos-api"; a_nout "livestreamz-vercel-token"
 # 9. remove → security delete-generic-password
 run "remove routes" "$CLI" remove demo-test-api
 a_rc 0; a_log "delete-generic-password"; a_log "demo-test-api"
+# 9b. verbes à nom unique : refusent un argument en trop (Codex #2 — verbe destructif)
+run "remove refuse extra" "$CLI" remove foo bar ; a_rc 2; a_err "argument en trop"
+run "get refuse extra"    "$CLI" get foo bar    ; a_rc 2; a_err "argument en trop"
 
 # 10. open → ouvre le Trousseau d'accès
 run "open routes" "$CLI" open
@@ -121,6 +124,18 @@ run "shim get"       "$HERE/ezk-secret-get" demo-test-api        ; a_rc 0; a_log
 run "shim list"      "$HERE/ezk-secret-list"                     ; a_rc 0; a_log "dump-keychain"
 run "shim check"     "$HERE/ezk-secret-check" demo-test-api      ; a_rc 0; a_log "find-generic-password"
 run "shim set-ionos" "$HERE/ezk-secret-set-ionos" demo-ionos --clip ; a_rc 0; a_log "add-generic-password"; a_err "déprécié"
+
+# Codex #1 : set-ionos SANS argument → défaut « samplerz-ionos-api » (rétro-compat).
+# Faux ezk-secret posé à côté d'une copie du shim : on vérifie l'argument transmis, sans interactif.
+IONOS="$TMP/ionos"; mkdir -p "$IONOS"
+cp "$HERE/ezk-secret-set-ionos" "$IONOS/ezk-secret-set-ionos"
+cat > "$IONOS/ezk-secret" <<'FAKE'
+#!/usr/bin/env bash
+printf '%s\n' "$@" >> "$FAKE_LOG"
+FAKE
+chmod +x "$IONOS/ezk-secret"
+run "shim set-ionos no-arg → défaut" "$IONOS/ezk-secret-set-ionos"
+a_rc 0; a_log "set"; a_log "samplerz-ionos-api"; a_err "déprécié"
 
 # --- bilan ---
 echo "----"
