@@ -22,6 +22,12 @@ describe('readField — valeur quotée lue littéralement', () => {
     expect(readField('pr: "PR #29 (suite de #30)"', 'pr')).toBe('PR #29 (suite de #30)');
   });
 
+  it('un guillemet interne échappé ne tronque pas la valeur [revue Codex #222]', () => {
+    // Sans ancrage de fin, la regex non-gourmande couperait à `dis \` ; on garde tout
+    // jusqu'au vrai guillemet fermant (le loader ne dé-échappe pas — pas de parseur YAML).
+    expect(readField('title: "dis \\"go\\" maintenant"', 'title')).toBe('dis \\"go\\" maintenant');
+  });
+
   it('valeur quotée sans # inchangée', () => {
     expect(readField('pr: "resolved-by 205+206"', 'pr')).toBe('resolved-by 205+206');
   });
@@ -67,5 +73,12 @@ describe('readField — bords', () => {
     expect(readField(fm, 'pr')).toBe('#124');
     expect(readField(fm, 'title')).toBe('Foo');
     expect(readField(fm, 'status')).toBe('shipped');
+  });
+
+  it('un scalaire quoté mal formé (texte parasite) n’est pas nettoyé en silence [revue Codex #222]', () => {
+    // `status: "idea" typo` ne doit PAS rendre `idea` : la faute reste visible (guillemets
+    // compris) pour que le validateur la refuse, au lieu d'avaler le `typo`.
+    expect(readField('status: "idea" typo', 'status')).toBe('"idea" typo');
+    expect(readField('status: "idea" typo', 'status')).not.toBe('idea');
   });
 });
