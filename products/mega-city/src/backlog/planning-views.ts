@@ -38,8 +38,9 @@ export function fmField(content: string, field: string): string {
 }
 
 /**
- * Entrées de `PLAN.md` (curé) présentant comme À FAIRE une fiche déjà `shipped`.
- * Une ligne barrée (`~~…~~`) est réputée déjà curée → jamais signalée.
+ * Entrées de `PLAN.md` (curé) présentant comme À FAIRE une fiche déjà TERMINALE
+ * (`shipped` livrée, ou `superseded` clôturée sans livraison). Une ligne barrée
+ * (`~~…~~`) est réputée déjà curée → jamais signalée.
  */
 export function findStalePlanEntries(
   planMd: string,
@@ -53,7 +54,8 @@ export function findStalePlanEntries(
     for (const entry of section.entries) {
       if (entry.struck || !entry.marker) continue; // curée, ou sans action annoncée
       for (const id of entry.ids) {
-        if (statusById.get(id) === 'shipped') {
+        const st = statusById.get(id);
+        if (st === 'shipped' || st === 'superseded') {
           stale.push({ id, view: 'PLAN', shown: entry.marker, where: section.label });
         }
       }

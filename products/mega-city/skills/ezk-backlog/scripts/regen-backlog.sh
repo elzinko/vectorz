@@ -161,7 +161,9 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   fi
   echo ''
   # Livrées : ids CLIQUABLES vers done/<fiche> (lien relatif au doc BACKLOG.md), triés par id.
-  done_summary="$(printf '%s' "$rows" | awk -F"$SEP" '$12 ~ /^done\//{ print $1 "\t" $12 }' | sort -k1,1 | awk -F'\t' 'NF{ printf "%s[%s](%s)", sep, $1, $2; sep=", " }')"
+  # Filtre `shipped` : une fiche `superseded` vit dans done/ mais n'est PAS livrée — elle reste
+  # dans la table principale en 🗑️ ; ne pas la lister ici sous « Livrées » (revue 2026-09-10).
+  done_summary="$(printf '%s' "$rows" | awk -F"$SEP" '$12 ~ /^done\// && $5 == "shipped"{ print $1 "\t" $12 }' | sort -k1,1 | awk -F'\t' 'NF{ printf "%s[%s](%s)", sep, $1, $2; sep=", " }')"
   echo "> Livrées (\`done/\`) : ${done_summary}."
 } > features/BACKLOG.md
 

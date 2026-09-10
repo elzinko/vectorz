@@ -25,6 +25,12 @@ describe('findStalePlanEntries (PLAN.md curé)', () => {
     const plan = `## NOW\n1. **0152** — ezk-bug · \`build\`\n`;
     expect(findStalePlanEntries(plan, new Map([['0152', 'idea']]))).toEqual([]);
   });
+
+  it('signale aussi une fiche superseded encore marquée `build` (terminale, non barrée)', () => {
+    const plan = `## NOW\n1. **0038** — pilote natif · \`build\`\n`;
+    const stale = findStalePlanEntries(plan, new Map([['0038', 'superseded']]));
+    expect(stale.map((s) => s.id)).toEqual(['0038']);
+  });
 });
 
 describe('findStalePortfolioEntries (PORTFOLIO.md généré)', () => {

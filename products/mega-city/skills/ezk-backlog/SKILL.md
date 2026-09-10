@@ -156,7 +156,7 @@ Puis le corps (cf. `templates/feature-template.md`) : **ouvre par « En clair »
 (cases à cocher), **`## Comment vérifier`**, Notes. Le corps de PR **rendra cette fiche telle
 quelle** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)) —
 écris-la pour être lue seule.
-Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped.
+Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped · 🗑️ superseded.
 
 > ⚠️ **Garantis « En clair » + `## Comment vérifier` sur la fiche créée, même si le
 > `feature-template.md` local du projet est antérieur à ADR-0029.** `init` **préserve** le
