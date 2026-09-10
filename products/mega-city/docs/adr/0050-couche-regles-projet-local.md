@@ -6,7 +6,7 @@
 **Panel adverse :** ezk-reviewer (GO-SI), ezk-architect (GO-SI, confronté)
 **Portée :** ce ADR ne traite QU'UN axe — le **scoping projet-local + la composition des
 règles de CODAGE** (conformité). Il est **subordonné** au cadrage
-[`fiche 20260910155608287`](../../../features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md),
+[`fiche 20260910155608287`](../../../../features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md),
 qui laisse ouvert notamment la **mesure d'efficacité des règles de RÉTRO** (monitoring
 sur-sprints, ADR-030). À ne pas accepter isolément avant ce cadrage.
 
