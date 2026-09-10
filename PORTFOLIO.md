@@ -12,6 +12,7 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
 | mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
+| vectorz | 20260906121839943 | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 | 🔵 ready |  |
 
 ## 🟠 En cours (`in-progress`)
 
@@ -31,6 +32,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | ⛔ blocked |  |
 | mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
 | vectorz | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 | ⛔ blocked |  |
+| vectorz | 20260906121839943 | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 | 🔵 ready |  |
 | vectorz | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | ⛔ blocked |  |
 | mega-city | 20260829140259165 | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 | ⛔ blocked |  |
 | vectorz | 0017 | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 | ⛔ blocked |  |
@@ -205,7 +207,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
-| vectorz | 27 | 0 | 1 | 4 | 20 | 2 |
+| vectorz | 28 | 1 | 1 | 4 | 20 | 2 |
 | mega-city | 139 | 1 | 3 | 2 | 126 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
