@@ -5,10 +5,10 @@ type: feature
 priority: P2
 product: mega-city
 epic:
-depends: ["20260906135450000", "20260812104022228"]
+depends: ["20260821210633457", "0102", "20260812104022228"]
 labels: [ezk-method, qa, bug-hunting, testbed, scout]
-status: ready
-ready: 2026-09-10
+status: idea
+ready: # PENDING arbitrage PO : recoupe la carte explorateur 20260821210633457 (fusion vs scission) — cf. Notes
 pr:
 evidence: none # capacité de méthode (skill) ; preuve = ses propres tests + un run de démonstration
 created: 2026-09-10
@@ -73,8 +73,12 @@ Ce qu'elle fait :
   rendu** (visuels → capture), écarts **UX / accessibilité**.
 - **FIND-ONLY — invariant dur** : ne modifie **jamais** le code produit. La sortie
   est faite de fiches, pas de diffs.
-- **Fiche chaque trouvaille** via `ezk-backlog add` (compose, ne réimplémente pas
-  le backlog). Une fiche riche :
+- **Propose une fiche par trouvaille** via `ezk-backlog add`, en mode
+  **proposition en attente d'arbitrage humain** — jamais appliquée ni tirée
+  seule (invariant `review`/`reconcile` : détecter propose, l'humain arbitre).
+  C'est la MÊME politique que la carte explorateur `20260821210633457` (on
+  s'aligne pour ne pas avoir deux contrats contradictoires — retour Codex). Une
+  fiche riche :
   - description « En clair » + **reproduction** exacte (requête / étapes) ;
   - **gravité** + type/priorité suggérés ;
   - **capture d'écran optionnelle** — pour un bug de rendu (compose le mécanisme
@@ -93,12 +97,12 @@ Ce qu'elle fait :
 - [ ] Elle ne modifie **jamais** le code produit (find-only, vérifiable — p. ex.
       `git diff` du code produit reste vide après une passe).
 - [ ] Elle isole l'état de l'app avant de piloter (compose la recette d'isolation).
-- [ ] Chaque trouvaille devient une fiche `ezk-backlog` portant : description +
-      reproduction + gravité + capture optionnelle (bug de rendu) + localisation
-      optionnelle (`fichier:ligne`).
+- [ ] Chaque trouvaille devient une fiche `ezk-backlog` **proposée** (pas tirée
+      seule) portant : description + reproduction + gravité + capture optionnelle
+      (bug de rendu) + localisation optionnelle (`fichier:ligne`).
 - [ ] La passe est **bornée** (budget/temps) et rend un **résumé** en fin.
-- [ ] Elle **compose** `ezk-backlog`, la recette émulateur et le mécanisme de
-      captures — sans les réimplémenter.
+- [ ] Elle **compose** `ezk-backlog`, l'env de test isolé (`0102 ezk-testbed`) et
+      le mécanisme de captures (`20260812104022228`) — sans les réimplémenter.
 - [ ] La **frontière** est documentée vs `ezk-qa` (valide une PR précise),
       `ezk-reviewer` (relit un diff), `ezk-sprint` (construit), `ezk-product-build`
       (décide/construit) : `ezk-scout` explore une app qui tourne et fiche des bugs,
@@ -106,8 +110,35 @@ Ce qu'elle fait :
 - [ ] Gate locale verte (typecheck / lint / tests du skill) puis démonstration
       d'un run réel (au moins un bug fiché de bout en bout).
 
+## Comment vérifier
+
+- **Find-only** : après une passe, `git status` / `git diff` sur le code produit
+  du dépôt cible sont **vides** (aucune modif de code) — seules des fiches
+  proposées apparaissent.
+- **État isolé** : le `HOME`/répertoire d'état réel de l'utilisateur n'est pas
+  touché (la passe pointe un répertoire d'état en tmp ; vérifier qu'aucun fichier
+  sous le vrai `~/.<app>` n'a changé).
+- **Passe bornée** : la passe s'arrête d'elle-même (budget/temps) et imprime un
+  résumé `N trouvées · M fichées · K écartées`.
+- **Bout en bout** : sur une app de démonstration avec un défaut connu, la passe
+  produit **au moins une fiche** `ezk-backlog` proposée, avec repro rejouable ;
+  si c'est un bug de rendu, la fiche porte une capture.
+- **Proposition, pas tirage** : les fiches créées naissent en proposition
+  (non tirables sans arbitrage humain) — vérifier qu'un `next --ready-only` ne les
+  sort pas directement.
+
 ## Notes / décisions
 
+- **⚠ RECOUPE la carte explorateur `20260821210633457`** (« Explorateur LLM par PR »,
+  active). Elle spécifie déjà « user l'app pour de vrai → proposer des fiches
+  (bug / trou / feature à adapter) », avec la politique **proposition en attente
+  d'arbitrage humain**. Retour Codex (PR #217) : deux contrats actifs pour le même
+  livrable. **On s'aligne déjà sur sa politique** (proposition, jamais tiré seul).
+  **Décision PO à trancher AVANT `ready`** : fusionner ezk-scout dans l'explorateur,
+  le superséder, ou scinder explicitement (l'explorateur = déclenché par PR, lignée
+  supervision/dogfood `[[0169]]` ; ezk-scout = passe **autonome en tâche de fond**,
+  webapp/émulateur, find-only, capture + localisation `fichier:ligne`). C'est
+  pourquoi cette fiche reste `idea`, pas `ready`.
 - **Prototype validé** : le run samplerz 2026-09-10 (crop #403, export #404) via le
   prompt ad hoc. Cette fiche **productise** ce prompt en outil de première classe.
 - **Statut des bugs trouvés** : samplerz a introduit `# status: suggest` (trouvaille
@@ -117,8 +148,11 @@ Ce qu'elle fait :
   find-only.)
 - **Capture d'écran** : réutiliser le mécanisme de la fiche `20260812104022228`
   (captures produit → doc/site) plutôt que d'en écrire un second.
-- **Émulateur / device** : réutiliser la recette `20260906135450000` (démarrer
-  l'émulateur Android / tester sur device).
+- **Env de test isolé** : réutiliser `0102 ezk-testbed` (démarrer un environnement
+  de test isolé — PR/branche/local), qui porte déjà l'isolation d'état. ⚠ La
+  recette **émulateur Android** existe en local (`20260906135450000`) mais **n'est
+  PAS encore sur `origin/main`** (retour Codex PR #217) — ne pas en dépendre en dur
+  tant qu'elle n'est pas poussée ; s'y raccrocher quand elle arrive.
 - **Localisation `fichier:ligne`** : opt-in et best-effort (une recherche de code
   qui pointe un candidat). Ne pas la vendre comme certaine.
 - **Distinct de `20260812104022231`** (« DoR — balayer les surfaces produit au
