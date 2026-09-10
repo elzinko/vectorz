@@ -5,7 +5,7 @@
 > uniquement des noms et des emplacements.
 >
 > Emplacements : `.env main` (racine du dépôt principal) · `trousseau`
-> (`ezk-secret-*`) · `GH` (GitHub Actions) · `Vercel`.
+> (`ezk-secret`) · `GH` (GitHub Actions) · `Vercel`.
 >
 > État : ✅ posé · ❌ manquant · ⚙️ à propager (valeur connue, pas encore posée).
 

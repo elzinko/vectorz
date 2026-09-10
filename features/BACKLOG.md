@@ -94,6 +94,7 @@
 | [20260829214131713](done/20260829214131713_ezk-sessions-vue-navigateur-live.md) | ezk-sessions — vue navigateur de l'état des sessions (live, machine-locale) | feature | P1 |  | mega-city | ✅ shipped | #189 |
 | [20260830184917144](done/20260830184917144_ezk-chef-extract-lit-le-labo.md) | ezk-chef extract lit le « labo » — remplir les TODO(jugement) depuis docs/sessions | feature | P1 |  | mega-city | ✅ shipped | #196 |
 | [20260902224608715](done/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md) | Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto | feature | P1 |  | mega-city | ✅ shipped | #207 |
+| [20260906121839943](20260906121839943_unifier-ezk-secret-cli.md) | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 |  | vectorz | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |

@@ -45,7 +45,7 @@ et **tu valides avant chaque écriture** sur un service externe.
 Un même secret peut avoir à vivre à **plusieurs endroits** selon qui le consomme :
 
 - **`.env` du main** — pour les scripts locaux et pour **propager** vers ailleurs.
-- **Trousseau macOS** (`ezk-secret-set/get/list`, cf. [`secrets-trousseau`](../secrets-trousseau/)) —
+- **Trousseau macOS** (`ezk-secret set/get/list`, cf. [`secrets-trousseau`](../secrets-trousseau/)) —
   pour les secrets que **je** dois lire à la demande, avec validation (Touch ID / mot de passe).
 - **GitHub Actions** (`gh secret set`) — pour les workflows CI (build/upload).
 - **Vercel** (`vercel env add`) — pour le site déployé (fonctions, front).
@@ -72,8 +72,8 @@ Vercel — **avec ta validation**.
 
 ### D. Boutique Lemon Squeezy (API REST)
 1. **Prérequis humain** : compte LS créé + clé API générée (je **ne crée pas** de compte).
-   Ranger la clé : `ezk-secret-set lemonsqueezy-api`.
-2. `KEY=$(ezk-secret-get lemonsqueezy-api)` → `GET /v1/user` → **confirmer à l'humain le compte connecté** (nom + email) avant toute écriture.
+   Ranger la clé : `ezk-secret set lemonsqueezy-api --clip` (clé longue → presse-papier).
+2. `KEY=$(ezk-secret get lemonsqueezy-api)` → `GET /v1/user` → **confirmer à l'humain le compte connecté** (nom + email) avant toute écriture.
 3. `GET /v1/stores`, `GET /v1/products` (lecture libre).
 4. **[VALIDATION à chaque écriture]** `POST /v1/products` etc. — jamais sans OK explicite, avec le détail (nom, prix).
 
@@ -86,7 +86,7 @@ Lecture (lister, inspecter) = libre.
 
 ## Recettes réutilisées
 
-- [`secrets-trousseau/`](../secrets-trousseau/) — l'outil `ezk-secret-*`.
+- [`secrets-trousseau/`](../secrets-trousseau/) — l'outil `ezk-secret`.
 - [`plan-distribution-app.md`](../plan-distribution-app.md) — R2 / téléchargement.
 - [`brancher-domaine-vercel.md`](../brancher-domaine-vercel.md) · [`dns-ionos-mcp.md`](../dns-ionos-mcp.md) — domaine.
 - [`vercel-kv-database.md`](../vercel-kv-database.md) — base KV (waitlist).
