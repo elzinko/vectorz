@@ -48,6 +48,12 @@ describe('findStalePortfolioEntries (PORTFOLIO.md généré)', () => {
     expect(findStalePortfolioEntries(portfolio, shipped(['20260812100109940']))).toEqual([]);
   });
 
+  it('signale aussi une fiche superseded affichée comme active (terminale)', () => {
+    const portfolio = row('0038', '⛔ blocked');
+    const stale = findStalePortfolioEntries(portfolio, new Map([['0038', 'superseded']]));
+    expect(stale.map((s) => s.id)).toEqual(['0038']);
+  });
+
   it('ignore les lignes d’en-tête et de séparation', () => {
     const portfolio = `| Prod | # | Titre | Type | Prio | Statut | PR |\n|------|---|-------|------|------|--------|----|\n`;
     expect(findStalePortfolioEntries(portfolio, shipped(['0152']))).toEqual([]);

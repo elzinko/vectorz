@@ -65,8 +65,9 @@ export function findStalePlanEntries(
 }
 
 /**
- * Lignes de `PORTFOLIO.md` (généré) affichant une fiche `shipped` avec un statut
- * autre que « shipped » — signe que la vue n'a pas été régénérée après un `ship`.
+ * Lignes de `PORTFOLIO.md` (généré) affichant une fiche TERMINALE (`shipped` livrée,
+ * ou `superseded` clôturée) avec un statut qui ne le reflète pas — signe que la vue
+ * n'a pas été régénérée après un `ship`/une clôture.
  */
 export function findStalePortfolioEntries(
   portfolioMd: string,
@@ -81,7 +82,8 @@ export function findStalePortfolioEntries(
     const id = cells[2] ?? '';
     const shown = cells[6] ?? '';
     if (!VALID_ID.test(id)) continue; // en-tête, séparateur, ou ligne hors données
-    if (statusById.get(id) === 'shipped' && !shown.includes('shipped')) {
+    const st = statusById.get(id);
+    if ((st === 'shipped' || st === 'superseded') && !shown.includes(st)) {
       stale.push({ id, view: 'PORTFOLIO', shown, where: 'section actionnable' });
     }
   }
