@@ -69,9 +69,13 @@ Ce qu'elle fait :
   Android** est **conditionné** à l'arrivée sur `main` d'une recette émulateur —
   elle existe en local mais n'est pas encore poussée (cf. Notes) ; ne pas s'y
   raccrocher en dur avant.
-- **Isole l'état** de l'app avant de piloter (répertoire d'état en tmp :
-  prefs / session / credential / cache), pour ne jamais toucher l'état réel de
-  l'utilisateur. C'est la première leçon du run samplerz.
+- **Isole l'état** de l'app avant de piloter — et **tout** l'état mutable, pas
+  seulement les fichiers (prefs / session / credential / cache en tmp) : aussi
+  **base de données, volumes, services externes** que l'app touche. `0102
+  ezk-testbed` doit énumérer ces dépendances ; si une d'elles ne peut PAS être
+  isolée (un service réel partagé), la passe **ne la sonde pas** (STOP sur ce
+  chemin) plutôt que de risquer l'état réel (retour Codex : isoler `HOME`/prefs ne
+  suffit pas si une base reste réelle). C'est la première leçon du run samplerz.
 - **Cherche des classes d'anomalies** : robustesse (un `5xx` sur entrée cassée),
   **trous de validation d'entrée** (bornes absurdes, valeurs ≤ 0…), **bugs de
   rendu** (visuels → capture), écarts **UX / accessibilité**.
@@ -120,9 +124,11 @@ Ce qu'elle fait :
 
 ## Comment vérifier
 
-- **Find-only** : après une passe, `git status` / `git diff` sur le code produit
-  du dépôt cible sont **vides** (aucune modif de code) — seules des fiches
-  proposées apparaissent.
+- **Find-only** : capturer le **SHA de HEAD (et l'arbre)** du dépôt cible AVANT et
+  APRÈS la passe — ils doivent être **identiques**. Comparer seulement
+  `git status`/`git diff` (worktree) ne suffit pas : si la passe ou un outil
+  composé **committe**, le worktree paraîtrait propre alors que find-only serait
+  violé (retour Codex). Aucune modif de code, aucun commit, aucune carte.
 - **État isolé** : le `HOME`/répertoire d'état réel de l'utilisateur n'est pas
   touché (la passe pointe un répertoire d'état en tmp ; vérifier qu'aucun fichier
   sous le vrai `~/.<app>` n'a changé).
