@@ -112,4 +112,18 @@ describe('aggregateByScript', () => {
     ]);
     expect(report.clusters.every((c) => c.ficheIds.length >= 2)).toBe(true);
   });
+
+  it('10. une fiche type:epic est exclue des actives ; ses enfants epic: sont regroupés', () => {
+    const report = aggregateByScript([
+      fiche({ id: 'E', type: 'epic', title: 'Alpha', epic: '' }),
+      fiche({ id: '1', epic: 'E', title: 'Beta' }),
+      fiche({ id: '2', epic: 'E', title: 'Gamma' }),
+    ]);
+    // L'épic parent n'est ni compté ni clusterisé ni singleton.
+    expect(report.coverage.total).toBe(2);
+    expect(report.clusters.flatMap((c) => c.ficheIds)).not.toContain('E');
+    expect(report.singletons).not.toContain('E');
+    // Les enfants sont regroupés sous reason:'epic' (titres distincts → pas de cluster title-prefix parasite).
+    expect(report.clusters).toEqual([{ key: 'E', reason: 'epic', ficheIds: ['1', '2'] }]);
+  });
 });
