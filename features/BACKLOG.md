@@ -167,6 +167,7 @@
 | [0163](0163-serie-rex-migration-methodes.md) | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | epic | P2 |  | mega-city | 💡 idea |  |
 | [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md) | Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic) | epic | P2 |  | mega-city | 💡 idea |  |
 | [20260815080413884](20260815080413884_dor-agent-native-extensible-observable-epic.md) | DoR agent-native — extensible par projet + readiness observable (épic) | epic | P2 |  | mega-city | 💡 idea |  |
+| [20260910155608287](20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md) | Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution) | epic | P2 |  | vectorz | 💡 idea |  |
 
 ## 💡 Idées (non groomées)
 
@@ -295,6 +296,7 @@
 | [20260906122942770](20260906122942770_spike-isolation-worktree-avant-harvest.md) | SPIKE — pourquoi l'isolation worktree, avant de figer la moisson | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260906122942825](20260906122942825_spike-cout-gate-fraicheur-offline.md) | SPIKE — coût du gate de fraîcheur offline / sans remote | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260906135450000](20260906135450000_recette-emulateur-android-test-device.md) | Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus) | feature | P2 |  | vectorz | 💡 idea |  |
+| [20260910152227744](20260910152227744_regles-projet-local-couche-vectorz.md) | Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables | feature | P2 | 20260910155608287 | vectorz | 💡 idea |  |
 | [0007](0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0028](0028-policy-de-siege.md) | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 |  | vectorz | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
