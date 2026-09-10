@@ -139,6 +139,7 @@
 | [20260826225817193](done/20260826225817193_board-clic-fiche-detail.md) | Board d'avancement — cliquer une fiche ouvre son détail lisible (au lieu du .md brut) | feature | P2 | 20260821163346487 | mega-city | ✅ shipped | #181 |
 | [20260828165644386](done/20260828165644386_vue-ecart-plan-delta.md) | Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan | feature | P2 |  | mega-city | ✅ shipped | #185 |
 | [20260828165644452](done/20260828165644452_monitor-accueil-pilotage-sections.md) | Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête | feature | P2 |  | mega-city | ✅ shipped | #185 |
+| [20260910165637000](20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md) | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 |  | mega-city | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
 | [0011](done/0011-mission-control-frames-buffer.md) | Buffer `frames` non borné dans la mission-control | refactor | P3 |  | vectorz | ✅ shipped | #41 |
