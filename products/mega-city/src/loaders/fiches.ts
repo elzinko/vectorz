@@ -27,13 +27,28 @@ export interface Fiche {
 }
 
 /**
- * Lit un champ scalaire du front-matter, commentaire `# …` retiré, brut (non typé).
- * Exporté pour le validateur de conformité (fiche 652/281) : même lecture, pas de
- * second parseur de front-matter.
+ * Lit un champ scalaire du front-matter, brut (non typé). Exporté pour le validateur
+ * de conformité (fiche 652/281) : même lecture, pas de second parseur de front-matter.
+ *
+ * Deux régimes, comme en YAML — l'ordre compte (bug colonne PR du board, PR #221) :
+ *   - valeur QUOTÉE (`pr: "#29"`) → contenu LITTÉRAL entre guillemets, aucun `#` retiré ;
+ *     le `#` fait partie de la valeur, pas un commentaire.
+ *   - valeur NUE (`status: idea # notes`) → un `#` en tête ou précédé d'un blanc ouvre
+ *     un commentaire, retiré ; un `#` collé (`a#b`) reste dans la valeur.
+ * Retirer le commentaire AVANT les guillemets faisait lire `pr: "#29"` comme vide.
  */
 export function readField(text: string, field: string): string {
   const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
-  return m ? m[1].replace(/[ \t]*#.*$/, '').trim().replace(/^["']|["']$/g, '') : '';
+  if (!m) return '';
+  const raw = m[1].trim();
+  // Ancrée sur une fin valide : après le guillemet fermant, soit la fin de ligne, soit un
+  // commentaire précédé d'au moins un blanc (` # …`, règle YAML). Le `\1` tombe donc sur le
+  // VRAI guillemet fermant. Ça préserve un guillemet interne (`"dis \"go\""`), refuse un
+  // scalaire suivi de texte parasite (`"idea" typo`) ET un commentaire collé (`"idea"#typo`)
+  // — la faute reste visible au lieu d'être avalée en silence. Revue Codex, PR #222.
+  const quoted = raw.match(/^(["'])(.*?)\1(?:[ \t]+#.*)?[ \t]*$/);
+  if (quoted) return quoted[2];
+  return raw.replace(/(?:^|\s)#.*$/, '').trim();
 }
 
 /** Lit un champ liste EN LIGNE du front-matter (`labels: [a, b]`) → tableau (vide si absent). */
