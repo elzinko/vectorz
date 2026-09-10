@@ -81,4 +81,11 @@ describe('readField — bords', () => {
     expect(readField('status: "idea" typo', 'status')).toBe('"idea" typo');
     expect(readField('status: "idea" typo', 'status')).not.toBe('idea');
   });
+
+  it('un commentaire COLLÉ au guillemet (sans blanc) n’est pas traité comme un commentaire [revue Codex #222]', () => {
+    // Règle YAML : un `#` de commentaire exige un blanc devant. `"idea"#typo` est donc mal
+    // formé → la faute reste visible ; alors que `"idea" # note` (avec blanc) rend `idea`.
+    expect(readField('status: "idea"#typo', 'status')).not.toBe('idea');
+    expect(readField('status: "idea" # note', 'status')).toBe('idea');
+  });
 });

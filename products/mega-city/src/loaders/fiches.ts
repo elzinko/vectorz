@@ -41,11 +41,12 @@ export function readField(text: string, field: string): string {
   const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
   if (!m) return '';
   const raw = m[1].trim();
-  // Ancrée sur une fin valide (fin de ligne, ou commentaire ` # …`) : le `\1` tombe donc
-  // sur le VRAI guillemet fermant. Ça préserve un guillemet interne (`"dis \"go\""`) et
-  // refuse un scalaire mal formé (`status: "idea" typo` non reconnu → la faute reste
-  // visible au lieu d'être avalée en silence). Revue Codex, PR #222.
-  const quoted = raw.match(/^(["'])(.*?)\1[ \t]*(?:#.*)?$/);
+  // Ancrée sur une fin valide : après le guillemet fermant, soit la fin de ligne, soit un
+  // commentaire précédé d'au moins un blanc (` # …`, règle YAML). Le `\1` tombe donc sur le
+  // VRAI guillemet fermant. Ça préserve un guillemet interne (`"dis \"go\""`), refuse un
+  // scalaire suivi de texte parasite (`"idea" typo`) ET un commentaire collé (`"idea"#typo`)
+  // — la faute reste visible au lieu d'être avalée en silence. Revue Codex, PR #222.
+  const quoted = raw.match(/^(["'])(.*?)\1(?:[ \t]+#.*)?[ \t]*$/);
   if (quoted) return quoted[2];
   return raw.replace(/(?:^|\s)#.*$/, '').trim();
 }
