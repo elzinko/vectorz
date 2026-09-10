@@ -1,7 +1,7 @@
 ---
 composes: [ezk-commits]
 name: ezk-backlog
-layout_version: 3
+layout_version: 4
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne

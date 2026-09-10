@@ -4,12 +4,17 @@ title: E2E Playwright — dark-mode cobaye (post-FEAT-S1)
 type: chore
 priority: P3
 product: vectorz
-status: blocked
-pr:
+status: superseded
+pr: superseded — cobaye 0041 (déc. 2026-08-07)
 created: 2026-06-25
 ---
 
 # 0017 — E2E Playwright — dark-mode cobaye (post-FEAT-S1)
+
+> **🗑️ Clôturée le 2026-09-10 — `superseded`.** Prémisse morte : le banc `cop1-cobaye` visé
+> (FEAT-S1) n'a jamais été reconstruit après le pivot. Le cobaye a été refait par 0041 dans un
+> tout autre but (smoke Moniteur), et l'articulation dark-mode a été explicitement écartée
+> (décision 2026-08-07, notée dans 0041). Un E2E dark-mode existe déjà par ailleurs (0003).
 
 ## Contexte / Problème
 

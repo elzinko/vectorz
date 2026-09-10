@@ -97,6 +97,7 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   local st
   case "$status" in
     shipped) st='✅ shipped';;
+    superseded) st='🗑️ superseded';;
     in-progress) st='🟠 in-progress';;
     blocked) st='⛔ blocked';;
     ready) st='🔵 ready';;
@@ -119,7 +120,7 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   echo "# ${TITLE}"
   echo ''
   echo '> Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.'
-  echo '> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped.'
+  echo '> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped · 🗑️ superseded.'
   # Lien vers la séquence décidée (PLAN.md, curée hors index) — ré-émis à chaque regen
   # pour qu'il survive à la régénération (le contenu de PLAN.md n'est pas touché).
   if [ -f features/PLAN.md ]; then
@@ -169,8 +170,8 @@ echo "features/BACKLOG.md régénéré ($(printf '%s' "$rows" | grep -c .) fiche
 # Compteurs déterministes (ADR-0016 §5 / fiche 0071) — le script compte, le LLM juge.
 printf '%s' "$rows" | awk -F"$SEP" '
   NF { n++; c[$5]++; if ($3=="epic") e++ }
-  END { printf "stats: total=%d · idea=%d · ready=%d · in-progress=%d · blocked=%d · shipped=%d · épics=%d\n", \
-        n, c["idea"], c["ready"], c["in-progress"], c["blocked"], c["shipped"], e }'
+  END { printf "stats: total=%d · idea=%d · ready=%d · in-progress=%d · blocked=%d · shipped=%d · superseded=%d · épics=%d\n", \
+        n, c["idea"], c["ready"], c["in-progress"], c["blocked"], c["shipped"], c["superseded"], e }'
 median="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $8!="" { print $8 }' | sort | awk '{ a[NR]=$0 } END { if (NR) print a[int((NR+1)/2)] }')"
 if [ -n "$median" ]; then
   echo "stats: création médiane des ready = ${median}"

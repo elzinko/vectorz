@@ -47,8 +47,13 @@ export class GitGhRepoSource implements RepoSource {
         const relPath = join('features', 'done', f);
         const content = readFileSync(join(doneDir, f), 'utf8');
         const id = /^id:\s*"?(\S+?)"?\s*$/m.exec(content)?.[1] ?? f;
-        return { id, mergedAt: this.ficheMergedAt(repoRoot, relPath) };
-      });
+        const status = /^status:\s*(\S+)/m.exec(content)?.[1] ?? '';
+        return { id, status, mergedAt: this.ficheMergedAt(repoRoot, relPath) };
+      })
+      // Vélocité = fiches réellement LIVRÉES. Une fiche `superseded` (clôturée sans
+      // livraison) vit aussi dans done/ mais ne compte pas — idem futurs `merged`/`split`.
+      .filter((r) => r.status === 'shipped')
+      .map((r) => ({ id: r.id, mergedAt: r.mergedAt }));
   }
 
   listMergedPrs(repoRoot: string): MergedPrRecord[] {
