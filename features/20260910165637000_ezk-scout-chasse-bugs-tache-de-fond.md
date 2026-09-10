@@ -7,8 +7,8 @@ product: mega-city
 epic:
 depends: ["20260821210633457", "0102", "20260812104022228"]
 labels: [ezk-method, qa, bug-hunting, testbed, scout]
-status: idea
-ready: # PENDING arbitrage PO : recoupe la carte explorateur 20260821210633457 (fusion vs scission) — cf. Notes
+status: ready
+ready: 2026-09-10 # décision PO : garder ezk-scout (bugs) et l'explorateur (features) SÉPARÉS + mutualiser la commande — cf. Notes
 pr:
 evidence: none # capacité de méthode (skill) ; preuve = ses propres tests + un run de démonstration
 created: 2026-09-10
@@ -144,16 +144,16 @@ Ce qu'elle fait :
 
 ## Notes / décisions
 
-- **⚠ RECOUPE la carte explorateur `20260821210633457`** (« Explorateur LLM par PR »,
-  active). Elle spécifie déjà « user l'app pour de vrai → proposer des fiches
-  (bug / trou / feature à adapter) », avec la politique **proposition en attente
-  d'arbitrage humain**. Retour Codex (PR #217) : deux contrats actifs pour le même
-  livrable. **On s'aligne déjà sur sa politique** (proposition, jamais tiré seul).
-  **Décision PO à trancher AVANT `ready`** : fusionner ezk-scout dans l'explorateur,
-  le superséder, ou scinder explicitement (l'explorateur = déclenché par PR, lignée
-  supervision/dogfood `[[0169]]` ; ezk-scout = passe **autonome en tâche de fond**,
-  webapp/émulateur, find-only, capture + localisation `fichier:ligne`). C'est
-  pourquoi cette fiche reste `idea`, pas `ready`.
+- **Relation avec la carte explorateur `20260821210633457` — DÉCISION PO (2026-09-10)** :
+  on garde les **deux cartes SÉPARÉES**, avec une division nette de la cible —
+  **ezk-scout cherche des BUGS**, l'**explorateur cherche des NOUVELLES FEATURES**
+  (adaptations, trous à combler). MAIS les deux **mutualisent la commande
+  d'exploration** : une **brique commune** (monter le banc isolé, user l'app,
+  collecter des observations, rendre un **rapport** de brouillons sous gate humaine)
+  surmontée de deux **lentilles** (bugs vs features). Ne PAS dupliquer cette brique :
+  la factoriser, et que chaque carte la compose. La même précision est portée dans
+  la carte explorateur. Politique de création commune : proposition → arbitrage
+  humain, jamais tiré seul (cf. plus haut). Cette décision lève le blocage `ready`.
 - **Prototype validé** : le run samplerz 2026-09-10 (crop #403, export #404) via le
   prompt ad hoc. Cette fiche **productise** ce prompt en outil de première classe.
 - **Statut des bugs trouvés** : samplerz a introduit `# status: suggest` (trouvaille

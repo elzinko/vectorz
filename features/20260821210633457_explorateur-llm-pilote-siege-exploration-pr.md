@@ -102,6 +102,13 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
 
 ## Notes / décisions
 
+- **Division avec `ezk-scout` ([[20260910165637000]]) — décision PO (2026-09-10)** : deux cartes
+  **SÉPARÉES**. Cette carte cherche des **NOUVELLES FEATURES** (adaptations, trous à combler) ;
+  `ezk-scout` cherche les **BUGS**. Les deux **mutualisent la commande d'exploration** — une
+  **brique commune** (monter le banc isolé, user l'app, collecter des observations, rendre un
+  **rapport** de brouillons sous gate humaine) surmontée de deux **lentilles** (features vs bugs).
+  Ne PAS dupliquer cette brique : la factoriser et que chaque carte la compose. Politique commune :
+  proposition → arbitrage humain, jamais de carte créée/committée seule.
 - **Dépend de [[0169]]** (l'oracle) — le socle d'assertion. **Brique 2 avant brique 3** (l'explorateur
   a besoin d'un siège pilotable).
 - **Scindée de 0169 le 2026-08-21** (décision PO : garder l'oracle tirable seul, sortir le reste en suites).

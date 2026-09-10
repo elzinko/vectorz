@@ -12,7 +12,6 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
 | mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
-| vectorz | 20260906121839943 | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 | 🔵 ready |  |
 
 ## 🟠 En cours (`in-progress`)
 
@@ -32,7 +31,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | ⛔ blocked |  |
 | mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
 | vectorz | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 | ⛔ blocked |  |
-| vectorz | 20260906121839943 | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 | 🔵 ready |  |
 | vectorz | 0038 | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | ⛔ blocked |  |
 | mega-city | 20260829140259165 | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 | ⛔ blocked |  |
 | vectorz | 0017 | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 | ⛔ blocked |  |
@@ -150,6 +148,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260826222044335 | Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic | feature | P2 | 💡 idea |  |
 | mega-city | 20260830094601309 | Mode auto — gérer la fenêtre de contexte sur un run long (+ trace de supervision requise) | feature | P2 | 💡 idea |  |
 | mega-city | 20260830110131158 | Revue adverse skippable par flag — --review adverse\|skip (ezk-product-build → ezk-sprint) | feature | P2 | 💡 idea |  |
+| mega-city | 20260830113054036 | La règle de clarté pousse vers `<details>` HTML qui fuit en texte brut dans le terminal Claude Code | bug | P2 | 💡 idea |  |
 | mega-city | 20260830114318159 | ezk-ezk — option configurable « passer par la méthode » (proposer une fiche au lieu de créer un skill direct) | feature | P2 | 💡 idea |  |
 | mega-city | 20260830194601307 | front-matter généré émis + validé par la lib YAML (jamais par concaténation) | feature | P2 | 💡 idea |  |
 | mega-city | 20260830194601376 | SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions) | chore | P2 | 💡 idea |  |
@@ -177,6 +176,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | vectorz | 0056 | Visualisation — onglet « qualité par PR » dans mission-control | feature | P2 | 💡 idea |  |
 | vectorz | 0058 | Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR | feature | P2 | 💡 idea |  |
 | vectorz | 0180 | Fiches datées — id AAAAMMDDHHMMSSmmm (17 ch., ms, UTC) à la capture, fin de max+1 | feature | P2 | 💡 idea |  |
+| vectorz | 20260906135450000 | Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus) | feature | P2 | 💡 idea |  |
 | mega-city | 0074 | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 | 💡 idea |  |
 | mega-city | 0093 | BacklogStore — port de persistance agnostique (md/git · GitHub · Jira…) — IDEA, sur trigger | feature | P3 | 💡 idea |  |
 | mega-city | 0114 | webapp de config (édite les YAML profiles/bundles) | feature | P3 | 💡 idea |  |
@@ -207,7 +207,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
-| vectorz | 28 | 1 | 1 | 4 | 20 | 2 |
-| mega-city | 139 | 1 | 3 | 2 | 126 | 7 |
+| vectorz | 28 | 0 | 1 | 4 | 21 | 2 |
+| mega-city | 140 | 1 | 3 | 2 | 127 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
