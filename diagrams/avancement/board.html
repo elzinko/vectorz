@@ -271,12 +271,12 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 134,
-  "idea": 157,
+  "idea": 159,
   "blocked": 6,
   "in-progress": 4,
-  "ready": 1
+  "ready": 2
  },
- "tirables": 1,
+ "tirables": 2,
  "actives": [
   {
    "id": "20260826122532943",
@@ -2073,6 +2073,38 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260906135450000_recette-emulateur-android-test-device.md"
   },
   {
+   "id": "20260910152227744",
+   "title": "Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "epic": "20260910155608287",
+   "product": "vectorz",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md"
+  },
+  {
+   "id": "20260910165637000",
+   "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
+   "type": "feature",
+   "priority": "P2",
+   "status": "ready",
+   "ready": true,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-method",
+    "qa",
+    "bug-hunting",
+    "testbed",
+    "scout"
+   ],
+   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
+  },
+  {
    "id": "0007",
    "title": "Format de session log + discipline de commit (anchor réel)",
    "type": "chore",
@@ -2584,6 +2616,17 @@ window.EZK_AVANCEMENT = {
    "childCounts": {
     "idea": 3
    }
+  },
+  {
+   "id": "20260910155608287",
+   "title": "Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)",
+   "status": "idea",
+   "children": [
+    "20260910152227744"
+   ],
+   "childCounts": {
+    "idea": 1
+   }
   }
  ],
  "filtres": {
@@ -2608,6 +2651,7 @@ window.EZK_AVANCEMENT = {
    "architecture",
    "article",
    "bmad",
+   "bug-hunting",
    "ci",
    "cout",
    "decouvrabilite",
@@ -2621,6 +2665,7 @@ window.EZK_AVANCEMENT = {
    "ezk-chef",
    "ezk-ci",
    "ezk-codex",
+   "ezk-method",
    "ezk-pr",
    "follow-up",
    "fondation",
@@ -2633,12 +2678,14 @@ window.EZK_AVANCEMENT = {
    "moteur",
    "nommage",
    "outillage",
+   "qa",
    "r&d",
    "recette",
    "retro",
    "retro-2026-09-05",
    "run-intake",
    "run-report",
+   "scout",
    "spike",
    "supervision",
    "template",
@@ -2733,7 +2780,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#207",
        "file": "features/done/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md",
        "found": true
       }
@@ -2753,7 +2800,7 @@ window.EZK_PLAN = {
        "epic": "20260821163346487",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#179",
        "file": "features/done/20260821172716537_carte-ne-montre-pas-la-loi.md",
        "found": true
       }
@@ -2773,7 +2820,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#188",
        "file": "features/done/20260825141012293_ezk-sessions-cockpit.md",
        "found": true
       }
@@ -2898,7 +2945,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#92",
        "file": "features/done/0181-ezk-opus-et-restitutions-lisibles.md",
        "found": true
       }
@@ -2918,7 +2965,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "cop1",
        "type": "feature",
-       "pr": "",
+       "pr": "#89",
        "file": "features/done/0176-interdit-gitconfig-global-identite-agent.md",
        "found": true
       }
@@ -2938,7 +2985,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
+       "pr": "#50",
        "file": "features/done/0059-moniteur-carte-de-run-lisible.md",
        "found": true
       },
@@ -2951,7 +2998,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "bug",
-       "pr": "",
+       "pr": "#50",
        "file": "features/done/0061-methode-et-siege-absents-de-la-projection.md",
        "found": true
       }
@@ -3024,7 +3071,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "chore",
-       "pr": "",
+       "pr": "#101",
        "file": "features/done/0182-e4-bis-purge-docs-post-bmad.md",
        "found": true
       },
@@ -3037,7 +3084,7 @@ window.EZK_PLAN = {
        "epic": "0034",
        "product": "vectorz",
        "type": "refactor",
-       "pr": "",
+       "pr": "#81",
        "file": "features/done/0039-e4-retrait-bmad.md",
        "found": true
       }
@@ -3063,7 +3110,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "refactor",
-       "pr": "",
+       "pr": "#66",
        "file": "features/done/0064-liste-unique-features-champ-product.md",
        "found": true
       }
@@ -3123,7 +3170,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
+       "pr": "#70",
        "file": "features/done/0082-registre-supervision-cote-vectorz.md",
        "found": true
       }
@@ -3143,7 +3190,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "bug",
-       "pr": "",
+       "pr": "#76",
        "file": "features/done/0168-run-orphelin-verrou-sans-cle.md",
        "found": true
       }
@@ -3163,7 +3210,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#92",
        "file": "features/done/0181-ezk-opus-et-restitutions-lisibles.md",
        "found": true
       }
@@ -3183,7 +3230,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
+       "pr": "#95",
        "file": "features/done/0062-onglet-projets-moniteur.md",
        "found": true
       }
@@ -3203,7 +3250,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
+       "pr": "#97",
        "file": "features/done/0063-ancrer-projet-depuis-moniteur.md",
        "found": true
       }
@@ -3229,7 +3276,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#99",
        "file": "features/done/0090-coherence-de-sprint.md",
        "found": true
       }
@@ -3249,7 +3296,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#74",
        "file": "features/done/0079-restitutions-po-lisibles.md",
        "found": true
       }
@@ -3269,7 +3316,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "chore",
-       "pr": "",
+       "pr": "#103",
        "file": "features/done/0091-mise-a-plat-carte-glossaire.md",
        "found": true
       }
@@ -3289,7 +3336,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
+       "pr": "#105",
        "file": "features/done/0022-observabilite-mission-control-donnees-deja-collectees.md",
        "found": true
       }
@@ -3309,7 +3356,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "bug",
-       "pr": "",
+       "pr": "#107",
        "file": "features/done/0060-checklist-demo-desktop-perimee.md",
        "found": true
       }
@@ -3329,7 +3376,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "chore",
-       "pr": "",
+       "pr": "#113",
        "file": "features/done/0041-cobaye-banc-test-rapide.md",
        "found": true
       }
@@ -3349,7 +3396,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#52",
        "file": "features/done/0089-ordonnancement-plan-sur-intake.md",
        "found": true
       }
@@ -3369,7 +3416,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#121",
        "file": "features/done/0149-formaliser-composes-inter-skills.md",
        "found": true
       }
@@ -3422,7 +3469,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "chore",
-       "pr": "",
+       "pr": "#145",
        "file": "features/done/0044-mesureur-outcomes-script-append-mvp-a.md",
        "found": true
       }
@@ -3475,7 +3522,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#117",
        "file": "features/done/0185-archive-croise-pr-branches.md",
        "found": true
       }
@@ -3527,7 +3574,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
+       "pr": "#41",
        "file": "features/done/0078-mcpb-install-un-clic-supervision.md",
        "found": true
       },
@@ -3782,7 +3829,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "vectorz",
        "type": "feature",
-       "pr": "",
+       "pr": "#95",
        "file": "features/done/0062-onglet-projets-moniteur.md",
        "found": true
       },
@@ -3867,7 +3914,7 @@ window.EZK_PLAN = {
        "epic": "",
        "product": "mega-city",
        "type": "chore",
-       "pr": "",
+       "pr": "#56",
        "file": "features/done/0088-ezk-archive-cout-cloture-session-disciplinee.md",
        "found": true
       },
@@ -3972,7 +4019,7 @@ window.EZK_PLAN = {
        "epic": "0034",
        "product": "vectorz",
        "type": "refactor",
-       "pr": "",
+       "pr": "#81",
        "file": "features/done/0039-e4-retrait-bmad.md",
        "found": true
       }
@@ -4069,6 +4116,30 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260910165637000",
+   "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
+   "status": "ready",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
+  },
+  {
+   "id": "20260910155608287",
+   "title": "Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md"
+  },
+  {
+   "id": "20260910152227744",
+   "title": "Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md"
+  },
+  {
    "id": "20260906135450000",
    "title": "Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus)",
    "status": "idea",
@@ -4163,33 +4234,9 @@ window.EZK_PLAN_DELTA = {
    "priority": "P3",
    "inPlan": false,
    "file": "features/20260904074824499_renommer-ezk-vers-mc.md"
-  },
-  {
-   "id": "20260903134909124",
-   "title": "La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md"
-  },
-  {
-   "id": "20260903134908019",
-   "title": "CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260903134908019_cli-ezk-complet-publie.md"
-  },
-  {
-   "id": "20260903134906920",
-   "title": "CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)",
-   "status": "idea",
-   "priority": "P1",
-   "inPlan": false,
-   "file": "features/20260903134906920_cli-ezk-point-d-entree-unique.md"
   }
  ],
- "offPlanCount": 4,
+ "offPlanCount": 5,
  "n": 15
 };
 /*ezk-plan-delta:end*/
