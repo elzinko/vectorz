@@ -11,7 +11,6 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
-| mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
 
 ## 🟠 En cours (`in-progress`)
@@ -29,7 +28,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | ⛔ blocked |  |
-| mega-city | 20260812104022240 | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 | 🔵 ready |  |
 | vectorz | 20260813131259846 | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 | ⛔ blocked |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
 | mega-city | 20260829140259165 | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 | ⛔ blocked |  |
@@ -164,6 +162,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260906122942715 | Grain de livraison « lot empilé » — 1 PR, N commits propres pour fiches dépendantes | feature | P2 | 💡 idea |  |
 | mega-city | 20260906122942770 | SPIKE — pourquoi l'isolation worktree, avant de figer la moisson | chore | P2 | 💡 idea |  |
 | mega-city | 20260906122942825 | SPIKE — coût du gate de fraîcheur offline / sans remote | chore | P2 | 💡 idea |  |
+| mega-city | 20260910231201744 | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 | 💡 idea |  |
 | vectorz | 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 💡 idea |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 💡 idea |  |
 | vectorz | 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 💡 idea |  |
@@ -208,6 +207,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
 | vectorz | 26 | 0 | 0 | 1 | 22 | 3 |
-| mega-city | 141 | 2 | 3 | 2 | 127 | 7 |
+| mega-city | 141 | 1 | 3 | 2 | 128 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
