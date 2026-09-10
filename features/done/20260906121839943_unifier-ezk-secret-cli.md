@@ -5,9 +5,9 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P1 # P0 | P1 | P2 | P3
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic:
-status: ready # idea | ready | in-progress | blocked | shipped
+status: shipped # idea | ready | in-progress | blocked | shipped
 ready: 2026-09-06
-pr:
+pr: "#216"
 evidence: none # outil CLI, pas d'écran
 created: 2026-09-06
 ---
@@ -24,7 +24,7 @@ pour ouvrir le trousseau.
 
 ## Contexte / Problème
 
-Les scripts vivent dans [`recipes/secrets-trousseau/`](../recipes/secrets-trousseau/README.md)
+Les scripts vivent dans [`recipes/secrets-trousseau/`](../../recipes/secrets-trousseau/README.md)
 et sont copiés dans `~/.local/bin/`.
 
 Quatre frictions constatées :
@@ -105,12 +105,12 @@ Choix de conception :
       argument → message d'usage, code de sortie propre.
 - [ ] Les anciens noms (`ezk-secret-set/get/list/check/set-ionos`) restent fonctionnels
       via redirection pendant la transition.
-- [ ] La recette [`secrets-trousseau/README.md`](../recipes/secrets-trousseau/README.md)
+- [ ] La recette [`secrets-trousseau/README.md`](../../recipes/secrets-trousseau/README.md)
       est mise à jour : nouvelle CLI, **plus** la distinction Trousseau d'accès vs app
       « Mots de passe ».
 - [ ] Les deux README qui citent les anciens noms sont mis à jour
-      ([`recipes/lancement-app/README.md`](../recipes/lancement-app/README.md),
-      [`recipes/lancement-app/catalogue-secrets.md`](../recipes/lancement-app/catalogue-secrets.md)).
+      ([`recipes/lancement-app/README.md`](../../recipes/lancement-app/README.md),
+      [`recipes/lancement-app/catalogue-secrets.md`](../../recipes/lancement-app/catalogue-secrets.md)).
 - [ ] Gate locale verte (shellcheck/tests des scripts) avant PR.
 
 ## Comment vérifier
@@ -154,5 +154,5 @@ ezk-secret open
   **mise à jour** dans la même PR (critère d'acceptation ci-dessus).
 - Origine : session du 2026-09-06 (friction sur un secret LemonSqueezy de 1035 caractères,
   résolue par `--clip`).
-- Voisine mais distincte : [0158](0158-ezk-dns-ionos.md) (automatiser le DNS IONOS via
+- Voisine mais distincte : [0158](../0158-ezk-dns-ionos.md) (automatiser le DNS IONOS via
   l'API) — consomme un secret, ne refactore pas l'outil.
