@@ -4,16 +4,21 @@ title: Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic
 type: epic
 priority: P0
 product: vectorz
-status: idea
-pr:
+status: superseded
+pr: superseded — épic ~80% livré, reliquat pilote clos, 0024 détaché
 created: 2026-07-15
 ---
 
 # 0034 — Mise à plat post-pivot (épic)
 
+> **🗑️ Clôturé le 2026-09-11 — `superseded`.** Épic ~80 % livré (0035 / 0036 / 0037 / 0039 /
+> 0060 / 0182 shippés). Les enfants « mode pilote » sont clos `superseded` (0030 / 0038 / 0018 /
+> 0017 / 0020 / 0040). Le dernier, 0024 (purge de code mort), est **détaché** en chore autonome.
+> Plus rien de constructible ici — la mise à plat post-pivot est faite.
+
 > **Épic non-buildable** — ne pas tirer cette fiche directement à l'intake : tirer ses
-> lots / fiches filles ([0035](done/0035-consolider-statuts-adr.md),
-> [0036](done/0036-purge-code-mort-prouve.md), [0037](done/0037-arbitrage-double-writer-sprint-status.md), …).
+> lots / fiches filles ([0035](0035-consolider-statuts-adr.md),
+> [0036](0036-purge-code-mort-prouve.md), [0037](0037-arbitrage-double-writer-sprint-status.md), …).
 
 ## Contexte / Problème
 
@@ -28,9 +33,9 @@ sourcés, lots séquencés (1 PR/lot), schémas partagés pour valider la direct
 Synthèse produite par lecture exhaustive (ADR-015→028, fiches actives, docs vivants,
 ADR mega-city, cartographie du code) + **deux** passes adverses le 2026-07-15 (revue de
 la fiche, puis validation du registre garder/consolider/supprimer). Le travail amont
-validé est éclaté en 3 fiches filles : [0035](done/0035-consolider-statuts-adr.md) (P0,
-statuts ADR = L4a), [0036](done/0036-purge-code-mort-prouve.md) (P1, purge sûre ⊂ L8),
-[0037](done/0037-arbitrage-double-writer-sprint-status.md) (P1, D7). Faits marquants vérifiés
+validé est éclaté en 3 fiches filles : [0035](0035-consolider-statuts-adr.md) (P0,
+statuts ADR = L4a), [0036](0036-purge-code-mort-prouve.md) (P1, purge sûre ⊂ L8),
+[0037](0037-arbitrage-double-writer-sprint-status.md) (P1, D7). Faits marquants vérifiés
 en repo :
 
 - **ADR-021 est mergé** (commit `3cb9db2`, PR #48) mais toujours stampé « Proposé » — la
@@ -207,7 +212,7 @@ flowchart LR
   sprint-status §10.5) ; documenter la frontière `.cop1/` = état runtime piloté (ADR-019)
   vs `.supervision/` = journal observé, arbre du projet supervisé, gitignoré (ADR-028 +
   capture DP6) — repos potentiellement différents.
-- **L4a — Re-tampons immédiats** → **fiche [0035](done/0035-consolider-statuts-adr.md) (P0)**.
+- **L4a — Re-tampons immédiats** → **fiche [0035](0035-consolider-statuts-adr.md) (P0)**.
   Parallèle à L1-L3, sans gate démo : ADR-021 → Accepté (justifié par le contrat de
   couture, pas « code mergé » — lève le bloqueur (b) de mega-city 0016), ADR-024 → Accepté
   (après confirmation E6-S2 `d200f0e`), bandeau « révisé par ADR-027 » dans ADR-025.
@@ -238,7 +243,7 @@ flowchart LR
   propager le rename L6.
 - **L8 — Dette actée** (petits lots indépendants) : le **sous-ensemble sûr** (S1
   `TokenBudgetService`, S2 `docker-compose.yml`, S3 `ea13-real-run.sh`) part en
-  **fiche [0036](done/0036-purge-code-mort-prouve.md) (P1)** ; le sort de `useBMAD=false` +
+  **fiche [0036](0036-purge-code-mort-prouve.md) (P1)** ; le sort de `useBMAD=false` +
   agents legacy est **tranché par ADR-029 (D6)** : retrait en **E4**, après le gate E3 —
   runtime-atteignable et testé jusque-là, donc pas à purger ici. (Onglets 404 **déjà
   retirés** — `web/src/App.tsx` réf. 0022 ; ne reste que l'arbitrage D8 avec 0031.)
@@ -283,11 +288,11 @@ flowchart LR
 - **D6 — useBMAD + agents legacy** : **tranché par ADR-029** (retrait en E4, après le
   gate E3 « run pilote vert sur fiches natives »).
 - **D7 — Double-writer sprint-status.yaml** (snapshot §10.5) : jamais tranché → **porté
-  par la fiche [0037](done/0037-arbitrage-double-writer-sprint-status.md) (P1)**.
+  par la fiche [0037](0037-arbitrage-double-writer-sprint-status.md) (P1)**.
 - **D8 — 0022 vs 0031** : une seule vue runs dans la mission-control ou deux sources
   (SSE legacy vs journal `.supervision`) — re-cadrer post-démo.
 - **D9 — `_bmad/` racine (27 fichiers commités) et `_bmad-output/` (225)** : **tranché
-  par [ADR-029](../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md)**
+  par [ADR-029](../../docs/adr/ADR-029-emancipation-bmad-politique-archivage.md)**
   (émancipation, retrait en E4 après gate E3). NB : « réinstallable via `bmad install` »
   était trompeur — les 27 fichiers sont des customisations projet qu'une réinstallation
   ne régénère pas ; seul l'historique git les garde (tag d'ancrage `epoch-1-bmad-final`).

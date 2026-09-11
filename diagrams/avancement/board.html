@@ -271,8 +271,8 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 135,
-  "idea": 160,
-  "superseded": 4,
+  "superseded": 9,
+  "idea": 155,
   "blocked": 3,
   "in-progress": 3,
   "ready": 1
@@ -683,43 +683,17 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260906122942607_run-report-synthese-fin-de-run.md"
   },
   {
-   "id": "0020",
-   "title": "AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local)",
-   "type": "feature",
-   "priority": "P2",
-   "status": "idea",
-   "ready": false,
-   "epic": "0034",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0020-agent-session-port.md"
-  },
-  {
    "id": "0024",
    "title": "résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022",
    "type": "refactor",
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "epic": "0034",
+   "epic": "",
    "product": "vectorz",
    "pr": "",
    "labels": [],
    "file": "features/0024-resorber-peripherie-pre-pivot.md"
-  },
-  {
-   "id": "0040",
-   "title": "L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK)",
-   "type": "chore",
-   "priority": "P2",
-   "status": "idea",
-   "ready": false,
-   "epic": "0034",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0040-l2-durcir-garde-fous-ci.md"
   },
   {
    "id": "0043",
@@ -2080,32 +2054,6 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md"
   },
   {
-   "id": "0007",
-   "title": "Format de session log + discipline de commit (anchor réel)",
-   "type": "chore",
-   "priority": "P3",
-   "status": "idea",
-   "ready": false,
-   "epic": "",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0007-v11-session-log-commit-discipline.md"
-  },
-  {
-   "id": "0028",
-   "title": "Policy de siège — l'auto-continue configurable sur signaux typés",
-   "type": "feature",
-   "priority": "P3",
-   "status": "idea",
-   "ready": false,
-   "epic": "",
-   "product": "vectorz",
-   "pr": "",
-   "labels": [],
-   "file": "features/0028-policy-de-siege.md"
-  },
-  {
    "id": "0029",
    "title": "Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace)",
    "type": "chore",
@@ -2435,21 +2383,6 @@ window.EZK_AVANCEMENT = {
   }
  ],
  "epics": [
-  {
-   "id": "0034",
-   "title": "Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)",
-   "status": "in-progress",
-   "children": [
-    "0020",
-    "0024",
-    "0040"
-   ],
-   "childCounts": {
-    "superseded": 2,
-    "idea": 3,
-    "shipped": 4
-   }
-  },
   {
    "id": "0051",
    "title": "Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)",
@@ -3921,14 +3854,14 @@ window.EZK_PLAN = {
       {
        "id": "0034",
        "title": "Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)",
-       "status": "idea",
+       "status": "superseded",
        "priority": "P0",
        "ready": false,
        "epic": "",
        "product": "vectorz",
        "type": "epic",
-       "pr": "",
-       "file": "features/0034-mise-a-plat-post-pivot.md",
+       "pr": "superseded — épic ~80% livré, reliquat pilote clos, 0024 détaché",
+       "file": "features/done/0034-mise-a-plat-post-pivot.md",
        "found": true
       },
       {
@@ -3937,7 +3870,7 @@ window.EZK_PLAN = {
        "status": "idea",
        "priority": "P2",
        "ready": false,
-       "epic": "0034",
+       "epic": "",
        "product": "vectorz",
        "type": "refactor",
        "pr": "",

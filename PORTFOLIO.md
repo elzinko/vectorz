@@ -36,7 +36,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
-| vectorz | 0034 | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | epic | P0 | 💡 idea |  |
 | mega-city | 20260813124026215 | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad) | epic | P1 | 💡 idea |  |
 | mega-city | 20260816131703334 | Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro) | epic | P1 | 💡 idea |  |
 | mega-city | 20260821163346487 | Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau | epic | P1 | 💡 idea |  |
@@ -163,9 +162,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260906122942770 | SPIKE — pourquoi l'isolation worktree, avant de figer la moisson | chore | P2 | 💡 idea |  |
 | mega-city | 20260906122942825 | SPIKE — coût du gate de fraîcheur offline / sans remote | chore | P2 | 💡 idea |  |
 | mega-city | 20260910231201744 | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 | 💡 idea |  |
-| vectorz | 0020 | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 💡 idea |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 💡 idea |  |
-| vectorz | 0040 | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 💡 idea |  |
 | vectorz | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 | 💡 idea |  |
 | vectorz | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 | 💡 idea |  |
 | vectorz | 0053 | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 💡 idea |  |
@@ -194,8 +191,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260830110131298 | Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039) | refactor | P3 | 💡 idea |  |
 | mega-city | 20260904074824499 | Renommer les commandes ezk-* → mc-* (mega-city) | chore | P3 | 💡 idea |  |
 | mega-city | 20260904080827072 | admin ezk : partagé multi-projets vs une app par projet — ports, isolation | chore | P3 | 💡 idea |  |
-| vectorz | 0007 | Format de session log + discipline de commit (anchor réel) | chore | P3 | 💡 idea |  |
-| vectorz | 0028 | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 | 💡 idea |  |
 | vectorz | 0029 | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 | 💡 idea |  |
 | vectorz | 0046 | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 | 💡 idea |  |
 | vectorz | 0047 | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 | 💡 idea |  |
@@ -206,7 +201,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
-| vectorz | 26 | 0 | 0 | 1 | 22 | 3 |
+| vectorz | 21 | 0 | 0 | 1 | 18 | 2 |
 | mega-city | 141 | 1 | 3 | 2 | 128 | 7 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

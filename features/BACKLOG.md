@@ -102,12 +102,14 @@
 | [0009](done/0009-worktree-execfile-hardening.md) | Durcir les appels git worktree (execFileSync, anti-injection shell) | refactor | P2 |  | vectorz | ✅ shipped | #30 |
 | [0014](done/0014-iamthelaw-enforced.md) | iamthelaw enforced — Rule.check → DoDCheck, advisory dans le prompt | feature | P2 |  | vectorz | ✅ shipped | #36 |
 | [0015](done/0015-storybudget-dodlimiter.md) | StoryBudget par story + câblage DoDLimiter (enforcement budget fin) | feature | P2 |  | vectorz | ✅ shipped | #38 |
+| [0020](done/0020-agent-session-port.md) | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 0034 | vectorz | 🗑️ superseded | superseded — pilote cop1 retiré (jumeau 0038/0018) |
 | [0022](done/0022-observabilite-mission-control-donnees-deja-collectees.md) | mission-control — afficher ce qui est déjà collecté (heure, durée, agent, historique, $) | feature | P2 |  | vectorz | ✅ shipped | #105 |
 | [0023](done/0023-exposer-model-tiering-config.md) | exposer le model-tiering dans cop1.config.yaml (promesse ADR-015) | chore | P2 |  | vectorz | ✅ shipped | #52 |
 | [0025](done/0025-article-contrat-supervisabilite.md) | Article « contrat de supervisabilité » — lecture de première main + article publié dans la doc | feature | P2 |  | vectorz | ✅ shipped | #57 |
 | [0026](done/0026-article-fenetres-de-mise-a-jour.md) | Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur | feature | P2 |  | vectorz | ✅ shipped | #59 |
 | [0038](done/0038-e3-pilote-natif.md) | E3 — Pilote natif complet (stories front-matter, exécuteur générique, gate zéro-BMAD) | feature | P2 | 0034 | vectorz | 🗑️ superseded | superseded — pilote retiré (0039, PR 81) |
 | [0039](done/0039-e4-retrait-bmad.md) | E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque | refactor | P2 | 0034 | vectorz | ✅ shipped | #81 |
+| [0040](done/0040-l2-durcir-garde-fous-ci.md) | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 0034 | vectorz | 🗑️ superseded | superseded — seam pilote mort (scan frontière dans pnpm test) |
 | [0048](done/0048-champ-product-ezk-backlog.md) | ezk-backlog — champ `product` optionnel dans le front-matter (backlogs multi-produits) | feature | P2 |  | mega-city | ✅ shipped |  |
 | [0060](done/0060-checklist-demo-desktop-perimee.md) | Les deux docs d'installation ont décroché de main (checklist démo + guide web UI) | bug | P2 |  | vectorz | ✅ shipped | #107 |
 | [0062](done/0062-onglet-projets-moniteur.md) | Onglet « Projets » dans le Moniteur — portefeuille par projet (méthode+version, localisation, statut) cliquable vers son activité | feature | P2 |  | vectorz | ✅ shipped | #95 |
@@ -141,6 +143,7 @@
 | [20260828165644452](done/20260828165644452_monitor-accueil-pilotage-sections.md) | Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête | feature | P2 |  | mega-city | ✅ shipped | #185 |
 | [20260910165637000](20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md) | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 |  | mega-city | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
+| [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
 | [0011](done/0011-mission-control-frames-buffer.md) | Buffer `frames` non borné dans la mission-control | refactor | P3 |  | vectorz | ✅ shipped | #41 |
 | [0012](done/0012-refresh-brownfield-snapshot.md) | Rafraîchir brownfield-snapshot.md (ancien emplacement worktree agent/) | chore | P3 |  | vectorz | ✅ shipped | #43 |
@@ -148,6 +151,7 @@
 | [0017](done/0017-e2e-darkmode-cobaye.md) | E2E Playwright — dark-mode cobaye (post-FEAT-S1) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — cobaye 0041 (déc. 2026-08-07) |
 | [0018](done/0018-dodlimiter-wiring.md) | Câbler DoDLimiter (N rejets DoD → blocked + escalade) | feature | P3 | 0034 | vectorz | 🗑️ superseded | superseded — mode pilote retiré |
 | [0019](done/0019-typecheck-stale-state-robustness.md) | Rendre `pnpm typecheck` robuste sur état stale (TS6310) | chore | P3 |  | vectorz | ✅ shipped | #49 |
+| [0028](done/0028-policy-de-siege.md) | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 |  | vectorz | 🗑️ superseded | superseded — siège cop1 retiré (concept en 0029) |
 | [0182](done/0182-e4-bis-purge-docs-post-bmad.md) | E4 bis — docs vivants post-BMAD (complément 0039) | chore | P3 |  | vectorz | ✅ shipped | #101 |
 | [20260813170548417](done/20260813170548417_supprimer-tombstone-mega-city-features.md) | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 |  | mega-city | ✅ shipped | #147 |
 | [20260825152954193](done/20260825152954193_ezk-map-page-accueil-menu-cartes.md) | Page d'accueil ezk:map — un menu des cartes (naviguer sans relancer le serveur) | feature | P3 |  | mega-city | ✅ shipped | #170 |
@@ -158,7 +162,7 @@
 
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
-| [0034](0034-mise-a-plat-post-pivot.md) | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | epic | P0 |  | vectorz | 💡 idea |  |
+| [0034](done/0034-mise-a-plat-post-pivot.md) | Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic) | epic | P0 |  | vectorz | 🗑️ superseded | superseded — épic ~80% livré, reliquat pilote clos, 0024 détaché |
 | [0051](0051-observabilite-qualite-produit.md) | Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic) | epic | P1 |  | vectorz | 💡 idea |  |
 | [20260813124026215](20260813124026215_deploiement-methode-llm-native.md) | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad) | epic | P1 |  | mega-city | 💡 idea |  |
 | [20260816131703334](20260816131703334_doc-decouvrabilite-rationalisation.md) | Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro) | epic | P1 |  | mega-city | 💡 idea |  |
@@ -198,9 +202,7 @@
 | [20260903134906920](20260903134906920_cli-ezk-point-d-entree-unique.md) | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 💡 idea |  |
 | [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 |  | mega-city | 💡 idea |  |
-| [0020](0020-agent-session-port.md) | AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, puis LLM local) | feature | P2 | 0034 | vectorz | 💡 idea |  |
-| [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 0034 | vectorz | 💡 idea |  |
-| [0040](0040-l2-durcir-garde-fous-ci.md) | L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK) | chore | P2 | 0034 | vectorz | 💡 idea |  |
+| [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 |  | vectorz | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 | 0051 | vectorz | 💡 idea |  |
@@ -298,8 +300,6 @@
 | [20260906135450000](20260906135450000_recette-emulateur-android-test-device.md) | Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20260910152227744](20260910152227744_regles-projet-local-couche-vectorz.md) | Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables | feature | P2 | 20260910155608287 | vectorz | 💡 idea |  |
 | [20260910231201744](20260910231201744_aggregate-apply-merged-split-moteur-llm.md) | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 |  | mega-city | 💡 idea |  |
-| [0007](0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 💡 idea |  |
-| [0028](0028-policy-de-siege.md) | Policy de siège — l'auto-continue configurable sur signaux typés | feature | P3 |  | vectorz | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |

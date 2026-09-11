@@ -13,6 +13,11 @@ created: 2026-07-22
 
 # 0051 — Observabilité qualité produit (épic)
 
+> **⏸️ PARKÉ le 2026-09-11 (décision PO).** Épic dormant : 7 enfants, 0 construit, gated
+> ADR-033 « proposé ». Gelé pour ne pas gonfler le P1 sans traction. **Réveil = ADR-033 accepté
+> + besoin réel** (mesurer la qualité produite quand la méthode sera stable). La moisson des
+> capteurs `quality-intelligence` (fiche 0045) reste possible depuis l'historique git.
+
 > **Épic non-buildable** — ne pas tirer cette fiche à l'intake : tirer ses filles
 > ([0052](0052-socle-metrique-port-adaptateur-silo.md) en tête,
 > puis [0053](0053-gate-dod-metrique.md), [0054](0054-catalogue-adaptateurs-outils.md),

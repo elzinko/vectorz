@@ -4,13 +4,18 @@ title: résorber la périphérie pré-pivot (ceremony-engine, quality-intelligen
 type: refactor
 priority: P2
 product: vectorz
-epic: 0034
+epic:
 status: idea
 pr:
 created: 2026-07-06
 ---
 
 # 0024 — résorber la périphérie pré-pivot
+
+> **↗️ Détachée de l'épic 0034 le 2026-09-11.** 0034 (mise à plat post-pivot) est clôturé ;
+> 0024 devient un **chore autonome bas** — purger le code mort pré-pivot (`ceremony-engine`,
+> `quality-intelligence`). Pas urgent, pas obsolète. La moisson des capteurs (0045) peut
+> précéder cette purge ou se faire depuis l'historique git.
 
 ## Contexte / Problème
 ADR-022 définit le cœur comme control plane aveugle au métier (« jamais de code
