@@ -17,6 +17,44 @@
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
+## 🔁 ITÉRATION COURANTE — décidée le 2026-09-12 (PO Thomas)
+
+> Le lot **multi-sprint** à tirer maintenant. Une itération = plusieurs sprints ; **la rétro
+> se joue à SA fin**, pas à chaque sprint (sinon trop peu de métriques accumulées — décision PO
+> 2026-09-12). Ordre = *quoi d'abord* ; les `in-progress` en tête (déjà commencées → à finir).
+> ⚠️ **Prérequis avant tirage** : la plupart des fiches sont `idea`/`in-progress`, pas `ready` —
+> **groomer→ready d'abord** (seule `20260910165637000` est `ready`). Reprise des `in-progress` :
+> tout leur code livré est **sur `origin/main`**, rien de bloqué en branche (constat 2026-09-12)
+> → repartir d'un `origin/main` frais. Ids en clair — voir l'index [`BACKLOG.md`](BACKLOG.md).
+
+**Fondation méthode compilée (= Jalon ①)** — le socle, en tête
+- `20260821204737357` — le graphe compilé · **in-progress** (reste-à-faire non entamé) · `build`
+- `20260823121712652` — statut validé par schéma (LE VERROU) · **in-progress** · `build`
+- `20260826122532943` — chapeau P0 qui cadre les deux ci-dessus · `groom`→`build`
+
+**Preuve en attente**
+- `0164` — vz-product-builder : skill déjà mergé, reste la **preuve vécue MCP** ·
+  `audit` — planifier une session outillée MCP (décision PO 2026-09-12)
+
+**P0 indépendants**
+- `20260911213014783` — merge local-first : main local à jour + propagation GitHub · `groom`→`build`
+- `20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette · `groom`→`build`
+
+**Boucle d'auto-amélioration** (capturer → rétro → ranger)
+- `20260911224102584` — rétro systématique en **fin d'itération multi-sprint** (top 2-3
+  appliquées, reste en tampon) · `groom`→`build`
+- `0081` — carnet de prépa de rétro : chaque session note ses frictions · `groom`→`build`
+
+**Déjà tirable**
+- `20260910165637000` — ezk-scout : chasse aux bugs en tâche de fond · `ready` · `build`
+
+### ↪️ Sprint SUIVANT — pas dans cette itération (pour ne pas la casser)
+- `20260824204751403` — lotir les features en versions & cohérence de lot (outiller le
+  niveau « itération » lui-même) · `groom`. À traiter **après** l'itération courante
+  (décision PO 2026-09-12).
+
+---
+
 ## 🎯 JALONS — feuille de route (consolidation du 2026-09-11)
 
 > Posé après la grande passe de consolidation (bloc A livré #225). **C'est la feuille de route
