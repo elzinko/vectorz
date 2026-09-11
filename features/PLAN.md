@@ -17,6 +17,43 @@
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
+## 🎯 JALONS — feuille de route (consolidation du 2026-09-11)
+
+> Posé après la grande passe de consolidation (bloc A livré #225). **C'est la feuille de route
+> courante** ; les sections « NOW / NEXT / LATER » plus bas sont conservées pour l'HISTORIQUE.
+> Ordre = *quoi d'abord*. La fiche-verrou `20260823121712652` (statuts `merged`/`split`) est en
+> tête : elle débloque l'`apply` de la rationalisation. Ids en clair (pas des liens) — voir l'index.
+
+**① Fondation méthode compilée** — P0, en cours
+- `20260826122532943` (chapeau P0) · `20260821204737357` (le graphe, in-progress) ·
+  **`20260823121712652`** (statut validé par schéma + `merged`/`split` — LE VERROU) · `0186` (Skema).
+- Fusion à appliquer (quand le verrou est là) : absorber `20260826112620281` (validateur déclaratif).
+
+**② Rationalisation du backlog** — outil « propose » livré (#223), reste l'`apply`
+- `20260910231201744` — aggregate : appliquer `merged`/`split` + moteur `llm` (gated sur ①).
+- `20260829123707200` — ranger le cluster recette / chef / extraction.
+- `20260830194601233` / `20260823121712781` — ship transactionnel + reconcile systématique.
+
+**③ Environnement de test** — débloque un P1 ancien
+- Épic à créer depuis `20260824163426298` : cœur `0102` (débloquer) + adaptateurs `ezk-preview` / `ezk-device`.
+
+**④ Contrat d'améliorabilité** — GATED ADR-030 (non ratifié)
+- Fusionner `0165` + `20260813131259846` (+ `0046` en annexe). Programmer ADR-030 d'abord, sinon rester parké.
+
+**⑤ Capacité UX** — petit, bas
+- Créer l'agent `ezk-ux` (ADR-0026) puis brancher `20260829140259165` (règle `no-layout-shift`, déjà livrée #187).
+
+**⑥ Articles / promo** — opportuniste
+- Rattacher les articles orphelins sous l'épic `20260824060737115` (marketing) ou `0163` (REX).
+
+**⏸️ PARKÉ** : `0051` (observabilité qualité) — réveil = ADR-033 accepté + besoin réel.
+
+**Bloc A consolidation — FAIT (2026-09-11, #225)** : `superseded` 0020 / 0040 / 0028 / 0007 / 0034
+(reliquat pilote cop1) ; `0024` détaché en chore autonome ; `0051` parké. (Les 4 premières —
+0030 / 0038 / 0017 / 0018 — closes via #221.)
+
+---
+
 ## ▶️ NOW — post-ADR-0040 (réaligné le 2026-08-26)
 
 > Réalignement PO du **2026-08-26** : l'ancienne tête « vue d'avancement »
