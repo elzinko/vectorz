@@ -179,6 +179,7 @@
 |---|-------|------|------|------|---------|--------|----|
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 |  | mega-city | 💡 idea |  |
 | [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) | ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X » | feature | P0 |  | mega-city | 💡 idea |  |
+| [20260911213014783](20260911213014783_merge-local-first-sync-main.md) | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 |  | mega-city | 💡 idea | # ex. "#123" quand une PR existe |
 | [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 0051 | vectorz | 💡 idea |  |
 | [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
