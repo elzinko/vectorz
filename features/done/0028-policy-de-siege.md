@@ -4,12 +4,16 @@ title: Policy de siège — l'auto-continue configurable sur signaux typés
 type: feature
 priority: P3
 product: vectorz
-status: idea
-pr:
+status: superseded
+pr: superseded — siège cop1 retiré (concept en 0029)
 created: 2026-07-14
 ---
 
 # 0028 — Policy de siège (auto-continue configurable)
+
+> **🗑️ Clôturée le 2026-09-11 — `superseded`.** Policy de siège cop1 (auto-continue via
+> `cop1.config.yaml` / `commands.jsonl`) — implémentation du pilote/siège cop1, retiré au pivot.
+> Le concept « qui continue seul » vit dans le contrat de supervisabilité (fiche 0029).
 
 ## Contexte / Problème
 

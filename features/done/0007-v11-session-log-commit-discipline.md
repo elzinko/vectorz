@@ -4,12 +4,17 @@ title: Format de session log + discipline de commit (anchor réel)
 type: chore
 priority: P3
 product: vectorz
-status: idea
-pr:
+status: superseded
+pr: superseded — couvert (ezk-commits + docs/sessions), reliquat cop1
 created: 2026-06-23
 ---
 
 # 0007 — Format de session log + discipline de commit
+
+> **🗑️ Clôturée le 2026-09-11 — `superseded`.** Le commit-anchor `COP1_COMMIT_ANCHOR` est du
+> pilote cop1 (retiré) ; le format de session log est couvert par `docs/sessions/` (snapshots
+> `ezk-archive`) et les messages par `ezk-commits`. Si un vrai besoin de « discipline de commit »
+> resurgit, rouvrir une fiche neuve.
 
 ## Contexte / Problème
 
@@ -45,7 +50,7 @@ désormais **caduques** et retirées du périmètre :
 - ~~ADR-009 à rédiger~~ — planning-ADR **statué caduc** par ADR-029 (Décision 2 : les
   planning-ADRs ne sont pas des ADR vivants ; ADR-005/009 déjà actés caducs).
 - ~~D1 pin de version BMAD~~ — **contredit par ADR-029** : BMAD est retiré en E4
-  (fiches [0038](done/0038-e3-pilote-natif.md)/[0039](done/0039-e4-retrait-bmad.md)), pinner sa
+  (fiches [0038](0038-e3-pilote-natif.md)/[0039](0039-e4-retrait-bmad.md)), pinner sa
   version n'a plus d'objet. Le volet « à re-scoper avec D9 après L5/L6 » de l'épic 0034
   tombe avec.
 

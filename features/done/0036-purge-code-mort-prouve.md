@@ -16,7 +16,7 @@ created: 2026-07-15
 
 Amont validé par panel adverse (2026-07-15). La « dette actée non résorbée » parasite
 chaque revue. Ce lot ne prend que le **sous-ensemble 100 % sûr, sans aucune orientation
-produit** (extrait du lot L8 de [0034](../0034-mise-a-plat-post-pivot.md)). Il **ne touche
+produit** (extrait du lot L8 de [0034](0034-mise-a-plat-post-pivot.md)). Il **ne touche
 PAS** `_bmad/`, `_bmad-output/`, ni le flag `useBMAD` : ceux-là sont runtime-atteignables
 et relèvent d'arbitrages humains (0034 D6/D9) — voir Notes.
 

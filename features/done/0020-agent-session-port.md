@@ -5,12 +5,16 @@ type: feature
 priority: P2
 product: vectorz
 epic: 0034
-status: idea
-pr:
+status: superseded
+pr: superseded — pilote cop1 retiré (jumeau 0038/0018)
 created: 2026-06-28
 ---
 
 # 0020 — AgentSessionPort : prouver l'indépendance à l'agent
+
+> **🗑️ Clôturée le 2026-09-11 — `superseded`.** Reliquat du pilote cop1 : la thèse « prouver
+> l'indépendance à l'agent via un exécuteur non-Claude » n'a plus d'objet — le pilote a été
+> retiré (époque 2). Mêmes jumeaux que 0038 / 0018 (épic 0034), déjà `superseded`.
 
 ## Contexte / Problème
 

@@ -5,12 +5,16 @@ type: chore
 priority: P2
 product: vectorz
 epic: 0034
-status: idea
-pr:
+status: superseded
+pr: superseded — seam pilote mort (scan frontière dans pnpm test)
 created: 2026-07-16
 ---
 
 # 0040 — L2 : durcir les garde-fous CI de séparabilité
+
+> **🗑️ Clôturée le 2026-09-11 — `superseded`.** Garde-fous CI d'un seam pilote (allowlist du
+> SDK Claude) que 0020 / 0038 rendaient vivant — le seam est mort (pilote retiré). Le scan de
+> frontière cop1 ⇸ mega-city survit dans le `pnpm test` racine.
 
 ## Contexte / Problème
 
@@ -29,7 +33,7 @@ lint + build + test racine, couverture `@cop1/web`, steps standalone mega-city
 2. **Allowlist des imports `@anthropic-ai/claude-agent-sdk`** : test qui borne la liste
    des fichiers autorisés à importer le SDK (état actuel = les adapters de session,
    ADR-026) — durcie ensuite par E1/L6 (0020) et étendue « zéro bmad » par E4
-   ([0039](done/0039-e4-retrait-bmad.md) §5).
+   ([0039](0039-e4-retrait-bmad.md) §5).
 3. **NE PAS faire** (déjà là ou différé, cf. panel PR #10) : jobs `--filter` build par
    produit (mega-city n'a pas de script build ; `cop1` est le nom du package racine) ;
    check « config générée par bind committée » (différé à L9 — personne n'écrit encore
