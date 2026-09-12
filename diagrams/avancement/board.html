@@ -272,7 +272,7 @@ window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 135,
   "superseded": 9,
-  "idea": 155,
+  "idea": 157,
   "blocked": 3,
   "in-progress": 3,
   "ready": 1
@@ -310,6 +310,19 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
+  },
+  {
+   "id": "20260911213014783",
+   "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
+   "type": "feature",
+   "priority": "P0",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260911213014783_merge-local-first-sync-main.md"
   },
   {
    "id": "0050",
@@ -681,6 +694,19 @@ window.EZK_AVANCEMENT = {
     "run-report"
    ],
    "file": "features/20260906122942607_run-report-synthese-fin-de-run.md"
+  },
+  {
+   "id": "20260911224102584",
+   "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
+   "type": "feature",
+   "priority": "P1",
+   "status": "idea",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [],
+   "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md"
   },
   {
    "id": "0024",
@@ -2583,6 +2609,495 @@ window.EZK_AVANCEMENT = {
 window.EZK_PLAN = {
  "lanes": [
   {
+   "label": "🔁 ITÉRATION COURANTE — décidée le 2026-09-12 (PO Thomas)",
+   "level": 2,
+   "rows": [
+    {
+     "text": "`20260821204737357` — le graphe compilé · **in-progress** (reste-à-faire non entamé) · `build`",
+     "marker": "build",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260821204737357",
+       "title": "Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260821204737357_cabler-la-methode-modele-compile.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260823121712652` — statut validé par schéma (LE VERROU) · **in-progress** · `build`",
+     "marker": "build",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260823121712652",
+       "title": "Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260823121712652_modele-statut-kanban-schema-valide.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260826122532943` — chapeau P0 qui cadre les deux ci-dessus · `groom`→`build`",
+     "marker": "groom",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260826122532943",
+       "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
+       "status": "idea",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`0164` — vz-product-builder : skill déjà mergé, reste la **preuve vécue MCP** ·",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0164",
+       "title": "vz-product-builder — product-builder autonome à corpus de reviewers (overlay, n'écrase pas ezk-*)",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0164-vz-product-builder-corpus-reviewers.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260911213014783` — merge local-first : main local à jour + propagation GitHub · `groom`→`build`",
+     "marker": "groom",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260911213014783",
+       "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
+       "status": "idea",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260911213014783_merge-local-first-sync-main.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette · `groom`→`build`",
+     "marker": "groom",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260831075615969",
+       "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
+       "status": "idea",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260911224102584` — rétro systématique en **fin d'itération multi-sprint** (top 2-3",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260911224102584",
+       "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`0081` — carnet de prépa de rétro : chaque session note ses frictions · `groom`→`build`",
+     "marker": "groom",
+     "struck": false,
+     "cards": [
+      {
+       "id": "0081",
+       "title": "Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0081-carnet-preparation-retro.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260910165637000` — ezk-scout : chasse aux bugs en tâche de fond · `ready` · `build`",
+     "marker": "build",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260910165637000",
+       "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
+       "status": "ready",
+       "priority": "P2",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "↪️ Sprint SUIVANT — pas dans cette itération (pour ne pas la casser)",
+   "level": 3,
+   "rows": [
+    {
+     "text": "`20260824204751403` — lotir les features en versions & cohérence de lot (outiller le",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260824204751403",
+       "title": "Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260824204751403_preparation-lots-versions-coherence.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "🎯 JALONS — feuille de route (consolidation du 2026-09-11)",
+   "level": 2,
+   "rows": [
+    {
+     "text": "`20260826122532943` (chapeau P0) · `20260821204737357` (le graphe, in-progress) ·",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260826122532943",
+       "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
+       "status": "idea",
+       "priority": "P0",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md",
+       "found": true
+      },
+      {
+       "id": "20260821204737357",
+       "title": "Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend",
+       "status": "in-progress",
+       "priority": "P1",
+       "ready": false,
+       "epic": "20260821163346487",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260821204737357_cabler-la-methode-modele-compile.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "Fusion à appliquer (quand le verrou est là) : absorber `20260826112620281` (validateur déclaratif).",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260826112620281",
+       "title": "Schéma markdown déclaratif + validateur mécanique — format de fiche/recette vérifiable et versionnable",
+       "status": "idea",
+       "priority": "P3",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260826112620281_schema-markdown-declaratif-validateur.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260910231201744` — aggregate : appliquer `merged`/`split` + moteur `llm` (gated sur ①).",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260910231201744",
+       "title": "ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260829123707200` — ranger le cluster recette / chef / extraction.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260829123707200",
+       "title": "Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "chore",
+       "pr": "",
+       "file": "features/20260829123707200_reunifier-tagger-cluster-recette.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "`20260830194601233` / `20260823121712781` — ship transactionnel + reconcile systématique.",
+     "marker": "ship",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260830194601233",
+       "title": "ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/20260830194601233_ship-transactionnel-liens-vues.md",
+       "found": true
+      },
+      {
+       "id": "20260823121712781",
+       "title": "Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260823121712781_reconcile-systematique-merges-hors-flux.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "Épic à créer depuis `20260824163426298` : cœur `0102` (débloquer) + adaptateurs `ezk-preview` / `ezk-device`.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260824163426298",
+       "title": "Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map »",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "refactor",
+       "pr": "",
+       "file": "features/20260824163426298_consolider-device-preview-testbed.md",
+       "found": true
+      },
+      {
+       "id": "0102",
+       "title": "ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr",
+       "status": "blocked",
+       "priority": "P1",
+       "ready": true,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0102-ezk-testbed-brique-boot-env-test.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "Fusionner `0165` + `20260813131259846` (+ `0046` en annexe). Programmer ADR-030 d'abord, sinon rester parké.",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0165",
+       "title": "Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B)",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/0165-contrat-ameliorabilite-v01-mvp-b.md",
+       "found": true
+      },
+      {
+       "id": "20260813131259846",
+       "title": "Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié",
+       "status": "blocked",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md",
+       "found": true
+      },
+      {
+       "id": "0046",
+       "title": "Différés du contrat d'améliorabilité — parking gated « après boucles réelles »",
+       "status": "idea",
+       "priority": "P3",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "chore",
+       "pr": "",
+       "file": "features/0046-differes-contrat-ameliorabilite-parking.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "Créer l'agent `ezk-ux` (ADR-0026) puis brancher `20260829140259165` (règle `no-layout-shift`, déjà livrée #187).",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "0026",
+       "title": "Article « fenêtres de mise à jour » — l'éligibilité de migration déclarée par le travailleur",
+       "status": "shipped",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "vectorz",
+       "type": "feature",
+       "pr": "#59",
+       "file": "features/done/0026-article-fenetres-de-mise-a-jour.md",
+       "found": true
+      },
+      {
+       "id": "20260829140259165",
+       "title": "Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux",
+       "status": "blocked",
+       "priority": "P3",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "chore",
+       "pr": "",
+       "file": "features/20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md",
+       "found": true
+      }
+     ]
+    },
+    {
+     "text": "Rattacher les articles orphelins sous l'épic `20260824060737115` (marketing) ou `0163` (REX).",
+     "marker": null,
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260824060737115",
+       "title": "Épic — Marketing & site (orchestrateur, landing, recette site)",
+       "status": "idea",
+       "priority": "P1",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "epic",
+       "pr": "",
+       "file": "features/20260824060737115_epic-marketing-et-site.md",
+       "found": true
+      },
+      {
+       "id": "0163",
+       "title": "série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité",
+       "status": "idea",
+       "priority": "P2",
+       "ready": false,
+       "epic": "",
+       "product": "mega-city",
+       "type": "epic",
+       "pr": "",
+       "file": "features/0163-serie-rex-migration-methodes.md",
+       "found": true
+      }
+     ]
+    }
+   ]
+  },
+  {
    "label": "▶️ NOW — post-ADR-0040 (réaligné le 2026-08-26)",
    "level": 2,
    "rows": [
@@ -3934,37 +4449,75 @@ window.EZK_PLAN = {
    ]
   }
  ],
- "head": null,
+ "head": {
+  "id": "20260910165637000",
+  "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
+  "status": "ready",
+  "priority": "P2",
+  "ready": true,
+  "epic": "",
+  "product": "mega-city",
+  "type": "feature",
+  "pr": "",
+  "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md",
+  "found": true
+ },
  "blockedAhead": [
   {
-   "id": "20260824061247344",
-   "title": "Refonte « trois étages » — le reliquat exécutable (lot 4b + retouches + options PO)",
+   "id": "20260826122532943",
+   "title": "Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes)",
+   "status": "idea",
+   "priority": "P0",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md",
+   "found": true
+  },
+  {
+   "id": "20260911213014783",
+   "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
+   "status": "idea",
+   "priority": "P0",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260911213014783_merge-local-first-sync-main.md",
+   "found": true
+  },
+  {
+   "id": "20260831075615969",
+   "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
+   "status": "idea",
+   "priority": "P0",
+   "ready": false,
+   "epic": "",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md",
+   "found": true
+  },
+  {
+   "id": "20260911224102584",
+   "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
    "status": "idea",
    "priority": "P1",
    "ready": false,
    "epic": "",
    "product": "mega-city",
-   "type": "refactor",
-   "pr": "",
-   "file": "features/20260824061247344_refonte-trois-etages-reliquat.md",
-   "found": true
-  },
-  {
-   "id": "0067",
-   "title": "ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat)",
-   "status": "idea",
-   "priority": "P2",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
    "type": "feature",
    "pr": "",
-   "file": "features/0067-ezk-ezk-contract-aware-carte-emission.md",
+   "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md",
    "found": true
   },
   {
-   "id": "20260812104022246",
-   "title": "Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés)",
+   "id": "0081",
+   "title": "Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien",
    "status": "idea",
    "priority": "P1",
    "ready": false,
@@ -3972,33 +4525,7 @@ window.EZK_PLAN = {
    "product": "mega-city",
    "type": "feature",
    "pr": "",
-   "file": "features/20260812104022246_composition-comportementale-skills-ezk.md",
-   "found": true
-  },
-  {
-   "id": "20260825182327490",
-   "title": "Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport)",
-   "status": "idea",
-   "priority": "P2",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "feature",
-   "pr": "",
-   "file": "features/20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md",
-   "found": true
-  },
-  {
-   "id": "20260824163426298",
-   "title": "Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map »",
-   "status": "idea",
-   "priority": "P2",
-   "ready": false,
-   "epic": "",
-   "product": "mega-city",
-   "type": "refactor",
-   "pr": "",
-   "file": "features/20260824163426298_consolider-device-preview-testbed.md",
+   "file": "features/0081-carnet-preparation-retro.md",
    "found": true
   }
  ],
@@ -4007,10 +4534,10 @@ window.EZK_PLAN = {
   "0092"
  ],
  "counts": {
-  "entries": 43,
-  "cards": 78,
-  "resolved": 76,
-  "shipped": 36,
+  "entries": 62,
+  "cards": 104,
+  "resolved": 102,
+  "shipped": 37,
   "unresolved": 2
  }
 };
@@ -4022,11 +4549,27 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260911224102584",
+   "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
+   "status": "idea",
+   "priority": "P1",
+   "inPlan": true,
+   "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md"
+  },
+  {
+   "id": "20260911213014783",
+   "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
+   "status": "idea",
+   "priority": "P0",
+   "inPlan": true,
+   "file": "features/20260911213014783_merge-local-first-sync-main.md"
+  },
+  {
    "id": "20260910231201744",
    "title": "ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm",
    "status": "idea",
    "priority": "P2",
-   "inPlan": false,
+   "inPlan": true,
    "file": "features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md"
   },
   {
@@ -4034,7 +4577,7 @@ window.EZK_PLAN_DELTA = {
    "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
    "status": "ready",
    "priority": "P2",
-   "inPlan": false,
+   "inPlan": true,
    "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
   },
   {
@@ -4124,25 +4667,9 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260904091853974_journal-difficultes-artefact-independant.md"
-  },
-  {
-   "id": "20260904091853948",
-   "title": "ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md"
-  },
-  {
-   "id": "20260904080827072",
-   "title": "admin ezk : partagé multi-projets vs une app par projet — ports, isolation",
-   "status": "idea",
-   "priority": "P3",
-   "inPlan": false,
-   "file": "features/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md"
   }
  ],
- "offPlanCount": 3,
+ "offPlanCount": 0,
  "n": 15
 };
 /*ezk-plan-delta:end*/
