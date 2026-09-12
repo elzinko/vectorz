@@ -163,6 +163,53 @@ BARE_MAIN="$(git -C "$BARE" rev-parse main)"
 SHIP_HEAD="$(git -C "$SHIP_CLONE" rev-parse HEAD)"
 [[ "$SHIP_HEAD" == "$BARE_MAIN" ]] && ok "ship-clone lui-même à jour après son propre merge" || fail "ship-clone pas à jour"
 
+# --- Cas 4 : dépôt sale — squash local REFUSÉ (pas de publication silencieuse) ---------
+# Un changement STAGÉ sans rapport ne bloque pas `checkout` : il survivrait au switch puis
+# serait embarqué par le commit de squash. On exige donc un dépôt propre avant de shipper.
+echo "=== Cas 4 — dépôt sale : squash local refusé (pas de travail non validé publié) ==="
+REPO4="$WORK/repo-dirty"
+git init -q -b main "$REPO4"
+git -C "$REPO4" config user.email t@t.io
+git -C "$REPO4" config user.name t
+echo v1 > "$REPO4/f.txt"; git -C "$REPO4" add f.txt; git -C "$REPO4" commit -qm "chore: v1"
+git -C "$REPO4" checkout -qb feat/x
+echo v2 >> "$REPO4/f.txt"; git -C "$REPO4" add f.txt; git -C "$REPO4" commit -qm "feat: x"
+git -C "$REPO4" checkout -q main
+echo parasite > "$REPO4/parasite.txt"; git -C "$REPO4" add parasite.txt   # stagé, non conflictuel
+MAIN_BEFORE="$(git -C "$REPO4" rev-parse main)"
+if bash "$SCRIPT" --repo "$REPO4" --branch feat/x --base main --subject "feat: x" --body b >/dev/null 2>&1; then
+  fail "ship_local a accepté un dépôt sale (risque de publier parasite.txt)"
+else
+  ok "ship_local refuse un dépôt sale (exit != 0)"
+fi
+[[ "$(git -C "$REPO4" rev-parse main)" == "$MAIN_BEFORE" ]] && ok "main inchangé après le refus" || fail "main a avancé malgré le refus"
+
+# --- Cas 5 : --head-sha → --match-head-commit épingle le head validé ------------------
+echo "=== Cas 5 — --head-sha : --match-head-commit dans la commande gh (anti-course) ==="
+OUT5="$(PATH="$FAKE_BIN:$PATH" bash "$SCRIPT" --repo "$REPO2" --remote --pr 99 --branch feat/y \
+  --subject "feat: y" --body "corps y" --head-sha deadbeef --dry-run)"
+grep -qF -- "--match-head-commit deadbeef" <<<"$OUT5" && ok "--match-head-commit <sha validé> présent" || fail "--match-head-commit absent malgré --head-sha"
+
+# --- Cas 6 : branche absorbée tenue par un AUTRE worktree — signal, pas d'avortement ---
+echo "=== Cas 6 — branche absorbée tenue par un worktree : pas d'abandon en plein ship ==="
+REPO6="$WORK/repo-held"
+git init -q -b main "$REPO6"
+git -C "$REPO6" config user.email t@t.io
+git -C "$REPO6" config user.name t
+echo v1 > "$REPO6/f.txt"; git -C "$REPO6" add f.txt; git -C "$REPO6" commit -qm "chore: v1"
+git -C "$REPO6" branch held main                                   # déjà absorbée (= main)
+git -C "$REPO6" worktree add -q "$WORK/repo6-held-wt" held >/dev/null 2>&1   # tenue par un worktree
+git -C "$REPO6" checkout -qb feat/w
+echo v2 >> "$REPO6/f.txt"; git -C "$REPO6" add f.txt; git -C "$REPO6" commit -qm "feat: w"
+git -C "$REPO6" checkout -q main
+if bash "$SCRIPT" --repo "$REPO6" --branch feat/w --base main --subject "feat: w" --body b >/dev/null 2>&1; then
+  ok "ship_local n'a pas avorté malgré une branche absorbée tenue par un worktree"
+else
+  fail "ship_local a avorté (exit != 0) sur une branche tenue par un worktree"
+fi
+[[ "$(cat "$REPO6/f.txt")" == $'v1\nv2' ]] && ok "main a bien avancé (squash appliqué)" || fail "main n'a pas avancé"
+git -C "$REPO6" show-ref --verify -q refs/heads/held && ok "branche tenue 'held' préservée" || fail "branche tenue supprimée malgré le worktree"
+
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
   exit 1

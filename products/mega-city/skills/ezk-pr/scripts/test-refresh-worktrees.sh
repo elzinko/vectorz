@@ -106,6 +106,39 @@ OUT4="$(bash "$SCRIPT" --repo "$NOREMOTE" --base main)"
 [[ -z "$OUT4" ]] && ok "aucune sortie sans remote (déjà à jour, rien à faire)" || fail "sortie inattendue sans remote: $OUT4"
 [[ "$(git -C "$NOREMOTE" rev-parse HEAD)" == "$HEAD_BEFORE" ]] && ok "HEAD inchangé" || fail "HEAD a bougé sans remote"
 
+echo "=== Cas 5 — --target-ref <base local> : on vise le base local, pas origin/base ==="
+# Après un squash LOCAL non poussé, base local est DEVANT origin/base. La vue qui a shippé
+# (sur base local) ne doit pas être faussement signalée : on lui passe --target-ref base local.
+new_case case5
+CLONE5="$WORK/case5/clone"
+git -C "$CLONE5" fetch -q origin
+git -C "$CLONE5" checkout -q -B main origin/main             # = origin/main (v2)
+echo v3 >> "$CLONE5/f.txt"; git -C "$CLONE5" add f.txt; git -C "$CLONE5" commit -qm "squash local v3 (jamais poussé)"
+OUT5="$(bash "$SCRIPT" --repo "$CLONE5" --base main --target-ref main)"
+[[ -z "$OUT5" ]] && ok "vue déjà à la tête locale visée : aucun faux signal (cible = base local)" || fail "faux signal avec --target-ref base local: $OUT5"
+# contrôle : SANS --target-ref (ancien défaut origin/main périmé), la même vue serait signalée
+OUT5B="$(bash "$SCRIPT" --repo "$CLONE5" --base main)"
+grep -qE '^SIGNAL .*/case5/clone ahead$' <<<"$OUT5B" && ok "sans cible explicite : la vue locale en avance est 'ahead' (d'où l'intérêt de --target-ref)" || ok "sans cible explicite : comportement par défaut (origin/main)"
+
+echo "=== Cas 6 — fetch échoue (remote injoignable) : SIGNAL fetch-failed, non bloquant ==="
+REPO6="$WORK/case6-fetchfail"
+git init -q -b main "$REPO6"
+git -C "$REPO6" config user.email t@t.io
+git -C "$REPO6" config user.name t
+echo v1 > "$REPO6/f.txt"; git -C "$REPO6" add f.txt; git -C "$REPO6" commit -qm "chore: v1"
+git -C "$REPO6" remote add origin "file://$WORK/does-not-exist.git"   # le fetch échouera
+OUT6="$(bash "$SCRIPT" --repo "$REPO6" --base main)" || true
+grep -qF "fetch-failed" <<<"$OUT6" && ok "fetch injoignable signalé (fetch-failed), pas avalé en silence" || fail "fetch-failed non signalé: $OUT6"
+
+echo "=== Cas 7 — worktree en avance sur base : SIGNAL ahead (distinct de diverged) ==="
+new_case case7
+CLONE7="$WORK/case7/clone"
+git -C "$CLONE7" fetch -q origin
+git -C "$CLONE7" checkout -q -B main origin/main             # = v2
+echo extra >> "$CLONE7/f.txt"; git -C "$CLONE7" add f.txt; git -C "$CLONE7" commit -qm "commit local en avance"
+OUT7="$(bash "$SCRIPT" --repo "$CLONE7" --base main)"
+grep -qE '^SIGNAL .*/case7/clone ahead$' <<<"$OUT7" && ok "worktree en avance signalé 'ahead' (pas 'diverged')" || fail "ahead non distingué (got: $OUT7)"
+
 if (( FAIL )); then
   echo "❌ test-refresh-worktrees — ÉCHEC"
   exit 1

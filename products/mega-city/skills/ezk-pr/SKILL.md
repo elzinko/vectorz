@@ -260,6 +260,12 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
 - **Chemin fantôme interdit** — ce script n'a AUCUNE combinaison qui pousse un
   squash local puis referme la PR à la main : ça fabrique une PR
   « closed unmerged », jamais « Merged ».
+- **Garde-fous** — le squash local **refuse un dépôt sale** (un changement stagé
+  survivrait au `checkout` puis serait publié avec le squash) ; le merge distant
+  **épingle le head validé** (`--match-head-commit <sha>`, quand l'appelant passe
+  `--head-sha`) pour ne pas squasher un commit arrivé entre la validation et le
+  merge ; une branche absorbée **tenue par un autre worktree** est signalée, jamais
+  supprimée de force — le ship ne s'avorte pas en plein milieu.
 - **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :
   ce seul fetch rafraîchit `origin/main` pour toutes les vues), puis
   **fast-forward** de la vue qui a shippé et de l'arbre principal (jamais un
