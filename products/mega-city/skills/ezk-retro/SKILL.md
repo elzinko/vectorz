@@ -64,12 +64,14 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
   étape (pas de sprint à rapporter). En périmètre sprint :
   1. **Matérialise d'abord les artefacts du sprint courant.** Au checkpoint, le rapport n'est
      pas généré et les galères sont encore dans le `SPRINT.md` non commité. Produis le rapport
-     (`ezk-sprint … sprint:report` → `rapport.json`) et un **récit de galères** repris de la
+     (`pnpm sprint:report` → `rapport.json`) et un **récit de galères** repris de la
      section `## Galères & gestes (labo)` du `SPRINT.md`, **avec l'entête `fiches: <id>`** (l'id
-     de la fiche du sprint) en première ligne. Ces artefacts sont des **entrées de travail
-     transitoires** : ne les grave PAS toi-même dans `docs/sessions/` — `ezk-archive` est le
-     **seul** à archiver durablement le sprint à la clôture, et graver ici créerait un doublon
-     (`../ezk-archive/SKILL.md`, temps 8 « Archive session »).
+     de la fiche du sprint) en première ligne. Écris ces artefacts dans un **emplacement
+     transitoire** (scratchpad de session, hors dépôt) : ce sont des **entrées de travail**, ne
+     les grave PAS dans `docs/sessions/` — `ezk-archive` est le **seul** à archiver durablement le
+     sprint à la clôture, et graver ici créerait un doublon (`../ezk-archive/SKILL.md`, temps 8
+     « Archive session »). *(Sprint **déjà archivé** — rétro lancée après la clôture, `SPRINT.md`
+     disparu — : pointe `suggest` vers l'archive `docs/sessions/` du sprint au lieu de re-matérialiser.)*
   2. **Invoque `ezk-chef suggest`** sur ces chemins :
      `/ezk-chef suggest <rapport.json> <récit-galères.md>` — lecture seule, il propose et ne
      crée rien (`../ezk-chef/SKILL.md`, section `suggest`). **Source des candidats = les galères

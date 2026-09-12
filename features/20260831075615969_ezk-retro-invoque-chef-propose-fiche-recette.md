@@ -51,19 +51,21 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
    `ezk-chef suggest`, dès le temps 1** (collecte des signaux), **en amont du garde-fou « pas de
    symptôme → pas de rétro »** (`ezk-retro/SKILL.md:57-61`). Séquencement (option A) : au checkpoint,
    les galères sont encore dans le `SPRINT.md` non commité et le rapport n'est pas généré ; la rétro
-   **matérialise d'abord** ces artefacts (rapport via `sprint:report`, galères figées dans
-   `docs/sessions/`) avant d'appeler `suggest`, qui lit alors des artefacts frais (fiche voisine
+   **matérialise d'abord** ces artefacts dans un **emplacement transitoire hors `docs/sessions/`**
+   (rapport via `pnpm sprint:report`, récit de galères repris du `SPRINT.md`) avant d'appeler
+   `suggest`, qui lit alors des artefacts frais — `ezk-archive` reste seul graveur durable (fiche voisine
    [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
 
-   **Deux garde-fous d'implémentation (à trancher au développement) :**
+   **Deux garde-fous d'implémentation (tranchés au développement, 2026-09-12) :**
    - **Source des candidats = les galères attribuées, PAS la liste « fiches livrées » du rapport.**
      Au checkpoint, la fiche du sprint n'est pas encore mergée (`ezk-sprint` ne merge qu'à
      l'étape 10), donc `summarizeShippedFeatures` l'exclurait. Le rapport sert aux **signaux de
      méthode** (retouches, blocages) ; les candidats-recettes viennent des galères, qui portent
-     l'id de fiche.
-   - **Snapshot idempotent avec `ezk-archive`.** Figer les galères tôt ne doit pas créer un doublon
-     quand la clôture `ezk-archive` refige le `SPRINT.md` (`ezk-archive/SKILL.md:155-174`) — un
-     marqueur « galères déjà figées », ou le retrait de ce passage à la clôture.
+     l'id de fiche. *(Déjà imposé par `ezk-chef suggest` lui-même.)*
+   - **Snapshot idempotent avec `ezk-archive`.** Tranché : la rétro **ne grave rien de durable** —
+     elle écrit ses artefacts dans un **emplacement transitoire** (hors `docs/sessions/`) et laisse
+     `ezk-archive` seul graveur de l'archive à la clôture. Un seul graveur = zéro doublon, sans
+     marqueur ni protocole inter-skills.
 
    Un candidat-recette détecté **est** un signal : sans lui au temps 1, l'early-return couperait la
    rétro avant même d'avoir regardé le sprint.
@@ -79,7 +81,7 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
 ## Critères d'acceptation
 
 - [ ] Au temps 1, la rétro **produit d'abord les artefacts du sprint courant** (rapport +
-      galères figées dans `docs/sessions/`) **puis** invoque `ezk-chef suggest`, **avant** le
+      récit de galères dans un artefact **transitoire, hors `docs/sessions/`**) **puis** invoque `ezk-chef suggest`, **avant** le
       garde-fou « pas de symptôme » : un sprint sans symptôme verbal mais avec une galère
       capitalisable produit quand même des candidats — et `suggest` ne lit jamais du vide.
 - [ ] Un candidat figure d'abord au **rapport de rétro** avec ta case d'acceptation (⏳),
