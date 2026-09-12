@@ -121,13 +121,11 @@ OUT5B="$(bash "$SCRIPT" --repo "$CLONE5" --base main)"
 grep -qE '^SIGNAL .*/case5/clone ahead$' <<<"$OUT5B" && ok "sans cible explicite : la vue locale en avance est 'ahead' (d'où l'intérêt de --target-ref)" || ok "sans cible explicite : comportement par défaut (origin/main)"
 
 echo "=== Cas 6 — fetch échoue (remote injoignable) : SIGNAL fetch-failed, non bloquant ==="
-REPO6="$WORK/case6-fetchfail"
-git init -q -b main "$REPO6"
-git -C "$REPO6" config user.email t@t.io
-git -C "$REPO6" config user.name t
-echo v1 > "$REPO6/f.txt"; git -C "$REPO6" add f.txt; git -C "$REPO6" commit -qm "chore: v1"
-git -C "$REPO6" remote add origin "file://$WORK/does-not-exist.git"   # le fetch échouera
-OUT6="$(bash "$SCRIPT" --repo "$REPO6" --base main)" || true
+# main a un upstream CONFIGURÉ (clone), puis on casse le remote → le fetch de cet upstream échoue.
+new_case case6
+CLONE6="$WORK/case6/clone"
+git -C "$CLONE6" remote set-url origin "file://$WORK/does-not-exist.git"   # remote cassé
+OUT6="$(bash "$SCRIPT" --repo "$CLONE6" --base main)" || true
 grep -qF "fetch-failed" <<<"$OUT6" && ok "fetch injoignable signalé (fetch-failed), pas avalé en silence" || fail "fetch-failed non signalé: $OUT6"
 
 echo "=== Cas 7 — worktree en avance sur base : SIGNAL ahead (distinct de diverged) ==="
@@ -138,6 +136,20 @@ git -C "$CLONE7" checkout -q -B main origin/main             # = v2
 echo extra >> "$CLONE7/f.txt"; git -C "$CLONE7" add f.txt; git -C "$CLONE7" commit -qm "commit local en avance"
 OUT7="$(bash "$SCRIPT" --repo "$CLONE7" --base main)"
 grep -qE '^SIGNAL .*/case7/clone ahead$' <<<"$OUT7" && ok "worktree en avance signalé 'ahead' (pas 'diverged')" || fail "ahead non distingué (got: $OUT7)"
+
+echo "=== Cas 8 — AUTRE worktree sur base : signalé, JAMAIS fast-forwardé (ADR-0052 D3) ==="
+# On ship depuis un worktree de FEATURE (l'invoquant) ; le worktree principal porte main et
+# est en retard. D3 : on ne touche jamais cet autre worktree — on le signale, point.
+new_case case8
+MAINWT="$WORK/case8/clone"          # porte main, en retard
+git -C "$MAINWT" fetch -q origin    # origin/main = v2 connu localement
+git -C "$MAINWT" worktree add -q "$WORK/case8/feat" -b feat/work main >/dev/null 2>&1
+MAIN_BEFORE="$(git -C "$MAINWT" rev-parse HEAD)"
+OUT8="$(bash "$SCRIPT" --repo "$WORK/case8/feat" --base main)"   # invoqué DEPUIS la feature
+echo "$OUT8"
+grep -qE '^SIGNAL .*/case8/clone behind$' <<<"$OUT8" && ok "worktree principal (autre session) signalé 'behind'" || fail "principal mal traité: $OUT8"
+grep -qE '^FF ' <<<"$OUT8" && fail "un FF a eu lieu alors qu'aucune vue invoquante n'est sur base" || ok "aucun FF transverse (seule la vue invoquante peut avancer)"
+[[ "$(git -C "$MAINWT" rev-parse HEAD)" == "$MAIN_BEFORE" ]] && ok "worktree principal JAMAIS déplacé (D3)" || fail "principal déplacé — viole ADR-0052 D3"
 
 if (( FAIL )); then
   echo "❌ test-refresh-worktrees — ÉCHEC"

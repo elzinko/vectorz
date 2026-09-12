@@ -270,10 +270,12 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
   en plein milieu.
 - **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :
   ce seul fetch rafraîchit `origin/main` pour toutes les vues), puis
-  **fast-forward** de la vue qui a shippé et de l'arbre principal (jamais un
-  merge — juste avancer un pointeur, prédicat de sûreté D4 : working tree
-  **propre** ET fast-forward **strict** possible), et **signal** (sans y
-  toucher) des autres worktrees en retard.
+  **fast-forward de la SEULE vue invoquante** (celle qui a shippé), jamais un
+  merge — juste avancer un pointeur, prédicat D4 : working tree **propre** ET
+  fast-forward **strict** possible. Tous les **autres** worktrees — l'arbre
+  principal compris — sont seulement **signalés** en retard, **jamais touchés**
+  (ADR-0052 D3 : « propre » ≠ inutilisé, une autre session peut lire l'arbre ;
+  chacun se réaligne lui-même à son prochain geste via la gate de fraîcheur).
 
 Implémentation : `skills/ezk-pr/scripts/ship-merge.sh` (orchestre les deux
 chemins + le refus du chemin fantôme) et

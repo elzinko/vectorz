@@ -108,7 +108,10 @@ ship_local() {
   git_c commit -q -m "$subject" -m "$body"
   prune_absorbed_branches
   if has_remote; then
-    git_c fetch --prune --quiet 2>/dev/null || true
+    # On rafraîchit les refs partagées. Si le remote ne répond pas, on ne l'avale pas en
+    # silence (comme ship_remote) : on signale que le réalignement partagé n'est pas
+    # vérifié — sans bloquer le squash local déjà fait (retour Codex).
+    git_c fetch --prune --quiet 2>/dev/null || echo "SIGNAL fetch-failed (réalignement partagé non vérifié)"
   fi
   # <base> LOCAL vient d'avancer ; c'est LUI la vérité fraîche (origin/<base> n'a pas été
   # poussé par ce chemin) — on vise donc <base> local, pas origin/<base> (périmé).
