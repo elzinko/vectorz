@@ -16,12 +16,14 @@ export interface Fiche {
   title: string;
   type: string; // feature | bug | refactor | chore | epic
   priority: string; // P0 | P1 | P2 | P3 | '' (épics/idées sans prio)
-  status: string; // idea | ready | in-progress | blocked | shipped | superseded
+  status: string; // idea | ready | in-progress | shipped | superseded | merged | split
   ready: boolean; // le champ `ready:` est-il posé ?
   epic: string; // id de l'épic parent, ou ''
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
   labels: string[]; // tags libres du front-matter (`labels: [bmad, …]`), [] si absent
+  /** Drapeau orthogonal à la colonne (sliver B, fiche 652) : raison de `blocked:`, '' si absent. */
+  blocked: string;
   done: boolean; // vit dans features/done/ (livrée)
   file: string; // chemin relatif à la racine du repo (ex. `features/0094-slug.md`)
 }
@@ -51,8 +53,12 @@ export function readField(text: string, field: string): string {
   return raw.replace(/(?:^|\s)#.*$/, '').trim();
 }
 
-/** Lit un champ liste EN LIGNE du front-matter (`labels: [a, b]`) → tableau (vide si absent). */
-function readListField(text: string, field: string): string[] {
+/**
+ * Lit un champ liste EN LIGNE du front-matter (`labels: [a, b]`) → tableau (vide si absent).
+ * Exporté pour le validateur de conformité (`split_into: [...]`, sliver B fiche 652) — même
+ * lecture, pas de second parseur.
+ */
+export function readListField(text: string, field: string): string[] {
   const m = text.match(new RegExp(`^${field}:[ \\t]*\\[(.*)\\][ \\t]*$`, 'm'));
   if (!m) return [];
   return m[1]
@@ -88,6 +94,7 @@ export function loadFiches(rootDir: string): Fiche[] {
         product: readField(text, 'product') || '—',
         pr: readField(text, 'pr'),
         labels: readListField(text, 'labels'),
+        blocked: readField(text, 'blocked'),
         done,
         file: `features/${done ? 'done/' : ''}${filename}`,
       });

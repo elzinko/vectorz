@@ -52,7 +52,7 @@
 | [0081](done/0081-carnet-preparation-retro.md) | Carnet de préparation de rétro — chaque session note ses sujets, la rétro n'oublie plus rien | feature | P1 |  | mega-city | ✅ shipped | #230 |
 | [0082](done/0082-registre-supervision-cote-vectorz.md) | Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés) | feature | P1 |  | vectorz | ✅ shipped | #70 |
 | [0095](done/0095-ezk-product-builder-n-emet-pas.md) | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | mega-city | ✅ shipped | #55 |
-| [0102](0102-ezk-testbed-brique-boot-env-test.md) | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 |  | mega-city | ⛔ blocked |  |
+| [0102](0102-ezk-testbed-brique-boot-env-test.md) | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 |  | mega-city | 🔵 ready |  |
 | [0103](done/0103-heartbeat-methodes-supervision.md) | Les méthodes envoient un heartbeat — le Moniteur ne crie plus « silence » à tort | feature | P1 |  | mega-city | ✅ shipped |  |
 | [0104](done/0104-kit-analyse-session-supervision.md) | Kit d’analyse de session — journal + Moniteur + transcript Claude Code en un rapport | feature | P1 |  | mega-city | ✅ shipped |  |
 | [0107](done/0107-lawgiver-capture-flywheel.md) | lawgiver capture — flywheel | feature | P1 |  | mega-city | ✅ shipped | local (squash-merge) |
@@ -83,7 +83,6 @@
 | [0191](done/0191-lisibilite-templates-llm-au-moment-genere.md) | Lisibilité qui tient — templates LLM-adaptés + renfort au moment d'écrire (dès la description de PR) | feature | P1 |  | mega-city | ✅ shipped | local (main f196fe0) |
 | [20260812104022240](done/20260812104022240_backlog-rationalisation-tags-script-llm.md) | ezk-backlog aggregate — rationaliser le backlog (regrouper/splitter/épics), moteurs script + LLM | feature | P1 |  | mega-city | ✅ shipped | #223 |
 | [20260812134515706](done/20260812134515706_frugalite-ci-reutilisable-ezk-ci-harden.md) | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 |  | mega-city | ✅ shipped | #171 |
-| [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | ⛔ blocked |  |
 | [20260813200137369](done/20260813200137369_pb-auto-groom-ready-check-ready.md) | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 |  | mega-city | ✅ shipped | #148 |
 | [20260816131704335](done/20260816131704335_ezk-help-index-commandes-genere.md) | /ezk-help — index de commandes ezk généré depuis les frontmatter | feature | P1 | 20260816131703334 | mega-city | ✅ shipped | #151 |
 | [20260821172716537](done/20260821172716537_carte-ne-montre-pas-la-loi.md) | La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit) | feature | P1 | 20260821163346487 | mega-city | ✅ shipped | #179 |
@@ -159,7 +158,6 @@
 | [20260813170548417](done/20260813170548417_supprimer-tombstone-mega-city-features.md) | Supprimer le dossier tombstone products/mega-city/features/ + sevrer portfolio.sh (reliquat de 0064) | chore | P3 |  | mega-city | ✅ shipped | #147 |
 | [20260825152954193](done/20260825152954193_ezk-map-page-accueil-menu-cartes.md) | Page d'accueil ezk:map — un menu des cartes (naviguer sans relancer le serveur) | feature | P3 |  | mega-city | ✅ shipped | #170 |
 | [20260825232147620](done/20260825232147620_nav-cartes-retour-menu.md) | Barre de navigation sur chaque carte ezk:map — revenir au menu + sauter à une autre carte | feature | P3 |  | mega-city | ✅ shipped | #172 |
-| [20260829140259165](20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md) | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 |  | mega-city | ⛔ blocked |  |
 
 ## 🧭 Épics (jamais tirables — tirer leurs enfants ready, ADR-0017)
 
@@ -192,6 +190,7 @@
 | [0165](0165-contrat-ameliorabilite-v01-mvp-b.md) | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260812104022237](20260812104022237_owner-session-responsable-pr.md) | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
+| [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | 💡 idea |  |
 | [20260821163346490](20260821163346490_assemblage-ne-montre-pas-composition.md) | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | [20260821163346493](20260821163346493_carte-provenance-prouvee.md) | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 20260821163346487 | mega-city | 💡 idea |  |
 | [20260823121712781](20260823121712781_reconcile-systematique-merges-hors-flux.md) | Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge | feature | P1 |  | mega-city | 💡 idea |  |
@@ -302,6 +301,7 @@
 | [20260906135450000](20260906135450000_recette-emulateur-android-test-device.md) | Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20260910152227744](20260910152227744_regles-projet-local-couche-vectorz.md) | Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables | feature | P2 | 20260910155608287 | vectorz | 💡 idea |  |
 | [20260910231201744](20260910231201744_aggregate-apply-merged-split-moteur-llm.md) | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260912180313727](20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md) | Repenser le backlog : fusionner PLAN dans BACKLOG (champs itération/version) + historiser les itérations (sprint + rétro) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
@@ -321,6 +321,7 @@
 | [20260821163346503](20260821163346503_methode-auto-evaluation-validite.md) | La méthode s'auto-évalue : sa cohérence, et la fidélité de sa représentation | feature | P3 | 20260821163346487 | mega-city | 💡 idea |  |
 | [20260826112620281](20260826112620281_schema-markdown-declaratif-validateur.md) | Schéma markdown déclaratif + validateur mécanique — format de fiche/recette vérifiable et versionnable | feature | P3 |  | mega-city | 💡 idea |  |
 | [20260829132313947](20260829132313947_ci-conso-exclure-forks.md) | ezk-ci conso — exclure les forks (repos clonés) de la conso | feature | P3 |  | mega-city | 💡 idea |  |
+| [20260829140259165](20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md) | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20260830110131298](20260830110131298_supervision-ezk-plugin-separable.md) | Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039) | refactor | P3 |  | mega-city | 💡 idea |  |
 | [20260904074824499](20260904074824499_renommer-ezk-vers-mc.md) | Renommer les commandes ezk-* → mc-* (mega-city) | chore | P3 |  | mega-city | 💡 idea |  |

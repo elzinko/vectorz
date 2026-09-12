@@ -7,8 +7,9 @@ product: mega-city
 epic:
 depends: []
 labels: [method, enabler]
-status: blocked
+status: ready
 ready: 2026-07-26
+blocked: "raison non tracée à la création — statut hérité, migré en drapeau sans preuve documentée (sliver B, fiche 652)"
 pr:
 created: 2026-07-26
 ---

@@ -23,6 +23,7 @@ const fiche = (over: Partial<Fiche> & { id: string }): Fiche => ({
   product: over.product ?? 'mega-city',
   pr: over.pr ?? '',
   labels: over.labels ?? [],
+  blocked: over.blocked ?? '',
   done: over.done ?? false,
   file: over.file ?? `features/${over.id}-slug.md`,
 });

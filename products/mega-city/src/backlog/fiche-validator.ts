@@ -100,3 +100,35 @@ export function findDuplicateIds(
   }
   return anomalies;
 }
+
+/**
+ * Vérifie l'EXISTENCE de chaque id de provenance référencé par `merged_into:`/`split_into:`
+ * (ADR-0040 D5 : pas d'id fantôme — sliver B, fiche 652). Contrôle inter-fichiers, pur :
+ * `knownIds` est l'ensemble des ids réellement présents dans le backlog (actives + `done/`).
+ * Un champ absent (`''` / `[]`) n'est pas une anomalie — la provenance est optionnelle.
+ */
+export function findInvalidProvenanceIds(
+  entries: ReadonlyArray<{ file: string; mergedInto: string; splitInto: readonly string[] }>,
+  knownIds: ReadonlySet<string>,
+): FicheAnomaly[] {
+  const anomalies: FicheAnomaly[] = [];
+  for (const { file, mergedInto, splitInto } of entries) {
+    if (mergedInto !== '' && !knownIds.has(mergedInto)) {
+      anomalies.push({
+        file,
+        field: 'merged_into',
+        message: `id fantôme : "${mergedInto}" ne correspond à aucune fiche du backlog`,
+      });
+    }
+    for (const id of splitInto) {
+      if (!knownIds.has(id)) {
+        anomalies.push({
+          file,
+          field: 'split_into',
+          message: `id fantôme : "${id}" ne correspond à aucune fiche du backlog`,
+        });
+      }
+    }
+  }
+  return anomalies;
+}
