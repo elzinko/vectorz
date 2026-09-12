@@ -78,10 +78,11 @@ Piste à trancher au grooming (avec l'architecte). Rien de figé.
 - [ ] **Compose sans réimplémenter.** Le déclencheur **invoque** `ezk-retro run
       "itération …"` ; aucun temps de la cérémonie (round-robin / juge / rangement) n'est
       recodé dans `ezk-product-build`. `composes:` inclut `ezk-retro`.
-- [ ] **Applique 2-3, tamponne le reste, PO à la main.** À la clôture, **au plus 2-3**
-      propositions sont appliquées dans la foulée ; le reste part en **tampon** (`ezk-backlog
-      add` en `idea`, + carnet [[0081]] si présent). La liste « appliqué / tamponné » est
-      **arbitrable** : STOP en `--mode manuel`, délégation `ezk-pm` + journal en `auto`.
+- [ ] **Enacte 2-3, le reste reste au backlog, PO à la main.** `ezk-retro` range déjà ses
+      sorties (fiches + règles) ; à la clôture, **au plus 2-3** sont **enactées** dans la
+      foulée, le reste **reste au backlog** (les fiches de la rétro = le tampon, en `idea`) —
+      **jamais de re-`add`**. La liste « enacté / laissé » est **arbitrable** : STOP en
+      `--mode manuel`, délégation `ezk-pm` + journal en `auto`.
 - [ ] **Dégradation propre si le carnet [[0081]] est absent** : la rétro tourne quand même
       (signaux `SPRINT.md` du lot + session), le tampon va **au seul backlog**, sans erreur.
 - [ ] **Vues & gate.** Graphe README (`composes:graph`) + carte (`map:data`) régénérés ;

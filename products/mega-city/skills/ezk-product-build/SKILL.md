@@ -109,10 +109,12 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    **confies la livraison coordonnée à `ezk-pr`** (`plan` → branche d'intégration = test
    groupé → `ship` en cascade). Tu **décides** le grain ; `ezk-pr` **exécute** le git
    (frontière ADR-0001).
-5. **Clôture d'itération — rétro** — quand la boucle s'arrête (`--max-sprints` atteint,
-   backlog tirable épuisé, ou à chaque N sprints en `--retro every:N`) **et** que le run a
+5. **Rétro d'itération** — quand la boucle s'arrête (`--max-sprints` atteint,
+   backlog tirable épuisé) **ou** à chaque N sprints en `--retro every:N`, **et** que le run a
    construit **≥ 2 sprints**, déclenche **une** rétro d'itération (cf. § « Rétro de fin
-   d'itération »). Un run d'**un seul** sprint n'en déclenche **aucune**.
+   d'itération »). Un run d'**un seul** sprint n'en déclenche **aucune**. Après une rétro
+   `every:N` **en cours de run** (des sprints restent), **reprends la boucle** au sprint
+   suivant ; seule la rétro de **fin de run** précède la clôture.
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.
@@ -135,7 +137,7 @@ tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
 | **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — en `--check-ready false`, le tampon est pris sur concurrence `ezk-pm` sans cet arrêt. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive / plafond tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Augmenter le budget & continuer]` · `[Terminer l'en-cours puis stop]` · `[Stop net]` · `[Passer en `lean`]` — au **plafond `cap`**, l'arrêt se fait au **point sûr** le plus proche (jamais un sprint laissé à moitié) ; « augmenter le budget » est une **décision humaine** (cf. les 4 STOP). |
-| **Rétro d'itération** (fin de boucle ou palier `every:N`, ≥ 2 sprints) | 🔁 *Itération close — rétro jouée, ‹k› propositions.* → `[Appliquer ces 2-3 + tamponner le reste]` · `[Ajuster la sélection]` · `[Tout tamponner]` — puis clôture. |
+| **Rétro d'itération** (fin de boucle ou palier `every:N`, ≥ 2 sprints) | 🔁 *Rétro jouée, ‹k› propositions (déjà rangées par `ezk-retro`).* → `[Enacter ces 2-3]` · `[Ajuster la sélection]` · `[Aucune pour l'instant]` — puis **reprends la boucle** (palier `every:N`) ou **clôture** (fin de run). |
 
 > Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
 > disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
@@ -205,7 +207,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
 | **Dérive / plafond tokens** | en `cap`, **arrête au point sûr et demande** (augmenter / terminer l'en-cours / stop). En `lean` (défaut) — **déjà le moins cher, rien à dégrader** — si la dérive **persiste** au-delà du seuil : **surface + STOP humain**, jamais de burn illimité en silence. Une **augmentation** de budget = **STOP humain** dans les deux cas. |
-| **Rétro d'itération** | invoque `ezk-retro run "itération …"`, **confie à `ezk-pm`** le choix des **2-3** à appliquer, **tamponne le reste** (`ezk-backlog add` en `idea` + carnet fiche 0081 si présent), **journalise** la liste appliqué/tamponné. Ranger une **règle** reste sous feu vert `ezk-pm`. Aucune rétro si le run a construit < 2 sprints. |
+| **Rétro d'itération** | invoque `ezk-retro run "itération …"` (qui range déjà ses sorties), **confie à `ezk-pm`** le choix des **2-3 à enacter**, **laisse le reste au backlog** (fiches déjà créées par la rétro — pas de re-`add`), **journalise** la liste. Enacter une **règle** reste sous feu vert `ezk-pm`. Aucune rétro si le run a construit < 2 sprints. |
 | **Action sortante / secret** (transversal, hors des 4 moments) | **STOP humain** — jamais automatisé, dans les deux modes (cf. ci-dessous). |
 
 **Les 4 STOP humains — jamais automatisés** (ADR-0011 §3) : action irréversible/sortante
@@ -311,7 +313,9 @@ rétro** au lieu de la laisser à la main — mais **seulement si le run a const
 sprints** (une itération, pas un sprint isolé). Réglage : **`--retro end` (défaut)** lance
 **une** rétro quand la boucle s'arrête (`--max-sprints` atteint ou backlog tirable épuisé) ;
 **`--retro every:N`** (N ≥ 2) en lance une **tous les N sprints construits** ; **`--retro
-off`** n'en lance aucune.
+off`** n'en lance aucune. En `every:N`, la rétro se joue **en cours de run** : une fois faite,
+**la boucle reprend** au sprint suivant — seule la rétro `end` (ou la dernière atteinte) précède
+la clôture du run.
 
 > **Pourquoi ≥ 2 sprints (cadence au service des métriques).** Un sprint seul n'accumule pas
 > assez de frictions ni de mesures pour qu'une rétro serve. Donc **`--once` / `--max-sprints 1`
@@ -325,27 +329,31 @@ rangement PO). Tu ne refais ni le débat, ni le juge, ni le rangement. (Le volet
 d'`ezk-retro`, gaté sur le périmètre `sprint`, ne relève pas de ce déclencheur — fiche
 `20260831075615969`.)
 
-**Appliquer 2-3, tamponner le reste.** Une rétro peut sortir dix propositions ; tu n'en
-**appliques dans la foulée que 2-3**, les plus fortes (valeur/coût), et tu **tamponnes le
-reste** :
+**Enacter 2-3, le reste reste au backlog.** ⚠️ **Tu ne ranges rien toi-même** : `ezk-retro` a
+**déjà** rangé toutes ses sorties à son temps 5 — les non-règles (`action`/`feature`/`spike`/
+`recette`) sont **déjà** des fiches (`ezk-backlog add`), les règles **déjà** dans `rules/` sous
+feu vert PO. Re-`add` ici créerait un **doublon** (et son anti-doublon **interromprait un run
+auto**). Ton geste de clôture est un **choix de priorité**, pas un rangement : parmi ces sorties,
+tu en **enactes au plus 2-3 tout de suite** (une `action` immédiate, ou une fiche que tu passes
+`ready` pour l'itération suivante) ; **tout le reste reste tel quel au backlog** — les fiches que
+la rétro a créées **sont** le tampon (en `idea`).
 
-| Proposition | Sort de `ezk-retro` | Ton geste de clôture |
-|---|---|---|
-| `action` (geste ponctuel) | — | **Appliquable** dans la foulée (plafond 2-3) |
-| `règle` validée par le juge | rangée `rules/` + `bundles/` | **Appliquable** sous feu vert PO (plafond 2-3) |
-| `feature` / `spike` | fiche backlog | **Tampon** : `ezk-backlog add` en `idea` (+ carnet fiche 0081 si présent) |
-| tout ce qui dépasse le plafond 2-3 | — | **Tampon** : `ezk-backlog add` en `idea` |
+| Sortie de `ezk-retro` (déjà rangée) | Ton geste de clôture |
+|---|---|
+| `action` | **Enacter** si immédiate (plafond 2-3), sinon la laisser en fiche `idea` |
+| `règle` (dans `rules/`, feu vert PO) | **Enacter** sous feu vert PO (plafond 2-3) |
+| `feature` / `spike` / `recette` (fiche backlog) | **Laisser** : la fiche EST le tampon — **ne PAS re-`add`** |
 
 **Le PO garde la main (jamais silencieux).** En `--mode manuel` : STOP, tu présentes la liste
-« appliqué / tamponné » en suggestions-à-choix, tu n'appliques qu'après accord. En `--mode
-auto` : tu **confies l'arbitrage à `ezk-pm`** (quelles 2-3 appliquer), tu **journalises** la
-liste dans `SPRINT.md`, et **ranger une règle dans `rules/` reste sous son feu vert**
-(`ezk-retro` n'auto-applique jamais — même doctrine ici).
+« enacté maintenant / laissé au backlog » en suggestions-à-choix, tu n'enactes qu'après accord.
+En `--mode auto` : tu **confies à `ezk-pm`** le choix des **2-3 à enacter**, tu **journalises** la
+liste dans `SPRINT.md`, et **enacter une règle reste sous son feu vert** (`ezk-retro`
+n'auto-applique jamais — même doctrine ici).
 
 **Dégradation si le carnet (fiche 0081) est absent** (pas encore construit) : la rétro tourne
-quand même sur les signaux disponibles (les `SPRINT.md` du lot + mémoire de session) et le
-tampon part **uniquement** au backlog. Aucune erreur, aucun blocage : l'absence du carnet
-appauvrit la collecte amont, pas la mécanique du déclencheur.
+quand même sur les signaux disponibles (les `SPRINT.md` du lot + mémoire de session) ; ses
+sorties restent **au seul backlog** (rangées par `ezk-retro`). Aucune erreur, aucun blocage :
+l'absence du carnet appauvrit la collecte amont, pas la mécanique du déclencheur.
 
 ## Frontière & délégation — compose, ne réimplémente rien
 
