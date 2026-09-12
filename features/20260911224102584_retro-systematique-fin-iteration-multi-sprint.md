@@ -5,8 +5,8 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P1 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
-status: idea # idea | ready | in-progress | blocked | shipped
-ready: # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
+status: ready # idea | ready | in-progress | blocked | shipped
+ready: 2026-09-12 # posé par le gate ready — DoR concourue par ezk-pm
 pr:
 evidence: none # cérémonie / CLI, aucun écran
 created: 2026-09-11
@@ -71,19 +71,22 @@ Piste à trancher au grooming (avec l'architecte). Rien de figé.
 
 ## Critères d'acceptation
 
-Initiaux — à finaliser au grooming.
-
-- [ ] La rétro se déclenche **automatiquement en fin d'itération multi-sprint** (cadence
-      configurable : fin de run `ezk-product-build`, ou tous les N sprints) — **pas** à
-      chaque sprint.
-- [ ] En fin d'itération, la rétro **applique les 2-3 actions les plus utiles** et **met le
-      reste en tampon** (backlog `idea` et/ou carnet [[0081]]), sans déclenchement manuel.
-- [ ] Entre deux rétros, **assez de métriques de sprint** sont accumulées pour que les
-      décisions s'appuient sur des chiffres, pas sur un ressenti.
-- [ ] La cérémonie invoquée reste [[0167]] ; ce déclencheur **compose** `ezk-product-build`
-      / `ezk-retro` / `ezk-backlog` / [[0081]] — aucune cérémonie réimplémentée.
-- [ ] Le PO garde la main : actions appliquées **et** tamponnées listées et arbitrables.
-- [ ] Gate locale verte (typecheck / lint / tests).
+- [ ] **Cadence.** Un `run` qui construit **≥ 2 sprints** déclenche **une** rétro à la
+      clôture (`--retro end`, défaut) ; `--retro every:N` (N ≥ 2) en déclenche une **tous
+      les N sprints construits** ; `--once` / `--max-sprints 1` n'en déclenche **jamais**.
+      Vérifiable au journal `SPRINT.md` + à la trace de gate `retro-iteration`.
+- [ ] **Compose sans réimplémenter.** Le déclencheur **invoque** `ezk-retro run
+      "itération …"` ; aucun temps de la cérémonie (round-robin / juge / rangement) n'est
+      recodé dans `ezk-product-build`. `composes:` inclut `ezk-retro`.
+- [ ] **Applique 2-3, tamponne le reste, PO à la main.** À la clôture, **au plus 2-3**
+      propositions sont appliquées dans la foulée ; le reste part en **tampon** (`ezk-backlog
+      add` en `idea`, + carnet [[0081]] si présent). La liste « appliqué / tamponné » est
+      **arbitrable** : STOP en `--mode manuel`, délégation `ezk-pm` + journal en `auto`.
+- [ ] **Dégradation propre si le carnet [[0081]] est absent** : la rétro tourne quand même
+      (signaux `SPRINT.md` du lot + session), le tampon va **au seul backlog**, sans erreur.
+- [ ] **Vues & gate.** Graphe README (`composes:graph`) + carte (`map:data`) régénérés ;
+      gate locale verte (typecheck / lint / tests, dont `expand` / `profiles-sync` /
+      `compiled-graph` / `map-data`).
 
 ## Comment vérifier
 

@@ -96,6 +96,7 @@
 | [20260830184917144](done/20260830184917144_ezk-chef-extract-lit-le-labo.md) | ezk-chef extract lit le « labo » — remplir les TODO(jugement) depuis docs/sessions | feature | P1 |  | mega-city | ✅ shipped | #196 |
 | [20260902224608715](done/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md) | Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto | feature | P1 |  | mega-city | ✅ shipped | #207 |
 | [20260906121839943](done/20260906121839943_unifier-ezk-secret-cli.md) | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 |  | vectorz | ✅ shipped | #216 |
+| [20260911224102584](20260911224102584_retro-systematique-fin-iteration-multi-sprint.md) | Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste | feature | P1 |  | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -203,7 +204,6 @@
 | [20260903134906920](20260903134906920_cli-ezk-point-d-entree-unique.md) | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 💡 idea |  |
 | [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 |  | mega-city | 💡 idea |  |
-| [20260911224102584](20260911224102584_retro-systematique-fin-iteration-multi-sprint.md) | Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste | feature | P1 |  | mega-city | 💡 idea |  |
 | [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 |  | vectorz | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
