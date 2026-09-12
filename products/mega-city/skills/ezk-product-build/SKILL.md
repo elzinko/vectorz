@@ -1,9 +1,9 @@
 ---
 roles: [ezk-pm]
 name: ezk-product-build
-composes: [ezk-backlog, ezk-sprint, ezk-pr]
+composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
-argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic]"
+argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -40,7 +40,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -70,8 +70,9 @@ backlog tirable**.
 
 **Réglages avancés** — `--tokens` règle **comment la boîte roule** (indépendant du `--mode`, cf. § dédié) ;
 `--check-ready` règle **qui pose le tampon `ready`** après auto-grooming ; `--delivery` règle le **grain de
-livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas). Défauts : `--mode auto`,
-`--tokens lean`, `--check-ready true`, `--delivery per-feature`.
+livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas) ; `--retro` règle **si/quand une
+rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`, `--tokens lean`,
+`--check-ready true`, `--delivery per-feature`, `--retro end`.
 
 ## La boucle
 
@@ -108,6 +109,10 @@ livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas). D�
    **confies la livraison coordonnée à `ezk-pr`** (`plan` → branche d'intégration = test
    groupé → `ship` en cascade). Tu **décides** le grain ; `ezk-pr` **exécute** le git
    (frontière ADR-0001).
+5. **Clôture d'itération — rétro** — quand la boucle s'arrête (`--max-sprints` atteint,
+   backlog tirable épuisé, ou à chaque N sprints en `--retro every:N`) **et** que le run a
+   construit **≥ 2 sprints**, déclenche **une** rétro d'itération (cf. § « Rétro de fin
+   d'itération »). Un run d'**un seul** sprint n'en déclenche **aucune**.
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.
@@ -130,6 +135,7 @@ tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
 | **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — en `--check-ready false`, le tampon est pris sur concurrence `ezk-pm` sans cet arrêt. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive / plafond tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Augmenter le budget & continuer]` · `[Terminer l'en-cours puis stop]` · `[Stop net]` · `[Passer en `lean`]` — au **plafond `cap`**, l'arrêt se fait au **point sûr** le plus proche (jamais un sprint laissé à moitié) ; « augmenter le budget » est une **décision humaine** (cf. les 4 STOP). |
+| **Rétro d'itération** (fin de boucle, ≥ 2 sprints, `--retro end|every:N`) | 🔁 *Itération close — rétro jouée, ‹k› propositions.* → `[Appliquer ces 2-3 + tamponner le reste]` · `[Ajuster la sélection]` · `[Tout tamponner]` — puis clôture. |
 
 > Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
 > disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
@@ -199,6 +205,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
 | **Dérive / plafond tokens** | en `cap`, **arrête au point sûr et demande** (augmenter / terminer l'en-cours / stop). En `lean` (défaut) — **déjà le moins cher, rien à dégrader** — si la dérive **persiste** au-delà du seuil : **surface + STOP humain**, jamais de burn illimité en silence. Une **augmentation** de budget = **STOP humain** dans les deux cas. |
+| **Rétro d'itération** | invoque `ezk-retro run "itération …"`, **confie à `ezk-pm`** le choix des **2-3** à appliquer, **tamponne le reste** (`ezk-backlog add` en `idea` + carnet fiche 0081 si présent), **journalise** la liste appliqué/tamponné. Ranger une **règle** reste sous feu vert `ezk-pm`. Aucune rétro si le run a construit < 2 sprints. |
 | **Action sortante / secret** (transversal, hors des 4 moments) | **STOP humain** — jamais automatisé, dans les deux modes (cf. ci-dessous). |
 
 **Les 4 STOP humains — jamais automatisés** (ADR-0011 §3) : action irréversible/sortante
@@ -297,6 +304,48 @@ pourquoi chaque fiche a été skippée »), jamais une boucle folle.
 sur backlog vide · exigences contradictoires) — l'auto-groom et l'auto-tampon ne les contournent
 jamais.
 
+## Rétro de fin d'itération — configurable (`--retro`)
+
+Une **itération** = le lot de sprints d'un même `run`. À sa clôture, tu **déclenches la
+rétro** au lieu de la laisser à la main — mais **seulement si le run a construit ≥ 2
+sprints** (une itération, pas un sprint isolé). Réglage : **`--retro end` (défaut)** lance
+**une** rétro quand la boucle s'arrête (`--max-sprints` atteint ou backlog tirable épuisé) ;
+**`--retro every:N`** (N ≥ 2) en lance une **tous les N sprints construits** ; **`--retro
+off`** n'en lance aucune.
+
+> **Pourquoi ≥ 2 sprints (cadence au service des métriques).** Un sprint seul n'accumule pas
+> assez de frictions ni de mesures pour qu'une rétro serve. Donc **`--once` / `--max-sprints 1`
+> ne déclenche jamais de rétro**, quel que soit `--retro`. Lien vérifiable : rétro ⇔ au moins
+> deux sprints derrière soi.
+
+**Tu ne réimplémentes pas la cérémonie — tu l'invoques.** Tu appelles `ezk-retro run
+"itération <slug/dates>"` : lui déroule ses 5 temps (round-robin → sortie typée → juge →
+rangement PO). Tu ne refais ni le débat, ni le juge, ni le rangement. (Le volet recette
+d'`ezk-retro`, gaté sur le périmètre `sprint`, ne relève pas de ce déclencheur — fiche
+`20260831075615969`.)
+
+**Appliquer 2-3, tamponner le reste.** Une rétro peut sortir dix propositions ; tu n'en
+**appliques dans la foulée que 2-3**, les plus fortes (valeur/coût), et tu **tamponnes le
+reste** :
+
+| Proposition | Sort de `ezk-retro` | Ton geste de clôture |
+|---|---|---|
+| `action` (geste ponctuel) | — | **Appliquable** dans la foulée (plafond 2-3) |
+| `règle` validée par le juge | rangée `rules/` + `bundles/` | **Appliquable** sous feu vert PO (plafond 2-3) |
+| `feature` / `spike` / `recette` | fiche backlog | **Tampon** : `ezk-backlog add` en `idea` (+ carnet fiche 0081 si présent) |
+| tout ce qui dépasse le plafond 2-3 | — | **Tampon** : `ezk-backlog add` en `idea` |
+
+**Le PO garde la main (jamais silencieux).** En `--mode manuel` : STOP, tu présentes la liste
+« appliqué / tamponné » en suggestions-à-choix, tu n'appliques qu'après accord. En `--mode
+auto` : tu **confies l'arbitrage à `ezk-pm`** (quelles 2-3 appliquer), tu **journalises** la
+liste dans `SPRINT.md`, et **ranger une règle dans `rules/` reste sous son feu vert**
+(`ezk-retro` n'auto-applique jamais — même doctrine ici).
+
+**Dégradation si le carnet (fiche 0081) est absent** (pas encore construit) : la rétro tourne
+quand même sur les signaux disponibles (les `SPRINT.md` du lot + mémoire de session) et le
+tampon part **uniquement** au backlog. Aucune erreur, aucun blocage : l'absence du carnet
+appauvrit la collecte amont, pas la mécanique du déclencheur.
+
 ## Frontière & délégation — compose, ne réimplémente rien
 
 | Compétence | Rôle | Tu en fais quoi |
@@ -307,6 +356,7 @@ jamais.
 | **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--mode auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
 | **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
 | **`ezk-pr`** | le **train de merge** : test groupé + `ship` en cascade d'un lot | en `--delivery per-epic`, tu lui **confies** la livraison coordonnée (il exécute le git ; toi tu décides le grain) |
+| **`ezk-retro`** | la **cérémonie d'auto-amélioration** (round-robin → juge → rangement PO) | en fin d'itération (`--retro`, ≥ 2 sprints), tu l'**invoques** ; tu n'en réimplémentes aucun temps |
 | `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |
 
 Tu ne **ranges** rien toi-même (git, fichiers) : ce sont les compétences composées qui rangent
@@ -355,7 +405,7 @@ bruit** :
   où tu lui rends la main, et tu n'ouvres le tien **qu'après**. Un gate de sprint laissé
   ouvert bloque tous les checkpoints du reste de la session.
 - **À chacun des 5 moments** de ta table « Modèle d'interaction » : `gate_reached
-  {gate_id: <inter-sprint | ideation | aucune-fiche-ready | blocage | derive-tokens>,
+  {gate_id: <inter-sprint | ideation | aucune-fiche-ready | blocage | derive-tokens | retro-iteration>,
   outcome: ok|attention|failed, report_markdown: <ton résumé : livré · tokens · options
   posées>}` **avant** de présenter les suggestions-à-choix (mode `manuel`) ou de
   déléguer/journaliser (mode `auto`) — puis arrête-toi ou continue comme tu le fais

@@ -386,7 +386,7 @@ window.EZK = {
   "profiles": 6
  },
  "liens": {
-  "total": 195,
+  "total": 196,
   "casses": 0
  },
  "orphans": [
@@ -999,12 +999,13 @@ window.EZK = {
   "ezk-product-build": {
    "id": "ezk-product-build",
    "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-build », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
-   "usage": "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic]",
+   "usage": "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic] [--retro end|every:N|off]",
    "etage": "methode",
    "bande": "ceremonies",
    "composes": [
     "ezk-backlog",
     "ezk-pr",
+    "ezk-retro",
     "ezk-sprint"
    ],
    "composesExternal": [
@@ -1052,7 +1053,9 @@ window.EZK = {
    ],
    "composesExternal": [],
    "roles": [],
-   "composedBy": [],
+   "composedBy": [
+    "ezk-product-build"
+   ],
    "profiles": [
     "daily",
     "global"
