@@ -58,7 +58,7 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 - Fixe le **périmètre** (PR, sprint, friction, méthode en général).
 - Rassemble les **symptômes observés** : frictions vécues, échecs, retouches manuelles de
   PR, leçons ré-expliquées, points de douleur.
-- **Lis le carnet de préparation** (`docs/retro-notes/`, hors `traitees/`) : chaque fichier
+- **Lis le carnet de préparation** (`docs/retro-notes/`, hors `README.md` et `traitees/`) : chaque fichier
   `<id>-<slug>.md` est une friction/idée/problème déposé par une session passée. Ces notes
   s'ajoutent aux symptômes de la session courante — c'est le corpus accumulé qui garantit qu'aucun
   sujet inter-session n'est oublié. Dossier absent ou vide → rien à ajouter (pas d'erreur).

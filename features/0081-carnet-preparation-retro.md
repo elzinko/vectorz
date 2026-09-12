@@ -1,6 +1,6 @@
 ---
 id: 0081
-title: Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien
+title: Carnet de préparation de rétro — chaque session note ses sujets, la rétro n'oublie plus rien
 type: feature
 priority: P1
 product: mega-city
