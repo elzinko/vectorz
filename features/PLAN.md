@@ -38,12 +38,11 @@
 
 **P0 indépendants**
 - `20260911213014783` — merge local-first : main local à jour + propagation GitHub · `groom`→`build`
-- `20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette · `groom`→`build`
+- ~~`20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette~~ — **shipped #228**
 
 **Boucle d'auto-amélioration** (capturer → rétro → ranger)
-- `20260911224102584` — rétro systématique en **fin d'itération multi-sprint** (top 2-3
-  appliquées, reste en tampon) · `groom`→`build`
-- `0081` — carnet de prépa de rétro : chaque session note ses frictions · `groom`→`build`
+- ~~`20260911224102584` — rétro systématique en **fin d'itération multi-sprint** (top 2-3 appliquées, reste en tampon)~~ — **shipped #229**
+- ~~`0081` — carnet de prépa de rétro : chaque session note ses frictions~~ — **shipped #230**
 
 **Déjà tirable**
 - `20260910165637000` — ezk-scout : chasse aux bugs en tâche de fond · `ready` · `build`

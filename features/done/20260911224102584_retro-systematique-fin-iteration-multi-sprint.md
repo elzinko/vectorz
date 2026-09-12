@@ -5,9 +5,9 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P1 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
-status: ready # idea | ready | in-progress | blocked | shipped
+status: shipped # idea | ready | in-progress | blocked | shipped
 ready: 2026-09-12 # posé par le gate ready — DoR concourue par ezk-pm
-pr:
+pr: "#229"
 evidence: none # cérémonie / CLI, aucun écran
 created: 2026-09-11
 ---

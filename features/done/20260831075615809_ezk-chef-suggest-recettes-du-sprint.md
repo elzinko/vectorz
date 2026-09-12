@@ -19,7 +19,7 @@ created: 2026-08-31
 Cette fiche ajoute une sous-commande **`ezk-chef suggest`** : elle lit le sprint qui vient de
 finir (fiches livrées + galères notées) et répond « recette possible sur la fiche X ». Elle ne
 crée rien — elle **informe**. C'est la **rétro** qui l'invoque, et qui décide ensuite (fiche
-voisine [20260831075615969](../20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
+voisine [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
 
 ## Contexte / Problème
 
@@ -56,7 +56,7 @@ Ajouter à `ezk-chef` une sous-commande **`suggest <sprint>`** (lecture seule, a
    **Prérequis de fraîcheur (séquencement, option A) :** au checkpoint de fin de sprint, les
    galères vivent encore dans le `SPRINT.md` non commité et le rapport n'est pas encore généré.
    C'est la **rétro qui produit ces artefacts juste avant** d'appeler `suggest` (voir la fiche
-   voisine [20260831075615969](../20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
+   voisine [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md)).
    `suggest` lit donc des artefacts **frais et stables** — jamais le `SPRINT.md` live, et jamais
    « du vide » parce que la clôture n'a pas encore eu lieu.
 2. **Attribution galère → feature (déterministe, sinon pas de candidat).**
@@ -113,7 +113,7 @@ d'améliorabilité (Sujet B / ADR-030) : un seul moteur, plusieurs appelants.
   brainstorming du 2026-08-31 (panel ezk-architect / pm / reviewer / dev, 2 tours).
 - **P0** demandée par le PO.
 - **Voisine** :
-  [20260831075615969](../20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) — la
+  [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) — la
   rétro invoque `suggest` et décide. Membre du **cluster recette** (voir
   [20260829123707200](../20260829123707200_reunifier-tagger-cluster-recette.md)).
 - **Compose** : le rapport de sprint (fiche `20260826082120062`, shippée), le labo
