@@ -250,9 +250,10 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
 
 - **Avec remote** — le seul chemin qui laisse une vraie PR « Merged » et
   supprime la branche distante :
-  `gh pr merge <n> --squash --delete-branch --subject "<sujet>" --body "<corps>"`,
+  `gh pr merge <n> --squash --delete-branch --match-head-commit <sha validé> --subject "<sujet>" --body "<corps>"`,
   le message conventional venant du **local** (pas d'un résumé généré côté
-  GitHub).
+  GitHub). Le `--match-head-commit` (head validé, **obligatoire** en remote) refuse
+  le merge si la PR a reçu un commit depuis la validation.
 - **Sans remote** (dépôt local seul) — squash **local** sur `<base>` :
   `git merge --squash <branche>` + commit conventional, puis purge des
   branches déjà **absorbées** (même classification que la fiche 0076 —
@@ -262,10 +263,11 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
   « closed unmerged », jamais « Merged ».
 - **Garde-fous** — le squash local **refuse un dépôt sale** (un changement stagé
   survivrait au `checkout` puis serait publié avec le squash) ; le merge distant
-  **épingle le head validé** (`--match-head-commit <sha>`, quand l'appelant passe
-  `--head-sha`) pour ne pas squasher un commit arrivé entre la validation et le
-  merge ; une branche absorbée **tenue par un autre worktree** est signalée, jamais
-  supprimée de force — le ship ne s'avorte pas en plein milieu.
+  **exige `--head-sha <sha validé>`** et épingle le merge dessus (`--match-head-commit`),
+  pour ne jamais squasher un commit arrivé entre la validation et le merge — le
+  garde-fou n'est pas contournable par omission ; une branche absorbée **tenue par un
+  autre worktree** est signalée, jamais supprimée de force — le ship ne s'avorte pas
+  en plein milieu.
 - **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :
   ce seul fetch rafraîchit `origin/main` pour toutes les vues), puis
   **fast-forward** de la vue qui a shippé et de l'arbre principal (jamais un

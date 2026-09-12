@@ -90,13 +90,14 @@ GH_MARKER2="$WORK/gh-called-2"
 rm -f "$GH_MARKER2"
 OUT="$(PATH="$FAKE_BIN:$PATH" bash "$SCRIPT" \
   --repo "$REPO2" --remote --pr 42 --branch feat/y \
-  --subject "feat: y" --body "corps y" --dry-run)"
+  --subject "feat: y" --body "corps y" --head-sha cafe1234 --dry-run)"
 echo "$OUT"
 
 [[ ! -f "$GH_MARKER2" ]] && ok "gh jamais exécuté en --dry-run" || fail "gh a été appelé en dry-run"
 grep -qF "gh pr merge 42" <<<"$OUT" && ok "commande gh pr merge construite avec le bon numéro" || fail "commande gh absente/incorrecte"
 grep -qF -- "--squash" <<<"$OUT" && ok "--squash présent" || fail "--squash absent"
 grep -qF -- "--delete-branch" <<<"$OUT" && ok "--delete-branch présent" || fail "--delete-branch absent"
+grep -qF -- "--match-head-commit cafe1234" <<<"$OUT" && ok "--match-head-commit (head validé) épinglé" || fail "--match-head-commit absent"
 grep -qF -- "--subject" <<<"$OUT" && grep -qF "feat: y" <<<"$OUT" && ok "message conventional du LOCAL (--subject)" || fail "message local absent de la commande"
 
 # --- Cas 3 : refresh partagé — après le merge, un AUTRE clone voit origin/main à jour
@@ -151,7 +152,7 @@ chmod +x "$FAKE_GH_MERGE/gh"
 
 GH_MERGE_CALLED_FILE="$GH_MERGE_MARKER" PATH="$FAKE_GH_MERGE:$PATH" bash "$SCRIPT" \
   --repo "$SHIP_CLONE" --remote --pr 7 --branch feat/z \
-  --subject "feat: z" --body "corps z"
+  --subject "feat: z" --body "corps z" --head-sha deadbeef
 
 [[ -f "$GH_MERGE_MARKER" ]] && ok "gh (factice) invoqué pour le squash distant" || fail "gh jamais invoqué"
 
@@ -209,6 +210,15 @@ else
 fi
 [[ "$(cat "$REPO6/f.txt")" == $'v1\nv2' ]] && ok "main a bien avancé (squash appliqué)" || fail "main n'a pas avancé"
 git -C "$REPO6" show-ref --verify -q refs/heads/held && ok "branche tenue 'held' préservée" || fail "branche tenue supprimée malgré le worktree"
+
+# --- Cas 7 : remote SANS --head-sha — refus (le garde-fou anti-course est obligatoire) --
+echo "=== Cas 7 — remote sans --head-sha : refus (garde-fou non contournable par omission) ==="
+if PATH="$FAKE_BIN:$PATH" bash "$SCRIPT" --repo "$REPO2" --remote --pr 77 --branch feat/q \
+   --subject "feat: q" --body b >/dev/null 2>&1; then
+  fail "remote sans --head-sha accepté (le garde-fou anti-course serait contournable par omission)"
+else
+  ok "remote sans --head-sha refusé (exit != 0)"
+fi
 
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"

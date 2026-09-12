@@ -117,23 +117,23 @@ ship_local() {
 
 ship_remote() {
   [[ -n "$pr" ]] || { echo "ship-merge.sh: --pr requis avec --remote" >&2; exit 2; }
-  # Épingle le merge sur le head VALIDÉ (--match-head-commit) quand l'appelant fournit le
-  # SHA : si un commit arrive sur la PR entre la validation et le merge, `gh` refuse plutôt
-  # que de squasher un head jamais testé (course inter-sessions, fréquente ici).
-  local cmd=(gh pr merge "$pr" --squash --delete-branch --subject "$subject" --body "$body")
-  [[ -n "$head_sha" ]] && cmd+=(--match-head-commit "$head_sha")
+  # --head-sha OBLIGATOIRE en mode remote : on épingle le merge sur le head VALIDÉ
+  # (--match-head-commit). Si un commit arrive sur la PR entre la validation et le merge,
+  # `gh` refuse plutôt que de squasher un head jamais testé. Rendre le guard OPTIONNEL le
+  # rendrait contournable par simple omission (retour Codex) — donc on l'EXIGE.
+  [[ -n "$head_sha" ]] || { echo "ship-merge.sh: --head-sha <sha validé> requis en mode remote (anti-course : épingle le merge sur le head testé)" >&2; exit 2; }
+  local cmd=(gh pr merge "$pr" --squash --delete-branch --subject "$subject" --body "$body" --match-head-commit "$head_sha")
   if (( dry_run )); then
-    local guard=""
-    [[ -n "$head_sha" ]] && guard=" --match-head-commit $head_sha"
     # Lisible et rejouable tel quel (chaque argument contenant un espace est cité).
-    printf 'DRY-RUN: gh pr merge %s --squash --delete-branch%s --subject "%s" --body "%s"\n' \
-      "$pr" "$guard" "$subject" "$body"
+    printf 'DRY-RUN: gh pr merge %s --squash --delete-branch --match-head-commit %s --subject "%s" --body "%s"\n' \
+      "$pr" "$head_sha" "$subject" "$body"
     return 0
   fi
   ( cd "$repo" && "${cmd[@]}" )
-  git_c fetch --prune --quiet 2>/dev/null || true
-  # GitHub a exécuté le squash : origin/<base> est la vérité fraîche.
-  refresh "origin/$base"
+  # GitHub a exécuté le squash. On laisse refresh faire le fetch, dériver l'upstream
+  # CONFIGURÉ de <base> (pas un origin/<base> codé en dur) ET signaler un fetch échoué —
+  # plutôt que d'avaler l'échec ici avec `|| true`, ce qui court-circuiterait ce signal (Codex).
+  refresh
 }
 
 if [[ "$mode" == "remote" ]]; then
