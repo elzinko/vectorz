@@ -7,7 +7,7 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
 status: idea # idea | ready | in-progress | blocked | shipped
 ready: # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
-pr: # ex. "#123" quand une PR existe
+pr:
 evidence: none # flux git/CLI, aucun écran
 created: 2026-09-11
 ---
