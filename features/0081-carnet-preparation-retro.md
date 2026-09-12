@@ -1,12 +1,12 @@
 ---
 id: 0081
-title: Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien
+title: Carnet de préparation de rétro — chaque session note ses sujets, la rétro n'oublie plus rien
 type: feature
 priority: P1
 product: mega-city
 epic:
-status: idea
-ready:
+status: ready
+ready: 2026-09-12
 pr:
 created: 2026-07-18
 ---
@@ -47,15 +47,30 @@ des idées.
    symptômes de la session) et **le purge/archive** après traitement (une note traitée
    est marquée, jamais re-débattue silencieusement).
 
-## Critères d'acceptation (à affiner au groom)
+## Critères d'acceptation
 
-- [ ] Le déclencheur est **configuré** (config/hook versionné), pas une habitude : une
-      session qui se clôt sans passage par le carnet est détectable.
-- [ ] Une note déposée est relisible à froid : test = un relecteur sans contexte
-      comprend le sujet et peut le re-vérifier (zéro référence morte).
-- [ ] `ezk-retro run` liste les notes du carnet au temps 1 et marque leur traitement
-      (traitée / écartée avec raison) dans la capture de cérémonie.
-- [ ] Le carnet survit aux worktrees et aux sessions (commité, convention du repo).
+- [ ] **Le carnet existe comme convention versionnée** : dossier `docs/retro-notes/`, une
+      note par fichier `<AAAAMMDDHHMMSSmmm>-<slug>.md`, décrit dans `docs/retro-notes/README.md`
+      (emplacement, format de note, cycle de vie). Observable : dossier + README commités.
+- [ ] **Une note est auto-porteuse** : relisible à froid par un relecteur sans contexte, qui
+      comprend le sujet et peut le re-vérifier — zéro référence morte, chemins/commits explicites
+      (règle `documentation-guidelines/proven-outbound-references`).
+- [ ] **`ezk-retro run` consomme le carnet au temps 1** : il liste les notes de `docs/retro-notes/`
+      (hors `traitees/`) en plus des symptômes de session ; après la cérémonie chaque note est
+      marquée dans la capture (traitée / écartée + raison) puis **déplacée vers
+      `docs/retro-notes/traitees/`** — une note traitée n'est jamais re-débattue silencieusement.
+- [ ] **Déclencheur best-effort à la clôture** : `ezk-archive run`/`close` invite la session à
+      déposer une note si une friction/idée durable mérite d'atteindre la prochaine rétro.
+      Observable : la consigne figure dans `ezk-archive/SKILL.md` et une clôture produit soit une
+      note, soit un « rien à noter » explicite (même garde-fou que « Galères & gestes (labo) »).
+- [ ] **Le carnet survit aux worktrees et aux sessions** : une note = un fichier à id horodaté
+      (idiome anti-collision fiche 0180) → aucun conflit d'append entre worktrees parallèles.
+
+> **Déféré à la fiche 0077 (hooks classe A) — HORS MVP.** La garantie *déterministe* « une session
+> qui se clôt sans passage par le carnet est **détectable** » exige un hook qui émet **sans action
+> du LLM**. C'est l'objet de 0077 (non construite). Tant qu'elle n'est pas là, le déclencheur reste
+> **best-effort** (consigne de clôture, que le LLM peut oublier — la même faiblesse « classe B » que
+> 0077 corrige). C'est le seul écart au « par config » du titre.
 
 ## Notes
 

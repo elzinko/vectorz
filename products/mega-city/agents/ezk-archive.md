@@ -75,9 +75,9 @@ C'est la distinction à ne pas rater : le SCOPE ne restreint que les points de *
 | | Points | Qui tranche | Ton devoir |
 |---|---|---|---|
 | **Contrôle** | 1 working tree · 2 PRs/branches · 3 backlog · 4 ADR | le **portier** | traiter **uniquement** ceux listés dans le SCOPE. Les autres sont **prouvés CLEAN** — les re-dériver est une faute |
-| **Écriture** | 5 mémoire · 6 handoff · 7 verdict · 8 archive session | **toi, toujours** | le portier ne peut pas les trancher (sa ligne `NOTE:` le dit) — ils sont dus à **chaque** `run`, quel que soit le verdict |
+| **Écriture** | 5 mémoire · 6 handoff · 7 verdict · 8 archive session · 9 carnet de rétro | **toi, toujours** | le portier ne peut pas les trancher (sa ligne `NOTE:` le dit) — ils sont dus à **chaque** `run`, quel que soit le verdict |
 
-## Les 8 vérifications / actions
+## Les 9 vérifications / actions
 
 ### 1. Working tree propre
 `git status --porcelain` + `git stash list`. Rien d'uncommitted/untracked oublié
@@ -207,6 +207,15 @@ Si `SPRINT.md` existe à la racine **et** a du contenu réel (pas un stub vide) 
 - le handoff **pointe** vers le chemin d'archive — **ne duplique pas** le corps.
 
 Sur `check` : signale seulement si un archive serait dû ; n'écris rien.
+
+### 9. Carnet de rétro (best-effort) — `run`/`close`
+Invite la session à déposer une note dans `docs/retro-notes/` **si** une friction ou une idée
+durable mérite d'atteindre la prochaine rétro. Une note = **un fichier**
+`docs/retro-notes/<AAAAMMDDHHMMSSmmm>-<slug>.md` (id horodaté minté inline, fiche 0180),
+auto-porteuse : chemins/commits explicites, aucun renvoi « voir plus haut ». C'est le carnet
+lu au temps 1 de `ezk-retro` (fiche 0081). **Rien de durable à noter → n'écris rien** (même
+garde-fou que « Galères & gestes (labo) »). Best-effort assumé : la garantie déterministe (hook)
+attend la fiche 0077. Sur `check` : n'écris rien.
 
 ## Gabarit de la note de handoff
 

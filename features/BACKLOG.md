@@ -49,6 +49,7 @@
 | [0071](done/0071-ezk-backlog-review-sanity-check.md) | ezk-backlog review — sanity check global du backlog (validité, doublons, ordre, staleness) | feature | P1 |  | mega-city | ✅ shipped | #26 |
 | [0076](done/0076-hygiene-branches-post-squash.md) | Hygiène de branches post-squash — classification déterministe absorbée/réelle + suppression aux deux chemins de merge | feature | P1 |  | mega-city | ✅ shipped | #31 |
 | [0079](done/0079-restitutions-po-lisibles.md) | Lisibilité des artefacts humains — graver la règle (élargie des restitutions PO à tout artefact lu par un humain) | feature | P1 |  | mega-city | ✅ shipped | #74 |
+| [0081](0081-carnet-preparation-retro.md) | Carnet de préparation de rétro — chaque session note ses sujets, la rétro n'oublie plus rien | feature | P1 |  | mega-city | 🔵 ready |  |
 | [0082](done/0082-registre-supervision-cote-vectorz.md) | Registre de supervision versionné côté vectorz — QUOI + MÉTHODE, jamais OÙ (modèle à deux clés) | feature | P1 |  | vectorz | ✅ shipped | #70 |
 | [0095](done/0095-ezk-product-builder-n-emet-pas.md) | ezk-product-builder n'émet aucun événement — ses checkpoints inter-sprints sont invisibles au Moniteur | bug | P1 |  | mega-city | ✅ shipped | #55 |
 | [0102](0102-ezk-testbed-brique-boot-env-test.md) | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 |  | mega-city | ⛔ blocked |  |
@@ -185,7 +186,6 @@
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 0051 | vectorz | 💡 idea |  |
 | [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
 | [0077](0077-hooks-classe-a-supervision.md) | Kit émetteur — hooks Claude Code classe A (émission déterministe) | feature | P1 |  | mega-city | 💡 idea |  |
-| [0081](0081-carnet-preparation-retro.md) | Carnet de préparation de rétro — chaque session note ses sujets (par config), la rétro n'oublie plus rien | feature | P1 |  | mega-city | 💡 idea |  |
 | [0087](0087-plugin-claude-code-distribution.md) | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
 | [0156](0156-ezk-marketing.md) | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 | 20260824060737115 | mega-city | 💡 idea |  |
 | [0157](0157-ezk-landing-pages.md) | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 | 20260824060737115 | mega-city | 💡 idea |  |
