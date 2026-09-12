@@ -35,6 +35,7 @@ SUITES=(
   "bin/test-ezk-chef-suggest.sh"                          # ezk-chef suggest — détecter les candidats-recette d'un sprint (fiche 20260831075615809)
   "bin/test-pr-evidence.sh"                              # fiche 20260902224608715 — capture/render/decide avant-après (ADR-0045)
   "skills/ezk-pr/scripts/test-check-pr-body.sh"          # fiche 20260902224608715 — --changed-files (ADR-0045)
+  "bin/test-check-fiches.sh"                             # fiche 652 — bascule bloquante du validateur de statut (--strict)
 )
 
 FAILED=()
