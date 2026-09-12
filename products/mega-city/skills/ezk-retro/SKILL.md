@@ -64,7 +64,9 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
   étape (pas de sprint à rapporter). En périmètre sprint :
   1. **Matérialise d'abord les artefacts du sprint courant.** Au checkpoint, le rapport n'est
      pas généré et les galères sont encore dans le `SPRINT.md` non commité. Produis le rapport
-     (`pnpm sprint:report` → `rapport.json`) et un **récit de galères** repris de la
+     (`pnpm --dir products/mega-city sprint:report <slug> --out <scratch>` — le `--out` **hors
+     dépôt**, sinon le CLI écrit dans `docs/sprints/` tracké ; sortie `<scratch>/<jour>-sprint-<slug>.json`)
+     et un **récit de galères** repris de la
      section `## Galères & gestes (labo)` du `SPRINT.md`, **avec l'entête `fiches: <id>`** (l'id
      de la fiche du sprint) en première ligne. Écris ces artefacts dans un **emplacement
      transitoire** (scratchpad de session, hors dépôt) : ce sont des **entrées de travail**, ne

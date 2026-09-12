@@ -52,7 +52,7 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
    symptôme → pas de rétro »** (`ezk-retro/SKILL.md:57-61`). Séquencement (option A) : au checkpoint,
    les galères sont encore dans le `SPRINT.md` non commité et le rapport n'est pas généré ; la rétro
    **matérialise d'abord** ces artefacts dans un **emplacement transitoire hors `docs/sessions/`**
-   (rapport via `pnpm sprint:report`, récit de galères repris du `SPRINT.md`) avant d'appeler
+   (rapport via `pnpm --dir products/mega-city sprint:report <slug> --out <scratch>`, récit de galères repris du `SPRINT.md`) avant d'appeler
    `suggest`, qui lit alors des artefacts frais — `ezk-archive` reste seul graveur durable (fiche voisine
    [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)).
 
