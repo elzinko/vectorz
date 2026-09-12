@@ -58,6 +58,10 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 - Fixe le **périmètre** (PR, sprint, friction, méthode en général).
 - Rassemble les **symptômes observés** : frictions vécues, échecs, retouches manuelles de
   PR, leçons ré-expliquées, points de douleur.
+- **Lis le carnet de préparation** (`docs/retro-notes/`, hors `traitees/`) : chaque fichier
+  `<id>-<slug>.md` est une friction/idée/problème déposé par une session passée. Ces notes
+  s'ajoutent aux symptômes de la session courante — c'est le corpus accumulé qui garantit qu'aucun
+  sujet inter-session n'est oublié. Dossier absent ou vide → rien à ajouter (pas d'erreur).
 - **Candidats-recette — périmètre `sprint` uniquement.** Un sprint qui vient de finir peut
   contenir une galère *capitalisable* en recette. Ce signal-là ne se lit pas dans les mots :
   on le **demande à `ezk-chef`**. Une PR, une friction, « la méthode » **sautent** cette
@@ -144,6 +148,10 @@ Puis le rangement :
   / enforcements[]`), rattachées à un `bundle` si besoin, ou intégrées au **DoD/DoR**.
 - **réversibilité** : toute règle rangée est **retirable** (`retire`) — suppression documentée
   avec sa raison. Le PO **valide, peut imposer, peut retirer**.
+- **carnet de rétro** : chaque note lue au temps 1 est **marquée dans la capture** (traitée, ou
+  écartée + raison) puis **déplacée** — `git mv docs/retro-notes/<note>.md docs/retro-notes/traitees/`
+  — sous feu vert PO, comme le reste. Une note écartée est déplacée aussi (avec sa raison) : elle ne
+  doit pas remonter à la rétro suivante.
 
 > Frontière ADR-0001 : **le LLM rédige et juge** (cérémonie, propositions, avis de cohérence) ;
 > le **rangement suit la structure déterministe** existante. *MVP : la fiche de règle est

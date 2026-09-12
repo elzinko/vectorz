@@ -174,6 +174,12 @@ qui ne demandent aucun jugement.
      - **laisser `SPRINT.md` en place** (scratch éphémère du sprint) ;
      - le handoff **pointe** vers le chemin d'archive (`**Archive session :** …`) —
        **ne duplique pas** le corps de `SPRINT.md` dans la note.
+   - **9. Carnet de rétro (best-effort)** — invite la session à déposer une note dans
+     `docs/retro-notes/` **si** une friction ou une idée durable mérite d'atteindre la prochaine
+     rétro (une note = un fichier `<AAAAMMDDHHMMSSmmm>-<slug>.md`, auto-porteuse : chemins/commits
+     explicites, aucun renvoi « voir plus haut »). C'est le carnet lu au temps 1 du skill `ezk-retro`
+     (fiche 0081). **Rien de durable à noter → n'écris rien** (même garde-fou que « Galères & gestes
+     (labo) »). Best-effort assumé : la garantie déterministe (hook) attend la fiche 0077.
 4. Rends la note + le verdict **✅ archivable** — **En clair d'abord** (≤ 3 phrases),
    puis le corps gabarit. Sur `check`, dis que rien n'a été écrit et que `run` le ferait.
 
@@ -190,8 +196,8 @@ et un prompt **autonome** contenant :
 
 > `SCOPE : traite les points de contrôle <liste>. Les autres points de contrôle sont`
 > `PROUVÉS CLEAN par le portier — les re-dériver est une faute (token-economy/read-once).`
-> `Les points d'écriture 5 (mémoire), 6 (handoff), 7 (verdict), 8 (archive session)`
-> `sont TOUJOURS de ton ressort.`
+> `Les points d'écriture 5 (mémoire), 6 (handoff), 7 (verdict), 8 (archive session),`
+> `9 (carnet de rétro best-effort) sont TOUJOURS de ton ressort.`
 > `Restitution : ouvre par « En clair » (≤ 3 phrases) avant tout tableau —`
 > `human-facing-lisibility.`
 
