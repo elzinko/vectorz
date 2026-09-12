@@ -135,7 +135,7 @@ tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
 | **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — en `--check-ready false`, le tampon est pris sur concurrence `ezk-pm` sans cet arrêt. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive / plafond tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Augmenter le budget & continuer]` · `[Terminer l'en-cours puis stop]` · `[Stop net]` · `[Passer en `lean`]` — au **plafond `cap`**, l'arrêt se fait au **point sûr** le plus proche (jamais un sprint laissé à moitié) ; « augmenter le budget » est une **décision humaine** (cf. les 4 STOP). |
-| **Rétro d'itération** (fin de boucle, ≥ 2 sprints, `--retro end|every:N`) | 🔁 *Itération close — rétro jouée, ‹k› propositions.* → `[Appliquer ces 2-3 + tamponner le reste]` · `[Ajuster la sélection]` · `[Tout tamponner]` — puis clôture. |
+| **Rétro d'itération** (fin de boucle ou palier `every:N`, ≥ 2 sprints) | 🔁 *Itération close — rétro jouée, ‹k› propositions.* → `[Appliquer ces 2-3 + tamponner le reste]` · `[Ajuster la sélection]` · `[Tout tamponner]` — puis clôture. |
 
 > Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
 > disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
@@ -316,7 +316,8 @@ off`** n'en lance aucune.
 > **Pourquoi ≥ 2 sprints (cadence au service des métriques).** Un sprint seul n'accumule pas
 > assez de frictions ni de mesures pour qu'une rétro serve. Donc **`--once` / `--max-sprints 1`
 > ne déclenche jamais de rétro**, quel que soit `--retro`. Lien vérifiable : rétro ⇔ au moins
-> deux sprints derrière soi.
+> deux sprints derrière soi. `every:N` est **strict** — un reliquat de < N sprints à l'arrêt de
+> la boucle ne déclenche pas de rétro finale ; prends `--retro end` pour une rétro garantie à la clôture.
 
 **Tu ne réimplémentes pas la cérémonie — tu l'invoques.** Tu appelles `ezk-retro run
 "itération <slug/dates>"` : lui déroule ses 5 temps (round-robin → sortie typée → juge →
@@ -332,7 +333,7 @@ reste** :
 |---|---|---|
 | `action` (geste ponctuel) | — | **Appliquable** dans la foulée (plafond 2-3) |
 | `règle` validée par le juge | rangée `rules/` + `bundles/` | **Appliquable** sous feu vert PO (plafond 2-3) |
-| `feature` / `spike` / `recette` | fiche backlog | **Tampon** : `ezk-backlog add` en `idea` (+ carnet fiche 0081 si présent) |
+| `feature` / `spike` | fiche backlog | **Tampon** : `ezk-backlog add` en `idea` (+ carnet fiche 0081 si présent) |
 | tout ce qui dépasse le plafond 2-3 | — | **Tampon** : `ezk-backlog add` en `idea` |
 
 **Le PO garde la main (jamais silencieux).** En `--mode manuel` : STOP, tu présentes la liste
@@ -404,7 +405,7 @@ bruit** :
   sprint absorbé **résout son propre gate** (il détient le `gate_event_id`) au moment
   où tu lui rends la main, et tu n'ouvres le tien **qu'après**. Un gate de sprint laissé
   ouvert bloque tous les checkpoints du reste de la session.
-- **À chacun des 5 moments** de ta table « Modèle d'interaction » : `gate_reached
+- **À chacun des 6 moments** de ta table « Modèle d'interaction » : `gate_reached
   {gate_id: <inter-sprint | ideation | aucune-fiche-ready | blocage | derive-tokens | retro-iteration>,
   outcome: ok|attention|failed, report_markdown: <ton résumé : livré · tokens · options
   posées>}` **avant** de présenter les suggestions-à-choix (mode `manuel`) ou de
