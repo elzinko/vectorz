@@ -12,6 +12,7 @@ import { dirname, join, resolve } from 'node:path';
  * dessiner QUE ce qui existe dans les fichiers (épic « carte fidèle », PR #162).
  */
 import { fileURLToPath } from 'node:url';
+import { compileGraph } from '../src/core/compiled-graph.js';
 import { buildMapDataBlock, upsertMapDataBlock } from '../src/core/map-data.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
 import { loadMethodDoc } from '../src/loaders/method.js';
@@ -22,9 +23,10 @@ const repoRoot = resolve(megaCity, '..', '..'); // racine vectorz
 const mapPath = join(repoRoot, 'diagrams', 'methode-mega-city', 'carte-interactive.html');
 
 const catalog = loadCatalog(megaCity);
+const graph = compileGraph(catalog);
 // ceremonies.yml ET taxonomie.yml sont validés contre le catalogue DANS buildMapData —
 // référence fausse ou catalogue incomplètement rangé = échec de cette régénération.
-const block = buildMapDataBlock(catalog, loadMethodDoc(megaCity), loadTaxonomieDoc(megaCity));
+const block = buildMapDataBlock(catalog, graph, loadMethodDoc(megaCity), loadTaxonomieDoc(megaCity));
 const before = readFileSync(mapPath, 'utf8');
 const after = upsertMapDataBlock(before, block);
 
