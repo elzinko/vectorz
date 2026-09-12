@@ -270,14 +270,14 @@
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
-  "shipped": 135,
+  "shipped": 138,
   "superseded": 9,
   "idea": 154,
-  "ready": 4,
   "blocked": 3,
-  "in-progress": 3
+  "in-progress": 3,
+  "ready": 1
  },
- "tirables": 4,
+ "tirables": 1,
  "actives": [
   {
    "id": "20260826122532943",
@@ -297,19 +297,6 @@ window.EZK_AVANCEMENT = {
     "bmad"
    ],
    "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md"
-  },
-  {
-   "id": "20260831075615969",
-   "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
-   "type": "feature",
-   "priority": "P0",
-   "status": "ready",
-   "ready": true,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md"
   },
   {
    "id": "20260911213014783",
@@ -375,19 +362,6 @@ window.EZK_AVANCEMENT = {
    "pr": "",
    "labels": [],
    "file": "features/0077-hooks-classe-a-supervision.md"
-  },
-  {
-   "id": "0081",
-   "title": "Carnet de préparation de rétro — chaque session note ses sujets, la rétro n'oublie plus rien",
-   "type": "feature",
-   "priority": "P1",
-   "status": "ready",
-   "ready": true,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "file": "features/0081-carnet-preparation-retro.md"
   },
   {
    "id": "0087",
@@ -694,19 +668,6 @@ window.EZK_AVANCEMENT = {
     "run-report"
    ],
    "file": "features/20260906122942607_run-report-synthese-fin-de-run.md"
-  },
-  {
-   "id": "20260911224102584",
-   "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
-   "type": "feature",
-   "priority": "P1",
-   "status": "ready",
-   "ready": true,
-   "epic": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md"
   },
   {
    "id": "0024",
@@ -2713,61 +2674,61 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "`20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette · `groom`→`build`",
-     "marker": "groom",
-     "struck": false,
+     "text": "~~`20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette~~ — **shipped #228**",
+     "marker": null,
+     "struck": true,
      "cards": [
       {
        "id": "20260831075615969",
        "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
-       "status": "ready",
+       "status": "shipped",
        "priority": "P0",
        "ready": true,
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
-       "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md",
+       "pr": "#228",
+       "file": "features/done/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md",
        "found": true
       }
      ]
     },
     {
-     "text": "`20260911224102584` — rétro systématique en **fin d'itération multi-sprint** (top 2-3",
+     "text": "~~`20260911224102584` — rétro systématique en **fin d'itération multi-sprint** (top 2-3 appliquées, reste en tampon)~~ — **shipped #229**",
      "marker": null,
-     "struck": false,
+     "struck": true,
      "cards": [
       {
        "id": "20260911224102584",
        "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
-       "status": "ready",
+       "status": "shipped",
        "priority": "P1",
        "ready": true,
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
-       "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md",
+       "pr": "#229",
+       "file": "features/done/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md",
        "found": true
       }
      ]
     },
     {
-     "text": "`0081` — carnet de prépa de rétro : chaque session note ses frictions · `groom`→`build`",
-     "marker": "groom",
-     "struck": false,
+     "text": "~~`0081` — carnet de prépa de rétro : chaque session note ses frictions~~ — **shipped #230**",
+     "marker": null,
+     "struck": true,
      "cards": [
       {
        "id": "0081",
        "title": "Carnet de préparation de rétro — chaque session note ses sujets, la rétro n'oublie plus rien",
-       "status": "ready",
+       "status": "shipped",
        "priority": "P1",
        "ready": true,
        "epic": "",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
-       "file": "features/0081-carnet-preparation-retro.md",
+       "pr": "#230",
+       "file": "features/done/0081-carnet-preparation-retro.md",
        "found": true
       }
      ]
@@ -4450,16 +4411,16 @@ window.EZK_PLAN = {
   }
  ],
  "head": {
-  "id": "20260831075615969",
-  "title": "ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X »",
+  "id": "20260910165637000",
+  "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
   "status": "ready",
-  "priority": "P0",
+  "priority": "P2",
   "ready": true,
   "epic": "",
   "product": "mega-city",
   "type": "feature",
   "pr": "",
-  "file": "features/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md",
+  "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md",
   "found": true
  },
  "blockedAhead": [
@@ -4498,7 +4459,7 @@ window.EZK_PLAN = {
   "entries": 62,
   "cards": 104,
   "resolved": 102,
-  "shipped": 37,
+  "shipped": 40,
   "unresolved": 2
  }
 };
@@ -4509,14 +4470,6 @@ window.EZK_PLAN = {
 /*ezk-plan-delta:begin*/
 window.EZK_PLAN_DELTA = {
  "recent": [
-  {
-   "id": "20260911224102584",
-   "title": "Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste",
-   "status": "ready",
-   "priority": "P1",
-   "inPlan": true,
-   "file": "features/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md"
-  },
   {
    "id": "20260911213014783",
    "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
@@ -4628,6 +4581,14 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260904091853974_journal-difficultes-artefact-independant.md"
+  },
+  {
+   "id": "20260904091853948",
+   "title": "ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md"
   }
  ],
  "offPlanCount": 0,
