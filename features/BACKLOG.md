@@ -29,6 +29,7 @@
 | [20260828150801613](done/20260828150801613_ezk-ci-conso-script-endpoint.md) | ezk-ci conso — script déterministe + réparer l'endpoint billing migré (410 → /usage) | feature | P0 |  | mega-city | ✅ shipped | #186 |
 | [20260829123707100](done/20260829123707100_labo-de-cuisine-journal-difficultes.md) | « Labo de cuisine » — journaliser les difficultés vécues et leurs corrections (près de la feature, pas dedans) comme matière première d'ezk-chef et des rétros | feature | P0 |  | mega-city | ✅ shipped | #195 |
 | [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md) | ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir | feature | P0 |  | mega-city | ✅ shipped | #214 |
+| [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) | ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X » | feature | P0 |  | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -178,7 +179,6 @@
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 |  | mega-city | 💡 idea |  |
-| [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) | ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X » | feature | P0 |  | mega-city | 💡 idea |  |
 | [20260911213014783](20260911213014783_merge-local-first-sync-main.md) | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 |  | mega-city | 💡 idea |  |
 | [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 | 0051 | vectorz | 💡 idea |  |

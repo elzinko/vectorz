@@ -61,6 +61,7 @@ flowchart LR
     ezk-product-build --> ezk-sprint
     ezk-readme --> ezk-backlog
     ezk-retro --> ezk-backlog
+    ezk-retro --> ezk-chef
     ezk-sprint --> ezk-backlog
     ezk-sprint --> ezk-ci
     ezk-sprint --> ezk-commits

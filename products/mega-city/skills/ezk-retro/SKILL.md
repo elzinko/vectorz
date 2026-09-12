@@ -1,5 +1,5 @@
 ---
-composes: [ezk-backlog]
+composes: [ezk-backlog, ezk-chef]
 name: ezk-retro
 argument-hint: "[help|run|impose|retire]"
 description: >-
@@ -57,8 +57,32 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 ### 1. Cadrer & rassembler les signaux
 - Fixe le **périmètre** (PR, sprint, friction, méthode en général).
 - Rassemble les **symptômes observés** : frictions vécues, échecs, retouches manuelles de
-  PR, leçons ré-expliquées, points de douleur. **Pas de symptôme → pas de rétro utile** :
-  si rien de concret ne remonte, dis-le et rends la main.
+  PR, leçons ré-expliquées, points de douleur.
+- **Candidats-recette — périmètre `sprint` uniquement.** Un sprint qui vient de finir peut
+  contenir une galère *capitalisable* en recette. Ce signal-là ne se lit pas dans les mots :
+  on le **demande à `ezk-chef`**. Une PR, une friction, « la méthode » **sautent** cette
+  étape (pas de sprint à rapporter). En périmètre sprint :
+  1. **Matérialise d'abord les artefacts du sprint courant.** Au checkpoint, le rapport n'est
+     pas généré et les galères sont encore dans le `SPRINT.md` non commité. Produis le rapport
+     (`pnpm --dir products/mega-city sprint:report <slug> --out <scratch>` — le `--out` **hors
+     dépôt**, sinon le CLI écrit dans `docs/sprints/` tracké ; sortie `<scratch>/<jour>-sprint-<slug>.json`)
+     et un **récit de galères** repris de la
+     section `## Galères & gestes (labo)` du `SPRINT.md`, **avec l'entête `fiches: <id>`** (l'id
+     de la fiche du sprint) en première ligne. Écris ces artefacts dans un **emplacement
+     transitoire** (scratchpad de session, hors dépôt) : ce sont des **entrées de travail**, ne
+     les grave PAS dans `docs/sessions/` — `ezk-archive` est le **seul** à archiver durablement le
+     sprint à la clôture, et graver ici créerait un doublon (`../ezk-archive/SKILL.md`, temps 8
+     « Archive session »). *(Sprint **déjà archivé** — rétro lancée après la clôture, `SPRINT.md`
+     disparu — : pointe `suggest` vers l'archive `docs/sessions/` du sprint au lieu de re-matérialiser.)*
+  2. **Invoque `ezk-chef suggest`** sur ces chemins :
+     `/ezk-chef suggest <rapport.json> <récit-galères.md>` — lecture seule, il propose et ne
+     crée rien (`../ezk-chef/SKILL.md`, section `suggest`). **Source des candidats = les galères
+     attribuées** (récit mono-`fiches:`), **pas** la liste des fiches livrées du rapport : au
+     checkpoint la fiche du sprint n'est pas encore mergée, `suggest` l'exclut par construction.
+- **Pas de symptôme → pas de rétro utile** : si rien de concret ne remonte — **ni symptôme
+  verbal, ni candidat-recette** — dis-le et rends la main. Un candidat-recette **est** un
+  symptôme : on interroge `ezk-chef` **avant** cet early-return, jamais après (sinon il
+  couperait la rétro avant d'avoir regardé le sprint).
 
 ### 2. Cérémonie en round-robin (2 tours) — *soudure 1 : le déclencheur*
 Réunis les **agents bindés** du profil (`global.yml`) — par défaut `ezk-architect`, `ezk-qa`,
@@ -78,6 +102,14 @@ et tombe dans **une** catégorie :
 - `action` (geste ponctuel) · `feature` (→ fiche backlog) · `spike` (exploration) ·
 - **`règle`** — lint, principe d'archi, item de **DoD/DoR**, convention de communication,
   outil de contrôle.
+- **`recette`** (périmètre `sprint`) — un candidat rendu par `ezk-chef suggest` (temps 1)
+  qu'on décide de capitaliser → future fiche « créer la recette X ». **On juge la pertinence
+  au cas par cas** : ce n'est pas parce que `suggest` propose qu'on retient.
+
+> **Proposer d'abord, ne pas créer.** Chaque candidat-recette figure dans le **rapport de
+> rétro** avec sa **case d'acceptation** — `⏳` (en attente) → `✅` (retenu) / `❌` (écarté) —,
+> **jamais pré-remplie**. Le rapport *propose* ; la création de la fiche attend ton feu vert
+> au temps 5. Un candidat `⏳` ou `❌` ne crée **rien**.
 
 > **Garde-fou dur** : une proposition de type `règle` **sans symptôme OU sans critère
 > mesurable est refusée** (on ne range pas une règle qui ne répond pas à un vrai besoin et
@@ -101,6 +133,12 @@ seulement. On écrit **au PO**, pas entre agents.
 Puis le rangement :
 - **non-règles** (`action`/`feature`/`spike`) → backlog via `/ezk-backlog add` (avec le
   symptôme et le critère en contexte) ;
+- **candidats-recette `✅`** → une fiche « créer la recette X » via `/ezk-backlog add`,
+  **seulement une fois le candidat accepté** (`✅`). Un candidat `⏳` ou `❌` ne crée **aucune**
+  fiche (garde-fou « rien rangé sans feu vert PO »). La fiche porte des **pointeurs** vers la
+  fiche source et ses galères (résolvables par id dans `docs/sessions/` après clôture,
+  convention ADR-0018), part au sprint suivant selon ton mode (auto / manuel), et **ne contient
+  pas la recette** : c'est le sprint N+1 qui la construit (`ezk-chef extract`, ADR-0013) ;
 - **règles validées** → dans la **structure existante**, jamais un nouveau silo :
   `rules/<catégorie>/<slug>.md` (format maison : front-matter `id / kind / level(MUST|SHOULD)
   / enforcements[]`), rattachées à un `bundle` si besoin, ou intégrées au **DoD/DoR**.
@@ -131,6 +169,9 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 - **Juge de cohérence** : fiche [0008 chief-judge](../../../../features/0113-chief-judge.md) + agent `ezk-steward`.
 - **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
+- **Détection des candidats-recette** : skill [`ezk-chef`](../ezk-chef/) (`suggest`, lecture
+  seule) ; l'archivage durable du sprint reste à [`ezk-archive`](../ezk-archive/) (seul graveur
+  de `docs/sessions/`).
 - **Agents de la cérémonie** : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-dev`, `ezk-pm`.
 
 ## Quand l'utiliser / quand NE PAS
