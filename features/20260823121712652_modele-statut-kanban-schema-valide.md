@@ -15,8 +15,7 @@ created: 2026-08-23
 > **MAJ 2026-08-26 — validateur livré (étape 2 de l'ADR-0040) · `in-progress`.** `pnpm fiches:check`
 > **rapporte** (mode *warning*, exit 0) les fiches dont `status`/`type`/`priority` sont hors-enum ou
 > dont un champ requis manque ; `product:` conditionnel au monorepo. Enums centralisés
-> (`STATUTS`/`PRIOS`/`TYPES` dans `avancement-data.ts`, source unique). Commit `ce41a95` (merge local,
-> **non poussé**). Revue = GO. **Reste ouvert** (décisions de cette fiche) : bascule **bloquante**
+> (`STATUTS`/`PRIOS`/`TYPES` dans `avancement-data.ts`, source unique). Commit `ce41a95` (sur `origin/main`). Revue = GO. **Reste ouvert** (décisions de cette fiche) : bascule **bloquante**
 > (quand faux positifs = 0), refonte **kanban** (`ready` en colonne, retrait du champ `ready:`),
 > cas `blocked`+`ready`, **migration** des fiches.
 

@@ -17,7 +17,7 @@ created: 2026-08-21
 > **MAJ 2026-08-26 — POC (étape 1 de l'ADR-0040) livré · `in-progress`.** Le graphe se
 > **compile** en instance typée (`pnpm graph:compile` → artefact non-versionné `.ezk/graph.compiled.json`) ;
 > un id de lien inconnu **fait échouer** la compilation ; `pnpm graph:query` **lit** l'objet sans
-> recalcul. Commit `a4858f2` (merge local sur `main`, **non poussé**). Revue adverse `ezk-reviewer` = **GO**.
+> recalcul. Commit `a4858f2` (sur `origin/main`). Revue adverse `ezk-reviewer` = **GO**.
 > **Reste pour clore la fiche** : câbler la webapp/`map-data` (le consommateur POC est le CLI), unifier
 > le vocabulaire des 5 liens (D1, en **alias** — aucun rename), migrer les refs de prose → id.
 
