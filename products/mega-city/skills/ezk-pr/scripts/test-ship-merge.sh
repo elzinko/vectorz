@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+# test-ship-merge.sh — DoD de merge-local-first (ADR-0052).
+#
+# En clair : GitHub exécute le squash, le local décide puis se réaligne. Ce test prouve
+# les DEUX chemins (sans remote = squash local ; avec remote = commande `gh` construite,
+# jamais appelée) et le refus du chemin fantôme (push d'un squash local puis fermeture de
+# PR, qui fabrique une PR "closed unmerged").
+#
+# Fixtures 100% jetables sous $TMPDIR — jamais le vrai repo vectorz, jamais de `gh` réel.
+set -euo pipefail
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT="$HERE/ship-merge.sh"
+FAIL=0
+
+fail() { echo "  ✗ $1"; FAIL=1; }
+ok()   { echo "  ✓ $1"; }
+
+WORK="$(mktemp -d)"
+trap 'rm -rf "$WORK"' EXIT
+export GIT_CONFIG_GLOBAL=/dev/null
+export GIT_CONFIG_SYSTEM=/dev/null
+
+echo "=== Garde-fou statique — jamais de chemin fantôme (push + gh pr close) ==="
+if grep -qE 'pr close' "$SCRIPT"; then
+  fail "le script contient un appel 'pr close' — chemin fantôme (ADR-0052)"
+else
+  ok "aucun 'gh pr close' dans le script"
+fi
+
+# --- Cas 1 : SANS remote — squash local, prune, aucun gh appelé -----------------------
+echo "=== Cas 1 — sans remote : squash local + prune + aucun gh appelé ==="
+REPO="$WORK/repo-local"
+git init -q -b main "$REPO"
+git -C "$REPO" config user.email t@t.io
+git -C "$REPO" config user.name t
+echo v1 > "$REPO/f.txt"
+git -C "$REPO" add f.txt
+git -C "$REPO" commit -qm "chore: v1"
+
+git -C "$REPO" checkout -qb feat/x
+echo v2 >> "$REPO/f.txt"
+git -C "$REPO" add f.txt
+git -C "$REPO" commit -qm "feat: x en cours"
+git -C "$REPO" checkout -q main
+
+# Une branche déjà absorbée d'une session précédente (contenu déjà dans main) : le
+# script doit la retrouver et la purger, comme fait `check.sh` (fiche 0076).
+git -C "$REPO" branch old-absorbed main
+
+# `gh` est un piège : s'il est invoqué, il écrit un marqueur — le test échoue si le
+# marqueur apparaît.
+GH_MARKER="$WORK/gh-called"
+FAKE_BIN="$WORK/fakebin"
+mkdir -p "$FAKE_BIN"
+cat > "$FAKE_BIN/gh" <<EOF
+#!/usr/bin/env bash
+echo "gh appelé: \$*" >> "$GH_MARKER"
+exit 1
+EOF
+chmod +x "$FAKE_BIN/gh"
+
+PATH="$FAKE_BIN:$PATH" bash "$SCRIPT" \
+  --repo "$REPO" --branch feat/x --base main \
+  --subject "feat: x" --body "corps du commit"
+
+[[ ! -f "$GH_MARKER" ]] && ok "gh jamais appelé (chemin sans remote)" || fail "gh a été appelé: $(cat "$GH_MARKER" 2>/dev/null)"
+
+LOG="$(git -C "$REPO" log -1 --format='%s%n%b' main)"
+grep -qF "feat: x" <<<"$LOG" && ok "commit conventional sur main (sujet)" || fail "sujet du commit absent"
+grep -qF "corps du commit" <<<"$LOG" && ok "commit conventional sur main (corps)" || fail "corps du commit absent"
+[[ "$(cat "$REPO/f.txt")" == $'v1\nv2' ]] && ok "contenu de la branche bien squashé dans main" || fail "contenu pas squashé"
+
+git -C "$REPO" show-ref --verify -q refs/heads/feat/x && fail "feat/x pas prunée après ship" || ok "feat/x prunée (absorbée par le squash qu'on vient de faire)"
+git -C "$REPO" show-ref --verify -q refs/heads/old-absorbed && fail "old-absorbed pas prunée (déjà absorbée avant ce ship)" || ok "old-absorbed prunée (déjà absorbée)"
+[[ -z "$(git -C "$REPO" status --porcelain)" ]] && ok "working tree propre après ship" || fail "working tree sale après ship"
+
+# --- Cas 2 : AVEC remote, --dry-run — construit la commande, n'exécute rien -----------
+echo "=== Cas 2 — avec remote (--dry-run) : commande gh construite, jamais exécutée ==="
+REPO2="$WORK/repo-remote"
+git init -q -b main "$REPO2"
+git -C "$REPO2" config user.email t@t.io
+git -C "$REPO2" config user.name t
+echo v1 > "$REPO2/f.txt"
+git -C "$REPO2" add f.txt
+git -C "$REPO2" commit -qm "chore: v1"
+git -C "$REPO2" remote add origin https://example.invalid/repo.git
+
+GH_MARKER2="$WORK/gh-called-2"
+rm -f "$GH_MARKER2"
+OUT="$(PATH="$FAKE_BIN:$PATH" bash "$SCRIPT" \
+  --repo "$REPO2" --remote --pr 42 --branch feat/y \
+  --subject "feat: y" --body "corps y" --dry-run)"
+echo "$OUT"
+
+[[ ! -f "$GH_MARKER2" ]] && ok "gh jamais exécuté en --dry-run" || fail "gh a été appelé en dry-run"
+grep -qF "gh pr merge 42" <<<"$OUT" && ok "commande gh pr merge construite avec le bon numéro" || fail "commande gh absente/incorrecte"
+grep -qF -- "--squash" <<<"$OUT" && ok "--squash présent" || fail "--squash absent"
+grep -qF -- "--delete-branch" <<<"$OUT" && ok "--delete-branch présent" || fail "--delete-branch absent"
+grep -qF -- "--subject" <<<"$OUT" && grep -qF "feat: y" <<<"$OUT" && ok "message conventional du LOCAL (--subject)" || fail "message local absent de la commande"
+
+# --- Cas 3 : refresh partagé — après le merge, un AUTRE clone voit origin/main à jour
+# et la ref de la branche mergée disparaître.
+#
+# On mute le bare AVANT d'appeler ship-merge.sh, avec de simples commandes git au premier
+# niveau (pas de git imbriqué dans un script généré) : ça REPRÉSENTE ce que GitHub vient
+# de faire côté serveur (squash + suppression de branche). Le `gh` FACTICE posé sur le
+# PATH ne fait qu'enregistrer l'appel (jamais de réseau réel, jamais le vrai binaire) :
+# ship-merge.sh, lui, doit ensuite faire le VRAI travail testé ici — `fetch --prune` +
+# réalignement des vues — sans avoir eu besoin d'un `gh` réel pour ça.
+echo "=== Cas 3 — refresh partagé : fetch --prune propage le merge à un autre clone ==="
+BARE="$WORK/origin.git"
+git init -q --bare -b main "$BARE"
+
+SEED="$WORK/seed"
+git clone -q "$BARE" "$SEED"
+git -C "$SEED" config user.email t@t.io
+git -C "$SEED" config user.name t
+echo v1 > "$SEED/f.txt"
+git -C "$SEED" add f.txt
+git -C "$SEED" commit -qm "chore: v1"
+git -C "$SEED" push -q origin main
+git -C "$SEED" push -q origin main:feat/z
+
+SHIP_CLONE="$WORK/ship-clone"
+git clone -q "$BARE" "$SHIP_CLONE"
+git -C "$SHIP_CLONE" config user.email t@t.io
+git -C "$SHIP_CLONE" config user.name t
+
+OTHER_CLONE="$WORK/other-clone"
+git clone -q "$BARE" "$OTHER_CLONE"
+git -C "$OTHER_CLONE" config user.email t@t.io
+git -C "$OTHER_CLONE" config user.name t
+
+# "GitHub" vient de squasher la PR #7 et de supprimer sa branche — fait AVANT d'appeler
+# ship-merge.sh, avec le clone `seed` qui n'a rien à voir avec les clones sous test.
+echo v2 >> "$SEED/f.txt"
+git -C "$SEED" add f.txt
+git -C "$SEED" commit -qm "feat: z"
+git -C "$SEED" push -q origin main
+git -C "$SEED" push -q origin --delete feat/z
+
+FAKE_GH_MERGE="$WORK/fakebin-merge"
+mkdir -p "$FAKE_GH_MERGE"
+GH_MERGE_MARKER="$WORK/gh-merge-called"
+cat > "$FAKE_GH_MERGE/gh" <<'EOF'
+#!/usr/bin/env bash
+echo "$@" >> "$GH_MERGE_CALLED_FILE"
+EOF
+chmod +x "$FAKE_GH_MERGE/gh"
+
+GH_MERGE_CALLED_FILE="$GH_MERGE_MARKER" PATH="$FAKE_GH_MERGE:$PATH" bash "$SCRIPT" \
+  --repo "$SHIP_CLONE" --remote --pr 7 --branch feat/z \
+  --subject "feat: z" --body "corps z"
+
+[[ -f "$GH_MERGE_MARKER" ]] && ok "gh (factice) invoqué pour le squash distant" || fail "gh jamais invoqué"
+
+git -C "$OTHER_CLONE" fetch -q --prune origin
+git -C "$OTHER_CLONE" show-ref --verify -q refs/remotes/origin/feat/z \
+  && fail "other-clone voit encore origin/feat/z après le prune" \
+  || ok "other-clone : ref de la branche mergée disparue après fetch --prune"
+BARE_MAIN="$(git -C "$BARE" rev-parse main)"
+SHIP_HEAD="$(git -C "$SHIP_CLONE" rev-parse HEAD)"
+[[ "$SHIP_HEAD" == "$BARE_MAIN" ]] && ok "ship-clone lui-même à jour après son propre merge" || fail "ship-clone pas à jour"
+
+if (( FAIL )); then
+  echo "❌ test-ship-merge — ÉCHEC"
+  exit 1
+fi
+echo "✅ test-ship-merge — TOUT VERT"

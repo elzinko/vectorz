@@ -241,6 +241,40 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   fiche en `done` par personne, `reconcile` le détecte et propose le `ship`
   (ADR-0018) — sinon la fiche reste orpheline du merge.
 
+### `ship` — merge-local-first (ADR-0052)
+
+**En clair.** Piloter le squash « en local » pour GitHub ne marche jamais
+proprement : un squash fabriqué en local puis poussé ne fait jamais voir la PR
+comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
+**GitHub exécute le squash, le local décide puis se réaligne.**
+
+- **Avec remote** — le seul chemin qui laisse une vraie PR « Merged » et
+  supprime la branche distante :
+  `gh pr merge <n> --squash --delete-branch --subject "<sujet>" --body "<corps>"`,
+  le message conventional venant du **local** (pas d'un résumé généré côté
+  GitHub).
+- **Sans remote** (dépôt local seul) — squash **local** sur `<base>` :
+  `git merge --squash <branche>` + commit conventional, puis purge des
+  branches déjà **absorbées** (même classification que la fiche 0076 —
+  `skills/ezk-archive/scripts/check.sh:classify_ref`).
+- **Chemin fantôme interdit** — ce script n'a AUCUNE combinaison qui pousse un
+  squash local puis referme la PR à la main : ça fabrique une PR
+  « closed unmerged », jamais « Merged ».
+- **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :
+  ce seul fetch rafraîchit `origin/main` pour toutes les vues), puis
+  **fast-forward** de la vue qui a shippé et de l'arbre principal (jamais un
+  merge — juste avancer un pointeur, prédicat de sûreté D4 : working tree
+  **propre** ET fast-forward **strict** possible), et **signal** (sans y
+  toucher) des autres worktrees en retard.
+
+Implémentation : `skills/ezk-pr/scripts/ship-merge.sh` (orchestre les deux
+chemins + le refus du chemin fantôme) et
+`skills/ezk-pr/scripts/refresh-worktrees.sh` (le réalignement post-merge,
+réutilisé aussi par la gate de fraîcheur `run-freshness-origin-main`). Tests :
+`skills/ezk-pr/scripts/test-ship-merge.sh` et
+`skills/ezk-pr/scripts/test-refresh-worktrees.sh`, sur des fixtures git
+jetables — jamais le vrai repo.
+
 ## Frontière & délégation — compose, ne réimplémente rien
 
 | Besoin | Délègue à |
