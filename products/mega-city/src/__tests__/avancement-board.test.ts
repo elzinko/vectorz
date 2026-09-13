@@ -69,6 +69,7 @@ describe('diagrams/avancement/board.html — données à jour (fidélité par co
       product: 'mega-city',
       pr: '',
       labels,
+      blocked: '',
       done: false,
       file: `features/${id}.md`,
     });

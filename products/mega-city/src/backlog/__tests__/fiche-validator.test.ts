@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { findDuplicateIds, validateFicheFrontMatter } from '../fiche-validator.js';
+import {
+  findDuplicateIds,
+  findInvalidProvenanceIds,
+  validateFicheFrontMatter,
+} from '../fiche-validator.js';
 
 const fm = (fields: Record<string, string>) =>
   `---\n${Object.entries(fields)
@@ -119,6 +123,52 @@ describe('findDuplicateIds (contrôle inter-fichiers — fléau des ids en doubl
         { file: 'a.md', id: '' },
         { file: 'b.md', id: '' },
       ]),
+    ).toEqual([]);
+  });
+});
+
+describe('findInvalidProvenanceIds (ADR-0040 D5 — pas d’id fantôme pour merged_into/split_into)', () => {
+  const knownIds = new Set(['1', '2', '3']);
+
+  it('merged_into pointant vers un id existant → aucune anomalie', () => {
+    const anomalies = findInvalidProvenanceIds(
+      [{ file: 'a.md', mergedInto: '2', splitInto: [] }],
+      knownIds,
+    );
+    expect(anomalies).toEqual([]);
+  });
+
+  it('merged_into pointant vers un id inexistant → une anomalie (id fantôme)', () => {
+    const anomalies = findInvalidProvenanceIds(
+      [{ file: 'a.md', mergedInto: '999', splitInto: [] }],
+      knownIds,
+    );
+    expect(anomalies).toContainEqual(
+      expect.objectContaining({ file: 'a.md', field: 'merged_into' }),
+    );
+  });
+
+  it('split_into : tous les ids existants → aucune anomalie', () => {
+    const anomalies = findInvalidProvenanceIds(
+      [{ file: 'a.md', mergedInto: '', splitInto: ['2', '3'] }],
+      knownIds,
+    );
+    expect(anomalies).toEqual([]);
+  });
+
+  it('split_into : un id inexistant parmi d’autres valides → une anomalie ciblant cet id', () => {
+    const anomalies = findInvalidProvenanceIds(
+      [{ file: 'a.md', mergedInto: '', splitInto: ['2', '999'] }],
+      knownIds,
+    );
+    expect(anomalies).toHaveLength(1);
+    expect(anomalies[0]).toMatchObject({ file: 'a.md', field: 'split_into' });
+    expect(anomalies[0]?.message).toContain('999');
+  });
+
+  it('champs absents (fiche sans provenance) → aucune anomalie', () => {
+    expect(
+      findInvalidProvenanceIds([{ file: 'a.md', mergedInto: '', splitInto: [] }], knownIds),
     ).toEqual([]);
   });
 });

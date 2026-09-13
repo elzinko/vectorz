@@ -6,8 +6,9 @@ priority: P3
 product: mega-city
 version:
 epic:
-status: blocked
+status: idea
 ready:
+blocked: "dépend de l'agent ezk-ux (ADR-0026, statut proposé) — pas encore construit"
 pr:
 created: 2026-08-29
 ---

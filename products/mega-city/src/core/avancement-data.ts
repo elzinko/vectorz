@@ -10,27 +10,32 @@ import type { Fiche } from '../loaders/fiches.js';
 
 /**
  * L'ordre de statut du flux : `idea` (pas encore prête) → `ready` (groomée, tirable) →
- * `shipped` (livrée). `in-progress` / `blocked` sont des signaux orthogonaux (posés à la
- * main). Le statut `todo` a été RETIRÉ le 2026-09-04 (panel adverse, capture
+ * `shipped` (livrée). `in-progress` reste un signal orthogonal (dérivé de la branche
+ * `feat/<id>`). Le statut `todo` a été RETIRÉ le 2026-09-04 (panel adverse, capture
  * `docs/captures/2026-09-04-panel-adverse-objet-sprint.md`) : une fiche non prête est une
  * `idea`, une fiche prête est `ready` — plus d'état ambigu au milieu. « doing » (en cours)
  * reste DÉRIVÉ de la branche `feat/<id>`, jamais un statut committé.
  *
- * `superseded` = statut TERMINAL « clôturée sans livraison » : une fiche rendue caduque
- * (obsolète après un pivot, ou dépassée par du travail déjà livré ailleurs). Elle sort du
- * stock actif (elle part dans `features/done/`) SANS compter comme livrée — les métriques de
- * sprint ne comptent que `shipped` (cf. `sprint-metrics/adapters/repoSource.ts`). C'est le
- * cran « annulé/obsolète » que la chaîne `idea→ready→shipped` n'offrait pas (migration Skema
- * 004 ; famille des statuts terminaux non-`shipped`, à compléter par `merged`/`split` côté
- * fiche 20260823121712652).
+ * `blocked` N'EST PLUS une colonne (sliver B, fiche 652) : c'est un DRAPEAU orthogonal
+ * (champ `blocked:` en front-matter, une raison en texte) posé PAR-DESSUS n'importe quelle
+ * colonne — une fiche peut être `ready` ET `blocked`. Voir `Fiche.blocked` / `BoardFiche.blocked`.
+ *
+ * `superseded`, `merged`, `split` = statuts TERMINAUX « clôturés sans livraison de forme
+ * standard » : une fiche rendue caduque (`superseded`, pivot ou déjà livrée ailleurs), ou
+ * absorbée par une autre fiche (`merged` — voir `merged_into:`) ou scindée en plusieurs
+ * (`split` — voir `split_into:`). Ces trois statuts sortent du stock actif (la fiche part
+ * dans `features/done/`) SANS compter comme livrée — les métriques de sprint ne comptent que
+ * `shipped` (cf. `sprint-metrics/adapters/repoSource.ts`). Migration Skema 004 (`superseded`)
+ * puis fiche 20260823121712652 (`merged`/`split`).
  */
 export const STATUTS: readonly string[] = [
   'idea',
   'ready',
   'in-progress',
-  'blocked',
   'shipped',
   'superseded',
+  'merged',
+  'split',
 ];
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
 export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
@@ -60,6 +65,8 @@ export interface BoardFiche {
   product: string;
   pr: string;
   labels: string[];
+  /** Drapeau orthogonal (sliver B, fiche 652) : raison si `blocked:` est posé, '' sinon. */
+  blocked: string;
   file: string; // chemin relatif à la racine du repo — la vue en fait un lien cliquable
 }
 
@@ -97,6 +104,7 @@ const toBoard = (f: Fiche): BoardFiche => ({
   product: f.product,
   pr: f.pr,
   labels: f.labels,
+  blocked: f.blocked,
   file: f.file,
 });
 
@@ -109,9 +117,10 @@ const prioRank = (p: string): number => {
 /**
  * Statut d'un épic, CALCULÉ depuis ses enfants (D4, fiche 20260825123700998 ; ADR-0017 A15) :
  * tous les enfants livrés (`done/`) → `shipped` ; au moins un livré OU engagé
- * (ready/in-progress/blocked) → `in-progress` ; que des `idea` → `idea` ; aucun enfant → le
- * statut saisi (fallback). Le « tout livré » s'appuie sur `done/` (le dossier), pas sur la
- * chaîne 'shipped' — robuste à un statut de provenance `merged`/`split`. Jamais saisi (ADR-0001).
+ * (ready/in-progress, `blocked` étant désormais un drapeau et non une colonne — sliver B,
+ * fiche 652) → `in-progress` ; que des `idea` → `idea` ; aucun enfant → le statut saisi
+ * (fallback). Le « tout livré » s'appuie sur `done/` (le dossier), pas sur la chaîne
+ * 'shipped' — robuste à un statut de provenance `merged`/`split`. Jamais saisi (ADR-0001).
  */
 function deriveEpicStatus(
   childCounts: Record<string, number>,
@@ -121,8 +130,7 @@ function deriveEpicStatus(
   const total = Object.values(childCounts).reduce((a, b) => a + b, 0);
   if (total === 0) return fallback;
   if (doneCount === total) return 'shipped';
-  const engaged =
-    (childCounts.ready ?? 0) + (childCounts['in-progress'] ?? 0) + (childCounts.blocked ?? 0);
+  const engaged = (childCounts.ready ?? 0) + (childCounts['in-progress'] ?? 0);
   return doneCount > 0 || engaged > 0 ? 'in-progress' : 'idea';
 }
 
