@@ -12,7 +12,9 @@
  * disque au bloc régénéré — carte périmée ⇒ CI rouge.
  */
 import type { Catalog } from '../loaders/catalog.js';
+import type { CompiledGraph } from './compiled-graph.js';
 import { type MethodDoc, validateMethod } from './ceremonies.js';
+import type { LinkType } from './graph.js';
 import { validateGraph } from './graph.js';
 import { type Etage, type Famille, type TaxonomieDoc, validateTaxonomie } from './taxonomie.js';
 
@@ -99,6 +101,8 @@ const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
 
 /**
  * Compile les données de la carte. Tout est trié → sortie stable (F4).
+ * `graph` (`compileGraph(catalog)`) est l'UNIQUE source des liens/index de la carte —
+ * fiche 357/ADR-0040 : plus de second parcours du catalogue en parallèle du graphe compilé.
  * `method` (ceremonies.yml) et `taxonomie` (taxonomie.yml) sont VALIDÉS ici — une
  * référence fausse ou un catalogue incomplètement rangé fait échouer la compilation.
  * Sans `taxonomie` (tests unitaires ciblés uniquement), repli dégénéré : tout en
@@ -106,41 +110,18 @@ const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
  */
 export function buildMapData(
   catalog: Catalog,
+  graph: CompiledGraph,
   method?: MethodDoc,
   taxonomie?: TaxonomieDoc,
 ): MapData {
   const report = validateGraph(catalog);
   const taxo = taxonomie ? validateTaxonomie(catalog, taxonomie) : undefined;
 
-  // Index inverses — calculés une fois, jamais devinés par la carte.
-  const composedBy = new Map<string, Set<string>>();
-  const convokedBy = new Map<string, Set<string>>();
-  const skillProfiles = new Map<string, Set<string>>();
-  const agentProfiles = new Map<string, Set<string>>();
-  const ruleBundles = new Map<string, Set<string>>();
-  const ruleAgents = new Map<string, Set<string>>();
-  const bundleProfiles = new Map<string, Set<string>>();
-  const add = (m: Map<string, Set<string>>, key: string, value: string): void => {
-    const set = m.get(key) ?? new Set();
-    set.add(value);
-    m.set(key, set);
-  };
-
-  for (const s of catalog.skills.values()) {
-    for (const to of s.composes ?? []) add(composedBy, to, s.id);
-    for (const to of s.roles ?? []) add(convokedBy, to, s.id);
-  }
-  for (const a of catalog.agents.values()) {
-    for (const r of a.interactions) add(ruleAgents, r, a.id);
-  }
-  for (const b of catalog.bundles.values()) {
-    for (const r of b.rules) add(ruleBundles, r, b.id);
-  }
-  for (const p of catalog.profiles.values()) {
-    for (const s of p.skills) add(skillProfiles, s, p.id);
-    for (const a of p.agents) add(agentProfiles, a, p.id);
-    for (const b of p.bundles) add(bundleProfiles, b, p.id);
-  }
+  // Liens/index — lus dans les arêtes du graphe compilé, jamais re-devinés par la carte.
+  const outTo = (link: LinkType, from: string): string[] =>
+    sorted(graph.edges.filter((e) => e.link === link && e.from === from).map((e) => e.to));
+  const inFrom = (link: LinkType, to: string): string[] =>
+    sorted(graph.edges.filter((e) => e.link === link && e.to === to).map((e) => e.from));
 
   // Placement d'une brique : depuis la taxonomie validée ; repli dégénéré sinon.
   const placeSkill = (id: string) => taxo?.skills[id] ?? { etage: 'methode' as const };
@@ -167,11 +148,11 @@ export function buildMapData(
       etage: place.etage,
       ...(place.famille ? { famille: place.famille } : {}),
       ...(bande ? { bande } : {}),
-      composes: sorted(s.composes ?? []),
-      composesExternal: sorted(s.composesExternal ?? []),
-      roles: sorted(s.roles ?? []),
-      composedBy: sorted(composedBy.get(id) ?? []),
-      profiles: sorted(skillProfiles.get(id) ?? []),
+      composes: outTo('composes', id),
+      composesExternal: sorted(s.composesExternal ?? []), // hors catalogue (ADR-0025) — hors graphe
+      roles: outTo('roles', id),
+      composedBy: inFrom('composes', id),
+      profiles: inFrom('profile-skill', id),
     };
   }
 
@@ -187,10 +168,10 @@ export function buildMapData(
       ...(place.famille ? { famille: place.famille } : {}),
       model: a.model ?? '',
       effort: a.effort ?? '',
-      competences: sorted(a.competences),
-      interactions: sorted(a.interactions),
-      convokedBy: sorted(convokedBy.get(id) ?? []),
-      profiles: sorted(agentProfiles.get(id) ?? []),
+      competences: outTo('competences', id),
+      interactions: outTo('interactions', id),
+      convokedBy: inFrom('roles', id),
+      profiles: inFrom('profile-agent', id),
     };
   }
 
@@ -204,8 +185,8 @@ export function buildMapData(
       kind: r.kind,
       level: r.level ?? '',
       enforcements: sorted(new Set((r.enforcements ?? []).map((e) => e.type))),
-      bundles: sorted(ruleBundles.get(id) ?? []),
-      agents: sorted(ruleAgents.get(id) ?? []),
+      bundles: inFrom('bundle-rule', id),
+      agents: inFrom('interactions', id),
     };
   }
 
@@ -215,9 +196,9 @@ export function buildMapData(
     if (!b) continue;
     bundles[id] = {
       id,
-      extends: sorted(b.extends ?? []),
-      rules: sorted(b.rules),
-      profiles: sorted(bundleProfiles.get(id) ?? []),
+      extends: outTo('bundle-extends', id),
+      rules: outTo('bundle-rule', id),
+      profiles: inFrom('profile-bundle', id),
     };
   }
 
@@ -227,11 +208,11 @@ export function buildMapData(
     if (!p) continue;
     profiles[id] = {
       id,
-      extends: sorted(p.extends ?? []),
-      bundles: sorted(p.bundles),
-      agents: sorted(p.agents),
-      skills: sorted(p.skills),
-      interactions: sorted(p.interactions ?? []),
+      extends: outTo('profile-extends', id),
+      bundles: outTo('profile-bundle', id),
+      agents: outTo('profile-agent', id),
+      skills: outTo('profile-skill', id),
+      interactions: outTo('profile-interaction', id),
     };
   }
 
@@ -267,11 +248,12 @@ export function buildMapData(
 /** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans le HTML de la carte. */
 export function buildMapDataBlock(
   catalog: Catalog,
+  graph: CompiledGraph,
   method?: MethodDoc,
   taxonomie?: TaxonomieDoc,
 ): string {
   // `<` échappé en < : une description contenant `</script>` ne peut pas fermer la balise.
-  const json = JSON.stringify(buildMapData(catalog, method, taxonomie), null, 1).replace(
+  const json = JSON.stringify(buildMapData(catalog, graph, method, taxonomie), null, 1).replace(
     /</g,
     '\\u003c',
   );

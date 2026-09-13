@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
  * ne peut pas dériver des fichiers en silence.
  */
 import { describe, expect, it } from 'vitest';
+import { compileGraph } from '../core/compiled-graph.js';
 import { validateMethod } from '../core/ceremonies.js';
 import {
   MAP_DATA_BEGIN,
@@ -49,6 +50,7 @@ describe('carte-interactive.html — données à jour (fidélité par constructi
     const catalog = loadCatalog(megaCity);
     const expected = buildMapDataBlock(
       catalog,
+      compileGraph(catalog),
       loadMethodDoc(megaCity),
       loadTaxonomieDoc(megaCity),
     );
@@ -58,7 +60,7 @@ describe('carte-interactive.html — données à jour (fidélité par constructi
 
   it('ADR-0039 — chaque skill et chaque agent a un étage, et hors-bande est vide', () => {
     const catalog = loadCatalog(megaCity);
-    const data = buildMapData(catalog, undefined, loadTaxonomieDoc(megaCity));
+    const data = buildMapData(catalog, compileGraph(catalog), undefined, loadTaxonomieDoc(megaCity));
     for (const s of Object.values(data.skills)) {
       expect(s.etage, `skill ${s.id} sans étage`).toBeDefined();
     }
