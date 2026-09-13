@@ -302,6 +302,7 @@
 | [20260906135450000](20260906135450000_recette-emulateur-android-test-device.md) | Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20260910152227744](20260910152227744_regles-projet-local-couche-vectorz.md) | Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables | feature | P2 | 20260910155608287 | vectorz | 💡 idea |  |
 | [20260910231201744](20260910231201744_aggregate-apply-merged-split-moteur-llm.md) | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260912180313727](20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md) | Repenser le backlog : fusionner PLAN dans BACKLOG (champs itération/version) + historiser les itérations (sprint + rétro) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
