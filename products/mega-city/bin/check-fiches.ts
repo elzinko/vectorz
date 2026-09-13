@@ -22,9 +22,18 @@ import {
 } from '../src/backlog/fiche-validator.js';
 import { readField, readListField } from '../src/loaders/fiches.js';
 
-const STRICT = process.argv.slice(2).includes('--strict');
+const args = process.argv.slice(2);
+const STRICT = args.includes('--strict');
 
-const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+// `--root <dir>` : racine à scanner. Par défaut, la racine du dépôt (3 niveaux au-dessus
+// de ce script). L'option sert à exercer le gate sur un dossier JETABLE (sabotage testable
+// sans polluer le vrai backlog) — cf. `bin/test-check-fiches.sh`.
+function parseRoot(): string {
+  const i = args.indexOf('--root');
+  if (i >= 0 && args[i + 1]) return resolve(args[i + 1]);
+  return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+}
+const repoRoot = parseRoot();
 
 /** Monorepo (vectorz) = plusieurs produits sous `products/`. Sinon backlog autonome. */
 function isMonorepo(root: string): boolean {

@@ -51,3 +51,29 @@ jobs:
       #     merge ; la garantie tenue est qu'une collision NE DORT PAS.
       - name: numéros d'ADR (aucune collision neuve)
         run: bash products/mega-city/bin/test-adr-ids-repo.sh
+
+  # 3e garde-fou markdown-only : le SCHÉMA des fiches (statuts/enums validés). Une fiche au
+  # `status:` invalide est un fichier .md → `ci.yml` l'ignore (paths-ignore **/*.md) ; sans ce
+  # job, la bascule bloquante de `check-fiches --strict` (fiche 652) ne verrait JAMAIS le cas
+  # qu'elle cible — une PR doc-only (retour Codex, PR #233). Le validateur est en TS (tsx),
+  # donc ce job fait un `pnpm install` : il est SÉPARÉ du job bash ci-dessus, qui reste
+  # featherweight. Coût Actions : vectorz est public (runners gratuits).
+  fiche-schema:
+    name: schéma des fiches (statuts validés, --strict)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validateur de statut (bloquant)
+        run: pnpm --dir products/mega-city exec tsx bin/check-fiches.ts --strict

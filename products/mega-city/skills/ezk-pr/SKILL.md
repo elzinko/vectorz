@@ -241,6 +241,50 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   fiche en `done` par personne, `reconcile` le détecte et propose le `ship`
   (ADR-0018) — sinon la fiche reste orpheline du merge.
 
+### `ship` — merge-local-first (ADR-0052)
+
+**En clair.** Piloter le squash « en local » pour GitHub ne marche jamais
+proprement : un squash fabriqué en local puis poussé ne fait jamais voir la PR
+comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
+**GitHub exécute le squash, le local décide puis se réaligne.**
+
+- **Avec remote** — le seul chemin qui laisse une vraie PR « Merged » et
+  supprime la branche distante :
+  `gh pr merge <n> --squash --delete-branch --match-head-commit <sha validé> --subject "<sujet>" --body "<corps>"`,
+  le message conventional venant du **local** (pas d'un résumé généré côté
+  GitHub). Le `--match-head-commit` (head validé, **obligatoire** en remote) refuse
+  le merge si la PR a reçu un commit depuis la validation.
+- **Sans remote** (dépôt local seul) — squash **local** sur `<base>` :
+  `git merge --squash <branche>` + commit conventional, puis purge des
+  branches déjà **absorbées** (même classification que la fiche 0076 —
+  `skills/ezk-archive/scripts/check.sh:classify_ref`).
+- **Chemin fantôme interdit** — ce script n'a AUCUNE combinaison qui pousse un
+  squash local puis referme la PR à la main : ça fabrique une PR
+  « closed unmerged », jamais « Merged ».
+- **Garde-fous** — le squash local **refuse un dépôt sale** (un changement stagé
+  survivrait au `checkout` puis serait publié avec le squash) ; le merge distant
+  **exige `--head-sha <sha validé>`** et épingle le merge dessus (`--match-head-commit`),
+  pour ne jamais squasher un commit arrivé entre la validation et le merge — le
+  garde-fou n'est pas contournable par omission ; une branche absorbée **tenue par un
+  autre worktree** est signalée, jamais supprimée de force — le ship ne s'avorte pas
+  en plein milieu.
+- **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :
+  ce seul fetch rafraîchit `origin/main` pour toutes les vues), puis
+  **fast-forward de la SEULE vue invoquante** (celle qui a shippé), jamais un
+  merge — juste avancer un pointeur, prédicat D4 : working tree **propre** ET
+  fast-forward **strict** possible. Tous les **autres** worktrees — l'arbre
+  principal compris — sont seulement **signalés** en retard, **jamais touchés**
+  (ADR-0052 D3 : « propre » ≠ inutilisé, une autre session peut lire l'arbre ;
+  chacun se réaligne lui-même à son prochain geste via la gate de fraîcheur).
+
+Implémentation : `skills/ezk-pr/scripts/ship-merge.sh` (orchestre les deux
+chemins + le refus du chemin fantôme) et
+`skills/ezk-pr/scripts/refresh-worktrees.sh` (le réalignement post-merge,
+réutilisé aussi par la gate de fraîcheur `run-freshness-origin-main`). Tests :
+`skills/ezk-pr/scripts/test-ship-merge.sh` et
+`skills/ezk-pr/scripts/test-refresh-worktrees.sh`, sur des fixtures git
+jetables — jamais le vrai repo.
+
 ## Frontière & délégation — compose, ne réimplémente rien
 
 | Besoin | Délègue à |

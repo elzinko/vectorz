@@ -5,8 +5,8 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P0 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
-status: idea # idea | ready | in-progress | blocked | shipped
-ready: # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
+status: ready # idea | ready | in-progress | blocked | shipped
+ready: 2026-09-12 # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr:
 evidence: none # flux git/CLI, aucun écran
 created: 2026-09-11
@@ -48,27 +48,40 @@ Le principe visé : **travailler en local d'abord**. GitHub devient une projecti
 
 ## Proposition
 
-Idée non tranchée — à départager au grooming avec l'architecte. Deux axes, idéalement
-les deux ensemble :
+**Tranché au grooming (architecte, 2026-09-12 — [ADR-0052](../products/mega-city/docs/adr/0052-merge-local-first-github-execute-le-squash-main-se-realigne.md)).**
 
-1. **Le merge est piloté en local.** Une commande fait le squash de la branche de fiche
-   en un commit conventional **sur le main local**, met le main local à jour, puis
-   propage vers GitHub : `git push origin main`, PR marquée mergée/fermée, branche
-   distante supprimée, prune.
-   - Point à spiker : comment GitHub **ferme proprement** la PR quand le merge est fait
-     en local. Pousser un squash local sur `main` ne « merge » pas forcément la PR aux
-     yeux de GitHub. Il faudra peut-être `gh pr merge --squash` côté serveur puis
-     fast-forward local, ou un `gh pr close` explicite « merged locally ». Le
-     comportement exact est à vérifier, pas à supposer.
+La prémisse « piloter le squash en local » est **corrigée** sur le comportement réel de
+GitHub. Un squash fabriqué en local puis poussé ne fait jamais voir la PR comme mergée ;
+la fermer à la main la marque « closed unmerged » — la PR fantôme qu'on veut éviter. Donc :
 
-2. **Le main local et les worktrees se resynchronisent tout seuls après un merge.**
-   Quel que soit le chemin de merge, un mécanisme met le main local à jour (fetch +
-   fast-forward) et **resynchronise ou signale** les worktrees en retard. Sans terminal
-   manuel. Déclenché par la méthode : au démarrage de session, par une commande, ou par
-   un hook.
+1. **Le squash reste exécuté par GitHub, le local décide et se réaligne.** Avec remote :
+   `gh pr merge <n> --squash --delete-branch`, message conventional fourni par le local
+   (`--subject`/`--body`) — c'est le seul geste qui donne une PR réellement « Merged » et
+   supprime la branche distante. « Local-first » se déplace : le local possède la décision,
+   le message et le commit de ship ([[20260823121712781]], ADR-0049) ; GitHub exécute.
+   Sans remote (pas de PR) : le squash est bien local (`git merge --squash` + commit
+   conventional). Juste après le merge, `ezk-pr ship` fait **`git fetch --prune`** : comme
+   les worktrees partagent les refs, ce seul fetch rafraîchit `origin/main` **pour tous**.
 
-**Où ça vit** : sans doute une extension d'`ezk-pr` (le merge et le ship des PRs), à
-composer avec les briques voisines plutôt qu'à les refaire. À trancher au grooming.
+2. **Le main local et les worktrees se réalignent tout seuls, sans terminal.** Personne
+   ne réaligne le worktree d'une autre session (ADR-0042). Chaque worktree — l'arbre
+   principal qui porte `main` compris — se **fast-forward lui-même** à son prochain geste,
+   via la **gate de fraîcheur existante** (`development/run-freshness-origin-main`), promue
+   de « avertir » à « avertir **ou** se réaligner quand c'est sûr ». Remplace le
+   `git switch main && git pull` manuel.
+
+**Où ça vit** : **extension d'`ezk-pr ship`** pour le geste au moment du merge (fetch/prune,
+fast-forward de sa propre vue, signal des worktrees en retard), et **promotion de la gate de
+fraîcheur** pour l'auto-réalignement des autres worktrees. **Aucun nouveau skill** : le git
+vit déjà dans `ezk-pr` (ADR-0009), `ezk-product-build` décide *quand* shipper (ADR-0001 :
+le script range, le LLM décide aux bords).
+
+**Prédicat de sûreté** (réutilisé de [[20260902224043892]] + ADR-0042) : un worktree est
+auto-fast-forwardable ssi working tree **propre** ET fast-forward strict possible. Sinon :
+**signal seulement**. Un worktree sale ou tenu par une session vivante n'est jamais déplacé.
+
+**Dépendance** : l'axe 2 dépend du spike offline [[20260906122942825]] (la gate de fraîcheur
+doit dégrader proprement sans remote / hors ligne).
 
 **Frontière avec les fiches voisines** (anti-doublon) :
 
@@ -83,29 +96,50 @@ composer avec les briques voisines plutôt qu'à les refaire. À trancher au gro
 
 ## Critères d'acceptation
 
-Initiaux — à finaliser au grooming (l'idée n'est pas mûre).
+Finalisés au grooming (ADR-0052). Tous vérifiables.
 
-- [ ] Après un merge, le **main local avance** sans `git switch main && git pull` manuel.
-- [ ] Un worktree en retard sur `origin/main` est **détecté puis resynchronisé** (ou au
-      moins signalé sans ambiguïté), sans ouvrir un terminal à la main.
-- [ ] Le squash-merge peut être **piloté depuis la méthode**, en local, pas seulement
-      depuis l'UI GitHub.
-- [ ] Après le merge : la **PR est fermée**, la **branche distante supprimée**, et
-      `origin/main` est identique au `main` local.
-- [ ] Le sens **local → GitHub** est documenté (GitHub = projection, pas source du merge).
-- [ ] Aucune session concurrente cassée : ne touche pas un worktree tenu par une session
-      vivante (réutiliser le prédicat de sûreté de [[20260902224043892]]).
-- [ ] Gate locale verte (typecheck / lint / tests) et DoD script si de l'outillage est ajouté.
+- [ ] **Merge propre (remote).** `ezk-pr ship` merge via `gh pr merge --squash
+      --delete-branch` avec message conventional fourni par le local. Après : `gh pr view
+      <n>` rend **`MERGED`** (jamais `CLOSED` unmerged), la branche distante est supprimée.
+- [ ] **Merge local (sans remote).** Sur un dépôt sans remote, le ship fait un squash
+      **local** (`git merge --squash` + commit conventional) sur `main` et prune les
+      branches absorbées (0076). Aucun `gh` appelé, aucune erreur.
+- [ ] **Refus du chemin fantôme.** La commande ne fabrique jamais une PR « closed
+      unmerged » (pas de `push` d'un squash local suivi de `gh pr close`).
+- [ ] **Refresh partagé.** Après le merge, `ezk-pr ship` exécute `git fetch --prune` : tout
+      worktree du dépôt voit `origin/main` à jour et la ref de branche distante mergée
+      disparue — sans commande manuelle dans ces worktrees.
+- [ ] **Main local réaligné, sans terminal.** La vue de la session qui a shippé, et l'arbre
+      principal portant `main`, se retrouvent sur `origin/main` par **fast-forward** (jamais
+      par merge), sans `git switch main && git pull` tapé à la main.
+- [ ] **Auto-réalignement des worktrees en retard.** Un worktree en retard sur `origin/main`
+      se **fast-forward lui-même** à son prochain geste via la gate de fraîcheur promue,
+      **si et seulement si** le prédicat de sûreté est vrai ; sinon il **signale** sans agir.
+- [ ] **Prédicat de sûreté respecté.** Aucune session concurrente cassée : un worktree avec
+      working tree sale, ou tenu par une session vivante, n'est **jamais** déplacé — il est
+      seulement signalé (ADR-0042 ; prédicat réutilisé de [[20260902224043892]]).
+- [ ] **Dégradation offline.** Hors ligne ou remote injoignable, la gate de fraîcheur
+      **avertit sans bloquer** (selon le spike [[20260906122942825]]).
+- [ ] **Sens documenté.** Le flux « le local décide + se réaligne, GitHub exécute le
+      squash » est écrit dans `ezk-pr` (GitHub = exécutant du merge + projection, le local
+      garde la décision, le message et le commit de ship).
+- [ ] **Gate locale verte** (`pnpm build` + `pnpm test` + `pnpm test:scripts` + lint) et DoD
+      script pour tout outillage bash ajouté (prédicat de sûreté testé sur fixture jetable).
 
 ## Comment vérifier
 
-- [ ] Scénario à deux worktrees : merger une PR depuis le premier, constater que le main
-      local avance **et** que le second worktree se resynchronise ou est signalé — sans
-      terminal manuel.
-- [ ] Après un merge piloté en local : `gh pr view <n>` rend *merged/closed*,
-      `git ls-remote --heads origin <branche>` est vide, et `git rev-parse main origin/main`
-      renvoie le même SHA.
-- [ ] Détail restant à définir au grooming.
+- [ ] **Scénario deux worktrees (remote).** Depuis le worktree A : shipper une PR. Constater
+      `gh pr view <n>` = `MERGED`, `git ls-remote --heads origin <branche>` vide,
+      `git rev-parse main origin/main` (dans l'arbre principal) = même SHA. Depuis le
+      worktree B **propre et en retard** : au geste suivant, il s'est fast-forwardé seul.
+- [ ] **Worktree B sale.** Répéter avec un changement non commité dans B : B **n'est pas**
+      déplacé, un signal clair dit « en retard sur origin/main, working tree sale ».
+- [ ] **Sans remote.** Sur un clone sans remote : le ship squash-merge en local, prune les
+      branches absorbées, `main` avance ; aucun appel `gh`.
+- [ ] **Offline.** Couper le remote (ou simuler un fetch qui timeout) : la gate de fraîcheur
+      avertit, le run n'est pas bloqué.
+- [ ] **DoD script** : `test-*.sh` du prédicat vert sur fixture (propre → ff ; sale → signal ;
+      divergent → signal ; read-only garanti).
 
 ## Notes / décisions
 
@@ -124,3 +158,8 @@ Initiaux — à finaliser au grooming (l'idée n'est pas mûre).
   de visualisation GitHub est un bonus, jamais la source de vérité.
 - Recoupe la mémoire projet `ezk-worktree-friction` (frictions ezk en worktree) — matière
   de cadrage disponible pour le grooming.
+- **Tranché au grooming** (architecte, 2026-09-12, ADR-0052) : la prémisse « squash en
+  local » est corrigée sur le comportement réel de `gh`/GitHub — le squash reste exécuté
+  par GitHub (seul chemin « Merged » propre), le local décide + se réaligne par fast-forward.
+  Axe 2 = promotion de la gate de fraîcheur (advisory, prédicat de sûreté ADR-0042), dépend
+  du spike [[20260906122942825]]. **DoR atteinte.**
