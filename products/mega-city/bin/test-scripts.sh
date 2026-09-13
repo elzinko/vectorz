@@ -35,6 +35,9 @@ SUITES=(
   "bin/test-ezk-chef-suggest.sh"                          # ezk-chef suggest — détecter les candidats-recette d'un sprint (fiche 20260831075615809)
   "bin/test-pr-evidence.sh"                              # fiche 20260902224608715 — capture/render/decide avant-après (ADR-0045)
   "skills/ezk-pr/scripts/test-check-pr-body.sh"          # fiche 20260902224608715 — --changed-files (ADR-0045)
+  "bin/test-check-fiches.sh"                             # fiche 652 — bascule bloquante du validateur de statut (--strict)
+  "skills/ezk-pr/scripts/test-refresh-worktrees.sh"      # merge-local-first (ADR-0052) — prédicat de sûreté D4
+  "skills/ezk-pr/scripts/test-ship-merge.sh"             # merge-local-first (ADR-0052) — ship local vs remote, refus du chemin fantôme
 )
 
 FAILED=()
