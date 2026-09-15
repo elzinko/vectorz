@@ -19,8 +19,8 @@ native GitHub — regroupent et ordonnent mieux qu'un conteneur maison.
 1. **`type: epic` sort de l'enum** ; le champ `epic:` sort du modèle. Plus de troisième objet de composition.
 2. **Regroupement thématique = `labels:`**, mais sur une **liste de thèmes BORNÉE, validée par script**
    (voir ci-dessous : l'objection de l'option A est levée, le vocabulaire n'est plus libre).
-3. **Ordonnancement & exécution = un milestone** (jalon). Champ à trancher : `milestone:` neuf ou `version:`
-   réutilisé (à coordonner avec la fiche 20260912180313727). Il porte l'ordre, le regroupement de blocs et
+3. **Ordonnancement & exécution = un milestone** (jalon). Champ **tranché : `milestone:`** (`version:` réservé
+   aux releases ; implémentation à coordonner avec la fiche 20260912180313727). Il porte l'ordre, le regroupement de blocs et
    un **cumul d'avancement dérivé par milestone**.
 4. **Deux gestes de composition** : FUSION (1 PR indissociable) et DÉCOUPE INVEST (test D3), la découpe
    devenant **bloquante** au grooming. Plus de geste « épic ».

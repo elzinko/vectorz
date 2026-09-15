@@ -30,7 +30,7 @@ conteneur : chaque fiche reste **autonome et tirable**, et la famille se lit par
 
 - **Thème = `labels:` sur une liste BORNÉE**, validée par script (pas de vocabulaire libre : c'est ce
   qui rétablit l'intégrité que l'ADR-0017 réclamait à l'option A).
-- **Milestone = un jalon** (champ à figer : `milestone:` ou `version:`). Il porte l'**ordre**, le
+- **Milestone = un jalon** (champ **`milestone:`** ; `version:` réservé aux releases). Il porte l'**ordre**, le
   **regroupement de blocs**, et un **cumul d'avancement** dérivé.
 - Si une famille a besoin d'un **récit** commun, on écrit une **fiche-chapeau ordinaire**
   (`status: idea`, non tirée à la main) — pas un `type:` à part.
