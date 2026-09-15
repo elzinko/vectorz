@@ -97,7 +97,8 @@ que **« tant pis si volumineux » est à rejeter** (ça viole le « S », Small
 
 Après migration : `grep -rl "type: epic" features/` ne renvoie **rien** ; `regen` ne produit plus de
 section « 🧭 Épics » ; un board montre chaque milestone avec « N fiches — k livrées » ; tenter de
-poser un label hors-liste → le validateur bloque avec un message clair.
+poser un **thème inconnu** (namespace `theme:`) → le validateur bloque avec un message clair, **tandis
+qu'un label libre existant** (`bmad`, `ux`) **passe**.
 
 ## Anti-doublon
 
