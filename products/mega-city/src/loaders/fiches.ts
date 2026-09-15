@@ -68,6 +68,17 @@ export function readListField(text: string, field: string): string[] {
     .filter(Boolean);
 }
 
+/**
+ * Isole le bloc de front-matter (entre le premier `---` et le `---` suivant). Les champs se lisent
+ * LÀ, jamais dans le corps : une fiche sans `milestone:` en tête mais qui l'évoque dans sa prose
+ * ne doit pas le capter (revue Codex PR #237). Repli défensif sur le texte entier si le délimiteur
+ * manque (fiche sans front-matter — ne devrait pas arriver, FICHE_FILE filtre déjà).
+ */
+export function frontMatter(text: string): string {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  return m ? m[1] : text;
+}
+
 /** Les deux formats d'id coexistent (fiche 0180) : `0094-slug.md` et `20260810143052123_slug.md`. */
 const FICHE_FILE = /^(\d{4,})[-_].*\.md$/;
 
@@ -83,20 +94,20 @@ export function loadFiches(rootDir: string): Fiche[] {
     for (const filename of readdirSync(sub).sort()) {
       const idMatch = filename.match(FICHE_FILE);
       if (!idMatch) continue;
-      const text = readFileSync(join(sub, filename), 'utf8');
+      const fm = frontMatter(readFileSync(join(sub, filename), 'utf8'));
       fiches.push({
         id: idMatch[1],
-        title: readField(text, 'title'),
-        type: readField(text, 'type') || 'feature',
-        priority: readField(text, 'priority'),
-        status: readField(text, 'status') || 'idea',
-        ready: readField(text, 'ready') !== '',
-        epic: readField(text, 'epic'),
-        milestone: readField(text, 'milestone'),
-        product: readField(text, 'product') || '—',
-        pr: readField(text, 'pr'),
-        labels: readListField(text, 'labels'),
-        blocked: readField(text, 'blocked'),
+        title: readField(fm, 'title'),
+        type: readField(fm, 'type') || 'feature',
+        priority: readField(fm, 'priority'),
+        status: readField(fm, 'status') || 'idea',
+        ready: readField(fm, 'ready') !== '',
+        epic: readField(fm, 'epic'),
+        milestone: readField(fm, 'milestone'),
+        product: readField(fm, 'product') || '—',
+        pr: readField(fm, 'pr'),
+        labels: readListField(fm, 'labels'),
+        blocked: readField(fm, 'blocked'),
         done,
         file: `features/${done ? 'done/' : ''}${filename}`,
       });

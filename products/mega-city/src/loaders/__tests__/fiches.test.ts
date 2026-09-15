@@ -7,7 +7,7 @@
  * On fige ici les deux régimes (valeur quotée littérale vs commentaire hors guillemets).
  */
 import { describe, expect, it } from 'vitest';
-import { readField } from '../fiches.js';
+import { frontMatter, readField } from '../fiches.js';
 
 describe('readField — valeur quotée lue littéralement', () => {
   it('pr: "#29" → #29 (le # est la valeur, pas un commentaire) [bug PR #221]', () => {
@@ -97,5 +97,31 @@ describe('readField — champ milestone (ADR-0017 A16 : ordonnancement, remplace
 
   it('milestone absent → "" (champ optionnel, comme version)', () => {
     expect(readField('id: "0001"\nstatus: idea', 'milestone')).toBe('');
+  });
+});
+
+describe('frontMatter — les champs se lisent en tête, pas dans le corps [revue Codex #237]', () => {
+  const fiche = [
+    '---',
+    'id: "0001"',
+    'status: idea',
+    '---',
+    '',
+    '## Comment vérifier',
+    'milestone: ② (exemple en prose, PAS un champ)',
+  ].join('\n');
+
+  it('extrait le bloc entre les deux ---', () => {
+    expect(frontMatter(fiche)).toBe('id: "0001"\nstatus: idea');
+  });
+
+  it('un `milestone:` présent SEULEMENT dans le corps n’est pas lu depuis le front-matter', () => {
+    expect(readField(frontMatter(fiche), 'milestone')).toBe('');
+    // Sans le scope, readField capterait le corps — la régression que ce test fige :
+    expect(readField(fiche, 'milestone')).toBe('② (exemple en prose, PAS un champ)');
+  });
+
+  it('repli sur le texte entier si pas de délimiteur de front-matter', () => {
+    expect(frontMatter('pas de front-matter\nx: 1')).toBe('pas de front-matter\nx: 1');
   });
 });
