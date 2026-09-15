@@ -10,6 +10,7 @@ const f = (over: Partial<Fiche> & { id: string }): Fiche => ({
   status: 'ready',
   ready: false,
   epic: '',
+  milestone: '',
   product: 'mega-city',
   pr: '',
   labels: [],

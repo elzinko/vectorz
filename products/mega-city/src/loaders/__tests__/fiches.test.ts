@@ -89,3 +89,13 @@ describe('readField — bords', () => {
     expect(readField('status: "idea" # note', 'status')).toBe('idea');
   });
 });
+
+describe('readField — champ milestone (ADR-0017 A16 : ordonnancement, remplace l’épic)', () => {
+  it('milestone: ② → ② (jalon d’ordonnancement)', () => {
+    expect(readField('milestone: ②', 'milestone')).toBe('②');
+  });
+
+  it('milestone absent → "" (champ optionnel, comme version)', () => {
+    expect(readField('id: "0001"\nstatus: idea', 'milestone')).toBe('');
+  });
+});
