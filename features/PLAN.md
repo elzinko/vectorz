@@ -61,6 +61,18 @@
 > Ordre = *quoi d'abord*. La fiche-verrou `20260823121712652` (statuts `merged`/`split`) est en
 > tête : elle débloque l'`apply` de la rationalisation. Ids en clair (pas des liens) — voir l'index.
 
+> **Milestones × thèmes — décidé le 2026-09-15 (ADR-0017 amendement A16).** L'épic est retiré : le
+> **milestone** (ce jalon) porte l'**ordre**, le **thème** (`labels:`) porte le **sujet**. Champ retenu :
+> **`milestone:`** (posé en phase code ; `version:` réservé aux releases). Placement des thèmes
+> (provisoire, réajustable au planning) :
+> - **① Fondation** → `carte`, `cli`
+> - **② Rationalisation** → `ship`, `recette`, `rationalisation`, `dor`, `revue`
+> - **③ Environnement de test** → `testbed`
+> - **④ Contrat** → `contrat`
+> - **⑤ Capacité UX** → *(ezk-ux)*
+> - **⑥ Articles / promo** → `article`, `marketing`
+> - **⏸️ Parké** → `observabilite`
+
 **① Fondation méthode compilée** — P0, en cours
 - `20260826122532943` (chapeau P0) · `20260821204737357` (le graphe, in-progress) ·
   **`20260823121712652`** (statut validé par schéma + `merged`/`split` — LE VERROU) · `0186` (Skema).

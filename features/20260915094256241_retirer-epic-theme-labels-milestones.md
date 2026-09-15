@@ -87,7 +87,7 @@ que **« tant pis si volumineux » est à rejeter** (ça viole le « S », Small
 
 - [ ] ADR-0017 amendé (épic retiré) et doctrine #175 réécrite (2 gestes : fusion / découpe INVEST).
 - [ ] Une **liste de thèmes bornée** + un validateur qui refuse un label hors-liste.
-- [ ] Un champ **milestone** (ou `version:` réutilisé) sur les fiches, avec l'ordre des jalons.
+- [ ] Le champ **`milestone:`** posé sur les fiches (tranché le 2026-09-15 ; `version:` réservé aux releases), avec l'ordre des jalons.
 - [ ] Le board affiche un **cumul par milestone** (dérivé, pas saisi).
 - [ ] Les **9 épics** re-routés (label + milestone), leurs enfants rendus indépendants ; `type: epic` disparu de l'enum.
 - [ ] La **découpe INVEST/D3** est bloquante au grooming (`ready` refuse une fiche « trop grosse » divisible).
@@ -103,7 +103,7 @@ poser un label hors-liste → le validateur bloque avec un message clair.
 
 - **Amende** la doctrine #175 (`done/20260825123700998`) — qui *gardait* l'épic. À réécrire, pas dupliquer.
 - **Amende** l'ADR-0017 (`products/mega-city/docs/adr/0017-...`).
-- **À coordonner** avec [20260912180313727](20260912180313727_repenser-le-backlog-plan-backlog-iterations.md)
+- **À coordonner** avec [20260912180313727](20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md)
   (« repenser le backlog » : champ `iteration`/`version`, fusion PLAN→BACKLOG). Le **milestone** de
   cette fiche et le champ `version`/`iteration` de l'autre **se recouvrent** — à unifier au grooming
   (probable fusion des deux fiches sur l'axe « champ de séquencement »).
