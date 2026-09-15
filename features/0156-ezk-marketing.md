@@ -5,6 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 epic: "20260824060737115"
+labels: [marketing]
 status: idea
 pr:
 created: 2026-07-15

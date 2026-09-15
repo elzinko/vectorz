@@ -5,6 +5,7 @@ type: feature
 priority: P1 # arbitrée 2026-07-17 (review) : P1 confirmée (jumeau MVP B de racine 0044, P1) — gated derrière 0044 (MVP A, prérequis absolu)
 product: mega-city
 status: idea
+labels: [contrat]
 pr:
 created: 2026-07-16
 ---

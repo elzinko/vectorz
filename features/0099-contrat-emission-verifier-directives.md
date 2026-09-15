@@ -5,6 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 epic:
+labels: [contrat]
 status: idea
 ready:
 pr:

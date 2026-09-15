@@ -6,6 +6,7 @@ priority: P1
 product: mega-city
 version:
 epic:
+labels: [ship]
 depends: []
 status: idea
 ready:

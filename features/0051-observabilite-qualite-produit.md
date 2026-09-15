@@ -5,6 +5,7 @@ type: epic
 priority: P1
 product: vectorz
 epic:
+labels: [observabilite]
 status: idea
 ready:
 pr:

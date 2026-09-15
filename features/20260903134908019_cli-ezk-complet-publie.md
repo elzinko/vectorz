@@ -6,6 +6,7 @@ priority: P2 # décidé par le PO le 2026-09-03 : plus tard, si le besoin se fai
 product: mega-city
 version:
 epic:
+labels: [cli]
 status: idea
 ready:
 pr:

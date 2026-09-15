@@ -5,6 +5,7 @@ type: feature
 priority: P2
 product: vectorz
 status: idea
+labels: [article]
 pr:
 created: 2026-07-16
 ---
