@@ -11,6 +11,7 @@ function fiche(overrides: Partial<Fiche> & { id: string }): Fiche {
     status: 'ready',
     ready: true,
     epic: '',
+    milestone: '',
     product: 'mega-city',
     pr: '',
     labels: [],

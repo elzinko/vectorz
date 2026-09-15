@@ -18,6 +18,7 @@ const F = (over: Partial<Fiche>): Fiche => ({
   status: 'idea',
   ready: false,
   epic: '',
+  milestone: '',
   product: 'mega-city',
   pr: '',
   labels: [],
