@@ -1,7 +1,39 @@
 # ADR 0017 — Regroupement en épics : champ front-matter `epic:`, pas de tags libres ni de dossiers
 
-- Statut : **accepté** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)** ; **A8 supersédé par A15 (2026-08-26, fiche 20260825123700998, ratifié PO)**
+- Statut : **accepté (2026-07-17), puis DÉCISION CENTRALE RENVERSÉE par A16 (2026-09-15)** — panel adverse du 2026-07-17 (cf. ADR-0016 § Panel adverse) ; amendements A2, A7, A8, A12, A13 intégrés ; **A13 supersédé par A14 (2026-07-30, fiche 0064)** ; **A8 supersédé par A15 (2026-08-26, fiche 20260825123700998, ratifié PO)** ; **décisions 1-2 (l'épic) renversées par A16 (2026-09-15, fiche 20260915094256241, décision PO) : `type: epic` retiré, remplacé par thème (`labels:` bornés) + milestone**
 - Date : 2026-07-17
+
+## Amendement A16 — RETRAIT de l'épic : thème (labels) + milestone (2026-09-15, fiche 20260915094256241, décision PO)
+
+**Renverse les décisions 1 et 2 de cette ADR** (`type: epic` + champ `epic:`), et rend **caducs A15 et D4**
+(le cumul dérivé se recalcule par milestone, plus par épic). Décision PO (Thomas, 2026-09-15), prise à
+l'issue d'un `/ezk-backlog aggregate` et d'un **panel adverse** (architecte / PO-avocat / reviewer / juge).
+
+**Motif.** L'épic ne livre rien (ni critères, ni PR, ni code — cf. doctrine D1), n'a **aucun miroir
+GitHub** (l'export mappe feature→issue, sprint→milestone, version→release, fiche 0171), et dérive vers le
+**spéculatif** (0051 : 7 enfants mintés d'avance, 0 construit, parké). Deux primitives simples — dont une
+native GitHub — regroupent et ordonnent mieux qu'un conteneur maison.
+
+**Décision.**
+
+1. **`type: epic` sort de l'enum** ; le champ `epic:` sort du modèle. Plus de troisième objet de composition.
+2. **Regroupement thématique = `labels:`**, mais sur une **liste de thèmes BORNÉE, validée par script**
+   (voir ci-dessous : l'objection de l'option A est levée, le vocabulaire n'est plus libre).
+3. **Ordonnancement & exécution = un milestone** (jalon). Champ à trancher : `milestone:` neuf ou `version:`
+   réutilisé (à coordonner avec la fiche 20260912180313727). Il porte l'ordre, le regroupement de blocs et
+   un **cumul d'avancement dérivé par milestone**.
+4. **Deux gestes de composition** : FUSION (1 PR indissociable) et DÉCOUPE INVEST (test D3), la découpe
+   devenant **bloquante** au grooming. Plus de geste « épic ».
+
+**Sur l'option A (tags libres), rejetée en 2026-07-17 — son objection est levée autrement.** (a) Les thèmes
+sont une **liste bornée validée**, pas des tags libres → intégrité rétablie par le script. (b) « Prochain
+enfant ready de l'épic X ? » **n'a plus d'objet** : il n'y a plus de conteneur, seulement des fiches
+**indépendantes** filtrées par thème et séquencées par milestone ; `next --ready-only` opère sur les fiches.
+
+**Ordre impératif (loi d'abord).** Amender cette ADR + la doctrine `docs/backlog-composition-doctrine.md`
+→ re-router les **9 épics actifs** (label + milestone), rendre leurs enfants indépendants, clore 0051
+→ **puis seulement** toucher le code (~16 fichiers epic-aware). Détail, critères et « comment vérifier » :
+**fiche 20260915094256241**.
 
 ## Amendement A15 — statut d'épic DÉRIVÉ au board (2026-08-26, fiche 20260825123700998)
 
