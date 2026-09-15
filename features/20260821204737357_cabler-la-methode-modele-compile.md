@@ -6,6 +6,7 @@ priority: P1
 product: mega-city
 version:
 epic: "20260821163346487"
+labels: [carte]
 status: in-progress
 ready:
 pr:

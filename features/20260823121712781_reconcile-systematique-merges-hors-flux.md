@@ -5,6 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 status: idea
+labels: [ship]
 ready:
 pr:
 created: 2026-08-23

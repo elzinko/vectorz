@@ -6,6 +6,7 @@ priority: P1 # provisoire — direction actée par le PO le 2026-09-03 (nom `ezk
 product: mega-city
 version:
 epic:
+labels: [cli]
 status: idea
 ready:
 pr:

@@ -5,6 +5,7 @@ type: chore
 priority: P3
 product: vectorz
 status: idea
+labels: [contrat]
 pr:
 created: 2026-07-16
 ---

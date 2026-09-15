@@ -7,6 +7,7 @@ product: mega-city
 depends: ["0102"]
 version:
 epic:
+labels: [recette]
 status: idea
 ready:
 pr:

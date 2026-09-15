@@ -61,6 +61,18 @@
 > Ordre = *quoi d'abord*. La fiche-verrou `20260823121712652` (statuts `merged`/`split`) est en
 > tête : elle débloque l'`apply` de la rationalisation. Ids en clair (pas des liens) — voir l'index.
 
+> **Milestones × thèmes — décidé le 2026-09-15 (ADR-0017 amendement A16).** L'épic est retiré : le
+> **milestone** (ce jalon) porte l'**ordre**, le **thème** (`labels:`) porte le **sujet**. Champ retenu :
+> **`milestone:`** (posé en phase code ; `version:` réservé aux releases). Placement des thèmes
+> (provisoire, réajustable au planning) :
+> - **① Fondation** → `carte`, `cli`
+> - **② Rationalisation** → `ship`, `recette`, `rationalisation`, `dor`, `revue`
+> - **③ Environnement de test** → `testbed`
+> - **④ Contrat** → `contrat`
+> - **⑤ Capacité UX** → *(ezk-ux)*
+> - **⑥ Articles / promo** → `article`, `marketing`
+> - **⏸️ Parké** → `observabilite`
+
 **① Fondation méthode compilée** — P0, en cours
 - `20260826122532943` (chapeau P0) · `20260821204737357` (le graphe, in-progress) ·
   **`20260823121712652`** (statut validé par schéma + `merged`/`split` — LE VERROU) · `0186` (Skema).
@@ -72,7 +84,7 @@
 - `20260830194601233` / `20260823121712781` — ship transactionnel + reconcile systématique.
 
 **③ Environnement de test** — débloque un P1 ancien
-- Épic à créer depuis `20260824163426298` : cœur `0102` (débloquer) + adaptateurs `ezk-preview` / `ezk-device`.
+- Regroupement (milestone ③, thème `testbed`) depuis `20260824163426298` : cœur `0102` (débloquer) + adaptateurs `ezk-preview` / `ezk-device`. *(Plus d'épic — A16.)*
 
 **④ Contrat d'améliorabilité** — GATED ADR-030 (non ratifié)
 - Fusionner `0165` + `20260813131259846` (+ `0046` en annexe). Programmer ADR-030 d'abord, sinon rester parké.
@@ -81,7 +93,7 @@
 - Créer l'agent `ezk-ux` (ADR-0026) puis brancher `20260829140259165` (règle `no-layout-shift`, déjà livrée #187).
 
 **⑥ Articles / promo** — opportuniste
-- Rattacher les articles orphelins sous l'épic `20260824060737115` (marketing) ou `0163` (REX).
+- Regrouper les articles orphelins par thème `article` + milestone ⑥ *(ex-épics `20260824060737115` / `0163`, à re-router — A16)*.
 
 **⏸️ PARKÉ** : `0051` (observabilité qualité) — réveil = ADR-033 accepté + besoin réel.
 

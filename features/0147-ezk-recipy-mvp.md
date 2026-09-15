@@ -5,6 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 status: idea
+labels: [recette]
 pr:
 created: 2026-07-06
 ---

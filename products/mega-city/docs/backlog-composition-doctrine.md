@@ -1,84 +1,94 @@
-# Composition des fiches — fusionner, mettre en épic, ou diviser ?
+# Composition des fiches — fusionner ou diviser (thème + milestone pour regrouper)
 
-> Doctrine de backlog (fiche 20260825123700998). Elle guide les gestes de composition
-> (`add`, regroupement, `ship`) : **quel geste dans quel cas**. L'outil de rationalisation
-> (fiche 20260812104022240) la **consomme** ; il ne la redéfinit pas.
+> Doctrine de backlog. Elle guide les gestes de composition (`add`, regroupement, `ship`) :
+> **quel geste dans quel cas**. L'outil de rationalisation (fiche 20260812104022240) la
+> **consomme** ; il ne la redéfinit pas.
+>
+> ⚠️ **Réécrite le 2026-09-15 (décision PO, ADR-0017 amendement A16).** La version d'origine
+> (fiche shippée 20260825123700998, **trois** gestes dont l'« épic ») est conservée dans
+> `git log` et la fiche archivée. **L'épic est retiré.** Le regroupement passe désormais par
+> deux axes de métadonnées : **thème** (label) et **milestone** (jalon).
 
 ## En clair
 
-Quand deux fiches se recoupent, ou qu'une fiche grossit trop, il y a **trois gestes** :
-**fusionner** (deux fiches → une), **mettre en épic** (fiches distinctes sous un conteneur),
-ou **diviser** (une grosse fiche → plusieurs). **Une seule question tranche.**
+Deux fiches se recoupent, ou une fiche grossit trop : il y a **deux gestes**, et **deux seulement**.
 
-## D1 — La sémantique de l'épic (une seule)
+- **FUSIONNER** — deux fiches → une (les sujets deviennent des sections).
+- **DIVISER** — une grosse fiche → plusieurs fiches **indépendantes**.
 
-Un épic est un **conteneur de fiches-enfants distinctes et tirables séparément** :
-`type: epic` sur le conteneur, `epic: <id>` sur chaque enfant. L'épic **n'a pas** de
-critères d'acceptation propres, pas de code, pas de PR, et **n'est jamais tirable**
-directement (on descend vers l'enfant prêt). Ce n'est **pas** « une grosse fiche pleine de
-choses » — ça, c'est le déclencheur d'une **division**.
+Le **regroupement n'est pas un geste** : c'est **deux champs** portés par des fiches qui restent
+indépendantes.
 
-## D2 — La règle décidable
+- **le thème** (`labels:`) dit *de quoi* parle la fiche — carte, ship, recette… ;
+- **le milestone** (jalon) dit *quand* et *dans quel ordre* on la livre.
 
-**Une seule question au grooming : « Combien de PR pour tout livrer, et ont-elles un but commun ? »**
+## D1 — Plus de conteneur « épic » (A16)
+
+Il n'y a **pas** d'objet « épic ». Une famille de fiches qui partagent un but ne se met pas dans un
+conteneur : chaque fiche reste **autonome et tirable**, et la famille se lit par **filtre** — même
+`labels:` (le thème) et/ou même **milestone** (le bloc).
+
+- **Thème = `labels:` sur une liste BORNÉE**, validée par script (pas de vocabulaire libre : c'est ce
+  qui rétablit l'intégrité que l'ADR-0017 réclamait à l'option A).
+- **Milestone = un jalon** (champ **`milestone:`** ; `version:` réservé aux releases). Il porte l'**ordre**, le
+  **regroupement de blocs**, et un **cumul d'avancement** dérivé.
+- Si une famille a besoin d'un **récit** commun, on écrit une **fiche-chapeau ordinaire**
+  (`status: idea`, non tirée à la main) — pas un `type:` à part.
+
+## D2 — La règle décidable (deux issues)
+
+**Une seule question au grooming : « Combien de PR pour tout livrer, et sont-elles indissociables ? »**
 
 ```
 Deux fiches se recoupent, ou une fiche grossit
         │
-  « Combien de PR pour tout livrer, et un but commun ? »
+  « Combien de PR, indissociables ou non ? »
         │
         ├─ 1 PR, indissociable ......... FUSION
         │                                (une fiche ; les sujets deviennent des sections)
         │
-        ├─ N PR, but commun ............ ÉPIC
-        │                                (N enfants distincts + un conteneur type: epic)
-        │
-        └─ N PR, buts distincts ........ FICHES INDÉPENDANTES
-                                         (ni fusion ni épic — de simples voisines)
+        └─ N PR ........................ FICHES INDÉPENDANTES
+                                         (on ne fusionne pas ; on les relie par
+                                          le même thème `labels:` et/ou le même milestone)
 
 Une fiche empile des sujets livrables séparément → DIVISION, puis on re-pose la question.
 ```
 
-Le critère est **la PR**, pas le ressenti : une PR = indissociable = fusion. Décidable sans hésiter.
+Le critère est **la PR**, pas le ressenti : une PR indissociable = fusion. Sinon, des voisines
+indépendantes, regroupées par thème et séquencées par milestone. Décidable sans hésiter.
 
-## D3 — Le critère de division (« trop grosse »)
+## D3 — Le critère de division — **BLOQUANT au grooming** (A16)
 
-**Un test, pas un seuil** : une fiche est trop grosse quand **on peut en livrer une moitié
-dans une PR mergeable et utile toute seule**. Signaux (indices, ils ne tranchent pas) : un
-« et » dans le titre qui joint des sujets sans rapport ; plusieurs étages d'une refonte
-touchés dans une même fiche ; beaucoup de critères qui se rangent en groupes livrables
-séparément (~5+ est un indice, mais c'est l'**indépendance** qui compte, pas le nombre).
+**Un test, pas un seuil** : une fiche est trop grosse quand **on peut en livrer une moitié dans une PR
+mergeable et utile toute seule**. Si oui, elle est divisible — et **le gate `ready` la refuse tant
+qu'elle ne l'est pas** (fini le « tant pis si volumineux » : une fiche divisible n'est pas *ready*).
 
-## D4 — Les épics au board d'avancement (mécanisme LIVRÉ)
+Signaux (indices, ils ne tranchent pas) : un « et » dans le titre qui joint des sujets sans rapport ;
+plusieurs étages d'une refonte dans une même fiche ; beaucoup de critères qui se rangent en groupes
+livrables séparément (~5+ est un indice, mais c'est l'**indépendance** qui compte, pas le nombre).
 
-L'épic **ne devient pas une carte tirable** (ça fausserait le compte des tirables et le
-tri). Il reste dans sa section, qui affiche le **cumul de l'avancement des enfants**
-(« 9 enfant(s) : 2 blocked · 4 shipped · 3 todo »). Le statut de l'épic est **calculé,
-jamais saisi** : tous les enfants livrés → épic livré ; au moins un enfant actif → en cours.
+## D4 — Le cumul d'avancement passe au **milestone** (remplace l'épic, A16)
 
-Calculé dans [`src/core/avancement-data.ts`](../src/core/avancement-data.ts)
-(`buildAvancementData` enrichit chaque épic de `childCounts` + statut dérivé, pas de champ
-tenu à la main — ADR-0001) et **affiché** par `diagrams/avancement/board.html`. Répond au
-finding Codex P2 sur la [PR #166](https://github.com/elzinko/vectorz/pull/166) (l'épic
-n'affichait aucun avancement) sans casser l'invariant « le LLM ne range jamais ».
+Le board n'affiche plus de cumul « par épic » (A15/D4 d'origine caducs). Il affiche le **cumul par
+milestone** : « milestone ② — 6 fiches : 3 shipped · 2 idea · 1 in-progress ». Calculé, **jamais
+saisi** (ADR-0001) : le module range, le board affiche. Idem pour le thème si utile (« thème `carte` —
+N fiches, k livrées »).
 
 ## D5 — Réversibilité (git = substrat)
 
-Chaque geste est réversible car les relations sont des **champs de front-matter** :
+Chaque geste reste réversible car les relations sont des **champs de front-matter** :
 
-- **Sortir un enfant d'un épic** : vider son champ `epic:`, régénérer l'index. Un seul champ bouge.
+- **Retirer une fiche d'un bloc** : changer son `milestone:` ou son `labels:`. Un champ bouge.
 - **Défusionner** : rejouer une **division** (ids horodatés neufs) ; le contenu d'origine reste dans `git log`.
 - **Traçabilité de la fusion** (le seul geste « lossy ») : noter l'id de la fiche absorbée dans la survivante.
 
 ## Frontière doctrine ↔ outil (à garder nette)
 
 - **Cette doctrine** = *quel geste* dans quel cas (l'arbre D2). Elle se matérialise ici (playbook backlog).
-- **[Fiche 20260812104022240](../../../features/20260812104022240_backlog-rationalisation-tags-script-llm.md)** = l'**outil** : il applique ces règles **en masse** (clusters sur `labels:`/`depends:`). Il **consomme** cette doctrine, ne la redéfinit pas.
+- **[Fiche 20260812104022240](../../../features/done/20260812104022240_backlog-rationalisation-tags-script-llm.md)** = l'**outil** : il applique ces règles **en masse** (clusters sur `labels:`/`depends:`). Il **consomme** cette doctrine, ne la redéfinit pas.
 
-## Reste à faire — direction produit (hors périmètre de ce build)
+## Migration en cours (A16)
 
-Le **cas testbed** — matérialiser un épic « cœur testbed + adaptateurs preview/device » et
-**débloquer la fiche 0102** — est un acte de **direction produit** : il est **laissé au PO**,
-jamais décidé en autonomie (garde-fou du product-builder). La doctrine, elle, rend déjà le
-verdict : appliquée au cas testbed (N PR + but commun « voir/tester tourner un travail »),
-c'est un **épic**.
+Le retrait de l'épic est **tracé et séquencé** par la **fiche 20260915094256241** (loi d'abord → re-router
+les 9 épics en thème+milestone → code en dernier). Tant que la migration n'est pas faite, `type: epic`
+existe encore dans quelques fiches ; l'outillage le tolère jusqu'à son retrait planifié.

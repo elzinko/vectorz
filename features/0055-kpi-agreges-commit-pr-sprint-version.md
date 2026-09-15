@@ -5,6 +5,7 @@ type: feature
 priority: P2
 product: vectorz
 epic: 0051
+labels: [observabilite]
 status: idea
 ready:
 pr:

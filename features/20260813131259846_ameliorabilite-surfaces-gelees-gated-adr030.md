@@ -5,6 +5,7 @@ type: feature
 priority: P1
 product: vectorz
 status: idea
+labels: [contrat]
 ready:
 blocked: "ADR-030 non ratifié (panel adverse + arbitrage PO en attente sur la décision A2 transport)"
 pr:
