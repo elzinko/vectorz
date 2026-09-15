@@ -55,8 +55,8 @@ que **« tant pis si volumineux » est à rejeter** (ça viole le « S », Small
   observabilite, dor, marketing, article, revue, cli, rationalisation…), validée par script pour
   éviter le vocabulaire non borné que l'ADR-0017 redoutait. Déjà amorcé : 54 fiches taguées le
   2026-09-15 (commit `ca16606`).
-- **Milestone = le jalon.** On promeut les jalons ①→⑥ de `PLAN.md` en **champ** de fiche (nom à
-  trancher : `milestone:` neuf, ou réutiliser `version:`). Le milestone porte l'**ordre** et le
+- **Milestone = le jalon.** On promeut les jalons ①→⑥ de `PLAN.md` en **champ** de fiche : **`milestone:`**
+  (tranché le 2026-09-15 ; `version:` réservé aux releases). Le milestone porte l'**ordre** et le
   **regroupement de blocs** ; il donne un cumul d'avancement natif (issues closes / total).
 
 ### B. Ce qui remplace le conteneur épic
@@ -86,7 +86,7 @@ que **« tant pis si volumineux » est à rejeter** (ça viole le « S », Small
 ## Critères d'acceptation
 
 - [ ] ADR-0017 amendé (épic retiré) et doctrine #175 réécrite (2 gestes : fusion / découpe INVEST).
-- [ ] Une **liste de thèmes bornée** + un validateur qui refuse un label hors-liste.
+- [ ] Une **liste de thèmes bornée**, **distincte des labels libres existants** (`bmad`, `ux`, `dogfood`… restent valides — `fiches.ts` traite `labels:` en tags libres) : un thème porté par un **namespace** (ex. `theme:carte`) ou un champ séparé. Le validateur ne refuse **que** les thèmes hors-liste, jamais un label libre hérité.
 - [ ] Le champ **`milestone:`** posé sur les fiches (tranché le 2026-09-15 ; `version:` réservé aux releases), avec l'ordre des jalons.
 - [ ] Le board affiche un **cumul par milestone** (dérivé, pas saisi).
 - [ ] Les **9 épics** re-routés (label + milestone), leurs enfants rendus indépendants ; `type: epic` disparu de l'enum.

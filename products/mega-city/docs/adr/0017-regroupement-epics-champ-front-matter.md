@@ -17,8 +17,9 @@ native GitHub — regroupent et ordonnent mieux qu'un conteneur maison.
 **Décision.**
 
 1. **`type: epic` sort de l'enum** ; le champ `epic:` sort du modèle. Plus de troisième objet de composition.
-2. **Regroupement thématique = `labels:`**, mais sur une **liste de thèmes BORNÉE, validée par script**
-   (voir ci-dessous : l'objection de l'option A est levée, le vocabulaire n'est plus libre).
+2. **Regroupement thématique = `labels:`**, mais les **thèmes** forment un **sous-ensemble BORNÉ, validé
+   par script** — les labels libres existants (`bmad`, `ux`…) restent valides ; on distingue un thème par
+   un namespace `theme:` ou un champ séparé. L'objection de l'option A est levée : le vocabulaire des thèmes n'est plus libre.
 3. **Ordonnancement & exécution = un milestone** (jalon). Champ **tranché : `milestone:`** (`version:` réservé
    aux releases ; implémentation à coordonner avec la fiche 20260912180313727). Il porte l'ordre, le regroupement de blocs et
    un **cumul d'avancement dérivé par milestone**.

@@ -84,7 +84,7 @@
 - `20260830194601233` / `20260823121712781` — ship transactionnel + reconcile systématique.
 
 **③ Environnement de test** — débloque un P1 ancien
-- Épic à créer depuis `20260824163426298` : cœur `0102` (débloquer) + adaptateurs `ezk-preview` / `ezk-device`.
+- Regroupement (milestone ③, thème `testbed`) depuis `20260824163426298` : cœur `0102` (débloquer) + adaptateurs `ezk-preview` / `ezk-device`. *(Plus d'épic — A16.)*
 
 **④ Contrat d'améliorabilité** — GATED ADR-030 (non ratifié)
 - Fusionner `0165` + `20260813131259846` (+ `0046` en annexe). Programmer ADR-030 d'abord, sinon rester parké.
@@ -93,7 +93,7 @@
 - Créer l'agent `ezk-ux` (ADR-0026) puis brancher `20260829140259165` (règle `no-layout-shift`, déjà livrée #187).
 
 **⑥ Articles / promo** — opportuniste
-- Rattacher les articles orphelins sous l'épic `20260824060737115` (marketing) ou `0163` (REX).
+- Regrouper les articles orphelins par thème `article` + milestone ⑥ *(ex-épics `20260824060737115` / `0163`, à re-router — A16)*.
 
 **⏸️ PARKÉ** : `0051` (observabilité qualité) — réveil = ADR-033 accepté + besoin réel.
 
