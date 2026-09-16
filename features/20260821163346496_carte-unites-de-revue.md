@@ -6,6 +6,7 @@ priority: P2
 product: mega-city
 version:
 epic: "20260821163346487"
+milestone: fondation
 labels: [carte]
 status: idea
 ready:

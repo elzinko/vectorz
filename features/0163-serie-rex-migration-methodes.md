@@ -5,8 +5,10 @@ type: epic
 priority: P2
 product: mega-city
 status: idea
+milestone: articles
 pr:
 created: 2026-07-15
+labels: [article]
 ---
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **module** (production de contenu, **hors

@@ -4,7 +4,8 @@ title: KPI agrégés — rollups commit → PR → sprint → version depuis le 
 type: feature
 priority: P2
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:

@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 labels: [bmad, decouvrabilite]
-epic: "20260816131703334"
+epic:
 status: idea
 ready:
 pr:

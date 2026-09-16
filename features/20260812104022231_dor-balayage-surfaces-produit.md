@@ -5,6 +5,7 @@ type: feature
 priority: P2 # provisoire — posée à la capture (PO à confirmer au grooming)
 product: mega-city
 epic: "20260815080413884"
+milestone: rationalisation
 labels: [dor]
 status: idea
 ready:

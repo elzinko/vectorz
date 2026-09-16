@@ -5,6 +5,7 @@ type: epic
 priority: P2
 product: mega-city
 status: idea
+milestone: rationalisation
 labels: [dor]
 created: 2026-08-15
 ---

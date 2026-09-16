@@ -1,7 +1,7 @@
 ---
 id: "20260816131703334"
 title: "Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro)"
-type: epic
+type: feature
 priority: P1
 product: mega-city
 labels: [doc, decouvrabilite, oss, enabler]

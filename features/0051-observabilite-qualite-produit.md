@@ -6,7 +6,7 @@ priority: P1
 product: vectorz
 epic:
 labels: [observabilite]
-status: idea
+status: superseded
 ready:
 pr:
 created: 2026-07-22

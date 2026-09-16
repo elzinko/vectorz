@@ -6,6 +6,7 @@ priority: P1
 product: mega-city
 version:
 epic:
+milestone: articles
 labels: [marketing]
 status: idea
 ready:
