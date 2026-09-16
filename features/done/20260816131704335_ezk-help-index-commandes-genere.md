@@ -5,6 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 epic:
+milestone: rationalisation
 labels: [doc, decouvrabilite, enabler]
 status: shipped
 ready: 2026-08-16

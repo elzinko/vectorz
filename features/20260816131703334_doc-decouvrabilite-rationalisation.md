@@ -6,6 +6,7 @@ priority: P1
 product: mega-city
 labels: [doc, decouvrabilite, oss, enabler]
 status: idea
+milestone: rationalisation
 ready:
 pr:
 created: 2026-08-16

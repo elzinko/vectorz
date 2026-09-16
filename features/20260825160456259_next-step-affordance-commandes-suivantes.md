@@ -6,6 +6,7 @@ priority: P2
 product: mega-city
 labels: [bmad, decouvrabilite]
 epic:
+milestone: rationalisation
 status: idea
 ready:
 pr:
