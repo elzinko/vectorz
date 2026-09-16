@@ -9,7 +9,7 @@ import type { Fiche } from '../loaders/fiches.js';
  * appliquer `merged`/`split` (fiche 20260823121712652), parser `depends:`, backfiller les tags.
  */
 
-export type ClusterReason = 'label' | 'epic' | 'title-prefix';
+export type ClusterReason = 'label' | 'title-prefix';
 
 export interface AggregateCluster {
   key: string;
@@ -19,7 +19,7 @@ export interface AggregateCluster {
 }
 
 export interface AggregateCoverage {
-  /** Fiches actives non-épic considérées. */
+  /** Fiches actives considérées. */
   total: number;
   /** Parmi elles, celles portant au moins un `labels:`. */
   tagged: number;
@@ -34,16 +34,12 @@ export interface AggregateReport {
   singletons: string[];
 }
 
-const REASON_ORDER: readonly ClusterReason[] = ['label', 'epic', 'title-prefix'];
+const REASON_ORDER: readonly ClusterReason[] = ['label', 'title-prefix'];
 
-/** Restreint la passe : `all` (défaut) | un produit | un seau de priorité `Pn` | `epic:<id>`. */
+/** Restreint la passe : `all` (défaut) | un produit | un seau de priorité `Pn`. */
 export function selectScope(fiches: Fiche[], scope: string): Fiche[] {
   if (scope === 'all') return fiches;
   if (/^P[0-3]$/.test(scope)) return fiches.filter((f) => f.priority === scope);
-  if (scope.startsWith('epic:')) {
-    const epicId = scope.slice('epic:'.length);
-    return fiches.filter((f) => f.epic === epicId);
-  }
   return fiches.filter((f) => f.product === scope);
 }
 
@@ -74,23 +70,20 @@ function buildClusters(
 }
 
 /**
- * Clustering déterministe sur les fiches **actives non-épic** (exclut `f.done` et
- * `type: epic`) : label partagé (multi-appartenance), enfants d'un même épic, et
- * heuristique de 1er mot du titre. `product:` reste un critère de scope, pas une clé
- * de cluster. Sortie triée (clusters, ficheIds, singletons) → stable quel que soit
- * l'ordre d'entrée.
+ * Clustering déterministe sur les fiches **actives** (exclut `f.done`) : label partagé
+ * (multi-appartenance) et heuristique de 1er mot du titre. `product:` reste un critère de
+ * scope, pas une clé de cluster. Sortie triée (clusters, ficheIds, singletons) → stable quel
+ * que soit l'ordre d'entrée. (Le regroupement par épic est retiré — ADR-0017 A16.)
  */
 export function aggregateByScript(fiches: Fiche[]): AggregateReport {
-  const active = fiches.filter((f) => !f.done && f.type !== 'epic');
+  const active = fiches.filter((f) => !f.done);
 
   const labelPairs: Array<[string, string]> = [];
   for (const f of active) for (const label of f.labels) labelPairs.push([label, f.id]);
-  const epicPairs: Array<[string, string]> = active.map((f) => [f.epic, f.id]);
   const titlePairs: Array<[string, string]> = active.map((f) => [titlePrefixKey(f.title), f.id]);
 
   const clusters = [
     ...buildClusters('label', labelPairs),
-    ...buildClusters('epic', epicPairs),
     ...buildClusters('title-prefix', titlePairs),
   ].sort((a, b) => {
     const byReason = REASON_ORDER.indexOf(a.reason) - REASON_ORDER.indexOf(b.reason);

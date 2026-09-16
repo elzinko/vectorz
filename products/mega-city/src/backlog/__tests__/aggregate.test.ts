@@ -53,15 +53,6 @@ describe('aggregateByScript', () => {
     expect(report.singletons).toEqual(['1', '2']);
   });
 
-  it("4. epic: partagé → cluster reason:'epic'", () => {
-    const report = aggregateByScript([
-      fiche({ id: '1', epic: '999', title: 'Alpha' }),
-      fiche({ id: '2', epic: '999', title: 'Beta' }),
-    ]);
-    const epicCluster = report.clusters.find((c) => c.reason === 'epic');
-    expect(epicCluster).toEqual({ key: '999', reason: 'epic', ficheIds: ['1', '2'] });
-  });
-
   it('5. title-prefix : même 1er token → cluster, sinon singleton', () => {
     const report = aggregateByScript([
       fiche({ id: '1', title: 'Aggregate — backlog rationalisation' }),
@@ -84,16 +75,15 @@ describe('aggregateByScript', () => {
     expect(aggregateByScript(a)).toEqual(aggregateByScript(b));
   });
 
-  it('7. selectScope filtre par produit, priorité, épic', () => {
+  it('7. selectScope filtre par produit et priorité', () => {
     const fiches = [
-      fiche({ id: '1', product: 'mega-city', priority: 'P1', epic: '' }),
-      fiche({ id: '2', product: 'vectorz', priority: 'P2', epic: '9' }),
-      fiche({ id: '3', product: 'mega-city', priority: 'P2', epic: '9' }),
+      fiche({ id: '1', product: 'mega-city', priority: 'P1' }),
+      fiche({ id: '2', product: 'vectorz', priority: 'P2' }),
+      fiche({ id: '3', product: 'mega-city', priority: 'P2' }),
     ];
     expect(selectScope(fiches, 'all').map((f) => f.id)).toEqual(['1', '2', '3']);
     expect(selectScope(fiches, 'mega-city').map((f) => f.id)).toEqual(['1', '3']);
     expect(selectScope(fiches, 'P1').map((f) => f.id)).toEqual(['1']);
-    expect(selectScope(fiches, 'epic:9').map((f) => f.id)).toEqual(['2', '3']);
   });
 
   it('8. dégénéré : 0 fiche / tout done → rapport vide, pas d\'exception', () => {
@@ -115,17 +105,4 @@ describe('aggregateByScript', () => {
     expect(report.clusters.every((c) => c.ficheIds.length >= 2)).toBe(true);
   });
 
-  it('10. une fiche type:epic est exclue des actives ; ses enfants epic: sont regroupés', () => {
-    const report = aggregateByScript([
-      fiche({ id: 'E', type: 'epic', title: 'Alpha', epic: '' }),
-      fiche({ id: '1', epic: 'E', title: 'Beta' }),
-      fiche({ id: '2', epic: 'E', title: 'Gamma' }),
-    ]);
-    // L'épic parent n'est ni compté ni clusterisé ni singleton.
-    expect(report.coverage.total).toBe(2);
-    expect(report.clusters.flatMap((c) => c.ficheIds)).not.toContain('E');
-    expect(report.singletons).not.toContain('E');
-    // Les enfants sont regroupés sous reason:'epic' (titres distincts → pas de cluster title-prefix parasite).
-    expect(report.clusters).toEqual([{ key: 'E', reason: 'epic', ficheIds: ['1', '2'] }]);
-  });
 });

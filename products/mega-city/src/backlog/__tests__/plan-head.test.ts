@@ -95,17 +95,6 @@ describe('crossBacklogHead (fiche 0097)', () => {
     expect(r.unresolved).toEqual(['9999']); // pas omis malgré la tête trouvée avant
   });
 
-  it('n’élit jamais un épic comme tête, même todo+ready (revue Codex #53)', () => {
-    const planIds = ['0155', '0041'];
-    const index = indexOf(
-      card('0155', 'mega-city', 'ready', true, 'epic'), // épic tirable en apparence
-      card('0041', 'vectorz', 'ready', true), // la vraie tirable
-    );
-    const r = crossBacklogHead(planIds, index);
-    expect(r.head).toEqual(card('0041', 'vectorz', 'ready', true));
-    expect(r.blockedAhead).toEqual([]); // l'épic n'est pas non plus un blocage
-  });
-
   it('renvoie head null et listes vides sur un plan vide', () => {
     const r = crossBacklogHead([], new Map());
     expect(r).toEqual({ head: null, blockedAhead: [], unresolved: [] });

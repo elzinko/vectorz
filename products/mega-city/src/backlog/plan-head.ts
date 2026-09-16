@@ -12,7 +12,7 @@ export interface PlanCard {
   id: string;
   /** Produit déclaré en front-matter : `mega-city` | `vectorz` | … */
   product: string;
-  /** `feature | bug | refactor | chore | epic`. Un `epic` n'est jamais tirable. */
+  /** `feature | bug | refactor | chore`. */
   type: string;
   status: string;
   ready: boolean;
@@ -47,9 +47,6 @@ export function crossBacklogHead(
       unresolved.push(id);
       continue;
     }
-    // Un épic (ADR-0017) n'est jamais tirable — ce sont ses enfants ; on ne le
-    // choisit ni comme tête ni comme blocage (revue Codex #53).
-    if (card.type === 'epic') continue;
     if (head) continue; // tête déjà trouvée : on ne scanne plus que les introuvables
     if (card.status === 'ready') {
       head = card;
