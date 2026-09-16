@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: mega-city
 version:
-epic: "20260813131737959"
 milestone: rationalisation
 labels: [rationalisation]
 status: idea

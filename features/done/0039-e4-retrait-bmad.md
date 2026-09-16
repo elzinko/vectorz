@@ -4,7 +4,6 @@ title: E4 — Retrait de BMAD (relogement, suppression, purge) + tags d'époque
 type: refactor
 priority: P2
 product: vectorz
-epic: 0034
 status: shipped
 pr: "#81"
 created: 2026-07-16

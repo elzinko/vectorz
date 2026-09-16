@@ -56,6 +56,17 @@ describe('buildAvancementData — drapeau `blocked` par-dessus la colonne (slive
 });
 
 describe('buildAvancementData — logique du board', () => {
+  it('exclut du board actif les statuts terminaux gardés dans features/ (superseded/merged/split)', () => {
+    const data = buildAvancementData([
+      F({ id: '0001', status: 'ready', ready: true, priority: 'P0' }),
+      F({ id: '0002', status: 'superseded', priority: 'P1' }),
+      F({ id: '0003', status: 'merged', priority: 'P1' }),
+      F({ id: '0004', status: 'split', priority: 'P1' }),
+    ]);
+    expect(data.actives.map((f) => f.id)).toEqual(['0001']);
+    expect(data.counts.superseded).toBe(1); // toujours compté dans le tableau global des statuts
+  });
+
   it('compte par statut, trie les actives par priorité puis id, exclut done et épics', () => {
     const data = buildAvancementData([
       F({ id: '0003', priority: 'P3' }),

@@ -37,6 +37,17 @@ export const STATUTS: readonly string[] = [
   'merged',
   'split',
 ];
+
+/**
+ * Statuts TERMINAUX « clôturés sans livraison standard » (cf. bloc ci-dessus) : `superseded`
+ * (caduque/pivot), `merged`, `split`. Ils sortent du STOCK ACTIF même quand la fiche reste
+ * physiquement dans `features/` — cas d'une fiche gardée là pour ne pas casser ses liens relatifs
+ * (ex. `0051`, ~20 liens). `shipped` n'y figure pas : une livrée vit dans `done/`, déjà exclue par
+ * le dossier. Sans ce filtre, une `superseded` gardée dans `features/` fuiterait au board actif
+ * (revue Codex PR #240, exposé par le retrait de l'épic — A16).
+ */
+export const TERMINAUX: readonly string[] = ['superseded', 'merged', 'split'];
+
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
 export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
 
@@ -139,9 +150,9 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
   const counts: Record<string, number> = {};
   for (const f of fiches) counts[f.status] = (counts[f.status] ?? 0) + 1;
 
-  // Actives = non livrées, non épic. Triées priorité puis id.
+  // Actives = non livrées, non épic, non terminales (superseded/merged/split). Triées priorité puis id.
   const actives = fiches
-    .filter((f) => !f.done && f.type !== 'epic')
+    .filter((f) => !f.done && f.type !== 'epic' && !TERMINAUX.includes(f.status))
     .sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || (a.id < b.id ? -1 : 1))
     .map(toBoard);
 

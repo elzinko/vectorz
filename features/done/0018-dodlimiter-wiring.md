@@ -4,7 +4,6 @@ title: Câbler DoDLimiter (N rejets DoD → blocked + escalade)
 type: feature
 priority: P3
 product: vectorz
-epic: 0034
 status: superseded
 pr: superseded — mode pilote retiré
 created: 2026-06-25

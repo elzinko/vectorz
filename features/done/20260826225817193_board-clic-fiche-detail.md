@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: mega-city
 version:
-epic: "20260821163346487"
 labels: [carte]
 milestone: fondation
 status: shipped

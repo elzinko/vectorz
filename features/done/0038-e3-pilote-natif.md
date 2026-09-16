@@ -4,7 +4,6 @@ title: E3 — Pilote natif complet (stories front-matter, exécuteur générique
 type: feature
 priority: P2
 product: vectorz
-epic: 0034
 status: superseded
 pr: superseded — pilote retiré (0039, PR 81)
 created: 2026-07-16

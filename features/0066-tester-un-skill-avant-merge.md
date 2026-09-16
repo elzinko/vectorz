@@ -4,7 +4,6 @@ title: Tester un skill/agent avant merge — process maison (golden tests + DoR/
 type: feature
 priority: P2
 product: mega-city
-epic: "20260813131737959"
 milestone: rationalisation
 labels: [rationalisation]
 status: idea
