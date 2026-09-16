@@ -4,7 +4,8 @@ title: "/ezk-help — index de commandes ezk généré depuis les frontmatter"
 type: feature
 priority: P1
 product: mega-city
-epic: "20260816131703334"
+epic:
+milestone: rationalisation
 labels: [doc, decouvrabilite, enabler]
 status: shipped
 ready: 2026-08-16

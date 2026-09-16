@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: mega-city
 version:
-epic: "20260813124026215"
+epic:
 status: idea
 ready:
 pr:

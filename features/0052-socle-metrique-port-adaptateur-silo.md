@@ -4,7 +4,8 @@ title: Socle vertical — port de métrique + 1er adaptateur (couverture) + remo
 type: feature
 priority: P1
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:

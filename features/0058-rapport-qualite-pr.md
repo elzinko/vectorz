@@ -4,7 +4,8 @@ title: Rapport qualité de PR — les métriques et le résumé du test visibles
 type: feature
 priority: P2
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:

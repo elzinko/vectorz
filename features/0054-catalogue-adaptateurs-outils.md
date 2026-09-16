@@ -4,7 +4,8 @@ title: Catalogue d'adaptateurs — ajouter un outil de métrique sans réinvente
 type: feature
 priority: P2
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:

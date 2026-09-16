@@ -4,7 +4,8 @@ title: Agent d'analyse de la méthode — lit les KPI et propose des améliorati
 type: feature
 priority: P3
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:

@@ -5,6 +5,8 @@ type: chore
 priority: P2
 product: mega-city
 epic: "20260813131737959"
+labels: [rationalisation]
+milestone: rationalisation
 status: shipped
 ready: 2026-08-12
 pr: local (main)

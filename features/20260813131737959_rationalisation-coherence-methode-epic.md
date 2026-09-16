@@ -6,6 +6,7 @@ priority: P2
 product: mega-city
 version:
 epic:
+milestone: rationalisation
 labels: [rationalisation]
 status: idea
 ready:

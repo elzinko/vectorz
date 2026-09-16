@@ -4,7 +4,8 @@ title: Visualisation — onglet « qualité par PR » dans mission-control
 type: feature
 priority: P2
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:

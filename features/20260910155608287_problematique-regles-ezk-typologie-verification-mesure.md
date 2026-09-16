@@ -1,7 +1,7 @@
 ---
 id: "20260910155608287"
 title: Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)
-type: epic # feature | bug | refactor | chore | epic
+type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic:

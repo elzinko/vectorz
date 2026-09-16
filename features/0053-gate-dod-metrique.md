@@ -4,7 +4,8 @@ title: Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité
 type: feature
 priority: P2
 product: vectorz
-epic: 0051
+epic:
+milestone: parked
 labels: [observabilite]
 status: idea
 ready:
