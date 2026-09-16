@@ -1,10 +1,10 @@
 ---
 id: 0000
 title: <titre court et parlant>
-type: feature # feature | bug | refactor | chore | epic
+type: feature # feature | bug | refactor | chore
 priority: P2 # P0 | P1 | P2 | P3
 product: # obligatoire dans ce monorepo — vectorz | mega-city | …
-epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
+milestone: # optionnel — jalon d'ordre : fondation | rationalisation | env-test | contrat | ux | articles | parked
 status: idea # idea | ready | in-progress | blocked | shipped
 ready: # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr: # ex. "#123" quand une PR existe
