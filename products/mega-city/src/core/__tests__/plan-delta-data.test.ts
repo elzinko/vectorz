@@ -9,7 +9,6 @@ const f = (over: Partial<Fiche> & { id: string }): Fiche => ({
   priority: 'P2',
   status: 'ready',
   ready: false,
-  epic: '',
   milestone: '',
   product: 'mega-city',
   pr: '',

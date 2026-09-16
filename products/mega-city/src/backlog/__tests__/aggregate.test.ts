@@ -10,7 +10,6 @@ function fiche(overrides: Partial<Fiche> & { id: string }): Fiche {
     priority: 'P1',
     status: 'ready',
     ready: true,
-    epic: '',
     milestone: '',
     product: 'mega-city',
     pr: '',
@@ -68,8 +67,8 @@ describe('aggregateByScript', () => {
     const a = [
       fiche({ id: '3', labels: ['x'] }),
       fiche({ id: '1', labels: ['x'] }),
-      fiche({ id: '2', epic: '5', title: 'Z' }),
-      fiche({ id: '4', epic: '5', title: 'Y' }),
+      fiche({ id: '2', title: 'Z' }),
+      fiche({ id: '4', title: 'Y' }),
     ];
     const b = [a[3], a[1], a[2], a[0]];
     expect(aggregateByScript(a)).toEqual(aggregateByScript(b));

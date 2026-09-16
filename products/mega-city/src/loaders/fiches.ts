@@ -18,7 +18,6 @@ export interface Fiche {
   priority: string; // P0 | P1 | P2 | P3 | '' (épics/idées sans prio)
   status: string; // idea | ready | in-progress | shipped | superseded | merged | split
   ready: boolean; // le champ `ready:` est-il posé ?
-  epic: string; // id de l'épic parent, ou '' — LEGACY, en retrait (ADR-0017 A16, remplacé par milestone)
   milestone: string; // jalon d'ordonnancement/regroupement (ADR-0017 A16), '' si absent
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
@@ -102,7 +101,6 @@ export function loadFiches(rootDir: string): Fiche[] {
         priority: readField(fm, 'priority'),
         status: readField(fm, 'status') || 'idea',
         ready: readField(fm, 'ready') !== '',
-        epic: readField(fm, 'epic'),
         milestone: readField(fm, 'milestone'),
         product: readField(fm, 'product') || '—',
         pr: readField(fm, 'pr'),
