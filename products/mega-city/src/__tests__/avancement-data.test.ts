@@ -17,7 +17,6 @@ const F = (over: Partial<Fiche>): Fiche => ({
   priority: 'P2',
   status: 'idea',
   ready: false,
-  epic: '',
   milestone: '',
   product: 'mega-city',
   pr: '',
@@ -107,7 +106,7 @@ describe('avancement-data — invariant sur le backlog RÉEL', () => {
     const fiches = loadFiches(repoRoot);
     expect(fiches.length).toBeGreaterThan(50); // le backlog existe
     const data = buildAvancementData(fiches);
-    // Cohérence : chaque active est bien une fiche non-livrée non-épic.
+    // Cohérence : chaque active est bien une fiche non-livrée.
     const activeIds = new Set(data.actives.map((f) => f.id));
     for (const f of fiches) {
       if (f.done) expect(activeIds.has(f.id)).toBe(false);
