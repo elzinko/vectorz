@@ -26,7 +26,7 @@ if (process.argv.includes('--json')) {
 const actives = data.actives.length;
 console.log(
   `En clair : ${actives} fiches actives, dont ${data.tirables} tirable(s) (todo + ready). ` +
-    `${data.counts.shipped ?? 0} livrées, ${data.epics.length} épics.`,
+    `${data.counts.shipped ?? 0} livrées, ${data.milestones.length} milestone(s).`,
 );
 console.log(
   `\nPar statut : ${STATUTS.filter((s) => data.counts[s]).map((s) => `${s} ${data.counts[s]}`).join(' · ')}`,
@@ -40,13 +40,15 @@ for (const f of data.actives) {
     console.log(`\n  ${prio || '(sans prio)'}`);
   }
   const tag = f.status === 'ready' ? '✓' : f.status === 'blocked' ? '⛔' : ' ';
-  const ep = f.epic ? ` ⤷${f.epic}` : '';
-  console.log(`    ${tag} ${f.id}  ${f.status.padEnd(11)} ${f.title.slice(0, 66)}${ep}`);
+  const ms = f.milestone ? ` ⤷${f.milestone}` : '';
+  console.log(`    ${tag} ${f.id}  ${f.status.padEnd(11)} ${f.title.slice(0, 66)}${ms}`);
 }
 
-if (data.epics.length > 0) {
-  console.log('\nÉpics (enfants actifs) :');
-  for (const e of data.epics) {
-    console.log(`  ${e.id}  ${e.title.slice(0, 60)} — ${e.children.length} enfant(s) actif(s)`);
+if (data.milestones.length > 0) {
+  console.log('\nMilestones (avancement cumulé) :');
+  for (const m of data.milestones) {
+    console.log(
+      `  ${m.milestone.padEnd(16)} [${m.status}] — ${m.total} fiche(s), ${m.shipped} livrée(s)`,
+    );
   }
 }

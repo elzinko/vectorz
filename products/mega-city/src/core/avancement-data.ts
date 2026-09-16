@@ -56,7 +56,22 @@ export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
  * (fiches.ts, plan-head.ts, ezk-backlog/init.sh, SKILL.md, feature-template.md).
  * Centralisé ici (aux côtés de STATUTS/PRIOS) pour devenir la source unique — fiche 652/281.
  */
-export const TYPES: readonly string[] = ['feature', 'bug', 'refactor', 'chore', 'epic'];
+export const TYPES: readonly string[] = ['feature', 'bug', 'refactor', 'chore'];
+
+/**
+ * Ordre canonique des JALONS (`milestone`) — PLAN.md, ADR-0017 A16. Le milestone porte l'ORDRE et
+ * le regroupement de blocs ; le thème (`labels:`) porte le sujet. Un milestone hors liste est trié
+ * après, alphabétiquement. Remplace l'ancien conteneur « épic » (retiré A16).
+ */
+export const MILESTONE_ORDER: readonly string[] = [
+  'fondation',
+  'rationalisation',
+  'env-test',
+  'contrat',
+  'ux',
+  'articles',
+  'parked',
+];
 
 /**
  * `evidence` — champ OPTIONNEL de fiche (fiche 20260902224608715, ADR-0045) : la preuve
@@ -72,7 +87,7 @@ export interface BoardFiche {
   priority: string;
   status: string;
   ready: boolean;
-  epic: string;
+  milestone: string;
   product: string;
   pr: string;
   labels: string[];
@@ -81,27 +96,38 @@ export interface BoardFiche {
   file: string; // chemin relatif à la racine du repo — la vue en fait un lien cliquable
 }
 
-export interface BoardEpic {
-  id: string;
-  title: string;
-  /** Statut CALCULÉ depuis les enfants (jamais saisi) — fiche 20260825123700998 (D4). */
+export interface BoardMilestone {
+  /** Nom du jalon (`fondation`, `rationalisation`, …). */
+  milestone: string;
+  /** Statut CALCULÉ depuis les fiches du jalon (jamais saisi) — ADR-0017 A16. */
   status: string;
-  children: string[]; // ids des fiches actives portant epic == cet id
-  /** Cumul par statut sur TOUS les enfants (actifs + livrés) : « shipped: 1, todo: 2… ». */
-  childCounts: Record<string, number>;
+  /** Fiches non-terminales du jalon (idea/ready/in-progress/shipped). */
+  total: number;
+  /** Combien sont livrées (rangées dans `done/`). */
+  shipped: number;
+  /** Cumul par statut : « idea: 2, shipped: 1… ». */
+  counts: Record<string, number>;
+  /** ids des fiches ACTIVES (non-`done/`) du jalon, pour l'affichage détaillé. */
+  children: string[];
 }
 
 export interface AvancementData {
   /** Compteurs par statut sur TOUTES les fiches (actives + livrées). */
   counts: Record<string, number>;
-  /** Nombre de fiches TIRABLES (status `ready`, hors épic). */
+  /** Nombre de fiches TIRABLES (status `ready`). */
   tirables: number;
-  /** Fiches ACTIVES (hors `done/`, hors épic), triées priorité puis id. */
+  /** Fiches ACTIVES (hors `done/`, hors terminales), triées priorité puis id. */
   actives: BoardFiche[];
-  /** Épics avec leurs enfants actifs. */
-  epics: BoardEpic[];
-  /** Valeurs distinctes pour les filtres de la vue (statuts, priorités, produits, épics). */
-  filtres: { statuts: string[]; priorites: string[]; produits: string[]; labels: string[] };
+  /** Cumul d'avancement par milestone (jalon d'ordre, ADR-0017 A16). */
+  milestones: BoardMilestone[];
+  /** Valeurs distinctes pour les filtres de la vue. */
+  filtres: {
+    statuts: string[];
+    priorites: string[];
+    produits: string[];
+    labels: string[];
+    milestones: string[];
+  };
 }
 
 const toBoard = (f: Fiche): BoardFiche => ({
@@ -111,7 +137,7 @@ const toBoard = (f: Fiche): BoardFiche => ({
   priority: f.priority,
   status: f.status,
   ready: f.ready,
-  epic: f.epic,
+  milestone: f.milestone,
   product: f.product,
   pr: f.pr,
   labels: f.labels,
@@ -126,23 +152,20 @@ const prioRank = (p: string): number => {
 };
 
 /**
- * Statut d'un épic, CALCULÉ depuis ses enfants (D4, fiche 20260825123700998 ; ADR-0017 A15) :
- * tous les enfants livrés (`done/`) → `shipped` ; au moins un livré OU engagé
- * (ready/in-progress, `blocked` étant désormais un drapeau et non une colonne — sliver B,
- * fiche 652) → `in-progress` ; que des `idea` → `idea` ; aucun enfant → le statut saisi
- * (fallback). Le « tout livré » s'appuie sur `done/` (le dossier), pas sur la chaîne
- * 'shipped' — robuste à un statut de provenance `merged`/`split`. Jamais saisi (ADR-0001).
+ * Statut d'un MILESTONE, CALCULÉ depuis ses fiches (jamais saisi — ADR-0001, ADR-0017 A16) :
+ * toutes livrées (`done/`) → `shipped` ; au moins une livrée OU engagée (ready/in-progress) →
+ * `in-progress` ; que des `idea` → `idea`. Le « tout livré » s'appuie sur `done/` (le dossier),
+ * robuste à un statut de provenance. Remplace `deriveEpicStatus` (épic retiré A16).
  */
-function deriveEpicStatus(
-  childCounts: Record<string, number>,
-  doneCount: number,
-  fallback: string,
+function deriveMilestoneStatus(
+  counts: Record<string, number>,
+  shipped: number,
+  total: number,
 ): string {
-  const total = Object.values(childCounts).reduce((a, b) => a + b, 0);
-  if (total === 0) return fallback;
-  if (doneCount === total) return 'shipped';
-  const engaged = (childCounts.ready ?? 0) + (childCounts['in-progress'] ?? 0);
-  return doneCount > 0 || engaged > 0 ? 'in-progress' : 'idea';
+  if (total === 0) return 'idea';
+  if (shipped === total) return 'shipped';
+  const engaged = (counts.ready ?? 0) + (counts['in-progress'] ?? 0);
+  return shipped > 0 || engaged > 0 ? 'in-progress' : 'idea';
 }
 
 /** Compile le board. Tout est trié → sortie stable (F4). */
@@ -150,43 +173,50 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
   const counts: Record<string, number> = {};
   for (const f of fiches) counts[f.status] = (counts[f.status] ?? 0) + 1;
 
-  // Actives = non livrées, non épic, non terminales (superseded/merged/split). Triées priorité puis id.
+  // Actives = non livrées, non terminales (superseded/merged/split). Triées priorité puis id.
   const actives = fiches
-    .filter((f) => !f.done && f.type !== 'epic' && !TERMINAUX.includes(f.status))
+    .filter((f) => !f.done && !TERMINAUX.includes(f.status))
     .sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || (a.id < b.id ? -1 : 1))
     .map(toBoard);
 
   const tirables = actives.filter((f) => f.status === 'ready').length;
 
-  // Enfants par épic : compteurs par statut sur TOUS les enfants (actifs + livrés, D4),
-  // et liste des enfants ACTIFS pour l'affichage détaillé.
-  const activeChildrenByEpic = new Map<string, string[]>();
-  const childCountsByEpic = new Map<string, Record<string, number>>();
-  const doneCountByEpic = new Map<string, number>();
+  // Cumul par MILESTONE (jalon d'ordre, ADR-0017 A16) : regroupe les fiches NON-TERMINALES par
+  // milestone. « N fiches — k livrées » : total = fiches du jalon (idea/ready/in-progress/shipped),
+  // shipped = celles rangées dans `done/`. Statuts terminaux et fiches sans milestone = hors cumul.
+  const countsByMs = new Map<string, Record<string, number>>();
+  const doneByMs = new Map<string, number>();
+  const activeChildrenByMs = new Map<string, string[]>();
   for (const f of fiches) {
-    if (f.type === 'epic' || !f.epic) continue;
-    const rec = childCountsByEpic.get(f.epic) ?? {};
+    if (!f.milestone || TERMINAUX.includes(f.status)) continue;
+    const rec = countsByMs.get(f.milestone) ?? {};
     rec[f.status] = (rec[f.status] ?? 0) + 1;
-    childCountsByEpic.set(f.epic, rec);
+    countsByMs.set(f.milestone, rec);
     if (f.done) {
-      doneCountByEpic.set(f.epic, (doneCountByEpic.get(f.epic) ?? 0) + 1);
+      doneByMs.set(f.milestone, (doneByMs.get(f.milestone) ?? 0) + 1);
     } else {
-      const list = activeChildrenByEpic.get(f.epic) ?? [];
+      const list = activeChildrenByMs.get(f.milestone) ?? [];
       list.push(f.id);
-      activeChildrenByEpic.set(f.epic, list);
+      activeChildrenByMs.set(f.milestone, list);
     }
   }
-  const epics: BoardEpic[] = fiches
-    .filter((f) => !f.done && f.type === 'epic')
-    .sort((a, b) => (a.id < b.id ? -1 : 1))
-    .map((e) => {
-      const childCounts = childCountsByEpic.get(e.id) ?? {};
+  const msRank = (m: string): number => {
+    const i = MILESTONE_ORDER.indexOf(m);
+    return i === -1 ? MILESTONE_ORDER.length : i;
+  };
+  const milestones: BoardMilestone[] = [...countsByMs.keys()]
+    .sort((a, b) => msRank(a) - msRank(b) || (a < b ? -1 : a > b ? 1 : 0))
+    .map((m) => {
+      const counts = countsByMs.get(m) ?? {};
+      const total = Object.values(counts).reduce((n, k) => n + k, 0);
+      const shipped = doneByMs.get(m) ?? 0;
       return {
-        id: e.id,
-        title: e.title,
-        status: deriveEpicStatus(childCounts, doneCountByEpic.get(e.id) ?? 0, e.status),
-        children: (activeChildrenByEpic.get(e.id) ?? []).sort(),
-        childCounts,
+        milestone: m,
+        status: deriveMilestoneStatus(counts, shipped, total),
+        total,
+        shipped,
+        counts,
+        children: (activeChildrenByMs.get(m) ?? []).sort(),
       };
     });
 
@@ -195,12 +225,13 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
     counts,
     tirables,
     actives,
-    epics,
+    milestones,
     filtres: {
       statuts: uniq(actives.map((f) => f.status)),
       priorites: uniq(actives.map((f) => f.priority)),
       produits: uniq(actives.map((f) => f.product)),
       labels: uniq(actives.reduce<string[]>((acc, f) => acc.concat(f.labels), [])),
+      milestones: uniq(actives.map((f) => f.milestone)),
     },
   };
 }
