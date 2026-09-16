@@ -4,7 +4,6 @@ title: Purge du code mort prouvé + rescope 0022 AC3 (sous-ensemble sûr de L8)
 type: chore
 priority: P1
 product: vectorz
-epic: 0034
 status: shipped
 pr: "#13"
 created: 2026-07-15

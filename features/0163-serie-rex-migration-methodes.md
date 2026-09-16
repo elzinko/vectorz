@@ -1,15 +1,20 @@
 ---
 id: 0163
 title: série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité
-type: epic
+type: feature
 priority: P2
 product: mega-city
-status: idea
+status: superseded
 milestone: articles
 pr:
 created: 2026-07-15
 labels: [article]
 ---
+
+> **🗑️ Fondue le 2026-09-16 — `superseded` (ADR-0017 A16).** L'épic disparaît comme objet :
+> thème (`labels: [article]`) + `milestone: articles`. Cette série n'était qu'un conteneur ; ses
+> articles-filles `0073` / `0074` restent indépendants (milestone `articles`, sans champ `epic:`).
+> Le récit de série vit dans PLAN.md (jalon ⑥ Articles).
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **module** (production de contenu, **hors
 > méthode** ; ADR-0039 §3 : la rédaction d'articles se range en branchement). Reste un **épic vivant**

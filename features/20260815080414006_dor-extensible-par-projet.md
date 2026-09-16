@@ -4,7 +4,6 @@ title: DoR extensible par projet — base 3+1 + manifeste de slots par repo, lu 
 type: feature
 priority: P2
 product: mega-city
-epic: "20260815080413884"
 milestone: rationalisation
 labels: [dor]
 status: idea

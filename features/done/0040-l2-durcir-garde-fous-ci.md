@@ -4,7 +4,6 @@ title: L2 — Durcir les garde-fous CI (step boundary nommé + allowlist SDK)
 type: chore
 priority: P2
 product: vectorz
-epic: 0034
 status: superseded
 pr: superseded — seam pilote mort (scan frontière dans pnpm test)
 created: 2026-07-16

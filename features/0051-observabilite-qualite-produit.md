@@ -1,10 +1,11 @@
 ---
 id: 0051
 title: Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic)
-type: epic
+type: feature
 priority: P1
 product: vectorz
 epic:
+milestone: parked
 labels: [observabilite]
 status: superseded
 ready:
@@ -13,6 +14,10 @@ created: 2026-07-22
 ---
 
 # 0051 — Observabilité qualité produit (épic)
+
+> **🗑️ `type: epic` → `feature` le 2026-09-16 (ADR-0017 A16).** Reste `superseded` (déjà parké).
+> Le conteneur « épic » disparaît : thème (`labels: [observabilite]`) + `milestone: parked`. Les
+> briques 0052→0058 restent liées dans le corps, indépendantes, sans champ `epic:`.
 
 > **⏸️ PARKÉ le 2026-09-11 (décision PO).** Épic dormant : 7 enfants, 0 construit, gated
 > ADR-033 « proposé ». Gelé pour ne pas gonfler le P1 sans traction. **Réveil = ADR-033 accepté
