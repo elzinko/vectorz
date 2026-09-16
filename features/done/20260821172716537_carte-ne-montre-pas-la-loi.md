@@ -6,6 +6,7 @@ priority: P1
 product: mega-city
 version:
 epic: "20260821163346487"
+milestone: fondation
 status: shipped
 ready: 2026-08-26
 pr: "#179"

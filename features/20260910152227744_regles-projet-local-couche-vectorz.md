@@ -4,7 +4,7 @@ title: Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un pr
 type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
-epic: "20260910155608287" # cadrage : problématique des règles ezk (typologie/mesure/scoping)
+epic:
 status: idea # idea | ready | in-progress | blocked | shipped
 ready:
 pr:
