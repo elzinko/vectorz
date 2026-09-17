@@ -120,6 +120,35 @@
   section.manques ul { margin: 0; padding-left: 20px; color: var(--muted); line-height: 1.6; }
   section.manques li strong { color: var(--text); }
 
+  /* Milestones — cumul par jalon en cartes + barres (format retour PO). */
+  #milestones-rollup { max-width: none; }
+  #milestones-rollup .ms-table { margin-top: 2px; }
+  #milestones-rollup .ms-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 180px) 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 2px;
+  }
+  #milestones-rollup .ms-row + .ms-row { border-top: 1px solid var(--border); }
+  #milestones-rollup .ms-name { font-weight: 600; color: var(--text); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  #milestones-rollup .ms-status {
+    font-size: 0.66rem; letter-spacing: .02em; padding: 1px 7px; border-radius: 999px;
+    border: 1px solid var(--border); font-weight: 500; white-space: nowrap;
+  }
+  #milestones-rollup .ms-bar { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; min-width: 60px; }
+  #milestones-rollup .ms-bar > span { display: block; height: 100%; background: var(--shipped); border-radius: 999px; transition: width .2s; }
+  #milestones-rollup .ms-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--muted);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  #milestones-rollup .ms-num b { color: var(--text); font-weight: 600; }
+  @media (max-width: 600px) {
+    #milestones-rollup .ms-row { grid-template-columns: 1fr; row-gap: 6px; }
+    #milestones-rollup .ms-num { order: 1; }
+    #milestones-rollup .ms-bar { order: 2; }
+  }
+
   /* --- Onglets Board / Plan (fiche 20260825213807501) --- */
   .onglets { display: flex; gap: 4px; margin: 0 0 20px; border-bottom: 1px solid var(--border); }
   .onglet {
@@ -5011,20 +5040,47 @@ window.EZK_PLAN_DELTA = {
   var h = document.createElement('h2');
   h.textContent = 'Milestones — avancement cumulé par jalon';
   box.appendChild(h);
-  var ul = document.createElement('ul');
+  var table = document.createElement('div');
+  table.className = 'ms-table';
   milestones.forEach(function (m) {
-    var counts = m.counts || {};
-    var parts = Object.keys(counts).sort().map(function (k) { return counts[k] + ' ' + k; });
-    var li = document.createElement('li');
-    var strong = document.createElement('strong');
-    strong.textContent = '[' + m.status + '] ' + m.milestone;
-    var span = document.createElement('span');
-    span.textContent = ' — ' + m.total + ' fiche(s), ' + m.shipped + ' livrée(s)' + (parts.length ? ' : ' + parts.join(' · ') : '');
-    li.appendChild(strong);
-    li.appendChild(span);
-    ul.appendChild(li);
+    var total = m.total || 0;
+    var shipped = m.shipped || 0;
+    var pct = total ? Math.round((shipped / total) * 100) : 0;
+    var row = document.createElement('div');
+    row.className = 'ms-row';
+
+    var name = document.createElement('div');
+    name.className = 'ms-name';
+    var label = document.createElement('span');
+    label.textContent = m.milestone;
+    var status = document.createElement('span');
+    status.className = 'ms-status';
+    status.textContent = m.status;
+    // Statut = enum dérivé (shipped | in-progress | idea) → couleur via la variable de statut du board.
+    status.style.color = 'var(--' + m.status + ')';
+    status.style.borderColor = 'var(--' + m.status + ')';
+    name.appendChild(label);
+    name.appendChild(status);
+
+    var bar = document.createElement('div');
+    bar.className = 'ms-bar';
+    var fill = document.createElement('span');
+    fill.style.width = pct + '%';
+    bar.appendChild(fill);
+
+    var num = document.createElement('div');
+    num.className = 'ms-num';
+    var strong = document.createElement('b');
+    strong.textContent = total;
+    num.appendChild(strong);
+    num.appendChild(document.createTextNode(' fiche(s) · ' + shipped + ' livrée(s)'));
+
+    row.appendChild(name);
+    row.appendChild(bar);
+    row.appendChild(num);
+    table.appendChild(row);
   });
-  box.appendChild(ul);
+  box.appendChild(table);
 })();
 </script>
 
