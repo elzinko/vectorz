@@ -96,7 +96,14 @@ function buildPackFromArgs(values: Record<string, string>): ReviewPack {
 const { values, github } = parseArgs(process.argv.slice(2));
 const pack = buildPackFromArgs(values);
 
-const reviewsRoot = resolve(values['reviews-root'] ?? 'features/reviews');
+// `pnpm --dir products/mega-city …` place le cwd dans products/mega-city ; `INIT_CWD`
+// conserve le répertoire d'invocation (la racine du projet cible). On résout le dossier des
+// reviews contre CETTE base — sinon, lancé comme le prescrit ezk-sprint (`pnpm --dir …`), le
+// fichier de revue local atterrit dans `products/mega-city/features/reviews/` du monorepo au
+// lieu du projet où tourne le sprint (trou vu au dogfooding `github: false`). Même correctif
+// que `bin/ezk-config.ts` (revue Codex, PR #250). Un `--reviews-root` absolu reste pris tel quel.
+const base = process.env.INIT_CWD ?? process.cwd();
+const reviewsRoot = resolve(base, values['reviews-root'] ?? 'features/reviews');
 const markdownEmitter = createMarkdownFileEmitter({ reviewsRoot });
 const writtenPath = markdownEmitter.emit(pack);
 console.log(`✓ review écrite : ${writtenPath}`);
