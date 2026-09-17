@@ -6,8 +6,8 @@ priority: P0 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [github-optionnel, plugin]
-status: idea # idea | ready | in-progress | blocked | shipped
-ready: # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non groomée
+status: ready # idea | ready | in-progress | blocked | shipped
+ready: 2026-09-17 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr:
 evidence: none # config + skills, flux CLI, pas d'écran
 created: 2026-09-17
@@ -55,7 +55,11 @@ au plugin `github`. Trois briques, toutes adossées à de l'existant :
    `github.pr: on` mais `github.codex-review: off`. Toute capacité coupée → `ezk-sprint` et
    le module concerné **sautent proprement** l'étape sortante (pas de PR, ou pas de CI cloud,
    ou pas d'attente Codex). GitHub entièrement coupé → la revue adverse passe par
-   `ezk-reviewer` (local), la gate par `act` / native.
+   `ezk-reviewer` (local), la gate par `act` / native. Le cran **embarque le lecteur de config
+   minimal** requis (juste l'interrupteur `github` + ses options) ; il **n'attend pas** la
+   couche `.vectorz/` complète — [[20260916225506858]] la généralisera ensuite. Le merge local
+   et le fichier local s'appuient sur de l'**existant** (`ship-merge.sh --local`, émetteur
+   `markdown-file` de [[0183]]).
 2. **Le fichier PR local, systématique.** À la clôture de chaque feature, le corps de PR —
    qui n'est **que le rendu de la fiche** (ADR-0029) — est écrit dans un fichier local, même
    sans PR. Réutilise l'émetteur `markdown-file` du pack de revue (`src/review/`, déjà
@@ -63,6 +67,20 @@ au plugin `github`. Trois briques, toutes adossées à de l'existant :
    autre.
 3. **Le merge en local.** `git merge --squash` local, déjà couvert par
    [[20260911213014783]] (ADR-0052) — cette fiche ne le refait pas, elle s'y branche.
+
+**Périmètre (borné pour être ready).** Ce cran livre le mode **`github` off global** (pas de
+PR, pas de CI cloud, pas de Codex → 100 % local + fichier local systématique + merge squash
+local) et la **désactivation indépendante de `ci` et `codex-review`** même quand la PR reste
+ouverte. **Hors scope → panel / [[20260916225506858]]** : retirer la PR **unitairement alors
+qu'un remote GitHub est présent** (garder GitHub mais supprimer la PR comme unité) — le seul
+cas qui effleure ADR-037.
+
+**Pas de blocage d'archi pour ce cran** (vérifié en lisant les ADR, 2026-09-17). ADR-0039 §2
+(accepté) tranche déjà : « la pull request est un MÉCANISME GitHub, pas une cérémonie — on
+peut demander une revue adverse sur une branche sans PR », et le squash-merge nominal
+(étape 10 du sprint) se fait **sans passer par `ezk-pr`**. ADR-037 régit la **livraison d'un
+lot** *quand il y a des PR* — il ne s'applique pas au mode sans GitHub. Le cran mince est donc
+**déjà couvert** ; il ne rouvre pas ADR-037.
 
 **Frontière avec les voisines (anti-doublon) :**
 
@@ -109,10 +127,12 @@ au plugin `github`. Trois briques, toutes adossées à de l'existant :
   [[20260916225506858]], axe 2). L'*installation* du plugin par projet (axe 1) se rattache à
   [[0087]] / [[0170]].
 - **Priorité P0 posée par le PO.** Née `idea` (à groomer + gate `ready` avant tirage).
-- **Dépend d'une décision d'archi** portée par la fiche chapeau : rendre la PR elle-même
-  optionnelle touche l'invariant ADR-037 (« 1 feature = 1 PR »). Cran mince possible d'abord :
-  rendre explicite et systématiser le mode local **déjà** dégradé, sans casser le mode GitHub
-  ON.
+- **Pas de dépendance d'archi bloquante** (vérifié sur les ADR le 2026-09-17) : le cran mince
+  (`github` off + revue/CI optionnelles) est **déjà couvert par ADR-0039 §2** (PR = mécanisme
+  GitHub, revue sans PR, squash nominal hors `ezk-pr`). Seul « remote présent + PR retirée
+  unitairement » toucherait ADR-037 — **hors scope**, laissé au panel [[20260916225506858]].
+- **Dépendances externes : aucune** — config + skills internes, pas de repo/service/secret
+  hors monorepo (slot DoR conditionnel non requis).
 - **Compose** [[20260911213014783]], [[0183]], [[0171]] ; ne les refait pas.
 - Contrainte connue : la revue locale retrouve ~la moitié des défauts de Codex (mesure
   [[20260905134937885]]) — compromis vitesse/filet assumé quand `codex-review` est off.
