@@ -299,6 +299,7 @@
 | [20260910231201744](20260910231201744_aggregate-apply-merged-split-moteur-llm.md) | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 | mega-city | 💡 idea |  |
 | [20260912180313727](20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md) | Repenser le backlog : fusionner PLAN dans BACKLOG (champs itération/version) + historiser les itérations (sprint + rétro) | refactor | P2 | mega-city | 💡 idea |  |
 | [20260917123943914](20260917123943914_outils-dans-la-carte-methode.md) | Outils dans la carte méthode — un type de nœud `tool` (bin/script/commande) relié aux skills | feature | P2 | mega-city | 💡 idea |  |
+| [20260917143616286](20260917143616286_recette-lemonsqueezy-gating-pro.md) | Recette — brancher Lemon Squeezy + gating Pro in-app (étend lancement-app) | chore | P2 | vectorz | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 | vectorz | 💡 idea |  |
