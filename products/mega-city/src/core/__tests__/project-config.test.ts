@@ -43,6 +43,24 @@ describe('resolveGithub — capacités du plugin github (fiche 20260916225506856
     expect(resolveGithub(42)).toEqual(ON);
   });
 
+  it('valeur granulaire non-booléenne ne coupe pas (seul `false` coupe)', () => {
+    expect(resolveGithub({ pr: 'false' })).toEqual(ON); // la string "false" n'est pas `false`
+    expect(resolveGithub({ 'codex-review': null })).toEqual(ON); // null ne coupe pas
+    expect(resolveGithub({ ci: 0 })).toEqual(ON); // 0 non plus
+  });
+
+  it('array (objet en JS) sans clé connue → tout ON', () => {
+    expect(resolveGithub([])).toEqual(ON);
+  });
+
+  it('conflit kebab/camel : la graphie kebab `codex-review` gagne', () => {
+    expect(resolveGithub({ 'codex-review': false, codexReview: true })).toEqual({
+      pr: true,
+      ci: true,
+      codexReview: false,
+    });
+  });
+
   it('renvoie un objet neuf à chaque appel (pas de référence mutable partagée)', () => {
     const a = resolveGithub(undefined) as { pr: boolean };
     a.pr = false;

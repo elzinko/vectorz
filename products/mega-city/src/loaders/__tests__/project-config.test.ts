@@ -38,4 +38,20 @@ describe('githubCapabilities — lecture de .vectorz/config.yml (fiche 202609162
     writeConfig('autre: valeur\n');
     expect(githubCapabilities(root)).toEqual(ON);
   });
+
+  it('fichier vide → tout ON (parse null, pas de crash)', () => {
+    writeConfig('');
+    expect(githubCapabilities(root)).toEqual(ON);
+  });
+
+  it('YAML malformé → erreur explicite (fail-fast), jamais une coupure silencieuse', () => {
+    writeConfig('github: "guillemet non fermé\n');
+    expect(() => githubCapabilities(root)).toThrow(/malform/i);
+  });
+
+  it('extension .yaml acceptée aussi', () => {
+    mkdirSync(join(root, '.vectorz'), { recursive: true });
+    writeFileSync(join(root, '.vectorz', 'config.yaml'), 'github: false\n', 'utf8');
+    expect(githubCapabilities(root)).toEqual({ pr: false, ci: false, codexReview: false });
+  });
 });
