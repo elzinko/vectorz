@@ -9,7 +9,11 @@
  */
 import { githubCapabilities } from '../src/loaders/project-config.js';
 
-const root = process.argv[2] ?? process.cwd();
+// `pnpm --dir products/mega-city …` change le cwd vers products/mega-city ; `INIT_CWD`
+// conserve le répertoire d'invocation (la racine du projet). Priorité : argument explicite,
+// puis INIT_CWD, puis cwd. Sans ça, on lirait products/mega-city/.vectorz/config.yml et un
+// `github: false` posé à la racine serait ignoré (revue Codex, PR #250).
+const root = process.argv[2] ?? process.env.INIT_CWD ?? process.cwd();
 const caps = githubCapabilities(root);
 const flag = (on: boolean): string => (on ? 'ON ' : 'OFF');
 
