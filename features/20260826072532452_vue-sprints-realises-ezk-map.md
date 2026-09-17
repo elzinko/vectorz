@@ -127,6 +127,9 @@ et affiche), le mode dégradé pour les anciens, le test d'invariant.
       (date + titre + lien) **sans casser** la vue.
 - [ ] **Zéro** donnée saisie à la main dans la vue ; aucun objet « sprint » hors des
       comptes-rendus (garde-fou panel respecté).
+- [ ] Le **rendu par run/session** reprend le format validé par le PO (2026-09-17) : en-tête daté
+      + **une carte par PR** (quoi · comment valider · état) + résumé milestone ; la vue couvre les
+      runs **nocturnes ET diurnes** (pas seulement un product-build).
 - [ ] Gate locale verte (typecheck/lint/tests) + liens markdown OK.
 
 ## Comment vérifier
@@ -148,6 +151,14 @@ pnpm ezk:map sprints
   dé-gating déclenché par le retour PO du 2026-08-26.
 - **Choix PO 2026-08-26** : extraction structurée par sprint (option riche), et non un
   simple index de liens.
+- **Retour PO 2026-09-17** (constaté à l'issue du run nocturne « retrait de l'épic ») : le PO a vu
+  le **rapport de run** produit à la clôture — artefact « Run nocturne · 16 sept » : en-tête daté,
+  **une carte par PR** (« quoi » + « comment valider » + état), résumé milestone — et l'a désigné
+  comme **rendu cible** de cette vue : *« J'adore ce format… rends-le disponible depuis le board ;
+  pouvoir accéder à l'historique de ce qui a été fait »*. Deux précisions de périmètre : (a) couvrir
+  les **runs nocturnes** (product-build autonome) **ET les runs diurnes** (sessions ordinaires), pas
+  seulement les sprints d'un product-build ; (b) l'accès se fait **depuis le board** (`ezk:map`). Un
+  **prototype** du rendu a été produit cette session (le « digest de validation » du run).
 - **Briques réutilisables** (patron `avancement`) : `bin/ezk-map.ts` (onglets),
   `src/core/avancement-data.ts` + `bin/regen-avancement.ts` (patron « données d'onglet »
   compilées + invariant), `src/loaders/fiches.ts` (modèle de chargeur).
