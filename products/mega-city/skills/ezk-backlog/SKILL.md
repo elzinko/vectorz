@@ -445,8 +445,10 @@ Une seule brique, plusieurs appelants — aucun ne réimplémente le croisement.
 C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'importance de
 `reconcile`, qui la propose quand un merge s'est fait hors du flux). Étapes, dans l'ordre :
 
-1. Front-matter : pose `status: shipped` **et** `pr: #<n>` (le n° de PR — demande-le si
-   inconnu, ne l'invente pas ; garde-fou n°1).
+1. Front-matter : pose `status: shipped` **et** `pr:`. En flux GitHub : le n° de PR `#<n>`
+   (demande-le si inconnu, ne l'invente pas ; garde-fou n°1). **Livraison locale** (mode
+   `github: false` / dépôt sans remote — fiche 20260916225506856) : **pas de PR à inventer**,
+   pose `pr: local (<sha-du-squash>)` (précédent : fiche 0183 shippée `local (main c45102b)`).
 2. `git mv` la fiche de `features/` vers `features/done/` — c'est ce déplacement qui la sort
    du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
    candidate, elle ne peut pas être re-tirée).

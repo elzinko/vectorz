@@ -32,6 +32,7 @@
 | [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md) | ezk-chef suggest — détecter les recettes possibles sur le sprint qui vient de finir | feature | P0 | mega-city | ✅ shipped | #214 |
 | [20260831075615969](done/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) | ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X » | feature | P0 | mega-city | ✅ shipped | #228 |
 | [20260911213014783](20260911213014783_merge-local-first-sync-main.md) | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 | mega-city | 🔵 ready |  |
+| [20260916225506856](20260916225506856_github-optionnel-fichier-pr-local.md) | GitHub optionnel par config — le fichier PR local (fiche rendue) devient le défaut | feature | P0 | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 | vectorz | ✅ shipped | #33 |
@@ -198,6 +199,7 @@
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 | mega-city | 💡 idea |  |
 | [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 | mega-city | 💡 idea |  |
 | [20260915094256241](20260915094256241_retirer-epic-theme-labels-milestones.md) | Retirer l'épic — regrouper par thème (labels) + ordonnancer par milestones | refactor | P1 | mega-city | 💡 idea |  |
+| [20260916225506858](20260916225506858_github-modules-optionnels-config.md) | GitHub / CI / Codex = modules optionnels, pilotés par la config projet | feature | P1 | mega-city | 💡 idea |  |
 | [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | vectorz | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 | vectorz | 💡 idea |  |
