@@ -7,13 +7,15 @@
  *
  * Usage : pnpm --dir products/mega-city ezk:config [projectRoot]   (défaut : cwd)
  */
+import { resolve } from 'node:path';
 import { githubCapabilities } from '../src/loaders/project-config.js';
 
 // `pnpm --dir products/mega-city …` change le cwd vers products/mega-city ; `INIT_CWD`
-// conserve le répertoire d'invocation (la racine du projet). Priorité : argument explicite,
-// puis INIT_CWD, puis cwd. Sans ça, on lirait products/mega-city/.vectorz/config.yml et un
-// `github: false` posé à la racine serait ignoré (revue Codex, PR #250).
-const root = process.argv[2] ?? process.env.INIT_CWD ?? process.cwd();
+// conserve le répertoire d'invocation (la racine du projet). Un argument (chemin de projet)
+// est résolu contre cette base — un chemin relatif comme `.` vise donc la racine, pas le cwd
+// de pnpm (revue Codex, PR #250) ; un chemin absolu est pris tel quel.
+const base = process.env.INIT_CWD ?? process.cwd();
+const root = process.argv[2] ? resolve(base, process.argv[2]) : base;
 const caps = githubCapabilities(root);
 const flag = (on: boolean): string => (on ? 'ON ' : 'OFF');
 
