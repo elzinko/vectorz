@@ -1,0 +1,25 @@
+# Config projet vectorz — modules optionnels (`.vectorz/config.yml`)
+#
+# Copier ce fichier en `.vectorz/config.yml` pour l'activer.
+# ABSENT = comportement inchangé : tout est allumé (PR + CI + revue Codex).
+#
+# Fiche 20260916225506856 (cran mince) · ADR-0050 (couche `.vectorz/`) ·
+# ADR-0039 §2 (github = module activable, la PR n'est pas une cérémonie).
+
+# --- Plugin GitHub ---
+# Trois formes possibles :
+#
+#   github: true            # (défaut) tout allumé : PR + CI + revue Codex
+#
+#   github: false           # tout coupé : 100 % local, aucun appel GitHub
+#                           # (le « déconnecter GitHub » — on travaille plus vite)
+#
+#   github:                 # granulaire — une capacité coupée = `false`, sinon allumée
+#     pr: true              #   ouvrir une pull request
+#     ci: true              #   attendre la CI cloud (GitHub Actions)
+#     codex-review: false   #   ← ex. garder la PR mais couper la revue Codex
+
+github:
+  pr: true
+  ci: true
+  codex-review: true

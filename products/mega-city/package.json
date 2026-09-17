@@ -34,7 +34,8 @@
     "plan-delta:regen": "tsx bin/regen-plan-delta.ts",
     "ci:conso": "tsx bin/ci-conso.ts",
     "ezk:sessions": "tsx bin/ezk-sessions.ts",
-    "sprint:report": "tsx bin/sprint-report.ts"
+    "sprint:report": "tsx bin/sprint-report.ts",
+    "ezk:config": "tsx bin/ezk-config.ts"
   },
   "devDependencies": {
     "@types/node": "^26.4.1",
