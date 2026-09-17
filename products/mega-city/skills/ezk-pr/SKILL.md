@@ -65,6 +65,26 @@ avant ordres de merge et tableaux — règle
 | `report` | Poste dans chaque PR testée le résultat (✅/❌ par critère, signaux observés) |
 | `ship [#PR…]` | Squash-merge des PRs **au vert et validées**, `ezk-backlog ship`, branche supprimée |
 
+## Capacités GitHub — config projet `.vectorz/` (fiche 20260916225506856)
+
+GitHub est un **module optionnel** (ADR-0039 §2 : la PR est un mécanisme GitHub, pas une
+cérémonie). À l'**intake** (avant `plan`, avant tout `gh`), lis les capacités effectives :
+
+```bash
+pnpm --dir products/mega-city ezk:config
+```
+
+Trois capacités — `pr` · `ci` · `codex-review`. **Config ou capacité absente = tout ON**
+(comportement actuel, zéro régression). La bascule locale d'`ezk-pr` existait déjà sur
+**absence de remote** ; la config l'étend au cas **`pr: false` alors qu'un remote EXISTE**
+(« je garde le dépôt distant mais je livre en local »). Selon l'état :
+
+| Capacité `off` | Ce que tu changes |
+|---|---|
+| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales** `feat/<id>-<slug>` non absorbées (classification `ezk-archive`/fiche 0076) — voir `plan` §1. `ship` = **squash local** (`ship-merge.sh --local`), **jamais** `gh pr merge`, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`review:emit`) et le corps de PR dans le fichier local (`pr:emit-local`), cf. [`ezk-sprint`](../ezk-sprint/) § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
+| `ci: false` | Pas d'attente de CI cloud entre deux merges (`ship` §, « CI re-verte ») : la **gate locale** (`act`/`ezk-ci` ou gate hôte) est la seule validation. |
+| `codex-review: false` | Pas de revue Codex attendue sur les PR ; la revue adverse reste `ezk-reviewer` (local), cf. `ezk-sprint`. |
+
 ## `init` — installer la convention « Validation »
 
 La convention vit dans **deux fichiers découplés** (le fond peut évoluer sans
@@ -191,7 +211,8 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
 
 ## `plan` — le cœur : ordonner et regrouper
 
-1. **Inventaire** : `gh pr list --state open` (repo **sans remote** → branches
+1. **Inventaire** : `gh pr list --state open` **si `pr: on`** ; sinon (repo **sans remote**,
+   **ou** `pr: false` alors qu'un remote existe — cf. § Capacités GitHub) → branches
    locales **RÉELLES uniquement**, via la classification du `check.sh`
    d'ezk-archive — sur un repo squash-merge, `git branch --no-merged` brut liste
    surtout des résidus déjà livrés, fiche mega-city 0076). Lire chaque corps
@@ -248,13 +269,14 @@ proprement : un squash fabriqué en local puis poussé ne fait jamais voir la PR
 comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
 **GitHub exécute le squash, le local décide puis se réaligne.**
 
-- **Avec remote** — le seul chemin qui laisse une vraie PR « Merged » et
+- **Avec remote ET `pr: on`** — le seul chemin qui laisse une vraie PR « Merged » et
   supprime la branche distante :
   `gh pr merge <n> --squash --delete-branch --match-head-commit <sha validé> --subject "<sujet>" --body "<corps>"`,
   le message conventional venant du **local** (pas d'un résumé généré côté
   GitHub). Le `--match-head-commit` (head validé, **obligatoire** en remote) refuse
   le merge si la PR a reçu un commit depuis la validation.
-- **Sans remote** (dépôt local seul) — squash **local** sur `<base>` :
+- **Sans remote** (dépôt local seul) **ou `pr: false`** (github coupé alors qu'un remote
+  existe, cf. § Capacités GitHub) — squash **local** sur `<base>` :
   `git merge --squash <branche>` + commit conventional, puis purge des
   branches déjà **absorbées** (même classification que la fiche 0076 —
   `skills/ezk-archive/scripts/check.sh:classify_ref`).
