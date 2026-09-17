@@ -71,6 +71,30 @@ Trois invariants :
 2. **POC d'abord (ça marche), polish ensuite (c'est beau).** On ne peaufine jamais le visuel d'une feature non validée.
 3. **Tout testable en local d'abord** — tests, pipeline (`act` + Docker) **et** E2E (Playwright) tournent en local **avant** la CI cloud.
 
+## Capacités GitHub — config projet `.vectorz/` (fiche 20260916225506856)
+
+GitHub est un **module optionnel** (ADR-0039 §2 : la PR est un mécanisme GitHub, pas une
+cérémonie). Un projet règle son usage dans **`.vectorz/config.yml`** ; la méthode s'y adapte.
+À l'**intake (étape 0)**, lis les capacités effectives du projet :
+
+```bash
+pnpm --dir products/mega-city ezk:config
+```
+
+Trois capacités — `pr` · `ci` · `codex-review`. **Config ou capacité absente = tout ON**
+(comportement actuel, zéro régression). `github: false` coupe les trois (100 % local).
+Selon leur état, adapte la boucle :
+
+| Capacité `off` | Ce que tu changes dans la boucle |
+|---|---|
+| `pr: false` | **Pas de PR** (étape 8). Le livrable de revue devient le **fichier local** (le rendu de la fiche / `REVIEW.md` du pack de revue), écrit dans le repo. Merge **local** à l'étape 10 (`ezk-pr` → `ship-merge.sh --local`), jamais `gh pr create` ni `gh pr merge`. |
+| `ci: false` | Pas de CI cloud (étape 5) : la **gate locale** (`act`/`ezk-ci`, ou la gate hôte) est la seule validation attendue. |
+| `codex-review: false` | Pas d'attente Codex (étape 7) : la revue adverse **`ezk-reviewer` (local)** suffit — ne guette aucune review cloud. |
+
+**La config décide, tu obéis** : ne coupe jamais de toi-même une capacité que la config
+laisse `ON`, et n'ouvre jamais de PR quand `pr` est `off`. Le défaut (tout ON) préserve
+exactement le flux actuel.
+
 ---
 
 ## Frontière d'autonomie — LA règle
@@ -121,7 +145,7 @@ brouillon de recette (PR #196).
 
 Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
 
-0. **Intake** — d'abord la sous-commande **`check`** de CE skill (le portier d'ouverture, section « L'ouverture » ci-dessous — ex-`ezk-start`, absorbé le 2026-08-24) : working tree, worktrees parallèles, fiches `in-progress`. Sur **`VERDICT: ALERT`** → **STOP** : présenter les choix (rejoindre / interrompre journalisé) selon [`choice-template.md`](references/choice-template.md) — **ne pas** tirer la prochaine fiche tant que l'humain n'a pas tranché. Sur `CLEAR`, enchaîner. Puis **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `ready`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
+0. **Intake** — d'abord la sous-commande **`check`** de CE skill (le portier d'ouverture, section « L'ouverture » ci-dessous — ex-`ezk-start`, absorbé le 2026-08-24) : working tree, worktrees parallèles, fiches `in-progress`. Sur **`VERDICT: ALERT`** → **STOP** : présenter les choix (rejoindre / interrompre journalisé) selon [`choice-template.md`](references/choice-template.md) — **ne pas** tirer la prochaine fiche tant que l'humain n'a pas tranché. Sur `CLEAR`, enchaîner. Puis **`ezk-backlog reconcile`** : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `ready`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.) **Config GitHub** : lis les capacités du projet (`pnpm --dir products/mega-city ezk:config`, cf. § « Capacités GitHub — config projet `.vectorz/` ») — elles conditionnent la PR (étape 8), la CI cloud (5) et l'attente Codex (7).
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
@@ -129,7 +153,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
-8. **PR** — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement**). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) : **le corps de PR est le RENDU de la fiche** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)), **pas** un résumé parallèle. Concrètement :
+8. **PR** *(seulement si `pr: on` — sinon cf. § « Capacités GitHub » : pas de PR, le livrable de revue est le fichier local, merge local à l'étape 10)* — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement**). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) : **le corps de PR est le RENDU de la fiche** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)), **pas** un résumé parallèle. Concrètement :
 
    - **Recopier la fiche** dans le corps : son ouverture **« En clair »** (+ **« Si tu arrives frais »** si la fiche la porte — le vocabulaire projet pour un lecteur neuf) puis ses sections (Contexte / Proposition / Critères / **Comment vérifier**, et **`## Glossaire`** si la fiche en porte un). Ne **rien** réécrire à côté — si le texte manque de clarté, corriger **la fiche**, puis re-rendre.
    - Ajouter la **provenance** (chemin `features/<id>_*.md`, legacy `<id>-*.md` ; l'id est dans la branche `feat/<id>-<slug>`) et, en bas, la **matrice « Validation »** (statut CI/tests/E2E — **seul** bloc propre à la PR ; convention ADR-0009).
