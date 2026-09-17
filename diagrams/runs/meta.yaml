@@ -1,0 +1,14 @@
+title: "Historique des runs — chaque session close et ce qu'elle a livré (PR, fiches)"
+categorie: pilotage
+date: 2026-09-17
+type: board
+links:
+  entry: runs.html
+  fiche: ../../features/20260826072532452_vue-sprints-realises-ezk-map.md
+  compilateur: ../../products/mega-city/src/core/runs-data.ts
+  regen: "pnpm --dir products/mega-city runs:regen"
+note: >-
+  Tranche 1 (fiche 20260826072532452) : la liste des runs lue des récits
+  docs/sessions/ (date · titre · PR · fiches · lien vers le récit), mode dégradé
+  pour les récits en prose libre. L'émission d'un en-tête STRUCTURÉ par
+  ezk-archive (fiches / actions détaillées par sprint) est la tranche suivante.
