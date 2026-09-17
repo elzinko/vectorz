@@ -22,7 +22,13 @@ export interface ValidationRow {
 /**
  * Matrice « Validation » par défaut du mode local : pas de CI cloud ni de revue Codex — les
  * modalités sont les gates LOCALES (fiche 20260916225506856). `⏳` = à statuer au moment de
- * l'émission (avant le merge local) ; l'appelant peut passer des statuts déjà connus.
+ * l'émission ; l'émetteur tournant APRÈS la gate locale et la revue adverse, l'appelant passe
+ * normalement l'état RÉEL via `--validation` (`✅`), le `⏳` n'étant qu'un repli.
+ *
+ * La ligne « Before / after (UI) » (ADR-0045) n'est PAS dans ce défaut générique : l'émetteur
+ * rend une fiche, il ne connaît pas le diff — la détection des chemins d'écran vit dans
+ * `pr-evidence.sh` / `check-pr-body.sh`. Quand la feature touche un écran, l'appelant ajoute
+ * cette ligne via `--validation` (liens avant+après ou « N.A. — <raison> »).
  */
 export const DEFAULT_LOCAL_VALIDATION: readonly ValidationRow[] = [
   { modalite: 'Gate locale (build · test · lint)', statut: '⏳' },
