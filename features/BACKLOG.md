@@ -177,6 +177,7 @@
 | # | Titre | Type | Prio | Épic | Produit | Statut | PR |
 |---|-------|------|------|------|---------|--------|----|
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 |  | mega-city | 💡 idea |  |
+| [20260916225506856](20260916225506856_github-optionnel-fichier-pr-local.md) | GitHub optionnel par config — le fichier PR local (fiche rendue) devient le défaut | feature | P0 |  | mega-city | 💡 idea |  |
 | [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 |  | vectorz | 💡 idea |  |
 | [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
@@ -203,6 +204,7 @@
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 💡 idea |  |
 | [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20260915094256241](20260915094256241_retirer-epic-theme-labels-milestones.md) | Retirer l'épic — regrouper par thème (labels) + ordonnancer par milestones | refactor | P1 |  | mega-city | 💡 idea |  |
+| [20260916225506858](20260916225506858_github-modules-optionnels-config.md) | GitHub / CI / Codex = modules optionnels, pilotés par la config projet | feature | P1 |  | mega-city | 💡 idea |  |
 | [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 |  | vectorz | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
