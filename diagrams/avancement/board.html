@@ -4993,7 +4993,7 @@ window.EZK_PLAN_DELTA = {
     });
   }
 
-  [selStatut, selType, selEpic, selProduit, selLabel].forEach(function (s) {
+  [selStatut, selType, selMilestone, selProduit, selLabel].forEach(function (s) {
     s.addEventListener('change', render);
   });
   render();
