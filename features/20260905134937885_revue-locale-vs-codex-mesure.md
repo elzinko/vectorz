@@ -147,7 +147,7 @@ se branche sur `features/reviews/`.
 - Fiches voisines — **relier, pas dupliquer** :
   - [0161](0161-ezk-challenge-panel.md) — panel de challenge adverse réutilisable :
     l'**outil** des passes locales multiples ; cette fiche-ci en est l'**usage mesuré**.
-  - [0051](0051-observabilite-qualite-produit.md) et
+  - [0051](done/0051-observabilite-qualite-produit.md) et
     [0058](0058-rapport-qualite-pr.md) — mesurer / rapporter la qualité : là c'est la
     qualité du **logiciel** ; ici on mesure la qualité de la **revue**.
   - [20260830110131158](20260830110131158_revue-adverse-skippable-flag.md) — revue

@@ -196,7 +196,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
-| vectorz | 22 | 0 | 0 | 0 | 21 | 0 |
-| mega-city | 144 | 3 | 3 | 0 | 133 | 0 |
+| vectorz | 21 | 0 | 0 | 0 | 21 | 0 |
+| mega-city | 139 | 3 | 3 | 0 | 133 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

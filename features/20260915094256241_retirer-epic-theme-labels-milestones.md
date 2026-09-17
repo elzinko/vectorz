@@ -40,7 +40,7 @@ tranche : l'épic est un concept de trop.
 - **Il ne livre rien** — la doctrine #175 (D1) dit elle-même : pas de critères, pas de PR, pas de code.
 - **Il n'a pas de miroir GitHub** — l'export mappe feature→issue, sprint→milestone, version→release
   ([0171](0171-adapter-github-issues-push-only.md)). L'épic n'a aucune case.
-- **Il dérive vers le spéculatif** — cas d'école [0051](0051-observabilite-qualite-produit.md) :
+- **Il dérive vers le spéculatif** — cas d'école [0051](done/0051-observabilite-qualite-produit.md) :
   7 enfants mintés d'avance, 0 construit depuis juillet, parké. Un conteneur qui gonfle le P1 sans traction.
 
 Un panel adverse (architecte / PO-avocat / reviewer / juge) a été tenu le 2026-09-15. Il a acté
@@ -77,7 +77,7 @@ que **« tant pis si volumineux » est à rejeter** (ça viole le « S », Small
 1. **Amender la loi** : ADR-0017 (retrait de `type: epic` / champ `epic:`) + doctrine #175 (D1/D2
    réécrites sans l'épic). Décision PO + trace ADR **avant tout code**.
 2. **Re-router les 9 épics actifs** : chaque épic → un label de thème + un milestone ; ses enfants
-   deviennent des fiches indépendantes portant ces deux champs. [0051](0051-observabilite-qualite-produit.md)
+   deviennent des fiches indépendantes portant ces deux champs. [0051](done/0051-observabilite-qualite-produit.md)
    est clôturé (`superseded`).
 3. **Puis le code** (~16 fichiers epic-aware : `loaders/fiches.ts`, `core/avancement-data.ts`
    (`deriveEpicStatus`), `backlog/aggregate.ts`, `backlog/plan-head.ts`, `core/plan-view-data.ts`,
@@ -91,7 +91,7 @@ que **« tant pis si volumineux » est à rejeter** (ça viole le « S », Small
 - [ ] Le board affiche un **cumul par milestone** (dérivé, pas saisi).
 - [ ] Les **9 épics** re-routés (label + milestone), leurs enfants rendus indépendants ; `type: epic` disparu de l'enum.
 - [ ] La **découpe INVEST/D3** est bloquante au grooming (`ready` refuse une fiche « trop grosse » divisible).
-- [ ] [0051](0051-observabilite-qualite-produit.md) clôturée `superseded`.
+- [ ] [0051](done/0051-observabilite-qualite-produit.md) clôturée `superseded`.
 
 ## Comment vérifier
 

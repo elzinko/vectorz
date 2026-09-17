@@ -11,7 +11,7 @@ Q2-différé ; port lu par le moniteur). Les points qui restent au PO sont regro
 **Date :** 2026-07-22
 **Déciders :** elzinko (PO)
 **Origine :** `/architecture` demandé par le PO (brainstorm 2026-07-22, épic
-[0051](../../features/0051-observabilite-qualite-produit.md)).
+[0051](../../features/done/0051-observabilite-qualite-produit.md)).
 **Compose (sans les rouvrir) :**
 - **[ADR-032](ADR-032-emission-adaptateur-separable.md)** (Accepté) — l'**émetteur canonique reste
   dans la méthode** : c'est la méthode qui **exécute l'outil** en CI et journalise qu'elle l'a fait ;

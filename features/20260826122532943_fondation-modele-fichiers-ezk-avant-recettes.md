@@ -97,7 +97,7 @@ schéma**.
 | [281](20260826112620281_schema-markdown-declaratif-validateur.md) | validateur de conformité | P3 — **fusionner ici** |
 
 *(357 reste rattachée à son épic
-[carte fidèle](20260821163346487_carte-methode-fidele-et-revue.md) ; la carte est **un**
+[carte fidèle](done/20260821163346487_carte-methode-fidele-et-revue.md) ; la carte est **un**
 consommateur du modèle, comme les recettes.)*
 
 ## La décision d'architecture → ADR-0040

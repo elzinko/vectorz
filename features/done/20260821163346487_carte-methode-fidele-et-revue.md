@@ -91,7 +91,7 @@ Si l'un des trois n'est pas traçable, l'épic n'est pas fini.
   **Fermée le 2026-08-23 (paquet 1)** : le test d'invariant de la carte (map-data.test,
   PR #162) rend le besoin mécanique ; l'enforcement bloquant a été écarté par le panel.
 - **Pièce d'audit rattachée (2026-08-21)** : [l'audit complet de la méthode du
-  2026-08-20](../docs/audits/2026-08-20-audit-methode-mega-city.html) — 29 décisions
+  2026-08-20](../../docs/audits/2026-08-20-audit-methode-mega-city.html) — 29 décisions
   d'architecture passées au crible, 11 contradictions, sécurité, historique. Versionné
   dans le repo (l'artefact claude.ai reste la vue publiée privée). Lisible en local :
   `pnpm ezk:map` puis ouvrir `/docs/audits/2026-08-20-audit-methode-mega-city.html`.

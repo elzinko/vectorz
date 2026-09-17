@@ -33,7 +33,7 @@ qui ne rougit pas n'est pas un contrat »).
 > **Re-mesure 2026-08-13 (audit de rationalisation)** : `check-links` = **4 liens cassés**
 > (ADR `0019` l.6-7, `0021` l.7-8 → fiches `done/`), toujours **pas câblé**. La cause n° 2 a
 > déjà re-produit des liens morts — la fiche est confirmée par l'exemple. Rattachée à l'épic
-> [20260813131737959](../20260813131737959_rationalisation-coherence-methode-epic.md).
+> [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md).
 
 ## Valeur
 

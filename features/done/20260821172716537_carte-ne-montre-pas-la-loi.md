@@ -88,7 +88,7 @@ frontmatter (le graphe ne le porte pas encore) — il apparaîtra tout seul quan
 - **Interne, livrée** : `graph:compile` (ADR-0040) — expose les nœuds LOI et leurs liens.
   Déjà sur `main`. **Pas** de dépendance externe (tout est dans le monorepo) — slot DoR
   conditionnel non requis.
-- **Épic parent** : [Épic — La carte de la méthode : fidèle aux fichiers](../20260821163346487_carte-methode-fidele-et-revue.md).
+- **Épic parent** : [Épic — La carte de la méthode : fidèle aux fichiers](20260821163346487_carte-methode-fidele-et-revue.md).
 
 ## Critères d'acceptation
 

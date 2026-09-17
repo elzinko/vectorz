@@ -25,8 +25,8 @@ de démarrer un sprint ? » — grooming / refinement / INVEST / DoR extensible 
 métriques de readiness.
 
 **Constat de l'audit.** La machinerie scrum existe déjà et tourne : `groom`/`ready` (gate
-DoR bloquant, [ADR-0016](../products/mega-city/docs/adr/0016-rituels-scrum-cycle-de-vie-backlog.md)),
-auto-groom + `--check-ready` ([ADR-0028](../products/mega-city/docs/adr/0028-product-builder-auto-groom-ready.md)).
+DoR bloquant, [ADR-0016](../../products/mega-city/docs/adr/0016-rituels-scrum-cycle-de-vie-backlog.md)),
+auto-groom + `--check-ready` ([ADR-0028](../../products/mega-city/docs/adr/0028-product-builder-auto-groom-ready.md)).
 Mais deux trous :
 
 1. **La DoR est figée** — 3 slots en dur (problème / valeur / critères) + 1 conditionnel

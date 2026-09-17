@@ -46,7 +46,7 @@
 | [0037](done/0037-arbitrage-double-writer-sprint-status.md) | Arbitrage double-writer sprint-status.yaml (porter la décision D7) | chore | P1 | vectorz | ✅ shipped | #14 |
 | [0041](done/0041-cobaye-banc-test-rapide.md) | Cobaye — banc de test rapide (manuel + e2e Pareto) pour sécuriser les devs | chore | P1 | vectorz | ✅ shipped | #113 |
 | [0044](done/0044-mesureur-outcomes-script-append-mvp-a.md) | Mesureur d'outcomes métier + script d'append — l'évaluateur d'abord (contrat d'améliorabilité, MVP A) | chore | P1 | vectorz | ✅ shipped | #145 |
-| [0051](0051-observabilite-qualite-produit.md) | Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic) | feature | P1 | vectorz | 🗑️ superseded |  |
+| [0051](done/0051-observabilite-qualite-produit.md) | Observabilité qualité produit — mesurer, historiser et analyser la qualité des logiciels fabriqués (par PR) (épic) | feature | P1 | vectorz | 🗑️ superseded |  |
 | [0059](done/0059-moniteur-carte-de-run-lisible.md) | Moniteur — une carte par run, lisible d'un coup d'œil (état, gate en cours, projet, ordre) | feature | P1 | vectorz | ✅ shipped | #50 |
 | [0061](done/0061-methode-et-siege-absents-de-la-projection.md) | La projection jette la méthode et le siège — impossible de savoir QUI a produit un run, ni avec quelle version | bug | P1 | vectorz | ✅ shipped | #50 |
 | [0070](done/0070-ezk-diagram-explication-readme.md) | ezk-diagram — publier une explication compréhensible à côté du diagramme (README) | feature | P1 | mega-city | ✅ shipped | #33 |
@@ -89,13 +89,13 @@
 | [20260812134515706](done/20260812134515706_frugalite-ci-reutilisable-ezk-ci-harden.md) | Frugalité CI réutilisable — étendre ezk-ci d'un `harden`/`apply` (recettes appliquées par repo) | feature | P1 | mega-city | ✅ shipped | #171 |
 | [20260813200137369](done/20260813200137369_pb-auto-groom-ready-check-ready.md) | Product-builder — auto-groom vers la DoR + option --check-ready (révise ADR-0016 A5) | feature | P1 | mega-city | ✅ shipped | #148 |
 | [20260816131704335](done/20260816131704335_ezk-help-index-commandes-genere.md) | /ezk-help — index de commandes ezk généré depuis les frontmatter | feature | P1 | mega-city | ✅ shipped | #151 |
-| [20260821163346487](20260821163346487_carte-methode-fidele-et-revue.md) | Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau | feature | P1 | mega-city | 🗑️ superseded |  |
+| [20260821163346487](done/20260821163346487_carte-methode-fidele-et-revue.md) | Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau | feature | P1 | mega-city | 🗑️ superseded |  |
 | [20260821172716537](done/20260821172716537_carte-ne-montre-pas-la-loi.md) | La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit) | feature | P1 | mega-city | ✅ shipped | #179 |
 | [20260821204737357](20260821204737357_cabler-la-methode-modele-compile.md) | Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend | feature | P1 | mega-city | 🟠 in-progress |  |
 | [20260823121712652](20260823121712652_modele-statut-kanban-schema-valide.md) | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 | mega-city | 🟠 in-progress |  |
 | [20260823220100308](done/20260823220100308_binder-retrait-garde-anciens-noms.md) | Le binder retire proprement un ancien nom (retrait gardé) — le débloqueur des renames | feature | P1 | mega-city | ✅ shipped | #162 |
 | [20260823220100443](done/20260823220100443_split-ezk-product-build.md) | Split cérémonie/rôle — le skill devient ezk-product-build, le rôle PO reste l'agent ezk-pm | refactor | P1 | mega-city | ✅ shipped | #162 |
-| [20260824060737115](20260824060737115_epic-marketing-et-site.md) | Épic — Marketing & site (orchestrateur, landing, recette site) | feature | P1 | mega-city | 🗑️ superseded |  |
+| [20260824060737115](done/20260824060737115_epic-marketing-et-site.md) | Épic — Marketing & site (orchestrateur, landing, recette site) | feature | P1 | mega-city | 🗑️ superseded |  |
 | [20260825141012293](done/20260825141012293_ezk-sessions-cockpit.md) | ezk-sessions — cockpit de pilotage des sessions Claude Code (worktrees × sessions × branches), avec onglet dans la map | feature | P1 | mega-city | ✅ shipped | #188 |
 | [20260826082120062](done/20260826082120062_domaine-metriques-de-sprint-rapport.md) | Domaine « métriques de sprint » — durée, tokens & KPI scrum par sprint → rapport de sprint versionné + validateur | feature | P1 | mega-city | ✅ shipped | #191 |
 | [20260829214131713](done/20260829214131713_ezk-sessions-vue-navigateur-live.md) | ezk-sessions — vue navigateur de l'état des sessions (live, machine-locale) | feature | P1 | mega-city | ✅ shipped | #189 |
@@ -138,12 +138,12 @@
 | [0146](done/0146-profils-par-hote-cop1-desktop.md) | profils par hôte — cop1-target.yml et desktop.yml | feature | P2 | mega-city | ✅ shipped | #7 |
 | [0148](done/0148-serialiser-model-effort-isolation-dans-les-caps.md) | caps claude-code — sérialiser model/effort/isolation dans les fichiers agents générés | bug | P2 | mega-city | ✅ shipped | local (squash-merge) |
 | [0152](done/0152-ezk-bug-intake-repro.md) | ezk-bug — skill d'intake/cadrage d'un bug signalé : repro (Playwright MCP partagé) → fiche backlog | feature | P2 | mega-city | ✅ shipped | #174 |
-| [0163](0163-serie-rex-migration-methodes.md) | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | feature | P2 | mega-city | 🗑️ superseded |  |
+| [0163](done/0163-serie-rex-migration-methodes.md) | série d'articles REX — migrer des méthodes existantes vers le contrat de supervisabilité | feature | P2 | mega-city | 🗑️ superseded |  |
 | [0167](done/0167-ezk-retro-ceremonie-auto-amelioration.md) | ezk-retro — cérémonie d'auto-amélioration de la méthode (round-robin d'agents → règles mesurables → juge de cohérence → DoD/rules) | feature | P2 | mega-city | ✅ shipped | #21 |
 | [0184](done/0184-webapp-reporting-run.md) | Webapp de reporting de run — features livrées façon PR + preview/démo local + reste-à-tester | feature | P2 | vectorz | ✅ shipped | local (main 51d8bf0) |
 | [20260812100109940](done/20260812100109940-ship-sync-vues-planning.md) | ship doit synchroniser les vues de planning (PORTFOLIO.md + PLAN.md), pas seulement BACKLOG.md | chore | P2 | mega-city | ✅ shipped | #173 |
-| [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md) | Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic) | feature | P2 | mega-city | 🗑️ superseded |  |
-| [20260815080413884](20260815080413884_dor-agent-native-extensible-observable-epic.md) | DoR agent-native — extensible par projet + readiness observable (épic) | feature | P2 | mega-city | 🗑️ superseded |  |
+| [20260813131737959](done/20260813131737959_rationalisation-coherence-methode-epic.md) | Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic) | feature | P2 | mega-city | 🗑️ superseded |  |
+| [20260815080413884](done/20260815080413884_dor-agent-native-extensible-observable-epic.md) | DoR agent-native — extensible par projet + readiness observable (épic) | feature | P2 | mega-city | 🗑️ superseded |  |
 | [20260823124042708](done/20260823124042708_bundles-vs-themes-reorganisation.md) | LA LOI — distinguer thèmes (namespaces) et bundles (packs curated), désenchevêtrer hexagonal | refactor | P2 | mega-city | ✅ shipped | #190 |
 | [20260823124042842](done/20260823124042842_vue-avancement-sprints-fiches.md) | Vue d'avancement — les fiches positionnées sur le process scrum, sprints passés/en cours/futurs | feature | P2 | mega-city | ✅ shipped | main@7f0f12d |
 | [20260824185422122](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md) | « Recette » comme artefact de premier rang + gardien (ezk-chef) — instancier le pattern steward, ne rien inventer | feature | P2 | mega-city | ✅ shipped | #192 |

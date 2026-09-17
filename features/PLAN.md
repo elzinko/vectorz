@@ -190,22 +190,20 @@ aggregate, readyé via #177) — probablement pris par une autre session.
 
 > **Note 2026-09-16 (ADR-0017 A16)** : « épic » ci-dessous = **vocabulaire historique**, retiré le
 > 2026-09-15. Le regroupement passe au **thème** (`labels:`) + **milestone** (voir la section JALONS
-> plus haut) ; les ex-épics (`0051` / `20260813131737959` / `0163` / `0034` …) sont `superseded`,
-> leurs filles restées indépendantes.
+> plus haut) ; les ex-épics (`0051` / `20260813131737959` / `0163` / `0034` …) sont `superseded`
+> (rangés dans `done/`), leurs filles restées indépendantes.
 
 - ⚠️ **Distribution / publication** — 0087 · 0050 · 0078 · 0096 · 0186.
   **NE PAS PUBLIER : pas prêt (décision PO 2026-07-26).** L'ADR de versionnage et la
   question « méthode dans le projet, façon BMAD » s'instruiront quand *le PO* décidera
   d'ouvrir à d'autres.
-- **Observabilité qualité** (epic 0051) — 0052/0053/0054/0055/0056/0058 : mesurer la qualité par PR.
-- **Rationalisation & cohérence de la méthode** (épic `20260813131737959`) — audit 2026-08-13
-  → nommage/catalogue (rename `ezk-pr-pilot`→`ezk-pr`), assainir les refs, carte des rôles
-  (retro/steward/0057, dans `method-map.md`) ; regroupe 0066/0101/0161/0113. *Séquence & prio à arbitrer PO.*
-  *(vz-product-builder = 0164, décision overlay déjà prise — hors épic.)*
-- **Articles & promo** — 0043/0049 · 0156/0053/0069/0073/0074/0062 · epic 0163.
+- ~~**Observabilité qualité** (ex-épic `0051`)~~ — 🗑️ `superseded` (A16) ; thème `observabilite` **parké** (voir JALONS), filles `0052`→`0058` indépendantes. Réveil = ADR-033 accepté.
+- ~~**Rationalisation & cohérence de la méthode** (ex-épic `20260813131737959`) — audit 2026-08-13~~
+  🗑️ `superseded` (A16) : audit livré (#144), filles `0066`/`0101`/`0161`/`0113` désormais indépendantes (thème `rationalisation`). *(vz-product-builder = `0164`, overlay déjà décidé — hors ex-épic.)*
+- **Articles & promo** — 0043/0049 · 0156/0053/0069/0073/0074/0062 · ~~ex-épic `0163`~~ (🗑️ `superseded`, A16 — articles re-routés en JALONS ⑥).
 - **Méthode avancée** — 0065→0068 / 0077 / 0080 / 0088 / 0092 / 0100 (dont le seuil de lot ready, voir ci-dessous).
 - **2ᵉ méthode / BMAD** — 0162.
-- **Archi historique** — epic 0034 · 0024 ; ~~0038~~ **`superseded`** (pilote retiré, 0039 #81) ; **0039 E4 shippé** (#81) + périphérie P3 (réserve). *(0017 · 0018 aussi `superseded` le 2026-09-10.)*
+- **Archi historique** — ~~ex-épic `0034`~~ (🗑️ `superseded`) · `0024` (périphérie P3, réserve) ; ~~0038~~ **`superseded`** (pilote retiré, 0039 #81) ; **0039 E4 shippé** (#81). *(0017 · 0018 aussi `superseded` le 2026-09-10.)*
 
 ## 🚦 Note — lancement autonome (autre session)
 

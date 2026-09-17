@@ -17,7 +17,7 @@ created: 2026-07-22
 
 ## Contexte / Problème
 
-L'épic [0051](0051-observabilite-qualite-produit.md) tient sur une hypothèse à prouver le
+L'épic [0051](done/0051-observabilite-qualite-produit.md) tient sur une hypothèse à prouver le
 moins cher possible : **capter → garder → lire** une métrique de qualité **réelle**, sur une
 **vraie PR**, sans toucher au relicat `@cop1/quality-intelligence` (portes jetables, promis à
 résorption) ni au coût tokens (hors sujet ici). Tant que cette tranche verticale n'existe pas,

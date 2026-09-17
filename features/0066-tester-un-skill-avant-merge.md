@@ -74,7 +74,7 @@ Livrables candidats :
   existe mais **n'est pas câblé**), en plus du niveau 1 (audit statique `ezk-steward`) et de la gate
   de contrat (`src/…`). Ce qui
   **manque, c'est le niveau 2 « exercer le skill »** (golden / dry-run end-to-end) : **0/23** pour
-  cette catégorie — ce que cette fiche porte. Rattachée à l'épic [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md).
+  cette catégorie — ce que cette fiche porte. Rattachée à l'épic [20260813131737959](done/20260813131737959_rationalisation-coherence-methode-epic.md).
 - Un skill **de méthode** a un critère en plus : **émet-il les events du contrat ?** → voir
   0067 (test « golden events ») et l'ADR-032 (émission séparable).
 - Compose : `ezk-steward`, `verify`, `skill-creator`. Origine : cérémonie `ezk-retro`

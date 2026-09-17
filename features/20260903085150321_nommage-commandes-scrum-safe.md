@@ -35,7 +35,7 @@ c'est une **doctrine de nommage** à trancher (elle produira un ADR), dont **un*
   Scrum : le **train** (Agile Release Train) qui roule sur des **incréments** (Program Increment).
 - **Ce n'est pas couvert par les fiches de nommage existantes.** La fiche
   [20260813131737962](20260813131737962_nommage-catalogue-adr0022.md) et l'épic
-  [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md) règlent les
+  [20260813131737959](done/20260813131737959_rationalisation-coherence-methode-epic.md) règlent les
   **préfixes** (`ezk-`/`supervision-`/`vz-`) et le **catalogue** (README, ADR-0022). Ils ne posent
   **pas** la question du *lexique métier* des noms. Angle distinct → nouvelle fiche, liée, pas un
   doublon.
@@ -130,7 +130,7 @@ le retrait gardé des anciens noms (déjà outillé, PR #162).
 - **PO 2026-09-03 — penche pour `ezk-increment`** plutôt que `ezk-train`, **sous réserve** de
   l'ambiguïté artefact (Scrum) vs cadence (SAFe) documentée ci-dessus. Non tranché.
 - **Autonome, pas rattachée à un épic** : l'épic
-  [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md) est en voie de
+  [20260813131737959](done/20260813131737959_rationalisation-coherence-methode-epic.md) est en voie de
   clôture (solde porté par le lot 4b) et son périmètre est l'*hygiène* (préfixes/refs/catalogue),
   pas la *doctrine* de lexique. Le PO tranchera au grooming s'il faut la rattacher.
 - **Voisines** : nommage catalogue
