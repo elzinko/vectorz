@@ -120,35 +120,6 @@
   section.manques ul { margin: 0; padding-left: 20px; color: var(--muted); line-height: 1.6; }
   section.manques li strong { color: var(--text); }
 
-  /* Milestones — cumul par jalon en cartes + barres (format retour PO). */
-  #milestones-rollup { max-width: none; }
-  #milestones-rollup .ms-table { margin-top: 2px; }
-  #milestones-rollup .ms-row {
-    display: grid;
-    grid-template-columns: minmax(120px, 180px) 1fr auto;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 2px;
-  }
-  #milestones-rollup .ms-row + .ms-row { border-top: 1px solid var(--border); }
-  #milestones-rollup .ms-name { font-weight: 600; color: var(--text); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  #milestones-rollup .ms-status {
-    font-size: 0.66rem; letter-spacing: .02em; padding: 1px 7px; border-radius: 999px;
-    border: 1px solid var(--border); font-weight: 500; white-space: nowrap;
-  }
-  #milestones-rollup .ms-bar { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; min-width: 60px; }
-  #milestones-rollup .ms-bar > span { display: block; height: 100%; background: var(--shipped); border-radius: 999px; transition: width .2s; }
-  #milestones-rollup .ms-num {
-    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--muted);
-    white-space: nowrap; font-variant-numeric: tabular-nums;
-  }
-  #milestones-rollup .ms-num b { color: var(--text); font-weight: 600; }
-  @media (max-width: 600px) {
-    #milestones-rollup .ms-row { grid-template-columns: 1fr; row-gap: 6px; }
-    #milestones-rollup .ms-num { order: 1; }
-    #milestones-rollup .ms-bar { order: 2; }
-  }
-
   /* --- Onglets Board / Plan (fiche 20260825213807501) --- */
   .onglets { display: flex; gap: 4px; margin: 0 0 20px; border-bottom: 1px solid var(--border); }
   .onglet {
@@ -258,31 +229,6 @@
 
 <p class="compteur" id="compteur"></p>
 <div class="grille" id="grille"></div>
-
-<section class="manques" id="milestones-rollup"></section>
-
-<section class="manques">
-  <h2>Ce que le board ne sait PAS montrer</h2>
-  <ul>
-    <li><strong>Pas d'étage taxonomie sur les fiches.</strong> Le filtre « type »
-      ci-dessus (feature / bug / refactor / chore) n'est PAS l'étage méthode /
-      modules / librairie de la carte du domaine — ce classement n'existe pas au
-      niveau d'une fiche de backlog. À arbitrer si le besoin se confirme à l'usage.</li>
-    <li><strong>Pas de sprint.</strong> Aucune notion de sprint passé / en cours /
-      futur : c'est le lot 1, volontairement gelé (verdict panel adverse
-      2026-08-23, risque « 4ᵉ système scrum », ADR-0013) tant que l'usage du board
-      n'a pas prouvé le manque.</li>
-    <li><strong>Pas de process scrum visualisé.</strong> Aucune étape macro
-      (tirage → sprint → validation → rétro) avec les fiches positionnées dessus —
-      également lot 1, gelé pour la même raison.</li>
-    <li><strong>Pas d'historique.</strong> Le board montre un instantané au moment
-      du dernier <code>pnpm avancement:regen</code> — aucune trace de la
-      trajectoire d'une fiche dans le temps (dates de changement de statut).</li>
-    <li><strong>Épics sans compteur d'avancement.</strong> Un épic liste ses
-      enfants actifs mais ne dit pas combien sont déjà « shipped » côté épic
-      lui-même (les fiches livrées sortent des actives).</li>
-  </ul>
-</section>
 </div><!-- /vue-board -->
 
 <div id="vue-plan" role="tabpanel" aria-labelledby="onglet-plan" tabindex="0" hidden>
@@ -301,7 +247,7 @@ window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 138,
   "superseded": 15,
-  "idea": 152,
+  "idea": 153,
   "ready": 3,
   "in-progress": 3
  },
@@ -2379,6 +2325,24 @@ window.EZK_AVANCEMENT = {
    "file": "features/20260917123943914_outils-dans-la-carte-methode.md"
   },
   {
+   "id": "20260917143616286",
+   "title": "Recette — brancher Lemon Squeezy + gating Pro in-app (étend lancement-app)",
+   "type": "chore",
+   "priority": "P2",
+   "status": "idea",
+   "ready": false,
+   "milestone": "",
+   "product": "vectorz",
+   "pr": "",
+   "labels": [
+    "recette",
+    "lancement",
+    "monetisation"
+   ],
+   "blocked": "",
+   "file": "features/20260917143616286_recette-lemonsqueezy-gating-pro.md"
+  },
+  {
    "id": "0029",
    "title": "Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace)",
    "type": "chore",
@@ -2868,12 +2832,14 @@ window.EZK_AVANCEMENT = {
    "fondation",
    "format",
    "journal",
+   "lancement",
    "lisibilite",
    "llm",
    "marketing",
    "method",
    "methode",
    "milestone",
+   "monetisation",
    "moteur",
    "nommage",
    "observabilite",
@@ -4695,6 +4661,14 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260917143616286",
+   "title": "Recette — brancher Lemon Squeezy + gating Pro in-app (étend lancement-app)",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260917143616286_recette-lemonsqueezy-gating-pro.md"
+  },
+  {
    "id": "20260917123943914",
    "title": "Outils dans la carte méthode — un type de nœud `tool` (bin/script/commande) relié aux skills",
    "status": "idea",
@@ -4805,14 +4779,6 @@ window.EZK_PLAN_DELTA = {
    "priority": "P1",
    "inPlan": false,
    "file": "features/20260906122942607_run-report-synthese-fin-de-run.md"
-  },
-  {
-   "id": "20260906122942555",
-   "title": "Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260906122942555_preflight-contexte-de-run.md"
   }
  ],
  "offPlanCount": 0,
@@ -5042,61 +5008,6 @@ window.EZK_PLAN_DELTA = {
     s.addEventListener('change', render);
   });
   render();
-})();
-</script>
-
-<script>
-// Milestones — avancement cumulé par jalon (ADR-0017 A16, remplace le cumul par épic).
-// DOM + textContent, JAMAIS innerHTML sur du texte de fiche (même discipline que le board).
-(function renderMilestones() {
-  var box = document.getElementById('milestones-rollup');
-  if (!box) return;
-  var milestones = (window.EZK_AVANCEMENT && window.EZK_AVANCEMENT.milestones) || [];
-  if (!milestones.length) return;
-  var h = document.createElement('h2');
-  h.textContent = 'Milestones — avancement cumulé par jalon';
-  box.appendChild(h);
-  var table = document.createElement('div');
-  table.className = 'ms-table';
-  milestones.forEach(function (m) {
-    var total = m.total || 0;
-    var shipped = m.shipped || 0;
-    var pct = total ? Math.round((shipped / total) * 100) : 0;
-    var row = document.createElement('div');
-    row.className = 'ms-row';
-
-    var name = document.createElement('div');
-    name.className = 'ms-name';
-    var label = document.createElement('span');
-    label.textContent = m.milestone;
-    var status = document.createElement('span');
-    status.className = 'ms-status';
-    status.textContent = m.status;
-    // Statut = enum dérivé (shipped | in-progress | idea) → couleur via la variable de statut du board.
-    status.style.color = 'var(--' + m.status + ')';
-    status.style.borderColor = 'var(--' + m.status + ')';
-    name.appendChild(label);
-    name.appendChild(status);
-
-    var bar = document.createElement('div');
-    bar.className = 'ms-bar';
-    var fill = document.createElement('span');
-    fill.style.width = pct + '%';
-    bar.appendChild(fill);
-
-    var num = document.createElement('div');
-    num.className = 'ms-num';
-    var strong = document.createElement('b');
-    strong.textContent = total;
-    num.appendChild(strong);
-    num.appendChild(document.createTextNode(' fiche(s) · ' + shipped + ' livrée(s)'));
-
-    row.appendChild(name);
-    row.appendChild(bar);
-    row.appendChild(num);
-    table.appendChild(row);
-  });
-  box.appendChild(table);
 })();
 </script>
 

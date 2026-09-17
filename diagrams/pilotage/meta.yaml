@@ -1,0 +1,14 @@
+title: "Pilotage — avancement par milestone + historique des runs"
+categorie: pilotage
+date: 2026-09-17
+type: board
+links:
+  entry: pilotage.html
+  fiche: ../../features/20260826072532452_vue-sprints-realises-ezk-map.md
+  compilateur: ../../products/mega-city/src/core/pilotage-data.ts
+  regen: "pnpm --dir products/mega-city pilotage:regen"
+note: >-
+  Le suivi de HAUT NIVEAU, sorti du board (décision PO 2026-09-17) : cumul par
+  milestone + résumé de l'historique des runs (détail dans la carte `runs`).
+  Compose avancement-data + runs-data — zéro logique nouvelle. À venir : sessions
+  vivantes + détail par-PR quand ezk-archive émettra un en-tête structuré.
