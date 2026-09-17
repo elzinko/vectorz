@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Pilotage — vectorz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Palette du board (même look), clair par défaut, sombre selon système ou bascule. */
+  :root {
+    color-scheme: light dark;
+    --bg: #f5f6f8; --panel: #ffffff; --border: #d8dce4; --text: #1b1e25; --muted: #59616f;
+    --shipped: #2c8f4c; --idea: #7458cf; --in-progress: #b6740f; --accent: #2f6fed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+      --shipped: #34a853; --idea: #8a6fd8; --in-progress: #f5a524; --accent: #5b9bd5;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+    --shipped: #34a853; --idea: #8a6fd8; --in-progress: #f5a524; --accent: #5b9bd5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, 'Segoe UI', sans-serif; line-height: 1.5;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-family: "Chakra Petch", sans-serif; font-size: 1.5rem; margin: 0 0 4px; letter-spacing: .01em; }
+  .en-clair { color: var(--muted); margin: 0 0 24px; max-width: 72ch; }
+  h2 { font-size: 1rem; margin: 0 0 12px; }
+  section.bloc {
+    margin-bottom: 22px; padding: 16px 18px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+
+  /* Milestones — cartes + barres (repris du board, retour PO). */
+  .ms-table { margin-top: 2px; }
+  .ms-row { display: grid; grid-template-columns: minmax(120px, 180px) 1fr auto; align-items: center; gap: 16px; padding: 12px 2px; }
+  .ms-row + .ms-row { border-top: 1px solid var(--border); }
+  .ms-name { font-weight: 600; color: var(--text); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .ms-status { font-size: 0.66rem; letter-spacing: .02em; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); font-weight: 500; white-space: nowrap; }
+  .ms-bar { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; min-width: 60px; }
+  .ms-bar > span { display: block; height: 100%; background: var(--shipped); border-radius: 999px; }
+  .ms-num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ms-num b { color: var(--text); font-weight: 600; }
+  @media (max-width: 600px) {
+    .ms-row { grid-template-columns: 1fr; row-gap: 6px; }
+    .ms-num { order: 1; } .ms-bar { order: 2; }
+  }
+
+  /* Runs — résumé + lien vers l'historique complet. */
+  .lien-carte { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .lien-carte .stat { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.9rem; color: var(--muted); }
+  .lien-carte .stat b { color: var(--text); font-size: 1.1rem; }
+  .bouton {
+    display: inline-block; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent);
+    color: var(--accent); text-decoration: none; font-size: 0.88rem; font-weight: 500;
+  }
+  .bouton:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .avenir { color: var(--muted); font-size: 0.85rem; margin: 10px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pilotage</h1>
+  <p class="en-clair">Le suivi de <strong>haut niveau</strong> : où en est chaque <em>milestone</em>,
+    et l'historique des <em>runs</em>. Le <a class="lien" href="../avancement/board.html">board</a>,
+    lui, montre le stock de fiches. Tout est compilé — rien n'est saisi à la main.</p>
+
+  <section class="bloc">
+    <h2>Milestones — avancement cumulé par jalon</h2>
+    <div class="ms-table" id="milestones-rollup"></div>
+  </section>
+
+  <section class="bloc">
+    <h2>Runs — l'historique de ce qui a été fait</h2>
+    <div class="lien-carte">
+      <span class="stat" id="runs-stat">—</span>
+      <a class="bouton" href="../runs/runs.html">Ouvrir l'historique des runs →</a>
+    </div>
+    <p class="avenir">À venir ici : les <strong>sessions vivantes</strong> et le détail par-PR
+      (quoi · comment valider) quand <code>ezk-archive</code> émettra un en-tête structuré.</p>
+  </section>
+</div>
+
+<script>
+/*ezk-pilotage-data:begin*/
+window.EZK_PILOTAGE = {
+ "milestones": [
+  {
+   "milestone": "fondation",
+   "status": "in-progress",
+   "total": 10,
+   "shipped": 2,
+   "counts": {
+    "idea": 7,
+    "shipped": 2,
+    "in-progress": 1
+   },
+   "children": [
+    "20260821163346490",
+    "20260821163346493",
+    "20260821163346496",
+    "20260821163346498",
+    "20260821163346501",
+    "20260821163346503",
+    "20260821204737357",
+    "20260826222044335"
+   ]
+  },
+  {
+   "milestone": "rationalisation",
+   "status": "in-progress",
+   "total": 12,
+   "shipped": 2,
+   "counts": {
+    "idea": 10,
+    "shipped": 2
+   },
+   "children": [
+    "0066",
+    "0100",
+    "0161",
+    "20260812104022231",
+    "20260812104022243",
+    "20260813131737962",
+    "20260813131737971",
+    "20260815080414006",
+    "20260816131703334",
+    "20260825160456259"
+   ]
+  },
+  {
+   "milestone": "articles",
+   "status": "idea",
+   "total": 5,
+   "shipped": 0,
+   "counts": {
+    "idea": 5
+   },
+   "children": [
+    "0073",
+    "0074",
+    "0156",
+    "0157",
+    "20260821172716540"
+   ]
+  },
+  {
+   "milestone": "parked",
+   "status": "idea",
+   "total": 7,
+   "shipped": 0,
+   "counts": {
+    "idea": 7
+   },
+   "children": [
+    "0052",
+    "0053",
+    "0054",
+    "0055",
+    "0056",
+    "0057",
+    "0058"
+   ]
+  }
+ ],
+ "runs": {
+  "total": 15,
+  "withPr": 8,
+  "prs": 11
+ }
+};
+/*ezk-pilotage-data:end*/
+</script>
+
+<script>
+// Rendu de window.EZK_PILOTAGE. DOM + textContent, JAMAIS innerHTML sur du texte de fiche (anti-XSS).
+(function () {
+  var data = window.EZK_PILOTAGE || { milestones: [], runs: {} };
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  // Milestones (cartes + barres) — même rendu que le board.
+  var box = document.getElementById('milestones-rollup');
+  (data.milestones || []).forEach(function (m) {
+    var total = m.total || 0, shipped = m.shipped || 0;
+    var pct = total ? Math.round((shipped / total) * 100) : 0;
+    var row = el('div', 'ms-row');
+    var name = el('div', 'ms-name');
+    name.appendChild(el('span', null, m.milestone));
+    var status = el('span', 'ms-status', m.status);
+    status.style.color = 'var(--' + m.status + ')';        // enum dérivé : shipped|in-progress|idea
+    status.style.borderColor = 'var(--' + m.status + ')';
+    name.appendChild(status);
+    var bar = el('div', 'ms-bar');
+    var fill = el('span'); fill.style.width = pct + '%'; bar.appendChild(fill);
+    var num = el('div', 'ms-num');
+    var b = el('b'); b.textContent = total; num.appendChild(b);
+    num.appendChild(document.createTextNode(' fiche(s) · ' + shipped + ' livrée(s)'));
+    row.appendChild(name); row.appendChild(bar); row.appendChild(num);
+    box.appendChild(row);
+  });
+  if (!(data.milestones || []).length) box.appendChild(el('div', 'ms-num', 'Aucun milestone posé.'));
+
+  // Résumé runs.
+  var r = data.runs || {};
+  var stat = document.getElementById('runs-stat');
+  stat.textContent = '';
+  var strong = el('b', null, r.total || 0);
+  stat.appendChild(strong);
+  stat.appendChild(document.createTextNode(' run(s) archivé(s) · ' + (r.prs || 0) + ' PR distinctes'));
+})();
+</script>
+</body>
+</html>

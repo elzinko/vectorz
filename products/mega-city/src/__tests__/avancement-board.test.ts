@@ -65,7 +65,6 @@ describe('diagrams/avancement/board.html — données à jour (fidélité par co
       priority: 'P2',
       status: 'idea',
       ready: false,
-      epic: '',
       milestone: '',
       product: 'mega-city',
       pr: '',

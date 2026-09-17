@@ -1,18 +1,23 @@
 ---
 id: "20260824060737115"
 title: Épic — Marketing & site (orchestrateur, landing, recette site)
-type: epic
+type: feature
 priority: P1
 product: mega-city
 version:
 epic:
 milestone: articles
 labels: [marketing]
-status: idea
+status: superseded
 ready:
 pr:
 created: 2026-08-24
 ---
+
+> **🗑️ Fondue le 2026-09-16 — `superseded` (ADR-0017 A16).** L'épic disparaît comme objet :
+> thème (`labels: [marketing]`) + `milestone: articles`. Ce conteneur fédérait `0156` / `0157` /
+> `20260821172716540`, qui restent indépendants (milestone `articles`, sans champ `epic:`).
+> Registre des fermetures : `docs/captures/2026-08-24-fermetures-backlog-paquet2.md`.
 
 ## En clair
 

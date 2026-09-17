@@ -4,7 +4,6 @@ title: ezk-challenge — panel de challenge adversarial réutilisable (relecteur
 type: feature
 priority: P2
 product: mega-city
-epic: "20260813131737959"
 milestone: rationalisation
 labels: [rationalisation]
 status: idea

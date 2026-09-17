@@ -4,7 +4,6 @@ title: Arbitrage double-writer sprint-status.yaml (porter la décision D7)
 type: chore
 priority: P1
 product: vectorz
-epic: 0034
 status: shipped
 pr: "#14"
 created: 2026-07-15

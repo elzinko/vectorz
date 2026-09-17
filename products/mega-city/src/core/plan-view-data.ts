@@ -20,7 +20,6 @@ export interface PlanCardView {
   status: string;
   priority: string;
   ready: boolean;
-  epic: string;
   product: string;
   type: string;
   pr: string;
@@ -67,7 +66,6 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
       status: '',
       priority: '',
       ready: false,
-      epic: '',
       product: '',
       type: '',
       pr: '',
@@ -81,7 +79,6 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
     status: f.status,
     priority: f.priority,
     ready: f.ready,
-    epic: f.epic,
     product: f.product,
     type: f.type,
     pr: f.pr,

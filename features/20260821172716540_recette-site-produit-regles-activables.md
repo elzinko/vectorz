@@ -5,7 +5,6 @@ type: feature
 priority: P2 # posée par défaut — PO à confirmer (P1 si construction dès la prochaine session)
 product: mega-city
 version:
-epic: "20260824060737115"
 milestone: articles
 labels: [recette]
 status: idea

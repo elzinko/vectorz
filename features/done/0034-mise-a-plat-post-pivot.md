@@ -1,7 +1,7 @@
 ---
 id: 0034
 title: Mise à plat post-pivot — aligner Vectorz/cop1 sur ADR-021→028 (épic)
-type: epic
+type: feature
 priority: P0
 product: vectorz
 status: superseded
@@ -10,6 +10,10 @@ created: 2026-07-15
 ---
 
 # 0034 — Mise à plat post-pivot (épic)
+
+> **🗑️ `type: epic` → `feature` le 2026-09-16 (ADR-0017 A16).** L'objet « épic » est retiré ;
+> cette fiche reste `superseded` dans `done/`. Ses ex-filles (`0035` / `0036` / `0037` / `0038` /
+> `0039` / `0040` / `0018` / `0020`) perdent leur champ `epic:`.
 
 > **🗑️ Clôturé le 2026-09-11 — `superseded`.** Épic ~80 % livré (0035 / 0036 / 0037 / 0039 /
 > 0060 / 0182 shippés). Les enfants « mode pilote » sont clos `superseded` (0030 / 0038 / 0018 /

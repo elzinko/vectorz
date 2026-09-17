@@ -4,7 +4,6 @@ title: ezk-marketing — orchestrateur de promotion produit (articles d'épopée
 type: feature
 priority: P1
 product: mega-city
-epic: "20260824060737115"
 milestone: articles
 labels: [marketing]
 status: idea

@@ -4,7 +4,6 @@ title: Consolider les statuts ADR (re-tampons sans gate démo — L4a de 0034)
 type: chore
 priority: P0
 product: vectorz
-epic: 0034
 status: shipped
 pr: "#12"
 created: 2026-07-15

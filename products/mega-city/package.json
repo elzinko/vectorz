@@ -30,6 +30,8 @@
     "avancement": "tsx bin/avancement.ts",
     "backlog:aggregate": "tsx bin/backlog-aggregate.ts",
     "avancement:regen": "tsx bin/regen-avancement.ts",
+    "runs:regen": "tsx bin/regen-runs.ts",
+    "pilotage:regen": "tsx bin/regen-pilotage.ts",
     "plan-view:regen": "tsx bin/regen-plan-view.ts",
     "plan-delta:regen": "tsx bin/regen-plan-delta.ts",
     "ci:conso": "tsx bin/ci-conso.ts",

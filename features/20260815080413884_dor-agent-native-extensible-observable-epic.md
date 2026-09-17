@@ -1,16 +1,22 @@
 ---
 id: "20260815080413884"
 title: DoR agent-native — extensible par projet + readiness observable (épic)
-type: epic
+type: feature
 priority: P2
 product: mega-city
-status: idea
+status: superseded
 milestone: rationalisation
 labels: [dor]
 created: 2026-08-15
 ---
 
 # DoR agent-native — extensible par projet + readiness observable
+
+> **🗑️ Fondue le 2026-09-16 — `superseded` (ADR-0017 A16).** L'épic disparaît comme objet :
+> thème (`labels: [dor]`) + `milestone: rationalisation`. La thèse « DoR = INVEST − cérémonie + 2
+> slots agent-era » est déjà gravée dans ADR-0016 ; les chantiers vivent dans les filles `0100`,
+> `20260812104022231`, `20260812104022243`, `20260815080414006` (milestone `rationalisation`, sans
+> champ `epic:`).
 
 ## Contexte / Problème
 

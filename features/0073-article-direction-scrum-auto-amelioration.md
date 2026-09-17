@@ -4,7 +4,6 @@ title: article — donner à l'auto-amélioration la direction scrum (mapper sa 
 type: feature
 priority: P2
 product: mega-city
-epic: 0163
 milestone: articles
 labels: [article]
 status: idea

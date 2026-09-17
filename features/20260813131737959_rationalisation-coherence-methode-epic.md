@@ -1,20 +1,25 @@
 ---
 id: "20260813131737959"
 title: Rationalisation & cohérence de la méthode mega-city — audit → chantiers (épic)
-type: epic
+type: feature
 priority: P2
 product: mega-city
 version:
 epic:
 milestone: rationalisation
 labels: [rationalisation]
-status: idea
+status: superseded
 ready:
 pr:
 created: 2026-08-13
 ---
 
 # Rationalisation & cohérence de la méthode mega-city (épic)
+
+> **🗑️ Fondue le 2026-09-16 — `superseded` (ADR-0017 A16).** L'épic disparaît comme objet :
+> thème (`labels: [rationalisation]`) + `milestone: rationalisation`. Le reliquat vivant est porté
+> par la fiche `20260824061247344` (lot 4b — « le solde de cet épic est porté par elle », déjà écrit
+> plus bas). Ex-filles indépendantes, milestone `rationalisation`, sans champ `epic:`.
 
 ## En clair
 

@@ -4,7 +4,6 @@ title: AgentSessionPort — prouver l'indépendance à l'agent (StubExecutor, pu
 type: feature
 priority: P2
 product: vectorz
-epic: 0034
 status: superseded
 pr: superseded — pilote cop1 retiré (jumeau 0038/0018)
 created: 2026-06-28

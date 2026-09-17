@@ -188,6 +188,11 @@ aggregate, readyé via #177) — probablement pris par une autre session.
 
 ## ⏳ LATER — pas maintenant
 
+> **Note 2026-09-16 (ADR-0017 A16)** : « épic » ci-dessous = **vocabulaire historique**, retiré le
+> 2026-09-15. Le regroupement passe au **thème** (`labels:`) + **milestone** (voir la section JALONS
+> plus haut) ; les ex-épics (`0051` / `20260813131737959` / `0163` / `0034` …) sont `superseded`,
+> leurs filles restées indépendantes.
+
 - ⚠️ **Distribution / publication** — 0087 · 0050 · 0078 · 0096 · 0186.
   **NE PAS PUBLIER : pas prêt (décision PO 2026-07-26).** L'ADR de versionnage et la
   question « méthode dans le projet, façon BMAD » s'instruiront quand *le PO* décidera

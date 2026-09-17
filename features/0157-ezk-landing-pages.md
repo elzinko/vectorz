@@ -4,7 +4,6 @@ title: ezk-landing — skill de création de landing pages pro FR/EN (patrons r�
 type: feature
 priority: P1
 product: mega-city
-epic: "20260824060737115"
 milestone: articles
 labels: [marketing]
 status: idea

@@ -4,11 +4,11 @@
  * ADR-0051). Le cœur PUR (`src/backlog/aggregate.ts`) fait le clustering ; ICI = lecture
  * disque + affichage. **LECTURE SEULE — n'écrit jamais aucune fiche.**
  *
- *   pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn|epic:<id>>]
- *     [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>]
+ *   pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn>]
+ *     [--focus <merge|split|dedup|reprioritize>] [--mode <script|llm|both>]
  *
  * `aggregate` PROPOSE seulement (ADR-0001 : le script range, le PO tranche) : chaque
- * proposition nomme le geste d'application (fusion `merged` / rattachement épic) sans
+ * proposition nomme le geste d'application (fusion `merged`) sans
  * l'exécuter — **jamais `ship`** (ship = livrer une fiche et la déplacer dans `done/`,
  * pas regrouper des fiches actives ; Codex #223 P1).
  */
@@ -18,10 +18,10 @@ import { type AggregateCluster, aggregateByScript, selectScope } from '../src/ba
 import { loadFiches } from '../src/loaders/fiches.js';
 
 type Mode = 'script' | 'llm' | 'both';
-type Focus = 'merge' | 'split' | 'epics' | 'dedup' | 'reprioritize';
+type Focus = 'merge' | 'split' | 'dedup' | 'reprioritize';
 
 const MODES: readonly Mode[] = ['script', 'llm', 'both'];
-const FOCUSES: readonly Focus[] = ['merge', 'split', 'epics', 'dedup', 'reprioritize'];
+const FOCUSES: readonly Focus[] = ['merge', 'split', 'dedup', 'reprioritize'];
 
 function die(msg: string): never {
   console.error(`erreur: ${msg}`);
@@ -49,19 +49,17 @@ function parseArgs(argv: string[]): { scope: string; focus: Focus | null; mode: 
 
 /**
  * Focus couverts par un cluster : `label`/`title-prefix` = candidat FUSION, lisible aussi
- * sous `dedup` (ce SONT les doublons) ; `epic` = rattachement. Sans ce `dedup`, `--focus dedup`
- * filtrerait tous les clusters et n'afficherait que les singletons — l'inverse de son nom.
+ * sous `dedup` (ce SONT les doublons). Sans ce `dedup`, `--focus dedup` filtrerait tous les
+ * clusters et n'afficherait que les singletons — l'inverse de son nom.
  */
-function clusterFocuses(cluster: AggregateCluster): Focus[] {
-  return cluster.reason === 'epic' ? ['epics'] : ['merge', 'dedup'];
+function clusterFocuses(_cluster: AggregateCluster): Focus[] {
+  return ['merge', 'dedup'];
 }
 
 /** Nomme le geste d'application SANS l'exécuter — jamais `ship` (Codex #223 P1). */
 function printCluster(n: number, cluster: AggregateCluster): void {
   const geste =
-    cluster.reason === 'epic'
-      ? `rattacher à l'épic « ${cluster.key} » (éditer le champ epic: des fiches)`
-      : 'fusion candidate → statut `merged` (gated sur la fiche 20260823121712652 — pas de `ship`)';
+    'fusion candidate → statut `merged` (gated sur la fiche 20260823121712652 — pas de `ship`)';
   console.log(
     `  ${n}. [${cluster.reason}] "${cluster.key}" — ${cluster.ficheIds.join(', ')} → ${geste}`,
   );
@@ -76,13 +74,10 @@ function main(): void {
   // tomberait sinon dans un filtre produit vide et afficherait un message trompeur (ezk-reviewer P2).
   const knownProducts = [...new Set(allFiches.map((f) => f.product))].sort();
   const scopeOk =
-    scope === 'all' ||
-    /^P[0-3]$/.test(scope) ||
-    scope.startsWith('epic:') ||
-    knownProducts.includes(scope);
+    scope === 'all' || /^P[0-3]$/.test(scope) || knownProducts.includes(scope);
   if (!scopeOk) {
     die(
-      `--scope « ${scope} » non reconnu (attendu : all | P0..P3 | epic:<id> | ` +
+      `--scope « ${scope} » non reconnu (attendu : all | P0..P3 | ` +
         `un produit connu : ${knownProducts.join(', ')}).`,
     );
   }

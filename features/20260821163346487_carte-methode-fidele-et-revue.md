@@ -1,19 +1,24 @@
 ---
 id: "20260821163346487"
 title: Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau
-type: epic
+type: feature
 priority: P1
 product: mega-city
 version:
 epic: 
 milestone: fondation
 labels: [carte]
-status: idea
+status: superseded
 ready:
 pr:
 created: 2026-08-21
 ---
 # La carte de la méthode : fidèle, et revue morceau par morceau
+
+> **🗑️ Fondue le 2026-09-16 — `superseded` (ADR-0017 A16).** L'épic disparaît comme objet :
+> le regroupement passe au thème (`labels: [carte]`) + `milestone: fondation`. Le reliquat vivant
+> de cette carte est porté par la fiche `20260824061247344` (lot 4b). Les ex-filles restent
+> indépendantes, milestone `fondation`, sans champ `epic:`.
 
 ## En clair
 

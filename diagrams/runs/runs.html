@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Historique des runs — vectorz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Palette du board (même look), clair par défaut, sombre selon système ou bascule. */
+  :root {
+    color-scheme: light dark;
+    --bg: #f5f6f8; --panel: #ffffff; --border: #d8dce4; --text: #1b1e25; --muted: #59616f;
+    --accent: #2c8f4c; --pr: #2f6fed; --fiche: #7458cf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+      --accent: #34a853; --pr: #5b9bd5; --fiche: #8a6fd8;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e7e9ee; --muted: #9aa2b1;
+    --accent: #34a853; --pr: #5b9bd5; --fiche: #8a6fd8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, 'Segoe UI', sans-serif; line-height: 1.5;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-family: "Chakra Petch", sans-serif; font-size: 1.5rem; margin: 0 0 4px; letter-spacing: .01em; }
+  .en-clair { color: var(--muted); margin: 0 0 20px; max-width: 72ch; }
+  .barre {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px;
+    padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .barre label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: var(--muted); flex: 1 1 240px; }
+  .barre input {
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 7px 10px; font: inherit;
+  }
+  .compteur { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; }
+  .liste { display: grid; gap: 12px; }
+  .run {
+    background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .run-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .run-date {
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--muted);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .run-titre { font-size: 1.02rem; font-weight: 600; margin: 0; line-height: 1.3; flex: 1 1 300px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip {
+    font-size: 0.74rem; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border);
+    text-decoration: none; white-space: nowrap;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  .chip.pr { color: var(--pr); border-color: var(--pr); }
+  .chip.pr:hover { background: color-mix(in srgb, var(--pr) 12%, transparent); }
+  .chip.fiche { color: var(--fiche); border-color: var(--fiche); }
+  .run-foot { margin-top: 10px; }
+  .run-link { color: var(--muted); font-size: 0.82rem; text-decoration: none; }
+  .run-link:hover { color: var(--text); text-decoration: underline; }
+  .vide { color: var(--muted); padding: 40px; text-align: center; border: 1px dashed var(--border); border-radius: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Historique des runs</h1>
+  <p class="en-clair">Chaque run (session close, nocturne ou diurne) et ce qu'il a livré — ses PR,
+    ses fiches, un lien vers le récit complet. Compilé depuis les comptes-rendus de
+    <code>docs/sessions/</code> (figés par <code>ezk-archive</code>) — rien n'est saisi à la main.</p>
+
+  <div class="barre">
+    <label>Rechercher (titre, date, PR, fiche)
+      <input id="f-search" type="search" placeholder="ex. product-build, 171, 2026-08…" autocomplete="off" />
+    </label>
+  </div>
+
+  <p class="compteur" id="compteur"></p>
+  <div class="liste" id="runs-list"></div>
+</div>
+
+<script>
+/*ezk-runs-data:begin*/
+window.EZK_RUNS = {
+ "runs": [
+  {
+   "file": "docs/sessions/2026-08-30-suppr-bundles-orphelins.md",
+   "date": "2026-08-30",
+   "slug": "suppr-bundles-orphelins",
+   "title": "Sprint — supprimer les 2 bundles orphelins [20260823124042708]",
+   "fiches": [],
+   "prs": []
+  },
+  {
+   "file": "docs/sessions/2026-08-29-samplerz-cablage-domaine.md",
+   "date": "2026-08-29",
+   "slug": "samplerz-cablage-domaine",
+   "title": "Sprint — samplerz : câblage du domaine (Vercel + DNS IONOS)",
+   "fiches": [
+    "20260829123707100"
+   ],
+   "prs": []
+  },
+  {
+   "file": "docs/sessions/2026-08-29-ezk-ci-conso.md",
+   "date": "2026-08-29",
+   "slug": "ezk-ci-conso",
+   "title": "Sprint — ezk-ci conso : script déterministe + endpoint billing migré",
+   "fiches": [],
+   "prs": [
+    "186"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-08-27-ezk-map-carte-loi-board-design.md",
+   "date": "2026-08-27",
+   "slug": "ezk-map-carte-loi-board-design",
+   "title": "Sprint — carte-loi : ouvrir LA LOI dans ezk:map (fiche 20260821172716537)",
+   "fiches": [],
+   "prs": [
+    "179"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-08-26-product-build-4-sprints.md",
+   "date": "2026-08-26",
+   "slug": "product-build-4-sprints",
+   "title": "Clôture — Product-build autonome, 4 sprints",
+   "fiches": [],
+   "prs": [
+    "171",
+    "173",
+    "174",
+    "175"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-08-26-fondation-modele-fichiers-adr0040.md",
+   "date": "2026-08-26",
+   "slug": "fondation-modele-fichiers-adr0040",
+   "title": "Sprint — Graphe compilé (fiche 357), étape 1 de l'ADR-0040",
+   "fiches": [],
+   "prs": []
+  },
+  {
+   "file": "docs/sessions/2026-08-17-product-builder-0183-0184.md",
+   "date": "2026-08-17",
+   "slug": "product-builder-0183-0184",
+   "title": "SPRINT — mega-city",
+   "fiches": [],
+   "prs": [
+    "125"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-08-16-ezk-help-doc-strategy.md",
+   "date": "2026-08-16",
+   "slug": "ezk-help-doc-strategy",
+   "title": "Sprint — 0191 Lisibilité qui tient (product-builder --check-ready false)",
+   "fiches": [],
+   "prs": []
+  },
+  {
+   "file": "docs/sessions/2026-08-14-product-builder-auto-groom.md",
+   "date": "2026-08-14",
+   "slug": "product-builder-auto-groom",
+   "title": "Sprint — 0191 Lisibilité qui tient (product-builder --check-ready false)",
+   "fiches": [],
+   "prs": []
+  },
+  {
+   "file": "docs/sessions/2026-08-12-sprint-0149-composes.md",
+   "date": "2026-08-12",
+   "slug": "sprint-0149-composes",
+   "title": "SPRINT — 0149 `composes:`",
+   "fiches": [],
+   "prs": [
+    "121"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-08-05-sprint-0062-onglet-projets.md",
+   "date": "2026-08-05",
+   "slug": "sprint-0062-onglet-projets",
+   "title": "Sprint — 0062 Onglet Projets Moniteur",
+   "fiches": [],
+   "prs": []
+  },
+  {
+   "file": "docs/sessions/2026-08-03-sprint-0176.md",
+   "date": "2026-08-03",
+   "slug": "sprint-0176",
+   "title": "Sprint — 0176 interdit gitconfig global identité agent",
+   "fiches": [],
+   "prs": [
+    "89"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-08-01-reconcile-0173.md",
+   "date": "2026-08-01",
+   "slug": "reconcile-0173",
+   "title": "Sprint — intake 2026-07-31",
+   "fiches": [],
+   "prs": [
+    "83"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-07-31-sprint-0168.md",
+   "date": "2026-07-31",
+   "slug": "sprint-0168",
+   "title": "Sprint — 0168 run orphelin / verrou sans clé",
+   "fiches": [],
+   "prs": [
+    "76"
+   ]
+  },
+  {
+   "file": "docs/sessions/2026-07-31-sprint-0079.md",
+   "date": "2026-07-31",
+   "slug": "sprint-0079",
+   "title": "Sprint — 0079 lisibilité artefacts humains",
+   "fiches": [],
+   "prs": []
+  }
+ ],
+ "counts": {
+  "total": 15,
+  "withPr": 8,
+  "prs": 11,
+  "fiches": 1
+ }
+};
+/*ezk-runs-data:end*/
+</script>
+
+<script>
+// Rendu de window.EZK_RUNS. DOM + textContent, JAMAIS innerHTML sur du texte de récit (anti-XSS,
+// même discipline que le board d'avancement). fiche 20260826072532452.
+(function () {
+  var data = window.EZK_RUNS || { runs: [], counts: {} };
+  var runs = data.runs || [];
+  var counts = data.counts || {};
+  var list = document.getElementById('runs-list');
+  var search = document.getElementById('f-search');
+  var compteur = document.getElementById('compteur');
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function card(r) {
+    var c = el('article', 'run');
+    var head = el('div', 'run-head');
+    head.appendChild(el('span', 'run-date', r.date));
+    head.appendChild(el('h2', 'run-titre', r.title));
+    c.appendChild(head);
+
+    var prs = r.prs || [], fiches = r.fiches || [];
+    if (prs.length || fiches.length) {
+      var chips = el('div', 'chips');
+      prs.forEach(function (n) {
+        var a = el('a', 'chip pr', '#' + n);
+        a.href = 'https://github.com/elzinko/vectorz/pull/' + encodeURIComponent(n);
+        a.target = '_blank'; a.rel = 'noopener';
+        chips.appendChild(a);
+      });
+      fiches.forEach(function (id) { chips.appendChild(el('span', 'chip fiche', 'fiche ' + id)); });
+      c.appendChild(chips);
+    }
+
+    var foot = el('div', 'run-foot');
+    var link = el('a', 'run-link', '→ récit complet');
+    link.href = '../../' + r.file;   // servi en texte par ezk:map
+    foot.appendChild(link);
+    c.appendChild(foot);
+    return c;
+  }
+
+  function render() {
+    var q = (search && search.value || '').toLowerCase().trim();
+    var filtered = runs.filter(function (r) {
+      if (!q) return true;
+      var hay = (r.title + ' ' + r.date + ' ' + (r.prs || []).join(' ') + ' ' + (r.fiches || []).join(' ')).toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+    list.innerHTML = '';
+    if (!filtered.length) {
+      list.appendChild(el('div', 'vide', 'Aucun run pour cette recherche.'));
+    } else {
+      filtered.forEach(function (r) { list.appendChild(card(r)); });
+    }
+    compteur.textContent = filtered.length + ' run(s) sur ' + runs.length + ' — ' +
+      (counts.prs || 0) + ' PR distinctes, ' + (counts.fiches || 0) + ' fiche(s) citées.';
+  }
+
+  if (search) search.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

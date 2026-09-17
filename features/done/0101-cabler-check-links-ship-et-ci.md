@@ -4,7 +4,6 @@ title: Câbler check-links.sh — un contrôle que personne ne lance ne protège
 type: chore
 priority: P2
 product: mega-city
-epic: "20260813131737959"
 labels: [rationalisation]
 milestone: rationalisation
 status: shipped
