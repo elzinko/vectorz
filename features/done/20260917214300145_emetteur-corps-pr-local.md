@@ -6,9 +6,9 @@ priority: P1 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [github-optionnel, plugin]
-status: ready # idea | ready | in-progress | blocked | shipped
+status: shipped # idea | ready | in-progress | blocked | shipped
 ready: 2026-09-17 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète)
-pr:
+pr: "#252"
 evidence: none # outil CLI + câblage skill, pas d'écran
 created: 2026-09-17
 ---
@@ -31,7 +31,7 @@ en `pr: false`, un `review:emit` → `REVIEW.md`. Or `REVIEW.md` suit le schéma
 `method-review` (résumé + matrice + à tester) : c'est le **compte-rendu de la revue adverse**,
 pas le **corps de PR**.
 
-Le corps de PR, lui, est défini par [ADR-0029](../products/mega-city/docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) :
+Le corps de PR, lui, est défini par [ADR-0029](../../products/mega-city/docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) :
 « la fiche est le document, la PR en est le rendu ». Sur GitHub, à l'ouverture de la PR, on
 recopie la fiche dans le corps. Sans GitHub, ce rendu n'était produit **nulle part** de façon
 systématique. Résultat : en mode off, on ne retrouve pas le lendemain « la PR qu'on aurait
