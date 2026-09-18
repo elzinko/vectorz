@@ -104,6 +104,7 @@
 | [20260906121839943](done/20260906121839943_unifier-ezk-secret-cli.md) | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 | vectorz | ✅ shipped | #216 |
 | [20260911224102584](done/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md) | Rétro systématique en fin d'itération multi-sprint — appliquer les 2-3 actions clés, tamponner le reste | feature | P1 | mega-city | ✅ shipped | #229 |
 | [20260917214300145](done/20260917214300145_emetteur-corps-pr-local.md) | Émetteur automatique du corps de PR local (rendu de la fiche) en mode github off | feature | P1 | mega-city | ✅ shipped | #252 |
+| [20260917221003631](20260917221003631_cabler-ezk-pr-github-off.md) | Câbler ezk-pr sur les capacités GitHub (mode github off même avec remote) | feature | P1 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 | vectorz | ✅ shipped | #32 |
