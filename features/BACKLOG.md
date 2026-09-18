@@ -155,6 +155,7 @@
 | [20260828165644386](done/20260828165644386_vue-ecart-plan-delta.md) | Vue « écart plan » — dernières fiches créées, badgées dans le plan / hors plan | feature | P2 | mega-city | ✅ shipped | #185 |
 | [20260828165644452](done/20260828165644452_monitor-accueil-pilotage-sections.md) | Accueil du monitor — regrouper les diagrammes d'archi et mettre le pilotage en tête | feature | P2 | mega-city | ✅ shipped | #185 |
 | [20260910165637000](20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md) | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | mega-city | 🔵 ready |  |
+| [20260918113211648](20260918113211648_template-distinguer-criteres-verifier.md) | Template de fiche : distinguer « Critères d'acceptation » de « Comment vérifier » | chore | P2 | mega-city | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 | vectorz | ✅ shipped | #40 |
