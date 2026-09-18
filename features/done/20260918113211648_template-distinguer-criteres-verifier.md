@@ -6,9 +6,9 @@ priority: P2 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [méthode, template]
-status: ready # idea | ready | in-progress | blocked | shipped
+status: shipped # idea | ready | in-progress | blocked | shipped
 ready: 2026-09-18 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète)
-pr:
+pr: "#254"
 evidence: none # template markdown, pas d'écran
 created: 2026-09-18
 ---

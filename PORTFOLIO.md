@@ -14,7 +14,6 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 | mega-city | 20260911213014783 | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 | 🔵 ready |  |
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | 🔵 ready |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
-| mega-city | 20260918113211648 | Template de fiche : distinguer « Critères d'acceptation » de « Comment vérifier » | chore | P2 | 🔵 ready |  |
 
 ## 🟠 En cours (`in-progress`)
 
@@ -33,7 +32,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260911213014783 | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 | 🔵 ready |  |
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | 🔵 ready |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
-| mega-city | 20260918113211648 | Template de fiche : distinguer « Critères d'acceptation » de « Comment vérifier » | chore | P2 | 🔵 ready |  |
 
 ## 💡 Idées (non groomées, hors flux P0→P3)
 
@@ -156,6 +154,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260910231201744 | ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm | feature | P2 | 💡 idea |  |
 | mega-city | 20260912180313727 | Repenser le backlog : fusionner PLAN dans BACKLOG (champs itération/version) + historiser les itérations (sprint + rétro) | refactor | P2 | 💡 idea |  |
 | mega-city | 20260917123943914 | Outils dans la carte méthode — un type de nœud `tool` (bin/script/commande) relié aux skills | feature | P2 | 💡 idea |  |
+| mega-city | 20260918114726706 | Synchroniser les templates de fiche (une seule source de vérité) + supprimer l'orphelin | chore | P2 | 💡 idea |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 💡 idea |  |
 | vectorz | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 | 💡 idea |  |
 | vectorz | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 | 💡 idea |  |
@@ -199,6 +198,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
 | vectorz | 21 | 0 | 0 | 0 | 21 | 0 |
-| mega-city | 140 | 4 | 3 | 0 | 133 | 0 |
+| mega-city | 140 | 3 | 3 | 0 | 134 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
