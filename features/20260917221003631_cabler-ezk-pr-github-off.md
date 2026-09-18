@@ -61,15 +61,18 @@ suivant. Ici, le SKILL décide, `ship-merge.sh --local` exécute (comme pour `ez
 
 *(Ce qui doit être VRAI pour accepter. Coché = prouvé par le panel, pas auto-déclaré.)*
 
-- [ ] `ezk-pr` lit les capacités GitHub (`ezk:config`) à l'intake, **avant** tout appel `gh`.
-- [ ] En `pr: false`, `plan` n'appelle **aucun** `gh pr list` — le stock = les branches locales
+- [x] `ezk-pr` lit les capacités GitHub (`ezk:config`) à l'intake, **avant** tout appel `gh`.
+- [x] En `pr: false`, `plan` n'appelle **aucun** `gh pr list` — le stock = les branches locales
       `feat/…` — **même si un remote existe**.
-- [ ] En `pr: false`, `ship` fait un **squash local** (`ship-merge.sh --local`) et clôt en
+- [x] En `pr: false`, `ship` fait un **squash local** (`ship-merge.sh --local`) et clôt en
       `ezk-backlog ship <id> local (<sha>)` : **aucun** `gh pr merge`, **aucun** `#PR` inventé.
-- [ ] En `pr: false`, `report` ne poste **aucun** commentaire GitHub.
-- [ ] Non-régression : sans config (donc `pr: on`) **et** avec un remote, le flux GitHub est inchangé.
-- [ ] Non-régression : **sans remote** (config absente comprise), `plan` liste les branches locales
+- [x] En `pr: false`, `report` ne poste **aucun** commentaire GitHub.
+- [x] Non-régression : sans config (donc `pr: on`) **et** avec un remote, le flux GitHub est inchangé.
+- [x] Non-régression : **sans remote** (config absente comprise), `plan` liste les branches locales
       et ne tente pas `gh pr list`.
+
+*Cochés le 2026-09-18 par le panel adverse `ezk-reviewer` (verdict GO) — rejeu des « Comment vérifier »
++ parité `ezk-sprint` + chasse au trou (aucune fuite `gh`/`#PR` en `pr: false`).*
 
 ## Comment vérifier
 

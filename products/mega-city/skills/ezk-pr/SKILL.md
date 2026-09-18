@@ -58,7 +58,7 @@ avant ordres de merge et tableaux — règle
 
 | Sous-commande | Effet |
 |---|---|
-| `help` (ou **sans argument**) | Ce tableau + l'état du stock (`gh pr list` ou branches locales) |
+| `help` (ou **sans argument**) | Ce tableau + l'état du stock (`gh pr list` si `pr: on` + remote, sinon branches locales — cf. § Capacités GitHub) |
 | `init` | Installe la **convention « Validation »** (cf. plus bas). **Dette ADR-0022** : à terme, même geste via `ezk-backlog init` |
 | `plan` | Analyse le stock → **ordre de merge**, conflits, **sessions de test groupées** |
 | `run [session|#PR]` | Déroule une session : bancs démarrés, URLs/démos, checklist pas-à-pas |
