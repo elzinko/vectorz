@@ -26,9 +26,24 @@ POC d'abord, polish ensuite.>
 
 ## Critères d'acceptation
 
-- [ ] <comportement observable et vérifiable>
+<Ce qui doit être VRAI pour accepter — le RÉSULTAT observable, **pas** la commande qui le prouve
+(ça, c'est « Comment vérifier »). Une case cochée = **prouvé**, idéalement par un panel/reviewer
+qui a rejoué « Comment vérifier » — jamais auto-déclaré.>
+
+- [ ] <état observable et vérifiable>
 - [ ] <…>
-- [ ] Gate locale verte (typecheck/lint/tests) puis E2E si UI.
+
+## Comment vérifier
+
+<La PROCÉDURE qui prouve les critères ci-dessus — **pas une recopie** des critères. Des commandes
+littérales rejouables depuis un clone frais, OU des preuves agent (screenshots / before-after)
+pointant vers des scripts npm / BDD **existants**. C'est ce qu'un tiers (ou un panel adverse)
+**rejoue pour cocher** les critères. Rendu **tel quel** en corps de PR (ADR-0029) — ne pas le
+réécrire côté PR. Ne recopier ni le Gherkin ni les critères : orienter et lier.>
+
+```bash
+# ex. pnpm --dir <pkg> test -- <chemin pertinent>
+```
 
 ## Notes / décisions
 
