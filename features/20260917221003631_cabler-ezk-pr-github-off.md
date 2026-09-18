@@ -63,7 +63,7 @@ suivant. Ici, le SKILL décide, `ship-merge.sh --local` exécute (comme pour `ez
 
 - [x] `ezk-pr` lit les capacités GitHub (`ezk:config`) à l'intake, **avant** tout appel `gh`.
 - [x] En `pr: false`, `plan` n'appelle **aucun** `gh pr list` — le stock = les branches locales
-      `feat/…` — **même si un remote existe**.
+      **réelles** (`feat/…`, `fix/…`, classifieur `ezk-archive`) — **même si un remote existe**.
 - [x] En `pr: false`, `ship` fait un **squash local** (`ship-merge.sh --local`) et clôt en
       `ezk-backlog ship <id> local (<sha>)` : **aucun** `gh pr merge`, **aucun** `#PR` inventé.
 - [x] En `pr: false`, `report` ne poste **aucun** commentaire GitHub.
