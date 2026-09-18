@@ -59,19 +59,38 @@ suivant. Ici, le SKILL décide, `ship-merge.sh --local` exécute (comme pour `ez
 
 ## Critères d'acceptation
 
-- [ ] `ezk-pr/SKILL.md` a une section « Capacités GitHub » qui lit `ezk:config` à l'intake.
-- [ ] `plan` et `ship` basculent en local sur `pr: false` **même quand un remote existe**
-      (pas seulement sur absence de remote).
-- [ ] Aucun `gh pr …` prescrit en `pr: false`.
-- [ ] Non-régression : un projet **sans** config garde le comportement actuel (remote → `gh`).
-- [ ] Gate verte (`check-links`, `fiches:check --strict`).
+*(Ce qui doit être VRAI pour accepter. Coché = prouvé par le panel, pas auto-déclaré.)*
+
+- [ ] `ezk-pr` lit les capacités GitHub (`ezk:config`) à l'intake, **avant** tout appel `gh`.
+- [ ] En `pr: false`, `plan` n'appelle **aucun** `gh pr list` — le stock = les branches locales
+      `feat/…` — **même si un remote existe**.
+- [ ] En `pr: false`, `ship` fait un **squash local** (`ship-merge.sh --local`) et clôt en
+      `ezk-backlog ship <id> local (<sha>)` : **aucun** `gh pr merge`, **aucun** `#PR` inventé.
+- [ ] En `pr: false`, `report` ne poste **aucun** commentaire GitHub.
+- [ ] Non-régression : sans config (donc `pr: on`) **et** avec un remote, le flux GitHub est inchangé.
+- [ ] Non-régression : **sans remote** (config absente comprise), `plan` liste les branches locales
+      et ne tente pas `gh pr list`.
 
 ## Comment vérifier
 
-- [ ] Lire la section « Capacités GitHub » d'`ezk-pr/SKILL.md` : parité avec celle d'`ezk-sprint`.
-- [ ] `grep -n "pr: on\|pr: false\|ezk:config" products/mega-city/skills/ezk-pr/SKILL.md` →
-      `plan` et `ship` conditionnés sur la capacité.
-- [ ] `bash products/mega-city/bin/test-links-repo.sh` → 0 lien cassé.
+*(La procédure que le panel adverse REJOUE pour cocher ci-dessus — pas une recopie des critères.)*
+Se lance **depuis la racine d'un clone frais de vectorz** ; le point d'entrée portable `ezk <cmd>`,
+lançable de n'importe quel terminal, est fiché à part ([[20260903134906920]]).
+
+Contrôles **documentaires** (le câblage vit dans le prompt du skill, pas dans un binaire) :
+
+```bash
+grep -n "Capacités GitHub — config projet" products/mega-city/skills/ezk-pr/SKILL.md  # section présente
+grep -n "ET un remote existe" products/mega-city/skills/ezk-pr/SKILL.md               # plan durci (pr:on ET remote)
+grep -n "aucune cible GitHub" products/mega-city/skills/ezk-pr/SKILL.md               # report/ship conditionnés
+bash products/mega-city/bin/test-links-repo.sh                                        # liens valides (gate CI)
+```
+
+Contrôle de **cohérence** : lire la section et vérifier la **parité** avec celle d'`ezk-sprint`
+(même lecteur, même sémantique des trois capacités), sans contradiction avec `ship` merge-local-first.
+
+Contrôle **runtime déjà acquis** : le geste sous-jacent — squash local sans aucun `gh` — est prouvé
+par le dogfooding d'`ezk-sprint` ([[20260916225506856]]) ; ce cran route `ezk-pr` dessus, il ne le refait pas.
 
 ## Notes / décisions
 
