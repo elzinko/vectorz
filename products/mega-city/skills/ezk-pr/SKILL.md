@@ -211,9 +211,9 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
 
 ## `plan` — le cœur : ordonner et regrouper
 
-1. **Inventaire** : `gh pr list --state open` **si `pr: on`** ; sinon (repo **sans remote**,
-   **ou** `pr: false` alors qu'un remote existe — cf. § Capacités GitHub) → branches
-   locales **RÉELLES uniquement**, via la classification du `check.sh`
+1. **Inventaire** : `gh pr list --state open` **seulement si `pr: on` ET un remote existe** ;
+   sinon (**pas de remote**, ou `pr: false` alors qu'un remote existe — cf. § Capacités GitHub)
+   → branches locales **RÉELLES uniquement**, via la classification du `check.sh`
    d'ezk-archive — sur un repo squash-merge, `git branch --no-merged` brut liste
    surtout des résidus déjà livrés, fiche mega-city 0076). Lire chaque corps
    de PR : si la convention est en place, les blocs Validation disent déjà
@@ -261,6 +261,12 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   `ezk-backlog reconcile` et `ship`** : un merge fait hors du flux ne passe la
   fiche en `done` par personne, `reconcile` le détecte et propose le `ship`
   (ADR-0018) — sinon la fiche reste orpheline du merge.
+- **En `pr: false`** (github coupé, cf. § Capacités GitHub) — **aucune cible GitHub** : `report`
+  ne poste pas de commentaire, le compte-rendu de revue va dans le **fichier local**
+  (`review:emit`) et le corps de PR dans `pr:emit-local` ; `ship` = squash **local**
+  (`ship-merge.sh --local`) + **`ezk-backlog ship <id> local (<sha>)`** — **jamais** de suppression
+  de branche distante ni de `#PR` à poster ou à inventer. C'est le chemin « Sans remote » ci-dessous,
+  emprunté aussi quand un remote existe mais que `pr` est coupé.
 
 ### `ship` — merge-local-first (ADR-0052)
 
