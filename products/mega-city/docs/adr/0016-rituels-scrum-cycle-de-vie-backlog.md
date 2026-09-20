@@ -7,7 +7,13 @@
   pas abrogé**. En `--checkpoints auto`, `ezk-product-build` **groome désormais vers la DoR de
   façon autonome** au lieu de s'arrêter à vide ; l'option **`--check-ready`** règle le tampon
   final (`true` défaut = STOP humain, A5 préservé ; `false` = auto-tampon sur concurrence
-  `ezk-pm`, plancher outcome-testable, blocage réel → skip). Voir ADR-0028.
+  `ezk-pm`, plancher outcome-testable, blocage réel → skip). Voir ADR-0028. *(Défaut de ce flag
+  re-révisé le 2026-09-19 : voir la note suivante.)*
+- **Révision 2026-09-19 ([ADR-0053](0053-check-ready-devient-review-defaut-autonome.md)) :** le
+  gate humain d'A5 n'est **plus le défaut**. `--check-ready` est renommé **`--review`**
+  (interrupteur nu) et le **défaut bascule en autonome** : sans `--review`, le tampon `ready`
+  passe par la concurrence `ezk-pm` sans STOP. `--review` **rend le gate humain à la demande**.
+  `ezk-pm` cosigne toujours (jamais un auto-tampon solo). Voir ADR-0053.
 - **Révision 2026-08-15 (clarification de doctrine, sans changement de mécanique — épic
   `20260815080413884`) :** la DoR maison est explicitée comme **« INVEST moins la
   cérémonie »**. On garde les deux propriétés INVEST qui survivent au passage
