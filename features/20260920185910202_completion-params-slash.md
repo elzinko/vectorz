@@ -20,11 +20,37 @@ created: 2026-09-20
 options (`--`), rien ne propose les paramètres restants ni leurs valeurs. Il faut les
 connaître par cœur. L'idée : un **menu qui se remplit à mesure** — les flags encore
 disponibles, leurs valeurs, en masquant ceux déjà tapés. But du PO : lancer les modes sans
-retaper des paramètres complexes de mémoire.
+retaper des paramètres complexes de mémoire. **⚠️ Spike tranché le 2026-09-20 : Claude
+Code ne sait PAS faire ce menu dynamique aujourd'hui — voir le verdict juste en dessous.**
 
 **Si tu arrives frais.** *`/slash`* = les commandes de la méthode invoquées dans Claude Code
 (`/ezk-product-build …`). *complétion dynamique* = une liste d'options qui s'affine pendant
 la frappe, comme l'autocomplétion d'un shell.
+
+## Spike de faisabilité — VERDICT 2026-09-20 : ❌ pas possible aujourd'hui
+
+Recherche dans la doc Claude Code (agent `claude-code-guide`). **La complétion dynamique
+d'arguments dans le `/slash` n'existe pas**, et **aucun point d'extension** ne permet de la
+fournir :
+
+- `argument-hint` reste une **chaîne statique** ; la complétion TAB ne couvre que les **noms**
+  de commandes, pas leurs arguments.
+- Pas de champ frontmatter (type `choices`/`options`), pas de hook, pas d'API MCP, pas de
+  script de complétion.
+- **Aucune différence** CLI vs app desktop. Rien d'annoncé (doc `code.claude.com`, changelog
+  2.1.278 du 19 sept 2026).
+
+**Conséquence.** Le menu dynamique visé ici n'est pas buildable. Ce qui reste :
+
+1. **Vraie complétion → le terminal**, via la fiche sœur [[20260903134908019]] (complétion
+   shell `ezk`). C'est LA piste réelle.
+2. **Petit lever côté `/slash`** : structurer les `argument-hint` (chaîne statique plus
+   lisible). Mineur, pas de l'interactif.
+3. **Contournement menu numéroté** rendu par la skill à l'invocation — mais ça recoupe
+   [[20260825160456259]] (affordance next-step), pas cette fiche.
+
+**Statut** : gardée en `idea`, **parquée** — à ré-ouvrir seulement si Claude Code ajoute une
+complétion d'arguments. Ne pas re-spiker.
 
 ## Contexte / Problème
 
