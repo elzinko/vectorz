@@ -33,6 +33,7 @@
 | [20260831075615969](done/20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) | ezk-retro — invoquer ezk-chef suggest et proposer une fiche « créer la recette X » | feature | P0 | mega-city | ✅ shipped | #228 |
 | [20260911213014783](20260911213014783_merge-local-first-sync-main.md) | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 | mega-city | 🔵 ready |  |
 | [20260916225506856](done/20260916225506856_github-optionnel-fichier-pr-local.md) | GitHub optionnel par config — le fichier PR local (fiche rendue) devient le défaut | feature | P0 | mega-city | ✅ shipped | #250 |
+| [20260920111652514](20260920111652514_piloter-plugin-github-config.md) | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 | vectorz | ✅ shipped | #33 |

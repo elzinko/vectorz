@@ -69,6 +69,13 @@ Marqué « pas mûr » : à explorer en panel.
 PR = module GitHub, revue sans PR possible). Rendre la PR **elle-même** optionnelle rouvre
 cet invariant — c'est le nœud à trancher avant tout build large.
 
+> **Direction posée par le PO (2026-09-20) — le panel FORMALISE, il ne rouvre plus.** L'invariant
+> est *une feature = une branche* ; la **PR est la projection de l'adaptateur GitHub** (pattern
+> port/adaptateur, cohérent ADR-0003/0052) — présente quand le plugin `github` est branché, absente
+> sinon (branche + fichier local seuls). ADR-037 se révise en ce sens : l'unité atomique est la
+> **branche**, la PR redevient une sortie **optionnelle** de l'adaptateur. Reste au panel à mesurer
+> l'impact concret sur les invariants de merge / CI / revert qu'ADR-037 accrochait à la PR.
+
 **Frontière avec les voisines (anti-doublon) — cette fiche chapeaute, elle ne les refait pas :**
 
 - [[20260916225506856]] — le premier cran **buildable** (axe 2 pour `github` : config + fichier PR local).
