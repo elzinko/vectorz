@@ -13,3 +13,5 @@ rules:
   - development/command-reproducibility
   - development/merge-when-absent-default
   - development/worktree-secondary-inline-harvest
+  - development/fiche-read-via-loader
+  - development/active-views-exclude-terminal-status
