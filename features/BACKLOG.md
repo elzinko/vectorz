@@ -308,6 +308,7 @@
 | [20260917123943914](20260917123943914_outils-dans-la-carte-methode.md) | Outils dans la carte méthode — un type de nœud `tool` (bin/script/commande) relié aux skills | feature | P2 | mega-city | 💡 idea |  |
 | [20260917143616286](20260917143616286_recette-lemonsqueezy-gating-pro.md) | Recette — brancher Lemon Squeezy + gating Pro in-app (étend lancement-app) | chore | P2 | vectorz | 💡 idea |  |
 | [20260918114726706](20260918114726706_synchroniser-templates-fiche.md) | Synchroniser les templates de fiche (une seule source de vérité) + supprimer l'orphelin | chore | P2 | mega-city | 💡 idea |  |
+| [20260920213500176](20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | SPIKE — un sprint d'autorat de skill coûte trop cher (~330k) : quels leviers d'allègement ? | chore | P2 | mega-city | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 | vectorz | 💡 idea |  |
