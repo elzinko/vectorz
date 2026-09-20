@@ -50,3 +50,8 @@ publier » de la fiche [[0087]].
 - Décision PO du 2026-09-03 : « une autre pour le C plus tard en P2, on verra si le besoin
   s'en fait sentir entre temps ».
 - Dépend de [[20260903134906920]] (B d'abord).
+- **Signal de besoin capté (2026-09-20)** : le PO a demandé une complétion des paramètres
+  pendant la session « --review » (renommage `--check-ready` → `--review`, ADR-0053). C'est
+  l'un des deux signaux à guetter (cf. Proposition). Cible principale = **Claude Code
+  `/slash`** (fiche sœur [[20260920185910202]]) ; le terminal `ezk` (cette fiche) reste le
+  bonus. **Un seul signal daté à ce jour** — pas encore le seuil pour tirer.
