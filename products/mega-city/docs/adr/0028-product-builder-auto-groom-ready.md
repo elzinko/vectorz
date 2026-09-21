@@ -4,6 +4,13 @@
 **Date :** 2026-08-13
 **Deciders :** PO (opérateur) — décision prise en session product-builder
 
+> **Révision 2026-09-19 ([ADR-0053](0053-check-ready-devient-review-defaut-autonome.md)) :**
+> `--check-ready` est renommé **`--review`** (interrupteur nu) et son **défaut bascule** : le
+> nouveau défaut est **autonome** (ancien `--check-ready false`), `--review` étant l'opt-in de
+> relecture humaine (ancien `true`). La mécanique et les garde-fous ci-dessous (auto-groom,
+> concurrence `ezk-pm`, plancher, skip, 4 STOP) **restent valables** ; seuls le **nom du flag**
+> et le **défaut** changent. `--check-ready true|false` reste accepté en alias hérité.
+
 ## Contexte
 
 [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) a fait du gate `ready` (DoR) un
