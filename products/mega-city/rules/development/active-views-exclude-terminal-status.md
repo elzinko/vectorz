@@ -24,9 +24,14 @@ enforcements:
   n'apparaît comme **à faire** dans **aucune** vue de travail (board, sections tirables /
   actionnable / en cours de portfolio) ; elle n'est jamais comptée dans les `actives` /
   `tirables`. Un test de parité casse si une vue redéclare la liste des terminaux.
+- **Déploiement — dette connue (retour Codex #256, 2026-09-21).** Le board **avancement**
+  (`buildAvancementData`) et `PORTFOLIO.md` sont conformes. **Pas encore** les vues `plan-*` :
+  `buildPlanViewData` copie toutes les fiches, `buildPlanDelta` ne filtre que `done`/`shipped`,
+  le board ne masque que `shipped` → `window.EZK_PLAN` porte des cartes `superseded`. À aligner
+  sur `TERMINAUX` — dette suivie par la fiche `20260922160651394`. La règle vaut comme **cible +
+  garde-fou anti-régression** sur les vues déjà conformes ; `plan-*` s'y conforme via cette fiche.
 - Origine : rétro PO du **2026-09-16** (migration A16, PR #240 — 5 fiches-chapeau passées
-  `superseded` mais gardées dans `features/` ont **fui au board** : `buildAvancementData`
-  filtrait `actives` sur le dossier `!f.done`, jamais sur le statut ; finding Codex P2).
-  Vérifié le **2026-09-20** : le board (TS) est corrigé ; `portfolio.sh` filtre déjà par statut
-  **positif** (une terminale n'y fuite pas) ; `regen-backlog.sh` la marque 🗑️ dans l'index
-  (assumé). La règle **prévient la régression**. Enforcement niveau 1 : `ezk-reviewer`.
+  `superseded` mais gardées dans `features/` ont **fui au board avancement** : `buildAvancementData`
+  filtrait `actives` sur le dossier `!f.done`, jamais sur le statut ; finding Codex P2, corrigé).
+  `portfolio.sh` filtre par statut **positif** (une terminale n'y fuite pas). Enforcement niveau 1 :
+  `ezk-reviewer`.

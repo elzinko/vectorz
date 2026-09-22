@@ -20,10 +20,13 @@ enforcements:
   celle-ci porte sur l'**écriture** du front-matter (émission par la lib), celle-là sur sa
   **lecture** (parsing par le loader). Même principe : une seule implémentation testée,
   plusieurs consommateurs.
-- **Mesurable :** aucun script du monorepo (sous `bin/`, `scripts/`, migration jetable) ne
-  matche `id:` / `status:` / `epic:` / `milestone:` d'une fiche à la main ; `git grep` d'un
-  parse front-matter hors loader = **0**. Un outil qui re-parse le front-matter à la main est
-  **refusé en revue**.
+- **Déploiement (grandfathering documenté).** La règle mord sur **tout nouveau** lecteur de
+  fiche. Le legacy pré-existant est une **dette listée** — à migrer (fiche `20260922160651394`),
+  pas une violation silencieuse : `bin/regen-backlog.sh` et `bin/portfolio.sh` (`awk` sur le
+  front-matter) + `bin/plan-head.ts` (parser maison). **Aucune nouvelle entrée** dans cette liste.
+- **Mesurable :** `git grep` d'un parse front-matter hors loader = la **liste legacy figée**
+  ci-dessus, jamais un ajout. Tout **nouvel** outil qui re-parse le front-matter à la main est
+  **refusé en revue** ; la migration du legacy est suivie par la fiche `20260922160651394`.
 - Origine : rétros PO du **2026-09-16** (migration A16, PR #239 — un script python à la regex
   ratait l'enfant **quoté** et ceux de `done/` → 3 rounds Codex) et du **2026-09-20** (session
   `reconcile` — un `grep` de l'id `…856` a remonté la fiche `…858` qui ne fait que le citer).
