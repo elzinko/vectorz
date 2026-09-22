@@ -379,14 +379,14 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 72,
+  "rules": 74,
   "agents": 8,
   "skills": 24,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 196,
+  "total": 200,
   "casses": 0
  },
  "orphans": [
@@ -999,7 +999,7 @@ window.EZK = {
   "ezk-product-build": {
    "id": "ezk-product-build",
    "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-build », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
-   "usage": "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--check-ready true|false] [--delivery per-feature|per-epic] [--retro end|every:N|off]",
+   "usage": "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]",
    "etage": "methode",
    "bande": "ceremonies",
    "composes": [
@@ -1540,6 +1540,19 @@ window.EZK = {
    ],
    "agents": []
   },
+  "development/active-views-exclude-terminal-status": {
+   "id": "development/active-views-exclude-terminal-status",
+   "title": "Une vue du travail exclut les statuts terminaux par le statut, pas par le dossier done/",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "development"
+   ],
+   "agents": []
+  },
   "development/adversarial-review-before-merge": {
    "id": "development/adversarial-review-before-merge",
    "title": "Toute livraison passe une revue adverse avant merge",
@@ -1556,6 +1569,19 @@ window.EZK = {
   "development/command-reproducibility": {
    "id": "development/command-reproducibility",
    "title": "Une instruction inline oriente le QUOI, jamais le COMMENT d'une commande",
+   "kind": "disposition",
+   "level": "MUST",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "development"
+   ],
+   "agents": []
+  },
+  "development/fiche-read-via-loader": {
+   "id": "development/fiche-read-via-loader",
+   "title": "La lecture d'une fiche passe par le loader testé, jamais par un parse maison",
    "kind": "disposition",
    "level": "MUST",
    "enforcements": [
@@ -2167,8 +2193,10 @@ window.EZK = {
    "id": "development",
    "extends": [],
    "rules": [
+    "development/active-views-exclude-terminal-status",
     "development/adversarial-review-before-merge",
     "development/command-reproducibility",
+    "development/fiche-read-via-loader",
     "development/handle-blockers",
     "development/local-first-feedback",
     "development/merge-when-absent-default",

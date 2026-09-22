@@ -162,3 +162,12 @@ se branche sur `features/reviews/`.
   **ADR-038** (pack de revue markdown-first `features/reviews/`).
 - Retours Codex sur cette fiche (PR #213, 2026-09-05) **intégrés** : oracle indépendant,
   séparer revue/merge (ADR-037), réutiliser le pack (ADR-038).
+- **MAJ 2026-09-20 (rétro auto-amélioration, note N2)** — 2ᵉ observation datée (**run
+  auto-amélioration 2026-09-12**) : **5 findings Codex** sur 3 PR, plusieurs **P1**, **après** un
+  `ezk-reviewer` local ayant rendu **GO**. Deux classes à ajouter au durcissement du local
+  (proposition 1) et à la baseline : (a) **une commande citée n'existe pas / mauvaise signature**
+  (#228 : `sprint:report` invoqué faux — script absent à la racine, slug/`--out` manquants) ;
+  (b) **un contrat inter-skills se doublonne** (#229 double-`add` — sortie déjà rangée ; #230
+  point 9 absent du contrat de l'agent `ezk-archive`). Vérifier que chaque invocation **résout
+  vraiment** (script + args) et que les **contrats inter-skills** ne se chevauchent pas — rejoint
+  les familles « erreurs silencieuses » et « rétro-compat / contrats » déjà notées à la baseline.

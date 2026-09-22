@@ -66,3 +66,11 @@ adverse bloque sur un défaut injecté.
   buildable tout de suite ; le schéma généralisera.
 - Touche **deux skills** (`ezk-product-build` + `ezk-sprint`). Origine : revue de conception
   de la bascule du défaut `--mode auto` (session 2026-08-30).
+- **⚠️ Collision de nom `--review` à réconcilier (retour Codex, PR #255, 2026-09-20).** L'ADR-0053
+  a renommé `--check-ready` → **`--review`** (le flag du *ready gate* de grooming, défaut autonome)
+  sur **le même skill** `ezk-product-build`. Or cette fiche réserve `--review adverse|skip` pour le
+  *contrôle de la revue adverse*. Résultat : `ezk-product-build run --review skip` devient **ambigu**
+  — `skip` vise-t-il le reviewer, ou le bare `--review` active-t-il le ready gate ? À trancher au
+  grooming, **avant de builder ce flag** : renommer l'un des deux (p. ex. le ready gate en
+  `--groom` / `--ready-gate`, ou la revue en `--adverse-review`) et aligner les critères ci-dessus
+  **avec l'ADR-0053**. Décision produit (PO).

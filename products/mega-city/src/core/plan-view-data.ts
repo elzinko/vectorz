@@ -11,6 +11,7 @@
 import { type PlanCard, crossBacklogHead } from '../backlog/plan-head.js';
 import { parsePlanOrder } from '../backlog/plan-order.js';
 import { type PlanMarker, parsePlanSections } from '../backlog/plan-sections.js';
+import { TERMINAUX } from './avancement-data.js';
 import type { Fiche } from '../loaders/fiches.js';
 
 /** Une carte du plan = un id du plan résolu (ou non) contre le backlog. */
@@ -26,6 +27,8 @@ export interface PlanCardView {
   file: string;
   /** L'id existe-t-il dans `features/` ? `false` ⇒ signalé (jamais avalé). */
   found: boolean;
+  /** Clôturée : `shipped` OU statut terminal (`superseded/merged/split`) — masquable comme une livrée. */
+  closed: boolean;
 }
 
 /** Une ligne du plan : son intention + une carte par id cité. */
@@ -71,6 +74,7 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
       pr: '',
       file: '',
       found: false,
+      closed: false,
     };
   }
   return {
@@ -84,6 +88,7 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
     pr: f.pr,
     file: f.file,
     found: true,
+    closed: f.status === 'shipped' || TERMINAUX.includes(f.status),
   };
 };
 

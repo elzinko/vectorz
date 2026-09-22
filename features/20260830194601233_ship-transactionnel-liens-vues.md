@@ -63,3 +63,12 @@ jamais la vigilance humaine.
   1 et 2 : même racine (« le ship ne finit pas son travail ») → un seul durcissement.
 - Piège déjà noté en mémoire projet (« un ship casse les liens ../ »).
 - Frontière ADR-0001 : le rangement reste déterministe (script), le LLM ne range pas.
+- **MAJ 2026-09-20 (rétro auto-amélioration, note N1)** — le besoin **déborde le `ship`** :
+  éditer `composes:` d'un skill casse aussi plusieurs vues (`map:data`, board, graphe
+  `skills/README`), vécu 2× (sprints `20260831075615969` et `20260911224102584` ; board périmé
+  flaggé Codex #227). Piste convergente : **une commande unique `views:regen`** régénère **toutes**
+  les vues dérivées d'un coup (backlog, portfolio, board `avancement`/`plan-delta`/`plan-view`,
+  `composes:graph`, `map:data`), + un **garde-fou de dérive** en CI. Critère : `views:regen` puis
+  `git diff` **vide** sur les fichiers générés ; la CI **échoue** si une vue diffère de sa source.
+  Même racine que cette fiche (« le chemin d'écriture possède ses invariants »), élargie du `ship`
+  à **tout edit qui dérive une vue**.

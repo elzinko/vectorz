@@ -61,6 +61,9 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
       `board.html` (aujourd'hui il ne fait que BACKLOG/PORTFOLIO/PLAN).
 - [ ] Silencieux/inoffensif quand il n'y a rien à réconcilier.
 - [ ] Point d'ancrage tranché au grooming : hook local, job CI, ou étape `ezk-pr` ?
+- [ ] `reconcile` distingue le **match plein** (1 fiche ↔ 1 PR, fiche complète) du **mergé partiel**
+      (1 fiche = N tranches/PR) : sur un mergé partiel il **liste « à confirmer »** et ne propose
+      **jamais** `ship` sur la seule détection d'une PR mergée (symptôme SR2, 2026-09-20).
 
 ## Comment vérifier
 
@@ -76,3 +79,11 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
 - Voisins : [[0185]] (ezk-archive croise branches réelles ↔ PR ouvertes), [[20260812100109940]]
   (sync des vues de planning au `ship`), `ezk-backlog reconcile` (la brique composée).
 - **Non ready** — à groomer (point d'ancrage du filet + outillage de résolution de conflit).
+- **MAJ 2026-09-20 (rétro `reconcile`)** — symptôme SR2 : une session `reconcile` a trouvé 3
+  chantiers (retrait épic A16, kanban 652, graphe compilé 357) dont **plusieurs PR sont mergées**
+  mais qui restent `idea`/`in-progress` — découpés en **tranches**, le gros est sur `main`, la
+  fiche n'est pas finie. « id de branche mergé » ne prouve **pas** la complétude quand **1 fiche =
+  N PR**. À trancher au grooming : comment `reconcile` sait-il qu'une fiche multi-PR est finie ?
+  (a) une **section « tranches : [PR#…] »** cochée à mesure ; (b) **tous les critères d'acceptation
+  cochés** ; (c) **hors périmètre** (id ↔ branche seul, complétude = jugement humain/DoD). Angle
+  mort **distinct** du merge « hors flux » déjà couvert par cette fiche.
