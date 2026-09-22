@@ -4,8 +4,8 @@ title: Outils dans la carte méthode — un type de nœud `tool` (bin/script/com
 type: feature
 priority: P2
 product: mega-city
-version:
-milestone:
+version: V0.1
+milestone: fondation
 labels: [carte]
 status: idea
 ready:

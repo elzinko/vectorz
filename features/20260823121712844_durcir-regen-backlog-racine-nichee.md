@@ -8,6 +8,8 @@ status: idea
 ready:
 pr:
 created: 2026-08-23
+milestone: fondation
+version: V0.1
 ---
 
 # Durcir regen-backlog — que le défaut de racine ne puisse plus créer un backlog fantôme

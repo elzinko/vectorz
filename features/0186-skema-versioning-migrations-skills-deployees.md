@@ -9,6 +9,8 @@ status: idea
 ready:
 pr:
 created: 2026-08-09
+milestone: fondation
+version: V0.1
 ---
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **moteur** (le registre écrit au `bind`, le

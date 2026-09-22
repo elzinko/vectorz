@@ -4,7 +4,7 @@ title: Montrer sur la carte ce qui est revu, en cours, ou jamais vérifié (+ da
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea

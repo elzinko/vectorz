@@ -4,7 +4,7 @@ title: Définir ce qu'on valide et dans quel ordre (l'unité de revue de la cart
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea

@@ -4,7 +4,7 @@ title: Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement de
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea

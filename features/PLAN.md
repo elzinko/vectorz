@@ -17,6 +17,31 @@
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
+## 🚂 TRAIN DE VERSIONS — décidé le 2026-09-23 (PO Thomas)
+
+> **Nouveau cran au-dessus du jalon : la release.** Le **jalon** (`milestone:`) porte le *sujet*
+> (le lot). La **version** (`version:`) porte la *release testable* : un ou plusieurs jalons qu'on
+> livre et qu'on éprouve d'un bloc. Le champ `version:` se remplit **au moment de tirer la version**
+> (pas 166 fiches d'un coup — ça éviterait des conflits inter-sessions). Composition fiche-à-fiche :
+> carte des itérations de la session 2026-09-23. Ordre ci-dessous = *quoi d'abord* ; `P0→P3` reste le
+> bucket d'importance.
+
+| Version | Nom | Jalons | Statut |
+|---|---|---|---|
+| **V0.1** | Le socle dit vrai | Fondation | tête — à groomer (fiches taguées `version: V0.1`) |
+| **V0.2** | On teste vite, en local | Local-first + Testbed | 🔵 4 fiches déjà `ready` — carburant product-build |
+| **V0.3** | Le backlog dit vrai + on range | Outil-itération + Rationalisation | gated par le verrou `status` de V0.1 |
+| **V0.4** | La méthode se tient | Méthode avancée | later |
+| **V0.5** | Améliorabilité mesurée | Contrat + observabilité | ⏸️ gated ADR-030 |
+| **V1.0** | Ouvrable aux autres | Multi-client + Distribution + Articles | ⏸️ NE PAS PUBLIER (PO) |
+
+- **V0.1 — Le socle dit vrai** (jalon Fondation) : le graphe compilé + le verrou `status` validé par
+  schéma + le chapeau + la carte qui cite ses sources. C'est lui qui débloque l'`apply` de la
+  rationalisation (V0.3).
+- **V0.2 — On teste vite** (Local-first + Testbed) : `20260911213014783` merge local-first ·
+  `20260920111652514` config github · `0102` ezk-testbed · `20260910165637000` ezk-scout. **Déjà
+  `ready`** → tirées en autonomie par product-build pendant qu'on groome V0.1.
+
 ## 🔁 ITÉRATION COURANTE — décidée le 2026-09-12 (PO Thomas)
 
 > Le lot **multi-sprint** à tirer maintenant. Une itération = plusieurs sprints ; **la rétro

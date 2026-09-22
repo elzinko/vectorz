@@ -4,7 +4,7 @@ title: Corriger un lien faux depuis la carte, et que ça retombe dans les fichie
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea
