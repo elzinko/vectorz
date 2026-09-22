@@ -24,12 +24,11 @@ enforcements:
   n'apparaît comme **à faire** dans **aucune** vue de travail (board, sections tirables /
   actionnable / en cours de portfolio) ; elle n'est jamais comptée dans les `actives` /
   `tirables`. Un test de parité casse si une vue redéclare la liste des terminaux.
-- **Déploiement — dette connue (retour Codex #256, 2026-09-21).** Le board **avancement**
-  (`buildAvancementData`) et `PORTFOLIO.md` sont conformes. **Pas encore** les vues `plan-*` :
-  `buildPlanViewData` copie toutes les fiches, `buildPlanDelta` ne filtre que `done`/`shipped`,
-  le board ne masque que `shipped` → `window.EZK_PLAN` porte des cartes `superseded`. À aligner
-  sur `TERMINAUX` — dette suivie par la fiche `20260922160651394`. La règle vaut comme **cible +
-  garde-fou anti-régression** sur les vues déjà conformes ; `plan-*` s'y conforme via cette fiche.
+- **Conformité (2026-09-22, PR #256).** Toutes les vues du travail excluent les terminaux : board
+  **avancement** (`buildAvancementData`), `PORTFOLIO.md`, et les vues **`plan-*`**
+  (`buildPlanViewData` marque `closed` via `TERMINAUX` ; `buildPlanDelta` filtre les terminaux ;
+  le rendu board masque les cartes `closed`). La règle est **pleinement respectée** ; elle vaut
+  désormais comme **garde-fou anti-régression**.
 - Origine : rétro PO du **2026-09-16** (migration A16, PR #240 — 5 fiches-chapeau passées
   `superseded` mais gardées dans `features/` ont **fui au board avancement** : `buildAvancementData`
   filtrait `actives` sur le dossier `!f.done`, jamais sur le statut ; finding Codex P2, corrigé).

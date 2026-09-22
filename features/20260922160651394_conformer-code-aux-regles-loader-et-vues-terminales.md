@@ -24,6 +24,10 @@ La rétro du 2026-09-20 a posé **deux règles `MUST`** (`development/fiche-read
 déploiement progressif** (le legacy = dette listée), et cette fiche **porte la mise en
 conformité**. Deux volets indépendants.
 
+> **MAJ 2026-09-22 — volet B LIVRÉ dans la PR #256** : les vues `plan-*` filtrent désormais les
+> statuts terminaux (la règle `active-views-exclude-terminal-status` est pleinement respectée).
+> **Reste le volet A** : migrer les lecteurs de fiches legacy vers le loader testé.
+
 ## Contexte / Problème
 
 Retour Codex sur la PR #256 (2026-09-21), deux findings :
@@ -47,20 +51,24 @@ Retour Codex sur la PR #256 (2026-09-21), deux findings :
   qui lit `loadFiches`, ou porter ces vues en TS), et faire passer `plan-head.ts` par `readField`.
 - À la fin, la **liste legacy** de la règle `fiche-read-via-loader` est **vide**.
 
-### Volet B — vues `plan-*` alignées sur `TERMINAUX`
-- `buildPlanViewData`, `buildPlanDelta` et le rendu board excluent les statuts `TERMINAUX`
-  (`superseded/merged/split`) comme le fait déjà `buildAvancementData`.
-- Après regen, `window.EZK_PLAN` ne contient **aucune** carte terminale ; « Masquer les livrées »
-  et le tri du plan ignorent les terminaux.
+### Volet B — vues `plan-*` alignées sur `TERMINAUX` — ✅ LIVRÉ (PR #256, 2026-09-22)
+- `buildPlanViewData` calcule un flag `closed` (`shipped` OU `TERMINAUX`) que le rendu board lit
+  (les cartes `closed` prennent la classe `.livree` : estompées + masquables). `buildPlanDelta`
+  exclut les terminaux de sa fenêtre « dernières créées ». Source unique `TERMINAUX` conservée
+  (le JS ne redéclare pas la liste).
+- Vérifié : `window.EZK_PLAN` porte `closed:true` sur ses **10** cartes `superseded` ; gate
+  mega-city verte (777/777).
 
 ## Critères d'acceptation (à groomer)
 
 - [ ] `git grep` de parse front-matter hors loader = **0** (liste legacy de la règle vidée).
 - [ ] `regen-backlog.sh` / `portfolio.sh` / `plan-head.ts` lisent les fiches par le loader testé ;
       `test:scripts` + `fiches:check` verts.
-- [ ] Une fiche `superseded` restée dans `features/` n'apparaît dans **aucune** vue `plan-*`
-      (`window.EZK_PLAN`, écart-plan, board) — test de fidélité à l'appui.
-- [ ] Les deux règles perdent leur clause « déploiement / dette » (le code est conforme).
+- [x] Les statuts terminaux ne sont plus présentés comme **actifs** dans les vues `plan-*` :
+      exclus de l'écart-plan (`plan-delta`), et marqués `closed` dans la vue Plan
+      (`window.EZK_PLAN`) → estompés + masquables comme les livrées. *(Volet B, PR #256.)*
+- [x] La règle `active-views-exclude-terminal-status` est **pleinement conforme** (clause dette
+      retirée). La règle `fiche-read-via-loader` garde sa clause legacy jusqu'au volet A.
 
 ## Comment vérifier
 

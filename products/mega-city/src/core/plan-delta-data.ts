@@ -17,6 +17,7 @@
  * Isolé de `plan-view-data` (bloc + marqueurs disjoints) pour NE PAS toucher la vue Plan
  * livrée. La coquille est `bin/regen-plan-delta.ts`.
  */
+import { TERMINAUX } from './avancement-data.js';
 import type { Fiche } from '../loaders/fiches.js';
 
 /** Fenêtre par défaut : les 15 dernières fiches créées (réglable). */
@@ -76,7 +77,9 @@ export function buildPlanDelta(
   // « Dernières créées » = fiches non livrées (actives), triées par id DÉCROISSANT
   // (l'id horodaté = la date de création, fiche 0180). Les idées comptent : une idée
   // récemment ajoutée est un arrivant qu'on veut voir.
-  const active = fiches.filter((f) => !f.done && f.status !== 'shipped');
+  const active = fiches.filter(
+    (f) => !f.done && f.status !== 'shipped' && !TERMINAUX.includes(f.status),
+  );
   const recent: DeltaCard[] = active
     .slice()
     .sort((a, b) => (a.id < b.id ? 1 : a.id > b.id ? -1 : 0))
