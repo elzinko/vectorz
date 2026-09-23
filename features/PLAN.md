@@ -35,12 +35,16 @@
 | **V0.5** | Améliorabilité mesurée | Contrat + observabilité | ⏸️ gated ADR-030 |
 | **V1.0** | Ouvrable aux autres | Multi-client + Distribution + Articles | ⏸️ NE PAS PUBLIER (PO) |
 
-- **V0.1 — Le socle dit vrai** (jalon Fondation) : le graphe compilé + le verrou `status` validé par
-  schéma + le chapeau + la carte qui cite ses sources. C'est lui qui débloque l'`apply` de la
-  rationalisation (V0.3).
-- **V0.2 — On teste vite** (Local-first + Testbed) : `20260911213014783` merge local-first ·
-  `20260920111652514` config github · `0102` ezk-testbed · `20260910165637000` ezk-scout. **Déjà
-  `ready`** → tirées en autonomie par product-build pendant qu'on groome V0.1.
+> _Détail humain (non parsé — la séquence tirable vit dans « Itération courante » ci-dessous ;
+> l'intégration machine du niveau version viendra avec son outillage, fiche `20260824204751403`)._
+>
+> **V0.1 — Le socle dit vrai** (jalon Fondation) : le graphe compilé, le verrou `status` validé par
+> schéma, le chapeau, la carte qui cite ses sources. C'est lui qui débloque l'`apply` de la
+> rationalisation (V0.3).
+>
+> **V0.2 — On teste vite** (Local-first + Testbed) : merge local-first (`20260911213014783`),
+> config github (`20260920111652514`), ezk-testbed (`0102`), ezk-scout (`20260910165637000`) —
+> **déjà `ready`**, tirées en autonomie par product-build pendant qu'on groome V0.1.
 
 ## 🔁 ITÉRATION COURANTE — décidée le 2026-09-12 (PO Thomas)
 
@@ -63,6 +67,7 @@
 
 **P0 indépendants**
 - `20260911213014783` — merge local-first : main local à jour + propagation GitHub · `groom`→`build`
+- `20260920111652514` — ezk config github on/off : plugin github piloté par la config · `build`
 - ~~`20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette~~ — **shipped #228**
 
 **Boucle d'auto-amélioration** (capturer → rétro → ranger)
