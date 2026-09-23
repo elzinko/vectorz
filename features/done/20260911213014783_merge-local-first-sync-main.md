@@ -5,9 +5,9 @@ type: feature # feature | bug | refactor | chore | epic
 priority: P0 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
-status: ready # idea | ready | in-progress | blocked | shipped
+status: shipped
 ready: 2026-09-12 # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
-pr:
+pr: "#232"
 evidence: none # flux git/CLI, aucun écran
 created: 2026-09-11
 ---
@@ -48,7 +48,7 @@ Le principe visé : **travailler en local d'abord**. GitHub devient une projecti
 
 ## Proposition
 
-**Tranché au grooming (architecte, 2026-09-12 — [ADR-0052](../products/mega-city/docs/adr/0052-merge-local-first-github-execute-le-squash-main-se-realigne.md)).**
+**Tranché au grooming (architecte, 2026-09-12 — [ADR-0052](../../products/mega-city/docs/adr/0052-merge-local-first-github-execute-le-squash-main-se-realigne.md)).**
 
 La prémisse « piloter le squash en local » est **corrigée** sur le comportement réel de
 GitHub. Un squash fabriqué en local puis poussé ne fait jamais voir la PR comme mergée ;
