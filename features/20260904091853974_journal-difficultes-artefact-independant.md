@@ -67,7 +67,7 @@ Trois défauts constatés (2026-09-04, avec le PO) :
    vocabulaire méthode : les objets restent **feature / sprint / retro**. Les rétros lisent les
    frictions **par feature ou par thème**, jamais « par session ».
 5. **Absorber le compte-rendu structuré.** Cette fiche **absorbe**
-   [20260826121429274](20260826121429274_ezk-archive-compte-rendu-structure.md) (« ezk-archive
+   [20260826121429274](done/20260826121429274_ezk-archive-compte-rendu-structure.md) (« ezk-archive
    émet un compte-rendu de session structuré ») : même sujet — le **format** du récit et ce
    qu'il rend **extractible** (galères, PR, fiches, actions), prérequis des vues.
 
@@ -93,7 +93,7 @@ Trois défauts constatés (2026-09-04, avec le PO) :
 
 - **Statut idea** : direction validée par le PO (2026-09-04), non groomée.
 - **Provenance** : absorbe
-  [20260826121429274](20260826121429274_ezk-archive-compte-rendu-structure.md) (compte-rendu
+  [20260826121429274](done/20260826121429274_ezk-archive-compte-rendu-structure.md) (compte-rendu
   structuré) — la fiche source est tombstonée (redirection) en attendant son retrait au
   grooming.
 - **En aval** : nourrit le cluster recette / ezk-chef (labo #195 livré,

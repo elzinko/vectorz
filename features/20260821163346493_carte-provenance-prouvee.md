@@ -4,7 +4,7 @@ title: Chaque élément de la carte cite le fichier d'où il sort (fin de l'inte
 type: feature
 priority: P1
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea

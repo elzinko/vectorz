@@ -97,7 +97,7 @@ et affiche), le mode dégradé pour les anciens, le test d'invariant.
 2. **Producteur** : la convention s'ancre dans **`ezk-archive`** (recommandé — il est
    déjà le générateur des comptes-rendus).
 3. **Découpage** : 1a (la source) **a désormais sa fiche sœur** —
-   [`ezk-archive` émet un compte-rendu structuré](20260826121429274_ezk-archive-compte-rendu-structure.md)
+   [`ezk-archive` émet un compte-rendu structuré](done/20260826121429274_ezk-archive-compte-rendu-structure.md)
    (créée le 2026-08-26, arbitrage symétrie). Cette vue (1b) la **consomme**.
 4. **Anciens comptes-rendus** : mode dégradé **(recommandé)** vs rétro-fit.
 

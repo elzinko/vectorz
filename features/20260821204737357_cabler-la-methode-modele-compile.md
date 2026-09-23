@@ -4,7 +4,7 @@ title: Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce
 type: feature
 priority: P1
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: in-progress

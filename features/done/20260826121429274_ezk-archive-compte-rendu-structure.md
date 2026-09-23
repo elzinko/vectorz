@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 version:
 epic:
-status: idea
+status: superseded
 ready:
 pr:
 created: 2026-08-26
@@ -14,7 +14,7 @@ created: 2026-08-26
 
 # `ezk-archive` émet un compte-rendu de session structuré
 
-> **⟳ Absorbée le 2026-09-04 dans [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md)**
+> **⟳ Absorbée le 2026-09-04 dans [20260904091853974](../20260904091853974_journal-difficultes-artefact-independant.md)**
 > (« Journal des difficultés — artefact indépendant »). Le format structuré du récit de session
 > (en-tête PR / fiches / actions, prérequis des vues) y est traité comme une facette du même
 > chantier. **Fiche conservée comme redirection** — à retirer formellement au grooming de la
@@ -24,11 +24,11 @@ created: 2026-08-26
 
 Quand une session se clôt, `ezk-archive` écrit un compte-rendu dans `docs/sessions/`. Il
 est aujourd'hui **en prose libre** — lisible, mais **pas lisible par un script**. Pour que
-la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map.md) puisse
+la [vue « sprints réalisés »](../20260826072532452_vue-sprints-realises-ezk-map.md) puisse
 afficher, par sprint, ses PR / fiches / actions, ce compte-rendu doit porter ces données
 dans un **en-tête structuré**. Cette fiche demande à `ezk-archive` de l'écrire — en plus du
 récit. C'est le **pendant, côté sprints**, de la fiche
-[capture rétro standard](0080-ezk-retro-compte-rendu-standard.md).
+[capture rétro standard](../0080-ezk-retro-compte-rendu-standard.md).
 
 ## Contexte / Problème
 
@@ -73,14 +73,14 @@ main) — côté vue, ils s'affichent en **mode dégradé**.
 - **Forme** : **frontmatter structuré (recommandé)** — cohérent avec la doctrine repo
   « frontmatter = source de vérité » et **symétrique** de la capture rétro.
 - **Cadrage** : c'est une **instance du pattern**
-  [« livrable lisible » (template + extracteur + rendu)](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md) —
+  [« livrable lisible » (template + extracteur + rendu)](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md) —
   définir ce format **avec** ce pattern, pas dans son coin.
 
 ## Dépendances
 
-- **Prérequis de** : la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map.md).
-- **Cas d'application de** : le pattern [« livrable lisible »](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
-- **Miroir de** : la [capture rétro standard](0080-ezk-retro-compte-rendu-standard.md)
+- **Prérequis de** : la [vue « sprints réalisés »](../20260826072532452_vue-sprints-realises-ezk-map.md).
+- **Cas d'application de** : le pattern [« livrable lisible »](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
+- **Miroir de** : la [capture rétro standard](../0080-ezk-retro-compte-rendu-standard.md)
   (même patron « source normée + extractible », côté rétros).
 - **Touche** : le skill `ezk-archive`. Interne au monorepo — **pas** de dépendance externe
   (slot DoR conditionnel non requis).
@@ -105,3 +105,5 @@ trivial en sort les sprints — c'est ce que consommera `pnpm ezk:map sprints`.
 - **Origine** : arbitrage PO du 2026-08-26 (« rétablir la symétrie » — les rétros ont leur
   fiche-prérequis, pas les sprints).
 - **Product `mega-city`**.
+
+> 🗑️ **superseded 2026-09-23** — absorbée par la fiche 20260904091853974 (journal des difficultés). Fermée sans build.

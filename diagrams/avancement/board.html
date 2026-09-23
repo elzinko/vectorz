@@ -246,8 +246,8 @@
 window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 142,
-  "superseded": 15,
-  "idea": 159,
+  "superseded": 16,
+  "idea": 158,
   "ready": 4,
   "in-progress": 3
  },
@@ -260,7 +260,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P0",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [
@@ -502,7 +502,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260813124026215",
-   "title": "Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad)",
+   "title": "Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — cadrage (à la bmad)",
    "type": "feature",
    "priority": "P1",
    "status": "idea",
@@ -532,7 +532,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260816131703334",
-   "title": "Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro)",
+   "title": "Rationalisation doc + découvrabilité (produit OSS de niveau pro)",
    "type": "feature",
    "priority": "P1",
    "status": "idea",
@@ -604,7 +604,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P1",
    "status": "in-progress",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [],
@@ -1287,7 +1287,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "vectorz",
    "pr": "",
    "labels": [],
@@ -1301,7 +1301,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [],
@@ -1687,7 +1687,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [],
@@ -1701,7 +1701,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [],
@@ -1715,7 +1715,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [],
@@ -1896,20 +1896,6 @@ window.EZK_AVANCEMENT = {
    "labels": [],
    "blocked": "",
    "file": "features/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md"
-  },
-  {
-   "id": "20260826121429274",
-   "title": "⟳ ABSORBÉE (→ 20260904091853974) — ezk-archive émet un compte-rendu de session structuré (prérequis de la vue sprints)",
-   "type": "feature",
-   "priority": "P2",
-   "status": "idea",
-   "ready": false,
-   "milestone": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "blocked": "",
-   "file": "features/20260826121429274_ezk-archive-compte-rendu-structure.md"
   },
   {
    "id": "20260826173005368",
@@ -2364,7 +2350,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P2",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [
@@ -2707,7 +2693,7 @@ window.EZK_AVANCEMENT = {
    "priority": "P3",
    "status": "idea",
    "ready": false,
-   "milestone": "",
+   "milestone": "fondation",
    "product": "mega-city",
    "pr": "",
    "labels": [
@@ -2829,14 +2815,16 @@ window.EZK_AVANCEMENT = {
   {
    "milestone": "fondation",
    "status": "in-progress",
-   "total": 10,
+   "total": 19,
    "shipped": 2,
    "counts": {
-    "idea": 7,
+    "idea": 15,
     "shipped": 2,
-    "in-progress": 1
+    "in-progress": 2
    },
    "children": [
+    "0180",
+    "0186",
     "20260821163346490",
     "20260821163346493",
     "20260821163346496",
@@ -2844,7 +2832,14 @@ window.EZK_AVANCEMENT = {
     "20260821163346501",
     "20260821163346503",
     "20260821204737357",
-    "20260826222044335"
+    "20260823121712652",
+    "20260823121712716",
+    "20260823121712844",
+    "20260823121712909",
+    "20260826112620281",
+    "20260826122532943",
+    "20260826222044335",
+    "20260917123943914"
    ]
   },
   {
@@ -3100,6 +3095,26 @@ window.EZK_PLAN = {
        "type": "feature",
        "pr": "",
        "file": "features/20260911213014783_merge-local-first-sync-main.md",
+       "found": true,
+       "closed": false
+      }
+     ]
+    },
+    {
+     "text": "`20260920111652514` — ezk config github on/off : plugin github piloté par la config · `build`",
+     "marker": "build",
+     "struck": false,
+     "cards": [
+      {
+       "id": "20260920111652514",
+       "title": "Piloter le plugin github par la config — commande terminal `ezk config github on/off`",
+       "status": "ready",
+       "priority": "P0",
+       "ready": true,
+       "product": "mega-city",
+       "type": "feature",
+       "pr": "",
+       "file": "features/20260920111652514_piloter-plugin-github-config.md",
        "found": true,
        "closed": false
       }
@@ -4823,9 +4838,9 @@ window.EZK_PLAN = {
   "0092"
  ],
  "counts": {
-  "entries": 62,
-  "cards": 100,
-  "resolved": 98,
+  "entries": 63,
+  "cards": 101,
+  "resolved": 99,
   "shipped": 40,
   "unresolved": 2
  }
@@ -4866,7 +4881,7 @@ window.EZK_PLAN_DELTA = {
    "title": "Piloter le plugin github par la config — commande terminal `ezk config github on/off`",
    "status": "ready",
    "priority": "P0",
-   "inPlan": false,
+   "inPlan": true,
    "file": "features/20260920111652514_piloter-plugin-github-config.md"
   },
   {
@@ -4958,7 +4973,7 @@ window.EZK_PLAN_DELTA = {
    "file": "features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md"
   }
  ],
- "offPlanCount": 1,
+ "offPlanCount": 0,
  "n": 15
 };
 /*ezk-plan-delta:end*/

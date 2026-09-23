@@ -8,6 +8,8 @@ status: idea
 ready:
 pr:
 created: 2026-08-01
+milestone: fondation
+version: V0.1
 ---
 
 # 0180 — Fiches datées : id = timestamp à la capture

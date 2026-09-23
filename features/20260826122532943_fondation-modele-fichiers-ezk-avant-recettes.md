@@ -4,7 +4,7 @@ title: "Fondation — le modèle de fichiers ezk : compilé, schématisé, valid
 type: feature
 priority: P0
 product: mega-city
-version:
+version: V0.1
 epic:
 depends: []
 labels: [architecture, format, moteur, fondation, bmad]
@@ -12,6 +12,7 @@ status: idea
 ready:
 pr:
 created: 2026-08-26
+milestone: fondation
 ---
 
 ## En clair

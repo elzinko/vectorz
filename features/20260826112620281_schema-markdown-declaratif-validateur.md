@@ -4,7 +4,7 @@ title: Schéma markdown déclaratif + validateur mécanique — format de fiche/
 type: feature
 priority: P3
 product: mega-city
-version:
+version: V0.1
 epic:
 depends: []
 labels: [format, validation, methode, outillage]
@@ -12,6 +12,7 @@ status: idea
 ready:
 pr:
 created: 2026-08-26
+milestone: fondation
 ---
 
 ## En clair

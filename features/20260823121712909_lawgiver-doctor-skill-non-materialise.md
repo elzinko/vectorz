@@ -8,6 +8,8 @@ status: idea
 ready:
 pr:
 created: 2026-08-23
+milestone: fondation
+version: V0.1
 ---
 
 # lawgiver doctor — attraper l'écart silencieux entre le profil et le déploiement réel

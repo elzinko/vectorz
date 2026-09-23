@@ -4,7 +4,7 @@ title: La méthode s'auto-évalue : sa cohérence, et la fidélité de sa repré
 type: feature
 priority: P3
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea

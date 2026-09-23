@@ -4,7 +4,7 @@ title: La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retou
 type: feature
 priority: P1
 product: mega-city
-version:
+version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea
