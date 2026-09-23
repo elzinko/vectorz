@@ -31,6 +31,13 @@ enforcements:
   A generator that forbids hand-editing its index (`regen-backlog.sh`) MUST emit these links
   itself. Without the link the reader must guess the path to open the file — exactly what
   breaks piloting (Thomas, 2026-08-28: « je ne m'en sors pas » sur un `list` sans liens).
+- **A count shown next to a truncated list LIES unless it flags the truncation.** A number placed
+  beside a list (« N branches », « M fiches ») MUST derive from the **same source** as the list, and,
+  when a cap truncates the display, say **« X of Y shown »** — never the bare total while only X items
+  are printed. Origin: the `ezk-archive` gate announcing `branch_absorbed=26` while enumerating only 16
+  (`MAX_FACTS` cap), 2026-09-21 → a count that contradicts its list hides work (here: unmerged branches —
+  the opposite of « lose nothing between sessions »). Measure: under the cap, `emitted lines == announced
+  count`; above it, the label carries « X/Y ».
 
 ### Cas corps de PR — la fiche est le document, la PR en est le rendu (ADR-0029)
 

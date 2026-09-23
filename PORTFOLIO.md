@@ -36,6 +36,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
 | mega-city | 20260826122532943 | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 | 💡 idea |  |
+| mega-city | 20260830194601233 | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P0 | 💡 idea |  |
 | mega-city | 20260917162000501 | Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz | feature | P0 | 💡 idea |  |
 | mega-city | 0069 | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 | 💡 idea |  |
 | mega-city | 0077 | Kit émetteur — hooks Claude Code classe A (émission déterministe) | feature | P1 | 💡 idea |  |
@@ -55,7 +56,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260824122629925 | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 | 💡 idea |  |
 | mega-city | 20260824204751403 | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P1 | 💡 idea |  |
 | mega-city | 20260829123707200 | Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre | chore | P1 | 💡 idea |  |
-| mega-city | 20260830194601233 | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P1 | 💡 idea |  |
 | mega-city | 20260903134906920 | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 | 💡 idea |  |
 | mega-city | 20260903134909124 | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 | 💡 idea |  |
 | mega-city | 20260906122942607 | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 | 💡 idea |  |
@@ -155,6 +155,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260918114726706 | Synchroniser les templates de fiche (une seule source de vérité) + supprimer l'orphelin | chore | P2 | 💡 idea |  |
 | mega-city | 20260920213500176 | SPIKE — un sprint d'autorat de skill coûte trop cher (~330k) : quels leviers d'allègement ? | chore | P2 | 💡 idea |  |
 | mega-city | 20260922160651394 | Conformer le code aux 2 règles neuves : lecteur de fiche par loader + vues sans statut terminal | chore | P2 | 💡 idea |  |
+| mega-city | 20260923220631498 | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 | 💡 idea |  |
 | vectorz | 0024 | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 | 💡 idea |  |
 | vectorz | 0043 | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 | 💡 idea |  |
 | vectorz | 0045 | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 | 💡 idea |  |
@@ -199,6 +200,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
 | vectorz | 21 | 0 | 0 | 0 | 21 | 0 |
-| mega-city | 142 | 2 | 3 | 0 | 137 | 0 |
+| mega-city | 143 | 2 | 3 | 0 | 138 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
