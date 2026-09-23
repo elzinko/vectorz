@@ -22,3 +22,6 @@ sortent respectivement le compte `branch_absorbed=N` et les lignes `[P2] branch 
 **Reproduire.** Repo vectorz, depuis n'importe quel worktree :
 `bash products/mega-city/skills/ezk-archive/scripts/check.sh --gate --point 2 | grep -c "branch ABSORBED"`
 puis comparer au `branch_absorbed=` de la ligne `P2_PENDING`.
+
+---
+**Traitée** — rétro « versions + config github » (2026-09-24) : convertie en fiche backlog `20260923220631498` (correctif du portier) + puce de règle dans `documentation-guidelines/human-facing-lisibility` (compteur ≠ énumération).

@@ -110,3 +110,12 @@ version/milestone + cohérence de lot**, et renvoyer au reste :
 - **Foyer** : fiche-chapeau **autonome** (arbitré 2026-08-24) — le delta version/milestone +
   cohérence de lot n'est nommé par aucune voisine ; le fondre dans `0100` ou `…240` le diluerait.
 - `product: mega-city` (la méthode ezk vit dans mega-city).
+- **MAJ 2026-09-24 (rétro « versions + config github ») — cas daté qui muscle le besoin.** En posant le
+  niveau version « à la main » dans `PLAN.md` (section TRAIN DE VERSIONS citant des ids), les parseurs
+  `parsePlanOrder`/`parsePlanSections` ont **dégradé en silence** : un id (`20260920111652514`) est resté
+  **hors de la séquence tirable** et une lane board a été **rendue à moitié** — sans aucune erreur.
+  Leçon (juge de rétro : **critère d'acceptation de CETTE fiche**, pas une règle `rules/` isolée) : le
+  parseur doit **échouer franchement** sur une section ambiguë au lieu de rendre une lane à moitié (un
+  demi-rendu ment) ; une section non-tirable **se déclare** (marqueur ignoré par `parsePlanOrder`).
+  Contournement appliqué ce jour : section en blockquote non-parsé + entrée racine parsable pour l'id.
+  L'intégration MACHINE du niveau version (cette fiche) doit livrer ce « fail-loud ».

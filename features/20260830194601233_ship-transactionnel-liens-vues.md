@@ -2,7 +2,7 @@
 id: "20260830194601233"
 title: "ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge"
 type: refactor
-priority: P1
+priority: P0
 product: mega-city
 version:
 epic:
@@ -72,3 +72,18 @@ jamais la vigilance humaine.
   `git diff` **vide** sur les fichiers générés ; la CI **échoue** si une vue diffère de sa source.
   Même racine que cette fiche (« le chemin d'écriture possède ses invariants »), élargie du `ship`
   à **tout edit qui dérive une vue**.
+- **MAJ 2026-09-24 (rétro « versions + config github », note N2) — 3ᵉ récurrence → montée P1→P0.**
+  Le trou a mordu **3 fois dans la même session**, rattrapé TARD par 3 filets DIFFÉRENTS : Codex
+  (revue PR #257) sur `PORTFOLIO.md`+board périmés, `check-planning-views` sur `PLAN.md` non curé +
+  PORTFOLIO, puis `pnpm test` (égalité stricte) sur **`pilotage.html`** — une vue non listée dans la
+  note N1, **à ajouter au catalogue `views:regen`** (backlog · portfolio · board avancement/plan-delta/
+  plan-view · pilotage · `composes:graph` · `map:data`). **Sharpening reviewer (anti-Goodhart)** : le
+  garde-fou ne doit PAS rester « en CI » (tardif, et rouge pour des raisons sans rapport) ni être une
+  case DoD (se coche sans être tenue) — c'est un **`views:check` = régénère + `git diff --exit-code`**
+  branché dans la **gate LOCALE** (`pnpm test` / `test:scripts`) ; constat vérifié : `check-planning-views.ts`
+  **n'est câblé nulle part** aujourd'hui. **Frontière archi (règle qui découlera du build)** : une vue
+  dérivée n'existe **qu'à travers `views:regen`** — aucune procédure/skill ne liste les générateurs un par
+  un (le `ship` du SKILL `ezk-backlog` ne cite que backlog+portfolio, pas board/pilotage). Juge de
+  cohérence : **mieux en fiche qu'en règle-texte** (une règle sans check = Goodhart) → construire ceci
+  d'abord, la règle deviendra un enregistrement fidèle ensuite. **Sortir cette fiche de la boucle
+  « re-noter » et la CONSTRUIRE.**

@@ -178,6 +178,7 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 | V0.1 | mega-city | 💡 idea |  |
+| [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P0 |  | mega-city | 💡 idea |  |
 | [20260917162000501](20260917162000501_lanceur-dev-universel-worktree-branche.md) | Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz | feature | P0 |  | mega-city | 💡 idea |  |
 | [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 |  | vectorz | 💡 idea |  |
@@ -200,7 +201,6 @@
 | [20260824122629925](20260824122629925_onglet-faq-comment-faire.md) | Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260824204751403](20260824204751403_preparation-lots-versions-coherence.md) | Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md) | Réunifier (merge/split) et tagger le cluster de fiches « recette / chef / extraction » — sprint de mise en ordre | chore | P1 |  | mega-city | 💡 idea |  |
-| [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20260903134906920](20260903134906920_cli-ezk-point-d-entree-unique.md) | CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260903134909124](20260903134909124_loi-non-compilee-chez-l-agent.md) | La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste) | bug | P1 |  | mega-city | 💡 idea |  |
 | [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 |  | mega-city | 💡 idea |  |
@@ -310,6 +310,7 @@
 | [20260918114726706](20260918114726706_synchroniser-templates-fiche.md) | Synchroniser les templates de fiche (une seule source de vérité) + supprimer l'orphelin | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260920213500176](20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | SPIKE — un sprint d'autorat de skill coûte trop cher (~330k) : quels leviers d'allègement ? | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260922160651394](20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md) | Conformer le code aux 2 règles neuves : lecteur de fiche par loader + vues sans statut terminal | chore | P2 |  | mega-city | 💡 idea |  |
+| [20260923220631498](20260923220631498_portier-archive-compte-egale-enumeration.md) | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 |  | mega-city | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
