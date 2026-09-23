@@ -66,7 +66,7 @@
   `audit` — planifier une session outillée MCP (décision PO 2026-09-12)
 
 **P0 indépendants**
-- `20260911213014783` — merge local-first : main local à jour + propagation GitHub · `groom`→`build`
+- ~~`20260911213014783` — merge local-first : main local à jour + propagation GitHub~~ — **shipped #232**
 - `20260920111652514` — ezk config github on/off : plugin github piloté par la config · `build`
 - ~~`20260831075615969` — la rétro invoque `ezk-chef suggest` et propose une fiche-recette~~ — **shipped #228**
 

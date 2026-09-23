@@ -245,13 +245,13 @@
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
-  "shipped": 142,
+  "shipped": 143,
   "superseded": 16,
   "idea": 158,
-  "ready": 4,
+  "ready": 3,
   "in-progress": 3
  },
- "tirables": 4,
+ "tirables": 3,
  "actives": [
   {
    "id": "20260826122532943",
@@ -272,20 +272,6 @@ window.EZK_AVANCEMENT = {
    ],
    "blocked": "",
    "file": "features/20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md"
-  },
-  {
-   "id": "20260911213014783",
-   "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
-   "type": "feature",
-   "priority": "P0",
-   "status": "ready",
-   "ready": true,
-   "milestone": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [],
-   "blocked": "",
-   "file": "features/20260911213014783_merge-local-first-sync-main.md"
   },
   {
    "id": "20260917162000501",
@@ -3081,22 +3067,22 @@ window.EZK_PLAN = {
      ]
     },
     {
-     "text": "`20260911213014783` — merge local-first : main local à jour + propagation GitHub · `groom`→`build`",
-     "marker": "groom",
-     "struck": false,
+     "text": "~~`20260911213014783` — merge local-first : main local à jour + propagation GitHub~~ — **shipped #232**",
+     "marker": null,
+     "struck": true,
      "cards": [
       {
        "id": "20260911213014783",
        "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
-       "status": "ready",
+       "status": "shipped",
        "priority": "P0",
        "ready": true,
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
-       "file": "features/20260911213014783_merge-local-first-sync-main.md",
+       "pr": "#232",
+       "file": "features/done/20260911213014783_merge-local-first-sync-main.md",
        "found": true,
-       "closed": false
+       "closed": true
       }
      ]
     },
@@ -4806,15 +4792,15 @@ window.EZK_PLAN = {
   }
  ],
  "head": {
-  "id": "20260911213014783",
-  "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
+  "id": "20260920111652514",
+  "title": "Piloter le plugin github par la config — commande terminal `ezk config github on/off`",
   "status": "ready",
   "priority": "P0",
   "ready": true,
   "product": "mega-city",
   "type": "feature",
   "pr": "",
-  "file": "features/20260911213014783_merge-local-first-sync-main.md",
+  "file": "features/20260920111652514_piloter-plugin-github-config.md",
   "found": true,
   "closed": false
  },
@@ -4841,7 +4827,7 @@ window.EZK_PLAN = {
   "entries": 63,
   "cards": 101,
   "resolved": 99,
-  "shipped": 40,
+  "shipped": 41,
   "unresolved": 2
  }
 };
@@ -4941,14 +4927,6 @@ window.EZK_PLAN_DELTA = {
    "file": "features/20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md"
   },
   {
-   "id": "20260911213014783",
-   "title": "Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub",
-   "status": "ready",
-   "priority": "P0",
-   "inPlan": true,
-   "file": "features/20260911213014783_merge-local-first-sync-main.md"
-  },
-  {
    "id": "20260910231201744",
    "title": "ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm",
    "status": "idea",
@@ -4971,6 +4949,14 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md"
+  },
+  {
+   "id": "20260910152227744",
+   "title": "Couche de règles PROJET-LOCAL (`.vectorz/`) — règles propres à un projet, composées + auditables",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md"
   }
  ],
  "offPlanCount": 0,
