@@ -84,9 +84,13 @@ function applyGithubMutation(doc: Document, mutation: GithubMutation): void {
   const { cap, enabled } = mutation;
   const current = doc.get('github');
   if (enabled) {
-    // Rallumer une capacité = retirer sa coupure là où elle est écrite.
+    // Rallumer une capacité = retirer sa coupure là où elle est écrite. `codex-review`
+    // a un alias camel toléré par resolveGithub (`codexReview`) : on doit retirer LES DEUX,
+    // sinon un `on` face à une config écrite `codexReview: false` mentirait (capacité restée
+    // OFF) — exactement l'erreur silencieuse que l'alias dual était censé empêcher.
     if (isMap(current)) {
       current.delete(cap);
+      if (cap === 'codex-review') current.delete('codexReview');
       if (current.items.length === 0) doc.delete('github'); // map vide → défaut tout ON
     } else if (current === false) {
       // Était tout-coupé : rallumer une capacité laisse les DEUX autres coupées
@@ -100,8 +104,12 @@ function applyGithubMutation(doc: Document, mutation: GithubMutation): void {
   }
   // Couper une capacité (granulaire).
   if (current === false) return; // déjà tout coupé → cette capacité l'est → no-op sûr.
-  if (isMap(current)) current.set(cap, false); // map existante : préserve les autres clés.
-  else doc.set('github', { [cap]: false }); // github absent / true → map à une clé.
+  if (isMap(current)) {
+    if (cap === 'codex-review') current.delete('codexReview'); // pas de clé alias redondante
+    current.set(cap, false); // map existante : préserve les autres clés.
+  } else {
+    doc.set('github', { [cap]: false }); // github absent / true → map à une clé.
+  }
 }
 
 /**

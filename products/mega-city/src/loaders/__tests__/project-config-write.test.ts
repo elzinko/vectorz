@@ -89,4 +89,32 @@ describe('writeGithubConfig — pilotage de la config .vectorz/ (fiche 202609201
     expect(existsSync(join(root, '.vectorz', 'config.yml'))).toBe(false);
     expect(readFileSync(join(root, '.vectorz', 'config.yaml'), 'utf8')).toContain('github: false');
   });
+
+  it('`codex-review on` retire aussi l’alias camel `codexReview` (pas de « on » qui ment)', () => {
+    seed('github:\n  codexReview: false\n'); // graphie alias, écrite à la main
+    expect(githubCapabilities(root)).toEqual({ pr: true, ci: true, codexReview: false });
+    writeGithubConfig(root, { kind: 'cap', cap: 'codex-review', enabled: true });
+    expect(githubCapabilities(root)).toEqual(ON); // vraiment rallumé
+    expect(readConfig()).not.toContain('codexReview');
+  });
+
+  it('deux coupures granulaires coexistent (`pr off` puis `ci off`)', () => {
+    writeGithubConfig(root, { kind: 'cap', cap: 'pr', enabled: false });
+    writeGithubConfig(root, { kind: 'cap', cap: 'ci', enabled: false });
+    expect(githubCapabilities(root)).toEqual({ pr: false, ci: false, codexReview: true });
+  });
+
+  it('rallumer une capacité depuis `github: false` laisse les autres coupées', () => {
+    writeGithubConfig(root, { kind: 'all', enabled: false });
+    writeGithubConfig(root, { kind: 'cap', cap: 'pr', enabled: true });
+    expect(githubCapabilities(root)).toEqual({ pr: true, ci: false, codexReview: false });
+  });
+
+  it('préserve un commentaire d’en-tête du fichier existant', () => {
+    seed('# ma config de projet\ngithub:\n  ci: false\n');
+    writeGithubConfig(root, { kind: 'cap', cap: 'pr', enabled: false });
+    const out = readConfig();
+    expect(out).toContain('# ma config de projet');
+    expect(githubCapabilities(root)).toEqual({ pr: false, ci: false, codexReview: true });
+  });
 });
