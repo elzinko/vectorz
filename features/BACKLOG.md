@@ -93,7 +93,7 @@
 | [20260821163346487](done/20260821163346487_carte-methode-fidele-et-revue.md) | Épic — La carte de la méthode : fidèle aux fichiers, et revue morceau par morceau | feature | P1 |  | mega-city | 🗑️ superseded |  |
 | [20260821172716537](done/20260821172716537_carte-ne-montre-pas-la-loi.md) | La carte ne montre pas LA LOI de l'intérieur (règles, bundles, profils — et qui les lit) | feature | P1 |  | mega-city | ✅ shipped | #179 |
 | [20260821204737357](20260821204737357_cabler-la-methode-modele-compile.md) | Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend | feature | P1 | V0.1 | mega-city | 🟠 in-progress |  |
-| [20260823121712652](20260823121712652_modele-statut-kanban-schema-valide.md) | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 |  | mega-city | 🟠 in-progress |  |
+| [20260823121712652](20260823121712652_modele-statut-kanban-schema-valide.md) | Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne | feature | P1 | V0.1 | mega-city | 🟠 in-progress |  |
 | [20260823220100308](done/20260823220100308_binder-retrait-garde-anciens-noms.md) | Le binder retire proprement un ancien nom (retrait gardé) — le débloqueur des renames | feature | P1 |  | mega-city | ✅ shipped | #162 |
 | [20260823220100443](done/20260823220100443_split-ezk-product-build.md) | Split cérémonie/rôle — le skill devient ezk-product-build, le rôle PO reste l'agent ezk-pm | refactor | P1 |  | mega-city | ✅ shipped | #162 |
 | [20260824060737115](done/20260824060737115_epic-marketing-et-site.md) | Épic — Marketing & site (orchestrateur, landing, recette site) | feature | P1 |  | mega-city | 🗑️ superseded |  |

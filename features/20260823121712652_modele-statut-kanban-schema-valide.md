@@ -8,6 +8,8 @@ status: in-progress
 ready:
 pr:
 created: 2026-08-23
+milestone: fondation
+version: V0.1
 ---
 
 # Modèle de statut kanban — des colonnes contrôlées, pas un champ date bancal

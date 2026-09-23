@@ -49,8 +49,8 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0165 | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 | 💡 idea |  |
 | mega-city | 20260812104022237 | Tracer la session/branche responsable d'une PR — une PR = une seule session (éviter le double-travail) | feature | P1 | 💡 idea |  |
 | mega-city | 20260812104022246 | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 | 💡 idea |  |
-| mega-city | 20260813124026215 | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — épic de cadrage (à la bmad) | feature | P1 | 💡 idea |  |
-| mega-city | 20260816131703334 | Épic — Rationalisation doc + découvrabilité (produit OSS de niveau pro) | feature | P1 | 💡 idea |  |
+| mega-city | 20260813124026215 | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — cadrage (à la bmad) | feature | P1 | 💡 idea |  |
+| mega-city | 20260816131703334 | Rationalisation doc + découvrabilité (produit OSS de niveau pro) | feature | P1 | 💡 idea |  |
 | mega-city | 20260821163346490 | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | 💡 idea |  |
 | mega-city | 20260821163346493 | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | 💡 idea |  |
 | mega-city | 20260823121712781 | Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge | feature | P1 | 💡 idea |  |
@@ -131,7 +131,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260826072532537 | Vue « rétrospectives » dans ezk:map — chaque rétro et ses actions mesurables, extraites des captures | feature | P2 | 💡 idea |  |
 | mega-city | 20260826072532622 | Revue & validation des fiches dans ezk:map — pouce 👍/👎 (verdict versionné, partagé entre sessions) | feature | P2 | 💡 idea |  |
 | mega-city | 20260826082120069 | ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport | feature | P2 | 💡 idea |  |
-| mega-city | 20260826121429274 | ⟳ ABSORBÉE (→ 20260904091853974) — ezk-archive émet un compte-rendu de session structuré (prérequis de la vue sprints) | feature | P2 | 💡 idea |  |
 | mega-city | 20260826173005368 | Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills | refactor | P2 | 💡 idea |  |
 | mega-city | 20260826173221323 | Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet | refactor | P2 | 💡 idea |  |
 | mega-city | 20260826222044335 | Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic | feature | P2 | 💡 idea |  |
@@ -204,6 +203,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
 | vectorz | 21 | 0 | 0 | 0 | 21 | 0 |
-| mega-city | 145 | 4 | 3 | 0 | 138 | 0 |
+| mega-city | 144 | 4 | 3 | 0 | 137 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
