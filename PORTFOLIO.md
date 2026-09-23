@@ -11,7 +11,6 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
-| mega-city | 20260920111652514 | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 | 🔵 ready |  |
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | 🔵 ready |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
 
@@ -29,7 +28,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
-| mega-city | 20260920111652514 | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 | 🔵 ready |  |
 | mega-city | 0102 | ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr | feature | P1 | 🔵 ready |  |
 | mega-city | 20260910165637000 | ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger | feature | P2 | 🔵 ready |  |
 
@@ -201,6 +199,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|---------|
 | vectorz | 21 | 0 | 0 | 0 | 21 | 0 |
-| mega-city | 143 | 3 | 3 | 0 | 137 | 0 |
+| mega-city | 142 | 2 | 3 | 0 | 137 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
