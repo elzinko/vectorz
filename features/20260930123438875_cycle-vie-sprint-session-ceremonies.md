@@ -65,9 +65,10 @@ Nommage écarté : `stop` pour la clôture normale (en Scrum « stop/cancel a sp
 **anormale**) ; on termine avec `close`. `ezk-sprint retrospective` écarté (ferait entrer une
 cérémonie dans le sprint, contre la doctrine « le sprint n'est pas une cérémonie »).
 
-Décision à consigner en **ADR-0054** (à créer au build) : « Clôture de sprint vs archive de
-session ; cérémonies hors sprint ». Étend la doctrine ADR-0039 §2 (« la PR est un mécanisme, pas
-une cérémonie ») aux bornes de cycle de vie.
+Décision consignée en [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md)
+(statut *proposé*, à ratifier au build) : « Clôture de sprint vs archive de session ; cérémonies
+hors sprint ». Étend la doctrine ADR-0039 §2 (« la PR est un mécanisme, pas une cérémonie ») aux
+bornes de cycle de vie.
 
 ## Critères d'acceptation
 
@@ -96,9 +97,9 @@ pnpm --dir products/mega-city test:scripts
 
 ## Notes / décisions
 
-- Matière de conception produite le 2026-09-30 (brainstorm) : un schéma des 3 étages
-  (`cycle-ezk-3-etages.svg`) et un brouillon d'ADR-0054 existent comme artefacts de session — à
-  intégrer/committer au build.
+- Matière de conception (2026-09-30, brainstorm), **committée avec la fiche** :
+  [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md) (proposé) et le
+  [schéma des 3 étages](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.svg).
 - Verdicts du mini-panel : architecte **GO-avec-amendements** (garder 3 corps séparés, façade par
   pointeurs) ; scrum master a signalé que le vrai conteneur Scrum = la session (retenu). Le terme
   du livrable de sprint = **Incrément**.
