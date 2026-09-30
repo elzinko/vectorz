@@ -72,7 +72,7 @@ bornes de cycle de vie.
 
 ## Critères d'acceptation
 
-- [ ] `ezk-sprint start` ouvre un sprint (**lot** de stories) et exécute l'intake ; `check`/`run` conservés en **alias transitoires**.
+- [ ] `ezk-sprint start` ouvre un sprint (**lot** de stories) et exécute l'intake. Rétro-compat **par verbe** (pas un alias commun) : `check` → `start --dry-run` (**reste read-only**) ; `run` → cycle complet `start → stories → close` (**build 0→10 inchangé**).
 - [ ] `ezk-sprint close` clôt le sprint, scelle un **incrément**, et **rend la main à la session** (permet d'enchaîner retro → planning → sprint dans la même session).
 - [ ] `ezk-archive` **inchangé**, dédié à la clôture de **session** ; ouverture de session implicite au 1er `start`.
 - [ ] La retro reste hors sprint (`ezk-retro`) ; **aucune** sous-commande `ezk-sprint retrospective`.

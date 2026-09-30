@@ -80,8 +80,15 @@ des **mécanismes/hygiène**, pas des cérémonies.
 - `ezk-product-build` (le PO qui « enchaîne les sprints ») à **reposer** : il devient l'orchestrateur
   de la **boucle de session** (planning → sprint → retro → planning) et tient l'unique checkpoint
   inter-sprint.
-- `check`/`run` conservés en **alias transitoires** de `start` le temps de la bascule
-  (précédent [ADR-0053](0053-check-ready-devient-review-defaut-autonome.md) : renommage avec alias).
+- **Rétro-compat : un mapping PAR verbe** — `check` et `run` ne peuvent PAS aliaser `start` à
+  l'identique (ils n'ont pas le même contrat) :
+  - `check` → alias de `start --dry-run` : **reste strictement read-only** (aucun claim, aucune
+    branche) — on ne mappe jamais `check` vers une ouverture avec effet de bord.
+  - `run` → alias du **cycle complet** `start → stories → close` : conserve le build 0→10 de bout
+    en bout — on ne mappe jamais `run` vers la seule ouverture, sinon les appelants existants
+    s'arrêteraient avant d'avoir construit la moindre story.
+  Alias transitoires le temps de la bascule (précédent
+  [ADR-0053](0053-check-ready-devient-review-defaut-autonome.md) : renommage avec alias).
 
 **À valider en panel (grooming/archi)**
 - Objet « sprint » persistant (id, incrément listé) ou `SPRINT.md` suffit-il ?
