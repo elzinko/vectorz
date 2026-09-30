@@ -37,9 +37,10 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-retro` | 📦 né du 1er self-host (fiche 0063) | **cérémonie d'auto-amélioration de la méthode** (Sujet A) : round-robin d'agents → propositions typées symptôme+mesure → juge de cohérence → rangement `rules/`/backlog sous contrôle PO (`help`/`run`/`impose`/`retire`) |
 | `ezk-article` | 📦 nouveau (fiche 0049) | écrit/réécrit un **article technique vulgarisé** : brief de persona demandé au demandeur, règles d'écriture encodées, **panel de 5 relecteurs frais** (lecteur cible, essais techniques, copy-editor, fidélité aux sources, références) + contre-lecture à froid = gate de publication ; `revise` versionne côte à côte (`<slug>-vN.md`) |
 | `ezk-codex` | 📦 nouveau (ADR-0024) | **adresse les retours Codex d'une PR** de bout en bout : `fix` (récupère findings inline+reviews, corrige ou **décline** les faux positifs + 👎, commit scopé, push, re-déclenche `@codex review`, **sonde de verdict bornée**) · `check` (lecture seule). Garde-fou de tête : **stand-down** anti-collision (PR mergée / branche pilotée ailleurs / commits d'une autre session). **Aucune composition inconditionnelle** : invoquée à la demande quand le bot Codex est branché (`ezk-sprint` étape 10 le dit « si branché, sinon ne l'attends pas » ; `ezk-reviewer` le remplace) — un module GitHub, pas un maillon du flux ; **ne merge pas** |
+| `ezk-scout` | 📦 nouveau (fiche 20260910165637000) | **chasse aux bugs en tâche de fond** sur une app qui tourne : `run` (passe bornée dans un état isolé → **rapport** de brouillons de fiches) · `check` (forme du rapport) · `file` (**après validation humaine seulement** : `ezk-backlog add`). Invariants : **find-only** (HEAD, arbre, refs et worktree comparés avant/après par `find-only-guard.sh`), **aucune carte créée par la passe**, état isolé ou chemin non sondé. Compose `ezk-backlog` + `ezk-docker` ; frontière nette vs `ezk-qa` / `ezk-bug` / `ezk-reviewer` ; **ne corrige jamais** |
 
 > **Agents** (`../agents/`) : `ezk-architect`, `ezk-archive`, `ezk-pm`, `ezk-qa`, `ezk-reviewer`, `ezk-steward`, `ezk-dev` (7, tous bindés par le profil `global`).
-> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-codex` (ADR-0024) = **19 skills** au profil `global` (+ l'ex-`ezk-start`, fiche 0090, absorbé par `ezk-sprint:check` le 2026-08-24), + 7 agents.
+> Migration du contenu **terminée** : 12 skills migrés (0024) + `ezk-pr` (né ici) + `ezk-diagram` + `ezk-docker` & `ezk-readme` (récupérés de commits orphelins au passage au monorepo vectorz) + `ezk-retro` (né du 1er self-host, fiche 0063) + `ezk-article` (né de la fiche 0049) + `ezk-codex` (ADR-0024) + `ezk-scout` (fiche 20260910165637000) = **20 skills** au profil `global` (+ l'ex-`ezk-start`, fiche 0090, absorbé par `ezk-sprint:check` le 2026-08-24), + 7 agents.
 > Hors catalogue `global` : `supervision-demo` (méthode JOUET pour éprouver le kit de supervision — non déployée) · `supervision-analyze` (post-mortem journal + transcript — fiche 0104, opt-in) · `vz-product-builder` (overlay AUTONOME du product-builder à corpus de reviewers, fiche 0060 — opt-in explicite, jamais bindé par défaut : l'autonomie se choisit).
 > Follow-up hors migration : **étendre** `ezk-design-system` (UI/UX requêtable, fiche 0019).
 
@@ -63,6 +64,8 @@ flowchart LR
     ezk-readme --> ezk-backlog
     ezk-retro --> ezk-backlog
     ezk-retro --> ezk-chef
+    ezk-scout --> ezk-backlog
+    ezk-scout --> ezk-docker
     ezk-sprint --> ezk-backlog
     ezk-sprint --> ezk-ci
     ezk-sprint --> ezk-commits

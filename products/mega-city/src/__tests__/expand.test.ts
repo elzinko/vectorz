@@ -98,6 +98,7 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
       'ezk-product-build',
       'ezk-readme',
       'ezk-retro',
+      'ezk-scout',
       'ezk-sprint',
           ]);
   });

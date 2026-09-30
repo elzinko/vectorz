@@ -381,12 +381,12 @@ window.EZK = {
  "counts": {
   "rules": 74,
   "agents": 8,
-  "skills": 24,
+  "skills": 25,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 208,
+  "total": 211,
   "casses": 0
  },
  "orphans": [
@@ -689,7 +689,8 @@ window.EZK = {
    "ezk-product-build",
    "ezk-sprint",
    "ezk-retro",
-   "ezk-bug"
+   "ezk-bug",
+   "ezk-scout"
   ],
   "artefacts": [
    "ezk-backlog"
@@ -761,6 +762,7 @@ window.EZK = {
     "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
+    "ezk-scout",
     "ezk-sprint",
     "vz-product-builder"
    ],
@@ -917,7 +919,9 @@ window.EZK = {
    "composes": [],
    "composesExternal": [],
    "roles": [],
-   "composedBy": [],
+   "composedBy": [
+    "ezk-scout"
+   ],
    "profiles": [
     "daily",
     "global"
@@ -1054,6 +1058,23 @@ window.EZK = {
    ],
    "profiles": [
     "daily",
+    "global"
+   ]
+  },
+  "ezk-scout": {
+   "id": "ezk-scout",
+   "description": "Chasse aux bugs en tâche de fond : sonde une app qui tourne dans un état isolé et rend un RAPPORT de brouillons de fiches, sans jamais corriger ni créer de fiche seule. A utiliser quand l'utilisateur veut « chasser / trouver des bugs », « teste l'app et dis-moi ce qui casse », « lance un scout », ou quand le backlog est bloqué sur des gestes humains et qu'il vaut mieux tester que s'arrêter. Pilotable par sous-commandes : help, run (la passe bornée), check (contrôle la forme d'un rapport), file (APRÈS validation humaine seulement : `ezk-backlog add`). Invariants durs : FIND-ONLY (HEAD, arbre, refs et worktree comparés avant/après par un script), aucune carte créée par la passe, état isolé ou chemin non sondé, passe BORNÉE. COMPOSE `ezk-backlog` (filing après accord) et `ezk-docker` (banc isolé quand l'app tourne sous compose). N'EST PAS `ezk-qa` (valide une PR), `ezk-bug` (cadre UN bug déjà signalé), `ezk-reviewer` (relit un diff), `ezk-sprint` (construit) ni `ezk-product-build` (décide) : il explore une app qui tourne et NOURRIT les autres.",
+   "usage": "[help|run|check|file]",
+   "etage": "methode",
+   "bande": "ceremonies",
+   "composes": [
+    "ezk-backlog",
+    "ezk-docker"
+   ],
+   "composesExternal": [],
+   "roles": [],
+   "composedBy": [],
+   "profiles": [
     "global"
    ]
   },
@@ -2400,6 +2421,7 @@ window.EZK = {
     "ezk-product-build",
     "ezk-readme",
     "ezk-retro",
+    "ezk-scout",
     "ezk-sprint"
    ],
    "interactions": []
