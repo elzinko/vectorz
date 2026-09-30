@@ -1,5 +1,6 @@
 ---
 composes: [ezk-backlog, ezk-commits]
+applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-pr
 argument-hint: "[help|init|plan|run|report|ship] [#PR…]"
 description: >-

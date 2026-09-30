@@ -1,5 +1,6 @@
 ---
 composes: [ezk-backlog, ezk-chef]
+applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-retro
 argument-hint: "[help|run|impose|retire]"
 description: >-

@@ -7,7 +7,7 @@
  * (D5 : « un id référencé inexistant fait échouer le validateur »).
  */
 import { describe, expect, it } from 'vitest';
-import { compileGraph } from '../core/compiled-graph.js';
+import { type CompiledGraph, compileGraph, isRelation, queryGraph } from '../core/compiled-graph.js';
 import type { Agent, Bundle, Profile, Rule, Skill } from '../domain/model.js';
 import type { Catalog } from '../loaders/catalog.js';
 
@@ -52,6 +52,7 @@ describe('compileGraph — instance typée', () => {
       from: 'a',
       fromKind: 'skill',
       link: 'composes',
+      verb: 'compose',
       to: 'b',
       toKind: 'skill',
     });
@@ -74,5 +75,64 @@ describe('compileGraph — instance typée', () => {
     });
 
     expect(() => compileGraph(catalog)).not.toThrow();
+  });
+});
+
+describe('queryGraph — interroger l\'objet compilé sans grep (fiche 357)', () => {
+  // Deux skills (`a` applique la règle, `b` est composé par `a`), un agent qui applique
+  // aussi la règle et qui la vérifie : de quoi distinguer « applique » de « est-vérifié-par ».
+  const graph: CompiledGraph = compileGraph(
+    catalogOf({
+      skills: index<Skill>([
+        { id: 'a', content: '', composes: ['b'], applies: ['clean/x'] },
+        { id: 'b', content: '' },
+      ]),
+      agents: index<Agent>([
+        { id: 'reviewer', role: '', competences: ['b'], interactions: ['clean/x'] },
+      ]),
+      rules: index<Rule>([
+        {
+          id: 'clean/x',
+          kind: 'disposition',
+          level: 'MUST',
+          content: '',
+          enforcements: [{ type: 'agent-check', agent: 'reviewer' }],
+        },
+      ]),
+    }),
+  );
+
+  it('par lien, sens direct : ce que `a` compose', () => {
+    expect(queryGraph(graph, 'composes', 'a')).toEqual(['b']);
+  });
+
+  it('par verbe, sens direct : `reviewer` compose `b` (via le champ competences)', () => {
+    expect(queryGraph(graph, 'compose', 'reviewer')).toEqual(['b']);
+  });
+
+  it('par verbe, sens inverse : qui applique la règle ? (skill ET agent, triés)', () => {
+    expect(queryGraph(graph, 'applique', 'clean/x', true)).toEqual(['a', 'reviewer']);
+  });
+
+  it('« est-vérifié-par » ne se confond pas avec « applique » : seul l\'agent vérifie', () => {
+    expect(queryGraph(graph, 'est-verifie-par', 'clean/x')).toEqual(['reviewer']);
+    expect(queryGraph(graph, 'est-verifie-par', 'clean/x', true)).toEqual([]);
+  });
+
+  it('un artefact périmé (arêtes sans `verb`) répond quand même par verbe', () => {
+    const stale = {
+      nodes: graph.nodes,
+      edges: graph.edges.map(({ verb: _verb, ...rest }) => rest),
+    } as unknown as CompiledGraph;
+
+    expect(queryGraph(stale, 'applique', 'clean/x', true)).toEqual(['a', 'reviewer']);
+  });
+
+  it('isRelation reconnaît les liens ET les verbes, refuse le reste (une faute de frappe ne passe pas)', () => {
+    expect(isRelation('applies')).toBe(true);
+    expect(isRelation('est-verifie-par')).toBe(true);
+    expect(isRelation('applique')).toBe(true);
+    expect(isRelation('appliques')).toBe(false);
+    expect(isRelation('')).toBe(false);
   });
 });

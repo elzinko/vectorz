@@ -1,4 +1,5 @@
 ---
+applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-archive
 argument-hint: "[help|check|run]"
 description: >-
