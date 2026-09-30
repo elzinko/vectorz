@@ -106,9 +106,9 @@ describe('validateGraph — détection des liens cassés', () => {
     expect(new Set(keys).size).toBe(keys.length); // aucun doublon
   });
 
-  it('les treize types de lien du vocabulaire réuni sont couverts par la table', () => {
+  it('les quatorze types de lien du vocabulaire réuni sont couverts par la table', () => {
     expect(new Set(EDGE_SOURCES.map((s) => s.link)).size).toBe(EDGE_SOURCES.length);
-    expect(EDGE_SOURCES.length).toBe(13);
+    expect(EDGE_SOURCES.length).toBe(14); // 13 + `applies` (fiche 357)
   });
 });
 

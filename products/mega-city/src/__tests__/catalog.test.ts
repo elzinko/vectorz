@@ -242,6 +242,41 @@ describe('loadCatalog — frontmatter composes/composes-external (ADR-0025, fich
   });
 });
 
+describe('loadCatalog — frontmatter applies (fiche 357, refs structurelles par id)', () => {
+  let root: string;
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'lawgiver-applies-'));
+  });
+  afterEach(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  function writeSkill(dir: string, frontmatter: string): void {
+    mkdirSync(join(root, 'skills', dir), { recursive: true });
+    writeFileSync(join(root, 'skills', dir, 'SKILL.md'), `---\n${frontmatter}\n---\n\ncorps\n`);
+  }
+
+  it('parse applies: (ids de règles que le skill suit)', () => {
+    writeSkill('s', ['name: s', 'applies:', '  - ns/r1', '  - ns/r2'].join('\n'));
+    expect(loadCatalog(root).skills.get('s')?.applies).toEqual(['ns/r1', 'ns/r2']);
+  });
+
+  it("n'ajoute pas le champ quand applies est absent (rétro-compat)", () => {
+    writeSkill('plain', 'name: plain');
+    expect(loadCatalog(root).skills.get('plain')).not.toHaveProperty('applies');
+  });
+
+  it("ignore applies si ce n'est pas un tableau de strings", () => {
+    writeSkill('malformed', ['name: malformed', 'applies: notAnArray'].join('\n'));
+    expect(loadCatalog(root).skills.get('malformed')?.applies).toBeUndefined();
+  });
+
+  it('rejette un id non sûr (assertSafeId, défense frontière)', () => {
+    writeSkill('evil', ['name: evil', 'applies:', '  - ../../etc/passwd'].join('\n'));
+    expect(() => loadCatalog(root)).toThrow(/non sûr/);
+  });
+});
+
 describe('assertSafeId (anti-traversal, F1)', () => {
   it('accepte les ids légitimes, y compris avec / interne', () => {
     expect(assertSafeId('ezk-reviewer')).toBe('ezk-reviewer');
