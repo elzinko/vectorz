@@ -180,6 +180,7 @@
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 | V0.1 | mega-city | 💡 idea |  |
 | [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P0 |  | mega-city | 💡 idea |  |
 | [20260917162000501](20260917162000501_lanceur-dev-universel-worktree-branche.md) | Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz | feature | P0 |  | mega-city | 💡 idea |  |
+| [20260930123438875](20260930123438875_cycle-vie-sprint-session-ceremonies.md) | Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint | feature | P0 |  | mega-city | 💡 idea |  |
 | [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 |  | vectorz | 💡 idea |  |
 | [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
