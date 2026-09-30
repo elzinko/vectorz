@@ -1,10 +1,11 @@
 ---
 id: "20260825161522791"
-title: "Elicitation — boucle de raffinement structurée dans groom (à la BMAD advanced-elicitation)"
+title: "Un grooming guidé : l'agent propose des améliorations, tu choisis"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
-labels: [bmad, elicitation]
+version: V0.4
+labels: [backlog]
 epic:
 status: idea
 ready:
@@ -78,3 +79,12 @@ itérative, au lieu d'un unique échange libre. Sabotage : sortir au 1er tour ne
   actionnable), [[20260825160456259]] (affordance next-step, reco n°1), [[0161]] (panel de challenge, technique candidate).
 - **P2 = proposition** ; à confirmer/ajuster au grooming (choix du catalogue, où brancher exactement dans `groom`).
 - `status: idea` : direction issue du benchmark, à groomer avant build (choix de portée MVP).
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260812104022243`](done/20260812104022243_groom-appelle-architecture-brainstorming.md) — groom appelle aussi engineering:architecture (+ product-brainstorming) — par défaut, ou forcé par paramètre  
+  _Pourquoi_ : Même sujet : un grooming mieux outillé.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

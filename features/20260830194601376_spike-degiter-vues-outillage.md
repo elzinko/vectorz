@@ -1,10 +1,11 @@
 ---
 id: "20260830194601376"
-title: "SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions)"
+title: "Décider quelles vues générées ne plus committer (fin des conflits)"
 type: chore
-priority: P2
+priority: P1
 product: mega-city
-version:
+labels: [backlog]
+version: V0.3
 epic:
 depends: []
 status: idea

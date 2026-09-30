@@ -8,7 +8,7 @@ version:
 epic:
 status: superseded
 ready:
-pr: superseded — epic retire (ADR-0017 A16, PR #236) ; theme+milestone remplacent type: epic
+pr: "superseded — epic retire (ADR-0017 A16, PR #236) ; theme+milestone remplacent type: epic"
 labels: [backlog, methode, doctrine, milestone]
 created: 2026-09-15
 ---
@@ -104,7 +104,7 @@ qu'un label libre existant** (`bmad`, `ux`) **passe**.
 
 - **Amende** la doctrine #175 (`done/20260825123700998`) — qui *gardait* l'épic. À réécrire, pas dupliquer.
 - **Amende** l'ADR-0017 (`products/mega-city/docs/adr/0017-...`).
-- **À coordonner** avec [20260912180313727](../20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md)
+- **À coordonner** avec [20260912180313727](20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md)
   (« repenser le backlog » : champ `iteration`/`version`, fusion PLAN→BACKLOG). Le **milestone** de
   cette fiche et le champ `version`/`iteration` de l'autre **se recouvrent** — à unifier au grooming
   (probable fusion des deux fiches sur l'axe « champ de séquencement »).

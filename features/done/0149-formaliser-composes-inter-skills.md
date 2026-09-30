@@ -34,7 +34,7 @@ erreur), et 4 intégrations fantômes ont été constatées à l'audit. Par aill
 
 ## Notes
 **Remontée P2 → P1 le 2026-07-26** (arbitrage PO). Déclencheur : [ADR-0020](../../products/mega-city/docs/adr/0020-capacite-partagee-brique-autonome.md)
-grave la doctrine « briques autonomes **composables** » et la fiche [0102](../0102-ezk-testbed-brique-boot-env-test.md)
+grave la doctrine « briques autonomes **composables** » et la fiche [0102](0102-ezk-testbed-brique-boot-env-test.md)
 crée `ezk-testbed`, que `ezk-pr-pilot`, `ezk-preview` et `ezk-sprint` doivent composer.
 Sans `composes:`, ces trois liens naissent **en prose** — un profil pourra binder
 `ezk-pr-pilot` sans `ezk-testbed` sans qu'aucun warning ne tombe, exactement le symptôme

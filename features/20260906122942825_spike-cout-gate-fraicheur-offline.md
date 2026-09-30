@@ -1,13 +1,14 @@
 ---
 id: "20260906122942825"
-title: SPIKE — coût du gate de fraîcheur offline / sans remote
+title: "Que faire du contrôle « base fraîche » hors ligne ?"
 type: chore
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 depends: []
-labels: [methode, retro-2026-09-05, spike, run-intake]
+labels: [sprint]
 status: idea
 ready:
 pr:

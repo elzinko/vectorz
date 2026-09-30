@@ -8,7 +8,7 @@ version:
 epic:
 status: shipped
 ready:
-pr: #248
+pr: "#248"
 created: 2026-08-26
 ---
 

@@ -1,10 +1,10 @@
 ---
 id: "20260917123943914"
-title: Outils dans la carte méthode — un type de nœud `tool` (bin/script/commande) relié aux skills
+title: "Montrer sur la carte les scripts et commandes de la méthode"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
-version: V0.1
+version: V0.3
 milestone: fondation
 labels: [carte]
 status: idea

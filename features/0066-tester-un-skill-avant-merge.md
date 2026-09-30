@@ -1,11 +1,12 @@
 ---
 id: 0066
-title: Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run)
+title: "Tester un skill pour de vrai avant de le merger"
 type: feature
 priority: P2
 product: mega-city
+version: V0.4
 milestone: rationalisation
-labels: [rationalisation]
+labels: [fabrique]
 status: idea
 pr:
 created: 2026-07-16

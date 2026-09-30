@@ -1,8 +1,8 @@
 ---
 id: "20260821163346490"
-title: La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO)
+title: "Corriger la fausse « chaîne de montage » en haut de la carte"
 type: feature
-priority: P1
+priority: P2
 product: mega-city
 version: V0.1
 milestone: fondation

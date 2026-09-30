@@ -1,10 +1,11 @@
 ---
 id: "20260903134909124"
-title: La loi n'est compilée nulle part chez l'agent — le déploiement global ne porte que l'équipe, et aucun projet n'est lié (0 règle déployée sur le poste)
+title: "Déployer vraiment les règles chez les agents (aujourd'hui : zéro)"
 type: bug
-priority: P1 # provisoire — trou de méthode constaté le 2026-09-03 ; rang à confirmer par le PO
+priority: P1
 product: mega-city
-version:
+labels: [installation]
+version: V0.3
 epic:
 status: idea
 ready:
@@ -112,3 +113,12 @@ pnpm --filter mega-city test                                           # dont le
   moteur, même question « qu'est-ce qui est déployé »). Doctrine « règle au catalogue ≠ règle
   déployée » (mémoire de session du 2026-09-03).
 - Priorité P1 provisoire : c'est la promesse centrale de LA LOI qui est en jeu.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260823121712909`](done/20260823121712909_lawgiver-doctor-skill-non-materialise.md) — lawgiver doctor — détecter un skill du profil non matérialisé dans ~/.claude (le bug /ezk-pr introuvable)  
+  _Pourquoi_ : Même sujet : ce qui est déclaré doit être réellement installé.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

@@ -115,22 +115,20 @@ describe('parsePlanOrder (fiche 0089)', () => {
     expect(parsePlanOrder(md)).toEqual(['0059', '0094']);
   });
 
-  it('charge le vrai features/PLAN.md : 0094 est présent et précède 0062 ; l’hygiène (0059) est en tête', () => {
+  it('charge le vrai features/PLAN.md : la séquence V0.1 → V0.2 → P0 → V0.3 est lue dans l’ordre du document', () => {
     const planPath = resolve(
       dirname(fileURLToPath(import.meta.url)),
       '../../../../../features/PLAN.md',
     );
     const planMd = readFileSync(planPath, 'utf8');
     const ids = parsePlanOrder(planMd);
-    expect(ids).toContain('0094');
-    expect(ids).toContain('0062');
-    expect(ids).toContain('0041'); // entrée NEXT (· build)
-    // La séquence de travail (0094 → 0062) est préservée dans l’ordre du plan.
-    expect(ids.indexOf('0094')).toBeLessThan(ids.indexOf('0062'));
-    // La section Hygiène (0059, marqueur ship) précède le NOW — plus d’omission silencieuse.
-    expect(ids).toContain('0059');
-    expect(ids.indexOf('0059')).toBeLessThan(ids.indexOf('0094'));
-    // Les paquets « LATER » descriptifs (sans marqueur) ne sont PAS pris pour des entrées.
+    // Plan du tri du 2026-09-30 : la tête du socle V0.1 (graphe compilé) vient en premier.
+    expect(ids[0]).toBe('20260821204737357');
+    // V0.1 → V0.2 (ezk-scout) → P0 (ship sûr) → V0.3 (versions) : l’ordre du document est préservé.
+    expect(ids.indexOf('20260821204737357')).toBeLessThan(ids.indexOf('20260910165637000'));
+    expect(ids.indexOf('20260910165637000')).toBeLessThan(ids.indexOf('20260830194601233'));
+    expect(ids.indexOf('20260830194601233')).toBeLessThan(ids.indexOf('20260824204751403'));
+    // Une fiche parkée (0087, plugin) n'est pas une entrée du plan.
     expect(ids).not.toContain('0087');
   });
 });

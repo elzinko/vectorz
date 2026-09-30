@@ -1,9 +1,11 @@
 ---
 id: 0119
-title: capture — charger un vrai corpus pour judge (détection de doublon)
+title: "Le juge de « capture » doit voir le catalogue pour repérer les doublons"
 type: feature
 priority: P2
 product: mega-city
+labels: [installation]
+milestone: parked
 status: idea
 pr:
 created: 2026-06-26
@@ -27,3 +29,12 @@ reste **non bloquant** (un `ok:false` est tracé, jamais exécutoire).
 
 ## Notes
 Le chargement vit au bord (orchestrateur), pas dans `planCapture` (qui reste pur).
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`0120`](done/0120-io-dette-dry-cli-coverage.md) — dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture  
+  _Pourquoi_ : Même composant que la fiche capture ; part avec elle au parking.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

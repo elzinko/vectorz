@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: vectorz
 status: superseded
-pr: superseded — dépassé par Moniteur/Projets/Sessions
+pr: "superseded — dépassé par Moniteur/Projets/Sessions"
 created: 2026-07-14
 ---
 

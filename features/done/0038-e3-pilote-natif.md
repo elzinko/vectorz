@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: vectorz
 status: superseded
-pr: superseded — pilote retiré (0039, PR 81)
+pr: "superseded — pilote retiré (0039, PR 81)"
 created: 2026-07-16
 ---
 

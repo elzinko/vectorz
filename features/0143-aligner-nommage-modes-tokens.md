@@ -1,9 +1,11 @@
 ---
 id: 0143
-title: aligner le nommage des modes tokens du product-builder (lean|cap|full partout)
+title: "Unifier le nom des modes tokens (lean / cap / full) dans la doc"
 type: chore
 priority: P3
 product: mega-city
+version:
+labels: [dette]
 status: idea
 pr:
 created: 2026-07-06

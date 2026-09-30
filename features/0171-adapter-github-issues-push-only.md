@@ -1,8 +1,10 @@
 ---
 id: 0171
-title: Adapter GitHub Issues (push-only, config-gated) — projection du backlog md, pas SoT
+title: "Publier le backlog en issues GitHub (lecture seule)"
 type: feature
 product: mega-city
+labels: [installation]
+milestone: parked
 priority: P2
 epic:
 depends: [0170]

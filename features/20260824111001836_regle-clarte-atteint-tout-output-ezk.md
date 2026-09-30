@@ -1,10 +1,11 @@
 ---
 id: "20260824111001836"
-title: La règle de clarté doit atteindre TOUT ce qui sort de la méthode (base + sorties de chat), pas rester orpheline
+title: "Appliquer la règle de clarté à tout ce que la méthode produit"
 type: refactor
 priority: P1
 product: mega-city
-version:
+labels: [lisibilite]
+version: V0.1
 epic:
 status: idea
 ready:
@@ -102,3 +103,12 @@ pnpm --dir products/mega-city graph:check # 0 lien cassé
 Fiche née du `/ezk-backlog add` du 2026-08-24, en pleine session de refonte de la méthode.
 Lignée : règle `human-facing-lisibility` (ADR-0029 « la fiche est le document »),
 output-style « Explication claire », épic dérive-communication-lisibilité (0079, shippée).
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260830113054036`](done/20260830113054036_style-clair-details-html-brut-terminal.md) — La règle de clarté pousse vers `<details>` HTML qui fuit en texte brut dans le terminal Claude Code  
+  _Pourquoi_ : C'est un réglage de la règle de clarté.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

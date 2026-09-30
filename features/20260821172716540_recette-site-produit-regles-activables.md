@@ -48,7 +48,7 @@ samplerz #239, ouverts depuis le 2026-08-10), sans rien attendre de mega-city.
 |---|---|
 | « des règles que je peux ajouter » | `rules/` — un fichier markdown par règle, niveau MAY/SHOULD/MUST |
 | « des options activables » | `bundles/` + `profiles/` — mais ⚠️ les profils actuels sont des profils de POSTE, aucun par projet externe |
-| « le projet ajoute SES règles » | l'épic ancrage/installeur [20260813124026215](20260813124026215_deploiement-methode-llm-native.md) (`idea`) — **la dépendance réelle** du « le projet déclare » |
+| « le projet ajoute SES règles » | l'épic ancrage/installeur [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md) (`idea`) — **la dépendance réelle** du « le projet déclare » |
 | relier une règle à qui la vérifie | **`enforcements:`** — déjà présent sur 14 règles (ex. [pr-before-after-media](../products/mega-city/rules/development/pr-before-after-media.md) → agent-check `ezk-reviewer`) — tout nouveau lien règle↔acteur doit d'abord s'unifier avec lui |
 | le patron « moteur de règles par domaine » | [ADR-0026](../products/mega-city/docs/adr/0026-capacite-ux-agent-plus-skill-mince.md) — dessiné, jamais construit ; sa **doctrine §3 donne l'ordre** : « câblage en prose tant que le champ n'existe pas » |
 | « captures de l'app démarrée » | fiche [screenshots produit](20260812104022228_ezk-screenshots-doc-produit.md) (`idea` — dépendance non construite, à dire) + la règle MUST `pr-before-after-media` qui couvre déjà les livrables visibles |

@@ -2,7 +2,7 @@
 
 - Statut : **accepté** — 2026-08-20 (voir *Amendement du 2026-08-20* en fin de fiche)
 - Date : 2026-07-26
-- Amende : [ADR-0009 §2](0009-ezk-pr-pilot-orchestrateur-validation-prs.md) · Fiche : [0102](../../../../features/0102-ezk-testbed-brique-boot-env-test.md)
+- Amende : [ADR-0009 §2](0009-ezk-pr-pilot-orchestrateur-validation-prs.md) · Fiche : [0102](../../../../features/done/0102-ezk-testbed-brique-boot-env-test.md)
 - **Absorbe [ADR-0022](0022-ezk-methode-trois-bandes-naming.md)** (fusion décidée par le PO
   le 2026-08-20) : la taxonomie et le naming vivent désormais **ici**, en une seule décision.
 
@@ -155,7 +155,7 @@ LA LOI (`rules/testing/`), pas dans le nom de l'agent.
 
 - **`ezk-sandbox` / `ezk-caps-sandbox` n'est pas créé.** ADR-0022 §3 le nommait comme s'il
   existait ; c'est un nom **réservé** dont la construction reste la fiche
-  [0102](../../../../features/0102-ezk-testbed-brique-boot-env-test.md), `status: blocked`.
+  [0102](../../../../features/done/0102-ezk-testbed-brique-boot-env-test.md), `status: blocked`.
   Renommer n'est pas construire.
 - **La convention Validation n'est pas migrée** vers `ezk-backlog init` (dette d'ADR-0022 §3,
   reprise telle quelle) : `ezk-pr init` reste le chemin opérationnel.
@@ -180,4 +180,4 @@ LA LOI (`rules/testing/`), pas dans le nom de l'agent.
   personnalisation utilisateur, ni une purge des entrées hors-plan, qui effacerait les skills
   volontairement omis d'un profil curated (`daily`). Le correctif propre — **durcir le binder
   pour gérer les renommages** — reste à faire : fiche
-  [`20260813131737962`](../../../../features/20260813131737962_nommage-catalogue-adr0022.md).
+  [`20260813131737962`](../../../../features/done/20260813131737962_nommage-catalogue-adr0022.md).

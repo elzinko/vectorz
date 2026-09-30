@@ -1,9 +1,11 @@
 ---
 id: 0024
-title: résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022
+title: "Supprimer le vieux code d'avant le pivot"
 type: refactor
-priority: P2
+priority: P3
 product: vectorz
+version:
+labels: [dette]
 epic:
 status: idea
 pr:

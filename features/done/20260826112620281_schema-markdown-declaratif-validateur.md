@@ -10,7 +10,7 @@ depends: []
 labels: [format, validation, methode, outillage]
 status: superseded
 ready:
-pr: superseded — sliver absorbe par la fondation 20260826122532943 (ADR-0040 D2)
+pr: "superseded — sliver absorbe par la fondation 20260826122532943 (ADR-0040 D2)"
 created: 2026-08-26
 milestone: fondation
 ---
@@ -60,7 +60,7 @@ vérifier seule. Cette fiche propose ce chaînon manquant : un **schéma markdow
   [`20260823121712652`](../20260823121712652_modele-statut-kanban-schema-valide.md). Cette fiche
   est probablement **ce** sliver — à **fusionner / positionner** au cadrage de la fondation
   « formats + moteur ezk » : **cadrée par la fiche-chapeau
-  [`20260826122532943`](../20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md)**
+  [`20260826122532943`](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md)**
   et l'[ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)
   (D2), qui prévoit de l'**absorber** (note du 2026-08-26).
 - **Voisin de** [`20260825182327490`](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md)

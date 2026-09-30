@@ -1,10 +1,10 @@
 ---
 id: "20260905134937885"
-title: Revue adverse locale vs Codex — mesurer avant d'arbitrer (peut-on sortir la PR du chemin ?)
+title: "Mesurer si la revue locale peut remplacer Codex (et sortir la PR du chemin)"
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.4
 epic:
 labels: [revue]
 status: idea
@@ -171,3 +171,12 @@ se branche sur `features/reviews/`.
   point 9 absent du contrat de l'agent `ezk-archive`). Vérifier que chaque invocation **résout
   vraiment** (script + args) et que les **contrats inter-skills** ne se chevauchent pas — rejoint
   les familles « erreurs silencieuses » et « rétro-compat / contrats » déjà notées à la baseline.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260916225506858`](done/20260916225506858_github-modules-optionnels-config.md) — GitHub / CI / Codex = modules optionnels, pilotés par la config projet  
+  _Pourquoi_ : Les crans utiles sont livrés ; il reste la décision « PR optionnelle ».
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

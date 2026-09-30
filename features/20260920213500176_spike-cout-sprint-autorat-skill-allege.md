@@ -1,12 +1,12 @@
 ---
 id: "20260920213500176"
-title: "SPIKE — un sprint d'autorat de skill coûte trop cher (~330k) : quels leviers d'allègement ?"
+title: "Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons)"
 type: chore
 priority: P2
 product: mega-city
-version:
+version: V0.4
 epic:
-labels: [token-economy, revue]
+labels: [fabrique]
 status: idea
 ready:
 pr:

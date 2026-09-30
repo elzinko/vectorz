@@ -1,9 +1,11 @@
 ---
 id: "20260812104022228"
-title: Capturer des screenshots du produit et les injecter dans la doc/le site quand l'UI change
+title: "Régénérer les captures d'écran de la doc quand l'interface change"
 type: feature
 priority: P2 # provisoire — posée à la capture (PO à confirmer au grooming)
 product: mega-city
+labels: [lisibilite]
+milestone: parked
 epic:
 status: idea
 ready:

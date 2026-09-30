@@ -1,9 +1,11 @@
 ---
 id: "20260813122510737"
-title: ezk-backlog init.sh — le marqueur layout_version doit primer sur la détection legacy « Index auto-généré »
+title: "ezk-backlog init se trompe de version de format dans un cas"
 type: bug
 priority: P3
 product: mega-city
+version:
+labels: [dette]
 epic:
 status: idea
 ready:

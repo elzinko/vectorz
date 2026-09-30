@@ -1,12 +1,13 @@
 ---
 id: "20260906135450000"
-title: "Recette — démarrer l'émulateur Android / tester sur device (pour que l'agent ne skippe plus)"
+title: "Recette : lancer l'émulateur Android pour tester sur mobile"
 type: feature
-priority: P2
+priority: P3
 product: vectorz
+version: V0.2
 epic:
 depends: []
-labels: [recette, ezk-chef, android, testbed]
+labels: [test-local]
 status: idea
 ready:
 pr:

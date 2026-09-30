@@ -1,10 +1,11 @@
 ---
 id: "20260917162000501"
-title: "Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz"
+title: "Une commande pour lancer l'app de n'importe quelle branche ou worktree"
 type: feature
 priority: P0
 product: mega-city
-version:
+labels: [test-local]
+version: V0.2
 epic:
 status: idea
 ready:
@@ -64,3 +65,14 @@ voulue depuis n'importe quel worktree**, sans jongler. Elle doit être **install
 
 - Demandé explicitement en P0 par Thomas (2026-09-17). **Grooming archi requis** avant tout code.
 - Recettes vectorz existantes : `/Users/elzinko/git/bacasable/vectorz/recipes` + `tools/` + `scripts/`.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`0102`](done/0102-ezk-testbed-brique-boot-env-test.md) — ezk-testbed — démarrer un environnement de test isolé (PR, branche ou local) : une brique autonome, pas un chapitre d'ezk-pr  
+  _Pourquoi_ : Même besoin que le lanceur ; ⚠️ elle perd son statut « prête » dans la fusion.
+- [`20260824163426298`](done/20260824163426298_consolider-device-preview-testbed.md) — Consolider ezk-device + ezk-preview + ezk-testbed (0102) — nouvelle sémantique post-refactoring « map »  
+  _Pourquoi_ : C'est le cadrage du chantier « lancer et tester une branche ».
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

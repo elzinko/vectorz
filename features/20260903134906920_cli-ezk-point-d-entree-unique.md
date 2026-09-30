@@ -1,12 +1,12 @@
 ---
 id: "20260903134906920"
-title: CLI `ezk` — un point d'entrée unique et mince pour les commandes de la méthode (manifeste + routage, zéro logique)
+title: "Une seule commande `ezk` pour tout lancer"
 type: feature
-priority: P1 # provisoire — direction actée par le PO le 2026-09-03 (nom `ezk`, option B de l'ADR-0046) ; rang à confirmer
+priority: P1
 product: mega-city
-version:
+version: V0.3
 epic:
-labels: [cli]
+labels: [installation]
 status: idea
 ready:
 pr:
@@ -130,3 +130,12 @@ pnpm --filter mega-city test                         # dont le test de couvertur
 - À trancher à l'étape Archi : format du manifeste (YAML ou table TypeScript) et détection de
   la racine.
 - Priorité P1 provisoire : direction actée par le PO ; rang dans PLAN.md à confirmer.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260826173005368`](done/20260826173005368_renommer-ezk-map.md) — Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills  
+  _Pourquoi_ : Le bon nom se décidera avec la commande unique `ezk`.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

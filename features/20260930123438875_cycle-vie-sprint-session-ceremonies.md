@@ -1,11 +1,12 @@
 ---
 id: "20260930123438875"
-title: "Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint"
+title: "Séparer clairement fiche, sprint et session (ezk-sprint start/close)"
 type: feature
 priority: P0
 product: mega-city
+version: V0.4
 milestone:
-labels: [ezk-sprint, cycle-de-vie, methode, nommage]
+labels: [sprint]
 status: idea
 ready:
 pr:
@@ -106,3 +107,12 @@ pnpm --dir products/mega-city test:scripts
 - Décision produit (PO) : niveau **session** nommé « session » (terme réel Claude Code) ; priorité
   **P0**, à groomer pour le **prochain sprint**.
 - Doctrine réutilisée : bornes de cycle de vie = **mécanisme/hygiène**, pas cérémonie (ADR-0039 §2).
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260903085150321`](done/20260903085150321_nommage-commandes-scrum-safe.md) — Aligner le vocabulaire des commandes sur Scrum/SAFe (doctrine de nommage — dont ezk-product-build → train/increment)  
+  _Pourquoi_ : Le nouveau cycle de vie sprint/session tranche déjà ces noms.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

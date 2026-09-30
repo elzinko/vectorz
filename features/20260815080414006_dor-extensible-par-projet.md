@@ -1,11 +1,12 @@
 ---
 id: "20260815080414006"
-title: DoR extensible par projet — base 3+1 + manifeste de slots par repo, lu par groom/ready
+title: "Critères de « prête » (DoR) adaptables par projet"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
+version: V0.4
 milestone: rationalisation
-labels: [dor]
+labels: [backlog]
 status: idea
 ready:
 pr:
@@ -67,3 +68,14 @@ réclame) :**
 - **Anti-sur-outillage** : si le manifeste vire au mini-langage, c'est le signal de s'arrêter
   ([ADR-0013] §4) — commencer par **1 slot réel** (surfaces), pas un framework de slots.
 - Origine : session 2026-08-15 (audit méthode) — décision PO « DoR de base extensible par projet ».
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`0100`](done/0100-sprint-intake-sante-backlog-metriques.md) — Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible »)  
+  _Pourquoi_ : Le volet « réconcilier » est livré ; le reste est un critère de DoR.
+- [`20260812104022231`](done/20260812104022231_dor-balayage-surfaces-produit.md) — DoR — balayer les surfaces produit impactées (doc, site, release notes…) au grooming  
+  _Pourquoi_ : C'est un exemple de critère DoR par projet.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

@@ -1,9 +1,11 @@
 ---
 id: 0075
-title: Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider
+title: "Règles de style d'écriture pour les articles"
 type: feature
 priority: P2
 product: mega-city
+labels: [article]
+milestone: parked
 status: idea
 pr:
 created: 2026-07-16

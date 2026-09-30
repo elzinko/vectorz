@@ -115,7 +115,7 @@ d'améliorabilité (Sujet B / ADR-030) : un seul moteur, plusieurs appelants.
 - **Voisine** :
   [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) — la
   rétro invoque `suggest` et décide. Membre du **cluster recette** (voir
-  [20260829123707200](../20260829123707200_reunifier-tagger-cluster-recette.md)).
+  [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md)).
 - **Compose** : le rapport de sprint (fiche `20260826082120062`, shippée), le labo
   ([20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md), shippée),
   `ezk-chef extract` (livré). **Dépendances déjà satisfaites.**

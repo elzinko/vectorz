@@ -1,13 +1,13 @@
 ---
 id: "20260906122942607"
-title: RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens)
+title: "Run autonome transparent : ce qu'il va faire, puis ce qu'il a fait"
 type: chore
 priority: P1
 product: mega-city
-version:
+version: V0.4
 epic:
 depends: []
-labels: [methode, retro-2026-09-05, run-report]
+labels: [sprint]
 status: idea
 ready:
 pr:
@@ -58,3 +58,16 @@ traitée et les lignes HEAD et tokens.
 Origine : rétrospective du 2026-09-05 (symptôme 2) — demande directe du PO. Fiche **prioritaire**
 (P1). Complète la règle [development/merge-when-absent-default](../products/mega-city/rules/development/merge-when-absent-default.md) :
 le RUN-REPORT est l'endroit où le « blocage journalisé par fiche » devient visible.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260906122942555`](done/20260906122942555_preflight-contexte-de-run.md) — Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation)  
+  _Pourquoi_ : Même sujet : un run autonome transparent.
+- [`20260906122942662`](done/20260906122942662_echo-du-contrat-avant-run-auto.md) — Écho du contrat avant un run auto (opérateur absent)  
+  _Pourquoi_ : Même sujet : un run autonome transparent.
+- [`0151`](done/0151-product-builder-briefing-demarrage.md) — ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles)  
+  _Pourquoi_ : Même sujet : un run autonome transparent.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

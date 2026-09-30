@@ -5,7 +5,7 @@ type: feature
 priority: P0
 product: vectorz
 status: superseded
-pr: superseded — épic ~80% livré, reliquat pilote clos, 0024 détaché
+pr: "superseded — épic ~80% livré, reliquat pilote clos, 0024 détaché"
 created: 2026-07-15
 ---
 

@@ -1,12 +1,12 @@
 ---
 id: "20260922160651394"
-title: "Conformer le code aux 2 règles neuves : lecteur de fiche par loader + vues sans statut terminal"
+title: "Mettre le code en conformité avec les règles de dev récentes"
 type: chore
 priority: P2
 product: mega-city
-version:
+version: V0.1
 epic:
-labels: [dette, revue]
+labels: [socle]
 status: idea
 ready:
 pr:
@@ -83,3 +83,12 @@ Retour Codex sur la PR #256 (2026-09-21), deux findings :
   carnet N5 (aligner les vues bash sur `TERMINAUX`) et l'**élargit** aux vues `plan-*` (TS).
 - Voisin : [20260910155608287](20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md)
   (typologie / vérification des règles) — cadre général ; ici c'est la mise en conformité concrète.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260830194601307`](done/20260830194601307_front-matter-emis-par-lib-yaml.md) — front-matter généré émis + validé par la lib YAML (jamais par concaténation)  
+  _Pourquoi_ : Même sujet : mettre le code en conformité avec les règles.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

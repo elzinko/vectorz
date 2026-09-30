@@ -7,7 +7,7 @@ product: mega-city
 epic:
 status: superseded
 ready:
-pr: superseded — absorbee dans le cockpit sessions 20260825141012293 (ADR-0042)
+pr: "superseded — absorbee dans le cockpit sessions 20260825141012293 (ADR-0042)"
 created: 2026-08-12
 ---
 

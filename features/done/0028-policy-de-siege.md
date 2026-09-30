@@ -5,7 +5,7 @@ type: feature
 priority: P3
 product: vectorz
 status: superseded
-pr: superseded — siège cop1 retiré (concept en 0029)
+pr: "superseded — siège cop1 retiré (concept en 0029)"
 created: 2026-07-14
 ---
 

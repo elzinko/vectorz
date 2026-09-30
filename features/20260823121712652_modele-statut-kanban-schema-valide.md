@@ -1,9 +1,10 @@
 ---
 id: "20260823121712652"
-title: "Modèle de statut kanban — liste de statuts validée par schéma, `ready` devient une colonne"
+title: "Valider les statuts des fiches par un schéma (fin des fautes de frappe)"
 type: feature
-priority: P1
+priority: P0
 product: mega-city
+labels: [socle]
 status: in-progress
 ready:
 pr:

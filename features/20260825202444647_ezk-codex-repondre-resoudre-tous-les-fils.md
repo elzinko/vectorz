@@ -1,10 +1,11 @@
 ---
 id: "20260825202444647"
-title: "ezk-codex fix — répondre en fil ET résoudre TOUS les fils traités (pas seulement décliner)"
+title: "ezk-codex répond et ferme tous les fils de revue traités"
 type: feature
 priority: P2
 product: mega-city
-labels: [ezk-codex, dx]
+version: V0.3
+labels: [revue]
 status: idea
 ready:
 pr:

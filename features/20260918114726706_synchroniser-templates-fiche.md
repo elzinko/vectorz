@@ -1,11 +1,12 @@
 ---
 id: "20260918114726706"
-title: "Synchroniser les templates de fiche (une seule source de vérité) + supprimer l'orphelin"
+title: "Une seule source pour le modèle de fiche (3 copies divergent aujourd'hui)"
 type: chore # feature | bug | refactor | chore | epic
-priority: P2 # P0 | P1 | P2 | P3
+priority: P2
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
+version: V0.1
 epic: # optionnel — id de la fiche épic parente (type: epic)
-labels: [méthode, template, dette]
+labels: [socle]
 status: idea # idea | ready | in-progress | blocked | shipped
 ready: # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr:

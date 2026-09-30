@@ -37,7 +37,7 @@ l'humain : il déclenche le run (équivalent `/supervision-demo`), franchit les 
 la chaîne écrire son `events.jsonl` — **sans interaction humaine**, exécutable en **nightly**,
 avec un verdict **OK/KO déterministe** sur l'émission réelle.
 
-- **Compose, ne réimplémente pas** : la brique de démarrage d'env [0102](0102-ezk-testbed-brique-boot-env-test.md)
+- **Compose, ne réimplémente pas** : la brique de démarrage d'env [0102](done/0102-ezk-testbed-brique-boot-env-test.md)
   (démarrer/arrêter proprement) et le kit d'analyse [0104](done/0104-kit-analyse-session-supervision.md)
   (`supervision:analyze`, journal ↔ transcript) pour rendre le verdict.
 - **POC d'abord** : un seul scénario nominal headless **vert** (un run produit un journal non
@@ -54,7 +54,7 @@ avec un verdict **OK/KO déterministe** sur l'émission réelle.
 ## Notes / décisions
 
 - **Origine** : `docs/DOGFOOD.md` §« Suite produit » (ex-réf fantôme `2103`, jamais créée).
-- **Voisines** : [0102](0102-ezk-testbed-brique-boot-env-test.md) (brique boot env — **composée**),
+- **Voisines** : [0102](done/0102-ezk-testbed-brique-boot-env-test.md) (brique boot env — **composée**),
   [0104](done/0104-kit-analyse-session-supervision.md) (kit analyse session — d'où vient `DOGFOOD.md`),
   [0169](done/0169-explorateur-llm-par-pr.md) (explorateur LLM par PR — angle complémentaire sur les trous fonctionnels).
 - **Priorité P3 / `idea`** : pas requis pour le dogfood humain d'aujourd'hui — c'est la v2.

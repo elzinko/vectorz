@@ -1,10 +1,11 @@
 ---
 id: "20260824122629925"
-title: Onglet FAQ « comment faire » — ancrer une bonne fois les questions récurrentes du PO
+title: "Une FAQ « comment faire » pour tes questions récurrentes"
 type: feature
 priority: P1
 product: mega-city
-version:
+labels: [lisibilite]
+version: V0.3
 epic:
 depends: ["20260824122629794"]
 status: idea
@@ -72,3 +73,14 @@ Origine : `/ezk-backlog add` du 2026-08-24. P1 proposée (PO « urgent ») — �
 Fiche sœur : `20260824122629794` (le mécanisme d'extraction), dont dépend l'entrée
 « capitaliser une feature ». À rapprocher de l'épic doc/découvrabilité
 `20260816131703334`.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260813131737962`](done/20260813131737962_nommage-catalogue-adr0022.md) — Nommage & catalogue — aligner sur ADR-0022 (rename ezk-pr-pilot→ezk-pr, ranger vz-/supervision-) + README table scannable  
+  _Pourquoi_ : Deux volets sur trois sont livrés ; le reste relève de la découvrabilité.
+- [`20260813131737971`](done/20260813131737971_carte-roles-analyse-methode.md) — Carte des rôles d'analyse — documenter retro / steward / 0057 (+ trancher le juge unique) en un seul endroit  
+  _Pourquoi_ : C'est une entrée de FAQ, pas un chantier.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

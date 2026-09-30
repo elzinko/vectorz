@@ -1,9 +1,11 @@
 ---
 id: 0121
-title: cap cop1 — matérialiser un profil en config native cop1
+title: "Installer un profil de règles au format natif de cop1"
 type: feature
 priority: P2
 product: mega-city
+labels: [installation]
+milestone: parked
 status: idea
 pr:
 created: 2026-06-26

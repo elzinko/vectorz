@@ -1,15 +1,16 @@
 ---
 id: 0186
-title: Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation)
+title: "Versionner et migrer tous les artefacts de la méthode (Skema)"
 type: feature
 priority: P2
 product: mega-city
+labels: [installation]
 epic:
 status: idea
 ready:
 pr:
 created: 2026-08-09
-milestone: fondation
+milestone: parked
 version: V0.1
 ---
 
@@ -261,5 +262,5 @@ par-commande).
   --apply`) ; (2) l'**isolation** tient (une version déployée reste stable tant qu'on ne migre pas).
   **Réserve PO explicite** : garder un fixture **minimal** (le plus petit projet qui prouve la
   migration), pas un banc exhaustif — ne pas se compliquer la vie tant que le besoin réel n'excède
-  pas ça. Cousin mais autre objet : [0102](0102-ezk-testbed-brique-boot-env-test.md) (environnement
+  pas ça. Cousin mais autre objet : [0102](done/0102-ezk-testbed-brique-boot-env-test.md) (environnement
   de test isolé d'une PR/branche).

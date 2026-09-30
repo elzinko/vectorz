@@ -1,12 +1,12 @@
 ---
 id: "20260830194601233"
-title: "ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge"
+title: "Livrer une fiche sans casser les liens ni les vues (ship sûr)"
 type: refactor
 priority: P0
 product: mega-city
-version:
+version: V0.3
 epic:
-labels: [ship]
+labels: [backlog]
 depends: []
 status: idea
 ready:
@@ -87,3 +87,12 @@ jamais la vigilance humaine.
   cohérence : **mieux en fiche qu'en règle-texte** (une règle sans check = Goodhart) → construire ceci
   d'abord, la règle deviendra un enregistrement fidèle ensuite. **Sortir cette fiche de la boucle
   « re-noter » et la CONSTRUIRE.**
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260823121712781`](done/20260823121712781_reconcile-systematique-merges-hors-flux.md) — Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge  
+  _Pourquoi_ : Même chantier que le ship sûr.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

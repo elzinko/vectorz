@@ -1,11 +1,12 @@
 ---
 id: "20260910231201744"
-title: ezk-backlog aggregate — appliquer les fusions/splits (statuts merged/split) + moteur llm
+title: "Appliquer pour de vrai les fusions et découpages de fiches proposés"
 type: feature
 priority: P2
 product: mega-city
+labels: [backlog]
 epic:
-version:
+version: V0.3
 status: idea
 ready:
 pr:

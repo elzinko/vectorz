@@ -1,12 +1,12 @@
 ---
 id: "20260904091853948"
-title: ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement)
+title: "ezk-archive plus léger et plus juste (voie rapide, bon compte, survit au cloud)"
 type: refactor
-priority: P2
+priority: P1
 product: mega-city
-version:
+version: V0.4
 epic:
-labels: [ezk-archive, methode, cout]
+labels: [session]
 status: idea
 ready:
 pr:
@@ -91,8 +91,23 @@ incrément produit est fini. On le **garde** (le handoff a une vraie valeur), ma
   par le PO). La fiche sœur B (journal indépendant) déplace déjà une partie du problème.
 - Voisines : [0088](done/0088-ezk-archive-cout-cloture-session-disciplinee.md) (coût de
   clôture, livrée — même esprit),
-  [20260902224043892](20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md)
-  (nettoyage fin de session), [0189](0189-handoff-durable-session-ephemere.md) (handoff en
+  [20260902224043892](done/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md)
+  (nettoyage fin de session), [0189](done/0189-handoff-durable-session-ephemere.md) (handoff en
   session éphémère), et la fiche sœur
   [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md) (journal
   indépendant).
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260830225021794`](done/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md) — ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué  
+  _Pourquoi_ : Même composant : ezk-archive.
+- [`20260923220631498`](done/20260923220631498_portier-archive-compte-egale-enumeration.md) — Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y »)  
+  _Pourquoi_ : Même composant : ezk-archive.
+- [`0189`](done/0189-handoff-durable-session-ephemere.md) — ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable)  
+  _Pourquoi_ : Même composant : ezk-archive.
+- [`20260902224043892`](done/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md) — Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété  
+  _Pourquoi_ : La clôture de session doit faire ce ménage elle-même.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.
