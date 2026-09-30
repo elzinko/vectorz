@@ -44,6 +44,10 @@ const MIME: Record<string, string> = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.md': 'text/plain; charset=utf-8',
+  // Les « Source » de la carte ouvrent les fichiers du catalogue : un bundle ou un profil est un
+  // YAML, qu'un navigateur TÉLÉCHARGERAIT faute de type — on l'affiche en clair.
+  '.yml': 'text/plain; charset=utf-8',
+  '.yaml': 'text/plain; charset=utf-8',
   '.woff2': 'font/woff2',
 };
 

@@ -13,8 +13,10 @@ import { dirname, join, resolve } from 'node:path';
  */
 import { fileURLToPath } from 'node:url';
 import { compileGraph } from '../src/core/compiled-graph.js';
+import { CYCLE_DOC } from '../src/core/cycle.js';
 import { buildMapDataBlock, upsertMapDataBlock } from '../src/core/map-data.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
+import { loadMapSources } from '../src/loaders/map-sources.js';
 import { loadMethodDoc } from '../src/loaders/method.js';
 import { loadTaxonomieDoc } from '../src/loaders/taxonomie.js';
 
@@ -26,7 +28,16 @@ const catalog = loadCatalog(megaCity);
 const graph = compileGraph(catalog);
 // ceremonies.yml ET taxonomie.yml sont validés contre le catalogue DANS buildMapData —
 // référence fausse ou catalogue incomplètement rangé = échec de cette régénération.
-const block = buildMapDataBlock(catalog, graph, loadMethodDoc(megaCity), loadTaxonomieDoc(megaCity));
+// Les sources (fichier de chaque brique) sont vérifiées par loadMapSources : un chemin qui ne
+// mène à aucun fichier fait aussi échouer la régénération. Le cycle écrit à la main est
+// compilé par buildMapData : id inconnu = échec ; puce sans appui = « déduite », visible.
+const block = buildMapDataBlock(
+  catalog,
+  graph,
+  loadMethodDoc(megaCity),
+  loadTaxonomieDoc(megaCity),
+  { sources: loadMapSources(megaCity, repoRoot), cycle: CYCLE_DOC },
+);
 const before = readFileSync(mapPath, 'utf8');
 const after = upsertMapDataBlock(before, block);
 

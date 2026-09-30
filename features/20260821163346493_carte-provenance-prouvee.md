@@ -15,51 +15,57 @@ created: 2026-08-21
 
 ## En clair
 
-Aujourd'hui, en regardant la carte, **rien ne dit si un élément vient d'un fichier ou de
-la déduction d'un LLM**. C'est le piège central : une carte crédible mais partiellement
-inventée oriente les décisions dans le vide.
+La carte dessine déjà ses liens depuis les fichiers du dépôt. Mais elle ne le **montre** pas :
+on ne voit ni de quel fichier vient un élément, ni quelle part de la carte est prouvée.
+Cette fiche ajoute trois choses. Un lien « Source » cliquable dans chaque dossier. Un ratio
+« prouvé / déduit » en haut de la carte. Un pointillé sur tout ce qu'aucun fichier ne déclare.
 
 ## Contexte / Problème
 
-Mesure du 2026-08-20 : la carte dessinait ~40 liens, le graphe déclaré en comptait 7.
-Les 33 autres étaient de l'interprétation — dont un lien franchement **faux** (un
-orchestrateur présenté comme appelant un outil que son propre playbook dit ne jamais
-appeler).
+Mesure du 2026-08-20 : la carte dessinait ~40 liens, le graphe déclaré en comptait 7. Les 33
+autres étaient de l'interprétation, dont un lien franchement faux. Une carte crédible mais
+en partie inventée oriente les décisions dans le vide.
 
-Depuis, les liens de composition sont adossés au graphe généré et un contrôle refuse
-qu'ils divergent. **Mais c'est la seule partie prouvée.** Les rôles, les regroupements en
-bandes, les descriptions, la colonne d'assemblage : tout cela reste de la rédaction.
+Depuis, les liens et les briques sont compilés depuis le catalogue (PR #234, puis #265 pour
+les quatre verbes de lien et les références par id). Le risque a changé de place : ce qui
+reste écrit à la main dans la page (le cycle en 5 temps) s'affiche à égalité avec le prouvé.
 
-## Proposition
+## Déjà livré
 
-À groomer. L'idée directrice : **la carte n'affiche rien qu'elle ne puisse sourcer**.
+- [x] Les liens de composition viennent du graphe compilé, un test refuse la divergence
+      (`map-data-graph-parity.test.ts`, PR #234 et #265).
+- [x] Les références de `ceremonies.yml` et `taxonomie.yml` sont vérifiées contre le catalogue à
+      la régénération (`validateMethod`, `validateTaxonomie`).
 
-- Chaque nœud et chaque lien porte sa **provenance** (fichier, et si possible la ligne).
-- Ce qui n'a **pas** de source est marqué explicitement — grisé, pointillé, ou rangé dans
-  une zone « lecture d'auteur », mais **jamais présenté à égalité** avec du prouvé.
-- Idéalement, la provenance est **cliquable** : on ouvre le fichier qui justifie.
-- Corollaire : les parties non sourçables sont soit à sourcer (annoter le fichier), soit à
-  retirer de la carte.
+## Critères d'acceptation (le reste réel, POC)
 
-## Critères d'acceptation
-
-- [ ] Chaque élément affiché est soit **sourcé**, soit **visiblement marqué comme déduit**.
-- [ ] La proportion prouvé / déduit est **affichée** : on sait à quel point on peut se fier.
-- [ ] Un élément sourcé pointe vers un fichier qui existe (contrôle mécanique).
-- [ ] Ajouter un élément non sourcé à la carte **échoue** ou l'affiche comme déduit — jamais
-      en silence.
+- [ ] Le dossier de chaque brique (commande, juge, règle, bundle, profil) et de chaque
+      cérémonie affiche « Source : *chemin du fichier* » en lien cliquable.
+- [ ] Chaque source pointe vers un fichier qui existe : la régénération échoue sinon, et un
+      test le prouve sur le catalogue réel.
+- [ ] Le ratio « prouvé / déduit » est affiché en haut de la carte, avec sa définition au survol.
+- [ ] Ce qu'aucun fichier ne déclare (puces du cycle sans appui, acteurs humains) est en
+      pointillé, étiqueté « lecture d'auteur ».
+- [ ] Sabotage : une puce du cycle qui cite un id inconnu fait échouer la régénération ; une
+      puce connue mais sans appui ressort en pointillé, jamais en silence.
 
 ## Comment vérifier
 
-Prendre trois éléments au hasard sur la carte ouverte et remonter à leur source.
-Et saboter : ajouter un lien inventé, vérifier qu'il ressort comme déduit, pas comme fait.
+```bash
+pnpm ezk:map                                              # menu des cartes → « La méthode »
+pnpm --dir products/mega-city test -- map-provenance      # sabotage automatisé
+```
 
+1. Barre du haut : le ratio « prouvé » s'affiche ; le survol donne la définition.
+2. Cliquer trois cartes au hasard : chaque dossier porte « Source : … », le lien ouvre le fichier.
+3. Cycle en 5 temps : les puces en pointillé sont les lectures d'auteur.
 
-## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+- vue carte-haut : /diagrams/methode-mega-city/carte-interactive.html
+- vue dossier-skill : idem, après un clic sur la carte « ezk-sprint »
 
-> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
->
-> **Constat de l'audit** : Liens inventés résolus par graphe compilé ; reste UI provenance cliquable + ratio prouvé/déduit.
->
-> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
-> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).
+## Suite (hors POC)
+
+- La ligne du fichier (pas seulement le fichier) et la provenance lien par lien.
+- Sourcer ou retirer les éléments encore déduits ; un seuil de ratio en CI.
+- Marquer en « lecture d'auteur » la page « le domaine » et son schéma dessiné à la main.
+- Décision du PO sur « rangé par `taxonomie.yml` » : fichier-source ou lecture d'auteur ?
