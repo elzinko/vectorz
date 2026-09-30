@@ -1,0 +1,92 @@
+<svg viewBox="0 0 980 680" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5A5A66"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2C6E9B"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="980" height="680" fill="#FBFBFD"/>
+
+  <!-- Title -->
+  <text x="490" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#23232B">Les 3 étages du cycle ezk — où vit chaque verbe</text>
+  <text x="490" y="60" text-anchor="middle" font-size="13.5" fill="#6A6A78">story ⊂ sprint ⊂ session   ·   les cérémonies encadrent le sprint, elles n'y entrent pas</text>
+
+  <!-- SESSION container -->
+  <rect x="28" y="82" width="924" height="486" rx="16" fill="#FDF4E8" stroke="#C2701E" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="48" y="110" font-size="15" font-weight="700" fill="#8A4E12">SESSION — de « je m'assois » à « je me lève »</text>
+  <text x="48" y="130" font-size="12" font-style="italic" fill="#9A6A3A">entrée : reprise du handoff (implicite, au 1er start)</text>
+  <text x="934" y="110" text-anchor="end" font-size="14" font-weight="700" fill="#8A4E12">⏹ ezk-archive → clôture de session</text>
+  <text x="934" y="129" text-anchor="end" font-size="11.5" fill="#9A6A3A">1× quand tu quittes — persistance, pas Scrum</text>
+
+  <!-- (1) PLANNING -->
+  <rect x="66" y="170" width="176" height="120" rx="12" fill="#DCEBF5" stroke="#2C6E9B" stroke-width="1.8"/>
+  <text x="154" y="198" text-anchor="middle" font-size="14" font-weight="700" fill="#123A52">① PLANNING</text>
+  <text x="154" y="216" text-anchor="middle" font-size="11" fill="#2C6E9B">cérémonie · hors sprint</text>
+  <text x="154" y="244" text-anchor="middle" font-size="12.5" fill="#123A52">groomer le lot</text>
+  <text x="154" y="262" text-anchor="middle" font-size="12.5" fill="#123A52">de stories ready</text>
+
+  <line x1="246" y1="230" x2="292" y2="230" stroke="#5A5A66" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- (2) SPRINT -->
+  <rect x="296" y="150" width="372" height="200" rx="14" fill="#DDEFE0" stroke="#2F7D46" stroke-width="2"/>
+  <text x="482" y="176" text-anchor="middle" font-size="15" font-weight="700" fill="#163E22">② SPRINT — un lot de stories</text>
+
+  <rect x="316" y="188" width="150" height="30" rx="15" fill="#2F7D46"/>
+  <text x="391" y="208" text-anchor="middle" font-size="12.5" font-weight="700" fill="#FFFFFF">ezk-sprint start</text>
+
+  <rect x="316" y="232" width="150" height="46" rx="8" fill="#FFFFFF" stroke="#2F7D46" stroke-width="1.4"/>
+  <text x="391" y="252" text-anchor="middle" font-size="12" fill="#163E22">story</text>
+  <text x="391" y="269" text-anchor="middle" font-size="11" fill="#5A7A63">▸ 1 PR</text>
+  <rect x="480" y="232" width="150" height="46" rx="8" fill="#FFFFFF" stroke="#2F7D46" stroke-width="1.4"/>
+  <text x="555" y="252" text-anchor="middle" font-size="12" fill="#163E22">story</text>
+  <text x="555" y="269" text-anchor="middle" font-size="11" fill="#5A7A63">▸ 1 PR</text>
+  <text x="648" y="260" text-anchor="middle" font-size="16" fill="#2F7D46">…</text>
+
+  <rect x="380" y="298" width="205" height="32" rx="16" fill="#2F7D46"/>
+  <text x="482" y="319" text-anchor="middle" font-size="12.5" font-weight="700" fill="#FFFFFF">ezk-sprint close  ★ Incrément</text>
+
+  <line x1="672" y1="230" x2="716" y2="230" stroke="#5A5A66" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- (3) RETRO -->
+  <rect x="720" y="170" width="182" height="120" rx="12" fill="#DCEBF5" stroke="#2C6E9B" stroke-width="1.8"/>
+  <text x="811" y="198" text-anchor="middle" font-size="14" font-weight="700" fill="#123A52">③ RETRO</text>
+  <text x="811" y="216" text-anchor="middle" font-size="11" fill="#2C6E9B">cérémonie · hors sprint</text>
+  <text x="811" y="244" text-anchor="middle" font-size="12.5" fill="#123A52">ezk-retro</text>
+  <text x="811" y="262" text-anchor="middle" font-size="12" fill="#123A52">→ accouche de fiches</text>
+
+  <!-- BACKLOG -->
+  <rect x="357" y="410" width="266" height="66" rx="10" fill="#EEF0F4" stroke="#6A6A78" stroke-width="1.6"/>
+  <text x="490" y="440" text-anchor="middle" font-size="14" font-weight="700" fill="#33333B">BACKLOG</text>
+  <text x="490" y="460" text-anchor="middle" font-size="12" fill="#5A5A66">fiches = user stories (ezk-backlog)</text>
+
+  <!-- Retro -> backlog -->
+  <path d="M811 290 L811 443 L631 443" fill="none" stroke="#2C6E9B" stroke-width="1.8" marker-end="url(#arrB)"/>
+  <text x="726" y="435" text-anchor="middle" font-size="11" fill="#2C6E9B">produit des fiches</text>
+
+  <!-- Backlog -> planning -->
+  <path d="M357 443 L154 443 L154 292" fill="none" stroke="#2C6E9B" stroke-width="1.8" marker-end="url(#arrB)"/>
+  <text x="243" y="435" text-anchor="middle" font-size="11" fill="#2C6E9B">tire le lot ready</text>
+
+  <!-- loop caption -->
+  <text x="490" y="516" text-anchor="middle" font-size="12.5" font-style="italic" fill="#8A4E12">↻ autant de sprints qu'on veut dans la même session — puis ezk-archive</text>
+
+  <!-- divider -->
+  <line x1="28" y1="540" x2="952" y2="540" stroke="#E2E2E8" stroke-width="1"/>
+
+  <!-- Legend -->
+  <text x="28" y="590" font-size="12.5" font-weight="700" fill="#33333B">Légende</text>
+
+  <rect x="110" y="578" width="18" height="18" rx="4" fill="#DDEFE0" stroke="#2F7D46" stroke-width="1.6"/>
+  <text x="136" y="592" font-size="12.5" fill="#33333B">verbe DU sprint (namespace ezk-sprint) : <tspan font-weight="700" fill="#163E22">start · close</tspan></text>
+
+  <rect x="110" y="606" width="18" height="18" rx="4" fill="#FDF4E8" stroke="#C2701E" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <text x="136" y="620" font-size="12.5" fill="#33333B">SESSION (persistance, 1× à la fin) : <tspan font-weight="700" fill="#8A4E12">ezk-archive</tspan></text>
+
+  <rect x="560" y="578" width="18" height="18" rx="4" fill="#DCEBF5" stroke="#2C6E9B" stroke-width="1.6"/>
+  <text x="586" y="592" font-size="12.5" fill="#33333B">cérémonie HORS sprint : <tspan font-weight="700" fill="#123A52">planning · ezk-retro</tspan></text>
+
+  <text x="560" y="620" font-size="12.5" fill="#33333B">★  <tspan fill="#33333B">Incrément = le livrable « Done » du sprint</tspan></text>
+</svg>

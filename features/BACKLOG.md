@@ -190,6 +190,7 @@
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 | V0.1 | mega-city | 💡 idea |  |
 | [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P0 |  | mega-city | 💡 idea |  |
 | [20260917162000501](20260917162000501_lanceur-dev-universel-worktree-branche.md) | Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz | feature | P0 |  | mega-city | 💡 idea |  |
+| [20260930123438875](20260930123438875_cycle-vie-sprint-session-ceremonies.md) | Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint | feature | P0 |  | mega-city | 💡 idea |  |
 | [0077](0077-hooks-classe-a-supervision.md) | Kit émetteur — hooks Claude Code classe A (émission déterministe) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260813124026215](20260813124026215_deploiement-methode-llm-native.md) | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — cadrage (à la bmad) | feature | P1 |  | mega-city | 💡 idea |  |
