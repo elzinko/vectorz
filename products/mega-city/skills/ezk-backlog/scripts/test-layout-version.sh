@@ -63,6 +63,7 @@ check "README curé" "grep -q '^layout_version: 5' '$D/features/README.md'"
 check "BACKLOG.md présent" "test -f '$D/features/BACKLOG.md'"
 check "done/ présent" "test -d '$D/features/done'"
 check "template présent" "test -f '$D/features/feature-template.md'"
+check "template = gabarit de référence" "cmp -s '$SKILL/templates/feature-template.md' '$D/features/feature-template.md'"
 out_d="$("$CHECK" "$D")"
 check "init → STATUS=ok" "printf '%s' \"\$out_d\" | grep -q 'STATUS=ok'"
 
@@ -203,5 +204,31 @@ rc_l=$?
 set -e
 check "exit 1" "test '$rc_l' -eq 1"
 check "message racine inexistante" "printf '%s' \"\$out_l\" | grep -q 'racine inexistante'"
+
+# Cas M : gabarit local vs référence (fiche 20260918114726706) — identique : silence ;
+# périmé : signalé avec la commande cp, JAMAIS écrasé ; référence absente : exit 2, rien créé.
+echo "Cas M (gabarit local vs référence) :"
+M="$TMP/tpl"
+mkdir -p "$M"
+bash "$SKILL/init.sh" "$M" "Backlog — M" >/dev/null
+out_m1="$(bash "$SKILL/init.sh" "$M" "Backlog — M" 2>&1)"
+check "gabarit identique → aucune note" "! printf '%s' \"\$out_m1\" | grep -q 'diffère'"
+printf '\n<!-- réglage local -->\n' >> "$M/features/feature-template.md"
+out_m2="$(bash "$SKILL/init.sh" "$M" "Backlog — M" 2>&1)"
+check "gabarit périmé → signalé" "printf '%s' \"\$out_m2\" | grep -q 'diffère du gabarit de référence'"
+check "… avec la commande cp" "printf '%s' \"\$out_m2\" | grep -q 'cp .*feature-template.md'"
+check "… sans être écrasé" "grep -q 'réglage local' '$M/features/feature-template.md'"
+S="$TMP/skill-sans-gabarit"
+cp -R "$SKILL" "$S"
+rm "$S/templates/feature-template.md"
+N="$TMP/tpl-sans-ref"
+mkdir -p "$N"
+set +e
+out_m3="$(bash "$S/init.sh" "$N" "Backlog — N" 2>&1)"
+rc_m3=$?
+set -e
+check "référence absente → exit 2" "test '$rc_m3' -eq 2"
+check "… message clair" "printf '%s' \"\$out_m3\" | grep -q 'gabarit de référence introuvable'"
+check "… rien créé" "! test -e '$N/features'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi

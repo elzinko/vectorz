@@ -1,10 +1,13 @@
 ---
-id: 0000
+# id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
+id: "0000"
 title: <titre court et parlant>
 type: feature # feature | bug | refactor | chore
 priority: P2 # P0 | P1 | P2 | P3
-product: # obligatoire dans ce monorepo — vectorz | mega-city | …
-milestone: # optionnel — jalon d'ordre : fondation | rationalisation | env-test | contrat | ux | articles | parked
+product: # obligatoire dans un monorepo — sinon omettre
+milestone: # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre propre au projet
+version: # optionnel — release ciblée, ex. "V1.1" (distincte du milestone)
+labels: # optionnel — thèmes, en ligne : [a, b]
 status: idea # idea | ready | in-progress | shipped | superseded | merged | split
 pr: # ex. "#123" quand une PR existe
 evidence: # before-after | auto | none — preuve d'écran avant/après en PR (règle development/pr-before-after-media) ; vide = auto
@@ -13,15 +16,23 @@ created: <YYYY-MM-DD>
 
 # <id> — <titre>
 
+**En clair.** <L'essentiel en ≤ 3 phrases, AVANT le détail : symptôme vécu → proposition en
+mots simples → effet concret pour le lecteur. Sans jargon interne. Règle
+`human-facing-lisibility` — cette fiche EST le document ; le corps de PR en sera le **rendu**
+(ADR-0029), donc écris-la pour être lue telle quelle.>
+
+**Si tu arrives frais.** <1–2 lignes : le vocabulaire projet minimal pour lire cette fiche sans
+contexte — ce qu'est le composant/produit concerné et le(s) terme(s)-clé(s). Retire cette ligne si
+la fiche n'introduit aucun terme spécifique.>
+
 ## Contexte / Problème
 
 <Ce qui ne va pas ou ce qu'on veut, et pourquoi ça compte. Pour un bug : symptôme
-observé + reproduction. Lier le code en `chemin/fichier:ligne` si pertinent.>
+observé + reproduction.>
 
 ## Proposition
 
-<L'approche envisagée. Plusieurs options possibles → lister + recommander.
-POC d'abord, polish ensuite.>
+<L'approche envisagée. POC d'abord, polish ensuite.>
 
 ## Critères d'acceptation
 
@@ -44,6 +55,14 @@ réécrire côté PR. Ne recopier ni le Gherkin ni les critères : orienter et l
 # ex. pnpm --dir <pkg> test -- <chemin pertinent>
 ```
 
+## Glossaire
+
+<CONDITIONNEL : obligatoire si la fiche emploie du jargon interne, un sigle ou un terme inventé
+(règle `human-facing-lisibility` : le jargon ne porte jamais le sens hors glossaire). Retire toute
+la section si la fiche n'emploie aucun jargon. Une entrée par terme, définie une fois.>
+
+- `<terme>` — <définition en clair, une phrase>
+
 ## Notes / décisions
 
-<Hypothèses, risques, liens (ADR, PR, issues). Mettre à jour à mesure.>
+<Hypothèses, risques, liens (ADR, PR, issues).>

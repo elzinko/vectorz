@@ -15,64 +15,94 @@ created: 2026-09-18
 
 # 20260918114726706 — Synchroniser les templates de fiche
 
-## En clair
+**En clair.** Le modèle de fiche existe en plusieurs copies. Elles ne disent plus la même chose.
+On garde **une seule source** : le gabarit du skill `ezk-backlog`. La copie locale de vectorz en
+devient un double exact, surveillé par un test. La copie morte disparaît. Enfin `init` signale une
+copie locale en retard et donne la commande qui la remet à niveau.
 
-Il existe **trois** copies du template de fiche, et elles ne sont pas d'accord entre elles. Un
-nouveau projet initialisé aujourd'hui hériterait d'un template périmé. On veut **une seule
-source de vérité** et un moyen simple de propager ses évolutions, plus supprimer la copie morte.
+**Si tu arrives frais.** Une *fiche* est le fichier markdown d'une feature, dans `features/`. Son
+*gabarit* est le squelette que `add` recopie pour en créer une. Le skill en porte la **référence**,
+et `init` la copie dans chaque projet.
 
 ## Contexte / Problème
 
-Découvert en corrigeant le template ([[20260918113211648]], retour Codex sur PR #254). Les trois
-copies divergent :
+Quatre endroits portent le squelette d'une fiche. Trois divergent (état au 2026-10-01).
 
-- `products/mega-city/skills/ezk-backlog/templates/feature-template.md` — la **référence** (celle
-  qu'`init` copie dans un nouveau projet). Corps à jour, mais front-matter encore `epic:`
-  **périmé** (les épics ont été retirés, A16 → `milestone:`).
-- `features/feature-template.md` — le template **local de vectorz** (celui d'où naissent les
-  fiches d'ici). Front-matter à jour (`milestone:`), corps rafraîchi partiellement en #254 (il
-  manque encore « En clair » et « Glossaire »).
-- `products/mega-city/feature-template.md` — **orphelin** : mega-city n'a plus de `features/`
-  (tombstoné), et rien ne le référence. Du code mort.
+- `products/mega-city/skills/ezk-backlog/templates/feature-template.md` est la **référence**, celle
+  que `init` copie. Le corps est à jour. Le front-matter est périmé : il garde `epic:` et `type: epic`,
+  retirés par le retrait de l'épic.
+- `features/feature-template.md` est le gabarit **local** de vectorz, celui d'où naissent les fiches
+  d'ici. Le front-matter est à jour (`milestone:`). Il manque « En clair » et « Glossaire ».
+- `products/mega-city/feature-template.md` est **orphelin**. mega-city n'a plus de `features/` et rien
+  ne le lit, sauf un test qui vérifie sa ligne `status:`. C'est du code mort.
+- `products/mega-city/skills/ezk-backlog/init.sh` porte un **repli** en heredoc. C'est une quatrième
+  copie. Elle ne sert jamais tant que la référence existe.
 
-`init.sh` **préserve** un template local existant (ne le réécrit pas), et `add` crée les fiches
-depuis le template local — donc les évolutions de la référence n'atteignent jamais les projets
-déjà initialisés. C'est la dette « rafraîchir le template local », déjà notée dans le SKILL
-`ezk-backlog` (réponse Codex PR #152).
+`init` **préserve** un gabarit local existant. Les évolutions de la référence n'atteignent donc jamais
+un projet déjà initialisé. La dette est déjà notée dans le SKILL (réponse Codex sur la PR #152).
+
+Déjà livré par le sprint « verrou de statut » : le schéma des statuts est central
+(`src/core/fiche-schema.ts`) et un test garde la ligne `status:` de chaque gabarit. Il reste la
+structure du gabarit (champs, sections) et l'existence même des copies.
 
 ## Proposition
 
-1. **Aligner la référence sur le modèle courant** : front-matter `epic:` → `milestone:` (A16),
-   id quoté, `superseded` dans les statuts — pour qu'un nouveau projet naisse à jour.
-2. **Rafraîchir le template local de vectorz** : lui ajouter « En clair » et « Glossaire » (le
-   reste du corps ADR-0029), front-matter conservé.
-3. **Supprimer l'orphelin** `products/mega-city/feature-template.md` (dead code).
-4. **Décider d'un mécanisme de synchro** (au choix, à groomer) : `init` propose une resync quand
-   le template local est plus vieux que la référence, OU un pointeur vers la référence unique,
-   OU un test qui signale la dérive. À trancher au grooming.
+Le mécanisme retenu pour ce POC est un **test de contrat** plus une **indication de `init`**.
+
+1. **Référence** : `epic:` devient `milestone:` (et `labels:` pour les thèmes). `version:` passe en
+   champ optionnel. `type` perd `epic`. Les commentaires restent génériques, sans liste de jalons
+   propre à vectorz.
+2. **Local vectorz** : copie exacte de la référence.
+3. **Suppression** de l'orphelin et du repli de `init.sh`. Si la référence manque, `init` échoue
+   avec un message clair.
+4. **`init`** ne réécrit jamais un gabarit local (il peut porter des réglages). Il dit quand le
+   gabarit diffère de la référence et affiche la commande `cp` qui l'aligne.
+5. **SKILL.md** : l'exemple de front-matter passe à `milestone:` et `labels:`. La note « chantier
+   séparé » dit désormais comment rafraîchir.
+6. **Garde** : un test de contrat, plus deux cas dans `test-layout-version.sh`.
 
 ## Critères d'acceptation
 
-- [ ] Un nouveau projet initialisé naît avec un template à jour (front-matter `milestone`, corps ADR-0029).
-- [ ] Le template local de vectorz porte les mêmes sections que la référence.
-- [ ] Plus de copie orpheline du template.
-- [ ] La dérive future entre référence et local est détectable (mécanisme choisi au grooming).
+- [x] La référence porte le modèle courant : `milestone:` et plus `epic:`, id entre guillemets,
+  listes `type` / `priority` / `evidence` / `status` égales aux énumérations du code, corps ADR-0029.
+  Preuve : deux tests de `fiche-template-contract.test.ts`.
+- [x] Le gabarit local de vectorz est identique à la référence, octet pour octet.
+  Preuve : le test « copie exacte » et le `cmp` ci-dessous.
+- [x] Il n'existe plus de copie orpheline ni de repli : le fichier orphelin est supprimé et
+  `init.sh` ne porte plus de squelette de fiche. Preuve : deux tests du même fichier.
+- [x] Un projet neuf initialisé par `init` reçoit le gabarit de référence.
+  Preuve : cas D de `test-layout-version.sh`.
+- [x] La dérive se voit. Le test échoue en affichant la commande `cp` à rejouer. `init` signale un
+  gabarit local différent, sans l'écraser. Preuve : cas M de `test-layout-version.sh`.
+- [x] L'exemple de front-matter du SKILL ne parle plus d'`epic:`.
+  Preuve : un test de `fiche-template-contract.test.ts`.
 
 ## Comment vérifier
 
-À préciser au grooming (fiche `idea`). Pistes de procédure :
-
 ```bash
-# les templates ne divergent plus sur les sections structurantes
-diff <(grep '^## ' features/feature-template.md) \
-     <(grep '^## ' products/mega-city/skills/ezk-backlog/templates/feature-template.md)
-# l'orphelin n'existe plus
-test ! -e products/mega-city/feature-template.md
+# Le contrat du gabarit (copie locale identique, orphelin absent, listes = schéma, pas d'epic)
+pnpm --dir products/mega-city exec vitest run fiche-template-contract fiche-schema-contract
+# init : projet neuf = référence ; gabarit périmé signalé sans être écrasé
+bash products/mega-city/skills/ezk-backlog/scripts/test-layout-version.sh | tail -8
+# À la main
+cmp products/mega-city/skills/ezk-backlog/templates/feature-template.md features/feature-template.md && echo identiques
+test ! -e products/mega-city/feature-template.md && echo "orphelin supprimé"
 ```
+
+## Suite (hors POC)
+
+- **Pousser la mise à jour aux projets déjà installés** sans geste manuel : une migration Skema 006.
+  Elle exige de bumper `VERSION`, le README modèle, le SKILL et `test-layout-version.sh`. À fiche
+  seulement si la commande `cp` indiquée par `init` s'avère trop manuelle.
+- **Option d'écrasement** `init --refresh-template` avec sauvegarde, pour le même besoin.
+- **Exemple du SKILL** : il reste une illustration, pas une copie gardée. Un test de clés le
+  rapprocherait du gabarit si l'écart revient.
 
 ## Notes / décisions
 
-- **Origine** : retour Codex sur PR #254 (« propagate the distinction to installed project
-  templates ») + décision PO (Thomas, 2026-09-18) de ficher la dette.
-- Rattaché à la dette connue « rafraîchir le template local » (SKILL `ezk-backlog`, réponse
-  Codex PR #152).
+- **Origine** : retour Codex sur la PR #254 (« propagate the distinction to installed project
+  templates ») et décision du PO (Thomas, 2026-09-18) de ficher la dette.
+- Rattaché à la dette « rafraîchir le template local » du SKILL `ezk-backlog` (réponse Codex, PR #152).
+- Décisions de grooming (2026-10-01) : pas de gabarit « dérivé » généré ni de pointeur. Une copie
+  exacte plus un test coûtent moins cher et se lisent d'un coup d'œil.
+- Retrait de l'épic : ADR-0017, amendement A16. Point de départ : sprint « verrou de statut », PR #267.

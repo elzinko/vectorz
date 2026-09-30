@@ -22,6 +22,14 @@ CHECK="$SKILL_DIR/scripts/check-layout-version.sh"
 RESOLVE="$SKILL_DIR/scripts/resolve-regen-backlog.sh"
 SKILL_VERSION="$(tr -d '[:space:]' < "$SKILL_DIR/migrations/VERSION")"
 
+# UNE seule source pour le squelette de fiche : le gabarit du skill (fiche 20260918114726706).
+# Pas de repli embarqué ici — sans la référence, on échoue avant d'avoir créé quoi que ce soit.
+TEMPLATE_REF="$SKILL_DIR/templates/feature-template.md"
+if [[ ! -f "$TEMPLATE_REF" ]]; then
+  echo "erreur: gabarit de référence introuvable: $TEMPLATE_REF" >&2
+  exit 2
+fi
+
 installed_layout() {
   # Lit layout_version réel du projet (via check) — pas le VERSION skill.
   local out
@@ -62,48 +70,14 @@ if [[ ! -f "$FEATURES/README.md" ]]; then
   echo "créé features/README.md (guide, layout_version=${SKILL_VERSION})"
 fi
 
-# Template fiche
+# Template fiche — copié tel quel depuis la référence. Un gabarit local existant n'est JAMAIS
+# réécrit (il peut porter des réglages du projet) : on signale l'écart et la commande qui l'aligne.
 if [[ ! -f "$FEATURES/feature-template.md" ]]; then
-  if [[ -f "$SKILL_DIR/templates/feature-template.md" ]]; then
-    cp "$SKILL_DIR/templates/feature-template.md" "$FEATURES/feature-template.md"
-  else
-    # Fallback minimal si le template n'est pas encore dans la skill
-    cat > "$FEATURES/feature-template.md" <<'EOF'
----
-# id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
-id: "0000"
-title: <titre court et parlant>
-type: feature # feature | bug | refactor | chore | epic
-priority: P2 # P0 | P1 | P2 | P3
-product: # obligatoire dans un monorepo — sinon omettre
-epic:
-status: idea # idea | ready | in-progress | shipped | superseded | merged | split
-pr:
-created: <YYYY-MM-DD>
----
-
-# <id> — <titre>
-
-**En clair.** <≤ 3 phrases sans jargon : symptôme vécu → proposition simple → effet concret.
-Cette fiche EST le document ; le corps de PR en sera le rendu (ADR-0029).>
-
-## Contexte / Problème
-
-## Proposition
-
-## Critères d'acceptation
-
-- [ ]
-
-## Comment vérifier
-
-<Commandes rejouables OU preuves agent pointant des scripts existants. C'est ce que la PR
-affichera tel quel — ne pas réécrire côté PR.>
-
-## Notes / décisions
-EOF
-  fi
+  cp "$TEMPLATE_REF" "$FEATURES/feature-template.md"
   echo "créé features/feature-template.md"
+elif ! cmp -s "$TEMPLATE_REF" "$FEATURES/feature-template.md"; then
+  echo "note: features/feature-template.md diffère du gabarit de référence (conservé tel quel)."
+  echo "      Pour l'aligner : cp \"$TEMPLATE_REF\" \"$FEATURES/feature-template.md\""
 fi
 
 # BACKLOG.md — généré (vide ou regen si fiches présentes)
