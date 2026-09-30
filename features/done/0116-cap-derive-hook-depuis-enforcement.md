@@ -4,8 +4,8 @@ title: cap — dériver le hook du champ enforcement.hook.script (au lieu du har
 type: refactor
 priority: P3
 product: mega-city
-status: idea
-pr:
+status: superseded
+pr: superseded — 3/4 AC livres par 0111, reliquat YAGNI
 created: 2026-06-26
 ---
 

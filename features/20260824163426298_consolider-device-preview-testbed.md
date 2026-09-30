@@ -86,7 +86,7 @@ comme on le fait pour un skill ou une règle ? Intuition PO : « l'ajout de comp
 geste pour un agent, un skill ou une règle ». Si oui, `ezk-preview` (à modes) et `ezk-device`
 deviennent **le même agent** équipé de compétences différentes, pas deux skills concurrentes.
 
-Voir aussi : [0177](0177-pack-pratiques-projet-portables.md) (capacités portables, indépendantes
+Voir aussi : [0177](done/0177-pack-pratiques-projet-portables.md) (capacités portables, indépendantes
 du driver LLM) et la doctrine [20260825123700998](done/20260825123700998_doctrine-composition-features.md)
 (fusion vs épic vs division — pour trancher `ezk-preview` + `ezk-device` : une skill fusionnée à
 modes, ou un socle + adaptateurs).

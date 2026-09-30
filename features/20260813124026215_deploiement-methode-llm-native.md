@@ -59,7 +59,7 @@ source de vérité…) sont appliquées **au petit bonheur**.
 |---|---|---|
 | [0170](done/0170-modele-extension-plugin-mega-city.md) (P1) | **Modèle d'extension / plugin** mega-city : ADR + panel architecte, réf. **BMAD overlay** + **plugin Claude Code officiel** | La vision produit qui **motive** et **priorise** l'ADR |
 | [0087](0087-plugin-claude-code-distribution.md) | **Distribuer** le catalogue de skills en plugin Claude Code | Le lien avec l'ancrage **par projet** (pas que la distribution globale) |
-| [0177](0177-pack-pratiques-projet-portables.md) (P2) | **Pack de pratiques projet portable** : lien indirect README → répertoire déporté versionné, lu par **tout** LLM | Le **cycle install / retrait** + le **plugin GitHub** + le **monitoring** |
+| [0177](done/0177-pack-pratiques-projet-portables.md) (P2) | **Pack de pratiques projet portable** : lien indirect README → répertoire déporté versionné, lu par **tout** LLM | Le **cycle install / retrait** + le **plugin GitHub** + le **monitoring** |
 | 0172 | **Backlog markdown = source de vérité**, GitHub = export | Le raccord avec la **description de PR** |
 | [0171](0171-adapter-github-issues-push-only.md) · [0174](0174-ezk-issues-intake-github.md) | **Adaptateur GitHub** (Issues push-only, intake) | Le **template de PR** déployé qui pointe vers la fiche markdown |
 | [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md) · [0162](0162-bmad-contrat-supervisabilite.md) · [0154](done/0154-kit-emetteur-supervisabilite.md) | **Monitoring / supervision** branché en **sidecar** (cas BMAD) + kit émetteur | Le **déploiement du monitoring comme plugin** par le même installeur |
@@ -85,14 +85,14 @@ PR** comme premier livrable visible, et le **monitoring** comme plugin du même 
 - Le **vrai point d'entrée** est un fichier **fourni par la méthode** (`LLM.md` /
   `README.md`) qui vit dans le répertoire déporté (`.mega-city/` ? `.ezk/` ? `.methode/` —
   à trancher, cf. 0177). Ce fichier gouverne les pratiques du projet.
-- C'est exactement la direction de [0177](0177-pack-pratiques-projet-portables.md) ; cette fiche en fait le **cœur d'un
+- C'est exactement la direction de [0177](done/0177-pack-pratiques-projet-portables.md) ; cette fiche en fait le **cœur d'un
   installeur**, pas juste un pattern isolé.
 - **⚠️ Question ouverte — découvrabilité hors Claude (à trancher au grooming).** L'objectif
   affiché (§ *Le problème*) est que la méthode s'applique **quel que soit le pilote** ; or une
   ancre uniquement dans `CLAUDE.md` n'est **pas lue** par un harness non-Claude, qui ne
   découvrirait donc pas le point d'entrée déporté. Trois pistes à arbitrer : **(a)** restreindre
   explicitement le périmètre à Claude (et amender le § *Le problème*) ; **(b)** garder l'ancre
-  **générique projet-README** de [0177](0177-pack-pratiques-projet-portables.md) ; **(c)** faire générer par l'`init`
+  **générique projet-README** de [0177](done/0177-pack-pratiques-projet-portables.md) ; **(c)** faire générer par l'`init`
   le **fichier d'instructions natif de chaque harness supporté**. *(Tension relevée par la
   revue Codex — cf. critères d'acceptation.)*
 
@@ -163,7 +163,7 @@ Claude Code officiel comme références.
       projet (cette fiche) vs store agnostique ([0093](0093-backlogstore-port-agnostique.md), **YAGNI** jusqu'au trigger).
 - [ ] **Découvrabilité hors Claude tranchée** (cf. §B) : soit périmètre **Claude-only**
       assumé (et § *Le problème* aligné), soit ancrage **lu par tout harness** — ancre
-      projet-README ([0177](0177-pack-pratiques-projet-portables.md)) et/ou fichier d'instructions natif par harness.
+      projet-README ([0177](done/0177-pack-pratiques-projet-portables.md)) et/ou fichier d'instructions natif par harness.
 - [ ] **MVP identifié** : le plus petit `init` utile (hypothèse : plugin GitHub =
       `.github/PULL_REQUEST_TEMPLATE.md` + lien `CLAUDE.md` + point d'entrée méthode).
 
@@ -175,7 +175,7 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
   (réutiliser le pattern **panel adverse + juge** qui a durci [ADR-032](../docs/adr/ADR-032-emission-adaptateur-separable.md)).
 - **`ezk-pm`** — périmètre, découpage en fiches enfants, priorité, MVP, ce qu'on parque.
 - **dev / QA** (`ezk-dev` / `ezk-qa`) — faisabilité de l'installeur, scénario cobaye « skill
-  A puis skill B sur le même projet → mêmes pratiques lues » (repris de [0177](0177-pack-pratiques-projet-portables.md)).
+  A puis skill B sur le même projet → mêmes pratiques lues » (repris de [0177](done/0177-pack-pratiques-projet-portables.md)).
 
 ## Anti-doublon (par intention)
 
@@ -184,7 +184,7 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
 - [0170](done/0170-modele-extension-plugin-mega-city.md) produit **l'ADR technique** du modèle de plugin ; ici = la **vision
   produit** qui le motive, le priorise et le relie au reste. 0170 reste la fiche qui grave la
   décision d'extension.
-- [0177](0177-pack-pratiques-projet-portables.md) définit **le pack de pratiques portable** (le *quoi* déposé) ; ici = **le
+- [0177](done/0177-pack-pratiques-projet-portables.md) définit **le pack de pratiques portable** (le *quoi* déposé) ; ici = **le
   cycle qui l'installe / le retire** et les **plugins** autour.
 - [0087](0087-plugin-claude-code-distribution.md) = **distribution globale** de la méthode ; ici = **ancrage par
   projet**. Frontière à graver (critère ci-dessus).

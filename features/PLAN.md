@@ -106,7 +106,7 @@
 **① Fondation méthode compilée** — P0, en cours
 - `20260826122532943` (chapeau P0) · `20260821204737357` (le graphe, in-progress) ·
   **`20260823121712652`** (statut validé par schéma + `merged`/`split` — LE VERROU) · `0186` (Skema).
-- Fusion à appliquer (quand le verrou est là) : absorber `20260826112620281` (validateur déclaratif).
+- ~~Fusion à appliquer (quand le verrou est là) : absorber `20260826112620281` (validateur déclaratif).~~ — **superseded** (sliver absorbé par la fondation `20260826122532943`, ADR-0040 D2).
 
 **② Rationalisation du backlog** — outil « propose » livré (#223), reste l'`apply`
 - `20260910231201744` — aggregate : appliquer `merged`/`split` + moteur `llm` (gated sur ①).

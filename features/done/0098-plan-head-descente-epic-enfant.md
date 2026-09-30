@@ -7,9 +7,9 @@ product: mega-city
 epic:
 depends: []
 labels: [enabler, follow-up]
-status: idea
+status: superseded
 ready:
-pr:
+pr: superseded — type: epic retire (A16), plus d'enfant d'epic ou descendre
 created: 2026-07-26
 ---
 

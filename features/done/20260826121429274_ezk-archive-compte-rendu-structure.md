@@ -24,7 +24,7 @@ created: 2026-08-26
 
 Quand une session se clôt, `ezk-archive` écrit un compte-rendu dans `docs/sessions/`. Il
 est aujourd'hui **en prose libre** — lisible, mais **pas lisible par un script**. Pour que
-la [vue « sprints réalisés »](../20260826072532452_vue-sprints-realises-ezk-map.md) puisse
+la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map.md) puisse
 afficher, par sprint, ses PR / fiches / actions, ce compte-rendu doit porter ces données
 dans un **en-tête structuré**. Cette fiche demande à `ezk-archive` de l'écrire — en plus du
 récit. C'est le **pendant, côté sprints**, de la fiche
@@ -78,7 +78,7 @@ main) — côté vue, ils s'affichent en **mode dégradé**.
 
 ## Dépendances
 
-- **Prérequis de** : la [vue « sprints réalisés »](../20260826072532452_vue-sprints-realises-ezk-map.md).
+- **Prérequis de** : la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map.md).
 - **Cas d'application de** : le pattern [« livrable lisible »](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
 - **Miroir de** : la [capture rétro standard](../0080-ezk-retro-compte-rendu-standard.md)
   (même patron « source normée + extractible », côté rétros).

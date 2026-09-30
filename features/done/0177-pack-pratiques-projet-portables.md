@@ -4,18 +4,18 @@ title: Pack de pratiques projet — capacités portables indépendantes du skill
 type: feature
 priority: P2
 product: mega-city
-status: idea
+status: superseded
 ready:
-pr:
+pr: superseded — doublon absorbe par la recette-chapeau 20260824185422122
 created: 2026-08-01
 ---
 
 > **⛔ ABSORBÉE le 2026-08-24 (lot 4b) — ne pas tirer.** Doublon de la recette-chapeau
-> [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md) : un « pack de
+> [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md) : un « pack de
 > pratiques projet » = un **cas d'usage de l'objet recette** (artefact-donnée qui compose des rules +
 > référence un profil + pointe un exemple), pas un objet neuf. Piste **overlay écartée** (ADR-0039 §4 :
 > un overlay surcharge une brique du catalogue ; 0177 n'en surcharge aucune). La moitié **versioning +
-> pointeur README any-driver** part vers [`0186`](0186-skema-versioning-migrations-skills-deployees.md).
+> pointeur README any-driver** part vers [`0186`](../0186-skema-versioning-migrations-skills-deployees.md).
 > Résidu propre ≈ nul. **Fermeture physique** (déplacer en `done/` ou supprimer) à confirmer par le PO.
 
 # 0177 — Pack de pratiques projet (capacités portables)
@@ -47,7 +47,7 @@ Direction LLM-native (à raffiner au grooming) :
 3. Objectif : **binding de pratiques au niveau projet**, qui survit quel que
    soit le skill/commande/LLM qui conduit la session.
 
-Complémentaire de **[0175 — Skema](0175-article-skema-skill-schema-migrations.md)**
+Complémentaire de **[0175 — Skema](../0175-article-skema-skill-schema-migrations.md)**
 (*Skill Schema Migrations*) : Skema = comment une *skill* migre **son propre**
 layout ; cette fiche = comment un *projet* ancre un **jeu portable** de
 pratiques/capacités pour **n'importe quel** driver. Ne pas fusionner les deux
@@ -61,7 +61,7 @@ scopes.
       versionné, liste des capacités).
 - [ ] Frontière écrite vs `caps/` / `bind` / lawgiver / profils `.claude`
       (ce qui est réutilisé vs ce qui est nouveau).
-- [ ] Lien explicite avec [0175](0175-article-skema-skill-schema-migrations.md)
+- [ ] Lien explicite avec [0175](../0175-article-skema-skill-schema-migrations.md)
       (complémentaire, pas doublon) — et éventuelle fiche voisine si grooming
       révèle un chevauchement.
 - [ ] Au moins un scénario cobaye : « skill A puis skill B sur le même projet
@@ -77,16 +77,16 @@ scopes.
   Id **0177** choisi pour ne pas collisionner avec 0175 ni avec le WIP 0176
   (interdit gitconfig) sur la même branche.
 - **Anti-doublon** (par intention) — *pas* de doublon trouvé :
-  - [0106](done/0106-lawgiver-bind-cap-claude-code.md) / [0115](done/0115-bind-merge-au-lieu-decraser.md) /
-    [0122](done/0122-cap-global-home-claude.md) — *matérialisent* agents/skills/rules
+  - [0106](0106-lawgiver-bind-cap-claude-code.md) / [0115](0115-bind-merge-au-lieu-decraser.md) /
+    [0122](0122-cap-global-home-claude.md) — *matérialisent* agents/skills/rules
     dans un harness ; ici = contrat de *pratiques projet* lisible par tout LLM.
   - 0150 — méthode TDD en *rule de profil*
     (composition mega-city), pas un pack projet déporté.
-  - [0170](done/0170-modele-extension-plugin-mega-city.md) — modèle d'extension /
+  - [0170](0170-modele-extension-plugin-mega-city.md) — modèle d'extension /
     plugin (ADR), pas le binding de pratiques.
-  - [0173](done/0173-ezk-methode-trois-bandes-naming.md) — naming méthode /
+  - [0173](0173-ezk-methode-trois-bandes-naming.md) — naming méthode /
     caps / archive ; orthogonal.
-  - [0175](0175-article-skema-skill-schema-migrations.md) — migrations de
+  - [0175](../0175-article-skema-skill-schema-migrations.md) — migrations de
     *layout de skill* ; complémentaire (voir Proposition).
 - **Noms de travail du pattern** (arbitrage PO) :
   1. **Praxis** — pack de pratiques projet (court, distinct de Skema).
