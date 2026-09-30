@@ -7,6 +7,9 @@
 #
 # Skema : refuse de half-migrer un layout v1 (README « Index auto-généré ») —
 # propose apply-002 après OK utilisateur (pas de split-brain README+BACKLOG).
+#
+# Codes de sortie : 0 ok · 1 racine inexistante · 2 layout v1 (migration 002 requise) ·
+# 3 gabarit de référence (templates/feature-template.md) introuvable.
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -21,14 +24,8 @@ FEATURES="$ROOT/features"
 CHECK="$SKILL_DIR/scripts/check-layout-version.sh"
 RESOLVE="$SKILL_DIR/scripts/resolve-regen-backlog.sh"
 SKILL_VERSION="$(tr -d '[:space:]' < "$SKILL_DIR/migrations/VERSION")"
-
 # UNE seule source pour le squelette de fiche : le gabarit du skill (fiche 20260918114726706).
-# Pas de repli embarqué ici — sans la référence, on échoue avant d'avoir créé quoi que ce soit.
 TEMPLATE_REF="$SKILL_DIR/templates/feature-template.md"
-if [[ ! -f "$TEMPLATE_REF" ]]; then
-  echo "erreur: gabarit de référence introuvable: $TEMPLATE_REF" >&2
-  exit 2
-fi
 
 installed_layout() {
   # Lit layout_version réel du projet (via check) — pas le VERSION skill.
@@ -44,6 +41,13 @@ installed_layout() {
 if [[ -d "$ROOT/roadmap" ]]; then
   echo "convention roadmap/ détectée — rien créé (épouser l'existant)."
   exit 0
+fi
+
+# Pas de repli embarqué : sans la référence on échoue (code 3, distinct du 2 « migration requise »)
+# avant d'avoir créé quoi que ce soit.
+if [[ ! -f "$TEMPLATE_REF" ]]; then
+  echo "erreur: gabarit de référence introuvable: $TEMPLATE_REF" >&2
+  exit 3
 fi
 
 mkdir -p "$FEATURES/done"

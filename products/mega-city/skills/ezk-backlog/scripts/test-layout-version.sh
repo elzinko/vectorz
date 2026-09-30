@@ -206,7 +206,7 @@ check "exit 1" "test '$rc_l' -eq 1"
 check "message racine inexistante" "printf '%s' \"\$out_l\" | grep -q 'racine inexistante'"
 
 # Cas M : gabarit local vs référence (fiche 20260918114726706) — identique : silence ;
-# périmé : signalé avec la commande cp, JAMAIS écrasé ; référence absente : exit 2, rien créé.
+# périmé : signalé avec la commande cp, JAMAIS écrasé ; référence absente : exit 3, rien créé.
 echo "Cas M (gabarit local vs référence) :"
 M="$TMP/tpl"
 mkdir -p "$M"
@@ -227,7 +227,7 @@ set +e
 out_m3="$(bash "$S/init.sh" "$N" "Backlog — N" 2>&1)"
 rc_m3=$?
 set -e
-check "référence absente → exit 2" "test '$rc_m3' -eq 2"
+check "référence absente → exit 3" "test '$rc_m3' -eq 3"
 check "… message clair" "printf '%s' \"\$out_m3\" | grep -q 'gabarit de référence introuvable'"
 check "… rien créé" "! test -e '$N/features'"
 
