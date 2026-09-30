@@ -112,8 +112,8 @@ mécaniques. Ce qui dépend de briques pas encore livrées est écrit en « Suit
       déployé par `profiles/global.yml`, contrat `src/__tests__/ezk-scout-contract.test.ts`.*
 - [x] Elle ne modifie **jamais** le code produit (find-only, vérifiable — p. ex.
       `git diff` du code produit reste vide après une passe).
-      *Preuve : `scripts/find-only-guard.sh` compare HEAD, arbre, refs et worktree avant/après ;
-      25 contrôles dans `test-find-only-guard.sh`, dont le cas « commit sans toucher le worktree ».*
+      *Preuve : `scripts/find-only-guard.sh` compare HEAD, branche courante, arbre, refs, index et worktree avant/après ;
+      29 contrôles dans `test-find-only-guard.sh`, dont le cas « commit sans toucher le worktree ».*
 - [x] Elle isole l'état de l'app avant de piloter (compose la recette d'isolation).
       *Preuve : étape 2 du skill (fichiers, base, volumes, services externes ; un état NON ISOLÉ
       n'est pas sondé) + passe de démonstration avec `HOME` et état en tmp, vérifiés vides après.

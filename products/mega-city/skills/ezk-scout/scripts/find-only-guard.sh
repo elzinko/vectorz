@@ -6,7 +6,11 @@
 # Ce que la photo contient (pourquoi un simple `git status` ne suffit pas : si la passe
 # COMMITTE, le worktree paraît propre alors que le contrat est violé) :
 #   head / tree — le commit et l'arbre courants ;
+#   branch      — la branche courante (ou DETACHED) : deux branches sur le même commit ne se
+#                 distinguent ni par head ni par tree, seul un checkout les sépare ;
 #   refs        — toutes les branches et tags locaux (attrape un commit sur une autre branche) ;
+#   index       — le contenu de la zone de préparation : un fichier « MM » dont seul l'index
+#                 change garde le même statut et le même contenu de worktree ;
 #   status      — chaque fichier suivi modifié/supprimé et chaque fichier non suivi (donc toute
 #                 fiche créée dans features/), avec le hash de son contenu : un WIP qui existait
 #                 déjà est toléré tant qu'il ne bouge pas.
@@ -36,15 +40,19 @@ EOF
 
 # Bloc canonique de l'état d'un dépôt (racine absolue en argument), sur stdout.
 canon() {
-  local top="$1" head tree refs xy path h
+  local top="$1" head branch index tree refs xy path h
   head="$(git -C "$top" rev-parse --verify -q HEAD 2>/dev/null || echo NONE)"
+  branch="$(git -C "$top" symbolic-ref -q HEAD 2>/dev/null || echo DETACHED)"
+  index="$(git -C "$top" ls-files -s | git hash-object --stdin)"
   tree="$(git -C "$top" rev-parse --verify -q 'HEAD^{tree}' 2>/dev/null || echo NONE)"
   refs="$(git -C "$top" for-each-ref --format='%(refname) %(objectname)' refs/heads refs/tags \
     | git hash-object --stdin)"
   echo "repo=$top"
   echo "head=$head"
+  echo "branch=$branch"
   echo "tree=$tree"
   echo "refs=$refs"
+  echo "index=$index"
   git -C "$top" status --porcelain=v1 -z --no-renames --untracked-files=all \
     | while IFS= read -r -d '' rec; do
         xy="${rec:0:2}"
@@ -78,7 +86,7 @@ explain() {
     function short(s) { return substr(s, 1, 7) }
     /^@@APRES@@$/ { side = 2; next }
     /^repo=/ { repo = substr($0, 6); repos[repo] = 1; next }
-    /^(head|tree|refs)=/ {
+    /^(head|branch|tree|refs|index)=/ {
       k = $0; sub(/=.*/, "", k); v = $0; sub(/^[a-z]+=/, "", v); val[side, repo, k] = v; next
     }
     /^status / {
@@ -89,6 +97,12 @@ explain() {
       for (r in repos) {
         if (val[1, r, "head"] != val[2, r, "head"])
           printf "  %s : head %s -> %s (un commit a été créé ou la branche a bougé)\n", r, short(val[1, r, "head"]), short(val[2, r, "head"])
+        if (val[1, r, "branch"] != val[2, r, "branch"]) {
+          b1 = val[1, r, "branch"]; b2 = val[2, r, "branch"]; sub(/^refs\/heads\//, "", b1); sub(/^refs\/heads\//, "", b2)
+          printf "  %s : branche courante changée (%s -> %s)\n", r, b1, b2
+        }
+        if (val[1, r, "index"] != val[2, r, "index"])
+          printf "  %s : index (fichiers préparés pour un commit) modifié\n", r
         if (val[1, r, "tree"] != val[2, r, "tree"])
           printf "  %s : arbre du commit changé\n", r
         if (val[1, r, "refs"] != val[2, r, "refs"])

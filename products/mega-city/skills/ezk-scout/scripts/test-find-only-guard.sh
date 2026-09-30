@@ -92,6 +92,21 @@ run_case "$R" "printf 'encore\n' >> '$R/app.js'"
 check "WIP re-modifié → code 1"           "[ $rc -eq 1 ]"
 git -C "$R" checkout -q -- app.js
 
+echo "Cas h2 (index remplacé alors que statut et worktree restent identiques — retour Codex) :"
+printf 'wip\n' >> "$R/app.js"; git -C "$R" add app.js; printf 'wip2\n' >> "$R/app.js"   # fichier « MM »
+run_case "$R" "b=\$(printf 'autre contenu stagé\n' | git -C '$R' hash-object -w --stdin) && git -C '$R' update-index --cacheinfo 100644,\$b,app.js"
+check "code de sortie 1"                  "[ $rc -eq 1 ]"
+check "signale l'index"                   "printf '%s' \"\$out\" | grep -q 'index'"
+git -C "$R" reset -q --hard HEAD
+
+echo "Cas h3 (autre branche au MÊME commit — retour Codex) :"
+git -C "$R" branch copie
+base="$(git -C "$R" symbolic-ref --short HEAD)"
+run_case "$R" "git -C '$R' checkout -q copie"
+check "code de sortie 1"                  "[ $rc -eq 1 ]"
+check "signale la branche courante"      "printf '%s' \"\$out\" | grep -q 'branche courante'"
+git -C "$R" checkout -q "$base"; git -C "$R" branch -q -D copie
+
 echo "Cas i (deux dépôts surveillés : cible + backlog) :"
 R2="$TMP/backlog"; mkrepo "$R2"
 bash "$GUARD" snapshot "$R" "$R2" > "$TMP/snap" 2>/dev/null

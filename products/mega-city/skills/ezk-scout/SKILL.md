@@ -54,8 +54,9 @@ Lance `run` dans un sous-agent **en arrière-plan** : il rend le chemin du rappo
 ## Les cinq invariants
 
 1. **FIND-ONLY.** Le code produit ne change pas, rien n'est committé, aucune branche ne bouge.
-   Preuve mécanique : `scripts/find-only-guard.sh` prend une photo AVANT (SHA de HEAD, arbre,
-   branches et tags, fichiers suivis et non suivis avec leur contenu) et la rejoue APRÈS. Un
+   Preuve mécanique : `scripts/find-only-guard.sh` prend une photo AVANT (SHA de HEAD, branche
+   courante, arbre, branches et tags, index, fichiers suivis et non suivis avec leur contenu) et la
+   rejoue APRÈS. Un
    `git status` seul ne suffit pas : si la passe committe, le worktree paraît propre alors que
    le contrat est violé. Surveille aussi le dépôt du backlog s'il est distinct de la cible.
 2. **AUCUNE CARTE créée par la passe.** Elle n'appelle **jamais** `ezk-backlog add` : `add` crée
@@ -79,8 +80,8 @@ ou arrête-toi. Fixe les bornes. Choisis le dossier de passe **hors de la cible*
 Si le backlog vit dans un autre dépôt que la cible, **ajoute-le** : sans lui, un `ezk-backlog add`
 égaré passerait inaperçu.
 *(Bind par projet : seul ce `SKILL.md` est matérialisé. Note alors à la main `git rev-parse HEAD`,
-`git rev-parse 'HEAD^{tree}'`, `git for-each-ref refs/heads refs/tags` et
-`git status --porcelain=v1 --untracked-files=all`, puis compare-les à la fin.)*
+`git symbolic-ref -q HEAD`, `git rev-parse 'HEAD^{tree}'`, `git for-each-ref refs/heads refs/tags`,
+`git ls-files -s` et `git status --porcelain=v1 --untracked-files=all`, puis compare-les à la fin.)*
 
 **2. Isoler l'état.** Inventorie ce que l'app touche, puis isole **chaque** ligne :
 
