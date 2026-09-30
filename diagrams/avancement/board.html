@@ -245,12 +245,11 @@
 /*ezk-avancement-data:begin*/
 window.EZK_AVANCEMENT = {
  "counts": {
-  "shipped": 150,
+  "shipped": 151,
   "superseded": 59,
-  "idea": 115,
-  "ready": 1
+  "idea": 115
  },
- "tirables": 1,
+ "tirables": 0,
  "actives": [
   {
    "id": "20260830194601233",
@@ -611,21 +610,6 @@ window.EZK_AVANCEMENT = {
    ],
    "blocked": "",
    "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md"
-  },
-  {
-   "id": "20260910165637000",
-   "title": "ezk-scout : chasser les bugs en tâche de fond, sans corriger",
-   "type": "feature",
-   "priority": "P2",
-   "status": "ready",
-   "milestone": "",
-   "product": "mega-city",
-   "pr": "",
-   "labels": [
-    "test-local"
-   ],
-   "blocked": "",
-   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
   },
   {
    "id": "20260910231201744",
@@ -1031,8 +1015,7 @@ window.EZK_AVANCEMENT = {
  ],
  "filtres": {
   "statuts": [
-   "idea",
-   "ready"
+   "idea"
   ],
   "priorites": [
    "P0",
@@ -1214,21 +1197,21 @@ window.EZK_PLAN = {
    "level": 3,
    "rows": [
     {
-     "text": "`20260910165637000` — ezk-scout : chasser les bugs en tâche de fond, sans corriger · prête · `build`",
+     "text": "~~`20260910165637000` — ezk-scout : chasser les bugs en tâche de fond, sans corriger · prête · `build`~~ — shipped #266",
      "marker": "build",
-     "struck": false,
+     "struck": true,
      "cards": [
       {
        "id": "20260910165637000",
        "title": "ezk-scout : chasser les bugs en tâche de fond, sans corriger",
-       "status": "ready",
+       "status": "shipped",
        "priority": "P2",
        "product": "mega-city",
        "type": "feature",
-       "pr": "",
-       "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md",
+       "pr": "#266",
+       "file": "features/done/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md",
        "found": true,
-       "closed": false
+       "closed": true
       }
      ]
     },
@@ -1981,18 +1964,7 @@ window.EZK_PLAN = {
    ]
   }
  ],
- "head": {
-  "id": "20260910165637000",
-  "title": "ezk-scout : chasser les bugs en tâche de fond, sans corriger",
-  "status": "ready",
-  "priority": "P2",
-  "product": "mega-city",
-  "type": "feature",
-  "pr": "",
-  "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md",
-  "found": true,
-  "closed": false
- },
+ "head": null,
  "blockedAhead": [
   {
    "id": "20260824111001836",
@@ -2053,6 +2025,462 @@ window.EZK_PLAN = {
    "file": "features/20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md",
    "found": true,
    "closed": false
+  },
+  {
+   "id": "20260917162000501",
+   "title": "Une commande pour lancer l'app de n'importe quelle branche ou worktree",
+   "status": "idea",
+   "priority": "P0",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260917162000501_lanceur-dev-universel-worktree-branche.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260906135450000",
+   "title": "Recette : lancer l'émulateur Android pour tester sur mobile",
+   "status": "idea",
+   "priority": "P3",
+   "product": "vectorz",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260906135450000_recette-emulateur-android-test-device.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260830194601233",
+   "title": "Livrer une fiche sans casser les liens ni les vues (ship sûr)",
+   "status": "idea",
+   "priority": "P0",
+   "product": "mega-city",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/20260830194601233_ship-transactionnel-liens-vues.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260830194601376",
+   "title": "Décider quelles vues générées ne plus committer (fin des conflits)",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "chore",
+   "pr": "",
+   "file": "features/20260830194601376_spike-degiter-vues-outillage.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260930123438875",
+   "title": "Séparer clairement fiche, sprint et session (ezk-sprint start/close)",
+   "status": "idea",
+   "priority": "P0",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260930123438875_cycle-vie-sprint-session-ceremonies.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260824204751403",
+   "title": "Découper le backlog en versions et vérifier la cohérence d'un lot",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260824204751403_preparation-lots-versions-coherence.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260903134906920",
+   "title": "Une seule commande `ezk` pour tout lancer",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260903134906920_cli-ezk-point-d-entree-unique.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260903134909124",
+   "title": "Déployer vraiment les règles chez les agents (aujourd'hui : zéro)",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "bug",
+   "pr": "",
+   "file": "features/20260903134909124_loi-non-compilee-chez-l-agent.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260824122629925",
+   "title": "Une FAQ « comment faire » pour tes questions récurrentes",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260824122629925_onglet-faq-comment-faire.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260825160456259",
+   "title": "À la fin d'une commande, proposer les 1 à 3 commandes suivantes",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825160456259_next-step-affordance-commandes-suivantes.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260825182327490",
+   "title": "Un modèle standard pour tout texte destiné à un humain",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260825202444647",
+   "title": "ezk-codex répond et ferme tous les fils de revue traités",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825202444647_ezk-codex-repondre-resoudre-tous-les-fils.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260826072532622",
+   "title": "Valider fiches et carte depuis le tableau de bord (👍/👎 enregistré)",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260826072532622_revue-fiches-pouce-ezk-map.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260910231201744",
+   "title": "Appliquer pour de vrai les fusions et découpages de fiches proposés",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260917123943914",
+   "title": "Montrer sur la carte les scripts et commandes de la méthode",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260917123943914_outils-dans-la-carte-methode.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260917143616286",
+   "title": "Recette : vendre une app avec Lemon Squeezy et une licence Pro",
+   "status": "idea",
+   "priority": "P2",
+   "product": "vectorz",
+   "type": "chore",
+   "pr": "",
+   "file": "features/20260917143616286_recette-lemonsqueezy-gating-pro.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260904091853974",
+   "title": "Tenir un journal des galères résolues, pendant le dev",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260904091853974_journal-difficultes-artefact-independant.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260824141336516",
+   "title": "Recette : mettre en place la CI d'un projet type muti",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260824141336516_recette-mise-en-place-ci-type-muti.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260906122942607",
+   "title": "Run autonome transparent : ce qu'il va faire, puis ce qu'il a fait",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "chore",
+   "pr": "",
+   "file": "features/20260906122942607_run-report-synthese-fin-de-run.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260904091853948",
+   "title": "ezk-archive plus léger et plus juste (voie rapide, bon compte, survit au cloud)",
+   "status": "idea",
+   "priority": "P1",
+   "product": "mega-city",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/20260904091853948_ezk-archive-capacite-allegement.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "0080",
+   "title": "Chaque rétro laisse un compte rendu clair et des propositions ciblées",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/0080-ezk-retro-compte-rendu-standard.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260905134937885",
+   "title": "Mesurer si la revue locale peut remplacer Codex (et sortir la PR du chemin)",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260905134937885_revue-locale-vs-codex-mesure.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260826173221323",
+   "title": "Pouvoir pointer les vues sur un autre projet (muti, samplerz)",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/20260826173221323_racine-parametrable-des-vues.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260910152227744",
+   "title": "Des règles propres à un projet (ex. « samplerz en hexagonal »)",
+   "status": "idea",
+   "priority": "P2",
+   "product": "vectorz",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260910152227744_regles-projet-local-couche-vectorz.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260813095351680",
+   "title": "Rendre l'installation des skills robuste (3 défauts de lawgiver)",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "bug",
+   "pr": "",
+   "file": "features/20260813095351680_bind-global-copy-idempotence-agents.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260816151112162",
+   "title": "Installer les slash-commands comme les skills",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260816151112162_lawgiver-canal-commands-slash.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260812104022246",
+   "title": "Composer des consignes réutilisables dans les skills",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260812104022246_composition-comportementale-skills-ezk.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "0066",
+   "title": "Tester un skill pour de vrai avant de le merger",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/0066-tester-un-skill-avant-merge.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260920213500176",
+   "title": "Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons)",
+   "status": "idea",
+   "priority": "P2",
+   "product": "mega-city",
+   "type": "chore",
+   "pr": "",
+   "file": "features/20260920213500176_spike-cout-sprint-autorat-skill-allege.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260830114318159",
+   "title": "Créer un skill en passant par une fiche du backlog",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260830114318159_ezk-ezk-option-passer-par-fiche.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260815080414006",
+   "title": "Critères de « prête » (DoR) adaptables par projet",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260815080414006_dor-extensible-par-projet.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260825161522791",
+   "title": "Un grooming guidé : l'agent propose des améliorations, tu choisis",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260825161522791_elicitation-raffinement-structure-groom.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "0024",
+   "title": "Supprimer le vieux code d'avant le pivot",
+   "status": "idea",
+   "priority": "P3",
+   "product": "vectorz",
+   "type": "refactor",
+   "pr": "",
+   "file": "features/0024-resorber-peripherie-pre-pivot.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "0117",
+   "title": "Corriger les signatures de domain.ts qui ne collent plus au code",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "chore",
+   "pr": "",
+   "file": "features/0117-aligner-domain-ts-signatures.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "0143",
+   "title": "Unifier le nom des modes tokens (lean / cap / full) dans la doc",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "chore",
+   "pr": "",
+   "file": "features/0143-aligner-nommage-modes-tokens.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260813122510737",
+   "title": "ezk-backlog init se trompe de version de format dans un cas",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "bug",
+   "pr": "",
+   "file": "features/20260813122510737_init-layout-version-prime-sur-detection-legacy.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260823121712844",
+   "title": "Empêcher la régénération du backlog de viser le mauvais dossier",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "bug",
+   "pr": "",
+   "file": "features/20260823121712844_durcir-regen-backlog-racine-nichee.md",
+   "found": true,
+   "closed": false
+  },
+  {
+   "id": "20260829132313947",
+   "title": "Masquer les forks dans le suivi de consommation CI",
+   "status": "idea",
+   "priority": "P3",
+   "product": "mega-city",
+   "type": "feature",
+   "pr": "",
+   "file": "features/20260829132313947_ci-conso-exclure-forks.md",
+   "found": true,
+   "closed": false
   }
  ],
  "unresolved": [],
@@ -2060,7 +2488,7 @@ window.EZK_PLAN = {
   "entries": 46,
   "cards": 46,
   "resolved": 46,
-  "shipped": 2,
+  "shipped": 3,
   "unresolved": 0
  }
 };
@@ -2144,14 +2572,6 @@ window.EZK_PLAN_DELTA = {
    "file": "features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md"
   },
   {
-   "id": "20260910165637000",
-   "title": "ezk-scout : chasser les bugs en tâche de fond, sans corriger",
-   "status": "ready",
-   "priority": "P2",
-   "inPlan": true,
-   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
-  },
-  {
    "id": "20260910155608287",
    "title": "Cadrer toute la problématique des règles (mesure d'efficacité…)",
    "status": "idea",
@@ -2190,6 +2610,14 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": false,
    "file": "features/20260906122942770_spike-isolation-worktree-avant-harvest.md"
+  },
+  {
+   "id": "20260906122942715",
+   "title": "Livrer plusieurs fiches liées en une PR, un commit par fiche",
+   "status": "idea",
+   "priority": "P2",
+   "inPlan": false,
+   "file": "features/20260906122942715_grain-de-livraison-lot-empile.md"
   }
  ],
  "offPlanCount": 0,

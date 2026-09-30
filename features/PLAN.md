@@ -47,7 +47,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20260922160651394` — mettre le code en conformité avec les règles de dev récentes · `build`
 
 ### ② V0.2 — tester vite en local (en parallèle, en autonomie)
-- `20260910165637000` — ezk-scout : chasser les bugs en tâche de fond, sans corriger · prête · `build`
+- ~~`20260910165637000` — ezk-scout : chasser les bugs en tâche de fond, sans corriger · prête · `build`~~ — shipped #266
 - `20260917162000501` — une commande pour lancer l'app de n'importe quelle branche ou worktree · `groom` → `build`
 - `20260906135450000` — recette : lancer l'émulateur Android pour tester sur mobile · `build`
 

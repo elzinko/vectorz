@@ -8,8 +8,8 @@ version: V0.2
 epic:
 depends: ["20260821210633457", "0102", "20260812104022228"]
 labels: [test-local]
-status: ready
-pr:
+status: shipped
+pr: "#266"
 evidence: none # capacité de méthode (skill) ; preuve = ses propres tests + un run de démonstration
 created: 2026-09-10
 ---
@@ -102,25 +102,47 @@ Ce qu'elle fait :
 
 ## Critères d'acceptation
 
-- [ ] Une capacité ezk dédiée (skill) existe ; un agent l'invoque pour lancer une
+Livré en **POC** (constat du 2026-09-30) : le skill, son format de rapport et ses garde-fous
+mécaniques. Ce qui dépend de briques pas encore livrées est écrit en « Suite » plus bas.
+
+- [x] Une capacité ezk dédiée (skill) existe ; un agent l'invoque pour lancer une
       passe de chasse aux bugs, en tâche de fond, sur une app qui tourne.
-- [ ] Elle ne modifie **jamais** le code produit (find-only, vérifiable — p. ex.
+      *Preuve : `products/mega-city/skills/ezk-scout/SKILL.md` (verbes `help` · `run` · `check` · `file`),
+      déployé par `profiles/global.yml`, contrat `src/__tests__/ezk-scout-contract.test.ts`.*
+- [x] Elle ne modifie **jamais** le code produit (find-only, vérifiable — p. ex.
       `git diff` du code produit reste vide après une passe).
-- [ ] Elle isole l'état de l'app avant de piloter (compose la recette d'isolation).
-- [ ] Chaque trouvaille est un **brouillon de fiche** dans un rapport, portant :
+      *Preuve : `scripts/find-only-guard.sh` compare HEAD, branche courante, arbre, refs, index et worktree (dépôts imbriqués compris) avant/après ;
+      32 contrôles dans `test-find-only-guard.sh`, dont le cas « commit sans toucher le worktree ».*
+- [x] Elle isole l'état de l'app avant de piloter (compose la recette d'isolation).
+      *Preuve : étape 2 du skill (fichiers, base, volumes, services externes ; un état NON ISOLÉ
+      n'est pas sondé) + passe de démonstration avec `HOME` et état en tmp, vérifiés vides après.
+      La brique « lanceur universel » n'existe pas encore : voir « Suite ».*
+- [x] Chaque trouvaille est un **brouillon de fiche** dans un rapport, portant :
       description + reproduction + gravité + capture optionnelle (bug de rendu) +
       localisation optionnelle (`fichier:ligne`). **Aucune carte n'est créée ni
       committée par la passe** ; `ezk-backlog add` n'est invoqué qu'**après**
       validation humaine du rapport.
-- [ ] La passe est **bornée** (budget/temps) et rend un **résumé** en fin.
-- [ ] Elle **compose** `ezk-backlog`, l'env de test isolé (`0102 ezk-testbed`) et
-      le mécanisme de captures (`20260812104022228`) — sans les réimplémenter.
-- [ ] La **frontière** est documentée vs `ezk-qa` (valide une PR précise),
+      *Preuve : gabarit `assets/SCOUT_REPORT.template.md`, contrôle de forme `scripts/check-report.sh`
+      (`test-check-report.sh`), verbe `file` réservé à l'après-validation, exemple réel `examples/demo-report.md`.*
+- [x] La passe est **bornée** (budget/temps) et rend un **résumé** en fin.
+      *Preuve : `--max-probes` (30) et `--max-min` (15) ; `check-report.sh` refuse un rapport qui
+      dépasse ses bornes ou dont le résumé `N trouvées · M fichées · K écartées` ment (N = M + K).*
+- [x] Elle **compose** `ezk-backlog`, l'env de test isolé et le mécanisme de captures — sans
+      les réimplémenter.
+      *POC : `composes: [ezk-backlog, ezk-docker]` (filing après accord ; banc isolé sous compose),
+      captures par le Playwright MCP partagé en opt-in (`--ui`). `0102 ezk-testbed` a été absorbée par le
+      lanceur universel `20260917162000501` et le mécanisme `20260812104022228` est parqué : les deux se
+      brancheront plus tard (voir « Suite »).*
+- [x] La **frontière** est documentée vs `ezk-qa` (valide une PR précise),
       `ezk-reviewer` (relit un diff), `ezk-sprint` (construit), `ezk-product-build`
       (décide/construit) : `ezk-scout` explore une app qui tourne et fiche des bugs,
       puis **nourrit** les autres.
-- [ ] Gate locale verte (typecheck / lint / tests du skill) puis démonstration
+      *Preuve : section « Frontière avec les voisins » du SKILL.md (+ `ezk-bug`), ligne dans `method-map.md`.*
+- [x] Gate locale verte (typecheck / lint / tests du skill) puis démonstration
       d'un run réel (au moins un bug fiché de bout en bout).
+      *Preuve : typecheck, 808 tests, 25 suites bash, lint et liens verts. Passe réelle sur l'app jouet
+      `examples/demo-app.mjs` : 12 sondes, 3 brouillons, `find-only : OK`, rapport valide
+      (`examples/demo-report.md`) ; `test-demo-app.sh` rejoue les défauts.*
 
 ## Comment vérifier
 
@@ -142,6 +164,20 @@ Ce qu'elle fait :
   `features/`) ; le livrable est un **rapport** de brouillons. `ezk-backlog add`
   n'apparaît qu'**après** validation humaine.
 
+## Suite (reliquat hors POC)
+
+- **Brancher `ezk-product-build`** : quand le backlog est bloqué, lancer `ezk-scout` au lieu de
+  s'arrêter (le chemin « si bloqué, teste » du run samplerz). Aujourd'hui le skill s'invoque seul.
+- **Banc isolé universel** : composer le lanceur `20260917162000501` (qui a absorbé `0102 ezk-testbed`)
+  dès qu'il est livré ; il remplacera la « recette déclarée par le projet » de l'étape 2.
+- **Captures** : brancher le mécanisme partagé `20260812104022228` (parqué) à la place du Playwright MCP direct.
+- **Émulateur Android** : chemin conditionné à l'arrivée de la recette `20260906135450000` sur `main`.
+- **Supervision** : émettre vers le Moniteur (bon client du heartbeat, fiche 0103) ; impose de déclarer
+  le skill dans `EMITTING_SKILLS` et dans le README du kit.
+- **Explorateur de features** (`20260821210633457`) : réutiliser gabarit, scripts et `file` avec la lentille
+  `features` (à ajouter au contrôle `check-report.sh`).
+- **Profil `daily`** : `ezk-scout` n'y est pas (curated) ; au PO de décider.
+
 ## Notes / décisions
 
 - **Relation avec la carte explorateur `20260821210633457` — DÉCISION PO (2026-09-10)** :
@@ -160,7 +196,14 @@ Ce qu'elle fait :
   de test à confirmer). vectorz utilise `idea / ready`. À trancher au build : les
   bugs fichés naissent-ils `idea`, ou introduit-on un marqueur « scouté / à
   confirmer » ? (Ne pas les tirer directement sans revue — c'est le sens du
-  find-only.)
+  find-only.) **Tranché au build (2026-09-30)** : pas de nouveau statut. Un brouillon validé
+  naît `idea` (non tirable tant qu'il n'est pas groomé) avec `labels: [scout]` pour garder
+  la provenance.
+- **Décisions de build (2026-09-30)** : (1) la passe part en HTTP (`curl`), l'UI est opt-in
+  (`--ui`) à cause de la règle `development/playwright-mcp-usage` ; (2) rapport, captures et journal
+  vivent hors du dépôt cible ; (3) classé `méthode` / bande `cérémonies` dans `taxonomie.yml`, comme
+  `ezk-bug` (à déplacer si le PO préfère `modules`) ; (4) la brique commune avec l'explorateur est
+  portée par le gabarit, les deux scripts et `file`, la lentille `bugs` étant la seule écrite ici.
 - **Capture d'écran** : réutiliser le mécanisme de la fiche `20260812104022228`
   (captures produit → doc/site) plutôt que d'en écrire un second.
 - **Env de test isolé** : réutiliser `0102 ezk-testbed` (démarrer un environnement

@@ -39,6 +39,7 @@ const restitutionSkills = [
   join(megaCityDir, 'skills', 'ezk-backlog', 'SKILL.md'),
   prPilotSkill,
   join(megaCityDir, 'skills', 'ezk-ezk', 'SKILL.md'),
+  join(megaCityDir, 'skills', 'ezk-scout', 'SKILL.md'), // le rapport de brouillons est lu par un humain
 ] as const;
 
 const modelPolicyDoc = join(megaCityDir, 'docs', 'ezk-model-and-lisibility.md');

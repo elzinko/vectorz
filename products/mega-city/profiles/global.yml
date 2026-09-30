@@ -42,5 +42,6 @@ skills:
   - ezk-product-build
   - ezk-readme
   - ezk-retro
+  - ezk-scout
   - ezk-sprint
 interactions: []           # → règles d'interaction entre agents

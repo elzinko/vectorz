@@ -9,9 +9,7 @@
 
 Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produit, puis id).
 
-| Prod | # | Titre | Type | Prio | Statut | PR |
-|------|---|-------|------|------|--------|----|
-| mega-city | 20260910165637000 | ezk-scout : chasser les bugs en tâche de fond, sans corriger | feature | P2 | 🔵 ready |  |
+_Aucune fiche ready — flux gelé, groomer une tête de file._
 
 ## 🟠 En cours (`in-progress`)
 
@@ -23,7 +21,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
-| mega-city | 20260910165637000 | ezk-scout : chasser les bugs en tâche de fond, sans corriger | feature | P2 | 🔵 ready |  |
 
 ## 💡 Idées (non groomées, hors flux P0→P3)
 
@@ -155,6 +152,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|-----------|---------|
 | vectorz | 20 | 0 | 0 | 0 | 4 | 16 | 0 |
-| mega-city | 96 | 1 | 0 | 0 | 39 | 56 | 0 |
+| mega-city | 95 | 0 | 0 | 0 | 39 | 56 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

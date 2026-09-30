@@ -39,6 +39,9 @@ SUITES=(
   "bin/test-check-fiches.sh"                             # fiche 652 — bascule bloquante du validateur de statut (--strict)
   "skills/ezk-pr/scripts/test-refresh-worktrees.sh"      # merge-local-first (ADR-0052) — prédicat de sûreté D4
   "skills/ezk-pr/scripts/test-ship-merge.sh"             # merge-local-first (ADR-0052) — ship local vs remote, refus du chemin fantôme
+  "skills/ezk-scout/scripts/test-find-only-guard.sh"     # fiche 20260910165637000 — ezk-scout ne modifie rien (HEAD, arbre, refs, worktree)
+  "skills/ezk-scout/scripts/test-check-report.sh"        # fiche 20260910165637000 — forme du rapport de brouillons (comptes, bornes, garde)
+  "skills/ezk-scout/scripts/test-demo-app.sh"            # fiche 20260910165637000 — défauts connus de l'app de démonstration
 )
 
 FAILED=()
