@@ -1,11 +1,12 @@
 ---
 id: "20260930123438875"
-title: "Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint"
+title: "ezk-sprint start/close au niveau lot + rétro-compat par verbe (cycle de vie)"
 type: feature
 priority: P0
 product: mega-city
 milestone:
 labels: [ezk-sprint, cycle-de-vie, methode, nommage]
+depends: ["20260930194219046"]
 status: idea
 ready:
 pr:
@@ -13,7 +14,12 @@ evidence: none # méthode / skills / doc, pas d'écran
 created: 2026-09-30
 ---
 
-# 20260930123438875 — Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint
+# 20260930123438875 — ezk-sprint start/close au niveau lot + rétro-compat par verbe
+
+> **Fiche 2/3 du re-scope du 2026-09-30** (panel adverse, Option A). Fondation =
+> [fiche 1 : le lot dans ezk-backlog](20260930194219046_ezk-backlog-lot.md) (construite **avant** celle-ci).
+> Suite = [fiche 3 : ezk-product-build orchestrateur de session](20260930194219068_ezk-product-build-orchestrateur-session.md).
+> Cette fiche est scopée aux **verbes `ezk-sprint`** ; le lot vient de la fiche 1, le repositionnement product-build part en fiche 3.
 
 ## En clair
 
@@ -72,13 +78,12 @@ bornes de cycle de vie.
 
 ## Critères d'acceptation
 
-- [ ] `ezk-sprint start` ouvre un sprint (**lot** de stories) et exécute l'intake. Rétro-compat **par verbe** (pas un alias commun) : `check` → `start --dry-run` (**reste read-only**) ; `run` → cycle complet `start → stories → close` (**build 0→10 inchangé**).
-- [ ] `ezk-sprint close` clôt le sprint, scelle un **incrément**, et **rend la main à la session** (permet d'enchaîner retro → planning → sprint dans la même session).
+- [ ] `ezk-sprint start` **consomme le lot** figé par `ezk-backlog` (fiche 1) et exécute l'intake. Rétro-compat **par verbe** (pas un alias commun) : `check` → `start --dry-run` (**reste read-only**) ; `run` → cycle complet `start → stories → close` (**build 0→10 inchangé**).
+- [ ] `ezk-sprint close` clôt le sprint, scelle l'**incrément** (fiches `shipped` du lot), et **rend la main à la session**.
 - [ ] `ezk-archive` **inchangé**, dédié à la clôture de **session** ; ouverture de session implicite au 1er `start`.
 - [ ] La retro reste hors sprint (`ezk-retro`) ; **aucune** sous-commande `ezk-sprint retrospective`.
-- [ ] `ezk-product-build` **repositionné** en orchestrateur de la boucle de session (planning → sprint → retro → planning), un seul checkpoint inter-sprint.
-- [ ] **ADR-0054** rédigé et ratifié ; `SKILL.md` (ezk-sprint, ezk-archive, ezk-product-build) et `SPRINT.md` (suit le lot) mis à jour ; tests verts.
-- [ ] **Panel adverse** (architecte + scrum master + PO/juge) validé au grooming/archi — changement structurant.
+- [ ] **ADR-0054 ratifié** ; `SKILL.md` **`ezk-sprint`** et **`ezk-archive`** + `SPRINT.md` (suit le lot) à jour ; tests verts. *(Le repositionnement `ezk-product-build` est en [fiche 3](20260930194219068_ezk-product-build-orchestrateur-session.md).)*
+- [x] **Panel adverse** (architecte + PO/juge) tenu le 2026-09-30 → Option A + découpage en 3 fiches (voir Notes).
 
 ## Comment vérifier
 
@@ -106,3 +111,8 @@ pnpm --dir products/mega-city test:scripts
 - Décision produit (PO) : niveau **session** nommé « session » (terme réel Claude Code) ; priorité
   **P0**, à groomer pour le **prochain sprint**.
 - Doctrine réutilisée : bornes de cycle de vie = **mécanisme/hygiène**, pas cérémonie (ADR-0039 §2).
+- **Grooming panel 2026-09-30** (architecte + PO/juge) : fiche jugée trop grosse → **scindée en 3**
+  (1 = lot `ezk-backlog` · 2 = verbes `ezk-sprint` (celle-ci) · 3 = `ezk-product-build`). Contradiction
+  `run` ↔ product-build tranchée par le PO = **Option A** : `ezk-sprint` possède la boucle du lot,
+  `ezk-product-build` enchaîne les **sprints** (lots). Questions ADR (a) [pas d'objet sprint] et
+  (b) [le lot vit dans `ezk-backlog`] résolues.

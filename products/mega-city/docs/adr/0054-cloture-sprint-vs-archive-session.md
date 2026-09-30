@@ -2,10 +2,13 @@
 
 **Statut :** Proposé
 **Date :** 2026-09-30
-**Deciders :** PO (opérateur) — décision prise en session brainstorming produit, appuyée par un mini-panel (architecte + scrum master)
+**Deciders :** PO (opérateur) — brainstorming produit + mini-panel (architecte + scrum master), puis **grooming panel du 2026-09-30** (architecte + PO/juge) : Option A + découpage en 3 fiches
 
-> Matière de la fiche [20260930123438875](../../../../features/20260930123438875_cycle-vie-sprint-session-ceremonies.md).
-> À ratifier (`Statut : Accepté`) à l'étape Archi du sprint qui construira la fiche.
+> **Découpé en 3 fiches** au grooming panel du 2026-09-30 (Option A) :
+> [1 — le lot dans ezk-backlog](../../../../features/20260930194219046_ezk-backlog-lot.md) ·
+> [2 — verbes ezk-sprint start/close](../../../../features/20260930123438875_cycle-vie-sprint-session-ceremonies.md) ·
+> [3 — ezk-product-build orchestrateur de session](../../../../features/20260930194219068_ezk-product-build-orchestrateur-session.md).
+> À ratifier (`Statut : Accepté`) à l'étape Archi du sprint qui construira la **fiche 1**.
 
 ## En clair
 
@@ -61,6 +64,20 @@ cadence. La prémisse était trop étroite ; cet ADR la corrige.
    **anormale** (annulation). On termine avec un incrément → `close`. `stop` pourra plus tard
    désigner l'annulation d'un sprint, si le besoin apparaît.
 
+6. **Qui itère les stories d'un sprint — Option A** (tranchée au grooming du 2026-09-30).
+   C'est **`ezk-sprint`** qui possède la boucle du lot : `run` = `start → N stories → close` =
+   **un incrément**. `ezk-product-build` se **repose** au-dessus — il enchaîne des **sprints**
+   (des lots), son checkpoint passe **entre incréments**, plus entre features. Cela lève la
+   contradiction « `run` construit N stories » vs « product-build appelle ezk-sprint par fiche ».
+
+7. **Le lot vit dans `ezk-backlog`, pas dans `ezk-sprint`** (question b). Sélectionner/figer un
+   lot de N fiches ready (le « sprint backlog ») est une capacité **neuve** d'`ezk-backlog`
+   (ex. `next --lot N`) ; `ezk-sprint start` ne fait que **consommer** le lot. C'est la
+   **fondation** (fiche 1), construite en premier.
+
+8. **Pas d'objet « sprint » persistant** (question a). YAGNI : l'incrément existe déjà (commits
+   squash sur `main` + fiches `shipped`). `SPRINT.md` + un pointeur (ids/PRs du lot) suffisent.
+
 Cette décision **étend** [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §2
 (« la PR est un mécanisme, pas une cérémonie ») aux bornes de cycle de vie : ouvrir/fermer sont
 des **mécanismes/hygiène**, pas des cérémonies.
@@ -74,12 +91,12 @@ des **mécanismes/hygiène**, pas des cérémonies.
   de prémisse, tracé ici.
 
 **Coûts (ce n'est PAS un simple renommage — à traiter au build)**
-- `ezk-sprint start` ouvre un **lot** (N fiches), plus une seule → l'intake sélectionne un lot.
-- `run` **itère les stories** du lot (chacune sa PR) ; `close` scelle l'incrément.
-- `SPRINT.md` suit le **lot** courant, plus une feature isolée.
-- `ezk-product-build` (le PO qui « enchaîne les sprints ») à **reposer** : il devient l'orchestrateur
-  de la **boucle de session** (planning → sprint → retro → planning) et tient l'unique checkpoint
-  inter-sprint.
+- **Fiche 1** — `ezk-backlog` gagne le **lot** (sélectionner/figer N fiches ready) + la définition
+  d'incrément. `ezk-sprint start` **consomme** ce lot (fondation, construite en premier).
+- **Fiche 2** — `ezk-sprint start`/`close` au niveau lot ; `run` = `start → N stories → close`
+  (chaque story sa PR) ; `close` scelle l'incrément. `SPRINT.md` suit le **lot** courant.
+- **Fiche 3** — `ezk-product-build` **reposé** en orchestrateur de session (Option A) : il enchaîne
+  des **sprints** (lots), checkpoint **entre incréments**.
 - **Rétro-compat : un mapping PAR verbe** — `check` et `run` ne peuvent PAS aliaser `start` à
   l'identique (ils n'ont pas le même contrat) :
   - `check` → alias de `start --dry-run` : **reste strictement read-only** (aucun claim, aucune
@@ -90,9 +107,10 @@ des **mécanismes/hygiène**, pas des cérémonies.
   Alias transitoires le temps de la bascule (précédent
   [ADR-0053](0053-check-ready-devient-review-defaut-autonome.md) : renommage avec alias).
 
-**À valider en panel (grooming/archi)**
-- Objet « sprint » persistant (id, incrément listé) ou `SPRINT.md` suffit-il ?
-- Frontière exacte planning ⟷ `ezk-backlog` (`plan`/`next`/`groom` couvrent déjà une partie).
+**Tranché au grooming panel (2026-09-30)** — voir Décision 6-8
+- Objet « sprint » persistant ? **NON** (question a) — `SPRINT.md` + pointeur.
+- Frontière planning ⟷ `ezk-backlog` ? **Le lot vit dans `ezk-backlog`** (question b), `ezk-sprint` le consomme.
+- Contradiction `run` ↔ product-build ? **Option A** — `ezk-sprint` possède la boucle du lot.
 
 ## Alternatives écartées
 

@@ -247,7 +247,7 @@ window.EZK_AVANCEMENT = {
  "counts": {
   "shipped": 144,
   "superseded": 16,
-  "idea": 160,
+  "idea": 162,
   "ready": 2,
   "in-progress": 3
  },
@@ -305,7 +305,7 @@ window.EZK_AVANCEMENT = {
   },
   {
    "id": "20260930123438875",
-   "title": "Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint",
+   "title": "ezk-sprint start/close au niveau lot + rétro-compat par verbe (cycle de vie)",
    "type": "feature",
    "priority": "P0",
    "status": "idea",
@@ -321,6 +321,25 @@ window.EZK_AVANCEMENT = {
    ],
    "blocked": "",
    "file": "features/20260930123438875_cycle-vie-sprint-session-ceremonies.md"
+  },
+  {
+   "id": "20260930194219046",
+   "title": "ezk-backlog : concept de lot (sprint backlog) + définition d'incrément",
+   "type": "feature",
+   "priority": "P0",
+   "status": "idea",
+   "ready": false,
+   "milestone": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-backlog",
+    "cycle-de-vie",
+    "methode",
+    "fondation"
+   ],
+   "blocked": "",
+   "file": "features/20260930194219046_ezk-backlog-lot.md"
   },
   {
    "id": "0050",
@@ -785,6 +804,24 @@ window.EZK_AVANCEMENT = {
    ],
    "blocked": "",
    "file": "features/20260916225506858_github-modules-optionnels-config.md"
+  },
+  {
+   "id": "20260930194219068",
+   "title": "ezk-product-build : orchestrateur de session, contrat de sprint redéfini (Option A)",
+   "type": "refactor",
+   "priority": "P1",
+   "status": "idea",
+   "ready": false,
+   "milestone": "",
+   "product": "mega-city",
+   "pr": "",
+   "labels": [
+    "ezk-product-build",
+    "cycle-de-vie",
+    "methode"
+   ],
+   "blocked": "",
+   "file": "features/20260930194219068_ezk-product-build-orchestrateur-session.md"
   },
   {
    "id": "0024",
@@ -2942,11 +2979,13 @@ window.EZK_AVANCEMENT = {
    "elicitation",
    "enabler",
    "ezk-archive",
+   "ezk-backlog",
    "ezk-chef",
    "ezk-ci",
    "ezk-codex",
    "ezk-method",
    "ezk-pr",
+   "ezk-product-build",
    "ezk-sprint",
    "follow-up",
    "fondation",
@@ -4859,8 +4898,24 @@ window.EZK_PLAN = {
 window.EZK_PLAN_DELTA = {
  "recent": [
   {
+   "id": "20260930194219068",
+   "title": "ezk-product-build : orchestrateur de session, contrat de sprint redéfini (Option A)",
+   "status": "idea",
+   "priority": "P1",
+   "inPlan": false,
+   "file": "features/20260930194219068_ezk-product-build-orchestrateur-session.md"
+  },
+  {
+   "id": "20260930194219046",
+   "title": "ezk-backlog : concept de lot (sprint backlog) + définition d'incrément",
+   "status": "idea",
+   "priority": "P0",
+   "inPlan": false,
+   "file": "features/20260930194219046_ezk-backlog-lot.md"
+  },
+  {
    "id": "20260930123438875",
-   "title": "Cycle de vie : ezk-sprint start/close, ezk-archive pour la session, cérémonies hors sprint",
+   "title": "ezk-sprint start/close au niveau lot + rétro-compat par verbe (cycle de vie)",
    "status": "idea",
    "priority": "P0",
    "inPlan": false,
@@ -4961,22 +5016,6 @@ window.EZK_PLAN_DELTA = {
    "priority": "P2",
    "inPlan": true,
    "file": "features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md"
-  },
-  {
-   "id": "20260910165637000",
-   "title": "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger",
-   "status": "ready",
-   "priority": "P2",
-   "inPlan": true,
-   "file": "features/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md"
-  },
-  {
-   "id": "20260910155608287",
-   "title": "Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)",
-   "status": "idea",
-   "priority": "P2",
-   "inPlan": false,
-   "file": "features/20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md"
   }
  ],
  "offPlanCount": 0,
