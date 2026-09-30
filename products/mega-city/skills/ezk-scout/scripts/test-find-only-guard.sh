@@ -107,6 +107,15 @@ check "code de sortie 1"                  "[ $rc -eq 1 ]"
 check "signale la branche courante"      "printf '%s' \"\$out\" | grep -q 'branche courante'"
 git -C "$R" checkout -q "$base"; git -C "$R" branch -q -D copie
 
+echo "Cas h4 (dépôt imbriqué / sous-module déjà sale puis modifié — retour Codex) :"
+N="$R/imbrique"; mkrepo "$N"; printf 'wip imbriqué\n' >> "$N/app.js"
+run_case "$R" ':'
+check "WIP imbriqué inchangé → code 0"    "[ $rc -eq 0 ]"
+run_case "$R" "printf 'encore\n' >> '$N/app.js'"
+check "WIP imbriqué re-modifié → code 1"  "[ $rc -eq 1 ]"
+check "nomme le dépôt imbriqué"           "printf '%s' \"\$out\" | grep -q 'imbrique'"
+rm -rf "$N"
+
 echo "Cas i (deux dépôts surveillés : cible + backlog) :"
 R2="$TMP/backlog"; mkrepo "$R2"
 bash "$GUARD" snapshot "$R" "$R2" > "$TMP/snap" 2>/dev/null

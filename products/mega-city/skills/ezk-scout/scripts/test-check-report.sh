@@ -158,6 +158,12 @@ echo "Cas p2 (sections réordonnées) :"
 mutate p2 's/\A(.*?)(## Cadre de la passe.*?)(## Pour valider \(toi\).*)\z/$1$3\n$2/s'
 refuse "« Pour valider » placé avant « Cadre »" p2 "ordre"
 
+echo "Cas p3 (identifiants de brouillons — retour Codex) :"
+mutate p3 's/### B1 —/### Brouillon —/'
+refuse "titre sans identifiant B<n>" p3 "identifiant"
+mutate p4 's/### B2 —/### B1 —/'
+refuse "identifiant B1 en double" p4 "en double"
+
 echo "Cas q (erreurs d'usage) :"
 bash "$CHECK" >/dev/null 2>&1; rc1=$?
 check "sans argument → code 2"            "[ $rc1 -eq 2 ]"

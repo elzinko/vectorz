@@ -13,7 +13,8 @@
 #                 change garde le même statut et le même contenu de worktree ;
 #   status      — chaque fichier suivi modifié/supprimé et chaque fichier non suivi (donc toute
 #                 fiche créée dans features/), avec le hash de son contenu : un WIP qui existait
-#                 déjà est toléré tant qu'il ne bouge pas.
+#                 déjà est toléré tant qu'il ne bouge pas. Un dépôt imbriqué ou un sous-module
+#                 est photographié à son tour (récursif).
 # Les fichiers IGNORÉS par git (état applicatif, caches, logs) ne comptent pas : ce n'est pas
 # du code produit. Surveille aussi le dépôt du backlog s'il est distinct de la cible.
 #
@@ -60,6 +61,10 @@ canon() {
         path="${rec:3}"
         if [ -f "$top/$path" ] || [ -L "$top/$path" ]; then
           h="$(git -C "$top" hash-object -- "$path" 2>/dev/null || echo ILLISIBLE)"
+        elif [ -d "$top/$path" ] && [ -e "$top/$path/.git" ]; then
+          # Dépôt imbriqué ou sous-module : son état propre (commit, branche, index, fichiers
+          # sales) compte aussi, sinon un WIP déjà sale y serait modifié sans qu'on le voie.
+          h="nested:$(canon "$top/$path" 2>/dev/null | git hash-object --stdin)"
         else
           h=ABSENT
         fi

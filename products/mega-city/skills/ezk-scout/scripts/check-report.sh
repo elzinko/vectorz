@@ -6,7 +6,7 @@
 #   - « En clair » n'ouvre pas le rapport, les sections ne suivent pas l'ordre du gabarit, ou la
 #     ligne de synthèse manque / est mal formée ;
 #   - les comptes mentent : N = M + K, M = nombre de brouillons, K = nombre d'écartées ;
-#   - un brouillon n'a pas de reproduction numérotée, de gravité valide, d'attendu/obtenu,
+#   - un brouillon n'a pas d'identifiant B<n> unique, pas de reproduction numérotée, de gravité valide, d'attendu/obtenu,
 #     d'anti-doublon ; une capture ou une localisation déclarée est vide / sans `fichier:ligne` ;
 #   - les bornes sont dépassées, la lentille est inconnue, la garde find-only est absente ou violée ;
 #   - la section d'isolation de l'état manque ;
@@ -105,6 +105,10 @@ sec == "Brouillons de fiche" && /^### / {
   close_block()
   nblk++; blk = 1; reset_block()
   bid = $0; sub(/^### /, "", bid); split(bid, tk, " "); bid = tk[1]
+  # `ezk-scout file` désigne les brouillons par leur identifiant : B1, B2… uniques (retour Codex).
+  if (bid !~ /^B[0-9]+$/) err("brouillon « " bid " » : identifiant attendu sous la forme B1, B2… (le verbe file les cite)")
+  else if (bid in seenid) err("brouillon " bid " : identifiant en double")
+  else seenid[bid] = 1
   next
 }
 
