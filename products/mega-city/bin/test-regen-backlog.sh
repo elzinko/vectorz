@@ -184,14 +184,20 @@ fiche "$H/features" 0002 parkee 'type: feature
 priority: P2
 status: idea
 milestone: parked'
+fiche "$H/features" 0003 parkee-quote 'type: feature
+priority: P2
+status: idea
+milestone: "parked"'
 out_h="$("$SCRIPT" "$H" "Backlog — test H" 2>/dev/null)"
 idxh="$H/features/BACKLOG.md"
 echo "Cas H (bloc Parkées) :"
-check "section Parkées présente"           "grep -q '## ⏸️ Parkées' '$idxh'"
-check "parkée 0002 dans la section Parkées" "sed -n '/## ⏸️ Parkées/,\$p' '$idxh' | grep -q '^| \[0002\]'"
-check "0001 dans Idées, 0002 PAS dans Idées" \
-  "sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -q '^| \[0001\]' && ! sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -q '^| \[0002\]'"
-check "0002 HORS tableau actionnable"      "! awk '/^## /{exit} {print}' '$idxh' | grep -q '^| \[0002\]'"
-check "stats parked=1"                     "printf '%s' \"\$out_h\" | grep -q 'parked=1'"
+check "section Parkées présente"            "grep -q '## ⏸️ Parkées' '$idxh'"
+check "parkée 0002 dans la section Parkées"  "sed -n '/## ⏸️ Parkées/,\$p' '$idxh' | grep -q '^| \[0002\]'"
+check "parkée QUOTÉE 0003 dans Parkées (dé-quotage milestone)" \
+  "sed -n '/## ⏸️ Parkées/,\$p' '$idxh' | grep -q '^| \[0003\]'"
+check "0001 dans Idées, 0002/0003 PAS dans Idées" \
+  "sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -q '^| \[0001\]' && ! sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -qE '^\| \[(0002|0003)\]'"
+check "0002 HORS tableau actionnable"       "! awk '/^## /{exit} {print}' '$idxh' | grep -q '^| \[0002\]'"
+check "stats parked=2 (quoté compté)"       "printf '%s' \"\$out_h\" | grep -q 'parked=2'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

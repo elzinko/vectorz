@@ -44,7 +44,7 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, r
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
       if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); product=unquote($0) }
-      if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=$0 }
+      if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
     }
     END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, ready, created, version, epic, product, milestone }
   ' "$1"
