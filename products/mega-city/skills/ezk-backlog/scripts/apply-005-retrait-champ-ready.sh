@@ -101,6 +101,8 @@ while IFS= read -r -d '' f; do
   vc="$(printf '%s' "$raw" | split_value_comment)"
   value="${vc%%"$SEP"*}"
   comment="${vc#*"$SEP"}"
+  # Valeur quotée (`ready: "2026-08-21"`) : on garde le contenu de la date, pas les guillemets.
+  value="${value#[\"\']}"; value="${value%[\"\']}"
   rel="${f#"$ROOT"/}"
 
   note=""

@@ -114,4 +114,12 @@ fiche "$C/features/20260101000000001_propre.md" '' idea
 out5="$(bash "$APPLY" "$C")"
 check "dry-run : « rien à migrer »" "printf '%s' \"\$out5\" | grep -q 'rien à migrer'"
 
+echo "Cas 6 (date entre guillemets — revue ezk-reviewer) :"
+Q="$TMP/q"
+mk_root "$Q" 4
+fiche "$Q/features/20260101000000001_quotee.md" 'ready: "2026-08-24"' ready
+bash "$APPLY" --apply "$Q" >/dev/null
+check "date quotée : la note porte la date sans guillemets" \
+  "grep -q 'passée le 2026-08-24 ·' '$Q/features/20260101000000001_quotee.md' && ! grep -q 'passée le \"' '$Q/features/20260101000000001_quotee.md'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-apply-005: TOUT VERT'; else echo 'test-apply-005: ÉCHECS' >&2; exit 1; fi
