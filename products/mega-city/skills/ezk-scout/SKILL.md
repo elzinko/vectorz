@@ -76,6 +76,8 @@ ou arrête-toi. Fixe les bornes. Choisis le dossier de passe **hors de la cible*
 
 **1. Photo find-only.**
 `bash $SCOUT/scripts/find-only-guard.sh snapshot <dépôt cible> [<dépôt backlog>] > $RUN/snapshot.txt`
+Si le backlog vit dans un autre dépôt que la cible, **ajoute-le** : sans lui, un `ezk-backlog add`
+égaré passerait inaperçu.
 *(Bind par projet : seul ce `SKILL.md` est matérialisé. Note alors à la main `git rev-parse HEAD`,
 `git rev-parse 'HEAD^{tree}'`, `git for-each-ref refs/heads refs/tags` et
 `git status --porcelain=v1 --untracked-files=all`, puis compare-les à la fin.)*

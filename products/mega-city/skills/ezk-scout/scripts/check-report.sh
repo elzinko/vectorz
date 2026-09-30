@@ -3,7 +3,8 @@
 # Le rapport est ce qu'un humain valide avant tout `ezk-backlog add` : il ne doit pas mentir
 # par sa forme. Ce script ne juge pas si un bug est vrai (c'est le travail de la passe), il
 # refuse un rapport incomplet ou incohérent :
-#   - « En clair » n'ouvre pas le rapport, ou la ligne de synthèse manque / est mal formée ;
+#   - « En clair » n'ouvre pas le rapport, les sections ne suivent pas l'ordre du gabarit, ou la
+#     ligne de synthèse manque / est mal formée ;
 #   - les comptes mentent : N = M + K, M = nombre de brouillons, K = nombre d'écartées ;
 #   - un brouillon n'a pas de reproduction numérotée, de gravité valide, d'attendu/obtenu,
 #     d'anti-doublon ; une capture ou une localisation déclarée est vide / sans `fichier:ligne` ;
@@ -127,6 +128,15 @@ END {
   if (order[1] != "En clair") err("« En clair » doit ouvrir le rapport (première section après le titre)")
   n = split("En clair|Cadre de la passe|Isolation de l\047état|Brouillons de fiche|Écartées|Pour valider (toi)", req, "|")
   for (i = 1; i <= n; i++) if (!(req[i] in seen)) err("section « " req[i] " » absente")
+  # Ordre du gabarit : le rapport se lit dans le même sens que le gabarit (revue adverse, P2).
+  prev = 0; prevname = ""
+  for (i = 1; i <= n; i++) {
+    pos = 0
+    for (j = 1; j <= nh2; j++) if (order[j] == req[i]) { pos = j; break }
+    if (pos == 0) continue
+    if (prev && pos < prev) err("ordre des sections : « " req[i] " » doit venir après « " prevname " » (ordre du gabarit)")
+    else { prev = pos; prevname = req[i] }
+  }
   if (nsum != 1) err("synthèse : une (et une seule) ligne « **N trouvées · M fichées · K écartées** » attendue dans « En clair »")
   else {
     if (sN != sM + sK) err("synthèse : " sN " trouvées ≠ " sM " fichées + " sK " écartées")

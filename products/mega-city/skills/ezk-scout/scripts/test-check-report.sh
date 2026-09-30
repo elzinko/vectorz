@@ -154,6 +154,10 @@ mutate p 's/(## En clair)/<!-- ‹placeholder› find-only : VIOLÉ -->\n\n$1/'
 out="$(bash "$CHECK" "$TMP/p.md" 2>&1)"; rc=$?
 check "commentaire HTML neutralisé → code 0" "[ $rc -eq 0 ]"
 
+echo "Cas p2 (sections réordonnées) :"
+mutate p2 's/\A(.*?)(## Cadre de la passe.*?)(## Pour valider \(toi\).*)\z/$1$3\n$2/s'
+refuse "« Pour valider » placé avant « Cadre »" p2 "ordre"
+
 echo "Cas q (erreurs d'usage) :"
 bash "$CHECK" >/dev/null 2>&1; rc1=$?
 check "sans argument → code 2"            "[ $rc1 -eq 2 ]"
