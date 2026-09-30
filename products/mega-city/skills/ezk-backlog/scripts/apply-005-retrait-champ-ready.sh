@@ -27,8 +27,10 @@
 #     `features/feature-template.md` perd sa ligne `ready:` (un nouvel `add` ne la recrée pas) et son
 #     commentaire de `status:` annonce les statuts du layout 5.
 # Idempotent : une fois les lignes parties et les `blocked` convertis, il n'y a plus rien à faire.
-# Garde : refuse `--apply` si le dossier est avant le layout v4 — la migration 003 LIT le champ `ready:`
-# pour scinder `todo` en `ready` / `idea`, il faut donc l'avoir passée avant.
+# Gardes de version : refuse `--apply` si le dossier est avant le layout v4 — la migration 003 LIT le champ
+# `ready:` pour scinder `todo` en `ready` / `idea`, il faut donc l'avoir passée avant. Ne fait RIEN sur un
+# dossier en layout > 5 (jamais de rétrogradation). Sur un dossier déjà en layout 5, `--apply` reste permis :
+# c'est le rejeu voulu après un `merge` qui ramène une fiche portant encore `ready:` (idempotent).
 #
 # Usage : apply-005-retrait-champ-ready.sh [--apply] [racine-projet]
 #   sans --apply : DRY-RUN — liste les changements, n'écrit rien.
@@ -54,6 +56,11 @@ installed=0
 if [[ -f "$README" ]]; then
   installed="$(awk '/^layout_version:/ { sub(/^layout_version:[[:space:]]*/, ""); gsub(/[^0-9].*$/, ""); print; exit }' "$README")"
   installed="${installed:-0}"
+fi
+if [[ "$installed" -gt 5 ]]; then
+  # Jamais de rétrogradation : un dossier plus récent a déjà passé cette migration (et en porte d'autres).
+  echo "rien à faire : layout_version ${installed} > 5 — la migration 005 est déjà passée, rien n'est modifié (jamais de rétrogradation)."
+  exit 0
 fi
 if [[ "$installed" -lt 4 && "$APPLY" -eq 1 ]]; then
   echo "erreur: layout_version ${installed} < 4 — applique d'abord les migrations pending (003 lit le champ ready: pour scinder todo en ready/idea), puis relance 005." >&2

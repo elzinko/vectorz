@@ -59,8 +59,11 @@ exemple) reste intact. Il est **idempotent** : une fois les lignes parties, une 
 la ligne `ready:` du gabarit déployé `features/feature-template.md` et y met à jour le commentaire de
 `status:` (les statuts du layout 5 : plus de `blocked`, désormais un drapeau ; `merged` et `split` ajoutés).
 
-**Garde d'ordre.** La migration 003 lit le champ `ready:` pour scinder `todo` en `ready` ou `idea`.
+**Gardes de version.** La migration 003 lit le champ `ready:` pour scinder `todo` en `ready` ou `idea`.
 Sur un dossier plus ancien que le layout v4, `--apply` refuse et nomme la migration à passer d'abord.
+Sur un dossier déjà en layout 6 ou plus, le script ne fait rien (jamais de rétrogradation). Sur un
+dossier déjà en layout 5, `--apply` reste permis : c'est le rejeu voulu après un `merge` qui ramène
+une fiche portant encore `ready:`.
 
 Filet : les fiches sont versionnées. `git diff` montre chaque changement, `git checkout` l'annule.
 Après l'`--apply`, régénère les vues (`regen-backlog.sh`, `portfolio.sh`, `avancement:regen`, …).

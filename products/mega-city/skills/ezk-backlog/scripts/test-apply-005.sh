@@ -156,4 +156,24 @@ out7b="$(bash "$APPLY" --apply "$K")"
 check "2e --apply : idempotent, « rien à migrer »" \
   "[ \"\$(snap '$K')\" = '$before7b' ] && printf '%s' \"\$out7b\" | grep -q 'rien à migrer'"
 
+echo "Cas 8 (jamais de rétrogradation — retour Codex P2) :"
+N="$TMP/n"
+mk_root "$N" 6
+fiche "$N/features/20260101000000001_en-avance.md" 'ready: 2026-08-21' ready
+before8="$(snap "$N")"
+if out8="$(bash "$APPLY" --apply "$N" 2>&1)"; then rc8=0; else rc8=$?; fi
+check "layout 6 : --apply sort sans erreur et ne change RIEN" "[ $rc8 -eq 0 ] && [ \"\$(snap '$N')\" = '$before8' ]"
+check "layout 6 : le marqueur reste 6 (pas ramené à 5)" "grep -q '^layout_version: 6\$' '$N/features/README.md'"
+check "layout 6 : message « déjà passée »" "printf '%s' \"\$out8\" | grep -q 'déjà passée'"
+out8b="$(bash "$APPLY" "$N" 2>&1)"
+check "layout 6 : le dry-run ne touche rien non plus" "[ \"\$(snap '$N')\" = '$before8' ] && printf '%s' \"\$out8b\" | grep -q 'déjà passée'"
+# Rejeu sur un dossier DÉJÀ en layout 5 : permis (fiche arrivée par un merge avec un vieux ready:).
+M="$TMP/m"
+mk_root "$M" 5
+fiche "$M/features/20260101000000001_arrivee-par-merge.md" 'ready: 2026-08-25' ready
+bash "$APPLY" --apply "$M" >/dev/null
+check "layout 5 : le rejeu nettoie la fiche arrivée par merge (date en note)" \
+  "! grep -q '^ready:' '$M/features/20260101000000001_arrivee-par-merge.md' && grep -q 'passée le 2026-08-25' '$M/features/20260101000000001_arrivee-par-merge.md'"
+check "layout 5 : le marqueur reste 5" "grep -q '^layout_version: 5\$' '$M/features/README.md'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-apply-005: TOUT VERT'; else echo 'test-apply-005: ÉCHECS' >&2; exit 1; fi
