@@ -4,6 +4,7 @@ title: article — « Brancher une méthode qu'on ne possède pas : le pattern s
 type: feature
 priority: P3
 product: vectorz
+milestone: parked
 status: idea
 labels: [article]
 pr:

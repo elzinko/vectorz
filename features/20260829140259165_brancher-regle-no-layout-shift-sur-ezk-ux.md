@@ -4,6 +4,7 @@ title: Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux
 type: chore
 priority: P3
 product: mega-city
+milestone: parked
 version:
 epic:
 status: idea

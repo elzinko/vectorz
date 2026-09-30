@@ -4,6 +4,7 @@ title: Complétion dynamique des paramètres des commandes slash (Claude Code, m
 type: feature
 priority: P3
 product: mega-city
+milestone: parked
 version:
 epic:
 labels: [cli, decouvrabilite]

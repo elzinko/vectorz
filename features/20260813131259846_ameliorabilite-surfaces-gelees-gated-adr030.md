@@ -4,6 +4,7 @@ title: Contrat d'améliorabilité — validateur noyau + miroir + chien de garde
 type: feature
 priority: P1
 product: vectorz
+milestone: parked
 status: idea
 labels: [contrat]
 ready:

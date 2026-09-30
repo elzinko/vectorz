@@ -190,17 +190,9 @@
 | [20260826122532943](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md) | Fondation — le modèle de fichiers ezk : compilé, schématisé, validé (avant les recettes) | feature | P0 | V0.1 | mega-city | 💡 idea |  |
 | [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P0 |  | mega-city | 💡 idea |  |
 | [20260917162000501](20260917162000501_lanceur-dev-universel-worktree-branche.md) | Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz | feature | P0 |  | mega-city | 💡 idea |  |
-| [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
-| [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 |  | vectorz | 💡 idea |  |
-| [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
 | [0077](0077-hooks-classe-a-supervision.md) | Kit émetteur — hooks Claude Code classe A (émission déterministe) | feature | P1 |  | mega-city | 💡 idea |  |
-| [0087](0087-plugin-claude-code-distribution.md) | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
-| [0156](0156-ezk-marketing.md) | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 |  | mega-city | 💡 idea |  |
-| [0157](0157-ezk-landing-pages.md) | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 |  | mega-city | 💡 idea |  |
-| [0165](0165-contrat-ameliorabilite-v01-mvp-b.md) | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md) | Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260813124026215](20260813124026215_deploiement-methode-llm-native.md) | Déployer (et retirer) la méthode ezk LLM-native dans un projet cible — cadrage (à la bmad) | feature | P1 |  | mega-city | 💡 idea |  |
-| [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | 💡 idea |  |
 | [20260816131703334](20260816131703334_doc-decouvrabilite-rationalisation.md) | Rationalisation doc + découvrabilité (produit OSS de niveau pro) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260821163346490](20260821163346490_assemblage-ne-montre-pas-composition.md) | La ligne « L'ASSEMBLAGE » ne montre pas les liens de composition (retour PO) | feature | P1 | V0.1 | mega-city | 💡 idea |  |
 | [20260821163346493](20260821163346493_carte-provenance-prouvee.md) | Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation) | feature | P1 | V0.1 | mega-city | 💡 idea |  |
@@ -215,33 +207,18 @@
 | [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) | RUN-REPORT — synthèse de fin de run (une ligne par fiche + HEAD + tokens) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20260916225506858](20260916225506858_github-modules-optionnels-config.md) | GitHub / CI / Codex = modules optionnels, pilotés par la config projet | feature | P1 |  | mega-city | 💡 idea |  |
 | [0024](0024-resorber-peripherie-pre-pivot.md) | résorber la périphérie pré-pivot (ceremony-engine, quality-intelligence) + acter ADR-021/022 | refactor | P2 |  | vectorz | 💡 idea |  |
-| [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
-| [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
-| [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 |  | vectorz | 💡 idea |  |
-| [0054](0054-catalogue-adaptateurs-outils.md) | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 |  | vectorz | 💡 idea |  |
-| [0055](0055-kpi-agreges-commit-pr-sprint-version.md) | KPI agrégés — rollups commit → PR → sprint → version depuis le silo | feature | P2 |  | vectorz | 💡 idea |  |
-| [0056](0056-viz-qualite-mission-control.md) | Visualisation — onglet « qualité par PR » dans mission-control | feature | P2 |  | vectorz | 💡 idea |  |
-| [0058](0058-rapport-qualite-pr.md) | Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR | feature | P2 |  | vectorz | 💡 idea |  |
 | [0066](0066-tester-un-skill-avant-merge.md) | Tester un skill/agent avant merge — process maison (golden tests + DoR/DoD de skill + gate dry-run) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0067](0067-ezk-ezk-contract-aware-carte-emission.md) | ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat) | feature | P2 |  | mega-city | 💡 idea |  |
-| [0073](0073-article-direction-scrum-auto-amelioration.md) | article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0075](0075-ezk-article-persona-rules-curation.md) | Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider | feature | P2 |  | mega-city | 💡 idea |  |
 | [0080](0080-ezk-retro-compte-rendu-standard.md) | ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR) | feature | P2 |  | mega-city | 💡 idea |  |
-| [0096](0096-mcpb-version-en-dur.md) | build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient | bug | P2 |  | mega-city | 💡 idea |  |
-| [0099](0099-contrat-emission-verifier-directives.md) | Contrat d'émission — vérifier la STRUCTURE des directives, pas compter les mentions | chore | P2 |  | mega-city | 💡 idea |  |
 | [0100](0100-sprint-intake-sante-backlog-metriques.md) | Sprint intake — DoR & santé du backlog (combien de features prêtes/pas prêtes, métriques émises pour le monitoring, garde « pas de sprint possible ») | feature | P2 |  | mega-city | 💡 idea |  |
 | [0119](0119-capture-judge-corpus-reel.md) | capture — charger un vrai corpus pour judge (détection de doublon) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0121](0121-cap-cop1.md) | cap cop1 — matérialiser un profil en config native cop1 | feature | P2 |  | mega-city | 💡 idea |  |
 | [0125](0125-domaine-stack-toolchain.md) | explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0147](0147-ezk-recipy-mvp.md) | ezk-recipy — scanner les repos froids et proposer des fiches de skills | feature | P2 |  | mega-city | 💡 idea |  |
-| [0155](0155-ezk-cowork-scaffold-audit-contrat-cowork.md) | ezk-cowork — scaffold + audit du pattern « contrat cowork » (bootstrap mince / guide servi par l'app) | feature | P2 |  | mega-city | 💡 idea |  |
-| [0158](0158-ezk-dns-ionos.md) | ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0161](0161-ezk-challenge-panel.md) | ezk-challenge — panel de challenge adversarial réutilisable (relecteurs frais + gate) | feature | P2 |  | mega-city | 💡 idea |  |
-| [0162](0162-bmad-contrat-supervisabilite.md) | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 |  | mega-city | 💡 idea |  |
-| [0166](0166-article-seed-ai-contrat-auto-amelioration.md) | article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère » | feature | P2 |  | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Adapter GitHub Issues (push-only, config-gated) — projection du backlog md, pas SoT | feature | P2 |  | mega-city | 💡 idea |  |
 | [0174](0174-ezk-issues-intake-github.md) | ezk-issues — intake GitHub (analyse, PR fix/feature md opt-in, coût local) | feature | P2 |  | mega-city | 💡 idea |  |
-| [0175](0175-article-skema-skill-schema-migrations.md) | article — Skema : versionner une skill LLM avec des migrations markdown | feature | P2 |  | mega-city | 💡 idea |  |
 | [0178](0178-ezk-checks-recette-manuelle.md) | ezk-checks — recette manuelle déclenchable (Playwright → features/checks/) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0186](0186-skema-versioning-migrations-skills-deployees.md) | Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation) | feature | P2 | V0.1 | mega-city | 💡 idea |  |
 | [0188](0188-adr-lisibles-comme-articles.md) | ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm) | feature | P2 |  | mega-city | 💡 idea |  |
@@ -257,16 +234,10 @@
 | [20260815080414006](20260815080414006_dor-extensible-par-projet.md) | DoR extensible par projet — base 3+1 + manifeste de slots par repo, lu par groom/ready | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260816151112162](20260816151112162_lawgiver-canal-commands-slash.md) | Canal commands: dans lawgiver — déployer les slash-commands comme les skills | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260816194833618](20260816194833618_deps-sante-audit-local-par-profil.md) | Santé des dépendances côté ezk — audit local activable par profil (alternative frugale à Dependabot) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20260817113353676](20260817113353676_article-templates-reponse-llm.md) | Article « Templates de réponse adaptés aux LLM » (via ezk-article) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20260818185931307](20260818185931307_capability-vente-lemonsqueezy.md) | Capability de vente LemonSqueezy (checkout + licence + entitlement) — récoltée de muti, réutilisable | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260821163346496](20260821163346496_carte-unites-de-revue.md) | Définir ce qu'on valide et dans quel ordre (l'unité de revue de la carte) | feature | P2 | V0.1 | mega-city | 💡 idea |  |
 | [20260821163346498](20260821163346498_carte-etat-de-revue-visible.md) | Montrer sur la carte ce qui est revu, en cours, ou jamais vérifié (+ date) | feature | P2 | V0.1 | mega-city | 💡 idea |  |
 | [20260821163346501](20260821163346501_carte-corriger-un-lien-faux.md) | Corriger un lien faux depuis la carte, et que ça retombe dans les fichiers | feature | P2 | V0.1 | mega-city | 💡 idea |  |
-| [20260821171238990](20260821171238990_capability-launchpad-landing-waitlist.md) | Capability launchpad (landing + waitlist + tracking) — récoltée de city-guided, réutilisable pour valider un produit | feature | P2 |  | mega-city | 💡 idea |  |
-| [20260821172716540](20260821172716540_recette-site-produit-regles-activables.md) | Recette « site produit » — un skill + des règles activables (cas samplerz) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260821210633457](20260821210633457_explorateur-llm-pilote-siege-exploration-pr.md) | Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20260821210633522](20260821210633522_article-llm-pose-questions-tests-non-ecrites.md) | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 |  | mega-city | 💡 idea |  |
-| [20260822200213110](20260822200213110_regle-page-vitrine-screenshots-reels.md) | Règle — une page (vitrine/landing/capture) construite par un skill utilise des screenshots réels de l'app, jamais des visuels générés | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260823121712716](20260823121712716_vues-generees-board-kanban-history-git.md) | Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche) | feature | P2 | V0.1 | mega-city | 💡 idea |  |
 | [20260823121712844](20260823121712844_durcir-regen-backlog-racine-nichee.md) | Durcir regen-backlog — refuser une racine par défaut nichée sous un autre backlog (fin du piège products/mega-city) | bug | P2 | V0.1 | mega-city | 💡 idea |  |
 | [20260823121712909](20260823121712909_lawgiver-doctor-skill-non-materialise.md) | lawgiver doctor — détecter un skill du profil non matérialisé dans ~/.claude (le bug /ezk-pr introuvable) | feature | P2 | V0.1 | mega-city | 💡 idea |  |
@@ -290,10 +261,8 @@
 | [20260830194601307](20260830194601307_front-matter-emis-par-lib-yaml.md) | front-matter généré émis + validé par la lib YAML (jamais par concaténation) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830194601376](20260830194601376_spike-degiter-vues-outillage.md) | SPIKE — sortir les vues purement outillage du versionnage (tuer les conflits inter-sessions) | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260830225021794](20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md) | ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué | refactor | P2 |  | mega-city | 💡 idea |  |
-| [20260901173549334](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md) | ezk multi-client : cap Cursor + modèle & effort configurables par hôte | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260902224043892](20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md) | Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260903085150321](20260903085150321_nommage-commandes-scrum-safe.md) | Aligner le vocabulaire des commandes sur Scrum/SAFe (doctrine de nommage — dont ezk-product-build → train/increment) | refactor | P2 |  | mega-city | 💡 idea |  |
-| [20260903134908019](20260903134908019_cli-ezk-complet-publie.md) | CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) | ezk-archive — recadrer en capacité + alléger (fast-path no-op + modèle adapté au jugement) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md) | Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260905134937885](20260905134937885_revue-locale-vs-codex-mesure.md) | Revue adverse locale vs Codex — mesurer avant d'arbitrer (peut-on sortir la PR du chemin ?) | feature | P2 |  | mega-city | 💡 idea |  |
@@ -313,6 +282,53 @@
 | [20260920213500176](20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | SPIKE — un sprint d'autorat de skill coûte trop cher (~330k) : quels leviers d'allègement ? | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260922160651394](20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md) | Conformer le code aux 2 règles neuves : lecteur de fiche par loader + vues sans statut terminal | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260923220631498](20260923220631498_portier-archive-compte-egale-enumeration.md) | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 |  | mega-city | 💡 idea |  |
+| [0114](0114-webapp-config.md) | webapp de config (édite les YAML profiles/bundles) | feature | P3 |  | mega-city | 💡 idea |  |
+| [0117](0117-aligner-domain-ts-signatures.md) | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 |  | mega-city | 💡 idea |  |
+| [0120](0120-io-dette-dry-cli-coverage.md) | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 |  | mega-city | 💡 idea |  |
+| [0143](0143-aligner-nommage-modes-tokens.md) | aligner le nommage des modes tokens du product-builder (lean\|cap\|full partout) | chore | P3 |  | mega-city | 💡 idea |  |
+| [0151](0151-product-builder-briefing-demarrage.md) | ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles) | feature | P3 |  | mega-city | 💡 idea |  |
+| [20260813122510737](20260813122510737_init-layout-version-prime-sur-detection-legacy.md) | ezk-backlog init.sh — le marqueur layout_version doit primer sur la détection legacy « Index auto-généré » | bug | P3 |  | mega-city | 💡 idea |  |
+| [20260813122619707](20260813122619707_robustesse-groupage-skill-dir-materialisation.md) | Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu) | bug | P3 |  | mega-city | 💡 idea |  |
+| [20260821163346503](20260821163346503_methode-auto-evaluation-validite.md) | La méthode s'auto-évalue : sa cohérence, et la fidélité de sa représentation | feature | P3 | V0.1 | mega-city | 💡 idea |  |
+| [20260829132313947](20260829132313947_ci-conso-exclure-forks.md) | ezk-ci conso — exclure les forks (repos clonés) de la conso | feature | P3 |  | mega-city | 💡 idea |  |
+| [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040) | feature | P3 |  | mega-city | 💡 idea |  |
+| [20260830110131298](20260830110131298_supervision-ezk-plugin-separable.md) | Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039) | refactor | P3 |  | mega-city | 💡 idea |  |
+
+## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
+
+| # | Titre | Type | Prio | Version | Produit | Statut | PR |
+|---|-------|------|------|---------|---------|--------|----|
+| [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
+| [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 |  | vectorz | 💡 idea |  |
+| [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
+| [0087](0087-plugin-claude-code-distribution.md) | Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marketplace + versionnage) | feature | P1 |  | mega-city | 💡 idea |  |
+| [0156](0156-ezk-marketing.md) | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 |  | mega-city | 💡 idea |  |
+| [0157](0157-ezk-landing-pages.md) | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 |  | mega-city | 💡 idea |  |
+| [0165](0165-contrat-ameliorabilite-v01-mvp-b.md) | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 💡 idea |  |
+| [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | 💡 idea |  |
+| [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
+| [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
+| [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 |  | vectorz | 💡 idea |  |
+| [0054](0054-catalogue-adaptateurs-outils.md) | Catalogue d'adaptateurs — ajouter un outil de métrique sans réinventer la roue | feature | P2 |  | vectorz | 💡 idea |  |
+| [0055](0055-kpi-agreges-commit-pr-sprint-version.md) | KPI agrégés — rollups commit → PR → sprint → version depuis le silo | feature | P2 |  | vectorz | 💡 idea |  |
+| [0056](0056-viz-qualite-mission-control.md) | Visualisation — onglet « qualité par PR » dans mission-control | feature | P2 |  | vectorz | 💡 idea |  |
+| [0058](0058-rapport-qualite-pr.md) | Rapport qualité de PR — les métriques et le résumé du test visibles dans chaque PR | feature | P2 |  | vectorz | 💡 idea |  |
+| [0073](0073-article-direction-scrum-auto-amelioration.md) | article — donner à l'auto-amélioration la direction scrum (mapper sa méthode sur le vocabulaire officiel) | feature | P2 |  | mega-city | 💡 idea |  |
+| [0096](0096-mcpb-version-en-dur.md) | build-mcpb.sh fige la version en dur — le bundle installé ne dit pas ce qu'il contient | bug | P2 |  | mega-city | 💡 idea |  |
+| [0099](0099-contrat-emission-verifier-directives.md) | Contrat d'émission — vérifier la STRUCTURE des directives, pas compter les mentions | chore | P2 |  | mega-city | 💡 idea |  |
+| [0155](0155-ezk-cowork-scaffold-audit-contrat-cowork.md) | ezk-cowork — scaffold + audit du pattern « contrat cowork » (bootstrap mince / guide servi par l'app) | feature | P2 |  | mega-city | 💡 idea |  |
+| [0158](0158-ezk-dns-ionos.md) | ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste manuel) | feature | P2 |  | mega-city | 💡 idea |  |
+| [0162](0162-bmad-contrat-supervisabilite.md) | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 |  | mega-city | 💡 idea |  |
+| [0166](0166-article-seed-ai-contrat-auto-amelioration.md) | article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère » | feature | P2 |  | mega-city | 💡 idea |  |
+| [0175](0175-article-skema-skill-schema-migrations.md) | article — Skema : versionner une skill LLM avec des migrations markdown | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260817113353676](20260817113353676_article-templates-reponse-llm.md) | Article « Templates de réponse adaptés aux LLM » (via ezk-article) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260818185931307](20260818185931307_capability-vente-lemonsqueezy.md) | Capability de vente LemonSqueezy (checkout + licence + entitlement) — récoltée de muti, réutilisable | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260821171238990](20260821171238990_capability-launchpad-landing-waitlist.md) | Capability launchpad (landing + waitlist + tracking) — récoltée de city-guided, réutilisable pour valider un produit | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260821172716540](20260821172716540_recette-site-produit-regles-activables.md) | Recette « site produit » — un skill + des règles activables (cas samplerz) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260821210633522](20260821210633522_article-llm-pose-questions-tests-non-ecrites.md) | Article — les tests vérifient des réponses déjà posées, le LLM pose les questions | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260822200213110](20260822200213110_regle-page-vitrine-screenshots-reels.md) | Règle — une page (vitrine/landing/capture) construite par un skill utilise des screenshots réels de l'app, jamais des visuels générés | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260901173549334](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md) | ezk multi-client : cap Cursor + modèle & effort configurables par hôte | feature | P2 |  | mega-city | 💡 idea |  |
+| [20260903134908019](20260903134908019_cli-ezk-complet-publie.md) | CLI `ezk` complet et publié — framework de commandes et paquet distribuable (option C de l'ADR-0046, plus tard) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |
@@ -320,19 +336,8 @@
 | [0057](0057-agent-analyse-methode.md) | Agent d'analyse de la méthode — lit les KPI et propose des améliorations (gate PO) [nord/parking] | feature | P3 |  | vectorz | 💡 idea |  |
 | [0074](0074-article-loi-pareto-dynamique.md) | article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve) | feature | P3 |  | mega-city | 💡 idea |  |
 | [0093](0093-backlogstore-port-agnostique.md) | BacklogStore — port de persistance agnostique (md/git · GitHub · Jira…) — IDEA, sur trigger | feature | P3 |  | mega-city | 💡 idea |  |
-| [0114](0114-webapp-config.md) | webapp de config (édite les YAML profiles/bundles) | feature | P3 |  | mega-city | 💡 idea |  |
-| [0117](0117-aligner-domain-ts-signatures.md) | aligner les signatures de domain.ts sur l'implémentation (expand/bind) | chore | P3 |  | mega-city | 💡 idea |  |
-| [0120](0120-io-dette-dry-cli-coverage.md) | dette I/O — factoriser resolveInside* (DRY) + couvrir la CLI capture | refactor | P3 |  | mega-city | 💡 idea |  |
-| [0143](0143-aligner-nommage-modes-tokens.md) | aligner le nommage des modes tokens du product-builder (lean\|cap\|full partout) | chore | P3 |  | mega-city | 💡 idea |  |
-| [0151](0151-product-builder-briefing-demarrage.md) | ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20260812100258610](20260812100258610_harnais-dogfood-llm-headless.md) | testbed dogfood LLM headless — rejouer la chaîne méthode→journal→Moniteur sans humain (nightly) | feature | P3 |  | mega-city | 💡 idea |  |
-| [20260813122510737](20260813122510737_init-layout-version-prime-sur-detection-legacy.md) | ezk-backlog init.sh — le marqueur layout_version doit primer sur la détection legacy « Index auto-généré » | bug | P3 |  | mega-city | 💡 idea |  |
-| [20260813122619707](20260813122619707_robustesse-groupage-skill-dir-materialisation.md) | Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu) | bug | P3 |  | mega-city | 💡 idea |  |
-| [20260821163346503](20260821163346503_methode-auto-evaluation-validite.md) | La méthode s'auto-évalue : sa cohérence, et la fidélité de sa représentation | feature | P3 | V0.1 | mega-city | 💡 idea |  |
-| [20260829132313947](20260829132313947_ci-conso-exclure-forks.md) | ezk-ci conso — exclure les forks (repos clonés) de la conso | feature | P3 |  | mega-city | 💡 idea |  |
 | [20260829140259165](20260829140259165_brancher-regle-no-layout-shift-sur-ezk-ux.md) | Brancher la règle UX « no-layout-shift » sur l'agent ezk-ux | chore | P3 |  | mega-city | 💡 idea |  |
-| [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040) | feature | P3 |  | mega-city | 💡 idea |  |
-| [20260830110131298](20260830110131298_supervision-ezk-plugin-separable.md) | Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039) | refactor | P3 |  | mega-city | 💡 idea |  |
 | [20260904074824499](20260904074824499_renommer-ezk-vers-mc.md) | Renommer les commandes ezk-* → mc-* (mega-city) | chore | P3 |  | mega-city | 💡 idea |  |
 | [20260904080827072](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) | admin ezk : partagé multi-projets vs une app par projet — ports, isolation | chore | P3 |  | mega-city | 💡 idea |  |
 | [20260920185910202](20260920185910202_completion-params-slash.md) | Complétion dynamique des paramètres des commandes slash (Claude Code, menu qui filtre) | feature | P3 |  | mega-city | 💡 idea |  |

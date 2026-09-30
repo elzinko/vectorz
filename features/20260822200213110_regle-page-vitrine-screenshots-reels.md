@@ -4,6 +4,7 @@ title: Règle — une page (vitrine/landing/capture) construite par un skill uti
 type: feature
 priority: P2 # provisoire — posée à la capture (PO à confirmer au grooming)
 product: mega-city
+milestone: parked
 epic:
 status: idea
 ready:

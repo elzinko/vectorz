@@ -4,6 +4,7 @@ title: Capability launchpad (landing + waitlist + tracking) — récoltée de ci
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
 pr:
 created: 2026-08-21

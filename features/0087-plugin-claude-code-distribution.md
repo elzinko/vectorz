@@ -4,6 +4,7 @@ title: Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marke
 type: feature
 priority: P1
 product: mega-city
+milestone: parked
 epic:
 status: idea
 ready:

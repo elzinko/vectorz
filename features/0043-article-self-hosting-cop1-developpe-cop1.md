@@ -4,6 +4,7 @@ title: article — « Self-hosting : le jour où cop1 développera cop1 » (dogf
 type: feature
 priority: P2
 product: vectorz
+milestone: parked
 status: idea
 labels: [article]
 pr:

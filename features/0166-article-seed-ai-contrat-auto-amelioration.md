@@ -4,6 +4,7 @@ title: article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
 labels: [article]
 pr:
