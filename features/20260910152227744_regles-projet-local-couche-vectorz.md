@@ -8,7 +8,6 @@ version: V0.4
 labels: [installation]
 epic:
 status: idea # idea | ready | in-progress | blocked | shipped
-ready:
 pr:
 evidence: none # mécanisme / CLI, pas d'écran
 created: 2026-09-10

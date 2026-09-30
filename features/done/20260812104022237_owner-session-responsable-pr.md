@@ -6,7 +6,6 @@ priority: P1 # choisie par le PO (session 2026-08-12)
 product: mega-city
 epic:
 status: superseded
-ready:
 pr: "superseded — absorbee dans le cockpit sessions 20260825141012293 (ADR-0042)"
 created: 2026-08-12
 ---

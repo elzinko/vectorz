@@ -7,7 +7,6 @@ priority: P1
 epic:
 depends: []
 status: shipped
-ready:
 pr: "#162"
 created: 2026-07-30
 ---

@@ -27,7 +27,20 @@ cd "$ROOT"
 
 SEP=$'\x1f'
 
-extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, ready, created, version, epic, product, milestone
+# Schéma des statuts — MIROIR de src/core/fiche-schema.ts (STATUT_DEFS : id=libellé, dans l'ordre du flux).
+# Gardé par le test de contrat src/__tests__/fiche-schema-contract.test.ts : ajouter un statut au schéma
+# sans le mettre ici fait échouer la suite. Libellés, légende et compteurs en dérivent — aucune autre liste.
+STATUT_LABELS='idea=💡 idea|ready=🔵 ready|in-progress=🟠 in-progress|shipped=✅ shipped|superseded=🗑️ superseded|merged=🔀 merged|split=🧩 split'
+
+label_of() { # $1=statut → LABEL (sans sous-shell) ; « ❓ statut » si inconnu — le validateur le signale
+  local s="|${STATUT_LABELS}"
+  case "$s" in
+    *"|$1="*) LABEL="${s#*"|$1="}"; LABEL="${LABEL%%|*}";;
+    *) LABEL="❓ $1";;
+  esac
+}
+
+extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, created, version, epic, product, milestone
   awk '
     function unquote(s) { gsub(/^"|"$/, "", s); return s }
     BEGIN { infm=0 }
@@ -39,14 +52,13 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, r
       if ($0 ~ /^priority:/) { sub(/^priority:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); prio=$0 }
       if ($0 ~ /^status:/)   { sub(/^status:[[:space:]]*/, "");   sub(/[[:space:]]*#.*$/, ""); status=$0 }
       if ($0 ~ /^pr:/)       { sub(/^pr:[[:space:]]*/, "");       pr=unquote($0) }
-      if ($0 ~ /^ready:/)    { sub(/^ready:[[:space:]]*/, "");    sub(/[[:space:]]*#.*$/, ""); ready=$0 }
       if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
       if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); product=unquote($0) }
       if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
     }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, ready, created, version, epic, product, milestone }
+    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, created, version, epic, product, milestone }
   ' "$1"
 }
 
@@ -63,7 +75,7 @@ done
 # Intégrité épics (ADR-0017 A7) + unicité des ids (fiche 0064) — warnings non bloquants.
 printf '%s' "$rows" | awk -F"$SEP" '
   NF {
-    nr++; rowid[nr]=$1; rowtype[nr]=$3; ref[nr]=$10
+    nr++; rowid[nr]=$1; rowtype[nr]=$3; ref[nr]=$9
     if ($3 == "epic") isepic[$1]=1
     seen[$1]++
   }
@@ -80,9 +92,9 @@ printf '%s' "$rows" | awk -F"$SEP" '
   }'
 
 # Colonnes conditionnelles (ADR-0017 A12) : Version / Épic / Produit (0064).
-has_version="$(printf '%s' "$rows" | awk -F"$SEP" '$9 != "" { f=1 } END { print f+0 }')"
-has_epic_col="$(printf '%s' "$rows" | awk -F"$SEP" '$10 != "" { f=1 } END { print f+0 }')"
-has_product="$(printf '%s' "$rows" | awk -F"$SEP" '$11 != "" { f=1 } END { print f+0 }')"
+has_version="$(printf '%s' "$rows" | awk -F"$SEP" '$8 != "" { f=1 } END { print f+0 }')"
+has_epic_col="$(printf '%s' "$rows" | awk -F"$SEP" '$9 != "" { f=1 } END { print f+0 }')"
+has_product="$(printf '%s' "$rows" | awk -F"$SEP" '$10 != "" { f=1 } END { print f+0 }')"
 has_epics="$(printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic" { f=1 } END { print f+0 }')"
 
 cols='| # | Titre | Type | Prio |'
@@ -93,18 +105,10 @@ if [ "$has_product" = 1 ]; then cols="${cols} Produit |"; dash="${dash}---------
 cols="${cols} Statut | PR |"
 dash="${dash}--------|----|"
 
-emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de table
-  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$9" epic="${10}" product="${11}" rel="${12}"
+emit_row() { # $1..$10 = champs + $11 = chemin relatif ; émet une ligne de table
+  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$8" epic="$9" product="${10}" rel="${11}"
   local st
-  case "$status" in
-    shipped) st='✅ shipped';;
-    superseded) st='🗑️ superseded';;
-    in-progress) st='🟠 in-progress';;
-    blocked) st='⛔ blocked';;
-    ready) st='🔵 ready';;
-    idea) st='💡 idea';;
-    *) st="❓ $status";;
-  esac
+  label_of "$status"; st="$LABEL"
   title="${title//|/\\|}"
   pr="${pr//|/\\|}"
   # Id CLIQUABLE vers la fiche (règle human-facing-lisibility) — lien relatif au doc BACKLOG.md.
@@ -117,11 +121,15 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   echo "${line} $st | $pr |"
 }
 
+legend=""
+IFS='|' read -r -a _pairs <<< "$STATUT_LABELS"
+for _p in "${_pairs[@]}"; do legend="${legend:+${legend} · }${_p#*=}"; done
+
 {
   echo "# ${TITLE}"
   echo ''
   echo '> Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.'
-  echo '> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped · 🗑️ superseded.'
+  echo "> Guide du dossier : [README.md](README.md). Statuts : ${legend}."
   # Lien vers la séquence décidée (PLAN.md, curée hors index) — ré-émis à chaque regen
   # pour qu'il survive à la régénération (le contenu de PLAN.md n'est pas touché).
   if [ -f features/PLAN.md ]; then
@@ -132,8 +140,8 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   echo "$cols"
   echo "$dash"
   printf '%s' "$rows" | awk -F"$SEP" '$5 != "idea" && $3 != "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-    while IFS="$SEP" read -r id title type prio status pr ready created version epic product milestone rel; do
-      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+    while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
     done
 
   if [ "$has_epics" = 1 ]; then
@@ -143,12 +151,12 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
     echo "$cols"
     echo "$dash"
     printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product milestone rel; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+      while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
 
-  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic" && $12 != "parked"')"
+  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic" && $11 != "parked"')"
   if [ -n "$ideas" ]; then
     echo ''
     echo '## 💡 Idées (non groomées)'
@@ -156,14 +164,14 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
     echo "$cols"
     echo "$dash"
     printf '%s\n' "$ideas" | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product milestone rel; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+      while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
 
   # Parkées : fiches `idea` explicitement sorties du flux via `milestone: parked` (jalon
   # fermé par le PO) — hors tirage ET hors « Idées », pour que la liste active dise vrai.
-  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic" && $12 == "parked"')"
+  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic" && $11 == "parked"')"
   if [ -n "$parked" ]; then
     echo ''
     echo '## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)'
@@ -171,26 +179,34 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
     echo "$cols"
     echo "$dash"
     printf '%s\n' "$parked" | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product milestone rel; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+      while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
   echo ''
   # Livrées : ids CLIQUABLES vers done/<fiche> (lien relatif au doc BACKLOG.md), triés par id.
   # Filtre `shipped` : une fiche `superseded` vit dans done/ mais n'est PAS livrée — elle reste
   # dans la table principale en 🗑️ ; ne pas la lister ici sous « Livrées » (revue 2026-09-10).
-  done_summary="$(printf '%s' "$rows" | awk -F"$SEP" '$13 ~ /^done\// && $5 == "shipped"{ print $1 "\t" $13 }' | sort -k1,1 | awk -F'\t' 'NF{ printf "%s[%s](%s)", sep, $1, $2; sep=", " }')"
+  done_summary="$(printf '%s' "$rows" | awk -F"$SEP" '$12 ~ /^done\// && $5 == "shipped"{ print $1 "\t" $12 }' | sort -k1,1 | awk -F'\t' 'NF{ printf "%s[%s](%s)", sep, $1, $2; sep=", " }')"
   echo "> Livrées (\`done/\`) : ${done_summary}."
 } > features/BACKLOG.md
 
 echo "features/BACKLOG.md régénéré ($(printf '%s' "$rows" | grep -c .) fiches)."
 
 # Compteurs déterministes (ADR-0016 §5 / fiche 0071) — le script compte, le LLM juge.
-printf '%s' "$rows" | awk -F"$SEP" '
-  NF { n++; c[$5]++; if ($3=="epic") e++; if ($5=="idea" && $12=="parked") p++ }
-  END { printf "stats: total=%d · idea=%d · parked=%d · ready=%d · in-progress=%d · blocked=%d · shipped=%d · superseded=%d · épics=%d\n", \
-        n, c["idea"], p+0, c["ready"], c["in-progress"], c["blocked"], c["shipped"], c["superseded"], e }'
-median="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $8!="" { print $8 }' | sort | awk '{ a[NR]=$0 } END { if (NR) print a[int((NR+1)/2)] }')"
+order="$(printf '%s' "$STATUT_LABELS" | tr '|' '\n' | cut -d= -f1 | tr '\n' ' ')"
+printf '%s' "$rows" | awk -F"$SEP" -v order="$order" '
+  NF { n++; c[$5]++; if ($3=="epic") e++; if ($5=="idea" && $11=="parked") p++ }
+  END {
+    printf "stats: total=%d", n
+    k = split(order, ids, " ")
+    for (i = 1; i <= k; i++) {
+      printf " · %s=%d", ids[i], c[ids[i]] + 0
+      if (ids[i] == "idea") printf " · parked=%d", p + 0
+    }
+    printf " · épics=%d\n", e + 0
+  }'
+median="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $7!="" { print $7 }' | sort | awk '{ a[NR]=$0 } END { if (NR) print a[int((NR+1)/2)] }')"
 if [ -n "$median" ]; then
   echo "stats: création médiane des ready = ${median}"
 fi

@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [ezk-map, ux]
 status: shipped
-ready: 2026-08-25
 pr: "#170"
 created: 2026-08-25
 ---
@@ -75,3 +74,5 @@ carte l'ouvre ; un lien ramène au menu.
 ⚠️ Réunir l'**accès** (un menu), **pas** fusionner les vues : la carte du domaine (structure) et le
 board d'avancement (flux) restent **deux vues séparées** (décision PO 2026-08-23). Origine : retour
 PO du 2026-08-25.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-25 · ancien champ front-matter `ready:`, retiré en migration 005.

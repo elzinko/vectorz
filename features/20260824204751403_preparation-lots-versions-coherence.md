@@ -8,7 +8,6 @@ version: V0.3
 labels: [backlog]
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-24
 ---

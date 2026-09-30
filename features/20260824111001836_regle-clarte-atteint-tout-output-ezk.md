@@ -8,7 +8,6 @@ labels: [lisibilite]
 version: V0.1
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-24
 ---

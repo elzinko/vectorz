@@ -8,7 +8,6 @@ version:
 milestone: rationalisation
 labels: [lisibilite]
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260824122629925 (tri 2026-09-30)"
 created: 2026-08-13
 ---

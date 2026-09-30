@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 labels: [enabler, ci, cost]
 status: shipped
-ready: 2026-08-21
 pr: "#171"
 created: 2026-08-12
 ---
@@ -95,3 +94,5 @@ compile (leçon panels-adverses).
 - **Groom 2026-08-21** : DoR complétée — valeur explicitée, section « Comment vérifier » ajoutée,
   slot **dépendances externes** traité (accès muti/city-guided constaté ce jour + repli fixtures).
   Statut/`ready:` inchangés (gate au PO).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-21 · ancien champ front-matter `ready:`, retiré en migration 005.

@@ -84,7 +84,7 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
 2. **Décision « quoi »** :
    - **Fiche ready ET aucune tête bloquée signalée** → va construire (3).
    - **Tête bloquée** (`next` signale une fiche de priorité supérieure sautée faute de
-     `ready:`) → traite la tête D'ABORD : `groom` + gate `ready` (fiche 0056) ; ne
+     `status: ready`) → traite la tête D'ABORD : `groom` + gate `ready` (fiche 0056) ; ne
      construis la fiche ready inférieure que sur décision **journalisée** (sinon c'est
      une inversion de priorité silencieuse). Si le groom exige un arbitrage produit →
      **checkpoint « aucune fiche ready »** (cf. tableau).

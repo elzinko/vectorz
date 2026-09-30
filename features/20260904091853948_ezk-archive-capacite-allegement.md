@@ -8,7 +8,6 @@ version: V0.4
 epic:
 labels: [session]
 status: idea
-ready:
 pr:
 created: 2026-09-04
 ---

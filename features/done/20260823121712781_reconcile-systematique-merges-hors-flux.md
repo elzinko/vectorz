@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 status: superseded
 labels: [backlog]
-ready:
 pr: "superseded — fusionnée dans 20260830194601233 (tri 2026-09-30)"
 created: 2026-08-23
 ---

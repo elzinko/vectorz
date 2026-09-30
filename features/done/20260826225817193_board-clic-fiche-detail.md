@@ -8,7 +8,6 @@ version:
 labels: [carte]
 milestone: fondation
 status: shipped
-ready: 2026-08-27
 pr: "#181"
 created: 2026-08-27
 ---
@@ -63,3 +62,5 @@ pnpm --dir products/mega-city exec tsx bin/ezk-map.ts avancement
 - Réutilise le **patron du panneau** de la carte LA LOI ([20260821172716537](20260821172716537_carte-ne-montre-pas-la-loi.md)).
 - Le champ `file` existe déjà dans `products/mega-city/src/core/avancement-data.ts` (`BoardFiche.file`).
 - Feature UI : DoD = scénarios E2E (`board-fiche-detail.feature`) validés au navigateur ; pas de nouvelle logique pure à unit-tester.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-27 · ancien champ front-matter `ready:`, retiré en migration 005.

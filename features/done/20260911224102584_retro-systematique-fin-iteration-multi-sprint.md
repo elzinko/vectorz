@@ -6,7 +6,6 @@ priority: P1 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
 status: shipped # idea | ready | in-progress | blocked | shipped
-ready: 2026-09-12 # posé par le gate ready — DoR concourue par ezk-pm
 pr: "#229"
 evidence: none # cérémonie / CLI, aucun écran
 created: 2026-09-11
@@ -109,3 +108,5 @@ Piste à trancher au grooming (avec l'architecte). Rien de figé.
   l'**alimente** en données en cadençant la collecte.
 - **Anti-doublon** : le « qui lance la rétro et quand » est explicitement laissé ouvert par
   [[20260831075615969]] ; aucune fiche ne le portait. Fiche distincte, à composer.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-12 · ancien champ front-matter `ready:`, retiré en migration 005 · note d'origine : posé par le gate ready — DoR concourue par ezk-pm.

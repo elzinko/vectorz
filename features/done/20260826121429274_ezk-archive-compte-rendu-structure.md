@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: superseded
-ready:
 pr:
 created: 2026-08-26
 ---

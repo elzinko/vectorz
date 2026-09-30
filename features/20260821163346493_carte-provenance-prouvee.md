@@ -8,7 +8,6 @@ version: V0.1
 milestone: fondation
 labels: [carte]
 status: idea
-ready:
 pr:
 created: 2026-08-21
 ---

@@ -8,7 +8,6 @@ version:
 labels: [dette]
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-13
 ---

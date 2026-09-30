@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-29
 pr: "#188"
 created: 2026-08-25
 ---
@@ -172,3 +171,5 @@ Les deux frontières laissées ouvertes au grooming sont tranchées ; DoR attein
 **État DoR** : critères d'acceptation testables ✅ · périmètre borné au sous-commande `state`
 ✅ · décisions de conception actées (brainstorm PO 2026-08-28 + ADR-0042) ✅ · faisabilité
 confirmée ✅. **Tampon `ready` en attente du PO** (mode `--check-ready true`).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-29 · ancien champ front-matter `ready:`, retiré en migration 005.

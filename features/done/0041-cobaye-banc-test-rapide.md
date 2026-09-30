@@ -5,7 +5,6 @@ type: chore
 priority: P1
 product: vectorz
 status: shipped
-ready: 2026-07-17
 pr: "#113"
 created: 2026-07-16
 ---
@@ -77,3 +76,5 @@ Transverse :
 - 2026-07-17 — rattachée à la ligne **Sprint Review** du mapping ADR-0016 §1 mega-city
   (contrôle « existant vs prévu ») : le banc cobaye outille le gate démo (validation de
   PR par l'opérateur). Relation informative, pas une dépendance bloquante.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

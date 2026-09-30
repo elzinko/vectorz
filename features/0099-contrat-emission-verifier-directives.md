@@ -8,7 +8,6 @@ milestone: parked
 epic:
 labels: [contrat]
 status: idea
-ready:
 pr:
 created: 2026-07-26
 ---

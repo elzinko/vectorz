@@ -8,7 +8,6 @@ labels: [test-local]
 version: V0.2
 epic:
 status: idea
-ready:
 pr:
 created: 2026-09-17
 ---

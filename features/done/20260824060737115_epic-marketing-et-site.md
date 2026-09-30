@@ -9,7 +9,6 @@ epic:
 milestone: articles
 labels: [marketing]
 status: superseded
-ready:
 pr:
 created: 2026-08-24
 ---

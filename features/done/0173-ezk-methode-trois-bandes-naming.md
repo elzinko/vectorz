@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-30
 pr: "#72"
 created: 2026-07-30
 ---
@@ -45,3 +44,5 @@ comme orchestrateur alors que c'est une **hygiène de clôture** ; capacités
   d'y loger testbed* ; ici on **souhaite** le rename pour clarté, sans y coller
   de capacité captive.
 - IDs 0168–0172 réservés par une autre branche (orphan-run) → cette fiche = **0173**.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-30 · ancien champ front-matter `ready:`, retiré en migration 005.

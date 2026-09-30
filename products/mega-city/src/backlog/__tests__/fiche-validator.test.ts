@@ -94,6 +94,36 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
     const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
     expect(anomalies.find((a) => a.field === 'evidence')).toBeUndefined();
   });
+
+  // Champ RETIRÉ (migration 005, fiche 20260823121712652) : `ready` est une colonne (`status: ready`),
+  // plus un champ date. Sa réapparition — gabarit périmé, fiche copiée d'un vieux repo — est signalée.
+  describe('champ retiré `ready:` (migration 005)', () => {
+    it('`ready: 2026-08-21` en front-matter → anomalie « champ retiré » qui dit quoi faire', () => {
+      const text = fm({ ...VALID_FIELDS, ready: '2026-08-21' });
+      const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+      const a = anomalies.find((x) => x.field === 'ready');
+      expect(a).toBeDefined();
+      expect(a?.message).toContain('champ retiré');
+      expect(a?.message).toContain('status: ready');
+    });
+
+    it('`ready:` VIDE en front-matter est aussi une anomalie (le champ lui-même est retiré)', () => {
+      const text = fm({ ...VALID_FIELDS, ready: '' });
+      const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+      expect(anomalies.find((x) => x.field === 'ready')).toBeDefined();
+    });
+
+    it('`ready:` cité dans le CORPS (bloc de code) n’est PAS une anomalie', () => {
+      const text = `${fm(VALID_FIELDS)}\n\`\`\`yaml\nready: 2026-01-01\n\`\`\`\n`;
+      const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+      expect(anomalies.find((x) => x.field === 'ready')).toBeUndefined();
+    });
+
+    it('`status: ready` (la colonne) reste valide', () => {
+      const text = fm({ ...VALID_FIELDS, status: 'ready' });
+      expect(validateFicheFrontMatter('features/x.md', text, { monorepo: false })).toEqual([]);
+    });
+  });
 });
 
 describe('findDuplicateIds (contrôle inter-fichiers — fléau des ids en double)', () => {

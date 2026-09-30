@@ -7,7 +7,6 @@ epic:
 depends: []
 labels: [supervision, tooling, dogfood]
 status: shipped
-ready: 2026-07-29
 pr:
 created: 2026-07-29
 product: mega-city
@@ -51,3 +50,5 @@ Claude Code — sans fouiller à la main trois endroits.
   `mcp_without_journal`) — utile en script / CI dogfood ; en interactif lire le rapport.
 - Complète **0103** (heartbeat) : analyze explique le passé ; heartbeat améliore le futur.
 - Pas le harness E2E-LLM (**2103**) — ici on **explique** une session déjà faite.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-29 · ancien champ front-matter `ready:`, retiré en migration 005.

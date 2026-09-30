@@ -7,7 +7,6 @@ product: mega-city
 milestone: rationalisation
 labels: [backlog]
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260815080414006 (tri 2026-09-30)"
 created: 2026-08-10
 ---

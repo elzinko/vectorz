@@ -18,7 +18,7 @@ Ce document couvre le jargon du commentaire [PR #37](https://github.com/elzinko/
 |---|---|---|
 | **Backlog** | La liste ordonnée des choses à construire (les « fiches »). | **garder** |
 | **Fiche** | Un sujet = un fichier markdown (`features/NNNN-slug.md`) avec statut, priorité, critères. | **garder** |
-| **Prête (ready)** | Assez précise pour construire : problème, valeur et critères posés ; tampon `ready: AAAA-MM-JJ` posé par le gate. | **traduire** — dire « prête à construire », pas « ready » seul |
+| **Prête (ready)** | Assez précise pour construire : problème, valeur et critères posés ; le gate la passe en `status: ready` (une colonne, plus un champ date). | **traduire** — dire « prête à construire », pas « ready » seul |
 | **DoR** | *Definition of Ready* — la check-list « prête à construire » (problème, valeur, critères). | **traduire** — « check-list prêt à construire » en ouverture |
 | **DoD** | *Definition of Done* — la check-list « vraiment terminée » (tests, revue, merge…). | **traduire** — « check-list terminée » |
 | **Gate** | Point de contrôle bloquant (ex. : le tampon « prête », les tests avant fusion). | **traduire** — « point de contrôle » ou « étape bloquante » |

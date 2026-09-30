@@ -6,7 +6,6 @@ priority: P2
 product: mega-city
 labels: [process, lisibilite]
 status: shipped
-ready: 2026-08-21
 pr: "#173"
 created: 2026-08-12
 ---
@@ -77,3 +76,5 @@ Recette manuelle (depuis la racine du monorepo) :
 - **Groom 2026-08-21** : DoR complétée pour le gate `ready` — valeur explicitée, preuve terrain du jour
   ajoutée (l'intake `build` s'est arrêté sur ce plan périmé), section « Comment vérifier » ajoutée.
   Aucune dépendance externe (tout est dans le monorepo). Statut/`ready:` inchangés (gate au PO).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-21 · ancien champ front-matter `ready:`, retiré en migration 005.

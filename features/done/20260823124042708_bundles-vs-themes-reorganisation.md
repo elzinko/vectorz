@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-30
 pr: "#190"
 created: 2026-08-23
 ---
@@ -125,3 +124,5 @@ Le dernier `ls` ne doit montrer que des packs qui composent réellement.
 Origine : retour PO sur la section « Les règles, rangées par bundle » de la carte
 compilée (2026-08-23). Décision PO explicite : possibilité de « laisser vivre » et
 laisser la structure émerger — cette fiche est la cible, pas une urgence.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

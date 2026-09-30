@@ -8,7 +8,6 @@ priority: P1
 epic:
 depends: []
 status: superseded
-ready:
 pr: "superseded — Ancien chapeau d'épic : le travail vit dans les fiches de ce chantier"
 created: 2026-08-10
 ---

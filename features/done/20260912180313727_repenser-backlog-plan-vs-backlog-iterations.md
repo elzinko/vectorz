@@ -7,7 +7,6 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 labels: [backlog]
 epic: # optionnel — id de la fiche épic parente
 status: superseded
-ready: # YYYY-MM-DD — posée par le gate `ready <id>`
 pr: "superseded — fusionnée dans 20260824204751403 (tri 2026-09-30)"
 evidence: none # méthode / fichiers markdown, aucun écran
 created: 2026-09-12

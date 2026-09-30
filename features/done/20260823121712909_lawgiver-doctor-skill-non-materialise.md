@@ -6,7 +6,6 @@ priority: P2
 product: mega-city
 labels: [installation]
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260903134909124 (tri 2026-09-30)"
 created: 2026-08-23
 milestone: fondation

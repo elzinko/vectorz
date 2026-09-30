@@ -6,7 +6,6 @@ priority: P1 # P0 | P1 | P2 | P3
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic:
 status: shipped # idea | ready | in-progress | blocked | shipped
-ready: 2026-09-06
 pr: "#216"
 evidence: none # outil CLI, pas d'écran
 created: 2026-09-06
@@ -156,3 +155,5 @@ ezk-secret open
   résolue par `--clip`).
 - Voisine mais distincte : [0158](../0158-ezk-dns-ionos.md) (automatiser le DNS IONOS via
   l'API) — consomme un secret, ne refactore pas l'outil.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-06 · ancien champ front-matter `ready:`, retiré en migration 005.

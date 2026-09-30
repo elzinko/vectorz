@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-08-31
 pr: "#214"
 created: 2026-08-31
 ---
@@ -122,3 +121,5 @@ d'améliorabilité (Sujet B / ADR-030) : un seul moteur, plusieurs appelants.
 - **Frontière** : ne déclenche pas la rétro (réglage séparé) ; ne construit pas la recette
   (sprint N+1) ; pas de scan de repos froids ([0147](../0147-ezk-recipy-mvp.md)).
 - Doctrine : ADR-0013 (une recette propose, ne fabrique pas de code seule).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-31 · ancien champ front-matter `ready:`, retiré en migration 005.

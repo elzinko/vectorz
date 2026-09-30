@@ -9,7 +9,6 @@ epic:
 depends: ["0191"]
 labels: [article, lisibilite]
 status: idea
-ready:
 pr:
 created: 2026-08-17
 ---

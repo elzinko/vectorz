@@ -9,7 +9,6 @@ labels: [lisibilite]
 epic:
 milestone: rationalisation
 status: idea
-ready:
 pr:
 created: 2026-08-25
 ---

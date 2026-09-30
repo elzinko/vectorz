@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-07-24
 pr: "#47"
 created: 2026-07-19
 ---
@@ -88,3 +87,5 @@ dans le monde du kit :
 - Réfs : `src/supervision/upgrade-ok.ts` ; captures des 2026-07-13 (décision sur
   l'éligibilité de mise à jour) et 2026-07-14 ; analyse
   `docs/captures/2026-07-19-topologie-supervision-et-plan-diagrammes.md`.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-24 · ancien champ front-matter `ready:`, retiré en migration 005.

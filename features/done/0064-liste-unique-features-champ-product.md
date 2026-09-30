@@ -6,7 +6,6 @@ priority: P0
 product: vectorz
 epic:
 status: shipped
-ready: 2026-07-30
 pr: "#66"
 created: 2026-07-26
 ---
@@ -124,3 +123,5 @@ fiche**, pas une donnée de l'arborescence :
   été faite : c'est la **stratégie de migration**, à trancher au grooming (le panel), pas
   à improviser. Commande de contrôle :
   `comm -12 <(ids features) <(ids products/mega-city/features)`.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-30 · ancien champ front-matter `ready:`, retiré en migration 005.

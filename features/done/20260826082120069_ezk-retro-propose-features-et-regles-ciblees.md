@@ -7,7 +7,6 @@ product: mega-city
 labels: [sprint]
 epic:
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 0080 (tri 2026-09-30)"
 created: 2026-08-26
 ---

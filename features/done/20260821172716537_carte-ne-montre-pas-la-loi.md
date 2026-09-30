@@ -8,7 +8,6 @@ version:
 labels: [carte]
 milestone: fondation
 status: shipped
-ready: 2026-08-26
 pr: "#179"
 created: 2026-08-21
 ---
@@ -119,3 +118,5 @@ Après : le sabotage du critère 5, en moins d'une minute.
 - **MAJ 2026-08-26** : ADR-0040 dé-risque la fiche (le graphe est compilé ; la carte n'est
   plus qu'un lecteur). Chiffres constatés sur `.ezk/graph.compiled.json` : 59 règles,
   12 bundles, 6 profils, 187 liens.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-26 · ancien champ front-matter `ready:`, retiré en migration 005.

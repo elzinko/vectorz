@@ -8,7 +8,6 @@ version:
 epic:
 depends: []
 status: shipped
-ready: 2026-08-30
 pr: "#195"
 created: 2026-08-29
 ---
@@ -108,3 +107,5 @@ un nom conventional qui rend le tout **retrouvable et rapprochable** de la featu
 
 Origine : session samplerz du 2026-08-29 (câblage domaine + Vercel : Root Directory oublié,
 DNS IONOS). Priorité **P0** demandée par le PO. `idea` — **à groomer**.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

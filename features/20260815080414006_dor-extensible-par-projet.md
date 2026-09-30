@@ -8,7 +8,6 @@ version: V0.4
 milestone: rationalisation
 labels: [backlog]
 status: idea
-ready:
 pr:
 created: 2026-08-15
 ---

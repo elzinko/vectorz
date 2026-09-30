@@ -15,7 +15,7 @@ cd "$ROOT"
 SEP=$'\x1f'
 OUT="PORTFOLIO.md"
 
-# extract $1=file $2=product-par-défaut → id,title,type,prio,status,pr,ready,created,version,epic,PRODUCT,milestone
+# extract $1=file $2=product-par-défaut → id,title,type,prio,status,pr,created,version,epic,PRODUCT,milestone
 # Le produit vient du front-matter `product:` (liste unifiée `features/`, ADR-0017 A14) ; le
 # $2 (dossier) n'est qu'un fallback si le champ manque. Sinon toute fiche mega-city de la
 # liste racine était comptée vectorz (retour Codex #128).
@@ -31,15 +31,14 @@ extract() {
       if ($0 ~ /^priority:/) { sub(/^priority:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); prio=$0 }
       if ($0 ~ /^status:/)   { sub(/^status:[[:space:]]*/, "");   sub(/[[:space:]]*#.*$/, ""); status=$0 }
       if ($0 ~ /^pr:/)       { sub(/^pr:[[:space:]]*/, "");       pr=unquote($0) }
-      if ($0 ~ /^ready:/)    { sub(/^ready:[[:space:]]*/, "");    sub(/[[:space:]]*#.*$/, ""); ready=$0 }
       if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
       if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); fmproduct=unquote($0) }
       if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
     }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", \
-          id, title, type, prio, status, pr, ready, created, version, epic, (fmproduct != "" ? fmproduct : product), milestone }
+    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", \
+          id, title, type, prio, status, pr, created, version, epic, (fmproduct != "" ? fmproduct : product), milestone }
   ' "$1" "$1"
 }
 
@@ -49,10 +48,16 @@ for f in features/[0-9]*.md; do
   rows="${rows}$(extract "$f" "vectorz")"$'\n'
 done
 
-st_label() {
-  case "$1" in
-    shipped) echo '✅ shipped';; in-progress) echo '🟠 in-progress';;
-    blocked) echo '⛔ blocked';; ready) echo '🔵 ready';; idea) echo '💡 idea';; *) echo "❓ $1";;
+# Schéma des statuts — MIROIR de src/core/fiche-schema.ts (STATUT_DEFS), comme dans regen-backlog.sh.
+# Gardé par le test de contrat src/__tests__/fiche-schema-contract.test.ts (ajouter un statut au schéma
+# sans le mettre ici fait échouer la suite).
+STATUT_LABELS='idea=💡 idea|ready=🔵 ready|in-progress=🟠 in-progress|shipped=✅ shipped|superseded=🗑️ superseded|merged=🔀 merged|split=🧩 split'
+
+st_label() { # $1=statut → « emoji statut » ; « ❓ statut » si inconnu (le validateur le signale)
+  local s="|${STATUT_LABELS}"
+  case "$s" in
+    *"|$1="*) s="${s#*"|$1="}"; echo "${s%%|*}";;
+    *) echo "❓ $1";;
   esac
 }
 
@@ -60,7 +65,7 @@ st_label() {
 emit_table() {
   echo '| Prod | # | Titre | Type | Prio | Statut | PR |'
   echo '|------|---|-------|------|------|--------|----|'
-  while IFS="$SEP" read -r id title type prio status pr ready created version epic product milestone; do
+  while IFS="$SEP" read -r id title type prio status pr created version epic product milestone; do
     [ -z "$id" ] && continue
     title="${title//|/\\|}"; pr="${pr//|/\\|}"
     echo "| ${product} | ${id} | ${title} | ${type} | ${prio} | $(st_label "$status") | ${pr} |"
@@ -80,13 +85,13 @@ emit_table() {
   echo ''
   echo 'Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produit, puis id).'
   echo ''
-  readies="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $3!="epic"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  readies="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $3!="epic"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
   if [ -n "$readies" ]; then printf '%s\n' "$readies" | emit_table; else echo '_Aucune fiche ready — flux gelé, groomer une tête de file._'; fi
   echo ''
 
   echo '## 🟠 En cours (`in-progress`)'
   echo ''
-  inprog="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="in-progress"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  inprog="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="in-progress"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
   if [ -n "$inprog" ]; then printf '%s\n' "$inprog" | emit_table; else echo '_Rien en cours._'; fi
   echo ''
 
@@ -95,10 +100,10 @@ emit_table() {
   echo 'Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir la fiche).'
   echo ''
   printf '%s' "$rows" | awk -F"$SEP" '($5=="ready" || $5=="blocked") && $3!="epic"' \
-    | sort -t"$SEP" -k4,4 -k11,11 -k1,1 | emit_table
+    | sort -t"$SEP" -k4,4 -k10,10 -k1,1 | emit_table
   echo ''
 
-  epics="$(printf '%s' "$rows" | awk -F"$SEP" '$3=="epic"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  epics="$(printf '%s' "$rows" | awk -F"$SEP" '$3=="epic"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
   if [ -n "$epics" ]; then
     echo '## 🧭 Épics (jamais tirables — tirer leurs enfants ready)'
     echo ''
@@ -108,13 +113,13 @@ emit_table() {
 
   echo '## 💡 Idées (non groomées, hors flux P0→P3)'
   echo ''
-  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $12!="parked"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $11!="parked"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
   if [ -n "$ideas" ]; then printf '%s\n' "$ideas" | emit_table; else echo '_Aucune idée en attente._'; fi
   echo ''
 
   # Parkées : idea + `milestone: parked` = jalon fermé par le PO, hors flux (cohérent avec le
   # bloc « Parkées » de features/BACKLOG.md et l'exclusion du board d'avancement).
-  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $12=="parked"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $11=="parked"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
   if [ -n "$parked" ]; then
     echo '## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)'
     echo ''
@@ -127,9 +132,9 @@ emit_table() {
   echo ''
   printf '%s' "$rows" | awk -F"$SEP" '
     NF {
-      p=$11; tot[p]++; totall++
+      p=$10; tot[p]++; totall++
       if ($3=="epic") { epic[p]++; next }
-      if ($5=="idea" && $12=="parked") { parked[p]++; next }
+      if ($5=="idea" && $11=="parked") { parked[p]++; next }
       st[p"/"$5]++
     }
     END {

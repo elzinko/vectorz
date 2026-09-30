@@ -9,7 +9,6 @@ epic:
 labels: [recettes]
 depends: []
 status: superseded
-ready:
 pr: "superseded — Ce rangement est fait par ce tri"
 created: 2026-08-29
 ---

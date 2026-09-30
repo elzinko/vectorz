@@ -8,7 +8,6 @@ epic:
 depends: [0079]
 labels: []
 status: shipped
-ready: 2026-08-05
 pr: "#103"
 created: 2026-07-25
 ---
@@ -44,3 +43,5 @@ interne → sens simple + verdict).
 
 - **Ordre** : P0 par importance, mais à faire **en dernier** — d'où `depends: [0079]` (et après
   l'intake + `digest`). Cas d'école du besoin d'ordre distinct de la priorité (cf. `0089`).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-05 · ancien champ front-matter `ready:`, retiré en migration 005.

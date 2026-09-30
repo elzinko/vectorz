@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#26"
 created: 2026-07-17
 ---
@@ -61,3 +60,5 @@ ancienneté médiane des `todo`.
 - 2026-07-17 — recoupe la friction **0100** (ex-0064 ; intake / santé backlog, capturée en session
   parallèle) : voir sa note de réconciliation — reste chez elle l'émission
   `backlog.health` au journal de supervisabilité et les seuils « temps de groomer ».
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

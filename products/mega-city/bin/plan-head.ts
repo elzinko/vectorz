@@ -1,8 +1,8 @@
 /**
  * plan-head — imprime la « tête réelle » du plan sur la **liste unique**
  * `features/` (fiche 0064 ; ex-0097 cross-liste). 1re carte non-livrée du
- * PLAN.md avec son `product:` et son état `ready`, plus les têtes bloquées
- * (todo sans ready qui précèdent) et les ids introuvables.
+ * PLAN.md avec son `product:` et son statut (`status: ready` = tirable), plus les têtes
+ * bloquées (fiches `idea` à groomer qui précèdent) et les ids introuvables.
  *
  *   pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md]
  *
@@ -44,7 +44,6 @@ function collect(root: string): Map<string, PlanCard> {
         product: readField(text, 'product') || '—',
         type: readField(text, 'type') || 'feature',
         status: readField(text, 'status') || 'idea',
-        ready: readField(text, 'ready') !== '',
       });
     }
   }
@@ -72,10 +71,10 @@ const { head, blockedAhead, unresolved } = crossBacklogHead(planIds, collect(roo
 if (head) {
   console.log(`tête : ${head.id} (${head.product}) — ready ✓ TIRABLE`);
 } else {
-  console.log('tête : aucune fiche tirable (todo + ready) dans le plan');
+  console.log('tête : aucune fiche tirable (status: ready) dans le plan');
 }
 if (blockedAhead.length > 0) {
-  console.log('bloquées avant (todo sans ready — à groomer) :');
+  console.log('bloquées avant (idea — à groomer) :');
   for (const c of blockedAhead) console.log(`  · ${c.id} (${c.product})`);
 }
 if (unresolved.length > 0) {

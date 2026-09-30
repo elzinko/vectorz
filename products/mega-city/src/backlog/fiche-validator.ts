@@ -4,15 +4,16 @@
  * I/O (bin/check-fiches.ts). Absorbe la fiche 281 et promeut en vrai validateur les
  * warnings d'intégrité déjà émis par regen-backlog.sh (id dupliqué, etc. — inchangés ici).
  *
- * Enums réutilisées, pas dupliquées : STATUTS/PRIOS/TYPES viennent de
- * `../core/avancement-data.js` (déjà la source pour le board d'avancement).
+ * Enums réutilisées, pas dupliquées : STATUTS vient du schéma unique `../core/fiche-schema.js`
+ * (avec les CHAMPS_RETIRES), PRIOS/TYPES de `../core/avancement-data.js`.
  * Lecture de champ réutilisée : `readField` vient de `../loaders/fiches.js`.
  *
  * Mode WARNING seulement : produit une liste d'anomalies, ne lance jamais, ne bloque
  * jamais. La bascule bloquante (exit ≠ 0, préflight/CI) est hors périmètre (D2).
  */
-import { EVIDENCE, PRIOS, STATUTS, TYPES } from '../core/avancement-data.js';
-import { readField } from '../loaders/fiches.js';
+import { EVIDENCE, PRIOS, TYPES } from '../core/avancement-data.js';
+import { CHAMPS_RETIRES, STATUTS } from '../core/fiche-schema.js';
+import { frontMatter, readField } from '../loaders/fiches.js';
 
 export interface FicheAnomaly {
   file: string;
@@ -56,6 +57,15 @@ export function validateFicheFrontMatter(
         field,
         message: `${field} inconnu : "${value}" (attendu : ${values.join(', ')})`,
       });
+    }
+  }
+
+  // Champs RETIRÉS (migration Skema, ex. `ready:` depuis la 005) : leur simple présence dans le
+  // FRONT-MATTER est une anomalie — jamais dans le corps (un exemple en bloc de code est légitime).
+  const frontMatterText = frontMatter(text);
+  for (const { field, hint } of CHAMPS_RETIRES) {
+    if (new RegExp(`^${field}:`, 'm').test(frontMatterText)) {
+      anomalies.push({ file, field, message: `champ retiré : ${field} — ${hint}` });
     }
   }
 

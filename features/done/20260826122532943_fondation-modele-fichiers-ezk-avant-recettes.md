@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [socle]
 status: superseded
-ready:
 pr: "superseded — Ancien chapeau : son contenu est livré ou porté par le graphe et le verrou de statut"
 created: 2026-08-26
 milestone: fondation
@@ -48,7 +47,7 @@ au lieu de le réinventer.
    cassent à chaque `ship`. Porté par
    **[357](20260821204737357_cabler-la-methode-modele-compile.md)**.
 2. **Aucun schéma qui *échoue*.** Un front-matter malformé passe en **warning**, jamais en rouge.
-   Porté par **[652](../20260823121712652_modele-statut-kanban-schema-valide.md)** + le **sliver
+   Porté par **[652](20260823121712652_modele-statut-kanban-schema-valide.md)** + le **sliver
    validateur** de **[0186](../0186-skema-versioning-migrations-skills-deployees.md)** + ma fiche
    **[281](20260826112620281_schema-markdown-declaratif-validateur.md)** (à fusionner ici).
 3. **Skema (versioning + migrations) ne couvre qu'`ezk-backlog`.** Porté par
@@ -94,7 +93,7 @@ schéma**.
 |---|---|---|
 | [357](20260821204737357_cabler-la-methode-modele-compile.md) | graphe compilé + unifier les liens (+ BMAD) | P1 idea — **l'ancre** |
 | [0186](../0186-skema-versioning-migrations-skills-deployees.md) | Skema généralisé + sliver validateur | P2 idea |
-| [652](../20260823121712652_modele-statut-kanban-schema-valide.md) | schéma de statut + 4 métas | P1 todo |
+| [652](20260823121712652_modele-statut-kanban-schema-valide.md) | schéma de statut + 4 métas | P1 todo |
 | [281](20260826112620281_schema-markdown-declaratif-validateur.md) | validateur de conformité | P3 — **fusionner ici** |
 
 *(357 reste rattachée à son épic

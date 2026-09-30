@@ -58,7 +58,6 @@ status: idea'
 fiche "$B/features"      0011 enfant-a 'type: feature
 priority: P1
 status: idea
-ready: 2026-07-17
 epic: 0010'
 fiche "$B/features"      0012 jalon 'type: chore
 priority: P2
@@ -199,5 +198,59 @@ check "0001 dans Idées, 0002/0003 PAS dans Idées" \
   "sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -q '^| \[0001\]' && ! sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -qE '^\| \[(0002|0003)\]'"
 check "0002 HORS tableau actionnable"       "! awk '/^## /{exit} {print}' '$idxh' | grep -q '^| \[0002\]'"
 check "stats parked=2 (quoté compté)"       "printf '%s' \"\$out_h\" | grep -q 'parked=2'"
+
+# ── Cas I : le schéma des statuts (fiche 20260823121712652) ─────────────────────────────────────
+# Chaque statut du schéma (idea/ready/in-progress/shipped/superseded/merged/split) a son libellé ;
+# `blocked` n'est plus un statut ; un statut inconnu reste visible (❓) ; le champ retiré `ready:`
+# n'influence plus rien (une fiche au vieux format est lue sans planter).
+I="$TMP/i"
+fiche "$I/features"      0001 i-idea   'type: feature
+priority: P1
+status: idea'
+fiche "$I/features"      0002 i-ready  'type: feature
+priority: P1
+status: ready'
+fiche "$I/features"      0003 i-wip    'type: feature
+priority: P1
+status: in-progress'
+fiche "$I/features/done" 0004 i-ship   'type: feature
+priority: P1
+status: shipped
+pr: "#4"'
+fiche "$I/features/done" 0005 i-sup    'type: feature
+priority: P1
+status: superseded'
+fiche "$I/features/done" 0006 i-merged 'type: feature
+priority: P1
+status: merged'
+fiche "$I/features/done" 0007 i-split  'type: feature
+priority: P1
+status: split'
+fiche "$I/features"      0008 i-typo   'type: feature
+priority: P1
+status: to-do'
+fiche "$I/features"      0009 i-vieux  'type: feature
+priority: P1
+status: ready
+ready: 2026-07-17'
+out_i="$("$SCRIPT" "$I" "Backlog — test I" 2>/dev/null)"
+idxi="$I/features/BACKLOG.md"
+echo "Cas I (schéma des statuts) :"
+check "libellé 🔵 ready"               "grep -q '| 🔵 ready |' '$idxi'"
+check "libellé 🟠 in-progress"         "grep -q '| 🟠 in-progress |' '$idxi'"
+check "libellé ✅ shipped"              "grep -q '| ✅ shipped |' '$idxi'"
+check "libellé 🗑️ superseded"          "grep -q '| 🗑️ superseded |' '$idxi'"
+check "libellé 🔀 merged (plus ❓)"     "grep -q '| 🔀 merged |' '$idxi' && ! grep -q '❓ merged' '$idxi'"
+check "libellé 🧩 split (plus ❓)"      "grep -q '| 🧩 split |' '$idxi' && ! grep -q '❓ split' '$idxi'"
+check "statut inconnu visible en ❓"    "grep -q '| ❓ to-do |' '$idxi'"
+check "légende = tous les statuts du schéma, sans blocked" \
+  "grep -q 'Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ✅ shipped · 🗑️ superseded · 🔀 merged · 🧩 split\\.' '$idxi' && ! grep -q 'Statuts :.*blocked' '$idxi'"
+check "stats : un compteur par statut du schéma, dans l'ordre" \
+  "printf '%s' \"\$out_i\" | grep -q 'stats: total=9 · idea=1 · parked=0 · ready=2 · in-progress=1 · shipped=1 · superseded=1 · merged=1 · split=1 · épics=0'"
+check "stats : plus de compteur blocked" "! printf '%s' \"\$out_i\" | grep -q 'blocked='"
+check "vieux format (ready: daté) lu sans planter, colonne = status" \
+  "grep -q '^| \[0009\](0009-i-vieux.md) |.*| 🔵 ready |' '$idxi'"
+check "médiane de création des ready émise (lit created, pas ready:)" \
+  "printf '%s' \"\$out_i\" | grep -q 'stats: création médiane des ready = 2026-07-17'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: superseded
-ready:
 pr: "superseded — epic retire (ADR-0017 A16, PR #236) ; theme+milestone remplacent type: epic"
 labels: [backlog, methode, doctrine, milestone]
 created: 2026-09-15

@@ -67,7 +67,7 @@ bloquées avant elle dans l'ordre du plan.
 | [`features/[NNNN]-slug.md`](../features/) | **La fiche** — source de vérité du statut, critères, PR |
 
 Priorité (`P0`→`P3`) = importance relative. **PLAN** = quoi d'abord. Une fiche **prête**
-(`ready:` daté) = assez cadrée pour être construite sans revenir vers toi.
+(`status: ready`) = assez cadrée pour être construite sans revenir vers toi.
 
 ---
 

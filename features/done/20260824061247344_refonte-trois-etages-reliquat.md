@@ -8,7 +8,6 @@ labels: [dette]
 version:
 epic:
 status: superseded
-ready:
 pr: "superseded — Fourre-tout au « prête » révoqué ; je vérifie que chaque point a sa fiche avant de clore"
 created: 2026-08-24
 ---

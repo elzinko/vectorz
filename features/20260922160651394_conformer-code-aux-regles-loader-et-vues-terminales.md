@@ -8,7 +8,6 @@ version: V0.1
 epic:
 labels: [socle]
 status: idea
-ready:
 pr:
 evidence: none # code / outillage, pas d'écran
 created: 2026-09-22

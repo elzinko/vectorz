@@ -24,6 +24,7 @@ Elle ne touche **que** les fiches `status: todo`. Elle les scinde selon le champ
 
 Le champ `ready:` (la date) **est conservé** : il reste la trace du passage DoR. Ce qui change,
 c'est que le tirage lit désormais `status: ready`, plus le couple `todo` + `ready:`.
+*(Mise à jour : la migration 005 a ensuite retiré ce champ — voir `005-retrait-champ-ready.md`. La 005 doit passer après la 003, qui lit encore `ready:`.)*
 
 ## Appliquer
 

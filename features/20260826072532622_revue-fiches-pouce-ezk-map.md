@@ -8,7 +8,6 @@ version: V0.3
 epic:
 labels: [carte]
 status: idea
-ready:
 pr:
 created: 2026-08-26
 ---

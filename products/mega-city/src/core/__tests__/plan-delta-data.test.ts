@@ -8,7 +8,6 @@ const f = (over: Partial<Fiche> & { id: string }): Fiche => ({
   type: 'feature',
   priority: 'P2',
   status: 'ready',
-  ready: false,
   milestone: '',
   product: 'mega-city',
   pr: '',

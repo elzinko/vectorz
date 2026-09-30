@@ -6,7 +6,6 @@ priority: P2
 product: mega-city
 labels: [carte]
 status: idea
-ready:
 pr:
 created: 2026-08-23
 milestone: parked

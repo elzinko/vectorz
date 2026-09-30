@@ -8,7 +8,6 @@ version:
 epic:
 depends: []
 status: shipped
-ready: 2026-08-25
 pr: "#192"
 created: 2026-08-24
 ---
@@ -234,3 +233,5 @@ déjà pour garder une famille d'artefacts-données.
   (source `~/git/google-mcp-multi-account/`) — à normaliser à l'étape 5.
 - Origine : session du 2026-08-24 (brainstorm pasteriz → le pattern cowork a fait émerger « recette »).
 - Grooming : 2026-08-25, panel `ezk-architect` (décisions D1–D5).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-25 · ancien champ front-matter `ready:`, retiré en migration 005.

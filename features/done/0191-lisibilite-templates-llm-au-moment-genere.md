@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 labels: [enabler, lisibilite]
 status: shipped
-ready: 2026-08-14
 pr: local (main f196fe0)
 created: 2026-08-11
 ---
@@ -104,3 +103,5 @@ filles : **AC4** (étude prior-art BMAD), **AC5** (article `ezk-article`).
 - **Scope MVP IN** : AC1 (template PR LLM-adapté à l'étape d'écriture) + AC2 (inlining au moment de générer) + AC3 (vérif prose testable, 3/3 reformulation).
 - **Déporté** en fiches filles à créer au build : AC4 (étude prior-art BMAD), AC5 (article `ezk-article`).
 - Cadré ezk-pm : la vérif prose (AC3) peut exiger un avis `ezk-architect` (test de contrat vs lentille reviewer) — sans remettre en cause le ready.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-14 · ancien champ front-matter `ready:`, retiré en migration 005.

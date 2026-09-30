@@ -8,7 +8,6 @@ epic:
 milestone: rationalisation
 labels: [doc, decouvrabilite, enabler]
 status: shipped
-ready: 2026-08-16
 pr: "#151"
 created: 2026-08-16
 ---
@@ -58,3 +57,5 @@ Frontière (ADR-0013 anti-surproduction) : **mince**. Le LLM ne juge rien ; **le
 - Antidote direct au symptôme « la carte n'est pas à jour » : **généré = ne dérive pas**.
 - Voisines : épic parent · [[0068]] (method-map à la main — antipattern remplacé) · [[0133]] (carte des rôles).
 - Candidat idéal pour dogfooder `/ezk-product-builder build --check-ready false` (petit, outcome testable net).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-16 · ancien champ front-matter `ready:`, retiré en migration 005.

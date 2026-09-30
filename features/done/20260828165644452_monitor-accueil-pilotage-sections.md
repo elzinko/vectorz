@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [ezk-map, ux, pilotage]
 status: shipped
-ready: 2026-08-29
 pr: "#185"
 created: 2026-08-28
 ---
@@ -95,3 +94,5 @@ diagrammes d'archi regroupés).
   (décision PO 2026-08-23 : réunir l'accès, ne pas fusionner les vues).
 - Incrément sur l'accueil livré [[20260825152954193]] (PR #170). Lien avec le rename
   [[20260826173005368]] (`ezk:map` → `ezk:monitor`) : **indépendant**, peut livrer séparément.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-29 · ancien champ front-matter `ready:`, retiré en migration 005.

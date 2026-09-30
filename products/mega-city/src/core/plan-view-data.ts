@@ -20,7 +20,6 @@ export interface PlanCardView {
   title: string;
   status: string;
   priority: string;
-  ready: boolean;
   product: string;
   type: string;
   pr: string;
@@ -49,9 +48,9 @@ export interface PlanLane {
 export interface PlanViewData {
   /** Couloirs (sections non vides), dans l'ordre du document. */
   lanes: PlanLane[];
-  /** 1re fiche `todo` + `ready` dans l'ordre du plan — ce que le prochain sprint tire. */
+  /** 1re fiche `status: ready` dans l'ordre du plan — ce que le prochain sprint tire. */
   head: PlanCardView | null;
-  /** Fiches `todo` sans `ready:` qui PRÉCÈDENT la tête — à groomer (jamais sautées en silence). */
+  /** Fiches `idea` (pas encore prêtes) qui PRÉCÈDENT la tête — à groomer (jamais sautées en silence). */
   blockedAhead: PlanCardView[];
   /** Ids cités par le plan mais ABSENTS de `features/` — signalés. */
   unresolved: string[];
@@ -68,7 +67,6 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
       title: '',
       status: '',
       priority: '',
-      ready: false,
       product: '',
       type: '',
       pr: '',
@@ -82,7 +80,6 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
     title: f.title,
     status: f.status,
     priority: f.priority,
-    ready: f.ready,
     product: f.product,
     type: f.type,
     pr: f.pr,
@@ -112,7 +109,7 @@ export function buildPlanViewData(planMd: string, fiches: Fiche[]): PlanViewData
 
   // Tête tirable + têtes bloquées : on RÉUTILISE crossBacklogHead sur l'ordre plat (0089).
   const planIndex = new Map<string, PlanCard>(
-    fiches.map((f) => [f.id, { id: f.id, product: f.product, type: f.type, status: f.status, ready: f.ready }]),
+    fiches.map((f) => [f.id, { id: f.id, product: f.product, type: f.type, status: f.status }]),
   );
   const cross = crossBacklogHead(parsePlanOrder(planMd), planIndex);
   const head = cross.head ? toCardView(cross.head.id, index) : null;

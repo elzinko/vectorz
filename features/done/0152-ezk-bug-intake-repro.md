@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: mega-city
 status: shipped
-ready: 2026-08-21
 pr: "#174"
 created: 2026-07-12
 ---
@@ -185,3 +184,5 @@ Les critères ci-dessus sont des **tests d'acceptation**. Recette à l'intake du
   rôle-vs-capacité tranchée) ; ajout d'une section « Comment vérifier » explicite. Deux points restent
   **au build** (gabarit inline vs fichier ; sévérité vs priorité) et n'empêchent pas la DoR. Aucune
   dépendance externe. Candidate au gate `ready` (tampon au PO). Build self-contained (skill + tests).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-21 · ancien champ front-matter `ready:`, retiré en migration 005.

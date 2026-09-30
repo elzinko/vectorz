@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [dette]
 status: idea
-ready:
 pr:
 created: 2026-08-29
 ---

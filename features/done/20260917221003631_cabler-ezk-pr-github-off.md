@@ -7,7 +7,6 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [github-optionnel, plugin]
 status: shipped # idea | ready | in-progress | blocked | shipped
-ready: 2026-09-17 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète)
 pr: "#253"
 evidence: none # câblage skill, pas d'écran
 created: 2026-09-17
@@ -102,3 +101,5 @@ par le dogfooding d'`ezk-sprint` ([[20260916225506856]]) ; ce cran route `ezk-pr
 - **Parallèle d'ezk-sprint** : même patron de section « Capacités GitHub », même lecteur.
 - **Distinction** : `ezk-sprint` PRODUIT une feature (une PR) ; `ezk-pr` CONSOMME un stock de PR.
   En mode off, le « stock » devient les branches locales + leurs fichiers de corps de PR locaux.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-17 · ancien champ front-matter `ready:`, retiré en migration 005.

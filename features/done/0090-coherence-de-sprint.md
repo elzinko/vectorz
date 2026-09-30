@@ -8,7 +8,6 @@ epic:
 depends: []
 labels: [enabler, r&d]
 status: shipped
-ready: 2026-08-03
 pr: "#99"
 created: 2026-07-25
 ---
@@ -61,3 +60,5 @@ Override humain via la tâche 1. **Hors scope de ce sprint** (attend 0092 pour l
   couvre 90 % ; le bail (tâche 2) paie surtout pour des flottes automatisées.
 - La forme exacte du claim en front-matter s'appuie sur `0092` (champs partagés).
 - Groomé 2026-08-03 — POC borné à la tâche 1.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-03 · ancien champ front-matter `ready:`, retiré en migration 005.

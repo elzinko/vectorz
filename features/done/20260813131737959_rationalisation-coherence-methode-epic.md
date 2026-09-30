@@ -9,7 +9,6 @@ epic:
 milestone: rationalisation
 labels: [rationalisation]
 status: superseded
-ready:
 pr:
 created: 2026-08-13
 ---
