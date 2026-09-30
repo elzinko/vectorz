@@ -78,3 +78,13 @@ de cette fiche. Le panel tranche.
 - **2026-08-08** — Composé par le pack de review **0183** (section « À tester »
   pointe vers `features/checks/<id>/`). Checks ≠ REVIEW : recette vs manifeste
   agrégateur. Webapp reporting **0184** affiche cette section.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : ezk-checks jamais committée, cluster recette réorg ezk-chef, rescoper vs ezk-qa.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

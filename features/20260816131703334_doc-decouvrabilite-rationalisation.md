@@ -64,3 +64,13 @@ Registre `docs/adr/` (le joyau) · `rules/` (58 fichiers, frontmatter homogène 
 - Voisines : [[0079]] (lisibilité — règle), [[0091]] (glossaire jargon), [[0133]] (fermée 2026-08-24 — la carte des rôles = le graphe compilé),
   [[0177]] (pack pratiques portables), [[0087]] (distribution/publication — LATER).
 - Filles à ce jour : `/ezk-help` (Phase 1). Les autres phases → fiches filles à groomer au fil de l'eau.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Épic doc fourre-tout (A16 retire épics), Phase1 ezk-help livrée, requalifier.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

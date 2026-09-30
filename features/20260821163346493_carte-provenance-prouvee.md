@@ -54,3 +54,13 @@ bandes, les descriptions, la colonne d'assemblage : tout cela reste de la rédac
 
 Prendre trois éléments au hasard sur la carte ouverte et remonter à leur source.
 Et saboter : ajouter un lien inventé, vérifier qu'il ressort comme déduit, pas comme fait.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Liens inventés résolus par graphe compilé ; reste UI provenance cliquable + ratio prouvé/déduit.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

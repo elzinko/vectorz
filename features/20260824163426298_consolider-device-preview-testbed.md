@@ -118,3 +118,13 @@ modes, ou un socle + adaptateurs).
   [20260825123700998](done/20260825123700998_doctrine-composition-features.md).
 - **À construire (à l'OK PO)** : créer le conteneur `type: epic`, **débloquer 0102** et le rattacher
   comme enfant-cœur, `ezk-preview` / `ezk-device` en enfants-adaptateurs.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Consolidation device/preview/testbed valide MAIS cadrée type:epic retiré par A16 → requalifier.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

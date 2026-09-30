@@ -59,3 +59,13 @@ relire pour être tranchée, la découpe est mauvaise.
 > principal — la carte est désormais organisée par ÉTAGES (ADR-0039) et sections
 > compilées (cérémonies, modules, librairie, LOI, profils). L'unité de revue candidate
 > naturelle = LA SECTION compilée (chacune a sa source de données et son invariant).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Fiche-décision unité de revue ; axe bandes disparu (ADR-0039), recadrer sur sections compilées.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

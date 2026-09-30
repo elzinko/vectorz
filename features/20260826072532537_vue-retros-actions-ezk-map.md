@@ -136,3 +136,13 @@ regen ; la modifier sans regen → le test d'invariant rougit.
 - **Briques réutilisables** (patron `avancement`) : `bin/ezk-map.ts`, `bin/regen-avancement.ts`
   + son cœur `src/core/…-data.ts`, un chargeur `src/loaders/…`.
 - **Product `mega-city`**.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Vue rétros non bâtie ; bloquée par 0080 (format capture) ; séquencer.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

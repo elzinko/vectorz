@@ -146,3 +146,13 @@ reconstruite** au sprint suivant.
   Références mises à jour : 0065, `done/0071`, ADR-0016, ADR-0018, `features/PLAN.md`.
   Correctif **manuel et ponctuel** : la cause structurelle (deux listes numérotant chacune
   depuis 0001) reste ouverte dans la fiche racine 0064.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Volet reconcile livré (ADR-0018) ; résidu DoR-règle + émission backlog.health.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

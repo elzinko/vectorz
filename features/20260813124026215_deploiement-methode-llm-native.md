@@ -222,3 +222,13 @@ Sujet **central au produit** → grooming **à fond**, avec un **panel multi-age
     live** vers le checkout principal (constaté 2026-08-26). Modifier la méthode pendant qu'une **autre
     session** s'en sert (ex. `muti`) peut la casser — surtout les **scripts rejoués** en cours de flux —
     au moment où l'on **répercute dans le principal**. L'install-par-projet **figée** est le vrai correctif.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Épic cadrage déploiement méthode, à réécrire (ADR-0039 overlay), réf 0172 fantôme.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

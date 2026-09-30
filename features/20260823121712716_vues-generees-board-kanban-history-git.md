@@ -60,3 +60,13 @@ date du tampon **sans** qu'elle figure dans la fiche.
 - Voisin : [[20260812100109940]] (synchroniser les vues de planning au `ship`) — même famille « vues
   générées qui ne mentent pas ».
 - **Non ready** — à groomer (format du board, extraction git des transitions).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Board kanban livré ; reste history <id> depuis git + limite squash.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

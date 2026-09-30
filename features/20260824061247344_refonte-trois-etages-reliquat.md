@@ -80,3 +80,13 @@ Sources durables : ADR-0039 (+ amendements 2026-08-24) · captures
 `2026-08-24-fermetures-backlog-paquet2.md` · inventaire backlog du 2026-08-23 (exploration,
 résumé dans les registres). `ready:` posé d'office : chaque point porte son critère et sa
 taille — c'est une fiche d'exécution, pas une idée.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Fiche fourre-tout reliquat, ready révoqué, à scinder ; bundles orphelins supprimés + board livré.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

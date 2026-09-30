@@ -97,3 +97,13 @@ le premier sans toucher au second.
   le PO au grooming.
 - Recoupe la mémoire projet `ezk-worktree-friction` (frictions ezk en worktree) — matière de
   cadrage disponible.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Ombrelle nettoyage session sur 0076/781/0189 ; idée pas mûre, à fusionner.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

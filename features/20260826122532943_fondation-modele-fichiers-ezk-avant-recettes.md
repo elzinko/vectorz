@@ -149,3 +149,13 @@ qui échoue) · le **versionnement** (granularité Skema) · les **4 métas**.
 - **Ne pas rouvrir** ADR-0001 / ADR-0039 : la fondation **construit dessus**.
 - Doctrine « pas d'outillage sans preuve dans ≥ 2 projets » (ADR-0013) = **question, pas interdit**
   (doctrine PO 2026-08-21) — ce chantier sert la méthode entière, il n'attend pas un 2ᵉ projet.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Chapeau fondation : ADR-0040 + graphe + validateur --strict livrés ; rescoper reliquat.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).
