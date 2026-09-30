@@ -1,6 +1,7 @@
 ---
 composes: [ezk-backlog]
 roles: [ezk-steward]
+applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-ezk
 argument-hint: "[help|harvest|create|deploy|audit]"
 description: >-

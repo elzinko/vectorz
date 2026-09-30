@@ -88,6 +88,13 @@ export interface Skill {
    * champ ne portait : elle ne vivait qu'en prose.
    */
   roles?: string[];
+  /**
+   * Fiche 357 (ADR-0040) — ids de RÈGLES que ce skill applique. Le trou que `composes` et `roles`
+   * laissaient : « le skill X suit la règle Y » ne vivait qu'en prose, sous forme de lien
+   * markdown par chemin (fragile). Déclaré par id, il entre dans le graphe compilé (verbe
+   * « applique ») et un id inconnu fait échouer la compilation.
+   */
+  applies?: string[];
   /** ADR-0027 — fichiers auxiliaires du dossier (hors `SKILL.md`). Absent ⇒ dossier sans asset. */
   assets?: SkillAsset[];
 }
