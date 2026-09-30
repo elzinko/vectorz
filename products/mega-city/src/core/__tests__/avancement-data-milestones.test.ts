@@ -9,7 +9,6 @@ const fiche = (over: Partial<Fiche>): Fiche =>
     type: 'feature',
     priority: 'P2',
     status: 'idea',
-    ready: false,
     milestone: '',
     product: 'mega-city',
     pr: '',

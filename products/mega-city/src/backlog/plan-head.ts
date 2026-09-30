@@ -15,7 +15,6 @@ export interface PlanCard {
   /** `feature | bug | refactor | chore`. */
   type: string;
   status: string;
-  ready: boolean;
 }
 
 export interface CrossBacklogHead {

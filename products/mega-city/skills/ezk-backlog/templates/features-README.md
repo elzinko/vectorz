@@ -1,6 +1,6 @@
 ---
 skill: ezk-backlog
-layout_version: 4
+layout_version: 5
 ---
 
 # Features — backlog du projet
@@ -12,10 +12,10 @@ Ce dossier est le **suivi versionné** des features / bugs / chores. Il vit sur
 
 | Fichier / dossier | Rôle |
 |---|---|
-| `<id>_slug.md` | Fiches **actives** (`idea` / `ready` / `in-progress` / `blocked`) — `id` horodaté `AAAAMMDDHHMMSSmmm` ; legacy `0001-slug.md` (4 chiffres) toléré |
+| `<id>_slug.md` | Fiches **actives** (`idea` / `ready` / `in-progress`) — `id` horodaté `AAAAMMDDHHMMSSmmm` ; legacy `0001-slug.md` (4 chiffres) toléré |
 | [`BACKLOG.md`](BACKLOG.md) | **Index généré** (`regen`) — ne pas éditer à la main |
 | [`PLAN.md`](PLAN.md) | Séquence décidée (curée) — horizon **NOW** court, pas une encyclopédie |
-| [`done/`](done/) | Fiches **closes** : `shipped` (livrées) ou `superseded` (clôturées sans livraison) |
+| [`done/`](done/) | Fiches **closes** : `shipped` (livrées), ou clôturées sans livraison : `superseded` / `merged` / `split` |
 | [`feature-template.md`](feature-template.md) | Gabarit pour une nouvelle fiche |
 
 ## Comment travailler

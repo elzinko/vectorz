@@ -1,7 +1,7 @@
 ---
 composes: [ezk-commits]
 name: ezk-backlog
-layout_version: 4
+layout_version: 5
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
@@ -41,7 +41,7 @@ worktrees, ni entre sessions, ni quand une branche est abandonnée.
 
 Toute réponse à l'humain (`list`, `next`, `review`, `reconcile`, `plan`, `help` avec
 état) ouvre par **« En clair »** (≤ 3 phrases : où on en est / quoi faire / suite),
-avant tables ou jargon (`DoR`, `ready:`, ids seuls). Règle
+avant tables ou jargon (`DoR`, `ready`, ids seuls). Règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
 Voir aussi [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
 
@@ -88,8 +88,8 @@ du front-matter de cette skill).
 | `init` | Initialise le suivi : `features/` + `done/` + README curé + `BACKLOG.md` (helper `init.sh`) |
 | `list` / `next` | Charge le backlog **trié par priorité** (P0→P3) en contexte de session |
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
-| `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change ni statut ni `ready:` |
-| `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert passe la fiche en `status: ready` + pose `ready: <date>` + regen + commit |
+| `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change pas le statut |
+| `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
@@ -127,7 +127,7 @@ features/
   README.md            # guide humain CURÉ (marque layout_version) — pas l'index
   BACKLOG.md           # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
   PLAN.md              # séquence décidée (curée) — NOW = prochaines N cartes
-  20260810143052123_slug.md   # fiches ACTIVES (idea / ready / in-progress / blocked) — id horodaté AAAAMMDDHHMMSSmmm (fiche 0180)
+  20260810143052123_slug.md   # fiches ACTIVES (idea / ready / in-progress) — id horodaté AAAAMMDDHHMMSSmmm (fiche 0180)
   0002-autre-slug.md          # format historique 4 chiffres — toujours valide (bascule en avant, pas de renommage)
   done/                # fiches LIVRÉES (déplacées ici quand status: shipped)
     0000-vieux-slug.md
@@ -145,8 +145,8 @@ priority: P0         # P0 | P1 | P2 | P3
 product:             # obligatoire dans ce monorepo — vectorz | mega-city | … (ADR-0017 A14)
 version:             # optionnel — jalon ciblé, ex. "V1.1" (vide si non pertinent)
 epic:                # optionnel — id de la fiche épic parente (type: epic) ; jamais d'épic → épic (ADR-0017)
-status: idea         # idea | ready | in-progress | blocked | shipped
-ready:               # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non-ready
+status: idea         # idea | ready | in-progress | shipped | superseded | merged | split
+blocked:             # optionnel — raison d'un blocage : un DRAPEAU posé par-dessus la colonne (une fiche peut être ready ET bloquée)
 pr:                  # ex. "#118" quand une PR existe
 created: 2026-06-23
 ---
@@ -157,7 +157,7 @@ Puis le corps (cf. `templates/feature-template.md`) : **ouvre par « En clair »
 (cases à cocher), **`## Comment vérifier`**, Notes. Le corps de PR **rendra cette fiche telle
 quelle** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)) —
 écris-la pour être lue seule.
-Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped · 🗑️ superseded.
+Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ✅ shipped · 🗑️ superseded · 🔀 merged · 🧩 split.
 
 > ⚠️ **Garantis « En clair » + `## Comment vérifier` sur la fiche créée, même si le
 > `feature-template.md` local du projet est antérieur à ADR-0029.** `init` **préserve** le
@@ -287,7 +287,7 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
 2. Session de raffinement **ciblée** sur ces slots via
    `product-management:product-brainstorming` ; le panel de challenge (fiche 0057) est
    composable en étape optionnelle.
-3. Écris les enrichissements dans la fiche. **Ne change ni le statut ni `ready:`** —
+3. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
    c'est le job du gate.
 
 Quand groomer : au moment de **tirer** la fiche (pas à la capture — une `idea` jamais
@@ -300,13 +300,14 @@ d'`add` (étape 1).
    **conditionnel** dépendances externes (exigé seulement si la fiche référence un
    repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »).
    **Un slot manque → REFUS motivé** (dis précisément quoi groomer) ; ne touche à rien.
-2. Au vert : passe la fiche en `status: ready` et pose `ready: <YYYY-MM-DD>` dans le
-   front-matter (date du jour — demande-la si inconnue), `regen`, commit
-   `docs(features): ready <id>`.
+2. Au vert : passe la fiche en `status: ready` — c'est la colonne « tirable », il n'y a
+   **plus de champ date `ready:`** (retiré par la migration 005 ; les dates historiques sont en note
+   au bas des fiches), `regen`, commit `docs(features): ready <id>`.
 
-Règles (ADR-0016 §2) : une fiche née via `add` (`idea`) n'est **pas présumée ready** (pas de champ
-`ready:` = non tirable sans passage ici) ; **aucun grandfathering** des fiches
-antérieures au gate ; `review` peut proposer la **révocation** d'un `ready:` devenu faux.
+Règles (ADR-0016 §2, amendé le 2026-09-30) : une fiche née via `add` (`idea`) n'est **pas présumée
+ready** (pas `status: ready` = non tirable sans passage ici) ; **aucun grandfathering** des fiches
+antérieures au gate ; `review` peut proposer la **révocation** d'un `status: ready` devenu faux
+(retour en `idea`).
 
 ### `next --ready-only` — LA prochaine fiche tirable (point d'entrée unique)
 
@@ -400,7 +401,7 @@ Contrôles (jugement LLM) :
 4. **Staleness** — vieux `ready` jamais tirés → proposer rétrogradation en `idea` ou clôture.
 5. **Cohérence épic/enfants** (ADR-0017) — épic `shipped` avec enfants actifs, épic
    `in-progress` aux enfants tous livrés, épic fourre-tout sans objectif livrable.
-6. **Révocation** — `ready:` devenus faux (le contexte a bougé depuis le gate).
+6. **Révocation** — `status: ready` devenus faux (le contexte a bougé depuis le gate).
 
 Les **compteurs viennent du script** (`regen`, doctrine ADR-0001 — ne les recompte
 jamais à la main) : fiches par statut, `ready`, création médiane des `ready`.
@@ -467,7 +468,7 @@ détection ne bascule rien seule ; l'arbitrage reste au PO).
 
 ### `plan [set …]` — la séquence décidée, persistée entre sessions
 
-Le problème : `priority` ne donne que des **buckets** (P0→P3) et `ready:` n'est qu'un **gate**
+Le problème : `priority` ne donne que des **buckets** (P0→P3) et `ready` n'est qu'un **gate**
 booléen. La **séquence** effectivement décidée en `review`/planning (« d'abord 0043, puis 0017,
 puis les bugs admin… ») ne vivait nulle part → perdue entre sessions. `plan` la
 **fige** dans un fichier dédié.
@@ -522,8 +523,8 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
 ## Garde-fous
 
 - Ne jamais inventer une priorité, une date ou un n° de PR : demander si inconnu.
-- Gate DoR **bloquant** : pas de tirage d'une fiche sans `ready:` — sauf soupape PO
-  (décision explicite journalisée). Seul `ready <id>` pose le champ.
+- Gate DoR **bloquant** : pas de tirage d'une fiche qui n'est pas `status: ready` — sauf soupape PO
+  (décision explicite journalisée). Seul `ready <id>` pose ce statut.
 - Une **direction non mûre** = `status: idea`, pas une fiche `ready` creuse (ne pas polluer l'actionnable ; groomer au moment de la tirer).
 - **Avant tout `add` : anti-doublon obligatoire** — 1 sujet = 1 fiche ; regrouper plutôt que multiplier ; jamais de fiche creuse (cadrer via `product-brainstorming` si flou).
 - Ne pas éditer `BACKLOG.md` à la main (toujours `regen`) ; ne pas laisser `regen` écraser le guide `README.md`.

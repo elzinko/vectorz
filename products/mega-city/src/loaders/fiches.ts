@@ -16,8 +16,7 @@ export interface Fiche {
   title: string;
   type: string; // feature | bug | refactor | chore | epic
   priority: string; // P0 | P1 | P2 | P3 | '' (épics/idées sans prio)
-  status: string; // idea | ready | in-progress | shipped | superseded | merged | split
-  ready: boolean; // le champ `ready:` est-il posé ?
+  status: string; // un des STATUTS du schéma (core/fiche-schema.ts) — `ready` est une COLONNE, plus un champ date
   milestone: string; // jalon d'ordonnancement/regroupement (ADR-0017 A16), '' si absent
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
@@ -100,7 +99,6 @@ export function loadFiches(rootDir: string): Fiche[] {
         type: readField(fm, 'type') || 'feature',
         priority: readField(fm, 'priority'),
         status: readField(fm, 'status') || 'idea',
-        ready: readField(fm, 'ready') !== '',
         milestone: readField(fm, 'milestone'),
         product: readField(fm, 'product') || '—',
         pr: readField(fm, 'pr'),

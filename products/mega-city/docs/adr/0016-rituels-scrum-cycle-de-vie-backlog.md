@@ -223,3 +223,28 @@ d'ordre intra-bucket nommée. (**A7, A8, A12, A13** → ADR-0017.)
    ezk-product-build = checkpoint « aucune fiche ready » + review complet
    tous les 5 sprints (PR #26).
 5. [ ] Épics : ADR-0017 + fiche 0072 (phase 2).
+
+## Amendement du 2026-09-30 — le tampon DoR est une colonne, plus un champ date
+
+**En clair.** Le gate `ready <id>` ne pose plus de date. Il passe la fiche en `status: ready`, et
+c'est tout. Le champ `ready: AAAA-MM-JJ` est retiré des fiches.
+
+Ce qui change par rapport au texte ci-dessus (A1 « readiness persistée `ready:` », les gates et les
+mentions de « pose `ready: <date>` ») :
+
+- **La colonne fait foi.** Depuis le retrait de `todo` (migration Skema 003), le tirage lit
+  `status: ready`. Le champ date n'avait plus de lecteur vivant. Il prêtait à confusion
+  (« pourquoi une date, on ne passe pas juste le statut à *ready* ? », PO du 2026-08-23).
+- **Migration 005 sans perte.** Chaque date `ready:` réelle (81 fiches) est recopiée en note datée au
+  bas de la fiche avant la suppression de la ligne. La date n'est jamais dérivée de git : le
+  squash-merge ment (une fiche livrée le 22 a pu être `ready` le 21).
+- **Un blocage est un drapeau**, pas une colonne (`blocked:` + raison, PR #235) : une fiche peut être
+  `ready` ET bloquée. La révocation d'une DoR devenue fausse (`review`, point 6) repasse la fiche en
+  `idea`.
+- **La soupape PO et le gate restent** : pas de tirage d'une fiche qui n'est pas `status: ready`, sauf
+  décision explicite journalisée.
+- **La liste des statuts** vit dans un schéma unique typé (`src/core/fiche-schema.ts`), pas dans un
+  fichier par repo (ADR-0040 D2 ; arbitrage PO du 2026-09-12).
+
+Portée : fiche `20260823121712652`, migration `migrations/005-retrait-champ-ready.md` du skill
+`ezk-backlog`.

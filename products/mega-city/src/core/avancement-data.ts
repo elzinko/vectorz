@@ -7,46 +7,13 @@
  * charge les fiches ; ici on ne fait que trier/compter/grouper.
  */
 import type { Fiche } from '../loaders/fiches.js';
+import { STATUTS, TERMINAUX } from './fiche-schema.js';
 
 /**
- * L'ordre de statut du flux : `idea` (pas encore prête) → `ready` (groomée, tirable) →
- * `shipped` (livrée). `in-progress` reste un signal orthogonal (dérivé de la branche
- * `feat/<id>`). Le statut `todo` a été RETIRÉ le 2026-09-04 (panel adverse, capture
- * `docs/captures/2026-09-04-panel-adverse-objet-sprint.md`) : une fiche non prête est une
- * `idea`, une fiche prête est `ready` — plus d'état ambigu au milieu. « doing » (en cours)
- * reste DÉRIVÉ de la branche `feat/<id>`, jamais un statut committé.
- *
- * `blocked` N'EST PLUS une colonne (sliver B, fiche 652) : c'est un DRAPEAU orthogonal
- * (champ `blocked:` en front-matter, une raison en texte) posé PAR-DESSUS n'importe quelle
- * colonne — une fiche peut être `ready` ET `blocked`. Voir `Fiche.blocked` / `BoardFiche.blocked`.
- *
- * `superseded`, `merged`, `split` = statuts TERMINAUX « clôturés sans livraison de forme
- * standard » : une fiche rendue caduque (`superseded`, pivot ou déjà livrée ailleurs), ou
- * absorbée par une autre fiche (`merged` — voir `merged_into:`) ou scindée en plusieurs
- * (`split` — voir `split_into:`). Ces trois statuts sortent du stock actif (la fiche part
- * dans `features/done/`) SANS compter comme livrée — les métriques de sprint ne comptent que
- * `shipped` (cf. `sprint-metrics/adapters/repoSource.ts`). Migration Skema 004 (`superseded`)
- * puis fiche 20260823121712652 (`merged`/`split`).
+ * STATUTS et TERMINAUX vivent dans `fiche-schema.ts` (LE schéma des fiches, fiche 20260823121712652) :
+ * la liste des statuts n'existe plus qu'à un seul endroit. Réexportés ici pour les importeurs du board.
  */
-export const STATUTS: readonly string[] = [
-  'idea',
-  'ready',
-  'in-progress',
-  'shipped',
-  'superseded',
-  'merged',
-  'split',
-];
-
-/**
- * Statuts TERMINAUX « clôturés sans livraison standard » (cf. bloc ci-dessus) : `superseded`
- * (caduque/pivot), `merged`, `split`. Ils sortent du STOCK ACTIF même quand la fiche reste
- * physiquement dans `features/` — cas d'une fiche gardée là pour ne pas casser ses liens relatifs
- * (ex. `0051`, ~20 liens). `shipped` n'y figure pas : une livrée vit dans `done/`, déjà exclue par
- * le dossier. Sans ce filtre, une `superseded` gardée dans `features/` fuiterait au board actif
- * (revue Codex PR #240, exposé par le retrait de l'épic — A16).
- */
-export const TERMINAUX: readonly string[] = ['superseded', 'merged', 'split'];
+export { STATUTS, TERMINAUX };
 
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
 export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
@@ -86,7 +53,6 @@ export interface BoardFiche {
   type: string;
   priority: string;
   status: string;
-  ready: boolean;
   milestone: string;
   product: string;
   pr: string;
@@ -136,7 +102,6 @@ const toBoard = (f: Fiche): BoardFiche => ({
   type: f.type,
   priority: f.priority,
   status: f.status,
-  ready: f.ready,
   milestone: f.milestone,
   product: f.product,
   pr: f.pr,

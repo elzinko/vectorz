@@ -16,7 +16,6 @@ const F = (over: Partial<Fiche>): Fiche => ({
   type: 'feature',
   priority: 'P2',
   status: 'idea',
-  ready: false,
   milestone: '',
   product: 'mega-city',
   pr: '',
@@ -41,7 +40,7 @@ describe('STATUTS — colonne du flux (sliver B, fiche 652)', () => {
 describe('buildAvancementData — drapeau `blocked` par-dessus la colonne (sliver B, fiche 652)', () => {
   it('une fiche ready ET blocked reste dans la colonne ready, avec le drapeau exposé', () => {
     const data = buildAvancementData([
-      F({ id: '0102', status: 'ready', ready: true, blocked: 'ADR-030 non ratifié' }),
+      F({ id: '0102', status: 'ready', blocked: 'ADR-030 non ratifié' }),
     ]);
     const f = data.actives.find((a) => a.id === '0102');
     expect(f?.status).toBe('ready');
@@ -49,7 +48,7 @@ describe('buildAvancementData — drapeau `blocked` par-dessus la colonne (slive
   });
 
   it('une fiche non bloquée expose un drapeau vide', () => {
-    const data = buildAvancementData([F({ id: '0001', status: 'ready', ready: true })]);
+    const data = buildAvancementData([F({ id: '0001', status: 'ready' })]);
     expect(data.actives[0]?.blocked).toBe('');
   });
 });
@@ -57,7 +56,7 @@ describe('buildAvancementData — drapeau `blocked` par-dessus la colonne (slive
 describe('buildAvancementData — logique du board', () => {
   it('exclut du board actif les statuts terminaux gardés dans features/ (superseded/merged/split)', () => {
     const data = buildAvancementData([
-      F({ id: '0001', status: 'ready', ready: true, priority: 'P0' }),
+      F({ id: '0001', status: 'ready', priority: 'P0' }),
       F({ id: '0002', status: 'superseded', priority: 'P1' }),
       F({ id: '0003', status: 'merged', priority: 'P1' }),
       F({ id: '0004', status: 'split', priority: 'P1' }),
@@ -89,10 +88,10 @@ describe('buildAvancementData — logique du board', () => {
 
   it('compte les tirables (status ready ; un terminal ready ne compte pas)', () => {
     const data = buildAvancementData([
-      F({ id: '0001', status: 'ready', ready: true }),
-      F({ id: '0002', status: 'idea', ready: false }),
-      F({ id: '0003', status: 'idea', ready: true }), // idea → pas tirable
-      F({ id: '0004', status: 'superseded', ready: true }), // terminal → hors board, jamais tirable
+      F({ id: '0001', status: 'ready' }),
+      F({ id: '0002', status: 'idea' }),
+      F({ id: '0003', status: 'in-progress' }), // commencée → pas tirable
+      F({ id: '0004', status: 'superseded' }), // terminal → hors board, jamais tirable
     ]);
     expect(data.tirables).toBe(1);
   });

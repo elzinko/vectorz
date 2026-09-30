@@ -27,6 +27,7 @@ SUITES=(
   "bin/test-ezk-help.sh"                                 # /ezk-help — index de commandes généré (fiche 20260816131704335)
   "skills/ezk-backlog/scripts/test-mint-id.sh"           # ezk-backlog — id horodaté (fiche 0180)
   "skills/ezk-backlog/scripts/test-layout-version.sh"    # ezk-backlog — Skema layout version
+  "skills/ezk-backlog/scripts/test-apply-005.sh"         # fiche 20260823121712652 — migration 005 (retrait du champ ready:, dates préservées)
   "bin/test-check-links.sh"                              # fiche 0101 — sabotage du vérificateur de liens
   "bin/test-links-repo.sh"                               # fiche 0101 — liens réels du repo (mega-city + racine vectorz)
   "bin/test-check-adr-ids.sh"                            # sabotage du garde-fou de numérotation des ADR

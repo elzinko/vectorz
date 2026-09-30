@@ -9,7 +9,6 @@ function fiche(overrides: Partial<Fiche> & { id: string }): Fiche {
     type: 'feature',
     priority: 'P1',
     status: 'ready',
-    ready: true,
     milestone: '',
     product: 'mega-city',
     pr: '',
