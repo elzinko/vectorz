@@ -19,7 +19,8 @@ import { type EntityFile, catalogEntityFiles } from './catalog.js';
 
 const INLINE_LINK = /\[[^\]]*\]\(\s*<?([^)\s>]+)>?[^)]*\)/g;
 const REFERENCE_DEFINITION = /^\s{0,3}\[[^\]]+\]:\s*<?([^\s>]+)>?/;
-const FENCE = /^\s{0,3}(`{3,}|~{3,})/;
+const FENCE_OPEN = /^\s{0,3}(`{3,}|~{3,})/;
+const FENCE_CLOSE = /^\s{0,3}(`{3,}|~{3,})\s*$/;
 const INLINE_CODE = /`[^`]*`/g;
 const EXTERNAL = /^([a-z][a-z0-9+.-]*:|#|\/)/i;
 
@@ -44,13 +45,17 @@ function linkTargets(text: string): { line: number; href: string }[] {
   const found: { line: number; href: string }[] = [];
   let fence: string | undefined;
   text.split('\n').forEach((raw, index) => {
-    const marker = FENCE.exec(raw)?.[1];
-    if (marker) {
-      if (fence === undefined) fence = marker[0];
-      else if (marker[0] === fence) fence = undefined;
+    if (fence !== undefined) {
+      // CommonMark : on ne ferme qu'avec le même caractère, au moins aussi long, sans texte derrière.
+      const closing = FENCE_CLOSE.exec(raw)?.[1];
+      if (closing && closing[0] === fence[0] && closing.length >= fence.length) fence = undefined;
       return;
     }
-    if (fence !== undefined) return;
+    const opening = FENCE_OPEN.exec(raw)?.[1];
+    if (opening) {
+      fence = opening;
+      return;
+    }
     const line = raw.replace(INLINE_CODE, '');
     for (const match of line.matchAll(INLINE_LINK)) {
       if (match[1]) found.push({ line: index + 1, href: match[1] });

@@ -146,6 +146,32 @@ describe('scanPathRefs — le bord I/O sur un mini-dépôt', () => {
     expect(first?.href).toBe('../../rules/ns/r1.md#section');
   });
 
+  it('suit les blocs de code imbriqués (CommonMark) : seul le lien APRÈS le bloc compte', () => {
+    buildRepo();
+    write(
+      'skills/gamma/SKILL.md',
+      [
+        '---',
+        'name: gamma',
+        '---',
+        '',
+        '````md',
+        '```text',
+        '[dans le bloc imbriqué](../../rules/ns/r2.md)',
+        '```',
+        '[encore dans le bloc externe](../../rules/ns/r2.md)',
+        '````',
+        '',
+        'Après le bloc : [vraie référence](../../rules/ns/r2.md).',
+        '',
+      ].join('\n'),
+    );
+
+    const gamma = scanPathRefs(root).filter((r) => r.from.id === 'gamma');
+
+    expect(brief(gamma)).toEqual(['skills/gamma/SKILL.md:12 skill:gamma → rule:ns/r2']);
+  });
+
   it('sabotage : sans `applies:` le lien est signalé ; avec `applies:` il est déclaré', () => {
     buildRepo();
     const undeclaredBefore = checkPathRefs(
