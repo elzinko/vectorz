@@ -4,6 +4,7 @@ title: "Article « Templates de réponse adaptés aux LLM » (via ezk-article)"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 epic:
 depends: ["0191"]
 labels: [article, lisibilite]

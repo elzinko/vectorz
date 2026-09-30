@@ -86,7 +86,7 @@ comme on le fait pour un skill ou une règle ? Intuition PO : « l'ajout de comp
 geste pour un agent, un skill ou une règle ». Si oui, `ezk-preview` (à modes) et `ezk-device`
 deviennent **le même agent** équipé de compétences différentes, pas deux skills concurrentes.
 
-Voir aussi : [0177](0177-pack-pratiques-projet-portables.md) (capacités portables, indépendantes
+Voir aussi : [0177](done/0177-pack-pratiques-projet-portables.md) (capacités portables, indépendantes
 du driver LLM) et la doctrine [20260825123700998](done/20260825123700998_doctrine-composition-features.md)
 (fusion vs épic vs division — pour trancher `ezk-preview` + `ezk-device` : une skill fusionnée à
 modes, ou un socle + adaptateurs).
@@ -118,3 +118,13 @@ modes, ou un socle + adaptateurs).
   [20260825123700998](done/20260825123700998_doctrine-composition-features.md).
 - **À construire (à l'OK PO)** : créer le conteneur `type: epic`, **débloquer 0102** et le rattacher
   comme enfant-cœur, `ezk-preview` / `ezk-device` en enfants-adaptateurs.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Consolidation device/preview/testbed valide MAIS cadrée type:epic retiré par A16 → requalifier.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

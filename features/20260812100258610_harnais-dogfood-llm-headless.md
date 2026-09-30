@@ -4,6 +4,7 @@ title: "testbed dogfood LLM headless — rejouer la chaîne méthode→journal�
 type: feature
 priority: P3
 product: mega-city
+milestone: parked
 epic:
 depends: []
 labels: [method, testbed, supervision]

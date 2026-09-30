@@ -4,6 +4,7 @@ title: article — émettre des events en restant fidèle au fonctionnement de C
 type: feature
 priority: P1
 product: mega-city
+milestone: parked
 status: idea
 labels: [article]
 pr:

@@ -7,9 +7,9 @@ product: mega-city
 epic:
 depends: ["0191"]
 labels: [bmad, lisibilite, doc]
-status: idea
+status: shipped
 ready:
-pr:
+pr: #167
 created: 2026-08-17
 ---
 
@@ -49,7 +49,7 @@ la méthode ezk (LLM-native), ce qui ne se transpose pas, et pourquoi. Réf. [[0
 - Fille de [[0191]] ; à groomer avant build.
 - **Findings du benchmark (2026-08-25)** — l'analyse « transposable / non-transposable » demandée par
   cette fiche est **largement livrée** par le rapport
-  [BMAD vs ezk](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 2 & 3) : le trésor
+  [BMAD vs ezk](../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 2 & 3) : le trésor
   transposable = la **boucle d'elicitation** (50 méthodes, propose 5, applique, re-propose), pas les
   gabarits documentaires ; le build actionnable est parti en fiche fille [[20260825161522791]]. Reste à
   cette fiche : trancher si on adopte aussi une **bibliothèque de templates par livrable** (PRD/archi/story)

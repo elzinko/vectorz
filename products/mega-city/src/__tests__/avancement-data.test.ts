@@ -66,6 +66,15 @@ describe('buildAvancementData — logique du board', () => {
     expect(data.counts.superseded).toBe(1); // toujours compté dans le tableau global des statuts
   });
 
+  it('exclut du board actif les fiches parkées (idea + milestone: parked), hors flux', () => {
+    const data = buildAvancementData([
+      F({ id: '0001', status: 'idea', priority: 'P1' }),
+      F({ id: '0002', status: 'idea', milestone: 'parked', priority: 'P0' }),
+    ]);
+    expect(data.actives.map((f) => f.id)).toEqual(['0001']); // la parkée sort du board actif
+    expect(data.counts.idea).toBe(2); // mais reste comptée dans le total des statuts
+  });
+
   it('compte par statut, trie les actives par priorité puis id, exclut done', () => {
     const data = buildAvancementData([
       F({ id: '0003', priority: 'P3' }),

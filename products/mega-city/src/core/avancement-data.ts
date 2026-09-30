@@ -168,14 +168,19 @@ function deriveMilestoneStatus(
   return shipped > 0 || engaged > 0 ? 'in-progress' : 'idea';
 }
 
+/** Fiche « parkée » : `idea` + `milestone: parked` (jalon fermé par le PO, hors flux). */
+const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
+
 /** Compile le board. Tout est trié → sortie stable (F4). */
 export function buildAvancementData(fiches: Fiche[]): AvancementData {
   const counts: Record<string, number> = {};
   for (const f of fiches) counts[f.status] = (counts[f.status] ?? 0) + 1;
 
-  // Actives = non livrées, non terminales (superseded/merged/split). Triées priorité puis id.
+  // Actives = non livrées, non terminales (superseded/merged/split), HORS parkées
+  // (idea + `milestone: parked` = jalon fermé par le PO, hors flux — cohérent avec le bloc
+  // « Parkées » de regen-backlog.sh et la section Idées de PORTFOLIO.md). Triées priorité puis id.
   const actives = fiches
-    .filter((f) => !f.done && !TERMINAUX.includes(f.status))
+    .filter((f) => !f.done && !TERMINAUX.includes(f.status) && !isParked(f))
     .sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || (a.id < b.id ? -1 : 1))
     .map(toBoard);
 

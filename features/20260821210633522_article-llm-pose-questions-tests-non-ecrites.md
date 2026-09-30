@@ -4,6 +4,7 @@ title: "Article — les tests vérifient des réponses déjà posées, le LLM po
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 epic:
 labels: [article, supervision, dogfood]
 status: idea

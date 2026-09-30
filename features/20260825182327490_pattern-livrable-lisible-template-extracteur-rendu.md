@@ -70,7 +70,7 @@ artefact + gardien » = instance du pattern steward — voir [20260824185422122]
   [20260825141012293](done/20260825141012293_ezk-sessions-cockpit.md).
 - **S'inspirer de BMAD** (rappel PO 2026-08-25) : avant de figer le format des templates/validateurs,
   regarder ce que **BMAD a déjà implémenté** (templates + validateurs + elicitation) — cf. l'étude
-  prior-art [20260817113353538](20260817113353538_etude-prior-art-bmad-templates-elicitation.md).
+  prior-art [20260817113353538](done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md).
 
 ## Critères d'acceptation (brouillon)
 
@@ -99,7 +99,7 @@ Cette fiche pose **l'OUTILLAGE généralisé** (le trio). Les voisines couvrent 
   et `0079` disent que le texte doit être lisible. Ici = **comment l'outiller** (le squelette + les données).
 - **L'article** : [`20260817113353676`](20260817113353676_article-templates-reponse-llm.md) vulgarise le
   sujet (éditorial). Ici = l'implémentation, pas l'article.
-- **Prior-art** : [`20260817113353538`](20260817113353538_etude-prior-art-bmad-templates-elicitation.md)
+- **Prior-art** : [`20260817113353538`](done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md)
   (BMAD = templates + elicitation) → matière d'entrée pour le grooming.
 - **Directives composables** : [`20260812104022246`](20260812104022246_composition-comportementale-skills-ezk.md)
   (format imposé aux skills) → mécanisme voisin, pour *appliquer* un template dans un skill.

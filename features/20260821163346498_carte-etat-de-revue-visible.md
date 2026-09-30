@@ -56,3 +56,13 @@ Points à trancher au grooming :
 
 Valider un élément, régénérer la carte, vérifier que la marque est toujours là. Puis
 modifier le fichier source et vérifier que la validation ne ment plus.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : État de revue sur carte non bâti ; recoupe 622 (pouce verdict versionné) ; recadrer.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

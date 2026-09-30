@@ -4,6 +4,7 @@ title: Contrat d'émission — vérifier la STRUCTURE des directives, pas compte
 type: chore
 priority: P2
 product: mega-city
+milestone: parked
 epic:
 labels: [contrat]
 status: idea

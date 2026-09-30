@@ -4,6 +4,7 @@ title: ezk-dns — automatiser la config DNS chez IONOS via l'API (l'achat reste
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
 pr:
 created: 2026-07-15

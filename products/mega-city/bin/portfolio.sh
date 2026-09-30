@@ -15,7 +15,7 @@ cd "$ROOT"
 SEP=$'\x1f'
 OUT="PORTFOLIO.md"
 
-# extract $1=file $2=product-par-défaut → id,title,type,prio,status,pr,ready,created,version,epic,PRODUCT
+# extract $1=file $2=product-par-défaut → id,title,type,prio,status,pr,ready,created,version,epic,PRODUCT,milestone
 # Le produit vient du front-matter `product:` (liste unifiée `features/`, ADR-0017 A14) ; le
 # $2 (dossier) n'est qu'un fallback si le champ manque. Sinon toute fiche mega-city de la
 # liste racine était comptée vectorz (retour Codex #128).
@@ -36,9 +36,10 @@ extract() {
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
       if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); fmproduct=unquote($0) }
+      if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
     }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", \
-          id, title, type, prio, status, pr, ready, created, version, epic, (fmproduct != "" ? fmproduct : product) }
+    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", \
+          id, title, type, prio, status, pr, ready, created, version, epic, (fmproduct != "" ? fmproduct : product), milestone }
   ' "$1" "$1"
 }
 
@@ -59,7 +60,7 @@ st_label() {
 emit_table() {
   echo '| Prod | # | Titre | Type | Prio | Statut | PR |'
   echo '|------|---|-------|------|------|--------|----|'
-  while IFS="$SEP" read -r id title type prio status pr ready created version epic product; do
+  while IFS="$SEP" read -r id title type prio status pr ready created version epic product milestone; do
     [ -z "$id" ] && continue
     title="${title//|/\\|}"; pr="${pr//|/\\|}"
     echo "| ${product} | ${id} | ${title} | ${type} | ${prio} | $(st_label "$status") | ${pr} |"
@@ -107,9 +108,19 @@ emit_table() {
 
   echo '## 💡 Idées (non groomées, hors flux P0→P3)'
   echo ''
-  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $12!="parked"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
   if [ -n "$ideas" ]; then printf '%s\n' "$ideas" | emit_table; else echo '_Aucune idée en attente._'; fi
   echo ''
+
+  # Parkées : idea + `milestone: parked` = jalon fermé par le PO, hors flux (cohérent avec le
+  # bloc « Parkées » de features/BACKLOG.md et l'exclusion du board d'avancement).
+  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $12=="parked"' | sort -t"$SEP" -k4,4 -k11,11 -k1,1)"
+  if [ -n "$parked" ]; then
+    echo '## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)'
+    echo ''
+    printf '%s\n' "$parked" | emit_table
+    echo ''
+  fi
 
   # Compteurs déterministes par produit (le script compte, le LLM juge — ADR-0001).
   echo '## 📊 Compteurs (déterministes)'
@@ -118,15 +129,16 @@ emit_table() {
     NF {
       p=$11; tot[p]++; totall++
       if ($3=="epic") { epic[p]++; next }
+      if ($5=="idea" && $12=="parked") { parked[p]++; next }
       st[p"/"$5]++
     }
     END {
-      printf "| Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | 🧭 épics |\n"
-      printf "|---------|-------|----------|-----------|-----------|---------|---------|\n"
+      printf "| Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked | 🧭 épics |\n"
+      printf "|---------|-------|----------|-----------|-----------|---------|-----------|---------|\n"
       split("vectorz mega-city", order, " ")
       for (i=1;i<=2;i++){ p=order[i];
-        printf "| %s | %d | %d | %d | %d | %d | %d |\n", p, tot[p]+0, \
-          st[p"/ready"]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, epic[p]+0 }
+        printf "| %s | %d | %d | %d | %d | %d | %d | %d |\n", p, tot[p]+0, \
+          st[p"/ready"]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, parked[p]+0, epic[p]+0 }
     }'
   echo ''
   echo '> Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.'

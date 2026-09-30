@@ -93,3 +93,13 @@ Frictions constatées :
 - **Contrainte connue** : toucher `features/` en vectorz oblige à régénérer les vues (carte, board,
   plan, graph, BACKLOG) — tout changement de format devra mettre à jour ces générateurs.
 - À groomer avec **ezk-architect** + un rôle **scrum** (ezk-qa ou équivalent).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Repenser PLAN→BACKLOG ; milestone déjà livré (A16), reste fusion, à unifier avec 241.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

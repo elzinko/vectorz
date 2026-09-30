@@ -50,7 +50,7 @@ au lieu de le réinventer.
 2. **Aucun schéma qui *échoue*.** Un front-matter malformé passe en **warning**, jamais en rouge.
    Porté par **[652](20260823121712652_modele-statut-kanban-schema-valide.md)** + le **sliver
    validateur** de **[0186](0186-skema-versioning-migrations-skills-deployees.md)** + ma fiche
-   **[281](20260826112620281_schema-markdown-declaratif-validateur.md)** (à fusionner ici).
+   **[281](done/20260826112620281_schema-markdown-declaratif-validateur.md)** (à fusionner ici).
 3. **Skema (versioning + migrations) ne couvre qu'`ezk-backlog`.** Porté par
    **[0186](0186-skema-versioning-migrations-skills-deployees.md)**.
 
@@ -95,7 +95,7 @@ schéma**.
 | [357](20260821204737357_cabler-la-methode-modele-compile.md) | graphe compilé + unifier les liens (+ BMAD) | P1 idea — **l'ancre** |
 | [0186](0186-skema-versioning-migrations-skills-deployees.md) | Skema généralisé + sliver validateur | P2 idea |
 | [652](20260823121712652_modele-statut-kanban-schema-valide.md) | schéma de statut + 4 métas | P1 todo |
-| [281](20260826112620281_schema-markdown-declaratif-validateur.md) | validateur de conformité | P3 — **fusionner ici** |
+| [281](done/20260826112620281_schema-markdown-declaratif-validateur.md) | validateur de conformité | P3 — **fusionner ici** |
 
 *(357 reste rattachée à son épic
 [carte fidèle](done/20260821163346487_carte-methode-fidele-et-revue.md) ; la carte est **un**
@@ -149,3 +149,13 @@ qui échoue) · le **versionnement** (granularité Skema) · les **4 métas**.
 - **Ne pas rouvrir** ADR-0001 / ADR-0039 : la fondation **construit dessus**.
 - Doctrine « pas d'outillage sans preuve dans ≥ 2 projets » (ADR-0013) = **question, pas interdit**
   (doctrine PO 2026-08-21) — ce chantier sert la méthode entière, il n'attend pas un 2ᵉ projet.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Chapeau fondation : ADR-0040 + graphe + validateur --strict livrés ; rescoper reliquat.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

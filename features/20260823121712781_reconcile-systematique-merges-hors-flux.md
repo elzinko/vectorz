@@ -87,3 +87,13 @@ de re-`regen`** quand deux ships se disputent une vue générée au merge.
   (a) une **section « tranches : [PR#…] »** cochée à mesure ; (b) **tous les critères d'acceptation
   cochés** ; (c) **hors périmètre** (id ↔ branche seul, complétude = jugement humain/DoD). Angle
   mort **distinct** du merge « hors flux » déjà couvert par cette fiche.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : reconcile + ship-regen livrés ; reste détection merge partiel + helper conflit.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

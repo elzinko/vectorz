@@ -4,6 +4,7 @@ title: "admin ezk : partagé multi-projets vs une app par projet — ports, isol
 type: chore
 priority: P3
 product: mega-city
+milestone: parked
 version:
 epic:
 status: idea

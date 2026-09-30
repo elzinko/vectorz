@@ -16,7 +16,7 @@ version: V0.1
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **moteur** (le registre écrit au `bind`, le
 > `VERSION` sur artefacts, le préflight par commande = machinerie générique scrum-agnostique), avec
 > **émission** déléguée à la **librairie** (`ezk-ezk`/`ezk-steward`, ADR-0039 §6). **Absorbe** la moitié
-> « pack versionné committé + pointeur README any-driver » de [0177](0177-pack-pratiques-projet-portables.md)
+> « pack versionné committé + pointeur README any-driver » de [0177](done/0177-pack-pratiques-projet-portables.md)
 > (devient propriétaire du versioning). À faire au grooming : **scinder** le sliver « validateur de
 > conformité » (gate enums/`id` dupliqué) en fiche dédiée ; trancher le **couplage 0087** (d'où vient
 > `VERSION` : umbrella plugin vs version mega-city). Garder distinct de l'article 0175.
@@ -197,7 +197,7 @@ par-commande).
     edit-once-live-everywhere — [0018]) ; ne pas vendoriser N copies d'une logique éditée en continu ;
   - **le projet committe (petit, data-like, cloud-friendly)** : le **lock Skema**
     `{artefact: version}` (le registre de bind ci-dessus) **+** le **pack de pratiques portable**
-    ([0177](0177-pack-pratiques-projet-portables.md)) pointé depuis le README, lu par n'importe
+    ([0177](done/0177-pack-pratiques-projet-portables.md)) pointé depuis le README, lu par n'importe
     quel driver LLM (cloud compris) ;
   - **cloud = matérialiser le CODE dans l'env cloud**, via deux options — **distinctes de la
     *direction* de mise à jour** (matérialiser ≠ pousser : une copie n'est **pas** un « push ») :

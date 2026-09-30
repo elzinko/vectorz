@@ -60,3 +60,13 @@ l'équipe (agents/skills) atteint déjà cop1 par pass-through du cap claude-cod
 (`settingSources:['project']`, cf. fiche 0146 cop1-target.yml) — la Phase 2 se limite donc
 aux compléments cop1-natifs éventuels (ex. mapping `Agent.model` → model-tiering,
 cop1 fiche 0128), à statuer quand le besoin est réel.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Cap cop1 jamais construit ; cible format iamthelaw legacy caduque ; rescoper Phase 1.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

@@ -4,6 +4,7 @@ title: ezk-cowork — scaffold + audit du pattern « contrat cowork » (bootstra
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
 pr:
 created: 2026-07-14

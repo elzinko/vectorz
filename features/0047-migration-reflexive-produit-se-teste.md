@@ -4,6 +4,7 @@ title: Migration réflexive — quand le produit se teste lui-même, la migratio
 type: feature
 priority: P3
 product: vectorz
+milestone: parked
 status: idea
 pr:
 created: 2026-07-16

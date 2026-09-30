@@ -5,7 +5,7 @@ type: feature
 priority: P2 # posée par défaut — PO à confirmer (P1 si construction dès la prochaine session)
 product: mega-city
 version:
-milestone: articles
+milestone: parked
 labels: [recette]
 status: idea
 ready:

@@ -8,9 +8,9 @@ version: V0.1
 epic:
 depends: []
 labels: [format, validation, methode, outillage]
-status: idea
+status: superseded
 ready:
-pr:
+pr: superseded — sliver absorbe par la fondation 20260826122532943 (ADR-0040 D2)
 created: 2026-08-26
 milestone: fondation
 ---
@@ -51,19 +51,19 @@ vérifier seule. Cette fiche propose ce chaînon manquant : un **schéma markdow
 ## Frontière (anti-doublon)
 
 - **Distinct de** la rule `recipe/valid-frontmatter` du chapeau
-  [`20260824185422122`](done/20260824185422122_recette-artefact-premier-rang-et-gardien.md) :
+  [`20260824185422122`](20260824185422122_recette-artefact-premier-rang-et-gardien.md) :
   celle-ci vérifie **une** recette, jugée par le gardien. Ici = le **mécanisme générique**
   (schéma déclaré + validateur), transverse aux familles.
 - **⚠ Recouvre** le **sliver « validateur de conformité »** que
-  [`0186`](0186-skema-versioning-migrations-skills-deployees.md) demande explicitement de
+  [`0186`](../0186-skema-versioning-migrations-skills-deployees.md) demande explicitement de
   **scinder en fiche dédiée**, et la validation de statut de
-  [`20260823121712652`](20260823121712652_modele-statut-kanban-schema-valide.md). Cette fiche
+  [`20260823121712652`](../20260823121712652_modele-statut-kanban-schema-valide.md). Cette fiche
   est probablement **ce** sliver — à **fusionner / positionner** au cadrage de la fondation
   « formats + moteur ezk » : **cadrée par la fiche-chapeau
-  [`20260826122532943`](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md)**
-  et l'[ADR-0040](../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)
+  [`20260826122532943`](../20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md)**
+  et l'[ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)
   (D2), qui prévoit de l'**absorber** (note du 2026-08-26).
-- **Voisin de** [`20260825182327490`](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md)
+- **Voisin de** [`20260825182327490`](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md)
   « livrable lisible » (template + extracteur scripté) : même famille d'outillage « format
   vérifiable », angle complémentaire — là **produire/rendre**, ici **valider**.
 - **Compose** ADR-0001 (frontière déterministe : le script tranche, pas le LLM).
