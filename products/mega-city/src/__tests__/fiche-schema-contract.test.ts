@@ -64,9 +64,7 @@ describe('contrat du schéma — gabarits et documentation', () => {
 
   const docs = [
     'features/feature-template.md',
-    'products/mega-city/feature-template.md',
     'products/mega-city/skills/ezk-backlog/templates/feature-template.md',
-    'products/mega-city/skills/ezk-backlog/init.sh',
     'products/mega-city/skills/ezk-backlog/SKILL.md',
   ];
   for (const rel of docs) {
@@ -86,7 +84,6 @@ describe('contrat du schéma — gabarits et documentation', () => {
   it('aucun gabarit ne recrée le champ retiré `ready:`', () => {
     for (const rel of [
       'features/feature-template.md',
-      'products/mega-city/feature-template.md',
       'products/mega-city/skills/ezk-backlog/templates/feature-template.md',
     ]) {
       expect(read(join(REPO, rel)), rel).not.toMatch(/^ready:/m);

@@ -141,11 +141,12 @@ Chaque fiche commence par un **front-matter YAML = source de vérité** :
 ---
 id: 0002
 title: Échec de connexion mobile invisible (caméra tourne, zéro erreur)
-type: feature        # feature | bug | refactor | chore | epic
+type: feature        # feature | bug | refactor | chore
 priority: P0         # P0 | P1 | P2 | P3
 product:             # obligatoire dans ce monorepo — vectorz | mega-city | … (ADR-0017 A14)
-version:             # optionnel — jalon ciblé, ex. "V1.1" (vide si non pertinent)
-epic:                # optionnel — id de la fiche épic parente (type: epic) ; jamais d'épic → épic (ADR-0017)
+milestone:           # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre propre au projet
+version:             # optionnel — release ciblée, ex. "V1.1" (vide si non pertinent)
+labels:              # optionnel — thèmes, en ligne : [a, b]
 status: idea         # idea | ready | in-progress | shipped | superseded | merged | split
 blocked:             # optionnel — raison d'un blocage : un DRAPEAU posé par-dessus la colonne (une fiche peut être ready ET bloquée)
 pr:                  # ex. "#118" quand une PR existe
@@ -163,8 +164,9 @@ Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ✅ shipped · 🗑️ 
 > ⚠️ **Garantis « En clair » + `## Comment vérifier` sur la fiche créée, même si le
 > `feature-template.md` local du projet est antérieur à ADR-0029.** `init` **préserve** le
 > template existant d'un projet déjà initialisé (il ne le ré-écrit pas) — donc ne t'y fie pas :
-> ajoute ces deux sections à la fiche, template à jour ou non. *(Rafraîchir le template local
-> lui-même reste un chantier séparé — cf. réponse Codex PR #152.)*
+> ajoute ces deux sections à la fiche, template à jour ou non. *(La référence est unique :
+> `templates/feature-template.md`. `init` signale l'écart avec le template local et donne la
+> commande `cp` qui l'aligne — il ne l'écrase jamais.)*
 
 > **Une seule source de vérité** : le **front-matter** de chaque fiche. L'index
 > `BACKLOG.md` est **régénéré** (`regen`) — on ne l'édite jamais à la main.
