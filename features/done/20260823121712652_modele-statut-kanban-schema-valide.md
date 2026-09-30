@@ -5,8 +5,8 @@ type: feature
 priority: P0
 product: mega-city
 labels: [socle]
-status: in-progress
-pr:
+status: shipped
+pr: "#267"
 created: 2026-08-23
 milestone: fondation
 version: V0.1
@@ -69,16 +69,23 @@ endroit, un schéma, au lieu d'être recopiée à la main dans le validateur, le
 - [x] `blocked` et `ready` cohabitent sans perte : `blocked` est un **drapeau orthogonal**, pas une
       colonne (cas `0102`) — PR #235. Statuts terminaux `merged` / `split` + provenance validée — PR #235.
 - [x] Markdown reste la **source** ; aucun moteur de workflow introduit.
-- [ ] (a) La liste des statuts vit en **un seul schéma** (`FICHE_SCHEMA`) ; validateur, board et vues
+- [x] (a) La liste des statuts vit en **un seul schéma** (`FICHE_SCHEMA`) ; validateur, board et vues
       en dérivent ; les scripts bash et les gabarits sont gardés par un test de contrat (un statut
       ajouté au schéma sans son habillage fait échouer la suite).
-- [ ] (b) `ready` est une **colonne** (`status: ready`, déjà vrai) **et** le champ date `ready:` n'existe
+- [x] (b) `ready` est une **colonne** (`status: ready`, déjà vrai) **et** le champ date `ready:` n'existe
       plus : aucune fiche ne le porte, le validateur le rejette, les gabarits ne le créent plus.
-- [ ] (c) Migration **005** sans perte sur les fiches actives et `done/` : chaque date `ready:` réelle
+- [x] (c) Migration **005** sans perte sur les fiches actives et `done/` : chaque date `ready:` réelle
       (81 fiches) est recopiée en note datée avant la suppression de la ligne ; une 2e exécution ne
       change rien ; `layout_version` 5.
-- [ ] (d) Les consommateurs listés en Proposition 5 passent sur `status: ready` ; `BACKLOG.md` /
+- [x] (d) Les consommateurs listés en Proposition 5 passent sur `status: ready` ; `BACKLOG.md` /
       `PORTFOLIO.md` restent fidèles (mêmes lignes qu'avant, `merged` / `split` enfin libellés).
+
+**Preuves (PR #267).** (a) `src/core/fiche-schema.ts` et `src/__tests__/fiche-schema-contract.test.ts`.
+(b) `fiche-validator.ts` (règle « champ retiré ») et les trois gabarits. (c) `apply-005-retrait-champ-ready.sh`
+et `test-apply-005.sh` : 219 fiches migrées, 81 dates préservées en note, 0 perdue, vérifié par un second
+calcul indépendant contre `HEAD` (324 fiches sur 325 égales octet pour octet, la 325e étant cette fiche
+groomée). (d) `BACKLOG.md` régénéré : une seule ligne change, la légende ; `PORTFOLIO.md` identique ;
+gate verte (848 tests, 23 suites bash, lint, `check-links` 0 cassé). Revue adverse `ezk-reviewer` : GO.
 
 ## Comment vérifier
 
@@ -100,7 +107,8 @@ Introduire `status: to-do` → il échoue aussi (déjà le cas depuis #233).
   git » ne tient plus pour les DoR historiques, conservées ici en note. À re-scoper en « vue git bonus »
   (arbitrage PO).
 - `portfolio.sh` lit encore `status: blocked` (section « Actionnable », compteur `⛔`) : depuis #235,
-  `blocked` est un drapeau. À passer sur le champ `blocked:`.
+  `blocked` est un drapeau. La branche est morte (elle ne correspond plus à rien). À passer sur le
+  champ `blocked:`. Relevé par la revue adverse, non bloquant.
 - Les quatre « métas » (`schema`, `generated_by`, `version`, sprint) restent hors périmètre (ADR-0040 D4).
 
 ## Notes / voisins
@@ -109,6 +117,12 @@ Introduire `status: to-do` → il échoue aussi (déjà le cas depuis #233).
   slots par repo), [[20260823121712716]] (les vues générées : board + historique git).
 - Issu de l'échange PO du 2026-08-23 (le champ `ready:` daté jugé bancal ; préférence pour des colonnes
   validées).
+- **2026-09-30 — DoR concourue par `ezk-pm` : GO.** Les dates `ready:` historiques vont en note datée
+  au bas de la fiche, jamais dérivées de git. Le critère « schéma éditable » est lu comme un schéma
+  typé unique gardé par un test de contrat, sans YAML par repo (ADR-0040 D2, arbitrage PO 2026-09-12).
+- **Autres sprints en vol** : après un `merge origin/main`, relancer
+  `apply-005-retrait-champ-ready.sh --apply` si une de leurs fiches porte encore `ready:` ; le
+  validateur la rejette sinon.
 - **Statuts `merged` / `split`** (échange PO 2026-08-25) : fusionner ou splitter des fiches produit des
   états **terminaux** ; les fiches absorbées passent `merged` / `split`, avec back-références vers la
   résultante. Geste porté par [[20260812104022240]].

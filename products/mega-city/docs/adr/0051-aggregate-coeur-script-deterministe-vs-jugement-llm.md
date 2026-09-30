@@ -7,7 +7,7 @@
 **Portée :** ce ADR grave DEUX coutures de la sous-commande `ezk-backlog aggregate` — (1) où
 passe la frontière code-déterministe ↔ jugement-LLM, et (2) qui, de `review` ou `aggregate`,
 possède le dédoublonnage profond. Il ne traite PAS l'**application** des fusions/splits (statuts
-`merged`/`split`), gated sur la fiche [`20260823121712652`](../../../../features/20260823121712652_modele-statut-kanban-schema-valide.md).
+`merged`/`split`), gated sur la fiche [`20260823121712652`](../../../../features/done/20260823121712652_modele-statut-kanban-schema-valide.md).
 
 ## En clair
 

@@ -15,9 +15,7 @@ Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produi
 
 ## 🟠 En cours (`in-progress`)
 
-| Prod | # | Titre | Type | Prio | Statut | PR |
-|------|---|-------|------|------|--------|----|
-| mega-city | 20260823121712652 | Valider les statuts des fiches par un schéma (fin des fautes de frappe) | feature | P0 | 🟠 in-progress |  |
+_Rien en cours._
 
 ## 📋 Actionnable (ready + blocked, hors idées et épics)
 
@@ -157,6 +155,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|-----------|---------|
 | vectorz | 20 | 0 | 0 | 0 | 4 | 16 | 0 |
-| mega-city | 97 | 1 | 1 | 0 | 39 | 56 | 0 |
+| mega-city | 96 | 1 | 0 | 0 | 39 | 56 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.
