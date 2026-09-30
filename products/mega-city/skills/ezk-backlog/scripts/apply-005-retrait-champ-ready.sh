@@ -19,11 +19,12 @@
 #   - valeur datée (non vide) → ajoute une note « Historique » au bas de la fiche ; le commentaire
 #     d'origine n'est recopié que s'il porte une info (le texte-type du gabarit est écarté) ;
 #   - valeur vide → suppression seule, aucune note ;
-#   - `status: blocked` → `status: ready` si la fiche portait une date `ready:` (DoR passée), sinon
-#     `status: idea` (même règle que la migration 003 pour `todo`), plus un drapeau
+#   - `status: blocked` → `status: idea` plus un drapeau
 #     `blocked: "ancien statut blocked (migration 005) — raison à préciser"` — sauf si la fiche a déjà
-#     sa propre ligne `blocked:`, conservée telle quelle ;
-#   - `--apply` uniquement : `features/README.md` → `layout_version: 5` ; le gabarit déployé
+#     sa propre ligne `blocked:`, conservée telle quelle. Jamais `ready` : la file tirable lit le statut
+#     seul et ignore le drapeau, une fiche bloquée y deviendrait tirable. Sa date de DoR, si elle
+#     existait, reste en note datée ;
+#   - `--apply` uniquement (réécritures bornées au FRONT-MATTER) : `features/README.md` → `layout_version: 5` ; le gabarit déployé
 #     `features/feature-template.md` perd sa ligne `ready:` (un nouvel `add` ne la recrée pas) et son
 #     commentaire de `status:` annonce les statuts du layout 5.
 # Idempotent : une fois les lignes parties et les `blocked` convertis, il n'y a plus rien à faire.
@@ -175,11 +176,13 @@ while IFS= read -r -d '' f; do
   new_status=""; flag_line=""
   if [[ "$is_blocked" -eq 1 ]]; then
     n_blocked=$((n_blocked + 1))
-    # Même règle que la migration 003 pour `todo` : la colonne d'origine se lit dans `ready:`.
-    # Daté → la DoR était passée (`ready`), sinon `idea`. Le blocage devient un drapeau.
-    if [[ -n "$value" ]]; then new_status="ready"; else new_status="idea"; fi
+    # Une fiche bloquée ne doit PAS entrer dans la file `ready` : les consommateurs de la file (plan-head,
+    # `next --ready-only`) lisent le statut seul et ignorent le drapeau. Elle passait pour non tirable
+    # avant le layout 5 ; elle repasse donc en `idea` (non tirable), avec le drapeau. Sa date de DoR, si
+    # elle existait, reste en note datée ; un nouveau `ready <id>` la remet dans la file une fois débloquée.
+    new_status="idea"
     fm_has_key "$f" blocked || flag_line="$BLOCKED_FLAG"
-    msg="status: blocked → ${new_status} + drapeau blocked:${msg:+ ; ${msg}}"
+    msg="status: blocked → idea + drapeau blocked:${msg:+ ; ${msg}}"
   fi
 
   if [[ "$APPLY" -eq 1 ]]; then
@@ -208,7 +211,13 @@ fi
 if [[ "$APPLY" -eq 1 ]]; then
   # Bumper le marqueur de layout à 5 (comme 003 le pose à 3).
   if [[ -f "$README" ]]; then
-    tmp="$(mktemp)"; sed 's/^layout_version:.*/layout_version: 5/' "$README" > "$tmp" && cat "$tmp" > "$README"; rm -f "$tmp"
+    tmp="$(mktemp)"
+    awk '
+      /^---[[:space:]]*$/ { fm++ }
+      fm == 1 && /^layout_version:/ { print "layout_version: 5"; next }
+      { print }
+    ' "$README" > "$tmp" && cat "$tmp" > "$README"
+    rm -f "$tmp"
   fi
   # Le gabarit déployé : un nouvel `add` ne doit plus recréer le champ, et le commentaire de
   # `status:` annonce les statuts du layout 5 (sans `blocked`, devenu un drapeau ; avec merged/split).
@@ -217,9 +226,12 @@ if [[ "$APPLY" -eq 1 ]]; then
   tpl="$FEATURES/feature-template.md"
   if [[ -f "$tpl" ]]; then
     tmp="$(mktemp)"
-    sed -E -e '/^ready:/d' \
-           -e 's/^(status:[^#]*#).*$/\1 idea | ready | in-progress | shipped | superseded | merged | split/' \
-           "$tpl" > "$tmp" && cat "$tmp" > "$tpl"
+    awk '
+      /^---[[:space:]]*$/ { fm++ }
+      fm == 1 && /^ready:/ { next }
+      fm == 1 && /^status:[^#]*#/ { sub(/#.*$/, "# idea | ready | in-progress | shipped | superseded | merged | split") }
+      { print }
+    ' "$tpl" > "$tmp" && cat "$tmp" > "$tpl"
     rm -f "$tmp"
   fi
   echo "(layout_version: 5) → régénère les vues (regen-backlog.sh + avancement:regen …)."

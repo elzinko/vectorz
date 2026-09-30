@@ -109,6 +109,10 @@ Introduire `status: to-do` → il échoue aussi (déjà le cas depuis #233).
 - `portfolio.sh` lit encore `status: blocked` (section « Actionnable », compteur `⛔`) : depuis #235,
   `blocked` est un drapeau. La branche est morte (elle ne correspond plus à rien). À passer sur le
   champ `blocked:`. Relevé par la revue adverse, non bloquant.
+- **La file tirable ignore le drapeau `blocked:`** : `plan:head`, `next --ready-only` et le compteur
+  `tirables` du board lisent le statut seul, donc une fiche `ready` ET bloquée reste « tirable ». Trou
+  du modèle à deux axes (#235), relevé par Codex sur cette PR. La migration 005 l'évite : elle ne
+  promeut jamais une fiche bloquée en `ready`. À trancher : faire ignorer le drapeau par la file, ou non.
 - Les quatre « métas » (`schema`, `generated_by`, `version`, sprint) restent hors périmètre (ADR-0040 D4).
 
 ## Notes / voisins

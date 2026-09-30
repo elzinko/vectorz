@@ -36,12 +36,16 @@ Pour chaque fiche de `features/` et de `features/done/` qui porte un `ready:` da
 |---|---|
 | une date (`ready: 2026-08-21`) | ajoute au bas de la fiche une note datée, puis supprime la ligne |
 | rien (`ready:`) | supprime la ligne, sans note |
-| `status: blocked` (layout v4) | `status: ready` si la fiche portait une date `ready:`, sinon `status: idea` ; ajoute le drapeau `blocked: "ancien statut blocked (migration 005) — raison à préciser"` (un `blocked:` déjà présent est conservé) |
+| `status: blocked` (layout v4) | `status: idea` et ajoute le drapeau `blocked: "ancien statut blocked (migration 005) — raison à préciser"` (un `blocked:` déjà présent est conservé) ; si la fiche portait une date `ready:`, elle reste en note |
 
 Le dernier cas ferme un trou du schéma : `blocked` n'est plus une colonne mais un **drapeau** posé par-dessus
-la colonne (une fiche peut être `ready` ET bloquée). Le validateur v5 rejette `status: blocked`. Sans cette
-conversion, un dossier serait déclaré layout 5 alors qu'il ne passe pas la validation stricte. La colonne
-d'origine se lit dans `ready:`, comme la migration 003 le fait pour `todo` : daté = la DoR était passée.
+la colonne. Le validateur v5 rejette `status: blocked`. Sans cette conversion, un dossier serait déclaré
+layout 5 alors qu'il ne passe pas la validation stricte.
+
+**Pourquoi `idea` et jamais `ready`.** La file tirable (`plan:head`, `next --ready-only`) lit le statut seul
+et ignore encore le drapeau. Une fiche bloquée promue en `ready` deviendrait donc tirable, alors qu'elle ne
+l'était pas avant. Elle repasse en `idea` (non tirable, comme avant), avec son drapeau. Sa date de DoR n'est
+pas perdue (note datée). Une fois débloquée, un nouveau `ready <id>` la remet dans la file.
 
 La note a toujours cette forme (le commentaire d'origine n'est recopié que s'il porte une information ;
 le texte-type du gabarit est écarté) :
@@ -58,6 +62,7 @@ exemple) reste intact. Il est **idempotent** : une fois les lignes parties, une 
 « rien à migrer ». Avec `--apply`, il passe aussi `features/README.md` à `layout_version: 5`, retire
 la ligne `ready:` du gabarit déployé `features/feature-template.md` et y met à jour le commentaire de
 `status:` (les statuts du layout 5 : plus de `blocked`, désormais un drapeau ; `merged` et `split` ajoutés).
+Ces réécritures restent dans le front-matter : un exemple du corps du gabarit ou du README n'est jamais touché.
 
 **Gardes de version.** La migration 003 lit le champ `ready:` pour scinder `todo` en `ready` ou `idea`.
 Sur un dossier plus ancien que le layout v4, `--apply` refuse et nomme la migration à passer d'abord.

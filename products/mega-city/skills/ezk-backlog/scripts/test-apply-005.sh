@@ -21,8 +21,8 @@ snap() { (cd "$1" && find features -type f | LC_ALL=C sort | xargs shasum | shas
 
 mk_root() { # $1=dir $2=layout_version
   mkdir -p "$1/features/done"
-  printf -- '---\nskill: ezk-backlog\nlayout_version: %s\n---\n\n# Features\n' "$2" > "$1/features/README.md"
-  printf -- '---\nid: "0000"\ntitle:\nstatus: idea # idea | ready | in-progress | blocked | shipped | superseded\nready:               # YYYY-MM-DD — posée par le gate `ready <id>`\npr:\n---\n\n# modèle\n' \
+  printf -- '---\nskill: ezk-backlog\nlayout_version: %s\n---\n\n# Features\n\n```yaml\nlayout_version: 1\n```\n' "$2" > "$1/features/README.md"
+  printf -- '---\nid: "0000"\ntitle:\nstatus: idea # idea | ready | in-progress | blocked | shipped | superseded\nready:               # YYYY-MM-DD — posée par le gate `ready <id>`\npr:\n---\n\n# modèle\n\nExemple du corps :\n\nready: 2026-01-01\nstatus: demo # exemple du corps\n' \
     > "$1/features/feature-template.md"
 }
 
@@ -88,7 +88,12 @@ check "rien d'autre ne disparaît : seules des lignes sont AJOUTÉES (la note)" 
 check "sans retour final : la note est sur sa propre ligne" \
   "tail -n1 '$A/features/20260101000000009_sans-newline.md' | grep -q '^> .*Historique' && grep -q '^dernière ligne sans retour$' '$A/features/20260101000000009_sans-newline.md'"
 check "layout_version: 5 dans features/README.md" "grep -q '^layout_version: 5$' '$A/features/README.md'"
-check "le gabarit déployé ne porte plus ready:" "! grep -q '^ready:' '$A/features/feature-template.md'"
+fm_key() { awk -v k="$2" '/^---[[:space:]]*$/{c++; next} c==1 && index($0, k ":")==1 {f=1} END{exit !f}' "$1"; }
+check "le gabarit déployé ne porte plus ready: en front-matter" "! fm_key '$A/features/feature-template.md' ready"
+check "retour Codex P2 : l'exemple du CORPS du gabarit est intact (ready: et status: … #)" \
+  "grep -q '^ready: 2026-01-01\$' '$A/features/feature-template.md' && grep -q '^status: demo # exemple du corps\$' '$A/features/feature-template.md'"
+check "retour Codex P2 : le layout_version du CORPS du README est intact, celui du front-matter passe à 5" \
+  "grep -q '^layout_version: 1\$' '$A/features/README.md' && [ \"\$(grep -c '^layout_version: 5\$' '$A/features/README.md')\" = 1 ]"
 check "le gabarit déployé annonce les statuts du layout 5 (sans blocked, avec merged/split) — retour Codex" \
   "grep -q '^status: idea # idea | ready | in-progress | shipped | superseded | merged | split\$' '$A/features/feature-template.md' && ! grep -q 'blocked' '$A/features/feature-template.md'"
 check "le compte-rendu annonce layout_version 5" "printf '%s' \"\$out2\" | grep -q 'layout_version: 5'"
@@ -124,7 +129,7 @@ bash "$APPLY" --apply "$Q" >/dev/null
 check "date quotée : la note porte la date sans guillemets" \
   "grep -q 'passée le 2026-08-24 ·' '$Q/features/20260101000000001_quotee.md' && ! grep -q 'passée le \"' '$Q/features/20260101000000001_quotee.md'"
 
-echo "Cas 7 (statut blocked du layout v4 — retour Codex P1) :"
+echo "Cas 7 (statut blocked du layout v4 — retour Codex P1 : jamais promu dans la file ready) :"
 K="$TMP/k"
 mk_root "$K" 4
 F1="$K/features/20260101000000001_bloquee-datee.md"
@@ -141,14 +146,14 @@ check "dry-run : rien d'écrit" "[ \"\$(snap '$K')\" = '$before7' ]"
 check "dry-run : annonce 4 statuts blocked à convertir" "printf '%s' \"\$out7\" | grep -q '4 statut(s) blocked converti(s)'"
 bash "$APPLY" --apply "$K" >/dev/null
 check "plus aucun status: blocked" "! grep -rq '^status: blocked' '$K/features'"
-check "blocked daté → ready + drapeau + note datée" \
-  "grep -q '^status: ready\$' '$F1' && grep -q '^blocked: \"ancien statut blocked' '$F1' && grep -q 'passée le 2026-08-21' '$F1'"
+check "blocked daté → idea (JAMAIS ready) + drapeau + note datée — retour Codex P1" \
+  "grep -q '^status: idea\$' '$F1' && ! grep -q '^status: ready' '$F1' && grep -q '^blocked: \"ancien statut blocked' '$F1' && grep -q 'passée le 2026-08-21' '$F1'"
 check "blocked au champ vide → idea + drapeau, sans note" \
   "grep -q '^status: idea\$' '$F2' && grep -q '^blocked: ' '$F2' && ! grep -q 'Historique' '$F2'"
 check "blocked sans champ ready → idea + drapeau (commentaire de la ligne status retiré)" \
   "grep -q '^status: idea\$' '$F3' && grep -q '^blocked: ' '$F3' && ! grep -q 'arbitrage' '$F3'"
-check "drapeau existant conservé, pas de doublon, colonne ready" \
-  "[ \"\$(grep -c '^blocked:' '$F4')\" = 1 ] && grep -q '^blocked: \"ADR-030 non ratifié\"\$' '$F4' && grep -q '^status: ready\$' '$F4'"
+check "drapeau existant conservé, pas de doublon, colonne idea" \
+  "[ \"\$(grep -c '^blocked:' '$F4')\" = 1 ] && grep -q '^blocked: \"ADR-030 non ratifié\"\$' '$F4' && grep -q '^status: idea\$' '$F4'"
 check "le reste du front-matter est intact (id, title, created, corps)" \
   "grep -q '^id: \"b1\"\$' '$F1' && grep -q '^created: 2026-07-01\$' '$F1' && grep -q '^# Titre\$' '$F1'"
 before7b="$(snap "$K")"
