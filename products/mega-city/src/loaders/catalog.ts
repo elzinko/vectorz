@@ -212,7 +212,7 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
   };
 }
 
-const SKILL_FILE = 'SKILL.md';
+export const SKILL_FILE = 'SKILL.md';
 
 /**
  * Fichiers auxiliaires d'un dossier de skill (ADR-0027), triés par chemin relatif POSIX

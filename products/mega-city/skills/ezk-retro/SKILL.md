@@ -179,7 +179,7 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 - **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
 - **Détection des candidats-recette** : skill [`ezk-chef`](../ezk-chef/) (`suggest`, lecture
-  seule) ; l'archivage durable du sprint reste à [`ezk-archive`](../ezk-archive/) (seul graveur
+  seule) ; l'archivage durable du sprint reste à `ezk-archive` (seul graveur
   de `docs/sessions/`).
 - **Agents de la cérémonie** : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-dev`, `ezk-pm`.
 

@@ -229,6 +229,11 @@ est écrite plus bas.
   `applies:`) et le catalogue réel est à 0 signalement, donc aucun faux positif mesuré (D2).
 - **La prose garde ses liens** pour la lecture. Tant que la relation est aussi déclarée par id, le
   lien de lecture est libre.
+- **Un lien par chemin affirme une relation.** Un skill se vise par son `SKILL.md` ou par son
+  dossier (`../ezk-chef/`, la forme usuelle) : le validateur suit les deux. Un simple renvoi
+  (« cf. », une frontière, « candidat, pas câblé ») n'est pas une dépendance. On écrit alors le nom
+  en code (`ezk-sprint`), sans lien. Déclarer `composes:` à tort dirait « requis » (ADR-0025) et
+  ferait surgir de faux avertissements de profil.
 - **Reliquat.** Trois liens règle → règle n'ont pas de champ d'id : `graph:check` les liste en
   information. Il faut d'abord leur donner un verbe. Voir la section « Suite » de la fiche 357.
 

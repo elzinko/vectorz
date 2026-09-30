@@ -58,8 +58,8 @@ Quand tu délègues :
    autres familles **que** si l'humain le demande explicitement.
 
 > **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
-> scrum (ça, c'est [`ezk-sprint`](../ezk-sprint/)), ni le suivi du *quoi* (ça, c'est
-> [`ezk-backlog`](../ezk-backlog/)). `ezk-sprint` **ouvre/déroule**, `ezk-backlog`
+> scrum (ça, c'est `ezk-sprint`), ni le suivi du *quoi* (ça, c'est
+> `ezk-backlog`). `ezk-sprint` **ouvre/déroule**, `ezk-backlog`
 > suit **le quoi**, **`ezk-archive` clôt**.
 >
 > **Bande (ADR-0022)** : **capacité**, pas orchestrateur. Sur le diagramme
@@ -207,14 +207,14 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 
 ## Intégration
 
-- **[`ezk-backlog`](../ezk-backlog/)** : le sous-agent lui délègue `ship`/`add`/`regen`
+- **`ezk-backlog`** : le sous-agent lui délègue `ship`/`add`/`regen`
   — **uniquement si le point 3 est DIRTY** (c'est le geste le plus cher de la chaîne) ;
   la note de handoff renvoie vers `list`.
-- **[`ezk-sprint`](../ezk-sprint/)** : complémentaire — le sprint *ouvre/déroule*,
+- **`ezk-sprint`** : complémentaire — le sprint *ouvre/déroule*,
   ezk-archive *clôt*. Typiquement invoqué **après** le checkpoint de fin de sprint.
   À la clôture `run`/`close`, archive un snapshot de `SPRINT.md` dans
   `docs/sessions/` (voir `docs/sessions/README.md` du projet).
-- **[`ezk-commits`](../ezk-commits/)** : tout commit produit suit les Conventional Commits.
+- **`ezk-commits`** : tout commit produit suit les Conventional Commits.
 - **`ezk-product-build`** : à ses pauses inter-sprint, il **rappelle** que
   `/ezk-archive` est disponible — il ne réimplémente rien du handoff ni de
   l'archive `docs/sessions/`.

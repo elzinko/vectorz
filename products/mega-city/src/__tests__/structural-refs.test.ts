@@ -172,6 +172,49 @@ describe('scanPathRefs — le bord I/O sur un mini-dépôt', () => {
     expect(brief(gamma)).toEqual(['skills/gamma/SKILL.md:12 skill:gamma → rule:ns/r2']);
   });
 
+  it('un lien vers un DOSSIER de skill (forme conventionnelle) vise bien ce skill, avec ou sans `/` final', () => {
+    buildRepo();
+    write(
+      'skills/delta/SKILL.md',
+      [
+        '---',
+        'name: delta',
+        '---',
+        '',
+        'Voir [beta](../beta/) et [alpha](../alpha).',
+        'Section : [usage](../beta/#usage).',
+        'Dossier de règles, pas une entité : [ns](../../rules/ns/).',
+        '',
+      ].join('\n'),
+    );
+    write('agents/scout.md', '---\nname: scout\n---\n\nSuit [alpha](../skills/alpha/).\n');
+
+    const refs = scanPathRefs(root).filter((r) => r.from.id === 'delta' || r.from.id === 'scout');
+
+    expect(brief(refs)).toEqual([
+      'agents/scout.md:5 agent:scout → skill:alpha',
+      'skills/delta/SKILL.md:5 skill:delta → skill:beta',
+      'skills/delta/SKILL.md:5 skill:delta → skill:alpha',
+      'skills/delta/SKILL.md:6 skill:delta → skill:beta',
+    ]);
+  });
+
+  it('sans `composes:`, un lien vers un dossier de skill est signalé — il ne disparaît plus en silence', () => {
+    buildRepo();
+    const linkToBetaDir = (frontmatter: string): void =>
+      write('skills/delta/SKILL.md', `---\n${frontmatter}\n---\n\nVoir [beta](../beta/).\n`);
+    const undeclared = (): string[] =>
+      brief(checkPathRefs(scanPathRefs(root), graphEdges(loadCatalog(root))).undeclared).filter(
+        (line) => line.includes('skill:delta'),
+      );
+
+    linkToBetaDir('name: delta');
+    expect(undeclared()).toEqual(['skills/delta/SKILL.md:5 skill:delta → skill:beta']);
+
+    linkToBetaDir('name: delta\ncomposes: [beta]');
+    expect(undeclared()).toEqual([]);
+  });
+
   it('sabotage : sans `applies:` le lien est signalé ; avec `applies:` il est déclaré', () => {
     buildRepo();
     const undeclaredBefore = checkPathRefs(
