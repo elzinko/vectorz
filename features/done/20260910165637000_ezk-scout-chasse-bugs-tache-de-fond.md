@@ -8,9 +8,9 @@ version: V0.2
 epic:
 depends: ["20260821210633457", "0102", "20260812104022228"]
 labels: [test-local]
-status: ready
+status: shipped
 ready: 2026-09-10 # décision PO : garder ezk-scout (bugs) et l'explorateur (features) SÉPARÉS + mutualiser la commande — cf. Notes
-pr:
+pr: "#266"
 evidence: none # capacité de méthode (skill) ; preuve = ses propres tests + un run de démonstration
 created: 2026-09-10
 ---
