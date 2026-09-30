@@ -1,9 +1,11 @@
 ---
 id: "20260824204751403"
-title: Méthode de préparation — lotir les features en versions (milestones) & contrôler la cohérence d'un lot, au-dessus du sprint
+title: "Découper le backlog en versions et vérifier la cohérence d'un lot"
 type: feature
 priority: P1
 product: mega-city
+version: V0.3
+labels: [backlog]
 epic:
 status: idea
 ready:
@@ -119,3 +121,12 @@ version/milestone + cohérence de lot**, et renvoyer au reste :
   demi-rendu ment) ; une section non-tirable **se déclare** (marqueur ignoré par `parsePlanOrder`).
   Contournement appliqué ce jour : section en blockquote non-parsé + entrée racine parsable pour l'id.
   L'intégration MACHINE du niveau version (cette fiche) doit livrer ce « fail-loud ».
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260912180313727`](done/20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md) — Repenser le backlog : fusionner PLAN dans BACKLOG (champs itération/version) + historiser les itérations (sprint + rétro)  
+  _Pourquoi_ : Même chantier : le plan et les versions vivent dans le backlog.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

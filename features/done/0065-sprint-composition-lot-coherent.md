@@ -28,7 +28,7 @@ Question PO (session 2026-07-16, premier self-host) : la règle actuelle est str
 À groomer. Piste (distinguer deux niveaux qu'on confond aujourd'hui) :
 
 - **Sprint ≠ PR.** Un **sprint** peut grouper **un lot cohérent** de fiches vers un **but de
-  sprint** (c'est la sortie du planning — fiche [0100](../0100-sprint-intake-sante-backlog-metriques.md)).
+  sprint** (c'est la sortie du planning — fiche [0100](0100-sprint-intake-sante-backlog-metriques.md)).
   La **PR** reste l'unité de revue/merge.
 - **Défaut : petite PR = 1 incrément livrable cohérent** (souvent 1 fiche) — meilleure revue,
   revert propre, une raison de changer.
@@ -147,7 +147,7 @@ d'archi neuve (ADR-037 déjà accepté).
 - **Auto-démonstration** : les fiches **0063 (ezk-retro) + 0100 (intake/santé, ex-0064) + 0065 (ce
   sujet)** forment justement un **lot cohérent** (« améliorer la méthode ») — le cas exact
   décrit par le PO. Elles sont d'ailleurs capturées ensemble (PR #20).
-- Relie [0100](../0100-sprint-intake-sante-backlog-metriques.md) (le « lot » = sortie du sprint
+- Relie [0100](0100-sprint-intake-sante-backlog-metriques.md) (le « lot » = sortie du sprint
   planning) et [0063](0167-ezk-retro-ceremonie-auto-amelioration.md) (la règle de composition
   est une **règle d'équipe évolutive** — donc gérable par `ezk-retro`).
 - À trancher au grooming : la formule de règle (« 1 PR = 1 incrément livrable cohérent :

@@ -33,7 +33,7 @@ règle et range via `ezk-backlog`. Elle **ne connaît pas `ezk-chef`** et ne sai
 recette.
 
 Voisine :
-[20260826082120069](../20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md)
+[20260826082120069](20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md)
 (« ezk-retro propose des features ET des règles ciblées ») fait évoluer le **même** temps 3 de
 la cérémonie, mais pour le **ciblage des règles** (agent / skill), avec une lourde dépendance au
 modèle compilé. Cette fiche-ci reste **focalisée sur le volet recette**, P0, sans cette
@@ -108,7 +108,7 @@ Faire évoluer la skill `ezk-retro` (temps 1 « collecte des signaux » + temps 
 - **Compose** : `0167` (la cérémonie, shippée) ; fiche voisine
   [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)
   (`ezk-chef suggest`) ; `ezk-backlog add` (création de fiche). **Voisine** de
-  [20260826082120069](../20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md) (même
+  [20260826082120069](20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md) (même
   temps 3, volet ciblage des règles — distincte, à composer, pas à fusionner).
 - **Frontière** : ne construit pas la recette (sprint N+1, via `ezk-chef extract`) ; ne déclenche
   pas la rétro (réglage séparé — « qui lance la rétro, et quand ») ; ne touche pas au Sujet B /

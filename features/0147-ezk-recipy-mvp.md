@@ -1,11 +1,12 @@
 ---
 id: 0147
-title: ezk-recipy — scanner les repos froids et proposer des fiches de skills
+title: "Scanner tes anciens dépôts pour proposer des skills"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
-labels: [recette]
+labels: [recettes]
 pr:
 created: 2026-07-06
 ---

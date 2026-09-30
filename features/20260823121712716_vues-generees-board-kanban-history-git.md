@@ -1,14 +1,15 @@
 ---
 id: "20260823121712716"
-title: "Vues générées — board kanban + historique des décisions relu depuis git (pas dans la fiche)"
+title: "Retrouver quand une fiche est passée prête ou livrée (historique git)"
 type: feature
 priority: P2
 product: mega-city
+labels: [carte]
 status: idea
 ready:
 pr:
 created: 2026-08-23
-milestone: fondation
+milestone: parked
 version: V0.1
 ---
 

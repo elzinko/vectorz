@@ -1,9 +1,11 @@
 ---
 id: 0125
-title: explorer le domaine « stack → toolchain » (cousin de Cap sur l'axe techno)
+title: "Modéliser « besoin × stack → outils à installer »"
 type: feature
 priority: P2
 product: mega-city
+labels: [installation]
+milestone: parked
 status: idea
 pr:
 created: 2026-06-27

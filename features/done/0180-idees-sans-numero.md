@@ -6,7 +6,7 @@ priority: P2
 product: vectorz
 status: shipped
 ready:
-pr: #124
+pr: "#124"
 created: 2026-08-01
 milestone: fondation
 version: V0.1
@@ -28,7 +28,7 @@ numérique** (`max+1`, 4 chiffres). Conséquences :
    trous et les « faux » ids rendent la lecture du backlog plus bruyante (le numéro
    suggère une fiche actionnable alors que ce n'est qu'une icebox).
 2. **Course à l'assignation** — plusieurs sprints / worktrees / processus calculent
-   `max+1` en parallèle (déjà constaté dans [0102](../0102-ezk-testbed-brique-boot-env-test.md))
+   `max+1` en parallèle (déjà constaté dans [0102](0102-ezk-testbed-brique-boot-env-test.md))
    et peuvent coller le même id, ou en brûler plusieurs inutilement.
 
 Besoin : un id **généré localement, sans coordination**, qui ne collisionne pas
@@ -39,7 +39,7 @@ parallèle — le préfixe projet (`mc-`, `cop1-`) ne suffit donc pas.
 distincts, chacune ayant fait `max+1` sur sa vue de `main`) ; arbitrée à la main
 (#82 garde `0073` — réservé en premier, id présent jusque dans sa branche ; #86 →
 `0075`). Même motif déjà vu : 0064, la course `max+1` de
-[0102](../0102-ezk-testbed-brique-boot-env-test.md), et les ids 0168–0172 « réservés
+[0102](0102-ezk-testbed-brique-boot-env-test.md), et les ids 0168–0172 « réservés
 par une autre branche » ([0173](0173-ezk-methode-trois-bandes-naming.md)).
 
 ## Décision (2026-08-10)

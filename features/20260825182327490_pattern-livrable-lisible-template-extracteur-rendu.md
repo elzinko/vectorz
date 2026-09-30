@@ -1,13 +1,13 @@
 ---
 id: "20260825182327490"
-title: Pattern « livrable lisible » — template + extracteur scripté + rendu LLM (généraliser handoff / PR / rapport)
+title: "Un modèle standard pour tout texte destiné à un humain"
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.3
 epic:
 depends: []
-labels: [lisibilite, methode, template]
+labels: [lisibilite]
 status: idea
 ready:
 pr:

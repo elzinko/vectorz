@@ -5,7 +5,7 @@ type: chore
 priority: P3
 product: vectorz
 status: superseded
-pr: superseded — cobaye 0041 (déc. 2026-08-07)
+pr: "superseded — cobaye 0041 (déc. 2026-08-07)"
 created: 2026-06-25
 ---
 

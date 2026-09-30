@@ -1,12 +1,12 @@
 ---
 id: "20260826072532622"
-title: Revue & validation des fiches dans ezk:map — pouce 👍/👎 (verdict versionné, partagé entre sessions)
+title: "Valider fiches et carte depuis le tableau de bord (👍/👎 enregistré)"
 type: feature
 priority: P2
 product: mega-city
-version:
+version: V0.3
 epic:
-labels: [revue]
+labels: [carte]
 status: idea
 ready:
 pr:
@@ -133,3 +133,16 @@ pnpm ezk:map avancement
 - **Rupture assumée** : première **écriture** depuis la map (GET-only confirmé dans
   `bin/ezk-map.ts`). C'est le morceau le plus lourd des trois sous-pages demandées.
 - **Product `mega-city`**.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260821163346496`](done/20260821163346496_carte-unites-de-revue.md) — Définir ce qu'on valide et dans quel ordre (l'unité de revue de la carte)  
+  _Pourquoi_ : Les quatre fiches « valider la carte » deviennent une seule.
+- [`20260821163346498`](done/20260821163346498_carte-etat-de-revue-visible.md) — Montrer sur la carte ce qui est revu, en cours, ou jamais vérifié (+ date)  
+  _Pourquoi_ : Même sujet : valider depuis le tableau de bord.
+- [`20260821163346501`](done/20260821163346501_carte-corriger-un-lien-faux.md) — Corriger un lien faux depuis la carte, et que ça retombe dans les fichiers  
+  _Pourquoi_ : Même sujet ; la correction côté fichier existe déjà.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

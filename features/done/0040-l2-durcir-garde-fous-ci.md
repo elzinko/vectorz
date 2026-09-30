@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: vectorz
 status: superseded
-pr: superseded — seam pilote mort (scan frontière dans pnpm test)
+pr: "superseded — seam pilote mort (scan frontière dans pnpm test)"
 created: 2026-07-16
 ---
 

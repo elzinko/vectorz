@@ -1,12 +1,12 @@
 ---
 id: "20260821204737357"
-title: Câbler la méthode par un modèle compilé, pas 30 frontmatter — et ce que BMAD apprend
+title: "Compiler la méthode en un seul graphe que tout le monde lit"
 type: feature
-priority: P1
+priority: P0
 product: mega-city
 version: V0.1
 milestone: fondation
-labels: [carte]
+labels: [socle]
 status: in-progress
 ready:
 pr:

@@ -1,10 +1,11 @@
 ---
 id: "20260825160456259"
-title: "Proposer les commandes suivantes en fin de sprint/skill (affordance next-step, à la BMAD *help)"
+title: "À la fin d'une commande, proposer les 1 à 3 commandes suivantes"
 type: feature
 priority: P2
 product: mega-city
-labels: [bmad, decouvrabilite]
+version: V0.3
+labels: [lisibilite]
 epic:
 milestone: rationalisation
 status: idea

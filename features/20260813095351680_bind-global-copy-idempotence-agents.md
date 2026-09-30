@@ -1,9 +1,11 @@
 ---
 id: "20260813095351680"
-title: bind-global copy non idempotent pour les agents (2e passage refusé)
+title: "Rendre l'installation des skills robuste (3 défauts de lawgiver)"
 type: bug
 priority: P2
 product: mega-city
+version: V0.4
+labels: [installation]
 epic:
 status: idea
 ready:
@@ -51,3 +53,14 @@ Trancher entre deux options (POC d'abord) :
   `managedTopNames`). Même problème de fond (« distinguer le géré du user »), mais pour un
   **fichier plat** au lieu d'un dossier.
 - Recoupe [[0186]] (versioning / déploiement des skills) sur le cycle de vie des artefacts déployés.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260813095351681`](done/20260813095351681_cap-projet-claude-code-skills-dossier-assets.md) — Cap projet claude-code — skills en forme dossier pour porter les assets  
+  _Pourquoi_ : Même composant : la matérialisation lawgiver.
+- [`20260813122619707`](done/20260813122619707_robustesse-groupage-skill-dir-materialisation.md) — Robustesse du groupage skill-dir en matérialisation (marqueur SKILL.md ambigu)  
+  _Pourquoi_ : Même composant ; aucun skill ne le déclenche aujourd'hui.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

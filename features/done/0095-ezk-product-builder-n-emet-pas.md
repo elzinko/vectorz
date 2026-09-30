@@ -7,7 +7,7 @@ product: mega-city
 epic:
 status: shipped
 ready: 2026-07-26
-pr: #55
+pr: "#55"
 created: 2026-07-25
 ---
 

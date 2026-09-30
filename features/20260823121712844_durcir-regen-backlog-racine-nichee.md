@@ -1,15 +1,16 @@
 ---
 id: "20260823121712844"
-title: "Durcir regen-backlog — refuser une racine par défaut nichée sous un autre backlog (fin du piège products/mega-city)"
+title: "Empêcher la régénération du backlog de viser le mauvais dossier"
 type: bug
-priority: P2
+priority: P3
 product: mega-city
+labels: [dette]
 status: idea
 ready:
 pr:
 created: 2026-08-23
 milestone: fondation
-version: V0.1
+version:
 ---
 
 # Durcir regen-backlog — que le défaut de racine ne puisse plus créer un backlog fantôme

@@ -1,9 +1,11 @@
 ---
 id: 0080
-title: ezk-retro — compte rendu standard de cérémonie (capture versionnée ET extractible, décisions PO tracées, via PR)
+title: "Chaque rétro laisse un compte rendu clair et des propositions ciblées"
 type: feature
 priority: P2
 product: mega-city
+version: V0.4
+labels: [sprint]
 epic:
 status: idea
 ready:
@@ -123,3 +125,12 @@ frontmatter se parse sans ambiguïté (c'est ce que consommera `pnpm ezk:map ret
   **P1** se justifierait (décision PO, non faite ici).
 - Origine : rétro 2026-07-18, demande directe du PO. L'ajout « extractible » vient du
   grooming des sous-pages `ezk:map` du 2026-08-26.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`20260826082120069`](done/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md) — ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport  
+  _Pourquoi_ : Même skill : on améliore ezk-retro en une fois.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

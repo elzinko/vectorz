@@ -101,7 +101,7 @@ un nom conventional qui rend le tout **retrouvable et rapprochable** de la featu
 - Alimente : [`20260824122629794`](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
   (feature → recette) et le futur **ezk-chef**.
 - Doctrine : ADR-0013 (une recette **propose**, ne fabrique jamais de code seule).
-- Sœur : [`20260829123707200`](../20260829123707200_reunifier-tagger-cluster-recette.md)
+- Sœur : [`20260829123707200`](20260829123707200_reunifier-tagger-cluster-recette.md)
   (réunifier + tagger le cluster recette).
 
 ## Notes

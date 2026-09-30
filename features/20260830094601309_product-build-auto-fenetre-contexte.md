@@ -1,9 +1,11 @@
 ---
 id: "20260830094601309"
-title: Mode auto — gérer la fenêtre de contexte sur un run long (+ trace de supervision requise)
+title: "Repartir « propre » pendant un long run autonome"
 type: feature
 priority: P2
 product: mega-city
+labels: [sprint]
+milestone: parked
 version:
 epic:
 status: idea

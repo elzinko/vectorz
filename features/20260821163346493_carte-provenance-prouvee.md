@@ -1,6 +1,6 @@
 ---
 id: "20260821163346493"
-title: Chaque élément de la carte cite le fichier d'où il sort (fin de l'interprétation)
+title: "Chaque élément de la carte montre le fichier d'où il vient"
 type: feature
 priority: P1
 product: mega-city

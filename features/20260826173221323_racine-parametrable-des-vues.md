@@ -1,10 +1,11 @@
 ---
 id: "20260826173221323"
-title: Racine de données paramétrable dans les vues — le déblocage de l'ancrage par projet
+title: "Pouvoir pointer les vues sur un autre projet (muti, samplerz)"
 type: refactor
 priority: P2
 product: mega-city
-version:
+labels: [installation]
+version: V0.4
 epic:
 status: idea
 ready:
@@ -33,7 +34,7 @@ d'environnement. C'est le **premier déblocage** de l'ancrage de la méthode par
 - Conséquence : board / map / plan / avancement ne peuvent afficher que les fiches **de vectorz**.
   Un projet hôte ne peut pas voir les siennes — ce qui rend l'install-par-projet inutile côté vues.
 - **Verrou indépendant de la grande décision d'archi** (options 0-4 de l'épic
-  [20260813124026215](20260813124026215_deploiement-methode-llm-native.md)) : quelle que soit la
+  [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md)) : quelle que soit la
   façon d'installer la méthode (copie, store versionné, plugin), les vues devront lire une racine
   **désignée**. D'où le **faible regret** : cette brique est vraie dans tous les scénarios.
 
@@ -74,12 +75,12 @@ Attendu : avec `EZK_ROOT`, la page montre les fiches du projet désigné ; sans,
 
 ## Notes / décisions
 
-- **Fille de l'épic** [20260813124026215](20260813124026215_deploiement-methode-llm-native.md) —
+- **Fille de l'épic** [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md) —
   le **déblocage n°1** identifié en session archi du 2026-08-26.
 - **Faible regret** : brique vraie quelle que soit l'option d'ancrage retenue (0-4). Peut être
   tirée **avant** le grooming panel de l'épic sans rien présupposer.
 - **Prérequis pratique** du « site de monitoring montre les fiches du projet courant » (fiche rename
-  [20260826173005368](20260826173005368_renommer-ezk-map.md)) et de l'install-par-projet.
+  [20260826173005368](done/20260826173005368_renommer-ezk-map.md)) et de l'install-par-projet.
 - **Adjacent mais distinct** de `20260823121712844` (durcir `regen-backlog` — refuser une racine par
   défaut nichée) : ici on **ouvre** une racine désignée aux vues, là on **verrouille** un défaut
   dangereux du backlog.

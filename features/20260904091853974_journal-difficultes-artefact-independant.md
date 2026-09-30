@@ -1,12 +1,12 @@
 ---
 id: "20260904091853974"
-title: Journal des difficultés — artefact indépendant (hors SPRINT.md, écrit pendant le dev, taggé par feature) ; absorbe le compte-rendu structuré
+title: "Tenir un journal des galères résolues, pendant le dev"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
-version:
+version: V0.3
 epic:
-labels: [journal, ezk-chef, retro, methode]
+labels: [recettes]
 status: idea
 ready:
 pr:

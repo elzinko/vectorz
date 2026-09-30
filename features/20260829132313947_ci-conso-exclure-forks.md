@@ -1,13 +1,13 @@
 ---
 id: "20260829132313947"
-title: "ezk-ci conso — exclure les forks (repos clonés) de la conso"
+title: "Masquer les forks dans le suivi de consommation CI"
 type: feature
 priority: P3
 product: mega-city
 version:
 epic:
 depends: []
-labels: [ezk-ci, ci, dx]
+labels: [dette]
 status: idea
 ready:
 pr:

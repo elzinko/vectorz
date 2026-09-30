@@ -1,12 +1,13 @@
 ---
 id: "20260917143616286"
-title: Recette — brancher Lemon Squeezy + gating Pro in-app (étend lancement-app)
+title: "Recette : vendre une app avec Lemon Squeezy et une licence Pro"
 type: chore
 priority: P2
 product: vectorz
+version: V0.3
 epic:
 milestone:
-labels: [recette, lancement, monetisation]
+labels: [recettes]
 status: idea
 ready:
 pr:

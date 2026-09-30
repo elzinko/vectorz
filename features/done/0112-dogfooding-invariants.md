@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 status: superseded
-pr: superseded — regles iamthelaw, systeme gele/archive (fiche 0140)
+pr: "superseded — regles iamthelaw, systeme gele/archive (fiche 0140)"
 created: 2026-06-26
 ---
 

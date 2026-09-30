@@ -1,9 +1,11 @@
 ---
 id: "20260812104022246"
-title: "Composition comportementale des skills ezk — directives composables (format imposé, appels de commandes forcés)"
+title: "Composer des consignes réutilisables dans les skills"
 type: feature
-priority: P1 # choisie par le PO (session 2026-08-12)
+priority: P2
 product: mega-city
+version: V0.4
+labels: [fabrique]
 epic:
 status: idea
 ready:
@@ -73,3 +75,12 @@ et ses cas).
   visible « ce qui est tissé » à l'exécution, très parlant pour comprendre le comportement réel.
   Recoupe l'onglet sessions de [[20260825141012293]].
 - Origine : session 2026-08-12.
+
+## ⤓ Absorbe (tri du 2026-09-30)
+
+Cette fiche reprend désormais le périmètre de :
+
+- [`0190`](done/0190-composes-delegates-tier-optionnel.md) — composes — tier « delegates: » (composition optionnelle, jamais warnée)  
+  _Pourquoi_ : Même sujet : la composition des skills.
+
+Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

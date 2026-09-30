@@ -1,12 +1,13 @@
 ---
 id: "20260910165637000"
-title: "ezk-scout — chasse aux bugs en tâche de fond : trouver et ficher, jamais corriger"
+title: "ezk-scout : chasser les bugs en tâche de fond, sans corriger"
 type: feature
 priority: P2
 product: mega-city
+version: V0.2
 epic:
 depends: ["20260821210633457", "0102", "20260812104022228"]
-labels: [ezk-method, qa, bug-hunting, testbed, scout]
+labels: [test-local]
 status: ready
 ready: 2026-09-10 # décision PO : garder ezk-scout (bugs) et l'explorateur (features) SÉPARÉS + mutualiser la commande — cf. Notes
 pr:

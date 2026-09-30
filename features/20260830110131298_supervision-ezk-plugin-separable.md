@@ -1,9 +1,11 @@
 ---
 id: "20260830110131298"
-title: Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039)
+title: "Sortir le code de supervision du texte des skills"
 type: refactor
 priority: P3
 product: mega-city
+labels: [supervision]
+milestone: parked
 version:
 epic:
 status: idea

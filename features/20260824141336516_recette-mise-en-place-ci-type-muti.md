@@ -1,12 +1,12 @@
 ---
 id: "20260824141336516"
-title: Recette « mise en place de la CI » pour un projet type muti (app desktop + web de vente) — build local (act) et/ou GitHub
+title: "Recette : mettre en place la CI d'un projet type muti"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
-version:
+version: V0.3
 epic:
-labels: [recette]
+labels: [recettes]
 depends: []
 status: idea
 ready:

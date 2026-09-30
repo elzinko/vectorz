@@ -1,9 +1,11 @@
 ---
 id: 0117
-title: aligner les signatures de domain.ts sur l'implémentation (expand/bind)
+title: "Corriger les signatures de domain.ts qui ne collent plus au code"
 type: chore
 priority: P3
 product: mega-city
+version:
+labels: [dette]
 status: idea
 pr:
 created: 2026-06-26

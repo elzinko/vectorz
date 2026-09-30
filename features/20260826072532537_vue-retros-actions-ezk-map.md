@@ -1,9 +1,11 @@
 ---
 id: "20260826072532537"
-title: Vue « rétrospectives » dans ezk:map — chaque rétro et ses actions mesurables, extraites des captures
+title: "Une page qui liste les rétros passées et leurs décisions"
 type: feature
 priority: P2
 product: mega-city
+labels: [carte]
+milestone: parked
 version:
 epic:
 status: idea

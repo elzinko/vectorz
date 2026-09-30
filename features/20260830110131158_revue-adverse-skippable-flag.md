@@ -1,9 +1,10 @@
 ---
 id: "20260830110131158"
-title: Revue adverse skippable par flag — --review adverse|skip (ezk-product-build → ezk-sprint)
+title: "Pouvoir sauter volontairement la revue adverse"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 labels: [revue]

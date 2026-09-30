@@ -1,9 +1,11 @@
 ---
 id: "20260816151112162"
-title: "Canal commands: dans lawgiver — déployer les slash-commands comme les skills"
+title: "Installer les slash-commands comme les skills"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
+version: V0.4
+labels: [installation]
 epic:
 status: idea
 ready:

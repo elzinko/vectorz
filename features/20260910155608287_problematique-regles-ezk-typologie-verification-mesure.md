@@ -1,9 +1,11 @@
 ---
 id: "20260910155608287"
-title: Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)
+title: "Cadrer toute la problématique des règles (mesure d'efficacité…)"
 type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
+labels: [installation]
+milestone: parked
 epic:
 status: idea # idea | ready | in-progress | blocked | shipped
 ready:

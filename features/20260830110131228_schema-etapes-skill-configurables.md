@@ -1,9 +1,11 @@
 ---
 id: "20260830110131228"
-title: Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040)
+title: "Rendre les étapes d'un skill configurables (schéma)"
 type: feature
 priority: P3
 product: mega-city
+labels: [fabrique]
+milestone: parked
 version:
 epic:
 status: idea

@@ -1,10 +1,11 @@
 ---
 id: "20260830114318159"
-title: ezk-ezk — option configurable « passer par la méthode » (proposer une fiche au lieu de créer un skill direct)
+title: "Créer un skill en passant par une fiche du backlog"
 type: feature
-priority: P2
+priority: P3
 product: mega-city
-version:
+labels: [fabrique]
+version: V0.4
 epic:
 depends: []
 status: idea

@@ -1,9 +1,11 @@
 ---
 id: 0077
-title: Kit émetteur — hooks Claude Code classe A (émission déterministe)
+title: "Émettre les événements de supervision via des hooks Claude Code"
 type: feature
 priority: P1
 product: mega-city
+labels: [supervision]
+milestone: parked
 epic:
 status: idea
 ready:
