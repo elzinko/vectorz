@@ -34,6 +34,7 @@
 | [20260911213014783](done/20260911213014783_merge-local-first-sync-main.md) | Merge local-first — piloter le squash en local, garder le main local à jour, propager vers GitHub | feature | P0 |  | mega-city | ✅ shipped | #232 |
 | [20260916225506856](done/20260916225506856_github-optionnel-fichier-pr-local.md) | GitHub optionnel par config — le fichier PR local (fiche rendue) devient le défaut | feature | P0 |  | mega-city | ✅ shipped | #250 |
 | [20260920111652514](done/20260920111652514_piloter-plugin-github-config.md) | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 |  | mega-city | ✅ shipped | #259 |
+| [20260930194219046](20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 |  | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -181,7 +182,6 @@
 | [20260830194601233](20260830194601233_ship-transactionnel-liens-vues.md) | ship transactionnel — réparer les liens + régénérer les vues, refuser de pousser si rouge | refactor | P0 |  | mega-city | 💡 idea |  |
 | [20260917162000501](20260917162000501_lanceur-dev-universel-worktree-branche.md) | Lanceur dev universel (n'importe quel projet / worktree / branche) — recette déployée par vectorz | feature | P0 |  | mega-city | 💡 idea |  |
 | [20260930123438875](20260930123438875_cycle-vie-sprint-session-ceremonies.md) | ezk-sprint start/close au niveau lot + rétro-compat par verbe (cycle de vie) | feature | P0 |  | mega-city | 💡 idea |  |
-| [20260930194219046](20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 |  | mega-city | 💡 idea |  |
 | [0050](0050-release-pastille-dogfooding.md) | Canal de release + pastille de MAJ — dogfooding sûr (version figée par squash-merge, adoption aux jalons upgrade_ok) | feature | P1 |  | vectorz | 💡 idea |  |
 | [0052](0052-socle-metrique-port-adaptateur-silo.md) | Socle vertical — port de métrique + 1er adaptateur (couverture) + remontée build PR + silo | feature | P1 |  | vectorz | 💡 idea |  |
 | [0069](0069-article-emission-events-claude-desktop-code.md) | article — émettre des events en restant fidèle au fonctionnement de Claude Desktop/Code | feature | P1 |  | mega-city | 💡 idea |  |
