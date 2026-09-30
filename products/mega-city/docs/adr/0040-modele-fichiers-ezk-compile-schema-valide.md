@@ -215,6 +215,10 @@ est écrite plus bas.
 - **Interroger.** `pnpm graph:query <verbe|lien> <id> [--inverse]`. « Qui applique cette règle ? »
   est `graph:query applique <règle> --inverse`. Une faute de frappe sur le verbe ou sur l'id est
   une erreur nommée, jamais un « aucune arête ».
+- **Un nœud est `{kind, id}`, pas un id.** Le catalogue a un agent ET un skill `ezk-archive`. Quand
+  un id est partagé, on écrit `kind:id` (`graph:query compose skill:ezk-archive`). Un lien
+  (`composes` part d'un skill) suffit parfois à trancher ; un verbe non. Dans ce cas l'id ambigu
+  est refusé avec les choix possibles : jamais une réponse qui mélange deux nœuds.
 
 ### Les références structurelles par id (premier incrément de l'item 5)
 

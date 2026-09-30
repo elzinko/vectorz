@@ -12,13 +12,23 @@
  * LIEN (le nom historique du champ : composes, roles, applies…). Sens direct par défaut ;
  * `--inverse` pour remonter (« qui applique cette règle ? »).
  *
+ * Un nœud est {kind, id}, pas un id : le catalogue a un agent ET un skill `ezk-archive`.
+ * Quand un id est partagé, écris `kind:id` (graph:query compose skill:ezk-archive). Un LIEN
+ * suffit souvent à trancher (`composes` part d'un skill) ; un VERBE, non : l'id ambigu est
+ * REFUSÉ avec les choix possibles, jamais répondu en mélangeant deux nœuds.
+ *
  * Artefact absent ⇒ message clair (régénère-le), pas un plantage silencieux. Relation ou id
  * inconnus ⇒ erreur nommée : une faute de frappe ne doit pas ressembler à « aucune arête ».
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { type CompiledGraph, isRelation, queryGraph } from '../src/core/compiled-graph.js';
+import {
+  type CompiledGraph,
+  isRelation,
+  queryGraph,
+  resolveNode,
+} from '../src/core/compiled-graph.js';
 import { EDGE_SOURCES, LINK_VERBS } from '../src/core/graph.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,14 +37,17 @@ const artifactPath = join(repoRoot, '.ezk', 'graph.compiled.json');
 
 const args = process.argv.slice(2);
 const inverse = args.includes('--inverse');
-const [relation, id] = args.filter((a) => !a.startsWith('--'));
+const [relation, ref] = args.filter((a) => !a.startsWith('--'));
 
-if (!relation || !id) {
-  console.log('Usage : pnpm --dir products/mega-city graph:query <verbe|lien> <id> [--inverse]');
+if (!relation || !ref) {
+  console.log(
+    'Usage : pnpm --dir products/mega-city graph:query <verbe|lien> <id | kind:id> [--inverse]',
+  );
   console.log('Exemple : graph:query est-verifie-par clean-code/no-dead-code');
   console.log(
     'Exemple : graph:query applique documentation-guidelines/human-facing-lisibility --inverse',
   );
+  console.log('Exemple : graph:query compose skill:ezk-archive   (id partagé par un agent et un skill)');
   process.exit(1);
 }
 
@@ -65,19 +78,30 @@ if (!Array.isArray(compiled?.edges) || !Array.isArray(compiled?.nodes)) {
   process.exit(1);
 }
 
-if (!compiled.nodes.some((n) => n.id === id)) {
-  console.log(`En clair : « ${id} » n'existe pas dans le graphe compilé (faute de frappe ?).`);
+const resolved = resolveNode(compiled, relation, ref, inverse);
+
+if (resolved.status === 'unknown') {
+  console.log(`En clair : « ${ref} » n'existe pas dans le graphe compilé (faute de frappe ?).`);
+  process.exit(1);
+}
+if (resolved.status === 'ambiguous') {
+  console.log(
+    `En clair : « ${ref} » existe en plusieurs exemplaires (${resolved.kinds.join(', ')}) et « ${relation} » ne dit pas lequel interroger.`,
+  );
+  console.log(`Précise le kind devant l'id : ${resolved.kinds.map((k) => `${k}:${ref}`).join(' · ')}`);
   process.exit(1);
 }
 
-const found = queryGraph(compiled, relation, id, inverse);
+const { node } = resolved;
+const name = `${node.kind}:${node.id}`;
+const found = queryGraph(compiled, relation, node, inverse);
 
 if (found.length === 0) {
   console.log(
-    `En clair : aucune arête « ${relation} » ${inverse ? 'vers' : 'depuis'} ${id} dans le graphe compilé.`,
+    `En clair : aucune arête « ${relation} » ${inverse ? 'vers' : 'depuis'} ${name} dans le graphe compilé.`,
   );
 } else if (inverse) {
-  console.log(`En clair : ${found.join(', ')} --(${relation})--> ${id}`);
+  console.log(`En clair : ${found.join(', ')} --(${relation})--> ${name}`);
 } else {
-  console.log(`En clair : ${id} --(${relation})--> ${found.join(', ')}`);
+  console.log(`En clair : ${name} --(${relation})--> ${found.join(', ')}`);
 }
