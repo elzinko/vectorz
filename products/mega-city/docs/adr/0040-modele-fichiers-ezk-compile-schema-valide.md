@@ -192,7 +192,7 @@ De la fiche **652** (nommage validé PO 2026-08-25) :
 ### En clair
 
 Le graphe compilé existe (`graph:compile`) et la carte le lit. Ce sprint tranche les trois restes
-de la fiche [357](../../../../features/20260821204737357_cabler-la-methode-modele-compile.md).
+de la fiche [357](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md).
 Les 5 mots de lien deviennent **4 verbes fermés**, posés en alias dans le compilateur. Les liens
 **skill → règle** passent par des ids, avec un validateur qui signale les oublis. La **note BMAD**
 est écrite plus bas.

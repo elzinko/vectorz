@@ -33,7 +33,7 @@ Chaque ligne : qui fait le travail, qui s'en sort le mieux, et ce qui se transpo
 | **Découvrabilité / « et maintenant ? »** | menu numéroté à l'activation + routeur global `/bmad-help` + « Next Steps » en fin d'étape | `/ezk-help` (index plat généré), sinon prose ; rien en fin de commande | **BMAD** | **Oui** — [20260825160456259](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md) |
 | **Elicitation (raffinement guidé)** | boucle `advanced-elicitation` : 50 méthodes, propose 5, applique, re-propose | absente ; `groom` délègue à un brainstorm libre | **BMAD** | **Oui** — [20260825161522791](../../../../features/20260825161522791_elicitation-raffinement-structure-groom.md) |
 | **Templates de livrables** | PRD, archi, story, epic… templatés avec instructions embarquées | 1 seul vrai template (la fiche) + ADR | **BMAD** | Partiel — [20260817113353538](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
-| **Modèle / graphe** | manifests CSV compilés (`bmad-help.csv`, `agent-manifest.csv`, SHA-256) | schéma typé `domain.ts` **mais aucune instance compilée** ; graphe dérivé à la volée | **BMAD** (sur ce point précis) | **Oui** — [20260821204737357](../../../../features/20260821204737357_cabler-la-methode-modele-compile.md) |
+| **Modèle / graphe** | manifests CSV compilés (`bmad-help.csv`, `agent-manifest.csv`, SHA-256) | schéma typé `domain.ts` **mais aucune instance compilée** ; graphe dérivé à la volée | **BMAD** (sur ce point précis) | **Oui** — [20260821204737357](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md) |
 | **Orchestration** | 4 phases longues, un « OS » `workflow.xml` interprété par le LLM | boucle sprint 0→10, étapes déléguées à des agents typés | Nul (choix différents) | Non |
 | **Sûreté / cœur** | tout est un prompt **non appliqué** (« NEVER skip a step ») | cœur déterministe testé (ADR-0001) ; LLM jamais load-bearing | **ezk** | — |
 | **Coût (tokens / temps)** | lourd : persona + menu + `workflow.xml` rechargés à chaque tour | léger : fichiers plats, scripts, délégation par modèle | **ezk** | — |
@@ -110,7 +110,7 @@ découle de ce choix.
 - **BMAD.** Un installeur Node (`tools/cli/`) **compile** les agents, **génère les manifests** dans `_bmad/_config/` (`agent-manifest.csv`, `workflow-manifest.csv`, `files-manifest.csv` avec **SHA-256 par fichier**), et **fusionne** les `module-help.csv` en un **catalogue unique** `bmad-help.csv` (58 commandes, colonnes `phase, code, command, required, agent, description, outputs`…). C'est une vraie **couche de build**, bien séparée des sources.
 - **ezk.** Le schéma existe — [domain.ts](../domain.ts) type proprement Rule / Bundle / Skill / Agent / Profile — **mais il n'y a aucune instance compilée**. Le graphe est **redérivé à la volée** (`src/loaders/catalog.ts`). Ce qui est compilé, ce sont des **vues** régénérées et CI-vérifiées : `regen-backlog.sh` (l'index BACKLOG), `regen-composes-graph.ts` (un graphe Mermaid), `ezk-map.ts` (la carte 3-étages). Le câblage relationnel (`competences` / `roles` / `interactions`) est **peu peuplé** : beaucoup de liens vivent encore en **prose Markdown** (chemins fragiles, d'où le `check-links.sh` à lancer à la main).
 - **Verdict.** **BMAD gagne sur ce point précis** : il a l'objet compilé interrogeable que ezk n'a pas encore.
-- **À voler.** Compiler le graphe en **une instance typée** (pas juste des vues Mermaid). Déjà capturé et argumenté : fiche [`20260821204737357`](../../../../features/20260821204737357_cabler-la-methode-modele-compile.md).
+- **À voler.** Compiler le graphe en **une instance typée** (pas juste des vues Mermaid). Déjà capturé et argumenté : fiche [`20260821204737357`](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md).
 
 ### Dim 6 — Sûreté : qui garantit que ça marche ?
 
@@ -158,7 +158,7 @@ Les recommandations sont **déjà rangées dans le backlog** (dédoublonnées co
 | **« Et maintenant ? »** en fin de commande | Fiche **neuve** [`20260825160456259`](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md) (idée #1) |
 | **Boucle d'elicitation** dans `groom` | Fiche **neuve** [`20260825161522791`](../../../../features/20260825161522791_elicitation-raffinement-structure-groom.md) |
 | **Bibliothèque de templates + étude prior-art** | **Enrichit** l'étude existante [`20260817113353538`](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
-| **Graphe compilé** (instance, pas vues) | **Existe déjà**, argumenté : [`20260821204737357`](../../../../features/20260821204737357_cabler-la-methode-modele-compile.md) |
+| **Graphe compilé** (instance, pas vues) | **Existe déjà**, argumenté : [`20260821204737357`](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md) |
 
 Ce qu'on **n'imite pas** volontairement : le pipeline documentaire long (4 phases), l'« OS »
 `workflow.xml` non appliqué, les prises de personnalisation (le canal règles/profils d'ezk fait mieux).

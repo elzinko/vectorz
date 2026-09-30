@@ -38,7 +38,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
 
 ### ① V0.1 — le socle dit vrai
-- `20260821204737357` — compiler la méthode en un seul graphe que tout le monde lit · en cours · `build`
+- ~~`20260821204737357` — compiler la méthode en un seul graphe que tout le monde lit · en cours · `build`~~ — shipped #265
 - `20260823121712652` — valider les statuts des fiches par un schéma (fin des fautes de frappe) · en cours · `build`
 - `20260824111001836` — appliquer la règle de clarté à tout ce que la méthode produit · `build`
 - `20260821163346493` — chaque élément de la carte montre le fichier d'où il vient · `build`

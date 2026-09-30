@@ -7,9 +7,9 @@ product: mega-city
 version: V0.1
 milestone: fondation
 labels: [socle]
-status: in-progress
+status: shipped
 ready:
-pr:
+pr: "#265"
 created: 2026-08-21
 ---
 
@@ -30,7 +30,7 @@ est écrite. Ce qui n'entre pas dans ce premier incrément est écrit plus bas, 
 | 1. Compiler le graphe en un objet unique | **Livré.** `graph:compile` (commit `a4858f2`), carte branchée dessus (PR #234). |
 | 2. Unifier les 5 mots de lien | **Livré par ce sprint.** 4 verbes fermés, posés comme alias dans le compilateur. Aucun champ renommé. |
 | 3. Liens structurels par id, pas par chemin | **Premier incrément livré par ce sprint.** Champ `applies:` + validateur. Reliquat en « Suite ». |
-| Note BMAD | **Livrée par ce sprint**, dans l'[ADR-0040](../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md). |
+| Note BMAD | **Livrée par ce sprint**, dans l'[ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md). |
 
 ## Le vocabulaire tranché
 
@@ -53,15 +53,17 @@ côtés : « je suis fait de ces briques ». Ils partagent donc le verbe **compo
       Preuve : `pnpm --dir products/mega-city graph:compile`, commit `a4858f2`.
 - [x] La webapp lit cet objet — aucune arête peinte à la main ne subsiste.
       Preuve : PR #234 et le test de parité `map-data-graph-parity.test.ts`.
-- [ ] Les 5 vocabulaires de lien sont tranchés en 4 verbes fermés, par alias dans le compilateur.
+- [x] Les 5 vocabulaires de lien sont tranchés en 4 verbes fermés, par alias dans le compilateur.
       Chaque arête compilée porte son `verb`. Un test refuse tout lien sans verbe. Aucun champ renommé.
-- [ ] `graph:query` accepte un verbe **ou** un lien, en sens direct ou inverse
+      Preuve : PR #265, test `graph-vocabulary.test.ts`.
+- [x] `graph:query` accepte un verbe **ou** un lien, en sens direct ou inverse
       (« qui applique cette règle ? » sans grep).
-- [ ] **Incrément** des références structurelles par id : le champ `applies:` (skill → règle) est lu
+- [x] **Incrément** des références structurelles par id : le champ `applies:` (skill → règle) est lu
       par le graphe, et un id inconnu fait échouer la compilation. `graph:check` signale tout lien
       markdown par chemin vers un skill, un agent ou une règle qui n'est pas déclaré par id.
       Le catalogue réel est à **0** signalement (les liens existants sont déclarés).
-- [ ] BMAD : la note « ce qu'on reprend / ce qu'on écarte » est écrite dans l'ADR-0040.
+      Preuve : PR #265, tests `structural-refs.test.ts` (dont l'invariant sur le catalogue réel).
+- [x] BMAD : la note « ce qu'on reprend / ce qu'on écarte » est écrite dans l'ADR-0040.
 
 ## Comment vérifier
 
@@ -212,7 +214,7 @@ et **un graphe compilé**. On n'a pas à copier BMAD — on a à finir ce qu'on 
   `domain.ts` (schéma), `bind` (build). Ce chantier ne crée pas un concept — il **relie**
   trois pièces existantes.
 - **Confirmé par le benchmark (2026-08-25)** — le rapport
-  [BMAD vs ezk](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 5) montre la cible
+  [BMAD vs ezk](../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 5) montre la cible
   concrète : BMAD **compile** ses manifests (`agent-manifest.csv`, `bmad-help.csv`, empreintes SHA-256)
   en une couche de build séparée, alors qu'ezk a le **schéma** (`domain.ts`) sans **instance**. C'est le
   seul point où BMAD gagne franchement côté modèle — un argument de plus pour ce chantier.
