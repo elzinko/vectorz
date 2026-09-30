@@ -94,6 +94,24 @@ describe('catalogSources — où vit chaque brique', () => {
     expect(sources.get('profile:mon-profil')).toBe('profiles/p.yml');
   });
 
+  it('cite le fichier que le catalogue a RETENU quand deux skills portent le même nom', () => {
+    const root = mkdtempSync(join(tmpdir(), 'ezk-sources-dup-'));
+    made.push(root);
+    for (const dir of ['zzz', 'aaa']) {
+      mkdirSync(join(root, 'skills', dir), { recursive: true });
+      writeFileSync(
+        join(root, 'skills', dir, 'SKILL.md'),
+        `---\nname: doublon\ndescription: vient-de-${dir}\n---\ncorps\n`,
+      );
+    }
+
+    const retenu = loadCatalog(root).skills.get('doublon')?.description;
+    const source = catalogSources(root).get('skill:doublon') ?? '';
+    // le dernier dossier dans l'ordre trié gagne, des deux côtés
+    expect(retenu).toBe('vient-de-zzz');
+    expect(source).toBe('skills/zzz/SKILL.md');
+  });
+
   it('rend des chemins relatifs à la base demandée, en séparateurs POSIX', () => {
     const sources = catalogSources(megaCity, repoRoot);
     expect(sources.get('skill:ezk-sprint')).toBe('products/mega-city/skills/ezk-sprint/SKILL.md');

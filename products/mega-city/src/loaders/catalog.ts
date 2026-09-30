@@ -328,7 +328,11 @@ export function catalogEntityFiles(rootDir: string): Map<string, EntityFile> {
   }
   const skillsRoot = join(rootDir, 'skills');
   if (existsSync(skillsRoot)) {
-    for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {
+    // Même ordre que `loadSkills` (noms de dossier triés) : sur un id en double, le dernier gagne
+    // pareil des deux côtés — sinon la carte citerait un autre fichier que celui retenu.
+    const byName = (a: { name: string }, b: { name: string }): number =>
+      a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    for (const entry of readdirSync(skillsRoot, { withFileTypes: true }).sort(byName)) {
       const skillFile = join(skillsRoot, entry.name, SKILL_FILE);
       if (!entry.isDirectory() || !existsSync(skillFile)) continue;
       files.set(resolve(skillFile), {
