@@ -15,39 +15,36 @@ created: 2026-08-21
 
 ## En clair
 
-La carte dessine déjà ses liens depuis les fichiers du dépôt. Mais elle ne le **montre** pas :
-on ne voit ni de quel fichier vient un élément, ni quelle part de la carte est prouvée.
-Cette fiche ajoute trois choses. Un lien « Source » cliquable dans chaque dossier. Un ratio
-« prouvé / déduit » en haut de la carte. Un pointillé sur tout ce qu'aucun fichier ne déclare.
+La carte dessine déjà ses liens depuis les fichiers du dépôt. Elle ne le **montre** pas : on
+ne voit ni le fichier d'où vient un élément, ni la part de la carte qui est prouvée. Cette
+fiche ajoute un lien « Source » cliquable dans chaque dossier, un ratio « prouvé / déduit »
+en haut de la carte, et un pointillé sur tout ce qu'aucun fichier ne déclare.
 
 ## Contexte / Problème
 
-Mesure du 2026-08-20 : la carte dessinait ~40 liens, le graphe déclaré en comptait 7. Les 33
-autres étaient de l'interprétation, dont un lien franchement faux. Une carte crédible mais
-en partie inventée oriente les décisions dans le vide.
+Le 2026-08-20, la carte dessinait ~40 liens pour 7 déclarés : le reste était de
+l'interprétation, dont un lien faux. Depuis, briques et liens sont compilés depuis le
+catalogue et un test refuse la divergence (PR #234, puis #265 : **déjà livré**). Le risque
+a changé de place : le cycle en 5 temps, écrit à la main, s'affichait à égalité avec le prouvé.
 
-Depuis, les liens et les briques sont compilés depuis le catalogue (PR #234, puis #265 pour
-les quatre verbes de lien et les références par id). Le risque a changé de place : ce qui
-reste écrit à la main dans la page (le cycle en 5 temps) s'affiche à égalité avec le prouvé.
+## Proposition (POC)
 
-## Déjà livré
+- Chaque brique et chaque cérémonie porte la **source** qui la déclare, vérifiée à la régénération.
+- Le cycle passe dans `src/core/cycle.ts` : chaque puce est **prouvée** (`ceremonies.yml`,
+  `roles:`) ou **déduite** (pointillé). Un id inconnu fait échouer la régénération.
+- **Prouvé** = lu dans un fichier versionné et vérifié. **Déduit** = écrit à la main, sans fichier.
 
-- [x] Les liens de composition viennent du graphe compilé, un test refuse la divergence
-      (`map-data-graph-parity.test.ts`, PR #234 et #265).
-- [x] Les références de `ceremonies.yml` et `taxonomie.yml` sont vérifiées contre le catalogue à
-      la régénération (`validateMethod`, `validateTaxonomie`).
+## Critères d'acceptation
 
-## Critères d'acceptation (le reste réel, POC)
-
-- [ ] Le dossier de chaque brique (commande, juge, règle, bundle, profil) et de chaque
-      cérémonie affiche « Source : *chemin du fichier* » en lien cliquable.
-- [ ] Chaque source pointe vers un fichier qui existe : la régénération échoue sinon, et un
+- [x] Le dossier de chaque brique (commande, juge, règle, bundle, profil) et de chaque
+      cérémonie affiche « Source : *fichier* » en lien cliquable.
+- [x] Chaque source pointe vers un fichier qui existe : la régénération échoue sinon, et un
       test le prouve sur le catalogue réel.
-- [ ] Le ratio « prouvé / déduit » est affiché en haut de la carte, avec sa définition au survol.
-- [ ] Ce qu'aucun fichier ne déclare (puces du cycle sans appui, acteurs humains) est en
+- [x] Le ratio « prouvé / déduit » est affiché en haut de la carte, définition au survol.
+- [x] Ce qu'aucun fichier ne déclare (puces du cycle sans appui, acteurs humains) est en
       pointillé, étiqueté « lecture d'auteur ».
-- [ ] Sabotage : une puce du cycle qui cite un id inconnu fait échouer la régénération ; une
-      puce connue mais sans appui ressort en pointillé, jamais en silence.
+- [x] Sabotage : une puce du cycle qui cite un id inconnu fait échouer la régénération ; une
+      puce connue sans appui ressort en pointillé, jamais en silence.
 
 ## Comment vérifier
 
@@ -56,8 +53,8 @@ pnpm ezk:map                                              # menu des cartes → 
 pnpm --dir products/mega-city test -- map-provenance      # sabotage automatisé
 ```
 
-1. Barre du haut : le ratio « prouvé » s'affiche ; le survol donne la définition.
-2. Cliquer trois cartes au hasard : chaque dossier porte « Source : … », le lien ouvre le fichier.
+1. Barre du haut : « 98 % prouvé » ; le survol donne la définition.
+2. Trois cartes au hasard : chaque dossier porte « Source : … » ; le lien ouvre le fichier.
 3. Cycle en 5 temps : les puces en pointillé sont les lectures d'auteur.
 
 - vue carte-haut : /diagrams/methode-mega-city/carte-interactive.html
@@ -65,7 +62,8 @@ pnpm --dir products/mega-city test -- map-provenance      # sabotage automatisé
 
 ## Suite (hors POC)
 
-- La ligne du fichier (pas seulement le fichier) et la provenance lien par lien.
-- Sourcer ou retirer les éléments encore déduits ; un seuil de ratio en CI.
+- La ligne du fichier, et la provenance lien par lien (aujourd'hui : le fichier de la brique).
+- Sourcer ou retirer ce qui reste déduit ; un seuil de ratio en CI.
 - Marquer en « lecture d'auteur » la page « le domaine » et son schéma dessiné à la main.
-- Décision du PO sur « rangé par `taxonomie.yml` » : fichier-source ou lecture d'auteur ?
+- À trancher par le PO : `taxonomie.yml` (qui range chaque brique dans son étage) compte
+  aujourd'hui comme source, est-ce une lecture d'auteur ?

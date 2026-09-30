@@ -2760,10 +2760,15 @@ window.EZK = {
     'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier ne le déclare (pointillés). ' +
     'Regen : pnpm --dir products/mega-city map:data';
   if(D.liens.casses) $('proof').classList.add('bad');
-  $('prov').innerHTML = '<b>Provenance : ' + pct + ' % prouvé.</b> ' + nProuve +
-    ' éléments sont lus dans un fichier du dépôt (' + P.prouve.briques + ' briques, ' + P.prouve.liens +
-    ' liens, ' + P.prouve.ceremonies + ' cérémonies, ' + P.prouve.cycle + ' puces du cycle). ' +
-    (nDeduit ? nDeduit + ' sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier ne les déclare. ' : '') +
+  /* Par nature, « prouvé/total » : le chiffre global est porté par les liens ; le détail montre
+     où se cache le déduit (ici : le cycle écrit à la main). */
+  const NATURES = [['briques','briques'], ['liens','liens'], ['cérémonies','ceremonies'], ['cycle écrit à la main','cycle']];
+  const parNature = NATURES
+    .filter(([, k]) => P.prouve[k] + P.deduit[k] > 0)
+    .map(([label, k]) => label + ' ' + P.prouve[k] + '/' + (P.prouve[k] + P.deduit[k])).join(' · ');
+  $('prov').innerHTML = '<b>Provenance : ' + pct + ' % prouvé</b> (' + nProuve + ' sur ' + (nProuve + nDeduit) +
+    ' éléments lus dans un fichier du dépôt). Par nature : ' + parNature + '. ' +
+    (nDeduit ? 'Les ' + nDeduit + ' autres sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier ne les déclare. ' : '') +
     'Le dossier de chaque carte donne son fichier source.';
 
   /* ── légende ── */
@@ -2777,7 +2782,9 @@ window.EZK = {
   const firstSentence = (s) => { const m = String(s).split(/(?<=\.)\s/)[0]; return m.length > 170 ? m.slice(0,167)+'…' : m; };
 
   /* ── provenance cliquable : le lien ouvre le fichier. Servie par `pnpm ezk:map` (boucle locale),
-     la carte lit le fichier du dépôt local ; ouverte ailleurs (file://, publiée), elle pointe GitHub. ── */
+     la carte lit le fichier du dépôt local ; ouverte ailleurs (file://, publiée), elle pointe GitHub.
+     Hypothèse assumée : dépôt public `elzinko/vectorz`, branche `main` — si l'un des deux change,
+     ce préfixe est la seule ligne à corriger. ── */
   const REPO_BLOB = 'https://github.com/elzinko/vectorz/blob/main/';
   const LOCAL = /^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname);
   const srcHref = (path) => (LOCAL ? '/' : REPO_BLOB) + path.split('/').map(encodeURIComponent).join('/');
@@ -2875,11 +2882,10 @@ window.EZK = {
   const methodById = new Map(methodEls.map((e) => [e.id, e]));
   const refChip = (ref) => {
     if(ref === 'humain')
-      return '<span class="chip" style="cursor:default;border-style:dashed">Toi (PO)</span>';
+      return '<span class="chip inferred" style="cursor:default" title="acteur humain : aucun fichier du catalogue ne le déclare">Toi (PO)</span>';
     if(ref.startsWith('agent:')) return chip('agent', ref.slice(6));
     const [skillId, sub] = ref.split(':');
-    if(!D.skills[skillId]) return '<span class="chip" style="cursor:default">'+esc(ref)+'</span>';
-    return '<button class="chip" data-open="skill:'+esc(skillId)+'"><span class="sw" style="background:'+KIND.skill.color+'"></span>'+esc(skillId)+(sub?'<b>:'+esc(sub)+'</b>':'')+'</button>';
+    return chip('skill', skillId, sub ? '<b>:'+esc(sub)+'</b>' : '');
   };
   const ceremonyCard = (e) => {
     const etat = ETAT[e.etat] || ETAT.assume;
