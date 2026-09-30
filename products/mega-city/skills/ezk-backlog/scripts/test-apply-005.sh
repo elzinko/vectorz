@@ -124,4 +124,36 @@ bash "$APPLY" --apply "$Q" >/dev/null
 check "date quotée : la note porte la date sans guillemets" \
   "grep -q 'passée le 2026-08-24 ·' '$Q/features/20260101000000001_quotee.md' && ! grep -q 'passée le \"' '$Q/features/20260101000000001_quotee.md'"
 
+echo "Cas 7 (statut blocked du layout v4 — retour Codex P1) :"
+K="$TMP/k"
+mk_root "$K" 4
+F1="$K/features/20260101000000001_bloquee-datee.md"
+F2="$K/features/20260101000000002_bloquee-vide.md"
+F3="$K/features/20260101000000003_bloquee-sans-champ.md"
+F4="$K/features/20260101000000004_bloquee-drapeau.md"
+printf -- '---\nid: "b1"\ntitle: "bloquée datée"\ntype: feature\npriority: P1\nstatus: blocked\nready: 2026-08-21\npr:\ncreated: 2026-07-01\n---\n\n# Titre\n' > "$F1"
+printf -- '---\nid: "b2"\ntitle: "bloquée vide"\ntype: feature\npriority: P1\nstatus: blocked\nready:\npr:\ncreated: 2026-07-01\n---\n\n# Titre\n' > "$F2"
+printf -- '---\nid: "b3"\ntitle: "bloquée sans champ"\ntype: feature\npriority: P1\nstatus: blocked # attend un arbitrage\npr:\ncreated: 2026-07-01\n---\n\n# Titre\n' > "$F3"
+printf -- '---\nid: "b4"\ntitle: "bloquée avec drapeau"\ntype: feature\npriority: P1\nstatus: blocked\nblocked: "ADR-030 non ratifié"\nready: 2026-08-22\npr:\ncreated: 2026-07-01\n---\n\n# Titre\n' > "$F4"
+before7="$(snap "$K")"
+out7="$(bash "$APPLY" "$K")"
+check "dry-run : rien d'écrit" "[ \"\$(snap '$K')\" = '$before7' ]"
+check "dry-run : annonce 4 statuts blocked à convertir" "printf '%s' \"\$out7\" | grep -q '4 statut(s) blocked converti(s)'"
+bash "$APPLY" --apply "$K" >/dev/null
+check "plus aucun status: blocked" "! grep -rq '^status: blocked' '$K/features'"
+check "blocked daté → ready + drapeau + note datée" \
+  "grep -q '^status: ready\$' '$F1' && grep -q '^blocked: \"ancien statut blocked' '$F1' && grep -q 'passée le 2026-08-21' '$F1'"
+check "blocked au champ vide → idea + drapeau, sans note" \
+  "grep -q '^status: idea\$' '$F2' && grep -q '^blocked: ' '$F2' && ! grep -q 'Historique' '$F2'"
+check "blocked sans champ ready → idea + drapeau (commentaire de la ligne status retiré)" \
+  "grep -q '^status: idea\$' '$F3' && grep -q '^blocked: ' '$F3' && ! grep -q 'arbitrage' '$F3'"
+check "drapeau existant conservé, pas de doublon, colonne ready" \
+  "[ \"\$(grep -c '^blocked:' '$F4')\" = 1 ] && grep -q '^blocked: \"ADR-030 non ratifié\"\$' '$F4' && grep -q '^status: ready\$' '$F4'"
+check "le reste du front-matter est intact (id, title, created, corps)" \
+  "grep -q '^id: \"b1\"\$' '$F1' && grep -q '^created: 2026-07-01\$' '$F1' && grep -q '^# Titre\$' '$F1'"
+before7b="$(snap "$K")"
+out7b="$(bash "$APPLY" --apply "$K")"
+check "2e --apply : idempotent, « rien à migrer »" \
+  "[ \"\$(snap '$K')\" = '$before7b' ] && printf '%s' \"\$out7b\" | grep -q 'rien à migrer'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-apply-005: TOUT VERT'; else echo 'test-apply-005: ÉCHECS' >&2; exit 1; fi

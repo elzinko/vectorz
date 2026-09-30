@@ -15,6 +15,8 @@ une, elle est recopiée dans une ligne de note au bas de la fiche, avant que la 
 
 - Le front-matter d'une fiche ne porte plus `ready:`. Le statut dit tout : `idea` (pas prête) ou
   `ready` (groomée, tirable).
+- `blocked` n'est plus un statut : c'est un drapeau `blocked:` (+ la raison) posé par-dessus la colonne.
+  Une fiche encore en `status: blocked` est convertie (voir le tableau plus bas).
 - Le gate `ready <id>` passe la fiche en `status: ready`. Il ne pose plus de date.
 - Le validateur (`fiches:check --strict`) signale `ready:` comme **champ retiré**. Un gabarit périmé
   ou une fiche copiée d'un vieux dépôt ne peut donc pas le faire revenir en silence.
@@ -34,6 +36,12 @@ Pour chaque fiche de `features/` et de `features/done/` qui porte un `ready:` da
 |---|---|
 | une date (`ready: 2026-08-21`) | ajoute au bas de la fiche une note datée, puis supprime la ligne |
 | rien (`ready:`) | supprime la ligne, sans note |
+| `status: blocked` (layout v4) | `status: ready` si la fiche portait une date `ready:`, sinon `status: idea` ; ajoute le drapeau `blocked: "ancien statut blocked (migration 005) — raison à préciser"` (un `blocked:` déjà présent est conservé) |
+
+Le dernier cas ferme un trou du schéma : `blocked` n'est plus une colonne mais un **drapeau** posé par-dessus
+la colonne (une fiche peut être `ready` ET bloquée). Le validateur v5 rejette `status: blocked`. Sans cette
+conversion, un dossier serait déclaré layout 5 alors qu'il ne passe pas la validation stricte. La colonne
+d'origine se lit dans `ready:`, comme la migration 003 le fait pour `todo` : daté = la DoR était passée.
 
 La note a toujours cette forme (le commentaire d'origine n'est recopié que s'il porte une information ;
 le texte-type du gabarit est écarté) :
