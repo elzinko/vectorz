@@ -16,7 +16,8 @@
 #     d'origine n'est recopié que s'il porte une info (le texte-type du gabarit est écarté) ;
 #   - valeur vide → suppression seule, aucune note ;
 #   - `--apply` uniquement : `features/README.md` → `layout_version: 5` ; le gabarit déployé
-#     `features/feature-template.md` perd sa ligne `ready:` (un nouvel `add` ne la recrée pas).
+#     `features/feature-template.md` perd sa ligne `ready:` (un nouvel `add` ne la recrée pas) et son
+#     commentaire de `status:` annonce les statuts du layout 5.
 # Idempotent : une fois les lignes parties, il n'y a plus rien à faire ni à noter.
 # Garde : refuse `--apply` si le dossier est avant le layout v4 — la migration 003 LIT le champ `ready:`
 # pour scinder `todo` en `ready` / `idea`, il faut donc l'avoir passée avant.
@@ -147,10 +148,17 @@ if [[ "$APPLY" -eq 1 ]]; then
   if [[ -f "$README" ]]; then
     tmp="$(mktemp)"; sed 's/^layout_version:.*/layout_version: 5/' "$README" > "$tmp" && cat "$tmp" > "$README"; rm -f "$tmp"
   fi
-  # Le gabarit déployé : un nouvel `add` ne doit plus recréer le champ.
+  # Le gabarit déployé : un nouvel `add` ne doit plus recréer le champ, et le commentaire de
+  # `status:` annonce les statuts du layout 5 (sans `blocked`, devenu un drapeau ; avec merged/split).
+  # Cette liste est un INSTANTANÉ du layout 5 (une migration fige son état cible) ; la source vivante
+  # est src/core/fiche-schema.ts. Retour de la revue Codex (PR #267).
   tpl="$FEATURES/feature-template.md"
   if [[ -f "$tpl" ]]; then
-    tmp="$(mktemp)"; sed '/^ready:/d' "$tpl" > "$tmp" && cat "$tmp" > "$tpl"; rm -f "$tmp"
+    tmp="$(mktemp)"
+    sed -E -e '/^ready:/d' \
+           -e 's/^(status:[^#]*#).*$/\1 idea | ready | in-progress | shipped | superseded | merged | split/' \
+           "$tpl" > "$tmp" && cat "$tmp" > "$tpl"
+    rm -f "$tmp"
   fi
   echo "(layout_version: 5) → régénère les vues (regen-backlog.sh + avancement:regen …)."
 fi

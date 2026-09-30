@@ -47,8 +47,9 @@ le texte-type du gabarit est écarté) :
 
 Le script ne touche que le front-matter : un `ready:` cité dans le corps (un bloc de code, par
 exemple) reste intact. Il est **idempotent** : une fois les lignes parties, une 2e exécution répond
-« rien à migrer ». Avec `--apply`, il passe aussi `features/README.md` à `layout_version: 5` et retire
-la ligne `ready:` du gabarit déployé `features/feature-template.md`.
+« rien à migrer ». Avec `--apply`, il passe aussi `features/README.md` à `layout_version: 5`, retire
+la ligne `ready:` du gabarit déployé `features/feature-template.md` et y met à jour le commentaire de
+`status:` (les statuts du layout 5 : plus de `blocked`, désormais un drapeau ; `merged` et `split` ajoutés).
 
 **Garde d'ordre.** La migration 003 lit le champ `ready:` pour scinder `todo` en `ready` ou `idea`.
 Sur un dossier plus ancien que le layout v4, `--apply` refuse et nomme la migration à passer d'abord.

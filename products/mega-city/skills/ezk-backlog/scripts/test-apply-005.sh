@@ -22,7 +22,7 @@ snap() { (cd "$1" && find features -type f | LC_ALL=C sort | xargs shasum | shas
 mk_root() { # $1=dir $2=layout_version
   mkdir -p "$1/features/done"
   printf -- '---\nskill: ezk-backlog\nlayout_version: %s\n---\n\n# Features\n' "$2" > "$1/features/README.md"
-  printf -- '---\nid: "0000"\ntitle:\nstatus: idea\nready:               # YYYY-MM-DD — posée par le gate `ready <id>`\npr:\n---\n\n# modèle\n' \
+  printf -- '---\nid: "0000"\ntitle:\nstatus: idea # idea | ready | in-progress | blocked | shipped | superseded\nready:               # YYYY-MM-DD — posée par le gate `ready <id>`\npr:\n---\n\n# modèle\n' \
     > "$1/features/feature-template.md"
 }
 
@@ -89,6 +89,8 @@ check "sans retour final : la note est sur sa propre ligne" \
   "tail -n1 '$A/features/20260101000000009_sans-newline.md' | grep -q '^> .*Historique' && grep -q '^dernière ligne sans retour$' '$A/features/20260101000000009_sans-newline.md'"
 check "layout_version: 5 dans features/README.md" "grep -q '^layout_version: 5$' '$A/features/README.md'"
 check "le gabarit déployé ne porte plus ready:" "! grep -q '^ready:' '$A/features/feature-template.md'"
+check "le gabarit déployé annonce les statuts du layout 5 (sans blocked, avec merged/split) — retour Codex" \
+  "grep -q '^status: idea # idea | ready | in-progress | shipped | superseded | merged | split\$' '$A/features/feature-template.md' && ! grep -q 'blocked' '$A/features/feature-template.md'"
 check "le compte-rendu annonce layout_version 5" "printf '%s' \"\$out2\" | grep -q 'layout_version: 5'"
 
 echo "Cas 3 (idempotence) :"
