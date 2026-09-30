@@ -8,7 +8,6 @@ labels: [supervision]
 milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-18
 ---

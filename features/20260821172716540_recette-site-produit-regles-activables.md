@@ -8,7 +8,6 @@ version:
 milestone: parked
 labels: [recette]
 status: idea
-ready:
 pr:
 created: 2026-08-21
 ---

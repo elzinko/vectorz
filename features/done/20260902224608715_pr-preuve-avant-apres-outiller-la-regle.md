@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-09-03
 pr: "#207"
 evidence: before-after # dogfood : le diff touche diagrams/methode-mega-city/carte-interactive.html (la règle entre dans le bundle base)
 created: 2026-09-03
@@ -243,3 +242,5 @@ lien règle → bundle `base` que cette fiche ajoute à la LOI.
 - **À porter en rétro** : cette règle est un cas d'école « règle MUST déclarée, jamais
   outillée ni contrôlée ». Les autres règles à `enforcements: agent-check` méritent le même
   contrôle sur pièce : le prompt de l'agent nommé les porte-t-il vraiment ?
+
+> **Historique** — DoR (`ready`) passée le 2026-09-03 · ancien champ front-matter `ready:`, retiré en migration 005.

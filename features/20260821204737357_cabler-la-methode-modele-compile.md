@@ -8,7 +8,6 @@ version: V0.1
 milestone: fondation
 labels: [socle]
 status: in-progress
-ready:
 pr:
 created: 2026-08-21
 ---

@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 epic:
 status: shipped
-ready: 2026-08-30
 pr: "#191"
 created: 2026-08-26
 ---
@@ -169,3 +168,5 @@ valider. Le déclenchement « sur preuve chiffrée » est le Sujet B (ADR-030), 
   fenêtrés par les gates `sprint-<slug>` (le domaine budget cop1 est orphelin, écarté) ;
   KPI MVP = fiches livrées + retouches PR + blocages. Restent 2 confirmations produit au
   tampon : `product:` (→ `mega-city`) et le sort de la vélocité (→ retirée du MVP).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

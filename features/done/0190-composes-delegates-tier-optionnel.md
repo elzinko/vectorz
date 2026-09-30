@@ -6,7 +6,6 @@ priority: P2
 product: mega-city
 labels: [fabrique]
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260812104022246 (tri 2026-09-30)"
 created: 2026-08-10
 ---

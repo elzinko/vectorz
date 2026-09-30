@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 labels: [enabler]
 status: shipped
-ready: 2026-08-09
 pr: "#121"
 created: 2026-07-06
 ---
@@ -46,3 +45,5 @@ ADR-0012. Chantier structurel (domaine + loaders + tests) — après les quick w
 ezk-recipy (fiche 0147) : ne l'annoter que si 0042 est déjà livrée, sinon l'annoter à sa
 création. La mutation « Skill = dossier » est celle qui impacte les caps : à signaler au
 gate de la fiche 0121.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-09 · ancien champ front-matter `ready:`, retiré en migration 005.

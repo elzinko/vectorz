@@ -8,7 +8,6 @@ labels: [session]
 version:
 epic:
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260904091853948 (tri 2026-09-30)"
 created: 2026-08-30
 ---

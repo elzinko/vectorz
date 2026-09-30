@@ -6,7 +6,6 @@ priority: P3
 product: mega-city
 epic:
 status: shipped
-ready: 2026-08-13
 pr: "#147"
 created: 2026-08-13
 ---
@@ -71,3 +70,5 @@ commentaire d'exemple d'`ezk-archive/check.sh`) — on ne réécrit pas l'histoi
 - Défaut **pré-existant, hors scope** noté au passage : `portfolio.sh` ne compte que
   `vectorz`/`mega-city` (l.131), les fiches `product: cop1` apparaissent dans les tables
   mais pas dans les compteurs. À traiter dans une fiche dédiée si le PO le veut.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-13 · ancien champ front-matter `ready:`, retiré en migration 005.

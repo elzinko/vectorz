@@ -7,7 +7,6 @@ product: mega-city
 labels: [lisibilite]
 status: superseded
 milestone: rationalisation
-ready:
 pr: "superseded — Ancien chapeau : ezk-help est livré, le reste vit dans la FAQ et les « commandes suivantes »"
 created: 2026-08-16
 ---

@@ -7,7 +7,6 @@ product: mega-city
 labels: [installation]
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-09
 milestone: parked

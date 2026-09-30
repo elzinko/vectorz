@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-24
 pr: "main@7f0f12d"
 created: 2026-08-23
 ---
@@ -101,3 +100,5 @@ La vue apparaît comme une carte servie par ezk-map, avec son test d'invariant
 Origine : retour PO du 2026-08-23 sur la carte compilée. À rapprocher de
 `features/PLAN.md` (la séquence décidée) et du champ `epic:` (regroupements) —
 la vue les affiche, elle ne les remplace pas.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-24 · ancien champ front-matter `ready:`, retiré en migration 005.

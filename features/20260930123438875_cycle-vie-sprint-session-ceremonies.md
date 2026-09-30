@@ -8,7 +8,6 @@ version: V0.4
 milestone:
 labels: [sprint]
 status: idea
-ready:
 pr:
 evidence: none # méthode / skills / doc, pas d'écran
 created: 2026-09-30

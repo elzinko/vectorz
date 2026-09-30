@@ -9,7 +9,6 @@ epic:
 milestone:
 labels: [recettes]
 status: idea
-ready:
 pr:
 created: 2026-09-17
 ---

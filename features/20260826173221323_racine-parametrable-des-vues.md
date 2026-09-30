@@ -8,7 +8,6 @@ labels: [installation]
 version: V0.4
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-26
 ---

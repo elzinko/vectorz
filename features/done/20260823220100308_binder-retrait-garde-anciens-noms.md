@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-23
 pr: "#162"
 created: 2026-08-23
 ---
@@ -39,3 +38,5 @@ Extraite du volet binder de la fiche `20260813131737962` (lot 3.1 du plan
 pnpm --dir products/mega-city exec vitest run src/__tests__/apply-global-renames.test.ts
 pnpm lawgiver bind-global global --link   # affiche « 🧹 renommage nettoyé : … »
 ```
+
+> **Historique** — DoR (`ready`) passée le 2026-08-23 · ancien champ front-matter `ready:`, retiré en migration 005.

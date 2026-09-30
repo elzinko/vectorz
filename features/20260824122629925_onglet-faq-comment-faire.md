@@ -9,7 +9,6 @@ version: V0.3
 epic:
 depends: ["20260824122629794"]
 status: idea
-ready:
 pr:
 created: 2026-08-24
 ---

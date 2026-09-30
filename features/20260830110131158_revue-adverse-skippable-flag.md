@@ -9,7 +9,6 @@ version:
 epic:
 labels: [revue]
 status: idea
-ready:
 pr:
 created: 2026-08-30
 ---

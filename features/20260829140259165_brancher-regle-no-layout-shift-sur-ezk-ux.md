@@ -8,7 +8,6 @@ milestone: parked
 version:
 epic:
 status: idea
-ready:
 blocked: "dépend de l'agent ezk-ux (ADR-0026, statut proposé) — pas encore construit"
 pr:
 created: 2026-08-29

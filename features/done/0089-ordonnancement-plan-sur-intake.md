@@ -8,7 +8,6 @@ epic:
 depends: []
 labels: [enabler]
 status: shipped
-ready: 2026-07-26
 pr: "#52"
 created: 2026-07-25
 ---
@@ -78,3 +77,5 @@ placement multi-rôle, `review` signale la dérive de `PLAN.md` (AC2), gate exig
 - Bâtit sur `plan`/`plan set` existant — ne le réinvente pas.
 - Cas d'école : `0091` (mise à plat) est P0 mais doit passer **après** `0079` (P1) — la
   priorité seule donnerait le mauvais ordre.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-26 · ancien champ front-matter `ready:`, retiré en migration 005.

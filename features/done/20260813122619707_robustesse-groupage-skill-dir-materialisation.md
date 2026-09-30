@@ -7,7 +7,6 @@ product: mega-city
 labels: [installation]
 epic:
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260813095351680 (tri 2026-09-30)"
 created: 2026-08-13
 ---

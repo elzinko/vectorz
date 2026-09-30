@@ -9,7 +9,6 @@ epic:
 depends: ["20260821210633457", "0102", "20260812104022228"]
 labels: [test-local]
 status: ready
-ready: 2026-09-10 # décision PO : garder ezk-scout (bugs) et l'explorateur (features) SÉPARÉS + mutualiser la commande — cf. Notes
 pr:
 evidence: none # capacité de méthode (skill) ; preuve = ses propres tests + un run de démonstration
 created: 2026-09-10
@@ -178,3 +177,5 @@ Ce qu'elle fait :
   `--tokens lean` d'`ezk-product-build`) et prévenir avant tout fan-out coûteux.
 - **Émission de supervisabilité** : une passe en tâche de fond est un bon client du
   heartbeat / run (fiche 0103) pour rester visible au Moniteur.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-10 · ancien champ front-matter `ready:`, retiré en migration 005 · note d'origine : décision PO : garder ezk-scout (bugs) et l'explorateur (features) SÉPARÉS + mutualiser la commande — cf. Notes.

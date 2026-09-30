@@ -9,7 +9,6 @@ epic:
 labels: [backlog]
 depends: []
 status: idea
-ready:
 pr:
 created: 2026-08-30
 ---

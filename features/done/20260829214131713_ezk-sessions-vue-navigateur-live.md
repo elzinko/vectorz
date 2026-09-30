@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-29
 pr: "#189"
 created: 2026-08-29
 ---
@@ -77,3 +76,5 @@ fichier d'état committé).
   (option B écartée : casse son métier « fichiers statiques » ; option C regen gitignoré
   écartée : snapshot périmé). Dette assumée : ~40 lignes de patron serveur recopiées d'ezk-map
   (extraction d'un helper partagé différée pour ne pas risquer le fichier partagé).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-29 · ancien champ front-matter `ready:`, retiré en migration 005.

@@ -7,7 +7,6 @@ product: mega-city
 milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-25
 ---

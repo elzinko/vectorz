@@ -8,7 +8,6 @@ labels: [installation]
 version: V0.3
 epic:
 status: idea
-ready:
 pr:
 evidence: none # méthode, aucun écran
 created: 2026-09-03

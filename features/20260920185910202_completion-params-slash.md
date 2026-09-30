@@ -9,7 +9,6 @@ version:
 epic:
 labels: [cli, decouvrabilite]
 status: idea
-ready:
 pr:
 evidence: none # affordance de saisie, pas d'écran d'app
 created: 2026-09-20

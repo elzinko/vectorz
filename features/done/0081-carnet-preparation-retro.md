@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 epic:
 status: shipped
-ready: 2026-09-12
 pr: "#230"
 created: 2026-07-18
 ---
@@ -81,3 +80,5 @@ des idées.
   naturel de collecte.
 - Anti-doublon vérifié (2026-07-18) : 0080 = la sortie de la cérémonie, 0063 (shippée) =
   la cérémonie elle-même ; rien ne portait la collecte amont continue.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-12 · ancien champ front-matter `ready:`, retiré en migration 005.

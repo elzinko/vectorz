@@ -9,7 +9,6 @@ version:
 epic:
 labels: [cli]
 status: idea
-ready:
 pr:
 evidence: none # outil de terminal, aucun écran
 created: 2026-09-03

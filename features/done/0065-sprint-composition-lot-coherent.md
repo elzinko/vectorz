@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: mega-city
 status: shipped
-ready: 2026-08-13
 pr: local (squash-merge c969569)
 created: 2026-07-16
 ---
@@ -159,3 +158,5 @@ d'archi neuve (ADR-037 déjà accepté).
   compatible avec le lot cohérent visé ici (le planning peut tirer plusieurs fiches ready
   vers un même but ; la PR reste l'unité de revue/merge). Cette fiche garde la question
   de la granularité sprint ↔ PR.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-13 · ancien champ front-matter `ready:`, retiré en migration 005.

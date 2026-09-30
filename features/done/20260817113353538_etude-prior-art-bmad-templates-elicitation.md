@@ -8,7 +8,6 @@ epic:
 depends: ["0191"]
 labels: [bmad, lisibilite, doc]
 status: shipped
-ready:
 pr: "#167"
 created: 2026-08-17
 ---

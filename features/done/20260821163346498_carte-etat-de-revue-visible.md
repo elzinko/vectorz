@@ -8,7 +8,6 @@ version: V0.1
 milestone: fondation
 labels: [carte]
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260826072532622 (tri 2026-09-30)"
 created: 2026-08-21
 ---

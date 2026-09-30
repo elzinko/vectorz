@@ -7,7 +7,6 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [github-optionnel, plugin]
 status: shipped # idea | ready | in-progress | blocked | shipped
-ready: 2026-09-17 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr: "#250"
 evidence: none # config + skills, flux CLI, pas d'écran
 created: 2026-09-17
@@ -136,3 +135,5 @@ lot** *quand il y a des PR* — il ne s'applique pas au mode sans GitHub. Le cra
 - **Compose** [[20260911213014783]], [[0183]], [[0171]] ; ne les refait pas.
 - Contrainte connue : la revue locale retrouve ~la moitié des défauts de Codex (mesure
   [[20260905134937885]]) — compromis vitesse/filet assumé quand `codex-review` est off.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-17 · ancien champ front-matter `ready:`, retiré en migration 005.

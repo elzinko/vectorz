@@ -9,7 +9,6 @@ version:
 epic:
 depends: []
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260922160651394 (tri 2026-09-30)"
 created: 2026-08-30
 ---

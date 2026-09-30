@@ -6,7 +6,6 @@ priority: P2
 product: vectorz
 epic:
 status: shipped
-ready: 2026-08-03
 pr: "#97"
 created: 2026-07-26
 ---
@@ -54,3 +53,5 @@ Bouton **« Ajouter un projet »** dans l'onglet Projets (0062).
 - Pendant *écriture* de **0062** (lister) ; shippables séparément.
 - Dialog dossier OSX natif reporté (suite) — POC = collage chemin.
 - Groomé 2026-08-03 — DoR problème / valeur / AC OK.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-03 · ancien champ front-matter `ready:`, retiré en migration 005.

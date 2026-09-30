@@ -9,7 +9,6 @@ version:
 epic:
 labels: [test-local]
 status: superseded
-ready:
 pr: "superseded — Jamais construite : ezk-qa fait déjà la recette de bout en bout, ezk-scout l'exploration"
 created: 2026-08-01
 ---

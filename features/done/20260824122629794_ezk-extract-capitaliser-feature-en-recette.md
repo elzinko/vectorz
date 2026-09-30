@@ -8,7 +8,6 @@ version:
 epic:
 depends: []
 status: shipped
-ready: 2026-08-30
 pr: "#194"
 created: 2026-08-24
 ---
@@ -165,3 +164,5 @@ Lignée : ADR-0039 §6 (extraction notée), fiche `0147` (ezk-recipy), fiche
 `20260821172716540` (recette site produit). **Fiche sœur** : `20260824122629925`
 (l'entrée FAQ « comment capitaliser une feature ») **dépend** de celle-ci — on ne
 documente le « comment faire » qu'une fois le mécanisme construit.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

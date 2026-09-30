@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-07-25
 pr: "#48"
 created: 2026-07-19
 ---
@@ -75,3 +74,5 @@ fiche se clôt par le **verrou** qui l'empêche de revenir :
   d'échelle, celle-là décide *ce qu'on compte*. Les deux sont P0 et se complètent.
 - Réfs : `src/supervision/upgrade-ok.ts` ; `src/supervision/__tests__/upgrade-ok.test.ts` ;
   analyse `docs/captures/2026-07-19-topologie-supervision-et-plan-diagrammes.md`.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-25 · ancien champ front-matter `ready:`, retiré en migration 005.

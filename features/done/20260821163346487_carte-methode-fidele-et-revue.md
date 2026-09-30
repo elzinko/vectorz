@@ -9,7 +9,6 @@ epic:
 milestone: fondation
 labels: [carte]
 status: superseded
-ready:
 pr:
 created: 2026-08-21
 ---

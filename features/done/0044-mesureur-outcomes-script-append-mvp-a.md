@@ -5,7 +5,6 @@ type: chore
 priority: P1
 product: vectorz
 status: shipped
-ready: 2026-07-17
 pr: "#145"
 created: 2026-07-16
 ---
@@ -119,3 +118,5 @@ moisson (critère de maintien éventuel = arbitrage PO).
 - S'appuie sur les capteurs recensés par 0022 (mission-control) et 0041 (banc cobaye) sans les dupliquer ; `cout_tokens` reste inactif tant que le mode pilote (0038) n'existe pas.
 - Le mesureur, le ledger, le miroir, **le script d'append lui-même** et les définitions de métriques sont **surface gelée** du contrat : toute modification ultérieure = PO après panel.
 - Signaux « santé de la porte humaine » (taux de rejet PO, latence submitted→approved) : proposés, hors cible d'optimisation — leur ajout touche le choix des métriques (surface gelée), donc soumis à arbitrage PO avant implémentation.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

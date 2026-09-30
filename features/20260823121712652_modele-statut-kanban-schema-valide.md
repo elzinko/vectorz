@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 labels: [socle]
 status: in-progress
-ready:
 pr:
 created: 2026-08-23
 milestone: fondation
@@ -15,80 +14,105 @@ version: V0.1
 
 # Modèle de statut kanban — des colonnes contrôlées, pas un champ date bancal
 
-> **MAJ 2026-08-26 — validateur livré (étape 2 de l'ADR-0040) · `in-progress`.** `pnpm fiches:check`
-> **rapporte** (mode *warning*, exit 0) les fiches dont `status`/`type`/`priority` sont hors-enum ou
-> dont un champ requis manque ; `product:` conditionnel au monorepo. Enums centralisés
-> (`STATUTS`/`PRIOS`/`TYPES` dans `avancement-data.ts`, source unique). Commit `ce41a95` (sur `origin/main`). Revue = GO. **Reste ouvert** (décisions de cette fiche) : bascule **bloquante**
-> (quand faux positifs = 0), refonte **kanban** (`ready` en colonne, retrait du champ `ready:`),
-> cas `blocked`+`ready`, **migration** des fiches.
+> **MAJ 2026-09-30 — groom du sprint « le verrou » (V0.1).** Déjà livré et vérifié : le validateur
+> `fiches:check --strict` bloque la CI (PR #233) ; le modèle à deux axes est en place — `merged` et
+> `split` terminaux avec provenance validée, `blocked` en drapeau orthogonal (PR #235) ; les listes
+> d'énumérations sont centralisées dans `avancement-data.ts`. **Reste** : le champ date `ready:` et la
+> liste des statuts recopiée à la main dans les scripts.
 
 ## En clair
 
-Les statuts des fiches ne sont **validés nulle part** : une faute de frappe (`to-do`) passerait sans
-bruit. Et le feu vert DoR est un **champ date** (`ready: 2026-08-21`) qui prête à confusion. On veut un
-**tableau kanban** : une liste de statuts **définie dans un schéma**, éditable par repo, **contrôlée par
-un validateur**, où `ready` devient une **colonne** à part entière — plus un champ date obscur.
+Une faute de frappe sur un statut est déjà arrêtée par la CI, et `ready` est déjà une colonne du board.
+Il reste un vieux champ date, `ready: 2026-08-21`, présent dans 219 fiches et lu par plusieurs scripts.
+C'est lui qui prête à confusion : on le retire. La date de chaque DoR passée n'est pas perdue. Elle est
+recopiée dans une ligne de note datée au bas de la fiche. La liste des statuts, elle, vit en un seul
+endroit, un schéma, au lieu d'être recopiée à la main dans le validateur, le board et les scripts.
 
 ## Contexte / Problème
 
-- La liste des statuts (`idea / todo / in-progress / blocked / shipped`) est **en dur** dans les scripts.
-  Rien ne rejette une valeur invalide.
-- `ready:` est un **champ orthogonal** au statut (source de l'incompréhension PO du 2026-08-23 : « pourquoi
-  une date, on ne passe pas juste le statut à *ready* ? »).
-- On réinvente un bout d'outil scrum — le risque étant de le faire « en moins bien ». La ligne de crête :
-  **schéma léger + validateur + vues générées, jamais un moteur de workflow**.
+- **La liste des statuts dérive.** Le validateur et le board la lisent dans `avancement-data.ts`. Mais
+  `regen-backlog.sh` (2 copies), `portfolio.sh`, les 3 gabarits de fiche et le skill la recopient à la
+  main. Elles ont déjà dérivé : `merged` et `split` s'affichent `❓` dans l'index, et `blocked` (qui
+  n'est plus un statut) y figure encore.
+- **Le champ `ready:` n'a plus d'effet, mais il traîne.** Le tirage lit `status: ready`. Pourtant le
+  champ reste dans 219 fiches (81 avec une vraie date, 138 vides), dans le loader, le board,
+  `plan:head`, l'index `BACKLOG.md`, `PORTFOLIO.md`, le gate `ready` du skill `ezk-backlog` et les
+  gabarits. Source d'incompréhension PO du 2026-08-23 : « pourquoi une date, on ne passe pas juste le
+  statut à *ready* ? ».
+- **Ligne de crête inchangée** : schéma léger + validateur + vues générées, jamais un moteur de workflow.
 
-## Proposition
+## Proposition (décisions du grooming)
 
-- **Un schéma** porte la liste des statuts (colonnes), **éditable** (par repo — cf. manifeste de slots
-  [[20260815080414006]]) sans toucher au code.
-- **Un validateur** (gate CI / pré-commit) **refuse** toute fiche dont `status` ∉ liste.
-- **`ready` devient une colonne** : `Backlog → Ready → En cours → Revue → Livré`. Le tampon DoR = « la fiche
-  entre dans *Ready* », et **le champ date `ready:` disparaît** (la date vient de git — cf. [[20260823121712716]]).
-- **Migration** des fiches existantes (convertir les `ready:` en colonne, retirer le champ). ⚠ **Cas
-  `blocked` + `ready`** (retour Codex #164) : `0102` est `status: blocked` **et** `ready: 2026-07-26` —
-  or `Bloqué` et `Ready` seraient deux colonnes **exclusives**, donc une fiche ne peut pas être dans les
-  deux, et l'éligibilité au déblocage (déjà passée par la DoR) doit survivre. La migration n'est « sans
-  perte » **qu'à condition** de trancher : (a) `blocked` reste un **attribut orthogonal** (un flag, pas
-  une colonne), ou (b) une représentation dédiée aux items *bloqués-mais-mûrs*. **À décider au grooming.**
-- **Préserver les dates `ready:` historiques** (retour Codex #164) : dériver la date de la colonne
-  *Ready* **uniquement de git** l'altère — ex. `20260812134515706` porte `ready: 2026-08-21`, mais le
-  commit qui l'a livrée (`ede1224`, squash-merge) est daté du 2026-08-22. Retirer le champ ferait donc
-  **mentir** `history`. Avant de supprimer `ready:`, **importer les dates legacy** (ou inscrire un
-  événement historique équivalent) — sinon la migration n'est pas « sans perte ».
-- **Ce qu'on ne fait PAS** : transitions autorisées, rôles, permissions, objets sprint. Juste valeurs validées.
+1. **Deux axes** (livré, #235). La *colonne* est le champ `status` : `idea → ready → shipped`, plus les
+   terminaux `superseded`, `merged`, `split`. Les *drapeaux* se posent par-dessus la colonne : `blocked:`
+   avec sa raison. Une fiche peut donc être `ready` ET bloquée (cas `0102`, retour Codex #164).
+2. **Un schéma unique des statuts** : `FICHE_SCHEMA`, dans `src/core/fiche-schema.ts`. Il dit, pour
+   chaque statut, son libellé et s'il est terminal. Le validateur, le board et les vues en dérivent.
+   Les scripts bash ne portent qu'un habillage (l'emoji) qu'un **test de contrat** compare au schéma :
+   plus de dérive silencieuse. **Pas de YAML par repo** : c'est l'ADR-0040 D2 (« schéma dérivé du code
+   typé, pas de schéma parallèle ») et l'arbitrage PO du 2026-09-12 (« refus schéma statuts par repo »).
+3. **Retrait du champ `ready:`** par la migration Skema **005** (dry-run ou `--apply`, idempotente).
+   Pour chaque fiche qui porte une vraie date, la migration ajoute une ligne de note datée au bas de la
+   fiche, puis supprime la ligne `ready:`. **Refus de dériver la date de git** : le squash-merge ment
+   (ex. `20260812134515706` porte `ready: 2026-08-21`, mais son commit de livraison est du 2026-08-22,
+   retour Codex #164). `layout_version` passe de 4 à 5.
+4. **Garde contre le retour du champ** : le validateur signale `ready:` comme champ retiré, et les
+   gabarits ne le créent plus.
+5. **Consommateurs passés sur `status: ready`** : loader `fiches.ts`, board, plan-view, `plan:head`,
+   `regen-backlog.sh` (2 copies byte-identiques) et `portfolio.sh`, gate `ready` du skill, `next --ready-only`,
+   `check-fiches`, gabarits, doc.
 
-## Critères d'acceptation (à groomer)
+## Critères d'acceptation
 
-- [ ] La liste des statuts vit dans **un schéma éditable** (pas en dur dans les scripts).
-- [ ] Un validateur **rejette** un `status` hors-liste (testé, rouge→vert).
-- [ ] `ready` est une **colonne** ; le champ date `ready:` est **retiré** du front-matter.
-- [ ] Migration des fiches actives + `done/` **sans perte** — items `blocked` **et** `ready` (cf. `0102`)
-      via un `blocked` orthogonal ou une représentation dédiée, **et** dates `ready:` historiques
-      **préservées** (pas dérivées à tort du squash-merge, cf. `20260812134515706`).
-- [ ] Markdown reste la **source** ; aucun moteur de workflow introduit.
+- [x] Un validateur **rejette** un `status` hors-liste (testé rouge→vert) — PR #233, `fiches:check --strict`
+      en gate bloquante.
+- [x] `blocked` et `ready` cohabitent sans perte : `blocked` est un **drapeau orthogonal**, pas une
+      colonne (cas `0102`) — PR #235. Statuts terminaux `merged` / `split` + provenance validée — PR #235.
+- [x] Markdown reste la **source** ; aucun moteur de workflow introduit.
+- [ ] (a) La liste des statuts vit en **un seul schéma** (`FICHE_SCHEMA`) ; validateur, board et vues
+      en dérivent ; les scripts bash et les gabarits sont gardés par un test de contrat (un statut
+      ajouté au schéma sans son habillage fait échouer la suite).
+- [ ] (b) `ready` est une **colonne** (`status: ready`, déjà vrai) **et** le champ date `ready:` n'existe
+      plus : aucune fiche ne le porte, le validateur le rejette, les gabarits ne le créent plus.
+- [ ] (c) Migration **005** sans perte sur les fiches actives et `done/` : chaque date `ready:` réelle
+      (81 fiches) est recopiée en note datée avant la suppression de la ligne ; une 2e exécution ne
+      change rien ; `layout_version` 5.
+- [ ] (d) Les consommateurs listés en Proposition 5 passent sur `status: ready` ; `BACKLOG.md` /
+      `PORTFOLIO.md` restent fidèles (mêmes lignes qu'avant, `merged` / `split` enfin libellés).
 
 ## Comment vérifier
 
-Introduire une fiche avec `status: n-importe-quoi` → le validateur bloque avec un message clair. Tamponner
-une fiche → elle apparaît dans la colonne *Ready* du board.
+```bash
+pnpm --dir products/mega-city fiches:check --strict       # 0 anomalie — plus aucun champ ready:
+grep -l '^ready:' features/*.md features/done/*.md         # aucune sortie
+bash products/mega-city/skills/ezk-backlog/scripts/apply-005-retrait-champ-ready.sh .   # dry-run : rien à migrer
+pnpm --dir products/mega-city test && pnpm --dir products/mega-city test:scripts
+```
+
+Sabotage : remettre `ready: 2026-01-01` dans une fiche → `fiches:check --strict` échoue avec « champ retiré ».
+Introduire `status: to-do` → il échoue aussi (déjà le cas depuis #233).
+
+## Suite (reliquat hors POC)
+
+- **Surcharge du schéma par repo** (un YAML éditable par projet) : refusée tant qu'aucun second repo
+  ne demande d'autres colonnes (YAGNI, PO 2026-09-12). À rouvrir sur ce signal.
+- **Fiche 20260823121712716** (board en colonnes + historique git) : sa prémisse « la date vient de
+  git » ne tient plus pour les DoR historiques, conservées ici en note. À re-scoper en « vue git bonus »
+  (arbitrage PO).
+- `portfolio.sh` lit encore `status: blocked` (section « Actionnable », compteur `⛔`) : depuis #235,
+  `blocked` est un drapeau. À passer sur le champ `blocked:`.
+- Les quatre « métas » (`schema`, `generated_by`, `version`, sprint) restent hors périmètre (ADR-0040 D4).
 
 ## Notes / voisins
 
-- Voisins : [[0186]] (validateur de conformité d'artefacts), [[20260815080414006]] (manifeste de slots par
-  repo = colonnes flexibles), [[20260823121712716]] (les vues générées : board + historique git).
+- Voisins : [[0186]] (validateur de conformité d'artefacts, Skema), [[20260815080414006]] (manifeste de
+  slots par repo), [[20260823121712716]] (les vues générées : board + historique git).
 - Issu de l'échange PO du 2026-08-23 (le champ `ready:` daté jugé bancal ; préférence pour des colonnes
-  validées). **Non ready** — à groomer/architecturer avant de tirer (format du schéma, stratégie de migration).
-- **Statuts `merged` / `split`** (échange PO 2026-08-25) : fusionner/splitter des fiches produit des états
-  **terminaux** — les fiches absorbées passent `merged`/`split`, avec back-références vers la résultante.
-  À intégrer comme valeurs validées par le schéma. Geste porté par [[20260812104022240]].
-- **Quatre « métas » à ne pas fondre** (échange PO 2026-08-25, nommage validé) :
-  - **`schema`** — version du **format** de la fiche (ce qu'elle doit contenir). Précédent : le pack de
-    review `0183` porte déjà `schema: method-review@0.1`. Indépendant de qui l'a produite.
-  - **`generated_by`** — le **producteur** : `{ skill, skill_version, model, effort }`. L'`id` horodaté
-    donne déjà le **quand** ; on n'ajoute PAS llm/branche/worktree. Précédent : `method {name, version}` du pack `0183`.
-  - **`version`** (cible) — la **version/tag** visée (le champ `version:`, aujourd'hui non lu).
-  - **sprint / milestone** — la **boîte de temps**, dimension SÉPARÉE de la version. Export GitHub : voir
-    [[0171]] (sprint→milestone, feature→issue, version→Release, en **push-only**).
-  - Piège : `schema` (format) ≠ `generated_by` (producteur) — une fiche de `schema v2` peut être produite
-    par n'importe quel skill/modèle.
+  validées).
+- **Statuts `merged` / `split`** (échange PO 2026-08-25) : fusionner ou splitter des fiches produit des
+  états **terminaux** ; les fiches absorbées passent `merged` / `split`, avec back-références vers la
+  résultante. Geste porté par [[20260812104022240]].
+- **Quatre « métas » à ne pas fondre** (échange PO 2026-08-25) : `schema` (version du **format** de la
+  fiche) · `generated_by` (le **producteur** : skill, version, modèle, effort) · `version` (la
+  version/tag **visée**) · sprint / milestone (la **boîte de temps**, séparée de la version). Export
+  GitHub : voir [[0171]]. Piège : `schema` (format) ≠ `generated_by` (producteur).

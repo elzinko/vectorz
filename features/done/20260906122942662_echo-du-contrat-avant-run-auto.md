@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [sprint]
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260906122942607 (tri 2026-09-30)"
 created: 2026-09-06
 ---

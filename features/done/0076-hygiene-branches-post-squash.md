@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#31"
 created: 2026-07-17
 ---
@@ -79,3 +78,5 @@ un luxe, c'est la doctrine ADR-0001 appliquée aux branches.
   sans connaître le SHA de squash.
 - Chemin UI GitHub : imprévenable à la source → c'est le **filet** (ancrage 1-2) qui
   le couvre ; la règle `fetch --prune` (ancrage 3) réduit le résidu remote.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

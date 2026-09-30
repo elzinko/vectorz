@@ -6,7 +6,6 @@ priority: P0 # P0 | P1 | P2 | P3
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic) ; une épic n'en référence jamais une autre
 status: shipped
-ready: 2026-09-12 # YYYY-MM-DD — posée par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr: "#232"
 evidence: none # flux git/CLI, aucun écran
 created: 2026-09-11
@@ -163,3 +162,5 @@ Finalisés au grooming (ADR-0052). Tous vérifiables.
   par GitHub (seul chemin « Merged » propre), le local décide + se réaligne par fast-forward.
   Axe 2 = promotion de la gate de fraîcheur (advisory, prédicat de sûreté ADR-0042), dépend
   du spike [[20260906122942825]]. **DoR atteinte.**
+
+> **Historique** — DoR (`ready`) passée le 2026-09-12 · ancien champ front-matter `ready:`, retiré en migration 005.

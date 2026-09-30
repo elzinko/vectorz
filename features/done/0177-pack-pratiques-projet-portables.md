@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: mega-city
 status: superseded
-ready:
 pr: "superseded — doublon absorbe par la recette-chapeau 20260824185422122"
 created: 2026-08-01
 ---

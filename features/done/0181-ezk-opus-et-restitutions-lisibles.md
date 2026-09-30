@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-08-03
 pr: "#92"
 created: 2026-08-03
 ---
@@ -71,3 +70,5 @@ de la méthode**.
 - Dérogation sonnet : `ezk-tdd`, `ezk-qa`, `ezk-steward` (mécanique / bas effort).
 - PLAN : tête hygiène/NOW — tirée avant 0062.
 - Hors scope : pin exact Opus 5 ; modèles par défaut de la session Cursor parente.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-03 · ancien champ front-matter `ready:`, retiré en migration 005.

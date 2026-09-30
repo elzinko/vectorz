@@ -8,7 +8,6 @@ version: V0.3
 epic:
 labels: [recettes]
 status: idea
-ready:
 pr:
 created: 2026-09-04
 ---

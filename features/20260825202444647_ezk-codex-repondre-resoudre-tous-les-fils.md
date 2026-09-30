@@ -7,7 +7,6 @@ product: mega-city
 version: V0.3
 labels: [revue]
 status: idea
-ready:
 pr:
 created: 2026-08-25
 ---

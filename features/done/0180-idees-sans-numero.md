@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: vectorz
 status: shipped
-ready:
 pr: "#124"
 created: 2026-08-01
 milestone: fondation

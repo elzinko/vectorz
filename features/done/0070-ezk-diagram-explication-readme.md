@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#33"
 created: 2026-07-15
 ---
@@ -49,3 +48,5 @@ explication :
 
 - Suite de la PR #9 (règles de lisibilité) ; la skill elle-même est la fiche 0032
   (shipped, PR #3), les vues partageables datent de la PR #6.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

@@ -7,7 +7,6 @@ product: mega-city
 labels: [rationalisation]
 milestone: rationalisation
 status: shipped
-ready: 2026-08-12
 pr: local (main)
 created: 2026-07-26
 ---
@@ -88,3 +87,5 @@ lance la bonne skill), `ship` ensuite si le PO veut la réparation automatique.
   et le cas G du test couvre la forme NUE (sans `/` avant le `:`), seule discriminante.
 - Voisin thématique : 0068 règle « method-map à jour »
   — même famille (un artefact humain qui se périme sans que rien ne rougisse).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-12 · ancien champ front-matter `ready:`, retiré en migration 005.

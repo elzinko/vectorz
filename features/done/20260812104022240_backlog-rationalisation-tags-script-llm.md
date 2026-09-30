@@ -7,7 +7,6 @@ product: mega-city
 epic:
 version:
 status: shipped
-ready: 2026-08-26
 pr: "#223"
 created: 2026-08-12
 ---
@@ -163,3 +162,5 @@ qu'elles ont été **absorbées**, sans perdre l'historique. Symétrique pour le
   pas organisation du stock).
 - Voisin de méthode : [[20260812104022237]] (owner de PR, même session).
 - Origine : session 2026-08-12. Design tranché et groomé ready le 2026-08-26.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-26 · ancien champ front-matter `ready:`, retiré en migration 005.

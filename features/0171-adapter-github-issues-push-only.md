@@ -9,7 +9,6 @@ priority: P2
 epic:
 depends: [0170]
 status: idea
-ready:
 pr:
 created: 2026-07-30
 ---

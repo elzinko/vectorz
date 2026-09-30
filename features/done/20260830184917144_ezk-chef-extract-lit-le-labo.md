@@ -8,7 +8,6 @@ version:
 epic:
 depends: []
 status: shipped
-ready: 2026-08-30
 pr: "#196"
 created: 2026-08-30
 ---
@@ -76,3 +75,5 @@ bash products/mega-city/bin/test-ezk-chef-extract.sh   # étendu : cas « avec l
   nouvel objet ni de nouvelle commande — on étend `ezk-chef-extract.sh`.
 - **Réutilise** : le lecteur de section `## <nom>` déjà présent dans `ezk-chef-extract.sh`
   (fonction `section()`), l'entête `fiches:` du récit, la convention `feat/<id>-<slug>` (ADR-0018).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

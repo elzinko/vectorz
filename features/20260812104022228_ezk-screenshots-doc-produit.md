@@ -8,7 +8,6 @@ labels: [lisibilite]
 milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-10
 ---

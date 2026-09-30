@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#26"
 created: 2026-07-15
 ---
@@ -64,3 +63,5 @@ range (flip statut, regen, commit).
   (fiche 0161) pour confronter l'idée avant de la déclarer Ready.
 - Origine : discussion session 2026-07-15 (capture de 0052/0053/0054 en idea → « il faut
   groomer dessus »).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

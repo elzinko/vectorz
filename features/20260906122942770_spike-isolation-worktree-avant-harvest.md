@@ -10,7 +10,6 @@ epic:
 depends: []
 labels: [sprint]
 status: idea
-ready:
 pr:
 created: 2026-09-06
 ---

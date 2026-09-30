@@ -7,7 +7,6 @@ epic:
 depends: []
 labels: [method, supervision, ux]
 status: shipped
-ready: 2026-07-29
 pr:
 created: 2026-07-29
 product: mega-city
@@ -48,3 +47,5 @@ Dogfood 2026-07-29 (vectorz) — voir issue #63 / fiche 0105.
 - Issue : https://github.com/elzinko/vectorz/issues/63
 - Complète **0104** (analyze) et **0105** (bug P0) — 0105 reste ouvert jusqu’au dogfood.
 - Relancer Claude Code après merge pour recharger les 6 outils MCP.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-29 · ancien champ front-matter `ready:`, retiré en migration 005.

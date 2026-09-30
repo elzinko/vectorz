@@ -10,7 +10,6 @@ epic:
 depends: []
 labels: [supervision]
 status: idea
-ready:
 pr:
 created: 2026-08-25
 ---

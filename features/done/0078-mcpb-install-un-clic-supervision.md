@@ -6,7 +6,6 @@ priority: P2
 product: mega-city
 epic:
 status: shipped
-ready:
 pr: "#41"
 created: 2026-07-18
 ---

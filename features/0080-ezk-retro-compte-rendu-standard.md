@@ -8,7 +8,6 @@ version: V0.4
 labels: [sprint]
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-18
 ---

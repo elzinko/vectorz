@@ -7,7 +7,6 @@ product: mega-city
 labels: [test-local]
 epic:
 status: superseded
-ready:
 pr: "superseded — fusionnée dans 20260917162000501 (tri 2026-09-30)"
 created: 2026-08-24
 ---

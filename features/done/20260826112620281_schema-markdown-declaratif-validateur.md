@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [format, validation, methode, outillage]
 status: superseded
-ready:
 pr: "superseded — sliver absorbe par la fondation 20260826122532943 (ADR-0040 D2)"
 created: 2026-08-26
 milestone: fondation

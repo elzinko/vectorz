@@ -8,7 +8,6 @@ labels: [installation]
 milestone: parked
 epic:
 status: idea # idea | ready | in-progress | blocked | shipped
-ready:
 pr:
 evidence: none # cadrage méthode, pas d'écran
 created: 2026-09-10

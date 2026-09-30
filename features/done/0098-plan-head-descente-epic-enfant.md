@@ -8,7 +8,6 @@ epic:
 depends: []
 labels: [enabler, follow-up]
 status: superseded
-ready:
 pr: "superseded — type: epic retire (A16), plus d'enfant d'epic ou descendre"
 created: 2026-07-26
 ---

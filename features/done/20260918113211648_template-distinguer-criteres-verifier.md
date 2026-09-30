@@ -7,7 +7,6 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [méthode, template]
 status: shipped # idea | ready | in-progress | blocked | shipped
-ready: 2026-09-18 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète)
 pr: "#254"
 evidence: none # template markdown, pas d'écran
 created: 2026-09-18
@@ -71,3 +70,5 @@ pnpm --dir products/mega-city exec vitest run src/__tests__/human-facing-lisibil
   recopient pas).
 - Distinct du **CLI `ezk`** ([[20260903134906920]]) qui, lui, rendra les commandes de « Comment
   vérifier » lançables depuis n'importe quel terminal (portabilité) — sujet séparé.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-18 · ancien champ front-matter `ready:`, retiré en migration 005.

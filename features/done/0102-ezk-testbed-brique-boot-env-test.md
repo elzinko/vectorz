@@ -8,7 +8,6 @@ epic:
 depends: []
 labels: [test-local]
 status: superseded
-ready: 2026-07-26
 blocked: "raison non tracée à la création — statut hérité, migré en drapeau sans preuve documentée (sliver B, fiche 652)"
 pr: "superseded — fusionnée dans 20260917162000501 (tri 2026-09-30)"
 created: 2026-07-26
@@ -231,3 +230,5 @@ une isolation de sécurité qu'on ne fournit pas — même limite honnête qu'`e
   contre `origin/main` **fetché** *et* toutes les branches non mergées, pas contre le
   worktree courant. Un trou dans la numérotation est sans conséquence — un id est un
   identifiant, pas un compteur.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-26 · ancien champ front-matter `ready:`, retiré en migration 005.

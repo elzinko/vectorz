@@ -8,7 +8,6 @@ epic:
 depends: ["0039"]
 labels: [hygiene, docs, epoch-2]
 status: shipped
-ready: 2026-08-05
 pr: "#101"
 created: 2026-08-05
 ---
@@ -49,3 +48,5 @@ ou agent suit encore le mauvais chemin. `docs/bmad-version-audit.md` et
 
 - Complément doc-only de 0039 — pas un second retrait code.
 - BMAD externe : renvoyer vers `docs/brancher-une-methode-existante.md` + fiche 0162 (LATER).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-05 · ancien champ front-matter `ready:`, retiré en migration 005.

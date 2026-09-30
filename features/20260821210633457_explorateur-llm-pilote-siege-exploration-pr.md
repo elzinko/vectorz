@@ -9,7 +9,6 @@ epic:
 depends: ["0169"]
 labels: [test-local]
 status: idea
-ready:
 pr:
 created: 2026-08-21
 ---

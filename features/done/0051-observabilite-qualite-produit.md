@@ -8,7 +8,6 @@ epic:
 milestone: parked
 labels: [observabilite]
 status: superseded
-ready:
 pr:
 created: 2026-07-22
 ---

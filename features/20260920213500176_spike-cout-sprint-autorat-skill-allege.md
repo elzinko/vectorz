@@ -8,7 +8,6 @@ version: V0.4
 epic:
 labels: [fabrique]
 status: idea
-ready:
 pr:
 evidence: none # coût / méthode, pas d'écran
 created: 2026-09-20

@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [backlog, methode, doctrine]
 status: shipped
-ready: 2026-08-25
 pr: "#175"
 created: 2026-08-25
 ---
@@ -180,3 +179,5 @@ lot 4b = division + absorption, fiche suite = division) et le cas testbed (= ép
 Origine : demande PO du 2026-08-25 (`/ezk-backlog add`), née du finding Codex P2 sur le board
 (#166) et des trois gestes de composition faits à la main pendant la mise à plat du backlog.
 Grooming : 2026-08-25, panel `ezk-architect` (décisions D1–D5 + verdict testbed).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-25 · ancien champ front-matter `ready:`, retiré en migration 005.

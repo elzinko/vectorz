@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [method, testbed, supervision]
 status: idea
-ready:
 pr:
 created: 2026-08-11
 ---

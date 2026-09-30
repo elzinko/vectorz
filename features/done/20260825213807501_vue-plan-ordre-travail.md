@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-25
 pr: "#169"
 created: 2026-08-25
 ---
@@ -202,3 +201,5 @@ Preuve agent attendue au sprint : capture de l'onglet « Plan » (couloirs par s
   token de 4 chiffres borné (PR `#1234`, fragment de SHA) est capté quelle que soit sa nature
   — seul cas gênant : collision exacte avec un id legacy existant, très improbable (PRs à 3
   chiffres, SHA non alignés). À durcir le jour où un PR à 4 chiffres entre dans PLAN.md.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-25 · ancien champ front-matter `ready:`, retiré en migration 005.

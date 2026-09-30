@@ -6,7 +6,6 @@ priority: P3
 product: mega-city
 labels: [dette]
 status: idea
-ready:
 pr:
 created: 2026-08-23
 milestone: fondation

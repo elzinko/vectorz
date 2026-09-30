@@ -8,7 +8,6 @@ milestone: parked
 version:
 epic:
 status: idea
-ready:
 pr:
 created: 2026-09-04
 ---

@@ -8,7 +8,6 @@ version: V0.3
 epic:
 labels: [installation]
 status: idea
-ready:
 pr:
 evidence: none # outil de terminal, aucun écran
 created: 2026-09-03

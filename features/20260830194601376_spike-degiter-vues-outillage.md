@@ -9,7 +9,6 @@ version: V0.3
 epic:
 depends: []
 status: idea
-ready:
 pr:
 created: 2026-08-30
 ---

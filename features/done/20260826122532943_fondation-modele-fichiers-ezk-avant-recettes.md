@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [socle]
 status: superseded
-ready:
 pr: "superseded — Ancien chapeau : son contenu est livré ou porté par le graphe et le verrou de statut"
 created: 2026-08-26
 milestone: fondation
