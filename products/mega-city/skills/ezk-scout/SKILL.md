@@ -31,6 +31,9 @@ le rapport, et seulement ensuite les brouillons retenus entrent au backlog. Il *
 
 Le rapport est un artefact que tu lis : il suit la règle `human-facing-lisibility`
 (« En clair » d'abord, phrases courtes, comptes qui collent à la liste).
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 > Origine : le run samplerz du 2026-09-10 a trouvé trois vrais bugs avec un prompt improvisé
 > (bornes de recadrage non validées, export qui plante sur un BPM ≤ 0 et sur un dossier non

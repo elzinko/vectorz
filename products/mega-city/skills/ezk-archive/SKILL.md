@@ -144,6 +144,9 @@ qui ne demandent aucun jugement.
 2. Rédige la note d'après [`references/handoff-template.md`](references/handoff-template.md)
    — **ouvre par « En clair »** (règle
    [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md)).
+   **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
+   affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
+   **titre + lien**, jamais par son id nu.
 3. **Si — et seulement si — la sous-commande est `run`/`close`** :
    - **mémoire projet** : les faits durables non-dérivables du repo (dates relatives
      converties en absolues) ; ne mémorise pas ce que le repo encode déjà ;

@@ -59,5 +59,10 @@ lui-même** : cohérence, conformité, fonctionnalité.
 - Les désynchros **triviales** (README), tu peux les **corriger** directement ; le
   reste, tu le **rapportes** (ne réécris pas un skill sans accord).
 - Termine par un **verdict GO / NO-GO** pour la librairie.
+- **Restitution** (règle `human-facing-lisibility`) : ouvre par **« En clair »** (verdict + 1 à 2
+  raisons, une phrase chacune), avant les findings.
+  **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
+  affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
+  **titre + lien**, jamais par son id nu.
 
 Concis et actionnable. Ne signale pas ce qui est déjà vert.

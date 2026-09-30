@@ -149,6 +149,11 @@ describe('enforcingAgents & bundleRules — les liens règle→agent (enforces) 
     const loi = extractLoi(loadRealCompiledGraph());
     expect(bundleRules(loi, 'base')).toContain('development/pr-before-after-media');
   });
+
+  it('réel : le bundle base porte documentation-guidelines/human-facing-lisibility (fiche 20260824111001836)', () => {
+    const loi = extractLoi(loadRealCompiledGraph());
+    expect(bundleRules(loi, 'base')).toContain('documentation-guidelines/human-facing-lisibility');
+  });
 });
 
 describe('nodeDetail & sourcePath — navigation inter-nœuds, agents/skills compris (retour PO 2026-08-27)', () => {

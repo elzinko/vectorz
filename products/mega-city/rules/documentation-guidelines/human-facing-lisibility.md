@@ -10,8 +10,9 @@ enforcements:
 
 - Scope: **every artefact a human reads** — PR description, backlog fiche, capture,
   retro write-up, product-builder checkpoint, sprint closure summary,
-  **ezk-archive handoff / rapport de clôture**. Not internal scratch (`SPRINT.md`,
-  draft ADR notes).
+  **ezk-archive handoff / rapport de clôture** — **and every chat answer addressed to the
+  human**: end-of-turn explanation, session summary, sub-agent report relayed to the PO
+  (see « Cas sortie de chat » below). Not internal scratch (`SPRINT.md`, draft ADR notes).
 - Open with an **« En clair »** block: the essential in **≤ 3 sentences**, BEFORE detail.
 - Trame: lived symptom → proposal in plain words → concrete effect for the reader.
 - Internal codes and invented jargon (`R1`, `DoR`, « verrou », « borne anti-veto »…)
@@ -38,6 +39,36 @@ enforcements:
   (`MAX_FACTS` cap), 2026-09-21 → a count that contradicts its list hides work (here: unmerged branches —
   the opposite of « lose nothing between sessions »). Measure: under the cap, `emitted lines == announced
   count`; above it, the label carries « X/Y ».
+
+### Cas sortie de chat — réponse de fin de tour, résumé de session
+
+Le `Scope:` couvre aussi ce que l'humain lit **dans le fil de conversation** : l'explication de
+fin de tour, le résumé de session, le compte rendu d'un sous-agent relayé au PO. Trois clauses.
+
+1. **Canal : Markdown seul.** Le terminal de Claude Code rend le Markdown, pas le HTML.
+   `<details>`, `<summary>` et tout HTML brut s'y affichent **en texte, balises comprises** : le
+   bloc censé alléger la lecture la dégrade. Interdit dans le chat. Le détail technique va **en
+   bas**, sous un titre Markdown (`### Détail technique`) ou en liste, sans repli. `<details>`
+   **reste permis** dans les livrables `.md` committés (fiche, PR, doc) : GitHub les rend.
+2. **Une fiche se cite par son titre + lien.** En prose comme en chat, une fiche (ou une PR,
+   un ADR) s'écrit comme un **titre court en lien cliquable** vers son fichier. L'id peut suivre
+   le titre, **jamais le remplacer**. Un id nu (`0080`, `20260826072532537`, `#175`) est un code
+   interne : illisible et non navigable. Cette clause ne contredit pas la puce « Lists of
+   file-backed items » : dans une liste dont chaque ligne affiche déjà le titre en clair à côté
+   du lien (index généré), le lien peut rester sur l'id. Seul l'id **seul** est interdit.
+3. **Leviers d'application.** Le chat n'a aucun contrôle automatique : `ezk-reviewer` juge des
+   diffs, pas des réponses. La règle tient par des leviers posés ensemble : le `CLAUDE.md` du
+   projet ; le style de sortie « Explication claire » du poste (`~/.claude/output-styles/`,
+   hors dépôt) ; le texte des agents et des skills de la méthode, qui reprennent la clause de
+   canal ; la loi compilée (`.iamthelaw/ENTRY.md`) dans un projet lié par `lawgiver bind`. Sans
+   l'un d'eux, la règle reste une intention.
+
+Origin: demande PO 2026-08-24 (« tout ce qui sort de la méthode doit être très clair, y compris
+l'explication en retour de chaque LLM »), décision PO 2026-08-26 (clause « titre + lien » dans la
+règle et dans `CLAUDE.md`), constat 2026-08-30 (`<details>` affiché en brut dans un projet hôte
+sous le style « Explication claire »). Measure (removability): 0 balise `<details>` ou
+`<summary>` visible sur les 5 prochaines réponses longues en terminal, et 0 fiche citée par son
+seul id.
 
 ### Cas corps de PR — la fiche est le document, la PR en est le rendu (ADR-0029)
 

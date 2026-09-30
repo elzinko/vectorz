@@ -34,6 +34,9 @@ le refaire chaque fois.
 **Restitution** (`harvest` / `create` / `deploy`) : ouvre par **« En clair »**
 (≤ 3 phrases) — règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 Politique modèles + inventaire :
 [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
 

@@ -57,5 +57,10 @@ Une recette qui viole un SHOULD reste indexée et utilisable — signalée, pas 
 - Les désynchros **triviales** (un champ front-matter manquant, une régénération pas relancée),
   tu peux les **corriger** directement ; le reste, tu le **rapportes**.
 - Termine par un **verdict GO / NO-GO** pour la ou les recette(s) évaluée(s).
+- **Restitution** (règle `human-facing-lisibility`) : ouvre par **« En clair »** (verdict + 1 à 2
+  raisons, une phrase chacune), avant les findings.
+  **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
+  affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
+  **titre + lien**, jamais par son id nu.
 
 Concis et actionnable. Ne signale pas ce qui est déjà vert.
