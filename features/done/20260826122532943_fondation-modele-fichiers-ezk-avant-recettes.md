@@ -45,7 +45,7 @@ au lieu de le réinventer.
 1. **Le graphe est dérivé, jamais stocké.** Cinq mots pour dire « X est lié à Y » (`composes`,
    `enforcements`, `competences`, `roles`, `interactions`), plus ~600 liens de **prose** qui
    cassent à chaque `ship`. Porté par
-   **[357](../20260821204737357_cabler-la-methode-modele-compile.md)**.
+   **[357](20260821204737357_cabler-la-methode-modele-compile.md)**.
 2. **Aucun schéma qui *échoue*.** Un front-matter malformé passe en **warning**, jamais en rouge.
    Porté par **[652](../20260823121712652_modele-statut-kanban-schema-valide.md)** + le **sliver
    validateur** de **[0186](../0186-skema-versioning-migrations-skills-deployees.md)** + ma fiche
@@ -91,7 +91,7 @@ schéma**.
 
 | Fiche | Rôle dans la fondation | Statut aujourd'hui |
 |---|---|---|
-| [357](../20260821204737357_cabler-la-methode-modele-compile.md) | graphe compilé + unifier les liens (+ BMAD) | P1 idea — **l'ancre** |
+| [357](20260821204737357_cabler-la-methode-modele-compile.md) | graphe compilé + unifier les liens (+ BMAD) | P1 idea — **l'ancre** |
 | [0186](../0186-skema-versioning-migrations-skills-deployees.md) | Skema généralisé + sliver validateur | P2 idea |
 | [652](../20260823121712652_modele-statut-kanban-schema-valide.md) | schéma de statut + 4 métas | P1 todo |
 | [281](20260826112620281_schema-markdown-declaratif-validateur.md) | validateur de conformité | P3 — **fusionner ici** |
@@ -115,7 +115,7 @@ qui échoue) · le **versionnement** (granularité Skema) · les **4 métas**.
 > `domain.ts`**, **validateur en warning avant bloquant**, **métas optionnelles**. Capture :
 > [`docs/captures/2026-08-26-panel-ezk-architect-adr-0040.md`](../../docs/captures/2026-08-26-panel-ezk-architect-adr-0040.md).
 > **Ratifié PO le 2026-08-26 → ADR accepté.** Construction ouverte : **graphe compilé en premier**
-> (fiche [357](../20260821204737357_cabler-la-methode-modele-compile.md)).
+> (fiche [357](20260821204737357_cabler-la-methode-modele-compile.md)).
 
 ## Critères d'acceptation
 

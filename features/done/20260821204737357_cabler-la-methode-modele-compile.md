@@ -7,21 +7,89 @@ product: mega-city
 version: V0.1
 milestone: fondation
 labels: [socle]
-status: in-progress
-pr:
+status: shipped
+pr: "#265"
 created: 2026-08-21
 ---
 
 # Comment câbler la méthode pour qu'elle soit enfin lisible
 
-> **MAJ 2026-08-26 — POC (étape 1 de l'ADR-0040) livré · `in-progress`.** Le graphe se
-> **compile** en instance typée (`pnpm graph:compile` → artefact non-versionné `.ezk/graph.compiled.json`) ;
-> un id de lien inconnu **fait échouer** la compilation ; `pnpm graph:query` **lit** l'objet sans
-> recalcul. Commit `a4858f2` (sur `origin/main`). Revue adverse `ezk-reviewer` = **GO**.
-> **Reste pour clore la fiche** : câbler la webapp/`map-data` (le consommateur POC est le CLI), unifier
-> le vocabulaire des 5 liens (D1, en **alias** — aucun rename), migrer les refs de prose → id.
-
 ## En clair
+
+Le graphe de la méthode est **compilé une fois en un seul objet**, et la carte le lit : ces deux
+morceaux sont livrés. Il restait trois choses, que ce sprint ferme. Un **seul vocabulaire** de
+4 verbes remplace les 5 mots de lien, sans rien renommer sur disque. Les liens **skill → règle**
+passent par des **ids** au lieu de chemins, et un validateur signale tout oubli. La **note BMAD**
+est écrite. Ce qui n'entre pas dans ce premier incrément est écrit plus bas, en « Suite ».
+
+## Où on en est (2026-09-30)
+
+| Geste de la recommandation | État |
+|---|---|
+| 1. Compiler le graphe en un objet unique | **Livré.** `graph:compile` (commit `a4858f2`), carte branchée dessus (PR #234). |
+| 2. Unifier les 5 mots de lien | **Livré par ce sprint.** 4 verbes fermés, posés comme alias dans le compilateur. Aucun champ renommé. |
+| 3. Liens structurels par id, pas par chemin | **Premier incrément livré par ce sprint.** Champ `applies:` + validateur. Reliquat en « Suite ». |
+| Note BMAD | **Livrée par ce sprint**, dans l'[ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md). |
+
+## Le vocabulaire tranché
+
+Quatre verbes, fermés. Chacun garde un couple « source → cible » précis, donc le typage tient.
+Les champs sur disque ne bougent pas (décision D1 de l'ADR-0040).
+
+| Verbe | Se lit | Champs qui le portent |
+|---|---|---|
+| **compose** | « X est fait de Y » | `composes` (skill → skill) · `competences` (agent → skill) · bundles et profils (`extends`, `rules`, `bundles`, `agents`, `skills`) |
+| **convoque** | « X fait venir le rôle Y » | `roles` (skill → agent) · `participants` (règle d'interaction → agent) |
+| **applique** | « X suit la règle Y » | `interactions` (agent → règle, profil → règle) · **nouveau** `applies` (skill → règle) |
+| **est-vérifié-par** | « la règle X est contrôlée par Y » | `enforcements` de type `agent-check` (règle → agent) |
+
+Cinq mots deviennent quatre. `composes` et `competences` disaient la même chose vue de deux
+côtés : « je suis fait de ces briques ». Ils partagent donc le verbe **compose**.
+
+## Critères d'acceptation
+
+- [x] Un `pnpm` émet le graphe complet de la méthode en un objet typé (pas un Mermaid).
+      Preuve : `pnpm --dir products/mega-city graph:compile`, commit `a4858f2`.
+- [x] La webapp lit cet objet — aucune arête peinte à la main ne subsiste.
+      Preuve : PR #234 et le test de parité `map-data-graph-parity.test.ts`.
+- [x] Les 5 vocabulaires de lien sont tranchés en 4 verbes fermés, par alias dans le compilateur.
+      Chaque arête compilée porte son `verb`. Un test refuse tout lien sans verbe. Aucun champ renommé.
+      Preuve : PR #265, test `graph-vocabulary.test.ts`.
+- [x] `graph:query` accepte un verbe **ou** un lien, en sens direct ou inverse
+      (« qui applique cette règle ? » sans grep).
+- [x] **Incrément** des références structurelles par id : le champ `applies:` (skill → règle) est lu
+      par le graphe, et un id inconnu fait échouer la compilation. `graph:check` signale tout lien
+      markdown par chemin vers un skill, un agent ou une règle qui n'est pas déclaré par id.
+      Le catalogue réel est à **0** signalement (les liens existants sont déclarés).
+      Preuve : PR #265, tests `structural-refs.test.ts` (dont l'invariant sur le catalogue réel).
+- [x] BMAD : la note « ce qu'on reprend / ce qu'on écarte » est écrite dans l'ADR-0040.
+
+## Comment vérifier
+
+```bash
+pnpm --dir products/mega-city graph:compile
+pnpm --dir products/mega-city graph:query est-verifie-par clean-code/no-dead-code
+pnpm --dir products/mega-city graph:query applique documentation-guidelines/human-facing-lisibility --inverse
+pnpm --dir products/mega-city graph:check
+```
+
+- La 2e commande répond `ezk-reviewer` sans aucun grep. La 3e liste les 7 skills qui suivent la règle.
+- La 4e sort `0 lien cassé` et `0 référence par chemin non déclarée`.
+- **Sabotage A.** Écrire `applies: [regle-inexistante]` dans un `SKILL.md` : `graph:compile` refuse et nomme l'id.
+- **Sabotage B.** Retirer `applies:` d'un skill qui garde son lien markdown vers une règle :
+  `graph:check` sort en erreur et donne `fichier:ligne`.
+
+## Suite (reliquat assumé de ce premier incrément)
+
+- **Rule → rule.** Trois liens par chemin existent entre règles (`fiche-read-via-loader`,
+  `merge-when-absent-default`). Aucun champ d'id n'existe pour cette relation. `graph:check` les
+  liste en information, sans bloquer. Il faut d'abord choisir le verbe.
+- **La carte** ne montre pas encore les liens « applique » skill → règle (elle les compte déjà).
+- **`bind`** ne vérifie pas encore qu'une règle citée par `applies:` est bien dans le profil.
+- **La prose** garde ses liens markdown pour la lecture (décision de la recommandation). Les ~600
+  liens des fiches et des docs restent couverts par `check-links`, pas par le graphe.
+
+## Sujet d'origine (2026-08-21, conservé)
 
 Le sujet n'est pas samplerz — c'était un exemple. Le sujet, c'est **vectorz et la méthode
 elle-même** : elle est un peu en bazar, et on veut la représenter **telle qu'elle est**
@@ -129,22 +197,8 @@ et **un graphe compilé**. On n'a pas à copier BMAD — on a à finir ce qu'on 
 - **Corriger un lien** = éditer un frontmatter + recompiler ; la carte suit toute seule
   (fille « corriger un lien faux » de l'épic).
 
-## Critères d'acceptation
-
-- [ ] Un `pnpm` émet le graphe complet de la méthode en un objet typé (pas un Mermaid).
-- [ ] La webapp lit cet objet — aucune arête peinte à la main ne subsiste.
-- [ ] Les 5 vocabulaires de lien sont tranchés en un jeu cohérent (ou justifiés distincts).
-- [ ] Les références structurelles skill/agent/règle passent par id, plus par chemin markdown.
-- [ ] BMAD : la note « ce qu'on reprend / ce qu'on écarte » est écrite (co-localisation +
-      un vocabulaire + build oui ; taxonomie et bundling à leur échelle = à juger).
-
-## Comment vérifier
-
-Aujourd'hui (analyse) : ouvrir `domain.ts` et constater que le schéma existe mais qu'aucune
-instance compilée n'est produite. Après construction : demander au graphe « qui applique la
-règle `clean-code/no-dead-code` ? » et obtenir une réponse **sans grep**. Sabotage : ajouter
-une arête dans un frontmatter → elle apparaît dans l'objet compilé ET sur la webapp, sans
-retouche manuelle.
+> Les critères d'acceptation et la vérification d'origine sont remontés en tête de fiche,
+> mis à jour sur le reste réel.
 
 ## Notes
 
@@ -159,7 +213,7 @@ retouche manuelle.
   `domain.ts` (schéma), `bind` (build). Ce chantier ne crée pas un concept — il **relie**
   trois pièces existantes.
 - **Confirmé par le benchmark (2026-08-25)** — le rapport
-  [BMAD vs ezk](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 5) montre la cible
+  [BMAD vs ezk](../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md) (Dim 5) montre la cible
   concrète : BMAD **compile** ses manifests (`agent-manifest.csv`, `bmad-help.csv`, empreintes SHA-256)
   en une couche de build séparée, alors qu'ezk a le **schéma** (`domain.ts`) sans **instance**. C'est le
   seul point où BMAD gagne franchement côté modèle — un argument de plus pour ce chantier.
