@@ -27,9 +27,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Prod | # | Titre | Type | Prio | Statut | PR |
 |------|---|-------|------|------|--------|----|
 | mega-city | 20260830194601233 | Livrer une fiche sans casser les liens ni les vues (ship sûr) | refactor | P0 | 💡 idea |  |
-| mega-city | 20260917162000501 | Une commande pour lancer l'app de n'importe quelle branche ou worktree | feature | P0 | 💡 idea |  |
 | mega-city | 20260930123438875 | Séparer clairement fiche, sprint et session (ezk-sprint start/close) | feature | P0 | 💡 idea |  |
-| mega-city | 20260824111001836 | Appliquer la règle de clarté à tout ce que la méthode produit | refactor | P1 | 💡 idea |  |
 | mega-city | 20260824122629925 | Une FAQ « comment faire » pour tes questions récurrentes | feature | P1 | 💡 idea |  |
 | mega-city | 20260824204751403 | Découper le backlog en versions et vérifier la cohérence d'un lot | feature | P1 | 💡 idea |  |
 | mega-city | 20260830194601376 | Décider quelles vues générées ne plus committer (fin des conflits) | chore | P1 | 💡 idea |  |
@@ -64,7 +62,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260904091853974 | Tenir un journal des galères résolues, pendant le dev | feature | P3 | 💡 idea |  |
 | mega-city | 20260917123943914 | Montrer sur la carte les scripts et commandes de la méthode | feature | P3 | 💡 idea |  |
 | vectorz | 0024 | Supprimer le vieux code d'avant le pivot | refactor | P3 | 💡 idea |  |
-| vectorz | 20260906135450000 | Recette : lancer l'émulateur Android pour tester sur mobile | feature | P3 | 💡 idea |  |
 
 ## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
 
@@ -147,7 +144,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|-----------|---------|
-| vectorz | 20 | 0 | 0 | 0 | 4 | 16 | 0 |
-| mega-city | 91 | 0 | 0 | 0 | 35 | 56 | 0 |
+| vectorz | 19 | 0 | 0 | 0 | 3 | 16 | 0 |
+| mega-city | 89 | 0 | 0 | 0 | 33 | 56 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

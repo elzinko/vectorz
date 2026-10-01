@@ -94,7 +94,7 @@ Cette fiche pose **l'OUTILLAGE généralisé** (le trio). Les voisines couvrent 
 
 - **Un template concret déjà livré** : la PR = rendu de fiche (`0191` livrée + ADR-0029). Cette fiche
   le **généralise**, elle ne le refait pas.
-- **La règle de clarté** : [`20260824111001836`](20260824111001836_regle-clarte-atteint-tout-output-ezk.md)
+- **La règle de clarté** : [`20260824111001836`](done/20260824111001836_regle-clarte-atteint-tout-output-ezk.md)
   et `0079` disent que le texte doit être lisible. Ici = **comment l'outiller** (le squelette + les données).
 - **L'article** : [`20260817113353676`](20260817113353676_article-templates-reponse-llm.md) vulgarise le
   sujet (éditorial). Ici = l'implémentation, pas l'article.
