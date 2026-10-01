@@ -70,9 +70,9 @@ export const CYCLE_DOC: readonly CycleStepDoc[] = [
   {
     n: 3,
     t: 'Le run',
-    scrum: '≈ Sprint (une fiche)',
+    scrum: '≈ Sprint (un lot de stories)',
     ceremonie: 'sprint',
-    p: 'La boucle BDD/TDD construit UNE feature en convoquant les juges.',
+    p: 'Un sprint est un lot de stories, une PR chacune, qui produit un incrément : ouvert par start, fermé par close. La boucle BDD/TDD construit chaque story en convoquant les juges.',
     etape: ['ezk-sprint'],
     acteurs: ['ezk-architect', 'ezk-dev', 'ezk-qa', 'ezk-reviewer'],
     humains: [],
