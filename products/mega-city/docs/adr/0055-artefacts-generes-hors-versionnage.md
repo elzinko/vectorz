@@ -24,6 +24,10 @@ git. `BACKLOG.md` et `PLAN.md` restent.
   jamais committée ». La différence : l'état des sessions est propre à la machine, donc il a son
   propre serveur. Les données du board sont une **fonction pure de fichiers committés** (les mêmes
   sur toutes les machines) : `ezk:map` peut les calculer sans changer de métier.
+- **Écart assumé avec l'ADR-0043.** Celui-ci refuse d'ajouter une route de calcul à `ezk:map`,
+  parce que `ezk:map` « sert des fichiers figés ». Le présent ADR s'en écarte sur un seul point :
+  `ezk:map` calcule aussi le fichier de données d'une page committée, tant que son contenu est une
+  fonction pure de fichiers committés. L'état des sessions reste, lui, hors d'`ezk:map`.
 - Une page HTML de `diagrams/` est **hybride**. Elle est écrite à moitié à la main (la **coque** :
   mise en page, script de rendu) et générée à moitié (le **bloc de données**, entre marqueurs).
   On ne peut pas dégiter la page entière sans perdre la coque.
