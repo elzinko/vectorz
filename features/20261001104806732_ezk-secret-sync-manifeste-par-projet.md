@@ -127,7 +127,10 @@ bash recipes/secrets-trousseau/test-ezk-secret.sh
 - **Secrets partagés (niveau compte)** : certains secrets ne sont pas propres à un projet —
   identifiants Apple, cert Developer ID. On les range UNE fois au trousseau, SANS préfixe, et
   chaque manifeste pointe dessus via `from:`. Le nom poussé peut différer par projet quand l'outil
-  l'impose (tauri `APPLE_PASSWORD` vs electron-builder `APPLE_APP_SPECIFIC_PASSWORD`).
+  l'impose (tauri `APPLE_PASSWORD` vs electron-builder `APPLE_APP_SPECIFIC_PASSWORD`). Le mécanisme
+  complet (scope compte/par-app, specs de recette, valorisation à l'application) est détaillé dans
+  la fiche sœur [`20261001142603963`](20261001142603963_ezk-secret-apply-scope-compte-par-app.md),
+  dont cette fiche est la brique de poussée.
 - **Priorité P2** : hors chemin critique de la 1.0, mais supprime une classe d'erreurs de release
   et sert **tous** les projets.
 - Portée POC : GitHub d'abord, puis `.env` local, puis Vercel. Les secrets lus uniquement en local
