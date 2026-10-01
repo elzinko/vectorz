@@ -124,6 +124,10 @@ bash recipes/secrets-trousseau/test-ezk-secret.sh
   source unique ; `.env`, GitHub et Vercel en sont des **projections**. C'est le pattern standard
   d'un gestionnaire de secrets + provisioning (Doppler, 1Password `op`, Vault, sops) en version
   locale/Mac : simple, solo-friendly, sans SaaS — au prix d'être mono-machine / mono-utilisateur.
+- **Secrets partagés (niveau compte)** : certains secrets ne sont pas propres à un projet —
+  identifiants Apple, cert Developer ID. On les range UNE fois au trousseau, SANS préfixe, et
+  chaque manifeste pointe dessus via `from:`. Le nom poussé peut différer par projet quand l'outil
+  l'impose (tauri `APPLE_PASSWORD` vs electron-builder `APPLE_APP_SPECIFIC_PASSWORD`).
 - **Priorité P2** : hors chemin critique de la 1.0, mais supprime une classe d'erreurs de release
   et sert **tous** les projets.
 - Portée POC : GitHub d'abord, puis `.env` local, puis Vercel. Les secrets lus uniquement en local

@@ -12,32 +12,49 @@ import type { Catalog } from '../loaders/catalog.js';
 export interface ComposesEdge {
   from: string;
   to: string;
+  /** `delegates:` (optionnel, dessiné en pointillé) ; absent pour `composes:` (requis, trait plein). */
+  optional?: boolean;
 }
 
 export const COMPOSES_GRAPH_BEGIN = '<!-- composes-graph:begin -->';
 export const COMPOSES_GRAPH_END = '<!-- composes-graph:end -->';
 
-/** Arêtes `composes:` (internes) de tout le catalogue, dédupliquées et triées stablement. */
+/**
+ * Arêtes `composes:` (requises) puis `delegates:` (optionnelles) de tout le catalogue, internes,
+ * dédupliquées et triées stablement. Une cible à la fois composée ET déléguée reste requise.
+ */
 export function composesEdges(catalog: Catalog): ComposesEdge[] {
   const seen = new Set<string>();
   const edges: ComposesEdge[] = [];
   const skillIds = [...catalog.skills.keys()].sort();
   for (const from of skillIds) {
     const skill = catalog.skills.get(from);
-    for (const to of [...(skill?.composes ?? [])].sort()) {
-      const key = `${from} ${to}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      edges.push({ from, to });
+    const tiers: { targets: readonly string[]; optional: boolean }[] = [
+      { targets: skill?.composes ?? [], optional: false },
+      { targets: skill?.delegates ?? [], optional: true },
+    ];
+    for (const { targets, optional } of tiers) {
+      for (const to of [...targets].sort()) {
+        const key = `${from} ${to}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        edges.push(optional ? { from, to, optional } : { from, to });
+      }
     }
   }
   return edges;
 }
 
-/** Rendu Mermaid `flowchart LR` des arêtes de composition. Déterministe. */
+/**
+ * Rendu Mermaid `flowchart LR` des arêtes de composition : trait plein (`-->`) pour `composes:`,
+ * pointillé (`-.->`) pour `delegates:`. Déterministe.
+ */
 export function renderComposesGraphMermaid(catalog: Catalog): string {
   const edges = composesEdges(catalog);
-  const lines = ['flowchart LR', ...edges.map(({ from, to }) => `    ${from} --> ${to}`)];
+  const lines = [
+    'flowchart LR',
+    ...edges.map(({ from, to, optional }) => `    ${from} ${optional ? '-.->' : '-->'} ${to}`),
+  ];
   return lines.join('\n');
 }
 

@@ -96,6 +96,12 @@ export interface Skill {
   /** ADR-0025 — refs EXTERNES (`skill-creator`, `product-brainstorming`…) : documentées, jamais warnées. */
   composesExternal?: string[];
   /**
+   * ADR-0025 (amendement 2026-10-01) — ids de skills INTERNES délégués SI PRÉSENTS : le tier
+   * optionnel de `composes`. Déclaré et tracé dans le graphe (pointillé), mais JAMAIS averti si le
+   * skill est absent du profil — le corps du skill écrit le repli. Même garde-fou de frontière.
+   */
+  delegates?: string[];
+  /**
    * ADR-0020 (amendement 2026-08-20) — ids d'AGENTS que cet orchestrateur convoque.
    * `composes` dit « quelles briques j'utilise » ; `roles` dit « quels rôles je fais venir ».
    * C'était la relation centrale du scrum (le sprint convoque l'équipe) et la seule qu'aucun

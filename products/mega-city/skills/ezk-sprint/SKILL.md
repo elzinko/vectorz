@@ -85,6 +85,8 @@ Le script repasse le portier, puis écrit `SPRINT.md` (gabarit plus bas) avec un
 
 `start` n'écrit **rien d'autre** : ni branche, ni commit, ni statut de fiche. Le lot par défaut est la prochaine fiche tirable (`next --ready-only`), soit un lot d'une story : exactement le sprint d'avant.
 
+**Titres des stories.** Le script les lit par le loader du catalogue (`bin/fiche-rows.ts`, via `tsx`). Skill installé en **lien** (`lawgiver bind-global --link`) : il suit le symlink, rien à faire. Skill installé en **copie** (le défaut), donc sans catalogue autour de lui : exporte `MEGA_CITY_ROOT=<dépôt>/products/mega-city`. Sans cela, `start` ouvre quand même le sprint, tire les titres du nom des fichiers et le dit par une ligne `WARN:`.
+
 ## La clôture — `close` (le sprint, pas la session)
 
 `close` ferme le **sprint** et **scelle l'incrément**. Il tourne **1× par sprint**, après le dernier squash-merge du lot.
@@ -97,9 +99,10 @@ Avant de l'appeler, mets le lot de `SPRINT.md` à jour : `[x]` pour une story li
 
 | Verdict | Sens | Tu fais |
 |---|---|---|
-| `CLOSE: SEALED …` | Incrément scellé : `Statut: clos`, une ligne ajoutée à « Incréments scellés de la session » | Restitue l'incrément (En clair d'abord, ≤ 3 phrases), puis **rends la main à la session** |
+| `CLOSE: SEALED …` | Incrément scellé : `Statut: clos`, une ligne ajoutée à « Incréments scellés de la session » (stories livrées **et** reportées nommées par leur id) | Restitue l'incrément (En clair d'abord, ≤ 3 phrases), puis **rends la main à la session** |
 | `CLOSE: OPEN …` | Une story du lot est encore `[ ]` | Termine-la, reporte-la `[~]` ou retire-la du lot. Ne force rien |
 | `CLOSE: REFUSED empty_increment` | Rien de livré : pas d'incrément à sceller | Dis-le au PO. S'il arrête le sprint : `close --abandon "<raison>"` |
+| `CLOSE: REFUSED malformed_story …` | Une case du lot n'est ni `[ ]`, ni `[x]`, ni `[~]` (`[X]`, `[]`…) : rien n'est scellé, `--abandon` non plus | Corrige le marqueur dans `SPRINT.md` (`STORY_MALFORMED:` cite chaque case fautive), puis relance `close` |
 | `CLOSE: ABANDONED …` | Fin **anormale** (`close --abandon "<raison>"`) : sprint fermé **sans incrément**, raison journalisée, savoir de session conservé | Dis ce qui est livré, reporté ou resté ouvert, puis rends la main à la session |
 | `CLOSE: REFUSED not_open` | Aucun sprint ouvert | Rien à fermer |
 
@@ -167,6 +170,18 @@ exactement le flux actuel.
 - **Isole le contexte coûteux dans les sous-agents** (leur contexte est jetable).
 - **Étapes mécaniques** (scaffolding, formatage) sur un modèle moins cher.
 - Ne relis pas un fichier déjà lu ; ne re-explore pas ce que `SPRINT.md` mémorise.
+- **Compte en appels d'agent, pas en lignes** (ADR-0060, règle `token-economy/agent-call-budget`) :
+  chaque appel de sous-agent emporte ~85k jetons de contexte fixe. Par fiche : toi qui la mènes, plus
+  **au plus une revue** (`ezk-reviewer`, partagée par 2-3 petits patchs) et **une DoR groupée** pour N
+  fiches (`ezk-pm`, aucune si la fiche est déjà `ready`).
+- **Pas d'explorateur** : cherche toi-même par `grep` ciblé. Un explorateur mal borné a coûté ~370k.
+- **Donne l'artefact, pas la chasse** : la fiche collée dans le prompt d'`ezk-pm` (modèle `sonnet`,
+  « ne lis aucun fichier, GO/NO-GO en ≤ 5 lignes ») ; le chemin du patch à `ezk-reviewer`
+  (`git diff origin/main...HEAD > fichier`, « relis uniquement ce patch, ≤ 8 constats »).
+- **Autorat de prose** (un `SKILL.md`, une règle, un ADR) : pas d'`ezk-architect` sauf décision de
+  structure non triviale, pas de BDD / TDD / E2E d'agent. Les tests de contrat sur le texte restent.
+  **La revue n'est jamais sautée.**
+- **Cible : ≤ 200k jetons par fiche** en moyenne de run. Dis ta consommation dans ton compte rendu.
 
 ## L'état du sprint — `SPRINT.md`
 
@@ -187,9 +202,10 @@ Statut: en cours   Ouvert: <date>
 
 ## Incréments scellés de la session
 - Sprint 1 — <objectif> — 2 livrées, 0 reportée : <id> (PR #12), <id> (PR #13)
+- Sprint 2 — <objectif> — 1 livrée, 1 reportée : <id> (PR #14) — reportée : <id>
 ```
 
-**Éphémère, non commité.** Le **lot** change à chaque sprint. Les trois dernières sections sont du savoir de **session** : un nouveau `start` les reporte telles quelles, et `close` y ajoute une ligne par incrément scellé (`Statut: clos` une fois scellé). À la clôture de session, `/ezk-archive run` archive un snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
+**Éphémère, non commité.** Le **lot** change à chaque sprint. Les trois dernières sections sont du savoir de **session** : un nouveau `start` les reporte telles quelles, et `close` y ajoute une ligne par incrément scellé (`Statut: clos` une fois scellé). Une story **reportée** (`[~]`) ou **restée ouverte** à l'abandon y garde son id (`— reportée : <id>`, `— ouverte : <id>`) : le prochain `start` remplace le lot, cette ligne est ce qui reste de lui dans la session. À la clôture de session, `/ezk-archive run` archive un snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
 
 **`## Galères & gestes (labo)`** — remplie **au fil de l'eau**, seulement quand une
 galère est **corrigée + validée** (jamais une fausse piste, jamais en cours). Une entrée
@@ -256,7 +272,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 |---|---|---|
 | `check` rend `CLEAR` | `/ezk-sprint run` — le terrain est prêt | `/ezk-backlog next --ready-only` — voir d'abord quelle fiche sera tirée |
 | `check` rend `ALERT` | aucun bloc : le choix proposé par l'alerte tient lieu de suite | aucun |
-| fin d'un sprint (après le merge, étape 10) | `/ezk-backlog next --ready-only` — la prochaine fiche tirable | `/ezk-retro run` — si le sprint a coincé ; `/ezk-archive check` — si tu t'arrêtes là |
+| fin d'un sprint (`close` rend `CLOSE: SEALED`, après le dernier merge du lot) | `/ezk-backlog next --ready-only` — la prochaine fiche tirable | `/ezk-retro run` — si le sprint a coincé ; `/ezk-archive check` — si tu t'arrêtes là |
 | `help` | aucun bloc | aucun |
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
