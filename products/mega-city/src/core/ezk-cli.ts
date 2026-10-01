@@ -2,9 +2,9 @@
  * ezk-cli — cœur PUR du routeur `ezk` (fiche 20260903134906920, ADR-0046 option B).
  *
  * Un manifeste YAML dit quelle commande de terminal (`ezk <domaine> <verbe>`) lance quel
- * script. Ce module lit le manifeste, choisit les scripts et leurs arguments, applique la
- * règle de racine et rend l'aide. Il ne lance AUCUN processus et ne lit AUCUN fichier : le
- * bord I/O (bin/ezk.ts) lui passe le texte du manifeste et exécute les étapes qu'il rend.
+ * script. Ce module lit le manifeste, choisit le script et ses arguments, applique la règle de
+ * racine et rend l'aide. Il ne lance AUCUN processus et ne lit AUCUN fichier : le bord I/O
+ * (bin/ezk.ts) lui passe le texte du manifeste et exécute l'étape qu'il rend.
  * Le moteur reste « plan pur + coquille I/O » (ADR-0003) ; le CLI n'est qu'un bord de plus.
  */
 import { dirname, join, resolve } from 'node:path';
@@ -20,10 +20,8 @@ export interface ManifestEntry {
   domain: string;
   /** Absent : le domaine EST la commande, tous les arguments vont au script. */
   verb?: string;
-  /** Un script + ses arguments fixes, relatifs à products/mega-city. Exclusif avec `steps`. */
-  run?: string;
-  /** Plusieurs `run`, lancés dans l'ordre. */
-  steps?: string[];
+  /** Un script + ses arguments fixes (séparés par des espaces), relatifs à products/mega-city. */
+  run: string;
   summary: string;
   root: RootPolicy;
   /** Nouveau nom : l'entrée est un ancien nom, gardé le temps de la transition. */
@@ -40,6 +38,7 @@ export interface Manifest {
   internal: InternalScript[];
 }
 
+/** Un script à lancer, avec les arguments dans l'ordre : ceux du manifeste, puis ceux de l'utilisateur. */
 export interface Step {
   script: string;
   args: string[];
@@ -55,7 +54,7 @@ export interface RouterEnv {
 }
 
 export type Resolution =
-  | { kind: 'run'; entry: ManifestEntry; steps: Step[]; notices: string[] }
+  | { kind: 'run'; entry: ManifestEntry; step: Step; notices: string[] }
   | { kind: 'help'; topic?: string }
   | { kind: 'error'; message: string; exitCode: 2 };
 
@@ -78,7 +77,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 function readEntry(raw: unknown, index: number): ManifestEntry {
   const where = `entrée ${index + 1}`;
   if (!isRecord(raw)) fail(where, 'doit être un objet.');
-  const { domain, verb, run, steps, summary, root, deprecated } = raw;
+  const { domain, verb, run, summary, root, deprecated } = raw;
   if (typeof domain !== 'string' || !NAME.test(domain)) fail(where, 'domain manquant ou invalide.');
   const label = `${domain}${typeof verb === 'string' ? ` ${verb}` : ''}`;
   if (verb !== undefined && (typeof verb !== 'string' || !NAME.test(verb))) {
@@ -86,22 +85,14 @@ function readEntry(raw: unknown, index: number): ManifestEntry {
   }
   if (typeof summary !== 'string' || summary.trim() === '') fail(label, 'résumé (summary) manquant.');
   if (/\n/.test(summary)) fail(label, 'le résumé doit tenir sur une ligne.');
-  const hasRun = run !== undefined;
-  const hasSteps = steps !== undefined;
-  if (hasRun === hasSteps) fail(label, 'il faut exactement un des deux : run ou steps.');
-  if (hasRun && (typeof run !== 'string' || run.trim() === '')) fail(label, 'run invalide.');
-  if (hasSteps) {
-    const ok = Array.isArray(steps) && steps.length > 0 && steps.every((s) => typeof s === 'string' && s.trim() !== '');
-    if (!ok) fail(label, 'steps doit être une liste de scripts non vide.');
-  }
+  if (typeof run !== 'string' || run.trim() === '') fail(label, 'run (le script à lancer) manquant.');
   const rootPolicy = root ?? 'fixed';
   if (rootPolicy !== 'fixed' && rootPolicy !== 'none') fail(label, "root doit valoir 'fixed' ou 'none'.");
   if (deprecated !== undefined && typeof deprecated !== 'string') fail(label, 'deprecated invalide.');
   return {
     domain,
     ...(typeof verb === 'string' ? { verb } : {}),
-    ...(typeof run === 'string' ? { run: run.trim() } : {}),
-    ...(Array.isArray(steps) ? { steps: steps.map((s) => String(s).trim()) } : {}),
+    run: run.trim(),
     summary: summary.trim(),
     root: rootPolicy,
     ...(typeof deprecated === 'string' ? { deprecated } : {}),
@@ -142,15 +133,10 @@ export function parseManifest(text: string): Manifest {
   return { commands, internal };
 }
 
-/** Un `run` du manifeste = un script puis ses arguments fixes, séparés par des espaces. */
-export function parseRun(run: string): Step {
-  const [script = '', ...args] = run.trim().split(/\s+/);
+/** Le `run` d'une entrée = un script puis ses arguments fixes, séparés par des espaces. */
+export function entryStep(entry: ManifestEntry): Step {
+  const [script = '', ...args] = entry.run.split(/\s+/);
   return { script, args };
-}
-
-/** Les `run` d'une entrée, une étape par script. */
-export function entrySteps(entry: ManifestEntry): Step[] {
-  return (entry.steps ?? [entry.run ?? '']).map(parseRun);
 }
 
 /**
@@ -159,7 +145,7 @@ export function entrySteps(entry: ManifestEntry): Step[] {
  */
 export function uncoveredScripts(manifest: Manifest, pnpmScripts: Record<string, string>): string[] {
   const known = new Set<string>(manifest.internal.map((i) => i.script));
-  for (const entry of manifest.commands) for (const step of entrySteps(entry)) known.add(step.script);
+  for (const entry of manifest.commands) known.add(entryStep(entry).script);
   const cited = new Set<string>();
   for (const command of Object.values(pnpmScripts)) {
     for (const match of command.matchAll(/\bbin\/[\w.-]+\.(?:ts|sh)\b/g)) cited.add(match[0]);
@@ -180,7 +166,7 @@ function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
     // paramétrable des vues). On n'en cite pas le numéro à l'utilisateur.
     return (
       `${name} : « --root ${env.rootFlag} » n'est pas le dépôt de la méthode (${env.ownRoot}). ` +
-      'Viser un autre projet n\'est pas encore possible : le chantier « racine paramétrable des vues » n\'est pas fait.'
+      "Viser un autre projet n'est pas encore possible : le chantier « racine paramétrable des vues » n'est pas fait."
     );
   }
   if (env.checkoutRoot === env.ownRoot) return undefined;
@@ -226,33 +212,11 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
   const problem = rootProblem(entry, env);
   if (problem) return { kind: 'error', exitCode: 2, message: problem };
 
-  const base = entrySteps(entry);
-  if (base.length > 1 && userArgs.length > 0) {
-    return {
-      kind: 'error',
-      exitCode: 2,
-      message: `ezk ${label(entry)} : cette commande lance ${base.length} étapes et ne prend pas d'argument.`,
-    };
-  }
-  const steps = base.map((s) => ({ script: s.script, args: [...s.args, ...userArgs] }));
+  const fixed = entryStep(entry);
   const notices = entry.deprecated
     ? [`« ezk ${label(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
     : [];
-  return { kind: 'run', entry, steps, notices };
-}
-
-/** Lance les étapes l'une après l'autre ; s'arrête à la première qui échoue (code ≠ 0). */
-export async function runInOrder(
-  steps: Step[],
-  run: (step: Step) => Promise<number>,
-): Promise<{ code: number; ran: Step[]; failed?: Step }> {
-  const ran: Step[] = [];
-  for (const step of steps) {
-    ran.push(step);
-    const code = await run(step);
-    if (code !== 0) return { code, ran, failed: step };
-  }
-  return { code: 0, ran };
+  return { kind: 'run', entry, step: { script: fixed.script, args: [...fixed.args, ...userArgs] }, notices };
 }
 
 /** Options du routeur : placées AVANT la commande seulement. Celles d'après sont pour le script. */
@@ -306,7 +270,7 @@ export function renderHelp(manifest: Manifest, chat: ChatCommand[]): string {
     'Commandes de chat (dans Claude Code)',
     ...chatLines,
     '',
-    'Options du routeur, avant la commande : --root <dépôt> (le dépôt de la méthode visé), --dry-run (montre les scripts sans les lancer).',
+    'Options du routeur, avant la commande : --root <dépôt> (le dépôt de la méthode visé), --dry-run (montre le script sans le lancer).',
     '« ezk help <domaine> » détaille un domaine ; « ezk help <skill> » détaille une commande de chat.',
     '',
   ].join('\n');
@@ -318,10 +282,8 @@ export function renderDomainHelp(manifest: Manifest, domain: string): string | u
   if (entries.length === 0) return undefined;
   const width = Math.max(...entries.map((e) => label(e).length));
   const lines = entries.map((e) => {
-    const targets = entrySteps(e)
-      .map((s) => [s.script, ...s.args].join(' '))
-      .join(' puis ');
-    return `  ${label(e).padEnd(width)}  ${e.summary}\n  ${' '.repeat(width)}  lance : ${targets}`;
+    const step = entryStep(e);
+    return `  ${label(e).padEnd(width)}  ${e.summary}\n  ${' '.repeat(width)}  lance : ${[step.script, ...step.args].join(' ')}`;
   });
   return `ezk ${domain}\n\n${lines.join('\n')}\n`;
 }

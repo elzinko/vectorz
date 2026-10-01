@@ -8,7 +8,7 @@
 ```bash
 pnpm ezk help                 # toutes les commandes de terminal ET de chat, une ligne chacune
 pnpm ezk help law             # le détail d'un domaine : quel script il lance
-pnpm ezk board regen          # les trois blocs du board, d'un coup
+pnpm ezk views regen          # toutes les vues générées hors git, d'un coup (ADR-0055)
 pnpm ezk law status global    # ce qui est déployé dans ~/.claude (lien, copie, absent)
 pnpm ezk dashboard            # le tableau de bord de la méthode (ex « ezk:map »)
 pnpm ezk --dry-run <commande> # montre les scripts qui seraient lancés, sans rien faire

@@ -6,9 +6,8 @@
  *   ezk [--root <dépôt>] [--dry-run] <domaine> [<verbe>] [args…]
  *
  * Bord I/O mince : lit le manifeste (products/mega-city/ezk-manifest.yml), laisse le cœur pur
- * (src/core/ezk-cli.ts) choisir les scripts, puis les lance l'un après l'autre avec les
- * arguments tels quels, dans le dossier où l'utilisateur se trouve. Aucune logique métier ici :
- * les scripts gardent la leur.
+ * (src/core/ezk-cli.ts) choisir le script, puis le lance avec les arguments tels quels, dans
+ * le dossier où l'utilisateur se trouve. Aucune logique métier ici : les scripts gardent la leur.
  */
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
@@ -24,7 +23,6 @@ import {
   renderDomainHelp,
   renderHelp,
   route,
-  runInOrder,
   splitRouterFlags,
 } from '../src/core/ezk-cli.js';
 import { listSkills, skillDetail } from './ezk-help.js';
@@ -123,17 +121,16 @@ async function main(argv: string[]): Promise<number> {
     return resolution.exitCode;
   }
   for (const notice of resolution.notices) warn(`ezk : ${notice}`);
-  if (flags.dryRun) say(`ezk (à blanc) : dossier de travail = ${userCwd}`);
-  const outcome = await runInOrder(resolution.steps, async (step) => {
-    if (!flags.dryRun) return runStep(step, userCwd);
+  const { step } = resolution;
+  if (flags.dryRun) {
     const runner = extname(step.script) === '.sh' ? 'bash' : 'tsx';
+    say(`ezk (à blanc) : dossier de travail = ${userCwd}`);
     say(`ezk (à blanc) : ${[runner, step.script, ...step.args].join(' ')}`);
     return 0;
-  });
-  if (outcome.failed) {
-    warn(`ezk : l'étape « ${outcome.failed.script} » a échoué (code ${outcome.code}) ; arrêt.`);
   }
-  return outcome.code;
+  const code = await runStep(step, userCwd);
+  if (code !== 0) warn(`ezk : « ${step.script} » a échoué (code ${code}).`);
+  return code;
 }
 
 main(process.argv.slice(2)).then(

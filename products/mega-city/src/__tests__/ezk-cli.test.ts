@@ -10,7 +10,6 @@ import {
   renderDomainHelp,
   renderHelp,
   route,
-  runInOrder,
   splitRouterFlags,
   uncoveredScripts,
 } from '../core/ezk-cli.js';
@@ -26,13 +25,10 @@ commands:
     verb: capture
     run: bin/lawgiver.ts capture
     summary: Range une règle, un skill ou un agent au catalogue.
-  - domain: board
+  - domain: views
     verb: regen
-    steps:
-      - bin/regen-avancement.ts
-      - bin/regen-plan-delta.ts
-      - bin/regen-plan-view.ts
-    summary: Régénère les trois blocs du board, dans l'ordre.
+    run: bin/views-regen.ts
+    summary: Régénère toutes les vues générées.
   - domain: dashboard
     run: bin/ezk-map.ts
     summary: Ouvre le tableau de bord de la méthode.
@@ -62,9 +58,8 @@ describe('parseManifest', () => {
   it('refuse une entrée sans résumé', () => {
     bad('  - domain: a\n    verb: b\n    run: bin/x.ts\n', /résumé|summary/);
   });
-  it('refuse une entrée sans run ni steps, ou avec les deux', () => {
-    bad('  - domain: a\n    summary: s\n', /run|steps/);
-    bad('  - domain: a\n    summary: s\n    run: bin/x.ts\n    steps: [bin/y.ts]\n', /run|steps/);
+  it('refuse une entrée sans script à lancer', () => {
+    bad('  - domain: a\n    summary: s\n', /run/);
   });
   it('refuse une règle de racine inconnue', () => {
     bad('  - domain: a\n    summary: s\n    run: bin/x.ts\n    root: partout\n', /root/);
@@ -93,31 +88,15 @@ describe('route', () => {
     const r = route(MANIFEST, ['law', 'bind', 'global', './p', '--force'], inside);
     expect(r).toMatchObject({
       kind: 'run',
-      steps: [{ script: 'bin/lawgiver.ts', args: ['bind', 'global', './p', '--force'] }],
+      step: { script: 'bin/lawgiver.ts', args: ['bind', 'global', './p', '--force'] },
     });
   });
 
   it('une entrée sans verbe reçoit tous les arguments', () => {
     expect(route(MANIFEST, ['dashboard', '--list'], inside)).toMatchObject({
       kind: 'run',
-      steps: [{ script: 'bin/ezk-map.ts', args: ['--list'] }],
+      step: { script: 'bin/ezk-map.ts', args: ['--list'] },
     });
-  });
-
-  it('une entrée à étapes lance chaque script dans l’ordre du manifeste', () => {
-    const r = route(MANIFEST, ['board', 'regen'], inside);
-    expect(r.kind).toBe('run');
-    if (r.kind !== 'run') return;
-    expect(r.steps.map((s) => s.script)).toEqual([
-      'bin/regen-avancement.ts',
-      'bin/regen-plan-delta.ts',
-      'bin/regen-plan-view.ts',
-    ]);
-  });
-
-  it('refuse un argument sur une entrée à étapes (on ne sait pas à quelle étape le donner)', () => {
-    const r = route(MANIFEST, ['board', 'regen', 'x'], inside);
-    expect(r).toMatchObject({ kind: 'error', exitCode: 2 });
   });
 
   it('un ancien nom marche encore et prévient', () => {
@@ -125,7 +104,7 @@ describe('route', () => {
     expect(r.kind).toBe('run');
     if (r.kind !== 'run') return;
     expect(r.notices.join(' ')).toMatch(/dashboard/);
-    expect(r.steps[0]).toEqual({ script: 'bin/ezk-map.ts', args: ['--list'] });
+    expect(r.step).toEqual({ script: 'bin/ezk-map.ts', args: ['--list'] });
   });
 
   it('domaine inconnu : message qui renvoie vers « ezk help »', () => {
@@ -154,7 +133,7 @@ describe('route', () => {
 describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)', () => {
   it('commande fixe depuis un autre dépôt ou un dossier hors dépôt : refusée avec la marche à suivre', () => {
     for (const checkoutRoot of [undefined, '/autre/projet']) {
-      const r = route(MANIFEST, ['board', 'regen'], { ownRoot: OWN, checkoutRoot });
+      const r = route(MANIFEST, ['views', 'regen'], { ownRoot: OWN, checkoutRoot });
       expect(r.kind).toBe('error');
       if (r.kind !== 'error') continue;
       expect(r.message).toContain(OWN);
@@ -164,12 +143,12 @@ describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)',
   });
 
   it('commande fixe avec --root vers le dépôt de la méthode : passe, même depuis ailleurs', () => {
-    const r = route(MANIFEST, ['board', 'regen'], { ownRoot: OWN, rootFlag: OWN });
+    const r = route(MANIFEST, ['views', 'regen'], { ownRoot: OWN, rootFlag: OWN });
     expect(r.kind).toBe('run');
   });
 
   it('commande fixe avec --root vers un autre dépôt : refusée, et dit que ce n’est pas encore possible', () => {
-    const r = route(MANIFEST, ['board', 'regen'], { ownRoot: OWN, rootFlag: '/autre/projet' });
+    const r = route(MANIFEST, ['views', 'regen'], { ownRoot: OWN, rootFlag: '/autre/projet' });
     expect(r.kind).toBe('error');
     if (r.kind !== 'error') return;
     expect(r.message).toMatch(/pas encore possible/);
@@ -182,39 +161,12 @@ describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)',
   });
 });
 
-describe('runInOrder — plusieurs étapes, arrêt à la première qui échoue', () => {
-  const steps = ['a', 'b', 'c'].map((s) => ({ script: `bin/${s}.ts`, args: [] }));
-
-  it('lance tout dans l’ordre quand tout va bien', async () => {
-    const seen: string[] = [];
-    const r = await runInOrder(steps, async (s) => {
-      seen.push(s.script);
-      return 0;
-    });
-    expect(seen).toEqual(['bin/a.ts', 'bin/b.ts', 'bin/c.ts']);
-    expect(r).toMatchObject({ code: 0 });
-    expect(r.failed).toBeUndefined();
-  });
-
-  it('s’arrête à la première étape en échec, sans lancer la suivante, et rend son code', async () => {
-    const codes = [0, 3, 0];
-    const seen: string[] = [];
-    const r = await runInOrder(steps, async (s) => {
-      seen.push(s.script);
-      return codes[seen.length - 1] ?? 0;
-    });
-    expect(seen).toEqual(['bin/a.ts', 'bin/b.ts']);
-    expect(r.code).toBe(3);
-    expect(r.failed?.script).toBe('bin/b.ts');
-  });
-});
-
 describe('splitRouterFlags — options du routeur, avant la commande seulement', () => {
   it('lit --root et --dry-run placés avant le domaine', () => {
-    expect(splitRouterFlags(['--root', '/x', '--dry-run', 'board', 'regen'])).toEqual({
+    expect(splitRouterFlags(['--root', '/x', '--dry-run', 'views', 'regen'])).toEqual({
       rootFlag: '/x',
       dryRun: true,
-      rest: ['board', 'regen'],
+      rest: ['views', 'regen'],
     });
   });
 
@@ -268,6 +220,7 @@ describe('help', () => {
     const detail = renderDomainHelp(MANIFEST, 'law');
     expect(detail).toContain('bind');
     expect(detail).toContain('capture');
+    expect(detail).toContain('lance : bin/lawgiver.ts bind');
     expect(renderDomainHelp(MANIFEST, 'zzz')).toBeUndefined();
   });
 });
@@ -279,7 +232,7 @@ describe('uncoveredScripts — un script exposé en pnpm que le manifeste oublie
       route: 'tsx bin/lawgiver.ts',
       interne: 'tsx bin/ezk.ts',
       tests: 'bash bin/test-foo.sh',
-      compose: 'tsx bin/regen-plan-view.ts && vitest run',
+      compose: 'tsx bin/views-regen.ts && vitest run',
       autre: 'vitest run',
     };
     expect(uncoveredScripts(MANIFEST, pnpm)).toEqual(['bin/oublie.ts']);

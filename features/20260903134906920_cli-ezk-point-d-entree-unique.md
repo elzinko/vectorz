@@ -16,11 +16,11 @@ created: 2026-09-03
 # 20260903134906920 — CLI `ezk` : un point d'entrée unique
 
 **En clair.** Les commandes de la méthode se lancent aujourd'hui de trois façons, avec quatre
-styles de noms. Personne ne peut deviner `pnpm lawgiver bind-global global --link`, ni savoir
-qu'il faut trois commandes pour régénérer un board. Cette fiche donne à la méthode une seule
-commande de terminal, `ezk`. Elle lit un manifeste et lance le script existant, sans en
-déplacer la logique. Ce lot livre le routeur, `ezk help`, `ezk board regen`, `ezk law status`
-et le nouveau nom du tableau de bord : `ezk dashboard` (ancien `ezk:map`).
+styles de noms. Personne ne peut deviner `pnpm lawgiver bind-global global --link`. Cette fiche
+donne à la méthode une seule commande de terminal, `ezk`. Elle lit un manifeste et lance le
+script existant, sans en déplacer la logique. Ce lot livre le routeur, `ezk help`,
+`ezk views regen`, `ezk law status` et le nouveau nom du tableau de bord : `ezk dashboard`
+(ancien `ezk:map`).
 
 **Si tu arrives frais.** `products/mega-city/bin/` = les scripts déterministes de la méthode
 (compilation du graphe, régénération des vues, moteur de la LOI). Un « script pnpm » = un alias
@@ -35,9 +35,10 @@ s'appellent par chemin complet. Depuis la racine, tout demande le préfixe
 `pnpm --dir products/mega-city`. Les commandes de chat ont un index généré (`ezk-help`) ; les
 commandes de terminal n'en ont aucun.
 
-Symptômes vécus pendant le sprint [[20260902224608715]] : le board porte trois blocs générés,
+Symptômes vécus pendant le sprint [[20260902224608715]] : le board portait trois blocs générés,
 régénérés par trois commandes (en oublier une a mis la CI en rouge) ; `bind-global` déploie
-skills et agents mais pas la loi, et le PO ne pouvait pas le deviner.
+skills et agents mais pas la loi, et le PO ne pouvait pas le deviner. Le premier est réglé à la
+source depuis [[20260830194601376]] : un seul script, `views-regen.ts`, régénère toutes les vues.
 
 Analogie : une cuisine où chaque appareil a sa propre prise. Tout marche, mais chaque geste
 demande de retrouver le bon adaptateur.
@@ -49,15 +50,16 @@ moteur reste « plan pur + coquille I/O » (ADR-0003), le CLI n'est qu'un bord d
 
 ```
 terminal ─ ezk law bind-global … ─┐
-                                   ├─ bin/ezk.ts (routeur) lit ezk-manifest.yml ─► bin/lawgiver.ts, bin/regen-*.ts …
+                                   ├─ bin/ezk.ts (routeur) lit ezk-manifest.yml ─► bin/lawgiver.ts, bin/views-regen.ts …
 chat ─ /ezk-sprint, /ezk-backlog ──┘   ezk help liste les deux familles
 ```
 
 Décisions prises au grooming (étape Archi) :
 
 - **Manifeste en YAML**, `products/mega-city/ezk-manifest.yml` : le PO le lit sans lire du code, et
-  l'option C pourra le reprendre. Chaque entrée : domaine, verbe, script cible (ou liste d'étapes),
-  une ligne de description, et une règle de racine.
+  l'option C pourra le reprendre. Chaque entrée : domaine, verbe, script cible, une ligne de
+  description, et une règle de racine. Pas d'étapes multiples : elles devaient servir à régénérer
+  le board en trois commandes, et un seul script le fait désormais (ADR-0055).
 - **Racine.** Options du routeur placées avant la commande : `--root <dépôt>` et `--dry-run`.
   Une commande « fixe » (qui lit ou écrit les fichiers du dépôt de la méthode) refuse de tourner
   depuis un autre dépôt, avec un message qui dit quoi faire. Les scripts ne savent pas encore
@@ -65,7 +67,7 @@ Décisions prises au grooming (étape Archi) :
   « racine passée au script ». Le tableau de bord, qui ne fait que servir les fichiers de son
   dépôt sans rien écrire, marche de n'importe quel dossier.
 - **Nom du tableau de bord : `ezk dashboard`.** Écartés : `monitor` (se confond avec
-  `ezk supervision` et le Moniteur d'events), `board` (déjà le domaine des régénérations du
+  `ezk supervision` et le Moniteur d'events), `board` (déjà le domaine des commandes du
   kanban), `city` et `hq` (images que seul l'initié comprend). `ezk map` et `pnpm ezk:map`
   continuent de marcher, avec un avertissement.
 - **Lanceur `bin/ezk.mjs`** derrière le champ `bin` : il trouve `tsx` dans les dépendances de
@@ -83,12 +85,11 @@ Décisions prises au grooming (étape Archi) :
       manifeste n'existe pas, ou si deux entrées ont le même domaine et verbe.
       _Preuve_ : `ezk-manifest.test.ts` (le vrai manifeste) et `uncoveredScripts` dans
       `ezk-cli.test.ts` (le cas du script oublié).
-- [x] `ezk board regen` lance les trois blocs du board (avancement, plan-delta, plan-view) dans
-      cet ordre et s'arrête au premier échec. Un test échoue si un script `regen-*` qui écrit
-      `board.html` manque à cette liste. `ezk board check` lance `check-planning-views`.
-      _Preuve_ : run réel, les trois étapes répondent « déjà à jour » et `git status` ne bouge
-      pas ; `ezk board check` rend « Vues de planning à jour » ; tests `runInOrder` et
-      `ezk-manifest.test.ts` (aucun écrivain de `board.html` oublié).
+- [x] `ezk views regen` régénère toutes les vues générées hors git en une commande (le script
+      unique `views-regen.ts`, ADR-0055) : plus de risque d'oublier un des trois blocs du board.
+      `ezk board check` lance `check-planning-views`.
+      _Preuve_ : `ezk-manifest.test.ts` (la commande vise bien le script unique) ; run réel de
+      `pnpm ezk views regen` et de `pnpm ezk board check` (« Vues de planning à jour »).
 - [x] `ezk law status <profil> [--target <dossier>]` dit, pour chaque skill et agent du profil,
       s'il est en lien, en copie, absent ou en lien mort. Lecture seule, prouvé sur dossier jetable.
       _Preuve_ : `deploy-state.test.ts` (dossier jetable, dossier laissé vide). Sur le poste, en
@@ -106,7 +107,7 @@ Décisions prises au grooming (étape Archi) :
       vérifié à la main : un SIGTERM au routeur ferme le serveur du tableau de bord, sans orphelin.
 - [x] Gate locale verte : typecheck, `pnpm --dir products/mega-city test`, `test:scripts`,
       `pnpm lint`, `check-links.sh`.
-      _Preuve_ : typecheck propre ; 1017 tests verts ; `test:scripts` 28 suites vertes ; lint
+      _Preuve_ : typecheck propre ; 1028 tests verts ; `test:scripts` 28 suites vertes ; lint
       propre ; 0 lien cassé (2 racines).
 
 ## Comment vérifier
@@ -114,7 +115,7 @@ Décisions prises au grooming (étape Archi) :
 ```bash
 pnpm install --frozen-lockfile
 pnpm ezk help                                   # les deux index, une ligne par commande
-pnpm ezk --dry-run board regen                  # montre les trois étapes sans rien écrire
+pnpm ezk --dry-run views regen                  # montre le script lancé sans rien écrire
 pnpm ezk law status global --target "$(mktemp -d)"   # dossier vide : tout « absent »
 pnpm ezk dashboard --list                       # le tableau de bord ; `pnpm ezk:map` aussi, avec avertissement
 pnpm --dir products/mega-city test              # dont la couverture du manifeste
@@ -130,8 +131,8 @@ pnpm --dir products/mega-city test              # dont la couverture du manifest
 - Racine réellement passée aux scripts : fiche [[20260826173221323]].
 - `pnpm link --global` sur le poste : à faire par le PO (le test couvre le lanceur sans toucher
   au poste).
-- Un `ezk views regen` qui enchaîne backlog, portfolio, board et pilotage : fiche
-  [[20260830194601233]].
+- Faire enchaîner `ezk backlog regen` à `ezk views regen` : `BACKLOG.md` reste committé, avec son
+  propre script, qui demande une racine et un titre. À faire si le besoin se confirme.
 - Option C (CLI complet publié) : fiche [[20260903134908019]], plus tard.
 
 ## Glossaire

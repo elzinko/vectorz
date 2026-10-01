@@ -41,33 +41,28 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
   });
 
   it('« help <domaine> » et « help <skill> » détaillent', { timeout: 60_000 }, () => {
-    expect(ezk(['help', 'board']).out).toMatch(/regen[\s\S]*regen-avancement\.ts/);
+    expect(ezk(['help', 'views']).out).toMatch(/regen[\s\S]*lance : bin\/views-regen\.ts/);
     expect(ezk(['help', 'ezk-sprint']).out).toContain('usage');
     expect(ezk(['help', 'nimporte-quoi']).code).toBe(2);
     expect(ezk(['help', '../..']).code).toBe(2); // pas de sortie du dossier des skills
   });
 
   it('refuse une commande qui touche aux fichiers du dépôt quand on est ailleurs', { timeout: 60_000 }, () => {
-    const r = ezk(['--dry-run', 'board', 'regen']);
+    const r = ezk(['--dry-run', 'views', 'regen']);
     expect(r.code).toBe(2);
     expect(r.err).toContain('dépôt de la méthode');
     expect(r.err).toContain('--root');
-    expect(r.out).not.toContain('regen-avancement');
+    expect(r.out).not.toContain('views-regen');
   });
 
-  it('avec --root vers le dépôt de la méthode, elle passe : trois étapes, dans l’ordre', { timeout: 60_000 }, () => {
-    const r = ezk(['--root', repoRoot, '--dry-run', 'board', 'regen']);
+  it('avec --root vers le dépôt de la méthode, elle passe : un script, celui des vues', { timeout: 60_000 }, () => {
+    const r = ezk(['--root', repoRoot, '--dry-run', 'views', 'regen']);
     expect(r.code).toBe(0);
-    const steps = r.out.split('\n').filter((l) => l.includes('bin/regen-'));
-    expect(steps.map((l) => l.replace(/^.*(bin\/regen-[\w-]+\.ts).*$/, '$1'))).toEqual([
-      'bin/regen-avancement.ts',
-      'bin/regen-plan-delta.ts',
-      'bin/regen-plan-view.ts',
-    ]);
+    expect(r.out).toContain('tsx bin/views-regen.ts');
   });
 
   it('un autre dépôt derrière --root est refusé, et dit que ce n’est pas encore possible', { timeout: 60_000 }, () => {
-    const r = ezk(['--root', elsewhere, '--dry-run', 'board', 'regen']);
+    const r = ezk(['--root', elsewhere, '--dry-run', 'views', 'regen']);
     expect(r.code).toBe(2);
     expect(r.err).toMatch(/pas encore possible/);
   });

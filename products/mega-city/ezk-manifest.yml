@@ -6,7 +6,6 @@
 #
 #   domain / verb   le nom de la commande (verb absent = le domaine EST la commande)
 #   run             le script (chemin depuis products/mega-city) + ses arguments fixes
-#   steps           plusieurs scripts, lancés dans l'ordre ; arrêt au premier échec
 #   summary         UNE ligne, en clair : c'est ce que `ezk help` affiche
 #   root            fixed (défaut) = lit ou écrit les fichiers du dépôt de la méthode ;
 #                   none = marche de n'importe quel dossier
@@ -36,14 +35,7 @@ commands:
     summary: Dit ce qui est déployé pour un profil (lien, copie, absent), sans rien écrire.
     root: none
 
-  # --- board : le tableau kanban et ses blocs générés ---
-  - domain: board
-    verb: regen
-    steps:
-      - bin/regen-avancement.ts
-      - bin/regen-plan-delta.ts
-      - bin/regen-plan-view.ts
-    summary: Régénère les trois blocs du board (avancement, écart du plan, plan), dans l'ordre.
+  # --- board : le tableau kanban ---
   - domain: board
     verb: check
     run: bin/check-planning-views.ts
@@ -61,7 +53,7 @@ commands:
   - domain: backlog
     verb: regen
     run: bin/regen-backlog.sh
-    summary: Régénère l'index features/BACKLOG.md.
+    summary: Régénère l'index BACKLOG.md (ezk backlog regen <racine> <titre>).
   - domain: backlog
     verb: portfolio
     run: bin/portfolio.sh
@@ -126,7 +118,7 @@ commands:
   - domain: docs
     verb: check-links
     run: bin/check-links.sh
-    summary: Vérifie que les liens markdown relatifs résolvent sur le disque.
+    summary: Vérifie les liens markdown relatifs (ezk docs check-links <racine> <dossiers>).
   - domain: docs
     verb: check-adr-ids
     run: bin/check-adr-ids.sh
@@ -152,17 +144,13 @@ commands:
     run: bin/ezk-config.ts
     summary: Lit et pilote les capacités du plugin github (.vectorz/config.yml).
   - domain: views
+    verb: regen
+    run: bin/views-regen.ts
+    summary: Régénère toutes les vues générées hors git (board, pilotage, runs, portfolio).
+  - domain: views
     verb: map-data
     run: bin/regen-map-data.ts
     summary: Régénère les données de la carte interactive.
-  - domain: views
-    verb: pilotage
-    run: bin/regen-pilotage.ts
-    summary: Régénère la page Pilotage (backlog et récits de sessions).
-  - domain: views
-    verb: runs
-    run: bin/regen-runs.ts
-    summary: Régénère la vue Historique des runs (récits de sessions).
   - domain: supervision
     verb: link
     run: bin/supervision-link.ts

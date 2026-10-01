@@ -1,12 +1,12 @@
 /**
- * Le VRAI manifeste `ezk-manifest.yml` (fiche 20260903134906920) : il ne doit rien oublier,
- * ne rien inventer, et `ezk board regen` ne doit jamais perdre un bloc du board.
+ * Le VRAI manifeste `ezk-manifest.yml` (fiche 20260903134906920) : il ne doit rien oublier
+ * et ne rien inventer.
  */
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { entrySteps, parseManifest, uncoveredScripts } from '../core/ezk-cli.js';
+import { entryStep, parseManifest, uncoveredScripts } from '../core/ezk-cli.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const manifest = parseManifest(readFileSync(join(megaCity, 'ezk-manifest.yml'), 'utf8'));
@@ -21,7 +21,7 @@ describe('ezk-manifest.yml', () => {
   });
 
   it('ne vise que des scripts qui existent', () => {
-    const targets = manifest.commands.flatMap((e) => entrySteps(e).map((s) => s.script));
+    const targets = manifest.commands.map((e) => entryStep(e).script);
     const missing = [...targets, ...manifest.internal.map((i) => i.script)].filter(
       (s) => !existsSync(join(megaCity, s)),
     );
@@ -29,7 +29,7 @@ describe('ezk-manifest.yml', () => {
   });
 
   it('ne range pas un script à la fois dans le routeur et dans internal', () => {
-    const routed = new Set(manifest.commands.flatMap((e) => entrySteps(e).map((s) => s.script)));
+    const routed = new Set(manifest.commands.map((e) => entryStep(e).script));
     expect(manifest.internal.filter((i) => routed.has(i.script))).toEqual([]);
   });
 
@@ -45,20 +45,9 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it('« ezk board regen » lance TOUS les scripts qui produisent board.html — aucun bloc oublié', () => {
-    // Tout script (ts ou sh, tests exclus) qui nomme board.html pour l'ÉCRIRE : le nom du fichier
-    // ne compte pas, le contenu oui. Un script qui ne fait que le lire ne doit pas le citer ainsi.
-    const writes = (source: string): boolean =>
-      source.includes('board.html') && /writeFileSync|>\s*"?\$?[\w{}/.-]*board\.html/.test(source);
-    const writers = readdirSync(join(megaCity, 'bin'))
-      .filter((f) => /\.(ts|sh)$/.test(f) && !f.startsWith('test-') && f !== 'ezk.ts')
-      .filter((f) => writes(readFileSync(join(megaCity, 'bin', f), 'utf8')))
-      .map((f) => `bin/${f}`)
-      .sort();
-    const regen = manifest.commands.find((e) => e.domain === 'board' && e.verb === 'regen');
-    const steps = regen ? entrySteps(regen).map((s) => s.script) : [];
-    expect(writers.length).toBeGreaterThan(0);
-    expect([...steps].sort()).toEqual(writers);
+  it('« ezk views regen » lance le script unique des vues générées (ADR-0055), jamais cinq commandes', () => {
+    const regen = manifest.commands.find((e) => e.domain === 'views' && e.verb === 'regen');
+    expect(regen && entryStep(regen).script).toBe('bin/views-regen.ts');
   });
 
   it('le tableau de bord, qui ne fait que servir les fichiers de son dépôt, marche de partout', () => {
@@ -67,7 +56,7 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it("expose la commande « ezk » par le champ bin du paquet, via un lanceur qui existe", () => {
+  it('expose la commande « ezk » par le champ bin du paquet, via un lanceur qui existe', () => {
     expect(pkg.bin?.ezk).toBe('bin/ezk.mjs');
     expect(existsSync(join(megaCity, 'bin', 'ezk.mjs'))).toBe(true);
   });
