@@ -57,6 +57,7 @@ démarre jamais un sprint tout seul (ex-`ezk-start`).
 
 ```bash
 bash <chemin-du-skill>/scripts/sprint.sh start --dry-run   # = check : le portier, rien d'écrit
+bash <chemin-du-skill>/scripts/check.sh --gate             # le moteur du portier, lancé tel quel par la ligne du dessus
 ```
 
 Le portier est **read-only** : working tree, worktrees, fiches `in-progress`, handoff
