@@ -62,9 +62,9 @@ la voie 1 à la liaison par projet. Décision : ADR-0056.
    `~/.claude/rules/*.md` dans chaque session, sans pointeur. Le fichier est possédé par lawgiver :
    un marqueur dans son en-tête permet de le remplacer, et un fichier du même nom sans marqueur
    n'est jamais écrasé. Coût : le socle `base` pèse 16 Ko, soit environ 4 k jetons par session.
-2. **Voie 3 — le cliquet.** Un test échoue quand une règle `agent-check` n'est citée ni par id
-   ni par titre dans le prompt de l'agent nommé, sauf si elle figure dans la dette datée. La
-   liste ne peut que rétrécir. Les 20 règles non citées y sont consignées.
+2. **Voie 3 — le cliquet.** Un test échoue quand une règle `agent-check` n'est pas citée par son
+   id dans le prompt de l'agent nommé (le titre ne compte pas : trop lâche), sauf si elle figure
+   dans la dette datée. La liste ne peut que rétrécir. Les 20 règles non citées y sont consignées.
 3. **Le doctor.** `lawgiver doctor <profil> [--target <dossier>]` (et `ezk law doctor`) compare
    le profil et la cible. Lecture seule. Code retour 1 si une divergence bloque. Il réutilise la
    primitive « état de déploiement » créée par `ezk law status`.
@@ -113,6 +113,10 @@ ls "$T/rules"                                     # iamthelaw.md
 pnpm --dir products/mega-city exec vitest run law-coverage deploy-doctor apply-global-law
 ```
 
+Après le vrai `pnpm ezk law bind-global global --link` (au PO), ouvrir une session Claude Code et
+lancer `/context` : `iamthelaw.md` doit figurer dans « Memory files ». C'est le seul maillon que
+les tests ne prouvent pas : que Claude Code lit bien ce fichier.
+
 ## Suite (hors de ce lot)
 
 - Critères repris de la fiche absorbée `lawgiver doctor`, non livrés ici : `doctor --fix
@@ -120,6 +124,11 @@ pnpm --dir products/mega-city exec vitest run law-coverage deploy-doctor apply-g
   catalogue lawgiver, hors profil, sans jamais signaler un skill d'un autre outil) ; éléments du
   catalogue dans aucun profil, en sortie du doctor (le test de couverture du profil `global`
   garde déjà la famille `ezk-*`).
+- Limites du doctor : un lien vivant est cru sur parole (vérifier qu'il vise le catalogue
+  courant demande de lui passer la racine du catalogue, et le poste lie vers le checkout
+  principal depuis un worktree) ; une copie n'est comparée qu'aux fichiers du plan (un fichier
+  résiduel d'une ancienne version passe) ; une règle qui nomme un agent inexistant reste en dette
+  sans alerte.
 - Résorber les 20 règles en dette : les citer dans le prompt de l'agent, ou compiler par agent.
 - Choisir quels bundles le global porte (aujourd'hui `base` seul, 6 règles ; `development` et
   `testing` n'arrivent que par `cop1-target`). Décision du PO, avec le coût en jetons.

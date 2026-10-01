@@ -9,7 +9,10 @@
  *   - un lien mort ;
  *   - une copie périmée (un fichier manque ou diffère du plan) ;
  *   - la loi (`rules/iamthelaw.md`) absente, périmée, ou occupée par un fichier qui n'est pas à lawgiver.
- * Restent hors de ce lot (fiche) : orphelins gérés, éléments du catalogue dans aucun profil, --fix.
+ * Limites connues, rangées en « Suite » dans la fiche : un lien VIVANT est cru sur parole (on ne
+ * vérifie pas qu'il vise le catalogue courant) ; une copie n'est comparée qu'aux fichiers du plan
+ * (un fichier résiduel d'une ancienne version passe) ; orphelins gérés, éléments du catalogue dans
+ * aucun profil et `--fix` ne sont pas là.
  */
 import { GLOBAL_LAW_PATH, isManagedLaw } from '../domain/law-file.js';
 import type { FileWrite, WritePlan } from '../domain/plan.js';
@@ -126,9 +129,11 @@ export function renderDiagnosis(
     lines.push(`  ✖ ${WORD[p.kind].padEnd(width)}  ${p.path}${where}`);
   }
   const target = options.target ? ` --target ${options.target}` : '';
-  lines.push(
-    `${plural(diagnosis.problems.length, 'divergence', 'divergences')} sur ${scope}.`,
-    `Pour réparer : pnpm ezk law bind-global ${profileId} --link${target}`,
-  );
+  lines.push(`${plural(diagnosis.problems.length, 'divergence', 'divergences')} sur ${scope}.`);
+  if (diagnosis.problems.some((p) => p.kind === 'loi-non-geree')) {
+    // bind-global refuse d'écraser un fichier qui n'est pas à lawgiver : le conseil seul échouerait.
+    lines.push(`D'abord : ${GLOBAL_LAW_PATH} n'est pas à lawgiver. Renomme-le ou retire-le à la main.`);
+  }
+  lines.push(`Pour réparer : pnpm ezk law bind-global ${profileId} --link${target}`);
   return `${lines.join('\n')}\n`;
 }

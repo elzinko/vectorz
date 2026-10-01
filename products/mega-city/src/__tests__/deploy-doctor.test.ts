@@ -142,6 +142,14 @@ describe('renderDiagnosis', () => {
     expect(text).toContain('pnpm ezk law bind-global global --link');
   });
 
+  it('quand un fichier de l’utilisateur occupe la place de la loi, dit de le retirer AVANT de réparer', () => {
+    const texts = { ...GOOD_TEXT, [GLOBAL_LAW_PATH]: '# Mes règles perso\n' };
+    const text = renderDiagnosis('global', '/poste/.claude', diagnose(plan(), probe(GOOD, texts)));
+    expect(text).toMatch(/✖ loi non gérée\s+rules\/iamthelaw\.md/);
+    expect(text).toContain("D'abord : rules/iamthelaw.md n'est pas à lawgiver");
+    expect(text.indexOf("D'abord")).toBeLessThan(text.indexOf('Pour réparer'));
+  });
+
   it('dit « tout est en place » quand il n’y a rien à signaler', () => {
     const text = renderDiagnosis('global', '/poste/.claude', diagnose(plan(), probe(GOOD, GOOD_TEXT)));
     expect(text).toContain('✔ Tout est en place');

@@ -6,7 +6,7 @@
 # 20 non citées — listées ci-dessous.
 #
 # Le test src/__tests__/law-coverage.test.ts accepte CETTE liste et interdit de l'allonger : une
-# règle agent-check nouvelle doit être citée (id ou titre) dans agents/<agent>.md, ou — dernier
+# règle agent-check nouvelle doit être citée (par son id) dans agents/<agent>.md, ou — dernier
 # recours — entrer ici. La liste ne peut que rétrécir : pour sortir une règle de la dette, cite son
 # id dans le prompt de l'agent, puis retire sa ligne.
 measured: 2026-10-01

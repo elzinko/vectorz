@@ -48,9 +48,12 @@ describe('agentCheckCoverage — la règle atteint-elle le prompt de son agent ?
   const rows = agentCheckCoverage(rules, agents);
   const cited = (id: string) => rows.find((r) => r.rule === id)?.cited;
 
-  it('cite par id ou par titre, dans le corps du rôle', () => {
+  it('cite par id, dans le corps du rôle', () => {
     expect(cited('clean/a')).toBe(true);
-    expect(cited('clean/titre')).toBe(true);
+  });
+
+  it('ne compte pas le titre : un titre générique se retrouve dans n’importe quelle prose', () => {
+    expect(cited('clean/titre')).toBe(false);
   });
 
   it('ne compte pas la liste « interactions » de l’en-tête : le modèle ne la lit pas', () => {

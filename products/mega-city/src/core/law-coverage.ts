@@ -3,10 +3,11 @@
  * (fiche 20260903134909124, ADR-0056 — voie 3 : le cliquet).
  *
  * PUR (ADR-0003). Une règle `enforcements: agent-check` nomme l'agent qui doit la contrôler.
- * Elle n'atteint cet agent que si son prompt la porte : le corps de son rôle la cite par son id
- * ou son titre. La liste `interactions` de l'en-tête ne compte pas : Claude Code retire l'en-tête
- * avant de bâtir le prompt, le modèle ne la lit jamais. Sinon la règle est au catalogue et
- * l'agent ne la lit pas : « panneau sans casques ».
+ * Elle n'atteint cet agent que si son prompt la porte : le corps de son rôle cite son ID. Le titre
+ * ne compte pas (un titre générique se retrouve dans n'importe quelle prose), ni la liste
+ * `interactions` de l'en-tête (Claude Code retire l'en-tête avant de bâtir le prompt : le modèle
+ * ne la lit jamais). Sinon la règle est au catalogue et l'agent ne la lit pas : « panneau sans
+ * casques ».
  */
 import type { Agent, Rule } from '../domain/model.js';
 
@@ -20,8 +21,7 @@ export interface AgentCheck {
 }
 
 function cites(agent: Agent, rule: Rule): boolean {
-  const title = rule.title?.trim();
-  return agent.role.includes(rule.id) || (title !== undefined && title !== '' && agent.role.includes(title));
+  return agent.role.includes(rule.id);
 }
 
 /** Une ligne par couple (règle, agent) déclaré en `agent-check`, trié par règle puis agent. */
@@ -39,7 +39,8 @@ export function agentCheckCoverage(rules: Iterable<Rule>, agents: Map<string, Ag
       });
     }
   }
-  return rows.sort((a, b) => (a.rule + a.agent < b.rule + b.agent ? -1 : 1));
+  const order = (r: AgentCheck): string => `${r.rule}\u0000${r.agent}`;
+  return rows.sort((a, b) => (order(a) < order(b) ? -1 : order(a) > order(b) ? 1 : 0));
 }
 
 /** La clé d'un couple, telle qu'elle s'écrit dans la dette. */
