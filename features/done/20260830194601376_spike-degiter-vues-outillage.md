@@ -88,6 +88,9 @@ EZK_MAP_NO_OPEN=1 pnpm ezk:map   # puis GET /diagrams/avancement/board.data.js �
   mois », en novembre 2026. Il ne se prouve pas dans une PR.
 - `carte-interactive.html` : même schéma si un conflit réel y apparaît (elle ne bouge que quand le
   catalogue bouge).
+  **Fait le 2026-10-01 (PR #297)** : le conflit est venu (#286, #288, #293…). Les données de la carte
+  sortent de git comme celles du board : coque committée, `carte-interactive.data.js` ignoré,
+  `ezk:map` le calcule à chaque requête, `views:regen` l'écrit. Voir ADR-0055 (note du 2026-10-01).
 - `views:check` et le ship qui régénère les vues restées committées : fiche `20260830194601233`.
 
 ## Notes

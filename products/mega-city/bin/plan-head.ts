@@ -14,6 +14,7 @@ import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type PlanCard, crossBacklogHead } from '../src/backlog/plan-head.js';
 import { parsePlanOrder } from '../src/backlog/plan-order.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 
 function fail(message: string): never {
@@ -34,16 +35,18 @@ function collect(root: string): Map<string, PlanCard> {
   return index;
 }
 
-const arg = process.argv[2];
+// Le projet dont on lit le plan : --root > EZK_ROOT > ce dépôt (fiche 20260826173221323).
+const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+const { root, rest } = projectRootOrExit(ownRoot);
+const arg = rest[0];
 if (arg === '-h' || arg === '--help') {
-  console.log('usage : pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md]');
+  console.log('usage : pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md] [--root <projet>]');
   console.log('');
   console.log('Imprime la tête réelle du plan sur la liste unique features/ (champ product:).');
-  console.log('Défaut du PLAN.md : <racine>/features/PLAN.md.');
+  console.log('Défaut du PLAN.md : <racine>/features/PLAN.md. --root (ou EZK_ROOT) : le plan d’un autre projet.');
   process.exit(0);
 }
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const invokedFrom = process.env.INIT_CWD ?? process.cwd();
 const planArg = arg ?? join(root, 'features/PLAN.md');
 const planPath = isAbsolute(planArg) ? planArg : resolve(invokedFrom, planArg);

@@ -13,8 +13,8 @@ import { dirname, join, resolve } from 'node:path';
  * Ce que chaque déploiement écrit — et n'écrit PAS (fiche 20260903134909124, ADR-0056) :
  *   bind <profil> <projet>   ÉCRIT  <projet>/.claude/agents, .claude/skills, .iamthelaw/ENTRY.md (la loi),
  *                                   un bloc dans CLAUDE.md, les hooks git.   N'ÉCRIT PAS  ~/.claude.
- *   bind-global <profil>     ÉCRIT  ~/.claude/skills, ~/.claude/agents, ~/.claude/rules/iamthelaw.md (la loi
- *                                   du profil, en copie compilée même avec --link).
+ *   bind-global <profil>     ÉCRIT  ~/.claude/skills, ~/.claude/agents, ~/.claude/commands (les slash-commands),
+ *                                   ~/.claude/rules/iamthelaw.md (la loi du profil, en copie compilée même avec --link).
  *                                   N'ÉCRIT PAS  ~/.claude/CLAUDE.md, ni de hook, ni rien dans un projet.
  *   --target <dossier>       vise un autre dossier que ~/.claude (essais sur dossier jetable).
  *
@@ -31,7 +31,7 @@ import { diagnose, exitCodeOf, renderDiagnosis } from '../src/core/deploy-doctor
 import { expectedItems, inspect, renderStatus } from '../src/core/deploy-state.js';
 import { expandProfile } from '../src/core/expand.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
-import { applyGlobalPlan, applyPlan } from '../src/io/apply.js';
+import { applyGlobalPlan, applyPlan, staleFlatSkillFiles } from '../src/io/apply.js';
 import { applyCapture } from '../src/io/capture.js';
 import { probePath, readText } from '../src/io/deploy-probe.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
@@ -128,6 +128,13 @@ function runBind(profile: string, projectDir: string, host: HostId, force: boole
   console.log(
     `lawgiver: bind '${profile}' → ${absoluteProject} [${host}] : ${files} fichier(s), ${hooks} hook(s).`,
   );
+  // Les skills du projet sont des DOSSIERS depuis la fiche 20260813095351680 : un ancien fichier plat n'est
+  // plus écrit ni lu, mais on ne le supprime pas — on le signale.
+  for (const rel of staleFlatSkillFiles(plan, absoluteProject)) {
+    console.warn(
+      `  ⚠️ ancien fichier plat laissé en place : ${rel} (forme d'avant, plus écrite). Supprime-le s'il vient d'un ancien bind.`,
+    );
+  }
   reportComposition(profile);
 }
 

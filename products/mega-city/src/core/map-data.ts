@@ -1,15 +1,16 @@
 /**
  * map-data — les données de la carte interactive, compilées depuis le catalogue.
- * DÉTERMINISTE et PUR (ADR-0003) — le bord I/O est `bin/regen-map-data.ts`.
+ * DÉTERMINISTE et PUR (ADR-0003) — le bord I/O est `src/io/derived-views.ts` (vue `carte`).
  *
  * POURQUOI (épic « carte fidèle », synthèse PR #162) : la carte dessinait des données
  * écrites À LA MAIN dans son HTML — impossible de prouver qu'un trait venait des fichiers.
  * Ici, chaque entrée de la carte est DÉRIVÉE du catalogue chargé par `loadCatalog` et du
  * graphe validé par `validateGraph`. La carte ne peut plus montrer que ce qui existe.
  *
- * Le bloc est posé dans le HTML entre deux marqueurs gérés (même patron que
- * `composes-graph.ts` pour skills/README.md) ; un test d'invariant compare le bloc sur
- * disque au bloc régénéré — carte périmée ⇒ CI rouge.
+ * Le bloc est écrit dans `carte-interactive.data.js`, que la coque HTML charge par
+ * `<script src>`. Ce fichier n'est dans AUCUN commit (ADR-0055) : `ezk:map` le calcule à chaque
+ * requête, `pnpm views:regen` l'écrit sur disque. Sans copie committée, la carte ne peut pas être
+ * périmée ; un test prouve que le constructeur dit vrai sur le dépôt réel (fidélité par construction).
  */
 import type { Catalog } from '../loaders/catalog.js';
 import type { CompiledGraph } from './compiled-graph.js';
@@ -396,7 +397,7 @@ export function buildMapData(
   };
 }
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans le HTML de la carte. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `carte-interactive.data.js`. */
 export function buildMapDataBlock(
   catalog: Catalog,
   graph: CompiledGraph,
@@ -411,20 +412,4 @@ export function buildMapDataBlock(
     1,
   ).replace(/</g, '\\u003c');
   return `${MAP_DATA_BEGIN}\nwindow.EZK = ${json};\n${MAP_DATA_END}`;
-}
-
-/**
- * Pose `block` dans `text` entre les marqueurs. Les marqueurs DOIVENT déjà exister dans le
- * HTML (posés une fois par l'auteur de la carte) : contrairement au README, on n'appende
- * jamais une section en fin de page HTML. Absents ⇒ erreur franche.
- */
-export function upsertMapDataBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(MAP_DATA_BEGIN);
-  const endIdx = text.indexOf(MAP_DATA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${MAP_DATA_BEGIN} … ${MAP_DATA_END} introuvables dans la carte — le HTML doit les porter`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + MAP_DATA_END.length);
 }

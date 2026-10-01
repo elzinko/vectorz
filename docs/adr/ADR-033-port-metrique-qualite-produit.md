@@ -47,7 +47,7 @@ Trois faits d'état des lieux : `products/cop1/packages/quality-intelligence` **
 faisabilité** (`SonarQubeAdapter`, `CoverageGate`, `StaticAnalysisGate`, `ArchDriftDetector`)
 **mais** câble les mesures en **portes jetables** (la valeur ouvre/ferme le gate du sprint puis
 est **jetée** — rien n'est historisé ni collé à un commit) et il est **promis à résorption**
-(relicat pré-pivot, [0024](../../features/0024-resorber-peripherie-pre-pivot.md)) — on moissonne
+(relicat pré-pivot, [0024](../../features/done/0024-resorber-peripherie-pre-pivot.md)) — on moissonne
 sa **liste de capteurs**, pas son code. **LA LOI vit dans `products/mega-city/rules/`** (époque 2,
 ADR-029). Le **moniteur** = cop1 `observability` + `web` (mission-control, ADR-028). Et **ADR-032
 a déjà tranché** que l'exécution/l'émission appartient à la méthode.
@@ -247,4 +247,4 @@ chercher », mais c'est le prix de la cohérence avec ADR-032 **et** d'une mesur
        **ne dépend PAS de Q2** (0052 écrit derrière `MetricSink`).
 4. [ ] Mettre à jour `docs/adr/README.md` (registre) — ligne 033 tenue à jour.
 5. [ ] Moissonner la liste de capteurs de `quality-intelligence`
-       ([0024](../../features/0024-resorber-peripherie-pre-pivot.md)) avant résorption.
+       ([0024](../../features/done/0024-resorber-peripherie-pre-pivot.md)) avant résorption.

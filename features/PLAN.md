@@ -31,7 +31,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **V0.1** | Le socle dit vrai | graphe compilé, verrou de statut, carte qui cite ses sources, un seul modèle de fiche, règle de clarté partout | ✅ livrée le 2026-10-01 |
 | **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | ✅ livrée le 2026-10-01 |
 | **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | ✅ livrée le 2026-10-01 |
-| **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | à faire |
+| **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | 🟠 construite — 9 PR en attente de merge humain (#275, #297, #298, #300, #301, #302, #310, #311, #312) |
 | **V0.5** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
@@ -75,25 +75,26 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20260906122942607` — run autonome transparent : ce qu'il va faire, puis ce qu'il a fait · `build`
 - `20260904091853948` — ezk-archive plus léger et plus juste (voie rapide, bon compte, survit au cloud) · `build`
 - `0080` — chaque rétro laisse un compte rendu clair et des propositions ciblées · `build`
-- `20260905134937885` — mesurer si la revue locale peut remplacer Codex (et sortir la PR du chemin) · `build`
-- `20260826173221323` — pouvoir pointer les vues sur un autre projet (muti, samplerz) · `build`
-- `20260910152227744` — des règles propres à un projet (ex. « samplerz en hexagonal ») · `build`
-- `20260813095351680` — rendre l'installation des skills robuste (3 défauts de lawgiver) · `build`
-- `20260816151112162` — installer les slash-commands comme les skills · `build`
+- ~~`20260905134937885` — mesurer si la revue locale peut remplacer Codex (et sortir la PR du chemin) · `build`~~ — shipped #308
+- ~~`20260826173221323` — pouvoir pointer les vues sur un autre projet (muti, samplerz) · `build`~~ — shipped #299
+- ~~`20260910152227744` — des règles propres à un projet (ex. « samplerz en hexagonal ») · `build`~~ — shipped #303
+- ~~`20260813095351680` — rendre l'installation des skills robuste (3 défauts de lawgiver) · `build`~~ — shipped #304
+- ~~`20260816151112162` — installer les slash-commands comme les skills · `build`~~ — shipped #305
 - `20260812104022246` — composer des consignes réutilisables dans les skills · `build`
 - `0066` — tester un skill pour de vrai avant de le merger · `build`
 - `20260920213500176` — réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons) · `build`
 - `20260830114318159` — créer un skill en passant par une fiche du backlog · `build`
-- `20260815080414006` — critères de « prête » (DoR) adaptables par projet · `build`
-- `20260825161522791` — un grooming guidé : l'agent propose des améliorations, tu choisis · `build`
+- ~~`20260815080414006` — critères de « prête » (DoR) adaptables par projet · `build`~~ — shipped #307
+- ~~`20260825161522791` — un grooming guidé : l'agent propose des améliorations, tu choisis · `build`~~ — shipped #309
+- `20260930123438875` — séparer clairement fiche, sprint et session · `groom` → `build` — déjà planifiée en ③ (P0 juste après le socle), elle appartient aussi au lot V0.4
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
-- `0024` — supprimer le vieux code d'avant le pivot · `build`
-- `0117` — corriger les signatures de domain.ts qui ne collent plus au code · `build`
-- `0143` — unifier le nom des modes tokens (lean / cap / full) dans la doc · `build`
-- `20260813122510737` — ezk-backlog init se trompe de version de format dans un cas · `build`
-- `20260823121712844` — empêcher la régénération du backlog de viser le mauvais dossier · `build`
-- `20260829132313947` — masquer les forks dans le suivi de consommation CI · `build`
+- ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
+- ~~`0117` — corriger les signatures de domain.ts qui ne collent plus au code · `build`~~ — shipped #295
+- ~~`0143` — unifier le nom des modes tokens (lean / cap / full) dans la doc · `build`~~ — shipped #295
+- ~~`20260813122510737` — ezk-backlog init se trompe de version de format dans un cas · `build`~~ — shipped #295
+- ~~`20260823121712844` — empêcher la régénération du backlog de viser le mauvais dossier · `build`~~ — shipped #295
+- ~~`20260829132313947` — masquer les forks dans le suivi de consommation CI · `build`~~ — shipped #295
 
 > Historique : les séquences précédentes (itérations d'août et de septembre) sont dans
 > l'historique git de ce fichier, avant le 2026-09-30.
