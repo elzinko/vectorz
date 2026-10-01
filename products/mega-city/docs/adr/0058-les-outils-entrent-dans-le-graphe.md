@@ -3,7 +3,7 @@
 **Statut :** Accepté
 **Date :** 2026-10-01
 **Deciders :** PO (retour du 2026-09-17 : « on ne voit pas les outils de la méthode dans la map ») ; sprint du run V0.1 → V0.4 (le choix du verbe)
-**Fiche :** [`20260917123943914`](../../../../features/20260917123943914_outils-dans-la-carte-methode.md)
+**Fiche :** [`20260917123943914`](../../../../features/done/20260917123943914_outils-dans-la-carte-methode.md)
 **Amende :** [ADR-0040](0040-modele-fichiers-ezk-compile-schema-valide.md) D1 — le jeu fermé de quatre verbes passe à cinq.
 **S'appuie sur :** [ADR-0046](0046-cli-ezk-point-d-entree-mince-manifeste.md) — le manifeste de la commande `ezk` dit déjà quelle commande lance quel script.
 
