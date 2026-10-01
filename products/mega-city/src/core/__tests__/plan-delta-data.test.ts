@@ -13,6 +13,7 @@ const f = (over: Partial<Fiche> & { id: string }): Fiche => ({
   pr: '',
   labels: [],
   blocked: '',
+  version: '',
   done: false,
   file: `features/${over.id}_x.md`,
   ...over,

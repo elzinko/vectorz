@@ -16,11 +16,13 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   type FicheAnomaly,
+  type ProvenanceEntry,
   findDuplicateIds,
   findInvalidProvenanceIds,
+  findProvenanceMismatches,
   validateFicheFrontMatter,
 } from '../src/backlog/fiche-validator.js';
-import { readField, readListField } from '../src/loaders/fiches.js';
+import { frontMatter, readField, readListField } from '../src/loaders/fiches.js';
 
 const args = process.argv.slice(2);
 const STRICT = args.includes('--strict');
@@ -63,22 +65,27 @@ function main(): number {
   const files = listFicheFiles(repoRoot);
   const anomalies: FicheAnomaly[] = [];
   const idEntries: { file: string; id: string }[] = [];
-  const provenanceEntries: { file: string; mergedInto: string; splitInto: string[] }[] = [];
+  const provenanceEntries: ProvenanceEntry[] = [];
 
   for (const path of files) {
     const relative = path.slice(repoRoot.length + 1);
     const text = readFileSync(path, 'utf8');
     anomalies.push(...validateFicheFrontMatter(relative, text, { monorepo }));
     idEntries.push({ file: relative, id: readField(text, 'id') });
+    const head = frontMatter(text); // la provenance se lit dans le front-matter, jamais dans le corps
     provenanceEntries.push({
       file: relative,
-      mergedInto: readField(text, 'merged_into'),
-      splitInto: readListField(text, 'split_into'),
+      id: readField(head, 'id'),
+      mergedInto: readField(head, 'merged_into'),
+      mergedFrom: readListField(head, 'merged_from'),
+      splitInto: readListField(head, 'split_into'),
+      splitFrom: readField(head, 'split_from'),
     });
   }
   anomalies.push(...findDuplicateIds(idEntries));
   const knownIds = new Set(idEntries.map((e) => e.id).filter(Boolean));
   anomalies.push(...findInvalidProvenanceIds(provenanceEntries, knownIds));
+  anomalies.push(...findProvenanceMismatches(provenanceEntries));
 
   // En clair d'abord (règle human-facing-lisibility).
   if (anomalies.length === 0) {

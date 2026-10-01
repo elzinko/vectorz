@@ -72,10 +72,12 @@ Vercel — **avec ta validation**.
 
 ### D. Boutique Lemon Squeezy (API REST)
 1. **Prérequis humain** : compte LS créé + clé API générée (je **ne crée pas** de compte).
-   Ranger la clé : `ezk-secret set lemonsqueezy-api --clip` (clé longue → presse-papier).
-2. `KEY=$(ezk-secret get lemonsqueezy-api)` → `GET /v1/user` → **confirmer à l'humain le compte connecté** (nom + email) avant toute écriture.
-3. `GET /v1/stores`, `GET /v1/products` (lecture libre).
+   Ranger la clé : `ezk-secret set LEMONSQUEEZY_API_KEY_TEST --clip` (clé longue → presse-papier).
+2. `KEY=$(ezk-secret get LEMONSQUEEZY_API_KEY_TEST)` → `GET /v1/user` → **confirmer à l'humain le compte connecté** (nom + email) avant toute écriture.
+3. `GET /v1/stores`, `GET /v1/products` (lecture libre, avec `curl -g` dès qu'une URL porte des crochets).
 4. **[VALIDATION à chaque écriture]** `POST /v1/products` etc. — jamais sans OK explicite, avec le détail (nom, prix).
+5. Réglages du produit, validation de la clé dans l'app, passage test → live : voir la recette
+   [`vendre-app-lemonsqueezy-licence-pro.md`](../vendre-app-lemonsqueezy-licence-pro.md).
 
 ## Validation humaine (élicitation)
 
@@ -88,6 +90,7 @@ Lecture (lister, inspecter) = libre.
 
 - [`secrets-trousseau/`](../secrets-trousseau/) — l'outil `ezk-secret`.
 - [`plan-distribution-app.md`](../plan-distribution-app.md) — R2 / téléchargement.
+- [`vendre-app-lemonsqueezy-licence-pro.md`](../vendre-app-lemonsqueezy-licence-pro.md) — boutique Lemon Squeezy, clé de licence, verrou Pro.
 - [`brancher-domaine-vercel.md`](../brancher-domaine-vercel.md) · [`dns-ionos-mcp.md`](../dns-ionos-mcp.md) — domaine.
 - [`vercel-kv-database.md`](../vercel-kv-database.md) — base KV (waitlist).
 - [`elicitation-authentification-forte.md`](../elicitation-authentification-forte.md) — validation.

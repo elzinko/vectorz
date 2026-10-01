@@ -55,6 +55,7 @@ describe('diagrams/avancement/board.html — la coque', () => {
       pr: '',
       labels,
       blocked: '',
+      version: '',
       done: false,
       file: `features/${id}.md`,
     });

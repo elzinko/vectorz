@@ -61,6 +61,10 @@ garde stand-down, sonde de verdict bornée) sont spécifiées comme commandes `g
    `sleep` infini), n'avale pas ses erreurs ; verdict = réaction 👍 **ou** review sans
    nouveau finding sur le HEAD courant.
 5. **Rapport en checkpoint** : État · Qui a la main · Prochaine action.
+6. **Clore chaque fil traité** *(ajout 2026-10-01, fiche 20260825202444647)* : corrigé comme
+   décliné, un fil traité reçoit une réponse en fil, puis passe à `resolved`. Un fil corrigé
+   n'est clos qu'après un commit **et** un push réussis. L'intake ne reprend que les fils non
+   résolus (`reviewThreads`, `isResolved:false`).
 
 ## Conséquences
 
