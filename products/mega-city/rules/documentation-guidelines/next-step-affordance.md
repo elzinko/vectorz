@@ -14,7 +14,7 @@ enforcements:
 - **Deux étages, jamais mélangés** :
   - **Suite logique** : la suivante est *déterminée* par l'état (ex. après `ready <id>` → `next --ready-only`). Une ligne : la commande + pourquoi.
   - **Pistes** : des idées au choix de l'humain. Jamais formulées comme une obligation.
-- **1 à 3 commandes au total.** Chaque commande sur sa ligne, suivie d'une raison d'une ligne (« la fiche est tirable maintenant »).
+- **1 à 3 commandes au total.** Chaque commande sur sa ligne, puis « — », puis une raison d'une ligne (« la fiche est tirable maintenant »). Le test compte ces « — ».
 - **Pas de bloc creux.** Une sous-commande en lecture seule ou sans suite naturelle (`list`, `help`) ne propose rien. On n'invente jamais une suite pour remplir le bloc.
 - **Où vivent les successions.** Chaque skill qui adopte la règle la déclare dans `applies:` et garde dans son `SKILL.md` une courte section « Et maintenant ? » : une table `quand | suite logique | pistes`. Il **ne ré-explique pas** le format : il renvoie ici. Le LLM rédige le bloc d'après la table. Aucun script, aucun menu généré.
 - **Les commandes citées existent.** Chaque commande de la table est un vrai skill, une vraie commande, un vrai agent ou un vrai script pnpm (le test `next-step-affordance.test.ts` le vérifie).

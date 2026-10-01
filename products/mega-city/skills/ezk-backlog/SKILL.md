@@ -73,7 +73,7 @@ La restitution se ferme par un bloc « Et maintenant ? » : 1 à 3 commandes, ch
 | après `groom <id>` | `/ezk-backlog ready <id>` — passer la porte « prête » quand les critères tiennent | aucune |
 | après `ready <id>` accepté | `/ezk-backlog next --ready-only` — la fiche est tirable maintenant | `/ezk-sprint run` — la développer tout de suite |
 | après `next --ready-only` | `/ezk-sprint run` — développer cette fiche | aucune |
-| après `ship <id>` | `/ezk-backlog reconcile` — aligner les statuts sur les PRs déjà fusionnées | `/ezk-backlog next --ready-only` — enchaîner sur la suivante |
+| après `ship <id>` | `/ezk-backlog next --ready-only` — enchaîner sur la fiche suivante | `/ezk-backlog reconcile` — si des PRs ont été fusionnées hors du flux (ex. depuis GitHub) |
 | `list`, `review`, `help` | aucun bloc | aucun |
 
 ## Préflight Skema (layout version) — à chaque commande
