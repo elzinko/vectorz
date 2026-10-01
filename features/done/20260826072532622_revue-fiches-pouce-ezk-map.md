@@ -7,8 +7,8 @@ product: mega-city
 version: V0.3
 epic:
 labels: [carte]
-status: idea
-pr:
+status: shipped
+pr: "#287"
 created: 2026-08-26
 ---
 
@@ -92,9 +92,9 @@ Les trois fiches fusionnées ici sont rangées dans `done/`. Voici ce qui tient 
 
 | Fiche absorbée | Dans ce lot | En « Suite » |
 |---|---|---|
-| [20260821163346496](done/20260821163346496_carte-unites-de-revue.md) — unité de revue | **Tranché** : un verdict porte sur un *sujet*. Aujourd'hui le sujet est la fiche. Pour la carte méthode, l'unité retenue est la **section compilée** (une source de données et un invariant chacune, ADR-0039), pas le lien : environ 40 décisions, trop fin pour être tenu. | Construire le verdict par section sur la carte. |
-| [20260821163346498](done/20260821163346498_carte-etat-de-revue-visible.md) — état « vérifié, quand » | Les trois états sont visibles, avec la **date**. L'état vit dans des fichiers : il survit à toute régénération. | L'état « en cours de revue ». La péremption quand la source change. |
-| [20260821163346501](done/20260821163346501_carte-corriger-un-lien-faux.md) — corriger un lien depuis la carte | **Déjà livré** : de la carte on atteint le fichier qui déclare (dossier, puis « Source »), et retirer la déclaration fait disparaître le lien (parité graphe et carte, testée). | Le *geste* depuis la carte. Il écrirait dans des `SKILL.md` ou des YAML : hors du garde-fou « un seul dossier ». Décision d'ADR à part. |
+| [20260821163346496](20260821163346496_carte-unites-de-revue.md) — unité de revue | **Tranché** : un verdict porte sur un *sujet*. Aujourd'hui le sujet est la fiche. Pour la carte méthode, l'unité retenue est la **section compilée** (une source de données et un invariant chacune, ADR-0039), pas le lien : environ 40 décisions, trop fin pour être tenu. | Construire le verdict par section sur la carte. |
+| [20260821163346498](20260821163346498_carte-etat-de-revue-visible.md) — état « vérifié, quand » | Les trois états sont visibles, avec la **date**. L'état vit dans des fichiers : il survit à toute régénération. | L'état « en cours de revue ». La péremption quand la source change. |
+| [20260821163346501](20260821163346501_carte-corriger-un-lien-faux.md) — corriger un lien depuis la carte | **Déjà livré** : de la carte on atteint le fichier qui déclare (dossier, puis « Source »), et retirer la déclaration fait disparaître le lien (parité graphe et carte, testée). | Le *geste* depuis la carte. Il écrirait dans des `SKILL.md` ou des YAML : hors du garde-fou « un seul dossier ». Décision d'ADR à part. |
 
 ## Suite (hors lot, après usage)
 

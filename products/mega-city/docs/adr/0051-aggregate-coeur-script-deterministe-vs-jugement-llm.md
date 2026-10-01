@@ -125,7 +125,7 @@ flowchart LR
 **Neutres**
 - `depends:` non parsé : le cœur ne l'utilise pas ; l'ajouter plus tard n'invalide pas cet ADR.
 
-## Suite — le geste d'application et le moteur `llm` (2026-10-01, fiche [`20260910231201744`](../../../../features/20260910231201744_aggregate-apply-merged-split-moteur-llm.md))
+## Suite — le geste d'application et le moteur `llm` (2026-10-01, fiche [`20260910231201744`](../../../../features/done/20260910231201744_aggregate-apply-merged-split-moteur-llm.md))
 
 La « gate dure » du §3 est levée : les statuts `merged` et `split` sont dans le schéma depuis la fiche
 [`20260823121712652`](../../../../features/done/20260823121712652_modele-statut-kanban-schema-valide.md).

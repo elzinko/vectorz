@@ -8,8 +8,8 @@ version: V0.3
 epic:
 labels: [recettes]
 depends: []
-status: idea
-pr:
+status: shipped
+pr: "#291"
 created: 2026-08-24
 ---
 

@@ -7,8 +7,8 @@ product: mega-city
 version: V0.3
 labels: [backlog]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#286"
 created: 2026-08-24
 ---
 
@@ -113,7 +113,7 @@ pnpm --dir products/mega-city backlog:version close V0.3    # refus : la liste d
   resté hors de la séquence tirable, une lane du board a été rendue à moitié. Leçon : l'intégration
   machine du niveau version doit **échouer franchement** sur l'ambigu. Le POC y répond par `format`,
   `plan-ecart`, `plan-absente` et `plan-ambigue`.
-- Absorbe [`20260912180313727`](done/20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md)
+- Absorbe [`20260912180313727`](20260912180313727_repenser-backlog-plan-vs-backlog-iterations.md)
   (tri du 2026-09-30). Ses critères encore utiles : « la version d'une fiche est visible dans le
   BACKLOG » (déjà vrai : colonne `Version` de `regen-backlog.sh`), « plus de convention qui dérive »
   (gardes `plan-*`), « historique par itération » (en Suite).

@@ -7,8 +7,8 @@ product: mega-city
 labels: [backlog]
 epic:
 version: V0.3
-status: idea
-pr:
+status: shipped
+pr: "#292"
 created: 2026-09-10
 ---
 
@@ -111,8 +111,8 @@ pnpm --dir products/mega-city fiches:check                                      
 ## Notes / décisions
 
 - Fiche de suivi ouverte le 2026-09-10 au ship du cœur « propose » (#223 ; option (a) du PO).
-- Design de référence : fiche parente [`20260812104022240`](done/20260812104022240_backlog-rationalisation-tags-script-llm.md)
-  et [ADR-0051](../products/mega-city/docs/adr/0051-aggregate-coeur-script-deterministe-vs-jugement-llm.md).
+- Design de référence : fiche parente [`20260812104022240`](20260812104022240_backlog-rationalisation-tags-script-llm.md)
+  et [ADR-0051](../../products/mega-city/docs/adr/0051-aggregate-coeur-script-deterministe-vs-jugement-llm.md).
 - **Groom du 2026-10-01** : la gate sur `20260823121712652` est levée (statuts `merged` / `split` dans
   le schéma depuis V0.1). Priorité P2 inchangée.
 - **Livré le 2026-10-01** : `src/backlog/aggregate-apply.ts` (plan pur, réutilise `planShip`),
