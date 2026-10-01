@@ -4,6 +4,8 @@
 - Date : 2026-08-26 (panel + ratification le 2026-08-26)
 - Décideur : **PO** (ratifié le 2026-08-26), sur la base du panel `ezk-architect` (architecte + reviewer adverse + dev)
 - Cadré par : fiche-chapeau P0 `20260826122532943`
+- Amendé par : [ADR-0058](0058-les-outils-entrent-dans-le-graphe.md) — D1 : un cinquième verbe,
+  `utilise` (skill → outil), et un 6ᵉ type de nœud, `tool`
 - Capture du panel : `docs/captures/2026-08-26-panel-ezk-architect-adr-0040.md`
 - Consomme : fiches `20260821204737357` (357), `0186`, `20260823121712652` (652),
   `20260826112620281` (281) ; benchmark `docs/benchmarks/2026-08-25-bmad-vs-ezk.md`
@@ -211,7 +213,8 @@ est écrite plus bas.
 - **Pourquoi `competences` dit « compose ».** Un agent est fait de ses compétences, comme un skill
   est fait des skills qu'il compose. C'est la même relation vue depuis un autre type de nœud.
 - **Le jeu est fermé.** Le test `graph-vocabulary` fige les 4 verbes et leurs couples source → cible.
-  Un cinquième verbe est une décision de conception, pas un ajout en passant.
+  Un cinquième verbe est une décision de conception, pas un ajout en passant. (Prise depuis :
+  l'[ADR-0058](0058-les-outils-entrent-dans-le-graphe.md) ajoute `utilise`, skill → outil.)
 - **Interroger.** `pnpm graph:query <verbe|lien> <id> [--inverse]`. « Qui applique cette règle ? »
   est `graph:query applique <règle> --inverse`. Une faute de frappe sur le verbe ou sur l'id est
   une erreur nommée, jamais un « aucune arête ».

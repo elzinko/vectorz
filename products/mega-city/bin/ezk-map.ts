@@ -57,6 +57,11 @@ const MIME: Record<string, string> = {
   // YAML, qu'un navigateur TÉLÉCHARGERAIT faute de type — on l'affiche en clair.
   '.yml': 'text/plain; charset=utf-8',
   '.yaml': 'text/plain; charset=utf-8',
+  // Même chose pour les OUTILS de la carte (ADR-0058) : leur « Source » est un script, qu'un
+  // navigateur téléchargerait (ou, pour `.mjs`, exécuterait) au lieu de l'afficher.
+  '.sh': 'text/plain; charset=utf-8',
+  '.ts': 'text/plain; charset=utf-8',
+  '.mjs': 'text/plain; charset=utf-8',
   '.woff2': 'font/woff2',
 };
 
@@ -195,8 +200,10 @@ const server = createServer((req, res) => {
       return;
     }
 
+    // Un fichier sans extension (le hook `commit-msg` d'un skill) est du texte : on l'affiche aussi.
+    const fallbackType = extname(target) === '' ? MIME['.md'] : 'application/octet-stream';
     res.writeHead(200, {
-      'Content-Type': MIME[extname(target).toLowerCase()] ?? 'application/octet-stream',
+      'Content-Type': MIME[extname(target).toLowerCase()] ?? fallbackType,
       'Cache-Control': 'no-store', // on itère sur la carte : jamais de version périmée
     });
     createReadStream(target).pipe(res);

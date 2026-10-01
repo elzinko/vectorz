@@ -88,7 +88,8 @@ body{
 .theme-btn:focus-visible{outline:2px solid var(--accent)}
 
 /* ── sections ───────────────────────────────────────── */
-.section{margin-top:44px}
+.section{margin-top:44px; scroll-margin-top:84px} /* un lien #ancre ne se cache pas sous la barre fixe */
+@media (max-width:700px){ .section{scroll-margin-top:190px} } /* la barre fixe passe sur trois lignes */
 .eyebrow{
   font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.2em;
   text-transform:uppercase; color:var(--ink-faint);
@@ -145,6 +146,11 @@ body{
 .c-cmd{border-left-color:var(--cmd)} .c-cap{border-left-color:var(--cap)}
 .c-flow{border-left-color:var(--flow)} .c-law{border-left-color:var(--law)}
 .c-pro{border-left-color:var(--pro)} .c-warn{border-left-color:var(--warn)}
+/* Les outils (fiche 20260917123943914) : groupés par ce qui les justifie, repliés sauf les cités. */
+.outils-groupe{margin:0 0 16px}
+.outils-groupe > summary{cursor:pointer; font-weight:600; margin:0 0 10px; color:var(--ink)}
+.outils-groupe > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.card .meta .chip{cursor:pointer}
 
 .chip{
   display:inline-flex; align-items:center; gap:5px;
@@ -398,10 +404,17 @@ body{
     <div class="grid" id="profiles"></div>
   </div>
 
+  <div class="section" id="outils-section">
+    <div class="eyebrow">Les outils — ce que les commandes lancent</div>
+    <h2>Les scripts de la méthode, reliés aux commandes qui les citent</h2>
+    <p class="lead">Un <b>outil</b> est un script de <code>bin/</code> ou du dossier <code>scripts/</code> d'un skill. Le lien est <b>calculé</b> : une commande « utilise » un outil quand sa doc en cite le chemin (ADR-0058). Un outil que ni une commande, ni le manifeste <code>ezk</code> ne justifie est <b>orphelin</b> : il est rangé dans « le bruit restant », plus bas. Cliquez un outil pour son dossier.</p>
+    <div id="outils"></div>
+  </div>
+
   <div class="section">
     <div class="eyebrow">Ce que le graphe révèle</div>
     <h2>Le bruit restant, rendu visible</h2>
-    <p class="lead">Depuis ADR-0039, chaque brique a un étage — le « sans bande » a disparu par construction. Reste l'autre signal : des briques que <b>rien ne cite</b> (orphelines). Chaque entrée est une décision à prendre — brancher, ou retirer.</p>
+    <p class="lead">Depuis ADR-0039, chaque brique a un étage — le « sans bande » a disparu par construction. Reste l'autre signal : des briques que <b>rien ne cite</b> (orphelines), dont les outils que personne ne lance. Chaque entrée est une décision à prendre — brancher, ou retirer.</p>
     <div class="grid" id="noise"></div>
   </div>
 
@@ -456,16 +469,17 @@ window.EZK = {
   "agents": 8,
   "skills": 25,
   "bundles": 10,
-  "profiles": 6
+  "profiles": 6,
+  "tools": 71
  },
  "liens": {
-  "total": 222,
+  "total": 261,
   "casses": 0
  },
  "provenance": {
   "prouve": {
-   "briques": 125,
-   "liens": 222,
+   "briques": 196,
+   "liens": 261,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -484,7 +498,8 @@ window.EZK = {
    "agent": 8,
    "skill": 25,
    "bundle": 10,
-   "profile": 6
+   "profile": 6,
+   "tool": 71
   },
   "arrows": [
    {
@@ -558,6 +573,12 @@ window.EZK = {
     "verb": "convoque",
     "to": "agent",
     "count": 6
+   },
+   {
+    "from": "skill",
+    "verb": "utilise",
+    "to": "tool",
+    "count": 39
    }
   ],
   "bind": {
@@ -669,6 +690,22 @@ window.EZK = {
   {
    "kind": "profile",
    "id": "mobile"
+  },
+  {
+   "kind": "tool",
+   "id": "bin/build-mcpb.sh"
+  },
+  {
+   "kind": "tool",
+   "id": "bin/fiche-rows.ts"
+  },
+  {
+   "kind": "tool",
+   "id": "bin/recipe-frontmatter.ts"
+  },
+  {
+   "kind": "tool",
+   "id": "bin/supervision-demo-run.ts"
   }
  ],
  "method": {
@@ -999,6 +1036,9 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-apk/scripts/build-preview-apk.sh"
+   ],
    "profiles": [
     "global"
    ]
@@ -1014,6 +1054,10 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-archive/scripts/check.sh",
+    "skills/ezk-archive/scripts/handoff.sh"
+   ],
    "profiles": [
     "base",
     "daily",
@@ -1033,6 +1077,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": [
     "global"
    ]
@@ -1060,6 +1105,19 @@ window.EZK = {
     "ezk-sprint",
     "vz-product-builder"
    ],
+   "tools": [
+    "bin/check-links.sh",
+    "bin/check-planning-views.ts",
+    "bin/portfolio.sh",
+    "bin/regen-backlog.sh",
+    "skills/ezk-backlog/scripts/apply-002-readme-vs-backlog.sh",
+    "skills/ezk-backlog/scripts/apply-003-statuts-colonnes.sh",
+    "skills/ezk-backlog/scripts/apply-005-retrait-champ-ready.sh",
+    "skills/ezk-backlog/scripts/check-layout-version.sh",
+    "skills/ezk-backlog/scripts/mint-id.sh",
+    "skills/ezk-backlog/scripts/regen-backlog.sh",
+    "skills/ezk-backlog/scripts/resolve-regen-backlog.sh"
+   ],
    "profiles": [
     "cop1-target",
     "daily",
@@ -1082,6 +1140,7 @@ window.EZK = {
    ],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": [
     "global"
    ]
@@ -1097,6 +1156,12 @@ window.EZK = {
    "roles": [],
    "composedBy": [
     "ezk-retro"
+   ],
+   "tools": [
+    "bin/ezk-chef-extract.sh",
+    "bin/ezk-chef-suggest.ts",
+    "bin/regen-recipes.sh",
+    "skills/ezk-backlog/scripts/mint-id.sh"
    ],
    "profiles": [
     "global"
@@ -1114,6 +1179,9 @@ window.EZK = {
    "roles": [],
    "composedBy": [
     "ezk-sprint"
+   ],
+   "tools": [
+    "bin/ezk-ci-harden.ts"
    ],
    "profiles": [
     "cop1-target",
@@ -1134,6 +1202,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": [
     "global"
    ]
@@ -1155,6 +1224,7 @@ window.EZK = {
     "ezk-pr",
     "ezk-sprint"
    ],
+   "tools": [],
    "profiles": [
     "cop1-target",
     "daily",
@@ -1173,6 +1243,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": [
     "cop1-target",
     "daily",
@@ -1190,6 +1261,13 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-device/scripts/check-setup.sh",
+    "skills/ezk-device/scripts/connect.sh",
+    "skills/ezk-device/scripts/deploy-and-launch.sh",
+    "skills/ezk-device/scripts/enable-tcpip.sh",
+    "skills/ezk-device/scripts/install-tools.sh"
+   ],
    "profiles": [
     "global"
    ]
@@ -1208,6 +1286,10 @@ window.EZK = {
    "roles": [],
    "composedBy": [
     "ezk-article"
+   ],
+   "tools": [
+    "skills/ezk-diagram/scripts/publish.sh",
+    "skills/ezk-diagram/scripts/render.sh"
    ],
    "profiles": [
     "cop1-target",
@@ -1229,6 +1311,7 @@ window.EZK = {
    "composedBy": [
     "ezk-scout"
    ],
+   "tools": [],
    "profiles": [
     "daily",
     "global"
@@ -1248,6 +1331,10 @@ window.EZK = {
     "ezk-steward"
    ],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-ezk/scripts/catalog-sync.mjs",
+    "skills/ezk-ezk/scripts/deploy.sh"
+   ],
    "profiles": [
     "daily",
     "desktop",
@@ -1265,6 +1352,9 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-npm-scripts/scripts/audit.mjs"
+   ],
    "profiles": [
     "cop1-target",
     "daily",
@@ -1287,6 +1377,12 @@ window.EZK = {
    "composedBy": [
     "ezk-product-build"
    ],
+   "tools": [
+    "skills/ezk-archive/scripts/check.sh",
+    "skills/ezk-pr/scripts/check-pr-body.sh",
+    "skills/ezk-pr/scripts/refresh-worktrees.sh",
+    "skills/ezk-pr/scripts/ship-merge.sh"
+   ],
    "profiles": [
     "global"
    ]
@@ -1302,6 +1398,9 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-preview/scripts/start-demo.sh"
+   ],
    "profiles": [
     "cop1-target",
     "global"
@@ -1330,6 +1429,7 @@ window.EZK = {
    "composedBy": [
     "vz-product-builder"
    ],
+   "tools": [],
    "profiles": [
     "daily",
     "desktop",
@@ -1349,6 +1449,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": [
     "daily",
     "global"
@@ -1370,6 +1471,7 @@ window.EZK = {
    "composedBy": [
     "ezk-product-build"
    ],
+   "tools": [],
    "profiles": [
     "daily",
     "global"
@@ -1389,6 +1491,10 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "skills/ezk-scout/scripts/check-report.sh",
+    "skills/ezk-scout/scripts/find-only-guard.sh"
+   ],
    "profiles": [
     "global"
    ]
@@ -1416,6 +1522,10 @@ window.EZK = {
     "ezk-product-build",
     "vz-product-builder"
    ],
+   "tools": [
+    "bin/pr-evidence.sh",
+    "skills/ezk-sprint/scripts/check.sh"
+   ],
    "profiles": [
     "daily",
     "global"
@@ -1432,6 +1542,7 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": []
   },
   "supervision-demo": {
@@ -1445,6 +1556,9 @@ window.EZK = {
    "composesExternal": [],
    "roles": [],
    "composedBy": [],
+   "tools": [
+    "bin/supervision-mcp.ts"
+   ],
    "profiles": []
   },
   "vz-product-builder": {
@@ -1464,6 +1578,7 @@ window.EZK = {
    ],
    "roles": [],
    "composedBy": [],
+   "tools": [],
    "profiles": []
   }
  },
@@ -2897,6 +3012,584 @@ window.EZK = {
    ],
    "interactions": []
   }
+ },
+ "tools": {
+  "bin/avancement.ts": {
+   "id": "bin/avancement.ts",
+   "source": "products/mega-city/bin/avancement.ts",
+   "commands": [
+    "ezk board show"
+   ],
+   "usedBy": []
+  },
+  "bin/backlog-aggregate.ts": {
+   "id": "bin/backlog-aggregate.ts",
+   "source": "products/mega-city/bin/backlog-aggregate.ts",
+   "commands": [
+    "ezk backlog aggregate"
+   ],
+   "usedBy": []
+  },
+  "bin/build-mcpb.sh": {
+   "id": "bin/build-mcpb.sh",
+   "source": "products/mega-city/bin/build-mcpb.sh",
+   "commands": [],
+   "usedBy": []
+  },
+  "bin/check-adr-ids.sh": {
+   "id": "bin/check-adr-ids.sh",
+   "source": "products/mega-city/bin/check-adr-ids.sh",
+   "commands": [
+    "ezk docs check-adr-ids"
+   ],
+   "usedBy": []
+  },
+  "bin/check-fiches.ts": {
+   "id": "bin/check-fiches.ts",
+   "source": "products/mega-city/bin/check-fiches.ts",
+   "commands": [
+    "ezk backlog check"
+   ],
+   "usedBy": []
+  },
+  "bin/check-links.sh": {
+   "id": "bin/check-links.sh",
+   "source": "products/mega-city/bin/check-links.sh",
+   "commands": [
+    "ezk docs check-links"
+   ],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "bin/check-planning-views.ts": {
+   "id": "bin/check-planning-views.ts",
+   "source": "products/mega-city/bin/check-planning-views.ts",
+   "commands": [
+    "ezk board check"
+   ],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "bin/ci-conso.ts": {
+   "id": "bin/ci-conso.ts",
+   "source": "products/mega-city/bin/ci-conso.ts",
+   "commands": [
+    "ezk ci conso"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk-chef-extract.sh": {
+   "id": "bin/ezk-chef-extract.sh",
+   "source": "products/mega-city/bin/ezk-chef-extract.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-chef"
+   ]
+  },
+  "bin/ezk-chef-suggest.ts": {
+   "id": "bin/ezk-chef-suggest.ts",
+   "source": "products/mega-city/bin/ezk-chef-suggest.ts",
+   "commands": [],
+   "usedBy": [
+    "ezk-chef"
+   ]
+  },
+  "bin/ezk-ci-harden.ts": {
+   "id": "bin/ezk-ci-harden.ts",
+   "source": "products/mega-city/bin/ezk-ci-harden.ts",
+   "commands": [],
+   "usedBy": [
+    "ezk-ci"
+   ]
+  },
+  "bin/ezk-config.ts": {
+   "id": "bin/ezk-config.ts",
+   "source": "products/mega-city/bin/ezk-config.ts",
+   "commands": [
+    "ezk config"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk-graph.ts": {
+   "id": "bin/ezk-graph.ts",
+   "source": "products/mega-city/bin/ezk-graph.ts",
+   "commands": [
+    "ezk graph check"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk-help.ts": {
+   "id": "bin/ezk-help.ts",
+   "source": "products/mega-city/bin/ezk-help.ts",
+   "commands": [],
+   "internal": "bibliothèque de « ezk help » (liste des skills de chat) ; l'ancien « pnpm ezk:help » marche toujours",
+   "usedBy": []
+  },
+  "bin/ezk-map.ts": {
+   "id": "bin/ezk-map.ts",
+   "source": "products/mega-city/bin/ezk-map.ts",
+   "commands": [
+    "ezk dashboard"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk-sessions.ts": {
+   "id": "bin/ezk-sessions.ts",
+   "source": "products/mega-city/bin/ezk-sessions.ts",
+   "commands": [
+    "ezk sessions"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk.mjs": {
+   "id": "bin/ezk.mjs",
+   "source": "products/mega-city/bin/ezk.mjs",
+   "commands": [
+    "ezk"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk.ts": {
+   "id": "bin/ezk.ts",
+   "source": "products/mega-city/bin/ezk.ts",
+   "commands": [],
+   "internal": "le routeur lui-même (script pnpm « ezk »)",
+   "usedBy": []
+  },
+  "bin/fiche-rows.ts": {
+   "id": "bin/fiche-rows.ts",
+   "source": "products/mega-city/bin/fiche-rows.ts",
+   "commands": [],
+   "usedBy": []
+  },
+  "bin/graph-compile.ts": {
+   "id": "bin/graph-compile.ts",
+   "source": "products/mega-city/bin/graph-compile.ts",
+   "commands": [
+    "ezk graph compile"
+   ],
+   "usedBy": []
+  },
+  "bin/graph-query.ts": {
+   "id": "bin/graph-query.ts",
+   "source": "products/mega-city/bin/graph-query.ts",
+   "commands": [
+    "ezk graph query"
+   ],
+   "usedBy": []
+  },
+  "bin/lawgiver.ts": {
+   "id": "bin/lawgiver.ts",
+   "source": "products/mega-city/bin/lawgiver.ts",
+   "commands": [
+    "ezk law bind",
+    "ezk law bind-global",
+    "ezk law capture",
+    "ezk law doctor",
+    "ezk law status"
+   ],
+   "usedBy": []
+  },
+  "bin/plan-head.ts": {
+   "id": "bin/plan-head.ts",
+   "source": "products/mega-city/bin/plan-head.ts",
+   "commands": [
+    "ezk backlog plan-head"
+   ],
+   "usedBy": []
+  },
+  "bin/plan-order.ts": {
+   "id": "bin/plan-order.ts",
+   "source": "products/mega-city/bin/plan-order.ts",
+   "commands": [
+    "ezk backlog plan-order"
+   ],
+   "usedBy": []
+  },
+  "bin/portfolio.sh": {
+   "id": "bin/portfolio.sh",
+   "source": "products/mega-city/bin/portfolio.sh",
+   "commands": [
+    "ezk backlog portfolio"
+   ],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "bin/pr-emit-local.ts": {
+   "id": "bin/pr-emit-local.ts",
+   "source": "products/mega-city/bin/pr-emit-local.ts",
+   "commands": [
+    "ezk pr emit-local"
+   ],
+   "usedBy": []
+  },
+  "bin/pr-evidence.sh": {
+   "id": "bin/pr-evidence.sh",
+   "source": "products/mega-city/bin/pr-evidence.sh",
+   "commands": [
+    "ezk evidence"
+   ],
+   "usedBy": [
+    "ezk-sprint"
+   ]
+  },
+  "bin/recipe-frontmatter.ts": {
+   "id": "bin/recipe-frontmatter.ts",
+   "source": "products/mega-city/bin/recipe-frontmatter.ts",
+   "commands": [],
+   "usedBy": []
+  },
+  "bin/regen-backlog.sh": {
+   "id": "bin/regen-backlog.sh",
+   "source": "products/mega-city/bin/regen-backlog.sh",
+   "commands": [
+    "ezk backlog regen"
+   ],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "bin/regen-composes-graph.ts": {
+   "id": "bin/regen-composes-graph.ts",
+   "source": "products/mega-city/bin/regen-composes-graph.ts",
+   "commands": [
+    "ezk graph composes"
+   ],
+   "usedBy": []
+  },
+  "bin/regen-map-data.ts": {
+   "id": "bin/regen-map-data.ts",
+   "source": "products/mega-city/bin/regen-map-data.ts",
+   "commands": [
+    "ezk views map-data"
+   ],
+   "usedBy": []
+  },
+  "bin/regen-recipes.sh": {
+   "id": "bin/regen-recipes.sh",
+   "source": "products/mega-city/bin/regen-recipes.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-chef"
+   ]
+  },
+  "bin/review-emit.ts": {
+   "id": "bin/review-emit.ts",
+   "source": "products/mega-city/bin/review-emit.ts",
+   "commands": [
+    "ezk review emit"
+   ],
+   "usedBy": []
+  },
+  "bin/ship-fiche.ts": {
+   "id": "bin/ship-fiche.ts",
+   "source": "products/mega-city/bin/ship-fiche.ts",
+   "commands": [
+    "ezk backlog ship"
+   ],
+   "usedBy": []
+  },
+  "bin/sprint-report.ts": {
+   "id": "bin/sprint-report.ts",
+   "source": "products/mega-city/bin/sprint-report.ts",
+   "commands": [
+    "ezk sprint report"
+   ],
+   "usedBy": []
+  },
+  "bin/supervision-abandon.ts": {
+   "id": "bin/supervision-abandon.ts",
+   "source": "products/mega-city/bin/supervision-abandon.ts",
+   "commands": [
+    "ezk supervision abandon"
+   ],
+   "usedBy": []
+  },
+  "bin/supervision-analyze.ts": {
+   "id": "bin/supervision-analyze.ts",
+   "source": "products/mega-city/bin/supervision-analyze.ts",
+   "commands": [
+    "ezk supervision analyze"
+   ],
+   "usedBy": []
+  },
+  "bin/supervision-demo-run.ts": {
+   "id": "bin/supervision-demo-run.ts",
+   "source": "products/mega-city/bin/supervision-demo-run.ts",
+   "commands": [],
+   "usedBy": []
+  },
+  "bin/supervision-doctor.ts": {
+   "id": "bin/supervision-doctor.ts",
+   "source": "products/mega-city/bin/supervision-doctor.ts",
+   "commands": [
+    "ezk supervision doctor"
+   ],
+   "usedBy": []
+  },
+  "bin/supervision-link.ts": {
+   "id": "bin/supervision-link.ts",
+   "source": "products/mega-city/bin/supervision-link.ts",
+   "commands": [
+    "ezk supervision link"
+   ],
+   "usedBy": []
+  },
+  "bin/supervision-mcp.ts": {
+   "id": "bin/supervision-mcp.ts",
+   "source": "products/mega-city/bin/supervision-mcp.ts",
+   "commands": [],
+   "usedBy": [
+    "supervision-demo"
+   ]
+  },
+  "bin/supervision-probe.ts": {
+   "id": "bin/supervision-probe.ts",
+   "source": "products/mega-city/bin/supervision-probe.ts",
+   "commands": [
+    "ezk supervision probe"
+   ],
+   "usedBy": []
+  },
+  "bin/supervision-registry-add.ts": {
+   "id": "bin/supervision-registry-add.ts",
+   "source": "products/mega-city/bin/supervision-registry-add.ts",
+   "commands": [
+    "ezk supervision registry-add"
+   ],
+   "usedBy": []
+  },
+  "bin/views-regen.ts": {
+   "id": "bin/views-regen.ts",
+   "source": "products/mega-city/bin/views-regen.ts",
+   "commands": [
+    "ezk views regen"
+   ],
+   "usedBy": []
+  },
+  "skills/ezk-apk/scripts/build-preview-apk.sh": {
+   "id": "skills/ezk-apk/scripts/build-preview-apk.sh",
+   "source": "products/mega-city/skills/ezk-apk/scripts/build-preview-apk.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-apk"
+   ]
+  },
+  "skills/ezk-archive/scripts/check.sh": {
+   "id": "skills/ezk-archive/scripts/check.sh",
+   "source": "products/mega-city/skills/ezk-archive/scripts/check.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-archive",
+    "ezk-pr"
+   ]
+  },
+  "skills/ezk-archive/scripts/handoff.sh": {
+   "id": "skills/ezk-archive/scripts/handoff.sh",
+   "source": "products/mega-city/skills/ezk-archive/scripts/handoff.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-archive"
+   ]
+  },
+  "skills/ezk-backlog/scripts/apply-002-readme-vs-backlog.sh": {
+   "id": "skills/ezk-backlog/scripts/apply-002-readme-vs-backlog.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/apply-002-readme-vs-backlog.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "skills/ezk-backlog/scripts/apply-003-statuts-colonnes.sh": {
+   "id": "skills/ezk-backlog/scripts/apply-003-statuts-colonnes.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/apply-003-statuts-colonnes.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "skills/ezk-backlog/scripts/apply-005-retrait-champ-ready.sh": {
+   "id": "skills/ezk-backlog/scripts/apply-005-retrait-champ-ready.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/apply-005-retrait-champ-ready.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "skills/ezk-backlog/scripts/check-layout-version.sh": {
+   "id": "skills/ezk-backlog/scripts/check-layout-version.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/check-layout-version.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "skills/ezk-backlog/scripts/mint-id.sh": {
+   "id": "skills/ezk-backlog/scripts/mint-id.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/mint-id.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog",
+    "ezk-chef"
+   ]
+  },
+  "skills/ezk-backlog/scripts/regen-backlog.sh": {
+   "id": "skills/ezk-backlog/scripts/regen-backlog.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/regen-backlog.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "skills/ezk-backlog/scripts/resolve-regen-backlog.sh": {
+   "id": "skills/ezk-backlog/scripts/resolve-regen-backlog.sh",
+   "source": "products/mega-city/skills/ezk-backlog/scripts/resolve-regen-backlog.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-backlog"
+   ]
+  },
+  "skills/ezk-device/scripts/check-setup.sh": {
+   "id": "skills/ezk-device/scripts/check-setup.sh",
+   "source": "products/mega-city/skills/ezk-device/scripts/check-setup.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-device"
+   ]
+  },
+  "skills/ezk-device/scripts/connect.sh": {
+   "id": "skills/ezk-device/scripts/connect.sh",
+   "source": "products/mega-city/skills/ezk-device/scripts/connect.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-device"
+   ]
+  },
+  "skills/ezk-device/scripts/deploy-and-launch.sh": {
+   "id": "skills/ezk-device/scripts/deploy-and-launch.sh",
+   "source": "products/mega-city/skills/ezk-device/scripts/deploy-and-launch.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-device"
+   ]
+  },
+  "skills/ezk-device/scripts/enable-tcpip.sh": {
+   "id": "skills/ezk-device/scripts/enable-tcpip.sh",
+   "source": "products/mega-city/skills/ezk-device/scripts/enable-tcpip.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-device"
+   ]
+  },
+  "skills/ezk-device/scripts/install-tools.sh": {
+   "id": "skills/ezk-device/scripts/install-tools.sh",
+   "source": "products/mega-city/skills/ezk-device/scripts/install-tools.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-device"
+   ]
+  },
+  "skills/ezk-diagram/scripts/publish.sh": {
+   "id": "skills/ezk-diagram/scripts/publish.sh",
+   "source": "products/mega-city/skills/ezk-diagram/scripts/publish.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-diagram"
+   ]
+  },
+  "skills/ezk-diagram/scripts/render.sh": {
+   "id": "skills/ezk-diagram/scripts/render.sh",
+   "source": "products/mega-city/skills/ezk-diagram/scripts/render.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-diagram"
+   ]
+  },
+  "skills/ezk-ezk/scripts/catalog-sync.mjs": {
+   "id": "skills/ezk-ezk/scripts/catalog-sync.mjs",
+   "source": "products/mega-city/skills/ezk-ezk/scripts/catalog-sync.mjs",
+   "commands": [],
+   "usedBy": [
+    "ezk-ezk"
+   ]
+  },
+  "skills/ezk-ezk/scripts/deploy.sh": {
+   "id": "skills/ezk-ezk/scripts/deploy.sh",
+   "source": "products/mega-city/skills/ezk-ezk/scripts/deploy.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-ezk"
+   ]
+  },
+  "skills/ezk-npm-scripts/scripts/audit.mjs": {
+   "id": "skills/ezk-npm-scripts/scripts/audit.mjs",
+   "source": "products/mega-city/skills/ezk-npm-scripts/scripts/audit.mjs",
+   "commands": [],
+   "usedBy": [
+    "ezk-npm-scripts"
+   ]
+  },
+  "skills/ezk-pr/scripts/check-pr-body.sh": {
+   "id": "skills/ezk-pr/scripts/check-pr-body.sh",
+   "source": "products/mega-city/skills/ezk-pr/scripts/check-pr-body.sh",
+   "commands": [
+    "ezk pr check-body"
+   ],
+   "usedBy": [
+    "ezk-pr"
+   ]
+  },
+  "skills/ezk-pr/scripts/refresh-worktrees.sh": {
+   "id": "skills/ezk-pr/scripts/refresh-worktrees.sh",
+   "source": "products/mega-city/skills/ezk-pr/scripts/refresh-worktrees.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-pr"
+   ]
+  },
+  "skills/ezk-pr/scripts/ship-merge.sh": {
+   "id": "skills/ezk-pr/scripts/ship-merge.sh",
+   "source": "products/mega-city/skills/ezk-pr/scripts/ship-merge.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-pr"
+   ]
+  },
+  "skills/ezk-preview/scripts/start-demo.sh": {
+   "id": "skills/ezk-preview/scripts/start-demo.sh",
+   "source": "products/mega-city/skills/ezk-preview/scripts/start-demo.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-preview"
+   ]
+  },
+  "skills/ezk-scout/scripts/check-report.sh": {
+   "id": "skills/ezk-scout/scripts/check-report.sh",
+   "source": "products/mega-city/skills/ezk-scout/scripts/check-report.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-scout"
+   ]
+  },
+  "skills/ezk-scout/scripts/find-only-guard.sh": {
+   "id": "skills/ezk-scout/scripts/find-only-guard.sh",
+   "source": "products/mega-city/skills/ezk-scout/scripts/find-only-guard.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-scout"
+   ]
+  },
+  "skills/ezk-sprint/scripts/check.sh": {
+   "id": "skills/ezk-sprint/scripts/check.sh",
+   "source": "products/mega-city/skills/ezk-sprint/scripts/check.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-sprint"
+   ]
+  }
  }
 };
 /*ezk-map-data:end*/
@@ -2927,6 +3620,7 @@ window.EZK = {
     rule:   {label:'règle', color:'var(--law)', cls:'c-law'},
     bundle: {label:'bundle de règles', color:'var(--law)', cls:'c-law'},
     profile:{label:'profil', color:'var(--pro)', cls:'c-pro'},
+    tool:   {label:'outil', color:'var(--asm)', cls:''},
   };
   const BAND_CLS = {ceremonies:'c-cmd', artefacts:'c-flow', outillage:'c-asm', 'hors-bande':'c-warn'};
 
@@ -2939,7 +3633,7 @@ window.EZK = {
   const pct = Math.floor(100 * nProuve / (nProuve + nDeduit));
   $('proof-text').textContent =
     D.liens.total + ' liens · ' + (D.liens.casses ? D.liens.casses + ' cassé(s) ⚠' : '0 cassé') +
-    ' · ' + D.counts.rules + ' règles · ' + D.counts.skills + ' commandes';
+    ' · ' + D.counts.rules + ' règles · ' + D.counts.skills + ' commandes · ' + D.counts.tools + ' outils';
   $('proof-ratio').textContent = pct + ' % prouvé' + (nDeduit ? ' · ' + nDeduit + ' déduits (pointillés)' : '');
   $('proof').title = 'Prouvé (' + nProuve + ') : lu dans un fichier du dépôt, vérifié à la régénération. ' +
     'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier du catalogue ne le déclare (pointillés). ' +
@@ -2960,7 +3654,8 @@ window.EZK = {
   /* ── légende ── */
   $('legend').innerHTML = [
     ['var(--cmd)','Commandes (skills)'], ['var(--cap)','Juges (agents)'],
-    ['var(--law)','La loi (règles & bundles)'], ['var(--pro)','Profils'], ['var(--warn)','Bruit à trancher'],
+    ['var(--law)','La loi (règles & bundles)'], ['var(--pro)','Profils'], ['var(--asm)','Outils (scripts)'],
+    ['var(--warn)','Bruit à trancher'],
   ].map(([c,l]) => '<span class="key"><span class="sw" style="background:'+c+'"></span>'+l+'</span>').join('') +
     '<span class="key"><span class="sw dashed"></span>Pointillé = lecture d’auteur (aucun fichier du catalogue ne le déclare)</span>';
 
@@ -2979,7 +3674,7 @@ window.EZK = {
       '" target="_blank" rel="noopener" title="ouvrir le fichier">'+esc(path)+' ↗</a></div>'
     : '<div class="d-src inferred"><span class="tag">déduit</span>aucun fichier ne déclare cet élément</div>';
 
-  const STORES = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles};
+  const STORES = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles, tool:D.tools};
   /* Une puce cite une brique du catalogue. Id inconnu (écrit à la main dans la page) : jamais en
      silence — la puce s'affiche en pointillé, marquée « ? », non cliquable. */
   const chip = (kind, id, extra) => {
@@ -3019,11 +3714,11 @@ window.EZK = {
      un bundle CONTIENT des règles. Chaque flèche porte le verbe du graphe et le nombre de liens
      qui la portent. Le bind est hors graphe (du code) : dessiné en pointillé, compté « déduit ». ── */
   const A = D.assemblage;
-  const NODE_LABEL = {profile:'Profil', bundle:'Bundle', rule:'Règle', agent:'Juge', skill:'Commande'};
+  const NODE_LABEL = {profile:'Profil', bundle:'Bundle', rule:'Règle', agent:'Juge', skill:'Commande', tool:'Outil'};
   const NODE_HINT = {profile:'le bon de commande d’une cible', bundle:'un classeur de règles',
-    rule:'une consigne de travail', agent:'un rôle (agent)', skill:'une commande (skill)'};
-  const NODE_COLOR = {profile:'var(--pro)', bundle:'var(--law)', rule:'var(--law)', agent:'var(--cap)', skill:'var(--cmd)'};
-  const VERB_LABEL = {compose:'compose', convoque:'convoque', applique:'applique', 'est-verifie-par':'est vérifiée par'};
+    rule:'une consigne de travail', agent:'un rôle (agent)', skill:'une commande (skill)', tool:'un script de la méthode'};
+  const NODE_COLOR = {profile:'var(--pro)', bundle:'var(--law)', rule:'var(--law)', agent:'var(--cap)', skill:'var(--cmd)', tool:'var(--asm)'};
+  const VERB_LABEL = {compose:'compose', convoque:'convoque', applique:'applique', 'est-verifie-par':'est vérifiée par', utilise:'utilise'};
   const arrowN = (from, verb, to) =>
     (A.arrows.find((a) => a.from === from && a.verb === verb && a.to === to) || {count:0}).count;
   const asmNode = (kind, extra) =>
@@ -3177,6 +3872,36 @@ window.EZK = {
       (b.profiles.length?' · cité par '+esc(b.profiles.join(', ')):' · cité par aucun profil')+'</div>'+rows+'</div>';
   }).join('');
 
+  /* ── LES OUTILS (ADR-0058) : les scripts de bin/ et des scripts/ de skills, reliés aux commandes qui
+     les citent. Tout est compilé (src/core/tools.ts) : rien n'est écrit à la main ici. Un outil est
+     justifié par une commande qui le cite, une commande `ezk …` ou une raison « internal » du
+     manifeste ; sans rien de cela il est orphelin — rangé dans « le bruit restant », jamais masqué. ── */
+  const toolIds = Object.keys(D.tools);
+  const toolOrphan = (t) => !t.usedBy.length && !t.commands.length && t.internal === undefined;
+  const toolCard = (id) => {
+    const t = D.tools[id];
+    const cut = id.lastIndexOf('/');
+    const meta = t.usedBy.map((s) => chip('skill', s))
+      .concat(t.commands.map((c) => '<span class="tag">'+esc(c)+'</span>'));
+    if(t.internal !== undefined) meta.push('<span class="tag">interne</span>');
+    return '<div class="card" tabindex="0" data-open="tool:'+esc(id)+'" data-search="'+esc(id.toLowerCase())+'">'+
+      '<h3>'+esc(id.slice(cut + 1))+'</h3><p>'+esc(id.slice(0, cut + 1))+'</p>'+
+      (meta.length ? '<div class="meta">'+meta.join('')+'</div>' : '')+'</div>';
+  };
+  const toolGroups = [
+    ['Cités par une commande', toolIds.filter((id) => D.tools[id].usedBy.length), true],
+    ['Lancés à la main, par une commande ezk', toolIds.filter((id) => !D.tools[id].usedBy.length && D.tools[id].commands.length), false],
+    ['Internes, déclarés dans le manifeste ezk', toolIds.filter((id) => { const t = D.tools[id]; return !t.usedBy.length && !t.commands.length && t.internal !== undefined; }), false],
+  ];
+  const nToolOrphans = toolIds.filter((id) => toolOrphan(D.tools[id])).length;
+  $('outils').innerHTML = toolGroups.filter((g) => g[1].length).map((g) =>
+    '<details class="outils-groupe"'+(g[2] ? ' open' : '')+'><summary>'+g[0]+' · '+g[1].length+'</summary>'+
+    '<div class="grid">'+g[1].map(toolCard).join('')+'</div></details>'
+  ).join('') + (nToolOrphans
+    ? '<p class="d-note">⚠ '+nToolOrphans+' outil(s) orphelin(s) : aucune commande ne les cite et le manifeste ezk ne les justifie pas. Ils sont dans « le bruit restant », plus bas.</p>'
+    : '');
+  if(!toolIds.length) $('outils-section').hidden = true;
+
   /* ── le bruit — DÉDOUBLONNÉ : un même id hors-bande ET orphelin = UNE carte, plusieurs raisons ── */
   const noiseMap = new Map();
   const addNoise = (kind, id, reason) => {
@@ -3190,7 +3915,9 @@ window.EZK = {
   for(const o of D.orphans.filter((o) => o.kind !== 'profile'))
     addNoise(o.kind, o.id, o.kind === 'bundle'
       ? 'bundle que AUCUN profil ne cite'
-      : 'orpheline — rien ne la cite');
+      : o.kind === 'tool'
+        ? 'aucune commande ne le cite, aucune commande ezk ne le lance, aucune raison « internal »'
+        : 'orpheline — rien ne la cite');
   $('noise').innerHTML = [...noiseMap.values()].map((e) =>
     '<div class="card c-warn" tabindex="0" data-open="'+esc(e.kind)+':'+esc(e.id)+'" data-search="'+esc(e.id.toLowerCase())+'">'+
     '<h3>'+esc(e.id)+'</h3><p>'+esc(KIND[e.kind]?KIND[e.kind].label:e.kind)+' — '+esc(e.reasons.join(' · '))+'.</p></div>'
@@ -3233,6 +3960,7 @@ window.EZK = {
       h += sec('Compose → (commandes utilisées)', s.composes.map((x) => chip('skill',x)));
       if(s.composesExternal.length) h += sec('Compose (hors catalogue)', s.composesExternal.map((x) => '<span class="chip" style="cursor:default">'+esc(x)+'</span>'));
       h += sec('Convoque → (juges)', s.roles.map((x) => chip('agent',x)));
+      h += sec('Utilise → (outils)', s.tools.map((x) => chip('tool',x)), 'aucun outil cité dans sa doc');
       h += sec('← Composée par', s.composedBy.map((x) => chip('skill',x)), 'aucune commande ne la compose');
       h += sec('Installée par (profils)', s.profiles.map((x) => chip('profile',x)), 'aucun profil ne l’installe');
       const viaJuges = s.roles.map((aid) => {
@@ -3287,6 +4015,18 @@ window.EZK = {
       if(p.interactions.length) h += sec('Règles d’interaction', p.interactions.map((x) => chip('rule',x)));
       return h;
     }
+    if(kind === 'tool'){
+      const t = D.tools[id];
+      let h = '<p class="d-desc">'+(t.usedBy.length
+        ? 'Un script que '+t.usedBy.length+' commande'+(t.usedBy.length > 1 ? 's citent' : ' cite')+' dans sa doc.'
+        : 'Un script qu’aucune commande ne cite dans sa doc.')+'</p>'+srcLine(t.source);
+      if(t.commands.length) h += sec('Commandes ezk qui le lancent', t.commands.map((c) => '<span class="chip" style="cursor:default">'+esc(c)+'</span>'));
+      if(t.internal !== undefined) h += '<div class="d-note">Interne, déclaré dans le manifeste ezk : '+esc(t.internal)+'.</div>';
+      h += sec('← Utilisé par (commandes)', t.usedBy.map((x) => chip('skill',x)), 'aucune commande ne le cite');
+      if(toolOrphan(t)) h += '<div class="d-note">⚠ Orphelin : aucune commande ne le cite, aucune commande <code>ezk</code> ne le lance, aucune raison « internal » ne le justifie. À brancher (le citer dans le <code>SKILL.md</code> qui s’en sert) ou à retirer.</div>';
+      h += '<div class="d-note">Le lien est <b>calculé</b> : une commande « utilise » un outil quand son <code>SKILL.md</code> (ou un fichier de son dossier) en cite le chemin. Un nom seul (<code>check.sh</code>) ne compte pas.</div>';
+      return h;
+    }
     return '<span class="d-empty">inconnu</span>';
   }
 
@@ -3300,7 +4040,7 @@ window.EZK = {
       overlay.classList.add('on'); panel.classList.add('on');
       return;
     }
-    const store = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles}[kind];
+    const store = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles, tool:D.tools}[kind];
     if(!store || !store[id]) return;
     $('d-kind').textContent = KIND[kind].label;
     $('d-title').textContent = id;

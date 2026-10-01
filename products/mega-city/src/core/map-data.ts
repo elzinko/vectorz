@@ -49,7 +49,22 @@ export interface MapSkill {
   composesExternal: string[]; // refs hors catalogue (documentées, jamais warnées — ADR-0025)
   roles: string[]; // agents que je convoque
   composedBy: string[]; // ← skills qui me composent
+  tools: string[]; // outils que ma doc cite (ADR-0058)
   profiles: string[]; // ⊃ profils qui m'embarquent
+}
+
+/**
+ * Un outil : un script de `bin/` ou des `scripts/` d'un skill (fiche 20260917123943914, ADR-0058).
+ * Son `source` est le script lui-même ; `usedBy` dit quels skills le citent ; `commands` et
+ * `internal` disent ce que le manifeste de la commande `ezk` en sait. Aucun des trois (ni skill,
+ * ni commande, ni raison) : l'outil est orphelin, la carte le range dans « le bruit restant ».
+ */
+export interface MapTool {
+  id: string;
+  source?: string;
+  commands: string[]; // commandes `ezk …` qui le lancent
+  internal?: string; // raison « internal » du manifeste
+  usedBy: string[]; // ← skills qui le citent
 }
 
 export interface MapAgent {
@@ -126,7 +141,14 @@ export interface Provenance {
 }
 
 export interface MapData {
-  counts: { rules: number; agents: number; skills: number; bundles: number; profiles: number };
+  counts: {
+    rules: number;
+    agents: number;
+    skills: number;
+    bundles: number;
+    profiles: number;
+    tools: number;
+  };
   liens: { total: number; casses: number };
   provenance: Provenance;
   /** « Qui compose quoi » : flèches comptées dans le graphe (assemblage.ts). */
@@ -144,6 +166,7 @@ export interface MapData {
   rules: Record<string, MapRule>;
   bundles: Record<string, MapBundle>;
   profiles: Record<string, MapProfile>;
+  tools: Record<string, MapTool>;
 }
 
 const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
@@ -222,6 +245,7 @@ export function buildMapData(
       composesExternal: sorted(s.composesExternal ?? []), // hors catalogue (ADR-0025) — hors graphe
       roles: outTo('roles', id),
       composedBy: inFrom('composes', id),
+      tools: outTo('uses', id),
       profiles: inFrom('profile-skill', id),
     };
   }
@@ -290,6 +314,20 @@ export function buildMapData(
     };
   }
 
+  // Les outils : calculés depuis les fichiers, reliés aux skills par les arêtes `uses` du graphe.
+  const tools: Record<string, MapTool> = {};
+  for (const id of sorted(catalog.tools?.keys() ?? [])) {
+    const t = catalog.tools?.get(id);
+    if (!t) continue;
+    tools[id] = {
+      id,
+      ...sourceOf('tool', id),
+      commands: [...t.commands],
+      ...(t.internal === undefined ? {} : { internal: t.internal }),
+      usedBy: inFrom('uses', id),
+    };
+  }
+
   // Bandes internes à l'étage méthode, dans l'ordre du document (= ordre du flux).
   // `hors-bande` = skills méthode oubliés des bandes — doit rester vide par construction.
   const bandes: Record<Bande, string[]> = {
@@ -337,6 +375,7 @@ export function buildMapData(
       skills: catalog.skills.size,
       bundles: catalog.bundles.size,
       profiles: catalog.profiles.size,
+      tools: catalog.tools?.size ?? 0,
     },
     liens: { total: report.edgeCount, casses: report.broken.length },
     provenance,
@@ -353,6 +392,7 @@ export function buildMapData(
     rules,
     bundles,
     profiles,
+    tools,
   };
 }
 

@@ -1,10 +1,11 @@
 /**
  * graph-vocabulary — les cinq mots de lien (`composes` · `roles` · `competences` ·
- * `interactions` · `enforcements`) se lisent comme QUATRE verbes fermés (fiche 357,
+ * `interactions` · `enforcements`) se lisent comme des verbes fermés (fiche 357,
  * ADR-0040 D1 : l'unification vit dans le compilateur, par ALIAS — aucun champ renommé).
+ * Quatre verbes à l'origine ; l'ADR-0058 en ajoute un cinquième, `utilise` (skill → outil).
  *
  * Ce fichier fige la décision : si quelqu'un ajoute un lien, change son verbe ou ouvre
- * un cinquième verbe, un test rougit et force un choix conscient.
+ * un sixième verbe, un test rougit et force un choix conscient.
  */
 import { describe, expect, it } from 'vitest';
 import { compileGraph } from '../core/compiled-graph.js';
@@ -26,9 +27,15 @@ function catalogOf(parts: Partial<Catalog>): Catalog {
   };
 }
 
-describe('vocabulaire de liens — jeu fermé de 4 verbes (ADR-0040 D1)', () => {
-  it('le jeu est fermé : exactement quatre verbes', () => {
-    expect([...LINK_VERBS]).toEqual(['compose', 'convoque', 'applique', 'est-verifie-par']);
+describe('vocabulaire de liens — jeu fermé de 5 verbes (ADR-0040 D1, amendé par ADR-0058)', () => {
+  it('le jeu est fermé : exactement cinq verbes', () => {
+    expect([...LINK_VERBS]).toEqual([
+      'compose',
+      'convoque',
+      'applique',
+      'est-verifie-par',
+      'utilise',
+    ]);
   });
 
   it('chaque type de lien porte UN verbe du jeu, et chaque verbe sert à quelque chose', () => {
@@ -69,6 +76,7 @@ describe('vocabulaire de liens — jeu fermé de 4 verbes (ADR-0040 D1)', () => 
     expect(couples('convoque')).toEqual(['rule>agent', 'skill>agent']);
     expect(couples('applique')).toEqual(['agent>rule', 'profile>rule', 'skill>rule']);
     expect(couples('est-verifie-par')).toEqual(['rule>agent']);
+    expect(couples('utilise')).toEqual(['skill>tool']); // ADR-0058 : « ce skill lance cet outil »
   });
 
   it('chaque arête sortie de graphEdges porte le verbe de son lien', () => {
