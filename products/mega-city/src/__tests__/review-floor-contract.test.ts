@@ -51,6 +51,10 @@ describe('ezk-sprint — la revue locale est le plancher (D1) et la PR suit la c
     expect(sprint).toMatch(/jamais une condition de merge/);
   });
 
+  it('ne dit plus que le relecteur local « remplace Codex » (ancienne doctrine, relevée en revue)', () => {
+    expect(sprint).not.toMatch(/remplace Codex/);
+  });
+
   it('précise l’invariant : une PR quand `github.pr` est actif', () => {
     expect(sprint).toMatch(/1 PR quand `github\.pr` est actif/);
   });
