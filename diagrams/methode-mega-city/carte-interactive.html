@@ -473,13 +473,13 @@ window.EZK = {
   "tools": 78
  },
  "liens": {
-  "total": 262,
+  "total": 263,
   "casses": 0
  },
  "provenance": {
   "prouve": {
    "briques": 203,
-   "liens": 262,
+   "liens": 263,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -578,7 +578,7 @@ window.EZK = {
     "from": "skill",
     "verb": "utilise",
     "to": "tool",
-    "count": 40
+    "count": 41
    }
   ],
   "bind": {
@@ -710,10 +710,6 @@ window.EZK = {
   {
    "kind": "tool",
    "id": "skills/ezk-commits/scripts/commit-msg"
-  },
-  {
-   "kind": "tool",
-   "id": "skills/ezk-sprint/scripts/check.sh"
   }
  ],
  "method": {
@@ -1535,6 +1531,7 @@ window.EZK = {
    "tools": [
     "bin/journal-add.sh",
     "bin/pr-evidence.sh",
+    "skills/ezk-sprint/scripts/check.sh",
     "skills/ezk-sprint/scripts/sprint.sh"
    ],
    "profiles": [
@@ -3647,7 +3644,9 @@ window.EZK = {
    "id": "skills/ezk-sprint/scripts/check.sh",
    "source": "products/mega-city/skills/ezk-sprint/scripts/check.sh",
    "commands": [],
-   "usedBy": []
+   "usedBy": [
+    "ezk-sprint"
+   ]
   },
   "skills/ezk-sprint/scripts/sprint.sh": {
    "id": "skills/ezk-sprint/scripts/sprint.sh",
