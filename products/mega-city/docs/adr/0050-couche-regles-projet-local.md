@@ -1,6 +1,6 @@
 # ADR-0050 : Couche de règles projet-local (`.vectorz/`) pour la méthode ezk
 
-**Statut :** Proposé
+**Statut :** Accepté (ratifié par le PO le 2026-10-01)
 **Date :** 2026-09-10
 **Déciders :** PO (Thomas)
 **Panel adverse :** ezk-reviewer (GO-SI), ezk-architect (GO-SI, confronté)

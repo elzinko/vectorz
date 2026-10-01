@@ -9,6 +9,7 @@ epic:
 status: idea
 pr:
 created: 2026-08-22
+labels: [marketing]
 ---
 
 # Règle — page construite par un skill ⇒ screenshots réels du produit

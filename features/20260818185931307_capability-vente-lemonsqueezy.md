@@ -8,6 +8,7 @@ milestone: parked
 status: idea
 pr:
 created: 2026-08-18
+labels: [recettes]
 ---
 
 # Capability de vente LemonSqueezy — récoltée de muti, réutilisable

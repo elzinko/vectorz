@@ -1,6 +1,6 @@
 # ADR 0060 — Le coût d'un sprint se compte en appels d'agent
 
-**Statut :** Proposé (à confirmer par le PO à la livraison de la fiche)
+**Statut :** Accepté (ratifié par le PO le 2026-10-01, fiche livrée par #300)
 **Date :** 2026-10-01
 **Deciders :** PO (demande du spike, cible de coût du run V0.1 → V0.4) ; mesures fournies par le run
 **Fiche :** `20260920213500176` (spike « coût d'un sprint d'autorat de skill »)

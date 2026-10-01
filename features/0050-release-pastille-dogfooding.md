@@ -8,6 +8,7 @@ milestone: parked
 status: idea
 pr:
 created: 2026-07-18
+labels: [installation]
 ---
 
 # 0050 — Canal de release + pastille de mise à jour

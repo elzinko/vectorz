@@ -1,6 +1,6 @@
 # ADR 0056 — La loi du socle voyage par le global : `~/.claude/rules/iamthelaw.md`
 
-**Statut :** Proposé (à confirmer par le PO au merge)
+**Statut :** Accepté (ratifié par le PO le 2026-10-01)
 **Date :** 2026-10-01
 **Deciders :** PO (consigne du run V0.1 → V0.4 : « faire que la loi atteigne réellement l'agent »)
 **Fiche :** [`20260903134909124`](../../../../features/done/20260903134909124_loi-non-compilee-chez-l-agent.md)
