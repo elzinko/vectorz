@@ -7,7 +7,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { extractRootFlag, resolveProjectRoot } from '../core/project-root.js';
+import { extractRootFlag, resolveProjectRoot, rootBanner } from '../core/project-root.js';
 import { ProjectRootError, checkProjectRoot } from '../io/project-root.js';
 
 const base = { fallback: '/methode', cwd: '/ici' };
@@ -44,6 +44,17 @@ describe('resolveProjectRoot — argument > variable > défaut', () => {
   it('un chemin absolu passe tel quel, quel que soit INIT_CWD', () => {
     const r = resolveProjectRoot({ ...base, flag: '/muti', initCwd: '/ailleurs' });
     expect(r.root).toBe('/muti');
+  });
+});
+
+describe('rootBanner — dire quel projet on lit, quand ce n’est pas le défaut', () => {
+  it('rien pour le défaut : la sortie reste celle d’avant', () => {
+    expect(rootBanner({ root: '/methode', source: 'default' })).toBeUndefined();
+  });
+
+  it('nomme le projet et d’où vient la désignation (option ou variable)', () => {
+    expect(rootBanner({ root: '/muti', source: 'flag' })).toBe('Projet visé : /muti (option --root)');
+    expect(rootBanner({ root: '/muti', source: 'env' })).toBe('Projet visé : /muti (variable EZK_ROOT)');
   });
 });
 

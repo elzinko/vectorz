@@ -47,6 +47,16 @@ export function resolveProjectRoot(inputs: RootInputs): ResolvedRoot {
   return { root: inputs.fallback, source: 'default' };
 }
 
+/**
+ * Le bandeau qui dit QUEL projet on lit, quand ce n'est pas le défaut. Une variable `EZK_ROOT` restée dans
+ * le shell ferait sinon lire en silence les fiches d'un autre projet. Rien pour le défaut : sans argument ni
+ * variable, la sortie reste celle d'avant.
+ */
+export function rootBanner(resolved: ResolvedRoot): string | undefined {
+  if (resolved.source === 'default') return undefined;
+  return `Projet visé : ${resolved.root} (${resolved.source === 'flag' ? 'option --root' : `variable ${PROJECT_ROOT_ENV}`})`;
+}
+
 const FLAG = '--root';
 
 /**

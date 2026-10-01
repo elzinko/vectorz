@@ -34,7 +34,10 @@ pnpm ezk board show                       # sans rien : les fiches de la méthod
 ```
 
 L'option prime sur la variable, la variable sur le défaut. Un chemin relatif se lit depuis le dossier
-où tu as tapé la commande. Un dossier qui n'existe pas est refusé. Les **pages** du tableau de bord
+où tu as tapé la commande. Un dossier qui n'existe pas est refusé. Quand le projet n'est pas celui de
+la méthode, la commande l'écrit sur stderr (« Projet visé : … ») : une variable oubliée dans le shell ne
+fait jamais lire un autre projet en silence. Mets `--root` **avant** la commande ; placé après, il va au
+script, ce qui marche aussi quand tu es dans un dépôt de la méthode. Les **pages** du tableau de bord
 viennent toujours de la méthode : seules les **données** (fiches, plan, récits, pouces) viennent du
 projet désigné, et le pouce haut ou bas s'écrit dans `features/reviews/verdicts/` de ce projet. Une commande
 qui écrit dans la méthode (`views regen`) refuse un autre projet. Une commande n'accepte un projet que

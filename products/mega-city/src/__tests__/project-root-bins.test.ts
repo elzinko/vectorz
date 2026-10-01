@@ -76,11 +76,15 @@ describe('les scripts qui lisent les fiches du projet désigné', () => {
     expect(r.stdout).not.toContain(A_VECTORZ_FICHE);
   });
 
-  it('EZK_ROOT=<projet> : les fiches DE ce projet, pas celles de vectorz', { timeout: 60_000 }, () => {
+  it('EZK_ROOT=<projet> : les fiches DE ce projet, pas celles de vectorz — et le script le dit sur stderr', { timeout: 60_000 }, () => {
     const r = script('avancement.ts', ['--json'], { EZK_ROOT: project });
     expect(r.code).toBe(0);
     expect(r.out).toContain(PROJECT_FICHE);
     expect(r.out).not.toContain(A_VECTORZ_FICHE);
+    // Une variable restée dans le shell ne doit jamais faire lire un autre projet en silence ;
+    // le bandeau est sur stderr, donc le JSON de stdout reste du JSON.
+    expect(r.err).toContain(`Projet visé : ${project} (variable EZK_ROOT)`);
+    expect(() => JSON.parse(r.out)).not.toThrow();
   });
 
   it('sans argument ni variable : la sortie est celle d’avant (défaut == --root <méthode>)', { timeout: 60_000 }, () => {
@@ -91,6 +95,7 @@ describe('les scripts qui lisent les fiches du projet désigné', () => {
     expect(byDefault.out).toBe(explicit.out);
     expect(byDefault.out).toContain(A_VECTORZ_FICHE);
     expect(byDefault.out).not.toContain(PROJECT_FICHE);
+    expect(byDefault.err).not.toContain('Projet visé'); // aucun bandeau sans désignation : rien ne change
   });
 
   it('un projet qui n’existe pas : refusé net, avec son chemin (pas un board vide)', { timeout: 60_000 }, () => {
