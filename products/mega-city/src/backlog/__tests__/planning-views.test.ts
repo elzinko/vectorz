@@ -90,4 +90,10 @@ describe('fmField (front-matter en texte)', () => {
   it('déquote un id horodaté', () => {
     expect(fmField('---\nid: "20260812100109940"\n---\n', 'id')).toBe('20260812100109940');
   });
+
+  it('une valeur quotée suivie d’un commentaire ne garde aucun guillemet résiduel (lecture par le loader)', () => {
+    // L’ancienne lecture maison retirait les guillemets AVANT le commentaire et laissait `0018"`.
+    expect(fmField('---\nid: "0018" # legacy\n---\n', 'id')).toBe('0018');
+    expect(fmField('---\nstatus: "shipped" # livré\n---\n', 'status')).toBe('shipped');
+  });
 });

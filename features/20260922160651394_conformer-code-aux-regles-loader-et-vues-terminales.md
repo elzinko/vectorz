@@ -17,77 +17,130 @@ created: 2026-09-22
 
 ## En clair
 
-La rétro du 2026-09-20 a posé **deux règles `MUST`** (`development/fiche-read-via-loader` et
-`development/active-views-exclude-terminal-status`). Codex (PR #256) a montré qu'elles sont
-**violées par du code existant** dès leur activation. Les règles sont donc **cadrées en
-déploiement progressif** (le legacy = dette listée), et cette fiche **porte la mise en
-conformité**. Deux volets indépendants.
+La rétro du 2026-09-20 a posé deux règles `MUST`. Le code existant les violait dès leur activation.
+Le **volet B** est livré : les vues du plan cachent les fiches closes (PR #256). Il reste le **volet A** :
+des outils lisent encore le front-matter des fiches avec leur propre `awk` ou leur propre regex, au
+lieu du loader testé. Ce POC migre les lecteurs qui n'appellent aucune décision d'architecture. Il fait
+aussi émettre le front-matter de `ezk-chef extract` par la lib YAML (fiche absorbée). Enfin il fige, par
+un test, la liste de ce qui reste. Le reste part en « Suite ».
 
-> **MAJ 2026-09-22 — volet B LIVRÉ dans la PR #256** : les vues `plan-*` filtrent désormais les
-> statuts terminaux (la règle `active-views-exclude-terminal-status` est pleinement respectée).
-> **Reste le volet A** : migrer les lecteurs de fiches legacy vers le loader testé.
+**Si tu arrives frais.** Le *front-matter* est le bloc YAML entre deux `---` en tête d'une fiche. Le
+*loader* (`src/loaders/fiches.ts`) est l'unique code testé qui sait le lire.
+
+> **MAJ 2026-09-22 : volet B livré dans la PR #256.** Les vues `plan-*` filtrent les statuts
+> terminaux. La règle `active-views-exclude-terminal-status` est pleinement respectée.
 
 ## Contexte / Problème
 
-Retour Codex sur la PR #256 (2026-09-21), deux findings :
+Retour Codex sur la PR #256 (2026-09-21), deux constats.
 
-1. **Lecteurs de fiche en parse maison** — la règle `development/fiche-read-via-loader` exige que
-   tout lecteur passe par `loadFiches` / `readField`. Or trois outils parsent le front-matter à la
-   main : `products/mega-city/bin/regen-backlog.sh` (fonction `extract`, `awk` sur id/title/status…),
-   `products/mega-city/bin/portfolio.sh` (même `awk`), et `products/mega-city/bin/plan-head.ts`
-   (parser maison). Le bundle `development` est donc non conforme immédiatement.
-2. **Vues `plan-*` qui laissent fuiter les terminaux** — la règle
-   `development/active-views-exclude-terminal-status` inclut `plan-*`, mais `buildPlanViewData`
-   copie **toutes** les fiches référencées, `buildPlanDelta` ne filtre que `done`/`shipped`, et le
-   board ne masque que `shipped`. Résultat : `window.EZK_PLAN` porte **10 cartes `superseded`**
-   (dont 2 sur des lignes non barrées) ; l'onglet Plan présente du travail terminal comme actif et
-   « Masquer les fiches livrées » ne les cache pas.
+1. **Lecteurs de fiche en parse maison.** La règle `development/fiche-read-via-loader` exige que tout
+   lecteur passe par `loadFiches` ou `readField`. Or plusieurs outils parsent le front-matter à la
+   main. Un `awk` ne sait ni lire une valeur quotée avec `#`, ni distinguer le front-matter du corps.
+2. **Vues `plan-*` qui laissaient fuiter les terminaux.** Corrigé par le volet B.
 
-## Proposition (2 volets)
+La liste « legacy » de la règle nomme trois lecteurs. L'inventaire réel du 2026-10-01 en trouve plus
+(voir Notes). Le test de garde ci-dessous rend cette liste exacte et la fige.
 
-### Volet A — lecteurs de fiche via le loader
-- Réécrire `regen-backlog.sh` et `portfolio.sh` pour consommer le loader testé (via un `bin/*.ts`
-  qui lit `loadFiches`, ou porter ces vues en TS), et faire passer `plan-head.ts` par `readField`.
-- À la fin, la **liste legacy** de la règle `fiche-read-via-loader` est **vide**.
+Le sprint « verrou de statut » (PR #267) a déjà centralisé le schéma (`src/core/fiche-schema.ts`).
+Cette fiche part de là et ne touche pas au schéma.
 
-### Volet B — vues `plan-*` alignées sur `TERMINAUX` — ✅ LIVRÉ (PR #256, 2026-09-22)
-- `buildPlanViewData` calcule un flag `closed` (`shipped` OU `TERMINAUX`) que le rendu board lit
-  (les cartes `closed` prennent la classe `.livree` : estompées + masquables). `buildPlanDelta`
-  exclut les terminaux de sa fenêtre « dernières créées ». Source unique `TERMINAUX` conservée
-  (le JS ne redéclare pas la liste).
-- Vérifié : `window.EZK_PLAN` porte `closed:true` sur ses **10** cartes `superseded` ; gate
-  mega-city verte (777/777).
+## Proposition (POC)
 
-## Critères d'acceptation (à groomer)
+**Volet A, ce qui est migré :**
 
-- [ ] `git grep` de parse front-matter hors loader = **0** (liste legacy de la règle vidée).
-- [ ] `regen-backlog.sh` / `portfolio.sh` / `plan-head.ts` lisent les fiches par le loader testé ;
-      `test:scripts` + `fiches:check` verts.
-- [x] Les statuts terminaux ne sont plus présentés comme **actifs** dans les vues `plan-*` :
-      exclus de l'écart-plan (`plan-delta`), et marqués `closed` dans la vue Plan
-      (`window.EZK_PLAN`) → estompés + masquables comme les livrées. *(Volet B, PR #256.)*
-- [x] La règle `active-views-exclude-terminal-status` est **pleinement conforme** (clause dette
-      retirée). La règle `fiche-read-via-loader` garde sa clause legacy jusqu'au volet A.
+1. **Un module de lecture pour le bash.** `src/loaders/fiche-rows.ts` sort les onze champs que les
+   anciens `extract()` awk lisaient, en s'appuyant sur `frontMatter` et `readField`. Un petit CLI
+   `bin/fiche-rows.ts` l'expose aux scripts.
+2. `bin/portfolio.sh` appelle ce CLI. Plus d'`awk` de front-matter. Il gagne son premier test,
+   `bin/test-portfolio.sh`.
+3. `bin/plan-head.ts` lit par `loadFiches`. Son `readField` maison et son scan disparaissent.
+   `fmField` de `planning-views.ts` délègue aussi au loader.
+4. `bin/ezk-chef-extract.sh` lit titre et PR par le même CLI.
+
+**Fiche absorbée, ce qui est migré :**
+
+5. `ezk-chef extract` émet son front-matter par la lib `yaml` (`src/core/recipe-frontmatter.ts`),
+   plus par `echo`. Les champs libres restent entre guillemets doubles, pour les lecteurs `awk` des
+   recettes.
+
+**Garde :**
+
+6. `fiche-read-via-loader-contract.test.ts` applique la mesure de la règle. Un nouveau parse de
+   front-matter hors loader fait échouer la suite. Une entrée migrée doit sortir de la liste.
+7. La règle est mise à jour avec la liste exacte.
+
+## Critères d'acceptation
+
+- [x] Les vues `plan-*` ne présentent plus un statut terminal comme actif : exclus de `plan-delta`,
+  marqués `closed` dans `window.EZK_PLAN`. *(Volet B, PR #256.)*
+- [x] La règle `active-views-exclude-terminal-status` est pleinement conforme. *(Volet B.)*
+- [x] `fiche-rows` rend les onze champs, testés : valeur quotée avec `#` ou `:`, commentaire de fin,
+  champ cité dans le corps, produit absent. Preuve : `fiche-rows.test.ts`, 8 tests.
+- [x] `portfolio.sh` lit par ce module. `PORTFOLIO.md` régénéré est identique à l'octet. Preuve :
+  comparaison avant/après sur les fiches du dépôt, et `test-portfolio.sh` qui échoue sur l'ancien `awk`.
+- [x] `plan-head.ts` lit par `loadFiches`. La sortie de `plan:head` est inchangée. Preuve : sortie
+  comparée avant/après.
+- [x] `ezk-chef extract` lit par le CLI et émet par la lib YAML. Un titre hostile (`:`, `#`,
+  guillemets, antislash, accents) donne un front-matter valide pour `yaml` ET `gray-matter`, avec le
+  titre que voit le loader. Preuve : cas J de `test-ezk-chef-extract.sh`, rouge sur l'ancien script
+  (`Invalid escape sequence`), vert sur le nouveau ; `recipe-frontmatter.test.ts`, 14 tests.
+- [x] La liste legacy de la règle est exacte et figée par un test : un nouveau parse hors loader
+  échoue, une entrée migrée sort de la liste. Preuve : `fiche-read-via-loader-contract.test.ts`
+  (13 entrées restantes, chacune avec sa raison).
 
 ## Comment vérifier
 
-- Poser une fiche `status: superseded` dans `features/` → elle n'apparaît ni au board avancement,
-  ni au plan, ni dans BACKLOG/PORTFOLIO ; « Masquer les livrées » ne change rien pour elle.
-- `git grep -n "awk" products/mega-city/bin/regen-backlog.sh products/mega-city/bin/portfolio.sh`
-  → aucune lecture de front-matter maison.
+```bash
+# Le module de lecture, le générateur de front-matter et le garde de la règle
+pnpm --dir products/mega-city exec vitest run fiche-rows recipe-frontmatter fiche-read-via-loader-contract
+# extract : titres hostiles, front-matter valide des deux parseurs
+bash products/mega-city/bin/test-ezk-chef-extract.sh | tail -6
+# portfolio : son test, puis la vue régénérée est identique (aucune sortie attendue)
+bash products/mega-city/bin/test-portfolio.sh | tail -2
+bash products/mega-city/bin/portfolio.sh . && git diff --stat PORTFOLIO.md
+# plan:head inchangé
+pnpm --dir products/mega-city plan:head
+```
+
+## Suite (hors POC)
+
+- **`regen-backlog.sh` et sa copie vendored.** Les deux copies doivent rester identiques (test
+  `bin ≡ skill`), et la copie vendored sert hors monorepo, sans `tsx` ni loader. Migrer exige une
+  décision : repli `awk` gardé par un test de parité, ou bundle JS compilé dans le skill, ou
+  abandon du mode copie. À trancher par ADR court.
+- **`ezk-archive/scripts/check.sh` et `ezk-sprint/scripts/check.sh`** : lecteurs bash dans des skills
+  déployables hors monorepo. Même question de vendoring.
+- **`sprint-metrics/adapters/repoSource.ts` et `tools/outcomes/sources.ts`** : deux lecteurs
+  TypeScript qui appliquent leurs regex sur le fichier ENTIER. Simples à migrer (`loadFiches`), mais
+  sans test aujourd'hui : écrire d'abord le test.
+- **Autres émetteurs de front-matter** : `src/review/render.ts` (quotage maison, correct), les
+  scripts `ezk-backlog add` et `ship`, et les fixtures de test en chaîne brute.
+- **Migrations `apply-003` et `apply-005`** : scripts jetables qui réécrivent des fiches en place.
+- **Règle `yaml-emission-via-lib` absente de tout bundle** (`bundles/development.yml` en porte 15
+  pour 16 règles). Elle n'est donc matérialisée dans aucun profil. Décision de méthode : au PO.
 
 ## Notes / anti-doublon
 
-- **Née du retour Codex sur PR #256** (les 2 règles de la rétro 2026-09-20). Recoupe la note de
-  carnet N5 (aligner les vues bash sur `TERMINAUX`) et l'**élargit** aux vues `plan-*` (TS).
+- **Née du retour Codex sur la PR #256** (les deux règles de la rétro 2026-09-20). Recoupe la note de
+  carnet N5 (aligner les vues bash sur `TERMINAUX`) et l'élargit aux vues `plan-*`.
 - Voisin : [20260910155608287](20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md)
-  (typologie / vérification des règles) — cadre général ; ici c'est la mise en conformité concrète.
+  (typologie et vérification des règles). Cadre général ; ici, c'est la mise en conformité concrète.
+- **Inventaire des parses de front-matter hors loader (2026-10-01).** Migrés par ce POC :
+  `bin/portfolio.sh`, `bin/plan-head.ts`, `bin/ezk-chef-extract.sh`, `fmField` de `planning-views.ts`.
+  Restent 13 fichiers, listés avec leur raison dans `fiche-read-via-loader-contract.test.ts` :
+  `bin/regen-backlog.sh` et sa copie dans le skill `ezk-backlog`, `ezk-archive/scripts/check.sh`,
+  `ezk-sprint/scripts/check.sh`, `repoSource.ts`, `tools/outcomes/sources.ts`, la sonde de
+  `fiche-validator.ts`, `apply-003`, `apply-005` et deux scripts python jetables. Hors fiches (recettes,
+  méta de diagramme) : `bin/regen-recipes.sh`, `ezk-diagram/scripts/publish.sh`.
+- **Décision de grooming** : le `title` d'une recette est celui que voit le loader (`readField` ne
+  dé-échappe pas). Un titre contenant `\"` garde donc ses antislash, comme au board. Le dé-échappement
+  est un autre chantier, il toucherait tous les consommateurs du loader.
 
 ## ⤓ Absorbe (tri du 2026-09-30)
 
-Cette fiche reprend désormais le périmètre de :
-
-- [`20260830194601307`](done/20260830194601307_front-matter-emis-par-lib-yaml.md) — front-matter généré émis + validé par la lib YAML (jamais par concaténation)  
-  _Pourquoi_ : Même sujet : mettre le code en conformité avec les règles.
-
-Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.
+Cette fiche reprend le périmètre de
+[`20260830194601307`](done/20260830194601307_front-matter-emis-par-lib-yaml.md) : front-matter généré
+émis et validé par la lib YAML, jamais par concaténation. Critères repris ici : titre hostile valide
+(fait pour `ezk-chef extract`), générateurs émettant par la lib (fait pour `ezk-chef extract`, le
+reste en « Suite »), fixtures re-parsées par le vrai parseur (fait pour les nouveaux tests).

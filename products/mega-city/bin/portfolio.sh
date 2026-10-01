@@ -8,6 +8,8 @@
 # Usage : portfolio.sh [racine-vectorz]   (défaut : parent de products/, déduit de bin/)
 set -euo pipefail
 
+# Dossier de mega-city (parent de bin/), résolu AVANT le cd : $0 peut être relatif.
+MC="$(cd "$(dirname "$0")/.." && pwd)"
 ROOT="${1:-"$(cd "$(dirname "$0")/../../.." && pwd)"}"
 cd "$ROOT"
 [ -d features ] || { echo "erreur: pas de features/ à la racine ${ROOT}" >&2; exit 1; }
@@ -15,38 +17,22 @@ cd "$ROOT"
 SEP=$'\x1f'
 OUT="PORTFOLIO.md"
 
-# extract $1=file $2=product-par-défaut → id,title,type,prio,status,pr,created,version,epic,PRODUCT,milestone
-# Le produit vient du front-matter `product:` (liste unifiée `features/`, ADR-0017 A14) ; le
-# $2 (dossier) n'est qu'un fallback si le champ manque. Sinon toute fiche mega-city de la
-# liste racine était comptée vectorz (retour Codex #128).
-extract() {
-  awk -v product="$2" '
-    function unquote(s) { gsub(/^"|"$/, "", s); return s }
-    BEGIN { infm=0 }
-    /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-    infm==1 {
-      if ($0 ~ /^id:/)       { sub(/^id:[[:space:]]*/, "");       id=unquote($0) }
-      if ($0 ~ /^title:/)    { sub(/^title:[[:space:]]*/, "");    title=unquote($0) }
-      if ($0 ~ /^type:/)     { sub(/^type:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); type=$0 }
-      if ($0 ~ /^priority:/) { sub(/^priority:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); prio=$0 }
-      if ($0 ~ /^status:/)   { sub(/^status:[[:space:]]*/, "");   sub(/[[:space:]]*#.*$/, ""); status=$0 }
-      if ($0 ~ /^pr:/)       { sub(/^pr:[[:space:]]*/, "");       pr=unquote($0) }
-      if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
-      if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
-      if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
-      if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); fmproduct=unquote($0) }
-      if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
-    }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", \
-          id, title, type, prio, status, pr, created, version, epic, (fmproduct != "" ? fmproduct : product), milestone }
-  ' "$1" "$1"
-}
+# Lecture des fiches : par le loader testé (règle development/fiche-read-via-loader), jamais par un
+# awk maison. `bin/fiche-rows.ts` imprime une ligne par fiche : id, title, type, prio, status, pr,
+# created, version, epic, PRODUIT, milestone (séparés par \x1f). Le produit vient du front-matter
+# `product:` (liste unifiée `features/`, ADR-0017 A14) ; « vectorz » n'est qu'un repli si le champ
+# manque (sinon toute fiche mega-city de la liste racine était comptée vectorz, retour Codex #128).
+TSX="$MC/node_modules/.bin/tsx"
+[ -x "$TSX" ] || { echo "erreur: tsx introuvable (${TSX}) — lancer « pnpm install »" >&2; exit 1; }
 
-rows=""
+files=()
 for f in features/[0-9]*.md; do
-  [ -e "$f" ] || continue
-  rows="${rows}$(extract "$f" "vectorz")"$'\n'
+  if [ -e "$f" ]; then files+=("$f"); fi
 done
+rows=""
+if [ "${#files[@]}" -gt 0 ]; then
+  rows="$("$TSX" "$MC/bin/fiche-rows.ts" --default-product vectorz "${files[@]}")"$'\n'
+fi
 
 # Schéma des statuts — MIROIR de src/core/fiche-schema.ts (STATUT_DEFS), comme dans regen-backlog.sh.
 # Gardé par le test de contrat src/__tests__/fiche-schema-contract.test.ts (ajouter un statut au schéma

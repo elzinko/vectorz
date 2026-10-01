@@ -9,43 +9,27 @@
  * Réutilise `plan:order` (0089) pour l'ordre. Le préfixe `mc-` n'est plus
  * requis (toléré en legacy, normalisé vers l'id nu).
  */
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type PlanCard, crossBacklogHead } from '../src/backlog/plan-head.js';
 import { parsePlanOrder } from '../src/backlog/plan-order.js';
+import { loadFiches } from '../src/loaders/fiches.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
   process.exit(2);
 }
 
-function readField(text: string, field: string): string {
-  const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
-  return m ? m[1].replace(/[ \t]*#.*$/, '').trim() : '';
-}
-
-/** Liste unique à la racine — le produit vient du front-matter (0064). */
+/**
+ * Liste unique à la racine (actifs + `done/`) — le produit vient du front-matter (0064). La lecture
+ * passe par le loader testé (règle `development/fiche-read-via-loader`) : défauts `—` / `feature` /
+ * `idea`, valeurs quotées et commentaires gérés, deux formats d'id (fiche 0180) reconnus.
+ */
 function collect(root: string): Map<string, PlanCard> {
   const index = new Map<string, PlanCard>();
-  const base = join(root, 'features');
-  for (const sub of [base, join(base, 'done')]) {
-    if (!existsSync(sub)) continue;
-    for (const file of readdirSync(sub)) {
-      // Deux formats d'id coexistent (fiche 0180) : historique `0094-slug.md`
-      // (4 chiffres, séparateur `-`) et horodaté `20260810143052123_slug.md`
-      // (17 chiffres, séparateur `_`). `\d{4,}` + `[-_]` accepte les deux.
-      const idMatch = file.match(/^(\d{4,})[-_].*\.md$/);
-      if (!idMatch) continue;
-      const text = readFileSync(join(sub, file), 'utf8');
-      const id = idMatch[1];
-      index.set(id, {
-        id,
-        product: readField(text, 'product') || '—',
-        type: readField(text, 'type') || 'feature',
-        status: readField(text, 'status') || 'idea',
-      });
-    }
+  for (const f of loadFiches(root)) {
+    index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status });
   }
   return index;
 }
