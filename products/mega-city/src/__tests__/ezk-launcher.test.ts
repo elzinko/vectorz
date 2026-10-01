@@ -4,7 +4,7 @@
  * (fiche 20260903134906920). Tout passe par `--dry-run` : rien n'est régénéré ni écrit.
  */
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,9 +22,9 @@ afterAll(() => {
   rmSync(elsewhere, { recursive: true, force: true });
 });
 
-function ezk(args: string[]): { code: number | null; out: string; err: string } {
+function ezk(args: string[], cwd = elsewhere): { code: number | null; out: string; err: string } {
   const r = spawnSync(process.execPath, [launcher, ...args], {
-    cwd: elsewhere,
+    cwd,
     encoding: 'utf8',
     env: { PATH: '/usr/bin:/bin', HOME: elsewhere },
   });
@@ -94,13 +94,22 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     expect(r.err).toContain('a échoué (code 2)');
   });
 
-  it('lance VRAIMENT un script bash, dans le dossier de l’utilisateur, et rend son code', { timeout: 60_000 }, () => {
-    writeFileSync(join(elsewhere, 'a.md'), '[b](b.md)\n');
-    const broken = ezk(['--root', repoRoot, 'docs', 'check-links', '.', '.']);
-    expect(broken.code).toBe(1);
-    expect(broken.out).toContain('a.md');
-    writeFileSync(join(elsewhere, 'b.md'), '# b\n');
-    expect(ezk(['--root', repoRoot, 'docs', 'check-links', '.', '.']).code).toBe(0);
+  it('une commande « fixed » part de la racine du dépôt : {root} remplacé, quel que soit le dossier de départ', { timeout: 60_000 }, () => {
+    const viaRoot = ezk(['--root', repoRoot, '--dry-run', 'backlog', 'regen']);
+    expect(viaRoot.out).toContain(`dossier de travail = ${repoRoot}`);
+    expect(viaRoot.out).toContain(`bash bin/regen-backlog.sh ${repoRoot} "Backlog features & bugs — vectorz"`);
+    // une commande « none » part du dossier de l'utilisateur, pas de la racine du dépôt
+    expect(ezk(['--dry-run', 'law', 'status', 'global']).out).toContain(`dossier de travail = ${elsewhere}`);
+  });
+
+  it('lance VRAIMENT un script bash depuis un SOUS-dossier du dépôt (sans --root) et rend son code', { timeout: 60_000 }, () => {
+    // check-adr-ids.sh prend la racine en argument : le routeur la lui donne, d'où qu'on parte.
+    const sub = ezk(['docs', 'check-adr-ids'], join(repoRoot, 'products', 'mega-city'));
+    expect(sub.code).toBe(0);
+    expect(sub.err).toContain('check-adr-ids');
+    const next = ezk(['--root', repoRoot, 'docs', 'check-adr-ids', '--next']);
+    expect(next.code).toBe(0);
+    expect(next.out).toMatch(/^\d{3,4}$/m); // le prochain numéro d'ADR libre
   });
 
   it('une commande inconnue sort en code 2 avec une marche à suivre', { timeout: 60_000 }, () => {

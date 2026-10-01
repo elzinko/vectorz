@@ -14,10 +14,11 @@ pnpm ezk dashboard            # le tableau de bord de la méthode (ex « ezk:map
 pnpm ezk --dry-run <commande> # montre les scripts qui seraient lancés, sans rien faire
 ```
 
-Avec `pnpm ezk`, les chemins relatifs partent de la racine du dépôt. Sur un poste, `pnpm link --global`
-depuis `products/mega-city` expose `ezk` partout (`bin/ezk.mjs`, qui n'a pas besoin de `tsx` installé).
-Une commande qui travaille sur les fichiers du dépôt de la méthode refuse de tourner depuis un autre
-dépôt et dit comment faire (`--root <dépôt>` avant la commande). Les anciens scripts pnpm
+Sur un poste, `pnpm link --global` depuis `products/mega-city` expose `ezk` partout (`bin/ezk.mjs`,
+qui n'a pas besoin de `tsx` installé). Une commande qui travaille sur les fichiers du dépôt de la
+méthode part toujours de la racine de ce dépôt, même lancée depuis un sous-dossier, et refuse de
+tourner depuis un autre dépôt en disant comment faire (`--root <dépôt>` avant la commande). Les
+autres (`law`, `dashboard`, `help`) partent du dossier où tu es. Les anciens scripts pnpm
 (`lawgiver`, `graph:compile`, `ezk:map`…) marchent toujours.
 
 ## Ajouter une commande

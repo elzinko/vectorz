@@ -20,7 +20,10 @@ export interface ManifestEntry {
   domain: string;
   /** Absent : le domaine EST la commande, tous les arguments vont au script. */
   verb?: string;
-  /** Un script + ses arguments fixes (séparés par des espaces), relatifs à products/mega-city. */
+  /**
+   * Un script (chemin depuis products/mega-city) + ses arguments fixes, séparés par des espaces
+   * (un argument entre guillemets doubles reste entier ; `{root}` = la racine du dépôt de la méthode).
+   */
   run: string;
   summary: string;
   root: RootPolicy;
@@ -133,9 +136,17 @@ export function parseManifest(text: string): Manifest {
   return { commands, internal };
 }
 
-/** Le `run` d'une entrée = un script puis ses arguments fixes, séparés par des espaces. */
+/** Découpe un `run` : des mots séparés par des espaces ; un argument entre guillemets doubles reste entier. */
+function tokenize(run: string): string[] {
+  return [...run.matchAll(/"([^"]*)"|(\S+)/g)].map((m) => m[1] ?? m[2] ?? '');
+}
+
+/**
+ * Le `run` d'une entrée = un script puis ses arguments fixes. Un argument fixe peut contenir
+ * `{root}` : la racine du dépôt de la méthode (remplacée par `route`).
+ */
 export function entryStep(entry: ManifestEntry): Step {
-  const [script = '', ...args] = entry.run.split(/\s+/);
+  const [script = '', ...args] = tokenize(entry.run);
   return { script, args };
 }
 
@@ -216,7 +227,10 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
   const notices = entry.deprecated
     ? [`« ezk ${label(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
     : [];
-  return { kind: 'run', entry, step: { script: fixed.script, args: [...fixed.args, ...userArgs] }, notices };
+  // `{root}` : la racine du dépôt de la méthode, que la règle de racine vient d'autoriser. Les
+  // arguments de l'utilisateur, eux, passent tels quels.
+  const fixedArgs = fixed.args.map((a) => a.replaceAll('{root}', env.ownRoot));
+  return { kind: 'run', entry, step: { script: fixed.script, args: [...fixedArgs, ...userArgs] }, notices };
 }
 
 /** Options du routeur : placées AVANT la commande seulement. Celles d'après sont pour le script. */

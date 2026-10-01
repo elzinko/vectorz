@@ -36,6 +36,10 @@ commands:
     run: bin/ezk-map.ts
     summary: Ancien nom du tableau de bord.
     deprecated: dashboard
+  - domain: docs
+    verb: check
+    run: bin/check.sh {root} features "docs/mon dossier"
+    summary: Vérifie les documents du dépôt.
 internal:
   - script: bin/ezk.ts
     reason: le routeur lui-même
@@ -46,7 +50,7 @@ const inside = { ownRoot: OWN, checkoutRoot: OWN };
 
 describe('parseManifest', () => {
   it('lit les entrées et pose la règle de racine « fixed » par défaut', () => {
-    expect(MANIFEST.commands).toHaveLength(5);
+    expect(MANIFEST.commands).toHaveLength(6);
     expect(MANIFEST.commands[0]).toMatchObject({ domain: 'law', verb: 'bind', root: 'none' });
     expect(MANIFEST.commands[1]?.root).toBe('fixed');
     expect(MANIFEST.internal).toEqual([{ script: 'bin/ezk.ts', reason: 'le routeur lui-même' }]);
@@ -89,6 +93,15 @@ describe('route', () => {
     expect(r).toMatchObject({
       kind: 'run',
       step: { script: 'bin/lawgiver.ts', args: ['bind', 'global', './p', '--force'] },
+    });
+  });
+
+  it('remplace {root} par la racine du dépôt, garde un argument entre guillemets entier, puis ajoute ceux de l’utilisateur', () => {
+    const r = route(MANIFEST, ['docs', 'check', '--next', '{root}'], inside);
+    expect(r).toMatchObject({
+      kind: 'run',
+      // {root} est remplacé dans les arguments FIXES du manifeste, jamais dans ceux de l'utilisateur
+      step: { script: 'bin/check.sh', args: [OWN, 'features', 'docs/mon dossier', '--next', '{root}'] },
     });
   });
 

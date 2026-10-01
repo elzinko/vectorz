@@ -6,8 +6,9 @@
  *   ezk [--root <dépôt>] [--dry-run] <domaine> [<verbe>] [args…]
  *
  * Bord I/O mince : lit le manifeste (products/mega-city/ezk-manifest.yml), laisse le cœur pur
- * (src/core/ezk-cli.ts) choisir le script, puis le lance avec les arguments tels quels, dans
- * le dossier où l'utilisateur se trouve. Aucune logique métier ici : les scripts gardent la leur.
+ * (src/core/ezk-cli.ts) choisir le script, puis le lance avec les arguments tels quels : depuis
+ * la racine du dépôt pour une commande qui travaille sur ses fichiers (« fixed »), depuis le
+ * dossier de l'utilisateur sinon (« none »). Aucune logique métier ici : les scripts gardent la leur.
  */
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
@@ -121,14 +122,19 @@ async function main(argv: string[]): Promise<number> {
     return resolution.exitCode;
   }
   for (const notice of resolution.notices) warn(`ezk : ${notice}`);
-  const { step } = resolution;
+  const { step, entry } = resolution;
+  // Une commande « fixe » travaille sur le dépôt de la méthode : son script part de la racine de
+  // ce dépôt, d'où que l'utilisateur la lance (sous-dossier, ou --root depuis ailleurs). Une
+  // commande « none » part du dossier de l'utilisateur : ses chemins relatifs sont les siens.
+  const cwd = entry.root === 'fixed' ? OWN_ROOT : userCwd;
   if (flags.dryRun) {
     const runner = extname(step.script) === '.sh' ? 'bash' : 'tsx';
-    say(`ezk (à blanc) : dossier de travail = ${userCwd}`);
-    say(`ezk (à blanc) : ${[runner, step.script, ...step.args].join(' ')}`);
+    const shown = step.args.map((a) => (/\s/.test(a) ? JSON.stringify(a) : a));
+    say(`ezk (à blanc) : dossier de travail = ${cwd}`);
+    say(`ezk (à blanc) : ${[runner, step.script, ...shown].join(' ')}`);
     return 0;
   }
-  const code = await runStep(step, userCwd);
+  const code = await runStep(step, cwd);
   if (code !== 0) warn(`ezk : « ${step.script} » a échoué (code ${code}).`);
   return code;
 }
