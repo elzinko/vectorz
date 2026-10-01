@@ -35,8 +35,8 @@ done
 
 if [ $# -lt 4 ] || [ $# -gt 5 ]; then usage; exit 1; fi
 
-# Une entrée tient sur une ligne par champ : on aplatit retours à la ligne et espaces multiples.
-oneline() { printf '%s' "$1" | tr '\n\r' '  ' | sed -e 's/  */ /g' -e 's/^ //' -e 's/ $//'; }
+# Une entrée tient sur une ligne par champ : on aplatit retours à la ligne, tabulations et espaces multiples.
+oneline() { printf '%s' "$1" | tr '\n\r\t' '   ' | sed -e 's/  */ /g' -e 's/^ //' -e 's/ $//'; }
 
 ID="$1"
 TITRE="$(oneline "$2")"

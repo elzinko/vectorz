@@ -81,10 +81,13 @@ check "aucun fichier créé par les refus" "! ls '$E/docs/journal'/*.md >/dev/nu
 # ── Cas F : retours à la ligne aplatis → une puce = une ligne ─────────────────────────────────
 F="$TMP/f"
 fixture_repo "$F" "feat/f"
-out_f="$(cd "$F" && "$SCRIPT" "$ID" $'Titre\nsur deux lignes' $'coincé ligne 1\nligne 2' "réglé")"
-echo "Cas F (retours à la ligne) :"
+TAB="$(printf '\t')"
+out_f="$(cd "$F" && "$SCRIPT" "$ID" $'Titre\nsur deux lignes' $'coincé ligne 1\nligne 2' "réglé${TAB}avec tabulation")"
+echo "Cas F (retours à la ligne, tabulations) :"
 check "titre aplati sur une ligne"     "grep -q '^## \[$ID\] Titre sur deux lignes\$' '$F/$out_f'"
 check "puce aplatie sur une ligne"     "grep -q '^- \*\*Coincé\*\* : coincé ligne 1 ligne 2\$' '$F/$out_f'"
+check "tabulation aplatie en espace"   "grep -q '^- \*\*Réglé\*\* : réglé avec tabulation\$' '$F/$out_f'"
+check "aucune tabulation dans le fichier" "! grep -q '$TAB' '$F/$out_f'"
 
 # ── Cas G : slug hostile assaini — le fichier reste DANS docs/journal ────────────────────────
 G="$TMP/g"

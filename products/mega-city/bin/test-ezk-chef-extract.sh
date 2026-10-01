@@ -313,5 +313,7 @@ check "geste du récit versé"                "grep -q 'Geste du récit de sessi
 check "entrée du journal versée aussi"      "grep -q 'Galère du journal' '$dest_l'"
 check "ordre : récit labo avant le journal" \
   "[[ \$(grep -n 'Geste du récit de session' '$dest_l' | cut -d: -f1) -lt \$(grep -n 'Galère du journal' '$dest_l' | cut -d: -f1) ]]"
+check "une ligne blanche sépare le récit du journal (pas de séparateur littéral)" \
+  "[[ -z \"\$(grep -B1 'journal des difficultés, entrées taguées' '$dest_l' | head -1)\" ]]"
 
 if [ "$FAIL" = 0 ]; then echo 'test-ezk-chef-extract: TOUT VERT'; else echo 'test-ezk-chef-extract: ÉCHECS' >&2; exit 1; fi
