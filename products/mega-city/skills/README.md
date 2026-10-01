@@ -82,3 +82,23 @@ flowchart LR
     vz-product-builder --> ezk-sprint
 ```
 <!-- composes-graph:end -->
+
+## Valider un skill avant de le merger — trois niveaux
+
+**En clair.** Un skill de méthode est de la prose que des agents exécutent. On le valide à trois
+niveaux, du moins cher au plus fiable. Aujourd'hui seul le niveau 1 est mécanique, et seulement en
+partie. Les niveaux 2 et 3 restent manuels (fiche 0066, § Suite).
+
+| Niveau | Ce qu'il vérifie | Qui | Où on en est |
+|---|---|---|---|
+| 1. Statique | conventions, déclenchement, références | `pnpm test` (mécanique) puis l'agent `ezk-steward` (jugement) | **Mécanique** : les scripts cités existent, les `composes:` / `delegates:` déclarés sont cités dans le corps (`skill-refs.test.ts`), les commandes citées par les tables « Et maintenant ? » existent, les liens markdown tiennent. **Jugement** : l'agent lit le reste. |
+| 2. Exercice | le skill fait ce qu'il dit sur un cas réel | `/verify` : le lancer et observer | Manuel. Les cas « golden » par sous-commande restent à écrire. |
+| 3. Éval | la description se déclenche-t-elle, avec quelle variance ? | le harnais de `skill-creator` | Manuel, hors dépôt. |
+
+Ce que le niveau 1 mécanique ne voit pas : une phrase en prose qui prête à un AUTRE skill un
+comportement qu'il n'a pas (cas `ezk-preview` ↔ `ezk-sprint`, 2026-07-26). Tant que « qui m'appelle »
+n'est pas une arête déclarée, c'est le travail de l'agent et du niveau 2.
+
+Un skill qui cite un script du projet CIBLE (un script qu'il fait générer ailleurs que dans ce dépôt)
+demande une exception écrite, avec sa raison, dans `src/__tests__/skill-refs.test.ts`. Il n'y a
+pas de joker.
