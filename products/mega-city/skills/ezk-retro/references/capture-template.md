@@ -47,7 +47,7 @@ actions:
 | `target` | oui pour une `regle` | `global`, `agent:<nom>` ou `skill:<nom>` |
 | `by` | non | qui a proposé : les lentilles du tour 1 |
 | `status` | oui | `⏳` en attente, `✅` retenue, `❌` écartée |
-| `decision` | oui si `✅` ou `❌` | ce que le PO a décidé, et où cela atterrit |
+| `decision` | oui si `✅` ou `❌`, **interdite** si `⏳` | ce que le PO a décidé, et où cela atterrit |
 | `date` (de l'action) | oui si `✅` ou `❌`, **interdite** si `⏳` | date de la décision |
 
 ## Le récit (lu par l'humain)
@@ -87,7 +87,7 @@ Les termes d'équipe, traduits.
 
 1. **La case du PO n'est jamais pré-remplie.** Une action naît `⏳`, sans décision ni date.
    Le PO tranche, puis on passe à `✅` ou `❌`, avec sa décision et la date. Le script refuse un
-   `✅` ou `❌` sans décision ni date, et un `⏳` daté.
+   `✅` ou `❌` sans décision ni date, et un `⏳` qui porte déjà l'une ou l'autre.
 2. **L'en-tête et le tableau « Décisions du PO » disent la même chose.** L'en-tête est la source
    pour le script, le tableau est la lecture pour l'humain. Si l'un bouge, l'autre bouge.
 3. **Une règle porte une cible.** Le fichier de règle entre toujours dans `rules/<catégorie>/` et

@@ -45,13 +45,13 @@ Le pattern [gabarit + extracteur + rendu](../products/mega-city/rules/documentat
 3. **Skill** `ezk-retro` : le temps 5 exige la capture et sa validation. Le temps 3 type chaque proposition (règle, feature, action, spike, recette), pose la cible d'une règle (`global`, `agent:<nom>` ou `skill:<nom>`) et demande de proposer une `feature` quand le symptôme est structurel. Une règle ciblée déclare sa portée par le lien explicite de sa cible. Le bundle déploie le texte, il ne porte pas la portée. `retire` enlève aussi ce lien.
 4. **Modèle** : la capture du 18 juillet passe au format cible. Elle prouve que l'extracteur lit un vrai fichier.
 
-Forme de l'en-tête : un bloc YAML. Chaque action porte `proposition`, `kind`, `target` (règles), `by` (qui a proposé), `status` (✅ ❌ ⏳), `decision` et `date`. Un statut ✅ ou ❌ sans décision ni date est refusé. Un statut ⏳ avec une date aussi : la case n'est jamais pré-remplie.
+Forme de l'en-tête : un bloc YAML. Chaque action porte `proposition`, `kind`, `target` (règles), `by` (qui a proposé), `status` (✅ ❌ ⏳), `decision` et `date`. Un statut ✅ ou ❌ sans décision ni date est refusé. Un statut ⏳ qui porte déjà une décision ou une date aussi : la case n'est jamais pré-remplie.
 
 ## Critères d'acceptation (reste réel)
 
 - [ ] Le SKILL.md d'`ezk-retro` exige la capture au temps 5, avec le gabarit, la validation `retro:captures --check` et le lien de la capture dans la PR de rangement.
 - [ ] Le gabarit existe, ouvre par « En clair », et figure dans la table des instances de la règle `readable-deliverable-trio` (test vert).
-- [ ] `retro:captures` accepte la capture du 18 juillet et en liste les 7 décisions. Il refuse, avec le fichier et le champ nommés : un en-tête absent, un statut inconnu, une règle sans cible valide, un ✅ ou ❌ sans décision ni date, un ⏳ daté.
+- [ ] `retro:captures` accepte la capture du 18 juillet et en liste les 7 décisions. Il refuse, avec le fichier et le champ nommés : un en-tête absent, un statut inconnu, une règle sans cible valide, un ✅ ou ❌ sans décision ni date, un ⏳ qui porte déjà une décision ou une date.
 - [ ] Une proposition de type `feature` est acceptée par l'extracteur. Le temps 3 dit quand en proposer une.
 - [ ] Une règle ciblée déclare sa portée par `applies:` ou `interactions:` de sa cible. Le SKILL dit que le bundle déploie le texte sans porter la portée, et `retire` enlève aussi le lien.
 - [ ] La capture du 18 juillet porte l'en-tête cible, fidèle à son tableau « Décisions du PO ».

@@ -144,6 +144,15 @@ describe('parseRetroCapture — les refus nomment le fichier et le champ', () =>
     expect(problemsOf(capture(pre)).join('\n')).toMatch(at('date', '.*⏳'));
   });
 
+  it('refuse un ⏳ qui porte déjà une décision : la case n’est pas à moitié pré-remplie', () => {
+    const pre = `  - proposition: "Vérifier avant de citer"
+    kind: regle
+    target: global
+    status: ⏳
+    decision: "Adoptée, obligatoire"`;
+    expect(problemsOf(capture(pre)).join('\n')).toMatch(at('decision', '.*⏳'));
+  });
+
   it('numérote les actions pour retrouver la bonne', () => {
     const deux = `${ACTION_OK}\n  - proposition: "Deuxième"\n    kind: spike\n    status: bof`;
     expect(problemsOf(capture(deux)).join('\n')).toMatch(/actions\[1\] \(« Deuxième »\)\.status/);

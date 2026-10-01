@@ -131,8 +131,10 @@ function parseAction(
     if (!decision) fail('decision', `un ${status} dit ce que le PO a décidé : texte non vide attendu`);
     if (!date) fail('date', `un ${status} porte la date de la décision (AAAA-MM-JJ)`);
     else if (!isRealDay(date)) fail('date', `AAAA-MM-JJ attendu, reçu « ${date} »`);
-  } else if (status === '⏳' && date) {
-    fail('date', 'un ⏳ ne porte pas de date : la case du PO reste vide tant qu’il n’a pas tranché');
+  } else if (status === '⏳') {
+    // La case du PO reste vide tant qu'il n'a pas tranché : ni décision, ni date.
+    if (decision) fail('decision', 'un ⏳ ne porte pas de décision : la case du PO reste vide tant qu’il n’a pas tranché');
+    if (date) fail('date', 'un ⏳ ne porte pas de date : la case du PO reste vide tant qu’il n’a pas tranché');
   }
 
   if (!ok) return undefined;
