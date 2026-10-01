@@ -29,6 +29,7 @@ import {
   renderNavBar,
   renderSvgWrapper,
 } from '../src/core/ezk-map-menu.js';
+import { dataViewForPath } from '../src/io/derived-views.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz
@@ -135,6 +136,22 @@ const server = createServer((req, res) => {
       res.writeHead(403).end('403');
       return;
     }
+    // Vues générées NON committées (ADR-0055) : le fichier de données d'une page (board, pilotage,
+    // runs) est CALCULÉ à la requête depuis les sources réelles — jamais périmé, même absent du
+    // disque. Une source illisible rend une 500 lisible plutôt qu'un 400 trompeur.
+    const dataView = dataViewForPath(rel);
+    if (dataView) {
+      try {
+        const body = dataView.build(REPO_ROOT);
+        res.writeHead(200, { 'Content-Type': MIME['.js'], 'Cache-Control': 'no-store' });
+        res.end(body);
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': MIME['.js'] });
+        res.end(`// views: construction impossible — ${(err as Error).message}\n`);
+      }
+      return;
+    }
+
     if (!existsSync(target) || statSync(target).isDirectory()) {
       res.writeHead(404).end('404');
       return;

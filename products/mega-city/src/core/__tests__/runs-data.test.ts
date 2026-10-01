@@ -8,7 +8,6 @@ import {
   RUNS_DATA_END,
   buildRunsData,
   buildRunsDataBlock,
-  upsertRunsDataBlock,
 } from '../runs-data.js';
 
 const R = (over: Partial<RunReport>): RunReport => ({
@@ -37,18 +36,12 @@ describe('buildRunsData', () => {
   });
 });
 
-describe('bloc de données de runs.html', () => {
-  it('upsert remplace le contenu entre les marqueurs (round-trip)', () => {
-    const html = `avant ${RUNS_DATA_BEGIN}\nOLD\n${RUNS_DATA_END} après`;
-    const out = upsertRunsDataBlock(html, buildRunsDataBlock([R({})]));
-    expect(out.startsWith('avant ')).toBe(true);
-    expect(out.endsWith(' après')).toBe(true);
-    expect(out).toContain('window.EZK_RUNS =');
-    expect(out).not.toContain('OLD');
-  });
-
-  it('échoue franchement si les marqueurs manquent', () => {
-    expect(() => upsertRunsDataBlock('<title>x</title>', 'bloc')).toThrow(/marqueurs/);
+describe('bloc de données de runs (runs.data.js)', () => {
+  it('est délimité par ses marqueurs et affecte window.EZK_RUNS', () => {
+    const block = buildRunsDataBlock([R({})]);
+    expect(block.startsWith(RUNS_DATA_BEGIN)).toBe(true);
+    expect(block.endsWith(RUNS_DATA_END)).toBe(true);
+    expect(block).toContain('window.EZK_RUNS =');
   });
 
   it('échappe `<` pour qu\'un titre ne ferme pas la balise <script>', () => {

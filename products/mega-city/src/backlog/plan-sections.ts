@@ -14,7 +14,7 @@
  * ne capter que les tokens de LONGUEUR D'ID RÉELLE — 4 chiffres (legacy) ou 17 (horodaté,
  * fiche 0180) — bornés par des non-chiffres. Préfixe `mc-` legacy toléré, normalisé.
  *
- * Logique PURE, sans I/O (ADR-0003) ; la coquille est `bin/regen-plan-view.ts`.
+ * Logique PURE, sans I/O (ADR-0003) ; la colle I/O est `src/io/derived-views.ts`.
  */
 
 export type PlanMarker = 'build' | 'audit' | 'ship' | 'groom';

@@ -7,7 +7,6 @@ import {
   PLAN_DATA_END,
   buildPlanViewData,
   buildPlanViewDataBlock,
-  upsertPlanViewDataBlock,
 } from '../core/plan-view-data.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { loadFiches } from '../loaders/fiches.js';
@@ -83,15 +82,12 @@ describe('buildPlanViewData (fiche 20260825213807501)', () => {
 });
 
 describe('bloc géré window.EZK_PLAN (marqueurs disjoints d’avancement)', () => {
-  it('pose le bloc entre les marqueurs, idempotent, et échoue franchement si absents', () => {
-    const stub = `avant ${PLAN_DATA_BEGIN}\nOLD\n${PLAN_DATA_END} apres`;
+  it('le bloc est délimité par ses marqueurs, déterministe, et affecte window.EZK_PLAN', () => {
     const block = buildPlanViewDataBlock(PLAN, FICHES);
-    const out = upsertPlanViewDataBlock(stub, block);
-    expect(out).toContain('window.EZK_PLAN');
-    expect(out.startsWith('avant ')).toBe(true);
-    expect(out.endsWith(' apres')).toBe(true);
-    expect(upsertPlanViewDataBlock(out, block)).toBe(out); // idempotent
-    expect(() => upsertPlanViewDataBlock('sans marqueurs', block)).toThrow();
+    expect(block.startsWith(PLAN_DATA_BEGIN)).toBe(true);
+    expect(block.endsWith(PLAN_DATA_END)).toBe(true);
+    expect(block).toContain('window.EZK_PLAN =');
+    expect(buildPlanViewDataBlock(PLAN, FICHES)).toBe(block); // déterministe
   });
 
   it('échappe `<` dans les données (protège la balise <script> porteuse)', () => {
