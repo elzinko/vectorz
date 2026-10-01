@@ -90,8 +90,8 @@ Hors lot : les agents qui utilisent un outil (`agent → tool`) et les commandes
 **Preuves.** Tests : `tools.test.ts` (chaque règle du calcul du lien), `tools-loader.test.ts`
 (ce qui est listé, ce que le manifeste dit, ce qui ne jette jamais), `graph-tools.test.ts`
 (nœuds, liens, orphelins), `tools-real-repo.test.ts` (le dépôt réel : cas connus reliés, zéro faux
-orphelin, source de chaque outil) et `graph-vocabulary.test.ts` (cinq verbes). Sur le dépôt réel :
-71 outils, 37 cités par une commande, 4 orphelins (`bin/build-mcpb.sh`, `bin/fiche-rows.ts`,
+orphelin, source de chaque outil) et `graph-vocabulary.test.ts` (cinq verbes). Sur le dépôt réel,
+le 2026-10-01 : 73 outils, 4 orphelins (`bin/build-mcpb.sh`, `bin/fiche-rows.ts`,
 `bin/recipe-frontmatter.ts`, `bin/supervision-demo-run.ts`). Avant/après : voir la PR.
 
 ## Comment vérifier
