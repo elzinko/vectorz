@@ -80,3 +80,10 @@ docs/dogfood-reports/
 /.ezk/
 # Lanceur universel (fiche 20260917162000501) : état d'exécution des stacks, jamais suivi.
 .vectorz/run/
+
+# Vues générées NON committées (fiche 20260830194601376, ADR-0055) — construites à la demande par
+# `pnpm --dir products/mega-city views:regen` ou servies à la volée par `pnpm ezk:map`. Seules les
+# vues lues sur GitHub (features/BACKLOG.md, features/PLAN.md) restent committées : deux sessions
+# parallèles ne peuvent plus se disputer ces fichiers. Pour la coque HTML, voir l'ADR.
+/PORTFOLIO.md
+/diagrams/*/*.data.js

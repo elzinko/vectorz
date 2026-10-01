@@ -23,27 +23,15 @@ export function buildPilotageData(fiches: Fiche[], runs: RunReport[]): PilotageD
   return { milestones, runs: { total: counts.total, withPr: counts.withPr, prs: counts.prs } };
 }
 
-// --- Bord pour la vue `diagrams/pilotage/pilotage.html` (même patron de marqueurs que le board). ---
+// --- Bloc de données de la vue pilotage (fichier voisin `pilotage.data.js`, non committé — ADR-0055) ---
 
 export const PILOTAGE_DATA_BEGIN = '/*ezk-pilotage-data:begin*/';
 export const PILOTAGE_DATA_END = '/*ezk-pilotage-data:end*/';
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans pilotage.html. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `pilotage.data.js`. */
 export function buildPilotageDataBlock(fiches: Fiche[], runs: RunReport[]): string {
   // `<` échappé (protège la SOURCE : un titre contenant `</script>` ne ferme pas la balise porteuse ;
   // le RENDU est protégé séparément via textContent). Deux protections distinctes — cf. avancement-data.
   const json = JSON.stringify(buildPilotageData(fiches, runs), null, 1).replace(/</g, '\\u003c');
   return `${PILOTAGE_DATA_BEGIN}\nwindow.EZK_PILOTAGE = ${json};\n${PILOTAGE_DATA_END}`;
-}
-
-/** Pose `block` entre les marqueurs (qui DOIVENT exister) — absents ⇒ erreur franche, comme le board. */
-export function upsertPilotageDataBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(PILOTAGE_DATA_BEGIN);
-  const endIdx = text.indexOf(PILOTAGE_DATA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${PILOTAGE_DATA_BEGIN} … ${PILOTAGE_DATA_END} introuvables dans pilotage.html`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + PILOTAGE_DATA_END.length);
 }

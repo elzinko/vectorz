@@ -47,16 +47,15 @@ function main(): number {
   const portfolio = readView(join(repoRoot, 'PORTFOLIO.md'));
   const plan = readView(join(repoRoot, 'features', 'PLAN.md'));
 
-  const missing = [
-    portfolio === null ? 'PORTFOLIO.md' : '',
-    plan === null ? 'features/PLAN.md' : '',
-  ].filter(Boolean);
-  if (missing.length > 0) {
-    console.error(`✗ Vue(s) de planning introuvable(s) : ${missing.join(', ')}`);
+  // PLAN.md est committé et curé : son absence est une vraie erreur. PORTFOLIO.md, lui, est
+  // construit à la demande et n'est plus committé (ADR-0055) : absent, il n'y a rien de périmé à
+  // signaler ; présent (copie locale), il est contrôlé comme avant.
+  if (plan === null) {
+    console.error('✗ Vue de planning introuvable : features/PLAN.md');
     return 2;
   }
 
-  const stale = findStalePlanningViews(statusById, portfolio ?? '', plan ?? '');
+  const stale = findStalePlanningViews(statusById, portfolio ?? '', plan);
   if (stale.length === 0) {
     console.log('✓ Vues de planning à jour (aucune fiche livrée présentée comme à faire).');
     return 0;
@@ -73,7 +72,7 @@ function main(): number {
   for (const entry of unique) {
     console.log(`  - ${entry.id} — ${entry.view} (${entry.shown}) · ${entry.where}`);
   }
-  console.log('\nCorrige : régénère PORTFOLIO.md (portfolio.sh) et cure PLAN.md (barrer + « shipped #PR »).');
+  console.log('\nCorrige : cure PLAN.md (barrer + « shipped #PR ») et, si PORTFOLIO.md traîne en local, `views:regen`.');
   return 1;
 }
 

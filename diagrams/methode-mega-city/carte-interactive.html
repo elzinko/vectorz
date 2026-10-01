@@ -452,20 +452,20 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 74,
+  "rules": 75,
   "agents": 8,
   "skills": 25,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 212,
+  "total": 216,
   "casses": 0
  },
  "provenance": {
   "prouve": {
-   "briques": 123,
-   "liens": 212,
+   "briques": 124,
+   "liens": 216,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -480,7 +480,7 @@ window.EZK = {
  },
  "assemblage": {
   "nodes": {
-   "rule": 74,
+   "rule": 75,
    "agent": 8,
    "skill": 25,
    "bundle": 10,
@@ -509,7 +509,7 @@ window.EZK = {
     "from": "bundle",
     "verb": "compose",
     "to": "rule",
-    "count": 59
+    "count": 60
    },
    {
     "from": "profile",
@@ -539,13 +539,13 @@ window.EZK = {
     "from": "rule",
     "verb": "est-verifie-par",
     "to": "agent",
-    "count": 25
+    "count": 26
    },
    {
     "from": "skill",
     "verb": "applique",
     "to": "rule",
-    "count": 8
+    "count": 10
    },
    {
     "from": "skill",
@@ -2152,6 +2152,20 @@ window.EZK = {
    ],
    "agents": []
   },
+  "documentation-guidelines/next-step-affordance": {
+   "id": "documentation-guidelines/next-step-affordance",
+   "source": "products/mega-city/rules/documentation-guidelines/next-step-affordance.md",
+   "title": "End a skill's human-facing answer with « Et maintenant ? »",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "base"
+   ],
+   "agents": []
+  },
   "documentation-guidelines/proven-outbound-references": {
    "id": "documentation-guidelines/proven-outbound-references",
    "source": "products/mega-city/rules/documentation-guidelines/proven-outbound-references.md",
@@ -2561,7 +2575,8 @@ window.EZK = {
     "clean-code/no-dead-code",
     "conventional-commits/format",
     "development/pr-before-after-media",
-    "documentation-guidelines/human-facing-lisibility"
+    "documentation-guidelines/human-facing-lisibility",
+    "documentation-guidelines/next-step-affordance"
    ],
    "profiles": [
     "base",
