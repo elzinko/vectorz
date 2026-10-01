@@ -120,6 +120,27 @@ commands:
     root: none
     project: true
 
+  # --- dor : la « prête » propre à un projet (.vectorz/dor.yml, ADR-0016 amendé) ---
+  # Le projet visé : --root, EZK_ROOT, sinon la racine git du dossier courant. Elles ne font que lire.
+  - domain: dor
+    verb: show
+    run: bin/ezk-dor.ts show
+    summary: Montre les critères de « prête » que le projet ajoute au socle (.vectorz/dor.yml).
+    root: none
+    project: true
+  - domain: dor
+    verb: check
+    run: bin/ezk-dor.ts check
+    summary: Dit si une fiche tient les critères de « prête » du projet, code 1 sinon.
+    root: none
+    project: true
+  - domain: dor
+    verb: health
+    run: bin/ezk-dor.ts health
+    summary: Compte les fiches prêtes et pas prêtes, code 1 sous le seuil de lot du projet.
+    root: none
+    project: true
+
   # --- graph : le graphe compilé de la méthode ---
   - domain: graph
     verb: compile

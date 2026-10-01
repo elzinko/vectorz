@@ -22,7 +22,7 @@ const launcher = join(megaCity, 'bin', 'ezk.mjs');
 const tsxCli = createRequire(import.meta.url).resolve('tsx/cli');
 
 const PROJECT_FICHE = '20991231000000001';
-const A_VECTORZ_FICHE = '20260826173221323'; // la fiche de ce chantier : elle vit dans vectorz, pas dans le projet jetable
+const A_VECTORZ_FICHE = '20260830114318159'; // une fiche OUVERTE de vectorz (listée par avancement), pas du projet jetable : à remplacer quand elle est livrée
 
 let project: string;
 let elsewhere: string;

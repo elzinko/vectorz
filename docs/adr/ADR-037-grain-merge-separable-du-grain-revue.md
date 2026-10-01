@@ -5,6 +5,8 @@
 - **Fiches** : [0065](../../features/done/0065-sprint-composition-lot-coherent.md) (sprint composition / mode `--delivery`)
 - **Déciders** : PO (Thomas) ; **panel adverse passé le 2026-08-13** ([capture](../captures/2026-08-13-panel-adverse-adr-037.md))
 
+> **Précisé le 2026-10-01 par [ADR-0059](../../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md).** L'invariant « 1 feature = 1 branche = 1 PR = 1 squash-merge » se lit désormais « … = 1 PR **quand `github.pr` est actif** » : l'unité atomique est la branche, la PR est la projection de l'adaptateur GitHub. Le reste de la décision (lots, train de merge, une seule politique de squash) ne bouge pas.
+
 > **Révision 2026-08-13 (panel adverse).** La 1ʳᵉ version proposait un **mode agrégé** (N features
 > dans **1 PR**, merge en **`rebase-merge`**). Le panel l'a **écarté** (verdict archi NO-GO, faisabilité
 > et valeur GO-avec-réserves convergents) : exécutant orphelin, prémisse « frictions par-merge » fausse
