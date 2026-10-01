@@ -264,6 +264,10 @@ describe('provenance dans les deux sens (fiche 20260910231201744 — merged_from
     expect(b).toEqual([expect.objectContaining({ file: '2.md', field: 'split_from' })]);
   });
 
+  it('une fiche sans id ne fabrique pas de fausses anomalies sur les autres', () => {
+    expect(findProvenanceMismatches([E('', { file: 'sans-id.md' }), E('1'), E('2', { mergedFrom: [] })])).toEqual([]);
+  });
+
   it('un id absent des fiches est ignoré ici (c’est un id fantôme, signalé ailleurs)', () => {
     expect(findProvenanceMismatches([E('1', { mergedFrom: ['999'], mergedInto: '888', splitFrom: '777' })])).toEqual([]);
   });

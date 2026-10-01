@@ -164,13 +164,14 @@ export interface ProvenanceEntry {
  * main (ou d'un apply interrompu) : elle ment à celui qui la lit dans l'autre sens.
  */
 export function findProvenanceMismatches(entries: ReadonlyArray<ProvenanceEntry>): FicheAnomaly[] {
-  const byId = new Map(entries.map((e) => [e.id, e] as const));
+  // Une fiche sans id n'est pas adressable : sans ce filtre, la clé '' attirerait toute provenance vide.
+  const byId = new Map(entries.filter((e) => e.id !== '').map((e) => [e.id, e] as const));
   const anomalies: FicheAnomaly[] = [];
   const report = (file: string, field: string, message: string): void => {
     anomalies.push({ file, field, message: `provenance non réciproque : ${message}` });
   };
   for (const e of entries) {
-    const target = byId.get(e.mergedInto);
+    const target = e.mergedInto === '' ? undefined : byId.get(e.mergedInto);
     if (target && !target.mergedFrom.includes(e.id)) {
       report(e.file, 'merged_into', `${e.mergedInto} ne cite pas ${e.id} dans merged_from`);
     }
@@ -186,7 +187,7 @@ export function findProvenanceMismatches(entries: ReadonlyArray<ProvenanceEntry>
         report(e.file, 'split_into', `${id} ne dit pas split_from: ${e.id}`);
       }
     }
-    const parent = byId.get(e.splitFrom);
+    const parent = e.splitFrom === '' ? undefined : byId.get(e.splitFrom);
     if (parent && !parent.splitInto.includes(e.id)) {
       report(e.file, 'split_from', `${e.splitFrom} ne cite pas ${e.id} dans split_into`);
     }

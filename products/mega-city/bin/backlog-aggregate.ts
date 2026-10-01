@@ -182,6 +182,11 @@ function printLlmReport(
     console.log('\nRejetées (jamais appliquées) :');
     for (const r of rejected) console.log(`  n°${r.index} : ${r.reason}`);
   }
+  if (accepted.length === 0 && rejected.length > 0) {
+    // Tout rejeter n'est pas un succès : un appelant scripté doit le distinguer de « tout validé ».
+    console.log('\nAucune proposition valide : corrige le fichier et relance.');
+    process.exitCode = 1;
+  }
   if (!crossed) return;
 
   const cross = crossCheck(clusters, accepted);

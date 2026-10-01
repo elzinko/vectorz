@@ -172,6 +172,16 @@ describe('backlog:aggregate — le moteur llm « propose »', () => {
     expect(git('status', '--porcelain')).toBe('');
   });
 
+  it('toutes les propositions rejetées : les raisons sont listées ET le code de sortie est 1', () => {
+    const file = proposals([{ kind: 'merge', into: I(1), sources: [I(99)], why: 'id inventé' }]);
+    const r = run('aggregate', '--mode', 'llm', '--proposals', file);
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('0 proposition(s) validée(s), 1 rejetée(s)');
+    expect(r.out).toContain(`n°1 : id ${I(99)} inconnu`);
+    expect(r.out).toContain('Aucune proposition valide');
+    expect(git('status', '--porcelain')).toBe('');
+  });
+
   it('--mode both : croise les clusters du script avec les propositions du llm', () => {
     const file = proposals([{ kind: 'merge', into: I(1), sources: [I(2)], why: 'même sujet' }]);
     const r = run('aggregate', '--mode', 'both', '--proposals', file);
