@@ -49,7 +49,12 @@ const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz = la MÉTHODE : ses pages
 const DIAGRAMS = join(REPO_ROOT, 'diagrams');
 // Le PROJET dont on lit les fiches : --root > EZK_ROOT > la méthode (comportement d'avant).
-const { root: PROJECT_ROOT, source: ROOT_SOURCE, rest: cliArgs } = projectRootOrExit(REPO_ROOT);
+// Le tableau de bord annonce lui-même le projet, dans son bloc de démarrage : pas de bandeau en plus.
+const {
+  root: PROJECT_ROOT,
+  source: ROOT_SOURCE,
+  rest: cliArgs,
+} = projectRootOrExit(REPO_ROOT, undefined, { announce: false });
 const DEFAULT_SLUG = 'methode-mega-city';
 
 const MIME: Record<string, string> = {

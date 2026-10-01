@@ -10,6 +10,7 @@ import {
   type ResolvedRoot,
   extractRootFlag,
   resolveProjectRoot,
+  rootBanner,
 } from '../core/project-root.js';
 
 export class ProjectRootError extends Error {}
@@ -54,10 +55,21 @@ export function projectRootFromProcess(
   return { ...resolved, rest };
 }
 
+export interface RootOptions {
+  /**
+   * Annoncer sur stderr quel projet est visé quand ce n'est pas le défaut (oui par défaut). stderr, pas
+   * stdout : un `--json` reste du JSON. Un script qui dit déjà quel projet il traite l'éteint.
+   */
+  announce?: boolean;
+}
+
 /** Comme `projectRootFromProcess`, pour un script : une erreur s'écrit sur stderr, code 2. */
-export function projectRootOrExit(fallback: string, argv?: string[]): ProcessRoot {
+export function projectRootOrExit(fallback: string, argv?: string[], options: RootOptions = {}): ProcessRoot {
   try {
-    return projectRootFromProcess(fallback, argv);
+    const resolved = projectRootFromProcess(fallback, argv);
+    const banner = rootBanner(resolved);
+    if (banner && options.announce !== false) console.error(banner);
+    return resolved;
   } catch (error) {
     if (!(error instanceof ProjectRootError)) throw error;
     console.error(error.message);
