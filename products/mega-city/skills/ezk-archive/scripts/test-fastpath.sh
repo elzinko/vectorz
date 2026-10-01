@@ -80,6 +80,21 @@ BEFORE="$(git status --porcelain | wc -l | tr -d ' ')"
 bash "$CHECK" --gate --shipped none --worked none >/dev/null
 ok "aucun fichier créé ni modifié"           "[ \"\$(git status --porcelain | wc -l | tr -d ' ')\" = \"\$BEFORE\" ]"
 
+echo "F7 — un worktree voisin sale ne bloque pas la voie rapide, mais elle le dit :"
+git worktree add -q --detach "$TMP/voisin" main
+echo "travail d'un agent" > "$TMP/voisin/agent.txt"
+OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
+ok "EMPTY other_worktrees_dirty=1"           "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY other_worktrees_dirty=1'"
+rm -f "$TMP/voisin/agent.txt"
+OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
+ok "voisin redevenu propre : EMPTY nu"       "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY'"
+echo "en cours" > travail-principal.txt
+OUT="$(cd "$TMP/voisin" && bash "$CHECK" --gate --shipped none --worked none)"
+ok "lancé depuis le voisin propre, le principal sale est signalé" \
+   "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY other_worktrees_dirty=1'"
+rm -f travail-principal.txt
+git worktree remove --force "$TMP/voisin"
+
 # ── W : les fiches travaillées ─────────────────────────────────────────────────
 new_repo worked
 echo "W1 — --worked est recopié sur la ligne P3_BACKLOG :"

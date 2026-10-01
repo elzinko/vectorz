@@ -25,6 +25,11 @@ describe('ezk-archive — voie rapide', () => {
     expect(skill.indexOf('FASTPATH: EMPTY')).toBeLessThan(skill.indexOf('#### `VERDICT: CLEAN`'));
   });
 
+  it('la voie rapide dit le travail non commité des autres worktrees au lieu de le taire', () => {
+    expect(skill).toContain('other_worktrees_dirty=N');
+    expect(skill).toMatch(/ne tait jamais ce reste/);
+  });
+
   it('une clôture complète garde ses raisons de refus', () => {
     for (const reason of ['verdict', 'shipped', 'worked', 'sprint', 'shipped_undeclared', 'worked_undeclared']) {
       expect(skill, reason).toContain(`\`${reason}\``);

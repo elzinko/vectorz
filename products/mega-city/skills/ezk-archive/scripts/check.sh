@@ -15,6 +15,8 @@
 #   FASTPATH: EMPTY               rien à sauver : verdict CLEAN + `--shipped none` + `--worked none`
 #                                 + pas de SPRINT.md avec du contenu → le skill répond « rien à
 #                                 archiver » en une ligne (fiche 20260904091853948).
+#                                 Si d'AUTRES worktrees portent du travail non commité (un agent, une autre
+#                                 session), la ligne le dit : `FASTPATH: EMPTY other_worktrees_dirty=N`.
 #   FASTPATH: NO reason=<a,b,…>   sinon : verdict · shipped · shipped_undeclared · worked ·
 #                                 worked_undeclared · sprint. Une session sale déroule la clôture complète.
 #   Un compteur de la ligne P2_PENDING dit `affichées/total` quand le plafond MAX_FACTS coupe sa liste.
@@ -569,7 +571,25 @@ if [[ -z "$WORKED" ]]; then fp_reason worked_undeclared; elif [[ "$WORKED" != "n
 # Un SPRINT.md qui porte autre chose que des titres, des lignes vides et des commentaires est du
 # contenu à archiver (docs/sessions/). Dans le doute, on déroule la clôture.
 if [[ -f SPRINT.md ]] && grep -qvE '^[[:space:]]*($|#|<!--)' SPRINT.md 2>/dev/null; then fp_reason sprint; fi
-if [[ -z "$FP_REASONS" ]]; then FASTPATH_LINE="FASTPATH: EMPTY"; else FASTPATH_LINE="FASTPATH: NO reason=$FP_REASONS"; fi
+if [[ -z "$FP_REASONS" ]]; then
+  FASTPATH_LINE="FASTPATH: EMPTY"
+  # Le travail non commité d'un AUTRE worktree (un agent, une autre session) n'est vu ni par P1, qui lit
+  # le worktree courant, ni par le verdict. La voie rapide ne le tait pas : elle le dit sur sa ligne.
+  OTHER_DIRTY=0
+  here_real="$(pwd -P)"
+  while IFS= read -r wl; do
+    case "$wl" in
+      "worktree "*)
+        w="${wl#worktree }"
+        [[ -d "$w" ]] || continue
+        [[ "$(cd "$w" 2>/dev/null && pwd -P)" == "$here_real" ]] && continue
+        [[ -n "$(git --no-optional-locks -C "$w" status --porcelain 2>/dev/null | head -n 1)" ]] && OTHER_DIRTY=$((OTHER_DIRTY + 1)) ;;
+    esac
+  done < <(git worktree list --porcelain 2>/dev/null)
+  (( OTHER_DIRTY > 0 )) && FASTPATH_LINE="FASTPATH: EMPTY other_worktrees_dirty=$OTHER_DIRTY"
+else
+  FASTPATH_LINE="FASTPATH: NO reason=$FP_REASONS"
+fi
 
 # ==============================================================================
 # MÉNAGE (--cleanup) : l'inventaire de ce qui se range sans risque. NE SUPPRIME RIEN.

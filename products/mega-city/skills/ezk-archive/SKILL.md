@@ -165,6 +165,9 @@ git ni le backlog ne disent ? Si **non**, réponds par **une seule ligne** et ar
 Aucune note de handoff, aucun résumé, aucune écriture, **aucun sous-agent**, sur `check` comme
 sur `run`. Si le bloc montre des restes à ranger (`branch_absorbed` ou `worktree_prunable` non
 nuls), ajoute à la même ligne : « N branches absorbées à ranger : `check.sh --cleanup` ».
+Si la ligne porte `other_worktrees_dirty=N`, d'autres worktrees (un agent, une autre session) ont du
+travail non commité que le portier ne juge pas : ajoute à la même ligne « N autre(s) worktree(s) ont
+des changements non commités : à regarder ». La voie rapide ne tait jamais ce reste.
 Si **oui** (un fait durable existe), compose le résumé et déroule la branche `CLEAN` ci-dessous.
 
 #### `FASTPATH: NO reason=…` → la clôture complète
