@@ -73,6 +73,18 @@ export interface SkillAsset {
   executable?: boolean; // bit d'exécution de la source → mode 0o755 à la matérialisation
 }
 
+/**
+ * Une slash-command Claude Code (`/ezk-help`) — le 3ᵉ canal de lawgiver, avec les skills et les agents
+ * (fiche 20260816151112162). Un fichier MARKDOWN `commands/<id>.md`, déployé tel quel dans
+ * `~/.claude/commands/`. Pas de logique ici : la commande est une façade (souvent d'un CLI).
+ */
+export interface Command {
+  id: string; // 'ezk-help' = le nom du fichier sans `.md` : ce qu'on tape après le `/`
+  description?: string; // OPTIONNEL — la ligne `description:` du frontmatter (ce que l'aide de Claude Code affiche)
+  /** Le fichier ENTIER, frontmatter compris (Claude Code lit `description`, `argument-hint`, `allowed-tools`), `\n` final. */
+  content: string;
+}
+
 /** Une capacité / un playbook. Fichier MARKDOWN (corps = mode opératoire). Host-agnostique. */
 export interface Skill {
   id: string; // 'ezk-commits'
@@ -128,6 +140,8 @@ export interface Profile {
   bundles: string[]; // → règles
   agents: string[]; // → l'équipe
   skills: string[]; // → compétences directes du projet
+  /** → slash-commands (`commands/<id>.md`), posées dans `~/.claude/commands/` par `bind-global` (fiche 20260816151112162). */
+  commands?: string[];
   interactions?: string[]; // → règles d'interaction entre agents
 }
 
@@ -162,6 +176,8 @@ export interface ResolvedProfile {
   rules: Rule[];
   agents: Agent[];
   skills: Skill[];
+  /** Absent quand le profil n'en déclare aucune : les profils sans commande se résolvent comme avant. */
+  commands?: Command[];
 }
 
 /**

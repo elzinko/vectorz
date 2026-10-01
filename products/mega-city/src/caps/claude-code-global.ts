@@ -6,6 +6,7 @@
  * La racine est passée en PARAMÈTRE — seul le CLI résout `~/.claude`. Forme native :
  *   - skills/<id>/SKILL.md  ← un dossier par skill (comme claude-skills/install.sh)
  *   - agents/<id>.md        ← un fichier par agent (rôle markdown)
+ *   - commands/<id>.md      ← un fichier par slash-command (fiche 20260816151112162)
  *
  * PUR : ResolvedProfile → WritePlan, sans toucher au disque. La coquille I/O global
  * (src/io/apply.ts → applyGlobalPlan) applique le plan de façon NON-DESTRUCTIVE.
@@ -37,6 +38,19 @@ function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   }));
 }
 
+/**
+ * Les slash-commands (3ᵉ canal, fiche 20260816151112162) : `commands/<id>.md`, un fichier plat comme un
+ * agent — donc marqué de la même façon, pour que le 2ᵉ `bind-global` en copie reconnaisse le sien. Le
+ * front-matter de la commande (`description`, `argument-hint`, `allowed-tools`) est conservé : le marqueur
+ * s'ajoute en tête de l'en-tête, Claude Code ignore la clé.
+ */
+function commandFiles(resolved: ResolvedProfile): FileWrite[] {
+  return (resolved.commands ?? []).map((command) => ({
+    path: `commands/${assertSafeId(command.id)}.md`,
+    content: markManaged(command.content),
+  }));
+}
+
 /** La loi du profil, en UN fichier — absent si le profil ne porte aucune règle. */
 function lawFiles(resolved: ResolvedProfile): FileWrite[] {
   if (resolved.rules.length === 0) return [];
@@ -47,6 +61,7 @@ function materialize(resolved: ResolvedProfile, _root: string): WritePlan {
   // Skills en dossiers `skills/<id>/SKILL.md` — logique partagée (ADR-0014, prefix='skills').
   const files: FileWrite[] = [
     ...agentFiles(resolved),
+    ...commandFiles(resolved),
     ...skillFolderFiles(resolved, 'skills'),
     ...lawFiles(resolved),
   ].sort((a, b) => a.path.localeCompare(b.path));

@@ -49,4 +49,9 @@ skills:
   - ezk-retro
   - ezk-scout
   - ezk-sprint
+# → les slash-commands du catalogue (commands/<id>.md) → installées dans ~/.claude/commands/
+#   (fiche 20260816151112162 : /ezk-help était copiée à la main, donc absente d'une machine neuve).
+#   Garde : src/__tests__/global-profile-covers-ezk.test.ts — toute commande du catalogue est ici.
+commands:
+  - ezk-help
 interactions: []           # → règles d'interaction entre agents

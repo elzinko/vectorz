@@ -56,7 +56,10 @@ Zéro IA dans le chemin d'écriture.
 - `bind <profile> <projet> [host]` : `expand(profile)` (résout `extends`, déduplique) puis matérialise
   par le `cap` de l'hôte. C'est le « charger d'un coup ». Données pures → fichiers, testable.
 - `bind-global <profile> [--link] [--target <dossier>]` : même chose dans `~/.claude` (skills,
-  agents et loi du profil).
+  agents, slash-commands et loi du profil). Un profil déclare ses commandes avec `commands:`
+  (`commands/<id>.md`, posées dans `~/.claude/commands/`). En copie, un agent ou une commande porte la
+  clé d'en-tête `generated-by: lawgiver bind-global` : c'est ce qui prouve qu'ils sont à lawgiver, et
+  permet de rejouer la commande sans jamais écraser un fichier à toi.
 - `status <profile> [--target <dossier>]` : ce qui est déployé, en lecture seule.
 - `doctor <profile> [--target <dossier>]` : ce qui est déclaré mais pas installé (élément manquant,
   lien mort, copie périmée, loi absente ou périmée), en lecture seule, code 1 s'il y a un écart.
