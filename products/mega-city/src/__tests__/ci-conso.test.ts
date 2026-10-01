@@ -9,7 +9,9 @@ import {
   type UsageItem,
   aggregateActionsUsage,
   formatConsoReport,
+  hideFreeForks,
   isActionsMinutes,
+  parseConsoArgs,
 } from '../core/ci-conso.js';
 
 // Fixture inspirée d'une vraie réponse /settings/billing/usage : plusieurs SKU par repo,
@@ -84,5 +86,123 @@ describe('ci-conso — agrégation déterministe (fiche 20260828150801613)', () 
     expect(r.rows).toEqual([]);
     expect(r.totalMinutes).toBe(0);
     expect(r.totalNetUsd).toBe(0);
+  });
+});
+
+/**
+ * `--no-forks` (fiche 20260829132313947) : ranger à part les forks qui ne pèsent PAS sur le quota
+ * (publics, sans coût) sans jamais masquer ce qui consomme vraiment.
+ */
+describe('ci-conso — masquer les forks gratuits (--no-forks)', () => {
+  const run = (repositoryName: string, quantity: number, netAmount = 0): UsageItem => ({
+    product: 'actions',
+    sku: 'Actions Linux',
+    quantity,
+    unitType: 'Minutes',
+    netAmount,
+    repositoryName,
+  });
+  const ITEMS: UsageItem[] = [
+    run('vectorz', 900),
+    run('muti', 700, 4.96),
+    run('p5.js', 300), // fork public gratuit
+    run('BMAD-METHOD', 120), // fork public gratuit
+    run('mon-fork-prive', 50), // fork PRIVÉ : pèse sur le quota
+    run('fork-facture', 40, 1.5), // fork public mais FACTURÉ (gros runner)
+    run('fork-inconnu', 30), // fork dont la visibilité n'a pas pu être lue
+  ];
+  const VIS = {
+    vectorz: 'public',
+    muti: 'private',
+    'p5.js': 'public',
+    'BMAD-METHOD': 'public',
+    'mon-fork-prive': 'private',
+    'fork-facture': 'public',
+    // 'fork-inconnu' absent → '?'
+  };
+  const FORKS = new Set(['p5.js', 'BMAD-METHOD', 'mon-fork-prive', 'fork-facture', 'fork-inconnu']);
+
+  it('masque les forks publics sans coût, recalcule les totaux, compte ce qui est masqué', () => {
+    const r = hideFreeForks(aggregateActionsUsage(ITEMS, VIS), FORKS);
+    expect(r.rows.map((row) => row.repo)).toEqual([
+      'vectorz',
+      'muti',
+      'mon-fork-prive',
+      'fork-facture',
+      'fork-inconnu',
+    ]);
+    expect(r.hiddenForks).toEqual({ count: 2, minutes: 420 }); // p5.js 300 + BMAD-METHOD 120
+    expect(r.totalMinutes).toBe(900 + 700 + 50 + 40 + 30); // somme des lignes GARDÉES
+    expect(r.totalNetUsd).toBeCloseTo(4.96 + 1.5);
+  });
+
+  it('ne masque JAMAIS ce qui consomme : fork privé, fork facturé, fork à visibilité inconnue', () => {
+    const r = hideFreeForks(aggregateActionsUsage(ITEMS, VIS), FORKS);
+    const repos = r.rows.map((row) => row.repo);
+    expect(repos).toContain('mon-fork-prive');
+    expect(repos).toContain('fork-facture');
+    expect(repos).toContain('fork-inconnu');
+  });
+
+  it('un repo public qui n’est PAS un fork reste affiché', () => {
+    const r = hideFreeForks(aggregateActionsUsage(ITEMS, VIS), new Set(['p5.js']));
+    expect(r.rows.map((row) => row.repo)).toContain('vectorz');
+    expect(r.hiddenForks).toEqual({ count: 1, minutes: 300 });
+  });
+
+  it('option appliquée sans fork à masquer → lignes intactes, « 0 masqué » explicite', () => {
+    const base = aggregateActionsUsage(ITEMS, VIS);
+    const r = hideFreeForks(base, new Set());
+    expect(r.rows).toEqual(base.rows);
+    expect(r.totalMinutes).toBe(base.totalMinutes);
+    expect(r.hiddenForks).toEqual({ count: 0, minutes: 0 });
+  });
+
+  it('pur : le rapport d’entrée n’est pas modifié', () => {
+    const base = aggregateActionsUsage(ITEMS, VIS);
+    const snapshot = JSON.parse(JSON.stringify(base));
+    hideFreeForks(base, FORKS);
+    expect(base).toEqual(snapshot);
+  });
+
+  it('rendu : les forks masqués disparaissent de la table, un pied dit combien', () => {
+    const out = formatConsoReport(hideFreeForks(aggregateActionsUsage(ITEMS, VIS), FORKS), '2026-09');
+    expect(out).not.toMatch(/p5\.js/);
+    expect(out).not.toMatch(/BMAD-METHOD/);
+    expect(out).toMatch(/mon-fork-prive/); // le fork privé reste lisible
+    expect(out).toMatch(/forks masqués : 2 \(420 min/);
+    expect(out).toMatch(/total : 1720 min/);
+  });
+
+  it('rendu sans l’option : aucune ligne « forks masqués », forks présents (comportement inchangé)', () => {
+    const out = formatConsoReport(aggregateActionsUsage(ITEMS, VIS), '2026-09');
+    expect(out).not.toMatch(/forks masqués/);
+    expect(out).toMatch(/p5\.js/);
+  });
+});
+
+describe('ci-conso — lecture des arguments de la CLI', () => {
+  it('rien → mois courant, forks affichés', () => {
+    expect(parseConsoArgs([])).toEqual({ noForks: false });
+  });
+
+  it('une période, avec ou sans --no-forks, dans les deux ordres', () => {
+    expect(parseConsoArgs(['2026-08'])).toEqual({ period: '2026-08', noForks: false });
+    expect(parseConsoArgs(['2026-08', '--no-forks'])).toEqual({ period: '2026-08', noForks: true });
+    expect(parseConsoArgs(['--no-forks', '2026-08'])).toEqual({ period: '2026-08', noForks: true });
+    expect(parseConsoArgs(['--no-forks'])).toEqual({ noForks: true });
+  });
+
+  it('ignore le séparateur « -- » laissé par un lanceur', () => {
+    expect(parseConsoArgs(['--', '--no-forks'])).toEqual({ noForks: true });
+  });
+
+  it('jette sur une option inconnue (la faute de frappe ne passe pas en silence)', () => {
+    expect(() => parseConsoArgs(['--no-fork'])).toThrow(/option inconnue « --no-fork »/);
+    expect(() => parseConsoArgs(['-x'])).toThrow(/option inconnue/);
+  });
+
+  it('jette sur une deuxième période', () => {
+    expect(() => parseConsoArgs(['2026-08', '2026-09'])).toThrow(/une seule période/);
   });
 });

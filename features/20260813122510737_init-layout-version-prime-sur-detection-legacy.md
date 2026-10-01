@@ -65,14 +65,25 @@ Voie 1 préférée (ne pas dupliquer la logique de détection).
 
 ## Critères d'acceptation
 
-- [ ] Un `features/README.md` avec `layout_version: 2` **et** « Index auto-généré » ne
+- [x] Un `features/README.md` avec `layout_version: 2` **et** « Index auto-généré » ne
       déclenche **plus** le chemin « layout v1 détecté » d'`init.sh` (pas d'`exit 2` à tort).
-- [ ] Un README **legacy réel** (index auto-généré, **sans** `layout_version`) déclenche
+      — Cas O de `scripts/test-layout-version.sh` ; l'ancien `init.sh` sortait en `exit 2`.
+- [x] Un README **legacy réel** (index auto-généré, **sans** `layout_version`) déclenche
       **toujours** la proposition de migration 002 (pas de régression du cas legitime).
-- [ ] La détection de version d'`init.sh` et de `check-layout-version.sh` donne le **même
+      — Cas E (inchangé) : `exit 2`, pas de BACKLOG.md.
+- [x] La détection de version d'`init.sh` et de `check-layout-version.sh` donne le **même
       verdict** sur les mêmes entrées (une seule logique, ou deux logiques prouvées équivalentes
       par test).
-- [ ] Gate locale verte (tests shell du skill).
+      — Voie 1 : `init.sh` lit `INSTALLED` dans la sortie de `check-layout-version.sh`
+      (une seule logique). Le Cas O le prouve aussi pour `layout_version: 1` sans mention.
+- [x] Gate locale verte (tests shell du skill).
+      — `bash products/mega-city/skills/ezk-backlog/scripts/test-layout-version.sh` : TOUT VERT.
+
+## Livré (2026-10-01)
+
+Voie 1 retenue : `init.sh` n'entre dans la branche « migration » que si `INSTALLED=1`, verdict
+de `check-layout-version.sh`. Effet de bord voulu : un README qui déclare `layout_version: 1`
+sans la mention « Index auto-généré » est lui aussi classé v1 (même verdict que `check`).
 
 ## Notes / décisions
 
