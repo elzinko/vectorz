@@ -53,6 +53,7 @@ const SCRIPT_EXTENSION = /\.(sh|ts|mjs|js)$/;
  */
 export function isToolFile(name: string, executable: boolean): boolean {
   if (name.startsWith('.') || name.startsWith('test-') || name.endsWith('.md')) return false;
+  if (/\.(test|spec)\./.test(name)) return false; // `x.test.ts` : un test, pas un outil
   return SCRIPT_EXTENSION.test(name) || executable;
 }
 
@@ -80,12 +81,13 @@ function formsOf(id: string, skill: string): { form: string; bare: boolean }[] {
 
 /**
  * Un skill note souvent SON dossier par un gabarit : `<skill>/scripts/x`, `<chemin-du-skill>/scripts/x`,
- * `$SCOUT/scripts/x`, ou en chemin relatif `./scripts/x`, `../scripts/x` (depuis un fichier de son
- * dossier). Tout cela veut dire `scripts/x`, le dossier de celui qui écrit : on retire le préfixe.
- * Sans cela, ces skills passeraient pour ne citer aucun de leurs scripts (faux orphelins).
+ * `skills/<skill>/scripts/x`, `~/.claude/skills/<skill>/scripts/x`, `$SCOUT/scripts/x`, ou en chemin
+ * relatif `./scripts/x`, `../scripts/x` (depuis un fichier de son dossier). Tout cela veut dire
+ * `scripts/x`, le dossier de celui qui écrit : on retire le préfixe. Sans cela, ces skills
+ * passeraient pour ne citer aucun de leurs scripts (faux orphelins).
  */
 const OWN_FOLDER_PREFIX =
-  /(?:<[^<>\n/]{1,40}>\/|\$\{?[A-Za-z_][A-Za-z0-9_]*\}?\/|(?<![A-Za-z0-9_./~-])\.{1,2}\/)(?=scripts\/)/g;
+  /(?:[A-Za-z0-9_.~/-]*skills\/<[^<>\n/]{1,40}>\/|<[^<>\n/]{1,40}>\/|\$\{?[A-Za-z_][A-Za-z0-9_]*\}?\/|(?<![A-Za-z0-9_./~-])\.{1,2}\/)(?=scripts\/)/g;
 
 const withoutOwnFolderPrefix = (text: string): string => text.replace(OWN_FOLDER_PREFIX, '');
 

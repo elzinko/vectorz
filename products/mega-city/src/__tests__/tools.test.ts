@@ -25,6 +25,8 @@ describe('isToolFile — ce qui est un outil', () => {
 
   it.each([
     ['test-regen-backlog.sh', 'un test, pas un outil'],
+    ['regen.test.ts', 'un test, pas un outil'],
+    ['regen.spec.mjs', 'un test, pas un outil'],
     ['README.md', 'de la doc'],
     ['.DS_Store', 'un fichier caché'],
     ['fixture.json', 'des données'],
@@ -87,6 +89,8 @@ describe('deriveTools — qui utilise quel outil', () => {
   it.each([
     ['un gabarit <skill>', 'bash <skill>/scripts/ship.sh .'],
     ['un gabarit français', 'bash <chemin-du-skill>/scripts/ship.sh --gate'],
+    ['un gabarit sous skills/', 'bash skills/<skill>/scripts/ship.sh .'],
+    ['le dossier installé, avec un gabarit', 'bash ~/.claude/skills/<skill>/scripts/ship.sh .'],
     ['une variable $VAR', 'bash $SKILL/scripts/ship.sh snapshot'],
     ['une variable ${VAR}', 'bash ${SKILL}/scripts/ship.sh snapshot'],
     ['un lien relatif depuis un sous-dossier', '[le helper](../scripts/ship.sh)'],

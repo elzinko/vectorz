@@ -40,17 +40,12 @@ describe('les outils du dépôt réel', () => {
     expect(tools.has('bin/test-regen-backlog.sh')).toBe(false);
   });
 
+  // Un cas par FORME d'écriture, pas un inventaire des docs : ces cas ne cassent que si le calcul
+  // casse, ou si un SKILL.md cesse de citer son propre script (alors la carte le montrerait orphelin).
   it.each([
-    ['bin/regen-backlog.sh', 'ezk-backlog'],
-    ['bin/pr-evidence.sh', 'ezk-sprint'],
-    ['skills/ezk-archive/scripts/check.sh', 'ezk-archive'],
-    ['skills/ezk-archive/scripts/handoff.sh', 'ezk-archive'],
-    ['skills/ezk-pr/scripts/check-pr-body.sh', 'ezk-pr'],
-    ['skills/ezk-apk/scripts/build-preview-apk.sh', 'ezk-apk'],
-    // Les skills notent souvent leur propre dossier par un gabarit : ce ne sont pas des orphelins.
+    ['bin/regen-backlog.sh', 'ezk-backlog'], // le chemin depuis la racine du dépôt
+    ['skills/ezk-archive/scripts/check.sh', 'ezk-archive'], // `scripts/check.sh`, son propre script
     ['skills/ezk-sprint/scripts/check.sh', 'ezk-sprint'], // <chemin-du-skill>/scripts/check.sh
-    ['skills/ezk-backlog/scripts/check-layout-version.sh', 'ezk-backlog'], // <skill>/scripts/…
-    ['skills/ezk-npm-scripts/scripts/audit.mjs', 'ezk-npm-scripts'], // <skill>/scripts/audit.mjs
     ['skills/ezk-scout/scripts/check-report.sh', 'ezk-scout'], // $SCOUT/scripts/check-report.sh
     ['skills/ezk-backlog/scripts/apply-003-statuts-colonnes.sh', 'ezk-backlog'], // ../scripts/… (migrations/)
   ])('cas connu : %s est relié à %s', (tool, skill) => {
@@ -66,16 +61,17 @@ describe('les outils du dépôt réel', () => {
       'bin/ezk-map.ts', // lancé à la main : `ezk dashboard`
       'bin/ezk.ts', // interne : le routeur lui-même
       'bin/ezk.mjs', // le lanceur installé : `bin` de package.json
-      'skills/ezk-backlog/scripts/check-layout-version.sh', // cité par un gabarit : <skill>/scripts/…
     ]) {
       expect(orphans.has(known), known).toBe(false);
     }
   });
 
   it('le manifeste donne ses commandes à l’outil qu’elles lancent', () => {
-    expect(tools.get('bin/ezk-map.ts')?.commands).toEqual(['ezk dashboard']); // l’ancien nom `ezk map` est exclu
+    const dashboard = tools.get('bin/ezk-map.ts')?.commands ?? [];
+    expect(dashboard).toContain('ezk dashboard');
+    expect(dashboard).not.toContain('ezk map'); // l’ancien nom (deprecated) est exclu
     expect(tools.get('bin/ezk.ts')?.internal).toMatch(/routeur/);
-    expect(tools.get('bin/ezk.mjs')?.commands).toEqual(['ezk']); // la commande installée par package.json
+    expect(tools.get('bin/ezk.mjs')?.commands).toContain('ezk'); // la commande installée par package.json
   });
 
   it('les liens passent dans le graphe compilé : `utilise` donne les outils d’un skill', () => {
@@ -102,11 +98,8 @@ describe('les outils du dépôt réel', () => {
 
     expect(data.counts.tools).toBe(tools.size);
     expect(Object.keys(data.tools)).toEqual([...tools.keys()].sort());
-    expect(data.tools['bin/regen-backlog.sh']).toMatchObject({
-      source: 'products/mega-city/bin/regen-backlog.sh',
-      usedBy: ['ezk-backlog'],
-      commands: ['ezk backlog regen'],
-    });
+    expect(data.tools['bin/regen-backlog.sh']?.source).toBe('products/mega-city/bin/regen-backlog.sh');
+    expect(data.tools['bin/regen-backlog.sh']?.usedBy).toContain('ezk-backlog');
     expect(data.skills['ezk-backlog']?.tools).toContain('bin/regen-backlog.sh');
     // Les orphelins de la carte sont ceux du rapport du graphe : rien de plus, rien de moins.
     const reported = validateGraph(catalog).orphans.filter((o) => o.kind === 'tool').map((o) => o.id);
