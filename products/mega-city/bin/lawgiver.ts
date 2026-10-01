@@ -53,6 +53,23 @@ function defaultTarget(): string {
   return join(homedir(), '.claude');
 }
 
+/**
+ * La cible de `bind-global`, `status` et `doctor`. `--target <dossier>` si on le donne ; le vrai
+ * `~/.claude` seulement quand l'option est ABSENTE. Une option présente sans valeur (« --target »
+ * seul, ou suivi d'une autre option) est une faute de frappe : on s'arrête au lieu de retomber
+ * en silence sur le vrai `~/.claude`.
+ */
+function targetOf(args: string[]): { target: string; explicit: boolean } {
+  const at = args.indexOf('--target');
+  if (at === -1) return { target: defaultTarget(), explicit: false };
+  const value = args[at + 1];
+  if (value === undefined || value.startsWith('--')) {
+    console.error("lawgiver: « --target » attend un dossier (sans lui, la cible serait le vrai ~/.claude).");
+    process.exit(2);
+  }
+  return { target: value, explicit: true };
+}
+
 /** Les arguments positionnels : ni option (`--x`), ni valeur d'une option qui en prend une. */
 function positional(args: string[], valueFlags: string[]): string[] {
   const out: string[] = [];
@@ -217,18 +234,18 @@ function main(argv: string[]): void {
   if (command === 'bind-global') {
     const [profile] = positional(rest, ['--target']);
     if (!profile) usage();
-    return runBindGlobal(profile, rest.includes('--link'), parseFlag(rest, '--target') ?? defaultTarget());
+    return runBindGlobal(profile, rest.includes('--link'), targetOf(rest).target);
   }
   if (command === 'status') {
     const [profile] = positional(rest, ['--target']);
     if (!profile) usage();
-    return runStatus(profile, parseFlag(rest, '--target') ?? defaultTarget());
+    return runStatus(profile, targetOf(rest).target);
   }
   if (command === 'doctor') {
     const [profile] = positional(rest, ['--target']);
     if (!profile) usage();
-    const explicit = parseFlag(rest, '--target');
-    return runDoctor(profile, explicit ?? defaultTarget(), explicit !== undefined);
+    const { target, explicit } = targetOf(rest);
+    return runDoctor(profile, target, explicit);
   }
   if (command === 'capture') {
     const [target, kind] = rest;

@@ -223,6 +223,18 @@ describe('lawgiver doctor — la commande, sur une cible jetable', () => {
     expect(stale.stdout).toMatch(/✖ copie périmée\s+skills\/ezk-sprint/);
   });
 
+  it('refuse « --target » sans dossier : jamais de repli silencieux sur le vrai ~/.claude', { timeout: 120_000 }, () => {
+    for (const command of ['bind-global', 'status', 'doctor']) {
+      const bare = lawgiver(command, 'global', '--target');
+      expect(bare.status, `${command} --target`).toBe(2);
+      expect(bare.stderr).toMatch(/--target/);
+      const swallowed = lawgiver(command, 'global', '--target', '--link');
+      expect(swallowed.status, `${command} --target --link`).toBe(2);
+    }
+    expect(existsSync(join(fakeHome, '.claude'))).toBe(false);
+    expect(existsSync(join(fakeHome, 'skills'))).toBe(false);
+  });
+
   it('refuse un profil inconnu avec un message clair', { timeout: 120_000 }, () => {
     const r = lawgiver('doctor', 'profil-qui-nexiste-pas', '--target', target);
     expect(r.status).toBe(2);
