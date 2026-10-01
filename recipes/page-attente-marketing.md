@@ -97,7 +97,7 @@ d'endroit pour tester le vrai site.
 ## Statut de cette recette
 
 Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
-[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+[`20260824185422122`](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
 **`status: draft`** : la recette cite « muti / livestreamz », mais liste des fichiers
 (`src/views/ComingSoonView.vue`, `api/notify.js`…) sans dire **lequel des 3 projets** cités
 (muti, livestreamz, samplerz) est la racine `source:` à pointer — trop ambigu pour un `source:`
