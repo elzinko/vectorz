@@ -225,7 +225,11 @@ facturée. Le LLM LIT sa sortie, il ne recompte pas :
 ```bash
 pnpm --dir products/mega-city ci:conso            # mois courant (UTC)
 pnpm --dir products/mega-city ci:conso 2026-08    # un mois précis
+pnpm --dir products/mega-city ci:conso --no-forks # sans les forks publics gratuits (pied : combien masqués)
 ```
+
+`--no-forks` ne masque que les forks qui ne pèsent pas sur le quota (publics, coût net nul). Un
+fork privé ou facturé reste affiché : il consomme vraiment.
 
 Il lit l'endpoint COURANT `/users/<u>/settings/billing/usage`. Cœur pur/testé :
 `src/core/ci-conso.ts` (+ `src/__tests__/ci-conso.test.ts`). Fiche 20260828150801613.

@@ -24,9 +24,19 @@ Soit aligner les déclarations `expand`/`bind` de `domain.ts` sur l'implémentat
 fichier que `domain.ts` ne porte que les **types** et non les signatures runtime.
 Trancher et documenter (une ligne d'ADR ou un commentaire).
 
+## En clair
+Le fichier `domain.ts` annonce deux fonctions avec trop peu d'arguments. Le code en demande
+plus. On a choisi la première voie : **aligner les signatures**, sans toucher au code.
+
 ## Critères d'acceptation
-- [ ] `domain.ts` ne contredit plus l'implémentation (signatures alignées OU rôle « types only » explicité)
-- [ ] décision tracée (commentaire ou note ADR)
+- [x] `domain.ts` ne contredit plus l'implémentation (signatures alignées OU rôle « types only » explicité)
+      — `expandProfile(profile, catalog)` et `bind(profileId, projectDir, host, rootDir)`, comme
+      `src/core/expand.ts` et `src/core/bind.ts` ; `pnpm --dir products/mega-city typecheck` vert.
+- [x] décision tracée (commentaire ou note ADR) — commentaires de signature dans `domain.ts` (fiche 0117).
+
+## Comment vérifier
+`grep -n "expandProfile\|function bind" -A4 products/mega-city/docs/domain.ts` montre les deux
+signatures ; elles se lisent comme celles de `src/core/expand.ts:59` et `src/core/bind.ts:19`.
 
 ## Notes
 `Cap.materialize`/`bind` `void → WritePlan` est déjà tracé dans l'ADR-0003 ; ici
