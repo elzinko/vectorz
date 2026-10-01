@@ -65,8 +65,10 @@ jamais la vigilance humaine.
       `<cible>`, blocs de code ignorés, schémas / ancres / chemins absolus laissés tels quels.
       Preuve : tests `recalLinks` et `findBroken`.
 - [x] **Refus avant toute écriture** (exit 1, dépôt intact) : fiche hors `features/` ou déjà dans
-      `done/`, destination existante, statut non admis, liens cassés en hausse, entrée de `PLAN.md`
-      non barrable. Preuve : tests `planShip`, et `--no-bar-plan` refusé sur la vraie fiche.
+      `done/`, fiche pas suivie par git, destination existante, statut non admis, lien nouvellement
+      cassé (on compare les liens, pas seulement leur nombre), entrée de `PLAN.md` non barrable
+      (pour les quatre statuts terminaux). Preuve : tests `planShip`, et `--no-bar-plan` refusé sur
+      la vraie fiche.
 - [x] Un échec pendant l'application (git, régénération) remet le dépôt à l'état initial (exit 2).
       Preuve : test sur dépôt jetable, `git status` vide et fiche identique à l'octet.
 - [x] Sur un dépôt jetable : ship d'une fiche riche en liens `../` ⇒ delta de liens cassés = 0 pour

@@ -98,6 +98,16 @@ describe('recalLinks — lit les liens comme check-links.sh', () => {
     expect(r.count).toBe(3);
   });
 
+  it('coupe la cible au premier blanc et garde le titre optionnel, comme la gate', () => {
+    const text =
+      '[a](../docs/x.md "titre") [b](<../docs/x.md> "t") [c]( ../docs/x.md )\n[ref]: ../docs/x.md "titre"';
+    const r = recalLinks(text, A, 'features/done/20260101000000001_a.md', moved, exists);
+    expect(r.text).toBe(
+      '[a](../../docs/x.md "titre") [b](<../../docs/x.md> "t") [c]( ../../docs/x.md )\n[ref]: ../../docs/x.md "titre"',
+    );
+    expect(r.count).toBe(4);
+  });
+
   it('recale un lien ENTRANT vers la fiche déplacée', () => {
     const r = recalLinks('[a](../features/20260101000000001_a.md)', 'docs/x.md', 'docs/x.md', moved, exists);
     expect(r.text).toBe('[a](../features/done/20260101000000001_a.md)');
@@ -203,6 +213,19 @@ describe('planShip — calcule tout en mémoire, refuse avant d’écrire', () =
     expect(() => planShip(memFs(files), { ...ship, files: [A] })).toThrow(/mêle une fiche livrée/);
   });
 
+  it('refuse aussi pour merged / split : PLAN.md ne garde jamais la fiche à faire', () => {
+    const merged = { status: 'merged', pr: 'merged — fusionnée ailleurs', barPlan: false, files: [A] };
+    expect(() => planShip(memFs(fixture()), merged)).toThrow(/reste à faire/);
+    const barred = planShip(memFs(fixture()), { ...merged, barPlan: true });
+    expect(barred.writes.get('features/PLAN.md')).toContain('~~ — merged\n');
+    const files = fixture();
+    files['features/PLAN.md'] =
+      '## NOW\n\n- `20260101000000001` et `20260101000000003` — mêlées · `build`\n';
+    expect(() =>
+      planShip(memFs(files), { status: 'split', pr: 'split — x', barPlan: true, files: [A] }),
+    ).toThrow(/mêle une fiche livrée/);
+  });
+
   it('filet : un recaleur défaillant fait monter les liens cassés → refus, avec les liens fautifs', () => {
     const sabote = { recal: (text: string) => ({ text, count: 0 }) };
     let refus: ShipRefusal | undefined;
@@ -214,6 +237,25 @@ describe('planShip — calcule tout en mémoire, refuse avant d’écrire', () =
     expect(refus).toBeInstanceOf(ShipRefusal);
     expect(refus?.reasons[0]).toMatch(/liens cassés en hausse : 1 avant, \d+ après/);
     expect(refus?.reasons.join('\n')).toContain('docs/x.md:1 → ../features/20260101000000001_a.md');
+  });
+
+  it('filet : un lien réparé par accident ne masque pas un lien cassé par le ship', () => {
+    const files = {
+      [A]: fm('20260101000000001', '[p](../zz.md)\n[q](../docs/x.md)'),
+      'docs/x.md': 'ok\n',
+      'features/zz.md': '# existe\n', // `../zz.md` y tombe depuis done/ : cassé avant, valide après
+    };
+    const input = { ...ship, barPlan: false, files: [A] };
+    expect(() => planShip(memFs(files), input)).not.toThrow(); // le vrai recaleur ne casse rien
+    const sabote = { recal: (text: string) => ({ text, count: 0 }) };
+    // Avec un recaleur défaillant : 1 lien cassé avant, 1 après — le nombre ne bouge pas, mais
+    // ce n'est plus le même lien. Comparer les liens (pas les nombres) le voit.
+    expect(() => planShip(memFs(files), input, sabote)).toThrow(/dont 1 nouveau/);
+  });
+
+  it('findBroken coupe la cible au premier blanc (titre optionnel), comme la gate', () => {
+    const files = new Map([['docs/x.md', '[ok](y.md "titre") [ko](z.md "titre")']]);
+    expect(findBroken(files, (p) => p === 'docs/y.md').map((b) => b.target)).toEqual(['z.md']);
   });
 
   it('findBroken compte les mêmes liens que la gate : cible absente seulement', () => {
@@ -275,6 +317,16 @@ describe('sur un dépôt git jetable — la vraie gate check-links.sh mesure le 
     );
     expect(git(root, 'status', '--porcelain')).toContain('features/done/20260101000000002_b.md');
     expect(brokenByGate(root)).toBe(baseline);
+  });
+
+  it('refuse une fiche pas encore suivie par git, avant d’écrire quoi que ce soit', slow, () => {
+    const root = toyRepo();
+    const neuve = 'features/20260101000000042_neuve.md';
+    writeFileSync(join(root, neuve), fm('20260101000000042', 'neuve'));
+    expect(() => planShip(nodeRepoFs(root), { ...ship, files: [neuve] })).toThrow(
+      /pas suivie par git/,
+    );
+    expect(git(root, 'status', '--porcelain')).toBe(`?? ${neuve}\n`); // rien n'a bougé
   });
 
   it('un échec en route (régénération) remet le dépôt à l’état initial', slow, () => {

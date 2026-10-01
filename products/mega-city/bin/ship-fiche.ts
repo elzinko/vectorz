@@ -18,7 +18,7 @@
  * Codes de sortie : 0 fait · 1 refusé (rien écrit) · 2 échec pendant l'application (retour arrière).
  */
 import { execFileSync } from 'node:child_process';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ShipFailure, ShipRefusal, applyShip, planShip } from '../src/backlog/ship-fiche.js';
 import { nodeRepoFs, nodeShipIo } from '../src/io/ship-fiche-io.js';
@@ -46,7 +46,7 @@ for (let i = 0; i < args.length; i += 1) {
   else if (arg === '--no-bar-plan') barPlan = false;
   else if (arg === '--dry-run') dryRun = true;
   else if (arg.startsWith('--')) usage();
-  else files.push(arg);
+  else files.push(isAbsolute(arg) ? relative(repoRoot, arg) : arg); // sinon : relatif à la racine du dépôt
 }
 
 const fs = nodeRepoFs(repoRoot);

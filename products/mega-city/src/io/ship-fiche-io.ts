@@ -21,6 +21,17 @@ export function nodeRepoFs(root: string): RepoFs {
         .filter((path) => path !== '' && existsSync(join(root, path))),
     read: (path) => readFileSync(join(root, path), 'utf8'),
     exists: (path) => existsSync(join(root, path)),
+    isTracked: (path) => {
+      try {
+        execFileSync('git', ['ls-files', '--error-unmatch', '--', path], {
+          cwd: root,
+          stdio: 'pipe',
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    },
   };
 }
 

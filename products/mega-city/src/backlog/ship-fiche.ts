@@ -20,7 +20,6 @@ import { posix } from 'node:path';
 import { TERMINAUX } from '../core/fiche-schema.js';
 import { frontMatter, readField } from '../loaders/fiches.js';
 import { parsePlanSections } from './plan-sections.js';
-import { findStalePlanEntries } from './planning-views.js';
 
 // ─── Lecture des liens, calquée sur bin/check-links.sh ───────────────────────────────────────
 
@@ -36,7 +35,10 @@ const SCHEME = /^(?:(?:https?|ftps?|mailto|tel|data|file|git|ssh):|[a-zA-Z][a-zA
  */
 function mapLinks(text: string, fn: (target: string, line: number) => string | null): string {
   const rewriteRaw = (raw: string, line: number): string => {
-    let t = raw;
+    // La gate coupe la cible au premier blanc : le titre optionnel `(cible "titre")` n'en fait pas
+    // partie. On isole donc le premier mot et on remet le reste (blancs, titre) tel quel.
+    const [, space, word, rest] = /^(\s*)(\S*)([\s\S]*)$/.exec(raw) as RegExpExecArray;
+    let t = word;
     let lead = '';
     let trail = '';
     if (t.startsWith('<')) {
@@ -53,7 +55,7 @@ function mapLinks(text: string, fn: (target: string, line: number) => string | n
     const tail = hash === -1 ? '' : t.slice(hash);
     if (path === '' || path.startsWith('/')) return raw;
     const next = fn(path, line);
-    return next === null ? raw : `${lead}${next}${tail}${trail}`;
+    return next === null ? raw : `${space}${lead}${next}${tail}${trail}${rest}`;
   };
 
   let fenced = false;
@@ -193,6 +195,21 @@ export function barPlanEntries(
   return { text, barred, unbarrable };
 }
 
+/** Les entrées de `PLAN.md` encore « à faire » (non barrées, avec marqueur) qui portent une de `ids`. */
+function openPlanEntries(
+  planMd: string,
+  ids: ReadonlySet<string>,
+): Array<{ id: string; where: string }> {
+  const open: Array<{ id: string; where: string }> = [];
+  for (const section of parsePlanSections(planMd)) {
+    for (const entry of section.entries) {
+      if (entry.struck || !entry.marker) continue;
+      for (const id of entry.ids) if (ids.has(id)) open.push({ id, where: section.label });
+    }
+  }
+  return open;
+}
+
 // ─── Le plan de la transaction ───────────────────────────────────────────────────────────────
 
 /** L'état du dépôt, injecté : le cœur ne touche jamais au disque. */
@@ -202,6 +219,8 @@ export interface RepoFs {
   read(path: string): string;
   /** Fichier OU dossier. */
   exists(path: string): boolean;
+  /** Le fichier est suivi par git (le `git mv` l'exige). Absent : on ne le vérifie pas. */
+  isTracked?(path: string): boolean;
 }
 
 export interface ShipInput {
@@ -261,6 +280,10 @@ export function planShip(fs: RepoFs, input: ShipInput, seams: ShipSeams = {}): S
       reasons.push(`${raw} : introuvable`);
       continue;
     }
+    if (fs.isTracked && !fs.isTracked(file)) {
+      reasons.push(`${raw} : pas suivie par git — \`git add\` d'abord (le \`git mv\` l'exige)`);
+      continue;
+    }
     const to = `features/done/${posix.basename(file)}`;
     if (fs.exists(to)) reasons.push(`${raw} : la destination ${to} existe déjà`);
     if ([...moved.values()].includes(to)) reasons.push(`${raw} : fiche donnée deux fois`);
@@ -297,31 +320,35 @@ export function planShip(fs: RepoFs, input: ShipInput, seams: ShipSeams = {}): S
     after.set(newSrc, out);
   }
 
-  // Filet 1 : PLAN.md ne doit plus présenter à faire une fiche qu'on livre.
+  // Filet 1 : PLAN.md ne doit plus présenter à faire une fiche qu'on livre — quel que soit le statut
+  // terminal choisi (`findStalePlanEntries` ne connaît que shipped et superseded).
   const planAfter = after.get(PLAN);
   if (planAfter !== undefined) {
-    const status = new Map([...ids.keys()].map((id) => [id, input.status] as const));
-    for (const stale of findStalePlanEntries(planAfter, status)) {
-      const why = mixed.has(stale.id)
+    for (const open of openPlanEntries(planAfter, new Set(ids.keys()))) {
+      const why = mixed.has(open.id)
         ? 'la ligne mêle une fiche livrée et une fiche à faire : barre-la à la main'
         : input.barPlan
           ? "elle n'a pas pu être barrée"
           : 'barre-la, ou retire --no-bar-plan';
-      reasons.push(`${PLAN} : l'entrée de ${stale.id} reste à faire (${stale.where}) — ${why}`);
+      reasons.push(`${PLAN} : l'entrée de ${open.id} reste à faire (${open.where}) — ${why}`);
     }
   }
 
-  // Filet 2 : le ship n'augmente JAMAIS le nombre de liens cassés.
+  // Filet 2 : le ship ne casse JAMAIS un lien. On compare les liens eux-mêmes, pas seulement leur
+  // nombre : un lien réparé par accident (un `../x.md` cassé qui, depuis `done/`, tombe sur un
+  // fichier existant) ne doit pas masquer un lien cassé par le ship.
   const movedTargets = new Set(moved.values());
   const existsAfter = (p: string): boolean =>
     movedTargets.has(p) || (!moved.has(p) && fs.exists(p));
   const brokenBefore = findBroken(before, fs.exists);
   const brokenAfter = findBroken(after, existsAfter);
-  if (brokenAfter.length > brokenBefore.length) {
-    const known = new Set(brokenBefore.map((b) => `${b.file}|${b.target}`));
-    const fresh = brokenAfter.filter((b) => !known.has(`${reverse.get(b.file) ?? b.file}|${b.target}`));
+  const known = new Set(brokenBefore.map((b) => `${b.file}|${b.target}`));
+  const fresh = brokenAfter.filter(
+    (b) => !known.has(`${reverse.get(b.file) ?? b.file}|${b.target}`),
+  );
+  if (fresh.length > 0 || brokenAfter.length > brokenBefore.length) {
     reasons.push(
-      `liens cassés en hausse : ${brokenBefore.length} avant, ${brokenAfter.length} après`,
+      `liens cassés en hausse : ${brokenBefore.length} avant, ${brokenAfter.length} après, dont ${fresh.length} nouveau(x)`,
       ...fresh.slice(0, 10).map((b) => `  ${b.file}:${b.line} → ${b.target}`),
     );
   }
