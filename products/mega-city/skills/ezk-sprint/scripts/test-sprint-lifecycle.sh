@@ -204,7 +204,33 @@ ok "second close : REFUSED not_open, pas de double scellé" 'printf "%s\n" "$OUT
 OUT14C="$(bash "$SPRINT" start --lot "$A" --objective "Après l'ancien format")"
 ok "le sprint suivant s'ouvre (sprint=8) et garde le labo hérité" 'printf "%s\n" "$OUT14C" | grep -qx "START: OPENED sprint=8 stories=1" && grep -q "galère héritée — geste hérité" SPRINT.md'
 
-echo "S15 — hors dépôt git : exit 2"
+echo "S15 — une case mal formée ne disparaît jamais en silence : close refuse au lieu de sceller en l'omettant"
+# Retour Codex (PR #310) : `lot_lines` ne voit que `[ ]`, `[x]` et `[~]`. Un `[X]` tapé à la main devenait
+# invisible aux totaux ; avec une autre story en `[x]`, close scellait le sprint sans lui.
+edit "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (PR #20)/"
+bash "$SPRINT" close >/dev/null # ferme proprement le sprint 8, resté ouvert à la fin de S14
+bash "$SPRINT" start --lot "$A,$B,$C" --objective "Cases mal formées" >/dev/null
+edit "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (PR #21)/"
+edit "s/^- \[ \] $B — Beta\$/- [X] $B — Beta (PR #22)/" # majuscule : ni [ ], ni [x], ni [~]
+edit "s/^- \[ \] $C — Gamma\$/- [] $C — Gamma/"          # marqueur vide
+# Une puce de lot qui n'est PAS une case (un lien) ne doit pas être prise pour une case fautive.
+awk -v ins="- [la fiche](features/x.md) — un lien, pas une case" '{ print } /^- \[x\] '"$A"' — / { print ins }' SPRINT.md > SPRINT.md.tmp && mv SPRINT.md.tmp SPRINT.md
+SUM15="$(sum SPRINT.md)"
+OUT15="$(bash "$SPRINT" close)"
+HINT15="$(printf '%s\n' "$OUT15" | grep '^HINT:' || true)"
+ok "CLOSE: REFUSED malformed_story sprint=9 rows=2 (le lien n'est pas compté)" 'printf "%s\n" "$OUT15" | grep -qx "CLOSE: REFUSED malformed_story sprint=9 rows=2"'
+ok "chaque case fautive est citée telle qu'écrite" 'printf "%s\n" "$OUT15" | grep -qxF "STORY_MALFORMED: - [X] $B — Beta (PR #22)" && printf "%s\n" "$OUT15" | grep -qxF "STORY_MALFORMED: - [] $C — Gamma"'
+ok "dit comment corriger : les trois marqueurs valides" 'printf "%s" "$HINT15" | grep -qF -- "[ ]" && printf "%s" "$HINT15" | grep -qF -- "[x]" && printf "%s" "$HINT15" | grep -qF -- "[~]"'
+ok "rien n'est scellé : SPRINT.md intact, sprint toujours en cours" '[ "$(sum SPRINT.md)" = "$SUM15" ] && grep -q "^Statut: en cours" SPRINT.md'
+OUT15B="$(bash "$SPRINT" close --abandon "test")"
+ok "close --abandon refuse aussi : le résumé de session doit dire vrai" 'printf "%s\n" "$OUT15B" | grep -qx "CLOSE: REFUSED malformed_story sprint=9 rows=2" && [ "$(sum SPRINT.md)" = "$SUM15" ]'
+edit "s/^- \[X\] $B — Beta (PR #22)\$/- [x] $B — Beta (PR #22)/"
+edit "s/^- \[\] $C — Gamma\$/- [~] $C — Gamma (reportée)/"
+OUT15C="$(bash "$SPRINT" close)"
+ok "marqueurs corrigés : CLOSE: SEALED sprint=9 done=2 deferred=1" 'printf "%s\n" "$OUT15C" | grep -qx "CLOSE: SEALED sprint=9 done=2 deferred=1"'
+ok "l'incrément reprend les deux stories livrées" 'printf "%s\n" "$OUT15C" | grep -qx "INCREMENT: $A (PR #21)" && printf "%s\n" "$OUT15C" | grep -qx "INCREMENT: $B (PR #22)"'
+
+echo "S16 — hors dépôt git : exit 2"
 mkdir "$TMP/nogit"
 rc=0; (cd "$TMP/nogit" && bash "$SPRINT" close >/dev/null 2>&1) || rc=$?
 ok "exit 2" '[ "$rc" = 2 ]'

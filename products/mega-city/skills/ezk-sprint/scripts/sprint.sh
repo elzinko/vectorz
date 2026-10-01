@@ -23,11 +23,14 @@
 #         | CLOSE: OPEN sprint=<n> open=<k>      (une story du lot est encore ouverte)
 #         | CLOSE: REFUSED not_open
 #         | CLOSE: REFUSED empty_increment sprint=<n>   (rien de livré : pas d'incrément à sceller)
+#         | CLOSE: REFUSED malformed_story sprint=<n> rows=<k>   (une case du lot n'est ni [ ], ni [x], ni [~])
 #         | CLOSE: ABANDONED sprint=<n> done=<d> deferred=<r> open=<o>   (close --abandon)
-#   Les refus de close ajoutent une ligne `HINT:` quand --abandon est la sortie.
+#   Les refus de close ajoutent une ligne `HINT:` quand --abandon est la sortie (ou quand le marqueur est à corriger).
 #   Chaque réponse finit par `--- END ---`.
 #
 # Format du lot dans SPRINT.md : `- [ ] <id> — <titre>` ouverte · `- [x] …` livrée · `- [~] …` reportée.
+# Toute autre case (`- [X] …`, `- [] …`, `- [-] …`) est REFUSÉE à la clôture, `--abandon` compris : une case que
+# les totaux ne voient pas ne doit jamais être omise en silence du sprint scellé.
 # Une référence de PR ou de commit en fin de ligne — `(PR #12)`, `(#12)`, `(local abc1234)` — est reprise
 # dans l'incrément ; toute autre parenthèse (un bout de titre) est ignorée.
 # Sections portées d'un sprint au suivant (savoir de SESSION) : Notes / décisions, Galères & gestes (labo),
@@ -120,6 +123,15 @@ lot_lines() { # les cases du lot (section `## Lot`, ou `## Backlog` des anciens 
     /^## (Lot|Backlog)/      { inlot=1; next }
     /^## /                   { inlot=0 }
     inlot && /^- \[[ x~]\] / { print }
+  ' "$FILE"
+}
+lot_malformed() { # les cases du lot qui RESSEMBLENT à une case (`- [?]`, un caractère au plus) sans être [ ] [x] [~]
+  # `lot_lines` ne les voit pas : sceller les omettrait en silence des totaux et de l'incrément. Une puce dont
+  # le crochet est plus long (`- [la fiche](…)`, un lien) n'est pas une case et n'est pas comptée.
+  awk '
+    /^## (Lot|Backlog)/ { inlot=1; next }
+    /^## /              { inlot=0 }
+    inlot && /^- \[.?\]/ && !/^- \[[ x~]\] / { print }
   ' "$FILE"
 }
 count_lot() { lot_lines | grep -c -F -- "- [$1] " || true; }
@@ -279,9 +291,22 @@ do_close() {
     end
   fi
 
-  local n obj n_open n_done n_def
+  local n obj n_open n_done n_def bad n_bad
   n="$(sprint_number)"
   obj="$(sprint_objective)"
+
+  # Une case mal formée (`[X]`, `[]`…) n'est ni ouverte, ni livrée, ni reportée : les décomptes ci-dessous ne la
+  # voient pas, et sceller l'omettrait. On refuse AVANT toute écriture, pour `close` comme pour `close --abandon` :
+  # le résumé inscrit dans la session doit dire vrai.
+  bad="$(lot_malformed)"
+  if [[ -n "$bad" ]]; then
+    n_bad="$(printf '%s\n' "$bad" | grep -c '')"
+    echo "CLOSE: REFUSED malformed_story sprint=${n} rows=${n_bad}"
+    printf '%s\n' "$bad" | sed -e 's/^/STORY_MALFORMED: /'
+    echo "HINT: une case du lot n'est ni [ ] (ouverte), ni [x] (livrée), ni [~] (reportée) : corrige le marqueur dans ${FILE}, puis relance close"
+    end
+  fi
+
   n_open="$(count_lot ' ')"
   n_done="$(count_lot x)"
   n_def="$(count_lot '~')"

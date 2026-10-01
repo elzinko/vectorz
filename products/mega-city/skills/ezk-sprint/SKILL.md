@@ -100,6 +100,7 @@ Avant de l'appeler, mets le lot de `SPRINT.md` à jour : `[x]` pour une story li
 | `CLOSE: SEALED …` | Incrément scellé : `Statut: clos`, une ligne ajoutée à « Incréments scellés de la session » | Restitue l'incrément (En clair d'abord, ≤ 3 phrases), puis **rends la main à la session** |
 | `CLOSE: OPEN …` | Une story du lot est encore `[ ]` | Termine-la, reporte-la `[~]` ou retire-la du lot. Ne force rien |
 | `CLOSE: REFUSED empty_increment` | Rien de livré : pas d'incrément à sceller | Dis-le au PO. S'il arrête le sprint : `close --abandon "<raison>"` |
+| `CLOSE: REFUSED malformed_story …` | Une case du lot n'est ni `[ ]`, ni `[x]`, ni `[~]` (`[X]`, `[]`…) : rien n'est scellé, `--abandon` non plus | Corrige le marqueur dans `SPRINT.md` (`STORY_MALFORMED:` cite chaque case fautive), puis relance `close` |
 | `CLOSE: ABANDONED …` | Fin **anormale** (`close --abandon "<raison>"`) : sprint fermé **sans incrément**, raison journalisée, savoir de session conservé | Dis ce qui est livré, reporté ou resté ouvert, puis rends la main à la session |
 | `CLOSE: REFUSED not_open` | Aucun sprint ouvert | Rien à fermer |
 
