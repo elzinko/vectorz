@@ -30,6 +30,7 @@
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",
     "backlog:aggregate": "tsx bin/backlog-aggregate.ts",
+    "ship:fiche": "tsx bin/ship-fiche.ts",
     "views:regen": "tsx bin/views-regen.ts",
     "avancement:regen": "tsx bin/views-regen.ts",
     "runs:regen": "tsx bin/views-regen.ts",

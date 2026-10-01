@@ -99,7 +99,7 @@ du front-matter de cette skill).
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
-| `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index `BACKLOG.md` et cure `PLAN.md` ; filet `check-planning-views` (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
+| `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`pnpm --dir products/mega-city ship:fiche`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
 | `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `pnpm --dir products/mega-city views:regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
 
@@ -451,25 +451,47 @@ Une seule brique, plusieurs appelants — aucun ne réimplémente le croisement.
 ### `ship <id> [#PR]` — la transition « livrée » (cible de `reconcile`)
 
 C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'importance de
-`reconcile`, qui la propose quand un merge s'est fait hors du flux). Étapes, dans l'ordre :
+`reconcile`, qui la propose quand un merge s'est fait hors du flux). Elle tient en **un seul
+geste**, pas en une liste d'étapes à suivre de mémoire (fiche 20260830194601233) :
 
-1. Front-matter : pose `status: shipped` **et** `pr:`. En flux GitHub : le n° de PR `#<n>`
+```bash
+pnpm --dir products/mega-city ship:fiche -- --pr '#<n>' features/<id>_<slug>.md [autres fiches du lot]
+```
+
+La commande fait tout, dans l'ordre, **ou rien** :
+
+1. **Front-matter** : pose `status: shipped` **et** `pr:`. En flux GitHub : le n° de PR `#<n>`
    (demande-le si inconnu, ne l'invente pas ; garde-fou n°1). **Livraison locale** (mode
    `github: false` / dépôt sans remote — fiche 20260916225506856) : **pas de PR à inventer**,
-   pose `pr: local (<sha-du-squash>)` (précédent : fiche 0183 shippée `local (main c45102b)`).
-2. `git mv` la fiche de `features/` vers `features/done/` — c'est ce déplacement qui la sort
-   du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
+   `--pr 'local (<sha-du-squash>)'` (précédent : fiche 0183 shippée `local (main c45102b)`).
+   Autre statut terminal : `--status superseded --pr 'superseded — <raison>'`.
+2. **Un seul `git mv`** de `features/` vers `features/done/` — c'est ce déplacement qui sort la
+   fiche du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
    candidate, elle ne peut pas être re-tirée).
-3. **`regen` — l'index ET la vue curée** (fiche 20260812100109940, resserrée par l'ADR-0055) :
-   - `regen` reconstruit l'index `features/BACKLOG.md` (la fiche passe en « Livrées `done/` ») ;
-   - **rien d'autre à régénérer** : `PORTFOLIO.md` et les données du board / pilotage / runs ne sont
-     plus committés (ADR-0055). Ils se construisent à la demande (`views:regen`, ou `ezk:map` à la
-     volée), donc ne peuvent pas rester périmés dans un commit ;
-   - **cure `PLAN.md`** (curé, jamais régénéré) : barre l'entrée de la fiche
-     (`~~…~~ — shipped #<n>`) — **proposé à l'humain**, `PLAN` est une décision, pas un index.
-4. **Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
-   fiche `shipped` encore présentée comme à faire dans `PORTFOLIO.md` / `PLAN.md`. Doit être vert avant de committer.
-5. Commit `docs(features): ship <id> #<PR>` (via `ezk-commits`).
+3. **Recale TOUS les liens relatifs** du markdown : sortants de la fiche, entrants, entre fiches du
+   lot. Les liens sont lus comme `bin/check-links.sh` les lit.
+4. **Régénère `features/BACKLOG.md`** (la fiche passe en « Livrées `done/` ») et **barre l'entrée de
+   `PLAN.md`** (`~~…~~ — shipped #<n>`) : barrer un fait accompli, c'est ranger (ADR-0001). Rien
+   d'autre à régénérer : `PORTFOLIO.md` et les données du board / pilotage / runs ne sont plus
+   committés (ADR-0055).
+5. **Refuse sans rien écrire** (exit 1) si les liens cassés augmenteraient, si l'entrée de `PLAN.md`
+   ne peut pas être barrée (une ligne qui mêle plusieurs fiches est un jugement : à barrer à la
+   main), ou si la fiche n'est pas directement sous `features/`. Un échec en cours de route remet le
+   dépôt à l'état initial (exit 2). `--dry-run` montre le plan sans rien écrire.
+6. **Commit** `docs(features): ship <id> #<PR>` (via `ezk-commits`, après `git add features`). La
+   commande ne committe ni ne pousse.
+
+**Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
+fiche `shipped` encore présentée comme à faire dans `PLAN.md` (et dans `PORTFOLIO.md` s'il traîne
+en local). Reste utile pour un ship fait à la main ou hors flux.
+
+**Conflit sur `BACKLOG.md` entre deux ships parallèles** (ADR-0049 §3). Depuis l'ADR-0055, c'est la
+seule vue générée qui peut encore se disputer. Recette, dans cet ordre : (1) `git merge origin/main`
+dans la branche, jamais de rebase d'une branche poussée ; (2) sur `features/BACKLOG.md` en conflit,
+prendre n'importe quel côté (`git checkout --ours features/BACKLOG.md`), puis la régénérer
+(`bash products/mega-city/bin/regen-backlog.sh .`) ; (3) `git add features/BACKLOG.md`, terminer le
+merge, rejouer la gate. Jamais d'édition à la main d'une vue générée. Un conflit sur `PLAN.md` (curé)
+se résout à la main.
 
 `ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
 détection ne bascule rien seule ; l'arbitrage reste au PO).
