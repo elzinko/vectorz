@@ -1,0 +1,98 @@
+# Catalogue des techniques de raffinement de `groom` — fiche 20260825161522791.
+#
+# C'est une DONNÉE éditable : ajoute, retire ou reformule une technique ici, sans toucher au skill.
+# `groom` en propose 3 à la fois (menu court), l'opérateur en choisit une, l'agent l'applique à la
+# section concernée, remontre le résultat, puis re-propose (voir « groom » dans SKILL.md).
+#
+# Prior art : BMAD `advanced-elicitation` (50 méthodes dans `methods.csv`, 5 proposées à la fois,
+# boucle jusqu'à « proceed »). On en garde 9, orientées DoR, pas 50 (ADR-0013 : pas de moteur générique).
+# Rapport de benchmark : products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md
+#
+# Frontière (ADR-0001) : le LLM choisit les 3 techniques du menu et rédige. Rien ici ne se calcule.
+# Un test garde la FORME de ce fichier (src/backlog/__tests__/groom-techniques.test.ts).
+#
+#   id     identifiant stable, en kebab-case
+#   title  le nom court, affiché dans le menu
+#   slot   le slot de DoR visé : probleme | valeur | criteres | dependances | perimetre | structure | projet
+#   ask    la consigne appliquée à la section
+#   calls  (optionnel) le skill appelé : engineering:architecture | product-management:product-brainstorming
+#   when   (optionnel) quand proposer cette technique d'office, en clair
+
+techniques:
+  - id: retourne-la-premisse
+    title: Retourner la prémisse
+    slot: probleme
+    ask: >-
+      Et si le problème décrit n'était qu'un symptôme ? Cherche une autre cause qui expliquerait la même
+      gêne, puis dis quelle preuve écarte celle-ci. Réécris la section « problème » avec la cause retenue
+      et sa preuve.
+
+  - id: un-tiers-reformule
+    title: Faire reformuler par un tiers
+    slot: probleme
+    ask: >-
+      Reformule le besoin en deux phrases, pour quelqu'un qui n'a aucun contexte. Ce qui ne passe pas dans
+      cette reformulation est du flou : replace-le dans l'ouverture « En clair » de la fiche.
+
+  - id: valeur-par-labsence
+    title: Mesurer le coût de ne rien faire
+    slot: valeur
+    ask: >-
+      Que se passe-t-il si cette fiche n'est jamais faite ? Pour qui, à partir de quand, avec quel coût ?
+      Si la réponse est « rien de grave », baisse la priorité ou propose de fermer la fiche.
+
+  - id: criteres-testables
+    title: Rendre chaque critère testable
+    slot: criteres
+    ask: >-
+      Pour chaque critère, nomme la commande ou l'observation qui le prouve. Puis cherche comment cocher
+      tous les critères sans que la chose marche, et ajoute le critère qui l'en empêche. Un critère sans
+      preuve est réécrit ou retiré.
+
+  - id: dependances-non-constatees
+    title: Constater les dépendances
+    slot: dependances
+    ask: >-
+      Liste ce que la fiche suppose sans l'avoir vu : repo, service, secret, droit d'accès, version. Pour
+      chacun, constate-le (une commande, un appel) et note la ligne datée « accès constaté le AAAA-MM-JJ ».
+
+  - id: couper-au-poc
+    title: Couper au plus petit morceau utile
+    slot: perimetre
+    ask: >-
+      Quel est le plus petit morceau qui prouve la valeur ? Garde-le dans les critères. Tout le reste
+      part dans la section « Suite », avec une ligne de raison.
+
+  - id: avis-architecte
+    title: Demander l'avis de l'architecte
+    slot: structure
+    calls: engineering:architecture
+    when: >-
+      La fiche est de type feature ou refactor ET porte une décision de structure (frontière de module,
+      format ou contrat, dépendance). Forcé par --archi, coupé par --no-archi.
+    ask: >-
+      Appelle l'architecte sur la décision de structure de la fiche : options, compromis, choix
+      recommandé. Reporte le choix et sa raison dans « Proposition ». Ouvre un ADR court seulement si la
+      décision est durable.
+
+  - id: brainstorm-cible
+    title: Brainstormer sur le point faible
+    slot: probleme
+    calls: product-management:product-brainstorming
+    when: >-
+      Le slot « problème » est faible ou la fiche est floue. Forcé par --brainstorm, coupé par
+      --no-brainstorm.
+    ask: >-
+      Brainstorm ciblé avec product-brainstorming sur le slot le plus faible : explore des pistes,
+      challenge les hypothèses, puis converge sur une formulation que l'opérateur garde.
+
+  - id: slot-du-projet
+    title: Remplir un slot propre au projet
+    slot: projet
+    when: >-
+      `ezk dor check <id>` nomme un slot du projet (.vectorz/dor.yml) vide ou incomplet. À proposer
+      d'office : sans elle, un slot propre au projet n'aurait aucune technique applicable.
+    ask: >-
+      Reprends la question (`ask`) du slot que `ezk dor check` nomme, balaie chacun de ses `items` (oui,
+      non, ou comment), puis écris la réponse sous le titre attendu (`heading`). Le script vérifie la
+      forme ; toi, tu juges si la réponse tient.
