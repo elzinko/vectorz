@@ -38,6 +38,10 @@ Le trou se trouve dans `products/mega-city/skills/ezk-codex/SKILL.md` :
 Un `fix` « réussi » laisse donc la PR avec N fils ouverts. La résolution s'est faite **à la main**
 cette fois-là (réponses `…/comments/<id>/replies`, puis GraphQL `resolveReviewThread`).
 
+**Mesure du 2026-10-01.** Sur les 60 dernières PR de vectorz, 40 portent des fils Codex. Parmi elles,
+35 en gardent au moins un **non résolu**, soit 61 fils sur 69. Le cas de la #167 n'est pas isolé :
+c'est la norme.
+
 ## Périmètre de cette PR (POC)
 
 Un patch de **playbook** dans `products/mega-city/skills/ezk-codex/SKILL.md`. Aucun script : le POC
@@ -57,13 +61,24 @@ prouve la valeur avec le texte du skill, les requêtes rejouées pour de vrai.
 
 ## Critères d'acceptation
 
-- [ ] `SKILL.md` étape 1 : l'intake lit `reviewThreads` et ne garde que les fils `isResolved:false` ouverts par Codex
-- [ ] `SKILL.md` contient un bloc « Clore un fil » : réponse en fil, puis GraphQL `resolveReviewThread` (threadId issu de `reviewThreads`)
-- [ ] un fil **décliné** est clos à la décision (réponse + 👎 + résolu)
-- [ ] un fil **corrigé** n'est clos qu'après commit **et** push réussis, la réponse cite le commit ; push en échec ⇒ aucun fil résolu
-- [ ] étape 6 : « prêt à merger » exige 0 fil traité non résolu, avec la requête de contrôle
-- [ ] `check`, la description du skill et les garde-fous disent la même chose que la boucle
-- [ ] les requêtes du playbook sont **rejouées pour de vrai** : intake sur une PR réelle portant des fils Codex, mutation validée par l'introspection du schéma GitHub
+- [x] `SKILL.md` étape 1 : l'intake lit `reviewThreads` et ne garde que les fils `isResolved:false` ouverts par Codex
+- [x] `SKILL.md` contient un bloc « Clore un fil » : réponse en fil, puis GraphQL `resolveReviewThread` (threadId issu de `reviewThreads`)
+- [x] un fil **décliné** est clos à la décision (réponse + 👎 + résolu)
+- [x] un fil **corrigé** n'est clos qu'après commit **et** push réussis, la réponse cite le commit ; push en échec ⇒ aucun fil résolu
+- [x] étape 6 : « prêt à merger » exige 0 fil traité non résolu, avec la requête de contrôle
+- [x] `check`, la description du skill et les garde-fous disent la même chose que la boucle
+- [x] les requêtes du playbook sont **rejouées pour de vrai** (preuves ci-dessous)
+
+**Preuves (2026-10-01).**
+
+- **Intake** : le bloc de l'étape 1, extrait tel quel du `SKILL.md`, est rejoué sur la PR #70. Il rend
+  les 2 fils Codex non résolus avec `threadId`, `commentId`, `path`, `line`, `body`. Sur la PR #211
+  (4 fils, tous résolus), la même requête ne rend rien.
+- **Mutation** : l'introspection du schéma GitHub donne `ResolveReviewThreadInput.threadId` (ID).
+  Le bloc de résolution, extrait tel quel, est rejoué avec un identifiant factice. GitHub l'analyse,
+  lie la variable et répond « introuvable » : la syntaxe est bonne.
+- **Limite assumée** : la résolution d'un fil **vivant** n'est pas exercée. Aucun fil Codex ouvert
+  n'existe sur la PR du POC, et résoudre les fils d'une PR ancienne serait une écriture non demandée.
 
 ## Comment vérifier
 
@@ -84,6 +99,10 @@ prouve la valeur avec le texte du skill, les requêtes rejouées pour de vrai.
 - Rejouer la boucle complète de bout en bout sur une PR vivante dès qu'un fil Codex ouvert existe
   (le quota Codex est épuisé au moment du POC).
 - Paginer `reviewThreads` au-delà de 100 fils (cas rare).
+- Utiliser le `resolutionReason` facultatif de `resolveReviewThread` (`ADDRESSED`, `WONT_FIX`,
+  `INVALID`, vérifié dans le schéma). Corrigé et décliné se liraient alors d'un coup d'œil dans la PR.
+- Les 61 fils déjà ouverts sur les PR mergées ne sont pas touchés par ce patch. Les clore serait un
+  nettoyage à part, à décider par le PO.
 
 ## Glossaire
 
@@ -96,5 +115,7 @@ prouve la valeur avec le texte du skill, les requêtes rejouées pour de vrai.
   valable à la main tant que le `SKILL.md` n'est pas patché.
 - Réf **ADR-0024** (décision fondatrice d'ezk-codex). Voisin : la section « Suivi (polish noté) » du
   `SKILL.md`.
+- Effets de bord du patch : l'ADR-0024 reçoit l'invariant 6 (clore chaque fil traité), et la carte
+  interactive est régénérée (`pnpm map:data`) parce que la description du skill change.
 - Arbitrage de grooming : **pas de script dans le POC**. Le texte du skill suffit à prouver la
   valeur, et les scripts attendent que le besoin de les tester se confirme.
