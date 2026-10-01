@@ -34,6 +34,7 @@
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",
     "backlog:aggregate": "tsx bin/backlog-aggregate.ts",
+    "backlog:version": "tsx bin/backlog-version.ts",
     "ship:fiche": "tsx bin/ship-fiche.ts",
     "backlog:apply": "tsx bin/backlog-apply.ts",
     "views:regen": "tsx bin/views-regen.ts",
