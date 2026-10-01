@@ -71,13 +71,19 @@ describe('loadCatalog (données réelles du repo)', () => {
     const catalog = loadCatalog(repoRoot);
 
     // jugement / PO : pin Opus 4.8 + spare sonnet (0181 — jamais alias opus → Opus 5)
-    for (const id of ['ezk-architect', 'ezk-reviewer', 'ezk-pm', 'ezk-archive'] as const) {
+    for (const id of ['ezk-architect', 'ezk-reviewer', 'ezk-pm'] as const) {
       const agent = catalog.agents.get(id);
       expect(agent?.model, id).toBe('claude-opus-4-8');
       expect(agent?.model_spare, id).toBe('sonnet');
     }
     expect(catalog.agents.get('ezk-architect')?.effort).toBe('high');
-    expect(catalog.agents.get('ezk-archive')?.effort).toBe('medium');
+
+    // ezk-archive (fiche 20260904091853948) : léger par défaut ; le skill passe Opus 4.8 à l'appel
+    // pour le seul jugement des branches réelles, donc l'agent n'a pas besoin de model_spare.
+    const archive = catalog.agents.get('ezk-archive');
+    expect(archive?.model).toBe('sonnet');
+    expect(archive?.model_spare).toBeUndefined();
+    expect(archive?.effort).toBe('medium');
 
     // mécanique : sonnet (dérogation motivée 0181)
     const tdd = catalog.agents.get('ezk-dev');

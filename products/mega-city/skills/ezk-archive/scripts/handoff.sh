@@ -22,9 +22,17 @@
 #   handoff.sh path                    → chemin du fichier (le crée s'il manque)
 #   handoff.sh carry                   → section **Pending de l'entrée la plus récente
 #   handoff.sh add "<titre>" < corps   → insère l'entrée en tête, puis fait tourner l'anneau
+#   handoff.sh durable "<titre>" < corps → écrit une COPIE VERSIONNÉE dans docs/sessions/
 #   handoff.sh help
 #
-# `path` et `carry` sont read-only ; seul `add` écrit.
+# `path` et `carry` sont read-only ; `add` et `durable` écrivent.
+#
+# Machine jetable (fiche 0189) : `.claude/handoff.md` est ignoré par git, donc perdu avec un
+# conteneur de session cloud. `durable` écrit la même note dans
+# docs/sessions/AAAA-MM-JJ-handoff-HHMMSS-<slug>.md : à committer ET pousser par l'humain
+# (le script ne committe ni ne pousse jamais). L'heure sert à l'ordre : l'ordre des noms est
+# l'ordre du temps. `carry` lit la plus récente des deux sources — la note locale ou la
+# copie versionnée — pour qu'un nouveau clone retrouve le Pending.
 
 set -uo pipefail
 
@@ -38,7 +46,7 @@ ROOT="$(git rev-parse --show-toplevel)" || exit 2
 FILE="$ROOT/.claude/handoff.md"
 ARCHIVE="$ROOT/.claude/handoff.archive.md"
 
-usage() { sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'; }
 
 # `add` est un read-modify-write : on lit HEADER/REST, on compose un fichier temporaire,
 # puis on le `mv` en place. Deux sessions parallèles (le PO travaille en worktrees) peuvent
@@ -73,10 +81,60 @@ ensure_gitignored() {
   # `.claude/handoff.md` est de l'ÉPHÉMÈRE PERSONNEL : jamais committé. On garantit
   # l'entrée .gitignore AVANT d'écrire, jamais après — sinon une session parallèle
   # pourrait committer le fichier entre l'écriture et l'ignore.
-  git -C "$ROOT" check-ignore -q ".claude/handoff.md" 2>/dev/null && return 0
-  printf '\n# note de handoff ezk-archive — éphémère personnel, jamais committée\n.claude/\n' \
-    >> "$ROOT/.gitignore"
-  echo "ℹ .gitignore : entrée « .claude/ » ajoutée avant écriture." >&2
+  #
+  # On n'ignore QUE les deux fichiers du handoff, jamais `.claude/` en entier (fiche 0189) : ce
+  # dossier peut être versionné (agents, skills, réglages du projet), et l'ignorer d'un bloc les
+  # ferait disparaître de `git status`.
+  # Migration : la version précédente écrivait « .claude/ » sous un commentaire qui est le sien. On
+  # remplace CETTE entrée-là par les deux fichiers, et rien d'autre : un « .claude/ » posé par le
+  # projet, sans ce commentaire, est à lui et reste en place.
+  local gi="$ROOT/.gitignore" legacy='# note de handoff ezk-archive — éphémère personnel, jamais committée'
+  if [[ -f "$gi" ]] && grep -qxF "$legacy" "$gi"; then
+    awk -v m="$legacy" '
+      { if (prev && $0 == ".claude/") { print ".claude/handoff.md"; print ".claude/handoff.archive.md"; prev = 0; next }
+        prev = ($0 == m); print }
+    ' "$gi" > "$gi.new" && if ! cmp -s "$gi" "$gi.new"; then
+      mv "$gi.new" "$gi"
+      echo "ℹ .gitignore : l'ancienne entrée « .claude/ » est remplacée par handoff.md et handoff.archive.md." >&2
+    else
+      rm -f "$gi.new"
+    fi
+  fi
+  local f missing=""
+  for f in .claude/handoff.md .claude/handoff.archive.md; do
+    git -C "$ROOT" check-ignore -q "$f" 2>/dev/null || missing="${missing}${f}"$'\n'
+  done
+  [[ -z "$missing" ]] && return 0
+  { printf '\n# note de handoff ezk-archive — éphémère personnel, jamais committée\n'
+    printf '%s' "$missing"; } >> "$ROOT/.gitignore"
+  echo "ℹ .gitignore : handoff.md et handoff.archive.md ajoutés avant écriture." >&2
+}
+
+# mtime portable (voir test-check-gate.sh : `stat -f` est du BSD, mais sur GNU il veut dire --file-system).
+if stat -c %Y . >/dev/null 2>&1; then mtime() { stat -c %Y "$1"; }   # GNU coreutils
+else                                  mtime() { stat -f %m "$1"; }   # BSD / macOS
+fi
+
+SESSIONS_DIR="$ROOT/docs/sessions"
+
+# La copie versionnée la plus récente. L'heure est dans le nom : l'ordre des noms est l'ordre du temps.
+latest_durable() {
+  ls -1 "$SESSIONS_DIR"/*-handoff-*.md 2>/dev/null | sort | tail -n 1
+}
+
+# La section **Pending d'un fichier de handoff, bornée (le rédacteur ne lit jamais le fichier entier).
+carry_from() {
+  awk '
+    /^## / { if (started) exit; next }              # entrée suivante APRÈS la section = fin
+    /^\*\*Pending/ { started=1; print; next }       # 1re section Pending rencontrée (= la + récente)
+    started && /^\*\*/ { exit }                     # section suivante = fin
+    started { print }
+  ' "$1" | head -n "$CARRY_MAX"
+}
+
+# Slug du titre pour le nom de fichier : ASCII minuscule, tirets, 40 caractères au plus.
+slugify() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | LC_ALL=C sed 's/[^a-z0-9]\{1,\}/-/g; s/^-//; s/-$//' | cut -c1-40
 }
 
 ensure_file() {
@@ -108,13 +166,45 @@ case "${1:-help}" in
     # perdus au tour suivant (ici : deux décisions PO en attente sur des branches, plus une
     # fiche reportée). Un rituel dont la raison d'être est de ne rien perdre ne peut pas
     # dépendre de la forme de la dernière entrée écrite.
-    [[ -f "$FILE" ]] || exit 0
-    awk '
-      /^## / { if (started) exit; next }              # entrée suivante APRÈS la section = fin
-      /^\*\*Pending/ { started=1; print; next }       # 1re section Pending rencontrée (= la + récente)
-      started && /^\*\*/ { exit }                     # section suivante = fin
-      started { print }
-    ' "$FILE" | head -n "$CARRY_MAX"
+    #
+    # Deux sources (fiche 0189) : la note locale, ignorée par git, et la copie versionnée que
+    # `durable` écrit sur une machine jetable. La plus récente (mtime) gagne : sur un nouveau clone
+    # la note locale n'existe pas, la copie prend le relais ; sur un poste normal, la note locale
+    # reste la source tant qu'aucune copie plus récente n'est arrivée par un `git pull`.
+    SRC=""
+    [[ -f "$FILE" ]] && SRC="$FILE"
+    DUR="$(latest_durable)"
+    if [[ -n "$DUR" && -f "$DUR" ]]; then
+      if [[ -z "$SRC" ]] || (( $(mtime "$DUR") > $(mtime "$SRC") )); then SRC="$DUR"; fi
+    fi
+    [[ -n "$SRC" ]] || exit 0
+    carry_from "$SRC"
+    ;;
+
+  durable)
+    TITLE="${2:-}"
+    if [[ -z "$TITLE" ]]; then echo "✗ handoff.sh durable « <titre> » — titre manquant." >&2; exit 2; fi
+    BODY="$(cat)"
+    if [[ -z "${BODY//[[:space:]]/}" ]]; then echo "✗ corps vide sur stdin — rien écrit." >&2; exit 2; fi
+    mkdir -p "$SESSIONS_DIR"
+    DAY="$(date +%F)"; HMS="$(date +%H%M%S)"; SLUG="$(slugify "$TITLE")"
+    [[ -n "$SLUG" ]] || SLUG="note"
+    # Jamais d'écrasement : en cas de collision on avance l'heure d'une seconde, pour que
+    # l'ordre des noms reste l'ordre du temps (un suffixe `-2` se trierait AVANT `.md`).
+    OUT="$SESSIONS_DIR/$DAY-handoff-$HMS-$SLUG.md"
+    # Création EXCLUSIVE (noclobber = O_EXCL) : deux processus qui écrivent le même titre dans la même
+    # seconde ne peuvent pas obtenir le même fichier, l'un d'eux passe à la seconde suivante.
+    while ! ( set -o noclobber; : > "$OUT" ) 2>/dev/null; do
+      HMS="$(printf '%06d' $(( 10#$HMS + 1 )))"
+      OUT="$SESSIONS_DIR/$DAY-handoff-$HMS-$SLUG.md"
+    done
+    {
+      printf '# Handoff — %s\n\n' "$TITLE"
+      printf '> Copie versionnée (machine jetable). À committer ET pousser : sans cela, elle disparaît avec le conteneur.\n\n'
+      printf '## %s\n\n' "$TITLE"
+      printf '%s\n' "$BODY"
+    } > "$OUT"
+    echo "$OUT"
     ;;
 
   add)
@@ -173,5 +263,5 @@ case "${1:-help}" in
     ;;
 
   help|-h|--help) usage ;;
-  *) echo "✗ verbe inconnu « $1 » (path|carry|add|help)" >&2; usage >&2; exit 2 ;;
+  *) echo "✗ verbe inconnu « $1 » (path|carry|add|durable|help)" >&2; usage >&2; exit 2 ;;
 esac
