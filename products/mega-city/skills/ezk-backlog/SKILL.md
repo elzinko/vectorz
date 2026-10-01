@@ -1,9 +1,9 @@
 ---
 composes: [ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance]
 name: ezk-backlog
 layout_version: 5
-argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate]"
+argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate|version]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
   jamais les perdre entre worktrees ni entre sessions. A utiliser quand
@@ -13,10 +13,10 @@ description: >-
   (« elle est ready ? »), passer le backlog en revue (sanity check), demander la
   prochaine fiche tirable, regrouper des fiches, marquer une feature livrée,
   réconcilier le statut des fiches avec l'état réel des PRs mergées (merges faits
-  hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, ou voir
-  l'état du backlog.
+  hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, dire où
+  en est une version et la clore, ou voir l'état du backlog.
   Pilotable par sous-commandes : help, init, list, add, groom, ready, next,
-  plan, review, reconcile, ship, regen, aggregate. A la
+  plan, review, reconcile, ship, regen, aggregate, version. A la
   première invocation dans un projet, INITIALISE la structure (dossier features/,
   sous-dossier done/, fichier de suivi index) ; ensuite charge le backlog trié
   par priorité en contexte de session. Format léger : une fiche markdown par
@@ -63,6 +63,19 @@ Sans ce lien, l'humain ne peut pas ouvrir la fiche depuis la liste (règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md),
 puce « Lists of file-backed items »).
 
+## Et maintenant ?
+
+La restitution se ferme par un bloc « Et maintenant ? » : 1 à 3 commandes, chacune avec une raison d'une ligne, la **suite logique** séparée des **pistes**. Le format est fixé par la règle [`documentation-guidelines/next-step-affordance`](../../rules/documentation-guidelines/next-step-affordance.md) : ne le recopie pas ici. Voici les successions d'`ezk-backlog`.
+
+| Quand | Suite logique | Pistes |
+|---|---|---|
+| après `add` | `/ezk-backlog groom <id>` — la fiche naît « idée », elle n'est pas encore tirable | `/ezk-backlog list` — revoir le stock |
+| après `groom <id>` | `/ezk-backlog ready <id>` — passer la porte « prête » quand les critères tiennent | aucune |
+| après `ready <id>` accepté | `/ezk-backlog next --ready-only` — la fiche est tirable maintenant | `/ezk-sprint run` — la développer tout de suite |
+| après `next --ready-only` | `/ezk-sprint run` — développer cette fiche | aucune |
+| après `ship <id>` | `/ezk-backlog next --ready-only` — enchaîner sur la fiche suivante | `/ezk-backlog reconcile` — si des PRs ont été fusionnées hors du flux (ex. depuis GitHub) |
+| `list`, `review`, `version`, `help` | aucun bloc | aucun |
+
 ## Préflight Skema (layout version) — à chaque commande
 
 Avant `list` / `next` / `add` / `groom` / `ready` / `plan` / `review` /
@@ -93,15 +106,16 @@ du front-matter de cette skill).
 | `init` | Initialise le suivi : `features/` + `done/` + README curé + `BACKLOG.md` (helper `init.sh`) |
 | `list` / `next` | Charge le backlog **trié par priorité** (P0→P3) en contexte de session |
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
-| `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change pas le statut |
-| `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
+| `groom <id> [--archi\|--no-archi] [--brainstorm\|--no-brainstorm]` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères, + les slots que le projet déclare dans `.vectorz/dor.yml`) par une **boucle guidée** : menu court de techniques (catalogue `groom-techniques.yml`), tu choisis, l'agent applique et re-propose ; l'architecte et le brainstorm en font partie — ne change pas le statut |
+| `ready <id>` | **Gate DoR** : refuse si un slot manque (socle ou slot du projet) ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
-| `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index **et les vues** (`PORTFOLIO.md` généré + `PLAN.md` curé) ; filet `check-planning-views` |
-| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches |
+| `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`pnpm --dir products/mega-city ship:fiche`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
+| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `pnpm --dir products/mega-city views:regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
+| `version [list\|check\|close]` | Le niveau **version** : où en est chaque lot (champ `version:`), cohérence d'un lot, et clôture d'une version livrée (étiquette `vX.Y` **proposée**, jamais poussée) |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
 > si un backlog existe, son état trié par priorité. Sans sous-commande reconnue → traite la
@@ -290,22 +304,76 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    écran, `before-after` ou `auto` motivé), et — si la fiche en référence — **dépendances
    externes** (repo hors monorepo, service, secret : chacune **constatée** accessible, avec une
    ligne datée « dépendance <nom> — accès constaté le AAAA-MM-JJ » dans la fiche ;
-   rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié).
-2. Session de raffinement **ciblée** sur ces slots via
-   `product-management:product-brainstorming` ; le panel de challenge (fiche 0057) est
-   composable en étape optionnelle.
-3. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
+   rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié),
+   **plus les slots du projet** s'il en déclare (section suivante : `ezk dor show` les liste ;
+   chacun a une section attendue dans la fiche, une question à trancher, une liste à balayer).
+2. **Boucle de raffinement guidée** (fiche 20260825161522791). Au lieu d'un brainstorm libre,
+   une boucle « propose, l'opérateur choisit, tu appliques, tu re-proposes ». Prior art : BMAD
+   `advanced-elicitation` (50 méthodes, `methods.csv`) — voir le
+   [rapport de benchmark](../../docs/benchmarks/2026-08-25-bmad-vs-ezk.md). Le catalogue est une
+   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (9 techniques).
+   - **Menu court.** Propose 3 techniques (4 au plus), choisies sur le slot le plus faible :
+     numérotées, une ligne chacune (titre + ce qu'elle va faire), plus `0 — terminer`. Si
+     `ezk dor check <id>` nomme un **slot du projet** vide ou incomplet, propose d'office
+     `slot-du-projet` : la technique de repli générique, qui reprend la `ask` et les `items` du
+     slot déclaré (le catalogue ne peut pas connaître d'avance les slots d'un projet).
+   - **Applique, remontre.** L'opérateur en choisit une. Applique-la à la section concernée, puis
+     montre la section améliorée (avant, après).
+   - **Valide.** « garder / retoucher / annuler ». N'écris dans la fiche que ce qui est gardé.
+   - **Re-propose.** Un nouveau menu, sans les techniques déjà jouées, jusqu'à la
+     **sortie explicite** (`0`, « ça suffit »). Sortir au premier tour est légitime : aucune passe
+     n'est forcée, la fiche reste telle quelle.
+   - **Sans opérateur interactif** : pas de menu, il bloquerait l'auto-groom. C'est le cas dès que
+     personne ne peut répondre : appel d'un orchestrateur ou d'un run autonome (`ezk-product-build`,
+     `ezk-pm`, `ezk-sprint` à l'intake sur une tête bloquée). Pour **chaque slot manquant** ou faible
+     (le socle et les slots du projet), applique toi-même la technique la plus utile : une par slot,
+     en une passe, et nomme-les dans ton compte rendu. Un slot qui ne se remplit pas sans arbitrage
+     reste dit tel quel : la fiche n'est pas prête, et l'appelant retombe sur son checkpoint « aucune
+     fiche ready ».
+3. **Architecte et brainstorm** (fiche 20260812104022243). Deux techniques du catalogue APPELLENT un
+   skill : `avis-architecte` → `engineering:architecture`, `brainstorm-cible` →
+   `product-management:product-brainstorming`. Par défaut, l'architecte est proposé au menu quand la
+   fiche est de type `feature` ou `refactor` ET porte une décision de structure (frontière de module,
+   format ou contrat, dépendance) ; le brainstorm, quand le slot « problème » est faible. Les
+   paramètres `groom <id> --archi` / `--no-archi` et `--brainstorm` / `--no-brainstorm` forcent la
+   technique au premier menu, ou la retirent. Sans paramètre, c'est ton jugement. Le panel de
+   challenge (fiche 0161) viendra comme une technique de plus.
+4. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
    c'est le job du gate.
 
 Quand groomer : au moment de **tirer** la fiche (pas à la capture — une `idea` jamais
 tirée ne mérite pas de grooming). Cadrer une demande floue à la création reste le job
 d'`add` (étape 1).
 
+### La DoR du projet — `.vectorz/dor.yml` (fiche 20260815080414006, ADR-0016 amendé)
+
+Le socle (problème / valeur / critères + dépendances externes) est le même partout et vit ICI.
+Un projet peut y **ajouter** des slots dans `.vectorz/dor.yml` (exemple : `.vectorz/dor.example.yml`
+du dépôt vectorz) : un `heading` (la section attendue dans la fiche), une `ask` (la question à
+trancher), des `items` (la liste à balayer — ex. les surfaces : doc, site, README, notes de
+version), et un seuil de lot `health.min-ready`. **Absent = le socle seul, rien ne change.**
+
+Frontière (ADR-0001) : le **script** range le mécanique, **toi** tu juges le fond.
+
+| Commande | Ce qu'elle dit |
+|---|---|
+| `ezk dor show` | les slots déclarés et le seuil de lot |
+| `ezk dor check <id>` | pour chaque slot : section absente / vide / incomplète (item non mentionné) / OK — **code 1** si un slot manque **ou si le manifeste est invalide** (le message dit lequel : stdout = refus, stderr = manifeste cassé). Un item se cherche comme mot entier |
+| `ezk dor health` | fiches tirables / pas prêtes ; **code 1** sous `health.min-ready` |
+
+Depuis vectorz : `pnpm ezk dor …`. Ailleurs : le binaire `ezk` lié globalement, avec
+`--root <projet>` si besoin. **Best-effort, jamais fatal** : si `ezk` est absent, lis
+`.vectorz/dor.yml` toi-même et applique la même règle (la section existe, a du contenu,
+mentionne chaque item).
+
 ### `ready <id>` — le gate DoR (bloquant)
 
 1. Vérifie les slots DoR : les 3 de base (problème / valeur / critères) + le slot
    **conditionnel** dépendances externes (exigé seulement si la fiche référence un
-   repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »).
+   repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »),
+   **puis les slots du projet** : `ezk dor check <id>` — s'il rend le code 1, c'est un
+   **refus** et sa sortie dit déjà quel slot, quelle section, quel item. Juge ensuite le
+   **fond** de chaque réponse : une section pleine de « oui » sans raison ne tient pas.
    **Un slot manque → REFUS motivé** (dis précisément quoi groomer) ; ne touche à rien.
 2. Au vert : passe la fiche en `status: ready` — c'est la colonne « tirable », il n'y a
    **plus de champ date `ready:`** (retiré par la migration 005 ; les dates historiques sont en note
@@ -346,6 +414,10 @@ d'abord, ou décision journalisée).
   enfant ready (champ `epic:`), sinon passe à la fiche suivante.
 - Aucune fiche éligible → dis-le et **propose le groom de la fiche de tête** ; en run
   autonome, c'est le checkpoint bloquant « aucune fiche ready » d'ezk-product-build.
+- **Seuil de lot** (fiche 20260815080414006, reprend la fiche 0100) : si le projet déclare
+  `health.min-ready` dans `.vectorz/dor.yml`, lance `ezk dor health`. Sous le seuil (code 1),
+  ajoute à ta réponse « seulement N fiche(s) tirable(s) pour un minimum de M » et **propose une
+  session de groom** avant d'ouvrir un sprint. C'est un rappel, pas un refus : la soupape PO reste.
 - **Soupape PO** : l'opérateur peut décider de tirer une fiche non-ready — décision
   explicite, **journalisée** (note dans la fiche + scratch de sprint).
 
@@ -360,31 +432,58 @@ réimplémentée en aval (test de séparabilité).
 
 Distinct de `review` (hygiène périodique, cadence bornée) : `aggregate` est le geste de
 **restructuration délibéré**, lancé quand le stock a gonflé. Il **propose** ; le PO
-**tranche** ; un geste séparé **applique** — jamais d'auto-modification (ADR-0001).
+**tranche** ; un geste séparé (`backlog:apply`, plus bas) **applique** — jamais d'auto-modification
+(ADR-0001).
 
 ```bash
 pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn|epic:<id>>] \
-  [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>]
+  [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>] [--proposals <fichier.json>]
 ```
 
 - `--scope` restreint la passe : `all` (défaut, tout le stock actif), un `<produit>`,
   un seau de priorité `Pn`, ou `epic:<id>` (les enfants d'un épic).
 - `--focus` cible l'affichage sur un type de remaniement (`merge`, `split`, `epics`,
   `dedup`, `reprioritize`) ; sans arg, tout est montré. `split`/`reprioritize` ne sont
-  **pas produits** par le moteur `script` aujourd'hui — le dit sans planter.
+  **pas produits** par le moteur `script` : c'est le jugement du moteur `llm` — le dit sans planter.
 - `--mode` choisit le moteur :
   - **`script`** (défaut) — clustering **mécanique et déterministe** sur `labels:`
     partagés (multi-appartenance), enfants d'un même `epic:`, et 1er mot du titre.
     Rend toujours sa **couverture** (« N/M fiches taguées ») : jamais de crash sur
     des fiches sans tag, jamais de bascule silencieuse.
-  - **`llm`** — saute le clustering déterministe ; le jugement par intention (faux
-    positifs/négatifs du script, épics et splits proposés) reste à faire via le
-    playbook — pas encore implémenté par ce cœur.
-  - **`both`** — exécute `script` puis annonce que la passe `llm` reste à faire.
-- Chaque proposition nomme le **geste d'application** (`ship`, futur `merge`/`split`)
-  **sans l'exécuter**. Les statuts `merged`/`split` avec provenance sont **gated** sur
-  [[20260823121712652]] — en attendant, `aggregate` propose, `ship` reste le seul geste
-  qui exécute.
+  - **`llm`** — le jugement par le sens est celui de **l'agent**, jamais du code (ADR-0051).
+    Sans `--proposals` : imprime le **dossier** (fiches actives du scope : id, priorité, titre,
+    labels) et le **format JSON** de la réponse. L'agent juge, écrit un tableau de propositions
+    `{kind: merge|split, …, why}` dans un fichier, puis relance avec `--proposals <fichier>` : le
+    script **valide** chaque proposition (id inventé, fiche déjà livrée ou close, résultante parmi
+    les sources, `why` vide, recouvrement avec une proposition plus haute) — chaque rejet est
+    **listé avec sa raison**, jamais abandonné en silence ; un fichier illisible est une erreur
+    franche. Il rend ensuite les propositions valides, chacune avec son geste.
+  - **`both`** — `script`, puis `llm`, puis le **croisement** : cluster confirmé par le llm ·
+    cluster non retenu (faux positif possible) · proposition trouvée « par le sens seulement ».
+- Chaque proposition nomme son **geste d'application** (`backlog:apply …`, prêt à copier)
+  **sans l'exécuter** : `aggregate` n'écrit jamais rien.
+
+#### Appliquer — `backlog:apply` (fiche 20260910231201744)
+
+Après l'arbitrage du PO, un script applique (ADR-0001). C'est la transaction de `ship` (liens
+recalés, entrée de `PLAN.md` barrée, un seul `git mv` vers `done/`, `BACKLOG.md` régénéré, retour
+arrière au moindre échec), avec le statut `merged` ou `split` et la **provenance dans les deux sens** :
+
+```bash
+pnpm --dir products/mega-city backlog:apply merge --into <résultante> <source>… [--dry-run]
+pnpm --dir products/mega-city backlog:apply split <source> --into <enfantA>,<enfantB>… [--dry-run]
+```
+
+- **Fusion** : chaque source passe `merged` (+ `merged_into`) et part dans `done/` ; la résultante
+  reste active et cite ses sources (`merged_from`).
+- **Découpage** : la source passe `split` (+ `split_into`) et part dans `done/` ; chaque enfant cite
+  la source (`split_from`).
+- La résultante (ou les enfants) doit **déjà exister** : créer une fiche, c'est `add`, avant l'apply.
+- **Refus avant d'écrire** (code 1), toutes les raisons d'un coup : id inconnu, fiche déjà livrée ou
+  close, résultante parmi les sources, découpage à moins de 2 enfants, liens cassés en hausse,
+  entrée de `PLAN.md` laissée « à faire ». `--dry-run` décrit sans rien écrire.
+- Ne committe ni ne pousse : le commit reste celui d'`ezk-commits`. `fiches:check` contrôle ensuite
+  que la provenance se lit dans les deux sens.
 
 ### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0071)
 
@@ -409,6 +508,9 @@ Contrôles (jugement LLM) :
 5. **Cohérence épic/enfants** (ADR-0017) — épic `shipped` avec enfants actifs, épic
    `in-progress` aux enfants tous livrés, épic fourre-tout sans objectif livrable.
 6. **Révocation** — `status: ready` devenus faux (le contexte a bougé depuis le gate).
+7. **Cohérence des versions** — **lance `version check`** (bras *mécanique* : `version:` illisible,
+   fiche parkée rangée dans une version, version rouverte, écart avec `PLAN.md`) ; le jugement LLM
+   garde ce que le script ne voit pas : manque-t-il une fiche dans le lot ? y en a-t-il une hors sujet ?
 
 Les **compteurs viennent du script** (`regen`, doctrine ADR-0001 — ne les recompte
 jamais à la main) : fiches par statut, `ready`, création médiane des `ready`.
@@ -451,27 +553,81 @@ Une seule brique, plusieurs appelants — aucun ne réimplémente le croisement.
 ### `ship <id> [#PR]` — la transition « livrée » (cible de `reconcile`)
 
 C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'importance de
-`reconcile`, qui la propose quand un merge s'est fait hors du flux). Étapes, dans l'ordre :
+`reconcile`, qui la propose quand un merge s'est fait hors du flux). Elle tient en **un seul
+geste**, pas en une liste d'étapes à suivre de mémoire (fiche 20260830194601233) :
 
-1. Front-matter : pose `status: shipped` **et** `pr:`. En flux GitHub : le n° de PR `#<n>`
+```bash
+pnpm --dir products/mega-city ship:fiche -- --pr '#<n>' features/<id>_<slug>.md [autres fiches du lot]
+```
+
+La commande fait tout, dans l'ordre, **ou rien** :
+
+1. **Front-matter** : pose `status: shipped` **et** `pr:`. En flux GitHub : le n° de PR `#<n>`
    (demande-le si inconnu, ne l'invente pas ; garde-fou n°1). **Livraison locale** (mode
    `github: false` / dépôt sans remote — fiche 20260916225506856) : **pas de PR à inventer**,
-   pose `pr: local (<sha-du-squash>)` (précédent : fiche 0183 shippée `local (main c45102b)`).
-2. `git mv` la fiche de `features/` vers `features/done/` — c'est ce déplacement qui la sort
-   du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
+   `--pr 'local (<sha-du-squash>)'` (précédent : fiche 0183 shippée `local (main c45102b)`).
+   Autre statut terminal : `--status superseded --pr 'superseded — <raison>'`.
+2. **Un seul `git mv`** de `features/` vers `features/done/` — c'est ce déplacement qui sort la
+   fiche du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
    candidate, elle ne peut pas être re-tirée).
-3. **`regen` — l'index ET les vues dérivées** (fiche 20260812100109940) :
-   - `regen` reconstruit l'index `features/BACKLOG.md` (la fiche passe en « Livrées `done/` ») ;
-   - **régénère `PORTFOLIO.md`** — `bash products/mega-city/bin/portfolio.sh <racine>` — vue générée
-     au même titre que l'index ; sinon la fiche livrée y reste affichée `ready` (ADR-0001 : le script range) ;
-   - **cure `PLAN.md`** (curé, jamais régénéré) : barre l'entrée de la fiche
-     (`~~…~~ — shipped #<n>`) — **proposé à l'humain**, `PLAN` est une décision, pas un index.
-4. **Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
-   fiche `shipped` encore présentée comme à faire dans `PORTFOLIO.md` / `PLAN.md`. Doit être vert avant de committer.
-5. Commit `docs(features): ship <id> #<PR>` (via `ezk-commits`).
+3. **Recale TOUS les liens relatifs** du markdown : sortants de la fiche, entrants, entre fiches du
+   lot. Les liens sont lus comme `bin/check-links.sh` les lit.
+4. **Régénère `features/BACKLOG.md`** (la fiche passe en « Livrées `done/` ») et **barre l'entrée de
+   `PLAN.md`** (`~~…~~ — shipped #<n>`) : barrer un fait accompli, c'est ranger (ADR-0001). Rien
+   d'autre à régénérer : `PORTFOLIO.md` et les données du board / pilotage / runs ne sont plus
+   committés (ADR-0055).
+5. **Refuse sans rien écrire** (exit 1) si les liens cassés augmenteraient, si l'entrée de `PLAN.md`
+   ne peut pas être barrée (une ligne qui mêle plusieurs fiches est un jugement : à barrer à la
+   main), ou si la fiche n'est pas directement sous `features/`. Un échec en cours de route remet le
+   dépôt à l'état initial (exit 2). `--dry-run` montre le plan sans rien écrire.
+6. **Commit** `docs(features): ship <id> #<PR>` (via `ezk-commits`, après `git add features`). La
+   commande ne committe ni ne pousse.
+
+**Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
+fiche `shipped` encore présentée comme à faire dans `PLAN.md` (et dans `PORTFOLIO.md` s'il traîne
+en local). Reste utile pour un ship fait à la main ou hors flux.
+
+**Conflit sur `BACKLOG.md` entre deux ships parallèles** (ADR-0049 §3). Depuis l'ADR-0055, c'est la
+seule vue générée qui peut encore se disputer. Recette, dans cet ordre : (1) `git merge origin/main`
+dans la branche, jamais de rebase d'une branche poussée ; (2) sur `features/BACKLOG.md` en conflit,
+prendre n'importe quel côté (`git checkout --ours features/BACKLOG.md`), puis la régénérer
+(`bash products/mega-city/bin/regen-backlog.sh .`) ; (3) `git add features/BACKLOG.md`, terminer le
+merge, rejouer la gate. Jamais d'édition à la main d'une vue générée. Un conflit sur `PLAN.md` (curé)
+se résout à la main.
 
 `ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
 détection ne bascule rien seule ; l'arbitrage reste au PO).
+
+### `version [list|check|close]` — le niveau version (fiche 20260824204751403)
+
+Le champ `version:` d'une fiche désigne son **lot de livraison** (`V0.3`). Cette sous-commande le
+rend actif : tout se **calcule** depuis le front-matter (aucun objet milestone, aucun fichier de plus),
+par un script déterministe (ADR-0001), jamais recompté à la main. Format attendu : `V<n>.<n>`.
+
+```bash
+pnpm --dir products/mega-city backlog:version                       # list : une ligne par version
+pnpm --dir products/mega-city backlog:version check [<X>] [--max <n>] [--no-plan]
+pnpm --dir products/mega-city backlog:version close <X> [--tag]
+```
+
+- **`list`** (défaut) — par version : fiches, livrées, à faire, prêtes, bloquées, intrus, et l'**état** :
+  `en cours` · `à clore` (tout est livré, pas d'étiquette) · `livrée` (tout est livré **et** l'étiquette
+  `vX.Y` existe) · `rouverte` (livrée, mais une fiche est revenue). Les fiches **sans** version sont
+  comptées, jamais passées sous silence. Un **intrus** = une fiche parkée qui porte une version.
+- **`check [<X>]`** — la cohérence d'un lot. **Erreurs** (code 1) : `format` (version illisible),
+  `parkee`, `rouverte`, `plan-ecart` (`PLAN.md` range la fiche dans une autre version), `plan-ambigue`
+  (une section du plan cite deux versions). **Alertes** : `bloquee`, `taille` (plus de 15 fiches à
+  faire, calibrage provisoire), `plan-absente` (fiche de la version absente de sa section du plan).
+  Il dit aussi ce qu'il **ne contrôle pas** : le séquencement (`depends:` n'est pas lu).
+- **`close <X>`** — refuse (code 1) tant qu'une fiche reste à livrer, qu'une erreur de lot subsiste ou
+  que `features/` porte des changements non commités. Sinon il déclare la version complète et
+  **propose** `git tag -a vX.Y <HEAD>` puis `git push origin vX.Y`, **sans les exécuter**. L'étiquette
+  vise `HEAD`, le commit dont les fiches ont été lues ; la proposition avertit si ce n'est pas la pointe
+  de `origin/main`. `--tag` crée l'étiquette **en local** seulement (réversible : `git tag -d`) ; le
+  `push` reste un geste du PO.
+
+Restitution : « En clair » d'abord (où en est la version, ce qui bloque), puis le tableau ou les
+constats. Lance-le depuis un `main` à jour. `PLAN.md` n'est jamais modifié par cette sous-commande.
 
 ### `plan [set …]` — la séquence décidée, persistée entre sessions
 

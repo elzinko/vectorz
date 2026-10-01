@@ -62,7 +62,7 @@ vérifier seule. Cette fiche propose ce chaînon manquant : un **schéma markdow
   [`20260826122532943`](20260826122532943_fondation-modele-fichiers-ezk-avant-recettes.md)**
   et l'[ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)
   (D2), qui prévoit de l'**absorber** (note du 2026-08-26).
-- **Voisin de** [`20260825182327490`](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md)
+- **Voisin de** [`20260825182327490`](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md)
   « livrable lisible » (template + extracteur scripté) : même famille d'outillage « format
   vérifiable », angle complémentaire — là **produire/rendre**, ici **valider**.
 - **Compose** ADR-0001 (frontière déterministe : le script tranche, pas le LLM).

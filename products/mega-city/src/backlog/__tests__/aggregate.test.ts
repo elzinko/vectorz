@@ -14,6 +14,7 @@ function fiche(overrides: Partial<Fiche> & { id: string }): Fiche {
     pr: '',
     labels: [],
     blocked: '',
+    version: '',
     done: false,
     file: `features/${overrides.id}-x.md`,
     ...overrides,

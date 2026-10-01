@@ -1,7 +1,7 @@
 ---
 roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility, development/pr-before-after-media]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/pr-before-after-media]
 argument-hint: "[help|start|close|check|run]"
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
@@ -121,7 +121,7 @@ Ce skill est de la **glue** : ton rôle est l'**orchestration** et le **jugement
 
 Trois invariants :
 
-1. **1 feature = 1 branche = 1 PR = 1 squash-merge.** Jamais deux features dans une PR.
+1. **1 feature = 1 branche = 1 squash-merge, et 1 PR quand `github.pr` est actif** (ADR-0059 : la PR est la projection de l'adaptateur GitHub, l'unité atomique est la branche). Jamais deux features dans une PR.
 2. **POC d'abord (ça marche), polish ensuite (c'est beau).** On ne peaufine jamais le visuel d'une feature non validée.
 3. **Tout testable en local d'abord** — tests, pipeline (`act` + Docker) **et** E2E (Playwright) tournent en local **avant** la CI cloud.
 
@@ -199,6 +199,15 @@ l'utilité, c'est du jugement). C'est cette section qu'`ezk-archive` fige dans
 `docs/sessions/` à la clôture, et que consomme `ezk-chef extract` pour amorcer un
 brouillon de recette (PR #196).
 
+**Où écrire désormais : le journal des difficultés.** Écris l'entrée **directement** dans un
+fichier durable, hors `SPRINT.md`, avec
+`bash products/mega-city/bin/journal-add.sh <id-fiche> "<titre>" "<ce qui a coincé>" "<comment réglé>" ["<pourquoi>"]`.
+Une entrée par galère, **taguée par fiche**. Le fichier est propre à la session (le nom de la
+branche) : deux sprints en parallèle ne se marchent pas dessus. Le journal est indépendant du
+labo : `ezk-chef extract` le lit à la demande. Format et règles : `docs/journal/README.md`. La
+section de `SPRINT.md` ci-dessus reste lue (rétro-compatibilité), mais n'est plus la voie
+recommandée.
+
 ## La boucle de sprint — par story
 
 `run` déroule `start`, puis cette boucle **pour chaque story du lot** (une branche et une PR chacune, dans l'ordre du lot), puis `close`. L'intake (étape 0) se fait en entier une seule fois, à l'ouverture du sprint : entre deux stories, reprends seulement la branche et le cadrage. Un lot d'une story donne le même déroulé qu'avant.
@@ -212,7 +221,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 4. **TDD POC** — délègue à **`ezk-dev`** : red → green → refactor sur le cœur.
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
-7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
+7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR. Cette revue locale est le **plancher** ([ADR-0059](../../docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md)) : aucun merge sans son `GO`, avec ou sans Codex. Garde son verdict tel quel (un fichier) : il laisse une **trace**. La PR n'existe pas encore à cette étape, donc en `pr: on` tu le postes en commentaire de la PR dès son ouverture (étape 8, `gh pr review <N> --comment --body-file <verdict>`), **avant le merge** ; en `pr: off`, `review:emit`. Codex est un filet en plus, jamais une condition de merge.
 8. **PR** *(seulement si `pr: on` — sinon cf. § « Capacités GitHub » : pas de PR, le livrable de revue est le fichier local, merge local à l'étape 10)* — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement**). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) : **le corps de PR est le RENDU de la fiche** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)), **pas** un résumé parallèle. Concrètement :
 
    - **Recopier la fiche** dans le corps : son ouverture **« En clair »** (+ **« Si tu arrives frais »** si la fiche la porte — le vocabulaire projet pour un lecteur neuf) puis ses sections (Contexte / Proposition / Critères / **Comment vérifier**, et **`## Glossaire`** si la fiche en porte un). Ne **rien** réécrire à côté — si le texte manque de clarté, corriger **la fiche**, puis re-rendre.
@@ -236,7 +245,18 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
    affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
    **titre + lien**, jamais par son id nu.
-10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui **remplace Codex** ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**. Coche ensuite la story dans le lot de `SPRINT.md` (`[x] … (PR #N)`). **Si c'était la dernière du lot, lance `close`** (cf. § « La clôture »).
+10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui est le **plancher** de la revue (ADR-0059) ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**. Coche ensuite la story dans le lot de `SPRINT.md` (`[x] … (PR #N)`). **Si c'était la dernière du lot, lance `close`** (cf. § « La clôture »).
+
+## Et maintenant ?
+
+À la fin d'une commande, ferme ta réponse par un bloc « Et maintenant ? » : 1 à 3 commandes, chacune avec une raison d'une ligne, la **suite logique** séparée des **pistes**. Le format est fixé par la règle [`documentation-guidelines/next-step-affordance`](../../rules/documentation-guidelines/next-step-affordance.md) : ne le recopie pas ici. Voici les successions de ce skill.
+
+| Quand | Suite logique | Pistes |
+|---|---|---|
+| `check` rend `CLEAR` | `/ezk-sprint run` — le terrain est prêt | `/ezk-backlog next --ready-only` — voir d'abord quelle fiche sera tirée |
+| `check` rend `ALERT` | aucun bloc : le choix proposé par l'alerte tient lieu de suite | aucun |
+| fin d'un sprint (`close` rend `CLOSE: SEALED`, après le dernier merge du lot) | `/ezk-backlog next --ready-only` — la prochaine fiche tirable | `/ezk-retro run` — si le sprint a coincé ; `/ezk-archive check` — si tu t'arrêtes là |
+| `help` | aucun bloc | aucun |
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 

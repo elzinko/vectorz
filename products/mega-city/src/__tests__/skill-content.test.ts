@@ -35,6 +35,26 @@ describe('skillFolderFiles — assets de dossier (ADR-0027)', () => {
     expect(byPath['skills/ezk-article/scripts/run.sh'].mode).toBe(0o755);
   });
 
+  it('chaque fichier dit à quel dossier de skill il appartient (skillDir), annexe nommé SKILL.md compris', () => {
+    const files = skillFolderFiles(
+      profile([
+        { id: 'gen', content: 'x', assets: [{ path: 'templates/x/SKILL.md', content: 'modèle' }] },
+        { id: 'foo/bar', content: 'y' },
+      ]),
+      'skills',
+    );
+    expect(files.map((f) => [f.path, f.skillDir])).toEqual([
+      ['skills/gen/SKILL.md', 'skills/gen'],
+      ['skills/gen/templates/x/SKILL.md', 'skills/gen'], // l'annexe appartient à gen, il n'ouvre aucun skill
+      ['skills/foo/bar/SKILL.md', 'skills/foo/bar'],
+    ]);
+  });
+
+  it('skillDir sans slash en tête quand le prefix est vide (cap desktop)', () => {
+    const files = skillFolderFiles(profile([{ id: 'foo', content: 'x' }]), '');
+    expect(files[0]?.skillDir).toBe('foo');
+  });
+
   it('prefix vide (cap desktop) : <id>/<rel>, jamais de slash en tête', () => {
     const files = skillFolderFiles(
       profile([{ id: 'foo', content: 'x', assets: [{ path: 'approaches/a.md', content: 'a' }] }]),
@@ -62,6 +82,6 @@ describe('skillFolderFiles — assets de dossier (ADR-0027)', () => {
 
   it('rétro-compat : un skill sans assets émet uniquement SKILL.md', () => {
     const files = skillFolderFiles(profile([{ id: 'foo', content: 'x' }]), 'skills');
-    expect(files).toEqual([{ path: 'skills/foo/SKILL.md', content: 'x\n' }]);
+    expect(files).toEqual([{ path: 'skills/foo/SKILL.md', content: 'x\n', skillDir: 'skills/foo' }]);
   });
 });

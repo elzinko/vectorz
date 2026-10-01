@@ -107,7 +107,7 @@ Racine : **`~/git/bacasable/muti`**
 ## Statut de cette recette
 
 Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
-[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+[`20260824185422122`](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
 **`status: draft`** : les pointeurs ci-dessus sont réels (fichiers muti existants), mais sans
 `fichier:ligne` précis — c'est un journal/doc narratif, pas du code à une ligne donnée. Signalé
 plutôt qu'inventer une ligne.

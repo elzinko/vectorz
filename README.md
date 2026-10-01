@@ -2,7 +2,7 @@
 
 > Autonomous AI-agent development with human supervision — local-first, commit-disciplined.
 >
-> **Comprendre la méthode en 10 min** : `pnpm ezk:map` ouvre la [carte interactive](diagrams/methode-mega-city/carte-interactive.html) (moteur / méthode / modules, onglet 🧭 « le domaine ») ; jargon traduit dans le [glossaire](docs/glossaire-jargon-ezk.md).
+> **Comprendre la méthode en 10 min** : `pnpm ezk dashboard` ouvre le tableau de bord de la méthode, dont la [carte interactive](diagrams/methode-mega-city/carte-interactive.html) (moteur / méthode / modules, onglet 🧭 « le domaine ») ; jargon traduit dans le [glossaire](docs/glossaire-jargon-ezk.md).
 
 **Epoch 2 (current).** Dogfood on this repo uses **mega-city** skills (`ezk-backlog`, `ezk-sprint`, `ezk-archive`) plus the **cop1** supervision daemon and Moniteur. The epoch-1 BMAD orchestrator pilot was removed from prod (E4 / [ADR-029](docs/adr/ADR-029-emancipation-bmad-politique-archivage.md), fiche [0039](features/done/0039-e4-retrait-bmad.md)).
 
@@ -11,6 +11,7 @@ BMAD on **another** project stays supported as an optional sidecar via `cop1 ini
 ## Start here
 
 - **Onboarding** → [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)
+- **Une question « comment faire ? »** (quelle commande, qui analyse la méthode…) → [`docs/faq-comment-faire.md`](docs/faq-comment-faire.md) ; tous les skills en un tableau → [`products/mega-city/skills/README.md`](products/mega-city/skills/README.md)
 - **Supervision on a project** → [`docs/running-cop1-on-a-project.md`](docs/running-cop1-on-a-project.md)
 - **Backlog & sprints (dogfood method)** → [`products/mega-city/skills/ezk-backlog/SKILL.md`](products/mega-city/skills/ezk-backlog/SKILL.md), [`ezk-sprint`](products/mega-city/skills/ezk-sprint/SKILL.md)
 - **Doc index** → [`docs/index.md`](docs/index.md)

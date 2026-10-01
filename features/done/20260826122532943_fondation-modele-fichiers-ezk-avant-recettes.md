@@ -82,8 +82,8 @@ schéma**.
 
 **Hors P0 (reste en P2 — « on verra ensuite »)**
 - Les **affordances BMAD** : le « et maintenant ? »
-  ([next-step](../20260825160456259_next-step-affordance-commandes-suivantes.md)) et
-  l'[elicitation](../20260825161522791_elicitation-raffinement-structure-groom.md). Utile, mais UX,
+  ([next-step](20260825160456259_next-step-affordance-commandes-suivantes.md)) et
+  l'[elicitation](20260825161522791_elicitation-raffinement-structure-groom.md). Utile, mais UX,
   pas fondation.
 - La **construction** de `ezk-chef` et de l'extraction (elles consomment, elles ne fondent pas).
 

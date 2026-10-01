@@ -1,5 +1,5 @@
 ---
-applies: [documentation-guidelines/human-facing-lisibility]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio]
 name: ezk-archive
 argument-hint: "[help|check|run]"
 description: >-
@@ -96,6 +96,11 @@ Le détail des 7 vérifications et les garde-fous vivent dans le sous-agent
 (`~/.claude/agents/ezk-archive.md`) ; le gabarit de la note vit dans
 [`references/handoff-template.md`](references/handoff-template.md), **source unique lue
 par les deux chemins** (`scripts/test-template-unicity.sh` interdit de le dupliquer).
+
+Cette note suit le pattern [gabarit + extracteur + rendu](../../rules/documentation-guidelines/readable-deliverable-trio.md) :
+le gabarit est `references/handoff-template.md`, l'extracteur est `scripts/check.sh`, le rendu
+est la réponse en « 3 réponses, zéro jargon » ci-dessous. Le gabarit fixe le format ; la règle de
+clarté garantit le texte dedans.
 
 ## Le portier décide
 

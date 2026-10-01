@@ -118,26 +118,78 @@ export function findDuplicateIds(
  * Un champ absent (`''` / `[]`) n'est pas une anomalie — la provenance est optionnelle.
  */
 export function findInvalidProvenanceIds(
-  entries: ReadonlyArray<{ file: string; mergedInto: string; splitInto: readonly string[] }>,
+  entries: ReadonlyArray<{
+    file: string;
+    mergedInto: string;
+    splitInto: readonly string[];
+    /** Sens inverse, posé par `backlog:apply` (fiche 20260910231201744) : optionnels. */
+    mergedFrom?: readonly string[];
+    splitFrom?: string;
+  }>,
   knownIds: ReadonlySet<string>,
 ): FicheAnomaly[] {
   const anomalies: FicheAnomaly[] = [];
-  for (const { file, mergedInto, splitInto } of entries) {
-    if (mergedInto !== '' && !knownIds.has(mergedInto)) {
+  const phantom = (file: string, field: string, id: string): void => {
+    if (id !== '' && !knownIds.has(id)) {
       anomalies.push({
         file,
-        field: 'merged_into',
-        message: `id fantôme : "${mergedInto}" ne correspond à aucune fiche du backlog`,
+        field,
+        message: `id fantôme : "${id}" ne correspond à aucune fiche du backlog`,
       });
     }
-    for (const id of splitInto) {
-      if (!knownIds.has(id)) {
-        anomalies.push({
-          file,
-          field: 'split_into',
-          message: `id fantôme : "${id}" ne correspond à aucune fiche du backlog`,
-        });
+  };
+  for (const { file, mergedInto, splitInto, mergedFrom = [], splitFrom = '' } of entries) {
+    phantom(file, 'merged_into', mergedInto);
+    for (const id of splitInto) phantom(file, 'split_into', id);
+    for (const id of mergedFrom) phantom(file, 'merged_from', id);
+    phantom(file, 'split_from', splitFrom);
+  }
+  return anomalies;
+}
+
+export interface ProvenanceEntry {
+  file: string;
+  id: string;
+  mergedInto: string;
+  mergedFrom: readonly string[];
+  splitInto: readonly string[];
+  splitFrom: string;
+}
+
+/**
+ * La provenance se lit dans les DEUX sens (fiche 20260910231201744) : si B dit `merged_into: A`, A doit
+ * citer B dans `merged_from`, et inversement ; de même `split_into` ↔ `split_from`. Contrôle
+ * inter-fichiers, pur. Un id qui n'est pas dans `entries` est ignoré ici : c'est un id fantôme, déjà
+ * signalé par `findInvalidProvenanceIds`. Une provenance à sens unique est la trace d'une édition à la
+ * main (ou d'un apply interrompu) : elle ment à celui qui la lit dans l'autre sens.
+ */
+export function findProvenanceMismatches(entries: ReadonlyArray<ProvenanceEntry>): FicheAnomaly[] {
+  // Une fiche sans id n'est pas adressable : sans ce filtre, la clé '' attirerait toute provenance vide.
+  const byId = new Map(entries.filter((e) => e.id !== '').map((e) => [e.id, e] as const));
+  const anomalies: FicheAnomaly[] = [];
+  const report = (file: string, field: string, message: string): void => {
+    anomalies.push({ file, field, message: `provenance non réciproque : ${message}` });
+  };
+  for (const e of entries) {
+    const target = e.mergedInto === '' ? undefined : byId.get(e.mergedInto);
+    if (target && !target.mergedFrom.includes(e.id)) {
+      report(e.file, 'merged_into', `${e.mergedInto} ne cite pas ${e.id} dans merged_from`);
+    }
+    for (const id of e.mergedFrom) {
+      const source = byId.get(id);
+      if (source && source.mergedInto !== e.id) {
+        report(e.file, 'merged_from', `${id} ne dit pas merged_into: ${e.id}`);
       }
+    }
+    for (const id of e.splitInto) {
+      const child = byId.get(id);
+      if (child && child.splitFrom !== e.id) {
+        report(e.file, 'split_into', `${id} ne dit pas split_from: ${e.id}`);
+      }
+    }
+    const parent = e.splitFrom === '' ? undefined : byId.get(e.splitFrom);
+    if (parent && !parent.splitInto.includes(e.id)) {
+      report(e.file, 'split_from', `${e.splitFrom} ne cite pas ${e.id} dans split_into`);
     }
   }
   return anomalies;

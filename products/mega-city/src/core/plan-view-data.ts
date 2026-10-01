@@ -135,32 +135,16 @@ export function buildPlanViewData(planMd: string, fiches: Fiche[]): PlanViewData
   };
 }
 
-// --- Bord pour la vue `diagrams/avancement/board.html` (même patron que avancement-data.ts) ---
+// --- Bloc de données de l'onglet Plan (dans `board.data.js`, non committé — ADR-0055) ---
 
 export const PLAN_DATA_BEGIN = '/*ezk-plan-data:begin*/';
 export const PLAN_DATA_END = '/*ezk-plan-data:end*/';
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans board.html. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `board.data.js`. */
 export function buildPlanViewDataBlock(planMd: string, fiches: Fiche[]): string {
   // `<` échappé en < : un titre/texte de plan contenant `</script>` ne peut pas
   // fermer la balise <script> porteuse. Le RENDU est protégé séparément (board.html pose
   // les données via textContent, jamais innerHTML). Deux protections distinctes.
   const json = JSON.stringify(buildPlanViewData(planMd, fiches), null, 1).replace(/</g, '\\u003c');
   return `${PLAN_DATA_BEGIN}\nwindow.EZK_PLAN = ${json};\n${PLAN_DATA_END}`;
-}
-
-/**
- * Pose `block` dans `text` entre les marqueurs `ezk-plan-data:*` (disjoints de ceux
- * d'avancement). Les marqueurs DOIVENT déjà exister (posés une fois par l'auteur de la
- * carte) — absents ⇒ erreur franche (même règle que `upsertAvancementDataBlock`).
- */
-export function upsertPlanViewDataBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(PLAN_DATA_BEGIN);
-  const endIdx = text.indexOf(PLAN_DATA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${PLAN_DATA_BEGIN} … ${PLAN_DATA_END} introuvables dans board.html`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + PLAN_DATA_END.length);
 }

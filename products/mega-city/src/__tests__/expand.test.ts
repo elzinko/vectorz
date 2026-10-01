@@ -22,6 +22,8 @@ describe('expandProfile(mobile)', () => {
       'conventional-commits/format',
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
+      'documentation-guidelines/next-step-affordance',
+      'documentation-guidelines/readable-deliverable-trio',
     ]);
   });
 
@@ -49,6 +51,8 @@ describe('expandProfile(mobile)', () => {
       'conventional-commits/format',
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
+      'documentation-guidelines/next-step-affordance',
+      'documentation-guidelines/readable-deliverable-trio',
     ]);
     expect(resolved.agents.map((a) => a.id)).toEqual(['ezk-reviewer']);
   });
@@ -66,11 +70,12 @@ function expandGlobal() {
 }
 
 describe('expandProfile(global) — l\'équipe complète du bind daily-driver (fiche 0024)', () => {
-  it('agrège TOUS les agents ezk-* (7, dont ezk-archive), triés stablement', () => {
+  it('agrège TOUS les agents ezk-* (8, dont ezk-archive et ezk-chef), triés stablement', () => {
     const resolved = expandGlobal();
     expect(resolved.agents.map((a) => a.id)).toEqual([
       'ezk-architect',
       'ezk-archive',
+      'ezk-chef',
       'ezk-dev',
       'ezk-pm',
       'ezk-qa',
@@ -79,13 +84,15 @@ describe('expandProfile(global) — l\'équipe complète du bind daily-driver (f
     ]);
   });
 
-  it('agrège TOUT le catalogue de skills ezk-* (20), triés stablement', () => {
+  it('agrège TOUT le catalogue de skills ezk-* (22), triés stablement', () => {
     const resolved = expandGlobal();
     expect(resolved.skills.map((s) => s.id)).toEqual([
       'ezk-apk',
       'ezk-archive',
       'ezk-article',
       'ezk-backlog',
+      'ezk-bug',
+      'ezk-chef',
       'ezk-ci',
       'ezk-codex',
       'ezk-commits',

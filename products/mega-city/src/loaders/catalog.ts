@@ -10,12 +10,14 @@
  *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
-import { join, relative, resolve, sep } from 'node:path';
+import { basename, join, relative, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
+import type { Tool } from '../core/tools.js';
 import type {
   Agent,
   Bundle,
+  Command,
   Enforcement,
   Profile,
   Rule,
@@ -23,6 +25,7 @@ import type {
   Skill,
   SkillAsset,
 } from '../domain/model.js';
+import { listToolFiles, loadTools } from './tools.js';
 
 export interface Catalog {
   rules: Map<string, Rule>;
@@ -30,6 +33,17 @@ export interface Catalog {
   skills: Map<string, Skill>;
   bundles: Map<string, Bundle>;
   profiles: Map<string, Profile>;
+  /**
+   * Les slash-commands (`commands/<id>.md`), le 3ᵉ canal de lawgiver — fiche 20260816151112162. Absent quand
+   * la racine n'en porte aucune (un projet hôte, un catalogue de test) : ni le bind ni les écritures n'en dépendent.
+   */
+  commands?: Map<string, Command>;
+  /**
+   * Les outils de la méthode (les scripts de `bin/` et le dossier `scripts/` de chaque skill),
+   * CALCULÉS depuis les fichiers — fiche 20260917123943914, ADR-0058. Absent quand la racine n'en porte aucun
+   * (un projet hôte, un catalogue de test) : ni le bind ni les écritures n'en dépendent.
+   */
+  tools?: Map<string, Tool>;
 }
 
 const MARKDOWN = /\.md$/;
@@ -271,6 +285,28 @@ function loadSkills(skillsRoot: string): Map<string, Skill> {
   return indexById(items);
 }
 
+/**
+ * Slash-commands = fichiers `commands/<id>.md`, UN niveau (fiche 20260816151112162). L'`id` est le nom du
+ * fichier — c'est ce qu'on tape après le `/` — jamais le front-matter. Le fichier est porté ENTIER (Claude
+ * Code lit son front-matter : `description`, `argument-hint`, `allowed-tools`), seule la fin est normalisée
+ * (un seul `\n`). Un fichier vide, ou qui n'est pas du markdown, est ignoré ; les sous-dossiers aussi
+ * (les commandes à espace de noms ne sont pas gérées). Tri stable par nom de fichier.
+ */
+function loadCommands(commandsRoot: string): Map<string, Command> {
+  const commands: Command[] = [];
+  for (const file of listFiles(commandsRoot, MARKDOWN)) {
+    const text = readFileSync(file, 'utf8');
+    if (text.trim().length === 0) continue;
+    const { data } = matter(text);
+    commands.push({
+      id: assertSafeId(basename(file, '.md')),
+      ...(typeof data.description === 'string' ? { description: data.description } : {}),
+      content: `${text.trimEnd()}\n`,
+    });
+  }
+  return indexById(commands);
+}
+
 function readYamlEntity<T>(file: string): T {
   return parseYaml(readFileSync(file, 'utf8')) as T;
 }
@@ -293,12 +329,17 @@ function loadYaml<T extends { id: string }>(dir: string): Map<string, T> {
 
 /** Charge tout le catalogue depuis la racine du repo. Pur (lecture seule, déterministe). */
 export function loadCatalog(rootDir: string): Catalog {
+  const skills = loadSkills(join(rootDir, 'skills'));
+  const tools = loadTools(rootDir, skills);
+  const commands = loadCommands(join(rootDir, 'commands'));
   return {
     rules: loadMarkdown(join(rootDir, 'rules'), (file) => readRule(file, rootDir), true), // récursif : ids slashés → sous-dossiers (fiche 0037)
     agents: loadMarkdown(join(rootDir, 'agents'), readAgent),
-    skills: loadSkills(join(rootDir, 'skills')),
+    skills,
     bundles: loadYaml<Bundle>(join(rootDir, 'bundles')),
     profiles: loadYaml<Profile>(join(rootDir, 'profiles')),
+    ...(commands.size > 0 ? { commands } : {}),
+    ...(tools.length > 0 ? { tools: indexById(tools) } : {}),
   };
 }
 
@@ -357,6 +398,8 @@ export function catalogSources(rootDir: string, baseDir: string = rootDir): Map<
   for (const [file, entity] of catalogEntityFiles(rootDir)) {
     out.set(`${entity.kind}:${entity.id}`, rel(file));
   }
+  // Les outils : leur id EST leur chemin depuis `rootDir` (fiche 20260917123943914).
+  for (const id of listToolFiles(rootDir)) out.set(`tool:${id}`, rel(join(rootDir, id)));
   for (const [kind, dir] of [
     ['bundle', 'bundles'],
     ['profile', 'profiles'],

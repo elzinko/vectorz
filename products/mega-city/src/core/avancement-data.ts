@@ -206,12 +206,12 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
   };
 }
 
-// --- Bord pour la vue `diagrams/avancement/board.html` (même patron que map-data.ts) ---
+// --- Bloc de données du board (fichier voisin `board.data.js`, non committé — ADR-0055) ---
 
 export const AVANCEMENT_DATA_BEGIN = '/*ezk-avancement-data:begin*/';
 export const AVANCEMENT_DATA_END = '/*ezk-avancement-data:end*/';
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans board.html. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `board.data.js`. */
 export function buildAvancementDataBlock(fiches: Fiche[]): string {
   // `<` échappé en < : protège la SOURCE (un titre
   // contenant `</script>` ne peut pas fermer la balise <script> qui porte le bloc). Le
@@ -219,20 +219,4 @@ export function buildAvancementDataBlock(fiches: Fiche[]): string {
   // innerHTML (revue P0). Les deux protections sont nécessaires et distinctes.
   const json = JSON.stringify(buildAvancementData(fiches), null, 1).replace(/</g, '\\u003c');
   return `${AVANCEMENT_DATA_BEGIN}\nwindow.EZK_AVANCEMENT = ${json};\n${AVANCEMENT_DATA_END}`;
-}
-
-/**
- * Pose `block` dans `text` entre les marqueurs. Les marqueurs DOIVENT déjà exister dans le
- * HTML (posés une fois par l'auteur de la carte) : on n'appende jamais une section en fin de
- * page HTML. Absents ⇒ erreur franche (même règle que `upsertMapDataBlock`).
- */
-export function upsertAvancementDataBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(AVANCEMENT_DATA_BEGIN);
-  const endIdx = text.indexOf(AVANCEMENT_DATA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${AVANCEMENT_DATA_BEGIN} … ${AVANCEMENT_DATA_END} introuvables dans board.html`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + AVANCEMENT_DATA_END.length);
 }

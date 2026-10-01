@@ -4,7 +4,7 @@ title: "Dessiner les liens entre règles, bundles et profils (carte LA LOI)"
 type: feature
 priority: P2
 product: mega-city
-version: V0.1
+version:
 milestone: parked
 labels: [carte]
 status: idea

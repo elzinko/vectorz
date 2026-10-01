@@ -1,0 +1,33 @@
+# Dette datée de la LOI : les règles `enforcements: agent-check` que le prompt de l'agent nommé
+# ne cite pas encore (fiche 20260903134909124, ADR-0056).
+#
+# Mesure du 2026-10-01 : 27 règles « un agent la contrôle », 7 citées par le prompt de leur
+# agent (les six règles recipe/* d'ezk-chef et development/pr-before-after-media d'ezk-reviewer),
+# 20 non citées — listées ci-dessous.
+#
+# Le test src/__tests__/law-coverage.test.ts accepte CETTE liste et interdit de l'allonger : une
+# règle agent-check nouvelle doit être citée (par son id) dans agents/<agent>.md, ou — dernier
+# recours — entrer ici. La liste ne peut que rétrécir : pour sortir une règle de la dette, cite son
+# id dans le prompt de l'agent, puis retire sa ligne.
+measured: 2026-10-01
+uncited:
+  - { rule: architecture/mvp-first, agent: ezk-architect }
+  - { rule: clean-code/no-dead-code, agent: ezk-reviewer }
+  - { rule: clean-code/small-functions, agent: ezk-reviewer }
+  - { rule: conventional-commits/meaningful-scope, agent: ezk-reviewer }
+  - { rule: development/active-views-exclude-terminal-status, agent: ezk-reviewer }
+  - { rule: development/adversarial-review-before-merge, agent: ezk-reviewer }
+  - { rule: development/command-reproducibility, agent: ezk-steward }
+  - { rule: development/fiche-read-via-loader, agent: ezk-reviewer }
+  - { rule: development/merge-when-absent-default, agent: ezk-pm }
+  - { rule: development/quality-guardrails, agent: ezk-reviewer }
+  - { rule: development/run-freshness-origin-main, agent: ezk-pm }
+  - { rule: development/worktree-secondary-inline-harvest, agent: ezk-reviewer }
+  - { rule: development/yaml-emission-via-lib, agent: ezk-reviewer }
+  - { rule: documentation-guidelines/human-facing-lisibility, agent: ezk-reviewer }
+  - { rule: documentation-guidelines/next-step-affordance, agent: ezk-reviewer }
+  - { rule: documentation-guidelines/readable-deliverable-trio, agent: ezk-reviewer }
+  - { rule: documentation-guidelines/readme-structure, agent: ezk-reviewer }
+  - { rule: hexagonal/domain-isolation, agent: ezk-architect }
+  - { rule: testing/manual-validation-camera-gesture, agent: ezk-qa }
+  - { rule: testing/playwright-workflow, agent: ezk-qa }

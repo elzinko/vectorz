@@ -37,7 +37,14 @@ export interface AssemblageView {
 
 /** Regroupe les arêtes du graphe par (source, verbe, cible) et les compte. Trié → sortie stable. */
 export function buildAssemblage(graph: CompiledGraph, bind: AssemblageBind = {}): AssemblageView {
-  const nodes: Record<NodeKind, number> = { rule: 0, agent: 0, skill: 0, bundle: 0, profile: 0 };
+  const nodes: Record<NodeKind, number> = {
+    rule: 0,
+    agent: 0,
+    skill: 0,
+    bundle: 0,
+    profile: 0,
+    tool: 0,
+  };
   for (const n of graph.nodes) nodes[n.kind] += 1;
 
   const tally = new Map<string, AssemblageArrow>();

@@ -1,10 +1,18 @@
 #!/usr/bin/env tsx
 /**
- * ezk-map — ouvre une carte de `diagrams/` dans le navigateur.
+ * ezk-map — le tableau de bord de la méthode : sert `diagrams/` (cartes, board, plan) au navigateur.
  *
- *   pnpm ezk:map                      # la carte de la méthode (défaut)
- *   pnpm ezk:map <slug>               # une autre carte de diagrams/
- *   pnpm ezk:map --list               # ce qui est disponible
+ *   pnpm ezk dashboard                # la carte de la méthode (défaut)
+ *   pnpm ezk dashboard <slug>         # une autre carte de diagrams/
+ *   pnpm ezk dashboard --list         # ce qui est disponible
+ *   pnpm ezk --root <projet> dashboard   # les fiches d'un AUTRE projet (ou EZK_ROOT=<projet>)
+ *
+ * DEUX racines (fiche 20260826173221323) : les PAGES viennent toujours de la méthode (`diagrams/`) ;
+ * les DONNÉES (fiches, PLAN.md, récits, pouces) viennent du projet désigné, par défaut la méthode.
+ * Sans `--root` ni `EZK_ROOT`, rien ne change.
+ *
+ * « dashboard » est le nom de commande depuis la fiche 20260903134906920 ; `ezk map` et
+ * `pnpm ezk:map` marchent encore (ils préviennent). Le fichier garde son nom pour l'instant.
  *
  * POURQUOI un serveur plutôt qu'un double-clic sur le fichier : ouvert en `file://`,
  * un navigateur applique des règles d'origine strictes — les polices distantes et une
@@ -13,6 +21,10 @@
  *
  * ZÉRO dépendance (`node:http` + `node:fs`), écoute UNIQUEMENT sur la boucle locale :
  * rien n'est exposé au réseau. Le script RANGE, il ne juge pas (ADR-0001 §2).
+ *
+ * UNE SEULE écriture (ADR-0057, fiche 20260826072532622) : `POST /api/verdict` pose le pouce
+ * 👍/👎 d'une fiche, dans `features/reviews/verdicts/<id>.json` et nulle part ailleurs. Route
+ * gardée (Host, Origin, type, taille, id), jamais de commit. Tout le reste du serveur lit.
  */
 import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -29,10 +41,20 @@ import {
   renderNavBar,
   renderSvgWrapper,
 } from '../src/core/ezk-map-menu.js';
+import { dataViewForPath } from '../src/io/derived-views.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
+import { VERDICT_ROUTE, serveVerdict } from '../src/io/verdict-endpoint.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz
+const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz = la MÉTHODE : ses pages
 const DIAGRAMS = join(REPO_ROOT, 'diagrams');
+// Le PROJET dont on lit les fiches : --root > EZK_ROOT > la méthode (comportement d'avant).
+// Le tableau de bord annonce lui-même le projet, dans son bloc de démarrage : pas de bandeau en plus.
+const {
+  root: PROJECT_ROOT,
+  source: ROOT_SOURCE,
+  rest: cliArgs,
+} = projectRootOrExit(REPO_ROOT, undefined, { announce: false });
 const DEFAULT_SLUG = 'methode-mega-city';
 
 const MIME: Record<string, string> = {
@@ -48,6 +70,11 @@ const MIME: Record<string, string> = {
   // YAML, qu'un navigateur TÉLÉCHARGERAIT faute de type — on l'affiche en clair.
   '.yml': 'text/plain; charset=utf-8',
   '.yaml': 'text/plain; charset=utf-8',
+  // Même chose pour les OUTILS de la carte (ADR-0058) : leur « Source » est un script, qu'un
+  // navigateur téléchargerait (ou, pour `.mjs`, exécuterait) au lieu de l'afficher.
+  '.sh': 'text/plain; charset=utf-8',
+  '.ts': 'text/plain; charset=utf-8',
+  '.mjs': 'text/plain; charset=utf-8',
   '.woff2': 'font/woff2',
 };
 
@@ -78,7 +105,7 @@ function fail(msg: string, code = 1): never {
   process.exit(code);
 }
 
-const args = process.argv.slice(2).filter((a) => a !== '--');
+const args = cliArgs.filter((a) => a !== '--');
 const diagrams = listDiagrams();
 
 if (args.includes('--list') || args.includes('-l')) {
@@ -127,14 +154,42 @@ const server = createServer((req, res) => {
       return;
     }
 
+    // La seule route qui ÉCRIT (ADR-0057) : le pouce 👍/👎 d'une fiche, dans le dossier du PROJET
+    // désigné (ses fiches sont là). Elle se garde elle-même (méthode, Host, Origin, type, taille, id)
+    // et ne jette jamais.
+    if (url.pathname === VERDICT_ROUTE) {
+      void serveVerdict(req, res, { repoRoot: PROJECT_ROOT });
+      return;
+    }
+
     const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, '');
     const target = resolve(REPO_ROOT, rel);
 
-    // Garde-fou de traversée : on ne sort JAMAIS de la racine du dépôt.
+    // Garde-fou de traversée : on ne sort JAMAIS de la racine de la méthode, d'où viennent tous les
+    // fichiers servis. Les fiches du projet désigné ne sont jamais lues par chemin : seules les
+    // vues de données ci-dessous (calculées, sans chemin venu de la requête) et la route du pouce
+    // (id validé) y touchent.
     if (target !== REPO_ROOT && !target.startsWith(REPO_ROOT + sep)) {
       res.writeHead(403).end('403');
       return;
     }
+    // Vues générées NON committées (ADR-0055) : le fichier de données d'une page (board, pilotage,
+    // runs) est CALCULÉ à la requête depuis les sources réelles — jamais périmé, même absent du
+    // disque. Elles viennent du PROJET désigné. Une source illisible rend une 500 lisible plutôt
+    // qu'un 400 trompeur.
+    const dataView = dataViewForPath(rel);
+    if (dataView) {
+      try {
+        const body = dataView.build(PROJECT_ROOT);
+        res.writeHead(200, { 'Content-Type': MIME['.js'], 'Cache-Control': 'no-store' });
+        res.end(body);
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': MIME['.js'] });
+        res.end(`// views: construction impossible — ${(err as Error).message}\n`);
+      }
+      return;
+    }
+
     if (!existsSync(target) || statSync(target).isDirectory()) {
       res.writeHead(404).end('404');
       return;
@@ -163,8 +218,10 @@ const server = createServer((req, res) => {
       return;
     }
 
+    // Un fichier sans extension (le hook `commit-msg` d'un skill) est du texte : on l'affiche aussi.
+    const fallbackType = extname(target) === '' ? MIME['.md'] : 'application/octet-stream';
     res.writeHead(200, {
-      'Content-Type': MIME[extname(target).toLowerCase()] ?? 'application/octet-stream',
+      'Content-Type': MIME[extname(target).toLowerCase()] ?? fallbackType,
       'Cache-Control': 'no-store', // on itère sur la carte : jamais de version périmée
     });
     createReadStream(target).pipe(res);
@@ -189,6 +246,8 @@ function listen(port: number, attemptsLeft: number): void {
       : `http://127.0.0.1:${port}/`;
     const label = found ? found.slug : 'menu des cartes';
     console.log(`\n  📍 ${label}\n     ${target}\n`);
+    // Un projet désigné se voit : on ne doit jamais prendre ses fiches pour celles de vectorz.
+    if (ROOT_SOURCE !== 'default') console.log(`     Fiches lues dans : ${PROJECT_ROOT}\n`);
     console.log('     Ctrl-C pour arrêter.\n');
     // `EZK_MAP_NO_OPEN=1` : un lanceur (scripts/dev-branch.sh) gère lui-même l'ouverture du navigateur.
     if (process.env.EZK_MAP_NO_OPEN) return;
