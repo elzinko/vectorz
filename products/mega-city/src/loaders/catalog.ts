@@ -10,7 +10,7 @@
  *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
-import { join, resolve, sep } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
 import type {
@@ -328,7 +328,11 @@ export function catalogEntityFiles(rootDir: string): Map<string, EntityFile> {
   }
   const skillsRoot = join(rootDir, 'skills');
   if (existsSync(skillsRoot)) {
-    for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {
+    // Même ordre que `loadSkills` (noms de dossier triés) : sur un id en double, le dernier gagne
+    // pareil des deux côtés — sinon la carte citerait un autre fichier que celui retenu.
+    const byName = (a: { name: string }, b: { name: string }): number =>
+      a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    for (const entry of readdirSync(skillsRoot, { withFileTypes: true }).sort(byName)) {
       const skillFile = join(skillsRoot, entry.name, SKILL_FILE);
       if (!entry.isDirectory() || !existsSync(skillFile)) continue;
       files.set(resolve(skillFile), {
@@ -338,4 +342,29 @@ export function catalogEntityFiles(rootDir: string): Map<string, EntityFile> {
     }
   }
   return files;
+}
+
+/**
+ * La PROVENANCE de chaque brique : clé `kind:id` → chemin du fichier qui la déclare, relatif à
+ * `baseDir` (défaut : `rootDir`), en séparateurs POSIX. Règles, juges et commandes viennent de
+ * `catalogEntityFiles` ; bundles et profils sont des YAML dont l'id s'écrit DANS le fichier
+ * (le nom du fichier ne fait pas foi — même règle que `loadCatalog`). Dernier-gagne, comme lui.
+ * Sert la carte : elle montre, pour chaque élément, le fichier d'où il vient.
+ */
+export function catalogSources(rootDir: string, baseDir: string = rootDir): Map<string, string> {
+  const out = new Map<string, string>();
+  const rel = (file: string): string => relative(baseDir, file).split(sep).join('/');
+  for (const [file, entity] of catalogEntityFiles(rootDir)) {
+    out.set(`${entity.kind}:${entity.id}`, rel(file));
+  }
+  for (const [kind, dir] of [
+    ['bundle', 'bundles'],
+    ['profile', 'profiles'],
+  ] as const) {
+    for (const file of listFiles(join(rootDir, dir), YAML)) {
+      const id = readYamlEntity<{ id?: unknown } | null>(file)?.id;
+      if (typeof id === 'string' && id.length > 0) out.set(`${kind}:${assertSafeId(id)}`, rel(file));
+    }
+  }
+  return out;
 }

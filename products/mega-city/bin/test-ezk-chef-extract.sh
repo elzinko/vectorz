@@ -191,4 +191,57 @@ check "un id superchaîne (…106 vs …1069) n'est PAS versé" "! grep -q 'SUPE
 check "TODO Préliminaires conservé (rien versé à tort)" \
   "grep -q 'TODO(jugement) — ce qui ne s’automatise pas.' '$dest_i'"
 
+# ── Cas J : titres HOSTILES → front-matter de la recette valide pour les vrais parseurs ─────────
+# Fiche 20260922160651394 (absorbe 20260830194601307) — règle development/yaml-emission-via-lib.
+# Le front-matter est ÉMIS par la lib `yaml` (plus par echo) et RE-PARSÉ ici par deux parseurs
+# (`yaml`, et `gray-matter` = js-yaml). Avant : un titre nu avec un antislash ou un guillemet
+# donnait un YAML invalide (« Invalid escape sequence »), invisible aux fixtures au titre simple.
+# Le titre attendu est celui que voit le loader (readField ne dé-échappe pas).
+MC="$(cd "$(dirname "$0")/.." && pwd)"
+assert_eq() { # $1=label $2=obtenu $3=attendu
+  if [ "$2" = "$3" ]; then echo "  ok — $1"; else echo "  ÉCHEC — $1 (attendu « $3 », obtenu « $2 »)"; FAIL=1; fi
+}
+parsed_title() { # $1=recette $2=yaml|gray-matter → titre parsé ; « INVALIDE: … » si le parseur refuse
+  node -e '
+    const fs = require("fs");
+    const [mc, file, lib] = process.argv.slice(1);
+    const txt = fs.readFileSync(file, "utf8");
+    try {
+      const title = lib === "yaml"
+        ? require(mc + "/node_modules/yaml").parse(txt.match(/^---\n([\s\S]*?)\n---\n/)[1]).title
+        : require(mc + "/node_modules/gray-matter")(txt).data.title;
+      process.stdout.write(String(title));
+    } catch (e) { process.stdout.write("INVALIDE: " + String(e.message).split("\n")[0]); }
+  ' "$MC" "$1" "$2"
+}
+titre_hostile() { # $1=dir $2=id $3=slug $4=ligne title (telle qu'écrite dans le front-matter) $5=attendu
+  local root="$1/$3" out
+  fixture_root "$root"
+  cat > "$root/features/done/$2_$3.md" <<EOF
+---
+id: "$2"
+title: $4
+type: feature
+priority: P1
+product: mega-city
+status: shipped
+pr: "#999"
+created: 2026-08-26
+---
+
+## En clair
+
+Fiche à titre hostile.
+EOF
+  out="$("$SCRIPT" "$2" "$root")"
+  assert_eq "$3 — parseur yaml" "$(parsed_title "$root/$out" yaml)" "$5"
+  assert_eq "$3 — parseur gray-matter" "$(parsed_title "$root/$out" gray-matter)" "$5"
+}
+echo "Cas J (titres hostiles, front-matter re-parsé) :"
+J="$TMP/j"
+titre_hostile "$J" 20260830000000201 "antislash-nu" 'Fix C:\dossier\nouveau' 'Fix C:\dossier\nouveau'
+titre_hostile "$J" 20260830000000202 "guillemets-nus" 'Il a dit "go" puis "stop"' 'Il a dit "go" puis "stop"'
+titre_hostile "$J" 20260830000000203 "quote-deux-points-diese" '"Fix: le deux-points # et le dièse"' 'Fix: le deux-points # et le dièse'
+titre_hostile "$J" 20260830000000204 "accents-emoji" 'Éléphant déjà vu ✓ 🚀' 'Éléphant déjà vu ✓ 🚀'
+
 if [ "$FAIL" = 0 ]; then echo 'test-ezk-chef-extract: TOUT VERT'; else echo 'test-ezk-chef-extract: ÉCHECS' >&2; exit 1; fi

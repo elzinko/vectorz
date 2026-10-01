@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { compileGraph } from '../core/compiled-graph.js';
 import { validateMethod } from '../core/ceremonies.js';
+import { CYCLE_DOC } from '../core/cycle.js';
 import {
   MAP_DATA_BEGIN,
   MAP_DATA_END,
@@ -22,6 +23,7 @@ import {
 import { validateTaxonomie } from '../core/taxonomie.js';
 import type { Catalog } from '../loaders/catalog.js';
 import { loadCatalog } from '../loaders/catalog.js';
+import { loadMapSources } from '../loaders/map-sources.js';
 import { loadMethodDoc } from '../loaders/method.js';
 import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
 
@@ -53,6 +55,7 @@ describe('carte-interactive.html — données à jour (fidélité par constructi
       compileGraph(catalog),
       loadMethodDoc(megaCity),
       loadTaxonomieDoc(megaCity),
+      { sources: loadMapSources(megaCity, resolve(megaCity, '..', '..')), cycle: CYCLE_DOC },
     );
     const actual = extractBlock(readFileSync(mapPath, 'utf8'));
     expect(actual).toBe(expected);
