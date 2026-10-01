@@ -1,3 +1,4 @@
+import { frontMatter, readField } from '../loaders/fiches.js';
 import { parsePlanSections } from './plan-sections.js';
 
 /**
@@ -26,15 +27,12 @@ const VALID_ID = /^(?:\d{4}|\d{17})$/;
 
 /**
  * Lit un champ du front-matter d'une fiche, en TEXTE (garde `0018` intact — un parsing
- * YAML lirait `0018` en octal). Ne regarde que le front-matter (avant le 2e `---`),
- * retire les quotes et un commentaire inline `# …`.
+ * YAML lirait `0018` en octal). La lecture passe par le loader testé (règle
+ * `development/fiche-read-via-loader`) : seul le front-matter compte, les quotes et un
+ * commentaire inline `# …` sont gérés là, pas ici.
  */
 export function fmField(content: string, field: string): string {
-  const secondSep = content.indexOf('\n---', 3);
-  const frontMatter = secondSep > 0 ? content.slice(0, secondSep) : content;
-  const match = frontMatter.match(new RegExp(`^${field}:\\s*(.*)$`, 'm'));
-  if (!match) return '';
-  return match[1].trim().replace(/^["']|["']$/g, '').replace(/\s*#.*$/, '').trim();
+  return readField(frontMatter(content), field);
 }
 
 /**

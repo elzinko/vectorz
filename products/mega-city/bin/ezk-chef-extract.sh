@@ -55,23 +55,16 @@ SLUG="${FICHE_BASENAME#"${FICHE_ID}"}"   # retire l'id en tête
 SLUG="${SLUG#[-_]}"                        # retire le séparateur (_ récent ou - legacy)
 SLUG="${SLUG%.md}"
 
-# ── front-matter mécanique (même idiome que regen-recipes.sh : awk, pas un parseur YAML) ──
-frontmatter() {
-  awk '
-    function unquote(s) { gsub(/^"|"$/, "", s); return s }
-    BEGIN { infm=0 }
-    /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-    infm==1 {
-      if ($0 ~ /^title:/) { sub(/^title:[[:space:]]*/, ""); title=unquote($0) }
-      if ($0 ~ /^pr:/)    { sub(/^pr:[[:space:]]*/, "");    pr=unquote($0) }
-    }
-    END { printf "%s\x1f%s\n", title, pr }
-  ' "$1"
-}
+# ── front-matter de la fiche source : LU par le loader testé (règle development/fiche-read-via-loader),
+# puis celui de la recette ÉMIS par la lib YAML (règle development/yaml-emission-via-lib) — plus d'awk
+# ni d'echo pour le front-matter. Les deux passent par un CLI tsx de mega-city.
+MC="$(cd "$_SCRIPT_DIR/.." && pwd)"
+TSX="$MC/node_modules/.bin/tsx"
+[ -x "$TSX" ] || { echo "erreur: tsx introuvable (${TSX}) — lancer « pnpm install »" >&2; exit 1; }
 SEP=$'\x1f'
-fm_line="$(frontmatter "$FICHE")"
-TITLE="${fm_line%%${SEP}*}"
-PR="${fm_line#*${SEP}}"
+# Une ligne : id, title, type, priority, status, pr, created, … (séparés par \x1f).
+fiche_row="$("$TSX" "$MC/bin/fiche-rows.ts" "$FICHE")"
+IFS="$SEP" read -r _ TITLE _ _ _ PR _ <<< "$fiche_row"
 
 # ── section extraction : corps entre `## <nom>` et le prochain `## ` (ou EOF) ─────────────
 section() { # $1=fichier $2=nom-de-section
@@ -141,19 +134,11 @@ PR_NOTE="TODO(jugement) — pas de PR dans le front-matter de la fiche source"
 
 SOURCE_NOTE="TODO(jugement) — racine de l'implémentation non dérivable mécaniquement ; voir ${PR_NOTE}"
 
+# Front-matter émis AVANT d'ouvrir DEST : un échec de l'émetteur ne laisse pas de fichier tronqué.
+FRONT_MATTER="$("$TSX" "$MC/bin/recipe-frontmatter.ts" --id "$NEW_ID" --title "$TITLE" --source "$SOURCE_NOTE" --today "$TODAY")"
+
 {
-  echo '---'
-  echo "id: \"${NEW_ID}\""
-  echo "title: \"${TITLE//\"/\'}\""
-  echo 'makes: "TODO(jugement) — ce que cette recette fabrique (une ligne)"'
-  echo "source: \"${SOURCE_NOTE}\""
-  echo 'composes: [] # TODO(jugement) — rules composées (idiome ADR-0012/0025)'
-  echo 'profile: # TODO(jugement) — profil référencé, si pertinent'
-  echo 'status: draft'
-  echo 'home: central'
-  echo "created: ${TODAY}"
-  echo "updated: ${TODAY}"
-  echo '---'
+  printf '%s\n' "$FRONT_MATTER"
   echo
   echo '## En clair'
   echo

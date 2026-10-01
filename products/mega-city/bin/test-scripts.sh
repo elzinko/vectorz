@@ -22,6 +22,7 @@ SUITES=(
   "skills/ezk-archive/scripts/test-handoff.sh"           # fiche 0088 — anneau FIFO du handoff
   "skills/ezk-archive/scripts/test-template-unicity.sh"  # fiche 0088 — gabarit non dupliqué
   "bin/test-regen-backlog.sh"                            # ezk-backlog — régénération de l'index
+  "bin/test-portfolio.sh"                                # fiche 20260922160651394 — portfolio.sh lit par le loader (fiche-rows)
   "bin/test-regen-recipes.sh"                            # ezk-chef — régénération du livre de recettes (fiche 20260824185422122)
   "bin/test-ezk-chef-extract.sh"                         # ezk-chef extract — fiche shippée → brouillon de recette (fiche 20260824122629794)
   "bin/test-ezk-help.sh"                                 # /ezk-help — index de commandes généré (fiche 20260816131704335)
