@@ -1,6 +1,6 @@
 ---
 composes: [ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance]
 name: ezk-backlog
 layout_version: 5
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate]"
@@ -62,6 +62,19 @@ résout **là où l'humain lit** :
 Sans ce lien, l'humain ne peut pas ouvrir la fiche depuis la liste (règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md),
 puce « Lists of file-backed items »).
+
+## Et maintenant ?
+
+La restitution se ferme par un bloc « Et maintenant ? » : 1 à 3 commandes, chacune avec une raison d'une ligne, la **suite logique** séparée des **pistes**. Le format est fixé par la règle [`documentation-guidelines/next-step-affordance`](../../rules/documentation-guidelines/next-step-affordance.md) : ne le recopie pas ici. Voici les successions d'`ezk-backlog`.
+
+| Quand | Suite logique | Pistes |
+|---|---|---|
+| après `add` | `/ezk-backlog groom <id>` — la fiche naît « idée », elle n'est pas encore tirable | `/ezk-backlog list` — revoir le stock |
+| après `groom <id>` | `/ezk-backlog ready <id>` — passer la porte « prête » quand les critères tiennent | aucune |
+| après `ready <id>` accepté | `/ezk-backlog next --ready-only` — la fiche est tirable maintenant | `/ezk-sprint run` — la développer tout de suite |
+| après `next --ready-only` | `/ezk-sprint run` — développer cette fiche | aucune |
+| après `ship <id>` | `/ezk-backlog next --ready-only` — enchaîner sur la fiche suivante | `/ezk-backlog reconcile` — si des PRs ont été fusionnées hors du flux (ex. depuis GitHub) |
+| `list`, `review`, `help` | aucun bloc | aucun |
 
 ## Préflight Skema (layout version) — à chaque commande
 

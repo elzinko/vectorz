@@ -15,74 +15,59 @@ created: 2026-08-25
 
 # 20260825160456259 — Proposer les commandes suivantes en fin de sprint/skill
 
-**En clair.** Aujourd'hui, quand une commande ezk se termine, elle ne dit pas « et maintenant ? ».
-L'opérateur doit se souvenir de la commande d'après. BMAD, lui, le fait : chaque agent affiche un
-**menu numéroté** (`*help`) et chaque workflow annonce **quoi lancer ensuite**. L'idée : à la fin d'un
-sprint ou d'un skill, proposer les **1 à 3 commandes suivantes** qui ont du sens dans le contexte, avec
-une raison en une ligne — pour qu'on ne cherche plus « c'était quoi la commande pour X ».
+**En clair.** Quand une commande ezk se termine, elle ne dit pas « et maintenant ? ». Tu dois te souvenir de la commande d'après. BMAD, lui, le fait : chaque workflow annonce quoi lancer ensuite. Cette fiche ajoute, à la fin d'un sprint et d'une commande de backlog, un bloc court **« Et maintenant ? »** : 1 à 3 commandes qui ont du sens dans le contexte, chacune avec une raison en une ligne.
 
-**Si tu arrives frais.** *ezk* = la méthode outillée en skills Claude Code (`/ezk-…`). *affordance* =
-un indice visible qui suggère l'action suivante. `/ezk-help` existe déjà mais c'est un **index global**
-(« quelles commandes existent »), pas un « **et maintenant, ici** ».
+**Si tu arrives frais.** *ezk* = la méthode outillée en skills Claude Code (`/ezk-…`). *affordance* = un indice visible qui suggère l'action suivante. `/ezk-help` existe déjà, mais c'est un **index global** (« quelles commandes existent »), pas un « **et maintenant, ici** ».
 
 ## Contexte / Problème
 
-Déclencheur daté : **2026-08-25**, le PO (Thomas), pendant un `/ezk-backlog add` :
-« il faudrait que quand on lance un sprint ou une commande / skill, à la fin les commandes suivantes
-soient proposées » — en citant le `help` de BMAD.
+Déclencheur daté : **2026-08-25**, le PO (Thomas), pendant un `/ezk-backlog add` : « il faudrait que quand on lance un sprint ou une commande / skill, à la fin les commandes suivantes soient proposées », en citant le `help` de BMAD.
 
-Le trou : une commande ezk se **clôt sans indiquer la suite**. Après `ezk-backlog ready <id>`, la
-suite déterministe est `next --ready-only` puis `ezk-sprint` — mais rien ne le dit. Après un ship de
-sprint, la suite est `reconcile` / `next` — mais rien ne le dit. `/ezk-help` (livré, #151) répond
-« quelles commandes existent », **pas** « que faire maintenant, dans cet état ». C'est un besoin de
-découvrabilité **contextuelle**, complémentaire de l'index global.
+Le trou : une commande ezk se **clôt sans indiquer la suite**. Après `ezk-backlog ready <id>`, la suite est `next --ready-only` puis `ezk-sprint`, mais rien ne le dit. Après un sprint mergé, la suite est la fiche suivante, mais rien ne le dit. C'est un besoin de découvrabilité **contextuelle**, complémentaire de l'index global.
 
-**Prior art BMAD (vérifié dans le code v6.0.4).** `*help` et `*exit` sont **auto-injectés** dans le
-menu de chaque agent ; à l'activation, l'agent affiche un **menu numéroté** puis s'arrête et attend ;
-les descriptions de workflow **encodent la chaîne** (« Create Story → Validate → Dev → Code Review →
-Retrospective ») ; un workflow « Sprint Status » a pour seul rôle « summarize status and **route to
-next workflow** » ; « Correct Course » sert d'échappatoire à tout moment.
+**Prior art BMAD** (vérifié dans le code v6.0.4, rapport [`2026-08-25-bmad-vs-ezk`](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md)). `*help` et `*exit` sont injectés dans le menu de chaque agent. L'agent affiche un menu numéroté, puis attend. Les descriptions de workflow encodent la chaîne (« Create Story → Validate → Dev → Code Review → Retrospective »). Un workflow « Sprint Status » a pour seul rôle de router vers le workflow suivant.
 
-## Proposition
+## Décisions de grooming (MVP)
 
-**MVP resserré** — une **convention de restitution**, pas un moteur de menu (garde-fou ADR-0013) :
+- **Une règle partagée** `documentation-guidelines/next-step-affordance` (SHOULD, bundle `base`) fixe le format du bloc. Les skills la déclarent dans `applies:` et la citent. Ils ne la recopient pas.
+- Les **successions** (« après X, proposer Y ») sont **curées par skill**, dans une courte section « Et maintenant ? » du `SKILL.md` : une table `quand | suite logique | pistes`. Pas de script, pas de génération. Le LLM rédige le bloc d'après la table (garde-fou ADR-0013 : une convention de restitution, pas un moteur de menu).
+- Le bloc a **deux étages** : « Suite logique » (la suivante est déterminée par l'état) et « Pistes » (au choix, jamais présentées comme une obligation). **1 à 3 commandes** au total, chacune avec un pourquoi d'une ligne.
+- **Pas de bloc creux** : une sous-commande en lecture seule (`list`, `help`) ou sans suite naturelle n'invente rien. La table l'écrit « aucun bloc ».
+- Premiers skills : `ezk-sprint` (après `check`, fin de sprint) et `ezk-backlog` (après `add`, `groom`, `ready`, `ship`).
 
-1. Chaque skill termine sa restitution humaine par un bloc court **« Et maintenant ? »** : les 1 à 3
-   commandes suivantes **pertinentes au contexte**, chacune sur sa ligne, avec un « pourquoi » d'une ligne.
-2. Le bloc distingue la **suite déterministe** (ex. après `ready` → `next --ready-only`) des **suggestions**.
-3. Mécanisme **composable** : une règle/snippet partagé (« affordance next-step ») que les skills
-   **référencent**, pas ré-écrit dans chacun. Le LLM rédige le bloc ; aucun nouveau script requis pour le MVP.
-4. Commencer par **`ezk-sprint`** (fin de sprint) et **`ezk-backlog`** (après `add` / `ready` / `ship`),
-   les points où « la suite » est la plus attendue.
+## Critères d'acceptation (reste réel)
 
-Plus tard (hors MVP) : générer la **carte des successions** depuis le modèle de la méthode
-(cf. [[20260821204737357]], modèle compilé) au lieu de la curer à la main.
-
-## Critères d'acceptation
-
-- [ ] `ezk-sprint` (fin de sprint) et `ezk-backlog` (après `add`/`ready`/`ship`) terminent leur
-      restitution par un bloc « Et maintenant ? » listant 1–3 commandes suivantes contextuelles, chacune motivée en une ligne
-- [ ] le bloc **distingue** suite déterministe et suggestions (ne présente pas une suggestion comme une obligation)
-- [ ] le mécanisme est une **convention partagée** (règle composable citée par les skills), pas dupliquée dans chaque `SKILL.md`
-- [ ] respecte « En clair » : bloc en **clôture**, court, sans jargon (règle `human-facing-lisibility`)
-- [ ] une note relie le besoin au **prior-art BMAD** (menu/`*help` + routage next-step) — sortie du benchmark de cette session
+- [x] La règle existe, est rangée dans le bundle `base`, et relie le besoin au prior art BMAD (menu `*help` + routage vers le workflow suivant). Preuve : `next-step-affordance.test.ts`.
+- [x] `ezk-sprint` et `ezk-backlog` déclarent la règle dans `applies:` et ont une section « Et maintenant ? » avec une table `quand | suite logique | pistes`.
+- [x] Le bloc distingue suite logique et pistes ; 1 à 3 commandes par ligne de table ; un pourquoi d'une ligne (le test compte les commandes et les « — » de raison).
+- [x] Une sous-commande sans suite naturelle est marquée « aucun bloc » (`help`, `list`, `review`, `check` en alerte) : pas de suite inventée.
+- [x] Un test passe au rouge si : la section manque, `applies:` ou le lien vers la règle manque, une ligne cite 0 ou plus de 3 commandes, ou une commande citée n'existe pas. Sabotage prouvé à la main : `/ezk-fantome` dans la table d'`ezk-backlog` → « L11: … ni skill, ni commande ».
+- [x] Respecte « En clair » : la règle impose un bloc en clôture, court, sans jargon. Le texte final rédigé par le LLM n'est pas testable : il se constate à l'usage.
 
 ## Comment vérifier
 
-<à groomer> Exemple attendu : lancer `/ezk-backlog ready <id>` et constater que la sortie se termine par
-« Et maintenant ? → `/ezk-sprint` (la fiche est tirable maintenant) ». Sabotage : une commande sans
-suite naturelle n'invente pas un bloc creux (pas de « next » forcé).
+```bash
+pnpm --dir products/mega-city exec vitest run src/__tests__/next-step-affordance.test.ts
+```
+
+À la main, une fois : `/ezk-backlog ready <id>` se termine par « Et maintenant ? » avec `/ezk-backlog next --ready-only` en suite logique. C'est le LLM qui rédige : le test garde la table et la règle, pas la phrase finale.
+
+Sabotage : citer `/ezk-fantome` dans la table. Le test passe au rouge.
+
+## Suite (hors POC)
+
+- Étendre à `ezk-archive`, `ezk-pr`, `ezk-retro`, `ezk-chef`, `ezk-product-build`.
+- Générer la carte des successions depuis le modèle compilé ([20260821204737357](done/20260821204737357_cabler-la-methode-modele-compile.md)) au lieu de la curer à la main.
+- Adapter les pistes à l'état réel (statut de la fiche, PR ouverte) ; menu numéroté interactif à la BMAD.
 
 ## Glossaire
 
-- `affordance` — indice visible qui suggère l'action suivante possible.
-- `*help` (BMAD) — commande auto-injectée affichant le menu numéroté des actions d'un agent.
+- `affordance` : indice visible qui suggère l'action suivante possible.
+- `*help` (BMAD) : commande qui affiche le menu numéroté des actions d'un agent.
 
 ## Notes / décisions
 
-- **Fille** de l'épic [[20260816131703334]] (Rationalisation doc + découvrabilité). **Distinct** de
-  `/ezk-help` (#151, index global) : ici = next-step **contextuel**.
-- Voisines : [[20260817113353538]] (étude templates + elicitation BMAD), [[20260821204737357]]
-  (modèle compilé — pourrait générer la carte des successions).
-- **Source** : benchmark BMAD vs ezk conduit cette session (2026-08-25) — voir le rapport joint à la PR.
-- **P2 = proposition** ; à confirmer/ajuster au grooming (choix MVP : curé par skill vs généré).
+- Ancienne fille de l'épic « Rationalisation doc + découvrabilité », retiré le 2026-09-15 (devenu le thème `lisibilite` et le jalon `rationalisation`). **Distinct** de `/ezk-help` (index global).
+- Voisines : [20260817113353538](done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) (étude BMAD), [20260821204737357](done/20260821204737357_cabler-la-methode-modele-compile.md) (modèle compilé).
+- **Source** : benchmark BMAD vs ezk du 2026-08-25.
+- Choix MVP tranché au grooming : **curé par skill**, pas généré.
