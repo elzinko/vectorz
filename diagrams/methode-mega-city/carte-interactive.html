@@ -470,7 +470,7 @@ window.EZK = {
   "skills": 25,
   "bundles": 10,
   "profiles": 6,
-  "tools": 78
+  "tools": 79
  },
  "liens": {
   "total": 264,
@@ -478,7 +478,7 @@ window.EZK = {
  },
  "provenance": {
   "prouve": {
-   "briques": 203,
+   "briques": 204,
    "liens": 264,
    "ceremonies": 16,
    "cycle": 9,
@@ -499,7 +499,7 @@ window.EZK = {
    "skill": 25,
    "bundle": 10,
    "profile": 6,
-   "tool": 78
+   "tool": 79
   },
   "arrows": [
    {
@@ -1701,7 +1701,7 @@ window.EZK = {
   "ezk-reviewer": {
    "id": "ezk-reviewer",
    "source": "products/mega-city/agents/ezk-reviewer.md",
-   "description": "Reviewer ADVERSE senior de la boucle ezk-sprint (étape Revue). On lui confie le diff d'une feature (branche `feat/\u003cid>-\u003cslug>` vs `main`, ou une PR ouverte) et il cherche activement à le CASSER — correctness, sécurité, perf, contrats/API, clean code & SOLID, et surtout la qualité RÉELLE des tests — puis rend un verdict GO/NO-GO bloquant. Tourne sur un modèle DIFFÉRENT du dev (ezk-dev = Sonnet → reviewer = Opus) pour une seconde opinion indépendante : il REMPLACE la revue Codex quand la CI cloud est indisponible (quota GitHub épuisé, repo privé). Compose /code-review, /security-review, /simplify, et valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas : il juge, motive, et bloque.",
+   "description": "Reviewer ADVERSE senior de la boucle ezk-sprint (étape Revue). On lui confie le diff d'une feature (branche `feat/\u003cid>-\u003cslug>` vs `main`, ou une PR ouverte) et il cherche activement à le CASSER — correctness, sécurité, perf, contrats/API, clean code & SOLID, et surtout la qualité RÉELLE des tests — puis rend un verdict GO/NO-GO bloquant. Tourne sur un modèle DIFFÉRENT du dev (ezk-dev = Sonnet → reviewer = Opus) pour une seconde opinion indépendante : il est le PLANCHER de la revue (aucun merge sans son GO, ADR-0059) ; Codex est un filet en plus, qu'il remplace quand il est absent (quota épuisé, repo privé, pas de PR). Compose /code-review, /security-review, /simplify, et valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas : il juge, motive, et bloque.",
    "etage": "methode",
    "model": "claude-opus-4-8",
    "effort": "high",
@@ -3133,6 +3133,16 @@ window.EZK = {
    "source": "products/mega-city/bin/ezk-config.ts",
    "commands": [
     "ezk config"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk-dor.ts": {
+   "id": "bin/ezk-dor.ts",
+   "source": "products/mega-city/bin/ezk-dor.ts",
+   "commands": [
+    "ezk dor check",
+    "ezk dor health",
+    "ezk dor show"
    ],
    "usedBy": []
   },
