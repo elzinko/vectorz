@@ -29,7 +29,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260830194601233 | Livrer une fiche sans casser les liens ni les vues (ship sûr) | refactor | P0 | 💡 idea |  |
 | mega-city | 20260917162000501 | Une commande pour lancer l'app de n'importe quelle branche ou worktree | feature | P0 | 💡 idea |  |
 | mega-city | 20260930123438875 | Séparer clairement fiche, sprint et session (ezk-sprint start/close) | feature | P0 | 💡 idea |  |
-| mega-city | 20260821163346493 | Chaque élément de la carte montre le fichier d'où il vient | feature | P1 | 💡 idea |  |
 | mega-city | 20260824111001836 | Appliquer la règle de clarté à tout ce que la méthode produit | refactor | P1 | 💡 idea |  |
 | mega-city | 20260824122629925 | Une FAQ « comment faire » pour tes questions récurrentes | feature | P1 | 💡 idea |  |
 | mega-city | 20260824204751403 | Découper le backlog en versions et vérifier la cohérence d'un lot | feature | P1 | 💡 idea |  |
@@ -42,7 +41,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 0080 | Chaque rétro laisse un compte rendu clair et des propositions ciblées | feature | P2 | 💡 idea |  |
 | mega-city | 20260812104022246 | Composer des consignes réutilisables dans les skills | feature | P2 | 💡 idea |  |
 | mega-city | 20260813095351680 | Rendre l'installation des skills robuste (3 défauts de lawgiver) | bug | P2 | 💡 idea |  |
-| mega-city | 20260821163346490 | Corriger la fausse « chaîne de montage » en haut de la carte | feature | P2 | 💡 idea |  |
 | mega-city | 20260825160456259 | À la fin d'une commande, proposer les 1 à 3 commandes suivantes | feature | P2 | 💡 idea |  |
 | mega-city | 20260825182327490 | Un modèle standard pour tout texte destiné à un humain | feature | P2 | 💡 idea |  |
 | mega-city | 20260825202444647 | ezk-codex répond et ferme tous les fils de revue traités | feature | P2 | 💡 idea |  |
@@ -50,9 +48,7 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | mega-city | 20260826173221323 | Pouvoir pointer les vues sur un autre projet (muti, samplerz) | refactor | P2 | 💡 idea |  |
 | mega-city | 20260905134937885 | Mesurer si la revue locale peut remplacer Codex (et sortir la PR du chemin) | feature | P2 | 💡 idea |  |
 | mega-city | 20260910231201744 | Appliquer pour de vrai les fusions et découpages de fiches proposés | feature | P2 | 💡 idea |  |
-| mega-city | 20260918114726706 | Une seule source pour le modèle de fiche (3 copies divergent aujourd'hui) | chore | P2 | 💡 idea |  |
 | mega-city | 20260920213500176 | Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons) | chore | P2 | 💡 idea |  |
-| mega-city | 20260922160651394 | Mettre le code en conformité avec les règles de dev récentes | chore | P2 | 💡 idea |  |
 | vectorz | 20260910152227744 | Des règles propres à un projet (ex. « samplerz en hexagonal ») | feature | P2 | 💡 idea |  |
 | vectorz | 20260917143616286 | Recette : vendre une app avec Lemon Squeezy et une licence Pro | chore | P2 | 💡 idea |  |
 | mega-city | 0117 | Corriger les signatures de domain.ts qui ne collent plus au code | chore | P3 | 💡 idea |  |
@@ -152,6 +148,6 @@ Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir 
 | Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked | 🧭 épics |
 |---------|-------|----------|-----------|-----------|---------|-----------|---------|
 | vectorz | 20 | 0 | 0 | 0 | 4 | 16 | 0 |
-| mega-city | 95 | 0 | 0 | 0 | 39 | 56 | 0 |
+| mega-city | 91 | 0 | 0 | 0 | 35 | 56 | 0 |
 
 > Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.

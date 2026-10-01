@@ -7,8 +7,8 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 version: V0.1
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [socle]
-status: idea # idea | ready | in-progress | blocked | shipped
-pr:
+status: shipped
+pr: "#268"
 evidence: none # templates markdown, pas d'écran
 created: 2026-09-18
 ---

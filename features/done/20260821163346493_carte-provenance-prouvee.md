@@ -7,8 +7,8 @@ product: mega-city
 version: V0.1
 milestone: fondation
 labels: [carte]
-status: idea
-pr:
+status: shipped
+pr: "#269"
 created: 2026-08-21
 ---
 # Prouver d'où vient chaque élément de la carte
