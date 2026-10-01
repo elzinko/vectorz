@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { claudeCodeCap } from '../caps/claude-code.js';
 import type { ResolvedProfile } from '../domain/model.js';
-import { applyPlan } from '../io/apply.js';
+import { applyPlan, staleFlatSkillFiles } from '../io/apply.js';
 
 let project: string;
 beforeEach(() => {
@@ -62,6 +62,17 @@ describe('bind projet — un skill est un dossier qui porte ses fichiers annexes
     expect(read('.claude/skills/ezk-demo.md')).toBe('ancienne forme plate\n');
     expect(read('.claude/skills/mon-skill.md')).toBe('un fichier à moi\n');
     expect(read('.claude/skills/ezk-demo/SKILL.md')).toContain('Playbook.');
+  });
+
+  it('signale l’ancien fichier plat laissé en place (sans le supprimer), et rien s’il n’y en a pas', () => {
+    const plan = claudeCodeCap.materialize(profile, project);
+    expect(staleFlatSkillFiles(plan, project)).toEqual([]);
+    mkdirSync(join(project, '.claude/skills'), { recursive: true });
+    writeFileSync(join(project, '.claude/skills/ezk-demo.md'), 'ancienne forme plate\n');
+    writeFileSync(join(project, '.claude/skills/autre.md'), 'sans lien avec ce profil\n');
+    expect(staleFlatSkillFiles(plan, project)).toEqual(['.claude/skills/ezk-demo.md']); // seulement les skills du plan
+    applyPlan(plan, project);
+    expect(read('.claude/skills/ezk-demo.md')).toBe('ancienne forme plate\n'); // signalé, jamais supprimé
   });
 
   it('un annexe nommé SKILL.md n’a pas besoin de garde ici : le plan le range dans son dossier', () => {
