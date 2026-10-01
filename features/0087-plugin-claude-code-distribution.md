@@ -9,6 +9,7 @@ epic:
 status: idea
 pr:
 created: 2026-07-20
+labels: [installation]
 ---
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **À réécrire au grooming** (pas maintenant).

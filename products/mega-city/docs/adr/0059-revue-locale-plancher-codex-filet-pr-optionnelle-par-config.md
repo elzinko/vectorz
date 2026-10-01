@@ -1,6 +1,6 @@
 # ADR-0059 — La revue locale est le plancher, Codex le filet ; la PR reste le défaut et devient optionnelle par la config
 
-- Statut : **Proposé** (2026-10-01), à ratifier par le PO. Les données du run V0.1 → V0.4 sont citées, pas refaites.
+- Statut : **Accepté** (ratifié par le PO le 2026-10-01). Les données du run V0.1 → V0.4 sont citées, pas refaites.
 - Date : 2026-10-01
 - Compose / précise : [ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) (la PR, unité de merge), [ADR-038](../../../../docs/adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md) (le pack de revue), [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §2 (GitHub est un module), [ADR-0050](0050-couche-regles-projet-local.md) (la couche `.vectorz/`), [ADR-0052](0052-merge-local-first-github-execute-le-squash-main-se-realigne.md) (le local décide, GitHub exécute)
 - Fiche : `../../../../features/20260905134937885_revue-locale-vs-codex-mesure.md`. Elle reprend `20260916225506858` (GitHub, CI et Codex en modules optionnels) : il restait la décision « PR optionnelle ».

@@ -8,6 +8,7 @@ milestone: parked
 status: idea
 pr:
 created: 2026-08-21
+labels: [recettes]
 ---
 
 # Capability launchpad — landing + waitlist + tracking, réutilisable

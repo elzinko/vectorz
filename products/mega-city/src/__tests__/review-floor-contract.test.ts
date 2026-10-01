@@ -63,9 +63,9 @@ describe('ezk-sprint — la revue locale est le plancher (D1) et la PR suit la c
 describe('ADR-0059', () => {
   const adr = existsSync(ADR) ? readFileSync(ADR, 'utf8') : '';
 
-  it('existe, ouvre par « En clair » et reste Proposé jusqu’à la ratification du PO', () => {
+  it('existe, ouvre par « En clair » et porte la ratification du PO (Accepté le 2026-10-01)', () => {
     expect(adr).not.toBe('');
-    expect(adr).toMatch(/^- Statut : \*\*Proposé\*\*/m);
+    expect(adr).toMatch(/^- Statut : \*\*Accepté\*\* \(ratifié par le PO le 2026-10-01\)/m);
     expect(adr.indexOf('## En clair')).toBeGreaterThan(-1);
     expect(adr.indexOf('## En clair')).toBeLessThan(adr.indexOf('## Contexte'));
   });

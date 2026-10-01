@@ -8,6 +8,7 @@ milestone: parked
 status: idea
 pr:
 created: 2026-07-15
+labels: [supervision]
 ---
 
 ## Contexte / Problème

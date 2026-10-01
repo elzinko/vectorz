@@ -10,6 +10,7 @@ epic:
 status: idea
 pr:
 created: 2026-09-01
+labels: [installation]
 ---
 
 **En clair.** On ne peut pas installer ezk dans Cursor, et le modèle épinglé

@@ -8,6 +8,7 @@ milestone: parked
 status: idea
 pr:
 created: 2026-07-16
+labels: [observabilite]
 ---
 
 # 0045 — Moisson du pipeline d'amélioration d'époque 1 (avant résorption L5 pour la part menacée)

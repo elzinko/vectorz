@@ -9,6 +9,7 @@ epic:
 status: idea
 pr:
 created: 2026-07-25
+labels: [installation]
 ---
 
 ## Contexte / Problème
