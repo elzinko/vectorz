@@ -4,7 +4,6 @@ title: "Vendre une app avec Lemon Squeezy : clé de licence et verrou Pro in-app
 makes: "Une boutique Lemon Squeezy en achat unique et un verrou Pro dans l'app : le client colle sa clé, l'app l'active sur un appareil, et le Pro marche ensuite hors-ligne"
 source: ~/git/samplerz # implémentation prouvée (PR #419, mergée le 2026-09-17)
 composes: [plan-distribution-app]
-profile:
 status: draft
 home: central
 created: 2026-10-01
