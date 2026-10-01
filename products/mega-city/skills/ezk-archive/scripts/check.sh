@@ -101,6 +101,13 @@ HAS_REMOTE=0; [[ -n "$(git remote 2>/dev/null)" ]] && HAS_REMOTE=1
 HAS_GH=0; command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && HAS_GH=1
 # Le ménage ne regarde que les branches et les worktrees : inutile de payer l'aller-retour GitHub.
 [[ "$MODE" == "cleanup" ]] && HAS_GH=0
+# Le main LOCAL peut avoir des dizaines de commits de retard (un squash-merge n'avance pas le main
+# local) : tout serait « réel », et chaque preuve de contenu coûterait des minutes. Le ménage prouve
+# donc contre origin/<base> quand elle existe ; la base locale reste protégée de toute suppression.
+BASE_LOCAL="$BASE"
+if [[ "$MODE" == "cleanup" ]] && git show-ref --verify --quiet "refs/remotes/origin/$BASE"; then
+  BASE="origin/$BASE"
+fi
 # Un remote n'implique PAS des pull requests : un bare local (`file://`), un serveur git
 # perso ou un GitLab n'en ont aucune que `gh` puisse lire. Sans cette distinction, on
 # confond « je ne peux pas lire les PRs » (⇒ UNKNOWN, prudent) et « il n'y a pas de PRs
@@ -586,7 +593,7 @@ if [[ "$MODE" == "cleanup" ]]; then
   # Bases de preuve : la base locale ET sa jumelle distante, quand elle existe. Le main local peut
   # être en retard sur origin : sans la jumelle, des worktrees déjà livrés passeraient pour « réels ».
   PROOF_BASES="$BASE"
-  git show-ref --verify --quiet "refs/remotes/origin/$BASE" && PROOF_BASES="$PROOF_BASES origin/$BASE"
+  [[ "$BASE" != "$BASE_LOCAL" ]] && git show-ref --verify --quiet "refs/heads/$BASE_LOCAL" && PROOF_BASES="$PROOF_BASES $BASE_LOCAL"
   absorbed_by_any() { # $1=ref (branche ou sha) → 0 si son contenu est dans une des bases de preuve
     local b
     for b in $PROOF_BASES; do
@@ -652,15 +659,15 @@ if [[ "$MODE" == "cleanup" ]]; then
   while IFS= read -r l; do
     [[ -z "$l" ]] && continue
     b="$(printf '%s' "$l" | awk '{print $3}')"
-    [[ "$b" == "$CUR" ]] && continue
+    [[ "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
     case "$l" in
       *"worktree_held=1"*) continue ;;                 # tenue par un worktree : voir BRANCH_AFTER_WORKTREE
       *) add_safe_branch "$b" -D ;;
     esac
   done <<< "$ABSORBED_FACTS"
-  MERGED="$(git branch --merged "$BASE" 2>/dev/null | grep -v '^[*+]' | sed 's/^ *//' | grep -vx "$BASE" || true)"
+  MERGED="$(git branch --merged "$BASE" 2>/dev/null | grep -v '^[*+]' | sed 's/^ *//' || true)"
   while IFS= read -r b; do
-    [[ -z "$b" || "$b" == "$CUR" ]] && continue
+    [[ -z "$b" || "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
     add_safe_branch "$b" -d
   done <<< "$MERGED"
   # Une branche tenue par un worktree GARDÉ n'est pas listée du tout (elle reste tenue).

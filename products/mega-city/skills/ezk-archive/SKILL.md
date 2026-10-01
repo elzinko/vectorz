@@ -240,6 +240,9 @@ qui ne demandent aucun jugement.
    porte beaucoup de worktrees d'agents, propose `bash <skill>/scripts/check.sh --cleanup` :
    l'inventaire des worktrees et branches sûrs à retirer, avec la commande exacte de chacun. Il
    ne supprime **rien**. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
+   Les worktrees que les agents de CETTE session viennent de laisser ont moins de 24 h : le ménage
+   les garde (« recent »). Une fois certain qu'aucun agent ne tourne encore, relance avec
+   `EZK_CLEANUP_IDLE_HOURS=0` pour les proposer.
 
 #### `VERDICT: DIRTY points=…` → tu délègues, scopé
 

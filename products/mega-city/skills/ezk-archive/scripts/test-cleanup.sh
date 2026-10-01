@@ -112,6 +112,22 @@ SHOWN="$(echo "$OUT5" | grep -c '^BRANCH_SAFE:' || true)"
 ok "moins de lignes que de branches"              "[ \"\$SHOWN\" -lt 47 ]"
 ok "le compte final dit « affichées/total »"      "echo \"\$OUT5\" | grep -qE '^CLEANUP: .*branches_safe=[0-9]+/47 '"
 
+echo "K6 — main local en retard : la preuve se fait contre origin/main, jamais main n'est proposée :"
+cd "$TMP" && git init -q --bare origin6.git
+git clone -q origin6.git repo6 2>/dev/null && cd repo6
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+git checkout -q -b main 2>/dev/null || true
+echo base > a.txt && git add . && git commit -qm base && git push -q origin main
+git checkout -q -b late-squash main && echo "livré plus tard" > late.txt && git add late.txt && git commit -qm "late" && git checkout -q main
+cd "$TMP" && git clone -q origin6.git other6 && cd other6
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+echo "livré plus tard" > late.txt && git add late.txt && git commit -qm "squash late" && git push -q origin main
+cd "$TMP/repo6" && git fetch -q origin
+OUT6="$(bash "$CHECK" --cleanup)"
+ok "la base de preuve est origin/main"          "echo \"\$OUT6\" | grep -qx 'BASE: origin/main'"
+ok "la branche livrée sur origin/main est sûre" "echo \"\$OUT6\" | grep -q '^BRANCH_SAFE: late-squash cmd=git branch -D late-squash\$'"
+ok "main n'est jamais proposée"                 "! echo \"\$OUT6\" | grep -qE '^BRANCH_[A-Z_]*: main '"
+
 echo
 if (( FAIL )); then echo "test-cleanup: ÉCHECS"; exit 1; fi
 echo "test-cleanup: TOUT VERT"
