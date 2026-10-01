@@ -80,10 +80,18 @@ POC d'abord (décider + bouger), polish ensuite (nettoyage fin).
 ## Comment vérifier
 
 ```bash
-# 1. Plus aucun skill n'écrit en dur dans docs/sessions|retro-notes|captures :
-grep -rnE "docs/(sessions|retro-notes|captures)" skills/ && echo "ENCORE EN DUR" || echo "OK"
-# 2. Les tests des skills touchés passent :
+# 1. Plus aucun skill n'écrit en dur dans docs/sessions|retro-notes|captures.
+#    Les skills vivent sous products/mega-city/skills/ (PAS skills/ à la racine), et un chemin
+#    absent ne doit JAMAIS passer pour « OK » — on distingue les 3 codes de sortie de grep.
+grep -rnE "docs/(sessions|retro-notes|captures)" products/mega-city/skills/; rc=$?
+case $rc in
+  0) echo "KO — occurrences en dur ci-dessus" ;;
+  1) echo "OK — plus aucune occurrence" ;;
+  *) echo "ERREUR grep (rc=$rc) — mauvais chemin ?" ;;   # chemin absent ≠ OK
+esac
+# 2. Les tests des skills touchés passent — Vitest ET les suites SHELL qui exercent les chemins :
 pnpm --dir products/mega-city test
+pnpm --dir products/mega-city test:scripts   # test-handoff.sh + test-sprint-lifecycle.sh (chemins de session)
 # 3. Un clone frais d'un projet migré montre le dossier process au bon endroit (pas dans docs/) :
 #    git clone <projet> /tmp/x && ls /tmp/x/scrum/ && ls /tmp/x/docs/
 ```
