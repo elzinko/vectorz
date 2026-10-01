@@ -187,5 +187,31 @@ ok "note locale plus récente : carry lit la note locale" "bash \"\$HANDOFF\" ca
 touch -t 203001010000 docs/sessions/*-handoff-*.md
 ok "copie versionnée plus récente : carry lit la copie" "bash \"\$HANDOFF\" carry | grep -q 'numéro 8'"
 
+echo "H15 — l'ancienne entrée « .claude/ » de la méthode est migrée, celle du projet reste :"
+cd "$TMP" && git init -q -b main repo3 && cd repo3
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+mkdir -p .claude && echo '{}' > .claude/settings.json
+printf '# note de handoff ezk-archive — éphémère personnel, jamais committée\n.claude/\n' > .gitignore
+echo x > a.txt && git add -f .gitignore a.txt .claude/settings.json && git commit -qm base
+body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null 2>&1
+ok ".claude/settings.json n'est plus ignoré"         "! git check-ignore -q .claude/settings.json"
+ok "handoff.md reste ignoré"                         "git check-ignore -q .claude/handoff.md"
+ok "plus de « .claude/ » seul dans .gitignore"       "! grep -qxE '\\.claude/?' .gitignore"
+cd "$TMP" && git init -q -b main repo4 && cd repo4
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+printf '.claude/\n' > .gitignore          # posé par le projet, sans le commentaire de la méthode
+echo x > a.txt && git add .gitignore a.txt && git commit -qm base
+body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null 2>&1
+ok "une entrée « .claude/ » du projet reste en place" "grep -qxF '.claude/' .gitignore"
+
+echo "H16 — durable : jamais d'écrasement, même avec plusieurs processus à la fois :"
+cd "$TMP/repo2"
+for i in 1 2 3 4 5 6; do ( body "$i" | bash "$HANDOFF" durable "meme titre concurrent" >/dev/null 2>&1 ) & done
+wait
+ok "6 appels simultanés, 6 fichiers distincts" \
+   "[ \"\$(ls docs/sessions/*-handoff-*-meme-titre-concurrent.md 2>/dev/null | wc -l | tr -d ' ')\" = 6 ]"
+ok "chaque fichier porte son propre corps" \
+   "[ \"\$(cat docs/sessions/*-handoff-*-meme-titre-concurrent.md | grep -c 'report non-git numéro')\" = 6 ]"
+
 echo
 if [ "$FAIL" = 0 ]; then echo "test-handoff: TOUT VERT"; else echo "test-handoff: ÉCHECS"; exit 1; fi

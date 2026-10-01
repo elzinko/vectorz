@@ -85,6 +85,9 @@ git worktree add -q --detach "$TMP/voisin" main
 echo "travail d'un agent" > "$TMP/voisin/agent.txt"
 OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
 ok "EMPTY other_worktrees_dirty=1"           "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY other_worktrees_dirty=1'"
+OUTF="$(bash "$CHECK" --full --shipped none --worked none)"
+ok "--full : une voie rapide annotée reste une voie rapide, et dit le voisin" \
+   "echo \"\$OUTF\" | grep -q 'voie rapide : rien à archiver' && echo \"\$OUTF\" | grep -q 'd.autres worktrees ont des changements' && ! echo \"\$OUTF\" | grep -q 'voie rapide : non'"
 rm -f "$TMP/voisin/agent.txt"
 OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
 ok "voisin redevenu propre : EMPTY nu"       "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY'"

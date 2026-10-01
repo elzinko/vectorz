@@ -614,6 +614,9 @@ if [[ "$MODE" == "cleanup" ]]; then
   # être en retard sur origin : sans la jumelle, des worktrees déjà livrés passeraient pour « réels ».
   PROOF_BASES="$BASE"
   [[ "$BASE" != "$BASE_LOCAL" ]] && git show-ref --verify --quiet "refs/heads/$BASE_LOCAL" && PROOF_BASES="$PROOF_BASES $BASE_LOCAL"
+  # Une commande affichée est une commande que l'opérateur lance : un nom de branche ou un chemin peut
+  # contenir `;`, `$( )`, une apostrophe. Tout ce qui entre dans un `cmd=` passe par printf %q.
+  shq() { printf '%q' "$1"; }
   absorbed_by_any() { # $1=ref (branche ou sha) → 0 si son contenu est dans une des bases de preuve
     local b
     for b in $PROOF_BASES; do
@@ -651,11 +654,11 @@ if [[ "$MODE" == "cleanup" ]]; then
     label="${wt_branch:-detached}"
     WT_SAFE_N=$((WT_SAFE_N + 1))
     (( WT_SAFE_N <= MAX_CLEAN )) && \
-      WT_SAFE_LINES="${WT_SAFE_LINES}WORKTREE_SAFE: $real head=$head7 branch=$label idle_h=$idle_h cmd=git worktree remove \"$real\""$'\n'
+      WT_SAFE_LINES="${WT_SAFE_LINES}WORKTREE_SAFE: $real head=$head7 branch=$label idle_h=$idle_h cmd=git worktree remove $(shq "$real")"$'\n'
     if [[ -n "$wt_branch" ]]; then
       SAFE_AFTER="${SAFE_AFTER}${wt_branch}|"
       AFTER_N=$((AFTER_N + 1))
-      AFTER_LINES="${AFTER_LINES}BRANCH_AFTER_WORKTREE: $wt_branch after=$real cmd=git branch -D $wt_branch"$'\n'
+      AFTER_LINES="${AFTER_LINES}BRANCH_AFTER_WORKTREE: $wt_branch after=$real cmd=git branch -D $(shq "$wt_branch")"$'\n'
     fi
   }
 
@@ -674,7 +677,7 @@ if [[ "$MODE" == "cleanup" ]]; then
   BR_SAFE_LINES=""; BR_SAFE_N=0
   add_safe_branch() { # $1=nom $2=-d|-D
     BR_SAFE_N=$((BR_SAFE_N + 1))
-    (( BR_SAFE_N <= MAX_CLEAN )) && BR_SAFE_LINES="${BR_SAFE_LINES}BRANCH_SAFE: $1 cmd=git branch $2 $1"$'\n'
+    (( BR_SAFE_N <= MAX_CLEAN )) && BR_SAFE_LINES="${BR_SAFE_LINES}BRANCH_SAFE: $1 cmd=git branch $2 $(shq "$1")"$'\n'
   }
   while IFS= read -r l; do
     [[ -z "$l" ]] && continue
@@ -877,8 +880,10 @@ if [[ "$VERDICT" == "CLEAN" ]]; then
 else
   echo "— VERDICT : DIRTY (points $POINTS). Voir ci-dessus."
 fi
-if [[ "$FASTPATH_LINE" == "FASTPATH: EMPTY" ]]; then
+if [[ "$FASTPATH_LINE" == "FASTPATH: EMPTY"* ]]; then
   echo "— voie rapide : rien à archiver (rien livré, rien travaillé, rien en suspens)."
+  [[ "$FASTPATH_LINE" == *other_worktrees_dirty=* ]] \
+    && echo "  mais d'autres worktrees ont des changements non commités (${FASTPATH_LINE##* }) : à regarder."
 else
   echo "— voie rapide : non (${FASTPATH_LINE#FASTPATH: NO reason=})."
 fi

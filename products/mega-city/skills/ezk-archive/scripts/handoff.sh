@@ -85,6 +85,21 @@ ensure_gitignored() {
   # On n'ignore QUE les deux fichiers du handoff, jamais `.claude/` en entier (fiche 0189) : ce
   # dossier peut être versionné (agents, skills, réglages du projet), et l'ignorer d'un bloc les
   # ferait disparaître de `git status`.
+  # Migration : la version précédente écrivait « .claude/ » sous un commentaire qui est le sien. On
+  # remplace CETTE entrée-là par les deux fichiers, et rien d'autre : un « .claude/ » posé par le
+  # projet, sans ce commentaire, est à lui et reste en place.
+  local gi="$ROOT/.gitignore" legacy='# note de handoff ezk-archive — éphémère personnel, jamais committée'
+  if [[ -f "$gi" ]] && grep -qxF "$legacy" "$gi"; then
+    awk -v m="$legacy" '
+      { if (prev && $0 == ".claude/") { print ".claude/handoff.md"; print ".claude/handoff.archive.md"; prev = 0; next }
+        prev = ($0 == m); print }
+    ' "$gi" > "$gi.new" && if ! cmp -s "$gi" "$gi.new"; then
+      mv "$gi.new" "$gi"
+      echo "ℹ .gitignore : l'ancienne entrée « .claude/ » est remplacée par handoff.md et handoff.archive.md." >&2
+    else
+      rm -f "$gi.new"
+    fi
+  fi
   local f missing=""
   for f in .claude/handoff.md .claude/handoff.archive.md; do
     git -C "$ROOT" check-ignore -q "$f" 2>/dev/null || missing="${missing}${f}"$'\n'
@@ -177,7 +192,9 @@ case "${1:-help}" in
     # Jamais d'écrasement : en cas de collision on avance l'heure d'une seconde, pour que
     # l'ordre des noms reste l'ordre du temps (un suffixe `-2` se trierait AVANT `.md`).
     OUT="$SESSIONS_DIR/$DAY-handoff-$HMS-$SLUG.md"
-    while [[ -e "$OUT" ]]; do
+    # Création EXCLUSIVE (noclobber = O_EXCL) : deux processus qui écrivent le même titre dans la même
+    # seconde ne peuvent pas obtenir le même fichier, l'un d'eux passe à la seconde suivante.
+    while ! ( set -o noclobber; : > "$OUT" ) 2>/dev/null; do
       HMS="$(printf '%06d' $(( 10#$HMS + 1 )))"
       OUT="$SESSIONS_DIR/$DAY-handoff-$HMS-$SLUG.md"
     done

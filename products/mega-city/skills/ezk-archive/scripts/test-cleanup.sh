@@ -64,7 +64,7 @@ echo "K1 — les worktrees sûrs, et eux seuls, sont proposés :"
 ok "wt-detached est sûr"                   "echo \"\$OUT\" | grep -q '^WORKTREE_SAFE: .*wt-detached '"
 ok "wt-donebranch est sûr"                 "echo \"\$OUT\" | grep -q '^WORKTREE_SAFE: .*wt-donebranch '"
 ok "la commande exacte accompagne chaque ligne" \
-   "echo \"\$OUT\" | grep -q 'wt-detached.* cmd=git worktree remove \".*wt-detached\"\$'"
+   "echo \"\$OUT\" | grep -q 'wt-detached.* cmd=git worktree remove .*wt-detached\$'"
 ok "exactement 2 worktrees sûrs"           "[ \"\$(echo \"\$OUT\" | grep -c '^WORKTREE_SAFE:')\" = 2 ]"
 
 echo "K2 — tout le reste est gardé, par raison :"
@@ -121,7 +121,7 @@ git config user.email t@t && git config user.name t && git config commit.gpgsign
 git remote add origin "$TMP/origin6.git"
 echo base > a.txt && git add . && git commit -qm base && git push -q origin main
 git checkout -q -b late-squash main && echo "livré plus tard" > late.txt && git add late.txt && git commit -qm "late" && git checkout -q main
-cd "$TMP" && git clone -q origin6.git other6 && cd other6
+cd "$TMP" && git clone -q --branch main origin6.git other6 && cd other6
 git config user.email t@t && git config user.name t && git config commit.gpgsign false
 echo "livré plus tard" > late.txt && git add late.txt && git commit -qm "squash late" && git push -q origin main
 cd "$TMP/repo6" && git fetch -q origin
@@ -129,6 +129,17 @@ OUT6="$(bash "$CHECK" --cleanup)"
 ok "la base de preuve est origin/main"          "echo \"\$OUT6\" | grep -qx 'BASE: origin/main'"
 ok "la branche livrée sur origin/main est sûre" "echo \"\$OUT6\" | grep -q '^BRANCH_SAFE: late-squash cmd=git branch -D late-squash\$'"
 ok "main n'est jamais proposée"                 "! echo \"\$OUT6\" | grep -qE '^BRANCH_[A-Z_]*: main '"
+
+echo "K7 — les commandes sont citées : un nom de branche hostile n'injecte rien :"
+cd "$TMP" && git init -q -b main repo7 && cd repo7
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+echo base > a.txt && git add . && git commit -qm base
+git branch 'evil;touch${IFS}pwn' main
+OUT7="$(bash "$CHECK" --cleanup)"
+# `printf %q` échappe chaque métacaractère : `;` devient `\;`, `$` devient `\$`, `{` devient `\{`.
+EXPECT='cmd=git branch -d evil\;touch\$\{IFS\}pwn'
+ok "la branche hostile est proposée, citée pour le shell" "echo \"\$OUT7\" | grep -qF -- \"\$EXPECT\""
+ok "aucun « ; » nu dans une commande proposée"            "! echo \"\$OUT7\" | grep 'cmd=' | grep -qE 'cmd=[^;]*[^\\\\];touch'"
 
 echo
 if (( FAIL )); then echo "test-cleanup: ÉCHECS"; exit 1; fi
