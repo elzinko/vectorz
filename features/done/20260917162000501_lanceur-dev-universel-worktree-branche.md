@@ -7,8 +7,8 @@ product: mega-city
 labels: [test-local]
 version: V0.2
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#274"
 created: 2026-09-17
 ---
 
@@ -43,7 +43,7 @@ worktree, la branche ».
 
 Prises en ligne, réversibles, sans ADR (aucune n'engage un autre produit tant que le contrat des
 5 emplacements reste le même). Le détail du mécanisme est dans la recette
-[lanceur-dev-universel](../recipes/lanceur-dev-universel.md).
+[lanceur-dev-universel](../../recipes/lanceur-dev-universel.md).
 
 | Question de la fiche | Décision |
 |---|---|
@@ -100,8 +100,8 @@ aussi 200 et s'arrête de même.
 
 ## Absorbe (tri du 2026-09-30) — critères intégrés
 
-- [`0102`](done/0102-ezk-testbed-brique-boot-env-test.md) — ezk-testbed : AC1, AC2, AC4 livrés dans le POC ; AC3, AC5, AC6 en « Suite ». Sa séquence « adaptateur samplerz d'abord » tombe : la brique se prouve ici sur vectorz.
-- [`20260824163426298`](done/20260824163426298_consolider-device-preview-testbed.md) — consolidation device / preview / testbed : le **cœur** est ce lanceur ; `ezk-preview` (URL partageable) et `ezk-device` (téléphone) deviennent des surfaces qui le consomment, en « Suite ». Principe repris : git est le substrat, GitHub un raccourci optionnel (le lanceur n'appelle jamais `gh`).
+- [`0102`](0102-ezk-testbed-brique-boot-env-test.md) — ezk-testbed : AC1, AC2, AC4 livrés dans le POC ; AC3, AC5, AC6 en « Suite ». Sa séquence « adaptateur samplerz d'abord » tombe : la brique se prouve ici sur vectorz.
+- [`20260824163426298`](20260824163426298_consolider-device-preview-testbed.md) — consolidation device / preview / testbed : le **cœur** est ce lanceur ; `ezk-preview` (URL partageable) et `ezk-device` (téléphone) deviennent des surfaces qui le consomment, en « Suite ». Principe repris : git est le substrat, GitHub un raccourci optionnel (le lanceur n'appelle jamais `gh`).
 
 ## Ce que ça veut dire pour toi
 

@@ -11,6 +11,7 @@ BMAD on **another** project stays supported as an optional sidecar via `cop1 ini
 ## Start here
 
 - **Onboarding** → [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)
+- **Une question « comment faire ? »** (quelle commande, qui analyse la méthode…) → [`docs/faq-comment-faire.md`](docs/faq-comment-faire.md) ; tous les skills en un tableau → [`products/mega-city/skills/README.md`](products/mega-city/skills/README.md)
 - **Supervision on a project** → [`docs/running-cop1-on-a-project.md`](docs/running-cop1-on-a-project.md)
 - **Backlog & sprints (dogfood method)** → [`products/mega-city/skills/ezk-backlog/SKILL.md`](products/mega-city/skills/ezk-backlog/SKILL.md), [`ezk-sprint`](products/mega-city/skills/ezk-sprint/SKILL.md)
 - **Doc index** → [`docs/index.md`](docs/index.md)

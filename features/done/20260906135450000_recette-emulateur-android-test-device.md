@@ -8,8 +8,8 @@ version: V0.2
 epic:
 depends: []
 labels: [test-local]
-status: idea
-pr:
+status: shipped
+pr: "#276"
 created: 2026-09-06
 ---
 

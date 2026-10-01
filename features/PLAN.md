@@ -28,8 +28,8 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 | Version | Nom | Contenu | Statut |
 |---|---|---|---|
-| **V0.1** | Le socle dit vrai | graphe compilé, verrou de statut, carte qui cite ses sources, un seul modèle de fiche, règle de clarté partout | en cours |
-| **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | en parallèle, en autonomie |
+| **V0.1** | Le socle dit vrai | graphe compilé, verrou de statut, carte qui cite ses sources, un seul modèle de fiche, règle de clarté partout | ✅ livrée le 2026-10-01 |
+| **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | ✅ livrée le 2026-10-01 |
 | **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | à faire |
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | à faire |
 | **V0.5** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
@@ -40,7 +40,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ### ① V0.1 — le socle dit vrai
 - ~~`20260821204737357` — compiler la méthode en un seul graphe que tout le monde lit · en cours · `build`~~ — shipped #265
 - ~~`20260823121712652` — valider les statuts des fiches par un schéma (fin des fautes de frappe) · en cours · `build`~~ — shipped #267
-- `20260824111001836` — appliquer la règle de clarté à tout ce que la méthode produit · `build`
+- ~~`20260824111001836` — appliquer la règle de clarté à tout ce que la méthode produit · `build`~~ — shipped #273
 - ~~`20260821163346493` — chaque élément de la carte montre le fichier d'où il vient · `build`~~ — shipped #269
 - ~~`20260821163346490` — corriger la fausse « chaîne de montage » en haut de la carte · `build`~~ — shipped #271
 - ~~`20260918114726706` — une seule source pour le modèle de fiche (3 copies divergent aujourd'hui) · `build`~~ — shipped #268
@@ -48,8 +48,8 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 ### ② V0.2 — tester vite en local (en parallèle, en autonomie)
 - ~~`20260910165637000` — ezk-scout : chasser les bugs en tâche de fond, sans corriger · prête · `build`~~ — shipped #266
-- `20260917162000501` — une commande pour lancer l'app de n'importe quelle branche ou worktree · `groom` → `build`
-- `20260906135450000` — recette : lancer l'émulateur Android pour tester sur mobile · `build`
+- ~~`20260917162000501` — une commande pour lancer l'app de n'importe quelle branche ou worktree · `groom` → `build`~~ — shipped #274
+- ~~`20260906135450000` — recette : lancer l'émulateur Android pour tester sur mobile · `build`~~ — shipped #276
 
 ### ③ Les deux P0 qui font mal (juste après le socle)
 - `20260830194601233` — livrer une fiche sans casser les liens ni les vues (ship sûr) · `build`
