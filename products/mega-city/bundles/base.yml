@@ -5,3 +5,4 @@ rules:
   - conventional-commits/format
   - development/pr-before-after-media
   - documentation-guidelines/human-facing-lisibility
+  - documentation-guidelines/next-step-affordance

@@ -1,7 +1,7 @@
 ---
 roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility, development/pr-before-after-media]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/pr-before-after-media]
 argument-hint: "[help|check|run]"
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
@@ -180,6 +180,17 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
    **titre + lien**, jamais par son id nu.
 10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui **remplace Codex** ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**.
+
+## Et maintenant ?
+
+À la fin d'une commande, ferme ta réponse par un bloc « Et maintenant ? » : 1 à 3 commandes, chacune avec une raison d'une ligne, la **suite logique** séparée des **pistes**. Le format est fixé par la règle [`documentation-guidelines/next-step-affordance`](../../rules/documentation-guidelines/next-step-affordance.md) : ne le recopie pas ici. Voici les successions de ce skill.
+
+| Quand | Suite logique | Pistes |
+|---|---|---|
+| `check` rend `CLEAR` | `/ezk-sprint run` — le terrain est prêt | `/ezk-backlog next --ready-only` — voir d'abord quelle fiche sera tirée |
+| `check` rend `ALERT` | aucun bloc : le choix proposé par l'alerte tient lieu de suite | aucun |
+| fin d'un sprint (après le merge, étape 10) | `/ezk-backlog next --ready-only` — la prochaine fiche tirable | `/ezk-retro run` — si le sprint a coincé ; `/ezk-archive check` — si tu t'arrêtes là |
+| `help` | aucun bloc | aucun |
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 
