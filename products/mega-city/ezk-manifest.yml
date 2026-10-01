@@ -136,7 +136,8 @@ commands:
     summary: Vérifie qu'aucun numéro d'ADR n'est pris deux fois (--next donne le prochain).
 
   # --- le tableau de bord de la méthode (ex « ezk:map ») ---
-  # Il SERT les fichiers de son propre dépôt, sans rien écrire : il marche de n'importe quel dossier.
+  # Il SERT les fichiers de son propre dépôt et ne les écrit pas — sauf UNE route, le pouce 👍/👎
+  # d'une fiche (features/reviews/verdicts/, ADR-0057). Il marche de n'importe quel dossier.
   - domain: dashboard
     run: bin/ezk-map.ts
     summary: Ouvre le tableau de bord de la méthode dans le navigateur (board, plan, cartes).
