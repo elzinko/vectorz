@@ -19,6 +19,8 @@
  *
  * `superseded`, `merged`, `split` sont TERMINAUX : « clôturés sans livraison de forme standard »
  * (caduque après pivot ; absorbée par une autre fiche — `merged_into:` ; scindée — `split_into:`).
+ * La provenance se lit dans les DEUX sens : `merged_from:` sur la résultante, `split_from:` sur les enfants
+ * (posés par `backlog:apply`, fiche 20260910231201744 ; leur réciprocité est contrôlée par `fiches:check`).
  * Ils sortent du stock actif (la fiche part dans `features/done/`) SANS compter comme livrée : les
  * métriques de sprint ne comptent que `shipped`. `shipped` n'est pas terminal ici : une livrée vit
  * dans `done/`, déjà exclue par le dossier.
