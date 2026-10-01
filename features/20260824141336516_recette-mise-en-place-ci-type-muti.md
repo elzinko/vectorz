@@ -76,7 +76,8 @@ plutôt que de la noyer ici. Références : samplerz `scripts/release-set-versio
 ## Périmètre de cette PR
 
 Une recette `recipes/mettre-en-place-ci-projet-type-muti.md`, en `status: draft`. Elle **pointe**
-la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013).
+la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013). Les 7 liens cassés
+hérités de `recipes/` sont réparés au passage, pour que la gate `ezk-chef` puisse rendre GO.
 
 ## Critères d'acceptation
 
@@ -86,7 +87,7 @@ la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013
 - [x] elle explique comment **rejouer le même plan en local** : `pnpm ci:local` (`act` ou mode natif), secrets locaux générés, lint des workflows, et ce qui ne se joue pas sous `act` (packaging multi-OS, tags de release)
 - [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers muti ; `source:` existe ; aucun code recopié (28 pointeurs sur 28 existent)
 - [x] elle compose les recettes sœurs (`composes:` et liens) : distribution, domaine Vercel (les deux fichiers existent dans `recipes/`)
-- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 28 pointeurs sur 28, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
+- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 28 pointeurs sur 28, `check-links.sh . recipes` à 0 lien cassé (les 7 liens hérités sont réparés, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
 
 Preuves ajoutées : les affirmations de la recette sont relues dans le code de muti. Le job de preview a
 un `timeout-minutes` de 5 (`ci.yml:171`). La matrice de packaging porte `fail-fast: false`
@@ -97,8 +98,7 @@ Le smoke de l'app empaquetée fait échouer le job si l'app plante au démarrage
 
 1. `bash products/mega-city/bin/regen-recipes.sh`, puis `git diff --stat -- recipes/RECIPES.md` :
    une seule ligne ajoutée, celle de la nouvelle recette.
-2. `bash products/mega-city/bin/check-links.sh . recipes` ne signale aucun lien cassé dans les fichiers
-   de cette PR. Il en reste 7 hérités dans d'autres recettes (voir Notes).
+2. `bash products/mega-city/bin/check-links.sh . recipes` rend 0 lien cassé et sort en code 0.
 3. Chaque pointeur `fichier:ligne` de la recette existe dans le dépôt muti.
 4. La gate `ezk-chef` rejouée rend GO.
 
@@ -111,8 +111,9 @@ Le smoke de l'app empaquetée fait échouer le job si l'app plante au démarrage
 
 ## Notes / décisions
 
-- `recipes/` porte 7 liens cassés **hérités** : sept recettes pointent vers la fiche
-  `20260824185422122`, déplacée dans `features/done/`. Hors périmètre de cette PR, signalé au PO.
+- `recipes/` portait 7 liens cassés **hérités** : sept recettes pointaient vers la fiche
+  `20260824185422122`, déplacée dans `features/done/`. Réparés dans cette PR (retour Codex : la gate
+  `ezk-chef` ne peut pas rendre GO avec un code de sortie non nul). Ce sont 7 lignes, une par recette.
 - Ce que la recette ajoute à la fiche d'origine : l'interrupteur `LOCAL_CI` (`pnpm ci:mode`) et son
   exception pour les tags de release, que la fiche ne mentionnait pas.
 - Les économies de minutes (`paths-ignore`, concurrence, `LOCAL_CI`) valent pour un dépôt **privé**.

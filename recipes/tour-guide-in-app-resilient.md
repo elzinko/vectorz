@@ -122,7 +122,7 @@ Racine : **`~/git/bacasable/muti`**
 ## Statut de cette recette
 
 Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
-[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+[`20260824185422122`](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
 **`status: draft`** : le **pattern** (registre `data-testid` + Driver.js + double filet de
 test) est décrit, mais l'implémentation de référence n'est **pas encore livrée** dans muti —
 seul un point d'entrée intérimaire (`HelpModal.vue`) existe. `source:` laissé vide plutôt que

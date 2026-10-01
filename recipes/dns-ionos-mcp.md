@@ -123,7 +123,7 @@ Dans une session interactive, demande à l'agent : **« liste les enregistrement
 ## Statut de cette recette
 
 Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
-[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+[`20260824185422122`](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
 **`status: draft`** : recette de **configuration** (créer un token, brancher un serveur MCP
 tiers) — aucune implémentation de code à pointer, `source:` laissé vide plutôt qu'inventé.
 Signalé au PO.

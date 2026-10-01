@@ -93,7 +93,7 @@ C'est la **CI** (voir recette « CI type muti ») qui déploie puis fait `vercel
 ## Statut de cette recette
 
 Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
-[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+[`20260824185422122`](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
 **`status: draft`** : c'est un **playbook dashboard** (Vercel/IONOS, clics guidés), pas une
 implémentation de code — aucun `source:` honnête à pointer sans inventer. La recette « CI type
 muti » qu'elle cite (déploiement par tags + alias) n'existe pas encore comme fiche séparée.
