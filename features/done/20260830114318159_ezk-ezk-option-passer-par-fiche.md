@@ -8,8 +8,8 @@ labels: [fabrique]
 version: V0.4
 epic:
 depends: []
-status: idea
-pr:
+status: shipped
+pr: "#301"
 created: 2026-08-30
 ---
 

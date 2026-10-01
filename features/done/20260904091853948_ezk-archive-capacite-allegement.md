@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 epic:
 labels: [session]
-status: idea
-pr:
+status: shipped
+pr: "#311"
 created: 2026-09-04
 ---
 
@@ -35,7 +35,7 @@ Chaque point a son symptôme daté.
 
 ## Déjà livré (ne pas refaire)
 
-- [x] [ADR-0022](../products/mega-city/docs/adr/0022-ezk-methode-trois-bandes-naming.md) range déjà `ezk-archive` en capacité, et le SKILL le redit (« Bande (ADR-0022) »). Il reste l'addendum et le vocabulaire « rituel ».
+- [x] [ADR-0022](../../products/mega-city/docs/adr/0022-ezk-methode-trois-bandes-naming.md) range déjà `ezk-archive` en capacité, et le SKILL le redit (« Bande (ADR-0022) »). Il reste l'addendum et le vocabulaire « rituel ».
 - [x] Le portier est un script (fiche 0088) et la clôture propre se traite en direct.
 - [x] Le portier classe déjà les branches absorbées (`safe_delete=1`, fiche 0076). Personne ne les propose en clair ni ne les range.
 
@@ -45,7 +45,7 @@ Chaque point a son symptôme daté.
 2. **Modèle.** L'agent passe sur `sonnet` par défaut. Le skill délègue avec `claude-opus-4-8` seulement quand le bloc du portier contient une branche réelle à juger.
 3. **Compte juste.** Quand le plafond coupe une liste, le compteur le dit : `branch_absorbed=16/26`. Sous le plafond, le compte égale la liste.
 4. **Fiches travaillées.** Le portier reçoit `--worked <ids|none>` et le recopie sur sa ligne `P3_BACKLOG`. L'agent pose l'en-tête `fiches:` d'après cette ligne, pas d'après `--shipped`.
-5. **Passation durable.** `handoff.sh` n'ignore plus `.claude/` en entier, seulement ses deux fichiers. Le portier ajoute `durable=0` sur une machine jetable (`CLAUDE_CODE_REMOTE` ou `EZK_EPHEMERAL`). Dans ce cas, `run` écrit aussi la note dans `docs/sessions/`, et `carry` la relit si le fichier local manque. Le skill propose le commit, il ne pousse jamais. Choix des options de la fiche absorbée : B (détection, bascule) plus A (copie versionnée distincte de la note perso). Décision notée dans l'[ADR-0021](../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md).
+5. **Passation durable.** `handoff.sh` n'ignore plus `.claude/` en entier, seulement ses deux fichiers. Le portier ajoute `durable=0` sur une machine jetable (`CLAUDE_CODE_REMOTE` ou `EZK_EPHEMERAL`). Dans ce cas, `run` écrit aussi la note dans `docs/sessions/`, et `carry` la relit si le fichier local manque. Le skill propose le commit, il ne pousse jamais. Choix des options de la fiche absorbée : B (détection, bascule) plus A (copie versionnée distincte de la note perso). Décision notée dans l'[ADR-0021](../../products/mega-city/docs/adr/0021-cloture-portier-deterministe-ranger-rediger-juger.md).
 6. **Ménage.** `check.sh --cleanup` liste, sans rien supprimer, les worktrees sûrs à retirer et les branches absorbées, avec la commande exacte de chacun. Un worktree est sûr s'il est propre, sans verrou, différent du courant, inactif depuis plus de 24 h, et si sa tête est déjà dans la base. Le skill montre la liste au PO. La suppression reste un geste validé.
 7. **Recadrage.** Le skill et l'agent disent « capacité » et « clôture », plus « rituel » ni « cérémonie ». La description de l'agent dit la vraie logique : propre, traité en direct ; sale, délégué. L'ADR-0022 reçoit un addendum d'une ligne.
 
@@ -85,13 +85,13 @@ pnpm --dir products/mega-city exec vitest run src/__tests__/catalog.test.ts
 
 Cette fiche reprend désormais le périmètre de :
 
-- [`20260830225021794`](done/20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md) — ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué  
+- [`20260830225021794`](20260830225021794_ezk-archive-fiches-travaillees-prompt-delegue.md) — ezk-archive — passer les fiches TRAVAILLÉES (pas seulement livrées) au prompt délégué  
   _Pourquoi_ : Même composant : ezk-archive.
-- [`20260923220631498`](done/20260923220631498_portier-archive-compte-egale-enumeration.md) — Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y »)  
+- [`20260923220631498`](20260923220631498_portier-archive-compte-egale-enumeration.md) — Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y »)  
   _Pourquoi_ : Même composant : ezk-archive.
-- [`0189`](done/0189-handoff-durable-session-ephemere.md) — ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable)  
+- [`0189`](0189-handoff-durable-session-ephemere.md) — ezk-archive — le handoff doit survivre aux sessions éphémères (cloud/conteneur jetable)  
   _Pourquoi_ : Même composant : ezk-archive.
-- [`20260902224043892`](done/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md) — Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété  
+- [`20260902224043892`](20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md) — Nettoyage de fin de session — worktrees, branches, ship, reconcile : automatiser le ménage manuel répété  
   _Pourquoi_ : La clôture de session doit faire ce ménage elle-même.
 
 Critères intégrés au grooming du 2026-10-01.

@@ -27,7 +27,7 @@ la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map
 afficher, par sprint, ses PR / fiches / actions, ce compte-rendu doit porter ces données
 dans un **en-tête structuré**. Cette fiche demande à `ezk-archive` de l'écrire — en plus du
 récit. C'est le **pendant, côté sprints**, de la fiche
-[capture rétro standard](../0080-ezk-retro-compte-rendu-standard.md).
+[capture rétro standard](0080-ezk-retro-compte-rendu-standard.md).
 
 ## Contexte / Problème
 
@@ -79,7 +79,7 @@ main) — côté vue, ils s'affichent en **mode dégradé**.
 
 - **Prérequis de** : la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map.md).
 - **Cas d'application de** : le pattern [« livrable lisible »](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
-- **Miroir de** : la [capture rétro standard](../0080-ezk-retro-compte-rendu-standard.md)
+- **Miroir de** : la [capture rétro standard](0080-ezk-retro-compte-rendu-standard.md)
   (même patron « source normée + extractible », côté rétros).
 - **Touche** : le skill `ezk-archive`. Interne au monorepo — **pas** de dépendance externe
   (slot DoR conditionnel non requis).

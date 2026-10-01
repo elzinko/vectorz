@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 labels: [fabrique]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#298"
 created: 2026-08-12
 ---
 
@@ -97,5 +97,5 @@ Annulé ensuite. Reste à rejouer à la main : retirer `ezk-backlog` d'un profil
 ## Notes / décisions
 
 - Origine : session 2026-08-12. Sœur de `0149` (composition structurelle, livrée).
-- Absorbe [`0190`](done/0190-composes-delegates-tier-optionnel.md) (tri du 2026-09-30).
+- Absorbe [`0190`](0190-composes-delegates-tier-optionnel.md) (tri du 2026-09-30).
 - Nom `delegates:` proposé par l'architecte lors du panel du 2026-08-10 ; on le garde.
