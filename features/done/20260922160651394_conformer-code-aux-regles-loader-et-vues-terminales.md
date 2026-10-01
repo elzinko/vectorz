@@ -7,8 +7,8 @@ product: mega-city
 version: V0.1
 epic:
 labels: [socle]
-status: idea
-pr:
+status: shipped
+pr: "#270"
 evidence: none # code / outillage, pas d'écran
 created: 2026-09-22
 ---
@@ -124,7 +124,7 @@ pnpm --dir products/mega-city plan:head
 
 - **Née du retour Codex sur la PR #256** (les deux règles de la rétro 2026-09-20). Recoupe la note de
   carnet N5 (aligner les vues bash sur `TERMINAUX`) et l'élargit aux vues `plan-*`.
-- Voisin : [20260910155608287](20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md)
+- Voisin : [20260910155608287](../20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md)
   (typologie et vérification des règles). Cadre général ; ici, c'est la mise en conformité concrète.
 - **Inventaire des parses de front-matter hors loader (2026-10-01).** Migrés par ce POC :
   `bin/portfolio.sh`, `bin/plan-head.ts`, `bin/ezk-chef-extract.sh`, `fmField` de `planning-views.ts`.
@@ -144,7 +144,7 @@ pnpm --dir products/mega-city plan:head
 ## ⤓ Absorbe (tri du 2026-09-30)
 
 Cette fiche reprend le périmètre de
-[`20260830194601307`](done/20260830194601307_front-matter-emis-par-lib-yaml.md) : front-matter généré
+[`20260830194601307`](20260830194601307_front-matter-emis-par-lib-yaml.md) : front-matter généré
 émis et validé par la lib YAML, jamais par concaténation. Critères repris ici : titre hostile valide
 (fait pour `ezk-chef extract`), générateurs émettant par la lib (fait pour `ezk-chef extract`, le
 reste en « Suite »), fixtures re-parsées par le vrai parseur (fait pour les nouveaux tests).
