@@ -62,3 +62,52 @@ describe('catalogue skills/README.md à jour', () => {
     );
   });
 });
+
+/**
+ * Tableau « scannable » (fiche 20260824122629925, reprend le volet 3 de 20260813131737962) :
+ * une ligne par skill, une phrase courte, et une colonne « profil » qui dit la vérité.
+ */
+interface CatalogRow {
+  id: string;
+  role: string;
+  profil: string;
+}
+
+function catalogRows(): CatalogRow[] {
+  const rows: CatalogRow[] = [];
+  for (const line of readFileSync(readmePath, 'utf8').split('\n')) {
+    const cells = line.split('|').map((c) => c.trim());
+    const id = /^`([a-z0-9][a-z0-9_-]*)`$/.exec(cells[1] ?? '')?.[1];
+    if (id) rows.push({ id, role: cells[2] ?? '', profil: cells[3] ?? '' });
+  }
+  return rows;
+}
+
+describe('catalogue skills/README.md — tableau scannable', () => {
+  it('catalogue TOUS les dossiers de skills, hors profil global compris', () => {
+    const catalogued = cataloguedSkillIds();
+    const missing = [...skillDirIds()].filter((id) => !catalogued.has(id));
+    expect(missing, `dossiers de skills absents du tableau : ${missing.join(', ')}`).toEqual([]);
+  });
+
+  it('dit vrai dans la colonne « profil » (global ou opt-in, d’après profiles/global.yml)', () => {
+    const inGlobal = new Set(globalSkillIds());
+    const wrong = catalogRows()
+      .filter((r) => r.profil !== (inGlobal.has(r.id) ? 'global' : 'opt-in'))
+      .map((r) => `${r.id} : « ${r.profil} »`);
+    expect(wrong, `colonne profil fausse : ${wrong.join(' ; ')}`).toEqual([]);
+  });
+
+  it('tient une ligne par skill en une phrase courte (≤ 170 caractères)', () => {
+    const tooLong = catalogRows()
+      .filter((r) => r.role.length === 0 || r.role.length > 170)
+      .map((r) => `${r.id} (${r.role.length} car.)`);
+    expect(tooLong, `lignes vides ou trop longues : ${tooLong.join(', ')}`).toEqual([]);
+  });
+
+  it('ne renvoie plus à install.sh (migration terminée) et ne code aucun total en dur', () => {
+    const text = readFileSync(readmePath, 'utf8');
+    expect(text).not.toMatch(/install\.sh/);
+    expect(text).not.toMatch(/\b\d+\s+(skills|agents)\b/i);
+  });
+});
