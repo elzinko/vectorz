@@ -57,14 +57,13 @@ mais ne le déclare pas. Le déclarer en `composes:` ferait avertir chaque profi
       en trait plein ; le bloc se régénère par `pnpm composes:graph` et le test d'à-jour est vert.
 - [ ] `ezk-archive` déclare `delegates: [ezk-backlog]` ; son corps cite `ezk-backlog` **et** écrit
       le repli si absent (la délégation est réelle, pas deux lignes de frontmatter).
-- [ ] Garde « intégration fantôme » : un test échoue si un `composes:` ou `delegates:` du catalogue
-      réel n'est pas cité dans le corps du skill qui le déclare (retour Codex #125). Prouvé par
-      sabotage sur le garde pur, vert sur le catalogue réel (constat : 0 fantôme sur 25 skills).
 - [ ] ADR-0025 amendé (quelques lignes) : le tier optionnel et la frontière ci-dessus.
 
 Absorbé de 0190 : ses critères 1 à 3 sont repris tels quels. Son critère 4 (migrer `ezk-sprint`
 vers `ezk-codex` / `ezk-preview`) est **sans objet** : `ezk-sprint` ne cite plus ces deux skills.
-Le cas réel est `ezk-archive` → `ezk-backlog`.
+Le cas réel est `ezk-archive` → `ezk-backlog`. Le garde automatique « intégration fantôme » (retour
+Codex #125 : tout `composes:`/`delegates:` doit être cité dans le corps) est **porté par la fiche
+0066**, qui en a la charge ; constat de départ : 0 fantôme sur 25 skills.
 
 ## Comment vérifier
 
@@ -73,8 +72,8 @@ pnpm --dir products/mega-city exec vitest run src/__tests__/composition.test.ts 
 pnpm --dir products/mega-city composes:graph   # puis `git diff --stat skills/README.md` : vide
 ```
 
-Sabotage à rejouer : retirer la mention d'`ezk-backlog` du corps d'`ezk-archive` → le garde passe
-au rouge ; mettre `delegates: [fantome]` sur un skill → la validation du graphe échoue.
+Sabotage à rejouer : mettre `delegates: [fantome]` sur un skill → la validation du graphe échoue ;
+retirer `ezk-backlog` d'un profil qui porte `ezk-archive` → aucun ⚠️ au bind.
 
 ## Suite (hors POC)
 
