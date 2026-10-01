@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 labels: [sprint]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#310"
 created: 2026-07-18
 ---
 
@@ -32,13 +32,13 @@ Deuxième manque : la cérémonie retombe sur des règles générales. Le format
 
 ## Déjà livré (ne pas refaire)
 
-- [x] Le lien explicite skill → règle (`applies:`) et agent → règle (`interactions:`) existe. Preuve : verbe « applique » dans `src/core/graph.ts`, [ADR-0040](../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md). Le trou noté par la fiche absorbée est comblé.
+- [x] Le lien explicite skill → règle (`applies:`) et agent → règle (`interactions:`) existe. Preuve : verbe « applique » dans `src/core/graph.ts`, [ADR-0040](../../products/mega-city/docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md). Le trou noté par la fiche absorbée est comblé.
 - [x] Les candidats-recette ont leur case ⏳ / ✅ / ❌, jamais pré-remplie. Preuve : `ezk-retro/SKILL.md`, temps 3.
 - [x] `retire` existe et reste réversible. Preuve : `ezk-retro/SKILL.md`, section « Contrôle direct du PO ».
 
 ## Proposition (POC)
 
-Le pattern [gabarit + extracteur + rendu](../products/mega-city/rules/documentation-guidelines/readable-deliverable-trio.md), en quatre pièces :
+Le pattern [gabarit + extracteur + rendu](../../products/mega-city/rules/documentation-guidelines/readable-deliverable-trio.md), en quatre pièces :
 
 1. **Gabarit** `ezk-retro/references/capture-template.md` : « En clair », sections du récit, en-tête structuré, section « Suivi des décisions de la rétro précédente ».
 2. **Extracteur** `retro:captures` : lit l'en-tête de chaque capture, vérifie le format, liste les décisions. `--check <fichier>` valide une capture avant la PR. `--json` nourrira la future vue rétros.
@@ -85,7 +85,7 @@ Sabotage : retirer `date:` d'une action ✅ de la capture. La commande sort en e
 
 Cette fiche reprend désormais le périmètre de :
 
-- [`20260826082120069`](done/20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md) — ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport  
+- [`20260826082120069`](20260826082120069_ezk-retro-propose-features-et-regles-ciblees.md) — ezk-retro — proposer des features ET des règles ciblées (agent / skill par composition), validées dans le rapport  
   _Pourquoi_ : Même skill : on améliore ezk-retro en une fois.
 
 Critères intégrés au grooming du 2026-10-01.

@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 milestone:
 labels: [sprint]
-status: idea
-pr:
+status: shipped
+pr: "#275"
 evidence: none # méthode / skills / doc, pas d'écran
 created: 2026-09-30
 ---
@@ -43,7 +43,7 @@ Le mini-panel du 2026-09-30 avait d'abord rejeté `ezk-sprint close` par argumen
 
 ## Proposition
 
-Trois étages emboîtés : `story ⊂ sprint ⊂ session`. Le détail et les alternatives écartées sont dans l'[ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).
+Trois étages emboîtés : `story ⊂ sprint ⊂ session`. Le détail et les alternatives écartées sont dans l'[ADR-0054](../../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).
 
 - **Story** : 1 story = 1 PR, inchangé.
 - **Sprint** : verbes `ezk-sprint start` et `ezk-sprint close`. `check` devient `start --dry-run`. `run` devient `start → stories → close`.
@@ -96,7 +96,7 @@ Revue narrative : une session enchaîne bien `start → stories (1 PR chacune) �
 
 ## Notes / décisions
 
-- Matière de conception (2026-09-30, brainstorm), committée avec la fiche : [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md) et le [schéma des 3 étages](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.svg).
+- Matière de conception (2026-09-30, brainstorm), committée avec la fiche : [ADR-0054](../../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md) et le [schéma des 3 étages](../../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.svg).
 - Verdicts du mini-panel : l'architecte dit GO-avec-amendements (garder 3 corps séparés, façade par pointeurs). Le scrum master note que le vrai conteneur Scrum est la session (retenu). Le terme du livrable de sprint est **Incrément**.
 - Décision produit (PO) : le niveau **session** s'appelle « session », terme réel de Claude Code. Priorité **P0**.
 - Doctrine réutilisée : les bornes de cycle de vie sont du mécanisme et de l'hygiène, pas des cérémonies (ADR-0039 §2).
@@ -108,7 +108,7 @@ Revue narrative : une session enchaîne bien `start → stories (1 PR chacune) �
   - `ezk-archive close` (alias de `run`) reste, avec une phrase qui le distingue de `ezk-sprint close`.
   - Un sprint où rien n'est livré ne peut pas rester ouvert, sinon aucun `start` n'est plus possible. `close --abandon "<raison>"` le ferme sans incrément et garde le savoir de session. `stop` reste réservé à une annulation plus riche.
 
-## ⤓ Absorbé : [`20260903085150321`](done/20260903085150321_nommage-commandes-scrum-safe.md)
+## ⤓ Absorbé : [`20260903085150321`](20260903085150321_nommage-commandes-scrum-safe.md)
 
 Cette fiche a repris la doctrine de nommage Scrum/SAFe. Ses critères utiles sont intégrés ainsi :
 

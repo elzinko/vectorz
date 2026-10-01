@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 milestone: rationalisation
 labels: [fabrique]
-status: idea
-pr:
+status: shipped
+pr: "#302"
 created: 2026-07-16
 ---
 
@@ -105,20 +105,20 @@ ajoutée à `agents/ezk-steward.md` → rouge, « agents/ezk-steward.md:70 scrip
 
 - Origine : cérémonie `ezk-retro` (dry-run 2026-07-16, lentilles QA + PM). Compose `ezk-steward`,
   `verify`, `skill-creator`. Rattachée à l'épic
-  [20260813131737959](done/20260813131737959_rationalisation-coherence-methode-epic.md).
+  [20260813131737959](20260813131737959_rationalisation-coherence-methode-epic.md).
 - Un skill de méthode a un critère de plus : émet-il les events du contrat ? Voir 0067 (test
   « golden events ») et l'ADR-032.
 - **0066 porte le contrôle** (PO 2026-07-26) : il ne dépend d'aucun autre merge. C'est aussi le
-  validateur de structure du générateur [0067](0067-ezk-ezk-contract-aware-carte-emission.md).
-- Même motif que [0095](done/0095-ezk-product-builder-n-emet-pas.md) (une consigne partie neuf jours en
-  silence) et [0101](done/0101-cabler-check-links-ship-et-ci.md) (« un contrôle que personne ne lance ne
+  validateur de structure du générateur [0067](../0067-ezk-ezk-contract-aware-carte-emission.md).
+- Même motif que [0095](0095-ezk-product-builder-n-emet-pas.md) (une consigne partie neuf jours en
+  silence) et [0101](0101-cabler-check-links-ship-et-ci.md) (« un contrôle que personne ne lance ne
   protège de rien »).
 
 ## Détail : les deux références mortes du 2026-07-26
 
 | Ce que le texte affirmait | Le réel |
 |---|---|
-| [`ezk-steward`](../products/mega-city/agents/ezk-steward.md) ligne 15 + sa `description:` : « lance `./scripts/validate.sh` » | le script n'existe **nulle part** ; héritage de l'ancien repo `claude-skills`. Le gate réel est `pnpm --filter mega-city test` / `typecheck` + [`bin/check-links.sh`](../products/mega-city/bin/check-links.sh) |
-| [`ezk-preview`](../products/mega-city/skills/ezk-preview/SKILL.md) ligne 136 : « c'est l'étape "1 lien de démo par PR" d'ezk-sprint » | [`ezk-sprint`](../products/mega-city/skills/ezk-sprint/SKILL.md) ne l'invoque **jamais**. Le seul appelant câblé est [`ezk-pr`](../products/mega-city/skills/ezk-pr/SKILL.md) |
+| [`ezk-steward`](../../products/mega-city/agents/ezk-steward.md) ligne 15 + sa `description:` : « lance `./scripts/validate.sh` » | le script n'existe **nulle part** ; héritage de l'ancien repo `claude-skills`. Le gate réel est `pnpm --filter mega-city test` / `typecheck` + [`bin/check-links.sh`](../../products/mega-city/bin/check-links.sh) |
+| [`ezk-preview`](../../products/mega-city/skills/ezk-preview/SKILL.md) ligne 136 : « c'est l'étape "1 lien de démo par PR" d'ezk-sprint » | [`ezk-sprint`](../../products/mega-city/skills/ezk-sprint/SKILL.md) ne l'invoque **jamais**. Le seul appelant câblé est [`ezk-pr`](../../products/mega-city/skills/ezk-pr/SKILL.md) |
 
 Les deux textes sont corrigés. Ce qui restait ouvert, c'est le **contrôle**.

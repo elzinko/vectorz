@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 epic:
 labels: [fabrique]
-status: idea
-pr:
+status: shipped
+pr: "#300"
 evidence: none # coût / méthode, pas d'écran
 created: 2026-09-20
 ---
@@ -99,10 +99,10 @@ run, la moyenne tient sous 200k. Cette dernière mesure est la « Suite » (elle
 
 ## Notes / anti-doublon
 
-- **S'appuie sur** [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md)
-  (schéma d'étapes configurables = le mécanisme) et [0143](done/0143-aligner-nommage-modes-tokens.md)
+- **S'appuie sur** [20260830110131228](../20260830110131228_schema-etapes-skill-configurables.md)
+  (schéma d'étapes configurables = le mécanisme) et [0143](0143-aligner-nommage-modes-tokens.md)
   (nommage des modes) — cette fiche est le **besoin mesuré**, pas le mécanisme.
 - Voisins « coût disproportionné pour un petit geste » :
   [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) et
-  [0088](done/0088-ezk-archive-cout-cloture-session-disciplinee.md) (allègement d'`ezk-archive`).
+  [0088](0088-ezk-archive-cout-cloture-session-disciplinee.md) (allègement d'`ezk-archive`).
 - Origine : rétro auto-amélioration 2026-09-20 (note de carnet N3, run du 2026-09-12).

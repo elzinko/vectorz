@@ -5,7 +5,7 @@
 **Ratifié le :** 2026-10-01, au build du POC (fiche 20260930123438875)
 **Deciders :** PO (opérateur) — décision prise en session brainstorming produit, appuyée par un mini-panel (architecte + scrum master)
 
-> Matière de la fiche [20260930123438875](../../../../features/20260930123438875_cycle-vie-sprint-session-ceremonies.md).
+> Matière de la fiche [20260930123438875](../../../../features/done/20260930123438875_cycle-vie-sprint-session-ceremonies.md).
 > Ratifié à l'étape Archi du sprint qui a construit le POC (`start` et `close`). Ce que le POC ne livre pas est rangé en « Suite » plus bas.
 
 ## En clair

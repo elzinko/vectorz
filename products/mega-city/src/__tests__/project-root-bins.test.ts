@@ -15,6 +15,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { buildAvancementData } from '../core/avancement-data.js';
+import { loadFiches } from '../loaders/fiches.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const repoRoot = realpathSync(resolve(megaCity, '..', '..'));
@@ -22,7 +24,17 @@ const launcher = join(megaCity, 'bin', 'ezk.mjs');
 const tsxCli = createRequire(import.meta.url).resolve('tsx/cli');
 
 const PROJECT_FICHE = '20991231000000001';
-const A_VECTORZ_FICHE = '20260830114318159'; // une fiche OUVERTE de vectorz (listée par avancement), pas du projet jetable : à remplacer quand elle est livrée
+
+/**
+ * Une fiche OUVERTE de vectorz, celle que le board liste en premier, lue dans le vrai backlog.
+ * Jamais codée en dur : une fiche nommée ici finit livrée, et le test cassait le jour de son ship.
+ */
+function anOpenVectorzFiche(): string {
+  const id = buildAvancementData(loadFiches(repoRoot)).actives[0]?.id;
+  if (!id) throw new Error('aucune fiche ouverte dans le backlog de vectorz : ce test en a besoin d’une');
+  return id;
+}
+const A_VECTORZ_FICHE = anOpenVectorzFiche();
 
 let project: string;
 let elsewhere: string;

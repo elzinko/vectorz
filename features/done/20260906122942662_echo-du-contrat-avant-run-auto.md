@@ -51,5 +51,5 @@ s'affichent avant le premier sprint.
 ## Notes
 
 Origine : rétrospective du 2026-09-05 (symptôme 3). Petit garde-fou de transparence, complémentaire
-du RUN-REPORT [20260906122942607](../20260906122942607_run-report-synthese-fin-de-run.md) : l'un annonce
+du RUN-REPORT [20260906122942607](20260906122942607_run-report-synthese-fin-de-run.md) : l'un annonce
 le contrat, l'autre rend compte de son respect.

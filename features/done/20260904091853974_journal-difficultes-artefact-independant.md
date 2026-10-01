@@ -33,7 +33,7 @@ Le modèle propre, en 4 briques à ne pas confondre :
 3. **Labo / ezk-chef** — un **consommateur à la demande** qui lit le journal pour générer des
    recettes (déjà livré, #195, via `ezk-chef-extract.sh`).
 4. **ezk-archive** — la clôture (portier + handoff). Une **capacité** (cf. fiche sœur
-   [20260904091853948](../20260904091853948_ezk-archive-capacite-allegement.md)).
+   [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md)).
 
 Trois défauts constatés (2026-09-04, avec le PO) :
 
@@ -129,7 +129,7 @@ le prouve, et rougit si on retire le condensat.
 ## Suite (hors POC)
 
 - Alléger `ezk-archive` : il ne possède plus le snapshot des galères (fiche sœur
-  [20260904091853948](../20260904091853948_ezk-archive-capacite-allegement.md)).
+  [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md)).
 - `ezk-chef suggest` et `ezk-retro` lisent aussi le journal, par feature ou par thème.
 - En-tête structuré des récits de session (PR, fiches, actions), repris de la fiche absorbée
   20260826121429274. C'est une facette du récit (brique 2), pas de la capture.

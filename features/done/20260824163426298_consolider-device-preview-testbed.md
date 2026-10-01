@@ -78,7 +78,7 @@ d'un socle qu'on enrichit ; on ne duplique pas des agents entiers.
 **capacités (« cap ») + profils/bundles**, composé par le moteur `bind` / `extends`
 (`products/mega-city/bin/README.md`), qui liste **déjà `agent`** parmi les types composables
 (`kind = rule | skill | agent | interaction`). La composition *comportementale* des skills est
-traitée par [20260812104022246](../20260812104022246_composition-comportementale-skills-ezk.md).
+traitée par [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md).
 
 **Question centrale à trancher (avec `ezk-architect`).** Peut-on appliquer **ce même mécanisme aux
 agents** — composer *un agent socle + compétences web/device/desktop* via profils — exactement

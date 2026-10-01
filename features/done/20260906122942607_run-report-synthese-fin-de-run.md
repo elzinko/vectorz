@@ -8,8 +8,8 @@ version: V0.4
 epic:
 depends: []
 labels: [sprint]
-status: idea
-pr:
+status: shipped
+pr: "#312"
 created: 2026-09-06
 ---
 
@@ -35,9 +35,9 @@ Quatre symptômes de la rétro du 2026-09-05, plus une idée plus ancienne.
 
 ## Déjà livré (ne pas refaire)
 
-- [x] Les trois règles existent et fixent le fond : [fraîcheur d'`origin/main`](../products/mega-city/rules/development/run-freshness-origin-main.md), [worktree secondaire](../products/mega-city/rules/development/worktree-secondary-inline-harvest.md), [merge en auto](../products/mega-city/rules/development/merge-when-absent-default.md). Il manque de les rendre visibles.
+- [x] Les trois règles existent et fixent le fond : [fraîcheur d'`origin/main`](../../products/mega-city/rules/development/run-freshness-origin-main.md), [worktree secondaire](../../products/mega-city/rules/development/worktree-secondary-inline-harvest.md), [merge en auto](../../products/mega-city/rules/development/merge-when-absent-default.md). Il manque de les rendre visibles.
 - [x] Le pattern « livrable lisible » (gabarit, extracteur, rendu) est posé : règle `readable-deliverable-trio`.
-- [x] Le sprint a son ouverture et sa clôture (`ezk-sprint start` et `close`, [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md)). Elles portent le sprint, pas le run entier.
+- [x] Le sprint a son ouverture et sa clôture (`ezk-sprint start` et `close`, [ADR-0054](../../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md)). Elles portent le sprint, pas le run entier.
 
 ## Proposition (POC)
 
@@ -79,17 +79,17 @@ Les deux commandes rendent leur bloc. La preuve par l'usage vient au prochain ru
 ## Notes
 
 - Priorité P1. Origine : rétro du 2026-09-05, demande directe du PO.
-- Complète la règle [`development/merge-when-absent-default`](../products/mega-city/rules/development/merge-when-absent-default.md) : le rapport est l'endroit où le blocage de chaque fiche devient visible.
+- Complète la règle [`development/merge-when-absent-default`](../../products/mega-city/rules/development/merge-when-absent-default.md) : le rapport est l'endroit où le blocage de chaque fiche devient visible.
 
 ## ⤓ Absorbe (tri du 2026-09-30)
 
 Cette fiche reprend désormais le périmètre de :
 
-- [`20260906122942555`](done/20260906122942555_preflight-contexte-de-run.md) — Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation)  
+- [`20260906122942555`](20260906122942555_preflight-contexte-de-run.md) — Préflight « Contexte de run » — bloc d'ouverture (origin/main, worktree, délégation)  
   _Pourquoi_ : Même sujet : un run autonome transparent.
-- [`20260906122942662`](done/20260906122942662_echo-du-contrat-avant-run-auto.md) — Écho du contrat avant un run auto (opérateur absent)  
+- [`20260906122942662`](20260906122942662_echo-du-contrat-avant-run-auto.md) — Écho du contrat avant un run auto (opérateur absent)  
   _Pourquoi_ : Même sujet : un run autonome transparent.
-- [`0151`](done/0151-product-builder-briefing-demarrage.md) — ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles)  
+- [`0151`](0151-product-builder-briefing-demarrage.md) — ezk-product-build — briefing au démarrage (comment je travaille, avec quelles règles)  
   _Pourquoi_ : Même sujet : un run autonome transparent.
 
 Critères intégrés au grooming du 2026-10-01.
