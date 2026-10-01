@@ -113,10 +113,12 @@ ok "moins de lignes que de branches"              "[ \"\$SHOWN\" -lt 47 ]"
 ok "le compte final dit « affichées/total »"      "echo \"\$OUT5\" | grep -qE '^CLEANUP: .*branches_safe=[0-9]+/47 '"
 
 echo "K6 — main local en retard : la preuve se fait contre origin/main, jamais main n'est proposée :"
-cd "$TMP" && git init -q --bare origin6.git
-git clone -q origin6.git repo6 2>/dev/null && cd repo6
+# Branche par défaut EXPLICITE : sur un runner où `init.defaultBranch` vaut `master`, un clone d'un dépôt
+# nu vide n'aurait pas de `main` (c'est ce que la CI a montré).
+cd "$TMP" && git init -q --bare -b main origin6.git
+git init -q -b main repo6 && cd repo6
 git config user.email t@t && git config user.name t && git config commit.gpgsign false
-git checkout -q -b main 2>/dev/null || true
+git remote add origin "$TMP/origin6.git"
 echo base > a.txt && git add . && git commit -qm base && git push -q origin main
 git checkout -q -b late-squash main && echo "livré plus tard" > late.txt && git add late.txt && git commit -qm "late" && git checkout -q main
 cd "$TMP" && git clone -q origin6.git other6 && cd other6
