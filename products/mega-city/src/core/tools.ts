@@ -47,14 +47,14 @@ export interface RoutedTools {
 const SCRIPT_EXTENSION = /\.(sh|ts|mjs|js)$/;
 
 /**
- * Ce nom de fichier est-il celui d'un outil ? Un script (extension connue), ou un fichier
- * exécutable sans extension (le hook `commit-msg`). Les `test-*` sont des tests, pas des outils ;
- * les fichiers cachés et la doc non plus.
+ * Ce nom de fichier est-il celui d'un outil ? Un script (extension connue), ou un fichier sans
+ * extension qui se lance (`scriptLike` : exécutable ou commençant par `#!`, comme le hook
+ * `commit-msg`). Les `test-*` sont des tests, pas des outils ; les fichiers cachés et la doc non plus.
  */
-export function isToolFile(name: string, executable: boolean): boolean {
+export function isToolFile(name: string, scriptLike: boolean): boolean {
   if (name.startsWith('.') || name.startsWith('test-') || name.endsWith('.md')) return false;
   if (/\.(test|spec)\./.test(name)) return false; // `x.test.ts` : un test, pas un outil
-  return SCRIPT_EXTENSION.test(name) || executable;
+  return SCRIPT_EXTENSION.test(name) || scriptLike;
 }
 
 const escapeRegExp = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

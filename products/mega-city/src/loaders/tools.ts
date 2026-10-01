@@ -6,7 +6,7 @@
  * la commande `ezk` en dit, puis laisse le cœur pur (`core/tools.ts`) calculer qui cite quoi.
  * Rien ici ne juge : le cœur calcule, le validateur du graphe rapporte.
  */
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { closeSync, existsSync, openSync, readFileSync, readSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseManifest } from '../core/ezk-cli.js';
 import { type RoutedTools, type Tool, deriveTools, isToolFile } from '../core/tools.js';
@@ -15,22 +15,40 @@ import type { Skill } from '../domain/model.js';
 const MANIFEST_FILE = 'ezk-manifest.yml';
 const SKILL_FILE = 'SKILL.md';
 
+/** Les deux premiers octets du fichier sont `#!` : c'est un script, même sans extension ni droit d'exécution. */
+function startsWithShebang(file: string): boolean {
+  try {
+    const fd = openSync(file, 'r');
+    try {
+      const head = Buffer.alloc(2);
+      return readSync(fd, head, 0, 2, 0) === 2 && head.toString('latin1') === '#!';
+    } finally {
+      closeSync(fd);
+    }
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Les fichiers outils sous `rootDir` (la racine du produit, `products/mega-city`) : leurs ids,
  * c'est-à-dire leurs chemins depuis cette racine, triés. Les dossiers et les liens symboliques sont
  * ignorés (même défense que les assets des skills). Un dossier sous `skills/` sans `SKILL.md`
- * n'est pas un skill : ses scripts ne comptent pas.
+ * n'est pas un skill : ses scripts ne comptent pas. Dans `scripts/`, un fichier sans extension est
+ * un outil s'il est exécutable OU s'il commence par `#!` : le hook `commit-msg` est un script,
+ * même si git le garde en mode 644.
  */
 export function listToolFiles(rootDir: string): string[] {
   const ids: string[] = [];
-  const scan = (relDir: string, executableCounts: boolean): void => {
+  const scan = (relDir: string, extensionlessCounts: boolean): void => {
     const dir = join(rootDir, relDir);
     if (!existsSync(dir)) return;
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isFile()) continue;
-      const executable =
-        executableCounts && (statSync(join(dir, entry.name)).mode & 0o111) !== 0;
-      if (isToolFile(entry.name, executable)) ids.push(`${relDir}/${entry.name}`);
+      const full = join(dir, entry.name);
+      const scriptLike =
+        extensionlessCounts && ((statSync(full).mode & 0o111) !== 0 || startsWithShebang(full));
+      if (isToolFile(entry.name, scriptLike)) ids.push(`${relDir}/${entry.name}`);
     }
   };
 

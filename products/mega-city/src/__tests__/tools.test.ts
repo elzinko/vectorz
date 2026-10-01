@@ -35,7 +35,7 @@ describe('isToolFile — ce qui est un outil', () => {
     expect(isToolFile(name, false)).toBe(false);
   });
 
-  it('un fichier sans extension mais exécutable est un outil (le hook commit-msg)', () => {
+  it('un fichier sans extension qui se lance (exécutable ou #!) est un outil (le hook commit-msg)', () => {
     expect(isToolFile('commit-msg', true)).toBe(true);
   });
 });

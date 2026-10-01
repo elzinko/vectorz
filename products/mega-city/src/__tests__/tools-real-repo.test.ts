@@ -38,6 +38,8 @@ describe('les outils du dépôt réel', () => {
     }
     expect(tools.has('bin/ezk-map.ts')).toBe(true);
     expect(tools.has('bin/test-regen-backlog.sh')).toBe(false);
+    // Le hook git est un script sans extension, gardé en mode 644 par git : le `#!` le désigne.
+    expect(tools.has('skills/ezk-commits/scripts/commit-msg')).toBe(true);
   });
 
   // Un cas par FORME d'écriture, pas un inventaire des docs : ces cas ne cassent que si le calcul

@@ -28,8 +28,9 @@ liste à tenir à jour.
 ## Décision
 
 **1. Un outil, c'est quoi.** Un fichier script de `products/mega-city/bin/` ou du dossier `scripts/`
-d'un skill (`.sh`, `.ts`, `.mjs`, `.js`, ou un fichier exécutable sans extension comme le hook
-`commit-msg`). Les `test-*` sont des tests, pas des outils. L'id d'un outil est son chemin depuis
+d'un skill (`.sh`, `.ts`, `.mjs`, `.js`, ou, dans `scripts/`, un fichier sans extension qui est
+exécutable ou commence par `#!`, comme le hook `commit-msg`, que git garde en mode 644). Les
+`test-*` et `*.test.*` sont des tests, pas des outils. L'id d'un outil est son chemin depuis
 `products/mega-city` : `bin/regen-backlog.sh`, `skills/ezk-pr/scripts/ship-merge.sh`.
 
 **2. Le lien est calculé.** Un skill *utilise* un outil quand son `SKILL.md`, ou un fichier markdown

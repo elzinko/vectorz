@@ -46,6 +46,15 @@ describe('listToolFiles — les fichiers qui sont des outils', () => {
     expect(listToolFiles(root)).toEqual(['skills/ezk-x/scripts/commit-msg']);
   });
 
+  it('un fichier sans extension qui commence par #! est un outil même sans droit d’exécution (commit-msg est en 644 dans git)', () => {
+    put('skills/ezk-x/SKILL.md', '---\nname: ezk-x\n---\n');
+    put('skills/ezk-x/scripts/commit-msg', '#!/bin/sh\necho ok\n', 0o644);
+    put('skills/ezk-x/scripts/notes', 'des notes, pas un script', 0o644);
+    put('skills/ezk-x/scripts/vide', '', 0o644); // un fichier vide ne plante pas la lecture des 2 octets
+
+    expect(listToolFiles(root)).toEqual(['skills/ezk-x/scripts/commit-msg']);
+  });
+
   it('ignore un dossier sans SKILL.md, les sous-dossiers de scripts/ et les liens symboliques', () => {
     put('skills/pas-un-skill/scripts/x.sh'); // pas de SKILL.md : pas un skill
     put('skills/ezk-x/SKILL.md', '---\nname: ezk-x\n---\n');
