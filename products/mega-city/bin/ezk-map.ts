@@ -190,6 +190,8 @@ function listen(port: number, attemptsLeft: number): void {
     const label = found ? found.slug : 'menu des cartes';
     console.log(`\n  📍 ${label}\n     ${target}\n`);
     console.log('     Ctrl-C pour arrêter.\n');
+    // `EZK_MAP_NO_OPEN=1` : un lanceur (scripts/dev-branch.sh) gère lui-même l'ouverture du navigateur.
+    if (process.env.EZK_MAP_NO_OPEN) return;
     // Ouverture best-effort : si la plateforme ne suit pas, l'URL ci-dessus suffit.
     const opener =
       process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';

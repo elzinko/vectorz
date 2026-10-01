@@ -15,4 +15,5 @@
 | [20260830104013981](vercel-kv-database.md) | Base de données KV sur Vercel (Upstash Redis) | Un store clé-valeur Redis (Upstash) branché à un projet Vercel, avec un adaptateur tolérant les 2 nommages de variables | 📝 draft | central |
 | [20260910211134049](logs-export-remontee-bug.md) | Logs applicatifs exportables + remontée de bug avec logs joints | Un fichier de logs applicatif (avec rotation) et un bouton « remonter un bug » qui joint automatiquement les derniers logs, la version et l'info système | 📝 draft | central |
 | [20260910211134143](version-ui-menu-licence.md) | Afficher la version dans l'UI + menu de bascule licence/Pro (dev) | Un badge de version à droite du titre (« dev » en local, sinon « vX.Y.Z ») et, en dev, un clic qui ouvre un menu pour basculer l'état de licence Pro/gratuit | 📝 draft | central |
+| [20261001004228784](lanceur-dev-universel.md) | Lancer l'app de n'importe quelle branche ou worktree avec une seule commande | Une commande unique, copiée dans le projet, qui lance l'app de la branche voulue sur un port libre sans toucher à ta stack perso, et n'arrête que ce qu'elle a lancé | 📝 draft | central |
 

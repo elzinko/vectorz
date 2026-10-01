@@ -1,0 +1,40 @@
+# scripts/dev-branch.conf — la déclaration du projet pour le lanceur `dev-branch.sh`.
+# Ce fichier est à toi : vectorz ne l'écrase jamais. Le lanceur ne devine RIEN : tant que les
+# trois emplacements obligatoires (DEV_START, DEV_STATE, DEV_ISOLATION) sont vides, il refuse
+# de lancer et dit quoi remplir. Vérifie avec : bash scripts/dev-branch.sh doctor
+#
+# C'est un fichier shell : des guillemets simples gardent `$PORT` pour le moment du lancement.
+
+# 1. LANCER — UNE commande, jouée depuis la racine de l'arbre. Elle lit $PORT (le lanceur
+#    l'exporte, libre et propre à cette branche). Ex. : 'pnpm dev --port "$PORT"'
+DEV_START=''
+# Variantes nommées (ex. un autre mode de lancement), choisies avec `--as <nom>` :
+#   DEV_START__electron='bash apps/desktop/scripts/dev-electron.sh "$PORT"'
+
+# 2. ARRÊTER — optionnel. Le lanceur arrête déjà SEUL ce qu'il a lancé (groupe de process).
+#    Ne remplis que pour un reste à nettoyer (ex. 'docker compose -p "$VZ_STACK" down').
+DEV_STOP=''
+
+# 3. ÉTAT DE DÉPART — UNE phrase : ce que « neuf » veut dire ici et comment c'est garanti.
+#    Obligatoire. « sans objet — <raison> » est une réponse valable ; vide ne l'est pas.
+#    Le lanceur exporte VZ_STATE_DIR (un dossier vide propre à chaque lancement) pour les apps
+#    qui peuvent y poser leurs données.
+DEV_STATE=''
+
+# 4. PÉRIMÈTRE D'ISOLATION — ce qui est isolé (port, base, volumes, dossier) ET ce qui ne l'est
+#    pas. Obligatoire : l'aveu compte autant que la garantie.
+DEV_ISOLATION=''
+
+# 5. PORTS — le lanceur prend le premier port libre à partir de la base, jamais un port réservé
+#    (ceux de ta stack perso, que tu ne veux surtout pas voir écrasée), jamais un port occupé.
+DEV_PORT_BASE=4100
+DEV_RESERVED_PORTS=''
+#DEV_PORT_ENV='PORT'        # nom de la variable qui porte le port, si l'app n'a pas PORT
+
+# Réglages (valeurs par défaut) :
+#DEV_URL_PATH='/'           # page d'accueil affichée
+#DEV_ENV_FILES='.env'       # copiés depuis l'arbre principal s'ils manquent (jamais affichés)
+#DEV_DEPS='auto'            # auto | none | une commande (pnpm/npm/yarn détecté par le lockfile)
+#DEV_TREES_DIR='.worktrees' # où créer les arbres de run (doit être ignoré par git)
+#DEV_WAIT=60                # secondes d'attente avant de dire « pas de réponse »
+#DEV_CMD_HINT='pnpm dev:branch'  # la commande à afficher dans les messages
