@@ -19,7 +19,7 @@ ezk-commits/
 | skill | pour quoi faire | profil | origine |
 |---|---|---|---|
 | `ezk-backlog` | noter une idée ou un bug, groomer une fiche, choisir la prochaine à tirer, marquer livré | global | importé |
-| `ezk-sprint` | développer une fiche en autonomie : tests d'abord, revue, une PR, un merge | global | importé |
+| `ezk-sprint` | développer des fiches en autonomie : tests d'abord, revue, une PR chacune. `start` ouvre le sprint, `close` le scelle ; la session reste à `ezk-archive` | global | importé, ADR-0054 |
 | `ezk-product-build` | enchaîner plusieurs sprints tout seul, en décidant quoi construire ensuite | global | ADR-0008 |
 | `ezk-archive` | clôturer une session sans rien perdre : verdict propre ou sale, note de passation | global | importé, ADR-0021 |
 | `ezk-commits` | écrire des messages de commit au bon format, avec un hook qui le vérifie | global | importé |
