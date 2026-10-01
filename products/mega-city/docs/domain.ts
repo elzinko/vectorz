@@ -18,6 +18,8 @@
 
 // ADR-0003 : le moteur `bind` est pur et retourne un plan d'écriture.
 import type { WritePlan } from '../src/domain/plan.js';
+// Fiche 0117 : `expandProfile` reçoit le catalogue chargé (dépendance explicite, pas d'état caché).
+import type { Catalog } from '../src/loaders/catalog.js';
 
 // ════════════════════════════════════════════════════════════════
 // CATALOGUE 1 — LA LOI (règles)            [ iamthelaw ]
@@ -162,15 +164,26 @@ export interface ResolvedProfile {
   skills: Skill[];
 }
 
-/** DÉTERMINISTE — pure data : résout extends + déduplique. Aucune IA. */
-export declare function expand(profile: Profile): ResolvedProfile;
+/**
+ * DÉTERMINISTE — pure data : résout extends + déduplique. Aucune IA, aucun I/O.
+ * Signature RÉELLE de `src/core/expand.ts` (fiche 0117) : le catalogue est un argument
+ * explicite. Dans les ADR, ce geste s'appelle « expand » ; la fonction exportée, `expandProfile`.
+ */
+export declare function expandProfile(profile: Profile, catalog: Catalog): ResolvedProfile;
 
 /**
  * DÉTERMINISTE — calcule le PLAN d'écriture du projet via le Cap de l'hôte.
- * « Charger d'un coup ». ADR-0003 : pur, retourne un WritePlan (l'application
+ * « Charger d'un coup ». ADR-0003 : retourne un WritePlan, n'écrit RIEN (l'application
  * disque est faite par la coquille I/O, src/io/apply.ts).
+ * Signature RÉELLE de `src/core/bind.ts` (fiche 0117) : le profil est désigné par son `id`,
+ * et `rootDir` est la racine du catalogue que `bind` LIT (lecture seule, via `loadCatalog`).
  */
-export declare function bind(profile: Profile, projectDir: string, host: HostId): WritePlan;
+export declare function bind(
+  profileId: string,
+  projectDir: string,
+  host: HostId,
+  rootDir: string,
+): WritePlan;
 
 /** Une ligne du journal append-only = la mémoire du flywheel. */
 export interface LearningEntry {
