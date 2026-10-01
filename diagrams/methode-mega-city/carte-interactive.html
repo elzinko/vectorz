@@ -452,20 +452,20 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 75,
+  "rules": 76,
   "agents": 8,
   "skills": 25,
   "bundles": 10,
   "profiles": 6
  },
  "liens": {
-  "total": 216,
+  "total": 219,
   "casses": 0
  },
  "provenance": {
   "prouve": {
-   "briques": 124,
-   "liens": 216,
+   "briques": 125,
+   "liens": 219,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -480,7 +480,7 @@ window.EZK = {
  },
  "assemblage": {
   "nodes": {
-   "rule": 75,
+   "rule": 76,
    "agent": 8,
    "skill": 25,
    "bundle": 10,
@@ -509,7 +509,7 @@ window.EZK = {
     "from": "bundle",
     "verb": "compose",
     "to": "rule",
-    "count": 60
+    "count": 61
    },
    {
     "from": "profile",
@@ -539,13 +539,13 @@ window.EZK = {
     "from": "rule",
     "verb": "est-verifie-par",
     "to": "agent",
-    "count": 26
+    "count": 27
    },
    {
     "from": "skill",
     "verb": "applique",
     "to": "rule",
-    "count": 10
+    "count": 11
    },
    {
     "from": "skill",
@@ -2176,6 +2176,20 @@ window.EZK = {
    "bundles": [],
    "agents": []
   },
+  "documentation-guidelines/readable-deliverable-trio": {
+   "id": "documentation-guidelines/readable-deliverable-trio",
+   "source": "products/mega-city/rules/documentation-guidelines/readable-deliverable-trio.md",
+   "title": "A human-facing deliverable = template + extractor + render",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [
+    "agent-check"
+   ],
+   "bundles": [
+    "base"
+   ],
+   "agents": []
+  },
   "documentation-guidelines/readme-structure": {
    "id": "documentation-guidelines/readme-structure",
    "source": "products/mega-city/rules/documentation-guidelines/readme-structure.md",
@@ -2576,7 +2590,8 @@ window.EZK = {
     "conventional-commits/format",
     "development/pr-before-after-media",
     "documentation-guidelines/human-facing-lisibility",
-    "documentation-guidelines/next-step-affordance"
+    "documentation-guidelines/next-step-affordance",
+    "documentation-guidelines/readable-deliverable-trio"
    ],
    "profiles": [
     "base",
