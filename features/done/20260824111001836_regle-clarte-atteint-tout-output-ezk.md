@@ -7,8 +7,8 @@ product: mega-city
 labels: [lisibilite]
 version: V0.1
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#273"
 created: 2026-08-24
 ---
 
@@ -23,15 +23,15 @@ avec un lien.
 **Pour toi.** Après cette PR, tout projet lié par `lawgiver bind` reçoit la règle. Sur ton
 poste, l'effet passe d'abord par le texte des agents et des skills, déjà vivant dans
 `~/.claude`. Le déploiement global des règles reste à faire : c'est la fiche
-[Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md).
+[Déployer vraiment les règles chez les agents](../20260903134909124_loi-non-compilee-chez-l-agent.md).
 
 ## Contexte / Problème (mesuré le 2026-10-01)
 
 - La règle
-  [human-facing-lisibility](../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md)
+  [human-facing-lisibility](../../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md)
   est MUST, contrôlée par `ezk-reviewer`. Son `Scope:` liste des artefacts écrits. Le chat n'y est pas.
 - Son bundle n'existe plus. La PR #190, fiche
-  [bundles vs thèmes](done/20260823124042708_bundles-vs-themes-reorganisation.md), a supprimé
+  [bundles vs thèmes](20260823124042708_bundles-vs-themes-reorganisation.md), a supprimé
   `documentation-guidelines.yml`, resté sans profil. `base` porte trois règles, pas celle-ci.
   (La première version de cette fiche parlait encore de ce bundle.)
 - Avant cette PR, le texte atteignait déjà une partie des agents : 4 agents sur 8 et 10 skills
@@ -48,7 +48,7 @@ poste, l'effet passe d'abord par le texte des agents et des skills, déjà vivan
 Un seul texte de règle, enrichi. Aucune nouvelle règle.
 
 1. **Câbler** : la règle entre dans `bundles/base.yml`, une ligne, comme
-   [ADR-0045](../products/mega-city/docs/adr/0045-pr-preuve-avant-apres-outillage-loi.md).
+   [ADR-0045](../../products/mega-city/docs/adr/0045-pr-preuve-avant-apres-outillage-loi.md).
 2. **Étendre** : le `Scope:` nomme les sorties de chat. Trois clauses s'ajoutent : canal
    terminal sans HTML, « titre + lien », leviers d'application côté chat.
 3. **Faire marcher le chemin qui existe** : `CLAUDE.md`, les 8 agents et les 8 skills de
@@ -105,7 +105,7 @@ montre aucune balise `<details>` ni `<summary>`. Les fiches y sont citées par l
 ## Suite (hors POC)
 
 - **Dépendance.** La fiche
-  [Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md)
+  [Déployer vraiment les règles chez les agents](../20260903134909124_loi-non-compilee-chez-l-agent.md)
   doit aboutir pour que `base` atteigne un agent lancé hors d'un projet lié par `lawgiver bind`.
   Tant que `bind-global` ne compile aucune règle, le câblage attend. Il est livré pour être
   prêt ce jour-là. D'ici là, l'effet passe par le texte des agents et des skills.
@@ -126,5 +126,5 @@ Fiche née du `/ezk-backlog add` du 2026-08-24, pendant la refonte de la méthod
 « Explication claire », épic dérive-communication-lisibilité (0079, livrée).
 
 Absorbe, depuis le tri du 2026-09-30 :
-[La règle de clarté pousse vers `<details>` HTML qui fuit en texte brut](done/20260830113054036_style-clair-details-html-brut-terminal.md).
+[La règle de clarté pousse vers `<details>` HTML qui fuit en texte brut](20260830113054036_style-clair-details-html-brut-terminal.md).
 Ses critères encore utiles sont repris dans « Canal terminal » ci-dessus.
