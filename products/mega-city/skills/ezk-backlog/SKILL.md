@@ -320,9 +320,10 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    - **Re-propose.** Un nouveau menu, sans les techniques déjà jouées, jusqu'à la
      **sortie explicite** (`0`, « ça suffit »). Sortir au premier tour est légitime : aucune passe
      n'est forcée, la fiche reste telle quelle.
-   - **Sans opérateur** (appel d'un orchestrateur : `ezk-product-build`, `ezk-pm`) : pas de menu,
-     il bloquerait l'auto-groom. Applique toi-même les 2 techniques les plus utiles, en une passe,
-     et nomme-les dans ton compte rendu.
+   - **Sans opérateur interactif** : pas de menu, il bloquerait l'auto-groom. C'est le cas dès que
+     personne ne peut répondre : appel d'un orchestrateur ou d'un run autonome (`ezk-product-build`,
+     `ezk-pm`, `ezk-sprint` à l'intake sur une tête bloquée). Applique toi-même les 2 techniques les
+     plus utiles, en une passe, et nomme-les dans ton compte rendu.
 3. **Architecte et brainstorm** (fiche 20260812104022243). Deux techniques du catalogue APPELLENT un
    skill : `avis-architecte` → `engineering:architecture`, `brainstorm-cible` →
    `product-management:product-brainstorming`. Par défaut, l'architecte est proposé au menu quand la
