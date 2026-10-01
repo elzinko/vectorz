@@ -49,6 +49,7 @@ session. `lawgiver doctor <profil>` dit si la loi, les skills et les agents inst
 du profil.
 
 ## Ajouter / modifier un profil
-1. Éditer/créer `profiles/<id>.yml` (mêmes champs : `id`, `extends`, `bundles`, `agents`, `skills`, `interactions`).
+1. Éditer/créer `profiles/<id>.yml` (mêmes champs : `id`, `extends`, `bundles`, `agents`, `skills`, `interactions`,
+   et `commands` : les slash-commands de `commands/<id>.md`, posées dans `~/.claude/commands/` par `bind-global`).
 2. `npm test -- profiles-sync` : la garde anti-désync refuse toute référence pendante.
 3. Vérifier le rendu : `npm run lawgiver -- bind <id> <dir> <host>` puis inspecter la sortie.

@@ -18,7 +18,7 @@ description: >-
   vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne
   s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque
   checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens
-  en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance).
+  en réglage avancé (lean par défaut | cap arrête-et-demande | full multi-agents libre).
   N'EST PAS le scrum master
   qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus
   qui décide quoi & quand, et le lui confie.
@@ -168,7 +168,7 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
   `[Terminer l'en-cours puis stop]` · `[Stop net]`. **Augmenter le budget = décision humaine**
   (un des 4 STOP) : même en `--mode auto`, toucher ce seuil **rend la main à l'humain**, jamais
   un redémarrage silencieux.
-- **`full`** (pleine-puissance) — multi-agents libre quand ça sert la qualité (mode « ultracode ») ;
+- **`full`** (multi-agents libre) — fan-out permis quand ça sert la qualité (mode « ultracode ») ;
   l'utilisateur surveille lui-même la conso.
 
 > **Le mode règle le PLAFOND, pas la pertinence.** Même en `full`, avant tout fan-out :

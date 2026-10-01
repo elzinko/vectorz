@@ -46,7 +46,7 @@ Sinon elle n'est dans aucun commit et se construit à la demande.
 | bloc `composes` de `skills/README.md` | GitHub (bloc dans un README écrit à la main) | committé |
 | `PORTFOLIO.md` | en local | **non committée** |
 | données de `board.html`, `pilotage.html`, `runs.html` | `ezk:map` | **non committées** |
-| données de `carte-interactive.html` | `ezk:map`, lien du README | committées pour l'instant (voir Suite) |
+| données de `carte-interactive.html` | `ezk:map`, lien du README | **non committées** depuis le 2026-10-01 (voir Suite) |
 
 **3. Coque et données se séparent.** La coque reste committée dans la page HTML. Les données
 sortent dans un fichier voisin (`board.data.js`, `pilotage.data.js`, `runs.data.js`), ignoré par
@@ -86,6 +86,15 @@ alias.
 
 - `carte-interactive.html` (vue du **catalogue**) reste committée dans ce lot. Le README la lie, et
   elle ne bouge que si le catalogue bouge. Même schéma si un conflit réel y apparaît.
+  **Note du 2026-10-01 : le conflit réel est venu, le schéma est appliqué.** Chaque PR qui ajoutait
+  un script ou changeait la description d'un skill devait régénérer la carte, d'où des conflits
+  répétés entre sprints parallèles (#286, #288, #293…). Les données de la carte sortent de git comme
+  celles du board : la coque reste committée, `carte-interactive.data.js` est ignoré, construit par
+  `ezk:map` à chaque requête ou écrit par `views:regen`. `map:data` devient un alias de
+  `views:regen`. Les ADR [0041](0041-carte-la-loi-lecteur-runtime-graphe-compile.md) et
+  [0058](0058-les-outils-entrent-dans-le-graphe.md) décrivent encore l'ancien mécanisme (bloc
+  committé) : c'est l'historique, pas le présent. Le test « le bloc committé égale le bloc régénéré »
+  est remplacé par des tests de fidélité par construction (`map-data.test.ts`).
 - `views:check` et le ship transactionnel : fiche
   [`20260830194601233`](../../../../features/done/20260830194601233_ship-transactionnel-liens-vues.md).
 - Mesurer le critère « 0 conflit sur une vue générée par mois » en novembre 2026.

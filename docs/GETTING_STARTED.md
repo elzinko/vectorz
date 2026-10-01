@@ -72,7 +72,6 @@ products/cop1/packages/
   observability/        — logging, metrics
   sprint-core/          — supervision adapters (hex architecture)
   llm-intelligence/     — LLM gateway
-  ceremony-engine/      — ceremonies
   app/                  — CLI (start, init, init-bmad-bridge, …)
   web/                  — Moniteur (React)
 ```
