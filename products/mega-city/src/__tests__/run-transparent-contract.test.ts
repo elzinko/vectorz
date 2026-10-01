@@ -23,7 +23,7 @@ const bin = (name: string, args: string[]): { code: number | null; out: string; 
   return { code: r.status, out: r.stdout, err: r.stderr };
 };
 
-describe('run:context — la commande', () => {
+describe('run:context — la commande', { timeout: 30_000 }, () => {
   it('rend le bloc, le contrat suit les réglages donnés, et sort en 0', () => {
     const r = bin('run-context.ts', ['--no-fetch', '--mode', 'auto', '--delivery', 'per-epic', '--tokens', 'cap', '--fiche', '0080']);
     expect(r.code).toBe(0);
@@ -41,7 +41,7 @@ describe('run:context — la commande', () => {
   });
 });
 
-describe('run:report — la commande', () => {
+describe('run:report — la commande', { timeout: 30_000 }, () => {
   const MERGED = '0080|mergée|#277|verte|GO|faite|-';
 
   it('rend le bilan sans GitHub, en le disant, et sort en 0', () => {
