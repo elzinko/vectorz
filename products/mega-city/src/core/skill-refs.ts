@@ -18,7 +18,10 @@
  *   - `scripts/x` ou `./scripts/x` nus : dossier du skill (du skill homonyme pour un agent), puis
  *     `scripts/` du produit, puis `scripts/` de la racine du dépôt.
  * Les gabarits (`<skill>/scripts/x`, `$VAR/scripts/x`) et les chemins `../scripts/x` ne disent pas
- * quel dépôt ils visent : ignorés. Aucun I/O ici : lire les fichiers = `loaders/skill-refs.ts`.
+ * quel dépôt ils visent : ignorés.
+ * Angle mort assumé : seules les extensions `.sh`, `.ts`, `.mjs`, `.js` sont reconnues. Un script
+ * `.py`, `.rb` ou sans extension n'est pas vu (zéro faux positif plutôt qu'une alarme douteuse).
+ * Aucun I/O ici : lire les fichiers = `loaders/skill-refs.ts`.
  */
 import type { Skill } from '../domain/model.js';
 
@@ -68,7 +71,7 @@ const SKILL_QUALIFIED = new RegExp(
 const SKILL_SHORT = new RegExp(`${LEFT}([\\w-]+)/(scripts/${NAME})`, 'g');
 const BARE = new RegExp(`${LEFT}(?:\\./)?(scripts/${NAME})`, 'g');
 
-/** Tous les scripts du dépôt cités par `doc`, existants ou non, dans l'ordre du texte. */
+/** Tous les scripts du dépôt cités par `doc`, existants ou non, ligne par ligne. */
 export function citedScriptRefs(doc: RefDoc, skillIds: ReadonlySet<string>): ScriptCitation[] {
   const found: ScriptCitation[] = [];
   doc.text.split('\n').forEach((text, index) => {

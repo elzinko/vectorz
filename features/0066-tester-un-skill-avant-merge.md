@@ -42,7 +42,8 @@ Le POC ferme le trou **mécanique** du niveau 1 : deux contrôles dans `pnpm tes
 sabotage. Il réutilise l'idée de `helpers/cited-commands.ts` (un document qui cite une chose doit
 citer une chose qui existe). Mesure de départ : 64 citations de scripts dans 33 documents (25 skills,
 8 agents) ; 7 sont à expliquer, dont 3 = un agent qui parle du script de son skill homonyme, et 4 =
-scripts du **projet cible** cités par `ezk-ci`.
+citations (2 scripts) du **projet cible** par `ezk-ci`. Angle mort assumé : seules les extensions
+`.sh`, `.ts`, `.mjs`, `.js` sont vues ; un script `.py` ou sans extension passe.
 
 ## Critères d'acceptation
 
