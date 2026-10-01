@@ -70,27 +70,65 @@ Trois défauts constatés (2026-09-04, avec le PO) :
    émet un compte-rendu de session structuré ») : même sujet — le **format** du récit et ce
    qu'il rend **extractible** (galères, PR, fiches, actions), prérequis des vues.
 
-## Critères d'acceptation (brouillon — DoR au grooming)
+## Décisions de grooming (2026-10-01)
 
-- [ ] Le journal est un artefact **indépendant** du labo (capture ≠ consommation).
-- [ ] Les entrées s'écrivent **pendant** le dev, **hors** `SPRINT.md`, dans un fichier durable.
-- [ ] Deux sprints en parallèle **n'entrent pas en conflit** sur le journal.
-- [ ] Chaque entrée est **taggée par feature** ; `grep <id>` sort l'historique d'une feature.
-- [ ] Le labo / ezk-chef lit ce journal **à la demande** (recettes toujours générables).
-- [ ] La décision « session = capture, pas concept méthode » est écrite (ici ou en règle).
+- **Où écrire.** Dans `docs/journal/<date>-<slug>.md`, un dossier **à part** de `docs/sessions/`.
+  La capture (brique 1) ne se mélange pas au récit (brique 2).
+- **Un fichier par session.** Le `<slug>` est le nom de la branche git. Deux worktrees écrivent
+  donc deux fichiers différents, et ne peuvent pas se marcher dessus.
+- **Forme d'une entrée.** Un titre `## [<id-fiche>] <titre court>`, puis trois puces : ce qui a
+  coincé, comment c'est réglé, pourquoi (facultatif).
+- **Qui écrit.** Un petit script, `journal-add.sh`, pour qu'une entrée tienne en une commande.
+- **Qui lit.** `ezk-chef extract` lit le journal à la demande : on re-pointe sa source. Le reste se
+  lit avec `grep`.
+- **Le mot « session ».** Il reste une unité de **capture**. Il n'entre pas dans le vocabulaire
+  de la méthode, qui garde feature, sprint et rétro. Cette décision est écrite dans
+  `docs/journal/README.md`.
+
+## Périmètre de cette PR (POC)
+
+1. `docs/journal/README.md` : format, tag par fiche, règle « un fichier par session », décision
+   sur le mot « session ».
+2. `products/mega-city/bin/journal-add.sh`, son test `test-journal-add.sh`, inscrit dans
+   `test-scripts.sh`.
+3. `ezk-chef-extract.sh` lit aussi `docs/journal/`, avec un cas de test.
+4. `ezk-sprint/SKILL.md` demande d'écrire dans le journal. La section « Galères & gestes (labo) »
+   de `SPRINT.md` reste lue (rétro-compatibilité), ses tests restent verts.
+
+## Critères d'acceptation
+
+- [ ] `docs/journal/README.md` fixe le format, le tag par fiche, « un fichier par session » et la décision sur le mot « session »
+- [ ] `journal-add.sh` écrit une entrée **pendant** le dev, **hors** `SPRINT.md`, dans `docs/journal/<date>-<slug>.md`, et fonctionne sans recette ni labo
+- [ ] deux sessions (deux slugs) donnent deux fichiers distincts : aucun conflit possible
+- [ ] chaque entrée est **taggée par fiche** : `grep -rl <id> docs/journal/` rend les fichiers, `grep -rh -A4 "^## \[<id>\]" docs/journal/` rend les galères d'une feature
+- [ ] `ezk-chef extract <id>` verse les entrées du journal dans les Préliminaires, avec un pointeur vers le fichier
+- [ ] `ezk-sprint` dit d'écrire dans le journal ; la section de `SPRINT.md` reste lue et `test-labo-cuisine.sh` reste vert
+- [ ] gate verte : test du script, test de l'extraction, `pnpm test:scripts`
 
 ## Comment vérifier
 
-- **Indépendance** : renommer/retirer le labo ne casse pas le journal ; le journal existe et
-  se remplit sans qu'aucune recette soit générée.
-- **Parallélisme** : deux worktrees qui journalisent en même temps produisent **deux**
-  fichiers durables, aucun conflit sur un `SPRINT.md`.
-- **Par-feature** : `grep -rl <id-fiche> docs/sessions/` (ou `docs/journal/`) rend toutes les
-  galères de cette feature.
+- **Indépendance** : `test-journal-add.sh` écrit dans un dépôt de test **sans** `recipes/` ni labo.
+  Le journal existe et se remplit sans qu'aucune recette soit générée.
+- **Parallélisme** : le même test journalise avec deux slugs. Il obtient deux fichiers, et aucun
+  `SPRINT.md` n'est touché.
+- **Par feature** : le test rejoue le `grep -rl <id> docs/journal/` ci-dessus.
+- **Lecture par le labo** : `test-ezk-chef-extract.sh` ajoute un dépôt avec un journal. Les
+  Préliminaires du brouillon citent l'entrée et le fichier source.
+- **Commande** : `pnpm --dir products/mega-city test:scripts`.
+
+## Suite (hors POC)
+
+- Alléger `ezk-archive` : il ne possède plus le snapshot des galères (fiche sœur
+  [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md)).
+- `ezk-chef suggest` et `ezk-retro` lisent aussi le journal, par feature ou par thème.
+- En-tête structuré des récits de session (PR, fiches, actions), repris de la fiche absorbée
+  20260826121429274. C'est une facette du récit (brique 2), pas de la capture.
+- Commande `ezk journal` dans le manifeste du CLI `ezk`.
 
 ## Notes / décisions
 
-- **Statut idea** : direction validée par le PO (2026-09-04), non groomée.
+- **Statut idea** : direction validée par le PO (2026-09-04). Groomée le 2026-10-01 sur un POC
+  borné (voir « Décisions de grooming »).
 - **Provenance** : absorbe
   [20260826121429274](done/20260826121429274_ezk-archive-compte-rendu-structure.md) (compte-rendu
   structuré) — la fiche source est tombstonée (redirection) en attendant son retrait au
