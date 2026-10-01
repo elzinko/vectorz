@@ -470,16 +470,16 @@ window.EZK = {
   "skills": 25,
   "bundles": 10,
   "profiles": 6,
-  "tools": 77
+  "tools": 80
  },
  "liens": {
-  "total": 262,
+  "total": 264,
   "casses": 0
  },
  "provenance": {
   "prouve": {
-   "briques": 202,
-   "liens": 262,
+   "briques": 205,
+   "liens": 264,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -499,7 +499,7 @@ window.EZK = {
    "skill": 25,
    "bundle": 10,
    "profile": 6,
-   "tool": 77
+   "tool": 80
   },
   "arrows": [
    {
@@ -560,7 +560,7 @@ window.EZK = {
     "from": "skill",
     "verb": "applique",
     "to": "rule",
-    "count": 11
+    "count": 12
    },
    {
     "from": "skill",
@@ -578,7 +578,7 @@ window.EZK = {
     "from": "skill",
     "verb": "utilise",
     "to": "tool",
-    "count": 40
+    "count": 41
    }
   ],
   "bind": {
@@ -1531,7 +1531,8 @@ window.EZK = {
    "tools": [
     "bin/journal-add.sh",
     "bin/pr-evidence.sh",
-    "skills/ezk-sprint/scripts/check.sh"
+    "skills/ezk-sprint/scripts/check.sh",
+    "skills/ezk-sprint/scripts/sprint.sh"
    ],
    "profiles": [
     "daily",
@@ -3335,6 +3336,22 @@ window.EZK = {
    ],
    "usedBy": []
   },
+  "bin/run-context.ts": {
+   "id": "bin/run-context.ts",
+   "source": "products/mega-city/bin/run-context.ts",
+   "commands": [
+    "ezk run context"
+   ],
+   "usedBy": []
+  },
+  "bin/run-report.ts": {
+   "id": "bin/run-report.ts",
+   "source": "products/mega-city/bin/run-report.ts",
+   "commands": [
+    "ezk run report"
+   ],
+   "usedBy": []
+  },
   "bin/ship-fiche.ts": {
    "id": "bin/ship-fiche.ts",
    "source": "products/mega-city/bin/ship-fiche.ts",
@@ -3642,6 +3659,14 @@ window.EZK = {
   "skills/ezk-sprint/scripts/check.sh": {
    "id": "skills/ezk-sprint/scripts/check.sh",
    "source": "products/mega-city/skills/ezk-sprint/scripts/check.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-sprint"
+   ]
+  },
+  "skills/ezk-sprint/scripts/sprint.sh": {
+   "id": "skills/ezk-sprint/scripts/sprint.sh",
+   "source": "products/mega-city/skills/ezk-sprint/scripts/sprint.sh",
    "commands": [],
    "usedBy": [
     "ezk-sprint"
