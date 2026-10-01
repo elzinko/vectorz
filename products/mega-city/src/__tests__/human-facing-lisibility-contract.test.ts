@@ -238,11 +238,11 @@ const claudeMd = resolve(megaCityDir, '..', '..', 'CLAUDE.md'); // racine vector
 const agentsDir = join(megaCityDir, 'agents');
 
 /** Ancres stables de la clause de canal, communes à la règle, CLAUDE.md, agents et skills. */
-const CANAL_ANCHORS = [/Markdown seul/, /`<details>`/, /titre \+ lien/, /id nu/] as const;
+const CANAL_ANCHORS = [/Markdown seul/, /`<details>`/, /titre \+ lien/, /\bid nu\b/] as const;
 
 /** La section « Cas sortie de chat » de la règle (jusqu'à la section suivante). */
 function chatSection(): string {
-  return read(lisibilityRule).match(/### Cas sortie de chat[\s\S]*?(?=\n### )/)?.[0] ?? '';
+  return read(lisibilityRule).match(/### Cas sortie de chat[\s\S]*?(?=\n### |$)/)?.[0] ?? '';
 }
 
 describe('clarté partout — câblage et preuve d\'effet (fiche 20260824111001836)', () => {
@@ -256,7 +256,9 @@ describe('clarté partout — câblage et preuve d\'effet (fiche 202608241110018
       .materialize(resolved, '/tmp/projet')
       .files.find((f) => f.path === '.iamthelaw/ENTRY.md');
     expect(entry, 'ENTRY.md absent du plan').toBeDefined();
-    expect(entry?.content).toContain(`## ${RULE_ID}  \`[MUST]\``);
+    expect(entry?.content).toMatch(
+      /## documentation-guidelines\/human-facing-lisibility\s+`\[MUST\]`/,
+    );
     for (const anchor of CANAL_ANCHORS) expect(entry?.content).toMatch(anchor);
   });
 
@@ -294,7 +296,7 @@ describe('clarté partout — la règle étend sa portée au chat (fiche 2026082
   it('titre + lien : la fiche ne se cite jamais par son id nu, sans contredire la règle des listes', () => {
     const section = chatSection();
     expect(section).toMatch(/titre \+ lien/);
-    expect(section).toMatch(/id nu/);
+    expect(section).toMatch(/\bid nu\b/);
     expect(section).toMatch(/jamais le remplacer/);
     // Coexistence : la puce « Lists of file-backed items » (lien sur l'id, titre à côté) reste,
     // et la clause dit expressément qu'elle reste valide pour les listes à titre affiché.

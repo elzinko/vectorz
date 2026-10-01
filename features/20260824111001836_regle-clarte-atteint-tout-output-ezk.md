@@ -25,7 +25,7 @@ poste, l'effet passe d'abord par le texte des agents et des skills, déjà vivan
 `~/.claude`. Le déploiement global des règles reste à faire : c'est la fiche
 [Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md).
 
-## Ce qui est vrai aujourd'hui (mesuré le 2026-10-01)
+## Contexte / Problème (mesuré le 2026-10-01)
 
 - La règle
   [human-facing-lisibility](../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md)
@@ -34,16 +34,16 @@ poste, l'effet passe d'abord par le texte des agents et des skills, déjà vivan
   [bundles vs thèmes](done/20260823124042708_bundles-vs-themes-reorganisation.md), a supprimé
   `documentation-guidelines.yml`, resté sans profil. `base` porte trois règles, pas celle-ci.
   (La première version de cette fiche parlait encore de ce bundle.)
-- Le texte atteint déjà une partie des agents : 4 agents sur 8 et 10 skills sur 25 citent la
-  règle. Les 8 skills de restitution sont figés par un test de contrat.
+- Avant cette PR, le texte atteignait déjà une partie des agents : 4 agents sur 8 et 10 skills
+  sur 25 citaient la règle. Les 8 skills de restitution sont figés par un test de contrat.
 - `bind-global` n'écrit que les skills et les agents. Aucune règle n'est compilée chez l'agent
-  par ce chemin. `lawgiver bind <profil> <projet>` compile bien les règles dans
-  `.iamthelaw/ENTRY.md`, mais vectorz n'en a pas.
+  par ce chemin. Le cap projet compile bien les règles dans `.iamthelaw/ENTRY.md` (c'est lui que
+  `lawgiver bind <profil> <projet>` applique), mais vectorz n'en a pas.
 - Côté chat, les leviers réels sont `CLAUDE.md` et le style de sortie « Explication claire »
   (`~/.claude/output-styles/`, hors dépôt). Ce style demande des « blocs de détail technique »
   sans dire le format. C'est la source probable du `<details>` affiché en brut le 2026-08-30.
 
-## Périmètre de ce POC
+## Proposition (périmètre du POC)
 
 Un seul texte de règle, enrichi. Aucune nouvelle règle.
 
@@ -67,28 +67,28 @@ Déjà en place, avec preuve :
 
 Reste à livrer :
 
-- [ ] **Câblage.** `bundles/base.yml` porte la règle. `expand(base)` la résout. Les tests
+- [x] **Câblage.** `bundles/base.yml` porte la règle. `expand(base)` la résout. Les tests
       `catalog`, `expand` et `loi-view` sont à jour. `graph:check` et `fiches:check` sont verts.
       La carte est régénérée (`map:data`).
-- [ ] **Preuve d'effet.** Un test compile le profil `base` réel avec le cap projet. Le
+- [x] **Preuve d'effet.** Un test compile le profil `base` réel avec le cap projet. Le
       `.iamthelaw/ENTRY.md` obtenu contient la règle et ses clauses de chat.
-- [ ] **Portée.** Le `Scope:` nomme les sorties de chat : réponse de fin de tour, résumé de
+- [x] **Portée.** Le `Scope:` nomme les sorties de chat : réponse de fin de tour, résumé de
       session.
-- [ ] **Canal terminal** *(absorbe la fiche du `<details>`)*. La règle impose Markdown seul dans
+- [x] **Canal terminal** *(absorbe la fiche du `<details>`)*. La règle impose Markdown seul dans
       le chat : ni `<details>`, ni `<summary>`, ni HTML brut. Le détail technique va en bas,
       sous un titre Markdown ou en liste. `<details>` reste permis dans les livrables `.md`
       committés, où GitHub le rend.
-- [ ] **Titre + lien.** La règle exige qu'une fiche (ou une PR, un ADR) soit citée par son titre
+- [x] **Titre + lien.** La règle exige qu'une fiche (ou une PR, un ADR) soit citée par son titre
       en lien cliquable. L'id peut suivre le titre, jamais le remplacer. La clause reste
       compatible avec la règle existante des listes (lien sur l'id, titre à côté).
-- [ ] **Leviers côté chat.** La règle nomme ses leviers : `CLAUDE.md`, style « Explication
+- [x] **Leviers côté chat.** La règle nomme ses leviers : `CLAUDE.md`, style « Explication
       claire », texte des agents et des skills, loi compilée. Elle dit qu'aucun contrôle
       automatique ne couvre le chat.
-- [ ] **Texte qui marche déjà.** `CLAUDE.md` reprend les deux clauses de chat. Les 8 agents
+- [x] **Texte qui marche déjà.** `CLAUDE.md` reprend les deux clauses de chat. Les 8 agents
       citent la règle et portent la clause de canal, soit 4 de plus qu'aujourd'hui. Les 8
       skills de restitution portent la clause de canal. Un test de contrat fige les trois.
-- [ ] **Zéro nouvelle règle.** Une seule règle porte la clarté. Aucun fichier de règle ajouté.
-- [ ] Gate locale verte. Revue adverse sans bloquant.
+- [x] **Zéro nouvelle règle.** Une seule règle porte la clarté. Aucun fichier de règle ajouté.
+- [x] Gate locale verte. Revue adverse sans bloquant.
 
 ## Comment vérifier
 
