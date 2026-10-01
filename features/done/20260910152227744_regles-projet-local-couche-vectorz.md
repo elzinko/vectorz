@@ -7,8 +7,8 @@ product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
 version: V0.4
 labels: [installation]
 epic:
-status: idea # idea | ready | in-progress | blocked | shipped
-pr:
+status: shipped
+pr: "#303"
 evidence: none # mécanisme / CLI, pas d'écran
 created: 2026-09-10
 ---
@@ -24,7 +24,7 @@ sont que des **conseils**. Le POC livre l'outil qui lit ces règles, les compose
 choisis, refuse les incohérences et écrit le résultat là où Claude Code le charge. Il ne fait pas
 tourner les contrôles et ne compte pas encore les violations : c'est la suite.
 
-Décision d'architecture : [ADR-0050](../products/mega-city/docs/adr/0050-couche-regles-projet-local.md).
+Décision d'architecture : [ADR-0050](../../products/mega-city/docs/adr/0050-couche-regles-projet-local.md).
 
 ## Où on en est (relu contre le code du 2026-10-01)
 

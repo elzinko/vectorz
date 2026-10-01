@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 labels: [installation]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#305"
 created: 2026-08-16
 ---
 

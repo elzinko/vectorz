@@ -5,8 +5,8 @@ type: bug
 priority: P3
 product: mega-city
 labels: [dette]
-status: idea
-pr:
+status: shipped
+pr: "#295"
 created: 2026-08-23
 milestone: fondation
 version:

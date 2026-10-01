@@ -7,8 +7,8 @@ product: mega-city
 labels: [installation]
 version: V0.4
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#299"
 created: 2026-08-26
 ---
 
@@ -24,7 +24,7 @@ déblocage pour installer la méthode ailleurs.
 ## Où on en est (relu contre le code du 2026-10-01)
 
 La première version de cette fiche citait `regen-avancement.ts` et `regen-plan-view.ts`. Ils
-n'existent plus. Depuis l'[ADR-0055](../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md),
+n'existent plus. Depuis l'[ADR-0055](../../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md),
 `ezk dashboard` calcule les données du board à chaque requête (`src/io/derived-views.ts`), et
 `views:regen` les écrit sur disque.
 
@@ -99,7 +99,7 @@ Attendu : avec `--root` ou `EZK_ROOT`, on voit les fiches du projet désigné ; 
 
 ## Notes
 
-- **Fille de l'épic** [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md) :
+- **Fille de l'épic** [20260813124026215](20260813124026215_deploiement-methode-llm-native.md) :
   le déblocage n°1 de la session d'architecture du 2026-08-26. Faible regret : vraie quelle que soit
   l'option d'ancrage retenue.
 - **Adjacente, distincte** de `20260823121712844` (durcir `regen-backlog` contre une racine par défaut
