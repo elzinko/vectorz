@@ -10,24 +10,29 @@
 id: global
 extends: [base]            # → hérite le socle (bundle base + ezk-archive)
 bundles: [base]
-# → toute l'équipe ezk-* (7 agents) → installée dans ~/.claude/agents/
+# → toute l'équipe ezk-* (8 agents) → installée dans ~/.claude/agents/
 #   ezk-archive = le sous-agent de clôture, cible de délégation du skill ezk-archive
 #   (skill mince → modèle/effort fixes) ; ici plutôt que dans base pour garder les
 #   profils par-cible curated (le socle reste `agents: []`).
+#   ezk-chef = le sous-agent du livre de recettes (fiche 20260903134909124 : il manquait).
+# Garde : src/__tests__/global-profile-covers-ezk.test.ts — « exhaustif » = tout ezk-* du catalogue.
 agents:
   - ezk-architect
   - ezk-archive
+  - ezk-chef
   - ezk-pm
   - ezk-qa
   - ezk-reviewer
   - ezk-steward
   - ezk-dev
-# → tout le catalogue de skills ezk-* (20) → installés dans ~/.claude/skills/
+# → tout le catalogue de skills ezk-* (22) → installés dans ~/.claude/skills/
 skills:
   - ezk-apk
   - ezk-archive
   - ezk-article
   - ezk-backlog
+  - ezk-bug
+  - ezk-chef
   - ezk-ci
   - ezk-codex
   - ezk-commits

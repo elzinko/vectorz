@@ -5,9 +5,18 @@ import { dirname, join, resolve } from 'node:path';
  * lawgiver — CLI du moteur déterministe (ADR-0003 / ADR-0004).
  *
  *   lawgiver bind <profile> <projet> [host] [--force] (host par défaut : claude-code)
- *   lawgiver bind-global <profile> [--link]          (matérialise dans ~/.claude — fiche 0017/0018)
+ *   lawgiver bind-global <profile> [--link] [--target <dossier>]  (matérialise dans ~/.claude — fiche 0017/0018)
  *   lawgiver status <profile> [--target <dossier>]   (ce qui est déployé : lien, copie, absent — lecture seule)
+ *   lawgiver doctor <profile> [--target <dossier>]   (ce qui est déclaré mais pas installé — lecture seule, code 1 si écart)
  *   lawgiver capture <cible> <kind> --content "<md>"  (kind = rule|skill|agent|interaction)
+ *
+ * Ce que chaque déploiement écrit — et n'écrit PAS (fiche 20260903134909124, ADR-0056) :
+ *   bind <profil> <projet>   ÉCRIT  <projet>/.claude/agents, .claude/skills, .iamthelaw/ENTRY.md (la loi),
+ *                                   un bloc dans CLAUDE.md, les hooks git.   N'ÉCRIT PAS  ~/.claude.
+ *   bind-global <profil>     ÉCRIT  ~/.claude/skills, ~/.claude/agents, ~/.claude/rules/iamthelaw.md (la loi
+ *                                   du profil, en copie compilée même avec --link).
+ *                                   N'ÉCRIT PAS  ~/.claude/CLAUDE.md, ni de hook, ni rien dans un projet.
+ *   --target <dossier>       vise un autre dossier que ~/.claude (essais sur dossier jetable).
  *
  * Parse les args, calcule un plan PUR puis l'applique via la coquille I/O unique.
  * Aucune logique métier ici. Pour `capture`, le markdown est fourni par `--content`
@@ -18,12 +27,13 @@ import { fileURLToPath } from 'node:url';
 import { bind } from '../src/core/bind.js';
 import { planCapture } from '../src/core/capture.js';
 import { checkComposition, checkRoles } from '../src/core/composition.js';
+import { diagnose, exitCodeOf, renderDiagnosis } from '../src/core/deploy-doctor.js';
 import { expectedItems, inspect, renderStatus } from '../src/core/deploy-state.js';
 import { expandProfile } from '../src/core/expand.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
 import { applyGlobalPlan, applyPlan } from '../src/io/apply.js';
 import { applyCapture } from '../src/io/capture.js';
-import { probePath } from '../src/io/deploy-probe.js';
+import { probePath, readText } from '../src/io/deploy-probe.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
 import { loadRenames } from '../src/loaders/renames.js';
 
@@ -31,10 +41,48 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function usage(): never {
   console.error('Usage: lawgiver bind <profile> <projet> [host] [--force]');
-  console.error('       lawgiver bind-global <profile> [--link]');
+  console.error('       lawgiver bind-global <profile> [--link] [--target <dossier>]');
   console.error('       lawgiver status <profile> [--target <dossier>]');
+  console.error('       lawgiver doctor <profile> [--target <dossier>]');
   console.error('       lawgiver capture <cible> <kind> --content "<markdown>" [--for <agentId>]');
   process.exit(2);
+}
+
+/** Où `bind-global`, `status` et `doctor` travaillent par défaut : le `~/.claude` de l'utilisateur. */
+function defaultTarget(): string {
+  return join(homedir(), '.claude');
+}
+
+/** Les arguments positionnels : ni option (`--x`), ni valeur d'une option qui en prend une. */
+function positional(args: string[], valueFlags: string[]): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i] as string;
+    if (valueFlags.includes(arg)) i += 1;
+    else if (!arg.startsWith('--')) out.push(arg);
+  }
+  return out;
+}
+
+/**
+ * doctor — compare ce que `bind-global <profil>` déposerait à ce qui est vraiment installé :
+ * élément manquant, lien mort, copie périmée, loi absente ou périmée. LECTURE SEULE. Code retour
+ * 1 s'il reste une divergence (composable en gate). `--target` vise un autre dossier que `~/.claude`.
+ */
+function runDoctor(profile: string, target: string, explicitTarget: boolean): void {
+  const root = resolve(target);
+  try {
+    const plan = bind(profile, root, 'claude-code-global', repoRoot);
+    const diagnosis = diagnose(plan, {
+      fact: (rel) => probePath(root, rel),
+      readText: (rel) => readText(root, rel),
+    });
+    process.stdout.write(renderDiagnosis(profile, root, diagnosis, explicitTarget ? { target: root } : {}));
+    process.exitCode = exitCodeOf(diagnosis);
+  } catch (error) {
+    console.error(`lawgiver: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(2);
+  }
 }
 
 /**
@@ -72,10 +120,12 @@ function runBind(profile: string, projectDir: string, host: HostId, force: boole
  * I/O non-destructive : ne remplace que ses propres entrées.
  *   - défaut : `copy` (contenu figé) ;
  *   - `--link` : symlink live-update vers la source du catalogue (`catalogRoot = repoRoot`),
- *     un `git pull` dans mega-city met alors à jour partout.
+ *     un `git pull` dans mega-city met alors à jour partout. La LOI, elle, est un fichier
+ *     compilé : écrite en copie dans les deux modes (rejouer la commande après un changement de règle) ;
+ *   - `--target <dossier>` : un autre dossier que `~/.claude` (essais sur dossier jetable).
  */
-function runBindGlobal(profile: string, link: boolean): void {
-  const root = join(homedir(), '.claude');
+function runBindGlobal(profile: string, link: boolean, target: string): void {
+  const root = resolve(target);
   const plan = bind(profile, root, 'claude-code-global', repoRoot);
   const mode = link ? 'link' : 'copy';
   // Registre des renommages (renames.yml) : le re-bind retire proprement les ANCIENS noms.
@@ -165,15 +215,20 @@ function main(argv: string[]): void {
     return runBind(profile, projectDir, host, force);
   }
   if (command === 'bind-global') {
-    const link = rest.includes('--link');
-    const [profile] = rest.filter((arg) => arg !== '--link');
+    const [profile] = positional(rest, ['--target']);
     if (!profile) usage();
-    return runBindGlobal(profile, link);
+    return runBindGlobal(profile, rest.includes('--link'), parseFlag(rest, '--target') ?? defaultTarget());
   }
   if (command === 'status') {
-    const [profile] = rest;
-    if (!profile || profile.startsWith('--')) usage();
-    return runStatus(profile, parseFlag(rest, '--target') ?? join(homedir(), '.claude'));
+    const [profile] = positional(rest, ['--target']);
+    if (!profile) usage();
+    return runStatus(profile, parseFlag(rest, '--target') ?? defaultTarget());
+  }
+  if (command === 'doctor') {
+    const [profile] = positional(rest, ['--target']);
+    if (!profile) usage();
+    const explicit = parseFlag(rest, '--target');
+    return runDoctor(profile, explicit ?? defaultTarget(), explicit !== undefined);
   }
   if (command === 'capture') {
     const [target, kind] = rest;
