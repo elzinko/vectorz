@@ -18,7 +18,9 @@ created: 2026-09-03
 **En clair.** Les commandes de la méthode se lancent aujourd'hui de trois façons, avec quatre
 styles de noms. Personne ne peut deviner `pnpm lawgiver bind-global global --link`, ni savoir
 qu'il faut trois commandes pour régénérer un board. Cette fiche donne à la méthode une seule
-commande de terminal, `ezk`, qui route vers les scripts existants sans en déplacer la logique.
+commande de terminal, `ezk`. Elle lit un manifeste et lance le script existant, sans en
+déplacer la logique. Ce lot livre le routeur, `ezk help`, `ezk board regen`, `ezk law status`
+et le nouveau nom du tableau de bord : `ezk dashboard` (ancien `ezk:map`).
 
 **Si tu arrives frais.** `products/mega-city/bin/` = les scripts déterministes de la méthode
 (compilation du graphe, régénération des vues, moteur de la LOI). Un « script pnpm » = un alias
@@ -29,81 +31,105 @@ charge depuis `~/.claude`.
 
 Mesure du 2026-09-03 : `bin/` compte 49 scripts. 27 sont exposés en scripts pnpm, avec quatre
 styles de noms (`lawgiver`, `ezk:map`, `graph:compile`, `plan-view:regen`). Les scripts bash
-s'appellent par chemin complet (`bash products/mega-city/bin/check-links.sh`). Depuis la
-racine, tout demande le préfixe `pnpm --dir products/mega-city`, sauf `ezk:map`, ré-exposé à
-la main. Les commandes de chat ont un index généré (`ezk-help`) ; les commandes de terminal
-n'en ont aucun.
+s'appellent par chemin complet. Depuis la racine, tout demande le préfixe
+`pnpm --dir products/mega-city`. Les commandes de chat ont un index généré (`ezk-help`) ; les
+commandes de terminal n'en ont aucun.
 
-Symptômes vécus le jour même, pendant le sprint [[20260902224608715]] :
-
-- le board porte trois blocs générés, régénérés par trois commandes différentes ; en oublier
-  une a mis la CI en rouge ;
-- `pnpm lawgiver bind-global global --link` : le PO ne pouvait pas deviner ce qu'elle déploie
-  (skills et agents seulement, pas la loi) ; question posée en séance ;
-- le nouveau script du sprint s'appelle par chemin, `bash products/mega-city/bin/pr-evidence.sh …`,
-  comme les autres.
+Symptômes vécus pendant le sprint [[20260902224608715]] : le board porte trois blocs générés,
+régénérés par trois commandes (en oublier une a mis la CI en rouge) ; `bind-global` déploie
+skills et agents mais pas la loi, et le PO ne pouvait pas le deviner.
 
 Analogie : une cuisine où chaque appareil a sa propre prise. Tout marche, mais chaque geste
 demande de retrouver le bon adaptateur.
 
-**Valeur.** Une commande apprise vaut pour toutes. Le PO lance et découvre les gestes de la
-méthode sans lire `package.json`. Le même vocabulaire dans le terminal (`ezk law …`) et dans
-le chat (`/ezk-…`).
-
 ## Proposition
 
-Option B de l'ADR-0046 : un CLI mince sur manifeste.
-
-- `products/mega-city/bin/ezk.ts` : un routeur `ezk <domaine> <verbe> [args]` qui lit un
-  manifeste (domaine, verbe, script cible, une ligne de description) et lance le script
-  existant avec les arguments tels quels. Zéro logique métier dans le routeur : le moteur
-  reste « plan pur + coquille I/O » (ADR-0003), le CLI n'est qu'un bord de plus.
-- Exposé par le champ `bin` du paquet mega-city (`ezk`) : `pnpm ezk …` à la racine, et
-  `pnpm link --global` sur un poste.
-- Premiers domaines : `law` (bind, bind-global, status = déployé vs catalogue), `board`
-  (regen = les trois blocs d'un coup), `backlog` (check, regen, plan-head), `graph` (compile,
-  check, query), `evidence` (capture, render, decide), `pr` (check-body), `ci` (conso), `map`,
-  `sessions`, `help`.
-- `ezk help` fusionne les deux index : commandes de terminal (manifeste) et commandes de chat
-  (`ezk-help`, lu des SKILL.md).
-- Les scripts pnpm actuels restent en alias pendant une transition et appellent le routeur.
-  Précédent : refonte du CLI d'ezk-product-build (PR #193), chaque ancien flag gardé en alias.
-- La racine paramétrable ([[20260826173221323]]) devient l'option `--root` du routeur, ou la
-  détection du dépôt courant : c'est ce qui débloque l'installation par projet.
+Option B de l'ADR-0046 : un CLI mince sur manifeste. Zéro logique métier dans le routeur : le
+moteur reste « plan pur + coquille I/O » (ADR-0003), le CLI n'est qu'un bord de plus.
 
 ```
-terminal ─ ezk law bind-global --link ─┐
-                                        ├─ bin/ezk.ts (routeur, lit le manifeste) ─► bin/lawgiver.ts, bin/regen-*.ts …
-chat ─ /ezk-sprint, /ezk-backlog ───────┘   ezk help liste les deux familles
+terminal ─ ezk law bind-global … ─┐
+                                   ├─ bin/ezk.ts (routeur) lit ezk-manifest.yml ─► bin/lawgiver.ts, bin/regen-*.ts …
+chat ─ /ezk-sprint, /ezk-backlog ──┘   ezk help liste les deux familles
 ```
+
+Décisions prises au grooming (étape Archi) :
+
+- **Manifeste en YAML**, `products/mega-city/ezk-manifest.yml` : le PO le lit sans lire du code, et
+  l'option C pourra le reprendre. Chaque entrée : domaine, verbe, script cible (ou liste d'étapes),
+  une ligne de description, et une règle de racine.
+- **Racine.** Options du routeur placées avant la commande : `--root <dépôt>` et `--dry-run`.
+  Une commande « fixe » (qui lit ou écrit les fichiers du dépôt de la méthode) refuse de tourner
+  depuis un autre dépôt, avec un message qui dit quoi faire. Les scripts ne savent pas encore
+  viser un autre projet : c'est la fiche [[20260826173221323]], qui retournera ces entrées en
+  « racine passée au script ».
+- **Nom du tableau de bord : `ezk dashboard`.** Écartés : `monitor` (se confond avec
+  `ezk supervision` et le Moniteur d'events), `board` (déjà le domaine des régénérations du
+  kanban), `city` et `hq` (images que seul l'initié comprend). `ezk map` et `pnpm ezk:map`
+  continuent de marcher, avec un avertissement.
+- **Lanceur `bin/ezk.mjs`** derrière le champ `bin` : il trouve `tsx` dans les dépendances de
+  mega-city, donc `ezk` ne demande pas de `tsx` installé sur le poste.
 
 ## Critères d'acceptation
 
-- [ ] `pnpm ezk help` liste toutes les commandes de terminal (manifeste) et toutes les
-      commandes de chat (SKILL.md), une ligne par entrée, ouverture « En clair ».
-- [ ] Un test échoue quand un script de `bin/` exposé en script pnpm n'a pas d'entrée dans le
-      manifeste et n'est pas listé comme interne.
-- [ ] `ezk board regen` régénère les trois blocs du board ; le filet `check-planning-views`
-      reste vert ; `plan-view-board.test.ts` ne peut plus rougir par oubli d'un bloc.
-- [ ] `ezk law status <profil>` dit ce qui est déployé sur le poste (lien, copie, absent) par
-      rapport au catalogue.
-- [ ] Les anciens scripts pnpm continuent de marcher (alias) ; `bin/README.md`, `ezk-help` et
-      les SKILL qui citent des commandes sont mis à jour.
-- [ ] Depuis un autre dépôt lié (`pnpm link --global`), `ezk` marche avec `--root`, ou dit
-      clairement qu'il lui manque la racine.
-- [ ] Gate locale verte : `pnpm build`, `pnpm test`, `pnpm --filter mega-city test:scripts`,
-      `bash products/mega-city/bin/test-links-repo.sh`.
+- [x] `pnpm ezk help` ouvre sur « En clair », liste chaque commande du manifeste (une ligne) et
+      chaque skill de chat (une ligne, lue dans les `skills/*/SKILL.md` par la fonction qui
+      alimente déjà `ezk-help`). `pnpm ezk help <domaine|skill>` donne le détail. `pnpm ezk` est
+      un script créé par ce lot (à la racine et dans mega-city), comme le champ `bin`.
+      _Preuve_ : `ezk-cli.test.ts` (aide, une ligne par commande) et `ezk-launcher.test.ts`.
+- [x] Un test échoue quand un script de `bin/` exposé en script pnpm n'a ni entrée dans le
+      manifeste ni mention dans `internal` (avec raison). Il échoue aussi si une cible du
+      manifeste n'existe pas, ou si deux entrées ont le même domaine et verbe.
+      _Preuve_ : `ezk-manifest.test.ts` (le vrai manifeste) et `uncoveredScripts` dans
+      `ezk-cli.test.ts` (le cas du script oublié).
+- [x] `ezk board regen` lance les trois blocs du board (avancement, plan-delta, plan-view) dans
+      cet ordre et s'arrête au premier échec. Un test échoue si un script `regen-*` qui écrit
+      `board.html` manque à cette liste. `ezk board check` lance `check-planning-views`.
+      _Preuve_ : run réel, les trois étapes répondent « déjà à jour » et `git status` ne bouge
+      pas ; `ezk board check` rend « Vues de planning à jour » ; tests `runInOrder` et
+      `ezk-manifest.test.ts` (aucun écrivain de `board.html` oublié).
+- [x] `ezk law status <profil> [--target <dossier>]` dit, pour chaque skill et agent du profil,
+      s'il est en lien, en copie, absent ou en lien mort. Lecture seule, prouvé sur dossier jetable.
+      _Preuve_ : `deploy-state.test.ts` (dossier jetable, dossier laissé vide). Sur le poste, en
+      lecture seule : 26 éléments en lien, 1 absent (`ezk-scout`, déclaré dans `global`, jamais lié).
+- [x] Le tableau de bord s'appelle `ezk dashboard`. `ezk map` et `pnpm ezk:map` marchent encore
+      et préviennent. README racine, `docs/GETTING_STARTED.md`, `commands/ezk-help.md` et
+      `bin/README.md` disent le nouveau nom.
+      _Preuve_ : `pnpm ezk dashboard --list` ; `pnpm ezk:map --list` affiche l'avertissement puis
+      la liste ; `ezk-launcher.test.ts` (même script visé, avertissement seulement sur l'ancien).
+- [x] Hors du dépôt de la méthode, une commande fixe est refusée avec un message clair ; avec
+      `--root <dépôt>` elle passe ; `help` et `law` marchent partout. Le lanceur `bin/ezk.mjs`
+      est testé depuis un dossier jetable, sans `tsx` dans le PATH.
+      _Preuve_ : `ezk-launcher.test.ts` (PATH réduit à `/usr/bin:/bin`, dossier jetable).
+- [x] Gate locale verte : typecheck, `pnpm --dir products/mega-city test`, `test:scripts`,
+      `pnpm lint`, `check-links.sh`.
+      _Preuve_ : typecheck propre ; 997 tests verts ; `test:scripts` 28 suites vertes ; lint
+      propre ; 0 lien cassé (2 racines).
 
 ## Comment vérifier
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm ezk help                                        # les deux index, une ligne par commande
-pnpm ezk board regen && pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts
-pnpm ezk law status global                           # déployé vs catalogue
-pnpm --dir products/mega-city ezk:map                # l'ancien alias marche toujours
-pnpm --filter mega-city test                         # dont le test de couverture du manifeste
+pnpm ezk help                                   # les deux index, une ligne par commande
+pnpm ezk --dry-run board regen                  # montre les trois étapes sans rien écrire
+pnpm ezk law status global --target "$(mktemp -d)"   # dossier vide : tout « absent »
+pnpm ezk dashboard --list                       # le tableau de bord ; `pnpm ezk:map` aussi, avec avertissement
+pnpm --dir products/mega-city test              # dont la couverture du manifeste
 ```
+
+## Suite (hors de ce lot)
+
+- Faire appeler le routeur par les anciens scripts pnpm (`lawgiver`, `graph:compile`,
+  `plan-view:regen`…) : aujourd'hui ils restent tels quels et marchent. Migrer les citations de
+  commandes dans les `SKILL.md` vers `ezk …`.
+- Finir le renommage : fichier `bin/ezk-map.ts`, variable `EZK_MAP_PORT`, texte de marque de la
+  page d'accueil, références historiques, puis retrait de l'alias `ezk map`.
+- Racine réellement passée aux scripts : fiche [[20260826173221323]].
+- `pnpm link --global` sur le poste : à faire par le PO (le test couvre le lanceur sans toucher
+  au poste).
+- Un `ezk views regen` qui enchaîne backlog, portfolio, board et pilotage : fiche
+  [[20260830194601233]].
+- Option C (CLI complet publié) : fiche [[20260903134908019]], plus tard.
 
 ## Glossaire
 
@@ -120,21 +146,12 @@ pnpm --filter mega-city test                         # dont le test de couvertur
   d'abord, option C différée).
 - Nom : `ezk` plutôt que `vcz`. Il désigne la méthode, pas le dépôt ; il fait écho aux
   commandes de chat `/ezk-…` ; il reste vrai chez samplerz et muti.
-- Fiches voisines, distinctes : [[20260903134908019]] (CLI complet publié, option C, P2, plus tard) ;
-  [[20260826173221323]] (racine paramétrable : devient `--root`) ; [[20260816151112162]]
-  (lawgiver déploie aussi les slash-commands : un verbe `ezk law …` de plus) ; [[0120]]
-  (couverture CLI de `lawgiver capture`) ; [[0087]] (distribution en plugin : hors périmètre,
-  « ne pas publier ») ; [[20260903134909124]] (la loi n'est compilée nulle part chez l'agent : `ezk law status`
-  l'affichera, il ne le règle pas).
-- À trancher à l'étape Archi : format du manifeste (YAML ou table TypeScript) et détection de
-  la racine.
+- Fiches voisines, distinctes : [[20260903134908019]] (CLI complet publié, option C, P2) ;
+  [[20260826173221323]] (racine paramétrable) ; [[20260816151112162]] (lawgiver déploie aussi
+  les slash-commands) ; [[0120]] (couverture CLI de `lawgiver capture`) ; [[0087]] (distribution
+  en plugin : hors périmètre, « ne pas publier ») ; [[20260903134909124]] (la loi n'est compilée
+  nulle part chez l'agent : `ezk law status` la rend visible, cette fiche-là la règle).
+- Absorbe [`20260826173005368`](done/20260826173005368_renommer-ezk-map.md) (renommer `ezk:map`,
+  tri du 2026-09-30) : le nom est tranché ci-dessus ; l'affichage de l'état d'installation dans
+  le site reste séparable et dépend du registre de bind.
 - Priorité P1 provisoire : direction actée par le PO ; rang dans PLAN.md à confirmer.
-
-## ⤓ Absorbe (tri du 2026-09-30)
-
-Cette fiche reprend désormais le périmètre de :
-
-- [`20260826173005368`](done/20260826173005368_renommer-ezk-map.md) — Renommer ezk:map — c'est devenu le site de monitoring de la méthode, plus la carte des skills  
-  _Pourquoi_ : Le bon nom se décidera avec la commande unique `ezk`.
-
-Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.

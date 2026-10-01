@@ -1,10 +1,13 @@
 #!/usr/bin/env tsx
 /**
- * ezk-map — ouvre une carte de `diagrams/` dans le navigateur.
+ * ezk-map — le tableau de bord de la méthode : sert `diagrams/` (cartes, board, plan) au navigateur.
  *
- *   pnpm ezk:map                      # la carte de la méthode (défaut)
- *   pnpm ezk:map <slug>               # une autre carte de diagrams/
- *   pnpm ezk:map --list               # ce qui est disponible
+ *   pnpm ezk dashboard                # la carte de la méthode (défaut)
+ *   pnpm ezk dashboard <slug>         # une autre carte de diagrams/
+ *   pnpm ezk dashboard --list         # ce qui est disponible
+ *
+ * « dashboard » est le nom de commande depuis la fiche 20260903134906920 ; `ezk map` et
+ * `pnpm ezk:map` marchent encore (ils préviennent). Le fichier garde son nom pour l'instant.
  *
  * POURQUOI un serveur plutôt qu'un double-clic sur le fichier : ouvert en `file://`,
  * un navigateur applique des règles d'origine strictes — les polices distantes et une

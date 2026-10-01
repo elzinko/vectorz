@@ -1,0 +1,194 @@
+# Manifeste de la commande `ezk` (ADR-0046, option B : un routeur mince).
+#
+# Une entrée = une commande de terminal : `ezk <domaine> <verbe>`. Le routeur (bin/ezk.ts) lit
+# ce fichier, choisit le script et lui passe les arguments tels quels. Aucune logique ici,
+# aucune dans le routeur : les scripts gardent la leur.
+#
+#   domain / verb   le nom de la commande (verb absent = le domaine EST la commande)
+#   run             le script (chemin depuis products/mega-city) + ses arguments fixes
+#   steps           plusieurs scripts, lancés dans l'ordre ; arrêt au premier échec
+#   summary         UNE ligne, en clair : c'est ce que `ezk help` affiche
+#   root            fixed (défaut) = lit ou écrit les fichiers du dépôt de la méthode ;
+#                   none = marche de n'importe quel dossier
+#   deprecated      nouveau nom : l'entrée est un ancien nom, gardé et signalé
+#
+# Le test src/__tests__/ezk-manifest.test.ts vérifie que tout script de bin/ exposé en script
+# pnpm figure ici, ou dans `internal` plus bas avec sa raison.
+commands:
+  # --- law : la loi et l'équipe déployées par lawgiver ---
+  - domain: law
+    verb: bind
+    run: bin/lawgiver.ts bind
+    summary: Déploie un profil (loi, équipe) dans un projet.
+    root: none
+  - domain: law
+    verb: bind-global
+    run: bin/lawgiver.ts bind-global
+    summary: Déploie un profil (skills, agents) dans ~/.claude.
+    root: none
+  - domain: law
+    verb: capture
+    run: bin/lawgiver.ts capture
+    summary: Range une règle, un skill ou un agent au catalogue.
+  - domain: law
+    verb: status
+    run: bin/lawgiver.ts status
+    summary: Dit ce qui est déployé pour un profil (lien, copie, absent), sans rien écrire.
+    root: none
+
+  # --- board : le tableau kanban et ses blocs générés ---
+  - domain: board
+    verb: regen
+    steps:
+      - bin/regen-avancement.ts
+      - bin/regen-plan-delta.ts
+      - bin/regen-plan-view.ts
+    summary: Régénère les trois blocs du board (avancement, écart du plan, plan), dans l'ordre.
+  - domain: board
+    verb: check
+    run: bin/check-planning-views.ts
+    summary: Signale une fiche livrée encore présentée comme à faire dans le plan.
+  - domain: board
+    verb: show
+    run: bin/avancement.ts
+    summary: Affiche le board d'avancement en texte.
+
+  # --- backlog : les fiches ---
+  - domain: backlog
+    verb: check
+    run: bin/check-fiches.ts
+    summary: Vérifie que les fiches respectent le schéma.
+  - domain: backlog
+    verb: regen
+    run: bin/regen-backlog.sh
+    summary: Régénère l'index features/BACKLOG.md.
+  - domain: backlog
+    verb: portfolio
+    run: bin/portfolio.sh
+    summary: Régénère la vue portfolio par produit (PORTFOLIO.md).
+  - domain: backlog
+    verb: plan-head
+    run: bin/plan-head.ts
+    summary: Imprime la tête réelle du plan.
+  - domain: backlog
+    verb: plan-order
+    run: bin/plan-order.ts
+    summary: Imprime l'ordre des fiches du plan.
+  - domain: backlog
+    verb: aggregate
+    run: bin/backlog-aggregate.ts
+    summary: Regroupe des fiches (cœur d'« ezk-backlog aggregate »).
+
+  # --- graph : le graphe compilé de la méthode ---
+  - domain: graph
+    verb: compile
+    run: bin/graph-compile.ts
+    summary: Émet le graphe compilé de la méthode.
+  - domain: graph
+    verb: check
+    run: bin/ezk-graph.ts
+    summary: Compile le graphe et valide ses liens.
+  - domain: graph
+    verb: query
+    run: bin/graph-query.ts
+    summary: Interroge le graphe compilé.
+  - domain: graph
+    verb: composes
+    run: bin/regen-composes-graph.ts
+    summary: Régénère le graphe « composes » des skills (Mermaid).
+
+  # --- evidence, pr, review, ci : la livraison ---
+  - domain: evidence
+    run: bin/pr-evidence.sh
+    summary: Capture, rend et tranche les preuves avant/après d'une PR (capture, render, decide).
+  - domain: pr
+    verb: check-body
+    run: skills/ezk-pr/scripts/check-pr-body.sh
+    summary: Vérifie le corps d'une PR, lu sur l'entrée standard.
+  - domain: pr
+    verb: emit-local
+    run: bin/pr-emit-local.ts
+    summary: Écrit le corps d'une PR dans un fichier local, sans GitHub.
+  - domain: review
+    verb: emit
+    run: bin/review-emit.ts
+    summary: Écrit une revue de PR au format markdown.
+  - domain: ci
+    verb: conso
+    run: bin/ci-conso.ts
+    summary: Affiche la consommation GitHub Actions du mois.
+  - domain: sprint
+    verb: report
+    run: bin/sprint-report.ts
+    summary: Collecte le rapport de sprint (durée, jetons, indicateurs).
+
+  # --- docs : contrôles de liens et de numéros ---
+  - domain: docs
+    verb: check-links
+    run: bin/check-links.sh
+    summary: Vérifie que les liens markdown relatifs résolvent sur le disque.
+  - domain: docs
+    verb: check-adr-ids
+    run: bin/check-adr-ids.sh
+    summary: Vérifie qu'aucun nouveau numéro d'ADR n'est attribué deux fois.
+
+  # --- le tableau de bord de la méthode (ex « ezk:map ») ---
+  - domain: dashboard
+    run: bin/ezk-map.ts
+    summary: Ouvre le tableau de bord de la méthode dans le navigateur (board, plan, cartes).
+  - domain: map
+    run: bin/ezk-map.ts
+    summary: Ancien nom du tableau de bord.
+    deprecated: dashboard
+
+  # --- sessions, config, vues générées, supervision ---
+  - domain: sessions
+    run: bin/ezk-sessions.ts
+    summary: Cockpit des sessions Claude Code (qui travaille sur quoi).
+  - domain: config
+    run: bin/ezk-config.ts
+    summary: Lit et pilote les capacités du plugin github (.vectorz/config.yml).
+  - domain: views
+    verb: map-data
+    run: bin/regen-map-data.ts
+    summary: Régénère les données de la carte interactive.
+  - domain: views
+    verb: pilotage
+    run: bin/regen-pilotage.ts
+    summary: Régénère la page Pilotage (backlog et récits de sessions).
+  - domain: views
+    verb: runs
+    run: bin/regen-runs.ts
+    summary: Régénère la vue Historique des runs (récits de sessions).
+  - domain: supervision
+    verb: link
+    run: bin/supervision-link.ts
+    summary: Branche l'émetteur de supervision sur un projet Claude Code.
+  - domain: supervision
+    verb: doctor
+    run: bin/supervision-doctor.ts
+    summary: Liste, en lecture seule, les projets du registre sans ancrage de supervision.
+  - domain: supervision
+    verb: probe
+    run: bin/supervision-probe.ts
+    summary: Prouve vite qu'un projet est réellement supervisé.
+  - domain: supervision
+    verb: analyze
+    run: bin/supervision-analyze.ts
+    summary: Post-mortem d'un run à partir du journal et du transcript.
+  - domain: supervision
+    verb: abandon
+    run: bin/supervision-abandon.ts
+    summary: Abandonne un run orphelin identifié par son run_id.
+  - domain: supervision
+    verb: registry-add
+    run: bin/supervision-registry-add.ts
+    summary: Ajoute un projet au registre du siège.
+
+# Scripts de bin/ exposés en script pnpm, volontairement hors du routeur.
+# (Les test-*.sh sont des tests : jamais des commandes.)
+internal:
+  - script: bin/ezk.ts
+    reason: le routeur lui-même (script pnpm « ezk »)
+  - script: bin/ezk-help.ts
+    reason: bibliothèque de « ezk help » (liste des skills de chat) ; l'ancien « pnpm ezk:help » marche toujours
