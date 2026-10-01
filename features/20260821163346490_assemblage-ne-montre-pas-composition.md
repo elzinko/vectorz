@@ -62,6 +62,11 @@ décrit une suite d'étapes, c'est raté.
 
 - vue haut-de-carte : /diagrams/methode-mega-city/carte-interactive.html
 
+**Avant / après** (règle `development/pr-before-after-media`)
+| Vue | Avant | Après |
+|---|---|---|
+| haut-de-carte | ![haut-de-carte avant](https://github.com/elzinko/vectorz/blob/cb70da1bba9e85fb68983bad1876ff8e6e3710c1/docs/pr-evidence/20260821163346490/haut-de-carte-before.png?raw=true) | ![haut-de-carte après](https://github.com/elzinko/vectorz/blob/cb70da1bba9e85fb68983bad1876ff8e6e3710c1/docs/pr-evidence/20260821163346490/haut-de-carte-after.png?raw=true) |
+
 ## Suite (hors POC)
 
 - Les caps de l'hôte (`caps/`) : ce que le bind écrit chez Claude Code, Desktop, Cursor.
