@@ -144,6 +144,15 @@ l'utilité, c'est du jugement). C'est cette section qu'`ezk-archive` fige dans
 `docs/sessions/` à la clôture, et que consomme `ezk-chef extract` pour amorcer un
 brouillon de recette (PR #196).
 
+**Où écrire désormais : le journal des difficultés.** Écris l'entrée **directement** dans un
+fichier durable, hors `SPRINT.md`, avec
+`bash products/mega-city/bin/journal-add.sh <id-fiche> "<titre>" "<ce qui a coincé>" "<comment réglé>" ["<pourquoi>"]`.
+Une entrée par galère, **taguée par fiche**. Le fichier est propre à la session (le nom de la
+branche) : deux sprints en parallèle ne se marchent pas dessus. Le journal est indépendant du
+labo : `ezk-chef extract` le lit à la demande. Format et règles : `docs/journal/README.md`. La
+section de `SPRINT.md` ci-dessus reste lue (rétro-compatibilité), mais n'est plus la voie
+recommandée.
+
 ## La boucle de sprint — par feature
 
 Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
