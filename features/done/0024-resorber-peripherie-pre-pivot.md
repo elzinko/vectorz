@@ -7,8 +7,8 @@ product: vectorz
 version:
 labels: [dette]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#296"
 created: 2026-07-06
 ---
 

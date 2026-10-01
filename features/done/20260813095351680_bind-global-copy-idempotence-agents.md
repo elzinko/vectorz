@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 labels: [installation]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#304"
 created: 2026-08-13
 ---
 
@@ -99,7 +99,7 @@ pnpm --dir products/mega-city exec tsx bin/lawgiver.ts bind-global global --targ
 
 Cette fiche a repris le périmètre de :
 
-- [`20260813095351681`](done/20260813095351681_cap-projet-claude-code-skills-dossier-assets.md) : cap projet
+- [`20260813095351681`](20260813095351681_cap-projet-claude-code-skills-dossier-assets.md) : cap projet
   en forme dossier pour porter les annexes. Ses critères sont intégrés ci-dessus (projet, coexistence).
-- [`20260813122619707`](done/20260813122619707_robustesse-groupage-skill-dir-materialisation.md) : cas
+- [`20260813122619707`](20260813122619707_robustesse-groupage-skill-dir-materialisation.md) : cas
   limites du regroupement par `SKILL.md`. Ses critères sont intégrés ci-dessus (annexe `SKILL.md`, imbrication).

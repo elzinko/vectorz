@@ -66,7 +66,7 @@ Deux leviers distincts :
 ## Notes / anti-doublon
 
 - **S'appuie sur** [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md)
-  (schéma d'étapes configurables = le mécanisme) et [0143](0143-aligner-nommage-modes-tokens.md)
+  (schéma d'étapes configurables = le mécanisme) et [0143](done/0143-aligner-nommage-modes-tokens.md)
   (nommage des modes) — cette fiche est le **besoin mesuré**, pas le mécanisme.
 - Voisins « coût disproportionné pour un petit geste » :
   [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) et
