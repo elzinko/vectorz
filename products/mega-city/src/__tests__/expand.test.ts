@@ -22,6 +22,7 @@ describe('expandProfile(mobile)', () => {
       'conventional-commits/format',
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
+      'documentation-guidelines/next-step-affordance',
     ]);
   });
 
@@ -49,6 +50,7 @@ describe('expandProfile(mobile)', () => {
       'conventional-commits/format',
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
+      'documentation-guidelines/next-step-affordance',
     ]);
     expect(resolved.agents.map((a) => a.id)).toEqual(['ezk-reviewer']);
   });
