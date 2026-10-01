@@ -7,8 +7,8 @@ product: mega-city
 version: V0.4
 milestone: rationalisation
 labels: [backlog]
-status: idea
-pr:
+status: shipped
+pr: "#307"
 created: 2026-08-15
 ---
 
@@ -40,9 +40,9 @@ On compose l'existant : [ADR-0001] le script range, le LLM juge ; [ADR-0013] pas
 2. **Forme, sans mini-langage.** Une liste `slots`. Chaque slot a un `id`, un `heading` (le titre de section attendu dans la fiche), une `ask` (la question à trancher) et, au choix, des `items` (la liste à balayer, par exemple les surfaces). Un bloc `health.min-ready` optionnel porte le seuil de lot.
 3. **Qui fait quoi.** Le script `ezk dor check <id>` vérifie le **mécanique** : la section existe, elle n'est pas vide, elle mentionne chaque item. Le LLM de `groom` et `ready` juge le **fond** : la réponse tient-elle ? Le script ne note jamais la qualité.
 4. **Opt-in franc.** Un slot déclaré **bloque** `ready` s'il est vide. Un slot non déclaré est absent : zéro bruit. Le socle 3+1 reste inchangé dans le skill.
-5. **Santé du lot** (reprend [`0100`](done/0100-sprint-intake-sante-backlog-metriques.md)). `ezk dor health` compte les fiches prêtes et pas prêtes (statut `idea`, hors épics). Avec `health.min-ready`, sous le seuil : code 1 et « groomez d'abord ». `next --ready-only` rappelle ce seuil.
-6. **Slot réel : « Surfaces impactées »** (reprend [`20260812104022231`](done/20260812104022231_dor-balayage-surfaces-produit.md)). Un balayage à 30 secondes : pour chaque surface listée, oui, non, ou comment. Ce n'est pas une étude d'impact, sinon il sera sauté.
-7. **Décision d'archi.** Un amendement court à [ADR-0016](../products/mega-city/docs/adr/0016-rituels-scrum-cycle-de-vie-backlog.md) (le gate DoR est son objet), pas un ADR neuf. La liste des statuts reste dans le schéma typé : seuls les slots de DoR deviennent propres au projet.
+5. **Santé du lot** (reprend [`0100`](0100-sprint-intake-sante-backlog-metriques.md)). `ezk dor health` compte les fiches prêtes et pas prêtes (statut `idea`, hors épics). Avec `health.min-ready`, sous le seuil : code 1 et « groomez d'abord ». `next --ready-only` rappelle ce seuil.
+6. **Slot réel : « Surfaces impactées »** (reprend [`20260812104022231`](20260812104022231_dor-balayage-surfaces-produit.md)). Un balayage à 30 secondes : pour chaque surface listée, oui, non, ou comment. Ce n'est pas une étude d'impact, sinon il sera sauté.
+7. **Décision d'archi.** Un amendement court à [ADR-0016](../../products/mega-city/docs/adr/0016-rituels-scrum-cycle-de-vie-backlog.md) (le gate DoR est son objet), pas un ADR neuf. La liste des statuts reste dans le schéma typé : seuls les slots de DoR deviennent propres au projet.
 
 ## Critères d'acceptation
 
@@ -90,5 +90,5 @@ Déjà livré (absorbé, avec preuve) :
 
 Cette fiche reprend le périmètre de :
 
-- [`0100`](done/0100-sprint-intake-sante-backlog-metriques.md) — santé du backlog à l'ouverture d'un sprint. Intégré : le seuil de lot et le décompte prêtes / pas prêtes. Le volet « réconcilier » était déjà livré. L'émission vers la supervision reste parkée.
-- [`20260812104022231`](done/20260812104022231_dor-balayage-surfaces-produit.md) — balayage des surfaces impactées. Intégré : premier slot réel.
+- [`0100`](0100-sprint-intake-sante-backlog-metriques.md) — santé du backlog à l'ouverture d'un sprint. Intégré : le seuil de lot et le décompte prêtes / pas prêtes. Le volet « réconcilier » était déjà livré. L'émission vers la supervision reste parkée.
+- [`20260812104022231`](20260812104022231_dor-balayage-surfaces-produit.md) — balayage des surfaces impactées. Intégré : premier slot réel.
