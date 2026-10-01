@@ -23,6 +23,7 @@ describe('expandProfile(mobile)', () => {
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
       'documentation-guidelines/next-step-affordance',
+      'documentation-guidelines/readable-deliverable-trio',
     ]);
   });
 
@@ -51,6 +52,7 @@ describe('expandProfile(mobile)', () => {
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
       'documentation-guidelines/next-step-affordance',
+      'documentation-guidelines/readable-deliverable-trio',
     ]);
     expect(resolved.agents.map((a) => a.id)).toEqual(['ezk-reviewer']);
   });

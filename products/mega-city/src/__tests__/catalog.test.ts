@@ -100,6 +100,7 @@ describe('loadCatalog (données réelles du repo)', () => {
       'development/pr-before-after-media',
       'documentation-guidelines/human-facing-lisibility',
       'documentation-guidelines/next-step-affordance',
+      'documentation-guidelines/readable-deliverable-trio',
     ]);
     expect(catalog.bundles.get('mobile')?.extends).toEqual(['base']);
     expect(catalog.profiles.get('mobile')?.bundles).toEqual(['mobile']);
