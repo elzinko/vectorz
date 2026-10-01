@@ -5,7 +5,7 @@
  * qu'une étiquette LOCALE (aucune poussée, aucune fiche touchée).
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -104,6 +104,33 @@ describe('backlog:version — le bin', () => {
     const again = run('close', 'V0.2'); // idempotent : on ne reclôt pas
     expect(again.code).toBe(1);
     expect(again.out).toContain('déjà livrée');
+  });
+
+  it('close refuse (code 1) quand features/ porte des changements non commités : l’état validé n’est pas celui de HEAD', () => {
+    appendFileSync(join(root, 'features/20260101000000003_c.md'), 'ajout non commité\n');
+    for (const args of [['close', 'V0.2'], ['close', 'V0.2', '--tag']]) {
+      const r = run(...args);
+      expect(r.code).toBe(1);
+      expect(r.out).toContain('non commités');
+      expect(git('tag', '-l')).toBe('');
+    }
+  });
+
+  it('l’étiquette vise HEAD, le commit dont les fiches ont été lues — et la proposition avertit si origin/main est ailleurs', () => {
+    const seed = git('rev-parse', 'HEAD').trim();
+    put('README.md', 'un autre commit\n');
+    git('add', 'README.md');
+    git('commit', '--quiet', '-m', 'chore: avance');
+    const head = git('rev-parse', 'HEAD').trim();
+    git('update-ref', 'refs/remotes/origin/main', seed); // origin/main est en retard sur HEAD
+
+    const proposal = run('close', 'V0.2');
+    expect(proposal.code).toBe(0);
+    expect(proposal.out).toContain(`git tag -a v0.2 -m "Version V0.2" ${head}`);
+    expect(proposal.out).toContain("n'est pas la pointe de origin/main");
+
+    expect(run('close', 'V0.2', '--tag').code).toBe(0);
+    expect(git('rev-list', '-n', '1', 'v0.2').trim()).toBe(head); // jamais origin/main
   });
 
   it('refuse les usages invalides (code 2) sans rien faire', () => {

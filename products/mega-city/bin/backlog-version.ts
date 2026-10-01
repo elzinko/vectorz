@@ -93,17 +93,13 @@ function localTags(root: string): Set<string> {
   }
 }
 
-/** Le commit à étiqueter : `origin/main` si on le connaît, sinon `HEAD`. SHA complet, jamais une branche. */
-function targetSha(root: string): { sha: string; ref: string } {
-  for (const ref of ['origin/main', 'HEAD']) {
-    try {
-      const sha = execFileSync('git', ['rev-parse', ref], { cwd: root, encoding: 'utf8', stdio: 'pipe' });
-      return { sha: sha.trim(), ref };
-    } catch {
-      /* ref inconnue : on essaie la suivante */
-    }
+/** Sortie d'une commande git dans `root`, ou `undefined` si elle échoue (hors dépôt, référence inconnue). */
+function gitOut(root: string, args: string[]): string | undefined {
+  try {
+    return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: 'pipe' }).trim();
+  } catch {
+    return undefined;
   }
-  return { sha: 'HEAD', ref: 'HEAD' };
 }
 
 function say(lines: string[]): void {
@@ -146,13 +142,30 @@ function main(): void {
     say(renderRefusal(version, result.reasons));
     process.exit(1);
   }
-  const { sha, ref } = targetSha(args.root);
+
+  // L'étiquette vise le commit dont les fiches ont été LUES : HEAD, jamais une autre référence (Codex #286).
+  // Si `features/` porte des changements non commités, l'état validé n'est pas celui de HEAD : on refuse.
+  const head = gitOut(args.root, ['rev-parse', 'HEAD']);
+  if (head === undefined) {
+    say(renderRefusal(version, ['pas de dépôt git (ou aucun commit) ici : impossible de proposer une étiquette']));
+    process.exit(1);
+  }
+  const dirty = gitOut(args.root, ['status', '--porcelain', '--', 'features']);
+  if (dirty) {
+    say([
+      `En clair : ${version} est complète, mais les fiches lues ne sont pas toutes commitées. Rien n'a été écrit.`,
+      '',
+      "Des changements non commités dans features/ : l'état validé n'est pas celui du commit HEAD. Committe (ou annule) d'abord.",
+      ...dirty.split('\n').slice(0, 5).map((line) => `  ${line}`),
+    ]);
+    process.exit(1);
+  }
   if (!args.tag) {
-    say(renderProposal(version, result.tag, sha, ref));
+    say(renderProposal(version, result.tag, head, gitOut(args.root, ['rev-parse', 'origin/main'])));
     return;
   }
   try {
-    execFileSync('git', ['tag', '-a', result.tag, '-m', `Version ${version}`, sha], {
+    execFileSync('git', ['tag', '-a', result.tag, '-m', `Version ${version}`, head], {
       cwd: args.root,
       stdio: 'pipe',
     });
@@ -162,7 +175,7 @@ function main(): void {
     process.exit(2);
   }
   say([
-    `En clair : ${version} est livrée. L'étiquette ${result.tag} est créée en local sur ${ref} (${sha.slice(0, 9)}).`,
+    `En clair : ${version} est livrée. L'étiquette ${result.tag} est créée en local sur HEAD (${head.slice(0, 9)}).`,
     `Pour la publier, lance toi-même : git push origin ${result.tag}`,
     `Pour la retirer : git tag -d ${result.tag}`,
   ]);

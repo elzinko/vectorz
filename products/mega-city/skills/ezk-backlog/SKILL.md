@@ -534,14 +534,15 @@ pnpm --dir products/mega-city backlog:version close <X> [--tag]
   (une section du plan cite deux versions). **Alertes** : `bloquee`, `taille` (plus de 15 fiches à
   faire, calibrage provisoire), `plan-absente` (fiche de la version absente de sa section du plan).
   Il dit aussi ce qu'il **ne contrôle pas** : le séquencement (`depends:` n'est pas lu).
-- **`close <X>`** — refuse (code 1) tant qu'une fiche reste à livrer ou qu'une erreur de lot subsiste.
-  Sinon il déclare la version complète et **propose** `git tag -a vX.Y` puis `git push origin vX.Y`,
-  **sans les exécuter**. `--tag` crée l'étiquette **en local** seulement (réversible : `git tag -d`) ;
-  le `push` reste un geste du PO.
+- **`close <X>`** — refuse (code 1) tant qu'une fiche reste à livrer, qu'une erreur de lot subsiste ou
+  que `features/` porte des changements non commités. Sinon il déclare la version complète et
+  **propose** `git tag -a vX.Y <HEAD>` puis `git push origin vX.Y`, **sans les exécuter**. L'étiquette
+  vise `HEAD`, le commit dont les fiches ont été lues ; la proposition avertit si ce n'est pas la pointe
+  de `origin/main`. `--tag` crée l'étiquette **en local** seulement (réversible : `git tag -d`) ; le
+  `push` reste un geste du PO.
 
 Restitution : « En clair » d'abord (où en est la version, ce qui bloque), puis le tableau ou les
-constats. Lance-le depuis un `main` à jour : les fiches lues sont celles du dossier courant.
-`PLAN.md` n'est jamais modifié par cette sous-commande.
+constats. Lance-le depuis un `main` à jour. `PLAN.md` n'est jamais modifié par cette sous-commande.
 
 ### `plan [set …]` — la séquence décidée, persistée entre sessions
 

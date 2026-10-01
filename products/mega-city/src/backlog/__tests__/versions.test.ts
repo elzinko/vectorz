@@ -263,6 +263,21 @@ describe('checkVersions — l’accord avec PLAN.md (fail-loud sur la dérive)',
     expect(planFindings.filter((f) => f.code === 'plan-absente').every((f) => f.severity === 'warning')).toBe(true);
   });
 
+  it('un constat de plan concerne TOUTES les versions impliquées : check et close de chacune le voient', () => {
+    // plan-ambigue : « V0.3 → V0.4 » concerne les deux versions
+    for (const version of ['V0.3', 'V0.4']) {
+      expect(checkVersions(fiches, noTags, { planMd: PLAN, version }).some((f) => f.code === 'plan-ambigue')).toBe(true);
+    }
+    // plan-ecart : une fiche V0.4 rangée dans la section V0.3 concerne V0.3 (la section) ET V0.4 (la fiche)
+    const ecartV04 = checkVersions(fiches, noTags, { planMd: PLAN, version: 'V0.4' }).filter((f) => f.code === 'plan-ecart');
+    expect(ecartV04.map((f) => f.ficheId)).toEqual([I(2)]);
+    // close V0.4 (lot complet par ailleurs) refuse tant que le plan est ambigu ou contradictoire
+    const complet = [shipped(10, 'V0.4'), shipped(11, 'V0.4')];
+    const refus = closeVersion(complet, noTags, 'V0.4', { planMd: PLAN });
+    expect(refus.ok).toBe(false);
+    if (!refus.ok) expect(refus.reasons.join('\n')).toContain('plan-ambigue');
+  });
+
   it('ignore les entrées barrées, les sections sans version et les versions sans section', () => {
     const ids = planFindings.map((f) => f.ficheId);
     expect(ids).not.toContain(I(4)); // barrée
@@ -345,16 +360,18 @@ describe('rendu texte — « En clair » d’abord', () => {
   });
 
   it('la proposition nomme les deux commandes git et affirme que rien n’est exécuté', () => {
-    const text = renderProposal('V0.2', 'v0.2', 'abc1234').join('\n');
+    const text = renderProposal('V0.2', 'v0.2', 'abc1234', 'abc1234').join('\n');
     expect(text).toContain('git tag -a v0.2 -m "Version V0.2" abc1234');
     expect(text).toContain('git push origin v0.2');
     expect(text).toContain("rien n'est exécuté");
-    expect(text).toContain('pointe de origin/main');
+    expect(text).toContain('HEAD, qui est la pointe de origin/main');
   });
 
-  it('la proposition dit la référence réellement visée quand origin/main est inconnu (repli sur HEAD)', () => {
-    const text = renderProposal('V0.2', 'v0.2', 'abc1234', 'HEAD').join('\n');
-    expect(text).toContain('pointe de HEAD');
-    expect(text).not.toContain('origin/main');
+  it('la proposition avertit quand HEAD n’est pas la pointe de origin/main, ou quand elle est inconnue', () => {
+    const apart = renderProposal('V0.2', 'v0.2', 'abc1234567890', 'def4567890123').join('\n');
+    expect(apart).toContain("Attention : HEAD (abc123456) n'est pas la pointe de origin/main (def456789)");
+    expect(apart).toContain('git tag -a v0.2 -m "Version V0.2" abc1234567890'); // toujours HEAD
+    const unknown = renderProposal('V0.2', 'v0.2', 'abc1234').join('\n');
+    expect(unknown).toContain('Pas de origin/main connu');
   });
 });

@@ -157,6 +157,12 @@ export interface VersionFinding {
   code: FindingCode;
   /** La version concernée (la valeur brute, pour `format`). */
   version: string;
+  /**
+   * Toutes les versions que le constat concerne, quand il en implique plusieurs : un écart de plan
+   * touche la version de la SECTION et celle de la FICHE ; une section ambiguë, chaque version
+   * citée. Sans cela, `check V0.4` ou `close V0.4` ne verrait pas une erreur qui la concerne.
+   */
+  versions?: readonly string[];
   ficheId?: string;
   /** Une phrase en clair, qui se suffit. */
   message: string;
@@ -196,6 +202,7 @@ function planFindings(
         severity: 'error',
         code: 'plan-ambigue',
         version: tokens[0],
+        versions: tokens,
         message: `la section « ${section.label} » de PLAN.md cite plusieurs versions (${tokens.join(', ')}). Son lot est ambigu.`,
       });
       continue;
@@ -214,6 +221,7 @@ function planFindings(
             severity: 'error',
             code: 'plan-ecart',
             version,
+            versions: fiche.version === '' ? [version] : [version, fiche.version],
             ficheId: id,
             message: `PLAN.md (section « ${section.label} ») la range dans ${version}, mais la fiche dit version: ${fiche.version === '' ? '(vide)' : fiche.version}.`,
           });
@@ -305,7 +313,11 @@ export function checkVersions(
   }
   if (opts.planMd !== undefined) found.push(...planFindings(fiches, report, opts.planMd));
 
-  const scoped = opts.version === undefined ? found : found.filter((f) => f.version === opts.version);
+  const wanted = opts.version;
+  const scoped =
+    wanted === undefined
+      ? found
+      : found.filter((f) => f.version === wanted || (f.versions?.includes(wanted) ?? false));
   return scoped.sort(compareFindings);
 }
 
