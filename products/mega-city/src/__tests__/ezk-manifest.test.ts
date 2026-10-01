@@ -56,12 +56,21 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it('les commandes qui lisent un projet désigné sont exactement celles-ci (fiche 20260826173221323)', () => {
+  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323 et 20260910152227744)', () => {
     const labels = manifest.commands
       .filter((e) => e.project)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
       .sort();
-    expect(labels).toEqual(['backlog check', 'backlog plan-head', 'board show', 'dashboard', 'map']);
+    expect(labels).toEqual([
+      'backlog check',
+      'backlog plan-head',
+      'board show',
+      'dashboard',
+      'map',
+      'rules apply',
+      'rules check',
+      'rules show',
+    ]);
   });
 
   it('toute commande « project » lance un script qui lit la racine désignée (jamais une promesse en l’air)', () => {
