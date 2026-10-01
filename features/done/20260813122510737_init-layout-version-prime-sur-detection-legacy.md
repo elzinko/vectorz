@@ -7,8 +7,8 @@ product: mega-city
 version:
 labels: [dette]
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#295"
 created: 2026-08-13
 ---
 
@@ -30,7 +30,7 @@ créer/toucher le backlog et **sort en `exit 2`**. Le projet reste bloqué aprè
 3. → « init: layout v1 détecté … STATUS=behind … exit 2 », alors que le projet est en v2.
 
 **Cause racine.**
-[`skills/ezk-backlog/init.sh:44`](../products/mega-city/skills/ezk-backlog/init.sh#L44) fait
+[`skills/ezk-backlog/init.sh:44`](../../products/mega-city/skills/ezk-backlog/init.sh#L44) fait
 un `grep -q 'Index auto-généré'` **inconditionnel** pour décider « legacy v1 » :
 
 ```bash
@@ -42,7 +42,7 @@ fi
 ```
 
 Il **ne lit pas d'abord** le marqueur `layout_version:` du front-matter. À l'inverse,
-[`check-layout-version.sh:44-59`](../products/mega-city/skills/ezk-backlog/scripts/check-layout-version.sh#L44)
+[`check-layout-version.sh:44-59`](../../products/mega-city/skills/ezk-backlog/scripts/check-layout-version.sh#L44)
 lit `layout_version` **en premier** (via `awk`) et **ne retombe** sur le grep « Index
 auto-généré » **que si** aucun marqueur n'est présent (`INSTALLED -eq 0`). `init.sh` invoque
 pourtant déjà `$CHECK` (ligne 45) — mais pour **afficher** sa sortie, pas pour **gater** la
