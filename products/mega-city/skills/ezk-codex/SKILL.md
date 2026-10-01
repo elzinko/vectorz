@@ -122,7 +122,8 @@ C'est le **jugement LLM**. Pour chaque finding :
   pose un 👎, puis **clos le fil tout de suite** avec la raison. Aucun commit à attendre.
 
 Le **même geste clôt tout fil traité**, corrigé comme décliné : **répondre dans le fil,
-puis le marquer `resolved`**. Les deux appels vont ensemble.
+puis le marquer `resolved`**. Les deux appels vont ensemble, et la résolution ne part que si la
+réponse a réussi.
 
 ```bash
 # COMMENT_ID et THREAD_ID viennent de l'étape 1.
@@ -130,9 +131,11 @@ puis le marquer `resolved`**. Les deux appels vont ensemble.
 gh api --method POST "repos/$REPO/pulls/comments/$COMMENT_ID/reactions" \
   -H "Accept: application/vnd.github+json" -f content="-1"
 # Clore un fil traité (corrigé OU décliné) = 1) répondre en fil, 2) le résoudre.
+# La résolution ne part QUE si la réponse a réussi (&&) : un fil résolu sans réponse ne serait
+# plus repris par l'intake.
 # REPLY = "Décliné : <raison courte et factuelle>."  ou  "Corrigé en `<sha>` : <ce qui a changé>."
-gh api "repos/$REPO/pulls/$PR/comments/$COMMENT_ID/replies" -f body="$REPLY"
-gh api graphql -f threadId="$THREAD_ID" -f query='
+gh api "repos/$REPO/pulls/$PR/comments/$COMMENT_ID/replies" -f body="$REPLY" \
+  && gh api graphql -f threadId="$THREAD_ID" -f query='
 mutation($threadId:ID!){
   resolveReviewThread(input:{threadId:$threadId}){ thread{ id isResolved } }
 }' --jq '.data.resolveReviewThread.thread.isResolved'   # doit afficher true
