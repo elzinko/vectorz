@@ -108,6 +108,29 @@
   .badge.prio-P2 { color: var(--p2); border-color: var(--p2); }
   .badge.prio-P3 { color: var(--p3); border-color: var(--p3); }
   .vide { color: var(--muted); padding: 40px; text-align: center; border: 1px dashed var(--border); border-radius: 8px; }
+
+  /* --- Pouces 👍/👎 (fiche 20260826072532622) : le verdict vit dans features/reviews/verdicts/ --- */
+  .cadre { display: flex; flex-direction: column; }
+  .cadre > a.carte { flex: 1; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .revue {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    padding: 6px 10px; background: var(--bg); font-size: 0.78rem; color: var(--muted);
+    border: 1px solid var(--border); border-top: none;
+    border-left: 4px solid var(--prio-color, var(--p3)); border-radius: 0 0 8px 8px;
+  }
+  .revue button {
+    font: inherit; color: var(--text); background: var(--panel); cursor: pointer;
+    border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; line-height: 1.3;
+  }
+  .revue button:hover { border-color: #4a5262; }
+  .revue button:focus-visible { outline: 2px solid var(--p2); outline-offset: 2px; }
+  .revue button[aria-pressed="true"].up { border-color: var(--shipped); color: var(--shipped); font-weight: 600; }
+  .revue button[aria-pressed="true"].down { border-color: var(--blocked); color: var(--blocked); font-weight: 600; }
+  .revue .etat { margin-left: auto; }
+  .revue .etat.up { color: var(--shipped); }
+  .revue .etat.down { color: var(--blocked); }
+  .revue-msg { margin: 0 0 12px; min-height: 1.2em; font-size: 0.85rem; color: var(--blocked); }
+  .revue-msg.info { color: var(--muted); }
   section.manques {
     margin-top: 32px;
     padding: 16px 18px;
@@ -206,7 +229,9 @@
 <p class="en-clair">
   En clair : ce board montre où en sont les fiches actives du backlog, compilées
   depuis leur front-matter — rien n'est saisi à la main ici. Priorité d'abord,
-  statut ensuite. Cliquer une carte ouvre sa fiche source.
+  statut ensuite. Cliquer une carte ouvre sa fiche source. Les pouces 👍/👎 enregistrent ton
+  avis dans <code>features/reviews/verdicts/</code> : un fichier par fiche, jamais dans la fiche
+  elle-même. Il reste à le committer, comme le reste.
 </p>
 
 <div class="filtres">
@@ -225,9 +250,18 @@
   <label>Label
     <select id="f-label"><option value="">Tous</option></select>
   </label>
+  <label>Revue
+    <select id="f-revue">
+      <option value="">Toutes</option>
+      <option value="up">Validée 👍</option>
+      <option value="down">Rejetée 👎</option>
+      <option value="none">Non revue</option>
+    </select>
+  </label>
 </div>
 
 <p class="compteur" id="compteur"></p>
+<p class="revue-msg" id="revue-msg" role="status" aria-live="polite"></p>
 <div class="grille" id="grille"></div>
 </div><!-- /vue-board -->
 
@@ -274,6 +308,14 @@
   var selMilestone = document.getElementById('f-milestone');
   var selProduit = document.getElementById('f-produit');
   var selLabel = document.getElementById('f-label');
+  var selRevue = document.getElementById('f-revue');
+  var revueMsg = document.getElementById('revue-msg');
+
+  // Pouces 👍/👎 (fiche 20260826072532622) : posés par le serveur local dans
+  // features/reviews/verdicts/, relus à chaque chargement de board.data.js.
+  var verdicts = (window.EZK_VERDICTS && window.EZK_VERDICTS.verdicts) || {};
+  var illisibles = (window.EZK_VERDICTS && window.EZK_VERDICTS.illisibles) || [];
+  var DOSSIER_VERDICTS = 'features/reviews/verdicts/';
 
   fillSelect(selStatut, (data.filtres && data.filtres.statuts) || uniq(actives.map(function (f) { return f.status; })));
   fillSelect(selType, uniq(actives.map(function (f) { return f.type; })));
@@ -295,7 +337,68 @@
   // Valeur mise en NOM DE CLASSE CSS → slug (jamais de texte libre brut en classe).
   function slug(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9_-]/g, '-'); }
 
+  function etatRevue(id) { var v = verdicts[id]; return v ? v.verdict : 'none'; }
+
+  // Fichier illisible (JSON cassé, conflit git non résolu) : signalé en permanence, jamais ignoré.
+  var banniere = illisibles.length
+    ? '⚠ ' + illisibles.length + ' fichier(s) de verdict illisible(s) : ' + illisibles.join(', ') + '. Corrige-les ou supprime-les.'
+    : '';
+  function dire(texte, info) {
+    revueMsg.textContent = texte || banniere;
+    revueMsg.className = 'revue-msg' + (texte && info ? ' info' : '');
+  }
+
+  // Pose, remplace ou retire (re-clic sur le même pouce) le verdict d'une fiche.
+  function poserVerdict(f, voulu) {
+    var suivant = etatRevue(f.id) === voulu ? 'none' : voulu;
+    dire('Enregistrement…', true);
+    fetch('/api/verdict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: f.id, verdict: suivant })
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok && j.ok === true, j: j }; });
+    }).then(function (res) {
+      if (!res.ok) { var refus = new Error(res.j && res.j.error ? res.j.error : 'refusé'); refus.refus = true; throw refus; }
+      if (res.j.verdict === 'none') delete verdicts[f.id]; else verdicts[f.id] = { verdict: res.j.verdict, date: res.j.date };
+      dire('');
+      render();
+      // render() reconstruit les cartes : on rend le focus au pouce cliqué (clavier).
+      var boutons = grille.querySelectorAll('button[data-v]');
+      for (var i = 0; i < boutons.length; i++) {
+        if (boutons[i].dataset.id === f.id && boutons[i].dataset.v === voulu) { boutons[i].focus(); break; }
+      }
+    }).catch(function (e) {
+      dire(e && e.refus
+        ? 'Verdict refusé : ' + e.message + '.'
+        : 'Verdict non enregistré. Ouvre cette page avec « pnpm ezk dashboard » : sans lui, rien ne peut écrire dans ' + DOSSIER_VERDICTS + '.');
+    });
+  }
+
+  function barreRevue(f) {
+    var etat = etatRevue(f.id);
+    var v = verdicts[f.id];
+    var barre = el('div', 'revue');
+    barre.setAttribute('role', 'group');
+    barre.setAttribute('aria-label', 'Revue de la fiche ' + f.id);
+    [['up', '👍 Valider', 'Valider cette fiche'], ['down', '👎 Rejeter', 'Rejeter cette fiche']].forEach(function (b) {
+      var btn = el('button', b[0], b[1]);
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', etat === b[0] ? 'true' : 'false');
+      btn.title = etat === b[0] ? 'Retirer le verdict' : b[2];
+      btn.dataset.id = f.id;
+      btn.dataset.v = b[0];
+      btn.addEventListener('click', function () { poserVerdict(f, b[0]); });
+      barre.appendChild(btn);
+    });
+    barre.appendChild(el('span', 'etat ' + (v ? slug(v.verdict) : ''),
+      v ? (v.verdict === 'up' ? 'validée le ' : 'rejetée le ') + v.date : 'non revue'));
+    return barre;
+  }
+
   function carteHtml(f) {
+    var cadre = el('div', 'cadre');
+    cadre.style.setProperty('--prio-color', 'var(--p' + slug(f.priority ? f.priority.replace('P', '') : '3') + ')');
     var a = document.createElement('a');
     a.className = 'carte';
     a.href = '../../' + f.file;
@@ -314,7 +417,9 @@
     if (f.epic) badges.appendChild(el('span', 'badge', '⤷ ' + f.epic));
     (f.labels || []).forEach(function (l) { badges.appendChild(el('span', 'badge tag', '#' + l)); });
     a.appendChild(badges);
-    return a;
+    cadre.appendChild(a);
+    cadre.appendChild(barreRevue(f));
+    return cadre;
   }
 
   function render() {
@@ -323,13 +428,15 @@
     var fMilestone = selMilestone.value;
     var fProduit = selProduit.value;
     var fLabel = selLabel.value;
+    var fRevue = selRevue.value;
 
     var filtered = actives.filter(function (f) {
       return (!fStatut || f.status === fStatut) &&
         (!fType || f.type === fType) &&
         (!fMilestone || f.milestone === fMilestone) &&
         (!fProduit || f.product === fProduit) &&
-        (!fLabel || (f.labels || []).indexOf(fLabel) !== -1);
+        (!fLabel || (f.labels || []).indexOf(fLabel) !== -1) &&
+        (!fRevue || etatRevue(f.id) === fRevue);
     });
 
     // Tri d'affichage priorité puis statut (présentation seule, la donnée compilée
@@ -353,6 +460,10 @@
     }
     compteur.textContent = filtered.length + ' fiche(s) sur ' + actives.length + ' active(s) — ' +
       (data.tirables || 0) + ' tirable(s), ' + ((data.milestones || []).length) + ' milestone(s).';
+    var nUp = 0, nDown = 0;
+    actives.forEach(function (f) { var e = etatRevue(f.id); if (e === 'up') nUp++; else if (e === 'down') nDown++; });
+    compteur.textContent += ' Revue : ' + nUp + ' validée(s), ' + nDown + ' rejetée(s), ' +
+      (actives.length - nUp - nDown) + ' non revue(s).';
   }
 
   // --- Détail d'une fiche au clic (fiche 20260826225817193) ---
@@ -461,9 +572,10 @@
     });
   }
 
-  [selStatut, selType, selMilestone, selProduit, selLabel].forEach(function (s) {
+  [selStatut, selType, selMilestone, selProduit, selLabel, selRevue].forEach(function (s) {
     s.addEventListener('change', render);
   });
+  dire('');
   render();
 })();
 </script>
