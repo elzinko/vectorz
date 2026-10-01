@@ -9,6 +9,10 @@ import type { ResolvedProfile } from '../domain/model.js';
  * absents du profil) et signale chaque arête dont la cible n'est ni dans le
  * profil résolu, ni listée en `composesExternal`.
  *
+ * `delegates:` (ADR-0025, amendement) est le tier OPTIONNEL : il n'est jamais lu ici — pas de
+ * warning s'il manque, et la fermeture ne le suit pas (un délégué absent ne sera pas matérialisé ;
+ * présent au profil, il est déjà jugé comme tout skill résolu).
+ *
  * Diagnostic non bloquant : aucun I/O, aucune horloge, aucune IA. Sortie
  * triée stablement (from, missing) → déterministe (ADR-0003).
  */

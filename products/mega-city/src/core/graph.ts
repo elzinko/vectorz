@@ -33,6 +33,7 @@ export const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundl
  * Le VOCABULAIRE de lien réuni. Chaque variante = un champ de frontmatter/YAML aujourd'hui
  * éparpillé sur un type différent. Les nommer ici, ensemble, EST l'unification demandée.
  *   composes   skill → skill   (ADR-0025)      · roles       skill → agent  (ADR-0020 amend.)
+ *   delegates  skill → skill   (ADR-0025 amend.) : « je confie ceci à ce skill, s'il est là » (optionnel)
  *   competences agent → skill                   · interactions agent → rule
  *   applies    skill → rule    (fiche 357 : « ce skill suit cette règle », déclaré par id)
  *   enforces   rule  → agent   (enforcement agent-check, seul lien inter-catalogue, domain.ts)
@@ -42,6 +43,7 @@ export const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundl
  */
 export type LinkType =
   | 'composes'
+  | 'delegates'
   | 'roles'
   | 'competences'
   | 'interactions'
@@ -95,6 +97,8 @@ interface EdgeSource {
 
 export const EDGE_SOURCES: readonly EdgeSource[] = [
   { link: 'composes', fromKind: 'skill', toKind: 'skill', verb: 'compose' },
+  // Tier optionnel de `composes` : même verbe (le jeu reste fermé), jamais averti si la cible manque.
+  { link: 'delegates', fromKind: 'skill', toKind: 'skill', verb: 'compose' },
   { link: 'roles', fromKind: 'skill', toKind: 'agent', verb: 'convoque' },
   // Un agent est fait de ses compétences (des skills) : comme `composes`, vu depuis l'agent.
   { link: 'competences', fromKind: 'agent', toKind: 'skill', verb: 'compose' },
@@ -147,6 +151,9 @@ function targetsFor(catalog: Catalog, src: EdgeSource): { from: string; to: stri
   switch (src.link) {
     case 'composes':
       for (const s of catalog.skills.values()) push(s.id, s.composes);
+      break;
+    case 'delegates':
+      for (const s of catalog.skills.values()) push(s.id, s.delegates);
       break;
     case 'roles':
       for (const s of catalog.skills.values()) push(s.id, s.roles);
