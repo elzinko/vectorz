@@ -24,7 +24,7 @@ describe('bind(mobile, …, claude-code-global) — plan global pur', () => {
     const plan = bind('mobile', '/fake/.claude', 'claude-code-global', repoRoot);
     const paths = plan.files.map((f) => f.path);
     expect(paths).toContain('agents/ezk-reviewer.md');
-    // aucune écriture de loi / hook côté global
+    // ni CLAUDE.md ni .iamthelaw/ côté global : la loi y vit dans rules/iamthelaw.md (ADR-0056)
     expect(paths.some((p) => p === 'CLAUDE.md' || p.startsWith('.iamthelaw/'))).toBe(false);
     expect(plan.hooks).toEqual([]);
   });

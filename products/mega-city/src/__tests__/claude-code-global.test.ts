@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ResolvedProfile, Rule } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
 import { claudeCodeGlobalCap } from '../caps/claude-code-global.js';
+import { isManagedLaw } from '../domain/law-file.js';
 
 const ruleCleanCode: Rule = {
   id: 'clean-code/no-dead-code',
@@ -61,9 +62,30 @@ describe('claudeCodeGlobalCap.materialize (plan pur, sans FS)', () => {
     expect(plan.files.some((f) => f.path.startsWith('skills/vide/'))).toBe(false);
   });
 
-  it("n'émet aucun hook (global = skills + agents seulement)", () => {
+  it("n'émet aucun hook (pas de dépôt git côté global)", () => {
     const plan = claudeCodeGlobalCap.materialize(resolved, '/fake/.claude');
     expect(plan.hooks).toEqual([]);
+  });
+
+  it('compile la loi du profil dans rules/iamthelaw.md, marquée comme générée par lawgiver (ADR-0056)', () => {
+    const plan = claudeCodeGlobalCap.materialize(resolved, '/fake/.claude');
+    const law = find(plan, 'rules/iamthelaw.md');
+    expect(law).toBeDefined();
+    expect(law?.content).toContain('## clean-code/no-dead-code');
+    expect(law?.content).toContain('Pas de code mort');
+    expect(isManagedLaw(law?.content ?? '')).toBe(true);
+    // Fichier POSSÉDÉ par lawgiver : remplacement franc, pas de bloc managé dans un fichier partagé.
+    expect(law?.intent).toBeUndefined();
+  });
+
+  it("n'émet aucun fichier de loi quand le profil ne porte aucune règle", () => {
+    const plan = claudeCodeGlobalCap.materialize({ ...resolved, rules: [] }, '/fake/.claude');
+    expect(plan.files.some((f) => f.path.startsWith('rules/'))).toBe(false);
+  });
+
+  it("ne touche ni CLAUDE.md (fichier de l'utilisateur) ni .iamthelaw/ (cap projet)", () => {
+    const paths = claudeCodeGlobalCap.materialize(resolved, '/fake/.claude').files.map((f) => f.path);
+    expect(paths.some((p) => p === 'CLAUDE.md' || p.startsWith('.iamthelaw/'))).toBe(false);
   });
 
   it('rejette un id de skill non sûr (assertSafeId)', () => {
