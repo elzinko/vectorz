@@ -202,6 +202,8 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
   const id = skillIdOf(data, fallbackId);
   const composes = stringArray(data.composes)?.map(assertSafeId);
   const composesExternal = stringArray(data['composes-external'])?.map(assertSafeId);
+  // ADR-0025 (amendement) : tier optionnel de `composes`. Même garde-fou de frontière.
+  const delegates = stringArray(data.delegates)?.map(assertSafeId);
   // ADR-0020 (amendement) : agents convoqués. Même garde-fou de frontière que `composes`.
   const roles = stringArray(data.roles)?.map(assertSafeId);
   // Fiche 357 : règles appliquées, déclarées par id. Même garde-fou de frontière.
@@ -214,6 +216,7 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
     content: content.trim(),
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),
+    ...(delegates ? { delegates } : {}),
     ...(roles ? { roles } : {}),
     ...(applies ? { applies } : {}),
     ...(assets.length > 0 ? { assets } : {}),
