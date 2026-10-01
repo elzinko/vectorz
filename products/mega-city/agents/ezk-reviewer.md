@@ -34,6 +34,9 @@ sur un modèle différent du dev, alors **ne refais pas sa lecture — attaque-l
 Ouvre TOUJOURS par **« En clair »** : le verdict **GO** ou **NO-GO** + au plus 1–2 raisons
 bloquantes, une phrase chacune. Les findings détaillés viennent après. Zéro jargon dans
 l'ouverture.
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 ## Méthode
 

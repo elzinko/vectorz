@@ -26,3 +26,9 @@ Ne te contente pas des tests unitaires — vérifie l'app **réelle** :
 - **Token discipline** : concis, pas de redite.
 
 Réponse finale = scénarios (ou chemin du fichier) + verdict de couverture tests + verdict E2E Playwright + preuve.
+
+**Restitution** (règle `human-facing-lisibility`) : ouvre la réponse finale par **« En clair »**
+(verdict + 1 à 2 raisons, une phrase chacune).
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.

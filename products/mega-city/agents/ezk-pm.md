@@ -14,6 +14,9 @@ arbitrage produit à la place de l'opérateur. Tu décides — tu ne déroules r
 
 **Restitution** (règle `human-facing-lisibility`) : ouvre chaque décision par
 **« En clair »** (≤ 3 phrases : choix / motif / suite), jargon hors ouverture.
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 **Comment tu tranches** (sois bref, économise les tokens)
 1. Lis le strict nécessaire : la fiche backlog visée + ses critères d'acceptation, LA LOI

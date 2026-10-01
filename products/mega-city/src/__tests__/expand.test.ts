@@ -21,6 +21,7 @@ describe('expandProfile(mobile)', () => {
       'clean-code/no-dead-code',
       'conventional-commits/format',
       'development/pr-before-after-media',
+      'documentation-guidelines/human-facing-lisibility',
     ]);
   });
 
@@ -47,6 +48,7 @@ describe('expandProfile(mobile)', () => {
       'clean-code/no-dead-code',
       'conventional-commits/format',
       'development/pr-before-after-media',
+      'documentation-guidelines/human-facing-lisibility',
     ]);
     expect(resolved.agents.map((a) => a.id)).toEqual(['ezk-reviewer']);
   });
