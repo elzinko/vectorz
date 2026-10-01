@@ -176,6 +176,56 @@ body{
 .d-src a:hover{border-bottom-style:solid}
 .d-src.inferred{font-style:italic}
 
+/* ── L'ASSEMBLAGE : qui compose quoi — une hiérarchie compilée, pas une file ── */
+.asm{--wire:var(--ink-faint); max-width:780px; margin:6px auto 0; display:flex; flex-direction:column; align-items:center}
+.asm-node{
+  --c:var(--ink-faint); min-width:170px; max-width:100%; text-align:center; padding:9px 14px;
+  background:var(--panel); border:1px solid var(--line); border-top:3px solid var(--c);
+  border-radius:10px; box-shadow:var(--shadow);
+}
+.asm-node b{display:block; font-family:"Chakra Petch",sans-serif; font-size:15px}
+.asm-node small{display:block; font-size:11.5px; color:var(--ink-soft)}
+.asm-node .asm-self{display:block; margin-top:5px; font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-faint)}
+.asm-node.inferred{border-style:dashed; background:transparent; box-shadow:none}
+.asm-node .d-src{justify-content:center; margin-top:6px}
+.asm-leg{display:flex; flex-direction:column; align-items:center}
+.asm-leg i{width:0; height:12px; border-left:2px solid var(--wire)}
+.asm-leg i.head{height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:7px solid var(--wire)}
+.asm-leg.dashed i:not(.head){border-left-style:dashed}
+.asm-edge{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-soft); white-space:nowrap;
+  background:var(--panel-2); border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.asm-leg.dashed .asm-edge{border-style:dashed; background:transparent; color:var(--ink-faint)}
+.asm-bus{width:66.66%; height:0; border-top:2px solid var(--wire)}
+.asm-cols{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:0 14px; width:100%}
+.asm-branch, .asm-body{display:flex; flex-direction:column; align-items:center}
+.asm-other{max-width:780px; margin:18px auto 0; font-size:12.5px; color:var(--ink-soft)}
+.asm-other .rels{display:flex; gap:6px; flex-wrap:wrap; margin-top:7px}
+.asm-rel{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; border:1px dotted var(--ink-faint);
+  border-radius:6px; padding:2px 8px; background:transparent; color:var(--ink-soft);
+}
+.asm-rel i{font-style:normal; color:var(--ink); font-weight:600}
+/* Mobile : un arbre indenté (jamais une pile de blocs, qui se lirait comme une chaîne). Chaque
+   branche = la flèche nommée à gauche, la brique à droite ; la règle est un sous-niveau du bundle. */
+@media (max-width:700px){
+  .asm{align-items:stretch}
+  .asm > .asm-leg{align-items:center}
+  .asm-bus, .asm > .asm-leg:not(.dashed){display:none}
+  .asm-cols{grid-template-columns:1fr; gap:0; margin-left:20px}
+  .asm-cols > .asm-branch{position:relative; padding-top:10px; border-left:2px solid var(--wire)}
+  .asm-cols > .asm-branch:last-child{border-left-color:transparent}
+  .asm-cols > .asm-branch:last-child::before{content:''; position:absolute; left:-2px; top:0; height:37px; border-left:2px solid var(--wire)}
+  .asm-cols > .asm-branch{flex-direction:row; align-items:flex-start; gap:8px}
+  .asm-cols > .asm-branch > .asm-leg{flex-direction:row; align-items:center; flex:none; margin-top:16px}
+  .asm-cols > .asm-branch > .asm-leg i{width:10px; height:0; border-left:0; border-top:2px solid var(--wire)}
+  .asm-cols > .asm-branch > .asm-leg i.head{width:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:7px solid var(--wire); border-right:0}
+  .asm-body{flex:1; min-width:0; align-items:stretch}
+  .asm-body > .asm-branch{margin-top:4px; align-items:center}
+  .asm-node{min-width:0; width:100%}
+}
+
 /* ── bundles (LA LOI) ───────────────────────────────── */
 .shelves{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px}
 .shelf{background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--law); border-radius:11px; padding:13px 15px; box-shadow:var(--shadow)}
@@ -269,10 +319,18 @@ body{
     <p>Trois étages. <b>Le moteur</b> (règles · bundles · profils · bind) ne connaît pas scrum — il compose
     et matérialise. <b>La méthode</b> (cérémonies, rôles, artefacts) est une instance construite avec lui.
     <b>Les modules</b> (GitHub, sessions LLM, supervision, outillage, overlays) s'y activent sans en faire partie.
-    Cette carte n'est <b>pas dessinée à la main</b> : elle est compilée depuis les fichiers du dépôt, sauf le cycle ci-dessous (texte d'auteur, puces classées).
+    Cette carte n'est <b>pas dessinée à la main</b> : elle est compilée depuis les fichiers du dépôt, sauf le bind et le cycle en 5 temps (lectures d'auteur, en pointillé).
     Cliquez une carte pour ouvrir son dossier et voir ses liens réels.</p>
     <div class="legend" id="legend"></div>
     <p class="prov" id="prov"></p>
+  </div>
+
+  <div class="section" id="assemblage">
+    <div class="eyebrow">L'assemblage — qui compose quoi</div>
+    <h2>Un profil contient, le bind le lit</h2>
+    <p class="lead">Ce n'est <b>pas une chaîne de montage</b> : rien ne « suit » rien, tout se <b>contient</b>. Chaque flèche dit sa relation et le nombre de liens qui la portent, comptés dans le graphe compilé. Seul le <b>bind</b>, en pointillé, n'y est pas : c'est du code, aucun fichier du catalogue ne le déclare.</p>
+    <div class="asm" id="asm"></div>
+    <div class="asm-other" id="asm-other"></div>
   </div>
 
   <div class="section">
@@ -409,13 +467,102 @@ window.EZK = {
    "briques": 123,
    "liens": 211,
    "ceremonies": 16,
-   "cycle": 9
+   "cycle": 9,
+   "assemblage": 0
   },
   "deduit": {
    "briques": 0,
    "liens": 0,
    "ceremonies": 0,
-   "cycle": 7
+   "cycle": 7,
+   "assemblage": 1
+  }
+ },
+ "assemblage": {
+  "nodes": {
+   "rule": 74,
+   "agent": 8,
+   "skill": 25,
+   "bundle": 10,
+   "profile": 6
+  },
+  "arrows": [
+   {
+    "from": "agent",
+    "verb": "applique",
+    "to": "rule",
+    "count": 1
+   },
+   {
+    "from": "agent",
+    "verb": "compose",
+    "to": "skill",
+    "count": 3
+   },
+   {
+    "from": "bundle",
+    "verb": "compose",
+    "to": "bundle",
+    "count": 1
+   },
+   {
+    "from": "bundle",
+    "verb": "compose",
+    "to": "rule",
+    "count": 58
+   },
+   {
+    "from": "profile",
+    "verb": "compose",
+    "to": "agent",
+    "count": 21
+   },
+   {
+    "from": "profile",
+    "verb": "compose",
+    "to": "bundle",
+    "count": 14
+   },
+   {
+    "from": "profile",
+    "verb": "compose",
+    "to": "profile",
+    "count": 5
+   },
+   {
+    "from": "profile",
+    "verb": "compose",
+    "to": "skill",
+    "count": 46
+   },
+   {
+    "from": "rule",
+    "verb": "est-verifie-par",
+    "to": "agent",
+    "count": 25
+   },
+   {
+    "from": "skill",
+    "verb": "applique",
+    "to": "rule",
+    "count": 8
+   },
+   {
+    "from": "skill",
+    "verb": "compose",
+    "to": "skill",
+    "count": 23
+   },
+   {
+    "from": "skill",
+    "verb": "convoque",
+    "to": "agent",
+    "count": 6
+   }
+  ],
+  "bind": {
+   "source": "products/mega-city/src/core/bind.ts",
+   "adr": "products/mega-city/docs/adr/0003-moteur-bind-plan-pur-coquille-io.md"
   }
  },
  "orphans": [
@@ -2749,7 +2896,7 @@ window.EZK = {
      déclare) et quelle part est DÉDUITE (écrite à la main). Arrondi vers le bas : 100 % ne
      s'affiche que s'il n'y a rien de déduit. ── */
   const P = D.provenance;
-  const total = (c) => c.briques + c.liens + c.ceremonies + c.cycle;
+  const total = (c) => c.briques + c.liens + c.ceremonies + c.cycle + c.assemblage;
   const nProuve = total(P.prouve), nDeduit = total(P.deduit);
   const pct = Math.floor(100 * nProuve / (nProuve + nDeduit));
   $('proof-text').textContent =
@@ -2757,18 +2904,19 @@ window.EZK = {
     ' · ' + D.counts.rules + ' règles · ' + D.counts.skills + ' commandes';
   $('proof-ratio').textContent = pct + ' % prouvé' + (nDeduit ? ' · ' + nDeduit + ' déduits (pointillés)' : '');
   $('proof').title = 'Prouvé (' + nProuve + ') : lu dans un fichier du dépôt, vérifié à la régénération. ' +
-    'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier ne le déclare (pointillés). ' +
+    'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier du catalogue ne le déclare (pointillés). ' +
     'Regen : pnpm --dir products/mega-city map:data';
   if(D.liens.casses) $('proof').classList.add('bad');
   /* Par nature, « prouvé/total » : le chiffre global est porté par les liens ; le détail montre
      où se cache le déduit (ici : le cycle écrit à la main). */
-  const NATURES = [['briques','briques'], ['liens','liens'], ['cérémonies','ceremonies'], ['cycle écrit à la main','cycle']];
+  const NATURES = [['briques','briques'], ['liens','liens'], ['cérémonies','ceremonies'],
+    ['cycle écrit à la main','cycle'], ['assemblage hors graphe','assemblage']];
   const parNature = NATURES
     .filter(([, k]) => P.prouve[k] + P.deduit[k] > 0)
     .map(([label, k]) => label + ' ' + P.prouve[k] + '/' + (P.prouve[k] + P.deduit[k])).join(' · ');
   $('prov').innerHTML = '<b>Provenance : ' + pct + ' % prouvé</b> (' + nProuve + ' sur ' + (nProuve + nDeduit) +
     ' éléments lus dans un fichier du dépôt). Par nature : ' + parNature + '. ' +
-    (nDeduit ? 'Les ' + nDeduit + ' autres sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier ne les déclare. ' : '') +
+    (nDeduit ? 'Les ' + nDeduit + ' autres sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier du catalogue ne les déclare. ' : '') +
     'Le dossier de chaque carte donne son fichier source.';
 
   /* ── légende ── */
@@ -2776,7 +2924,7 @@ window.EZK = {
     ['var(--cmd)','Commandes (skills)'], ['var(--cap)','Juges (agents)'],
     ['var(--law)','La loi (règles & bundles)'], ['var(--pro)','Profils'], ['var(--warn)','Bruit à trancher'],
   ].map(([c,l]) => '<span class="key"><span class="sw" style="background:'+c+'"></span>'+l+'</span>').join('') +
-    '<span class="key"><span class="sw dashed"></span>Pointillé = lecture d’auteur (aucun fichier)</span>';
+    '<span class="key"><span class="sw dashed"></span>Pointillé = lecture d’auteur (aucun fichier du catalogue ne le déclare)</span>';
 
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const firstSentence = (s) => { const m = String(s).split(/(?<=\.)\s/)[0]; return m.length > 170 ? m.slice(0,167)+'…' : m; };
@@ -2825,8 +2973,63 @@ window.EZK = {
     '<div style="margin:-1px 0 6px"><span class="tag">'+esc(s.scrum)+'</span></div>'+
     '<p>'+esc(s.p)+'</p>'+
     stepGroup('étape','skill',s.etape)+stepGroup('acteurs','agent',s.acteurs)+humanGroup(s.humains)+
-    '<span class="arrow">→</span></div>'
+    '<span class="arrow" title="puis" aria-label="puis">→</span></div>'
   ).join('');
+
+  /* ── L'ASSEMBLAGE : qui compose quoi — compilé (src/core/assemblage.ts), jamais écrit à la main.
+     Une hiérarchie, pas une file : le profil CONTIENT des bundles, des juges et des commandes ;
+     un bundle CONTIENT des règles. Chaque flèche porte le verbe du graphe et le nombre de liens
+     qui la portent. Le bind est hors graphe (du code) : dessiné en pointillé, compté « déduit ». ── */
+  const A = D.assemblage;
+  const NODE_LABEL = {profile:'Profil', bundle:'Bundle', rule:'Règle', agent:'Juge', skill:'Commande'};
+  const NODE_HINT = {profile:'le bon de commande d’une cible', bundle:'un classeur de règles',
+    rule:'une consigne de travail', agent:'un rôle (agent)', skill:'une commande (skill)'};
+  const NODE_COLOR = {profile:'var(--pro)', bundle:'var(--law)', rule:'var(--law)', agent:'var(--cap)', skill:'var(--cmd)'};
+  const VERB_LABEL = {compose:'compose', convoque:'convoque', applique:'applique', 'est-verifie-par':'est vérifiée par'};
+  const arrowN = (from, verb, to) =>
+    (A.arrows.find((a) => a.from === from && a.verb === verb && a.to === to) || {count:0}).count;
+  const asmNode = (kind, extra) =>
+    '<div class="asm-node" style="--c:'+NODE_COLOR[kind]+'"><b>'+NODE_LABEL[kind]+' ×'+A.nodes[kind]+'</b>'+
+    '<small>'+NODE_HINT[kind]+'</small>'+(extra||'')+'</div>';
+  const asmSelf = (n, what) => n ? '<span class="asm-self">↻ compose d’autres '+what+' · '+n+'</span>' : '';
+  const asmLeg = (label, dashed) =>
+    '<div class="asm-leg'+(dashed?' dashed':'')+'"><i></i><span class="asm-edge">'+label+'</span><i></i><i class="head"></i></div>';
+  const leg = (from, verb, to) => asmLeg(VERB_LABEL[verb]+' · '+arrowN(from, verb, to));
+  const srcLink = (path, label) => path
+    ? '<a href="'+esc(srcHref(path))+'" target="_blank" rel="noopener" title="'+esc(path)+'">'+label+' ↗</a>' : '';
+  const bindNode =
+    '<div class="asm-node inferred" title="Le bind est du code (plan pur, ADR-0003), pas une brique du catalogue : aucun fichier ne déclare ce lien. Lecture d’auteur.">'+
+    '<b style="font-family:\'IBM Plex Mono\',monospace">bind</b><small>le moteur — hors graphe, lecture d’auteur</small>'+
+    '<div class="d-src"><span class="tag">source</span>'+
+    [srcLink(A.bind.source, 'code'), srcLink(A.bind.adr, 'ADR-0003')].filter(Boolean).join(' · ')+'</div></div>';
+  /* Une branche = la flèche nommée + la brique qu'elle atteint (+ ses sous-branches). */
+  const branch = (legHtml, nodeHtml, sub) =>
+    '<div class="asm-branch">'+legHtml+'<div class="asm-body">'+nodeHtml+(sub||'')+'</div></div>';
+  /* Une branche à zéro lien n'est pas dessinée : la figure ne montre jamais un lien qui n'existe plus. */
+  const has = (from, verb, to) => arrowN(from, verb, to) > 0;
+  const branchTo = (from, to, nodeHtml, sub) =>
+    has(from, 'compose', to) ? branch(leg(from, 'compose', to), nodeHtml, sub) : '';
+  $('asm').innerHTML =
+    bindNode + asmLeg('lit un profil', true) +
+    asmNode('profile', asmSelf(arrowN('profile','compose','profile'), 'profils')) +
+    '<div class="asm-leg"><i></i></div><div class="asm-bus"></div>' +
+    '<div class="asm-cols">' +
+      branchTo('profile', 'bundle',
+        asmNode('bundle', asmSelf(arrowN('bundle','compose','bundle'), 'bundles')),
+        branchTo('bundle', 'rule', asmNode('rule'))) +
+      branchTo('profile', 'agent', asmNode('agent')) +
+      branchTo('profile', 'skill', asmNode('skill')) +
+    '</div>';
+  /* Les relations qui ne sont pas dans la figure (convoque, applique, est vérifiée par…) : listées
+     avec leur nombre, en pointillé fin — d'une autre nature que la composition d'un profil. */
+  const DRAWN = new Set(['profile>bundle','profile>agent','profile>skill','profile>profile','bundle>rule','bundle>bundle']);
+  const autres = A.arrows.filter((a) => !(a.verb === 'compose' && DRAWN.has(a.from+'>'+a.to)));
+  $('asm-other').innerHTML = autres.length
+    ? '<b>Les autres relations</b>, comptées dans le même graphe : elles relient des briques entre elles, hors de la composition d’un profil (y compris les compositions internes, une commande qui en compose une autre).'+
+      '<div class="rels">'+autres.map((a) =>
+        '<span class="asm-rel">'+NODE_LABEL[a.from]+' <i>'+VERB_LABEL[a.verb]+'</i> '+NODE_LABEL[a.to]+' · '+a.count+'</span>'
+      ).join('')+'</div>'
+    : '';
 
   /* ── cartes des bandes ── */
   /** Sous-commandes depuis `argument-hint:` — le 1er groupe [a|b|c] s'il est propre, sinon rien. */
