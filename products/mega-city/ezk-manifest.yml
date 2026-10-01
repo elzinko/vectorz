@@ -80,7 +80,7 @@ commands:
   - domain: backlog
     verb: apply
     run: bin/backlog-apply.ts
-    summary: Applique une fusion ou un découpage de fiches décidé (merged / split, provenance dans les deux sens).
+    summary: Applique une fusion ou un découpage de fiches décidé par le PO.
   - domain: backlog
     verb: aggregate
     run: bin/backlog-aggregate.ts
