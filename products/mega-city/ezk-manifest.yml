@@ -11,10 +11,11 @@
 #   root            fixed (défaut) = lit ou écrit les fichiers du dépôt de la méthode : le script
 #                   part de la RACINE du dépôt, d'où qu'on lance la commande dans ce dépôt ;
 #                   none = marche de n'importe quel dossier, et part du dossier de l'utilisateur
-#   project         true = la commande SEULEMENT lit les fiches d'un projet, et son script sait lire
-#                   celui qu'on désigne : `ezk --root <projet> …` ou la variable EZK_ROOT (le routeur la
-#                   passe au script). Sans cette marque, une commande qui écrit dans le dépôt de la
-#                   méthode refuse tout autre dépôt, et ignore EZK_ROOT. Défaut = la méthode.
+#   project         true = la commande travaille sur un PROJET désigné (ses fiches, son contrat de
+#                   règles) et n'écrit jamais dans le dépôt de la méthode — au plus dans le projet visé.
+#                   Son script sait lire le projet qu'on désigne : `ezk --root <projet> …` ou la
+#                   variable EZK_ROOT (le routeur la passe au script). Sans cette marque, une commande
+#                   qui écrit dans le dépôt de la méthode refuse tout autre dépôt, et ignore EZK_ROOT.
 #   deprecated      nouveau nom : l'entrée est un ancien nom, gardé et signalé
 #
 # Le test src/__tests__/ezk-manifest.test.ts vérifie que tout script de bin/ exposé en script
@@ -96,6 +97,28 @@ commands:
     verb: version
     run: bin/backlog-version.ts
     summary: Dit où en est chaque version, contrôle un lot, clôt une version livrée.
+
+  # --- rules : les règles propres à un projet (.vectorz/, ADR-0050) ---
+  # Le projet visé : --root, EZK_ROOT, sinon la racine git du dossier courant. Elles n'écrivent que
+  # dans ce projet (.claude/rules/vectorz-project.md), jamais dans la méthode.
+  - domain: rules
+    verb: check
+    run: bin/ezk-rules.ts check
+    summary: Contrôle le contrat de règles du projet (.vectorz/rules.yml), code 1 si erreur.
+    root: none
+    project: true
+  - domain: rules
+    verb: show
+    run: bin/ezk-rules.ts show
+    summary: Montre le jeu de règles effectif du projet, avec la garantie de chacune.
+    root: none
+    project: true
+  - domain: rules
+    verb: apply
+    run: bin/ezk-rules.ts apply
+    summary: Écrit le jeu de règles du projet dans .claude/rules/ pour que Claude Code le charge.
+    root: none
+    project: true
 
   # --- graph : le graphe compilé de la méthode ---
   - domain: graph
