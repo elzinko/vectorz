@@ -117,18 +117,24 @@ Apprentissages transverses de la session, à capitaliser côté **ezk-method / r
 
 ## Critères d'acceptation
 
-- [ ] `recipes/vendre-app-lemonsqueezy-licence-pro.md` existe, front-matter valide, `status: draft`, listée dans `recipes/RECIPES.md` après `regen-recipes.sh`
-- [ ] elle couvre les 5 blocs de la checklist : clés et comptes, inspection de l'API (piège `curl -g`), réglages du produit, validation in-app, passage test → live
-- [ ] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers samplerz ; `source:` existe ; aucun code recopié
-- [ ] `catalogue-secrets.md` et le README `lancement-app` donnent le vrai nom de la clé (plus `lemonsqueezy-api`)
-- [ ] le README `lancement-app` relie la recette (section D et « Recettes réutilisées »)
-- [ ] gate `ezk-chef` : `regen-recipes.sh` et `check-links.sh . recipes` verts, verdict GO
+- [x] `recipes/vendre-app-lemonsqueezy-licence-pro.md` existe, front-matter valide, `status: draft`, listée dans `recipes/RECIPES.md` après `regen-recipes.sh` (1 ligne ajoutée, 13 recettes)
+- [x] elle couvre les 5 blocs de la checklist : clés et comptes, inspection de l'API (piège `curl -g`), réglages du produit, validation in-app, passage test → live
+- [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers samplerz ; `source:` existe ; aucun code recopié (16 pointeurs sur 16 existent)
+- [x] `catalogue-secrets.md` et le README `lancement-app` donnent le vrai nom de la clé (plus `lemonsqueezy-api`, sauf dans la mention de la correction)
+- [x] le README `lancement-app` relie la recette (section D et « Recettes réutilisées »)
+- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 16 pointeurs sur 16, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
+
+Preuves ajoutées : le piège `curl -g` est rejoué sans identifiant. Sans `-g`, `curl -s` sort en code 3 sans
+rien afficher. Avec `-g`, l'API répond 401, donc l'URL est bien atteinte. Le trousseau liste
+`LEMONSQUEEZY_API_KEY_TEST` (`ezk-secret list lemon`, noms seulement), et le `.env` de samplerz porte
+`LEMONSQUEEZY_API_SECRET_TEST`.
 
 ## Comment vérifier
 
 1. `bash products/mega-city/bin/regen-recipes.sh`, puis `git diff --stat -- recipes/RECIPES.md` :
    une seule ligne ajoutée, celle de la nouvelle recette.
-2. `bash products/mega-city/bin/check-links.sh . recipes` rend vert.
+2. `bash products/mega-city/bin/check-links.sh . recipes` ne signale aucun lien cassé dans les fichiers
+   de cette PR. Il en reste 7 hérités dans d'autres recettes (voir Notes).
 3. `grep -n "lemonsqueezy-api" recipes/lancement-app/README.md recipes/lancement-app/catalogue-secrets.md`
    ne rend plus l'ancien nom (hors mention de la correction).
 4. Chaque pointeur `fichier:ligne` de la recette existe dans le dépôt samplerz.
@@ -140,3 +146,11 @@ Apprentissages transverses de la session, à capitaliser côté **ezk-method / r
 - Les trois apprentissages de méthode ci-dessus partent en rétro / ezk-method.
 - L'exemple `ezk-secret set lemonsqueezy-api --clip` de `recipes/secrets-trousseau/README.md` est
   un simple exemple de clé longue. Il peut être aligné plus tard.
+
+## Notes / décisions
+
+- `recipes/` porte 7 liens cassés **hérités** : sept recettes pointent vers la fiche
+  `20260824185422122`, déplacée dans `features/done/`. Hors périmètre de cette PR, signalé au PO.
+- Le trousseau contient aussi un `LEMONSQUEEZY_API_KEY` sans suffixe. Son rôle (clé live ?) reste à
+  confirmer par le PO. La recette le dit sans l'affirmer.
+- La recette reste `draft` : aucune deuxième app ne l'a encore rejouée.
