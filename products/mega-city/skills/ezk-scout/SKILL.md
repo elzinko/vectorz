@@ -163,8 +163,9 @@ Seule la **lentille** diffère : ici `bugs`. L'explorateur les réutilisera avec
 
 **Pas encore branché** (POC) : le mécanisme de captures partagé (fiche 20260812104022228, parquée :
 on utilise le Playwright MCP partagé comme `ezk-bug` et `ezk-qa`) · le démarrage automatique de
-l'émulateur Android (la recette 20260906135450000 existe, le scout la lit mais ne la lance pas
-encore) · l'appel depuis `ezk-product-build` quand le
+l'émulateur Android (la fiche 20260906135450000 a livré la recette
+`recipes/emulateur-android-test-device.md` ; le scout la lit mais ne la lance pas encore) · l'appel
+depuis `ezk-product-build` quand le
 backlog est bloqué · l'émission vers le Moniteur de supervision (une passe de fond y serait
 visible) : elle suivra le contrat d'émission d'`ezk-sprint`, qui impose de la déclarer au kit.
 

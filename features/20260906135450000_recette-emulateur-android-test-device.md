@@ -16,11 +16,11 @@ created: 2026-09-06
 ## En clair
 
 Une **recette** dans `recipes/` (gardien `ezk-chef`) explique à tout agent **comment démarrer un
-émulateur Android et lancer l'app dessus**. Elle est livrée : elle donne la commande qui marche
-sur ce Mac, celle de chaque stack (Capacitor, Expo) et le piège qui fait perdre des tours (deux
-racines SDK). Elle pose surtout un réflexe : **avant de déclarer un test sur appareil impossible,
-vérifier qu'un émulateur est démarrable.** `ezk-scout` la lit désormais avant de classer un
-chemin mobile « non sondé ».
+émulateur Android et lancer l'app dessus**. Elle est écrite et reste `draft` : elle donne la
+commande qui marche sur ce Mac, celle de chaque stack (Capacitor, Expo) et le piège qui fait perdre
+des tours (deux racines SDK). Seul le build d'app de bout en bout n'est pas rejoué. Elle pose
+surtout un réflexe : **avant de déclarer un test sur appareil impossible, vérifier qu'un émulateur
+est démarrable.** `ezk-scout` la lit désormais avant de classer un chemin mobile « non sondé ».
 
 ## Contexte / Problème
 

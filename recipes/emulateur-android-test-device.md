@@ -56,13 +56,17 @@ net, alors que l'image est bien installée ailleurs.
 | `~/Library/Android/sdk` (Android Studio) | platforms, build-tools, `emulator` | **les images système** |
 | `/opt/homebrew/share/android-commandlinetools` (brew) | `adb`, `emulator`, cmdline-tools, **`system-images/android-34/google_apis/arm64-v8a`** | — |
 
+Ailleurs (Mac Intel, Linux, autre AVD), les chemins et l'ABI changent (image `x86_64` au lieu
+d'`arm64-v8a`) mais la règle reste la même : **prendre l'`emulator` de la racine qui contient
+`system-images/`**. Non vérifié hors de ce Mac : adapter les noms, pas la règle.
+
 ```
  test mobile demandé
    │ adb devices ── appareil ou émulateur déjà là ? ── oui ──────────────┐
    ▼ non                                                                │
  emulator -list-avds ── vide ? ── oui → créer l'AVD (préliminaire)      │
    ▼                                                                    │
- démarrer avec l'emulator de la racine QUI A LES IMAGES (brew)          │
+ démarrer l'AVD avec l'emulator de la racine QUI A LES IMAGES           │
    ▼                                                                    │
  attendre  adb shell getprop sys.boot_completed  = 1                    │
    ▼                                                                    ▼
@@ -73,7 +77,8 @@ net, alors que l'image est bien installée ailleurs.
 
 - **muti (Capacitor)** : `pnpm --filter @muti/mobile run dev:android` fait `build:web`, puis
   `cap sync android`, puis `cap run android` (choisit l'émulateur ou l'appareil branché).
-- **lmnpz (Expo / React Native)** : démarrer l'AVD, puis `expo run:android` depuis `apps/mobile`.
+- **lmnpz (Expo / React Native)** : démarrer l'AVD, puis, depuis `apps/mobile`, `pnpm run android`
+  (le script `android` vaut `expo run:android`).
 - **Rejoué le 2026-10-01** : émulateur 36.6 de la racine brew, `-no-window -no-audio -no-snapshot`,
   AVD `livestreamz-test` → `sys.boot_completed=1` en une quinzaine de secondes, Android 34, `arm64-v8a`.
   Le même AVD lancé avec l'`emulator` d'Android Studio, sans variable, s'arrête sur
@@ -82,16 +87,19 @@ net, alors que l'image est bien installée ailleurs.
 ## Les étapes (playbook)
 
 1. **Réflexe** : `adb devices`. Une ligne `… device` suffit : passer à l'étape 5.
-2. **Lister les AVD** : `/opt/homebrew/share/android-commandlinetools/emulator/emulator -list-avds`.
-3. **Démarrer**, en arrière-plan, avec l'`emulator` de la racine brew :
-   `/opt/homebrew/share/android-commandlinetools/emulator/emulator -avd livestreamz-test -no-snapshot -no-boot-anim`
-   (ajouter `-no-window -no-audio` pour un agent ou une CI). Si on préfère l'`emulator` d'Android
-   Studio, **exporter `ANDROID_SDK_ROOT=/opt/homebrew/share/android-commandlinetools`** d'abord.
+2. **Trouver la racine qui a les images, puis lister les AVD.** Pour chaque racine SDK connue,
+   `ls -d <racine>/system-images` : celle qui répond est la bonne (ici
+   `SDK=/opt/homebrew/share/android-commandlinetools`). Puis `"$SDK/emulator/emulator" -list-avds`
+   (ici : `livestreamz-test`). Liste vide : voir « Préliminaires ».
+3. **Démarrer** l'AVD trouvé, en arrière-plan, avec l'`emulator` de cette racine :
+   `"$SDK/emulator/emulator" -avd <AVD> -no-snapshot -no-boot-anim` (ajouter `-no-window -no-audio`
+   pour un agent ou une CI). Si on préfère l'`emulator` d'Android Studio, **exporter
+   `ANDROID_SDK_ROOT="$SDK"`** d'abord.
 4. **Attendre le boot** : `adb wait-for-device`, puis répéter `adb shell getprop sys.boot_completed`
    jusqu'à `1`. Ne pas lancer l'app avant.
 5. **Lancer l'app** selon la stack :
    - Capacitor : `pnpm --filter @muti/mobile run dev:android`.
-   - Expo : `expo run:android` depuis `apps/mobile`. Pour un build **debug**, Metro doit tourner :
+   - Expo : `pnpm run android` depuis `apps/mobile` (= `expo run:android`). Pour un build **debug**, Metro doit tourner :
      `npx expo start --dev-client`, puis `adb reverse tcp:8081 tcp:8081`.
 6. **Éteindre** : `adb emu kill` (tue l'émulateur, pas les autres appareils).
 
@@ -120,13 +128,15 @@ Seconde racine : **`~/git/immo/lmnpz`**
 - `apps/mobile/package.json:8` — `android` = `expo run:android`
 
 Sur la machine : `/opt/homebrew/share/android-commandlinetools/emulator/emulator` (l'`emulator` qui trouve
-ses images) et `~/.android/avd/livestreamz-test.ini` (l'AVD).
+ses images) et le dossier `~/.android/avd/` (les AVD, partagés par toutes les racines SDK).
 
 ## Statut de cette recette
 
 Capturée le 2026-10-01 depuis la fiche `20260906135450000`, née d'un skip erroné sur lmnpz (fiche 0032).
 Les commandes de boot et le piège des deux racines ont été **rejoués sur ce Mac** ; les commandes de
 build d'app (`dev:android`, `expo run:android`) sont lues dans les `package.json` des deux projets et
-**n'ont pas été rejouées** ici : la recette reste `draft` jusqu'à un test complet. Hors périmètre :
+**n'ont pas été rejouées** ici. Les autres pièges de la checklist (Gradle, Metro, worktree neuf,
+quoting d'`adb shell`) sont le retour d'expérience des sprints lmnpz, eux aussi non rejoués : la
+recette reste `draft` jusqu'à un test complet. Hors périmètre :
 le téléphone physique (skill `ezk-device`), les captures d'écran (mécanisme parqué) et l'appel
 automatique par `ezk-scout` (il lit la recette, il ne la lance pas encore).
