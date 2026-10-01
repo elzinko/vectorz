@@ -133,6 +133,10 @@ pnpm --dir products/mega-city plan:head
   `ezk-sprint/scripts/check.sh`, `repoSource.ts`, `tools/outcomes/sources.ts`, la sonde de
   `fiche-validator.ts`, `apply-003`, `apply-005` et deux scripts python jetables. Hors fiches (recettes,
   méta de diagramme) : `bin/regen-recipes.sh`, `ezk-diagram/scripts/publish.sh`.
+- **Convention** : un titre qui contient ` #` doit être quoté. Lu par le loader, un `#` précédé d'un
+  blanc ouvre un commentaire YAML, donc le titre nu serait coupé. L'ancien `awk` le gardait en entier,
+  ce qui n'était pas du YAML correct. Aucune fiche n'est concernée : zéro titre nu avec ` #` dans
+  `features/` et `features/done/` (vérifié par grep le 2026-10-01).
 - **Décision de grooming** : le `title` d'une recette est celui que voit le loader (`readField` ne
   dé-échappe pas). Un titre contenant `\"` garde donc ses antislash, comme au board. Le dé-échappement
   est un autre chantier, il toucherait tous les consommateurs du loader.

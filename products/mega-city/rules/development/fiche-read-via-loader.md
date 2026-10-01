@@ -28,9 +28,10 @@ enforcements:
   une seule liste, exacte. Premières migrations faites : `bin/portfolio.sh`, `bin/plan-head.ts`,
   `bin/ezk-chef-extract.sh`, `fmField` de `planning-views.ts`. **Aucune nouvelle entrée** dans la liste.
 - **Mesurable :** ce test. Un parse de front-matter hors loader qui n'est pas dans sa liste **fait
-  échouer la suite** ; une entrée migrée **doit en sortir**. Tout **nouvel** outil qui re-parse le
-  front-matter à la main est en outre **refusé en revue** ; la migration du legacy est suivie par
-  la fiche `20260922160651394`.
+  échouer la suite** ; une entrée migrée **doit en sortir**. Limite : la détection est une
+  heuristique sur le motif ancré `^champ:` ; un parse écrit autrement lui échappe, et la revue reste
+  le filet. Tout **nouvel** outil qui re-parse le front-matter à la main est refusé en revue ; la
+  migration du legacy est suivie par la fiche `20260922160651394`.
 - Origine : rétros PO du **2026-09-16** (migration A16, PR #239 — un script python à la regex
   ratait l'enfant **quoté** et ceux de `done/` → 3 rounds Codex) et du **2026-09-20** (session
   `reconcile` — un `grep` de l'id `…856` a remonté la fiche `…858` qui ne fait que le citer).
