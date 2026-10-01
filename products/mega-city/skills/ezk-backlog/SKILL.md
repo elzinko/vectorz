@@ -311,9 +311,12 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    une boucle « propose, l'opérateur choisit, tu appliques, tu re-proposes ». Prior art : BMAD
    `advanced-elicitation` (50 méthodes, `methods.csv`) — voir le
    [rapport de benchmark](../../docs/benchmarks/2026-08-25-bmad-vs-ezk.md). Le catalogue est une
-   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (8 techniques).
+   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (9 techniques).
    - **Menu court.** Propose 3 techniques (4 au plus), choisies sur le slot le plus faible :
-     numérotées, une ligne chacune (titre + ce qu'elle va faire), plus `0 — terminer`.
+     numérotées, une ligne chacune (titre + ce qu'elle va faire), plus `0 — terminer`. Si
+     `ezk dor check <id>` nomme un **slot du projet** vide ou incomplet, propose d'office
+     `slot-du-projet` : la technique de repli générique, qui reprend la `ask` et les `items` du
+     slot déclaré (le catalogue ne peut pas connaître d'avance les slots d'un projet).
    - **Applique, remontre.** L'opérateur en choisit une. Applique-la à la section concernée, puis
      montre la section améliorée (avant, après).
    - **Valide.** « garder / retoucher / annuler ». N'écris dans la fiche que ce qui est gardé.
@@ -322,8 +325,11 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
      n'est forcée, la fiche reste telle quelle.
    - **Sans opérateur interactif** : pas de menu, il bloquerait l'auto-groom. C'est le cas dès que
      personne ne peut répondre : appel d'un orchestrateur ou d'un run autonome (`ezk-product-build`,
-     `ezk-pm`, `ezk-sprint` à l'intake sur une tête bloquée). Applique toi-même les 2 techniques les
-     plus utiles, en une passe, et nomme-les dans ton compte rendu.
+     `ezk-pm`, `ezk-sprint` à l'intake sur une tête bloquée). Pour **chaque slot manquant** ou faible
+     (le socle et les slots du projet), applique toi-même la technique la plus utile : une par slot,
+     en une passe, et nomme-les dans ton compte rendu. Un slot qui ne se remplit pas sans arbitrage
+     reste dit tel quel : la fiche n'est pas prête, et l'appelant retombe sur son checkpoint « aucune
+     fiche ready ».
 3. **Architecte et brainstorm** (fiche 20260812104022243). Deux techniques du catalogue APPELLENT un
    skill : `avis-architecte` → `engineering:architecture`, `brainstorm-cible` →
    `product-management:product-brainstorming`. Par défaut, l'architecte est proposé au menu quand la

@@ -13,8 +13,8 @@ const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '.
 const skillDir = join(megaCity, 'skills', 'ezk-backlog');
 const catalogPath = join(skillDir, 'groom-techniques.yml');
 
-/** Les slots que le catalogue peut viser : la DoR de base + le périmètre et la structure. */
-const SLOTS = ['probleme', 'valeur', 'criteres', 'dependances', 'perimetre', 'structure'];
+/** Les slots que le catalogue peut viser : la DoR de base, le périmètre, la structure, et `projet` (les slots de `.vectorz/dor.yml`). */
+const SLOTS = ['probleme', 'valeur', 'criteres', 'dependances', 'perimetre', 'structure', 'projet'];
 /** Les slots de la DoR de base : chacun doit avoir au moins une technique. */
 const BASE_SLOTS = ['probleme', 'valeur', 'criteres', 'dependances'];
 /** Les deux skills qu'une technique peut appeler. */
@@ -65,6 +65,15 @@ describe('groom-techniques.yml — le catalogue de raffinement', () => {
     }
   });
 
+  it('une technique de repli couvre les slots propres au projet (.vectorz/dor.yml), sans les connaître d’avance', () => {
+    const repli = techniques.find((t) => t.id === 'slot-du-projet');
+    expect(repli?.slot).toBe('projet');
+    expect(repli?.when?.trim()).toBeTruthy();
+    // Générique : elle s’appuie sur la `ask` et les `items` du slot déclaré, pas sur un slot précis.
+    expect(repli?.ask).toMatch(/`ask`/);
+    expect(repli?.ask).toMatch(/`items`/);
+  });
+
   it('`calls` ne désigne que les deux skills connus ; l’architecte et le brainstorm y sont, avec leur `when`', () => {
     for (const t of techniques) {
       if (t.calls !== undefined) expect(CALLABLE, t.id).toContain(t.calls);
@@ -106,5 +115,13 @@ describe('SKILL.md ezk-backlog — la boucle de groom est écrite (convention, p
     expect(skill).toMatch(/sortie explicite/i);
     expect(skill).toMatch(/sans opérateur/i);
     expect(skill).toContain('advanced-elicitation');
+  });
+
+  it('sans opérateur, couvre CHAQUE slot manquant (sinon l’auto-groom ne passerait plus le gate ready)', () => {
+    expect(skill).toMatch(/chaque slot manquant/i);
+  });
+
+  it('propose la technique de repli quand `ezk dor check` nomme un slot du projet', () => {
+    expect(skill).toContain('slot-du-projet');
   });
 });

@@ -5,7 +5,7 @@
 # section concernée, remontre le résultat, puis re-propose (voir « groom » dans SKILL.md).
 #
 # Prior art : BMAD `advanced-elicitation` (50 méthodes dans `methods.csv`, 5 proposées à la fois,
-# boucle jusqu'à « proceed »). On en garde 8, orientées DoR, pas 50 (ADR-0013 : pas de moteur générique).
+# boucle jusqu'à « proceed »). On en garde 9, orientées DoR, pas 50 (ADR-0013 : pas de moteur générique).
 # Rapport de benchmark : products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md
 #
 # Frontière (ADR-0001) : le LLM choisit les 3 techniques du menu et rédige. Rien ici ne se calcule.
@@ -13,7 +13,7 @@
 #
 #   id     identifiant stable, en kebab-case
 #   title  le nom court, affiché dans le menu
-#   slot   le slot de DoR visé : probleme | valeur | criteres | dependances | perimetre | structure
+#   slot   le slot de DoR visé : probleme | valeur | criteres | dependances | perimetre | structure | projet
 #   ask    la consigne appliquée à la section
 #   calls  (optionnel) le skill appelé : engineering:architecture | product-management:product-brainstorming
 #   when   (optionnel) quand proposer cette technique d'office, en clair
@@ -85,3 +85,14 @@ techniques:
     ask: >-
       Brainstorm ciblé avec product-brainstorming sur le slot le plus faible : explore des pistes,
       challenge les hypothèses, puis converge sur une formulation que l'opérateur garde.
+
+  - id: slot-du-projet
+    title: Remplir un slot propre au projet
+    slot: projet
+    when: >-
+      `ezk dor check <id>` nomme un slot du projet (.vectorz/dor.yml) vide ou incomplet. À proposer
+      d'office : sans elle, un slot propre au projet n'aurait aucune technique applicable.
+    ask: >-
+      Reprends la question (`ask`) du slot que `ezk dor check` nomme, balaie chacun de ses `items` (oui,
+      non, ou comment), puis écris la réponse sous le titre attendu (`heading`). Le script vérifie la
+      forme ; toi, tu juges si la réponse tient.
