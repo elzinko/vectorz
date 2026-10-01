@@ -6,3 +6,4 @@ rules:
   - token-economy/concise-output
   - token-economy/checkpoint-before-cost
   - token-economy/verification-budget
+  - token-economy/agent-call-budget
