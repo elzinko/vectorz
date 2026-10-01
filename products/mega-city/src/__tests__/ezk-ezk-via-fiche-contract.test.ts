@@ -68,6 +68,7 @@ describe('ezk-ezk — le mode create --via-fiche reste écrit dans le SKILL.md',
     expect(text).toMatch(/tirable/);
     expect(text).toContain('create --direct');
     expect(text).toMatch(/boucle/);
+    expect(text).toMatch(/priorité/); // `ezk-backlog add` la demande, elle n'est jamais inventée
   });
 
   it('garde-fous : aucun SKILL.md, deploy.sh non appelé, skill-creator non invoqué, rien hors features/', () => {

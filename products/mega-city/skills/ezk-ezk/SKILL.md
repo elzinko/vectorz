@@ -3,7 +3,7 @@ composes: [ezk-backlog]
 roles: [ezk-steward]
 applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-ezk
-argument-hint: "[help|harvest|create|deploy|audit]"
+argument-hint: "[help|harvest|create|deploy|audit] [--via-fiche|--direct]"
 description: >-
   Méta-skill qui transforme une discussion de session en un skill réutilisable.
   A utiliser quand l'utilisateur veut « créer un skill », « ezk-ezk »,
@@ -193,7 +193,8 @@ Les étapes 5 et 6 (fabrication par `skill-creator`, rangement par `deploy.sh`) 
 une seule étape, **5′ — Proposition de fiche**.
 
 **Étape 5′.** Délègue la création à `ezk-backlog add`, avec une description en quatre blocs. `add`
-garde ses réflexes : anti-doublon, regroupement, id horodaté, statut `idea`.
+garde ses réflexes : anti-doublon, regroupement, id horodaté, statut `idea`. Il demande aussi le type
+et la **priorité** (jamais inventée) : relaie ces questions à l'humain, ne les devine pas.
 
 1. **Problème et valeur** : tirés du cadrage de l'étape 2.
 2. **Specs** : ce que fait le skill, ses formulations de déclenchement, son format de sortie.

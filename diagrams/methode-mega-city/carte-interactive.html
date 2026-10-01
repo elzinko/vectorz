@@ -1325,7 +1325,7 @@ window.EZK = {
    "id": "ezk-ezk",
    "source": "products/mega-city/skills/ezk-ezk/SKILL.md",
    "description": "Méta-skill qui transforme une discussion de session en un skill réutilisable. A utiliser quand l'utilisateur veut « créer un skill », « ezk-ezk », « transforme cette discussion en skill », « fais-en un skill », « génère un skill depuis la session », « capitalise ce qu'on vient de faire en skill réutilisable », ou outiller un déroulé manuel récurrent. Orchestrateur MINCE : il COMPOSE product-management:product-brainstorming (cadrer le besoin), engineering:architecture (trancher la structure) et skill-creator (rédiger / valider / packager le SKILL.md) — il ne réimplémente aucun des trois. Pilotable par sous-commandes : help, harvest (récolte ≤3 sujets du contexte de session + champ libre), create (brainstorm → archi → skill-creator, après validation ; avec --via-fiche, propose une fiche au backlog au lieu de fabriquer le skill), audit (convoque l'agent ezk-steward : gate mécanique + jugement du catalogue), deploy (range via scripts/deploy.sh : crée le dossier + symlink non-destructif, destination par défaut mega-city skills/). Frontière ADR-0001 : le LLM rédige/juge via les sous-skills, le script range. N'est PAS la fabrique de skills elle-même (ça, c'est skill-creator) ; c'est l'orchestrateur qui l'alimente depuis une conversation.",
-   "usage": "[help|harvest|create|deploy|audit]",
+   "usage": "[help|harvest|create|deploy|audit] [--via-fiche|--direct]",
    "etage": "librairie",
    "composes": [
     "ezk-backlog"

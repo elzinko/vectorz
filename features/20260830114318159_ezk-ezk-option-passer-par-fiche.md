@@ -65,7 +65,8 @@ La fiche rappelle de construire le skill avec `--direct` (la fiche existe déjà
 - [x] La fiche produite est **tirable** : gabarit à quatre blocs (problème et valeur, specs,
       contraintes et garde-fous, source) plus le rappel `--direct`. Assez de matière pour groomer
       sans redemander.
-      *Preuve : les quatre blocs et la consigne `create --direct` sont gardés par le test de contrat.*
+      *Preuve : les quatre blocs, la consigne `create --direct` et la question de priorité sont gardés
+      par le test de contrat. Un essai réel de bout en bout avec un LLM reste à faire (« Comment vérifier »).*
 - [x] La frontière avec `ezk-chef extract` est écrite : `ezk-ezk` propose un **skill** via fiche,
       `ezk-chef extract` produit une **recette**. Objets différents.
       *Preuve : paragraphe « Frontière » du mode, rappelé dans « Délégation / voisinage ».*
