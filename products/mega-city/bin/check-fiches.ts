@@ -22,20 +22,19 @@ import {
   findProvenanceMismatches,
   validateFicheFrontMatter,
 } from '../src/backlog/fiche-validator.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { frontMatter, readField, readListField } from '../src/loaders/fiches.js';
 
-const args = process.argv.slice(2);
-const STRICT = args.includes('--strict');
+const STRICT = process.argv.slice(2).includes('--strict');
 
-// `--root <dir>` : racine à scanner. Par défaut, la racine du dépôt (3 niveaux au-dessus
-// de ce script). L'option sert à exercer le gate sur un dossier JETABLE (sabotage testable
-// sans polluer le vrai backlog) — cf. `bin/test-check-fiches.sh`.
-function parseRoot(): string {
-  const i = args.indexOf('--root');
-  if (i >= 0 && args[i + 1]) return resolve(args[i + 1]);
-  return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-}
-const repoRoot = parseRoot();
+// `--root <dir>` (ou la variable EZK_ROOT) : racine à scanner. Par défaut, la racine du dépôt (3
+// niveaux au-dessus de ce script). L'option sert à contrôler les fiches d'un AUTRE projet, ou à
+// exercer le gate sur un dossier JETABLE (sabotage testable sans polluer le vrai backlog) —
+// cf. `bin/test-check-fiches.sh`. Un chemin relatif se lit depuis le dossier de l'utilisateur
+// (INIT_CWD), comme pour toutes les commandes qui lisent un projet (fiche 20260826173221323).
+const { root: repoRoot } = projectRootOrExit(
+  resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..'),
+);
 
 /** Monorepo (vectorz) = plusieurs produits sous `products/`. Sinon backlog autonome. */
 function isMonorepo(root: string): boolean {

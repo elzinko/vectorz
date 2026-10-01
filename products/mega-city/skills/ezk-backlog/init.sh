@@ -5,8 +5,9 @@
 # + feature-template.md. Idempotent : n'écrase pas un roadmap/ existant ni un
 # features/ déjà peuplé (sauf regen de BACKLOG si demandé).
 #
-# Skema : refuse de half-migrer un layout v1 (README « Index auto-généré ») —
-# propose apply-002 après OK utilisateur (pas de split-brain README+BACKLOG).
+# Skema : refuse de half-migrer un layout v1 (`layout_version` 1, ou README « Index
+# auto-généré » SANS marqueur : le marqueur prime) — propose apply-002 après OK
+# utilisateur (pas de split-brain README+BACKLOG).
 #
 # Codes de sortie : 0 ok · 1 racine inexistante · 2 layout v1 (migration 002 requise) ·
 # 3 gabarit de référence (templates/feature-template.md) introuvable.
@@ -53,11 +54,14 @@ fi
 mkdir -p "$FEATURES/done"
 
 # Legacy v1 : ne pas créer BACKLOG à côté d'un index README — propose migration.
-if [[ -f "$FEATURES/README.md" ]] && grep -q 'Index auto-généré' "$FEATURES/README.md" 2>/dev/null; then
+# La version vient d'UNE seule source, check-layout-version.sh : le marqueur `layout_version`
+# du front-matter PRIME sur la mention « Index auto-généré » (fiche 20260813122510737).
+# Un README déjà en v2+ qui garde cette mention n'est donc PAS classé v1.
+if [[ "$(installed_layout)" -eq 1 ]]; then
   out="$("$CHECK" "$ROOT")"
   echo "$out"
   cat <<EOF
-init: layout v1 détecté (features/README.md = index auto-généré).
+init: layout v1 détecté (features/README.md : layout_version 1, ou index auto-généré sans marqueur).
 STATUS=behind — ne crée PAS BACKLOG.md (évite un split-brain README+BACKLOG).
 
 Après OK utilisateur, appliquer la migration 002 :

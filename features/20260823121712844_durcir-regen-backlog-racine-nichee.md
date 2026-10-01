@@ -42,18 +42,24 @@ neutraliser **à la source**.
 - Le défaut « bin → parent du bin » **reste valide** pour un projet autonome (le fixture de test est dans
   un tmpdir sans ancêtre `features/`) — on ne casse pas ce cas.
 
-## Critères d'acceptation (à groomer)
+## Critères d'acceptation
 
-- [ ] `regen` sans-argument depuis `products/mega-city` **échoue** avec un message explicite (racine nichée),
-      **sans rien écrire**.
-- [ ] Le cas légitime (projet autonome, bin à la racine) **fonctionne toujours** (test existant vert).
-- [ ] Les deux copies restent **identiques**.
-- [ ] **Nouveau test** couvrant le refus de racine nichée.
+- [x] `regen` sans-argument depuis `products/mega-city` **échoue** avec un message explicite (racine nichée),
+      **sans rien écrire**. — message « racine nichée … Passe la vraie racine explicitement », `exit 1`.
+- [x] Le cas légitime (projet autonome, bin à la racine) **fonctionne toujours** (test existant vert).
+      — Cas D de `bin/test-regen-backlog.sh`, inchangé et vert.
+- [x] Les deux copies restent **identiques**. — `cmp` sans écart ; garde anti-dérive du test verte.
+- [x] **Nouveau test** couvrant le refus de racine nichée. — Cas D2 : refus, rien écrit (ni dans le
+      fantôme, ni dans le backlog parent), racine explicite toujours permise.
 
 ## Comment vérifier
 
 Recréer `products/mega-city/features/`, lancer `regen` sans-argument → refus explicite, aucune écriture.
 Le suite `test-regen-backlog.sh` reste verte.
+
+Preuve avant/après (2026-10-01) : l'ancien script, lancé sans argument depuis un `bin/` niché sous un
+backlog, sortait en `exit 0` et écrivait un `BACKLOG.md` vide dans le dossier fantôme (« 0 fiches »).
+Le nouveau sort en `exit 1` et n'écrit rien.
 
 ## Notes / voisins
 

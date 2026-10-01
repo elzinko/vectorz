@@ -4,6 +4,7 @@
  *
  *   pnpm --dir products/mega-city avancement          # résumé lisible
  *   pnpm --dir products/mega-city avancement --json    # données pour la future vue web
+ *   pnpm --dir products/mega-city avancement --root <projet>   # les fiches d'un AUTRE projet (ou EZK_ROOT)
  *
  * Le cœur (src/core/avancement-data.ts) compile depuis les fiches ; ce script est le
  * bord I/O. La vue interactive (`diagrams/avancement/`, servie par ezk-map) est la
@@ -12,9 +13,12 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STATUTS, buildAvancementData } from '../src/core/avancement-data.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 
-const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+// Le projet dont on lit les fiches : --root > EZK_ROOT > ce dépôt (fiche 20260826173221323).
+const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+const { root: repoRoot } = projectRootOrExit(ownRoot);
 const data = buildAvancementData(loadFiches(repoRoot));
 
 if (process.argv.includes('--json')) {
