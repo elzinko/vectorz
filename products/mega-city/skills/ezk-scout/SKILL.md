@@ -100,8 +100,11 @@ Un état **NON ISOLÉ** (service réel partagé) : le chemin qui le touche est *
 dans « Isolation de l'état » et continue sur les autres chemins. Si rien d'important n'est
 isolable, arrête-toi avant de sonder et rends un rapport court (N = 0, raison en clair). Le
 banc se lance par la recette du projet ; `ezk-docker` si l'app tourne sous compose. Le lanceur
-universel (fiche 20260917162000501, qui a absorbé `ezk-testbed` 0102) s'y branchera quand il
-sera livré.
+universel (fiche 20260917162000501, qui a absorbé `ezk-testbed` 0102) existe en POC : si le projet
+l'a installé, `pnpm dev:branch` lance la branche sur un port libre ; le scout ne l'appelle pas
+encore. **Cible mobile (Android)** : avant de classer un chemin « non sondé » faute d'appareil,
+applique le réflexe de la recette `recipes/emulateur-android-test-device.md` (`adb devices`, AVD,
+démarrage). Un émulateur démarrable n'est jamais une raison de sauter le chemin.
 
 **3. Sonder.** Quatre classes d'anomalies :
 robustesse (un 5xx, un crash, une trace sur entrée cassée) · validation d'entrée (bornes
@@ -159,8 +162,9 @@ Seule la **lentille** diffère : ici `bugs`. L'explorateur les réutilisera avec
 `features` (à ajouter au contrôle le jour où cette fiche sera construite) : ne pas les dupliquer.
 
 **Pas encore branché** (POC) : le mécanisme de captures partagé (fiche 20260812104022228, parquée :
-on utilise le Playwright MCP partagé comme `ezk-bug` et `ezk-qa`) · le chemin émulateur Android
-(recette 20260906135450000, pas sur `main`) · l'appel depuis `ezk-product-build` quand le
+on utilise le Playwright MCP partagé comme `ezk-bug` et `ezk-qa`) · le démarrage automatique de
+l'émulateur Android (la recette 20260906135450000 existe, le scout la lit mais ne la lance pas
+encore) · l'appel depuis `ezk-product-build` quand le
 backlog est bloqué · l'émission vers le Moniteur de supervision (une passe de fond y serait
 visible) : elle suivra le contrat d'émission d'`ezk-sprint`, qui impose de la déclarer au kit.
 
