@@ -97,13 +97,18 @@ Trois défauts constatés (2026-09-04, avec le PO) :
 
 ## Critères d'acceptation
 
-- [ ] `docs/journal/README.md` fixe le format, le tag par fiche, « un fichier par session » et la décision sur le mot « session »
-- [ ] `journal-add.sh` écrit une entrée **pendant** le dev, **hors** `SPRINT.md`, dans `docs/journal/<date>-<slug>.md`, et fonctionne sans recette ni labo
-- [ ] deux sessions (deux slugs) donnent deux fichiers distincts : aucun conflit possible
-- [ ] chaque entrée est **taggée par fiche** : `grep -rl <id> docs/journal/` rend les fichiers, `grep -rh -A4 "^## \[<id>\]" docs/journal/` rend les galères d'une feature
-- [ ] `ezk-chef extract <id>` verse les entrées du journal dans les Préliminaires, avec un pointeur vers le fichier
-- [ ] `ezk-sprint` dit d'écrire dans le journal ; la section de `SPRINT.md` reste lue et `test-labo-cuisine.sh` reste vert
-- [ ] gate verte : test du script, test de l'extraction, `pnpm test:scripts`
+- [x] `docs/journal/README.md` fixe le format, le tag par fiche, « un fichier par session » et la décision sur le mot « session »
+- [x] `journal-add.sh` écrit une entrée **pendant** le dev, **hors** `SPRINT.md`, dans `docs/journal/<date>-<slug>.md`, et fonctionne sans recette ni labo (`test-journal-add.sh`, cas A)
+- [x] deux sessions (deux slugs) donnent deux fichiers distincts : aucun conflit possible (cas C)
+- [x] chaque entrée est **taggée par fiche** : `grep -rl <id> docs/journal/` rend les fichiers, `grep -rh -A4 "^## \[<id>\]" docs/journal/` rend les galères d'une feature (cas D)
+- [x] `ezk-chef extract <id>` verse les entrées du journal dans les Préliminaires, avec un pointeur vers le fichier (`test-ezk-chef-extract.sh`, cas K et L)
+- [x] `ezk-sprint` dit d'écrire dans le journal ; la section de `SPRINT.md` reste lue et `test-labo-cuisine.sh` reste vert
+- [x] gate verte : test du script, test de l'extraction, `pnpm test:scripts`
+
+**Preuves (2026-10-01).** Les deux tests rougissent bien quand on sabote le code :
+`journal-add.sh` qui écrase au lieu d'ajouter (5 échecs), sans validation d'id (2 échecs), sans
+assainissement du slug (arrêt franc). `ezk-chef-extract.sh` sans la borne d'identifiant laisse
+passer une entrée d'une « superchaîne » d'id, et le cas K le détecte.
 
 ## Comment vérifier
 
