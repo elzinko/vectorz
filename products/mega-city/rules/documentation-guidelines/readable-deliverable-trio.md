@@ -27,6 +27,7 @@ Chaque ligne nomme les trois pièces d'un livrable qui existe déjà. Les chemin
 | Contexte et bilan d'un run autonome (`ezk-product-build`) | `skills/ezk-product-build/references/run-report-template.md` | `bin/run-report.ts` — avec `bin/run-context.ts` à l'ouverture | `skills/ezk-product-build/SKILL.md` — étape 0 (ouverture) et étape 6 (clôture) de la boucle |
 | Note de handoff de clôture (`ezk-archive`) | `skills/ezk-archive/references/handoff-template.md` | `skills/ezk-archive/scripts/check.sh` | `skills/ezk-archive/SKILL.md` — « 3 réponses, zéro jargon » |
 | Corps de PR rendu depuis la fiche | `skills/ezk-backlog/templates/feature-template.md` | `bin/pr-emit-local.ts` — mode sans GitHub seulement | `docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md` |
+| Capture de rétro (`ezk-retro`) | `skills/ezk-retro/references/capture-template.md` | `bin/retro-captures.ts` | `skills/ezk-retro/SKILL.md` — temps 5, « La capture (obligatoire) » |
 
 Trou connu : avec une PR GitHub, le corps est recopié de la fiche à la main. L'extracteur ne couvre que le mode sans GitHub.
 

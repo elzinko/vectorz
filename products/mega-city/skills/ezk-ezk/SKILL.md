@@ -3,7 +3,7 @@ composes: [ezk-backlog]
 roles: [ezk-steward]
 applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-ezk
-argument-hint: "[help|harvest|create|deploy|audit]"
+argument-hint: "[help|harvest|create|deploy|audit] [--via-fiche|--direct]"
 description: >-
   Méta-skill qui transforme une discussion de session en un skill réutilisable.
   A utiliser quand l'utilisateur veut « créer un skill », « ezk-ezk »,
@@ -14,7 +14,8 @@ description: >-
   engineering:architecture (trancher la structure) et skill-creator (rédiger /
   valider / packager le SKILL.md) — il ne réimplémente aucun des trois. Pilotable
   par sous-commandes : help, harvest (récolte ≤3 sujets du contexte de session +
-  champ libre), create (brainstorm → archi → skill-creator, après validation),
+  champ libre), create (brainstorm → archi → skill-creator, après validation ;
+  avec --via-fiche, propose une fiche au backlog au lieu de fabriquer le skill),
   audit (convoque l'agent ezk-steward : gate mécanique + jugement du catalogue),
   deploy (range via scripts/deploy.sh : crée le dossier + symlink non-destructif,
   destination par défaut mega-city skills/). Frontière ADR-0001 : le LLM
@@ -98,7 +99,7 @@ orchestrateur.
 |---|---|
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + le rôle de chaque étape — ne lance rien |
 | `harvest` | **Récolte ≤ 3 sujets** par introspection du contexte de session courant + champ libre ; 1 seul candidat → confirmation. Ne génère rien |
-| `create` (**défaut** en langage naturel) | Déroule le flux complet : harvest → résumé + questions (boucle de validation) → compose les sous-skills → produit le contenu du SKILL.md → demande la destination |
+| `create` (**défaut** en langage naturel) | Déroule le flux complet : harvest → résumé + questions (boucle de validation) → compose les sous-skills → produit le contenu du SKILL.md → demande la destination. **Options** : `--direct` (défaut) fabrique le skill ; `--via-fiche` (alias `--propose`) propose une **fiche** au backlog à la place des étapes 5-6 — voir « Mode `create --via-fiche` » |
 | `deploy` | Range le skill validé via `scripts/deploy.sh` (dossier + symlink non-destructif + ligne de catalogue) puis émet le verdict de disponibilité + le fallback `/reload-skills` |
 | `audit` | **Convoque l'agent [`ezk-steward`](../../agents/ezk-steward.md)** (le gardien) : gate mécanique du repo puis jugement de cohérence du catalogue, verdict GO/NO-GO. ezk-ezk est le CLI de la librairie ; steward reste l'exécutant (modèle/effort épinglés) — décision PO 2026-08-24 |
 
@@ -179,6 +180,39 @@ bash skills/ezk-ezk/scripts/deploy.sh [--copy] <name> <chemin/SKILL.md> [dest-sk
 
 Après le déploiement, énonce le verdict de l'étape suivante.
 
+## Mode `create --via-fiche` — entrer par la porte du backlog
+
+**En clair.** Par défaut, `create` fabrique le skill tout de suite. Avec `--via-fiche` (alias
+`--propose`), il **propose une fiche** au backlog à la place, avec les specs et les contraintes déjà
+écrites. Le skill naît ensuite par le flux normal : groom, build, ship. « Bien faire la fiche, c'est
+déjà tout dire. » Le mode direct reste le défaut : `--direct` (rien à écrire) ne change rien au flux
+des six étapes.
+
+**Ce qui change.** Les étapes 1 à 4 restent telles quelles : récolte, cadrage, structure, validation.
+Les étapes 5 et 6 (fabrication par `skill-creator`, rangement par `deploy.sh`) sont **remplacées** par
+une seule étape, **5′ — Proposition de fiche**.
+
+**Étape 5′.** Délègue la création à `ezk-backlog add`, avec une description en quatre blocs. `add`
+garde ses réflexes : anti-doublon, regroupement, id horodaté, statut `idea`. Il demande aussi le type
+et la **priorité** (jamais inventée) : relaie ces questions à l'humain, ne les devine pas.
+
+1. **Problème et valeur** : tirés du cadrage de l'étape 2.
+2. **Specs** : ce que fait le skill, ses formulations de déclenchement, son format de sortie.
+3. **Contraintes et garde-fous** : la structure tranchée à l'étape 3 (script ou non, frontière
+   LLM / script) et ce que le skill ne doit jamais faire.
+4. **Source** : la session ou le dépôt d'où vient la matière, avec la date.
+
+Finis la fiche par cette consigne : *construire ce skill avec `/ezk-ezk create --direct`*. La fiche
+existe déjà ; relancer `--via-fiche` ferait une boucle. Elle doit être **tirable** : assez de matière
+pour groomer sans te redemander. Annonce-la à l'humain par son **titre + lien**, jamais par son id nu.
+
+**Garde-fous du mode.** Aucun `SKILL.md` n'est écrit. `deploy.sh` n'est pas appelé et `skill-creator` n'est pas invoqué.
+Rien n'est créé hors de `features/`, et seulement par `ezk-backlog add`. Si `add` trouve une fiche
+équivalente, propose de l'enrichir au lieu d'en créer une seconde.
+
+**Frontière avec `ezk-chef extract`.** `ezk-ezk` propose un **skill** via une fiche. `ezk-chef extract`
+produit une **recette**. Deux objets différents, deux portes différentes.
+
 ## Disponibilité intra-session — le verdict HONNÊTE
 
 Un skill fraîchement symlinké **n'est PAS visible dans la session en cours** :
@@ -219,6 +253,8 @@ SKILL.md**. Il ne touche **jamais** un fichier de l'utilisateur (invariant ADR-0
   Référencé **par capacité** (deux enregistrements existent —
   `anthropic-skills:skill-creator` et `skill-creator:skill-creator` — et le cache
   est versionné ; **jamais de chemin en dur**).
+- **`ezk-backlog add`** — reçoit la fiche pré-remplie en mode `--via-fiche` (étape 5′). Les
+  **recettes** viennent de `ezk-chef extract`, pas d'ici.
 
 Même idiome que `ezk-archive` (capacité de clôture qui appelle `ezk-backlog`,
 ne réimplémente pas le suivi) et `ezk-ci` (génère via `skill-creator` à partir

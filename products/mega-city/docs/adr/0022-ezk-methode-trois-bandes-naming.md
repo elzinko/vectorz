@@ -94,3 +94,9 @@ Une capacité utilisée par ≥ 2 rôles **ne vit pas** dans un orchestrateur.
   pr-pilot jusqu'à migration vers backlog.
 - Après merge : **re-bind / reload des skills locaux** (`~/.claude/skills`) pour
   prendre la carte dans `ezk-ezk`.
+
+## Addendum — 2026-10-01 (fiche 20260904091853948)
+
+`ezk-archive` est une **capacité de continuité d'exécution** (hygiène de session), pas une
+cérémonie agile : il existe parce qu'un agent perd sa mémoire entre deux sessions. Son corps
+s'auto-annule quand il n'y a rien à sauver (voie rapide « rien à archiver »).

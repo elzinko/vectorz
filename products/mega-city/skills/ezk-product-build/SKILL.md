@@ -3,7 +3,7 @@ roles: [ezk-pm]
 name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget]
 argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
@@ -177,6 +177,9 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 - **`lean` (défaut)** — délégation **simple et séquentielle** ; tu **préviens AVANT** tout
   fan-out multi-agents coûteux, et tu déclenches le checkpoint « dérive tokens » au-delà d'un
   seuil souple par sprint. Tu privilégies le moins cher qui tient la qualité.
+  **Compte le coût en appels d'agent** (ADR-0060, règle `token-economy/agent-call-budget`) : ~85k de
+  contexte fixe par appel. En `lean` : une seule DoR `ezk-pm` pour tout le lot de fiches, une revue
+  `ezk-reviewer` pour 2-3 petits patchs (jamais sautée), aucun explorateur, cible ≤ 200k par fiche.
 - **`cap`** (arrête-et-demande) — dès que la conso d'un sprint **dérape au-delà d'un seuil**
   (jugé, **pas un chiffre figé** — un `--budget` numérique attend une vraie jauge de dépense,
   cf. la fiche « fenêtre de contexte »), tu **t'arrêtes au point sûr le plus proche** (jamais un

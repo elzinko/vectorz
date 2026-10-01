@@ -167,8 +167,10 @@ OUT8="$(bash "$CHECK" --gate)"
 ok "sortie ≤ 60 lignes malgré 40 branches et 30 untracked" \
    "[ \"\$(echo \"\$OUT8\" | wc -l | tr -d ' ')\" -le 60 ]"
 ok "la troncature est ANNONCÉE, pas silencieuse" "echo \"\$OUT8\" | grep -q 'lignes omises\|faits omis'"
-ok "les compteurs restent justes malgré la troncature (branch_real=40)" \
-   "echo \"\$OUT8\" | grep -q 'branch_real=40'"
+ok "le compteur dit « affichées/total » quand la liste est coupée (branch_real=X/40)" \
+   "echo \"\$OUT8\" | grep -qE 'branch_real=[0-9]+/40 '"
+ok "plus jamais le total nu à côté d'une liste tronquée" \
+   "! echo \"\$OUT8\" | grep -q 'branch_real=40 '"
 ok "--point 1 permet de retrouver le détail d'un point" \
    "[ \"\$(bash \"\$CHECK\" --gate --point 1 | grep -c '^\[P1\]')\" -ge 25 ]"
 rm -f untracked-*.txt
@@ -184,7 +186,7 @@ ok "--full affiche aussi le verdict"         "echo \"\$FULL\" | grep -q 'VERDICT
 # c'est le piège que check.sh documente pour blob_landed, et il vaut aussi ici.
 GATE_AFTER="$(bash "$CHECK" --gate)"
 ok "--full et --gate s'accordent sur le nombre de branches réelles" \
-   "echo \"\$FULL\" | grep -q 'NON livré' && echo \"\$GATE_AFTER\" | grep -q 'branch_real=40'"
+   "echo \"\$FULL\" | grep -q 'NON livré' && echo \"\$GATE_AFTER\" | grep -qE 'branch_real=([0-9]+/)?40 '"
 
 echo "G7 — strictement read-only :"
 BEFORE_STATUS="$(git status --porcelain | sort)"

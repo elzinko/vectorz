@@ -71,13 +71,19 @@ describe('loadCatalog (données réelles du repo)', () => {
     const catalog = loadCatalog(repoRoot);
 
     // jugement / PO : pin Opus 4.8 + spare sonnet (0181 — jamais alias opus → Opus 5)
-    for (const id of ['ezk-architect', 'ezk-reviewer', 'ezk-pm', 'ezk-archive'] as const) {
+    for (const id of ['ezk-architect', 'ezk-reviewer', 'ezk-pm'] as const) {
       const agent = catalog.agents.get(id);
       expect(agent?.model, id).toBe('claude-opus-4-8');
       expect(agent?.model_spare, id).toBe('sonnet');
     }
     expect(catalog.agents.get('ezk-architect')?.effort).toBe('high');
-    expect(catalog.agents.get('ezk-archive')?.effort).toBe('medium');
+
+    // ezk-archive (fiche 20260904091853948) : léger par défaut ; le skill passe Opus 4.8 à l'appel
+    // pour le seul jugement des branches réelles, donc l'agent n'a pas besoin de model_spare.
+    const archive = catalog.agents.get('ezk-archive');
+    expect(archive?.model).toBe('sonnet');
+    expect(archive?.model_spare).toBeUndefined();
+    expect(archive?.effort).toBe('medium');
 
     // mécanique : sonnet (dérogation motivée 0181)
     const tdd = catalog.agents.get('ezk-dev');
@@ -241,6 +247,43 @@ describe('loadCatalog — frontmatter composes/composes-external (ADR-0025, fich
 
   it('rejette un id composé non sûr (assertSafeId, défense frontière)', () => {
     writeSkill('evil', ['name: evil', 'composes:', '  - ../../etc/passwd'].join('\n'));
+    expect(() => loadCatalog(root)).toThrow(/non sûr/);
+  });
+});
+
+describe('loadCatalog — frontmatter delegates (tier optionnel, fiche 20260812104022246)', () => {
+  let root: string;
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'lawgiver-delegates-'));
+  });
+  afterEach(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  function writeSkill(dir: string, frontmatter: string): void {
+    mkdirSync(join(root, 'skills', dir), { recursive: true });
+    writeFileSync(join(root, 'skills', dir, 'SKILL.md'), `---\n${frontmatter}\n---\n\ncorps\n`);
+  }
+
+  it('parse delegates: dans le champ delegates, à côté de composes:', () => {
+    writeSkill(
+      'archiver',
+      ['name: archiver', 'composes:', '  - a', 'delegates:', '  - ezk-backlog'].join('\n'),
+    );
+    const skill = loadCatalog(root).skills.get('archiver');
+    expect(skill?.delegates).toEqual(['ezk-backlog']);
+    expect(skill?.composes).toEqual(['a']);
+  });
+
+  it("n'ajoute pas le champ quand delegates est absent (rétro-compat)", () => {
+    writeSkill('plain', 'name: plain');
+    const skill = loadCatalog(root).skills.get('plain');
+    expect(skill).toEqual({ id: 'plain', content: 'corps' });
+    expect(skill).not.toHaveProperty('delegates');
+  });
+
+  it('rejette un id délégué non sûr (assertSafeId, défense frontière)', () => {
+    writeSkill('evil', ['name: evil', 'delegates:', '  - ../../etc/passwd'].join('\n'));
     expect(() => loadCatalog(root)).toThrow(/non sûr/);
   });
 });

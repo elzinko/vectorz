@@ -65,3 +65,27 @@ représentation « Skill = {id, content} » au-delà de l'ajout des deux champs.
   de vrais trous du profil `global` : c'est le **but** (finding, pas régression).
 - Suite : annoter progressivement tous les orchestrateurs ; remodel « Skill = dossier »
   quand la fiche 0121 l'exigera.
+
+## Amendement 2026-10-01 — le tier optionnel `delegates:` (fiche 20260812104022246, absorbe 0190)
+
+**En clair.** `composes:` dit « ce skill est requis ». Beaucoup de collaborateurs sont seulement
+**délégués s'ils sont là**, avec un repli écrit dans le skill. Les déclarer en `composes:` ferait
+avertir à tort les profils qui les omettent. `delegates:` est ce second tier : déclaré, tracé,
+jamais averti.
+
+- **Domaine et loader.** `Skill.delegates?: string[]`, lu par `readSkill` avec le même garde
+  `assertSafeId`. Absent ⇒ champ non posé.
+- **Checker.** `checkComposition` ne lit jamais `delegates` : aucun avertissement s'il manque, et
+  la fermeture ne le suit pas. Un délégué présent au profil est jugé comme tout skill résolu.
+- **Graphe compilé.** Lien `delegates`, skill → skill, verbe `compose` : le jeu fermé de verbes
+  (ADR-0040 D1) ne bouge pas. Un id inconnu est un lien cassé, comme pour `composes:`. Une cible hors
+  catalogue reste du ressort de `composes-external:`.
+- **Schéma.** Le bloc Mermaid de `skills/README.md` dessine `delegates:` en pointillé (`-.->`) et
+  `composes:` en trait plein ; une cible à la fois composée et déléguée reste en trait plein.
+- **Frontière des consignes.** Un format imposé est une règle de `rules/` déclarée par `applies:`.
+  Un appel forcé est une arête déclarée (`composes:` requis, `delegates:` optionnel) plus la phrase du
+  corps qui dit quand appeler. Pas de quatrième mécanisme.
+- **Garde.** Le corps du skill écrit le repli. Le contrôle automatique « tout `composes:` /
+  `delegates:` est cité dans le corps » est porté par la fiche 0066.
+- **Premier usage.** `ezk-archive` délègue `ship` / `add` / `regen` à `ezk-backlog` : il le déclare
+  en `delegates:` et écrit son repli (nommer les fiches à livrer, verdict `pending`).
