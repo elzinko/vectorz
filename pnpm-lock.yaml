@@ -60,18 +60,6 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4
 
-  products/cop1/packages/ceremony-engine:
-    dependencies:
-      '@cop1/llm-intelligence':
-        specifier: workspace:*
-        version: link:../llm-intelligence
-      '@cop1/observability':
-        specifier: workspace:*
-        version: link:../observability
-      '@cop1/shared-kernel':
-        specifier: workspace:*
-        version: link:../shared-kernel
-
   products/cop1/packages/journal-validator: {}
 
   products/cop1/packages/llm-intelligence:

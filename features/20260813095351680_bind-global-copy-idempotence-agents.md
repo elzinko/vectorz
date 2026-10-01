@@ -41,8 +41,9 @@ dans deux cas rares.
   et `doctor` restent justes). Un fichier réel avec ce marqueur est remplaçable ; sans marqueur, il reste
   protégé, avec un message qui dit quoi faire. Une ancienne copie sans marqueur se supprime à la main une fois.
 - **Projet : forme dossier.** `bind <profil> <projet>` écrit `.claude/skills/<id>/SKILL.md` et les annexes
-  (via `skillFolderFiles`). Un ancien fichier plat `.claude/skills/<id>.md` n'est pas touché : il coexiste,
-  sans effet. Pas de nettoyage automatique (on ne peut pas prouver qu'il est à nous).
+  (via `skillFolderFiles`). Un ancien fichier plat `.claude/skills/<id>.md` n'est pas touché : il coexiste.
+  Pas de nettoyage automatique (on ne peut pas prouver qu'il est à nous), mais `lawgiver bind` le SIGNALE
+  (retour de la revue adverse : un projet déjà bindé ne garde pas une copie périmée en silence).
 - **Regroupement : le plan porte le dossier.** `FileWrite.skillDir` (optionnel) dit à quel skill appartient
   chaque fichier ; plus de déduction par `SKILL.md`. Sans cette métadonnée, l'ancien repérage sert de repli.
   Skills imbriqués : posés dans l'ordre parent puis enfant en copie ; refusés avec un message clair en
@@ -61,7 +62,8 @@ dans deux cas rares.
 - [x] `status` et `doctor` restent justes : copie à jour = ok, copie périmée = signalée. Preuve : test
       `diagnose` sur une copie à jour puis périmée. `expectedItems` suit aussi le dossier déclaré par le plan.
 - [x] `bind <profil> <projet>` porte les annexes d'un skill (`approaches/`, `scripts/` en `+x`) ; un ancien
-      fichier plat n'est pas écrasé ni supprimé. Preuve : `apply-project-skills.test.ts`, `claude-code.test.ts`.
+      fichier plat n'est pas écrasé ni supprimé, et le bind le signale. Preuve : `apply-project-skills.test.ts`
+      (dont `staleFlatSkillFiles`), `claude-code.test.ts`.
 - [x] Un fichier annexe nommé `SKILL.md` est livré en copie, sans être pris pour un skill. Preuve : `apply-global-robust`
       (y compris au 2ᵉ passage) et `skill-content.test.ts`.
 - [x] Deux skills imbriqués sont posés tous les deux en copie ; en `--link`, refus explicite. Preuve :
@@ -81,7 +83,9 @@ pnpm --dir products/mega-city exec tsx bin/lawgiver.ts bind-global global --targ
 ## Suite (hors de ce POC)
 
 - Retirer automatiquement l'ancien fichier plat `.claude/skills/<id>.md` (il faudrait un marqueur écrit par
-  l'ancienne version, donc rien de prouvable).
+  l'ancienne version, donc rien de prouvable) : aujourd'hui le bind le signale, à toi de le supprimer.
+- Confirmer sur une vraie session que Claude Code ignore la clé d'en-tête `generated-by` d'un agent. Indice :
+  `model_spare`, autre clé propre à lawgiver, est déjà déployée dans les agents sans gêner leur chargement.
 - Alléger la contrainte qui force `ezk-backlog` à minter ses ids en ligne (« la copie ne livre que
   SKILL.md ») : à évaluer à part, maintenant que le projet porte aussi les scripts.
 - Cycle de vie des artefacts déployés (versioning, registre de bind) : fiche 0186.

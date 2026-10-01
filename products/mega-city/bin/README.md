@@ -25,7 +25,7 @@ autres (`law`, `dashboard`, `help`) partent du dossier où tu es. Les anciens sc
 
 Quatre commandes ne font que **lire** des fiches : `ezk dashboard`, `ezk board show`,
 `ezk backlog check` et `ezk backlog plan-head`. Elles lisent par défaut les fiches de la méthode.
-Pour lire celles d'un autre projet, désigne-le :
+(`ezk rules`, plus bas, vise un projet lui aussi.) Pour lire les fiches d'un autre projet, désigne-le :
 
 ```bash
 pnpm ezk --root ../muti dashboard         # l'option, avant la commande
@@ -42,6 +42,24 @@ viennent toujours de la méthode : seules les **données** (fiches, plan, récit
 projet désigné, et le pouce haut ou bas s'écrit dans `features/reviews/verdicts/` de ce projet. Une commande
 qui écrit dans la méthode (`views regen`) refuse un autre projet. Une commande n'accepte un projet que
 si le manifeste la marque `project: true` ; un test vérifie que son script sait alors le lire.
+
+## Les règles propres à un projet (`ezk rules`)
+
+Les règles de la méthode sont globales. Un projet peut avoir les siennes, qui ne valent que chez lui :
+il les déclare dans son dossier `.vectorz/` (modèle : [`.vectorz/rules.example.yml`](../../../.vectorz/rules.example.yml)).
+
+```bash
+pnpm ezk rules check --root ../samplerz   # le contrat est-il cohérent ? (code 1 sinon)
+pnpm ezk rules show  --root ../samplerz   # le jeu effectif : projet, commit, empreinte, garantie par règle
+pnpm ezk rules apply --root ../samplerz   # l'écrit dans .claude/rules/vectorz-project.md, que Claude Code charge
+```
+
+Sans `--root` ni `EZK_ROOT`, le projet est celui du dossier où tu es (sa racine git). Chaque règle dit ce
+qui la tient : un **gate déclaré**, que le projet exécute (vectorz n'en lance aucun et ne vérifie pas qu'il
+existe), une **revue a posteriori déclarée**, ou rien — un **conseil**, injecté dans le prompt mais jamais
+présenté comme garanti. Un `MUST` local sans
+gate ni revue est refusé ; le local peut durcir une règle globale, jamais la desserrer. Décision :
+[ADR-0050](../docs/adr/0050-couche-regles-projet-local.md).
 
 ## Ajouter une commande
 

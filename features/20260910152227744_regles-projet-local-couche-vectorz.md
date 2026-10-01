@@ -17,77 +17,109 @@ created: 2026-09-10
 
 ## En clair
 
-Aujourd'hui les règles ezk sont **globales** — elles s'appliquent à tous les projets qui
-utilisent vectorz. On veut qu'un projet (ex. samplerz) puisse avoir ses **propres** règles de
-dev (« conçois CE projet en hexagonal », « pas d'import `adapters` dans `domain` ») qui ne
-débordent **pas** sur les autres, restent **auditables** (prouver → retirer) et réutilisent des
-**bundles**. Décision d'archi actée en **[ADR-0050](../products/mega-city/docs/adr/0050-couche-regles-projet-local.md)**.
+Aujourd'hui les règles de la méthode sont globales : elles valent pour tous les projets. On veut
+qu'un projet (samplerz) ait ses propres règles, qui ne débordent pas chez les autres, et qu'on sache
+dire honnêtement lesquelles sont **garanties** (un contrôle automatique les vérifie) et lesquelles ne
+sont que des **conseils**. Le POC livre l'outil qui lit ces règles, les compose avec les bundles
+choisis, refuse les incohérences et écrit le résultat là où Claude Code le charge. Il ne fait pas
+tourner les contrôles et ne compte pas encore les violations : c'est la suite.
 
-## Contexte / Problème
+Décision d'architecture : [ADR-0050](../products/mega-city/docs/adr/0050-couche-regles-projet-local.md).
 
-Deux natures de règle projet, que le mécanisme actuel ne sait pas scoper à un projet :
+## Où on en est (relu contre le code du 2026-10-01)
 
-- **(a) invariant vérifiable** (« pas d'import `adapters/` dans `domain/` ») → un lint le vérifie
-  a posteriori ;
-- **(b) guidage génératif** (« hexagonal », « composition > héritage ») → un lint ne peut PAS le
-  produire ; ça vit dans la **composition du prompt** des agents.
+- `.vectorz/config.yml` existe déjà (modules GitHub, `src/loaders/project-config.ts`) : le dossier
+  `.vectorz/` est donc déjà « le contrat du projet ». Les règles n'y étaient pas.
+- Le mécanisme global `rules/` + `bundles/` existe (76 règles, 43 `MUST`). Ses `enforcements[]` sont
+  `prompt`, `agent-check` ou `hook`. **23 `MUST` globaux n'ont aucune garde** : c'est la dette que le
+  finding Codex P1 de la PR #219 demandait de ne pas casser d'un coup.
+- Claude Code charge `<projet>/.claude/rules/*.md` pour les agents qui tournent dans ce projet, sous-agents
+  compris (même mécanisme que `~/.claude/rules/iamthelaw.md`, ADR-0056). C'est le véhicule de la
+  composition : pas de runtime à écrire.
 
-Les mémoires projet / `CLAUDE.md` ne suffisent pas : ni garantie d'application, ni audit
-mesurable pour retirer une règle, ni composition ciblée par rôle, ni bundles.
+## Décisions du POC
 
-## Proposition (design ADR-0050)
-
-Une couche projet-local, **un seul mécanisme**, discriminée par `enforcements[]` :
-
-- **`.vectorz/` = le contrat du projet** : règles locales + manifeste sélectionnant les bundles
-  globaux + un binding par règle (`gate: <cmd | job CI>` | `advisory`).
-- **Méta-gate d'honnêteté** au load : `MUST` interdit sans `enforcements[]` résolvable → advisory
-  plafonné `SHOULD`/`GUIDE`. On sépare « chargée » (déterministe) de « appliquée » (gate).
-- **Split** : Découvrir + Composer + Mesurer = vectorz ; **Exécuter** le gate = le projet.
-- **Couplage inversé** : le projet expose ses gates, vectorz consomme le contrat (jamais le CI concret).
-- **POC-first** : loader + schéma de manifeste + méta-lint. Pas de runtime de plugins par agent.
+- **Disposition** : `.vectorz/rules.yml` (bundles globaux choisis + un binding par règle) et
+  `.vectorz/rules/<id>.md` (règle locale, même front-matter que les règles globales).
+- **Bindings** : `gate: "<commande ou job CI>"` (le projet l'exécute) · `review: "<agent ou point de
+  revue>"` (revue a posteriori liée) · `advisory` (conseil). Les deux premiers sont des
+  « enforcements résolvables » ; le troisième plafonne la règle à `SHOULD`/`MAY`.
+- **Trois commandes**, domaine `ezk rules` : `check` (le méta-lint, code 1 s'il y a une erreur), `show`
+  (imprime le jeu EFFECTIF : chemin du projet, SHA du commit, empreinte, étiquette de garantie par
+  règle), `apply` (écrit `.claude/rules/vectorz-project.md`, fichier à marqueur : jamais d'écrasement
+  d'un fichier sans marqueur, ni à travers un lien). Racine du projet : `--root` > `EZK_ROOT` >
+  racine git du dossier courant. Elle réutilise le résolveur de la fiche 20260826173221323, qui reçoit
+  son **défaut en paramètre** : la méthode pour les vues, la racine git du dossier courant ici (le
+  dossier courant lui-même hors dépôt git).
+- **SHA du commit** : valeur vide explicite (`aucun`, `null` en JSON) quand le projet n'est pas un dépôt
+  git ou n'a aucun commit. Ce n'est pas une erreur.
+- **Hors POC** (ADR-0050, action 5) : pas de runtime de plugins par agent, et vectorz n'exécute aucun
+  gate. « Exécuter » reste au projet.
 
 ## Critères d'acceptation
 
-- [ ] Un projet déclare dans `.vectorz/` une règle **locale** ; elle est **composée** dans le prompt
-  des agents QUAND ils tournent dans ce projet, et **absente** ailleurs (scope étanche).
-- [ ] Une règle `MUST` **sans enforcement résolvable est refusée au load** (erreur), pas
-  silencieusement dégradée — où un **enforcement** est soit un **gate exécutable** (invariant
-  machine, ex. import-linter), soit une **revue a posteriori** liée (règle de codage-JUGEMENT,
-  ex. hexagonal, vérifiée sur la PR). Les deux types comptent.
-- [ ] **Migration (finding Codex P1 PR #219)** : les règles `MUST` **existantes** sans enforcement
-  (ex. `products/mega-city/rules/hexagonal/*`, `development/local-first-feedback.md`) ne deviennent
-  **PAS inchargeables d'un coup**. Un chemin de migration est livré AVANT d'activer le méta-gate
-  strict : grandfathering daté, **ou** reclassification `MUST → SHOULD/GUIDE`, **ou** binding vers
-  une revue a posteriori. Le méta-gate strict ne s'active **qu'une fois le corpus migré**.
-- [ ] Une règle locale **ne peut pas DESSERRER** un `MUST` global (durcir OUI, desserrer → erreur au load).
-- [ ] Le loader **émet** le chemin résolu (`git rev-parse --show-toplevel`) + le SHA, et le **jeu
-  EFFECTIF** composé (pas le déclaré).
-- [ ] Chaque gate incrémente un **compteur d'audit** (chargé / violé / passé) → base du retrait mesuré.
+- [x] Manifeste `.vectorz/rules.yml` et règles locales `.vectorz/rules/<id>.md` chargés et validés
+      (YAML malformé ou champ inconnu : erreur qui cite le fichier). Preuve : `src/loaders/project-rules.ts`,
+      `src/core/project-rules.ts` (`parseRulesManifest`), tests `project-rules*.test.ts`.
+- [x] Le chargeur émet le chemin résolu du projet, le SHA du commit et l'empreinte du jeu EFFECTIF
+      composé (pas du déclaré). Preuve : `ezk rules show` (test « A, en texte » et « A » en JSON) ; hors
+      git, le SHA vaut `null` (test « C »).
+- [x] **Scope étanche** : un projet sans manifeste ne compose rien ; la règle locale d'un projet
+      n'apparaît jamais dans un autre (test sur deux projets jetables). Preuve : tests « B, sans contrat »
+      et « les règles locales d'un projet ne sortent que de SES entrées ».
+- [x] **Méta-gate** : un `MUST` local sans `gate:` ni `review:` est refusé au chargement (erreur) ;
+      `advisory` sur un `MUST` est refusé ; aucune dégradation silencieuse. Les deux types d'enforcement
+      comptent : un gate exécutable, ou une revue a posteriori liée. Preuve : `composeProjectRules` ; test du
+      script (code 1, message sur stderr, rien d'écrit).
+- [x] **Précédence** : le local peut ajouter ou durcir ; desserrer un `MUST` global est une erreur.
+      Preuve : tests « la précédence » (cœur et chargement).
+- [x] **Étiquette honnête** : la sortie dit pour chaque règle « gate déclaré (exécuté par le projet, non
+      vérifié ici) », « revue a posteriori déclarée » ou « conseil, non garanti » ; une règle advisory n'est
+      jamais présentée comme garantie. Le mot « déclaré » est voulu (retour de la revue adverse) : vectorz lit
+      la déclaration du projet, il ne vérifie pas que le contrôle existe. Preuve : test `guaranteeLabel` et
+      test « A » (deux natures, deux étiquettes).
+- [x] **Rien ne devient inchargeable** (finding Codex P1, PR #219) : le méta-gate de ce POC ne juge que les
+      règles LOCALES. Les 23 `MUST` globaux sans garde restent chargés tels quels ; la sortie les étiquette
+      « MUST sans garde (héritage global, non vérifié) » au lieu de les taire. La migration elle-même est en
+      « Suite » : elle précède toute activation du méta-gate sur le corpus global. Preuve : test « les MUST
+      globaux sans garde restent chargeables ».
+- [x] `ezk rules apply` écrit `.claude/rules/vectorz-project.md` dans le projet visé seulement. Preuve :
+      test « apply écrit le jeu dans A seulement » ; refus d'écraser un fichier sans marqueur, d'écrire à
+      travers un lien, ou dans un `.claude` qui sort du projet.
+- [x] Preuves sur projets jetables, jamais sur un vrai projet. Gate locale verte (typecheck, 1433 tests,
+      29 suites bash, liens). Le test s'est allégé : la commande tourne en mémoire, deux vrais processus
+      seulement, pour ne pas faire expirer un test voisin (délai de 5 s) sous charge.
 
-## Comment vérifier — LE TEST SE FAIT VIA VECTORZ UTILISÉ PAR UN AUTRE PROJET
+## Comment vérifier
 
-⚠️ **Contrainte PO** : le mécanisme ne se valide pas dans vectorz seul, mais dans le cadre d'un
-**projet consommateur** (samplerz = banc d'essai). Le test vise la **couche déterministe** (règle
-injectée + gate exécuté), **jamais** l'obéissance du LLM (non reproductible).
+Le test vise la couche déterministe (règle injectée, gate déclaré), jamais l'obéissance du LLM.
 
-1. **ROUGE (loader débranché)** — dans samplerz, un diff qui viole une règle-gate témoin
-   (`hexagonal-imports`) : le prompt composé **ne contient pas** l'id de la règle ; le gate n'est
-   **jamais** invoqué ; la violation passe.
-2. **VERT (loader branché, dans samplerz)** — même diff : (a) le prompt composé **contient** le
-   texte de la règle (preuve « chargée ») ET (b) le gate déclaré **s'exécute et rend ≠ 0**
-   (preuve « appliquée »).
-3. **DEUX NATURES** — le banc exerce **une** règle-gate ET **une** règle advisory (« préfère la
-   composition ») et prouve que le mécanisme **étiquette différemment leur garantie sans mentir**
-   (l'advisory est injectée, jamais présentée comme garantie).
-4. **SCOPING (négation)** — un **second** projet consommateur SANS cette règle : elle n'est **pas**
-   chargée. Prouve qu'elle est locale et ne fuit pas en global.
-5. **PRÉCÉDENCE** — un local qui tente d'abaisser un `MUST` global → le load **échoue**.
+```bash
+# deux projets jetables : A a une règle-gate et un conseil, B n'a rien
+pnpm ezk rules check --root /tmp/projet-a     # code 0
+pnpm ezk rules show  --root /tmp/projet-a     # les 2 règles, étiquetées différemment
+pnpm ezk rules show  --root /tmp/projet-b     # aucune règle projet : rien ne fuit
+pnpm --dir products/mega-city exec vitest run project-rules
+```
+
+## Suite (hors de ce POC)
+
+- **Migration des `MUST` globaux sans garde** (finding Codex P1, PR #219) : une base « héritage » datée des
+  23 ids, un avertissement chiffré, un test qui échoue sur le corpus réel quand un NOUVEAU `MUST` sans
+  garde apparaît, puis un mode strict global une fois la base vide. Elle touche le corpus global, pas le
+  mécanisme projet : chantier à part.
+- **Exécuter** les gates déclarés et tenir les compteurs d'audit (chargé / violé / passé), base du
+  retrait mesuré : demande un projet consommateur réel.
+- **Banc d'essai samplerz** (contrainte PO) : une règle-gate (`hexagonal-imports`) et une règle conseil,
+  rouge sans chargeur, vert avec. À jouer avec le PO.
+- Plafond de règles composées par agent (dilution « lost in the middle »).
+- Résoudre un `gate:` (le script existe-t-il ?) ; aujourd'hui seule sa forme est contrôlée.
+- Passer l'ADR-0050 de « Proposé » à « Accepté » quand le banc d'essai est passé.
 
 ## Notes
 
-- Dépend de : le mécanisme `rules/` + `bundles/` existant (le local l'ÉTEND, ne le duplique pas).
-- Découle de la rétro samplerz 2026-09-06 : plusieurs règles proposées étaient méthode-wide, mais
-  d'autres seraient propres à un projet — d'où ce besoin de scope.
-- Alternatives rejetées (ADR-0050) : B (mémoires/`CLAUDE.md` seuls, pas d'enforcement/audit) ;
-  C (registre mince + gates CI seuls — jette le guidage génératif (b)).
+- Dépend du mécanisme `rules/` + `bundles/` existant : le local l'étend, il ne le duplique pas.
+- Né de la rétro samplerz du 2026-09-06 : certaines règles proposées valaient pour la méthode, d'autres
+  pour un seul projet.
+- Alternatives rejetées (ADR-0050) : B (mémoires et `CLAUDE.md` seuls : ni garantie, ni audit) ; C
+  (registre mince et gates CI seuls : jette le guidage génératif).

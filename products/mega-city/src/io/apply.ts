@@ -128,6 +128,22 @@ export function applyPlan(plan: WritePlan, projectDir: string, options: ApplyOpt
   }
 }
 
+/**
+ * Les anciens fichiers PLATS `.claude/skills/<id>.md` (la forme d'avant la fiche 20260813095351680) qui
+ * traînent à côté du dossier `.claude/skills/<id>/` que le plan écrit. On ne les supprime JAMAIS (rien ne
+ * prouve qu'ils sont à nous) : on les SIGNALE, pour qu'un projet déjà bindé ne garde pas en silence une
+ * copie périmée d'un skill. Lecture seule ; chemins relatifs au projet.
+ */
+export function staleFlatSkillFiles(plan: WritePlan, projectDir: string): string[] {
+  const stale: string[] = [];
+  for (const file of plan.files) {
+    if (file.skillDir === undefined || file.path !== `${file.skillDir}/SKILL.md`) continue;
+    const flat = `${file.skillDir}.md`;
+    if (existsSync(resolveInsideProject(projectDir, flat))) stale.push(flat);
+  }
+  return stale;
+}
+
 /** Le nom de fichier canonique d'une skill matérialisée par le cap global. */
 /**
  * Discrimine les deux formes du plan global : arbre des skills (`skills/<id>/...`, un dossier
