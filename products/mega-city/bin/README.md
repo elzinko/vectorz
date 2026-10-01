@@ -55,8 +55,9 @@ pnpm ezk rules apply --root ../samplerz   # l'écrit dans .claude/rules/vectorz-
 ```
 
 Sans `--root` ni `EZK_ROOT`, le projet est celui du dossier où tu es (sa racine git). Chaque règle dit ce
-qui la tient : un **gate** que le projet exécute (vectorz n'en lance aucun), une **revue a posteriori**,
-ou rien — un **conseil**, injecté dans le prompt mais jamais présenté comme garanti. Un `MUST` local sans
+qui la tient : un **gate déclaré**, que le projet exécute (vectorz n'en lance aucun et ne vérifie pas qu'il
+existe), une **revue a posteriori déclarée**, ou rien — un **conseil**, injecté dans le prompt mais jamais
+présenté comme garanti. Un `MUST` local sans
 gate ni revue est refusé ; le local peut durcir une règle globale, jamais la desserrer. Décision :
 [ADR-0050](../docs/adr/0050-couche-regles-projet-local.md).
 

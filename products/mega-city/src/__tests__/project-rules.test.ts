@@ -279,8 +279,10 @@ describe('composeProjectRules — les règles globales des bundles choisis', () 
 
 describe('étiquette de garantie — honnête sur ce qui est vérifié', () => {
   it('chaque garantie a son mot, et le conseil n’est jamais présenté comme garanti', () => {
-    expect(guaranteeLabel({ kind: 'gate', ref: 'pnpm lint:imports' })).toMatch(/gate.*pnpm lint:imports.*projet/);
-    expect(guaranteeLabel({ kind: 'review', ref: 'ezk-reviewer' })).toMatch(/revue a posteriori.*ezk-reviewer/);
+    const gate = guaranteeLabel({ kind: 'gate', ref: 'pnpm lint:imports' });
+    expect(gate).toMatch(/gate déclaré.*pnpm lint:imports.*projet/);
+    expect(gate).toMatch(/non vérifié/); // vectorz lit la déclaration, il ne vérifie pas que le contrôle existe
+    expect(guaranteeLabel({ kind: 'review', ref: 'ezk-reviewer' })).toMatch(/revue a posteriori déclarée.*ezk-reviewer/);
     expect(guaranteeLabel({ kind: 'hook' })).toMatch(/hook/);
     expect(guaranteeLabel({ kind: 'agent-check', ref: 'ezk-reviewer' })).toMatch(/ezk-reviewer/);
     expect(guaranteeLabel({ kind: 'unguarded-must' })).toMatch(/sans garde.*non vérifié/);
@@ -320,7 +322,7 @@ describe('empreinte et rendu du jeu effectif', () => {
     expect(isManagedProjectRules(text)).toBe(true);
     expect(text).toMatch(/^---\ngenerated-by: ezk rules apply\n---\n/);
     expect(text).toContain('## a  `[MUST]`');
-    expect(text).toContain('gate : pnpm lint');
+    expect(text).toContain('gate déclaré : pnpm lint');
     expect(text).toContain('## b  `[SHOULD]`');
     expect(text).toContain('conseil, non garanti');
     expect(text).toContain('Texte local de a.');

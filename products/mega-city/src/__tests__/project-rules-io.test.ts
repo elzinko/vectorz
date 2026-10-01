@@ -188,7 +188,7 @@ describe('écriture gardée du jeu composé', () => {
     const outside = scratch();
     symlinkSync(outside, join(root, '.claude'));
     expect(() => writeProjectRulesFile(root, content)).toThrow(/sort du projet/);
-    expect(existsSync(join(outside, 'rules', 'vectorz-project.md'))).toBe(false);
+    expect(existsSync(join(outside, 'rules'))).toBe(false); // refusé AVANT de créer un dossier hors du projet
   });
 
   it('retire NOTRE fichier, et seulement lui', () => {
@@ -236,7 +236,7 @@ describe('ezk rules — le banc d’essai (projets consommateurs jetables)', () 
     expect(shown.digest).toMatch(/^[0-9a-f]{12}$/);
     const byId = Object.fromEntries(shown.rules.map((x) => [x.id, x]));
     expect(byId['hexagonal-imports']).toMatchObject({ origin: 'local', guarantee: { kind: 'gate' } });
-    expect(byId['hexagonal-imports']?.label).toMatch(/gate : pnpm lint:imports/);
+    expect(byId['hexagonal-imports']?.label).toMatch(/gate déclaré : pnpm lint:imports/);
     expect(byId['prefer-composition']).toMatchObject({ origin: 'local', guarantee: { kind: 'advisory' } });
     expect(byId['prefer-composition']?.label).toBe('conseil, non garanti');
     expect(shown.rules.some((x) => x.origin === 'global' && x.id.startsWith('clean-code/'))).toBe(true); // le bundle choisi
@@ -247,7 +247,9 @@ describe('ezk rules — le banc d’essai (projets consommateurs jetables)', () 
     expect(r.code).toBe(0);
     expect(r.out).toContain(`Projet : ${projectA} (racine git)`);
     expect(r.out).toMatch(/Commit : [0-9a-f]{40}/);
-    expect(r.out).toContain('## hexagonal-imports  `[MUST]`  gate : pnpm lint:imports (exécuté par le projet)');
+    expect(r.out).toContain(
+      '## hexagonal-imports  `[MUST]`  gate déclaré : pnpm lint:imports (exécuté par le projet, non vérifié ici)',
+    );
     expect(r.out).toContain('## prefer-composition  `[SHOULD]`  conseil, non garanti');
     expect(r.out).not.toMatch(/^---$/m); // l'en-tête du fichier n'est pas dans l'affichage
   });
@@ -274,7 +276,7 @@ describe('ezk rules — le banc d’essai (projets consommateurs jetables)', () 
     expect(rules('apply', projectA).code).toBe(0);
     const text = readFileSync(join(projectA, PROJECT_RULES_FILE), 'utf8');
     expect(text).toContain('Aucun import de `adapters/` dans `domain/`.');
-    expect(text).toContain('gate : pnpm lint:imports');
+    expect(text).toContain('gate déclaré : pnpm lint:imports');
     expect(text).toContain('conseil, non garanti');
     expect(existsSync(join(projectB, PROJECT_RULES_FILE))).toBe(false);
     expect(rules('apply', projectA).out).toContain('déjà à jour');

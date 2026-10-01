@@ -35,6 +35,23 @@ function assertOurs(target: string): void {
   }
 }
 
+/**
+ * Le dossier visé reste sous le projet. On regarde le plus proche ancêtre qui EXISTE (le dossier peut ne
+ * pas exister encore) : un `.claude` en lien vers l'extérieur est refusé AVANT tout `mkdir`, donc rien
+ * n'est créé hors du projet, pas même un dossier vide.
+ */
+function assertInsideProject(projectRoot: string, dir: string): void {
+  let probe = dir;
+  while (!existsSync(probe)) probe = dirname(probe);
+  const realRoot = realpathSync(projectRoot);
+  const realProbe = realpathSync(probe);
+  if (realProbe !== realRoot && !realProbe.startsWith(realRoot + sep)) {
+    throw new ProjectRulesFileError(
+      `refus : ${dir} sort du projet (un lien dans le chemin) ; rien n'a été écrit.`,
+    );
+  }
+}
+
 export type WriteOutcome = 'created' | 'updated' | 'unchanged';
 
 /** Écrit le jeu composé. Idempotent : un contenu identique ne touche pas au disque. */
@@ -43,14 +60,8 @@ export function writeProjectRulesFile(projectRoot: string, content: string): Wri
   assertOurs(target);
   const existed = existsSync(target);
   if (existed && readFileSync(target, 'utf8') === content) return 'unchanged';
+  assertInsideProject(projectRoot, dirname(target));
   mkdirSync(dirname(target), { recursive: true });
-  const realRoot = realpathSync(projectRoot);
-  const realDir = realpathSync(dirname(target));
-  if (realDir !== realRoot && !realDir.startsWith(realRoot + sep)) {
-    throw new ProjectRulesFileError(
-      `refus : ${dirname(target)} sort du projet (un lien dans le chemin) ; rien n'a été écrit.`,
-    );
-  }
   writeFileSync(target, content);
   return existed ? 'updated' : 'created';
 }

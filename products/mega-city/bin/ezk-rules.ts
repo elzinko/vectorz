@@ -22,7 +22,8 @@ import { gitFacts } from '../src/loaders/project-rules.js';
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const here = process.env.INIT_CWD || process.cwd();
-const { root, rest } = projectRootOrExit(gitFacts(here).toplevel ?? resolve(here));
+// Pas de bandeau « Projet visé » : chaque sortie de `ezk rules` nomme déjà le projet qu'elle traite.
+const { root, rest } = projectRootOrExit(gitFacts(here).toplevel ?? resolve(here), undefined, { announce: false });
 const [verb, ...flags] = rest;
 if (verb !== 'check' && verb !== 'show' && verb !== 'apply') {
   console.error('Usage : ezk rules check|show|apply [--root <projet>] (show : [--json])');

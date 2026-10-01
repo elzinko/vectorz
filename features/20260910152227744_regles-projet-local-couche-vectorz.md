@@ -73,9 +73,11 @@ Décision d'architecture : [ADR-0050](../products/mega-city/docs/adr/0050-couche
       script (code 1, message sur stderr, rien d'écrit).
 - [x] **Précédence** : le local peut ajouter ou durcir ; desserrer un `MUST` global est une erreur.
       Preuve : tests « la précédence » (cœur et chargement).
-- [x] **Étiquette honnête** : la sortie dit pour chaque règle « gate (exécuté par le projet) », « revue a
-      posteriori » ou « conseil, non garanti » ; une règle advisory n'est jamais présentée comme garantie.
-      Preuve : test `guaranteeLabel` et test « A » (deux natures, deux étiquettes).
+- [x] **Étiquette honnête** : la sortie dit pour chaque règle « gate déclaré (exécuté par le projet, non
+      vérifié ici) », « revue a posteriori déclarée » ou « conseil, non garanti » ; une règle advisory n'est
+      jamais présentée comme garantie. Le mot « déclaré » est voulu (retour de la revue adverse) : vectorz lit
+      la déclaration du projet, il ne vérifie pas que le contrôle existe. Preuve : test `guaranteeLabel` et
+      test « A » (deux natures, deux étiquettes).
 - [x] **Rien ne devient inchargeable** (finding Codex P1, PR #219) : le méta-gate de ce POC ne juge que les
       règles LOCALES. Les 23 `MUST` globaux sans garde restent chargés tels quels ; la sortie les étiquette
       « MUST sans garde (héritage global, non vérifié) » au lieu de les taire. La migration elle-même est en

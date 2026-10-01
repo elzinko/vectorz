@@ -273,10 +273,11 @@ const byId = (a: { id: string }, b: { id: string }): number => (a.id < b.id ? -1
 /** Le mot qui dit, sans mentir, ce qui tient la règle. */
 export function guaranteeLabel(guarantee: Guarantee): string {
   switch (guarantee.kind) {
+    // « déclaré » : vectorz lit la déclaration du projet, il ne vérifie pas que le contrôle existe ni qu'il tourne.
     case 'gate':
-      return `gate : ${guarantee.ref} (exécuté par le projet)`;
+      return `gate déclaré : ${guarantee.ref} (exécuté par le projet, non vérifié ici)`;
     case 'review':
-      return `revue a posteriori : ${guarantee.ref}`;
+      return `revue a posteriori déclarée : ${guarantee.ref}`;
     case 'hook':
       return 'hook git (bloquant)';
     case 'agent-check':
@@ -297,9 +298,9 @@ export function rulesDigest(rules: readonly EffectiveRule[]): string {
 }
 
 const LEGEND =
-  'Garanties. « gate » : un contrôle exécutable du projet vérifie la règle (vectorz ne l’exécute pas). ' +
-  '« revue a posteriori » : la règle est relue après coup. « conseil » : la règle est injectée dans le prompt ; ' +
-  'elle n’est jamais présentée comme une garantie.';
+  'Garanties. « gate déclaré » : le projet déclare un contrôle exécutable pour cette règle ; vectorz ne l’exécute pas ' +
+  'et ne vérifie pas qu’il existe. « revue a posteriori déclarée » : le projet dit que la règle est relue après coup. ' +
+  '« conseil » : la règle est injectée dans le prompt ; elle n’est jamais présentée comme une garantie.';
 
 /**
  * Le jeu effectif en markdown : ce que Claude Code charge pour les agents de CE projet. Déterministe :
