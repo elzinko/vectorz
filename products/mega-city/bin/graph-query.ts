@@ -8,9 +8,9 @@
  *   pnpm --dir products/mega-city graph:query applique documentation-guidelines/human-facing-lisibility --inverse
  *   → répond « qui vérifie / applique cette règle ? » sans grep (critère de vérification, fiche 357).
  *
- * On peut demander un VERBE (compose · convoque · applique · est-verifie-par : le sens) ou un
- * LIEN (le nom historique du champ : composes, roles, applies…). Sens direct par défaut ;
- * `--inverse` pour remonter (« qui applique cette règle ? »).
+ * On peut demander un VERBE (compose · convoque · applique · est-verifie-par · utilise : le sens)
+ * ou un LIEN (le nom historique du champ : composes, roles, applies, uses…). Sens direct par
+ * défaut ; `--inverse` pour remonter (« qui applique cette règle ? », « qui utilise cet outil ? »).
  *
  * Un nœud est {kind, id}, pas un id : le catalogue a un agent ET un skill `ezk-archive`.
  * Quand un id est partagé, écris `kind:id` (graph:query compose skill:ezk-archive). Un LIEN
@@ -48,6 +48,8 @@ if (!relation || !ref) {
     'Exemple : graph:query applique documentation-guidelines/human-facing-lisibility --inverse',
   );
   console.log('Exemple : graph:query compose skill:ezk-archive   (id partagé par un agent et un skill)');
+  console.log('Exemple : graph:query utilise ezk-backlog   (les outils que ce skill utilise)');
+  console.log('Exemple : graph:query utilise bin/regen-backlog.sh --inverse   (qui utilise cet outil ?)');
   process.exit(1);
 }
 

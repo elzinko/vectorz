@@ -196,7 +196,8 @@ describe('provenance — prouvé / déduit, sans tricher', () => {
       catalog.agents.size +
       catalog.skills.size +
       catalog.bundles.size +
-      catalog.profiles.size;
+      catalog.profiles.size +
+      (catalog.tools?.size ?? 0); // les outils (ADR-0058) : leur fichier existe, ils sont prouvés
     expect(data.provenance.prouve.briques).toBe(briques);
     expect(data.provenance.deduit.briques).toBe(0);
     expect(data.provenance.prouve.liens).toBe(graph.edges.length);

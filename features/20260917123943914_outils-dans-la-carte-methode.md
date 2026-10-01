@@ -16,81 +16,117 @@ created: 2026-09-17
 
 ## En clair
 
-Quand on ouvre la carte méthode (`pnpm ezk:map`), on voit les **skills**, les **agents**, les
-**règles**, les **bundles** et les **profils**, et comment ils se composent. Mais on **ne voit pas
-les outils** que la méthode utilise vraiment : les scripts `bin/*.ts`, les `.sh`, les commandes CLI
-(`regen-backlog`, `avancement`, `fiches:check`…). Le PO l'a relevé le 2026-09-17 : *« on ne voit pas
-les outils utilisés par la méthode dans la map »*.
+La carte méthode (`pnpm ezk dashboard`) montre les skills, les agents, les règles, les bundles
+et les profils. Elle ne montre pas les **outils** que ces skills lancent : les scripts de
+`bin/` et les `scripts/` de chaque skill. Le PO l'a relevé le 2026-09-17.
 
-Cette fiche propose d'ajouter un **6ᵉ type de nœud, `tool`**, relié aux skills/agents qui s'en
-servent — pour qu'on voie, sur la carte, quel outil fait quoi et qui l'appelle.
+Ce lot ajoute un 6ᵉ type de nœud, `tool`, relié aux skills qui le citent. Le lien se **calcule**
+depuis les fichiers : rien à saisir, rien à tenir à jour à la main.
 
 ## Contexte / Problème
 
-Le graphe compilé (`products/mega-city/src/core/graph.ts`) modélise **5 types de nœuds** :
-`rule | agent | skill | bundle | profile`, avec leurs liens de composition (`composes`, `roles`,
-`competences`, `enforces`, `profile-*`…). Les **outils** ne sont pas des nœuds :
+Le graphe compilé (`products/mega-city/src/core/graph.ts`) modélise cinq types de nœuds :
+`rule`, `agent`, `skill`, `bundle`, `profile`. Un script de `bin/` ou un `.sh` n'est nulle part
+sur la carte. `ezk-help` liste les commandes, mais ne dit pas quel skill lance quel outil.
+Analogie : on a le plan des pièces et qui communique avec qui, pas les appareils branchés dans
+chaque pièce.
 
-- un `bin/*.ts` ou un `*.sh` (ex. `regen-backlog.sh`, `ezk-map.ts`, `check-fiches.ts`) n'apparaît
-  nulle part sur la carte ;
-- une **commande** (script npm, sous-commande de skill) n'y est pas non plus.
+## Proposition (le cadrage)
 
-Aujourd'hui les **commandes** sont listées par `ezk-help` (l'index des commandes), et le CLI unique
-est le sujet de [`20260903134906920`](done/20260903134906920_cli-ezk-point-d-entree-unique.md). Mais
-aucune de ces deux briques ne **relie** un outil au(x) skill(s) qui l'appelle(nt), ni ne le pose sur
-la **carte** à côté des skills. Résultat : la carte dit *quelles* skills existent et *qui compose
-qui*, mais pas *avec quels outils* la méthode s'exécute.
+1. **Un outil, c'est quoi.** Un fichier script de `products/mega-city/bin/` ou de
+   `skills/<skill>/scripts/`. Les scripts `test-*` sont des tests, pas des outils. L'id de
+   l'outil est son chemin depuis `products/mega-city` (par exemple `bin/regen-backlog.sh`).
+2. **D'où vient le lien.** Il est calculé. Un skill *utilise* un outil quand son `SKILL.md`
+   (ou un `.md` de son dossier) cite le chemin de l'outil. Les écritures qui comptent : le
+   chemin complet, `<skill>/scripts/x` avec un vrai nom de skill, et `scripts/x` pour les
+   propres scripts du skill, nu ou noté par un gabarit (`<skill>/scripts/x`, `$VAR/scripts/x`,
+   `../scripts/x`). Un nom nu comme `check.sh` ne compte pas : il est ambigu.
+3. **Le vocabulaire.** Nouveau nœud `tool`, nouveau lien `uses` (skill vers outil), nouveau
+   verbe `utilise`. L'ADR-0040 (D1) ferme le jeu de verbes : « un cinquième verbe est une décision
+   de conception, pas un ajout en passant », et le test `graph-vocabulary` fige ce jeu. Aucun des
+   quatre verbes ne dit « lance cet outil » sans tordre son sens. Ce lot prend donc la décision,
+   et la trace dans un ADR court qui amende l'ADR-0040 (statut *proposé*). Le PO la valide en
+   mergeant la PR. Elle est réversible : retirer `utilise` et `uses` suffit.
+4. **Les commandes.** Le manifeste de la commande `ezk` (`ezk-manifest.yml`) dit déjà quelle
+   commande lance quel script. Chaque outil en reprend ses commandes (`ezk dashboard`…), sans
+   nouvelle liste à maintenir.
+5. **Orphelin.** Un outil est justifié par un skill qui le cite, par une commande du manifeste
+   (ou installée par le champ `bin` de `package.json`, comme le lanceur `ezk`), ou par une
+   raison `internal` du manifeste. Sinon il est **orphelin** : il est signalé, jamais
+   masqué. Chaque orphelin est listé avec sa raison. Aucun *faux* orphelin n'est toléré sur les
+   cas connus (voir les critères).
+6. **Le rendu.** Une section « Les outils » dans la carte méthode, chaque outil relié aux
+   skills qui le citent. Le dossier d'un skill liste ses outils. Les orphelins rejoignent le
+   « bruit restant » de la carte.
 
-Analogie : on a le plan des **pièces** de la maison (skills/agents) et **qui communique avec qui**
-(composition), mais pas les **appareils** branchés dans chaque pièce (les outils).
+Hors lot : les agents qui utilisent un outil (`agent → tool`) et les commandes de `package.json`
+(le manifeste couvre déjà les commandes utiles). Voir « Suite ».
 
-## Proposition (esquisse — à cadrer à l'étape Archi)
+## Critères d'acceptation
 
-1. **Nouveau `NodeKind` : `tool`.** Un outil = un `bin/*` / `*.sh` / commande de la méthode.
-2. **Nouveau lien `uses` : `skill → tool`** (et `agent → tool` si pertinent). La carte affiche
-   l'outil rattaché aux skills qui l'appellent (provenance).
-3. **La source des arêtes `skill↔tool`** — la vraie décision d'archi : d'où vient la relation ?
-   Options à trancher :
-   - **parser les `SKILL.md`** pour les références de scripts/commandes qu'ils mentionnent (dérivé,
-     pas de saisie — cohérent avec « la carte dit vrai, compilée des fichiers ») ;
-   - un **champ déclaré** (`tools:`/`uses:`) dans le front-matter des skills ;
-   - s'adosser à un **manifeste de commandes** existant (celui d'`ezk-help`).
-   Reco de départ : **dérivé** (parse), pour ne pas créer une liste à maintenir à la main.
-4. **Rendu** sur la carte méthode (`diagrams/methode-mega-city/`) : les outils comme une strate/forme
-   distincte, reliés aux skills.
+- [x] Le graphe compilé porte des nœuds `tool` (scripts de `bin/` et de `skills/*/scripts/`,
+      hors `test-*`) et des liens `uses` skill vers outil, **calculés** depuis les fichiers.
+      La sortie reste déterministe.
+- [x] Le jeu de verbes passe à cinq (`utilise`). Le test de vocabulaire fige le nouveau couple
+      `skill>tool`. Un ADR court amende l'ADR-0040.
+- [x] Chaque outil porte ses commandes `ezk …` (manifeste) et, s'il y en a une, sa raison
+      `internal`.
+- [x] Un outil sans skill, sans commande et sans raison `internal` est **signalé** : dans le
+      rapport du graphe (`pnpm ezk graph check`) et dans le « bruit restant » de la carte,
+      chacun avec sa raison.
+- [x] **Zéro faux orphelin sur les cas connus**, vérifié par un test sur le dépôt réel :
+      `bin/regen-backlog.sh` est relié à `ezk-backlog`, et chaque script de `skills/*/scripts/`
+      cité par le `SKILL.md` de son propre skill est relié à ce skill.
+- [x] La carte méthode a une section « Les outils » : chaque outil relié à ses skills (puces
+      cliquables). Le dossier d'un skill liste « Utilise → (outils) ». Le dossier d'un outil donne
+      sa source, ses commandes et ses skills.
+- [x] La provenance compte les outils comme **prouvés** (leur fichier existe). Régénérer la
+      carte (`map:data`) est idempotent ; le test « carte à jour » passe.
+- [x] Preuve avant/après en PR : une capture de la carte (`pr-evidence.sh` : section « Les
+      outils » absente avant, présente après) et le diff du bloc de données de la carte
+      (`map:data`).
+- [x] Gate locale verte et liens markdown OK.
 
-## Critères d'acceptation (esquisse — à groomer)
-
-- [ ] Le graphe compilé porte un type de nœud `tool` + un lien `uses` (skill/agent → tool), **dérivé**
-      des fichiers (pas de liste saisie à la main).
-- [ ] La carte méthode **affiche** les outils, chacun relié à au moins un skill/agent qui l'appelle.
-- [ ] Un outil **orphelin** (référencé par aucun skill) est signalé, pas masqué en silence (cohérent
-      avec la doctrine de provenance de la carte).
-- [ ] Gate locale verte (typecheck/lint/tests) + liens markdown OK.
+**Preuves.** Tests : `tools.test.ts` (chaque règle du calcul du lien), `tools-loader.test.ts`
+(ce qui est listé, ce que le manifeste dit, ce qui ne jette jamais), `graph-tools.test.ts`
+(nœuds, liens, orphelins), `tools-real-repo.test.ts` (le dépôt réel : cas connus reliés, zéro faux
+orphelin, source de chaque outil) et `graph-vocabulary.test.ts` (cinq verbes). Sur le dépôt réel,
+le 2026-10-01 : 73 outils, 4 orphelins (`bin/build-mcpb.sh`, `bin/fiche-rows.ts`,
+`bin/recipe-frontmatter.ts`, `bin/supervision-demo-run.ts`). Avant/après : voir la PR.
 
 ## Comment vérifier
 
 ```bash
-pnpm ezk:map
+pnpm ezk graph check      # nombre de nœuds par type, dont les outils, et les orphelins
+pnpm ezk dashboard        # ouvrir la carte méthode : section « Les outils »
 ```
 
-Ouvrir la **carte méthode** : les outils (`regen-backlog`, `avancement`, `fiches:check`…)
-apparaissent, chacun **relié** aux skills qui l'utilisent.
+1. Dans la carte, ouvrir un outil cité (`bin/regen-backlog.sh`) : sa source, ses skills
+   (`ezk-backlog`…) et ses commandes s'affichent.
+2. Ouvrir le skill `ezk-backlog` : son dossier liste ses outils.
+3. Le « bruit restant » nomme les orphelins, chacun avec sa raison.
+4. Retirer une mention d'outil dans un `SKILL.md`, régénérer (`map:data`) : le lien disparaît.
 
 ## Anti-doublon
 
-- **≠ `ezk-help`** (`20260903085150321` et voisines) : `ezk-help` **liste** les commandes ; ici on les
-  **pose sur la carte** et on les **relie** aux skills (mécanisme du graphe, pas un index).
-- **≠ CLI `ezk`** ([`20260903134906920`](done/20260903134906920_cli-ezk-point-d-entree-unique.md)) : le CLI
-  est le **point d'entrée** d'exécution ; cette fiche est une **facette de visualisation** de la carte.
-- **S'adosse** au graphe compilé + validateur (ADR-0040) : c'est un **6ᵉ NodeKind**, pas un
+- **≠ `ezk-help`** : il *liste* les commandes. Ici on les *pose sur la carte* et on les relie
+  aux skills (un mécanisme du graphe, pas un index).
+- **≠ CLI `ezk`** (20260903134906920) : le CLI est le point d'entrée d'exécution. Cette fiche
+  est une facette de visualisation de la carte. Elle *lit* son manifeste, elle ne le change pas.
+- **S'adosse** au graphe compilé et à son validateur (ADR-0040) : un 6ᵉ type de nœud, pas un
   nouveau système.
-- **Facette de la carte méthode** — voisine des facettes de l'ex-épic carte (`20260821163346487`,
-  fondu A16) : provenance, unités de revue… « voir les outils » est une facette de plus.
+
+## Suite (hors lot)
+
+- Liens `agent → tool` quand les agents citent des outils.
+- Liens `outil → outil` : un script lancé par un autre script. Ils expliqueraient sans doute
+  les orphelins de `bin/` qui restent (`fiche-rows.ts`, `recipe-frontmatter.ts`…).
+- Outils décrits par une commande `package.json` sans script `bin/` propre.
+- Une carte dédiée « outils » si la section devient trop dense.
 
 ## Notes
 
-- **Origine** : retour PO du 2026-09-17 en testant `ezk:map` (« on ne voit pas les outils de la
-  méthode dans la map »). Confirmé côté code : `NodeKind = rule|agent|skill|bundle|profile` — pas de
-  `tool` (`products/mega-city/src/core/graph.ts`).
-- **Product `mega-city`** (là où vivent le graphe, la carte et les outils `bin/`).
+- **Origine** : retour du PO le 2026-09-17 en testant la carte (« on ne voit pas les outils de
+  la méthode dans la map »). Confirmé dans le code : `NodeKind` n'avait pas de `tool`
+  (`products/mega-city/src/core/graph.ts`).
+- **Product `mega-city`** : là où vivent le graphe, la carte et les outils `bin/`.

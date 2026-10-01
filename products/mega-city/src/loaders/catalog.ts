@@ -13,6 +13,7 @@ import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'n
 import { join, relative, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
+import type { Tool } from '../core/tools.js';
 import type {
   Agent,
   Bundle,
@@ -23,6 +24,7 @@ import type {
   Skill,
   SkillAsset,
 } from '../domain/model.js';
+import { listToolFiles, loadTools } from './tools.js';
 
 export interface Catalog {
   rules: Map<string, Rule>;
@@ -30,6 +32,12 @@ export interface Catalog {
   skills: Map<string, Skill>;
   bundles: Map<string, Bundle>;
   profiles: Map<string, Profile>;
+  /**
+   * Les outils de la méthode (les scripts de `bin/` et le dossier `scripts/` de chaque skill),
+   * CALCULÉS depuis les fichiers — fiche 20260917123943914, ADR-0058. Absent quand la racine n'en porte aucun
+   * (un projet hôte, un catalogue de test) : ni le bind ni les écritures n'en dépendent.
+   */
+  tools?: Map<string, Tool>;
 }
 
 const MARKDOWN = /\.md$/;
@@ -293,12 +301,15 @@ function loadYaml<T extends { id: string }>(dir: string): Map<string, T> {
 
 /** Charge tout le catalogue depuis la racine du repo. Pur (lecture seule, déterministe). */
 export function loadCatalog(rootDir: string): Catalog {
+  const skills = loadSkills(join(rootDir, 'skills'));
+  const tools = loadTools(rootDir, skills);
   return {
     rules: loadMarkdown(join(rootDir, 'rules'), (file) => readRule(file, rootDir), true), // récursif : ids slashés → sous-dossiers (fiche 0037)
     agents: loadMarkdown(join(rootDir, 'agents'), readAgent),
-    skills: loadSkills(join(rootDir, 'skills')),
+    skills,
     bundles: loadYaml<Bundle>(join(rootDir, 'bundles')),
     profiles: loadYaml<Profile>(join(rootDir, 'profiles')),
+    ...(tools.length > 0 ? { tools: indexById(tools) } : {}),
   };
 }
 
@@ -357,6 +368,8 @@ export function catalogSources(rootDir: string, baseDir: string = rootDir): Map<
   for (const [file, entity] of catalogEntityFiles(rootDir)) {
     out.set(`${entity.kind}:${entity.id}`, rel(file));
   }
+  // Les outils : leur id EST leur chemin depuis `rootDir` (fiche 20260917123943914).
+  for (const id of listToolFiles(rootDir)) out.set(`tool:${id}`, rel(join(rootDir, id)));
   for (const [kind, dir] of [
     ['bundle', 'bundles'],
     ['profile', 'profiles'],

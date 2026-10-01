@@ -40,7 +40,7 @@ describe('buildAssemblage — compté dans le graphe, jamais écrit à la main',
   it('compte les briques de chaque nature et regroupe les liens par (source, verbe, cible)', () => {
     const catalog = tiny();
     const view = buildAssemblage(compileGraph(catalog));
-    expect(view.nodes).toEqual({ rule: 1, agent: 1, skill: 1, bundle: 2, profile: 1 });
+    expect(view.nodes).toEqual({ rule: 1, agent: 1, skill: 1, bundle: 2, profile: 1, tool: 0 });
     const arrow = (from: string, verb: string, to: string) =>
       view.arrows.find((a) => a.from === from && a.verb === verb && a.to === to)?.count;
     expect(arrow('profile', 'compose', 'bundle')).toBe(2); // p1 → b1, b2 : UNE flèche, nombre 2

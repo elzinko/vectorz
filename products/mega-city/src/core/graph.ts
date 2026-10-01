@@ -10,7 +10,8 @@
  * L'UNIFICATION des cinq vocabulaires de liens (`composes`, `roles`, `competences`,
  * `interactions`, `enforcements`) est TRANCHÉE (fiche 357, ADR-0040 D1) : quatre VERBES
  * fermés — compose · convoque · applique · est-verifie-par — posés en ALIAS sur les champs
- * existants. Aucun champ n'est renommé sur disque (un rename vide le graphe sans faire
+ * existants. L'ADR-0058 (fiche 20260917123943914) en ajoute un cinquième, `utilise`, pour le seul
+ * lien skill → outil. Aucun champ n'est renommé sur disque (un rename vide le graphe sans faire
  * rougir un test) ; `EDGE_SOURCES` dit, pour chaque champ, d'où il part, où il arrive et
  * quel verbe il porte. Un seul endroit énumère « qui peut pointer vers qui, et pour dire quoi ».
  *
@@ -18,8 +19,15 @@
  */
 import type { Catalog } from '../loaders/catalog.js';
 
-/** Les cinq catalogues = les cinq types de nœud du graphe. */
-export type NodeKind = 'rule' | 'agent' | 'skill' | 'bundle' | 'profile';
+/**
+ * Les types de nœud du graphe : les cinq catalogues, plus les OUTILS (scripts de `bin/` et des
+ * `scripts/` des skills, ADR-0058). Un outil n'est pas un catalogue : il est CALCULÉ depuis les
+ * fichiers, jamais écrit à la main.
+ */
+export type NodeKind = 'rule' | 'agent' | 'skill' | 'bundle' | 'profile' | 'tool';
+
+/** L'ordre d'énumération des nœuds — la source unique, partagée avec le graphe compilé. */
+export const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundle', 'profile', 'tool'];
 
 /**
  * Le VOCABULAIRE de lien réuni. Chaque variante = un champ de frontmatter/YAML aujourd'hui
@@ -29,6 +37,7 @@ export type NodeKind = 'rule' | 'agent' | 'skill' | 'bundle' | 'profile';
  *   applies    skill → rule    (fiche 357 : « ce skill suit cette règle », déclaré par id)
  *   enforces   rule  → agent   (enforcement agent-check, seul lien inter-catalogue, domain.ts)
  *   participants rule(interaction) → agent      (ADR-0002)
+ *   uses       skill → outil   (ADR-0058 : « ce skill cite et lance cet outil », CALCULÉ depuis sa doc)
  *   les `*-…` = composition STRUCTURELLE des bundles/profiles (le keystone).
  */
 export type LinkType =
@@ -39,6 +48,7 @@ export type LinkType =
   | 'applies'
   | 'enforces'
   | 'participants'
+  | 'uses'
   | 'bundle-extends'
   | 'bundle-rule'
   | 'profile-extends'
@@ -54,10 +64,11 @@ export type LinkType =
  *   convoque         X fait venir le rôle Y
  *   applique         X suit la règle Y
  *   est-verifie-par  la règle X est contrôlée par Y
- * Fermé volontairement : un cinquième verbe est une décision de conception, pas un ajout
+ *   utilise          le skill X lance l'outil Y   (ADR-0058)
+ * Fermé volontairement : un nouveau verbe est une décision de conception, pas un ajout
  * en passant (le test `graph-vocabulary` fige le jeu et ses couples source → cible).
  */
-export const LINK_VERBS = ['compose', 'convoque', 'applique', 'est-verifie-par'] as const;
+export const LINK_VERBS = ['compose', 'convoque', 'applique', 'est-verifie-par', 'utilise'] as const;
 export type LinkVerb = (typeof LINK_VERBS)[number];
 
 /** Une arête du graphe : `from` (un nœud `fromKind`) référence `to` (attendu dans `toKind`) via `link`, qui dit `verb`. */
@@ -92,6 +103,8 @@ export const EDGE_SOURCES: readonly EdgeSource[] = [
   { link: 'enforces', fromKind: 'rule', toKind: 'agent', verb: 'est-verifie-par' },
   // Un protocole d'interaction fait venir ses participants : il les convoque.
   { link: 'participants', fromKind: 'rule', toKind: 'agent', verb: 'convoque' },
+  // Un skill lance un outil : le lien est calculé depuis la doc du skill (core/tools.ts).
+  { link: 'uses', fromKind: 'skill', toKind: 'tool', verb: 'utilise' },
   { link: 'bundle-extends', fromKind: 'bundle', toKind: 'bundle', verb: 'compose' },
   { link: 'bundle-rule', fromKind: 'bundle', toKind: 'rule', verb: 'compose' },
   { link: 'profile-extends', fromKind: 'profile', toKind: 'profile', verb: 'compose' },
@@ -120,6 +133,8 @@ export function nodesOf(catalog: Catalog, kind: NodeKind): Map<string, { id: str
       return catalog.bundles;
     case 'profile':
       return catalog.profiles;
+    case 'tool':
+      return catalog.tools ?? new Map();
   }
 }
 
@@ -151,6 +166,10 @@ function targetsFor(catalog: Catalog, src: EdgeSource): { from: string; to: stri
       break;
     case 'participants':
       for (const r of catalog.rules.values()) push(r.id, r.participants);
+      break;
+    case 'uses':
+      // Le lien est porté par l'outil (`usedBy`) : c'est lui qui sait qui le cite.
+      for (const t of catalog.tools?.values() ?? []) for (const skill of t.usedBy) out.push({ from: skill, to: t.id });
       break;
     case 'bundle-extends':
       for (const b of catalog.bundles.values()) push(b.id, b.extends);
@@ -231,12 +250,21 @@ export interface GraphReport {
   orphans: Orphan[];
 }
 
-const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundle', 'profile'];
+/**
+ * Un outil que ni un skill ne cite ni le manifeste ne justifie : il n'est lancé par personne.
+ * Une commande `ezk …` (on le lance à la main) ou une raison `internal` du manifeste le justifient,
+ * sans qu'aucun skill n'ait à le citer (ADR-0058).
+ */
+function isUnjustifiedTool(catalog: Catalog, id: string): boolean {
+  const tool = catalog.tools?.get(id);
+  return tool === undefined || (tool.commands.length === 0 && tool.internal === undefined);
+}
 
 /**
  * Compile le graphe et le valide. PUR : ne lit pas le disque (on lui passe un `Catalog` déjà chargé).
  * `broken` = arêtes dont la cible n'existe pas dans son catalogue → l'exit-code du CLI en dépend.
  * `orphans` = purement informatif (un profil racine ou une règle pas encore bundlée est orphelin, sans faute).
+ * Un outil est orphelin si aucun skill ne le cite ET que le manifeste ne le justifie pas.
  */
 export function validateGraph(catalog: Catalog): GraphReport {
   const edges = graphEdges(catalog);
@@ -247,7 +275,9 @@ export function validateGraph(catalog: Catalog): GraphReport {
   const orphans: Orphan[] = [];
   for (const kind of NODE_KINDS) {
     for (const id of [...nodesOf(catalog, kind).keys()].sort()) {
-      if (!referenced.has(`${kind} ${id}`)) orphans.push({ kind, id });
+      if (referenced.has(`${kind} ${id}`)) continue;
+      if (kind === 'tool' && !isUnjustifiedTool(catalog, id)) continue;
+      orphans.push({ kind, id });
     }
   }
 
