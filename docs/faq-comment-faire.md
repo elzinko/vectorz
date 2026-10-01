@@ -4,7 +4,7 @@
 
 Cette page répond aux questions que tu te poses le plus souvent sur la méthode. Chaque réponse tient en quelques phrases. Chaque réponse pointe vers la commande ou le document qui fait autorité.
 
-Si une commande citée ici n'existe plus, un test passe au rouge. Cette page ne peut donc pas mentir longtemps. Pour un mot que tu ne connais pas, ouvre le [glossaire](glossaire-jargon-ezk.md).
+Si une commande citée ici n'existe plus, un test passe au rouge. Le test vérifie que les commandes existent, pas que chaque phrase reste juste : relis une réponse si elle te surprend. Pour un mot que tu ne connais pas, ouvre le [glossaire](glossaire-jargon-ezk.md).
 
 ### Quelle commande pour faire X ? Existe-t-elle déjà ?
 

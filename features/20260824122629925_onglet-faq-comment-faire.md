@@ -17,7 +17,7 @@ created: 2026-08-24
 
 Tu te reposes souvent les mêmes questions : « ai-je déjà une commande pour ça ? », « qui analyse la méthode ? ». La réponse existe, mais elle est éparpillée. Cette fiche pose **une FAQ « comment faire »** : un seul fichier, une réponse courte par question, et un lien vers la commande ou l'ADR qui fait autorité.
 
-Elle remet aussi à jour le **tableau des skills** du catalogue, pour qu'il se lise d'un coup d'œil. Un test empêche la FAQ et le tableau de mentir : une commande citée qui n'existe pas fait passer la CI au rouge.
+Elle remet aussi à jour le **tableau des skills** du catalogue, pour qu'il se lise d'un coup d'œil. Un test empêche la FAQ de citer une commande qui n'existe pas : elle fait passer la CI au rouge. Il ne juge pas le sens des phrases.
 
 ## Contexte / problème
 

@@ -75,7 +75,11 @@ interface CatalogRow {
 
 function catalogRows(): CatalogRow[] {
   const rows: CatalogRow[] = [];
-  for (const line of readFileSync(readmePath, 'utf8').split('\n')) {
+  // Seule la section « Catalogue » compte : un autre tableau du README ne doit pas casser le test.
+  const section = readFileSync(readmePath, 'utf8')
+    .split(/^## /m)
+    .find((s) => s.startsWith('Catalogue'));
+  for (const line of (section ?? '').split('\n')) {
     const cells = line.split('|').map((c) => c.trim());
     const id = /^`([a-z0-9][a-z0-9_-]*)`$/.exec(cells[1] ?? '')?.[1];
     if (id) rows.push({ id, role: cells[2] ?? '', profil: cells[3] ?? '' });
