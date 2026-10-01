@@ -58,10 +58,11 @@ Quand tu délègues :
    équivalent 4.8 du catalogue) ; sinon `model_spare` → Sonnet. N'utilise Grok /
    autres familles **que** si l'humain le demande explicitement.
 
-> **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
-> scrum (ça, c'est `ezk-sprint`), ni le suivi du *quoi* (ça, c'est
-> `ezk-backlog`). `ezk-sprint` **ouvre/déroule**, `ezk-backlog`
-> suit **le quoi**, **`ezk-archive` clôt**.
+> **Une seule responsabilité : l'hygiène de clôture de la SESSION** (s'asseoir puis se lever
+> dans Claude Code). Ce n'est PAS du sprint ni du scrum (ça, c'est `ezk-sprint`), ni le suivi
+> du *quoi* (ça, c'est `ezk-backlog`). `ezk-sprint` **ouvre, déroule et ferme le sprint**
+> (`start` / `close`, voir [ADR-0054](../../docs/adr/0054-cloture-sprint-vs-archive-session.md)),
+> `ezk-backlog` suit **le quoi**, **`ezk-archive` ferme la session**.
 >
 > **Bande (ADR-0022)** : **capacité**, pas orchestrateur. Sur le diagramme
 > [`ezk-methode-globale`](../../diagrams/ezk-methode-globale/), `archive` vit
@@ -78,6 +79,12 @@ Quand tu délègues :
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + un mot sur chaque vérification |
 | `check` | **Dry-run, ne modifie RIEN** — produit le rapport de clôture |
 | `run` / `close` | Applique les **corrections sûres** (ship/regen backlog, mémoire) puis produit la **note de handoff** + le **verdict** |
+
+> **Deux `close`, deux étages.** `ezk-archive close` (alias de `run`) ferme la **session**.
+> `ezk-sprint close` ferme le **sprint** et scelle l'incrément : il ne touche pas à la session.
+> L'ordre normal : un ou plusieurs `ezk-sprint close`, la rétro et le planning si besoin, puis
+> `ezk-archive`. L'**ouverture** de session est implicite : le handoff se reprend au premier
+> `ezk-sprint start` (via `handoff.sh carry`). Il n'existe pas de verbe d'ouverture ici.
 
 Deux échappatoires, quand le portier ne doit pas décider :
 
@@ -221,9 +228,10 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
   la note de handoff renvoie vers `list`. **Délégation optionnelle** (`delegates:`, pas `composes:`) :
   si `ezk-backlog` n'est pas installé dans le profil, ne livre rien toi-même — nomme dans le rapport
   les fiches à livrer, verdict `pending`, et laisse l'humain lancer `ship`.
-- **`ezk-sprint`** : complémentaire — le sprint *ouvre/déroule*,
-  ezk-archive *clôt*. Typiquement invoqué **après** le checkpoint de fin de sprint.
-  À la clôture `run`/`close`, archive un snapshot de `SPRINT.md` dans
+- **`ezk-sprint`** : complémentaire — le sprint *ouvre, déroule et ferme* (`start` / `close`,
+  qui scelle l'incrément dans `SPRINT.md`), ezk-archive ferme la *session*. Typiquement invoqué
+  **après** le `close` du dernier sprint de la session. À la clôture `run`/`close`, archive un
+  snapshot de `SPRINT.md` (tous les incréments scellés de la session y figurent) dans
   `docs/sessions/` (voir `docs/sessions/README.md` du projet).
 - **`ezk-commits`** : tout commit produit suit les Conventional Commits.
 - **`ezk-product-build`** : à ses pauses inter-sprint, il **rappelle** que
@@ -245,6 +253,7 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 - **Ne recopie pas le gabarit ici** : il vit dans `references/handoff-template.md`.
 - **Toujours fournir le résumé de session** au sous-agent quand tu délègues : sans lui,
   il ne voit que l'état git, pas ce qui a été décidé/appris/livré.
+- **Ne ferme jamais un sprint** : sceller l'incrément, c'est `ezk-sprint close` (ADR-0054). Ici on ferme la session.
 - **Ne merge/push rien toi-même** ; ça reste à l'utilisateur de trancher.
 - **PRs déjà ouvertes (fiche 0185)** : si un fait gate `branch REAL … pr=#N` (ou
   rendu `→ PR #N`) existe, **ne propose jamais** d'ouvrir une nouvelle PR sur
