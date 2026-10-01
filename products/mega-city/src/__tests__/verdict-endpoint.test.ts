@@ -148,6 +148,15 @@ describe('POST /api/verdict — l’écriture', () => {
     expect(data.verdicts[ID]).toBeDefined();
     expect(data.illisibles).toEqual([`${VERDICTS_DIR}/${OTHER}.json`]);
   });
+
+  it('une lecture qui échoue ne fait pas tomber le board : le chemin part dans les illisibles', async () => {
+    await post(own(), ask('up'));
+    mkdirSync(join(repo, VERDICTS_DIR, `${OTHER}.json`)); // un dossier nommé comme un verdict
+
+    const data = loadVerdicts(repo);
+    expect(data.verdicts[ID]).toBeDefined();
+    expect(data.illisibles).toEqual([`${VERDICTS_DIR}/${OTHER}.json`]);
+  });
 });
 
 describe('POST /api/verdict — les refus n’écrivent rien', () => {
@@ -167,6 +176,30 @@ describe('POST /api/verdict — les refus n’écrivent rien', () => {
     const before = tree();
     const res = await send();
     expect(res.status).toBe(status);
+    expect(tree()).toEqual(before);
+  });
+
+  it('refuse un corps trop gros envoyé par morceaux, sans Content-Length (413, rien d’écrit)', async () => {
+    const before = tree();
+    const res = await new Promise<{ status: number }>((resolve, reject) => {
+      const req = request(
+        { host: '127.0.0.1', port, path: VERDICT_ROUTE, method: 'POST', headers: own() },
+        (r) => {
+          r.resume();
+          r.on('end', () => resolve({ status: r.statusCode ?? 0 }));
+        },
+      );
+      req.on('error', (err: NodeJS.ErrnoException) => {
+        // Le serveur coupe la connexion après son 413 : si la réponse est déjà partie, c'est normal.
+        if (err.code === 'ECONNRESET' || err.code === 'EPIPE') return;
+        reject(err);
+      });
+      expect(req.getHeader('content-length')).toBeUndefined(); // pas de taille annoncée : c'est le but
+      for (let i = 0; i < 8; i++) req.write('x'.repeat(MAX_BODY_BYTES));
+      req.end();
+    });
+
+    expect(res.status).toBe(413);
     expect(tree()).toEqual(before);
   });
 
