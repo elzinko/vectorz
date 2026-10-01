@@ -130,8 +130,8 @@ describe('construction à la demande', () => {
     return root;
   }
 
-  // Le dépôt jetable n'a ni catalogue ni `products/mega-city` : la carte, qui se construit depuis
-  // le catalogue, y est écartée (elle est prouvée sur le dépôt réel dans map-data.test.ts).
+  // La carte lit le catalogue de la MÉTHODE, pas celui du dépôt jetable : l'y écrire n'aurait pas de
+  // sens, on l'écarte ici (elle est prouvée sur le dépôt réel dans map-data.test.ts).
   const FIXTURE_VIEWS = DATA_VIEWS.filter((v) => v.id !== 'carte');
 
   it('writeDataViews écrit les trois fichiers, et un second passage n’écrit rien', () => {
@@ -148,8 +148,10 @@ describe('construction à la demande', () => {
     expect(second.unchanged.sort()).toEqual(FIXTURE_VIEWS.map((v) => v.out).sort());
   });
 
-  it('la carte sans catalogue échoue net, avec une raison lisible (jamais un fichier vide)', () => {
-    expect(() => view('carte').build(fixtureRepo())).toThrow(/depuis le catalogue/);
+  it('la carte décrit la MÉTHODE : le projet visé (--root, EZK_ROOT) ne change pas son fichier', () => {
+    // `ezk:map --root <projet>` passe la racine de CE projet aux vues : la carte l'ignore, sinon elle
+    // chercherait un catalogue dans un dépôt qui n'en a pas (fiche 20260826173221323).
+    expect(view('carte').build(fixtureRepo())).toBe(view('carte').build(repoRoot));
   });
 
   it('une fiche ajoutée apparaît au board sans autre étape (jamais périmé)', () => {
