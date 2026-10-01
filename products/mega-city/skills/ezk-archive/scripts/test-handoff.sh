@@ -7,6 +7,9 @@
 #   H2  `carry` rend une section bornée, pas le fichier — c'est ce qui supprime les
 #       deux lectures de 20 Ko par run ;
 #   H5  `.gitignore` est garanti AVANT la première écriture (éphémère personnel).
+#   H11-H14 (fiche 0189, session jetable) : `.claude/` n'est plus ignoré en entier, `durable`
+#       écrit une copie versionnée, elle survit à un nouveau clone, et la source la plus
+#       récente gagne (le mode local ne change pas).
 set -euo pipefail
 
 HANDOFF="$(cd "$(dirname "$0")" && pwd)/handoff.sh"
@@ -142,6 +145,47 @@ ok "corps vide ⇒ exit 2, rien écrit"   "! printf '   \n' | bash \"\$HANDOFF\"
 ok "titre manquant ⇒ exit 2"           "! echo corps | bash \"\$HANDOFF\" add >/dev/null 2>&1"
 ok "verbe inconnu ⇒ exit 2"            "! bash \"\$HANDOFF\" nawak >/dev/null 2>&1"
 ok "help n'écrit rien"                 "bash \"\$HANDOFF\" help | grep -q 'RANGEUR'"
+
+# ── fiche 0189 : le handoff doit survivre à une session éphémère ──────────────────────
+cd "$TMP" && git init -q -b main repo2 && cd repo2
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+mkdir -p .claude && echo '{}' > .claude/settings.json
+echo x > a.txt && git add . && git commit -qm base
+
+echo "H11 — .claude/ n'est plus ignoré en entier (il peut être versionné) :"
+body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null
+ok "handoff.md est ignoré"                      "git check-ignore -q .claude/handoff.md"
+ok "handoff.archive.md est ignoré"              "git check-ignore -q .claude/handoff.archive.md"
+ok ".claude/settings.json reste versionnable"   "! git check-ignore -q .claude/settings.json"
+ok ".gitignore ne contient pas « .claude/ » seul" "! grep -qxE '\\.claude/?' .gitignore"
+
+echo "H12 — durable : une copie versionnée, jamais écrasée :"
+P1="$(body 7 | bash "$HANDOFF" durable "2026-10-01 — clôture cloud")"
+ok "écrite sous docs/sessions/"                 "case \"\$P1\" in */docs/sessions/*-handoff-*.md) true ;; *) false ;; esac"
+ok "porte le titre et le corps"                 "grep -q 'clôture cloud' \"\$P1\" && grep -q 'report non-git numéro 7' \"\$P1\""
+ok "n'est PAS ignorée (elle est faite pour être commitée)" "! git check-ignore -q \"\$P1\""
+P2="$(body 8 | bash "$HANDOFF" durable "2026-10-01 — clôture cloud")"
+ok "un 2ᵉ appel le même jour n'écrase rien"     "[ \"\$P2\" != \"\$P1\" ] && [ -f \"\$P1\" ] && [ -f \"\$P2\" ]"
+ok "l'ordre des noms est l'ordre du temps"      "[ \"\$(printf '%s\n%s\n' \"\$P1\" \"\$P2\" | sort | tail -1)\" = \"\$P2\" ]"
+ok "corps vide ⇒ exit 2"                        "! printf '  \n' | bash \"\$HANDOFF\" durable 'titre' >/dev/null 2>&1"
+ok "titre manquant ⇒ exit 2"                    "! echo corps | bash \"\$HANDOFF\" durable >/dev/null 2>&1"
+
+echo "H13 — la note survit à un nouveau clone (conteneur jetable) :"
+git add docs/sessions && git commit -qm "handoff durable"
+cd "$TMP" && git clone -q repo2 clone2 && cd clone2
+ok "le clone n'a pas la note locale"            "[ ! -f .claude/handoff.md ]"
+CARRIED="$(bash "$HANDOFF" carry)"
+ok "carry relit le Pending de la copie la plus récente" "echo \"\$CARRIED\" | grep -q 'report non-git numéro 8'"
+ok "sans copie versionnée ni note locale : rien, sans erreur" \
+   "cd \"\$TMP\" && git init -q -b main vide && cd vide && [ -z \"\$(bash \"\$HANDOFF\" carry)\" ]"
+
+echo "H14 — mode local inchangé : la plus récente des deux sources gagne :"
+cd "$TMP/repo2"
+touch -t 202601010000 docs/sessions/*-handoff-*.md
+body 9 | bash "$HANDOFF" add "2026-10-02 — note locale" >/dev/null
+ok "note locale plus récente : carry lit la note locale" "bash \"\$HANDOFF\" carry | grep -q 'numéro 9'"
+touch -t 203001010000 docs/sessions/*-handoff-*.md
+ok "copie versionnée plus récente : carry lit la copie" "bash \"\$HANDOFF\" carry | grep -q 'numéro 8'"
 
 echo
 if [ "$FAIL" = 0 ]; then echo "test-handoff: TOUT VERT"; else echo "test-handoff: ÉCHECS"; exit 1; fi

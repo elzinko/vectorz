@@ -470,16 +470,16 @@ window.EZK = {
   "skills": 25,
   "bundles": 10,
   "profiles": 6,
-  "tools": 76
+  "tools": 77
  },
  "liens": {
-  "total": 262,
+  "total": 263,
   "casses": 0
  },
  "provenance": {
   "prouve": {
-   "briques": 201,
-   "liens": 262,
+   "briques": 202,
+   "liens": 263,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -499,7 +499,7 @@ window.EZK = {
    "skill": 25,
    "bundle": 10,
    "profile": 6,
-   "tool": 76
+   "tool": 77
   },
   "arrows": [
    {
@@ -578,7 +578,7 @@ window.EZK = {
     "from": "skill",
     "verb": "utilise",
     "to": "tool",
-    "count": 40
+    "count": 41
    }
   ],
   "bind": {
@@ -1052,7 +1052,7 @@ window.EZK = {
   "ezk-archive": {
    "id": "ezk-archive",
    "source": "products/mega-city/skills/ezk-archive/SKILL.md",
-   "description": "Rituel de CLÔTURE de session avant archivage : clôt proprement un repo pour ne RIEN perdre entre deux sessions. A utiliser quand l'utilisateur veut « archiver / clôturer une session », « fermer proprement avant de partir », « ne rien perdre entre deux sessions », préparer un « handoff » pour la prochaine session, ou demande « on archive ? » « avant de fermer ». Pilotable par sous-commandes : help, check (dry-run strictement read-only : produit le rapport de clôture), run/close (applique les corrections sûres — ship/regen du backlog, mémoire — et produit la note de handoff). Un script portier (`scripts/check.sh`) rend un verdict CLEAN/DIRTY sur 4 points de contrôle : working tree + stashes, PRs & branches non-mergées (crucial pour les repos sans remote), fiches déclarées livrées, ADR de la session ; sur CLEAN la clôture est traitée directement, sur DIRTY elle est déléguée au sous-agent, scopée aux points signalés. Produit toujours la note de handoff persistée dans `.claude/handoff.md` (anneau FIFO) et le verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de clôture uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).",
+   "description": "CLÔTURE de session avant archivage (une capacité de continuité, pas une étape agile) : clôt proprement un repo pour ne RIEN perdre entre deux sessions. Une session sans rien à sauver sort en une ligne « rien à archiver ». A utiliser quand l'utilisateur veut « archiver / clôturer une session », « fermer proprement avant de partir », « ne rien perdre entre deux sessions », préparer un « handoff » pour la prochaine session, ou demande « on archive ? » « avant de fermer ». Pilotable par sous-commandes : help, check (dry-run strictement read-only : produit le rapport de clôture), run/close (applique les corrections sûres — ship/regen du backlog, mémoire — et produit la note de handoff). Un script portier (`scripts/check.sh`) rend un verdict CLEAN/DIRTY sur 4 points de contrôle : working tree + stashes, PRs & branches non-mergées (crucial pour les repos sans remote), fiches déclarées livrées, ADR de la session ; sur CLEAN la clôture est traitée directement, sur DIRTY elle est déléguée au sous-agent, scopée aux points signalés. Produit toujours la note de handoff persistée dans `.claude/handoff.md` (anneau FIFO) et le verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de clôture uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).",
    "usage": "[help|check|run]",
    "etage": "modules",
    "famille": "hote-llm",
@@ -1531,7 +1531,8 @@ window.EZK = {
    "tools": [
     "bin/journal-add.sh",
     "bin/pr-evidence.sh",
-    "skills/ezk-sprint/scripts/check.sh"
+    "skills/ezk-sprint/scripts/check.sh",
+    "skills/ezk-sprint/scripts/sprint.sh"
    ],
    "profiles": [
     "daily",
@@ -1611,10 +1612,10 @@ window.EZK = {
   "ezk-archive": {
    "id": "ezk-archive",
    "source": "products/mega-city/agents/ezk-archive.md",
-   "description": "Rituel de CLÔTURE de session avant archivage — clôt proprement un repo pour ne rien perdre entre deux sessions (working tree, PRs/branches en attente, backlog, ADR, mémoire, note de handoff persistée). Invoqué via le skill `/ezk-archive`, qui lui délègue systématiquement pour figer le modèle/effort indépendamment du modèle de la session en cours. Reçoit dans le prompt la sous-commande (help/check/run), le chemin du repo, et un résumé de ce qui a été livré/décidé/ appris pendant la session — n'a AUCUNE mémoire de la conversation qui a précédé l'appel.",
+   "description": "CLÔTURE de session avant archivage (une capacité de continuité, pas une étape agile) — clôt proprement un repo pour ne rien perdre entre deux sessions (working tree, PRs/branches en attente, backlog, ADR, mémoire, note de handoff persistée). Invoqué par le skill `/ezk-archive`, qui traite lui-même une session propre et ne lui délègue que les points qui demandent du JUGEMENT (branche réelle, divergence), en figeant le modèle/effort indépendamment du modèle de la session en cours. Reçoit dans le prompt la sous-commande (help/check/run), le chemin du repo, un résumé de ce qui a été livré/décidé/appris pendant la session et le bloc du portier — n'a AUCUNE mémoire de la conversation qui a précédé l'appel.",
    "etage": "modules",
    "famille": "hote-llm",
-   "model": "claude-opus-4-8",
+   "model": "sonnet",
    "effort": "medium",
    "competences": [
     "ezk-backlog"
@@ -3632,6 +3633,14 @@ window.EZK = {
   "skills/ezk-sprint/scripts/check.sh": {
    "id": "skills/ezk-sprint/scripts/check.sh",
    "source": "products/mega-city/skills/ezk-sprint/scripts/check.sh",
+   "commands": [],
+   "usedBy": [
+    "ezk-sprint"
+   ]
+  },
+  "skills/ezk-sprint/scripts/sprint.sh": {
+   "id": "skills/ezk-sprint/scripts/sprint.sh",
+   "source": "products/mega-city/skills/ezk-sprint/scripts/sprint.sh",
    "commands": [],
    "usedBy": [
     "ezk-sprint"

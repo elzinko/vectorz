@@ -179,3 +179,19 @@ raisonnement initial.
   périmées de la même liste, alors que le pending vivant est déjà ré-émis depuis le portier.
 - **Faire porter le verdict par le code retour.** Rendu comme une erreur par l'outil Bash,
   il déclencherait l'enquête qu'on cherche à éviter.
+
+## Addendum — 2026-10-01 : la passation survit à une machine jetable
+
+Fiche 0189, absorbée par la fiche 20260904091853948.
+
+- **Constat.** `.claude/handoff.md` est ignoré par git. Une session cloud tourne dans un
+  conteneur recyclé : la note n'atteint jamais la session suivante.
+- **Décision.** Les options B (détecter l'hôte jetable) et A (une copie versionnée, distincte
+  de la note perso) ensemble. Le portier dit `durable=0` sur la ligne `HANDOFF:` quand
+  `CLAUDE_CODE_REMOTE=true` ou `EZK_EPHEMERAL=1`. `run` écrit alors aussi la note dans
+  `docs/sessions/` (`handoff.sh durable`), que l'humain commite et pousse. `carry` relit la plus
+  récente des deux sources, donc un nouveau clone retrouve le Pending.
+- **Option C écartée** (la note devient un simple pointeur) : elle ne sauve pas les faits non
+  dérivables, qui sont la raison d'être de la note.
+- **Garde-fous.** Le mode local ne change pas (anneau FIFO ignoré). Le script ne commite ni ne
+  pousse jamais. `handoff.sh` n'ignore plus `.claude/` en entier, seulement ses deux fichiers.
