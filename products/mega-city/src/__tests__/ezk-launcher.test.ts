@@ -4,7 +4,7 @@
  * (fiche 20260903134906920). Tout passe par `--dry-run` : rien n'est régénéré ni écrit.
  */
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, realpathSync, rmSync } from 'node:fs';
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,6 +44,7 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     expect(ezk(['help', 'board']).out).toMatch(/regen[\s\S]*regen-avancement\.ts/);
     expect(ezk(['help', 'ezk-sprint']).out).toContain('usage');
     expect(ezk(['help', 'nimporte-quoi']).code).toBe(2);
+    expect(ezk(['help', '../..']).code).toBe(2); // pas de sortie du dossier des skills
   });
 
   it('refuse une commande qui touche aux fichiers du dépôt quand on est ailleurs', { timeout: 60_000 }, () => {
@@ -65,20 +66,46 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     ]);
   });
 
-  it('un autre dépôt derrière --root est refusé, avec la fiche qui le permettra', { timeout: 60_000 }, () => {
+  it('un autre dépôt derrière --root est refusé, et dit que ce n’est pas encore possible', { timeout: 60_000 }, () => {
     const r = ezk(['--root', elsewhere, '--dry-run', 'board', 'regen']);
     expect(r.code).toBe(2);
-    expect(r.err).toContain('20260826173221323');
+    expect(r.err).toMatch(/pas encore possible/);
   });
 
-  it('« law » ne dépend pas du dépôt courant ; « map » prévient et vise le même script que « dashboard »', { timeout: 60_000 }, () => {
+  it('« law » et le tableau de bord ne dépendent pas du dossier courant ; « map » prévient et vise le même script', { timeout: 60_000 }, () => {
     expect(ezk(['--dry-run', 'law', 'status', 'global']).code).toBe(0);
-    const old = ezk(['--root', repoRoot, '--dry-run', 'map', '--list']);
-    const now = ezk(['--root', repoRoot, '--dry-run', 'dashboard', '--list']);
+    const old = ezk(['--dry-run', 'map', '--list']);
+    const now = ezk(['--dry-run', 'dashboard', '--list']);
+    expect(old.code).toBe(0);
     expect(old.err).toContain('dashboard');
     expect(old.out).toContain('bin/ezk-map.ts --list');
+    expect(now.code).toBe(0);
     expect(now.err).toBe('');
     expect(now.out).toContain('bin/ezk-map.ts --list');
+  });
+
+  it('lance VRAIMENT un script TypeScript (sans --dry-run) et rend sa sortie', { timeout: 60_000 }, () => {
+    const r = ezk(['law', 'status', 'global', '--target', elsewhere]);
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("Déploiement du profil 'global'");
+    expect(r.out).toMatch(/absent\s+ezk-sprint/);
+  });
+
+  it('rend le code de sortie du script et dit quelle étape a échoué', { timeout: 60_000 }, () => {
+    // lawgiver sans argument affiche son usage, sort en code 2 et n'écrit rien.
+    const r = ezk(['law', 'bind']);
+    expect(r.code).toBe(2);
+    expect(r.err).toContain('Usage: lawgiver bind');
+    expect(r.err).toContain('a échoué (code 2)');
+  });
+
+  it('lance VRAIMENT un script bash, dans le dossier de l’utilisateur, et rend son code', { timeout: 60_000 }, () => {
+    writeFileSync(join(elsewhere, 'a.md'), '[b](b.md)\n');
+    const broken = ezk(['--root', repoRoot, 'docs', 'check-links', '.', '.']);
+    expect(broken.code).toBe(1);
+    expect(broken.out).toContain('a.md');
+    writeFileSync(join(elsewhere, 'b.md'), '# b\n');
+    expect(ezk(['--root', repoRoot, 'docs', 'check-links', '.', '.']).code).toBe(0);
   });
 
   it('une commande inconnue sort en code 2 avec une marche à suivre', { timeout: 60_000 }, () => {

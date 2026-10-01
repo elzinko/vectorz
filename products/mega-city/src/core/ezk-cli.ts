@@ -13,9 +13,6 @@ import { parse as parseYaml } from 'yaml';
 /** Où vit le manifeste, depuis la racine d'un checkout de la méthode : sert à reconnaître un checkout. */
 export const MANIFEST_RELPATH = 'products/mega-city/ezk-manifest.yml';
 
-/** Fiche qui permettra de viser un AUTRE projet : citée dans le refus de `--root`. */
-const FICHE_RACINE_PARAMETRABLE = '20260826173221323';
-
 /** `fixed` : lit/écrit les fichiers du dépôt de la méthode. `none` : indépendante du dépôt courant. */
 export type RootPolicy = 'fixed' | 'none';
 
@@ -179,9 +176,11 @@ function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
   const name = `ezk ${label(entry)}`;
   if (env.rootFlag !== undefined) {
     if (env.rootFlag === env.ownRoot) return undefined;
+    // Le chantier qui permettra de viser un autre projet : fiche 20260826173221323 (racine
+    // paramétrable des vues). On n'en cite pas le numéro à l'utilisateur.
     return (
       `${name} : « --root ${env.rootFlag} » n'est pas le dépôt de la méthode (${env.ownRoot}). ` +
-      `Viser un autre projet n'est pas encore possible : c'est la fiche ${FICHE_RACINE_PARAMETRABLE}.`
+      'Viser un autre projet n\'est pas encore possible : le chantier « racine paramétrable des vues » n\'est pas fait.'
     );
   }
   if (env.checkoutRoot === env.ownRoot) return undefined;

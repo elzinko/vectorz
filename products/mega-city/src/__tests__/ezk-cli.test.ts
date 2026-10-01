@@ -168,10 +168,12 @@ describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)',
     expect(r.kind).toBe('run');
   });
 
-  it('commande fixe avec --root vers un autre dépôt : refusée, avec la fiche qui le permettra', () => {
+  it('commande fixe avec --root vers un autre dépôt : refusée, et dit que ce n’est pas encore possible', () => {
     const r = route(MANIFEST, ['board', 'regen'], { ownRoot: OWN, rootFlag: '/autre/projet' });
     expect(r.kind).toBe('error');
-    if (r.kind === 'error') expect(r.message).toContain('20260826173221323');
+    if (r.kind !== 'error') return;
+    expect(r.message).toMatch(/pas encore possible/);
+    expect(r.message).not.toMatch(/\d{10,}/); // pas de numéro de fiche dans un message d'erreur
   });
 
   it('commande « none » (law bind) : marche de n’importe où', () => {

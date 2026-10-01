@@ -85,7 +85,7 @@ function plural(n: number, one: string, many: string): string {
 /** Une ligne par élément, puis le bilan. */
 export function renderStatus(profileId: string, targetLabel: string, entries: DeployEntry[]): string {
   const width = Math.max(...Object.values(WORD).map((w) => w.length));
-  const lines = [`lawgiver: status '${profileId}' → ${targetLabel} [claude-code-global]`];
+  const lines = [`Déploiement du profil '${profileId}' dans ${targetLabel} [claude-code-global]`];
   for (const [title, kind] of [['skills', 'skill'], ['agents', 'agent']] as const) {
     const group = entries.filter((e) => e.kind === kind);
     lines.push(`  ${title} (${group.length})`);

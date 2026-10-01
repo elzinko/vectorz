@@ -83,7 +83,7 @@ describe('inspect, summarize, renderStatus', () => {
 
   it('rend une ligne par élément, le bilan, et le mot « lien mort » en clair', () => {
     const text = renderStatus('global', '/poste/.claude', entries);
-    expect(text).toContain("status 'global'");
+    expect(text).toContain("Déploiement du profil 'global' dans /poste/.claude");
     expect(text).toMatch(/lien mort\s+ezk-d/);
     expect(text).toMatch(/absent\s+ezk-c/);
     expect(text).toContain('Bilan : 1 en lien, 1 en copie, 1 absent, 1 lien mort (sur 4 éléments du profil).');

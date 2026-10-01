@@ -133,12 +133,15 @@ commands:
     summary: Vérifie qu'aucun nouveau numéro d'ADR n'est attribué deux fois.
 
   # --- le tableau de bord de la méthode (ex « ezk:map ») ---
+  # Il SERT les fichiers de son propre dépôt, sans rien écrire : il marche de n'importe quel dossier.
   - domain: dashboard
     run: bin/ezk-map.ts
     summary: Ouvre le tableau de bord de la méthode dans le navigateur (board, plan, cartes).
+    root: none
   - domain: map
     run: bin/ezk-map.ts
     summary: Ancien nom du tableau de bord.
+    root: none
     deprecated: dashboard
 
   # --- sessions, config, vues générées, supervision ---

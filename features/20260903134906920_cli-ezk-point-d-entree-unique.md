@@ -62,7 +62,8 @@ Décisions prises au grooming (étape Archi) :
   Une commande « fixe » (qui lit ou écrit les fichiers du dépôt de la méthode) refuse de tourner
   depuis un autre dépôt, avec un message qui dit quoi faire. Les scripts ne savent pas encore
   viser un autre projet : c'est la fiche [[20260826173221323]], qui retournera ces entrées en
-  « racine passée au script ».
+  « racine passée au script ». Le tableau de bord, qui ne fait que servir les fichiers de son
+  dépôt sans rien écrire, marche de n'importe quel dossier.
 - **Nom du tableau de bord : `ezk dashboard`.** Écartés : `monitor` (se confond avec
   `ezk supervision` et le Moniteur d'events), `board` (déjà le domaine des régénérations du
   kanban), `city` et `hq` (images que seul l'initié comprend). `ezk map` et `pnpm ezk:map`
@@ -100,10 +101,12 @@ Décisions prises au grooming (étape Archi) :
 - [x] Hors du dépôt de la méthode, une commande fixe est refusée avec un message clair ; avec
       `--root <dépôt>` elle passe ; `help` et `law` marchent partout. Le lanceur `bin/ezk.mjs`
       est testé depuis un dossier jetable, sans `tsx` dans le PATH.
-      _Preuve_ : `ezk-launcher.test.ts` (PATH réduit à `/usr/bin:/bin`, dossier jetable).
+      _Preuve_ : `ezk-launcher.test.ts` (PATH réduit à `/usr/bin:/bin`, dossier jetable, vrais
+      lancements d'un script TypeScript et d'un script bash, code de sortie rendu). Arrêt propre
+      vérifié à la main : un SIGTERM au routeur ferme le serveur du tableau de bord, sans orphelin.
 - [x] Gate locale verte : typecheck, `pnpm --dir products/mega-city test`, `test:scripts`,
       `pnpm lint`, `check-links.sh`.
-      _Preuve_ : typecheck propre ; 997 tests verts ; `test:scripts` 28 suites vertes ; lint
+      _Preuve_ : typecheck propre ; 1017 tests verts ; `test:scripts` 28 suites vertes ; lint
       propre ; 0 lien cassé (2 racines).
 
 ## Comment vérifier

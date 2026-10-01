@@ -45,16 +45,26 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it('« ezk board regen » lance TOUS les scripts qui écrivent board.html — aucun bloc oublié', () => {
+  it('« ezk board regen » lance TOUS les scripts qui produisent board.html — aucun bloc oublié', () => {
+    // Tout script (ts ou sh, tests exclus) qui nomme board.html pour l'ÉCRIRE : le nom du fichier
+    // ne compte pas, le contenu oui. Un script qui ne fait que le lire ne doit pas le citer ainsi.
+    const writes = (source: string): boolean =>
+      source.includes('board.html') && /writeFileSync|>\s*"?\$?[\w{}/.-]*board\.html/.test(source);
     const writers = readdirSync(join(megaCity, 'bin'))
-      .filter((f) => /^regen-.*\.ts$/.test(f))
-      .filter((f) => readFileSync(join(megaCity, 'bin', f), 'utf8').includes('board.html'))
+      .filter((f) => /\.(ts|sh)$/.test(f) && !f.startsWith('test-') && f !== 'ezk.ts')
+      .filter((f) => writes(readFileSync(join(megaCity, 'bin', f), 'utf8')))
       .map((f) => `bin/${f}`)
       .sort();
     const regen = manifest.commands.find((e) => e.domain === 'board' && e.verb === 'regen');
     const steps = regen ? entrySteps(regen).map((s) => s.script) : [];
     expect(writers.length).toBeGreaterThan(0);
     expect([...steps].sort()).toEqual(writers);
+  });
+
+  it('le tableau de bord, qui ne fait que servir les fichiers de son dépôt, marche de partout', () => {
+    for (const domain of ['dashboard', 'map']) {
+      expect(manifest.commands.find((e) => e.domain === domain)?.root, domain).toBe('none');
+    }
   });
 
   it("expose la commande « ezk » par le champ bin du paquet, via un lanceur qui existe", () => {
