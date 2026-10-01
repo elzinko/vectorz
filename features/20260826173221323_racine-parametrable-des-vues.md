@@ -16,72 +16,93 @@ created: 2026-08-26
 
 ## En clair
 
-Aujourd'hui, les vues (board, map, plan, avancement) ne savent regarder **que** les fiches de
-vectorz. Le dossier qu'elles lisent est calculé depuis l'emplacement du script, jamais depuis un
-projet qu'on leur désigne. Résultat : impossible d'installer la méthode dans un autre projet (muti)
-et d'y voir **ses** fiches. On rend cette racine **paramétrable** — un argument ou une variable
-d'environnement. C'est le **premier déblocage** de l'ancrage de la méthode par projet.
+Le tableau de bord et les vues de la méthode ne lisent que les fiches de vectorz. On les rend
+capables de lire celles d'un autre projet (muti, samplerz). Il suffit de désigner le projet :
+`--root <dossier>` ou la variable `EZK_ROOT`. Sans rien, rien ne change. C'est le premier
+déblocage pour installer la méthode ailleurs.
 
-## Contexte / Problème
+## Où on en est (relu contre le code du 2026-10-01)
 
-- Le **cœur est déjà propre** : `loadFiches(rootDir)` prend la racine **en paramètre**
-  (`products/mega-city/src/loaders/fiches.ts:53`).
-- Mais les **binaires des vues figent la racine** via `import.meta.url` — donc toujours le dépôt
-  vectorz : `bin/regen-avancement.ts:19`, `bin/regen-map-data.ts:20`, `bin/regen-plan-view.ts:20`,
-  `bin/ezk-map.ts:33`, `bin/check-fiches.ts:19`. (`bin/plan-head.ts:64` **affiche** le plan mais ne
-  régénère PAS l'onglet Plan — c'est `regen-plan-view.ts` qui produit la vue ; retour Codex 2026-08-27.)
-- Conséquence : board / map / plan / avancement ne peuvent afficher que les fiches **de vectorz**.
-  Un projet hôte ne peut pas voir les siennes — ce qui rend l'install-par-projet inutile côté vues.
-- **Verrou indépendant de la grande décision d'archi** (options 0-4 de l'épic
-  [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md)) : quelle que soit la
-  façon d'installer la méthode (copie, store versionné, plugin), les vues devront lire une racine
-  **désignée**. D'où le **faible regret** : cette brique est vraie dans tous les scénarios.
+La première version de cette fiche citait `regen-avancement.ts` et `regen-plan-view.ts`. Ils
+n'existent plus. Depuis l'[ADR-0055](../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md),
+`ezk dashboard` calcule les données du board à chaque requête (`src/io/derived-views.ts`), et
+`views:regen` les écrit sur disque.
 
-## Proposition
+Le cœur est déjà propre : `loadFiches(rootDir)` et chaque `DATA_VIEWS[].build(root)` reçoivent la
+racine en paramètre. Ce qui la fige, ce sont les points d'entrée : ils la tirent de `import.meta.url`
+(`bin/ezk-map.ts`, `bin/avancement.ts`, `bin/plan-head.ts`). `bin/check-fiches.ts` accepte déjà
+`--root`, mais pas la variable d'environnement.
 
-- Introduire une **résolution de racine unique et explicite**, même ordre partout :
-  **argument CLI** > **variable d'env** (ex. `EZK_ROOT`) > `INIT_CWD` / cwd > **défaut = dépôt
-  courant** (comportement actuel préservé).
-- L'appliquer aux **5 bins** des vues. Réutiliser le pattern **déjà présent** ailleurs :
-  `scripts/regen-backlog.sh` accepte déjà une racine en argument, et la supervision fait
-  `resolveProjectPath(arg, INIT_CWD, cwd)` — ne pas réinventer.
-- Conserver la **garde anti-traversée** de `ezk-map.ts` (interdit de sortir de la racine), rebasée
-  sur la racine désignée.
-- **Non-régression stricte** : sans argument ni env, comportement **identique** à aujourd'hui.
+Il y a **deux racines**, à ne pas confondre :
+
+- **la méthode** (le dépôt vectorz) : les pages (`diagrams/`) et les outils. Elle ne change jamais ;
+- **le projet** : ses fiches (`features/`), son `PLAN.md`, ses récits (`docs/sessions/`), ses pouces
+  (`features/reviews/verdicts/`). C'est elle qu'on rend paramétrable. Par défaut : la méthode.
+
+## Décisions
+
+- **Ordre** : `--root` (argument) > `EZK_ROOT` (variable) > défaut = le dépôt de la méthode. Un chemin
+  relatif se lit depuis `INIT_CWD`, sinon le dossier courant : c'est la règle de `resolveProjectPath`
+  (supervision), réutilisée.
+- **Pas de détection automatique** depuis le dossier courant. « Sans argument ni variable, rien ne
+  change » reste ainsi vrai à la lettre.
+- **Quatre commandes** lisent le projet désigné : `ezk dashboard`, `ezk board show`,
+  `ezk backlog check`, `ezk backlog plan-head`. Le manifeste gagne une marque `project: true` ; pour ces
+  commandes, `ezk --root <projet> …` n'est plus refusé et passe `EZK_ROOT` au script.
+- **Garde anti-traversée** : les fichiers servis restent ceux de `diagrams/` (la méthode), avec la même
+  garde. Le projet n'est lu que par les vues de données (calculées, sans chemin venu de la requête)
+  et par la route du pouce haut/bas (id validé), qui écrit dans `features/reviews/verdicts/` du projet.
+- **Refus assumés** : `views regen` écrit dans la méthode, donc refuse un autre projet avec un message
+  clair. `views map-data` décrit la méthode (catalogue), pas un projet : hors sujet.
 
 ## Critères d'acceptation
 
-- [ ] Les bins des vues (`avancement` / `regen-avancement` / `regen-map-data` / **`regen-plan-view`** /
-      `ezk-map` / `check-fiches`) acceptent une **racine explicite** (arg > env `EZK_ROOT` > défaut actuel).
-      `regen-plan-view` inclus : il régénère **l'onglet Plan** ; `plan-head` ne fait qu'**afficher**, il ne régénère aucune vue.
-- [ ] Depuis un autre dossier, désigner un projet hôte fait afficher **les fiches DE ce projet**
-      (pas celles de vectorz).
-- [ ] **Sans** argument ni env : comportement **inchangé** (test de non-régression).
-- [ ] Garde anti-traversée **rebasée** sur la racine désignée (pas de lecture hors racine).
-- [ ] Gate locale verte (build / test / lint).
+- [x] `ezk backlog check` accepte déjà `--root <dossier>` (preuve : `bin/check-fiches.ts`, test
+      `bin/test-check-fiches.sh`). Reste : la variable `EZK_ROOT` et le passage par le routeur.
+- [x] Un résolveur unique (pur, testé) applique l'ordre argument > variable > défaut ; un dossier absent
+      ou qui n'est pas un dossier est refusé avec un message clair (pas de page vide trompeuse).
+      Preuve : `src/core/project-root.ts`, `src/io/project-root.ts`, `src/__tests__/project-root.test.ts`.
+- [x] Les quatre commandes ci-dessus suivent cette règle, y compris via `ezk --root <projet> <commande>`
+      et via `EZK_ROOT=<projet> ezk <commande>`. Preuve : marque `project: true` au manifeste, tests
+      `ezk-cli`, `ezk-launcher`, et `ezk-manifest` (chaque commande marquée lance un script qui lit la racine).
+- [x] Sur un projet jetable, le tableau de bord (données du board) et `ezk board show` montrent les
+      fiches DE ce projet, pas celles de vectorz. Preuve : `src/__tests__/project-root-bins.test.ts`.
+- [x] Sans argument ni variable, la sortie est identique à celle d'aujourd'hui (test : défaut ==
+      `--root <dépôt de la méthode>`). Preuve : même fichier.
+- [x] La route du pouce écrit dans le projet désigné ; la garde de traversée du serveur est inchangée.
+      Preuve : même fichier (le pouce tombe dans le projet jetable, jamais dans vectorz).
+- [x] `ezk --root <autre> <commande qui écrit dans la méthode>` reste refusé, avec un message à jour.
+      Preuve : `ezk-cli.test.ts` et `ezk-launcher.test.ts`.
+- [x] Gate locale verte (typecheck, tests, lint, liens). Constat : l'essai de bout en bout lance des
+      processus ; sa première version faisait expirer, sous charge, un test voisin (délai de 5 s). Il est
+      allégé (un serveur partagé, scripts lancés sans le routeur quand il n'est pas l'objet du test).
 
 ## Comment vérifier
 
 ```bash
-# la vue lit les fiches d'un AUTRE projet
-EZK_ROOT=/chemin/vers/muti pnpm --dir products/mega-city ezk:map
+# les fiches d'un AUTRE projet (dossier jetable : on ne touche pas à muti)
+EZK_ROOT=/chemin/vers/projet pnpm ezk board show
+pnpm ezk --root /chemin/vers/projet dashboard
 # sans rien : comportement d'avant (fiches de vectorz)
-pnpm --dir products/mega-city ezk:map
+pnpm ezk board show
 ```
 
-Attendu : avec `EZK_ROOT`, la page montre les fiches du projet désigné ; sans, celles de vectorz,
-à l'identique d'aujourd'hui.
+Attendu : avec `--root` ou `EZK_ROOT`, on voit les fiches du projet désigné ; sans, celles de vectorz,
+à l'identique d'aujourd'hui. Les tests le prouvent sur un projet jetable (`src/__tests__/project-root*.test.ts`).
 
-## Notes / décisions
+## Suite (hors de ce POC)
 
-- **Fille de l'épic** [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md) —
-  le **déblocage n°1** identifié en session archi du 2026-08-26.
-- **Faible regret** : brique vraie quelle que soit l'option d'ancrage retenue (0-4). Peut être
-  tirée **avant** le grooming panel de l'épic sans rien présupposer.
-- **Prérequis pratique** du « site de monitoring montre les fiches du projet courant » (fiche rename
-  [20260826173005368](done/20260826173005368_renommer-ezk-map.md)) et de l'install-par-projet.
-- **Adjacent mais distinct** de `20260823121712844` (durcir `regen-backlog` — refuser une racine par
-  défaut nichée) : ici on **ouvre** une racine désignée aux vues, là on **verrouille** un défaut
-  dangereux du backlog.
-- **Priorité proposée P2** (ajustable) : **P1** défendable si tu veux attaquer tôt l'isolation muti
-  (c'est le déblocage concret). Noms de flags / env (`EZK_ROOT`) à confirmer au grooming.
+- `views regen` pour un autre projet (il écrit des fichiers : décision à part) ;
+- `ezk board check` (il lit `PORTFOLIO.md`, généré hors git, absent d'un projet neuf) ;
+- `backlog regen`, `backlog portfolio`, `docs check-links` : leur `{root}` du manifeste vise toujours la méthode ;
+- accrocher le projet hôte à la méthode (dossier `.vectorz/`, fiche voisine sur les règles projet).
+
+## Notes
+
+- **Fille de l'épic** [20260813124026215](done/20260813124026215_deploiement-methode-llm-native.md) :
+  le déblocage n°1 de la session d'architecture du 2026-08-26. Faible regret : vraie quelle que soit
+  l'option d'ancrage retenue.
+- **Adjacente, distincte** de `20260823121712844` (durcir `regen-backlog` contre une racine par défaut
+  nichée) : ici on ouvre une racine désignée aux vues, là on verrouille un défaut dangereux.
+- Le message du routeur qui disait « le chantier racine paramétrable n'est pas fait » disparaît avec
+  cette fiche.

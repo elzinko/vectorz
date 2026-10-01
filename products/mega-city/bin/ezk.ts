@@ -3,7 +3,10 @@
  * ezk — le point d'entrée unique de la méthode (fiche 20260903134906920, ADR-0046 option B).
  *
  *   ezk help [domaine|skill]                   les deux index : terminal et chat
- *   ezk [--root <dépôt>] [--dry-run] <domaine> [<verbe>] [args…]
+ *   ezk [--root <dossier>] [--dry-run] <domaine> [<verbe>] [args…]
+ *
+ * `--root` vise le dépôt de la méthode ; pour une commande marquée `project` au manifeste (elle ne
+ * fait que lire les fiches), il désigne le PROJET dont on les lit — comme la variable `EZK_ROOT`.
  *
  * Bord I/O mince : lit le manifeste (products/mega-city/ezk-manifest.yml), laisse le cœur pur
  * (src/core/ezk-cli.ts) choisir le script, puis le lance avec les arguments tels quels : depuis
@@ -26,6 +29,7 @@ import {
   route,
   splitRouterFlags,
 } from '../src/core/ezk-cli.js';
+import { PROJECT_ROOT_ENV } from '../src/core/project-root.js';
 import { listSkills, skillDetail } from './ezk-help.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -77,10 +81,12 @@ function launcherFor(step: Step): { cmd: string; args: string[] } {
   return { cmd: process.execPath, args: [tsx, script, ...step.args] };
 }
 
-function runStep(step: Step, cwd: string): Promise<number> {
+function runStep(step: Step, cwd: string, projectRoot?: string): Promise<number> {
   const { cmd, args } = launcherFor(step);
+  // Le projet désigné voyage par la variable EZK_ROOT : le script la lit comme si l'utilisateur l'avait posée.
+  const env = projectRoot === undefined ? process.env : { ...process.env, [PROJECT_ROOT_ENV]: projectRoot };
   return new Promise((done) => {
-    const child = spawn(cmd, args, { cwd, stdio: 'inherit' });
+    const child = spawn(cmd, args, { cwd, stdio: 'inherit', env });
     // Un serveur long (le tableau de bord) doit s'arrêter avec nous : on relaie les signaux.
     const relayed = (['SIGINT', 'SIGTERM', 'SIGHUP'] as const).map((signal) => {
       const relay = (): void => {
@@ -110,10 +116,13 @@ async function main(argv: string[]): Promise<number> {
   // pnpm change de dossier avant de lancer le script ; INIT_CWD garde celui de l'utilisateur.
   const userCwd = process.env.INIT_CWD ?? process.cwd();
   const checkout = findCheckoutRoot(userCwd, existsSync);
+  const envRoot = process.env[PROJECT_ROOT_ENV];
   const resolution = route(manifest, flags.rest, {
     ownRoot: OWN_ROOT,
     ...(checkout ? { checkoutRoot: real(checkout) } : {}),
     ...(flags.rootFlag ? { rootFlag: real(resolve(userCwd, flags.rootFlag)) } : {}),
+    // Vide = absente. Relative, elle se lit depuis le dossier de l'utilisateur, comme l'option.
+    ...(envRoot ? { envRoot: real(resolve(userCwd, envRoot)) } : {}),
   });
 
   if (resolution.kind === 'help') return showHelp(manifest, resolution.topic);
@@ -122,7 +131,7 @@ async function main(argv: string[]): Promise<number> {
     return resolution.exitCode;
   }
   for (const notice of resolution.notices) warn(`ezk : ${notice}`);
-  const { step, entry } = resolution;
+  const { step, entry, projectRoot } = resolution;
   // Une commande « fixe » travaille sur le dépôt de la méthode : son script part de la racine de
   // ce dépôt, d'où que l'utilisateur la lance (sous-dossier, ou --root depuis ailleurs). Une
   // commande « none » part du dossier de l'utilisateur : ses chemins relatifs sont les siens.
@@ -131,10 +140,11 @@ async function main(argv: string[]): Promise<number> {
     const runner = extname(step.script) === '.sh' ? 'bash' : 'tsx';
     const shown = step.args.map((a) => (/\s/.test(a) ? JSON.stringify(a) : a));
     say(`ezk (à blanc) : dossier de travail = ${cwd}`);
+    if (projectRoot !== undefined) say(`ezk (à blanc) : projet visé = ${projectRoot}`);
     say(`ezk (à blanc) : ${[runner, step.script, ...shown].join(' ')}`);
     return 0;
   }
-  const code = await runStep(step, cwd);
+  const code = await runStep(step, cwd, projectRoot);
   // Un code non nul n'est pas toujours une panne : `law doctor` rend 1 pour dire « il y a un écart ».
   if (code !== 0) warn(`ezk : « ${step.script} » s'est terminé avec le code ${code}.`);
   return code;

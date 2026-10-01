@@ -11,6 +11,10 @@
 #   root            fixed (défaut) = lit ou écrit les fichiers du dépôt de la méthode : le script
 #                   part de la RACINE du dépôt, d'où qu'on lance la commande dans ce dépôt ;
 #                   none = marche de n'importe quel dossier, et part du dossier de l'utilisateur
+#   project         true = la commande SEULEMENT lit les fiches d'un projet, et son script sait lire
+#                   celui qu'on désigne : `ezk --root <projet> …` ou la variable EZK_ROOT (le routeur la
+#                   passe au script). Sans cette marque, une commande qui écrit dans le dépôt de la
+#                   méthode refuse tout autre dépôt, et ignore EZK_ROOT. Défaut = la méthode.
 #   deprecated      nouveau nom : l'entrée est un ancien nom, gardé et signalé
 #
 # Le test src/__tests__/ezk-manifest.test.ts vérifie que tout script de bin/ exposé en script
@@ -50,13 +54,15 @@ commands:
   - domain: board
     verb: show
     run: bin/avancement.ts
-    summary: Affiche le board d'avancement en texte.
+    summary: Affiche le board d'avancement en texte (--root <projet> pour un autre projet).
+    project: true
 
   # --- backlog : les fiches ---
   - domain: backlog
     verb: check
     run: bin/check-fiches.ts
-    summary: Vérifie que les fiches respectent le schéma.
+    summary: Vérifie que les fiches respectent le schéma (--root <projet> pour un autre projet).
+    project: true
   - domain: backlog
     verb: regen
     run: bin/regen-backlog.sh {root} "Backlog features & bugs — vectorz"
@@ -68,7 +74,8 @@ commands:
   - domain: backlog
     verb: plan-head
     run: bin/plan-head.ts
-    summary: Imprime la tête réelle du plan.
+    summary: Imprime la tête réelle du plan (--root <projet> pour un autre projet).
+    project: true
   - domain: backlog
     verb: plan-order
     run: bin/plan-order.ts
@@ -144,16 +151,19 @@ commands:
     summary: Vérifie qu'aucun numéro d'ADR n'est pris deux fois (--next donne le prochain).
 
   # --- le tableau de bord de la méthode (ex « ezk:map ») ---
-  # Il SERT les fichiers de son propre dépôt et ne les écrit pas — sauf UNE route, le pouce 👍/👎
-  # d'une fiche (features/reviews/verdicts/, ADR-0057). Il marche de n'importe quel dossier.
+  # Il SERT les pages de la méthode (diagrams/) et calcule leurs données depuis les fiches du projet
+  # désigné (--root, EZK_ROOT ; par défaut la méthode). Il ne les écrit pas — sauf UNE route, le
+  # pouce 👍/👎 d'une fiche (features/reviews/verdicts/ du projet, ADR-0057). Il marche de n'importe quel dossier.
   - domain: dashboard
     run: bin/ezk-map.ts
-    summary: Ouvre le tableau de bord de la méthode dans le navigateur (board, plan, cartes).
+    summary: Ouvre le tableau de bord dans le navigateur (--root <projet> pour un autre projet).
     root: none
+    project: true
   - domain: map
     run: bin/ezk-map.ts
     summary: Ancien nom du tableau de bord.
     root: none
+    project: true
     deprecated: dashboard
 
   # --- sessions, config, vues générées, supervision ---

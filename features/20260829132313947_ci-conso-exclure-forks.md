@@ -43,6 +43,17 @@ minutes », puisqu'ils ne consomment aucun quota.
   écarte AUSSI des repos qui ne sont **pas** des forks (un repo qu'on ne veut simplement pas voir).
   `--no-forks` gère l'automatique (les forks), `.conso-ignore` l'exception manuelle — les deux se composent.
 
+## Critères d'acceptation
+
+- [x] `ci:conso --no-forks` écarte de la table les forks **publics sans coût** ; un pied dit combien
+      (forks masqués, minutes). — `hideFreeForks` + pied « forks masqués : N » (`src/core/ci-conso.ts`).
+- [x] Aucun appel en plus : le `fork` est lu dans la même réponse `/repos/<o>/<r>` que la visibilité.
+- [x] **Rien qui consomme n'est masqué** : un fork privé, facturé ou de visibilité inconnue reste
+      affiché. (Précision par rapport à la proposition : « fork » ne veut pas dire « gratuit ».)
+- [x] Sans le flag, la sortie est **inchangée**. Une option inconnue (`--no-fork`) est refusée.
+- [x] Tests : `src/__tests__/ci-conso.test.ts` (masquage, totaux, forks gardés, pur, rendu, arguments).
+- [ ] `.conso-ignore` (liste manuelle) — **reste en Suite**.
+
 ## Comment vérifier
 
 ```bash
@@ -50,6 +61,22 @@ pnpm --dir products/mega-city ci:conso 2026-08 --no-forks
 ```
 
 Attendu : la table ne montre plus les forks publics ; un pied indique combien ont été masqués.
+
+Essai réel (2026-10-01, mois 2026-09) : la commande tourne, le pied affiche « forks masqués : 0 ».
+Cause : **aucun fork public n'a consommé de minutes ce mois-ci** (voir « Suite »).
+
+## Suite
+
+- **Le constat de départ ne tient plus.** `gh repo list --fork` ne rend aujourd'hui que **2** forks,
+  tous deux **privés**. Les dépôts qui encombraient la table (`p5.js`, `ableton-js`…) sont des
+  **copies privées qui ne sont pas des forks** pour GitHub (`fork: false`) et qui **consomment du
+  quota**. Le flag est juste et testé, mais il ne désencombre rien sur ce compte.
+- Piste plus utile pour lire « où partent mes minutes » : un filtre **`--private-only`**
+  (seuls les privés pèsent sur le quota Free). À décider par le PO avant de le construire.
+- **`.conso-ignore`** (exclusion manuelle d'un repo, un par ligne, `#` = commentaire) : non fait,
+  c'est la 2e moitié de la proposition.
+- **Défaut** : `--no-forks` est opt-in. Le passer en défaut (avec `--all` pour tout voir) tient en
+  une ligne dans `bin/ci-conso.ts` si le PO le veut.
 
 ## Notes
 
