@@ -11,8 +11,8 @@ description: >-
   (la boucle complète : récupère les fils Codex non résolus + reviews, écarte
   le cas 👍 « RAS », les classe P0/P1/P2 + file:line, pour chacun CORRIGE ou
   DÉCLINE, commit conventional scopé, push, puis RÉPOND en fil et RÉSOUT chaque
-  fil traité (corrigé comme décliné), re-déclenche `@codex review`, attend le
-  verdict de façon BORNÉE, rapporte), check (liste les fils Codex non résolus +
+  fil traité (le décliné à la décision, le corrigé après le push), re-déclenche
+  `@codex review`, attend le verdict de façon BORNÉE, rapporte), check (liste les fils Codex non résolus +
   le verdict courant sans rien écrire). Garde-fou de tête : STAND-DOWN avant
   toute écriture (PR déjà mergée/fermée, branche pilotée par un autre worktree,
   commits d'une autre session apparus) → ne rien pousser, rapporter, rendre la
@@ -139,7 +139,9 @@ mutation($threadId:ID!){
 ```
 
 Si la réponse ou la résolution échoue (droits, réseau), **ne l'avale pas** : note le fil
-resté ouvert et rapporte-le à l'étape 6.
+resté ouvert et rapporte-le à l'étape 6. Si la réponse est partie mais pas la résolution,
+**relance seulement la mutation** : ne reposte pas la réponse. Au `fix` suivant, ouvre le fil
+avant de répondre : s'il porte déjà ta réponse, résous-le sans répondre une seconde fois.
 
 ### 3. Commit conventional, scopé
 
@@ -162,7 +164,8 @@ git push origin "$HEAD_BRANCH"
 ```
 
 **Push réussi** → clos chaque fil **corrigé** avec le bloc « Clore un fil » de l'étape 2,
-`REPLY="Corrigé en \`$(git rev-parse --short HEAD)\` : <ce qui a changé>."`.
+`REPLY="Corrigé en \`$(git rev-parse --short HEAD)\` : <ce qui a changé>."`. Si tu as fait un
+commit par finding, cite le commit propre au finding plutôt que le HEAD poussé.
 **Push échoué** → ne résous rien : le fil resterait « resolved » sans correction publiée.
 Rapporte l'échec (étape 6).
 
