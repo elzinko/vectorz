@@ -56,24 +56,32 @@ La fiche rappelle de construire le skill avec `--direct` (la fiche existe déjà
 
 ## Critères d'acceptation
 
-- [ ] `create --via-fiche` (alias `--propose`) et `create --direct` sont dans le tableau d'usage de
+- [x] `create --via-fiche` (alias `--propose`) et `create --direct` sont dans le tableau d'usage de
       `ezk-ezk`. Sans option : comportement direct, inchangé.
-- [ ] En mode via-fiche, les étapes 1 à 4 restent et les étapes 5-6 sont remplacées par `ezk-backlog
+      *Preuve : ligne `create` du tableau, test « le tableau d'usage annonce les deux options ».*
+- [x] En mode via-fiche, les étapes 1 à 4 restent et les étapes 5-6 sont remplacées par `ezk-backlog
       add`. Aucun `SKILL.md` n'est écrit, `deploy.sh` n'est pas appelé, rien n'est créé hors `features/`.
-- [ ] La fiche produite est **tirable** : gabarit à quatre blocs (problème et valeur, specs,
+      *Preuve : section « Mode `create --via-fiche` » (étape 5′ et garde-fous du mode).*
+- [x] La fiche produite est **tirable** : gabarit à quatre blocs (problème et valeur, specs,
       contraintes et garde-fous, source) plus le rappel `--direct`. Assez de matière pour groomer
       sans redemander.
-- [ ] La frontière avec `ezk-chef extract` est écrite : `ezk-ezk` propose un **skill** via fiche,
+      *Preuve : les quatre blocs et la consigne `create --direct` sont gardés par le test de contrat.*
+- [x] La frontière avec `ezk-chef extract` est écrite : `ezk-ezk` propose un **skill** via fiche,
       `ezk-chef extract` produit une **recette**. Objets différents.
-- [ ] Un test de contrat sur le texte du `SKILL.md` (modèle `ezk-scout-contract.test.ts`) échoue si
+      *Preuve : paragraphe « Frontière » du mode, rappelé dans « Délégation / voisinage ».*
+- [x] Un test de contrat sur le texte du `SKILL.md` (modèle `ezk-scout-contract.test.ts`) échoue si
       l'option, son opposé, la délégation à `ezk-backlog add`, les quatre blocs ou la frontière
       disparaissent. Prouvé par sabotage. `ezk-ezk` garde `composes: [ezk-backlog]` (déjà déclaré).
+      *Preuve : `ezk-ezk-via-fiche-contract.test.ts` (10 tests) ; sabotage joué, voir « Comment vérifier ».*
 
 ## Comment vérifier
 
 ```bash
 pnpm --dir products/mega-city exec vitest run src/__tests__/ezk-ezk-via-fiche-contract.test.ts
 ```
+
+Sabotage joué le 2026-10-01 sur le vrai `SKILL.md`, puis annulé : retirer `ezk-backlog add` du mode,
+ou la phrase « Aucun `SKILL.md` n'est écrit », fait passer le test au rouge.
 
 À la main, dans une session qui a un sujet de skill : `/ezk-ezk create --via-fiche`, valider le
 résumé. Une fiche `idea` apparaît dans `features/` (dédoublonnée, quatre blocs) et aucun dossier
