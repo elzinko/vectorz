@@ -373,31 +373,58 @@ réimplémentée en aval (test de séparabilité).
 
 Distinct de `review` (hygiène périodique, cadence bornée) : `aggregate` est le geste de
 **restructuration délibéré**, lancé quand le stock a gonflé. Il **propose** ; le PO
-**tranche** ; un geste séparé **applique** — jamais d'auto-modification (ADR-0001).
+**tranche** ; un geste séparé (`backlog:apply`, plus bas) **applique** — jamais d'auto-modification
+(ADR-0001).
 
 ```bash
 pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn|epic:<id>>] \
-  [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>]
+  [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>] [--proposals <fichier.json>]
 ```
 
 - `--scope` restreint la passe : `all` (défaut, tout le stock actif), un `<produit>`,
   un seau de priorité `Pn`, ou `epic:<id>` (les enfants d'un épic).
 - `--focus` cible l'affichage sur un type de remaniement (`merge`, `split`, `epics`,
   `dedup`, `reprioritize`) ; sans arg, tout est montré. `split`/`reprioritize` ne sont
-  **pas produits** par le moteur `script` aujourd'hui — le dit sans planter.
+  **pas produits** par le moteur `script` : c'est le jugement du moteur `llm` — le dit sans planter.
 - `--mode` choisit le moteur :
   - **`script`** (défaut) — clustering **mécanique et déterministe** sur `labels:`
     partagés (multi-appartenance), enfants d'un même `epic:`, et 1er mot du titre.
     Rend toujours sa **couverture** (« N/M fiches taguées ») : jamais de crash sur
     des fiches sans tag, jamais de bascule silencieuse.
-  - **`llm`** — saute le clustering déterministe ; le jugement par intention (faux
-    positifs/négatifs du script, épics et splits proposés) reste à faire via le
-    playbook — pas encore implémenté par ce cœur.
-  - **`both`** — exécute `script` puis annonce que la passe `llm` reste à faire.
-- Chaque proposition nomme le **geste d'application** (`ship`, futur `merge`/`split`)
-  **sans l'exécuter**. Les statuts `merged`/`split` avec provenance sont **gated** sur
-  [[20260823121712652]] — en attendant, `aggregate` propose, `ship` reste le seul geste
-  qui exécute.
+  - **`llm`** — le jugement par le sens est celui de **l'agent**, jamais du code (ADR-0051).
+    Sans `--proposals` : imprime le **dossier** (fiches actives du scope : id, priorité, titre,
+    labels) et le **format JSON** de la réponse. L'agent juge, écrit un tableau de propositions
+    `{kind: merge|split, …, why}` dans un fichier, puis relance avec `--proposals <fichier>` : le
+    script **valide** chaque proposition (id inventé, fiche déjà livrée ou close, résultante parmi
+    les sources, `why` vide, recouvrement avec une proposition plus haute) — chaque rejet est
+    **listé avec sa raison**, jamais abandonné en silence ; un fichier illisible est une erreur
+    franche. Il rend ensuite les propositions valides, chacune avec son geste.
+  - **`both`** — `script`, puis `llm`, puis le **croisement** : cluster confirmé par le llm ·
+    cluster non retenu (faux positif possible) · proposition trouvée « par le sens seulement ».
+- Chaque proposition nomme son **geste d'application** (`backlog:apply …`, prêt à copier)
+  **sans l'exécuter** : `aggregate` n'écrit jamais rien.
+
+#### Appliquer — `backlog:apply` (fiche 20260910231201744)
+
+Après l'arbitrage du PO, un script applique (ADR-0001). C'est la transaction de `ship` (liens
+recalés, entrée de `PLAN.md` barrée, un seul `git mv` vers `done/`, `BACKLOG.md` régénéré, retour
+arrière au moindre échec), avec le statut `merged` ou `split` et la **provenance dans les deux sens** :
+
+```bash
+pnpm --dir products/mega-city backlog:apply merge --into <résultante> <source>… [--dry-run]
+pnpm --dir products/mega-city backlog:apply split <source> --into <enfantA>,<enfantB>… [--dry-run]
+```
+
+- **Fusion** : chaque source passe `merged` (+ `merged_into`) et part dans `done/` ; la résultante
+  reste active et cite ses sources (`merged_from`).
+- **Découpage** : la source passe `split` (+ `split_into`) et part dans `done/` ; chaque enfant cite
+  la source (`split_from`).
+- La résultante (ou les enfants) doit **déjà exister** : créer une fiche, c'est `add`, avant l'apply.
+- **Refus avant d'écrire** (code 1), toutes les raisons d'un coup : id inconnu, fiche déjà livrée ou
+  close, résultante parmi les sources, découpage à moins de 2 enfants, liens cassés en hausse,
+  entrée de `PLAN.md` laissée « à faire ». `--dry-run` décrit sans rien écrire.
+- Ne committe ni ne pousse : le commit reste celui d'`ezk-commits`. `fiches:check` contrôle ensuite
+  que la provenance se lit dans les deux sens.
 
 ### `review [--delta]` — le sanity check du stock (ADR-0016 §4, fiche 0071)
 

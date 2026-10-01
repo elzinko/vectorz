@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  type ProvenanceEntry,
   findDuplicateIds,
   findInvalidProvenanceIds,
+  findProvenanceMismatches,
   validateFicheFrontMatter,
 } from '../fiche-validator.js';
 
@@ -200,5 +202,69 @@ describe('findInvalidProvenanceIds (ADR-0040 D5 — pas d’id fantôme pour mer
     expect(
       findInvalidProvenanceIds([{ file: 'a.md', mergedInto: '', splitInto: [] }], knownIds),
     ).toEqual([]);
+  });
+});
+
+describe('provenance dans les deux sens (fiche 20260910231201744 — merged_from / split_from)', () => {
+  const E = (id: string, over: Partial<ProvenanceEntry> = {}): ProvenanceEntry => ({
+    file: `${id}.md`,
+    id,
+    mergedInto: '',
+    mergedFrom: [],
+    splitInto: [],
+    splitFrom: '',
+    ...over,
+  });
+
+  it('merged_from / split_from vers un id inexistant → id fantôme', () => {
+    const known = new Set(['1', '2']);
+    const anomalies = findInvalidProvenanceIds(
+      [
+        { file: 'a.md', mergedInto: '', splitInto: [], mergedFrom: ['2', '999'] },
+        { file: 'b.md', mergedInto: '', splitInto: [], splitFrom: '888' },
+      ],
+      known,
+    );
+    expect(anomalies).toHaveLength(2);
+    expect(anomalies[0]).toMatchObject({ file: 'a.md', field: 'merged_from' });
+    expect(anomalies[0]?.message).toContain('999');
+    expect(anomalies[1]).toMatchObject({ file: 'b.md', field: 'split_from' });
+  });
+
+  it('une fusion réciproque ne produit aucune anomalie', () => {
+    expect(
+      findProvenanceMismatches([E('1', { mergedFrom: ['2', '3'] }), E('2', { mergedInto: '1' }), E('3', { mergedInto: '1' })]),
+    ).toEqual([]);
+  });
+
+  it('un découpage réciproque ne produit aucune anomalie', () => {
+    expect(
+      findProvenanceMismatches([E('1', { splitInto: ['2', '3'] }), E('2', { splitFrom: '1' }), E('3', { splitFrom: '1' })]),
+    ).toEqual([]);
+  });
+
+  it('merged_into sans merged_from en face → anomalie sur la source', () => {
+    const a = findProvenanceMismatches([E('1'), E('2', { mergedInto: '1' })]);
+    expect(a).toHaveLength(1);
+    expect(a[0]).toMatchObject({ file: '2.md', field: 'merged_into' });
+    expect(a[0]?.message).toContain('non réciproque');
+  });
+
+  it('merged_from sans merged_into en face, ou vers une autre résultante → anomalie sur la résultante', () => {
+    const none = findProvenanceMismatches([E('1', { mergedFrom: ['2'] }), E('2')]);
+    expect(none).toEqual([expect.objectContaining({ file: '1.md', field: 'merged_from' })]);
+    const other = findProvenanceMismatches([E('1', { mergedFrom: ['2'] }), E('2', { mergedInto: '3' }), E('3', { mergedFrom: ['2'] })]);
+    expect(other.map((x) => x.file)).toEqual(['1.md']);
+  });
+
+  it('split_into sans split_from en face, et split_from sans split_into en face → anomalies', () => {
+    const a = findProvenanceMismatches([E('1', { splitInto: ['2'] }), E('2')]);
+    expect(a).toEqual([expect.objectContaining({ file: '1.md', field: 'split_into' })]);
+    const b = findProvenanceMismatches([E('1'), E('2', { splitFrom: '1' })]);
+    expect(b).toEqual([expect.objectContaining({ file: '2.md', field: 'split_from' })]);
+  });
+
+  it('un id absent des fiches est ignoré ici (c’est un id fantôme, signalé ailleurs)', () => {
+    expect(findProvenanceMismatches([E('1', { mergedFrom: ['999'], mergedInto: '888', splitFrom: '777' })])).toEqual([]);
   });
 });

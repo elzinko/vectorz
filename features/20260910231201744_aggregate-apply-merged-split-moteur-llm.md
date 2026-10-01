@@ -30,7 +30,9 @@ le jugement de l'agent : il écrit ses propositions dans un fichier, et le scrip
 transforme une proposition acceptée en réalité. Le LLM propose, le PO tranche, un script applique
 (ADR-0001).
 
-## Ce qui est déjà là (à ne pas refaire)
+## Contexte / Problème
+
+Ce qui est déjà là, à ne pas refaire :
 
 - Le cœur `script` et son bin en lecture seule (#223).
 - Les statuts `merged` / `split` et les champs `merged_into` / `split_into`, validés par le schéma
@@ -40,7 +42,11 @@ transforme une proposition acceptée en réalité. Le LLM propose, le PO tranche
   `git mv` vers `done/`, `BACKLOG.md` régénéré, retour arrière) admet déjà `merged` et `split`.
   L'apply la **réutilise** : pas de seconde transaction.
 
-## Décisions de cadrage
+Ce qui manque : appliquer une fusion ou un découpage, et le moteur `llm`. Les champs inverses
+`merged_from` et `split_from` sont **nouveaux** et optionnels : le schéma ne rejette aucun champ
+inconnu, et le validateur en contrôle la réciprocité (ajouté ici).
+
+## Proposition : décisions de cadrage
 
 1. **L'écriture reste séparée de la lecture.** `aggregate` reste en lecture seule (ADR-0051 : « un
    geste séparé applique »). L'apply est un bin à part, `backlog:apply`, exposé par `ezk backlog apply`.
@@ -58,32 +64,32 @@ transforme une proposition acceptée en réalité. Le LLM propose, le PO tranche
 ## Critères d'acceptation
 
 **Apply**
-- [ ] `backlog:apply merge --into <id> <source>…` : chaque source passe `status: merged`, reçoit
+- [x] `backlog:apply merge --into <id> <source>…` : chaque source passe `status: merged`, reçoit
       `merged_into` et `pr: "merged — fusionnée dans <id>"`, part dans `features/done/` ; la résultante
       reçoit `merged_from` (trié, sans doublon) ; liens recalés ; `BACKLOG.md` régénéré.
-- [ ] `backlog:apply split <source> --into <idA>,<idB>…` : la source passe `status: split` avec
+- [x] `backlog:apply split <source> --into <idA>,<idB>…` : la source passe `status: split` avec
       `split_into`, part dans `done/` ; chaque enfant reçoit `split_from`.
-- [ ] Refus **avant toute écriture** (code 1) : id inconnu ; fiche déjà dans `done/` ou terminale ;
+- [x] Refus **avant toute écriture** (code 1) : id inconnu ; fiche déjà dans `done/` ou terminale ;
       résultante parmi les sources ; découpage avec moins de 2 enfants ou un enfant égal à la source ;
       liens cassés en hausse ; entrée de `PLAN.md` laissée « à faire » (gardes de `planShip`).
-- [ ] `--dry-run` n'écrit rien. Un échec en route remet le dépôt à l'état initial (un test le prouve).
-- [ ] `fiches:check` signale une provenance non réciproque (A dit `merged_into` B, B ne cite pas A)
+- [x] `--dry-run` n'écrit rien. Un échec en route remet le dépôt à l'état initial (un test le prouve).
+- [x] `fiches:check` signale une provenance non réciproque (A dit `merged_into` B, B ne cite pas A)
       et un id fantôme dans `merged_from` / `split_from`.
 
 **Moteur llm « propose »**
-- [ ] `aggregate --mode llm` imprime le dossier (fiches actives du scope : id, priorité, titre,
+- [x] `aggregate --mode llm` imprime le dossier (fiches actives du scope : id, priorité, titre,
       labels) et le format JSON attendu. Fin du « non implémenté par ce cœur ».
-- [ ] `aggregate --mode llm|both --proposals <fichier>` valide chaque proposition : id inexistant ou
+- [x] `aggregate --mode llm|both --proposals <fichier>` valide chaque proposition : id inexistant ou
       déjà terminal, fiche déjà source d'une autre proposition, résultante parmi les sources, `why`
       vide. Chaque rejet est **listé avec sa raison**, jamais abandonné en silence. Un fichier
       illisible est une erreur franche (code 1).
-- [ ] `--mode both` croise les deux moteurs : cluster confirmé par le llm · cluster non retenu ·
+- [x] `--mode both` croise les deux moteurs : cluster confirmé par le llm · cluster non retenu ·
       proposition trouvée « par le sens seulement ».
-- [ ] Chaque proposition valide nomme son geste `backlog:apply …`, prêt à copier, sans l'exécuter.
+- [x] Chaque proposition valide nomme son geste `backlog:apply …`, prêt à copier, sans l'exécuter.
       `aggregate` n'écrit toujours rien.
 
 **Livrables**
-- [ ] `SKILL.md` d'`ezk-backlog` (§ `aggregate`) à jour : gate levée, apply, contrat llm. Manifeste
+- [x] `SKILL.md` d'`ezk-backlog` (§ `aggregate`) à jour : gate levée, apply, contrat llm. Manifeste
       `ezk` et script pnpm ajoutés.
 
 ## Comment vérifier
@@ -109,3 +115,7 @@ pnpm --dir products/mega-city fiches:check                                      
   et [ADR-0051](../products/mega-city/docs/adr/0051-aggregate-coeur-script-deterministe-vs-jugement-llm.md).
 - **Groom du 2026-10-01** : la gate sur `20260823121712652` est levée (statuts `merged` / `split` dans
   le schéma depuis V0.1). Priorité P2 inchangée.
+- **Livré le 2026-10-01** : `src/backlog/aggregate-apply.ts` (plan pur, réutilise `planShip`),
+  `aggregate-llm.ts` (contrat du moteur llm), `bin/backlog-apply.ts`, `bin/backlog-aggregate.ts` (modes
+  `llm` et `both`, `--proposals`), validateur de provenance réciproque. Tests : cœurs purs, plus les deux
+  bins de bout en bout sur un dépôt git jetable (boucle fermée apply puis `fiches:check --strict`).
