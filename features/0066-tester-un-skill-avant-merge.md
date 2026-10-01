@@ -46,21 +46,28 @@ scripts du **projet cible** cités par `ezk-ci`.
 
 ## Critères d'acceptation
 
-- [ ] **Scripts cités.** Un `SKILL.md` ou un `agents/*.md` qui cite un script du dépôt inexistant
+- [x] **Scripts cités.** Un `SKILL.md` ou un `agents/*.md` qui cite un script du dépôt inexistant
       fait échouer `pnpm test`. Écritures reconnues : `bin/x.sh` (avec ou sans `products/mega-city/`),
       `skills/<skill>/scripts/x` (ou `<skill>/scripts/x`), et `scripts/x` nu ou `./scripts/x`. Le nu
       se résout dans le dossier du skill (du skill homonyme pour un agent), puis dans `scripts/` du
       produit ou de la racine.
-- [ ] **Exceptions explicites.** Les scripts d'un AUTRE projet (ex. `ezk-ci` cite `scripts/ci-local.sh`,
+      *Preuve : `core/skill-refs.ts` + `skill-refs.test.ts` ; 33 documents, 64 citations, 0 introuvable.*
+- [x] **Exceptions explicites.** Les scripts d'un AUTRE projet (ex. `ezk-ci` cite `scripts/ci-local.sh`,
       généré dans le projet cible) sont listés un par un, avec leur raison. Aucun joker.
-- [ ] **Composition déclarée = citée.** Un `composes:` ou `delegates:` du frontmatter dont l'id
+      *Preuve : 2 exceptions (`ezk-ci`), chacune testée « encore citée » pour ne pas pourrir.*
+- [x] **Composition déclarée = citée.** Un `composes:` ou `delegates:` du frontmatter dont l'id
       n'apparaît pas dans le corps du skill fait échouer `pnpm test` (le graphe ne peut pas annoncer
       une intégration que le texte n'honore pas ; retour Codex #125). Départ : 0 fantôme sur 25 skills.
-- [ ] **Preuve par sabotage**, pas par lecture. Chaque contrôle a un test qui injecte le défaut et
+      *Preuve : `findUncitedCompositions`, mot entier (`ezk-pr-pilot` ne cite pas `ezk-pr`) ; `delegates:`
+      vient de la fiche 20260812104022246, empilée sous cette branche.*
+- [x] **Preuve par sabotage**, pas par lecture. Chaque contrôle a un test qui injecte le défaut et
       attend le rouge : `./scripts/validate.sh` nu dans un agent (le cas réel du 2026-07-26),
       `bin/fantome.sh` dans un skill, un `composes:` jamais cité. Le dépôt réel reste vert.
-- [ ] **Les trois niveaux sont écrits** dans `skills/README.md` : pour chacun, ce qui est mécanique
+      *Preuve : 12 tests de sabotage synthétiques ; rejoué le 2026-10-01 sur les vrais fichiers
+      (voir « Comment vérifier »).*
+- [x] **Les trois niveaux sont écrits** dans `skills/README.md` : pour chacun, ce qui est mécanique
       aujourd'hui et ce qui reste manuel.
+      *Preuve : section « Valider un skill avant de le merger — trois niveaux ».*
 
 ## Comment vérifier
 
@@ -69,9 +76,10 @@ pnpm --dir products/mega-city exec vitest run src/__tests__/skill-refs.test.ts
 pnpm --dir products/mega-city test        # le dépôt réel reste vert
 ```
 
-Sabotage à rejouer sur le vrai dépôt : ajouter `./scripts/validate.sh` dans
-`products/mega-city/agents/ezk-steward.md`, ou retirer `ezk-backlog` du corps d'`ezk-pr` → le test
-passe au rouge et nomme le fichier et la ligne.
+Sabotage joué le 2026-10-01 sur les vrais fichiers, puis annulé : une ligne `./scripts/validate.sh`
+ajoutée à `agents/ezk-steward.md` → rouge, « agents/ezk-steward.md:70 scripts/validate.sh » ;
+`composes: [ezk-backlog, ezk-chef]` sur `ezk-readme` → rouge, « ezk-readme composes ezk-chef ».
+À rejouer avec la même méthode quand on touche aux regex de `core/skill-refs.ts`.
 
 ## Suite (hors POC)
 
