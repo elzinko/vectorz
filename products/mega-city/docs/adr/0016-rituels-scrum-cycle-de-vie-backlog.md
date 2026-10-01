@@ -248,3 +248,30 @@ mentions de « pose `ready: <date>` ») :
 
 Portée : fiche `20260823121712652`, migration `migrations/005-retrait-champ-ready.md` du skill
 `ezk-backlog`.
+
+## Amendement du 2026-10-01 — la DoR s'étend par projet
+
+**En clair.** Le socle de la « prête » ne bouge pas : problème, valeur, critères d'acceptation, et
+dépendances externes quand la fiche en référence. Un projet peut maintenant y ajouter ses propres
+critères, dans un petit fichier : `.vectorz/dor.yml`. `groom` les fait remplir. `ready` refuse la
+fiche s'ils manquent. Sans ce fichier, rien ne change.
+
+Ce que cet amendement précise (le gate `ready` et ses slots) :
+
+- **Le socle reste dans le skill.** Il vaut pour tous les dépôts, sans régression.
+- **Les slots en plus vivent dans le projet**, commités sur `main`, dans la couche `.vectorz/`
+  (ADR-0050), à côté de `config.yml` et `rules.yml`. Un slot déclaré **bloque** `ready` s'il est
+  vide. Un slot non déclaré est absent : zéro bruit.
+- **Le script range le mécanique, le LLM juge le fond** (ADR-0001). `ezk dor check <id>` vérifie que
+  la section existe, qu'elle a du contenu et qu'elle mentionne chaque item de la liste à balayer. Il
+  ne note jamais la qualité de la réponse.
+- **Pas de contradiction avec l'amendement précédent.** La liste des **statuts** reste dans le schéma
+  typé (pas de YAML par repo). Seuls les **slots de DoR** deviennent propres au projet.
+- **Un seuil de lot optionnel**, `health.min-ready` : sous ce nombre de fiches tirables, l'ouverture
+  d'un sprint propose une session de groom (`ezk dor health`, rappelé par `next --ready-only`).
+  C'est un rappel, la soupape PO reste.
+- **Une clé inconnue est une erreur.** Une faute de frappe ne doit pas éteindre le gate en silence.
+
+Portée : fiche `20260815080414006`. Elle reprend `0100` (santé du lot) et `20260812104022231`
+(premier slot réel : « surfaces impactées »). Parqué : l'émission `backlog.health` vers la
+supervision, et l'appairage DoR vers DoD dans `ezk-sprint`.
