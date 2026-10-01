@@ -48,16 +48,22 @@ mais ne le déclare pas. Le déclarer en `composes:` ferait avertir chaque profi
 
 ## Critères d'acceptation (reste réel après tri du 2026-09-30)
 
-- [ ] `delegates:` est lu par le loader (même garde `assertSafeId` que `composes:`) et entre dans
+- [x] `delegates:` est lu par le loader (même garde `assertSafeId` que `composes:`) et entre dans
       le graphe compilé : lien `delegates`, skill → skill, verbe `compose`.
-- [ ] Skill avec `delegates: [X]`, X absent du profil bindé → **aucun** avertissement au bind
+      *Preuve : `catalog.test.ts` (3 cas), `graph.test.ts`, `graph-vocabulary.test.ts`.*
+- [x] Skill avec `delegates: [X]`, X absent du profil bindé → **aucun** avertissement au bind
       (ni direct, ni via la fermeture transitive).
-- [ ] Skill avec `composes: [Y]`, Y absent → avertissement **inchangé** (ADR-0025).
-- [ ] Le graphe Mermaid de `skills/README.md` dessine `delegates:` en **pointillé**, `composes:`
+      *Preuve : `composition.test.ts` (4 cas dont la fermeture et le délégué présent).*
+- [x] Skill avec `composes: [Y]`, Y absent → avertissement **inchangé** (ADR-0025).
+      *Preuve : les tests existants de `composition.test.ts` restent verts, plus le cas côte à côte.*
+- [x] Le graphe Mermaid de `skills/README.md` dessine `delegates:` en **pointillé**, `composes:`
       en trait plein ; le bloc se régénère par `pnpm composes:graph` et le test d'à-jour est vert.
-- [ ] `ezk-archive` déclare `delegates: [ezk-backlog]` ; son corps cite `ezk-backlog` **et** écrit
+      *Preuve : `composes-graph.test.ts` ; bloc régénéré (`ezk-archive -.-> ezk-backlog`) + légende.*
+- [x] `ezk-archive` déclare `delegates: [ezk-backlog]` ; son corps cite `ezk-backlog` **et** écrit
       le repli si absent (la délégation est réelle, pas deux lignes de frontmatter).
-- [ ] ADR-0025 amendé (quelques lignes) : le tier optionnel et la frontière ci-dessus.
+      *Preuve : § Intégration d'`ezk-archive` (repli : nommer les fiches à livrer, verdict `pending`).*
+- [x] ADR-0025 amendé (quelques lignes) : le tier optionnel et la frontière ci-dessus.
+      *Preuve : section « Amendement 2026-10-01 » de l'ADR-0025.*
 
 Absorbé de 0190 : ses critères 1 à 3 sont repris tels quels. Son critère 4 (migrer `ezk-sprint`
 vers `ezk-codex` / `ezk-preview`) est **sans objet** : `ezk-sprint` ne cite plus ces deux skills.
@@ -72,8 +78,10 @@ pnpm --dir products/mega-city exec vitest run src/__tests__/composition.test.ts 
 pnpm --dir products/mega-city composes:graph   # puis `git diff --stat skills/README.md` : vide
 ```
 
-Sabotage à rejouer : mettre `delegates: [fantome]` sur un skill → la validation du graphe échoue ;
-retirer `ezk-backlog` d'un profil qui porte `ezk-archive` → aucun ⚠️ au bind.
+Sabotage joué le 2026-10-01 : `delegates: [fantome]` ajouté à `ezk-diagram` → le test « aucun lien
+ne pointe dans le vide » (`graph.test.ts`) passe au rouge et nomme `ezk-diagram --(delegates)--> fantome`.
+Annulé ensuite. Reste à rejouer à la main : retirer `ezk-backlog` d'un profil qui porte `ezk-archive`
+→ aucun ⚠️ au bind (couvert par `composition.test.ts`).
 
 ## Suite (hors POC)
 

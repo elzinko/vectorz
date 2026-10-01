@@ -49,6 +49,7 @@ describe('vocabulaire de liens — jeu fermé de 5 verbes (ADR-0040 D1, amendé 
 
   it('les cinq champs historiques tombent chacun dans le verbe décidé', () => {
     expect(LINK_VERB.composes).toBe('compose'); // skill → skill
+    expect(LINK_VERB.delegates).toBe('compose'); // skill → skill, optionnel : même verbe, pas un 6e
     expect(LINK_VERB.competences).toBe('compose'); // agent → skill : « je suis fait de ces briques »
     expect(LINK_VERB.roles).toBe('convoque'); // skill → agent
     expect(LINK_VERB.interactions).toBe('applique'); // agent → règle

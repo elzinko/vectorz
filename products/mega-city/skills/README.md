@@ -48,11 +48,15 @@ ezk-commits/
 > **Agents.** Les rôles de la méthode (architecte, dev, QA, relecteur, PM, steward, archiviste) vivent dans [`../agents/`](../agents/) ; le profil `global` les déploie.
 > **Suite connue.** Ajouter un axe de maturité (ready / experimental / deprecated) : à décider par le PO. Étendre `ezk-design-system` à l'UI/UX requêtable : à reprendre depuis le backlog.
 
-## Graphe de composition (`composes:`)
+## Graphe de composition (`composes:` et `delegates:`)
+
+Trait plein : `composes:`, le composant est requis (avertissement au bind s'il manque).
+Pointillé : `delegates:`, délégué s'il est présent, jamais d'avertissement ; le skill écrit son repli.
 
 <!-- composes-graph:begin -->
 ```mermaid
 flowchart LR
+    ezk-archive -.-> ezk-backlog
     ezk-article --> ezk-diagram
     ezk-backlog --> ezk-commits
     ezk-bug --> ezk-backlog
