@@ -1,0 +1,35 @@
+# Critères de « prête » propres à un projet — le manifeste (`.vectorz/dor.yml`)
+#
+# Copier ce fichier en `.vectorz/dor.yml` dans le PROJET concerné pour lui ajouter des critères.
+# ABSENT = le projet garde le socle de la méthode : problème, valeur, critères d'acceptation
+# (+ dépendances externes quand la fiche en référence). Rien ne change.
+#
+# Fiche 20260815080414006 · ADR-0016 (amendement du 2026-10-01) · ADR-0050 (couche `.vectorz/`).
+# Commandes :
+#   ezk dor show     les critères en plus, et le seuil de lot
+#   ezk dor check    <id>   la fiche tient-elle ces critères ? (code 1 sinon : `ready` la refuse)
+#   ezk dor health   prêtes / pas prêtes, et le seuil de lot (code 1 s'il est insuffisant)
+#
+# Qui fait quoi : le script vérifie le MÉCANIQUE (la section existe, elle a du contenu, elle mentionne
+# chaque item). Le LLM de `groom` et `ready` juge le FOND : la réponse tient-elle ? Une clé inconnue est
+# une erreur (une faute de frappe ne doit pas éteindre le gate en silence).
+
+slots:
+  # Premier slot réel : « surfaces impactées » (fiche 20260812104022231).
+  # Un balayage à 30 secondes, pas une étude d'impact : pour CHAQUE surface listée, la fiche répond
+  # oui, non, ou comment. Les « oui » deviennent des critères d'acceptation de la fiche.
+  - id: surfaces
+    heading: Surfaces impactées          # le titre de section attendu dans la fiche (## Surfaces impactées)
+    ask: "Pour chaque surface : cette fiche la touche-t-elle ? oui, non, ou comment."
+    items:                               # la liste à balayer : la section doit mentionner chacune, comme MOT entier
+                                         # (« docs » vaut « doc » ; « nécessite » ne vaut pas « site »). Un item de
+                                         # plusieurs mots se cherche tel quel : « notes de version » en toutes lettres.
+      - doc
+      - site
+      - README
+      - notes de version
+
+# Seuil de lot : en dessous de ce nombre de fiches prêtes (tirables), l'ouverture d'un sprint dit
+# « groomez d'abord ». Absent = `ezk dor health` informe, sans jamais refuser.
+health:
+  min-ready: 3
