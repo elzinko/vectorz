@@ -6,8 +6,8 @@ priority: P2
 product: mega-city
 version: V0.3
 labels: [revue]
-status: idea
-pr:
+status: shipped
+pr: "#288"
 created: 2026-08-25
 ---
 

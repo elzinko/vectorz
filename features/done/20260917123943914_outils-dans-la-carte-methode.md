@@ -7,8 +7,8 @@ product: mega-city
 version: V0.3
 milestone: fondation
 labels: [carte]
-status: idea
-pr:
+status: shipped
+pr: "#293"
 created: 2026-09-17
 ---
 

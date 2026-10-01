@@ -9,7 +9,7 @@ status: idea
 pr:
 created: 2026-08-23
 milestone: parked
-version: V0.1
+version:
 ---
 
 # Vues générées — un board kanban, et l'historique daté sans l'empiler dans la fiche

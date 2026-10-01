@@ -13,7 +13,7 @@ created: 2026-08-26
 
 # `ezk-archive` émet un compte-rendu de session structuré
 
-> **⟳ Absorbée le 2026-09-04 dans [20260904091853974](../20260904091853974_journal-difficultes-artefact-independant.md)**
+> **⟳ Absorbée le 2026-09-04 dans [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md)**
 > (« Journal des difficultés — artefact indépendant »). Le format structuré du récit de session
 > (en-tête PR / fiches / actions, prérequis des vues) y est traité comme une facette du même
 > chantier. **Fiche conservée comme redirection** — à retirer formellement au grooming de la

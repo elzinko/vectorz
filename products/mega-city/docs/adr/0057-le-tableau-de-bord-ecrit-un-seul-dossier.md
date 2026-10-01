@@ -3,7 +3,7 @@
 **Statut :** Accepté
 **Date :** 2026-10-01
 **Deciders :** PO (verdict versionné et partagé, 2026-08-26 ; critère « aucun conflit entre sessions ») ; sprint du run V0.1 → V0.4 (le format : un fichier par fiche)
-**Fiche :** [`20260826072532622`](../../../../features/20260826072532622_revue-fiches-pouce-ezk-map.md)
+**Fiche :** [`20260826072532622`](../../../../features/done/20260826072532622_revue-fiches-pouce-ezk-map.md)
 **Précise :** [ADR-0043](0043-vue-sessions-live-servie-jamais-committee.md) et [ADR-0055](0055-artefacts-generes-hors-versionnage.md) — le tableau de bord passe de « sert des fichiers figés » à « calcule des données », puis à « écrit un dossier ».
 
 ## En clair
