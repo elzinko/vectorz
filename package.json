@@ -19,6 +19,7 @@
     "cobaye:reset": "bash cobaye/reset.sh",
     "cobaye:smoke": "bash scripts/cobaye-smoke.sh",
     "outcomes:measure": "pnpm --dir products/mega-city exec tsx ../../tools/outcomes/cli.ts",
+    "ezk": "pnpm --dir products/mega-city ezk",
     "ezk:map": "pnpm --dir products/mega-city ezk:map",
     "dev:branch": "bash scripts/dev-branch.sh"
   },

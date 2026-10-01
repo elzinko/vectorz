@@ -64,7 +64,7 @@ touché). Un stack = une branche (+ une variante), il est arrêté seul.
 ## Exemples pour goûter (référence)
 
 Le projet **vectorz** s'est installé lui-même : sa déclaration `scripts/dev-branch.conf` lance la
-carte de la méthode (`ezk:map`), avec une variante `moniteur`. La suite de tests
+tableau de bord de la méthode (`ezk dashboard`, ex `ezk:map`), avec une variante `moniteur`. La suite de tests
 `tools/launcher/test-dev-branch.sh` rejoue tout sur un projet-jouet jetable (54 contrôles).
 
 ## Les étapes (playbook)

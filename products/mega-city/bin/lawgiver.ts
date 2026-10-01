@@ -6,6 +6,7 @@ import { dirname, join, resolve } from 'node:path';
  *
  *   lawgiver bind <profile> <projet> [host] [--force] (host par défaut : claude-code)
  *   lawgiver bind-global <profile> [--link]          (matérialise dans ~/.claude — fiche 0017/0018)
+ *   lawgiver status <profile> [--target <dossier>]   (ce qui est déployé : lien, copie, absent — lecture seule)
  *   lawgiver capture <cible> <kind> --content "<md>"  (kind = rule|skill|agent|interaction)
  *
  * Parse les args, calcule un plan PUR puis l'applique via la coquille I/O unique.
@@ -17,10 +18,12 @@ import { fileURLToPath } from 'node:url';
 import { bind } from '../src/core/bind.js';
 import { planCapture } from '../src/core/capture.js';
 import { checkComposition, checkRoles } from '../src/core/composition.js';
+import { expectedItems, inspect, renderStatus } from '../src/core/deploy-state.js';
 import { expandProfile } from '../src/core/expand.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
 import { applyGlobalPlan, applyPlan } from '../src/io/apply.js';
 import { applyCapture } from '../src/io/capture.js';
+import { probePath } from '../src/io/deploy-probe.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
 import { loadRenames } from '../src/loaders/renames.js';
 
@@ -29,8 +32,26 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 function usage(): never {
   console.error('Usage: lawgiver bind <profile> <projet> [host] [--force]');
   console.error('       lawgiver bind-global <profile> [--link]');
+  console.error('       lawgiver status <profile> [--target <dossier>]');
   console.error('       lawgiver capture <cible> <kind> --content "<markdown>" [--for <agentId>]');
   process.exit(2);
+}
+
+/**
+ * status — ce que `bind-global <profil>` déposerait, et ce qui y est vraiment (lien, copie,
+ * absent, lien mort). LECTURE SEULE : rien n'est écrit. `--target` vise un autre dossier que
+ * `~/.claude` (c'est ainsi que les tests le prouvent sur un dossier jetable).
+ */
+function runStatus(profile: string, target: string): void {
+  const root = resolve(target);
+  try {
+    const plan = bind(profile, root, 'claude-code-global', repoRoot);
+    const entries = inspect(expectedItems(plan), (rel) => probePath(root, rel));
+    process.stdout.write(renderStatus(profile, root, entries));
+  } catch (error) {
+    console.error(`lawgiver: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(2);
+  }
 }
 
 function runBind(profile: string, projectDir: string, host: HostId, force: boolean): void {
@@ -148,6 +169,11 @@ function main(argv: string[]): void {
     const [profile] = rest.filter((arg) => arg !== '--link');
     if (!profile) usage();
     return runBindGlobal(profile, link);
+  }
+  if (command === 'status') {
+    const [profile] = rest;
+    if (!profile || profile.startsWith('--')) usage();
+    return runStatus(profile, parseFlag(rest, '--target') ?? join(homedir(), '.claude'));
   }
   if (command === 'capture') {
     const [target, kind] = rest;

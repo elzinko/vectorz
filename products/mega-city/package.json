@@ -4,14 +4,18 @@
   "private": true,
   "type": "module",
   "description": "mega-city — moteur lawgiver bind (POC déterministe, ADR-0003)",
+  "bin": {
+    "ezk": "bin/ezk.mjs"
+  },
   "scripts": {
     "test": "tsx bin/graph-compile.ts && vitest run",
     "test:watch": "vitest",
     "test:scripts": "bash bin/test-scripts.sh",
     "typecheck": "tsc --noEmit",
+    "ezk": "tsx bin/ezk.ts",
     "lawgiver": "tsx bin/lawgiver.ts",
     "ezk:help": "tsx bin/ezk-help.ts",
-    "ezk:map": "tsx bin/ezk-map.ts",
+    "ezk:map": "tsx bin/ezk.ts map",
     "supervision:link": "tsx bin/supervision-link.ts",
     "supervision:doctor": "tsx bin/supervision-doctor.ts",
     "supervision:probe": "tsx bin/supervision-probe.ts",

@@ -4,7 +4,7 @@
 
 ## Comprendre la méthode (avant de lancer)
 
-`pnpm ezk:map` ouvre la **carte interactive** (3 étages moteur / méthode / modules, toutes les cérémonies scrum, onglet 🧭 « le domaine »). Jargon `ezk-*` traduit dans [`glossaire-jargon-ezk.md`](glossaire-jargon-ezk.md).
+`pnpm ezk dashboard` ouvre le **tableau de bord** de la méthode, dont la **carte interactive** (3 étages moteur / méthode / modules, toutes les cérémonies scrum, onglet 🧭 « le domaine »). `pnpm ezk help` liste toutes les commandes de terminal et de chat. Jargon `ezk-*` traduit dans [`glossaire-jargon-ezk.md`](glossaire-jargon-ezk.md).
 
 ## Prerequisites
 
