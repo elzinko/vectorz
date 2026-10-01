@@ -14,6 +14,7 @@ const fiche = (over: Partial<Fiche>): Fiche =>
     pr: '',
     labels: [],
     blocked: '',
+    version: '',
     file: '',
     done: false,
     ...over,

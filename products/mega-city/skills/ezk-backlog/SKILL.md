@@ -3,7 +3,7 @@ composes: [ezk-commits]
 applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance]
 name: ezk-backlog
 layout_version: 5
-argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate]"
+argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate|version]"
 description: >-
   Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne
   jamais les perdre entre worktrees ni entre sessions. A utiliser quand
@@ -13,10 +13,10 @@ description: >-
   (« elle est ready ? »), passer le backlog en revue (sanity check), demander la
   prochaine fiche tirable, regrouper des fiches, marquer une feature livrée,
   réconcilier le statut des fiches avec l'état réel des PRs mergées (merges faits
-  hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, ou voir
-  l'état du backlog.
+  hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, dire où
+  en est une version et la clore, ou voir l'état du backlog.
   Pilotable par sous-commandes : help, init, list, add, groom, ready, next,
-  plan, review, reconcile, ship, regen, aggregate. A la
+  plan, review, reconcile, ship, regen, aggregate, version. A la
   première invocation dans un projet, INITIALISE la structure (dossier features/,
   sous-dossier done/, fichier de suivi index) ; ensuite charge le backlog trié
   par priorité en contexte de session. Format léger : une fiche markdown par
@@ -74,7 +74,7 @@ La restitution se ferme par un bloc « Et maintenant ? » : 1 à 3 commandes, ch
 | après `ready <id>` accepté | `/ezk-backlog next --ready-only` — la fiche est tirable maintenant | `/ezk-sprint run` — la développer tout de suite |
 | après `next --ready-only` | `/ezk-sprint run` — développer cette fiche | aucune |
 | après `ship <id>` | `/ezk-backlog next --ready-only` — enchaîner sur la fiche suivante | `/ezk-backlog reconcile` — si des PRs ont été fusionnées hors du flux (ex. depuis GitHub) |
-| `list`, `review`, `help` | aucun bloc | aucun |
+| `list`, `review`, `version`, `help` | aucun bloc | aucun |
 
 ## Préflight Skema (layout version) — à chaque commande
 
@@ -115,6 +115,7 @@ du front-matter de cette skill).
 | `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`pnpm --dir products/mega-city ship:fiche`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
 | `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `pnpm --dir products/mega-city views:regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
+| `version [list\|check\|close]` | Le niveau **version** : où en est chaque lot (champ `version:`), cohérence d'un lot, et clôture d'une version livrée (étiquette `vX.Y` **proposée**, jamais poussée) |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
 > si un backlog existe, son état trié par priorité. Sans sous-commande reconnue → traite la
@@ -422,6 +423,9 @@ Contrôles (jugement LLM) :
 5. **Cohérence épic/enfants** (ADR-0017) — épic `shipped` avec enfants actifs, épic
    `in-progress` aux enfants tous livrés, épic fourre-tout sans objectif livrable.
 6. **Révocation** — `status: ready` devenus faux (le contexte a bougé depuis le gate).
+7. **Cohérence des versions** — **lance `version check`** (bras *mécanique* : `version:` illisible,
+   fiche parkée rangée dans une version, version rouverte, écart avec `PLAN.md`) ; le jugement LLM
+   garde ce que le script ne voit pas : manque-t-il une fiche dans le lot ? y en a-t-il une hors sujet ?
 
 Les **compteurs viennent du script** (`regen`, doctrine ADR-0001 — ne les recompte
 jamais à la main) : fiches par statut, `ready`, création médiane des `ready`.
@@ -508,6 +512,36 @@ se résout à la main.
 
 `ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
 détection ne bascule rien seule ; l'arbitrage reste au PO).
+
+### `version [list|check|close]` — le niveau version (fiche 20260824204751403)
+
+Le champ `version:` d'une fiche désigne son **lot de livraison** (`V0.3`). Cette sous-commande le
+rend actif : tout se **calcule** depuis le front-matter (aucun objet milestone, aucun fichier de plus),
+par un script déterministe (ADR-0001), jamais recompté à la main. Format attendu : `V<n>.<n>`.
+
+```bash
+pnpm --dir products/mega-city backlog:version                       # list : une ligne par version
+pnpm --dir products/mega-city backlog:version check [<X>] [--max <n>] [--no-plan]
+pnpm --dir products/mega-city backlog:version close <X> [--tag]
+```
+
+- **`list`** (défaut) — par version : fiches, livrées, à faire, prêtes, bloquées, intrus, et l'**état** :
+  `en cours` · `à clore` (tout est livré, pas d'étiquette) · `livrée` (tout est livré **et** l'étiquette
+  `vX.Y` existe) · `rouverte` (livrée, mais une fiche est revenue). Les fiches **sans** version sont
+  comptées, jamais passées sous silence. Un **intrus** = une fiche parkée qui porte une version.
+- **`check [<X>]`** — la cohérence d'un lot. **Erreurs** (code 1) : `format` (version illisible),
+  `parkee`, `rouverte`, `plan-ecart` (`PLAN.md` range la fiche dans une autre version), `plan-ambigue`
+  (une section du plan cite deux versions). **Alertes** : `bloquee`, `taille` (plus de 15 fiches à
+  faire, calibrage provisoire), `plan-absente` (fiche de la version absente de sa section du plan).
+  Il dit aussi ce qu'il **ne contrôle pas** : le séquencement (`depends:` n'est pas lu).
+- **`close <X>`** — refuse (code 1) tant qu'une fiche reste à livrer ou qu'une erreur de lot subsiste.
+  Sinon il déclare la version complète et **propose** `git tag -a vX.Y` puis `git push origin vX.Y`,
+  **sans les exécuter**. `--tag` crée l'étiquette **en local** seulement (réversible : `git tag -d`) ;
+  le `push` reste un geste du PO.
+
+Restitution : « En clair » d'abord (où en est la version, ce qui bloque), puis le tableau ou les
+constats. Lance-le depuis un `main` à jour : les fiches lues sont celles du dossier courant.
+`PLAN.md` n'est jamais modifié par cette sous-commande.
 
 ### `plan [set …]` — la séquence décidée, persistée entre sessions
 
