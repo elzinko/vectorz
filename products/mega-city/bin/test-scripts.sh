@@ -45,6 +45,7 @@ SUITES=(
   "skills/ezk-scout/scripts/test-find-only-guard.sh"     # fiche 20260910165637000 — ezk-scout ne modifie rien (HEAD, arbre, refs, worktree)
   "skills/ezk-scout/scripts/test-check-report.sh"        # fiche 20260910165637000 — forme du rapport de brouillons (comptes, bornes, garde)
   "skills/ezk-scout/scripts/test-demo-app.sh"            # fiche 20260910165637000 — défauts connus de l'app de démonstration
+  "../../tools/launcher/test-dev-branch.sh"              # fiche 20260917162000501 — lanceur universel (projet-jouet : ports, arbres, arrêt ciblé)
 )
 
 FAILED=()

@@ -45,6 +45,9 @@ tu **démarres les bancs**, tu guides l'utilisateur **checklist en main**, tu
 **Restitution** (`plan` / `run` / `report`) : ouvre par **« En clair »** (≤ 3 phrases)
 avant ordres de merge et tableaux — règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 > Né du rétrofit livestreamz 2026-07-06 (PRs #69–#79) : 8 PRs, 3 sessions de
 > test au lieu de 8, ordre de merge calculé par `git merge-tree`, et le constat

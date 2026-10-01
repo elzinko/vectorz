@@ -41,10 +41,10 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260821204737357` — compiler la méthode en un seul graphe que tout le monde lit · en cours · `build`~~ — shipped #265
 - ~~`20260823121712652` — valider les statuts des fiches par un schéma (fin des fautes de frappe) · en cours · `build`~~ — shipped #267
 - `20260824111001836` — appliquer la règle de clarté à tout ce que la méthode produit · `build`
-- `20260821163346493` — chaque élément de la carte montre le fichier d'où il vient · `build`
-- `20260821163346490` — corriger la fausse « chaîne de montage » en haut de la carte · `build`
-- `20260918114726706` — une seule source pour le modèle de fiche (3 copies divergent aujourd'hui) · `build`
-- `20260922160651394` — mettre le code en conformité avec les règles de dev récentes · `build`
+- ~~`20260821163346493` — chaque élément de la carte montre le fichier d'où il vient · `build`~~ — shipped #269
+- ~~`20260821163346490` — corriger la fausse « chaîne de montage » en haut de la carte · `build`~~ — shipped #271
+- ~~`20260918114726706` — une seule source pour le modèle de fiche (3 copies divergent aujourd'hui) · `build`~~ — shipped #268
+- ~~`20260922160651394` — mettre le code en conformité avec les règles de dev récentes · `build`~~ — shipped #270
 
 ### ② V0.2 — tester vite en local (en parallèle, en autonomie)
 - ~~`20260910165637000` — ezk-scout : chasser les bugs en tâche de fond, sans corriger · prête · `build`~~ — shipped #266

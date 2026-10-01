@@ -45,6 +45,10 @@ Toute réponse à l'humain (`list`, `next`, `review`, `reconcile`, `plan`, `help
 avant tables ou jargon (`DoR`, `ready`, ids seuls). Règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
 Voir aussi [`docs/ezk-model-and-lisibility.md`](../../docs/ezk-model-and-lisibility.md).
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu. Dans une liste, le lien reste sur l'id et le titre s'affiche à côté
+(« Fiche cliquable » ci-dessous) ; hors liste, on cite par titre + lien.
 
 **Fiche cliquable (MUST).** Dès que `list` / `next` / `review` / `reconcile` / `plan`
 énumèrent des fiches, **l'id de chaque fiche est un lien** vers son fichier. Le chemin se

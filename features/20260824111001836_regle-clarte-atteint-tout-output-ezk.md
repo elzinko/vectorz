@@ -14,100 +14,117 @@ created: 2026-08-24
 
 ## En clair
 
-La règle « tout ce qu'un humain lit doit être clair » **existe déjà**
-(`documentation-guidelines/human-facing-lisibility`, niveau MUST). Mais elle est dans un
-bundle que **AUCUN profil n'inclut** — donc elle ne s'applique à personne. Résultat : rien
-ne garantit qu'un agent ou un skill ezk restitue clairement. Cette fiche demande de la
-**câbler dans `base`** (héritée par tous) et d'**étendre sa portée aux sorties de chat**
-(explication de fin de tour, résumé de session), pas seulement aux artefacts écrits.
+La règle « tout ce qu'un humain lit doit être clair » existe déjà. Mais rien ne la branche :
+aucun bundle ne la porte, donc aucun projet ne la reçoit. Et elle ne parle pas du chat.
+Cette fiche la branche sur le socle `base` et l'étend aux réponses de chat. Elle lui ajoute
+deux consignes précises : pas de HTML dans le terminal, et une fiche se cite par son titre
+avec un lien.
 
-> Anti-doublon : ce n'est PAS une nouvelle règle. C'est **corriger le câblage** de la
-> règle existante + élargir son scope. Priorité **P1 proposée** (enjeu churn — la clarté
-> est le critère n°1 du PO), à confirmer.
+**Pour toi.** Après cette PR, tout projet lié par `lawgiver bind` reçoit la règle. Sur ton
+poste, l'effet passe d'abord par le texte des agents et des skills, déjà vivant dans
+`~/.claude`. Le déploiement global des règles reste à faire : c'est la fiche
+[Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md).
 
-## Contexte / problème (constaté le 2026-08-24)
+## Contexte / Problème (mesuré le 2026-10-01)
 
-Demande PO : « ajouter une règle à la base de chaque agent et/ou skill afin que tout ce
-qui sort de la méthode scrum mega-city (ezk) soit très clair — features, explication en
-retour de chaque LLM, retour de la session en cours… ».
+- La règle
+  [human-facing-lisibility](../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md)
+  est MUST, contrôlée par `ezk-reviewer`. Son `Scope:` liste des artefacts écrits. Le chat n'y est pas.
+- Son bundle n'existe plus. La PR #190, fiche
+  [bundles vs thèmes](done/20260823124042708_bundles-vs-themes-reorganisation.md), a supprimé
+  `documentation-guidelines.yml`, resté sans profil. `base` porte trois règles, pas celle-ci.
+  (La première version de cette fiche parlait encore de ce bundle.)
+- Avant cette PR, le texte atteignait déjà une partie des agents : 4 agents sur 8 et 10 skills
+  sur 25 citaient la règle. Les 8 skills de restitution sont figés par un test de contrat.
+- `bind-global` n'écrit que les skills et les agents. Aucune règle n'est compilée chez l'agent
+  par ce chemin. Le cap projet compile bien les règles dans `.iamthelaw/ENTRY.md` (c'est lui que
+  `lawgiver bind <profil> <projet>` applique), mais vectorz n'en a pas.
+- Côté chat, les leviers réels sont `CLAUDE.md` et le style de sortie « Explication claire »
+  (`~/.claude/output-styles/`, hors dépôt). Ce style demande des « blocs de détail technique »
+  sans dire le format. C'est la source probable du `<details>` affiché en brut le 2026-08-30.
 
-État réel vérifié :
+## Proposition (périmètre du POC)
 
-- La règle `documentation-guidelines/human-facing-lisibility` existe (MUST, enforcement
-  `agent-check` → `ezk-reviewer`).
-- Elle vit dans `bundles/documentation-guidelines.yml`.
-- **`grep -l documentation-guidelines profiles/*.yml` → aucun.** Le bundle n'est cité
-  par aucun profil. La règle est **orpheline** : jamais matérialisée chez un hôte.
-- `bundles/base.yml` (le socle hérité par tous) ne porte que `clean-code/no-dead-code`
-  et `conventional-commits/format`. Pas la clarté.
-- Le `Scope:` actuel de la règle dit explicitement « **every artefact a human reads** »
-  et exclut le chat. Or le PO veut aussi couvrir « l'explication en retour de chaque
-  LLM » (le fil de conversation) et « le retour de session ».
+Un seul texte de règle, enrichi. Aucune nouvelle règle.
 
-Deux problèmes distincts, donc : **(A) câblage** (la règle n'atteint personne) et
-**(B) portée** (elle ne couvre pas les sorties conversationnelles).
+1. **Câbler** : la règle entre dans `bundles/base.yml`, une ligne, comme
+   [ADR-0045](../products/mega-city/docs/adr/0045-pr-preuve-avant-apres-outillage-loi.md).
+2. **Étendre** : le `Scope:` nomme les sorties de chat. Trois clauses s'ajoutent : canal
+   terminal sans HTML, « titre + lien », leviers d'application côté chat.
+3. **Faire marcher le chemin qui existe** : `CLAUDE.md`, les 8 agents et les 8 skills de
+   restitution reprennent la consigne de canal. Un test de contrat la fige.
 
-## Proposition
-
-1. **Câbler la clarté dans `base`** (geste A, XS) : ajouter
-   `documentation-guidelines/human-facing-lisibility` au bundle `base` — de sorte que
-   TOUT profil (donc tout agent/skill matérialisé) l'hérite. Vérifier l'impact sur
-   `expand.test.ts` (le compte de règles change) et sur les caps.
-2. **Étendre la portée aux sorties de chat** (geste B, à groomer) : amender le `Scope:`
-   de la règle pour inclure « toute restitution à l'humain en fin de tour » et « le
-   résumé de session ». Attention : une règle est une *disposition lue par le LLM*
-   (niveau prompt/agent-check), pas un verrou déterministe — l'enforcement reste
-   `agent-check` (le reviewer juge), doublé du garde-fou hôte réel qui existe déjà :
-   l'**output-style « Explication claire »** (`~/.claude/output-styles/`) et les
-   `CLAUDE.md`. La fiche doit trancher : la règle *renvoie-t-elle* à l'output-style
-   comme mécanisme d'application côté chat ?
-3. **Ne pas créer de doublon** : un seul texte de règle, enrichi — pas une « règle de
-   clarté agent » distincte de la « règle de clarté artefact ».
-
-### Cas concret ajouté — la clause « titre + lien » (demande PO 2026-08-26)
-
-Un **enrichissement de contenu** à porter en même temps que le câblage : la règle doit
-exiger que **toute citation d'une fiche (ou entité à id) se fasse par son titre + un lien
-cliquable, jamais par l'id nu**. Un id (`0080`, `20260826072532537`, `#175`) est un code
-interne : illisible et non navigable pour le lecteur. C'est déjà interdit *en creux*
-(« pas de code interne comme porteur de sens ») — on le rend **explicite et vérifiable**.
-Format : un lien markdown — **titre court entre crochets**, puis **le chemin du fichier de la
-fiche entre parenthèses** ; l'id peut suivre le titre, jamais le remplacer.
-
-**Décision PO du 2026-08-26** : inscrire cette clause **aux deux endroits** — le texte de la
-règle (le moteur) **et** `CLAUDE.md` (pour le chat) — au titre des gestes A (câblage) et B
-(portée chat) ci-dessus.
+Le reste est en « Suite ».
 
 ## Critères d'acceptation
 
-- [ ] `human-facing-lisibility` est dans `base` ; `pnpm --dir products/mega-city graph:check`
-      vert et `expand` résout la règle pour tout profil (test mis à jour).
-- [ ] Le `Scope:` de la règle nomme explicitement les sorties de chat et le résumé de session.
-- [ ] La règle référence le mécanisme d'application côté chat (output-style / CLAUDE.md) —
-      pas juste une injonction sans levier.
-- [ ] La règle porte la clause explicite « fiche = titre + lien, jamais l'id nu » ;
-      `CLAUDE.md` la reprend pour le chat.
-- [ ] Zéro nouvelle règle créée (enrichissement de l'existante uniquement).
+Déjà en place, avec preuve :
+
+- [x] La règle est MUST et contrôlée par `ezk-reviewer` (`enforcements: agent-check` dans
+      son en-tête).
+- [x] Les 8 skills de restitution portent « En clair » et l'id de la règle (test de contrat
+      `human-facing-lisibility-contract.test.ts`, bloc « porte la consigne lisibilité »).
+
+Reste à livrer :
+
+- [x] **Câblage.** `bundles/base.yml` porte la règle. `expand(base)` la résout. Les tests
+      `catalog`, `expand` et `loi-view` sont à jour. `graph:check` et `fiches:check` sont verts.
+      La carte est régénérée (`map:data`).
+- [x] **Preuve d'effet.** Un test compile le profil `base` réel avec le cap projet. Le
+      `.iamthelaw/ENTRY.md` obtenu contient la règle et ses clauses de chat.
+- [x] **Portée.** Le `Scope:` nomme les sorties de chat : réponse de fin de tour, résumé de
+      session.
+- [x] **Canal terminal** *(absorbe la fiche du `<details>`)*. La règle impose Markdown seul dans
+      le chat : ni `<details>`, ni `<summary>`, ni HTML brut. Le détail technique va en bas,
+      sous un titre Markdown ou en liste. `<details>` reste permis dans les livrables `.md`
+      committés, où GitHub le rend.
+- [x] **Titre + lien.** La règle exige qu'une fiche (ou une PR, un ADR) soit citée par son titre
+      en lien cliquable. L'id peut suivre le titre, jamais le remplacer. La clause reste
+      compatible avec la règle existante des listes (lien sur l'id, titre à côté).
+- [x] **Leviers côté chat.** La règle nomme ses leviers : `CLAUDE.md`, style « Explication
+      claire », texte des agents et des skills, loi compilée. Elle dit qu'aucun contrôle
+      automatique ne couvre le chat.
+- [x] **Texte qui marche déjà.** `CLAUDE.md` reprend les deux clauses de chat. Les 8 agents
+      citent la règle et portent la clause de canal, soit 4 de plus qu'aujourd'hui. Les 8
+      skills de restitution portent la clause de canal. Un test de contrat fige les trois.
+- [x] **Zéro nouvelle règle.** Une seule règle porte la clarté. Aucun fichier de règle ajouté.
+- [x] Gate locale verte. Revue adverse sans bloquant.
 
 ## Comment vérifier
 
 ```bash
-grep -l human-facing-lisibility products/mega-city/bundles/base.yml   # doit matcher
-pnpm --dir products/mega-city test        # expand.test à jour
-pnpm --dir products/mega-city graph:check # 0 lien cassé
+grep -n "human-facing-lisibility" products/mega-city/bundles/base.yml   # doit matcher
+pnpm --dir products/mega-city test         # contrat : règle, CLAUDE.md, agents, skills, ENTRY compilé
+pnpm --dir products/mega-city graph:check  # 0 lien cassé
+pnpm --dir products/mega-city fiches:check # la fiche reste valide
 ```
+
+Signal humain, à constater dans le terminal : une réponse longue avec détail technique ne
+montre aucune balise `<details>` ni `<summary>`. Les fiches y sont citées par leur titre en lien.
+
+## Suite (hors POC)
+
+- **Dépendance.** La fiche
+  [Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md)
+  doit aboutir pour que `base` atteigne un agent lancé hors d'un projet lié par `lawgiver bind`.
+  Tant que `bind-global` ne compile aucune règle, le câblage attend. Il est livré pour être
+  prêt ce jour-là. D'ici là, l'effet passe par le texte des agents et des skills.
+- **À faire par toi, hors dépôt.** Ajouter les deux clauses de chat à `~/.claude/CLAUDE.md`.
+  Préciser le format dans `~/.claude/output-styles/explication-claire.md` : détail en bas sous
+  un titre, jamais de `<details>`. Ce sont tes fichiers personnels, je n'y touche pas.
+- Livrer le style « Explication claire » dans le dépôt pour qu'il se déploie avec la méthode :
+  idée à mettre en fiche.
+- Les 17 autres skills ne sont pas touchés. Leur restitution relève du style et de `CLAUDE.md`.
+- Mesure d'efficacité, à observer : 0 balise `<details>` visible sur les 5 prochaines réponses
+  longues en terminal.
 
 ## Notes
 
-Fiche née du `/ezk-backlog add` du 2026-08-24, en pleine session de refonte de la méthode.
-Lignée : règle `human-facing-lisibility` (ADR-0029 « la fiche est le document »),
-output-style « Explication claire », épic dérive-communication-lisibilité (0079, shippée).
+Fiche née du `/ezk-backlog add` du 2026-08-24, pendant la refonte de la méthode. La clause
+« titre + lien » vient de la décision PO du 2026-08-26 : l'inscrire dans le texte de la règle
+**et** dans `CLAUDE.md`. Lignée : ADR-0029 « la fiche est le document », style de sortie
+« Explication claire », épic dérive-communication-lisibilité (0079, livrée).
 
-## ⤓ Absorbe (tri du 2026-09-30)
-
-Cette fiche reprend désormais le périmètre de :
-
-- [`20260830113054036`](done/20260830113054036_style-clair-details-html-brut-terminal.md) — La règle de clarté pousse vers `<details>` HTML qui fuit en texte brut dans le terminal Claude Code  
-  _Pourquoi_ : C'est un réglage de la règle de clarté.
-
-Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.
+Absorbe, depuis le tri du 2026-09-30 :
+[La règle de clarté pousse vers `<details>` HTML qui fuit en texte brut](done/20260830113054036_style-clair-details-html-brut-terminal.md).
+Ses critères encore utiles sont repris dans « Canal terminal » ci-dessus.

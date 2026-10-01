@@ -7,8 +7,8 @@ product: mega-city
 version: V0.1
 milestone: fondation
 labels: [carte]
-status: idea
-pr:
+status: shipped
+pr: "#271"
 created: 2026-08-21
 ---
 # La ligne « L'ASSEMBLAGE » ne montre pas ce qu'elle prétend montrer

@@ -134,6 +134,9 @@ toute restitution au PO (propositions, avis du juge, résumé de rangement) ouvr
 bloc **« En clair »** (≤ 3 phrases : symptôme vécu → proposition en mots simples → effet
 concret). Codes internes (`R1`, `DoR`, jargon inventé) hors ouverture — annexe/glossaire
 seulement. On écrit **au PO**, pas entre agents.
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 Puis le rangement :
 - **non-règles** (`action`/`feature`/`spike`) → backlog via `/ezk-backlog add` (avec le

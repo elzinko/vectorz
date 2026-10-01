@@ -78,3 +78,5 @@ docs/dogfood-reports/
 # à la demande par `pnpm --dir products/mega-city graph:compile`. Jamais commité :
 # reproductible depuis les frontmatter du repo.
 /.ezk/
+# Lanceur universel (fiche 20260917162000501) : état d'exécution des stacks, jamais suivi.
+.vectorz/run/

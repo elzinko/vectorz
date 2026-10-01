@@ -252,6 +252,9 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
    - **Pas** de dump P1–P8 en ouverture ; le détail gate va en annexe courte **seulement**
      s'il change une décision humaine.
    - Ne réécris pas le résumé de session qu'on vient de te donner.
+   - **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
+     affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
+     **titre + lien**, jamais par son id nu.
    Ta réponse est restituée telle quelle par l'appelant.
 
 ## Garde-fous

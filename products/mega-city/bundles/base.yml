@@ -4,3 +4,4 @@ rules:
   - clean-code/no-dead-code
   - conventional-commits/format
   - development/pr-before-after-media
+  - documentation-guidelines/human-facing-lisibility

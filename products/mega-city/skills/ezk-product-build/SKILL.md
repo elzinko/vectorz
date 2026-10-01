@@ -130,6 +130,9 @@ automatiquement selon la section « Mode `--mode` » ci-dessous.
 **Lisibilité (règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md))** —
 chaque checkpoint suggestions-à-choix ouvre par **« En clair »** (≤ 3 phrases) avant le
 tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 | Moment | Ce que tu présentes |
 |---|---|
