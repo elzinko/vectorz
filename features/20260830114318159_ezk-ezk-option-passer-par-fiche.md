@@ -80,8 +80,8 @@ La fiche rappelle de construire le skill avec `--direct` (la fiche existe déjà
 pnpm --dir products/mega-city exec vitest run src/__tests__/ezk-ezk-via-fiche-contract.test.ts
 ```
 
-Sabotage joué le 2026-10-01 sur le vrai `SKILL.md`, puis annulé : retirer `ezk-backlog add` du mode,
-ou la phrase « Aucun `SKILL.md` n'est écrit », fait passer le test au rouge.
+Sabotage joué le 2026-10-01 sur le vrai `SKILL.md`, puis annulé : retirer la phrase « Aucun
+`SKILL.md` n'est écrit » et l'alias `--propose` du tableau fait échouer 2 tests sur 10.
 
 À la main, dans une session qui a un sujet de skill : `/ezk-ezk create --via-fiche`, valider le
 résumé. Une fiche `idea` apparaît dans `features/` (dédoublonnée, quatre blocs) et aucun dossier
