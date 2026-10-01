@@ -7,8 +7,10 @@
 # Deux copies à garder alignées (corps identique après set -euo) :
 #   products/mega-city/bin/regen-backlog.sh  (source monorepo)
 #   skills/ezk-backlog/scripts/regen-backlog.sh  (vendored skill-only)
-#   Si $0 est sous …/bin/, défaut racine = parent du bin (produit mega-city) ;
-#   sinon racine **obligatoire** (pas de défaut vers le dossier skill).
+#   Si $0 est sous …/bin/, défaut racine = parent du bin — valable pour un projet AUTONOME
+#   seulement : si un ancêtre porte déjà un backlog (features/), la racine est NICHÉE et le
+#   script REFUSE (fiche 20260823121712844) ; sinon racine **obligatoire** (pas de défaut
+#   vers le dossier skill).
 #   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz"
 set -euo pipefail
 
@@ -17,6 +19,17 @@ if [[ -n "${1:-}" ]]; then
   ROOT="$1"
 elif [[ "$(basename "$_SCRIPT_DIR")" == "bin" ]]; then
   ROOT="$(cd "$_SCRIPT_DIR/.." && pwd)"
+  # Défaut « parent du bin » refusé s'il est NICHÉ sous un autre backlog (ex. products/mega-city
+  # sous la racine vectorz, depuis la liste unique de la fiche 0064) : le viser créerait un
+  # backlog fantôme. Refus AVANT toute écriture ; la racine explicite reste toujours permise.
+  _outer="$(dirname "$ROOT")"
+  while [[ "$_outer" != "/" ]]; do
+    if [[ -d "$_outer/features" ]]; then
+      echo "erreur: racine nichée — ${ROOT} est sous ${_outer}, qui a déjà un backlog features/. Passe la vraie racine explicitement : regen-backlog.sh ${_outer}" >&2
+      exit 1
+    fi
+    _outer="$(dirname "$_outer")"
+  done
 else
   echo "erreur: racine-projet obligatoire (copie skill — pas de défaut produit)" >&2
   exit 1

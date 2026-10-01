@@ -128,6 +128,30 @@ check "sans args → racine = parent de bin/ (fixture)" \
 check "titre par défaut mega-city" \
   "head -1 '$D/features/BACKLOG.md' | grep -q '^# Backlog — mega-city$'"
 
+# ── Cas D2 : racine NICHÉE → refus explicite, aucune écriture (fiche 20260823121712844) ──
+# Le défaut « parent du bin » ne vaut que pour un projet autonome. Ici bin/ est dans
+# nest/products/mega-city, SOUS un backlog déjà présent (nest/features) : sans argument, le
+# script refuse — même quand le dossier fantôme nest/products/mega-city/features existe
+# (c'est lui qui réarmait le piège).
+NEST="$TMP/nest"
+mkdir -p "$NEST/products/mega-city/bin" "$NEST/products/mega-city/features"
+cp "$SCRIPT" "$NEST/products/mega-city/bin/regen-backlog.sh"
+fiche "$NEST/features" 0040 parent 'type: feature
+priority: P2
+status: idea'
+set +e
+out_nest="$(cd "$TMP" && bash "$NEST/products/mega-city/bin/regen-backlog.sh" 2>&1)"
+rc_nest=$?
+set -e
+echo "Cas D2 (racine nichée refusée) :"
+check "sans argument → refus (exit 1)" "test '$rc_nest' -eq 1"
+check "message « racine nichée »" "printf '%s' \"\$out_nest\" | grep -q 'racine nichée'"
+check "… qui nomme la vraie racine à passer" "printf '%s' \"\$out_nest\" | grep -qF 'regen-backlog.sh $NEST'"
+check "rien écrit dans le dossier fantôme" "! test -e '$NEST/products/mega-city/features/BACKLOG.md'"
+check "rien écrit dans le backlog parent" "! test -e '$NEST/features/BACKLOG.md'"
+check "racine explicite toujours permise" \
+  "bash '$NEST/products/mega-city/bin/regen-backlog.sh' '$NEST' >/dev/null 2>&1 && test -s '$NEST/features/BACKLOG.md'"
+
 echo ''
 # ── Cas E : lien PLAN.md émis seulement si features/PLAN.md existe (PR #43 / ADR-0018) ─
 E="$TMP/e"
