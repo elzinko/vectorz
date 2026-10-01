@@ -77,6 +77,9 @@ problème, la proposition, les critères, le « Comment vérifier » et, via sa 
    - `pr:` de la fiche → note pointeur (numéro de PR ; `gh pr view` reste **best-effort**,
      à toi de l'interroger si tu veux le diff réel — le script ne l'appelle pas) ;
    - la section **En clair** recopiée telle quelle ;
+   - les **galères de la fiche** versées en Préliminaires, avec un pointeur vers leur fichier :
+     la section « Galères & gestes (labo) » des récits de `docs/sessions/` **et** les entrées du
+     journal `docs/journal/` taguées de l'id (voir `docs/journal/README.md`) ;
    - un **amorçage du playbook** depuis les listes numérotées/à puces de « Proposition » et
      « Comment vérifier » de la fiche, chaque ligne préfixée `TODO(jugement, depuis « … »)` ;
    - `status: draft`, `home: central`, `created`/`updated` à aujourd'hui.

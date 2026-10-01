@@ -18,6 +18,7 @@ const fiche = (over: Partial<Fiche> & { id: string }): Fiche => ({
   priority: over.priority ?? 'P2',
   status: over.status ?? 'idea',
   milestone: over.milestone ?? '',
+  version: over.version ?? '',
   product: over.product ?? 'mega-city',
   pr: over.pr ?? '',
   labels: over.labels ?? [],

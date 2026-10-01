@@ -124,6 +124,40 @@ ${labo_body}
 done <<< "$(labo_sessions "$FICHE_ID")"
 PRELIM_LABO="${PRELIM_LABO%$'\n\n'}"
 
+# ── journal des difficultés (fiche 20260904091853974) : docs/journal/<date>-<slug>.md ──────────
+# Capture INDÉPENDANTE du labo, écrite pendant le dev par journal-add.sh : ici on la LIT seulement.
+# On ne lit que les fichiers préfixés d'une date (README.md et autres docs du dossier restent
+# ignorés) et que les entrées dont le titre est `## [FICHE_ID] …` (borne : id exact, pas préfixe).
+journal_files() {
+  local id="$1" f
+  [ -d docs/journal ] || return 0
+  for f in docs/journal/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.md; do
+    [ -e "$f" ] || continue
+    grep -q "^## \[${id}\] " "$f" && printf '%s\n' "$f"
+  done | LC_ALL=C sort
+}
+# Entrées de l'id, titres rétrogradés en `###` pour ne pas casser les `##` de la recette.
+journal_body() { # $1=fichier $2=id
+  awk -v id="$2" '
+    /^## / { keep = (index($0, "## [" id "] ") == 1); if (keep) sub(/^## /, "### ") }
+    keep { print }
+  ' "$1" | awk 'NF { started=1 } started { buf[++n]=$0 } END { last=n; while (last>0 && buf[last]=="") last--; for (i=1;i<=last;i++) print buf[i] }'
+}
+
+PRELIM_JOURNAL=""
+while IFS= read -r jf; do
+  [ -n "$jf" ] || continue
+  PRELIM_JOURNAL="${PRELIM_JOURNAL}Source : \`${jf}\` (journal des difficultés, entrées taguées ${FICHE_ID}).
+
+$(journal_body "$jf" "$FICHE_ID")
+
+"
+done <<< "$(journal_files "$FICHE_ID")"
+PRELIM_JOURNAL="${PRELIM_JOURNAL%$'\n\n'}"
+if [ -n "$PRELIM_JOURNAL" ]; then
+  PRELIM_LABO="${PRELIM_LABO:+${PRELIM_LABO}$'\n\n'}${PRELIM_JOURNAL}"
+fi
+
 NEW_ID="$(bash "$MINT_ID")"
 TODAY="$(date -u +%Y-%m-%d)"
 DEST="recipes/${SLUG}.md"

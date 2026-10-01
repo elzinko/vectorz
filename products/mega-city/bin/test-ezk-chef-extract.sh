@@ -3,7 +3,9 @@
 # fiche shippée → brouillon de recette) sur fixtures jetables. Calqué sur test-regen-recipes.sh.
 # Cas : A basique (fiche complète → recette draft avec sections attendues) · B id introuvable
 # (refus net) · C déjà existant (pas d'écrasement silencieux) · D déterminisme du contenu
-# dérivé mécaniquement (hors id minté, horodaté par construction).
+# dérivé mécaniquement (hors id minté, horodaté par construction) · G-I récits labo de
+# docs/sessions · J titres hostiles · K-L journal des difficultés de docs/journal (fiche
+# 20260904091853974).
 set -euo pipefail
 
 SCRIPT="$(cd "$(dirname "$0")" && pwd)/ezk-chef-extract.sh"
@@ -243,5 +245,75 @@ titre_hostile "$J" 20260830000000201 "antislash-nu" 'Fix C:\dossier\nouveau' 'Fi
 titre_hostile "$J" 20260830000000202 "guillemets-nus" 'Il a dit "go" puis "stop"' 'Il a dit "go" puis "stop"'
 titre_hostile "$J" 20260830000000203 "quote-deux-points-diese" '"Fix: le deux-points # et le dièse"' 'Fix: le deux-points # et le dièse'
 titre_hostile "$J" 20260830000000204 "accents-emoji" 'Éléphant déjà vu ✓ 🚀' 'Éléphant déjà vu ✓ 🚀'
+
+# ── Cas K : journal des difficultés (fiche 20260904091853974) — entrées taguées de l'id ─────────
+# Capture indépendante (docs/journal/<date>-<slug>.md, écrite par journal-add.sh) LUE à la demande
+# par l'extraction. Bornes : id exact (pas une superchaîne), autre fiche ignorée, README ignoré.
+K="$TMP/k"
+fixture_root "$K"
+fiche_shippee "$K" "20260930000000301" "avec-journal"
+mkdir -p "$K/docs/journal"
+cat > "$K/docs/journal/2026-10-01-feat-avec-journal.md" <<'EOF'
+# Journal des difficultés — feat-avec-journal
+
+## [20260930000000301] Build local qui plante sans Docker
+- **Coincé** : act refuse de démarrer.
+- **Réglé** : lancer le mode natif.
+- **Pourquoi** : act exige Docker.
+
+## [99999999999999999] Galère d'une AUTRE fiche
+- **Coincé** : sans rapport.
+- **Réglé** : sans rapport.
+
+## [202609300000003019] Galère d'une SUPERCHAINE de l'id testé
+- **Coincé** : id plus long.
+- **Réglé** : id plus long.
+EOF
+cat > "$K/docs/journal/README.md" <<'EOF'
+## [20260930000000301] EXEMPLE-DU-README-NE-PAS-VERSER
+- **Coincé** : exemple de format.
+EOF
+out_k="$("$SCRIPT" 20260930000000301 "$K")"
+dest_k="$K/$out_k"
+echo "Cas K (journal des difficultés) :"
+check "entrée du journal versée en Préliminaires"   "grep -q 'Build local qui plante sans Docker' '$dest_k'"
+check "puces de l'entrée versées"                   "grep -q 'act exige Docker' '$dest_k'"
+check "pointeur vers le fichier journal source"     "grep -q 'docs/journal/2026-10-01-feat-avec-journal.md' '$dest_k'"
+check "titre rétrogradé en ### (les ## de la recette restent intacts)" \
+  "grep -q '^### \[20260930000000301\] Build local' '$dest_k'"
+check "l'entrée d'une autre fiche n'est PAS versée" "! grep -q 'AUTRE fiche' '$dest_k'"
+check "un id superchaîne n'est PAS versé (borne)"   "! grep -q 'SUPERCHAINE' '$dest_k'"
+check "docs/journal/README.md n'est jamais lu"      "! grep -q 'EXEMPLE-DU-README' '$dest_k'"
+check "plus de TODO(jugement) vide en Préliminaires" \
+  "! awk '/^## Préliminaires/{p=1;next} /^## /{p=0} p' '$dest_k' | grep -q 'ce qui ne s’automatise pas'"
+
+# ── Cas L : récit labo ET journal pour la même fiche → les deux versés, récit d'abord ──────────
+L="$TMP/l"
+fixture_root "$L"
+fiche_shippee "$L" "20260930000000303" "labo-et-journal"
+mkdir -p "$L/docs/sessions" "$L/docs/journal"
+cat > "$L/docs/sessions/2026-09-30-labo-et-journal.md" <<'EOF'
+fiches: 20260930000000303
+
+## Galères & gestes (labo)
+
+- **Geste du récit de session.**
+EOF
+cat > "$L/docs/journal/2026-09-30-feat-labo-et-journal.md" <<'EOF'
+# Journal des difficultés — feat-labo-et-journal
+
+## [20260930000000303] Galère du journal
+- **Coincé** : x.
+- **Réglé** : y.
+EOF
+out_l="$("$SCRIPT" 20260930000000303 "$L")"
+dest_l="$L/$out_l"
+echo "Cas L (récit labo + journal) :"
+check "geste du récit versé"                "grep -q 'Geste du récit de session' '$dest_l'"
+check "entrée du journal versée aussi"      "grep -q 'Galère du journal' '$dest_l'"
+check "ordre : récit labo avant le journal" \
+  "[[ \$(grep -n 'Geste du récit de session' '$dest_l' | cut -d: -f1) -lt \$(grep -n 'Galère du journal' '$dest_l' | cut -d: -f1) ]]"
+check "une ligne blanche sépare le récit du journal (pas de séparateur littéral)" \
+  "[[ -z \"\$(grep -B1 'journal des difficultés, entrées taguées' '$dest_l' | head -1)\" ]]"
 
 if [ "$FAIL" = 0 ]; then echo 'test-ezk-chef-extract: TOUT VERT'; else echo 'test-ezk-chef-extract: ÉCHECS' >&2; exit 1; fi
