@@ -74,7 +74,7 @@ Prises en ligne, réversibles, sans ADR (aucune n'engage un autre produit tant q
 ## Comment vérifier
 
 ```
-bash tools/launcher/test-dev-branch.sh       # 48 contrôles sur un projet-jouet jetable, doit finir « TOUT VERT »
+bash tools/launcher/test-dev-branch.sh       # 54 contrôles sur un projet-jouet jetable, doit finir « TOUT VERT »
 pnpm dev:branch doctor                       # la déclaration de vectorz est complète
 pnpm dev:branch                              # imprime une URL ; curl dessus répond 200 ; la page est « ezk:map — les cartes »
 pnpm dev:branch origin/main                  # crée .claude/worktrees/run-origin-main-…, autre port, en parallèle

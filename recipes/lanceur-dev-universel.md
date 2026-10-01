@@ -65,7 +65,7 @@ touché). Un stack = une branche (+ une variante), il est arrêté seul.
 
 Le projet **vectorz** s'est installé lui-même : sa déclaration `scripts/dev-branch.conf` lance la
 carte de la méthode (`ezk:map`), avec une variante `moniteur`. La suite de tests
-`tools/launcher/test-dev-branch.sh` rejoue tout sur un projet-jouet jetable (48 contrôles).
+`tools/launcher/test-dev-branch.sh` rejoue tout sur un projet-jouet jetable (54 contrôles).
 
 ## Les étapes (playbook)
 

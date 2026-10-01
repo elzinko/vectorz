@@ -7,6 +7,9 @@
 
 # 1. LANCER — UNE commande, jouée depuis la racine de l'arbre. Elle lit $PORT (le lanceur
 #    l'exporte, libre et propre à cette branche). Ex. : 'pnpm dev --port "$PORT"'
+#    La commande doit RESTER AU PREMIER PLAN : le lanceur suit son process pour l'arrêter ensuite.
+#    Une commande qui se détache (daemon, `docker compose up -d`) est prise pour une app morte
+#    (code 4) ; pour ces cas, lance-la en avant-plan (`docker compose up`) et déclare le reste.
 DEV_START=''
 # Variantes nommées (ex. un autre mode de lancement), choisies avec `--as <nom>` :
 #   DEV_START__electron='bash apps/desktop/scripts/dev-electron.sh "$PORT"'

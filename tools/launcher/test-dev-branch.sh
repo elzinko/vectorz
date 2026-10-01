@@ -61,6 +61,12 @@ echo "# bricolage local" >> "$TOY/scripts/dev-branch.sh"
 expect_not "--check : signale une copie qui a dérivé" bash "$HERE/install.sh" --check "$TOY"
 bash "$HERE/install.sh" "$TOY" >/dev/null 2>&1
 expect "la mise à jour rétablit la copie" cmp -s "$HERE/dev-branch.sh" "$TOY/scripts/dev-branch.sh"
+if ! env PATH=/usr/bin:/bin sh -c 'command -v node' >/dev/null 2>&1; then # sans node : l'entrée est reconnue par grep
+  expect "--check sans node : l'entrée présente est reconnue" env PATH=/usr/bin:/bin bash "$HERE/install.sh" --check "$TOY"
+  cp "$TOY/package.json" "$WORK/package.json.bak"; sed -i.bak 's/"dev:branch"/"x:y"/' "$TOY/package.json"; rm -f "$TOY/package.json.bak"
+  expect_not "--check sans node : une entrée absente est une dérive (code 1)" env PATH=/usr/bin:/bin bash "$HERE/install.sh" --check "$TOY"
+  cp "$WORK/package.json.bak" "$TOY/package.json"
+fi
 if [ -f "$HERE/../../scripts/dev-branch.sh" ]; then
   expect "la copie installée dans vectorz lui-même n'a pas dérivé" cmp -s "$HERE/dev-branch.sh" "$HERE/../../scripts/dev-branch.sh"
 fi
@@ -93,6 +99,7 @@ out="$(L doctor 2>&1)"; rc=$?
 # On fige le lanceur et la déclaration dans le projet-jouet, puis on crée une branche et un second worktree.
 git add -A && git commit -qm "chore: lanceur"
 git checkout -q -b feat/a && printf 'feat-a\n' > BRANCH.txt && git commit -qam a && git checkout -q main
+git checkout -q -b broken && sed -i.bak "s|^DEV_START='node server.js'|DEV_START=''|" scripts/dev-branch.conf && rm -f scripts/dev-branch.conf.bak && git commit -qam broken && git checkout -q main
 git worktree add -q -b wip "$WT" main && printf 'wip\n' > "$WT/BRANCH.txt"
 
 echo "== Ports : jamais un port réservé, jamais un port occupé, jamais un process étranger tué"
@@ -120,7 +127,8 @@ URL_A="$(printf '%s\n' "$out" | field url)"; TREE_A="$(printf '%s\n' "$out" | fi
 has "$TOY/.worktrees/run-feat-a-" "$TREE_A" && ok "l'arbre de run vit dans le dossier déclaré (ignoré par git)" || ko "arbre : $TREE_A"
 [ "$(printf '%s\n' "$out" | field port)" = "$((BASE + 3))" ] && ok "second stack : port suivant, sans collision" || ko "port du second stack"
 expect ".env copié dans l'arbre de run (la copie existe et est identique)" cmp -s "$TOY/.env" "$TREE_A/.env"
-has "hunter2" "$out" && ko "le .env a fuité dans la sortie" || ok "les valeurs du .env ne sont jamais affichées"
+all="$out$(L list 2>&1)$(L doctor 2>&1)$(cat "$TOY"/.vectorz/run/feat-a-*/run.log 2>/dev/null)"
+has "hunter2" "$all" && ko "le .env a fuité (start, list, doctor ou journal)" || ok "les valeurs du .env ne sont jamais affichées (start, list, doctor, journal)"
 out="$(LW start 2>&1)"; rc=$?
 [ "$rc" = 0 ] && has "wip|web|" "$(get "$(printf '%s\n' "$out" | field url)")" && ok "depuis un autre worktree : lance SA branche (wip)" || ko "wip ($rc) $out"
 expect ".env copié aussi dans un worktree ordinaire" cmp -s "$TOY/.env" "$WT/.env"
@@ -166,9 +174,16 @@ out="$(L stop feat/a 2>&1)"
 kill -0 "$SLEEPER" 2>/dev/null && has "déjà arrêté" "$out" && ok "signature différente : le pid n'est pas le nôtre, rien n'est tué" || ko "pid recyclé tué ? $out"
 kill "$SLEEPER" 2>/dev/null; kill -TERM -- "-$REAL" 2>/dev/null
 
-echo "== Branche inconnue"
+echo "== Refus : branche inconnue, déclaration de la branche incomplète, port réservé, variante invalide"
 out="$(L start nexiste-pas 2>&1)"; rc=$?
 [ "$rc" = 1 ] && has "branche inconnue" "$out" && ok "branche inconnue : refus net" || ko "branche inconnue ($rc)"
+out="$(L start broken 2>&1)"; rc=$?
+[ "$rc" = 1 ] && has "déclaration de la branche est incomplète" "$out" && ok "branche à déclaration incomplète : refus (code 1)" || ko "broken ($rc) $out"
+[ -z "$(ls "$TOY/.worktrees" 2>/dev/null | grep broken)" ] && ! has "run-broken" "$(cd "$TOY" && git worktree list)" && ok "…et l'arbre de run créé pour l'occasion est retiré (aucun orphelin)" || ko "arbre de run orphelin après refus"
+out="$(L start --as alt --port "$((BASE + 1))" 2>&1)"; rc=$?
+[ "$rc" = 2 ] && has "réservé" "$out" && ok "--port réservé : refus (code 2)" || ko "--port réservé ($rc) $out"
+out="$(L stop x --as '../../y' 2>&1)"; rc=$?
+[ "$rc" = 1 ] && has "variante invalide" "$out" && ok "variante invalide refusée aussi à l'arrêt" || ko "variante invalide à stop ($rc) $out"
 
 echo "== Arrêt général"
 L stop --all >/dev/null 2>&1

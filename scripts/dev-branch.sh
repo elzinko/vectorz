@@ -121,6 +121,7 @@ prepare_tree() { # crée l'arbre de run dédié, ou le met à jour s'il est prop
   else
     mkdir -p "$(dirname "$TREE")"
     git -C "$MAIN_ROOT" worktree add --quiet --detach "$TREE" "$REF" >/dev/null 2>&1 || die "création de l'arbre de run impossible ($TREE)"
+    CREATED_TREE=1
     say "  arbre de run créé : $TREE"
   fi
 }
@@ -237,11 +238,17 @@ cleanup_unlaunched() { # rien n'a été lancé (refus, port, dépendances) : on 
     mv "$STACK_DIR/run.log" "$RUN_DIR/last-$(basename "$STACK_DIR").log" 2>/dev/null
     rm -rf "$STACK_DIR"
   fi
+  # Un arbre de run créé pour ce lancement, puis refus avant tout essai : on le retire (rien n'y a tourné).
+  if [ "${CREATED_TREE:-0}" = 1 ] && [ "${LAUNCH_ATTEMPTED:-0}" = 0 ]; then
+    git -C "$MAIN_ROOT" worktree remove --force "$TREE" >/dev/null 2>&1
+  fi
 }
+
+valid_variant() { case "$1" in *[!A-Za-z0-9_-]*) die "nom de variante invalide : « $1 »";; esac; }
 
 cmd_start() {
   local arg='' want_port='' do_open=0 S pid rc
-  VARIANT=''; STACK_DIR=''
+  VARIANT=''; STACK_DIR=''; CREATED_TREE=0; LAUNCH_ATTEMPTED=0
   trap cleanup_unlaunched EXIT
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -252,6 +259,7 @@ cmd_start() {
       *)      [ -z "$arg" ] || die "une seule branche à la fois"; arg="$1"; shift;;
     esac
   done
+  [ -z "$VARIANT" ] || valid_variant "$VARIANT"
   load_conf "$CALLER_TREE" || true
   pick_start "$VARIANT"
   decl_problems || { warn "refus : la déclaration du projet est incomplète$PROBLEMS"; exit 1; }
@@ -270,6 +278,7 @@ cmd_start() {
   ensure_deps "$S/run.log"
   if [ -n "$want_port" ]; then
     case "$want_port" in ''|*[!0-9]*) die "--port attend un numéro";; esac
+    case " $DEV_RESERVED_PORTS " in *" $want_port "*) die "le port $want_port est réservé (DEV_RESERVED_PORTS) : c'est celui de ta stack perso" 2;; esac
     port_busy "$want_port" && die "le port $want_port est déjà occupé (on ne tue jamais un process qu'on n'a pas lancé)" 2
     PORT="$want_port"
   else
@@ -279,6 +288,7 @@ cmd_start() {
   printf '%s\n' "$PORT" >"$S/port"
   write_meta "$S"
 
+  LAUNCH_ATTEMPTED=1
   ( cd "$TREE" || exit 1
     set -m
     env PORT="$PORT" ${DEV_PORT_ENV:+"$DEV_PORT_ENV=$PORT"} VZ_PORT="$PORT" VZ_URL="$URL" VZ_STACK="$(basename "$S")" \
@@ -334,6 +344,7 @@ cmd_stop() {
       *)        [ -z "$arg" ] || die "une seule branche à la fois"; arg="$1"; shift;;
     esac
   done
+  [ -z "$VARIANT" ] || valid_variant "$VARIANT"
   if [ "$all" = 1 ]; then
     for S in "$RUN_DIR"/*/; do [ -f "${S}meta" ] || continue; stop_stack "${S%/}" "$remove"; n=$((n + 1)); done
     [ "$n" -gt 0 ] || say "rien à arrêter pour ce projet."
@@ -381,7 +392,7 @@ cmd_doctor() {
   return 1
 }
 
-usage() { sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { awk 'NR>1 && /^#/ { sub(/^# ?/, ""); print; next } NR>1 { exit }' "$0"; }
 
 sub="${1:-start}"
 case "$sub" in

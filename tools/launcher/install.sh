@@ -42,7 +42,12 @@ elif [ "$check" = 1 ]; then gap "déclaration: absente (scripts/dev-branch.conf)
 else mkdir -p "$PROJ/scripts"; cp "$SRC/dev-branch.conf.example" "$CONF"; note "déclaration: créée VIDE (scripts/dev-branch.conf) — à remplir, puis : bash scripts/dev-branch.sh doctor"; fi
 
 # 3. L'entrée package.json `dev:branch` : insertion textuelle, la mise en forme du fichier est conservée.
-if [ -f "$PROJ/package.json" ]; then
+if [ -f "$PROJ/package.json" ] && ! command -v node >/dev/null 2>&1; then
+  # Sans node on ne sait pas éditer le JSON proprement, mais on sait encore dire si l'entrée est là.
+  if grep -q '"dev:branch"[[:space:]]*:' "$PROJ/package.json"; then note "package.json: entrée dev:branch présente"
+  elif [ "$check" = 1 ]; then gap "package.json: entrée dev:branch absente"
+  else note "package.json: node absent — ajoute à la main dans scripts : \"dev:branch\": \"bash scripts/dev-branch.sh\""; fi
+elif [ -f "$PROJ/package.json" ]; then
   res="$(node -e '
     const fs=require("fs");const p=process.argv[1];const dry=process.argv[2]==="1";const t=fs.readFileSync(p,"utf8");
     const m=/"scripts"\s*:\s*\{/.exec(t);if(!m){console.log("noscripts");process.exit(0)}
