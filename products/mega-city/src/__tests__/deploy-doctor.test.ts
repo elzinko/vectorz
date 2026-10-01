@@ -139,7 +139,7 @@ describe('renderDiagnosis', () => {
     expect(text).toMatch(/✖ manquant\s+skills\/ezk-s/);
     expect(text).toMatch(/✖ loi absente\s+rules\/iamthelaw\.md/);
     expect(text).toContain('2 divergences');
-    expect(text).toContain('lawgiver bind-global global --link');
+    expect(text).toContain('pnpm ezk law bind-global global --link');
   });
 
   it('dit « tout est en place » quand il n’y a rien à signaler', () => {

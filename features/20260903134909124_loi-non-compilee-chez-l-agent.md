@@ -107,7 +107,7 @@ la voie 1 à la liaison par projet. Décision : ADR-0056.
 ```bash
 T=$(mktemp -d)
 pnpm ezk law doctor global --target "$T"          # cible vide : tout manque, code retour 1
-pnpm lawgiver bind-global global --link --target "$T"
+pnpm ezk law bind-global global --link --target "$T"
 pnpm ezk law doctor global --target "$T"          # tout vert, code retour 0
 ls "$T/rules"                                     # iamthelaw.md
 pnpm --dir products/mega-city exec vitest run law-coverage deploy-doctor apply-global-law

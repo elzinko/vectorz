@@ -128,7 +128,7 @@ export function renderDiagnosis(
   const target = options.target ? ` --target ${options.target}` : '';
   lines.push(
     `${plural(diagnosis.problems.length, 'divergence', 'divergences')} sur ${scope}.`,
-    `Pour réparer : lawgiver bind-global ${profileId} --link${target}`,
+    `Pour réparer : pnpm ezk law bind-global ${profileId} --link${target}`,
   );
   return `${lines.join('\n')}\n`;
 }
