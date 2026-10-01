@@ -21,6 +21,7 @@ import {
   LINK_VERBS,
   type LinkType,
   type LinkVerb,
+  NODE_KINDS,
   type NodeKind,
   graphEdges,
   nodesOf,
@@ -39,8 +40,6 @@ export interface CompiledGraph {
   nodes: CompiledNode[];
   edges: Edge[];
 }
-
-const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundle', 'profile'];
 
 function compileNodes(catalog: Catalog): CompiledNode[] {
   const nodes: CompiledNode[] = [];

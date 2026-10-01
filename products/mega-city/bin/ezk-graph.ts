@@ -55,7 +55,7 @@ if (ok) {
   console.log(`En clair : ⚠️ ${problems.join(' et ')}.`);
 }
 console.log(
-  `\nNœuds   : rules ${n.rule} · agents ${n.agent} · skills ${n.skill} · bundles ${n.bundle} · profiles ${n.profile}`,
+  `\nNœuds   : rules ${n.rule} · agents ${n.agent} · skills ${n.skill} · bundles ${n.bundle} · profiles ${n.profile} · outils ${n.tool}`,
 );
 console.log(`Liens   : ${edgeCount}`);
 
@@ -85,10 +85,21 @@ if (pathRefs.unsupported.length > 0) {
   }
 }
 
-if (orphans.length > 0) {
+const catalogOrphans = orphans.filter((o) => o.kind !== 'tool');
+if (catalogOrphans.length > 0) {
   // Info, pas erreur : un profil racine, ou une règle pas encore bundlée, est orphelin sans faute.
-  const shown = orphans.map((o) => `${o.kind}:${o.id}`).join(', ');
-  console.log(`\nOrphelins (${orphans.length}, info — rien ne les cite) : ${shown}`);
+  const shown = catalogOrphans.map((o) => `${o.kind}:${o.id}`).join(', ');
+  console.log(`\nOrphelins (${catalogOrphans.length}, info — rien ne les cite) : ${shown}`);
+}
+
+// Un outil est justifié par un skill qui le cite, une commande `ezk …` ou une raison « internal »
+// du manifeste (ADR-0058). Sans rien de cela, personne ne le lance : on le dit, jamais en silence.
+const toolOrphans = orphans.filter((o) => o.kind === 'tool');
+if (toolOrphans.length > 0) {
+  console.log(
+    `\nOutils orphelins (${toolOrphans.length}, info — aucun skill ne les cite, aucune commande ezk ne les lance, aucune raison « internal ») :`,
+  );
+  for (const o of toolOrphans) console.log(`  · ${o.id}`);
 }
 
 process.exit(ok ? 0 : 1);
