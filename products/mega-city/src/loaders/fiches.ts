@@ -18,6 +18,8 @@ export interface Fiche {
   priority: string; // P0 | P1 | P2 | P3 | '' (épics/idées sans prio)
   status: string; // un des STATUTS du schéma (core/fiche-schema.ts) — `ready` est une COLONNE, plus un champ date
   milestone: string; // jalon d'ordonnancement/regroupement (ADR-0017 A16), '' si absent
+  /** Version cible (`V0.3`) — le lot de livraison (fiche 20260824204751403), '' si absente. Valeur BRUTE : le format est jugé par `backlog/versions.ts`. */
+  version: string;
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
   labels: string[]; // tags libres du front-matter (`labels: [bmad, …]`), [] si absent
@@ -100,6 +102,7 @@ export function loadFiches(rootDir: string): Fiche[] {
         priority: readField(fm, 'priority'),
         status: readField(fm, 'status') || 'idea',
         milestone: readField(fm, 'milestone'),
+        version: readField(fm, 'version'),
         product: readField(fm, 'product') || '—',
         pr: readField(fm, 'pr'),
         labels: readListField(fm, 'labels'),

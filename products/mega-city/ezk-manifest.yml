@@ -81,6 +81,10 @@ commands:
     verb: aggregate
     run: bin/backlog-aggregate.ts
     summary: Regroupe des fiches (cœur d'« ezk-backlog aggregate »).
+  - domain: backlog
+    verb: version
+    run: bin/backlog-version.ts
+    summary: Dit où en est chaque version, contrôle un lot, clôt une version livrée.
 
   # --- graph : le graphe compilé de la méthode ---
   - domain: graph
