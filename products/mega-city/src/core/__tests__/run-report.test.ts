@@ -68,7 +68,7 @@ describe('parseFicheArg — une ligne, sept champs, aucun trou', () => {
 });
 
 describe('crossCheck — le déclaré contre ce que dit GitHub', () => {
-  const pr = (over: Partial<PrFacts> = {}): PrFacts => ({ state: 'MERGED', checks: 'success', reviewTraces: 1, ...over });
+  const pr = (over: Partial<PrFacts> = {}): PrFacts => ({ state: 'MERGED', checks: 'success', reviewTraces: 1, latestReview: 'positive', ...over });
   const prs = (entries: Array<[string, PrFacts | null]>): Map<string, PrFacts | null> => new Map(entries);
 
   it('ne dit rien quand tout concorde', () => {
@@ -92,8 +92,22 @@ describe('crossCheck — le déclaré contre ce que dit GitHub', () => {
   });
 
   it('une revue GO sans aucune trace sur la PR est un écart (le garde-fou refuserait le merge)', () => {
-    const out = crossCheck([ok(MERGED)], prs([['#277', pr({ reviewTraces: 0 })]]));
+    const out = crossCheck([ok(MERGED)], prs([['#277', pr({ reviewTraces: 0, latestReview: 'none' })]]));
     expect(out[0]?.message).toMatch(/revue GO.*aucune trace/);
+  });
+
+  it('une revue GO dont le dernier verdict est négatif est un écart', () => {
+    const out = crossCheck([ok(MERGED)], prs([['#277', pr({ reviewTraces: 2, latestReview: 'negative' })]]));
+    expect(out[0]?.message).toMatch(/revue GO.*dernier verdict.*négatif/);
+  });
+
+  it('une fiche bloquée ou sautée dont la PR est déjà mergée est un écart', () => {
+    const blocked = crossCheck([ok('0500|bloquée|#123|rouge|-|-|CI rouge')], prs([['#123', pr({ state: 'MERGED' })]]));
+    expect(blocked[0]?.message).toMatch(/déclarée bloquée, GitHub dit MERGED/);
+    const skipped = crossCheck([ok('0501|sautée|#124|-|-|-|hors lot')], prs([['#124', pr({ state: 'MERGED' })]]));
+    expect(skipped[0]?.message).toMatch(/déclarée sautée, GitHub dit MERGED/);
+    // fermée sans merge : c'est cohérent avec « bloquée »
+    expect(crossCheck([ok('0500|bloquée|#123|rouge|-|-|CI rouge')], prs([['#123', pr({ state: 'CLOSED' })]]))).toEqual([]);
   });
 
   it('une PR illisible n’est pas un écart : elle est dite « non vérifiée »', () => {
@@ -112,7 +126,7 @@ describe('parsePrFacts — ce que dit gh pr view, réduit à ce que le bilan com
   });
 
   it('lit l’état et une CI verte', () => {
-    expect(parsePrFacts(view())).toEqual({ state: 'MERGED', checks: 'success', reviewTraces: 0 });
+    expect(parsePrFacts(view())).toEqual({ state: 'MERGED', checks: 'success', reviewTraces: 0, latestReview: 'none' });
   });
 
   it('une CI sans aucun check vaut « none », un check rouge vaut « failure », un check en cours « pending »', () => {
@@ -129,6 +143,30 @@ describe('parsePrFacts — ce que dit gh pr view, réduit à ce que le bilan com
       }),
     );
     expect(out?.reviewTraces).toBe(2);
+    expect(out?.latestReview).toBe('positive');
+  });
+
+  it('un verdict négatif n’est jamais une trace de GO : on garde le dernier, daté', () => {
+    const changes = parsePrFacts(view({ reviews: [{ state: 'CHANGES_REQUESTED', submittedAt: '2026-10-01T10:00:00Z' }] }));
+    expect(changes?.latestReview).toBe('negative');
+    const nogo = parsePrFacts(view({ comments: [{ body: 'Verdict : NO-GO', createdAt: '2026-10-01T10:00:00Z' }] }));
+    expect(nogo?.latestReview).toBe('negative');
+    const fixed = parsePrFacts(
+      view({
+        comments: [
+          { body: 'Verdict : NO-GO', createdAt: '2026-10-01T10:00:00Z' },
+          { body: 'Verdict après correction : GO', createdAt: '2026-10-01T11:00:00Z' },
+        ],
+      }),
+    );
+    expect(fixed?.latestReview).toBe('positive');
+    const regressed = parsePrFacts(
+      view({
+        reviews: [{ state: 'APPROVED', submittedAt: '2026-10-01T10:00:00Z' }],
+        comments: [{ body: 'NO-GO : un bloquant est apparu', createdAt: '2026-10-01T12:00:00Z' }],
+      }),
+    );
+    expect(regressed?.latestReview).toBe('negative');
   });
 
   it('une réponse illisible rend null (non vérifiée), jamais une exception', () => {
@@ -175,7 +213,11 @@ describe('renderRunReport', () => {
     expect(render([MERGED])).toMatch(/HEAD abc1234 = origin\/main/);
     expect(render([MERGED], { head: head({ behind: 2 }) })).toMatch(/en retard de 2/);
     expect(render([MERGED], { head: head({ behind: 1, ahead: 3 }) })).toMatch(/divergé/);
-    expect(render([MERGED], { head: head({ originMain: null }) })).toMatch(/pas d'origin\/main/);
+    expect(render([MERGED], { head: head({ originMain: null }) })).toMatch(/origin\/main injoignable/);
+    // --base release : la ligne dit la base réellement comparée, jamais « origin/main » en dur
+    const release = render([MERGED], { head: head({ baseRef: 'origin/release', behind: 4 }) });
+    expect(release).toMatch(/en retard de 4 sur origin\/release def5678/);
+    expect(release).not.toMatch(/origin\/main/);
   });
 
   it('dit les jetons contre le plafond, ou qu’ils ne sont pas mesurés', () => {

@@ -66,6 +66,7 @@ export function collectRunFacts(cwd: string, o: GitOptions = {}): RunFacts {
       : {};
   return {
     remote,
+    baseRef: ref,
     ...base,
     behind: remote === 'ok' ? count(cwd, `HEAD..${ref}`) : 0,
     ahead: remote === 'ok' ? count(cwd, `${ref}..HEAD`) : 0,
@@ -83,6 +84,7 @@ export function collectHeadFacts(cwd: string, o: GitOptions = {}): HeadFacts {
     head: run('git', ['rev-parse', '--short', 'HEAD'], cwd) ?? '?',
     branch: run('git', ['symbolic-ref', '--short', '-q', 'HEAD'], cwd),
     originMain: ok ? (run('git', ['rev-parse', '--short', ref], cwd) ?? null) : null,
+    baseRef: ref,
     behind: ok ? count(cwd, `HEAD..${ref}`) : 0,
     ahead: ok ? count(cwd, `${ref}..HEAD`) : 0,
   };

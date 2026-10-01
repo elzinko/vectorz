@@ -49,6 +49,12 @@ describe('buildRunContext — la base', () => {
     expect(dirty).toMatch(/rebase|stop|go/);
   });
 
+  it('dit la base réellement comparée quand --base la change', () => {
+    const out = text(settings(), facts({ baseRef: 'origin/release' }));
+    expect(out).toContain('origin/release = 3133cd5');
+    expect(out).not.toContain('origin/main');
+  });
+
   it('sans remote joignable : avertit sans bloquer', () => {
     const { lines } = buildRunContext(settings(), facts({ remote: 'none', originMain: undefined }));
     expect(lines.join('\n')).toMatch(/pas de remote joignable.*avertissement, pas un blocage/);

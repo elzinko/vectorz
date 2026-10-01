@@ -35,6 +35,8 @@ export interface RunFacts {
   /** `ok` : origin/main est lisible. `none` : pas de remote. `unreachable` : le fetch a échoué. */
   remote: 'ok' | 'none' | 'unreachable';
   originMain?: { sha: string; subject: string } | undefined;
+  /** La base comparée, telle que `--base` l'a désignée (défaut `origin/main`). */
+  baseRef?: string | undefined;
   /** `git rev-list --count HEAD..origin/main` : ce qui manque à HEAD. */
   behind: number;
   /** `git rev-list --count origin/main..HEAD` : ce que HEAD a en plus. */
@@ -53,11 +55,12 @@ export interface RunContext {
 const plural = (n: number, word: string): string => `${n} ${word}${n > 1 ? 's' : ''}`;
 
 function baseLine(facts: RunFacts): string {
+  const ref = facts.baseRef ?? 'origin/main';
   if (facts.remote !== 'ok' || !facts.originMain) {
     const why = facts.remote === 'none' ? 'pas de remote' : 'le fetch a échoué';
-    return `  Base       pas de remote joignable (${why}) : base non vérifiée, c'est un avertissement, pas un blocage`;
+    return `  Base       pas de remote joignable (${why}) : ${ref} non vérifiée, c'est un avertissement, pas un blocage`;
   }
-  const where = `origin/main = ${facts.originMain.sha} « ${facts.originMain.subject} »`;
+  const where = `${ref} = ${facts.originMain.sha} « ${facts.originMain.subject} »`;
   if (facts.behind === 0) {
     const ahead = facts.ahead > 0 ? ` · ${plural(facts.ahead, 'commit')} en avance` : '';
     return `  Base       ${where} · à jour${ahead}`;

@@ -56,8 +56,10 @@ export function parseFicheArg(arg: string): { line?: FicheLine; error?: string }
 export interface PrFacts {
   state: 'MERGED' | 'OPEN' | 'CLOSED';
   checks: 'success' | 'failure' | 'pending' | 'none';
-  /** Revues et commentaires qui portent une trace de revue. */
+  /** Revues et commentaires qui portent un verdict (positif ou négatif). */
   reviewTraces: number;
+  /** Le DERNIER verdict de la PR : `negative` = modifications demandées ou NO-GO, `none` = aucune trace. */
+  latestReview: 'positive' | 'negative' | 'none';
 }
 
 const BAD_CONCLUSIONS = ['FAILURE', 'TIMED_OUT', 'CANCELLED', 'ACTION_REQUIRED', 'STARTUP_FAILURE', 'ERROR'];
@@ -85,11 +87,25 @@ export function parsePrFacts(json: unknown): PrFacts | null {
     }
     if (PENDING_STATES.includes(verdict) || (status !== '' && status !== 'COMPLETED')) checks = 'pending';
   }
-  const reviews = Array.isArray(o.reviews) ? o.reviews.length : 0;
-  const comments = Array.isArray(o.comments)
-    ? (o.comments as Array<Record<string, unknown>>).filter((c) => REVIEW_WORDS.test(String(c.body ?? ''))).length
-    : 0;
-  return { state, checks, reviewTraces: reviews + comments };
+  // Chaque revue ou commentaire qui porte un verdict, daté : on garde le dernier. Une revue
+  // CHANGES_REQUESTED ou un commentaire NO-GO est un verdict négatif, jamais une trace de GO.
+  const verdicts: Array<{ at: string; negative: boolean }> = [];
+  for (const r of Array.isArray(o.reviews) ? (o.reviews as Array<Record<string, unknown>>) : []) {
+    const st = String(r.state ?? '').toUpperCase();
+    const at = String(r.submittedAt ?? '');
+    if (st === 'CHANGES_REQUESTED') verdicts.push({ at, negative: true });
+    else if (st === 'APPROVED' || st === 'COMMENTED') verdicts.push({ at, negative: false });
+  }
+  for (const c of Array.isArray(o.comments) ? (o.comments as Array<Record<string, unknown>>) : []) {
+    const body = String(c.body ?? '');
+    const at = String(c.createdAt ?? '');
+    if (/NO-GO/i.test(body)) verdicts.push({ at, negative: true });
+    else if (REVIEW_WORDS.test(body)) verdicts.push({ at, negative: false });
+  }
+  verdicts.sort((a, b) => a.at.localeCompare(b.at));
+  const last = verdicts[verdicts.length - 1];
+  const latestReview: PrFacts['latestReview'] = last === undefined ? 'none' : last.negative ? 'negative' : 'positive';
+  return { state, checks, reviewTraces: verdicts.length, latestReview };
 }
 
 export interface Discrepancy {
@@ -112,9 +128,17 @@ export function crossCheck(lines: FicheLine[], prs: Map<string, PrFacts | null>)
     const mismatch = (message: string): number => out.push({ id: line.id, message, severity: 'mismatch' });
     if (line.state === 'mergée' && facts.state !== 'MERGED') mismatch(`déclarée mergée, GitHub dit ${facts.state}`);
     if (line.state === 'PR-ouverte' && facts.state !== 'OPEN') mismatch(`déclarée ouverte, GitHub dit ${facts.state}`);
+    // Bloquée ou sautée avec une PR que GitHub dit déjà mergée : le bilan de fin de run serait faux.
+    if ((line.state === 'bloquée' || line.state === 'sautée') && facts.state === 'MERGED') {
+      mismatch(`déclarée ${line.state}, GitHub dit MERGED`);
+    }
     if (/^verte$/i.test(line.gate) && facts.checks === 'failure') mismatch('gate verte déclarée, CI rouge sur GitHub');
-    if (/^GO$/i.test(line.review) && facts.reviewTraces === 0) {
-      mismatch('revue GO déclarée, aucune trace de revue sur la PR (le garde-fou refuserait le merge)');
+    if (/^GO$/i.test(line.review)) {
+      if (facts.latestReview === 'none') {
+        mismatch('revue GO déclarée, aucune trace de revue sur la PR (le garde-fou refuserait le merge)');
+      } else if (facts.latestReview === 'negative') {
+        mismatch('revue GO déclarée, mais le dernier verdict de la PR est négatif (modifications demandées ou NO-GO)');
+      }
     }
   }
   return out;
@@ -123,10 +147,12 @@ export function crossCheck(lines: FicheLine[], prs: Map<string, PrFacts | null>)
 export interface HeadFacts {
   head: string;
   branch: string | null;
-  /** `null` : pas d'origin/main joignable. */
+  /** `null` : pas de base distante joignable. */
   originMain: string | null;
   behind: number;
   ahead: number;
+  /** La base comparée, telle que `--base` l'a désignée (défaut `origin/main`). */
+  baseRef?: string;
 }
 
 export interface Tokens {
@@ -150,13 +176,14 @@ const many = (n: number, one: string, more: string): string => `${n} ${n > 1 ? m
 function headLine(h: HeadFacts): string {
   const on = h.branch ? ` (${h.branch})` : '';
   const at = `HEAD ${h.head}${on}`;
-  if (h.originMain === null) return `${at} : pas d'origin/main joignable, position non vérifiée.`;
-  if (h.behind === 0 && h.ahead === 0) return `HEAD ${h.head} = origin/main ${h.originMain} : identique${on}.`;
+  const base = h.baseRef ?? 'origin/main';
+  if (h.originMain === null) return `${at} : ${base} injoignable, position non vérifiée.`;
+  if (h.behind === 0 && h.ahead === 0) return `HEAD ${h.head} = ${base} ${h.originMain} : identique${on}.`;
   if (h.behind > 0 && h.ahead > 0) {
-    return `${at} a divergé d'origin/main ${h.originMain} : en retard de ${h.behind}, en avance de ${h.ahead}.`;
+    return `${at} a divergé de ${base} ${h.originMain} : en retard de ${h.behind}, en avance de ${h.ahead}.`;
   }
-  if (h.behind > 0) return `${at} est en retard de ${h.behind} sur origin/main ${h.originMain}.`;
-  return `${at} est en avance de ${h.ahead} sur origin/main ${h.originMain}, pas encore poussé ou mergé.`;
+  if (h.behind > 0) return `${at} est en retard de ${h.behind} sur ${base} ${h.originMain}.`;
+  return `${at} est en avance de ${h.ahead} sur ${base} ${h.originMain}, pas encore poussé ou mergé.`;
 }
 
 function tokensLine(t: Tokens): string {
