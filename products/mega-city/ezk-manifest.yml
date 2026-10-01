@@ -162,6 +162,10 @@ commands:
     verb: report
     run: bin/sprint-report.ts
     summary: Collecte le rapport de sprint (durée, jetons, indicateurs).
+  - domain: retro
+    verb: captures
+    run: bin/retro-captures.ts
+    summary: Liste les décisions des rétros passées, ou vérifie une capture (--check).
 
   # --- docs : contrôles de liens et de numéros ---
   - domain: docs

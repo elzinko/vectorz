@@ -42,7 +42,7 @@ Le pattern [gabarit + extracteur + rendu](../products/mega-city/rules/documentat
 
 1. **Gabarit** `ezk-retro/references/capture-template.md` : « En clair », sections du récit, en-tête structuré, section « Suivi des décisions de la rétro précédente ».
 2. **Extracteur** `retro:captures` : lit l'en-tête de chaque capture, vérifie le format, liste les décisions. `--check <fichier>` valide une capture avant la PR. `--json` nourrira la future vue rétros.
-3. **Skill** `ezk-retro` : le temps 5 exige la capture et sa validation. Le temps 3 type chaque proposition (règle, feature, action, spike, recette), pose la cible d'une règle (`global`, `agent:<nom>` ou `skill:<nom>`) et demande de proposer une `feature` quand le symptôme est structurel. Une règle ciblée se range par le lien explicite de sa cible, jamais par un bundle. `retire` enlève aussi ce lien.
+3. **Skill** `ezk-retro` : le temps 5 exige la capture et sa validation. Le temps 3 type chaque proposition (règle, feature, action, spike, recette), pose la cible d'une règle (`global`, `agent:<nom>` ou `skill:<nom>`) et demande de proposer une `feature` quand le symptôme est structurel. Une règle ciblée déclare sa portée par le lien explicite de sa cible. Le bundle déploie le texte, il ne porte pas la portée. `retire` enlève aussi ce lien.
 4. **Modèle** : la capture du 18 juillet passe au format cible. Elle prouve que l'extracteur lit un vrai fichier.
 
 Forme de l'en-tête : un bloc YAML. Chaque action porte `proposition`, `kind`, `target` (règles), `by` (qui a proposé), `status` (✅ ❌ ⏳), `decision` et `date`. Un statut ✅ ou ❌ sans décision ni date est refusé. Un statut ⏳ avec une date aussi : la case n'est jamais pré-remplie.
@@ -53,7 +53,7 @@ Forme de l'en-tête : un bloc YAML. Chaque action porte `proposition`, `kind`, `
 - [ ] Le gabarit existe, ouvre par « En clair », et figure dans la table des instances de la règle `readable-deliverable-trio` (test vert).
 - [ ] `retro:captures` accepte la capture du 18 juillet et en liste les 7 décisions. Il refuse, avec le fichier et le champ nommés : un en-tête absent, un statut inconnu, une règle sans cible valide, un ✅ ou ❌ sans décision ni date, un ⏳ daté.
 - [ ] Une proposition de type `feature` est acceptée par l'extracteur. Le temps 3 dit quand en proposer une.
-- [ ] Une règle ciblée se range par `applies:` ou `interactions:` de sa cible. Le SKILL le dit, `retire` aussi.
+- [ ] Une règle ciblée déclare sa portée par `applies:` ou `interactions:` de sa cible. Le SKILL dit que le bundle déploie le texte sans porter la portée, et `retire` enlève aussi le lien.
 - [ ] La capture du 18 juillet porte l'en-tête cible, fidèle à son tableau « Décisions du PO ».
 - [ ] Gate locale verte.
 
@@ -70,6 +70,7 @@ Sabotage : retirer `date:` d'une action ✅ de la capture. La commande sort en e
 ## Suite (hors POC)
 
 - Preuve par l'usage : la prochaine rétro réelle doit produire sa capture sans demande du PO. Cela se constate à ce moment-là.
+- Déploiement ciblé du texte de la règle (livré seulement avec l'agent ou le skill visé). Aujourd'hui `expandProfile` ne prend les règles que dans les bundles : le lien déclare la portée, il ne filtre pas encore ce qui est déployé.
 - Quatrième cible, demandée par le PO le 2026-08-26 : le LLM qui traite les retours (output-style). Non traitée ici.
 - La page `ezk:map retros` consommera `retro:captures --json`. C'est sa propre fiche.
 - Boucle d'élicitation pour des propositions plus riches.

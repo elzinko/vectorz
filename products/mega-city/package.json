@@ -46,6 +46,7 @@
     "ci:conso": "tsx bin/ci-conso.ts",
     "ezk:sessions": "tsx bin/ezk-sessions.ts",
     "sprint:report": "tsx bin/sprint-report.ts",
+    "retro:captures": "tsx bin/retro-captures.ts",
     "ezk:config": "tsx bin/ezk-config.ts"
   },
   "devDependencies": {
