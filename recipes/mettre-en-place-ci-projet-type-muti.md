@@ -4,7 +4,6 @@ title: "Mettre en place la CI d'un projet type muti (app desktop + site de vente
 makes: "Une CI complète pour une app desktop et son site de vente : tests sur chaque PR, livraison sur main et sur les tags, déploiement du site, et un même plan rejouable en local"
 source: ~/git/bacasable/muti # CI prouvée : 6 workflows et un lanceur local
 composes: [plan-distribution-app, brancher-domaine-vercel]
-profile:
 status: draft
 home: central
 created: 2026-10-01
@@ -186,7 +185,7 @@ Racine : **`~/git/bacasable/muti`** (pointeurs relevés le 2026-10-01).
 - `.github/workflows/cleanup.yml:1` — le nettoyage des previews et des caches
 - `.github/workflows/smoke-test.yml:1` — le smoke test E2E, à la demande ou par label
 - `.github/workflows/coming-soon.yml:1` — la bascule de la page d'attente
-- `package.json:47` — les commandes `ci:local` et `ci:mode`
+- `package.json:47` — les commandes `ci:local` (lignes 47 à 50) et `ci:mode` (ligne 51)
 - `scripts/ci-local.sh:51` — l'aide du lanceur local : toutes les commandes
 - `scripts/ci-local.sh:229` — le mode natif, sans Docker
 - `scripts/ci-local.sh:296` — le signal posé sur la PR
