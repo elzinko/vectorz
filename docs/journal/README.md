@@ -18,6 +18,9 @@ bash products/mega-city/bin/journal-add.sh <id-fiche> "<titre court>" "<ce qui a
 La commande écrit dans `docs/journal/<date>-<slug>.md` et affiche le chemin du fichier.
 
 - Le `<slug>` est le nom de la branche git. Un worktree écrit donc dans son propre fichier.
+  Le nom est assaini pour devenir un nom de fichier. S'il change (`feat/x` devient `feat-x`), un
+  court condensat du nom d'origine est ajouté : `feat/x` et `feat-x` ne tombent jamais sur le même
+  fichier. L'en-tête du fichier garde le nom d'origine.
 - `--slug <nom>` choisit un autre nom de session. `--root <dir>` vise un autre projet.
 
 N'écris que ce qui aide à **reproduire** : un geste d'interface, un réglage, un piège. Une fausse

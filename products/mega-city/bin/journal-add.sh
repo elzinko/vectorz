@@ -9,6 +9,9 @@
 #   <id-fiche>  chiffres seulement (l'id horodaté de la fiche concernée)
 #   --slug      nom de la session ; défaut = la branche git courante. Un worktree = une branche =
 #               un fichier : deux sprints en parallèle n'écrivent jamais dans le même fichier.
+#               Le nom est assaini pour en faire un nom de fichier ; s'il change (feat/x devient
+#               feat-x), un condensat du nom d'origine est ajouté, pour que feat/x et feat-x
+#               ne tombent jamais sur le même fichier.
 #   --root      racine du projet ; défaut = racine git courante, sinon le dossier courant
 #
 # Sortie : le chemin du fichier journal (relatif à la racine), en dernière ligne de stdout.
@@ -59,8 +62,15 @@ if [ -z "$SLUG" ]; then
   SLUG="$(git -C "$ROOT" symbolic-ref --short -q HEAD 2>/dev/null || true)"
 fi
 # Nom de fichier sûr : jamais de séparateur de chemin, d'espace ni de point en tête.
-SLUG="$(printf '%s' "$SLUG" | sed -e 's#[^A-Za-z0-9._-]#-#g' -e 's#--*#-#g' -e 's#^[-.]*##' -e 's#[-.]*$##')"
+SLUG_BRUT="$SLUG"
+SLUG="$(printf '%s' "$SLUG_BRUT" | sed -e 's#[^A-Za-z0-9._-]#-#g' -e 's#--*#-#g' -e 's#^[-.]*##' -e 's#[-.]*$##')"
 [ -n "$SLUG" ] || SLUG="session"
+# Deux noms différents ne doivent jamais donner le même fichier (feat/x et feat-x, par exemple),
+# sinon deux worktrees du même jour recréeraient le conflit que le journal veut éviter. Quand
+# l'assainissement a changé le nom, un court condensat du nom d'origine le rend unique.
+if [ -n "$SLUG_BRUT" ] && [ "$SLUG" != "$SLUG_BRUT" ]; then
+  SLUG="${SLUG}-$(printf '%s' "$SLUG_BRUT" | cksum | awk '{ printf "%08x", $1 }')"
+fi
 
 DIR="$ROOT/docs/journal"
 mkdir -p "$DIR"
@@ -73,7 +83,7 @@ if [ ${#existants[@]} -gt 0 ]; then
   FILE="${existants[0]}"
 else
   FILE="$DIR/$(date +%Y-%m-%d)-${SLUG}.md"
-  printf '# Journal des difficultés — %s\n' "$SLUG" > "$FILE"
+  printf '# Journal des difficultés — %s\n' "$(oneline "${SLUG_BRUT:-$SLUG}")" > "$FILE"
 fi
 
 {

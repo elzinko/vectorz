@@ -110,6 +110,11 @@ Trois défauts constatés (2026-09-04, avec le PO) :
 assainissement du slug (arrêt franc). `ezk-chef-extract.sh` sans la borne d'identifiant laisse
 passer une entrée d'une « superchaîne » d'id, et le cas K le détecte.
 
+**Retour Codex (PR #290).** Deux noms de branche qui s'assainissent pareil (`feat/x` et `feat-x`)
+donneraient le même fichier daté, donc un conflit add/add entre deux worktrees du même jour. Quand
+l'assainissement change le nom, `journal-add.sh` ajoute un court condensat du nom d'origine. Le cas I
+le prouve, et rougit si on retire le condensat.
+
 ## Comment vérifier
 
 - **Indépendance** : `test-journal-add.sh` écrit dans un dépôt de test **sans** `recipes/` ni labo.
