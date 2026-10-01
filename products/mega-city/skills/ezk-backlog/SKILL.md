@@ -106,7 +106,7 @@ du front-matter de cette skill).
 | `init` | Initialise le suivi : `features/` + `done/` + README curé + `BACKLOG.md` (helper `init.sh`) |
 | `list` / `next` | Charge le backlog **trié par priorité** (P0→P3) en contexte de session |
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
-| `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères, + les slots que le projet déclare dans `.vectorz/dor.yml`) via `product-brainstorming` ciblé — ne change pas le statut |
+| `groom <id> [--archi\|--no-archi] [--brainstorm\|--no-brainstorm]` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères, + les slots que le projet déclare dans `.vectorz/dor.yml`) par une **boucle guidée** : menu court de techniques (catalogue `groom-techniques.yml`), tu choisis, l'agent applique et re-propose ; l'architecte et le brainstorm en font partie — ne change pas le statut |
 | `ready <id>` | **Gate DoR** : refuse si un slot manque (socle ou slot du projet) ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
@@ -307,10 +307,31 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié),
    **plus les slots du projet** s'il en déclare (section suivante : `ezk dor show` les liste ;
    chacun a une section attendue dans la fiche, une question à trancher, une liste à balayer).
-2. Session de raffinement **ciblée** sur ces slots via
-   `product-management:product-brainstorming` ; le panel de challenge (fiche 0057) est
-   composable en étape optionnelle.
-3. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
+2. **Boucle de raffinement guidée** (fiche 20260825161522791). Au lieu d'un brainstorm libre,
+   une boucle « propose, l'opérateur choisit, tu appliques, tu re-proposes ». Prior art : BMAD
+   `advanced-elicitation` (50 méthodes, `methods.csv`) — voir le
+   [rapport de benchmark](../../docs/benchmarks/2026-08-25-bmad-vs-ezk.md). Le catalogue est une
+   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (8 techniques).
+   - **Menu court.** Propose 3 techniques (4 au plus), choisies sur le slot le plus faible :
+     numérotées, une ligne chacune (titre + ce qu'elle va faire), plus `0 — terminer`.
+   - **Applique, remontre.** L'opérateur en choisit une. Applique-la à la section concernée, puis
+     montre la section améliorée (avant, après).
+   - **Valide.** « garder / retoucher / annuler ». N'écris dans la fiche que ce qui est gardé.
+   - **Re-propose.** Un nouveau menu, sans les techniques déjà jouées, jusqu'à la
+     **sortie explicite** (`0`, « ça suffit »). Sortir au premier tour est légitime : aucune passe
+     n'est forcée, la fiche reste telle quelle.
+   - **Sans opérateur** (appel d'un orchestrateur : `ezk-product-build`, `ezk-pm`) : pas de menu,
+     il bloquerait l'auto-groom. Applique toi-même les 2 techniques les plus utiles, en une passe,
+     et nomme-les dans ton compte rendu.
+3. **Architecte et brainstorm** (fiche 20260812104022243). Deux techniques du catalogue APPELLENT un
+   skill : `avis-architecte` → `engineering:architecture`, `brainstorm-cible` →
+   `product-management:product-brainstorming`. Par défaut, l'architecte est proposé au menu quand la
+   fiche est de type `feature` ou `refactor` ET porte une décision de structure (frontière de module,
+   format ou contrat, dépendance) ; le brainstorm, quand le slot « problème » est faible. Les
+   paramètres `groom <id> --archi` / `--no-archi` et `--brainstorm` / `--no-brainstorm` forcent la
+   technique au premier menu, ou la retirent. Sans paramètre, c'est ton jugement. Le panel de
+   challenge (fiche 0161) viendra comme une technique de plus.
+4. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
    c'est le job du gate.
 
 Quand groomer : au moment de **tirer** la fiche (pas à la capture — une `idea` jamais
