@@ -8,8 +8,8 @@ labels: [backlog]
 version: V0.3
 epic:
 depends: []
-status: idea
-pr:
+status: shipped
+pr: "#279"
 created: 2026-08-30
 ---
 

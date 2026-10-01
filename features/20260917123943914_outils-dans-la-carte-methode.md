@@ -36,7 +36,7 @@ Le graphe compilé (`products/mega-city/src/core/graph.ts`) modélise **5 types 
 - une **commande** (script npm, sous-commande de skill) n'y est pas non plus.
 
 Aujourd'hui les **commandes** sont listées par `ezk-help` (l'index des commandes), et le CLI unique
-est le sujet de [`20260903134906920`](20260903134906920_cli-ezk-point-d-entree-unique.md). Mais
+est le sujet de [`20260903134906920`](done/20260903134906920_cli-ezk-point-d-entree-unique.md). Mais
 aucune de ces deux briques ne **relie** un outil au(x) skill(s) qui l'appelle(nt), ni ne le pose sur
 la **carte** à côté des skills. Résultat : la carte dit *quelles* skills existent et *qui compose
 qui*, mais pas *avec quels outils* la méthode s'exécute.
@@ -81,7 +81,7 @@ apparaissent, chacun **relié** aux skills qui l'utilisent.
 
 - **≠ `ezk-help`** (`20260903085150321` et voisines) : `ezk-help` **liste** les commandes ; ici on les
   **pose sur la carte** et on les **relie** aux skills (mécanisme du graphe, pas un index).
-- **≠ CLI `ezk`** ([`20260903134906920`](20260903134906920_cli-ezk-point-d-entree-unique.md)) : le CLI
+- **≠ CLI `ezk`** ([`20260903134906920`](done/20260903134906920_cli-ezk-point-d-entree-unique.md)) : le CLI
   est le **point d'entrée** d'exécution ; cette fiche est une **facette de visualisation** de la carte.
 - **S'adosse** au graphe compilé + validateur (ADR-0040) : c'est un **6ᵉ NodeKind**, pas un
   nouveau système.

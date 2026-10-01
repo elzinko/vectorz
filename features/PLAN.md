@@ -52,17 +52,17 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260906135450000` — recette : lancer l'émulateur Android pour tester sur mobile · `build`~~ — shipped #276
 
 ### ③ Les deux P0 qui font mal (juste après le socle)
-- `20260830194601233` — livrer une fiche sans casser les liens ni les vues (ship sûr) · `build`
-- `20260830194601376` — décider quelles vues générées ne plus committer (fin des conflits) · `build`
+- ~~`20260830194601233` — livrer une fiche sans casser les liens ni les vues (ship sûr) · `build`~~ — shipped #282
+- ~~`20260830194601376` — décider quelles vues générées ne plus committer (fin des conflits) · `build`~~ — shipped #279
 - `20260930123438875` — séparer clairement fiche, sprint et session (ezk-sprint start/close) · `groom` → `build`
 
 ### ④ V0.3 — le backlog dit vrai + on range
 - `20260824204751403` — découper le backlog en versions et vérifier la cohérence d'un lot · `build`
-- `20260903134906920` — une seule commande `ezk` pour tout lancer · `build`
-- `20260903134909124` — déployer vraiment les règles chez les agents (aujourd'hui : zéro) · `build`
-- `20260824122629925` — une FAQ « comment faire » pour tes questions récurrentes · `build`
-- `20260825160456259` — à la fin d'une commande, proposer les 1 à 3 commandes suivantes · `build`
-- `20260825182327490` — un modèle standard pour tout texte destiné à un humain · `build`
+- ~~`20260903134906920` — une seule commande `ezk` pour tout lancer · `build`~~ — shipped #281
+- ~~`20260903134909124` — déployer vraiment les règles chez les agents (aujourd'hui : zéro) · `build`~~ — shipped #284
+- ~~`20260824122629925` — une FAQ « comment faire » pour tes questions récurrentes · `build`~~ — shipped #278
+- ~~`20260825160456259` — à la fin d'une commande, proposer les 1 à 3 commandes suivantes · `build`~~ — shipped #280
+- ~~`20260825182327490` — un modèle standard pour tout texte destiné à un humain · `build`~~ — shipped #283
 - `20260825202444647` — ezk-codex répond et ferme tous les fils de revue traités · `build`
 - `20260826072532622` — valider fiches et carte depuis le tableau de bord (👍/👎 enregistré) · `build`
 - `20260910231201744` — appliquer pour de vrai les fusions et découpages de fiches proposés · `build`

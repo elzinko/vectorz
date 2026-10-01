@@ -8,8 +8,8 @@ version: V0.3
 labels: [lisibilite]
 epic:
 milestone: rationalisation
-status: idea
-pr:
+status: shipped
+pr: "#280"
 created: 2026-08-25
 ---
 
@@ -25,7 +25,7 @@ Déclencheur daté : **2026-08-25**, le PO (Thomas), pendant un `/ezk-backlog ad
 
 Le trou : une commande ezk se **clôt sans indiquer la suite**. Après `ezk-backlog ready <id>`, la suite est `next --ready-only` puis `ezk-sprint`, mais rien ne le dit. Après un sprint mergé, la suite est la fiche suivante, mais rien ne le dit. C'est un besoin de découvrabilité **contextuelle**, complémentaire de l'index global.
 
-**Prior art BMAD** (vérifié dans le code v6.0.4, rapport [`2026-08-25-bmad-vs-ezk`](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md)). `*help` et `*exit` sont injectés dans le menu de chaque agent. L'agent affiche un menu numéroté, puis attend. Les descriptions de workflow encodent la chaîne (« Create Story → Validate → Dev → Code Review → Retrospective »). Un workflow « Sprint Status » a pour seul rôle de router vers le workflow suivant.
+**Prior art BMAD** (vérifié dans le code v6.0.4, rapport [`2026-08-25-bmad-vs-ezk`](../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md)). `*help` et `*exit` sont injectés dans le menu de chaque agent. L'agent affiche un menu numéroté, puis attend. Les descriptions de workflow encodent la chaîne (« Create Story → Validate → Dev → Code Review → Retrospective »). Un workflow « Sprint Status » a pour seul rôle de router vers le workflow suivant.
 
 ## Décisions de grooming (MVP)
 
@@ -57,7 +57,7 @@ Sabotage : citer `/ezk-fantome` dans la table. Le test passe au rouge.
 ## Suite (hors POC)
 
 - Étendre à `ezk-archive`, `ezk-pr`, `ezk-retro`, `ezk-chef`, `ezk-product-build`.
-- Générer la carte des successions depuis le modèle compilé ([20260821204737357](done/20260821204737357_cabler-la-methode-modele-compile.md)) au lieu de la curer à la main.
+- Générer la carte des successions depuis le modèle compilé ([20260821204737357](20260821204737357_cabler-la-methode-modele-compile.md)) au lieu de la curer à la main.
 - Adapter les pistes à l'état réel (statut de la fiche, PR ouverte) ; menu numéroté interactif à la BMAD.
 
 ## Glossaire
@@ -68,6 +68,6 @@ Sabotage : citer `/ezk-fantome` dans la table. Le test passe au rouge.
 ## Notes / décisions
 
 - Ancienne fille de l'épic « Rationalisation doc + découvrabilité », retiré le 2026-09-15 (devenu le thème `lisibilite` et le jalon `rationalisation`). **Distinct** de `/ezk-help` (index global).
-- Voisines : [20260817113353538](done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) (étude BMAD), [20260821204737357](done/20260821204737357_cabler-la-methode-modele-compile.md) (modèle compilé).
+- Voisines : [20260817113353538](20260817113353538_etude-prior-art-bmad-templates-elicitation.md) (étude BMAD), [20260821204737357](20260821204737357_cabler-la-methode-modele-compile.md) (modèle compilé).
 - **Source** : benchmark BMAD vs ezk du 2026-08-25.
 - Choix MVP tranché au grooming : **curé par skill**, pas généré.
