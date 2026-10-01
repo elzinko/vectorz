@@ -1,9 +1,9 @@
 # Dette datée de la LOI : les règles `enforcements: agent-check` que le prompt de l'agent nommé
 # ne cite pas encore (fiche 20260903134909124, ADR-0056).
 #
-# Mesure du 2026-10-01 : 26 règles « un agent la contrôle », 7 citées par le prompt de leur
+# Mesure du 2026-10-01 : 27 règles « un agent la contrôle », 7 citées par le prompt de leur
 # agent (les six règles recipe/* d'ezk-chef et development/pr-before-after-media d'ezk-reviewer),
-# 19 non citées — listées ci-dessous.
+# 20 non citées — listées ci-dessous.
 #
 # Le test src/__tests__/law-coverage.test.ts accepte CETTE liste et interdit de l'allonger : une
 # règle agent-check nouvelle doit être citée (id ou titre) dans agents/<agent>.md, ou — dernier
@@ -26,6 +26,7 @@ uncited:
   - { rule: development/yaml-emission-via-lib, agent: ezk-reviewer }
   - { rule: documentation-guidelines/human-facing-lisibility, agent: ezk-reviewer }
   - { rule: documentation-guidelines/next-step-affordance, agent: ezk-reviewer }
+  - { rule: documentation-guidelines/readable-deliverable-trio, agent: ezk-reviewer }
   - { rule: documentation-guidelines/readme-structure, agent: ezk-reviewer }
   - { rule: hexagonal/domain-isolation, agent: ezk-architect }
   - { rule: testing/manual-validation-camera-gesture, agent: ezk-qa }

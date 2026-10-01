@@ -17,18 +17,18 @@ propre à un projet reste liée par projet. Un test garde les règles « un agen
 
 - Le cap global écrivait `skills/` et `agents/` seulement. Sur le poste, `~/.claude/rules/`
   n'existait pas : aucune règle n'était compilée (mesuré le 2026-10-01).
-- Mesure du 2026-10-01 : 26 règles `agent-check`, 7 citées par le prompt de l'agent nommé, 19 non.
+- Mesure du 2026-10-01 : 27 règles `agent-check`, 7 citées par le prompt de l'agent nommé, 20 non.
 - Claude Code charge les fichiers `~/.claude/rules/*.md` dans toutes les sessions, avant les
   règles du projet, sans pointeur. Il retire l'en-tête YAML avant de les lire et n'y interprète
   que `paths` : une autre clé est ignorée sans erreur. Les commentaires HTML sont retirés aussi.
-- Poids du socle `base` : 5 règles, 12 Ko, environ 3 k jetons par session.
+- Poids du socle `base` : 6 règles, 16 Ko, environ 4 k jetons par session ; il grossit à chaque règle ajoutée à `base` : 9 Ko avec 4 règles, 16 Ko avec 6.
 
 ## Options
 
 | Option | Effet | Coût | Risque |
 |---|---|---|---|
-| A. Statu quo | la loi vit dans les textes copiés à la main | nul | 19 règles sur 26 non citées, dérive |
-| B. Le global compile le socle dans `rules/iamthelaw.md` | toutes les sessions et tous les sous-agents voient le socle | environ 3 k jetons par session | un fichier généré à tenir à jour |
+| A. Statu quo | la loi vit dans les textes copiés à la main | nul | 20 règles sur 27 non citées, dérive |
+| B. Le global compile le socle dans `rules/iamthelaw.md` | toutes les sessions et tous les sous-agents voient le socle | environ 4 k jetons par session | un fichier généré à tenir à jour |
 | C. Bloc managé dans `~/.claude/CLAUDE.md` | idem, mais dans le fichier personnel du PO | idem | on édite un fichier qui n'est pas le nôtre |
 | D. Lier chaque projet (`lawgiver bind`) | la loi complète arrive par projet | un geste par projet | oubli : un projet non lié n'a pas de loi |
 

@@ -40,8 +40,8 @@ Constaté le 2026-09-03, pendant la livraison de [[20260902224608715]] :
 - Le cap projet compile bien la loi, mais aucun `lawgiver bind` n'a été lancé sur vectorz : 0 règle
   compilée sur le poste (`~/.claude/rules/` n'existe pas, mesuré le 2026-10-01).
 - Une règle n'était donc effective que si un texte d'agent la répétait à la main. Mesure du
-  2026-10-01 : 26 règles `agent-check`, **7 citées** par le prompt de l'agent nommé, **19 non**
-  (ezk-reviewer 12 sur 13, ezk-architect 2 sur 2, ezk-pm 2 sur 2, ezk-qa 2 sur 2, ezk-steward 1
+  2026-10-01 : 27 règles `agent-check`, **7 citées** par le prompt de l'agent nommé, **20 non**
+  (ezk-reviewer 13 sur 14, ezk-architect 2 sur 2, ezk-pm 2 sur 2, ezk-qa 2 sur 2, ezk-steward 1
   sur 1 ; ezk-chef 6 sur 6 citées). La liste exacte est dans `law-debt.yml`.
 - Le profil `global` se dit « exhaustif » mais omettait `ezk-bug`, `ezk-chef` (skills) et
   `ezk-chef` (agent) : ils n'étaient dans aucun profil. Même famille de bug : `/ezk-pr` était resté
@@ -61,10 +61,10 @@ la voie 1 à la liaison par projet. Décision : ADR-0056.
    `rules/iamthelaw.md` (les règles du profil, même format que `ENTRY.md`). Claude Code charge
    `~/.claude/rules/*.md` dans chaque session, sans pointeur. Le fichier est possédé par lawgiver :
    un marqueur dans son en-tête permet de le remplacer, et un fichier du même nom sans marqueur
-   n'est jamais écrasé. Coût : le socle `base` pèse 12 Ko, soit environ 3 k jetons par session.
+   n'est jamais écrasé. Coût : le socle `base` pèse 16 Ko, soit environ 4 k jetons par session.
 2. **Voie 3 — le cliquet.** Un test échoue quand une règle `agent-check` n'est citée ni par id
    ni par titre dans le prompt de l'agent nommé, sauf si elle figure dans la dette datée. La
-   liste ne peut que rétrécir. Les 19 règles non citées y sont consignées.
+   liste ne peut que rétrécir. Les 20 règles non citées y sont consignées.
 3. **Le doctor.** `lawgiver doctor <profil> [--target <dossier>]` (et `ezk law doctor`) compare
    le profil et la cible. Lecture seule. Code retour 1 si une divergence bloque. Il réutilise la
    primitive « état de déploiement » créée par `ezk law status`.
@@ -72,7 +72,7 @@ la voie 1 à la liaison par projet. Décision : ADR-0056.
 ## Critères d'acceptation
 
 - [x] La mesure datée (ci-dessus) est consignée dans la fiche, et le test la reproduit.
-      _Preuve_ : `law-debt.yml` (les 19 règles, datées) et `law-coverage.test.ts`.
+      _Preuve_ : `law-debt.yml` (les 20 règles, datées) et `law-coverage.test.ts`.
 - [x] Le test cliquet échoue sur une règle `agent-check` nouvelle et non citée, et sur une entrée
       de dette devenue citée ou disparue.
       _Preuve_ : `law-coverage.test.ts` (cas simulés, puis le vrai catalogue). Il a vu une dette
@@ -120,8 +120,8 @@ pnpm --dir products/mega-city exec vitest run law-coverage deploy-doctor apply-g
   catalogue lawgiver, hors profil, sans jamais signaler un skill d'un autre outil) ; éléments du
   catalogue dans aucun profil, en sortie du doctor (le test de couverture du profil `global`
   garde déjà la famille `ezk-*`).
-- Résorber les 19 règles en dette : les citer dans le prompt de l'agent, ou compiler par agent.
-- Choisir quels bundles le global porte (aujourd'hui `base` seul, 5 règles ; `development` et
+- Résorber les 20 règles en dette : les citer dans le prompt de l'agent, ou compiler par agent.
+- Choisir quels bundles le global porte (aujourd'hui `base` seul, 6 règles ; `development` et
   `testing` n'arrivent que par `cop1-target`). Décision du PO, avec le coût en jetons.
 - Lier vectorz lui-même (`lawgiver bind base . claude-code` : `.iamthelaw/` + pointeur dans
   `CLAUDE.md`).

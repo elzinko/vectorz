@@ -44,7 +44,7 @@ par composition externe de `product-management:product-brainstorming` (ADR-0012)
 ### La loi d'un profil bindé en global
 `bind-global` compile aussi les règles du profil (aujourd'hui le bundle `base`) dans
 `~/.claude/rules/iamthelaw.md`, que Claude Code charge dans chaque session (ADR-0056). Ce socle
-pèse environ 3 k jetons par session : élargir les bundles d'un profil global se paie à chaque
+pèse environ 4 k jetons par session : élargir les bundles d'un profil global se paie à chaque
 session. `lawgiver doctor <profil>` dit si la loi, les skills et les agents installés sont ceux
 du profil.
 
