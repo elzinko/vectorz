@@ -47,7 +47,7 @@ Voisines, à ne pas refaire : `0100` (sprint planning, santé du backlog), `2026
 - **Dans le POC ?** Le champ actif, le contrôle de lot, la clôture, l'écart avec `PLAN.md`. Le reste
   de la fiche absorbée (fusionner PLAN dans BACKLOG, historiser les itérations) va en « Suite ».
 
-## Le POC en trois gestes
+## Proposition : le POC en trois gestes
 
 Un cœur pur `src/backlog/versions.ts` (déterministe, n'écrit rien) et un bord I/O
 `bin/backlog-version.ts`, câblé `backlog:version` et `ezk backlog version`.
