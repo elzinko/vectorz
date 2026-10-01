@@ -17,8 +17,10 @@ import { buildPilotageDataBlock } from '../core/pilotage-data.js';
 import { buildPlanDeltaBlock } from '../core/plan-delta-data.js';
 import { buildPlanViewDataBlock } from '../core/plan-view-data.js';
 import { buildRunsDataBlock } from '../core/runs-data.js';
+import { buildVerdictsBlock } from '../core/verdicts.js';
 import { loadFiches } from '../loaders/fiches.js';
 import { loadRuns } from '../loaders/runs.js';
+import { loadVerdicts } from './verdicts.js';
 
 export interface DataView {
   id: 'board' | 'pilotage' | 'runs';
@@ -52,6 +54,9 @@ export const DATA_VIEWS: readonly DataView[] = [
         buildAvancementDataBlock(fiches),
         buildPlanViewDataBlock(plan, fiches),
         buildPlanDeltaBlock(plan, fiches),
+        // Les pouces 👍/👎 posés depuis le tableau de bord (fiche 20260826072532622) : relus à
+        // chaque requête, comme le reste — un redémarrage ne les efface pas, ils sont dans des fichiers.
+        buildVerdictsBlock(loadVerdicts(repoRoot)),
       ];
       return `${HEADER}${blocks.join('\n')}\n`;
     },

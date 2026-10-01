@@ -7,8 +7,8 @@ product: mega-city
 labels: [installation]
 version: V0.3
 epic:
-status: idea
-pr:
+status: shipped
+pr: "#284"
 evidence: none # méthode, aucun écran
 created: 2026-09-03
 ---
@@ -155,7 +155,7 @@ les tests ne prouvent pas : que Claude Code lit bien ce fichier.
 - Liens : [[20260902224608715]] (sa règle est effective par le texte, pas par la loi compilée) ;
   [[20260816151112162]] (lawgiver déploie les slash-commands) ; [[20260903134906920]] (`ezk law
   status` affiche l'état déployé).
-- Absorbe [`20260823121712909`](done/20260823121712909_lawgiver-doctor-skill-non-materialise.md)
+- Absorbe [`20260823121712909`](20260823121712909_lawgiver-doctor-skill-non-materialise.md)
   (`lawgiver doctor`, tri du 2026-09-30) : lecture seule, copie et lien reconnus tous les deux ;
   le reste de ses critères est rangé dans « Suite ».
 - DoR du 2026-10-01 (ezk-pm) : NO-GO d'abord (dépendance à nommer, périmètre trop large), corrigé

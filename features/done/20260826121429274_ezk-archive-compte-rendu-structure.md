@@ -72,13 +72,13 @@ main) — côté vue, ils s'affichent en **mode dégradé**.
 - **Forme** : **frontmatter structuré (recommandé)** — cohérent avec la doctrine repo
   « frontmatter = source de vérité » et **symétrique** de la capture rétro.
 - **Cadrage** : c'est une **instance du pattern**
-  [« livrable lisible » (template + extracteur + rendu)](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md) —
+  [« livrable lisible » (template + extracteur + rendu)](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md) —
   définir ce format **avec** ce pattern, pas dans son coin.
 
 ## Dépendances
 
 - **Prérequis de** : la [vue « sprints réalisés »](20260826072532452_vue-sprints-realises-ezk-map.md).
-- **Cas d'application de** : le pattern [« livrable lisible »](../20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
+- **Cas d'application de** : le pattern [« livrable lisible »](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
 - **Miroir de** : la [capture rétro standard](../0080-ezk-retro-compte-rendu-standard.md)
   (même patron « source normée + extractible », côté rétros).
 - **Touche** : le skill `ezk-archive`. Interne au monorepo — **pas** de dépendance externe

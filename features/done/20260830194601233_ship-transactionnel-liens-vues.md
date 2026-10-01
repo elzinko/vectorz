@@ -8,8 +8,8 @@ version: V0.3
 epic:
 labels: [backlog]
 depends: []
-status: idea
-pr:
+status: shipped
+pr: "#282"
 created: 2026-08-30
 ---
 
@@ -134,7 +134,7 @@ pnpm --dir products/mega-city ship:fiche --dry-run --pr '#999' features/<id>_slu
 
 Cette fiche reprend le périmètre de :
 
-- [`20260823121712781`](done/20260823121712781_reconcile-systematique-merges-hors-flux.md) — Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge  
+- [`20260823121712781`](20260823121712781_reconcile-systematique-merges-hors-flux.md) — Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge  
   _Pourquoi_ : Même chantier que le ship sûr.
 
 Critères repris : ship complet dans la PR (ADR-0049, **dans le POC**), régénération sans liste de

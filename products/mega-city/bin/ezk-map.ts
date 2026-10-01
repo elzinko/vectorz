@@ -16,6 +16,10 @@
  *
  * ZÉRO dépendance (`node:http` + `node:fs`), écoute UNIQUEMENT sur la boucle locale :
  * rien n'est exposé au réseau. Le script RANGE, il ne juge pas (ADR-0001 §2).
+ *
+ * UNE SEULE écriture (ADR-0057, fiche 20260826072532622) : `POST /api/verdict` pose le pouce
+ * 👍/👎 d'une fiche, dans `features/reviews/verdicts/<id>.json` et nulle part ailleurs. Route
+ * gardée (Host, Origin, type, taille, id), jamais de commit. Tout le reste du serveur lit.
  */
 import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -33,6 +37,7 @@ import {
   renderSvgWrapper,
 } from '../src/core/ezk-map-menu.js';
 import { dataViewForPath } from '../src/io/derived-views.js';
+import { VERDICT_ROUTE, serveVerdict } from '../src/io/verdict-endpoint.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz
@@ -128,6 +133,13 @@ const server = createServer((req, res) => {
         'Cache-Control': 'no-store',
       });
       res.end(renderMenuHtml(diagrams));
+      return;
+    }
+
+    // La seule route qui ÉCRIT (ADR-0057) : le pouce 👍/👎 d'une fiche. Elle se garde elle-même
+    // (méthode, Host, Origin, type, taille, id) et ne jette jamais.
+    if (url.pathname === VERDICT_ROUTE) {
+      void serveVerdict(req, res, { repoRoot: REPO_ROOT });
       return;
     }
 
