@@ -117,7 +117,8 @@ describe('diagram.mmd (colonne vertébrale) — aucune flèche nue', () => {
       join(repoRoot, 'diagrams', 'methode-mega-city', 'diagram.mmd'),
       'utf8',
     );
-    const arrows = [...mmd.matchAll(/(-->|-\.->|==>)(.?)/g)];
+    // toutes les formes de lien Mermaid utilisables ici : têtes (-->, -.->, ==>), --x, --o et le lien ouvert ---
+    const arrows = [...mmd.matchAll(/(-->|-\.->|==>|--[xo]|---)(.?)/g)];
     expect(arrows.length).toBeGreaterThan(0);
     for (const [, arrow, next] of arrows) {
       expect(next, `flèche nue « ${arrow} » dans diagram.mmd`).toBe('|');

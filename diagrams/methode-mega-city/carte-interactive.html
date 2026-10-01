@@ -2904,7 +2904,7 @@ window.EZK = {
     ' · ' + D.counts.rules + ' règles · ' + D.counts.skills + ' commandes';
   $('proof-ratio').textContent = pct + ' % prouvé' + (nDeduit ? ' · ' + nDeduit + ' déduits (pointillés)' : '');
   $('proof').title = 'Prouvé (' + nProuve + ') : lu dans un fichier du dépôt, vérifié à la régénération. ' +
-    'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier ne le déclare (pointillés). ' +
+    'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier du catalogue ne le déclare (pointillés). ' +
     'Regen : pnpm --dir products/mega-city map:data';
   if(D.liens.casses) $('proof').classList.add('bad');
   /* Par nature, « prouvé/total » : le chiffre global est porté par les liens ; le détail montre
@@ -2916,7 +2916,7 @@ window.EZK = {
     .map(([label, k]) => label + ' ' + P.prouve[k] + '/' + (P.prouve[k] + P.deduit[k])).join(' · ');
   $('prov').innerHTML = '<b>Provenance : ' + pct + ' % prouvé</b> (' + nProuve + ' sur ' + (nProuve + nDeduit) +
     ' éléments lus dans un fichier du dépôt). Par nature : ' + parNature + '. ' +
-    (nDeduit ? 'Les ' + nDeduit + ' autres sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier ne les déclare. ' : '') +
+    (nDeduit ? 'Les ' + nDeduit + ' autres sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier du catalogue ne les déclare. ' : '') +
     'Le dossier de chaque carte donne son fichier source.';
 
   /* ── légende ── */
@@ -2924,7 +2924,7 @@ window.EZK = {
     ['var(--cmd)','Commandes (skills)'], ['var(--cap)','Juges (agents)'],
     ['var(--law)','La loi (règles & bundles)'], ['var(--pro)','Profils'], ['var(--warn)','Bruit à trancher'],
   ].map(([c,l]) => '<span class="key"><span class="sw" style="background:'+c+'"></span>'+l+'</span>').join('') +
-    '<span class="key"><span class="sw dashed"></span>Pointillé = lecture d’auteur (aucun fichier)</span>';
+    '<span class="key"><span class="sw dashed"></span>Pointillé = lecture d’auteur (aucun fichier du catalogue ne le déclare)</span>';
 
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const firstSentence = (s) => { const m = String(s).split(/(?<=\.)\s/)[0]; return m.length > 170 ? m.slice(0,167)+'…' : m; };
@@ -3005,23 +3005,27 @@ window.EZK = {
   /* Une branche = la flèche nommée + la brique qu'elle atteint (+ ses sous-branches). */
   const branch = (legHtml, nodeHtml, sub) =>
     '<div class="asm-branch">'+legHtml+'<div class="asm-body">'+nodeHtml+(sub||'')+'</div></div>';
+  /* Une branche à zéro lien n'est pas dessinée : la figure ne montre jamais un lien qui n'existe plus. */
+  const has = (from, verb, to) => arrowN(from, verb, to) > 0;
+  const branchTo = (from, to, nodeHtml, sub) =>
+    has(from, 'compose', to) ? branch(leg(from, 'compose', to), nodeHtml, sub) : '';
   $('asm').innerHTML =
-    bindNode + asmLeg('lit', true) +
+    bindNode + asmLeg('lit un profil', true) +
     asmNode('profile', asmSelf(arrowN('profile','compose','profile'), 'profils')) +
     '<div class="asm-leg"><i></i></div><div class="asm-bus"></div>' +
     '<div class="asm-cols">' +
-      branch(leg('profile','compose','bundle'),
+      branchTo('profile', 'bundle',
         asmNode('bundle', asmSelf(arrowN('bundle','compose','bundle'), 'bundles')),
-        branch(leg('bundle','compose','rule'), asmNode('rule'))) +
-      branch(leg('profile','compose','agent'), asmNode('agent')) +
-      branch(leg('profile','compose','skill'), asmNode('skill')) +
+        branchTo('bundle', 'rule', asmNode('rule'))) +
+      branchTo('profile', 'agent', asmNode('agent')) +
+      branchTo('profile', 'skill', asmNode('skill')) +
     '</div>';
   /* Les relations qui ne sont pas dans la figure (convoque, applique, est vérifiée par…) : listées
      avec leur nombre, en pointillé fin — d'une autre nature que la composition d'un profil. */
   const DRAWN = new Set(['profile>bundle','profile>agent','profile>skill','profile>profile','bundle>rule','bundle>bundle']);
   const autres = A.arrows.filter((a) => !(a.verb === 'compose' && DRAWN.has(a.from+'>'+a.to)));
   $('asm-other').innerHTML = autres.length
-    ? '<b>Les autres relations</b>, comptées dans le même graphe : elles relient des briques entre elles, hors de la composition d’un profil.'+
+    ? '<b>Les autres relations</b>, comptées dans le même graphe : elles relient des briques entre elles, hors de la composition d’un profil (y compris les compositions internes, une commande qui en compose une autre).'+
       '<div class="rels">'+autres.map((a) =>
         '<span class="asm-rel">'+NODE_LABEL[a.from]+' <i>'+VERB_LABEL[a.verb]+'</i> '+NODE_LABEL[a.to]+' · '+a.count+'</span>'
       ).join('')+'</div>'
