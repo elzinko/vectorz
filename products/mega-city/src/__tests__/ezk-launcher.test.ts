@@ -61,10 +61,24 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     expect(r.out).toContain('tsx bin/views-regen.ts');
   });
 
-  it('un autre dépôt derrière --root est refusé, et dit que ce n’est pas encore possible', { timeout: 60_000 }, () => {
+  it('un autre dépôt derrière --root est refusé pour une commande qui écrit dans la méthode', { timeout: 60_000 }, () => {
     const r = ezk(['--root', elsewhere, '--dry-run', 'views', 'regen']);
     expect(r.code).toBe(2);
-    expect(r.err).toMatch(/pas encore possible/);
+    expect(r.err).toMatch(/écrit dans le dépôt de la méthode/);
+  });
+
+  it('un autre dossier derrière --root ou EZK_ROOT passe pour une commande qui seulement lit les fiches', { timeout: 60_000 }, () => {
+    const flag = ezk(['--root', elsewhere, '--dry-run', 'board', 'show']);
+    expect(flag.code).toBe(0);
+    expect(flag.out).toContain(`projet visé = ${elsewhere}`);
+    expect(flag.out).toContain('bin/avancement.ts');
+    const viaEnv = spawnSync(process.execPath, [launcher, '--dry-run', 'dashboard'], {
+      cwd: elsewhere,
+      encoding: 'utf8',
+      env: { PATH: '/usr/bin:/bin', HOME: elsewhere, EZK_ROOT: elsewhere },
+    });
+    expect(viaEnv.status).toBe(0);
+    expect(viaEnv.stdout).toContain(`projet visé = ${elsewhere}`);
   });
 
   it('« law » et le tableau de bord ne dépendent pas du dossier courant ; « map » prévient et vise le même script', { timeout: 60_000 }, () => {

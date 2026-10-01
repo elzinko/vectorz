@@ -27,6 +27,13 @@ export interface ManifestEntry {
   run: string;
   summary: string;
   root: RootPolicy;
+  /**
+   * La commande SEULEMENT lit les fiches d'un projet, et son script sait lire celui qu'on désigne
+   * (`--root` avant la commande, ou la variable `EZK_ROOT`). Le routeur la laisse alors viser un
+   * autre projet que la méthode et lui passe `EZK_ROOT`. Sans cette marque, une commande qui écrit
+   * dans le dépôt de la méthode refuse tout autre dépôt (fiche 20260826173221323).
+   */
+  project?: boolean;
   /** Nouveau nom : l'entrée est un ancien nom, gardé le temps de la transition. */
   deprecated?: string;
 }
@@ -54,10 +61,19 @@ export interface RouterEnv {
   checkoutRoot?: string;
   /** Valeur de `--root`, déjà résolue en absolu. */
   rootFlag?: string;
+  /** Valeur de la variable `EZK_ROOT`, déjà résolue en absolu. Ne vaut que pour les commandes `project`. */
+  envRoot?: string;
 }
 
 export type Resolution =
-  | { kind: 'run'; entry: ManifestEntry; step: Step; notices: string[] }
+  | {
+      kind: 'run';
+      entry: ManifestEntry;
+      step: Step;
+      notices: string[];
+      /** Le projet désigné (option ou variable), pour une commande `project` seulement. */
+      projectRoot?: string;
+    }
   | { kind: 'help'; topic?: string }
   | { kind: 'error'; message: string; exitCode: 2 };
 
@@ -80,7 +96,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 function readEntry(raw: unknown, index: number): ManifestEntry {
   const where = `entrée ${index + 1}`;
   if (!isRecord(raw)) fail(where, 'doit être un objet.');
-  const { domain, verb, run, summary, root, deprecated } = raw;
+  const { domain, verb, run, summary, root, deprecated, project } = raw;
   if (typeof domain !== 'string' || !NAME.test(domain)) fail(where, 'domain manquant ou invalide.');
   const label = `${domain}${typeof verb === 'string' ? ` ${verb}` : ''}`;
   if (verb !== undefined && (typeof verb !== 'string' || !NAME.test(verb))) {
@@ -92,12 +108,14 @@ function readEntry(raw: unknown, index: number): ManifestEntry {
   const rootPolicy = root ?? 'fixed';
   if (rootPolicy !== 'fixed' && rootPolicy !== 'none') fail(label, "root doit valoir 'fixed' ou 'none'.");
   if (deprecated !== undefined && typeof deprecated !== 'string') fail(label, 'deprecated invalide.');
+  if (project !== undefined && typeof project !== 'boolean') fail(label, 'project doit valoir true ou false.');
   return {
     domain,
     ...(typeof verb === 'string' ? { verb } : {}),
     run: run.trim(),
     summary: summary.trim(),
     root: rootPolicy,
+    ...(project === true ? { project: true } : {}),
     ...(typeof deprecated === 'string' ? { deprecated } : {}),
   };
 }
@@ -171,13 +189,14 @@ function label(entry: ManifestEntry): string {
 function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
   if (entry.root === 'none') return undefined;
   const name = `ezk ${label(entry)}`;
+  // Un projet est désigné et la commande sait le lire : c'est son script qui contrôle le dossier.
+  if (entry.project && (env.rootFlag !== undefined || env.envRoot !== undefined)) return undefined;
   if (env.rootFlag !== undefined) {
     if (env.rootFlag === env.ownRoot) return undefined;
-    // Le chantier qui permettra de viser un autre projet : fiche 20260826173221323 (racine
-    // paramétrable des vues). On n'en cite pas le numéro à l'utilisateur.
     return (
       `${name} : « --root ${env.rootFlag} » n'est pas le dépôt de la méthode (${env.ownRoot}). ` +
-      "Viser un autre projet n'est pas encore possible : le chantier « racine paramétrable des vues » n'est pas fait."
+      "Cette commande écrit dans le dépôt de la méthode : elle ne vise pas un autre projet. " +
+      'Seules les commandes qui seulement lisent les fiches (« ezk dashboard », « ezk board show »…) acceptent --root.'
     );
   }
   if (env.checkoutRoot === env.ownRoot) return undefined;
@@ -227,10 +246,18 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
   const notices = entry.deprecated
     ? [`« ezk ${label(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
     : [];
-  // `{root}` : la racine du dépôt de la méthode, que la règle de racine vient d'autoriser. Les
-  // arguments de l'utilisateur, eux, passent tels quels.
-  const fixedArgs = fixed.args.map((a) => a.replaceAll('{root}', env.ownRoot));
-  return { kind: 'run', entry, step: { script: fixed.script, args: [...fixedArgs, ...userArgs] }, notices };
+  // Le projet désigné ne compte que pour une commande `project` : l'option prime sur la variable.
+  const projectRoot = entry.project ? (env.rootFlag ?? env.envRoot) : undefined;
+  // `{root}` : la racine que la règle de racine vient d'autoriser — le projet désigné pour une commande
+  // `project`, le dépôt de la méthode sinon. Les arguments de l'utilisateur, eux, passent tels quels.
+  const fixedArgs = fixed.args.map((a) => a.replaceAll('{root}', projectRoot ?? env.ownRoot));
+  return {
+    kind: 'run',
+    entry,
+    step: { script: fixed.script, args: [...fixedArgs, ...userArgs] },
+    notices,
+    ...(projectRoot !== undefined ? { projectRoot } : {}),
+  };
 }
 
 /** Options du routeur : placées AVANT la commande seulement. Celles d'après sont pour le script. */
@@ -284,7 +311,8 @@ export function renderHelp(manifest: Manifest, chat: ChatCommand[]): string {
     'Commandes de chat (dans Claude Code)',
     ...chatLines,
     '',
-    'Options du routeur, avant la commande : --root <dépôt> (le dépôt de la méthode visé), --dry-run (montre le script sans le lancer).',
+    'Options du routeur, avant la commande : --root <dossier> (le dépôt de la méthode visé ; pour une commande qui seulement lit les fiches,',
+    'le projet dont on les lit — la variable EZK_ROOT fait de même), --dry-run (montre le script sans le lancer).',
     '« ezk help <domaine> » détaille un domaine ; « ezk help <skill> » détaille une commande de chat.',
     '',
   ].join('\n');

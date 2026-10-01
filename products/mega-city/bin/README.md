@@ -21,6 +21,25 @@ tourner depuis un autre dépôt en disant comment faire (`--root <dépôt>` avan
 autres (`law`, `dashboard`, `help`) partent du dossier où tu es. Les anciens scripts pnpm
 (`lawgiver`, `graph:compile`, `ezk:map`…) marchent toujours.
 
+## Lire les fiches d'un autre projet (muti, samplerz)
+
+Quatre commandes ne font que **lire** des fiches : `ezk dashboard`, `ezk board show`,
+`ezk backlog check` et `ezk backlog plan-head`. Elles lisent par défaut les fiches de la méthode.
+Pour lire celles d'un autre projet, désigne-le :
+
+```bash
+pnpm ezk --root ../muti dashboard         # l'option, avant la commande
+EZK_ROOT=../muti pnpm ezk board show      # ou la variable
+pnpm ezk board show                       # sans rien : les fiches de la méthode, comme avant
+```
+
+L'option prime sur la variable, la variable sur le défaut. Un chemin relatif se lit depuis le dossier
+où tu as tapé la commande. Un dossier qui n'existe pas est refusé. Les **pages** du tableau de bord
+viennent toujours de la méthode : seules les **données** (fiches, plan, récits, pouces) viennent du
+projet désigné, et le pouce haut ou bas s'écrit dans `features/reviews/verdicts/` de ce projet. Une commande
+qui écrit dans la méthode (`views regen`) refuse un autre projet. Une commande n'accepte un projet que
+si le manifeste la marque `project: true` ; un test vérifie que son script sait alors le lire.
+
 ## Ajouter une commande
 
 Une entrée dans `ezk-manifest.yml` : domaine, verbe, script, une ligne de description. Un test

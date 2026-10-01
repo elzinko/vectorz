@@ -56,6 +56,21 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
+  it('les commandes qui lisent un projet désigné sont exactement celles-ci (fiche 20260826173221323)', () => {
+    const labels = manifest.commands
+      .filter((e) => e.project)
+      .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
+      .sort();
+    expect(labels).toEqual(['backlog check', 'backlog plan-head', 'board show', 'dashboard', 'map']);
+  });
+
+  it('toute commande « project » lance un script qui lit la racine désignée (jamais une promesse en l’air)', () => {
+    for (const entry of manifest.commands.filter((e) => e.project)) {
+      const script = readFileSync(join(megaCity, entryStep(entry).script), 'utf8');
+      expect(script, entry.domain).toContain('projectRootOrExit');
+    }
+  });
+
   it('expose la commande « ezk » par le champ bin du paquet, via un lanceur qui existe', () => {
     expect(pkg.bin?.ezk).toBe('bin/ezk.mjs');
     expect(existsSync(join(megaCity, 'bin', 'ezk.mjs'))).toBe(true);
