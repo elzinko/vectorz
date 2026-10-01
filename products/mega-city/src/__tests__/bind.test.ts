@@ -18,7 +18,7 @@ describe('bind(mobile, …, claude-code) — plan bout-en-bout', () => {
     expect(paths).toContain('.iamthelaw/ENTRY.md');
     expect(paths).toContain('CLAUDE.md');
     // ezk-commits migré (fiche 0004) → matérialisé comme skill bindable
-    expect(paths).toContain('.claude/skills/ezk-commits.md');
+    expect(paths).toContain('.claude/skills/ezk-commits/SKILL.md');
     // un hook commit-msg (conventional-commits/format est type:hook)
     expect(plan.hooks.map((h) => h.stage)).toEqual(['commit-msg']);
   });

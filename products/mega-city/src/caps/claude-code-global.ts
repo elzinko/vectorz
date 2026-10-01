@@ -20,14 +20,20 @@ import { assertSafeId } from '../loaders/catalog.js';
 import type { Cap, FileWrite, ResolvedProfile } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
 import { GLOBAL_LAW_PATH } from '../domain/law-file.js';
+import { markManaged } from '../domain/managed-file.js';
 import { agentContent } from './agent-content.js';
 import { globalLawContent } from './law-content.js';
 import { skillFolderFiles } from './skill-content.js';
 
+/**
+ * Un agent copié est un fichier plat : rien ne dit qu'il est « à lawgiver ». On pose le marqueur dans le
+ * PLAN (donc `status` et `doctor` comparent le texte réellement écrit) pour que le 2ᵉ `bind-global` en
+ * copie reconnaisse son fichier et le remplace, au lieu de le prendre pour celui de l'utilisateur.
+ */
 function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   return resolved.agents.map((agent) => ({
     path: `agents/${assertSafeId(agent.id)}.md`,
-    content: agentContent(agent),
+    content: markManaged(agentContent(agent)),
   }));
 }
 

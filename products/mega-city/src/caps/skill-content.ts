@@ -37,13 +37,17 @@ export function skillFolderFiles(resolved: ResolvedProfile, prefix: string): Fil
   return resolved.skills
     .filter((skill) => skill.content.trim().length > 0)
     .flatMap((skill) => {
+      // Le dossier du skill, porté par CHAQUE fichier : la coquille I/O n'a plus à le deviner.
+      const skillDir = prefix ? `${prefix}/${assertSafeId(skill.id)}` : assertSafeId(skill.id);
       const doc: FileWrite = {
         path: skillFilePath(prefix, skill.id, 'SKILL.md'),
         content: `${skill.content.trim()}\n`,
+        skillDir,
       };
       const assets: FileWrite[] = (skill.assets ?? []).map((asset) => ({
         path: skillFilePath(prefix, skill.id, asset.path),
         content: asset.content, // VERBATIM — pas de normalisation (ADR-0027)
+        skillDir,
         // Mode TOUJOURS explicite : sans lui, une ré-application in-place (cap desktop /
         // projet via applyPlan, sans rm préalable) laisserait survivre un ancien bit +x
         // quand l'asset redevient non-exécutable (finding Codex PR #138).

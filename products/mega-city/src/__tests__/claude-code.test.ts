@@ -76,14 +76,36 @@ describe('claudeCodeCap.materialize (plan pur, sans FS)', () => {
     expect(plan.files.some((f) => f.path.startsWith('.claude/skills/'))).toBe(false);
   });
 
-  it('écrit une skill par skill dont le contenu existe', () => {
+  it('écrit une skill par skill dont le contenu existe, en DOSSIER .claude/skills/<id>/SKILL.md', () => {
     const withSkill: ResolvedProfile = {
       ...resolved,
       skills: [{ id: 'ezk-commits', content: '# ezk-commits\n\nPlaybook.' }],
     };
     const plan = claudeCodeCap.materialize(withSkill, '/tmp/projet');
-    const skillFile = find(plan, '.claude/skills/ezk-commits.md');
+    const skillFile = find(plan, '.claude/skills/ezk-commits/SKILL.md');
     expect(skillFile?.content).toContain('Playbook');
+    // l'ancienne forme plate (qui ne pouvait porter aucun annexe) n'est plus écrite
+    expect(find(plan, '.claude/skills/ezk-commits.md')).toBeUndefined();
+  });
+
+  it('porte les fichiers annexes d’un skill (approaches/, scripts/ en exécutable), comme le cap global', () => {
+    const withAssets: ResolvedProfile = {
+      ...resolved,
+      skills: [
+        {
+          id: 'ezk-demo',
+          content: '# ezk-demo',
+          assets: [
+            { path: 'approaches/a.md', content: 'a\n' },
+            { path: 'scripts/run.sh', content: '#!/bin/sh\n', executable: true },
+          ],
+        },
+      ],
+    };
+    const plan = claudeCodeCap.materialize(withAssets, '/tmp/projet');
+    expect(find(plan, '.claude/skills/ezk-demo/approaches/a.md')?.content).toBe('a\n');
+    expect(find(plan, '.claude/skills/ezk-demo/scripts/run.sh')?.mode).toBe(0o755);
+    expect(find(plan, '.claude/skills/ezk-demo/approaches/a.md')?.mode).toBe(0o644);
   });
 
   it('compile les règles (corps + level) dans .iamthelaw/ENTRY.md', () => {

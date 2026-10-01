@@ -44,13 +44,25 @@ export function classify(fact: PathFact): DeployState {
   }
 }
 
-/** Les skills et agents que le plan dépose, skills d'abord, chacun trié par id. */
+/**
+ * Les skills et agents que le plan dépose, skills d'abord, chacun trié par id.
+ * Quand le plan dit à quel dossier appartient un fichier (`skillDir`), seul le `SKILL.md` DE ce dossier est
+ * le skill : un fichier annexe nommé `SKILL.md` (`templates/x/SKILL.md`) n'en est pas un. Sans cette
+ * information (plan écrit à la main), on retombe sur le repérage par le chemin.
+ */
 export function expectedItems(plan: WritePlan): DeployItem[] {
   const skills: DeployItem[] = [];
   const agents: DeployItem[] = [];
   for (const file of plan.files) {
-    const skill = /^skills\/(.+)\/SKILL\.md$/.exec(file.path);
-    if (skill?.[1]) skills.push({ kind: 'skill', id: skill[1], path: `skills/${skill[1]}` });
+    if (file.skillDir !== undefined) {
+      const owner = /^skills\/(.+)$/.exec(file.skillDir);
+      if (owner?.[1] && file.path === `${file.skillDir}/SKILL.md`) {
+        skills.push({ kind: 'skill', id: owner[1], path: file.skillDir });
+      }
+    } else {
+      const skill = /^skills\/(.+)\/SKILL\.md$/.exec(file.path);
+      if (skill?.[1]) skills.push({ kind: 'skill', id: skill[1], path: `skills/${skill[1]}` });
+    }
     const agent = /^agents\/(.+)\.md$/.exec(file.path);
     if (agent?.[1]) agents.push({ kind: 'agent', id: agent[1], path: file.path });
   }
