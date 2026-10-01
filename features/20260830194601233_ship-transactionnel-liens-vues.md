@@ -15,46 +15,89 @@ created: 2026-08-30
 
 ## En clair
 
-Marquer une fiche livrée (`ship`) la déplace en `features/done/` par un `git mv` nu — et **ne
-finit pas le travail** : les liens relatifs `../` de la fiche (et ceux qui la pointent) cassent,
-et les vues générées (board, écart-plan) deviennent périmées. Comme le `ship` pousse **direct
-sur `main`** (pas de PR, pas de gate), personne ne voit les liens cassés. On veut que le `ship`
-soit une **transaction qui préserve les invariants du repo**.
+Marquer une fiche livrée (`ship`) doit être **un seul geste qui ne laisse rien de cassé**.
+Aujourd'hui, c'est un `git mv` nu. Les liens relatifs `../` cassent (17 d'un coup sur `main`) et
+personne ne le voit, car le ship part sans gate. On industrialise l'outil de preuve (`ship_move.py`,
+hors dépôt) en une commande du dépôt : `pnpm --dir products/mega-city ship:fiche`. Elle fait tout,
+dans l'ordre, **ou rien** : si un contrôle est rouge, elle n'écrit rien et sort en erreur.
+
+Depuis la fiche `20260830194601376` (PR #279), `board`, `pilotage`, `runs` et `PORTFOLIO` ne sont
+plus dans git. Au ship, il ne reste donc à tenir à jour que `BACKLOG.md` (régénéré) et `PLAN.md`
+(curé).
 
 ## Symptôme (rétro 2026-08-30 — RÉCURRENT, vécu à chaque sprint de la session)
 
 - **Liens** : shipper les fiches bundles (#190) puis recette (#192) a laissé **17 liens cassés
   sur `main`**, non détectés car `test-links-repo` (la gate) ne tourne pas sur un ship.
-- **Vues** : après chaque tampon `ready`/`ship`, `avancement-board.test.ts` /
-  `plan-delta-board.test.ts` rougissent tant qu'on n'a pas lancé `avancement:regen` +
-  `plan-delta:regen` à la main.
+- **Vues** : après chaque tampon `ready`/`ship`, les tests de fidélité rougissaient tant qu'on
+  n'avait pas lancé les `regen` à la main (réglé pour board/pilotage/portfolio par la fiche
+  `20260830194601376` : ces vues ne sont plus committées).
 
-## Proposition
+## Ce que fait la commande (POC borné)
 
-Le `ship` (et le tampon `ready` qui touche le front-matter) devient une transaction unique :
-1. réécrire les liens `../` de la fiche déplacée (un cran de profondeur en plus) **et** les
-   liens entrants qui la pointent (→ `done/`) ;
-2. régénérer **toutes** les vues dérivées (`regen-backlog`, `avancement:regen`,
-   `plan-delta:regen`, `map:data` si le catalogue change) et les stager dans le même commit ;
-3. lancer `test-links-repo` + les tests de fidélité ; **refuser de committer/pousser** (exit
-   ≠ 0) si un lien casse ou une vue reste périmée.
+`ship:fiche [--status shipped] --pr '#N' [--dry-run] features/<id>_slug.md [...]`
+
+1. **Vérifie avant d'écrire** : chaque fiche est sous `features/` (pas déjà dans `done/`), sa
+   destination est libre, le statut est admis.
+2. **Calcule en mémoire** : `status` et `pr` du front-matter ; recalage de **tous** les liens
+   relatifs du markdown (sortants de la fiche, entrants, entre fiches d'un même lot) ; barrage de
+   l'entrée de `PLAN.md` (`~~…~~ — shipped #N`).
+3. **Refuse, sans rien écrire** (exit 1), si le nombre de liens cassés augmente ou si une entrée de
+   `PLAN.md` ne peut pas être barrée proprement.
+4. **Applique** : écritures, un seul `git mv` groupé, puis `regen-backlog.sh`. Si une étape échoue,
+   tout revient à l'état initial (exit 2).
+
+La commande ne committe ni ne pousse : elle prépare un état propre et vérifié. Le commit reste
+celui du `ship` (`ezk-commits`). Les liens sont lus **comme `check-links.sh` les lit**, pour que le
+ship recale exactement ce que la gate vérifie.
 
 Règle d'archi : **le chemin d'écriture possède ses invariants** (liens résolus, vues à jour),
 jamais la vigilance humaine.
 
-## Critères d'acceptation
+## Critères d'acceptation (reste réel)
 
-- [ ] Un `ship` n'augmente **jamais** le compte de liens cassés (`test-links-repo` delta = 0),
-      mesuré sur 3 sprints consécutifs (aujourd'hui : 17 en un ship).
-- [ ] Après un `ship`, `git status` montre **0 diff résiduel** sur les vues générées et **0
-      test de fidélité rouge** en local, sans regen manuel.
-- [ ] Le `ship` **refuse de pousser** si un lien casse ou une vue reste périmée.
+- [x] `ship:fiche` livre 1 à n fiches en un geste : `status` et `pr` posés, `git mv` groupé vers
+      `done/`, liens recalés (sortants, entrants, entre fiches du lot), `BACKLOG.md` régénéré,
+      entrée de `PLAN.md` barrée. Preuve : `ship-fiche.test.ts` (lot de 2 fiches, puis dépôt git
+      jetable) et un `--dry-run` sur la vraie fiche `20260830194601376` (3 liens recalés, 1 entrée
+      de `PLAN.md` barrée).
+- [x] Les liens sont lus comme `check-links.sh` : liens en ligne, définitions `[x]: cible`,
+      `<cible>`, blocs de code ignorés, schémas / ancres / chemins absolus laissés tels quels.
+      Preuve : tests `recalLinks` et `findBroken`.
+- [x] **Refus avant toute écriture** (exit 1, dépôt intact) : fiche hors `features/` ou déjà dans
+      `done/`, fiche pas suivie par git, destination existante, statut non admis, lien nouvellement
+      cassé (on compare les liens, pas seulement leur nombre), entrée de `PLAN.md` non barrable
+      (pour les quatre statuts terminaux). Preuve : tests `planShip`, et `--no-bar-plan` refusé sur
+      la vraie fiche.
+- [x] Un échec pendant l'application (git, régénération) remet le dépôt à l'état initial (exit 2).
+      Preuve : test sur dépôt jetable, `git status` vide et fiche identique à l'octet.
+- [x] Sur un dépôt jetable : ship d'une fiche riche en liens `../` ⇒ delta de liens cassés = 0 pour
+      la vraie gate `check-links.sh` ; le même ship avec un recaleur saboté est refusé, avec les
+      liens fautifs listés.
+- [x] `ezk-backlog ship` (SKILL.md) appelle la commande et ne liste plus les générateurs un par un.
+      La recette de conflit sur `BACKLOG.md` y est écrite (merger `main`, puis régénérer).
+- [x] Gate locale verte (typecheck, test 974/974, test:scripts 28 suites, lint, check-links 0
+      cassé).
 
 ## Comment vérifier
 
 ```bash
-# shipper une fiche riche en liens ../ → test-links-repo reste vert, board fidélité vert, 0 étape manuelle
+pnpm --dir products/mega-city exec vitest run src/backlog/__tests__/ship-fiche.test.ts
+# à blanc sur une vraie fiche : rapport des liens recalés, aucune écriture
+pnpm --dir products/mega-city ship:fiche --dry-run --pr '#999' features/<id>_slug.md
 ```
+
+## Suite (hors POC)
+
+- `views:check` (régénère + `git diff --exit-code`) dans la gate locale pour les vues restées
+  committées (`BACKLOG.md`, bloc `composes`, carte) : notes N1 et N2 ci-dessous.
+- Helper de conflit entre deux ships parallèles : après la fiche `20260830194601376`, seul
+  `BACKLOG.md` peut encore entrer en conflit. La recette écrite dans le SKILL suffit. Un helper
+  viendra si un second cas apparaît.
+- `reconcile` et le merge partiel (1 fiche = N PR, symptôme SR2) : choisir entre (a) section
+  « tranches », (b) tous les critères cochés, (c) jugement humain. Pas tranché ici.
+- Tampon `ready` qui touche le front-matter : plus aucune vue committée à rafraîchir hors
+  `BACKLOG.md` ; rien à ajouter tant que ce point reste vrai.
 
 ## Notes
 
@@ -89,9 +132,12 @@ jamais la vigilance humaine.
 
 ## ⤓ Absorbe (tri du 2026-09-30)
 
-Cette fiche reprend désormais le périmètre de :
+Cette fiche reprend le périmètre de :
 
 - [`20260823121712781`](done/20260823121712781_reconcile-systematique-merges-hors-flux.md) — Ship atomique dans la PR — filet reconcile + re-regen au conflit de merge  
   _Pourquoi_ : Même chantier que le ship sûr.
 
-Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.
+Critères repris : ship complet dans la PR (ADR-0049, **dans le POC**), régénération sans liste de
+commandes à tenir (**dans le POC** : une seule commande), résolution de conflit par « merger `main`
+puis régénérer » (**recette écrite**, helper en Suite), `reconcile` qui propose sans basculer
+(**déjà livré**, ADR-0018). Reste en Suite : le merge partiel (SR2).
