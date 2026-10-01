@@ -30,7 +30,7 @@
     "graph:check": "tsx bin/ezk-graph.ts",
     "graph:compile": "tsx bin/graph-compile.ts",
     "graph:query": "tsx bin/graph-query.ts",
-    "map:data": "tsx bin/regen-map-data.ts",
+    "map:data": "tsx bin/views-regen.ts",
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",
     "backlog:aggregate": "tsx bin/backlog-aggregate.ts",

@@ -227,8 +227,9 @@ commands:
     summary: Régénère toutes les vues générées hors git (board, pilotage, runs, portfolio).
   - domain: views
     verb: map-data
-    run: bin/regen-map-data.ts
-    summary: Régénère les données de la carte interactive.
+    run: bin/views-regen.ts
+    summary: Ancien nom de « views regen » (la carte se construit avec les autres vues).
+    deprecated: views regen
   - domain: supervision
     verb: link
     run: bin/supervision-link.ts
