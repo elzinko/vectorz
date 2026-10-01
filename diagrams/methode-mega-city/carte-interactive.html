@@ -730,11 +730,13 @@ window.EZK = {
     "scrum": "Sprint (le conteneur)",
     "etat": "adapte",
     "implemente_par": [
+     "ezk-sprint:start",
+     "ezk-sprint:close",
      "ezk-sprint:run",
      "ezk-sprint:check",
      "ezk-archive:run"
     ],
-    "note": "Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run` (hygiène d'hôte, hors scrum)."
+    "note": "Un lot de stories (1 story = 1 branche = 1 PR) qui produit un incrément, SANS timebox (écart connu). Ouvert par `ezk-sprint:start`, fermé par `ezk-sprint:close` qui scelle l'incrément (ADR-0054). `check` = `start --dry-run` (le portier en lecture seule, ex-ezk-start) ; `run` = le cycle complet. La clôture de SESSION est un autre étage : `ezk-archive:run` (hygiène d'hôte, hors scrum)."
    },
    {
     "id": "review",
@@ -906,8 +908,8 @@ window.EZK = {
   {
    "n": 3,
    "t": "Le run",
-   "scrum": "≈ Sprint (une fiche)",
-   "p": "La boucle BDD/TDD construit UNE feature en convoquant les juges.",
+   "scrum": "≈ Sprint (un lot de stories)",
+   "p": "Un sprint est un lot de stories, une PR chacune, qui produit un incrément : ouvert par start, fermé par close. La boucle BDD/TDD construit chaque story en convoquant les juges.",
    "etape": [
     {
      "id": "ezk-sprint",
@@ -1396,8 +1398,8 @@ window.EZK = {
   "ezk-sprint": {
    "id": "ezk-sprint",
    "source": "products/mega-city/skills/ezk-sprint/SKILL.md",
-   "description": "Orchestrateur de developpement produit en sprints autonomes. A utiliser quand l'utilisateur veut construire ou iterer une feature ou un produit en mode sprint ou en POC, demande de developper, implementer ou iterer automatiquement, ou evoque une equipe agile (scrum master, architecte, dev, QA, reviewer). Deroule une boucle BDD/TDD vers clean code, clean arch et SOLID, valide TOUT en local d'abord (tests, pipeline act/Docker via ezk-ci, E2E navigateur via Playwright), revue, une PR par feature, squash-merge en conventional commit. Autonome a l'interieur d'un sprint mais s'arrete et demande validation entre chaque sprint, et alerte sur tout blocage ou derive de tokens. POC fonctionnel d'abord, polissage visuel ensuite.",
-   "usage": "[help|check|run]",
+   "description": "Orchestrateur de developpement produit en sprints autonomes. A utiliser quand l'utilisateur veut construire ou iterer une feature ou un produit en mode sprint ou en POC, demande de developper, implementer ou iterer automatiquement, ou evoque une equipe agile (scrum master, architecte, dev, QA, reviewer). Deroule une boucle BDD/TDD vers clean code, clean arch et SOLID, valide TOUT en local d'abord (tests, pipeline act/Docker via ezk-ci, E2E navigateur via Playwright), revue, une PR par feature, squash-merge en conventional commit. Autonome a l'interieur d'un sprint mais s'arrete et demande validation entre chaque sprint, et alerte sur tout blocage ou derive de tokens. POC fonctionnel d'abord, polissage visuel ensuite. Cycle de vie du sprint, `start` ouvre un lot de stories et `close` scelle l'incrément ; la session, elle, reste fermée par `ezk-archive`.",
+   "usage": "[help|start|close|check|run]",
    "etage": "methode",
    "bande": "ceremonies",
    "composes": [

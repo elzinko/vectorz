@@ -69,10 +69,12 @@ elements:
     nom: Le run (« sprint » maison)
     scrum: Sprint (le conteneur)
     etat: adapte
-    implemente_par: [ezk-sprint:run, ezk-sprint:check, ezk-archive:run]
+    implemente_par: [ezk-sprint:start, ezk-sprint:close, ezk-sprint:run, ezk-sprint:check, ezk-archive:run]
     note: >-
-      Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du
-      Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run`
+      Un lot de stories (1 story = 1 branche = 1 PR) qui produit un incrément, SANS timebox
+      (écart connu). Ouvert par `ezk-sprint:start`, fermé par `ezk-sprint:close` qui scelle
+      l'incrément (ADR-0054). `check` = `start --dry-run` (le portier en lecture seule, ex-ezk-start) ;
+      `run` = le cycle complet. La clôture de SESSION est un autre étage : `ezk-archive:run`
       (hygiène d'hôte, hors scrum).
 
   - id: review

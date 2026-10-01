@@ -23,7 +23,7 @@ En attendant, ils restent utilisables **tels quels** via `install.sh` — voir `
 | `ezk-product-build` | 📝 proposé (ADR-0008) | couche product-owner : construit un produit en enchaînant des sprints (compose ezk-backlog + /product-brainstorming + ezk-sprint ; pure orchestration, aucun script) |
 | `ezk-commits` | 📥 importé (strangler-fig, pilote 0004) | messages Conventional Commits + hook `commit-msg` (`scripts/commit-msg`) — 1er skill rendu **bindable** (loader sous-dossiers) |
 | `ezk-backlog` | 📥 importé (0024, version #31) | backlog markdown versionné (add dédoublonnant + version + brainstorm) — satisfait la fiche 0022 |
-| `ezk-sprint` | 📥 importé (0024) | orchestrateur de sprints autonomes (BDD→TDD→gate→revue→PR→squash) |
+| `ezk-sprint` | 📥 importé (0024) | orchestrateur de sprints autonomes (BDD→TDD→gate→revue→PR→squash). Le sprint est un **lot de stories** : `start` l'ouvre, `close` scelle l'incrément (`scripts/sprint.sh`, ADR-0054) ; la session reste fermée par `ezk-archive` |
 | `ezk-ci` | 📥 importé (0024), volet conso (0055) | valide les pipelines GitHub Actions en local (act + Docker) + surveille/plafonne la conso GHA des repos privés (`conso`/`frugal`) |
 | `ezk-preview` | 📥 importé (0024) | URL de démo pour une feature (Vercel / cloudflared / tailscale) |
 | `ezk-device` | 📥 importé (0024) | build + test Android sur un tél physique distant (Tailscale/adb) |

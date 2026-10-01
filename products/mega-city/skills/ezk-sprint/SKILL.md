@@ -2,7 +2,7 @@
 roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits]
 applies: [documentation-guidelines/human-facing-lisibility, development/pr-before-after-media]
-argument-hint: "[help|check|run]"
+argument-hint: "[help|start|close|check|run]"
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
   produit en mode sprint ou en POC, demande de developper, implementer ou
@@ -13,6 +13,8 @@ description: Orchestrateur de developpement produit en sprints autonomes. A
   squash-merge en conventional commit. Autonome a l'interieur d'un sprint mais
   s'arrete et demande validation entre chaque sprint, et alerte sur tout blocage
   ou derive de tokens. POC fonctionnel d'abord, polissage visuel ensuite.
+  Cycle de vie du sprint, `start` ouvre un lot de stories et `close` scelle
+  l'incrément ; la session, elle, reste fermée par `ezk-archive`.
 ---
 
 # ezk-sprint
@@ -30,16 +32,31 @@ sous-agents de rôle dédiés (voir le tableau des rôles plus bas).
 | Sous-commande | Effet |
 |---|---|
 | `help` (ou **sans argument**) | Affiche ce tableau + les points de contrôle du portier |
-| `check` | **Le portier d'ouverture, dry-run** (ex-`ezk-start`) : inspecte en lecture seule, verdict `CLEAR`/`ALERT` + choix si ALERT — ne modifie RIEN |
-| `run` | `check` d'abord, puis **déroule la boucle de sprint** (étapes 0→10) |
+| `start` | **Ouvre un sprint**, c'est-à-dire un **lot** de stories : intake (portier, config, `reconcile`, `next`), choix du lot, écriture de `SPRINT.md`. C'est le verbe d'ouverture |
+| `close` | **Ferme le sprint** : refuse tant qu'une story du lot est ouverte, sinon **scelle l'incrément** et rend la main à la session. Ne ferme PAS la session (c'est `ezk-archive`) |
+| `check` | Alias de **`start --dry-run`** (ex-`ezk-start`) : le portier en lecture seule, verdict `CLEAR`/`ALERT` + choix si ALERT — ne modifie RIEN, jamais |
+| `run` | Alias du **cycle complet** `start` → stories → `close` : la boucle 0→10 reste inchangée, un lot d'une story donne le même build qu'avant |
 
-## L'ouverture — `check` (le portier, ex-ezk-start)
+## Trois étages : story ⊂ sprint ⊂ session
 
-**`check` ne démarre jamais un sprint tout seul.** Pendant symétrique de la clôture
-(`ezk-archive`) : il **inspecte** (read-only) et **alerte** ; l'humain tranche.
+Ne les confonds plus ([ADR-0054](../../docs/adr/0054-cloture-sprint-vs-archive-session.md)).
+
+| Étage | C'est | Qui l'ouvre et le ferme |
+|---|---|---|
+| **Story** | une fiche = une branche = **une PR** | la boucle 1→10 ; le squash-merge la ferme |
+| **Sprint** | un **lot** de stories qui produit un **incrément** | `ezk-sprint start` puis `ezk-sprint close` |
+| **Session** | s'asseoir puis se lever dans Claude Code : la frontière de **persistance** | **`ezk-archive`**. L'ouverture est implicite : le handoff se reprend au premier `start` |
+
+Les **cérémonies** restent **hors** du sprint : le planning (`ezk-backlog`) et la rétro (`ezk-retro`). La rétro n'agit pas elle-même : elle **produit des fiches** que le planning suivant groome. Boucle : `retro → fiches → backlog → planning → sprint`. Une session enchaîne autant de sprints qu'on veut : `start → stories → close`, rétro, planning, `start`, puis `ezk-archive`.
+
+## L'ouverture — `start` (et son dry-run `check`)
+
+`start` ouvre le sprint. Il commence par le **portier**, qui **inspecte** (read-only) et
+**alerte** ; l'humain tranche. `check` n'est rien d'autre que `start --dry-run` : il ne
+démarre jamais un sprint tout seul (ex-`ezk-start`).
 
 ```bash
-bash <chemin-du-skill>/scripts/check.sh --gate
+bash <chemin-du-skill>/scripts/sprint.sh start --dry-run   # = check : le portier, rien d'écrit
 ```
 
 Le portier est **read-only** : working tree, worktrees, fiches `in-progress`, handoff
@@ -51,7 +68,40 @@ Le portier est **read-only** : working tree, worktrees, fiches `in-progress`, ha
   [`references/choice-template.md`](references/choice-template.md) : **Rejoindre** (reprendre
   le sprint/worktree signalé) ou **Interrompre journalisé** (clôturer via `/ezk-archive`
   ou journaliser l'override PO, puis relancer `check`).
-- `check` **n'écrit jamais** (pas de claim, pas de branche) ; ne merge/push rien.
+- `check` et `start --dry-run` **n'écrivent jamais** (ni `SPRINT.md`, ni claim, ni branche) ; ne mergent/pushent rien.
+
+**Ouvrir pour de vrai.** Une fois l'intake fait (étape 0) et le **lot** choisi :
+
+```bash
+bash <chemin-du-skill>/scripts/sprint.sh start --lot <id[,id…]> --objective "<objectif>"
+```
+
+Le script repasse le portier, puis écrit `SPRINT.md` (gabarit plus bas) avec une ligne par story du lot. Il **refuse** (`START: REFUSED …`) dans trois cas :
+
+- le portier est en **ALERT** : seul l'humain passe outre, avec `--override "<raison>"`, et la raison est **journalisée** dans `SPRINT.md` ;
+- un sprint est déjà ouvert : `close` d'abord ;
+- une story du lot est inconnue dans `features/`.
+
+`start` n'écrit **rien d'autre** : ni branche, ni commit, ni statut de fiche. Le lot par défaut est la prochaine fiche tirable (`next --ready-only`), soit un lot d'une story : exactement le sprint d'avant.
+
+## La clôture — `close` (le sprint, pas la session)
+
+`close` ferme le **sprint** et **scelle l'incrément**. Il tourne **1× par sprint**, après le dernier squash-merge du lot.
+
+```bash
+bash <chemin-du-skill>/scripts/sprint.sh close
+```
+
+Avant de l'appeler, mets le lot de `SPRINT.md` à jour : `[x]` pour une story livrée (ajoute sa PR : `(PR #12)`), `[~]` pour une story reportée (elle retourne au backlog, avec sa raison).
+
+| Verdict | Sens | Tu fais |
+|---|---|---|
+| `CLOSE: SEALED …` | Incrément scellé : `Statut: clos`, une ligne ajoutée à « Incréments scellés de la session » | Restitue l'incrément (En clair d'abord, ≤ 3 phrases), puis **rends la main à la session** |
+| `CLOSE: OPEN …` | Une story du lot est encore `[ ]` | Termine-la, reporte-la `[~]` ou retire-la du lot. Ne force rien |
+| `CLOSE: REFUSED empty_increment` | Rien de livré : pas d'incrément à sceller | Dis-le au PO. Ne scelle pas un sprint vide |
+| `CLOSE: REFUSED not_open` | Aucun sprint ouvert | Rien à fermer |
+
+`close` **ne ferme PAS la session** : il ne touche ni `docs/sessions/` ni `.claude/handoff.md`. C'est le métier d'`ezk-archive`, et le DoD bash le prouve. Il ne pose pas non plus de nouveau « on continue ? » : l'accord a été donné au checkpoint avant merge (étape 9). « Rendre la main à la session », c'est afficher la suite possible puis **t'arrêter** : rétro (`ezk-retro`), planning (`ezk-backlog next|groom`), un nouveau `start`, ou `ezk-archive` pour lever la session.
 
 ## L'équipe convoquée
 
@@ -103,37 +153,39 @@ exactement le flux actuel.
 ## Frontière d'autonomie — LA règle
 
 - **Autonome À L'INTÉRIEUR d'un sprint** : une fois la feature cadrée et validée, enchaîne sans redemander à chaque micro-action.
-- **Checkpoint OBLIGATOIRE ENTRE les sprints** : à la clôture, **STOP**. Résume (livré / estimation tokens / sprint suivant) puis demande « On continue ? ».
+- **Checkpoint OBLIGATOIRE avant chaque merge** (étape 9, donc entre les stories et avant chaque `close`) : **STOP**. Résume (livré / estimation tokens / suite) puis demande « On continue ? ». Pour un lot d'une story, le cas courant, c'est le même arrêt qu'avant. `close` ne pose pas de seconde question : il rend la main. *Suite : un seul checkpoint par sprint pour les lots de plusieurs stories, avec le repositionnement d'`ezk-product-build` (fiche 20260930123438875).*
   - **Absorption quand tu es appelé par `ezk-product-build`** : le product-owner tient déjà SON propre checkpoint inter-sprint. Dans ce cas, **ne re-demande pas** « On continue ? » à l'humain — remonte ton résumé de clôture à l'appelant et laisse-le tenir l'unique checkpoint (un seul « on continue ? » par feature, pas deux). Tu restes maître du checkpoint uniquement en usage direct (hors builder).
 - **Stop & ask immédiat** dès que : exigence ambiguë/contradictoire ; une gate échoue **2 fois de suite** ; **scope creep** ; action **irréversible/sortante** (déploiement, `git push --force`, suppression, secret manquant) ; la **consommation de tokens dérape**.
 
 ## Budget tokens
 
-- Périmètre **borné** par sprint (1 feature, POC). Checkpoint **avant** une phase coûteuse.
+- Périmètre **borné** par sprint (un lot, de préférence 1 story, POC). Checkpoint **avant** une phase coûteuse.
 - **Isole le contexte coûteux dans les sous-agents** (leur contexte est jetable).
 - **Étapes mécaniques** (scaffolding, formatage) sur un modèle moins cher.
 - Ne relis pas un fichier déjà lu ; ne re-explore pas ce que `SPRINT.md` mémorise.
 
 ## L'état du sprint — `SPRINT.md`
 
-Maintiens un `SPRINT.md` à la racine du projet (crée-le s'il manque). Il **survit à la compaction de contexte**.
+`SPRINT.md`, à la racine du projet, suit le **lot** du sprint courant. `sprint.sh start` le crée, tu le tiens à jour, `sprint.sh close` le scelle. Il **survit à la compaction de contexte**.
 
 ```
 # Sprint N — <objectif>
-Périmètre: <borne tokens-temps>   Statut: en cours | en attente de validation
+Statut: en cours   Ouvert: <date>
 
-## Backlog  (1 ligne = 1 feature = 1 PR)
-- [ ] feat: <feature A>      <- en cours
-- [x] feat: <feature B>      (PR #12, squash-merged)
+## Lot  (1 ligne = 1 story = 1 PR ; [x] livrée · [~] reportée · [ ] ouverte)
+- [ ] <id> — <titre>                 <- en cours
+- [x] <id> — <titre> (PR #12)        (squash-merged)
+- [~] <id> — <titre> (reportée : <raison>)
 
-## Definition of Done
 ## Notes / décisions  (ADR courts)
 
 ## Galères & gestes (labo)
+
+## Incréments scellés de la session
+- Sprint 1 — <objectif> — 2 livrées, 0 reportée : <id> (PR #12), <id> (PR #13)
 ```
 
-**Éphémère, non commité.** À la clôture de session, `/ezk-archive run` archive un
-snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
+**Éphémère, non commité.** Le **lot** change à chaque sprint. Les trois dernières sections sont du savoir de **session** : un nouveau `start` les reporte telles quelles, et `close` y ajoute une ligne par incrément scellé (`Statut: clos` une fois scellé). À la clôture de session, `/ezk-archive run` archive un snapshot dans `docs/sessions/` (voir `docs/sessions/README.md`).
 
 **`## Galères & gestes (labo)`** — remplie **au fil de l'eau**, seulement quand une
 galère est **corrigée + validée** (jamais une fausse piste, jamais en cours). Une entrée
@@ -144,11 +196,13 @@ l'utilité, c'est du jugement). C'est cette section qu'`ezk-archive` fige dans
 `docs/sessions/` à la clôture, et que consomme `ezk-chef extract` pour amorcer un
 brouillon de recette (PR #196).
 
-## La boucle de sprint — par feature
+## La boucle de sprint — par story
+
+`run` déroule `start`, puis cette boucle **pour chaque story du lot** (une branche et une PR chacune, dans l'ordre du lot), puis `close`. L'intake (étape 0) se fait en entier une seule fois, à l'ouverture du sprint : entre deux stories, reprends seulement la branche et le cadrage. Un lot d'une story donne le même déroulé qu'avant.
 
 Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial — mais **jamais** la gate locale (5), la validation E2E s'il y a une UI (6), ni le checkpoint (9).
 
-0. **Intake** — d'abord la sous-commande **`check`** de CE skill (le portier d'ouverture, section « L'ouverture » ci-dessous — ex-`ezk-start`, absorbé le 2026-08-24) : working tree, worktrees parallèles, fiches `in-progress`. Sur **`VERDICT: ALERT`** → **STOP** : présenter les choix (rejoindre / interrompre journalisé) selon [`choice-template.md`](references/choice-template.md) — **ne pas** tirer la prochaine fiche tant que l'humain n'a pas tranché. Sur `CLEAR`, enchaîner. **Lis d'abord les capacités GitHub du projet** (`pnpm --dir products/mega-city ezk:config`, cf. § « Capacités GitHub — config projet `.vectorz/` ») — **avant tout appel `gh`**, car elles conditionnent la suite (PR 8, CI 5, Codex 7) **et la réconciliation ci-dessous**. Puis **`ezk-backlog reconcile`** *(seulement si `pr` **ou** `ci` est `on` — `reconcile` appelle `gh pr list` ; en `github: false`, saute-le : sans PR il n'y a rien à réconcilier)* : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `ready`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis prends LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère du sprint en cours ; la **liste des features** vit dans le backlog commité, pas dans `SPRINT.md`.)
+0. **Intake = `start`** — d'abord le portier, soit `start --dry-run` (= **`check`**, section « L'ouverture » ci-dessus — ex-`ezk-start`, absorbé le 2026-08-24) : working tree, worktrees parallèles, fiches `in-progress`. Sur **`VERDICT: ALERT`** → **STOP** : présenter les choix (rejoindre / interrompre journalisé) selon [`choice-template.md`](references/choice-template.md) — **ne pas** tirer la prochaine fiche tant que l'humain n'a pas tranché. Sur `CLEAR`, enchaîner. **Lis d'abord les capacités GitHub du projet** (`pnpm --dir products/mega-city ezk:config`, cf. § « Capacités GitHub — config projet `.vectorz/` ») — **avant tout appel `gh`**, car elles conditionnent la suite (PR 8, CI 5, Codex 7) **et la réconciliation ci-dessous**. Puis **`ezk-backlog reconcile`** *(seulement si `pr` **ou** `ci` est `on` — `reconcile` appelle `gh pr list` ; en `github: false`, saute-le : sans PR il n'y a rien à réconcilier)* : rattrape les fiches déjà mergées **hors du flux** (squash depuis l'UI GitHub, reviewer humain) qui sont restées `ready`/`in-progress` — traite les propositions (`ship` au PO) **avant** de tirer, sinon tu risques de reconstruire du déjà-livré (ADR-0018). Sans remote/`gh`, `reconcile` le dit et on continue. Puis, si un review est dû, passe le backlog en revue via [`ezk-backlog`](../ezk-backlog/) (`review --delta` avant le planning ; complet post-pivot / tous les 5 sprints — ADR-0016 mega-city). Puis choisis le **lot** : par défaut LA prochaine fiche **tirable** via `next --ready-only` (ready + non-épic), soit un lot d'une story ; pour plusieurs stories, le planning est celui d'`ezk-backlog` (`review`, `groom`, `next`), pas un verbe d'`ezk-sprint`. **Ouvre le sprint** avec `sprint.sh start --lot …` (cf. § « L'ouverture »). Si `next` signale une **tête bloquée** (fiche de priorité supérieure non-ready sautée) → `groom` + gate `ready` de la tête d'abord, ou soupape PO journalisée — jamais d'inversion de priorité silencieuse. Puis, pour chaque story du lot, branche **`feat/<id>-<slug>`** (l'id de fiche en préfixe rend le rapprochement fiche↔PR mécanique pour `reconcile` — ADR-0018). **Jamais sur `main`.** (`SPRINT.md` = scratch éphémère : il suit le **lot** du sprint en cours ; le **backlog produit**, la liste de toutes les features, vit dans `features/` commité.)
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
@@ -176,7 +230,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :
    ouvre par **« En clair »** (≤ 3 phrases : livré / effet / suite), jargon interne hors
    ouverture.
-10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui **remplace Codex** ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**.
+10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui **remplace Codex** ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**. Coche ensuite la story dans le lot de `SPRINT.md` (`[x] … (PR #N)`). **Si c'était la dernière du lot, lance `close`** (cf. § « La clôture »).
 
 ## Émission de supervisabilité (contrat v0.1 — best-effort, classe B)
 
@@ -184,7 +238,7 @@ Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `esc
 `heartbeat`, `run_finished`) sont **disponibles dans le contexte** — sinon **saute cette section sans
 bruit** :
 
-- **À l'intake (étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
+- **À l'ouverture du sprint (`start`, étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
   <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
 - **Pendant le travail long (étapes 1–8, best-effort)** — fiche 0103 : appelle `heartbeat
   {note: "<étape en cours, une ligne>"}` **au moins une fois par étape majeure**, et en
@@ -220,7 +274,7 @@ bruit** :
 - **Sur un « stop & ask »** (blocage, gate locale rouge 2×, scope creep, action
   irréversible) : `escalate {type: blocked|authority, detail: <une ligne>}` — un signal,
   jamais un arrêt de plus que celui que tu fais déjà.
-- **À la clôture du sprint** (après squash-merge, ou abandon) : `run_finished {status:
+- **À la clôture du sprint** (`close`, après le dernier squash-merge du lot, ou abandon) : `run_finished {status:
   success|failure|abandoned}`.
 
 Tu n'écris **jamais** les champs d'enveloppe (le serveur les calcule) et tu ne forces
@@ -235,6 +289,7 @@ Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
 corps relisable seul = rendu de la fiche** (« En clair » + sections + `## Comment vérifier`
 + provenance `features/<id>_*.md` + matrice `## Validation` — [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) ; **pas** de Summary parallèle, `## Summary` proscrit) •
 (après validation) squash-mergée en conventional commit • branche supprimée.
+Le **sprint** est fini quand `sprint.sh close` répond `CLOSE: SEALED` : chaque story du lot est livrée ou reportée.
 
 **En `pr: false`** (config `.vectorz/`, cf. § « Capacités GitHub ») la DoD se lit sans GitHub : pas de PR ni de branche distante — le livrable de revue est le **fichier local** (même rendu de fiche), le merge un **squash local** (`ship-merge.sh --local`), la clôture un **`ezk-backlog ship <id> local (<sha>)`**.
 
@@ -263,6 +318,8 @@ les états. Tant que le POC n'est pas validé, on ne dépense pas de tokens sur 
 | Gate CI locale (`act` + Docker) | skill `ezk-ci` (fallback `act` inline) |
 | Validation E2E navigateur (PR) | sous-agent `ezk-qa` → **Playwright MCP** |
 | Revue code / sécurité / clean code | sous-agent `ezk-reviewer` (`/code-review`, `/security-review`, `/simplify`) |
+| Ouvrir et sceller le sprint (lot, incrément) | script `scripts/sprint.sh` (`start`, `close`) |
+| Planning (choisir et groomer le lot) · rétro · clôturer la **session** | `ezk-backlog` · `ezk-retro` · `ezk-archive` — hors sprint |
 | Messages de commit | skill `ezk-commits` |
 | Voir l'app tourner | `/verify`, `/run` |
 
