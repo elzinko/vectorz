@@ -3,7 +3,7 @@
  * Bord I/O du diagnostic de déploiement : il regarde, il n'écrit jamais. Le cœur pur
  * (src/core/deploy-state.ts) range ensuite ce qu'il a vu.
  */
-import { existsSync, lstatSync, readlinkSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import type { PathFact } from '../core/deploy-state.js';
 
@@ -21,4 +21,13 @@ export function probePath(root: string, rel: string): PathFact {
     return { kind: 'symlink', target: readlinkSync(absolute), alive: existsSync(absolute) };
   }
   return stat.isDirectory() ? { kind: 'dir' } : { kind: 'file' };
+}
+
+/** Le texte d'un fichier de `<root>/<rel>` (suit un lien), ou undefined s'il est absent ou illisible. */
+export function readText(root: string, rel: string): string | undefined {
+  try {
+    return readFileSync(join(root, rel), 'utf8');
+  } catch {
+    return undefined;
+  }
 }

@@ -11,9 +11,10 @@
  *
  * Tri stable des fichiers par `path` ⇒ plan reproductible byte-for-byte.
  */
-import type { Cap, FileWrite, HookWrite, ResolvedProfile, Rule } from '../domain/model.js';
+import type { Cap, FileWrite, HookWrite, ResolvedProfile } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
 import { agentContent } from './agent-content.js';
+import { compileRule } from './law-content.js';
 
 const ENTRY_PATH = '.iamthelaw/ENTRY.md';
 const CLAUDE_MD_REFERENCE = `> **iamthelaw** : avant toute action, lis et applique \`${ENTRY_PATH}\` (la loi de ce projet).`;
@@ -35,10 +36,6 @@ function skillFiles(resolved: ResolvedProfile): FileWrite[] {
       content: `${skill.content.trim()}\n`,
       intent: 'replace',
     }));
-}
-
-function compileRule(rule: Rule): string {
-  return [`## ${rule.id}  \`[${rule.level}]\``, '', rule.content.trim(), ''].join('\n');
 }
 
 function entryFile(resolved: ResolvedProfile): FileWrite {

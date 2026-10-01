@@ -91,7 +91,7 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     const r = ezk(['law', 'bind']);
     expect(r.code).toBe(2);
     expect(r.err).toContain('Usage: lawgiver bind');
-    expect(r.err).toContain('a échoué (code 2)');
+    expect(r.err).toContain("s'est terminé avec le code 2");
   });
 
   it('une commande « fixed » part de la racine du dépôt : {root} remplacé, quel que soit le dossier de départ', { timeout: 60_000 }, () => {

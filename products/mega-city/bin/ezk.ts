@@ -135,7 +135,8 @@ async function main(argv: string[]): Promise<number> {
     return 0;
   }
   const code = await runStep(step, cwd);
-  if (code !== 0) warn(`ezk : « ${step.script} » a échoué (code ${code}).`);
+  // Un code non nul n'est pas toujours une panne : `law doctor` rend 1 pour dire « il y a un écart ».
+  if (code !== 0) warn(`ezk : « ${step.script} » s'est terminé avec le code ${code}.`);
   return code;
 }
 

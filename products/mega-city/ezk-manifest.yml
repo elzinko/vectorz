@@ -25,7 +25,7 @@ commands:
   - domain: law
     verb: bind-global
     run: bin/lawgiver.ts bind-global
-    summary: Déploie un profil (skills, agents) dans ~/.claude.
+    summary: Déploie un profil (skills, agents, loi) dans ~/.claude.
     root: none
   - domain: law
     verb: capture
@@ -35,6 +35,11 @@ commands:
     verb: status
     run: bin/lawgiver.ts status
     summary: Dit ce qui est déployé pour un profil (lien, copie, absent), sans rien écrire.
+    root: none
+  - domain: law
+    verb: doctor
+    run: bin/lawgiver.ts doctor
+    summary: Dit ce qui est déclaré mais pas installé (code 1 s'il y a un écart), sans rien écrire.
     root: none
 
   # --- board : le tableau kanban ---
@@ -68,6 +73,10 @@ commands:
     verb: plan-order
     run: bin/plan-order.ts
     summary: Imprime l'ordre des fiches du plan.
+  - domain: backlog
+    verb: ship
+    run: bin/ship-fiche.ts
+    summary: Livre une ou plusieurs fiches en une transaction (liens recalés, BACKLOG régénéré).
   - domain: backlog
     verb: aggregate
     run: bin/backlog-aggregate.ts

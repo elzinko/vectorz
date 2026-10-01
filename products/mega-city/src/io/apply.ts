@@ -23,6 +23,7 @@ import {
 } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { GLOBAL_LAW_PATH, isManagedLaw } from '../domain/law-file.js';
 import type { FileWrite, HookWrite, WritePlan } from '../domain/plan.js';
 
 const EXECUTABLE = 0o755;
@@ -137,6 +138,11 @@ function isUnderSkills(path: string): boolean {
 
 function isAgentFile(path: string): boolean {
   return path.startsWith('agents/') && path.endsWith('.md');
+}
+
+/** Le fichier de loi du cap global (ADR-0056) : `rules/iamthelaw.md`. */
+function isLawFile(path: string): boolean {
+  return path === GLOBAL_LAW_PATH;
 }
 
 const SKILL_DOC = 'SKILL.md';
@@ -263,6 +269,28 @@ function assertReplaceableAgent(root: string, agentFilePath: string): void {
 }
 
 /**
+ * Garde du fichier de LOI (ADR-0056) : lawgiver ne remplace que SON fichier, reconnu à
+ * l'en-tête `generated-by`. Un fichier du même nom écrit par l'utilisateur, ou un lien (l'écriture
+ * partirait dans le fichier visé), est refusé — jamais écrasé. Absent : rien à protéger.
+ */
+function assertReplaceableLaw(root: string, lawPath: string): void {
+  const target = resolveInsideProject(root, lawPath);
+  if (isSymlink(target)) {
+    throw new Error(
+      `refus non-destructif : ${JSON.stringify(target)} est un lien ; lawgiver n'écrit pas à travers un lien. ` +
+        'Retire-le à la main.',
+    );
+  }
+  if (!existsSync(target)) return;
+  if (!statSync(target).isFile() || !isManagedLaw(readFileSync(target, 'utf8'))) {
+    throw new Error(
+      `refus non-destructif : ${JSON.stringify(target)} existe et n'est pas géré par lawgiver ` +
+        "(l'en-tête « generated-by: lawgiver bind-global » manque). Renomme-le ou retire-le à la main.",
+    );
+  }
+}
+
+/**
  * Retrait GARDÉ d'un ANCIEN nom après renommage (fiche 20260813131737962, volet binder,
  * livré 2026-08-23 ; DURCI le 2026-08-24 après revue adverse). Le re-bind n'itère que le
  * nouveau plan ; ce retrait nettoie l'ancien — mais SEULEMENT ce qu'on peut PROUVER à nous :
@@ -351,7 +379,8 @@ function linkAgent(root: string, catalogRoot: string, agentFilePath: string): vo
  *   - `copy` (défaut) : écrit le contenu figé du plan (skills et agents).
  *   - `link` : symlink chaque skill-dir ET chaque agent-fichier vers sa source
  *     (`catalogRoot` requis) → un `git pull` mega-city met tout à jour (live-update).
- * Pas de hooks côté global.
+ * La LOI (`rules/iamthelaw.md`, ADR-0056) est un fichier COMPILÉ : écrit tel quel dans les deux
+ * modes, refusé s'il existe un fichier du même nom qui n'est pas à lawgiver. Pas de hooks côté global.
  */
 export function applyGlobalPlan(
   plan: WritePlan,
@@ -362,12 +391,14 @@ export function applyGlobalPlan(
   // Un skill = un DOSSIER multi-fichiers (ADR-0027) : on groupe le plan par `skills/<id>`.
   const skillDirs = groupBySkillDir(plan.files.filter((file) => isUnderSkills(file.path)));
   const agentFiles = plan.files.filter((file) => isAgentFile(file.path));
+  const lawFiles = plan.files.filter((file) => isLawFile(file.path));
 
-  // Garde non-destructive AVANT toute écriture, pour les DEUX formes (skills + agents).
+  // Garde non-destructive AVANT toute écriture, pour les TROIS formes (skills, agents, loi).
   for (const [dirRel, files] of skillDirs) {
     assertReplaceableSkillDir(root, dirRel, managedTopNames(dirRel, files));
   }
   for (const file of agentFiles) assertReplaceableAgent(root, file.path);
+  for (const file of lawFiles) assertReplaceableLaw(root, file.path);
 
   if (mode === 'link') {
     const catalogRoot = options.catalogRoot;
@@ -376,6 +407,8 @@ export function applyGlobalPlan(
     }
     for (const dirRel of skillDirs.keys()) linkSkillDir(root, catalogRoot, dirRel);
     for (const file of agentFiles) linkAgent(root, catalogRoot, file.path);
+    // La loi est COMPILÉE depuis les règles : pas un fichier du catalogue, donc jamais un lien.
+    for (const file of lawFiles) applyFile(root, file);
     return retireRenamedEntries(root, options.renames ?? []);
   }
 
@@ -393,5 +426,6 @@ export function applyGlobalPlan(
     if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
     applyFile(root, file);
   }
+  for (const file of lawFiles) applyFile(root, file);
   return retireRenamedEntries(root, options.renames ?? []);
 }

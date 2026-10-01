@@ -33,12 +33,26 @@ Zéro IA dans le chemin d'écriture.
 
 - `bind <profile> <projet> [host]` : `expand(profile)` (résout `extends`, déduplique) puis matérialise
   par le `cap` de l'hôte. C'est le « charger d'un coup ». Données pures → fichiers, testable.
-- `bind-global <profile> [--link]` : même chose dans `~/.claude` (skills et agents).
+- `bind-global <profile> [--link] [--target <dossier>]` : même chose dans `~/.claude` (skills,
+  agents et loi du profil).
 - `status <profile> [--target <dossier>]` : ce qui est déployé, en lecture seule.
+- `doctor <profile> [--target <dossier>]` : ce qui est déclaré mais pas installé (élément manquant,
+  lien mort, copie périmée, loi absente ou périmée), en lecture seule, code 1 s'il y a un écart.
 - `capture <cible> <kind>` (`kind` = rule | skill | agent | interaction) : les bords (LLM) rédigent et
   jugent ; le cœur (script) range dans la liste cible, ajoute une ligne au `journal/` et fait le commit.
 
 Le LLM ne **range** jamais : il produit du contenu et un avis, le moteur écrit et commit.
+
+### Ce que `bind` et `bind-global` écrivent, et n'écrivent pas
+
+| | `bind <profil> <projet>` | `bind-global <profil>` |
+|---|---|---|
+| Écrit | `<projet>/.claude/agents` et `.claude/skills`, la loi dans `.iamthelaw/ENTRY.md`, un bloc dans `CLAUDE.md`, les hooks git | `~/.claude/skills`, `~/.claude/agents`, la loi du profil dans `~/.claude/rules/iamthelaw.md` |
+| N'écrit pas | rien dans `~/.claude` | `~/.claude/CLAUDE.md`, les hooks, rien dans un projet |
+| La loi | les règles de tous les bundles du profil | les règles du profil, copie compilée même avec `--link` : rejouer la commande après un changement de règle |
+| Refuse d'écraser | un hook git qui existe et diffère (sans `--force`) | un skill, un agent ou un fichier de loi qui n'est pas à lawgiver |
+
+Décision et coût en jetons de la loi globale : [ADR-0056](../docs/adr/0056-loi-du-socle-par-le-global.md).
 
 ---
 

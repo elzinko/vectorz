@@ -15,7 +15,7 @@ pendante** (id absent du catalogue = silencieusement ignoré). D'où la **garde 
 | **base** | socle hérité (`extends: [base]`) | LOI socle (clean-code, conventional-commits) + `ezk-archive` (l'ouverture = `ezk-sprint:check` depuis 2026-08-24) | — (jamais bindé seul) |
 | **mobile** | cible app mobile | reviewer + commits (+ règles mobile) | claude-code |
 | **daily** | daily-driver **curated** (throughput solo) | 7 agents + boucle produit/sprint/ci — **sans** apk/device/preview/article/pr-pilot | `bind-global daily --link` → `~/.claude` **(recommandé)** |
-| **global** | daily-driver **exhaustif** (tout le toolbox) | les 7 agents + tous les skills ezk-* | `bind-global global --link` → `~/.claude` |
+| **global** | daily-driver **exhaustif** (tout le toolbox) | les 8 agents + tous les skills ezk-* (un test le garde) | `bind-global global --link` → `~/.claude` |
 | **cop1-target** | un projet que **cop1 pilote** | équipe FEUILLE + `ezk-pm` + skills feuilles, **sans orchestrateur** | claude-code (pass-through) |
 | **desktop** | session **Claude Desktop** pure | `ezk-pm` + builder + backlog + skills de rédaction/orga, **sans env d'exécution** | claude-desktop |
 
@@ -40,6 +40,13 @@ Une session Claude Desktop **pense / cadre / organise / rédige** ; elle n'exéc
 (décider quoi & quand), le **backlog**, le décideur **ezk-pm**, et les skills de
 rédaction/organisation (diagram, ezk-ezk). Le cadrage/brainstorm n'est pas bindable : il arrive
 par composition externe de `product-management:product-brainstorming` (ADR-0012).
+
+### La loi d'un profil bindé en global
+`bind-global` compile aussi les règles du profil (aujourd'hui le bundle `base`) dans
+`~/.claude/rules/iamthelaw.md`, que Claude Code charge dans chaque session (ADR-0056). Ce socle
+pèse environ 4 k jetons par session : élargir les bundles d'un profil global se paie à chaque
+session. `lawgiver doctor <profil>` dit si la loi, les skills et les agents installés sont ceux
+du profil.
 
 ## Ajouter / modifier un profil
 1. Éditer/créer `profiles/<id>.yml` (mêmes champs : `id`, `extends`, `bundles`, `agents`, `skills`, `interactions`).
