@@ -4,14 +4,15 @@
  *
  *   pnpm --dir products/mega-city views:regen
  *
- * Écrit sur disque, depuis les sources réelles (fiches, PLAN.md, récits de docs/sessions/) :
- *   - les fichiers de données `*.data.js` de board / pilotage / runs (ignorés par git) ;
+ * Écrit sur disque, depuis les sources réelles (fiches, PLAN.md, récits de docs/sessions/,
+ * catalogue de la méthode) :
+ *   - les fichiers de données `*.data.js` de board / pilotage / runs / carte (ignorés par git) ;
  *   - `PORTFOLIO.md` (via `portfolio.sh`, ignoré par git).
  * Ouvrir `pnpm ezk:map` suffit pour VOIR les pages à jour : le serveur calcule les données à
  * chaque requête. `views:regen` sert à lire hors serveur (file://, éditeur) et à repartir propre.
  *
  * Les anciennes commandes `avancement:regen`, `plan-view:regen`, `plan-delta:regen`,
- * `pilotage:regen` et `runs:regen` sont des alias de celle-ci. Les vues qui RESTENT committées
+ * `pilotage:regen`, `runs:regen` et `map:data` sont des alias de celle-ci. Les vues qui RESTENT committées
  * (`features/BACKLOG.md`, `features/PLAN.md`) gardent leur propre outil : `regen-backlog.sh`.
  */
 import { execFileSync } from 'node:child_process';
