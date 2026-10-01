@@ -157,6 +157,11 @@ function isAgentFile(path: string): boolean {
   return path.startsWith('agents/') && path.endsWith('.md');
 }
 
+/** Une slash-command (`commands/<id>.md`, fiche 20260816151112162) : un fichier plat, comme un agent. */
+function isCommandFile(path: string): boolean {
+  return path.startsWith('commands/') && path.endsWith('.md');
+}
+
 /** Le fichier de loi du cap global (ADR-0056) : `rules/iamthelaw.md`. */
 function isLawFile(path: string): boolean {
   return path === GLOBAL_LAW_PATH;
@@ -293,8 +298,8 @@ function assertReplaceableSkillDir(root: string, dirRel: string, managed: Set<st
 }
 
 /**
- * Pendant agent de `assertReplaceableSkillDir` : un agent est un FICHIER
- * `agents/<id>.md` (pas un dossier). Remplaçable de façon non-destructive s'il
+ * Pendant fichier de `assertReplaceableSkillDir` : un agent (`agents/<id>.md`) ou une slash-command
+ * (`commands/<id>.md`) est un FICHIER (pas un dossier). Remplaçable de façon non-destructive s'il
  * est inexistant, n'est qu'un symlink (le nôtre, ou l'ancien de claude-skills
  * qu'on bascule), OU est une copie que lawgiver a écrite : l'en-tête porte son marqueur
  * (`domain/managed-file.ts`, comme la loi). Sans lui, le 2ᵉ `bind-global` en copie prenait sa propre
@@ -302,13 +307,14 @@ function assertReplaceableSkillDir(root: string, dirRel: string, managed: Set<st
  * Un vrai fichier utilisateur préexistant → refus (jamais écrasé), avec la marche à suivre pour une
  * ancienne copie faite avant le marqueur : la supprimer une fois, elle sera recréée marquée.
  */
-function assertReplaceableAgent(root: string, agentFilePath: string): void {
-  const target = resolveInsideProject(root, agentFilePath);
+function assertReplaceableFlatFile(root: string, filePath: string): void {
+  const target = resolveInsideProject(root, filePath);
   if (isSymlink(target)) return; // symlink (le nôtre / l'ancien) : basculable.
   if (!existsSync(target)) return; // inexistant : rien à protéger.
   if (statSync(target).isFile() && isManagedFile(readFileSync(target, 'utf8'))) return; // notre copie.
+  const noun = isCommandFile(filePath) ? 'commande' : 'agent';
   throw new Error(
-    `refus non-destructif : ${JSON.stringify(target)} est un vrai fichier agent que lawgiver n'a pas écrit ` +
+    `refus non-destructif : ${JSON.stringify(target)} est un vrai fichier ${noun} que lawgiver n'a pas écrit ` +
       `(l'en-tête « ${MANAGED_MARKER} » manque). Si c'est une ancienne copie de lawgiver, supprime-la ` +
       `(rm ${JSON.stringify(target)}) puis relance : elle sera recréée avec le marqueur. ` +
       'Sinon, garde ton fichier et choisis un autre id.',
@@ -407,10 +413,13 @@ function linkSkillDir(root: string, catalogRoot: string, dirRel: string): void {
   symlinkSync(source, target);
 }
 
-/** Matérialise un agent par symlink `<root>/agents/<id>.md` → `<catalogRoot>/agents/<id>.md`. */
-function linkAgent(root: string, catalogRoot: string, agentFilePath: string): void {
-  const target = resolveInsideProject(root, agentFilePath); // 'agents/<id>.md'
-  const source = resolve(catalogRoot, agentFilePath);
+/**
+ * Matérialise un fichier plat par symlink `<root>/<rel>` → `<catalogRoot>/<rel>` : un agent
+ * (`agents/<id>.md`) ou une slash-command (`commands/<id>.md`), qui ont la même disposition dans le catalogue.
+ */
+function linkFile(root: string, catalogRoot: string, filePath: string): void {
+  const target = resolveInsideProject(root, filePath); // 'agents/<id>.md' ou 'commands/<id>.md'
+  const source = resolve(catalogRoot, filePath);
   removeManagedEntry(target);
   mkdirSync(dirname(target), { recursive: true });
   symlinkSync(source, target);
@@ -419,12 +428,12 @@ function linkAgent(root: string, catalogRoot: string, agentFilePath: string): vo
 /**
  * Coquille I/O GLOBALE (fiche 0017/0018 ; agents en link : fiche 0025) : applique un plan
  * dans une racine `~/.claude` factice ou réelle, de façon NON-DESTRUCTIVE dans les DEUX
- * modes. Matérialise l'équipe COMPLÈTE — skills (`skills/<id>/SKILL.md`) ET agents
- * (`agents/<id>.md`). Ne remplace QUE ses propres entrées (un symlink, ou un skill-dir ne
- * contenant que SKILL.md) et refuse d'écraser un fichier/dossier utilisateur étranger
- * préexistant. Idempotent.
- *   - `copy` (défaut) : écrit le contenu figé du plan (skills et agents).
- *   - `link` : symlink chaque skill-dir ET chaque agent-fichier vers sa source
+ * modes. Matérialise l'équipe COMPLÈTE — skills (`skills/<id>/SKILL.md`), agents
+ * (`agents/<id>.md`) ET slash-commands (`commands/<id>.md`, fiche 20260816151112162). Ne remplace
+ * QUE ses propres entrées (un symlink, une copie marquée, ou un skill-dir ne contenant que du géré)
+ * et refuse d'écraser un fichier/dossier utilisateur étranger préexistant. Idempotent.
+ *   - `copy` (défaut) : écrit le contenu figé du plan (skills, agents et commandes).
+ *   - `link` : symlink chaque skill-dir ET chaque fichier plat (agent, commande) vers sa source
  *     (`catalogRoot` requis) → un `git pull` mega-city met tout à jour (live-update).
  * La LOI (`rules/iamthelaw.md`, ADR-0056) est un fichier COMPILÉ : écrit tel quel dans les deux
  * modes, refusé s'il existe un fichier du même nom qui n'est pas à lawgiver. Pas de hooks côté global.
@@ -443,7 +452,8 @@ export function applyGlobalPlan(
       ([a], [b]) => a.length - b.length || (a < b ? -1 : 1),
     ),
   );
-  const agentFiles = plan.files.filter((file) => isAgentFile(file.path));
+  // Les fichiers PLATS gérés : les agents et les slash-commands (même garde, même matérialisation).
+  const flatFiles = plan.files.filter((file) => isAgentFile(file.path) || isCommandFile(file.path));
   const lawFiles = plan.files.filter((file) => isLawFile(file.path));
 
   // Des skills imbriqués ne se lient pas : le lien du parent porte déjà tout son dossier, et lier l'enfant
@@ -456,11 +466,11 @@ export function applyGlobalPlan(
     );
   }
 
-  // Garde non-destructive AVANT toute écriture, pour les TROIS formes (skills, agents, loi).
+  // Garde non-destructive AVANT toute écriture, pour toutes les formes (skills, agents et commandes, loi).
   for (const [dirRel, files] of skillDirs) {
     assertReplaceableSkillDir(root, dirRel, managedTopNames(dirRel, files, [...skillDirs.keys()]));
   }
-  for (const file of agentFiles) assertReplaceableAgent(root, file.path);
+  for (const file of flatFiles) assertReplaceableFlatFile(root, file.path);
   for (const file of lawFiles) assertReplaceableLaw(root, file.path);
 
   if (mode === 'link') {
@@ -469,7 +479,7 @@ export function applyGlobalPlan(
       throw new Error("mode 'link' : catalogRoot (racine du catalogue) est requis.");
     }
     for (const dirRel of skillDirs.keys()) linkSkillDir(root, catalogRoot, dirRel);
-    for (const file of agentFiles) linkAgent(root, catalogRoot, file.path);
+    for (const file of flatFiles) linkFile(root, catalogRoot, file.path);
     // La loi est COMPILÉE depuis les règles : pas un fichier du catalogue, donc jamais un lien.
     for (const file of lawFiles) applyFile(root, file);
     return retireRenamedEntries(root, options.renames ?? []);
@@ -484,9 +494,9 @@ export function applyGlobalPlan(
     removeManagedEntry(resolveInsideProject(root, dirRel));
     for (const file of files) applyFile(root, file);
   }
-  for (const file of agentFiles) {
-    const agentFile = resolveInsideProject(root, file.path);
-    if (isSymlink(agentFile)) rmSync(agentFile, { force: true });
+  for (const file of flatFiles) {
+    const flatFile = resolveInsideProject(root, file.path);
+    if (isSymlink(flatFile)) rmSync(flatFile, { force: true });
     applyFile(root, file);
   }
   for (const file of lawFiles) applyFile(root, file);

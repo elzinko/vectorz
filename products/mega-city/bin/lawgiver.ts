@@ -13,8 +13,8 @@ import { dirname, join, resolve } from 'node:path';
  * Ce que chaque déploiement écrit — et n'écrit PAS (fiche 20260903134909124, ADR-0056) :
  *   bind <profil> <projet>   ÉCRIT  <projet>/.claude/agents, .claude/skills, .iamthelaw/ENTRY.md (la loi),
  *                                   un bloc dans CLAUDE.md, les hooks git.   N'ÉCRIT PAS  ~/.claude.
- *   bind-global <profil>     ÉCRIT  ~/.claude/skills, ~/.claude/agents, ~/.claude/rules/iamthelaw.md (la loi
- *                                   du profil, en copie compilée même avec --link).
+ *   bind-global <profil>     ÉCRIT  ~/.claude/skills, ~/.claude/agents, ~/.claude/commands (les slash-commands),
+ *                                   ~/.claude/rules/iamthelaw.md (la loi du profil, en copie compilée même avec --link).
  *                                   N'ÉCRIT PAS  ~/.claude/CLAUDE.md, ni de hook, ni rien dans un projet.
  *   --target <dossier>       vise un autre dossier que ~/.claude (essais sur dossier jetable).
  *
