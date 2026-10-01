@@ -5,7 +5,10 @@
  * skill exige la capture, pointe vers son gabarit et son extracteur, nomme les cibles d'une règle,
  * et que le gabarit existe, ouvre par « En clair » et décrit les mêmes valeurs que l'extracteur.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -53,5 +56,33 @@ describe('le gabarit de capture', () => {
   it('décrit les mêmes natures et les mêmes statuts que l’extracteur', () => {
     for (const kind of RETRO_KINDS) expect(template, kind).toContain(`\`${kind}\``);
     for (const status of RETRO_STATUSES) expect(template, status).toContain(status);
+  });
+});
+
+describe('retro:captures --check — la commande', { timeout: 30_000 }, () => {
+  const tsx = createRequire(import.meta.url).resolve('tsx/cli');
+  const model = readFileSync(join(mega, '..', '..', 'docs', 'captures', '2026-07-18-retro-cinq-sprints.md'), 'utf8');
+  const check = (path: string): { code: number | null; out: string; err: string } => {
+    const r = spawnSync(process.execPath, [tsx, join(mega, 'bin', 'retro-captures.ts'), '--check', path], { encoding: 'utf8', cwd: mega });
+    return { code: r.status, out: r.stdout, err: r.stderr };
+  };
+
+  it('valide une capture au bon nom et dit combien de décisions elle porte', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'retro-'));
+    const file = join(dir, '2026-10-01-retro-essai.md');
+    writeFileSync(file, model);
+    const r = check(file);
+    expect(r.code).toBe(0);
+    expect(r.out).toMatch(/^OK .*2026-10-01-retro-essai\.md \(7 décisions\)/);
+  });
+
+  it('refuse une capture valide au mauvais nom : elle resterait invisible de la liste', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'retro-'));
+    const file = join(dir, 'retro.md');
+    writeFileSync(file, model);
+    const r = check(file);
+    expect(r.code).toBe(1);
+    expect(r.err).toMatch(/nom du fichier — AAAA-MM-JJ-retro-<slug>\.md attendu/);
+    expect(r.out).not.toMatch(/^OK/);
   });
 });

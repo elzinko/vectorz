@@ -60,6 +60,20 @@ const FRONT_MATTER = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/;
 /** Une capture de rétro se reconnaît à son nom : `AAAA-MM-JJ-retro-<slug>.md`. */
 export const isRetroCaptureName = (name: string): boolean => CAPTURE_NAME.test(name);
 
+/**
+ * `--check` accepte n'importe quel chemin, mais la liste ne retrouve une capture que par son nom : une
+ * capture au mauvais nom passerait la validation puis resterait invisible. On le dit à la validation.
+ */
+export function captureNameProblem(file: string): RetroProblem | undefined {
+  const base = file.split(/[\\/]/).pop() ?? file;
+  if (isRetroCaptureName(base)) return undefined;
+  return {
+    file,
+    where: 'nom du fichier',
+    message: 'AAAA-MM-JJ-retro-<slug>.md attendu : sous un autre nom, retro:captures ne la retrouve pas dans docs/captures/',
+  };
+}
+
 function isRealDay(value: string): boolean {
   if (!DAY.test(value)) return false;
   const parsed = new Date(`${value}T00:00:00Z`);

@@ -10,6 +10,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  captureNameProblem,
   isRetroCaptureName,
   parseRetroCapture,
   renderCaptures,
@@ -164,6 +165,20 @@ describe('isRetroCaptureName', () => {
     expect(isRetroCaptureName('2026-07-18-retro-cinq-sprints.md')).toBe(true);
     expect(isRetroCaptureName('2026-07-13-contrat-methode-et-versions.md')).toBe(false);
     expect(isRetroCaptureName('README.md')).toBe(false);
+  });
+});
+
+describe('captureNameProblem — une capture au mauvais nom resterait invisible', () => {
+  it('accepte le nom attendu, depuis n’importe quel dossier', () => {
+    expect(captureNameProblem('docs/captures/2026-07-18-retro-cinq-sprints.md')).toBeUndefined();
+    expect(captureNameProblem('/tmp/x/2026-10-01-retro-un-test.md')).toBeUndefined();
+  });
+
+  it('refuse un autre nom et dit le nom attendu', () => {
+    const p = captureNameProblem('docs/captures/retro.md');
+    expect(p).toMatchObject({ file: 'docs/captures/retro.md', where: 'nom du fichier' });
+    expect(p?.message).toMatch(/AAAA-MM-JJ-retro-<slug>\.md/);
+    expect(captureNameProblem('2026-10-01-panel-adverse.md')).toBeDefined();
   });
 });
 

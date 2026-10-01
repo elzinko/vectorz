@@ -14,6 +14,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  captureNameProblem,
   isRetroCaptureName,
   parseRetroCapture,
   renderCaptures,
@@ -48,7 +49,10 @@ function load(files: Array<{ label: string; path: string }>): Loaded {
     }
     const parsed = parseRetroCapture(label, readFileSync(path, 'utf8'));
     problems.push(...parsed.problems);
-    if (parsed.capture) captures.push(parsed.capture);
+    // Un mauvais nom est dit, et la capture n'est pas comptée : la liste ne la retrouverait pas.
+    const badName = captureNameProblem(label);
+    if (badName) problems.push(badName);
+    else if (parsed.capture) captures.push(parsed.capture);
   }
   return { captures, problems };
 }
