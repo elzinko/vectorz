@@ -90,6 +90,9 @@ n'est donc **pas équivalent** au symlink-mode — objectif visé par cet ADR : 
   `.claude/skills/<id>.md` (forme non-dossier) : il ne peut pas porter d'asset **par
   construction**. Le passer en forme dossier `.claude/skills/<id>/SKILL.md` est une décision
   distincte (impacte CLAUDE.md/hooks du cap projet) → **hors périmètre**.
+  _Mise à jour 2026-10-01 : fait par la fiche `20260813095351680`. Le cap projet écrit maintenant
+  `.claude/skills/<id>/SKILL.md` et les annexes, via `skillFolderFiles`. Il n'a touché ni à `CLAUDE.md`
+  ni aux hooks. Un ancien fichier plat déjà présent n'est pas touché : il coexiste, sans effet._
 
 ## Conséquences
 

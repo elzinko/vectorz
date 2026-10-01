@@ -26,9 +26,13 @@ ni n'**idée** le backlog. C'est ce trou que `ezk-product-build` comble.
 4. **Vigilance tokens = mode CONFIGURABLE** (3) :
    - `lean` (**défaut**) : délégation simple, **alerte avant** un fan-out multi-agents coûteux
      ou un dépassement de seuil souple ;
-   - `plafond-dur` : budget par sprint, **stop net** + demande s'il l'atteint ;
-   - `pleine-puissance` : multi-agents libre (mode « ultracode »).
+   - `cap` : budget par sprint, **stop net** + demande s'il l'atteint ;
+   - `full` : multi-agents libre (mode « ultracode »).
    Le mode est un **réglage** du skill (défaut `lean`).
+
+   > **Note du 2026-10-01 (fiche 0143)** — un seul vocabulaire : le flag réel est
+   > `--tokens lean|cap|full`. Le texte d'origine nommait ces deux modes `plafond-dur` (devenu
+   > `cap`) et `pleine-puissance` (devenu `full`). Seuls les noms changent, pas la décision.
 5. **Vit dans `mega-city/skills/`** (ADR-0006). Place dans la famille : **au-dessus** d'ezk-sprint.
 
 ## Conséquences
@@ -47,5 +51,5 @@ capitaliser un apprentissage en skill, ou à une future couche **stratégie** au
 - **Recloner ezk-sprint sous un autre nom** — duplication + dérive en amont. Rejeté (compose, ne réinvente pas).
 - **Tuner ezk-sprint en place** — il vit dans `claude-skills` (gelé ADR-0006) et mélangerait
   product-owner et scrum-master dans un seul skill. Rejeté (responsabilité unique).
-- **Mode tokens unique** (toujours lean, ou toujours pleine-puissance) — l'utilisateur veut le
+- **Mode tokens unique** (toujours `lean`, ou toujours `full`) — l'utilisateur veut le
   réglage selon l'enjeu. Rejeté.

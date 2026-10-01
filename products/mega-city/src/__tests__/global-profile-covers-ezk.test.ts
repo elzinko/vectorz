@@ -31,4 +31,11 @@ describe('profil global — exhaustif sur la famille ezk-*', () => {
     const missing = [...catalog.agents.keys()].filter((id) => !declared.has(id));
     expect(missing, `agents absents du profil global : ${missing.join(', ')}`).toEqual([]);
   });
+
+  it('porte toutes les slash-commands du catalogue (fiche 20260816151112162 : plus de copie à la main)', () => {
+    const declared = new Set(resolved?.commands?.map((c) => c.id));
+    const missing = [...(catalog.commands?.keys() ?? [])].filter((id) => !declared.has(id));
+    expect(missing, `commandes absentes du profil global : ${missing.join(', ')}`).toEqual([]);
+    expect(declared.has('ezk-help')).toBe(true);
+  });
 });

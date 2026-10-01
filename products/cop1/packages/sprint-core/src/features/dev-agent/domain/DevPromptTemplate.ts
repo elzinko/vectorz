@@ -30,7 +30,7 @@ export function extractMarkdownSection(content: string, heading: string): string
 const PROJECT_CONTEXT = `## Project Context
 
 This is a TypeScript strict mode project using NodeNext module resolution.
-- **Monorepo**: pnpm workspaces with 8 packages: shared-kernel, observability, llm-intelligence, quality-intelligence, sprint-core, ceremony-engine, app, web
+- **Monorepo**: pnpm workspaces with 8 packages: shared-kernel, observability, llm-intelligence, quality-intelligence, sprint-core, journal-validator, app, web
 - **Testing**: Vitest
 - **Linting**: Biome
 - **Architecture**: Feature-first hexagonal (domain/ → application/ → infrastructure/ layers)

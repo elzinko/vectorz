@@ -3,7 +3,7 @@
 Matérialise un profil résolu dans la forme native de **Claude Code** :
 
 - `<projet>/.claude/agents/*`        ← les agents (avec leurs `competences` résolues)
-- `<projet>/.claude/skills/*`        ← les skills
+- `<projet>/.claude/skills/<id>/`    ← un dossier par skill : `SKILL.md` et ses annexes (`approaches/`, `scripts/`)
 - `<projet>/.iamthelaw/ENTRY.md`     ← les règles compilées (texte)
 - `<projet>/.git/hooks/*`            ← les enforcements niveau 2
 - une référence « lire ENTRY.md » dans `CLAUDE.md`

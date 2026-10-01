@@ -60,10 +60,17 @@ describe('frontière « non committé » (tenue par un test, pas par la mémoire
     (v) => {
       const html = readFileSync(join(repoRoot, v.page), 'utf8');
       expect(html).toContain(`<script src="${basename(v.out)}"></script>`);
-      expect(html).not.toMatch(/window\.EZK_[A-Z_]+\s*=[^=]/); // aucune affectation de données en ligne
+      // aucune affectation de données en ligne (EZK_AVANCEMENT… du board, EZK seul de la carte)
+      expect(html).not.toMatch(/window\.EZK(?:_[A-Z_]+)?\s*=[^=]/);
       expect(html).not.toMatch(/\/\*ezk-[a-z-]+:begin\*\//); // ni bloc géré résiduel
     },
   );
+
+  it('carte : sans son fichier de données (clone neuf, file://), la coque le dit au lieu de planter', () => {
+    const html = readFileSync(join(repoRoot, view('carte').page), 'utf8');
+    expect(html).toContain('if(!D){');
+    expect(html).toContain('données absentes');
+  });
 });
 
 describe('fidélité par construction (dépôt réel)', () => {
@@ -123,18 +130,28 @@ describe('construction à la demande', () => {
     return root;
   }
 
+  // La carte lit le catalogue de la MÉTHODE, pas celui du dépôt jetable : l'y écrire n'aurait pas de
+  // sens, on l'écarte ici (elle est prouvée sur le dépôt réel dans map-data.test.ts).
+  const FIXTURE_VIEWS = DATA_VIEWS.filter((v) => v.id !== 'carte');
+
   it('writeDataViews écrit les trois fichiers, et un second passage n’écrit rien', () => {
     const root = fixtureRepo();
-    const first = writeDataViews(root);
-    expect(first.written.sort()).toEqual(DATA_VIEWS.map((v) => v.out).sort());
+    const first = writeDataViews(root, FIXTURE_VIEWS);
+    expect(first.written.sort()).toEqual(FIXTURE_VIEWS.map((v) => v.out).sort());
     expect(first.unchanged).toEqual([]);
     const board = readFileSync(join(root, 'diagrams/avancement/board.data.js'), 'utf8');
     expect(board).toContain('20260101000000001');
     expect(board.startsWith('// Généré — NE PAS committer')).toBe(true);
 
-    const second = writeDataViews(root);
+    const second = writeDataViews(root, FIXTURE_VIEWS);
     expect(second.written).toEqual([]);
-    expect(second.unchanged.sort()).toEqual(DATA_VIEWS.map((v) => v.out).sort());
+    expect(second.unchanged.sort()).toEqual(FIXTURE_VIEWS.map((v) => v.out).sort());
+  });
+
+  it('la carte décrit la MÉTHODE : le projet visé (--root, EZK_ROOT) ne change pas son fichier', () => {
+    // `ezk:map --root <projet>` passe la racine de CE projet aux vues : la carte l'ignore, sinon elle
+    // chercherait un catalogue dans un dépôt qui n'en a pas (fiche 20260826173221323).
+    expect(view('carte').build(fixtureRepo())).toBe(view('carte').build(repoRoot));
   });
 
   it('une fiche ajoutée apparaît au board sans autre étape (jamais périmé)', () => {
@@ -159,6 +176,8 @@ describe('construction à la demande', () => {
     expect(dataViewForPath('diagrams/avancement/board.data.js')?.id).toBe('board');
     expect(dataViewForPath('./diagrams/pilotage/pilotage.data.js')?.id).toBe('pilotage');
     expect(dataViewForPath('diagrams\\runs\\runs.data.js')?.id).toBe('runs');
+    expect(dataViewForPath('diagrams/methode-mega-city/carte-interactive.data.js')?.id).toBe('carte');
+    expect(dataViewForPath('diagrams/methode-mega-city/carte-interactive.html')).toBeUndefined();
     expect(dataViewForPath('diagrams/avancement/board.html')).toBeUndefined();
     expect(dataViewForPath('diagrams/../etc/passwd')).toBeUndefined();
   });

@@ -32,6 +32,11 @@ export interface ConsoReport {
   rows: ConsoRow[]; // triées minutes DESC puis repo (déterministe)
   totalMinutes: number;
   totalNetUsd: number;
+  /**
+   * Forks écartés de `rows` par l'option `--no-forks` (fiche 20260829132313947). Absent quand
+   * l'option n'est pas appliquée ; `count: 0` quand elle l'est mais qu'il n'y avait rien à masquer.
+   */
+  hiddenForks?: { count: number; minutes: number };
 }
 
 /**
@@ -76,6 +81,64 @@ export function aggregateActionsUsage(
   return { rows, totalMinutes, totalNetUsd };
 }
 
+/**
+ * Écarte du rapport les forks qui ne pèsent PAS sur le quota : publics ET sans coût net.
+ * Un fork privé, de visibilité inconnue ou facturé RESTE affiché — masquer ce qui consomme
+ * ferait mentir la conso (la table ne ment pas). Les totaux sont recalculés sur les lignes
+ * gardées ; ce qui est masqué est compté à part (`hiddenForks`) pour ne rien perdre.
+ * `forks` : noms de repo (même clé que `row.repo`) dont l'API a rendu `fork: true`.
+ * Pur : le rapport d'entrée n'est pas modifié.
+ */
+export function hideFreeForks(report: ConsoReport, forks: ReadonlySet<string>): ConsoReport {
+  const rows: ConsoRow[] = [];
+  let count = 0;
+  let minutes = 0;
+  for (const row of report.rows) {
+    if (forks.has(row.repo) && row.visibility === 'public' && row.netUsd <= 0) {
+      count += 1;
+      minutes += row.minutes;
+    } else {
+      rows.push(row);
+    }
+  }
+  return {
+    rows,
+    totalMinutes: rows.reduce((sum, r) => sum + r.minutes, 0),
+    totalNetUsd: rows.reduce((sum, r) => sum + r.netUsd, 0),
+    hiddenForks: { count, minutes },
+  };
+}
+
+export interface ConsoArgs {
+  /** Période brute `YYYY-MM` (validée par la CLI) ; absente = mois courant. */
+  period?: string;
+  /** `--no-forks` : masquer les forks publics sans coût (voir `hideFreeForks`). */
+  noForks: boolean;
+}
+
+/**
+ * Lit les arguments de la CLI (`process.argv.slice(2)`) : une période optionnelle et `--no-forks`.
+ * Pur. Jette sur une option inconnue ou une 2e période — une faute de frappe (`--no-fork`)
+ * ne doit pas passer en silence et laisser croire que les forks sont masqués.
+ */
+export function parseConsoArgs(argv: readonly string[]): ConsoArgs {
+  const args: ConsoArgs = { noForks: false };
+  for (const arg of argv) {
+    if (arg === '--') {
+      continue; // séparateur laissé par un lanceur (pnpm/npm) : sans sens ici
+    } else if (arg === '--no-forks') {
+      args.noForks = true;
+    } else if (arg.startsWith('-')) {
+      throw new Error(`option inconnue « ${arg} » — attendu : [YYYY-MM] [--no-forks]`);
+    } else if (args.period === undefined) {
+      args.period = arg;
+    } else {
+      throw new Error(`une seule période attendue (« ${args.period} » puis « ${arg} »)`);
+    }
+  }
+  return args;
+}
+
 /** Rendu texte déterministe — le LLM LIT cette table, il ne recompte pas (ADR-0001). */
 export function formatConsoReport(report: ConsoReport, period: string): string {
   const lines: string[] = [];
@@ -96,6 +159,12 @@ export function formatConsoReport(report: ConsoReport, period: string): string {
     );
   }
   lines.push(`total : ${report.totalMinutes} min · net facturé $${report.totalNetUsd.toFixed(2)}`);
+  if (report.hiddenForks) {
+    // L'info masquée n'est pas perdue : combien de forks, combien de minutes, et pourquoi sans enjeu.
+    lines.push(
+      `forks masqués : ${report.hiddenForks.count} (${report.hiddenForks.minutes} min — publics, sans coût ; hors du total ci-dessus)`,
+    );
+  }
   // Qualifié (retour Codex #186, comment 6) : un public sur GROS runner peut être facturé
   // (colonne coût ci-dessus) — ne pas affirmer « public = gratuit » sans réserve, sinon le
   // pied contredit une ligne « $X.XX public ».
