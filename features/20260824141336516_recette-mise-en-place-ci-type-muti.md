@@ -39,8 +39,9 @@ groome quand on la tire.
 CI muti (`~/git/bacasable/muti/.github/workflows/`) : `ci.yml` (tests) ·
 `cd.yml` (build + release + deploy) · `deploy-website.yml` · `cleanup.yml`
 (purge des vieux artefacts) · `smoke-test.yml` · `coming-soon.yml`.
-⚠ Le **build local via `act`** est annoncé mais **à vérifier au grooming** (pas de
-`Makefile` trouvé à la racine de muti — confirmer le point d'entrée `act`).
+**Point d'entrée local vérifié (2026-10-01).** Il n'y a pas de `Makefile`. Le build local passe par
+`pnpm ci:local` (`package.json:47-50`). Cette commande lance `scripts/ci-local.sh`, une façade de
+`act`, avec un mode natif quand Docker n'est pas là.
 
 ## Périmètre pressenti (à groomer, non figé)
 
@@ -60,13 +61,47 @@ de la **capturer à part** (recette « versionnement » composable) au grooming,
 plutôt que de la noyer ici. Références : samplerz `scripts/release-set-version.sh`
 + `desktop-sync-manifest.sh` ; muti (script de version — à confirmer).
 
-## Options à trancher (au grooming)
+## Décisions de grooming (2026-10-01)
 
-- `act` **obligatoire** (build local reproductible) ou GitHub seul suffit ?
-- Périmètre : tout (tests + build + release + deploy + cleanup) ou un sous-ensemble
-  activable par projet ?
-- Versionnement **inclus** ici ou **recette séparée** composée (mon avis : séparée).
-- Smoke-test / coming-soon : dans la recette de base ou en options ?
+- **`act` : recommandé, pas obligatoire.** Les workflows GitHub restent la source de vérité. Le
+  local est un accélérateur : `act` si Docker tourne, mode natif sinon. Le packaging multi-OS
+  (macOS, Windows) ne se joue de toute façon pas sous `act`.
+- **Périmètre : un socle et des options.** Le socle est la CI sur PR, le CD sur `main` et sur les
+  tags, et le déploiement du site. Les options, activables par projet : nettoyage, smoke-test, page
+  « coming soon ».
+- **Versionnement : recette séparée**, composable avec celle-ci et avec la distribution. La recette
+  CI se contente de la citer.
+- **Smoke-test et coming-soon : options.** Chacune renvoie à son workflow muti.
+
+## Périmètre de cette PR
+
+Une recette `recipes/mettre-en-place-ci-projet-type-muti.md`, en `status: draft`. Elle **pointe**
+la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013).
+
+## Critères d'acceptation
+
+- [ ] la recette existe, son front-matter est valide, `status: draft`, et elle est listée dans `recipes/RECIPES.md` après `regen-recipes.sh`
+- [ ] elle décrit le **socle** (CI sur PR, CD sur `main` et tags, déploiement du site) et les **options** (nettoyage, smoke-test, coming-soon), chacun relié à son workflow muti
+- [ ] elle répond aux quatre options tranchées ci-dessus
+- [ ] elle explique comment **rejouer le même plan en local** : `pnpm ci:local` (`act` ou mode natif), secrets locaux générés, lint des workflows, et ce qui ne se joue pas sous `act`
+- [ ] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers muti ; `source:` existe ; aucun code recopié
+- [ ] elle compose les recettes sœurs (`composes:` et liens) : distribution, domaine Vercel
+- [ ] gate `ezk-chef` : `regen-recipes.sh` et `check-links.sh . recipes` verts, verdict GO
+
+## Comment vérifier
+
+1. `bash products/mega-city/bin/regen-recipes.sh`, puis `git diff --stat -- recipes/RECIPES.md` :
+   une seule ligne ajoutée, celle de la nouvelle recette.
+2. `bash products/mega-city/bin/check-links.sh . recipes` rend vert.
+3. Chaque pointeur `fichier:ligne` de la recette existe dans le dépôt muti.
+4. Le verdict de la gate `ezk-chef` est GO.
+
+## Suite (hors de cette PR)
+
+- Recette « versionnement » séparée et composable : source unique de version, propagation dans les
+  fichiers, du tag vers les fichiers. Références : `scripts/release-set-version.sh` et
+  `desktop-sync-manifest.sh` côté samplerz, `scripts/bump-version.sh` côté muti.
+- Rejouer la recette sur un 2ᵉ projet, puis la passer `ready` après `ezk-chef check`.
 
 ## LIENS
 
