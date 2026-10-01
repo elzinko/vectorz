@@ -24,7 +24,14 @@ Le verdict est un petit fichier versionné, **un par fiche**, rangé dans
 différents : elles ne peuvent pas se marcher dessus. Le tableau de bord n'écrit rien d'autre
 et ne committe jamais : le commit reste un geste normal du flux.
 
-## Ce qu'on décide (le cadrage de cette première écriture)
+## Contexte / Problème
+
+Le tableau de bord est un petit serveur local qui sert des pages (`bin/ezk-map.ts`). Il n'avait
+aucune écriture : mettre un pouce est donc une vraie évolution, pas un bouton de plus. Et
+plusieurs sessions écrivent le même dépôt en parallèle : un verdict mal rangé créerait des
+conflits de merge.
+
+## Proposition (le cadrage de cette première écriture)
 
 1. **Périmètre d'écriture.** Un seul dossier : `features/reviews/verdicts/`. Jamais le
    front-matter d'une fiche, jamais un commit.
