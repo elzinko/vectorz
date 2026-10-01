@@ -116,6 +116,11 @@ l'activation, la validation hors-ligne et la libération de l'appareil.
    `deactivate` rend le slot. Prévoir un bouton « Libérer cet appareil » pour changer de machine.
 3. **« v1 à vie, pas v2 »** : après l'activation, vérifier que `meta.store_id` et `meta.product_id`
    correspondent au produit v1. Une v2 est un **nouveau produit** Lemon Squeezy, donc un nouvel achat.
+   ⚠ L'activation a déjà consommé le slot. Si la vérification échoue, **appeler `deactivate`** avec
+   l'`instance_id` reçu. Sinon une clé valide d'un autre produit garde son seul appareil occupé et ne
+   s'active plus dans la bonne app.
+   Le même réflexe vaut pour tout échec après `activate` : une autre licence déjà active sur
+   l'appareil, ou une écriture locale impossible. Chaque échec rend le slot.
 4. **Marche hors-ligne** : activer une fois avec le réseau, puis faire confiance au fichier local.
    `validate` ne rétrograde jamais sur une panne réseau ou un 429 ou 5xx. Il rétrograde seulement sur
    un verdict explicite « invalide » ou « désactivée ».
@@ -141,6 +146,7 @@ l'activation, la validation hors-ligne et la libération de l'appareil.
 - [ ] la configuration a été relue par l'API après un délai
 - [ ] l'app appelle l'API License avec la clé du client, sans secret de boutique
 - [ ] l'activation vérifie `meta.store_id` et `meta.product_id`
+- [ ] toute activation qui échoue après coup (autre produit, autre licence active, écriture locale impossible) rend son slot par `deactivate`
 - [ ] une panne réseau ou un 429 ou 5xx ne rétrograde jamais un client Pro
 - [ ] un bouton « Libérer cet appareil » rend le slot, et le fichier local n'est effacé qu'après la confirmation de Lemon Squeezy
 - [ ] les endpoints d'activation sont réservés à l'opérateur local
@@ -154,6 +160,7 @@ Racine : **`~/git/samplerz`** (pointeurs relevés le 2026-10-01 sur le checkout 
 - `src/samplerz/plugins/license.py:49` — identifiants attendus et URL de checkout, surchargeables par variable d'environnement
 - `src/samplerz/plugins/license.py:95` — `_meta_matches` : le verrou « v1 oui, v2 non »
 - `src/samplerz/plugins/license.py:217` — `activate` : consomme un slot, écrit le fichier local
+- `src/samplerz/plugins/license.py:247` — une clé d'un autre produit est refusée, et son slot rendu par `deactivate`
 - `src/samplerz/plugins/license.py:302` — `validate` : ne rétrograde jamais sur une panne
 - `src/samplerz/plugins/license.py:368` — `deactivate` : efface la clé locale seulement si Lemon Squeezy confirme
 - `src/samplerz/plugins/entitlement.py:65` — `get_entitlement` lit le fichier de licence local

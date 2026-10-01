@@ -119,10 +119,10 @@ Apprentissages transverses de la session, à capitaliser côté **ezk-method / r
 
 - [x] `recipes/vendre-app-lemonsqueezy-licence-pro.md` existe, front-matter valide, `status: draft`, listée dans `recipes/RECIPES.md` après `regen-recipes.sh` (1 ligne ajoutée, 13 recettes)
 - [x] elle couvre les 5 blocs de la checklist : clés et comptes, inspection de l'API (piège `curl -g`), réglages du produit, validation in-app, passage test → live
-- [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers samplerz ; `source:` existe ; aucun code recopié (16 pointeurs sur 16 existent)
+- [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers samplerz ; `source:` existe ; aucun code recopié (17 pointeurs sur 17 existent)
 - [x] `catalogue-secrets.md` et le README `lancement-app` donnent le vrai nom de la clé (plus `lemonsqueezy-api`, sauf dans la mention de la correction)
 - [x] le README `lancement-app` relie la recette (section D et « Recettes réutilisées »)
-- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 16 pointeurs sur 16, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
+- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 17 pointeurs sur 17, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
 
 Preuves ajoutées : le piège `curl -g` est rejoué sans identifiant. Sans `-g`, `curl -s` sort en code 3 sans
 rien afficher. Avec `-g`, l'API répond 401, donc l'URL est bien atteinte. Le trousseau liste
