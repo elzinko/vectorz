@@ -7,8 +7,8 @@ product: mega-city
 version: V0.3
 epic:
 labels: [installation]
-status: idea
-pr:
+status: shipped
+pr: "#281"
 evidence: none # outil de terminal, aucun écran
 created: 2026-09-03
 ---
@@ -157,7 +157,7 @@ pnpm --dir products/mega-city test              # dont la couverture du manifest
   les slash-commands) ; [[0120]] (couverture CLI de `lawgiver capture`) ; [[0087]] (distribution
   en plugin : hors périmètre, « ne pas publier ») ; [[20260903134909124]] (la loi n'est compilée
   nulle part chez l'agent : `ezk law status` la rend visible, cette fiche-là la règle).
-- Absorbe [`20260826173005368`](done/20260826173005368_renommer-ezk-map.md) (renommer `ezk:map`,
+- Absorbe [`20260826173005368`](20260826173005368_renommer-ezk-map.md) (renommer `ezk:map`,
   tri du 2026-09-30) : le nom est tranché ci-dessus ; l'affichage de l'état d'installation dans
   le site reste séparable et dépend du registre de bind.
 - Priorité P1 provisoire : direction actée par le PO ; rang dans PLAN.md à confirmer.

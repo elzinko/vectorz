@@ -8,8 +8,8 @@ version: V0.3
 epic:
 depends: []
 labels: [lisibilite]
-status: idea
-pr:
+status: shipped
+pr: "#283"
 created: 2026-08-25
 ---
 
@@ -37,7 +37,7 @@ Résultat : chaque skill re-décide son format dans son coin, et la qualité dé
 - **Format d'un gabarit** : des sections, et pour chacune une consigne courte « mets / bannis ». Le gabarit **impose l'ouverture « En clair »** : le bloc figure dans le gabarit. Il porte aussi le **périmètre** : ce qu'on montre selon le contexte (cas fondateur : le handoff ne restitue que la session courante).
 - **Frontière avec la règle de clarté** : le gabarit fixe le **format**, la règle `human-facing-lisibility` garantit la **lisibilité du texte dedans**. Jamais le gabarit seul.
 - **Premier cas** : `ezk-archive` (déjà amorcé), puis le corps de PR (ADR-0029). Le corps de PR révèle un trou honnête : son extracteur (`pr:emit-local`) ne sert que le mode sans GitHub. Avec une PR GitHub, le corps est recopié de la fiche à la main.
-- **BMAD** : le prior art (templates + validateurs + elicitation) est dans l'étude [20260817113353538](done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md). On n'en reprend pas le moteur : on garde le trio, plus simple.
+- **BMAD** : le prior art (templates + validateurs + elicitation) est dans l'étude [20260817113353538](20260817113353538_etude-prior-art-bmad-templates-elicitation.md). On n'en reprend pas le moteur : on garde le trio, plus simple.
 
 ## Critères d'acceptation (reste réel)
 
@@ -64,7 +64,7 @@ Sabotage : renommer `handoff-template.md`, ou retirer son « En clair ». Le tes
 
 - Appliquer le trio au checkpoint de `ezk-sprint`, au rapport de sprint (`sprint-report.ts`) et aux réponses de synthèse.
 - Combler le trou du corps de PR : brancher l'extracteur sur le chemin GitHub aussi.
-- Faire porter le **périmètre** par chaque gabarit (règle comportementale de [20260812104022246](20260812104022246_composition-comportementale-skills-ezk.md)) ; l'état des autres sessions relève du cockpit [20260825141012293](done/20260825141012293_ezk-sessions-cockpit.md).
+- Faire porter le **périmètre** par chaque gabarit (règle comportementale de [20260812104022246](../20260812104022246_composition-comportementale-skills-ezk.md)) ; l'état des autres sessions relève du cockpit [20260825141012293](20260825141012293_ezk-sessions-cockpit.md).
 - Cluster à regrouper (cette fiche, `20260824111001836`, `20260817113353676`, `20260817113353538`, `20260812104022246`) : décision PO avec la doctrine de composition.
 
 ## Frontière anti-doublon (aucun recouvrement)
@@ -72,9 +72,9 @@ Sabotage : renommer `handoff-template.md`, ou retirer son « En clair ». Le tes
 Cette fiche pose **l'outillage généralisé** (le trio). Les voisines couvrent d'autres angles :
 
 - **Un gabarit concret déjà livré** : la PR rendue depuis la fiche (ADR-0029). Cette fiche le généralise, elle ne le refait pas.
-- **La règle de clarté** : [`20260824111001836`](done/20260824111001836_regle-clarte-atteint-tout-output-ezk.md) dit que le texte doit être lisible. Ici : comment l'outiller (le squelette + les faits).
-- **L'article** : [`20260817113353676`](20260817113353676_article-templates-reponse-llm.md) vulgarise le sujet. Ici : l'implémentation.
-- **Directives composables** : [`20260812104022246`](20260812104022246_composition-comportementale-skills-ezk.md) donne le mécanisme pour appliquer un gabarit dans un skill.
+- **La règle de clarté** : [`20260824111001836`](20260824111001836_regle-clarte-atteint-tout-output-ezk.md) dit que le texte doit être lisible. Ici : comment l'outiller (le squelette + les faits).
+- **L'article** : [`20260817113353676`](../20260817113353676_article-templates-reponse-llm.md) vulgarise le sujet. Ici : l'implémentation.
+- **Directives composables** : [`20260812104022246`](../20260812104022246_composition-comportementale-skills-ezk.md) donne le mécanisme pour appliquer un gabarit dans un skill.
 
 ## Notes
 

@@ -3,7 +3,7 @@
 **Statut :** Accepté
 **Date :** 2026-10-01
 **Deciders :** PO (consigne du run V0.1 → V0.4)
-**Fiche :** [`20260830194601376`](../../../../features/20260830194601376_spike-degiter-vues-outillage.md)
+**Fiche :** [`20260830194601376`](../../../../features/done/20260830194601376_spike-degiter-vues-outillage.md)
 **Précise :** [ADR-0049](0049-ship-fiche-dans-la-pr-vues-post-merge.md) — la liste « toutes les vues dérivées » du ship raccourcit.
 
 ## En clair
@@ -87,5 +87,5 @@ alias.
 - `carte-interactive.html` (vue du **catalogue**) reste committée dans ce lot. Le README la lie, et
   elle ne bouge que si le catalogue bouge. Même schéma si un conflit réel y apparaît.
 - `views:check` et le ship transactionnel : fiche
-  [`20260830194601233`](../../../../features/20260830194601233_ship-transactionnel-liens-vues.md).
+  [`20260830194601233`](../../../../features/done/20260830194601233_ship-transactionnel-liens-vues.md).
 - Mesurer le critère « 0 conflit sur une vue générée par mois » en novembre 2026.

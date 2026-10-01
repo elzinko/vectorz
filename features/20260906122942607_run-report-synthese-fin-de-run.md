@@ -38,7 +38,7 @@ le bilan lisible en fin de run.
 - **Tokens consommés vs cap**.
 
 Réutiliser le pattern « livrable lisible » (template + extracteur scripté + rendu) plutôt que de
-rédiger le rapport au jugé — voir [20260825182327490](20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
+rédiger le rapport au jugé — voir [20260825182327490](done/20260825182327490_pattern-livrable-lisible-template-extracteur-rendu.md).
 
 ## Critères d'acceptation
 

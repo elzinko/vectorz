@@ -23,7 +23,7 @@ avec un lien.
 **Pour toi.** Après cette PR, tout projet lié par `lawgiver bind` reçoit la règle. Sur ton
 poste, l'effet passe d'abord par le texte des agents et des skills, déjà vivant dans
 `~/.claude`. Le déploiement global des règles reste à faire : c'est la fiche
-[Déployer vraiment les règles chez les agents](../20260903134909124_loi-non-compilee-chez-l-agent.md).
+[Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md).
 
 ## Contexte / Problème (mesuré le 2026-10-01)
 
@@ -105,7 +105,7 @@ montre aucune balise `<details>` ni `<summary>`. Les fiches y sont citées par l
 ## Suite (hors POC)
 
 - **Dépendance.** La fiche
-  [Déployer vraiment les règles chez les agents](../20260903134909124_loi-non-compilee-chez-l-agent.md)
+  [Déployer vraiment les règles chez les agents](20260903134909124_loi-non-compilee-chez-l-agent.md)
   doit aboutir pour que `base` atteigne un agent lancé hors d'un projet lié par `lawgiver bind`.
   Tant que `bind-global` ne compile aucune règle, le câblage attend. Il est livré pour être
   prêt ce jour-là. D'ici là, l'effet passe par le texte des agents et des skills.

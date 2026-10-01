@@ -30,7 +30,7 @@ Chaque ligne : qui fait le travail, qui s'en sort le mieux, et ce qui se transpo
 
 | Dimension | BMAD | ezk | Avantage | À voler ? |
 |---|---|---|---|---|
-| **Découvrabilité / « et maintenant ? »** | menu numéroté à l'activation + routeur global `/bmad-help` + « Next Steps » en fin d'étape | `/ezk-help` (index plat généré), sinon prose ; rien en fin de commande | **BMAD** | **Oui** — [20260825160456259](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md) |
+| **Découvrabilité / « et maintenant ? »** | menu numéroté à l'activation + routeur global `/bmad-help` + « Next Steps » en fin d'étape | `/ezk-help` (index plat généré), sinon prose ; rien en fin de commande | **BMAD** | **Oui** — [20260825160456259](../../../../features/done/20260825160456259_next-step-affordance-commandes-suivantes.md) |
 | **Elicitation (raffinement guidé)** | boucle `advanced-elicitation` : 50 méthodes, propose 5, applique, re-propose | absente ; `groom` délègue à un brainstorm libre | **BMAD** | **Oui** — [20260825161522791](../../../../features/20260825161522791_elicitation-raffinement-structure-groom.md) |
 | **Templates de livrables** | PRD, archi, story, epic… templatés avec instructions embarquées | 1 seul vrai template (la fiche) + ADR | **BMAD** | Partiel — [20260817113353538](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
 | **Modèle / graphe** | manifests CSV compilés (`bmad-help.csv`, `agent-manifest.csv`, SHA-256) | schéma typé `domain.ts` **mais aucune instance compilée** ; graphe dérivé à la volée | **BMAD** (sur ce point précis) | **Oui** — [20260821204737357](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md) |
@@ -82,7 +82,7 @@ découle de ce choix.
   > Nuance de version : le préfixe `*` de l'ancien BMAD **a disparu en v6**. Le menu passe par des codes à 2 lettres (`[CP]`, `[MH]`, `[DA]`) auto-injectés + les commandes `/slash`.
 - **ezk.** `/ezk-help` ([bin/ezk-help.ts](../../bin/ezk-help.ts)) génère un **index plat** de tous les skills depuis les frontmatter — il répond « quelles commandes existent », **pas** « que faire maintenant, ici ». En fin de sprint, l'étape 9 est un **STOP en prose** (« on continue ? »), sans proposer de commande. La suite est **tirée** au prochain intake via `ezk-backlog next --ready-only`, jamais **proposée**. Seule exception : une ligne isolée dans `ezk-codex`.
 - **Verdict.** **BMAD gagne nettement.** C'est exactement le trou que tu as ressenti.
-- **À voler.** Un bloc **« Et maintenant ? »** en clôture de commande (1-3 commandes contextuelles). Déjà capturé : fiche [`20260825160456259`](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md).
+- **À voler.** Un bloc **« Et maintenant ? »** en clôture de commande (1-3 commandes contextuelles). Déjà capturé : fiche [`20260825160456259`](../../../../features/done/20260825160456259_next-step-affordance-commandes-suivantes.md).
 
 ### Dim 2 — Templates de réponse et elicitation *(ton déclencheur n°2)*
 
@@ -155,7 +155,7 @@ Les recommandations sont **déjà rangées dans le backlog** (dédoublonnées co
 
 | Reco | Statut backlog |
 |---|---|
-| **« Et maintenant ? »** en fin de commande | Fiche **neuve** [`20260825160456259`](../../../../features/20260825160456259_next-step-affordance-commandes-suivantes.md) (idée #1) |
+| **« Et maintenant ? »** en fin de commande | Fiche **neuve** [`20260825160456259`](../../../../features/done/20260825160456259_next-step-affordance-commandes-suivantes.md) (idée #1) |
 | **Boucle d'elicitation** dans `groom` | Fiche **neuve** [`20260825161522791`](../../../../features/20260825161522791_elicitation-raffinement-structure-groom.md) |
 | **Bibliothèque de templates + étude prior-art** | **Enrichit** l'étude existante [`20260817113353538`](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
 | **Graphe compilé** (instance, pas vues) | **Existe déjà**, argumenté : [`20260821204737357`](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md) |

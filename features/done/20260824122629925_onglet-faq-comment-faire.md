@@ -8,8 +8,8 @@ labels: [lisibilite]
 version: V0.3
 epic:
 depends: ["20260824122629794"]
-status: idea
-pr:
+status: shipped
+pr: "#278"
 created: 2026-08-24
 ---
 
@@ -65,5 +65,5 @@ Origine : `/ezk-backlog add` du 2026-08-24. P1 proposée (PO « urgent »).
 
 Cette fiche reprend le périmètre de :
 
-- [`20260813131737962`](done/20260813131737962_nommage-catalogue-adr0022.md) — Nommage & catalogue. Deux volets sur trois étaient livrés ailleurs ; il restait le tableau scannable. _Repris ici_ : tableau complet, une ligne par skill, test « tous les dossiers sont catalogués ».
-- [`20260813131737971`](done/20260813131737971_carte-roles-analyse-methode.md) — Carte des rôles d'analyse (retro / steward / 0057). _Repris ici_ : une entrée de FAQ. Le choix « un seul juge de cohérence » et la correction des références périmées dans `ezk-retro` restent à faire : voir « Suite ».
+- [`20260813131737962`](20260813131737962_nommage-catalogue-adr0022.md) — Nommage & catalogue. Deux volets sur trois étaient livrés ailleurs ; il restait le tableau scannable. _Repris ici_ : tableau complet, une ligne par skill, test « tous les dossiers sont catalogués ».
+- [`20260813131737971`](20260813131737971_carte-roles-analyse-methode.md) — Carte des rôles d'analyse (retro / steward / 0057). _Repris ici_ : une entrée de FAQ. Le choix « un seul juge de cohérence » et la correction des références périmées dans `ezk-retro` restent à faire : voir « Suite ».
