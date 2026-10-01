@@ -330,7 +330,7 @@ Frontière (ADR-0001) : le **script** range le mécanique, **toi** tu juges le f
 | Commande | Ce qu'elle dit |
 |---|---|
 | `ezk dor show` | les slots déclarés et le seuil de lot |
-| `ezk dor check <id>` | pour chaque slot : section absente / vide / incomplète (item non mentionné) / OK — **code 1** si un slot manque |
+| `ezk dor check <id>` | pour chaque slot : section absente / vide / incomplète (item non mentionné) / OK — **code 1** si un slot manque **ou si le manifeste est invalide** (le message dit lequel : stdout = refus, stderr = manifeste cassé). Un item se cherche comme mot entier |
 | `ezk dor health` | fiches tirables / pas prêtes ; **code 1** sous `health.min-ready` |
 
 Depuis vectorz : `pnpm ezk dor …`. Ailleurs : le binaire `ezk` lié globalement, avec

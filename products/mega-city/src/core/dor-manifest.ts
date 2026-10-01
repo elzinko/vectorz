@@ -201,6 +201,16 @@ function sectionLines(body: string, heading: string): string[] | undefined {
   return found ? out : undefined;
 }
 
+/**
+ * L'item est-il mentionné ? Comme MOT entier (pluriel simple toléré), jamais comme morceau d'un autre
+ * mot : « site » ne doit pas se lire dans « nécessite » (faux vert relevé en revue). Le texte est déjà
+ * passé par `plain` ; les bornes sont des lettres, chiffres ou `_` (un identifiant `readme_old` n'est pas `readme`).
+ */
+function mentions(text: string, item: string): boolean {
+  const escaped = plain(item).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\p{L}\\p{N}_])${escaped}(?:s|x)?(?![\\p{L}\\p{N}_])`, 'u').test(text);
+}
+
 /** Les lignes qui portent une vraie réponse : ni vides, ni commentaires HTML, ni marqueurs. */
 function answerLines(lines: readonly string[]): string[] {
   return lines
@@ -223,7 +233,7 @@ export function checkFiche(manifest: DorManifest, ficheText: string): SlotReport
     const answers = answerLines(lines);
     if (answers.length === 0) return { slot, state: 'vide', missing: [], reason: 'sans contenu' };
     const text = plain(answers.join(' '));
-    const missing = slot.items.filter((item) => !text.includes(plain(item)));
+    const missing = slot.items.filter((item) => !mentions(text, item));
     return { slot, state: missing.length > 0 ? 'incomplet' : 'ok', missing };
   });
 }

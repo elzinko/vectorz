@@ -56,7 +56,7 @@ Reste réel :
 - [x] `ezk-backlog groom` remplit les slots déclarés. `ready` appelle `ezk dor check` et **refuse avec motif** s'il rend 1 (texte du skill). Preuve : texte du skill, sections « La DoR du projet », `groom`, `ready`.
 - [x] Le slot « Surfaces impactées » existe en exemple (`.vectorz/dor.example.yml`) avec une liste de surfaces.
 - [x] Amendement ajouté à ADR-0016.
-- [x] Tests : cœur pur (lecture, vide / incomplet / ok, santé), commande en mémoire, entrées du manifeste `ezk`. 38 tests.
+- [x] Tests : cœur pur (lecture, vide / incomplet / ok, santé), commande en mémoire, entrées du manifeste `ezk`. 42 tests.
 
 Déjà livré (absorbé, avec preuve) :
 

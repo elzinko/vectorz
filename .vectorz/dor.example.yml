@@ -21,7 +21,9 @@ slots:
   - id: surfaces
     heading: Surfaces impactées          # le titre de section attendu dans la fiche (## Surfaces impactées)
     ask: "Pour chaque surface : cette fiche la touche-t-elle ? oui, non, ou comment."
-    items:                               # la liste à balayer : la section doit mentionner chacune
+    items:                               # la liste à balayer : la section doit mentionner chacune, comme MOT entier
+                                         # (« docs » vaut « doc » ; « nécessite » ne vaut pas « site »). Un item de
+                                         # plusieurs mots se cherche tel quel : « notes de version » en toutes lettres.
       - doc
       - site
       - README

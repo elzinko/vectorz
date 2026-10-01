@@ -117,6 +117,28 @@ describe('checkFiche — le mécanique du slot : présent, non vide, tous les it
     expect(r.missing).toEqual([]);
   });
 
+  it('un item se cherche comme MOT entier : « site » n’est pas « nécessite » (faux vert relevé en revue)', () => {
+    const r = etat(fiche('## Surfaces impactées\n\nCe point nécessite une doc ; le README suit. Rien d’autre.'));
+    expect(r.state).toBe('incomplet');
+    expect(r.missing).toEqual(['site']);
+    // Ni préfixe d’un autre mot, ni milieu de mot : « website », « docker », « readmes-old » ne comptent pas.
+    const mots = etat(fiche('## Surfaces impactées\n\nwebsite : oui. docker : non. README_OLD : non.'));
+    expect(mots.missing).toEqual(['doc', 'site', 'README']);
+  });
+
+  it('le pluriel simple est toléré (« docs » vaut « doc », « sites » vaut « site »)', () => {
+    const r = etat(fiche('## Surfaces impactées\n\ndocs : oui. sites : non. README : non.'));
+    expect(r.state).toBe('ok');
+  });
+
+  it('un item de plusieurs mots se cherche tel quel, espaces fusionnés', () => {
+    const slot = { id: 'n', heading: 'Notes', ask: 'q', items: ['notes de version'] };
+    const ok = checkFiche(manifestOf(slot), fiche('## Notes\n\nNotes   de\nversion : oui.'))[0];
+    expect(ok.state).toBe('ok');
+    const ko = checkFiche(manifestOf(slot), fiche('## Notes\n\nnotes : oui. version : non.'))[0];
+    expect(ko.state).toBe('incomplet');
+  });
+
   it('« N.A. — raison » est une réponse, pas un marqueur', () => {
     const slot = { id: 'a', heading: 'Contrat', ask: 'q', items: [] };
     const r = checkFiche(manifestOf(slot), fiche('## Contrat\n\nN.A. — aucune API publique touchée')) [0];
