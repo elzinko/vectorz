@@ -177,6 +177,19 @@ describe('carte de méthode — le sprint est décrit tel qu’il est maintenant
     }
     expect(sprint?.note ?? '').not.toMatch(/MONO-FICHE/); // l'ancienne description est périmée
   });
+
+  it('aucun élément de la carte ne décrit encore le run comme mono-fiche : le sprint porte un lot', () => {
+    // Retour Codex (PR #275) : « sprint-backlog » disait encore « un seul item (le run est mono-fiche) » à côté de
+    // « sprint », qui décrit le lot. La carte interactive expose les deux ensemble : elle se contredisait.
+    const doc = validateMethod(loadCatalog(megaCity), loadMethodDoc(megaCity));
+    const perimes = doc.elements
+      .filter((e) => /mono-fiche|mono-feature|un seul item/i.test(e.note ?? ''))
+      .map((e) => e.id);
+    expect(perimes, 'éléments dont la note décrit encore un run à une seule fiche').toEqual([]);
+    const backlog = doc.elements.find((e) => e.id === 'sprint-backlog');
+    expect(backlog, 'élément « sprint-backlog » absent de ceremonies.yml').toBeDefined();
+    expect(backlog?.note ?? '', 'le sprint-backlog doit parler du lot de stories').toMatch(/\blot\b/i);
+  });
 });
 
 describe('ADR-0054 — ratifié avec le POC', () => {

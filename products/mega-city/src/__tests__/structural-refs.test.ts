@@ -64,7 +64,8 @@ describe('checkPathRefs — le cœur pur', () => {
   it('skill → skill non déclaré : le champ attendu est `composes`', () => {
     const report = checkPathRefs([ref(skill('a'), skill('b'))], edges);
 
-    expect(report.undeclared[0]?.declareWith).toEqual(['composes']);
+    // skill → skill : deux champs peuvent le déclarer, le requis puis l'optionnel (delegates)
+    expect(report.undeclared[0]?.declareWith).toEqual(['composes', 'delegates']);
   });
 
   it("rule → rule : aucun champ d'id n'existe, donc info (reliquat assumé), pas une faute", () => {

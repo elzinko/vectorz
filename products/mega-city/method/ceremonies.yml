@@ -117,9 +117,11 @@ elements:
     etat: adapte
     implemente_par: [ezk-sprint]
     note: >-
-      Dégénéré : `SPRINT.md` éphémère, un seul item (le run est mono-fiche). Le panel a
-      constaté sa corruption par l'entrelacement de chantiers — pièce au dossier de la
-      vue d'avancement.
+      `SPRINT.md` éphémère (gitignoré) : le LOT du sprint, une ligne par story, une PR
+      chacune (`[ ]` ouverte · `[x]` livrée · `[~]` reportée, ADR-0054). `ezk-sprint:start`
+      l'écrit, `ezk-sprint:close` le scelle ; les ids des stories non livrées restent dans
+      les incréments scellés de la session. Le panel a constaté sa corruption par
+      l'entrelacement de chantiers — pièce au dossier de la vue d'avancement.
 
   - id: increment
     type: artefact
@@ -159,8 +161,10 @@ elements:
     etat: assume
     implemente_par: []
     note: >-
-      Assumé ≡ la fiche tirée (le run est mono-fiche, son but EST la fiche) — verdict
-      du panel du 2026-08-23 (B-5). Pas de chantier tant que le run reste mono-fiche.
+      Assumé ≡ l'objectif donné à l'ouverture (`ezk-sprint:start --objective`, titre de
+      `SPRINT.md`) : une ligne libre, pas un artefact validé. Avant le lot (ADR-0054), un
+      run = une seule fiche et son but ÉTAIT la fiche tirée (verdict du panel du
+      2026-08-23, B-5) : ce cadre n'existe plus, le sprint porte plusieurs stories.
 
   # ── Rôles ───────────────────────────────────────────────────
   - id: po

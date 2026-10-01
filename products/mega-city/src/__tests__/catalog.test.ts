@@ -251,6 +251,43 @@ describe('loadCatalog — frontmatter composes/composes-external (ADR-0025, fich
   });
 });
 
+describe('loadCatalog — frontmatter delegates (tier optionnel, fiche 20260812104022246)', () => {
+  let root: string;
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'lawgiver-delegates-'));
+  });
+  afterEach(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  function writeSkill(dir: string, frontmatter: string): void {
+    mkdirSync(join(root, 'skills', dir), { recursive: true });
+    writeFileSync(join(root, 'skills', dir, 'SKILL.md'), `---\n${frontmatter}\n---\n\ncorps\n`);
+  }
+
+  it('parse delegates: dans le champ delegates, à côté de composes:', () => {
+    writeSkill(
+      'archiver',
+      ['name: archiver', 'composes:', '  - a', 'delegates:', '  - ezk-backlog'].join('\n'),
+    );
+    const skill = loadCatalog(root).skills.get('archiver');
+    expect(skill?.delegates).toEqual(['ezk-backlog']);
+    expect(skill?.composes).toEqual(['a']);
+  });
+
+  it("n'ajoute pas le champ quand delegates est absent (rétro-compat)", () => {
+    writeSkill('plain', 'name: plain');
+    const skill = loadCatalog(root).skills.get('plain');
+    expect(skill).toEqual({ id: 'plain', content: 'corps' });
+    expect(skill).not.toHaveProperty('delegates');
+  });
+
+  it('rejette un id délégué non sûr (assertSafeId, défense frontière)', () => {
+    writeSkill('evil', ['name: evil', 'delegates:', '  - ../../etc/passwd'].join('\n'));
+    expect(() => loadCatalog(root)).toThrow(/non sûr/);
+  });
+});
+
 describe('loadCatalog — frontmatter applies (fiche 357, refs structurelles par id)', () => {
   let root: string;
   beforeEach(() => {

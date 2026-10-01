@@ -1,5 +1,6 @@
 ---
 applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio]
+delegates: [ezk-backlog]
 name: ezk-archive
 argument-hint: "[help|check|run]"
 description: >-
@@ -275,7 +276,9 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 
 - **`ezk-backlog`** : le sous-agent lui délègue `ship`/`add`/`regen`
   — **uniquement si le point 3 est DIRTY** (c'est le geste le plus cher de la chaîne) ;
-  la note de handoff renvoie vers `list`.
+  la note de handoff renvoie vers `list`. **Délégation optionnelle** (`delegates:`, pas `composes:`) :
+  si `ezk-backlog` n'est pas installé dans le profil, ne livre rien toi-même — nomme dans le rapport
+  les fiches à livrer, verdict `pending`, et laisse l'humain lancer `ship`.
 - **`ezk-sprint`** : complémentaire — le sprint *ouvre, déroule et ferme* (`start` / `close`,
   qui scelle l'incrément dans `SPRINT.md`), ezk-archive ferme la *session*. Typiquement invoqué
   **après** le `close` du dernier sprint de la session. À la clôture `run`/`close`, archive un

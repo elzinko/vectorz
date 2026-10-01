@@ -14,72 +14,88 @@ created: 2026-08-12
 
 # Composer du COMPORTEMENT dans un skill ezk (pas seulement des dépendances)
 
+## En clair
+
+Un skill sait déjà dire « j'applique cette règle » (`applies:`) et « je suis fait de ce skill »
+(`composes:`). Il ne sait pas dire « je confie ceci à ce skill, **s'il est là** ».
+Cette fiche ajoute ce troisième geste : `delegates:`, une composition **optionnelle** qui ne
+déclenche jamais d'avertissement. Elle l'utilise sur le cas réel d'`ezk-archive`, qui délègue à
+`ezk-backlog` sans l'avoir déclaré. Le reste de l'idée d'origine reste en « Suite ».
+
 ## Contexte / Problème
 
-Besoin PO (session 2026-08-12) : pouvoir créer de la **composition** dans les skills
-générés par ezk — ajouter des **lignes/directives** qui **imposent** à la commande/skill
-un **formalisme** particulier : *répondre de telle manière*, *appeler telle commande*
-(architecte, brainstorming, …), etc. Autrement dit des **fragments comportementaux
-réutilisables** (mixins / aspects) qu'un skill **déclare** et qui se **tissent** dans ses
-instructions.
+Besoin PO (2026-08-12) : des **consignes réutilisables** qu'un skill déclare et qui s'imposent à lui
+(un format de réponse, un appel obligatoire à une commande). Trois voisins existent ; aucun ne
+couvrait l'appel **optionnel** :
 
-**État de la méthode — trois voisins, aucun ne couvre exactement ça.**
-- **`0149` composition inter-skills (`composes:`) — SHIPPED** (ADR-0025-composes) : graphe
-  de dépendances + warning sur composant manquant. C'est **QUI dépend de QUI** (structurel),
-  **pas QUELLE directive comportementale** un skill impose.
-- **Système `rules/` (iamthelaw)** : sait déjà « imposer une ligne de conduite » à
-  l'échelle d'un **profil** (ex. `rules/documentation-guidelines/human-facing-lisibility.md`
-  = « réponds ainsi »). Mais ce n'est pas déclaré **au niveau d'un skill généré**, ni
-  orienté « force l'appel de telle commande ».
-- **`0075`** (idea) : corpus de règles de **persona/format** pour `ezk-article` — cousin,
-  mais scopé écriture d'articles.
+- `applies:` (fiche 357, ADR-0040) : le skill déclare, par id, la règle de `rules/` qu'il suit.
+- `composes:` (ADR-0025) : dépendance **requise**, avertissement au bind si elle manque.
+- `composes-external:` : référence hors catalogue, jamais avertie.
 
-## Proposition
+Cas réel qui attend : `ezk-archive` délègue `ship`/`add`/`regen` à `ezk-backlog` (§ Intégration)
+mais ne le déclare pas. Le déclarer en `composes:` ferait avertir chaque profil sans `ezk-backlog`.
 
-**À groomer — solution non tranchée** (demande PO : « peux-tu créer une fiche… il faudra
-la groomer avec `/engineering:architecture` et `/product-management:product-brainstorming` »).
-Pistes :
+## Frontière tranchée (c'était la question « à groomer avec /engineering:architecture »)
 
-- Un mécanisme (frontmatter ? bloc dédié ? références vers des `rules/` ?) par lequel un
-  skill ezk **déclare des directives comportementales composables** : format de
-  restitution imposé, **appels de commandes obligatoires** (ex. « ce skill DOIT appeler
-  `engineering:architecture` à l'étape X »), tics à éviter, etc.
-- **Frontière à trancher** avec : `0149` (`composes:` structurel — est-ce une facette
-  `composes-behavior` ?), le système **`rules/`** (est-ce une extension de rules bindées au
-  skill ?), `0075` (persona/format), et le générateur **`ezk-ezk`** (qui fabrique les
-  skills : c'est probablement lui qui poserait ces directives).
-- **Cas d'usage moteur** : [[20260812104022243]] (③ — groom force l'appel archi+brainstorm)
-  est une **instance** de ce mécanisme.
-- **2e cas d'usage (PO 2026-08-25)** : une directive « **`ezk-archive` ne restitue QUE la session
-  courante** » — ne pas afficher le pending des autres worktrees/sessions (les **nommer** suffit),
-  tissée dans le **bundle d'archivage**. Règle de sortie voisine : [[20260824111001836]] ; le cockpit
-  [[20260825141012293]] EXPOSE déjà l'état des autres sessions, donc l'archivage n'a pas à le dupliquer.
+- **Format imposé, tics à éviter** : une **règle** de `rules/`, déclarée par `applies:`. Ça existe.
+  Exemple en service : `human-facing-lisibility` sur `ezk-archive` (#273). Rien à inventer.
+- **Appel forcé** : une arête déclarée dans le frontmatter **plus** la phrase du corps qui dit
+  QUAND appeler. `composes:` si l'appel est requis, `delegates:` s'il est optionnel avec repli.
+- **Pas de 4e mécanisme** (mixin, aspect). L'idée d'origine précède `applies:` ; elle est couverte.
+- **`ezk-ezk`** (le générateur) pose ces déclarations ; il n'a pas besoin d'un mécanisme neuf.
+- Le jeu de **verbes du graphe reste fermé** (ADR-0040 D1) : `delegates:` porte le verbe `compose`,
+  comme `composes:` ; la différence se lit dans le trait (pointillé) et dans l'absence d'alerte.
 
-**À groomer avec `/engineering:architecture`** (frontière `composes:`↔`rules/`↔`ezk-ezk`,
-forme de la directive) **et `/product-management:product-brainstorming`** (le vrai besoin
-et ses cas).
+## Critères d'acceptation (reste réel après tri du 2026-09-30)
 
-## Critères d'acceptation
+- [x] `delegates:` est lu par le loader (même garde `assertSafeId` que `composes:`) et entre dans
+      le graphe compilé : lien `delegates`, skill → skill, verbe `compose`.
+      *Preuve : `catalog.test.ts` (3 cas), `graph.test.ts`, `graph-vocabulary.test.ts`.*
+- [x] Skill avec `delegates: [X]`, X absent du profil bindé → **aucun** avertissement au bind
+      (ni direct, ni via la fermeture transitive).
+      *Preuve : `composition.test.ts` (4 cas dont la fermeture et le délégué présent).*
+- [x] Skill avec `composes: [Y]`, Y absent → avertissement **inchangé** (ADR-0025).
+      *Preuve : les tests existants de `composition.test.ts` restent verts, plus le cas côte à côte.*
+- [x] Le graphe Mermaid de `skills/README.md` dessine `delegates:` en **pointillé**, `composes:`
+      en trait plein ; le bloc se régénère par `pnpm composes:graph` et le test d'à-jour est vert.
+      *Preuve : `composes-graph.test.ts` ; bloc régénéré (`ezk-archive -.-> ezk-backlog`) + légende.*
+- [x] `ezk-archive` déclare `delegates: [ezk-backlog]` ; son corps cite `ezk-backlog` **et** écrit
+      le repli si absent (la délégation est réelle, pas deux lignes de frontmatter).
+      *Preuve : § Intégration d'`ezk-archive` (repli : nommer les fiches à livrer, verdict `pending`).*
+- [x] ADR-0025 amendé (quelques lignes) : le tier optionnel et la frontière ci-dessus.
+      *Preuve : section « Amendement 2026-10-01 » de l'ADR-0025.*
 
-- [ ] (à définir au grooming — DoR)
+Absorbé de 0190 : ses critères 1 à 3 sont repris tels quels. Son critère 4 (migrer `ezk-sprint`
+vers `ezk-codex` / `ezk-preview`) est **sans objet** : `ezk-sprint` ne cite plus ces deux skills.
+Le cas réel est `ezk-archive` → `ezk-backlog`. Le garde automatique « intégration fantôme » (retour
+Codex #125 : tout `composes:`/`delegates:` doit être cité dans le corps) est **porté par la fiche
+0066**, qui en a la charge ; constat de départ : 0 fantôme sur 25 skills.
+
+## Comment vérifier
+
+```bash
+pnpm --dir products/mega-city exec vitest run src/__tests__/composition.test.ts src/__tests__/composes-graph.test.ts src/__tests__/graph-vocabulary.test.ts src/__tests__/catalog.test.ts
+pnpm --dir products/mega-city composes:graph   # puis `git diff --stat skills/README.md` : vide
+```
+
+Sabotage joué le 2026-10-01 : `delegates: [fantome]` ajouté à `ezk-diagram` → le test « aucun lien
+ne pointe dans le vide » (`graph.test.ts`) passe au rouge et nomme `ezk-diagram --(delegates)--> fantome`.
+Annulé ensuite. Reste à rejouer à la main : retirer `ezk-backlog` d'un profil qui porte `ezk-archive`
+→ aucun ⚠️ au bind (couvert par `composition.test.ts`).
+
+## Suite (hors POC)
+
+- `ezk-ezk` pose `delegates:` à la fabrication d'un skill (aujourd'hui il ne pose que `composes:`).
+- `delegates-external:` pour une délégation hors catalogue (aucun cas aujourd'hui).
+- La carte `ezk:map` affiche, par skill, les consignes tissées et les délégations (idée PO
+  2026-08-25 ; recoupe l'onglet sessions de la fiche 20260825141012293).
+- Directive « `ezk-archive` ne restitue QUE la session courante » (2e cas PO, 2026-08-25) : à poser
+  comme **règle** appliquée par `applies:`, dans une fiche à part (voisine : 20260824111001836).
+- Cas moteur ③ « groom force l'appel archi + brainstorm » : fiche 20260812104022243 fusionnée dans
+  20260825161522791 (tri 2026-09-30).
 
 ## Notes / décisions
 
-- **Sœur de `0149`** (composition **structurelle**, shippée) — ici = composition
-  **comportementale**. Voisins : `rules/` (iamthelaw), [[0075]] (persona/format),
-  instance concrète [[20260812104022243]] (③). Générateur concerné : `ezk-ezk`.
-- Solution **non tranchée** (demande PO) → architecte.
-- **Idée map (PO 2026-08-25)** : la carte de la méthode (`ezk:map`, qui liste les skills dont
-  `ezk-archive`) pourrait **afficher, par skill/agent, les directives/règles composées** — rendre
-  visible « ce qui est tissé » à l'exécution, très parlant pour comprendre le comportement réel.
-  Recoupe l'onglet sessions de [[20260825141012293]].
-- Origine : session 2026-08-12.
-
-## ⤓ Absorbe (tri du 2026-09-30)
-
-Cette fiche reprend désormais le périmètre de :
-
-- [`0190`](done/0190-composes-delegates-tier-optionnel.md) — composes — tier « delegates: » (composition optionnelle, jamais warnée)  
-  _Pourquoi_ : Même sujet : la composition des skills.
-
-Au grooming, intégrer leurs critères encore utiles ici plutôt que de les rouvrir.
+- Origine : session 2026-08-12. Sœur de `0149` (composition structurelle, livrée).
+- Absorbe [`0190`](done/0190-composes-delegates-tier-optionnel.md) (tri du 2026-09-30).
+- Nom `delegates:` proposé par l'architecte lors du panel du 2026-08-10 ; on le garde.
