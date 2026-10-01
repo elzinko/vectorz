@@ -9,7 +9,10 @@
 #     session (docs/sessions/, .claude/handoff.md : c'est le métier d'ezk-archive) ;
 #   - `start → close → start` s'enchaîne sans perdre ni l'incrément ni les galères du labo ;
 #   - un sprint où rien n'est livré a une sortie (`close --abandon`) : pas d'impasse, pas de rm SPRINT.md ;
-#   - un SPRINT.md d'ancien format (statut en fin de ligne) se ferme, une seule fois.
+#   - un SPRINT.md d'ancien format (statut en fin de ligne) se ferme, une seule fois ;
+#   - un skill installé en COPIE ou en LIEN (bind-global) ouvre un sprint : le loader se résout sans que
+#     le script soit lancé depuis le catalogue ;
+#   - les ids des stories reportées ou restées ouvertes survivent au prochain `start` (journal de session).
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -112,7 +115,7 @@ ok "CLOSE: SEALED sprint=1 done=1 deferred=1" 'printf "%s\n" "$OUT7" | grep -qx 
 ok "annonce l'incrément (id + référence de PR)" 'printf "%s\n" "$OUT7" | grep -qx "INCREMENT: $A (PR #12)"'
 ok "rend la main à la session : retro, planning, sprint suivant, archive nommés" 'N="$(printf "%s\n" "$OUT7" | grep "^NEXT:")" && for w in ezk-retro ezk-backlog "ezk-sprint start" ezk-archive; do printf "%s\n" "$N" | grep -qF "$w" || exit 1; done'
 ok "Statut: clos" 'grep -q "^Statut: clos" SPRINT.md'
-ok "incrément inscrit dans « Incréments scellés de la session »" 'grep -qxF -- "- Sprint 1 — Premier sprint — 1 livrée, 1 reportée : $A (PR #12)" SPRINT.md && grep -qxF "## Incréments scellés de la session" SPRINT.md'
+ok "incrément inscrit dans « Incréments scellés de la session », la story reportée nommée" 'grep -qxF -- "- Sprint 1 — Premier sprint — 1 livrée, 1 reportée : $A (PR #12) — reportée : $B" SPRINT.md && grep -qxF "## Incréments scellés de la session" SPRINT.md'
 ok "la session n'est pas touchée (docs/sessions, handoff)" '[ "$(sum docs/sessions/2026-10-01-marker.md)" = "$SESS_MARK" ] && [ "$(sum .claude/handoff.md)" = "$SESS_HAND" ] && [ "$(ls docs/sessions | wc -l | tr -d " ")" = 1 ]'
 ok "close n'a créé ni branche ni commit, l'arbre reste propre" '[ "$(git rev-parse HEAD)" = "$HEAD0" ] && [ "$(git for-each-ref | sort)" = "$REFS0" ] && [ -z "$(git status --porcelain)" ]'
 
@@ -134,7 +137,7 @@ OUT9B="$(bash "$SPRINT" start --lot "$C" --objective "Second sprint" --override 
 ok "avec override : OPENED sprint=2 stories=1" 'printf "%s\n" "$OUT9B" | grep -qx "START: OPENED sprint=2 stories=1"'
 ok "l'override est journalisé dans les notes" 'grep -q "Override du portier.*ALERT points=1.*arbre sale volontaire (test)" SPRINT.md'
 ok "le labo du sprint 1 est conservé, en une seule section" 'grep -q "symptôme X — geste Y" SPRINT.md && [ "$(grep -cxF "## Galères & gestes (labo)" SPRINT.md)" = 1 ]'
-ok "l'incrément scellé du sprint 1 est conservé" 'grep -qxF -- "- Sprint 1 — Premier sprint — 1 livrée, 1 reportée : $A (PR #12)" SPRINT.md'
+ok "l'incrément scellé du sprint 1 est conservé, avec sa story reportée" 'grep -qxF -- "- Sprint 1 — Premier sprint — 1 livrée, 1 reportée : $A (PR #12) — reportée : $B" SPRINT.md'
 ok "le lot du sprint 2 ne contient que sa story" '[ "$(grep -c "^- \[[ x~]\] " SPRINT.md)" = 1 ] && grep -qx -- "- \[ \] $C — Gamma" SPRINT.md'
 git checkout -- a.txt
 
@@ -230,7 +233,57 @@ OUT15C="$(bash "$SPRINT" close)"
 ok "marqueurs corrigés : CLOSE: SEALED sprint=9 done=2 deferred=1" 'printf "%s\n" "$OUT15C" | grep -qx "CLOSE: SEALED sprint=9 done=2 deferred=1"'
 ok "l'incrément reprend les deux stories livrées" 'printf "%s\n" "$OUT15C" | grep -qx "INCREMENT: $A (PR #21)" && printf "%s\n" "$OUT15C" | grep -qx "INCREMENT: $B (PR #22)"'
 
-echo "S16 — hors dépôt git : exit 2"
+echo "S16 — skill installé en COPIE (bind-global par défaut) : aucun catalogue autour du script"
+# Retour Codex (PR #275, P1) : MC se calculait depuis le chemin du script, donc = ~/.claude, où ni tsx ni
+# bin/fiche-rows.ts n'existent. Tout `start --lot` sortait en « tsx introuvable ». Une copie ne matérialise que
+# le DOSSIER de chaque skill (SKILL.md, scripts/…), jamais bin/ ni node_modules.
+SKILLS_SRC="$(cd "$HERE/../.." && pwd -P)" # products/mega-city/skills
+MC_REAL="$(cd "$HERE/../../.." && pwd -P)"  # products/mega-city : porte bin/ et node_modules
+mkdir -p "$TMP/home-copy/.claude/skills"
+cp -R "$SKILLS_SRC/ezk-sprint" "$SKILLS_SRC/ezk-archive" "$TMP/home-copy/.claude/skills/"
+SPRINT_COPY="$TMP/home-copy/.claude/skills/ezk-sprint/scripts/sprint.sh"
+rc=0; OUT16="$(bash "$SPRINT_COPY" start --lot "$A" --objective "Copie sans catalogue" 2>/dev/null)" || rc=$?
+ok "start s'ouvre (OPENED sprint=10), il ne sort plus en exit 2 « tsx introuvable »" '[ "$rc" = 0 ] && printf "%s\n" "$OUT16" | grep -qx "START: OPENED sprint=10 stories=1"'
+ok "dit que le loader est introuvable et comment le désigner (WARN, MEGA_CITY_ROOT)" 'printf "%s\n" "$OUT16" | grep "^WARN:" | grep -qF "MEGA_CITY_ROOT"'
+ok "faute de loader, le titre vient du NOM du fichier (jamais d'un parse maison du front-matter)" 'grep -qx -- "- \[ \] $A — alpha" SPRINT.md'
+bash "$SPRINT" close --abandon "S16 : copie sans catalogue" >/dev/null
+rc=0; OUT16B="$(MEGA_CITY_ROOT="$MC_REAL" bash "$SPRINT_COPY" start --lot "$A" --objective "Copie + catalogue" 2>/dev/null)" || rc=$?
+ok "MEGA_CITY_ROOT désigne le catalogue : OPENED sprint=11, sans WARN" '[ "$rc" = 0 ] && printf "%s\n" "$OUT16B" | grep -qx "START: OPENED sprint=11 stories=1" && ! printf "%s\n" "$OUT16B" | grep -q "^WARN:"'
+ok "le titre est lu par le loader du catalogue (Alpha, pas alpha)" 'grep -qx -- "- \[ \] $A — Alpha" SPRINT.md'
+
+echo "S17 — skill installé en LIEN (bind-global --link) : le script suit le symlink jusqu'au catalogue"
+# Le chemin LOGIQUE du script (~/.claude/skills/ezk-sprint/scripts) ne contient pas le catalogue ; le chemin
+# PHYSIQUE, si : MC doit se calculer depuis lui.
+mkdir -p "$TMP/home-link/.claude/skills"
+ln -s "$SKILLS_SRC/ezk-sprint" "$TMP/home-link/.claude/skills/ezk-sprint"
+ln -s "$SKILLS_SRC/ezk-archive" "$TMP/home-link/.claude/skills/ezk-archive"
+bash "$SPRINT" close --abandon "S17 : fin de S16" >/dev/null
+rc=0; OUT17="$(bash "$TMP/home-link/.claude/skills/ezk-sprint/scripts/sprint.sh" start --lot "$A" --objective "Lien" 2>/dev/null)" || rc=$?
+ok "start s'ouvre depuis le chemin installé (OPENED sprint=12)" '[ "$rc" = 0 ] && printf "%s\n" "$OUT17" | grep -qx "START: OPENED sprint=12 stories=1"'
+ok "titre lu par le loader du catalogue, sans WARN" '! printf "%s\n" "$OUT17" | grep -q "^WARN:" && grep -qx -- "- \[ \] $A — Alpha" SPRINT.md'
+
+echo "S18 — les ids non livrés (reportés, restés ouverts) traversent le prochain start"
+# Retour Codex (PR #275, P2) : chaque start REMPLACE le lot, et la ligne scellée ne nommait que les stories livrées.
+# L'id d'une story reportée ou abandonnée disparaissait du savoir de session, alors qu'ezk-archive en tire
+# l'entête `fiches:` du récit.
+cur() { sed -nE 's/^# Sprint ([0-9]+).*/\1/p' SPRINT.md | head -1; }
+bash "$SPRINT" close --abandon "S18 : fin de S17" >/dev/null
+bash "$SPRINT" start --lot "$A,$B" --objective "Reports" >/dev/null
+N18="$(cur)"
+edit "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (PR #30)/"
+edit "s/^- \[ \] $B — Beta\$/- [~] $B — Beta (PR #31)/"
+bash "$SPRINT" close >/dev/null
+SEAL18="- Sprint $N18 — Reports — 1 livrée, 1 reportée : $A (PR #30) — reportée : $B (PR #31)"
+ok "la ligne scellée nomme la story reportée, avec sa PR" 'grep -qxF -- "$SEAL18" SPRINT.md'
+bash "$SPRINT" start --lot "$C" --objective "Après les reports" >/dev/null
+N18B="$(cur)"
+ok "le lot du sprint suivant ne contient que sa story" '[ "$(grep -c "^- \[[ x~]\] " SPRINT.md)" = 1 ] && grep -qx -- "- \[ \] $C — Gamma" SPRINT.md'
+ok "l'id reporté a survécu au remplacement du lot" 'grep -qxF -- "$SEAL18" SPRINT.md'
+bash "$SPRINT" close --abandon "PO arrête" >/dev/null
+bash "$SPRINT" start --lot "$A" --objective "Suite" >/dev/null
+ok "abandon : l'id de la story restée ouverte est gardé aussi" 'grep -qxF -- "- Sprint $N18B — Après les reports — abandonné (PO arrête) — 0 livrée, 0 reportée, 1 ouverte — ouverte : $C" SPRINT.md'
+
+echo "S19 — hors dépôt git : exit 2"
 mkdir "$TMP/nogit"
 rc=0; (cd "$TMP/nogit" && bash "$SPRINT" close >/dev/null 2>&1) || rc=$?
 ok "exit 2" '[ "$rc" = 2 ]'
