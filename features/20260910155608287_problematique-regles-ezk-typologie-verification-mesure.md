@@ -64,7 +64,7 @@ Différences : **quoi** (artefact vs process) · **quand** (par-PR vs sur-sprint
 
 - **Sous-problème 6 (scoping/composition + honnêteté de garantie)** : candidat conçu et passé
   au panel adverse → **[ADR-0050](../products/mega-city/docs/adr/0050-couche-regles-projet-local.md)**
-  + fiche fille [`20260910152227744`](20260910152227744_regles-projet-local-couche-vectorz.md).
+  + fiche fille [`20260910152227744`](done/20260910152227744_regles-projet-local-couche-vectorz.md).
   Verdict panel : GO-SI (séparer « chargée » de « appliquée », méta-gate anti-`MUST`-sans-gate,
   couplage inversé). **Reste ouvert** : les problématiques 1–5, surtout la **mesure d'efficacité**.
 

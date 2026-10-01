@@ -160,17 +160,105 @@ describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)',
     expect(r.kind).toBe('run');
   });
 
-  it('commande fixe avec --root vers un autre dépôt : refusée, et dit que ce n’est pas encore possible', () => {
+  it('commande fixe avec --root vers un autre dépôt : refusée, car elle écrit dans la méthode', () => {
     const r = route(MANIFEST, ['views', 'regen'], { ownRoot: OWN, rootFlag: '/autre/projet' });
     expect(r.kind).toBe('error');
     if (r.kind !== 'error') return;
-    expect(r.message).toMatch(/pas encore possible/);
+    expect(r.message).toMatch(/écrit dans le dépôt de la méthode/);
+    expect(r.message).toMatch(/travaillent sur un projet désigné/); // dit où --root est accepté
+    expect(r.message).not.toMatch(/pas encore possible/);
     expect(r.message).not.toMatch(/\d{10,}/); // pas de numéro de fiche dans un message d'erreur
   });
 
   it('commande « none » (law bind) : marche de n’importe où', () => {
     const r = route(MANIFEST, ['law', 'bind', 'global', '.'], { ownRoot: OWN });
     expect(r.kind).toBe('run');
+  });
+});
+
+// Fiche 20260826173221323 : une commande qui SEULEMENT lit les fiches peut viser le projet désigné.
+const PROJECT_MANIFEST = parseManifest(`
+commands:
+  - domain: board
+    verb: show
+    run: bin/avancement.ts
+    summary: Affiche le board.
+    project: true
+  - domain: dashboard
+    run: bin/ezk-map.ts
+    summary: Ouvre le tableau de bord.
+    root: none
+    project: true
+  - domain: views
+    verb: regen
+    run: bin/views-regen.ts
+    summary: Régénère les vues.
+  - domain: docs
+    verb: check
+    run: bin/check.sh {root} features
+    summary: Vérifie les documents.
+    project: true
+`);
+
+describe('manifeste — la marque « project »', () => {
+  it('se lit, et vaut faux par défaut', () => {
+    expect(PROJECT_MANIFEST.commands[0]).toMatchObject({ domain: 'board', project: true });
+    expect(PROJECT_MANIFEST.commands[2]?.project).toBeUndefined();
+  });
+
+  it('refuse autre chose qu’un booléen', () => {
+    const entry = '  - domain: a\n    run: bin/a.ts\n    summary: x\n    project: oui';
+    expect(() => parseManifest(`commands:\n${entry}`)).toThrow(/project/);
+  });
+});
+
+describe('route — projet désigné (project: true)', () => {
+  it('--root vers un autre projet : la commande passe, et rend le projet visé', () => {
+    const r = route(PROJECT_MANIFEST, ['board', 'show'], { ownRoot: OWN, checkoutRoot: OWN, rootFlag: '/muti' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
+  });
+
+  it('même depuis un dossier hors de tout dépôt de la méthode', () => {
+    const r = route(PROJECT_MANIFEST, ['board', 'show'], { ownRoot: OWN, rootFlag: '/muti' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
+  });
+
+  it('la variable EZK_ROOT désigne le projet quand l’option manque', () => {
+    const r = route(PROJECT_MANIFEST, ['board', 'show'], { ownRoot: OWN, envRoot: '/samplerz' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/samplerz' });
+  });
+
+  it('l’option prime sur la variable', () => {
+    const r = route(PROJECT_MANIFEST, ['dashboard'], { ownRoot: OWN, rootFlag: '/muti', envRoot: '/samplerz' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
+  });
+
+  it('sans désignation : comme avant — refus hors dépôt pour une commande fixe, aucun projet visé', () => {
+    expect(route(PROJECT_MANIFEST, ['board', 'show'], { ownRoot: OWN }).kind).toBe('error');
+    const r = route(PROJECT_MANIFEST, ['board', 'show'], inside);
+    expect(r.kind).toBe('run');
+    expect(r).not.toHaveProperty('projectRoot');
+  });
+
+  it('une commande « none » marquée project passe sans désignation, depuis n’importe où', () => {
+    const r = route(PROJECT_MANIFEST, ['dashboard'], { ownRoot: OWN });
+    expect(r.kind).toBe('run');
+    expect(r).not.toHaveProperty('projectRoot');
+  });
+
+  it('une commande qui écrit dans la méthode ignore la variable, et refuse toujours --root vers un autre dépôt', () => {
+    const viaEnv = route(PROJECT_MANIFEST, ['views', 'regen'], { ownRoot: OWN, checkoutRoot: OWN, envRoot: '/muti' });
+    expect(viaEnv.kind).toBe('run');
+    expect(viaEnv).not.toHaveProperty('projectRoot');
+    expect(route(PROJECT_MANIFEST, ['views', 'regen'], { ownRoot: OWN, envRoot: '/muti' }).kind).toBe('error');
+    expect(route(PROJECT_MANIFEST, ['views', 'regen'], { ownRoot: OWN, rootFlag: '/muti' }).kind).toBe('error');
+  });
+
+  it('{root} devient le projet désigné pour une commande project, la méthode sinon', () => {
+    const own = route(PROJECT_MANIFEST, ['docs', 'check'], inside);
+    const other = route(PROJECT_MANIFEST, ['docs', 'check'], { ownRoot: OWN, rootFlag: '/muti' });
+    expect(own).toMatchObject({ kind: 'run', step: { args: [OWN, 'features'] } });
+    expect(other).toMatchObject({ kind: 'run', step: { args: ['/muti', 'features'] } });
   });
 });
 

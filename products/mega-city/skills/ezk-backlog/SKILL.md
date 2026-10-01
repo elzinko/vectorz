@@ -106,8 +106,8 @@ du front-matter de cette skill).
 | `init` | Initialise le suivi : `features/` + `done/` + README curé + `BACKLOG.md` (helper `init.sh`) |
 | `list` / `next` | Charge le backlog **trié par priorité** (P0→P3) en contexte de session |
 | `add <description>` | Crée une fiche **après anti-doublon + cadrage** : vérifie qu'elle n'existe pas déjà, propose de regrouper / re-prioriser, fixe type & version (cadre via `product-brainstorming` si flou) |
-| `groom <id>` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères) via `product-brainstorming` ciblé — ne change pas le statut |
-| `ready <id>` | **Gate DoR** : refuse si un slot manque ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
+| `groom <id> [--archi\|--no-archi] [--brainstorm\|--no-brainstorm]` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères, + les slots que le projet déclare dans `.vectorz/dor.yml`) par une **boucle guidée** : menu court de techniques (catalogue `groom-techniques.yml`), tu choisis, l'agent applique et re-propose ; l'architecte et le brainstorm en font partie — ne change pas le statut |
+| `ready <id>` | **Gate DoR** : refuse si un slot manque (socle ou slot du projet) ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
@@ -304,22 +304,76 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    écran, `before-after` ou `auto` motivé), et — si la fiche en référence — **dépendances
    externes** (repo hors monorepo, service, secret : chacune **constatée** accessible, avec une
    ligne datée « dépendance <nom> — accès constaté le AAAA-MM-JJ » dans la fiche ;
-   rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié).
-2. Session de raffinement **ciblée** sur ces slots via
-   `product-management:product-brainstorming` ; le panel de challenge (fiche 0057) est
-   composable en étape optionnelle.
-3. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
+   rétro 2026-07-18, symptôme : une fiche ready dépendant d'un repo externe jamais vérifié),
+   **plus les slots du projet** s'il en déclare (section suivante : `ezk dor show` les liste ;
+   chacun a une section attendue dans la fiche, une question à trancher, une liste à balayer).
+2. **Boucle de raffinement guidée** (fiche 20260825161522791). Au lieu d'un brainstorm libre,
+   une boucle « propose, l'opérateur choisit, tu appliques, tu re-proposes ». Prior art : BMAD
+   `advanced-elicitation` (50 méthodes, `methods.csv`) — voir le
+   [rapport de benchmark](../../docs/benchmarks/2026-08-25-bmad-vs-ezk.md). Le catalogue est une
+   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (9 techniques).
+   - **Menu court.** Propose 3 techniques (4 au plus), choisies sur le slot le plus faible :
+     numérotées, une ligne chacune (titre + ce qu'elle va faire), plus `0 — terminer`. Si
+     `ezk dor check <id>` nomme un **slot du projet** vide ou incomplet, propose d'office
+     `slot-du-projet` : la technique de repli générique, qui reprend la `ask` et les `items` du
+     slot déclaré (le catalogue ne peut pas connaître d'avance les slots d'un projet).
+   - **Applique, remontre.** L'opérateur en choisit une. Applique-la à la section concernée, puis
+     montre la section améliorée (avant, après).
+   - **Valide.** « garder / retoucher / annuler ». N'écris dans la fiche que ce qui est gardé.
+   - **Re-propose.** Un nouveau menu, sans les techniques déjà jouées, jusqu'à la
+     **sortie explicite** (`0`, « ça suffit »). Sortir au premier tour est légitime : aucune passe
+     n'est forcée, la fiche reste telle quelle.
+   - **Sans opérateur interactif** : pas de menu, il bloquerait l'auto-groom. C'est le cas dès que
+     personne ne peut répondre : appel d'un orchestrateur ou d'un run autonome (`ezk-product-build`,
+     `ezk-pm`, `ezk-sprint` à l'intake sur une tête bloquée). Pour **chaque slot manquant** ou faible
+     (le socle et les slots du projet), applique toi-même la technique la plus utile : une par slot,
+     en une passe, et nomme-les dans ton compte rendu. Un slot qui ne se remplit pas sans arbitrage
+     reste dit tel quel : la fiche n'est pas prête, et l'appelant retombe sur son checkpoint « aucune
+     fiche ready ».
+3. **Architecte et brainstorm** (fiche 20260812104022243). Deux techniques du catalogue APPELLENT un
+   skill : `avis-architecte` → `engineering:architecture`, `brainstorm-cible` →
+   `product-management:product-brainstorming`. Par défaut, l'architecte est proposé au menu quand la
+   fiche est de type `feature` ou `refactor` ET porte une décision de structure (frontière de module,
+   format ou contrat, dépendance) ; le brainstorm, quand le slot « problème » est faible. Les
+   paramètres `groom <id> --archi` / `--no-archi` et `--brainstorm` / `--no-brainstorm` forcent la
+   technique au premier menu, ou la retirent. Sans paramètre, c'est ton jugement. Le panel de
+   challenge (fiche 0161) viendra comme une technique de plus.
+4. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
    c'est le job du gate.
 
 Quand groomer : au moment de **tirer** la fiche (pas à la capture — une `idea` jamais
 tirée ne mérite pas de grooming). Cadrer une demande floue à la création reste le job
 d'`add` (étape 1).
 
+### La DoR du projet — `.vectorz/dor.yml` (fiche 20260815080414006, ADR-0016 amendé)
+
+Le socle (problème / valeur / critères + dépendances externes) est le même partout et vit ICI.
+Un projet peut y **ajouter** des slots dans `.vectorz/dor.yml` (exemple : `.vectorz/dor.example.yml`
+du dépôt vectorz) : un `heading` (la section attendue dans la fiche), une `ask` (la question à
+trancher), des `items` (la liste à balayer — ex. les surfaces : doc, site, README, notes de
+version), et un seuil de lot `health.min-ready`. **Absent = le socle seul, rien ne change.**
+
+Frontière (ADR-0001) : le **script** range le mécanique, **toi** tu juges le fond.
+
+| Commande | Ce qu'elle dit |
+|---|---|
+| `ezk dor show` | les slots déclarés et le seuil de lot |
+| `ezk dor check <id>` | pour chaque slot : section absente / vide / incomplète (item non mentionné) / OK — **code 1** si un slot manque **ou si le manifeste est invalide** (le message dit lequel : stdout = refus, stderr = manifeste cassé). Un item se cherche comme mot entier |
+| `ezk dor health` | fiches tirables / pas prêtes ; **code 1** sous `health.min-ready` |
+
+Depuis vectorz : `pnpm ezk dor …`. Ailleurs : le binaire `ezk` lié globalement, avec
+`--root <projet>` si besoin. **Best-effort, jamais fatal** : si `ezk` est absent, lis
+`.vectorz/dor.yml` toi-même et applique la même règle (la section existe, a du contenu,
+mentionne chaque item).
+
 ### `ready <id>` — le gate DoR (bloquant)
 
 1. Vérifie les slots DoR : les 3 de base (problème / valeur / critères) + le slot
    **conditionnel** dépendances externes (exigé seulement si la fiche référence un
-   repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »).
+   repo/service/secret hors du monorepo — ligne datée « accès constaté le AAAA-MM-JJ »),
+   **puis les slots du projet** : `ezk dor check <id>` — s'il rend le code 1, c'est un
+   **refus** et sa sortie dit déjà quel slot, quelle section, quel item. Juge ensuite le
+   **fond** de chaque réponse : une section pleine de « oui » sans raison ne tient pas.
    **Un slot manque → REFUS motivé** (dis précisément quoi groomer) ; ne touche à rien.
 2. Au vert : passe la fiche en `status: ready` — c'est la colonne « tirable », il n'y a
    **plus de champ date `ready:`** (retiré par la migration 005 ; les dates historiques sont en note
@@ -360,6 +414,10 @@ d'abord, ou décision journalisée).
   enfant ready (champ `epic:`), sinon passe à la fiche suivante.
 - Aucune fiche éligible → dis-le et **propose le groom de la fiche de tête** ; en run
   autonome, c'est le checkpoint bloquant « aucune fiche ready » d'ezk-product-build.
+- **Seuil de lot** (fiche 20260815080414006, reprend la fiche 0100) : si le projet déclare
+  `health.min-ready` dans `.vectorz/dor.yml`, lance `ezk dor health`. Sous le seuil (code 1),
+  ajoute à ta réponse « seulement N fiche(s) tirable(s) pour un minimum de M » et **propose une
+  session de groom** avant d'ouvrir un sprint. C'est un rappel, pas un refus : la soupape PO reste.
 - **Soupape PO** : l'opérateur peut décider de tirer une fiche non-ready — décision
   explicite, **journalisée** (note dans la fiche + scratch de sprint).
 

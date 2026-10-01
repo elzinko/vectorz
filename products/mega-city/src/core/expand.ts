@@ -8,7 +8,7 @@
  * ignorée (ex. skill externe `ezk-commits`) : on ne matérialise que ce qui existe.
  */
 import type { Catalog } from '../loaders/catalog.js';
-import type { Agent, Bundle, Profile, ResolvedProfile, Rule, Skill } from '../domain/model.js';
+import type { Agent, Bundle, Command, Profile, ResolvedProfile, Rule, Skill } from '../domain/model.js';
 
 const byId = (a: { id: string }, b: { id: string }): number => a.id.localeCompare(b.id);
 
@@ -65,17 +65,23 @@ export function expandProfile(profile: Profile, catalog: Catalog): ResolvedProfi
   const ruleIds: string[] = [];
   const agentIds: string[] = [];
   const skillIds: string[] = [];
+  const commandIds: string[] = [];
   for (const p of lineage) {
     for (const bundleId of p.bundles) {
       collectBundleRuleIds(bundleId, catalog.bundles, new Set(), ruleIds);
     }
     agentIds.push(...p.agents);
     skillIds.push(...p.skills);
+    commandIds.push(...(p.commands ?? []));
   }
 
+  // Les slash-commands (3ᵉ canal, fiche 20260816151112162) : la clé n'existe que si une commande est
+  // résolue, pour que les profils qui n'en déclarent pas se résolvent exactement comme avant.
+  const commands = dedupSorted<Command>(resolve(commandIds, catalog.commands ?? new Map()));
   return {
     rules: dedupSorted<Rule>(resolve(ruleIds, catalog.rules)),
     agents: dedupSorted<Agent>(resolve(agentIds, catalog.agents)),
     skills: dedupSorted<Skill>(resolve(skillIds, catalog.skills)),
+    ...(commands.length > 0 ? { commands } : {}),
   };
 }

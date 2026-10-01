@@ -1,5 +1,5 @@
 /**
- * Contrat du budget d'appels d'agent (ADR-0059, fiche 20260920213500176).
+ * Contrat du budget d'appels d'agent (ADR-0060, fiche 20260920213500176).
  *
  * Leçon 0095 : une consigne qui ne vit qu'en prose peut disparaître en silence. La décision « le coût
  * d'un sprint se compte en appels d'agent » est portée par quatre choses : l'ADR, la règle
@@ -31,8 +31,8 @@ function section(text: string, heading: RegExp): string {
 
 const RULE = 'token-economy/agent-call-budget';
 
-describe('ADR-0059 — le coût d’un sprint se compte en appels d’agent', () => {
-  const adr = read('docs', 'adr', '0059-cout-sprint-compte-en-appels-agent.md');
+describe('ADR-0060 — le coût d’un sprint se compte en appels d’agent', () => {
+  const adr = read('docs', 'adr', '0060-cout-sprint-compte-en-appels-agent.md');
 
   it('cite les mesures du run V0.1 → V0.4 (on ne les refait pas)', () => {
     for (const measure of ['~85k', '87-95k', '107-162k', '250-700k', '370k', '~500k', '~215k']) {

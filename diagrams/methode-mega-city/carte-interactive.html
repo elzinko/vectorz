@@ -470,7 +470,7 @@ window.EZK = {
   "skills": 25,
   "bundles": 10,
   "profiles": 6,
-  "tools": 75
+  "tools": 77
  },
  "liens": {
   "total": 264,
@@ -478,7 +478,7 @@ window.EZK = {
  },
  "provenance": {
   "prouve": {
-   "briques": 201,
+   "briques": 203,
    "liens": 264,
    "ceremonies": 16,
    "cycle": 9,
@@ -499,7 +499,7 @@ window.EZK = {
    "skill": 25,
    "bundle": 10,
    "profile": 6,
-   "tool": 75
+   "tool": 77
   },
   "arrows": [
    {
@@ -1413,7 +1413,7 @@ window.EZK = {
   "ezk-product-build": {
    "id": "ezk-product-build",
    "source": "products/mega-city/skills/ezk-product-build/SKILL.md",
-   "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-build », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
+   "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-build », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens en réglage avancé (lean par défaut | cap arrête-et-demande | full multi-agents libre). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
    "usage": "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]",
    "etage": "methode",
    "bande": "ceremonies",
@@ -1698,7 +1698,7 @@ window.EZK = {
   "ezk-reviewer": {
    "id": "ezk-reviewer",
    "source": "products/mega-city/agents/ezk-reviewer.md",
-   "description": "Reviewer ADVERSE senior de la boucle ezk-sprint (étape Revue). On lui confie le diff d'une feature (branche `feat/\u003cid>-\u003cslug>` vs `main`, ou une PR ouverte) et il cherche activement à le CASSER — correctness, sécurité, perf, contrats/API, clean code & SOLID, et surtout la qualité RÉELLE des tests — puis rend un verdict GO/NO-GO bloquant. Tourne sur un modèle DIFFÉRENT du dev (ezk-dev = Sonnet → reviewer = Opus) pour une seconde opinion indépendante : il REMPLACE la revue Codex quand la CI cloud est indisponible (quota GitHub épuisé, repo privé). Compose /code-review, /security-review, /simplify, et valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas : il juge, motive, et bloque.",
+   "description": "Reviewer ADVERSE senior de la boucle ezk-sprint (étape Revue). On lui confie le diff d'une feature (branche `feat/\u003cid>-\u003cslug>` vs `main`, ou une PR ouverte) et il cherche activement à le CASSER — correctness, sécurité, perf, contrats/API, clean code & SOLID, et surtout la qualité RÉELLE des tests — puis rend un verdict GO/NO-GO bloquant. Tourne sur un modèle DIFFÉRENT du dev (ezk-dev = Sonnet → reviewer = Opus) pour une seconde opinion indépendante : il est le PLANCHER de la revue (aucun merge sans son GO, ADR-0059) ; Codex est un filet en plus, qu'il remplace quand il est absent (quota épuisé, repo privé, pas de PR). Compose /code-review, /security-review, /simplify, et valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas : il juge, motive, et bloque.",
    "etage": "methode",
    "model": "claude-opus-4-8",
    "effort": "high",
@@ -3146,6 +3146,16 @@ window.EZK = {
    ],
    "usedBy": []
   },
+  "bin/ezk-dor.ts": {
+   "id": "bin/ezk-dor.ts",
+   "source": "products/mega-city/bin/ezk-dor.ts",
+   "commands": [
+    "ezk dor check",
+    "ezk dor health",
+    "ezk dor show"
+   ],
+   "usedBy": []
+  },
   "bin/ezk-graph.ts": {
    "id": "bin/ezk-graph.ts",
    "source": "products/mega-city/bin/ezk-graph.ts",
@@ -3166,6 +3176,16 @@ window.EZK = {
    "source": "products/mega-city/bin/ezk-map.ts",
    "commands": [
     "ezk dashboard"
+   ],
+   "usedBy": []
+  },
+  "bin/ezk-rules.ts": {
+   "id": "bin/ezk-rules.ts",
+   "source": "products/mega-city/bin/ezk-rules.ts",
+   "commands": [
+    "ezk rules apply",
+    "ezk rules check",
+    "ezk rules show"
    ],
    "usedBy": []
   },

@@ -231,4 +231,43 @@ check "référence absente → exit 3" "test '$rc_m3' -eq 3"
 check "… message clair" "printf '%s' \"\$out_m3\" | grep -q 'gabarit de référence introuvable'"
 check "… rien créé" "! test -e '$N/features'"
 
+# Cas O : le marqueur `layout_version` PRIME sur la mention « Index auto-généré » (fiche
+# 20260813122510737). Un README déjà en v2 qui garde la mention legacy n'est PAS classé v1 par
+# init (ni exit 2, ni migration 002) ; un vrai legacy (sans marqueur) l'est TOUJOURS (Cas E) ;
+# et check/init rendent le même verdict (une seule logique : init lit le verdict de check).
+echo "Cas O (layout_version prime sur « Index auto-généré ») :"
+O="$TMP/v2-mention-legacy"
+mkdir -p "$O/features"
+cat > "$O/features/README.md" <<'EOF'
+---
+layout_version: 2
+---
+# Backlog — v2
+
+> Index auto-généré — mention conservée dans un README déjà migré.
+EOF
+out_o_check="$("$CHECK" "$O")"
+set +e
+out_o="$(bash "$SKILL/init.sh" "$O" "Backlog — O" 2>&1)"
+rc_o=$?
+set -e
+check "check : INSTALLED=2 (marqueur lu en premier)" "printf '%s' \"\$out_o_check\" | grep -q 'INSTALLED=2'"
+check "init : pas d'exit 2" "test '$rc_o' -eq 0"
+check "init : pas de « layout v1 détecté »" "! printf '%s' \"\$out_o\" | grep -q 'layout v1 détecté'"
+check "init : BACKLOG.md créé" "test -f '$O/features/BACKLOG.md'"
+check "init : README intact" "grep -q '^layout_version: 2' '$O/features/README.md'"
+# Même verdict : un marqueur explicite `layout_version: 1` est v1 pour les DEUX scripts,
+# même sans la mention « Index auto-généré ».
+P="$TMP/v1-marqueur-seul"
+mkdir -p "$P/features"
+printf -- '---\nlayout_version: 1\n---\n# Backlog — v1 déclaré\n' > "$P/features/README.md"
+out_p_check="$("$CHECK" "$P")"
+set +e
+out_p="$(bash "$SKILL/init.sh" "$P" "Backlog — P" 2>&1)"
+rc_p=$?
+set -e
+check "check : INSTALLED=1" "printf '%s' \"\$out_p_check\" | grep -q 'INSTALLED=1'"
+check "init : exit 2 (même verdict)" "test '$rc_p' -eq 2"
+check "init : pas de BACKLOG.md" "! test -f '$P/features/BACKLOG.md'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi

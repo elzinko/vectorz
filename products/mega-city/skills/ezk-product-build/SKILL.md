@@ -18,7 +18,7 @@ description: >-
   vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne
   s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque
   checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens
-  en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance).
+  en réglage avancé (lean par défaut | cap arrête-et-demande | full multi-agents libre).
   N'EST PAS le scrum master
   qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus
   qui décide quoi & quand, et le lui confie.
@@ -161,7 +161,7 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 - **`lean` (défaut)** — délégation **simple et séquentielle** ; tu **préviens AVANT** tout
   fan-out multi-agents coûteux, et tu déclenches le checkpoint « dérive tokens » au-delà d'un
   seuil souple par sprint. Tu privilégies le moins cher qui tient la qualité.
-  **Compte le coût en appels d'agent** (ADR-0059, règle `token-economy/agent-call-budget`) : ~85k de
+  **Compte le coût en appels d'agent** (ADR-0060, règle `token-economy/agent-call-budget`) : ~85k de
   contexte fixe par appel. En `lean` : une seule DoR `ezk-pm` pour tout le lot de fiches, une revue
   `ezk-reviewer` pour 2-3 petits patchs (jamais sautée), aucun explorateur, cible ≤ 200k par fiche.
 - **`cap`** (arrête-et-demande) — dès que la conso d'un sprint **dérape au-delà d'un seuil**
@@ -171,7 +171,7 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
   `[Terminer l'en-cours puis stop]` · `[Stop net]`. **Augmenter le budget = décision humaine**
   (un des 4 STOP) : même en `--mode auto`, toucher ce seuil **rend la main à l'humain**, jamais
   un redémarrage silencieux.
-- **`full`** (pleine-puissance) — multi-agents libre quand ça sert la qualité (mode « ultracode ») ;
+- **`full`** (multi-agents libre) — fan-out permis quand ça sert la qualité (mode « ultracode ») ;
   l'utilisateur surveille lui-même la conso.
 
 > **Le mode règle le PLAFOND, pas la pertinence.** Même en `full`, avant tout fan-out :

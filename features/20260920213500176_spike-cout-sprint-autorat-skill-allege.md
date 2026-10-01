@@ -41,7 +41,7 @@ coûtait ~330k. Trois postes dominaient : `ezk-pm` (concurrence DoR) ~85k pour u
 pas d'explorateur ; la livraison (`ship`) sortie des PR ; les vues générées hors git (ADR-0055).
 Coût moyen : ~500k → ~215k par fiche.
 
-## Décision proposée (ADR court, 0059)
+## Décision proposée (ADR court, 0060)
 
 1. **L'unité de coût est l'appel d'agent**, pas la longueur de la tâche. Plancher : ~85k.
 2. **Budget d'appels par fiche** : l'agent qui mène la fiche, plus au plus une revue (mutualisée
@@ -56,9 +56,10 @@ Coût moyen : ~500k → ~215k par fiche.
 
 ## Critères d'acceptation
 
-- [x] L'ADR-0059 cite les mesures ci-dessus et tranche les cinq points, alternatives rejetées comprises.
-      *Preuve : `docs/adr/0059-cout-sprint-compte-en-appels-agent.md` (numéro libre sur `main`, dernier
-      = 0058) ; statut « Proposé » : la cible change, le PO confirme à la livraison.*
+- [x] L'ADR-0060 cite les mesures ci-dessus et tranche les cinq points, alternatives rejetées comprises.
+      *Preuve : `docs/adr/0060-cout-sprint-compte-en-appels-agent.md` (premier numéro libre sur `main`
+      au 2026-10-01 : le 0059 est pris par l'ADR de la revue locale, PR #308) ; statut « Proposé » : la
+      cible change, le PO confirme à la livraison.*
 - [x] **Le filet de qualité reste** : `ezk-reviewer` n'est jamais sauté ; on n'allège que BDD, TDD et
       E2E d'agent pour de la prose. Les tests de contrat sur le texte restent (sans jetons d'agent).
       *Preuve : décision 6 de l'ADR ; « jamais sautée » gardé dans les deux `SKILL.md` par le test.*
@@ -98,8 +99,9 @@ run, la moyenne tient sous 200k. Cette dernière mesure est la « Suite » (elle
 
 ## Notes / anti-doublon
 
-- Mécanisme voisin : [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md)
-  (schéma d'étapes configurables). Nommage des modes : [0143](0143-aligner-nommage-modes-tokens.md).
+- **S'appuie sur** [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md)
+  (schéma d'étapes configurables = le mécanisme) et [0143](done/0143-aligner-nommage-modes-tokens.md)
+  (nommage des modes) — cette fiche est le **besoin mesuré**, pas le mécanisme.
 - Voisins « coût disproportionné pour un petit geste » :
   [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md) et
   [0088](done/0088-ezk-archive-cout-cloture-session-disciplinee.md) (allègement d'`ezk-archive`).

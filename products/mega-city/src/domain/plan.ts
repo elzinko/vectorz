@@ -25,6 +25,13 @@ export interface FileWrite {
   content: string;
   mode?: number;
   intent?: WriteIntent;
+  /**
+   * Le dossier du skill auquel ce fichier appartient (ex. `skills/ezk-pr`), quand le cap le sait. Le plan
+   * PORTE le regroupement au lieu de laisser la coquille I/O le déduire des `SKILL.md` : un fichier annexe
+   * nommé `SKILL.md`, ou deux skills imbriqués, trompaient cette déduction (fiche 20260813095351680, retours
+   * Codex de la PR #138). Absent : la coquille retombe sur l'ancien repérage par `SKILL.md`.
+   */
+  skillDir?: string;
 }
 
 /**

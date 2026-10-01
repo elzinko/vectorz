@@ -4,7 +4,10 @@
  * ResolvedProfile → WritePlan, SANS toucher au disque. La coquille I/O
  * (src/io/apply.ts) applique le plan. Forme native de Claude Code :
  *   - .claude/agents/<id>.md        ← un fichier par agent (rôle markdown)
- *   - .claude/skills/<id>.md        ← une skill PAR skill dont le contenu existe
+ *   - .claude/skills/<id>/SKILL.md  ← un DOSSIER par skill dont le contenu existe, avec ses annexes
+ *                                     (approaches/, scripts/…) — la forme que Claude Code lit, comme le cap
+ *                                     global (ADR-0027, fiche 20260813095351680). L'ancien fichier plat
+ *                                     `.claude/skills/<id>.md` n'est plus écrit ; un exemplaire déjà là reste en place.
  *   - .iamthelaw/ENTRY.md           ← les règles compilées en texte (corps + level)
  *   - CLAUDE.md                     ← référence « lire .iamthelaw/ENTRY.md »
  *   - hooks commit-msg / …          ← un hook par enforcement type:hook (niveau 2)
@@ -15,6 +18,7 @@ import type { Cap, FileWrite, HookWrite, ResolvedProfile } from '../domain/model
 import type { WritePlan } from '../domain/plan.js';
 import { agentContent } from './agent-content.js';
 import { compileRule } from './law-content.js';
+import { skillFolderFiles } from './skill-content.js';
 
 const ENTRY_PATH = '.iamthelaw/ENTRY.md';
 const CLAUDE_MD_REFERENCE = `> **iamthelaw** : avant toute action, lis et applique \`${ENTRY_PATH}\` (la loi de ce projet).`;
@@ -25,17 +29,6 @@ function agentFiles(resolved: ResolvedProfile): FileWrite[] {
     content: agentContent(agent),
     intent: 'replace',
   }));
-}
-
-/** Une skill n'est matérialisée que si son contenu est réellement présent. */
-function skillFiles(resolved: ResolvedProfile): FileWrite[] {
-  return resolved.skills
-    .filter((skill) => skill.content.trim().length > 0)
-    .map((skill) => ({
-      path: `.claude/skills/${skill.id}.md`,
-      content: `${skill.content.trim()}\n`,
-      intent: 'replace',
-    }));
 }
 
 function entryFile(resolved: ResolvedProfile): FileWrite {
@@ -74,7 +67,8 @@ function collectHooks(resolved: ResolvedProfile): HookWrite[] {
 function materialize(resolved: ResolvedProfile, _projectDir: string): WritePlan {
   const files: FileWrite[] = [
     ...agentFiles(resolved),
-    ...skillFiles(resolved),
+    // Une skill n'est matérialisée que si son contenu est réellement présent ; le dossier porte ses annexes.
+    ...skillFolderFiles(resolved, '.claude/skills'),
     entryFile(resolved),
     claudeMdFile(),
   ].sort((a, b) => a.path.localeCompare(b.path));
