@@ -34,7 +34,7 @@ Résultat : chaque skill re-décide son format dans son coin, et la qualité dé
 ## Décisions de grooming
 
 - **Où vivent les gabarits** : **par skill**, comme `handoff-template.md`, en source unique. Pas de dossier commun (on n'a pas de besoin de partage prouvé). Une table « instances connues » dans la règle les recense.
-- **Format d'un gabarit** : des sections, et pour chacune une consigne courte « mets / bannis ». Le gabarit **ouvre par « En clair »**. Il porte aussi le **périmètre** : ce qu'on montre selon le contexte (cas fondateur : le handoff ne restitue que la session courante).
+- **Format d'un gabarit** : des sections, et pour chacune une consigne courte « mets / bannis ». Le gabarit **impose l'ouverture « En clair »** : le bloc figure dans le gabarit. Il porte aussi le **périmètre** : ce qu'on montre selon le contexte (cas fondateur : le handoff ne restitue que la session courante).
 - **Frontière avec la règle de clarté** : le gabarit fixe le **format**, la règle `human-facing-lisibility` garantit la **lisibilité du texte dedans**. Jamais le gabarit seul.
 - **Premier cas** : `ezk-archive` (déjà amorcé), puis le corps de PR (ADR-0029). Le corps de PR révèle un trou honnête : son extracteur (`pr:emit-local`) ne sert que le mode sans GitHub. Avec une PR GitHub, le corps est recopié de la fiche à la main.
 - **BMAD** : le prior art (templates + validateurs + elicitation) est dans l'étude [20260817113353538](done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md). On n'en reprend pas le moteur : on garde le trio, plus simple.
@@ -45,7 +45,7 @@ Résultat : chaque skill re-décide son format dans son coin, et la qualité dé
 - [x] La règle est rangée dans le bundle `base` et déclarée par `ezk-archive` (`applies:`). Preuve : `readable-deliverable-trio.test.ts`.
 - [x] `ezk-archive` est relu à sa lumière : la table donne son gabarit (`handoff-template.md`), son extracteur (`check.sh`) et son rendu (« 3 réponses, zéro jargon »), et chaque chemin existe.
 - [x] Un second livrable (le corps de PR) est recensé, avec son trou dit tel quel : l'extracteur ne couvre que le mode sans GitHub.
-- [x] Un test passe au rouge si un chemin de la table n'existe pas, ou si un gabarit recensé n'ouvre pas par « En clair ». Sabotage prouvé : `handoff-template.md` renommé à la main → « Note de handoff… : gabarit introuvable (…) » ; le test d'outil nomme aussi l'extracteur introuvable et le gabarit sans « En clair ».
+- [x] Un test passe au rouge si un chemin de la table n'existe pas, ou si un gabarit recensé ne porte pas le bloc « En clair », ou si une ligne de la table est mal formée (jamais ignorée en silence). Sabotage prouvé : `handoff-template.md` renommé à la main → « Note de handoff… : gabarit introuvable (…) » ; le test d'outil nomme aussi l'extracteur introuvable et le gabarit sans « En clair ».
 - [x] La frontière avec la règle de clarté est nette : la règle de clarté est citée dans la règle et testée, le gabarit ne la remplace pas (il embarque « En clair »).
 
 ## Comment vérifier

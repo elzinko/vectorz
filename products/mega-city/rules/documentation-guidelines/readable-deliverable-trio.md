@@ -13,14 +13,14 @@ enforcements:
   1. **Gabarit** : un fichier `*-template.md` qui liste les sections attendues **et**, pour chacune, une consigne courte « mets / bannis ». Source unique, lue par tous les chemins qui produisent le livrable.
   2. **Extracteur** : un script qui sort les **faits** (chiffres, états, listes). Le LLM ne les calcule pas et ne les recopie pas : il les **reçoit** (ADR-0001 : le script range et extrait, le LLM juge et rédige).
   3. **Rendu** : le LLM remplit le gabarit avec ces faits, sous la règle [`human-facing-lisibility`](human-facing-lisibility.md).
-- **Format d'un gabarit.** Des sections, chacune avec sa consigne « mets / bannis ». Il **ouvre par « En clair »**. Il porte aussi le **périmètre** : ce qu'on montre selon le contexte. Cas fondateur : le handoff d'`ezk-archive` ne restitue que la session courante ; les autres sessions sont nommées, jamais déroulées.
+- **Format d'un gabarit.** Des sections, chacune avec sa consigne « mets / bannis ». Il **impose l'ouverture « En clair »** : le bloc figure dans le gabarit. Il porte aussi le **périmètre** : ce qu'on montre selon le contexte. Cas fondateur : le handoff d'`ezk-archive` ne restitue que la session courante ; les autres sessions sont nommées, jamais déroulées.
 - **Frontière avec la règle de clarté.** Le gabarit fixe le **format**. La règle `human-facing-lisibility` garantit la **lisibilité du texte dedans**. Le gabarit ne la remplace jamais : un gabarit trop rigide produit du remplissage illisible. Le pattern = gabarit **+** extracteur **+** règle de clarté, jamais le gabarit seul.
 - **Source unique.** Un gabarit n'existe qu'à un endroit. Le skill le **lie** ; il ne le recopie pas, sinon les copies divergent en silence.
 - **Où il vit.** Dans le skill qui produit le livrable (`references/` ou `templates/`). Pas de dossier commun tant qu'aucun partage n'est prouvé.
 
 ### Instances connues
 
-Chaque ligne nomme les trois pièces d'un livrable qui existe déjà. Les chemins sont relatifs à `products/mega-city/`. Le test `readable-deliverable-trio.test.ts` vérifie que chaque chemin existe et que chaque gabarit ouvre par « En clair ».
+Chaque ligne nomme les trois pièces d'un livrable qui existe déjà. Les chemins sont relatifs à `products/mega-city/`. Le test `readable-deliverable-trio.test.ts` vérifie que chaque ligne a quatre cellules, que chaque chemin existe et que chaque gabarit porte le bloc « En clair ».
 
 | Livrable | Gabarit | Extracteur | Rendu |
 |---|---|---|---|
@@ -28,6 +28,8 @@ Chaque ligne nomme les trois pièces d'un livrable qui existe déjà. Les chemin
 | Corps de PR rendu depuis la fiche | `skills/ezk-backlog/templates/feature-template.md` | `bin/pr-emit-local.ts` — mode sans GitHub seulement | `docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md` |
 
 Trou connu : avec une PR GitHub, le corps est recopié de la fiche à la main. L'extracteur ne couvre que le mode sans GitHub.
+
+Cas limite : pour le corps de PR, le « rendu » est un recopiage de la fiche (ADR-0029). L'extracteur et le rendu se confondent presque. Le détail est dans « Cas corps de PR » de [`human-facing-lisibility`](human-facing-lisibility.md).
 
 ### Ajouter une instance
 

@@ -2,8 +2,9 @@
  * Pattern « livrable lisible » : gabarit + extracteur + rendu (fiche 20260825182327490).
  *
  * En clair : la règle recense les livrables destinés à l'humain qui suivent le pattern, avec
- * leurs trois pièces. Ce test vérifie que chaque pièce existe, que chaque gabarit ouvre par
- * « En clair » (le gabarit ne remplace pas la règle de clarté : il l'embarque), et que le skill
+ * leurs trois pièces. Ce test vérifie qu'aucune ligne de la table n'est ignorée, que chaque pièce
+ * existe, que chaque gabarit porte le bloc « En clair » (le gabarit ne remplace pas la règle de
+ * clarté : il l'embarque), et que le skill
  * pris pour exemple, `ezk-archive`, déclare la règle et lie son gabarit au lieu de le recopier.
  */
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
@@ -27,14 +28,23 @@ interface Instance {
 /** Premier chemin entre accents graves d'une cellule. */
 const firstPath = (cell: string): string | undefined => /`([^`]+)`/.exec(cell)?.[1];
 
-/** Lignes de la table « Instances connues » d'une règle. */
-function parseInstances(rule: string): Instance[] {
+/** Lignes de la table « Instances connues » d'une règle (en-tête et séparateur exclus). */
+function instanceRows(rule: string): string[][] {
   const section = rule.split(/^### /m).find((s) => s.startsWith('Instances connues')) ?? '';
   return section
     .split('\n')
     .filter((l) => l.trim().startsWith('|'))
     .map((l) => l.split('|').slice(1, -1).map((c) => c.trim()))
-    .filter((c) => c.length === 4 && !/^-+$/.test(c[0] ?? '') && c[0] !== 'Livrable')
+    .filter((c) => !/^-+$/.test(c[0] ?? '') && c[0] !== 'Livrable');
+}
+
+/** Lignes qui n'ont pas exactement quatre cellules : à signaler, jamais à ignorer. */
+const malformedRows = (rows: string[][]): string[] =>
+  rows.filter((c) => c.length !== 4).map((c) => c.join(' | '));
+
+function parseInstances(rows: string[][]): Instance[] {
+  return rows
+    .filter((c) => c.length === 4)
     .map(([livrable = '', gabarit = '', extracteur = '', rendu = '']) => ({
       livrable,
       gabarit,
@@ -59,7 +69,7 @@ function instanceProblems(inst: Instance, root: string): string[] {
   const template = firstPath(inst.gabarit);
   if (template && existsSync(join(root, template))) {
     if (!/En clair/.test(readFileSync(join(root, template), 'utf8'))) {
-      problems.push(`${inst.livrable} : le gabarit n'ouvre pas par « En clair »`);
+      problems.push(`${inst.livrable} : le gabarit ne porte pas le bloc « En clair »`);
     }
   }
   return problems;
@@ -81,7 +91,7 @@ describe('table des instances — outil de vérification', () => {
     return { root, inst };
   };
 
-  it('accepte une instance complète dont le gabarit ouvre par « En clair »', () => {
+  it('accepte une instance complète dont le gabarit porte le bloc « En clair »', () => {
     const { root, inst } = fixture('**En clair :** ...', true);
     expect(instanceProblems(inst, root)).toEqual([]);
   });
@@ -90,8 +100,13 @@ describe('table des instances — outil de vérification', () => {
     const { root, inst } = fixture('rien d’utile', false);
     expect(instanceProblems(inst, root)).toEqual([
       'démo : extracteur introuvable (skills/extract.sh)',
-      'démo : le gabarit n\'ouvre pas par « En clair »',
+      'démo : le gabarit ne porte pas le bloc « En clair »',
     ]);
+  });
+
+  it('signale une ligne mal formée au lieu de l’ignorer en silence', () => {
+    const rule = ['### Instances connues', '| Livrable | Gabarit | Extracteur | Rendu |', '|---|---|---|---|', '| démo | `a.md` | `b.sh` |'].join('\n');
+    expect(malformedRows(instanceRows(rule))).toEqual(['démo | `a.md` | `b.sh`']);
   });
 });
 
@@ -109,15 +124,19 @@ describe('règle documentation-guidelines/readable-deliverable-trio', () => {
   });
 
   it('recense au moins le handoff d’ezk-archive et le corps de PR, trois pièces chacun', () => {
-    const instances = parseInstances(rule);
+    const instances = parseInstances(instanceRows(rule));
     expect(instances.length).toBeGreaterThanOrEqual(2);
     expect(instances.map((i) => firstPath(i.gabarit))).toContain(
       'skills/ezk-archive/references/handoff-template.md',
     );
   });
 
-  it('ne recense que des instances dont les pièces existent et dont le gabarit ouvre par « En clair »', () => {
-    const problems = parseInstances(rule).flatMap((i) => instanceProblems(i, mega));
+  it('a une table dont chaque ligne compte quatre cellules (aucune ligne ignorée)', () => {
+    expect(malformedRows(instanceRows(rule))).toEqual([]);
+  });
+
+  it('ne recense que des instances dont les pièces existent et dont le gabarit porte « En clair »', () => {
+    const problems = parseInstances(instanceRows(rule)).flatMap((i) => instanceProblems(i, mega));
     expect(problems).toEqual([]);
   });
 });
