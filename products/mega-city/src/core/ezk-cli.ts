@@ -28,9 +28,10 @@ export interface ManifestEntry {
   summary: string;
   root: RootPolicy;
   /**
-   * La commande SEULEMENT lit les fiches d'un projet, et son script sait lire celui qu'on désigne
-   * (`--root` avant la commande, ou la variable `EZK_ROOT`). Le routeur la laisse alors viser un
-   * autre projet que la méthode et lui passe `EZK_ROOT`. Sans cette marque, une commande qui écrit
+   * La commande travaille sur un PROJET désigné (ses fiches, son contrat de règles) et n'écrit jamais
+   * dans le dépôt de la méthode — au plus dans le projet visé. Son script sait lire le projet qu'on
+   * désigne (`--root` avant la commande, ou la variable `EZK_ROOT`) : le routeur la laisse alors viser
+   * un autre projet que la méthode et lui passe `EZK_ROOT`. Sans cette marque, une commande qui écrit
    * dans le dépôt de la méthode refuse tout autre dépôt (fiche 20260826173221323).
    */
   project?: boolean;
@@ -196,7 +197,7 @@ function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
     return (
       `${name} : « --root ${env.rootFlag} » n'est pas le dépôt de la méthode (${env.ownRoot}). ` +
       "Cette commande écrit dans le dépôt de la méthode : elle ne vise pas un autre projet. " +
-      'Seules les commandes qui seulement lisent les fiches (« ezk dashboard », « ezk board show »…) acceptent --root.'
+      'Seules les commandes qui travaillent sur un projet désigné (« ezk dashboard », « ezk board show », « ezk rules »…) acceptent --root.'
     );
   }
   if (env.checkoutRoot === env.ownRoot) return undefined;
@@ -311,8 +312,8 @@ export function renderHelp(manifest: Manifest, chat: ChatCommand[]): string {
     'Commandes de chat (dans Claude Code)',
     ...chatLines,
     '',
-    'Options du routeur, avant la commande : --root <dossier> (le dépôt de la méthode visé ; pour une commande qui seulement lit les fiches,',
-    'le projet dont on les lit — la variable EZK_ROOT fait de même), --dry-run (montre le script sans le lancer).',
+    'Options du routeur, avant la commande : --root <dossier> (le dépôt de la méthode visé ; pour une commande qui travaille sur un projet,',
+    'le projet désigné — la variable EZK_ROOT fait de même), --dry-run (montre le script sans le lancer).',
     '« ezk help <domaine> » détaille un domaine ; « ezk help <skill> » détaille une commande de chat.',
     '',
   ].join('\n');

@@ -165,7 +165,7 @@ describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)',
     expect(r.kind).toBe('error');
     if (r.kind !== 'error') return;
     expect(r.message).toMatch(/écrit dans le dépôt de la méthode/);
-    expect(r.message).toMatch(/seulement lisent les fiches/); // dit où --root est accepté
+    expect(r.message).toMatch(/travaillent sur un projet désigné/); // dit où --root est accepté
     expect(r.message).not.toMatch(/pas encore possible/);
     expect(r.message).not.toMatch(/\d{10,}/); // pas de numéro de fiche dans un message d'erreur
   });
