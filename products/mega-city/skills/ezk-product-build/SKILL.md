@@ -3,7 +3,7 @@ roles: [ezk-pm]
 name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
-applies: [documentation-guidelines/human-facing-lisibility, token-economy/agent-call-budget]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget]
 argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
@@ -47,7 +47,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 |---|---|
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes courants — ne lance rien |
 | `run` (**action par défaut**, alias `build`) | Lance la **boucle** : enchaîne les sprints jusqu'à un checkpoint ou `--max-sprints` |
-| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
+| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants, puis réaffiche le contexte de run (`run:context`) |
 
 > **Invocation nue = `help`, jamais un lancement.** `/ezk-product-build` **sans argument affiche ce
 > tableau et ne lance rien** — un défaut `auto` ne doit pas démarrer une boucle autonome depuis une
@@ -77,6 +77,15 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
 
 ## La boucle
 
+0. **Ouverture — le contexte de run** (une fois, avant tout). Lance `run:context` avec les réglages
+   **réels** du run et affiche son bloc tel quel, **sans attendre de validation** (c'est un
+   affichage, pas un checkpoint) :
+   `pnpm --dir products/mega-city run:context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> [--fiche <id>] [--max-sprints N]`.
+   Le bloc dit d'où le run part (`origin/main` après `git fetch`, le retard de HEAD), où il travaille
+   (worktree, qui écrit les fichiers) et son **contrat en trois lignes** : ce qu'il merge seul, les
+   4 STOP, le plafond de jetons. En `--mode auto`, c'est l'écho qui permet à l'opérateur de
+   s'absenter en sachant ce que la boucle fera. Un retard sur `origin/main` ou l'absence de remote
+   avertit, **ne bloque jamais**. Format : [`references/run-report-template.md`](references/run-report-template.md).
 1. **Intake** — si un review est dû (`review --delta` avant le planning ; complet
    post-pivot / tous les 5 sprints — ADR-0016), passe-le d'abord. Puis
    `ezk-backlog next --ready-only` : prends LA prochaine fiche **tirable**
@@ -116,6 +125,13 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    d'itération »). Un run d'**un seul** sprint n'en déclenche **aucune**. Après une rétro
    `every:N` **en cours de run** (des sprints restent), **reprends la boucle** au sprint
    suivant ; seule la rétro de **fin de run** précède la clôture.
+6. **Clôture — le RUN-REPORT.** Quand la boucle s'arrête **et que le run a construit plus d'un
+   sprint**, émets le bilan avec `run:report` : une ligne par fiche (`mergée`, `PR-ouverte`,
+   `bloquée`, `sautée`) avec son PR, sa gate, sa revue, sa validation et, hors `mergée`, sa raison.
+   `pnpm --dir products/mega-city run:report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] [--tokens-used N] [--tokens-setting <lean|cap|full>]`.
+   Le script refuse une ligne incomplète, compare le déclaré à GitHub (un écart sort en code 1) et
+   ajoute HEAD contre `origin/main` et les jetons. Tu restitues son rapport **tel quel** : c'est la
+   dernière sortie du run. Un run d'**un seul** sprint n'en émet pas.
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.

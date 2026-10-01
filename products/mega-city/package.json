@@ -44,6 +44,8 @@
     "plan-view:regen": "tsx bin/views-regen.ts",
     "plan-delta:regen": "tsx bin/views-regen.ts",
     "ci:conso": "tsx bin/ci-conso.ts",
+    "run:context": "tsx bin/run-context.ts",
+    "run:report": "tsx bin/run-report.ts",
     "ezk:sessions": "tsx bin/ezk-sessions.ts",
     "sprint:report": "tsx bin/sprint-report.ts",
     "retro:captures": "tsx bin/retro-captures.ts",

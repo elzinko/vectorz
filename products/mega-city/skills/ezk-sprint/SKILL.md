@@ -71,6 +71,10 @@ Le portier est **read-only** : working tree, worktrees, fiches `in-progress`, ha
   ou journaliser l'override PO, puis relancer `check`).
 - `check` et `start --dry-run` **n'écrivent jamais** (ni `SPRINT.md`, ni claim, ni branche) ; ne mergent/pushent rien.
 
+**Lancé seul, affiche d'abord le contexte de run** : `pnpm --dir products/mega-city run:context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> --fiche <id>`.
+Il dit la base (`origin/main` après `git fetch`), le worktree, qui écrit les fichiers, et ce que tu feras
+seul. Sous `ezk-product-build`, ce bloc est déjà affiché à l'ouverture du run : **ne le répète pas**.
+
 **Ouvrir pour de vrai.** Une fois l'intake fait (étape 0) et le **lot** choisi :
 
 ```bash
