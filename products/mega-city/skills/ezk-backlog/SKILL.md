@@ -99,8 +99,8 @@ du front-matter de cette skill).
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
-| `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index **et les vues** (`PORTFOLIO.md` généré + `PLAN.md` curé) ; filet `check-planning-views` |
-| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches |
+| `ship <id> [#PR]` | Passe la fiche `shipped`, la déplace dans `done/`, régénère l'index `BACKLOG.md` et cure `PLAN.md` ; filet `check-planning-views` (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
+| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `pnpm --dir products/mega-city views:regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
@@ -460,10 +460,11 @@ C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'impo
 2. `git mv` la fiche de `features/` vers `features/done/` — c'est ce déplacement qui la sort
    du stock **actif** (donc de `list`/`next`/`reconcile` : une fiche dans `done/` n'est plus
    candidate, elle ne peut pas être re-tirée).
-3. **`regen` — l'index ET les vues dérivées** (fiche 20260812100109940) :
+3. **`regen` — l'index ET la vue curée** (fiche 20260812100109940, resserrée par l'ADR-0055) :
    - `regen` reconstruit l'index `features/BACKLOG.md` (la fiche passe en « Livrées `done/` ») ;
-   - **régénère `PORTFOLIO.md`** — `bash products/mega-city/bin/portfolio.sh <racine>` — vue générée
-     au même titre que l'index ; sinon la fiche livrée y reste affichée `ready` (ADR-0001 : le script range) ;
+   - **rien d'autre à régénérer** : `PORTFOLIO.md` et les données du board / pilotage / runs ne sont
+     plus committés (ADR-0055). Ils se construisent à la demande (`views:regen`, ou `ezk:map` à la
+     volée), donc ne peuvent pas rester périmés dans un commit ;
    - **cure `PLAN.md`** (curé, jamais régénéré) : barre l'entrée de la fiche
      (`~~…~~ — shipped #<n>`) — **proposé à l'humain**, `PLAN` est une décision, pas un index.
 4. **Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute

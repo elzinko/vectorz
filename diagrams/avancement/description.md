@@ -7,10 +7,11 @@ sa fiche source, servie par `ezk-map`.
 
 **Même principe que la carte du domaine** (`diagrams/methode-mega-city/`, épic
 « carte fidèle ») : rien n'est dessiné à la main. `avancement-data.ts` compile les
-données depuis les fiches (même patron que `map-data.ts` depuis le catalogue), et
-`bin/regen-avancement.ts` les injecte dans `board.html` entre deux marqueurs gérés.
-Un test d'invariant compare le bloc régénéré en mémoire au bloc présent sur disque :
-backlog modifié sans relancer `pnpm avancement:regen` ⇒ le test rougit.
+données depuis les fiches (même patron que `map-data.ts` depuis le catalogue). Elles ne sont
+plus dans `board.html` : elles vivent dans `board.data.js`, non committé (ADR-0055), calculé à
+chaque requête par `pnpm ezk:map` ou écrit par `pnpm --dir products/mega-city views:regen`. Le
+board ne peut donc pas être périmé ; un test (`untracked-views.test.ts`) prouve que les données
+construites disent vrai sur le backlog réel.
 
 **Ce que ce lot NE fait PAS** (gelé, voir la section dédiée dans le board lui-même) :
 la frise des sprints, le diagramme du process scrum avec les fiches positionnées

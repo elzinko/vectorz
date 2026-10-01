@@ -4,6 +4,7 @@
 - Date : 2026-08-29
 - Fiche : `20260829214131713_ezk-sessions-vue-navigateur-live.md` (suite de `20260825141012293`, PR #188)
 - Contexte amont : ADR-0042 (cockpit de sessions = surface « Observe »), ADR-0001 (« le script range, il ne juge pas »), `bin/ezk-map.ts` (serveur de diagrammes statiques)
+- Précisé par : [ADR-0055](0055-artefacts-generes-hors-versionnage.md) (2026-10-01) — `ezk:map` calcule désormais à la requête les fichiers de données des pages board / pilotage / runs (fonction pure de fichiers committés). L'état des sessions reste hors d'`ezk:map`, comme décidé ici.
 
 ## En clair
 

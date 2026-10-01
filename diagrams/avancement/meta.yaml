@@ -6,7 +6,7 @@ links:
   entry: board.html
   fiche: ../../features/20260823124042842_vue-avancement-sprints-fiches.md
   compilateur: ../../products/mega-city/src/core/avancement-data.ts
-  regen: "pnpm --dir products/mega-city avancement:regen"
+  regen: "pnpm --dir products/mega-city views:regen"
 note: >-
   Lot 0 uniquement (fiche 20260823124042842) : le board compilé depuis le
   front-matter des fiches — zéro objet nouveau, zéro saisie à la main. La frise
