@@ -86,11 +86,19 @@ lire le workflow de PR par `act` sans lancer aucune étape.
 2. ⚙️ Poser les secrets dans GitHub avec `gh secret set <NOM>`, valeur en entrée standard, jamais
    affichée. Poser les variables avec `gh variable set <NOM>`.
 3. Garder dans le `.env` du dépôt principal la copie locale des valeurs. Le lanceur local en a besoin.
+4. ⚠ **Avant d'écrire la moindre valeur**, vérifier que `.env`, `.secrets` et `.vars` sont ignorés
+   par git. `git check-ignore .env .secrets .vars` doit afficher les **trois** noms. Le code de sortie
+   vaut 0 même si un seul est ignoré : il faut lire la liste. Sinon, ajouter les entrées au
+   `.gitignore` d'abord. Sans cela, un `git add .` peut commiter les secrets.
 
 ### 2. CI sur les PR (`ci.yml`)
 
 1. Déclencher sur `pull_request` vers `main`, avec `paths-ignore` pour les docs, les fiches et les
    dossiers d'outils. Une PR docs-only ne lance rien.
+   ⚠ **Check requis.** Si `ci.yml` est un check **requis** par une protection de branche,
+   `paths-ignore` laisse ce check « pending » et bloque les PR docs-only. Dans ce cas, lancer sur
+   toute PR un job léger qui se termine toujours, et sauter seulement les jobs coûteux par une
+   condition sur les fichiers modifiés. Sans protection de branche, `paths-ignore` suffit.
 2. Un groupe de concurrence par ref, avec annulation du run précédent.
 3. Enchaîner `context`, puis `build+test` (lint, tests avec couverture, build global), puis
    `upload-videos`, puis `deploy-preview` sur Vercel.
@@ -129,7 +137,8 @@ lire le workflow de PR par `act` sans lancer aucune étape.
 
 ### 6. Rejouer le même plan en local
 
-1. `pnpm ci:local setup` génère `.secrets` et `.vars` depuis le `.env`. Les deux sont ignorés par git.
+1. `pnpm ci:local setup` génère `.secrets` et `.vars` depuis le `.env`. Les deux doivent être ignorés
+   par git (étape 1, point 4).
 2. `pnpm ci:local verify` contrôle Docker, `act` et les secrets.
 3. `pnpm ci:local dryrun ci` (ou `cd`) lit le workflow sans exécuter d'étape. C'est rapide et sans risque.
 4. `pnpm ci:local cd-tag <tag> -j <job>` joue un job précis. Les jobs de build et de packaging demandent
@@ -154,8 +163,10 @@ part, qui se compose avec cette recette et avec la distribution. Il aura sa prop
 
 ## Checklist « rien d'oublié »
 
+- [ ] `git check-ignore .env .secrets .vars` affiche les trois noms avant d'écrire la moindre valeur
 - [ ] les secrets et variables listés plus haut sont posés dans GitHub, sans valeur affichée
 - [ ] une PR docs-only ne lance aucun workflow, et un nouveau push annule le run en cours
+- [ ] si un check est requis par une protection de branche, une PR docs-only ne reste pas « pending »
 - [ ] le packaging ne part que sur un tag, avec `fail-fast: false` et un `timeout-minutes`
 - [ ] un tag `v*` donne une release, et le site staging est déployé
 - [ ] la prod ne se déploie qu'à la main, après vérification
@@ -193,6 +204,7 @@ Racine : **`~/git/bacasable/muti`** (pointeurs relevés le 2026-10-01).
 - `scripts/setup-act-secrets.sh:1` — la génération de `.secrets` et `.vars` depuis le `.env`
 - `scripts/lint-workflows.sh:1` — le lint des workflows sans rien installer
 - `scripts/pipeline-context.sh:1` — le calcul du contexte appelé par le job `context`
+- `.gitignore:43` (`.env`), `.gitignore:89` (`.secrets`) et `.gitignore:90` (`.vars`) — les trois fichiers de secrets sont ignorés
 
 ## Statut de cette recette
 

@@ -84,9 +84,9 @@ la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013
 - [x] elle décrit le **socle** (CI sur PR, CD sur `main` et tags, déploiement du site) et les **options** (nettoyage, smoke-test, coming-soon), chacun relié à son workflow muti
 - [x] elle répond aux quatre options tranchées ci-dessus
 - [x] elle explique comment **rejouer le même plan en local** : `pnpm ci:local` (`act` ou mode natif), secrets locaux générés, lint des workflows, et ce qui ne se joue pas sous `act` (packaging multi-OS, tags de release)
-- [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers muti ; `source:` existe ; aucun code recopié (25 pointeurs sur 25 existent)
+- [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers muti ; `source:` existe ; aucun code recopié (28 pointeurs sur 28 existent)
 - [x] elle compose les recettes sœurs (`composes:` et liens) : distribution, domaine Vercel (les deux fichiers existent dans `recipes/`)
-- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 25 pointeurs sur 25, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
+- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 28 pointeurs sur 28, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
 
 Preuves ajoutées : les affirmations de la recette sont relues dans le code de muti. Le job de preview a
 un `timeout-minutes` de 5 (`ci.yml:171`). La matrice de packaging porte `fail-fast: false`
