@@ -58,7 +58,7 @@ Ce qui n'est **pas** mesuré, dit franchement : le local durci (D2 ci-dessous), 
 
 ### D1 — Revue : le local est le plancher, Codex est un filet
 
-- **Aucun merge sans un `GO` de la revue locale** (`ezk-reviewer`), et une trace lisible : un commentaire de PR quand il y a une PR, un fichier `review:emit` sinon.
+- **Aucun merge sans un `GO` de la revue locale** (`ezk-reviewer`), et une trace lisible. La revue précède la PR, la trace la suit : le verdict est gardé en fichier, puis posté en commentaire de la PR dès son ouverture et avant le merge. Sans PR, c'est un fichier `review:emit`.
 - **Codex n'est jamais une condition de merge.** Il reste lancé à l'ouverture de la PR tant que `github.codex-review` est actif. Son silence ne bloque rien. Quand il parle, on traite ses retours.
 - **Changements ordinaires** : on n'attend pas Codex et on ne le relance pas.
 - **Changements sensibles** (sécurité, écriture hors du dépôt, contrats publics, chemins d'erreur) : on garde la PR et on lui laisse le temps de passer, par une attente bornée, tant que le quota le permet. Quota épuisé : on ne bloque pas, et la revue locale porte la liste des angles morts (D2).
@@ -82,7 +82,7 @@ Pourquoi par le prompt : le coût d'un appel est surtout un contexte fixe. Un pr
 
 ### D4 — La trace du verdict
 
-Le verdict local ne se perd pas : commentaire de PR (`gh pr review --comment`) quand il y a une PR, `review:emit` sinon. L'archive **structurée** (un fichier par relecteur et par run, en-tête YAML, extension du pack d'[ADR-038](../../../../docs/adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md) vers `method-review@0.2`, index généré) est la **suite** : c'est le prérequis de la re-mesure, pas de cette décision.
+Le verdict local ne se perd pas : commentaire de PR (`gh pr review --comment`) posé dès l'ouverture de la PR et avant le merge, `review:emit` sans PR. L'archive **structurée** (un fichier par relecteur et par run, en-tête YAML, extension du pack d'[ADR-038](../../../../docs/adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md) vers `method-review@0.2`, index généré) est la **suite** : c'est le prérequis de la re-mesure, pas de cette décision.
 
 ### D5 — Le protocole de re-mesure
 

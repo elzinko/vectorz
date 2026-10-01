@@ -27,7 +27,7 @@ Pour toi : tu lis l'ADR et tu le ratifies ou le corriges. Le durcissement du rel
 
 La revue de référence sur les PR vectorz est **Codex**, lancée à l'ouverture d'une PR. Elle est bonne, mais elle impose une PR GitHub, une latence de 3 à 5 minutes, un quota et un service externe.
 
-Retirer **Codex** touche le grain de *revue*. Retirer la **PR** touche le grain de *merge* ([ADR-037] : une feature = une branche = une PR = un squash-merge ; [ADR-0052] : le local décide, GitHub exécute). Ce sont deux décisions distinctes. Sans PR, il n'y a pas de Codex : la revue locale devient alors le seul filet.
+Retirer **Codex** touche le grain de *revue*. Retirer la **PR** touche le grain de *merge* ([ADR-037](../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md) : une feature = une branche = une PR = un squash-merge ; [ADR-0052](../products/mega-city/docs/adr/0052-merge-local-first-github-execute-le-squash-main-se-realigne.md) : le local décide, GitHub exécute). Ce sont deux décisions distinctes. Sans PR, il n'y a pas de Codex : la revue locale devient alors le seul filet.
 
 Deux inconnues bloquaient la décision. Le local seul tient-il le niveau sur les défauts qui comptent ? Et ses verdicts ne sont archivés nulle part, donc rien ne se compare dans le temps.
 
@@ -75,7 +75,7 @@ Deux inconnues bloquaient la décision. Le local seul tient-il le niveau sur les
 
 ## Suite (hors POC)
 
-- **Archiver chaque verdict local.** Format retenu : un fichier markdown par revue, en-tête YAML (verdict, coût, durée, findings : fichier, ligne, sévérité, catégorie) et corps lisible. Il **étend le pack** de l'[ADR-038] (`features/reviews/`, contrat `method-review@0.1` vers `0.2`), au lieu d'ouvrir un second store. Une entrée par couple relecteur × run, sans écrasement. Aujourd'hui l'émetteur écrit au chemin de la fiche et écrase la revue précédente. Un index agrégé généré balaie les en-têtes (doctrine [ADR-0001]).
+- **Archiver chaque verdict local.** Format retenu : un fichier markdown par revue, en-tête YAML (verdict, coût, durée, findings : fichier, ligne, sévérité, catégorie) et corps lisible. Il **étend le pack** de l'[ADR-038](../docs/adr/ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md) (`features/reviews/`, contrat `method-review@0.1` vers `0.2`), au lieu d'ouvrir un second store. Une entrée par couple relecteur × run, sans écrasement. Aujourd'hui l'émetteur écrit au chemin de la fiche et écrase la revue précédente. Un index agrégé généré balaie les en-têtes (doctrine [ADR-0001](../products/mega-city/docs/adr/0001-monorepo-composable-coeur-deterministe.md)).
 - **Trace en attendant.** Le verdict est posté en commentaire de la PR : les verdicts de ce run restent lisibles sur GitHub.
 - **Rejouer la mesure** avec l'oracle indépendant et le local durci.
 - **N relecteurs en parallèle** : à mesurer seulement si la re-mesure montre un rappel insuffisant. Le coût est en jetons.
