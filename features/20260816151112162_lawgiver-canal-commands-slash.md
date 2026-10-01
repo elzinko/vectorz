@@ -59,7 +59,7 @@ laisseraient une source de vérité de plus hors de `bind-global`.
 - [x] Tests : catalogue (`catalog-commands.test.ts`), expansion, plan, application (copie et lien),
       diagnostic (`commands-channel.test.ts`), garde « toute commande du catalogue est dans `global` »
       (`global-profile-covers-ezk.test.ts`), et l'essai bout en bout ci-dessus.
-- [x] Preuves sur dossier jetable, jamais sur `~/.claude`. Gate locale verte (typecheck, 1436 tests, scripts
+- [x] Preuves sur dossier jetable, jamais sur `~/.claude`. Gate locale verte (typecheck, 1498 tests, scripts
       bash, liens).
 
 ## Comment vérifier
