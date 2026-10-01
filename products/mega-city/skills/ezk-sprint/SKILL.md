@@ -68,7 +68,7 @@ Ce skill est de la **glue** : ton rôle est l'**orchestration** et le **jugement
 
 Trois invariants :
 
-1. **1 feature = 1 branche = 1 PR = 1 squash-merge.** Jamais deux features dans une PR.
+1. **1 feature = 1 branche = 1 squash-merge, et 1 PR quand `github.pr` est actif** (ADR-0059 : la PR est la projection de l'adaptateur GitHub, l'unité atomique est la branche). Jamais deux features dans une PR.
 2. **POC d'abord (ça marche), polish ensuite (c'est beau).** On ne peaufine jamais le visuel d'une feature non validée.
 3. **Tout testable en local d'abord** — tests, pipeline (`act` + Docker) **et** E2E (Playwright) tournent en local **avant** la CI cloud.
 
@@ -164,7 +164,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 4. **TDD POC** — délègue à **`ezk-dev`** : red → green → refactor sur le cœur.
 5. **Gate locale (pipeline)** — lance les tests **en local**, puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
-7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR.
+7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR. Cette revue locale est le **plancher** ([ADR-0059](../../docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md)) : aucun merge sans son `GO`, avec ou sans Codex, et son verdict laisse une **trace** (commentaire de PR en `pr: on`, `review:emit` en `pr: off`). Codex est un filet en plus, jamais une condition de merge.
 8. **PR** *(seulement si `pr: on` — sinon cf. § « Capacités GitHub » : pas de PR, le livrable de revue est le fichier local, merge local à l'étape 10)* — **1 PR pour cette feature**. Titre = conventional commit (skill [`ezk-commits`](../ezk-commits/) — le **titre seulement**). Corps **relisable seul** (diff fermé), règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) : **le corps de PR est le RENDU de la fiche** ([ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md)), **pas** un résumé parallèle. Concrètement :
 
    - **Recopier la fiche** dans le corps : son ouverture **« En clair »** (+ **« Si tu arrives frais »** si la fiche la porte — le vocabulaire projet pour un lecteur neuf) puis ses sections (Contexte / Proposition / Critères / **Comment vérifier**, et **`## Glossaire`** si la fiche en porte un). Ne **rien** réécrire à côté — si le texte manque de clarté, corriger **la fiche**, puis re-rendre.
