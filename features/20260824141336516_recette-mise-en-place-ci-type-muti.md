@@ -80,21 +80,27 @@ la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013
 
 ## Critères d'acceptation
 
-- [ ] la recette existe, son front-matter est valide, `status: draft`, et elle est listée dans `recipes/RECIPES.md` après `regen-recipes.sh`
-- [ ] elle décrit le **socle** (CI sur PR, CD sur `main` et tags, déploiement du site) et les **options** (nettoyage, smoke-test, coming-soon), chacun relié à son workflow muti
-- [ ] elle répond aux quatre options tranchées ci-dessus
-- [ ] elle explique comment **rejouer le même plan en local** : `pnpm ci:local` (`act` ou mode natif), secrets locaux générés, lint des workflows, et ce qui ne se joue pas sous `act`
-- [ ] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers muti ; `source:` existe ; aucun code recopié
-- [ ] elle compose les recettes sœurs (`composes:` et liens) : distribution, domaine Vercel
-- [ ] gate `ezk-chef` : `regen-recipes.sh` et `check-links.sh . recipes` verts, verdict GO
+- [x] la recette existe, son front-matter est valide, `status: draft`, et elle est listée dans `recipes/RECIPES.md` après `regen-recipes.sh` (1 ligne ajoutée, 13 recettes)
+- [x] elle décrit le **socle** (CI sur PR, CD sur `main` et tags, déploiement du site) et les **options** (nettoyage, smoke-test, coming-soon), chacun relié à son workflow muti
+- [x] elle répond aux quatre options tranchées ci-dessus
+- [x] elle explique comment **rejouer le même plan en local** : `pnpm ci:local` (`act` ou mode natif), secrets locaux générés, lint des workflows, et ce qui ne se joue pas sous `act` (packaging multi-OS, tags de release)
+- [x] la section « Fichiers de référence » porte des pointeurs `fichier:ligne` réels vers muti ; `source:` existe ; aucun code recopié (25 pointeurs sur 25 existent)
+- [x] elle compose les recettes sœurs (`composes:` et liens) : distribution, domaine Vercel (les deux fichiers existent dans `recipes/`)
+- [x] gate `ezk-chef` rejouée : `regen-recipes.sh` (+1 ligne), les 5 champs du front-matter, 25 pointeurs sur 25, aucun lien cassé de plus (7 hérités, voir Notes). Le jugement (zéro code recopié, deux SHOULD) est porté par la revue.
+
+Preuves ajoutées : les affirmations de la recette sont relues dans le code de muti. Le job de preview a
+un `timeout-minutes` de 5 (`ci.yml:171`). La matrice de packaging porte `fail-fast: false`
+(`cd.yml:268`). Un tag de release part toujours en cloud, même avec `LOCAL_CI=true` (`cd.yml:44`).
+Le smoke de l'app empaquetée fait échouer le job si l'app plante au démarrage (`cd.yml:364`).
 
 ## Comment vérifier
 
 1. `bash products/mega-city/bin/regen-recipes.sh`, puis `git diff --stat -- recipes/RECIPES.md` :
    une seule ligne ajoutée, celle de la nouvelle recette.
-2. `bash products/mega-city/bin/check-links.sh . recipes` rend vert.
+2. `bash products/mega-city/bin/check-links.sh . recipes` ne signale aucun lien cassé dans les fichiers
+   de cette PR. Il en reste 7 hérités dans d'autres recettes (voir Notes).
 3. Chaque pointeur `fichier:ligne` de la recette existe dans le dépôt muti.
-4. Le verdict de la gate `ezk-chef` est GO.
+4. La gate `ezk-chef` rejouée rend GO.
 
 ## Suite (hors de cette PR)
 
@@ -102,6 +108,15 @@ la CI de muti (`source: ~/git/bacasable/muti`), elle ne la recopie pas (ADR-0013
   fichiers, du tag vers les fichiers. Références : `scripts/release-set-version.sh` et
   `desktop-sync-manifest.sh` côté samplerz, `scripts/bump-version.sh` côté muti.
 - Rejouer la recette sur un 2ᵉ projet, puis la passer `ready` après `ezk-chef check`.
+
+## Notes / décisions
+
+- `recipes/` porte 7 liens cassés **hérités** : sept recettes pointent vers la fiche
+  `20260824185422122`, déplacée dans `features/done/`. Hors périmètre de cette PR, signalé au PO.
+- Ce que la recette ajoute à la fiche d'origine : l'interrupteur `LOCAL_CI` (`pnpm ci:mode`) et son
+  exception pour les tags de release, que la fiche ne mentionnait pas.
+- Les économies de minutes (`paths-ignore`, concurrence, `LOCAL_CI`) valent pour un dépôt **privé**.
+  Sur un dépôt public, GitHub Actions est gratuit : la recette le dit.
 
 ## LIENS
 
