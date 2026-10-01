@@ -14,6 +14,7 @@
 import type { Catalog } from '../loaders/catalog.js';
 import type { CompiledGraph } from './compiled-graph.js';
 import { type MethodDoc, validateMethod } from './ceremonies.js';
+import { type AssemblageView, buildAssemblage } from './assemblage.js';
 import { type CycleStep, type CycleStepDoc, compileCycle } from './cycle.js';
 import type { LinkType, NodeKind } from './graph.js';
 import { validateGraph } from './graph.js';
@@ -94,7 +95,10 @@ export interface MapProfile {
   interactions: string[];
 }
 
-/** Index des sources : `kind:id` → chemin du fichier ; `method` et `taxonomie` → leurs YAML. */
+/**
+ * Index des sources : `kind:id` → chemin du fichier ; `method` et `taxonomie` → leurs YAML ;
+ * `bind` et `adr-bind` → le code du moteur et son ADR (le bind n'est pas dans le graphe).
+ */
 export type SourceIndex = ReadonlyMap<string, string>;
 
 /** Ce que l'appelant (le bord I/O) fournit en plus du catalogue : d'où vient chaque chose, et le cycle écrit à la main. */
@@ -109,6 +113,7 @@ export interface ProvenanceCounts {
   liens: number; // arêtes du graphe compilé
   ceremonies: number; // éléments de ceremonies.yml
   cycle: number; // puces du cycle écrit à la main
+  assemblage: number; // ce que la vue « qui compose quoi » dessine hors graphe (le bind)
 }
 
 /**
@@ -124,6 +129,8 @@ export interface MapData {
   counts: { rules: number; agents: number; skills: number; bundles: number; profiles: number };
   liens: { total: number; casses: number };
   provenance: Provenance;
+  /** « Qui compose quoi » : flèches comptées dans le graphe (assemblage.ts). */
+  assemblage: AssemblageView;
   orphans: { kind: string; id: string }[];
   /** La carte totale de la méthode scrum (method/ceremonies.yml), VALIDÉE — lot 1. */
   method?: MethodDoc;
@@ -299,8 +306,8 @@ export function buildMapData(
   // fichier de la brique qui le DÉCLARE (`from`) est connu ; une puce du cycle, si un fichier
   // l'appuie (cycle.ts) — les humains n'ont pas de fichier, donc toujours déduits.
   const provenance: Provenance = {
-    prouve: { briques: 0, liens: 0, ceremonies: 0, cycle: 0 },
-    deduit: { briques: 0, liens: 0, ceremonies: 0, cycle: 0 },
+    prouve: { briques: 0, liens: 0, ceremonies: 0, cycle: 0, assemblage: 0 },
+    deduit: { briques: 0, liens: 0, ceremonies: 0, cycle: 0, assemblage: 0 },
   };
   const tally = (nature: keyof ProvenanceCounts, prouve: boolean, n = 1): void => {
     provenance[prouve ? 'prouve' : 'deduit'][nature] += n;
@@ -312,6 +319,15 @@ export function buildMapData(
     for (const chip of [...s.etape, ...s.acteurs]) tally('cycle', chip.prouve);
     tally('cycle', false, s.humains.length);
   }
+  // Le bind lit un profil : vrai dans le code (ADR-0003), mais le graphe ne le déclare pas — la
+  // flèche est une lecture d'auteur, donc DÉDUITE ; ses nombres, eux, sont déjà comptés en « liens ».
+  tally('assemblage', false);
+  const bindSource = sources.get('bind');
+  const bindAdr = sources.get('adr-bind');
+  const assemblage = buildAssemblage(graph, {
+    ...(bindSource ? { source: bindSource } : {}),
+    ...(bindAdr ? { adr: bindAdr } : {}),
+  });
 
   const taxonomieSource = taxonomie ? sources.get('taxonomie') : undefined;
   return {
@@ -324,6 +340,7 @@ export function buildMapData(
     },
     liens: { total: report.edgeCount, casses: report.broken.length },
     provenance,
+    assemblage,
     orphans: report.orphans.map(({ kind, id }) => ({ kind, id })),
     // Validée ICI : une référence fausse dans ceremonies.yml fait échouer la compilation.
     ...(method ? { method: validateMethod(catalog, method) } : {}),
