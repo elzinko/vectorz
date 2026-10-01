@@ -479,7 +479,7 @@ body{
     try{ localStorage.setItem('ezk-theme', root.dataset.theme); }catch(e){}
   });
 
-  if(!D){ $('proof-text').textContent = 'données absentes — lancer pnpm ezk dashboard (ou pnpm views:regen)'; $('proof').classList.add('bad'); return; }
+  if(!D){ $('proof-text').textContent = 'données absentes — lancer pnpm ezk dashboard (ou pnpm --dir products/mega-city views:regen)'; $('proof').classList.add('bad'); return; }
 
   /* ── vocabulaire d'affichage ── */
   const KIND = {

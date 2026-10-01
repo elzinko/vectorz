@@ -40,7 +40,7 @@ export interface DataView {
 }
 
 const HEADER =
-  '// Généré — NE PAS committer (ADR-0055). Reconstruit par `pnpm views:regen`, servi à la volée par `ezk:map`.\n';
+  '// Généré — NE PAS committer (ADR-0055). Reconstruit par `pnpm --dir products/mega-city views:regen`, servi à la volée par `ezk:map`.\n';
 
 /** `features/PLAN.md` est curé à la main ; absent, la vue Plan est simplement vide. */
 function readPlan(repoRoot: string): string {
