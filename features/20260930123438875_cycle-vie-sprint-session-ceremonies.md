@@ -56,14 +56,14 @@ Nommage écarté : `stop` pour la clôture normale (en Scrum, c'est une fin anor
 
 **POC — ce sprint**
 
-- [ ] **A1 — `start` ouvre un sprint.** `sprint.sh start --lot <ids>` passe le portier, écrit `SPRINT.md` avec le lot, refuse sur ALERT (sauf `--override "<raison>"`, journalisé) et refuse si un sprint est déjà ouvert.
-- [ ] **A2 — `check` = `start --dry-run`, strictement read-only.** Même sortie que le portier. Ni fichier, ni branche, ni commit.
-- [ ] **A3 — `close` scelle un incrément.** Il refuse tant qu'une story du lot est ouverte. Sinon il passe le sprint à `clos`, inscrit l'incrément dans `SPRINT.md` (section « Incréments scellés de la session ») et rend la main à la session. Il ne touche ni `docs/sessions/` ni `.claude/handoff.md`. Sortie d'un sprint où rien n'est livré : `close --abandon "<raison>"`, sans incrément.
-- [ ] **A4 — Enchaînement.** `start → close → start` marche dans la même session. Ni l'incrément scellé ni la section « Galères & gestes (labo) » ne se perdent.
-- [ ] **A5 — `run` = `start → stories → close`**, écrit dans `SKILL.md`. Un lot d'une story donne le build 0→10 d'avant, inchangé.
-- [ ] **A6 — `ezk-archive` garde la session.** Ses scripts ne changent pas. Son `SKILL.md` dit « session », renvoie à l'ADR-0054 et lève l'ambiguïté de son alias `close`. Aucune sous-commande `retrospective`, aucun verbe `start` hors `ezk-sprint`.
-- [ ] **A7 — ADR-0054 `Accepté`.** Ses deux questions ouvertes sont tranchées pour le POC : `SPRINT.md` suffit (pas d'objet persistant) et le planning, c'est `ezk-backlog`. La règle de nommage est posée.
-- [ ] **A8 — Contrat testé.** Vitest (catalogue, `ceremonies.yml`, `SKILL.md`, ADR), suite bash câblée dans `test:scripts`, carte régénérée, gate complète verte.
+- [x] **A1 — `start` ouvre un sprint.** `sprint.sh start --lot <ids>` passe le portier, écrit `SPRINT.md` avec le lot, refuse sur ALERT (sauf `--override "<raison>"`, journalisé) et refuse si un sprint est déjà ouvert.
+- [x] **A2 — `check` = `start --dry-run`, strictement read-only.** Même sortie que le portier. Ni fichier, ni branche, ni commit.
+- [x] **A3 — `close` scelle un incrément.** Il refuse tant qu'une story du lot est ouverte. Sinon il passe le sprint à `clos`, inscrit l'incrément dans `SPRINT.md` (section « Incréments scellés de la session ») et rend la main à la session. Il ne touche ni `docs/sessions/` ni `.claude/handoff.md`. Sortie d'un sprint où rien n'est livré : `close --abandon "<raison>"`, sans incrément.
+- [x] **A4 — Enchaînement.** `start → close → start` marche dans la même session. Ni l'incrément scellé ni la section « Galères & gestes (labo) » ne se perdent.
+- [x] **A5 — `run` = `start → stories → close`**, écrit dans `SKILL.md`. Un lot d'une story donne le build 0→10 d'avant, inchangé.
+- [x] **A6 — `ezk-archive` garde la session.** Ses scripts ne changent pas. Son `SKILL.md` dit « session », renvoie à l'ADR-0054 et lève l'ambiguïté de son alias `close`. Aucune sous-commande `retrospective`, aucun verbe `start` hors `ezk-sprint`.
+- [x] **A7 — ADR-0054 `Accepté`.** Ses deux questions ouvertes sont tranchées pour le POC : `SPRINT.md` suffit (pas d'objet persistant) et le planning, c'est `ezk-backlog`. La règle de nommage est posée.
+- [x] **A8 — Contrat testé.** Vitest (catalogue, `ceremonies.yml`, `SKILL.md`, ADR), suite bash câblée dans `test:scripts`, carte régénérée, gate complète verte.
 
 **Suite — hors POC**
 
