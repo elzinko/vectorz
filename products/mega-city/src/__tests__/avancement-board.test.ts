@@ -32,6 +32,17 @@ describe('diagrams/avancement/board.html — la coque', () => {
     expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\b(md|parseBlocks|renderBlocks|stripInline)\b/);
   });
 
+  it('les pouces 👍/👎 (fiche 20260826072532622) : boutons annoncés, filtre « Revue », message sans serveur', () => {
+    const html = readFileSync(boardPath, 'utf8');
+    expect(html).toContain('id="f-revue"'); // le filtre validée / rejetée / non revue
+    expect(html).toContain("fetch('/api/verdict'"); // la seule route d'écriture du tableau de bord
+    expect(html).toContain('aria-pressed'); // l'état du pouce est annoncé, pas seulement coloré
+    // Page ouverte sans `ezk dashboard` : on le dit, on ne fait pas semblant d'enregistrer.
+    expect(html).toContain('pnpm ezk dashboard');
+    // Le verdict, la date et les fichiers illisibles viennent de fichiers : jamais via innerHTML.
+    expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\b(verdict|illisibles|banniere|date)\b/);
+  });
+
   it('les labels du front-matter alimentent BoardFiche.labels et filtres.labels (filtre par tag)', () => {
     const mk = (id: string, labels: string[]): Fiche => ({
       id,
