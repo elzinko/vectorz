@@ -179,10 +179,6 @@ commands:
     verb: conso
     run: bin/ci-conso.ts
     summary: Affiche la consommation GitHub Actions du mois.
-  - domain: sprint
-    verb: report
-    run: bin/sprint-report.ts
-    summary: Collecte le rapport de sprint (durée, jetons, indicateurs).
   - domain: run
     verb: context
     run: bin/run-context.ts
@@ -191,6 +187,10 @@ commands:
     verb: report
     run: bin/run-report.ts
     summary: Rend le bilan de fin de run, une ligne par fiche, avec HEAD et les jetons.
+  - domain: sprint
+    verb: report
+    run: bin/sprint-report.ts
+    summary: Collecte le rapport de sprint (durée, jetons, indicateurs).
 
   # --- docs : contrôles de liens et de numéros ---
   - domain: docs

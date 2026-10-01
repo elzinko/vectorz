@@ -50,9 +50,8 @@ describe('buildRunContext — la base', () => {
   });
 
   it('sans remote joignable : avertit sans bloquer', () => {
-    const { lines, warnings } = buildRunContext(settings(), facts({ remote: 'none', originMain: undefined }));
-    expect(lines.join('\n')).toMatch(/pas de remote joignable/);
-    expect(warnings.length).toBeGreaterThan(0);
+    const { lines } = buildRunContext(settings(), facts({ remote: 'none', originMain: undefined }));
+    expect(lines.join('\n')).toMatch(/pas de remote joignable.*avertissement, pas un blocage/);
   });
 });
 

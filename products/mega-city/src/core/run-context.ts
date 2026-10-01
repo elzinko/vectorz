@@ -48,15 +48,13 @@ export interface RunFacts {
 
 export interface RunContext {
   lines: string[];
-  warnings: string[];
 }
 
 const plural = (n: number, word: string): string => `${n} ${word}${n > 1 ? 's' : ''}`;
 
-function baseLine(facts: RunFacts, warnings: string[]): string {
+function baseLine(facts: RunFacts): string {
   if (facts.remote !== 'ok' || !facts.originMain) {
     const why = facts.remote === 'none' ? 'pas de remote' : 'le fetch a échoué';
-    warnings.push(`${why} : la base n'a pas été comparée à origin/main`);
     return `  Base       pas de remote joignable (${why}) : base non vérifiée, c'est un avertissement, pas un blocage`;
   }
   const where = `origin/main = ${facts.originMain.sha} « ${facts.originMain.subject} »`;
@@ -68,7 +66,6 @@ function baseLine(facts: RunFacts, warnings: string[]): string {
   if (facts.clean && facts.fastForwardable) {
     return `  Base       ${where} · ${late} : réalignement sans risque possible (fast-forward strict, arbre propre)`;
   }
-  warnings.push(`${late} sur origin/main, mais l'arbre est sale ou divergent : rien n'est déplacé`);
   return `  Base       ${where} · ${late} : avertissement seul, rien n'est déplacé (arbre sale ou divergent) — décision : rebase, stop ou go`;
 }
 
@@ -90,9 +87,8 @@ function contractLines(s: RunSettings): string[] {
   return [`    1. ${one}`, `    2. ${two}`, `    3. ${three}`];
 }
 
-/** Rend le bloc. Ne jette jamais : une base illisible devient un avertissement. */
+/** Rend le bloc. Ne jette jamais : une base illisible devient un avertissement dans la ligne Base. */
 export function buildRunContext(settings: RunSettings, facts: RunFacts): RunContext {
-  const warnings: string[] = [];
   const flags = [
     `--mode ${settings.mode}`,
     `--tokens ${settings.tokens}`,
@@ -113,12 +109,11 @@ export function buildRunContext(settings: RunSettings, facts: RunFacts): RunCont
     lines: [
       'Contexte de run',
       `  Réglages   ${flags.join(' · ')}${target}`,
-      baseLine(facts, warnings),
+      baseLine(facts),
       `  Worktree   ${wt.kind === 'secondary' ? 'secondaire' : 'principal'} · ${branch} · ${wt.path}`,
       write,
       '  Contrat',
       ...contractLines(settings),
     ],
-    warnings,
   };
 }
