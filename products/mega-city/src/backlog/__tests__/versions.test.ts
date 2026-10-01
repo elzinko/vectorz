@@ -349,5 +349,12 @@ describe('rendu texte — « En clair » d’abord', () => {
     expect(text).toContain('git tag -a v0.2 -m "Version V0.2" abc1234');
     expect(text).toContain('git push origin v0.2');
     expect(text).toContain("rien n'est exécuté");
+    expect(text).toContain('pointe de origin/main');
+  });
+
+  it('la proposition dit la référence réellement visée quand origin/main est inconnu (repli sur HEAD)', () => {
+    const text = renderProposal('V0.2', 'v0.2', 'abc1234', 'HEAD').join('\n');
+    expect(text).toContain('pointe de HEAD');
+    expect(text).not.toContain('origin/main');
   });
 });

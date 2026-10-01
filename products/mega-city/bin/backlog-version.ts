@@ -148,7 +148,7 @@ function main(): void {
   }
   const { sha, ref } = targetSha(args.root);
   if (!args.tag) {
-    say(renderProposal(version, result.tag, sha));
+    say(renderProposal(version, result.tag, sha, ref));
     return;
   }
   try {

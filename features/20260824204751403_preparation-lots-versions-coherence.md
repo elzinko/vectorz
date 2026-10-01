@@ -68,18 +68,18 @@ Un cœur pur `src/backlog/versions.ts` (déterministe, n'écrit rien) et un bord
 
 ## Critères d'acceptation
 
-- [ ] Le loader lit `version:` (`Fiche.version`). Le format attendu est `V<n>.<n>`.
-- [ ] `version` liste les versions dans l'ordre naturel (V0.2 avant V0.10), avec compteurs et état, et
+- [x] Le loader lit `version:` (`Fiche.version`). Le format attendu est `V<n>.<n>`.
+- [x] `version` liste les versions dans l'ordre naturel (V0.2 avant V0.10), avec compteurs et état, et
       dit combien de fiches actives n'ont pas de version (dont combien de parkées).
-- [ ] `version check` : chaque règle ci-dessus produit sa ligne, avec son **code** (`format`, `parkee`,
+- [x] `version check` : chaque règle ci-dessus produit sa ligne, avec son **code** (`format`, `parkee`,
       `rouverte`, `bloquee`, `taille`, `plan-ecart`, `plan-absente`, `plan-ambigue`), la version et l'id.
       Code de sortie 1 s'il y a une erreur, 0 sinon.
-- [ ] Aucune fiche n'est perdue : chaque fiche lue tombe dans une catégorie (lot, parkée, terminale,
+- [x] Aucune fiche n'est perdue : chaque fiche lue tombe dans une catégorie (lot, parkée, terminale,
       sans version, illisible). Un test de conservation le prouve.
-- [ ] `version close <X>` refuse (code 1) tant qu'une fiche reste à livrer ou qu'une erreur de lot
+- [x] `version close <X>` refuse (code 1) tant qu'une fiche reste à livrer ou qu'une erreur de lot
       subsiste. Sinon il propose les deux commandes git sans rien exécuter ; `--tag` crée l'étiquette
       locale et ne pousse jamais.
-- [ ] `SKILL.md` d'`ezk-backlog` : sous-commande `version` (usage et détail), contrôle n°7 de `review`,
+- [x] `SKILL.md` d'`ezk-backlog` : sous-commande `version` (usage et détail), contrôle n°7 de `review`,
       `argument-hint` à jour. Manifeste `ezk` et script pnpm ajoutés.
 
 ## Comment vérifier
@@ -118,3 +118,6 @@ pnpm --dir products/mega-city backlog:version close V0.3    # refus : la liste d
   BACKLOG » (déjà vrai : colonne `Version` de `regen-backlog.sh`), « plus de convention qui dérive »
   (gardes `plan-*`), « historique par itération » (en Suite).
 - **Groom du 2026-10-01** : POC borné ci-dessus, le reste en Suite.
+- **Livré le 2026-10-01** : `src/backlog/versions.ts` et `versions-render.ts` (cœur pur), `bin/backlog-version.ts`
+  (`list`, `check`, `close`), loader (`Fiche.version`), `SKILL.md`, manifeste `ezk`. Sur le vrai backlog,
+  `check` signale 4 fiches parkées rangées en V0.1 ; `close V0.1` refuse, `close V0.2` propose l'étiquette.

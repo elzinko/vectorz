@@ -89,7 +89,12 @@ export function renderRefusal(version: string, reasons: readonly string[]): stri
 }
 
 /** La clôture acceptée : l'étiquette est PROPOSÉE, jamais exécutée ni poussée par le script. */
-export function renderProposal(version: string, tag: string, sha: string): string[] {
+export function renderProposal(
+  version: string,
+  tag: string,
+  sha: string,
+  ref = 'origin/main',
+): string[] {
   return [
     `En clair : ${version} est complète, toutes ses fiches sont livrées.`,
     '',
@@ -97,7 +102,7 @@ export function renderProposal(version: string, tag: string, sha: string): strin
     `  git tag -a ${tag} -m "Version ${version}" ${sha}`,
     `  git push origin ${tag}`,
     '',
-    `Le commit proposé est la pointe de origin/main : choisis-en un autre si la version était complète avant.`,
+    `Le commit proposé est la pointe de ${ref} : choisis-en un autre si la version était complète avant.`,
     `Pour créer l'étiquette en local, relance avec --tag. Réversible : git tag -d ${tag}. Jamais poussée.`,
   ];
 }
