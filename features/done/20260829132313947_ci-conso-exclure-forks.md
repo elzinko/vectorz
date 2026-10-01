@@ -8,15 +8,15 @@ version:
 epic:
 depends: []
 labels: [dette]
-status: idea
-pr:
+status: shipped
+pr: "#295"
 created: 2026-08-29
 ---
 
 ## En clair
 
-La conso ([`ci:conso`](../products/mega-city/bin/ci-conso.ts), fiche
-[20260828150801613](done/20260828150801613_ezk-ci-conso-script-endpoint.md)) liste **tous**
+La conso ([`ci:conso`](../../products/mega-city/bin/ci-conso.ts), fiche
+[20260828150801613](20260828150801613_ezk-ci-conso-script-endpoint.md)) liste **tous**
 les repos, forks compris. Or on ne travaille pas sur les forks, et ils sont **publics donc
 gratuits** — ils encombrent la vue sans peser sur le quota. Cette fiche propose de **les
 masquer** (ou de les mettre à part) pour une conso lisible d'un coup d'œil.
@@ -80,7 +80,7 @@ Cause : **aucun fork public n'a consommé de minutes ce mois-ci** (voir « Suite
 
 ## Notes
 
-- Suivi de [20260828150801613](done/20260828150801613_ezk-ci-conso-script-endpoint.md) (conso livrée) — décidé le 2026-08-29.
+- Suivi de [20260828150801613](20260828150801613_ezk-ci-conso-script-endpoint.md) (conso livrée) — décidé le 2026-08-29.
 - **Declutter, pas économie** : les forks sont publics → déjà gratuits ; ça n'change pas le quota.
 - Mutualiser avec l'appel visibilité existant (`/repos/<o>/<r>` rend `visibility` ET `fork`) — 0 appel en plus.
 - Priorité **P3 par défaut** (confort de lecture) — à ajuster au grooming.

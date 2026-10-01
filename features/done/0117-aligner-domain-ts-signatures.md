@@ -6,8 +6,8 @@ priority: P3
 product: mega-city
 version:
 labels: [dette]
-status: idea
-pr:
+status: shipped
+pr: "#295"
 created: 2026-06-26
 ---
 
