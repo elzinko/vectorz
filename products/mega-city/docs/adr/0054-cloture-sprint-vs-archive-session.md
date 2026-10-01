@@ -98,12 +98,13 @@ Les deux questions laissées ouvertes à la proposition sont closes pour le POC.
 - **Objet « sprint » persistant, ou SPRINT.md suffit-il ?** SPRINT.md suffit. Il est ignoré par git. Il porte le lot, les notes, la section « Galères & gestes (labo) » et une ligne par incrément scellé. Un nouveau `start` reporte ces trois dernières sections. Un objet persistant (id, incrément listé) ne se justifie que si cette approche montre ses limites.
 - **Frontière entre le planning et `ezk-backlog`.** Le planning, c'est `ezk-backlog` : `review`, `groom` et `next --ready-only`, composés par l'intake de `start`. Il n'y a pas de verbe `planning`.
 
-Quatre précisions sont nées du build.
+Cinq précisions sont nées du build.
 
 - **Checkpoint.** Il reste avant chaque merge (étape 9), donc par story. `close` ne pose pas de seconde question « on continue ? » : il rend la main. Pour un lot d'une story, le déroulé est celui d'avant.
 - **Deux `close`.** `ezk-archive close` (alias de `run`) reste et ferme la session. `ezk-sprint close` ferme le sprint. Les deux SKILL.md se distinguent l'un de l'autre.
 - **Story reportée.** Elle prend `[~]` dans le lot et retourne au backlog. Seule une case `[ ]` bloque `close`. Un sprint sans aucune story livrée n'a pas d'incrément : `close` refuse.
 - **Portier en ALERT.** `start` refuse. Seul `--override "<raison>"` passe outre, et la raison est journalisée dans SPRINT.md.
+- **Fin anormale.** Un sprint où rien n'est livré, ou que le PO arrête, ne peut pas rester ouvert : il bloquerait tout nouveau `start`. `close --abandon "<raison>"` le ferme sans incrément. La raison est journalisée et le savoir de session reste. Le verbe `stop` reste réservé à une annulation plus riche, si le besoin apparaît.
 
 ## Périmètre du POC et Suite
 

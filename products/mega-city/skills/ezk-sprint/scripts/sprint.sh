@@ -10,9 +10,11 @@
 #                          ni branche, ni commit, ni statut de fiche.
 #   close                  scelle l'incrément. Ne touche JAMAIS la session (docs/sessions/,
 #                          .claude/handoff.md) : c'est le métier d'ezk-archive.
+#   close --abandon "<r>"  fin ANORMALE : ferme le sprint sans incrément. Seule sortie quand rien
+#                          n'est livré (ou que le PO arrête). Le savoir de session est conservé.
 #
 # CONTRAT — comme check.sh, le verdict passe par stdout, jamais par le code retour :
-#   exit 0 pour tout verdict ; exit 2 = erreur d'usage, ou pas un dépôt git.
+#   exit 0 pour tout verdict ; exit 2 = erreur d'usage, écriture impossible, ou pas un dépôt git.
 #   start : START: OPENED sprint=<n> stories=<k>
 #         | START: REFUSED gate=ALERT            (suivi du bloc du portier)
 #         | START: REFUSED open_sprint sprint=<n>
@@ -21,9 +23,13 @@
 #         | CLOSE: OPEN sprint=<n> open=<k>      (une story du lot est encore ouverte)
 #         | CLOSE: REFUSED not_open
 #         | CLOSE: REFUSED empty_increment sprint=<n>   (rien de livré : pas d'incrément à sceller)
+#         | CLOSE: ABANDONED sprint=<n> done=<d> deferred=<r> open=<o>   (close --abandon)
+#   Les refus de close ajoutent une ligne `HINT:` quand --abandon est la sortie.
 #   Chaque réponse finit par `--- END ---`.
 #
 # Format du lot dans SPRINT.md : `- [ ] <id> — <titre>` ouverte · `- [x] …` livrée · `- [~] …` reportée.
+# Une référence de PR ou de commit en fin de ligne — `(PR #12)`, `(#12)`, `(local abc1234)` — est reprise
+# dans l'incrément ; toute autre parenthèse (un bout de titre) est ignorée.
 # Sections portées d'un sprint au suivant (savoir de SESSION) : Notes / décisions, Galères & gestes (labo),
 # Incréments scellés de la session. Le lot, lui, est propre à chaque sprint.
 
@@ -46,6 +52,7 @@ sprint.sh — cycle de vie du sprint (ezk-sprint start / close, ADR-0054)
         [--objective "<texte>"]    objectif du sprint (titre de SPRINT.md)
         [--override "<raison>"]    passe outre un portier ALERT ; la raison est journalisée
   close                            scelle l'incrément (refuse si une story du lot est ouverte)
+  close --abandon "<raison>"       fin anormale : ferme le sprint SANS incrément (raison journalisée)
   -h, --help                       cette aide
   Dernier argument optionnel : <racine> du dépôt.
 USAGE
@@ -61,13 +68,14 @@ case "$CMD" in
   *)           die_usage "sous-commande inconnue « $CMD »" ;;
 esac
 
-DRY=0; LOT=""; OBJ=""; OVERRIDE=""; HAS_OVERRIDE=0; ROOT=""
+DRY=0; LOT=""; OBJ=""; OVERRIDE=""; HAS_OVERRIDE=0; ABANDON=""; HAS_ABANDON=0; ROOT=""
 while (( $# )); do
   case "$1" in
     --dry-run)   DRY=1 ;;
     --lot)       [[ $# -ge 2 ]] || die_usage "--lot demande une valeur"; LOT="$2"; shift ;;
     --objective) [[ $# -ge 2 ]] || die_usage "--objective demande une valeur"; OBJ="$2"; shift ;;
     --override)  [[ $# -ge 2 ]] || die_usage "--override demande une raison"; OVERRIDE="$2"; HAS_OVERRIDE=1; shift ;;
+    --abandon)   [[ $# -ge 2 ]] || die_usage "--abandon demande une raison"; ABANDON="$2"; HAS_ABANDON=1; shift ;;
     -h|--help)   usage; exit 0 ;;
     --*)         die_usage "option inconnue « $1 »" ;;
     *)           ROOT="$1" ;;
@@ -75,8 +83,13 @@ while (( $# )); do
   shift
 done
 if (( DRY )) && [[ "$CMD" != "start" ]]; then die_usage "--dry-run n'existe que pour start"; fi
+if (( HAS_ABANDON )) && [[ "$CMD" != "close" ]]; then die_usage "--abandon n'existe que pour close"; fi
+if (( HAS_OVERRIDE )) && [[ "$CMD" != "start" ]]; then die_usage "--override n'existe que pour start"; fi
 if (( HAS_OVERRIDE )) && [[ -z "${OVERRIDE//[[:space:]]/}" ]]; then
   die_usage "--override exige une raison non vide (elle est journalisée)"
+fi
+if (( HAS_ABANDON )) && [[ -z "${ABANDON//[[:space:]]/}" ]]; then
+  die_usage "--abandon exige une raison non vide (elle est journalisée)"
 fi
 
 if [[ -n "$ROOT" ]]; then cd "$ROOT" || exit 2; fi
@@ -92,7 +105,7 @@ if (( DRY )); then exec bash "$CHECK" --gate; fi
 # --- lecture de SPRINT.md ----------------------------------------------------------
 sprint_state() { # none | open | closed — un SPRINT.md d'ancien format (sans `Statut: clos`) compte comme ouvert
   if [[ ! -s "$FILE" ]]; then echo none; return; fi
-  if grep -q '^Statut:[[:space:]]*clos' "$FILE"; then echo closed; else echo open; fi
+  if head -5 "$FILE" | grep -q 'Statut:[[:space:]]*clos'; then echo closed; else echo open; fi
 }
 sprint_number() { # numéro lu dans l'en-tête « # Sprint N — … » (0 si absent)
   local n
@@ -123,7 +136,21 @@ section_body() { # $1 = titre de section (préfixe) ; imprime son corps sans lig
   ' "$2"
 }
 plural() { if (( $1 > 1 )); then echo "$2s"; else echo "$2"; fi; }
-
+item_of() { # $1 = ligne de lot sans sa case → « id » ou « id (réf) » ; la réf doit ressembler à une PR ou un commit
+  local rest="$1" id grp ref=""
+  local re_pr='^(PR[[:space:]]+)?#[0-9]+'
+  local re_sha='^(local[[:space:]]+)?[0-9a-f]{7,40}([^0-9a-zA-Z]|$)'
+  grp="$(printf '%s\n' "$rest" | sed -nE 's/.*\(([^()]*)\)[[:space:]]*$/\1/p')"
+  if [[ -n "$grp" ]]; then
+    if [[ "$grp" =~ $re_pr ]] || [[ "$grp" =~ $re_sha ]]; then ref="$grp"; fi
+  fi
+  if [[ "$rest" == *" — "* ]]; then
+    id="${rest%% — *}"
+  else # ancien format : pas de « — », on garde le libellé sans sa parenthèse finale
+    id="$(printf '%s\n' "$rest" | sed -E 's/[[:space:]]*\([^()]*\)[[:space:]]*$//')"
+  fi
+  if [[ -n "$ref" ]]; then echo "${id} (${ref})"; else echo "${id}"; fi
+}
 fiche_path() { # $1 = id → chemin de la fiche active (features/, résolu par NOM de fichier), vide si introuvable
   local f
   for f in features/"$1"_*.md features/"$1"-*.md; do
@@ -132,6 +159,23 @@ fiche_path() { # $1 = id → chemin de la fiche active (features/, résolu par N
 }
 
 # --- start -------------------------------------------------------------------------
+sprint_file_content() { # le nouveau SPRINT.md, sur stdout (variables de do_start)
+  echo "# Sprint ${n} — ${OBJ:-sans objectif}"
+  echo "Statut: en cours   Ouvert: ${today}"
+  echo
+  echo "## Lot  (1 ligne = 1 story = 1 PR ; [x] livrée · [~] reportée · [ ] ouverte)"
+  printf '%s' "$lot_text"
+  echo
+  echo "$H_NOTES"
+  if [[ -n "$notes" ]]; then printf '%s\n' "$notes"; fi
+  echo
+  echo "$H_LABO"
+  if [[ -n "$labo" ]]; then printf '%s\n' "$labo"; fi
+  echo
+  echo "$H_SEALED"
+  if [[ -n "$sealed" ]]; then printf '%s\n' "$sealed"; fi
+}
+
 do_start() {
   [[ -n "$LOT" ]] || die_usage "start demande --lot <id[,id…]> (ou --dry-run pour le seul portier)"
 
@@ -141,13 +185,14 @@ do_start() {
     end
   fi
 
-  # 2) le lot : chaque story doit exister dans features/
+  # 2) le lot : chaque story doit exister dans features/. Un id n'est jamais un motif de glob.
   local ids id f lot_ids=() lot_files=()
   IFS=',' read -r -a ids <<< "$LOT"
   for id in "${ids[@]}"; do
     id="${id//[[:space:]]/}"
     [[ -n "$id" ]] || continue
-    f="$(fiche_path "$id")"
+    f=""
+    if [[ "$id" =~ ^[0-9A-Za-z_-]+$ ]]; then f="$(fiche_path "$id")"; fi
     if [[ -z "$f" ]]; then
       echo "START: REFUSED lot_unknown id=$id"
       end
@@ -192,22 +237,10 @@ do_start() {
   if (( alert )); then
     notes="${notes:+$notes$'\n'}- Override du portier (${verdict#VERDICT: }) — ${OVERRIDE} (${today})"
   fi
-  {
-    echo "# Sprint ${n} — ${OBJ:-sans objectif}"
-    echo "Statut: en cours   Ouvert: ${today}"
-    echo
-    echo "## Lot  (1 ligne = 1 story = 1 PR ; [x] livrée · [~] reportée · [ ] ouverte)"
-    printf '%s' "$lot_text"
-    echo
-    echo "$H_NOTES"
-    if [[ -n "$notes" ]]; then printf '%s\n' "$notes"; fi
-    echo
-    echo "$H_LABO"
-    if [[ -n "$labo" ]]; then printf '%s\n' "$labo"; fi
-    echo
-    echo "$H_SEALED"
-    if [[ -n "$sealed" ]]; then printf '%s\n' "$sealed"; fi
-  } > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+  if ! { sprint_file_content > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"; }; then
+    echo "sprint.sh : écriture de ${FILE} impossible" >&2
+    exit 2
+  fi
 
   echo "START: OPENED sprint=${n} stories=${n_stories}"
   echo "SPRINT_FILE: ${FILE}"
@@ -216,6 +249,30 @@ do_start() {
 }
 
 # --- close -------------------------------------------------------------------------
+write_closed() { # $1 = ligne du journal des incréments ; $2 = raison d'abandon (vide pour un sceau normal)
+  local today has_status=1
+  today="$(date +%F)"
+  head -5 "$FILE" | grep -q 'Statut:' || has_status=0
+  SEAL="$1" ABANDON="$2" awk -v today="$today" -v head="$H_SEALED" -v hs="$has_status" '
+    function flush() { if (insec && !done) { print ENVIRON["SEAL"]; done=1 } }
+    function closed(o,   sfx) {
+      sfx = ""; if (ENVIRON["ABANDON"] != "") sfx = "   Abandon: " ENVIRON["ABANDON"]
+      return "Statut: clos   " o "Clos: " today sfx
+    }
+    NR == 1 { print; if (hs == 0) { print closed(""); st=1 }; next }
+    NR <= 5 && !st && /Statut:/ {
+      # `Statut:` en début de ligne (format actuel) ou en fin de ligne (ancien « Périmètre: … Statut: … »)
+      match($0, /Statut:/); pre = substr($0, 1, RSTART - 1)
+      o = ""; if (match($0, /Ouvert: [0-9-]+/)) o = substr($0, RSTART, RLENGTH) "   "
+      print pre closed(o); st=1; next
+    }
+    index($0, head) == 1 { print; insec=1; seen=1; next }
+    /^## / && insec      { flush(); insec=0 }
+    { print }
+    END { if (insec) flush(); if (!seen) { print ""; print head; print ENVIRON["SEAL"] } }
+  ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+}
+
 do_close() {
   if [[ "$(sprint_state)" != "open" ]]; then
     echo "CLOSE: REFUSED not_open"
@@ -229,46 +286,49 @@ do_close() {
   n_done="$(count_lot x)"
   n_def="$(count_lot '~')"
 
-  if (( n_open > 0 )); then
-    echo "CLOSE: OPEN sprint=${n} open=${n_open}"
-    lot_lines | grep -F -- '- [ ] ' | sed -E 's/^- \[ \] /STORY_OPEN: /'
-    end
-  fi
-  if (( n_done == 0 )); then
-    echo "CLOSE: REFUSED empty_increment sprint=${n}"
-    end
+  if (( ! HAS_ABANDON )); then
+    if (( n_open > 0 )); then
+      echo "CLOSE: OPEN sprint=${n} open=${n_open}"
+      lot_lines | grep -F -- '- [ ] ' | sed -E 's/^- \[ \] /STORY_OPEN: /'
+      echo "HINT: termine ou reporte ([~]) ces stories ; ou close --abandon \"<raison>\" si le PO arrête le sprint"
+      end
+    fi
+    if (( n_done == 0 )); then
+      echo "CLOSE: REFUSED empty_increment sprint=${n}"
+      echo "HINT: rien n'est livré, donc pas d'incrément ; close --abandon \"<raison>\" ferme le sprint sans le sceller"
+      end
+    fi
   fi
 
-  # l'incrément : id + référence (dernier groupe entre parenthèses) de chaque story livrée
-  local line rest id ref item inc_lines="" seal_ids=""
+  # les stories livrées : id + référence de PR ou de commit
+  local line item inc_lines="" done_items=""
   while IFS= read -r line; do
-    rest="${line#- \[x\] }"
-    id="${rest%% *}"
-    ref="$(printf '%s\n' "$rest" | sed -nE 's/.*\(([^()]*)\)[[:space:]]*$/\1/p')"
-    if [[ -n "$ref" ]]; then item="${id} (${ref})"; else item="${id}"; fi
+    [[ -n "$line" ]] || continue
+    item="$(item_of "${line#- \[x\] }")"
     inc_lines="${inc_lines}INCREMENT: ${item}"$'\n'
-    seal_ids="${seal_ids:+$seal_ids, }${item}"
+    done_items="${done_items:+$done_items, }${item}"
   done < <(lot_lines | grep -F -- '- [x] ')
 
-  local seal_line today
-  today="$(date +%F)"
-  seal_line="- Sprint ${n} — ${obj:-sans objectif} — ${n_done} $(plural "$n_done" livrée), ${n_def} $(plural "$n_def" reportée) : ${seal_ids}"
+  local seal_line
+  if (( HAS_ABANDON )); then
+    seal_line="- Sprint ${n} — ${obj:-sans objectif} — abandonné (${ABANDON}) — ${n_done} $(plural "$n_done" livrée), ${n_def} $(plural "$n_def" reportée), ${n_open} $(plural "$n_open" ouverte)${done_items:+ : $done_items}"
+  else
+    seal_line="- Sprint ${n} — ${obj:-sans objectif} — ${n_done} $(plural "$n_done" livrée), ${n_def} $(plural "$n_def" reportée) : ${done_items}"
+  fi
 
   # Statut → clos, et la ligne d'incrément en fin de section. Rien d'autre n'est touché.
-  SEAL="$seal_line" awk -v today="$today" -v head="$H_SEALED" '
-    function flush() { if (insec && !done) { print ENVIRON["SEAL"]; done=1 } }
-    /^Statut:/ && !st {
-      o = ""; if (match($0, /Ouvert: [0-9-]+/)) o = substr($0, RSTART, RLENGTH) "   "
-      print "Statut: clos   " o "Clos: " today; st=1; next
-    }
-    index($0, head) == 1 { print; insec=1; seen=1; next }
-    /^## / && insec      { flush(); insec=0 }
-    { print }
-    END { if (insec) flush(); if (!seen) { print ""; print head; print ENVIRON["SEAL"] } }
-  ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+  if ! write_closed "$seal_line" "$ABANDON"; then
+    echo "sprint.sh : écriture de ${FILE} impossible" >&2
+    exit 2
+  fi
 
-  echo "CLOSE: SEALED sprint=${n} done=${n_done} deferred=${n_def}"
-  printf '%s' "$inc_lines"
+  if (( HAS_ABANDON )); then
+    echo "CLOSE: ABANDONED sprint=${n} done=${n_done} deferred=${n_def} open=${n_open}"
+    if (( n_open > 0 )); then lot_lines | grep -F -- '- [ ] ' | sed -E 's/^- \[ \] /STORY_OPEN: /'; fi
+  else
+    echo "CLOSE: SEALED sprint=${n} done=${n_done} deferred=${n_def}"
+    printf '%s' "$inc_lines"
+  fi
   if (( n_def > 0 )); then
     lot_lines | grep -F -- '- [~] ' | sed -E 's/^- \[~\] /STORY_DEFERRED: /'
   fi

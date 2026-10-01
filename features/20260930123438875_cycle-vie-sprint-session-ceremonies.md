@@ -58,7 +58,7 @@ Nommage écarté : `stop` pour la clôture normale (en Scrum, c'est une fin anor
 
 - [ ] **A1 — `start` ouvre un sprint.** `sprint.sh start --lot <ids>` passe le portier, écrit `SPRINT.md` avec le lot, refuse sur ALERT (sauf `--override "<raison>"`, journalisé) et refuse si un sprint est déjà ouvert.
 - [ ] **A2 — `check` = `start --dry-run`, strictement read-only.** Même sortie que le portier. Ni fichier, ni branche, ni commit.
-- [ ] **A3 — `close` scelle un incrément.** Il refuse tant qu'une story du lot est ouverte. Sinon il passe le sprint à `clos`, inscrit l'incrément dans `SPRINT.md` (section « Incréments scellés de la session ») et rend la main à la session. Il ne touche ni `docs/sessions/` ni `.claude/handoff.md`.
+- [ ] **A3 — `close` scelle un incrément.** Il refuse tant qu'une story du lot est ouverte. Sinon il passe le sprint à `clos`, inscrit l'incrément dans `SPRINT.md` (section « Incréments scellés de la session ») et rend la main à la session. Il ne touche ni `docs/sessions/` ni `.claude/handoff.md`. Sortie d'un sprint où rien n'est livré : `close --abandon "<raison>"`, sans incrément.
 - [ ] **A4 — Enchaînement.** `start → close → start` marche dans la même session. Ni l'incrément scellé ni la section « Galères & gestes (labo) » ne se perdent.
 - [ ] **A5 — `run` = `start → stories → close`**, écrit dans `SKILL.md`. Un lot d'une story donne le build 0→10 d'avant, inchangé.
 - [ ] **A6 — `ezk-archive` garde la session.** Ses scripts ne changent pas. Son `SKILL.md` dit « session », renvoie à l'ADR-0054 et lève l'ambiguïté de son alias `close`. Aucune sous-commande `retrospective`, aucun verbe `start` hors `ezk-sprint`.
@@ -106,6 +106,7 @@ Revue narrative : une session enchaîne bien `start → stories (1 PR chacune) �
   - Le checkpoint avant merge (étape 9) reste par story. `close` ne repose pas « on continue ? ».
   - Dans le lot, `[x]` veut dire livrée et `[~]` reportée (elle retourne au backlog). Seule une case `[ ]` bloque `close`.
   - `ezk-archive close` (alias de `run`) reste, avec une phrase qui le distingue de `ezk-sprint close`.
+  - Un sprint où rien n'est livré ne peut pas rester ouvert, sinon aucun `start` n'est plus possible. `close --abandon "<raison>"` le ferme sans incrément et garde le savoir de session. `stop` reste réservé à une annulation plus riche.
 
 ## ⤓ Absorbé : [`20260903085150321`](done/20260903085150321_nommage-commandes-scrum-safe.md)
 

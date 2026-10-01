@@ -7,7 +7,9 @@
 #   - `start` refuse sur ALERT (sauf override journalisé) et refuse d'ouvrir un 2e sprint ;
 #   - `close` refuse tant qu'une story est ouverte, scelle sinon, et ne touche JAMAIS la
 #     session (docs/sessions/, .claude/handoff.md : c'est le métier d'ezk-archive) ;
-#   - `start → close → start` s'enchaîne sans perdre ni l'incrément ni les galères du labo.
+#   - `start → close → start` s'enchaîne sans perdre ni l'incrément ni les galères du labo ;
+#   - un sprint où rien n'est livré a une sortie (`close --abandon`) : pas d'impasse, pas de rm SPRINT.md ;
+#   - un SPRINT.md d'ancien format (statut en fin de ligne) se ferme, une seule fois.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -69,6 +71,9 @@ ok "sans --lot : exit 2 (erreur d'usage)" '[ "$rc" = 2 ]'
 OUT3="$(bash "$SPRINT" start --lot "$A,99999999999999")"
 ok "story inconnue : REFUSED lot_unknown" 'printf "%s\n" "$OUT3" | grep -qx "START: REFUSED lot_unknown id=99999999999999"'
 ok "rien n'est écrit" '[ ! -e SPRINT.md ]'
+OUT3G="$(bash "$SPRINT" start --lot '2026*')"
+ok "un id n'est jamais un motif de glob : REFUSED lot_unknown" 'printf "%s\n" "$OUT3G" | grep -qxF "START: REFUSED lot_unknown id=2026*"'
+ok "rien n'est écrit (glob)" '[ ! -e SPRINT.md ]'
 OUT3B="$(bash "$SPRINT" close)"
 ok "close sans SPRINT.md : REFUSED not_open" 'printf "%s\n" "$OUT3B" | grep -qx "CLOSE: REFUSED not_open"'
 
@@ -139,14 +144,67 @@ OUT10="$(bash "$SPRINT" close)"
 ok "CLOSE: SEALED sprint=2 done=1 deferred=0" 'printf "%s\n" "$OUT10" | grep -qx "CLOSE: SEALED sprint=2 done=1 deferred=0"'
 ok "deux incréments dans la session, dans l'ordre" '[ "$(grep -c "^- Sprint [0-9]* — " SPRINT.md)" = 2 ] && [ "$(grep "^- Sprint [0-9]* — " SPRINT.md | head -1 | cut -c1-10)" = "- Sprint 1" ]'
 
-echo "S11 — un sprint dont toutes les stories sont reportées n'a pas d'incrément : refus"
+echo "S11 — rien de livré : pas d'incrément, donc close refuse ; --abandon est la sortie, le savoir de session reste"
 bash "$SPRINT" start --lot "$A" --objective "Sprint vide" >/dev/null
 edit "s/^- \[ \] $A — Alpha\$/- [~] $A — Alpha (reportée)/"
+SUM11="$(sum SPRINT.md)"
 OUT11="$(bash "$SPRINT" close)"
 ok "CLOSE: REFUSED empty_increment sprint=3" 'printf "%s\n" "$OUT11" | grep -qx "CLOSE: REFUSED empty_increment sprint=3"'
-ok "le sprint reste ouvert" 'grep -q "^Statut: en cours" SPRINT.md'
+ok "indique la sortie : close --abandon" 'printf "%s\n" "$OUT11" | grep "^HINT:" | grep -qF -- "--abandon"'
+ok "le sprint reste ouvert, SPRINT.md intact" '[ "$(sum SPRINT.md)" = "$SUM11" ] && grep -q "^Statut: en cours" SPRINT.md'
+rc=0; bash "$SPRINT" close --abandon "" >/dev/null 2>&1 || rc=$?
+ok "--abandon sans raison : exit 2" '[ "$rc" = 2 ]'
+OUT11B="$(bash "$SPRINT" close --abandon "pas de capacité")"
+ok "CLOSE: ABANDONED sprint=3 done=0 deferred=1 open=0" 'printf "%s\n" "$OUT11B" | grep -qx "CLOSE: ABANDONED sprint=3 done=0 deferred=1 open=0"'
+ok "la story reportée est annoncée (retour au backlog)" 'printf "%s\n" "$OUT11B" | grep -qx "STORY_DEFERRED: $A — Alpha (reportée)"'
+ok "Statut: clos, avec la raison de l'abandon" 'head -5 SPRINT.md | grep -q "^Statut: clos .*Abandon: pas de capacité"'
+ok "le journal de session garde l'abandon ET les incréments précédents" 'grep -qF -- "- Sprint 3 — Sprint vide — abandonné (pas de capacité) — 0 livrée, 1 reportée, 0 ouverte" SPRINT.md && [ "$(grep -c "^- Sprint [0-9]* — " SPRINT.md)" = 3 ]'
+ok "le labo est conservé" 'grep -q "symptôme X — geste Y" SPRINT.md'
+ok "la session n'est pas touchée" '[ "$(sum .claude/handoff.md)" = "$SESS_HAND" ]'
 
-echo "S12 — hors dépôt git : exit 2"
+echo "S12 — après un abandon, plus d'impasse : un nouveau sprint s'ouvre ; abandon avec des stories encore ouvertes"
+OUT12="$(bash "$SPRINT" start --lot "$A,$B" --objective "Sprint repris")"
+ok "START: OPENED sprint=4 stories=2" 'printf "%s\n" "$OUT12" | grep -qx "START: OPENED sprint=4 stories=2"'
+OUT12B="$(bash "$SPRINT" close --abandon "PO arrête")"
+ok "CLOSE: ABANDONED sprint=4 done=0 deferred=0 open=2" 'printf "%s\n" "$OUT12B" | grep -qx "CLOSE: ABANDONED sprint=4 done=0 deferred=0 open=2"'
+ok "annonce les stories restées ouvertes" 'printf "%s\n" "$OUT12B" | grep -qx "STORY_OPEN: $B — Beta"'
+
+echo "S13 — l'incrément ne reprend que de vraies références (PR, commit), pas un bout de titre"
+bash "$SPRINT" start --lot "$A,$B" --objective "Références" >/dev/null
+edit "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (local abc1234)/"
+edit "s/^- \[ \] $B — Beta\$/- [x] $B — Beta (kanban)/"
+OUT13="$(bash "$SPRINT" close)"
+ok "référence de commit reprise" 'printf "%s\n" "$OUT13" | grep -qx "INCREMENT: $A (local abc1234)"'
+ok "parenthèse de titre ignorée" 'printf "%s\n" "$OUT13" | grep -qx "INCREMENT: $B"'
+
+echo "S14 — un SPRINT.md d'ancien format (statut en fin de ligne) se ferme, une seule fois"
+cat > SPRINT.md <<'EOF'
+# Sprint 7 — ancien format
+Périmètre: 2h   Statut: en cours | en attente de validation
+
+## Backlog  (1 ligne = 1 feature = 1 PR)
+- [x] feat: B      (PR #12, squash-merged)
+- [~] feat: C (reportée)
+
+## Definition of Done
+## Notes / décisions  (ADR courts)
+
+## Galères & gestes (labo)
+- galère héritée — geste hérité
+EOF
+OUT14A="$(bash "$SPRINT" start --lot "$A")"
+ok "compte comme un sprint ouvert : REFUSED open_sprint sprint=7" 'printf "%s\n" "$OUT14A" | grep -qx "START: REFUSED open_sprint sprint=7"'
+OUT14="$(bash "$SPRINT" close)"
+ok "CLOSE: SEALED sprint=7 done=1 deferred=1" 'printf "%s\n" "$OUT14" | grep -qx "CLOSE: SEALED sprint=7 done=1 deferred=1"'
+ok "le statut en fin de ligne passe à clos, le périmètre reste" 'sed -n 2p SPRINT.md | grep -q "^Périmètre: 2h   Statut: clos"'
+ok "incrément lu sans « — » : libellé + référence de PR" 'printf "%s\n" "$OUT14" | grep -qx "INCREMENT: feat: B (PR #12, squash-merged)"'
+SUM14="$(sum SPRINT.md)"
+OUT14B="$(bash "$SPRINT" close)"
+ok "second close : REFUSED not_open, pas de double scellé" 'printf "%s\n" "$OUT14B" | grep -qx "CLOSE: REFUSED not_open" && [ "$(sum SPRINT.md)" = "$SUM14" ]'
+OUT14C="$(bash "$SPRINT" start --lot "$A" --objective "Après l'ancien format")"
+ok "le sprint suivant s'ouvre (sprint=8) et garde le labo hérité" 'printf "%s\n" "$OUT14C" | grep -qx "START: OPENED sprint=8 stories=1" && grep -q "galère héritée — geste hérité" SPRINT.md'
+
+echo "S15 — hors dépôt git : exit 2"
 mkdir "$TMP/nogit"
 rc=0; (cd "$TMP/nogit" && bash "$SPRINT" close >/dev/null 2>&1) || rc=$?
 ok "exit 2" '[ "$rc" = 2 ]'

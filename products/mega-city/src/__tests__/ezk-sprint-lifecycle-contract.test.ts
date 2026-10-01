@@ -97,6 +97,14 @@ describe('ezk-sprint — le sprint a ses deux verbes de cycle de vie', () => {
     expect(text).toMatch(/d[ée]j[àa] ouvert/i);
   });
 
+  it('un sprint sans livraison a une sortie écrite : close --abandon, jamais la suppression de SPRINT.md', () => {
+    const text = body(sprintDir);
+    expect(text).toMatch(/close --abandon "<raison>"/);
+    expect(text).toMatch(/CLOSE: ABANDONED/);
+    expect(text).toMatch(/Ne supprime jamais `SPRINT\.md`/);
+    expect(read(adrPath)).toMatch(/close --abandon/);
+  });
+
   it('le gabarit SPRINT.md garde les sections lues ailleurs et ajoute le lot et les incréments', () => {
     const text = body(sprintDir);
     // « Galères & gestes (labo) » est lue par ezk-archive et ezk-chef : titre exact, une seule fois.

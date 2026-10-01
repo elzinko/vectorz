@@ -98,8 +98,11 @@ Avant de l'appeler, mets le lot de `SPRINT.md` à jour : `[x]` pour une story li
 |---|---|---|
 | `CLOSE: SEALED …` | Incrément scellé : `Statut: clos`, une ligne ajoutée à « Incréments scellés de la session » | Restitue l'incrément (En clair d'abord, ≤ 3 phrases), puis **rends la main à la session** |
 | `CLOSE: OPEN …` | Une story du lot est encore `[ ]` | Termine-la, reporte-la `[~]` ou retire-la du lot. Ne force rien |
-| `CLOSE: REFUSED empty_increment` | Rien de livré : pas d'incrément à sceller | Dis-le au PO. Ne scelle pas un sprint vide |
+| `CLOSE: REFUSED empty_increment` | Rien de livré : pas d'incrément à sceller | Dis-le au PO. S'il arrête le sprint : `close --abandon "<raison>"` |
+| `CLOSE: ABANDONED …` | Fin **anormale** (`close --abandon "<raison>"`) : sprint fermé **sans incrément**, raison journalisée, savoir de session conservé | Dis ce qui est livré, reporté ou resté ouvert, puis rends la main à la session |
 | `CLOSE: REFUSED not_open` | Aucun sprint ouvert | Rien à fermer |
+
+Ne supprime jamais `SPRINT.md` pour sortir d'une impasse : tu perdrais le labo, les notes et les incréments de la session. `--abandon` est la sortie.
 
 `close` **ne ferme PAS la session** : il ne touche ni `docs/sessions/` ni `.claude/handoff.md`. C'est le métier d'`ezk-archive`, et le DoD bash le prouve. Il ne pose pas non plus de nouveau « on continue ? » : l'accord a été donné au checkpoint avant merge (étape 9). « Rendre la main à la session », c'est afficher la suite possible puis **t'arrêter** : rétro (`ezk-retro`), planning (`ezk-backlog next|groom`), un nouveau `start`, ou `ezk-archive` pour lever la session.
 
