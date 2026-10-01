@@ -56,20 +56,28 @@ Coût moyen : ~500k → ~215k par fiche.
 
 ## Critères d'acceptation
 
-- [ ] L'ADR-0059 cite les mesures ci-dessus et tranche les cinq points, alternatives rejetées comprises.
-- [ ] **Le filet de qualité reste** : `ezk-reviewer` n'est jamais sauté ; on n'allège que BDD, TDD et
+- [x] L'ADR-0059 cite les mesures ci-dessus et tranche les cinq points, alternatives rejetées comprises.
+      *Preuve : `docs/adr/0059-cout-sprint-compte-en-appels-agent.md` (numéro libre sur `main`, dernier
+      = 0058) ; statut « Proposé » : la cible change, le PO confirme à la livraison.*
+- [x] **Le filet de qualité reste** : `ezk-reviewer` n'est jamais sauté ; on n'allège que BDD, TDD et
       E2E d'agent pour de la prose. Les tests de contrat sur le texte restent (sans jetons d'agent).
-- [ ] Règle `token-economy/agent-call-budget` créée, rangée dans son bundle, comptée par le test de
-      profil, et appliquée (`applies:`) par `ezk-sprint` et `ezk-product-build`.
-- [ ] Consignes écrites dans `ezk-sprint` (§ Budget tokens) et `ezk-product-build` (§ `lean`) :
+      *Preuve : décision 6 de l'ADR ; « jamais sautée » gardé dans les deux `SKILL.md` par le test.*
+- [x] Règle `token-economy/agent-call-budget` créée, rangée dans `bundles/token-economy.yml`, comptée
+      par `expand.test.ts` (55 → 56), et appliquée (`applies:`) par `ezk-product-build`. Pour
+      `ezk-sprint`, la règle est citée par id dans son § Budget tokens ; la déclaration `applies:`
+      attend le merge de la PR #275, qui réécrit les lignes voisines de son frontmatter (voir « Suite »).
+      *Preuve : `sprint-cost-budget-contract.test.ts` (7 tests), `expand.test.ts`.*
+- [x] Consignes écrites dans `ezk-sprint` (§ Budget tokens) et `ezk-product-build` (§ `lean`) :
       ces deux textes sont ceux que les sprints lisent vraiment.
-- [ ] Les deux critères d'origine non retenus sont tranchés par écrit dans l'ADR (< 100k ; DoR à
+      *Preuve : cinq consignes dans `ezk-sprint`, un paragraphe dans `ezk-product-build`.*
+- [x] Les deux critères d'origine non retenus sont tranchés par écrit dans l'ADR (< 100k ; DoR à
       3 champs) avec la raison.
+      *Preuve : décisions 3 et 5 de l'ADR.*
 
 ## Comment vérifier
 
 ```bash
-pnpm --dir products/mega-city exec vitest run src/__tests__/expand.test.ts src/__tests__/graph.test.ts
+pnpm --dir products/mega-city exec vitest run src/__tests__/sprint-cost-budget-contract.test.ts src/__tests__/expand.test.ts src/__tests__/graph.test.ts
 bash products/mega-city/bin/check-links.sh . features docs/adr docs/captures
 ```
 
@@ -82,6 +90,11 @@ run, la moyenne tient sous 200k. Cette dernière mesure est la « Suite » (elle
   « fenêtre de contexte »).
 - Aucune gate mécanique ne vérifie un budget de jetons aujourd'hui : la règle est une consigne.
 - Encoder ces choix par type de fiche dans le schéma d'étapes, si on le débloque.
+- Déclarer `applies: [token-economy/agent-call-budget]` sur `ezk-sprint` une fois la PR #275 mergée.
+- Faire de la livraison hors PR (`ship` par le PO, en une PR dédiée) le défaut d'`ezk-sprint` : c'est
+  aujourd'hui le choix du run, pas encore la consigne du skill.
+- La règle n'est matérialisée que par le profil `cop1-target` ; le profil global ne porte pas le
+  bundle `token-economy`. À décider si elle doit y entrer.
 
 ## Notes / anti-doublon
 

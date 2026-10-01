@@ -465,7 +465,7 @@ body{
 /*ezk-map-data:begin*/
 window.EZK = {
  "counts": {
-  "rules": 76,
+  "rules": 77,
   "agents": 8,
   "skills": 25,
   "bundles": 10,
@@ -473,13 +473,13 @@ window.EZK = {
   "tools": 75
  },
  "liens": {
-  "total": 262,
+  "total": 264,
   "casses": 0
  },
  "provenance": {
   "prouve": {
-   "briques": 200,
-   "liens": 262,
+   "briques": 201,
+   "liens": 264,
    "ceremonies": 16,
    "cycle": 9,
    "assemblage": 0
@@ -494,7 +494,7 @@ window.EZK = {
  },
  "assemblage": {
   "nodes": {
-   "rule": 76,
+   "rule": 77,
    "agent": 8,
    "skill": 25,
    "bundle": 10,
@@ -524,7 +524,7 @@ window.EZK = {
     "from": "bundle",
     "verb": "compose",
     "to": "rule",
-    "count": 61
+    "count": 62
    },
    {
     "from": "profile",
@@ -560,7 +560,7 @@ window.EZK = {
     "from": "skill",
     "verb": "applique",
     "to": "rule",
-    "count": 11
+    "count": 12
    },
    {
     "from": "skill",
@@ -2522,6 +2522,18 @@ window.EZK = {
    ],
    "agents": []
   },
+  "token-economy/agent-call-budget": {
+   "id": "token-economy/agent-call-budget",
+   "source": "products/mega-city/rules/token-economy/agent-call-budget.md",
+   "title": "Count cost in agent calls, not in task length",
+   "kind": "disposition",
+   "level": "SHOULD",
+   "enforcements": [],
+   "bundles": [
+    "token-economy"
+   ],
+   "agents": []
+  },
   "token-economy/batch-tool-calls": {
    "id": "token-economy/batch-tool-calls",
    "source": "products/mega-city/rules/token-economy/batch-tool-calls.md",
@@ -2823,6 +2835,7 @@ window.EZK = {
    "source": "products/mega-city/bundles/token-economy.yml",
    "extends": [],
    "rules": [
+    "token-economy/agent-call-budget",
     "token-economy/batch-tool-calls",
     "token-economy/checkpoint-before-cost",
     "token-economy/concise-output",

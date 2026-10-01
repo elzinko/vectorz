@@ -113,6 +113,18 @@ exactement le flux actuel.
 - **Isole le contexte coûteux dans les sous-agents** (leur contexte est jetable).
 - **Étapes mécaniques** (scaffolding, formatage) sur un modèle moins cher.
 - Ne relis pas un fichier déjà lu ; ne re-explore pas ce que `SPRINT.md` mémorise.
+- **Compte en appels d'agent, pas en lignes** (ADR-0059, règle `token-economy/agent-call-budget`) :
+  chaque appel de sous-agent emporte ~85k jetons de contexte fixe. Par fiche : toi qui la mènes, plus
+  **au plus une revue** (`ezk-reviewer`, partagée par 2-3 petits patchs) et **une DoR groupée** pour N
+  fiches (`ezk-pm`, aucune si la fiche est déjà `ready`).
+- **Pas d'explorateur** : cherche toi-même par `grep` ciblé. Un explorateur mal borné a coûté ~370k.
+- **Donne l'artefact, pas la chasse** : la fiche collée dans le prompt d'`ezk-pm` (modèle `sonnet`,
+  « ne lis aucun fichier, GO/NO-GO en ≤ 5 lignes ») ; le chemin du patch à `ezk-reviewer`
+  (`git diff origin/main...HEAD > fichier`, « relis uniquement ce patch, ≤ 8 constats »).
+- **Autorat de prose** (un `SKILL.md`, une règle, un ADR) : pas d'`ezk-architect` sauf décision de
+  structure non triviale, pas de BDD / TDD / E2E d'agent. Les tests de contrat sur le texte restent.
+  **La revue n'est jamais sautée.**
+- **Cible : ≤ 200k jetons par fiche** en moyenne de run. Dis ta consommation dans ton compte rendu.
 
 ## L'état du sprint — `SPRINT.md`
 
