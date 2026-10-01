@@ -30,7 +30,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 |---|---|---|---|
 | **V0.1** | Le socle dit vrai | graphe compilé, verrou de statut, carte qui cite ses sources, un seul modèle de fiche, règle de clarté partout | ✅ livrée le 2026-10-01 |
 | **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | ✅ livrée le 2026-10-01 |
-| **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | à faire |
+| **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | ✅ livrée le 2026-10-01 |
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | à faire |
 | **V0.5** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
@@ -57,19 +57,19 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20260930123438875` — séparer clairement fiche, sprint et session (ezk-sprint start/close) · `groom` → `build`
 
 ### ④ V0.3 — le backlog dit vrai + on range
-- `20260824204751403` — découper le backlog en versions et vérifier la cohérence d'un lot · `build`
+- ~~`20260824204751403` — découper le backlog en versions et vérifier la cohérence d'un lot · `build`~~ — shipped #286
 - ~~`20260903134906920` — une seule commande `ezk` pour tout lancer · `build`~~ — shipped #281
 - ~~`20260903134909124` — déployer vraiment les règles chez les agents (aujourd'hui : zéro) · `build`~~ — shipped #284
 - ~~`20260824122629925` — une FAQ « comment faire » pour tes questions récurrentes · `build`~~ — shipped #278
 - ~~`20260825160456259` — à la fin d'une commande, proposer les 1 à 3 commandes suivantes · `build`~~ — shipped #280
 - ~~`20260825182327490` — un modèle standard pour tout texte destiné à un humain · `build`~~ — shipped #283
-- `20260825202444647` — ezk-codex répond et ferme tous les fils de revue traités · `build`
-- `20260826072532622` — valider fiches et carte depuis le tableau de bord (👍/👎 enregistré) · `build`
-- `20260910231201744` — appliquer pour de vrai les fusions et découpages de fiches proposés · `build`
-- `20260917123943914` — montrer sur la carte les scripts et commandes de la méthode · `build`
-- `20260917143616286` — recette : vendre une app avec Lemon Squeezy et une licence Pro · `build`
-- `20260904091853974` — tenir un journal des galères résolues, pendant le dev · `build`
-- `20260824141336516` — recette : mettre en place la CI d'un projet type muti · `build`
+- ~~`20260825202444647` — ezk-codex répond et ferme tous les fils de revue traités · `build`~~ — shipped #288
+- ~~`20260826072532622` — valider fiches et carte depuis le tableau de bord (👍/👎 enregistré) · `build`~~ — shipped #287
+- ~~`20260910231201744` — appliquer pour de vrai les fusions et découpages de fiches proposés · `build`~~ — shipped #292
+- ~~`20260917123943914` — montrer sur la carte les scripts et commandes de la méthode · `build`~~ — shipped #293
+- ~~`20260917143616286` — recette : vendre une app avec Lemon Squeezy et une licence Pro · `build`~~ — shipped #289
+- ~~`20260904091853974` — tenir un journal des galères résolues, pendant le dev · `build`~~ — shipped #290
+- ~~`20260824141336516` — recette : mettre en place la CI d'un projet type muti · `build`~~ — shipped #291
 
 ### ⑤ V0.4 — la méthode se tient
 - `20260906122942607` — run autonome transparent : ce qu'il va faire, puis ce qu'il a fait · `build`

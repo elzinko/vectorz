@@ -8,8 +8,8 @@ version: V0.3
 epic:
 milestone:
 labels: [recettes]
-status: idea
-pr:
+status: shipped
+pr: "#289"
 created: 2026-09-17
 ---
 

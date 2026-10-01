@@ -4,7 +4,7 @@ title: "La méthode s'évalue elle-même (cohérence, fidélité de la carte)"
 type: feature
 priority: P3
 product: mega-city
-version: V0.1
+version:
 milestone: parked
 labels: [carte]
 status: idea

@@ -93,7 +93,7 @@ incrément produit est fini. On le **garde** (le handoff a une vraie valeur), ma
   [20260902224043892](done/20260902224043892_ezk-nettoyage-fin-session-worktrees-branches.md)
   (nettoyage fin de session), [0189](done/0189-handoff-durable-session-ephemere.md) (handoff en
   session éphémère), et la fiche sœur
-  [20260904091853974](20260904091853974_journal-difficultes-artefact-independant.md) (journal
+  [20260904091853974](done/20260904091853974_journal-difficultes-artefact-independant.md) (journal
   indépendant).
 
 ## ⤓ Absorbe (tri du 2026-09-30)

@@ -26,7 +26,7 @@ une feature produit.
   feature codée → recette (**l'extraction**), P0.
 - [`0147`](../0147-ezk-recipy-mvp.md) — `ezk-recipy` : scanner des repos froids → proposer des
   idées de skills (sourcing).
-- [`20260824141336516`](../20260824141336516_recette-mise-en-place-ci-type-muti.md) — recette
+- [`20260824141336516`](20260824141336516_recette-mise-en-place-ci-type-muti.md) — recette
   « mise en place CI, façon muti ».
 - `20260821172716540` — recette « site produit à règles activables ».
 - [`20260829123707100`](20260829123707100_labo-de-cuisine-journal-difficultes.md) — **labo

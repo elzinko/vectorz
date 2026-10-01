@@ -7,8 +7,8 @@ product: mega-city
 version: V0.3
 epic:
 labels: [recettes]
-status: idea
-pr:
+status: shipped
+pr: "#290"
 created: 2026-09-04
 ---
 
@@ -33,12 +33,12 @@ Le modèle propre, en 4 briques à ne pas confondre :
 3. **Labo / ezk-chef** — un **consommateur à la demande** qui lit le journal pour générer des
    recettes (déjà livré, #195, via `ezk-chef-extract.sh`).
 4. **ezk-archive** — la clôture (portier + handoff). Une **capacité** (cf. fiche sœur
-   [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md)).
+   [20260904091853948](../20260904091853948_ezk-archive-capacite-allegement.md)).
 
 Trois défauts constatés (2026-09-04, avec le PO) :
 
 - **Journal et labo fusionnés.** La fiche livrée
-  [20260829123707100](done/20260829123707100_labo-de-cuisine-journal-difficultes.md) (labo,
+  [20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md) (labo,
   #195) décrit à la fois la **capture** et la **génération de recettes**. Or ce sont deux
   choses : la capture est **primaire et indépendante**, le labo **s'appuie dessus**.
 - **Écrit dans `SPRINT.md`.** Ce scratch est **partagé** et transitoire ; il n'est archivé
@@ -66,7 +66,7 @@ Trois défauts constatés (2026-09-04, avec le PO) :
    vocabulaire méthode : les objets restent **feature / sprint / retro**. Les rétros lisent les
    frictions **par feature ou par thème**, jamais « par session ».
 5. **Absorber le compte-rendu structuré.** Cette fiche **absorbe**
-   [20260826121429274](done/20260826121429274_ezk-archive-compte-rendu-structure.md) (« ezk-archive
+   [20260826121429274](20260826121429274_ezk-archive-compte-rendu-structure.md) (« ezk-archive
    émet un compte-rendu de session structuré ») : même sujet — le **format** du récit et ce
    qu'il rend **extractible** (galères, PR, fiches, actions), prérequis des vues.
 
@@ -129,7 +129,7 @@ le prouve, et rougit si on retire le condensat.
 ## Suite (hors POC)
 
 - Alléger `ezk-archive` : il ne possède plus le snapshot des galères (fiche sœur
-  [20260904091853948](20260904091853948_ezk-archive-capacite-allegement.md)).
+  [20260904091853948](../20260904091853948_ezk-archive-capacite-allegement.md)).
 - `ezk-chef suggest` et `ezk-retro` lisent aussi le journal, par feature ou par thème.
 - En-tête structuré des récits de session (PR, fiches, actions), repris de la fiche absorbée
   20260826121429274. C'est une facette du récit (brique 2), pas de la capture.
@@ -140,10 +140,10 @@ le prouve, et rougit si on retire le condensat.
 - **Statut idea** : direction validée par le PO (2026-09-04). Groomée le 2026-10-01 sur un POC
   borné (voir « Décisions de grooming »).
 - **Provenance** : absorbe
-  [20260826121429274](done/20260826121429274_ezk-archive-compte-rendu-structure.md) (compte-rendu
+  [20260826121429274](20260826121429274_ezk-archive-compte-rendu-structure.md) (compte-rendu
   structuré) — la fiche source est tombstonée (redirection) en attendant son retrait au
   grooming.
 - **En aval** : nourrit le cluster recette / ezk-chef (labo #195 livré,
-  [20260831075615809](done/20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)), et les vues
-  ([20260826072532452](done/20260826072532452_vue-sprints-realises-ezk-map.md) sprints,
-  [20260826072532537](20260826072532537_vue-retros-actions-ezk-map.md) rétros).
+  [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)), et les vues
+  ([20260826072532452](20260826072532452_vue-sprints-realises-ezk-map.md) sprints,
+  [20260826072532537](../20260826072532537_vue-retros-actions-ezk-map.md) rétros).

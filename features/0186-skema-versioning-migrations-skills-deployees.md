@@ -10,7 +10,7 @@ status: idea
 pr:
 created: 2026-08-09
 milestone: parked
-version: V0.1
+version:
 ---
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **moteur** (le registre écrit au `bind`, le
