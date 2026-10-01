@@ -13,17 +13,24 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { buildAvancementDataBlock } from '../core/avancement-data.js';
+import { compileGraph } from '../core/compiled-graph.js';
+import { CYCLE_DOC } from '../core/cycle.js';
+import { buildMapDataBlock } from '../core/map-data.js';
 import { buildPilotageDataBlock } from '../core/pilotage-data.js';
 import { buildPlanDeltaBlock } from '../core/plan-delta-data.js';
 import { buildPlanViewDataBlock } from '../core/plan-view-data.js';
 import { buildRunsDataBlock } from '../core/runs-data.js';
 import { buildVerdictsBlock } from '../core/verdicts.js';
+import { loadCatalog } from '../loaders/catalog.js';
 import { loadFiches } from '../loaders/fiches.js';
+import { loadMapSources } from '../loaders/map-sources.js';
+import { loadMethodDoc } from '../loaders/method.js';
 import { loadRuns } from '../loaders/runs.js';
+import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
 import { loadVerdicts } from './verdicts.js';
 
 export interface DataView {
-  id: 'board' | 'pilotage' | 'runs';
+  id: 'board' | 'pilotage' | 'runs' | 'carte';
   /** Fichier de données, relatif à la racine du dépôt — ignoré par git. */
   out: string;
   /** Page HTML (committée) qui le charge par `<script src>`. */
@@ -41,7 +48,7 @@ function readPlan(repoRoot: string): string {
   return existsSync(path) ? readFileSync(path, 'utf8') : '';
 }
 
-/** Les trois vues à données sorties de leur page. L'ordre des blocs du board suit celui de la coque. */
+/** Les vues à données sorties de leur page. L'ordre des blocs du board suit celui de la coque. */
 export const DATA_VIEWS: readonly DataView[] = [
   {
     id: 'board',
@@ -74,6 +81,33 @@ export const DATA_VIEWS: readonly DataView[] = [
     page: 'diagrams/runs/runs.html',
     build: (repoRoot) => `${HEADER}${buildRunsDataBlock(loadRuns(repoRoot))}\n`,
   },
+  {
+    // La carte de la méthode (suite de l'ADR-0055). Ses données ne viennent pas des fiches mais du
+    // CATALOGUE (`products/mega-city` : règles, skills, agents, graphe, sources) : même fonction pure
+    // qu'avant (`buildMapDataBlock`), appelée ici au lieu d'être collée dans le HTML.
+    id: 'carte',
+    out: 'diagrams/methode-mega-city/carte-interactive.data.js',
+    page: 'diagrams/methode-mega-city/carte-interactive.html',
+    build(repoRoot) {
+      const megaCity = join(repoRoot, 'products', 'mega-city');
+      if (!existsSync(megaCity)) {
+        throw new Error(`la carte se construit depuis le catalogue — ${megaCity} est absent`);
+      }
+      // ceremonies.yml ET taxonomie.yml sont validés contre le catalogue DANS buildMapData, et les
+      // sources (fichier de chaque brique) par loadMapSources : une référence fausse, un catalogue
+      // mal rangé ou un chemin qui ne mène à aucun fichier fait ÉCHOUER la construction — la carte
+      // ne peut dessiner que ce qui existe dans les fichiers (épic « carte fidèle », PR #162).
+      const catalog = loadCatalog(megaCity);
+      const block = buildMapDataBlock(
+        catalog,
+        compileGraph(catalog),
+        loadMethodDoc(megaCity),
+        loadTaxonomieDoc(megaCity),
+        { sources: loadMapSources(megaCity, repoRoot), cycle: CYCLE_DOC },
+      );
+      return `${HEADER}${block}\n`;
+    },
+  },
 ];
 
 /** Tout ce que git ne doit PAS suivre : les données ci-dessus, plus `PORTFOLIO.md` (bash). */
@@ -93,10 +127,16 @@ export interface WriteReport {
   unchanged: string[];
 }
 
-/** Écrit chaque fichier de données ; n'y touche pas s'il est déjà identique (idempotent). */
-export function writeDataViews(repoRoot: string): WriteReport {
+/**
+ * Écrit chaque fichier de données ; n'y touche pas s'il est déjà identique (idempotent).
+ * `views` : par défaut toutes ; un dépôt jetable sans catalogue (les tests) écarte la carte.
+ */
+export function writeDataViews(
+  repoRoot: string,
+  views: readonly DataView[] = DATA_VIEWS,
+): WriteReport {
   const report: WriteReport = { written: [], unchanged: [] };
-  for (const view of DATA_VIEWS) {
+  for (const view of views) {
     const path = join(repoRoot, view.out);
     const content = view.build(repoRoot);
     if (existsSync(path) && readFileSync(path, 'utf8') === content) {
