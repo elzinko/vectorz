@@ -276,6 +276,7 @@
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002155911250](20261002155911250_portier-archive-origin-main-squash.md) | Le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge | bug | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261002155911257](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md) | Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte | bug | P1 | V0.5 | mega-city | 💡 idea |  |
+| [20261002231845120](20261002231845120_backlog-md-sans-conflit-entre-pr.md) | BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
