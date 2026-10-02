@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version:
 labels: [dette]
-status: idea
-pr:
+status: shipped
+pr: "#317"
 evidence: none # pas d'écran
 created: 2026-10-01
 ---
@@ -65,3 +65,25 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - Défaut repéré pendant le run V0.1 → V0.4, PR #275 à #314.
+- Grooming 2026-10-01 (run ezk-product-build, mode auto/lean). DoR concourue par **ezk-pm** :
+  CONCOURS — problème clair, valeur claire, critères mesurables (3 passages verts d'affilée,
+  durée +20 % max), commande de vérif rejouable. → tamponnée `ready`.
+  - **Approche tranchée : (1)+(2)** — isoler les 3 fichiers à processus dans un projet vitest
+    lancé en série, avec un délai calé sur leur durée réelle sous charge. La piste (3) (baisser
+    le parallélisme global) reste en repli si (1)+(2) ne stabilise pas.
+  - **Garde-fou de périmètre** : ne toucher QUE la config d'exécution des 3 fichiers nommés
+    (isolation + timeout), jamais leur logique ni les délais des autres tests. Un test vraiment
+    bloqué doit toujours échouer **vite**, avec un message clair — pas de rallonge à l'aveugle.
+- **Build 2026-10-01 (même run).** Mesure faite au build : l'approche (1) — isoler les 3 fichiers
+  dans un projet vitest série — stabilise bien, MAIS le découpage en projets TAXE le reste de la
+  suite de ~30 % (projet `unit` seul = 42 s contre 32,8 s en pool unique) → viole le critère
+  « durée +20 % max ». **(1) écartée.** Livré : **(2) seul**, le délai ciblé. Cause confirmée =
+  le délai vitest par défaut de 5 s (message « Test timed out in 5000ms »), pas un enfant tué.
+  Fix : `vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 })` en tête des 3 fichiers, la
+  config vitest restant inchangée. Vérifié : suite complète verte 3× (32,77 / 32,79 / 32,95 s,
+  soit +0 % vs baseline flaky ~32,8 s), typecheck, test:scripts (33 suites), check-links. Revue
+  adverse `ezk-reviewer` = GO.
+  - **Nuance critère 2, assumée** : pour ces 3 fichiers, un test réellement bloqué échoue
+    désormais en ≤ 60 s au lieu de 5 s — borné, avec un message clair, et le reste de la suite
+    garde 5 s. Le 5 s initial était incident, pas un garde-fou de perf voulu ; ces tests
+    vérifient un comportement, pas une latence.
