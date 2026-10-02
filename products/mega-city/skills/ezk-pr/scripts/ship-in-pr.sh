@@ -46,19 +46,35 @@ done
 die() { echo "ship-in-pr.sh: $2" >&2; exit "$1"; }
 git_c() { git -C "$repo" "$@"; }
 
+# Le CATALOGUE (products/mega-city) porte le loader des fiches et le regen de l'index. Comme
+# sprint.sh : en LIEN, le chemin physique du script y mène ; en COPIE, $MEGA_CITY_ROOT le désigne.
+HERE="$(cd "$(dirname "$0")" && pwd -P)"
+MC="$(cd "$HERE/../../.." && pwd)"
+loader_root() {
+  local c
+  for c in "${MEGA_CITY_ROOT:-}" "$MC"; do
+    if [[ -n "$c" && -f "$c/bin/fiche-rows.ts" && -x "$c/node_modules/.bin/tsx" ]]; then echo "$c"; return 0; fi
+  done
+  die 2 "loader des fiches introuvable : lance le script depuis le catalogue, ou exporte MEGA_CITY_ROOT=<dépôt>/products/mega-city (après pnpm install)"
+}
+TMPD="$(mktemp -d)"
+trap 'rm -rf "$TMPD"' EXIT
+
 [[ -n "$id" ]] || die 2 "--fiche-id requis"
 
 # La fiche est-elle livrée dans l'arbre de $1 ? Rangée dans done/ (`<id>_slug.md`, legacy
-# `<id>-slug.md`) ET `status: shipped` dans son front-matter : un simple déplacement à la main
-# ne compte pas. Aucun lecteur ne sort avant la fin de son entrée (pas de `grep -q`, pas de
-# `head`) : sous pipefail, le SIGPIPE de git ferait répondre « absente » à tort.
+# `<id>-slug.md`) ET `status: shipped`, lu par le loader (règle development/fiche-read-via-loader) :
+# un simple déplacement à la main ne compte pas. Pas de `grep -q` : sous pipefail, le SIGPIPE de
+# git sur un gros done/ ferait répondre « absente » à tort.
 shipped_in() {
-  local path
+  local path status
   path="$(git_c ls-tree --name-only "$1" -- features/done/ | grep -E "^features/done/${id}[_-]" || true)"
   [[ -n "$path" ]] || return 1
-  git_c show "$1:${path%%$'\n'*}" \
-    | awk 'NR == 1 && /^---/ { fm = 1; next } fm && /^---/ { fm = 0 } fm' \
-    | grep -E '^status:[[:space:]]*"?shipped"?[[:space:]]*$' >/dev/null
+  git_c show "$1:${path%%$'\n'*}" > "$TMPD/fiche.md"
+  # `|| die` explicite : appelée sous `if`, la fonction ne profite pas de `set -e`.
+  status="$("$LOADER/node_modules/.bin/tsx" "$LOADER/bin/fiche-rows.ts" "$TMPD/fiche.md" | cut -d $'\x1f' -f 5)" \
+    || die 2 "lecture de la fiche ${id} par le loader impossible ($LOADER)"
+  [[ "$status" == "shipped" ]]
 }
 
 require_clean() {
@@ -125,13 +141,25 @@ do_undo() {
   sha="$(last_ship_commit)"
   [[ -n "$sha" ]] || die 1 "la fiche ${id} est en done/ sans commit ship sur cette branche (héritée de '$base' ?) — rien retiré"
   if ! git_c revert --no-commit "$sha" >/dev/null 2>&1; then
-    git_c revert --abort
-    die 2 "le revert du ship ${sha:0:8} conflicte avec un commit plus récent — rien retiré, résous à la main"
+    # Cas courant : la branche a fusionné main après le ship d'une autre PR, et l'index généré
+    # porte les deux ships. Ce conflit-là se résout mécaniquement (ADR-0049 §3) : on régénère
+    # l'index depuis les fiches. Tout autre conflit (PLAN.md, une fiche) se tranche à la main.
+    if [[ "$(git_c diff --name-only --diff-filter=U)" != "features/BACKLOG.md" ]]; then
+      git_c revert --abort
+      die 2 "le revert du ship ${sha:0:8} conflicte avec un commit plus récent — rien retiré, résous à la main"
+    fi
+    git_c checkout --ours -- features/BACKLOG.md
+    bash "$LOADER/bin/regen-backlog.sh" "$repo" >/dev/null
+    git_c add -- features/BACKLOG.md
   fi
   git_c commit -q -m "revert(features): retire le ship ${id} après un no-go de revue" \
     -m "Annule ${sha:0:8} (ADR-0049) : la branche ne présente plus la story comme livrée."
   echo "SHIP: undone ${sha:0:8}"
 }
+
+# Résolu une fois, au niveau du script : un loader absent arrête tout (exit 2), jamais un faux
+# « absente » qui ferait répondre `undo` « SHIP: none » en silence.
+LOADER="$(loader_root)"
 
 case "$cmd" in
   check) do_check ;;

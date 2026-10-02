@@ -137,13 +137,13 @@ ship_guard() {
   id="$(sed -nE 's#^(feat|fix)/([0-9]{17}|[0-9]{4})-[^0-9].*#\2#p' <<<"$branch")"
   if [[ -z "$id" ]]; then echo "SHIP-GUARD: skip (branche sans id de fiche)"; return 0; fi
   if [[ -n "$allow_unshipped" ]]; then echo "SHIP-GUARD: override ($id) — $allow_unshipped"; return 0; fi
-  bash "$(dirname "$0")/ship-in-pr.sh" check --repo "$repo" --ref "$head_sha" --fiche-id "$id" >/dev/null 2>&1 || rc=$?
+  bash "$(dirname "$0")/ship-in-pr.sh" check --repo "$repo" --ref "$head_sha" --fiche-id "$id" >/dev/null || rc=$?
   case "$rc" in
     0) echo "SHIP-GUARD: present ($id)" ;;
     1) echo "ship-merge.sh: la PR #$pr ne porte pas le ship de la fiche $id (ADR-0049) — merge refusé." >&2
        echo "  Remède : ship-in-pr.sh add --repo $repo --fiche-id $id --pr $pr ; git push ; puis merge sur le nouveau head." >&2
        exit 3 ;;
-    *) echo "ship-merge.sh: head $head_sha inconnu dans $repo — git fetch d'abord (garde ADR-0049 non vérifiable, merge refusé)" >&2
+    *) echo "ship-merge.sh: ship de la fiche $id non vérifiable au head $head_sha (cause ci-dessus) — merge refusé (garde ADR-0049)" >&2
        exit 3 ;;
   esac
 }

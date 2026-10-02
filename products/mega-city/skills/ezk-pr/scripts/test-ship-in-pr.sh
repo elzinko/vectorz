@@ -54,7 +54,7 @@ new_repo() {
   git -C "$r" config user.name t
   mkdir -p "$r/features" "$r/products/mega-city"
   echo '{}' > "$r/products/mega-city/package.json"
-  printf -- '---\nid: "%s"\nstatus: ready\npr:\n---\n# x\n' "$ID" > "$r/features/${ID}_x.md"
+  printf -- '---\nid: "%s"\ntitle: fiche x\ntype: feature\npriority: P1\nstatus: ready\npr:\ncreated: 2099-01-01\n---\n# x\n' "$ID" > "$r/features/${ID}_x.md"
   echo "# Backlog" > "$r/features/BACKLOG.md"
   git -C "$r" add -A
   git -C "$r" commit -qm "chore: base"
@@ -162,6 +162,38 @@ rc=0; bash "$SCRIPT" check --repo "$REPO3" --ref HEAD --fiche-id "$ID" >/dev/nul
 [[ $rc -eq 1 ]] && ok "done/ mais status: ready → SHIP: missing" || fail "déplacement à la main accepté : rc=$rc"
 rc=0; bash "$MERGE" --repo "$REPO3" --remote --pr 4 --branch "feat/${ID}-x" --subject s --body b --head-sha "$(git -C "$REPO3" rev-parse HEAD)" --dry-run >/dev/null 2>&1 || rc=$?
 [[ $rc -eq 3 ]] && ok "la garde du merge refuse ce faux ship (exit 3)" || fail "garde : rc=$rc"
+
+echo "=== check — copie hors du catalogue, sans MEGA_CITY_ROOT : le loader manque, refus net ==="
+mkdir -p "$WORK/copie"
+cp "$SCRIPT" "$WORK/copie/ship-in-pr.sh"
+rc=0; ERR="$(env -u MEGA_CITY_ROOT bash "$WORK/copie/ship-in-pr.sh" check --repo "$REPO" --ref HEAD --fiche-id "$ID" 2>&1)" || rc=$?
+[[ $rc -eq 2 ]] && grep -q "loader des fiches introuvable" <<<"$ERR" && ok "loader absent → exit 2, remède MEGA_CITY_ROOT imprimé" || fail "loader absent : rc=$rc err=$ERR"
+
+FAUX_MC="$WORK/faux-catalogue"
+mkdir -p "$FAUX_MC/bin" "$FAUX_MC/node_modules/.bin"
+touch "$FAUX_MC/bin/fiche-rows.ts"
+printf '#!/usr/bin/env bash\nexit 1\n' > "$FAUX_MC/node_modules/.bin/tsx"
+chmod +x "$FAUX_MC/node_modules/.bin/tsx"
+rc=0; MEGA_CITY_ROOT="$FAUX_MC" bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID" >/dev/null 2>&1 || rc=$?
+[[ $rc -eq 2 ]] && bash "$SCRIPT" check --repo "$REPO" --ref HEAD --fiche-id "$ID" >/dev/null \
+  && ok "loader en panne → undo exit 2, jamais un faux « SHIP: none »" || fail "loader en panne : rc=$rc"
+
+echo "=== undo — après fusion de main portant un autre ship : l'index se régénère ==="
+REPO4="$WORK/repo4"
+new_repo "$REPO4"
+bash "$SCRIPT" add --repo "$REPO4" --fiche-id "$ID" --pr 5 >/dev/null
+git -C "$REPO4" checkout -q main
+echo "- livrée autre" >> "$REPO4/features/BACKLOG.md"
+git -C "$REPO4" commit -qam "docs(features): ship d'une autre story"
+git -C "$REPO4" checkout -q "feat/${ID}-x"
+git -C "$REPO4" merge -q main >/dev/null 2>&1 || true
+printf '# Backlog\n- livrée %s_x.md\n- livrée autre\n' "$ID" > "$REPO4/features/BACKLOG.md"
+git -C "$REPO4" add features/BACKLOG.md
+git -C "$REPO4" commit -qm "merge: main dans la story (index régénéré)"
+rc=0; OUT="$(bash "$SCRIPT" undo --repo "$REPO4" --fiche-id "$ID" 2>&1)" || rc=$?
+[[ $rc -eq 0 ]] && grep -q "^SHIP: undone " <<<"$OUT" && ok "conflit sur l'index seul → résolu par régénération, ship retiré" || fail "undo après fusion : rc=$rc out=$OUT"
+[[ -f "$REPO4/features/${ID}_x.md" && -z "$(git -C "$REPO4" status --porcelain)" ]] && ok "fiche revenue sous features/, arbre propre" || fail "état après undo fusionné"
+grep -q "livrée ${ID}_x.md" "$REPO4/features/BACKLOG.md" && fail "l'index présente encore la story comme livrée" || ok "l'index régénéré ne la présente plus comme livrée"
 
 echo "=== undo — refus : revert en conflit, fiche héritée de main ==="
 # Un commit plus récent retouche la ligne même que le revert doit rétablir : conflit franc.
