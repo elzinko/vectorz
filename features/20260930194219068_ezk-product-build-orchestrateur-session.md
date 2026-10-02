@@ -68,7 +68,7 @@ grep -nE "next --lot|start --lot|CLOSE: SEALED|--lot N" products/mega-city/skill
 ## Suite (hors POC)
 
 - `run:context` et `run:report` affichent la taille du lot (code des deux scripts).
-- `--delivery per-epic` aligné sur le lot du sprint : livraison coordonnée au `close`.
+- `--delivery per-epic` : la règle est posée (livraison coordonnée **avant** `close`, un ensemble plus grand qu'un lot se livre lot par lot, retour Codex sur #325) ; reste à la prouver par un test de bout en bout.
 - Panel adverse complet (architecte, scrum master, PO/juge) sur ce repositionnement (ADR-0054, « Suite »).
 - Orchestration de session complète : planning → sprint → rétro → planning.
 

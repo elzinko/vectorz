@@ -69,10 +69,10 @@ Une seule différence : une fiche prête mais marquée `blocked:` est écartée 
 l'**exécution/complétion** d'un sprint, **pas à sa livraison** (merge). **`--once`** = raccourci
 de `--max-sprints 1` (un seul sprint). **Rétro-compat** : l'ancienne sous-commande **`once` reste acceptée**
 et **mappe sur `--once`** (= `--max-sprints 1`) — un `once` hérité reste **borné à un sprint**, il **ne tombe
-pas** dans le `run` auto. **En `--delivery per-epic`** (livraison différée, PR laissées ouvertes jusqu'au
-lot complet), la borne compte quand même les sprints **construits** : l'atteindre **arrête la boucle** et
-**laisse les PR du lot ouvertes** — livraison coordonnée par `ezk-pr` quand le lot est complet, sinon état
-partiel **journalisé** (`SPRINT.md`). Sans borne, la boucle va jusqu'à un checkpoint ou l'**épuisement du
+pas** dans le `run` auto. **En `--delivery per-epic`** (livraison coordonnée, PR laissées ouvertes jusqu'au
+lot complet), la borne compte quand même les sprints **construits** : chaque lot est livré par `ezk-pr`
+**avant** son `close` (cf. étape 4), donc l'atteindre **arrête la boucle** sans PR du lot restée ouverte,
+sauf échec de cette livraison, **journalisé** (`SPRINT.md`). Sans borne, la boucle va jusqu'à un checkpoint ou l'**épuisement du
 backlog tirable**.
 
 **Réglages avancés** — `--tokens` règle **comment la boîte roule** (indépendant du `--mode`, cf. § dédié) ;
@@ -128,10 +128,14 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    lot est livrée **au fil de l'eau**, avant `close` — son squash-merge suit son cours normal (statu quo
    strict : c'est `ezk-sprint` qui merge, **pas toi**). En `per-epic`, tu **ne
    shippes pas** isolément une fiche appartenant à un lot cohérent (même `epic:`, ou lot
-   désigné en opt-in) : tu **laisses sa PR ouverte**, poursuis le lot, puis, le lot complet,
-   **confies la livraison coordonnée à `ezk-pr`** (`plan` → branche d'intégration = test
-   groupé → `ship` en cascade). Tu **décides** le grain ; `ezk-pr` **exécute** le git
-   (frontière ADR-0001).
+   désigné en opt-in) : tu **laisses sa PR ouverte** et poursuis le lot. **Le lot complet, et
+   avant `close`**, tu **confies la livraison coordonnée à `ezk-pr`** (`plan` → branche
+   d'intégration = test groupé → `ship` en cascade) : `close` ne scelle que des stories
+   **mergées** (sinon `CLOSE: REFUSED empty_increment`, et le `start` suivant refuse tant que le
+   sprint reste ouvert). Un ensemble cohérent plus grand qu'un lot se livre **lot par lot**,
+   chacun avant son `close` ; sinon, repasse en `per-feature`. Si la livraison coordonnée échoue,
+   reporte les stories non mergées en `[~]` puis `close`, ou `close --abandon "<raison>"` si rien
+   n'est livré. Tu **décides** le grain ; `ezk-pr` **exécute** le git (frontière ADR-0001).
 5. **Rétro d'itération** — quand la boucle s'arrête (`--max-sprints` atteint,
    backlog tirable épuisé) **ou** à chaque N sprints en `--retro every:N`, **et** que le run a
    construit **≥ 2 sprints**, déclenche **une** rétro d'itération (cf. § « Rétro de fin
