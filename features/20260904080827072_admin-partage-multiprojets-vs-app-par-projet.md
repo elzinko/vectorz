@@ -44,7 +44,8 @@ Les morceaux existent, mais en deux moitiés qui ne se parlent pas.
 - **La config d'un projet ne se lit que dans le terminal** : `ezk config` (PR, CI, revue Codex),
   `ezk rules show`, `ezk dor show`. Et `ezk config` ne sait pas viser un autre projet. Elle n'est
   pas déclarée « commande projet » dans le manifeste, contrairement aux deux autres (constaté le
-  2026-10-02).
+  2026-10-02). Elle sait aussi écrire (`github on|off`) : en faire telle quelle une commande projet
+  permettrait d'écrire par erreur dans un autre projet.
 - **Tous les projets ne rangent pas leurs fiches au même format** (constaté le 2026-10-03). vectorz
   et muti sont au format actuel. Quatre projets sont restés à un format ancien. Samplerz range les
   siennes en fichiers Gherkin `.feature`, que le tableau de bord ne sait pas lire.
@@ -102,9 +103,15 @@ Dans le tableau de bord :
      avec la version, au lieu d'afficher des statuts qui n'existent plus.
 2. **Une page « config »** du projet choisi, faite de sections : les interrupteurs GitHub (PR, CI,
    revue Codex), ses règles propres, ses critères de « prête ». Ici, toutes ces sections sont en
-   lecture seule.
-3. **`ezk config` devient une commande projet** : `ezk --root <projet> config` lit la config de
-   n'importe quel projet, comme `ezk rules show` le fait déjà.
+   lecture seule. **Chaque section se lit seule** : un fichier illisible n'affecte que sa section,
+   qui affiche « illisible » et le chemin du fichier. Les autres restent visibles. Aujourd'hui, une
+   vue de données qui échoue rend une erreur pour toute la page (`bin/ezk-map.ts`, vers la ligne
+   186).
+3. **La lecture de la config devient une commande projet, pas l'écriture.** `ezk config show`
+   lit la config de n'importe quel projet avec `--root`, comme `ezk rules show`. L'écriture
+   (`ezk config github on|off`) reste limitée au projet courant. Le routeur impose ce découpage : un
+   domaine ne mélange pas une commande sans verbe et des verbes (`src/core/ezk-cli.ts`, vers la
+   ligne 136). Toutes les commandes `config` prennent donc un verbe.
 
 **Deux règles de sûreté**, dans la ligne de l'ADR-0057 :
 
@@ -133,10 +140,14 @@ plus tard, pas nécessaire au besoin.
       en charge ». Sa page « config » s'affiche ; aucune fiche n'est inventée.
 - [ ] Un projet dont les fiches sont dans une version ancienne du format affiche « format en
       retard » et cette version, au lieu de statuts faux.
-- [ ] La page « config » montre, pour le projet choisi, les mêmes valeurs que `ezk config`,
-      `ezk rules show` et `ezk dor show`. Elle n'écrit rien.
+- [ ] La page « config » montre, pour le projet choisi, les mêmes valeurs que `ezk config show`,
+      `ezk rules show` et `ezk dor show`. Elle n'écrit rien. La preuve se fait sur une copie de
+      test dont les trois fichiers portent des valeurs différentes des défauts.
+- [ ] Un fichier de config illisible n'affiche « illisible » et son chemin que dans sa section. Les
+      deux autres sections restent visibles.
 - [ ] Un pouce posé sur une fiche du projet choisi s'écrit dans ce projet, et seulement là.
-- [ ] `ezk --root <projet> config` affiche la config d'un autre projet.
+- [ ] `ezk --root <projet> config show` affiche la config d'un autre projet.
+- [ ] `ezk --root <projet> config github off` est refusé : l'écriture reste au projet courant.
 - [ ] Inscrire un projet avec `ezk supervision registry-add` suffit pour qu'il apparaisse, y
       compris quand la commande est lancée depuis un worktree.
 - [ ] Le serveur n'écoute que sur la boucle locale (127.0.0.1).
@@ -155,11 +166,20 @@ ezk supervision registry-add samplerz <chemin-de-samplerz>   # fiches en Gherkin
 # 3. ouvrir le cockpit
 ezk dashboard
 # → le menu liste vectorz, muti et samplerz
-# → choisir muti : ses fiches s'affichent ; ouvrir « config », puis comparer avec le terminal :
-ezk --root <chemin-de-muti> config
-ezk --root <chemin-de-muti> rules show
-ezk --root <chemin-de-muti> dor show
+# → choisir muti : ses fiches s'affichent
 # → choisir samplerz : état « format de fiches non pris en charge », et sa page « config » s'affiche
+
+# 3 bis. comparer la page « config » au terminal, sur la copie de test créée au build
+#    (config.yml, rules.yml et dor.yml y portent des valeurs différentes des défauts :
+#    aucun projet local n'a ces fichiers, une comparaison sur eux se ferait à vide)
+ezk supervision registry-add essai-config <chemin-de-la-copie-de-test>
+ezk --root <chemin-de-la-copie-de-test> config show
+ezk --root <chemin-de-la-copie-de-test> rules show
+ezk --root <chemin-de-la-copie-de-test> dor show
+# → casser config.yml dans la copie : seule la section GitHub affiche « illisible » et son chemin
+
+# 3 ter. l'écriture reste au projet courant
+ezk --root <chemin-de-la-copie-de-test> config github off   # → refusé
 
 # 4. poser un pouce sur une fiche de muti : le fichier apparaît dans muti, pas dans vectorz
 ls <chemin-de-muti>/features/reviews/verdicts/
@@ -205,6 +225,11 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
   cette fiche le même jour, sur la branche `claude/ezk-backlog-grooming-cf040d`, sans la pousser.
   Même choix du tableau de bord ; elle sortait la page « config » dans une fiche à part. Le PO garde
   cette version-ci, déjà prête. De l'autre, on reprend le piège du registre ci-dessous.
+- **Trois défauts de la page « config »**, signalés par la session de grooming parallèle et
+  vérifiés sur le code le 2026-10-03. `ezk config` écrit aussi, et le routeur refuse un domaine qui
+  mêle commande sans verbe et verbes. Aucun projet local n'a de `.vectorz/config.yml`, `rules.yml`
+  ni `dor.yml`. Une vue de données qui échoue rend une erreur pour toute la page. Les critères en
+  tiennent compte.
 - **Piège du registre** (constaté le 2026-10-03, `bin/supervision-registry-add.ts`). `registry-add`
   cherche `supervision.registry.yaml` en remontant depuis le projet, puis depuis le dossier où on le
   lance. Lancé depuis un worktree, il écrit dans la copie du registre propre à ce worktree. Le

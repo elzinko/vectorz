@@ -108,10 +108,13 @@ courts (`opus`, `sonnet`…), et pas d'effort.
 
 **3. Voir et modifier, en terminal et dans le tableau de bord.**
 
-- `ezk --root <projet> config` affiche, pour chaque agent : son niveau, son modèle, son effort, et
+- `ezk --root <projet> config show` affiche, pour chaque agent : son niveau, son modèle, son effort, et
   la source de la valeur. La source est le défaut, le niveau du projet ou le réglage de l'agent.
 - Une commande `ezk config` règle un niveau ou un agent. Elle réutilise l'écriture actuelle, qui
   garde les commentaires du fichier. Puis elle met à jour les pointeurs du projet.
+- Écrire dans un autre projet est le but de cette fiche : régler samplerz depuis vectorz. Mais
+  l'écriture **nomme toujours sa cible**, avec `--root <projet>`, et ne la devine jamais. Sans
+  `--root`, elle écrit dans le projet courant. Elle affiche le chemin du fichier modifié.
 - La page « config » du tableau de bord gagne une section « Agents » : le même tableau. On y
   modifie un niveau ou un agent. L'écriture passe par le même code que la commande.
 - Cette écriture est la deuxième du tableau de bord. L'[ADR-0057](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md)
@@ -137,11 +140,13 @@ courts (`opus`, `sonnet`…), et pas d'effort.
       projets.
 - [ ] Un modèle, un effort, un niveau ou un agent inconnu est refusé. Le message nomme la clé et la
       valeur. Rien n'est remplacé en silence.
-- [ ] `ezk --root <projet> config` affiche, pour chaque agent : niveau, modèle, effort et source.
+- [ ] `ezk --root <projet> config show` affiche, pour chaque agent : niveau, modèle, effort et source.
 - [ ] Modifier un réglage par la commande garde les commentaires du fichier et met les pointeurs du
       projet à jour. Revenir au défaut retire le pointeur.
+- [ ] Une écriture affiche le chemin exact du fichier modifié. Sans `--root`, elle écrit dans le
+      projet courant, jamais ailleurs.
 - [ ] Le tableau de bord montre ce tableau pour le projet choisi. Il permet de modifier un niveau ou
-      un agent. Ensuite, `ezk config` affiche la nouvelle valeur.
+      un agent. Ensuite, `ezk config show` affiche la nouvelle valeur.
 - [ ] La route qui écrit la config refuse tout ce que refuse celle des pouces (ADR-0057) : méthode,
       `Host`, `Origin`, type, taille, projet inconnu. Elle refuse aussi un niveau, un agent ou une
       valeur inconnus. Un amendement de l'ADR-0057 consigne cette deuxième écriture.
@@ -158,15 +163,15 @@ cd products/mega-city && pnpm typecheck && pnpm test && pnpm test:scripts
 
 # 2. régler le niveau performant de samplerz, puis comparer les deux projets
 ezk --root <chemin-de-samplerz> config modeles set performant --model claude-opus-5-5 --effort xhigh
-ezk --root <chemin-de-samplerz> config   # → ezk-architect : performant · claude-opus-5-5 · xhigh · niveau du projet
-ezk config                               # depuis vectorz → ezk-architect : performant · claude-opus-4-8 · high · défaut
+ezk --root <chemin-de-samplerz> config show   # → ezk-architect : performant · claude-opus-5-5 · xhigh · niveau du projet
+ezk config show                               # depuis vectorz → ezk-architect : performant · claude-opus-4-8 · high · défaut
 
 # 3. le pointeur est posé dans samplerz : il porte le modèle, pas le texte du rôle
 head -8 <chemin-de-samplerz>/.claude/agents/ezk-architect.md
 
 # 4. un agent réglé à part l'emporte sur son niveau
 ezk --root <chemin-de-samplerz> config agents set ezk-reviewer --model claude-opus-4-8 --effort high
-ezk --root <chemin-de-samplerz> config   # → ezk-reviewer : performant · claude-opus-4-8 · high · réglage de l'agent
+ezk --root <chemin-de-samplerz> config show   # → ezk-reviewer : performant · claude-opus-4-8 · high · réglage de l'agent
 
 # 5. une valeur invalide est refusée, avec la clé et la valeur dans le message
 ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
@@ -182,7 +187,10 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
    ```
 
 7. `ezk dashboard` → choisir samplerz → page « config » → section « Agents ». Le tableau est le
-   même qu'à l'étape 2. Modifier une ligne, puis relancer `ezk --root <chemin-de-samplerz> config`.
+   même qu'à l'étape 2. Modifier une ligne, puis relancer `ezk --root <chemin-de-samplerz> config show`.
+8. La copie de test de la fiche du tableau de bord porte aussi une section `modeles:` avec des
+   valeurs non par défaut. La section « Agents » s'y vérifie comme les autres sections : mêmes
+   valeurs qu'en terminal, et « illisible » avec le chemin si le fichier est cassé.
 
 ## Glossaire
 
@@ -241,8 +249,11 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
   - Le modèle de secours (`model_spare`) de l'architecte, du PO et du reviewer : le niveau le
     porte-t-il aussi ?
   - La liste des modèles acceptés : où la tenir, et qui l'ajoute quand un modèle sort.
-  - Les noms exacts des clés (`modeles:`, `agents:`) et des sous-commandes.
-- **Dépendance : `ezk --root <projet> config` n'existe pas encore** (constaté le 2026-10-02).
+  - Les noms exacts des clés (`modeles:`, `agents:`) et des sous-commandes. Contrainte du routeur :
+    un domaine ne mélange pas une commande sans verbe et des verbes (`src/core/ezk-cli.ts`, vers la
+    ligne 136). Toutes les commandes `config` prennent donc un verbe : `config show`,
+    `config github`, `config modeles`, `config agents`.
+- **Dépendance : `ezk --root <projet> config show` n'existe pas encore** (constaté le 2026-10-02).
   `ezk config` ne lit que le projet courant. La fiche du tableau de bord ajoute `--root` dans ses
   critères. Si elle n'est pas livrée avant, cette fiche le construit, une seule fois.
 - **Fiches liées.**
