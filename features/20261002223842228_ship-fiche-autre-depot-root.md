@@ -49,14 +49,14 @@ commande de ship était figée.
 
 ## Critères d'acceptation
 
-- [ ] Avec `--root <dépôt>`, la fiche part dans `features/done/` de ce dépôt, avec
+- [x] Avec `--root <dépôt>`, la fiche part dans `features/done/` de ce dépôt, avec
   `status: shipped` et `pr:`.
-- [ ] L'index `features/BACKLOG.md` de ce dépôt est régénéré, avec le titre déclaré par son
+- [x] L'index `features/BACKLOG.md` de ce dépôt est régénéré, avec le titre déclaré par son
   `features/README.md`.
-- [ ] Le recalage des liens ne casse rien de plus dans ce dépôt.
-- [ ] Un `--root` sans dossier, ou vers un dossier absent, est refusé (code 1) sans rien écrire.
-- [ ] La variable `EZK_ROOT` seule ne change pas le dépôt visé.
-- [ ] Sans `--root`, la commande se comporte comme avant.
+- [x] Le recalage des liens ne casse rien de plus dans ce dépôt.
+- [x] Un `--root` sans dossier, ou vers un dossier absent, est refusé (code 1) sans rien écrire.
+- [x] La variable `EZK_ROOT` seule ne change pas le dépôt visé.
+- [x] Sans `--root`, la commande se comporte comme avant.
 
 ## Comment vérifier
 
@@ -81,6 +81,9 @@ pnpm --dir <vectorz>/products/mega-city ship:fiche -- --root . --dry-run --pr '#
 
 ## Notes / décisions
 
+- Critères cochés le 2026-10-03 après la revue `ezk-reviewer` (GO). Elle a rejoué « Comment
+  vérifier » : typecheck vert, 21/21 tests du ship, 1745/1745 tests, 34/34 suites de scripts.
+  Codex n'a pas relu, faute de quota.
 - Cette fiche est une brique de
   [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md).
   Celle-ci garde l'autre moitié : `ship-in-pr.sh` cherche encore `products/mega-city` dans le dépôt
