@@ -7,7 +7,7 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [installation, ezk-map]
-status: idea
+status: ready
 pr:
 evidence: auto
 created: 2026-10-02
@@ -114,6 +114,9 @@ courts (`opus`, `sonnet`…), et pas d'effort.
   garde les commentaires du fichier. Puis elle met à jour les pointeurs du projet.
 - La page « config » du tableau de bord gagne une section « Agents » : le même tableau. On y
   modifie un niveau ou un agent. L'écriture passe par le même code que la commande.
+- Cette écriture est la deuxième du tableau de bord. L'[ADR-0057](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md)
+  n'en autorise qu'une, les pouces 👍/👎 : cette fiche l'amende. La nouvelle route reprend les mêmes
+  gardes, et n'écrit que dans `.vectorz/config.yml` du projet choisi.
 
 **Hors périmètre.**
 
@@ -139,6 +142,9 @@ courts (`opus`, `sonnet`…), et pas d'effort.
       projet à jour. Revenir au défaut retire le pointeur.
 - [ ] Le tableau de bord montre ce tableau pour le projet choisi. Il permet de modifier un niveau ou
       un agent. Ensuite, `ezk config` affiche la nouvelle valeur.
+- [ ] La route qui écrit la config refuse tout ce que refuse celle des pouces (ADR-0057) : méthode,
+      `Host`, `Origin`, type, taille, projet inconnu. Elle refuse aussi un niveau, un agent ou une
+      valeur inconnus. Un amendement de l'ADR-0057 consigne cette deuxième écriture.
 - [ ] Le calcul « projet + agent → modèle + effort » est une fonction pure, testée. Il accepte un
       hôte en plus, sans changer de forme.
 
@@ -194,6 +200,9 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
 - **Créée le 2026-10-02** à la demande du PO. Décisions prises à la création : une nouvelle fiche
   plutôt qu'enrichir la fiche multi-client ; P1 ; version V0.6, jalon `cockpit` ; les agents
   d'abord, pas les commandes.
+- **Prête le 2026-10-03** (porte de « prête » passée : problème, valeur, critères et dépendances
+  constatées). Le critère « tableau de bord » suppose la page « config » de la fiche du tableau de
+  bord. **Ordre fixé par le PO le 2026-10-03 : le tableau de bord d'abord, cette fiche ensuite.**
 - **Groomée le 2026-10-02 : des niveaux, avec un repli par agent.** Le PO veut « faire abstraction
   des modèles » ; si c'est trop compliqué, « saisir le nom du modèle et l'effort ». Les deux tiennent
   ensemble : trois niveaux, plus un réglage par agent qui l'emporte. Le mécanisme retenu est le
@@ -233,8 +242,6 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
     porte-t-il aussi ?
   - La liste des modèles acceptés : où la tenir, et qui l'ajoute quand un modèle sort.
   - Les noms exacts des clés (`modeles:`, `agents:`) et des sous-commandes.
-  - L'ordre avec la fiche du tableau de bord. Si sa page « config » n'existe pas encore, livrer
-    d'abord le fichier, les pointeurs et `ezk config`, le tableau de bord ensuite.
 - **Dépendance : `ezk --root <projet> config` n'existe pas encore** (constaté le 2026-10-02).
   `ezk config` ne lit que le projet courant. La fiche du tableau de bord ajoute `--root` dans ses
   critères. Si elle n'est pas livrée avant, cette fiche le construit, une seule fois.

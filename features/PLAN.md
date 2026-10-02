@@ -94,11 +94,14 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`~~ — shipped #324
 - ~~`20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`~~ — shipped #325
 - ~~`20261002114435782` — la fiche d'une story arrive en done avec son merge, quel que soit le canal : ship avant merge, décidé mais jamais construit · prête le 2026-10-02 · `build`~~ — shipped #333
+- `20261002155911250` — le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge · P1, issue de la rétro muti (#331) · `groom` → `build`
+- `20261002155911257` — les skills ezk retrouvent le catalogue mega-city depuis un projet hôte · P1, issue de la rétro muti (#331) · `groom` → `build`
 - `20261001192624192` — regrouper les artefacts de méthode hors de docs/, dans un dossier dédié · `groom` → `build`
 
 ### ⑦ V0.6 — le cockpit : voir où en est chaque projet (décidé le 2026-10-02)
 > Le tableau de bord d'abord : son ADR dit dans quelle page vivra la vue du process.
-- `20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · `groom` → `build`
+- `20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · prête le 2026-10-03 · `build`
+- `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03 · `build` (après le tableau de bord : sa section « Agents » vit dans la page « config »)
 - `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
