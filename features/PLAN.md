@@ -4,7 +4,7 @@
 
 Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
 (`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de V0.1 à
-V0.4. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
+V0.6. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
 fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`BACKLOG.md`](BACKLOG.md).
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
@@ -24,7 +24,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
 > Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
 
-## 🚂 Train de versions (décidé le 2026-09-23, recalé au tri du 2026-09-30)
+## 🚂 Train de versions (décidé le 2026-09-23, recalé au tri du 2026-09-30, puis le 2026-10-02)
 
 | Version | Nom | Contenu | Statut |
 |---|---|---|---|
@@ -33,7 +33,8 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | ✅ livrée le 2026-10-01 |
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | ✅ livrée le 2026-10-01 |
 | **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, product-build qui enchaîne les sprints | ▶️ en cours |
-| **V0.6** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
+| **V0.6** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ⏭️ ensuite (décidé le 2026-10-02) |
+| **V0.7** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
@@ -92,6 +93,11 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ### ⑥ V0.5 — le sprint au lot (P0)
 - `20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`
 - `20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`
+
+### ⑦ V0.6 — le cockpit : voir où en est chaque projet (décidé le 2026-10-02)
+> Le tableau de bord d'abord : son ADR dit dans quelle page vivra la vue du process.
+- `20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · `groom` → `build`
+- `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
