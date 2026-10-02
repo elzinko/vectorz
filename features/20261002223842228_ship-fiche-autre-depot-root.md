@@ -76,7 +76,7 @@ pnpm --dir products/mega-city test:scripts
 Sur muti, un essai à blanc lancé depuis son dossier ne modifie rien :
 
 ```bash
-pnpm --dir <vectorz>/products/mega-city ship:fiche -- --root . --dry-run --pr '#999' features/<id>_<slug>.md
+pnpm --dir <vectorz>/products/mega-city ship:fiche -- --root . --dry-run --pr '#999' features/0005-outreach-wave.md
 ```
 
 ## Notes / décisions
