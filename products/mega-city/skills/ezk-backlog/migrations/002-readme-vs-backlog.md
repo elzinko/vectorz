@@ -31,13 +31,13 @@ Avant tout remplacement : **backup** `features/README.md.bak-skema-002`.
    le helper le backup + remplacer.
 2. **Écrire** le guide curé : copier le scaffold
    `<skill>/templates/features-README.md` vers `features/README.md`
-   (adapter le titre projet si besoin ; garder le front-matter
-   `layout_version: 2`).
-3. **Régénérer** l'index :
+   (garder le front-matter `layout_version: 2`). Le titre de l'index va dans ce
+   front-matter : `backlog_title: 'Backlog features & bugs — <projet>'`.
+3. **Régénérer** l'index, **sans titre** : le script lit `backlog_title:` :
    ```bash
-   bash products/mega-city/bin/regen-backlog.sh . "Backlog features & bugs — <projet>"
+   bash products/mega-city/bin/regen-backlog.sh .
    # ou la copie vendored :
-   bash <skill>/scripts/regen-backlog.sh . "Backlog features & bugs — <projet>"
+   bash <skill>/scripts/regen-backlog.sh .
    ```
 4. **Vérifier** : `features/BACKLOG.md` existe et contient la table ;
    `features/README.md` n'est **plus** une table auto-générée ; le `.bak-skema-002`
@@ -50,6 +50,9 @@ Helper optionnel (étapes 1–3) :
 bash <skill>/scripts/apply-002-readme-vs-backlog.sh [racine] [titre-index]
 # README curé volontaire : --force (backup puis remplace)
 ```
+
+Le helper écrit `[titre-index]` dans `backlog_title:` du README qu'il installe. Un README
+conservé n'est pas réécrit : une note donne la ligne à y ajouter.
 
 ### `regen-backlog.sh` hors monorepo vectorz
 
