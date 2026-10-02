@@ -28,6 +28,9 @@ jamais par son id nu.
    `ezk-reviewer` pour la qualité) — mais c'est TOI qui tranches.
 5. **Journalise chaque décision** dans `SPRINT.md`, section `## Notes / décisions` :
    `- [ezk-pm] <date> — <checkpoint> → <décision> (motif court)`.
+6. **Gate `ready` d'une fiche** (règle `development/acceptance-criteria-before-merge`) : chaque
+   critère d'acceptation doit se cocher dans la PR, avant le merge. Un critère qui ne se prouve
+   qu'après le merge part dans le bloc « Mesure de suivi » avant que tu dises GO.
 
 **Les 4 REFUS — décisions humaines, jamais les tiennes** (ADR-0011 §3)
 Réponds `REFUS — décision humaine (<catégorie>)` + le résumé minimal pour trancher vite :
