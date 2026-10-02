@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [cross-repo]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-02
@@ -111,6 +111,8 @@ Sur le terrain : 0 ship à la main sur les 3 prochains ships muti.
   affirmation.
 - Distincte de la fiche `20261001192624192` (sortir les artefacts de méthode de `docs/`).
 - Version V0.5 proposée par le pilote (P1 → release en cours) ; à confirmer au planning.
+- **Prête le 2026-10-03** (porte de « prête » passée : incident daté, valeur dite, 5 critères
+  prouvables, dépendance muti constatée).
 - **Groomée le 2026-10-03 : on réutilise `ezk`.** La variable `VECTORZ_ROOT` et la découverte d'un
   dépôt voisin sont abandonnées : la commande `ezk` installée résout déjà mega-city. La cible est
   nommée par `--root`, comme dans la fiche des modèles.
