@@ -7,7 +7,7 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [ezk-map, supervision]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-09-04
@@ -180,6 +180,9 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
 
 ## Notes / décisions
 
+- **Prête le 2026-10-03** (porte de « prête » passée : problème, valeur, 13 critères prouvables,
+  dépendances muti et samplerz constatées, preuve d'écran avant/après). Passe avant la fiche des
+  modèles, sur décision du PO du même jour.
 - **Groomée le 2026-10-03 : le tableau de bord devient le cockpit** (option A, choix du PO sur
   recommandation). Faits lus avant de trancher :
   - `bin/ezk-map.ts` calcule ses données par requête pour une racine passée en argument ; seule la
