@@ -1,4 +1,4 @@
-# Backlog — mega-city
+# Backlog features & bugs — vectorz
 
 > Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.
 > Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ✅ shipped · 🗑️ superseded · 🔀 merged · 🧩 split.
@@ -269,6 +269,7 @@
 |---|-------|------|------|---------|---------|--------|----|
 | [20260904080827072](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) | Un seul tableau de bord pour tous tes projets — choisir le projet, voir sa config | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20260930194219068](20260930194219068_ezk-product-build-orchestrateur-session.md) | ezk-product-build : orchestrateur de session, contrat de sprint redéfini (Option A) | refactor | P1 | V0.5 | mega-city | 💡 idea |  |
+| [20261002114435782](20261002114435782_done-par-story-a-la-validation.md) | Chaque user story porte ses statuts — en cours à la prise, done à sa validation | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
