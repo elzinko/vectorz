@@ -185,4 +185,8 @@ gh pr list --state merged --limit 40 --json number,headRefName \
   flux ne passe aucun gate, donc `reconcile` reste le filet.
 - **Panel adverse non nécessaire** : la décision existe déjà (ADR-0049). `ezk-reviewer` revoit le
   build (plancher de revue, ADR-0059).
+- **Titre de l'index, rien à prévoir** (constat du 2026-10-02) : un `ship` fait dans une PR (#317)
+  avait remis le titre « Backlog — mega-city » en tête de `BACKLOG.md`. Corrigé sur `main` par #323 :
+  `regen-backlog.sh` lit `backlog_title:` dans `features/README.md`, et `ship:fiche` l'appelle sans
+  titre (`products/mega-city/bin/ship-fiche.ts:65`). Le ship dans la PR hérite donc du bon titre.
 - **Suite** : le filet A (check CI « PR `feat/<id>-…` sans sa fiche dans `done/` »).
