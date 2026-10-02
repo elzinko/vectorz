@@ -238,10 +238,11 @@ Ce monorepo a **une seule** liste : `features/` à la racine. Le produit n'est p
 l'emplacement — c'est le champ front-matter **`product:`** (obligatoire ici :
 `vectorz` | `mega-city` | …). Ids **continus et uniques** sur l'ensemble (actifs +
 `done/`) ; `regen` warn si doublon. `PLAN.md` cite des ids nus (préfixe `mc-` legacy
-toléré). `regen` :
+toléré). `regen`, **sans titre** : le titre vient de `backlog_title:` dans l'en-tête de
+`features/README.md` (voir [`regen`](#regen)) :
 
 ```bash
-bash products/mega-city/bin/regen-backlog.sh . "Backlog features & bugs — vectorz"
+bash products/mega-city/bin/regen-backlog.sh .
 ```
 
 Dans un **autre** repo qui aurait encore plusieurs dossiers de backlog, la règle
@@ -736,8 +737,13 @@ Le script émet aussi sur stdout les **compteurs déterministes** (par statut, `
 épics, création médiane des `ready`) — `review` les lit tels quels, le LLM ne
 recompte jamais (ADR-0001 / ADR-0016 §5) — et des **warnings d'intégrité** non
 bloquants sur stderr (A7) : `epic:` pendant, cible non-épic, sous-épic (2 niveaux max).
+**Titre de l'index** (sa ligne 1) : le `[titre]` passé, sinon la clé `backlog_title:` de
+l'en-tête de `features/README.md`, sinon « Backlog features & bugs ». Un projet qui a
+déclaré `backlog_title:` ne passe **jamais** de titre : sinon la ligne 1 change selon l'outil
+qui régénère, et chaque PR parallèle se dispute cette ligne. vectorz déclare
+« Backlog features & bugs — vectorz » : la liste unique couvre tous ses produits.
 DoD exécutable du script : `bin/test-regen-backlog.sh`.
-**Ne touche jamais** à `features/README.md` (guide curé).
+**Ne touche jamais** à `features/README.md` (guide curé) : le script le lit, il ne l'écrit pas.
 
 ## Intégration
 
