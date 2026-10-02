@@ -3,12 +3,14 @@
  *
  * Trois étages : le recalage de liens (pur, calqué sur check-links.sh), le plan de la transaction
  * (pur, état du dépôt injecté — il REFUSE avant d'écrire), puis un dépôt git jetable où la VRAIE
- * gate `check-links.sh` mesure le delta de liens cassés avant / après un vrai ship.
+ * gate `check-links.sh` mesure le delta de liens cassés avant / après un vrai ship. Le vrai bin y
+ * livre aussi dans un dépôt qui n'est pas vectorz, désigné par `--root`.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { dirname, join, posix, resolve } from 'node:path';
+import { basename, dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 import { nodeRepoFs, nodeShipIo } from '../../io/ship-fiche-io.js';
@@ -346,5 +348,57 @@ describe('sur un dépôt git jetable — la vraie gate check-links.sh mesure le 
     expect(echec?.message).toBe('regen-backlog a planté');
     expect(git(root, 'status', '--porcelain')).toBe(''); // plus rien de modifié, ni déplacé
     expect(readFileSync(join(root, A), 'utf8')).toBe(fixture()[A]);
+  });
+
+  /** Le VRAI bin, lancé comme `pnpm --dir products/mega-city` le lance : depuis mega-city. */
+  const tsx = createRequire(import.meta.url).resolve('tsx/cli');
+  const shipBin = (args: string[], env: Record<string, string> = {}) => {
+    const r = spawnSync(process.execPath, [tsx, join(megaCity, 'bin', 'ship-fiche.ts'), '--', ...args], {
+      cwd: megaCity,
+      encoding: 'utf8',
+      env: { ...process.env, INIT_CWD: '', EZK_ROOT: '', ...env },
+    });
+    return { code: r.status, out: `${r.stdout}${r.stderr}` };
+  };
+
+  it('--root : le bin livre dans un AUTRE dépôt que vectorz — fiches, liens, BACKLOG.md régénérés là-bas', slow, () => {
+    const root = toyRepo();
+    // Un vrai projet ezk-backlog a son guide : l'index régénéré y renvoie et y lit son titre.
+    writeFileSync(join(root, 'features/README.md'), '---\nbacklog_title: Backlog — projet jouet\n---\n\n# Guide\n');
+    git(root, 'add', '.');
+    git(root, 'commit', '--quiet', '-m', 'guide');
+    const baseline = brokenByGate(root);
+    // Racine relative, lue depuis le dossier où la commande est tapée (INIT_CWD) ; une fiche en absolu.
+    const r = shipBin(['--root', basename(root), '--pr', '#273', A, join(root, B)], { INIT_CWD: dirname(root) });
+
+    expect(r.out).toContain(`Projet visé : ${root}`);
+    expect(r.code).toBe(0); // les fiches jouets n'existent pas dans vectorz : sans --root, ce serait un refus
+    const shipped = readFileSync(join(root, 'features/done/20260101000000001_a.md'), 'utf8');
+    expect(shipped).toMatch(/^status: shipped$/m);
+    expect(shipped).toContain('pr: "#273"');
+    expect(readFileSync(join(root, 'features/PLAN.md'), 'utf8')).toContain('~~`20260101000000001`');
+    // Le vrai regen-backlog.sh a tourné sur CE dépôt : titre lu dans son guide, livrées citées.
+    const backlog = readFileSync(join(root, 'features/BACKLOG.md'), 'utf8');
+    expect(backlog.split('\n')[0]).toBe('# Backlog — projet jouet');
+    expect(backlog).toContain('done/20260101000000002_b.md');
+    expect(git(root, 'status', '--porcelain')).toContain('features/done/20260101000000002_b.md');
+    expect(brokenByGate(root)).toBe(baseline);
+  });
+
+  it('--root mal formé ou faux : refus (code 1), rien écrit ; EZK_ROOT seule ne redirige pas les écritures', slow, () => {
+    const root = toyRepo();
+    const sansDossier = shipBin(['--pr', '#1', A, '--root']);
+    expect(sansDossier.code).toBe(1);
+    expect(sansDossier.out).toContain('attend un dossier');
+
+    const absent = shipBin(['--root', join(root, 'absent'), '--pr', '#1', A]);
+    expect(absent.code).toBe(1);
+    expect(absent.out).toContain("n'existe pas");
+
+    // Une variable restée dans le shell : le bin garde son défaut (vectorz), où la fiche jouet n'existe pas.
+    const parVariable = shipBin(['--dry-run', '--pr', '#1', A], { EZK_ROOT: root });
+    expect(parVariable.code).toBe(1);
+    expect(parVariable.out).toContain(`${A} : introuvable`);
+    expect(git(root, 'status', '--porcelain')).toBe('');
   });
 });

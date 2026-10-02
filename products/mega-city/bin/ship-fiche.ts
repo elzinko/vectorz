@@ -5,6 +5,12 @@
  *   pnpm --dir products/mega-city ship:fiche -- --pr '#270' features/<id>_slug.md [...]
  *   pnpm --dir products/mega-city ship:fiche -- --status superseded --pr 'superseded — raison' features/<id>_slug.md
  *   pnpm --dir products/mega-city ship:fiche -- --dry-run --pr '#999' features/<id>_slug.md
+ *   pnpm --dir products/mega-city ship:fiche -- --root ../muti --pr '#273' features/<id>_slug.md
+ *
+ * `--root <dossier>` : le dépôt dont on livre les fiches, s'il n'est pas vectorz (muti… : même layout
+ * `features/` + `done/` + `BACKLOG.md`). Un chemin relatif se lit depuis le dossier où la commande est
+ * tapée. Les fiches se donnent relatives à CE dépôt. Seule l'option compte, pas la variable `EZK_ROOT` :
+ * une commande qui écrit ne suit pas une variable restée dans le shell (comme `backlog:apply`).
  *
  * Ce que fait la commande, dans l'ordre :
  *   1. vérifie AVANT d'écrire (fiche sous features/, destination libre, statut admis) ;
@@ -21,19 +27,38 @@ import { execFileSync } from 'node:child_process';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ShipFailure, ShipRefusal, applyShip, planShip } from '../src/backlog/ship-fiche.js';
+import { extractRootFlag, resolveProjectRoot, rootBanner } from '../src/core/project-root.js';
+import { ProjectRootError, checkProjectRoot } from '../src/io/project-root.js';
 import { nodeRepoFs, nodeShipIo } from '../src/io/ship-fiche-io.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const repoRoot = resolve(megaCity, '..', '..'); // racine vectorz
 
-function usage(): never {
+function usage(message?: string): never {
+  if (message) console.error(`erreur: ${message}`);
   console.error(
-    "usage : ship:fiche [--status shipped|superseded|merged|split] --pr '<ref>' [--no-bar-plan] [--dry-run] features/<id>_slug.md [...]",
+    "usage : ship:fiche [--root <dépôt>] [--status shipped|superseded|merged|split] --pr '<ref>' [--no-bar-plan] [--dry-run] features/<id>_slug.md [...]",
   );
   process.exit(1);
 }
 
-const args = process.argv.slice(2).filter((a) => a !== '--');
+const { flag, rest: args, error } = extractRootFlag(process.argv.slice(2).filter((a) => a !== '--'));
+if (error) usage(error);
+const target = resolveProjectRoot({
+  flag,
+  fallback: resolve(megaCity, '..', '..'), // racine vectorz
+  initCwd: process.env.INIT_CWD,
+  cwd: process.cwd(),
+});
+const repoRoot = target.root;
+if (target.source === 'flag') {
+  try {
+    checkProjectRoot(repoRoot);
+  } catch (e) {
+    if (!(e instanceof ProjectRootError)) throw e;
+    usage(e.message);
+  }
+}
+
 const files: string[] = [];
 let status = 'shipped';
 let pr = '';
@@ -52,6 +77,8 @@ for (let i = 0; i < args.length; i += 1) {
 const fs = nodeRepoFs(repoRoot);
 try {
   const plan = planShip(fs, { files, status, pr, barPlan });
+  const banner = rootBanner(target);
+  if (banner) console.log(banner);
   console.log(
     `ship:fiche — ${plan.moves.length} fiche(s) → features/done/ (${status} ${pr}${dryRun ? ', à blanc : rien écrit' : ''})`,
   );

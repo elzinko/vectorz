@@ -629,6 +629,19 @@ geste**, pas en une liste d'étapes à suivre de mémoire (fiche 202608301946012
 pnpm --dir products/mega-city ship:fiche -- --pr '#<n>' features/<id>_<slug>.md [autres fiches du lot]
 ```
 
+**Un autre dépôt que vectorz** (muti, samplerz… au même layout `features/` + `done/` +
+`BACKLOG.md`) : ajoute `--root <dossier>`. Par exemple, depuis le dossier de muti :
+
+```bash
+pnpm --dir <vectorz>/products/mega-city ship:fiche -- --root . --pr '#<n>' features/<id>_<slug>.md
+```
+
+Un `--root` relatif se lit depuis le dossier où tu tapes la commande. Les fiches se donnent
+relatives au dépôt visé. Le reste ne change pas : mêmes contrôles, même retour arrière.
+`BACKLOG.md` est régénéré dans **ce** dépôt, avec le titre déclaré par `backlog_title:` dans son
+`features/README.md`. Seule l'option compte : une variable `EZK_ROOT` restée dans le shell ne
+redirige pas les écritures.
+
 La commande fait tout, dans l'ordre, **ou rien** :
 
 1. **Front-matter** : pose `status: shipped` **et** `pr:`. En flux GitHub : le n° de PR `#<n>`
