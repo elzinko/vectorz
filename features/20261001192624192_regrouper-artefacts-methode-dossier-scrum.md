@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: vectorz
 milestone: rationalisation
-version: V0.5
+version:
 labels: [convention, arborescence]
 status: idea
 pr:
@@ -112,5 +112,14 @@ pnpm --dir products/mega-city test:scripts   # test-handoff.sh + test-sprint-lif
 - **À trancher en rétro** (`/ezk-retro`, côté vectorz) : le **nom** (`scrum/` vs `agile/`/`method/`),
   le sort des **ADR** et du **backlog `features/`**, et la décision **`SPRINT.md`**.
 - **Priorité P2** : hygiène de méthode, rien n'est cassé ; mais cross-cutting (touche tous les
-  projets ezk via les skills). **version prévue V0.5** (prochaine release après V0.4) — à
-  confirmer au grooming.
+  projets ezk via les skills).
+- **Sortie de la V0.5 le 2026-10-03** (choix délégué par le PO). Elle est hors du thème de la V0.5
+  (« le sprint au lot ») et porte des décisions lourdes. La garder aurait bloqué le cockpit (V0.6)
+  derrière elle. Elle reste au jalon `rationalisation`, sans version, à reprendre avec l'architecte.
+- **Déjà tranché ailleurs, à retirer du périmètre au prochain grooming.** Le sort de `SPRINT.md` :
+  l'[ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md) le dit
+  ignoré par git, et vectorz l'ignore déjà (`.gitignore`). Le cas muti, qui l'a commité, est porté
+  par la fiche
+  [sprint.sh distingue un sprint ouvert d'un SPRINT.md commité](20261003011750433_portier-sprint-md-commite.md).
+- **Périmètre à élargir au prochain grooming** (constaté le 2026-10-03) : `docs/` de vectorz contient
+  aussi `journal/`, `archive/`, `audits/` et `pr-evidence/`, qui relèvent peut-être de la méthode.
