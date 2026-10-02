@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [sprint]
-status: idea
+status: ready
 pr:
 evidence: none # changement de méthode/outillage, pas d'écran
 created: 2026-10-02
@@ -190,3 +190,7 @@ gh pr list --state merged --limit 40 --json number,headRefName \
   `regen-backlog.sh` lit `backlog_title:` dans `features/README.md`, et `ship:fiche` l'appelle sans
   titre (`products/mega-city/bin/ship-fiche.ts:65`). Le ship dans la PR hérite donc du bon titre.
 - **Suite** : le filet A (check CI « PR `feat/<id>-…` sans sa fiche dans `done/` »).
+- **Dépendance GitHub** (`gh`, dépôt `elzinko/vectorz`, merges par l'UI et `gh pr merge`) — accès
+  constaté le 2026-10-02 (droit ADMIN).
+- **Gate « prête » passée le 2026-10-02** : problème, valeur, critères et dépendance externe tenus ;
+  aucun slot propre au projet (`.vectorz/dor.yml` absent).

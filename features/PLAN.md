@@ -32,7 +32,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | ✅ livrée le 2026-10-01 |
 | **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | ✅ livrée le 2026-10-01 |
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | ✅ livrée le 2026-10-01 |
-| **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, product-build qui enchaîne les sprints | ▶️ en cours |
+| **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, la fiche rangée avec son merge, product-build qui enchaîne les sprints | ▶️ en cours |
 | **V0.6** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ⏭️ ensuite (décidé le 2026-10-02) |
 | **V0.7** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
@@ -93,7 +93,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ### ⑥ V0.5 — le sprint au lot (P0)
 - ~~`20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`~~ — shipped #324
 - ~~`20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`~~ — shipped #325
-- `20261002114435782` — la fiche d'une story arrive en done avec son merge, quel que soit le canal · `groom` → `build`
+- `20261002114435782` — la fiche d'une story arrive en done avec son merge, quel que soit le canal : ship avant merge, décidé mais jamais construit · prête le 2026-10-02 · `build`
 - `20261001192624192` — regrouper les artefacts de méthode hors de docs/, dans un dossier dédié · `groom` → `build`
 
 ### ⑦ V0.6 — le cockpit : voir où en est chaque projet (décidé le 2026-10-02)
