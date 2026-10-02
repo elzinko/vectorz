@@ -18,6 +18,8 @@ export interface LotCard extends PlanCard {
   blocked: string;
   /** La fiche vit dans `features/done/`. */
   done: boolean;
+  /** Chemin du fichier de la fiche, relatif au dossier d'où l'on lance la commande : l'id devient un lien. */
+  path?: string;
 }
 
 /** Une fiche prête que le lot a passée, avec la raison. Elle est montrée, jamais tue. */
@@ -106,7 +108,14 @@ export interface FormatOptions {
   sprintScript: string;
 }
 
-const line = (c: LotCard): string => `${c.id} (${c.product} · ${c.priority || 'sans prio'}) — ${c.title}`;
+/** Une fiche se lit en lien cliquable vers son fichier (règle human-facing-lisibility) ; id brut sinon. */
+const line = (c: LotCard): string =>
+  `${c.path ? `[${c.id}](${c.path})` : c.id} (${c.product} · ${c.priority || 'sans prio'}) — ${c.title}`;
+
+/** Met un argument entre apostrophes pour bash dès qu'il contient un espace ou un caractère du shell. */
+export function shellQuote(arg: string): string {
+  return /^[A-Za-z0-9_/.,:@%+=-]+$/.test(arg) ? arg : `'${arg.replace(/'/g, "'\\''")}'`;
+}
 
 /** La sortie de `plan:lot`, ligne à ligne. Chaque signal a sa ligne : rien n'est masqué. */
 export function formatLot(lot: Lot, opts: FormatOptions): string[] {
@@ -141,7 +150,7 @@ export function formatLot(lot: Lot, opts: FormatOptions): string[] {
     out.push('rien à ouvrir : groome d’abord la tête (/ezk-backlog groom <id>).');
   } else {
     out.push('ouvrir le sprint (depuis la racine du projet) :');
-    out.push(`  bash ${opts.sprintScript} start --lot ${lot.stories.map((c) => c.id).join(',')}`);
+    out.push(`  bash ${shellQuote(opts.sprintScript)} start --lot ${lot.stories.map((c) => c.id).join(',')}`);
   }
   return out;
 }

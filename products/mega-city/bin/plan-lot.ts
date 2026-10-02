@@ -57,6 +57,8 @@ const cards = loadFiches(root).map((f) => ({
   title: f.title,
   blocked: f.blocked,
   done: f.done,
+  // L'id s'affiche en lien vers la fiche, relatif au dossier d'où la commande est lancée.
+  path: relative(invokedFrom, join(root, f.file)),
 }));
 const lot = selectLot(planIds, cards, Number(sizeArg));
 // sprint.sh se lance depuis la racine du projet (c'est là qu'il écrit SPRINT.md).
