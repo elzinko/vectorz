@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [archive]
-status: idea
+status: ready
 pr:
 evidence: none # script de clôture, pas d'écran
 created: 2026-10-02
@@ -96,6 +96,8 @@ Sur le terrain : 0 faux « REAL » sur les 5 prochaines clôtures d'un projet co
   `docs/captures/2026-10-02-retro-frictions-outillage-cross-repo.md`). Décision PO ✅, P1, unanime
   dans les quatre lentilles.
 - Version V0.5 proposée par le pilote (P1 → release en cours) ; à confirmer au planning.
+- **Prête le 2026-10-03** (porte de « prête » passée : deux incidents datés, coût dit, 5 critères
+  prouvables, dépendance muti constatée).
 - **Groomée le 2026-10-03 : fiche resserrée.** La reconnaissance du squash est livrée par la PR #311
   (2026-10-01). Reste la base de comparaison à la clôture. Le `git fetch` proposé à l'origine passe
   dans le skill, pas dans le script, à cause du test G7. La piste `gh pr list --head` est abandonnée.

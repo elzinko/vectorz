@@ -132,6 +132,7 @@
 | [20260930194219068](done/20260930194219068_ezk-product-build-orchestrateur-session.md) | ezk-product-build : orchestrateur de session, contrat de sprint redéfini (Option A) | refactor | P1 | V0.5 | mega-city | ✅ shipped | #325 |
 | [20261001133500727](done/20261001133500727_tests-processus-echouent-sous-charge.md) | Des tests à processus échouent sous la charge, puis passent relancés seuls | bug | P1 |  | mega-city | ✅ shipped | #317 |
 | [20261002114435782](done/20261002114435782_done-par-story-a-la-validation.md) | La fiche d'une story arrive en done avec son merge, quel que soit le canal | feature | P1 | V0.5 | mega-city | ✅ shipped | #333 |
+| [20261002155911250](20261002155911250_portier-archive-origin-main-squash.md) | Le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge | bug | P1 | V0.5 | mega-city | 🔵 ready |  |
 | [20261002205205417](20261002205205417_modele-effort-agents-par-projet.md) | Régler le modèle et l'effort de chaque agent, projet par projet | feature | P1 | V0.6 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
@@ -274,7 +275,6 @@
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
-| [20261002155911250](20261002155911250_portier-archive-origin-main-squash.md) | Le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge | bug | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261002155911257](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md) | Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte | bug | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
