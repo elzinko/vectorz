@@ -23,8 +23,8 @@ autres (`law`, `dashboard`, `help`) partent du dossier où tu es. Les anciens sc
 
 ## Lire les fiches d'un autre projet (muti, samplerz)
 
-Quatre commandes ne font que **lire** des fiches : `ezk dashboard`, `ezk board show`,
-`ezk backlog check` et `ezk backlog plan-head`. Elles lisent par défaut les fiches de la méthode.
+Cinq commandes ne font que **lire** des fiches : `ezk dashboard`, `ezk board show`,
+`ezk backlog check`, `ezk backlog plan-head` et `ezk backlog plan-lot`. Elles lisent par défaut les fiches de la méthode.
 (`ezk rules`, plus bas, vise un projet lui aussi.) Pour lire les fiches d'un autre projet, désigne-le :
 
 ```bash

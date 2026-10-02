@@ -26,6 +26,7 @@
     "pr:emit-local": "tsx bin/pr-emit-local.ts",
     "plan:order": "tsx bin/plan-order.ts",
     "plan:head": "tsx bin/plan-head.ts",
+    "plan:lot": "tsx bin/plan-lot.ts",
     "composes:graph": "tsx bin/regen-composes-graph.ts",
     "graph:check": "tsx bin/ezk-graph.ts",
     "graph:compile": "tsx bin/graph-compile.ts",

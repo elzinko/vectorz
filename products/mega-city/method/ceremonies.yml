@@ -115,11 +115,11 @@ elements:
     nom: Sprint Backlog
     scrum: Sprint Backlog
     etat: adapte
-    implemente_par: [ezk-sprint]
+    implemente_par: [ezk-backlog:next, ezk-sprint]
     note: >-
       `SPRINT.md` éphémère (gitignoré) : le LOT du sprint, une ligne par story, une PR
-      chacune (`[ ]` ouverte · `[x]` livrée · `[~]` reportée, ADR-0054). `ezk-sprint:start`
-      l'écrit, `ezk-sprint:close` le scelle ; les ids des stories non livrées restent dans
+      chacune (`[ ]` ouverte · `[x]` livrée · `[~]` reportée, ADR-0054). `ezk-backlog:next --lot N`
+      le choisit (N fiches prêtes, ordre du plan), `ezk-sprint:start` l'écrit, `ezk-sprint:close` le scelle ; les ids des stories non livrées restent dans
       les incréments scellés de la session. Le panel a constaté sa corruption par
       l'entrelacement de chantiers — pièce au dossier de la vue d'avancement.
 
@@ -130,8 +130,9 @@ elements:
     etat: adapte
     implemente_par: [ezk-sprint]
     note: >-
-      La PR squash-mergée sur main (étapes 8-10 du sprint) ; livraison groupée possible
-      par ezk-pr. Jamais nommé « Increment » dans la maison — le mot manque, pas la chose.
+      Les fiches du lot passées `shipped`, donc leurs PR squash-mergées sur main (étapes 8-10
+      du sprint) ; `ezk-sprint:close` le scelle, livraison groupée possible par ezk-pr. Aucun
+      objet « sprint » persistant (ADR-0054) : les fiches et l'historique git suffisent.
 
   - id: dod
     type: artefact
