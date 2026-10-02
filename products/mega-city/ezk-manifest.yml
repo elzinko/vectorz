@@ -78,6 +78,11 @@ commands:
     summary: Imprime la tête réelle du plan (--root <projet> pour un autre projet).
     project: true
   - domain: backlog
+    verb: plan-lot
+    run: bin/plan-lot.ts
+    summary: Choisit le lot d'un sprint (N fiches prêtes, ordre du plan) et tend sa ligne start --lot.
+    project: true
+  - domain: backlog
     verb: plan-order
     run: bin/plan-order.ts
     summary: Imprime l'ordre des fiches du plan.
