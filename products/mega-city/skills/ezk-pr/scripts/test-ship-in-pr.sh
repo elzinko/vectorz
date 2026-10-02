@@ -119,6 +119,12 @@ OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --s
 grep -q "SHIP-GUARD: override (${ID}) — livraison partielle" <<<"$OUT" && grep -q "^DRY-RUN:" <<<"$OUT" && ok "--allow-unshipped : passe, raison imprimée" || fail "override : $OUT"
 OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "docs/rangement" --subject s --body b --head-sha "$UNSHIPPED" --dry-run)"
 grep -q "SHIP-GUARD: skip" <<<"$OUT" && ok "branche sans id de fiche → garde non concernée" || fail "branche sans id : $OUT"
+for br in retro/2026-09-23-versions feat/2026-09-23-x; do
+  OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "$br" --subject s --body b --head-sha "$UNSHIPPED" --dry-run)"
+  grep -q "SHIP-GUARD: skip" <<<"$OUT" && ok "branche datée $br → une date n'est pas un id" || fail "branche datée $br : $OUT"
+done
+rc=0; bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" --allow-unshipped --dry-run >/dev/null 2>&1 || rc=$?
+[[ $rc -eq 2 && ! -f "$GH_MARKER" ]] && ok "--allow-unshipped sans raison n'avale pas --dry-run (exit 2, gh jamais appelé)" || fail "raison avalée : rc=$rc"
 
 echo "=== undo — NO-GO après le ship : la fiche revient sous features/ ==="
 OUT="$(bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID")"
@@ -132,6 +138,8 @@ OUT="$(bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID")"
 [[ "$OUT" == "SHIP: none" ]] && ok "undo rejoué → SHIP: none" || fail "undo sans ship : $OUT"
 bash "$SCRIPT" add --repo "$REPO" --fiche-id "$ID" --pr 12 >/dev/null && bash "$SCRIPT" check --repo "$REPO" --ref HEAD --fiche-id "$ID" >/dev/null \
   && ok "re-ship après correction → SHIP: present" || fail "re-ship après undo"
+rc=0; bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID" --base nulle-part >/dev/null 2>&1 || rc=$?
+[[ $rc -eq 2 ]] && ok "base introuvable → exit 2 (pas un code git brut)" || fail "base introuvable : rc=$rc"
 
 echo "=== undo — refus : revert en conflit, fiche héritée de main ==="
 # Un commit plus récent retouche la ligne même que le revert doit rétablir : conflit franc.

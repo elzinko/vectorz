@@ -51,7 +51,11 @@ while [[ $# -gt 0 ]]; do
     --body) body="$2"; shift 2 ;;
     --pr) pr="$2"; shift 2 ;;
     --head-sha) head_sha="$2"; shift 2 ;;
-    --allow-unshipped) allow_unshipped="$2"; shift 2 ;;
+    --allow-unshipped)
+      # Une raison vide ou qui ressemble à une option (« --dry-run ») transformerait un essai
+      # à blanc en vrai merge : refusée.
+      [[ -n "${2:-}" && "${2:-}" != --* ]] || { echo "ship-merge.sh: --allow-unshipped demande une raison" >&2; exit 2; }
+      allow_unshipped="$2"; shift 2 ;;
     --remote) mode="remote"; shift ;;
     --local) mode="local"; shift ;;
     --dry-run) dry_run=1; shift ;;
@@ -126,10 +130,11 @@ ship_local() {
 
 # --- Garde ADR-0049 : on ne merge pas une story sans son ship dans la PR. Le squash fait
 # atterrir code + fiche d'un coup ; sans ce commit, la fiche resterait « à faire » sur main.
-# L'id vient du nom de branche (`feat/<id>-<slug>`, ADR-0018) ; sans id, rien à garder.
+# L'id vient du nom de branche (`feat|fix/<id>-<slug>`, ADR-0018) ; sans id, rien à garder.
+# Une date (`retro/2026-09-23-…`, `feat/2026-09-23-…`) n'est pas un id de fiche.
 ship_guard() {
   local id rc=0
-  id="$(sed -nE 's#^[a-z]+/([0-9]{4}|[0-9]{17})-.*#\1#p' <<<"$branch")"
+  id="$(sed -nE 's#^(feat|fix)/([0-9]{17}|[0-9]{4})-[^0-9].*#\2#p' <<<"$branch")"
   if [[ -z "$id" ]]; then echo "SHIP-GUARD: skip (branche sans id de fiche)"; return 0; fi
   if [[ -n "$allow_unshipped" ]]; then echo "SHIP-GUARD: override ($id) — $allow_unshipped"; return 0; fi
   bash "$(dirname "$0")/ship-in-pr.sh" check --repo "$repo" --ref "$head_sha" --fiche-id "$id" >/dev/null 2>&1 || rc=$?

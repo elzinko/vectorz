@@ -49,8 +49,10 @@ git_c() { git -C "$repo" "$@"; }
 [[ -n "$id" ]] || die 2 "--fiche-id requis"
 
 # La fiche est-elle rangée dans done/ dans l'arbre de $1 ? (`<id>_slug.md`, legacy `<id>-slug.md`)
+# Pas de `grep -q` : il sortirait au premier match, et sous pipefail le SIGPIPE de git sur un
+# gros done/ ferait répondre « absente ».
 shipped_in() {
-  git_c ls-tree --name-only "$1" -- features/done/ | grep -qE "^features/done/${id}[_-]"
+  git_c ls-tree --name-only "$1" -- features/done/ | grep -E "^features/done/${id}[_-]" >/dev/null
 }
 
 require_clean() {
@@ -67,6 +69,7 @@ require_story_branch() {
 
 # Les commits « ship <id> » de la branche, du plus récent au plus ancien.
 ship_commits() {
+  git_c rev-parse --verify --quiet "${base}^{commit}" >/dev/null || die 2 "base '$base' introuvable dans $repo (--base ?)"
   git_c log --format='%H' -E --grep="^docs\(features\): ship ${id}( |$)" "$base..HEAD"
 }
 
@@ -115,7 +118,7 @@ do_undo() {
   sha="$(ship_commits | head -1)"
   [[ -n "$sha" ]] || die 1 "la fiche ${id} est en done/ sans commit ship sur cette branche (héritée de '$base' ?) — rien retiré"
   if ! git_c revert --no-commit "$sha" >/dev/null 2>&1; then
-    git_c revert --abort >/dev/null 2>&1 || true
+    git_c revert --abort
     die 2 "le revert du ship ${sha:0:8} conflicte avec un commit plus récent — rien retiré, résous à la main"
   fi
   git_c commit -q -m "revert(features): retire le ship ${id} après un no-go de revue" \

@@ -344,7 +344,7 @@ Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
 **E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte **avec un
 corps relisable seul = rendu de la fiche** (« En clair » + sections + `## Comment vérifier`
 + provenance `features/<id>_*.md` + matrice `## Validation` — [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) ; **pas** de Summary parallèle, `## Summary` proscrit) •
-**fiche de la story en `done/` + `status: shipped`**, par le commit ship de sa PR, avant le merge ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)) : c'est une condition de la **story**, pas du sprint ni de la session •
+**fiche de la story en `done/` + `status: shipped`** : en flux PR, par le commit ship de sa PR, avant le merge ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)) : c'est une condition de la **story**, pas du sprint ni de la session •
 (après validation) squash-mergée en conventional commit • branche supprimée.
 Le **sprint** est fini quand `sprint.sh close` répond `CLOSE: SEALED` : chaque story du lot est livrée ou reportée.
 

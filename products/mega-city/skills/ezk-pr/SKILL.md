@@ -267,6 +267,10 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   S'il manque, sur la branche de la PR : `ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>`,
   `git push`, puis attends la CI sur ce nouveau head. **Ensuite** le squash-merge, dans
   l'ordre du plan, par `ship-merge.sh --remote` : sa garde refuse une story sans son ship.
+  Deux PR shippées régénèrent toutes deux `BACKLOG.md` (et barrent `PLAN.md`) : après le
+  premier merge, la seconde **conflicte**, UI GitHub comprise. Reprise mécanique : la recette
+  « Conflit sur `BACKLOG.md` » d'`ezk-backlog` (merger `origin/main`, régénérer, pousser),
+  puis merge sur ce **nouveau** head.
   CI re-verte entre deux PRs qui partagent des fichiers, branche supprimée **remote ET
   locale** (+ worktree retiré le cas échéant — une locale oubliée sur un repo squash
   devient un faux « non-mergé » permanent, fiche mega-city 0076). Aucun `ezk-backlog ship`
