@@ -17,50 +17,64 @@ created: 2026-09-30
 
 ## En clair
 
-Dernière brique du cycle. Une fois le lot (fiche 1) et les verbes `start`/`close` (fiche 2) en
-place, il faut **reposer** `ezk-product-build` : il n'enchaîne plus des *features*, il enchaîne des
-**sprints** (des lots), et son checkpoint passe **entre incréments**, plus entre features. C'est
-l'**Option A** tranchée par le PO le 2026-09-30.
+Aujourd'hui, `ezk-product-build` confie **une fiche** à la fois à `ezk-sprint`, et pose sa question
+« on continue ? » après chacune. Cette fiche lui fait confier **un lot** : `ezk-sprint` construit les
+stories du lot, `close` scelle l'incrément, puis le product-owner pose **une seule** question par lot.
+Avec un lot d'une fiche, le défaut, rien ne change pour les runs existants.
 
 ## Contexte / Problème
 
-Le panel adverse a trouvé une **contradiction** : l'ADR-0054 fait de `run` le cycle complet
-(construit N stories), alors qu'aujourd'hui `ezk-product-build` **appelle `ezk-sprint` fiche par
-fiche** et tient lui-même le checkpoint inter-sprint. Les deux ne peuvent pas être vrais.
+Le panel adverse du 2026-09-30 a trouvé une **contradiction**. L'ADR-0054 fait de `run` le cycle
+complet d'un lot. Or `ezk-product-build` appelle encore `ezk-sprint` fiche par fiche et tient
+lui-même le checkpoint après chaque fiche. Les deux ne peuvent pas être vrais.
 
-**Arbitrage PO — Option A** : c'est **`ezk-sprint`** qui possède la boucle du lot
-(`run` = `start → N stories → close` = 1 incrément). Donc `ezk-product-build` doit être **reposé**
-au-dessus : il enchaîne des **sprints** (lots), pas des features. Sans cette fiche, le contrat
-`ezk-product-build ↔ ezk-sprint` reste contradictoire.
+Le PO a tranché pour l'**Option A** : `ezk-sprint` possède la boucle du lot
+(`start → stories → close` = un incrément). `ezk-product-build` se pose au-dessus et enchaîne des
+**sprints**, c'est-à-dire des lots. Les deux briques existent : le lot (fiche 1, `next --lot N`) et
+les verbes `start --lot` / `close` (fiche 2, livrée par #275). Voir
+[ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md), décision 6.
 
-## Proposition
+## Proposition (POC : le texte des skills + un test de contrat)
 
-- **Redéfinir le contrat** : `ezk-product-build` confie à `ezk-sprint` **un lot** (pas une fiche),
-  et `ezk-sprint` boucle les stories du lot jusqu'à l'incrément.
-- **Checkpoint entre incréments** : le checkpoint inter-sprint de `ezk-product-build` se déplace
-  **entre lots livrés**, plus entre features. Un seul checkpoint par sprint (lot), pas par story.
-- Aligner `SKILL.md` d'`ezk-product-build` : « la boucle », « frontière & délégation »,
-  l'absorption/checkpoint, et les exemples.
-- Vérifier la cohérence avec la rétro-compat par verbe (fiche 2) : un `run` hérité au niveau
-  feature doit continuer de s'arrêter là où avant (golden-path).
+- **La boucle par lot** (`SKILL.md` d'`ezk-product-build`, « La boucle ») :
+  `ezk-backlog next --lot N` → `ezk-sprint start --lot <ids>` → les stories du lot, une PR chacune
+  → `ezk-sprint close` (`CLOSE: SEALED`) → checkpoint inter-sprint.
+- **Taille du lot** : nouvelle option `--lot N` d'`ezk-product-build`. Défaut **1** : le déroulé d'avant.
+- **`--max-sprints N` et `--once`** comptent désormais des **lots** (une paire `start`…`close`).
+- **Un checkpoint par lot** : la question « sprint suivant ? » vient après `close`, plus après chaque
+  story. Le stop & ask immédiat (blocage, gate rouge 2 fois, action irréversible) et les 4 STOP
+  humains ne bougent pas.
+- **Les 3 `SKILL.md` disent la même chose** : `ezk-sprint` (son absorption passe à « une question
+  par sprint ») et `ezk-backlog` (le builder passe par `next --lot`).
 
 ## Critères d'acceptation
 
-- [ ] `ezk-product-build` confie un **lot** à `ezk-sprint` (plus une fiche isolée) ; le contrat est explicite dans son `SKILL.md`.
-- [ ] Le **checkpoint inter-sprint** se joue **entre incréments** (lots), un par sprint.
-- [ ] La **contradiction `run` ↔ product-build** est levée et documentée (Option A) ; plus aucune formulation contradictoire dans les 3 `SKILL.md`.
-- [ ] Rétro-compat : un `run`/`--checkpoints ask`/`once` hérité s'arrête **où avant** (test narratif golden-path).
-- [ ] Tests verts (`test` + `test:scripts`).
+- [x] Le `SKILL.md` d'`ezk-product-build` décrit la boucle par lot (`next --lot N` → `start --lot` → stories → `close` → checkpoint). Il ne dit plus qu'il confie une fiche isolée.
+- [x] L'option `--lot N` (défaut 1) figure dans l'`argument-hint` et dans l'usage. `--max-sprints` et `--once` comptent des lots.
+- [x] Le checkpoint inter-sprint se joue une fois par lot, après `CLOSE: SEALED`.
+- [x] Rétro-compat écrite : avec `--lot 1`, le déroulé est celui d'avant ; `once`, `--once` et `--checkpoints ask` s'arrêtent où avant.
+- [x] Plus de formulation contradictoire dans les 3 `SKILL.md` (ezk-backlog, ezk-sprint, ezk-product-build). Un test de contrat garde la boucle par lot, l'option `--lot` et l'absorption par sprint. Preuve : `ezk-sprint-lifecycle-contract.test.ts`, bloc « Option A », dont une liste de formulations périmées qui ne doivent plus apparaître.
+- [x] Tests verts (`test` + `test:scripts`).
 
 ## Comment vérifier
 
 ```bash
+pnpm --dir products/mega-city exec vitest run src/__tests__/ezk-sprint-lifecycle-contract.test.ts
 pnpm --dir products/mega-city test
 pnpm --dir products/mega-city test:scripts
-grep -nE "lot|incrément|sprint" products/mega-city/skills/ezk-product-build/SKILL.md
+grep -nE "next --lot|start --lot|CLOSE: SEALED|--lot N" products/mega-city/skills/ezk-product-build/SKILL.md
 ```
+
+## Suite (hors POC)
+
+- `run:context` et `run:report` affichent la taille du lot (code des deux scripts).
+- `--delivery per-epic` aligné sur le lot du sprint : livraison coordonnée au `close`.
+- Panel adverse complet (architecte, scrum master, PO/juge) sur ce repositionnement (ADR-0054, « Suite »).
+- Orchestration de session complète : planning → sprint → rétro → planning.
 
 ## Notes / décisions
 
 - Dépend de la fiche 1 ([lot](20260930194219046_ezk-backlog-lot.md)) et de la fiche 2 ([start/close](done/20260930123438875_cycle-vie-sprint-session-ceremonies.md)) — construite **en dernier**.
 - Lève la contradiction pointée par le panel (architecte) le 2026-09-30 ; Option A actée par le PO. Voir [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).
+- **Groom du 2026-10-02** (run V0.5) : défaut `--lot 1` choisi pour la rétro-compat (un run hérité ne change pas) ; le reste en « Suite ».
+- **DoR du 2026-10-02** : GO d'`ezk-pm`, avec une réserve tenue au build : le test de contrat prouve aussi qu'aucune formulation « une fiche à la fois » ne reste.

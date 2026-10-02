@@ -4,7 +4,7 @@ name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
 applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget]
-argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
+argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -12,7 +12,7 @@ description: >-
   backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit
   livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi),
   product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build
-  d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente
+  d'un lot de stories : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente
   AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments :
   inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de
   vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne
@@ -41,7 +41,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -59,7 +59,12 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 les vitesses toi-même, tu **valides à chaque checkpoint**. `auto` (**défaut**) : la boîte enchaîne
 pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready` **si tu passes `--review`**).
 
-**`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints construits** — comptés à
+**Un sprint = un lot** (ADR-0054, Option A) : `ezk-backlog next --lot N` le choisit,
+`ezk-sprint start --lot` l'ouvre, `ezk-sprint close` le scelle.
+**`--lot N`** fixe la taille du lot, défaut **1**. Un lot plus court part quand même (moins de N fiches prêtes).
+**Rétro-compat** : avec `--lot 1`, c'est le déroulé d'avant, à l'identique — un sprint porte une seule fiche.
+
+**`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints construits** (un sprint = un lot) — comptés à
 l'**exécution/complétion** d'un sprint, **pas à sa livraison** (merge). **`--once`** = raccourci
 de `--max-sprints 1` (un seul sprint). **Rétro-compat** : l'ancienne sous-commande **`once` reste acceptée**
 et **mappe sur `--once`** (= `--max-sprints 1`) — un `once` hérité reste **borné à un sprint**, il **ne tombe
@@ -88,10 +93,12 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    avertit, **ne bloque jamais**. Format : [`references/run-report-template.md`](references/run-report-template.md).
 1. **Intake** — si un review est dû (`review --delta` avant le planning ; complet
    post-pivot / tous les 5 sprints — ADR-0016), passe-le d'abord. Puis
-   `ezk-backlog next --ready-only` : prends LA prochaine fiche **tirable**
-   (ready, non-épic).
+   `ezk-backlog next --lot N` (N = `--lot`, défaut 1) : prends le **lot** du sprint, N fiches
+   **tirables** (ready, non-épic) dans l'ordre du plan. Avec `--lot 1`, c'est LA prochaine fiche
+   tirable, comme `next --ready-only`.
 2. **Décision « quoi »** :
-   - **Fiche ready ET aucune tête bloquée signalée** → va construire (3).
+   - **Lot non vide ET aucune tête bloquée signalée** → va construire (3). Un lot incomplet (moins
+     de N fiches prêtes) se construit tel quel : ne le complète jamais avec une fiche non prête.
    - **Tête bloquée** (`next` signale une fiche de priorité supérieure sautée faute de
      `status: ready`) → traite la tête D'ABORD : `groom` + gate `ready` (fiche 0056) ; ne
      construis la fiche ready inférieure que sur décision **journalisée** (sinon c'est
@@ -101,18 +108,22 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
      `product-management:product-brainstorming` (et `engineering:architecture` si structurant) pour cadrer la
      fiche **avant** de construire. Réutilise la capacité de la fiche 0022
      (`ezk-backlog add --brainstorm`). Tu n'idées jamais un sujet absent : tu proposes.
-3. **Build** — confie la fiche à **`ezk-sprint`** : POC d'abord (ça marche), polish
-   ensuite (c'est beau). Tests **locaux** d'abord, puis CI (testable en local via
-   `act`/`ezk-ci`). **1 PR/feature**, squash + conventional commit. Tu ne touches
+3. **Build** — confie le **lot** à **`ezk-sprint`** : il ouvre le sprint avec
+   `ezk-sprint start --lot <ids>` (la ligne que `next --lot` imprime), construit les stories du lot
+   une à une, puis le ferme avec `ezk-sprint close`. Pour chaque story : POC d'abord (ça marche),
+   polish ensuite (c'est beau), tests **locaux** d'abord, puis CI (testable en local via
+   `act`/`ezk-ci`). **1 PR par story**, squash + conventional commit. Tu ne touches
    pas au git toi-même : `ezk-sprint` (et `ezk-commits`) rangent.
-4. **Checkpoint inter-sprint** — en `--mode manuel` : STOP, résume
+4. **Checkpoint inter-sprint** — **un par lot**, après `close` (`CLOSE: SEALED` : l'incrément est
+   scellé), jamais entre deux stories du lot. En `--mode manuel` : STOP, résume
    (livré / tokens / suite) en **suggestions-à-choix**, boucle en (1) seulement après
    accord. En `--mode auto` (défaut) : voir la section « Mode `--mode` » — tu enchaînes le
    **sprint suivant** (dans la limite de `--max-sprints`) et tu tiens l'**unique** checkpoint
-   de la feature (`ezk-sprint` te remonte sa clôture au lieu de re-demander « on continue ? »
-   à l'humain).
-   **Grain de livraison (`--delivery`, cf. § dédié)** : en `per-feature` (défaut) la PR du
-   sprint est livrée **au fil de l'eau** — son squash-merge suit son cours normal (statu quo
+   du sprint (`ezk-sprint` te remonte l'incrément scellé au lieu de re-demander « on continue ? »
+   à l'humain après chaque story). Le stop & ask immédiat d'`ezk-sprint` (blocage, gate rouge
+   2 fois, action irréversible) et les 4 STOP humains jouent toujours, à tout moment.
+   **Grain de livraison (`--delivery`, cf. § dédié)** : en `per-feature` (défaut) chaque PR du
+   lot est livrée **au fil de l'eau**, avant `close` — son squash-merge suit son cours normal (statu quo
    strict : c'est `ezk-sprint` qui merge, **pas toi**). En `per-epic`, tu **ne
    shippes pas** isolément une fiche appartenant à un lot cohérent (même `epic:`, ou lot
    désigné en opt-in) : tu **laisses sa PR ouverte**, poursuis le lot, puis, le lot complet,
@@ -152,7 +163,7 @@ jamais par son id nu.
 
 | Moment | Ce que tu présentes |
 |---|---|
-| **Inter-sprint** | ✅ *‹feature› livrée (tests verts, mergée).* → `[Sprint suivant : ‹fiche N+1›]` · `[Polir ‹feature›]` · `[Idéer de nouvelles features]` · `[Stop]` |
+| **Inter-sprint** (après `close`, un par lot) | ✅ *Incrément scellé : ‹k› story(s) livrée(s) (tests verts, mergées).* → `[Sprint suivant : lot ‹ids›]` · `[Polir ‹story›]` · `[Idéer de nouvelles features]` · `[Stop]` |
 | **Idéation** (backlog vide / fiche vague) | *Plus de fiche claire / ‹fiche› est vague.* → `[Brainstormer pour la cadrer]` · `[Construire telle quelle]` · `[Tu donnes la prochaine idée]` |
 | **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — cet arrêt n'apparaît **qu'avec `--review`** ; **par défaut**, le tampon est pris sur concurrence `ezk-pm` sans s'arrêter. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
@@ -273,13 +284,14 @@ sélection du lot reste à l'humain — la machine ne décide jamais *quoi* cons
 ## Mode livraison — configurable (`--delivery`)
 
 Règle **comment un lot cohérent de fiches est livré** (mergé) : au fil de l'eau, ou de façon
-coordonnée. Adossé à [ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)
+coordonnée. Ici, « lot cohérent » = des fiches à livrer ensemble (même `epic:`, ou désignées) ; ne
+le confonds pas avec le lot du sprint (`--lot N`), qui dit seulement quoi construire. Adossé à [ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)
 (version réduite, panel adverse passé). Défaut : `per-feature`. **Le flag DÉCIDE — il n'exécute
 aucun git** (frontière ADR-0001 : c'est `ezk-pr` qui range). **Sépare le grain de *livraison*
 du grain de *revue*** : la **PR reste l'unité de revue/merge** dans les deux modes.
 
-- **`per-feature` (défaut)** — **statu quo strict** : chaque sprint ouvre **1 PR** et la
-  **squash-merge** au checkpoint inter-sprint, au fil de l'eau. Invariant `ezk-sprint`
+- **`per-feature` (défaut)** — **statu quo strict** : chaque story du lot ouvre **1 PR**, que
+  `ezk-sprint` **squash-merge** au fil de l'eau, avant `close`. Invariant `ezk-sprint`
   (« 1 feature = 1 branche = 1 PR = 1 squash-merge ») **intact**.
 - **`per-epic`** — livraison **coordonnée** d'un lot cohérent, **N PR conservées** (revue, CI
   et revert **atomiques** par feature préservés — **pas** de PR obèse, **pas** de `rebase-merge`,
@@ -339,7 +351,7 @@ jamais.
 
 ## Rétro de fin d'itération — configurable (`--retro`)
 
-Une **itération** = le lot de sprints d'un même `run`. À sa clôture, tu **déclenches la
+Une **itération** = l'ensemble des sprints (des lots) d'un même `run`. À sa clôture, tu **déclenches la
 rétro** au lieu de la laisser à la main — mais **seulement si le run a construit ≥ 2
 sprints** (une itération, pas un sprint isolé). Réglage : **`--retro end` (défaut)** lance
 **une** rétro quand la boucle s'arrête (`--max-sprints` atteint ou backlog tirable épuisé) ;
@@ -382,7 +394,7 @@ liste dans `SPRINT.md`, et **enacter une règle reste sous son feu vert** (`ezk-
 n'auto-applique jamais — même doctrine ici).
 
 **Dégradation si le carnet (fiche 0081) est absent** (pas encore construit) : la rétro tourne
-quand même sur les signaux disponibles (les `SPRINT.md` du lot + mémoire de session) ; ses
+quand même sur les signaux disponibles (les `SPRINT.md` de l'itération + mémoire de session) ; ses
 sorties restent **au seul backlog** (rangées par `ezk-retro`). Aucune erreur, aucun blocage :
 l'absence du carnet appauvrit la collecte amont, pas la mécanique du déclencheur.
 
@@ -390,11 +402,11 @@ l'absence du carnet appauvrit la collecte amont, pas la mécanique du déclenche
 
 | Compétence | Rôle | Tu en fais quoi |
 |---|---|---|
-| `ezk-backlog` | le **quoi/où** (fiches, priorités, ship) | `list` à l'intake, `ship` quand `ezk-sprint` a mergé |
+| `ezk-backlog` | le **quoi/où** (fiches, priorités, lot, ship) | `next --lot N` à l'intake, `ship` quand `ezk-sprint` a mergé |
 | `product-management:product-brainstorming` | cadrer une fiche vague / idéer | à l'étape idéation seulement |
 | `engineering:architecture` | trancher une structure non triviale | si l'archi le justifie (sinon laisse `ezk-sprint`/`ezk-architect`) |
 | **`ezk-pm`** (agent) | le **décideur** : tranche un checkpoint / arbitre un blocage | en `--mode auto`, tu lui **confies** les arrêts délégables ; il journalise et REFUSE les 4 décisions humaines |
-| **`ezk-sprint`** | le **comment** : build d'une feature (équipe scrum) | tu lui **confies** chaque fiche ; tu ne déroules pas le sprint toi-même |
+| **`ezk-sprint`** | le **comment** : build d'un lot de stories (équipe scrum), de `start --lot` à `close` | tu lui **confies** chaque lot ; tu ne déroules pas le sprint toi-même |
 | **`ezk-pr`** | le **train de merge** : test groupé + `ship` en cascade d'un lot | en `--delivery per-epic`, tu lui **confies** la livraison coordonnée (il exécute le git ; toi tu décides le grain) |
 | **`ezk-retro`** | la **cérémonie d'auto-amélioration** (round-robin → juge → rangement PO) | en fin d'itération (`--retro`, ≥ 2 sprints), tu l'**invoques** ; tu n'en réimplémentes aucun temps |
 | `ezk-archive` | clôture de session (hygiène, handoff) | tu la **mentionnes** au choix `[Stop]` — tu ne l'invoques jamais toi-même |

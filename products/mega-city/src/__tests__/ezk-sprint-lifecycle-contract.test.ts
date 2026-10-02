@@ -213,3 +213,50 @@ describe('ADR-0054 — ratifié avec le POC', () => {
     expect(adr).toMatch(/Suite/);
   });
 });
+
+describe('Option A — ezk-product-build enchaîne des lots, plus des fiches (fiche 20260930194219068)', () => {
+  const buildDir = join(megaCity, 'skills', 'ezk-product-build');
+  const backlogDir = join(megaCity, 'skills', 'ezk-backlog');
+  const build = body(buildDir);
+  const start = build.indexOf('## La boucle');
+  const loop = build.slice(start, build.indexOf('\n## ', start + 1));
+  const hint = /^argument-hint:\s*"([^"]+)"/m.exec(read(join(buildDir, 'SKILL.md')))?.[1] ?? '';
+
+  it('sa boucle tire un lot, ouvre le sprint, puis le scelle avant le checkpoint', () => {
+    for (const step of ['next --lot', 'start --lot', 'CLOSE: SEALED']) expect(loop, step).toContain(step);
+    expect(loop.indexOf('next --lot')).toBeLessThan(loop.indexOf('start --lot'));
+    expect(loop.indexOf('start --lot')).toBeLessThan(loop.indexOf('CLOSE: SEALED'));
+  });
+
+  it('déclare --lot N (défaut 1) et compte --max-sprints en lots', () => {
+    expect(hint).toContain('[--lot N]');
+    expect(build).toMatch(/`--lot N`[^\n]*défaut \*\*1\*\*/);
+    expect(build).toMatch(/un sprint = un lot/);
+  });
+
+  it('écrit sa rétro-compat : --lot 1 garde le déroulé d’avant, once et --checkpoints ask aussi', () => {
+    expect(build).toMatch(/`--lot 1`[^\n]*déroulé d'avant/);
+    expect(build).toMatch(/`once` reste acceptée/);
+    expect(build).toMatch(/`--checkpoints ask`[\s>]+sélectionne donc toujours le mode `manuel`/);
+  });
+
+  it('ezk-sprint, absorbé par le builder, ne pose qu’une question par sprint', () => {
+    expect(body(sprintDir)).toMatch(/un seul « on continue \? » par sprint/);
+  });
+
+  it('ezk-backlog nomme `next --lot` comme l’intake d’ezk-product-build', () => {
+    expect(body(backlogDir)).toMatch(/ezk-product-build[^\n]*`next --lot|`next --lot[^\n]*ezk-product-build/);
+  });
+
+  it('plus aucune formulation « une fiche à la fois » dans les trois skills (réserve DoR)', () => {
+    const texts = [build, body(sprintDir), body(backlogDir)].join('\n');
+    const stale = [
+      /confie la fiche à/,
+      /confies\*\* chaque fiche/,
+      /un seul « on continue \? » par feature/,
+      /checkpoint\s+de la feature/,
+      /Suite : un seul checkpoint par sprint/,
+    ];
+    for (const re of stale) expect(texts, String(re)).not.toMatch(re);
+  });
+});

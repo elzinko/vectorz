@@ -427,14 +427,15 @@ d'abord, ou décision journalisée).
 plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
 `ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
-ezk-sprint et ezk-product-build passent par **ici** : aucune logique de gate
-réimplémentée en aval (test de séparabilité).
+ezk-sprint et ezk-product-build passent par **ici**, ou par `next --lot N` qui applique les mêmes
+règles à N fiches : aucune logique de gate réimplémentée en aval (test de séparabilité).
 
 ### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
 
 **En clair.** `next --ready-only` tire **une** fiche. `next --lot N` en choisit **N** : le lot d'un
 sprint. Les règles sont les mêmes : fiches prêtes seulement, ordre du plan, tête bloquée signalée,
-aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`.
+aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`. C'est l'intake
+d'ezk-product-build : il tire un lot de `--lot N` fiches par sprint, avec `next --lot` (défaut 1).
 
 `pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md]` fait la sélection (aussi
 `ezk backlog plan-lot <N>`, avec `--root <projet>` pour un autre projet). Il n'écrit rien. Il imprime :
