@@ -62,7 +62,8 @@ pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready
 **Un sprint = un lot** (ADR-0054, Option A) : `ezk-backlog next --lot N` le choisit,
 `ezk-sprint start --lot` l'ouvre, `ezk-sprint close` le scelle.
 **`--lot N`** fixe la taille du lot, défaut **1**. Un lot plus court part quand même (moins de N fiches prêtes).
-**Rétro-compat** : avec `--lot 1`, c'est le déroulé d'avant, à l'identique — un sprint porte une seule fiche.
+**Rétro-compat** : avec `--lot 1`, c'est le déroulé d'avant — un sprint porte une seule fiche.
+Une seule différence : une fiche prête mais marquée `blocked:` est écartée (et signalée), plus construite.
 
 **`--max-sprints N`** borne la boucle : elle s'arrête après **N sprints construits** (un sprint = un lot) — comptés à
 l'**exécution/complétion** d'un sprint, **pas à sa livraison** (merge). **`--once`** = raccourci
@@ -95,7 +96,8 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    post-pivot / tous les 5 sprints — ADR-0016), passe-le d'abord. Puis
    `ezk-backlog next --lot N` (N = `--lot`, défaut 1) : prends le **lot** du sprint, N fiches
    **tirables** (ready, non-épic) dans l'ordre du plan. Avec `--lot 1`, c'est LA prochaine fiche
-   tirable, comme `next --ready-only`.
+   tirable, comme `next --ready-only` — sauf qu'une fiche prête mais marquée `blocked:` est
+   écartée et signalée, au lieu d'être construite.
 2. **Décision « quoi »** :
    - **Lot non vide ET aucune tête bloquée signalée** → va construire (3). Un lot incomplet (moins
      de N fiches prêtes) se construit tel quel : ne le complète jamais avec une fiche non prête.

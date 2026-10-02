@@ -20,7 +20,7 @@ created: 2026-09-30
 Aujourd'hui, `ezk-product-build` confie **une fiche** à la fois à `ezk-sprint`, et pose sa question
 « on continue ? » après chacune. Cette fiche lui fait confier **un lot** : `ezk-sprint` construit les
 stories du lot, `close` scelle l'incrément, puis le product-owner pose **une seule** question par lot.
-Avec un lot d'une fiche, le défaut, rien ne change pour les runs existants.
+Avec un lot d'une fiche, le défaut, les runs existants gardent leur déroulé.
 
 ## Contexte / Problème
 
@@ -78,3 +78,4 @@ grep -nE "next --lot|start --lot|CLOSE: SEALED|--lot N" products/mega-city/skill
 - Lève la contradiction pointée par le panel (architecte) le 2026-09-30 ; Option A actée par le PO. Voir [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).
 - **Groom du 2026-10-02** (run V0.5) : défaut `--lot 1` choisi pour la rétro-compat (un run hérité ne change pas) ; le reste en « Suite ».
 - **DoR du 2026-10-02** : GO d'`ezk-pm`, avec une réserve tenue au build : le test de contrat prouve aussi qu'aucune formulation « une fiche à la fois » ne reste.
+- **Revue du 2026-10-02** : GO. Une nuance écrite dans le `SKILL.md` : avec `--lot 1`, une fiche prête mais marquée `blocked:` est écartée, alors que `next --ready-only` la construisait. C'est plus sûr.
