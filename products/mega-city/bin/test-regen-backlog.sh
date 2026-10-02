@@ -113,7 +113,7 @@ check "warning cible non-epic (0022→0021)"  "grep -q 'fiche 0022 — epic: 002
 check "warning sous-épic (0023)"            "grep -q 'fiche 0023 — une épic ne référence pas' '$TMP/c.err'"
 check "warnings NON bloquants (index écrit)" "test -s '$C/features/BACKLOG.md'"
 
-# ── Cas D : défauts (racine = parent de bin/, titre mega-city) — hermétique ──────
+# ── Cas D : défauts (racine = parent de bin/, titre neutre) — hermétique ──────────
 # (revue Codex PR #30 : ne JAMAIS régénérer le vrai index depuis le banc — copie du
 # script dans un produit-fixture, la résolution par défaut opère dedans.)
 D="$TMP/d"
@@ -125,8 +125,8 @@ status: idea'
 echo "Cas D (défauts, hermétique) :"
 check "sans args → racine = parent de bin/ (fixture)" \
   "cd '$TMP' && bash '$D/bin/regen-backlog.sh' >/dev/null 2>&1 && test -s '$D/features/BACKLOG.md'"
-check "titre par défaut mega-city" \
-  "head -1 '$D/features/BACKLOG.md' | grep -q '^# Backlog — mega-city$'"
+check "titre par défaut neutre (ni argument ni backlog_title:)" \
+  "head -1 '$D/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs'"
 
 # ── Cas D2 : racine NICHÉE → refus explicite, aucune écriture (fiche 20260823121712844) ──
 # Le défaut « parent du bin » ne vaut que pour un projet autonome. Ici bin/ est dans
@@ -151,6 +151,26 @@ check "rien écrit dans le dossier fantôme" "! test -e '$NEST/products/mega-cit
 check "rien écrit dans le backlog parent" "! test -e '$NEST/features/BACKLOG.md'"
 check "racine explicite toujours permise" \
   "bash '$NEST/products/mega-city/bin/regen-backlog.sh' '$NEST' >/dev/null 2>&1 && test -s '$NEST/features/BACKLOG.md'"
+
+# ── Cas D3 : titre déclaré par le projet — `backlog_title:` dans l'en-tête de features/README.md ──
+# Ordre : argument > backlog_title: (en-tête seulement) > titre neutre.
+D3="$TMP/d3"
+fiche "$D3/features" 0050 titre 'type: feature
+priority: P2
+status: idea'
+printf -- '---\nskill: ezk-backlog\nlayout_version: 5\nbacklog_title: Backlog — fixture\n---\n\n# Guide\n' \
+  > "$D3/features/README.md"
+echo "Cas D3 (titre déclaré dans features/README.md) :"
+check "sans argument → backlog_title: de l'en-tête" \
+  "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF '# Backlog — fixture'"
+check "un argument explicite prime sur l'en-tête" \
+  "bash '$SCRIPT' '$D3' 'Backlog — argument' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF '# Backlog — argument'"
+printf -- '---\nbacklog_title: \"Backlog — quoté\"  \n---\n' > "$D3/features/README.md"
+check "valeur entre guillemets → dé-quotée" \
+  "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF '# Backlog — quoté'"
+printf -- '# Guide sans en-tête\n\n---\nbacklog_title: hors en-tête\n---\n' > "$D3/features/README.md"
+check "hors de l'en-tête → ignoré, titre neutre" \
+  "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs'"
 
 echo ''
 # ── Cas E : lien PLAN.md émis seulement si features/PLAN.md existe (PR #43 / ADR-0018) ─
@@ -276,5 +296,64 @@ check "vieux format (ready: daté) lu sans planter, colonne = status" \
   "grep -q '^| \[0009\](0009-i-vieux.md) |.*| 🔵 ready |' '$idxi'"
 check "médiane de création des ready émise (lit created, pas ready:)" \
   "printf '%s' \"\$out_i\" | grep -q 'stats: création médiane des ready = 2026-07-17'"
+
+# ── Cas J : UN seul titre, quel que soit l'outil qui régénère (défaut constaté le 2026-10-02) ──
+# La ligne 1 de features/BACKLOG.md basculait selon l'outil : « Backlog — mega-city » par l'appel
+# nu (ship:fiche, backlog:apply), « Backlog features & bugs — vectorz » par `ezk backlog regen` et
+# le skill. Ici, chaque chemin régénère la MÊME fixture, munie du vrai features/README.md ; le cas
+# rougit dès que deux chemins écrivent des titres différents. Jamais le vrai index (cf. Cas D).
+MC="$(dirname "$(dirname "$SCRIPT")")"   # products/mega-city (les cas précédents ont changé de dossier)
+J="$TMP/j"
+fiche "$J/features" 0001 story 'type: feature
+priority: P1
+status: idea'
+cp "$MC/../../features/README.md" "$J/features/README.md"
+want="$(awk 'NR == 1 && !/^---[[:space:]]*$/ { exit }
+  /^---[[:space:]]*$/ { fm++; if (fm == 2) exit; next }
+  fm == 1 && /^backlog_title:/ { sub(/^backlog_title:[[:space:]]*/, ""); sub(/[[:space:]]+$/, ""); gsub(/^"|"$/, ""); print; exit }' \
+  "$J/features/README.md")"
+run_regen="$(awk '/^  - domain:/ { d = $3; v = "" } /^    verb:/ { v = $2 }
+  /^    run:/ && d == "backlog" && v == "regen" { sub(/^    run:[[:space:]]*/, ""); print; exit }' \
+  "$MC/ezk-manifest.yml")"
+skill_cmds="$(grep -o 'bash products/mega-city/bin/regen-backlog\.sh[^`]*' "$MC/skills/ezk-backlog/SKILL.md" || true)"
+ts_calls="$(grep -rh --include='*.ts' --exclude-dir=__tests__ "'regen-backlog.sh')" "$MC/bin" "$MC/src" || true)"
+
+paths=''   # une ligne par chemin : « <ligne 1 écrite><TAB><chemin> »
+regen_by() { # $1=libellé du chemin, puis la commande qui régénère la fixture
+  local label="$1"; shift
+  rm -f "$J/features/BACKLOG.md"
+  "$@" >/dev/null 2>&1 || true
+  paths="${paths}$(head -1 "$J/features/BACKLOG.md" 2>/dev/null || true)"$'\t'"${label}"$'\n'
+}
+via_manifest() { # `ezk backlog regen` : la commande du manifeste, {root} → la fixture
+  local root="\"$J\""
+  [ -n "$run_regen" ] && (cd "$MC" && printf '%s' "${run_regen//\{root\}/$root}" | xargs bash)
+}
+via_skill() { # $1 = une commande citée par le skill, lancée depuis la fixture (« . » = la fixture)
+  (cd "$J" && printf '%s' "${1#bash products/mega-city/bin/regen-backlog.sh}" | xargs bash "$SCRIPT")
+}
+
+regen_by "appel nu : ship:fiche, backlog:apply" bash "$SCRIPT" "$J"
+regen_by "appel nu, copie du skill" bash "$VENDOR" "$J"
+regen_by "ezk backlog regen (manifeste)" via_manifest
+while IFS= read -r cmd; do
+  [ -n "$cmd" ] && regen_by "skill : ${cmd#bash }" via_skill "$cmd"
+done <<EOF
+$skill_cmds
+EOF
+
+echo "Cas J (un seul titre, quel que soit l'outil) :"
+check "le vrai features/README.md déclare backlog_title" "test -n \"\$want\""
+check "manifeste : commande « backlog regen » trouvée" "test -n \"\$run_regen\""
+check "skill : commandes regen trouvées" "test -n \"\$skill_cmds\""
+check "appelants TypeScript : la racine seule, jamais de titre" \
+  "test -n \"\$ts_calls\" && ! printf '%s\n' \"\$ts_calls\" | grep -vqE \"'regen-backlog\\.sh'\\), [A-Za-z]+\\]\""
+n_paths="$(printf '%s' "$paths" | wc -l | tr -d ' ')"
+n_titles="$(printf '%s' "$paths" | cut -f1 | sort -u | wc -l | tr -d ' ')"
+check "les ${n_paths} chemins écrivent le même titre" "test \"\$n_titles\" -eq 1"
+check "… celui de features/README.md" "! printf '%s' \"\$paths\" | cut -f1 | grep -vqxF \"# \$want\""
+if [ "$n_titles" != 1 ]; then
+  printf '%s' "$paths" | awk -F'\t' '{ printf "      %s → %s\n", $2, ($1 == "" ? "(aucun index écrit)" : $1) }'
+fi
 
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

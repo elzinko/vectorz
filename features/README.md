@@ -1,6 +1,7 @@
 ---
 skill: ezk-backlog
 layout_version: 5
+backlog_title: "Backlog features & bugs — vectorz"
 ---
 
 # Features — backlog du projet
@@ -13,7 +14,7 @@ Ce dossier est le **suivi versionné** des features / bugs / chores. Il vit sur
 | Fichier / dossier | Rôle |
 |---|---|
 | `[NNNN]-slug.md` | Fiches **actives** (`idea` / `ready` / `in-progress`) |
-| [`BACKLOG.md`](BACKLOG.md) | **Index généré** (`regen`) — ne pas éditer à la main |
+| [`BACKLOG.md`](BACKLOG.md) | **Index généré** (`regen`) — ne pas éditer à la main. Son titre vient de `backlog_title:`, dans l'en-tête de ce fichier |
 | [`PLAN.md`](PLAN.md) | Séquence décidée (curée) — horizon **NOW** court, pas une encyclopédie |
 | [`done/`](done/) | Fiches **closes** : `shipped` (livrées), ou clôturées sans livraison : `superseded` / `merged` / `split` |
 | [`feature-template.md`](feature-template.md) | Gabarit pour une nouvelle fiche |
