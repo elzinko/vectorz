@@ -1,6 +1,6 @@
 ---
 composes: [ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/acceptance-criteria-before-merge]
 name: ezk-backlog
 layout_version: 5
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate|version]"
