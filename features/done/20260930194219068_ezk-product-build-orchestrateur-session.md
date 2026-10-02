@@ -8,8 +8,8 @@ milestone:
 version: V0.5
 labels: [sprint]
 depends: ["20260930194219046", "20260930123438875"]
-status: idea
-pr:
+status: shipped
+pr: "#325"
 evidence: none # méthode / skills, pas d'écran
 created: 2026-09-30
 ---
@@ -33,7 +33,7 @@ Le PO a tranché pour l'**Option A** : `ezk-sprint` possède la boucle du lot
 (`start → stories → close` = un incrément). `ezk-product-build` se pose au-dessus et enchaîne des
 **sprints**, c'est-à-dire des lots. Les deux briques existent : le lot (fiche 1, `next --lot N`) et
 les verbes `start --lot` / `close` (fiche 2, livrée par #275). Voir
-[ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md), décision 6.
+[ADR-0054](../../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md), décision 6.
 
 ## Proposition (POC : le texte des skills + un test de contrat)
 
@@ -75,8 +75,8 @@ grep -nE "next --lot|start --lot|CLOSE: SEALED|--lot N" products/mega-city/skill
 
 ## Notes / décisions
 
-- Dépend de la fiche 1 ([lot](20260930194219046_ezk-backlog-lot.md)) et de la fiche 2 ([start/close](done/20260930123438875_cycle-vie-sprint-session-ceremonies.md)) — construite **en dernier**.
-- Lève la contradiction pointée par le panel (architecte) le 2026-09-30 ; Option A actée par le PO. Voir [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).
+- Dépend de la fiche 1 ([lot](20260930194219046_ezk-backlog-lot.md)) et de la fiche 2 ([start/close](20260930123438875_cycle-vie-sprint-session-ceremonies.md)) — construite **en dernier**.
+- Lève la contradiction pointée par le panel (architecte) le 2026-09-30 ; Option A actée par le PO. Voir [ADR-0054](../../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).
 - **Groom du 2026-10-02** (run V0.5) : défaut `--lot 1` choisi pour la rétro-compat (un run hérité ne change pas) ; le reste en « Suite ».
 - **DoR du 2026-10-02** : GO d'`ezk-pm`, avec une réserve tenue au build : le test de contrat prouve aussi qu'aucune formulation « une fiche à la fois » ne reste.
 - **Revue du 2026-10-02** : GO. Une nuance écrite dans le `SKILL.md` : avec `--lot 1`, une fiche prête mais marquée `blocked:` est écartée, alors que `next --ready-only` la construisait. C'est plus sûr.
