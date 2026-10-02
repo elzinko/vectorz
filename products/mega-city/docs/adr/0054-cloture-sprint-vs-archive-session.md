@@ -3,10 +3,15 @@
 **Statut :** Accepté
 **Date :** 2026-09-30
 **Ratifié le :** 2026-10-01, au build du POC (fiche 20260930123438875)
-**Deciders :** PO (opérateur) — décision prise en session brainstorming produit, appuyée par un mini-panel (architecte + scrum master)
+**Deciders :** PO (opérateur) — brainstorming produit + mini-panel (architecte + scrum master), puis **grooming panel du 2026-09-30** (architecte + PO/juge) : Option A + découpage en 3 fiches
 
 > Matière de la fiche [20260930123438875](../../../../features/done/20260930123438875_cycle-vie-sprint-session-ceremonies.md).
 > Ratifié à l'étape Archi du sprint qui a construit le POC (`start` et `close`). Ce que le POC ne livre pas est rangé en « Suite » plus bas.
+>
+> **Découpé en 3 fiches** au grooming panel du 2026-09-30 (Option A) :
+> [1 — le lot dans ezk-backlog](../../../../features/20260930194219046_ezk-backlog-lot.md) ·
+> [2 — verbes ezk-sprint start/close](../../../../features/done/20260930123438875_cycle-vie-sprint-session-ceremonies.md), livrée par #275 ·
+> [3 — ezk-product-build orchestrateur de session](../../../../features/20260930194219068_ezk-product-build-orchestrateur-session.md).
 
 ## En clair
 
@@ -62,6 +67,20 @@ cadence. La prémisse était trop étroite ; cet ADR la corrige.
    **anormale** (annulation). On termine avec un incrément → `close`. `stop` pourra plus tard
    désigner l'annulation d'un sprint, si le besoin apparaît.
 
+6. **Qui itère les stories d'un sprint — Option A** (tranchée au grooming du 2026-09-30).
+   C'est **`ezk-sprint`** qui possède la boucle du lot : `run` = `start → N stories → close` =
+   **un incrément**. `ezk-product-build` se **repose** au-dessus — il enchaîne des **sprints**
+   (des lots), son checkpoint passe **entre incréments**, plus entre features. Cela lève la
+   contradiction « `run` construit N stories » vs « product-build appelle ezk-sprint par fiche ».
+
+7. **Le lot vit dans `ezk-backlog`, pas dans `ezk-sprint`** (question b). Sélectionner/figer un
+   lot de N fiches ready (le « sprint backlog ») est une capacité **neuve** d'`ezk-backlog`
+   (ex. `next --lot N`) ; `ezk-sprint start` ne fait que **consommer** le lot. C'est la
+   **fondation** (fiche 1), construite en premier.
+
+8. **Pas d'objet « sprint » persistant** (question a). YAGNI : l'incrément existe déjà (commits
+   squash sur `main` + fiches `shipped`). `SPRINT.md` + un pointeur (ids/PRs du lot) suffisent.
+
 Cette décision **étend** [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §2
 (« la PR est un mécanisme, pas une cérémonie ») aux bornes de cycle de vie : ouvrir/fermer sont
 des **mécanismes/hygiène**, pas des cérémonies.
@@ -75,12 +94,12 @@ des **mécanismes/hygiène**, pas des cérémonies.
   de prémisse, tracé ici.
 
 **Coûts (ce n'est PAS un simple renommage — à traiter au build ; état du POC dans « Périmètre du POC et Suite »)**
-- `ezk-sprint start` ouvre un **lot** (N fiches), plus une seule → l'intake sélectionne un lot.
-- `run` **itère les stories** du lot (chacune sa PR) ; `close` scelle l'incrément.
-- `SPRINT.md` suit le **lot** courant, plus une feature isolée.
-- `ezk-product-build` (le PO qui « enchaîne les sprints ») à **reposer** : il devient l'orchestrateur
-  de la **boucle de session** (planning → sprint → retro → planning) et tient l'unique checkpoint
-  inter-sprint.
+- **Fiche 1** — `ezk-backlog` gagne le **lot** (sélectionner/figer N fiches ready) + la définition
+  d'incrément. `ezk-sprint start` **consomme** ce lot (fondation de la suite).
+- **Fiche 2** — livrée par #275 : `ezk-sprint start`/`close` au niveau lot (`start --lot <ids>`),
+  `close` scelle l'incrément, `SPRINT.md` suit le **lot** courant.
+- **Fiche 3** — `ezk-product-build` **reposé** en orchestrateur de session (Option A) : il enchaîne
+  des **sprints** (lots), checkpoint **entre incréments**.
 - **Rétro-compat : un mapping PAR verbe** — `check` et `run` ne peuvent PAS aliaser `start` à
   l'identique (ils n'ont pas le même contrat) :
   - `check` → alias de `start --dry-run` : **reste strictement read-only** (aucun claim, aucune
@@ -97,6 +116,8 @@ Les deux questions laissées ouvertes à la proposition sont closes pour le POC.
 
 - **Objet « sprint » persistant, ou SPRINT.md suffit-il ?** SPRINT.md suffit. Il est ignoré par git. Il porte le lot, les notes, la section « Galères & gestes (labo) » et une ligne par incrément scellé. Un nouveau `start` reporte ces trois dernières sections. Un objet persistant (id, incrément listé) ne se justifie que si cette approche montre ses limites.
 - **Frontière entre le planning et `ezk-backlog`.** Le planning, c'est `ezk-backlog` : `review`, `groom` et `next --ready-only`, composés par l'intake de `start`. Il n'y a pas de verbe `planning`.
+
+Le grooming panel du 2026-09-30 a tranché les mêmes questions dans le même sens (Décisions 6 à 8). Il ajoute un point : **sélectionner et figer** le lot (N fiches ready) devient une capacité d'`ezk-backlog`, que `start --lot` consomme. C'est la fiche 1. Le repositionnement d'`ezk-product-build`, rangé en « Suite » plus bas, est la fiche 3.
 
 Cinq précisions sont nées du build.
 

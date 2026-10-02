@@ -10,7 +10,15 @@ import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+// Ce fichier lance de vrais sous-processus (tsx, git) via spawnSync/execFileSync, BLOQUANTS.
+// Sous charge, un appel grimpe jusqu'à ~30 s et dépasse le délai vitest par défaut (5 s) : la
+// suite complète rougit par intermittence (fiche 20261001133500727). On élargit le délai POUR
+// CE FICHIER seul — le reste de la suite garde 5 s, donc un test unitaire bloqué échoue toujours
+// vite. Calibré sur le pire cas mesuré sous charge (~31 s) avec une marge ~2× ; un vrai blocage
+// reste borné à 60 s avec un message clair.
+vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 });
 
 const here = dirname(fileURLToPath(import.meta.url));
 const megaCity = resolve(here, '../..');
