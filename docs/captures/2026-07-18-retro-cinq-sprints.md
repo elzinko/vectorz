@@ -1,3 +1,59 @@
+---
+type: retro
+date: 2026-07-18
+theme: "Cinq sprints autonomes du jour"
+scope: "Les 5 sprints autonomes du 18 juillet (skills ezk-article, ezk-diagram, ezk-ci, clôture du kit de supervision, incrément vz-product-builder) et le lot documentation du branchement Claude Desktop (guide utilisateur, revue par personas, PR #37)."
+participants: [architecture, qualite, dev, produit, juge, po]
+actions:
+  - proposition: "Vérifier avant de citer"
+    kind: regle
+    target: global
+    by: [architecture, qualite]
+    status: ✅
+    decision: "Adoptée, obligatoire : règle documentation-guidelines/proven-outbound-references"
+    date: 2026-07-18
+  - proposition: "Vérifier les prérequis avant de tamponner une fiche « prête »"
+    kind: regle
+    target: skill:ezk-backlog
+    by: [architecture, qualite, dev, produit]
+    status: ✅
+    decision: "Adoptée : 4e slot conditionnel du gate ready d'ezk-backlog"
+    date: 2026-07-18
+  - proposition: "Toute doc destinée à un utilisateur : un guide dédié et une relecture par 3 profils de lecteurs, dont un qui exécute"
+    kind: regle
+    target: global
+    by: [architecture, produit]
+    status: ✅
+    decision: "Adoptée, recommandée (SHOULD) : règle user-guide enrichie sur place"
+    date: 2026-07-18
+  - proposition: "Au commit de livraison, nommer les fichiers un par un"
+    kind: action
+    target: skill:ezk-sprint
+    by: [qualite, dev]
+    status: ✅
+    decision: "Adoptée : étape de livraison d'ezk-sprint"
+    date: 2026-07-18
+  - proposition: "Ne jamais clore une session avec un frigo vide"
+    kind: regle
+    target: skill:ezk-archive
+    by: [produit]
+    status: ❌
+    decision: "Rejetée : « on peut très bien arrêter la session en disant que le frigo est vide, et rouvrir une session d'idéation/grooming »"
+    date: 2026-07-18
+  - proposition: "Graver la restitution lisible au PO dans les skills"
+    kind: feature
+    by: [po]
+    status: ✅
+    decision: "Fiche 0079 demandée par le PO : la leçon ne doit pas vivre qu'en mémoire d'agent"
+    date: 2026-07-18
+  - proposition: "ezk-retro produit systématiquement un compte rendu de ce type"
+    kind: feature
+    by: [po]
+    status: ✅
+    decision: "Fiche 0080 demandée par le PO : le présent document devient le gabarit"
+    date: 2026-07-18
+---
+
 # Rétrospective — session du 18 juillet 2026 (5 sprints)
 
 > **C'est quoi ce document ?** Le compte rendu complet de la **première rétrospective**

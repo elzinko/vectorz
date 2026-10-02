@@ -21,7 +21,8 @@ Audit du **2026-08-30**.
 | `R2_BUCKET_NAME` | ✅ | — | ✅ | — | CI upload binaires → R2 |
 | `R2_PUBLIC_URL` | ✅ | — | — | ✅ (corrigé 2026-08-30 : URL publique `pub-*.r2.dev`, pas l'endpoint S3) | fonction site `/api/downloads` (302 vers R2) |
 | IONOS API | — | ✅ `samplerz-ionos-api` | — | — | DNS domaine (recette IONOS) |
-| Lemon Squeezy API | — | ⚙️ `lemonsqueezy-api` (à ranger) | — | — | inspection + création produits (API REST) |
+| Lemon Squeezy API (test) | — | ✅ `LEMONSQUEEZY_API_KEY_TEST` | — | — | inspection + création produits (API REST) |
+| Lemon Squeezy webhook (test) | ✅ `LEMONSQUEEZY_API_SECRET_TEST` | — | — | — | secret **webhook**, à ne pas confondre avec la clé API |
 
 **Téléchargement : ✅ réparé (2026-08-30)** — #378 mergée + `R2_PUBLIC_URL`
 corrigé sur Vercel (pointait vers l'endpoint S3, pas l'URL publique). Détail et
@@ -50,10 +51,16 @@ Deux axes à ne pas confondre :
   Stripe). Vérif empirique : `GET /v1/user` + `GET /v1/stores`, lire `test_mode`.
 
 **Confirmé empiriquement (2026-08-30)** : test et live sont bien séparés. La clé
-rangée `lemonsqueezy-api` est une clé de **TEST** (elle voit des produits
+rangée `LEMONSQUEEZY_API_KEY_TEST` est une clé de **TEST** (elle voit des produits
 `test_mode=true`). Compte connecté : **Thomas Couderc** (thomas.couderc@gmail.com).
-Rangement : garder `lemonsqueezy-api` (= test) ; ajouter `lemonsqueezy-api-live`
-le jour du passage en vente réelle. `store_id` par app → tableau ci-dessous.
+Rangement : garder `LEMONSQUEEZY_API_KEY_TEST` (= test) ; ranger la clé live à part le
+jour du passage en vente réelle. `store_id` par app → tableau ci-dessous.
+
+**Correction (2026-10-01).** Ce catalogue citait un secret `lemonsqueezy-api`. Ce nom
+n'existe pas dans le trousseau : la clé de test s'appelle `LEMONSQUEEZY_API_KEY_TEST`. Le
+trousseau porte aussi un `LEMONSQUEEZY_API_KEY` sans suffixe, dont le rôle reste à confirmer
+avant de s'en servir. La recette détaillée est
+[vendre une app avec Lemon Squeezy](../vendre-app-lemonsqueezy-licence-pro.md).
 
 | App | `store_id` LS | Domaine LS | Produit (id) | Mode |
 |---|---|---|---|---|
@@ -79,6 +86,7 @@ Repo GitHub : <owner>/<repo>.
 
 - **Trousseau** : `<projet>-<service>-<type>` quand le secret est propre à un
   projet (ex. `samplerz-ionos-api`) ; `<service>-<type>` quand il est **au niveau
-  compte** et réutilisable entre projets (ex. `lemonsqueezy-api`).
+  compte** et réutilisable entre projets (ex. `LEMONSQUEEZY_API_KEY_TEST` : nom de style
+  variable d'environnement, suffixe `_TEST` pour la clé de test).
 - **GH / Vercel** : le **nom attendu par le code** (ex. `R2_PUBLIC_URL`) — ne pas
   renommer, le workflow / la fonction le lit tel quel.

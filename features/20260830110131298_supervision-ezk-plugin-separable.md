@@ -1,13 +1,14 @@
 ---
 id: "20260830110131298"
-title: Supervision d'ezk elle-même — sortir le contrat d'émission inliné, le brancher en adaptateur séparable (ADR-032/0039)
+title: "Sortir le code de supervision du texte des skills"
 type: refactor
 priority: P3
 product: mega-city
+labels: [supervision]
+milestone: parked
 version:
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-30
 ---
@@ -58,3 +59,13 @@ supervisabilité **en la branchant**. **Rien n'est perdu** : le bloc de 76 ligne
 - **Ne bloque pas** la bascule du défaut `--mode auto` : celle-ci laisse la section supervision
   intacte ; ce décrochage est un chantier ultérieur.
 - Origine : revue de conception `ezk-product-build` (session 2026-08-30).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Refactor P3 émission séparable ; risque doublon ADR-032/0170 déjà livrés, à réconcilier.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

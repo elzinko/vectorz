@@ -74,6 +74,7 @@ body{
   display:flex; gap:8px; align-items:center;
 }
 .proof .dot{width:8px; height:8px; border-radius:50%; background:var(--flow); flex:none}
+.proof .ratio{display:block; margin-top:1px; color:var(--ink); font-weight:600}
 .proof.bad .dot{background:var(--warn)}
 .search{
   border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:7px 12px;
@@ -87,7 +88,8 @@ body{
 .theme-btn:focus-visible{outline:2px solid var(--accent)}
 
 /* ── sections ───────────────────────────────────────── */
-.section{margin-top:44px}
+.section{margin-top:44px; scroll-margin-top:84px} /* un lien #ancre ne se cache pas sous la barre fixe */
+@media (max-width:700px){ .section{scroll-margin-top:190px} } /* la barre fixe passe sur trois lignes */
 .eyebrow{
   font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.2em;
   text-transform:uppercase; color:var(--ink-faint);
@@ -144,6 +146,11 @@ body{
 .c-cmd{border-left-color:var(--cmd)} .c-cap{border-left-color:var(--cap)}
 .c-flow{border-left-color:var(--flow)} .c-law{border-left-color:var(--law)}
 .c-pro{border-left-color:var(--pro)} .c-warn{border-left-color:var(--warn)}
+/* Les outils (fiche 20260917123943914) : groupés par ce qui les justifie, repliés sauf les cités. */
+.outils-groupe{margin:0 0 16px}
+.outils-groupe > summary{cursor:pointer; font-weight:600; margin:0 0 10px; color:var(--ink)}
+.outils-groupe > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.card .meta .chip{cursor:pointer}
 
 .chip{
   display:inline-flex; align-items:center; gap:5px;
@@ -161,6 +168,69 @@ body{
 .tag.must{color:var(--warn); border-color:color-mix(in srgb, var(--warn) 35%, transparent)}
 .tag.should{color:var(--cmd); border-color:color-mix(in srgb, var(--cmd) 35%, transparent)}
 .tag.may{color:var(--flow)}
+
+/* ── provenance : prouvé (un fichier le déclare) vs déduit (lecture d'auteur, en pointillé) ── */
+.chip.inferred{border-style:dashed; background:transparent; color:var(--ink-faint)}
+.chip.inferred:hover{color:var(--ink-soft)}
+.legend .sw.dashed{background:transparent; border:1.5px dashed var(--ink-faint)}
+.intro .prov{margin-top:12px; font-size:12.5px; color:var(--ink-soft); max-width:75ch}
+.d-src{
+  display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; margin:8px 0 0;
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-faint);
+}
+.d-src a{color:var(--accent); text-decoration:none; border-bottom:1px dotted var(--accent); word-break:break-all}
+.d-src a:hover{border-bottom-style:solid}
+.d-src.inferred{font-style:italic}
+
+/* ── L'ASSEMBLAGE : qui compose quoi — une hiérarchie compilée, pas une file ── */
+.asm{--wire:var(--ink-faint); max-width:780px; margin:6px auto 0; display:flex; flex-direction:column; align-items:center}
+.asm-node{
+  --c:var(--ink-faint); min-width:170px; max-width:100%; text-align:center; padding:9px 14px;
+  background:var(--panel); border:1px solid var(--line); border-top:3px solid var(--c);
+  border-radius:10px; box-shadow:var(--shadow);
+}
+.asm-node b{display:block; font-family:"Chakra Petch",sans-serif; font-size:15px}
+.asm-node small{display:block; font-size:11.5px; color:var(--ink-soft)}
+.asm-node .asm-self{display:block; margin-top:5px; font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-faint)}
+.asm-node.inferred{border-style:dashed; background:transparent; box-shadow:none}
+.asm-node .d-src{justify-content:center; margin-top:6px}
+.asm-leg{display:flex; flex-direction:column; align-items:center}
+.asm-leg i{width:0; height:12px; border-left:2px solid var(--wire)}
+.asm-leg i.head{height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:7px solid var(--wire)}
+.asm-leg.dashed i:not(.head){border-left-style:dashed}
+.asm-edge{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-soft); white-space:nowrap;
+  background:var(--panel-2); border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.asm-leg.dashed .asm-edge{border-style:dashed; background:transparent; color:var(--ink-faint)}
+.asm-bus{width:66.66%; height:0; border-top:2px solid var(--wire)}
+.asm-cols{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:0 14px; width:100%}
+.asm-branch, .asm-body{display:flex; flex-direction:column; align-items:center}
+.asm-other{max-width:780px; margin:18px auto 0; font-size:12.5px; color:var(--ink-soft)}
+.asm-other .rels{display:flex; gap:6px; flex-wrap:wrap; margin-top:7px}
+.asm-rel{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; border:1px dotted var(--ink-faint);
+  border-radius:6px; padding:2px 8px; background:transparent; color:var(--ink-soft);
+}
+.asm-rel i{font-style:normal; color:var(--ink); font-weight:600}
+/* Mobile : un arbre indenté (jamais une pile de blocs, qui se lirait comme une chaîne). Chaque
+   branche = la flèche nommée à gauche, la brique à droite ; la règle est un sous-niveau du bundle. */
+@media (max-width:700px){
+  .asm{align-items:stretch}
+  .asm > .asm-leg{align-items:center}
+  .asm-bus, .asm > .asm-leg:not(.dashed){display:none}
+  .asm-cols{grid-template-columns:1fr; gap:0; margin-left:20px}
+  .asm-cols > .asm-branch{position:relative; padding-top:10px; border-left:2px solid var(--wire)}
+  .asm-cols > .asm-branch:last-child{border-left-color:transparent}
+  .asm-cols > .asm-branch:last-child::before{content:''; position:absolute; left:-2px; top:0; height:37px; border-left:2px solid var(--wire)}
+  .asm-cols > .asm-branch{flex-direction:row; align-items:flex-start; gap:8px}
+  .asm-cols > .asm-branch > .asm-leg{flex-direction:row; align-items:center; flex:none; margin-top:16px}
+  .asm-cols > .asm-branch > .asm-leg i{width:10px; height:0; border-left:0; border-top:2px solid var(--wire)}
+  .asm-cols > .asm-branch > .asm-leg i.head{width:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:7px solid var(--wire); border-right:0}
+  .asm-body{flex:1; min-width:0; align-items:stretch}
+  .asm-body > .asm-branch{margin-top:4px; align-items:center}
+  .asm-node{min-width:0; width:100%}
+}
 
 /* ── bundles (LA LOI) ───────────────────────────────── */
 .shelves{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px}
@@ -242,7 +312,7 @@ body{
       <h1>La méthode mega-city</h1>
     </div>
     <div class="spacer"></div>
-    <div class="proof" id="proof" title="Données compilées depuis les fichiers du dépôt — regen : pnpm --dir products/mega-city map:data"><span class="dot"></span><span id="proof-text">…</span></div>
+    <div class="proof" id="proof" title="Données compilées depuis les fichiers du dépôt à chaque chargement (pnpm ezk dashboard) — hors serveur : pnpm --dir products/mega-city views:regen"><span class="dot"></span><span><span id="proof-text">…</span><span class="ratio" id="proof-ratio"></span></span></div>
     <input class="search" id="search" type="search" placeholder="chercher (id, description)…" aria-label="Chercher dans la carte">
     <button class="theme-btn" id="open-domaine" style="width:auto;padding:0 12px;font-size:13px" title="Comprendre les relations du domaine">🧭 le domaine</button>
     <button class="theme-btn" id="theme" title="Basculer clair / sombre" aria-label="Basculer le thème">◐</button>
@@ -255,9 +325,18 @@ body{
     <p>Trois étages. <b>Le moteur</b> (règles · bundles · profils · bind) ne connaît pas scrum — il compose
     et matérialise. <b>La méthode</b> (cérémonies, rôles, artefacts) est une instance construite avec lui.
     <b>Les modules</b> (GitHub, sessions LLM, supervision, outillage, overlays) s'y activent sans en faire partie.
-    Cette carte n'est <b>pas dessinée à la main</b> : tout est compilé depuis les fichiers du dépôt.
+    Cette carte n'est <b>pas dessinée à la main</b> : elle est compilée depuis les fichiers du dépôt, sauf le bind et le cycle en 5 temps (lectures d'auteur, en pointillé).
     Cliquez une carte pour ouvrir son dossier et voir ses liens réels.</p>
     <div class="legend" id="legend"></div>
+    <p class="prov" id="prov"></p>
+  </div>
+
+  <div class="section" id="assemblage">
+    <div class="eyebrow">L'assemblage — qui compose quoi</div>
+    <h2>Un profil contient, le bind le lit</h2>
+    <p class="lead">Ce n'est <b>pas une chaîne de montage</b> : rien ne « suit » rien, tout se <b>contient</b>. Chaque flèche dit sa relation et le nombre de liens qui la portent, comptés dans le graphe compilé. Seul le <b>bind</b>, en pointillé, n'y est pas : c'est du code, aucun fichier du catalogue ne le déclare.</p>
+    <div class="asm" id="asm"></div>
+    <div class="asm-other" id="asm-other"></div>
   </div>
 
   <div class="section">
@@ -325,16 +404,23 @@ body{
     <div class="grid" id="profiles"></div>
   </div>
 
+  <div class="section" id="outils-section">
+    <div class="eyebrow">Les outils — ce que les commandes lancent</div>
+    <h2>Les scripts de la méthode, reliés aux commandes qui les citent</h2>
+    <p class="lead">Un <b>outil</b> est un script de <code>bin/</code> ou du dossier <code>scripts/</code> d'un skill. Le lien est <b>calculé</b> : une commande « utilise » un outil quand sa doc en cite le chemin (ADR-0058). Un outil que ni une commande, ni le manifeste <code>ezk</code> ne justifie est <b>orphelin</b> : il est rangé dans « le bruit restant », plus bas. Cliquez un outil pour son dossier.</p>
+    <div id="outils"></div>
+  </div>
+
   <div class="section">
     <div class="eyebrow">Ce que le graphe révèle</div>
     <h2>Le bruit restant, rendu visible</h2>
-    <p class="lead">Depuis ADR-0039, chaque brique a un étage — le « sans bande » a disparu par construction. Reste l'autre signal : des briques que <b>rien ne cite</b> (orphelines). Chaque entrée est une décision à prendre — brancher, ou retirer.</p>
+    <p class="lead">Depuis ADR-0039, chaque brique a un étage — le « sans bande » a disparu par construction. Reste l'autre signal : des briques que <b>rien ne cite</b> (orphelines), dont les outils que personne ne lance. Chaque entrée est une décision à prendre — brancher, ou retirer.</p>
     <div class="grid" id="noise"></div>
   </div>
 
   <div class="foot">
     <span>source : catalogue mega-city (rules/ · agents/ · skills/ · bundles/ · profiles/)</span>
-    <span>régénérer : <b>pnpm --dir products/mega-city map:data</b></span>
+    <span>régénérer : <b>pnpm --dir products/mega-city views:regen</b></span>
     <span>valider les liens : <b>pnpm --dir products/mega-city graph:check</b></span>
   </div>
 </div>
@@ -375,2059 +461,7 @@ body{
   <div class="d-body" id="d-body"></div>
 </aside>
 
-<script>
-/*ezk-map-data:begin*/
-window.EZK = {
- "counts": {
-  "rules": 74,
-  "agents": 8,
-  "skills": 24,
-  "bundles": 10,
-  "profiles": 6
- },
- "liens": {
-  "total": 200,
-  "casses": 0
- },
- "orphans": [
-  {
-   "kind": "rule",
-   "id": "development/yaml-emission-via-lib"
-  },
-  {
-   "kind": "rule",
-   "id": "documentation-guidelines/changelog"
-  },
-  {
-   "kind": "rule",
-   "id": "documentation-guidelines/contributing-guide"
-  },
-  {
-   "kind": "rule",
-   "id": "documentation-guidelines/human-facing-lisibility"
-  },
-  {
-   "kind": "rule",
-   "id": "documentation-guidelines/proven-outbound-references"
-  },
-  {
-   "kind": "rule",
-   "id": "documentation-guidelines/readme-structure"
-  },
-  {
-   "kind": "rule",
-   "id": "documentation-guidelines/user-guide"
-  },
-  {
-   "kind": "rule",
-   "id": "hexagonal/adapter-location"
-  },
-  {
-   "kind": "rule",
-   "id": "hexagonal/dependency-inversion"
-  },
-  {
-   "kind": "rule",
-   "id": "hexagonal/domain-isolation"
-  },
-  {
-   "kind": "rule",
-   "id": "hexagonal/shared-libs-no-config"
-  },
-  {
-   "kind": "rule",
-   "id": "hexagonal/wiring-at-edge"
-  },
-  {
-   "kind": "rule",
-   "id": "recipe/indexed"
-  },
-  {
-   "kind": "rule",
-   "id": "recipe/lists-tasks-and-composes"
-  },
-  {
-   "kind": "rule",
-   "id": "recipe/no-stored-code"
-  },
-  {
-   "kind": "rule",
-   "id": "recipe/plain-language-first"
-  },
-  {
-   "kind": "rule",
-   "id": "recipe/points-to-real-example"
-  },
-  {
-   "kind": "rule",
-   "id": "recipe/valid-frontmatter"
-  },
-  {
-   "kind": "rule",
-   "id": "ux/no-layout-shift"
-  },
-  {
-   "kind": "skill",
-   "id": "ezk-bug"
-  },
-  {
-   "kind": "skill",
-   "id": "supervision-analyze"
-  },
-  {
-   "kind": "skill",
-   "id": "supervision-demo"
-  },
-  {
-   "kind": "skill",
-   "id": "vz-product-builder"
-  },
-  {
-   "kind": "profile",
-   "id": "cop1-target"
-  },
-  {
-   "kind": "profile",
-   "id": "daily"
-  },
-  {
-   "kind": "profile",
-   "id": "desktop"
-  },
-  {
-   "kind": "profile",
-   "id": "global"
-  },
-  {
-   "kind": "profile",
-   "id": "mobile"
-  }
- ],
- "method": {
-  "elements": [
-   {
-    "id": "grooming",
-    "type": "ceremonie",
-    "nom": "Grooming / Refinement",
-    "scrum": "Product Backlog Refinement",
-    "etat": "fidele",
-    "implemente_par": [
-     "ezk-backlog:groom",
-     "ezk-backlog:review"
-    ],
-    "note": "Activité continue : le groom se fait au tirage d'une fiche (ADR-0016), la passe globale par `review`. La Definition of Ready est le cran de sortie."
-   },
-   {
-    "id": "gate-ready",
-    "type": "ceremonie",
-    "nom": "Gate « ready » (DoR)",
-    "scrum": "— (cran maison, hors Guide)",
-    "etat": "fidele",
-    "implemente_par": [
-     "ezk-backlog:ready"
-    ],
-    "note": "Le gate bloquant qui promeut une fiche en « tirable » : problème / valeur / critères vérifiés, date posée en front-matter. Maison, assumé (ADR-0016)."
-   },
-   {
-    "id": "planning",
-    "type": "ceremonie",
-    "nom": "Le tirage",
-    "scrum": "Sprint Planning",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-backlog:next",
-     "ezk-backlog:plan",
-     "ezk-sprint",
-     "ezk-product-build"
-    ],
-    "note": "Éclaté : le QUOI = `next --ready-only` (une fiche, pop mécanique) ; l'ORDRE = `plan` (PLAN.md) ; le COMMENT = les étapes 0-2 du sprint (intake, cadrage, archi). Pas de sélection multiple négociée — du réapprovisionnement kanban de qualité."
-   },
-   {
-    "id": "daily",
-    "type": "ceremonie",
-    "nom": "Daily Scrum",
-    "scrum": "Daily Scrum",
-    "etat": "a-implementer",
-    "implemente_par": [],
-    "note": "Aucun équivalent. Absence ASSUMÉE pour l'instant (panel 2026-08-23 : aucune douleur documentée) — seul analogue : le heartbeat de supervision. Si une douleur se documente, une fiche dédiée s'ouvre."
-   },
-   {
-    "id": "sprint",
-    "type": "ceremonie",
-    "nom": "Le run (« sprint » maison)",
-    "scrum": "Sprint (le conteneur)",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-sprint:run",
-     "ezk-sprint:check",
-     "ezk-archive:run"
-    ],
-    "note": "Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run` (hygiène d'hôte, hors scrum)."
-   },
-   {
-    "id": "review",
-    "type": "ceremonie",
-    "nom": "La livraison (release gate)",
-    "scrum": "Sprint Review",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-sprint"
-    ],
-    "note": "Portée par le SPRINT (ezk-pr est un module GitHub OPTIONNEL, hors implémenteur). Ce n'est PAS une Sprint Review (pas d'inspection avec parties prenantes) : gate + revue adverse + squash-merge (étapes 6/7/9-10 du sprint). La seule « review » réelle est le checkpoint inter-sprint où l'humain inspecte le livré."
-   },
-   {
-    "id": "retro",
-    "type": "ceremonie",
-    "nom": "La rétro",
-    "scrum": "Sprint Retrospective",
-    "etat": "fidele",
-    "implemente_par": [
-     "ezk-retro:run"
-    ],
-    "note": "Round-robin des agents → propositions typées (symptôme + mesure) → juge de cohérence → rangement sous contrôle PO. À la demande (après un ou plusieurs runs), pas à cadence fixe — écart connu, toléré."
-   },
-   {
-    "id": "product-backlog",
-    "type": "artefact",
-    "nom": "Product Backlog",
-    "scrum": "Product Backlog",
-    "etat": "fidele",
-    "implemente_par": [
-     "ezk-backlog"
-    ],
-    "note": "`features/*.md` commités sur main, front-matter = source de vérité, index régénéré (BACKLOG.md). La fiche est le Product Backlog Item."
-   },
-   {
-    "id": "sprint-backlog",
-    "type": "artefact",
-    "nom": "Sprint Backlog",
-    "scrum": "Sprint Backlog",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-sprint"
-    ],
-    "note": "Dégénéré : `SPRINT.md` éphémère, un seul item (le run est mono-fiche). Le panel a constaté sa corruption par l'entrelacement de chantiers — pièce au dossier de la vue d'avancement."
-   },
-   {
-    "id": "increment",
-    "type": "artefact",
-    "nom": "L'increment",
-    "scrum": "Increment",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-sprint"
-    ],
-    "note": "La PR squash-mergée sur main (étapes 8-10 du sprint) ; livraison groupée possible par ezk-pr. Jamais nommé « Increment » dans la maison — le mot manque, pas la chose."
-   },
-   {
-    "id": "dod",
-    "type": "artefact",
-    "nom": "Definition of Done",
-    "scrum": "Definition of Done",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-sprint"
-    ],
-    "note": "Deux sens mélangés aujourd'hui (panel B-4) : les scénarios Gherkin (= critères d'acceptation par fiche) et la checklist de sortie (gate verte, E2E, revue GO). La séparation des mots est au lot vocabulaire du plan."
-   },
-   {
-    "id": "product-goal",
-    "type": "artefact",
-    "nom": "Product Goal",
-    "scrum": "Product Goal",
-    "etat": "a-implementer",
-    "implemente_par": [],
-    "note": "Zéro occurrence dans le dépôt avant le 2026-08-23. Premier pas posé : une ligne en tête de `features/PLAN.md` (brouillon à valider/réécrire par le PO)."
-   },
-   {
-    "id": "sprint-goal",
-    "type": "artefact",
-    "nom": "Sprint Goal",
-    "scrum": "Sprint Goal",
-    "etat": "assume",
-    "implemente_par": [],
-    "note": "Assumé ≡ la fiche tirée (le run est mono-fiche, son but EST la fiche) — verdict du panel du 2026-08-23 (B-5). Pas de chantier tant que le run reste mono-fiche."
-   },
-   {
-    "id": "po",
-    "type": "role",
-    "nom": "Product Owner",
-    "scrum": "Product Owner",
-    "etat": "fidele",
-    "implemente_par": [
-     "humain",
-     "agent:ezk-pm",
-     "ezk-product-build"
-    ],
-    "note": "L'humain arbitre toujours (4 décisions réservées) ; `ezk-pm` décide par délégation ; la couche product-builder orchestre. « Toi » n'est pas encore un objet du modèle — constat pour la refonte."
-   },
-   {
-    "id": "sm",
-    "type": "role",
-    "nom": "Scrum Master",
-    "scrum": "Scrum Master",
-    "etat": "adapte",
-    "implemente_par": [
-     "ezk-sprint"
-    ],
-    "note": "Porté par le SKILL ezk-sprint (« tu es le scrum master ») qui exécute et juge — le contraire du SM du Guide (servir, établir). Débaptisage prévu au lot vocabulaire ; le SM effectif = LA LOI compilée + la rétro."
-   },
-   {
-    "id": "developers",
-    "type": "role",
-    "nom": "Developers",
-    "scrum": "Developers",
-    "etat": "adapte",
-    "implemente_par": [
-     "agent:ezk-architect",
-     "agent:ezk-dev",
-     "agent:ezk-qa",
-     "agent:ezk-reviewer"
-    ],
-    "note": "Éclatés en 4 juges spécialisés convoqués par le sprint — pas une équipe auto-gérée, un pipeline à rôles. La vraie valeur : la seconde opinion inter-modèles (dev et reviewer sur des modèles différents)."
-   }
-  ]
- },
- "bandes": {
-  "ceremonies": [
-   "ezk-product-build",
-   "ezk-sprint",
-   "ezk-retro",
-   "ezk-bug"
-  ],
-  "artefacts": [
-   "ezk-backlog"
-  ],
-  "hors-bande": []
- },
- "skills": {
-  "ezk-apk": {
-   "id": "ezk-apk",
-   "description": "Build an installable preview APK (or IPA) on Expo EAS and hand the user an install link + QR, to demo or try a mobile (Expo / React Native) PR on a real device — including over 4G, with no adb, USB, Tailscale or debugging. Use whenever the user wants to \"share a build\", \"send me an APK\", \"test this PR on my phone\", \"install the app to try a feature\", \"give me a QR to install\", or demo a mobile branch to a tester or stakeholder. Walks through the EXPO_TOKEN setup, the eas preview profile, building, and returning the install link. Crucially covers the pnpm-monorepo gotchas that break EAS release builds while leaving debug builds working (expo-asset, node-linker=hoisted, building workspace TS deps), and validating the release compile locally first to avoid burning EAS queue time.",
-   "usage": "[help|build|link|status|check|setup]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "global"
-   ]
-  },
-  "ezk-archive": {
-   "id": "ezk-archive",
-   "description": "Rituel de CLÔTURE de session avant archivage : clôt proprement un repo pour ne RIEN perdre entre deux sessions. A utiliser quand l'utilisateur veut « archiver / clôturer une session », « fermer proprement avant de partir », « ne rien perdre entre deux sessions », préparer un « handoff » pour la prochaine session, ou demande « on archive ? » « avant de fermer ». Pilotable par sous-commandes : help, check (dry-run strictement read-only : produit le rapport de clôture), run/close (applique les corrections sûres — ship/regen du backlog, mémoire — et produit la note de handoff). Un script portier (`scripts/check.sh`) rend un verdict CLEAN/DIRTY sur 4 points de contrôle : working tree + stashes, PRs & branches non-mergées (crucial pour les repos sans remote), fiches déclarées livrées, ADR de la session ; sur CLEAN la clôture est traitée directement, sur DIRTY elle est déléguée au sous-agent, scopée aux points signalés. Produit toujours la note de handoff persistée dans `.claude/handoff.md` (anneau FIFO) et le verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de clôture uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).",
-   "usage": "[help|check|run]",
-   "etage": "modules",
-   "famille": "hote-llm",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "base",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-article": {
-   "id": "ezk-article",
-   "description": "Écrit ou réécrit un ARTICLE TECHNIQUE VULGARISÉ (blog, doc d'archi grand public, README long) avec un cadrage de persona explicite et une boucle de relecture par PANEL de relecteurs frais. A utiliser quand l'utilisateur veut « écrire / rédiger un article », « vulgariser » un sujet technique, réécrire un article existant pour le rendre lisible, faire relire un texte par un panel, ou publier un billet de blog technique accessible. Pilotable par sous-commandes : help, new (matière + brief persona → article), revise (vN → vN+1, versions côte à côte conservées), panel (la boucle de relecture seule, sur un texte existant). Demande TOUJOURS le brief de persona/audience au demandeur s'il est absent (jamais de défaut silencieux) ; panel de 5 lentilles SANS contexte de session (lecteur cible zéro-contexte, juge essais techniques, copy-editor, fidélité aux sources, accessibilité des références) puis contre-lecture finale à froid comme gate de publication. N'EST PAS un outil de doc de référence/spec (structure imposée par le domaine), ni le promoteur de l'article (ça, c'est ezk-marketing).",
-   "usage": "[help|new|revise|panel]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [
-    "ezk-diagram"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "global"
-   ]
-  },
-  "ezk-backlog": {
-   "id": "ezk-backlog",
-   "description": "Suit le backlog de features/bugs d'un projet en markdown versionné, pour ne jamais les perdre entre worktrees ni entre sessions. A utiliser quand l'utilisateur demande « c'est quoi la suite / les prochaines features », veut initialiser le suivi des features d'un projet, ajouter/noter une idée ou un bug (avec dédoublonnage), groomer une fiche vers la Definition of Ready (« elle est ready ? »), passer le backlog en revue (sanity check), demander la prochaine fiche tirable, regrouper des fiches, marquer une feature livrée, réconcilier le statut des fiches avec l'état réel des PRs mergées (merges faits hors du flux, ex. UI GitHub), (re)prioriser, cibler une version/jalon, ou voir l'état du backlog. Pilotable par sous-commandes : help, init, list, add, groom, ready, next, plan, review, reconcile, ship, regen, aggregate. A la première invocation dans un projet, INITIALISE la structure (dossier features/, sous-dossier done/, fichier de suivi index) ; ensuite charge le backlog trié par priorité en contexte de session. Format léger : une fiche markdown par sujet, front-matter YAML = source de vérité du statut, index régénéré. Se branche sur ezk-sprint (qui pioche la prochaine fiche) et ezk-commits. Si le repo a déjà sa convention (roadmap/, docs/specs…), l'épouser plutôt que d'en imposer une.",
-   "usage": "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate]",
-   "etage": "methode",
-   "bande": "artefacts",
-   "composes": [
-    "ezk-commits"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-bug",
-    "ezk-ezk",
-    "ezk-pr",
-    "ezk-product-build",
-    "ezk-readme",
-    "ezk-retro",
-    "ezk-sprint",
-    "vz-product-builder"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "desktop",
-    "global"
-   ]
-  },
-  "ezk-bug": {
-   "id": "ezk-bug",
-   "description": "Skill d'intake/cadrage d'un BUG signalé : transforme un rapport brut (« c'est cassé ») en fiche `type: bug` reproductible et exploitable (procédure, attendu/ obtenu, preuve), puis la file via `ezk-backlog add`. A utiliser quand l'utilisateur SIGNALE un bug à cadrer, veut « transformer ce bug en fiche », « reproduire et documenter un bug », « faire l'intake d'un bug », ou quand `ezk-backlog add` rencontre un bug vague à confirmer. COMPOSE le Playwright MCP partagé (pilotage de l'app + screenshot-preuve, chargé via ToolSearch — le MÊME que `ezk-qa`, pas emprunté à son rôle) pour la repro, et `ezk-backlog add` (anti-doublon + cadrage) pour le filing. Repro BORNÉE (timeout / max-tentatives) ; un harnais indisponible produit QUAND MÊME une fiche (`hors-portée`). N'EST PAS la validation d'une PR ni la rédaction de Gherkin (ça, c'est `ezk-qa`, en avant dans la boucle ezk-sprint) : `ezk-bug` confirme EN ARRIÈRE un symptôme signalé, en amont du backlog. Glue mince : ne gonfle ni `ezk-qa` ni `ezk-backlog`.",
-   "usage": "[help|intake]",
-   "etage": "methode",
-   "bande": "ceremonies",
-   "composes": [
-    "ezk-backlog"
-   ],
-   "composesExternal": [
-    "product-brainstorming"
-   ],
-   "roles": [],
-   "composedBy": [],
-   "profiles": []
-  },
-  "ezk-chef": {
-   "id": "ezk-chef",
-   "description": "Hub de la famille d'artefacts « recette » (recipes/*.md) — le point d'entrée verbes pour tout ce qui touche une recette. A utiliser quand l'utilisateur veut « fais-en une recette », « capitalise cette feature en recette », « extrais une recette depuis la fiche X », « ezk-chef », « vérifie / valide cette recette », « détecter les candidats-recette d'un sprint qui vient de finir », « range le livre des recettes », ou liste ce qui existe déjà comme recette. Pilotable par sous-commandes : help, check (délègue le jugement à l'agent `ezk-chef` — gate mécanique + verdict GO/NO-GO), extract (produit un BROUILLON de recette `status: draft` depuis une fiche déjà shippée ; extraction depuis une implémentation de référence d'un autre projet : à venir), suggest (lecture seule : lit le rapport + les récits d'un sprint fini et PROPOSE des candidats-recette, sans rien créer — invoquée par la rétro), regen/list (réécrit `recipes/RECIPES.md` via `regen-recipes.sh`). Orchestrateur MINCE, façon `ezk-backlog` : il ne réimplémente pas le jugement de l'agent `ezk-chef` (déjà livré) ni le régénérateur du livre (déjà livré) — il les COMPOSE et ajoute la partie mécanique manquante (`extract`, `suggest`). N'EST PAS `ezk-ezk` (qui fabrique des *skills*, pas des recettes) ; `ezk-chef scan` (sourcer des repos froids, fiche 0147) est différé.",
-   "usage": "[help|check|extract|suggest|regen|list]",
-   "etage": "librairie",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-retro"
-   ],
-   "profiles": []
-  },
-  "ezk-ci": {
-   "id": "ezk-ci",
-   "description": "Validate GitHub Actions pipelines locally with act + Docker before pushing or committing, AND watch/cap the cloud-side GHA consumption of private repos. Use whenever the user asks to run CI locally, mentions GitHub Actions billing exhaustion (spending limit, billing exceeded, out of GHA minutes), asks how many Actions minutes a repo burns or which workflows cost the most, wants to cap spending on a private repo, makes a repo private (key cost moment), wants a frugal CI (paths-ignore, concurrency, gated heavy jobs), reports a workflow failure they want to debug without burning runner minutes, edits a file under .github/workflows/, or needs to test a .yml workflow. Also covers macOS jobs that must run on the host because Docker has no macOS image, and a bootstrap path for projects with no local CI setup yet.",
-   "usage": "[help|check|list|dryrun|run|native|bootstrap|conso|frugal|harden]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-codex": {
-   "id": "ezk-codex",
-   "description": "Adresse les retours du reviewer Codex sur une PR, de bout en bout, sans les retaper à la main. A utiliser quand l'utilisateur veut « fix les retours codex », « adresse / traite les commentaires Codex de la PR X », « Codex a commenté ma PR », « corrige ce que Codex a relevé », ou après un `@codex review` qui a laissé des findings. Pilotable par sous-commandes : help, fix (la boucle complète : récupère les findings inline + reviews, écarte le cas 👍 « RAS », les classe P0/P1/P2 + file:line, pour chacun CORRIGE ou DÉCLINE avec raison postée + 👎, commit conventional scopé, push, re-déclenche `@codex review`, attend le verdict de façon BORNÉE, rapporte), check (lit le verdict Codex courant sans rien écrire). Garde-fou de tête : STAND-DOWN avant toute écriture (PR déjà mergée/fermée, branche pilotée par un autre worktree, commits d'une autre session apparus) → ne rien pousser, rapporter, rendre la main. Cross-repo (samplerz, muti… tout repo GitHub avec Codex branché). N'EST PAS le merge (ça reste `ezk-pr ship` / décision explicite) ni la revue initiale (le premier `@codex review` avant-merge reste décrit par `ezk-sprint`) ; `ezk-sprint` et `ezk-pr` la COMPOSENT au lieu de re-décrire le handling Codex.",
-   "usage": "[help|fix|check] [PR]",
-   "etage": "modules",
-   "famille": "github",
-   "composes": [
-    "ezk-commits"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "global"
-   ]
-  },
-  "ezk-commits": {
-   "id": "ezk-commits",
-   "description": "Help write Conventional Commits messages and set up a commit-msg hook. Use when the user wants to commit code, asks for help with commit message format, mentions \"conventional commit\", or wants to enforce commit format in a project. Also triggers after implementing a feature or fix when the user asks to create a commit.",
-   "usage": "[help|commit|hook|check]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-backlog",
-    "ezk-codex",
-    "ezk-diagram",
-    "ezk-pr",
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global",
-    "mobile"
-   ]
-  },
-  "ezk-design-system": {
-   "id": "ezk-design-system",
-   "description": "Create and ENFORCE a lightweight design system (tokens + canonical components + living styleguide) in any web project, and keep every UI change coherent with it. Use when the user mentions \"design system\", \"cohérence visuelle\", \"system design\" (UI sense), \"atomes\", \"librairie de composants\", \"styleguide\", \"storybook\", asks why the UI looks inconsistent, or whenever ANY task adds/modifies UI (buttons, colors, spacing, CSS) in a project that has a docs/design-system.md — read it FIRST and apply its rules. MVP-grade by design: three files, no build system, no heavy tooling — works for vanilla JS/CSS apps served by any backend (Python, Node…). Nomme et rend CONSULTABLE/REQUÊTABLE le vocabulaire complet — Token, Variant, Slot, Pattern, Breakpoint — sur une page /design vivante.",
-   "usage": "",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-device": {
-   "id": "ezk-device",
-   "description": "Build, install and live-test an Android app on a PHYSICAL phone that is NOT on the same Wi-Fi/LAN as the computer, by tunnelling adb over a Tailscale mesh VPN. Use this whenever the user wants to run, install, deploy, sideload or test an Android app on a real device remotely — e.g. \"test the app on my phone\", \"I'm away from my desk / travelling and want to try the build\", \"adb won't connect over the network\", \"install the APK on my Android over 4G\", \"debug on my phone from here\" — or any time the phone and the dev machine are on different networks. Walks the user through installing the tools (Tailscale, adb), enabling Android wireless/USB debugging, finding the IP/port/code on the phone, and connecting reliably. Also covers the LAN-only WebRTC caveat (why a public tunnel like ngrok is NOT enough and a mesh VPN is the right tool).",
-   "usage": "[help|check|setup|tcpip|connect|run]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "global"
-   ]
-  },
-  "ezk-diagram": {
-   "id": "ezk-diagram",
-   "description": "Transforme une DESCRIPTION EN PROSE en un diagramme VERSIONNÉ (Mermaid + image), itéré VERBALEMENT — sans jamais écrire de Mermaid à la main. A utiliser quand l'utilisateur veut « faire un schéma / un diagramme », « visualiser une archi / un flux / un organigramme / une machine à états », décrire une structure avec ses mots et obtenir un diagramme, réviser/corriger un diagramme existant en langage naturel, ou versionner / retrouver / dupliquer / supprimer un diagramme entre sessions. Pilotable par sous-commandes : help, add, list, edit, rm, dup, publish. Stocke un artefact versionné par diagramme dans `diagrams/\u003cslug>/` : la prose (source), le diagram-as-code (Mermaid généré), l'image (SVG rendue), une explication LECTEUR (« Ce que montre ce diagramme », assemblée dans le README publié), + un meta. Le LLM synthétise le Mermaid depuis la prose (capacité native, ZÉRO service externe) ; le rendu image est LOCAL (mermaid-cli/`mmdc`). Descriptif d'abord : le diagramme EST l'artefact (comprendre/documenter). N'EST PAS un éditeur Mermaid manuel, ni un service de dessin en ligne, ni un moteur d'exécution — juste « je décris, ça se dessine, je valide, ça se versionne ».",
-   "usage": "[help|add|list|edit|rm|dup|publish]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [
-    "ezk-commits"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-article"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "desktop",
-    "global"
-   ]
-  },
-  "ezk-docker": {
-   "id": "ezk-docker",
-   "description": "Pilot a local Docker stack for TESTING or DEV — spin up, monitor, tear down — directly via the Docker socket (docker compose CLI), with no bespoke code. Use whenever the user wants to \"lance/monte une stack docker\", start an app's services to test against, bring up a throwaway environment (db, redis, api…), watch container logs or status, or destroy a test stack cleanly. Enforces blast-radius conventions: project-prefixed stacks, mandatory teardown, never a global prune. NOT for CI pipelines (that is ezk-ci, act + Docker), NOT for building/pushing images to a registry, NOT for production orchestration.",
-   "usage": "[help|check|up|ps|logs|down|nuke]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-ezk": {
-   "id": "ezk-ezk",
-   "description": "Méta-skill qui transforme une discussion de session en un skill réutilisable. A utiliser quand l'utilisateur veut « créer un skill », « ezk-ezk », « transforme cette discussion en skill », « fais-en un skill », « génère un skill depuis la session », « capitalise ce qu'on vient de faire en skill réutilisable », ou outiller un déroulé manuel récurrent. Orchestrateur MINCE : il COMPOSE product-management:product-brainstorming (cadrer le besoin), engineering:architecture (trancher la structure) et skill-creator (rédiger / valider / packager le SKILL.md) — il ne réimplémente aucun des trois. Pilotable par sous-commandes : help, harvest (récolte ≤3 sujets du contexte de session + champ libre), create (brainstorm → archi → skill-creator, après validation), audit (convoque l'agent ezk-steward : gate mécanique + jugement du catalogue), deploy (range via scripts/deploy.sh : crée le dossier + symlink non-destructif, destination par défaut mega-city skills/). Frontière ADR-0001 : le LLM rédige/juge via les sous-skills, le script range. N'est PAS la fabrique de skills elle-même (ça, c'est skill-creator) ; c'est l'orchestrateur qui l'alimente depuis une conversation.",
-   "usage": "[help|harvest|create|deploy|audit]",
-   "etage": "librairie",
-   "composes": [
-    "ezk-backlog"
-   ],
-   "composesExternal": [],
-   "roles": [
-    "ezk-steward"
-   ],
-   "composedBy": [],
-   "profiles": [
-    "daily",
-    "desktop",
-    "global"
-   ]
-  },
-  "ezk-npm-scripts": {
-   "id": "ezk-npm-scripts",
-   "description": "Garantit que les scripts npm/pnpm/turbo d'un monorepo sont cohérents : chaque package enfant possède ses commandes, et le package.json RACINE les CENTRALISE sous des noms hiérarchiques clairs (verbe:cible[:sous-cible]) qui délèguent via --filter / turbo, pour qu'on lance tous les cas d'usage depuis la racine sans retaper --filter. A utiliser quand l'utilisateur veut « centraliser/nettoyer/ harmoniser les scripts », demande « pourquoi je dois taper --filter @scope/pkg », veut « toutes les commandes accessibles depuis le root », auditer/vérifier que les scripts du monorepo sont cohérents, ou s'assurer qu'un cas d'usage (dev:mobile:android, build:desktop, ci:local…) est piloté depuis la racine. Pilotable par sous-commandes : help, audit, fix, init, convention. AUDIT d'abord (rapport, ne modifie rien), fix opt-in (diff + confirmation). Référence de convention : le monorepo `muti`. NE force PAS le même set sur chaque package (une crate Rust ≠ une app Vite ≠ des docs) : vocabulaire partagé appliqué là où ça a du sens. Respecte le runner en place (turbo vs pnpm -r). Une seule responsabilité (hygiène des scripts) : s'intègre à ezk-ci et ezk-commits sans déborder sur CI/release/versioning.",
-   "usage": "[help|audit|fix|init|convention]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-pr": {
-   "id": "ezk-pr",
-   "description": "Chef d'orchestre du TEST-PUIS-MERGE d'un STOCK de PRs ouvertes. A utiliser quand l'utilisateur a plusieurs PRs à valider et demande « comment je les teste / les enchaîne / les merge », « dans quel ordre », « fais-moi un plan de test des PRs », « qu'est-ce qui reste à tester sur quelle PR », veut regrouper les tests device en une seule session, obtenir pour chaque PR le banc à démarrer et l'URL de démo, ou reporter dans chaque PR ce qui a été validé. Pilotable par sous-commandes : help, init (installe la convention « Validation » dans un repo — template PR mince + doc liée, sans jamais écraser un template existant), plan (analyse le stock : ordre de merge par dépendances/merge-tree, conflits, sessions de test groupées), run (déroule une session : démarre les bancs, tend URLs/checklists pas-à-pas), report (poste les résultats en commentaire des PRs), ship (squash-merge au vert + ezk-backlog ship). COMPOSE ezk-preview, ezk-device/ezk-apk, verify/run, ezk-backlog, ezk-commits — il ne réimplémente rien. N'est PAS ezk-sprint (qui PRODUIT une PR) : lui CONSOMME le stock. Une seule instance par repo.",
-   "usage": "[help|init|plan|run|report|ship] [#PR…]",
-   "etage": "modules",
-   "famille": "github",
-   "composes": [
-    "ezk-backlog",
-    "ezk-commits"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-product-build"
-   ],
-   "profiles": [
-    "global"
-   ]
-  },
-  "ezk-preview": {
-   "id": "ezk-preview",
-   "description": "Produce a shareable demo/preview URL for a work-in-progress feature (a branch or worktree). Use when the user asks for a demo link, a test or preview URL, a way to show a feature to someone, mentions \"lien de démo\", \"URL de test\", \"montre la feature\", \"accéder depuis mon téléphone\", \"démo privée\", or when a PR is ready and needs a preview. Picks a Vercel preview deploy when the app is deployable and Vercel-linked; opens a Cloudflare tunnel (cloudflared) to the local dev server for public sharing; or uses tailscale serve for a PRIVATE demo (own phone, peers in the tailnet, apps holding credentials or lacking auth — never expose those publicly). Returns the URL (QR code for phones) and can post it as a PR comment. For testing on a physical device over adb, use ezk-device instead.",
-   "usage": "[help|vercel|public|private|comment]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "cop1-target",
-    "global"
-   ]
-  },
-  "ezk-product-build": {
-   "id": "ezk-product-build",
-   "description": "Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit », « ezk-product-build », « itère en sprints automatiquement », « développe le backlog », « avance le produit tout seul », ou décrit une équipe scrum qui doit livrer en boucle. Orchestrateur MINCE : il COMPOSE ezk-backlog (le quoi), product-management:product-brainstorming (idéer/cadrer une fiche vague) et ezk-sprint (le build d'une feature : équipe scrum, BDD→TDD→gate→revue→PR→squash) — il ne réimplémente AUCUN des trois. Autonomie max ; s'arrête en suggestions-à-choix à 4 moments : inter-sprint, blocage, dérive tokens, idéation. Levier principal --mode (boîte de vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance). N'EST PAS le scrum master qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus qui décide quoi & quand, et le lui confie.",
-   "usage": "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]",
-   "etage": "methode",
-   "bande": "ceremonies",
-   "composes": [
-    "ezk-backlog",
-    "ezk-pr",
-    "ezk-retro",
-    "ezk-sprint"
-   ],
-   "composesExternal": [
-    "architecture",
-    "product-brainstorming"
-   ],
-   "roles": [
-    "ezk-pm"
-   ],
-   "composedBy": [
-    "vz-product-builder"
-   ],
-   "profiles": [
-    "daily",
-    "desktop",
-    "global"
-   ]
-  },
-  "ezk-readme": {
-   "id": "ezk-readme",
-   "description": "Crée ou audite le README d'un projet — le point d'entrée névralgique du repo : pitch en une ligne, badges adossés à une réalité (CI/release), quickstart, et des INDIRECTIONS vers les sources de vérité plutôt que des infos volatiles à maintenir, en descendant du général au particulier. A utiliser dès que l'utilisateur mentionne un README manquant, à écrire, refaire, améliorer, relire ou auditer (« il manque un README », « écris/refais le readme », « c'est quoi ce README », « le README est faux/périmé »), qu'un repo public n'a pas de README à la racine, qu'une fiche backlog de type readme/documentation d'accueil est tirée, ou en fin de sprint quand la porte d'entrée du repo ne reflète plus le projet. Pilotable par sous-commandes : help, create (génère depuis l'analyse du repo), audit (rapport + diff proposé, jamais d'écrasement direct).",
-   "usage": "[help|create|audit]",
-   "etage": "modules",
-   "famille": "techno",
-   "composes": [
-    "ezk-backlog"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": [
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-retro": {
-   "id": "ezk-retro",
-   "description": "Cérémonie d'AUTO-AMÉLIORATION DE LA MÉTHODE, déclenchée À LA DEMANDE par l'humain (Sujet A). A utiliser quand l'utilisateur veut « lancer une rétro », « améliorer la méthode / l'équipe / les règles », capitaliser une friction récurrente, « transformer un symptôme en règle mesurable », ajouter un principe d'archi / un item de DoD-DoR / une convention, ou faire le point après une PR ou un sprint qui a coincé. Déroule une cérémonie en ROUND-ROBIN (2 tours) entre les agents de l'équipe (ezk-architect, ezk-qa, ezk-reviewer, ezk-dev, ezk-pm) qui tombent d'accord sur des propositions RATTACHÉES À UN SYMPTÔME et MESURABLES (action, feature, spike, ou RÈGLE) — via les agents bindés du profil (ezk-architect, ezk-qa, ezk-dev, ezk-pm) —, les passe à un JUGE DE COHÉRENCE (chief-judge / ezk-steward : doublons ? contradictions avec les règles existantes ?), puis range SOUS CONTRÔLE DU PO : les non-règles vers ezk-backlog, les règles validées vers rules/ · bundles/ · DoD (toujours réversibles). Pilotable par sous-commandes : help, run, impose, retire. Le PO garde la main — AUCUNE auto-application. N'EST PAS l'auto-amélioration MESURÉE qui se déclenche sur des chiffres (ça, c'est le contrat d'améliorabilité, Sujet B / ADR-030) ; n'est pas ezk-sprint ni ezk-backlog — il les COMPOSE.",
-   "usage": "[help|run|impose|retire]",
-   "etage": "methode",
-   "bande": "ceremonies",
-   "composes": [
-    "ezk-backlog",
-    "ezk-chef"
-   ],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [
-    "ezk-product-build"
-   ],
-   "profiles": [
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-sprint": {
-   "id": "ezk-sprint",
-   "description": "Orchestrateur de developpement produit en sprints autonomes. A utiliser quand l'utilisateur veut construire ou iterer une feature ou un produit en mode sprint ou en POC, demande de developper, implementer ou iterer automatiquement, ou evoque une equipe agile (scrum master, architecte, dev, QA, reviewer). Deroule une boucle BDD/TDD vers clean code, clean arch et SOLID, valide TOUT en local d'abord (tests, pipeline act/Docker via ezk-ci, E2E navigateur via Playwright), revue, une PR par feature, squash-merge en conventional commit. Autonome a l'interieur d'un sprint mais s'arrete et demande validation entre chaque sprint, et alerte sur tout blocage ou derive de tokens. POC fonctionnel d'abord, polissage visuel ensuite.",
-   "usage": "[help|check|run]",
-   "etage": "methode",
-   "bande": "ceremonies",
-   "composes": [
-    "ezk-backlog",
-    "ezk-ci",
-    "ezk-commits"
-   ],
-   "composesExternal": [],
-   "roles": [
-    "ezk-architect",
-    "ezk-dev",
-    "ezk-qa",
-    "ezk-reviewer"
-   ],
-   "composedBy": [
-    "ezk-product-build",
-    "vz-product-builder"
-   ],
-   "profiles": [
-    "daily",
-    "global"
-   ]
-  },
-  "supervision-analyze": {
-   "id": "supervision-analyze",
-   "description": "Post-mortem Moniteur / supervision : quand le Moniteur dit « Silence prolongé », qu’un run semble figé, ou qu’on ne comprend pas ce qui a été émis. Lance le kit d’analyse déterministe (journal `.supervision/runs` + transcript Claude Code) — pas de LLM. Déclencheurs : « pourquoi silence Moniteur », « analyze supervision », « moniteur confus », « supervision:analyze », « post-mortem run ».",
-   "usage": "[chemin-projet=.]",
-   "etage": "modules",
-   "famille": "observabilite",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": []
-  },
-  "supervision-demo": {
-   "id": "supervision-demo",
-   "description": "Méthode JOUET à 2 gates pour éprouver le kit émetteur de supervisabilité (fiche 0050) depuis une session Claude Desktop réelle — SANS toucher aux skills de méthode de prod (ezk-*). A utiliser quand on veut tester l'émission du journal du contrat v0.1 : « teste le kit émetteur », « supervision-demo », « émets un journal jouet », « run de démo supervisabilité ». Déroule run_start → travail simulé → gate 1 (STOP, attend) → gate 2 (STOP, attend) → run_finished, en pilotant les 6 outils MCP de l'émetteur (dont `heartbeat`). N'est PAS une méthode de travail réelle : c'est le banc d'essai du contrat, jetable.",
-   "usage": "[sujet-du-run-jouet]",
-   "etage": "modules",
-   "famille": "observabilite",
-   "composes": [],
-   "composesExternal": [],
-   "roles": [],
-   "composedBy": [],
-   "profiles": []
-  },
-  "vz-product-builder": {
-   "id": "vz-product-builder",
-   "description": "Variante AUTONOME du product-builder (préfixe vz-, OVERLAY : n'écrase ni ne modifie ezk-product-build) : même doctrine product-owner — compose ezk-backlog (le quoi), product-brainstorming (cadrer) et ezk-sprint (le comment) — mais les checkpoints ne s'arrêtent plus vers l'humain : le builder convoque LUI-MÊME un corpus de reviewers (panel multi-lentilles + contradicteurs + synthèse) selon une échelle de coût à 3 crans, journalise chaque décision via le kit émetteur de supervisabilité, et ne s'arrête vers l'humain QUE sur les 4 STOP humains. A utiliser quand l'utilisateur veut « avancer sans que je réponde aux questions », « product builder autonome », « vz-product-builder », « mode corpus ». Refuse de démarrer sans le kit émetteur (l'autonomie sans journal = boîte noire).",
-   "usage": "[build|once|status] [--tokens lean|cap|full]",
-   "etage": "modules",
-   "famille": "overlay",
-   "composes": [
-    "ezk-backlog",
-    "ezk-product-build",
-    "ezk-sprint"
-   ],
-   "composesExternal": [
-    "product-brainstorming"
-   ],
-   "roles": [],
-   "composedBy": [],
-   "profiles": []
-  }
- },
- "agents": {
-  "ezk-architect": {
-   "id": "ezk-architect",
-   "description": "Architecte logiciel, a utiliser dans la boucle ezk-sprint a l'etape Archi, quand une feature justifie une decision de conception non triviale (frontieres de modules, structure, dependances, trade-offs). Produit une decision claire et un ADR court en respectant clean architecture et SOLID. Ne code pas, il decide et documente.",
-   "etage": "methode",
-   "model": "claude-opus-4-8",
-   "effort": "high",
-   "competences": [],
-   "interactions": [],
-   "convokedBy": [
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-archive": {
-   "id": "ezk-archive",
-   "description": "Rituel de CLÔTURE de session avant archivage — clôt proprement un repo pour ne rien perdre entre deux sessions (working tree, PRs/branches en attente, backlog, ADR, mémoire, note de handoff persistée). Invoqué via le skill `/ezk-archive`, qui lui délègue systématiquement pour figer le modèle/effort indépendamment du modèle de la session en cours. Reçoit dans le prompt la sous-commande (help/check/run), le chemin du repo, et un résumé de ce qui a été livré/décidé/ appris pendant la session — n'a AUCUNE mémoire de la conversation qui a précédé l'appel.",
-   "etage": "modules",
-   "famille": "hote-llm",
-   "model": "claude-opus-4-8",
-   "effort": "medium",
-   "competences": [
-    "ezk-backlog"
-   ],
-   "interactions": [],
-   "convokedBy": [],
-   "profiles": [
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-chef": {
-   "id": "ezk-chef",
-   "description": "Gardien de la famille « recette » (recipes/*.md). A utiliser pour verifier qu'une recette est bien formee avant/apres normalisation ou ajout — front-matter valide, pointeur fichier:ligne vers une implementation reelle, zero code recopie, presence dans le livre recipes/RECIPES.md. Lance d'abord la gate mecanique (regen-recipes.sh, champs front-matter, check-links sur recipes/), puis juge les deux SHOULD (playbook + composes, En clair en tete). Rend un verdict GO/NO-GO. Pas un role scrum.",
-   "etage": "librairie",
-   "model": "sonnet",
-   "effort": "low",
-   "competences": [],
-   "interactions": [],
-   "convokedBy": [],
-   "profiles": []
-  },
-  "ezk-dev": {
-   "id": "ezk-dev",
-   "description": "Developpeur TDD, a utiliser dans la boucle ezk-sprint a l'etape TDD POC, pour implementer le coeur d'une feature en red-green-refactor. Vise un POC fonctionnel (ca marche) en clean code, pas le polissage visuel. S'arrete des que les tests sont verts et renvoie un resume concis.",
-   "etage": "methode",
-   "model": "sonnet",
-   "effort": "medium",
-   "competences": [],
-   "interactions": [],
-   "convokedBy": [
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-pm": {
-   "id": "ezk-pm",
-   "description": "Product-owner décideur de l'équipe ezk. A utiliser quand un checkpoint ou un arbitrage produit doit être tranché À LA PLACE de l'opérateur — « on continue ? », choisir la prochaine fiche, arbitrer un blocage (option A/B), parquer un scope creep, dégrader le mode tokens — notamment depuis ezk-product-build en mode checkpoints auto, ou pour débloquer un run autonome (cop1). Décide d'après la fiche backlog, ses critères d'acceptation et LA LOI ; journalise chaque décision dans SPRINT.md ; REFUSE les 4 décisions humaines (irréversible/sortant, augmentation de budget, idée produit, exigences contradictoires). Ne déroule pas le sprint : il tranche.",
-   "etage": "methode",
-   "model": "claude-opus-4-8",
-   "effort": "high",
-   "competences": [
-    "ezk-backlog"
-   ],
-   "interactions": [],
-   "convokedBy": [
-    "ezk-product-build"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "desktop",
-    "global"
-   ]
-  },
-  "ezk-qa": {
-   "id": "ezk-qa",
-   "description": "QA / Business Analyst BDD + E2E, a utiliser dans la boucle ezk-sprint. Ecrit les scenarios d'acceptation Gherkin (Given/When/Then) qui constituent la Definition of Done, lance la suite de tests, et VALIDE une PR de bout en bout en pilotant l'app qui tourne via le Playwright MCP (navigate, click, fill, snapshot, screenshot). Ecrit les specs et valide ; ne developpe pas la feature.",
-   "etage": "methode",
-   "model": "sonnet",
-   "effort": "medium",
-   "competences": [],
-   "interactions": [],
-   "convokedBy": [
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global"
-   ]
-  },
-  "ezk-reviewer": {
-   "id": "ezk-reviewer",
-   "description": "Reviewer ADVERSE senior de la boucle ezk-sprint (étape Revue). On lui confie le diff d'une feature (branche `feat/\u003cid>-\u003cslug>` vs `main`, ou une PR ouverte) et il cherche activement à le CASSER — correctness, sécurité, perf, contrats/API, clean code & SOLID, et surtout la qualité RÉELLE des tests — puis rend un verdict GO/NO-GO bloquant. Tourne sur un modèle DIFFÉRENT du dev (ezk-dev = Sonnet → reviewer = Opus) pour une seconde opinion indépendante : il REMPLACE la revue Codex quand la CI cloud est indisponible (quota GitHub épuisé, repo privé). Compose /code-review, /security-review, /simplify, et valide en LOCAL via act/ezk-ci — jamais en comptant sur la CI GitHub. Ne développe pas : il juge, motive, et bloque.",
-   "etage": "methode",
-   "model": "claude-opus-4-8",
-   "effort": "high",
-   "competences": [
-    "ezk-ci"
-   ],
-   "interactions": [
-    "clean-code/no-dead-code"
-   ],
-   "convokedBy": [
-    "ezk-sprint"
-   ],
-   "profiles": [
-    "cop1-target",
-    "daily",
-    "global",
-    "mobile"
-   ]
-  },
-  "ezk-steward": {
-   "id": "ezk-steward",
-   "description": "Gardien de la librairie claude-skills. A utiliser pour auditer le repo lui-meme et verifier que les skills, agents, README et scripts sont coherents, conformes aux conventions et fonctionnels. Lance d'abord la gate mecanique du repo (tests et typecheck de mega-city, plus le controle des liens markdown), puis juge ce qu'un linter ne voit pas (qualite des descriptions qui declenchent, chevauchements, une responsabilite par skill, references croisees, README a jour) et si chaque skill ferait vraiment son job. Rend un verdict GO/NO-GO avec des findings. Pas un role scrum.",
-   "etage": "librairie",
-   "model": "sonnet",
-   "effort": "low",
-   "competences": [],
-   "interactions": [],
-   "convokedBy": [
-    "ezk-ezk"
-   ],
-   "profiles": [
-    "daily",
-    "global"
-   ]
-  }
- },
- "rules": {
-  "architecture/config-secrets-12factor": {
-   "id": "architecture/config-secrets-12factor",
-   "title": "Configuration, Secrets, and 12-Factor",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/containerization-local": {
-   "id": "architecture/containerization-local",
-   "title": "Containerization & Local Execution",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/data-persistence-mvp": {
-   "id": "architecture/data-persistence-mvp",
-   "title": "Data & Persistence (MVP Approach)",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/documentation-on-demand": {
-   "id": "architecture/documentation-on-demand",
-   "title": "Documentation (On-Demand Only)",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/hexagonal-architecture": {
-   "id": "architecture/hexagonal-architecture",
-   "title": "Hexagonal Architecture (Ports & Adapters)",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/mvp-first": {
-   "id": "architecture/mvp-first",
-   "title": "MVP-First Product Intent",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/operational-scripts": {
-   "id": "architecture/operational-scripts",
-   "title": "Operational Scripts (DX & Runbooks)",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/provisioning-deployment": {
-   "id": "architecture/provisioning-deployment",
-   "title": "Provisioning / Deployment (Generic)",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "architecture/repo-structure": {
-   "id": "architecture/repo-structure",
-   "title": "Repository Structure (Conceptual)",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "architecture"
-   ],
-   "agents": []
-  },
-  "ci-cd/artifact-strategy": {
-   "id": "ci-cd/artifact-strategy",
-   "title": "Build Artifact Strategy",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "ci-cd"
-   ],
-   "agents": []
-  },
-  "ci-cd/ci-coverage": {
-   "id": "ci-cd/ci-coverage",
-   "title": "CI Coverage Requirements",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "ci-cd"
-   ],
-   "agents": []
-  },
-  "ci-cd/fix-workflow": {
-   "id": "ci-cd/fix-workflow",
-   "title": "CI Fix Workflow",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "ci-cd"
-   ],
-   "agents": []
-  },
-  "ci-cd/investigate-failures": {
-   "id": "ci-cd/investigate-failures",
-   "title": "Investigate CI Build Failures",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "ci-cd"
-   ],
-   "agents": []
-  },
-  "ci-cd/local-reproduction": {
-   "id": "ci-cd/local-reproduction",
-   "title": "Local Reproduction Commands",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "hook"
-   ],
-   "bundles": [
-    "ci-cd"
-   ],
-   "agents": []
-  },
-  "ci-cd/smoke-tests": {
-   "id": "ci-cd/smoke-tests",
-   "title": "Smoke Tests in CI",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "ci-cd"
-   ],
-   "agents": []
-  },
-  "clean-code/comments": {
-   "id": "clean-code/comments",
-   "title": "Comments Are a Last Resort",
-   "kind": "disposition",
-   "level": "MAY",
-   "enforcements": [],
-   "bundles": [
-    "clean-code"
-   ],
-   "agents": []
-  },
-  "clean-code/dry-principle": {
-   "id": "clean-code/dry-principle",
-   "title": "Don't Repeat Yourself (DRY)",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "clean-code"
-   ],
-   "agents": []
-  },
-  "clean-code/meaningful-names": {
-   "id": "clean-code/meaningful-names",
-   "title": "Use Meaningful Names",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "clean-code"
-   ],
-   "agents": []
-  },
-  "clean-code/no-dead-code": {
-   "id": "clean-code/no-dead-code",
-   "title": "",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "base",
-    "clean-code"
-   ],
-   "agents": [
-    "ezk-reviewer"
-   ]
-  },
-  "clean-code/no-side-effects": {
-   "id": "clean-code/no-side-effects",
-   "title": "Avoid Side Effects",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "clean-code"
-   ],
-   "agents": []
-  },
-  "clean-code/small-functions": {
-   "id": "clean-code/small-functions",
-   "title": "Keep Functions Small",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "clean-code"
-   ],
-   "agents": []
-  },
-  "conventional-commits/format": {
-   "id": "conventional-commits/format",
-   "title": "Conventional Commit format",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "hook"
-   ],
-   "bundles": [
-    "base",
-    "conventional-commits"
-   ],
-   "agents": []
-  },
-  "conventional-commits/meaningful-scope": {
-   "id": "conventional-commits/meaningful-scope",
-   "title": "Scope names a real area of the codebase",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "conventional-commits"
-   ],
-   "agents": []
-  },
-  "development/active-views-exclude-terminal-status": {
-   "id": "development/active-views-exclude-terminal-status",
-   "title": "Une vue du travail exclut les statuts terminaux par le statut, pas par le dossier done/",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/adversarial-review-before-merge": {
-   "id": "development/adversarial-review-before-merge",
-   "title": "Toute livraison passe une revue adverse avant merge",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/command-reproducibility": {
-   "id": "development/command-reproducibility",
-   "title": "Une instruction inline oriente le QUOI, jamais le COMMENT d'une commande",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/fiche-read-via-loader": {
-   "id": "development/fiche-read-via-loader",
-   "title": "La lecture d'une fiche passe par le loader testé, jamais par un parse maison",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/handle-blockers": {
-   "id": "development/handle-blockers",
-   "title": "Stop and Inform on Blockers",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/local-first-feedback": {
-   "id": "development/local-first-feedback",
-   "title": "Local-First Feedback Loop",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/merge-when-absent-default": {
-   "id": "development/merge-when-absent-default",
-   "title": "En mode auto, une fiche verte se merge — le merge n'est pas un STOP",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/playwright-mcp-usage": {
-   "id": "development/playwright-mcp-usage",
-   "title": "Playwright MCP Usage",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/pr-before-after-media": {
-   "id": "development/pr-before-after-media",
-   "title": "Before/After Media in PR Description",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "base",
-    "development"
-   ],
-   "agents": []
-  },
-  "development/quality-guardrails": {
-   "id": "development/quality-guardrails",
-   "title": "Quality and Consistency Guardrails",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/run-freshness-origin-main": {
-   "id": "development/run-freshness-origin-main",
-   "title": "Un run part d'un origin/main frais — avertir, ou se réaligner quand c'est sûr",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/test-philosophy": {
-   "id": "development/test-philosophy",
-   "title": "Testing Philosophy",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/use-project-scripts": {
-   "id": "development/use-project-scripts",
-   "title": "Use Project Scripts as Source of Truth",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/workaround-traceability": {
-   "id": "development/workaround-traceability",
-   "title": "Document Workarounds and Decisions",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/worktree-secondary-inline-harvest": {
-   "id": "development/worktree-secondary-inline-harvest",
-   "title": "En worktree secondaire, délégation inline ou moisson vérifiée",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "development"
-   ],
-   "agents": []
-  },
-  "development/yaml-emission-via-lib": {
-   "id": "development/yaml-emission-via-lib",
-   "title": "Le front-matter généré est émis par la lib YAML, jamais par concaténation",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "documentation-guidelines/changelog": {
-   "id": "documentation-guidelines/changelog",
-   "title": "Maintain Changelog",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "documentation-guidelines/contributing-guide": {
-   "id": "documentation-guidelines/contributing-guide",
-   "title": "Contributing Documentation",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "documentation-guidelines/human-facing-lisibility": {
-   "id": "documentation-guidelines/human-facing-lisibility",
-   "title": "Human-Facing Artefact Lisibility",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "documentation-guidelines/proven-outbound-references": {
-   "id": "documentation-guidelines/proven-outbound-references",
-   "title": "Proven Outbound References",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "documentation-guidelines/readme-structure": {
-   "id": "documentation-guidelines/readme-structure",
-   "title": "README as Landing Page",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "documentation-guidelines/user-guide": {
-   "id": "documentation-guidelines/user-guide",
-   "title": "Separate User Guide",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "hexagonal/adapter-location": {
-   "id": "hexagonal/adapter-location",
-   "title": "Adapters Live in Infrastructure",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "hexagonal/dependency-inversion": {
-   "id": "hexagonal/dependency-inversion",
-   "title": "Invert Dependencies via Ports",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "hexagonal/domain-isolation": {
-   "id": "hexagonal/domain-isolation",
-   "title": "Domain Must Be Isolated",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "hexagonal/shared-libs-no-config": {
-   "id": "hexagonal/shared-libs-no-config",
-   "title": "Shared Libraries Don't Read Config",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "hexagonal/wiring-at-edge": {
-   "id": "hexagonal/wiring-at-edge",
-   "title": "Wiring at the Edge",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [],
-   "agents": []
-  },
-  "recipe/indexed": {
-   "id": "recipe/indexed",
-   "title": "Une recette est indexée dans le livre",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "recipe/lists-tasks-and-composes": {
-   "id": "recipe/lists-tasks-and-composes",
-   "title": "Playbook + composes + profil référencé",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "recipe/no-stored-code": {
-   "id": "recipe/no-stored-code",
-   "title": "Aucun code recopié dans une recette",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "recipe/plain-language-first": {
-   "id": "recipe/plain-language-first",
-   "title": "« En clair » en tête de recette",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "recipe/points-to-real-example": {
-   "id": "recipe/points-to-real-example",
-   "title": "Une recette pointe un exemple réel",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "recipe/valid-frontmatter": {
-   "id": "recipe/valid-frontmatter",
-   "title": "Front-matter de recette valide",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [],
-   "agents": []
-  },
-  "testing/manual-validation-camera-gesture": {
-   "id": "testing/manual-validation-camera-gesture",
-   "title": "« Validé » ≠ « tests verts » pour une fiche caméra ou geste",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "testing"
-   ],
-   "agents": []
-  },
-  "testing/mobile-first-testing": {
-   "id": "testing/mobile-first-testing",
-   "title": "Mobile-First Testing (Mandatory)",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "testing"
-   ],
-   "agents": []
-  },
-  "testing/mobile-interactions": {
-   "id": "testing/mobile-interactions",
-   "title": "Mobile Interaction Testing",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "testing"
-   ],
-   "agents": []
-  },
-  "testing/playwright-workflow": {
-   "id": "testing/playwright-workflow",
-   "title": "Playwright Testing Workflow",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "agent-check"
-   ],
-   "bundles": [
-    "testing"
-   ],
-   "agents": []
-  },
-  "testing/visual-validation": {
-   "id": "testing/visual-validation",
-   "title": "Visual Validation",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "testing"
-   ],
-   "agents": []
-  },
-  "token-economy/batch-tool-calls": {
-   "id": "token-economy/batch-tool-calls",
-   "title": "Batch independent tool calls",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "token-economy"
-   ],
-   "agents": []
-  },
-  "token-economy/checkpoint-before-cost": {
-   "id": "token-economy/checkpoint-before-cost",
-   "title": "Checkpoint before expensive work",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "token-economy"
-   ],
-   "agents": []
-  },
-  "token-economy/concise-output": {
-   "id": "token-economy/concise-output",
-   "title": "Be concise",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "prompt"
-   ],
-   "bundles": [
-    "token-economy"
-   ],
-   "agents": []
-  },
-  "token-economy/read-once": {
-   "id": "token-economy/read-once",
-   "title": "Don't re-read what you already have",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "token-economy"
-   ],
-   "agents": []
-  },
-  "token-economy/targeted-reads": {
-   "id": "token-economy/targeted-reads",
-   "title": "Read only what you need",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "token-economy"
-   ],
-   "agents": []
-  },
-  "token-economy/verification-budget": {
-   "id": "token-economy/verification-budget",
-   "title": "Size verification by the cost of checking",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "token-economy"
-   ],
-   "agents": []
-  },
-  "typescript-2026/const-assertions": {
-   "id": "typescript-2026/const-assertions",
-   "title": "Use const assertions",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "typescript-2026"
-   ],
-   "agents": []
-  },
-  "typescript-2026/discriminated-unions": {
-   "id": "typescript-2026/discriminated-unions",
-   "title": "Prefer Discriminated Unions",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "typescript-2026"
-   ],
-   "agents": []
-  },
-  "typescript-2026/explicit-return-types": {
-   "id": "typescript-2026/explicit-return-types",
-   "title": "Explicit Return Types for Exports",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [],
-   "bundles": [
-    "typescript-2026"
-   ],
-   "agents": []
-  },
-  "typescript-2026/no-enums": {
-   "id": "typescript-2026/no-enums",
-   "title": "Avoid Enums",
-   "kind": "disposition",
-   "level": "MAY",
-   "enforcements": [],
-   "bundles": [
-    "typescript-2026"
-   ],
-   "agents": []
-  },
-  "typescript-2026/prefer-unknown": {
-   "id": "typescript-2026/prefer-unknown",
-   "title": "Prefer unknown over any",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [],
-   "bundles": [
-    "typescript-2026"
-   ],
-   "agents": []
-  },
-  "typescript-2026/strict-config": {
-   "id": "typescript-2026/strict-config",
-   "title": "Strict Configuration",
-   "kind": "disposition",
-   "level": "MUST",
-   "enforcements": [
-    "hook"
-   ],
-   "bundles": [
-    "typescript-2026"
-   ],
-   "agents": []
-  },
-  "ux/no-layout-shift": {
-   "id": "ux/no-layout-shift",
-   "title": "Réserver l'espace des éléments optionnels",
-   "kind": "disposition",
-   "level": "SHOULD",
-   "enforcements": [
-    "prompt"
-   ],
-   "bundles": [],
-   "agents": []
-  }
- },
- "bundles": {
-  "architecture": {
-   "id": "architecture",
-   "extends": [],
-   "rules": [
-    "architecture/config-secrets-12factor",
-    "architecture/containerization-local",
-    "architecture/data-persistence-mvp",
-    "architecture/documentation-on-demand",
-    "architecture/hexagonal-architecture",
-    "architecture/mvp-first",
-    "architecture/operational-scripts",
-    "architecture/provisioning-deployment",
-    "architecture/repo-structure"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "base": {
-   "id": "base",
-   "extends": [],
-   "rules": [
-    "clean-code/no-dead-code",
-    "conventional-commits/format",
-    "development/pr-before-after-media"
-   ],
-   "profiles": [
-    "base",
-    "cop1-target",
-    "daily",
-    "desktop",
-    "global"
-   ]
-  },
-  "ci-cd": {
-   "id": "ci-cd",
-   "extends": [],
-   "rules": [
-    "ci-cd/artifact-strategy",
-    "ci-cd/ci-coverage",
-    "ci-cd/fix-workflow",
-    "ci-cd/investigate-failures",
-    "ci-cd/local-reproduction",
-    "ci-cd/smoke-tests"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "clean-code": {
-   "id": "clean-code",
-   "extends": [],
-   "rules": [
-    "clean-code/comments",
-    "clean-code/dry-principle",
-    "clean-code/meaningful-names",
-    "clean-code/no-dead-code",
-    "clean-code/no-side-effects",
-    "clean-code/small-functions"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "conventional-commits": {
-   "id": "conventional-commits",
-   "extends": [],
-   "rules": [
-    "conventional-commits/format",
-    "conventional-commits/meaningful-scope"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "development": {
-   "id": "development",
-   "extends": [],
-   "rules": [
-    "development/active-views-exclude-terminal-status",
-    "development/adversarial-review-before-merge",
-    "development/command-reproducibility",
-    "development/fiche-read-via-loader",
-    "development/handle-blockers",
-    "development/local-first-feedback",
-    "development/merge-when-absent-default",
-    "development/playwright-mcp-usage",
-    "development/pr-before-after-media",
-    "development/quality-guardrails",
-    "development/run-freshness-origin-main",
-    "development/test-philosophy",
-    "development/use-project-scripts",
-    "development/workaround-traceability",
-    "development/worktree-secondary-inline-harvest"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "mobile": {
-   "id": "mobile",
-   "extends": [
-    "base"
-   ],
-   "rules": [],
-   "profiles": [
-    "mobile"
-   ]
-  },
-  "testing": {
-   "id": "testing",
-   "extends": [],
-   "rules": [
-    "testing/manual-validation-camera-gesture",
-    "testing/mobile-first-testing",
-    "testing/mobile-interactions",
-    "testing/playwright-workflow",
-    "testing/visual-validation"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "token-economy": {
-   "id": "token-economy",
-   "extends": [],
-   "rules": [
-    "token-economy/batch-tool-calls",
-    "token-economy/checkpoint-before-cost",
-    "token-economy/concise-output",
-    "token-economy/read-once",
-    "token-economy/targeted-reads",
-    "token-economy/verification-budget"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  },
-  "typescript-2026": {
-   "id": "typescript-2026",
-   "extends": [],
-   "rules": [
-    "typescript-2026/const-assertions",
-    "typescript-2026/discriminated-unions",
-    "typescript-2026/explicit-return-types",
-    "typescript-2026/no-enums",
-    "typescript-2026/prefer-unknown",
-    "typescript-2026/strict-config"
-   ],
-   "profiles": [
-    "cop1-target"
-   ]
-  }
- },
- "profiles": {
-  "base": {
-   "id": "base",
-   "extends": [],
-   "bundles": [
-    "base"
-   ],
-   "agents": [],
-   "skills": [
-    "ezk-archive"
-   ],
-   "interactions": []
-  },
-  "cop1-target": {
-   "id": "cop1-target",
-   "extends": [
-    "base"
-   ],
-   "bundles": [
-    "architecture",
-    "base",
-    "ci-cd",
-    "clean-code",
-    "conventional-commits",
-    "development",
-    "testing",
-    "token-economy",
-    "typescript-2026"
-   ],
-   "agents": [
-    "ezk-architect",
-    "ezk-dev",
-    "ezk-pm",
-    "ezk-qa",
-    "ezk-reviewer"
-   ],
-   "skills": [
-    "ezk-backlog",
-    "ezk-ci",
-    "ezk-commits",
-    "ezk-design-system",
-    "ezk-diagram",
-    "ezk-npm-scripts",
-    "ezk-preview"
-   ],
-   "interactions": []
-  },
-  "daily": {
-   "id": "daily",
-   "extends": [
-    "base"
-   ],
-   "bundles": [
-    "base"
-   ],
-   "agents": [
-    "ezk-architect",
-    "ezk-archive",
-    "ezk-dev",
-    "ezk-pm",
-    "ezk-qa",
-    "ezk-reviewer",
-    "ezk-steward"
-   ],
-   "skills": [
-    "ezk-archive",
-    "ezk-backlog",
-    "ezk-ci",
-    "ezk-commits",
-    "ezk-design-system",
-    "ezk-diagram",
-    "ezk-docker",
-    "ezk-ezk",
-    "ezk-npm-scripts",
-    "ezk-product-build",
-    "ezk-readme",
-    "ezk-retro",
-    "ezk-sprint"
-   ],
-   "interactions": []
-  },
-  "desktop": {
-   "id": "desktop",
-   "extends": [
-    "base"
-   ],
-   "bundles": [
-    "base"
-   ],
-   "agents": [
-    "ezk-pm"
-   ],
-   "skills": [
-    "ezk-backlog",
-    "ezk-diagram",
-    "ezk-ezk",
-    "ezk-product-build"
-   ],
-   "interactions": []
-  },
-  "global": {
-   "id": "global",
-   "extends": [
-    "base"
-   ],
-   "bundles": [
-    "base"
-   ],
-   "agents": [
-    "ezk-architect",
-    "ezk-archive",
-    "ezk-dev",
-    "ezk-pm",
-    "ezk-qa",
-    "ezk-reviewer",
-    "ezk-steward"
-   ],
-   "skills": [
-    "ezk-apk",
-    "ezk-archive",
-    "ezk-article",
-    "ezk-backlog",
-    "ezk-ci",
-    "ezk-codex",
-    "ezk-commits",
-    "ezk-design-system",
-    "ezk-device",
-    "ezk-diagram",
-    "ezk-docker",
-    "ezk-ezk",
-    "ezk-npm-scripts",
-    "ezk-pr",
-    "ezk-preview",
-    "ezk-product-build",
-    "ezk-readme",
-    "ezk-retro",
-    "ezk-sprint"
-   ],
-   "interactions": []
-  },
-  "mobile": {
-   "id": "mobile",
-   "extends": [
-    "base"
-   ],
-   "bundles": [
-    "mobile"
-   ],
-   "agents": [
-    "ezk-reviewer"
-   ],
-   "skills": [
-    "ezk-commits"
-   ],
-   "interactions": []
-  }
- }
-};
-/*ezk-map-data:end*/
-</script>
+<script src="carte-interactive.data.js"></script>
 
 <script>
 (function(){
@@ -2445,7 +479,7 @@ window.EZK = {
     try{ localStorage.setItem('ezk-theme', root.dataset.theme); }catch(e){}
   });
 
-  if(!D){ $('proof-text').textContent = 'données absentes — lancer pnpm map:data'; $('proof').classList.add('bad'); return; }
+  if(!D){ $('proof-text').textContent = 'données absentes — lancer pnpm ezk dashboard (ou pnpm --dir products/mega-city views:regen)'; $('proof').classList.add('bad'); return; }
 
   /* ── vocabulaire d'affichage ── */
   const KIND = {
@@ -2454,52 +488,149 @@ window.EZK = {
     rule:   {label:'règle', color:'var(--law)', cls:'c-law'},
     bundle: {label:'bundle de règles', color:'var(--law)', cls:'c-law'},
     profile:{label:'profil', color:'var(--pro)', cls:'c-pro'},
+    tool:   {label:'outil', color:'var(--asm)', cls:''},
   };
   const BAND_CLS = {ceremonies:'c-cmd', artefacts:'c-flow', outillage:'c-asm', 'hors-bande':'c-warn'};
 
-  /* ── preuve de fraîcheur ── */
+  /* ── preuve de fraîcheur + provenance : quelle part de la carte est PROUVÉE (un fichier la
+     déclare) et quelle part est DÉDUITE (écrite à la main). Arrondi vers le bas : 100 % ne
+     s'affiche que s'il n'y a rien de déduit. ── */
+  const P = D.provenance;
+  const total = (c) => c.briques + c.liens + c.ceremonies + c.cycle + c.assemblage;
+  const nProuve = total(P.prouve), nDeduit = total(P.deduit);
+  const pct = Math.floor(100 * nProuve / (nProuve + nDeduit));
   $('proof-text').textContent =
     D.liens.total + ' liens · ' + (D.liens.casses ? D.liens.casses + ' cassé(s) ⚠' : '0 cassé') +
-    ' · ' + D.counts.rules + ' règles · ' + D.counts.skills + ' commandes';
+    ' · ' + D.counts.rules + ' règles · ' + D.counts.skills + ' commandes · ' + D.counts.tools + ' outils';
+  $('proof-ratio').textContent = pct + ' % prouvé' + (nDeduit ? ' · ' + nDeduit + ' déduits (pointillés)' : '');
+  $('proof').title = 'Prouvé (' + nProuve + ') : lu dans un fichier du dépôt, vérifié à la régénération. ' +
+    'Déduit (' + nDeduit + ') : écrit à la main dans la carte, aucun fichier du catalogue ne le déclare (pointillés). ' +
+    'Regen : pnpm --dir products/mega-city views:regen';
   if(D.liens.casses) $('proof').classList.add('bad');
+  /* Par nature, « prouvé/total » : le chiffre global est porté par les liens ; le détail montre
+     où se cache le déduit (ici : le cycle écrit à la main). */
+  const NATURES = [['briques','briques'], ['liens','liens'], ['cérémonies','ceremonies'],
+    ['cycle écrit à la main','cycle'], ['assemblage hors graphe','assemblage']];
+  const parNature = NATURES
+    .filter(([, k]) => P.prouve[k] + P.deduit[k] > 0)
+    .map(([label, k]) => label + ' ' + P.prouve[k] + '/' + (P.prouve[k] + P.deduit[k])).join(' · ');
+  $('prov').innerHTML = '<b>Provenance : ' + pct + ' % prouvé</b> (' + nProuve + ' sur ' + (nProuve + nDeduit) +
+    ' éléments lus dans un fichier du dépôt). Par nature : ' + parNature + '. ' +
+    (nDeduit ? 'Les ' + nDeduit + ' autres sont des <b>lectures d’auteur</b>, en pointillé : aucun fichier du catalogue ne les déclare. ' : '') +
+    'Le dossier de chaque carte donne son fichier source.';
 
   /* ── légende ── */
   $('legend').innerHTML = [
     ['var(--cmd)','Commandes (skills)'], ['var(--cap)','Juges (agents)'],
-    ['var(--law)','La loi (règles & bundles)'], ['var(--pro)','Profils'], ['var(--warn)','Bruit à trancher'],
-  ].map(([c,l]) => '<span class="key"><span class="sw" style="background:'+c+'"></span>'+l+'</span>').join('');
+    ['var(--law)','La loi (règles & bundles)'], ['var(--pro)','Profils'], ['var(--asm)','Outils (scripts)'],
+    ['var(--warn)','Bruit à trancher'],
+  ].map(([c,l]) => '<span class="key"><span class="sw" style="background:'+c+'"></span>'+l+'</span>').join('') +
+    '<span class="key"><span class="sw dashed"></span>Pointillé = lecture d’auteur (aucun fichier du catalogue ne le déclare)</span>';
 
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const firstSentence = (s) => { const m = String(s).split(/(?<=\.)\s/)[0]; return m.length > 170 ? m.slice(0,167)+'…' : m; };
 
-  const chip = (kind, id, extra) =>
-    '<button class="chip" data-open="'+kind+':'+esc(id)+'"><span class="sw" style="background:'+KIND[kind].color+'"></span>'+esc(id)+(extra||'')+'</button>';
+  /* ── provenance cliquable : le lien ouvre le fichier. Servie par `pnpm ezk:map` (boucle locale),
+     la carte lit le fichier du dépôt local ; ouverte ailleurs (file://, publiée), elle pointe GitHub.
+     Hypothèse assumée : dépôt public `elzinko/vectorz`, branche `main` — si l'un des deux change,
+     ce préfixe est la seule ligne à corriger. ── */
+  const REPO_BLOB = 'https://github.com/elzinko/vectorz/blob/main/';
+  const LOCAL = /^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname);
+  const srcHref = (path) => (LOCAL ? '/' : REPO_BLOB) + path.split('/').map(encodeURIComponent).join('/');
+  const srcLine = (path, label) => path
+    ? '<div class="d-src"><span class="tag">'+(label||'source')+'</span><a href="'+esc(srcHref(path))+
+      '" target="_blank" rel="noopener" title="ouvrir le fichier">'+esc(path)+' ↗</a></div>'
+    : '<div class="d-src inferred"><span class="tag">déduit</span>aucun fichier ne déclare cet élément</div>';
 
-  /* ── le cycle (storyboard éditorial : les cartes citées sont réelles).
-     `humains` = acteurs RÉELS mais absents du modèle (chips grises, non cliquables) :
-     les afficher rend le trou visible au lieu de le cacher. ── */
-  const CYCLE = [
-    {n:1, t:'La fiche', scrum:'Product Backlog', p:'Le PO capture le besoin, la fiche mûrit jusqu’à « ready ».', etape:['ezk-backlog'], acteurs:[], humains:['Toi (PO)']},
-    {n:2, t:'Le tirage', scrum:'≈ Sprint Planning', p:'La prochaine fiche prête est tirée ; en mode auto, ezk-pm décide à ta place.', etape:['ezk-product-build'], acteurs:['ezk-pm'], humains:['Toi (PO)']},
-    {n:3, t:'Le run', scrum:'≈ Sprint (une fiche)', p:'La boucle BDD/TDD construit UNE feature en convoquant les juges.', etape:['ezk-sprint'], acteurs:['ezk-architect','ezk-dev','ezk-qa','ezk-reviewer'], humains:[]},
-    {n:4, t:'La livraison', scrum:'release gate — ≠ Sprint Review', p:'Gate + revue, puis squash-merge — dans le flux nominal, par le sprint lui-même ; ezk-pr pilote le stock de PRs en attente.', etape:['ezk-pr','ezk-codex'], acteurs:[], humains:['Toi (PO)','Codex (bot)']},
-    {n:5, t:'La rétro', scrum:'≈ Rétrospective (à la demande)', p:'Après un ou plusieurs runs : l’équipe inspecte la méthode elle-même.', etape:['ezk-retro'], acteurs:[], humains:['Toi (PO)']},
-  ];
-  const stepGroup = (label, kind, ids) => {
-    const chips = ids.filter((id) => (kind==='skill'?D.skills:D.agents)[id]).map((id) => chip(kind,id)).join('');
-    return chips ? '<div class="meta"><span class="tag">'+label+'</span>'+chips+'</div>' : '';
+  const STORES = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles, tool:D.tools};
+  /* Une puce cite une brique du catalogue. Id inconnu (écrit à la main dans la page) : jamais en
+     silence — la puce s'affiche en pointillé, marquée « ? », non cliquable. */
+  const chip = (kind, id, extra) => {
+    const e = STORES[kind] && STORES[kind][id];
+    if(!e) return '<span class="chip inferred" style="cursor:default" title="absent du catalogue : aucune source (lecture d’auteur)">'+
+      esc(id)+' ?</span>';
+    return '<button class="chip" data-open="'+kind+':'+esc(id)+'" title="source : '+esc(e.source||'aucune (déduit)')+'">'+
+      '<span class="sw" style="background:'+KIND[kind].color+'"></span>'+esc(id)+(extra||'')+'</button>';
   };
+
+  /* ── le cycle (storyboard éditorial, compilé par src/core/cycle.ts) : le texte est écrit à la
+     main, mais chaque puce est CLASSÉE. Pleine = un fichier l'appuie (le survol dit lequel) ;
+     pointillée = lecture d'auteur, aucun fichier ne la relie à ce temps. `humains` = acteurs
+     RÉELS mais absents du modèle : toujours en pointillé, non cliquables — le trou reste visible. ── */
+  const cycleChip = (kind, c) =>
+    '<button class="chip'+(c.prouve?'':' inferred')+'" data-open="'+kind+':'+esc(c.id)+'" title="'+
+    esc(c.prouve ? 'prouvé — ' + c.via : 'lecture d’auteur — aucun fichier ne relie ' + c.id + ' à ce temps')+'">'+
+    '<span class="sw" style="background:'+KIND[kind].color+'"></span>'+esc(c.id)+'</button>';
+  const stepGroup = (label, kind, chips) => chips.length
+    ? '<div class="meta"><span class="tag">'+label+'</span>'+chips.map((c) => cycleChip(kind,c)).join('')+'</div>'
+    : '';
   const humanGroup = (names) => names.length
     ? '<div class="meta"><span class="tag">humains</span>'+names.map((x) =>
-        '<span class="chip" style="cursor:default;border-style:dashed">'+esc(x)+'</span>').join('')+'</div>'
+        '<span class="chip inferred" style="cursor:default" title="acteur réel, absent du modèle : aucun fichier ne le déclare">'+
+        esc(x)+'</span>').join('')+'</div>'
     : '';
-  $('cycle').innerHTML = CYCLE.map((s) =>
+  $('cycle').innerHTML = D.cycle.map((s) =>
     '<div class="step"><span class="n">'+s.n+'</span><h3>'+esc(s.t)+'</h3>'+
     '<div style="margin:-1px 0 6px"><span class="tag">'+esc(s.scrum)+'</span></div>'+
     '<p>'+esc(s.p)+'</p>'+
     stepGroup('étape','skill',s.etape)+stepGroup('acteurs','agent',s.acteurs)+humanGroup(s.humains)+
-    '<span class="arrow">→</span></div>'
+    '<span class="arrow" title="puis" aria-label="puis">→</span></div>'
   ).join('');
+
+  /* ── L'ASSEMBLAGE : qui compose quoi — compilé (src/core/assemblage.ts), jamais écrit à la main.
+     Une hiérarchie, pas une file : le profil CONTIENT des bundles, des juges et des commandes ;
+     un bundle CONTIENT des règles. Chaque flèche porte le verbe du graphe et le nombre de liens
+     qui la portent. Le bind est hors graphe (du code) : dessiné en pointillé, compté « déduit ». ── */
+  const A = D.assemblage;
+  const NODE_LABEL = {profile:'Profil', bundle:'Bundle', rule:'Règle', agent:'Juge', skill:'Commande', tool:'Outil'};
+  const NODE_HINT = {profile:'le bon de commande d’une cible', bundle:'un classeur de règles',
+    rule:'une consigne de travail', agent:'un rôle (agent)', skill:'une commande (skill)', tool:'un script de la méthode'};
+  const NODE_COLOR = {profile:'var(--pro)', bundle:'var(--law)', rule:'var(--law)', agent:'var(--cap)', skill:'var(--cmd)', tool:'var(--asm)'};
+  const VERB_LABEL = {compose:'compose', convoque:'convoque', applique:'applique', 'est-verifie-par':'est vérifiée par', utilise:'utilise'};
+  const arrowN = (from, verb, to) =>
+    (A.arrows.find((a) => a.from === from && a.verb === verb && a.to === to) || {count:0}).count;
+  const asmNode = (kind, extra) =>
+    '<div class="asm-node" style="--c:'+NODE_COLOR[kind]+'"><b>'+NODE_LABEL[kind]+' ×'+A.nodes[kind]+'</b>'+
+    '<small>'+NODE_HINT[kind]+'</small>'+(extra||'')+'</div>';
+  const asmSelf = (n, what) => n ? '<span class="asm-self">↻ compose d’autres '+what+' · '+n+'</span>' : '';
+  const asmLeg = (label, dashed) =>
+    '<div class="asm-leg'+(dashed?' dashed':'')+'"><i></i><span class="asm-edge">'+label+'</span><i></i><i class="head"></i></div>';
+  const leg = (from, verb, to) => asmLeg(VERB_LABEL[verb]+' · '+arrowN(from, verb, to));
+  const srcLink = (path, label) => path
+    ? '<a href="'+esc(srcHref(path))+'" target="_blank" rel="noopener" title="'+esc(path)+'">'+label+' ↗</a>' : '';
+  const bindNode =
+    '<div class="asm-node inferred" title="Le bind est du code (plan pur, ADR-0003), pas une brique du catalogue : aucun fichier ne déclare ce lien. Lecture d’auteur.">'+
+    '<b style="font-family:\'IBM Plex Mono\',monospace">bind</b><small>le moteur — hors graphe, lecture d’auteur</small>'+
+    '<div class="d-src"><span class="tag">source</span>'+
+    [srcLink(A.bind.source, 'code'), srcLink(A.bind.adr, 'ADR-0003')].filter(Boolean).join(' · ')+'</div></div>';
+  /* Une branche = la flèche nommée + la brique qu'elle atteint (+ ses sous-branches). */
+  const branch = (legHtml, nodeHtml, sub) =>
+    '<div class="asm-branch">'+legHtml+'<div class="asm-body">'+nodeHtml+(sub||'')+'</div></div>';
+  /* Une branche à zéro lien n'est pas dessinée : la figure ne montre jamais un lien qui n'existe plus. */
+  const has = (from, verb, to) => arrowN(from, verb, to) > 0;
+  const branchTo = (from, to, nodeHtml, sub) =>
+    has(from, 'compose', to) ? branch(leg(from, 'compose', to), nodeHtml, sub) : '';
+  $('asm').innerHTML =
+    bindNode + asmLeg('lit un profil', true) +
+    asmNode('profile', asmSelf(arrowN('profile','compose','profile'), 'profils')) +
+    '<div class="asm-leg"><i></i></div><div class="asm-bus"></div>' +
+    '<div class="asm-cols">' +
+      branchTo('profile', 'bundle',
+        asmNode('bundle', asmSelf(arrowN('bundle','compose','bundle'), 'bundles')),
+        branchTo('bundle', 'rule', asmNode('rule'))) +
+      branchTo('profile', 'agent', asmNode('agent')) +
+      branchTo('profile', 'skill', asmNode('skill')) +
+    '</div>';
+  /* Les relations qui ne sont pas dans la figure (convoque, applique, est vérifiée par…) : listées
+     avec leur nombre, en pointillé fin — d'une autre nature que la composition d'un profil. */
+  const DRAWN = new Set(['profile>bundle','profile>agent','profile>skill','profile>profile','bundle>rule','bundle>bundle']);
+  const autres = A.arrows.filter((a) => !(a.verb === 'compose' && DRAWN.has(a.from+'>'+a.to)));
+  $('asm-other').innerHTML = autres.length
+    ? '<b>Les autres relations</b>, comptées dans le même graphe : elles relient des briques entre elles, hors de la composition d’un profil (y compris les compositions internes, une commande qui en compose une autre).'+
+      '<div class="rels">'+autres.map((a) =>
+        '<span class="asm-rel">'+NODE_LABEL[a.from]+' <i>'+VERB_LABEL[a.verb]+'</i> '+NODE_LABEL[a.to]+' · '+a.count+'</span>'
+      ).join('')+'</div>'
+    : '';
 
   /* ── cartes des bandes ── */
   /** Sous-commandes depuis `argument-hint:` — le 1er groupe [a|b|c] s'il est propre, sinon rien. */
@@ -2555,11 +686,10 @@ window.EZK = {
   const methodById = new Map(methodEls.map((e) => [e.id, e]));
   const refChip = (ref) => {
     if(ref === 'humain')
-      return '<span class="chip" style="cursor:default;border-style:dashed">Toi (PO)</span>';
+      return '<span class="chip inferred" style="cursor:default" title="acteur humain : aucun fichier du catalogue ne le déclare">Toi (PO)</span>';
     if(ref.startsWith('agent:')) return chip('agent', ref.slice(6));
     const [skillId, sub] = ref.split(':');
-    if(!D.skills[skillId]) return '<span class="chip" style="cursor:default">'+esc(ref)+'</span>';
-    return '<button class="chip" data-open="skill:'+esc(skillId)+'"><span class="sw" style="background:'+KIND.skill.color+'"></span>'+esc(skillId)+(sub?'<b>:'+esc(sub)+'</b>':'')+'</button>';
+    return chip('skill', skillId, sub ? '<b>:'+esc(sub)+'</b>' : '');
   };
   const ceremonyCard = (e) => {
     const etat = ETAT[e.etat] || ETAT.assume;
@@ -2610,6 +740,36 @@ window.EZK = {
       (b.profiles.length?' · cité par '+esc(b.profiles.join(', ')):' · cité par aucun profil')+'</div>'+rows+'</div>';
   }).join('');
 
+  /* ── LES OUTILS (ADR-0058) : les scripts de bin/ et des scripts/ de skills, reliés aux commandes qui
+     les citent. Tout est compilé (src/core/tools.ts) : rien n'est écrit à la main ici. Un outil est
+     justifié par une commande qui le cite, une commande `ezk …` ou une raison « internal » du
+     manifeste ; sans rien de cela il est orphelin — rangé dans « le bruit restant », jamais masqué. ── */
+  const toolIds = Object.keys(D.tools);
+  const toolOrphan = (t) => !t.usedBy.length && !t.commands.length && t.internal === undefined;
+  const toolCard = (id) => {
+    const t = D.tools[id];
+    const cut = id.lastIndexOf('/');
+    const meta = t.usedBy.map((s) => chip('skill', s))
+      .concat(t.commands.map((c) => '<span class="tag">'+esc(c)+'</span>'));
+    if(t.internal !== undefined) meta.push('<span class="tag">interne</span>');
+    return '<div class="card" tabindex="0" data-open="tool:'+esc(id)+'" data-search="'+esc(id.toLowerCase())+'">'+
+      '<h3>'+esc(id.slice(cut + 1))+'</h3><p>'+esc(id.slice(0, cut + 1))+'</p>'+
+      (meta.length ? '<div class="meta">'+meta.join('')+'</div>' : '')+'</div>';
+  };
+  const toolGroups = [
+    ['Cités par une commande', toolIds.filter((id) => D.tools[id].usedBy.length), true],
+    ['Lancés à la main, par une commande ezk', toolIds.filter((id) => !D.tools[id].usedBy.length && D.tools[id].commands.length), false],
+    ['Internes, déclarés dans le manifeste ezk', toolIds.filter((id) => { const t = D.tools[id]; return !t.usedBy.length && !t.commands.length && t.internal !== undefined; }), false],
+  ];
+  const nToolOrphans = toolIds.filter((id) => toolOrphan(D.tools[id])).length;
+  $('outils').innerHTML = toolGroups.filter((g) => g[1].length).map((g) =>
+    '<details class="outils-groupe"'+(g[2] ? ' open' : '')+'><summary>'+g[0]+' · '+g[1].length+'</summary>'+
+    '<div class="grid">'+g[1].map(toolCard).join('')+'</div></details>'
+  ).join('') + (nToolOrphans
+    ? '<p class="d-note">⚠ '+nToolOrphans+' outil(s) orphelin(s) : aucune commande ne les cite et le manifeste ezk ne les justifie pas. Ils sont dans « le bruit restant », plus bas.</p>'
+    : '');
+  if(!toolIds.length) $('outils-section').hidden = true;
+
   /* ── le bruit — DÉDOUBLONNÉ : un même id hors-bande ET orphelin = UNE carte, plusieurs raisons ── */
   const noiseMap = new Map();
   const addNoise = (kind, id, reason) => {
@@ -2623,7 +783,9 @@ window.EZK = {
   for(const o of D.orphans.filter((o) => o.kind !== 'profile'))
     addNoise(o.kind, o.id, o.kind === 'bundle'
       ? 'bundle que AUCUN profil ne cite'
-      : 'orpheline — rien ne la cite');
+      : o.kind === 'tool'
+        ? 'aucune commande ne le cite, aucune commande ezk ne le lance, aucune raison « internal »'
+        : 'orpheline — rien ne la cite');
   $('noise').innerHTML = [...noiseMap.values()].map((e) =>
     '<div class="card c-warn" tabindex="0" data-open="'+esc(e.kind)+':'+esc(e.id)+'" data-search="'+esc(e.id.toLowerCase())+'">'+
     '<h3>'+esc(e.id)+'</h3><p>'+esc(KIND[e.kind]?KIND[e.kind].label:e.kind)+' — '+esc(e.reasons.join(' · '))+'.</p></div>'
@@ -2642,19 +804,19 @@ window.EZK = {
       let h = '<div class="d-sec"><div class="chips">'+
         '<span class="tag">'+etat.label+'</span>'+
         (e.scrum?'<span class="tag">Scrum Guide : '+esc(e.scrum)+'</span>':'')+
-        '</div></div>';
+        '</div></div>'+srcLine(D.methodSource);
       if(e.note) h += '<p class="d-desc" style="margin-top:12px">'+esc(e.note)+'</p>';
       h += sec('Implémenté par', e.implemente_par.map(refChip), 'personne — chantier ouvert');
-      h += '<div class="d-note">Source : <code>method/ceremonies.yml</code> — chaque référence est vérifiée contre le catalogue à la compilation (une référence fausse = régénération en échec).</div>';
+      h += '<div class="d-note">Chaque référence de <code>method/ceremonies.yml</code> est vérifiée contre le catalogue à la compilation (une référence fausse = régénération en échec).</div>';
       return h;
     }
     if(kind === 'skill'){
       const s = D.skills[id];
-      let h = '<p class="d-desc">'+esc(s.description||'(pas de description en frontmatter)')+'</p>';
+      let h = '<p class="d-desc">'+esc(s.description||'(pas de description en frontmatter)')+'</p>'+srcLine(s.source);
       const pt = ['<span class="tag">étage : '+ETAGE_LABEL[s.etage]+'</span>'];
       if(s.famille) pt.push('<span class="tag">famille : '+FAMILLE_LABEL[s.famille]+'</span>');
       if(s.bande && s.bande !== 'hors-bande') pt.push('<span class="tag">bande : '+esc(s.bande)+'</span>');
-      h += '<div class="d-sec"><div class="chips">'+pt.join('')+'</div></div>';
+      h += '<div class="d-sec"><div class="chips">'+pt.join('')+'</div></div>'+srcLine(D.taxonomieSource, 'rangé par');
       if(s.bande === 'hors-bande') h += '<div class="d-note">⚠ Skill de l’étage méthode oublié des bandes — anomalie à corriger dans taxonomie.yml.</div>';
       const cmds = subCommands(s.usage);
       if(cmds.length){
@@ -2666,6 +828,7 @@ window.EZK = {
       h += sec('Compose → (commandes utilisées)', s.composes.map((x) => chip('skill',x)));
       if(s.composesExternal.length) h += sec('Compose (hors catalogue)', s.composesExternal.map((x) => '<span class="chip" style="cursor:default">'+esc(x)+'</span>'));
       h += sec('Convoque → (juges)', s.roles.map((x) => chip('agent',x)));
+      h += sec('Utilise → (outils)', s.tools.map((x) => chip('tool',x)), 'aucun outil cité dans sa doc');
       h += sec('← Composée par', s.composedBy.map((x) => chip('skill',x)), 'aucune commande ne la compose');
       h += sec('Installée par (profils)', s.profiles.map((x) => chip('profile',x)), 'aucun profil ne l’installe');
       const viaJuges = s.roles.map((aid) => {
@@ -2678,9 +841,10 @@ window.EZK = {
     }
     if(kind === 'agent'){
       const a = D.agents[id];
-      let h = '<p class="d-desc">'+esc(a.description||'(pas de description)')+'</p>';
+      let h = '<p class="d-desc">'+esc(a.description||'(pas de description)')+'</p>'+srcLine(a.source);
       h += '<div class="d-sec"><div class="chips"><span class="tag">étage : '+ETAGE_LABEL[a.etage]+'</span>'+
-        (a.famille?'<span class="tag">famille : '+FAMILLE_LABEL[a.famille]+'</span>':'')+'</div></div>';
+        (a.famille?'<span class="tag">famille : '+FAMILLE_LABEL[a.famille]+'</span>':'')+'</div></div>'+
+        srcLine(D.taxonomieSource, 'rangé par');
       const rt = [];
       if(a.model) rt.push('<span class="tag">modèle '+esc(a.model)+'</span>');
       if(a.effort) rt.push('<span class="tag">effort '+esc(a.effort)+'</span>');
@@ -2693,7 +857,7 @@ window.EZK = {
     }
     if(kind === 'rule'){
       const r = D.rules[id];
-      let h = '<p class="d-desc">'+(r.title?esc(r.title):'(règle sans titre)')+'</p>';
+      let h = '<p class="d-desc">'+(r.title?esc(r.title):'(règle sans titre)')+'</p>'+srcLine(r.source);
       const rt = ['<span class="tag '+esc(r.level.toLowerCase())+'">'+esc(r.level||'?')+'</span>','<span class="tag">'+esc(r.kind)+'</span>'];
       for(const e of r.enforcements) rt.push('<span class="tag">garantie : '+esc(e)+'</span>');
       h += '<div class="d-sec"><div class="chips">'+rt.join('')+'</div></div>';
@@ -2703,7 +867,7 @@ window.EZK = {
     }
     if(kind === 'bundle'){
       const b = D.bundles[id];
-      let h = '';
+      let h = srcLine(b.source);
       if(b.extends.length) h += sec('Étend', b.extends.map((x) => chip('bundle',x)));
       h += sec('Règles ('+b.rules.length+')', b.rules.map((x) => chip('rule',x)));
       h += sec('Cité par (profils)', b.profiles.map((x) => chip('profile',x)), 'aucun profil ne le cite');
@@ -2711,12 +875,24 @@ window.EZK = {
     }
     if(kind === 'profile'){
       const p = D.profiles[id];
-      let h = '<p class="d-desc">Le bon de commande : ce que <code>bind</code> matérialise chez l’hôte pour ce (sous-)projet.</p>';
+      let h = '<p class="d-desc">Le bon de commande : ce que <code>bind</code> matérialise chez l’hôte pour ce (sous-)projet.</p>'+srcLine(p.source);
       if(p.extends.length) h += sec('Étend', p.extends.map((x) => chip('profile',x)));
       h += sec('Bundles (la loi)', p.bundles.map((x) => chip('bundle',x)));
       h += sec('Juges (agents)', p.agents.map((x) => chip('agent',x)));
       h += sec('Commandes (skills)', p.skills.map((x) => chip('skill',x)));
       if(p.interactions.length) h += sec('Règles d’interaction', p.interactions.map((x) => chip('rule',x)));
+      return h;
+    }
+    if(kind === 'tool'){
+      const t = D.tools[id];
+      let h = '<p class="d-desc">'+(t.usedBy.length
+        ? 'Un script que '+t.usedBy.length+' commande'+(t.usedBy.length > 1 ? 's citent' : ' cite')+' dans sa doc.'
+        : 'Un script qu’aucune commande ne cite dans sa doc.')+'</p>'+srcLine(t.source);
+      if(t.commands.length) h += sec('Commandes ezk qui le lancent', t.commands.map((c) => '<span class="chip" style="cursor:default">'+esc(c)+'</span>'));
+      if(t.internal !== undefined) h += '<div class="d-note">Interne, déclaré dans le manifeste ezk : '+esc(t.internal)+'.</div>';
+      h += sec('← Utilisé par (commandes)', t.usedBy.map((x) => chip('skill',x)), 'aucune commande ne le cite');
+      if(toolOrphan(t)) h += '<div class="d-note">⚠ Orphelin : aucune commande ne le cite, aucune commande <code>ezk</code> ne le lance, aucune raison « internal » ne le justifie. À brancher (le citer dans le <code>SKILL.md</code> qui s’en sert) ou à retirer.</div>';
+      h += '<div class="d-note">Le lien est <b>calculé</b> : une commande « utilise » un outil quand son <code>SKILL.md</code> (ou un fichier de son dossier) en cite le chemin. Un nom seul (<code>check.sh</code>) ne compte pas.</div>';
       return h;
     }
     return '<span class="d-empty">inconnu</span>';
@@ -2732,7 +908,7 @@ window.EZK = {
       overlay.classList.add('on'); panel.classList.add('on');
       return;
     }
-    const store = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles}[kind];
+    const store = {skill:D.skills, agent:D.agents, rule:D.rules, bundle:D.bundles, profile:D.profiles, tool:D.tools}[kind];
     if(!store || !store[id]) return;
     $('d-kind').textContent = KIND[kind].label;
     $('d-title').textContent = id;

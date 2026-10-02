@@ -5,10 +5,9 @@ type: refactor
 priority: P1
 product: mega-city
 milestone:
-labels: [ezk-product-build, cycle-de-vie, methode]
+labels: [sprint]
 depends: ["20260930194219046", "20260930123438875"]
 status: idea
-ready:
 pr:
 evidence: none # méthode / skills, pas d'écran
 created: 2026-09-30
@@ -63,5 +62,5 @@ grep -nE "lot|incrément|sprint" products/mega-city/skills/ezk-product-build/SKI
 
 ## Notes / décisions
 
-- Dépend de la fiche 1 ([lot](20260930194219046_ezk-backlog-lot.md)) et de la fiche 2 ([start/close](20260930123438875_cycle-vie-sprint-session-ceremonies.md)) — construite **en dernier**.
+- Dépend de la fiche 1 ([lot](20260930194219046_ezk-backlog-lot.md)) et de la fiche 2 ([start/close](done/20260930123438875_cycle-vie-sprint-session-ceremonies.md)) — construite **en dernier**.
 - Lève la contradiction pointée par le panel (architecte) le 2026-09-30 ; Option A actée par le PO. Voir [ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md).

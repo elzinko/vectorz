@@ -7,7 +7,7 @@
   "author": "elzinko",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -b products/cop1/packages/shared-kernel products/cop1/packages/observability products/cop1/packages/quality-intelligence products/cop1/packages/sprint-core products/cop1/packages/llm-intelligence products/cop1/packages/ceremony-engine products/cop1/packages/journal-validator products/cop1/packages/app",
+    "build": "tsc -b products/cop1/packages/shared-kernel products/cop1/packages/observability products/cop1/packages/quality-intelligence products/cop1/packages/sprint-core products/cop1/packages/llm-intelligence products/cop1/packages/journal-validator products/cop1/packages/app",
     "typecheck": "pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -19,7 +19,9 @@
     "cobaye:reset": "bash cobaye/reset.sh",
     "cobaye:smoke": "bash scripts/cobaye-smoke.sh",
     "outcomes:measure": "pnpm --dir products/mega-city exec tsx ../../tools/outcomes/cli.ts",
-    "ezk:map": "pnpm --dir products/mega-city ezk:map"
+    "ezk": "pnpm --dir products/mega-city ezk",
+    "ezk:map": "pnpm --dir products/mega-city ezk:map",
+    "dev:branch": "bash scripts/dev-branch.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

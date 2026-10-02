@@ -1,12 +1,13 @@
 ---
 id: 0188
-title: ADR lisibles comme des articles — format unique, article dérivé, ou règle ? (à groomer archi + brainstorm)
+title: "Rendre les ADR aussi lisibles qu'un article"
 type: feature
 priority: P2
 product: mega-city
+labels: [article]
+milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-09
 ---

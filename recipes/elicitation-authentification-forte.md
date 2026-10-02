@@ -91,4 +91,4 @@ Racine : **`~/git/google-mcp-multi-account/`**
 
 Capturée le 2026-08-24 (déclenchée par pasteriz : besoin d'un geste humain fort sur les actions sensibles).
 Emplacement **provisoire** — voir le débat « où vit une recette ? » dans
-[la fiche 20260824185422122](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md).
+[la fiche 20260824185422122](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md).

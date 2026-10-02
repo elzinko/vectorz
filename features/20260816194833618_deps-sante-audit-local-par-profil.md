@@ -1,12 +1,13 @@
 ---
 id: "20260816194833618"
-title: "Santé des dépendances côté ezk — audit local activable par profil (alternative frugale à Dependabot)"
+title: "Vérifier les dépendances en local plutôt qu'avec Dependabot"
 type: feature
 priority: P2
 product: mega-city
+labels: [dette]
+milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-16
 ---

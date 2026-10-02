@@ -19,7 +19,7 @@ echo "Cas A (missing) :"
 mkdir -p "$TMP/empty"
 out_a="$("$CHECK" "$TMP/empty")"
 check "STATUS=missing" "printf '%s' \"\$out_a\" | grep -q 'STATUS=missing'"
-check "CURRENT=4" "printf '%s' \"\$out_a\" | grep -q 'CURRENT=4'"
+check "CURRENT=5" "printf '%s' \"\$out_a\" | grep -q 'CURRENT=5'"
 
 # Cas B : legacy README index généré → behind, pending 002
 B="$TMP/legacy"
@@ -59,10 +59,11 @@ D="$TMP/fresh"
 mkdir -p "$D"
 bash "$SKILL/init.sh" "$D" "Backlog — fresh" >/dev/null
 echo "Cas D (init) :"
-check "README curé" "grep -q '^layout_version: 4' '$D/features/README.md'"
+check "README curé" "grep -q '^layout_version: 5' '$D/features/README.md'"
 check "BACKLOG.md présent" "test -f '$D/features/BACKLOG.md'"
 check "done/ présent" "test -d '$D/features/done'"
 check "template présent" "test -f '$D/features/feature-template.md'"
+check "template = gabarit de référence" "cmp -s '$SKILL/templates/feature-template.md' '$D/features/feature-template.md'"
 out_d="$("$CHECK" "$D")"
 check "init → STATUS=ok" "printf '%s' \"\$out_d\" | grep -q 'STATUS=ok'"
 
@@ -203,5 +204,70 @@ rc_l=$?
 set -e
 check "exit 1" "test '$rc_l' -eq 1"
 check "message racine inexistante" "printf '%s' \"\$out_l\" | grep -q 'racine inexistante'"
+
+# Cas M : gabarit local vs référence (fiche 20260918114726706) — identique : silence ;
+# périmé : signalé avec la commande cp, JAMAIS écrasé ; référence absente : exit 3, rien créé.
+echo "Cas M (gabarit local vs référence) :"
+M="$TMP/tpl"
+mkdir -p "$M"
+bash "$SKILL/init.sh" "$M" "Backlog — M" >/dev/null
+out_m1="$(bash "$SKILL/init.sh" "$M" "Backlog — M" 2>&1)"
+check "gabarit identique → aucune note" "! printf '%s' \"\$out_m1\" | grep -q 'diffère'"
+printf '\n<!-- réglage local -->\n' >> "$M/features/feature-template.md"
+out_m2="$(bash "$SKILL/init.sh" "$M" "Backlog — M" 2>&1)"
+check "gabarit périmé → signalé" "printf '%s' \"\$out_m2\" | grep -q 'diffère du gabarit de référence'"
+check "… avec la commande cp" "printf '%s' \"\$out_m2\" | grep -q 'cp .*feature-template.md'"
+check "… sans être écrasé" "grep -q 'réglage local' '$M/features/feature-template.md'"
+S="$TMP/skill-sans-gabarit"
+cp -R "$SKILL" "$S"
+rm "$S/templates/feature-template.md"
+N="$TMP/tpl-sans-ref"
+mkdir -p "$N"
+set +e
+out_m3="$(bash "$S/init.sh" "$N" "Backlog — N" 2>&1)"
+rc_m3=$?
+set -e
+check "référence absente → exit 3" "test '$rc_m3' -eq 3"
+check "… message clair" "printf '%s' \"\$out_m3\" | grep -q 'gabarit de référence introuvable'"
+check "… rien créé" "! test -e '$N/features'"
+
+# Cas O : le marqueur `layout_version` PRIME sur la mention « Index auto-généré » (fiche
+# 20260813122510737). Un README déjà en v2 qui garde la mention legacy n'est PAS classé v1 par
+# init (ni exit 2, ni migration 002) ; un vrai legacy (sans marqueur) l'est TOUJOURS (Cas E) ;
+# et check/init rendent le même verdict (une seule logique : init lit le verdict de check).
+echo "Cas O (layout_version prime sur « Index auto-généré ») :"
+O="$TMP/v2-mention-legacy"
+mkdir -p "$O/features"
+cat > "$O/features/README.md" <<'EOF'
+---
+layout_version: 2
+---
+# Backlog — v2
+
+> Index auto-généré — mention conservée dans un README déjà migré.
+EOF
+out_o_check="$("$CHECK" "$O")"
+set +e
+out_o="$(bash "$SKILL/init.sh" "$O" "Backlog — O" 2>&1)"
+rc_o=$?
+set -e
+check "check : INSTALLED=2 (marqueur lu en premier)" "printf '%s' \"\$out_o_check\" | grep -q 'INSTALLED=2'"
+check "init : pas d'exit 2" "test '$rc_o' -eq 0"
+check "init : pas de « layout v1 détecté »" "! printf '%s' \"\$out_o\" | grep -q 'layout v1 détecté'"
+check "init : BACKLOG.md créé" "test -f '$O/features/BACKLOG.md'"
+check "init : README intact" "grep -q '^layout_version: 2' '$O/features/README.md'"
+# Même verdict : un marqueur explicite `layout_version: 1` est v1 pour les DEUX scripts,
+# même sans la mention « Index auto-généré ».
+P="$TMP/v1-marqueur-seul"
+mkdir -p "$P/features"
+printf -- '---\nlayout_version: 1\n---\n# Backlog — v1 déclaré\n' > "$P/features/README.md"
+out_p_check="$("$CHECK" "$P")"
+set +e
+out_p="$(bash "$SKILL/init.sh" "$P" "Backlog — P" 2>&1)"
+rc_p=$?
+set -e
+check "check : INSTALLED=1" "printf '%s' \"\$out_p_check\" | grep -q 'INSTALLED=1'"
+check "init : exit 2 (même verdict)" "test '$rc_p' -eq 2"
+check "init : pas de BACKLOG.md" "! test -f '$P/features/BACKLOG.md'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi

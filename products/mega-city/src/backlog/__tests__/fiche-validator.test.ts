@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  type ProvenanceEntry,
   findDuplicateIds,
   findInvalidProvenanceIds,
+  findProvenanceMismatches,
   validateFicheFrontMatter,
 } from '../fiche-validator.js';
 
@@ -94,6 +96,36 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
     const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
     expect(anomalies.find((a) => a.field === 'evidence')).toBeUndefined();
   });
+
+  // Champ RETIRÉ (migration 005, fiche 20260823121712652) : `ready` est une colonne (`status: ready`),
+  // plus un champ date. Sa réapparition — gabarit périmé, fiche copiée d'un vieux repo — est signalée.
+  describe('champ retiré `ready:` (migration 005)', () => {
+    it('`ready: 2026-08-21` en front-matter → anomalie « champ retiré » qui dit quoi faire', () => {
+      const text = fm({ ...VALID_FIELDS, ready: '2026-08-21' });
+      const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+      const a = anomalies.find((x) => x.field === 'ready');
+      expect(a).toBeDefined();
+      expect(a?.message).toContain('champ retiré');
+      expect(a?.message).toContain('status: ready');
+    });
+
+    it('`ready:` VIDE en front-matter est aussi une anomalie (le champ lui-même est retiré)', () => {
+      const text = fm({ ...VALID_FIELDS, ready: '' });
+      const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+      expect(anomalies.find((x) => x.field === 'ready')).toBeDefined();
+    });
+
+    it('`ready:` cité dans le CORPS (bloc de code) n’est PAS une anomalie', () => {
+      const text = `${fm(VALID_FIELDS)}\n\`\`\`yaml\nready: 2026-01-01\n\`\`\`\n`;
+      const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+      expect(anomalies.find((x) => x.field === 'ready')).toBeUndefined();
+    });
+
+    it('`status: ready` (la colonne) reste valide', () => {
+      const text = fm({ ...VALID_FIELDS, status: 'ready' });
+      expect(validateFicheFrontMatter('features/x.md', text, { monorepo: false })).toEqual([]);
+    });
+  });
 });
 
 describe('findDuplicateIds (contrôle inter-fichiers — fléau des ids en double)', () => {
@@ -170,5 +202,73 @@ describe('findInvalidProvenanceIds (ADR-0040 D5 — pas d’id fantôme pour mer
     expect(
       findInvalidProvenanceIds([{ file: 'a.md', mergedInto: '', splitInto: [] }], knownIds),
     ).toEqual([]);
+  });
+});
+
+describe('provenance dans les deux sens (fiche 20260910231201744 — merged_from / split_from)', () => {
+  const E = (id: string, over: Partial<ProvenanceEntry> = {}): ProvenanceEntry => ({
+    file: `${id}.md`,
+    id,
+    mergedInto: '',
+    mergedFrom: [],
+    splitInto: [],
+    splitFrom: '',
+    ...over,
+  });
+
+  it('merged_from / split_from vers un id inexistant → id fantôme', () => {
+    const known = new Set(['1', '2']);
+    const anomalies = findInvalidProvenanceIds(
+      [
+        { file: 'a.md', mergedInto: '', splitInto: [], mergedFrom: ['2', '999'] },
+        { file: 'b.md', mergedInto: '', splitInto: [], splitFrom: '888' },
+      ],
+      known,
+    );
+    expect(anomalies).toHaveLength(2);
+    expect(anomalies[0]).toMatchObject({ file: 'a.md', field: 'merged_from' });
+    expect(anomalies[0]?.message).toContain('999');
+    expect(anomalies[1]).toMatchObject({ file: 'b.md', field: 'split_from' });
+  });
+
+  it('une fusion réciproque ne produit aucune anomalie', () => {
+    expect(
+      findProvenanceMismatches([E('1', { mergedFrom: ['2', '3'] }), E('2', { mergedInto: '1' }), E('3', { mergedInto: '1' })]),
+    ).toEqual([]);
+  });
+
+  it('un découpage réciproque ne produit aucune anomalie', () => {
+    expect(
+      findProvenanceMismatches([E('1', { splitInto: ['2', '3'] }), E('2', { splitFrom: '1' }), E('3', { splitFrom: '1' })]),
+    ).toEqual([]);
+  });
+
+  it('merged_into sans merged_from en face → anomalie sur la source', () => {
+    const a = findProvenanceMismatches([E('1'), E('2', { mergedInto: '1' })]);
+    expect(a).toHaveLength(1);
+    expect(a[0]).toMatchObject({ file: '2.md', field: 'merged_into' });
+    expect(a[0]?.message).toContain('non réciproque');
+  });
+
+  it('merged_from sans merged_into en face, ou vers une autre résultante → anomalie sur la résultante', () => {
+    const none = findProvenanceMismatches([E('1', { mergedFrom: ['2'] }), E('2')]);
+    expect(none).toEqual([expect.objectContaining({ file: '1.md', field: 'merged_from' })]);
+    const other = findProvenanceMismatches([E('1', { mergedFrom: ['2'] }), E('2', { mergedInto: '3' }), E('3', { mergedFrom: ['2'] })]);
+    expect(other.map((x) => x.file)).toEqual(['1.md']);
+  });
+
+  it('split_into sans split_from en face, et split_from sans split_into en face → anomalies', () => {
+    const a = findProvenanceMismatches([E('1', { splitInto: ['2'] }), E('2')]);
+    expect(a).toEqual([expect.objectContaining({ file: '1.md', field: 'split_into' })]);
+    const b = findProvenanceMismatches([E('1'), E('2', { splitFrom: '1' })]);
+    expect(b).toEqual([expect.objectContaining({ file: '2.md', field: 'split_from' })]);
+  });
+
+  it('une fiche sans id ne fabrique pas de fausses anomalies sur les autres', () => {
+    expect(findProvenanceMismatches([E('', { file: 'sans-id.md' }), E('1'), E('2', { mergedFrom: [] })])).toEqual([]);
+  });
+
+  it('un id absent des fiches est ignoré ici (c’est un id fantôme, signalé ailleurs)', () => {
+    expect(findProvenanceMismatches([E('1', { mergedFrom: ['999'], mergedInto: '888', splitFrom: '777' })])).toEqual([]);
   });
 });

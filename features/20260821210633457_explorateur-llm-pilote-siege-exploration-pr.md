@@ -1,14 +1,14 @@
 ---
 id: "20260821210633457"
-title: "Explorateur LLM par PR — pilote de siège auto + exploration (suite de l'oracle 0169)"
+title: "Un agent qui utilise l'app d'une PR et propose des fiches"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 epic:
 depends: ["0169"]
-labels: [supervision, test, llm, dogfood]
+labels: [test-local]
 status: idea
-ready:
 pr:
 created: 2026-08-21
 ---

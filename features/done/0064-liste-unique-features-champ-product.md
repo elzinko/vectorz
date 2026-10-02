@@ -6,7 +6,6 @@ priority: P0
 product: vectorz
 epic:
 status: shipped
-ready: 2026-07-30
 pr: "#66"
 created: 2026-07-26
 ---
@@ -41,7 +40,7 @@ pièce, pas en théorie :
    chaque liste numérote depuis 0001, donc la collision est **structurelle** — elle se
    reproduira à chaque fiche créée des deux côtés, quelle que soit la vigilance.
    *Suite (2026-07-26)* : la collision a été **levée à la main** en renumérotant la fiche
-   méthode en [0100](../0100-sprint-intake-sante-backlog-metriques.md)
+   méthode en [0100](0100-sprint-intake-sante-backlog-metriques.md)
    — 8 fichiers touchés, dont **deux ADR** (0016, 0018) et un lien markdown qui aurait
    cassé. Ce correctif **confirme** le constat au lieu de l'annuler : il a fallu un
    arbitrage humain et une passe manuelle pour un simple numéro, et l'id `max+1` du côté
@@ -124,3 +123,5 @@ fiche**, pas une donnée de l'arborescence :
   été faite : c'est la **stratégie de migration**, à trancher au grooming (le panel), pas
   à improviser. Commande de contrôle :
   `comm -12 <(ids features) <(ids products/mega-city/features)`.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-30 · ancien champ front-matter `ready:`, retiré en migration 005.

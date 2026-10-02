@@ -8,7 +8,6 @@ epic:
 depends: []
 labels: [method]
 status: shipped
-ready: 2026-07-26
 pr: "#74"
 created: 2026-07-18
 ---
@@ -162,3 +161,5 @@ Graver la consigne de restitution dans les artefacts de méthode qui la produise
 - Origine : rétro 2026-07-18, demande directe du PO au rangement.
 - Mesure de succès (retirabilité) : 0 réclamation « pas compris » du PO sur une
   restitution pendant 5 sprints consécutifs.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-26 · ancien champ front-matter `ready:`, retiré en migration 005.

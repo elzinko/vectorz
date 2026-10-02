@@ -1,11 +1,11 @@
 ---
 id: 0161
-title: ezk-challenge — panel de challenge adversarial réutilisable (relecteurs frais + gate)
+title: "Un panel de relecteurs adverses réutilisable par tous les skills"
 type: feature
 priority: P2
 product: mega-city
-milestone: rationalisation
-labels: [rationalisation]
+milestone: parked
+labels: [revue]
 status: idea
 pr:
 created: 2026-07-15

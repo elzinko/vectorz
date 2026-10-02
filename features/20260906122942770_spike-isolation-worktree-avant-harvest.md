@@ -1,15 +1,15 @@
 ---
 id: "20260906122942770"
-title: SPIKE — pourquoi l'isolation worktree, avant de figer la moisson
+title: "Comprendre pourquoi un sous-agent en worktree écrit à part"
 type: chore
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 depends: []
-labels: [methode, retro-2026-09-05, spike, worktree]
+labels: [sprint]
 status: idea
-ready:
 pr:
 created: 2026-09-06
 ---

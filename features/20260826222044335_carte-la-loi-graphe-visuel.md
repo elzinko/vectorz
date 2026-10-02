@@ -1,14 +1,13 @@
 ---
 id: "20260826222044335"
-title: Carte LA LOI — dessiner le graphe (arêtes visuelles), pas seulement des listes au clic
+title: "Dessiner les liens entre règles, bundles et profils (carte LA LOI)"
 type: feature
 priority: P2
 product: mega-city
-version: V0.1
-milestone: fondation
+version:
+milestone: parked
 labels: [carte]
 status: idea
-ready:
 pr:
 created: 2026-08-27
 ---

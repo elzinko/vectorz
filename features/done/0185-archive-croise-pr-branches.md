@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-08-08
 pr: "#117"
 created: 2026-08-08
 ---
@@ -58,3 +57,5 @@ de vérité fiable) ; `reconcile` backlog (déjà ADR-0018).
 - Injection test : `EZK_ARCHIVE_TEST=1` **et** `EZK_ARCHIVE_TEST_PRS` (TSV
   `head\tnum\ttitle`) — la variable de données seule est **ignorée** (anti-backdoor).
   Chemin live : `gh … --jq` embarqué, **pas** de `jq` système.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-08 · ancien champ front-matter `ready:`, retiré en migration 005.

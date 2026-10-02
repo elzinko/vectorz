@@ -6,7 +6,6 @@ priority: P2
 product: vectorz
 epic:
 status: shipped
-ready: 2026-08-03
 pr: "#95"
 created: 2026-07-26
 ---
@@ -60,3 +59,5 @@ lus ; sans registre, liste dérivée des `projectRoot` observés (dégradation g
 - Complémentaire de 0022 (afficher le déjà-collecté) : même surface, autre granularité
   (projet, pas run).
 - Groomé 2026-08-03 (sprint simplifié post-0181) — DoR problème / valeur / AC OK.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-03 · ancien champ front-matter `ready:`, retiré en migration 005.

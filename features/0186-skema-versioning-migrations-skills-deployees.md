@@ -1,22 +1,22 @@
 ---
 id: 0186
-title: Skema généralisé — versioning + migrations de tout artefact mega-city (émission · registre de bind · consommation)
+title: "Versionner et migrer tous les artefacts de la méthode (Skema)"
 type: feature
 priority: P2
 product: mega-city
+labels: [installation]
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-09
-milestone: fondation
-version: V0.1
+milestone: parked
+version:
 ---
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Étage **moteur** (le registre écrit au `bind`, le
 > `VERSION` sur artefacts, le préflight par commande = machinerie générique scrum-agnostique), avec
 > **émission** déléguée à la **librairie** (`ezk-ezk`/`ezk-steward`, ADR-0039 §6). **Absorbe** la moitié
-> « pack versionné committé + pointeur README any-driver » de [0177](0177-pack-pratiques-projet-portables.md)
+> « pack versionné committé + pointeur README any-driver » de [0177](done/0177-pack-pratiques-projet-portables.md)
 > (devient propriétaire du versioning). À faire au grooming : **scinder** le sliver « validateur de
 > conformité » (gate enums/`id` dupliqué) en fiche dédiée ; trancher le **couplage 0087** (d'où vient
 > `VERSION` : umbrella plugin vs version mega-city). Garder distinct de l'article 0175.
@@ -197,7 +197,7 @@ par-commande).
     edit-once-live-everywhere — [0018]) ; ne pas vendoriser N copies d'une logique éditée en continu ;
   - **le projet committe (petit, data-like, cloud-friendly)** : le **lock Skema**
     `{artefact: version}` (le registre de bind ci-dessus) **+** le **pack de pratiques portable**
-    ([0177](0177-pack-pratiques-projet-portables.md)) pointé depuis le README, lu par n'importe
+    ([0177](done/0177-pack-pratiques-projet-portables.md)) pointé depuis le README, lu par n'importe
     quel driver LLM (cloud compris) ;
   - **cloud = matérialiser le CODE dans l'env cloud**, via deux options — **distinctes de la
     *direction* de mise à jour** (matérialiser ≠ pousser : une copie n'est **pas** un « push ») :
@@ -261,5 +261,5 @@ par-commande).
   --apply`) ; (2) l'**isolation** tient (une version déployée reste stable tant qu'on ne migre pas).
   **Réserve PO explicite** : garder un fixture **minimal** (le plus petit projet qui prouve la
   migration), pas un banc exhaustif — ne pas se compliquer la vie tant que le besoin réel n'excède
-  pas ça. Cousin mais autre objet : [0102](0102-ezk-testbed-brique-boot-env-test.md) (environnement
+  pas ça. Cousin mais autre objet : [0102](done/0102-ezk-testbed-brique-boot-env-test.md) (environnement
   de test isolé d'une PR/branche).

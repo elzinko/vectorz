@@ -6,7 +6,6 @@ import {
   PILOTAGE_DATA_END,
   buildPilotageData,
   buildPilotageDataBlock,
-  upsertPilotageDataBlock,
 } from '../pilotage-data.js';
 
 const F = (over: Partial<Fiche>): Fiche => ({
@@ -15,12 +14,12 @@ const F = (over: Partial<Fiche>): Fiche => ({
   type: 'feature',
   priority: 'P2',
   status: 'idea',
-  ready: false,
   milestone: '',
   product: 'mega-city',
   pr: '',
   labels: [],
   blocked: '',
+  version: '',
   done: false,
   file: 'features/0001-x.md',
   ...over,
@@ -59,17 +58,11 @@ describe('buildPilotageData — composition avancement + runs', () => {
   });
 });
 
-describe('bloc de données de pilotage.html', () => {
-  it('upsert remplace entre les marqueurs', () => {
-    const html = `a ${PILOTAGE_DATA_BEGIN}\nOLD\n${PILOTAGE_DATA_END} b`;
-    const out = upsertPilotageDataBlock(html, buildPilotageDataBlock([], []));
-    expect(out).toContain('window.EZK_PILOTAGE =');
-    expect(out).not.toContain('OLD');
-    expect(out.startsWith('a ')).toBe(true);
-    expect(out.endsWith(' b')).toBe(true);
-  });
-
-  it('échoue franchement si les marqueurs manquent', () => {
-    expect(() => upsertPilotageDataBlock('<title>x</title>', 'bloc')).toThrow(/marqueurs/);
+describe('bloc de données de pilotage (pilotage.data.js)', () => {
+  it('est délimité par ses marqueurs et affecte window.EZK_PILOTAGE', () => {
+    const block = buildPilotageDataBlock([], []);
+    expect(block.startsWith(PILOTAGE_DATA_BEGIN)).toBe(true);
+    expect(block.endsWith(PILOTAGE_DATA_END)).toBe(true);
+    expect(block).toContain('window.EZK_PILOTAGE =');
   });
 });

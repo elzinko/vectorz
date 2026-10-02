@@ -3,6 +3,7 @@ roles: [ezk-pm]
 name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget]
 argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
@@ -17,7 +18,7 @@ description: >-
   vitesses) : auto par défaut (prend les décisions recommandées et délègue à ezk-pm, ne
   s'arrêtant que sur les 4 décisions humaines) | manuel (alias ask : validation à chaque
   checkpoint). Boucle bornée par --max-sprints (--once = un seul sprint). Vigilance tokens
-  en réglage avancé (lean par défaut | cap arrête-et-demande | full pleine-puissance).
+  en réglage avancé (lean par défaut | cap arrête-et-demande | full multi-agents libre).
   N'EST PAS le scrum master
   qui exécute un sprint (ça, c'est ezk-sprint) ; c'est le product-owner au-dessus
   qui décide quoi & quand, et le lui confie.
@@ -46,7 +47,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 |---|---|
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes courants — ne lance rien |
 | `run` (**action par défaut**, alias `build`) | Lance la **boucle** : enchaîne les sprints jusqu'à un checkpoint ou `--max-sprints` |
-| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants |
+| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants, puis réaffiche le contexte de run (`run:context`) |
 
 > **Invocation nue = `help`, jamais un lancement.** `/ezk-product-build` **sans argument affiche ce
 > tableau et ne lance rien** — un défaut `auto` ne doit pas démarrer une boucle autonome depuis une
@@ -76,6 +77,15 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
 
 ## La boucle
 
+0. **Ouverture — le contexte de run** (une fois, avant tout). Lance `run:context` avec les réglages
+   **réels** du run et affiche son bloc tel quel, **sans attendre de validation** (c'est un
+   affichage, pas un checkpoint) :
+   `pnpm --dir products/mega-city run:context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> [--fiche <id>] [--max-sprints N]`.
+   Le bloc dit d'où le run part (`origin/main` après `git fetch`, le retard de HEAD), où il travaille
+   (worktree, qui écrit les fichiers) et son **contrat en trois lignes** : ce qu'il merge seul, les
+   4 STOP, le plafond de jetons. En `--mode auto`, c'est l'écho qui permet à l'opérateur de
+   s'absenter en sachant ce que la boucle fera. Un retard sur `origin/main` ou l'absence de remote
+   avertit, **ne bloque jamais**. Format : [`references/run-report-template.md`](references/run-report-template.md).
 1. **Intake** — si un review est dû (`review --delta` avant le planning ; complet
    post-pivot / tous les 5 sprints — ADR-0016), passe-le d'abord. Puis
    `ezk-backlog next --ready-only` : prends LA prochaine fiche **tirable**
@@ -83,7 +93,7 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
 2. **Décision « quoi »** :
    - **Fiche ready ET aucune tête bloquée signalée** → va construire (3).
    - **Tête bloquée** (`next` signale une fiche de priorité supérieure sautée faute de
-     `ready:`) → traite la tête D'ABORD : `groom` + gate `ready` (fiche 0056) ; ne
+     `status: ready`) → traite la tête D'ABORD : `groom` + gate `ready` (fiche 0056) ; ne
      construis la fiche ready inférieure que sur décision **journalisée** (sinon c'est
      une inversion de priorité silencieuse). Si le groom exige un arbitrage produit →
      **checkpoint « aucune fiche ready »** (cf. tableau).
@@ -115,6 +125,13 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    d'itération »). Un run d'**un seul** sprint n'en déclenche **aucune**. Après une rétro
    `every:N` **en cours de run** (des sprints restent), **reprends la boucle** au sprint
    suivant ; seule la rétro de **fin de run** précède la clôture.
+6. **Clôture — le RUN-REPORT.** Quand la boucle s'arrête **et que le run a construit plus d'un
+   sprint**, émets le bilan avec `run:report` : une ligne par fiche (`mergée`, `PR-ouverte`,
+   `bloquée`, `sautée`) avec son PR, sa gate, sa revue, sa validation et, hors `mergée`, sa raison.
+   `pnpm --dir products/mega-city run:report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] [--tokens-used N] [--tokens-setting <lean|cap|full>]`.
+   Le script refuse une ligne incomplète, compare le déclaré à GitHub (un écart sort en code 1) et
+   ajoute HEAD contre `origin/main` et les jetons. Tu restitues son rapport **tel quel** : c'est la
+   dernière sortie du run. Un run d'**un seul** sprint n'en émet pas.
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.
@@ -129,6 +146,9 @@ automatiquement selon la section « Mode `--mode` » ci-dessous.
 **Lisibilité (règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md))** —
 chaque checkpoint suggestions-à-choix ouvre par **« En clair »** (≤ 3 phrases) avant le
 tableau d'options. Pas de jargon interne porteur du sens dans l'ouverture.
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 | Moment | Ce que tu présentes |
 |---|---|
@@ -157,6 +177,9 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
 - **`lean` (défaut)** — délégation **simple et séquentielle** ; tu **préviens AVANT** tout
   fan-out multi-agents coûteux, et tu déclenches le checkpoint « dérive tokens » au-delà d'un
   seuil souple par sprint. Tu privilégies le moins cher qui tient la qualité.
+  **Compte le coût en appels d'agent** (ADR-0060, règle `token-economy/agent-call-budget`) : ~85k de
+  contexte fixe par appel. En `lean` : une seule DoR `ezk-pm` pour tout le lot de fiches, une revue
+  `ezk-reviewer` pour 2-3 petits patchs (jamais sautée), aucun explorateur, cible ≤ 200k par fiche.
 - **`cap`** (arrête-et-demande) — dès que la conso d'un sprint **dérape au-delà d'un seuil**
   (jugé, **pas un chiffre figé** — un `--budget` numérique attend une vraie jauge de dépense,
   cf. la fiche « fenêtre de contexte »), tu **t'arrêtes au point sûr le plus proche** (jamais un
@@ -164,7 +187,7 @@ Un build multi-agents peut coûter **très cher** (~800k pour un seul skill). D'
   `[Terminer l'en-cours puis stop]` · `[Stop net]`. **Augmenter le budget = décision humaine**
   (un des 4 STOP) : même en `--mode auto`, toucher ce seuil **rend la main à l'humain**, jamais
   un redémarrage silencieux.
-- **`full`** (pleine-puissance) — multi-agents libre quand ça sert la qualité (mode « ultracode ») ;
+- **`full`** (multi-agents libre) — fan-out permis quand ça sert la qualité (mode « ultracode ») ;
   l'utilisateur surveille lui-même la conso.
 
 > **Le mode règle le PLAFOND, pas la pertinence.** Même en `full`, avant tout fan-out :

@@ -1,15 +1,15 @@
 ---
 id: "20260906122942715"
-title: Grain de livraison « lot empilé » — 1 PR, N commits propres pour fiches dépendantes
+title: "Livrer plusieurs fiches liées en une PR, un commit par fiche"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 depends: []
-labels: [methode, retro-2026-09-05, ezk-pr]
+labels: [sprint]
 status: idea
-ready:
 pr:
 created: 2026-09-06
 ---

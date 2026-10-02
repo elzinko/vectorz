@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: vectorz
 status: superseded
-pr: superseded — pilote cop1 retiré (jumeau 0038/0018)
+pr: "superseded — pilote cop1 retiré (jumeau 0038/0018)"
 created: 2026-06-28
 ---
 

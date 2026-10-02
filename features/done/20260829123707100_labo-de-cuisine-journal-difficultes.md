@@ -8,7 +8,6 @@ version:
 epic:
 depends: []
 status: shipped
-ready: 2026-08-30
 pr: "#195"
 created: 2026-08-29
 ---
@@ -101,10 +100,12 @@ un nom conventional qui rend le tout **retrouvable et rapprochable** de la featu
 - Alimente : [`20260824122629794`](20260824122629794_ezk-extract-capitaliser-feature-en-recette.md)
   (feature → recette) et le futur **ezk-chef**.
 - Doctrine : ADR-0013 (une recette **propose**, ne fabrique jamais de code seule).
-- Sœur : [`20260829123707200`](../20260829123707200_reunifier-tagger-cluster-recette.md)
+- Sœur : [`20260829123707200`](20260829123707200_reunifier-tagger-cluster-recette.md)
   (réunifier + tagger le cluster recette).
 
 ## Notes
 
 Origine : session samplerz du 2026-08-29 (câblage domaine + Vercel : Root Directory oublié,
 DNS IONOS). Priorité **P0** demandée par le PO. `idea` — **à groomer**.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

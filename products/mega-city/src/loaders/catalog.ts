@@ -10,12 +10,14 @@
  *   - skills = sous-dossiers `skills/<name>/SKILL.md` (id = `name`) ; sous-dossier sans SKILL.md ignoré.
  */
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
-import { join, resolve, sep } from 'node:path';
+import { basename, join, relative, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
+import type { Tool } from '../core/tools.js';
 import type {
   Agent,
   Bundle,
+  Command,
   Enforcement,
   Profile,
   Rule,
@@ -23,6 +25,7 @@ import type {
   Skill,
   SkillAsset,
 } from '../domain/model.js';
+import { listToolFiles, loadTools } from './tools.js';
 
 export interface Catalog {
   rules: Map<string, Rule>;
@@ -30,6 +33,17 @@ export interface Catalog {
   skills: Map<string, Skill>;
   bundles: Map<string, Bundle>;
   profiles: Map<string, Profile>;
+  /**
+   * Les slash-commands (`commands/<id>.md`), le 3ᵉ canal de lawgiver — fiche 20260816151112162. Absent quand
+   * la racine n'en porte aucune (un projet hôte, un catalogue de test) : ni le bind ni les écritures n'en dépendent.
+   */
+  commands?: Map<string, Command>;
+  /**
+   * Les outils de la méthode (les scripts de `bin/` et le dossier `scripts/` de chaque skill),
+   * CALCULÉS depuis les fichiers — fiche 20260917123943914, ADR-0058. Absent quand la racine n'en porte aucun
+   * (un projet hôte, un catalogue de test) : ni le bind ni les écritures n'en dépendent.
+   */
+  tools?: Map<string, Tool>;
 }
 
 const MARKDOWN = /\.md$/;
@@ -124,15 +138,30 @@ function resolveHookScript(enforcement: Enforcement, rootDir: string): Enforceme
   };
 }
 
+/**
+ * Comment un fichier déclare son `id` — UNE définition, partagée par les lecteurs ci-dessous
+ * et par `catalogEntityFiles` (qui doit retrouver la même identité sans rien re-deviner).
+ */
+type FrontMatter = Record<string, unknown>;
+const ruleIdOf = (data: FrontMatter): string | undefined =>
+  typeof data.id === 'string' ? data.id : undefined;
+/** Agents mega-city : `id` ; sous-agents Claude Code migrés : `name`. On accepte les deux. */
+const agentIdOf = (data: FrontMatter): string | undefined =>
+  typeof data.name === 'string' ? data.name : typeof data.id === 'string' ? data.id : undefined;
+/** Skills : `name`, à défaut `id`, à défaut le nom du dossier. */
+const skillIdOf = (data: FrontMatter, folderName: string): string =>
+  typeof data.name === 'string' ? data.name : typeof data.id === 'string' ? data.id : folderName;
+
 function readRule(file: string, rootDir: string): Rule | undefined {
   const { data, content } = matter(readFileSync(file, 'utf8'));
-  if (typeof data.id !== 'string') return undefined;
+  const ruleId = ruleIdOf(data);
+  if (ruleId === undefined) return undefined;
   const kind: RuleKind = data.kind === 'interaction' ? 'interaction' : 'disposition';
   const enforcements = Array.isArray(data.enforcements)
     ? data.enforcements.map((e: Enforcement) => resolveHookScript(e, rootDir))
     : data.enforcements;
   return {
-    id: data.id,
+    id: ruleId,
     kind,
     level: data.level,
     ...(typeof data.title === 'string' ? { title: data.title } : {}),
@@ -144,9 +173,8 @@ function readRule(file: string, rootDir: string): Rule | undefined {
 
 function readAgent(file: string): Agent | undefined {
   const { data, content } = matter(readFileSync(file, 'utf8'));
-  // Agents mega-city : `id` ; sous-agents Claude Code migrés : `name`. On accepte les deux.
-  const id = typeof data.name === 'string' ? data.name : data.id;
-  if (typeof id !== 'string') return undefined;
+  const id = agentIdOf(data);
+  if (id === undefined) return undefined;
   return {
     id,
     ...(typeof data.description === 'string' ? { description: data.description } : {}),
@@ -173,15 +201,19 @@ function stringArray(value: unknown): string[] | undefined {
  * (rétro-compat totale, un skill sans composition se charge comme avant). Chaque
  * id composé passe par `assertSafeId` — même garde-fou de frontière que le reste
  * du loader (F1) : un id composé devient potentiellement un chemin de sortie.
+ * `roles:` (agents convoqués) et `applies:` (règles suivies) suivent le même patron.
  */
 function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
   const { data, content } = matter(readFileSync(file, 'utf8'));
-  const id =
-    typeof data.name === 'string' ? data.name : typeof data.id === 'string' ? data.id : fallbackId;
+  const id = skillIdOf(data, fallbackId);
   const composes = stringArray(data.composes)?.map(assertSafeId);
   const composesExternal = stringArray(data['composes-external'])?.map(assertSafeId);
+  // ADR-0025 (amendement) : tier optionnel de `composes`. Même garde-fou de frontière.
+  const delegates = stringArray(data.delegates)?.map(assertSafeId);
   // ADR-0020 (amendement) : agents convoqués. Même garde-fou de frontière que `composes`.
   const roles = stringArray(data.roles)?.map(assertSafeId);
+  // Fiche 357 : règles appliquées, déclarées par id. Même garde-fou de frontière.
+  const applies = stringArray(data.applies)?.map(assertSafeId);
   const assets = readSkillAssets(skillDir);
   return {
     id,
@@ -190,12 +222,14 @@ function readSkill(file: string, fallbackId: string, skillDir: string): Skill {
     content: content.trim(),
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),
+    ...(delegates ? { delegates } : {}),
     ...(roles ? { roles } : {}),
+    ...(applies ? { applies } : {}),
     ...(assets.length > 0 ? { assets } : {}),
   };
 }
 
-const SKILL_FILE = 'SKILL.md';
+export const SKILL_FILE = 'SKILL.md';
 
 /**
  * Fichiers auxiliaires d'un dossier de skill (ADR-0027), triés par chemin relatif POSIX
@@ -254,6 +288,28 @@ function loadSkills(skillsRoot: string): Map<string, Skill> {
   return indexById(items);
 }
 
+/**
+ * Slash-commands = fichiers `commands/<id>.md`, UN niveau (fiche 20260816151112162). L'`id` est le nom du
+ * fichier — c'est ce qu'on tape après le `/` — jamais le front-matter. Le fichier est porté ENTIER (Claude
+ * Code lit son front-matter : `description`, `argument-hint`, `allowed-tools`), seule la fin est normalisée
+ * (un seul `\n`). Un fichier vide, ou qui n'est pas du markdown, est ignoré ; les sous-dossiers aussi
+ * (les commandes à espace de noms ne sont pas gérées). Tri stable par nom de fichier.
+ */
+function loadCommands(commandsRoot: string): Map<string, Command> {
+  const commands: Command[] = [];
+  for (const file of listFiles(commandsRoot, MARKDOWN)) {
+    const text = readFileSync(file, 'utf8');
+    if (text.trim().length === 0) continue;
+    const { data } = matter(text);
+    commands.push({
+      id: assertSafeId(basename(file, '.md')),
+      ...(typeof data.description === 'string' ? { description: data.description } : {}),
+      content: `${text.trimEnd()}\n`,
+    });
+  }
+  return indexById(commands);
+}
+
 function readYamlEntity<T>(file: string): T {
   return parseYaml(readFileSync(file, 'utf8')) as T;
 }
@@ -276,11 +332,85 @@ function loadYaml<T extends { id: string }>(dir: string): Map<string, T> {
 
 /** Charge tout le catalogue depuis la racine du repo. Pur (lecture seule, déterministe). */
 export function loadCatalog(rootDir: string): Catalog {
+  const skills = loadSkills(join(rootDir, 'skills'));
+  const tools = loadTools(rootDir, skills);
+  const commands = loadCommands(join(rootDir, 'commands'));
   return {
     rules: loadMarkdown(join(rootDir, 'rules'), (file) => readRule(file, rootDir), true), // récursif : ids slashés → sous-dossiers (fiche 0037)
     agents: loadMarkdown(join(rootDir, 'agents'), readAgent),
-    skills: loadSkills(join(rootDir, 'skills')),
+    skills,
     bundles: loadYaml<Bundle>(join(rootDir, 'bundles')),
     profiles: loadYaml<Profile>(join(rootDir, 'profiles')),
+    ...(commands.size > 0 ? { commands } : {}),
+    ...(tools.length > 0 ? { tools: indexById(tools) } : {}),
   };
+}
+
+/** Une entité du catalogue qu'un fichier markdown incarne. */
+export interface EntityFile {
+  kind: 'rule' | 'agent' | 'skill';
+  id: string;
+}
+
+/**
+ * Où vit chaque entité : chemin ABSOLU du fichier → l'entité qu'il incarne (`SKILL.md`, agent,
+ * règle). Sert aux validateurs qui lisent des CHEMINS (liens markdown) et doivent savoir
+ * quelle entité ils visent — jamais à identifier une entité (l'identité reste l'`id`).
+ * Même parcours et mêmes règles d'`id` que `loadCatalog` ; un fichier sans `id` est absent.
+ */
+export function catalogEntityFiles(rootDir: string): Map<string, EntityFile> {
+  const files = new Map<string, EntityFile>();
+  const frontMatterOf = (file: string): FrontMatter => matter(readFileSync(file, 'utf8')).data;
+
+  for (const file of listFiles(join(rootDir, 'rules'), MARKDOWN, true)) {
+    const id = ruleIdOf(frontMatterOf(file));
+    if (id !== undefined) files.set(resolve(file), { kind: 'rule', id });
+  }
+  for (const file of listFiles(join(rootDir, 'agents'), MARKDOWN)) {
+    const id = agentIdOf(frontMatterOf(file));
+    if (id !== undefined) files.set(resolve(file), { kind: 'agent', id });
+  }
+  const skillsRoot = join(rootDir, 'skills');
+  if (existsSync(skillsRoot)) {
+    // Même ordre que `loadSkills` (noms de dossier triés) : sur un id en double, le dernier gagne
+    // pareil des deux côtés — sinon la carte citerait un autre fichier que celui retenu.
+    const byName = (a: { name: string }, b: { name: string }): number =>
+      a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    for (const entry of readdirSync(skillsRoot, { withFileTypes: true }).sort(byName)) {
+      const skillFile = join(skillsRoot, entry.name, SKILL_FILE);
+      if (!entry.isDirectory() || !existsSync(skillFile)) continue;
+      files.set(resolve(skillFile), {
+        kind: 'skill',
+        id: skillIdOf(frontMatterOf(skillFile), entry.name),
+      });
+    }
+  }
+  return files;
+}
+
+/**
+ * La PROVENANCE de chaque brique : clé `kind:id` → chemin du fichier qui la déclare, relatif à
+ * `baseDir` (défaut : `rootDir`), en séparateurs POSIX. Règles, juges et commandes viennent de
+ * `catalogEntityFiles` ; bundles et profils sont des YAML dont l'id s'écrit DANS le fichier
+ * (le nom du fichier ne fait pas foi — même règle que `loadCatalog`). Dernier-gagne, comme lui.
+ * Sert la carte : elle montre, pour chaque élément, le fichier d'où il vient.
+ */
+export function catalogSources(rootDir: string, baseDir: string = rootDir): Map<string, string> {
+  const out = new Map<string, string>();
+  const rel = (file: string): string => relative(baseDir, file).split(sep).join('/');
+  for (const [file, entity] of catalogEntityFiles(rootDir)) {
+    out.set(`${entity.kind}:${entity.id}`, rel(file));
+  }
+  // Les outils : leur id EST leur chemin depuis `rootDir` (fiche 20260917123943914).
+  for (const id of listToolFiles(rootDir)) out.set(`tool:${id}`, rel(join(rootDir, id)));
+  for (const [kind, dir] of [
+    ['bundle', 'bundles'],
+    ['profile', 'profiles'],
+  ] as const) {
+    for (const file of listFiles(join(rootDir, dir), YAML)) {
+      const id = readYamlEntity<{ id?: unknown } | null>(file)?.id;
+      if (typeof id === 'string' && id.length > 0) out.set(`${kind}:${assertSafeId(id)}`, rel(file));
+    }
+  }
+  return out;
 }

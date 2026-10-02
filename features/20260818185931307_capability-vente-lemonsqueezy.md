@@ -4,9 +4,11 @@ title: Capability de vente LemonSqueezy (checkout + licence + entitlement) — r
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
 pr:
 created: 2026-08-18
+labels: [recettes]
 ---
 
 # Capability de vente LemonSqueezy — récoltée de muti, réutilisable

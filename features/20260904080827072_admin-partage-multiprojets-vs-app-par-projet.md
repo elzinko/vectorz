@@ -4,12 +4,13 @@ title: "admin ezk : partagé multi-projets vs une app par projet — ports, isol
 type: chore
 priority: P3
 product: mega-city
+milestone: parked
 version:
 epic:
 status: idea
-ready:
 pr:
 created: 2026-09-04
+labels: [installation]
 ---
 
 **En clair.** Question d'archi **ouverte**, capturée pour ne pas la perdre. Quand ezk pose des

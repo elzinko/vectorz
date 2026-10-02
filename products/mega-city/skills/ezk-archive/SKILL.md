@@ -1,9 +1,12 @@
 ---
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio]
+delegates: [ezk-backlog]
 name: ezk-archive
 argument-hint: "[help|check|run]"
 description: >-
-  Rituel de CLÔTURE de session avant archivage : clôt proprement un repo pour ne
-  RIEN perdre entre deux sessions. A utiliser quand l'utilisateur veut « archiver
+  CLÔTURE de session avant archivage (une capacité de continuité, pas une étape
+  agile) : clôt proprement un repo pour ne RIEN perdre entre deux sessions. Une
+  session sans rien à sauver sort en une ligne « rien à archiver ». A utiliser quand l'utilisateur veut « archiver
   / clôturer une session », « fermer proprement avant de partir », « ne rien
   perdre entre deux sessions », préparer un « handoff » pour la prochaine session,
   ou demande « on archive ? » « avant de fermer ». Pilotable par sous-commandes :
@@ -36,32 +39,36 @@ conversation**. Lui déléguer la *rédaction* n'achète pas un meilleur rédact
 peut que recopier ce qu'on lui écrit. On délègue **uniquement** pour le **jugement**
 (branches RÉELLES, stashes ambigus).
 
-### Modèle (Claude Code) + secours
+### Modèle (Claude Code) : léger par défaut, Opus pour le seul jugement
 
 Les skills / agents mega-city sont **orientés Claude Code** (ids host-natifs), pas
-Cursor/Grok. Frontmatter de l'agent :
+Cursor/Grok. Le portier est un script et la note est un gabarit : le travail délégué est
+surtout mécanique. L'agent tourne donc sur un modèle **léger** par défaut.
 
-| Champ | Valeur | Rôle |
+| Quand | Modèle | Pourquoi |
 |---|---|---|
-| `model` | `claude-opus-4-8` | Pin Opus **4.8** — **interdit** l'alias `opus` (peut dériver vers Opus 5) |
-| `model_spare` | `sonnet` | Secours si l'hôte n'a pas / refuse 4.8 |
-| `effort` | `medium` | |
+| Par défaut (frontmatter de l'agent) | `sonnet` | mécanique : purges prouvées, mémoire, note, archive session |
+| Le bloc gate contient un fait `[P2] branch REAL`, un `MAINSYNC` non prouvé (`DIVERGED_UNPROVEN`, `UNKNOWN`) ou un stash | `claude-opus-4-8` | le seul pas de **jugement** : cette branche est-elle un brouillon jetable ou du travail à récupérer ? |
 
 Quand tu délègues :
 
-1. **Préfère** `model` du frontmatter (`claude-opus-4-8`).
-2. Si l'hôte **refuse** 4.8 → relance avec `model_spare` (`sonnet`) et dis-le en une ligne.
-3. **Ne substitue jamais** Opus 5 / `claude-opus-5` / alias `opus`.
-4. **Hôte Cursor** (outil Task) : mappe vers `claude-opus-4-8-thinking-high` (ou
-   équivalent 4.8 du catalogue) ; sinon `model_spare` → Sonnet. N'utilise Grok /
-   autres familles **que** si l'humain le demande explicitement.
+1. **Par défaut**, ne passe pas de `model` : le frontmatter de l'agent (`sonnet`) s'applique.
+2. **Sur un fait de jugement** (ligne ci-dessus), passe `model: "claude-opus-4-8"` à l'outil Agent.
+   Si l'hôte le refuse, retombe sur `sonnet` et dis-le en une ligne.
+3. **Ne substitue jamais** Opus 5 / `claude-opus-5` / alias `opus` (il peut dériver vers Opus 5).
+4. **Hôte Cursor** (outil Task) : pour le pas de jugement, mappe vers
+   `claude-opus-4-8-thinking-high` (ou équivalent 4.8 du catalogue) ; sinon Sonnet. N'utilise
+   Grok / autres familles **que** si l'humain le demande explicitement.
 
-> **Une seule responsabilité : l'hygiène de clôture.** Ce n'est PAS du sprint ni du
-> scrum (ça, c'est [`ezk-sprint`](../ezk-sprint/)), ni le suivi du *quoi* (ça, c'est
-> [`ezk-backlog`](../ezk-backlog/)). `ezk-sprint` **ouvre/déroule**, `ezk-backlog`
-> suit **le quoi**, **`ezk-archive` clôt**.
+> **Une seule responsabilité : l'hygiène de clôture de la SESSION** (s'asseoir puis se lever
+> dans Claude Code). Ce n'est PAS du sprint ni du scrum (ça, c'est `ezk-sprint`), ni le suivi
+> du *quoi* (ça, c'est `ezk-backlog`). `ezk-sprint` **ouvre, déroule et ferme le sprint**
+> (`start` / `close`, voir [ADR-0054](../../docs/adr/0054-cloture-sprint-vs-archive-session.md)),
+> `ezk-backlog` suit **le quoi**, **`ezk-archive` ferme la session**.
 >
-> **Bande (ADR-0022)** : **capacité**, pas orchestrateur. Sur le diagramme
+> **Bande (ADR-0022)** : **capacité de continuité d'exécution**, pas orchestrateur ni étape agile.
+> Elle existe parce qu'un agent perd sa mémoire entre deux sessions, pas parce qu'un incrément
+> est fini. Sur le diagramme
 > [`ezk-methode-globale`](../../diagrams/ezk-methode-globale/), `archive` vit
 > avec backlog / sandbox / preview — pas dans la chaîne
 > product-builder → sprint → pr.
@@ -77,6 +84,12 @@ Quand tu délègues :
 | `check` | **Dry-run, ne modifie RIEN** — produit le rapport de clôture |
 | `run` / `close` | Applique les **corrections sûres** (ship/regen backlog, mémoire) puis produit la **note de handoff** + le **verdict** |
 
+> **Deux `close`, deux étages.** `ezk-archive close` (alias de `run`) ferme la **session**.
+> `ezk-sprint close` ferme le **sprint** et scelle l'incrément : il ne touche pas à la session.
+> L'ordre normal : un ou plusieurs `ezk-sprint close`, la rétro et le planning si besoin, puis
+> `ezk-archive`. L'**ouverture** de session est implicite : le handoff se reprend au premier
+> `ezk-sprint start` (via `handoff.sh carry`). Il n'existe pas de verbe d'ouverture ici.
+
 Deux échappatoires, quand le portier ne doit pas décider :
 
 | Modificateur | Effet |
@@ -88,6 +101,11 @@ Le détail des 7 vérifications et les garde-fous vivent dans le sous-agent
 (`~/.claude/agents/ezk-archive.md`) ; le gabarit de la note vit dans
 [`references/handoff-template.md`](references/handoff-template.md), **source unique lue
 par les deux chemins** (`scripts/test-template-unicity.sh` interdit de le dupliquer).
+
+Cette note suit le pattern [gabarit + extracteur + rendu](../../rules/documentation-guidelines/readable-deliverable-trio.md) :
+le gabarit est `references/handoff-template.md`, l'extracteur est `scripts/check.sh`, le rendu
+est la réponse en « 3 réponses, zéro jargon » ci-dessous. Le gabarit fixe le format ; la règle de
+clarté garantit le texte dedans.
 
 ## Le portier décide
 
@@ -106,27 +124,58 @@ par les deux chemins** (`scripts/test-template-unicity.sh` interdit de le dupliq
 > le sujet doit comprendre du premier coup (règle
 > [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md)).
 
-### 1. Compose le résumé de session
+### 1. Déclare les ids, puis (peut-être) compose le résumé
 
-5-15 lignes : fiches/PRs livrées **avec leurs ids**, décisions ADR, faits notables
-appris (contraintes, choix et leur *pourquoi*) — tout ce qui **n'est pas dérivable de
-l'état git/gh**. Tu es la seule à l'avoir.
+D'abord **deux listes d'ids**, une ligne chacune, `none` si elles sont vides :
+
+- **livrées** (`--shipped`) : les fiches mergées cette session ;
+- **travaillées** (`--worked`) : les fiches sur lesquelles la session a travaillé, **livrées ou non**.
+
+Elles coûtent presque rien et le portier en a besoin. Le **résumé** de 5-15 lignes (fiches/PRs
+livrées **avec leurs ids**, décisions ADR, faits notables appris : contraintes, choix et leur
+*pourquoi*, tout ce qui **n'est pas dérivable de l'état git/gh**) se compose **après** le gate,
+et seulement si la voie rapide ne s'applique pas. Tu es la seule à avoir cette matière.
 
 ### 2. Interroge le portier — **une seule commande**
 
 ```bash
-bash <chemin-du-skill>/scripts/check.sh --gate --shipped <ids-livrés>
+bash <chemin-du-skill>/scripts/check.sh --gate --shipped <ids-livrés|none> --worked <ids-travaillés|none>
 ```
 
 `--shipped` prend les ids que tu viens de lister (`0089,0097`), ou `none` si la
-session n'a **rien** livré. **Ne l'omets jamais sans raison** : sans déclaration, le
-portier n'a aucune preuve, répond `P3_BACKLOG: UNKNOWN` et force la délégation complète.
-C'est voulu — c'est ce qui garantit qu'une session qui n'a *pas* tenu ses comptes reçoit
-toujours le rituel entier.
+session n'a **rien** livré. `--worked` prend ceux sur lesquels elle a **travaillé**, livrés
+ou non, ou `none` : une session qui a travaillé la fiche X sans la livrer déclare
+`--shipped none --worked X`, et le récit porte alors `fiches: X`. **Ne les omets jamais sans
+raison** : sans déclaration, le portier n'a aucune preuve, répond `P3_BACKLOG: UNKNOWN` et
+refuse la voie rapide. C'est voulu — c'est ce qui garantit qu'une session qui n'a *pas* tenu
+ses comptes reçoit toujours la clôture complète.
 
 Le portier est **read-only** et rend ~12 lignes sur une session propre.
 
-### 3. Lis `VERDICT:` — et une seule des deux branches suivantes
+### 3. Lis `FASTPATH:` d'abord, puis `VERDICT:`
+
+#### `FASTPATH: EMPTY` → la voie rapide : une ligne, rien d'autre
+
+Le portier a **prouvé** qu'il n'y a rien à sauver : verdict propre, rien livré, rien travaillé,
+pas de `SPRINT.md` avec du contenu. Il reste une seule question, la tienne : **la session
+a-t-elle un fait durable à transmettre** — une décision, une contrainte, un « pourquoi » que ni
+git ni le backlog ne disent ? Si **non**, réponds par **une seule ligne** et arrête-toi :
+
+> Rien à archiver : tout est poussé, aucune branche ni PR en attente.
+
+Aucune note de handoff, aucun résumé, aucune écriture, **aucun sous-agent**, sur `check` comme
+sur `run`. Si le bloc montre des restes à ranger (`branch_absorbed` ou `worktree_prunable` non
+nuls), ajoute à la même ligne : « N branches absorbées à ranger : `check.sh --cleanup` ».
+Si la ligne porte `other_worktrees_dirty=N`, d'autres worktrees (un agent, une autre session) ont du
+travail non commité que le portier ne juge pas : ajoute à la même ligne « N autre(s) worktree(s) ont
+des changements non commités : à regarder ». La voie rapide ne tait jamais ce reste.
+Si **oui** (un fait durable existe), compose le résumé et déroule la branche `CLEAN` ci-dessous.
+
+#### `FASTPATH: NO reason=…` → la clôture complète
+
+La raison (`verdict`, `shipped`, `worked`, `sprint`, `shipped_undeclared`, `worked_undeclared`)
+dit pourquoi. Compose le résumé de l'étape 1, puis lis `VERDICT:` — et une seule des deux
+branches suivantes.
 
 #### `VERDICT: CLEAN` → tu traites la clôture toi-même
 
@@ -143,6 +192,9 @@ qui ne demandent aucun jugement.
 2. Rédige la note d'après [`references/handoff-template.md`](references/handoff-template.md)
    — **ouvre par « En clair »** (règle
    [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md)).
+   **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
+   affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
+   **titre + lien**, jamais par son id nu.
 3. **Si — et seulement si — la sous-commande est `run`/`close`** :
    - **mémoire projet** : les faits durables non-dérivables du repo (dates relatives
      converties en absolues) ; ne mémorise pas ce que le repo encode déjà ;
@@ -152,6 +204,12 @@ qui ne demandent aucun jugement.
      …
      EOF
      ```
+   - **machine jetable** — si la ligne `HANDOFF:` du gate porte `durable=0` (session cloud,
+     conteneur recyclé), écris AUSSI la copie versionnée, avec le même corps :
+     `bash <skill>/scripts/handoff.sh durable "<date> — <titre>"`. Elle atterrit dans
+     `docs/sessions/`. Propose le commit `docs(sessions): handoff <date>` et dis en toutes lettres
+     qu'il faut le **pousser** avant de fermer : sans push, la copie disparaît avec le conteneur.
+     Tu ne commites ni ne pousses jamais toi-même ;
    - **8. Archive session** — si `SPRINT.md` existe à la racine **et** a du contenu réel
      (pas un stub vide) :
      - copier vers `docs/sessions/YYYY-MM-DD-<slug>.md` (créer `docs/sessions/` si besoin ;
@@ -160,9 +218,9 @@ qui ne demandent aucun jugement.
        en tête du récit (première ligne, avant le titre) — le ou les ids de fiche backlog
        travaillés dans la session, c'est ce qui rend le récit **rapprochable** de sa/ses
        feature(s) (`grep -rl <id> docs/sessions/`, `git log --grep=<id>`, convention
-       `feat/<id>-<slug>` — ADR-0018) ; **session sans fiche** (non-feature, `--shipped
-       none`) → **pas d'entête**, ne jamais inventer d'id (même interdiction que le reste
-       des faits de session) ;
+       `feat/<id>-<slug>` — ADR-0018). **Les ids sont ceux de `--worked`** (livrées ou non) ;
+       **session sans fiche** (`--worked none`) → **pas d'entête**, ne jamais inventer d'id
+       (même interdiction que le reste des faits de session) ;
      - si `SPRINT.md` porte une section **`## Galères & gestes (labo)`** avec du contenu
        (pas vide) : la **reprendre telle quelle** dans le récit sous le même titre
        `## Galères & gestes (labo)` — c'est le moment où « corrigé + validé » est vrai
@@ -182,16 +240,26 @@ qui ne demandent aucun jugement.
      (labo) »). Best-effort assumé : la garantie déterministe (hook) attend la fiche 0077.
 4. Rends la note + le verdict **✅ archivable** — **En clair d'abord** (≤ 3 phrases),
    puis le corps gabarit. Sur `check`, dis que rien n'a été écrit et que `run` le ferait.
+5. **Ménage** — si `branch_absorbed` ou `worktree_prunable` sont non nuls, ou si la machine
+   porte beaucoup de worktrees d'agents, propose `bash <skill>/scripts/check.sh --cleanup` :
+   l'inventaire des worktrees et branches sûrs à retirer, avec la commande exacte de chacun. Il
+   ne supprime **rien**. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
+   Les worktrees que les agents de CETTE session viennent de laisser ont moins de 24 h : le ménage
+   les garde (« recent »). Une fois certain qu'aucun agent ne tourne encore, relance avec
+   `EZK_CLEANUP_IDLE_HOURS=0` pour les proposer.
 
 #### `VERDICT: DIRTY points=…` → tu délègues, scopé
 
 Appelle l'outil **Agent** avec `subagent_type: "ezk-archive"`, `run_in_background: false`,
-en honorant le frontmatter `model` / `model_spare` (section Modèle ci-dessus),
+**modèle léger par défaut** ; `model: "claude-opus-4-8"` seulement si le bloc gate contient un
+fait de jugement (section Modèle ci-dessus),
 et un prompt **autonome** contenant :
 
 - la sous-commande (`check` ou `run`) et le chemin du repo (cwd) ;
 - le **résumé de session** de l'étape 1 ;
-- **le bloc gate collé verbatim** — il a déjà payé la dérivation, la refaire est une faute ;
+- **le bloc gate collé verbatim** — il a déjà payé la dérivation, la refaire est une faute.
+  Il porte `worked=` sur la ligne `P3_BACKLOG` : c'est de là que l'agent tire l'en-tête
+  `fiches:` du récit, y compris pour une fiche travaillée et non livrée ;
 - la phrase de scope :
 
 > `SCOPE : traite les points de contrôle <liste>. Les autres points de contrôle sont`
@@ -206,14 +274,17 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 
 ## Intégration
 
-- **[`ezk-backlog`](../ezk-backlog/)** : le sous-agent lui délègue `ship`/`add`/`regen`
+- **`ezk-backlog`** : le sous-agent lui délègue `ship`/`add`/`regen`
   — **uniquement si le point 3 est DIRTY** (c'est le geste le plus cher de la chaîne) ;
-  la note de handoff renvoie vers `list`.
-- **[`ezk-sprint`](../ezk-sprint/)** : complémentaire — le sprint *ouvre/déroule*,
-  ezk-archive *clôt*. Typiquement invoqué **après** le checkpoint de fin de sprint.
-  À la clôture `run`/`close`, archive un snapshot de `SPRINT.md` dans
+  la note de handoff renvoie vers `list`. **Délégation optionnelle** (`delegates:`, pas `composes:`) :
+  si `ezk-backlog` n'est pas installé dans le profil, ne livre rien toi-même — nomme dans le rapport
+  les fiches à livrer, verdict `pending`, et laisse l'humain lancer `ship`.
+- **`ezk-sprint`** : complémentaire — le sprint *ouvre, déroule et ferme* (`start` / `close`,
+  qui scelle l'incrément dans `SPRINT.md`), ezk-archive ferme la *session*. Typiquement invoqué
+  **après** le `close` du dernier sprint de la session. À la clôture `run`/`close`, archive un
+  snapshot de `SPRINT.md` (tous les incréments scellés de la session y figurent) dans
   `docs/sessions/` (voir `docs/sessions/README.md` du projet).
-- **[`ezk-commits`](../ezk-commits/)** : tout commit produit suit les Conventional Commits.
+- **`ezk-commits`** : tout commit produit suit les Conventional Commits.
 - **`ezk-product-build`** : à ses pauses inter-sprint, il **rappelle** que
   `/ezk-archive` est disponible — il ne réimplémente rien du handoff ni de
   l'archive `docs/sessions/`.
@@ -233,6 +304,11 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 - **Ne recopie pas le gabarit ici** : il vit dans `references/handoff-template.md`.
 - **Toujours fournir le résumé de session** au sous-agent quand tu délègues : sans lui,
   il ne voit que l'état git, pas ce qui a été décidé/appris/livré.
+- **Ne ferme jamais un sprint** : sceller l'incrément, c'est `ezk-sprint close` (ADR-0054). Ici on ferme la session.
+- **Une session vide ne coûte presque rien** : sur `FASTPATH: EMPTY` et sans fait durable, une ligne,
+  aucune note, aucun sous-agent. Ne déroule jamais la clôture complète « par habitude ».
+- **Le ménage ne supprime jamais tout seul** : `check.sh --cleanup` liste, le PO valide, une
+  commande par appel. Un worktree d'une autre session vivante ne se retire jamais.
 - **Ne merge/push rien toi-même** ; ça reste à l'utilisateur de trancher.
 - **PRs déjà ouvertes (fiche 0185)** : si un fait gate `branch REAL … pr=#N` (ou
   rendu `→ PR #N`) existe, **ne propose jamais** d'ouvrir une nouvelle PR sur

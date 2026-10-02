@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-07-24
 pr: "#45"
 created: 2026-07-19
 ---
@@ -98,3 +97,5 @@ risque de divergence, non re-mesuré). À re-vérifier si le comportement de
 - Réfs : analyse `docs/captures/2026-07-19-topologie-supervision-et-plan-diagrammes.md` ;
   doc officielle Claude Code (portées MCP, `CLAUDE_PROJECT_DIR`) ; fiche 0086
   (normalisation), fiche 0050 (kit, livré).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-24 · ancien champ front-matter `ready:`, retiré en migration 005.

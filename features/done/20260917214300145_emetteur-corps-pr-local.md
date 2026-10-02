@@ -7,7 +7,6 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [github-optionnel, plugin]
 status: shipped # idea | ready | in-progress | blocked | shipped
-ready: 2026-09-17 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète)
 pr: "#252"
 evidence: none # outil CLI + câblage skill, pas d'écran
 created: 2026-09-17
@@ -92,3 +91,5 @@ hors de ce cran).
       + émission review). Ce cran ajoute le **corps de PR local** systématique, qui manquait.
 - **Trou corrigé en amont** : `review:emit` résolvait mal son dossier de sortie (PR #251) ; le
       même correctif `INIT_CWD` est appliqué au nouvel émetteur.
+
+> **Historique** — DoR (`ready`) passée le 2026-09-17 · ancien champ front-matter `ready:`, retiré en migration 005.

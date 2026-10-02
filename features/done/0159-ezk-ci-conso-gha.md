@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#34"
 created: 2026-07-15
 ---
@@ -56,3 +55,5 @@ des règles déjà en place sur le monorepo **muti** (à récolter / confirmer) 
 - Continuité avec le savoir déjà encodé dans `ezk-ci` (safeguard anti-runaway
   `timeout-minutes`, la « leçon à 720 min ») : même esprit, côté cloud cette fois.
 - **Enrichissement d'un skill existant**, pas un nouveau skill : reste sous `skills/ezk-ci/`.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

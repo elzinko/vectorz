@@ -9,7 +9,6 @@ epic:
 depends: []
 labels: [ezk-ci, ci, outillage, billing]
 status: shipped
-ready: 2026-08-29
 pr: "#186"
 created: 2026-08-28
 ---
@@ -118,3 +117,5 @@ Attendu : une table de conso par repo (mois courant), colonne public/privé, et 
 - **Groomée le 2026-08-29** — DoR complète : problème · valeur · critères vérifiables ·
   dépendance externe **constatée**. `ready:` **non posé** : c'est le gate `ready <id>` qui le
   pose. Reste au sprint : trancher les 3 décisions d'archi ci-dessus (étape archi).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-29 · ancien champ front-matter `ready:`, retiré en migration 005.

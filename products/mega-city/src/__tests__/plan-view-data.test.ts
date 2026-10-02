@@ -7,7 +7,6 @@ import {
   PLAN_DATA_END,
   buildPlanViewData,
   buildPlanViewDataBlock,
-  upsertPlanViewDataBlock,
 } from '../core/plan-view-data.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { loadFiches } from '../loaders/fiches.js';
@@ -18,8 +17,8 @@ const fiche = (over: Partial<Fiche> & { id: string }): Fiche => ({
   type: over.type ?? 'feature',
   priority: over.priority ?? 'P2',
   status: over.status ?? 'idea',
-  ready: over.ready ?? false,
   milestone: over.milestone ?? '',
+  version: over.version ?? '',
   product: over.product ?? 'mega-city',
   pr: over.pr ?? '',
   labels: over.labels ?? [],
@@ -30,16 +29,16 @@ const fiche = (over: Partial<Fiche> & { id: string }): Fiche => ({
 
 const PLAN = [
   '## ▶️ NOW',
-  '1. **0002** — todo pas ready (bloquée avant la tête)',
-  '2. **0001** — todo ready (la tête) · `build`',
+  '1. **0002** — idea pas prête (à groomer avant la tête)',
+  '2. **0001** — ready (la tête) · `build`',
   '## ⏳ LATER',
   '- Paquet distribution — 0003 · 0404',
 ].join('\n');
 
 const FICHES = [
-  fiche({ id: '0002', status: 'idea', ready: false }),
-  fiche({ id: '0001', status: 'ready', ready: true, title: 'La tête tirable' }),
-  fiche({ id: '0003', status: 'shipped', ready: true }),
+  fiche({ id: '0002', status: 'idea' }),
+  fiche({ id: '0001', status: 'ready', title: 'La tête tirable' }),
+  fiche({ id: '0003', status: 'shipped' }),
   // 0404 volontairement ABSENT → doit remonter en unresolved.
 ];
 
@@ -61,9 +60,9 @@ describe('buildPlanViewData (fiche 20260825213807501)', () => {
     expect(data.unresolved).toEqual(['0404']);
   });
 
-  it('calcule la tête tirable (1re todo+ready) et les têtes bloquées avant elle', () => {
+  it('calcule la tête tirable (1re fiche status: ready) et les idea à groomer avant elle', () => {
     expect(data.head?.id).toBe('0001');
-    expect(data.head?.ready).toBe(true);
+    expect(data.head?.status).toBe('ready');
     expect(data.head?.title).toBe('La tête tirable');
     expect(data.blockedAhead.map((c) => c.id)).toEqual(['0002']);
   });
@@ -84,19 +83,16 @@ describe('buildPlanViewData (fiche 20260825213807501)', () => {
 });
 
 describe('bloc géré window.EZK_PLAN (marqueurs disjoints d’avancement)', () => {
-  it('pose le bloc entre les marqueurs, idempotent, et échoue franchement si absents', () => {
-    const stub = `avant ${PLAN_DATA_BEGIN}\nOLD\n${PLAN_DATA_END} apres`;
+  it('le bloc est délimité par ses marqueurs, déterministe, et affecte window.EZK_PLAN', () => {
     const block = buildPlanViewDataBlock(PLAN, FICHES);
-    const out = upsertPlanViewDataBlock(stub, block);
-    expect(out).toContain('window.EZK_PLAN');
-    expect(out.startsWith('avant ')).toBe(true);
-    expect(out.endsWith(' apres')).toBe(true);
-    expect(upsertPlanViewDataBlock(out, block)).toBe(out); // idempotent
-    expect(() => upsertPlanViewDataBlock('sans marqueurs', block)).toThrow();
+    expect(block.startsWith(PLAN_DATA_BEGIN)).toBe(true);
+    expect(block.endsWith(PLAN_DATA_END)).toBe(true);
+    expect(block).toContain('window.EZK_PLAN =');
+    expect(buildPlanViewDataBlock(PLAN, FICHES)).toBe(block); // déterministe
   });
 
   it('échappe `<` dans les données (protège la balise <script> porteuse)', () => {
-    const withTag = [fiche({ id: '0001', title: 'titre </script> piégé', status: 'ready', ready: true })];
+    const withTag = [fiche({ id: '0001', title: 'titre </script> piégé', status: 'ready' })];
     const block = buildPlanViewDataBlock('## NOW\n- **0001** — x', withTag);
     expect(block).not.toContain('</script>');
     expect(block).toContain('\\u003c');
@@ -113,10 +109,9 @@ describe('smoke sur le vrai features/PLAN.md', () => {
     // La date « 2026 » et les fragments de SHA ne polluent PAS les introuvables.
     expect(data.unresolved).not.toContain('2026');
     expect(data.unresolved).not.toContain('45102');
-    // Si une tête existe, c'est une vraie fiche todo+ready.
+    // Si une tête existe, c'est une vraie fiche `status: ready`.
     if (data.head) {
       expect(data.head.found).toBe(true);
-      expect(data.head.ready).toBe(true);
       expect(data.head.status).toBe('ready');
     }
   });

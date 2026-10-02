@@ -1,20 +1,23 @@
 /**
  * map-data — les données de la carte interactive, compilées depuis le catalogue.
- * DÉTERMINISTE et PUR (ADR-0003) — le bord I/O est `bin/regen-map-data.ts`.
+ * DÉTERMINISTE et PUR (ADR-0003) — le bord I/O est `src/io/derived-views.ts` (vue `carte`).
  *
  * POURQUOI (épic « carte fidèle », synthèse PR #162) : la carte dessinait des données
  * écrites À LA MAIN dans son HTML — impossible de prouver qu'un trait venait des fichiers.
  * Ici, chaque entrée de la carte est DÉRIVÉE du catalogue chargé par `loadCatalog` et du
  * graphe validé par `validateGraph`. La carte ne peut plus montrer que ce qui existe.
  *
- * Le bloc est posé dans le HTML entre deux marqueurs gérés (même patron que
- * `composes-graph.ts` pour skills/README.md) ; un test d'invariant compare le bloc sur
- * disque au bloc régénéré — carte périmée ⇒ CI rouge.
+ * Le bloc est écrit dans `carte-interactive.data.js`, que la coque HTML charge par
+ * `<script src>`. Ce fichier n'est dans AUCUN commit (ADR-0055) : `ezk:map` le calcule à chaque
+ * requête, `pnpm views:regen` l'écrit sur disque. Sans copie committée, la carte ne peut pas être
+ * périmée ; un test prouve que le constructeur dit vrai sur le dépôt réel (fidélité par construction).
  */
 import type { Catalog } from '../loaders/catalog.js';
 import type { CompiledGraph } from './compiled-graph.js';
 import { type MethodDoc, validateMethod } from './ceremonies.js';
-import type { LinkType } from './graph.js';
+import { type AssemblageView, buildAssemblage } from './assemblage.js';
+import { type CycleStep, type CycleStepDoc, compileCycle } from './cycle.js';
+import type { LinkType, NodeKind } from './graph.js';
 import { validateGraph } from './graph.js';
 import { type Etage, type Famille, type TaxonomieDoc, validateTaxonomie } from './taxonomie.js';
 
@@ -30,8 +33,14 @@ export const MAP_DATA_END = '/*ezk-map-data:end*/';
  */
 export type Bande = 'ceremonies' | 'artefacts' | 'hors-bande';
 
+/**
+ * Provenance (fiche 20260821163346493) : chaque brique porte, si on la connaît, le chemin du
+ * fichier qui la déclare (relatif à la racine du dépôt). `source` ABSENT ⇒ la brique compte
+ * « déduite » : la carte ne la présente jamais à égalité avec du prouvé.
+ */
 export interface MapSkill {
   id: string;
+  source?: string;
   description: string;
   usage: string; // `argument-hint:` du frontmatter — les sous-commandes, verbatim
   etage: Etage; // ADR-0039 — méthode | modules | librairie
@@ -41,11 +50,27 @@ export interface MapSkill {
   composesExternal: string[]; // refs hors catalogue (documentées, jamais warnées — ADR-0025)
   roles: string[]; // agents que je convoque
   composedBy: string[]; // ← skills qui me composent
+  tools: string[]; // outils que ma doc cite (ADR-0058)
   profiles: string[]; // ⊃ profils qui m'embarquent
+}
+
+/**
+ * Un outil : un script de `bin/` ou des `scripts/` d'un skill (fiche 20260917123943914, ADR-0058).
+ * Son `source` est le script lui-même ; `usedBy` dit quels skills le citent ; `commands` et
+ * `internal` disent ce que le manifeste de la commande `ezk` en sait. Aucun des trois (ni skill,
+ * ni commande, ni raison) : l'outil est orphelin, la carte le range dans « le bruit restant ».
+ */
+export interface MapTool {
+  id: string;
+  source?: string;
+  commands: string[]; // commandes `ezk …` qui le lancent
+  internal?: string; // raison « internal » du manifeste
+  usedBy: string[]; // ← skills qui le citent
 }
 
 export interface MapAgent {
   id: string;
+  source?: string;
   description: string;
   etage: Etage; // ADR-0039
   famille?: Famille;
@@ -59,6 +84,7 @@ export interface MapAgent {
 
 export interface MapRule {
   id: string;
+  source?: string;
   title: string;
   kind: string;
   level: string;
@@ -69,6 +95,7 @@ export interface MapRule {
 
 export interface MapBundle {
   id: string;
+  source?: string;
   extends: string[];
   rules: string[];
   profiles: string[]; // ← profils qui me citent
@@ -76,6 +103,7 @@ export interface MapBundle {
 
 export interface MapProfile {
   id: string;
+  source?: string;
   extends: string[];
   bundles: string[];
   agents: string[];
@@ -83,21 +111,77 @@ export interface MapProfile {
   interactions: string[];
 }
 
+/**
+ * Index des sources : `kind:id` → chemin du fichier ; `method` et `taxonomie` → leurs YAML ;
+ * `bind` et `adr-bind` → le code du moteur et son ADR (le bind n'est pas dans le graphe).
+ */
+export type SourceIndex = ReadonlyMap<string, string>;
+
+/** Ce que l'appelant (le bord I/O) fournit en plus du catalogue : d'où vient chaque chose, et le cycle écrit à la main. */
+export interface MapExtras {
+  sources?: SourceIndex;
+  cycle?: readonly CycleStepDoc[];
+}
+
+/** Les éléments dessinés, rangés par nature. */
+export interface ProvenanceCounts {
+  briques: number; // règles, juges, commandes, bundles, profils
+  liens: number; // arêtes du graphe compilé
+  ceremonies: number; // éléments de ceremonies.yml
+  cycle: number; // puces du cycle écrit à la main
+  assemblage: number; // ce que la vue « qui compose quoi » dessine hors graphe (le bind)
+}
+
+/**
+ * Prouvé = déclaré dans un fichier versionné et vérifié à la compilation.
+ * Déduit = écrit à la main dans la carte, sans fichier qui l'appuie.
+ */
+export interface Provenance {
+  prouve: ProvenanceCounts;
+  deduit: ProvenanceCounts;
+}
+
 export interface MapData {
-  counts: { rules: number; agents: number; skills: number; bundles: number; profiles: number };
+  counts: {
+    rules: number;
+    agents: number;
+    skills: number;
+    bundles: number;
+    profiles: number;
+    tools: number;
+  };
   liens: { total: number; casses: number };
+  provenance: Provenance;
+  /** « Qui compose quoi » : flèches comptées dans le graphe (assemblage.ts). */
+  assemblage: AssemblageView;
   orphans: { kind: string; id: string }[];
   /** La carte totale de la méthode scrum (method/ceremonies.yml), VALIDÉE — lot 1. */
   method?: MethodDoc;
+  methodSource?: string; // chemin de ceremonies.yml
+  taxonomieSource?: string; // chemin de taxonomie.yml (qui range chaque brique dans son étage)
+  /** Le cycle en 5 temps, écrit à la main : chaque puce est classée prouvée / déduite (cycle.ts). */
+  cycle: CycleStep[];
   bandes: Record<Bande, string[]>;
   skills: Record<string, MapSkill>;
   agents: Record<string, MapAgent>;
   rules: Record<string, MapRule>;
   bundles: Record<string, MapBundle>;
   profiles: Record<string, MapProfile>;
+  tools: Record<string, MapTool>;
 }
 
 const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
+
+/**
+ * Le contrôle mécanique des sources : les entrées dont le fichier n'existe pas.
+ * `exists` est fourni par le bord (I/O) — le cœur reste pur.
+ */
+export function missingSources(
+  sources: SourceIndex,
+  exists: (path: string) => boolean,
+): [string, string][] {
+  return [...sources].filter(([, path]) => !exists(path));
+}
 
 /**
  * Compile les données de la carte. Tout est trié → sortie stable (F4).
@@ -107,15 +191,24 @@ const sorted = (xs: Iterable<string>): string[] => [...xs].sort();
  * référence fausse ou un catalogue incomplètement rangé fait échouer la compilation.
  * Sans `taxonomie` (tests unitaires ciblés uniquement), repli dégénéré : tout en
  * étage méthode, hors-bande — le bord (regen) passe TOUJOURS le document réel.
+ * `extras.sources` dit d'où vient chaque brique ; sans source, elle compte « déduite ».
+ * `extras.cycle` est le cycle écrit à la main : compilé ici, ses puces sont classées.
  */
 export function buildMapData(
   catalog: Catalog,
   graph: CompiledGraph,
   method?: MethodDoc,
   taxonomie?: TaxonomieDoc,
+  extras: MapExtras = {},
 ): MapData {
   const report = validateGraph(catalog);
   const taxo = taxonomie ? validateTaxonomie(catalog, taxonomie) : undefined;
+  const sources: SourceIndex = extras.sources ?? new Map();
+  // La source d'une brique, posée seulement si on la connaît (absente ⇒ déduite).
+  const sourceOf = (kind: NodeKind, id: string): { source?: string } => {
+    const source = sources.get(`${kind}:${id}`);
+    return source === undefined ? {} : { source };
+  };
 
   // Liens/index — lus dans les arêtes du graphe compilé, jamais re-devinés par la carte.
   const outTo = (link: LinkType, from: string): string[] =>
@@ -143,6 +236,7 @@ export function buildMapData(
     const bande = bandeOf(id);
     skills[id] = {
       id,
+      ...sourceOf('skill', id),
       description: s.description ?? '',
       usage: s.argumentHint ?? '',
       etage: place.etage,
@@ -152,6 +246,7 @@ export function buildMapData(
       composesExternal: sorted(s.composesExternal ?? []), // hors catalogue (ADR-0025) — hors graphe
       roles: outTo('roles', id),
       composedBy: inFrom('composes', id),
+      tools: outTo('uses', id),
       profiles: inFrom('profile-skill', id),
     };
   }
@@ -163,6 +258,7 @@ export function buildMapData(
     const place = placeAgent(id);
     agents[id] = {
       id,
+      ...sourceOf('agent', id),
       description: a.description ?? '',
       etage: place.etage,
       ...(place.famille ? { famille: place.famille } : {}),
@@ -181,6 +277,7 @@ export function buildMapData(
     if (!r) continue;
     rules[id] = {
       id,
+      ...sourceOf('rule', id),
       title: r.title ?? '',
       kind: r.kind,
       level: r.level ?? '',
@@ -196,6 +293,7 @@ export function buildMapData(
     if (!b) continue;
     bundles[id] = {
       id,
+      ...sourceOf('bundle', id),
       extends: outTo('bundle-extends', id),
       rules: outTo('bundle-rule', id),
       profiles: inFrom('profile-bundle', id),
@@ -208,11 +306,26 @@ export function buildMapData(
     if (!p) continue;
     profiles[id] = {
       id,
+      ...sourceOf('profile', id),
       extends: outTo('profile-extends', id),
       bundles: outTo('profile-bundle', id),
       agents: outTo('profile-agent', id),
       skills: outTo('profile-skill', id),
       interactions: outTo('profile-interaction', id),
+    };
+  }
+
+  // Les outils : calculés depuis les fichiers, reliés aux skills par les arêtes `uses` du graphe.
+  const tools: Record<string, MapTool> = {};
+  for (const id of sorted(catalog.tools?.keys() ?? [])) {
+    const t = catalog.tools?.get(id);
+    if (!t) continue;
+    tools[id] = {
+      id,
+      ...sourceOf('tool', id),
+      commands: [...t.commands],
+      ...(t.internal === undefined ? {} : { internal: t.internal }),
+      usedBy: inFrom('uses', id),
     };
   }
 
@@ -224,6 +337,38 @@ export function buildMapData(
     'hors-bande': Object.keys(skills).filter((id) => skills[id].bande === 'hors-bande'),
   };
 
+  // Le cycle écrit à la main : validé ici (id inconnu ⇒ jette), ses puces classées.
+  const cycle = extras.cycle ? compileCycle(catalog, graph, method, extras.cycle) : [];
+  const methodSource = method ? sources.get('method') : undefined;
+
+  // Prouvé / déduit. Une brique est prouvée si on connaît son fichier ; un lien l'est si le
+  // fichier de la brique qui le DÉCLARE (`from`) est connu ; une puce du cycle, si un fichier
+  // l'appuie (cycle.ts) — les humains n'ont pas de fichier, donc toujours déduits.
+  const provenance: Provenance = {
+    prouve: { briques: 0, liens: 0, ceremonies: 0, cycle: 0, assemblage: 0 },
+    deduit: { briques: 0, liens: 0, ceremonies: 0, cycle: 0, assemblage: 0 },
+  };
+  const tally = (nature: keyof ProvenanceCounts, prouve: boolean, n = 1): void => {
+    provenance[prouve ? 'prouve' : 'deduit'][nature] += n;
+  };
+  for (const n of graph.nodes) tally('briques', sources.has(`${n.kind}:${n.id}`));
+  for (const e of graph.edges) tally('liens', sources.has(`${e.fromKind}:${e.from}`));
+  tally('ceremonies', methodSource !== undefined, method?.elements.length ?? 0);
+  for (const s of cycle) {
+    for (const chip of [...s.etape, ...s.acteurs]) tally('cycle', chip.prouve);
+    tally('cycle', false, s.humains.length);
+  }
+  // Le bind lit un profil : vrai dans le code (ADR-0003), mais le graphe ne le déclare pas — la
+  // flèche est une lecture d'auteur, donc DÉDUITE ; ses nombres, eux, sont déjà comptés en « liens ».
+  tally('assemblage', false);
+  const bindSource = sources.get('bind');
+  const bindAdr = sources.get('adr-bind');
+  const assemblage = buildAssemblage(graph, {
+    ...(bindSource ? { source: bindSource } : {}),
+    ...(bindAdr ? { adr: bindAdr } : {}),
+  });
+
+  const taxonomieSource = taxonomie ? sources.get('taxonomie') : undefined;
   return {
     counts: {
       rules: catalog.rules.size,
@@ -231,47 +376,40 @@ export function buildMapData(
       skills: catalog.skills.size,
       bundles: catalog.bundles.size,
       profiles: catalog.profiles.size,
+      tools: catalog.tools?.size ?? 0,
     },
     liens: { total: report.edgeCount, casses: report.broken.length },
+    provenance,
+    assemblage,
     orphans: report.orphans.map(({ kind, id }) => ({ kind, id })),
     // Validée ICI : une référence fausse dans ceremonies.yml fait échouer la compilation.
     ...(method ? { method: validateMethod(catalog, method) } : {}),
+    ...(methodSource ? { methodSource } : {}),
+    ...(taxonomieSource ? { taxonomieSource } : {}),
+    cycle,
     bandes,
     skills,
     agents,
     rules,
     bundles,
     profiles,
+    tools,
   };
 }
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans le HTML de la carte. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `carte-interactive.data.js`. */
 export function buildMapDataBlock(
   catalog: Catalog,
   graph: CompiledGraph,
   method?: MethodDoc,
   taxonomie?: TaxonomieDoc,
+  extras: MapExtras = {},
 ): string {
   // `<` échappé en < : une description contenant `</script>` ne peut pas fermer la balise.
-  const json = JSON.stringify(buildMapData(catalog, graph, method, taxonomie), null, 1).replace(
-    /</g,
-    '\\u003c',
-  );
+  const json = JSON.stringify(
+    buildMapData(catalog, graph, method, taxonomie, extras),
+    null,
+    1,
+  ).replace(/</g, '\\u003c');
   return `${MAP_DATA_BEGIN}\nwindow.EZK = ${json};\n${MAP_DATA_END}`;
-}
-
-/**
- * Pose `block` dans `text` entre les marqueurs. Les marqueurs DOIVENT déjà exister dans le
- * HTML (posés une fois par l'auteur de la carte) : contrairement au README, on n'appende
- * jamais une section en fin de page HTML. Absents ⇒ erreur franche.
- */
-export function upsertMapDataBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(MAP_DATA_BEGIN);
-  const endIdx = text.indexOf(MAP_DATA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${MAP_DATA_BEGIN} … ${MAP_DATA_END} introuvables dans la carte — le HTML doit les porter`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + MAP_DATA_END.length);
 }

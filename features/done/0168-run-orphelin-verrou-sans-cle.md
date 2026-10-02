@@ -7,7 +7,6 @@ epic:
 depends: ["0105"]
 labels: [supervision, dogfood, ux, contrat]
 status: shipped
-ready: 2026-07-30
 pr: "#76"
 created: 2026-07-30
 product: mega-city
@@ -111,3 +110,5 @@ insuffisant en pratique.
 - **Règle de clôture** : laisser l’issue **ouverte** jusqu’au ship de **0105 et 0168**.
   Au ship de la dernière des deux, fermer #63 avec un commentaire pointant les deux ships.
   Ne **pas** fermer #63 au seul ship de 0168 (ni au seul ship de 0105).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-30 · ancien champ front-matter `ready:`, retiré en migration 005.

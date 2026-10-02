@@ -7,8 +7,9 @@ Cursor n'est qu'un hôte de délégation éventuel.
 
 | Rôle | Agents | `model` | `model_spare` |
 |---|---|---|---|
-| Jugement / restitution PO | `ezk-architect`, `ezk-reviewer`, `ezk-pm`, `ezk-archive` | **`claude-opus-4-8`** (pin — **jamais** l'alias `opus`, qui peut dériver vers Opus 5) | `sonnet` |
+| Jugement / restitution PO | `ezk-architect`, `ezk-reviewer`, `ezk-pm` | **`claude-opus-4-8`** (pin — **jamais** l'alias `opus`, qui peut dériver vers Opus 5) | `sonnet` |
 | Mécanique / exécution | `ezk-dev`, `ezk-qa`, `ezk-steward` | `sonnet` | — (pas de spare obligatoire) |
+| Mécanique, jugement ponctuel | `ezk-archive` | `sonnet` par défaut ; l'appelant passe `claude-opus-4-8` **seulement** pour juger une branche réelle (brouillon jetable ou travail à récupérer ?) | `sonnet` |
 
 > **Pourquoi le pin.** Les alias Claude Code (`opus`, `sonnet`, …) suivent la
 > version *recommandée* et bougent dans le temps. Pour rester sur Opus **4.8** et

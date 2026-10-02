@@ -58,7 +58,6 @@ status: idea'
 fiche "$B/features"      0011 enfant-a 'type: feature
 priority: P1
 status: idea
-ready: 2026-07-17
 epic: 0010'
 fiche "$B/features"      0012 jalon 'type: chore
 priority: P2
@@ -129,6 +128,30 @@ check "sans args → racine = parent de bin/ (fixture)" \
 check "titre par défaut mega-city" \
   "head -1 '$D/features/BACKLOG.md' | grep -q '^# Backlog — mega-city$'"
 
+# ── Cas D2 : racine NICHÉE → refus explicite, aucune écriture (fiche 20260823121712844) ──
+# Le défaut « parent du bin » ne vaut que pour un projet autonome. Ici bin/ est dans
+# nest/products/mega-city, SOUS un backlog déjà présent (nest/features) : sans argument, le
+# script refuse — même quand le dossier fantôme nest/products/mega-city/features existe
+# (c'est lui qui réarmait le piège).
+NEST="$TMP/nest"
+mkdir -p "$NEST/products/mega-city/bin" "$NEST/products/mega-city/features"
+cp "$SCRIPT" "$NEST/products/mega-city/bin/regen-backlog.sh"
+fiche "$NEST/features" 0040 parent 'type: feature
+priority: P2
+status: idea'
+set +e
+out_nest="$(cd "$TMP" && bash "$NEST/products/mega-city/bin/regen-backlog.sh" 2>&1)"
+rc_nest=$?
+set -e
+echo "Cas D2 (racine nichée refusée) :"
+check "sans argument → refus (exit 1)" "test '$rc_nest' -eq 1"
+check "message « racine nichée »" "printf '%s' \"\$out_nest\" | grep -q 'racine nichée'"
+check "… qui nomme la vraie racine à passer" "printf '%s' \"\$out_nest\" | grep -qF 'regen-backlog.sh $NEST'"
+check "rien écrit dans le dossier fantôme" "! test -e '$NEST/products/mega-city/features/BACKLOG.md'"
+check "rien écrit dans le backlog parent" "! test -e '$NEST/features/BACKLOG.md'"
+check "racine explicite toujours permise" \
+  "bash '$NEST/products/mega-city/bin/regen-backlog.sh' '$NEST' >/dev/null 2>&1 && test -s '$NEST/features/BACKLOG.md'"
+
 echo ''
 # ── Cas E : lien PLAN.md émis seulement si features/PLAN.md existe (PR #43 / ADR-0018) ─
 E="$TMP/e"
@@ -174,5 +197,84 @@ echo "Cas G (id horodaté quoté) :"
 check "id 17 chiffres dé-quoté dans l'index" "grep -qE '^\| \[20260810143052123\]\(' '$G/features/BACKLOG.md'"
 check "aucun guillemet résiduel sur l'id"    "! grep -q '\"20260810143052123\"' '$G/features/BACKLOG.md'"
 check "zéro warning (id quoté)"              "! test -s '$TMP/g.err'"
+
+# ── Cas H : `idea` + `milestone: parked` → section Parkées, hors Idées ET hors tirage ──
+H="$TMP/h"
+fiche "$H/features" 0001 vivante 'type: feature
+priority: P1
+status: idea'
+fiche "$H/features" 0002 parkee 'type: feature
+priority: P2
+status: idea
+milestone: parked'
+fiche "$H/features" 0003 parkee-quote 'type: feature
+priority: P2
+status: idea
+milestone: "parked"'
+out_h="$("$SCRIPT" "$H" "Backlog — test H" 2>/dev/null)"
+idxh="$H/features/BACKLOG.md"
+echo "Cas H (bloc Parkées) :"
+check "section Parkées présente"            "grep -q '## ⏸️ Parkées' '$idxh'"
+check "parkée 0002 dans la section Parkées"  "sed -n '/## ⏸️ Parkées/,\$p' '$idxh' | grep -q '^| \[0002\]'"
+check "parkée QUOTÉE 0003 dans Parkées (dé-quotage milestone)" \
+  "sed -n '/## ⏸️ Parkées/,\$p' '$idxh' | grep -q '^| \[0003\]'"
+check "0001 dans Idées, 0002/0003 PAS dans Idées" \
+  "sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -q '^| \[0001\]' && ! sed -n '/## 💡 Idées/,/## ⏸️ Parkées/p' '$idxh' | grep -qE '^\| \[(0002|0003)\]'"
+check "0002 HORS tableau actionnable"       "! awk '/^## /{exit} {print}' '$idxh' | grep -q '^| \[0002\]'"
+check "stats parked=2 (quoté compté)"       "printf '%s' \"\$out_h\" | grep -q 'parked=2'"
+
+# ── Cas I : le schéma des statuts (fiche 20260823121712652) ─────────────────────────────────────
+# Chaque statut du schéma (idea/ready/in-progress/shipped/superseded/merged/split) a son libellé ;
+# `blocked` n'est plus un statut ; un statut inconnu reste visible (❓) ; le champ retiré `ready:`
+# n'influence plus rien (une fiche au vieux format est lue sans planter).
+I="$TMP/i"
+fiche "$I/features"      0001 i-idea   'type: feature
+priority: P1
+status: idea'
+fiche "$I/features"      0002 i-ready  'type: feature
+priority: P1
+status: ready'
+fiche "$I/features"      0003 i-wip    'type: feature
+priority: P1
+status: in-progress'
+fiche "$I/features/done" 0004 i-ship   'type: feature
+priority: P1
+status: shipped
+pr: "#4"'
+fiche "$I/features/done" 0005 i-sup    'type: feature
+priority: P1
+status: superseded'
+fiche "$I/features/done" 0006 i-merged 'type: feature
+priority: P1
+status: merged'
+fiche "$I/features/done" 0007 i-split  'type: feature
+priority: P1
+status: split'
+fiche "$I/features"      0008 i-typo   'type: feature
+priority: P1
+status: to-do'
+fiche "$I/features"      0009 i-vieux  'type: feature
+priority: P1
+status: ready
+ready: 2026-07-17'
+out_i="$("$SCRIPT" "$I" "Backlog — test I" 2>/dev/null)"
+idxi="$I/features/BACKLOG.md"
+echo "Cas I (schéma des statuts) :"
+check "libellé 🔵 ready"               "grep -q '| 🔵 ready |' '$idxi'"
+check "libellé 🟠 in-progress"         "grep -q '| 🟠 in-progress |' '$idxi'"
+check "libellé ✅ shipped"              "grep -q '| ✅ shipped |' '$idxi'"
+check "libellé 🗑️ superseded"          "grep -q '| 🗑️ superseded |' '$idxi'"
+check "libellé 🔀 merged (plus ❓)"     "grep -q '| 🔀 merged |' '$idxi' && ! grep -q '❓ merged' '$idxi'"
+check "libellé 🧩 split (plus ❓)"      "grep -q '| 🧩 split |' '$idxi' && ! grep -q '❓ split' '$idxi'"
+check "statut inconnu visible en ❓"    "grep -q '| ❓ to-do |' '$idxi'"
+check "légende = tous les statuts du schéma, sans blocked" \
+  "grep -q 'Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ✅ shipped · 🗑️ superseded · 🔀 merged · 🧩 split\\.' '$idxi' && ! grep -q 'Statuts :.*blocked' '$idxi'"
+check "stats : un compteur par statut du schéma, dans l'ordre" \
+  "printf '%s' \"\$out_i\" | grep -q 'stats: total=9 · idea=1 · parked=0 · ready=2 · in-progress=1 · shipped=1 · superseded=1 · merged=1 · split=1 · épics=0'"
+check "stats : plus de compteur blocked" "! printf '%s' \"\$out_i\" | grep -q 'blocked='"
+check "vieux format (ready: daté) lu sans planter, colonne = status" \
+  "grep -q '^| \[0009\](0009-i-vieux.md) |.*| 🔵 ready |' '$idxi'"
+check "médiane de création des ready émise (lit created, pas ready:)" \
+  "printf '%s' \"\$out_i\" | grep -q 'stats: création médiane des ready = 2026-07-17'"
 
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

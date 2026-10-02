@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-30
 pr: "#190"
 created: 2026-08-23
 ---
@@ -35,7 +34,7 @@ dossier entier `hexagonal/`. Cette fiche fixe le modèle cible : **thème = le d
 Cette fiche mélange une **cible large** (retirer les 10 miroirs, un ADR, désenchevêtrer
 hexagonal) et une **tranche petite déjà approuvée**. Le grooming isole la tranche NOW,
 seule tirable aujourd'hui. Elle correspond au **point 1** de la fiche-conteneur
-[`20260824061247344`](../20260824061247344_refonte-trois-etages-reliquat.md) (« reliquat
+[`20260824061247344`](20260824061247344_refonte-trois-etages-reliquat.md) (« reliquat
 trois étages »), qui renvoie ici.
 
 **Vérifié le 2026-08-30** : les deux bundles `bundles/documentation-guidelines.yml` et
@@ -125,3 +124,5 @@ Le dernier `ls` ne doit montrer que des packs qui composent réellement.
 Origine : retour PO sur la section « Les règles, rangées par bundle » de la carte
 compilée (2026-08-23). Décision PO explicite : possibilité de « laisser vivre » et
 laisser la structure émerger — cette fiche est la cible, pas une urgence.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-30 · ancien champ front-matter `ready:`, retiré en migration 005.

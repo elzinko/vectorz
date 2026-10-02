@@ -7,7 +7,6 @@ product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [github-optionnel, plugin, cli]
 status: shipped
-ready: 2026-09-20 # YYYY-MM-DD — posé par le gate `ready <id>` (DoR complète) ; vide = non groomée
 pr: "#259"
 evidence: none # commande de terminal, aucun écran
 created: 2026-09-20
@@ -95,3 +94,5 @@ après écriture ; un YAML volontairement cassé fait échouer la commande avec 
 - **P0 posée par le PO** pour le prochain sprint. Née `idea` ; gate `ready` avant tirage.
 - Voisines : [[20260916225506856]] (lecteur, livré) · [[20260916225506858]] (chapeau plugin) ·
   [[20260903134906920]] (CLI `ezk`, futur porteur de la commande).
+
+> **Historique** — DoR (`ready`) passée le 2026-09-20 · ancien champ front-matter `ready:`, retiré en migration 005.

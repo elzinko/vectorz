@@ -1,12 +1,13 @@
 ---
 id: "20260910155608287"
-title: Problématique des règles ezk — typologie, régimes de vérification, mesure, scoping (CADRAGE avant solution)
+title: "Cadrer toute la problématique des règles (mesure d'efficacité…)"
 type: feature # feature | bug | refactor | chore | epic
 priority: P2 # P0 | P1 | P2 | P3
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
+labels: [installation]
+milestone: parked
 epic:
 status: idea # idea | ready | in-progress | blocked | shipped
-ready:
 pr:
 evidence: none # cadrage méthode, pas d'écran
 created: 2026-09-10
@@ -63,7 +64,7 @@ Différences : **quoi** (artefact vs process) · **quand** (par-PR vs sur-sprint
 
 - **Sous-problème 6 (scoping/composition + honnêteté de garantie)** : candidat conçu et passé
   au panel adverse → **[ADR-0050](../products/mega-city/docs/adr/0050-couche-regles-projet-local.md)**
-  + fiche fille [`20260910152227744`](20260910152227744_regles-projet-local-couche-vectorz.md).
+  + fiche fille [`20260910152227744`](done/20260910152227744_regles-projet-local-couche-vectorz.md).
   Verdict panel : GO-SI (séparer « chargée » de « appliquée », méta-gate anti-`MUST`-sans-gate,
   couplage inversé). **Reste ouvert** : les problématiques 1–5, surtout la **mesure d'efficacité**.
 
@@ -80,3 +81,13 @@ Différences : **quoi** (artefact vs process) · **quand** (par-PR vs sur-sprint
 
 Une cérémonie ezk (brainstorm / retro dédiée) **dans le repo vectorz** sur les problématiques
 1–5, avant d'accepter ADR-0050 et d'écrire les fiches filles de solution.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Cadrage règles : scoping traité (ADR-0050) ; reste mesure efficacité gated ADR-030 parké.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

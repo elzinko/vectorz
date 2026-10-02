@@ -4,11 +4,12 @@ title: Distribuer le catalogue vectorz en plugin Claude Code (cap plugin + marke
 type: feature
 priority: P1
 product: mega-city
+milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-20
+labels: [installation]
 ---
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — **À réécrire au grooming** (pas maintenant).

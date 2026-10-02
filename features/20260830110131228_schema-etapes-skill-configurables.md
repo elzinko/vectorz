@@ -1,13 +1,14 @@
 ---
 id: "20260830110131228"
-title: Schéma d'étapes de skill — étapes configurables/réordonnables par composition (extension ADR-0040)
+title: "Rendre les étapes d'un skill configurables (schéma)"
 type: feature
 priority: P3
 product: mega-city
+labels: [fabrique]
+milestone: parked
 version:
 epic:
 status: idea
-ready:
 pr:
 created: 2026-08-30
 ---
@@ -60,3 +61,13 @@ Le **format est la première marche** ; la reconfiguration vient après.
 - Cas particulier déjà demandé : `--review adverse|skip` (fiche 20260830110131158) — le schéma
   le généraliserait.
 - Origine : revue de conception `ezk-product-build` (session 2026-08-30).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Extension ADR-0040 spéculative ; panel anti-doublon requis avant build (recouvre Skema/0039).
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

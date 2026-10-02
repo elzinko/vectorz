@@ -2,12 +2,13 @@
 # id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
 id: "0000"
 title: <titre court et parlant>
-type: feature # feature | bug | refactor | chore | epic
+type: feature # feature | bug | refactor | chore
 priority: P2 # P0 | P1 | P2 | P3
 product: # obligatoire dans un monorepo — sinon omettre
-epic: # optionnel — id de la fiche épic parente (type: epic)
-status: idea # idea | ready | in-progress | blocked | shipped | superseded
-ready: # YYYY-MM-DD — posée par le gate `ready <id>` ; vide = non groomée
+milestone: # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre propre au projet
+version: # optionnel — release ciblée, ex. "V1.1" (distincte du milestone)
+labels: # optionnel — thèmes, en ligne : [a, b]
+status: idea # idea | ready | in-progress | shipped | superseded | merged | split
 pr: # ex. "#123" quand une PR existe
 evidence: # before-after | auto | none — preuve d'écran avant/après en PR (règle development/pr-before-after-media) ; vide = auto
 created: <YYYY-MM-DD>

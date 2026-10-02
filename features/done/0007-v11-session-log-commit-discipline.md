@@ -5,7 +5,7 @@ type: chore
 priority: P3
 product: vectorz
 status: superseded
-pr: superseded — couvert (ezk-commits + docs/sessions), reliquat cop1
+pr: "superseded — couvert (ezk-commits + docs/sessions), reliquat cop1"
 created: 2026-06-23
 ---
 

@@ -16,24 +16,25 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   type FicheAnomaly,
+  type ProvenanceEntry,
   findDuplicateIds,
   findInvalidProvenanceIds,
+  findProvenanceMismatches,
   validateFicheFrontMatter,
 } from '../src/backlog/fiche-validator.js';
-import { readField, readListField } from '../src/loaders/fiches.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
+import { frontMatter, readField, readListField } from '../src/loaders/fiches.js';
 
-const args = process.argv.slice(2);
-const STRICT = args.includes('--strict');
+const STRICT = process.argv.slice(2).includes('--strict');
 
-// `--root <dir>` : racine à scanner. Par défaut, la racine du dépôt (3 niveaux au-dessus
-// de ce script). L'option sert à exercer le gate sur un dossier JETABLE (sabotage testable
-// sans polluer le vrai backlog) — cf. `bin/test-check-fiches.sh`.
-function parseRoot(): string {
-  const i = args.indexOf('--root');
-  if (i >= 0 && args[i + 1]) return resolve(args[i + 1]);
-  return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-}
-const repoRoot = parseRoot();
+// `--root <dir>` (ou la variable EZK_ROOT) : racine à scanner. Par défaut, la racine du dépôt (3
+// niveaux au-dessus de ce script). L'option sert à contrôler les fiches d'un AUTRE projet, ou à
+// exercer le gate sur un dossier JETABLE (sabotage testable sans polluer le vrai backlog) —
+// cf. `bin/test-check-fiches.sh`. Un chemin relatif se lit depuis le dossier de l'utilisateur
+// (INIT_CWD), comme pour toutes les commandes qui lisent un projet (fiche 20260826173221323).
+const { root: repoRoot } = projectRootOrExit(
+  resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..'),
+);
 
 /** Monorepo (vectorz) = plusieurs produits sous `products/`. Sinon backlog autonome. */
 function isMonorepo(root: string): boolean {
@@ -63,22 +64,27 @@ function main(): number {
   const files = listFicheFiles(repoRoot);
   const anomalies: FicheAnomaly[] = [];
   const idEntries: { file: string; id: string }[] = [];
-  const provenanceEntries: { file: string; mergedInto: string; splitInto: string[] }[] = [];
+  const provenanceEntries: ProvenanceEntry[] = [];
 
   for (const path of files) {
     const relative = path.slice(repoRoot.length + 1);
     const text = readFileSync(path, 'utf8');
     anomalies.push(...validateFicheFrontMatter(relative, text, { monorepo }));
     idEntries.push({ file: relative, id: readField(text, 'id') });
+    const head = frontMatter(text); // la provenance se lit dans le front-matter, jamais dans le corps
     provenanceEntries.push({
       file: relative,
-      mergedInto: readField(text, 'merged_into'),
-      splitInto: readListField(text, 'split_into'),
+      id: readField(head, 'id'),
+      mergedInto: readField(head, 'merged_into'),
+      mergedFrom: readListField(head, 'merged_from'),
+      splitInto: readListField(head, 'split_into'),
+      splitFrom: readField(head, 'split_from'),
     });
   }
   anomalies.push(...findDuplicateIds(idEntries));
   const knownIds = new Set(idEntries.map((e) => e.id).filter(Boolean));
   anomalies.push(...findInvalidProvenanceIds(provenanceEntries, knownIds));
+  anomalies.push(...findProvenanceMismatches(provenanceEntries));
 
   // En clair d'abord (règle human-facing-lisibility).
   if (anomalies.length === 0) {

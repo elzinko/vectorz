@@ -1,66 +1,52 @@
 /**
  * plan-head — imprime la « tête réelle » du plan sur la **liste unique**
  * `features/` (fiche 0064 ; ex-0097 cross-liste). 1re carte non-livrée du
- * PLAN.md avec son `product:` et son état `ready`, plus les têtes bloquées
- * (todo sans ready qui précèdent) et les ids introuvables.
+ * PLAN.md avec son `product:` et son statut (`status: ready` = tirable), plus les têtes
+ * bloquées (fiches `idea` à groomer qui précèdent) et les ids introuvables.
  *
  *   pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md]
  *
  * Réutilise `plan:order` (0089) pour l'ordre. Le préfixe `mc-` n'est plus
  * requis (toléré en legacy, normalisé vers l'id nu).
  */
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type PlanCard, crossBacklogHead } from '../src/backlog/plan-head.js';
 import { parsePlanOrder } from '../src/backlog/plan-order.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
+import { loadFiches } from '../src/loaders/fiches.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
   process.exit(2);
 }
 
-function readField(text: string, field: string): string {
-  const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
-  return m ? m[1].replace(/[ \t]*#.*$/, '').trim() : '';
-}
-
-/** Liste unique à la racine — le produit vient du front-matter (0064). */
+/**
+ * Liste unique à la racine (actifs + `done/`) — le produit vient du front-matter (0064). La lecture
+ * passe par le loader testé (règle `development/fiche-read-via-loader`) : défauts `—` / `feature` /
+ * `idea`, valeurs quotées et commentaires gérés, deux formats d'id (fiche 0180) reconnus.
+ */
 function collect(root: string): Map<string, PlanCard> {
   const index = new Map<string, PlanCard>();
-  const base = join(root, 'features');
-  for (const sub of [base, join(base, 'done')]) {
-    if (!existsSync(sub)) continue;
-    for (const file of readdirSync(sub)) {
-      // Deux formats d'id coexistent (fiche 0180) : historique `0094-slug.md`
-      // (4 chiffres, séparateur `-`) et horodaté `20260810143052123_slug.md`
-      // (17 chiffres, séparateur `_`). `\d{4,}` + `[-_]` accepte les deux.
-      const idMatch = file.match(/^(\d{4,})[-_].*\.md$/);
-      if (!idMatch) continue;
-      const text = readFileSync(join(sub, file), 'utf8');
-      const id = idMatch[1];
-      index.set(id, {
-        id,
-        product: readField(text, 'product') || '—',
-        type: readField(text, 'type') || 'feature',
-        status: readField(text, 'status') || 'idea',
-        ready: readField(text, 'ready') !== '',
-      });
-    }
+  for (const f of loadFiches(root)) {
+    index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status });
   }
   return index;
 }
 
-const arg = process.argv[2];
+// Le projet dont on lit le plan : --root > EZK_ROOT > ce dépôt (fiche 20260826173221323).
+const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+const { root, rest } = projectRootOrExit(ownRoot);
+const arg = rest[0];
 if (arg === '-h' || arg === '--help') {
-  console.log('usage : pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md]');
+  console.log('usage : pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md] [--root <projet>]');
   console.log('');
   console.log('Imprime la tête réelle du plan sur la liste unique features/ (champ product:).');
-  console.log('Défaut du PLAN.md : <racine>/features/PLAN.md.');
+  console.log('Défaut du PLAN.md : <racine>/features/PLAN.md. --root (ou EZK_ROOT) : le plan d’un autre projet.');
   process.exit(0);
 }
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const invokedFrom = process.env.INIT_CWD ?? process.cwd();
 const planArg = arg ?? join(root, 'features/PLAN.md');
 const planPath = isAbsolute(planArg) ? planArg : resolve(invokedFrom, planArg);
@@ -72,10 +58,10 @@ const { head, blockedAhead, unresolved } = crossBacklogHead(planIds, collect(roo
 if (head) {
   console.log(`tête : ${head.id} (${head.product}) — ready ✓ TIRABLE`);
 } else {
-  console.log('tête : aucune fiche tirable (todo + ready) dans le plan');
+  console.log('tête : aucune fiche tirable (status: ready) dans le plan');
 }
 if (blockedAhead.length > 0) {
-  console.log('bloquées avant (todo sans ready — à groomer) :');
+  console.log('bloquées avant (idea — à groomer) :');
   for (const c of blockedAhead) console.log(`  · ${c.id} (${c.product})`);
 }
 if (unresolved.length > 0) {

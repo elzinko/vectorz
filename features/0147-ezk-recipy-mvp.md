@@ -1,11 +1,12 @@
 ---
 id: 0147
-title: ezk-recipy — scanner les repos froids et proposer des fiches de skills
+title: "Scanner tes anciens dépôts pour proposer des skills"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
-labels: [recette]
+labels: [recettes]
 pr:
 created: 2026-07-06
 ---
@@ -49,3 +50,13 @@ ezk-branch-sweep, ezk-doc-drift (preuves en mémoire projet, audit 2026-07-05).
 > **MAJ 2026-08-24 (doctrine PO du 2026-08-22)** : le gate « preuve dans ≥ 2 repos »
 > d'ADR-0013 est désormais une QUESTION à instruire (« pourquoi pas maintenant ? »), pas
 > un interdit — le PO sait anticiper ce qui va servir. Amendement porté dans ADR-0013.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Renommée ezk-recipy→ezk-chef scan (PO 08-30), non construite ; arbitrage recette/skill.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

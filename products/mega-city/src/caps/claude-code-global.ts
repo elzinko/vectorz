@@ -6,30 +6,65 @@
  * La racine est passée en PARAMÈTRE — seul le CLI résout `~/.claude`. Forme native :
  *   - skills/<id>/SKILL.md  ← un dossier par skill (comme claude-skills/install.sh)
  *   - agents/<id>.md        ← un fichier par agent (rôle markdown)
+ *   - commands/<id>.md      ← un fichier par slash-command (fiche 20260816151112162)
  *
  * PUR : ResolvedProfile → WritePlan, sans toucher au disque. La coquille I/O global
  * (src/io/apply.ts → applyGlobalPlan) applique le plan de façon NON-DESTRUCTIVE.
- * Pas de hooks, pas de CLAUDE.md, pas de loi compilée : le global ne porte que
- * l'équipe (skills + agents). Tri stable par `path` ⇒ plan reproductible.
+ * Le global porte l'équipe (skills + agents) ET le socle de loi du profil, compilé dans
+ *   - rules/iamthelaw.md ← les règles du profil (ADR-0056 ; fiche 20260903134909124) : Claude
+ *     Code charge `~/.claude/rules/*.md` dans chaque session, sous-agents compris.
+ * Pas de hooks (pas de dépôt git ici) et pas de CLAUDE.md (fichier de l'utilisateur : on n'y
+ * touche pas). Un profil sans règle n'émet pas de fichier de loi. Tri stable par `path` ⇒ plan
+ * reproductible.
  */
 import { assertSafeId } from '../loaders/catalog.js';
 import type { Cap, FileWrite, ResolvedProfile } from '../domain/model.js';
 import type { WritePlan } from '../domain/plan.js';
+import { GLOBAL_LAW_PATH } from '../domain/law-file.js';
+import { markManaged } from '../domain/managed-file.js';
 import { agentContent } from './agent-content.js';
+import { globalLawContent } from './law-content.js';
 import { skillFolderFiles } from './skill-content.js';
 
+/**
+ * Un agent copié est un fichier plat : rien ne dit qu'il est « à lawgiver ». On pose le marqueur dans le
+ * PLAN (donc `status` et `doctor` comparent le texte réellement écrit) pour que le 2ᵉ `bind-global` en
+ * copie reconnaisse son fichier et le remplace, au lieu de le prendre pour celui de l'utilisateur.
+ */
 function agentFiles(resolved: ResolvedProfile): FileWrite[] {
   return resolved.agents.map((agent) => ({
     path: `agents/${assertSafeId(agent.id)}.md`,
-    content: agentContent(agent),
+    content: markManaged(agentContent(agent)),
   }));
+}
+
+/**
+ * Les slash-commands (3ᵉ canal, fiche 20260816151112162) : `commands/<id>.md`, un fichier plat comme un
+ * agent — donc marqué de la même façon, pour que le 2ᵉ `bind-global` en copie reconnaisse le sien. Le
+ * front-matter de la commande (`description`, `argument-hint`, `allowed-tools`) est conservé : le marqueur
+ * s'ajoute en tête de l'en-tête, Claude Code ignore la clé.
+ */
+function commandFiles(resolved: ResolvedProfile): FileWrite[] {
+  return (resolved.commands ?? []).map((command) => ({
+    path: `commands/${assertSafeId(command.id)}.md`,
+    content: markManaged(command.content),
+  }));
+}
+
+/** La loi du profil, en UN fichier — absent si le profil ne porte aucune règle. */
+function lawFiles(resolved: ResolvedProfile): FileWrite[] {
+  if (resolved.rules.length === 0) return [];
+  return [{ path: GLOBAL_LAW_PATH, content: globalLawContent(resolved.rules) }];
 }
 
 function materialize(resolved: ResolvedProfile, _root: string): WritePlan {
   // Skills en dossiers `skills/<id>/SKILL.md` — logique partagée (ADR-0014, prefix='skills').
-  const files: FileWrite[] = [...agentFiles(resolved), ...skillFolderFiles(resolved, 'skills')].sort(
-    (a, b) => a.path.localeCompare(b.path),
-  );
+  const files: FileWrite[] = [
+    ...agentFiles(resolved),
+    ...commandFiles(resolved),
+    ...skillFolderFiles(resolved, 'skills'),
+    ...lawFiles(resolved),
+  ].sort((a, b) => a.path.localeCompare(b.path));
   return { files, hooks: [] };
 }
 

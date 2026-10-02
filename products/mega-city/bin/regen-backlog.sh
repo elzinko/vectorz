@@ -7,8 +7,10 @@
 # Deux copies à garder alignées (corps identique après set -euo) :
 #   products/mega-city/bin/regen-backlog.sh  (source monorepo)
 #   skills/ezk-backlog/scripts/regen-backlog.sh  (vendored skill-only)
-#   Si $0 est sous …/bin/, défaut racine = parent du bin (produit mega-city) ;
-#   sinon racine **obligatoire** (pas de défaut vers le dossier skill).
+#   Si $0 est sous …/bin/, défaut racine = parent du bin — valable pour un projet AUTONOME
+#   seulement : si un ancêtre porte déjà un backlog (features/), la racine est NICHÉE et le
+#   script REFUSE (fiche 20260823121712844) ; sinon racine **obligatoire** (pas de défaut
+#   vers le dossier skill).
 #   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz"
 set -euo pipefail
 
@@ -17,6 +19,17 @@ if [[ -n "${1:-}" ]]; then
   ROOT="$1"
 elif [[ "$(basename "$_SCRIPT_DIR")" == "bin" ]]; then
   ROOT="$(cd "$_SCRIPT_DIR/.." && pwd)"
+  # Défaut « parent du bin » refusé s'il est NICHÉ sous un autre backlog (ex. products/mega-city
+  # sous la racine vectorz, depuis la liste unique de la fiche 0064) : le viser créerait un
+  # backlog fantôme. Refus AVANT toute écriture ; la racine explicite reste toujours permise.
+  _outer="$(dirname "$ROOT")"
+  while [[ "$_outer" != "/" ]]; do
+    if [[ -d "$_outer/features" ]]; then
+      echo "erreur: racine nichée — ${ROOT} est sous ${_outer}, qui a déjà un backlog features/. Passe la vraie racine explicitement : regen-backlog.sh ${_outer}" >&2
+      exit 1
+    fi
+    _outer="$(dirname "$_outer")"
+  done
 else
   echo "erreur: racine-projet obligatoire (copie skill — pas de défaut produit)" >&2
   exit 1
@@ -27,7 +40,20 @@ cd "$ROOT"
 
 SEP=$'\x1f'
 
-extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, ready, created, version, epic, product
+# Schéma des statuts — MIROIR de src/core/fiche-schema.ts (STATUT_DEFS : id=libellé, dans l'ordre du flux).
+# Gardé par le test de contrat src/__tests__/fiche-schema-contract.test.ts : ajouter un statut au schéma
+# sans le mettre ici fait échouer la suite. Libellés, légende et compteurs en dérivent — aucune autre liste.
+STATUT_LABELS='idea=💡 idea|ready=🔵 ready|in-progress=🟠 in-progress|shipped=✅ shipped|superseded=🗑️ superseded|merged=🔀 merged|split=🧩 split'
+
+label_of() { # $1=statut → LABEL (sans sous-shell) ; « ❓ statut » si inconnu — le validateur le signale
+  local s="|${STATUT_LABELS}"
+  case "$s" in
+    *"|$1="*) LABEL="${s#*"|$1="}"; LABEL="${LABEL%%|*}";;
+    *) LABEL="❓ $1";;
+  esac
+}
+
+extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, created, version, epic, product, milestone
   awk '
     function unquote(s) { gsub(/^"|"$/, "", s); return s }
     BEGIN { infm=0 }
@@ -39,13 +65,13 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, r
       if ($0 ~ /^priority:/) { sub(/^priority:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); prio=$0 }
       if ($0 ~ /^status:/)   { sub(/^status:[[:space:]]*/, "");   sub(/[[:space:]]*#.*$/, ""); status=$0 }
       if ($0 ~ /^pr:/)       { sub(/^pr:[[:space:]]*/, "");       pr=unquote($0) }
-      if ($0 ~ /^ready:/)    { sub(/^ready:[[:space:]]*/, "");    sub(/[[:space:]]*#.*$/, ""); ready=$0 }
       if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
       if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
       if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); product=unquote($0) }
+      if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
     }
-    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, ready, created, version, epic, product }
+    END { printf "%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\x1f%s\n", id, title, type, prio, status, pr, created, version, epic, product, milestone }
   ' "$1"
 }
 
@@ -53,7 +79,7 @@ rows=""
 for f in features/[0-9]*.md features/done/[0-9]*.md; do
   [ -e "$f" ] || continue
   line="$(extract "$f")"
-  # 12e champ = chemin de la fiche RELATIF à features/ (donc relatif à features/BACKLOG.md,
+  # 13e champ = chemin de la fiche RELATIF à features/ (donc relatif à features/BACKLOG.md,
   # le document généré). Lien document-relative : `0050-slug.md`, `done/0000-slug.md` —
   # PAS `features/…` (qui, DANS BACKLOG.md, résoudrait `features/features/…`, revue Codex #184).
   rows="${rows}${line}${SEP}${f#features/}"$'\n'
@@ -62,7 +88,7 @@ done
 # Intégrité épics (ADR-0017 A7) + unicité des ids (fiche 0064) — warnings non bloquants.
 printf '%s' "$rows" | awk -F"$SEP" '
   NF {
-    nr++; rowid[nr]=$1; rowtype[nr]=$3; ref[nr]=$10
+    nr++; rowid[nr]=$1; rowtype[nr]=$3; ref[nr]=$9
     if ($3 == "epic") isepic[$1]=1
     seen[$1]++
   }
@@ -79,9 +105,9 @@ printf '%s' "$rows" | awk -F"$SEP" '
   }'
 
 # Colonnes conditionnelles (ADR-0017 A12) : Version / Épic / Produit (0064).
-has_version="$(printf '%s' "$rows" | awk -F"$SEP" '$9 != "" { f=1 } END { print f+0 }')"
-has_epic_col="$(printf '%s' "$rows" | awk -F"$SEP" '$10 != "" { f=1 } END { print f+0 }')"
-has_product="$(printf '%s' "$rows" | awk -F"$SEP" '$11 != "" { f=1 } END { print f+0 }')"
+has_version="$(printf '%s' "$rows" | awk -F"$SEP" '$8 != "" { f=1 } END { print f+0 }')"
+has_epic_col="$(printf '%s' "$rows" | awk -F"$SEP" '$9 != "" { f=1 } END { print f+0 }')"
+has_product="$(printf '%s' "$rows" | awk -F"$SEP" '$10 != "" { f=1 } END { print f+0 }')"
 has_epics="$(printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic" { f=1 } END { print f+0 }')"
 
 cols='| # | Titre | Type | Prio |'
@@ -92,18 +118,10 @@ if [ "$has_product" = 1 ]; then cols="${cols} Produit |"; dash="${dash}---------
 cols="${cols} Statut | PR |"
 dash="${dash}--------|----|"
 
-emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de table
-  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$9" epic="${10}" product="${11}" rel="${12}"
+emit_row() { # $1..$10 = champs + $11 = chemin relatif ; émet une ligne de table
+  local id="$1" title="$2" type="$3" prio="$4" status="$5" pr="$6" version="$8" epic="$9" product="${10}" rel="${11}"
   local st
-  case "$status" in
-    shipped) st='✅ shipped';;
-    superseded) st='🗑️ superseded';;
-    in-progress) st='🟠 in-progress';;
-    blocked) st='⛔ blocked';;
-    ready) st='🔵 ready';;
-    idea) st='💡 idea';;
-    *) st="❓ $status";;
-  esac
+  label_of "$status"; st="$LABEL"
   title="${title//|/\\|}"
   pr="${pr//|/\\|}"
   # Id CLIQUABLE vers la fiche (règle human-facing-lisibility) — lien relatif au doc BACKLOG.md.
@@ -116,11 +134,15 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   echo "${line} $st | $pr |"
 }
 
+legend=""
+IFS='|' read -r -a _pairs <<< "$STATUT_LABELS"
+for _p in "${_pairs[@]}"; do legend="${legend:+${legend} · }${_p#*=}"; done
+
 {
   echo "# ${TITLE}"
   echo ''
   echo '> Index auto-généré (`regen-backlog.sh` mega-city, via `/ezk-backlog regen`) — **ne pas éditer à la main**. Source de vérité = le front-matter de chaque fiche.'
-  echo '> Guide du dossier : [README.md](README.md). Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ⛔ blocked · ✅ shipped · 🗑️ superseded.'
+  echo "> Guide du dossier : [README.md](README.md). Statuts : ${legend}."
   # Lien vers la séquence décidée (PLAN.md, curée hors index) — ré-émis à chaque regen
   # pour qu'il survive à la régénération (le contenu de PLAN.md n'est pas touché).
   if [ -f features/PLAN.md ]; then
@@ -131,8 +153,8 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
   echo "$cols"
   echo "$dash"
   printf '%s' "$rows" | awk -F"$SEP" '$5 != "idea" && $3 != "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-    while IFS="$SEP" read -r id title type prio status pr ready created version epic product rel; do
-      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+    while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+      emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
     done
 
   if [ "$has_epics" = 1 ]; then
@@ -142,12 +164,12 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
     echo "$cols"
     echo "$dash"
     printf '%s' "$rows" | awk -F"$SEP" '$3 == "epic"' | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product rel; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+      while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
 
-  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic"')"
+  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic" && $11 != "parked"')"
   if [ -n "$ideas" ]; then
     echo ''
     echo '## 💡 Idées (non groomées)'
@@ -155,8 +177,23 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
     echo "$cols"
     echo "$dash"
     printf '%s\n' "$ideas" | sort -t"$SEP" -k4,4 -k1,1 | \
-      while IFS="$SEP" read -r id title type prio status pr ready created version epic product rel; do
-        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$ready" "$created" "$version" "$epic" "$product" "$rel"
+      while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
+      done
+  fi
+
+  # Parkées : fiches `idea` explicitement sorties du flux via `milestone: parked` (jalon
+  # fermé par le PO) — hors tirage ET hors « Idées », pour que la liste active dise vrai.
+  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5 == "idea" && $3 != "epic" && $11 == "parked"')"
+  if [ -n "$parked" ]; then
+    echo ''
+    echo '## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)'
+    echo ''
+    echo "$cols"
+    echo "$dash"
+    printf '%s\n' "$parked" | sort -t"$SEP" -k4,4 -k1,1 | \
+      while IFS="$SEP" read -r id title type prio status pr created version epic product milestone rel; do
+        emit_row "$id" "$title" "$type" "$prio" "$status" "$pr" "$created" "$version" "$epic" "$product" "$rel"
       done
   fi
   echo ''
@@ -170,11 +207,19 @@ emit_row() { # $1..$11 = champs + $12 = chemin relatif ; émet une ligne de tabl
 echo "features/BACKLOG.md régénéré ($(printf '%s' "$rows" | grep -c .) fiches)."
 
 # Compteurs déterministes (ADR-0016 §5 / fiche 0071) — le script compte, le LLM juge.
-printf '%s' "$rows" | awk -F"$SEP" '
-  NF { n++; c[$5]++; if ($3=="epic") e++ }
-  END { printf "stats: total=%d · idea=%d · ready=%d · in-progress=%d · blocked=%d · shipped=%d · superseded=%d · épics=%d\n", \
-        n, c["idea"], c["ready"], c["in-progress"], c["blocked"], c["shipped"], c["superseded"], e }'
-median="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $8!="" { print $8 }' | sort | awk '{ a[NR]=$0 } END { if (NR) print a[int((NR+1)/2)] }')"
+order="$(printf '%s' "$STATUT_LABELS" | tr '|' '\n' | cut -d= -f1 | tr '\n' ' ')"
+printf '%s' "$rows" | awk -F"$SEP" -v order="$order" '
+  NF { n++; c[$5]++; if ($3=="epic") e++; if ($5=="idea" && $11=="parked") p++ }
+  END {
+    printf "stats: total=%d", n
+    k = split(order, ids, " ")
+    for (i = 1; i <= k; i++) {
+      printf " · %s=%d", ids[i], c[ids[i]] + 0
+      if (ids[i] == "idea") printf " · parked=%d", p + 0
+    }
+    printf " · épics=%d\n", e + 0
+  }'
+median="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $7!="" { print $7 }' | sort | awk '{ a[NR]=$0 } END { if (NR) print a[int((NR+1)/2)] }')"
 if [ -n "$median" ]; then
   echo "stats: création médiane des ready = ${median}"
 fi

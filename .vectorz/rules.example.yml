@@ -1,0 +1,33 @@
+# Règles propres à un projet — le manifeste (`.vectorz/rules.yml`)
+#
+# Copier ce fichier en `.vectorz/rules.yml` dans le PROJET concerné pour lui donner ses règles.
+# ABSENT = le projet n'a pas de règle propre : rien n'est composé, rien ne change.
+#
+# Fiche 20260910152227744 · ADR-0050 (couche projet-local). Commandes :
+#   ezk rules check   le contrôle du contrat (code 1 s'il y a une erreur)
+#   ezk rules show    le jeu effectif, avec la garantie de chaque règle
+#   ezk rules apply   l'écrit dans .claude/rules/vectorz-project.md (Claude Code le charge dans CE projet)
+#
+# Les règles locales vivent à côté, une par fichier `.vectorz/rules/<id>.md` :
+#
+#   ---
+#   id: hexagonal-imports
+#   level: MUST            # MUST | SHOULD | MAY
+#   ---
+#   Aucun import de `adapters/` dans `domain/`.
+
+# Les bundles GLOBAUX (ceux du catalogue de la méthode) que ce projet choisit.
+bundles: [clean-code]
+
+# Un binding par règle : qu'est-ce qui la tient ? Trois réponses honnêtes.
+bindings:
+  # Un MUST local exige un enforcement résolvable, sinon il est REFUSÉ (jamais rétrogradé en silence).
+  hexagonal-imports:
+    gate: pnpm lint:imports     # un contrôle que LE PROJET exécute (commande ou job CI) ; vectorz ne le lance pas
+  design-review:
+    review: ezk-reviewer        # une revue a posteriori liée (agent ou point de revue)
+  # Un conseil est injecté dans le prompt mais n'est jamais présenté comme garanti (SHOULD ou MAY seulement).
+  prefer-composition: advisory
+
+# Précédence : le local peut AJOUTER et DURCIR une règle globale, jamais la DESSERRER.
+# Déclarer « advisory » un MUST global, ou réécrire un MUST global en SHOULD, est une erreur.

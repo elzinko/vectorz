@@ -1,12 +1,13 @@
 ---
 id: 0077
-title: Kit émetteur — hooks Claude Code classe A (émission déterministe)
+title: "Émettre les événements de supervision via des hooks Claude Code"
 type: feature
 priority: P1
 product: mega-city
+labels: [supervision]
+milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-18
 ---
@@ -69,3 +70,13 @@ compte le plus (démarrage, gate, reprise, fin).
   LLM)** sont **frères** sur la même couture d'émission — même noyau `runtime.ts`, déclencheur
   différent. Cette fiche **reste « hooks classe A »** (ne pas élargir son scope) ; le CLI se situe
   **à côté**, nommé par ADR-036 (le MCP n'est qu'un transport parmi ces trois).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Hooks classe A hors train ; classe B shippée peut suffire ; recadré ADR-036.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

@@ -1,14 +1,14 @@
 ---
 id: "20260830110131158"
-title: Revue adverse skippable par flag — --review adverse|skip (ezk-product-build → ezk-sprint)
+title: "Pouvoir sauter volontairement la revue adverse"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 labels: [revue]
 status: idea
-ready:
 pr:
 created: 2026-08-30
 ---
@@ -74,3 +74,13 @@ adverse bloque sur un défaut injecté.
   grooming, **avant de builder ce flag** : renommer l'un des deux (p. ex. le ready gate en
   `--groom` / `--ready-gate`, ou la revue en `--adverse-review`) et aligner les critères ci-dessus
   **avec l'ADR-0053**. Décision produit (PO).
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : Flag skip revue adverse ; collision de nom avec --review (ADR-0053) à trancher.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

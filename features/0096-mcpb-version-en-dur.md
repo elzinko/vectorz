@@ -4,11 +4,12 @@ title: build-mcpb.sh fige la version en dur — le bundle installé ne dit pas c
 type: bug
 priority: P2
 product: mega-city
+milestone: parked
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-25
+labels: [installation]
 ---
 
 ## Contexte / Problème

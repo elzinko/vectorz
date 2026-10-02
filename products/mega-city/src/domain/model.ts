@@ -9,6 +9,7 @@ export type {
   Agent,
   Bundle,
   Cap,
+  Command,
   Enforcement,
   EnforcementType,
   HostId,

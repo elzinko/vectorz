@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-07-24
 pr: "#46"
 created: 2026-07-19
 ---
@@ -92,3 +91,5 @@ d'échec silencieux d'un émetteur épinglé sur un dossier.
   2026-07-14 (règle « arbre principal ») ; fiche racine 0030 ; analyse
   `docs/captures/2026-07-19-topologie-supervision-et-plan-diagrammes.md` ; fiches 0083
   (mesure), 0084 et 0085 (quiescence).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-24 · ancien champ front-matter `ready:`, retiré en migration 005.

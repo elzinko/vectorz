@@ -4,6 +4,8 @@
 - Date : 2026-08-26 (panel + ratification le 2026-08-26)
 - Décideur : **PO** (ratifié le 2026-08-26), sur la base du panel `ezk-architect` (architecte + reviewer adverse + dev)
 - Cadré par : fiche-chapeau P0 `20260826122532943`
+- Amendé par : [ADR-0058](0058-les-outils-entrent-dans-le-graphe.md) — D1 : un cinquième verbe,
+  `utilise` (skill → outil), et un 6ᵉ type de nœud, `tool`
 - Capture du panel : `docs/captures/2026-08-26-panel-ezk-architect-adr-0040.md`
 - Consomme : fiches `20260821204737357` (357), `0186`, `20260823121712652` (652),
   `20260826112620281` (281) ; benchmark `docs/benchmarks/2026-08-25-bmad-vs-ezk.md`
@@ -187,6 +189,80 @@ De la fiche **652** (nommage validé PO 2026-08-25) :
   vs version mega-city) — Skema porte les migrations de **données**, 0087 tranche le **code**.
 - `schema_version` **par fiche** (D3-B) si le besoin de schémas coexistants se matérialise.
 
+## Mise en œuvre — fiche 357 (2026-09-30)
+
+### En clair
+
+Le graphe compilé existe (`graph:compile`) et la carte le lit. Ce sprint tranche les trois restes
+de la fiche [357](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md).
+Les 5 mots de lien deviennent **4 verbes fermés**, posés en alias dans le compilateur. Les liens
+**skill → règle** passent par des ids, avec un validateur qui signale les oublis. La **note BMAD**
+est écrite plus bas.
+
+### D1 tranchée : cinq mots, quatre verbes
+
+| Verbe | Se lit | Champs qui le portent (sur disque, inchangés) |
+|---|---|---|
+| **compose** | « X est fait de Y » | `composes` (skill → skill) · `competences` (agent → skill) · bundles et profils |
+| **convoque** | « X fait venir le rôle Y » | `roles` (skill → agent) · `participants` (règle d'interaction → agent) |
+| **applique** | « X suit la règle Y » | `interactions` (agent → règle, profil → règle) · `applies` (skill → règle, **nouveau**) |
+| **est-verifie-par** | « la règle X est contrôlée par Y » | `enforcements` de type `agent-check` (règle → agent) |
+
+- **Où ça vit.** `EDGE_SOURCES` (`src/core/graph.ts`) porte une ligne par champ : d'où il part, où il
+  arrive, quel verbe il dit. Chaque arête compilée reçoit son `verb`. Aucun champ n'est renommé.
+- **Pourquoi `competences` dit « compose ».** Un agent est fait de ses compétences, comme un skill
+  est fait des skills qu'il compose. C'est la même relation vue depuis un autre type de nœud.
+- **Le jeu est fermé.** Le test `graph-vocabulary` fige les 4 verbes et leurs couples source → cible.
+  Un cinquième verbe est une décision de conception, pas un ajout en passant. (Prise depuis :
+  l'[ADR-0058](0058-les-outils-entrent-dans-le-graphe.md) ajoute `utilise`, skill → outil.)
+- **Interroger.** `pnpm graph:query <verbe|lien> <id> [--inverse]`. « Qui applique cette règle ? »
+  est `graph:query applique <règle> --inverse`. Une faute de frappe sur le verbe ou sur l'id est
+  une erreur nommée, jamais un « aucune arête ».
+- **Un nœud est `{kind, id}`, pas un id.** Le catalogue a un agent ET un skill `ezk-archive`. Quand
+  un id est partagé, on écrit `kind:id` (`graph:query compose skill:ezk-archive`). Un lien
+  (`composes` part d'un skill) suffit parfois à trancher ; un verbe non. Dans ce cas l'id ambigu
+  est refusé avec les choix possibles : jamais une réponse qui mélange deux nœuds.
+
+### Les références structurelles par id (premier incrément de l'item 5)
+
+- **Le trou.** « Le skill X suit la règle Y » n'avait aucun champ : cela ne vivait que dans un lien
+  markdown par chemin. Déplacer la règle cassait le lien, et le graphe ne voyait rien.
+- **Le champ `applies:`** (skill → règle) comble ce trou. Il est additif et optionnel. Un id inconnu
+  fait échouer `graph:compile`, comme pour les autres liens (D5).
+- **Le validateur** vit dans `graph:check`. Il lit les corps des skills (fichiers auxiliaires
+  compris), des agents et des règles. Il signale tout lien markdown par chemin vers un skill, un
+  agent ou une règle dont la relation n'est pas déclarée par id, avec `fichier:ligne` et le champ à
+  renseigner. Il est **bloquant** dès ce sprint : la migration est écrite (7 skills déclarent
+  `applies:`) et le catalogue réel est à 0 signalement, donc aucun faux positif mesuré (D2).
+- **La prose garde ses liens** pour la lecture. Tant que la relation est aussi déclarée par id, le
+  lien de lecture est libre.
+- **Un lien par chemin affirme une relation.** Un skill se vise par son `SKILL.md` ou par son
+  dossier (`../ezk-chef/`, la forme usuelle) : le validateur suit les deux. Un simple renvoi
+  (« cf. », une frontière, « candidat, pas câblé ») n'est pas une dépendance. On écrit alors le nom
+  en code (`ezk-sprint`), sans lien. Déclarer `composes:` à tort dirait « requis » (ADR-0025) et
+  ferait surgir de faux avertissements de profil.
+- **Reliquat.** Trois liens règle → règle n'ont pas de champ d'id : `graph:check` les liste en
+  information. Il faut d'abord leur donner un verbe. Voir la section « Suite » de la fiche 357.
+
+### Note BMAD — ce qu'on reprend, ce qu'on écarte
+
+Preuves : le [benchmark du 2026-08-25](../benchmarks/2026-08-25-bmad-vs-ezk.md) (BMAD 6.0.4, code lu).
+Le fil rouge du benchmark tient en une phrase : BMAD compile des fragments mais laisse le LLM
+interpréter ; ezk garde un cœur déterministe. On prend donc la **mécanique de modèle**, pas
+l'**exécution par prompt**.
+
+| | Ce qu'on fait de BMAD |
+|---|---|
+| **On reprend** | **Déclarations co-localisées** : chaque agent BMAD porte ses dépendances dans son propre fichier. C'est déjà le frontmatter ezk. |
+| **On reprend** | **Un seul vocabulaire de dépendances**, par identifiant. BMAD a un bloc par agent. Nous avons 4 verbes fermés (ce sprint). |
+| **On reprend** | **Une étape de build qui compile en un objet interrogeable.** BMAD écrit des manifests. Nous écrivons `graph.compiled.json`, typé, non versionné (D5). |
+| **On écarte** | **L'« OS » `workflow.xml`** que le LLM interprète : rien n'est appliqué par du code, et il est rechargé à chaque workflow (benchmark, dimensions 4, 6 et 7). |
+| **On écarte** | **Les manifests CSV.** Leur découpage naïf a injecté de la prose dans une colonne (benchmark, dimension 6). Un JSON typé évite cette classe de défaut. |
+| **On écarte** | **Les prises `*.customize.yaml`.** 100 % vierges dans nos trois installs (dimension 8). Les règles et les profils font déjà ce travail. |
+| **À juger, à leur échelle** | **Une taxonomie de types de fichiers plus fine** (templates, checklists, équipes). ezk a déjà 5 catalogues typés et 3 étages ([ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md)). À rouvrir quand la fiche « bibliothèque de templates » sera tirée. |
+| **À juger, à leur échelle** | **Le bundling** (tout livrer d'un bloc). `bind` compose déjà par profil et par hôte. Aller plus loin se décidera avec la distribution plugin, aujourd'hui parkée. |
+| **À juger, à leur échelle** | **Les empreintes SHA-256** par fichier. Utiles si la compilation devient lente. Aujourd'hui elle tourne en une fraction de seconde, donc inutile. |
+
 ## Action items (post-panel — ordre de construction)
 
 Panel `ezk-architect` **tenu** le 2026-08-26 (GO-avec-amendements) ; **ratifié PO le 2026-08-26**.
@@ -198,18 +274,21 @@ Panel `ezk-architect` **tenu** le 2026-08-26 (GO-avec-amendements) ; **ratifié 
 > généralisé), **7** (vocabulaire en alias), **8** (frontière recettes).
 
 1. [x] **Ratification PO** de cet ADR amendé → statut *accepté* (2026-08-26).
-2. [ ] **Graphe compilé SEUL** (357) : un `pnpm` lit les frontmatter **existants** (aucun rename) et
+2. [x] **Graphe compilé SEUL** (357) : un `pnpm` lit les frontmatter **existants** (aucun rename) et
       émet une **instance typée** ; **artefact non-versionné**, régénéré à la demande / CI ; la webapp
-      lit l'objet. Valeur seule.
+      lit l'objet. Valeur seule. *(Livré : commit `a4858f2`, carte branchée PR #234.)*
 3. [ ] **Schéma dérivé de `domain.ts` + validateur en WARNING** (281 + 652), sur le graphe de
       l'étape 2 ; vérifie l'**existence de chaque id** référencé.
 4. [ ] **Bascule bloquante** règle par règle, quand la migration de la règle est écrite ET faux
       positifs = 0 (champs conditionnels ; cas legacy `blocked`+`ready` ; `generated_by` exempté).
 5. [ ] **Migration des refs de prose → id** (chantier one-shot outillable), APRÈS graphe stable.
+      *(Premier incrément livré le 2026-09-30 : `applies:` + validateur dans `graph:check`. Reliquat :
+      relations sans champ d'id, voir « Mise en œuvre — fiche 357 ».)*
 6. [ ] **Skema généralisé** (0186) en dernier : émission / registre de bind / consommation ;
       `schema_version` par fiche pour le transitoire ; `ahead` ne gèle pas tout le projet.
-7. [ ] **Vocabulaire** rationalisé en **couche d'alias dans le compilateur** (~4 verbes typés),
-      découplé, **jamais un rename** sur disque.
+7. [x] **Vocabulaire** rationalisé en **couche d'alias dans le compilateur** (~4 verbes typés),
+      découplé, **jamais un rename** sur disque. *(Livré le 2026-09-30 : compose · convoque · applique
+      · est-vérifié-par.)*
 8. [ ] Écrire la **frontière « les recettes consomment le modèle »** (débloque `ezk-chef`).
 
 **Nouveaux critères d'acceptation (panel 2026-08-26)**

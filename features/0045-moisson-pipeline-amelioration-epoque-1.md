@@ -4,9 +4,11 @@ title: Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire
 type: chore
 priority: P2 # arbitrée 2026-07-17 (review) : P2 — seule la part quality-intelligence/ceremony-engine/_bmad-output est menacée par L5/E4 ; contrainte d'ordre conservée (AC4)
 product: vectorz
+milestone: parked
 status: idea
 pr:
 created: 2026-07-16
+labels: [observabilite]
 ---
 
 # 0045 — Moisson du pipeline d'amélioration d'époque 1 (avant résorption L5 pour la part menacée)

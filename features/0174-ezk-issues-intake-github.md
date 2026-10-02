@@ -1,13 +1,14 @@
 ---
 id: 0174
-title: ezk-issues — intake GitHub (analyse, PR fix/feature md opt-in, coût local)
+title: "Traiter automatiquement les issues GitHub remontées par tes apps"
 type: feature
 priority: P2
 product: mega-city
+labels: [backlog]
+milestone: parked
 version:
 epic:
 status: idea
-ready:
 pr:
 created: 2026-07-31
 ---

@@ -18,6 +18,8 @@
 
 // ADR-0003 : le moteur `bind` est pur et retourne un plan d'écriture.
 import type { WritePlan } from '../src/domain/plan.js';
+// Fiche 0117 : `expandProfile` reçoit le catalogue chargé (dépendance explicite, pas d'état caché).
+import type { Catalog } from '../src/loaders/catalog.js';
 
 // ════════════════════════════════════════════════════════════════
 // CATALOGUE 1 — LA LOI (règles)            [ iamthelaw ]
@@ -71,6 +73,18 @@ export interface SkillAsset {
   executable?: boolean; // bit d'exécution de la source → mode 0o755 à la matérialisation
 }
 
+/**
+ * Une slash-command Claude Code (`/ezk-help`) — le 3ᵉ canal de lawgiver, avec les skills et les agents
+ * (fiche 20260816151112162). Un fichier MARKDOWN `commands/<id>.md`, déployé tel quel dans
+ * `~/.claude/commands/`. Pas de logique ici : la commande est une façade (souvent d'un CLI).
+ */
+export interface Command {
+  id: string; // 'ezk-help' = le nom du fichier sans `.md` : ce qu'on tape après le `/`
+  description?: string; // OPTIONNEL — la ligne `description:` du frontmatter (ce que l'aide de Claude Code affiche)
+  /** Le fichier ENTIER, frontmatter compris (Claude Code lit `description`, `argument-hint`, `allowed-tools`), `\n` final. */
+  content: string;
+}
+
 /** Une capacité / un playbook. Fichier MARKDOWN (corps = mode opératoire). Host-agnostique. */
 export interface Skill {
   id: string; // 'ezk-commits'
@@ -82,12 +96,25 @@ export interface Skill {
   /** ADR-0025 — refs EXTERNES (`skill-creator`, `product-brainstorming`…) : documentées, jamais warnées. */
   composesExternal?: string[];
   /**
+   * ADR-0025 (amendement 2026-10-01) — ids de skills INTERNES délégués SI PRÉSENTS : le tier
+   * optionnel de `composes`. Déclaré et tracé dans le graphe (pointillé), mais JAMAIS averti si le
+   * skill est absent du profil — le corps du skill écrit le repli. Même garde-fou de frontière.
+   */
+  delegates?: string[];
+  /**
    * ADR-0020 (amendement 2026-08-20) — ids d'AGENTS que cet orchestrateur convoque.
    * `composes` dit « quelles briques j'utilise » ; `roles` dit « quels rôles je fais venir ».
    * C'était la relation centrale du scrum (le sprint convoque l'équipe) et la seule qu'aucun
    * champ ne portait : elle ne vivait qu'en prose.
    */
   roles?: string[];
+  /**
+   * Fiche 357 (ADR-0040) — ids de RÈGLES que ce skill applique. Le trou que `composes` et `roles`
+   * laissaient : « le skill X suit la règle Y » ne vivait qu'en prose, sous forme de lien
+   * markdown par chemin (fragile). Déclaré par id, il entre dans le graphe compilé (verbe
+   * « applique ») et un id inconnu fait échouer la compilation.
+   */
+  applies?: string[];
   /** ADR-0027 — fichiers auxiliaires du dossier (hors `SKILL.md`). Absent ⇒ dossier sans asset. */
   assets?: SkillAsset[];
 }
@@ -119,6 +146,8 @@ export interface Profile {
   bundles: string[]; // → règles
   agents: string[]; // → l'équipe
   skills: string[]; // → compétences directes du projet
+  /** → slash-commands (`commands/<id>.md`), posées dans `~/.claude/commands/` par `bind-global` (fiche 20260816151112162). */
+  commands?: string[];
   interactions?: string[]; // → règles d'interaction entre agents
 }
 
@@ -153,17 +182,30 @@ export interface ResolvedProfile {
   rules: Rule[];
   agents: Agent[];
   skills: Skill[];
+  /** Absent quand le profil n'en déclare aucune : les profils sans commande se résolvent comme avant. */
+  commands?: Command[];
 }
 
-/** DÉTERMINISTE — pure data : résout extends + déduplique. Aucune IA. */
-export declare function expand(profile: Profile): ResolvedProfile;
+/**
+ * DÉTERMINISTE — pure data : résout extends + déduplique. Aucune IA, aucun I/O.
+ * Signature RÉELLE de `src/core/expand.ts` (fiche 0117) : le catalogue est un argument
+ * explicite. Dans les ADR, ce geste s'appelle « expand » ; la fonction exportée, `expandProfile`.
+ */
+export declare function expandProfile(profile: Profile, catalog: Catalog): ResolvedProfile;
 
 /**
  * DÉTERMINISTE — calcule le PLAN d'écriture du projet via le Cap de l'hôte.
- * « Charger d'un coup ». ADR-0003 : pur, retourne un WritePlan (l'application
+ * « Charger d'un coup ». ADR-0003 : retourne un WritePlan, n'écrit RIEN (l'application
  * disque est faite par la coquille I/O, src/io/apply.ts).
+ * Signature RÉELLE de `src/core/bind.ts` (fiche 0117) : le profil est désigné par son `id`,
+ * et `rootDir` est la racine du catalogue que `bind` LIT (lecture seule, via `loadCatalog`).
  */
-export declare function bind(profile: Profile, projectDir: string, host: HostId): WritePlan;
+export declare function bind(
+  profileId: string,
+  projectDir: string,
+  host: HostId,
+  rootDir: string,
+): WritePlan;
 
 /** Une ligne du journal append-only = la mémoire du flywheel. */
 export interface LearningEntry {

@@ -4,11 +4,11 @@ title: Complétion dynamique des paramètres des commandes slash (Claude Code, m
 type: feature
 priority: P3
 product: mega-city
+milestone: parked
 version:
 epic:
 labels: [cli, decouvrabilite]
 status: idea
-ready:
 pr:
 evidence: none # affordance de saisie, pas d'écran d'app
 created: 2026-09-20

@@ -91,7 +91,7 @@ describe('validateGraph — détection des liens cassés', () => {
   });
 
   it('compte les nœuds et remonte les orphelins (info)', () => {
-    expect(report.nodeCount).toEqual({ rule: 2, agent: 1, skill: 3, bundle: 2, profile: 1 });
+    expect(report.nodeCount).toEqual({ rule: 2, agent: 1, skill: 3, bundle: 2, profile: 1, tool: 0 });
     const orphans = new Set(report.orphans.map((o) => `${o.kind}:${o.id}`));
     expect(orphans.has('skill:lonely')).toBe(true); // rien ne le cite
     expect(orphans.has('profile:p')).toBe(true); // un profil est racine → orphelin par nature
@@ -106,9 +106,27 @@ describe('validateGraph — détection des liens cassés', () => {
     expect(new Set(keys).size).toBe(keys.length); // aucun doublon
   });
 
-  it('les treize types de lien du vocabulaire réuni sont couverts par la table', () => {
+  it('les seize types de lien du vocabulaire réuni sont couverts par la table', () => {
     expect(new Set(EDGE_SOURCES.map((s) => s.link)).size).toBe(EDGE_SOURCES.length);
-    expect(EDGE_SOURCES.length).toBe(13);
+    // 13 + `applies` (fiche 357) + `uses` (ADR-0058) + `delegates` (fiche 20260812104022246)
+    expect(EDGE_SOURCES.length).toBe(16);
+  });
+
+  it('delegates: entre dans le graphe, et une cible fantôme est un lien cassé comme pour composes:', () => {
+    const catalog: Catalog = {
+      rules: new Map(),
+      agents: new Map(),
+      skills: index<Skill>([
+        { id: 'a', content: '', delegates: ['b', 'ghost'] },
+        { id: 'b', content: '' },
+      ]),
+      bundles: new Map(),
+      profiles: new Map(),
+    };
+    const edges = graphEdges(catalog).filter((e) => e.link === 'delegates');
+    expect(edges.map((e) => `${e.from}>${e.to}:${e.verb}`)).toEqual(['a>b:compose', 'a>ghost:compose']);
+    const broken = validateGraph(catalog).broken.filter((e) => e.link === 'delegates');
+    expect(broken.map((e) => e.to)).toEqual(['ghost']);
   });
 });
 

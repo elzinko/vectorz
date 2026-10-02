@@ -2,7 +2,9 @@
  * ci-conso (CLI) — récupère la conso GitHub Actions du mois via `gh` et l'affiche.
  * Le cœur d'agrégation PUR (et testé) vit dans src/core/ci-conso.ts ; ICI = le bord I/O.
  *
- * Usage : pnpm --dir products/mega-city ci:conso [YYYY-MM]   (défaut : mois courant, UTC)
+ * Usage : pnpm --dir products/mega-city ci:conso [YYYY-MM] [--no-forks]   (défaut : mois courant, UTC)
+ *   --no-forks : masque les forks PUBLICS sans coût (ils ne pèsent pas sur le quota) et compte
+ *   ce qui est masqué en pied de table. Un fork privé ou facturé reste affiché. Fiche 20260829132313947.
  *
  * Fiche 20260828150801613 — l'ancien endpoint /settings/billing/actions répond 410 (migré) ;
  * on lit /settings/billing/usage (« enhanced billing platform »). Dégradation propre si l'API
@@ -10,10 +12,13 @@
  */
 import { execFileSync } from 'node:child_process';
 import {
+  type ConsoArgs,
   type UsageItem,
   aggregateActionsUsage,
   formatConsoReport,
+  hideFreeForks,
   isActionsMinutes,
+  parseConsoArgs,
 } from '../src/core/ci-conso.js';
 
 function fail(msg: string): never {
@@ -44,7 +49,13 @@ function resolvePeriod(arg: string | undefined): { year: number; month: number; 
 }
 
 function main(): void {
-  const { year, month, label } = resolvePeriod(process.argv[2]);
+  let args: ConsoArgs;
+  try {
+    args = parseConsoArgs(process.argv.slice(2));
+  } catch (err) {
+    fail(err instanceof Error ? err.message : String(err));
+  }
+  const { year, month, label } = resolvePeriod(args.period);
 
   // 1) l'utilisateur authentifié (le billing est niveau compte)
   let login: string;
@@ -78,22 +89,27 @@ function main(): void {
   // 3) visibilité par repo (best-effort, N appels ; public = Actions gratuit)
   // Même prédicat (casse tolérante) que l'agrégation — sinon un repo compté resterait « ? »
   // en visibilité (retour Codex #186, cohérence des deux filtres).
+  // Le même appel /repos/<o>/<r> rend aussi `fork` : on le lit au passage (0 appel en plus).
   const repos = [...new Set(items.filter(isActionsMinutes).map((i) => i.repositoryName))];
   const visibility: Record<string, string> = {};
+  const forks = new Set<string>();
   for (const repo of repos) {
     // `repositoryName` est nu en live (`vectorz`) → /repos/<login>/<repo> ; mais s'il venait
     // en `owner/repo` (doc « enhanced billing »), l'utiliser tel quel évite un /repos/login/owner/repo
     // qui 404 (retour Codex #186). Robuste aux deux formes.
     const path = repo.includes('/') ? `/repos/${repo}` : `/repos/${login}/${repo}`;
     try {
-      visibility[repo] = (ghApi(path) as { visibility?: string }).visibility ?? '?';
+      const meta = ghApi(path) as { visibility?: string; fork?: boolean };
+      visibility[repo] = meta.visibility ?? '?';
+      if (meta.fork === true) forks.add(repo);
     } catch {
       visibility[repo] = '?'; // repo supprimé, droits manquants — non bloquant
     }
   }
 
-  // 4) agrégation déterministe (cœur pur) + rendu
-  console.log(formatConsoReport(aggregateActionsUsage(items, visibility), label));
+  // 4) agrégation déterministe (cœur pur) + rendu ; `--no-forks` masque les forks publics gratuits
+  const report = aggregateActionsUsage(items, visibility);
+  console.log(formatConsoReport(args.noForks ? hideFreeForks(report, forks) : report, label));
 }
 
 main();

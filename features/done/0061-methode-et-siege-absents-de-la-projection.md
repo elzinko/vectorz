@@ -6,7 +6,6 @@ priority: P1
 product: vectorz
 epic:
 status: shipped
-ready:
 pr: "#50"
 created: 2026-07-25
 ---

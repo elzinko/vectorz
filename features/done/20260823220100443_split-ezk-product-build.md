@@ -7,7 +7,6 @@ product: mega-city
 version:
 epic:
 status: shipped
-ready: 2026-08-23
 pr: "#162"
 created: 2026-08-23
 ---
@@ -46,3 +45,5 @@ pnpm --dir products/mega-city graph:check
 pnpm --dir products/mega-city test
 grep -r 'ezk-product-builder' products/mega-city/skills products/mega-city/profiles  # → rien
 ```
+
+> **Historique** — DoR (`ready`) passée le 2026-08-23 · ancien champ front-matter `ready:`, retiré en migration 005.

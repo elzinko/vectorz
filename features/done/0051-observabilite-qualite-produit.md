@@ -8,7 +8,6 @@ epic:
 milestone: parked
 labels: [observabilite]
 status: superseded
-ready:
 pr:
 created: 2026-07-22
 ---
@@ -45,7 +44,7 @@ Constat « déjà là ? » : le package `products/cop1/packages/quality-intellig
 `ImprovementKPIService`) prouve la faisabilité **mais** est câblé en **portes jetables**
 (`CoverageResult { passed, coverage, threshold }` — la valeur ouvre/ferme le gate du sprint
 puis est **jetée** ; rien n'est historisé ni collé à un commit) et il est **promis à
-résorption** (relicat pré-pivot BMAD, fiche [0024](../0024-resorber-peripherie-pre-pivot.md)).
+résorption** (relicat pré-pivot BMAD, fiche [0024](0024-resorber-peripherie-pre-pivot.md)).
 Doctrine : on **moissonne sa liste de capteurs** (la carte de ce qui vaut la peine d'être
 mesuré), **pas son code**. Il manque la **mémoire** : un journal qui garde chaque mesure,
 indexée par PR, d'où sortent des courbes.
@@ -134,7 +133,7 @@ ADR-021 frontière, ADR-026 seam exécuteur, ADR-032 émission adaptateur sépar
   **nouveau type d'événement / une nouvelle source** → touche « **métriques = surface gelée** »
   → **PO + panel** avant gel. *Décision à trancher : même silo (nouvel event `quality.measured`)
   vs silo frère `.quality/`.*
-- **[0024](../0024-resorber-peripherie-pre-pivot.md)** — **moissonner la liste des capteurs** du
+- **[0024](0024-resorber-peripherie-pre-pivot.md)** — **moissonner la liste des capteurs** du
   relicat (Sonar/couverture/statique/arch-drift) **avant** suppression ; ajouter le cross-ref
   vers cet épic.
 - **[0022](../done/0022-observabilite-mission-control-donnees-deja-collectees.md)** — l'onglet qualité

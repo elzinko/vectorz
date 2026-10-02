@@ -6,7 +6,6 @@ priority: P2
 product: vectorz
 epic:
 status: shipped
-ready: 2026-08-05
 pr: "#107"
 created: 2026-07-25
 ---
@@ -115,3 +114,5 @@ Remettre les **deux** documents en accord avec l'état de `main`.
 - Voisine de la PR **#37** (guide utilisateur Claude Desktop, en attente) : si ce guide
   est abandonné, cette checklist redevient le **seul** document d'installation — raison de
   plus pour qu'elle soit juste.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-05 · ancien champ front-matter `ready:`, retiré en migration 005.

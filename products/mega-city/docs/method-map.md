@@ -31,6 +31,7 @@ flowchart TB
         S4 --> S5["5 · revue : ezk-steward + agents"] --> S6["6 · PR → squash-merge"]
     end
     RETRO["🔄 ezk-retro<br/>cérémonie d'amélioration (Sujet A)"]
+    SCOUT["🔎 ezk-scout<br/>chasse aux bugs en tâche de fond :<br/>trouve et rapporte, ne corrige jamais"]
     ARCH["🗄️ ezk-archive<br/>clôture de session : handoff, rien ne se perd<br/>(tri branches absorbées vs réelles — 0076)"]
     RULES[("⚖️ rules/ · bundles · DoD/DoR<br/>LA LOI")]
 
@@ -39,6 +40,9 @@ flowchart TB
     PB -->|tire la prochaine fiche| SP
     S6 -->|ship + suppr. branche locale+remote| BL
     RULES -.->|guident le sprint| SP
+    PO -->|lance une passe| SCOUT
+    SCOUT -->|rapport de brouillons, aucune fiche créée| PO
+    PO -->|valide : ezk-backlog add| BL
     PO -->|déclenche| RETRO
     RETRO -->|propositions typées symptôme+mesure| RULES
     PO -->|clôt la session| ARCH
@@ -47,7 +51,7 @@ flowchart TB
 
 **Acteurs** : le **PO** (déclenche, tranche) · les **skills** `ezk-product-build` (chaîne),
 `ezk-sprint` (1 fiche → 1 PR), `ezk-backlog` (le stock), `ezk-retro` (améliore),
-`ezk-archive` (clôt sans rien perdre) · **LA LOI** (`rules/`) qui guide et se fait enrichir.
+`ezk-archive` (clôt sans rien perdre), `ezk-scout` (cherche des bugs sans corriger ni créer de fiche) · **LA LOI** (`rules/`) qui guide et se fait enrichir.
 
 ---
 

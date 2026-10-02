@@ -6,7 +6,6 @@ priority: P1
 product: mega-city
 labels: [enabler]
 status: shipped
-ready: 2026-08-09
 pr: "#121"
 created: 2026-07-06
 ---
@@ -34,7 +33,7 @@ erreur), et 4 intégrations fantômes ont été constatées à l'audit. Par aill
 
 ## Notes
 **Remontée P2 → P1 le 2026-07-26** (arbitrage PO). Déclencheur : [ADR-0020](../../products/mega-city/docs/adr/0020-capacite-partagee-brique-autonome.md)
-grave la doctrine « briques autonomes **composables** » et la fiche [0102](../0102-ezk-testbed-brique-boot-env-test.md)
+grave la doctrine « briques autonomes **composables** » et la fiche [0102](0102-ezk-testbed-brique-boot-env-test.md)
 crée `ezk-testbed`, que `ezk-pr-pilot`, `ezk-preview` et `ezk-sprint` doivent composer.
 Sans `composes:`, ces trois liens naissent **en prose** — un profil pourra binder
 `ezk-pr-pilot` sans `ezk-testbed` sans qu'aucun warning ne tombe, exactement le symptôme
@@ -46,3 +45,5 @@ ADR-0012. Chantier structurel (domaine + loaders + tests) — après les quick w
 ezk-recipy (fiche 0147) : ne l'annoter que si 0042 est déjà livrée, sinon l'annoter à sa
 création. La mutation « Skill = dossier » est celle qui impacte les caps : à signaler au
 gate de la fiche 0121.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-09 · ancien champ front-matter `ready:`, retiré en migration 005.

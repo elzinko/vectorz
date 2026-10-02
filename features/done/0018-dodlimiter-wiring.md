@@ -5,7 +5,7 @@ type: feature
 priority: P3
 product: vectorz
 status: superseded
-pr: superseded — mode pilote retiré
+pr: "superseded — mode pilote retiré"
 created: 2026-06-25
 ---
 

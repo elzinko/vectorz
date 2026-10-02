@@ -20,7 +20,6 @@ export interface PlanCardView {
   title: string;
   status: string;
   priority: string;
-  ready: boolean;
   product: string;
   type: string;
   pr: string;
@@ -49,9 +48,9 @@ export interface PlanLane {
 export interface PlanViewData {
   /** Couloirs (sections non vides), dans l'ordre du document. */
   lanes: PlanLane[];
-  /** 1re fiche `todo` + `ready` dans l'ordre du plan — ce que le prochain sprint tire. */
+  /** 1re fiche `status: ready` dans l'ordre du plan — ce que le prochain sprint tire. */
   head: PlanCardView | null;
-  /** Fiches `todo` sans `ready:` qui PRÉCÈDENT la tête — à groomer (jamais sautées en silence). */
+  /** Fiches `idea` (pas encore prêtes) qui PRÉCÈDENT la tête — à groomer (jamais sautées en silence). */
   blockedAhead: PlanCardView[];
   /** Ids cités par le plan mais ABSENTS de `features/` — signalés. */
   unresolved: string[];
@@ -68,7 +67,6 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
       title: '',
       status: '',
       priority: '',
-      ready: false,
       product: '',
       type: '',
       pr: '',
@@ -82,7 +80,6 @@ const toCardView = (id: string, index: Map<string, Fiche>): PlanCardView => {
     title: f.title,
     status: f.status,
     priority: f.priority,
-    ready: f.ready,
     product: f.product,
     type: f.type,
     pr: f.pr,
@@ -112,7 +109,7 @@ export function buildPlanViewData(planMd: string, fiches: Fiche[]): PlanViewData
 
   // Tête tirable + têtes bloquées : on RÉUTILISE crossBacklogHead sur l'ordre plat (0089).
   const planIndex = new Map<string, PlanCard>(
-    fiches.map((f) => [f.id, { id: f.id, product: f.product, type: f.type, status: f.status, ready: f.ready }]),
+    fiches.map((f) => [f.id, { id: f.id, product: f.product, type: f.type, status: f.status }]),
   );
   const cross = crossBacklogHead(parsePlanOrder(planMd), planIndex);
   const head = cross.head ? toCardView(cross.head.id, index) : null;
@@ -138,32 +135,16 @@ export function buildPlanViewData(planMd: string, fiches: Fiche[]): PlanViewData
   };
 }
 
-// --- Bord pour la vue `diagrams/avancement/board.html` (même patron que avancement-data.ts) ---
+// --- Bloc de données de l'onglet Plan (dans `board.data.js`, non committé — ADR-0055) ---
 
 export const PLAN_DATA_BEGIN = '/*ezk-plan-data:begin*/';
 export const PLAN_DATA_END = '/*ezk-plan-data:end*/';
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans board.html. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `board.data.js`. */
 export function buildPlanViewDataBlock(planMd: string, fiches: Fiche[]): string {
   // `<` échappé en < : un titre/texte de plan contenant `</script>` ne peut pas
   // fermer la balise <script> porteuse. Le RENDU est protégé séparément (board.html pose
   // les données via textContent, jamais innerHTML). Deux protections distinctes.
   const json = JSON.stringify(buildPlanViewData(planMd, fiches), null, 1).replace(/</g, '\\u003c');
   return `${PLAN_DATA_BEGIN}\nwindow.EZK_PLAN = ${json};\n${PLAN_DATA_END}`;
-}
-
-/**
- * Pose `block` dans `text` entre les marqueurs `ezk-plan-data:*` (disjoints de ceux
- * d'avancement). Les marqueurs DOIVENT déjà exister (posés une fois par l'auteur de la
- * carte) — absents ⇒ erreur franche (même règle que `upsertAvancementDataBlock`).
- */
-export function upsertPlanViewDataBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(PLAN_DATA_BEGIN);
-  const endIdx = text.indexOf(PLAN_DATA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${PLAN_DATA_BEGIN} … ${PLAN_DATA_END} introuvables dans board.html`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + PLAN_DATA_END.length);
 }

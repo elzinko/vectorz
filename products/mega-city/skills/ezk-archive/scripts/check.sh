@@ -12,6 +12,16 @@
 #   VERDICT: DIRTY points=<n,…>   sous-ensemble croissant de {1,2,3,4}
 #   Aucune ligne de fait `[Pn]` n'est émise pour un point CLEAN → ~12 lignes sur
 #   une session disciplinée, au lieu des 120 de la version précédente.
+#   FASTPATH: EMPTY               rien à sauver : verdict CLEAN + `--shipped none` + `--worked none`
+#                                 + pas de SPRINT.md avec du contenu → le skill répond « rien à
+#                                 archiver » en une ligne (fiche 20260904091853948).
+#                                 Si d'AUTRES worktrees portent du travail non commité (un agent, une autre
+#                                 session), la ligne le dit : `FASTPATH: EMPTY other_worktrees_dirty=N`.
+#   FASTPATH: NO reason=<a,b,…>   sinon : verdict · shipped · shipped_undeclared · worked ·
+#                                 worked_undeclared · sprint. Une session sale déroule la clôture complète.
+#   Un compteur de la ligne P2_PENDING dit `affichées/total` quand le plafond MAX_FACTS coupe sa liste.
+#   HANDOFF … durable=0|1         0 = machine jetable (CLAUDE_CODE_REMOTE=true, ou EZK_EPHEMERAL=1) :
+#                                 la note locale ne survivra pas, `handoff.sh durable` en écrit une copie.
 #   Les libellés du gate sont ASCII (aucun piège d'encodage au `grep`) ; seules les
 #   DONNÉES citées (chemins, titres de PR) gardent leurs accents. Les accents de
 #   présentation sont réservés à `--full`.
@@ -25,7 +35,7 @@
 #   tout UNKNOWN, toute sonde en erreur, tout dépassement de borne ⇒ DIRTY.
 #   Un faux CLEAN ferait sauter la délégation ET son rattrapage : c'est le seul risque grave.
 #
-# Usage : bash check.sh [--gate|--full] [--base <ref>] [--shipped <ids>] [--point <n>] [base]
+# Usage : bash check.sh [--gate|--full|--cleanup] [--base <ref>] [--shipped <ids>] [--worked <ids>] [--point <n>] [base]
 #
 # Strictement read-only : lectures git/gh uniquement. Ne commite, push, merge — ni
 # **fetch** — JAMAIS : un fetch écrirait des refs et casserait la propriété que le DoD
@@ -34,19 +44,24 @@
 set -uo pipefail
 
 # --- options ------------------------------------------------------------------
-MODE="gate"; BASE=""; SHIPPED=""; ONLY_POINT=""
+MODE="gate"; BASE=""; SHIPPED=""; WORKED=""; ONLY_POINT=""
 usage() {
   cat <<'USAGE'
 check.sh — portier de clôture ezk-archive (read-only)
 
   --gate            bloc machine (DÉFAUT) : VERDICT + compteurs + faits des points DIRTY
   --full            rapport humain lisible
+  --cleanup         inventaire du ménage : worktrees et branches sûrs à retirer, avec la
+                    commande exacte de chacun. Ne supprime RIEN (le PO valide, puis on lance).
   --base <ref>      base de comparaison (défaut : main → master → HEAD)
   --shipped <ids>   ids de fiches livrées DÉCLARÉS par l'appelant (ex. 0089,0097)
                     « none » = déclaration explicite de « rien livré cette session ».
                     ABSENT ⇒ P3_BACKLOG: UNKNOWN ⇒ VERDICT: DIRTY (non-régression :
                     une session qui n'a pas tenu ses comptes ne peut pas déclarer,
-                    donc elle tombe toujours dans le rituel complet).
+                    donc elle tombe toujours dans la clôture complète).
+  --worked <ids>    ids de fiches TRAVAILLÉES (livrées ou non) ; « none » = aucune.
+                    Recopié sur la ligne P3_BACKLOG : l'agent délégué pose l'en-tête
+                    `fiches:` d'après lui, pas d'après --shipped. ABSENT ⇒ worked=-.
   --point <n>       n'émet que les faits du point n (1..4) — usage du sous-agent
   -h, --help        cette aide
 USAGE
@@ -55,8 +70,10 @@ while (( $# )); do
   case "$1" in
     --gate)    MODE="gate" ;;
     --full)    MODE="full" ;;
+    --cleanup) MODE="cleanup" ;;
     --base)    BASE="${2:-}"; shift ;;
     --shipped) SHIPPED="${2:-}"; shift ;;
+    --worked)  WORKED="${2:-}"; shift ;;
     --point)   ONLY_POINT="${2:-}"; shift ;;
     -h|--help) usage; exit 0 ;;
     --*)       echo "check.sh : option inconnue « $1 »" >&2; usage >&2; exit 2 ;;
@@ -84,6 +101,15 @@ CUR="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --shor
 
 HAS_REMOTE=0; [[ -n "$(git remote 2>/dev/null)" ]] && HAS_REMOTE=1
 HAS_GH=0; command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && HAS_GH=1
+# Le ménage ne regarde que les branches et les worktrees : inutile de payer l'aller-retour GitHub.
+[[ "$MODE" == "cleanup" ]] && HAS_GH=0
+# Le main LOCAL peut avoir des dizaines de commits de retard (un squash-merge n'avance pas le main
+# local) : tout serait « réel », et chaque preuve de contenu coûterait des minutes. Le ménage prouve
+# donc contre origin/<base> quand elle existe ; la base locale reste protégée de toute suppression.
+BASE_LOCAL="$BASE"
+if [[ "$MODE" == "cleanup" ]] && git show-ref --verify --quiet "refs/remotes/origin/$BASE"; then
+  BASE="origin/$BASE"
+fi
 # Un remote n'implique PAS des pull requests : un bare local (`file://`), un serveur git
 # perso ou un GitLab n'en ont aucune que `gh` puisse lire. Sans cette distinction, on
 # confond « je ne peux pas lire les PRs » (⇒ UNKNOWN, prudent) et « il n'y a pas de PRs
@@ -97,7 +123,7 @@ HAS_PR_HOST=0
 # feraient 100 lignes). Une sortie tronquée le DIT — un portier qui masque silencieusement
 # ce qu'il a vu produirait exactement le faux CLEAN qu'on cherche à rendre impossible.
 MAX_FACTS=25                  # borne par point
-MAX_TOTAL_FACTS=47            # borne globale (+ 12 d'en-tête + 1 de troncature = 60 max)
+MAX_TOTAL_FACTS=46            # borne globale (+ 13 d'en-tête + 1 de troncature = 60 max)
 add_fact() { # $1=tag (P1/P2/P3/P4/MAINSYNC) $2=texte
   local var="FACTS_$1"
   printf -v "$var" '%s%s\n' "${!var:-}" "[$1] $2"
@@ -399,7 +425,7 @@ fi
 # c'est le travail d'ezk-backlog) : il VÉRIFIE ce que l'appelant AFFIRME. Sans
 # déclaration, il n'a aucune preuve ⇒ UNKNOWN ⇒ DIRTY (fiche 0088, piste 1).
 # `declared=-` (rien déclaré) est distinct de `declared=none` (« rien livré », déclaré).
-P3_STATE="UNKNOWN"; P3_DECLARED="${SHIPPED:--}"
+P3_STATE="UNKNOWN"; P3_DECLARED="${SHIPPED:--}"; P3_WORKED="${WORKED:--}"
 if [[ -z "$SHIPPED" ]]; then
   add_fact P3 "aucun --shipped fourni : impossible de prouver la coherence du backlog"
 elif [[ "$SHIPPED" == "none" ]]; then
@@ -508,6 +534,16 @@ if [[ -f "$HANDOFF_FILE" ]]; then
   (( H_ENTRIES >= ${EZK_HANDOFF_KEEP:-3} )) && H_ROTATE=1
 fi
 
+# La machine garde-t-elle la note locale d'une session à l'autre ? Une session cloud tourne dans un
+# conteneur jetable : tout fichier non poussé disparaît avec lui (fiche 0189). EZK_EPHEMERAL=1|0 force
+# la réponse ; sinon CLAUDE_CODE_REMOTE=true dit « jetable ».
+H_DURABLE=1
+case "${EZK_EPHEMERAL:-}" in
+  1|true)  H_DURABLE=0 ;;
+  0|false) H_DURABLE=1 ;;
+  *)       [[ "${CLAUDE_CODE_REMOTE:-}" == "true" ]] && H_DURABLE=0 ;;
+esac
+
 # ==============================================================================
 # VERDICT
 # ==============================================================================
@@ -524,37 +560,209 @@ case "$MAINSYNC_STATE" in
 esac
 if [[ -z "$POINTS" ]]; then VERDICT="CLEAN"; else VERDICT="DIRTY"; fi
 
+# --- Voie rapide : rien à sauver => une ligne, pas de note, pas de sous-agent ------------
+# Même règle centrale que le verdict : EMPTY seulement sur PREUVE POSITIVE. Un obstacle suffit
+# à refuser, et une déclaration absente en est un (on ne devine pas qu'une session n'a rien fait).
+FP_REASONS=""
+fp_reason() { FP_REASONS="${FP_REASONS:+$FP_REASONS,}$1"; }
+[[ "$VERDICT" != "CLEAN" ]] && fp_reason verdict
+if [[ -z "$SHIPPED" ]]; then fp_reason shipped_undeclared; elif [[ "$SHIPPED" != "none" ]]; then fp_reason shipped; fi
+if [[ -z "$WORKED" ]]; then fp_reason worked_undeclared; elif [[ "$WORKED" != "none" ]]; then fp_reason worked; fi
+# Un SPRINT.md qui porte autre chose que des titres, des lignes vides et des commentaires est du
+# contenu à archiver (docs/sessions/). Dans le doute, on déroule la clôture.
+if [[ -f SPRINT.md ]] && grep -qvE '^[[:space:]]*($|#|<!--)' SPRINT.md 2>/dev/null; then fp_reason sprint; fi
+if [[ -z "$FP_REASONS" ]]; then
+  FASTPATH_LINE="FASTPATH: EMPTY"
+  # Le travail non commité d'un AUTRE worktree (un agent, une autre session) n'est vu ni par P1, qui lit
+  # le worktree courant, ni par le verdict. La voie rapide ne le tait pas : elle le dit sur sa ligne.
+  OTHER_DIRTY=0
+  here_real="$(pwd -P)"
+  while IFS= read -r wl; do
+    case "$wl" in
+      "worktree "*)
+        w="${wl#worktree }"
+        [[ -d "$w" ]] || continue
+        [[ "$(cd "$w" 2>/dev/null && pwd -P)" == "$here_real" ]] && continue
+        [[ -n "$(git --no-optional-locks -C "$w" status --porcelain 2>/dev/null | head -n 1)" ]] && OTHER_DIRTY=$((OTHER_DIRTY + 1)) ;;
+    esac
+  done < <(git worktree list --porcelain 2>/dev/null)
+  (( OTHER_DIRTY > 0 )) && FASTPATH_LINE="FASTPATH: EMPTY other_worktrees_dirty=$OTHER_DIRTY"
+else
+  FASTPATH_LINE="FASTPATH: NO reason=$FP_REASONS"
+fi
+
+# ==============================================================================
+# MÉNAGE (--cleanup) : l'inventaire de ce qui se range sans risque. NE SUPPRIME RIEN.
+# ==============================================================================
+# Le script prouve, l'humain valide, puis chaque commande se lance seule (ADR-0001). Un worktree
+# est SÛR quand les cinq conditions tiennent ensemble :
+#   - ce n'est pas le principal, ni celui d'où l'on lance ;
+#   - il n'est pas verrouillé (le verrou, c'est la session qui dit « je suis vivante ») ;
+#   - son activité git (HEAD, index, reflog) date de plus de EZK_CLEANUP_IDLE_HOURS (24 h) ;
+#   - son arbre est propre ;
+#   - son contenu est déjà dans la base (même preuve que pour les branches absorbées).
+# `git worktree remove` (sans --force) refuse de toute façon un arbre non propre : un filet de plus.
+if [[ "$MODE" == "cleanup" ]]; then
+  IDLE_MIN_H="${EZK_CLEANUP_IDLE_HOURS:-24}"
+  MAX_CLEAN=40                       # borne par liste ; au-delà, le compte dit « affichées/total »
+  NOW="$(date +%s)"
+  CUR_TOP="$(pwd -P)"
+  if stat -c %Y . >/dev/null 2>&1; then mtime_of() { stat -c %Y "$1"; }   # GNU coreutils
+  else                                  mtime_of() { stat -f %m "$1"; }   # BSD / macOS
+  fi
+  # Bases de preuve : la base locale ET sa jumelle distante, quand elle existe. Le main local peut
+  # être en retard sur origin : sans la jumelle, des worktrees déjà livrés passeraient pour « réels ».
+  PROOF_BASES="$BASE"
+  [[ "$BASE" != "$BASE_LOCAL" ]] && git show-ref --verify --quiet "refs/heads/$BASE_LOCAL" && PROOF_BASES="$PROOF_BASES $BASE_LOCAL"
+  # Une commande affichée est une commande que l'opérateur lance : un nom de branche ou un chemin peut
+  # contenir `;`, `$( )`, une apostrophe. Tout ce qui entre dans un `cmd=` passe par printf %q.
+  shq() { printf '%q' "$1"; }
+  absorbed_by_any() { # $1=ref (branche ou sha) → 0 si son contenu est dans une des bases de preuve
+    local b
+    for b in $PROOF_BASES; do
+      [[ "$(classify_ref "$b" "$1")" == "ABSORBEE" ]] && return 0
+    done
+    return 1
+  }
+
+  K_CUR=0; K_LOCK=0; K_RECENT=0; K_DIRTY=0; K_UNMERGED=0; K_PRUNABLE=0
+  WT_SAFE_LINES=""; WT_SAFE_N=0; AFTER_LINES=""; AFTER_N=0; SAFE_AFTER="|"
+  wt_first=1; wt_path=""; wt_head=""; wt_branch=""; wt_locked=0; wt_prunable=0
+
+  process_worktree() {
+    [[ -z "$wt_path" ]] && return 0
+    if (( wt_first )); then wt_first=0; return 0; fi          # le premier enregistrement est le principal
+    local real gd f m last idle_h ref head7 label
+    real="$(cd "$wt_path" 2>/dev/null && pwd -P)" || real=""
+    if (( wt_prunable )) || [[ -z "$real" ]]; then K_PRUNABLE=$((K_PRUNABLE + 1)); return 0; fi
+    if [[ "$real" == "$CUR_TOP" ]]; then K_CUR=$((K_CUR + 1)); return 0; fi
+    if (( wt_locked )); then K_LOCK=$((K_LOCK + 1)); return 0; fi
+    # Activité AVANT toute lecture d'état : `git status` peut rafraîchir l'index et rajeunir le worktree.
+    gd="$(git -C "$real" rev-parse --absolute-git-dir 2>/dev/null)" || gd=""
+    last=0
+    for f in "$gd/HEAD" "$gd/index" "$gd/logs/HEAD"; do
+      [[ -f "$f" ]] && { m="$(mtime_of "$f")"; (( m > last )) && last="$m"; }
+    done
+    idle_h=$(( (NOW - last) / 3600 ))
+    if (( idle_h < IDLE_MIN_H )); then K_RECENT=$((K_RECENT + 1)); return 0; fi
+    if [[ -n "$(git --no-optional-locks -C "$real" status --porcelain 2>/dev/null)" ]]; then
+      K_DIRTY=$((K_DIRTY + 1)); return 0
+    fi
+    ref="$wt_head"; [[ -n "$wt_branch" ]] && ref="$wt_branch"
+    if ! absorbed_by_any "$ref"; then K_UNMERGED=$((K_UNMERGED + 1)); return 0; fi
+    head7="$(printf '%s' "$wt_head" | cut -c1-7)"
+    label="${wt_branch:-detached}"
+    WT_SAFE_N=$((WT_SAFE_N + 1))
+    (( WT_SAFE_N <= MAX_CLEAN )) && \
+      WT_SAFE_LINES="${WT_SAFE_LINES}WORKTREE_SAFE: $real head=$head7 branch=$label idle_h=$idle_h cmd=git worktree remove $(shq "$real")"$'\n'
+    if [[ -n "$wt_branch" ]]; then
+      SAFE_AFTER="${SAFE_AFTER}${wt_branch}|"
+      AFTER_N=$((AFTER_N + 1))
+      AFTER_LINES="${AFTER_LINES}BRANCH_AFTER_WORKTREE: $wt_branch after=$real cmd=git branch -D $(shq "$wt_branch")"$'\n'
+    fi
+  }
+
+  while IFS= read -r line; do
+    case "$line" in
+      "worktree "*) wt_path="${line#worktree }"; wt_head=""; wt_branch=""; wt_locked=0; wt_prunable=0 ;;
+      "HEAD "*)     wt_head="${line#HEAD }" ;;
+      "branch "*)   wt_branch="${line#branch refs/heads/}" ;;
+      locked*)      wt_locked=1 ;;
+      prunable*)    wt_prunable=1 ;;
+      "")           process_worktree; wt_path="" ;;
+    esac
+  done < <(git worktree list --porcelain 2>/dev/null; echo)
+
+  # Branches : absorbées (squash-merge, preuve de contenu) et mergées (ancêtres de la base).
+  BR_SAFE_LINES=""; BR_SAFE_N=0
+  add_safe_branch() { # $1=nom $2=-d|-D
+    BR_SAFE_N=$((BR_SAFE_N + 1))
+    (( BR_SAFE_N <= MAX_CLEAN )) && BR_SAFE_LINES="${BR_SAFE_LINES}BRANCH_SAFE: $1 cmd=git branch $2 $(shq "$1")"$'\n'
+  }
+  while IFS= read -r l; do
+    [[ -z "$l" ]] && continue
+    b="$(printf '%s' "$l" | awk '{print $3}')"
+    [[ "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
+    case "$l" in
+      *"worktree_held=1"*) continue ;;                 # tenue par un worktree : voir BRANCH_AFTER_WORKTREE
+      *) add_safe_branch "$b" -D ;;
+    esac
+  done <<< "$ABSORBED_FACTS"
+  MERGED="$(git branch --merged "$BASE" 2>/dev/null | grep -v '^[*+]' | sed 's/^ *//' || true)"
+  while IFS= read -r b; do
+    [[ -z "$b" || "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
+    add_safe_branch "$b" -d
+  done <<< "$MERGED"
+  # Une branche tenue par un worktree GARDÉ n'est pas listée du tout (elle reste tenue).
+  # Une branche tenue par un worktree SÛR n'est proposée qu'après lui (AFTER_LINES) : son contenu
+  # est déjà prouvé dans la base, par la preuve même qui a rendu le worktree sûr.
+
+  shown_of() { # $1=affichées $2=total → total nu, ou affichées/total quand le plafond coupe
+    if (( $1 < $2 )); then echo "$1/$2"; else echo "$2"; fi
+  }
+  WT_SHOWN=$WT_SAFE_N; (( WT_SHOWN > MAX_CLEAN )) && WT_SHOWN=$MAX_CLEAN
+  BR_SHOWN=$BR_SAFE_N; (( BR_SHOWN > MAX_CLEAN )) && BR_SHOWN=$MAX_CLEAN
+
+  echo "# ezk-archive cleanup v1 (read-only)"
+  echo "BASE: $BASE"
+  printf '%s' "$WT_SAFE_LINES"
+  printf '%s' "$BR_SAFE_LINES"
+  printf "%s" "$AFTER_LINES"
+  echo "KEPT: current=$K_CUR locked=$K_LOCK recent=$K_RECENT dirty=$K_DIRTY unmerged=$K_UNMERGED prunable=$K_PRUNABLE"
+  echo "CLEANUP: worktrees_safe=$(shown_of "$WT_SHOWN" "$WT_SAFE_N") branches_safe=$(shown_of "$BR_SHOWN" "$BR_SAFE_N") branches_after_worktree=$AFTER_N"
+  echo "NOTE: rien n'a ete supprime ; chaque commande se lance seule, apres accord du PO ; les orphelins se purgent par git worktree prune"
+  echo "--- END ---"
+  exit 0
+fi
+
 # ==============================================================================
 # ÉMISSION
 # ==============================================================================
 if [[ "$MODE" == "gate" ]]; then
-  echo "# ezk-archive gate v1"
-  if [[ "$VERDICT" == "CLEAN" ]]; then echo "VERDICT: CLEAN"; else echo "VERDICT: DIRTY points=$POINTS"; fi
-  echo "REPO: $REPO"
-  echo "BRANCH: $CUR   BASE: $BASE"
-  echo "P1_TREE: $P1_STATE modified=$P1_MOD untracked=$P1_UNTRACKED stash=$P1_STASH"
-  echo "P2_PENDING: $P2_STATE pr_open=$P2_PR_OPEN branch_real=$P2_REAL branch_absorbed=$P2_ABSORBED worktree_prunable=$P2_WT_PRUNABLE"
-  P3_TAIL=""; [[ "$P3_STATE" == "CLEAN" ]] && P3_TAIL=" all_shipped=1"
-  echo "P3_BACKLOG: $P3_STATE declared=${P3_DECLARED:-none}$P3_TAIL"
-  echo "P4_ADR: $P4_STATE committed=$P4_COMMITTED uncommitted=$P4_UNCOMMITTED"
-  echo "MAINSYNC: $MAINSYNC_STATE ahead=$MS_AHEAD behind=$MS_BEHIND stale_ref=$MS_STALE"
-  echo "HANDOFF: entries=$H_ENTRIES lines=$H_LINES bytes=$H_BYTES gitignored=$H_IGNORED rotate=$H_ROTATE"
-  echo "NOTE: points 5 (memoire) / 6 (handoff) / 7 (verdict) ne sont PAS couverts par ce gate"
+  # Les faits d'abord : les compteurs de l'en-tête doivent dire ce que la liste montre vraiment.
   ALL_FACTS=""
   for tag in P1 P2 P3 P4 MAINSYNC; do
     [[ -n "$ONLY_POINT" && "$tag" != "P$ONLY_POINT" ]] && continue
     eval "f=\$FACTS_$tag"
     [[ -n "$f" ]] && ALL_FACTS="${ALL_FACTS}$(bounded "$f")"$'\n'
   done
+  FACT_OUT=""
   if [[ -n "$ALL_FACTS" ]]; then
     N_ALL="$(printf '%s' "$ALL_FACTS" | grep -c '')"
     if (( N_ALL > MAX_TOTAL_FACTS )); then
-      printf '%s' "$ALL_FACTS" | head -n "$MAX_TOTAL_FACTS"
-      echo "[...] +$(( N_ALL - MAX_TOTAL_FACTS )) lignes omises (borne MAX_TOTAL_FACTS=$MAX_TOTAL_FACTS) — relancer avec --point <n> pour le detail"
+      FACT_OUT="$(printf '%s' "$ALL_FACTS" | head -n "$MAX_TOTAL_FACTS")"$'\n'"[...] +$(( N_ALL - MAX_TOTAL_FACTS )) lignes omises (borne MAX_TOTAL_FACTS=$MAX_TOTAL_FACTS) — relancer avec --point <n> pour le detail"
     else
-      printf '%s' "$ALL_FACTS"
+      FACT_OUT="$(printf '%s' "$ALL_FACTS")"
     fi
   fi
+  # Un compte à côté d'une liste tronquée ment (règle human-facing-lisibility, fiche 20260923220631498) :
+  # quand le plafond coupe les faits du point 2, le compteur dit `affichées/total`. Un point propre
+  # n'émet aucune liste : son compteur nu n'a rien à côté de lui, il reste nu.
+  p2_count() { # $1=motif des lignes de fait  $2=total
+    local shown
+    if [[ -z "$FACTS_P2" ]] || { [[ -n "$ONLY_POINT" ]] && [[ "$ONLY_POINT" != "2" ]]; }; then echo "$2"; return; fi
+    shown="$(printf '%s\n' "$FACT_OUT" | grep -c -E "$1" || true)"
+    if (( shown < $2 )); then echo "$shown/$2"; else echo "$2"; fi
+  }
+  C_PR="$(p2_count '^\[P2\] pr ' "$P2_PR_OPEN")"
+  C_REAL="$(p2_count '^\[P2\] branch REAL ' "$P2_REAL")"
+  C_ABS="$(p2_count '^\[P2\] branch ABSORBED ' "$P2_ABSORBED")"
+  C_WTP="$(p2_count '^\[P2\] worktree PRUNABLE ' "$P2_WT_PRUNABLE")"
+
+  echo "# ezk-archive gate v1"
+  if [[ "$VERDICT" == "CLEAN" ]]; then echo "VERDICT: CLEAN"; else echo "VERDICT: DIRTY points=$POINTS"; fi
+  echo "$FASTPATH_LINE"
+  echo "REPO: $REPO"
+  echo "BRANCH: $CUR   BASE: $BASE"
+  echo "P1_TREE: $P1_STATE modified=$P1_MOD untracked=$P1_UNTRACKED stash=$P1_STASH"
+  echo "P2_PENDING: $P2_STATE pr_open=$C_PR branch_real=$C_REAL branch_absorbed=$C_ABS worktree_prunable=$C_WTP"
+  P3_TAIL=""; [[ "$P3_STATE" == "CLEAN" ]] && P3_TAIL=" all_shipped=1"
+  echo "P3_BACKLOG: $P3_STATE declared=${P3_DECLARED:-none}$P3_TAIL worked=$P3_WORKED"
+  echo "P4_ADR: $P4_STATE committed=$P4_COMMITTED uncommitted=$P4_UNCOMMITTED"
+  echo "MAINSYNC: $MAINSYNC_STATE ahead=$MS_AHEAD behind=$MS_BEHIND stale_ref=$MS_STALE"
+  echo "HANDOFF: entries=$H_ENTRIES lines=$H_LINES bytes=$H_BYTES gitignored=$H_IGNORED rotate=$H_ROTATE durable=$H_DURABLE"
+  echo "NOTE: points 5 (memoire) / 6 (handoff) / 7 (verdict) ne sont PAS couverts par ce gate"
+  [[ -n "$FACT_OUT" ]] && printf '%s\n' "$FACT_OUT"
   echo "--- END ---"
   exit 0
 fi
@@ -652,6 +860,9 @@ fi
 echo
 
 echo "## Note de handoff (fichier persistant)"
+if (( H_DURABLE == 0 )); then
+  echo "⚠ machine jetable (session cloud) : .claude/handoff.md ne survivra pas. \`handoff.sh durable\` en écrit une copie versionnée dans docs/sessions/ — à committer ET pousser avant de fermer."
+fi
 if (( H_IGNORED == 1 )); then
   echo "✓ $HANDOFF_FILE couvert par .gitignore."
 else
@@ -668,5 +879,12 @@ if [[ "$VERDICT" == "CLEAN" ]]; then
   echo "— VERDICT : CLEAN. Aucun point de contrôle en suspens."
 else
   echo "— VERDICT : DIRTY (points $POINTS). Voir ci-dessus."
+fi
+if [[ "$FASTPATH_LINE" == "FASTPATH: EMPTY"* ]]; then
+  echo "— voie rapide : rien à archiver (rien livré, rien travaillé, rien en suspens)."
+  [[ "$FASTPATH_LINE" == *other_worktrees_dirty=* ]] \
+    && echo "  mais d'autres worktrees ont des changements non commités (${FASTPATH_LINE##* }) : à regarder."
+else
+  echo "— voie rapide : non (${FASTPATH_LINE#FASTPATH: NO reason=})."
 fi
 echo "— fin du rapport read-only. Aucune modification effectuée."

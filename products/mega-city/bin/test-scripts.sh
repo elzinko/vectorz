@@ -21,23 +21,34 @@ SUITES=(
   "skills/ezk-archive/scripts/test-mainsync.sh"          # fiche 0088 — garde anti-faux-positif
   "skills/ezk-archive/scripts/test-handoff.sh"           # fiche 0088 — anneau FIFO du handoff
   "skills/ezk-archive/scripts/test-template-unicity.sh"  # fiche 0088 — gabarit non dupliqué
+  "skills/ezk-archive/scripts/test-fastpath.sh"          # fiche 20260904091853948 — voie rapide, compte juste, fiches travaillées, durable
+  "skills/ezk-archive/scripts/test-cleanup.sh"           # fiche 20260904091853948 — ménage : inventaire sûr, read-only
+  "skills/ezk-sprint/scripts/test-check-gate.sh"         # fiche 0090 — contrat du portier (= le dry-run de `start`, ADR-0054)
+  "skills/ezk-sprint/scripts/test-sprint-lifecycle.sh"   # fiche 20260930123438875 — start/close, check ≡ start --dry-run, la session reste à ezk-archive
   "bin/test-regen-backlog.sh"                            # ezk-backlog — régénération de l'index
+  "bin/test-portfolio.sh"                                # fiche 20260922160651394 — portfolio.sh lit par le loader (fiche-rows)
   "bin/test-regen-recipes.sh"                            # ezk-chef — régénération du livre de recettes (fiche 20260824185422122)
   "bin/test-ezk-chef-extract.sh"                         # ezk-chef extract — fiche shippée → brouillon de recette (fiche 20260824122629794)
   "bin/test-ezk-help.sh"                                 # /ezk-help — index de commandes généré (fiche 20260816131704335)
   "skills/ezk-backlog/scripts/test-mint-id.sh"           # ezk-backlog — id horodaté (fiche 0180)
   "skills/ezk-backlog/scripts/test-layout-version.sh"    # ezk-backlog — Skema layout version
+  "skills/ezk-backlog/scripts/test-apply-005.sh"         # fiche 20260823121712652 — migration 005 (retrait du champ ready:, dates préservées)
   "bin/test-check-links.sh"                              # fiche 0101 — sabotage du vérificateur de liens
   "bin/test-links-repo.sh"                               # fiche 0101 — liens réels du repo (mega-city + racine vectorz)
   "bin/test-check-adr-ids.sh"                            # sabotage du garde-fou de numérotation des ADR
   "bin/test-adr-ids-repo.sh"                             # numéros d'ADR réels du repo (aucune NOUVELLE collision)
   "bin/test-labo-cuisine.sh"                             # fiche 20260829123707100 — labo de cuisine (capture galères en session)
+  "bin/test-journal-add.sh"                              # fiche 20260904091853974 — journal des difficultés (capture indépendante, un fichier par session)
   "bin/test-ezk-chef-suggest.sh"                          # ezk-chef suggest — détecter les candidats-recette d'un sprint (fiche 20260831075615809)
   "bin/test-pr-evidence.sh"                              # fiche 20260902224608715 — capture/render/decide avant-après (ADR-0045)
   "skills/ezk-pr/scripts/test-check-pr-body.sh"          # fiche 20260902224608715 — --changed-files (ADR-0045)
   "bin/test-check-fiches.sh"                             # fiche 652 — bascule bloquante du validateur de statut (--strict)
   "skills/ezk-pr/scripts/test-refresh-worktrees.sh"      # merge-local-first (ADR-0052) — prédicat de sûreté D4
   "skills/ezk-pr/scripts/test-ship-merge.sh"             # merge-local-first (ADR-0052) — ship local vs remote, refus du chemin fantôme
+  "skills/ezk-scout/scripts/test-find-only-guard.sh"     # fiche 20260910165637000 — ezk-scout ne modifie rien (HEAD, arbre, refs, worktree)
+  "skills/ezk-scout/scripts/test-check-report.sh"        # fiche 20260910165637000 — forme du rapport de brouillons (comptes, bornes, garde)
+  "skills/ezk-scout/scripts/test-demo-app.sh"            # fiche 20260910165637000 — défauts connus de l'app de démonstration
+  "../../tools/launcher/test-dev-branch.sh"              # fiche 20260917162000501 — lanceur universel (projet-jouet : ports, arbres, arrêt ciblé)
 )
 
 FAILED=()

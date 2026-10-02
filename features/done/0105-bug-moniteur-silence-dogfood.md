@@ -7,7 +7,6 @@ epic:
 depends: ["0103", "0104"]
 labels: [supervision, dogfood, ux]
 status: shipped
-ready:
 pr: "resolved-by 0103+0104"
 created: 2026-07-29
 product: mega-city

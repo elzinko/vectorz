@@ -1,9 +1,11 @@
 ---
 id: 0075
-title: Curation des règles de persona/format d'écriture — règles lisibles humain+LLM, l'agent propose des extraits ciblés à valider
+title: "Règles de style d'écriture pour les articles"
 type: feature
 priority: P2
 product: mega-city
+labels: [article]
+milestone: parked
 status: idea
 pr:
 created: 2026-07-16
@@ -11,7 +13,7 @@ created: 2026-07-16
 
 > **⟳ Requalifiée 2026-08-24 (lot 4b, ADR-0039)** — Maître = la famille de règles d'écriture
 > `rules/documentation-guidelines/`, fondée par 0079 (shippé) et étendue par
-> [`20260824111001836`](20260824111001836_regle-clarte-atteint-tout-output-ezk.md) (P1). Étage
+> [`20260824111001836`](done/20260824111001836_regle-clarte-atteint-tout-output-ezk.md) (P1). Étage
 > **moteur** (rules/), avec override global→projet (motif profil/bundle). **Résidu réel à garder** : la
 > variabilité **persona/format** (voix, niveau, structure), l'**agent de curation** (propose des diffs à
 > valider), l'héritage — non couverts par 0079 (clarté seule). L'agent de curation se rattache à
@@ -68,3 +70,13 @@ vs « partout »), et le diff proposé indique clairement **quelle portée** il 
   vs skill/agent séparé ? format des règles ? mécanisme de proposition-validation
   d'extraits ?) et un product-brainstormer (cadrer le vrai besoin).
 - Origine : session samplerz 2026-07-16, retour user pendant le party mode article.
+
+
+## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
+
+> **Fiche EVOLVE** : partiellement livrée ou cadrage périmé — à rescoper au reliquat réel avant de la tirer.
+>
+> **Constat de l'audit** : 0079 shippé couvre la clarté ; résidu persona/format + agent curation → ezk-article.
+>
+> **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
+> ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).

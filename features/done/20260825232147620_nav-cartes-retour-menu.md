@@ -8,7 +8,6 @@ version:
 epic:
 labels: [ezk-map, ux]
 status: shipped
-ready: 2026-08-25
 pr: "#172"
 created: 2026-08-25
 ---
@@ -100,3 +99,5 @@ déroulant change de carte ; « ← Cartes » revient au menu.
   branche, bypass `?raw`, ordre du garde-fou de traversée) n'a pas de test d'intégration — les
   3 fonctions pures, elles, sont couvertes. Cohérent avec l'existant (la route `/` et le
   garde-fou n'en ont pas non plus). À fermer par un test serveur léger si on durcit.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-25 · ancien champ front-matter `ready:`, retiré en migration 005.

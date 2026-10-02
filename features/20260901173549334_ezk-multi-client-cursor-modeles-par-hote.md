@@ -4,12 +4,13 @@ title: "ezk multi-client : cap Cursor + modèle & effort configurables par hôte
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 status: idea
-ready:
 pr:
 created: 2026-09-01
+labels: [installation]
 ---
 
 **En clair.** On ne peut pas installer ezk dans Cursor, et le modèle épinglé

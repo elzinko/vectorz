@@ -4,7 +4,7 @@ title: article — la loi de Pareto dynamique (rollout à curseur : mesurer d'ab
 type: feature
 priority: P3
 product: mega-city
-milestone: articles
+milestone: parked
 labels: [article]
 status: idea
 pr:

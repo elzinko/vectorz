@@ -55,23 +55,16 @@ SLUG="${FICHE_BASENAME#"${FICHE_ID}"}"   # retire l'id en tête
 SLUG="${SLUG#[-_]}"                        # retire le séparateur (_ récent ou - legacy)
 SLUG="${SLUG%.md}"
 
-# ── front-matter mécanique (même idiome que regen-recipes.sh : awk, pas un parseur YAML) ──
-frontmatter() {
-  awk '
-    function unquote(s) { gsub(/^"|"$/, "", s); return s }
-    BEGIN { infm=0 }
-    /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-    infm==1 {
-      if ($0 ~ /^title:/) { sub(/^title:[[:space:]]*/, ""); title=unquote($0) }
-      if ($0 ~ /^pr:/)    { sub(/^pr:[[:space:]]*/, "");    pr=unquote($0) }
-    }
-    END { printf "%s\x1f%s\n", title, pr }
-  ' "$1"
-}
+# ── front-matter de la fiche source : LU par le loader testé (règle development/fiche-read-via-loader),
+# puis celui de la recette ÉMIS par la lib YAML (règle development/yaml-emission-via-lib) — plus d'awk
+# ni d'echo pour le front-matter. Les deux passent par un CLI tsx de mega-city.
+MC="$(cd "$_SCRIPT_DIR/.." && pwd)"
+TSX="$MC/node_modules/.bin/tsx"
+[ -x "$TSX" ] || { echo "erreur: tsx introuvable (${TSX}) — lancer « pnpm install »" >&2; exit 1; }
 SEP=$'\x1f'
-fm_line="$(frontmatter "$FICHE")"
-TITLE="${fm_line%%${SEP}*}"
-PR="${fm_line#*${SEP}}"
+# Une ligne : id, title, type, priority, status, pr, created, … (séparés par \x1f).
+fiche_row="$("$TSX" "$MC/bin/fiche-rows.ts" "$FICHE")"
+IFS="$SEP" read -r _ TITLE _ _ _ PR _ <<< "$fiche_row"
 
 # ── section extraction : corps entre `## <nom>` et le prochain `## ` (ou EOF) ─────────────
 section() { # $1=fichier $2=nom-de-section
@@ -131,6 +124,40 @@ ${labo_body}
 done <<< "$(labo_sessions "$FICHE_ID")"
 PRELIM_LABO="${PRELIM_LABO%$'\n\n'}"
 
+# ── journal des difficultés (fiche 20260904091853974) : docs/journal/<date>-<slug>.md ──────────
+# Capture INDÉPENDANTE du labo, écrite pendant le dev par journal-add.sh : ici on la LIT seulement.
+# On ne lit que les fichiers préfixés d'une date (README.md et autres docs du dossier restent
+# ignorés) et que les entrées dont le titre est `## [FICHE_ID] …` (borne : id exact, pas préfixe).
+journal_files() {
+  local id="$1" f
+  [ -d docs/journal ] || return 0
+  for f in docs/journal/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.md; do
+    [ -e "$f" ] || continue
+    grep -q "^## \[${id}\] " "$f" && printf '%s\n' "$f"
+  done | LC_ALL=C sort
+}
+# Entrées de l'id, titres rétrogradés en `###` pour ne pas casser les `##` de la recette.
+journal_body() { # $1=fichier $2=id
+  awk -v id="$2" '
+    /^## / { keep = (index($0, "## [" id "] ") == 1); if (keep) sub(/^## /, "### ") }
+    keep { print }
+  ' "$1" | awk 'NF { started=1 } started { buf[++n]=$0 } END { last=n; while (last>0 && buf[last]=="") last--; for (i=1;i<=last;i++) print buf[i] }'
+}
+
+PRELIM_JOURNAL=""
+while IFS= read -r jf; do
+  [ -n "$jf" ] || continue
+  PRELIM_JOURNAL="${PRELIM_JOURNAL}Source : \`${jf}\` (journal des difficultés, entrées taguées ${FICHE_ID}).
+
+$(journal_body "$jf" "$FICHE_ID")
+
+"
+done <<< "$(journal_files "$FICHE_ID")"
+PRELIM_JOURNAL="${PRELIM_JOURNAL%$'\n\n'}"
+if [ -n "$PRELIM_JOURNAL" ]; then
+  PRELIM_LABO="${PRELIM_LABO:+${PRELIM_LABO}$'\n\n'}${PRELIM_JOURNAL}"
+fi
+
 NEW_ID="$(bash "$MINT_ID")"
 TODAY="$(date -u +%Y-%m-%d)"
 DEST="recipes/${SLUG}.md"
@@ -141,19 +168,11 @@ PR_NOTE="TODO(jugement) — pas de PR dans le front-matter de la fiche source"
 
 SOURCE_NOTE="TODO(jugement) — racine de l'implémentation non dérivable mécaniquement ; voir ${PR_NOTE}"
 
+# Front-matter émis AVANT d'ouvrir DEST : un échec de l'émetteur ne laisse pas de fichier tronqué.
+FRONT_MATTER="$("$TSX" "$MC/bin/recipe-frontmatter.ts" --id "$NEW_ID" --title "$TITLE" --source "$SOURCE_NOTE" --today "$TODAY")"
+
 {
-  echo '---'
-  echo "id: \"${NEW_ID}\""
-  echo "title: \"${TITLE//\"/\'}\""
-  echo 'makes: "TODO(jugement) — ce que cette recette fabrique (une ligne)"'
-  echo "source: \"${SOURCE_NOTE}\""
-  echo 'composes: [] # TODO(jugement) — rules composées (idiome ADR-0012/0025)'
-  echo 'profile: # TODO(jugement) — profil référencé, si pertinent'
-  echo 'status: draft'
-  echo 'home: central'
-  echo "created: ${TODAY}"
-  echo "updated: ${TODAY}"
-  echo '---'
+  printf '%s\n' "$FRONT_MATTER"
   echo
   echo '## En clair'
   echo

@@ -40,7 +40,7 @@ elements:
     implemente_par: [ezk-backlog:ready]
     note: >-
       Le gate bloquant qui promeut une fiche en « tirable » : problème / valeur /
-      critères vérifiés, date posée en front-matter. Maison, assumé (ADR-0016).
+      critères vérifiés, fiche passée en `status: ready` (la colonne). Maison, assumé (ADR-0016).
 
   - id: planning
     type: ceremonie
@@ -69,10 +69,12 @@ elements:
     nom: Le run (« sprint » maison)
     scrum: Sprint (le conteneur)
     etat: adapte
-    implemente_par: [ezk-sprint:run, ezk-sprint:check, ezk-archive:run]
+    implemente_par: [ezk-sprint:start, ezk-sprint:close, ezk-sprint:run, ezk-sprint:check, ezk-archive:run]
     note: >-
-      Un run MONO-FICHE sans timebox (1 fiche = 1 branche = 1 PR), pas le conteneur du
-      Guide. Ouverture par `ezk-sprint:check` (ex-ezk-start, absorbé), clôture de session par `ezk-archive:run`
+      Un lot de stories (1 story = 1 branche = 1 PR) qui produit un incrément, SANS timebox
+      (écart connu). Ouvert par `ezk-sprint:start`, fermé par `ezk-sprint:close` qui scelle
+      l'incrément (ADR-0054). `check` = `start --dry-run` (le portier en lecture seule, ex-ezk-start) ;
+      `run` = le cycle complet. La clôture de SESSION est un autre étage : `ezk-archive:run`
       (hygiène d'hôte, hors scrum).
 
   - id: review
@@ -115,9 +117,11 @@ elements:
     etat: adapte
     implemente_par: [ezk-sprint]
     note: >-
-      Dégénéré : `SPRINT.md` éphémère, un seul item (le run est mono-fiche). Le panel a
-      constaté sa corruption par l'entrelacement de chantiers — pièce au dossier de la
-      vue d'avancement.
+      `SPRINT.md` éphémère (gitignoré) : le LOT du sprint, une ligne par story, une PR
+      chacune (`[ ]` ouverte · `[x]` livrée · `[~]` reportée, ADR-0054). `ezk-sprint:start`
+      l'écrit, `ezk-sprint:close` le scelle ; les ids des stories non livrées restent dans
+      les incréments scellés de la session. Le panel a constaté sa corruption par
+      l'entrelacement de chantiers — pièce au dossier de la vue d'avancement.
 
   - id: increment
     type: artefact
@@ -157,8 +161,10 @@ elements:
     etat: assume
     implemente_par: []
     note: >-
-      Assumé ≡ la fiche tirée (le run est mono-fiche, son but EST la fiche) — verdict
-      du panel du 2026-08-23 (B-5). Pas de chantier tant que le run reste mono-fiche.
+      Assumé ≡ l'objectif donné à l'ouverture (`ezk-sprint:start --objective`, titre de
+      `SPRINT.md`) : une ligne libre, pas un artefact validé. Avant le lot (ADR-0054), un
+      run = une seule fiche et son but ÉTAIT la fiche tirée (verdict du panel du
+      2026-08-23, B-5) : ce cadre n'existe plus, le sprint porte plusieurs stories.
 
   # ── Rôles ───────────────────────────────────────────────────
   - id: po

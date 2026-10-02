@@ -91,7 +91,7 @@ par ex. le set `waitlist:emails` se remplit à chaque écriture.
 ## Statut de cette recette
 
 Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
-[`20260824185422122`](../features/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
+[`20260824185422122`](../features/done/20260824185422122_recette-artefact-premier-rang-et-gardien.md)).
 **`status: draft`**, deux écarts connus, **signalés au PO plutôt que corrigés d'office** (la
 consigne de normalisation n'est pas une réécriture) :
 - **Code inline** dans « Le code (adaptateur réutilisable) » : déroge à la doctrine entonnoir

@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#32"
 created: 2026-07-13
 ---
@@ -112,3 +111,5 @@ Skill `ezk-article` (candidat), pilotable par sous-commandes (help, new, revise,
      lier l'ADR PUBLIC. ⚠️ Dépendance : suppose une **surface publique** pour les ADR
      quand le repo code est privé (cf. samplerz `public_content_annex`) ; tant qu'elle
      n'existe pas, formuler sans référence nue ni lien mort.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

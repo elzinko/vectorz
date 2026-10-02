@@ -7,7 +7,6 @@ epic:
 depends: ["0168"]
 labels: [supervision, test, llm, dogfood]
 status: shipped
-ready: 2026-08-21
 pr: main@1f4a0da
 created: 2026-07-30
 product: mega-city
@@ -90,3 +89,5 @@ toujours.
 - **Groom 2026-08-21** : DoR complète sur la brique 1 (problème, valeur, 4 critères observables, comment
   vérifier). Tamponnée `ready: 2026-08-21`.
 - Voisines : [[0099]] (vérifier les directives d'émission), [0105], [0104].
+
+> **Historique** — DoR (`ready`) passée le 2026-08-21 · ancien champ front-matter `ready:`, retiré en migration 005.

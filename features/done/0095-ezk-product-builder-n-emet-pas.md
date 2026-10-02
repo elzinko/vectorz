@@ -6,8 +6,7 @@ priority: P1
 product: mega-city
 epic:
 status: shipped
-ready: 2026-07-26
-pr: #55
+pr: "#55"
 created: 2026-07-25
 ---
 
@@ -81,3 +80,5 @@ product-builders qui ne se comportent pas pareil sur l'émission est un piège e
   compter les mentions — finding Codex). Parenté avec **0066** : deux findings bloquants
   de la revue étaient des bugs d'exécution dans du texte que rien ne compile
   (`gate_id` accentué refusé par le runtime ; « 4 checkpoints » pour une table qui en a 5).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-26 · ancien champ front-matter `ready:`, retiré en migration 005.

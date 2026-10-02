@@ -9,12 +9,18 @@ import { checkComposition, checkRoles } from '../core/composition.js';
 import type { ResolvedProfile, Skill } from '../domain/model.js';
 import type { Catalog } from '../loaders/catalog.js';
 
-function skill(id: string, composes?: string[], composesExternal?: string[]): Skill {
+function skill(
+  id: string,
+  composes?: string[],
+  composesExternal?: string[],
+  delegates?: string[],
+): Skill {
   return {
     id,
     content: `# ${id}`,
     ...(composes ? { composes } : {}),
     ...(composesExternal ? { composesExternal } : {}),
+    ...(delegates ? { delegates } : {}),
   };
 }
 
@@ -53,6 +59,32 @@ describe('checkComposition', () => {
     const catalog = catalogOf([a]);
     const resolved = resolvedOf([a]);
     expect(checkComposition(resolved, catalog)).toEqual([]);
+  });
+
+  it('delegates : une délégation absente du profil ne déclenche JAMAIS de warning', () => {
+    const a = skill('A', undefined, undefined, ['B']);
+    const catalog = catalogOf([a]); // B absent du catalogue ET du profil
+    expect(checkComposition(resolvedOf([a]), catalog)).toEqual([]);
+  });
+
+  it("delegates : n'est pas suivi par la fermeture (les deps d'un délégué absent ne sont pas évaluées)", () => {
+    const a = skill('A', undefined, undefined, ['B']);
+    const b = skill('B', ['C']); // B composerait C, mais B n'est pas dans le profil
+    const catalog = catalogOf([a, b]);
+    expect(checkComposition(resolvedOf([a]), catalog)).toEqual([]);
+  });
+
+  it('delegates : un délégué PRÉSENT au profil reste jugé comme tout skill (ses composes comptent)', () => {
+    const a = skill('A', undefined, undefined, ['B']);
+    const b = skill('B', ['C']);
+    const catalog = catalogOf([a, b]);
+    expect(checkComposition(resolvedOf([a, b]), catalog)).toEqual([{ from: 'B', missing: 'C' }]);
+  });
+
+  it('composes + delegates côte à côte : seul le composes absent avertit', () => {
+    const a = skill('A', ['B'], undefined, ['C']);
+    const catalog = catalogOf([a]); // B et C absents
+    expect(checkComposition(resolvedOf([a]), catalog)).toEqual([{ from: 'A', missing: 'B' }]);
   });
 
   it('cas sain : toutes les dépendances composées sont présentes → []', () => {

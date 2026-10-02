@@ -1,9 +1,11 @@
 ---
 id: 0067
-title: ezk-ezk contract-aware — génère un skill/agent + sa carte d'émission séparée (conforme au contrat)
+title: "Générer des skills qui émettent les événements de supervision"
 type: feature
 priority: P2
 product: mega-city
+labels: [supervision]
+milestone: parked
 status: idea
 pr:
 created: 2026-07-16

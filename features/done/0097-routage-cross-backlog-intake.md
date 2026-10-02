@@ -8,7 +8,6 @@ epic:
 depends: []
 labels: [enabler]
 status: shipped
-ready: 2026-07-26
 pr: "#53"
 created: 2026-07-26
 ---
@@ -62,3 +61,5 @@ soit la liste — `0094` en tête. La boucle « mon plan = ce que fait l'outil �
   déjà livrée). Ici : **le trait d'union** entre les deux.
 - Anti-doublon vérifié : `done/0048` (champ `product`) fermée « sans objet » — la distinction
   vient de l'**emplacement**, pas d'un champ ; cette fiche s'appuie dessus, ne la rouvre pas.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-26 · ancien champ front-matter `ready:`, retiré en migration 005.

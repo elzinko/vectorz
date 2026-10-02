@@ -6,7 +6,6 @@ priority: P2
 product: mega-city
 epic:
 status: shipped
-ready: 2026-07-26
 pr: "#56"
 created: 2026-07-25
 ---
@@ -206,3 +205,5 @@ Un finding (fixture sans `-b main`) était déjà corrigé au moment de la revue
   qu'on apprend à ignorer — même mécanique de perte de confiance), mémoire projet
   `vectorz-pieges-outillage` items 9-10 (test décisif merge-tree, code retour), handoff
   `.claude/handoff.md` entrées des 2026-07-24 et 2026-07-25 (les deux corrections).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-26 · ancien champ front-matter `ready:`, retiré en migration 005.

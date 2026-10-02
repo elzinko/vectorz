@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: mega-city
 status: shipped
-ready: 2026-07-17
 pr: "#30"
 created: 2026-07-17
 ---
@@ -63,3 +62,5 @@ A13 regen paramétré + migration complète).
   bloquant pour les rituels (le champ est utile en lecture avant même le rendu).
 - Le script `regen-backlog.sh` actuel ignore les champs inconnus : poser `epic:` dans
   des fiches avant l'implémentation du rendu est déjà sûr.
+
+> **Historique** — DoR (`ready`) passée le 2026-07-17 · ancien champ front-matter `ready:`, retiré en migration 005.

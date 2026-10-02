@@ -15,7 +15,7 @@
  * top N est de fait composé des fiches récentes.
  *
  * Isolé de `plan-view-data` (bloc + marqueurs disjoints) pour NE PAS toucher la vue Plan
- * livrée. La coquille est `bin/regen-plan-delta.ts`.
+ * livrée. La colle I/O est `src/io/derived-views.ts` (fichier de données non committé, ADR-0055).
  */
 import { TERMINAUX } from './avancement-data.js';
 import type { Fiche } from '../loaders/fiches.js';
@@ -102,12 +102,12 @@ export function buildPlanDelta(
   return { recent, offPlanCount, n };
 }
 
-// --- Bord pour l'onglet Plan de `diagrams/avancement/board.html` (marqueurs disjoints) ---
+// --- Bloc de données de l'encart écart-plan (dans `board.data.js`, non committé — ADR-0055) ---
 
 export const PLAN_DELTA_BEGIN = '/*ezk-plan-delta:begin*/';
 export const PLAN_DELTA_END = '/*ezk-plan-delta:end*/';
 
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à poser dans board.html. */
+/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `board.data.js`. */
 export function buildPlanDeltaBlock(
   planMd: string,
   fiches: Fiche[],
@@ -117,16 +117,4 @@ export function buildPlanDeltaBlock(
   // porteuse) ; le RENDU reste protégé séparément par `textContent` côté board.html.
   const json = JSON.stringify(buildPlanDelta(planMd, fiches, n), null, 1).replace(/</g, '\\u003c');
   return `${PLAN_DELTA_BEGIN}\nwindow.EZK_PLAN_DELTA = ${json};\n${PLAN_DELTA_END}`;
-}
-
-/** Pose `block` entre les marqueurs `ezk-plan-delta:*` (qui DOIVENT déjà exister). */
-export function upsertPlanDeltaBlock(text: string, block: string): string {
-  const beginIdx = text.indexOf(PLAN_DELTA_BEGIN);
-  const endIdx = text.indexOf(PLAN_DELTA_END);
-  if (beginIdx === -1 || endIdx === -1 || endIdx < beginIdx) {
-    throw new Error(
-      `marqueurs ${PLAN_DELTA_BEGIN} … ${PLAN_DELTA_END} introuvables dans board.html`,
-    );
-  }
-  return text.slice(0, beginIdx) + block + text.slice(endIdx + PLAN_DELTA_END.length);
 }

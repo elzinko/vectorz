@@ -8,7 +8,6 @@ version:
 epic:
 depends: []
 status: shipped
-ready: 2026-08-25
 pr: "#192"
 created: 2026-08-24
 ---
@@ -59,7 +58,7 @@ marqué ⚙️.
 que la machine vérifie seule**. Le PO veut faire **évoluer le format par itérations** — d'où une
 idée sœur à instruire : un **schéma markdown déclaratif + validateur mécanique**, transverse
 (fiches, ADR, recettes). Fiche
-[`20260826112620281`](../20260826112620281_schema-markdown-declaratif-validateur.md).
+[`20260826112620281`](20260826112620281_schema-markdown-declaratif-validateur.md).
 
 **Cobaye naturel = le cas R2 / Vercel / domaines.** La chaîne « créer un R2 + déployer un site
 Vercel + rattacher les domaines **dev / staging / prod** » est le premier vrai cas. R2 + site +
@@ -187,7 +186,7 @@ Cette fiche définit **l'OBJET** (format recette + livre + gardien). Les autres 
 - **repos froids** → `ezk-recipy` ([0147](../0147-ezk-recipy-mvp.md)) ;
 - **cas d'usage** : `ezk-cowork` ([0155](../0155-ezk-cowork-scaffold-audit-contrat-cowork.md)),
   [recette-site 540](../20260821172716540_recette-site-produit-regles-activables.md), et « pack de
-  pratiques projet » ([0177](../0177-pack-pratiques-projet-portables.md)).
+  pratiques projet » ([0177](0177-pack-pratiques-projet-portables.md)).
 
 Eux produisent/consomment, **celle-ci définit**. Pas de doublon.
 
@@ -234,3 +233,5 @@ déjà pour garder une famille d'artefacts-données.
   (source `~/git/google-mcp-multi-account/`) — à normaliser à l'étape 5.
 - Origine : session du 2026-08-24 (brainstorm pasteriz → le pattern cowork a fait émerger « recette »).
 - Grooming : 2026-08-25, panel `ezk-architect` (décisions D1–D5).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-25 · ancien champ front-matter `ready:`, retiré en migration 005.

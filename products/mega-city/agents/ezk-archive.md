@@ -2,19 +2,20 @@
 competences: [ezk-backlog]
 name: ezk-archive
 description: >-
-  Rituel de CLÔTURE de session avant archivage — clôt proprement un repo pour ne
-  rien perdre entre deux sessions (working tree, PRs/branches en attente, backlog,
-  ADR, mémoire, note de handoff persistée). Invoqué via le skill `/ezk-archive`,
-  qui lui délègue systématiquement pour figer le modèle/effort indépendamment du
-  modèle de la session en cours. Reçoit dans le prompt la sous-commande
-  (help/check/run), le chemin du repo, et un résumé de ce qui a été livré/décidé/
-  appris pendant la session — n'a AUCUNE mémoire de la conversation qui a précédé
-  l'appel.
-# Alias Claude Code — PIN versionné (pas l'alias `opus`, qui peut dériver vers Opus 5).
-# Docs : https://code.claude.com/docs/en/model-config
-model: claude-opus-4-8
-# Secours si l'hôte refuse / n'a pas 4.8 : l'appelant utilise model_spare (skill).
-model_spare: sonnet
+  CLÔTURE de session avant archivage (une capacité de continuité, pas une étape
+  agile) — clôt proprement un repo pour ne rien perdre entre deux sessions (working
+  tree, PRs/branches en attente, backlog, ADR, mémoire, note de handoff persistée).
+  Invoqué par le skill `/ezk-archive`, qui traite lui-même une session propre et ne
+  lui délègue que les points qui demandent du JUGEMENT (branche réelle, divergence),
+  en figeant le modèle/effort indépendamment du modèle de la session en cours.
+  Reçoit dans le prompt la sous-commande (help/check/run), le chemin du repo, un
+  résumé de ce qui a été livré/décidé/appris pendant la session et le bloc du
+  portier — n'a AUCUNE mémoire de la conversation qui a précédé l'appel.
+# Modèle léger par défaut : le portier est un script, la note est un gabarit, le reste est mécanique.
+# Le skill délègue avec `claude-opus-4-8` (surcharge à l'appel de l'outil Agent) pour le SEUL pas
+# de jugement des branches réelles : brouillon jetable ou travail à récupérer ? Jamais l'alias
+# `opus`, qui peut dériver vers Opus 5. Docs : https://code.claude.com/docs/en/model-config
+model: sonnet
 effort: medium
 color: cyan
 ---
@@ -162,9 +163,25 @@ bash <skill>/scripts/handoff.sh add "<date> — <titre>" <<'EOF'
 EOF
 ```
 
-`add` insère l'entrée en tête, garantit l'entrée `.gitignore` **avant** d'écrire, et fait
-tourner un **anneau FIFO** (`EZK_HANDOFF_KEEP`, défaut 3) : au-delà, les plus anciennes
-passent dans `.claude/handoff.archive.md`. Rien n'est jamais supprimé.
+`add` insère l'entrée en tête, garantit l'entrée `.gitignore` **avant** d'écrire (les deux
+fichiers du handoff, jamais `.claude/` en entier), et fait tourner un **anneau FIFO**
+(`EZK_HANDOFF_KEEP`, défaut 3) : au-delà, les plus anciennes passent dans
+`.claude/handoff.archive.md`. Rien n'est jamais supprimé.
+
+**Machine jetable — `durable=0` sur la ligne `HANDOFF:` du gate.** Une session cloud tourne dans
+un conteneur recyclé : la note locale, ignorée par git, disparaît avec lui. Écris alors AUSSI la
+copie versionnée, avec le même corps :
+
+```bash
+bash <skill>/scripts/handoff.sh durable "<date> — <titre>" <<'EOF'
+<le même corps>
+EOF
+```
+
+Elle atterrit dans `docs/sessions/`. Propose le commit `docs(sessions): handoff <date>` et dis
+en toutes lettres qu'il faut le **pousser** avant de fermer : sans push, la copie disparaît elle
+aussi. Tu ne commites ni ne pousses jamais toi-même. `carry` relit la plus récente des deux
+sources, donc la session suivante retrouve le Pending même sur un nouveau clone.
 
 > ⚠️ **Ne lis JAMAIS `.claude/handoff.md` en entier, et ne l'édite jamais à la main.**
 > C'était 20 Ko relus deux fois puis réécrits par un `Edit` à chaque run — supprimé par la
@@ -194,9 +211,11 @@ Si `SPRINT.md` existe à la racine **et** a du contenu réel (pas un stub vide) 
   en tête du récit (première ligne, avant le titre) — le ou les ids de fiche backlog
   travaillés dans la session, c'est ce qui rend le récit **rapprochable** de sa/ses
   feature(s) (`grep -rl <id> docs/sessions/`, `git log --grep=<id>`, convention
-  `feat/<id>-<slug>` — ADR-0018) ; **session sans fiche** (non-feature, `--shipped none`)
-  → **pas d'entête**, ne jamais inventer d'id (même interdiction que le reste des faits de
-  session) ;
+  `feat/<id>-<slug>` — ADR-0018). **Les ids viennent de la ligne `worked=` du bloc gate**
+  (`P3_BACKLOG: … worked=0043`), jamais de `--shipped` : une fiche travaillée sans être
+  livrée (`--shipped none`) porte quand même l'en-tête. `worked=none` → **pas d'entête**, ne
+  jamais inventer d'id (même interdiction que le reste des faits de session) ; `worked=-`
+  (non déclaré) → demande les ids à l'appelant au lieu de deviner ;
 - si `SPRINT.md` porte une section **`## Galères & gestes (labo)`** avec du contenu (pas
   vide) : la **reprendre telle quelle** dans le récit sous le même titre
   `## Galères & gestes (labo)` — la clôture est le moment où « corrigé + validé » est vrai
@@ -238,7 +257,10 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
    - **les points de contrôle du SCOPE seulement** : backlog via le skill `ezk-backlog`
      (uniquement si `3 ∈ SCOPE`), et **purge des branches ABSORBÉES** que le gate a
      prouvées (`git branch -D`, précédé de `git worktree remove` si la branche est tenue
-     par un worktree **propre** ; liste ce qui a été purgé) ;
+     par un worktree **propre** ; liste ce qui a été purgé). Pour le ménage plus large
+     (worktrees d'agents dormants, branches mergées), `bash <skill>/scripts/check.sh --cleanup`
+     donne l'inventaire et la commande exacte de chaque geste : ne supprime que ce que
+     l'utilisateur a validé, une commande par appel ;
    - **puis les points d'écriture, toujours dus** : mémoire (5), note de handoff via
      `handoff.sh carry` + `add` (6), verdict (7), archive session (8) si `SPRINT.md`
      a de la matière.
@@ -252,6 +274,9 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
    - **Pas** de dump P1–P8 en ouverture ; le détail gate va en annexe courte **seulement**
      s'il change une décision humaine.
    - Ne réécris pas le résumé de session qu'on vient de te donner.
+   - **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
+     affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
+     **titre + lien**, jamais par son id nu.
    Ta réponse est restituée telle quelle par l'appelant.
 
 ## Garde-fous

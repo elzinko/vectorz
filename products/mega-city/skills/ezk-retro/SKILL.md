@@ -1,5 +1,6 @@
 ---
 composes: [ezk-backlog, ezk-chef]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio]
 name: ezk-retro
 argument-hint: "[help|run|impose|retire]"
 description: >-
@@ -15,7 +16,9 @@ description: >-
   (ezk-architect, ezk-qa, ezk-dev, ezk-pm) —, les passe à un JUGE DE COHÉRENCE (chief-judge
   / ezk-steward : doublons ? contradictions avec les règles existantes ?), puis
   range SOUS CONTRÔLE DU PO : les non-règles vers ezk-backlog, les règles validées
-  vers rules/ · bundles/ · DoD (toujours réversibles). Pilotable par sous-commandes :
+  vers rules/ · bundles/ · DoD (toujours réversibles). Laisse toujours une CAPTURE
+  lisible et extractible dans docs/captures/ (qui a proposé quoi, ce qui est écarté,
+  ce que le PO a tranché). Pilotable par sous-commandes :
   help, run, impose, retire. Le PO garde la main — AUCUNE auto-application. N'EST
   PAS l'auto-amélioration MESURÉE qui se déclenche sur des chiffres (ça, c'est le
   contrat d'améliorabilité, Sujet B / ADR-030) ; n'est pas ezk-sprint ni
@@ -110,10 +113,20 @@ et tombe dans **une** catégorie :
   qu'on décide de capitaliser → future fiche « créer la recette X ». **On juge la pertinence
   au cas par cas** : ce n'est pas parce que `suggest` propose qu'on retient.
 
-> **Proposer d'abord, ne pas créer.** Chaque candidat-recette figure dans le **rapport de
-> rétro** avec sa **case d'acceptation** — `⏳` (en attente) → `✅` (retenu) / `❌` (écarté) —,
-> **jamais pré-remplie**. Le rapport *propose* ; la création de la fiche attend ton feu vert
-> au temps 5. Un candidat `⏳` ou `❌` ne crée **rien**.
+> **Proposer d'abord, ne pas créer.** Chaque proposition typée — règle, feature, action, spike,
+> candidat-recette — figure dans le **rapport de rétro** avec sa **case d'acceptation** — `⏳`
+> (en attente) → `✅` (retenu) / `❌` (écarté) —, **jamais pré-remplie**. Le rapport *propose* ;
+> la création de la fiche ou le rangement de la règle attend ton feu vert au temps 5. Une
+> proposition `⏳` ou `❌` ne crée **rien**.
+
+> **Cible d'une règle.** Une proposition `règle` dit **qui** elle concerne : `global`,
+> `agent:<nom>` ou `skill:<nom>`. Sans cible, elle est refusée comme une règle sans symptôme.
+> Les autres types n'ont pas besoin de cible.
+
+> **Quand proposer une `feature`.** Le biais « discipline d'abord » reste un garde-fou, pas un
+> couvercle. Quand un symptôme est **structurel** — il revient, et une règle de discipline ne
+> suffit pas à l'éteindre — propose une `feature` plutôt qu'une règle de plus. Une feature
+> écartée se **trace** : la capture dit pourquoi.
 
 > **Garde-fou dur** : une proposition de type `règle` **sans symptôme OU sans critère
 > mesurable est refusée** (on ne range pas une règle qui ne répond pas à un vrai besoin et
@@ -133,6 +146,17 @@ toute restitution au PO (propositions, avis du juge, résumé de rangement) ouvr
 bloc **« En clair »** (≤ 3 phrases : symptôme vécu → proposition en mots simples → effet
 concret). Codes internes (`R1`, `DoR`, jargon inventé) hors ouverture — annexe/glossaire
 seulement. On écrit **au PO**, pas entre agents.
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
+
+**La capture (obligatoire).** Chaque rétro laisse un fichier
+`docs/captures/AAAA-MM-JJ-retro-<slug>.md`, écrit **sans que le PO le demande**. Pars du gabarit
+[`references/capture-template.md`](references/capture-template.md), source unique : un en-tête YAML
+qui liste les décisions, puis le récit lisible. Pose chaque action en `⏳`. Quand le PO tranche, tu
+passes à `✅` ou `❌` avec sa décision et la date — jamais avant. Valide le fichier avant la PR :
+`pnpm --dir products/mega-city retro:captures --check docs/captures/<fichier>.md`. La PR de
+rangement **cite la capture** dans son corps. Pas de capture, pas de rangement.
 
 Puis le rangement :
 - **non-règles** (`action`/`feature`/`spike`) → backlog via `/ezk-backlog add` (avec le
@@ -145,9 +169,16 @@ Puis le rangement :
   pas la recette** : c'est le sprint N+1 qui la construit (`ezk-chef extract`, ADR-0013) ;
 - **règles validées** → dans la **structure existante**, jamais un nouveau silo :
   `rules/<catégorie>/<slug>.md` (format maison : front-matter `id / kind / level(MUST|SHOULD)
-  / enforcements[]`), rattachées à un `bundle` si besoin, ou intégrées au **DoD/DoR**.
+  / enforcements[]`) **et** un bundle (`bundles/<catégorie>.yml`, sinon la règle reste orpheline :
+  aucun profil ne la déploie ; relève alors le compteur de `expand.test.ts`), ou intégrées au
+  **DoD/DoR**.
+  **Selon la cible** : le bundle déploie le texte et vaut pour tout le profil, il ne porte pas la
+  portée. La portée se déclare par le **lien explicite** de la cible. `agent:<nom>` : l'id de la
+  règle s'ajoute à `interactions:` de l'agent. `skill:<nom>` : à `applies:` du skill (verbe
+  « applique », [ADR-0040](../../docs/adr/0040-modele-fichiers-ezk-compile-schema-valide.md)).
+  `global` : pas de lien à ajouter.
 - **réversibilité** : toute règle rangée est **retirable** (`retire`) — suppression documentée
-  avec sa raison. Le PO **valide, peut imposer, peut retirer**.
+  avec sa raison, lien de la cible compris. Le PO **valide, peut imposer, peut retirer**.
 - **carnet de rétro** : chaque note lue au temps 1 est **marquée dans la capture** (traitée, ou
   écartée + raison) puis **déplacée** — `git mv docs/retro-notes/<note>.md docs/retro-notes/traitees/`
   — sous feu vert PO, comme le reste. Une note écartée est déplacée aussi (avec sa raison) : elle ne
@@ -167,7 +198,8 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
   (temps 5). Une règle imposée porte tout de même un **critère mesurable** (sinon on ne saura
   ni la prouver ni la retirer).
 - **`retire <réf-règle>`** — retire une règle. **Réversible et tracé** : supprime le fichier
-  `rules/<cat>/<slug>.md` (ou l'entrée de `bundle`) et **consigne la raison dans le message de
+  `rules/<cat>/<slug>.md` (ou l'entrée de `bundle`), retire son id de `interactions:` ou
+  `applies:` s'il y figure, et **consigne la raison dans le message de
   commit** (`chore(rules): retire <slug> — <raison>`) ; l'archive git conserve la version
   retirée (réintroduction = décision PO). *Post-MVP : un `rules/CHANGELOG.md` daté si le volume
   le justifie.*
@@ -177,8 +209,10 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 - **Juge de cohérence** : fiche [0008 chief-judge](../../../../features/0113-chief-judge.md) + agent `ezk-steward`.
 - **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
+- **Capture de la rétro** : gabarit [`references/capture-template.md`](references/capture-template.md)
+  et extracteur `retro:captures` (pattern gabarit + extracteur + rendu, fiche 0080).
 - **Détection des candidats-recette** : skill [`ezk-chef`](../ezk-chef/) (`suggest`, lecture
-  seule) ; l'archivage durable du sprint reste à [`ezk-archive`](../ezk-archive/) (seul graveur
+  seule) ; l'archivage durable du sprint reste à `ezk-archive` (seul graveur
   de `docs/sessions/`).
 - **Agents de la cérémonie** : `ezk-architect`, `ezk-qa`, `ezk-reviewer`, `ezk-dev`, `ezk-pm`.
 
@@ -194,6 +228,8 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 ## Garde-fous
 
 - **Le PO garde la main** : aucune auto-application ; toute règle passe par sa validation.
+- **Pas de rétro sans capture** (temps 5), et **la case du PO n'est jamais pré-remplie** : un
+  `✅` ou un `❌` porte sa décision et sa date, un `⏳` n'en porte aucune. Le script le vérifie.
 - **Pas de règle sans symptôme + critère mesurable** (refus dur, étape 3).
 - **Réversibilité** : une règle est toujours retirable (`retire`), c'est le pendant de
   « construire → prouver → retirer ».

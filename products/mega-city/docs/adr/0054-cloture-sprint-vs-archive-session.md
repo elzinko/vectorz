@@ -1,14 +1,17 @@
 # ADR 0054 — Clôture de sprint vs archive de session ; cérémonies hors sprint
 
-**Statut :** Proposé
+**Statut :** Accepté
 **Date :** 2026-09-30
+**Ratifié le :** 2026-10-01, au build du POC (fiche 20260930123438875)
 **Deciders :** PO (opérateur) — brainstorming produit + mini-panel (architecte + scrum master), puis **grooming panel du 2026-09-30** (architecte + PO/juge) : Option A + découpage en 3 fiches
 
+> Matière de la fiche [20260930123438875](../../../../features/done/20260930123438875_cycle-vie-sprint-session-ceremonies.md).
+> Ratifié à l'étape Archi du sprint qui a construit le POC (`start` et `close`). Ce que le POC ne livre pas est rangé en « Suite » plus bas.
+>
 > **Découpé en 3 fiches** au grooming panel du 2026-09-30 (Option A) :
 > [1 — le lot dans ezk-backlog](../../../../features/20260930194219046_ezk-backlog-lot.md) ·
-> [2 — verbes ezk-sprint start/close](../../../../features/20260930123438875_cycle-vie-sprint-session-ceremonies.md) ·
+> [2 — verbes ezk-sprint start/close](../../../../features/done/20260930123438875_cycle-vie-sprint-session-ceremonies.md), livrée par #275 ·
 > [3 — ezk-product-build orchestrateur de session](../../../../features/20260930194219068_ezk-product-build-orchestrateur-session.md).
-> À ratifier (`Statut : Accepté`) à l'étape Archi du sprint qui construira la **fiche 1**.
 
 ## En clair
 
@@ -90,11 +93,11 @@ des **mécanismes/hygiène**, pas des cérémonies.
 - `ezk-sprint close` est légitimé (cadence sprint) — le NO-GO du mini-panel est levé par changement
   de prémisse, tracé ici.
 
-**Coûts (ce n'est PAS un simple renommage — à traiter au build)**
+**Coûts (ce n'est PAS un simple renommage — à traiter au build ; état du POC dans « Périmètre du POC et Suite »)**
 - **Fiche 1** — `ezk-backlog` gagne le **lot** (sélectionner/figer N fiches ready) + la définition
-  d'incrément. `ezk-sprint start` **consomme** ce lot (fondation, construite en premier).
-- **Fiche 2** — `ezk-sprint start`/`close` au niveau lot ; `run` = `start → N stories → close`
-  (chaque story sa PR) ; `close` scelle l'incrément. `SPRINT.md` suit le **lot** courant.
+  d'incrément. `ezk-sprint start` **consomme** ce lot (fondation de la suite).
+- **Fiche 2** — livrée par #275 : `ezk-sprint start`/`close` au niveau lot (`start --lot <ids>`),
+  `close` scelle l'incrément, `SPRINT.md` suit le **lot** courant.
 - **Fiche 3** — `ezk-product-build` **reposé** en orchestrateur de session (Option A) : il enchaîne
   des **sprints** (lots), checkpoint **entre incréments**.
 - **Rétro-compat : un mapping PAR verbe** — `check` et `run` ne peuvent PAS aliaser `start` à
@@ -107,10 +110,43 @@ des **mécanismes/hygiène**, pas des cérémonies.
   Alias transitoires le temps de la bascule (précédent
   [ADR-0053](0053-check-ready-devient-review-defaut-autonome.md) : renommage avec alias).
 
-**Tranché au grooming panel (2026-09-30)** — voir Décision 6-8
-- Objet « sprint » persistant ? **NON** (question a) — `SPRINT.md` + pointeur.
-- Frontière planning ⟷ `ezk-backlog` ? **Le lot vit dans `ezk-backlog`** (question b), `ezk-sprint` le consomme.
-- Contradiction `run` ↔ product-build ? **Option A** — `ezk-sprint` possède la boucle du lot.
+## Tranché au POC
+
+Les deux questions laissées ouvertes à la proposition sont closes pour le POC. Chacune reste révisable.
+
+- **Objet « sprint » persistant, ou SPRINT.md suffit-il ?** SPRINT.md suffit. Il est ignoré par git. Il porte le lot, les notes, la section « Galères & gestes (labo) » et une ligne par incrément scellé. Un nouveau `start` reporte ces trois dernières sections. Un objet persistant (id, incrément listé) ne se justifie que si cette approche montre ses limites.
+- **Frontière entre le planning et `ezk-backlog`.** Le planning, c'est `ezk-backlog` : `review`, `groom` et `next --ready-only`, composés par l'intake de `start`. Il n'y a pas de verbe `planning`.
+
+Le grooming panel du 2026-09-30 a tranché les mêmes questions dans le même sens (Décisions 6 à 8). Il ajoute un point : **sélectionner et figer** le lot (N fiches ready) devient une capacité d'`ezk-backlog`, que `start --lot` consomme. C'est la fiche 1. Le repositionnement d'`ezk-product-build`, rangé en « Suite » plus bas, est la fiche 3.
+
+Cinq précisions sont nées du build.
+
+- **Checkpoint.** Il reste avant chaque merge (étape 9), donc par story. `close` ne pose pas de seconde question « on continue ? » : il rend la main. Pour un lot d'une story, le déroulé est celui d'avant.
+- **Deux `close`.** `ezk-archive close` (alias de `run`) reste et ferme la session. `ezk-sprint close` ferme le sprint. Les deux SKILL.md se distinguent l'un de l'autre.
+- **Story reportée.** Elle prend `[~]` dans le lot et retourne au backlog. Seule une case `[ ]` bloque `close`. Un sprint sans aucune story livrée n'a pas d'incrément : `close` refuse.
+- **Portier en ALERT.** `start` refuse. Seul `--override "<raison>"` passe outre, et la raison est journalisée dans SPRINT.md.
+- **Fin anormale.** Un sprint où rien n'est livré, ou que le PO arrête, ne peut pas rester ouvert : il bloquerait tout nouveau `start`. `close --abandon "<raison>"` le ferme sans incrément. La raison est journalisée et le savoir de session reste. Le verbe `stop` reste réservé à une annulation plus riche, si le besoin apparaît.
+
+## Périmètre du POC et Suite
+
+**Livré par le POC.** `ezk-sprint start` et `close` (script `sprint.sh` et son DoD bash). `check` ≡ `start --dry-run`. `run` ≡ cycle complet. Le partage des rôles avec `ezk-archive`, qui ne change pas. La carte de méthode à jour. Cet ADR accepté.
+
+**En Suite.**
+- `ezk-product-build` repositionné en orchestrateur de la boucle de session (planning → sprint → rétro → planning), avec un seul checkpoint inter-sprint.
+- Lots de plusieurs stories de bout en bout : un checkpoint par sprint plutôt que par story.
+- Panel adverse complet (architecte, scrum master, PO/juge) sur ce repositionnement.
+- Date de retrait des alias `check` et `run`, et sort de l'alias `close` d'`ezk-archive`.
+
+## Nommage
+
+Cette section absorbe la fiche de nommage [20260903085150321](../../../../features/done/20260903085150321_nommage-commandes-scrum-safe.md), devenue `superseded`.
+
+**Règle.** On prend le mot Scrum là où Scrum en a un : story, sprint, incrément, planning, rétro. Pour ce que Scrum n'a pas, la persistance d'outil, on garde le terme réel de l'outil : **session**, au sens de Claude Code. SAFe n'est emprunté que pour un étage au-dessus du sprint, et seulement s'il faut le nommer.
+
+**Ce qui en découle.**
+- Les verbes du sprint sont des verbes d'événement Scrum : `start` et `close`. `stop` reste réservé à l'annulation, qui est une fin anormale.
+- La séparation tient : `ezk-product-build` **compose** `ezk-sprint` et n'en devient jamais un mode.
+- Le nom d'`ezk-product-build` n'est pas tranché ici. Fait nouveau : l'**incrément** est maintenant la sortie de chaque `ezk-sprint close`. Appeler `ezk-product-build` « `ezk-increment` » (penchant du PO au 2026-09-03) mettrait deux sens dans le même mot. `ezk-train` (SAFe) ou le statu quo restent ouverts. La décision est en Suite, avec le repositionnement.
 
 ## Alternatives écartées
 

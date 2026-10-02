@@ -4,6 +4,7 @@ title: article — Skema : versionner une skill LLM avec des migrations markdown
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 status: idea
 labels: [article]
 pr:

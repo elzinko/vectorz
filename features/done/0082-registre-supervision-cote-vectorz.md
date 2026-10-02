@@ -6,7 +6,6 @@ priority: P1
 product: vectorz
 epic:
 status: shipped
-ready: 2026-07-30
 pr: "#70"
 created: 2026-07-19
 ---
@@ -145,3 +144,5 @@ daemon/moniteur côté siège, pas une skill mega-city.
 - Réfs : fiche 0154 (kit émetteur, shippé — invariant anti-falsification), 0162 (BMAD,
   2ᵉ méthode), 0078 (`.mcpb`, la clé Desktop), 0061 (method/seat projection, shipped),
   ADR-021 (couplages interdits), ADR-0001 (le script range, l'humain décide).
+
+> **Historique** — DoR (`ready`) passée le 2026-07-30 · ancien champ front-matter `ready:`, retiré en migration 005.

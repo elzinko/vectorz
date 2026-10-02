@@ -1,0 +1,272 @@
+# Manifeste de la commande `ezk` (ADR-0046, option B : un routeur mince).
+#
+# Une entrée = une commande de terminal : `ezk <domaine> <verbe>`. Le routeur (bin/ezk.ts) lit
+# ce fichier, choisit le script et lui passe les arguments tels quels. Aucune logique ici,
+# aucune dans le routeur : les scripts gardent la leur.
+#
+#   domain / verb   le nom de la commande (verb absent = le domaine EST la commande)
+#   run             le script (chemin depuis products/mega-city) + ses arguments fixes ;
+#                   {root} = la racine du dépôt de la méthode ; "…" garde un argument entier
+#   summary         UNE ligne, en clair : c'est ce que `ezk help` affiche
+#   root            fixed (défaut) = lit ou écrit les fichiers du dépôt de la méthode : le script
+#                   part de la RACINE du dépôt, d'où qu'on lance la commande dans ce dépôt ;
+#                   none = marche de n'importe quel dossier, et part du dossier de l'utilisateur
+#   project         true = la commande travaille sur un PROJET désigné (ses fiches, son contrat de
+#                   règles) et n'écrit jamais dans le dépôt de la méthode — au plus dans le projet visé.
+#                   Son script sait lire le projet qu'on désigne : `ezk --root <projet> …` ou la
+#                   variable EZK_ROOT (le routeur la passe au script). Sans cette marque, une commande
+#                   qui écrit dans le dépôt de la méthode refuse tout autre dépôt, et ignore EZK_ROOT.
+#   deprecated      nouveau nom : l'entrée est un ancien nom, gardé et signalé
+#
+# Le test src/__tests__/ezk-manifest.test.ts vérifie que tout script de bin/ exposé en script
+# pnpm figure ici, ou dans `internal` plus bas avec sa raison.
+commands:
+  # --- law : la loi et l'équipe déployées par lawgiver ---
+  - domain: law
+    verb: bind
+    run: bin/lawgiver.ts bind
+    summary: Déploie un profil (loi, équipe) dans un projet.
+    root: none
+  - domain: law
+    verb: bind-global
+    run: bin/lawgiver.ts bind-global
+    summary: Déploie un profil (skills, agents, loi) dans ~/.claude.
+    root: none
+  - domain: law
+    verb: capture
+    run: bin/lawgiver.ts capture
+    summary: Range une règle, un skill ou un agent au catalogue.
+  - domain: law
+    verb: status
+    run: bin/lawgiver.ts status
+    summary: Dit ce qui est déployé pour un profil (lien, copie, absent), sans rien écrire.
+    root: none
+  - domain: law
+    verb: doctor
+    run: bin/lawgiver.ts doctor
+    summary: Dit ce qui est déclaré mais pas installé (code 1 s'il y a un écart), sans rien écrire.
+    root: none
+
+  # --- board : le tableau kanban ---
+  - domain: board
+    verb: check
+    run: bin/check-planning-views.ts
+    summary: Signale une fiche livrée encore présentée comme à faire dans le plan.
+  - domain: board
+    verb: show
+    run: bin/avancement.ts
+    summary: Affiche le board d'avancement en texte (--root <projet> pour un autre projet).
+    project: true
+
+  # --- backlog : les fiches ---
+  - domain: backlog
+    verb: check
+    run: bin/check-fiches.ts
+    summary: Vérifie que les fiches respectent le schéma (--root <projet> pour un autre projet).
+    project: true
+  - domain: backlog
+    verb: regen
+    run: bin/regen-backlog.sh {root} "Backlog features & bugs — vectorz"
+    summary: Régénère l'index features/BACKLOG.md du dépôt.
+  - domain: backlog
+    verb: portfolio
+    run: bin/portfolio.sh {root}
+    summary: Régénère la vue portfolio par produit (PORTFOLIO.md).
+  - domain: backlog
+    verb: plan-head
+    run: bin/plan-head.ts
+    summary: Imprime la tête réelle du plan (--root <projet> pour un autre projet).
+    project: true
+  - domain: backlog
+    verb: plan-order
+    run: bin/plan-order.ts
+    summary: Imprime l'ordre des fiches du plan.
+  - domain: backlog
+    verb: ship
+    run: bin/ship-fiche.ts
+    summary: Livre une ou plusieurs fiches en une transaction (liens recalés, BACKLOG régénéré).
+  - domain: backlog
+    verb: apply
+    run: bin/backlog-apply.ts
+    summary: Applique une fusion ou un découpage de fiches décidé par le PO.
+  - domain: backlog
+    verb: aggregate
+    run: bin/backlog-aggregate.ts
+    summary: Regroupe des fiches (cœur d'« ezk-backlog aggregate »).
+  - domain: backlog
+    verb: version
+    run: bin/backlog-version.ts
+    summary: Dit où en est chaque version, contrôle un lot, clôt une version livrée.
+
+  # --- rules : les règles propres à un projet (.vectorz/, ADR-0050) ---
+  # Le projet visé : --root, EZK_ROOT, sinon la racine git du dossier courant. Elles n'écrivent que
+  # dans ce projet (.claude/rules/vectorz-project.md), jamais dans la méthode.
+  - domain: rules
+    verb: check
+    run: bin/ezk-rules.ts check
+    summary: Contrôle le contrat de règles du projet (.vectorz/rules.yml), code 1 si erreur.
+    root: none
+    project: true
+  - domain: rules
+    verb: show
+    run: bin/ezk-rules.ts show
+    summary: Montre le jeu de règles effectif du projet, avec la garantie de chacune.
+    root: none
+    project: true
+  - domain: rules
+    verb: apply
+    run: bin/ezk-rules.ts apply
+    summary: Écrit le jeu de règles du projet dans .claude/rules/ pour que Claude Code le charge.
+    root: none
+    project: true
+
+  # --- dor : la « prête » propre à un projet (.vectorz/dor.yml, ADR-0016 amendé) ---
+  # Le projet visé : --root, EZK_ROOT, sinon la racine git du dossier courant. Elles ne font que lire.
+  - domain: dor
+    verb: show
+    run: bin/ezk-dor.ts show
+    summary: Montre les critères de « prête » que le projet ajoute au socle (.vectorz/dor.yml).
+    root: none
+    project: true
+  - domain: dor
+    verb: check
+    run: bin/ezk-dor.ts check
+    summary: Dit si une fiche tient les critères de « prête » du projet, code 1 sinon.
+    root: none
+    project: true
+  - domain: dor
+    verb: health
+    run: bin/ezk-dor.ts health
+    summary: Compte les fiches prêtes et pas prêtes, code 1 sous le seuil de lot du projet.
+    root: none
+    project: true
+
+  # --- graph : le graphe compilé de la méthode ---
+  - domain: graph
+    verb: compile
+    run: bin/graph-compile.ts
+    summary: Émet le graphe compilé de la méthode.
+  - domain: graph
+    verb: check
+    run: bin/ezk-graph.ts
+    summary: Compile le graphe et valide ses liens.
+  - domain: graph
+    verb: query
+    run: bin/graph-query.ts
+    summary: Interroge le graphe compilé.
+  - domain: graph
+    verb: composes
+    run: bin/regen-composes-graph.ts
+    summary: Régénère le graphe « composes » des skills (Mermaid).
+
+  # --- evidence, pr, review, ci : la livraison ---
+  - domain: evidence
+    run: bin/pr-evidence.sh
+    summary: Capture, rend et tranche les preuves avant/après d'une PR (capture, render, decide).
+  - domain: pr
+    verb: check-body
+    run: skills/ezk-pr/scripts/check-pr-body.sh
+    summary: Vérifie le corps d'une PR, lu sur l'entrée standard.
+  - domain: pr
+    verb: emit-local
+    run: bin/pr-emit-local.ts
+    summary: Écrit le corps d'une PR dans un fichier local, sans GitHub.
+  - domain: review
+    verb: emit
+    run: bin/review-emit.ts
+    summary: Écrit une revue de PR au format markdown.
+  - domain: ci
+    verb: conso
+    run: bin/ci-conso.ts
+    summary: Affiche la consommation GitHub Actions du mois.
+  - domain: run
+    verb: context
+    run: bin/run-context.ts
+    summary: Affiche le contexte d'un run auto et son contrat en trois lignes.
+  - domain: run
+    verb: report
+    run: bin/run-report.ts
+    summary: Rend le bilan de fin de run, une ligne par fiche, avec HEAD et les jetons.
+  - domain: sprint
+    verb: report
+    run: bin/sprint-report.ts
+    summary: Collecte le rapport de sprint (durée, jetons, indicateurs).
+  - domain: retro
+    verb: captures
+    run: bin/retro-captures.ts
+    summary: Liste les décisions des rétros passées, ou vérifie une capture (--check).
+
+  # --- docs : contrôles de liens et de numéros ---
+  - domain: docs
+    verb: check-links
+    run: bin/check-links.sh {root} features docs/adr docs/captures
+    summary: Vérifie les liens markdown relatifs du dépôt (features, docs/adr, docs/captures).
+  - domain: docs
+    verb: check-adr-ids
+    run: bin/check-adr-ids.sh {root}
+    summary: Vérifie qu'aucun numéro d'ADR n'est pris deux fois (--next donne le prochain).
+
+  # --- le tableau de bord de la méthode (ex « ezk:map ») ---
+  # Il SERT les pages de la méthode (diagrams/) et calcule leurs données depuis les fiches du projet
+  # désigné (--root, EZK_ROOT ; par défaut la méthode). Il ne les écrit pas — sauf UNE route, le
+  # pouce 👍/👎 d'une fiche (features/reviews/verdicts/ du projet, ADR-0057). Il marche de n'importe quel dossier.
+  - domain: dashboard
+    run: bin/ezk-map.ts
+    summary: Ouvre le tableau de bord dans le navigateur (--root <projet> pour un autre projet).
+    root: none
+    project: true
+  - domain: map
+    run: bin/ezk-map.ts
+    summary: Ancien nom du tableau de bord.
+    root: none
+    project: true
+    deprecated: dashboard
+
+  # --- sessions, config, vues générées, supervision ---
+  - domain: sessions
+    run: bin/ezk-sessions.ts
+    summary: Cockpit des sessions Claude Code (qui travaille sur quoi).
+  - domain: config
+    run: bin/ezk-config.ts
+    summary: Lit et pilote les capacités du plugin github (.vectorz/config.yml).
+  - domain: views
+    verb: regen
+    run: bin/views-regen.ts
+    summary: Régénère toutes les vues générées hors git (board, pilotage, runs, portfolio).
+  - domain: views
+    verb: map-data
+    run: bin/views-regen.ts
+    summary: Ancien nom de « views regen » (la carte se construit avec les autres vues).
+    deprecated: views regen
+  - domain: supervision
+    verb: link
+    run: bin/supervision-link.ts
+    summary: Branche l'émetteur de supervision sur un projet Claude Code.
+  - domain: supervision
+    verb: doctor
+    run: bin/supervision-doctor.ts
+    summary: Liste, en lecture seule, les projets du registre sans ancrage de supervision.
+  - domain: supervision
+    verb: probe
+    run: bin/supervision-probe.ts
+    summary: Prouve vite qu'un projet est réellement supervisé.
+  - domain: supervision
+    verb: analyze
+    run: bin/supervision-analyze.ts
+    summary: Post-mortem d'un run à partir du journal et du transcript.
+  - domain: supervision
+    verb: abandon
+    run: bin/supervision-abandon.ts
+    summary: Abandonne un run orphelin identifié par son run_id.
+  - domain: supervision
+    verb: registry-add
+    run: bin/supervision-registry-add.ts
+    summary: Ajoute un projet au registre du siège.
+
+# Scripts de bin/ exposés en script pnpm, volontairement hors du routeur.
+# (Les test-*.sh sont des tests : jamais des commandes.)
+internal:
+  - script: bin/ezk.ts
+    reason: le routeur lui-même (script pnpm « ezk »)
+  - script: bin/ezk-help.ts
+    reason: bibliothèque de « ezk help » (liste des skills de chat) ; l'ancien « pnpm ezk:help » marche toujours

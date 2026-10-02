@@ -4,11 +4,11 @@ title: BacklogStore — port de persistance agnostique (md/git · GitHub · Jira
 type: feature
 priority: P3
 product: mega-city
+milestone: parked
 epic:
 depends: []
 labels: [r&d, article]
 status: idea
-ready:
 pr:
 created: 2026-07-25
 ---

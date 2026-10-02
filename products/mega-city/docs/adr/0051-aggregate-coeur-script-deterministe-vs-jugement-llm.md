@@ -7,7 +7,7 @@
 **Portée :** ce ADR grave DEUX coutures de la sous-commande `ezk-backlog aggregate` — (1) où
 passe la frontière code-déterministe ↔ jugement-LLM, et (2) qui, de `review` ou `aggregate`,
 possède le dédoublonnage profond. Il ne traite PAS l'**application** des fusions/splits (statuts
-`merged`/`split`), gated sur la fiche [`20260823121712652`](../../../../features/20260823121712652_modele-statut-kanban-schema-valide.md).
+`merged`/`split`), gated sur la fiche [`20260823121712652`](../../../../features/done/20260823121712652_modele-statut-kanban-schema-valide.md).
 
 ## En clair
 
@@ -124,3 +124,17 @@ flowchart LR
 
 **Neutres**
 - `depends:` non parsé : le cœur ne l'utilise pas ; l'ajouter plus tard n'invalide pas cet ADR.
+
+## Suite — le geste d'application et le moteur `llm` (2026-10-01, fiche [`20260910231201744`](../../../../features/done/20260910231201744_aggregate-apply-merged-split-moteur-llm.md))
+
+La « gate dure » du §3 est levée : les statuts `merged` et `split` sont dans le schéma depuis la fiche
+[`20260823121712652`](../../../../features/done/20260823121712652_modele-statut-kanban-schema-valide.md).
+Deux gestes s'ajoutent **sans changer la couture** de cet ADR :
+
+- **Appliquer** = un bin séparé, `backlog:apply merge|split`. `aggregate` reste en lecture seule. Le bin
+  réutilise la transaction de `ship` (liens recalés, `PLAN.md`, `git mv`, retour arrière) et pose la
+  provenance dans les deux sens : `merged_into` / `merged_from`, `split_into` / `split_from`.
+  `fiches:check` en contrôle la réciprocité.
+- **Moteur `llm`** = toujours le playbook : l'agent juge. Le code n'en garde que le **contrat** : un
+  dossier à juger, un fichier de propositions **validé** (id inventé refusé, rejets listés, jamais de
+  repli silencieux) et le croisement avec le moteur `script`. Aucun appel LLM dans le code.

@@ -5,7 +5,6 @@ type: feature
 priority: P0
 product: cop1
 status: shipped
-ready: 2026-08-02
 pr: "#89"
 github: "#86"
 created: 2026-08-01
@@ -121,3 +120,5 @@ Feature: Interdiction de modifier l'identité git globale depuis les agents/skil
   smoke normalise les continuations `\` et détecte `git -C … config --global`.
 - Hors scope : changer l'identité humaine globale ; rewrite de commits historiques
   hors incident muti déjà traité.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-02 · ancien champ front-matter `ready:`, retiré en migration 005.

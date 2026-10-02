@@ -5,8 +5,12 @@
 # + feature-template.md. Idempotent : n'écrase pas un roadmap/ existant ni un
 # features/ déjà peuplé (sauf regen de BACKLOG si demandé).
 #
-# Skema : refuse de half-migrer un layout v1 (README « Index auto-généré ») —
-# propose apply-002 après OK utilisateur (pas de split-brain README+BACKLOG).
+# Skema : refuse de half-migrer un layout v1 (`layout_version` 1, ou README « Index
+# auto-généré » SANS marqueur : le marqueur prime) — propose apply-002 après OK
+# utilisateur (pas de split-brain README+BACKLOG).
+#
+# Codes de sortie : 0 ok · 1 racine inexistante · 2 layout v1 (migration 002 requise) ·
+# 3 gabarit de référence (templates/feature-template.md) introuvable.
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -21,6 +25,8 @@ FEATURES="$ROOT/features"
 CHECK="$SKILL_DIR/scripts/check-layout-version.sh"
 RESOLVE="$SKILL_DIR/scripts/resolve-regen-backlog.sh"
 SKILL_VERSION="$(tr -d '[:space:]' < "$SKILL_DIR/migrations/VERSION")"
+# UNE seule source pour le squelette de fiche : le gabarit du skill (fiche 20260918114726706).
+TEMPLATE_REF="$SKILL_DIR/templates/feature-template.md"
 
 installed_layout() {
   # Lit layout_version réel du projet (via check) — pas le VERSION skill.
@@ -38,14 +44,24 @@ if [[ -d "$ROOT/roadmap" ]]; then
   exit 0
 fi
 
+# Pas de repli embarqué : sans la référence on échoue (code 3, distinct du 2 « migration requise »)
+# avant d'avoir créé quoi que ce soit.
+if [[ ! -f "$TEMPLATE_REF" ]]; then
+  echo "erreur: gabarit de référence introuvable: $TEMPLATE_REF" >&2
+  exit 3
+fi
+
 mkdir -p "$FEATURES/done"
 
 # Legacy v1 : ne pas créer BACKLOG à côté d'un index README — propose migration.
-if [[ -f "$FEATURES/README.md" ]] && grep -q 'Index auto-généré' "$FEATURES/README.md" 2>/dev/null; then
+# La version vient d'UNE seule source, check-layout-version.sh : le marqueur `layout_version`
+# du front-matter PRIME sur la mention « Index auto-généré » (fiche 20260813122510737).
+# Un README déjà en v2+ qui garde cette mention n'est donc PAS classé v1.
+if [[ "$(installed_layout)" -eq 1 ]]; then
   out="$("$CHECK" "$ROOT")"
   echo "$out"
   cat <<EOF
-init: layout v1 détecté (features/README.md = index auto-généré).
+init: layout v1 détecté (features/README.md : layout_version 1, ou index auto-généré sans marqueur).
 STATUS=behind — ne crée PAS BACKLOG.md (évite un split-brain README+BACKLOG).
 
 Après OK utilisateur, appliquer la migration 002 :
@@ -62,49 +78,14 @@ if [[ ! -f "$FEATURES/README.md" ]]; then
   echo "créé features/README.md (guide, layout_version=${SKILL_VERSION})"
 fi
 
-# Template fiche
+# Template fiche — copié tel quel depuis la référence. Un gabarit local existant n'est JAMAIS
+# réécrit (il peut porter des réglages du projet) : on signale l'écart et la commande qui l'aligne.
 if [[ ! -f "$FEATURES/feature-template.md" ]]; then
-  if [[ -f "$SKILL_DIR/templates/feature-template.md" ]]; then
-    cp "$SKILL_DIR/templates/feature-template.md" "$FEATURES/feature-template.md"
-  else
-    # Fallback minimal si le template n'est pas encore dans la skill
-    cat > "$FEATURES/feature-template.md" <<'EOF'
----
-# id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
-id: "0000"
-title: <titre court et parlant>
-type: feature # feature | bug | refactor | chore | epic
-priority: P2 # P0 | P1 | P2 | P3
-product: # obligatoire dans un monorepo — sinon omettre
-epic:
-status: idea # idea | ready | in-progress | blocked | shipped | superseded
-ready:
-pr:
-created: <YYYY-MM-DD>
----
-
-# <id> — <titre>
-
-**En clair.** <≤ 3 phrases sans jargon : symptôme vécu → proposition simple → effet concret.
-Cette fiche EST le document ; le corps de PR en sera le rendu (ADR-0029).>
-
-## Contexte / Problème
-
-## Proposition
-
-## Critères d'acceptation
-
-- [ ]
-
-## Comment vérifier
-
-<Commandes rejouables OU preuves agent pointant des scripts existants. C'est ce que la PR
-affichera tel quel — ne pas réécrire côté PR.>
-
-## Notes / décisions
-EOF
-  fi
+  cp "$TEMPLATE_REF" "$FEATURES/feature-template.md"
   echo "créé features/feature-template.md"
+elif ! cmp -s "$TEMPLATE_REF" "$FEATURES/feature-template.md"; then
+  echo "note: features/feature-template.md diffère du gabarit de référence (conservé tel quel)."
+  echo "      Pour l'aligner : cp \"$TEMPLATE_REF\" \"$FEATURES/feature-template.md\""
 fi
 
 # BACKLOG.md — généré (vide ou regen si fiches présentes)

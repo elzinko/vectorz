@@ -1,14 +1,13 @@
 ---
 id: "20260821163346503"
-title: La méthode s'auto-évalue : sa cohérence, et la fidélité de sa représentation
+title: "La méthode s'évalue elle-même (cohérence, fidélité de la carte)"
 type: feature
 priority: P3
 product: mega-city
-version: V0.1
-milestone: fondation
+version:
+milestone: parked
 labels: [carte]
 status: idea
-ready:
 pr:
 created: 2026-08-21
 ---

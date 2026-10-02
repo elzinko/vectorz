@@ -5,7 +5,6 @@ type: feature
 priority: P2
 product: vectorz
 status: shipped
-ready: 2026-08-17
 pr: local (main 51d8bf0)
 created: 2026-08-08
 ---
@@ -83,3 +82,5 @@ Règles dures :
   (peut `--challenge` un REVIEW.md plus tard, hors MVP).
 - **Dogfood React+TS** = banc **0041** (cobaye), hors périmètre de *cette* fiche ;
   0184 consomme les packs produits sur ce banc (ou autre repo).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-17 · ancien champ front-matter `ready:`, retiré en migration 005.

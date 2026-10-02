@@ -1,5 +1,6 @@
 ---
 composes: [ezk-backlog, ezk-commits]
+applies: [documentation-guidelines/human-facing-lisibility]
 name: ezk-pr
 argument-hint: "[help|init|plan|run|report|ship] [#PR…]"
 description: >-
@@ -44,6 +45,9 @@ tu **démarres les bancs**, tu guides l'utilisateur **checklist en main**, tu
 **Restitution** (`plan` / `run` / `report`) : ouvre par **« En clair »** (≤ 3 phrases)
 avant ordres de merge et tableaux — règle
 [`human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md).
+**Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les affiche
+tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son **titre + lien**,
+jamais par son id nu.
 
 > Né du rétrofit livestreamz 2026-07-06 (PRs #69–#79) : 8 PRs, 3 sessions de
 > test au lieu de 8, ordre de merge calculé par `git merge-tree`, et le constat
@@ -81,7 +85,7 @@ Trois capacités — `pr` · `ci` · `codex-review`. **Config ou capacité absen
 
 | Capacité `off` | Ce que tu changes |
 |---|---|
-| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales réelles** non absorbées que rend le classifieur `ezk-archive` (fiche 0076) — **tout préfixe réel** (`feat/…`, `fix/…`, comme `ezk-sprint` l'autorise), pas un seul motif — voir `plan` §1. `ship` = **squash local** (`ship-merge.sh --local`), **jamais** `gh pr merge`, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`review:emit`) et le corps de PR dans le fichier local (`pr:emit-local`), cf. [`ezk-sprint`](../ezk-sprint/) § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
+| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales réelles** non absorbées que rend le classifieur `ezk-archive` (fiche 0076) — **tout préfixe réel** (`feat/…`, `fix/…`, comme `ezk-sprint` l'autorise), pas un seul motif — voir `plan` §1. `ship` = **squash local** (`ship-merge.sh --local`), **jamais** `gh pr merge`, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`review:emit`) et le corps de PR dans le fichier local (`pr:emit-local`), cf. `ezk-sprint` § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
 | `ci: false` | Pas d'attente de CI cloud entre deux merges (`ship` §, « CI re-verte ») : la **gate locale** (`act`/`ezk-ci` ou gate hôte) est la seule validation. |
 | `codex-review: false` | Pas de revue Codex attendue sur les PR ; la revue adverse reste `ezk-reviewer` (local), cf. `ezk-sprint`. |
 

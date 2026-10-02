@@ -4,6 +4,7 @@ title: Différés du contrat d'améliorabilité — parking gated « après bouc
 type: chore
 priority: P3
 product: vectorz
+milestone: parked
 status: idea
 labels: [contrat]
 pr:

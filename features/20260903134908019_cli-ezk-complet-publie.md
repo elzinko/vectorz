@@ -4,11 +4,11 @@ title: CLI `ezk` complet et publié — framework de commandes et paquet distrib
 type: feature
 priority: P2 # décidé par le PO le 2026-09-03 : plus tard, si le besoin se fait sentir
 product: mega-city
+milestone: parked
 version:
 epic:
 labels: [cli]
 status: idea
-ready:
 pr:
 evidence: none # outil de terminal, aucun écran
 created: 2026-09-03

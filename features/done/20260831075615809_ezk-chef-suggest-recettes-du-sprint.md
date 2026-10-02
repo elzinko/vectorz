@@ -6,7 +6,6 @@ priority: P0
 product: mega-city
 epic:
 status: shipped
-ready: 2026-08-31
 pr: "#214"
 created: 2026-08-31
 ---
@@ -115,10 +114,12 @@ d'améliorabilité (Sujet B / ADR-030) : un seul moteur, plusieurs appelants.
 - **Voisine** :
   [20260831075615969](20260831075615969_ezk-retro-invoque-chef-propose-fiche-recette.md) — la
   rétro invoque `suggest` et décide. Membre du **cluster recette** (voir
-  [20260829123707200](../20260829123707200_reunifier-tagger-cluster-recette.md)).
+  [20260829123707200](20260829123707200_reunifier-tagger-cluster-recette.md)).
 - **Compose** : le rapport de sprint (fiche `20260826082120062`, shippée), le labo
   ([20260829123707100](20260829123707100_labo-de-cuisine-journal-difficultes.md), shippée),
   `ezk-chef extract` (livré). **Dépendances déjà satisfaites.**
 - **Frontière** : ne déclenche pas la rétro (réglage séparé) ; ne construit pas la recette
   (sprint N+1) ; pas de scan de repos froids ([0147](../0147-ezk-recipy-mvp.md)).
 - Doctrine : ADR-0013 (une recette propose, ne fabrique pas de code seule).
+
+> **Historique** — DoR (`ready`) passée le 2026-08-31 · ancien champ front-matter `ready:`, retiré en migration 005.

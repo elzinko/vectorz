@@ -66,11 +66,11 @@ describe('extractLoi — le sous-graphe LA LOI (règles/bundles/profils), lu du 
         { kind: 'skill', id: 'ezk-backlog' },
       ],
       edges: [
-        { from: 'architecture', fromKind: 'bundle', link: 'bundle-rule', to: 'architecture/mvp-first', toKind: 'rule' },
-        { from: 'global', fromKind: 'profile', link: 'profile-bundle', to: 'architecture', toKind: 'bundle' },
-        { from: 'global', fromKind: 'profile', link: 'profile-skill', to: 'ezk-backlog', toKind: 'skill' },
+        { from: 'architecture', fromKind: 'bundle', link: 'bundle-rule', verb: 'compose', to: 'architecture/mvp-first', toKind: 'rule' },
+        { from: 'global', fromKind: 'profile', link: 'profile-bundle', verb: 'compose', to: 'architecture', toKind: 'bundle' },
+        { from: 'global', fromKind: 'profile', link: 'profile-skill', verb: 'compose', to: 'ezk-backlog', toKind: 'skill' },
         // hors-LOI : ne touche ni rule, ni bundle, ni profile
-        { from: 'ezk-dev', fromKind: 'agent', link: 'competences', to: 'ezk-backlog', toKind: 'skill' },
+        { from: 'ezk-dev', fromKind: 'agent', link: 'competences', verb: 'compose', to: 'ezk-backlog', toKind: 'skill' },
       ],
     };
 
@@ -109,14 +109,14 @@ describe('whoActivates — « qui active quoi », HÉRITAGE compris (AC4, régre
     const loi: LoiGraph = {
       nodes: [],
       edges: [
-        { from: 'child', fromKind: 'profile', link: 'profile-extends', to: 'parent', toKind: 'profile' },
-        { from: 'parent', fromKind: 'profile', link: 'profile-bundle', to: 'b-base', toKind: 'bundle' },
-        { from: 'child', fromKind: 'profile', link: 'profile-bundle', to: 'b-own', toKind: 'bundle' },
-        { from: 'b-own', fromKind: 'bundle', link: 'bundle-extends', to: 'b-base', toKind: 'bundle' },
-        { from: 'b-base', fromKind: 'bundle', link: 'bundle-rule', to: 'r-inherited', toKind: 'rule' },
-        { from: 'b-own', fromKind: 'bundle', link: 'bundle-rule', to: 'r-own', toKind: 'rule' },
-        { from: 'parent', fromKind: 'profile', link: 'profile-skill', to: 's-parent', toKind: 'skill' },
-        { from: 'child', fromKind: 'profile', link: 'profile-agent', to: 'a-child', toKind: 'agent' },
+        { from: 'child', fromKind: 'profile', link: 'profile-extends', verb: 'compose', to: 'parent', toKind: 'profile' },
+        { from: 'parent', fromKind: 'profile', link: 'profile-bundle', verb: 'compose', to: 'b-base', toKind: 'bundle' },
+        { from: 'child', fromKind: 'profile', link: 'profile-bundle', verb: 'compose', to: 'b-own', toKind: 'bundle' },
+        { from: 'b-own', fromKind: 'bundle', link: 'bundle-extends', verb: 'compose', to: 'b-base', toKind: 'bundle' },
+        { from: 'b-base', fromKind: 'bundle', link: 'bundle-rule', verb: 'compose', to: 'r-inherited', toKind: 'rule' },
+        { from: 'b-own', fromKind: 'bundle', link: 'bundle-rule', verb: 'compose', to: 'r-own', toKind: 'rule' },
+        { from: 'parent', fromKind: 'profile', link: 'profile-skill', verb: 'compose', to: 's-parent', toKind: 'skill' },
+        { from: 'child', fromKind: 'profile', link: 'profile-agent', verb: 'compose', to: 'a-child', toKind: 'agent' },
       ],
     };
 
@@ -148,6 +148,11 @@ describe('enforcingAgents & bundleRules — les liens règle→agent (enforces) 
   it('réel : le bundle base porte development/pr-before-after-media (ADR-0045, fiche 20260902224608715)', () => {
     const loi = extractLoi(loadRealCompiledGraph());
     expect(bundleRules(loi, 'base')).toContain('development/pr-before-after-media');
+  });
+
+  it('réel : le bundle base porte documentation-guidelines/human-facing-lisibility (fiche 20260824111001836)', () => {
+    const loi = extractLoi(loadRealCompiledGraph());
+    expect(bundleRules(loi, 'base')).toContain('documentation-guidelines/human-facing-lisibility');
   });
 });
 

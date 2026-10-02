@@ -1,9 +1,11 @@
 ---
 id: 0114
-title: webapp de config (édite les YAML profiles/bundles)
+title: "Une interface web pour éditer profils et bundles"
 type: feature
 priority: P3
 product: mega-city
+labels: [installation]
+milestone: parked
 status: idea
 pr:
 created: 2026-06-26

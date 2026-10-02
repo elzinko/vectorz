@@ -1,25 +1,21 @@
-import { readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { runInNewContext } from 'node:vm';
 /**
  * map-data — la carte interactive est FIDÈLE PAR CONSTRUCTION (épic « carte fidèle », PR #162).
  *
- * Même filet d'invariant que composes-graph.test.ts : le bloc de données régénéré en
- * mémoire depuis le catalogue réel doit être EXACTEMENT le bloc présent dans le HTML de
- * la carte. Catalogue modifié sans relancer `pnpm map:data` ⇒ ce test rougit — la carte
- * ne peut pas dériver des fichiers en silence.
+ * Depuis l'ADR-0055, les données de la carte ne sont plus committées dans le HTML : la coque charge
+ * `carte-interactive.data.js`, que `ezk:map` calcule à chaque requête. Plus de copie, donc plus de
+ * dérive possible — et plus de test « le bloc committé égale le bloc régénéré ». Le filet change de
+ * nature : on prouve que le constructeur dit vrai sur le dépôt RÉEL (chaque brique du catalogue est
+ * sur la carte, aucune n'est inventée) et que le fichier se charge comme la coque l'attend.
  */
 import { describe, expect, it } from 'vitest';
 import { compileGraph } from '../core/compiled-graph.js';
 import { validateMethod } from '../core/ceremonies.js';
-import {
-  MAP_DATA_BEGIN,
-  MAP_DATA_END,
-  buildMapData,
-  buildMapDataBlock,
-  upsertMapDataBlock,
-} from '../core/map-data.js';
+import { type MapData, MAP_DATA_BEGIN, MAP_DATA_END, buildMapData } from '../core/map-data.js';
 import { validateTaxonomie } from '../core/taxonomie.js';
+import { DATA_VIEWS } from '../io/derived-views.js';
 import type { Catalog } from '../loaders/catalog.js';
 import { loadCatalog } from '../loaders/catalog.js';
 import { loadMethodDoc } from '../loaders/method.js';
@@ -27,35 +23,48 @@ import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const megaCity = resolve(here, '../..'); // products/mega-city
-const mapPath = join(
-  megaCity,
-  '..',
-  '..',
-  'diagrams',
-  'methode-mega-city',
-  'carte-interactive.html',
-);
+const repoRoot = resolve(megaCity, '..', '..'); // racine vectorz
 
-function extractBlock(text: string): string {
-  const beginIdx = text.indexOf(MAP_DATA_BEGIN);
-  const endIdx = text.indexOf(MAP_DATA_END);
-  if (beginIdx === -1 || endIdx === -1) {
-    throw new Error('bloc ezk-map-data absent de la carte — lancer `pnpm map:data`');
-  }
-  return text.slice(beginIdx, endIdx + MAP_DATA_END.length);
+const carte = DATA_VIEWS.find((v) => v.id === 'carte');
+if (!carte) throw new Error('vue « carte » absente du registre DATA_VIEWS');
+
+/** Exécute le fichier de données dans un faux `window`, comme le navigateur, et rend `window.EZK`. */
+function loadWindowEzk(js: string): MapData {
+  const sandbox: { window: { EZK?: MapData } } = { window: {} };
+  runInNewContext(js, sandbox);
+  if (!sandbox.window.EZK) throw new Error('le fichier de données ne pose pas window.EZK');
+  return sandbox.window.EZK;
 }
 
-describe('carte-interactive.html — données à jour (fidélité par construction)', () => {
-  it('le bloc régénéré en mémoire est identique au bloc présent sur disque', () => {
+describe('carte-interactive.data.js — construit à la demande (fidélité par construction)', () => {
+  const js = carte.build(repoRoot); // une seule construction pour tout le bloc de tests
+  const data = loadWindowEzk(js);
+
+  it('le fichier se charge comme la coque l’attend : window.EZK posé, bloc géré présent une fois', () => {
+    expect(js.split(MAP_DATA_BEGIN)).toHaveLength(2);
+    expect(js.split(MAP_DATA_END)).toHaveLength(2);
+    expect(js.startsWith('// Généré — NE PAS committer')).toBe(true);
+    expect(js).not.toMatch(/<\/script/i); // inlinable dans une page sans en fermer la balise
+  });
+
+  it('chaque brique du catalogue réel est sur la carte, et la carte n’en invente aucune', () => {
     const catalog = loadCatalog(megaCity);
-    const expected = buildMapDataBlock(
-      catalog,
-      compileGraph(catalog),
-      loadMethodDoc(megaCity),
-      loadTaxonomieDoc(megaCity),
-    );
-    const actual = extractBlock(readFileSync(mapPath, 'utf8'));
-    expect(actual).toBe(expected);
+    expect(Object.keys(data.skills).sort()).toEqual([...catalog.skills.keys()].sort());
+    expect(Object.keys(data.agents).sort()).toEqual([...catalog.agents.keys()].sort());
+    expect(Object.keys(data.rules).sort()).toEqual([...catalog.rules.keys()].sort());
+    expect(Object.keys(data.bundles).sort()).toEqual([...catalog.bundles.keys()].sort());
+    expect(Object.keys(data.profiles).sort()).toEqual([...catalog.profiles.keys()].sort());
+    expect(data.counts).toMatchObject({
+      rules: catalog.rules.size,
+      agents: catalog.agents.size,
+      skills: catalog.skills.size,
+      bundles: catalog.bundles.size,
+      profiles: catalog.profiles.size,
+    });
+  });
+
+  it('déterministe : deux constructions donnent exactement le même fichier', () => {
+    expect(carte.build(repoRoot)).toBe(js);
   });
 
   it('ADR-0039 — chaque skill et chaque agent a un étage, et hors-bande est vide', () => {
@@ -76,9 +85,6 @@ describe('carte-interactive.html — données à jour (fidélité par constructi
     }
   });
 
-  it('upsertMapDataBlock refuse un HTML sans marqueurs (erreur franche, pas d’append)', () => {
-    expect(() => upsertMapDataBlock('<title>x</title>', 'bloc')).toThrow(/marqueurs/);
-  });
 });
 
 /**

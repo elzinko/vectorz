@@ -1,15 +1,15 @@
 ---
 id: "20260825024356665"
-title: Comparateur `analyze --expect` en sous-séquence — tolérer les events non déclarés (sessions live, briques 2/3)
+title: "Comparer une session réelle à un scénario attendu (tolérant)"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 version:
 epic:
 depends: []
-labels: [supervision, test, llm]
+labels: [supervision]
 status: idea
-ready:
 pr:
 created: 2026-08-25
 ---

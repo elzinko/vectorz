@@ -5,7 +5,6 @@ type: feature
 priority: P1
 product: mega-city
 status: shipped
-ready: 2026-08-17
 pr: local (main c45102b)
 created: 2026-08-08
 ---
@@ -113,3 +112,5 @@ review = manifeste agrégateur (SRP). Ne pas rouvrir 0093 (BacklogStore hexagona
   pas d'auto-merge ; pas gated sur 0038.
 - ADR candidat **ADR-036** (reporting vs monitoring + contrat artefacts) — à
   graver au build de cette fiche, pas avant.
+
+> **Historique** — DoR (`ready`) passée le 2026-08-17 · ancien champ front-matter `ready:`, retiré en migration 005.

@@ -8,7 +8,6 @@ epic:
 milestone: parked
 labels: [observabilite]
 status: idea
-ready:
 pr:
 created: 2026-07-22
 ---
