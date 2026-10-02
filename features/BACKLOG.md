@@ -231,6 +231,7 @@
 | [20260920213500176](done/20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons) | chore | P2 | V0.4 | mega-city | ✅ shipped | #300 |
 | [20260922160651394](done/20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md) | Mettre le code en conformité avec les règles de dev récentes | chore | P2 | V0.1 | mega-city | ✅ shipped | #270 |
 | [20260923220631498](done/20260923220631498_portier-archive-compte-egale-enumeration.md) | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 |  | mega-city | 🗑️ superseded | superseded — fusionnée dans 20260904091853948 (tri 2026-09-30) |
+| [20261002223842228](20261002223842228_ship-fiche-autre-depot-root.md) | ship:fiche livre aussi les fiches d'un autre dépôt (--root) | feature | P2 |  | mega-city | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
