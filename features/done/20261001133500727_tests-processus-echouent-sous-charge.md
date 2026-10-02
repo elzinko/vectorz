@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version:
 labels: [dette]
-status: ready
-pr:
+status: shipped
+pr: "#317"
 evidence: none # pas d'écran
 created: 2026-10-01
 ---
