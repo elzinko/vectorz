@@ -84,3 +84,13 @@ adverse bloque sur un défaut injecté.
 >
 > **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
 > ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).
+
+## ⚠️ À re-trancher par le PO — 2026-10-02
+
+Laissée au parking. Cette fiche contredit désormais
+[l'ADR-0059](../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md),
+acceptée le 2026-10-01 : la revue locale (`ezk-reviewer`) est le plancher, aucun merge sans son
+`GO`. Sauter cette revue retirerait le plancher.
+
+Ce qui reste réglable est déjà livré : couper la revue Codex ou la PR dans `.vectorz/config.yml`.
+Au PO de clore cette fiche (`superseded`) ou de la recadrer.
