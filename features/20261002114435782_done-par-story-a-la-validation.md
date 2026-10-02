@@ -95,22 +95,23 @@ Avis d'architecte du 2026-10-02 (grooming) : **piste C, c'est-à-dire construire
 
 ## Critères d'acceptation
 
-- [ ] La DoD d'une story, dans `ezk-sprint`, liste « fiche en `done/` + `status: shipped` » parmi
+- [x] La DoD d'une story, dans `ezk-sprint`, liste « fiche en `done/` + `status: shipped` » parmi
       ses conditions, **au niveau story** (pas sprint, pas session).
-- [ ] Dans `ezk-sprint`, le commit `ship` arrive **après** le GO de revue et la validation verte,
+- [x] Dans `ezk-sprint`, le commit `ship` arrive **après** le GO de revue et la validation verte,
       **avant** le merge ; l'étape 10 ne fait plus que merger. **Preuve anti-triche** : sur la
       première PR de story construite après le changement, la liste de ses commits montre le
       `ship` **avant** le merge. Réécrire le texte du skill ne suffit pas : c'est exactement ce que
       la fiche « ship sûr » avait déclaré sans que l'ordre change.
-- [ ] `ezk-pr ship` ajoute le commit `ship` à une PR qui ne l'a pas, **avant** `gh pr merge`.
+- [x] `ezk-pr ship` ajoute le commit `ship` à une PR qui ne l'a pas, **avant** `gh pr merge`.
 - [ ] Une PR de story mergée **depuis l'UI GitHub** arrive sur `main` avec sa fiche déjà dans
-      `done/`.
-- [ ] Un NO-GO de revue arrivé **après** le commit `ship` retire ce commit : la branche ne présente
-      plus la story comme livrée.
-- [ ] `reconcile` détecte toujours une PR mergée **sans** commit `ship` (story faite hors du flux)
+      `done/`. *Se prouve au merge de la PR qui livre cette fiche.*
+- [x] Un NO-GO de revue arrivé **après** le commit `ship` retire ce commit : la branche ne présente
+      plus la story comme livrée. Le retrait est un commit de revert : pas de réécriture
+      d'historique, pas de `push --force`.
+- [x] `reconcile` détecte toujours une PR mergée **sans** commit `ship` (story faite hors du flux)
       et propose son `ship`.
-- [ ] Le mode sans PR (`pr: false`) ne régresse pas : squash local, puis `ship <id> local (<sha>)`.
-- [ ] L'ADR-0049 passe « Accepté ».
+- [x] Le mode sans PR (`pr: false`) ne régresse pas : squash local, puis `ship <id> local (<sha>)`.
+- [x] L'ADR-0049 passe « Accepté ».
 
 **Mesure de suivi** — à relever après livraison, ne se coche pas à la PR :
 
@@ -133,8 +134,12 @@ git ls-tree --name-only origin/main features/done/ | grep <id>
 pnpm --dir products/mega-city test:scripts
 ```
 
-- **NO-GO** : rejouer une revue NO-GO après le commit `ship` ; la fiche revient sous `features/`
-  et la branche ne porte plus le commit `ship`.
+- **NO-GO** : après le commit `ship`, lancer
+  `bash products/mega-city/skills/ezk-pr/scripts/ship-in-pr.sh undo --repo . --fiche-id <id>` ; la
+  fiche revient sous `features/` et un commit de revert annule le `ship`.
+- **Garde du merge** : `ship-merge.sh --remote` refuse (exit 3) une branche de story sans son
+  `ship`, avant tout appel à `gh`. Le test `skills/ezk-pr/scripts/test-ship-in-pr.sh` rejoue
+  `check`, `add`, `undo` et cette garde sur des dépôts jetables.
 - **Filet** : merger une PR **sans** commit `ship`, puis lancer `/ezk-backlog reconcile` ; il
   propose le `ship` de cette fiche.
 - **DoD** : relire la section DoD d'`ezk-sprint` ; la ligne « fiche en `done` » y figure au niveau
@@ -192,5 +197,9 @@ gh pr list --state merged --limit 40 --json number,headRefName \
 - **Suite** : le filet A (check CI « PR `feat/<id>-…` sans sa fiche dans `done/` »).
 - **Dépendance GitHub** (`gh`, dépôt `elzinko/vectorz`, merges par l'UI et `gh pr merge`) — accès
   constaté le 2026-10-02 (droit ADMIN).
+- **Construit le 2026-10-02** : `ship-in-pr.sh` (`check` / `add` / `undo`) et la garde de
+  `ship-merge.sh --remote` ; texte d'`ezk-sprint`, `ezk-pr`, `ezk-backlog` ; ADR-0049 « Accepté ».
+  Revue `ezk-reviewer` GO ; ses 3 constats P1 sont corrigés. Écarté : lire le nom de branche par
+  `gh pr view` dans la garde (appel réseau de plus ; `ezk-pr` passe déjà la branche lue par `gh`).
 - **Gate « prête » passée le 2026-10-02** : problème, valeur, critères et dépendance externe tenus ;
   aucun slot propre au projet (`.vectorz/dor.yml` absent).
