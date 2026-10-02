@@ -137,7 +137,8 @@ plus tard, pas nécessaire au besoin.
       `ezk rules show` et `ezk dor show`. Elle n'écrit rien.
 - [ ] Un pouce posé sur une fiche du projet choisi s'écrit dans ce projet, et seulement là.
 - [ ] `ezk --root <projet> config` affiche la config d'un autre projet.
-- [ ] Inscrire un projet avec `ezk supervision registry-add` suffit pour qu'il apparaisse.
+- [ ] Inscrire un projet avec `ezk supervision registry-add` suffit pour qu'il apparaisse, y
+      compris quand la commande est lancée depuis un worktree.
 - [ ] Le serveur n'écoute que sur la boucle locale (127.0.0.1).
 
 ## Comment vérifier
@@ -146,7 +147,8 @@ plus tard, pas nécessaire au besoin.
 # 1. non-régression : la gate mega-city reste verte
 cd products/mega-city && pnpm typecheck && pnpm test && pnpm test:scripts
 
-# 2. inscrire deux projets dans le registre (depuis le dépôt vectorz)
+# 2. inscrire deux projets dans le registre, depuis le dossier principal de vectorz
+#    (pas depuis un worktree : voir la note « Piège du registre »)
 ezk supervision registry-add muti <chemin-de-muti>           # fiches au format actuel
 ezk supervision registry-add samplerz <chemin-de-samplerz>   # fiches en Gherkin
 
@@ -199,6 +201,15 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
     `main`. Ses 136 fiches sont des fichiers Gherkin `.feature`, sans `features/README.md` de format.
   - Formats relevés le 2026-10-03 : version 5 pour vectorz et muti ; version 4 pour whatsapp-mcp ;
     version 2 pour city-guided, claude-proxy, google-mcp-multi-account et whatsapp-group-mcp.
+- **Grooming parallèle écarté** (décision du PO du 2026-10-03). Une autre session avait groomé
+  cette fiche le même jour, sur la branche `claude/ezk-backlog-grooming-cf040d`, sans la pousser.
+  Même choix du tableau de bord ; elle sortait la page « config » dans une fiche à part. Le PO garde
+  cette version-ci, déjà prête. De l'autre, on reprend le piège du registre ci-dessous.
+- **Piège du registre** (constaté le 2026-10-03, `bin/supervision-registry-add.ts`). `registry-add`
+  cherche `supervision.registry.yaml` en remontant depuis le projet, puis depuis le dossier où on le
+  lance. Lancé depuis un worktree, il écrit dans la copie du registre propre à ce worktree. Le
+  cockpit, lancé depuis le dossier principal, ne la voit pas. Au build : le cockpit et `registry-add`
+  doivent viser le même registre, ou `registry-add` doit dire lequel il a écrit.
 - **Fiches de samplerz : décision du PO du 2026-10-03.** Le cockpit les signale « format non pris
   en charge », sans rien de plus. Deux suites possibles, à cadrer après le cockpit, et qui
   s'excluent : migrer samplerz au format de la méthode, ou apprendre au cockpit à lire son Gherkin.
