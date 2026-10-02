@@ -9,9 +9,9 @@
 > Ratifié à l'étape Archi du sprint qui a construit le POC (`start` et `close`). Ce que le POC ne livre pas est rangé en « Suite » plus bas.
 >
 > **Découpé en 3 fiches** au grooming panel du 2026-09-30 (Option A) :
-> [1 — le lot dans ezk-backlog](../../../../features/20260930194219046_ezk-backlog-lot.md) ·
+> [1 — le lot dans ezk-backlog](../../../../features/done/20260930194219046_ezk-backlog-lot.md) ·
 > [2 — verbes ezk-sprint start/close](../../../../features/done/20260930123438875_cycle-vie-sprint-session-ceremonies.md), livrée par #275 ·
-> [3 — ezk-product-build orchestrateur de session](../../../../features/20260930194219068_ezk-product-build-orchestrateur-session.md).
+> [3 — ezk-product-build orchestrateur de session](../../../../features/done/20260930194219068_ezk-product-build-orchestrateur-session.md).
 
 ## En clair
 
