@@ -88,6 +88,10 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260825161522791` — un grooming guidé : l'agent propose des améliorations, tu choisis · `build`~~ — shipped #309
 - ~~`20260930123438875` — séparer clairement fiche, sprint et session · `groom` → `build` — déjà planifiée en ③ (P0 juste après le socle), elle appartient aussi au lot V0.4~~ — shipped #275
 
+### ⑥ Suite du cycle de vie — le sprint au lot (P0, version à fixer par le PO)
+- `20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`
+- `20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`
+
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
 - ~~`0117` — corriger les signatures de domain.ts qui ne collent plus au code · `build`~~ — shipped #295
