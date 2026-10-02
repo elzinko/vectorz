@@ -40,7 +40,7 @@
 | [20260917162000501](done/20260917162000501_lanceur-dev-universel-worktree-branche.md) | Une commande pour lancer l'app de n'importe quelle branche ou worktree | feature | P0 | V0.2 | mega-city | ✅ shipped | #274 |
 | [20260920111652514](done/20260920111652514_piloter-plugin-github-config.md) | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 |  | mega-city | ✅ shipped | #259 |
 | [20260930123438875](done/20260930123438875_cycle-vie-sprint-session-ceremonies.md) | Séparer clairement fiche, sprint et session (ezk-sprint start/close) | feature | P0 | V0.4 | mega-city | ✅ shipped | #275 |
-| [20260930194219046](20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 |  | mega-city | 🔵 ready |  |
+| [20260930194219046](20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 | V0.5 | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -267,7 +267,7 @@
 
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
-| [20260930194219068](20260930194219068_ezk-product-build-orchestrateur-session.md) | ezk-product-build : orchestrateur de session, contrat de sprint redéfini (Option A) | refactor | P1 |  | mega-city | 💡 idea |  |
+| [20260930194219068](20260930194219068_ezk-product-build-orchestrateur-session.md) | ezk-product-build : orchestrateur de session, contrat de sprint redéfini (Option A) | refactor | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
