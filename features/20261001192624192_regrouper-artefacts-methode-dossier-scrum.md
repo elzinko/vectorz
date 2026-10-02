@@ -83,12 +83,13 @@ POC d'abord (décider + bouger), polish ensuite (nettoyage fin).
 # 1. Plus aucun skill n'écrit en dur dans docs/sessions|retro-notes|captures.
 #    Les skills vivent sous products/mega-city/skills/ (PAS skills/ à la racine), et un chemin
 #    absent ne doit JAMAIS passer pour « OK » — on distingue les 3 codes de sortie de grep.
-grep -rnE "docs/(sessions|retro-notes|captures)" products/mega-city/skills/; rc=$?
-case $rc in
-  0) echo "KO — occurrences en dur ci-dessus" ;;
-  1) echo "OK — plus aucune occurrence" ;;
-  *) echo "ERREUR grep (rc=$rc) — mauvais chemin ?" ;;   # chemin absent ≠ OK
-esac
+#    Le sous-shell sort en échec sur KO comme sur erreur, sans fermer ton terminal.
+( grep -rnE "docs/(sessions|retro-notes|captures)" products/mega-city/skills/; rc=$?
+  case $rc in
+    0) echo "KO — occurrences en dur ci-dessus"; exit 1 ;;
+    1) echo "OK — plus aucune occurrence" ;;
+    *) echo "ERREUR grep (rc=$rc) — mauvais chemin ?"; exit 2 ;;   # chemin absent ≠ OK
+  esac )
 # 2. Les tests des skills touchés passent — Vitest ET les suites SHELL qui exercent les chemins :
 pnpm --dir products/mega-city test
 pnpm --dir products/mega-city test:scripts   # test-handoff.sh + test-sprint-lifecycle.sh (chemins de session)
