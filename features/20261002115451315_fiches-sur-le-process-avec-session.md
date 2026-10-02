@@ -52,6 +52,11 @@ cinq étapes et y pose chaque fiche active. L'étape se **déduit** de ce qui ex
 | En revue | une PR ouverte porte la branche de la fiche |
 | Livrée | `status: shipped`, les plus récentes seulement |
 
+**Quand plusieurs signaux coexistent, l'étape la plus avancée l'emporte.** Une PR ouverte garde sa
+branche, souvent son worktree, et une fiche livrée peut garder sa branche jusqu'au ménage. L'ordre
+de lecture est donc fixe : livrée, puis en revue, puis en sprint, puis prête, puis idée. La
+première étape qui s'applique gagne.
+
 Une fiche travaillée par une session affiche cette session, comme le cockpit des sessions sait
 déjà le faire. Rien n'est saisi à la main et aucun objet nouveau n'apparaît : le verdict du panel
 est respecté.
@@ -64,6 +69,9 @@ revue) demandent que `ezk-sprint` annonce son étape à chaque passage. Hors de 
 
 - [ ] Une page du tableau de bord dessine les cinq étapes et place chaque fiche active sur la
       sienne, selon la table ci-dessus.
+- [ ] Une fiche qui coche plusieurs signaux est posée sur une seule étape, la plus avancée. Un
+      test le prouve : une fiche avec une PR ouverte et sa branche est « en revue », pas « en
+      sprint ».
 - [ ] Une fiche travaillée par une session affiche cette session (branche et worktree). Une fiche
       sans session n'affiche rien d'inventé.
 - [ ] Cliquer une fiche ouvre son détail, comme sur le board.

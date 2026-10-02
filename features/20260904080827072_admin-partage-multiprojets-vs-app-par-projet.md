@@ -64,7 +64,9 @@ Dans tous les cas, on garde **un seul registre de projets** : celui de la superv
 Ensuite, dans la page retenue :
 
 1. **Un menu de projets**, lu dans le registre. Choisir un projet recharge les pages sur ses
-   données, sans relancer le serveur.
+   données, sans relancer le serveur. Le registre accepte d'autres méthodes que mega-city
+   (`method: bmad`, par exemple). Le cockpit ne sait pas lire leurs fichiers : un tel projet reste
+   dans la liste, avec l'état « méthode non prise en charge », sans fiches ni config inventées.
 2. **Une page « config »** du projet choisi, en lecture seule : les interrupteurs GitHub (PR, CI,
    revue Codex), ses règles propres, ses critères de « prête ».
 3. **`ezk config` devient une commande projet** : `ezk --root <projet> config` lit la config de
@@ -77,6 +79,8 @@ Ensuite, dans la page retenue :
 - [ ] La page liste les projets du registre. Choisir un projet affiche **ses** fiches, sans
       relancer le serveur.
 - [ ] Un projet du registre introuvable sur le disque s'affiche comme tel. La page ne tombe pas.
+- [ ] Un projet du registre dont la méthode n'est pas mega-city apparaît avec l'état « méthode non
+      prise en charge ». Le cockpit n'affiche pour lui ni fiches ni config.
 - [ ] La page « config » montre, pour le projet choisi, les mêmes valeurs que `ezk config`,
       `ezk rules show` et `ezk dor show`. Elle n'écrit rien.
 - [ ] `ezk --root <projet> config` affiche la config d'un autre projet.
