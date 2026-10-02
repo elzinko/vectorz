@@ -111,7 +111,8 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
   it('une commande « fixed » part de la racine du dépôt : {root} remplacé, quel que soit le dossier de départ', { timeout: 60_000 }, () => {
     const viaRoot = ezk(['--root', repoRoot, '--dry-run', 'backlog', 'regen']);
     expect(viaRoot.out).toContain(`dossier de travail = ${repoRoot}`);
-    expect(viaRoot.out).toContain(`bash bin/regen-backlog.sh ${repoRoot} "Backlog features & bugs — vectorz"`);
+    // la racine seule : le titre de l'index vient de features/README.md, jamais du manifeste
+    expect(viaRoot.out).toContain(`bash bin/regen-backlog.sh ${repoRoot}\n`);
     // une commande « none » part du dossier de l'utilisateur, pas de la racine du dépôt
     expect(ezk(['--dry-run', 'law', 'status', 'global']).out).toContain(`dossier de travail = ${elsewhere}`);
   });

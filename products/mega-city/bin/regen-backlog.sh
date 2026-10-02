@@ -11,7 +11,7 @@
 #   seulement : si un ancêtre porte déjà un backlog (features/), la racine est NICHÉE et le
 #   script REFUSE (fiche 20260823121712844) ; sinon racine **obligatoire** (pas de défaut
 #   vers le dossier skill).
-#   Backlog racine vectorz : regen-backlog.sh <racine-vectorz> "Backlog features & bugs — vectorz"
+#   Backlog racine vectorz : regen-backlog.sh <racine-vectorz>   (titre lu dans features/README.md)
 set -euo pipefail
 
 _SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -34,9 +34,30 @@ else
   echo "erreur: racine-projet obligatoire (copie skill — pas de défaut produit)" >&2
   exit 1
 fi
-TITLE="${2:-Backlog — mega-city}"
 cd "$ROOT"
 [ -d features ] || { echo "erreur: pas de dossier features/ dans ${ROOT}" >&2; exit 1; }
+
+# Titre de l'index (ligne 1) : le [titre-index] passé, sinon `backlog_title:` dans l'en-tête de
+# features/README.md, sinon un titre neutre. Le projet déclare son titre une fois et tous les
+# outils le lisent : un appelant qui passerait le sien ferait basculer la ligne 1 d'un outil à
+# l'autre (défaut constaté le 2026-10-02, « Backlog — mega-city » ↔ « … — vectorz »).
+TITLE="${2:-}"
+if [[ -z "$TITLE" && -f features/README.md ]]; then
+  TITLE="$(awk '
+    NR == 1 && !/^---[[:space:]]*$/ { exit }
+    /^---[[:space:]]*$/ { fm++; if (fm == 2) exit; next }
+    fm == 1 && /^backlog_title:/ {
+      t = $0; sub(/^backlog_title:[[:space:]]*/, "", t); sub(/[[:space:]]+$/, "", t)
+      q = substr(t, 1, 1)   # valeur YAML entre guillemets ou entre apostrophes : on retire la paire
+      if (length(t) >= 2 && (q == "\"" || q == "\047") && substr(t, length(t), 1) == q) {
+        t = substr(t, 2, length(t) - 2)
+        if (q == "\047") gsub("\047\047", "\047", t)   # entre apostrophes, YAML écrit une apostrophe en double
+      }
+      print t; exit
+    }
+  ' features/README.md)"
+fi
+TITLE="${TITLE:-Backlog features & bugs}"
 
 SEP=$'\x1f'
 
