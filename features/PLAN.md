@@ -32,7 +32,8 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | ✅ livrée le 2026-10-01 |
 | **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | ✅ livrée le 2026-10-01 |
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | ✅ livrée le 2026-10-01 |
-| **V0.5** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
+| **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, product-build qui enchaîne les sprints | ▶️ en cours |
+| **V0.6** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
@@ -88,7 +89,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260825161522791` — un grooming guidé : l'agent propose des améliorations, tu choisis · `build`~~ — shipped #309
 - ~~`20260930123438875` — séparer clairement fiche, sprint et session · `groom` → `build` — déjà planifiée en ③ (P0 juste après le socle), elle appartient aussi au lot V0.4~~ — shipped #275
 
-### ⑥ Suite du cycle de vie — le sprint au lot (P0, version à fixer par le PO)
+### ⑥ V0.5 — le sprint au lot (P0)
 - `20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`
 - `20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`
 
