@@ -7,7 +7,7 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [installation, ezk-map]
-status: idea
+status: ready
 pr:
 evidence: auto
 created: 2026-10-02
@@ -194,6 +194,10 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
 - **Créée le 2026-10-02** à la demande du PO. Décisions prises à la création : une nouvelle fiche
   plutôt qu'enrichir la fiche multi-client ; P1 ; version V0.6, jalon `cockpit` ; les agents
   d'abord, pas les commandes.
+- **Prête le 2026-10-03** (porte de « prête » passée : problème, valeur, critères et dépendances
+  constatées). Point de vigilance : le critère « tableau de bord » suppose la page « config » de la
+  fiche du tableau de bord. Si elle n'existe pas au build, la section « Agents » la crée a minima,
+  ou le build découpe ce critère en fiche de suite.
 - **Groomée le 2026-10-02 : des niveaux, avec un repli par agent.** Le PO veut « faire abstraction
   des modèles » ; si c'est trop compliqué, « saisir le nom du modèle et l'effort ». Les deux tiennent
   ensemble : trois niveaux, plus un réglage par agent qui l'emporte. Le mécanisme retenu est le
