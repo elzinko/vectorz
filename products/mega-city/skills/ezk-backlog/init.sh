@@ -4,6 +4,8 @@
 # Crée features/ + done/ + README curé (layout_version courant) + BACKLOG.md vide
 # + feature-template.md. Idempotent : n'écrase pas un roadmap/ existant ni un
 # features/ déjà peuplé (sauf regen de BACKLOG si demandé).
+# Le [titre-index] s'écrit dans l'en-tête du README qu'init installe (backlog_title:) : c'est là
+# que regen-backlog.sh le relit à chaque régénération. Un README existant n'est jamais réécrit.
 #
 # Skema : refuse de half-migrer un layout v1 (`layout_version` 1, ou README « Index
 # auto-généré » SANS marqueur : le marqueur prime) — propose apply-002 après OK
@@ -20,7 +22,7 @@ if [[ ! -d "$ROOT" ]]; then
   exit 1
 fi
 ROOT="$(cd "$ROOT" && pwd)"
-TITLE="${2:-Backlog features & bugs}"
+TITLE="${2:-}"   # vide : le titre déclaré par le projet, sinon le défaut de regen-backlog.sh
 FEATURES="$ROOT/features"
 CHECK="$SKILL_DIR/scripts/check-layout-version.sh"
 RESOLVE="$SKILL_DIR/scripts/resolve-regen-backlog.sh"
@@ -39,6 +41,21 @@ installed_layout() {
   fi
 }
 
+# Écrit `backlog_title:` dans l'en-tête YAML d'un README tout juste copié du gabarit, juste avant
+# le `---` qui le ferme. Valeur entre apostrophes, une apostrophe y est doublée : du YAML valide
+# quel que soit le titre, que regen-backlog.sh relit à l'identique. Jumelle dans apply-002.
+write_backlog_title() { # $1=README $2=titre
+  local tmp
+  tmp="$(mktemp)"
+  BACKLOG_TITLE="$2" awk '
+    BEGIN { v = ENVIRON["BACKLOG_TITLE"]; gsub("\047", "\047\047", v) }
+    NR == 1 { fm = /^---[[:space:]]*$/; print; next }
+    fm && /^---[[:space:]]*$/ { print "backlog_title: \047" v "\047"; fm = 0 }
+    { print }
+  ' "$1" > "$tmp" && cat "$tmp" > "$1"
+  rm -f "$tmp"
+}
+
 if [[ -d "$ROOT/roadmap" ]]; then
   echo "convention roadmap/ détectée — rien créé (épouser l'existant)."
   exit 0
@@ -51,6 +68,13 @@ if [[ ! -f "$TEMPLATE_REF" ]]; then
   exit 3
 fi
 
+# BACKLOG.md est toujours écrit par regen-backlog.sh : le trouver AVANT toute écriture (pas d'init
+# à moitié faite). Le résolveur a toujours la copie vendored du skill en dernier recours.
+if ! REGEN="$("$RESOLVE" "$ROOT")"; then
+  echo "init: regen-backlog.sh introuvable — rien créé." >&2
+  exit 1
+fi
+
 mkdir -p "$FEATURES/done"
 
 # Legacy v1 : ne pas créer BACKLOG à côté d'un index README — propose migration.
@@ -60,21 +84,28 @@ mkdir -p "$FEATURES/done"
 if [[ "$(installed_layout)" -eq 1 ]]; then
   out="$("$CHECK" "$ROOT")"
   echo "$out"
+  title_arg=""
+  [[ -z "$TITLE" ]] || title_arg=" \"${TITLE}\""
   cat <<EOF
 init: layout v1 détecté (features/README.md : layout_version 1, ou index auto-généré sans marqueur).
 STATUS=behind — ne crée PAS BACKLOG.md (évite un split-brain README+BACKLOG).
 
 Après OK utilisateur, appliquer la migration 002 :
-  bash ${SKILL_DIR}/scripts/apply-002-readme-vs-backlog.sh ${ROOT} "${TITLE}"
+  bash ${SKILL_DIR}/scripts/apply-002-readme-vs-backlog.sh ${ROOT}${title_arg}
 
 Doc : ${SKILL_DIR}/migrations/002-readme-vs-backlog.md
 EOF
   exit 2
 fi
 
-# README curé (layout courant)
+# README curé (layout courant). Le titre demandé n'est écrit que dans un README qu'init installe.
+title_written=0
 if [[ ! -f "$FEATURES/README.md" ]]; then
   cp "$SKILL_DIR/templates/features-README.md" "$FEATURES/README.md"
+  if [[ -n "$TITLE" ]]; then
+    write_backlog_title "$FEATURES/README.md" "$TITLE"
+    title_written=1
+  fi
   echo "créé features/README.md (guide, layout_version=${SKILL_VERSION})"
 fi
 
@@ -88,32 +119,27 @@ elif ! cmp -s "$TEMPLATE_REF" "$FEATURES/feature-template.md"; then
   echo "      Pour l'aligner : cp \"$TEMPLATE_REF\" \"$FEATURES/feature-template.md\""
 fi
 
-# BACKLOG.md — généré (vide ou regen si fiches présentes)
+# BACKLOG.md — écrit par regen-backlog.sh, comme toute régénération (vide s'il n'y a pas encore de
+# fiche). Un BACKLOG existant sans fiche n'est pas touché. Le titre n'est passé que s'il vient d'être
+# écrit dans le README : même valeur des deux côtés, et la ligne 1 ne bougera pas à la prochaine
+# régénération, même avec un script plus ancien qui ne lit pas encore backlog_title:.
 has_fiches=0
 if compgen -G "$FEATURES/[0-9]*.md" > /dev/null \
   || compgen -G "$FEATURES/done/[0-9]*.md" > /dev/null; then
   has_fiches=1
 fi
 
-if [[ "$has_fiches" -eq 1 ]]; then
-  if REGEN="$("$RESOLVE" "$ROOT")"; then
+if [[ "$has_fiches" -eq 1 || ! -f "$FEATURES/BACKLOG.md" ]]; then
+  if [[ "$title_written" -eq 1 ]]; then
     bash "$REGEN" "$ROOT" "$TITLE"
   else
-    echo "init: fiches présentes mais regen-backlog.sh introuvable — BACKLOG non écrit." >&2
-    exit 1
+    bash "$REGEN" "$ROOT"
   fi
-elif [[ ! -f "$FEATURES/BACKLOG.md" ]]; then
-  cat > "$FEATURES/BACKLOG.md" <<EOF
-# ${TITLE}
-
-> Index auto-généré — **ne pas éditer à la main**. Guide : [README.md](README.md).
-
-| # | Titre | Type | Prio | Statut | PR |
-|---|-------|------|------|--------|----|
-
-> Livrées (\`done/\`) : .
-EOF
-  echo "créé features/BACKLOG.md (vide)"
+  if [[ -n "$TITLE" && "$(head -1 "$FEATURES/BACKLOG.md")" != "# ${TITLE}" ]]; then
+    q="'"
+    echo "note: titre « ${TITLE} » non appliqué : features/README.md existait déjà, c'est son en-tête qui fait foi."
+    echo "      Pour l'appliquer, ajoute dans cet en-tête : backlog_title: '${TITLE//$q/$q$q}' — puis régénère."
+  fi
 fi
 
 ACTUAL="$(installed_layout)"

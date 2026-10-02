@@ -216,9 +216,10 @@ qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
 1. **Détecter une convention existante** (`roadmap/`, `docs/specs/`, `.lifefindsaway/`,
    GitHub Issues…). Si oui → l'épouser, **ne rien créer**.
 2. Sinon, **scaffolder** via le helper de cette skill, à la racine du projet :
-   `bash <skill>/init.sh` (crée `features/` + `features/done/` + `README.md` guide
+   `bash <skill>/init.sh [racine] [titre]` (crée `features/` + `features/done/` + `README.md` guide
    avec `layout_version` courant + `BACKLOG.md` + `feature-template.md`).
-   Idempotent (n'écrase pas un `roadmap/` existant).
+   Idempotent (n'écrase pas un `roadmap/` existant). Le `[titre]` de l'index s'écrit une fois,
+   dans l'en-tête du README installé (`backlog_title:`) : voir [`regen`](#regen).
 3. Commit `chore(features): init backlog`. Confirmer le chemin créé.
 
 ## Épouser une convention existante (NE PAS churner)
@@ -742,6 +743,9 @@ l'en-tête de `features/README.md`, sinon « Backlog features & bugs ». Un proj
 déclaré `backlog_title:` ne passe **jamais** de titre : sinon la ligne 1 change selon l'outil
 qui régénère, et chaque PR parallèle se dispute cette ligne. vectorz déclare
 « Backlog features & bugs — vectorz » : la liste unique couvre tous ses produits.
+`init` et la migration 002 écrivent cette clé quand ils installent le README avec un titre ;
+un README déjà là n'est jamais réécrit (une note dit la ligne à y ajouter). Valeur YAML entre
+guillemets ou entre apostrophes ; entre apostrophes, une apostrophe s'écrit doublée.
 DoD exécutable du script : `bin/test-regen-backlog.sh`.
 **Ne touche jamais** à `features/README.md` (guide curé) : le script le lit, il ne l'écrit pas.
 

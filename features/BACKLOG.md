@@ -269,12 +269,13 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260904080827072](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) | Un seul tableau de bord pour tous tes projets — choisir le projet, voir sa config | feature | P1 | V0.6 | mega-city | 💡 idea |  |
-| [20261002114435782](20261002114435782_done-par-story-a-la-validation.md) | Chaque user story porte ses statuts — en cours à la prise, done à sa validation | feature | P1 | V0.5 | mega-city | 💡 idea |  |
+| [20261002114435782](20261002114435782_done-par-story-a-la-validation.md) | La fiche d'une story arrive en done avec son merge, quel que soit le canal | feature | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Regrouper les artefacts de méthode hors de docs/ — un dossier agnostique (ex. scrum/) + skills à jour | refactor | P2 | V0.5 | vectorz | 💡 idea |  |
+| [20261002130235353](20261002130235353_en-cours-deduit-des-branches.md) | « En cours » se déduit des branches, il ne s'écrit pas | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261002130917993](20261002130917993_release-local-first-macos.md) | Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261002133125444](20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 |  | mega-city | 💡 idea |  |
