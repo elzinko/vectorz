@@ -168,6 +168,15 @@ check "un argument explicite prime sur l'en-tête" \
 printf -- '---\nbacklog_title: \"Backlog — quoté\"  \n---\n' > "$D3/features/README.md"
 check "valeur entre guillemets → dé-quotée" \
   "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF '# Backlog — quoté'"
+# Les deux styles de YAML (revue Codex PR #323) : entre apostrophes, une apostrophe s'écrit doublée.
+want_d3="# L'index — apostrophes"
+printf -- "---\nbacklog_title: 'L''index — apostrophes'\n---\n" > "$D3/features/README.md"
+check "valeur entre apostrophes → dé-quotée, apostrophe doublée rendue simple" \
+  "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF \"\$want_d3\""
+want_d3="# L'index — guillemets"
+printf -- "---\nbacklog_title: \"L'index — guillemets\"\n---\n" > "$D3/features/README.md"
+check "apostrophe dans une valeur entre guillemets → gardée" \
+  "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF \"\$want_d3\""
 printf -- '# Guide sans en-tête\n\n---\nbacklog_title: hors en-tête\n---\n' > "$D3/features/README.md"
 check "hors de l'en-tête → ignoré, titre neutre" \
   "bash '$SCRIPT' '$D3' >/dev/null 2>&1 && head -1 '$D3/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs'"

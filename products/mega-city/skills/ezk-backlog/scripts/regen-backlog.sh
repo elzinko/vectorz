@@ -46,7 +46,15 @@ if [[ -z "$TITLE" && -f features/README.md ]]; then
   TITLE="$(awk '
     NR == 1 && !/^---[[:space:]]*$/ { exit }
     /^---[[:space:]]*$/ { fm++; if (fm == 2) exit; next }
-    fm == 1 && /^backlog_title:/ { sub(/^backlog_title:[[:space:]]*/, ""); sub(/[[:space:]]+$/, ""); gsub(/^"|"$/, ""); print; exit }
+    fm == 1 && /^backlog_title:/ {
+      t = $0; sub(/^backlog_title:[[:space:]]*/, "", t); sub(/[[:space:]]+$/, "", t)
+      q = substr(t, 1, 1)   # valeur YAML entre guillemets ou entre apostrophes : on retire la paire
+      if (length(t) >= 2 && (q == "\"" || q == "\047") && substr(t, length(t), 1) == q) {
+        t = substr(t, 2, length(t) - 2)
+        if (q == "\047") gsub("\047\047", "\047", t)   # entre apostrophes, YAML écrit une apostrophe en double
+      }
+      print t; exit
+    }
   ' features/README.md)"
 fi
 TITLE="${TITLE:-Backlog features & bugs}"
