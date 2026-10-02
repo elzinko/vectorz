@@ -1,7 +1,8 @@
 # ADR-0049 — Le ship complet vit dans la PR (fiche + toutes ses vues)
 
-- Statut : **Proposé** (2026-09-03)
-- Fiche : `../../../../features/20260823121712781_reconcile-systematique-merges-hors-flux.md`
+- Statut : **Accepté** (2026-10-02) — proposé le 2026-09-03, construit par la fiche
+  [« La fiche d'une story arrive en done avec son merge »](../../../../features/done/20261002114435782_done-par-story-a-la-validation.md)
+- Fiche d'origine : `../../../../features/done/20260823121712781_reconcile-systematique-merges-hors-flux.md`
 - Révise / complète : ADR-0018 (reconcile), fiche `20260812100109940` (sync des vues au ship)
 
 ## En clair
@@ -81,6 +82,25 @@ vues** puis rejouer les gates. C'est le prix — modéré et déterministe — d
 - **Frontière** : `ezk-sprint` (étape 10) et `ezk-backlog` (`ship`) portent tout le commit-dans-la-
   branche (`git mv` + statut + **régénération de toutes les vues**). La fiche `20260823121712781`
   porte le **filet `reconcile`** (merges hors flux) et le geste de **re-`regen` au conflit de merge**.
+
+## Mise en œuvre (2026-10-02)
+
+Proposé le 2026-09-03, cet ADR n'avait pas été construit : la fiche « ship sûr » a livré la
+commande `ship` en une transaction, mais l'étape 10 d'`ezk-sprint` et `ezk-pr ship` mergeaient
+toujours **avant** de shipper. La fiche ci-dessus change l'ordre, et le rend vérifiable :
+
+- **`ezk-pr/scripts/ship-in-pr.sh`** porte les trois gestes. `add` committe le ship sur la
+  branche de la story (jamais sur `main`, jamais sur un arbre sale). `undo` le retire après un
+  NO-GO par un **commit de revert** : aucune réécriture d'historique, aucun `push --force`. `check`
+  dit si l'arbre d'un head range déjà la fiche dans `features/done/` avec `status: shipped`.
+- **`ship-merge.sh --remote`** refuse (exit 3) une branche de story sans son ship, avant tout
+  appel à `gh`. `--allow-unshipped "<raison>"` laisse passer une livraison partielle voulue.
+- **`ezk-sprint`** : le ship entre à la fin de l'étape 8, l'étape 10 ne fait plus que merger, et
+  la DoD de la **story** inclut « fiche en `done/` ». **`ezk-pr ship`** ajoute le ship s'il manque.
+- **Vues** : depuis l'[ADR-0055](0055-artefacts-generes-hors-versionnage.md), `PORTFOLIO.md` et le board ne
+  sont plus committés. Le ship dans la PR régénère donc `BACKLOG.md` et barre l'entrée de
+  `PLAN.md` ; rien d'autre. La mention du board au §1 est caduque.
+- **`pr: false`** inchangé : un seul acteur local, et le sha du squash n'existe qu'après le merge.
 
 ## Alternatives écartées
 
