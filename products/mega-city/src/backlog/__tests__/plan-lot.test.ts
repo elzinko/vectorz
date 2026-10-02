@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type LotCard, formatLot, selectLot } from '../plan-lot.js';
+import { type LotCard, formatLot, selectLot, shellQuote } from '../plan-lot.js';
 
 function card(id: string, status: string, priority = 'P2', extra: Partial<LotCard> = {}): LotCard {
   return { id, product: 'mega-city', type: 'feature', status, priority, title: `Fiche ${id}`, blocked: '', done: false, ...extra };
@@ -133,5 +133,31 @@ describe('formatLot — la sortie lue par l’humain et par ezk-sprint', () => {
     expect(out).toContain('lot : aucune fiche prête (status: ready) sur 2 demandée(s) — ordre P0→P3 puis id (pas de PLAN.md)');
     expect(out).not.toContain('start --lot');
     expect(out).toContain('rien à ouvrir');
+  });
+
+  it('fait de chaque id un lien vers sa fiche quand le chemin est connu', () => {
+    const lot = selectLot(['0002'], [card('0002', 'ready', 'P1', { path: 'features/0002_x.md' })], 1);
+    const out = formatLot(lot, { planned: true, sprintScript: sprint }).join('\n');
+    expect(out).toContain('1. [0002](features/0002_x.md) (mega-city · P1) — Fiche 0002');
+  });
+
+  it('met le chemin du script entre apostrophes dès qu’il contient un espace', () => {
+    const lot = selectLot(['0001'], [card('0001', 'ready')], 1);
+    const out = formatLot(lot, { planned: true, sprintScript: '/tmp/mon projet/sprint.sh' }).join('\n');
+    expect(out).toContain("bash '/tmp/mon projet/sprint.sh' start --lot 0001");
+  });
+});
+
+describe('shellQuote — un argument sûr pour bash', () => {
+  it('laisse tel quel un chemin ordinaire', () => {
+    expect(shellQuote('products/mega-city/skills/ezk-sprint/scripts/sprint.sh')).toBe(
+      'products/mega-city/skills/ezk-sprint/scripts/sprint.sh',
+    );
+  });
+
+  it('protège un espace, un caractère du shell et une apostrophe', () => {
+    expect(shellQuote('/a b/sprint.sh')).toBe("'/a b/sprint.sh'");
+    expect(shellQuote('/a$b;c/sprint.sh')).toBe("'/a$b;c/sprint.sh'");
+    expect(shellQuote("/l'atelier/sprint.sh")).toBe("'/l'\\''atelier/sprint.sh'");
   });
 });

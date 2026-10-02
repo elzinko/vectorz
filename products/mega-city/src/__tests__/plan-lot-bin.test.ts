@@ -13,6 +13,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { formatLot, selectLot } from '../backlog/plan-lot.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const tsxCli = createRequire(import.meta.url).resolve('tsx/cli');
@@ -65,6 +66,8 @@ describe('plan:lot → sprint.sh start --lot', () => {
     expect(lot.stdout).toContain('lot : 2 fiche(s) prête(s) sur 2 demandée(s) — ordre du PLAN');
     expect(lot.stdout).toContain(`tête bloquée`);
     expect(lot.stdout).toContain(IDEA_B);
+    // Chaque fiche listée est un lien vers son fichier, relatif au dossier d'où la commande est lancée.
+    expect(lot.stdout).toContain(`[${READY_A}](features/${READY_A}_fiche-1.md)`);
 
     const startLine = lot.stdout.split('\n').find((l) => l.includes(' start --lot '))?.trim() ?? '';
     expect(startLine).toMatch(new RegExp(`^bash \\S+sprint\\.sh start --lot ${READY_A},${READY_C}$`));
@@ -75,5 +78,16 @@ describe('plan:lot → sprint.sh start --lot', () => {
     const sprintMd = readFileSync(join(project, 'SPRINT.md'), 'utf8');
     expect(sprintMd).toContain(`- [ ] ${READY_A} — Fiche 1`);
     expect(sprintMd).toContain(`- [ ] ${READY_C} — Fiche 3`);
+  });
+
+  it('la ligne start reste exécutable quand le chemin du script contient un espace', () => {
+    const dir = join(project, 'méthode avec espace');
+    mkdirSync(dir);
+    const script = join(dir, 'sprint.sh');
+    writeFileSync(script, 'echo "reçu: $*"\n');
+    const lot = selectLot(null, [{ id: '0001', product: 'p', type: 'feature', status: 'ready', priority: 'P1', title: 'F', blocked: '', done: false }], 1);
+    const startLine = formatLot(lot, { planned: false, sprintScript: script }).find((l) => l.includes(' start --lot '))?.trim() ?? '';
+    const ran = spawnSync('bash', ['-c', startLine], { encoding: 'utf8' });
+    expect(ran.stdout, ran.stderr).toContain('reçu: start --lot 0001');
   });
 });
