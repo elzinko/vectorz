@@ -25,6 +25,10 @@
 #       `--match-head-commit <sha>` si --head-sha est fourni (refuse le merge si le head de
 #       la PR a bougé depuis la validation). --dry-run : imprime la commande, n'exécute rien.
 #       Sans --dry-run : exécute, puis fetch --prune + réaligne les vues vers origin/<base>.
+#       Garde ADR-0049 : une branche de story `<type>/<id>-<slug>` doit porter le ship de sa
+#       fiche (fiche dans features/done/ à <sha>), sinon REFUS (exit 3) avant tout appel à `gh`.
+#       Le remède est imprimé : `ship-in-pr.sh add`, push, puis merge sur le nouveau head.
+#       `--allow-unshipped "<raison>"` laisse passer une livraison partielle voulue (raison imprimée).
 set -euo pipefail
 
 repo="."
@@ -34,6 +38,7 @@ subject=""
 body=""
 pr=""
 head_sha=""
+allow_unshipped=""
 mode="local"
 dry_run=0
 
@@ -46,6 +51,7 @@ while [[ $# -gt 0 ]]; do
     --body) body="$2"; shift 2 ;;
     --pr) pr="$2"; shift 2 ;;
     --head-sha) head_sha="$2"; shift 2 ;;
+    --allow-unshipped) allow_unshipped="$2"; shift 2 ;;
     --remote) mode="remote"; shift ;;
     --local) mode="local"; shift ;;
     --dry-run) dry_run=1; shift ;;
@@ -118,6 +124,25 @@ ship_local() {
   refresh "$base"
 }
 
+# --- Garde ADR-0049 : on ne merge pas une story sans son ship dans la PR. Le squash fait
+# atterrir code + fiche d'un coup ; sans ce commit, la fiche resterait « à faire » sur main.
+# L'id vient du nom de branche (`feat/<id>-<slug>`, ADR-0018) ; sans id, rien à garder.
+ship_guard() {
+  local id rc=0
+  id="$(sed -nE 's#^[a-z]+/([0-9]{4}|[0-9]{17})-.*#\1#p' <<<"$branch")"
+  if [[ -z "$id" ]]; then echo "SHIP-GUARD: skip (branche sans id de fiche)"; return 0; fi
+  if [[ -n "$allow_unshipped" ]]; then echo "SHIP-GUARD: override ($id) — $allow_unshipped"; return 0; fi
+  bash "$(dirname "$0")/ship-in-pr.sh" check --repo "$repo" --ref "$head_sha" --fiche-id "$id" >/dev/null 2>&1 || rc=$?
+  case "$rc" in
+    0) echo "SHIP-GUARD: present ($id)" ;;
+    1) echo "ship-merge.sh: la PR #$pr ne porte pas le ship de la fiche $id (ADR-0049) — merge refusé." >&2
+       echo "  Remède : ship-in-pr.sh add --repo $repo --fiche-id $id --pr $pr ; git push ; puis merge sur le nouveau head." >&2
+       exit 3 ;;
+    *) echo "ship-merge.sh: head $head_sha inconnu dans $repo — git fetch d'abord (garde ADR-0049 non vérifiable, merge refusé)" >&2
+       exit 3 ;;
+  esac
+}
+
 ship_remote() {
   [[ -n "$pr" ]] || { echo "ship-merge.sh: --pr requis avec --remote" >&2; exit 2; }
   # --head-sha OBLIGATOIRE en mode remote : on épingle le merge sur le head VALIDÉ
@@ -125,6 +150,7 @@ ship_remote() {
   # `gh` refuse plutôt que de squasher un head jamais testé. Rendre le guard OPTIONNEL le
   # rendrait contournable par simple omission (retour Codex) — donc on l'EXIGE.
   [[ -n "$head_sha" ]] || { echo "ship-merge.sh: --head-sha <sha validé> requis en mode remote (anti-course : épingle le merge sur le head testé)" >&2; exit 2; }
+  ship_guard
   local cmd=(gh pr merge "$pr" --squash --delete-branch --subject "$subject" --body "$body" --match-head-commit "$head_sha")
   if (( dry_run )); then
     # Lisible et rejouable tel quel (chaque argument contenant un espace est cité).
