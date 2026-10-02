@@ -652,6 +652,13 @@ La commande fait tout, dans l'ordre, **ou rien** :
 6. **Commit** `docs(features): ship <id> #<PR>` (via `ezk-commits`, après `git add features`). La
    commande ne committe ni ne pousse.
 
+**Où le ship se fait** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)).
+En flux PR, le ship d'une story est le **dernier commit de sa PR**, avant le merge :
+`ezk-pr/scripts/ship-in-pr.sh add` lance la commande ci-dessus puis committe. La fiche arrive
+en `done/` avec son code, quel que soit le canal de merge. Après un merge, `ship` ne sert plus
+qu'au filet : une PR mergée **sans** son ship, que `reconcile` propose. Livraison locale
+(`pr: false`) inchangée : squash local d'abord, puis `ship <id> local (<sha>)`.
+
 **Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
 fiche `shipped` encore présentée comme à faire dans `PLAN.md` (et dans `PORTFOLIO.md` s'il traîne
 en local). Reste utile pour un ship fait à la main ou hors flux.
