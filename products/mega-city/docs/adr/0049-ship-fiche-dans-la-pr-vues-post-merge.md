@@ -1,7 +1,7 @@
 # ADR-0049 — Le ship complet vit dans la PR (fiche + toutes ses vues)
 
 - Statut : **Accepté** (2026-10-02) — proposé le 2026-09-03, construit par la fiche
-  [« La fiche d'une story arrive en done avec son merge »](../../../../features/done/20261002114435782_done-par-story-a-la-validation.md)
+  [« La fiche d'une story arrive en done avec son merge »](../../../../features/20261002114435782_done-par-story-a-la-validation.md)
 - Fiche d'origine : `../../../../features/done/20260823121712781_reconcile-systematique-merges-hors-flux.md`
 - Révise / complète : ADR-0018 (reconcile), fiche `20260812100109940` (sync des vues au ship)
 

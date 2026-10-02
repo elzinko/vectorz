@@ -107,7 +107,7 @@ simple présence d'une branche ne prouve donc pas qu'une story est en cours.
 ## Notes / décisions
 
 - **Origine** : découpage du grooming de la fiche mère
-  [La fiche d'une story arrive en done avec son merge](done/20261002114435782_done-par-story-a-la-validation.md),
+  [La fiche d'une story arrive en done avec son merge](20261002114435782_done-par-story-a-la-validation.md),
   le 2026-10-02. Le « done » y reste ; le « en cours » vient ici, car il ne cause pas la corvée de
   rattrapage et il touche au schéma des statuts.
 - **Priorité P2** : un cran sous la fiche mère, qui porte la corvée. Acceptée par le PO au grooming
