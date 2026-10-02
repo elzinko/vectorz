@@ -64,6 +64,7 @@ describe('ezk-manifest.yml', () => {
     expect(labels).toEqual([
       'backlog check',
       'backlog plan-head',
+      'backlog plan-lot',
       'board show',
       'dashboard',
       'dor check',

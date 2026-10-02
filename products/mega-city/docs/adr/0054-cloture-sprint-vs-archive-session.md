@@ -121,7 +121,7 @@ Le grooming panel du 2026-09-30 a tranché les mêmes questions dans le même se
 
 Cinq précisions sont nées du build.
 
-- **Checkpoint.** Il reste avant chaque merge (étape 9), donc par story. `close` ne pose pas de seconde question « on continue ? » : il rend la main. Pour un lot d'une story, le déroulé est celui d'avant.
+- **Checkpoint.** Il reste avant chaque merge (étape 9), donc par story. `close` ne pose pas de seconde question « on continue ? » : il rend la main. Pour un lot d'une story, le déroulé est celui d'avant. Sous `ezk-product-build`, ces arrêts sont absorbés : une seule question par sprint, après `close` (fiche 3).
 - **Deux `close`.** `ezk-archive close` (alias de `run`) reste et ferme la session. `ezk-sprint close` ferme le sprint. Les deux SKILL.md se distinguent l'un de l'autre.
 - **Story reportée.** Elle prend `[~]` dans le lot et retourne au backlog. Seule une case `[ ]` bloque `close`. Un sprint sans aucune story livrée n'a pas d'incrément : `close` refuse.
 - **Portier en ALERT.** `start` refuse. Seul `--override "<raison>"` passe outre, et la raison est journalisée dans SPRINT.md.
@@ -132,8 +132,7 @@ Cinq précisions sont nées du build.
 **Livré par le POC.** `ezk-sprint start` et `close` (script `sprint.sh` et son DoD bash). `check` ≡ `start --dry-run`. `run` ≡ cycle complet. Le partage des rôles avec `ezk-archive`, qui ne change pas. La carte de méthode à jour. Cet ADR accepté.
 
 **En Suite.**
-- `ezk-product-build` repositionné en orchestrateur de la boucle de session (planning → sprint → rétro → planning), avec un seul checkpoint inter-sprint.
-- Lots de plusieurs stories de bout en bout : un checkpoint par sprint plutôt que par story.
+- `ezk-product-build` repositionné en orchestrateur de la boucle de session (planning → sprint → rétro → planning). Fait le 2026-10-02 : la boucle par lot (`--lot N`, défaut 1) et un seul checkpoint par sprint, après `close` (fiches 1 et 3). Reste la boucle de session complète, et `run:context` / `run:report` qui affichent la taille du lot.
 - Panel adverse complet (architecte, scrum master, PO/juge) sur ce repositionnement.
 - Date de retrait des alias `check` et `run`, et sort de l'alias `close` d'`ezk-archive`.
 

@@ -73,6 +73,7 @@ La restitution se ferme par un bloc « Et maintenant ? » : 1 à 3 commandes, ch
 | après `groom <id>` | `/ezk-backlog ready <id>` — passer la porte « prête » quand les critères tiennent | aucune |
 | après `ready <id>` accepté | `/ezk-backlog next --ready-only` — la fiche est tirable maintenant | `/ezk-sprint run` — la développer tout de suite |
 | après `next --ready-only` | `/ezk-sprint run` — développer cette fiche | aucune |
+| après `next --lot N` | `/ezk-sprint start --lot <ids>` — ouvrir le sprint, qui fige ce lot dans `SPRINT.md` | `/ezk-backlog groom <id>` — si le lot est incomplet ou sa tête bloquée |
 | après `ship <id>` | `/ezk-backlog next --ready-only` — enchaîner sur la fiche suivante | `/ezk-backlog reconcile` — si des PRs ont été fusionnées hors du flux (ex. depuis GitHub) |
 | `list`, `review`, `version`, `help` | aucun bloc | aucun |
 
@@ -109,6 +110,7 @@ du front-matter de cette skill).
 | `groom <id> [--archi\|--no-archi] [--brainstorm\|--no-brainstorm]` | Fait mûrir UNE fiche vers la **DoR** (problème / valeur / critères, + les slots que le projet déclare dans `.vectorz/dor.yml`) par une **boucle guidée** : menu court de techniques (catalogue `groom-techniques.yml`), tu choisis, l'agent applique et re-propose ; l'architecte et le brainstorm en font partie — ne change pas le statut |
 | `ready <id>` | **Gate DoR** : refuse si un slot manque (socle ou slot du projet) ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
+| `next --lot N` | Choisit le **lot** d'un sprint : N fiches **tirables** dans l'ordre du plan, tête bloquée signalée. Tend la ligne `sprint.sh start --lot` qui le fige dans `SPRINT.md` |
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
@@ -425,8 +427,73 @@ d'abord, ou décision journalisée).
 plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
 `ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
-ezk-sprint et ezk-product-build passent par **ici** : aucune logique de gate
-réimplémentée en aval (test de séparabilité).
+ezk-sprint et ezk-product-build passent par **ici**, ou par `next --lot N` qui applique les mêmes
+règles à N fiches : aucune logique de gate réimplémentée en aval (test de séparabilité).
+
+### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
+
+**En clair.** `next --ready-only` tire **une** fiche. `next --lot N` en choisit **N** : le lot d'un
+sprint. Les règles sont les mêmes : fiches prêtes seulement, ordre du plan, tête bloquée signalée,
+aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`. C'est l'intake
+d'ezk-product-build : il tire un lot de `--lot N` fiches par sprint, avec `next --lot` (défaut 1).
+
+`pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md]` fait la sélection (aussi
+`ezk backlog plan-lot <N>`, avec `--root <projet>` pour un autre projet). Il n'écrit rien. Il imprime :
+
+- **le lot** : jusqu'à N fiches `status: ready`, ni épic ni drapeau `blocked:`, dans l'ordre du
+  `PLAN.md`. Sans `PLAN.md` : `P0→P3 puis id` ;
+- **« lot incomplet »** s'il y a moins de N fiches prêtes : le lot part quand même, plus court ;
+- **la tête bloquée** : les fiches `idea` rencontrées avant que le lot soit plein. Groome-les
+  d'abord, ou tranche par la soupape PO journalisée (même règle que `next --ready-only`) ;
+- **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic ;
+- **les prêtes hors plan** : avec un `PLAN.md`, une fiche prête absente du plan n'entre pas dans le
+  lot, car la séquence, c'est le plan. Elle est listée : le PO l'y ajoute (`plan set`) s'il la veut ;
+- **les introuvables** : ids du plan absents de `features/` ;
+- **la ligne à copier** depuis la racine du projet : `bash <…>/sprint.sh start --lot <id,id…>`.
+  Ajoute `--objective "<objectif>"` si tu veux nommer le sprint.
+
+**Figer le lot, c'est `start --lot`.** `sprint.sh start --lot <ids>` (ezk-sprint) écrit le lot dans
+`SPRINT.md`, une ligne par story : c'est le pointeur du sprint courant. `next --lot` ne fige rien et
+ne modifie aucune fiche.
+
+**L'incrément.** L'incrément d'un sprint, ce sont les fiches du lot passées `shipped`, donc leurs
+squash-merges sur `main`. `sprint.sh close` le scelle dans `SPRINT.md`. Il n'existe pas d'objet
+« sprint » persistant (ADR-0054, décision 8) : les fiches et l'historique git suffisent.
+
+Hors du monorepo mega-city, le helper est absent : applique les mêmes règles à la main, comme pour
+`next --ready-only`.
+
+### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
+
+**En clair.** `next --ready-only` tire **une** fiche. `next --lot N` en choisit **N** : le lot d'un
+sprint. Les règles sont les mêmes : fiches prêtes seulement, ordre du plan, tête bloquée signalée,
+aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`.
+
+`pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md]` fait la sélection (aussi
+`ezk backlog plan-lot <N>`, avec `--root <projet>` pour un autre projet). Il n'écrit rien. Il imprime :
+
+- **le lot** : jusqu'à N fiches `status: ready`, ni épic ni drapeau `blocked:`, dans l'ordre du
+  `PLAN.md`. Sans `PLAN.md` : `P0→P3 puis id` ;
+- **« lot incomplet »** s'il y a moins de N fiches prêtes : le lot part quand même, plus court ;
+- **la tête bloquée** : les fiches `idea` rencontrées avant que le lot soit plein. Groome-les
+  d'abord, ou tranche par la soupape PO journalisée (même règle que `next --ready-only`) ;
+- **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic ;
+- **les prêtes hors plan** : avec un `PLAN.md`, une fiche prête absente du plan n'entre pas dans le
+  lot, car la séquence, c'est le plan. Elle est listée : le PO l'y ajoute (`plan set`) s'il la veut ;
+- **les introuvables** : ids du plan absents de `features/` ;
+- **la ligne à copier** depuis la racine du projet : `bash <…>/sprint.sh start --lot <id,id…>`.
+  Ajoute `--objective "<objectif>"` si tu veux nommer le sprint.
+
+**Figer le lot, c'est `start --lot`.** `sprint.sh start --lot <ids>` (ezk-sprint) écrit le lot dans
+`SPRINT.md`, une ligne par story : c'est le pointeur du sprint courant. `next --lot` ne fige rien et
+ne modifie aucune fiche.
+
+**L'incrément.** L'incrément d'un sprint, ce sont les fiches du lot passées `shipped`, donc leurs
+squash-merges sur `main`. `sprint.sh close` le scelle dans `SPRINT.md`. Il n'existe pas d'objet
+« sprint » persistant (ADR-0054, décision 8) : les fiches et l'historique git suffisent.
+
+Hors du monorepo mega-city, le helper est absent : applique les mêmes règles à la main, comme pour
+`next --ready-only`.
 
 ### `aggregate [options]` — le grand ménage à la demande (fiche 20260812104022240, ADR-0051)
 
@@ -675,7 +742,7 @@ DoD exécutable du script : `bin/test-regen-backlog.sh`.
 ## Intégration
 
 - **ezk-sprint** : à l'intake d'un sprint, ce skill fournit *la prochaine fiche tirable*
-  (`next --ready-only`) — **précédée d'un `reconcile`** (rattraper les fiches mergées
+  (`next --ready-only`) ou *le lot du sprint* (`next --lot N`, que `start --lot` fige) — **précédée d'un `reconcile`** (rattraper les fiches mergées
   hors-`ship` avant d'en tirer une, ADR-0018) ; à la clôture, `ship`. ezk-backlog = le
   **quoi/où**, ezk-sprint = le **comment**. Convention de branche partagée : `feat/<id>-<slug>`
   (l'id rend le rapprochement fiche↔PR mécanique pour `reconcile`).

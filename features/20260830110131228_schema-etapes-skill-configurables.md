@@ -5,7 +5,7 @@ type: feature
 priority: P3
 product: mega-city
 labels: [fabrique]
-milestone: parked
+milestone: cockpit
 version:
 epic:
 status: idea
@@ -71,3 +71,12 @@ Le **format est la première marche** ; la reconfiguration vient après.
 >
 > **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
 > ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).
+
+## 🔗 Rattachement au cockpit — 2026-10-02 (décision PO)
+
+Sortie du parking et rattachée au jalon `cockpit`, **sans version**. La priorité ne change pas (P3).
+
+Raison : décrire les étapes d'un skill comme de la donnée est le socle de la **position fine** dans
+la vue [voir les fiches posées sur le schéma du process, avec leur session](20261002115451315_fiches-sur-le-process-avec-session.md).
+La position fine, ce sont les étapes internes du sprint : BDD, TDD, gate, revue. Le panel
+`ezk-architect` + `ezk-pm` reste requis avant tout build.
