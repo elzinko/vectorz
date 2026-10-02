@@ -258,6 +258,15 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    5. Avant d'ouvrir la PR : `git diff --name-only main...HEAD > /tmp/changed && bash <chemin>/check-pr-body.sh --changed-files /tmp/changed < corps.md`.
 
    Apps de bureau (Tauri, Electron) : `evidence: none # <raison>` ou capture manuelle. Gabarit du rendu : [`ezk-pr` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr/assets/PULL_REQUEST_TEMPLATE.thin.md).
+
+   **Ship dans la PR : le dernier commit de la branche** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)). Dès que la DoD de la story est verte (revue `ezk-reviewer` GO, validation verte, PR ouverte donc son numéro connu), range la fiche **dans la PR**, avant le checkpoint :
+
+   ```bash
+   bash products/mega-city/skills/ezk-pr/scripts/ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>
+   git push
+   ```
+
+   Le script lance la transaction `ship:fiche` et committe `docs(features): ship <id> #<N>`. Le squash fera atterrir le code et la fiche **d'un seul coup**, quel que soit le canal de merge : UI GitHub, `gh` ou le flux. Le lien de provenance du corps pointe alors vers `features/done/<id>_*.md`. **Un NO-GO arrivé après** (revue, retour Codex retenu, CI rouge) : `ship-in-pr.sh undo --repo . --fiche-id <id>` annule le ship par un commit de revert, sans réécrire l'historique. Corrige, puis refais `add` : le ship reste le **dernier** commit de la branche.
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ». Le résumé de clôture suit la règle
    [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :
@@ -266,7 +275,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    **Chat** : Markdown seul — jamais `<details>`, `<summary>` ni HTML brut (le terminal les
    affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
    **titre + lien**, jamais par son id nu.
-10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). Marque la fiche livrée via [`ezk-backlog`](../ezk-backlog/) (`ship <id> #PR`). **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui est le **plancher** de la revue (ADR-0059) ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**. Coche ensuite la story dans le lot de `SPRINT.md` (`[x] … (PR #N)`). **Si c'était la dernière du lot, lance `close`** (cf. § « La clôture »).
+10. **Squash-merge** *(le geste dépend de `pr`, cf. § « Capacités GitHub » — **en `pr: false`** : **squash local** via `ship-merge.sh --local` (aucun `gh`), suppression de la seule branche **locale**, puis `ezk-backlog ship <id> local (<sha>)` au lieu de `ship <id> #PR` ; saute tout le `gh` ci-dessous)* — après accord : **squash + merge**, message conventional commit, **supprime la branche remote ET locale** (`gh pr merge --squash --delete-branch` ne couvre que le remote — vérifie qu'aucune copie locale ne survit : `git branch -D <br>` sinon) **et retire le worktree de session** le cas échéant (`git worktree remove`). Une branche locale oubliée sur un repo squash-merge devient un faux « non-mergé » permanent (fiche mega-city 0076 — le filet `ezk-archive` la rattrapera, mais l'hygiène se fait ici). **Le merge ne fait plus que merger** : la fiche est déjà en `done/` par le commit ship de l'étape 8 (ADR-0049). Merge par `ship-merge.sh --remote --pr <N> --branch <br> --head-sha <head après le ship> …` : sa garde **refuse** (exit 3) une branche de story sans son ship et imprime le remède. Si le PO merge depuis l'UI GitHub, la fiche arrive quand même : elle est dans la PR. **Commits de livraison scopés** : `git add` par fichiers **énumérés un par un** — jamais un dossier — puis `git status` de contrôle avant le commit (un dossier ajouté en bloc embarque les éditions en cours ; rétro 2026-07-18 — outillage type hook seulement si ≥2 récidives sur 5 sprints). **Avant de merger : validation verte ET revue adverse traitée** — la validation, c'est la **CI cloud si elle tourne, sinon la gate locale `act`/ezk-ci** (quand la CI GitHub est indisponible — quota épuisé, repo privé sans protection de branche — elle est **attendue rouge et n'est PAS un signal**, cf. `ezk-ci`). La **revue adverse indépendante** est **`ezk-reviewer`** (modèle **différent** du dev), qui est le **plancher** de la revue (ADR-0059) ; si un bot de revue (Codex) est branché, traite aussi ses findings inline, sinon **ne l'attends pas**. Coche ensuite la story dans le lot de `SPRINT.md` (`[x] … (PR #N)`). **Si c'était la dernière du lot, lance `close`** (cf. § « La clôture »).
 
 ## Et maintenant ?
 
@@ -335,6 +344,7 @@ Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
 **E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte **avec un
 corps relisable seul = rendu de la fiche** (« En clair » + sections + `## Comment vérifier`
 + provenance `features/<id>_*.md` + matrice `## Validation` — [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) ; **pas** de Summary parallèle, `## Summary` proscrit) •
+**fiche de la story en `done/` + `status: shipped`** : en flux PR, par le commit ship de sa PR, avant le merge ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)) : c'est une condition de la **story**, pas du sprint ni de la session •
 (après validation) squash-mergée en conventional commit • branche supprimée.
 Le **sprint** est fini quand `sprint.sh close` répond `CLOSE: SEALED` : chaque story du lot est livrée ou reportée.
 
@@ -358,7 +368,7 @@ les états. Tant que le POC n'est pas validé, on ne dépense pas de tokens sur 
 
 | Étape | Délègue à |
 | --- | --- |
-| Quelle fiche construire / marquer livré | skill `ezk-backlog` (`reconcile` puis `next --ready-only` à l'intake, `ship` au merge) |
+| Quelle fiche construire / marquer livré | skill `ezk-backlog` (`reconcile` puis `next --ready-only` à l'intake) ; le `ship` entre dans la PR avant le merge (`ezk-pr` `ship-in-pr.sh`, ADR-0049) |
 | Décision d'archi / SOLID / ADR | sous-agent `ezk-architect` |
 | Scénarios BDD (Gherkin = DoD) | sous-agent `ezk-qa` |
 | Implémentation TDD | sous-agent `ezk-dev` |

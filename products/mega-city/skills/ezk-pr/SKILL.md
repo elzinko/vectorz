@@ -261,16 +261,24 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
 - `report` : un commentaire par PR — matrice mise à jour (✅ fait avec méthode /
   ❌ échec avec le signal observé / ⏳ reste), horodaté. Un échec ⇒ la PR sort
   de la file de merge et retourne au dev (ezk-sprint), avec le signal en main.
-- `ship` : uniquement les PRs dont **toutes les modalités bloquantes** sont ✅ —
-  squash-merge dans l'ordre du plan, CI re-verte entre deux PRs qui partagent
-  des fichiers, branche supprimée **remote ET locale** (+ worktree retiré le cas
-  échéant — une locale oubliée sur un repo squash devient un faux « non-mergé »
-  permanent, fiche mega-city 0076), `ezk-backlog ship <fiche> #PR`. Après un
-  squash fait par le PO **depuis l'UI GitHub** : `git fetch --prune` + supprimer
-  la copie locale — l'UI ne supprime que la branche remote — **puis
-  `ezk-backlog reconcile` et `ship`** : un merge fait hors du flux ne passe la
-  fiche en `done` par personne, `reconcile` le détecte et propose le `ship`
-  (ADR-0018) — sinon la fiche reste orpheline du merge.
+- `ship` : uniquement les PRs dont **toutes les modalités bloquantes** sont ✅.
+  **D'abord le ship dans la PR** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)).
+  Pour chaque PR de story, `ship-in-pr.sh check --repo . --ref <head> --fiche-id <id>`.
+  S'il manque, sur la branche de la PR : `ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>`,
+  `git push`, puis attends la CI sur ce nouveau head. **Ensuite** le squash-merge, dans
+  l'ordre du plan, par `ship-merge.sh --remote` : sa garde refuse une story sans son ship.
+  Deux PR shippées régénèrent toutes deux `BACKLOG.md` (et barrent `PLAN.md`) : après le
+  premier merge, la seconde **conflicte**, UI GitHub comprise. Reprise mécanique : la recette
+  « Conflit sur `BACKLOG.md` » d'`ezk-backlog` (merger `origin/main`, régénérer, pousser),
+  puis merge sur ce **nouveau** head.
+  CI re-verte entre deux PRs qui partagent des fichiers, branche supprimée **remote ET
+  locale** (+ worktree retiré le cas échéant — une locale oubliée sur un repo squash
+  devient un faux « non-mergé » permanent, fiche mega-city 0076). Aucun `ezk-backlog ship`
+  après le merge : la fiche est arrivée avec lui. Après un squash fait par le PO **depuis
+  l'UI GitHub** : `git fetch --prune` + supprimer la copie locale — l'UI ne supprime que la
+  branche remote. Si la PR portait son ship, rien d'autre à faire. Sinon (story faite hors
+  du flux), **`ezk-backlog reconcile`** la détecte et propose le `ship` (ADR-0018) : c'est
+  le filet, plus la routine.
 - **En `pr: false`** (github coupé, cf. § Capacités GitHub) — **aucune cible GitHub** : `report`
   ne poste pas de commentaire, le compte-rendu de revue va dans le **fichier local**
   (`review:emit`) et le corps de PR dans `pr:emit-local` ; `ship` = squash **local**
@@ -305,7 +313,10 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
   pour ne jamais squasher un commit arrivé entre la validation et le merge — le
   garde-fou n'est pas contournable par omission ; une branche absorbée **tenue par un
   autre worktree** est signalée, jamais supprimée de force — le ship ne s'avorte pas
-  en plein milieu.
+  en plein milieu ; **garde ADR-0049** : en remote, une branche de story
+  `<type>/<id>-<slug>` dont le head validé ne range pas sa fiche dans `features/done/` avec `status: shipped`
+  est **refusée** (exit 3, aucun `gh` appelé, remède imprimé). Une livraison partielle
+  voulue passe par `--allow-unshipped "<raison>"`, raison imprimée.
 - **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :
   ce seul fetch rafraîchit `origin/main` pour toutes les vues), puis
   **fast-forward de la SEULE vue invoquante** (celle qui a shippé), jamais un
@@ -316,10 +327,11 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
   chacun se réaligne lui-même à son prochain geste via la gate de fraîcheur).
 
 Implémentation : `skills/ezk-pr/scripts/ship-merge.sh` (orchestre les deux
-chemins + le refus du chemin fantôme) et
+chemins + le refus du chemin fantôme + la garde ADR-0049),
+`skills/ezk-pr/scripts/ship-in-pr.sh` (`check` / `add` / `undo` du ship dans la PR) et
 `skills/ezk-pr/scripts/refresh-worktrees.sh` (le réalignement post-merge,
 réutilisé aussi par la gate de fraîcheur `run-freshness-origin-main`). Tests :
-`skills/ezk-pr/scripts/test-ship-merge.sh` et
+`skills/ezk-pr/scripts/test-ship-merge.sh`, `skills/ezk-pr/scripts/test-ship-in-pr.sh` et
 `skills/ezk-pr/scripts/test-refresh-worktrees.sh`, sur des fixtures git
 jetables — jamais le vrai repo.
 
