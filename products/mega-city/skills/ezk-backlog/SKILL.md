@@ -427,8 +427,41 @@ d'abord, ou décision journalisée).
 plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
 `ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
-ezk-sprint et ezk-product-build passent par **ici** : aucune logique de gate
-réimplémentée en aval (test de séparabilité).
+ezk-sprint et ezk-product-build passent par **ici**, ou par `next --lot N` qui applique les mêmes
+règles à N fiches : aucune logique de gate réimplémentée en aval (test de séparabilité).
+
+### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
+
+**En clair.** `next --ready-only` tire **une** fiche. `next --lot N` en choisit **N** : le lot d'un
+sprint. Les règles sont les mêmes : fiches prêtes seulement, ordre du plan, tête bloquée signalée,
+aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`. C'est l'intake
+d'ezk-product-build : il tire un lot de `--lot N` fiches par sprint, avec `next --lot` (défaut 1).
+
+`pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md]` fait la sélection (aussi
+`ezk backlog plan-lot <N>`, avec `--root <projet>` pour un autre projet). Il n'écrit rien. Il imprime :
+
+- **le lot** : jusqu'à N fiches `status: ready`, ni épic ni drapeau `blocked:`, dans l'ordre du
+  `PLAN.md`. Sans `PLAN.md` : `P0→P3 puis id` ;
+- **« lot incomplet »** s'il y a moins de N fiches prêtes : le lot part quand même, plus court ;
+- **la tête bloquée** : les fiches `idea` rencontrées avant que le lot soit plein. Groome-les
+  d'abord, ou tranche par la soupape PO journalisée (même règle que `next --ready-only`) ;
+- **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic ;
+- **les prêtes hors plan** : avec un `PLAN.md`, une fiche prête absente du plan n'entre pas dans le
+  lot, car la séquence, c'est le plan. Elle est listée : le PO l'y ajoute (`plan set`) s'il la veut ;
+- **les introuvables** : ids du plan absents de `features/` ;
+- **la ligne à copier** depuis la racine du projet : `bash <…>/sprint.sh start --lot <id,id…>`.
+  Ajoute `--objective "<objectif>"` si tu veux nommer le sprint.
+
+**Figer le lot, c'est `start --lot`.** `sprint.sh start --lot <ids>` (ezk-sprint) écrit le lot dans
+`SPRINT.md`, une ligne par story : c'est le pointeur du sprint courant. `next --lot` ne fige rien et
+ne modifie aucune fiche.
+
+**L'incrément.** L'incrément d'un sprint, ce sont les fiches du lot passées `shipped`, donc leurs
+squash-merges sur `main`. `sprint.sh close` le scelle dans `SPRINT.md`. Il n'existe pas d'objet
+« sprint » persistant (ADR-0054, décision 8) : les fiches et l'historique git suffisent.
+
+Hors du monorepo mega-city, le helper est absent : applique les mêmes règles à la main, comme pour
+`next --ready-only`.
 
 ### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
 
