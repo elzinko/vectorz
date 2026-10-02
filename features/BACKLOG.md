@@ -286,6 +286,7 @@
 | [20261002133125444](20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261002155911264](20261002155911264_ezk-archive-reprise-run-interrompu.md) | ezk-archive reprend proprement un run interrompu | feature | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261002155911271](20261002155911271_trier-sorties-retro-par-nature.md) | Trier les sorties de rétro par nature : aligner ADR-0054, ezk-retro et .rules/ | chore | P2 | V0.6 | mega-city | 💡 idea |  |
+| [20261002205428200](20261002205428200_garde-ship-branche-reelle-de-la-pr.md) | La garde de ship lit la vraie branche de la PR, pas l'argument --branch | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 
