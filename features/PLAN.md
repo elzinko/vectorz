@@ -93,7 +93,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ### ⑥ V0.5 — le sprint au lot (P0)
 - ~~`20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`~~ — shipped #324
 - ~~`20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`~~ — shipped #325
-- ~~`20261002114435782` — la fiche d'une story arrive en done avec son merge, quel que soit le canal : ship avant merge, décidé mais jamais construit · prête le 2026-10-02 · `build`~~ — shipped #333
+- `20261002114435782` — la fiche d'une story arrive en done avec son merge, quel que soit le canal : ship avant merge, décidé mais jamais construit · prête le 2026-10-02 · `build`
 - `20261001192624192` — regrouper les artefacts de méthode hors de docs/, dans un dossier dédié · `groom` → `build`
 
 ### ⑦ V0.6 — le cockpit : voir où en est chaque projet (décidé le 2026-10-02)
