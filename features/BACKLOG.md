@@ -271,6 +271,8 @@
 |---|-------|------|------|---------|---------|--------|----|
 | [20260904080827072](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) | Un seul tableau de bord pour tous tes projets — choisir le projet, voir sa config | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
+| [20261002155911250](20261002155911250_portier-archive-origin-main-squash.md) | Le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge | bug | P1 | V0.5 | mega-city | 💡 idea |  |
+| [20261002155911257](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md) | Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte | bug | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
@@ -279,6 +281,8 @@
 | [20261002130917993](20261002130917993_release-local-first-macos.md) | Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261002133125444](20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261002155911264](20261002155911264_ezk-archive-reprise-run-interrompu.md) | ezk-archive reprend proprement un run interrompu | feature | P2 | V0.6 | mega-city | 💡 idea |  |
+| [20261002155911271](20261002155911271_trier-sorties-retro-par-nature.md) | Trier les sorties de rétro par nature : aligner ADR-0054, ezk-retro et .rules/ | chore | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261002205428200](20261002205428200_garde-ship-branche-reelle-de-la-pr.md) | La garde de ship lit la vraie branche de la PR, pas l'argument --branch | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
