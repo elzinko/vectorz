@@ -270,4 +270,74 @@ check "check : INSTALLED=1" "printf '%s' \"\$out_p_check\" | grep -q 'INSTALLED=
 check "init : exit 2 (même verdict)" "test '$rc_p' -eq 2"
 check "init : pas de BACKLOG.md" "! test -f '$P/features/BACKLOG.md'"
 
+# Cas Q : le titre demandé à init s'écrit dans l'en-tête du README installé (backlog_title:), seule
+# source du titre de l'index : la régénération suivante, SANS titre (/ezk-backlog regen, ship:fiche…),
+# garde la même ligne 1. Apostrophe comprise : valeur YAML entre apostrophes, apostrophe doublée.
+echo "Cas Q (init écrit le titre dans l'en-tête du README) :"
+Q="$TMP/titre"
+mkdir -p "$Q/features"
+printf -- '---\nid: 0001\ntitle: q\ntype: feature\npriority: P2\nstatus: idea\ncreated: 2026-10-02\n---\n' \
+  > "$Q/features/0001-q.md"
+want_q="L'index — muti"
+key_q="backlog_title: 'L''index — muti'"
+bash "$SKILL/init.sh" "$Q" "$want_q" >/dev/null
+check "README : backlog_title: dans l'en-tête" \
+  "awk 'NR > 1 && /^---/ { exit } { print }' '$Q/features/README.md' | grep -qxF \"\$key_q\""
+check "BACKLOG : ligne 1 = titre demandé" "head -1 '$Q/features/BACKLOG.md' | grep -qxF \"# \$want_q\""
+bash "$REGEN" "$Q" >/dev/null 2>&1
+check "regen SANS titre → même ligne 1" "head -1 '$Q/features/BACKLOG.md' | grep -qxF \"# \$want_q\""
+Q2="$TMP/sans-titre"
+mkdir -p "$Q2"
+bash "$SKILL/init.sh" "$Q2" >/dev/null
+check "sans titre : pas de backlog_title:" "! grep -q '^backlog_title:' '$Q2/features/README.md'"
+check "sans titre : ligne 1 = titre neutre du script" \
+  "head -1 '$Q2/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs'"
+check "index vide écrit par le même script que les régénérations" \
+  "grep -q '^> Guide du dossier : \[README.md\](README.md). Statuts :' '$Q2/features/BACKLOG.md'"
+
+# Cas R : README déjà là, sans backlog_title: → init ne le réécrit JAMAIS. L'index prend le titre
+# que la régénération gardera, et une note dit comment appliquer le titre demandé.
+echo "Cas R (README existant : intact, titre non appliqué, note) :"
+R="$TMP/readme-existant"
+mkdir -p "$R/features"
+printf -- '---\nskill: ezk-backlog\nlayout_version: 5\n---\n\n# Guide curé\n' > "$R/features/README.md"
+cp "$R/features/README.md" "$TMP/readme-existant.before"
+out_r="$(bash "$SKILL/init.sh" "$R" "Backlog — R" 2>&1)"
+check "README intact" "cmp -s '$R/features/README.md' '$TMP/readme-existant.before'"
+check "ligne 1 = celle que la régénération gardera" \
+  "head -1 '$R/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs'"
+check "note : titre demandé non appliqué" "printf '%s' \"\$out_r\" | grep -qF '« Backlog — R » non appliqué'"
+check "… avec la clé à poser" "printf '%s' \"\$out_r\" | grep -qF \"backlog_title: 'Backlog — R'\""
+
+# Cas S : la migration 002 installe le README → elle y écrit aussi le titre demandé.
+echo "Cas S (apply-002 écrit le titre dans l'en-tête du README) :"
+MIG="$TMP/migre-titre"
+mkdir -p "$MIG/features" "$MIG/products/mega-city/bin"
+cp "$REGEN" "$MIG/products/mega-city/bin/regen-backlog.sh"
+printf '# Backlog\n\n> Index auto-généré — ne pas éditer.\n' > "$MIG/features/README.md"
+printf -- '---\nid: 0001\ntitle: m\ntype: feature\npriority: P2\nstatus: idea\ncreated: 2026-10-02\n---\n' \
+  > "$MIG/features/0001-m.md"
+bash "$APPLY" "$MIG" "Backlog — migré" >/dev/null
+check "README : backlog_title: écrit" "grep -qxF \"backlog_title: 'Backlog — migré'\" '$MIG/features/README.md'"
+check "BACKLOG : ligne 1 = titre demandé" "head -1 '$MIG/features/BACKLOG.md' | grep -qxF '# Backlog — migré'"
+bash "$MIG/products/mega-city/bin/regen-backlog.sh" "$MIG" >/dev/null 2>&1
+check "regen SANS titre → même ligne 1" "head -1 '$MIG/features/BACKLOG.md' | grep -qxF '# Backlog — migré'"
+
+# Cas T : init écrit toujours BACKLOG.md par regen-backlog.sh → introuvable : exit 1, RIEN créé
+# (skill isolée hors monorepo, sans sa copie vendored).
+echo "Cas T (regen introuvable → init n'écrit rien) :"
+SKILL_NOREGEN="$TMP/skill-sans-regen/ezk-backlog"
+mkdir -p "$TMP/skill-sans-regen"
+cp -R "$SKILL" "$SKILL_NOREGEN"
+rm "$SKILL_NOREGEN/scripts/regen-backlog.sh"
+T_ROOT="$TMP/sans-regen"
+mkdir -p "$T_ROOT"
+set +e
+out_t="$(env -i PATH="/usr/bin:/bin" HOME="$HOME" bash "$SKILL_NOREGEN/init.sh" "$T_ROOT" "Backlog — T" 2>&1)"
+rc_t=$?
+set -e
+check "exit 1" "test '$rc_t' -eq 1"
+check "message clair" "printf '%s' \"\$out_t\" | grep -q 'regen-backlog.sh introuvable'"
+check "rien créé" "! test -e '$T_ROOT/features'"
+
 if [ "$FAIL" = 0 ]; then echo 'test-layout-version: TOUT VERT'; else echo 'test-layout-version: ÉCHECS' >&2; exit 1; fi
