@@ -43,6 +43,13 @@ qui a rejoué « Comment vérifier » — jamais auto-déclaré.>
 - [ ] <état observable et vérifiable>
 - [ ] <…>
 
+**Mesure de suivi** *(optionnel)* — ce qui ne se prouve qu'APRÈS le merge : un merge fait depuis
+l'UI, un effet sur les sessions ou les lots suivants. Ça ne se coche pas à la PR, puisque le ship
+range la fiche avant le merge (ADR-0049, règle `development/acceptance-criteria-before-merge`).
+Supprime ce bloc s'il est vide.
+
+- <effet à relever après la livraison, et sur combien de PR / sessions>
+
 ## Comment vérifier
 
 <La PROCÉDURE qui prouve les critères ci-dessus — **pas une recopie** des critères. Des commandes
