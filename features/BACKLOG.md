@@ -129,7 +129,7 @@
 | [20260917214300145](done/20260917214300145_emetteur-corps-pr-local.md) | Émetteur automatique du corps de PR local (rendu de la fiche) en mode github off | feature | P1 |  | mega-city | ✅ shipped | #252 |
 | [20260917221003631](done/20260917221003631_cabler-ezk-pr-github-off.md) | Câbler ezk-pr sur les capacités GitHub (mode github off même avec remote) | feature | P1 |  | mega-city | ✅ shipped | #253 |
 | [20261001133500727](done/20261001133500727_tests-processus-echouent-sous-charge.md) | Des tests à processus échouent sous la charge, puis passent relancés seuls | bug | P1 |  | mega-city | ✅ shipped | #317 |
-| [20261002114435782](20261002114435782_done-par-story-a-la-validation.md) | La fiche d'une story arrive en done avec son merge, quel que soit le canal | feature | P1 |  | mega-city | 🔵 ready |  |
+| [20261002114435782](20261002114435782_done-par-story-a-la-validation.md) | La fiche d'une story arrive en done avec son merge, quel que soit le canal | feature | P1 | V0.5 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |

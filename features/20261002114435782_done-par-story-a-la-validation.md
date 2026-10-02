@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone:
-version:
+version: V0.5
 labels: [sprint]
 status: ready
 pr:
