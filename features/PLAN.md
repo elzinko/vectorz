@@ -100,7 +100,8 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 ### ⑦ V0.6 — le cockpit : voir où en est chaque projet (décidé le 2026-10-02)
 > Le tableau de bord d'abord : son ADR dit dans quelle page vivra la vue du process.
-- `20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · `groom` → `build`
+- `20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · prête le 2026-10-03 · `build`
+- `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03 · `build` (après le tableau de bord : sa section « Agents » vit dans la page « config »)
 - `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
