@@ -11,7 +11,7 @@
 #
 # Usage:
 #   ship-in-pr.sh check --repo <dir> --ref <ref> --fiche-id <id>
-#       Lecture seule. L'arbre de <ref> range-t-il la fiche dans features/done/ ?
+#       Lecture seule. L'arbre de <ref> range-t-il la fiche dans features/done/, en status: shipped ?
 #       `SHIP: present` (exit 0) · `SHIP: missing` (exit 1) · ref inconnue (exit 2).
 #   ship-in-pr.sh add --repo <dir> --fiche-id <id> --pr <n> [--base <base>]
 #       Sur la branche de la story : lance la transaction `ship:fiche` du dépôt (statut, git mv,
@@ -48,11 +48,17 @@ git_c() { git -C "$repo" "$@"; }
 
 [[ -n "$id" ]] || die 2 "--fiche-id requis"
 
-# La fiche est-elle rangée dans done/ dans l'arbre de $1 ? (`<id>_slug.md`, legacy `<id>-slug.md`)
-# Pas de `grep -q` : il sortirait au premier match, et sous pipefail le SIGPIPE de git sur un
-# gros done/ ferait répondre « absente ».
+# La fiche est-elle livrée dans l'arbre de $1 ? Rangée dans done/ (`<id>_slug.md`, legacy
+# `<id>-slug.md`) ET `status: shipped` dans son front-matter : un simple déplacement à la main
+# ne compte pas. Aucun lecteur ne sort avant la fin de son entrée (pas de `grep -q`, pas de
+# `head`) : sous pipefail, le SIGPIPE de git ferait répondre « absente » à tort.
 shipped_in() {
-  git_c ls-tree --name-only "$1" -- features/done/ | grep -E "^features/done/${id}[_-]" >/dev/null
+  local path
+  path="$(git_c ls-tree --name-only "$1" -- features/done/ | grep -E "^features/done/${id}[_-]" || true)"
+  [[ -n "$path" ]] || return 1
+  git_c show "$1:${path%%$'\n'*}" \
+    | awk 'NR == 1 && /^---/ { fm = 1; next } fm && /^---/ { fm = 0 } fm' \
+    | grep -E '^status:[[:space:]]*"?shipped"?[[:space:]]*$' >/dev/null
 }
 
 require_clean() {
@@ -67,10 +73,11 @@ require_story_branch() {
   [[ "$current" != "$base" ]] || die 1 "tu es sur '$base' — le ship se committe sur la branche de la story, jamais sur '$base'"
 }
 
-# Les commits « ship <id> » de la branche, du plus récent au plus ancien.
-ship_commits() {
+# Le dernier commit « ship <id> » de la branche. `-1` plutôt que `| head -1` : après un
+# re-ship, plusieurs commits correspondent et `head` couperait git (SIGPIPE sous pipefail).
+last_ship_commit() {
   git_c rev-parse --verify --quiet "${base}^{commit}" >/dev/null || die 2 "base '$base' introuvable dans $repo (--base ?)"
-  git_c log --format='%H' -E --grep="^docs\(features\): ship ${id}( |$)" "$base..HEAD"
+  git_c log -1 --format='%H' -E --grep="^docs\(features\): ship ${id}( |$)" "$base..HEAD"
 }
 
 do_check() {
@@ -115,7 +122,7 @@ do_undo() {
   require_clean
   if ! shipped_in HEAD; then echo "SHIP: none"; exit 0; fi
   local sha
-  sha="$(ship_commits | head -1)"
+  sha="$(last_ship_commit)"
   [[ -n "$sha" ]] || die 1 "la fiche ${id} est en done/ sans commit ship sur cette branche (héritée de '$base' ?) — rien retiré"
   if ! git_c revert --no-commit "$sha" >/dev/null 2>&1; then
     git_c revert --abort

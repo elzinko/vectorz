@@ -92,7 +92,7 @@ toujours **avant** de shipper. La fiche ci-dessus change l'ordre, et le rend vé
 - **`ezk-pr/scripts/ship-in-pr.sh`** porte les trois gestes. `add` committe le ship sur la
   branche de la story (jamais sur `main`, jamais sur un arbre sale). `undo` le retire après un
   NO-GO par un **commit de revert** : aucune réécriture d'historique, aucun `push --force`. `check`
-  dit si l'arbre d'un head range déjà la fiche dans `features/done/`.
+  dit si l'arbre d'un head range déjà la fiche dans `features/done/` avec `status: shipped`.
 - **`ship-merge.sh --remote`** refuse (exit 3) une branche de story sans son ship, avant tout
   appel à `gh`. `--allow-unshipped "<raison>"` laisse passer une livraison partielle voulue.
 - **`ezk-sprint`** : le ship entre à la fin de l'étape 8, l'étape 10 ne fait plus que merger, et

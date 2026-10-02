@@ -314,7 +314,7 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
   garde-fou n'est pas contournable par omission ; une branche absorbée **tenue par un
   autre worktree** est signalée, jamais supprimée de force — le ship ne s'avorte pas
   en plein milieu ; **garde ADR-0049** : en remote, une branche de story
-  `<type>/<id>-<slug>` dont le head validé ne range pas sa fiche dans `features/done/`
+  `<type>/<id>-<slug>` dont le head validé ne range pas sa fiche dans `features/done/` avec `status: shipped`
   est **refusée** (exit 3, aucun `gh` appelé, remède imprimé). Une livraison partielle
   voulue passe par `--allow-unshipped "<raison>"`, raison imprimée.
 - **Après le merge** — `git fetch --prune` (les worktrees partagent les refs :

@@ -141,9 +141,31 @@ bash "$SCRIPT" add --repo "$REPO" --fiche-id "$ID" --pr 12 >/dev/null && bash "$
 rc=0; bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID" --base nulle-part >/dev/null 2>&1 || rc=$?
 [[ $rc -eq 2 ]] && ok "base introuvable → exit 2 (pas un code git brut)" || fail "base introuvable : rc=$rc"
 
+echo "=== deux cycles NO-GO / re-ship : undo retire toujours le dernier ship ==="
+for cycle in 1 2; do
+  bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID" >/dev/null && bash "$SCRIPT" add --repo "$REPO" --fiche-id "$ID" --pr 12 >/dev/null \
+    || fail "cycle $cycle : undo puis re-ship"
+done
+n_ship="$(git -C "$REPO" log --oneline --grep="^docs(features): ship ${ID}" | wc -l | tr -d ' ')"
+OUT="$(bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID")"
+[[ "$n_ship" -ge 3 && "$OUT" == "SHIP: undone $(git -C "$REPO" rev-parse --short=8 HEAD~1)" ]] \
+  && ok "$n_ship commits ship sur la branche → undo vise le plus récent" || fail "multi-ship : n=$n_ship out=$OUT"
+bash "$SCRIPT" add --repo "$REPO" --fiche-id "$ID" --pr 12 >/dev/null
+
+echo "=== check — une fiche déplacée à la main, sans status: shipped, ne compte pas ==="
+REPO3="$WORK/repo3"
+new_repo "$REPO3"
+mkdir -p "$REPO3/features/done"
+git -C "$REPO3" mv "features/${ID}_x.md" "features/done/${ID}_x.md"
+git -C "$REPO3" commit -qm "docs: déplacement à la main"
+rc=0; bash "$SCRIPT" check --repo "$REPO3" --ref HEAD --fiche-id "$ID" >/dev/null || rc=$?
+[[ $rc -eq 1 ]] && ok "done/ mais status: ready → SHIP: missing" || fail "déplacement à la main accepté : rc=$rc"
+rc=0; bash "$MERGE" --repo "$REPO3" --remote --pr 4 --branch "feat/${ID}-x" --subject s --body b --head-sha "$(git -C "$REPO3" rev-parse HEAD)" --dry-run >/dev/null 2>&1 || rc=$?
+[[ $rc -eq 3 ]] && ok "la garde du merge refuse ce faux ship (exit 3)" || fail "garde : rc=$rc"
+
 echo "=== undo — refus : revert en conflit, fiche héritée de main ==="
 # Un commit plus récent retouche la ligne même que le revert doit rétablir : conflit franc.
-sed -i.bak 's/^status: shipped$/status: shipped # retouché/' "$REPO/features/done/${ID}_x.md" && rm -f "$REPO/features/done/${ID}_x.md.bak"
+sed -i.bak 's/^pr: "#12"$/pr: "#12" # retouché/' "$REPO/features/done/${ID}_x.md" && rm -f "$REPO/features/done/${ID}_x.md.bak"
 git -C "$REPO" commit -qam "docs: retouche la fiche après le ship"
 before="$(git -C "$REPO" rev-parse HEAD)"
 rc=0; bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID" >/dev/null 2>&1 || rc=$?

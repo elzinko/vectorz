@@ -26,7 +26,7 @@
 #       la PR a bougé depuis la validation). --dry-run : imprime la commande, n'exécute rien.
 #       Sans --dry-run : exécute, puis fetch --prune + réaligne les vues vers origin/<base>.
 #       Garde ADR-0049 : une branche de story `<type>/<id>-<slug>` doit porter le ship de sa
-#       fiche (fiche dans features/done/ à <sha>), sinon REFUS (exit 3) avant tout appel à `gh`.
+#       fiche (dans features/done/ à <sha>, status: shipped), sinon REFUS (exit 3) avant tout appel à `gh`.
 #       Le remède est imprimé : `ship-in-pr.sh add`, push, puis merge sur le nouveau head.
 #       `--allow-unshipped "<raison>"` laisse passer une livraison partielle voulue (raison imprimée).
 set -euo pipefail
