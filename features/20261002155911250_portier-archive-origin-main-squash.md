@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [archive]
-status: idea
+status: ready
 pr:
 evidence: none # script de clôture, pas d'écran
 created: 2026-10-02
@@ -16,9 +16,10 @@ created: 2026-10-02
 # 20261002155911250 — Le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge
 
 **En clair.** À la clôture d'une session, le portier d'`ezk-archive` classe « à récupérer » des
-branches dont tout le contenu est déjà sur `main`. Il compare à `main` local, parfois en retard, au
-lieu d'`origin/main`, et il ne reconnaît pas une branche fusionnée en squash. On le recale sur
-`origin/main` et on lui apprend le squash : une clôture ne crie plus au loup.
+branches dont tout le contenu est déjà sur `main`. Depuis le 2026-10-01, il sait reconnaître un
+squash-merge, mais à la clôture il compare encore au `main` local, souvent en retard sur
+`origin/main`. On le fait comparer à `origin/main`, comme le fait déjà le ménage : une clôture ne
+crie plus au loup.
 
 **Si tu arrives frais.** Le *portier* est `skills/ezk-archive/scripts/check.sh` : il dit si une
 session peut être archivée sans rien perdre. Un *squash-merge* écrase les commits d'une branche en un
@@ -37,31 +38,57 @@ Deux occurrences, dans le projet muti :
 Coût : à chaque clôture, le pilote doit prouver à la main que rien n'est perdu. Pire, un faux
 « REAL » peut cacher une vraie branche non mergée au milieu du bruit.
 
+**Ce qui est déjà fait** (lu dans le code le 2026-10-03, PR #311 du 2026-10-01) :
+
+- **Le squash est reconnu.** `classify_ref` vérifie que le contenu de chaque fichier de la branche
+  est arrivé sur la base. C'est robuste au squash, et ça marche sans GitHub.
+- **Le ménage compare à `origin/main`.** En mode `--cleanup`, le portier prouve contre
+  `origin/<base>` et sa jumelle locale (`PROOF_BASES`).
+- **Le portier mesure son retard.** Le contrôle `MAINSYNC` calcule l'écart entre `main` et
+  `origin/main`, et l'affiche.
+
+**Ce qui reste cassé.** À la clôture, le mode par défaut, le portier classe les branches contre le
+`main` **local** (`git branch --no-merged "$BASE"`, puis `classify_ref "$BASE"`). Si ce `main` est en
+retard, une branche déjà fusionnée en squash sur `origin/main` est classée « REAL ». Le portier
+connaît pourtant ce retard : il ne s'en sert pas pour classer.
+
 ## Proposition
 
-- Faire un `git fetch`, puis comparer à `origin/<base>`, pas à la branche locale.
-- Reconnaître une branche absorbée par squash : PR mergée depuis cette branche
-  (`gh pr list --state merged --head <branche>`), ou équivalence de patch (`git cherry`) en repli
-  hors GitHub.
-- Ne pas en faire une règle de discipline (« pense à fetch ») : c'est l'outil qui se corrige.
+1. **À la clôture, le portier prouve chaque branche contre `origin/<base>`**, plus sa jumelle
+   locale, quand la ref distante existe. C'est ce que fait déjà le ménage : on réutilise
+   `classify_ref` et `PROOF_BASES`, sans algorithme nouveau.
+2. **Le skill `ezk-archive` fait le `git fetch`, juste avant d'appeler le portier.** Le script reste
+   strictement en lecture : le test G7 (`test-check-gate.sh`) interdit qu'il fasse un `fetch`. C'est
+   l'outil qui se corrige, pas une règle de discipline (« pense à fetch »). Sans réseau, la clôture
+   continue, et le portier signale une ref `origin` qui peut être ancienne.
+3. **On abandonne `gh pr list --state merged --head`.** La preuve par contenu suffit, et elle marche
+   hors GitHub.
 
 ## Critères d'acceptation
 
-- [ ] Une branche squash-mergée sur `origin/main` est classée absorbée, pas « REAL ».
-- [ ] Une branche réellement non mergée reste classée « REAL ».
-- [ ] Un `main` local en retard ne change pas le verdict.
-- [ ] La suite shell couvre le cas squash et le cas « main local en retard ».
+- [ ] À la clôture, une branche fusionnée en squash sur `origin/main`, mais pas encore sur le `main`
+      local, est classée absorbée.
+- [ ] Une branche réellement non fusionnée reste classée « REAL ».
+- [ ] Le portier ne fait toujours aucun `fetch` : le test G7 reste vert.
+- [ ] Le skill `ezk-archive` rafraîchit les refs avant d'appeler le portier. Sans réseau, la clôture
+      continue et le dit.
+- [ ] La suite shell couvre le cas « squash sur `origin/main`, `main` local en retard » à la
+      clôture.
 
 ## Comment vérifier
 
-Ajouter les deux cas aux tests shell d'`ezk-archive`, puis lancer la suite :
-
 ```bash
+# la suite shell d'ezk-archive, dont le nouveau cas et le test G7
 pnpm --dir products/mega-city test:scripts
+bash products/mega-city/skills/ezk-archive/scripts/test-check-branches.sh
+bash products/mega-city/skills/ezk-archive/scripts/test-check-gate.sh
 ```
 
+Le nouveau cas, à rejouer dans un dépôt jetable : une branche fusionnée en squash sur un `origin`
+local, un `main` local laissé en arrière, puis `check.sh --gate`. Avant la correction : « REAL ».
+Après : absorbée.
+
 Sur le terrain : 0 faux « REAL » sur les 5 prochaines clôtures d'un projet consommateur (muti).
-*(Bloc provisoire, précisé au grooming.)*
 
 ## Notes / décisions
 
@@ -69,3 +96,10 @@ Sur le terrain : 0 faux « REAL » sur les 5 prochaines clôtures d'un projet co
   `docs/captures/2026-10-02-retro-frictions-outillage-cross-repo.md`). Décision PO ✅, P1, unanime
   dans les quatre lentilles.
 - Version V0.5 proposée par le pilote (P1 → release en cours) ; à confirmer au planning.
+- **Prête le 2026-10-03** (porte de « prête » passée : deux incidents datés, coût dit, 5 critères
+  prouvables, dépendance muti constatée).
+- **Groomée le 2026-10-03 : fiche resserrée.** La reconnaissance du squash est livrée par la PR #311
+  (2026-10-01). Reste la base de comparaison à la clôture. Le `git fetch` proposé à l'origine passe
+  dans le skill, pas dans le script, à cause du test G7. La piste `gh pr list --head` est abandonnée.
+- Dépendance muti — accès constaté le 2026-10-03. Dépôt git dans `~/git/bacasable/muti`, sur `main`.
+  Il sert à la vérification sur le terrain.
