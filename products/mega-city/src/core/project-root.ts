@@ -20,6 +20,9 @@ import { resolveProjectPath } from '../supervision/link-config.js';
 /** La variable qui désigne le projet quand l'option `--root` n'est pas donnée. */
 export const PROJECT_ROOT_ENV = 'EZK_ROOT';
 
+/** Posée par `ezk` quand il a déjà annoncé « dépôt visé : <racine> » : le script ne le répète pas. */
+export const ANNOUNCED_ENV = 'EZK_ROOT_ANNOUNCED';
+
 export type RootSource = 'flag' | 'env' | 'default';
 
 export interface RootInputs {

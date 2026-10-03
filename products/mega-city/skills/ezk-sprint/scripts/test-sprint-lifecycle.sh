@@ -283,6 +283,29 @@ bash "$SPRINT" close --abandon "PO arrête" >/dev/null
 bash "$SPRINT" start --lot "$A" --objective "Suite" >/dev/null
 ok "abandon : l'id de la story restée ouverte est gardé aussi" 'grep -qxF -- "- Sprint $N18B — Après les reports — abandonné (PO arrête) — 0 livrée, 0 reportée, 1 ouverte — ouverte : $C" SPRINT.md'
 
+echo "S20 — projet hôte qui n'ignore pas SPRINT.md : start l'exclut de git en local (fiche 20261003200945204)"
+# Sans ça, SPRINT.md reste « non suivi » et `ship-merge.sh --local` refuse un dépôt qu'il juge sale.
+git init -q -b main "$TMP/hote"
+(
+  cd "$TMP/hote"
+  git config user.email test@test && git config user.name test && git config commit.gpgsign false
+  mkdir -p features && mkfiche "$A" "Alpha" alpha
+  echo node_modules/ > .gitignore
+  git add . && git commit -qm base
+)
+GI0="$(cksum < "$TMP/hote/.gitignore")"
+(cd "$TMP/hote" && bash "$SPRINT" start --lot "$A" >/dev/null)
+ok "SPRINT.md écrit, et le dépôt reste propre pour git" '[ -f "$TMP/hote/SPRINT.md" ] && [ -z "$(git -C "$TMP/hote" status --porcelain)" ]'
+ok "aucun fichier du projet modifié (.gitignore intact)" '[ "$(cksum < "$TMP/hote/.gitignore")" = "$GI0" ]'
+EXCL="$(git -C "$TMP/hote" rev-parse --git-path info/exclude)"
+case "$EXCL" in /*) ;; *) EXCL="$TMP/hote/$EXCL" ;; esac
+ok "l'exclusion locale de git nomme SPRINT.md" 'grep -qx "/SPRINT.md" "$EXCL"'
+(cd "$TMP/hote" && bash "$SPRINT" close --abandon "S20" >/dev/null && bash "$SPRINT" start --lot "$A" >/dev/null)
+ok "un second start n'ajoute pas de doublon" '[ "$(grep -cx "/SPRINT.md" "$EXCL")" = 1 ]'
+# Le dépôt de test principal (le dossier courant) ignore SPRINT.md dans son .gitignore, comme vectorz.
+EXCL_REPO="$(git rev-parse --git-path info/exclude)"
+ok "un dépôt qui ignore déjà SPRINT.md garde son exclusion locale intacte" '[ ! -f "$EXCL_REPO" ] || ! grep -qx "/SPRINT.md" "$EXCL_REPO"'
+
 echo "S19 — hors dépôt git : exit 2"
 mkdir "$TMP/nogit"
 rc=0; (cd "$TMP/nogit" && bash "$SPRINT" close >/dev/null 2>&1) || rc=$?

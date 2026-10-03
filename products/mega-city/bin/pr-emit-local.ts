@@ -7,13 +7,16 @@
  *   pnpm --dir products/mega-city pr:emit-local --fiche features/<id>_<slug>.md \
  *     [--out-root features/pr-local] [--validation "Gate locale=✅,Revue=✅"]
  *
- * Le chemin CIBLE et la fiche sont résolus contre `INIT_CWD` (répertoire d'invocation = racine
- * du projet), pas le cwd de `pnpm --dir …` — même correctif que `bin/ezk-config.ts` et
- * `bin/review-emit.ts` (revues Codex, PR #250/#251), sans quoi le fichier atterrirait dans le
- * monorepo au lieu du projet où tourne le sprint.
+ * Le projet est celui que désigne `ezk` (`--root`, ou le dépôt du dossier courant), sinon `INIT_CWD`
+ * (répertoire d'invocation de `pnpm --dir …`) : jamais le monorepo de la méthode. La fiche et
+ * `--out-root` se lisent depuis la racine du projet, comme les fiches de `ezk backlog ship`.
+ * Les liens relatifs de la fiche sont recalés pour le dossier du document, et la provenance est un
+ * lien que `ship` recale quand il range la fiche (fiche 20261003200945204).
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { basename, isAbsolute, relative, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { basename, join, posix, relative, resolve, sep } from 'node:path';
+import { recalLinks } from '../src/backlog/ship-fiche.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { renderPrBody, type ValidationRow } from '../src/pr-body/render.js';
 
 function fail(message: string): never {
@@ -45,14 +48,18 @@ function parseValidation(spec: string | undefined): ValidationRow[] | undefined 
   });
 }
 
-const values = parseArgs(process.argv.slice(2));
+// Sans projet désigné : le dossier où l'on a tapé la commande (pnpm change de dossier avant le script).
+const project = projectRootOrExit(process.env.INIT_CWD ?? process.cwd());
+const values = parseArgs(project.rest);
 const ficheArg = values.fiche;
 if (!ficheArg) fail('option --fiche est requise (chemin de la fiche, ex. features/<id>_<slug>.md)');
 
-const base = process.env.INIT_CWD ?? process.cwd();
-const fichePathAbs = resolve(base, ficheArg);
+/** Un chemin du projet, relatif à sa racine, en séparateurs `/` (comme les liens markdown). */
+const inProject = (abs: string): string => relative(project.root, abs).split(sep).join(posix.sep);
+
+const fichePathAbs = resolve(project.root, ficheArg);
 // Provenance dans le corps = chemin relatif à la racine du projet (check-pr-body.sh veut `features/…md`).
-const fichePathRel = isAbsolute(ficheArg) ? relative(base, fichePathAbs) : ficheArg;
+const fichePathRel = inProject(fichePathAbs);
 
 let ficheText: string;
 try {
@@ -61,12 +68,16 @@ try {
   fail(`fiche introuvable : ${fichePathAbs}`);
 }
 
-const outRoot = resolve(base, values['out-root'] ?? 'features/pr-local');
+const outRoot = resolve(project.root, values['out-root'] ?? join('features', 'pr-local'));
 const outPath = resolve(outRoot, basename(fichePathRel));
+const outPathRel = inProject(outPath);
 
+// Le document vit un dossier plus bas que la fiche : ses liens relatifs suivent (images de preuve…).
+const rebased = recalLinks(ficheText, fichePathRel, outPathRel, new Map(), (p) => existsSync(join(project.root, p)));
 const body = renderPrBody({
-  ficheText,
+  ficheText: rebased.text,
   fichePath: fichePathRel,
+  ficheHref: posix.relative(posix.dirname(outPathRel), fichePathRel),
   validation: parseValidation(values.validation),
 });
 

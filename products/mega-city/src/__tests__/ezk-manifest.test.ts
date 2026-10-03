@@ -56,7 +56,7 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744 et 20261002155911257)', () => {
+  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744, 20261002155911257 et 20261003200945204)', () => {
     const labels = manifest.commands
       .filter((e) => e.project)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
@@ -75,19 +75,28 @@ describe('ezk-manifest.yml', () => {
       'dor health',
       'dor show',
       'map',
+      'pr emit-local',
       'retro captures',
+      'review emit',
       'rules apply',
       'rules check',
       'rules show',
     ]);
   });
 
-  it('les commandes qui ÉCRIVENT dans le projet désigné sont exactement celles-ci (fiche 20261002155911257)', () => {
+  it('les commandes qui ÉCRIVENT dans le projet désigné sont exactement celles-ci (fiches 20261002155911257 et 20261003200945204)', () => {
     const labels = manifest.commands
       .filter((e) => e.writes)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
       .sort();
-    expect(labels).toEqual(['backlog regen', 'backlog ship', 'backlog version', 'config']);
+    expect(labels).toEqual([
+      'backlog regen',
+      'backlog ship',
+      'backlog version',
+      'config',
+      'pr emit-local',
+      'review emit',
+    ]);
   });
 
   it('toute commande « project » lit la racine désignée (jamais une promesse en l’air)', () => {

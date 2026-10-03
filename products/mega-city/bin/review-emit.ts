@@ -14,11 +14,12 @@
  * sur stdout si `--github` est passé. L'acte `gh pr comment` reste à la
  * frontière CLI — ce script ne l'exécute jamais lui-même.
  */
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import type { ReviewPack, ReviewStatus } from '../src/review/contract.js';
 import { REVIEW_STATUSES, validateReviewPack } from '../src/review/contract.js';
 import { createMarkdownFileEmitter } from '../src/review/emitters/markdown-file.js';
 import { createGithubCommentEmitter } from '../src/review/emitters/github-comment.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
@@ -93,17 +94,16 @@ function buildPackFromArgs(values: Record<string, string>): ReviewPack {
   return pack;
 }
 
-const { values, github } = parseArgs(process.argv.slice(2));
-const pack = buildPackFromArgs(values);
-
 // `pnpm --dir products/mega-city …` place le cwd dans products/mega-city ; `INIT_CWD`
-// conserve le répertoire d'invocation (la racine du projet cible). On résout le dossier des
-// reviews contre CETTE base — sinon, lancé comme le prescrit ezk-sprint (`pnpm --dir …`), le
-// fichier de revue local atterrit dans `products/mega-city/features/reviews/` du monorepo au
-// lieu du projet où tourne le sprint (trou vu au dogfooding `github: false`). Même correctif
-// que `bin/ezk-config.ts` (revue Codex, PR #250). Un `--reviews-root` absolu reste pris tel quel.
-const base = process.env.INIT_CWD ?? process.cwd();
-const reviewsRoot = resolve(base, values['reviews-root'] ?? 'features/reviews');
+// conserve le répertoire d'invocation. Le dossier des reviews vit dans le PROJET : celui que désigne
+// `ezk` (`--root`, ou le dépôt du dossier courant — fiche 20261003200945204), sinon `INIT_CWD`.
+// Jamais `products/mega-city/features/reviews/` du monorepo (trou vu au dogfooding `github: false`).
+// Un `--reviews-root` se lit depuis la racine du projet, comme les fiches de `ezk backlog ship` ;
+// absolu, il est pris tel quel.
+const project = projectRootOrExit(process.env.INIT_CWD ?? process.cwd());
+const { values, github } = parseArgs(project.rest);
+const pack = buildPackFromArgs(values);
+const reviewsRoot = resolve(project.root, values['reviews-root'] ?? join('features', 'reviews'));
 const markdownEmitter = createMarkdownFileEmitter({ reviewsRoot });
 const writtenPath = markdownEmitter.emit(pack);
 console.log(`✓ review écrite : ${writtenPath}`);

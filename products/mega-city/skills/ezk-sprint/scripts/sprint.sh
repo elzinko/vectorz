@@ -207,6 +207,18 @@ loader_root() {
 }
 
 # --- start -------------------------------------------------------------------------
+# SPRINT.md ne se committe pas. Un projet hôte qui ne l'ignore pas le verrait « non suivi », et le
+# merge local (ship-merge.sh --local) refuserait un dépôt qu'il juge sale. On l'exclut donc de git
+# EN LOCAL (info/exclude), sans toucher un fichier du projet ni exiger de migration (fiche
+# 20261003200945204). Déjà ignoré ou déjà suivi : rien à faire.
+exclude_sprint_file() {
+  git check-ignore -q "$FILE" 2>/dev/null && return 0
+  git ls-files --error-unmatch -- "$FILE" >/dev/null 2>&1 && return 0
+  local excl
+  excl="$(git rev-parse --git-path info/exclude)" || return 1
+  mkdir -p "$(dirname "$excl")" && printf '/%s\n' "$FILE" >> "$excl"
+}
+
 sprint_file_content() { # le nouveau SPRINT.md, sur stdout (variables de do_start)
   echo "# Sprint ${n} — ${OBJ:-sans objectif}"
   echo "Statut: en cours   Ouvert: ${today}"
@@ -299,6 +311,7 @@ do_start() {
     echo "sprint.sh : écriture de ${FILE} impossible" >&2
     exit 2
   fi
+  exclude_sprint_file || warn="${warn:+$warn$'\n'}WARN: ${FILE} n'a pas pu être exclu de git : le merge local le verra comme un fichier non suivi"
 
   echo "START: OPENED sprint=${n} stories=${n_stories}"
   echo "SPRINT_FILE: ${FILE}"

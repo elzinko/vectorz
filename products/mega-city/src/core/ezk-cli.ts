@@ -251,6 +251,14 @@ function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
     );
   }
   if (env.checkoutRoot === env.ownRoot) return undefined;
+  if (entry.project) {
+    // Conseiller « --root <la méthode> » ferait travailler la commande sur vectorz au lieu du projet
+    // où l'on se trouve (fiche 20261003200945204) : on demande de désigner le projet.
+    return (
+      `${name} : cette commande travaille sur un projet, et aucun n'est désigné. Rien n'a été fait.\n` +
+      '  Ajoute « --root <dossier du projet> » avant la commande.'
+    );
+  }
   const where =
     env.checkoutRoot === undefined
       ? "tu n'es dans aucun dépôt de la méthode"

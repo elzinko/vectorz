@@ -249,6 +249,17 @@ describe('route — projet désigné (project: true)', () => {
     expect(r).not.toHaveProperty('projectRoot');
   });
 
+  it('sans désignation, hors de la méthode : le refus dit de désigner le projet, jamais de viser la méthode', () => {
+    // fiche 20261003200945204 : suivre l'ancien conseil (« --root <la méthode> ») visait le mauvais projet
+    for (const checkoutRoot of [undefined, '/autre/checkout']) {
+      const r = route(PROJECT_MANIFEST, ['board', 'show'], { ownRoot: OWN, ...(checkoutRoot ? { checkoutRoot } : {}) });
+      expect(r.kind).toBe('error');
+      if (r.kind !== 'error') continue;
+      expect(r.message).not.toContain(`--root ${OWN}`);
+      expect(r.message).toContain('--root <dossier du projet>');
+    }
+  });
+
   it('une commande « none » marquée project passe sans désignation, depuis n’importe où', () => {
     const r = route(PROJECT_MANIFEST, ['dashboard'], { ownRoot: OWN });
     expect(r.kind).toBe('run');
