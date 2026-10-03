@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [revue]
-status: idea
+status: ready
 pr:
 evidence: none # changement de méthode de revue, pas d'écran
 created: 2026-10-03
@@ -18,8 +18,9 @@ created: 2026-10-03
 **En clair.** Le gabarit de fiche le dit : une case cochée veut dire « prouvé, jamais
 auto-déclaré ». Mais aucun agent n'est chargé de cette preuve. En pratique, celui qui construit la
 story coche lui-même ses critères, avant même la revue. On veut que le **relecteur** rejoue
-« Comment vérifier », puis coche chaque case avec sa preuve, et qu'il ne dise GO que si toutes les
-cases sont prouvées.
+« Comment vérifier » et prouve chaque critère. Ses cases sont reportées dans la fiche telles quelles,
+et il ne dit GO que si toutes sont prouvées. Le PO accepte alors la story sur des preuves, plus sur
+des cases cochées par celui qui l'a construite.
 
 **Si tu arrives frais.** Les *critères d'acceptation* sont les cases à cocher d'une fiche : ce qui
 doit être vrai pour accepter la story. Le *relecteur* est l'agent `ezk-reviewer`, la revue adverse
@@ -122,6 +123,11 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - **P1 demandée par le PO** le 2026-10-03.
+- **Gate « prête » passée le 2026-10-03** : problème daté et cause retenue, valeur, décision
+  (prouver = relecteur, accepter = PO), cinq critères vérifiables avant le merge. Aucune dépendance
+  hors du monorepo ; aucun critère propre au projet (`.vectorz/dor.yml` absent). Retouche au
+  passage : l'« En clair » disait encore que le relecteur « coche » ; il **prouve**, ses cases sont
+  reportées (décision du grooming).
 - **Grooming du 2026-10-03**, deux techniques gardées par le PO : « retourner la prémisse » (prouver
   et accepter sont deux gestes ; le relecteur prouve, le PO accepte, l'agent qualité fournit ses
   preuves quand il est appelé) et « avis de l'architecte » (la preuve tombe entre la revue et le
