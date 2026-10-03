@@ -14,8 +14,12 @@ import { PROJECT_ROOT_ENV } from './project-root.js';
 /** Où vit le manifeste, depuis la racine d'un checkout de la méthode : sert à reconnaître un checkout. */
 export const MANIFEST_RELPATH = 'products/mega-city/ezk-manifest.yml';
 
-/** `fixed` : lit/écrit les fichiers du dépôt de la méthode. `none` : indépendante du dépôt courant. */
-export type RootPolicy = 'fixed' | 'none';
+/**
+ * `fixed` : lit/écrit les fichiers du dépôt de la méthode. `none` : indépendante du dépôt courant.
+ * `cwd` : écrit dans le dépôt git du dossier où la commande est tapée (sans `--root`), quel qu'il
+ * soit : vectorz, un worktree, muti (fiche 20261003072823731).
+ */
+export type RootPolicy = 'fixed' | 'none' | 'cwd';
 
 export interface ManifestEntry {
   domain: string;
@@ -71,6 +75,8 @@ export interface RouterEnv {
   rootFlag?: string;
   /** Valeur de la variable `EZK_ROOT`, déjà résolue en absolu. Ne vaut que pour les commandes `project`. */
   envRoot?: string;
+  /** Le dépôt git qui contient le dossier courant, s'il y en a un, et s'il porte un `features/`. */
+  cwdRepo?: { root: string; hasFeatures: boolean };
 }
 
 export type Resolution =
@@ -114,11 +120,16 @@ function readEntry(raw: unknown, index: number): ManifestEntry {
   if (/\n/.test(summary)) fail(label, 'le résumé doit tenir sur une ligne.');
   if (typeof run !== 'string' || run.trim() === '') fail(label, 'run (le script à lancer) manquant.');
   const rootPolicy = root ?? 'fixed';
-  if (rootPolicy !== 'fixed' && rootPolicy !== 'none') fail(label, "root doit valoir 'fixed' ou 'none'.");
+  if (rootPolicy !== 'fixed' && rootPolicy !== 'none' && rootPolicy !== 'cwd') {
+    fail(label, "root doit valoir 'fixed', 'none' ou 'cwd'.");
+  }
   if (deprecated !== undefined && typeof deprecated !== 'string') fail(label, 'deprecated invalide.');
   if (project !== undefined && typeof project !== 'boolean') fail(label, 'project doit valoir true ou false.');
   if (writes !== undefined && typeof writes !== 'boolean') fail(label, 'writes doit valoir true ou false.');
   if (writes === true && project !== true) fail(label, "writes n'a de sens qu'avec project: true.");
+  if (rootPolicy === 'cwd' && (project !== true || writes !== true)) {
+    fail(label, 'root: cwd désigne le dépôt où la commande écrit : il exige project: true et writes: true.');
+  }
   return {
     domain,
     ...(typeof verb === 'string' ? { verb } : {}),
@@ -203,12 +214,32 @@ function label(entry: ManifestEntry): string {
  */
 function designatedProject(entry: ManifestEntry, env: RouterEnv): string | undefined {
   if (!entry.project) return undefined;
+  if (entry.root === 'cwd') return env.rootFlag ?? (env.cwdRepo?.hasFeatures ? env.cwdRepo.root : undefined);
   return env.rootFlag ?? (entry.writes ? undefined : env.envRoot);
+}
+
+/** `root: cwd` sans `--root` : il faut un dépôt git, et qu'il porte un backlog. Sinon, quoi faire. */
+function cwdProblem(name: string, env: RouterEnv): string | undefined {
+  if (env.rootFlag !== undefined) return undefined;
+  if (env.cwdRepo === undefined) {
+    return (
+      `${name} : tu n'es dans aucun dépôt git, donc je ne sais pas où écrire. Rien n'a été écrit.\n` +
+      '  Lance la commande depuis le dépôt dont tu ranges les fiches, ou ajoute « --root <dossier> » avant la commande.'
+    );
+  }
+  if (!env.cwdRepo.hasFeatures) {
+    return (
+      `${name} : le dépôt ${env.cwdRepo.root} n'a pas de dossier features/ : ce n'est pas un backlog. Rien n'a été écrit.\n` +
+      '  Lance la commande depuis le dépôt qui porte les fiches, ou ajoute « --root <dossier> » avant la commande.'
+    );
+  }
+  return undefined;
 }
 
 function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
   if (entry.root === 'none') return undefined;
   const name = `ezk ${label(entry)}`;
+  if (entry.root === 'cwd') return cwdProblem(name, env);
   // Un projet est désigné et la commande sait le lire : c'est son script qui contrôle le dossier.
   if (designatedProject(entry, env) !== undefined) return undefined;
   if (env.rootFlag !== undefined) {
@@ -267,6 +298,8 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
     ? [`« ezk ${label(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
     : [];
   const projectRoot = designatedProject(entry, env);
+  // Une commande qui écrit là où l'on tape la commande dit toujours où elle écrit.
+  if (entry.root === 'cwd' && projectRoot !== undefined) notices.push(`dépôt visé : ${projectRoot}`);
   // `{root}` : la racine que la règle de racine vient d'autoriser — le projet désigné pour une commande
   // `project`, le dépôt de la méthode sinon. Les arguments de l'utilisateur, eux, passent tels quels.
   const fixedArgs = fixed.args.map((a) => a.replaceAll('{root}', projectRoot ?? env.ownRoot));
@@ -375,13 +408,23 @@ export function renderDomainHelp(manifest: Manifest, domain: string): string | u
   return `ezk ${domain}\n\n${lines.join('\n')}\n`;
 }
 
-/** Le checkout de la méthode qui contient `cwd` : le plus proche ancêtre qui porte le manifeste. */
-export function findCheckoutRoot(cwd: string, exists: (path: string) => boolean): string | undefined {
+/** Le plus proche ancêtre de `cwd` (lui compris) qui porte `marker`. */
+function nearestAncestorWith(marker: string, cwd: string, exists: (path: string) => boolean): string | undefined {
   let dir = resolve(cwd);
   for (;;) {
-    if (exists(join(dir, MANIFEST_RELPATH))) return dir;
+    if (exists(join(dir, marker))) return dir;
     const parent = dirname(dir);
     if (parent === dir) return undefined;
     dir = parent;
   }
+}
+
+/** Le dépôt git qui contient `cwd` : le plus proche ancêtre qui porte `.git` (dossier, ou fichier d'un worktree). */
+export function findGitRoot(cwd: string, exists: (path: string) => boolean): string | undefined {
+  return nearestAncestorWith('.git', cwd, exists);
+}
+
+/** Le checkout de la méthode qui contient `cwd` : le plus proche ancêtre qui porte le manifeste. */
+export function findCheckoutRoot(cwd: string, exists: (path: string) => boolean): string | undefined {
+  return nearestAncestorWith(MANIFEST_RELPATH, cwd, exists);
 }

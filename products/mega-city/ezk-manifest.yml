@@ -10,7 +10,10 @@
 #   summary         UNE ligne, en clair : c'est ce que `ezk help` affiche
 #   root            fixed (défaut) = lit ou écrit les fichiers du dépôt de la méthode : le script
 #                   part de la RACINE du dépôt, d'où qu'on lance la commande dans ce dépôt ;
-#                   none = marche de n'importe quel dossier, et part du dossier de l'utilisateur
+#                   none = marche de n'importe quel dossier, et part du dossier de l'utilisateur ;
+#                   cwd = sans --root, écrit dans le dépôt git du dossier où la commande est tapée
+#                   (vectorz, un worktree, muti…), et le dit ; refuse hors d'un dépôt ou sans features/.
+#                   Exige project et writes.
 #   project         true = la commande travaille sur un PROJET désigné (ses fiches, son contrat de
 #                   règles) et n'écrit jamais dans le dépôt de la méthode — au plus dans le projet visé.
 #                   Son script sait lire le projet qu'on désigne : `ezk --root <projet> …` ou la
@@ -70,7 +73,8 @@ commands:
   - domain: backlog
     verb: regen
     run: bin/regen-backlog.sh {root}
-    summary: Régénère l'index features/BACKLOG.md (--root <projet> pour un autre projet).
+    summary: Régénère l'index features/BACKLOG.md du dépôt où tu es (ou de --root <projet>).
+    root: cwd
     project: true
     writes: true
   - domain: backlog
@@ -94,7 +98,8 @@ commands:
   - domain: backlog
     verb: ship
     run: bin/ship-fiche.ts --root {root}
-    summary: Livre une ou plusieurs fiches en une transaction (--root <projet> pour un autre).
+    summary: Livre une ou plusieurs fiches du dépôt où tu es (ou de --root <projet>).
+    root: cwd
     project: true
     writes: true
   - domain: backlog

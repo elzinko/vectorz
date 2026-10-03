@@ -63,19 +63,22 @@ ezk backlog ship --pr '#275' features/<fiche>.md
 
 ## Critères d'acceptation
 
-- [ ] Depuis le dossier de muti, `ezk backlog ship --pr '#<n>' features/<fiche>.md` livre la fiche de
+- [x] Depuis le dossier de muti, `ezk backlog ship --pr '#<n>' features/<fiche>.md` livre la fiche de
   muti : statut, `done/`, liens et index. Rien ne bouge dans vectorz.
-- [ ] Depuis le dossier de muti, `ezk backlog regen` régénère l'index de muti, avec son titre.
+- [x] Depuis le dossier de muti, `ezk backlog regen` régénère l'index de muti, avec son titre.
   L'index de vectorz ne bouge pas.
-- [ ] Depuis un sous-dossier du dépôt, ou depuis un worktree, la commande vise ce dépôt ou ce
+- [x] Depuis un sous-dossier du dépôt, ou depuis un worktree, la commande vise ce dépôt ou ce
   worktree.
-- [ ] La commande affiche toujours le dépôt visé.
-- [ ] Hors d'un dépôt git, ou dans un dépôt sans `features/`, elle refuse sans rien écrire, avec un
+- [x] La commande affiche toujours le dépôt visé.
+- [x] Hors d'un dépôt git, ou dans un dépôt sans `features/`, elle refuse sans rien écrire, avec un
   message qui dit quoi faire.
-- [ ] Une variable `EZK_ROOT` restée dans le shell ne redirige jamais une écriture.
-- [ ] Avec `--root`, le comportement est celui de la fiche mère.
-- [ ] Les tests automatiques lancent la vraie commande **sans** `--root`, depuis un dépôt jetable, un
+- [x] Une variable `EZK_ROOT` restée dans le shell ne redirige jamais une écriture.
+- [x] Avec `--root`, le comportement est celui de la fiche mère.
+- [x] Les tests automatiques lancent la vraie commande **sans** `--root`, depuis un dépôt jetable, un
   de ses sous-dossiers et un de ses worktrees.
+
+## Mesure de suivi
+
 - [ ] Sur le poste, après le merge et la mise à jour du dossier principal de vectorz, le premier ship
   de muti tapé à la main se fait avec la commande courte.
 
@@ -101,7 +104,7 @@ ezk backlog ship --pr '#999' features/<fiche>.md             # la fiche part dan
 ezk backlog regen && head -1 features/BACKLOG.md             # « # Backlog features & bugs — MUTI »
 cd apps && ezk backlog regen                                 # depuis un sous-dossier : vise toujours /tmp/muti-essai
 git -C /Users/elzinko/git/bacasable/vectorz status --short | diff /tmp/vectorz-avant.txt -   # aucune différence : vectorz n'a pas bougé
-cd /tmp && ezk backlog ship --pr '#1' features/x.md; echo $?  # hors dépôt git : refus, code 1, message clair
+cd /tmp && ezk backlog ship --pr '#1' features/x.md; echo $?  # hors dépôt git : refus, code 2, message clair
 ```
 
 **3. Sur le terrain**, après le merge et `git pull` dans le dossier principal de vectorz : le prochain
@@ -135,3 +138,13 @@ ship muti tapé à la main se fait avec la commande courte.
 - **Prête le 2026-10-03** (porte « prête » passée : décision PO datée, valeur dite, 9 critères
   prouvables, 3 dépendances constatées). Rangée en V0.5, juste après la fiche mère, pour partir avec
   elle.
+- **Construite le 2026-10-03** (run V0.5, sprint 2). Une troisième règle de racine dans le manifeste
+  d'`ezk` : `root: cwd`. Sans `--root`, la commande vise le dépôt git du dossier courant (le plus
+  proche ancêtre qui porte `.git`, donc aussi un worktree). Seules `backlog ship` et `backlog regen`
+  la portent. Le routeur dit toujours « dépôt visé » ; `ship:fiche` ne répète plus son propre
+  bandeau. Un refus sort en code 2, comme toute erreur du routeur.
+- Le critère « premier ship muti tapé à la main » ne se prouve qu'après le merge : il passe en
+  « Mesure de suivi » (règle `development/acceptance-criteria-before-merge`).
+- Preuve du 2026-10-03 sur une copie jetable de muti, sans `--root` : ship à blanc puis réel (fiche
+  passée `shipped` dans `done/` de muti), `regen` (titre « MUTI »), depuis un sous-dossier, refus hors
+  dépôt git (code 2). Le dossier principal de vectorz n'a pas bougé.

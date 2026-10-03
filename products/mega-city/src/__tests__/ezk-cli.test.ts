@@ -8,6 +8,7 @@ import {
   childEnv,
   delegationTarget,
   findCheckoutRoot,
+  findGitRoot,
   parseManifest,
   renderDomainHelp,
   renderHelp,
@@ -440,5 +441,84 @@ describe('delegationTarget — un autre checkout de la méthode lance son propre
     expect(delegationTarget({ ownRoot: OWN, checkoutRoot: OWN, delegated: false })).toBeUndefined();
     expect(delegationTarget({ ownRoot: OWN, delegated: false })).toBeUndefined();
     expect(delegationTarget({ ownRoot: OWN, checkoutRoot: '/autre', delegated: true })).toBeUndefined();
+  });
+});
+
+const CWD_MANIFEST = parseManifest(`
+commands:
+  - domain: backlog
+    verb: ship
+    run: bin/ship-fiche.ts --root {root}
+    summary: Livre une fiche.
+    root: cwd
+    project: true
+    writes: true
+  - domain: backlog
+    verb: regen
+    run: bin/regen-backlog.sh {root}
+    summary: Régénère l'index.
+    root: cwd
+    project: true
+    writes: true
+`);
+
+describe('manifeste — la règle de racine « cwd » (fiche 20261003072823731)', () => {
+  it('se lit, et exige project et writes : elle désigne le dépôt où l’on écrit', () => {
+    expect(CWD_MANIFEST.commands[0]?.root).toBe('cwd');
+    const base = '  - domain: a\n    run: bin/a.ts\n    summary: x\n    root: cwd\n';
+    expect(() => parseManifest(`commands:\n${base}`)).toThrow(/cwd/);
+    expect(() => parseManifest(`commands:\n${base}    project: true\n`)).toThrow(/cwd/);
+  });
+});
+
+describe('route — sans --root, une commande « cwd » vise le dépôt git du dossier courant', () => {
+  const muti = { root: '/muti', hasFeatures: true };
+
+  it('vise ce dépôt, le passe au script, et le dit toujours', () => {
+    const r = route(CWD_MANIFEST, ['backlog', 'ship', '--pr', '#1', 'features/x.md'], { ownRoot: OWN, cwdRepo: muti });
+    expect(r).toMatchObject({
+      kind: 'run',
+      projectRoot: '/muti',
+      step: { args: ['--root', '/muti', '--pr', '#1', 'features/x.md'] },
+    });
+    expect(r.kind === 'run' && r.notices).toContain('dépôt visé : /muti');
+  });
+
+  it('dans le dépôt de la méthode, c’est la méthode : rien ne change pour vectorz', () => {
+    const r = route(CWD_MANIFEST, ['backlog', 'regen'], { ...inside, cwdRepo: { root: OWN, hasFeatures: true } });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: OWN, step: { args: [OWN] } });
+  });
+
+  it('--root prime sur le dossier courant, et se dit aussi', () => {
+    const r = route(CWD_MANIFEST, ['backlog', 'regen'], { ownRoot: OWN, cwdRepo: muti, rootFlag: '/samplerz' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/samplerz', step: { args: ['/samplerz'] } });
+    expect(r.kind === 'run' && r.notices).toContain('dépôt visé : /samplerz');
+  });
+
+  it('une EZK_ROOT restée dans le shell ne redirige pas l’écriture : le dossier courant gagne', () => {
+    const r = route(CWD_MANIFEST, ['backlog', 'regen'], { ownRoot: OWN, cwdRepo: muti, envRoot: '/samplerz' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
+  });
+
+  it('hors d’un dépôt git : refus, avec la marche à suivre', () => {
+    const r = route(CWD_MANIFEST, ['backlog', 'ship'], { ownRoot: OWN, envRoot: '/muti' });
+    expect(r).toMatchObject({ kind: 'error', exitCode: 2 });
+    expect(r.kind === 'error' && r.message).toMatch(/aucun dépôt git[\s\S]*--root/);
+  });
+
+  it('un dépôt sans features/ : refus, qui nomme le dépôt', () => {
+    const r = route(CWD_MANIFEST, ['backlog', 'regen'], { ownRoot: OWN, cwdRepo: { root: '/ailleurs', hasFeatures: false } });
+    expect(r).toMatchObject({ kind: 'error', exitCode: 2 });
+    expect(r.kind === 'error' && r.message).toMatch(/\/ailleurs[\s\S]*features\//);
+  });
+});
+
+describe('findGitRoot — le dépôt git qui contient le dossier courant', () => {
+  it('remonte jusqu’au premier dossier qui porte .git (dossier ou fichier de worktree)', () => {
+    const marks = new Set(['/a/.git', '/a/wt/.git']);
+    const exists = (p: string) => marks.has(p);
+    expect(findGitRoot('/a/b/c', exists)).toBe('/a');
+    expect(findGitRoot('/a/wt/src', exists)).toBe('/a/wt');
+    expect(findGitRoot('/x', exists)).toBeUndefined();
   });
 });
