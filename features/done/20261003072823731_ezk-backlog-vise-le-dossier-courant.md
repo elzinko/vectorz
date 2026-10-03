@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [cross-repo]
-status: ready
-pr:
+status: shipped
+pr: "#344"
 evidence: none # commande en ligne de commande, aucun écran
 created: 2026-10-03
 ---
@@ -27,13 +27,13 @@ où on la tape. Elle affiche toujours ce dépôt, pour qu'on voie où elle écri
 - Le 2026-10-03, après la livraison de `ship:fiche --root` (elzinko/vectorz#336), le PO a jugé la
   commande de ship trop complexe depuis muti.
 - La fiche
-  [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](done/20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md)
+  [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md)
   fait de `backlog ship` et `backlog regen` des commandes qui acceptent `--root`. Les skills
   passeront `--root` eux-mêmes : en passant par Claude, on ne tape rien. Elle garde exprès le défaut
   actuel (« Hors périmètre »).
 - Il reste le geste tapé à la main : il demandera `--root .`. Le PO veut s'en passer.
 - La règle actuelle vient de la fiche
-  [Racine paramétrable des vues](done/20260826173221323_racine-parametrable-des-vues.md). Elle a
+  [Racine paramétrable des vues](20260826173221323_racine-parametrable-des-vues.md). Elle a
   exclu la détection du dossier courant pour garder « sans argument ni variable, rien ne change ».
   C'était une précaution contre un changement de comportement, pas une règle de sécurité.
 
