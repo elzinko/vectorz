@@ -72,13 +72,13 @@ pilote ne conclut à tort que la méthode manque sur le poste.
 
 ## Critères d'acceptation
 
-- [ ] Depuis muti, le ship d'une fiche et la régénération du backlog aboutissent, sans chemin tapé à
+- [x] Depuis muti, le ship d'une fiche et la régénération du backlog aboutissent, sans chemin tapé à
       la main. Ils ne modifient que `features/` de muti.
-- [ ] Depuis muti, `ezk retro captures --check` et `ezk config show` marchent aussi.
-- [ ] Sans `ezk` installé, le skill dit comment l'installer.
-- [ ] `ezk-backlog`, `ezk-retro`, `ezk-sprint`, `ezk-product-build` et `ezk-pr` ne contiennent plus
+- [x] Depuis muti, `ezk retro captures --check` et `ezk config show` marchent aussi.
+- [x] Sans `ezk` installé, le skill dit comment l'installer.
+- [x] `ezk-backlog`, `ezk-retro`, `ezk-sprint`, `ezk-product-build` et `ezk-pr` ne contiennent plus
       `pnpm --dir products/mega-city`.
-- [ ] Sans `--root`, chaque commande se comporte comme aujourd'hui.
+- [x] Sans `--root`, chaque commande se comporte comme aujourd'hui.
 
 ## Comment vérifier
 
@@ -123,3 +123,17 @@ Sur le terrain : 0 ship à la main sur les 3 prochains ships muti.
 - **À trancher au build** : `ezk-ci` (3 appels) et `supervision-analyze` (1 appel) servent surtout
   vectorz. Les passer aussi par `ezk`, ou les laisser.
 - Dépendance muti — accès constaté le 2026-10-03. Dépôt git dans `~/git/bacasable/muti`, sur `main`.
+- **Construite le 2026-10-03** (run V0.5). Trois décisions de build :
+  1. **Un worktree de vectorz lance son propre `ezk`.** Le `ezk` du poste pointe sur le dossier
+     principal de vectorz ; depuis un worktree, il refusait toute commande « fixe ». Il passe
+     désormais la main au lanceur du worktree, s'il a ses dépendances. Sans ce relais, passer les
+     skills par `ezk` cassait tout le travail en worktree.
+  2. **Une commande qui écrit (`writes: true`) n'écoute que `--root`.** `backlog ship`, `regen`,
+     `version` et `config` ignorent une variable `EZK_ROOT` restée dans le shell, et le script ne la
+     reçoit pas. C'est la règle que `ship:fiche` suivait déjà.
+  3. **`ezk-ci` et `supervision-analyze` gardent leur appel** : ils servent vectorz seul.
+  Référence unique : `products/mega-city/docs/ezk-depuis-un-projet-hote.md`.
+- Preuve des critères 1 et 2, le 2026-10-03, sur une copie jetable de muti avec le lanceur de la
+  branche : `regen` (titre « MUTI » gardé, 193 fiches), ship d'une fiche (passée dans `done/` de
+  muti, vectorz intact), `config show`, `retro captures --check`. Le geste depuis le vrai muti
+  (item 4 de « Comment vérifier ») suit le merge et la mise à jour du dossier principal de vectorz.

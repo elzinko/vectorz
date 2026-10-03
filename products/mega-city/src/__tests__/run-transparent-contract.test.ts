@@ -79,9 +79,9 @@ describe('les skills et le gabarit', () => {
 
   it('ezk-product-build ouvre par le contexte de run et clôt par le RUN-REPORT', () => {
     expect(build).toContain('0. **Ouverture — le contexte de run**');
-    expect(build).toContain('run:context');
+    expect(build).toContain('ezk run context');
     expect(build).toContain('6. **Clôture — le RUN-REPORT.**');
-    expect(build).toContain('run:report');
+    expect(build).toContain('ezk run report');
     expect(build).toMatch(/plus d'un\s+sprint/);
     expect(build).toContain('references/run-report-template.md');
     expect(build.slice(0, build.indexOf('\n---', 4))).toContain('documentation-guidelines/readable-deliverable-trio');
@@ -96,13 +96,13 @@ describe('les skills et le gabarit', () => {
   });
 
   it('ezk-sprint, lancé seul, affiche le contexte ; sous product-build il ne le répète pas', () => {
-    expect(sprint).toContain('run:context');
+    expect(sprint).toContain('ezk run context');
     expect(sprint).toMatch(/ne le répète pas/);
   });
 
   it('le gabarit ouvre par « En clair » et décrit les mêmes états que le code', () => {
     expect(template).toContain('**En clair :**');
     for (const state of RUN_STATES) expect(template, state).toContain(`\`${state}\``);
-    for (const word of ['run:context', 'run:report', 'Ce que ça veut dire pour toi']) expect(template, word).toContain(word);
+    for (const word of ['ezk run context', 'ezk run report', 'Ce que ça veut dire pour toi']) expect(template, word).toContain(word);
   });
 });

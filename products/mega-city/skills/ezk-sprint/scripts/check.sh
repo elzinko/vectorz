@@ -133,9 +133,10 @@ if [[ -x "$HANDOFF_SCRIPT" ]] && [[ -f .claude/handoff.md ]]; then
   HANDOFF_LINES="$(bash "$HANDOFF_SCRIPT" carry 2>/dev/null | wc -l | tr -d ' ')"
 fi
 
+# Best-effort : la commande `ezk` du poste lit la tête du plan de CE dépôt (vectorz ou projet hôte).
 PLAN_HEAD="-"
-if command -v pnpm >/dev/null 2>&1 && [[ -d products/mega-city ]]; then
-  PLAN_HEAD="$(pnpm --dir products/mega-city plan:head 2>/dev/null | head -3 | tr '\n' ' ' | sed 's/[[:space:]]*$//')"
+if command -v ezk >/dev/null 2>&1; then
+  PLAN_HEAD="$(ezk --root "$REPO" backlog plan-head 2>/dev/null | head -3 | tr '\n' ' ' | sed 's/[[:space:]]*$//')"
   [[ -z "$PLAN_HEAD" ]] && PLAN_HEAD="-"
 fi
 

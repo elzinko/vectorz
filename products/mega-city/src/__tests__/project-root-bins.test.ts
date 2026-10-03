@@ -124,6 +124,56 @@ describe('les scripts qui lisent les fiches du projet désigné', () => {
   });
 });
 
+/** Le vrai lanceur `ezk`, depuis un dossier hors de tout dépôt, sans tsx dans le PATH. */
+function ezk(args: string[], env: Record<string, string> = {}) {
+  const r = spawnSync(process.execPath, [launcher, ...args], {
+    cwd: elsewhere,
+    encoding: 'utf8',
+    env: { PATH: '/usr/bin:/bin', HOME: elsewhere, ...env },
+  });
+  return { code: r.status, out: r.stdout, err: r.stderr };
+}
+
+describe('depuis un projet hôte : les commandes dont les skills ont besoin (fiche 20261002155911257)', () => {
+  const RETRO = '2026-10-03-retro-session-2026-10-02.md';
+
+  it('ezk --root <projet> backlog regen : écrit l’index DE ce projet, jamais celui de vectorz', { timeout: 60_000 }, () => {
+    const vectorzIndex = readFileSync(join(repoRoot, 'features', 'BACKLOG.md'), 'utf8');
+    const r = ezk(['--root', project, 'backlog', 'regen']);
+    expect(r.code).toBe(0);
+    const index = readFileSync(join(project, 'features', 'BACKLOG.md'), 'utf8');
+    expect(index).toContain(PROJECT_FICHE);
+    expect(index).not.toContain(A_VECTORZ_FICHE);
+    expect(readFileSync(join(repoRoot, 'features', 'BACKLOG.md'), 'utf8')).toBe(vectorzIndex);
+  });
+
+  it('une EZK_ROOT restée dans le shell ne redirige pas une écriture : refus, rien d’écrit', { timeout: 60_000 }, () => {
+    rmSync(join(project, 'features', 'BACKLOG.md'), { force: true });
+    const r = ezk(['backlog', 'regen'], { EZK_ROOT: project });
+    expect(r.code).toBe(2);
+    expect(r.err).toContain('--root');
+    expect(existsSync(join(project, 'features', 'BACKLOG.md'))).toBe(false);
+  });
+
+  it('ezk --root <projet> config show : la config DE ce projet', { timeout: 60_000 }, () => {
+    const r = ezk(['--root', project, 'config', 'show']);
+    expect(r.code).toBe(0);
+    expect(r.out).toContain(`Config projet    : ${project}/.vectorz/config.yml`);
+  });
+
+  it('ezk --root <projet> retro captures : les captures DE ce projet, et --check se lit depuis ce projet', { timeout: 60_000 }, () => {
+    expect(ezk(['--root', project, 'retro', 'captures']).out).toContain('Aucune capture de rétro');
+    mkdirSync(join(project, 'docs', 'captures'), { recursive: true });
+    writeFileSync(
+      join(project, 'docs', 'captures', RETRO),
+      readFileSync(join(repoRoot, 'docs', 'captures', RETRO), 'utf8'),
+    );
+    const checked = ezk(['--root', project, 'retro', 'captures', '--check', `docs/captures/${RETRO}`]);
+    expect(checked.code).toBe(0);
+    expect(checked.out).toContain(`OK docs/captures/${RETRO}`);
+  });
+});
+
 describe('ezk dashboard — les données du projet désigné, les pages de la méthode', () => {
   let server: ChildProcess;
   let origin: string;

@@ -8,7 +8,7 @@ garantit le **texte** dans ce format : « En clair » d'abord, phrases courtes, 
 gabarit seul ne rend rien lisible.
 
 **En clair :** un run autonome doit dire ce qu'il va faire seul avant de partir, puis ce qu'il a fait
-quand il a fini. Deux commandes sortent les faits : `run:context` à l'ouverture, `run:report` à la
+quand il a fini. Deux commandes sortent les faits : `ezk run context` à l'ouverture, `ezk run report` à la
 clôture. Tu ne recopies aucun chiffre à la main.
 
 ---
@@ -16,7 +16,7 @@ clôture. Tu ne recopies aucun chiffre à la main.
 ## À l'ouverture : le contexte de run
 
 ```bash
-pnpm --dir products/mega-city run:context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> [--fiche <id>] [--max-sprints N]
+ezk run context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> [--fiche <id>] [--max-sprints N]
 ```
 
 Passe les réglages **réels** du run : le contrat en trois lignes en sort. Affiche le bloc tel quel,
@@ -40,7 +40,7 @@ Un retard sur `origin/main` ne bloque rien : le bloc propose le réalignement qu
 Pour tout run auto qui a construit **plus d'un sprint**.
 
 ```bash
-pnpm --dir products/mega-city run:report \
+ezk run report \
   --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] \
   [--tokens-used N] [--tokens-cap N] [--tokens-setting lean|cap|full] [--no-github]
 ```

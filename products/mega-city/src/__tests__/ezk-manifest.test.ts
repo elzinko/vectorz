@@ -56,7 +56,7 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323 et 20260910152227744)', () => {
+  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744 et 20261002155911257)', () => {
     const labels = manifest.commands
       .filter((e) => e.project)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
@@ -65,20 +65,36 @@ describe('ezk-manifest.yml', () => {
       'backlog check',
       'backlog plan-head',
       'backlog plan-lot',
+      'backlog regen',
+      'backlog ship',
+      'backlog version',
       'board show',
+      'config',
       'dashboard',
       'dor check',
       'dor health',
       'dor show',
       'map',
+      'retro captures',
       'rules apply',
       'rules check',
       'rules show',
     ]);
   });
 
-  it('toute commande « project » lance un script qui lit la racine désignée (jamais une promesse en l’air)', () => {
+  it('les commandes qui ÉCRIVENT dans le projet désigné sont exactement celles-ci (fiche 20261002155911257)', () => {
+    const labels = manifest.commands
+      .filter((e) => e.writes)
+      .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
+      .sort();
+    expect(labels).toEqual(['backlog regen', 'backlog ship', 'backlog version', 'config']);
+  });
+
+  it('toute commande « project » lit la racine désignée (jamais une promesse en l’air)', () => {
+    // Deux façons de tenir la promesse : le routeur passe la racine en argument ({root}), ou le script
+    // la lit lui-même (--root, EZK_ROOT) par projectRootOrExit.
     for (const entry of manifest.commands.filter((e) => e.project)) {
+      if (entry.run.includes('{root}')) continue;
       const script = readFileSync(join(megaCity, entryStep(entry).script), 'utf8');
       expect(script, entry.domain).toContain('projectRootOrExit');
     }

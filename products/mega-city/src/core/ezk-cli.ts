@@ -9,6 +9,7 @@
  */
 import { dirname, join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
+import { PROJECT_ROOT_ENV } from './project-root.js';
 
 /** Où vit le manifeste, depuis la racine d'un checkout de la méthode : sert à reconnaître un checkout. */
 export const MANIFEST_RELPATH = 'products/mega-city/ezk-manifest.yml';
@@ -35,6 +36,12 @@ export interface ManifestEntry {
    * dans le dépôt de la méthode refuse tout autre dépôt (fiche 20260826173221323).
    */
   project?: boolean;
+  /**
+   * La commande ÉCRIT dans le projet désigné (livrer une fiche, régénérer l'index…). Seule l'option
+   * `--root` désigne alors le projet : une variable `EZK_ROOT` restée dans le shell ne redirige jamais
+   * une écriture, et le script ne la reçoit pas. N'a de sens qu'avec `project`.
+   */
+  writes?: boolean;
   /** Nouveau nom : l'entrée est un ancien nom, gardé le temps de la transition. */
   deprecated?: string;
 }
@@ -97,7 +104,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 function readEntry(raw: unknown, index: number): ManifestEntry {
   const where = `entrée ${index + 1}`;
   if (!isRecord(raw)) fail(where, 'doit être un objet.');
-  const { domain, verb, run, summary, root, deprecated, project } = raw;
+  const { domain, verb, run, summary, root, deprecated, project, writes } = raw;
   if (typeof domain !== 'string' || !NAME.test(domain)) fail(where, 'domain manquant ou invalide.');
   const label = `${domain}${typeof verb === 'string' ? ` ${verb}` : ''}`;
   if (verb !== undefined && (typeof verb !== 'string' || !NAME.test(verb))) {
@@ -110,6 +117,8 @@ function readEntry(raw: unknown, index: number): ManifestEntry {
   if (rootPolicy !== 'fixed' && rootPolicy !== 'none') fail(label, "root doit valoir 'fixed' ou 'none'.");
   if (deprecated !== undefined && typeof deprecated !== 'string') fail(label, 'deprecated invalide.');
   if (project !== undefined && typeof project !== 'boolean') fail(label, 'project doit valoir true ou false.');
+  if (writes !== undefined && typeof writes !== 'boolean') fail(label, 'writes doit valoir true ou false.');
+  if (writes === true && project !== true) fail(label, "writes n'a de sens qu'avec project: true.");
   return {
     domain,
     ...(typeof verb === 'string' ? { verb } : {}),
@@ -117,6 +126,7 @@ function readEntry(raw: unknown, index: number): ManifestEntry {
     summary: summary.trim(),
     root: rootPolicy,
     ...(project === true ? { project: true } : {}),
+    ...(writes === true ? { writes: true } : {}),
     ...(typeof deprecated === 'string' ? { deprecated } : {}),
   };
 }
@@ -187,11 +197,20 @@ function label(entry: ManifestEntry): string {
   return `${entry.domain}${entry.verb ? ` ${entry.verb}` : ''}`;
 }
 
+/**
+ * Le projet que désigne la ligne de commande, pour une commande `project` : l'option prime sur la
+ * variable. Une commande qui écrit (`writes`) n'écoute que l'option.
+ */
+function designatedProject(entry: ManifestEntry, env: RouterEnv): string | undefined {
+  if (!entry.project) return undefined;
+  return env.rootFlag ?? (entry.writes ? undefined : env.envRoot);
+}
+
 function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
   if (entry.root === 'none') return undefined;
   const name = `ezk ${label(entry)}`;
   // Un projet est désigné et la commande sait le lire : c'est son script qui contrôle le dossier.
-  if (entry.project && (env.rootFlag !== undefined || env.envRoot !== undefined)) return undefined;
+  if (designatedProject(entry, env) !== undefined) return undefined;
   if (env.rootFlag !== undefined) {
     if (env.rootFlag === env.ownRoot) return undefined;
     return (
@@ -247,8 +266,7 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
   const notices = entry.deprecated
     ? [`« ezk ${label(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
     : [];
-  // Le projet désigné ne compte que pour une commande `project` : l'option prime sur la variable.
-  const projectRoot = entry.project ? (env.rootFlag ?? env.envRoot) : undefined;
+  const projectRoot = designatedProject(entry, env);
   // `{root}` : la racine que la règle de racine vient d'autoriser — le projet désigné pour une commande
   // `project`, le dépôt de la méthode sinon. Les arguments de l'utilisateur, eux, passent tels quels.
   const fixedArgs = fixed.args.map((a) => a.replaceAll('{root}', projectRoot ?? env.ownRoot));
@@ -259,6 +277,32 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
     notices,
     ...(projectRoot !== undefined ? { projectRoot } : {}),
   };
+}
+
+/**
+ * L'environnement du script : le projet désigné y voyage par `EZK_ROOT`. Sans projet désigné, une
+ * commande qui écrit ne voit pas une `EZK_ROOT` restée dans le shell ; les autres gardent tout tel quel.
+ */
+export function childEnv(
+  entry: ManifestEntry,
+  projectRoot: string | undefined,
+  env: NodeJS.ProcessEnv,
+): NodeJS.ProcessEnv {
+  if (projectRoot !== undefined) return { ...env, [PROJECT_ROOT_ENV]: projectRoot };
+  if (!entry.writes || env[PROJECT_ROOT_ENV] === undefined) return env;
+  const { [PROJECT_ROOT_ENV]: _stale, ...rest } = env;
+  return rest;
+}
+
+/**
+ * Le checkout de la méthode qui doit lancer la commande à notre place. Le `ezk` installé sur le poste
+ * pointe sur UN checkout ; lancé depuis un autre (un worktree de la méthode), il passe la main au
+ * lanceur de ce worktree : ses scripts et ses fichiers, comme le faisait `pnpm --dir products/mega-city`.
+ * Une seule passe : un lanceur qui a déjà reçu la main ne la repasse pas.
+ */
+export function delegationTarget(env: { ownRoot: string; checkoutRoot?: string; delegated: boolean }): string | undefined {
+  if (env.delegated || env.checkoutRoot === undefined || env.checkoutRoot === env.ownRoot) return undefined;
+  return env.checkoutRoot;
 }
 
 /** Options du routeur : placées AVANT la commande seulement. Celles d'après sont pour le script. */

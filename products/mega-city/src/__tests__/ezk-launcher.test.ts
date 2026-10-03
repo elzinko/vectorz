@@ -4,7 +4,7 @@
  * (fiche 20260903134906920). Tout passe par `--dry-run` : rien n'est régénéré ni écrit.
  */
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, realpathSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -125,6 +125,32 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     const next = ezk(['--root', repoRoot, 'docs', 'check-adr-ids', '--next']);
     expect(next.code).toBe(0);
     expect(next.out).toMatch(/^\d{3,4}$/m); // le prochain numéro d'ADR libre
+  });
+
+  it('depuis un AUTRE checkout de la méthode (un worktree), passe la main à son lanceur', { timeout: 60_000 }, () => {
+    // Un faux worktree : le manifeste le désigne comme checkout, un lanceur bouchon dit ce qu'il reçoit.
+    const worktree = join(elsewhere, 'worktree');
+    const bin = join(worktree, 'products', 'mega-city', 'bin');
+    mkdirSync(bin, { recursive: true });
+    writeFileSync(join(worktree, 'products', 'mega-city', 'ezk-manifest.yml'), 'commands: []\n');
+    writeFileSync(
+      join(bin, 'ezk.mjs'),
+      "console.log('lanceur du worktree', JSON.stringify(process.argv.slice(2)), process.env.EZK_DELEGATED);\nprocess.exit(7);\n",
+    );
+    const sub = join(worktree, 'features');
+    mkdirSync(sub, { recursive: true });
+
+    // Sans ses dépendances, il ne peut pas tourner : on le dit, et on continue avec nos scripts.
+    const alone = ezk(['--dry-run', 'law', 'status', 'global'], sub);
+    expect(alone.code).toBe(0);
+    expect(alone.err).toContain('sans ses dépendances');
+    expect(alone.out).toContain('bin/lawgiver.ts status global');
+
+    // Avec ses dépendances : c'est lui qui répond, avec les mêmes arguments, et son code de sortie.
+    mkdirSync(join(worktree, 'products', 'mega-city', 'node_modules', 'tsx'), { recursive: true });
+    const handed = ezk(['--root', '.', 'backlog', 'ship', '--pr', '#1'], sub);
+    expect(handed.code).toBe(7);
+    expect(handed.out).toContain('lanceur du worktree ["--root",".","backlog","ship","--pr","#1"] 1');
   });
 
   it('une commande inconnue sort en code 2 avec une marche à suivre', { timeout: 60_000 }, () => {
