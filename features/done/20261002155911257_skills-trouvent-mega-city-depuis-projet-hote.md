@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [cross-repo]
-status: ready
-pr:
+status: shipped
+pr: "#343"
 evidence: none # outillage, pas d'écran
 created: 2026-10-02
 ---
@@ -118,7 +118,7 @@ Sur le terrain : 0 ship à la main sur les 3 prochains ships muti.
   nommée par `--root`, comme dans la fiche des modèles.
 - **Recoupements.** La PR #336 a donné `--root` au script de ship : reste à en faire une commande
   projet. `config show` est aussi un critère de la fiche
-  [Un seul tableau de bord pour tous tes projets](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) :
+  [Un seul tableau de bord pour tous tes projets](../20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) :
   la première des deux fiches construite la livre.
 - **À trancher au build** : `ezk-ci` (3 appels) et `supervision-analyze` (1 appel) servent surtout
   vectorz. Les passer aussi par `ezk`, ou les laisser.

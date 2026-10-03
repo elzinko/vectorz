@@ -51,4 +51,4 @@ Dans un worktree neuf de vectorz, installe aussi ses dépendances (`pnpm install
 le dit et continue avec les scripts du dossier principal.
 
 Origine : fiche
-[Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](../../../features/20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md).
+[Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](../../../features/done/20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md).
