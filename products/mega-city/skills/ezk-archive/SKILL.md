@@ -244,6 +244,9 @@ qui ne demandent aucun jugement.
    porte beaucoup de worktrees d'agents, propose `bash <skill>/scripts/check.sh --cleanup` :
    l'inventaire des worktrees et branches sûrs à retirer, avec la commande exacte de chacun. Il
    ne supprime **rien**. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
+   En mode auto, Claude Code peut bloquer ce listage comme « git destructif » (vu le 2026-10-03,
+   [fiche du ménage en mode auto](../../../../features/20261003105820099_menage-archive-lancable-mode-auto.md)) :
+   donne alors la commande à l'utilisateur, qui la lance dans son terminal.
    Les worktrees que les agents de CETTE session viennent de laisser ont moins de 24 h : le ménage
    les garde (« recent »). Une fois certain qu'aucun agent ne tourne encore, relance avec
    `EZK_CLEANUP_IDLE_HOURS=0` pour les proposer.
