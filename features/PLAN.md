@@ -97,6 +97,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261002155911250` — le portier d'ezk-archive compare à origin/main à la clôture (le squash est déjà reconnu) · P1, issue de la rétro muti (#331) · prête le 2026-10-03 · `build`
 - `20261002155911257` — les skills ezk retrouvent mega-city depuis un projet hôte, en passant par `ezk --root` · P1, issue de la rétro muti (#331) · prête le 2026-10-03 · `build`
 - `20261003072823731` — sans `--root`, `ezk backlog ship` et `regen` visent le dépôt du dossier où on tape la commande · P2, complète la précédente (décision PO du 2026-10-03) · prête le 2026-10-03 · `build`
+- `20261003105820077` — la note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app · P1, issue de la rétro muti du 2026-10-03 (#340) · `groom` → `build`
 > Sortie de la V0.5 le 2026-10-03 : la fiche « regrouper les artefacts de méthode hors de docs/ » (P2, hors thème, décisions lourdes). Elle reste au jalon rationalisation, sans version.
 
 ### ⑦ V0.6 — le cockpit : voir où en est chaque projet (décidé le 2026-10-02)
@@ -104,6 +105,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · prête le 2026-10-03 · `build`
 - `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03 · `build` (après le tableau de bord : sa section « Agents » vit dans la page « config »)
 - `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
+- `20261003105820099` — le ménage d'ezk-archive se lance en mode auto · P3, issue de la rétro muti du 2026-10-03 (#340) · `groom` → `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
