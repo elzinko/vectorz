@@ -326,7 +326,8 @@ if [[ -n "$UNMERGED" ]]; then
   while IFS= read -r b; do
     [[ -z "$b" ]] && continue
     # Absorbée dès qu'UNE base de preuve contient son contenu ; sinon, les fichiers non prouvés sont
-    # ceux de la première base (origin/<base> quand elle existe : la plus à jour).
+    # ceux de la première base (origin/<base> quand elle existe : la plus à jour). Coût borné : une
+    # absorbée s'arrête à sa première preuve ; seule une branche réelle est classée contre les deux bases.
     verdict=""; unproven_in=""; proved_by=""
     for pb in $PROOF_BASES; do
       v="$(classify_ref "$pb" "$b")"
@@ -711,7 +712,8 @@ if [[ "$MODE" == "cleanup" ]]; then
     [[ "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
     case "$l" in
       *"worktree_held=1"*) continue ;;                 # tenue par un worktree : voir BRANCH_AFTER_WORKTREE
-      *) add_safe_branch "$b" -D "content:$(printf '%s' "$l" | sed -n 's/.* proof=\([^ ]*\).*/\1/p')" ;;
+      *) pf="$(printf '%s' "$l" | sed -n 's/.* proof=\([^ ]*\).*/\1/p')"
+         add_safe_branch "$b" -D "${pf:+content:$pf}" ;;   # jamais une preuve vide affichée
     esac
   done <<< "$ABSORBED_FACTS"
   MERGED="$(git branch --merged "$BASE" 2>/dev/null | grep -v '^[*+]' | sed 's/^ *//' || true)"
