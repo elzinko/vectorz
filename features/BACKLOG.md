@@ -294,6 +294,7 @@
 | [20261003011750433](20261003011750433_portier-sprint-md-commite.md) | sprint.sh start/close distingue un sprint ouvert d'un SPRINT.md commité | bug | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261003011750521](20261003011750521_portier-copies-reserve.md) | Le portier ezk-sprint n'alerte plus sur les copies de réserve propres ni les sessions fusionnées | bug | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261003011750607](20261003011750607_checkpoint-sprint-termes-en-clair.md) | Le checkpoint d'ezk-sprint définit en clair les termes de chaque option | chore | P2 | V0.6 | mega-city | 💡 idea |  |
+| [20261003072823731](20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
