@@ -162,7 +162,7 @@ async function main(argv: string[]): Promise<number> {
     ...(flags.rootFlag ? { rootFlag: real(resolve(userCwd, flags.rootFlag)) } : {}),
     // Vide = absente. Relative, elle se lit depuis le dossier de l'utilisateur, comme l'option.
     ...(envRoot ? { envRoot: real(resolve(userCwd, envRoot)) } : {}),
-    ...(gitRoot ? { cwdRepo: { root: real(gitRoot), hasFeatures: existsSync(join(gitRoot, 'features')) } } : {}),
+    ...(gitRoot ? { cwdRepo: { root: real(gitRoot), hasFeatures: existsSync(join(real(gitRoot), 'features')) } } : {}),
   });
 
   if (resolution.kind === 'help') return showHelp(manifest, resolution.topic);
