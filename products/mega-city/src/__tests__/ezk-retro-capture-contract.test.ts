@@ -24,7 +24,7 @@ describe('ezk-retro — la capture est obligatoire', () => {
   it('exige la capture au temps 5, avec son gabarit et sa validation', () => {
     expect(skill).toContain('La capture (obligatoire)');
     expect(skill).toContain('references/capture-template.md');
-    expect(skill).toContain('retro:captures --check');
+    expect(skill).toContain('retro captures --check');
     expect(skill).toMatch(/PR de\s+rangement\s+\*\*cite la capture\*\*/);
   });
 

@@ -5,6 +5,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   MANIFEST_RELPATH,
+  childEnv,
+  delegationTarget,
   findCheckoutRoot,
   parseManifest,
   renderDomainHelp,
@@ -198,6 +200,12 @@ commands:
     run: bin/check.sh {root} features
     summary: Vérifie les documents.
     project: true
+  - domain: backlog
+    verb: ship
+    run: bin/ship-fiche.ts --root {root}
+    summary: Livre une fiche.
+    project: true
+    writes: true
 `);
 
 describe('manifeste — la marque « project »', () => {
@@ -359,5 +367,78 @@ describe('findCheckoutRoot — quel checkout de la méthode contient le dossier 
     expect(findCheckoutRoot('/a/.claude/worktrees/w/products', (p) => both.has(p))).toBe(
       '/a/.claude/worktrees/w',
     );
+  });
+});
+
+describe('manifeste — la marque « writes » (le projet désigné reçoit des écritures)', () => {
+  it('se lit avec project, et vaut faux par défaut', () => {
+    const ship = PROJECT_MANIFEST.commands.find((e) => e.verb === 'ship');
+    expect(ship).toMatchObject({ project: true, writes: true });
+    expect(PROJECT_MANIFEST.commands[0]?.writes).toBeUndefined();
+  });
+
+  it('refuse autre chose qu’un booléen, et refuse writes sans project', () => {
+    const base = '  - domain: a\n    run: bin/a.ts\n    summary: x\n';
+    expect(() => parseManifest(`commands:\n${base}    project: true\n    writes: oui`)).toThrow(/writes/);
+    expect(() => parseManifest(`commands:\n${base}    writes: true`)).toThrow(/project/);
+  });
+});
+
+describe('route — une commande qui ÉCRIT dans le projet désigné (writes: true)', () => {
+  it('--root désigne le projet : {root} devient ce projet, d’où qu’on parte', () => {
+    const r = route(PROJECT_MANIFEST, ['backlog', 'ship', '--pr', '#1', 'features/x.md'], { ownRoot: OWN, rootFlag: '/muti' });
+    expect(r).toMatchObject({
+      kind: 'run',
+      projectRoot: '/muti',
+      step: { args: ['--root', '/muti', '--pr', '#1', 'features/x.md'] },
+    });
+  });
+
+  it('sans --root, dans le dépôt de la méthode : {root} reste la méthode, comme avant', () => {
+    const r = route(PROJECT_MANIFEST, ['backlog', 'ship'], inside);
+    expect(r).toMatchObject({ kind: 'run', step: { args: ['--root', OWN] } });
+    expect(r).not.toHaveProperty('projectRoot');
+  });
+
+  it('une variable EZK_ROOT restée dans le shell ne désigne JAMAIS le projet d’une écriture', () => {
+    const fromMethod = route(PROJECT_MANIFEST, ['backlog', 'ship'], { ...inside, envRoot: '/muti' });
+    expect(fromMethod).toMatchObject({ kind: 'run', step: { args: ['--root', OWN] } });
+    expect(fromMethod).not.toHaveProperty('projectRoot');
+    // hors du dépôt de la méthode, la variable ne suffit pas : refus avec la marche à suivre
+    const fromElsewhere = route(PROJECT_MANIFEST, ['backlog', 'ship'], { ownRoot: OWN, envRoot: '/muti' });
+    expect(fromElsewhere).toMatchObject({ kind: 'error', exitCode: 2 });
+  });
+});
+
+describe('childEnv — la variable EZK_ROOT que reçoit le script', () => {
+  const ship = PROJECT_MANIFEST.commands.find((e) => e.verb === 'ship');
+  const board = PROJECT_MANIFEST.commands[0];
+  if (!ship || !board) throw new Error('fixture incomplète');
+
+  it('le projet désigné voyage par EZK_ROOT', () => {
+    expect(childEnv(board, '/muti', { PATH: '/bin' })).toEqual({ PATH: '/bin', EZK_ROOT: '/muti' });
+  });
+
+  it('sans projet désigné, une écriture ne voit pas une EZK_ROOT restée dans le shell', () => {
+    expect(childEnv(ship, undefined, { PATH: '/bin', EZK_ROOT: '/vieux' })).toEqual({ PATH: '/bin' });
+  });
+
+  it('sans projet désigné, une lecture garde l’environnement tel quel', () => {
+    const env = { PATH: '/bin', EZK_ROOT: '/samplerz' };
+    expect(childEnv(board, undefined, env)).toBe(env);
+  });
+});
+
+describe('delegationTarget — un autre checkout de la méthode lance son propre ezk', () => {
+  it('depuis un worktree de la méthode : la main passe à ce worktree', () => {
+    expect(delegationTarget({ ownRoot: OWN, checkoutRoot: '/repo/vectorz/.claude/worktrees/w', delegated: false })).toBe(
+      '/repo/vectorz/.claude/worktrees/w',
+    );
+  });
+
+  it('dans son propre checkout, hors de tout checkout, ou déjà délégué : on garde la main', () => {
+    expect(delegationTarget({ ownRoot: OWN, checkoutRoot: OWN, delegated: false })).toBeUndefined();
+    expect(delegationTarget({ ownRoot: OWN, delegated: false })).toBeUndefined();
+    expect(delegationTarget({ ownRoot: OWN, checkoutRoot: '/autre', delegated: true })).toBeUndefined();
   });
 });

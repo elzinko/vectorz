@@ -85,7 +85,7 @@ pnpm --dir <vectorz>/products/mega-city ship:fiche -- --root . --dry-run --pr '#
   vérifier » : typecheck vert, 21/21 tests du ship, 1745/1745 tests, 34/34 suites de scripts.
   Codex n'a pas relu, faute de quota.
 - Cette fiche est une brique de
-  [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](../20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md).
+  [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md).
   Celle-ci garde l'autre moitié : `ship-in-pr.sh` cherche encore `products/mega-city` dans le dépôt
   courant.
 - Essai du 2026-10-03 sur une copie jetable de muti : ship complet, aucun lien cassé en plus. La

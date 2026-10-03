@@ -69,13 +69,19 @@ jamais par son id nu.
 | `report` | Poste dans chaque PR testée le résultat (✅/❌ par critère, signaux observés) |
 | `ship [#PR…]` | Squash-merge des PRs **au vert et validées**, `ezk-backlog ship`, branche supprimée |
 
+**Outils : la commande `ezk`.** Ce skill appelle ses outils par `ezk`, installée sur le poste : il
+marche depuis vectorz comme depuis un projet hôte. Une commande sur les fiches d'un projet reçoit
+`--root "$(git rev-parse --show-toplevel)"`. `ezk` introuvable : installe-la une fois
+(`cd <vectorz>/products/mega-city && pnpm link --global`), et ne conclus jamais que la méthode manque
+au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet-hote.md).
+
 ## Capacités GitHub — config projet `.vectorz/` (fiche 20260916225506856)
 
 GitHub est un **module optionnel** (ADR-0039 §2 : la PR est un mécanisme GitHub, pas une
 cérémonie). À l'**intake** (avant `plan`, avant tout `gh`), lis les capacités effectives :
 
 ```bash
-pnpm --dir products/mega-city ezk:config
+ezk --root "$(git rev-parse --show-toplevel)" config show
 ```
 
 Trois capacités — `pr` · `ci` · `codex-review`. **Config ou capacité absente = tout ON**
@@ -85,7 +91,7 @@ Trois capacités — `pr` · `ci` · `codex-review`. **Config ou capacité absen
 
 | Capacité `off` | Ce que tu changes |
 |---|---|
-| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales réelles** non absorbées que rend le classifieur `ezk-archive` (fiche 0076) — **tout préfixe réel** (`feat/…`, `fix/…`, comme `ezk-sprint` l'autorise), pas un seul motif — voir `plan` §1. `ship` = **squash local** (`ship-merge.sh --local`), **jamais** `gh pr merge`, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`review:emit`) et le corps de PR dans le fichier local (`pr:emit-local`), cf. `ezk-sprint` § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
+| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales réelles** non absorbées que rend le classifieur `ezk-archive` (fiche 0076) — **tout préfixe réel** (`feat/…`, `fix/…`, comme `ezk-sprint` l'autorise), pas un seul motif — voir `plan` §1. `ship` = **squash local** (`ship-merge.sh --local`), **jamais** `gh pr merge`, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`ezk review emit`) et le corps de PR dans le fichier local (`ezk pr emit-local`), cf. `ezk-sprint` § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
 | `ci: false` | Pas d'attente de CI cloud entre deux merges (`ship` §, « CI re-verte ») : la **gate locale** (`act`/`ezk-ci` ou gate hôte) est la seule validation. |
 | `codex-review: false` | Pas de revue Codex attendue sur les PR ; la revue adverse reste `ezk-reviewer` (local), cf. `ezk-sprint`. |
 
@@ -281,7 +287,7 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   le filet, plus la routine.
 - **En `pr: false`** (github coupé, cf. § Capacités GitHub) — **aucune cible GitHub** : `report`
   ne poste pas de commentaire, le compte-rendu de revue va dans le **fichier local**
-  (`review:emit`) et le corps de PR dans `pr:emit-local` ; `ship` = squash **local**
+  (`ezk review emit`) et le corps de PR dans `ezk pr emit-local` ; `ship` = squash **local**
   (`ship-merge.sh --local`) + **`ezk-backlog ship <id> local (<sha>)`** — **jamais** de suppression
   de branche distante ni de `#PR` à poster ou à inventer. C'est le chemin « Sans remote » ci-dessous,
   emprunté aussi quand un remote existe mais que `pr` est coupé.

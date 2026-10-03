@@ -8,6 +8,10 @@
  * `--root` vise le dépôt de la méthode ; pour une commande marquée `project` au manifeste (elle ne
  * fait que lire les fiches), il désigne le PROJET dont on les lit — comme la variable `EZK_ROOT`.
  *
+ * Lancé depuis un AUTRE checkout de la méthode (un worktree), il passe la main au lanceur de ce
+ * checkout, s'il a ses dépendances : ce sont alors ses scripts et ses fichiers, comme avec
+ * `pnpm --dir products/mega-city`. Sans dépendances, il le dit et continue avec les siens.
+ *
  * Bord I/O mince : lit le manifeste (products/mega-city/ezk-manifest.yml), laisse le cœur pur
  * (src/core/ezk-cli.ts) choisir le script, puis le lance avec les arguments tels quels : depuis
  * la racine du dépôt pour une commande qui travaille sur ses fichiers (« fixed »), depuis le
@@ -22,6 +26,8 @@ import { fileURLToPath } from 'node:url';
 import {
   type Manifest,
   type Step,
+  childEnv,
+  delegationTarget,
   findCheckoutRoot,
   parseManifest,
   renderDomainHelp,
@@ -81,10 +87,17 @@ function launcherFor(step: Step): { cmd: string; args: string[] } {
   return { cmd: process.execPath, args: [tsx, script, ...step.args] };
 }
 
-function runStep(step: Step, cwd: string, projectRoot?: string): Promise<number> {
-  const { cmd, args } = launcherFor(step);
-  // Le projet désigné voyage par la variable EZK_ROOT : le script la lit comme si l'utilisateur l'avait posée.
-  const env = projectRoot === undefined ? process.env : { ...process.env, [PROJECT_ROOT_ENV]: projectRoot };
+/** Le lanceur ne repasse jamais la main deux fois (garde-fou contre une boucle de délégation). */
+const DELEGATED_ENV = 'EZK_DELEGATED';
+
+/** Le lanceur d'un autre checkout, s'il peut tourner : son `ezk.mjs` et le `tsx` de ses dépendances. */
+function launcherOf(checkout: string): string | undefined {
+  const megaCity = join(checkout, 'products', 'mega-city');
+  const launcher = join(megaCity, 'bin', 'ezk.mjs');
+  return existsSync(launcher) && existsSync(join(megaCity, 'node_modules', 'tsx')) ? launcher : undefined;
+}
+
+function spawnAndWait(cmd: string, args: string[], cwd: string, env: NodeJS.ProcessEnv, what: string): Promise<number> {
   return new Promise((done) => {
     const child = spawn(cmd, args, { cwd, stdio: 'inherit', env });
     // Un serveur long (le tableau de bord) doit s'arrêter avec nous : on relaie les signaux.
@@ -96,7 +109,7 @@ function runStep(step: Step, cwd: string, projectRoot?: string): Promise<number>
       return [signal, relay] as const;
     });
     child.on('error', (error) => {
-      warn(`ezk : impossible de lancer ${step.script} (${error.message}).`);
+      warn(`ezk : impossible de lancer ${what} (${error.message}).`);
       done(1);
     });
     child.on('exit', (code, signal) => {
@@ -104,6 +117,11 @@ function runStep(step: Step, cwd: string, projectRoot?: string): Promise<number>
       done(code ?? (signal ? 128 + (constants.signals[signal] ?? 0) : 1));
     });
   });
+}
+
+function runStep(step: Step, cwd: string, env: NodeJS.ProcessEnv): Promise<number> {
+  const { cmd, args } = launcherFor(step);
+  return spawnAndWait(cmd, args, cwd, env, step.script);
 }
 
 async function main(argv: string[]): Promise<number> {
@@ -116,6 +134,22 @@ async function main(argv: string[]): Promise<number> {
   // pnpm change de dossier avant de lancer le script ; INIT_CWD garde celui de l'utilisateur.
   const userCwd = process.env.INIT_CWD ?? process.cwd();
   const checkout = findCheckoutRoot(userCwd, existsSync);
+  const other = delegationTarget({
+    ownRoot: OWN_ROOT,
+    ...(checkout ? { checkoutRoot: real(checkout) } : {}),
+    delegated: process.env[DELEGATED_ENV] === '1',
+  });
+  if (other !== undefined) {
+    const launcher = launcherOf(other);
+    if (launcher) {
+      const env = { ...process.env, [DELEGATED_ENV]: '1' };
+      return spawnAndWait(process.execPath, [launcher, ...argv], process.cwd(), env, launcher);
+    }
+    warn(
+      `ezk : ${other} est un autre checkout de la méthode, sans ses dépendances (« pnpm install » dans products/mega-city). ` +
+        `Je continue avec les scripts de ${OWN_ROOT}.`,
+    );
+  }
   const envRoot = process.env[PROJECT_ROOT_ENV];
   const resolution = route(manifest, flags.rest, {
     ownRoot: OWN_ROOT,
@@ -144,7 +178,7 @@ async function main(argv: string[]): Promise<number> {
     say(`ezk (à blanc) : ${[runner, step.script, ...shown].join(' ')}`);
     return 0;
   }
-  const code = await runStep(step, cwd, projectRoot);
+  const code = await runStep(step, cwd, childEnv(entry, projectRoot, process.env));
   // Un code non nul n'est pas toujours une panne : `law doctor` rend 1 pour dire « il y a un écart ».
   if (code !== 0) warn(`ezk : « ${step.script} » s'est terminé avec le code ${code}.`);
   return code;

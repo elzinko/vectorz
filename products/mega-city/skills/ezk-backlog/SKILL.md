@@ -114,14 +114,20 @@ du front-matter de cette skill).
 | `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
-| `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`pnpm --dir products/mega-city ship:fiche`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
-| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `pnpm --dir products/mega-city views:regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
+| `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`ezk backlog ship`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
+| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `ezk views regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
 | `version [list\|check\|close]` | Le niveau **version** : où en est chaque lot (champ `version:`), cohérence d'un lot, et clôture d'une version livrée (étiquette `vX.Y` **proposée**, jamais poussée) |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
 > si un backlog existe, son état trié par priorité. Sans sous-commande reconnue → traite la
 > demande en prose (la skill reste pilotable naturellement).
+
+**Outils : la commande `ezk`.** Ce skill appelle ses outils par `ezk`, installée sur le poste : il
+marche depuis vectorz comme depuis un projet hôte. Une commande sur les fiches d'un projet reçoit
+`--root "$(git rev-parse --show-toplevel)"`. `ezk` introuvable : installe-la une fois
+(`cd <vectorz>/products/mega-city && pnpm link --global`), et ne conclus jamais que la méthode manque
+au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet-hote.md).
 
 ## Comment ça s'« installe » dans un projet
 
@@ -394,7 +400,7 @@ antérieures au gate ; `review` peut proposer la **révocation** d'un `status: r
 backlog, l'ordre de travail vient de **LUI**, pas du tri priorité : la priorité est un
 *seau* d'ex æquo, `PLAN.md` est la *séquence*. Pour obtenir l'ordre des ids **sans le lire
 à l'œil** (doctrine ADR-0001), un helper déterministe existe **dans le monorepo mega-city** :
-`pnpm --dir products/mega-city plan:order <chemin/vers/PLAN.md>` → les ids **dans l'ordre du
+`ezk backlog plan-order <chemin/vers/PLAN.md>` → les ids **dans l'ordre du
 document** (tous jalons confondus, quel que soit leur nom ; une entrée = puce commençant par
 son id **ou** portant un marqueur `build|audit|ship|groom`). **Best-effort — jamais fatal** :
 le helper vivant dans mega-city, dans **tout autre dépôt** où il est absent, **ne fais pas
@@ -425,8 +431,8 @@ d'abord, ou décision journalisée).
 - **Soupape PO** : l'opérateur peut décider de tirer une fiche non-ready — décision
   explicite, **journalisée** (note dans la fiche + scratch de sprint).
 
-**`plan:head` (0097 → adapté 0064).** Sur la liste unique, `pnpm --dir products/mega-city
-plan:head` lit `features/` + le champ `product:` du front-matter : 1re carte
+**`backlog plan-head` (0097 → adapté 0064).** Sur la liste unique, `ezk --root "$(git rev-parse --show-toplevel)"
+backlog plan-head` lit `features/` + le champ `product:` du front-matter : 1re carte
 `ready` du plan, têtes bloquées, ids introuvables. Plus de routage cross-liste.
 
 ezk-sprint et ezk-product-build passent par **ici**, ou par `next --lot N` qui applique les mêmes
@@ -439,40 +445,8 @@ sprint. Les règles sont les mêmes : fiches prêtes seulement, ordre du plan, t
 aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`. C'est l'intake
 d'ezk-product-build : il tire un lot de `--lot N` fiches par sprint, avec `next --lot` (défaut 1).
 
-`pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md]` fait la sélection (aussi
-`ezk backlog plan-lot <N>`, avec `--root <projet>` pour un autre projet). Il n'écrit rien. Il imprime :
-
-- **le lot** : jusqu'à N fiches `status: ready`, ni épic ni drapeau `blocked:`, dans l'ordre du
-  `PLAN.md`. Sans `PLAN.md` : `P0→P3 puis id` ;
-- **« lot incomplet »** s'il y a moins de N fiches prêtes : le lot part quand même, plus court ;
-- **la tête bloquée** : les fiches `idea` rencontrées avant que le lot soit plein. Groome-les
-  d'abord, ou tranche par la soupape PO journalisée (même règle que `next --ready-only`) ;
-- **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic ;
-- **les prêtes hors plan** : avec un `PLAN.md`, une fiche prête absente du plan n'entre pas dans le
-  lot, car la séquence, c'est le plan. Elle est listée : le PO l'y ajoute (`plan set`) s'il la veut ;
-- **les introuvables** : ids du plan absents de `features/` ;
-- **la ligne à copier** depuis la racine du projet : `bash <…>/sprint.sh start --lot <id,id…>`.
-  Ajoute `--objective "<objectif>"` si tu veux nommer le sprint.
-
-**Figer le lot, c'est `start --lot`.** `sprint.sh start --lot <ids>` (ezk-sprint) écrit le lot dans
-`SPRINT.md`, une ligne par story : c'est le pointeur du sprint courant. `next --lot` ne fige rien et
-ne modifie aucune fiche.
-
-**L'incrément.** L'incrément d'un sprint, ce sont les fiches du lot passées `shipped`, donc leurs
-squash-merges sur `main`. `sprint.sh close` le scelle dans `SPRINT.md`. Il n'existe pas d'objet
-« sprint » persistant (ADR-0054, décision 8) : les fiches et l'historique git suffisent.
-
-Hors du monorepo mega-city, le helper est absent : applique les mêmes règles à la main, comme pour
-`next --ready-only`.
-
-### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
-
-**En clair.** `next --ready-only` tire **une** fiche. `next --lot N` en choisit **N** : le lot d'un
-sprint. Les règles sont les mêmes : fiches prêtes seulement, ordre du plan, tête bloquée signalée,
-aucune fiche sautée en silence. Le lot part ensuite dans `ezk-sprint start --lot`.
-
-`pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md]` fait la sélection (aussi
-`ezk backlog plan-lot <N>`, avec `--root <projet>` pour un autre projet). Il n'écrit rien. Il imprime :
+`ezk --root "$(git rev-parse --show-toplevel)" backlog plan-lot <N>` fait la sélection, dans l'ordre de
+`<racine>/features/PLAN.md` (un autre plan se passe en argument). Il n'écrit rien. Il imprime :
 
 - **le lot** : jusqu'à N fiches `status: ready`, ni épic ni drapeau `blocked:`, dans l'ordre du
   `PLAN.md`. Sans `PLAN.md` : `P0→P3 puis id` ;
@@ -501,11 +475,11 @@ Hors du monorepo mega-city, le helper est absent : applique les mêmes règles �
 
 Distinct de `review` (hygiène périodique, cadence bornée) : `aggregate` est le geste de
 **restructuration délibéré**, lancé quand le stock a gonflé. Il **propose** ; le PO
-**tranche** ; un geste séparé (`backlog:apply`, plus bas) **applique** — jamais d'auto-modification
+**tranche** ; un geste séparé (`ezk backlog apply`, plus bas) **applique** — jamais d'auto-modification
 (ADR-0001).
 
 ```bash
-pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn|epic:<id>>] \
+ezk backlog aggregate [--scope <all|<produit>|Pn|epic:<id>>] \
   [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>] [--proposals <fichier.json>]
 ```
 
@@ -529,18 +503,18 @@ pnpm --dir products/mega-city backlog:aggregate [--scope <all|<produit>|Pn|epic:
     franche. Il rend ensuite les propositions valides, chacune avec son geste.
   - **`both`** — `script`, puis `llm`, puis le **croisement** : cluster confirmé par le llm ·
     cluster non retenu (faux positif possible) · proposition trouvée « par le sens seulement ».
-- Chaque proposition nomme son **geste d'application** (`backlog:apply …`, prêt à copier)
+- Chaque proposition nomme son **geste d'application** (`ezk backlog apply …`, prêt à copier)
   **sans l'exécuter** : `aggregate` n'écrit jamais rien.
 
-#### Appliquer — `backlog:apply` (fiche 20260910231201744)
+#### Appliquer — `ezk backlog apply` (fiche 20260910231201744)
 
 Après l'arbitrage du PO, un script applique (ADR-0001). C'est la transaction de `ship` (liens
 recalés, entrée de `PLAN.md` barrée, un seul `git mv` vers `done/`, `BACKLOG.md` régénéré, retour
 arrière au moindre échec), avec le statut `merged` ou `split` et la **provenance dans les deux sens** :
 
 ```bash
-pnpm --dir products/mega-city backlog:apply merge --into <résultante> <source>… [--dry-run]
-pnpm --dir products/mega-city backlog:apply split <source> --into <enfantA>,<enfantB>… [--dry-run]
+ezk backlog apply merge --into <résultante> <source>… [--dry-run]
+ezk backlog apply split <source> --into <enfantA>,<enfantB>… [--dry-run]
 ```
 
 - **Fusion** : chaque source passe `merged` (+ `merged_into`) et part dans `done/` ; la résultante
@@ -626,15 +600,12 @@ C'est **la seule** commande qui fait passer une fiche à `shipped` (d'où l'impo
 geste**, pas en une liste d'étapes à suivre de mémoire (fiche 20260830194601233) :
 
 ```bash
-pnpm --dir products/mega-city ship:fiche -- --pr '#<n>' features/<id>_<slug>.md [autres fiches du lot]
+ezk --root "$(git rev-parse --show-toplevel)" backlog ship --pr '#<n>' features/<id>_<slug>.md [autres fiches du lot]
 ```
 
 **Un autre dépôt que vectorz** (muti, samplerz… au même layout `features/` + `done/` +
-`BACKLOG.md`) : ajoute `--root <dossier>`. Par exemple, depuis le dossier de muti :
-
-```bash
-pnpm --dir <vectorz>/products/mega-city ship:fiche -- --root . --pr '#<n>' features/<id>_<slug>.md
-```
+`BACKLOG.md`) : la même commande, lancée depuis ce dépôt. `--root` vise la racine git du dossier
+où tu la tapes.
 
 Un `--root` relatif se lit depuis le dossier où tu tapes la commande. Les fiches se donnent
 relatives au dépôt visé. Le reste ne change pas : mêmes contrôles, même retour arrière.
@@ -672,7 +643,7 @@ en `done/` avec son code, quel que soit le canal de merge. Après un merge, `shi
 qu'au filet : une PR mergée **sans** son ship, que `reconcile` propose. Livraison locale
 (`pr: false`) inchangée : squash local d'abord, puis `ship <id> local (<sha>)`.
 
-**Filet** — `pnpm --dir products/mega-city exec tsx bin/check-planning-views.ts` : signale toute
+**Filet** — `ezk board check` : signale toute
 fiche `shipped` encore présentée comme à faire dans `PLAN.md` (et dans `PORTFOLIO.md` s'il traîne
 en local). Reste utile pour un ship fait à la main ou hors flux.
 
@@ -694,9 +665,9 @@ rend actif : tout se **calcule** depuis le front-matter (aucun objet milestone, 
 par un script déterministe (ADR-0001), jamais recompté à la main. Format attendu : `V<n>.<n>`.
 
 ```bash
-pnpm --dir products/mega-city backlog:version                       # list : une ligne par version
-pnpm --dir products/mega-city backlog:version check [<X>] [--max <n>] [--no-plan]
-pnpm --dir products/mega-city backlog:version close <X> [--tag]
+ezk --root "$(git rev-parse --show-toplevel)" backlog version                # list : une ligne par version
+ezk --root "$(git rev-parse --show-toplevel)" backlog version check [<X>] [--max <n>] [--no-plan]
+ezk --root "$(git rev-parse --show-toplevel)" backlog version close <X> [--tag]
 ```
 
 - **`list`** (défaut) — par version : fiches, livrées, à faire, prêtes, bloquées, intrus, et l'**état** :

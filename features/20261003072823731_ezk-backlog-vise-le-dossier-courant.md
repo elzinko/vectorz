@@ -27,7 +27,7 @@ où on la tape. Elle affiche toujours ce dépôt, pour qu'on voie où elle écri
 - Le 2026-10-03, après la livraison de `ship:fiche --root` (elzinko/vectorz#336), le PO a jugé la
   commande de ship trop complexe depuis muti.
 - La fiche
-  [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md)
+  [Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte](done/20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md)
   fait de `backlog ship` et `backlog regen` des commandes qui acceptent `--root`. Les skills
   passeront `--root` eux-mêmes : en passant par Claude, on ne tape rien. Elle garde exprès le défaut
   actuel (« Hors périmètre »).

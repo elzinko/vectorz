@@ -5,11 +5,12 @@
  * Écriture (fiche 20260920111652514) : un interrupteur de terminal pour (dé)brancher GitHub
  * sur un projet, sans éditer le YAML à la main.
  *
- * Usage :
- *   pnpm --dir products/mega-city ezk:config [projectRoot]        # statut (défaut : cwd)
- *   pnpm --dir products/mega-city ezk:config github [status]      # statut
- *   pnpm --dir products/mega-city ezk:config github on|off        # (dé)connecte GitHub
- *   pnpm --dir products/mega-city ezk:config github <cap> on|off  # granulaire (pr|ci|codex-review)
+ * Usage (le projet : `ezk --root <projet> config …`, sinon le dossier courant) :
+ *   ezk config [show]                    # statut
+ *   ezk config <projectRoot>             # statut d'un autre dossier (ancienne forme, gardée)
+ *   ezk config github [status]           # statut
+ *   ezk config github on|off             # (dé)connecte GitHub
+ *   ezk config github <cap> on|off       # granulaire (pr|ci|codex-review)
  *
  * `install` / `uninstall` sont HORS PÉRIMÈTRE (axe 1 de la fiche 20260916225506858 —
  * rendre le plugin disponible par projet, non couvert ici).
@@ -21,11 +22,14 @@ import {
   githubCapabilities,
   writeGithubConfig,
 } from '../src/loaders/project-config.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 
 // `pnpm --dir products/mega-city …` change le cwd vers products/mega-city ; `INIT_CWD`
 // conserve le répertoire d'invocation (la racine du projet). Un chemin relatif comme `.`
 // vise donc la racine, pas le cwd de pnpm (revue Codex, PR #250).
 const base = process.env.INIT_CWD ?? process.cwd();
+// Le projet désigné (`ezk --root <projet> config …`) prime sur le dossier courant.
+const target = projectRootOrExit(base);
 const CAP_KEYS: readonly GithubCapKey[] = ['pr', 'ci', 'codex-review'];
 
 function fail(message: string): never {
@@ -48,17 +52,17 @@ function parseOnOff(word: string | undefined, ctx: string): boolean {
   fail(`ezk:config ${ctx} : attendu 'on' ou 'off', reçu '${word ?? '(rien)'}'.`);
 }
 
-const argv = process.argv.slice(2);
+const argv = target.rest;
 
-// Rétro-compat 856 : sans famille `github`, l'argument est une racine de projet optionnelle.
+// `show` (ou rien) : le statut du projet. Rétro-compat 856 : un autre mot est une racine de projet.
 if (argv[0] !== 'github') {
-  const root = argv[0] ? resolve(base, argv[0]) : base;
+  const root = argv[0] && argv[0] !== 'show' ? resolve(base, argv[0]) : target.root;
   printStatus(root);
   process.exit(0);
 }
 
-// À partir d'ici : `ezk:config github …` — pilotage de l'activation (cwd = racine).
-const root = base;
+// À partir d'ici : `ezk config github …` — pilotage de l'activation du projet.
+const root = target.root;
 const sub = argv[1];
 
 if (sub === undefined || sub === 'status') {

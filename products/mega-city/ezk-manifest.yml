@@ -16,6 +16,9 @@
 #                   Son script sait lire le projet qu'on désigne : `ezk --root <projet> …` ou la
 #                   variable EZK_ROOT (le routeur la passe au script). Sans cette marque, une commande
 #                   qui écrit dans le dépôt de la méthode refuse tout autre dépôt, et ignore EZK_ROOT.
+#   writes          true (avec project) = la commande ÉCRIT dans le projet désigné. Seule l'option
+#                   --root le désigne : une variable EZK_ROOT restée dans le shell ne redirige jamais
+#                   une écriture. Les skills passent toujours --root (racine git où ils tournent).
 #   deprecated      nouveau nom : l'entrée est un ancien nom, gardé et signalé
 #
 # Le test src/__tests__/ezk-manifest.test.ts vérifie que tout script de bin/ exposé en script
@@ -67,7 +70,9 @@ commands:
   - domain: backlog
     verb: regen
     run: bin/regen-backlog.sh {root}
-    summary: Régénère l'index features/BACKLOG.md du dépôt.
+    summary: Régénère l'index features/BACKLOG.md (--root <projet> pour un autre projet).
+    project: true
+    writes: true
   - domain: backlog
     verb: portfolio
     run: bin/portfolio.sh {root}
@@ -88,8 +93,10 @@ commands:
     summary: Imprime l'ordre des fiches du plan.
   - domain: backlog
     verb: ship
-    run: bin/ship-fiche.ts
-    summary: Livre une ou plusieurs fiches en une transaction (liens recalés, BACKLOG régénéré).
+    run: bin/ship-fiche.ts --root {root}
+    summary: Livre une ou plusieurs fiches en une transaction (--root <projet> pour un autre).
+    project: true
+    writes: true
   - domain: backlog
     verb: apply
     run: bin/backlog-apply.ts
@@ -100,8 +107,10 @@ commands:
     summary: Regroupe des fiches (cœur d'« ezk-backlog aggregate »).
   - domain: backlog
     verb: version
-    run: bin/backlog-version.ts
-    summary: Dit où en est chaque version, contrôle un lot, clôt une version livrée.
+    run: bin/backlog-version.ts --root {root}
+    summary: Dit où en est chaque version, contrôle un lot, clôt une version (--root <projet>).
+    project: true
+    writes: true
 
   # --- rules : les règles propres à un projet (.vectorz/, ADR-0050) ---
   # Le projet visé : --root, EZK_ROOT, sinon la racine git du dossier courant. Elles n'écrivent que
@@ -199,7 +208,8 @@ commands:
   - domain: retro
     verb: captures
     run: bin/retro-captures.ts
-    summary: Liste les décisions des rétros passées, ou vérifie une capture (--check).
+    summary: Liste les décisions des rétros, ou vérifie une capture (--check ; --root <projet>).
+    project: true
 
   # --- docs : contrôles de liens et de numéros ---
   - domain: docs
@@ -233,7 +243,9 @@ commands:
     summary: Cockpit des sessions Claude Code (qui travaille sur quoi).
   - domain: config
     run: bin/ezk-config.ts
-    summary: Lit et pilote les capacités du plugin github (.vectorz/config.yml).
+    summary: Lit (show) et pilote (github) les capacités GitHub du projet (--root <projet>).
+    project: true
+    writes: true
   - domain: views
     verb: regen
     run: bin/views-regen.ts

@@ -47,7 +47,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 |---|---|
 | `help` (ou `?`, ou **sans argument**) | Affiche ce tableau + les modes courants — ne lance rien |
 | `run` (**action par défaut**, alias `build`) | Lance la **boucle** : enchaîne les sprints jusqu'à un checkpoint ou `--max-sprints` |
-| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants, puis réaffiche le contexte de run (`run:context`) |
+| `status` | Résume l'état : prochaine fiche (`ezk-backlog list`), sprint en cours, tokens dépensés, modes courants, puis réaffiche le contexte de run (`ezk run context`) |
 
 > **Invocation nue = `help`, jamais un lancement.** `/ezk-product-build` **sans argument affiche ce
 > tableau et ne lance rien** — un défaut `auto` ne doit pas démarrer une boucle autonome depuis une
@@ -81,12 +81,18 @@ livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas) ; `
 rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`, `--tokens lean`,
 `--review` **absent** (autonome), `--delivery per-feature`, `--retro end`.
 
+**Outils : la commande `ezk`.** Ce skill appelle ses outils par `ezk`, installée sur le poste : il
+marche depuis vectorz comme depuis un projet hôte. Une commande sur les fiches d'un projet reçoit
+`--root "$(git rev-parse --show-toplevel)"`. `ezk` introuvable : installe-la une fois
+(`cd <vectorz>/products/mega-city && pnpm link --global`), et ne conclus jamais que la méthode manque
+au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet-hote.md).
+
 ## La boucle
 
-0. **Ouverture — le contexte de run** (une fois, avant tout). Lance `run:context` avec les réglages
+0. **Ouverture — le contexte de run** (une fois, avant tout). Lance `ezk run context` avec les réglages
    **réels** du run et affiche son bloc tel quel, **sans attendre de validation** (c'est un
    affichage, pas un checkpoint) :
-   `pnpm --dir products/mega-city run:context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> [--fiche <id>] [--max-sprints N]`.
+   `ezk run context --mode <auto|manuel> --delivery <per-feature|per-epic> --tokens <lean|cap|full> [--fiche <id>] [--max-sprints N]`.
    Le bloc dit d'où le run part (`origin/main` après `git fetch`, le retard de HEAD), où il travaille
    (worktree, qui écrit les fichiers) et son **contrat en trois lignes** : ce qu'il merge seul, les
    4 STOP, le plafond de jetons. En `--mode auto`, c'est l'écho qui permet à l'opérateur de
@@ -143,9 +149,9 @@ rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`,
    `every:N` **en cours de run** (des sprints restent), **reprends la boucle** au sprint
    suivant ; seule la rétro de **fin de run** précède la clôture.
 6. **Clôture — le RUN-REPORT.** Quand la boucle s'arrête **et que le run a construit plus d'un
-   sprint**, émets le bilan avec `run:report` : une ligne par fiche (`mergée`, `PR-ouverte`,
+   sprint**, émets le bilan avec `ezk run report` : une ligne par fiche (`mergée`, `PR-ouverte`,
    `bloquée`, `sautée`) avec son PR, sa gate, sa revue, sa validation et, hors `mergée`, sa raison.
-   `pnpm --dir products/mega-city run:report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] [--tokens-used N] [--tokens-setting <lean|cap|full>]`.
+   `ezk run report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] [--tokens-used N] [--tokens-setting <lean|cap|full>]`.
    Le script refuse une ligne incomplète, compare le déclaré à GitHub (un écart sort en code 1) et
    ajoute HEAD contre `origin/main` et les jetons. Tu restitues son rapport **tel quel** : c'est la
    dernière sortie du run. Un run d'**un seul** sprint n'en émet pas.

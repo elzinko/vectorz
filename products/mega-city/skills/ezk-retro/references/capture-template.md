@@ -16,7 +16,7 @@ le relise des mois plus tard. Le PO remplit lui-même la case de chaque décisio
 ## Le fichier
 
 Nom : `docs/captures/AAAA-MM-JJ-retro-<slug>.md`. Le préfixe date + `-retro-` est ce qui permet à
-`pnpm --dir products/mega-city retro:captures` de la retrouver.
+`ezk retro captures` de la retrouver.
 
 ## L'en-tête (lu par le script)
 
@@ -102,7 +102,7 @@ Les termes d'équipe, traduits.
 ## Valider avant la PR de rangement
 
 ```bash
-pnpm --dir products/mega-city retro:captures --check docs/captures/AAAA-MM-JJ-retro-<slug>.md
+ezk --root "$(git rev-parse --show-toplevel)" retro captures --check docs/captures/AAAA-MM-JJ-retro-<slug>.md
 ```
 
 La PR de rangement **cite la capture** dans son corps : c'est la trace qui relie chaque règle au

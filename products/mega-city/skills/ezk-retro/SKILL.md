@@ -52,6 +52,12 @@ chiffres). **Ici, c'est l'humain qui décide quand, et le PO qui tranche quoi.**
 | `impose "<règle>"` | Le **PO impose** une règle directement (sans cérémonie) — passe **quand même** au juge de cohérence avant rangement |
 | `retire <réf-règle>` | **Retire** une règle (réversible : suppression documentée + raison) — le pendant de « construire → prouver → retirer » |
 
+**Outils : la commande `ezk`.** Ce skill appelle ses outils par `ezk`, installée sur le poste : il
+marche depuis vectorz comme depuis un projet hôte. Une commande sur les fiches d'un projet reçoit
+`--root "$(git rev-parse --show-toplevel)"`. `ezk` introuvable : installe-la une fois
+(`cd <vectorz>/products/mega-city && pnpm link --global`), et ne conclus jamais que la méthode manque
+au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet-hote.md).
+
 ## La cérémonie (le cœur du skill — sous-commande `run`)
 
 Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la fiche 0063
@@ -71,7 +77,7 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
   étape (pas de sprint à rapporter). En périmètre sprint :
   1. **Matérialise d'abord les artefacts du sprint courant.** Au checkpoint, le rapport n'est
      pas généré et les galères sont encore dans le `SPRINT.md` non commité. Produis le rapport
-     (`pnpm --dir products/mega-city sprint:report <slug> --out <scratch>` — le `--out` **hors
+     (`ezk sprint report <slug> --out <scratch>` — le `--out` **hors
      dépôt**, sinon le CLI écrit dans `docs/sprints/` tracké ; sortie `<scratch>/<jour>-sprint-<slug>.json`)
      et un **récit de galères** repris de la
      section `## Galères & gestes (labo)` du `SPRINT.md`, **avec l'entête `fiches: <id>`** (l'id
@@ -155,7 +161,7 @@ jamais par son id nu.
 [`references/capture-template.md`](references/capture-template.md), source unique : un en-tête YAML
 qui liste les décisions, puis le récit lisible. Pose chaque action en `⏳`. Quand le PO tranche, tu
 passes à `✅` ou `❌` avec sa décision et la date — jamais avant. Valide le fichier avant la PR :
-`pnpm --dir products/mega-city retro:captures --check docs/captures/<fichier>.md`. La PR de
+`ezk --root "$(git rev-parse --show-toplevel)" retro captures --check docs/captures/<fichier>.md`. La PR de
 rangement **cite la capture** dans son corps. Pas de capture, pas de rangement.
 
 Puis le rangement :
@@ -210,7 +216,7 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 - **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
 - **Capture de la rétro** : gabarit [`references/capture-template.md`](references/capture-template.md)
-  et extracteur `retro:captures` (pattern gabarit + extracteur + rendu, fiche 0080).
+  et extracteur `ezk retro captures` (pattern gabarit + extracteur + rendu, fiche 0080).
 - **Détection des candidats-recette** : skill [`ezk-chef`](../ezk-chef/) (`suggest`, lecture
   seule) ; l'archivage durable du sprint reste à `ezk-archive` (seul graveur
   de `docs/sessions/`).
