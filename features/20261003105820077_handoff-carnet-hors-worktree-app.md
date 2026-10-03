@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [archive, retro, worktree]
-status: idea
+status: ready
 pr:
 evidence: none # scripts de clôture et de rétro, pas d'écran
 created: 2026-10-03
@@ -129,3 +129,5 @@ bash products/mega-city/skills/ezk-archive/scripts/test-check-gate.sh
 - **Grooming du 2026-10-03** (boucle guidée, PO présent) : avis d'architecte (lieu commun), critères
   rendus testables (commande `ezk retro note` nommée, mesure terrain sortie en « Mesure de suivi »),
   section Valeur, dépendance muti constatée. Statut inchangé : la porte « prête » reste à passer.
+- **Prête le 2026-10-03** (porte « prête » passée : trois incidents datés, valeur chiffrée, six
+  critères prouvables sur la branche, dépendance muti constatée).
