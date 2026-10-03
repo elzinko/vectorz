@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261003200945204_mode-local-depuis-projet-hote.md](../20261003200945204_mode-local-depuis-projet-hote.md)
+> 🗎 Rendu de la fiche [features/20261003200945204_mode-local-depuis-projet-hote.md](../done/20261003200945204_mode-local-depuis-projet-hote.md)
 
 # 20261003200945204 — Le mode local marche depuis un projet hôte
 

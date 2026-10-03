@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [installation, github-optionnel]
-status: ready
-pr:
+status: shipped
+pr: "local (eb8de257)"
 evidence: none # outillage en ligne de commande, pas d'écran
 created: 2026-10-03
 ---
@@ -30,7 +30,7 @@ se committe.
 ## Contexte / Problème
 
 Constat du 2026-10-03, au test du cycle local sur `cop1-cobaye` (fiche
-[Recopier sur GitHub ce que la méthode écrit en local](0171-adapter-github-issues-push-only.md),
+[Recopier sur GitHub ce que la méthode écrit en local](../0171-adapter-github-issues-push-only.md),
 section « Gênes relevées »). La story « bouton mode sombre » a été livrée (`47c5f65`, rangée en
 `68d0797`). Quatre défauts ont bloqué le chemin prévu par le skill de sprint :
 
@@ -58,8 +58,8 @@ en mode local. Et la fiche 0171, la copie GitHub, attend que le local soit propr
 ## Proposition
 
 Suite des correctifs « projet hôte » déjà livrés :
-[les skills trouvent mega-city](done/20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md)
-(#343) et [ship et regen visent le dossier courant](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md)
+[les skills trouvent mega-city](20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md)
+(#343) et [ship et regen visent le dossier courant](20261003072823731_ezk-backlog-vise-le-dossier-courant.md)
 (#344).
 
 1. **Les commandes de projet visent le projet.** `ezk pr emit-local`, `ezk review emit` et
