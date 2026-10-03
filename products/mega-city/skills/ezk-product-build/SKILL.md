@@ -3,7 +3,7 @@ roles: [ezk-pm]
 name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget, token-economy/retro-due-choix-chiffre]
 argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
@@ -147,7 +147,10 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    construit **≥ 2 sprints**, déclenche **une** rétro d'itération (cf. § « Rétro de fin
    d'itération »). Un run d'**un seul** sprint n'en déclenche **aucune**. Après une rétro
    `every:N` **en cours de run** (des sprints restent), **reprends la boucle** au sprint
-   suivant ; seule la rétro de **fin de run** précède la clôture.
+   suivant ; seule la rétro de **fin de run** précède la clôture. **En `--tokens lean`, « déclencher »
+   veut dire « proposer »** : la rétro due se présente au PO comme un choix chiffré, complète ou
+   légère, avec son coût mesuré ; elle ne se lance pas seule (règle
+   [`token-economy/retro-due-choix-chiffre`](../../rules/token-economy/retro-due-choix-chiffre.md)).
 6. **Clôture — le RUN-REPORT.** Quand la boucle s'arrête **et que le run a construit plus d'un
    sprint**, émets le bilan avec `ezk run report` : une ligne par fiche (`mergée`, `PR-ouverte`,
    `bloquée`, `sautée`) avec son PR, sa gate, sa revue, sa validation et, hors `mergée`, sa raison.

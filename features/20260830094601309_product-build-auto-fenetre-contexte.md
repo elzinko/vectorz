@@ -88,3 +88,8 @@ Détachée de la bascule du défaut vers `--mode auto` (session 2026-08-30, bran
 `claude/ezk-product-build-defaults-0cd106`). Points 2 et 3 renvoient à la note
 « Pourquoi vz-product-builder refuse de démarrer sans ces outils » et au § « Vigilance
 tokens » de `products/mega-city/skills/ezk-product-build/SKILL.md`.
+- **Cas du 2026-10-03** (rétro de l'itération V0.5, capture `docs/captures/2026-10-03-retro-iteration-v0-5.md`) : le bilan de fin de run du
+  `ezk run report` a affiché « Jetons : non mesurés ». Mesures relevées à la main ce soir-là : revue
+  adverse `ezk-reviewer` à 183k, 145k et 134k jetons par appel ; rétro, ~97k à 103k par lentille au
+  tour 1 (~400k), 105k pour le tour 2 en un seul appel. Ces chiffres devraient sortir du bilan, par
+  fiche et par revue.

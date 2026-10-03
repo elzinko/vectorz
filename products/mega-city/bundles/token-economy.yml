@@ -7,3 +7,4 @@ rules:
   - token-economy/checkpoint-before-cost
   - token-economy/verification-budget
   - token-economy/agent-call-budget
+  - token-economy/retro-due-choix-chiffre

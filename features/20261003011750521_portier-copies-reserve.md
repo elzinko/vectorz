@@ -69,3 +69,7 @@ bash products/mega-city/skills/ezk-archive/scripts/test-cleanup.sh
   `docs/captures/2026-10-03-retro-cloture-et-menage.md` (décision PO ✅).
 - Voisines : SPRINT.md commité [[20261003011750433]] ; portier d'archive et squash
   [[20261002155911250]] ; ménage lançable en mode auto [[20261003105820099]].
+- **Cas du 2026-10-03** (run V0.5, rétro de l'itération, capture `docs/captures/2026-10-03-retro-iteration-v0-5.md`) : le portier d'ezk-sprint a
+  levé la même alerte aux trois ouvertures de sprint du run. Voisins : le dossier principal propre sur
+  `main`, trois worktrees détachés propres sur d'anciens commits de `main`, un worktree d'une session
+  muti. Trois passages outre journalisés dans `SPRINT.md`, aucun n'était un vrai risque.
