@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [backlog]
-status: idea
+status: ready
 pr:
 evidence: none # vue générée et outillage git, pas d'écran
 created: 2026-10-03
@@ -113,5 +113,8 @@ pnpm --dir products/mega-city test:scripts
 - **Grooming du 2026-10-03** : technique « avis de l'architecte », gardée par le PO. Faits vérifiés
   le jour même : `main` n'a pas de protection de branche ; 17 documents hors `features/` citent
   `BACKLOG.md` ; la CI (`ci.yml`, `check-links.yml`) ne régénère aucune vue.
+- **Gate « prête » passée le 2026-10-03** : problème daté, valeur, critères vérifiables avant le
+  merge, décision prise (piste 1). Aucune dépendance hors du monorepo ; aucun critère propre au
+  projet (`.vectorz/dor.yml` absent).
 - Le juge de la rétro du 2026-10-03 n'a pas vu ce sujet : il est apparu au merge de la PR de
   rangement (#337).
