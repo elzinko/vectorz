@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [installation, github-optionnel]
-status: idea
+status: ready
 pr:
 evidence: none # outillage en ligne de commande, pas d'écran
 created: 2026-10-03
@@ -70,9 +70,14 @@ Suite des correctifs « projet hôte » déjà livrés :
    modifierait vectorz à la place du projet.
 3. **Le document de PR local garde des liens justes.** L'émetteur recalcule chaque lien relatif
    de la fiche pour son propre dossier. La provenance pointe vers l'endroit réel de la fiche.
-4. **`SPRINT.md` ne bloque plus le merge local.** Deux voies, à trancher au grooming : `init`
-   ajoute `SPRINT.md` au `.gitignore` du projet (avec une migration pour les projets déjà
-   initialisés), ou `ship-merge.sh --local` tolère ce seul fichier non suivi.
+4. **`SPRINT.md` ne bloque plus le merge local.** Trois voies ; **C retenue** au grooming (voir
+   « Notes / décisions ») :
+   - A. `init` ajoute `SPRINT.md` au `.gitignore` du projet, avec une migration pour les projets
+     déjà initialisés ;
+   - B. `ship-merge.sh --local` tolère ce seul fichier non suivi ;
+   - C. `sprint.sh start`, qui crée `SPRINT.md`, l'ajoute à l'exclusion locale de git
+     (`.git/info/exclude`) s'il n'est pas déjà ignoré. Aucun fichier du projet ne change, aucune
+     migration, et ça vaut aussi pour les projets déjà initialisés.
 
 ## Critères d'acceptation
 
@@ -86,8 +91,9 @@ Suite des correctifs « projet hôte » déjà livrés :
       pour une commande qui travaille sur le projet.
 - [ ] `check-links.sh` ne trouve aucun lien cassé dans le document de PR local d'une fiche dont
       les images vivent dans `docs/pr-evidence/`.
-- [ ] Un projet initialisé par `ezk-backlog init`, avec un `SPRINT.md` ouvert, passe
-      `ship-merge.sh --local` sans contournement.
+- [ ] Dans un projet déjà initialisé, après `sprint.sh start`, `ship-merge.sh --local` passe
+      sans contournement : `SPRINT.md` est exclu de git localement, sans changer un fichier du
+      projet.
 - [ ] Les tests existants de ces commandes restent verts ; chaque correctif a son test.
 
 **Mesure de suivi** — le prochain sprint local dans muti ou samplerz se fait sans aucun des
@@ -118,9 +124,19 @@ pnpm --dir products/mega-city test -- ezk-cli project-root pr-emit
   GitHub.
 - `SPRINT.md` — le fichier qui suit le sprint en cours ; il ne se committe pas.
 
+## Dépendances externes
+
+- dépendance `cop1-cobaye` (`~/git/bacasable/cop1-cobaye`, dépôt local sans remote, étiquette
+  `banc-vierge`) — accès constaté le 2026-10-03.
+
 ## Notes / décisions
 
 - Priorité P0 et version V0.5 fixées par le PO le 2026-10-03.
+- Grooming du 2026-10-03, `ezk-pm` en concurrence (run `ezk-product-build --mode auto`) : DoR GO.
+  Point 4 : **option C**. `sprint.sh start` est le seul outil qui crée `SPRINT.md` ; C ne change
+  aucun fichier du projet et n'exige aucune migration. B affaiblirait la garde « dépôt propre »,
+  A demande une migration. Périmètre : une story ; si le recalcul des liens (point 3) dérape, il
+  part en fiche fille.
 - Hors de cette fiche, notées dans 0171 : `ezk run context` ne vise pas un projet hôte ;
   `pr-evidence.sh` suppose GitHub et Playwright ; `plan-head` plante sans `PLAN.md` ; le README
   d'`init` pointe vers un `PLAN.md` absent.

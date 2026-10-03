@@ -41,6 +41,7 @@
 | [20260920111652514](done/20260920111652514_piloter-plugin-github-config.md) | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 |  | mega-city | ✅ shipped | #259 |
 | [20260930123438875](done/20260930123438875_cycle-vie-sprint-session-ceremonies.md) | Séparer clairement fiche, sprint et session (ezk-sprint start/close) | feature | P0 | V0.4 | mega-city | ✅ shipped | #275 |
 | [20260930194219046](done/20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 | V0.5 | mega-city | ✅ shipped | #324 |
+| [20261003200945204](20261003200945204_mode-local-depuis-projet-hote.md) | Le mode local de la méthode marche depuis un projet hôte, sans contournement | bug | P0 | V0.5 | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -279,7 +280,6 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
-| [20261003200945204](20261003200945204_mode-local-depuis-projet-hote.md) | Le mode local de la méthode marche depuis un projet hôte, sans contournement | bug | P0 | V0.5 | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
