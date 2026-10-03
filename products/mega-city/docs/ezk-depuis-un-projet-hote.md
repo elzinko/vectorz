@@ -33,7 +33,11 @@ acceptent un autre projet le disent dans leur résumé (`--root <projet>`).
 - **Elle n'écrit que dans le projet visé.** Un ship depuis muti ne touche que `features/` de muti.
 - **Une variable `EZK_ROOT` restée dans le shell ne redirige jamais une écriture.** Seule l'option
   `--root` désigne le projet d'une commande qui écrit (`backlog ship`, `regen`, `version`, `config`).
-- **Sans `--root`**, chaque commande garde son comportement d'avant : elle vise vectorz.
+- **Sans `--root`, `backlog ship` et `backlog regen` visent le dépôt git du dossier où tu tapes la
+  commande** : vectorz, un de ses worktrees, ou muti. Elles disent toujours quel dépôt elles visent,
+  et refusent sans rien écrire hors d'un dépôt git ou dans un dépôt sans `features/`. À la main,
+  depuis muti : `ezk backlog ship --pr '#275' features/<fiche>.md`.
+- **Les autres commandes, sans `--root`**, gardent leur comportement d'avant : elles visent vectorz.
 
 Les autres commandes (`run context`, `pr emit-local`…) travaillent dans vectorz. Depuis un projet
 hôte, `ezk` refuse avec la marche à suivre, au lieu d'un `ENOENT` brut.

@@ -605,7 +605,8 @@ ezk --root "$(git rev-parse --show-toplevel)" backlog ship --pr '#<n>' features/
 
 **Un autre dépôt que vectorz** (muti, samplerz… au même layout `features/` + `done/` +
 `BACKLOG.md`) : la même commande, lancée depuis ce dépôt. `--root` vise la racine git du dossier
-où tu la tapes.
+où tu la tapes. Tapée à la main, la forme courte suffit : sans `--root`, `ezk backlog ship` et
+`ezk backlog regen` visent le dépôt git du dossier courant, et le disent.
 
 Un `--root` relatif se lit depuis le dossier où tu tapes la commande. Les fiches se donnent
 relatives au dépôt visé. Le reste ne change pas : mêmes contrôles, même retour arrière.

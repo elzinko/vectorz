@@ -29,6 +29,7 @@ import {
   childEnv,
   delegationTarget,
   findCheckoutRoot,
+  findGitRoot,
   parseManifest,
   renderDomainHelp,
   renderHelp,
@@ -86,6 +87,9 @@ function launcherFor(step: Step): { cmd: string; args: string[] } {
   const tsx = createRequire(import.meta.url).resolve('tsx/cli');
   return { cmd: process.execPath, args: [tsx, script, ...step.args] };
 }
+
+/** Le dépôt que le routeur a déjà annoncé au script (`ship:fiche` n'imprime alors pas son propre bandeau). */
+const ANNOUNCED_ENV = 'EZK_ROOT_ANNOUNCED';
 
 /** Le lanceur ne repasse jamais la main deux fois (garde-fou contre une boucle de délégation). */
 const DELEGATED_ENV = 'EZK_DELEGATED';
@@ -151,12 +155,14 @@ async function main(argv: string[]): Promise<number> {
     );
   }
   const envRoot = process.env[PROJECT_ROOT_ENV];
+  const gitRoot = findGitRoot(userCwd, existsSync);
   const resolution = route(manifest, flags.rest, {
     ownRoot: OWN_ROOT,
     ...(checkout ? { checkoutRoot: real(checkout) } : {}),
     ...(flags.rootFlag ? { rootFlag: real(resolve(userCwd, flags.rootFlag)) } : {}),
     // Vide = absente. Relative, elle se lit depuis le dossier de l'utilisateur, comme l'option.
     ...(envRoot ? { envRoot: real(resolve(userCwd, envRoot)) } : {}),
+    ...(gitRoot ? { cwdRepo: { root: real(gitRoot), hasFeatures: existsSync(join(real(gitRoot), 'features')) } } : {}),
   });
 
   if (resolution.kind === 'help') return showHelp(manifest, resolution.topic);
@@ -168,7 +174,7 @@ async function main(argv: string[]): Promise<number> {
   const { step, entry, projectRoot } = resolution;
   // Une commande « fixe » travaille sur le dépôt de la méthode : son script part de la racine de
   // ce dépôt, d'où que l'utilisateur la lance (sous-dossier, ou --root depuis ailleurs). Une
-  // commande « none » part du dossier de l'utilisateur : ses chemins relatifs sont les siens.
+  // commande « none » ou « cwd » part du dossier de l'utilisateur : ses chemins relatifs sont les siens.
   const cwd = entry.root === 'fixed' ? OWN_ROOT : userCwd;
   if (flags.dryRun) {
     const runner = extname(step.script) === '.sh' ? 'bash' : 'tsx';
@@ -178,7 +184,10 @@ async function main(argv: string[]): Promise<number> {
     say(`ezk (à blanc) : ${[runner, step.script, ...shown].join(' ')}`);
     return 0;
   }
-  const code = await runStep(step, cwd, childEnv(entry, projectRoot, process.env));
+  const env = childEnv(entry, projectRoot, process.env);
+  // Le routeur vient de dire « dépôt visé » : le script ne le répète pas (et ne parle pas d'une option non tapée).
+  if (entry.root === 'cwd' && projectRoot !== undefined) env[ANNOUNCED_ENV] = projectRoot;
+  const code = await runStep(step, cwd, env);
   // Un code non nul n'est pas toujours une panne : `law doctor` rend 1 pour dire « il y a un écart ».
   if (code !== 0) warn(`ezk : « ${step.script} » s'est terminé avec le code ${code}.`);
   return code;

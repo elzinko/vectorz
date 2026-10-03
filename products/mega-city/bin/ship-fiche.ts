@@ -78,7 +78,8 @@ const fs = nodeRepoFs(repoRoot);
 try {
   const plan = planShip(fs, { files, status, pr, barPlan });
   const banner = rootBanner(target);
-  if (banner) console.log(banner);
+  // Lancé par `ezk`, le routeur a déjà dit « dépôt visé » : pas de second bandeau.
+  if (banner && process.env.EZK_ROOT_ANNOUNCED !== repoRoot) console.log(banner);
   console.log(
     `ship:fiche — ${plan.moves.length} fiche(s) → features/done/ (${status} ${pr}${dryRun ? ', à blanc : rien écrit' : ''})`,
   );
