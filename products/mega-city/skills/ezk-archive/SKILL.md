@@ -138,9 +138,22 @@ et seulement si la voie rapide ne s'applique pas. Tu es la seule à avoir cette 
 
 ### 2. Interroge le portier — **une seule commande**
 
+D'abord, rafraîchis la copie locale d'`origin` : le portier compare les branches à `origin/main`, et
+lui ne fetch jamais (il reste strictement en lecture).
+
+```bash
+git fetch --prune origin
+```
+
+Sans réseau (ou sans remote), la clôture continue : dis-le en une ligne (« `origin/main` peut dater,
+le fetch a échoué »), puis lance le portier quand même. Il signale lui-même une ref trop vieille.
+
 ```bash
 bash <chemin-du-skill>/scripts/check.sh --gate --shipped <ids-livrés|none> --worked <ids-travaillés|none>
 ```
+
+Une branche dont le contenu est déjà sur `origin/main` sort **absorbée**, même si le `main` local est
+en retard (un squash-merge n'avance pas le `main` local).
 
 `--shipped` prend les ids que tu viens de lister (`0089,0097`), ou `none` si la
 session n'a **rien** livré. `--worked` prend ceux sur lesquels elle a **travaillé**, livrés
@@ -243,7 +256,8 @@ qui ne demandent aucun jugement.
 5. **Ménage** — si `branch_absorbed` ou `worktree_prunable` sont non nuls, ou si la machine
    porte beaucoup de worktrees d'agents, propose `bash <skill>/scripts/check.sh --cleanup` :
    l'inventaire des worktrees et branches sûrs à retirer, avec la commande exacte de chacun. Il
-   ne supprime **rien**. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
+   ne supprime **rien**. Chaque `git branch -D` proposé cite sa preuve (`proof=merged:origin/main` ou
+   `proof=content:<base>`) : c'est la commande qui réussira depuis ce worktree, même en retard. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
    En mode auto, Claude Code peut bloquer ce listage comme « git destructif » (vu le 2026-10-03,
    [fiche du ménage en mode auto](../../../../features/20261003105820099_menage-archive-lancable-mode-auto.md)) :
    donne alors la commande à l'utilisateur, qui la lance dans son terminal.

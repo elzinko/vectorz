@@ -6,7 +6,9 @@
 #       une session qui n'a pas tenu ses comptes tombe toujours en délégation complète) ;
 #   G1  une session disciplinée produit un verdict CLEAN et une sortie minuscule ;
 #   G6  le bruit regex sur handoff.md (96 lignes sur 120) a bien disparu ;
-#   G7  le portier reste strictement read-only (il ne fetch pas, n'écrit rien).
+#   G7  le portier reste strictement read-only (il ne fetch pas, n'écrit rien) ;
+#   G9  à la clôture, une branche fusionnée en squash sur origin/main est absorbée, même quand le
+#       main local est en retard ; une branche jamais fusionnée reste réelle (fiche 20261002155911250).
 set -euo pipefail
 
 CHECK="$(cd "$(dirname "$0")" && pwd)/check.sh"
@@ -201,6 +203,28 @@ ok "mtime de handoff.md inchangé (le portier ne le touche pas)" \
 ok "la sonde mtime renvoie bien un entier (sinon l'assertion ci-dessus ne prouve rien)" \
    "echo \"\$BEFORE_HANDOFF\" | grep -qE '^[0-9]+\$'"
 ok "aucun FETCH_HEAD créé (le portier ne fetch jamais)" "[ ! -f .git/FETCH_HEAD ]"
+
+echo "G9 — clôture : main local en retard, squash déjà sur origin/main :"
+cd "$TMP" && git init -q --bare -b main origin8.git
+git init -q -b main repo8 && cd repo8
+git config user.email test@test && git config user.name test && git config commit.gpgsign false
+git remote add origin "$TMP/origin8.git"
+echo base > a.txt && git add . && git commit -qm base && git push -q origin main
+git checkout -q -b feat/late main && echo "livré ailleurs" > late.txt && git add late.txt && git commit -qm late
+git checkout -q -b feat/reelle main && echo "jamais livré" > reelle.txt && git add reelle.txt && git commit -qm reelle
+git checkout -q main
+# Une autre session squash-merge feat/late sur origin ; ici, on fetch sans avancer le main local.
+cd "$TMP" && git clone -q --branch main origin8.git other8 && cd other8
+git config user.email test@test && git config user.name test && git config commit.gpgsign false
+echo "livré ailleurs" > late.txt && git add late.txt && git commit -qm "squash late" && git push -q origin main
+cd "$TMP/repo8" && git fetch -q origin
+OUT8="$(bash "$CHECK" --gate)"
+ok "le main local est bien en retard (la fixture prouve quelque chose)" \
+   "[ \"\$(git rev-list --count main..origin/main)\" = 1 ]"
+ok "la branche squashée sur origin/main est absorbée" "echo \"\$OUT8\" | grep -qE 'P2_PENDING: .* branch_real=1 branch_absorbed=1 '"
+ok "elle n'est pas classée réelle"                    "! echo \"\$OUT8\" | grep -q 'branch REAL feat/late '"
+ok "la branche jamais fusionnée reste réelle"         "echo \"\$OUT8\" | grep -q 'branch REAL feat/reelle '"
+cd "$TMP/repo"
 
 echo "G3 — option inconnue et hors dépôt :"
 ok "option inconnue ⇒ exit 2"    "! bash \"\$CHECK\" --nawak >/dev/null 2>&1"
