@@ -5,9 +5,9 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version:
+version: V0.5
 labels: [cross-repo]
-status: idea
+status: ready
 pr:
 evidence: none # commande en ligne de commande, aucun écran
 created: 2026-10-03
@@ -132,3 +132,6 @@ ship muti tapé à la main se fait avec la commande courte.
   `EZK_ROOT`.
 - Reprend le grooming de la branche `docs/groom-20261002155911257` du 2026-10-03. Cette branche est
   abandonnée : la fiche mère garde la version de `main`.
+- **Prête le 2026-10-03** (porte « prête » passée : décision PO datée, valeur dite, 9 critères
+  prouvables, 3 dépendances constatées). Rangée en V0.5, juste après la fiche mère, pour partir avec
+  elle.
