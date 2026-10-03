@@ -45,29 +45,53 @@ Deux stories en parallèle conflicteront donc toujours.
 
 ## Proposition
 
-C'est d'abord une **décision d'architecture**, qui révise l'ADR-0055 ou l'ADR-0052. Trois pistes :
+**Avis d'architecte du 2026-10-03 (grooming, gardé par le PO) : sortir `BACKLOG.md` de git
+(piste 1).**
 
-1. **Sortir `BACKLOG.md` de git**, comme les autres vues générées. Plus aucun conflit, mais on perd
-   la lecture du backlog sur GitHub.
-2. **Le faire régénérer par la CI après chaque merge sur `main`.** Les PR ne le touchent plus, et il
-   reste lisible sur GitHub. Mais un robot écrit alors sur `main`, ce que l'ADR-0052 interdit
-   aujourd'hui (« GitHub exécute le merge, rien d'autre n'écrit sur `main` »).
-3. **Réduire ce qui change dans le fichier** : retirer les lignes qui bougent à chaque fiche, comme
-   les compteurs. Moins de conflits, pas zéro : deux fiches ajoutées dans la même section se
-   touchent encore.
+| | 1 · Sortir de git | 2 · La CI régénère après le merge | 3 · Réduire les lignes qui bougent |
+|---|---|---|---|
+| Conflits | zéro, par construction | quasi nuls : chaque ship recale encore le lien de sa ligne | moins, pas zéro |
+| Pièce nouvelle | aucune | un robot qui committe sur `main` après chaque merge | aucune |
+| Lisible sur GitHub | non : `PLAN.md` et la liste des fiches le restent | oui | oui |
+| ADR révisé | ADR-0055, pour cette seule vue | ADR-0049 §2 (« pas de vues après le merge ») | aucun |
+| Risque principal | 17 liens de doc à rediriger | deux merges rapprochés se disputent le commit du robot | deux fiches ajoutées le même jour se touchent encore |
 
-Un ADR court tranche, puis le build applique la piste choisie au ship, à `ezk-backlog add` et aux
-gates.
+**Pourquoi la piste 1.**
+
+- L'ADR-0055 pose la règle : une vue générée reste dans git si, et seulement si, on la lit sur
+  GitHub. Son verdict « lue sur GitHub » pour `BACKLOG.md` a été affirmé, jamais mesuré. Le PO ne
+  sait pas s'il la lit là (2026-10-03).
+- Sur GitHub, deux vues restent lisibles : `PLAN.md`, la séquence curée et versionnée, et la liste
+  des fiches de `features/`, dont les noms `<id>_<slug>` se lisent.
+- C'est la piste la plus simple : aucune pièce nouvelle, rien qui écrive sur `main` après un merge.
+- Elle est réversible : il suffit de recommiter le fichier.
+
+**Ce que le build change.**
+
+- `features/BACKLOG.md` sort du suivi git (`git rm --cached`) et entre dans `.gitignore`. `regen` et
+  `views:regen` le construisent en local, à la demande.
+- Les 17 documents qui pointent vers `BACKLOG.md` pointent vers `features/README.md` ou `PLAN.md`.
+- `ezk-backlog` (`regen`, `ship`, recette de conflit) et `ship-in-pr.sh` n'ont plus d'index à
+  committer.
+- Un ADR court révise le verdict de l'ADR-0055 pour `BACKLOG.md`.
+
+**Correction du 2026-10-03.** La première version de cette fiche disait que la piste 2 contredit
+l'ADR-0052. C'est faux : l'ADR-0052 décide que GitHub exécute le squash, il n'interdit pas un commit
+de robot sur `main`. C'est l'ADR-0049 §2 qui a écarté les vues régénérées après le merge.
 
 ## Critères d'acceptation
 
-- [ ] Un ADR tranche entre les trois pistes, et dit quel ADR existant il révise.
+- [ ] Un ADR court révise le verdict de l'ADR-0055 pour `BACKLOG.md` : la vue n'est plus committée.
+- [ ] `features/BACKLOG.md` n'est plus suivi par git et figure dans `.gitignore` ; `regen` le
+      construit en local.
 - [ ] Un test sur dépôt jetable ouvre deux branches qui ajoutent chacune une fiche, puis les fusionne
       l'une après l'autre dans `main` : aucune ne conflicte.
-- [ ] La recette « Conflit sur `BACKLOG.md` » d'`ezk-backlog` est mise à jour, ou retirée si elle
-      ne sert plus.
+- [ ] Plus aucun lien du dépôt ne pointe vers `features/BACKLOG.md` (`test-links-repo` vert).
+- [ ] La recette « Conflit sur `BACKLOG.md` » est retirée d'`ezk-backlog`, et `ship-in-pr.sh` ne
+      committe plus d'index.
 
-**Mesure de suivi** — sur les 10 prochaines PR de story ou de fiche, 0 conflit sur `BACKLOG.md`.
+**Mesure de suivi** — sur les 10 prochaines PR de story ou de fiche, 0 conflit sur un fichier
+généré.
 
 ## Comment vérifier
 
@@ -76,7 +100,9 @@ pnpm --dir products/mega-city test:scripts
 ```
 
 - Le test de fusion de deux branches de fiches passe.
-- Relire l'ADR : la piste choisie et l'ADR révisé y figurent.
+- `git ls-files features/BACKLOG.md` ne rend rien ; `bash products/mega-city/bin/regen-backlog.sh .`
+  le reconstruit en local.
+- Relire l'ADR : il révise le verdict de l'ADR-0055 pour `BACKLOG.md`.
 
 ## Notes / décisions
 
@@ -84,5 +110,8 @@ pnpm --dir products/mega-city test:scripts
   [« Décider quelles vues générées ne plus committer »](done/20260830194601376_spike-degiter-vues-outillage.md),
   qui a produit l'ADR-0055 et gardé `BACKLOG.md` versionné.
 - **P1 demandée par le PO** le 2026-10-03 : le conflit touche désormais chaque PR de story.
+- **Grooming du 2026-10-03** : technique « avis de l'architecte », gardée par le PO. Faits vérifiés
+  le jour même : `main` n'a pas de protection de branche ; 17 documents hors `features/` citent
+  `BACKLOG.md` ; la CI (`ci.yml`, `check-links.yml`) ne régénère aucune vue.
 - Le juge de la rétro du 2026-10-03 n'a pas vu ce sujet : il est apparu au merge de la PR de
   rangement (#337).
