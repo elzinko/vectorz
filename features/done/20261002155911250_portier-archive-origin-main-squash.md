@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [archive]
-status: ready
-pr:
+status: shipped
+pr: "#345"
 evidence: none # script de clôture, pas d'écran
 created: 2026-10-02
 ---

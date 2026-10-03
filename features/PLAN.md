@@ -94,7 +94,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260930194219046` — ezk-backlog choisit et fige le lot du sprint, que `start --lot` consomme · `build`~~ — shipped #324
 - ~~`20260930194219068` — ezk-product-build enchaîne les sprints, un checkpoint entre deux incréments · `groom` → `build`~~ — shipped #325
 - ~~`20261002114435782` — la fiche d'une story arrive en done avec son merge, quel que soit le canal : ship avant merge, décidé mais jamais construit · prête le 2026-10-02 · `build`~~ — shipped #333
-- `20261002155911250` — le portier d'ezk-archive compare à origin/main à la clôture (le squash est déjà reconnu) · P1, issue de la rétro muti (#331) · prête le 2026-10-03 · `build`
+- ~~`20261002155911250` — le portier d'ezk-archive compare à origin/main à la clôture (le squash est déjà reconnu) · P1, issue de la rétro muti (#331) · prête le 2026-10-03 · `build`~~ — shipped #345
 - ~~`20261002155911257` — les skills ezk retrouvent mega-city depuis un projet hôte, en passant par `ezk --root` · P1, issue de la rétro muti (#331) · prête le 2026-10-03 · `build`~~ — shipped #343
 - ~~`20261003072823731` — sans `--root`, `ezk backlog ship` et `regen` visent le dépôt du dossier où on tape la commande · P2, complète la précédente (décision PO du 2026-10-03) · prête le 2026-10-03 · `build`~~ — shipped #344
 - `20261003105820077` — la note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app · P1, issue de la rétro muti du 2026-10-03 (#340) · `groom` → `build`
