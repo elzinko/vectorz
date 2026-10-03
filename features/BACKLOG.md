@@ -279,6 +279,8 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
+| [20261003200945204](20261003200945204_mode-local-depuis-projet-hote.md) | Le mode local de la méthode marche depuis un projet hôte, sans contournement | bug | P0 | V0.5 | mega-city | 💡 idea |  |
+| [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
@@ -346,7 +348,6 @@
 | [0161](0161-ezk-challenge-panel.md) | Un panel de relecteurs adverses réutilisable par tous les skills | feature | P2 |  | mega-city | 💡 idea |  |
 | [0162](0162-bmad-contrat-supervisabilite.md) | adapter BMAD au contrat de supervisabilité — 2ᵉ méthode émettrice (adaptateur→overlay→fork jetable) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0166](0166-article-seed-ai-contrat-auto-amelioration.md) | article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère » | feature | P2 |  | mega-city | 💡 idea |  |
-| [0171](0171-adapter-github-issues-push-only.md) | Publier le backlog en issues GitHub (lecture seule) | feature | P2 |  | mega-city | 💡 idea |  |
 | [0174](0174-ezk-issues-intake-github.md) | Traiter automatiquement les issues GitHub remontées par tes apps | feature | P2 |  | mega-city | 💡 idea |  |
 | [0175](0175-article-skema-skill-schema-migrations.md) | article — Skema : versionner une skill LLM avec des migrations markdown | feature | P2 |  | mega-city | 💡 idea |  |
 | [0186](0186-skema-versioning-migrations-skills-deployees.md) | Versionner et migrer tous les artefacts de la méthode (Skema) | feature | P2 |  | mega-city | 💡 idea |  |
