@@ -77,7 +77,7 @@ ok "KEPT dit les raisons"                  "echo \"\$OUT\" | grep -qx 'KEPT: cur
 
 echo "K3 — les branches :"
 ok "branche absorbée libre : sûre, avec -D (le squash n'est pas un ancêtre)" \
-   "echo \"\$OUT\" | grep -q '^BRANCH_SAFE: done-free cmd=git branch -D done-free\$'"
+   "echo \"\$OUT\" | grep -q '^BRANCH_SAFE: done-free proof=content:main cmd=git branch -D done-free\$'"
 ok "branche mergée normalement : sûre, avec -d" \
    "echo \"\$OUT\" | grep -q '^BRANCH_SAFE: merged-ff cmd=git branch -d merged-ff\$'"
 ok "branche tenue par un worktree sûr : après son retrait" \
@@ -127,8 +127,20 @@ echo "livré plus tard" > late.txt && git add late.txt && git commit -qm "squash
 cd "$TMP/repo6" && git fetch -q origin
 OUT6="$(bash "$CHECK" --cleanup)"
 ok "la base de preuve est origin/main"          "echo \"\$OUT6\" | grep -qx 'BASE: origin/main'"
-ok "la branche livrée sur origin/main est sûre" "echo \"\$OUT6\" | grep -q '^BRANCH_SAFE: late-squash cmd=git branch -D late-squash\$'"
+ok "la branche livrée sur origin/main est sûre" "echo \"\$OUT6\" | grep -q '^BRANCH_SAFE: late-squash proof=content:origin/main cmd=git branch -D late-squash\$'"
 ok "main n'est jamais proposée"                 "! echo \"\$OUT6\" | grep -qE '^BRANCH_[A-Z_]*: main '"
+
+echo "K8 — depuis un worktree en retard, la commande proposée réussit : -D, avec sa preuve :"
+# Une branche fusionnée (ancêtre) dans origin/main, mais pas dans le HEAD local : `git branch -d`
+# la refuserait (« not fully merged »). Le ménage propose -D et cite la preuve contre origin/main.
+cd "$TMP/repo6"
+git checkout -q --no-track -b merged-late origin/main && echo "fusionnée sur origin" > ml.txt && git add ml.txt && git commit -qm ml
+git push -q origin merged-late:main && git checkout -q main && git fetch -q origin
+OUT8="$(bash "$CHECK" --cleanup)"
+ok "la branche fusionnée sur origin/main est proposée en -D, preuve citée" \
+   "echo \"\$OUT8\" | grep -q '^BRANCH_SAFE: merged-late proof=merged:origin/main cmd=git branch -D merged-late\$'"
+ok "-d aurait échoué ici : la fixture reproduit le cas muti"   "! git branch -d merged-late >/dev/null 2>&1"
+ok "la commande proposée réussit vraiment"                     "git branch -D merged-late >/dev/null"
 
 echo "K7 — les commandes sont citées : un nom de branche hostile n'injecte rien :"
 cd "$TMP" && git init -q -b main repo7 && cd repo7

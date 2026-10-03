@@ -110,6 +110,18 @@ BASE_LOCAL="$BASE"
 if [[ "$MODE" == "cleanup" ]] && git show-ref --verify --quiet "refs/remotes/origin/$BASE"; then
   BASE="origin/$BASE"
 fi
+# Bases de preuve d'une branche : la base ET sa jumelle, quand elle existe (origin/<base> d'abord, la plus
+# à jour). À la clôture comme au ménage, une branche dont le contenu est arrivé sur l'une d'elles est
+# absorbée : un main local en retard ne fait plus crier « REAL » (fiche 20261002155911250). Le portier
+# ne fetch jamais : c'est le skill qui rafraîchit origin/<base> avant de l'appeler.
+if [[ "$BASE" != "$BASE_LOCAL" ]]; then
+  PROOF_BASES="$BASE"
+  git show-ref --verify --quiet "refs/heads/$BASE_LOCAL" && PROOF_BASES="$BASE $BASE_LOCAL"
+elif git show-ref --verify --quiet "refs/remotes/origin/$BASE"; then
+  PROOF_BASES="origin/$BASE $BASE"
+else
+  PROOF_BASES="$BASE"
+fi
 # Un remote n'implique PAS des pull requests : un bare local (`file://`), un serveur git
 # perso ou un GitLab n'en ont aucune que `gh` puisse lire. Sans cette distinction, on
 # confond « je ne peux pas lire les PRs » (⇒ UNKNOWN, prudent) et « il n'y a pas de PRs
@@ -313,7 +325,15 @@ WT_HELD="$(git branch --no-merged "$BASE" 2>/dev/null | grep '^+' | sed 's/^+ */
 if [[ -n "$UNMERGED" ]]; then
   while IFS= read -r b; do
     [[ -z "$b" ]] && continue
-    verdict="$(classify_ref "$BASE" "$b")"
+    # Absorbée dès qu'UNE base de preuve contient son contenu ; sinon, les fichiers non prouvés sont
+    # ceux de la première base (origin/<base> quand elle existe : la plus à jour). Coût borné : une
+    # absorbée s'arrête à sa première preuve ; seule une branche réelle est classée contre les deux bases.
+    verdict=""; unproven_in=""; proved_by=""
+    for pb in $PROOF_BASES; do
+      v="$(classify_ref "$pb" "$b")"
+      if [[ "$v" == "ABSORBEE" ]]; then verdict="ABSORBEE"; proved_by="$pb"; break; fi
+      [[ -z "$verdict" ]] && { verdict="$v"; unproven_in="$pb"; }
+    done
     last="$(git log -1 --format='%h %s (%cr)' "$b" 2>/dev/null)"
     wtmark=""
     grep -qx "$b" <<< "$WT_HELD" && wtmark=" [worktree — remove d'abord]"
@@ -321,7 +341,7 @@ if [[ -n "$UNMERGED" ]]; then
     if [[ "$verdict" == "ABSORBEE" ]]; then
       P2_ABSORBED=$(( P2_ABSORBED + 1 ))
       ABSORBED_LIST="${ABSORBED_LIST}    $b${wtmark} — $last"$'\n'
-      ABSORBED_FACTS="${ABSORBED_FACTS}branch ABSORBED $b $last${wtflag} safe_delete=1"$'\n'
+      ABSORBED_FACTS="${ABSORBED_FACTS}branch ABSORBED $b $last${wtflag} safe_delete=1 proof=$proved_by"$'\n'
     else
       P2_REAL=$(( P2_REAL + 1 ))
       pr_n="$(pr_number_for_head "$b")"
@@ -333,7 +353,7 @@ if [[ -n "$UNMERGED" ]]; then
       REAL_LIST="${REAL_LIST}    $b${wtmark}${pr_human} — $last"$'\n'
       unproven_csv=""
       [[ "$verdict" != "REELLE" ]] && {
-        REAL_LIST="${REAL_LIST}        non prouvé dans $BASE :${verdict#REELLE}"$'\n'
+        REAL_LIST="${REAL_LIST}        non prouvé dans $unproven_in :${verdict#REELLE}"$'\n'
         unproven_csv=" unproven=$(echo ${verdict#REELLE} | tr ' ' ',')"
       }
       REAL_FACTS="${REAL_FACTS}branch REAL $b $last${wtflag}${pr_fact}${unproven_csv}"$'\n'
@@ -610,10 +630,6 @@ if [[ "$MODE" == "cleanup" ]]; then
   if stat -c %Y . >/dev/null 2>&1; then mtime_of() { stat -c %Y "$1"; }   # GNU coreutils
   else                                  mtime_of() { stat -f %m "$1"; }   # BSD / macOS
   fi
-  # Bases de preuve : la base locale ET sa jumelle distante, quand elle existe. Le main local peut
-  # être en retard sur origin : sans la jumelle, des worktrees déjà livrés passeraient pour « réels ».
-  PROOF_BASES="$BASE"
-  [[ "$BASE" != "$BASE_LOCAL" ]] && git show-ref --verify --quiet "refs/heads/$BASE_LOCAL" && PROOF_BASES="$PROOF_BASES $BASE_LOCAL"
   # Une commande affichée est une commande que l'opérateur lance : un nom de branche ou un chemin peut
   # contenir `;`, `$( )`, une apostrophe. Tout ce qui entre dans un `cmd=` passe par printf %q.
   shq() { printf '%q' "$1"; }
@@ -675,9 +691,20 @@ if [[ "$MODE" == "cleanup" ]]; then
 
   # Branches : absorbées (squash-merge, preuve de contenu) et mergées (ancêtres de la base).
   BR_SAFE_LINES=""; BR_SAFE_N=0
-  add_safe_branch() { # $1=nom $2=-d|-D
+  add_safe_branch() { # $1=nom $2=-d|-D $3=preuve (citée avec chaque -D)
     BR_SAFE_N=$((BR_SAFE_N + 1))
-    (( BR_SAFE_N <= MAX_CLEAN )) && BR_SAFE_LINES="${BR_SAFE_LINES}BRANCH_SAFE: $1 cmd=git branch $2 $(shq "$1")"$'\n'
+    (( BR_SAFE_N <= MAX_CLEAN )) && BR_SAFE_LINES="${BR_SAFE_LINES}BRANCH_SAFE: $1${3:+ proof=$3} cmd=git branch $2 $(shq "$1")"$'\n'
+  }
+  # `git branch -d` ne compare pas à la base de preuve : il compare à l'upstream de la branche, sinon au
+  # HEAD du worktree courant. Depuis un worktree en retard, il refuse une branche pourtant fusionnée sur
+  # origin/<base> (« not fully merged », muti 2026-10-03). On ne propose -d que s'il réussira.
+  d_accepts() { # $1=branche → 0 si `git branch -d` l'accepterait d'ici
+    local up
+    if up="$(git rev-parse --verify --quiet "$1@{upstream}" 2>/dev/null)"; then
+      git merge-base --is-ancestor "$1" "$up"
+    else
+      git merge-base --is-ancestor "$1" HEAD
+    fi
   }
   while IFS= read -r l; do
     [[ -z "$l" ]] && continue
@@ -685,13 +712,15 @@ if [[ "$MODE" == "cleanup" ]]; then
     [[ "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
     case "$l" in
       *"worktree_held=1"*) continue ;;                 # tenue par un worktree : voir BRANCH_AFTER_WORKTREE
-      *) add_safe_branch "$b" -D ;;
+      *) pf="$(printf '%s' "$l" | sed -n 's/.* proof=\([^ ]*\).*/\1/p')"
+         add_safe_branch "$b" -D "${pf:+content:$pf}" ;;   # jamais une preuve vide affichée
     esac
   done <<< "$ABSORBED_FACTS"
   MERGED="$(git branch --merged "$BASE" 2>/dev/null | grep -v '^[*+]' | sed 's/^ *//' || true)"
   while IFS= read -r b; do
     [[ -z "$b" || "$b" == "$CUR" || "$b" == "$BASE_LOCAL" || "$b" == "main" || "$b" == "master" ]] && continue
-    add_safe_branch "$b" -d
+    if d_accepts "$b"; then add_safe_branch "$b" -d
+    else add_safe_branch "$b" -D "merged:$BASE"; fi
   done <<< "$MERGED"
   # Une branche tenue par un worktree GARDÉ n'est pas listée du tout (elle reste tenue).
   # Une branche tenue par un worktree SÛR n'est proposée qu'après lui (AFTER_LINES) : son contenu

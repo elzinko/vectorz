@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [archive]
-status: ready
-pr:
+status: shipped
+pr: "#345"
 evidence: none # script de clôture, pas d'écran
 created: 2026-10-02
 ---
@@ -70,15 +70,15 @@ connaît pourtant ce retard : il ne s'en sert pas pour classer.
 
 ## Critères d'acceptation
 
-- [ ] À la clôture, une branche fusionnée en squash sur `origin/main`, mais pas encore sur le `main`
+- [x] À la clôture, une branche fusionnée en squash sur `origin/main`, mais pas encore sur le `main`
       local, est classée absorbée.
-- [ ] Une branche réellement non fusionnée reste classée « REAL ».
-- [ ] Le portier ne fait toujours aucun `fetch` : le test G7 reste vert.
-- [ ] Le skill `ezk-archive` rafraîchit les refs avant d'appeler le portier. Sans réseau, la clôture
+- [x] Une branche réellement non fusionnée reste classée « REAL ».
+- [x] Le portier ne fait toujours aucun `fetch` : le test G7 reste vert.
+- [x] Le skill `ezk-archive` rafraîchit les refs avant d'appeler le portier. Sans réseau, la clôture
       continue et le dit.
-- [ ] La suite shell couvre le cas « squash sur `origin/main`, `main` local en retard » à la
+- [x] La suite shell couvre le cas « squash sur `origin/main`, `main` local en retard » à la
       clôture.
-- [ ] En mode `--cleanup`, la commande proposée réussit depuis le worktree courant. Sans upstream,
+- [x] En mode `--cleanup`, la commande proposée réussit depuis le worktree courant. Sans upstream,
       `git branch -d` compare à HEAD : depuis un worktree en retard, il refuse (« not fully merged »,
       constaté le 2026-10-03 dans muti). Quand la preuve contre `origin/main` est faite, proposer
       `git branch -D` et citer la preuve. (Ajout de la rétro muti du 2026-10-03.)
@@ -114,3 +114,14 @@ Sur le terrain : 0 faux « REAL » sur les 5 prochaines clôtures d'un projet co
 - 2026-10-03 : rétro muti `docs/captures/2026-10-03-retro-cloture-et-menage.md` (décision PO ✅) :
   3e occurrence ajoutée (clôture du 2026-10-02, points 3 et 4 compris) et critère `-d` / `-D` du
   ménage.
+- **Construite le 2026-10-03** (run V0.5, sprint 3).
+  - **Clôture** : chaque branche se prouve contre `origin/<base>` puis la base locale (`PROOF_BASES`,
+    calculé une fois pour les deux modes). Absorbée dès qu'une base contient son contenu. Test G9 de
+    `test-check-gate.sh` (fixture : squash sur `origin/main`, `main` local en retard d'un commit).
+  - **Skill** : `git fetch --prune origin` juste avant le portier ; sans réseau, la clôture continue
+    et le dit. Le portier ne fetch toujours pas (G7 vert).
+  - **Ménage** : `git branch -d` compare à l'upstream, sinon au HEAD du worktree. Le ménage ne le
+    propose que s'il réussira d'ici ; sinon `-D`, avec sa preuve (`proof=merged:origin/main` ou
+    `proof=content:<base>`). Test K8 de `test-cleanup.sh` : `-d` échoue, la commande proposée réussit.
+  - **Points 3 et 4 du portier** (fiche livrée dite « non livrée », ADR dit « non fusionné ») : hors
+    de cette fiche, qui ne les porte pas en critère. À reprendre dans une fiche voisine.
