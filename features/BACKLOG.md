@@ -137,6 +137,7 @@
 | [20261002205205417](20261002205205417_modele-effort-agents-par-projet.md) | Régler le modèle et l'effort de chaque agent, projet par projet | feature | P1 | V0.6 | mega-city | 🔵 ready |  |
 | [20261002231845120](20261002231845120_backlog-md-sans-conflit-entre-pr.md) | BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps | feature | P1 |  | mega-city | 🔵 ready |  |
 | [20261003075821760](20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 |  | mega-city | 🔵 ready |  |
+| [20261003105820077](20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | V0.5 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -281,7 +282,6 @@
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261003105820077](20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | V0.5 | mega-city | 💡 idea |  |
 | [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
