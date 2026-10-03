@@ -27,13 +27,17 @@ seul commit sur `main` : la branche n'est plus un ancêtre de `main`, même si t
 
 ## Contexte / Problème
 
-Deux occurrences, dans le projet muti :
+Trois occurrences, dans le projet muti :
 
 - 2026-09-29 : une branche identique à `origin/main` (`git rev-list --count origin/main..HEAD` = 0)
   classée « REAL / unproven ». Note de carnet muti
   `20260929191041932-gate-archive-compare-a-main-local-perime`.
 - 2026-10-01 : à la clôture, les branches des PR muti #266 et #267, déjà mergées en squash, classées
   « REAL ».
+- 2026-10-02 : clôture de la même session muti. La branche de la rétro, fusionnée en squash (PR muti
+  #270), classée « REAL ». Les points 3 et 4 du portier ont le même défaut : une fiche livrée dite
+  « non livrée », un ADR dit « non fusionné », car ils lisent le worktree en retard plutôt
+  qu'`origin/main`. À trancher au grooming : les traiter ici ou dans une fiche voisine.
 
 Coût : à chaque clôture, le pilote doit prouver à la main que rien n'est perdu. Pire, un faux
 « REAL » peut cacher une vraie branche non mergée au milieu du bruit.
@@ -74,6 +78,10 @@ connaît pourtant ce retard : il ne s'en sert pas pour classer.
       continue et le dit.
 - [ ] La suite shell couvre le cas « squash sur `origin/main`, `main` local en retard » à la
       clôture.
+- [ ] En mode `--cleanup`, la commande proposée réussit depuis le worktree courant. Sans upstream,
+      `git branch -d` compare à HEAD : depuis un worktree en retard, il refuse (« not fully merged »,
+      constaté le 2026-10-03 dans muti). Quand la preuve contre `origin/main` est faite, proposer
+      `git branch -D` et citer la preuve. (Ajout de la rétro muti du 2026-10-03.)
 
 ## Comment vérifier
 
@@ -103,3 +111,6 @@ Sur le terrain : 0 faux « REAL » sur les 5 prochaines clôtures d'un projet co
   dans le skill, pas dans le script, à cause du test G7. La piste `gh pr list --head` est abandonnée.
 - Dépendance muti — accès constaté le 2026-10-03. Dépôt git dans `~/git/bacasable/muti`, sur `main`.
   Il sert à la vérification sur le terrain.
+- 2026-10-03 : rétro muti `docs/captures/2026-10-03-retro-cloture-et-menage.md` (décision PO ✅) :
+  3e occurrence ajoutée (clôture du 2026-10-02, points 3 et 4 compris) et critère `-d` / `-D` du
+  ménage.
