@@ -272,7 +272,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    git push
    ```
 
-   Le script lance la transaction `ezk backlog ship` et committe `docs(features): ship <id> #<N>`. Le squash fera atterrir le code et la fiche **d'un seul coup**, quel que soit le canal de merge : UI GitHub, `gh` ou le flux. Le lien de provenance du corps pointe alors vers `features/done/<id>_*.md`. **Un NO-GO arrivé après** (revue, retour Codex retenu, CI rouge) : `ship-in-pr.sh undo --repo . --fiche-id <id>` annule le ship par un commit de revert, sans réécrire l'historique. Corrige, puis refais `add` : le ship reste le **dernier** commit de la branche.
+   Le script lance la transaction `ship:fiche` et committe `docs(features): ship <id> #<N>`. Le squash fera atterrir le code et la fiche **d'un seul coup**, quel que soit le canal de merge : UI GitHub, `gh` ou le flux. Le lien de provenance du corps pointe alors vers `features/done/<id>_*.md`. **Un NO-GO arrivé après** (revue, retour Codex retenu, CI rouge) : `ship-in-pr.sh undo --repo . --fiche-id <id>` annule le ship par un commit de revert, sans réécrire l'historique. Corrige, puis refais `add` : le ship reste le **dernier** commit de la branche.
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ». Le résumé de clôture suit la règle
    [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md) :
