@@ -129,7 +129,7 @@ fi
 # --- handoff + plan (best-effort, never ALERT alone) --------------------------
 HANDOFF_LINES=0
 HANDOFF_SCRIPT="$(cd "$(dirname "$0")/../../ezk-archive/scripts" && pwd)/handoff.sh"
-if [[ -x "$HANDOFF_SCRIPT" ]] && [[ -f .claude/handoff.md ]]; then
+if [[ -x "$HANDOFF_SCRIPT" ]]; then   # carry est muet quand aucune note n'existe
   HANDOFF_LINES="$(bash "$HANDOFF_SCRIPT" carry 2>/dev/null | wc -l | tr -d ' ')"
 fi
 

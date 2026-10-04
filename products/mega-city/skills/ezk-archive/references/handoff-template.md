@@ -90,7 +90,7 @@ bash scripts/handoff.sh add "<YYYY-MM-DD> — <titre court> — clôture ezk-arc
 EOF
 ```
 
-Le script insère l'entrée en tête, garantit l'entrée `.gitignore` avant d'écrire, et fait
-tourner l'anneau (`EZK_HANDOFF_KEEP`, défaut 3 — au-delà, les plus anciennes passent dans
-`handoff.archive.md`). **Ne jamais éditer `.claude/handoff.md` à la main** : c'est ce que
+Le script range la note hors du worktree, dans `<git-common-dir>/ezk/` (elle survit à la
+suppression du worktree de session), insère l'entrée en tête, et fait tourner l'anneau (`EZK_HANDOFF_KEEP`, défaut 3 — au-delà, les plus anciennes passent dans
+`handoff.archive.md`). **Ne jamais éditer la note à la main** : c'est ce que
 la fiche 0088 a supprimé (20 Ko relus deux fois puis réécrits par un `Edit`).

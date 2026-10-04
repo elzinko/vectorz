@@ -6,7 +6,7 @@
 #   - `check` ≡ `start --dry-run` : même sortie que le portier, strictement read-only ;
 #   - `start` refuse sur ALERT (sauf override journalisé) et refuse d'ouvrir un 2e sprint ;
 #   - `close` refuse tant qu'une story est ouverte, scelle sinon, et ne touche JAMAIS la
-#     session (docs/sessions/, .claude/handoff.md : c'est le métier d'ezk-archive) ;
+#     session (docs/sessions/, note de handoff : c'est le métier d'ezk-archive) ;
 #   - `start → close → start` s'enchaîne sans perdre ni l'incrément ni les galères du labo ;
 #   - un sprint où rien n'est livré a une sortie (`close --abandon`) : pas d'impasse, pas de rm SPRINT.md ;
 #   - un SPRINT.md d'ancien format (statut en fin de ligne) se ferme, une seule fois ;
@@ -48,7 +48,8 @@ mkfiche "$C" "Gamma" gamma
 echo hello > a.txt
 echo snapshot > docs/sessions/2026-10-01-marker.md
 git add . && git commit -qm "base"
-echo "# handoff" > .claude/handoff.md # ignoré par git : état de SESSION, propriété d'ezk-archive
+# La note de session, à son vrai lieu (dossier git commun, fiche 20261003105820077) : propriété d'ezk-archive.
+HF="$(bash "$(cd "$(dirname "$SPRINT")/../../ezk-archive/scripts" && pwd)/handoff.sh" path)"
 
 HEAD0="$(git rev-parse HEAD)"
 REFS0="$(git for-each-ref | sort)"
@@ -109,14 +110,14 @@ edit "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (PR #12)/"
 edit "s/^- \[ \] $B — Beta\$/- [~] $B — Beta (reportée : dépend d'Alpha)/"
 awk '{print} /^## Galères & gestes \(labo\)$/ {print "- symptôme X — geste Y — pourquoi Z"}' SPRINT.md > SPRINT.md.new && mv SPRINT.md.new SPRINT.md
 SESS_MARK="$(sum docs/sessions/2026-10-01-marker.md)"
-SESS_HAND="$(sum .claude/handoff.md)"
+SESS_HAND="$(sum "$HF")"
 OUT7="$(bash "$SPRINT" close)"
 ok "CLOSE: SEALED sprint=1 done=1 deferred=1" 'printf "%s\n" "$OUT7" | grep -qx "CLOSE: SEALED sprint=1 done=1 deferred=1"'
 ok "annonce l'incrément (id + référence de PR)" 'printf "%s\n" "$OUT7" | grep -qx "INCREMENT: $A (PR #12)"'
 ok "rend la main à la session : retro, planning, sprint suivant, archive nommés" 'N="$(printf "%s\n" "$OUT7" | grep "^NEXT:")" && for w in ezk-retro ezk-backlog "ezk-sprint start" ezk-archive; do printf "%s\n" "$N" | grep -qF "$w" || exit 1; done'
 ok "Statut: clos" 'grep -q "^Statut: clos" SPRINT.md'
 ok "incrément inscrit dans « Incréments scellés de la session », la story reportée nommée" 'grep -qxF -- "- Sprint 1 — Premier sprint — 1 livrée, 1 reportée : $A (PR #12) — reportée : $B" SPRINT.md && grep -qxF "## Incréments scellés de la session" SPRINT.md'
-ok "la session n'est pas touchée (docs/sessions, handoff)" '[ "$(sum docs/sessions/2026-10-01-marker.md)" = "$SESS_MARK" ] && [ "$(sum .claude/handoff.md)" = "$SESS_HAND" ] && [ "$(ls docs/sessions | wc -l | tr -d " ")" = 1 ]'
+ok "la session n'est pas touchée (docs/sessions, handoff)" '[ "$(sum docs/sessions/2026-10-01-marker.md)" = "$SESS_MARK" ] && [ "$(sum "$HF")" = "$SESS_HAND" ] && [ "$(ls docs/sessions | wc -l | tr -d " ")" = 1 ]'
 ok "close n'a créé ni branche ni commit, l'arbre reste propre" '[ "$(git rev-parse HEAD)" = "$HEAD0" ] && [ "$(git for-each-ref | sort)" = "$REFS0" ] && [ -z "$(git status --porcelain)" ]'
 
 echo "S8 — close sans sprint ouvert : refus, pas de double scellé"
@@ -163,7 +164,7 @@ ok "la story reportée est annoncée (retour au backlog)" 'printf "%s\n" "$OUT11
 ok "Statut: clos, avec la raison de l'abandon" 'head -5 SPRINT.md | grep -q "^Statut: clos .*Abandon: pas de capacité"'
 ok "le journal de session garde l'abandon ET les incréments précédents" 'grep -qF -- "- Sprint 3 — Sprint vide — abandonné (pas de capacité) — 0 livrée, 1 reportée, 0 ouverte" SPRINT.md && [ "$(grep -c "^- Sprint [0-9]* — " SPRINT.md)" = 3 ]'
 ok "le labo est conservé" 'grep -q "symptôme X — geste Y" SPRINT.md'
-ok "la session n'est pas touchée" '[ "$(sum .claude/handoff.md)" = "$SESS_HAND" ]'
+ok "la session n'est pas touchée" '[ "$(sum "$HF")" = "$SESS_HAND" ]'
 
 echo "S12 — après un abandon, plus d'impasse : un nouveau sprint s'ouvre ; abandon avec des stories encore ouvertes"
 OUT12="$(bash "$SPRINT" start --lot "$A,$B" --objective "Sprint repris")"

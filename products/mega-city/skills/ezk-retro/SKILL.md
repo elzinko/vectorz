@@ -67,8 +67,10 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 - Fixe le **périmètre** (PR, sprint, friction, méthode en général).
 - Rassemble les **symptômes observés** : frictions vécues, échecs, retouches manuelles de
   PR, leçons ré-expliquées, points de douleur.
-- **Lis le carnet de préparation** (`docs/retro-notes/`, hors `README.md` et `traitees/`) : chaque fichier
-  `<id>-<slug>.md` est une friction/idée/problème déposé par une session passée. Ces notes
+- **Lis le carnet de préparation**, en deux lieux : `docs/retro-notes/` (hors `README.md` et
+  `traitees/`), et les notes déposées hors de git par `ezk retro note`, que liste
+  `bash <skill>/scripts/note.sh list` (une note par ligne). Chaque fichier `<id>-<slug>.md` est une
+  friction/idée/problème déposé par une session passée. Ces notes
   s'ajoutent aux symptômes de la session courante — c'est le corpus accumulé qui garantit qu'aucun
   sujet inter-session n'est oublié. Dossier absent ou vide → rien à ajouter (pas d'erreur).
 - **Candidats-recette — périmètre `sprint` uniquement.** Un sprint qui vient de finir peut
@@ -187,7 +189,10 @@ Puis le rangement :
   avec sa raison, lien de la cible compris. Le PO **valide, peut imposer, peut retirer**.
 - **carnet de rétro** : chaque note lue au temps 1 est **marquée dans la capture** (traitée, ou
   écartée + raison) puis **déplacée** — `git mv docs/retro-notes/<note>.md docs/retro-notes/traitees/`
-  — sous feu vert PO, comme le reste. Une note écartée est déplacée aussi (avec sa raison) : elle ne
+  — sous feu vert PO, comme le reste. Une note déposée hors de git se **verse** dans le même dossier,
+  en la nommant : `bash <skill>/scripts/note.sh verse docs/retro-notes/traitees <note>.md…` ; la PR
+  de rangement la committe. Ne verse que les notes lues au temps 1 : une note arrivée pendant la
+  cérémonie attend la rétro suivante. Une note écartée est déplacée aussi (avec sa raison) : elle ne
   doit pas remonter à la rétro suivante.
 
 > Frontière ADR-0001 : **le LLM rédige et juge** (cérémonie, propositions, avis de cohérence) ;

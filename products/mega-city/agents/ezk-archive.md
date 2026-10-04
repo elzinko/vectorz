@@ -163,10 +163,11 @@ bash <skill>/scripts/handoff.sh add "<date> — <titre>" <<'EOF'
 EOF
 ```
 
-`add` insère l'entrée en tête, garantit l'entrée `.gitignore` **avant** d'écrire (les deux
-fichiers du handoff, jamais `.claude/` en entier), et fait tourner un **anneau FIFO**
-(`EZK_HANDOFF_KEEP`, défaut 3) : au-delà, les plus anciennes passent dans
-`.claude/handoff.archive.md`. Rien n'est jamais supprimé.
+`add` insère l'entrée en tête et fait tourner un **anneau FIFO** (`EZK_HANDOFF_KEEP`, défaut 3) :
+au-delà, les plus anciennes passent dans `handoff.archive.md`. Rien n'est jamais supprimé. La note
+vit dans `<git-common-dir>/ezk/`, le dossier git commun à tous les worktrees : elle survit à la
+suppression du worktree de session, et reste hors de git (`handoff.sh path` donne son chemin). Une
+note restée dans l'ancien lieu (`<worktree>/.claude/handoff.md`) est reprise une fois par `add`.
 
 **Machine jetable — `durable=0` sur la ligne `HANDOFF:` du gate.** Une session cloud tourne dans
 un conteneur recyclé : la note locale, ignorée par git, disparaît avec lui. Écris alors AUSSI la
@@ -183,7 +184,7 @@ en toutes lettres qu'il faut le **pousser** avant de fermer : sans push, la copi
 aussi. Tu ne commites ni ne pousses jamais toi-même. `carry` relit la plus récente des deux
 sources, donc la session suivante retrouve le Pending même sur un nouveau clone.
 
-> ⚠️ **Ne lis JAMAIS `.claude/handoff.md` en entier, et ne l'édite jamais à la main.**
+> ⚠️ **Ne lis JAMAIS la note de handoff en entier, et ne l'édite jamais à la main.**
 > C'était 20 Ko relus deux fois puis réécrits par un `Edit` à chaque run — supprimé par la
 > fiche 0088. `carry` te rend la seule partie que tu ne peux pas reconstituer : la section
 > `**Pending` de l'entrée la plus récente, bornée à 40 lignes.
@@ -299,7 +300,7 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
   est une heuristique étiquetée comme telle : elle ne décide de rien.
 - **Ne re-dérive jamais un point prouvé CLEAN** par le portier, et ne relance pas
   `check.sh` en entier (`rules/token-economy/read-once.md`, niveau MUST).
-- **`.claude/handoff.md` est de l'éphémère personnel** : gitignoré, jamais committé ;
+- **La note de handoff est de l'éphémère personnel** : rangée hors de git (dossier commun), jamais committée ;
   écrit **uniquement** via `handoff.sh add` (anneau FIFO), jamais lu en entier, jamais
   édité à la main.
 - Ne commite jamais à l'aveugle du code ou des secrets ; n'invente ni date ni n° de PR

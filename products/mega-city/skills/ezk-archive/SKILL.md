@@ -17,7 +17,7 @@ description: >-
   branches non-mergées (crucial pour les repos sans remote), fiches déclarées
   livrées, ADR de la session ; sur CLEAN la clôture est traitée directement, sur
   DIRTY elle est déléguée au sous-agent, scopée aux points signalés. Produit
-  toujours la note de handoff persistée dans `.claude/handoff.md` (anneau FIFO)
+  toujours la note de handoff persistée hors du worktree (`<git-common-dir>/ezk/handoff.md`, anneau FIFO)
   et le verdict archivable/pending. Ne merge/push JAMAIS tout seul ; hygiène de
   clôture uniquement (pas du scrum/sprint — ça, c'est ezk-sprint).
 ---
@@ -245,11 +245,12 @@ qui ne demandent aucun jugement.
      - **laisser `SPRINT.md` en place** (scratch éphémère du sprint) ;
      - le handoff **pointe** vers le chemin d'archive (`**Archive session :** …`) —
        **ne duplique pas** le corps de `SPRINT.md` dans la note.
-   - **9. Carnet de rétro (best-effort)** — invite la session à déposer une note dans
-     `docs/retro-notes/` **si** une friction ou une idée durable mérite d'atteindre la prochaine
-     rétro (une note = un fichier `<AAAAMMDDHHMMSSmmm>-<slug>.md`, auto-porteuse : chemins/commits
-     explicites, aucun renvoi « voir plus haut »). C'est le carnet lu au temps 1 du skill `ezk-retro`
-     (fiche 0081). **Rien de durable à noter → n'écris rien** (même garde-fou que « Galères & gestes
+   - **9. Carnet de rétro (best-effort)** — invite la session à déposer une note **si** une
+     friction ou une idée durable mérite d'atteindre la prochaine rétro. Une commande suffit, sans
+     commit ni PR : `ezk retro note "<titre>" [--type friction|idée|problème] <<< "<corps>"`. La note
+     va dans le dossier git commun à tous les worktrees : elle survit à la suppression de celui-ci.
+     Corps auto-porteur : chemins et commits explicites, aucun renvoi « voir plus haut ». C'est le
+     carnet lu au temps 1 du skill `ezk-retro` (fiche 0081, fiche 20261003105820077). **Rien de durable à noter → n'écris rien** (même garde-fou que « Galères & gestes
      (labo) »). Best-effort assumé : la garantie déterministe (hook) attend la fiche 0077.
 4. Rends la note + le verdict **✅ archivable** — **En clair d'abord** (≤ 3 phrases),
    puis le corps gabarit. Sur `check`, dis que rien n'a été écrit et que `run` le ferait.
@@ -313,7 +314,7 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
   à trancher un cas comme ceux-là dans la conversation principale, arrête-toi et délègue.
 - **`check` n'écrit jamais**, quel que soit le verdict : ni handoff, ni `.gitignore`, ni
   mémoire. Un dry-run qui modifie le dépôt n'est plus un dry-run.
-- **Ne relis jamais `.claude/handoff.md`** : `handoff.sh carry` en rend la seule partie
+- **Ne relis jamais la note de handoff** : `handoff.sh carry` en rend la seule partie
   utile, bornée. Le lire en entier (20 Ko, deux fois par run) est ce que la fiche 0088 a
   supprimé — et c'est une violation directe de `rules/token-economy/read-once.md`.
 - **Ne re-dérive jamais un point que le gate a prouvé CLEAN**, ni dans la conversation,

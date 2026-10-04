@@ -118,7 +118,7 @@ Avant de l'appeler, mets le lot de `SPRINT.md` à jour : `[x]` pour une story li
 
 Ne supprime jamais `SPRINT.md` pour sortir d'une impasse : tu perdrais le labo, les notes et les incréments de la session. `--abandon` est la sortie.
 
-`close` **ne ferme PAS la session** : il ne touche ni `docs/sessions/` ni `.claude/handoff.md`. C'est le métier d'`ezk-archive`, et le DoD bash le prouve. Il ne pose pas non plus de nouveau « on continue ? » : l'accord a été donné au checkpoint avant merge (étape 9). « Rendre la main à la session », c'est afficher la suite possible puis **t'arrêter** : rétro (`ezk-retro`), planning (`ezk-backlog next|groom`), un nouveau `start`, ou `ezk-archive` pour lever la session.
+`close` **ne ferme PAS la session** : il ne touche ni `docs/sessions/` ni la note de handoff. C'est le métier d'`ezk-archive`, et le DoD bash le prouve. Il ne pose pas non plus de nouveau « on continue ? » : l'accord a été donné au checkpoint avant merge (étape 9). « Rendre la main à la session », c'est afficher la suite possible puis **t'arrêter** : rétro (`ezk-retro`), planning (`ezk-backlog next|groom`), un nouveau `start`, ou `ezk-archive` pour lever la session.
 
 ## L'équipe convoquée
 

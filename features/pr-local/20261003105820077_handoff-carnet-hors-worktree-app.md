@@ -1,17 +1,4 @@
----
-id: "20261003105820077"
-title: "La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app"
-type: bug
-priority: P1
-product: mega-city
-milestone:
-version: V0.5
-labels: [archive, retro, worktree]
-status: ready
-pr:
-evidence: none # scripts de clôture et de rétro, pas d'écran
-created: 2026-10-03
----
+> 🗎 Rendu de la fiche [features/20261003105820077_handoff-carnet-hors-worktree-app.md](../20261003105820077_handoff-carnet-hors-worktree-app.md)
 
 # 20261003105820077 — La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app
 
@@ -131,3 +118,19 @@ bash products/mega-city/skills/ezk-archive/scripts/test-check-gate.sh
   section Valeur, dépendance muti constatée. Statut inchangé : la porte « prête » reste à passer.
 - **Prête le 2026-10-03** (porte « prête » passée : trois incidents datés, valeur chiffrée, six
   critères prouvables sur la branche, dépendance muti constatée).
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| test-handoff (H1-H22) | ✅ |
+| test-check-gate (G1-G11) | ✅ |
+| test-note (N1-N5) | ✅ |
+| test:scripts 35 | ✅ |
+| vitest 1787 | ✅ |
+| typecheck | ✅ |
+| Revue ezk-reviewer | ✅ GO (2e passe après NO-GO) |
+| Before / after (UI) | N.A. — scripts de clôture et de rétro sans écran |
+| CI cloud | N.A. github off |
+| Codex | N.A. github off |

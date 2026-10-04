@@ -9,7 +9,7 @@
 #
 # On remplace ça par une borne qui ne dépend de rien : un ANNEAU FIFO de N entrées
 # (EZK_HANDOFF_KEEP, défaut 3). Au-delà, la plus ancienne part en tête de
-# `.claude/handoff.archive.md` — rien n'est jamais supprimé, mais le fichier vivant est
+# `handoff.archive.md` — rien n'est jamais supprimé, mais le fichier vivant est
 # stationnaire. ADR-0001 : le script range, le LLM rédige.
 #
 # Ce qui garantit qu'aucun report ne se perd malgré la rotation : `carry` remonte la
@@ -19,15 +19,24 @@
 #     depuis la source de vérité live — les recopier d'une entrée à l'autre les périmait).
 #
 # Usage :
+#   handoff.sh where                   → chemin du fichier, sans rien créer
+#   handoff.sh legacy                  → l'ancienne note du worktree, si elle reste à reprendre
 #   handoff.sh path                    → chemin du fichier (le crée s'il manque)
 #   handoff.sh carry                   → section **Pending de l'entrée la plus récente
 #   handoff.sh add "<titre>" < corps   → insère l'entrée en tête, puis fait tourner l'anneau
 #   handoff.sh durable "<titre>" < corps → écrit une COPIE VERSIONNÉE dans docs/sessions/
 #   handoff.sh help
 #
-# `path` et `carry` sont read-only ; `add` et `durable` écrivent.
+# `where`, `legacy` et `carry` sont read-only ; `path`, `add` et `durable` écrivent.
 #
-# Machine jetable (fiche 0189) : `.claude/handoff.md` est ignoré par git, donc perdu avec un
+# Où vit la note (fiche 20261003105820077) : dans `<git-common-dir>/ezk/`, le dossier git que
+# tous les worktrees d'un dépôt partagent. L'app Claude supprime un worktree à l'archivage, ou le
+# recycle pour une autre session : une note rangée dans `<worktree>/.claude/` partait avec lui.
+# Le dossier commun survit à la suppression d'un worktree, reste hors de git, et l'app ne le
+# copie jamais dans un worktree neuf. Une note restée dans l'ancien lieu
+# (`<worktree>/.claude/handoff.md`) est reprise une fois par `add`, puis ignorée.
+#
+# Machine jetable (fiche 0189) : la note locale vit hors de git, donc elle est perdue avec un
 # conteneur de session cloud. `durable` écrit la même note dans
 # docs/sessions/AAAA-MM-JJ-handoff-HHMMSS-<slug>.md : à committer ET pousser par l'humain
 # (le script ne committe ni ne pousse jamais). L'heure sert à l'ordre : l'ordre des noms est
@@ -43,10 +52,19 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "✗ pas dans un dépôt git." >&2; exit 2
 fi
 ROOT="$(git rev-parse --show-toplevel)" || exit 2
-FILE="$ROOT/.claude/handoff.md"
-ARCHIVE="$ROOT/.claude/handoff.archive.md"
+# `pwd -P` : le même chemin, qu'on parte du dossier principal ou d'un worktree (macOS : /var → /private/var).
+COMMON="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)" || exit 2
+EZK_DIR="$COMMON/ezk"
+FILE="$EZK_DIR/handoff.md"
+ARCHIVE="$EZK_DIR/handoff.archive.md"
+# L'ancien lieu, dans le worktree : lu tant que la note commune n'existe pas, repris une fois par `add`.
+LEGACY="$ROOT/.claude/handoff.md"
+LEGACY_ARCHIVE="$ROOT/.claude/handoff.archive.md"
+# Empreintes des entrées déjà reprises de l'ancien lieu. L'app copie la note du dossier principal
+# dans chaque worktree neuf : sans cette mémoire, chaque copie serait reprise une fois de plus.
+IMPORTED="$EZK_DIR/legacy-imported"
 
-usage() { sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,44p' "$0" | sed 's/^# \{0,1\}//'; }
 
 # `add` est un read-modify-write : on lit HEADER/REST, on compose un fichier temporaire,
 # puis on le `mv` en place. Deux sessions parallèles (le PO travaille en worktrees) peuvent
@@ -56,13 +74,11 @@ usage() { sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'; }
 #
 # `mkdir` plutôt que `flock` : atomique sur tout POSIX, et présent partout — `flock` n'est
 # pas livré avec macOS. Le verrou porte sur le dépôt (git-common-dir) pour couvrir les
-# worktrees, qui partagent le fichier mais pas leur arborescence de travail.
+# worktrees, qui partagent le fichier.
 LOCK=""
 acquire_lock() {
-  local common tries=0
-  common="$(git -C "$ROOT" rev-parse --git-common-dir 2>/dev/null)"
-  [[ "$common" != /* ]] && common="$ROOT/$common"
-  LOCK="$common/ezk-handoff.lock"
+  local tries=0
+  LOCK="$COMMON/ezk-handoff.lock"
   while ! mkdir "$LOCK" 2>/dev/null; do
     # Verrou périmé (session tuée avant de le rendre) : au-delà de 60 s, on le reprend.
     if [[ -d "$LOCK" ]] && [[ -n "$(find "$LOCK" -maxdepth 0 -mmin +1 2>/dev/null)" ]]; then
@@ -75,39 +91,6 @@ acquire_lock() {
     sleep 0.1
   done
   trap 'rmdir "$LOCK" 2>/dev/null || true' EXIT INT TERM
-}
-
-ensure_gitignored() {
-  # `.claude/handoff.md` est de l'ÉPHÉMÈRE PERSONNEL : jamais committé. On garantit
-  # l'entrée .gitignore AVANT d'écrire, jamais après — sinon une session parallèle
-  # pourrait committer le fichier entre l'écriture et l'ignore.
-  #
-  # On n'ignore QUE les deux fichiers du handoff, jamais `.claude/` en entier (fiche 0189) : ce
-  # dossier peut être versionné (agents, skills, réglages du projet), et l'ignorer d'un bloc les
-  # ferait disparaître de `git status`.
-  # Migration : la version précédente écrivait « .claude/ » sous un commentaire qui est le sien. On
-  # remplace CETTE entrée-là par les deux fichiers, et rien d'autre : un « .claude/ » posé par le
-  # projet, sans ce commentaire, est à lui et reste en place.
-  local gi="$ROOT/.gitignore" legacy='# note de handoff ezk-archive — éphémère personnel, jamais committée'
-  if [[ -f "$gi" ]] && grep -qxF "$legacy" "$gi"; then
-    awk -v m="$legacy" '
-      { if (prev && $0 == ".claude/") { print ".claude/handoff.md"; print ".claude/handoff.archive.md"; prev = 0; next }
-        prev = ($0 == m); print }
-    ' "$gi" > "$gi.new" && if ! cmp -s "$gi" "$gi.new"; then
-      mv "$gi.new" "$gi"
-      echo "ℹ .gitignore : l'ancienne entrée « .claude/ » est remplacée par handoff.md et handoff.archive.md." >&2
-    else
-      rm -f "$gi.new"
-    fi
-  fi
-  local f missing=""
-  for f in .claude/handoff.md .claude/handoff.archive.md; do
-    git -C "$ROOT" check-ignore -q "$f" 2>/dev/null || missing="${missing}${f}"$'\n'
-  done
-  [[ -z "$missing" ]] && return 0
-  { printf '\n# note de handoff ezk-archive — éphémère personnel, jamais committée\n'
-    printf '%s' "$missing"; } >> "$ROOT/.gitignore"
-  echo "ℹ .gitignore : handoff.md et handoff.archive.md ajoutés avant écriture." >&2
 }
 
 # mtime portable (voir test-check-gate.sh : `stat -f` est du BSD, mais sur GNU il veut dire --file-system).
@@ -139,17 +122,110 @@ slugify() {
 
 ensure_file() {
   [[ -f "$FILE" ]] && return 0
-  mkdir -p "$(dirname "$FILE")"
+  mkdir -p "$EZK_DIR"
   {
-    echo "# Handoff — $(basename "$ROOT")"
+    echo "# Handoff — $(basename "$(dirname "$COMMON")")"
     echo
-    echo "> Éphémère personnel (gitignoré). Append-only, entrée la plus récente en tête."
+    echo "> Éphémère personnel, rangé hors de git (dossier commun des worktrees). Append-only, entrée la plus récente en tête."
     echo "> Anneau FIFO : au-delà de $KEEP entrées, les plus anciennes passent dans handoff.archive.md."
     echo                                  # sépare l'en-tête de la 1ʳᵉ entrée (HEADER l'absorbe ensuite)
   } > "$FILE"
 }
 
+# Découpe une note en entrées, une par fichier, sans lignes vides de fin : une même entrée a la même
+# empreinte, qu'elle soit au milieu ou à la fin d'une copie.
+split_entries() { # $1 = note, $2 = dossier de sortie
+  awk -v d="$2" '
+    function flush() { if (n) { out = d "/" sprintf("%05d", n); printf "%s", buf > out; close(out) } }
+    /^## / { flush(); n++; buf = $0 "\n"; blanks = ""; next }
+    !n { next }
+    /^[[:space:]]*$/ { blanks = blanks $0 "\n"; next }
+    { buf = buf blanks $0 "\n"; blanks = "" }
+    END { flush() }
+  ' "$1"
+}
+
+# La date d'une entrée, tirée de son titre « ## AAAA-MM-JJ — … » ; 0000-00-00 sans date.
+entry_date() {
+  local d
+  d="$(sed -n '1s/^## \([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\).*/\1/p' "$1")"
+  echo "${d:-0000-00-00}"
+}
+
+# La date la plus récente des entrées d'une note ; avec --unimported, des seules entrées pas encore
+# reprises (rien imprimé s'il n'y en a aucune). Read-only.
+newest_date() { # [--unimported] note
+  local only=0 parts f d max=""
+  [[ "$1" == "--unimported" ]] && { only=1; shift; }
+  [[ -s "$1" ]] || return 0
+  parts="$(mktemp -d)"; split_entries "$1" "$parts"
+  for f in "$parts"/*; do
+    [[ -f "$f" ]] || continue
+    (( only )) && grep -qxF "$(git hash-object "$f")" "$IMPORTED" 2>/dev/null && continue
+    d="$(entry_date "$f")"
+    [[ -z "$max" || "$d" > "$max" ]] && max="$d"
+  done
+  rm -rf "$parts"
+  [[ -n "$max" ]] && echo "$max"
+  return 0
+}
+
+# Remet les entrées d'une note dans l'ordre des dates, les plus récentes en tête. Le tri est stable,
+# et une entrée sans date suit sa voisine : il ne déplace que ce qu'une reprise a mis à la fin.
+sort_entries() { # $1 = note
+  local f="$1" tmp
+  tmp="$(mktemp)"
+  {
+    awk '/^## /{exit} {print}' "$f"
+    awk '
+      function flush() { if (n) printf "%s\t%05d\t%s\n", key, n, buf }
+      BEGIN { key = "9999-99-99" }
+      /^## / { flush(); n++; buf = $0
+               if ($0 ~ /^## [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/) key = substr($0, 4, 10)
+               next }
+      n { buf = buf "\001" $0 }
+      END { flush() }
+    ' "$f" | LC_ALL=C sort -t "$(printf '\t')" -k1,1r -k2,2n \
+           | awk -F '\t' '{ t = $3; for (i = 4; i <= NF; i++) t = t "\t" $i; gsub("\001", "\n", t); print t }'
+  } > "$tmp"
+  mv "$tmp" "$f"
+}
+
+# Reprend une fois les entrées d'une note de l'ancien lieu. Une entrée déjà reprise, d'où qu'elle
+# vienne, est sautée : la copie que l'app pose dans un worktree neuf ne double jamais la note commune.
+# Dans la note vivante, les entrées reprises prennent leur place par date : une entrée plus récente
+# que la note commune reste en tête, et `carry` la voit.
+import_legacy() { # $1 = ancien fichier, $2 = cible, $3 = en-tête de la cible si elle manque
+  local old="$1" target="$2" parts sum f taken=0
+  [[ -s "$old" ]] || return 0
+  parts="$(mktemp -d)"; split_entries "$old" "$parts"
+  for f in "$parts"/*; do
+    [[ -f "$f" ]] || continue
+    sum="$(git hash-object "$f")"
+    grep -qxF "$sum" "$IMPORTED" 2>/dev/null && continue
+    [[ -f "$target" ]] || printf '%s\n\n' "$3" > "$target"
+    [[ -n "$(tail -c 1 "$target")" ]] && echo >> "$target"
+    { cat "$f"; echo; } >> "$target"
+    echo "$sum" >> "$IMPORTED"
+    taken=$((taken + 1))
+  done
+  rm -rf "$parts"
+  (( taken > 0 )) || return 0
+  [[ "$target" == "$FILE" ]] && sort_entries "$target"
+  echo "ℹ ancienne note reprise : $taken entrée(s) de $old." >&2
+}
+
 case "${1:-help}" in
+  where)
+    echo "$FILE"
+    ;;
+
+  legacy)
+    # Read-only : le chemin de l'ancienne note du worktree, si elle porte une entrée pas encore reprise.
+    [[ -n "$(newest_date --unimported "$LEGACY")" ]] && echo "$LEGACY"
+    exit 0
+    ;;
+
   path)
     ensure_file
     echo "$FILE"
@@ -171,8 +247,20 @@ case "${1:-help}" in
     # `durable` écrit sur une machine jetable. La plus récente (mtime) gagne : sur un nouveau clone
     # la note locale n'existe pas, la copie prend le relais ; sur un poste normal, la note locale
     # reste la source tant qu'aucune copie plus récente n'est arrivée par un `git pull`.
+    #
+    # La note commune gagne sur l'ancien lieu : celui-ci n'est lu que tant qu'aucune note commune
+    # n'existe (dépôt pas encore repris par un `add`).
+    # Une exception : l'ancienne note du worktree porte une entrée pas encore reprise, plus récente
+    # que toute la note commune. C'est la session qui a écrit là avant la bascule ; son Pending passe
+    # devant, jusqu'au prochain `add` qui la reprend.
     SRC=""
-    [[ -f "$FILE" ]] && SRC="$FILE"
+    if [[ -f "$FILE" ]]; then
+      SRC="$FILE"
+      LEGACY_NEWEST="$(newest_date --unimported "$LEGACY")"
+      [[ -n "$LEGACY_NEWEST" && "$LEGACY_NEWEST" > "$(newest_date "$FILE")" ]] && SRC="$LEGACY"
+    elif [[ -f "$LEGACY" ]]; then
+      SRC="$LEGACY"
+    fi
     DUR="$(latest_durable)"
     if [[ -n "$DUR" && -f "$DUR" ]]; then
       if [[ -z "$SRC" ]] || (( $(mtime "$DUR") > $(mtime "$SRC") )); then SRC="$DUR"; fi
@@ -215,8 +303,9 @@ case "${1:-help}" in
     # Verrou pris AVANT la lecture : lire puis verrouiller laisserait la fenêtre de course
     # ouverte (deux sessions liraient le même instantané avant que l'une n'écrive).
     acquire_lock
-    ensure_gitignored
     ensure_file
+    import_legacy "$LEGACY" "$FILE"
+    import_legacy "$LEGACY_ARCHIVE" "$ARCHIVE" "# Handoff — archive (entrées sorties de l'anneau, les plus récentes en tête)"
 
     HEADER="$(awk '/^## /{exit} {print}' "$FILE")"
     REST="$(awk '/^## /{f=1} f{print}' "$FILE")"
@@ -263,5 +352,5 @@ case "${1:-help}" in
     ;;
 
   help|-h|--help) usage ;;
-  *) echo "✗ verbe inconnu « $1 » (path|carry|add|durable|help)" >&2; usage >&2; exit 2 ;;
+  *) echo "✗ verbe inconnu « $1 » (where|legacy|path|carry|add|durable|help)" >&2; usage >&2; exit 2 ;;
 esac

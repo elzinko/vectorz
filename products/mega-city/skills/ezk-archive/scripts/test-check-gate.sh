@@ -7,11 +7,13 @@
 #   G1  une session disciplinée produit un verdict CLEAN et une sortie minuscule ;
 #   G6  le bruit regex sur handoff.md (96 lignes sur 120) a bien disparu ;
 #   G7  le portier reste strictement read-only (il ne fetch pas, n'écrit rien) ;
+#   G11 `durable=1` seulement si la note vit sous `<git-common-dir>/ezk/` (fiche 20261003105820077) ;
 #   G9  à la clôture, une branche fusionnée en squash sur origin/main est absorbée, même quand le
 #       main local est en retard ; une branche jamais fusionnée reste réelle (fiche 20261002155911250).
 set -euo pipefail
 
 CHECK="$(cd "$(dirname "$0")" && pwd)/check.sh"
+HANDOFF_SH="$(cd "$(dirname "$0")" && pwd)/handoff.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 FAIL=0
@@ -145,11 +147,12 @@ ok "le fichier est cité"                     "echo \"\$OUT2\" | grep -q '\[P1\]
 rm untracked.txt
 
 echo "G6 — le bruit regex du handoff a disparu :"
-mkdir -p .claude
+HF="$(bash "$HANDOFF_SH" where)"
+mkdir -p "$(dirname "$HF")"
 { echo "# Handoff"; echo;
   for i in $(seq 1 100); do
     echo "- entrée $i : \`todo\` \`main\` \`run\` \`INIT_CWD\` \`RunProjection\` PR #$i"
-  done; } > .claude/handoff.md
+  done; } > "$HF"
 OUT6="$(bash "$CHECK" --gate --shipped 0042)"
 ok "aucun \`INIT_CWD\` recraché"              "! echo \"\$OUT6\" | grep -q 'INIT_CWD'"
 ok "aucun \`RunProjection\` recraché"         "! echo \"\$OUT6\" | grep -q 'RunProjection'"
@@ -193,16 +196,33 @@ ok "--full et --gate s'accordent sur le nombre de branches réelles" \
 echo "G7 — strictement read-only :"
 BEFORE_STATUS="$(git status --porcelain | sort)"
 BEFORE_BRANCHES="$(git branch --format='%(refname:short)' | sort)"
-BEFORE_HANDOFF="$(mtime .claude/handoff.md)"
+BEFORE_HANDOFF="$(mtime "$HF")"
 bash "$CHECK" --gate --shipped 0042 >/dev/null
 bash "$CHECK" --full --shipped 0042 >/dev/null
 ok "working tree inchangé"   "[ \"\$BEFORE_STATUS\" = \"\$(git status --porcelain | sort)\" ]"
 ok "branches inchangées"     "[ \"\$BEFORE_BRANCHES\" = \"\$(git branch --format='%(refname:short)' | sort)\" ]"
 ok "mtime de handoff.md inchangé (le portier ne le touche pas)" \
-   "[ \"\$BEFORE_HANDOFF\" = \"\$(mtime .claude/handoff.md)\" ]"
+   "[ \"\$BEFORE_HANDOFF\" = \"\$(mtime \"\$HF\")\" ]"
 ok "la sonde mtime renvoie bien un entier (sinon l'assertion ci-dessus ne prouve rien)" \
    "echo \"\$BEFORE_HANDOFF\" | grep -qE '^[0-9]+\$'"
 ok "aucun FETCH_HEAD créé (le portier ne fetch jamais)" "[ ! -f .git/FETCH_HEAD ]"
+
+echo "G11 — durable=1 seulement si la note vit dans le dossier git commun :"
+cd "$TMP/repo"
+git worktree add -q "$TMP/repo-wt" -b g10 2>/dev/null
+OUT10="$(cd "$TMP/repo-wt" && EZK_EPHEMERAL=0 bash "$CHECK" --gate)"
+ok "depuis un worktree, note commune : durable=1"  "echo \"\$OUT10\" | grep -q '^HANDOFF: .* durable=1\$'"
+FULL10="$(cd "$TMP/repo-wt" && EZK_EPHEMERAL=0 bash "$CHECK" --full)"
+ok "--full dit que la note survit au worktree"     "echo \"\$FULL10\" | grep -q 'dossier git commun : elle survit'"
+mkdir -p "$TMP/repo-wt/.claude" && printf '# H\n\n## 2026-09-21 — ancienne\n\n- x\n' > "$TMP/repo-wt/.claude/handoff.md"
+FULL10B="$(cd "$TMP/repo-wt" && bash "$CHECK" --full)"     # capturé d'abord : `| grep -q` SIGPIPE-rait sous pipefail
+ok "--full signale une ancienne note à reprendre" "echo \"\$FULL10B\" | grep -q 'ancienne note reste dans ce worktree'"
+# Un handoff.sh qui rangerait la note dans le worktree : le portier doit refuser durable=1.
+mkdir -p "$TMP/stub" && cp "$CHECK" "$TMP/stub/check.sh"
+printf '#!/usr/bin/env bash\necho "$(git rev-parse --show-toplevel)/.claude/handoff.md"\n' > "$TMP/stub/handoff.sh"
+OUT10B="$(cd "$TMP/repo-wt" && EZK_EPHEMERAL=0 bash "$TMP/stub/check.sh" --gate)"
+ok "note rangée dans le worktree : durable=0"      "echo \"\$OUT10B\" | grep -q '^HANDOFF: .* durable=0\$'"
+git worktree remove --force "$TMP/repo-wt"
 
 echo "G9 — clôture : main local en retard, squash déjà sur origin/main :"
 cd "$TMP" && git init -q --bare -b main origin8.git

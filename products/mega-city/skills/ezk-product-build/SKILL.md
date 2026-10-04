@@ -186,7 +186,7 @@ jamais par son id nu.
 | **Rétro d'itération** (fin de boucle ou palier `every:N`, ≥ 2 sprints) | 🔁 *Rétro jouée, ‹k› propositions (déjà rangées par `ezk-retro`).* → `[Enacter ces 2-3]` · `[Ajuster la sélection]` · `[Aucune pour l'instant]` — puis **reprends la boucle** (palier `every:N`) ou **clôture** (fin de run). |
 
 > Au choix `[Stop]` (inter-sprint) : **rappelle** simplement que `/ezk-archive` est
-> disponible pour clôturer proprement (persiste un handoff dans `.claude/handoff.md`)
+> disponible pour clôturer proprement (persiste un handoff hors du worktree, via `handoff.sh`)
 > — tu ne l'invoques **jamais** toi-même, ça reste au choix de l'utilisateur.
 > Si `SPRINT.md` contient des décisions journalisées (mode `--mode auto`),
 > l'archive de session vers `docs/sessions/` se fait via `ezk-archive run`, pas ici.

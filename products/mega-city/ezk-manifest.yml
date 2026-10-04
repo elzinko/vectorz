@@ -221,6 +221,13 @@ commands:
     run: bin/retro-captures.ts
     summary: Liste les décisions des rétros, ou vérifie une capture (--check ; --root <projet>).
     project: true
+  - domain: retro
+    verb: note
+    run: skills/ezk-retro/scripts/note.sh --root {root} add
+    summary: Dépose une note au carnet de rétro, sans commit ni PR (corps sur l'entrée standard).
+    root: cwd
+    project: true
+    writes: true
 
   # --- docs : contrôles de liens et de numéros ---
   - domain: docs

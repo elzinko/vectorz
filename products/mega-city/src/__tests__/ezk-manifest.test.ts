@@ -56,7 +56,7 @@ describe('ezk-manifest.yml', () => {
     }
   });
 
-  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744, 20261002155911257 et 20261003200945204)', () => {
+  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744, 20261002155911257, 20261003200945204 et 20261003105820077)', () => {
     const labels = manifest.commands
       .filter((e) => e.project)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
@@ -77,6 +77,7 @@ describe('ezk-manifest.yml', () => {
       'map',
       'pr emit-local',
       'retro captures',
+      'retro note',
       'review emit',
       'rules apply',
       'rules check',
@@ -84,7 +85,7 @@ describe('ezk-manifest.yml', () => {
     ]);
   });
 
-  it('les commandes qui ÉCRIVENT dans le projet désigné sont exactement celles-ci (fiches 20261002155911257 et 20261003200945204)', () => {
+  it('les commandes qui ÉCRIVENT dans le projet désigné sont exactement celles-ci (fiches 20261002155911257, 20261003200945204 et 20261003105820077)', () => {
     const labels = manifest.commands
       .filter((e) => e.writes)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
@@ -95,6 +96,7 @@ describe('ezk-manifest.yml', () => {
       'backlog version',
       'config',
       'pr emit-local',
+      'retro note',
       'review emit',
     ]);
   });

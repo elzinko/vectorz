@@ -20,7 +20,9 @@
 #   FASTPATH: NO reason=<a,b,…>   sinon : verdict · shipped · shipped_undeclared · worked ·
 #                                 worked_undeclared · sprint. Une session sale déroule la clôture complète.
 #   Un compteur de la ligne P2_PENDING dit `affichées/total` quand le plafond MAX_FACTS coupe sa liste.
-#   HANDOFF … durable=0|1         0 = machine jetable (CLAUDE_CODE_REMOTE=true, ou EZK_EPHEMERAL=1) :
+#   HANDOFF … durable=0|1         1 seulement si la note vit sous `<git-common-dir>/ezk/` (elle survit à
+#                                 la suppression du worktree) ET que la machine n'est pas jetable.
+#                                 0 = machine jetable (CLAUDE_CODE_REMOTE=true, ou EZK_EPHEMERAL=1) :
 #                                 la note locale ne survivra pas, `handoff.sh durable` en écrit une copie.
 #   Les libellés du gate sont ASCII (aucun piège d'encodage au `grep`) ; seules les
 #   DONNÉES citées (chemins, titres de PR) gardent leurs accents. Les accents de
@@ -87,6 +89,7 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "✗ pas dans un dépôt git." >&2
   exit 2
 fi
+HANDOFF_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/handoff.sh"
 cd "$(git rev-parse --show-toplevel)" || exit 2
 REPO="$(pwd)"
 
@@ -544,9 +547,11 @@ fi
 # lignes sur 120 de bruit (`todo`, `main`, `run`, `INIT_CWD`…), proportionnel à la
 # taille du fichier. Sa seule raison d'être — alimenter la purge « entrée entièrement
 # résolue » — disparaît avec l'anneau FIFO de handoff.sh. On n'émet plus que le compte.
-HANDOFF_FILE=".claude/handoff.md"
-H_ENTRIES=0; H_LINES=0; H_BYTES=0; H_IGNORED=0; H_ROTATE=0
-git check-ignore -q "$HANDOFF_FILE" 2>/dev/null && H_IGNORED=1
+# Le chemin vient de handoff.sh lui-même (`where`, read-only) : le portier décrit la note que
+# `add` écrira, pas un chemin recopié ici.
+HANDOFF_FILE="$(bash "$HANDOFF_SCRIPT" where 2>/dev/null)"
+H_COMMON="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)"
+H_ENTRIES=0; H_LINES=0; H_BYTES=0; H_ROTATE=0
 if [[ -f "$HANDOFF_FILE" ]]; then
   H_ENTRIES="$(grep -c '^## ' "$HANDOFF_FILE" 2>/dev/null || true)"
   H_LINES="$(grep -c '' "$HANDOFF_FILE" 2>/dev/null || true)"
@@ -557,12 +562,17 @@ fi
 # La machine garde-t-elle la note locale d'une session à l'autre ? Une session cloud tourne dans un
 # conteneur jetable : tout fichier non poussé disparaît avec lui (fiche 0189). EZK_EPHEMERAL=1|0 force
 # la réponse ; sinon CLAUDE_CODE_REMOTE=true dit « jetable ».
-H_DURABLE=1
+# Et la note survit-elle à la suppression du worktree courant ? Seulement si elle vit dans le dossier
+# git commun à tous les worktrees (fiche 20261003105820077) : l'app supprime ou recycle les worktrees.
+H_EPHEMERAL=0
 case "${EZK_EPHEMERAL:-}" in
-  1|true)  H_DURABLE=0 ;;
-  0|false) H_DURABLE=1 ;;
-  *)       [[ "${CLAUDE_CODE_REMOTE:-}" == "true" ]] && H_DURABLE=0 ;;
+  1|true)  H_EPHEMERAL=1 ;;
+  0|false) ;;
+  *)       [[ "${CLAUDE_CODE_REMOTE:-}" == "true" ]] && H_EPHEMERAL=1 ;;
 esac
+H_IN_COMMON=0
+[[ "$HANDOFF_FILE" == "$H_COMMON/"* ]] && H_IN_COMMON=1
+H_DURABLE=$(( H_IN_COMMON == 1 && H_EPHEMERAL == 0 ? 1 : 0 ))
 
 # ==============================================================================
 # VERDICT
@@ -789,7 +799,7 @@ if [[ "$MODE" == "gate" ]]; then
   echo "P3_BACKLOG: $P3_STATE declared=${P3_DECLARED:-none}$P3_TAIL worked=$P3_WORKED"
   echo "P4_ADR: $P4_STATE committed=$P4_COMMITTED uncommitted=$P4_UNCOMMITTED"
   echo "MAINSYNC: $MAINSYNC_STATE ahead=$MS_AHEAD behind=$MS_BEHIND stale_ref=$MS_STALE"
-  echo "HANDOFF: entries=$H_ENTRIES lines=$H_LINES bytes=$H_BYTES gitignored=$H_IGNORED rotate=$H_ROTATE durable=$H_DURABLE"
+  echo "HANDOFF: entries=$H_ENTRIES lines=$H_LINES bytes=$H_BYTES rotate=$H_ROTATE durable=$H_DURABLE"
   echo "NOTE: points 5 (memoire) / 6 (handoff) / 7 (verdict) ne sont PAS couverts par ce gate"
   [[ -n "$FACT_OUT" ]] && printf '%s\n' "$FACT_OUT"
   echo "--- END ---"
@@ -889,14 +899,15 @@ fi
 echo
 
 echo "## Note de handoff (fichier persistant)"
-if (( H_DURABLE == 0 )); then
-  echo "⚠ machine jetable (session cloud) : .claude/handoff.md ne survivra pas. \`handoff.sh durable\` en écrit une copie versionnée dans docs/sessions/ — à committer ET pousser avant de fermer."
-fi
-if (( H_IGNORED == 1 )); then
-  echo "✓ $HANDOFF_FILE couvert par .gitignore."
+if (( H_EPHEMERAL == 1 )); then
+  echo "⚠ machine jetable (session cloud) : la note locale ne survivra pas. \`handoff.sh durable\` en écrit une copie versionnée dans docs/sessions/ — à committer ET pousser avant de fermer."
+elif (( H_IN_COMMON == 0 )); then
+  echo "⚠ la note n'est pas dans le dossier git commun : elle partira avec ce worktree ($HANDOFF_FILE)."
 else
-  echo "⚠ $HANDOFF_FILE n'est PAS ignoré — \`handoff.sh add\` ajoutera l'entrée avant d'écrire."
+  echo "✓ note rangée hors du worktree, dans le dossier git commun : elle survit à sa suppression."
 fi
+H_LEGACY="$(bash "$HANDOFF_SCRIPT" legacy 2>/dev/null)"
+[[ -n "$H_LEGACY" ]] && echo "ℹ une ancienne note reste dans ce worktree ($H_LEGACY) : le prochain \`add\` la reprend."
 if [[ -f "$HANDOFF_FILE" ]]; then
   echo "ℹ $H_ENTRIES entrée(s), $H_LINES lignes, $H_BYTES octets$( (( H_ROTATE == 1 )) && echo " — rotation au prochain \`add\`")."
 else

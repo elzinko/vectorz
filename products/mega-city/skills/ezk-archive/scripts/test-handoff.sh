@@ -6,10 +6,15 @@
 #       perdu : entrées vivantes + archivées = tout ce qui a été écrit ;
 #   H2  `carry` rend une section bornée, pas le fichier — c'est ce qui supprime les
 #       deux lectures de 20 Ko par run ;
-#   H5  `.gitignore` est garanti AVANT la première écriture (éphémère personnel).
-#   H11-H14 (fiche 0189, session jetable) : `.claude/` n'est plus ignoré en entier, `durable`
-#       écrit une copie versionnée, elle survit à un nouveau clone, et la source la plus
-#       récente gagne (le mode local ne change pas).
+#   H5  la note vit hors du worktree : rien n'est écrit dans le dossier de travail ni dans
+#       `.gitignore` (fiche 20261003105820077) ;
+#   H12-H14 (fiche 0189, session jetable) : `durable` écrit une copie versionnée, elle survit à
+#       un nouveau clone, et la source la plus récente gagne (le mode local ne change pas) ;
+#   H17-H20 (fiche 20261003105820077, worktree d'app) : la note vit sous `<git-common-dir>/ezk/`,
+#       survit à `git worktree remove --force`, et l'ancienne note du worktree est reprise une
+#       seule fois sans jamais masquer la note commune ;
+#   H21-H22 (revue adverse) : des copies divergentes ne doublent aucune entrée, et une ancienne
+#       note plus récente que la note commune reste visible de `carry`.
 set -euo pipefail
 
 HANDOFF="$(cd "$(dirname "$0")" && pwd)/handoff.sh"
@@ -38,23 +43,27 @@ body() { # $1=n → un corps d'entrée réaliste, avec sa section Pending
 EOF
 }
 
-echo "H5 — .gitignore garanti AVANT la première écriture :"
-ok ".claude/ n'est pas encore ignoré"  "! git check-ignore -q .claude/handoff.md"
+F="$(bash "$HANDOFF" where)"
+A="$(dirname "$F")/handoff.archive.md"
+echo "H5 — la note vit hors du worktree, rien n'est écrit dans le dossier de travail :"
+ok "where ne crée rien"                  "[ ! -e \"\$F\" ]"
 body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null
-ok ".claude/ est désormais ignoré"     "git check-ignore -q .claude/handoff.md"
-ok "le fichier n'est pas suivi par git" "[ -z \"\$(git status --porcelain .claude 2>/dev/null)\" ]"
+ok "la note est écrite sous git-common-dir/ezk/" "[ -f \"\$F\" ] && [ \"\$F\" = \"\$(cd \"\$(git rev-parse --path-format=absolute --git-common-dir)\" && pwd -P)/ezk/handoff.md\" ]"
+ok "aucun .claude/ dans le worktree"     "[ ! -e .claude ]"
+ok "aucun .gitignore écrit"              "[ ! -e .gitignore ]"
+ok "git status reste propre"             "[ -z \"\$(git status --porcelain)\" ]"
 
 echo "H1 — anneau FIFO : borne garantie, et rien de perdu :"
 for i in 2 3 4 5; do body $i | bash "$HANDOFF" add "2026-01-0$i — entrée $i" >/dev/null; done
-LIVE="$(grep -c '^## ' .claude/handoff.md)"
-ARCH="$(grep -c '^## ' .claude/handoff.archive.md)"
+LIVE="$(grep -c '^## ' "$F")"
+ARCH="$(grep -c '^## ' "$A")"
 ok "3 entrées vivantes (KEEP par défaut)"     "[ \"\$LIVE\" = 3 ]"
 ok "2 entrées archivées"                      "[ \"\$ARCH\" = 2 ]"
 ok "union = 5 : aucune entrée perdue"         "[ \$(( LIVE + ARCH )) = 5 ]"
-ok "la plus récente est en tête"              "grep -m1 '^## ' .claude/handoff.md | grep -q 'entrée 5'"
-ok "les archivées sont les plus anciennes"    "grep -q 'entrée 1' .claude/handoff.archive.md && grep -q 'entrée 2' .claude/handoff.archive.md"
-ok "l'archive a un en-tête unique"            "[ \"\$(grep -c '^# Handoff — archive' .claude/handoff.archive.md)\" = 1 ]"
-ok "le fichier vivant garde son en-tête unique" "[ \"\$(grep -c '^# Handoff' .claude/handoff.md)\" = 1 ]"
+ok "la plus récente est en tête"              "grep -m1 '^## ' \"\$F\" | grep -q 'entrée 5'"
+ok "les archivées sont les plus anciennes"    "grep -q 'entrée 1' \"\$A\" && grep -q 'entrée 2' \"\$A\""
+ok "l'archive a un en-tête unique"            "[ \"\$(grep -c '^# Handoff — archive' \"\$A\")\" = 1 ]"
+ok "le fichier vivant garde son en-tête unique" "[ \"\$(grep -c '^# Handoff' \"\$F\")\" = 1 ]"
 
 echo "H2 — carry : la section Pending de la SEULE entrée la plus récente :"
 CARRY="$(bash "$HANDOFF" carry)"
@@ -63,7 +72,7 @@ ok "ne contient PAS celui de l'entrée 4"  "! echo \"\$CARRY\" | grep -q 'report
 ok "ne contient pas la section « Fait »"  "! echo \"\$CARRY\" | grep -q 'Fait cette session'"
 ok "borné à 40 lignes"                    "[ \"\$(echo \"\$CARRY\" | wc -l | tr -d ' ')\" -le 40 ]"
 ok "carry ne modifie rien (read-only)" \
-   "M1=\$(mtime .claude/handoff.md); bash \"\$HANDOFF\" carry >/dev/null; M2=\$(mtime .claude/handoff.md); [ \"\$M1\" = \"\$M2\" ] && echo \"\$M1\" | grep -qE '^[0-9]+\$'"
+   "M1=\$(mtime \"\$F\"); bash \"\$HANDOFF\" carry >/dev/null; M2=\$(mtime \"\$F\"); [ \"\$M1\" = \"\$M2\" ] && echo \"\$M1\" | grep -qE '^[0-9]+\$'"
 
 echo "H10 — carry saute les entrées SANS section Pending (trouvé en dogfoodant) :"
 # Toutes les entrées n'ont pas de section Pending : une note courte de correction n'en a
@@ -89,18 +98,18 @@ echo x > a.txt && git add . && git commit -qm base
 ok "sortie vide"  "[ -z \"\$(bash \"\$HANDOFF\" carry)\" ]"
 ok "exit 0"       "bash \"\$HANDOFF\" carry >/dev/null"
 ok "path crée le fichier avec son en-tête" \
-   "F=\$(bash \"\$HANDOFF\" path) && [ -f \"\$F\" ] && grep -q '^# Handoff' \"\$F\""
+   "PF=\$(bash \"\$HANDOFF\" path) && [ -f \"\$PF\" ] && grep -q '^# Handoff' \"\$PF\""
 cd "$TMP/repo"
 
 echo "H4 — append-only : deux corps identiques font deux entrées :"
 # Assertion en DELTA, pas en total absolu : un total codé en dur se décale dès qu'un cas
 # est insété plus haut dans le fichier, et l'échec pointe alors le mauvais coupable.
-total_entries() { echo $(( $(grep -c '^## ' .claude/handoff.md 2>/dev/null || echo 0) \
-                         + $(grep -c '^## ' .claude/handoff.archive.md 2>/dev/null || echo 0) )); }
+total_entries() { echo $(( $(grep -c '^## ' "$F" 2>/dev/null || echo 0) \
+                         + $(grep -c '^## ' "$A" 2>/dev/null || echo 0) )); }
 BEFORE="$(total_entries)"
 body 9 | bash "$HANDOFF" add "2026-01-09 — doublon" >/dev/null
 body 9 | bash "$HANDOFF" add "2026-01-09 — doublon" >/dev/null
-ok "toujours 3 vivantes (l'anneau tient)"  "[ \"\$(grep -c '^## ' .claude/handoff.md)\" = 3 ]"
+ok "toujours 3 vivantes (l'anneau tient)"  "[ \"\$(grep -c '^## ' \"\$F\")\" = 3 ]"
 ok "les deux entrées identiques ont bien été écrites (+2, aucune fusion silencieuse)" \
    "[ \$(( \$(total_entries) - BEFORE )) = 2 ]"
 
@@ -110,33 +119,33 @@ for i in $(seq 1 20); do
     echo "**Pending (à ne pas perdre) :**"; echo "- report $i"; } \
   | bash "$HANDOFF" add "2026-02-$(printf %02d $i) — charge $i" >/dev/null
 done
-L="$(wc -l < .claude/handoff.md | tr -d ' ')"
+L="$(wc -l < "$F" | tr -d ' ')"
 ok "fichier vivant < 250 lignes (il est stationnaire, pas croissant)" "[ \"\$L\" -lt 250 ]"
-ok "toujours exactement 3 entrées"     "[ \"\$(grep -c '^## ' .claude/handoff.md)\" = 3 ]"
-ok "l'archive, elle, a tout gardé (≥ 20)" "[ \"\$(grep -c '^## ' .claude/handoff.archive.md)\" -ge 20 ]"
+ok "toujours exactement 3 entrées"     "[ \"\$(grep -c '^## ' \"\$F\")\" = 3 ]"
+ok "l'archive, elle, a tout gardé (≥ 20)" "[ \"\$(grep -c '^## ' \"\$A\")\" -ge 20 ]"
 ok "carry rend toujours le dernier report" "bash \"\$HANDOFF\" carry | grep -q 'report 20'"
 
 echo "H7 — EZK_HANDOFF_KEEP est respecté :"
-rm -f .claude/handoff.md .claude/handoff.archive.md
+rm -f "$F" "$A"
 for i in 1 2 3 4 5; do body $i | EZK_HANDOFF_KEEP=1 bash "$HANDOFF" add "2026-03-0$i — k$i" >/dev/null; done
-ok "KEEP=1 ⇒ une seule entrée vivante"  "[ \"\$(grep -c '^## ' .claude/handoff.md)\" = 1 ]"
-ok "les 4 autres sont archivées"        "[ \"\$(grep -c '^## ' .claude/handoff.archive.md)\" = 4 ]"
+ok "KEEP=1 ⇒ une seule entrée vivante"  "[ \"\$(grep -c '^## ' \"\$F\")\" = 1 ]"
+ok "les 4 autres sont archivées"        "[ \"\$(grep -c '^## ' \"\$A\")\" = 4 ]"
 
 echo "H9 — écritures CONCURRENTES : aucune entrée perdue (finding Codex PR #56) :"
 # `add` est un read-modify-write. Sans verrou, deux sessions parallèles — le cas du PO,
 # qui travaille en worktrees — lisent le même instantané et le dernier `mv` écrase l'entrée
 # de l'autre : perte de données dans le scénario même que la persistance doit couvrir.
-rm -f .claude/handoff.md .claude/handoff.archive.md
+rm -f "$F" "$A"
 for i in $(seq 1 8); do
   ( body "$i" | bash "$HANDOFF" add "2026-04-0$i — concurrent $i" >/dev/null 2>&1 ) &
 done
 wait
-LIVE="$(grep -c '^## ' .claude/handoff.md 2>/dev/null || echo 0)"
-ARCH="$(grep -c '^## ' .claude/handoff.archive.md 2>/dev/null || echo 0)"
+LIVE="$(grep -c '^## ' "$F" 2>/dev/null || echo 0)"
+ARCH="$(grep -c '^## ' "$A" 2>/dev/null || echo 0)"
 ok "8 ajouts concurrents ⇒ 8 entrées au total (vivantes + archivées)" "[ \$(( LIVE + ARCH )) = 8 ]"
 ok "l'anneau tient malgré la concurrence (3 vivantes)"                "[ \"\$LIVE\" = 3 ]"
 ok "chaque entrée est intacte et distincte" \
-   "[ \"\$(cat .claude/handoff.md .claude/handoff.archive.md | grep -c 'concurrent ')\" = 8 ]"
+   "[ \"\$(cat \"\$F\" \"\$A\" | grep -c 'concurrent ')\" = 8 ]"
 ok "aucun verrou laissé derrière" \
    "[ ! -d \"\$(git rev-parse --git-common-dir)/ezk-handoff.lock\" ]"
 
@@ -152,13 +161,6 @@ git config user.email t@t && git config user.name t && git config commit.gpgsign
 mkdir -p .claude && echo '{}' > .claude/settings.json
 echo x > a.txt && git add . && git commit -qm base
 
-echo "H11 — .claude/ n'est plus ignoré en entier (il peut être versionné) :"
-body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null
-ok "handoff.md est ignoré"                      "git check-ignore -q .claude/handoff.md"
-ok "handoff.archive.md est ignoré"              "git check-ignore -q .claude/handoff.archive.md"
-ok ".claude/settings.json reste versionnable"   "! git check-ignore -q .claude/settings.json"
-ok ".gitignore ne contient pas « .claude/ » seul" "! grep -qxE '\\.claude/?' .gitignore"
-
 echo "H12 — durable : une copie versionnée, jamais écrasée :"
 P1="$(body 7 | bash "$HANDOFF" durable "2026-10-01 — clôture cloud")"
 ok "écrite sous docs/sessions/"                 "case \"\$P1\" in */docs/sessions/*-handoff-*.md) true ;; *) false ;; esac"
@@ -173,7 +175,7 @@ ok "titre manquant ⇒ exit 2"                    "! echo corps | bash \"\$HANDO
 echo "H13 — la note survit à un nouveau clone (conteneur jetable) :"
 git add docs/sessions && git commit -qm "handoff durable"
 cd "$TMP" && git clone -q repo2 clone2 && cd clone2
-ok "le clone n'a pas la note locale"            "[ ! -f .claude/handoff.md ]"
+ok "le clone n'a pas la note locale"            "[ ! -f \"\$(bash \"\$HANDOFF\" where)\" ]"
 CARRIED="$(bash "$HANDOFF" carry)"
 ok "carry relit le Pending de la copie la plus récente" "echo \"\$CARRIED\" | grep -q 'report non-git numéro 8'"
 ok "sans copie versionnée ni note locale : rien, sans erreur" \
@@ -187,23 +189,6 @@ ok "note locale plus récente : carry lit la note locale" "bash \"\$HANDOFF\" ca
 touch -t 203001010000 docs/sessions/*-handoff-*.md
 ok "copie versionnée plus récente : carry lit la copie" "bash \"\$HANDOFF\" carry | grep -q 'numéro 8'"
 
-echo "H15 — l'ancienne entrée « .claude/ » de la méthode est migrée, celle du projet reste :"
-cd "$TMP" && git init -q -b main repo3 && cd repo3
-git config user.email t@t && git config user.name t && git config commit.gpgsign false
-mkdir -p .claude && echo '{}' > .claude/settings.json
-printf '# note de handoff ezk-archive — éphémère personnel, jamais committée\n.claude/\n' > .gitignore
-echo x > a.txt && git add -f .gitignore a.txt .claude/settings.json && git commit -qm base
-body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null 2>&1
-ok ".claude/settings.json n'est plus ignoré"         "! git check-ignore -q .claude/settings.json"
-ok "handoff.md reste ignoré"                         "git check-ignore -q .claude/handoff.md"
-ok "plus de « .claude/ » seul dans .gitignore"       "! grep -qxE '\\.claude/?' .gitignore"
-cd "$TMP" && git init -q -b main repo4 && cd repo4
-git config user.email t@t && git config user.name t && git config commit.gpgsign false
-printf '.claude/\n' > .gitignore          # posé par le projet, sans le commentaire de la méthode
-echo x > a.txt && git add .gitignore a.txt && git commit -qm base
-body 1 | bash "$HANDOFF" add "2026-01-01 — entrée 1" >/dev/null 2>&1
-ok "une entrée « .claude/ » du projet reste en place" "grep -qxF '.claude/' .gitignore"
-
 echo "H16 — durable : jamais d'écrasement, même avec plusieurs processus à la fois :"
 cd "$TMP/repo2"
 for i in 1 2 3 4 5 6; do ( body "$i" | bash "$HANDOFF" durable "meme titre concurrent" >/dev/null 2>&1 ) & done
@@ -212,6 +197,72 @@ ok "6 appels simultanés, 6 fichiers distincts" \
    "[ \"\$(ls docs/sessions/*-handoff-*-meme-titre-concurrent.md 2>/dev/null | wc -l | tr -d ' ')\" = 6 ]"
 ok "chaque fichier porte son propre corps" \
    "[ \"\$(cat docs/sessions/*-handoff-*-meme-titre-concurrent.md | grep -c 'report non-git numéro')\" = 6 ]"
+
+# ── fiche 20261003105820077 : la note survit à la suppression d'un worktree d'app ─────────
+cd "$TMP" && git init -q -b main wt && cd wt
+git config user.email t@t && git config user.name t && git config commit.gpgsign false
+echo x > a.txt && git add . && git commit -qm base
+git worktree add -q "$TMP/wt-a" -b a && git worktree add -q "$TMP/wt-b" -b b
+COMMON_EXPECTED="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)/ezk/handoff.md"
+
+echo "H17 — path rend le même chemin commun, du dossier principal comme d'un worktree :"
+ok "depuis le dossier principal" "[ \"\$(bash \"\$HANDOFF\" path)\" = \"\$COMMON_EXPECTED\" ]"
+ok "depuis un worktree"          "[ \"\$(cd \"\$TMP/wt-a\" && bash \"\$HANDOFF\" path)\" = \"\$COMMON_EXPECTED\" ]"
+
+echo "H18 — une note écrite depuis un worktree survit à sa suppression forcée :"
+( cd "$TMP/wt-a" && body 31 | bash "$HANDOFF" add "2026-10-04 — depuis wt-a" >/dev/null )
+echo sale > "$TMP/wt-a/non-valide.txt"          # l'app supprime un worktree qui porte des fichiers non validés
+git worktree remove --force "$TMP/wt-a"
+ok "le worktree a bien disparu"               "[ ! -d \"\$TMP/wt-a\" ]"
+ok "carry la relit depuis un autre worktree"  "(cd \"\$TMP/wt-b\" && bash \"\$HANDOFF\" carry) | grep -q 'report non-git numéro 31'"
+
+echo "H19 — l'ancienne note du worktree est reprise une fois, puis ignorée :"
+mkdir -p "$TMP/wt-b/.claude"
+{ echo "# Handoff — ancien"; echo; echo "## 2026-09-21 — ancienne entrée"; echo
+  echo "**Pending (à ne pas perdre) :**"; echo "- report hérité de l'ancien lieu"; } > "$TMP/wt-b/.claude/handoff.md"
+( cd "$TMP/wt-b" && body 32 | bash "$HANDOFF" add "2026-10-04 — depuis wt-b" >/dev/null 2>&1 )
+COUNT_OLD() { cat "$COMMON_EXPECTED" "$(dirname "$COMMON_EXPECTED")/handoff.archive.md" 2>/dev/null | grep -c 'ancienne entrée'; }
+ok "l'ancienne entrée est reprise dans la note commune" "[ \"\$(COUNT_OLD)\" = 1 ]"
+( cd "$TMP/wt-b" && body 33 | bash "$HANDOFF" add "2026-10-04 — encore wt-b" >/dev/null 2>&1 )
+ok "un 2ᵉ add ne la reprend pas une 2ᵉ fois"           "[ \"\$(COUNT_OLD)\" = 1 ]"
+git worktree add -q "$TMP/wt-c" -b c
+mkdir -p "$TMP/wt-c/.claude" && cp "$TMP/wt-b/.claude/handoff.md" "$TMP/wt-c/.claude/handoff.md"   # la copie que l'app pose
+( cd "$TMP/wt-c" && body 34 | bash "$HANDOFF" add "2026-10-04 — depuis wt-c" >/dev/null 2>&1 )
+ok "la même copie dans un worktree neuf n'est pas reprise" "[ \"\$(COUNT_OLD)\" = 1 ]"
+
+echo "H20 — la copie posée dans un worktree neuf ne masque jamais la note commune :"
+git worktree add -q "$TMP/wt-d" -b d
+mkdir -p "$TMP/wt-d/.claude" && cp "$TMP/wt-b/.claude/handoff.md" "$TMP/wt-d/.claude/handoff.md"
+touch -t 203001010000 "$TMP/wt-d/.claude/handoff.md"   # même plus récente, elle ne gagne pas
+ok "carry lit la note commune, pas la copie périmée" \
+   "(cd \"\$TMP/wt-d\" && bash \"\$HANDOFF\" carry) | grep -q 'report non-git numéro 34'"
+ok "dépôt jamais repris : carry lit encore l'ancien lieu" \
+   "cd \"\$TMP\" && git init -q -b main ancien && mkdir -p ancien/.claude && cp \"\$TMP/wt-b/.claude/handoff.md\" ancien/.claude/ && cd ancien && bash \"\$HANDOFF\" carry | grep -q 'report hérité'"
+
+echo "H21 — deux copies divergentes de l'ancienne note : chaque entrée n'est reprise qu'une fois :"
+cd "$TMP/wt"
+git worktree add -q "$TMP/wt-e" -b e && git worktree add -q "$TMP/wt-f" -b f
+mkdir -p "$TMP/wt-e/.claude" "$TMP/wt-f/.claude"
+{ echo "# Handoff"; echo; echo "## 2026-08-01 — commune E1"; echo; echo "- corps E1"; } > "$TMP/wt-e/.claude/handoff.md"
+{ echo "# Handoff"; echo; echo "## 2026-08-02 — E2"; echo; echo "- corps E2"; echo
+  echo "## 2026-08-01 — commune E1"; echo; echo "- corps E1"; echo; } > "$TMP/wt-f/.claude/handoff.md"
+( cd "$TMP/wt-e" && body 41 | bash "$HANDOFF" add "2026-10-05 — depuis wt-e" >/dev/null 2>&1 )
+( cd "$TMP/wt-f" && body 42 | bash "$HANDOFF" add "2026-10-05 — depuis wt-f" >/dev/null 2>&1 )
+COUNT_E1() { cat "$COMMON_EXPECTED" "$(dirname "$COMMON_EXPECTED")/handoff.archive.md" | grep -c 'commune E1'; }
+ok "E1, dernière d'une copie et au milieu de l'autre, n'est reprise qu'une fois" "[ \"\$(COUNT_E1)\" = 1 ]"
+
+echo "H22 — une ancienne note plus récente que la note commune reste visible :"
+git worktree add -q "$TMP/wt-g" -b g
+mkdir -p "$TMP/wt-g/.claude"
+{ echo "# Handoff"; echo; echo "## 2030-01-01 — écrite avant la bascule"; echo
+  echo "**Pending (à ne pas perdre) :**"; echo "- report du worktree non repris"; } > "$TMP/wt-g/.claude/handoff.md"
+ok "legacy la signale tant qu'elle n'est pas reprise" "(cd \"\$TMP/wt-g\" && bash \"\$HANDOFF\" legacy) | grep -q 'wt-g/.claude/handoff.md'"
+ok "carry rend son Pending avant la reprise"           "(cd \"\$TMP/wt-g\" && bash \"\$HANDOFF\" carry) | grep -q 'report du worktree non repris'"
+( cd "$TMP/wt-g" && bash "$HANDOFF" add "2026-10-06 — sans Pending" >/dev/null 2>&1 <<<"Note courte." )
+ok "après add, elle est en tête des entrées reprises, pas enterrée en archive" \
+   "grep -q 'écrite avant la bascule' \"\$COMMON_EXPECTED\""
+ok "carry rend toujours son Pending"                   "(cd \"\$TMP/wt-g\" && bash \"\$HANDOFF\" carry) | grep -q 'report du worktree non repris'"
+ok "legacy ne la signale plus"                         "[ -z \"\$(cd \"\$TMP/wt-g\" && bash \"\$HANDOFF\" legacy)\" ]"
 
 echo
 if [ "$FAIL" = 0 ]; then echo "test-handoff: TOUT VERT"; else echo "test-handoff: ÉCHECS"; exit 1; fi

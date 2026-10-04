@@ -19,7 +19,8 @@ SUITES=(
   "skills/ezk-archive/scripts/test-check-branches.sh"    # fiche 0076 — classification des branches
   "skills/ezk-archive/scripts/test-check-gate.sh"        # fiche 0088 — contrat du gate
   "skills/ezk-archive/scripts/test-mainsync.sh"          # fiche 0088 — garde anti-faux-positif
-  "skills/ezk-archive/scripts/test-handoff.sh"           # fiche 0088 — anneau FIFO du handoff
+  "skills/ezk-archive/scripts/test-handoff.sh"           # fiche 0088 — anneau FIFO du handoff, lieu commun hors worktree (fiche 20261003105820077)
+  "skills/ezk-retro/scripts/test-note.sh"                # fiche 20261003105820077 — carnet de rétro hors de git
   "skills/ezk-archive/scripts/test-template-unicity.sh"  # fiche 0088 — gabarit non dupliqué
   "skills/ezk-archive/scripts/test-fastpath.sh"          # fiche 20260904091853948 — voie rapide, compte juste, fiches travaillées, durable
   "skills/ezk-archive/scripts/test-cleanup.sh"           # fiche 20260904091853948 — ménage : inventaire sûr, read-only
