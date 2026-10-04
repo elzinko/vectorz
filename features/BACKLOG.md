@@ -140,6 +140,7 @@
 | [20261002231845120](20261002231845120_backlog-md-sans-conflit-entre-pr.md) | BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps | feature | P1 |  | mega-city | 🔵 ready |  |
 | [20261003075821760](20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 |  | mega-city | 🔵 ready |  |
 | [20261003105820077](done/20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | V0.5 | mega-city | ✅ shipped | local (527868b7) |
+| [20261004181110120](20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md) | ezk ne croit plus un INIT_CWD laissé par un pnpm parent : le test de « ezk retro note » n'écrit plus dans le vrai dépôt | bug | P1 |  | mega-city | 🔵 ready |  |
 | [20261004192802828](done/20261004192802828_cockpit-adr-config-lisible-registre-unique.md) | Cockpit, socle : l'ADR, « ezk config show » lisible depuis un autre projet, un seul registre de projets | feature | P1 | V0.6 | mega-city | ✅ shipped | local (43dcb587) |
 | [20261004192802897](done/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) | Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi | feature | P1 | V0.6 | mega-city | ✅ shipped | local (7841c073) |
 | [20261004192802964](done/20261004192802964_cockpit-page-config-en-sections.md) | Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule | feature | P1 | V0.6 | mega-city | ✅ shipped | local (ec7fc3ec) |
@@ -292,7 +293,6 @@
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
-| [20261004181110120](20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md) | Le test de « ezk retro note » n'écrit plus dans le vrai dépôt quand il tourne sous pnpm | bug | P1 |  | mega-city | 💡 idea |  |
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
