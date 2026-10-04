@@ -174,7 +174,7 @@ milestone:           # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre 
 version:             # optionnel — release ciblée, ex. "V1.1" (vide si non pertinent)
 labels:              # optionnel — thèmes, en ligne : [a, b]
 status: idea         # idea | ready | in-progress | shipped | superseded | merged | split
-blocked:             # optionnel — raison d'un blocage : un DRAPEAU posé par-dessus la colonne (une fiche peut être ready ET bloquée)
+blocked:             # optionnel — raison d'un blocage : un DRAPEAU posé par-dessus la colonne (une fiche peut être ready ET bloquée) ; un geste attendu du PO se nomme ici
 pr:                  # ex. "#118" quand une PR existe
 created: 2026-06-23
 ---
@@ -453,7 +453,11 @@ d'ezk-product-build : il tire un lot de `--lot N` fiches par sprint, avec `next 
 - **« lot incomplet »** s'il y a moins de N fiches prêtes : le lot part quand même, plus court ;
 - **la tête bloquée** : les fiches `idea` rencontrées avant que le lot soit plein. Groome-les
   d'abord, ou tranche par la soupape PO journalisée (même règle que `next --ready-only`) ;
-- **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic ;
+- **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic.
+  Un geste attendu du PO (une vidéo à tourner, un test sur une autre machine) se pose aussi en
+  `blocked:`, qui nomme ce geste : la fiche reste prête. Les écartées bloquées par un geste
+  humain forment la file du PO ; les épics écartés n'en font pas partie. Montre-la-lui à
+  l'ouverture du sprint (rétro samplerz du 2026-10-03) ;
 - **les prêtes hors plan** : avec un `PLAN.md`, une fiche prête absente du plan n'entre pas dans le
   lot, car la séquence, c'est le plan. Elle est listée : le PO l'y ajoute (`plan set`) s'il la veut ;
 - **les introuvables** : ids du plan absents de `features/` ;
