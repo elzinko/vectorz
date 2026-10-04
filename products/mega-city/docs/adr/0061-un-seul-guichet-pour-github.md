@@ -1,6 +1,6 @@
 # ADR-0061 — Un seul guichet pour GitHub : chaque geste passe par `ezk forge`, qui lit la config
 
-- Statut : **Proposé** (à ratifier par le PO).
+- Statut : **Accepté** (ratifié par le PO le 2026-10-04, perspective du bus comprise).
 - Date : 2026-10-04 · perspective du bus ajoutée le même jour, à la demande du PO
 - Compose / précise : [ADR-0003](0003-moteur-bind-plan-pur-coquille-io.md) (cœur pur, coquille d'I/O), [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §2 (GitHub est un module), [ADR-0050](0050-couche-regles-projet-local.md) (la couche `.vectorz/`), [ADR-0052](0052-merge-local-first-github-execute-le-squash-main-se-realigne.md) (le local décide, GitHub exécute), [ADR-0059](0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md) (la PR devient optionnelle par la config)
 - Fiches : [20261004083838593](../../../../features/20261004083838593_guichet-unique-github-archive-reconcile.md) (le guichet), [20261004083838687](../../../../features/20261004083838687_integrer-sans-pr-par-avance-rapide.md) (intégrer sans PR), [20261004083838781](../../../../features/20261004083838781_ezk-config-help-lu-comme-un-chemin.md) (bug à part)
@@ -11,7 +11,7 @@ Un projet peut couper GitHub dans `.vectorz/config.yml`. Mais chaque skill et ch
 penser à lire ce fichier avant d'appeler `gh`. Trois l'oublient. Muti a coupé GitHub le
 2026-10-03 et les a trouvés dès le lendemain.
 
-On propose un **guichet unique** : `ezk forge`. Les skills et les scripts ne tapent plus `gh`
+On décide un **guichet unique** : `ezk forge`. Les skills et les scripts ne tapent plus `gh`
 eux-mêmes. Ils demandent au guichet. Le guichet lit la config une seule fois. Puis il appelle
 GitHub, ou il fait l'équivalent local, ou il répond « sans objet ».
 
@@ -179,7 +179,7 @@ intention de plus.
 
 ## Perspective — le bus de la méthode
 
-*Ajoutée le 2026-10-04 à la demande du PO, avant la ratification.*
+*Ajoutée le 2026-10-04 à la demande du PO, ratifiée avec le reste de l'ADR.*
 
 ### En clair
 
