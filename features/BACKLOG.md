@@ -304,10 +304,13 @@
 | [20261003201035080](20261003201035080_skills-sans-section-double-tests-sans-donnee-figee.md) | Un contrôle refuse une section en double dans un skill, et les tests ne figent plus l'état du backlog | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261003201035168](20261003201035168_portier-archive-fiches-et-adr-contre-origin-main.md) | Le portier d'ezk-archive juge les fiches livrées et les ADR contre origin/main | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261003201035260](20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
 | [20261003105820099](20261003105820099_menage-archive-lancable-mode-auto.md) | Le ménage d'ezk-archive se lance en mode auto | bug | P3 | V0.6 | mega-city | 💡 idea |  |
+| [20261004083838781](20261004083838781_ezk-config-help-lu-comme-un-chemin.md) | « ezk config --help » prend --help pour un chemin et affiche un faux statut | bug | P3 |  | mega-city | 💡 idea |  |
 
 ## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
 
