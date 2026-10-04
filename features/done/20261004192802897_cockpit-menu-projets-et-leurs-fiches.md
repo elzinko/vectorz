@@ -7,8 +7,8 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [ezk-map, supervision]
-status: ready
-pr:
+status: shipped
+pr: "local (7841c073)"
 evidence: before-after
 created: 2026-10-04
 split_from: "20260904080827072"
@@ -117,8 +117,8 @@ git status --porcelain features/reviews/verdicts/    # depuis vectorz → rien
 
 | Vue | Avant | Après |
 |---|---|---|
-| board | ![board avant](../docs/pr-evidence/20261004192802897/board-before.png) | ![board après, muti choisi](../docs/pr-evidence/20261004192802897/board-after.png) |
-| board, téléphone | (pas de barre de projet) | ![board sur téléphone, samplerz choisi](../docs/pr-evidence/20261004192802897/board-telephone-after.png) |
+| board | ![board avant](../../docs/pr-evidence/20261004192802897/board-before.png) | ![board après, muti choisi](../../docs/pr-evidence/20261004192802897/board-after.png) |
+| board, téléphone | (pas de barre de projet) | ![board sur téléphone, samplerz choisi](../../docs/pr-evidence/20261004192802897/board-telephone-after.png) |
 
 Demander un projet inconnu au serveur : il refuse, sans rien lire. Le choix voyage dans un cookie
 (`ezk-projet`), posé par `GET /projet?id=<id>` ; un id inconnu y rend 400, sans cookie, et une

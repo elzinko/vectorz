@@ -5,7 +5,7 @@
 **Deciders :** PO (global, pas une app par projet, 2026-10-02 ; le tableau de bord plutôt que le
 Moniteur, au grooming du 2026-10-03 ; découpage en trois fiches et deux arbitrages, 2026-10-04)
 **Fiches :** [socle](../../../../features/done/20261004192802828_cockpit-adr-config-lisible-registre-unique.md) ·
-[menu des projets](../../../../features/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) ·
+[menu des projets](../../../../features/done/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) ·
 [page « config »](../../../../features/20261004192802964_cockpit-page-config-en-sections.md) ·
 parent découpé : [un seul tableau de bord pour tous tes projets](../../../../features/done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md)
 **Précise :** [ADR-0057](0057-le-tableau-de-bord-ecrit-un-seul-dossier.md) (une seule écriture, par

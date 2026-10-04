@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md](../20261004192802897_cockpit-menu-projets-et-leurs-fiches.md)
+> 🗎 Rendu de la fiche [features/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md](../done/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md)
 
 # 20261004192802897 — Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi
 
