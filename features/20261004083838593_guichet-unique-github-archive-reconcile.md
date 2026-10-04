@@ -46,13 +46,13 @@ Mettre en œuvre les décisions D1, D2 et D4 de
 [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md), pour le premier
 cran seulement :
 
-1. **Le guichet.** Une commande `ezk forge prs --open|--merged`. Un cœur pur choisit l'adaptateur
+1. **Le guichet.** Une commande `ezk forge changes --open|--merged`. Un cœur pur choisit l'adaptateur
    d'après `resolveGithub` ; l'adaptateur GitHub appelle `gh`, l'adaptateur local répond « sans
    objet ».
 2. **Trois états distincts** en sortie : `ok`, `off` (coupé par la config), `unavailable` (`gh`
    absent, non authentifié ou hors ligne). `off` ne ressemble jamais à « aucune PR ».
 3. **Deux premiers clients.** `check.sh` d'`ezk-archive` et le texte de `reconcile` passent par
-   `ezk forge prs`. Le rapport d'archive dit « PR sans objet : GitHub coupé par la config ».
+   `ezk forge changes`. Le rapport d'archive dit « PR sans objet : GitHub coupé par la config ».
 4. **Le test à cliquet.** Un test de mega-city relève chaque appel à `gh` hors de l'adaptateur,
    dans le code et dans les textes de skills. La liste d'aujourd'hui est la base ; un appel nouveau
    fait échouer le test. `ci-conso`, GitHub par nature, reste dans la base avec sa raison.
@@ -64,14 +64,14 @@ et la base du cliquet rétrécira d'autant.
 
 ## Critères d'acceptation
 
-- [ ] Dans un projet à `github: false`, `ezk forge prs --open` et `--merged` rendent l'état `off`
+- [ ] Dans un projet à `github: false`, `ezk forge changes --open` et `--merged` rendent l'état `off`
       sans lancer `gh`.
 - [ ] Dans un projet sans config, ils rendent la même liste que `gh pr list` (non-régression).
 - [ ] `gh` absent ou non authentifié, config allumée : l'état est `unavailable`, distinct de `off`
       et d'une liste vide.
 - [ ] `check.sh` d'`ezk-archive` ne lance plus `gh` en `github: false`, et son rapport le dit en
       clair.
-- [ ] Le texte de `reconcile` passe par `ezk forge prs --merged` et dit « sans objet » en
+- [ ] Le texte de `reconcile` passe par `ezk forge changes --merged` et dit « sans objet » en
       `github: false`.
 - [ ] Le test à cliquet échoue si on ajoute un `gh pr list` dans un script ou un texte de skill
       hors de l'adaptateur, et passe sur la base.
@@ -86,7 +86,7 @@ CHECK="$PWD/products/mega-city/skills/ezk-archive/scripts/check.sh"   # depuis l
 P=$(mktemp -d) && git -C "$P" init -q && git -C "$P" remote add origin https://github.com/x/y.git
 mkdir -p "$P/.vectorz" && printf 'github: false\n' > "$P/.vectorz/config.yml"
 mkdir -p "$P/bin" && printf '#!/bin/sh\necho "gh $*" >> %s/gh.log\n' "$P" > "$P/bin/gh" && chmod +x "$P/bin/gh"
-PATH="$P/bin:$PATH" ezk --root "$P" forge prs --open; echo "rc=$?"     # état off
+PATH="$P/bin:$PATH" ezk --root "$P" forge changes --open; echo "rc=$?"     # état off
 (cd "$P" && PATH="$P/bin:$PATH" bash "$CHECK" --gate)                  # rapport : PR sans objet
 test ! -s "$P/gh.log" && echo "aucun appel gh"
 pnpm --dir products/mega-city test

@@ -1,7 +1,7 @@
 # ADR-0061 — Un seul guichet pour GitHub : chaque geste passe par `ezk forge`, qui lit la config
 
 - Statut : **Proposé** (à ratifier par le PO).
-- Date : 2026-10-04
+- Date : 2026-10-04 · perspective du bus ajoutée le même jour, à la demande du PO
 - Compose / précise : [ADR-0003](0003-moteur-bind-plan-pur-coquille-io.md) (cœur pur, coquille d'I/O), [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §2 (GitHub est un module), [ADR-0050](0050-couche-regles-projet-local.md) (la couche `.vectorz/`), [ADR-0052](0052-merge-local-first-github-execute-le-squash-main-se-realigne.md) (le local décide, GitHub exécute), [ADR-0059](0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md) (la PR devient optionnelle par la config)
 - Fiches : [20261004083838593](../../../../features/20261004083838593_guichet-unique-github-archive-reconcile.md) (le guichet), [20261004083838687](../../../../features/20261004083838687_integrer-sans-pr-par-avance-rapide.md) (intégrer sans PR), [20261004083838781](../../../../features/20261004083838781_ezk-config-help-lu-comme-un-chemin.md) (bug à part)
 
@@ -18,6 +18,9 @@ GitHub, ou il fait l'équivalent local, ou il répond « sans objet ».
 Analogie : aujourd'hui, chacun va lui-même au bureau de poste et doit lire l'affiche « fermé » sur
 la porte. Demain, tout le monde dépose son courrier à l'accueil. L'accueil connaît les horaires. Il
 répond « fermé, voici la boîte locale ».
+
+Plus loin, ce guichet est le premier morceau d'un **bus** : la méthode y annonce ses moments, et
+tout outil s'y branche sans toucher à son texte. La section « Perspective » le décrit.
 
 Ce que ça veut dire pour toi : un projet qui coupe GitHub n'a plus de trous à découvrir. Et un
 oubli futur ne passe plus : un test refuse tout nouvel appel à `gh` hors du guichet.
@@ -75,10 +78,14 @@ des commandes `gh`. C'est le motif « ports et adaptateurs » déjà en place po
 (`src/review/ports.ts` et ses émetteurs) et pour les métriques de sprint
 (`src/sprint-metrics/adapters/`). On ne crée que les verbes réellement utilisés.
 
+Les verbes portent un nom **neutre** : `changes` désigne les demandes de fusion, qu'on appelle
+« pull requests » chez GitHub et « merge requests » chez GitLab. Un adaptateur GitLab pourra donc
+se brancher plus tard sans renommer aucun verbe.
+
 | Verbe | Adaptateur GitHub | Adaptateur local |
 |---|---|---|
-| `ezk forge prs --open` | `gh pr list --state open` | « sans objet » |
-| `ezk forge prs --merged` | `gh pr list --state merged` | « sans objet » |
+| `ezk forge changes --open` | `gh pr list --state open` | « sans objet » |
+| `ezk forge changes --merged` | `gh pr list --state merged` | « sans objet » |
 | `ezk forge integrate --branch <b>` | `gh pr merge --squash` ([ADR-0052](0052-merge-local-first-github-execute-le-squash-main-se-realigne.md)) | la stratégie du projet (D3) |
 
 Les autres verbes arrivent quand on touche leur appelant : ouvrir une PR, commenter, poster un
@@ -145,9 +152,11 @@ intention de plus.
 - **C. Intercepteur.** Il casse le skill en plein milieu, au lieu de lui donner le chemin local. On
   le garde comme filet si un oubli passe malgré D4. La règle maison reste : un outillage de type
   hook seulement après au moins deux récidives.
-- **Une forge générique, pour GitHub, GitLab ou Gitea.** Personne n'en a besoin. Les verbes portent
-  le nom du travail, pas celui d'une API neutre. La fiche 0093 (le backlog stocké ailleurs que dans
-  git) a rendu le même verdict pour le stockage.
+- **Construire tout de suite un adaptateur GitLab.** Le PO veut que le motif marche pour GitLab,
+  mais aucun projet ne l'utilise aujourd'hui. On garde donc les verbes neutres (D1), et on
+  construit l'adaptateur GitLab quand un projet le demande. La fiche 0093 (le backlog stocké
+  ailleurs que dans git) a rendu le même verdict pour le stockage : ne rien construire avant un
+  besoin réel.
 
 ## Conséquences
 
@@ -161,12 +170,171 @@ intention de plus.
 ## Mise en œuvre
 
 1. [20261004083838593](../../../../features/20261004083838593_guichet-unique-github-archive-reconcile.md) :
-   poser `ezk forge` avec les verbes `prs`, y faire passer `ezk-archive` et `reconcile`, poser le
+   poser `ezk forge` avec le verbe `changes`, y faire passer `ezk-archive` et `reconcile`, poser le
    test à cliquet.
 2. [20261004083838687](../../../../features/20261004083838687_integrer-sans-pr-par-avance-rapide.md) :
    le verbe `integrate` et la stratégie `push-ff`. Dépend de la fiche 1.
 3. [20261004083838781](../../../../features/20261004083838781_ezk-config-help-lu-comme-un-chemin.md) :
    le bug `ezk config --help`. Indépendant, tirable tout de suite.
+
+## Perspective — le bus de la méthode
+
+*Ajoutée le 2026-10-04 à la demande du PO, avant la ratification.*
+
+### En clair
+
+Le guichet `ezk forge` n'est qu'un premier morceau. Le but plus large : que n'importe quel outil
+se branche sur la méthode **sans toucher à son texte**. GitHub, GitLab, Codex, SonarQube, Slack,
+Linear, par exemple.
+
+L'image est celle d'un **bus**, au sens des « Enterprise Integration Patterns » (EIP), un catalogue
+reconnu de motifs d'intégration. La méthode annonce ses moments sur le bus. Les plugins s'y
+branchent. Un diagramme généré montre qui écoute quoi.
+
+Trois rôles, jamais mélangés :
+
+| Qui | Décide | Où c'est écrit |
+|---|---|---|
+| La méthode | **quand** : le catalogue de ses moments | le texte des skills, qui ne nomme aucun outil |
+| Le projet | **qui** : les plugins actifs, l'exécutant de chaque commande | `.vectorz/config.yml` |
+| Le plugin | **comment** : ses scripts et son texte | son propre dossier, avec un manifeste |
+
+### Le schéma
+
+Les noms des moments sont indicatifs : le contrat les fixera.
+
+```
+           LA MÉTHODE  (texte stable : elle annonce des moments, elle ne nomme aucun outil)
+
+ story.started  branch.validated  review.requested   integrate   story.integrated  sprint.closed
+      │                │                 │               │               │               │
+══════╪════════════════╪═════════════════╪═══════════════╪═══════════════╪═══════════════╪══ bus
+      │                │                 │               │               │               │
+  événement        événement           avis          commande        événement       événement
+  0..N abonnés     0..N abonnés    N avis, 1 règle  1 exécutant     0..N abonnés    0..N abonnés
+      │                │          ┌──────┼──────┐        │               │               │
+  supervision     aperçu Vercel   revue  Codex  Sonar  GitHub,        Linear          Slack
+  (journal)       statut GitHub   locale (filet)       GitLab         (ticket livré)  (message)
+                                  (plancher)           ou local,
+                                                       choisi par
+                                                       la config
+```
+
+### Trois sortes d'échanges
+
+| Sorte | La méthode attend ? | Combien de plugins | Motif EIP | Exemple |
+|---|---|---|---|---|
+| **Événement** | non : elle annonce et continue | zéro, un ou plusieurs abonnés | canal publier-s'abonner (*Publish-Subscribe Channel*) | `story.integrated` : ticket Linear livré, message Slack, journal de supervision |
+| **Commande** | oui : il lui faut un résultat | exactement un exécutant, choisi par la config | passerelle et aiguillage (*Messaging Gateway*, *Content-Based Router*) | `integrate` : GitHub, GitLab ou local ; c'est `ezk forge` (D1) |
+| **Avis** | oui : il lui faut un verdict | plusieurs avis, combinés par une règle écrite | diffuser puis rassembler (*Scatter-Gather*, *Aggregator*) | `review.requested` : revue locale, Codex, SonarQube ; règle de l'ADR-0059 |
+
+La supervision observe tout le bus sans rien changer : c'est une écoute (*Wire Tap*). L'état
+`unavailable` de D2 joue le rôle du canal des messages non livrés (*Dead Letter Channel*) : un
+échec se voit, il ne se perd pas.
+
+### Cinq règles pour que les plugins n'interfèrent pas
+
+1. **Une commande a un seul exécutant.** Si deux plugins se proposent pour `integrate`, le
+   chargement échoue, et la config tranche.
+2. **Un abonné qui échoue ne bloque pas la méthode.** S'il doit bloquer, ce n'est pas un abonné :
+   c'est un avis, avec sa règle.
+3. **Un avis suit une règle écrite.** Par exemple celle de l'ADR-0059 : la revue locale doit dire
+   GO, les autres ajoutent des constats.
+4. **Les apports se fusionnent par identifiant, jamais par position.** Deux plugins qui ajoutent
+   chacun une consigne ne s'écrasent pas.
+5. **Le diagramme est généré** depuis les manifestes et la config, par une commande du type
+   `ezk bus show`. Il n'est jamais dessiné à la main : il ne peut pas mentir.
+
+### Un plugin, concrètement
+
+Un plugin est un dossier, avec un manifeste qui déclare ce qu'il fait. Forme indicative :
+
+```yaml
+# plugins/github/plugin.yml
+name: github
+executes: [integrate, changes]   # commandes qu'il sait exécuter
+listens: [branch.validated]      # événements qu'il écoute, ici pour poster un statut
+advises: []                      # avis qu'il rend
+needs: [network, gh-auth]        # ce qu'il lui faut pour répondre
+```
+
+Le projet active ses plugins dans sa config. Forme indicative :
+
+```yaml
+# .vectorz/config.yml
+plugins: [github, codex, slack]
+commands:
+  integrate: github
+```
+
+L'activation reste explicite, jamais « toujours allumé »
+([ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §4). La forme d'aujourd'hui
+reste lue : `github: false` revient à ne pas activer le plugin `github`.
+
+### Ce qu'on reprend de BMAD, et ce qu'on laisse
+
+Vérifié le 2026-10-04 dans la documentation officielle de BMAD (page « Customize BMad ») et dans la
+copie installée dans vectorz (`_bmad/_config/`, version 6.0.0-Beta.8).
+
+- **Repris : les couches.** Base, puis équipe, puis utilisateur. Chaque couche surcharge la
+  précédente sans la modifier.
+- **Repris : des règles de fusion selon la forme des données.** Une valeur simple est remplacée.
+  Une table est fusionnée. Une liste dont les éléments portent un `id` est fusionnée par cet `id`.
+  Une autre liste est complétée. C'est ce qui rend la règle 4 possible.
+- **Repris : des prises nommées dans le cycle de vie.** BMAD offre `activation_steps_prepend`,
+  `activation_steps_append` et `on_complete` sur ses workflows, et `critical_actions` sur ses
+  agents. Un premier essai s'en sert déjà pour brancher la supervision sur BMAD sans le
+  modifier : `BmadBridgeService`, dans cop1, écrit des `critical_actions`
+  ([ADR-032](../../../../docs/adr/ADR-032-emission-adaptateur-separable.md)).
+- **Laissé : des prises remplies par du texte libre.** Une prise BMAD reçoit une consigne en
+  prose. Rien ne dit ce qu'elle doit rendre, ni ce qui se passe si elle échoue. C'est assez pour un
+  événement, pas pour une commande ni pour un avis.
+- **Laissé : des moments grossiers.** BMAD n'a que le début et la fin d'un workflow. Il n'a pas de
+  moment comme « branche validée » ou « intégrer ».
+- **Constat : BMAD n'a pas de plugin GitHub.** Un projet qui veut GitHub écrit lui-même la consigne
+  dans une prise, par exemple dans `on_complete`.
+
+### Ce qui existe déjà en germe dans vectorz
+
+- **Les événements** : le contrat de supervisabilité (`run_start`, `gate_reached`, `heartbeat`,
+  `run_finished`), et le « sidecar » d'[ADR-032](../../../../docs/adr/ADR-032-emission-adaptateur-separable.md),
+  qui branche une méthode par des fiches « moment → consigne → prise ». Dans nos propres skills,
+  ces consignes restent écrites en dur
+  ([20260830110131298](../../../../features/20260830110131298_supervision-ezk-plugin-separable.md)).
+- **Les avis** : [ADR-0059](0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md),
+  la revue locale en plancher et Codex en filet.
+- **Les commandes** : cet ADR, avec `ezk forge`.
+
+### Faut-il attendre un deuxième plugin ?
+
+ADR-0039 §4 dit : la règle complète des plugins s'écrit au deuxième plugin. **Ce deuxième plugin
+existe déjà** : la supervision écoute la méthode depuis juillet 2026. On n'attend donc pas pour
+fixer le **contrat** : le catalogue des moments, les trois sortes d'échanges, les trois rôles.
+C'est du texte, peu coûteux, et c'est lui qui rend le diagramme lisible.
+
+On construit en revanche **canal par canal**, quand on touche son premier client :
+
+1. **Commande** : cet ADR, pour GitHub et le local.
+2. **Événement** : sortir la supervision du texte des skills
+   ([20260830110131298](../../../../features/20260830110131298_supervision-ezk-plugin-separable.md)).
+3. **Avis** : à la prochaine retouche de la revue (ADR-0059).
+4. **Plugins venus d'ailleurs**, avec manifeste et découverte : au premier outil demandé hors de
+   vectorz, par exemple GitLab, Linear ou Slack.
+
+Le contrat du bus fera l'objet de son propre ADR, quand on l'écrira.
+
+### Outils candidats
+
+| Outil | Sorte d'échange | Moment |
+|---|---|---|
+| GitHub | commande, événement | `integrate` et `changes` ; un statut à `branch.validated` |
+| GitLab | commande, événement | les mêmes, en merge requests |
+| Codex, CodeRabbit | avis | `review.requested` |
+| SonarQube | avis | `review.requested`, comme seuil de qualité |
+| Linear, Jira, GitHub Issues | événement | `story.started`, `story.integrated` (voir la fiche [0171](../../../../features/0171-adapter-github-issues-push-only.md)) |
+| Slack, Discord, WhatsApp | événement | `sprint.closed`, ou un jalon qui attend une réponse |
+| Vercel | événement | `branch.validated`, pour un déploiement d'aperçu |
+| Supervision | événement, en écoute | tous les moments |
 
 ## Glossaire
 
@@ -177,3 +345,11 @@ intention de plus.
 - **Cliquet** — une liste qui peut rétrécir mais jamais grandir : un test échoue si elle grandit.
 - **Avance rapide** (*fast-forward*) — pousser une branche sur `main` sans commit de fusion,
   parce que `main` n'a pas bougé depuis le départ de la branche.
+- **Bus** — le canal commun où la méthode annonce ses moments et où les plugins se branchent.
+- **EIP** (*Enterprise Integration Patterns*) — un catalogue reconnu de motifs pour faire
+  dialoguer des systèmes : canal, aiguillage, écoute, agrégation.
+- **Événement** — une annonce de la méthode ; elle n'attend rien en retour.
+- **Commande** — une demande de la méthode ; un seul plugin l'exécute, et la méthode attend son
+  résultat.
+- **Avis** — une demande de verdict à plusieurs plugins, combinés par une règle écrite.
+- **Manifeste** — le fichier où un plugin déclare ce qu'il exécute, écoute et rend.
