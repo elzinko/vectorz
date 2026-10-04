@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [github-optionnel, worktree]
-status: idea
+status: ready
 pr:
 evidence: none # script de merge en ligne de commande, pas d'écran
 created: 2026-10-04
