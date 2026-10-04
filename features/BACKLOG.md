@@ -288,6 +288,7 @@
 | [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
