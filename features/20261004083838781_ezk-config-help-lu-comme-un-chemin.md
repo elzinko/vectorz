@@ -72,3 +72,8 @@ pnpm --dir products/mega-city test
 - Vu pendant la coupure de GitHub dans muti. Indépendant du guichet de
   [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) : tirable tout de
   suite.
+- **Cas voisin, trouvé à la revue du socle du cockpit le 2026-10-04** (ADR-0062) : l'entrée `config`
+  du manifeste déclare `root: cwd` et `writes: true`. Lancé sans `--root` dans un dépôt sans dossier
+  `features/`, `ezk config show` est refusé avec « ce n'est pas un backlog… Rien n'a été écrit »,
+  alors que la commande ne fait que lire. À traiter avec ce bug : la lecture de la config ne devrait
+  pas exiger un backlog.

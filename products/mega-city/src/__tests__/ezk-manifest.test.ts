@@ -6,7 +6,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { entryStep, parseManifest, uncoveredScripts } from '../core/ezk-cli.js';
+import { entryStep, parseManifest, route, uncoveredScripts } from '../core/ezk-cli.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const manifest = parseManifest(readFileSync(join(megaCity, 'ezk-manifest.yml'), 'utf8'));
@@ -114,5 +114,27 @@ describe('ezk-manifest.yml', () => {
   it('expose la commande « ezk » par le champ bin du paquet, via un lanceur qui existe', () => {
     expect(pkg.bin?.ezk).toBe('bin/ezk.mjs');
     expect(existsSync(join(megaCity, 'bin', 'ezk.mjs'))).toBe(true);
+  });
+});
+
+// ADR-0062 (fiche 20261004192802828) : le cockpit lit la config d'un autre projet par la même voie
+// que le terminal. Le routeur est testé sur le VRAI manifeste : c'est l'entrée « config » qui décide.
+describe('ezk config — lire un autre projet par --root, écrire seulement par --root (ADR-0062)', () => {
+  const own = '/vectorz';
+  const muti = { root: '/muti', hasFeatures: true };
+
+  it('`ezk --root <projet> config show` lit le projet désigné', () => {
+    const r = route(manifest, ['config', 'show'], { ownRoot: own, cwdRepo: muti, rootFlag: '/samplerz' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/samplerz' });
+  });
+
+  it('sans --root, `ezk config show` lit le projet du dossier courant', () => {
+    const r = route(manifest, ['config', 'show'], { ownRoot: own, cwdRepo: muti });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
+  });
+
+  it('une EZK_ROOT restée dans le shell ne redirige pas `config github off` : le dossier courant gagne', () => {
+    const r = route(manifest, ['config', 'github', 'off'], { ownRoot: own, cwdRepo: muti, envRoot: '/samplerz' });
+    expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
   });
 });

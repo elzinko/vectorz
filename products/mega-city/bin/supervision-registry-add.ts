@@ -5,9 +5,15 @@
  *
  * Écrit `supervision.registry.yaml` (découvert par walk-up depuis cwd / chemin).
  * Ne touche PAS à `.mcp.json` (c'est `supervision:link`).
+ *
+ * Le registre est suivi par git : chaque checkout (dossier principal, worktree) a sa copie. La
+ * commande écrit celle du checkout trouvé, imprime le fichier écrit et, depuis un worktree, prévient
+ * que le cockpit du dossier principal ne verra le projet qu'après le merge (ADR-0062, arbitrage PO
+ * du 2026-10-04 : écrire la copie du dossier principal la laisserait modifiée hors de toute branche).
  */
+import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { basename, resolve } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import {
   appendRegistryProject,
   locateRegistry,
@@ -39,6 +45,23 @@ if (located === null) {
   );
 }
 
+/** Vrai si `dir` est dans un worktree lié (son dossier git n'est pas le dossier git commun). */
+function inLinkedWorktree(dir: string): boolean {
+  const ask = (flag: string): string | null => {
+    try {
+      return execFileSync('git', ['-C', dir, 'rev-parse', '--path-format=absolute', flag], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+    } catch {
+      return null;
+    }
+  };
+  const gitDir = ask('--git-dir');
+  const commonDir = ask('--git-common-dir');
+  return gitDir !== null && commonDir !== null && gitDir !== commonDir;
+}
+
 const pathLabel = pathLabelForRegistry(located.dir, projectRoot);
 try {
   appendRegistryProject(located.dir, { id: id || basename(projectRoot), path: pathLabel, method });
@@ -46,7 +69,12 @@ try {
   fail(error instanceof Error ? error.message : String(error));
 }
 
-console.log(
-  `✓ registre : projet « ${id} » ajouté (${pathLabel}, method=${method}) dans ${located.dir}`,
-);
-console.log('  → redémarre le daemon cop1 pour activer la surveillance (watchers).');
+console.log(`✓ registre : projet « ${id} » ajouté (${pathLabel}, method=${method})`);
+console.log(`  fichier écrit : ${join(located.dir, 'supervision.registry.yaml')}`);
+if (inLinkedWorktree(located.dir)) {
+  console.log(
+    "  ⚠ c'est la copie d'un worktree : committe-la et merge-la, sinon le cockpit et le daemon cop1 lancés depuis le dossier principal ne verront pas ce projet.",
+  );
+} else {
+  console.log('  → redémarre le daemon cop1 pour activer la surveillance (watchers).');
+}
