@@ -22,6 +22,7 @@ import {
   githubCapabilities,
   writeGithubConfig,
 } from '../src/loaders/project-config.js';
+import { githubStatusText } from '../src/core/project-config.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 
 // `pnpm --dir products/mega-city …` change le cwd vers products/mega-city ; `INIT_CWD`
@@ -38,12 +39,7 @@ function fail(message: string): never {
 }
 
 function printStatus(root: string): void {
-  const caps = githubCapabilities(root);
-  const flag = (on: boolean): string => (on ? 'ON ' : 'OFF');
-  console.log(`Config projet    : ${root}/.vectorz/config.yml`);
-  console.log(`github.pr            ${flag(caps.pr)}   (ouvrir une pull request)`);
-  console.log(`github.ci            ${flag(caps.ci)}   (attendre la CI cloud)`);
-  console.log(`github.codex-review  ${flag(caps.codexReview)}   (revue Codex)`);
+  console.log(githubStatusText(`${root}/.vectorz/config.yml`, githubCapabilities(root)));
 }
 
 function parseOnOff(word: string | undefined, ctx: string): boolean {

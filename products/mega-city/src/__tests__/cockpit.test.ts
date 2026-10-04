@@ -23,6 +23,7 @@ import {
   shownProjectName,
   stateLabel,
 } from '../core/cockpit.js';
+import { configReadable, renderConfigPage } from '../core/config-page.js';
 import { cockpitRegistryDir, loadCockpitProjects } from '../io/cockpit.js';
 
 const ok = (id: string, root = `/${id}`): CockpitProject => ({ id, root, method: 'mega-city', state: { kind: 'ok' } });
@@ -219,3 +220,37 @@ describe('loadCockpitProjects — le registre relu, chaque projet constaté', ()
     expect(cockpitRegistryDir('/trouve', { EZK_COCKPIT_REGISTRY: join(dir, 'absent') })).toBeNull();
   });
 });
+
+describe('renderConfigPage — la page « config » du projet choisi (fiche 20261004192802964)', () => {
+  const ok = { title: 'GitHub', command: 'ezk config show', file: '/p/.vectorz/config.yml', ok: true, text: 'github.pr OFF' };
+  const broken = { title: 'Règles du projet', command: 'ezk rules show', file: '/p/.vectorz/rules.yml', ok: false, text: 'YAML <cassé>' };
+
+  it('une section lisible montre le texte de sa commande, échappé', () => {
+    const html = renderConfigPage('muti', [ok], null);
+    expect(html).toContain('Config — muti</h1>');
+    expect(html).toContain('<pre>github.pr OFF</pre>');
+    expect(html).toContain('Même lecture que <code>ezk config show</code>');
+  });
+
+  it('une section illisible dit « illisible » et son chemin, sans toucher les autres', () => {
+    const html = renderConfigPage('muti', [ok, broken], null);
+    expect(html).toContain('<strong>illisible</strong> : <code>/p/.vectorz/rules.yml</code>');
+    expect(html).toContain('YAML &lt;cassé&gt;');
+    expect(html).toContain('<pre>github.pr OFF</pre>');
+  });
+
+  it('un refus : aucune section, la raison à la place', () => {
+    const html = renderConfigPage('bmad', [], 'bmad : méthode non prise en charge (bmad)');
+    expect(html).toContain('méthode non prise en charge (bmad) — aucune config affichée.');
+    expect(html).not.toContain('<pre>');
+  });
+
+  it('la config se lit tant que le projet est sur le disque et de la méthode', () => {
+    expect(configReadable({ kind: 'ok' })).toBe(true);
+    expect(configReadable({ kind: 'format-non-pris-en-charge' })).toBe(true);
+    expect(configReadable({ kind: 'format-en-retard', version: 2, current: 5 })).toBe(true);
+    expect(configReadable({ kind: 'introuvable' })).toBe(false);
+    expect(configReadable({ kind: 'methode-non-prise-en-charge', method: 'bmad' })).toBe(false);
+  });
+});
+

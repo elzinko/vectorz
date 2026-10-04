@@ -1,18 +1,4 @@
----
-id: "20261004192802964"
-title: "Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule"
-type: feature
-priority: P1
-product: mega-city
-milestone: cockpit
-version: V0.6
-labels: [ezk-map, config]
-status: ready
-pr:
-evidence: before-after
-created: 2026-10-04
-split_from: "20260904080827072"
----
+> 🗎 Rendu de la fiche [features/20261004192802964_cockpit-page-config-en-sections.md](../20261004192802964_cockpit-page-config-en-sections.md)
 
 # 20261004192802964 — Cockpit : la page « config » du projet choisi, en sections
 
@@ -83,7 +69,7 @@ ezk dashboard
 
 | Vue | Avant | Après |
 |---|---|---|
-| config | ![config avant : page absente (404)](../docs/pr-evidence/20261004192802964/config-before.png) | ![config après, copie de test choisie](../docs/pr-evidence/20261004192802964/config-after.png) |
+| config | ![config avant : page absente (404)](../../docs/pr-evidence/20261004192802964/config-before.png) | ![config après, copie de test choisie](../../docs/pr-evidence/20261004192802964/config-after.png) |
 
 ## Glossaire
 
@@ -117,3 +103,19 @@ ezk dashboard
   texte GitHub cite `config.yml` même pour un projet en `config.yaml`, comme le terminal le fait déjà
   (la page doit montrer le même texte) ; la section règles lance deux `git rev-parse` synchrones, sans
   effet notable pour un serveur local mono-utilisateur.
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| cockpit.test (unitaires) | ✅ |
+| project-root-bins.test (page comparée aux trois commandes) | ✅ |
+| vitest 1831 | ✅ |
+| test:scripts 36 | ✅ |
+| typecheck | ✅ |
+| Revue ezk-reviewer | ✅ GO |
+| Preuve projets hôtes | ✅ cop1-cobaye et muti et copie de test |
+| Before / after (UI) | ✅ docs/pr-evidence/20261004192802964 |
+| CI cloud | N.A. github off |
+| Codex | N.A. github off |

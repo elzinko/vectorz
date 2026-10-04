@@ -24,6 +24,9 @@ export function projectCookieName(port: number | string): string {
 /** La route qui pose ou retire le choix. */
 export const PROJECT_ROUTE = '/projet';
 
+/** La page « config » du projet choisi (fiche 20261004192802964). */
+export const CONFIG_ROUTE = '/config';
+
 /** Ce que le cockpit sait d'un projet du registre, avant d'en lire la moindre fiche. */
 export type ProjectState =
   | { kind: 'ok' }
@@ -216,6 +219,8 @@ export function renderProjectBar(
   .ezkprj select{font:inherit;color:#e7e9ee;background:#0f1115;border:1px solid #2a2f3a;border-radius:6px;padding:3px 6px;max-width:300px;}
   .ezkprj-etat{padding:6px 10px;color:#1a1300;background:#f2c94c;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.30);}
   .ezkprj-etat a{color:#1a1300;font-weight:600;}
+  .ezkprj-lien{color:#9fc5ff;text-decoration:none;padding:0 4px;}
+  .ezkprj-lien:hover{text-decoration:underline;}
   @media (max-width:720px){
     .ezkprj-wrap{top:auto;bottom:10px;left:10px;right:10px;max-width:none;align-items:stretch;}
     .ezkprj select{flex:1;max-width:none;}
@@ -227,6 +232,7 @@ export function renderProjectBar(
     <select id="ezkprj-id" name="id" onchange="this.form.submit()">${options}</select>
     <input type="hidden" name="retour" value="${escapeHtml(safeReturnPath(currentPath))}">
     <noscript><button type="submit">Voir</button></noscript>
+    <a class="ezkprj-lien" href="${CONFIG_ROUTE}">config</a>
   </form>${banner ? `\n  <div class="ezkprj-etat" role="status">${banner}</div>` : ''}
 </div>`;
 }

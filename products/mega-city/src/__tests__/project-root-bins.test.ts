@@ -287,9 +287,20 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
     project('ancien', '---\nlayout_version: 4\n---\n', true);
     project('sans-format', null, true);
     project('bmad', null);
+    // Une copie de test dont les trois fichiers de config portent des valeurs différentes des défauts.
+    project('configure', '---\nlayout_version: 5\n---\n');
+    mkdirSync(join(registry, 'configure', '.vectorz'), { recursive: true });
+    writeFileSync(join(registry, 'configure', '.vectorz', 'config.yml'), 'github:\n  pr: false\n  codex-review: false\n');
+    writeFileSync(join(registry, 'configure', '.vectorz', 'rules.yml'), 'bundles: [clean-code]\n');
+    writeFileSync(
+      join(registry, 'configure', '.vectorz', 'dor.yml'),
+      ['slots:', '  - id: surfaces', '    heading: Surfaces impactées', '    ask: "Quelles surfaces ?"',
+        '    items: [doc, site]', 'health:', '  min-ready: 2', ''].join('\n'),
+    );
     writeFileSync(
       join(registry, 'supervision.registry.yaml'),
       ['projects:',
+        '  - { id: configure, path: configure, method: mega-city }',
         '  - { id: courant, path: courant, method: mega-city }',
         '  - { id: ancien, path: ancien, method: mega-city }',
         '  - { id: sans-format, path: sans-format, method: mega-city }',
@@ -417,5 +428,63 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
     const port = new URL(origin).port;
     await expect(fetch(`http://${lanAddress}:${port}/`, { signal: AbortSignal.timeout(3000) })).rejects.toThrow();
   });
-});
 
+  /** Le texte des blocs <pre> d'une page, déséchappé : ce qu'un lecteur voit. */
+  const preBlocks = (html: string): string[] =>
+    [...html.matchAll(/<pre>([\s\S]*?)<\/pre>/g)].map((m) =>
+      (m[1] ?? '')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'")
+        .replaceAll('&amp;', '&'),
+    );
+
+  it('la page « config » montre les mêmes valeurs que les trois commandes, et n’écrit rien', { timeout: 60_000 }, async () => {
+    const root = join(registry, 'configure');
+    const contract = ['config.yml', 'rules.yml', 'dor.yml'].map((f) => join(root, '.vectorz', f));
+    const before = contract.map((f) => readFileSync(f, 'utf8'));
+    const page = await fetch(`${origin}/config`, { headers: cookie('configure') });
+    expect(page.status).toBe(200);
+    const html = await page.text();
+    expect(html).toContain('Config — configure</h1>');
+    const [github, rules, dor] = preBlocks(html);
+    for (const [args, shown] of [
+      [['config', 'show'], github],
+      [['rules', 'show'], rules],
+      [['dor', 'show'], dor],
+    ] as const) {
+      const r = ezk(['--root', root, ...args]);
+      expect(r.code).toBe(0);
+      expect(shown && shown.length > 0).toBe(true);
+      expect(r.out).toContain(shown as string);
+    }
+    expect(github).toContain('github.pr            OFF');
+    expect(github).toContain('github.ci            ON ');
+    expect(dor).toContain('surfaces');
+    expect(contract.map((f) => readFileSync(f, 'utf8'))).toEqual(before);
+  });
+
+  it('un fichier de config illisible ne touche que sa section', async () => {
+    const file = join(registry, 'configure', '.vectorz', 'config.yml');
+    const intact = readFileSync(file, 'utf8');
+    writeFileSync(file, 'github: [\n');
+    try {
+      const html = await (await fetch(`${origin}/config`, { headers: cookie('configure') })).text();
+      expect(html).toContain('<strong>illisible</strong> : <code>');
+      expect(html).toContain(file);
+      expect((html.match(/class="section illisible"/g) ?? []).length).toBe(1);
+      const [, rules, dor] = preBlocks(html);
+      expect(rules).toContain('Jeu effectif');
+      expect(dor).toContain('surfaces');
+    } finally {
+      writeFileSync(file, intact);
+    }
+  });
+
+  it('un projet d’une autre méthode n’a pas de page « config » inventée', async () => {
+    const html = await (await fetch(`${origin}/config`, { headers: cookie('bmad') })).text();
+    expect(html).toContain('méthode non prise en charge (bmad) — aucune config affichée.');
+    expect(preBlocks(html)).toEqual([]);
+  });
+});

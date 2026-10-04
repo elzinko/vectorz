@@ -49,7 +49,9 @@ import {
   renderNavBar,
   renderSvgWrapper,
 } from '../src/core/ezk-map-menu.js';
+import { configReadable, renderConfigPage } from '../src/core/config-page.js';
 import {
+  CONFIG_ROUTE,
   PROJECT_ROUTE,
   type ProjectChoice,
   dataTarget,
@@ -58,11 +60,13 @@ import {
   projectCookieName,
   safeReturnPath,
   shownProjectName,
+  stateLabel,
   readCookie,
   renderProjectBar,
   resolveChoice,
 } from '../src/core/cockpit.js';
 import { cockpitRegistryDir, currentLayoutVersion, loadCockpitProjects } from '../src/io/cockpit.js';
+import { configSections } from '../src/io/config-page.js';
 import { dataViewForPath } from '../src/io/derived-views.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { VERDICT_ROUTE, serveVerdict } from '../src/io/verdict-endpoint.js';
@@ -103,13 +107,18 @@ function cockpitFor(
   cookieHeader: string | undefined,
   cookieName: string,
   currentPath = '/',
-): { choice: ProjectChoice; bar: string; shownName: string | null } {
+): { choice: ProjectChoice; bar: string; shownName: string | null; launchName: string } {
   const { projects, problem } = loadCockpitProjects(REGISTRY_DIR, CURRENT_LAYOUT);
   const choice = resolveChoice(projects, readCookie(cookieHeader, cookieName));
   const launchName = shownProjectName({ kind: 'defaut' }, projects, LAUNCH_ROOT, LAUNCH_FALLBACK);
   const bar = renderProjectBar(projects, choice, `projet de lancement (${launchName})`, problem, currentPath);
   const rename = choice.kind === 'projet' || ROOT_SOURCE !== 'default';
-  return { choice, bar, shownName: rename ? shownProjectName(choice, projects, LAUNCH_ROOT, LAUNCH_FALLBACK) : null };
+  return {
+    choice,
+    bar,
+    shownName: rename ? shownProjectName(choice, projects, LAUNCH_ROOT, LAUNCH_FALLBACK) : null,
+    launchName,
+  };
 }
 
 const MIME: Record<string, string> = {
@@ -231,6 +240,28 @@ const server = createServer((req, res) => {
           'Set-Cookie': projectCookieHeader(cookieName, id === '' ? null : id),
         })
         .end();
+      return;
+    }
+
+    // La page « config » du projet choisi (fiche 20261004192802964) : trois sections en lecture seule,
+    // lues par les mêmes fonctions que le terminal. Un projet introuvable, d'une autre méthode ou
+    // inconnu n'a pas de config inventée.
+    if (url.pathname === CONFIG_ROUTE) {
+      const cockpit = cockpitFor(req.headers.cookie, cookieName, url.pathname);
+      const { choice } = cockpit;
+      let root: string | null = PROJECT_ROOT;
+      let refusal: string | null = null;
+      if (choice.kind === 'inconnu') {
+        root = null;
+        refusal = `projet inconnu du registre : ${choice.id}`;
+      } else if (choice.kind === 'projet') {
+        root = configReadable(choice.project.state) ? choice.project.root : null;
+        if (root === null) refusal = `${choice.project.id} : ${stateLabel(choice.project.state)}`;
+      }
+      const name = choice.kind === 'projet' ? choice.project.id : cockpit.launchName;
+      const page = renderConfigPage(name, root === null ? [] : configSections(root, MEGA_CITY), refusal);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(injectNavIntoHtml(page, renderNavBar(diagrams, '') + cockpit.bar));
       return;
     }
 

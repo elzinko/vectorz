@@ -54,3 +54,18 @@ export function resolveGithub(raw: unknown): GithubCapabilities {
   // valeur inattendue (string / number…) → défaut sûr
   return { pr: true, ci: true, codexReview: true };
 }
+
+/**
+ * Le statut GitHub tel que l'affiche `ezk config show` — un seul texte, que le terminal et la page
+ * « config » du cockpit partagent (ADR-0062) : la page ne peut pas montrer d'autres valeurs.
+ */
+export function githubStatusText(configFile: string, caps: GithubCapabilities): string {
+  const flag = (on: boolean): string => (on ? 'ON ' : 'OFF');
+  return [
+    `Config projet    : ${configFile}`,
+    `github.pr            ${flag(caps.pr)}   (ouvrir une pull request)`,
+    `github.ci            ${flag(caps.ci)}   (attendre la CI cloud)`,
+    `github.codex-review  ${flag(caps.codexReview)}   (revue Codex)`,
+  ].join('\n');
+}
+
