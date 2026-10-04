@@ -73,3 +73,9 @@ bash products/mega-city/skills/ezk-archive/scripts/test-cleanup.sh
   levé la même alerte aux trois ouvertures de sprint du run. Voisins : le dossier principal propre sur
   `main`, trois worktrees détachés propres sur d'anciens commits de `main`, un worktree d'une session
   muti. Trois passages outre journalisés dans `SPRINT.md`, aucun n'était un vrai risque.
+- **Cas du 2026-10-04** (run `--once`, rétro légère de fin de V0.5, capture
+  `docs/captures/2026-10-04-retro-iteration-v0-5-legere.md`) : `sprint.sh start --dry-run` a rendu
+  `ALERT` pour 4 worktrees voisins, tous propres, aucun ne touchait la fiche (le dossier principal sur
+  `main`, deux worktrees détachés sur d'anciens commits, un worktree sur une branche déjà absorbée).
+  En mode auto, le run a dû s'arrêter pour demander au PO de passer outre. Quatrième run de suite où
+  l'alerte n'était pas un vrai risque.

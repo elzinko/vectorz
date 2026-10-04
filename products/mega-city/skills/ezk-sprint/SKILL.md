@@ -1,7 +1,7 @@
 ---
 roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/pr-before-after-media]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/pr-before-after-media, development/host-project-proof-before-ship]
 argument-hint: "[help|start|close|check|run]"
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
@@ -347,7 +347,7 @@ gate est leur **trace contractuelle** (doc du kit :
 ## Definition of Done
 
 Scénarios BDD verts • gate locale verte (`ezk-ci`, `act`+Docker) •
-**E2E Playwright vert** (si UI) • revue GO (code + sécurité) • PR ouverte **avec un
+**E2E Playwright vert** (si UI) • **éprouvée sur le banc cop1-cobaye** si la fiche vise les projets hôtes, ligne datée dans la fiche (ou, sans banc, la raison datée) ([`host-project-proof-before-ship`](../../rules/development/host-project-proof-before-ship.md)) • revue GO (code + sécurité) • PR ouverte **avec un
 corps relisable seul = rendu de la fiche** (« En clair » + sections + `## Comment vérifier`
 + provenance `features/<id>_*.md` + matrice `## Validation` — [ADR-0029](../../docs/adr/0029-fiche-est-le-document-pr-en-est-le-rendu.md) ; **pas** de Summary parallèle, `## Summary` proscrit) •
 **fiche de la story en `done/` + `status: shipped`** : en flux PR, par le commit ship de sa PR, avant le merge ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)) : c'est une condition de la **story**, pas du sprint ni de la session •

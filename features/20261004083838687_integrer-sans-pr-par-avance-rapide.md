@@ -102,3 +102,9 @@ pnpm --dir products/mega-city test
 - À trancher au grooming : squasher la branche avant le `push-ff`, ou pousser ses commits tels
   quels (muti pousse tels quels aujourd'hui).
 - Le merge strictement hors ligne reste couvert par `local-squash` (ADR-0052 D5).
+- **Cas du 2026-10-03** (note du carnet
+  `docs/retro-notes/traitees/20261003202803910-revue-backlog-mode-local.md`, rétro légère du
+  2026-10-04) : un squash local qui ne contenait que des fiches, le plan et une ligne de config
+  (`f0e93201`, branche `squash/github-local`) a vu son push refusé par le garde-fou de Claude Code,
+  au motif d'un « merge sans revue ». En mode local, un changement de fiches seul n'a pas de chemin
+  de revue prévu. À trancher au grooming : quelle revue, légère, pour un changement sans code.

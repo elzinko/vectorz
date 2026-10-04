@@ -16,3 +16,4 @@ rules:
   - development/fiche-read-via-loader
   - development/active-views-exclude-terminal-status
   - development/acceptance-criteria-before-merge
+  - development/host-project-proof-before-ship
