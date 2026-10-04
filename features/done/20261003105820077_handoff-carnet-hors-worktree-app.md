@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [archive, retro, worktree]
-status: ready
-pr:
+status: shipped
+pr: "local (527868b7)"
 evidence: none # scripts de clôture et de rétro, pas d'écran
 created: 2026-10-03
 ---

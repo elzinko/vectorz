@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261003105820077_handoff-carnet-hors-worktree-app.md](../20261003105820077_handoff-carnet-hors-worktree-app.md)
+> 🗎 Rendu de la fiche [features/20261003105820077_handoff-carnet-hors-worktree-app.md](../done/20261003105820077_handoff-carnet-hors-worktree-app.md)
 
 # 20261003105820077 — La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app
 
