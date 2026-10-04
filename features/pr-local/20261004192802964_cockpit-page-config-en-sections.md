@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004192802964_cockpit-page-config-en-sections.md](../20261004192802964_cockpit-page-config-en-sections.md)
+> 🗎 Rendu de la fiche [features/20261004192802964_cockpit-page-config-en-sections.md](../done/20261004192802964_cockpit-page-config-en-sections.md)
 
 # 20261004192802964 — Cockpit : la page « config » du projet choisi, en sections
 

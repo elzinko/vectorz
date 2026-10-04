@@ -7,8 +7,8 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [ezk-map, config]
-status: ready
-pr:
+status: shipped
+pr: "local (ec7fc3ec)"
 evidence: before-after
 created: 2026-10-04
 split_from: "20260904080827072"
@@ -83,7 +83,7 @@ ezk dashboard
 
 | Vue | Avant | Après |
 |---|---|---|
-| config | ![config avant : page absente (404)](../docs/pr-evidence/20261004192802964/config-before.png) | ![config après, copie de test choisie](../docs/pr-evidence/20261004192802964/config-after.png) |
+| config | ![config avant : page absente (404)](../../docs/pr-evidence/20261004192802964/config-before.png) | ![config après, copie de test choisie](../../docs/pr-evidence/20261004192802964/config-after.png) |
 
 ## Glossaire
 

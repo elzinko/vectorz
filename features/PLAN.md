@@ -107,8 +107,8 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260904080827072` — un seul tableau de bord pour tous tes projets : choisir le projet, voir sa config · prête le 2026-10-03 · `build`~~ — split
 - ~~`20261004192802828` — cockpit, socle : l'ADR, `ezk config show` lisible depuis un autre projet, un seul registre · découpé le 2026-10-04 (décision PO) · prête le 2026-10-04 · `build`~~ — shipped
 - ~~`20261004192802897` — cockpit : le menu des projets et les fiches du projet choisi, pouces dans le bon projet · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
-- `20261004192802964` — cockpit : la page « config » du projet choisi, en sections · découpé le 2026-10-04 · prête le 2026-10-04 · `build`
-- `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03 · `build` (après la page « config » du cockpit, 20261004192802964 : sa section « Agents » y vit)
+- ~~`20261004192802964` — cockpit : la page « config » du projet choisi, en sections · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
+- `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03 · `build` (après la page « config » du cockpit : sa section « Agents » y vit)
 - `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
 - `20261003105820099` — le ménage d'ezk-archive se lance en mode auto · P3, issue de la rétro muti du 2026-10-03 (#340) · `groom` → `build`
 
