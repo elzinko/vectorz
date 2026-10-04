@@ -1,6 +1,6 @@
 ---
 composes: [ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/acceptance-criteria-before-merge]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/acceptance-criteria-before-merge, token-economy/fiche-tient-dans-un-sprint]
 name: ezk-backlog
 layout_version: 5
 argument-hint: "[help|init|list|add|groom|ready|next|plan|review|reconcile|ship|regen|aggregate|version]"
@@ -385,6 +385,9 @@ mentionne chaque item).
    **refus** et sa sortie dit déjà quel slot, quelle section, quel item. Juge ensuite le
    **fond** de chaque réponse : une section pleine de « oui » sans raison ne tient pas.
    **Un slot manque → REFUS motivé** (dis précisément quoi groomer) ; ne touche à rien.
+   **Taille** : une fiche de plus de six critères, ou qui touche plus de deux surfaces (commande,
+   serveur, écran, ADR), se découpe avant de passer, ou dit pourquoi elle reste entière (règle
+   [`token-economy/fiche-tient-dans-un-sprint`](../../rules/token-economy/fiche-tient-dans-un-sprint.md)).
 2. Au vert : passe la fiche en `status: ready` — c'est la colonne « tirable », il n'y a
    **plus de champ date `ready:`** (retiré par la migration 005 ; les dates historiques sont en note
    au bas des fiches), `regen`, commit `docs(features): ready <id>`.

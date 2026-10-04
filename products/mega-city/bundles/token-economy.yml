@@ -8,3 +8,4 @@ rules:
   - token-economy/verification-budget
   - token-economy/agent-call-budget
   - token-economy/retro-due-choix-chiffre
+  - token-economy/fiche-tient-dans-un-sprint

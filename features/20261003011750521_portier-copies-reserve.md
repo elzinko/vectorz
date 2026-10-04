@@ -2,7 +2,7 @@
 id: "20261003011750521"
 title: "Les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres"
 type: bug
-priority: P2
+priority: P1
 product: mega-city
 milestone:
 version: V0.6
@@ -79,3 +79,8 @@ bash products/mega-city/skills/ezk-archive/scripts/test-cleanup.sh
   `main`, deux worktrees détachés sur d'anciens commits, un worktree sur une branche déjà absorbée).
   En mode auto, le run a dû s'arrêter pour demander au PO de passer outre. Quatrième run de suite où
   l'alerte n'était pas un vrai risque.
+- **Passée en P1 le 2026-10-04** (rétro légère du run cockpit de la V0.6, capture
+  `docs/captures/2026-10-04-retro-run-cockpit-v0-6-legere.md`, décision PO) : cinquième passage outre
+  en deux jours. Ce soir, l'ouverture du run puis celle du sprint de correction ont demandé au PO de
+  passer outre pour deux dossiers voisins propres (le dossier principal sur `main`, un worktree
+  détaché), sans lien avec les fiches. Inscrite au plan, en tête de ce qui reste de la V0.6.

@@ -288,6 +288,7 @@
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261003011750521](20261003011750521_portier-copies-reserve.md) | Les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres | bug | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
@@ -309,7 +310,6 @@
 | [20261002230039650](20261002230039650_ship-pose-une-fois-apres-codex.md) | Poser le commit ship une seule fois, après la revue et la première passe Codex | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261002230039755](20261002230039755_revue-rejoue-scripts-bash.md) | La revue locale rejoue les scripts bash modifiés sur des entrées hostiles | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261003011750433](20261003011750433_portier-sprint-md-commite.md) | sprint.sh start/close distingue un sprint ouvert d'un SPRINT.md commité | bug | P2 | V0.6 | mega-city | 💡 idea |  |
-| [20261003011750521](20261003011750521_portier-copies-reserve.md) | Les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres | bug | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261003011750607](20261003011750607_checkpoint-sprint-termes-en-clair.md) | Le checkpoint d'ezk-sprint définit en clair les termes de chaque option | chore | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261003201035080](20261003201035080_skills-sans-section-double-tests-sans-donnee-figee.md) | Un contrôle refuse une section en double dans un skill, et les tests ne figent plus l'état du backlog | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261003201035168](20261003201035168_portier-archive-fiches-et-adr-contre-origin-main.md) | Le portier d'ezk-archive juge les fiches livrées et les ADR contre origin/main | bug | P2 |  | mega-city | 💡 idea |  |
@@ -318,6 +318,8 @@
 | [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004101755756](20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |

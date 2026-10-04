@@ -8,6 +8,7 @@ milestone: cockpit
 version: V0.6
 labels: [installation, ezk-map]
 status: ready
+blocked: "à découper avant de construire : 12 critères, estimée à 500-700k (règle token-economy/fiche-tient-dans-un-sprint, rétro du 2026-10-04)"
 pr:
 evidence: auto
 created: 2026-10-02
@@ -271,3 +272,13 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
   et la doctrine des modèles : [`ezk-model-and-lisibility.md`](../products/mega-city/docs/ezk-model-and-lisibility.md).
 - **Code existant à réutiliser.** Le lecteur de config :
   `products/mega-city/src/loaders/project-config.ts`. La commande : `products/mega-city/bin/ezk-config.ts`.
+- **À découper avant de construire (2026-10-04).** Le run cockpit de la V0.6 s'est arrêté devant
+  elle, sur décision du PO : 12 critères, estimée à 500-700k jetons pour une cible de 200k. La règle
+  `token-economy/fiche-tient-dans-un-sprint`, née de la rétro du même soir (capture
+  `docs/captures/2026-10-04-retro-run-cockpit-v0-6-legere.md`), attend qu'une fiche de cette taille se
+  découpe au grooming. Piste de découpe notée au run : schéma des niveaux et résolveur pur ; pointeurs
+  au `bind` et commande ; section modifiable du cockpit avec sa route gardée et l'amendement de
+  l'ADR-0057.
+- **Drapeau `blocked:` posé le 2026-10-04** au rangement de la rétro, sur avis de la revue : sans lui,
+  le prochain run l'aurait tirée entière. Le statut reste « prête » ; le PO retire le drapeau, ou la
+  fiche se découpe (`ezk backlog apply split`) et le drapeau part avec elle.
