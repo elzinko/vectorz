@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.5
 labels: [github-optionnel, worktree]
-status: ready
-pr:
+status: shipped
+pr: "local (80af4fbf)"
 evidence: none # script de merge en ligne de commande, pas d'écran
 created: 2026-10-04
 ---
@@ -27,7 +27,7 @@ locales devenues inutiles. La *base* est la branche qui reçoit le squash, en g�
 ## Contexte / Problème
 
 Constat du 2026-10-03, pendant le run `ezk-product-build` de la fiche
-[Le mode local de la méthode marche depuis un projet hôte](done/20261003200945204_mode-local-depuis-projet-hote.md).
+[Le mode local de la méthode marche depuis un projet hôte](20261003200945204_mode-local-depuis-projet-hote.md).
 
 - La session travaillait dans un worktree. `main` était extrait dans le dossier principal, donc le
   squash a visé une branche d'intégration : `--base squash/github-local`.

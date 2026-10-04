@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004074008211_merge-local-ne-supprime-jamais-main.md](../20261004074008211_merge-local-ne-supprime-jamais-main.md)
+> 🗎 Rendu de la fiche [features/20261004074008211_merge-local-ne-supprime-jamais-main.md](../done/20261004074008211_merge-local-ne-supprime-jamais-main.md)
 
 # 20261004074008211 — Le merge local ne supprime jamais main
 

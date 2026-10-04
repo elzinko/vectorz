@@ -98,7 +98,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261002155911257` — les skills ezk retrouvent mega-city depuis un projet hôte, en passant par `ezk --root` · P1, issue de la rétro muti (#331) · prête le 2026-10-03 · `build`~~ — shipped #343
 - ~~`20261003072823731` — sans `--root`, `ezk backlog ship` et `regen` visent le dépôt du dossier où on tape la commande · P2, complète la précédente (décision PO du 2026-10-03) · prête le 2026-10-03 · `build`~~ — shipped #344
 - ~~`20261003200945204` — le mode local de la méthode marche depuis un projet hôte, sans contournement (4 défauts trouvés au test sur cop1-cobaye) · P0, décision PO du 2026-10-03 · prête le 2026-10-03 · `build`~~ — shipped
-- `20261004074008211` — le merge local ne supprime jamais main, et dit chaque branche qu'il supprime · P0, décision PO du 2026-10-04 · prête le 2026-10-04 · `build`
+- ~~`20261004074008211` — le merge local ne supprime jamais main, et dit chaque branche qu'il supprime · P0, décision PO du 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
 - `20261003105820077` — la note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app · P1, issue de la rétro muti du 2026-10-03 (#340) · prête le 2026-10-03 · `build`
 > Sortie de la V0.5 le 2026-10-03 : la fiche « regrouper les artefacts de méthode hors de docs/ » (P2, hors thème, décisions lourdes). Elle reste au jalon rationalisation, sans version.
 
