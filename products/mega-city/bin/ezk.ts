@@ -36,7 +36,7 @@ import {
   route,
   splitRouterFlags,
 } from '../src/core/ezk-cli.js';
-import { PROJECT_ROOT_ENV } from '../src/core/project-root.js';
+import { ANNOUNCED_ENV, PROJECT_ROOT_ENV } from '../src/core/project-root.js';
 import { listSkills, skillDetail } from './ezk-help.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -87,9 +87,6 @@ function launcherFor(step: Step): { cmd: string; args: string[] } {
   const tsx = createRequire(import.meta.url).resolve('tsx/cli');
   return { cmd: process.execPath, args: [tsx, script, ...step.args] };
 }
-
-/** Le dépôt que le routeur a déjà annoncé au script (`ship:fiche` n'imprime alors pas son propre bandeau). */
-const ANNOUNCED_ENV = 'EZK_ROOT_ANNOUNCED';
 
 /** Le lanceur ne repasse jamais la main deux fois (garde-fou contre une boucle de délégation). */
 const DELEGATED_ENV = 'EZK_DELEGATED';

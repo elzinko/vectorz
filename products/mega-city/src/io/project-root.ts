@@ -6,6 +6,7 @@
  */
 import { statSync } from 'node:fs';
 import {
+  ANNOUNCED_ENV,
   PROJECT_ROOT_ENV,
   type ResolvedRoot,
   extractRootFlag,
@@ -68,7 +69,10 @@ export function projectRootOrExit(fallback: string, argv?: string[], options: Ro
   try {
     const resolved = projectRootFromProcess(fallback, argv);
     const banner = rootBanner(resolved);
-    if (banner && options.announce !== false) console.error(banner);
+    // `ezk` a déjà dit « dépôt visé » pour une commande du dossier courant : pas de second bandeau,
+    // qui parlerait d'une variable que l'utilisateur n'a pas tapée.
+    const announced = process.env[ANNOUNCED_ENV] === resolved.root;
+    if (banner && options.announce !== false && !announced) console.error(banner);
     return resolved;
   } catch (error) {
     if (!(error instanceof ProjectRootError)) throw error;

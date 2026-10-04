@@ -33,14 +33,18 @@ acceptent un autre projet le disent dans leur résumé (`--root <projet>`).
 - **Elle n'écrit que dans le projet visé.** Un ship depuis muti ne touche que `features/` de muti.
 - **Une variable `EZK_ROOT` restée dans le shell ne redirige jamais une écriture.** Seule l'option
   `--root` désigne le projet d'une commande qui écrit (`backlog ship`, `regen`, `version`, `config`).
-- **Sans `--root`, `backlog ship` et `backlog regen` visent le dépôt git du dossier où tu tapes la
-  commande** : vectorz, un de ses worktrees, ou muti. Elles disent toujours quel dépôt elles visent,
-  et refusent sans rien écrire hors d'un dépôt git ou dans un dépôt sans `features/`. À la main,
-  depuis muti : `ezk backlog ship --pr '#275' features/<fiche>.md`.
-- **Les autres commandes, sans `--root`**, gardent leur comportement d'avant : elles visent vectorz.
+- **Sans `--root`, cinq commandes visent le dépôt git du dossier où tu tapes la commande** :
+  `backlog ship`, `backlog regen`, `config`, `pr emit-local` et `review emit`. Ce dépôt peut être
+  vectorz, un de ses worktrees, ou muti. Elles disent toujours quel dépôt elles visent, et refusent
+  sans rien écrire hors d'un dépôt git ou dans un dépôt sans `features/`. À la main, depuis muti :
+  `ezk backlog ship --pr '#275' features/<fiche>.md`. C'est ce qui permet un sprint en mode local
+  (`github: false`) dans un projet hôte, avec les commandes que prescrit `ezk-sprint`.
+- **Les autres commandes de projet, sans `--root`**, visent vectorz quand tu es dans vectorz. Depuis
+  un projet hôte, elles refusent et te demandent `--root <dossier du projet>` : elles ne te
+  conseillent jamais de viser vectorz à la place.
 
-Les autres commandes (`run context`, `pr emit-local`…) travaillent dans vectorz. Depuis un projet
-hôte, `ezk` refuse avec la marche à suivre, au lieu d'un `ENOENT` brut.
+Les commandes de la méthode elle-même (`run context`, `views regen`…) travaillent dans vectorz.
+Depuis un projet hôte, `ezk` refuse avec la marche à suivre, au lieu d'un `ENOENT` brut.
 
 ## `ezk` introuvable
 

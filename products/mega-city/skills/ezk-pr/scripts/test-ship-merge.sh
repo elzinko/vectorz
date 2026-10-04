@@ -220,6 +220,46 @@ else
   ok "remote sans --head-sha refusé (exit != 0)"
 fi
 
+# --- Cas 8 : base ≠ main — la branche principale n'est jamais supprimée (fiche 20261004074008211) --
+# Le 2026-10-03, un squash vers une branche d'intégration a jugé `main` « absorbée » et lancé
+# `git branch -D main` : seul le verrou d'un worktree l'a empêché. Ici, AUCUN worktree ne tient
+# `main` : sans la protection, elle disparaît.
+echo "=== Cas 8 — base ≠ main : main, master et la cible d'origin/HEAD survivent ; chaque suppression se dit ==="
+REPO8="$WORK/repo-integ"
+BARE8="$WORK/remote8.git"
+git init -q -b main "$REPO8"
+git -C "$REPO8" config user.email t@t.io
+git -C "$REPO8" config user.name t
+echo v1 > "$REPO8/f.txt"
+git -C "$REPO8" add f.txt
+git -C "$REPO8" commit -qm "chore: v1"
+git -C "$REPO8" branch master main
+git -C "$REPO8" branch trunk main
+git -C "$REPO8" branch old-absorbed main
+git init -q --bare "$BARE8"
+git -C "$REPO8" remote add origin "$BARE8"
+git -C "$REPO8" push -q origin main trunk
+git -C "$REPO8" symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/trunk
+git -C "$REPO8" checkout -qb integ
+git -C "$REPO8" checkout -qb feat/y
+echo v2 >> "$REPO8/f.txt"
+git -C "$REPO8" add f.txt
+git -C "$REPO8" commit -qm "feat: y"
+SHA_Y="$(git -C "$REPO8" rev-parse feat/y)"
+SHA_OLD="$(git -C "$REPO8" rev-parse old-absorbed)"
+
+OUT8="$(PATH="$FAKE_BIN:$PATH" bash "$SCRIPT" --local --repo "$REPO8" --branch feat/y --base integ \
+  --subject "feat: y" --body "corps" 2>&1)"
+
+for b in main master trunk; do
+  git -C "$REPO8" show-ref --verify -q "refs/heads/$b" && ok "$b toujours là (base = integ)" || fail "$b supprimée alors que la base est integ"
+done
+git -C "$REPO8" show-ref --verify -q refs/heads/feat/y && fail "feat/y pas prunée" || ok "feat/y prunée (absorbée par le squash)"
+git -C "$REPO8" show-ref --verify -q refs/heads/old-absorbed && fail "old-absorbed pas prunée" || ok "old-absorbed prunée (déjà absorbée)"
+grep -qxF "pruned: feat/y ($SHA_Y) — git branch feat/y $SHA_Y" <<<"$OUT8" && ok "la suppression de feat/y se dit, avec la commande qui la recrée" || fail "suppression de feat/y muette : $OUT8"
+grep -qxF "pruned: old-absorbed ($SHA_OLD) — git branch old-absorbed $SHA_OLD" <<<"$OUT8" && ok "la suppression de old-absorbed se dit aussi" || fail "suppression de old-absorbed muette : $OUT8"
+grep -qE "pruned: (main|master|trunk) " <<<"$OUT8" && fail "une branche principale annoncée supprimée : $OUT8" || ok "aucune branche principale dans les suppressions"
+
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
   exit 1

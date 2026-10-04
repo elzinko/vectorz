@@ -55,6 +55,9 @@ export interface RenderPrBodyInput {
   /** Chemin CONCRET de la fiche, relatif à la racine du projet (ex. `features/0191-slug.md`).
    *  Sert de ligne de provenance — `check-pr-body.sh` rejette le placeholder `<id>_<slug>`. */
   readonly fichePath: string;
+  /** Lien vers la fiche, relatif au fichier rendu. Présent : la provenance devient un lien, que `ship`
+   *  recale quand il range la fiche dans `done/` (document de PR local, fiche 20261003200945204). */
+  readonly ficheHref?: string;
   /** Matrice de validation ; par défaut les gates locales (`DEFAULT_LOCAL_VALIDATION`). */
   readonly validation?: readonly ValidationRow[];
 }
@@ -67,5 +70,6 @@ export interface RenderPrBodyInput {
 export function renderPrBody(input: RenderPrBodyInput): string {
   const body = ficheBody(input.ficheText);
   const validation = renderValidation(input.validation ?? DEFAULT_LOCAL_VALIDATION);
-  return `> 🗎 Rendu de la fiche ${input.fichePath}\n\n${body}\n\n${validation}\n`;
+  const provenance = input.ficheHref ? `[${input.fichePath}](${input.ficheHref})` : input.fichePath;
+  return `> 🗎 Rendu de la fiche ${provenance}\n\n${body}\n\n${validation}\n`;
 }

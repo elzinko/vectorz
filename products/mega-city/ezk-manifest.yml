@@ -189,11 +189,17 @@ commands:
   - domain: pr
     verb: emit-local
     run: bin/pr-emit-local.ts
-    summary: Écrit le corps d'une PR dans un fichier local, sans GitHub.
+    summary: Écrit le corps d'une PR dans un fichier local, sans GitHub (dépôt où tu es, ou --root).
+    root: cwd
+    project: true
+    writes: true
   - domain: review
     verb: emit
     run: bin/review-emit.ts
-    summary: Écrit une revue de PR au format markdown.
+    summary: Écrit une revue de PR au format markdown (dépôt où tu es, ou --root <projet>).
+    root: cwd
+    project: true
+    writes: true
   - domain: ci
     verb: conso
     run: bin/ci-conso.ts
@@ -248,7 +254,8 @@ commands:
     summary: Cockpit des sessions Claude Code (qui travaille sur quoi).
   - domain: config
     run: bin/ezk-config.ts
-    summary: Lit (show) et pilote (github) les capacités GitHub du projet (--root <projet>).
+    summary: Lit (show) et pilote (github) les capacités GitHub (dépôt où tu es, ou --root).
+    root: cwd
     project: true
     writes: true
   - domain: views

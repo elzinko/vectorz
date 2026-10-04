@@ -88,6 +88,18 @@ describe('renderPrBody — corps de PR = rendu de la fiche (ADR-0029)', () => {
     expect(body).not.toContain('⏳');
   });
 
+  it('avec ficheHref, la provenance devient un lien vers la fiche, et le contrôle passe toujours', () => {
+    // fiche 20261003200945204 : le document de PR local suit la fiche quand `ship` la range dans done/
+    const body = renderPrBody({ ficheText: FICHE, fichePath: 'features/0191-slug.md', ficheHref: '../0191-slug.md' });
+    expect(body.split('\n')[0]).toBe('> 🗎 Rendu de la fiche [features/0191-slug.md](../0191-slug.md)');
+    expect(checkPrBody(body).code).toBe(0);
+  });
+
+  it('sans ficheHref, la provenance reste du texte (corps de PR GitHub inchangé)', () => {
+    const body = renderPrBody({ ficheText: FICHE, fichePath: 'features/0191-slug.md' });
+    expect(body.split('\n')[0]).toBe('> 🗎 Rendu de la fiche features/0191-slug.md');
+  });
+
   it('la matrice locale par défaut nomme les gates locales, pas la CI cloud', () => {
     expect(DEFAULT_LOCAL_VALIDATION.map((r) => r.modalite).join(' ')).toMatch(/locale/i);
     expect(DEFAULT_LOCAL_VALIDATION.map((r) => r.modalite).join(' ')).not.toMatch(/\bCI\b/);

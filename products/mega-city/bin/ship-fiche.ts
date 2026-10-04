@@ -27,7 +27,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ShipFailure, ShipRefusal, applyShip, planShip } from '../src/backlog/ship-fiche.js';
-import { extractRootFlag, resolveProjectRoot, rootBanner } from '../src/core/project-root.js';
+import { ANNOUNCED_ENV, extractRootFlag, resolveProjectRoot, rootBanner } from '../src/core/project-root.js';
 import { ProjectRootError, checkProjectRoot } from '../src/io/project-root.js';
 import { nodeRepoFs, nodeShipIo } from '../src/io/ship-fiche-io.js';
 
@@ -79,7 +79,7 @@ try {
   const plan = planShip(fs, { files, status, pr, barPlan });
   const banner = rootBanner(target);
   // Lancé par `ezk`, le routeur a déjà dit « dépôt visé » : pas de second bandeau.
-  if (banner && process.env.EZK_ROOT_ANNOUNCED !== repoRoot) console.log(banner);
+  if (banner && process.env[ANNOUNCED_ENV] !== repoRoot) console.log(banner);
   console.log(
     `ship:fiche — ${plan.moves.length} fiche(s) → features/done/ (${status} ${pr}${dryRun ? ', à blanc : rien écrit' : ''})`,
   );
