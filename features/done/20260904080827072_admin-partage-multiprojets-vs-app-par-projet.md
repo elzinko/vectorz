@@ -7,10 +7,11 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [ezk-map, supervision]
-status: ready
-pr:
+status: split
+pr: "split — scindée en 20261004192802828, 20261004192802897, 20261004192802964"
 evidence: before-after
 created: 2026-09-04
+split_into: ["20261004192802828", "20261004192802897", "20261004192802964"]
 ---
 
 # 20260904080827072 — Un seul tableau de bord pour tous tes projets
@@ -34,12 +35,12 @@ Les morceaux existent, mais en deux moitiés qui ne se parlent pas.
 
 - **Le tableau de bord sait lire un autre projet, mais un seul par lancement.**
   `ezk --root <projet> dashboard` fixe le projet au démarrage
-  ([pouvoir pointer les vues sur un autre projet](done/20260826173221323_racine-parametrable-des-vues.md)).
+  ([pouvoir pointer les vues sur un autre projet](20260826173221323_racine-parametrable-des-vues.md)).
   Il n'a pas de menu de projets.
 - **Le Moniteur liste déjà les projets**, une ligne chacun. Il lit le registre
   `supervision.registry.yaml`
-  ([onglet « Projets » dans le Moniteur](done/0062-onglet-projets-moniteur.md),
-  [registre de supervision](done/0082-registre-supervision-cote-vectorz.md)).
+  ([onglet « Projets » dans le Moniteur](0062-onglet-projets-moniteur.md),
+  [registre de supervision](0082-registre-supervision-cote-vectorz.md)).
   Mais il ne montre ni les fiches ni la config. Seul vectorz y est inscrit.
 - **La config d'un projet ne se lit que dans le terminal** : `ezk config` (PR, CI, revue Codex),
   `ezk rules show`, `ezk dor show`. Et `ezk config` ne sait pas viser un autre projet. Elle n'est
@@ -211,7 +212,7 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
     racine est fixée au lancement (`projectRootOrExit`).
   - Le Moniteur vit dans `products/cop1/packages/web` (React) et lit le registre par son service
     (`/api/supervision/projects`). L'ADR-0039 range la supervision dans les branchements.
-  - L'[ADR-0057](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md)
+  - L'[ADR-0057](../../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md)
     limite le tableau de bord à une seule écriture, les pouces, et désigne tout fichier par un
     identifiant validé. Cette fiche en garde les deux règles.
 - **Dépendances.**
@@ -241,19 +242,19 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
   Point dur pour la migration : chez samplerz, un `.feature` est à la fois la fiche et, parfois, un
   test qui tourne (6 fichiers de tests l'exécutent avec pytest-bdd).
 - **Fiche sœur qui écrit dans la page « config ».**
-  [Régler le modèle et l'effort de chaque agent, projet par projet](20261002205205417_modele-effort-agents-par-projet.md)
+  [Régler le modèle et l'effort de chaque agent, projet par projet](../20261002205205417_modele-effort-agents-par-projet.md)
   y ajoute une section « Agents » modifiable. Ici, la page reste en lecture seule. L'écriture de la
   config demandera d'amender l'ADR-0057, qui n'autorise qu'une écriture : c'est à la fiche sœur de
   le faire.
 - **Jalon `cockpit`, version V0.6** (décision PO du 2026-10-02 ; la V0.5 est « le sprint au lot »). Les fiches du cockpit se lient par
   ce jalon, pas par une fiche chapeau. Fiche sœur :
-  [voir les fiches posées sur le schéma du process, avec leur session](20261002115451315_fiches-sur-le-process-avec-session.md).
+  [voir les fiches posées sur le schéma du process, avec leur session](../20261002115451315_fiches-sur-le-process-avec-session.md).
   Idée liée, sans version :
-  [une page d'accueil, une ligne par projet](20261002115451451_page-une-ligne-par-projet.md).
+  [une page d'accueil, une ligne par projet](../20261002115451451_page-une-ligne-par-projet.md).
 - **Historique.** Créée le 2026-09-04 comme question d'archi ouverte, « admin ezk : partagé
   multi-projets vs une app par projet — ports, isolation » (type chore, P3). Née du chantier
-  [ezk multi-client](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md). Parkée par le
+  [ezk multi-client](../20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md). Parkée par le
   PO le 2026-09-04. Réveillée le 2026-10-02 : la question est tranchée (global), la fiche devient
   une feature en P1.
 - **Prior art** : la chaîne de supervision (daemon + web + registre) gère déjà du multi-projet.
-  Voir le [contrat de supervisabilité](0029-contrat-supervisabilite-v02-differes.md).
+  Voir le [contrat de supervisabilité](../0029-contrat-supervisabilite-v02-differes.md).

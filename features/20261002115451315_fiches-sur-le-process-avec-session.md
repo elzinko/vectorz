@@ -102,7 +102,7 @@ ezk sessions state             # chaque session affichée correspond à une sess
 
 - **Jalon `cockpit`, version V0.6** (décision PO du 2026-10-02 ; la V0.5 est « le sprint au lot »). Liaison par jalon, pas de fiche
   chapeau. Fiche sœur :
-  [un seul tableau de bord pour tous tes projets](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md).
+  [un seul tableau de bord pour tous tes projets](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md).
   Son ADR dira dans quelle page vit cette vue : à faire d'abord.
 - **Suite de** [Vue d'avancement](done/20260823124042842_vue-avancement-sprints-fiches.md), sa
   partie « schéma du process avec les fiches posées ». La frise des sprints reste hors périmètre.

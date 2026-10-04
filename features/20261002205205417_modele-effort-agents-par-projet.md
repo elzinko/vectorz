@@ -259,7 +259,7 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
 - **Fiches liées.**
   - [ezk multi-client : cap Cursor + modèle & effort configurables par hôte](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md) :
     même calcul, axe « hôte ». Avec les niveaux, elle n'aura que trois lignes à traduire. Parkée.
-  - [Un seul tableau de bord pour tous tes projets](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) :
+  - [Un seul tableau de bord pour tous tes projets](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) :
     la page « config » où s'ajoute la section « Agents ». Même version V0.6.
   - [Frontmatter des agents : model, effort, isolation](done/0144-frontmatter-tuning-agents-model-effort-isolation.md)
     et [sérialiser model/effort dans les caps](done/0148-serialiser-model-effort-isolation-dans-les-caps.md) :

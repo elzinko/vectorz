@@ -27,7 +27,7 @@ si c'est son usage : on la garde pour ne pas la perdre.
   ([onglet « Projets » dans le Moniteur](done/0062-onglet-projets-moniteur.md)) : méthode et
   version, chemin, activité. Elle ne montre ni la config ni le backlog.
 - Le menu de projets du cockpit
-  ([un seul tableau de bord pour tous tes projets](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md))
+  ([un seul tableau de bord pour tous tes projets](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md))
   pose la liste. Cette idée l'enrichit d'un résumé par projet.
 
 ## Proposition

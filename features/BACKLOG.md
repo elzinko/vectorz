@@ -122,7 +122,7 @@
 | [20260902224608715](done/20260902224608715_pr-preuve-avant-apres-outiller-la-regle.md) | Preuve avant/après dans les PR — outiller la règle existante (capture, dépôt, lien, contrôle), sur demande ou en auto | feature | P1 |  | mega-city | ✅ shipped | #207 |
 | [20260903134906920](done/20260903134906920_cli-ezk-point-d-entree-unique.md) | Une seule commande `ezk` pour tout lancer | feature | P1 | V0.3 | mega-city | ✅ shipped | #281 |
 | [20260903134909124](done/20260903134909124_loi-non-compilee-chez-l-agent.md) | Déployer vraiment les règles chez les agents (aujourd'hui : zéro) | bug | P1 | V0.3 | mega-city | ✅ shipped | #284 |
-| [20260904080827072](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) | Un seul tableau de bord pour tous tes projets — choisir le projet, voir sa config | feature | P1 | V0.6 | mega-city | 🔵 ready |  |
+| [20260904080827072](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) | Un seul tableau de bord pour tous tes projets — choisir le projet, voir sa config | feature | P1 | V0.6 | mega-city | 🧩 split | split — scindée en 20261004192802828, 20261004192802897, 20261004192802964 |
 | [20260904091853948](done/20260904091853948_ezk-archive-capacite-allegement.md) | ezk-archive plus léger et plus juste (voie rapide, bon compte, survit au cloud) | refactor | P1 | V0.4 | mega-city | ✅ shipped | #311 |
 | [20260906121839943](done/20260906121839943_unifier-ezk-secret-cli.md) | Unifier les scripts ezk-secret-* en une commande unique `ezk-secret <verbe>` (CLI POSIX) | feature | P1 |  | vectorz | ✅ shipped | #216 |
 | [20260906122942607](done/20260906122942607_run-report-synthese-fin-de-run.md) | Run autonome transparent : ce qu'il va faire, puis ce qu'il a fait | chore | P1 | V0.4 | mega-city | ✅ shipped | #312 |
@@ -140,6 +140,9 @@
 | [20261002231845120](20261002231845120_backlog-md-sans-conflit-entre-pr.md) | BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps | feature | P1 |  | mega-city | 🔵 ready |  |
 | [20261003075821760](20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 |  | mega-city | 🔵 ready |  |
 | [20261003105820077](done/20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | V0.5 | mega-city | ✅ shipped | local (527868b7) |
+| [20261004192802828](20261004192802828_cockpit-adr-config-lisible-registre-unique.md) | Cockpit, socle : l'ADR, « ezk config show » lisible depuis un autre projet, un seul registre de projets | feature | P1 | V0.6 | mega-city | 🔵 ready |  |
+| [20261004192802897](20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) | Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi | feature | P1 | V0.6 | mega-city | 🔵 ready |  |
+| [20261004192802964](20261004192802964_cockpit-page-config-en-sections.md) | Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule | feature | P1 | V0.6 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
