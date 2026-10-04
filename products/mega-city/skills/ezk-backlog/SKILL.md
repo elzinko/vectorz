@@ -455,8 +455,9 @@ d'ezk-product-build : il tire un lot de `--lot N` fiches par sprint, avec `next 
   d'abord, ou tranche par la soupape PO journalisée (même règle que `next --ready-only`) ;
 - **les écartées** : une fiche prête passée parce qu'elle porte un drapeau `blocked:` ou est un épic.
   Un geste attendu du PO (une vidéo à tourner, un test sur une autre machine) se pose aussi en
-  `blocked:`, qui nomme ce geste : la fiche reste prête, et les écartées forment la file du PO.
-  Montre-la-lui à l'ouverture du sprint (rétro samplerz du 2026-10-03) ;
+  `blocked:`, qui nomme ce geste : la fiche reste prête. Les écartées bloquées par un geste
+  humain forment la file du PO ; les épics écartés n'en font pas partie. Montre-la-lui à
+  l'ouverture du sprint (rétro samplerz du 2026-10-03) ;
 - **les prêtes hors plan** : avec un `PLAN.md`, une fiche prête absente du plan n'entre pas dans le
   lot, car la séquence, c'est le plan. Elle est listée : le PO l'y ajoute (`plan set`) s'il la veut ;
 - **les introuvables** : ids du plan absents de `features/` ;

@@ -29,9 +29,10 @@ enforcements:
   verdict GO cite le commit revu. Après ce GO, tout changement de logique, de condition ou de test
   repasse en revue, sur le seul delta, et la trace dit « delta re-vérifié ». Deux exceptions, à
   déclarer dans la PR : un changement de texte ou de style pur ; un changement qui applique une
-  décision explicite du PO prise au checkpoint, et qui cite cette décision (décision PO du
-  2026-10-04). Mesure : sur les 5 prochaines PR, 0 PR fusionnée dont le code diffère du code revu
-  sans ligne « delta re-vérifié » ni décision du PO citée. Symptôme : samplerz #442, une
+  décision explicite du PO prise au checkpoint, et qui cite cette décision, datée et consignée
+  dans la fiche (décision PO du 2026-10-04). Mesure : sur les 5 prochaines PR, hors changement de
+  texte ou de style pur, 0 PR fusionnée dont le code diffère du code revu sans ligne « delta
+  re-vérifié » ni décision du PO citée. Symptôme : samplerz #442, une
   condition d'affichage changée après le GO, fusionnée avec une simple déclaration.
 - Origine : décision PO du 2026-08-24 — « la revue est une règle de développement
   (DoD), pas une habitude » ; l'exécutant de l'enforcement est l'agent `ezk-reviewer`.
