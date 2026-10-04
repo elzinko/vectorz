@@ -20,6 +20,8 @@ competences:
   - ezk-ci
 interactions:
   - clean-code/no-dead-code
+  - development/adversarial-review-before-merge
+  - development/test-philosophy
 ---
 
 # ezk-reviewer — revue adverse

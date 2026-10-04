@@ -25,6 +25,14 @@ enforcements:
   *vérifiable* : sans elle, « toute livraison passe une revue » n'est pas mesurable. Symptôme :
   session du 2026-08-30, Codex non configuré → `ezk-reviewer` a porté 6 revues et trouvé de
   vrais findings à chaque PR, mais rien n'obligeait à en garder une trace.
+- **Le GO couvre le code revu, pas celui d'après** (ajout rétro samplerz du 2026-10-03). Le
+  verdict GO cite le commit revu. Après ce GO, tout changement de logique, de condition ou de test
+  repasse en revue, sur le seul delta, et la trace dit « delta re-vérifié ». Deux exceptions, à
+  déclarer dans la PR : un changement de texte ou de style pur ; un changement qui applique une
+  décision explicite du PO prise au checkpoint, et qui cite cette décision (décision PO du
+  2026-10-04). Mesure : sur les 5 prochaines PR, 0 PR fusionnée dont le code diffère du code revu
+  sans ligne « delta re-vérifié » ni décision du PO citée. Symptôme : samplerz #442, une
+  condition d'affichage changée après le GO, fusionnée avec une simple déclaration.
 - Origine : décision PO du 2026-08-24 — « la revue est une règle de développement
   (DoD), pas une habitude » ; l'exécutant de l'enforcement est l'agent `ezk-reviewer`.
 - **Portée honnête de l'enforcement** (revue adverse 2026-08-24) : `agent-check` est un

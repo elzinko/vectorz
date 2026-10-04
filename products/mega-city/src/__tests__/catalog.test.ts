@@ -63,7 +63,11 @@ describe('loadCatalog (données réelles du repo)', () => {
     const agent = catalog.agents.get('ezk-reviewer');
     expect(agent?.id).toBe('ezk-reviewer');
     expect(agent?.competences).toEqual(['ezk-ci']);
-    expect(agent?.interactions).toEqual(['clean-code/no-dead-code']);
+    expect(agent?.interactions).toEqual([
+      'clean-code/no-dead-code',
+      'development/adversarial-review-before-merge',
+      'development/test-philosophy',
+    ]);
     expect(agent?.role).toMatch(/reviewer senior/i); // insensible à la casse : l'agent réécrit dit « reviewer senior en posture adverse »
   });
 
