@@ -1,17 +1,4 @@
----
-id: "20261004074008211"
-title: Le merge local ne supprime jamais main, et dit chaque branche qu'il supprime
-type: bug
-priority: P0
-product: mega-city
-milestone:
-version: V0.5
-labels: [github-optionnel, worktree]
-status: ready
-pr:
-evidence: none # script de merge en ligne de commande, pas d'écran
-created: 2026-10-04
----
+> 🗎 Rendu de la fiche [features/20261004074008211_merge-local-ne-supprime-jamais-main.md](../20261004074008211_merge-local-ne-supprime-jamais-main.md)
 
 # 20261004074008211 — Le merge local ne supprime jamais main
 
@@ -27,7 +14,7 @@ locales devenues inutiles. La *base* est la branche qui reçoit le squash, en g�
 ## Contexte / Problème
 
 Constat du 2026-10-03, pendant le run `ezk-product-build` de la fiche
-[Le mode local de la méthode marche depuis un projet hôte](done/20261003200945204_mode-local-depuis-projet-hote.md).
+[Le mode local de la méthode marche depuis un projet hôte](../done/20261003200945204_mode-local-depuis-projet-hote.md).
 
 - La session travaillait dans un worktree. `main` était extrait dans le dossier principal, donc le
   squash a visé une branche d'intégration : `--base squash/github-local`.
@@ -82,3 +69,16 @@ pnpm --dir products/mega-city test:scripts
   elle s'appelle `main` ou `master`.
 - Priorité P0 fixée par le PO le 2026-10-04 (« corriger d'abord le merge »). Version V0.5 : même lot
   que le correctif du mode local, qu'elle complète.
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| test-ship-merge (cas 1 à 8) | ✅ |
+| test:scripts (34 suites) | ✅ |
+| vitest (1787) | ✅ |
+| Revue ezk-reviewer | ✅ GO |
+| Before / after (UI) | N.A. — script en ligne de commande |
+| CI cloud | N.A. — github off |
+| Codex | N.A. — github off |

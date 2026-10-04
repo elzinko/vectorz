@@ -309,7 +309,10 @@ comme *mergée*, et la fermer à la main la marque « closed unmerged ». Donc :
   existe, cf. § Capacités GitHub) — squash **local** sur `<base>` :
   `git merge --squash <branche>` + commit conventional, puis purge des
   branches déjà **absorbées** (même classification que la fiche 0076 —
-  `skills/ezk-archive/scripts/check.sh:classify_ref`).
+  `skills/ezk-archive/scripts/check.sh:classify_ref`). La purge ne touche **jamais**
+  `main`, `master` ni la branche que vise `origin/HEAD`, même quand `<base>` est une
+  branche d'intégration. Chaque suppression s'imprime avec la commande qui recrée la
+  branche : `pruned: <branche> (<sha>) — git branch <branche> <sha>`.
 - **Chemin fantôme interdit** — ce script n'a AUCUNE combinaison qui pousse un
   squash local puis referme la PR à la main : ça fabrique une PR
   « closed unmerged », jamais « Merged ».

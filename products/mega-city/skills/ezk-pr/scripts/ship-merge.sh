@@ -89,16 +89,31 @@ is_absorbed() {
   [[ -n "$merged_tree" && "$merged_tree" == "$base_tree" ]]
 }
 
+# Les branches principales ne se suppriment jamais, même « absorbées ». Quand la base n'est pas
+# `main` (squash vers une branche d'intégration depuis un worktree), `main` est une ancêtre de la
+# base, donc absorbée : sans cette garde, le prune l'effaçait (fiche 20261004074008211).
+protected_branch() {
+  local b="$1" remote_head
+  [[ "$b" == "$base" || "$b" == main || "$b" == master ]] && return 0
+  remote_head="$(git_c symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)" || return 1
+  [[ "$b" == "${remote_head#origin/}" ]]
+}
+
 prune_absorbed_branches() {
-  local b
+  local b sha
   while IFS= read -r b; do
-    [[ -z "$b" || "$b" == "$base" ]] && continue
+    [[ -z "$b" ]] && continue
+    protected_branch "$b" && continue
     if is_absorbed "$b"; then
+      sha="$(git_c rev-parse "$b")"
       # La branche peut être tenue par un AUTRE worktree (scénario multi-worktree normal
       # ici) : `git branch -D` échoue alors avec "used by worktree". On signale et on
       # continue — jamais d'abandon en plein ship (sinon <base> a avancé mais le refresh
-      # ne tourne pas, et le reste du ship non plus).
-      if ! git_c branch -D "$b" >/dev/null 2>&1; then
+      # ne tourne pas, et le reste du ship non plus). Une suppression réussie se dit, avec
+      # la commande qui recrée la branche.
+      if git_c branch -D "$b" >/dev/null 2>&1; then
+        echo "pruned: $b ($sha) — git branch $b $sha"
+      else
         echo "ship-merge.sh: branche absorbée '$b' non supprimée (tenue par un worktree ?) — ignorée" >&2
       fi
     fi
