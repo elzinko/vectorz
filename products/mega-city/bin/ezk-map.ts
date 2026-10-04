@@ -7,6 +7,14 @@
  *   pnpm ezk dashboard --list         # ce qui est disponible
  *   pnpm ezk --root <projet> dashboard   # les fiches d'un AUTRE projet (ou EZK_ROOT=<projet>)
  *
+ * LE COCKPIT (ADR-0062, fiche 20261004192802897) : une barre « Projet » liste les projets du registre
+ * de la supervision (`supervision.registry.yaml`, relu à chaque requête, jamais écrit ici). Choisir
+ * un projet pose un cookie ; chaque requête le porte, et les données comme le pouce viennent alors de
+ * ce projet, sans relancer le serveur. Sans choix, rien ne change. Un identifiant inconnu est refusé
+ * sans rien lire ; un projet qu'on ne sait pas lire (introuvable, autre méthode, format absent ou
+ * ancien) le dit au lieu d'afficher des fiches fausses. `EZK_COCKPIT_REGISTRY=<dossier>` fait lire un
+ * autre registre que celui de la méthode : pour un essai.
+ *
  * DEUX racines (fiche 20260826173221323) : les PAGES viennent toujours de la méthode (`diagrams/`) ;
  * les DONNÉES (fiches, PLAN.md, récits, pouces) viennent du projet désigné, par défaut la méthode.
  * Sans `--root` ni `EZK_ROOT`, rien ne change.
@@ -26,9 +34,9 @@
  * 👍/👎 d'une fiche, dans `features/reviews/verdicts/<id>.json` et nulle part ailleurs. Route
  * gardée (Host, Origin, type, taille, id), jamais de commit. Tout le reste du serveur lit.
  */
-import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, resolve, sep } from 'node:path';
+import { basename, extname, join, normalize, resolve, sep } from 'node:path';
 import { spawn } from 'node:child_process';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,9 +49,24 @@ import {
   renderNavBar,
   renderSvgWrapper,
 } from '../src/core/ezk-map-menu.js';
+import {
+  PROJECT_ROUTE,
+  type ProjectChoice,
+  dataTarget,
+  nameProjectInPage,
+  projectCookieHeader,
+  projectCookieName,
+  safeReturnPath,
+  shownProjectName,
+  readCookie,
+  renderProjectBar,
+  resolveChoice,
+} from '../src/core/cockpit.js';
+import { cockpitRegistryDir, currentLayoutVersion, loadCockpitProjects } from '../src/io/cockpit.js';
 import { dataViewForPath } from '../src/io/derived-views.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { VERDICT_ROUTE, serveVerdict } from '../src/io/verdict-endpoint.js';
+import { findRegistryDir } from '../src/supervision/registry.js';
 
 const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO_ROOT = resolve(MEGA_CITY, '..', '..'); // racine vectorz = la MÉTHODE : ses pages
@@ -56,6 +79,38 @@ const {
   rest: cliArgs,
 } = projectRootOrExit(REPO_ROOT, undefined, { announce: false });
 const DEFAULT_SLUG = 'methode-mega-city';
+
+// Le cockpit : le registre de la méthode (ou celui d'un essai), la version de format attendue, et
+// le libellé du choix par défaut (le projet du lancement).
+const REGISTRY_DIR = cockpitRegistryDir(findRegistryDir([REPO_ROOT]));
+const CURRENT_LAYOUT = currentLayoutVersion(MEGA_CITY);
+// La racine du lancement telle que le registre la résout (macOS : /tmp → /private/tmp).
+const LAUNCH_ROOT = (() => {
+  try {
+    return realpathSync(PROJECT_ROOT);
+  } catch {
+    return PROJECT_ROOT;
+  }
+})();
+// Sans projet désigné, c'est la méthode elle-même : les coques gardent leur nom, comme avant.
+const LAUNCH_FALLBACK = ROOT_SOURCE === 'default' ? 'la méthode' : basename(PROJECT_ROOT);
+
+/**
+ * Le choix porté par la requête, la barre qui le montre, et le nom à écrire dans les coques de page
+ * (null : on les laisse telles quelles). Relu à chaque appel. Le cookie est propre au port du serveur.
+ */
+function cockpitFor(
+  cookieHeader: string | undefined,
+  cookieName: string,
+  currentPath = '/',
+): { choice: ProjectChoice; bar: string; shownName: string | null } {
+  const { projects, problem } = loadCockpitProjects(REGISTRY_DIR, CURRENT_LAYOUT);
+  const choice = resolveChoice(projects, readCookie(cookieHeader, cookieName));
+  const launchName = shownProjectName({ kind: 'defaut' }, projects, LAUNCH_ROOT, LAUNCH_FALLBACK);
+  const bar = renderProjectBar(projects, choice, `projet de lancement (${launchName})`, problem, currentPath);
+  const rename = choice.kind === 'projet' || ROOT_SOURCE !== 'default';
+  return { choice, bar, shownName: rename ? shownProjectName(choice, projects, LAUNCH_ROOT, LAUNCH_FALLBACK) : null };
+}
 
 const MIME: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -142,6 +197,7 @@ const server = createServer((req, res) => {
   // le serveur » : il ne doit mourir sur AUCUNE requête (revue adverse, P1).
   try {
     const url = new URL(req.url ?? '/', 'http://127.0.0.1');
+    const cookieName = projectCookieName(req.socket.localPort ?? 0);
 
     // Page d'accueil : le menu des cartes (fiche 20260825152954193). Rendu à la volée depuis
     // `diagrams/` — un lien par carte, méthode en tête, sans relancer le serveur.
@@ -150,15 +206,46 @@ const server = createServer((req, res) => {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'no-store',
       });
-      res.end(renderMenuHtml(diagrams));
+      res.end(injectNavIntoHtml(renderMenuHtml(diagrams), cockpitFor(req.headers.cookie, cookieName).bar));
+      return;
+    }
+
+    // Le choix du projet (ADR-0062) : un identifiant du registre, jamais un chemin. Vide = retour au
+    // projet du lancement. Inconnu = refus, sans cookie et sans rien lire.
+    if (url.pathname === PROJECT_ROUTE) {
+      if (req.method !== 'GET') {
+        res.writeHead(405, { Allow: 'GET' }).end('405');
+        return;
+      }
+      const id = url.searchParams.get('id') ?? '';
+      if (id !== '') {
+        const { choice } = cockpitFor(`${cookieName}=${encodeURIComponent(id)}`, cookieName);
+        if (choice.kind !== 'projet') {
+          res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' }).end('projet inconnu du registre\n');
+          return;
+        }
+      }
+      res
+        .writeHead(303, {
+          Location: safeReturnPath(url.searchParams.get('retour')),
+          'Set-Cookie': projectCookieHeader(cookieName, id === '' ? null : id),
+        })
+        .end();
       return;
     }
 
     // La seule route qui ÉCRIT (ADR-0057) : le pouce 👍/👎 d'une fiche, dans le dossier du PROJET
-    // désigné (ses fiches sont là). Elle se garde elle-même (méthode, Host, Origin, type, taille, id)
-    // et ne jette jamais.
+    // choisi (ses fiches sont là), sinon du projet du lancement. Elle se garde elle-même (méthode,
+    // Host, Origin, type, taille, id) et ne jette jamais. Un projet inconnu ou illisible : refus.
     if (url.pathname === VERDICT_ROUTE) {
-      void serveVerdict(req, res, { repoRoot: PROJECT_ROOT });
+      const verdictTarget = dataTarget(cockpitFor(req.headers.cookie, cookieName).choice, PROJECT_ROOT);
+      if (verdictTarget.kind === 'refus') {
+        res
+          .writeHead(verdictTarget.status, { 'Content-Type': 'application/json; charset=utf-8' })
+          .end(JSON.stringify({ error: verdictTarget.reason }));
+        return;
+      }
+      void serveVerdict(req, res, { repoRoot: verdictTarget.root });
       return;
     }
 
@@ -179,8 +266,15 @@ const server = createServer((req, res) => {
     // qu'un 400 trompeur.
     const dataView = dataViewForPath(rel);
     if (dataView) {
+      const viewTarget = dataTarget(cockpitFor(req.headers.cookie, cookieName).choice, PROJECT_ROOT);
+      if (viewTarget.kind === 'refus') {
+        // Aucune donnée inventée : la page reste vide, la barre du cockpit dit pourquoi.
+        res.writeHead(viewTarget.status, { 'Content-Type': MIME['.js'], 'Cache-Control': 'no-store' });
+        res.end(`// cockpit : ${viewTarget.reason.replaceAll('\n', ' ')} — aucune donnée.\n`);
+        return;
+      }
       try {
-        const body = dataView.build(PROJECT_ROOT);
+        const body = dataView.build(viewTarget.root);
         res.writeHead(200, { 'Content-Type': MIME['.js'], 'Cache-Control': 'no-store' });
         res.end(body);
       } catch (err) {
@@ -207,10 +301,12 @@ const server = createServer((req, res) => {
       (ext === '.html' || ext === '.svg')
     ) {
       const slug = relParts[1] ?? '';
-      const nav = renderNavBar(diagrams, slug);
+      const cockpit = cockpitFor(req.headers.cookie, cookieName, url.pathname);
+      const nav = renderNavBar(diagrams, slug) + cockpit.bar;
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
       if (ext === '.html') {
-        res.end(injectNavIntoHtml(readFileSync(target, 'utf8'), nav));
+        const html = readFileSync(target, 'utf8');
+        res.end(injectNavIntoHtml(cockpit.shownName === null ? html : nameProjectInPage(html, cockpit.shownName), nav));
       } else {
         const title = diagrams.find((d) => d.slug === slug)?.title ?? slug;
         res.end(renderSvgWrapper(`${url.pathname}?raw`, nav, title));
@@ -248,6 +344,12 @@ function listen(port: number, attemptsLeft: number): void {
     console.log(`\n  📍 ${label}\n     ${target}\n`);
     // Un projet désigné se voit : on ne doit jamais prendre ses fiches pour celles de vectorz.
     if (ROOT_SOURCE !== 'default') console.log(`     Fiches lues dans : ${PROJECT_ROOT}\n`);
+    const { projects } = loadCockpitProjects(REGISTRY_DIR, CURRENT_LAYOUT);
+    console.log(
+      REGISTRY_DIR
+        ? `     Cockpit : ${projects.length} projet(s) au registre (${join(REGISTRY_DIR, 'supervision.registry.yaml')})\n`
+        : '     Cockpit : aucun registre trouvé, seul le projet du lancement est visible\n',
+    );
     console.log('     Ctrl-C pour arrêter.\n');
     // `EZK_MAP_NO_OPEN=1` : un lanceur (scripts/dev-branch.sh) gère lui-même l'ouverture du navigateur.
     if (process.env.EZK_MAP_NO_OPEN) return;

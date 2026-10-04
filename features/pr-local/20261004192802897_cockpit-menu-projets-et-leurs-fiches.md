@@ -1,18 +1,4 @@
----
-id: "20261004192802897"
-title: "Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi"
-type: feature
-priority: P1
-product: mega-city
-milestone: cockpit
-version: V0.6
-labels: [ezk-map, supervision]
-status: ready
-pr:
-evidence: before-after
-created: 2026-10-04
-split_from: "20260904080827072"
----
+> 🗎 Rendu de la fiche [features/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md](../20261004192802897_cockpit-menu-projets-et-leurs-fiches.md)
 
 # 20261004192802897 — Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi
 
@@ -117,8 +103,8 @@ git status --porcelain features/reviews/verdicts/    # depuis vectorz → rien
 
 | Vue | Avant | Après |
 |---|---|---|
-| board | ![board avant](../docs/pr-evidence/20261004192802897/board-before.png) | ![board après, muti choisi](../docs/pr-evidence/20261004192802897/board-after.png) |
-| board, téléphone | (pas de barre de projet) | ![board sur téléphone, samplerz choisi](../docs/pr-evidence/20261004192802897/board-telephone-after.png) |
+| board | ![board avant](../../docs/pr-evidence/20261004192802897/board-before.png) | ![board après, muti choisi](../../docs/pr-evidence/20261004192802897/board-after.png) |
+| board, téléphone | (pas de barre de projet) | ![board sur téléphone, samplerz choisi](../../docs/pr-evidence/20261004192802897/board-telephone-after.png) |
 
 Demander un projet inconnu au serveur : il refuse, sans rien lire. Le choix voyage dans un cookie
 (`ezk-projet`), posé par `GET /projet?id=<id>` ; un id inconnu y rend 400, sans cookie, et une
@@ -162,3 +148,19 @@ donnée demandée avec un cookie inconnu rend 400.
   les coques gardent leur nom d'avant. Écartés, avec leur raison : passer `/projet` en POST (le
   choix ne fait qu'afficher ; le pouce garde sa garde d'origine) ; mettre le registre en cache (un
   registre local de quelques projets, relu en quelques millisecondes).
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| cockpit.test (unitaires) | ✅ |
+| project-root-bins.test (bout en bout sur un vrai serveur) | ✅ |
+| vitest 1824 | ✅ |
+| test:scripts 36 | ✅ |
+| typecheck | ✅ |
+| Revue ezk-reviewer | ✅ GO puis correctifs |
+| Preuve projets hôtes | ✅ muti et samplerz et cop1-cobaye |
+| Before / after (UI) | ✅ docs/pr-evidence/20261004192802897 |
+| CI cloud | N.A. github off |
+| Codex | N.A. github off |
