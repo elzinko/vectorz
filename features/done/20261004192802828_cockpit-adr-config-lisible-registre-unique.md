@@ -7,8 +7,8 @@ product: mega-city
 milestone: cockpit
 version: V0.6
 labels: [ezk-map, supervision, cli]
-status: ready
-pr:
+status: shipped
+pr: "local (43dcb587)"
 evidence: none # commandes de terminal et ADR, pas d'écran
 created: 2026-10-04
 split_from: "20260904080827072"
@@ -29,7 +29,7 @@ devient multi-projets. Le *registre* est `supervision.registry.yaml` : la liste 
 ## Contexte / Problème
 
 Première des trois fiches nées du découpage de
-[« Un seul tableau de bord pour tous tes projets »](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md)
+[« Un seul tableau de bord pour tous tes projets »](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md)
 (20260904080827072), décidé par le PO le 2026-10-04 pour tenir le coût d'un sprint. Les deux
 suivantes construisent l'écran ; celle-ci pose ce dont elles ont besoin.
 
@@ -107,8 +107,8 @@ ezk supervision registry-add essai /tmp/essai        # → imprime le registre �
 
 - 2026-10-04 : née du découpage de 20260904080827072 (décision PO, run `ezk-product-build`), avec
   ses critères 1, 12, 13 et 14. Les deux sœurs :
-  [la liste des projets et leurs fiches](20261004192802897_cockpit-menu-projets-et-leurs-fiches.md)
-  (20261004192802897), [la page « config »](20261004192802964_cockpit-page-config-en-sections.md)
+  [la liste des projets et leurs fiches](../20261004192802897_cockpit-menu-projets-et-leurs-fiches.md)
+  (20261004192802897), [la page « config »](../20261004192802964_cockpit-page-config-en-sections.md)
   (20261004192802964).
 - Critère ajouté au découpage : `config show` sans `--root` garde le comportement d'aujourd'hui (le
   passage à un verbe obligatoire ne doit rien casser pour le projet courant).
@@ -119,7 +119,7 @@ ezk supervision registry-add essai /tmp/essai        # → imprime le registre �
   du parent prêt, concurrence `ezk-pm` GO sur la porte « prête ».
 - **Arbitrages du PO du 2026-10-04, au build** (contradiction avec l'état livré, run auto) :
   - le refus de `ezk --root <autre projet> config github off` est retiré. La fiche
-    [« le mode local marche depuis un projet hôte »](done/20261003200945204_mode-local-depuis-projet-hote.md)
+    [« le mode local marche depuis un projet hôte »](20261003200945204_mode-local-depuis-projet-hote.md)
     (livrée le 2026-10-04) fait écrire `config` dans le projet que vise
     `--root`, comme `ship` et `regen` ; seule l'option explicite redirige une écriture. Le critère
     devient : `EZK_ROOT` seul ne redirige jamais une écriture ;

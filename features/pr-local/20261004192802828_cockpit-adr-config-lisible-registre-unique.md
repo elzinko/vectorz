@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004192802828_cockpit-adr-config-lisible-registre-unique.md](../20261004192802828_cockpit-adr-config-lisible-registre-unique.md)
+> 🗎 Rendu de la fiche [features/20261004192802828_cockpit-adr-config-lisible-registre-unique.md](../done/20261004192802828_cockpit-adr-config-lisible-registre-unique.md)
 
 # 20261004192802828 — Cockpit, socle : l'ADR, la config lisible depuis un autre projet, un seul registre
 
