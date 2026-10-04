@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version:
 labels: [retro, tests, cli]
-status: ready
-pr:
+status: shipped
+pr: "local (f62e0128)"
 evidence: none # script de test, pas d'écran
 created: 2026-10-04
 ---

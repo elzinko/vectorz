@@ -113,7 +113,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261003105820099` — le ménage d'ezk-archive se lance en mode auto · P3, issue de la rétro muti du 2026-10-03 (#340) · `groom` → `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
-- `20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)
+- ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
 - ~~`0117` — corriger les signatures de domain.ts qui ne collent plus au code · `build`~~ — shipped #295
 - ~~`0143` — unifier le nom des modes tokens (lean / cap / full) dans la doc · `build`~~ — shipped #295

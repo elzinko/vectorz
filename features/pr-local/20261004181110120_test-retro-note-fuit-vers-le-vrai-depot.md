@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md](../20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md)
+> 🗎 Rendu de la fiche [features/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md](../done/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md)
 
 # 20261004181110120 — ezk ne croit plus un INIT_CWD laissé par un pnpm parent
 
