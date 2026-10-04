@@ -35,6 +35,7 @@ import {
   renderHelp,
   route,
   splitRouterFlags,
+  userDirectory,
 } from '../src/core/ezk-cli.js';
 import { ANNOUNCED_ENV, PROJECT_ROOT_ENV } from '../src/core/project-root.js';
 import { listSkills, skillDetail } from './ezk-help.js';
@@ -132,8 +133,12 @@ async function main(argv: string[]): Promise<number> {
     return 2;
   }
   const manifest = parseManifest(readFileSync(join(MEGA_CITY, 'ezk-manifest.yml'), 'utf8'));
-  // pnpm change de dossier avant de lancer le script ; INIT_CWD garde celui de l'utilisateur.
-  const userCwd = process.env.INIT_CWD ?? process.cwd();
+  // pnpm change de dossier avant de lancer le script ; INIT_CWD garde celui de l'utilisateur. Une
+  // INIT_CWD laissée par un pnpm parent est périmée : on la remplace par le vrai dossier, que les
+  // scripts lancés relisent eux-mêmes (fiche 20261004181110120 : un test écrivait dans le vrai dépôt
+  // de vectorz).
+  const { dir: userCwd, staleInitCwd } = userDirectory(process.env, process.cwd(), real);
+  if (staleInitCwd) process.env.INIT_CWD = userCwd;
   const checkout = findCheckoutRoot(userCwd, existsSync);
   const other = delegationTarget({
     ownRoot: OWN_ROOT,

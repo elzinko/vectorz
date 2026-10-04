@@ -427,6 +427,27 @@ function nearestAncestorWith(marker: string, cwd: string, exists: (path: string)
   }
 }
 
+/**
+ * Le dossier de l'utilisateur (fiche 20261004181110120). `pnpm` se place dans le dossier du paquet avant
+ * de lancer un script, et note dans `INIT_CWD` le dossier où l'on avait tapé la commande. On ne croit
+ * `INIT_CWD` que si `pnpm` vient vraiment de nous lancer : le dossier courant est alors celui de
+ * `npm_package_json`. Sinon, la variable est un reste d'un `pnpm` parent (un test qui s'est placé
+ * ailleurs, un script qui a changé de dossier) : elle est périmée, et le dossier courant fait foi.
+ * `npm_package_json` est posé par pnpm et npm 7+ ; yarn 1 et npm 6 ne le posent pas : sous eux, la
+ * variable passe pour périmée et le dossier du paquet fait foi (même dépôt, chemins relatifs lus de là).
+ */
+export function userDirectory(
+  env: { INIT_CWD?: string; npm_package_json?: string },
+  cwd: string,
+  real: (path: string) => string,
+): { dir: string; staleInitCwd: boolean } {
+  const initCwd = env.INIT_CWD;
+  if (initCwd === undefined || initCwd === '') return { dir: cwd, staleInitCwd: false };
+  const pkg = env.npm_package_json;
+  if (pkg !== undefined && pkg !== '' && real(dirname(pkg)) === real(cwd)) return { dir: initCwd, staleInitCwd: false };
+  return { dir: cwd, staleInitCwd: true };
+}
+
 /** Le dépôt git qui contient `cwd` : le plus proche ancêtre qui porte `.git` (dossier, ou fichier d'un worktree). */
 export function findGitRoot(cwd: string, exists: (path: string) => boolean): string | undefined {
   return nearestAncestorWith('.git', cwd, exists);

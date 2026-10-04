@@ -1,17 +1,4 @@
----
-id: "20261004181110120"
-title: "ezk ne croit plus un INIT_CWD laissé par un pnpm parent : le test de « ezk retro note » n'écrit plus dans le vrai dépôt"
-type: bug
-priority: P1
-product: mega-city
-milestone:
-version:
-labels: [retro, tests, cli]
-status: ready
-pr:
-evidence: none # script de test, pas d'écran
-created: 2026-10-04
----
+> 🗎 Rendu de la fiche [features/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md](../20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md)
 
 # 20261004181110120 — ezk ne croit plus un INIT_CWD laissé par un pnpm parent
 
@@ -110,3 +97,20 @@ cd features && pnpm ezk config show                              # « dépôt vi
   un processus qui hérite d'un `pnpm` parent sans quitter le dossier du paquet est encore cru (un test
   qui lance `ezk` sans se placer dans son dépôt jetable) ; sous yarn 1 ou npm 6, qui ne posent pas
   `npm_package_json`, le dossier du paquet fait foi (même dépôt).
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| test-note N5-N6 (fuite rejouée) | ✅ |
+| ezk-cli.test userDirectory | ✅ |
+| vitest 1836 | ✅ |
+| test:scripts 36 | ✅ |
+| typecheck | ✅ |
+| carnet de vectorz inchangé après la gate | ✅ |
+| Revue ezk-reviewer | ✅ GO |
+| Preuve projet hôte | ✅ cop1-cobaye |
+| Before / after (UI) | N.A. — routeur de commande sans écran |
+| CI cloud | N.A. github off |
+| Codex | N.A. github off |

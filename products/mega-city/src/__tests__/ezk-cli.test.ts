@@ -14,6 +14,7 @@ import {
   renderHelp,
   route,
   splitRouterFlags,
+  userDirectory,
   uncoveredScripts,
 } from '../core/ezk-cli.js';
 
@@ -533,3 +534,32 @@ describe('findGitRoot — le dépôt git qui contient le dossier courant', () =>
     expect(findGitRoot('/x', exists)).toBeUndefined();
   });
 });
+
+describe('userDirectory — INIT_CWD ne se croit que si pnpm vient de lancer ezk (fiche 20261004181110120)', () => {
+  const same = (p: string) => p;
+
+  it('sans INIT_CWD : le dossier courant', () => {
+    expect(userDirectory({}, '/repo/sous', same)).toEqual({ dir: '/repo/sous', staleInitCwd: false });
+  });
+
+  it('lancé par pnpm (dossier courant = celui du package.json) : le dossier où l’on avait tapé', () => {
+    const env = { INIT_CWD: '/repo/features', npm_package_json: '/repo/products/mega-city/package.json' };
+    expect(userDirectory(env, '/repo/products/mega-city', same)).toEqual({ dir: '/repo/features', staleInitCwd: false });
+  });
+
+  it('INIT_CWD héritée d’un pnpm parent, dossier courant ailleurs : périmée, le dossier courant fait foi', () => {
+    const env = { INIT_CWD: '/vectorz', npm_package_json: '/vectorz/products/mega-city/package.json' };
+    expect(userDirectory(env, '/tmp/depot-du-test', same)).toEqual({ dir: '/tmp/depot-du-test', staleInitCwd: true });
+  });
+
+  it('INIT_CWD sans npm_package_json : rien ne prouve qu’un pnpm nous a lancé, elle est ignorée', () => {
+    expect(userDirectory({ INIT_CWD: '/ailleurs' }, '/ici', same)).toEqual({ dir: '/ici', staleInitCwd: true });
+  });
+
+  it('compare les chemins réels (macOS : /var → /private/var)', () => {
+    const real = (p: string) => p.replace(/^\/var\//, '/private/var/');
+    const env = { INIT_CWD: '/private/var/x/sous', npm_package_json: '/var/x/package.json' };
+    expect(userDirectory(env, '/private/var/x', real)).toEqual({ dir: '/private/var/x/sous', staleInitCwd: false });
+  });
+});
+
