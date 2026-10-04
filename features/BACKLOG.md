@@ -280,6 +280,7 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
+| [20261004074008211](20261004074008211_merge-local-ne-supprime-jamais-main.md) | Le merge local ne supprime jamais main, et dit chaque branche qu'il supprime | bug | P0 | V0.5 | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20261002115451315](20261002115451315_fiches-sur-le-process-avec-session.md) | Voir les fiches posées sur le schéma du process, avec leur session | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
