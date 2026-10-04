@@ -11,7 +11,7 @@ Un projet peut couper GitHub dans `.vectorz/config.yml`. Mais chaque skill et ch
 penser à lire ce fichier avant d'appeler `gh`. Trois l'oublient. Muti a coupé GitHub le
 2026-10-03 et les a trouvés dès le lendemain.
 
-On décide un **guichet unique** : `ezk forge`. Les skills et les scripts ne tapent plus `gh`
+On retient un **guichet unique** : `ezk forge`. Les skills et les scripts ne tapent plus `gh`
 eux-mêmes. Ils demandent au guichet. Le guichet lit la config une seule fois. Puis il appelle
 GitHub, ou il fait l'équivalent local, ou il répond « sans objet ».
 
