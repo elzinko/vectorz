@@ -15,3 +15,9 @@ projects:
   - id: vectorz
     path: .
     method: mega-city
+  - id: samplerz
+    path: /Users/elzinko/git/samplerz
+    method: mega-city
+  - id: muti
+    path: /Users/elzinko/git/bacasable/muti
+    method: mega-city
