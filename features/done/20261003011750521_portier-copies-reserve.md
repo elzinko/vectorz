@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.6
 labels: [sprint, archive, portier, worktree]
-status: ready
-pr:
+status: shipped
+pr: "local (f0a5b0a9)"
 evidence: none # script de contrôle, pas d'écran
 created: 2026-10-03
 ---

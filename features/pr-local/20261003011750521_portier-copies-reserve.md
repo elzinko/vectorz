@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261003011750521_portier-copies-reserve.md](../20261003011750521_portier-copies-reserve.md)
+> 🗎 Rendu de la fiche [features/20261003011750521_portier-copies-reserve.md](../done/20261003011750521_portier-copies-reserve.md)
 
 # 20261003011750521 — Les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres
 
