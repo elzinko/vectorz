@@ -63,23 +63,65 @@ if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
   P1_FACTS+=("[P1] dirty_files=${dirty_n}")
 fi
 
-# --- P2 : worktrees -----------------------------------------------------------
+# --- P2 : copies voisines (worktrees) -----------------------------------------
+# Règle unique partagée (fiche 20261003011750521) : une copie voisine PROPRE dont le contenu est déjà
+# dans la base est SANS RISQUE — on l'ignore en nommant la raison (principal / réserve de l'app /
+# branche fusionnée). On ne signale (ALERT) que le vrai risque : modifications en cours, ou commits
+# absents de la base. La règle vit dans la lib d'ezk-archive, sourcée ici en best-effort (même schéma
+# que handoff.sh ci-dessous) ; lib absente → repli sur le comptage d'avant (toute copie voisine alerte).
 P2="CLEAR"
 P2_FACTS=()
-WT_COUNT=0
+# Lecture `--porcelain` ligne par ligne (pas `awk $2`) : un chemin de worktree peut contenir une espace.
+# Le PREMIER enregistrement `worktree ` est toujours le checkout principal.
+SIBLINGS=()
+MAIN_WT=""
 while IFS= read -r line; do
-  [[ -z "$line" ]] && continue
-  WT_COUNT=$((WT_COUNT + 1))
-done < <(git worktree list --porcelain 2>/dev/null | grep -E '^worktree ' || true)
+  case "$line" in
+    "worktree "*)
+      p="${line#worktree }"
+      [[ -z "$MAIN_WT" ]] && MAIN_WT="$p"
+      [[ "$p" != "$WT" ]] && SIBLINGS+=("$p")
+      ;;
+  esac
+done < <(git worktree list --porcelain 2>/dev/null)
+WT_COUNT=$(( ${#SIBLINGS[@]} + 1 ))
 
-if (( WT_COUNT > 1 )); then
-  P2="ALERT"
-  P2_FACTS+=("[P2] sibling_worktrees=$((WT_COUNT - 1)) total=${WT_COUNT}")
-  while IFS= read -r path; do
-    [[ -z "$path" || "$path" == "$WT" ]] && continue
-    br="$(git -C "$path" symbolic-ref --quiet --short HEAD 2>/dev/null || git -C "$path" rev-parse --short HEAD 2>/dev/null || echo '?')"
-    P2_FACTS+=("[P2] worktree ${path} branch=${br}")
-  done < <(git worktree list --porcelain 2>/dev/null | awk '/^worktree /{print $2}')
+SAFETY_LIB="$(cd "$(dirname "$0")/../../ezk-archive/scripts" 2>/dev/null && pwd)/lib-worktree-safety.sh"
+SAFETY_OK=0
+if [[ -r "$SAFETY_LIB" ]]; then . "$SAFETY_LIB" && SAFETY_OK=1; fi
+
+if (( ${#SIBLINGS[@]} > 0 )); then
+  if (( SAFETY_OK )); then
+    # Base de preuve : main/master, sinon la branche par défaut (origin/HEAD), sinon celle du principal.
+    SAFETY_BASE=""
+    for cand in main master; do
+      git show-ref --verify --quiet "refs/heads/$cand" && { SAFETY_BASE="$cand"; break; }
+    done
+    [[ -z "$SAFETY_BASE" ]] && SAFETY_BASE="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')"
+    [[ -z "$SAFETY_BASE" ]] && SAFETY_BASE="$(git -C "$MAIN_WT" symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
+    PROOF_BASES="$(wt_proof_bases "$SAFETY_BASE")"
+    # Sans base de preuve, on ne peut rien prouver : repli prudent (les copies non prouvées sont signalées), dit à voix haute.
+    [[ -z "$PROOF_BASES" ]] && P2_FACTS+=("[P2] base de preuve introuvable (${SAFETY_BASE:-?}) — repli prudent : copies non prouvées signalées")
+    flagged=0; ignored=0
+    for path in "${SIBLINGS[@]}"; do
+      reason="$(worktree_safe_reason "$path" "$MAIN_WT" "$SAFETY_BASE" $PROOF_BASES)"
+      br="$(git -C "$path" symbolic-ref --quiet --short HEAD 2>/dev/null || git -C "$path" rev-parse --short HEAD 2>/dev/null || echo '?')"
+      case "$reason" in
+        principal|reserve|fusionnee)
+          ignored=$((ignored + 1)); P2_FACTS+=("[P2] ignoré ${path} branch=${br} raison=${reason}") ;;
+        *)
+          flagged=$((flagged + 1)); P2="ALERT"; P2_FACTS+=("[P2] ALERT ${path} branch=${br} raison=${reason}") ;;
+      esac
+    done
+    P2_FACTS=("[P2] copies_voisines=${#SIBLINGS[@]} signalées=${flagged} ignorées=${ignored}" "${P2_FACTS[@]}")
+  else
+    P2="ALERT"
+    P2_FACTS+=("[P2] sibling_worktrees=${#SIBLINGS[@]} total=${WT_COUNT} (lib absente : repli comptage)")
+    for path in "${SIBLINGS[@]}"; do
+      br="$(git -C "$path" symbolic-ref --quiet --short HEAD 2>/dev/null || git -C "$path" rev-parse --short HEAD 2>/dev/null || echo '?')"
+      P2_FACTS+=("[P2] worktree ${path} branch=${br}")
+    done
+  fi
 fi
 
 # --- P3 : fiches in-progress --------------------------------------------------

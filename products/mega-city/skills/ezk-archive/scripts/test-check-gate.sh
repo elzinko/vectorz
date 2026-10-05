@@ -219,6 +219,7 @@ FULL10B="$(cd "$TMP/repo-wt" && bash "$CHECK" --full)"     # capturé d'abord : 
 ok "--full signale une ancienne note à reprendre" "echo \"\$FULL10B\" | grep -q 'ancienne note reste dans ce worktree'"
 # Un handoff.sh qui rangerait la note dans le worktree : le portier doit refuser durable=1.
 mkdir -p "$TMP/stub" && cp "$CHECK" "$TMP/stub/check.sh"
+cp "$(dirname "$CHECK")/lib-worktree-safety.sh" "$TMP/stub/"   # check.sh source sa lib voisine (fiche 20261003011750521)
 printf '#!/usr/bin/env bash\necho "$(git rev-parse --show-toplevel)/.claude/handoff.md"\n' > "$TMP/stub/handoff.sh"
 OUT10B="$(cd "$TMP/repo-wt" && EZK_EPHEMERAL=0 bash "$TMP/stub/check.sh" --gate)"
 ok "note rangée dans le worktree : durable=0"      "echo \"\$OUT10B\" | grep -q '^HANDOFF: .* durable=0\$'"

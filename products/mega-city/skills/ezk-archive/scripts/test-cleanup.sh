@@ -39,15 +39,18 @@ age() { # $1=dossier du worktree
 # ── le décor ────────────────────────────────────────────────────────────────────
 absorbed_branch done-wt            # tenue par un worktree sûr
 absorbed_branch done-free          # tenue par personne
+absorbed_branch recent-br          # tenue par un worktree ACTIF (sert au test de seuil)
 git checkout -q -b merged-ff main && git checkout -q main      # mergée « normalement » (pointe sur main)
 git checkout -q -b reelle main && echo "pas livré" > reelle.txt && git add reelle.txt && git commit -qm "réel" && git checkout -q main
 
-git worktree add -q --detach "$TMP/wt-detached" main                 # sûr : propre, détaché sur main
-git worktree add -q "$TMP/wt-donebranch" done-wt                     # sûr : sa branche est absorbée
+# wt-detached = la COPIE DE RÉSERVE de l'app (cas muti 2026-10-03) : propre, détachée sur un commit
+# déjà dans la base, inactive → jamais proposée au retrait, comptée `reserve` (fiche 20261003011750521).
+git worktree add -q --detach "$TMP/wt-detached" main                 # réserve : propre, détachée, absorbée
+git worktree add -q "$TMP/wt-donebranch" done-wt                     # sûr : sa BRANCHE est absorbée → proposé
 git worktree add -q --detach "$TMP/wt-dirty" main                    # gardé : sale
 git worktree add -q --detach "$TMP/wt-locked" main                   # gardé : verrouillé
 git worktree add -q "$TMP/wt-reelle" reelle                          # gardé : contenu non livré
-git worktree add -q --detach "$TMP/wt-recent" main                   # gardé : actif à l'instant
+git worktree add -q "$TMP/wt-recent" recent-br                       # gardé : actif à l'instant (sur branche)
 git worktree add -q --detach "$TMP/wt-gone" main                     # orphelin : dossier supprimé
 echo "en cours" > "$TMP/wt-dirty/travail.txt"
 git worktree lock "$TMP/wt-locked"
@@ -61,11 +64,14 @@ BEFORE_ST="$(git status --porcelain | wc -l | tr -d ' ')"
 OUT="$(EZK_CLEANUP_IDLE_HOURS=24 bash "$CHECK" --cleanup)"
 
 echo "K1 — les worktrees sûrs, et eux seuls, sont proposés :"
-ok "wt-detached est sûr"                   "echo \"\$OUT\" | grep -q '^WORKTREE_SAFE: .*wt-detached '"
-ok "wt-donebranch est sûr"                 "echo \"\$OUT\" | grep -q '^WORKTREE_SAFE: .*wt-donebranch '"
+ok "wt-donebranch (branche absorbée) est sûr" "echo \"\$OUT\" | grep -q '^WORKTREE_SAFE: .*wt-donebranch '"
 ok "la commande exacte accompagne chaque ligne" \
-   "echo \"\$OUT\" | grep -q 'wt-detached.* cmd=git worktree remove .*wt-detached\$'"
-ok "exactement 2 worktrees sûrs"           "[ \"\$(echo \"\$OUT\" | grep -c '^WORKTREE_SAFE:')\" = 2 ]"
+   "echo \"\$OUT\" | grep -q 'wt-donebranch.* cmd=git worktree remove .*wt-donebranch\$'"
+ok "exactement 1 worktree sûr (la réserve n'en est pas)" "[ \"\$(echo \"\$OUT\" | grep -c '^WORKTREE_SAFE:')\" = 1 ]"
+
+echo "K1bis — la copie de RÉSERVE (détachée, propre, absorbée) n'est jamais proposée (cas muti 2026-10-03) :"
+ok "wt-detached n'est pas dans les sûrs" "! echo \"\$OUT\" | grep -q 'WORKTREE_SAFE: .*wt-detached'"
+ok "KEPT la compte comme réserve"        "echo \"\$OUT\" | grep -qE '^KEPT: .* reserve=1\$'"
 
 echo "K2 — tout le reste est gardé, par raison :"
 ok "sale : jamais proposé"                 "! echo \"\$OUT\" | grep -q 'WORKTREE_SAFE: .*wt-dirty'"
@@ -73,7 +79,7 @@ ok "verrouillé : jamais proposé"           "! echo \"\$OUT\" | grep -q 'WORKTR
 ok "contenu non livré : jamais proposé"    "! echo \"\$OUT\" | grep -q 'WORKTREE_SAFE: .*wt-reelle'"
 ok "récent : jamais proposé"               "! echo \"\$OUT\" | grep -q 'WORKTREE_SAFE: .*wt-recent'"
 ok "le courant (principal) n'est jamais proposé" "! echo \"\$OUT\" | grep -q 'WORKTREE_SAFE: .*/repo '"
-ok "KEPT dit les raisons"                  "echo \"\$OUT\" | grep -qx 'KEPT: current=0 locked=1 recent=1 dirty=1 unmerged=1 prunable=1'"
+ok "KEPT dit les raisons"                  "echo \"\$OUT\" | grep -qx 'KEPT: current=0 locked=1 recent=1 dirty=1 unmerged=1 prunable=1 reserve=1'"
 
 echo "K3 — les branches :"
 ok "branche absorbée libre : sûre, avec -D (le squash n'est pas un ancêtre)" \
@@ -92,7 +98,7 @@ ok "l'arbre n'a pas bougé"                 "[ \"\$(git status --porcelain | wc 
 ok "le worktree sale a gardé son fichier"  "[ -f \"\$TMP/wt-dirty/travail.txt\" ]"
 ok "le bloc se termine proprement, exit 0" "echo \"\$OUT\" | tail -1 | grep -q -- '--- END ---' && EZK_CLEANUP_IDLE_HOURS=24 bash \"\$CHECK\" --cleanup >/dev/null"
 ok "le compte final dit ce qui est sûr" \
-   "echo \"\$OUT\" | grep -qx 'CLEANUP: worktrees_safe=2 branches_safe=2 branches_after_worktree=1'"
+   "echo \"\$OUT\" | grep -qx 'CLEANUP: worktrees_safe=1 branches_safe=2 branches_after_worktree=1'"
 
 echo "K2bis — seuil par défaut (24 h) : un worktree actif à l'instant n'est jamais vieux :"
 OUT2="$(bash "$CHECK" --cleanup)"

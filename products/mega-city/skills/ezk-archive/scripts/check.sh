@@ -90,6 +90,14 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 2
 fi
 HANDOFF_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/handoff.sh"
+# La règle « copie voisine sans risque » (classify_ref / absorbed_by_any / wt_proof_bases) vit dans une
+# lib partagée, définie UNE fois et sourcée ici en dur comme par ezk-sprint/check.sh (fiche 20261003011750521).
+# Dépendance DURE (archive ne sait pas prouver sans elle) : sous `set -uo pipefail` sans `-e`, un source
+# silencieusement raté laisserait classify_ref en « command not found » → classification faussée. On
+# refuse franchement plutôt que de dégrader en douce.
+SAFETY_LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib-worktree-safety.sh"
+[[ -r "$SAFETY_LIB" ]] || { echo "✗ lib introuvable : $SAFETY_LIB" >&2; exit 2; }
+. "$SAFETY_LIB"
 cd "$(git rev-parse --show-toplevel)" || exit 2
 REPO="$(pwd)"
 
@@ -191,53 +199,10 @@ fi
 #   historique (revert, rename pur, contenu dupliqué) ne prouve RIEN — sans ces bornes,
 #   une branche de revert serait « absorbée » à tort et sa purge perdrait du travail réel.
 #
-# PARAMÉTRÉE en <base> <ref> (elle était figée sur $BASE) : c'est ce qui permet de
-# réutiliser TEL QUEL cet algorithme déjà testé pour la garde `main` vs `origin/main`
-# ci-dessous — la garde anti-faux-positif n'est donc pas du code neuf, mais un 2ᵉ appel.
-classify_ref() { # $1=base $2=ref → "ABSORBEE" | "REELLE <fichiers-non-prouvés>"
-  local _base="$1" b="$2" mb base_tree merged_tree status path path2 blob unproven=""
-  base_tree="$(git rev-parse "$_base^{tree}" 2>/dev/null)" || { echo "REELLE (base illisible)"; return; }
-  # (a) fast-path : le merge ne changerait rien (git ≥ 2.38 ; sinon on passe au (b))
-  merged_tree="$(git merge-tree --write-tree "$_base" "$b" 2>/dev/null | head -1)"
-  if [[ -n "$merged_tree" && "$merged_tree" == "$base_tree" ]]; then echo "ABSORBEE"; return; fi
-  # (b) le blob a-t-il ATTERRI dans la base après la fourche ?
-  mb="$(git merge-base "$_base" "$b" 2>/dev/null)" || { echo "REELLE (merge-base introuvable)"; return; }
-  blob_landed() { # $1=blob $2=chemin-au-tip-de-la-ref → 0 si prouvé dans la base
-    # fast-path : contenu exact au même chemin au tip de la base (couvre aussi le rename pur)
-    [[ "$(git rev-parse "$_base:$2" 2>/dev/null)" == "$1" ]] && return 0
-    # sinon : un commit de la fenêtre post-fourche a-t-il porté ce contenu AU MÊME CHEMIN ?
-    #
-    # ⚠ La preuve doit être PATH-PRESERVING (finding Codex PR #56). Chercher le blob
-    # « n'importe où dans l'arbre » suffisait à déclarer absorbé un fichier dont le contenu
-    # existe ailleurs sous un AUTRE nom — et deux fichiers VIDES partagent le même blob,
-    # donc n'importe quel fichier vide en amont « prouvait » n'importe quel fichier vide
-    # local. Sur MAINSYNC, ça produisait un `resync_safe=1` dont le reset --hard aurait
-    # supprimé un fichier local unique : une perte de données recommandée par l'outil.
-    #
-    # Vérifier le chemin exact règle au passage le cas du commit qui a RETIRÉ le blob
-    # (il matche `--find-object` mais `rev-parse <commit>:<chemin>` échoue), ce que
-    # l'ancien `ls-tree | grep` traitait de façon détournée.
-    local c
-    while IFS= read -r c; do
-      [[ -z "$c" ]] && continue
-      [[ "$(git rev-parse "$c:$2" 2>/dev/null)" == "$1" ]] && return 0
-    done < <(git log "$mb..$_base" --format=%H --find-object="$1" 2>/dev/null)
-    return 1
-  }
-  while IFS=$'\t' read -r status path path2; do
-    [[ -z "$status" ]] && continue
-    case "$status" in
-      D*) # suppression : absorbée si le fichier est absent de la base
-          git cat-file -e "$_base:$path" 2>/dev/null && unproven="$unproven $path" ;;
-      R*) # rename : prouver le blob au nouveau chemin
-          blob="$(git rev-parse "$b:$path2" 2>/dev/null)" || { unproven="$unproven $path2"; continue; }
-          blob_landed "$blob" "$path2" || unproven="$unproven $path2" ;;
-      *)  blob="$(git rev-parse "$b:$path" 2>/dev/null)" || { unproven="$unproven $path"; continue; }
-          blob_landed "$blob" "$path" || unproven="$unproven $path" ;;
-    esac
-  done < <(git diff --name-status -M "$mb" "$b" 2>/dev/null)
-  if [[ -z "$unproven" ]]; then echo "ABSORBEE"; else echo "REELLE$unproven"; fi
-}
+# `classify_ref <base> <ref>` → "ABSORBEE" | "REELLE …" vit désormais dans la lib partagée
+# `lib-worktree-safety.sh` (sourcée en tête) : une seule définition de la preuve d'absorption, lue par
+# les deux portiers (fiche 20261003011750521). PARAMÉTRÉE en <base> <ref> : réutilisée telle quelle pour
+# la garde `main` vs `origin/main` ci-dessous — pas du code neuf, un 2ᵉ appel.
 
 P2_PR_OPEN=0; P2_REAL=0; P2_ABSORBED=0; P2_WT_PRUNABLE=0
 # Deux accumulateurs pour la MÊME collecte : `*_LIST` = rendu humain multi-lignes
@@ -643,15 +608,9 @@ if [[ "$MODE" == "cleanup" ]]; then
   # Une commande affichée est une commande que l'opérateur lance : un nom de branche ou un chemin peut
   # contenir `;`, `$( )`, une apostrophe. Tout ce qui entre dans un `cmd=` passe par printf %q.
   shq() { printf '%q' "$1"; }
-  absorbed_by_any() { # $1=ref (branche ou sha) → 0 si son contenu est dans une des bases de preuve
-    local b
-    for b in $PROOF_BASES; do
-      [[ "$(classify_ref "$b" "$1")" == "ABSORBEE" ]] && return 0
-    done
-    return 1
-  }
+  # `absorbed_by_any <ref> <bases…>` est dans la lib partagée (appelée ici avec $PROOF_BASES).
 
-  K_CUR=0; K_LOCK=0; K_RECENT=0; K_DIRTY=0; K_UNMERGED=0; K_PRUNABLE=0
+  K_CUR=0; K_LOCK=0; K_RECENT=0; K_DIRTY=0; K_UNMERGED=0; K_PRUNABLE=0; K_RESERVE=0
   WT_SAFE_LINES=""; WT_SAFE_N=0; AFTER_LINES=""; AFTER_N=0; SAFE_AFTER="|"
   wt_first=1; wt_path=""; wt_head=""; wt_branch=""; wt_locked=0; wt_prunable=0
 
@@ -675,7 +634,10 @@ if [[ "$MODE" == "cleanup" ]]; then
       K_DIRTY=$((K_DIRTY + 1)); return 0
     fi
     ref="$wt_head"; [[ -n "$wt_branch" ]] && ref="$wt_branch"
-    if ! absorbed_by_any "$ref"; then K_UNMERGED=$((K_UNMERGED + 1)); return 0; fi
+    if ! absorbed_by_any "$ref" $PROOF_BASES; then K_UNMERGED=$((K_UNMERGED + 1)); return 0; fi
+    # Copie de RÉSERVE de l'app : propre, contenu absorbé, en HEAD détaché. On ne la retire JAMAIS
+    # (la retirer à la main casse la réserve que l'app recycle) — on la compte à part (fiche 20261003011750521).
+    if [[ -z "$wt_branch" ]]; then K_RESERVE=$((K_RESERVE + 1)); return 0; fi
     head7="$(printf '%s' "$wt_head" | cut -c1-7)"
     label="${wt_branch:-detached}"
     WT_SAFE_N=$((WT_SAFE_N + 1))
@@ -747,7 +709,7 @@ if [[ "$MODE" == "cleanup" ]]; then
   printf '%s' "$WT_SAFE_LINES"
   printf '%s' "$BR_SAFE_LINES"
   printf "%s" "$AFTER_LINES"
-  echo "KEPT: current=$K_CUR locked=$K_LOCK recent=$K_RECENT dirty=$K_DIRTY unmerged=$K_UNMERGED prunable=$K_PRUNABLE"
+  echo "KEPT: current=$K_CUR locked=$K_LOCK recent=$K_RECENT dirty=$K_DIRTY unmerged=$K_UNMERGED prunable=$K_PRUNABLE reserve=$K_RESERVE"
   echo "CLEANUP: worktrees_safe=$(shown_of "$WT_SHOWN" "$WT_SAFE_N") branches_safe=$(shown_of "$BR_SHOWN" "$BR_SAFE_N") branches_after_worktree=$AFTER_N"
   echo "NOTE: rien n'a ete supprime ; chaque commande se lance seule, apres accord du PO ; les orphelins se purgent par git worktree prune"
   echo "--- END ---"
