@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: V0.6
 labels: [archive, sessions, mode-local]
-status: idea
+status: ready
 pr:
 evidence: none # script de clôture, pas d'écran
 created: 2026-10-05

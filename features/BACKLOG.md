@@ -145,6 +145,7 @@
 | [20261004192802828](done/20261004192802828_cockpit-adr-config-lisible-registre-unique.md) | Cockpit, socle : l'ADR, « ezk config show » lisible depuis un autre projet, un seul registre de projets | feature | P1 | V0.6 | mega-city | ✅ shipped | local (43dcb587) |
 | [20261004192802897](done/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) | Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi | feature | P1 | V0.6 | mega-city | ✅ shipped | local (7841c073) |
 | [20261004192802964](done/20261004192802964_cockpit-page-config-en-sections.md) | Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule | feature | P1 | V0.6 | mega-city | ✅ shipped | local (ec7fc3ec) |
+| [20261005100026946](20261005100026946_cloture-session-committe-son-archive.md) | La clôture de session committe l'archive qu'elle écrit, au lieu de la laisser hors de git dans le dossier de travail | bug | P1 | V0.6 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -295,7 +296,6 @@
 | [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261005100026946](20261005100026946_cloture-session-committe-son-archive.md) | La clôture de session committe l'archive qu'elle écrit, au lieu de la laisser hors de git dans le dossier de travail | bug | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20261005100027029](20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md) | Chaque sprint laisse un compte rendu committé et standard, que la rétro lit | feature | P1 | V0.6 | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
