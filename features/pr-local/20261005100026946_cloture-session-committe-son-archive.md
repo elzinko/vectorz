@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261005100026946_cloture-session-committe-son-archive.md](../20261005100026946_cloture-session-committe-son-archive.md)
+> 🗎 Rendu de la fiche [features/20261005100026946_cloture-session-committe-son-archive.md](../done/20261005100026946_cloture-session-committe-son-archive.md)
 
 # 20261005100026946 — La clôture de session committe l'archive qu'elle écrit
 

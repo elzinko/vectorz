@@ -109,7 +109,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261004192802897` — cockpit : le menu des projets et les fiches du projet choisi, pouces dans le bon projet · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
 - ~~`20261004192802964` — cockpit : la page « config » du projet choisi, en sections · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
 - ~~`20261003011750521` — les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres · P1 depuis la rétro du run cockpit (2026-10-04) · `groom` → `build`~~ — shipped
-- `20261005100026946` — la clôture de session committe l'archive qu'elle écrit · P1, décision PO du 2026-10-05 · `groom` → `build`
+- ~~`20261005100026946` — la clôture de session committe l'archive qu'elle écrit · P1, décision PO du 2026-10-05 · `groom` → `build`~~ — shipped
 - `20261005100027029` — chaque sprint laisse un compte rendu committé et standard, que la rétro lit · P1, décision PO du 2026-10-05 · `groom` → `build`
 - `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03, bloquée le 2026-10-04 : à découper · `groom` → `build` (après la page « config » du cockpit : sa section « Agents » y vit)
 - `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
