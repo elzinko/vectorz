@@ -39,9 +39,15 @@ de décalage.
    - `docs/journal` → `scrum/journal`
    - `docs/pr-evidence` → `scrum/evidence`
 2. `scrum: true` dans `.vectorz/config.yml`.
-3. Mettre à jour les **fixtures de test** qui codent les anciens chemins en dur (au moins
-   `test-handoff.sh`, `test-sprint-lifecycle.sh`, `test-archive-commit.sh`).
-4. Nettoyer les liens de `docs/index.md` qui pointaient ces dossiers (coordonner avec la fiche 4).
+3. Mettre à jour **toutes les fixtures** qui codent les anciens chemins. Le jeu est **large**
+   (~11 scripts `test-*.sh` + ~7 `__tests__` TS, vérifié le 2026-10-07), **pas trois** : on les
+   trouve en lançant les suites (rouge → vert), le vrai gate étant « suites vertes ». Exemples :
+   `test-handoff.sh`, `test-sprint-lifecycle.sh`, `test-archive-commit.sh`, `test-journal-add.sh`,
+   `test-note.sh`, `test-pr-evidence.sh`, `test-ezk-chef-extract.sh`, et les `__tests__` de
+   `retro-capture`, `runs-data`, `ezk-chef-suggest`, `pilotage-data`.
+4. Recaler les liens de `docs/index.md` : il ne pointe pas les **dossiers** mais des **fichiers de
+   captures** précis (`./captures/2026-…md`), qui partent sous `scrum/retro/captures/`. Coordonner
+   avec la fiche 4 (qui touche aussi `index.md`).
 
 ## Critères d'acceptation
 
