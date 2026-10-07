@@ -334,6 +334,7 @@
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
 | [20261003105820099](20261003105820099_menage-archive-lancable-mode-auto.md) | Le ménage d'ezk-archive se lance en mode auto | bug | P3 | V0.6 | mega-city | 💡 idea |  |
 | [20261004083838781](20261004083838781_ezk-config-help-lu-comme-un-chemin.md) | « ezk config --help » prend --help pour un chemin et affiche un faux statut | bug | P3 |  | mega-city | 💡 idea |  |
+| [20261007213454366](20261007213454366_spike-voir-histoire-feature-au-meme-endroit.md) | Spike : voir toute l'histoire d'une feature au même endroit (vue par id vs co-localisation) | chore | P3 |  | vectorz | 💡 idea |  |
 
 ## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
 
