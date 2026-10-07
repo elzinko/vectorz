@@ -32,9 +32,9 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **V0.2** | On teste vite, en local | lanceur universel, ezk-scout, recette Android | ✅ livrée le 2026-10-01 |
 | **V0.3** | Le backlog dit vrai + on range | ship sûr, versions dans le backlog, commande `ezk`, règles déployées, FAQ, recettes | ✅ livrée le 2026-10-01 |
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | ✅ livrée le 2026-10-01 |
-| **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, la fiche rangée avec son merge, product-build qui enchaîne les sprints | ▶️ en cours |
-| **V0.6** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ⏭️ ensuite (décidé le 2026-10-02) |
-| **V0.7** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche, dans une interface reliée au board (le journal durable des moments d'abord, puis l'interface) | ⏭️ ensuite (après V0.6) |
+| **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, la fiche rangée avec son merge, product-build qui enchaîne les sprints | ✅ livrée le 2026-10-04 |
+| **V0.6** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ✅ cockpit livré — **à clore** (`v0.6`), 2026-10-07 |
+| **V0.7** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche, dans une interface reliée au board (le journal durable des moments d'abord, puis l'interface) | ▶️ **en cours** — socle d'abord (2026-10-07) |
 | **V0.8** | Amélioration mesurée | métriques & qualité : KPI agrégés commit→PR→sprint→version, viz qualité par PR, gate DoD, agent d'analyse | ⏸️ ensuite |
 | **V0.9** | Ranger la maison | rationalisation : `docs/` redevient de la doc, le process regroupé dans `scrum/`, la config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ⏭️ ensuite |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
@@ -112,10 +112,21 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261004192802964` — cockpit : la page « config » du projet choisi, en sections · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
 - ~~`20261003011750521` — les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres · P1 depuis la rétro du run cockpit (2026-10-04) · `groom` → `build`~~ — shipped
 - ~~`20261005100026946` — la clôture de session committe l'archive qu'elle écrit · P1, décision PO du 2026-10-05 · `groom` → `build`~~ — shipped
-- `20261005100027029` — chaque sprint laisse un compte rendu committé et standard, que la rétro lit · P1, décision PO du 2026-10-05 · `groom` → `build`
-- `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03, bloquée le 2026-10-04 : à découper · `groom` → `build` (après la page « config » du cockpit : sa section « Agents » y vit)
-- `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`
-- `20261003105820099` — le ménage d'ezk-archive se lance en mode auto · P3, issue de la rétro muti du 2026-10-03 (#340) · `groom` → `build`
+> **Triage du 2026-10-07** : le cockpit est **livré** (les 5 fiches ci-dessus + le split). Sa queue
+> était mal étiquetée, re-rangée hors V0.6 :
+> `20261002115451315` (voir fiches sur le process) et `20261005100027029` (compte rendu de sprint) →
+> **V0.7** (observabilité) · `20261002205205417` (modèle/effort des agents) → **parked** (décalée) ·
+> `20261003105820099` (ménage archive auto) + 4 autres correctifs de méthode → **sans version**
+> (dispo, futur lot hygiène). V0.6 est **à clore** : `ezk backlog version close V0.6 --tag` + push de l'étiquette.
+
+### ⑧ V0.7 — voir sous le capot (socle d'abord — décidé le 2026-10-07)
+> La clé de voûte (le contrat du bus / catalogue des moments) est livrée ; puis le **socle** qui fiabilise la trace ; l'**interface** attend la maquette.
+- ~~`20261004101755756` — écrire le contrat du bus : le catalogue des moments de la méthode · P1 · `build`~~ — shipped local (2e395663)
+- `20261002133125444` — fermer un run de supervision ne doit fermer que le sien · P2 · **ready** — lot socle
+- `20261003201035260` — les récits de session reviennent sur main (historique des runs figé au 30 août) · P2 · **ready** — lot socle
+- `20261002115451315` — voir les fiches posées sur le process, avec leur session · `idea` → **maquette avant `ready`**
+- `20261005100027029` — chaque sprint laisse un compte rendu committé, lu par la rétro · `idea` → `groom`
+> Hors lot socle, après maquette / décision PO : la refonte du Moniteur (`20261007135620590`) et les hooks d'émission (`0077`, optionnel).
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

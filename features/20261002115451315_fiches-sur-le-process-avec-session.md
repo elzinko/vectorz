@@ -4,7 +4,7 @@ title: "Voir les fiches posées sur le schéma du process, avec leur session"
 type: feature
 priority: P1
 product: mega-city
-milestone: cockpit
+milestone:
 version: V0.7
 labels: [ezk-map, session]
 status: idea
