@@ -1,0 +1,81 @@
+# Le catalogue des moments de la méthode — le CONTRAT du bus (ADR-0065).
+#
+# Un « moment » est un point du déroulé de la méthode où elle annonce ou demande
+# quelque chose. Chaque moment a UNE sorte d'échange (ADR-0061) :
+#   evenement — la méthode annonce et continue ; 0..n abonnés (publier-s'abonner)
+#   commande  — la méthode attend un résultat ; UN exécutant, choisi par la config
+#   avis      — la méthode attend un verdict ; plusieurs avis, combinés par une règle
+#
+# `clients` = les clients d'AUJOURD'HUI. Une liste vide = moment déclaré au contrat,
+# pas encore branché (le canal viendra, canal par canal — ADR-0061).
+#
+# Hors périmètre de ce fichier : le code du bus, la découverte des plugins, le
+# diagramme. Ici, seulement le contrat lisible par une machine (fiche 20261004101755756).
+
+moments:
+  # — Supervision (kit émetteur livré, ADR-0032/0036) : les six événements du contrat
+  #   cop1/supervisability@0.1. Clients : le journal + le Moniteur.
+  - nom: run.started
+    sorte: evenement
+    etape: ouverture-du-run
+    transporte: "method{name,version}, seat"
+    clients: [supervision]
+  - nom: gate.reached
+    sorte: evenement
+    etape: checkpoint
+    transporte: "gate_id, outcome(ok|attention|failed), upgrade_ok, report_ref?"
+    clients: [supervision]
+  - nom: gate.resumed
+    sorte: evenement
+    etape: reprise-apres-checkpoint
+    transporte: "gate_event_id"
+    clients: [supervision]
+  - nom: escalation
+    sorte: evenement
+    etape: stop-and-ask
+    transporte: "type(blocked|authority), detail"
+    clients: [supervision]
+  - nom: heartbeat
+    sorte: evenement
+    etape: travail-long
+    transporte: "note?"
+    clients: [supervision]
+  - nom: run.finished
+    sorte: evenement
+    etape: cloture-du-run
+    transporte: "status(success|failure|abandoned), abandoned_by?"
+    clients: [supervision]
+
+  # — Guichet GitHub (ADR-0061, canal COMMANDE déjà posé) : un seul exécutant,
+  #   l'adaptateur choisi par .vectorz/config.yml (GitHub, ou local, ou « sans objet »).
+  - nom: changes
+    sorte: commande
+    etape: etat-des-changements
+    transporte: "cible(branche|pr)"
+    clients: [ezk-forge]
+  - nom: integrate
+    sorte: commande
+    etape: integration
+    transporte: "fiche, branche, pr?"
+    clients: [ezk-forge]
+
+  # — Projet → GitHub en recopie (fiche 0171, push-only) : déclarés au contrat,
+  #   pas encore branchés (clients vides tant que 0171 n'est pas livrée).
+  - nom: story.readied
+    sorte: evenement
+    etape: passage-en-ready
+    transporte: "fiche_id"
+    clients: []
+  - nom: version.closed
+    sorte: evenement
+    etape: cloture-de-version
+    transporte: "version, tag"
+    clients: []
+
+  # — Revue (ADR-0059 : plancher ezk-reviewer, filet Codex) : un AVIS. Plusieurs avis
+  #   combinés par une règle écrite — le NO-GO du plancher bloque le merge.
+  - nom: review.verdict
+    sorte: avis
+    etape: revue
+    transporte: "verdict(GO|NO-GO), motifs"
+    clients: [ezk-reviewer]
