@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.7
 labels: [github-optionnel, plugins]
-status: ready
-pr:
+status: shipped
+pr: "local (f56d17f5)"
 evidence: none # document et fichier de données, aucun écran
 created: 2026-10-04
 ---
@@ -23,7 +23,7 @@ interférence, et de générer un diagramme lisible.
 
 **Si tu arrives frais.** Le *bus* est le canal commun où la méthode annonce ses moments et où les
 plugins se branchent. Il est décrit dans la section « Perspective » de
-[ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
+[ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 
 ## Contexte / Problème
 
@@ -35,7 +35,7 @@ L'ADR-0061, accepté le 2026-10-04, fixe trois rôles : la méthode décide **qu
 - **avis** : la méthode attend un verdict ; plusieurs avis, combinés par une règle écrite.
 
 Il dit aussi : « on n'attend pas pour fixer le contrat », car un deuxième plugin écoute déjà la
-méthode, la supervision ([ADR-0039](../products/mega-city/docs/adr/0039-trois-etages-moteur-methode-branchements-plugin.md)
+méthode, la supervision ([ADR-0039](../../products/mega-city/docs/adr/0039-trois-etages-moteur-methode-branchements-plugin.md)
 §4 demandait d'attendre ce deuxième plugin).
 
 Aujourd'hui, les moments existent mais sont éparpillés :
@@ -44,11 +44,11 @@ Aujourd'hui, les moments existent mais sont éparpillés :
   `heartbeat`, `run_finished`), décrits dans `products/mega-city/src/supervision/README.md` et
   recopiés dans le texte d'`ezk-sprint` et d'`ezk-product-build` ;
 - les gestes GitHub deviennent des verbes du guichet `ezk forge` (`changes`, `integrate`), par la
-  fiche [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) ;
-- la fiche [0171](0171-adapter-github-issues-push-only.md) ajoute des moments à elle : créer une
+  fiche [20261004083838593](../20261004083838593_guichet-unique-github-archive-reconcile.md) ;
+- la fiche [0171](../0171-adapter-github-issues-push-only.md) ajoute des moments à elle : créer une
   issue au passage en `ready`, une release à la clôture d'une version ;
 - la revue a sa règle « plancher et filet » dans
-  [ADR-0059](../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md).
+  [ADR-0059](../../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md).
 
 Sans catalogue commun, chaque nouveau plugin inventera ses propres noms de moments, et le bus
 deviendra illisible avant d'exister.
@@ -105,10 +105,10 @@ au hasard, quand il se produit, s'il bloque la méthode, et quel outil peut s'y 
 
 - Décidé par l'ADR-0061, section « Perspective », sous-section « Faut-il attendre un deuxième
   plugin ? ».
-- Voisines : [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md)
-  (le guichet, premier canal), [20260830110131298](20260830110131298_supervision-ezk-plugin-separable.md)
+- Voisines : [20261004083838593](../20261004083838593_guichet-unique-github-archive-reconcile.md)
+  (le guichet, premier canal), [20260830110131298](../20260830110131298_supervision-ezk-plugin-separable.md)
   (sortir la supervision du texte des skills, futur canal des événements),
-  [0029](0029-contrat-supervisabilite-v02-differes.md) (la v0.2 du contrat de supervisabilité,
+  [0029](../0029-contrat-supervisabilite-v02-differes.md) (la v0.2 du contrat de supervisabilité,
   différée).
 - Référence externe : les « Enterprise Integration Patterns » pour nommer les motifs (canal
   publier-s'abonner, aiguillage, diffuser puis rassembler).

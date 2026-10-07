@@ -84,7 +84,7 @@ POC d'abord (l'écran se lit), polish ensuite.
 - 2026-10-07 : créée à la demande du PO en regardant le Moniteur live (« je trouve que ce n'est pas
   très lisible »). Anti-doublon fait : aucune fiche de refonte du Moniteur n'existe.
 - **Version V0.7 « Voir sous le capot »**, volet **interface**. Elle est la sœur du socle, la clé de
-  voûte [20261004101755756](20261004101755756_contrat-bus-catalogue-moments.md) (ready, P1, V0.7) :
+  voûte [20261004101755756](done/20261004101755756_contrat-bus-catalogue-moments.md) (ready, P1, V0.7) :
   le PO a choisi « socle d'abord », donc l'ordre de BUILD est socle → cette refonte.
 - **Le PO participe au grooming** : le brainstorming et la maquette se font avec lui, pas en
   autonomie.

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004101755756_contrat-bus-catalogue-moments.md](../20261004101755756_contrat-bus-catalogue-moments.md)
+> 🗎 Rendu de la fiche [features/20261004101755756_contrat-bus-catalogue-moments.md](../done/20261004101755756_contrat-bus-catalogue-moments.md)
 
 # 20261004101755756 — Écrire le contrat du bus : le catalogue des moments de la méthode
 

@@ -3,7 +3,7 @@
 - Statut : **Proposé** (2026-10-07)
 - Date : 2026-10-07
 - Compose / précise : [ADR-0061](0061-un-seul-guichet-pour-github.md) (la perspective du bus, qui annonçait ce contrat), [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §4 (la supervision est un branchement observabilité), [ADR-0059](0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md) (la revue : plancher et filet)
-- Fiches : [20261004101755756](../../../../features/20261004101755756_contrat-bus-catalogue-moments.md) (écrire le contrat du bus)
+- Fiches : [20261004101755756](../../../../features/done/20261004101755756_contrat-bus-catalogue-moments.md) (écrire le contrat du bus)
 
 ## En clair
 
