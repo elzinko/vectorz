@@ -60,6 +60,13 @@ Résolution (5 clés ; défaut = legacy si `scrum:` absent ou `false`) :
 
 `docs/adr/` et `features/` ne sont **pas** des clés (restent fixes).
 
+**Ancrage — pattern à cloner (vérifié le 2026-10-07).** On copie exactement la paire `github:` :
+- cœur : `resolveGithub(raw): GithubCapabilities` — `products/mega-city/src/core/project-config.ts:39` ;
+- loader : `githubCapabilities(projectRoot)` + `loadProjectConfig(projectRoot)` — `products/mega-city/src/loaders/project-config.ts:44` et `:27`.
+
+`resolveScrumPaths` / `scrumPaths` sont leurs frères, dans les mêmes fichiers. La sous-commande
+`ezk … paths` **n'existe pas encore** → à créer (cohérent avec le périmètre de cette fiche).
+
 ## Critères d'acceptation
 
 - [ ] `resolveScrumPaths` existe (cœur, sans I/O) avec tests unitaires couvrant les 3 cas :
