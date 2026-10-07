@@ -301,7 +301,7 @@
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
-| [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Regrouper les artefacts de méthode hors de docs/ — un dossier agnostique (ex. scrum/) + skills à jour | refactor | P2 |  | vectorz | 💡 idea |  |
+| [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Regrouper les artefacts de méthode hors de docs/ — un dossier agnostique (ex. scrum/) + skills à jour | refactor | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20261002130235353](20261002130235353_en-cours-deduit-des-branches.md) | « En cours » se déduit des branches, il ne s'écrit pas | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261002130917993](20261002130917993_release-local-first-macos.md) | Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 |  | mega-city | 💡 idea |  |
@@ -322,6 +322,8 @@
 | [20261004101755756](20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261007115128214](20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre la config runtime de cop1 de la racine du monorepo vers products/cop1/ | refactor | P2 | V0.9 | vectorz | 💡 idea |  |
+| [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |

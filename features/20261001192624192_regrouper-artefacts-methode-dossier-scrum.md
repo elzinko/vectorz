@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: vectorz
 milestone: rationalisation
-version:
+version: V0.9
 labels: [convention, arborescence]
 status: idea
 pr:
@@ -123,3 +123,71 @@ pnpm --dir products/mega-city test:scripts   # test-handoff.sh + test-sprint-lif
   [sprint.sh distingue un sprint ouvert d'un SPRINT.md commité](20261003011750433_portier-sprint-md-commite.md).
 - **Périmètre à élargir au prochain grooming** (constaté le 2026-10-03) : `docs/` de vectorz contient
   aussi `journal/`, `archive/`, `audits/` et `pr-evidence/`, qui relèvent peut-être de la méthode.
+
+### Revue PO du 2026-10-06 (vectorz) — décisions et classement
+
+Le PO a passé `docs/` en revue dossier par dossier. Tri arrêté :
+
+- **Déménage dans le dossier process** (continuité de méthode) : `sessions/` (renommé **`sprints/`**,
+  cf. ci-dessous), `retro-notes/`, `captures/`, `journal/`, `pr-evidence/`, snapshot `SPRINT.md`.
+- **Reste de la doc produit** dans `docs/` : `articles/`, `audits/`, `adr/`.
+- **À supprimer** (pas à archiver) : `archive/` (BMAD époque-1 + pré-phase-A). Pure paléontologie,
+  git garde l'historique — cohérent avec `clean-code/no-dead-code`. Décision à confirmer.
+- **À requalifier** : `e2e/` n'est pas du process mais de la **doc de test** (checklists manuelles,
+  fiches 0041/0003) ; vérifier qu'elle est encore exacte, sinon supprimer, sinon `docs/tests/`.
+
+**`sessions/` → `sprints/`.** Le PO tranche le nom : le dossier des snapshots s'appelle **`sprints/`**,
+pas `sessions/`. Raison : « session » est une notion de l'outil (Claude), pas du domaine agile. Le
+dossier ne contient que ce que **la méthode scelle** à la clôture d'un sprint. Une tâche lancée hors
+ezk ne produit pas de snapshot, donc ne pollue pas la convention. Fiche sœur :
+[Les récits de session reviennent sur main](20261003201035260_recits-de-session-de-retour-sur-main.md).
+
+**Groupé par type, PAS par sprint.** Le PO a proposé « un dossier par sprint contenant tout ». Écarté :
+les artefacts n'ont pas la même maille. `pr-evidence` est **par fiche**, `journal` couvre **tout le
+dépôt**, `retro-notes` s'étale sur **plusieurs sprints**, le snapshot est **par session**. Un
+découpage par sprint forcerait à couper ou dupliquer. On garde donc des **sous-dossiers par type**
+sous le dossier process (`sprints/`, `retro-notes/`, `captures/`, `journal/`, `pr-evidence/`).
+
+**capture ↔ retro-notes = deux bouts de la même cérémonie.** `retro-notes/` est l'entrée (frictions
+déposées pendant les sprints via `ezk retro note`), `captures/` est la sortie (l'arbitrage de la
+rétro). Cycles de vie distincts (une note part dans `traitees/`, une capture est permanente) : on ne
+fusionne pas les dossiers, on les **déménage ensemble**.
+
+**Hors périmètre — config runtime de produit.** `cop1.config.example.yaml`,
+`supervision.registry.example.yaml` et `supervision.registry.yaml`, aujourd'hui à la **racine du
+monorepo**, ne sont pas du process : ce sont des configs d'exécution du produit cop1 (qui vit sous
+`products/cop1/`). Elles descendent sous `products/cop1/` avec correction des liens dans les docs.
+Concern distinct → **fiche dédiée** (ne pas gonfler celle-ci).
+
+**CLAUDE.md = proxy, pas porteur de règles.** Constat PO connexe : le CLAUDE.md projet redit les
+règles de clarté en dur au lieu de pointer vers la loi compilée (`lawgiver bind`). Noté pour une
+fiche séparée, hors de ce périmètre.
+
+### Décisions du 2026-10-07 (lotissement V0.9)
+
+- **Version : V0.9 « Ranger la maison ».** Vérifié avec la session *supervision* : V0.7
+  (observabilité) et V0.8 (métriques) sont prises mais pas encore dans `PLAN.md` ; V0.9 est libre,
+  aucune collision. Cette fiche quitte « sans version » et devient la tête de la V0.9.
+- **`captures/` et `retro-notes/` déménagent sous un foyer commun `retro/`** (sous-dossiers
+  `notes/` = entrée, `captures/` = sortie). Même cérémonie, même endroit ; on garde la distinction
+  entrée/sortie mais plus deux dossiers éloignés.
+- **`pr-evidence/` → `evidence/`** (terme raccourci). Reste un **sous-dossier distinct**, pas
+  fusionné dans `retro/` : ce sont des images liées à une PR/fiche, pas à la rétro.
+- **`archive/` : suppression confirmée par le PO** (BMAD époque-1 + pré-phase-A). Git garde
+  l'historique. Critère : nettoyer les liens dans `docs/index.md`.
+- **`e2e/` : vérifier puis supprimer.** S'assurer que `pnpm cobaye:smoke` couvre les checklists
+  manuelles (fiches 0041/0003), puis supprimer ; en cas de doute, requalifier en `docs/tests/`
+  (jamais process). Priorité basse.
+- **La fiche récits de session (`20261003201035260`) N'est PAS dans cette V0.9** : elle relève de
+  la V0.7 observabilité (bug de confiance). Le renommage `sessions/` → `sprints/` reste porté ici.
+- **Deux fiches sœurs créées pour la V0.9** : (1) descendre `cop1.config.example.yaml` +
+  `supervision.*.yaml` sous `products/cop1/` ; (2) CLAUDE.md-proxy + loi bindée par projet
+  (`.iamthelaw/` visible dans le dépôt plutôt que `~/.claude/` global).
+
+### Critères d'acceptation ajoutés (2026-10-07)
+
+- [ ] `captures/` + `retro-notes/` regroupés sous `retro/{notes,captures}/`, skills `ezk-retro`
+      mis à jour.
+- [ ] `pr-evidence/` renommé `evidence/`, références mises à jour.
+- [ ] `docs/archive/` supprimé, liens `docs/index.md` nettoyés.
+- [ ] `docs/e2e/` : couverture smoke vérifiée, puis supprimé ou requalifié `docs/tests/`.
