@@ -7,7 +7,7 @@ product: vectorz
 milestone: rationalisation
 version: V0.9
 labels: [convention, arborescence]
-status: idea
+status: ready
 pr:
 evidence: none # doc + refactor d'arborescence, pas d'UI
 created: 2026-10-07
@@ -34,10 +34,12 @@ commit.
 
 1. **Note de migration** (dans la doc méthode) : les 5 `git mv` exacts + l'ajout `scrum: true`,
    présentés comme **un commit atomique**, avec le rollback (revert du commit).
-2. **Appliquer à muti** (≥ 1 consommateur, pour prouver la recette) :
+2. **Appliquer à muti** (≥ 1 consommateur, pour prouver la recette). muti porte **4 dossiers sur 5**
+   (pas de `docs/journal`) → ne bouger que les présents :
    `git mv docs/sessions scrum/sprints`, `git mv docs/retro-notes scrum/retro/notes`,
-   `git mv docs/captures scrum/retro/captures`, `git mv docs/journal scrum/journal`,
-   `git mv docs/pr-evidence scrum/evidence`, puis `scrum: true` dans son `.vectorz/config.yml`.
+   `git mv docs/captures scrum/retro/captures`, `git mv docs/pr-evidence scrum/evidence`
+   (**omettre** le `git mv` du journal, absent), puis `scrum: true` dans son `.vectorz/config.yml`.
+   Règle générale : **ne bouger que les dossiers qui existent** dans le consommateur.
 3. Vérifier qu'après bascule, les skills de muti résolvent bien vers `scrum/`.
 
 ## Critères d'acceptation
@@ -50,15 +52,19 @@ commit.
 ## Comment vérifier
 
 ```bash
-# Sur muti, après application de la recette :
-ls scrum/sprints scrum/retro/notes scrum/journal scrum/evidence
-git -C <muti> log --follow --oneline -- scrum/journal | tail -3   # historique préservé
-ezk --root <muti> paths journal   # → scrum/journal
+# Sur muti, après la recette (4 dossiers — muti n'a pas de journal) :
+M=/Users/elzinko/git/bacasable/muti
+ls "$M"/scrum/sprints "$M"/scrum/retro/notes "$M"/scrum/retro/captures "$M"/scrum/evidence
+git -C "$M" log --follow --oneline -- scrum/sprints | tail -3   # historique préservé par git mv
+ezk --root "$M" paths sprints   # → scrum/sprints (après scrum: true)
 ```
 
 ## Notes / décisions
 
 - **Dépend de** la fiche 2 (impératif : skills lisent la config avant toute bascule de consommateur).
-- **Dépendance externe** : le dépôt **muti** (hors monorepo). À constater accessible au grooming
-  (ligne datée « dépendance muti — accès constaté le AAAA-MM-JJ ») avant de passer `ready`.
+- **Dépendance muti — accès constaté le 2026-10-07** : dépôt git `/Users/elzinko/git/bacasable/muti`,
+  sur `main`, propre, avec `.vectorz/config.yml` (legacy, pas encore de bloc `scrum:`). Il porte
+  **4 des 5 dossiers** de process : `docs/sessions` (14 fichiers), `docs/retro-notes` (5),
+  `docs/captures` (4), `docs/pr-evidence` (42) — **pas** `docs/journal`. La recette ne bouge donc
+  que les dossiers **présents** (4 `git mv` pour muti, pas 5).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
