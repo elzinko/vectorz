@@ -5,9 +5,9 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version:
+version: V0.7
 labels: [supervision]
-status: idea
+status: ready
 pr:
 evidence: none # pas d'écran
 created: 2026-10-02
@@ -51,3 +51,6 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - Incident vécu le 2026-10-02, pendant le run de la V0.5.
+- 2026-10-07 : groomée `ready`, version **V0.7** (socle « voir sous le capot » : rendre la trace
+  fiable). DoR tenue — fix clair (`run_finished` exige l'id du run), critères testables. Fait lot
+  socle V0.7 avec 20261003201035260.

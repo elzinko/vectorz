@@ -5,9 +5,9 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version:
+version: V0.7
 labels: [archive, sessions]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
@@ -47,3 +47,6 @@ git log origin/main --oneline -- docs/sessions/ | head -3
 
 - Née de la rétro de l'itération V0.5 (capture `docs/captures/2026-10-03-retro-iteration-v0-5.md`), proposée par le produit. Retenue par choix
   délégué du PO à l'agent, P2. Traite la note de carnet sur les récits absents.
+- 2026-10-07 : groomée `ready`, version **V0.7** (socle « voir sous le capot »). Le sprint commence
+  par une **courte mesure** (combien de clôtures depuis le 30 août auraient dû écrire un récit, et
+  la cause), puis corrige — la fiche le prévoit. Fait lot socle V0.7 avec 20261002133125444.

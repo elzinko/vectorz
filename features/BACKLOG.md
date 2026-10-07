@@ -247,8 +247,10 @@
 | [20260920213500176](done/20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons) | chore | P2 | V0.4 | mega-city | ✅ shipped | #300 |
 | [20260922160651394](done/20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md) | Mettre le code en conformité avec les règles de dev récentes | chore | P2 | V0.1 | mega-city | ✅ shipped | #270 |
 | [20260923220631498](done/20260923220631498_portier-archive-compte-egale-enumeration.md) | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 |  | mega-city | 🗑️ superseded | superseded — fusionnée dans 20260904091853948 (tri 2026-09-30) |
+| [20261002133125444](20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 | V0.7 | mega-city | 🔵 ready |  |
 | [20261002223842228](done/20261002223842228_ship-fiche-autre-depot-root.md) | ship:fiche livre aussi les fiches d'un autre dépôt (--root) | feature | P2 |  | mega-city | ✅ shipped | #336 |
 | [20261003072823731](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 | V0.5 | mega-city | ✅ shipped | #344 |
+| [20261003201035260](20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 | V0.7 | mega-city | 🔵 ready |  |
 | [20261007115128214](20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
@@ -309,7 +311,6 @@
 | [20261002130235353](20261002130235353_en-cours-deduit-des-branches.md) | « En cours » se déduit des branches, il ne s'écrit pas | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261002130917993](20261002130917993_release-local-first-macos.md) | Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261002133125444](20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261002155911264](20261002155911264_ezk-archive-reprise-run-interrompu.md) | ezk-archive reprend proprement un run interrompu | feature | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261002155911271](20261002155911271_trier-sorties-retro-par-nature.md) | Trier les sorties de rétro par nature : aligner ADR-0054, ezk-retro et .rules/ | chore | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261002205428200](20261002205428200_garde-ship-branche-reelle-de-la-pr.md) | La garde de ship lit la vraie branche de la PR, pas l'argument --branch | bug | P2 |  | mega-city | 💡 idea |  |
@@ -319,7 +320,6 @@
 | [20261003011750607](20261003011750607_checkpoint-sprint-termes-en-clair.md) | Le checkpoint d'ezk-sprint définit en clair les termes de chaque option | chore | P2 | V0.6 | mega-city | 💡 idea |  |
 | [20261003201035080](20261003201035080_skills-sans-section-double-tests-sans-donnee-figee.md) | Un contrôle refuse une section en double dans un skill, et les tests ne figent plus l'état du backlog | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261003201035168](20261003201035168_portier-archive-fiches-et-adr-contre-origin-main.md) | Le portier d'ezk-archive juge les fiches livrées et les ADR contre origin/main | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261003201035260](20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004083345055](20261004083345055_pr-range-sa-fiche-seule.md) | Une PR ne range que sa fiche : l'index se régénère après la fusion | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
