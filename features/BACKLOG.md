@@ -249,6 +249,7 @@
 | [20261002223842228](done/20261002223842228_ship-fiche-autre-depot-root.md) | ship:fiche livre aussi les fiches d'un autre dépôt (--root) | feature | P2 |  | mega-city | ✅ shipped | #336 |
 | [20261003072823731](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 | V0.5 | mega-city | ✅ shipped | #344 |
 | [20261007115128214](20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
+| [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -323,7 +324,6 @@
 | [20261004101755756](20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
