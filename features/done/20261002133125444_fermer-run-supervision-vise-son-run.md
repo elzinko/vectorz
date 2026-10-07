@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.7
 labels: [supervision]
-status: ready
-pr:
+status: shipped
+pr: "local (29ee1834)"
 evidence: none # pas d'écran
 created: 2026-10-02
 ---

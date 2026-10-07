@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002133125444_fermer-run-supervision-vise-son-run.md](../20261002133125444_fermer-run-supervision-vise-son-run.md)
+> 🗎 Rendu de la fiche [features/20261002133125444_fermer-run-supervision-vise-son-run.md](../done/20261002133125444_fermer-run-supervision-vise-son-run.md)
 
 # 20261002133125444 — Fermer un run de supervision peut fermer celui d'une autre session
 
