@@ -42,22 +42,40 @@ Remplacer les littéraux `docs/(sessions|retro-notes|captures|journal|pr-evidenc
 
 Le défaut reste legacy → **zéro changement de comportement**.
 
+**Ancrage — trois catégories (vérifié le 2026-10-07).** Le grep brut remonte ~36 fichiers ; seules
+les deux premières catégories se rebranchent :
+
+1. **Code de production qui ÉCRIT ces chemins → à rebrancher** : `bin/journal-add.sh`,
+   `bin/pr-evidence.sh`, `bin/ezk-chef-extract.sh`, `skills/ezk-archive/scripts/{archive-commit.sh,handoff.sh}`,
+   `skills/ezk-retro/scripts/note.sh`, `skills/ezk-sprint/scripts/sprint.sh` ; côté TS
+   `bin/retro-captures.ts`, `src/core/{retro-capture.ts,runs-data.ts,ezk-chef-suggest.ts}`,
+   `src/loaders/runs.ts`, `src/supervision/journal.ts`.
+2. **Prose des `SKILL.md` → à pointer vers `ezk paths`** : `ezk-archive`, `ezk-backlog`, `ezk-chef`,
+   `ezk-product-build`, `ezk-retro`, `ezk-sprint` (6).
+3. **Hors périmètre** : les **fixtures de test** (`**/test-*.sh`, `src/**/__tests__/*.ts`) — elles
+   bougent avec la bascule (fiche 3), pas ici ; et les **vérificateurs de liens**
+   (`bin/check-links.sh`, `bin/test-links-repo.sh`) qui citent `docs/…` comme **exemples de liens**,
+   pas comme chemins d'écriture.
+
 ## Critères d'acceptation
 
-- [ ] `git grep -nE "docs/(sessions|retro-notes|captures|journal|pr-evidence)" products/mega-city/skills products/mega-city/bin`
-      ne renvoie **plus aucun chemin exécuté** (il peut rester des mentions en prose d'exemple,
-      clairement marquées « configurable »).
-- [ ] Les 4 scripts bash et les bins TS concernés lisent le résolveur / `ezk paths`.
-- [ ] `pnpm --dir products/mega-city test` et `test:scripts` restent **verts** (comportement
-      inchangé, défaut legacy).
+- [ ] **Catégorie 1** (code de production bash + TS) : le grep ci-dessous — **hors fixtures de
+      test, vérificateurs de liens et `SKILL.md`** — ne renvoie plus aucun chemin exécuté en dur ;
+      ces fichiers lisent le résolveur / `ezk paths`.
+- [ ] **Catégorie 2** : les 6 `SKILL.md` (ezk-archive, ezk-backlog, ezk-chef, ezk-product-build,
+      ezk-retro, ezk-sprint) référencent `ezk paths <clé>` au lieu du littéral (contrôle à l'œil).
+- [ ] `pnpm --dir products/mega-city test` et `test:scripts` restent **verts** (défaut legacy,
+      comportement inchangé) — les fixtures ne sont **pas** touchées ici (elles bougent en fiche 3).
 
 ## Comment vérifier
 
 ```bash
 cd products/mega-city && pnpm build && pnpm test && pnpm test:scripts
-# 0 chemin exécuté en dur (distinguer les 3 codes de retour de grep) :
-( git grep -nE "docs/(sessions|retro-notes|captures|journal|pr-evidence)" products/mega-city/skills products/mega-city/bin; rc=$?
-  case $rc in 0) echo "à vérifier : occurrences ci-dessus (prose d'exemple ou résidu ?)";; 1) echo "OK — plus aucune occurrence";; *) echo "ERREUR grep";; esac )
+# Catégorie 1 (code de prod) : 0 chemin exécuté en dur, hors fixtures / link-checkers / SKILL.md.
+( git grep -nE "docs/(sessions|retro-notes|captures|journal|pr-evidence)" -- \
+    products/mega-city/bin products/mega-city/src products/mega-city/skills \
+    ':!**/test-*.sh' ':!**/__tests__/**' ':!**/check-links.sh' ':!**/test-links-repo.sh' ':!**/SKILL.md'; rc=$?
+  case $rc in 0) echo "KO — résidu de code de prod ci-dessus"; exit 1;; 1) echo "OK — code de prod propre";; *) echo "ERREUR grep (rc=$rc)"; exit 2;; esac )
 ```
 
 ## Notes / décisions
