@@ -4,8 +4,8 @@ title: "Régler le modèle et l'effort de chaque agent, projet par projet"
 type: feature
 priority: P1
 product: mega-city
-milestone: cockpit
-version: V0.6
+milestone: parked
+version:
 labels: [installation, ezk-map]
 status: ready
 blocked: "à découper avant de construire : 12 critères, estimée à 500-700k (règle token-economy/fiche-tient-dans-un-sprint, rétro du 2026-10-04)"

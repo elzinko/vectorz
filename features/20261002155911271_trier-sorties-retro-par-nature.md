@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone: rationalisation
-version: V0.6
+version:
 labels: [retro]
 status: idea
 pr:
