@@ -256,6 +256,7 @@
 | [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [20261007154842506](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
+| [20261007154842780](20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -327,7 +328,6 @@
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261007154842780](20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
