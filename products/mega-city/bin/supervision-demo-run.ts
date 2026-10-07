@@ -22,20 +22,22 @@ const { run_id } = rt.runStart({
   method_version: '0.1.0',
   seat: 'human',
 });
-rt.heartbeat({ note: 'étape 1 simulée' });
+rt.heartbeat({ note: 'étape 1 simulée', run_id });
 rt.escalate({ type: 'blocked', detail: 'escalade factice de démo (signal non-bloquant)' });
 const g1 = rt.gateReached({
   gate_id: 'demo-gate-1',
   outcome: 'ok',
   report_markdown: 'Étape 1 simulée — résumé jouet.',
+  run_id,
 });
-rt.gateResumed({ gate_event_id: g1.gate_event_id });
-rt.heartbeat({ note: 'étape 2 simulée' });
+rt.gateResumed({ gate_event_id: g1.gate_event_id, run_id });
+rt.heartbeat({ note: 'étape 2 simulée', run_id });
 const g2 = rt.gateReached({
   gate_id: 'demo-gate-2',
   outcome: 'ok',
   report_markdown: 'Étape 2 simulée — résumé jouet.',
+  run_id,
 });
-rt.gateResumed({ gate_event_id: g2.gate_event_id });
-rt.runFinished({ status: 'success' });
+rt.gateResumed({ gate_event_id: g2.gate_event_id, run_id });
+rt.runFinished({ status: 'success', run_id });
 console.log(run_id);

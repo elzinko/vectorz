@@ -302,6 +302,9 @@ bruit** :
 
 - **À l'ouverture du sprint (`start`, étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
   <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+  **Retiens le `run_id` rendu** : `run_finished` l'exige pour ne fermer QUE ton run, et non celui
+  d'une autre session (fiche 20261002133125444). Passe-le aussi à `gate_reached`/`heartbeat` si tu veux
+  qu'ils refusent un run qui n'est pas le tien.
 - **Pendant le travail long (étapes 1–8, best-effort)** — fiche 0103 : appelle `heartbeat
   {note: "<étape en cours, une ligne>"}` **au moins une fois par étape majeure**, et en
   tout cas **au plus toutes les ~2–3 min** d'activité utile (jamais ≥ le seuil Moniteur
@@ -324,7 +327,7 @@ bruit** :
   ⚠️ **Refus SANS appelant = run orphelin, pas absorption** (usage direct, l'humain
   t'a lancé toi) : une session interrompue a laissé son run ouvert, et personne ne
   pourra jamais le clore. Ne t'y greffe pas — **arrête-toi et demande** : reprendre, ou
-  abandonner (`run_finished {status: abandoned}`) puis ouvrir un run neuf.
+  abandonner (`run_finished {run_id: <l'id de ce run orphelin>, status: abandoned}`) puis ouvrir un run neuf.
 - **Au checkpoint (étape 9)** — c'est TON gate : `gate_reached {gate_id:
   "sprint-<slug>-checkpoint", outcome: ok|attention|failed, report_markdown: <ton résumé
   de clôture : livré · PR · tokens>}` **avant** de poser « on continue ? » — puis
@@ -336,8 +339,9 @@ bruit** :
 - **Sur un « stop & ask »** (blocage, gate locale rouge 2×, scope creep, action
   irréversible) : `escalate {type: blocked|authority, detail: <une ligne>}` — un signal,
   jamais un arrêt de plus que celui que tu fais déjà.
-- **À la clôture du sprint** (`close`, après le dernier squash-merge du lot, ou abandon) : `run_finished {status:
-  success|failure|abandoned}`.
+- **À la clôture du sprint** (`close`, après le dernier squash-merge du lot, ou abandon) : `run_finished {run_id:
+  <l'id rendu par ton run_start>, status: success|failure|abandoned}`. Sans le `run_id`, ou avec celui d'un
+  autre run, l'appel est refusé et ne ferme rien (fiche 20261002133125444).
 
 Tu n'écris **jamais** les champs d'enveloppe (le serveur les calcule) et tu ne forces
 **jamais** `upgrade_ok` (au mieux un veto). Tes checkpoints restent des checkpoints — le

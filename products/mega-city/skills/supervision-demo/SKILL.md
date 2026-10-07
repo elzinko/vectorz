@@ -34,7 +34,8 @@ dans le contexte : **STOP** — explique la config manquante, n'émets rien.
 ## Le déroulé (strict, 2 gates)
 
 1. **`run_start`** `{method_name: "supervision-demo", method_version: "0.1.0",
-   seat: "human"}` — annonce le run. Montre à l'utilisateur le `run_id` retourné.
+   seat: "human"}` — annonce le run. Montre à l'utilisateur le `run_id` retourné,
+   et **garde-le** : `run_finished` l'exige pour ne fermer que ce run (fiche 20261002133125444).
 2. **Étape 1 (travail simulé)** : produis 3-5 lignes sur le sujet donné en argument
    (n'importe quoi de plausible — c'est un jouet). Émets un **`heartbeat`**
    `{note: "étape 1 en cours"}` pendant ce travail (signe de vie Moniteur). Si le sujet
@@ -48,7 +49,7 @@ dans le contexte : **STOP** — explique la config manquante, n'émets rien.
    t'a donné en 3), puis **étape 2** (encore 3-5 lignes + un `heartbeat` `{note:
    "étape 2"}`), puis **`gate_reached`**
    `{gate_id: "demo-gate-2", …}` — STOP à nouveau.
-5. À la 2ᵉ reprise : `gate_resumed` puis **`run_finished`** `{status: "success"}`.
+5. À la 2ᵉ reprise : `gate_resumed` puis **`run_finished`** `{run_id: <celui rendu en 1>, status: "success"}`.
    Termine en montrant où vit le journal
    (`<projet>/.supervision/runs/<run_id>/events.jsonl`) et propose de le vérifier
    (validateur cop1 0027 quand il existera ; en attendant `cat` + lecture).

@@ -439,8 +439,9 @@ bruit** :
 - **Au lancement d'un `run` (y compris `--once`) — UNE fois par session, pas à chaque tour de
   boucle** : `run_start {method_name: "ezk-product-build", method_version: <version du
   catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
-  Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un run déjà
-  ouvert), c'est **toi** qui ouvres le run quand tu es la tête de chaîne.
+  **Retiens le `run_id` rendu** : `run_finished` l'exige à la clôture, pour ne fermer que TON run
+  (fiche 20261002133125444). Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un
+  run déjà ouvert), c'est **toi** qui ouvres le run quand tu es la tête de chaîne.
   ⚠️ Deux pièges de portée : ton étape 4 reboucle en (1) — n'y réémets **pas**
   `run_start`, un run couvre la session, pas un sprint ; et `help`/`status`/sans-argument
   **n'ouvrent aucun run** (elles ne lancent rien, et n'ont pas de clôture où le refermer
@@ -461,8 +462,8 @@ bruit** :
     greffe pas : sans appelant, personne ne pourra jamais le clore, chaque session
     suivante s'y ajouterait, et un gate resté ouvert bloquerait tous les checkpoints —
     le journal se fige pour de bon. **Arrête-toi et demande** : reprendre ce run tel
-    quel, ou l'abandonner (`run_finished {status: abandoned}`) puis en ouvrir un neuf.
-    C'est une décision d'humain — clore le run d'autrui n'est jamais automatique.
+    quel, ou l'abandonner (`run_finished {run_id: <l'id de ce run orphelin>, status: abandoned}`) puis
+    en ouvrir un neuf. C'est une décision d'humain — clore le run d'autrui n'est jamais automatique.
 - **La règle d'absorption, vue de ton côté** : chaque `ezk-sprint` que tu lances reçoit
   ce même refus et émet ses gates (`sprint-<slug>-checkpoint`) **dans TON run**. Côté
   *run*, c'est mécanique. Côté ***gates*, ça ne l'est pas** : le serveur n'accepte
@@ -488,9 +489,10 @@ bruit** :
   décisions que tu **refuses** de prendre, cf. « Mode `--mode` ») : `escalate
   {type: authority, detail: <une ligne>}` — le signal part, tu poses la question, tu
   attends. Ce n'est jamais un arrêt de plus que celui que tu fais déjà.
-- **À la clôture** (choix `[Stop]`, ou fin de boucle) : `run_finished {status:
-  success|failure|abandoned}` — **seulement si c'est toi qui as ouvert le run**
-  (cf. le cas d'absorption ci-dessus) ; jamais par un `ezk-sprint` absorbé.
+- **À la clôture** (choix `[Stop]`, ou fin de boucle) : `run_finished {run_id: <l'id rendu par ton
+  run_start>, status: success|failure|abandoned}` — **seulement si c'est toi qui as ouvert le run**
+  (cf. le cas d'absorption ci-dessus) ; jamais par un `ezk-sprint` absorbé. Le `run_id` est exigé : il
+  garantit que tu fermes TON run, pas celui d'une autre session (fiche 20261002133125444).
 
 Tu n'écris **jamais** les champs d'enveloppe (le serveur les calcule) et tu ne forces
 **jamais** `upgrade_ok` — au mieux un veto (`upgrade_ok_veto`). C'est une tentation

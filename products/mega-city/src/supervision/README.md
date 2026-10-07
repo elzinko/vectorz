@@ -203,7 +203,10 @@ cette section sans bruit :
   résultat d'outil du `gate_reached`).
 - **Signal non-bloquant** : `escalate {type: blocked|authority, detail: <texte>}`
   — jamais un arrêt.
-- **À la clôture** : `run_finished {status: success|failure|abandoned}`.
+- **À la clôture** : `run_finished {run_id: <l'id rendu par run_start>, status: success|failure|abandoned}`.
+  Le `run_id` est **obligatoire** : il garantit qu'on ferme son propre run, pas celui d'une autre
+  session (fiche 20261002133125444). Un id absent ou étranger est refusé, avec un message qui nomme le
+  run ouvert, son âge et sa méthode. Même garde, optionnelle, sur `gate_reached`/`gate_resumed`/`heartbeat`.
 
 Tu n'écris jamais les champs d'enveloppe (le serveur les calcule) et tu ne
 forces jamais `upgrade_ok` (au mieux un veto). Vocabulaire : tes checkpoints

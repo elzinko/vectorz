@@ -77,7 +77,8 @@ faux négatif). Si **aucun** transport ne peut écrire → replie-toi sur ezk-pr
 classique et dis-le.
 L'autonomie sans journal est une boîte noire ; ici chaque décision laisse une trace :
 
-- `run_start` au lancement ; `run_finished` à la clôture.
+- `run_start` au lancement ; `run_finished {run_id: <l'id rendu par run_start>, status}` à la clôture
+  — le `run_id` est exigé, pour ne fermer que ton run et pas celui d'une autre session (fiche 20261002133125444).
 - **Pendant les sprints délégués** : `heartbeat {note}` au plus toutes les ~2–3 min
   (jamais ≥ `presumed_dead_after_min`, défaut 5 min — fiche 0103) pour éviter le faux
   « Silence prolongé » du Moniteur — ce n'est pas un jalon.

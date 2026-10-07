@@ -50,10 +50,15 @@ export interface GateReachedArgs {
   outcome: 'ok' | 'attention' | 'failed';
   report_markdown?: string;
   upgrade_ok_veto?: boolean;
+  /** Run visé (id rendu par run_start). Optionnel ; s'il est fourni, il doit
+   * correspondre au run ouvert, sinon l'appel est refusé (fiche 20261002133125444). */
+  run_id?: string;
 }
 
 export interface GateResumedArgs {
   gate_event_id: string;
+  /** Run visé — même règle optionnelle-mais-vérifiée que gate_reached. */
+  run_id?: string;
 }
 
 export interface EscalateArgs {
@@ -63,6 +68,9 @@ export interface EscalateArgs {
 
 export interface RunFinishedArgs {
   status: 'success' | 'failure' | 'abandoned';
+  /** Run à fermer — id rendu par run_start. OBLIGATOIRE : fermer sans viser son
+   * propre run pouvait fermer le run d'une autre session (fiche 20261002133125444). */
+  run_id: string;
   /** Provenance de l'abandon — obligatoire uniquement quand status === 'abandoned'.
    * Défaut 'method' (la méthode abandonne son propre run).
    * Écrit 'seat' par le chemin siège (bin/supervision-abandon via EmitterCliAbandonAdapter).
@@ -73,6 +81,8 @@ export interface RunFinishedArgs {
 export interface HeartbeatArgs {
   /** Note courte optionnelle (ex. étape en cours) — signe de vie entre deux jalons. */
   note?: string;
+  /** Run visé — même règle optionnelle-mais-vérifiée que gate_reached. */
+  run_id?: string;
 }
 
 interface OpenGate {
@@ -221,7 +231,7 @@ export function describeOpenRun(events: JournalEvent[]): string {
     `Méthode bloquante : ${method}`,
     `Âge du run : ${runAge}`,
     `Dernier événement : ${lastEventDesc} (${eventCount} événement(s) au total)`,
-    `Marche à suivre : abandonne ce run au Moniteur (bouton "Abandonner ce run" sur la carte "Silence prolongé"), ou appelle run_finished {status:"abandoned"} si c'est un orphelin de ta propre session.`,
+    `Marche à suivre : abandonne ce run au Moniteur (bouton "Abandonner ce run" sur la carte "Silence prolongé"), ou appelle run_finished {run_id:"<l'id du run ci-dessus>", status:"abandoned"} si c'est un orphelin de ta propre session.`,
   ].join('\n');
 }
 
@@ -289,7 +299,7 @@ export class SupervisionRuntime {
         gate_event_id: event.event_id,
         message: 'STOP — arrête-toi et attends la décision du siège avant de continuer.',
       };
-    });
+    }, { expectedRunId: args.run_id });
   }
 
   gateResumed(args: GateResumedArgs): { event_id: string } {
@@ -304,7 +314,7 @@ export class SupervisionRuntime {
       }
       const event = journal.append('gate.resumed', { gate_event_id: args.gate_event_id });
       return { event_id: event.event_id };
-    });
+    }, { expectedRunId: args.run_id });
   }
 
   escalate(args: EscalateArgs): { escalation_id: string } {
@@ -335,18 +345,22 @@ export class SupervisionRuntime {
         typeof args.note === 'string' && args.note.trim().length > 0 ? args.note.trim() : undefined;
       const event = journal.append('heartbeat', note !== undefined ? { note } : {});
       return { run_id: state.runId, event_id: event.event_id };
-    });
+    }, { expectedRunId: args.run_id });
   }
 
   runFinished(args: RunFinishedArgs): { run_id: string } {
-    return this.withOpenRunWrite('run_finished', (state, journal) => {
-      const payload: Record<string, unknown> = { status: args.status };
-      if (args.status === 'abandoned') {
-        payload.abandoned_by = args.abandoned_by ?? 'method';
-      }
-      journal.append('run.finished', payload);
-      return { run_id: state.runId };
-    });
+    return this.withOpenRunWrite(
+      'run_finished',
+      (state, journal) => {
+        const payload: Record<string, unknown> = { status: args.status };
+        if (args.status === 'abandoned') {
+          payload.abandoned_by = args.abandoned_by ?? 'method';
+        }
+        journal.append('run.finished', payload);
+        return { run_id: state.runId };
+      },
+      { expectedRunId: args.run_id, requireRunId: true },
+    );
   }
 
   /**
@@ -373,16 +387,20 @@ export class SupervisionRuntime {
   private withOpenRunWrite<T>(
     toolName: string,
     mutate: (state: OpenRunState, journal: Journal) => T,
-    options: { expectedRunId?: string } = {},
+    options: { expectedRunId?: string; requireRunId?: boolean } = {},
   ): T {
     const provisional = findOpenRun(this.projectRoot);
     if (!provisional) {
       throw new Error(`${toolName} refusé : aucun run ouvert (appelle run_start d'abord)`);
     }
+    if (
+      options.requireRunId === true &&
+      (typeof options.expectedRunId !== 'string' || options.expectedRunId.length === 0)
+    ) {
+      throw this.wrongRunError(toolName, provisional, undefined);
+    }
     if (options.expectedRunId !== undefined && provisional.runId !== options.expectedRunId) {
-      throw new Error(
-        `${toolName} refusé : le run ouvert (${provisional.runId}) ne correspond pas au run attendu (${options.expectedRunId}) — clic sur carte périmée ?`,
-      );
+      throw this.wrongRunError(toolName, provisional, options.expectedRunId);
     }
 
     return withRunWriteLock(provisional.runDir, () => {
@@ -393,12 +411,26 @@ export class SupervisionRuntime {
         );
       }
       if (options.expectedRunId !== undefined && state.runId !== options.expectedRunId) {
-        throw new Error(
-          `${toolName} refusé : le run ouvert (${state.runId}) ne correspond pas au run attendu (${options.expectedRunId}) — clic sur carte périmée ?`,
-        );
+        throw this.wrongRunError(toolName, state, options.expectedRunId);
       }
       const journal = new Journal(state.runDir, state.runId);
       return mutate(state, journal);
     });
+  }
+
+  /**
+   * Construit le refus « tu ne vises pas le run ouvert » : il NOMME le run en place,
+   * son âge et la méthode qui l'a ouvert (fiche 20261002133125444, critère 2), via
+   * `describeOpenRun`. `expectedRunId === undefined` ⇒ le cas « id manquant ».
+   */
+  private wrongRunError(toolName: string, open: OpenRunState, expectedRunId: string | undefined): Error {
+    const events = readJournalEvents(path.join(open.runDir, 'events.jsonl'));
+    const cause =
+      expectedRunId === undefined
+        ? `il faut viser le run à fermer (champ run_id, rendu par run_start)`
+        : `l'id visé (${expectedRunId}) n'est pas le run ouvert`;
+    return new Error(
+      `${toolName} refusé : ${cause}.\nRun ouvert : ${open.runId}\n${describeOpenRun(events)}`,
+    );
   }
 }

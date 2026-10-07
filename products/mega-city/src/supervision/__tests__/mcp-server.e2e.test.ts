@@ -133,7 +133,7 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
 
     const finishedResult = await client.callTool({
       name: 'run_finished',
-      arguments: { status: 'success' },
+      arguments: { status: 'success', run_id: runId },
     });
     expect(finishedResult.isError).toBeFalsy();
 

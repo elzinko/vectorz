@@ -110,7 +110,7 @@ projects:
     expect(event1.payload).not.toHaveProperty('_method_mismatch');
 
     // Terminer le run pour pouvoir en ouvrir un nouveau
-    runtime.runFinished({ status: 'success' });
+    runtime.runFinished({ status: 'success', run_id: runId1 });
 
     // Nouveau runtime avec méthode divergente (même expectedMethod dans le registre)
     const runtime2 = new SupervisionRuntime(tmpDir, 'mega-city');

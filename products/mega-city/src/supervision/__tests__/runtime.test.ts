@@ -95,7 +95,7 @@ describe('Rubrique A — Run nominal complet', () => {
     });
     expect(resumed).toBeTruthy();
 
-    runtime.runFinished({ status: 'success' });
+    runtime.runFinished({ status: 'success', run_id: started.run_id });
     events = readEvents(projectRoot, started.run_id);
     expect(events).toHaveLength(4);
     expect(events.map((e) => e.type)).toEqual([
@@ -114,12 +114,15 @@ describe('Rubrique B — enveloppe (intégration runtime)', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
 
+    // run_id = le run ouvert : c'est désormais un garde de ciblage (fiche 20261002133125444),
+    // plus un champ d'enveloppe. Le viser correctement laisse l'appel passer ; les champs
+    // d'enveloppe falsifiés (seq, event_id, contract) restent, eux, toujours ignorés.
     const hostile = {
       gate_id: 'gate-1',
       outcome: 'ok' as const,
       seq: 9999,
       event_id: 'fake',
-      run_id: 'autre-run',
+      run_id: started.run_id,
       contract: 'contract://falsifie',
     };
     runtime.gateReached(hostile);
@@ -161,14 +164,14 @@ describe('Rubrique C — cycle de vie du run', () => {
     expect(() => runtime.gateResumed({ gate_event_id: 'whatever' })).toThrow();
     expect(() => runtime.escalate({ type: 'blocked', detail: 'x' })).toThrow();
     expect(() => runtime.heartbeat({ note: 'x' })).toThrow();
-    expect(() => runtime.runFinished({ status: 'success' })).toThrow();
+    expect(() => runtime.runFinished({ status: 'success', run_id: 'run-inexistant' })).toThrow();
     expect(fs.existsSync(path.join(projectRoot, '.supervision'))).toBe(false);
   });
 
   it('refuse toute émission après run_finished, journal du run terminé inchangé', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
-    runtime.runFinished({ status: 'success' });
+    runtime.runFinished({ status: 'success', run_id: started.run_id });
     const before = readEvents(projectRoot, started.run_id);
 
     expect(() => runtime.gateReached({ gate_id: 'g', outcome: 'ok' })).toThrow();
@@ -205,7 +208,7 @@ describe('Rubrique C — cycle de vie du run', () => {
   it('un nouveau run_start après run_finished ouvre un nouveau run distinct', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const runA = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
-    runtime.runFinished({ status: 'success' });
+    runtime.runFinished({ status: 'success', run_id: runA.run_id });
     const runAEventsBefore = readEvents(projectRoot, runA.run_id);
 
     const runB = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
@@ -539,7 +542,7 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
   it('J1 — runFinished abandoned sans abandoned_by → abandoned_by:method dans le payload', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
-    runtime.runFinished({ status: 'abandoned' });
+    runtime.runFinished({ status: 'abandoned', run_id });
 
     const events = readEvents(projectRoot, run_id);
     const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
@@ -552,7 +555,7 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
   it('J2 — runFinished abandoned avec abandoned_by:seat → abandoned_by:seat dans le payload', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
-    runtime.runFinished({ status: 'abandoned', abandoned_by: 'seat' });
+    runtime.runFinished({ status: 'abandoned', abandoned_by: 'seat', run_id });
 
     const events = readEvents(projectRoot, run_id);
     const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
@@ -564,7 +567,7 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
   it('J3 — runFinished success → pas de champ abandoned_by dans le payload', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
-    runtime.runFinished({ status: 'success' });
+    runtime.runFinished({ status: 'success', run_id });
 
     const events = readEvents(projectRoot, run_id);
     const finished = events.find((e) => e.type === 'run.finished') as Record<string, unknown> | undefined;
@@ -627,7 +630,7 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
   it('J6 — abandonRun refuse si le run ouvert ne correspond pas au run attendu', () => {
     const runtime = new SupervisionRuntime(projectRoot);
     const { run_id: runA } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
-    runtime.runFinished({ status: 'success' });
+    runtime.runFinished({ status: 'success', run_id: runA });
 
     const { run_id: runB } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '1.0.0' });
     expect(runB).not.toBe(runA);
@@ -676,5 +679,79 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
     expect(events.map((e) => e.type)).not.toContain('run.finished');
     // run_start refusé = le run est bien toujours ouvert
     expect(() => runtime.runStart({ method_name: 'm', method_version: '1.0.0' })).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Rubrique K — run_finished vise son propre run (fiche 20261002133125444)
+// Une seule place partagée pour la trace : fermer sans viser son run pouvait
+// fermer celui d'une AUTRE session. run_finished exige désormais l'id du run.
+// ---------------------------------------------------------------------------
+describe('Rubrique K — run_finished vise son run (fiche 20261002133125444)', () => {
+  // C1 — l'incident : un id étranger ne ferme pas le run ouvert
+  it('K1 — run_finished avec un id étranger est refusé et ne ferme rien', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-product-build', method_version: '1.0.0' });
+
+    expect(() => runtime.runFinished({ status: 'success', run_id: 'run-dune-autre-session' })).toThrow(
+      /run_finished refusé/,
+    );
+    const events = readEvents(projectRoot, run_id);
+    expect(events.map((e) => e.type)).not.toContain('run.finished');
+  });
+
+  // C2 — le refus nomme le run ouvert, son âge et la méthode qui l'a ouvert
+  it('K2 — le refus nomme le run ouvert, son âge et la méthode', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'ezk-sprint', method_version: '2.3.4' });
+
+    let msg = '';
+    try {
+      runtime.runFinished({ status: 'success', run_id: 'pas-le-bon' });
+    } catch (e) {
+      msg = e instanceof Error ? e.message : String(e);
+    }
+    expect(msg).toContain(run_id); // le run ouvert est nommé
+    expect(msg).toContain('ezk-sprint'); // la méthode qui l'a ouvert
+    expect(msg).toMatch(/Âge du run/); // son âge
+  });
+
+  // C1bis — un id manquant (contrat contourné au runtime) est refusé de même
+  it('K3 — run_finished sans id (contrat contourné) est refusé et ne ferme rien', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+
+    // Simule un appelant qui n'a pas respecté le contrat de type (run_id obligatoire).
+    expect(() => runtime.runFinished({ status: 'success' } as never)).toThrow(/run_finished refusé/);
+    const events = readEvents(projectRoot, run_id);
+    expect(events.map((e) => e.type)).not.toContain('run.finished');
+  });
+
+  // le bon id ferme bien le run (chemin nominal du garde)
+  it('K4 — run_finished avec le bon id ferme le run', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+    runtime.runFinished({ status: 'success', run_id });
+    const events = readEvents(projectRoot, run_id);
+    expect(events.filter((e) => e.type === 'run.finished')).toHaveLength(1);
+  });
+
+  // la même règle vaut pour gate_reached/heartbeat SI elles visent un run
+  it('K5 — gate_reached et heartbeat refusent un id étranger, mais restent compatibles sans id', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const { run_id } = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+
+    // id étranger → refusé
+    expect(() => runtime.heartbeat({ note: 'x', run_id: 'etranger' })).toThrow(/heartbeat refusé/);
+    expect(() => runtime.gateReached({ gate_id: 'g', outcome: 'ok', run_id: 'etranger' })).toThrow(
+      /gate_reached refusé/,
+    );
+    // rétro-compat : sans run_id, l'émission passe comme avant
+    const beat = runtime.heartbeat({ note: 'sans id' });
+    expect(beat.run_id).toBe(run_id);
+    const gate = runtime.gateReached({ gate_id: 'g1', outcome: 'ok' });
+    expect(gate.gate_event_id).toBeTruthy();
+    // et avec le bon id, gate_resumed passe
+    runtime.gateResumed({ gate_event_id: gate.gate_event_id, run_id });
   });
 });

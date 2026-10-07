@@ -75,6 +75,7 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
         outcome: z.enum(['ok', 'attention', 'failed']),
         report_markdown: z.string().optional(),
         upgrade_ok_veto: z.boolean().optional(),
+        run_id: z.string().optional(),
       },
     },
     (args) => {
@@ -92,6 +93,7 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
       description: 'Accuse la reprise après un gate_reached — référence son gate_event_id.',
       inputSchema: {
         gate_event_id: z.string(),
+        run_id: z.string().optional(),
       },
     },
     (args) => {
@@ -128,6 +130,7 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
         'Signe de vie pendant un run ouvert (entre deux jalons) — réarme le timer « Silence prolongé » du Moniteur. note optionnelle.',
       inputSchema: {
         note: z.string().optional(),
+        run_id: z.string().optional(),
       },
     },
     (args) => {
@@ -143,9 +146,10 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
     'run_finished',
     {
       description:
-        'Clôture le run courant. Si status="abandoned", abandoned_by est obligatoire (défaut: "method"). ADR-035 D1.',
+        'Clôture le run visé par run_id (OBLIGATOIRE, rendu par run_start) : un id absent ou étranger est refusé sans rien fermer. Si status="abandoned", abandoned_by est obligatoire (défaut: "method"). ADR-035 D1 ; fiche 20261002133125444.',
       inputSchema: {
         status: z.enum(['success', 'failure', 'abandoned']),
+        run_id: z.string(),
         abandoned_by: z.enum(['seat', 'method']).optional(),
       },
     },
