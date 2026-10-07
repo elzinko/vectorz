@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: V0.7
 labels: [archive, sessions]
-status: ready
-pr:
+status: shipped
+pr: "local (274d25b4)"
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
 ---
@@ -55,10 +55,10 @@ son récit — c'est pour ça que `docs/sessions/` a repris.
   pas reconstituable. Le proxy ci-dessus (≥ 12 fiches livrées, plusieurs sessions) est l'estimation
   honnête, borne basse.
 
-**La cause.** Avant [ADR-0063](../products/mega-city/docs/adr/0063-cloture-committe-son-archive.md), `ezk-archive`
+**La cause.** Avant [ADR-0063](../../products/mega-city/docs/adr/0063-cloture-committe-son-archive.md), `ezk-archive`
 écrivait le récit puis *proposait* le commit à l'humain. Ce geste manuel était souvent sauté, ou le récit
 écrit dans un worktree de session que l'app réutilisait ensuite — il disparaissait avec le conteneur
-(note de carnet [récits de session absents de main](../docs/retro-notes/traitees/20261002230222359-recits-session-absents-de-main.md)).
+(note de carnet [récits de session absents de main](../../docs/retro-notes/traitees/20261002230222359-recits-session-absents-de-main.md)).
 
 **Le correctif, déjà livré.** ADR-0063 (fiche 20261005100026946, shippée le 2026-10-05) a remplacé la
 proposition par une action : `archive-commit.sh` committe le récit dans un **worktree git jetable** issu
