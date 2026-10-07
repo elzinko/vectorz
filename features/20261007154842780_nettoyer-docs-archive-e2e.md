@@ -35,12 +35,22 @@ l'automatisé `pnpm cobaye:smoke` couvre le même terrain. À vérifier avant de
 1. **Supprimer `docs/archive/`** (git garde tout).
 2. **`docs/e2e/`** : vérifier d'abord que `pnpm cobaye:smoke` couvre les checklists 0041/0003. Si
    oui → supprimer ; en cas de doute → déplacer en `docs/tests/` (jamais du process).
-3. Nettoyer les liens de `docs/index.md` qui pointaient `archive/` et `e2e/` (coordonner avec la
-   fiche 3 qui touche aussi `index.md`).
+3. Nettoyer `docs/index.md` : il porte **deux sections entières** qui pointent `archive/`
+   (« Epoch-1 BMAD archive » et « Pre-Phase-A archive ») plus l'ancre et le renvoi du haut — à
+   retirer, pas juste un lien. `e2e/` n'y est **pas** référencé (rien à toucher pour lui).
+   Coordonner avec la fiche 3 qui édite aussi `index.md`.
+
+**Ancrage (vérifié le 2026-10-07).** `docs/archive/` = **8 fichiers** (`epoch-1-bmad/` : 3,
+`pre-phase-a/` : 5), tous historiques. `docs/e2e/` = **3 fichiers** (`README.md`, `auth-panel.md`,
+`moniteur-smoke.md`). Le smoke automatisé est `scripts/cobaye-smoke.sh` (script pnpm
+`cobaye:smoke`) : lire ce script pour confirmer qu'il exerce bien l'auth (fiche 0003) et le
+Moniteur (fiche 0041) **avant** de supprimer `e2e/` ; sinon déplacer en `docs/tests/`. `index.md`
+cite `archive/` aux lignes 8 (ancre), 36-40 et 42-44.
 
 ## Critères d'acceptation
 
-- [ ] `docs/archive/` n'existe plus ; `docs/index.md` n'a plus de lien vers lui.
+- [ ] `docs/archive/` n'existe plus ; les **deux sections d'archive** de `docs/index.md` (+ l'ancre
+      et le renvoi du haut) sont retirées.
 - [ ] `docs/e2e/` est supprimé (couverture smoke vérifiée) **ou** déplacé en `docs/tests/`, avec
       une ligne disant pourquoi.
 - [ ] Aucun lien mort introduit (gate liens verte).
@@ -48,11 +58,12 @@ l'automatisé `pnpm cobaye:smoke` couvre le même terrain. À vérifier avant de
 ## Comment vérifier
 
 ```bash
-test ! -d docs/archive && echo "OK archive supprimé" || echo "KO"
-ls docs/ | grep -E "^e2e$|^tests$"
-bash products/mega-city/bin/test-links-repo.sh .
-# Couverture smoke des checklists avant suppression de e2e/ :
-grep -nE "moniteur|auth" products/mega-city/… 2>/dev/null; pnpm cobaye:smoke --help 2>/dev/null || true
+test ! -d docs/archive && echo "OK archive supprimé" || echo "KO archive reste"
+ls docs/ | grep -E "^e2e$|^tests$" || echo "OK e2e retiré"
+grep -nE "archive|epoch-1-bmad|pre-phase-a" docs/index.md && echo "KO sections d'archive restantes" || echo "OK index.md nettoyé"
+bash products/mega-city/bin/test-links-repo.sh .   # 0 lien cassé
+# Couverture smoke AVANT de supprimer e2e/ : lire le script, vérifier qu'il exerce auth + moniteur.
+grep -nE "auth|moniteur|monitor" scripts/cobaye-smoke.sh
 ```
 
 ## Notes / décisions
