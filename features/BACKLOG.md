@@ -141,6 +141,7 @@
 | [20261003011750521](done/20261003011750521_portier-copies-reserve.md) | Les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres | bug | P1 | V0.6 | mega-city | ✅ shipped | local (f0a5b0a9) |
 | [20261003075821760](20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 |  | mega-city | 🔵 ready |  |
 | [20261003105820077](done/20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | V0.5 | mega-city | ✅ shipped | local (527868b7) |
+| [20261004101755756](20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P1 | V0.7 | mega-city | 🔵 ready |  |
 | [20261004181110120](done/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md) | ezk ne croit plus un INIT_CWD laissé par un pnpm parent : le test de « ezk retro note » n'écrit plus dans le vrai dépôt | bug | P1 |  | mega-city | ✅ shipped | local (f62e0128) |
 | [20261004192802828](done/20261004192802828_cockpit-adr-config-lisible-registre-unique.md) | Cockpit, socle : l'ADR, « ezk config show » lisible depuis un autre projet, un seul registre de projets | feature | P1 | V0.6 | mega-city | ✅ shipped | local (43dcb587) |
 | [20261004192802897](done/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) | Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi | feature | P1 | V0.6 | mega-city | ✅ shipped | local (7841c073) |
@@ -319,7 +320,6 @@
 | [20261004083345055](20261004083345055_pr-range-sa-fiche-seule.md) | Une PR ne range que sa fiche : l'index se régénère après la fusion | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261004101755756](20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |

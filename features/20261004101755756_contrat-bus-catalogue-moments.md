@@ -2,12 +2,12 @@
 id: "20261004101755756"
 title: "Écrire le contrat du bus : le catalogue des moments de la méthode"
 type: feature
-priority: P2
+priority: P1
 product: mega-city
 milestone:
-version:
+version: V0.7
 labels: [github-optionnel, plugins]
-status: idea
+status: ready
 pr:
 evidence: none # document et fichier de données, aucun écran
 created: 2026-10-04
@@ -112,3 +112,9 @@ au hasard, quand il se produit, s'il bloque la méthode, et quel outil peut s'y 
   différée).
 - Référence externe : les « Enterprise Integration Patterns » pour nommer les motifs (canal
   publier-s'abonner, aiguillage, diffuser puis rassembler).
+- 2026-10-07 : groomée et passée `ready` (go du PO). **Clé de voûte de la V0.7 « Voir sous le
+  capot »** : l'ordre choisi est le socle d'abord, et cette fiche en est la première brique (le
+  journal durable des moments rattachés à une fiche / un sprint / une version). Priorité montée
+  P2 → P1 : tout le socle en dépend. DoR déjà tenue — critères testables, « Comment vérifier »
+  rejouable, glossaire, lentille « si tu arrives frais ». Rien à construire ici d'autre que le
+  contrat (ADR du bus + catalogue), le code du bus reste hors périmètre.
