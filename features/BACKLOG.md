@@ -247,12 +247,14 @@
 | [20260920213500176](done/20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons) | chore | P2 | V0.4 | mega-city | ✅ shipped | #300 |
 | [20260922160651394](done/20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md) | Mettre le code en conformité avec les règles de dev récentes | chore | P2 | V0.1 | mega-city | ✅ shipped | #270 |
 | [20260923220631498](done/20260923220631498_portier-archive-compte-egale-enumeration.md) | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 |  | mega-city | 🗑️ superseded | superseded — fusionnée dans 20260904091853948 (tri 2026-09-30) |
+| [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Chemins des artefacts de méthode configurables (`scrum:`) — la fondation | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [20261002133125444](20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 | V0.7 | mega-city | 🔵 ready |  |
 | [20261002223842228](done/20261002223842228_ship-fiche-autre-depot-root.md) | ship:fiche livre aussi les fiches d'un autre dépôt (--root) | feature | P2 |  | mega-city | ✅ shipped | #336 |
 | [20261003072823731](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 | V0.5 | mega-city | ✅ shipped | #344 |
 | [20261003201035260](20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 | V0.7 | mega-city | 🔵 ready |  |
 | [20261007115128214](20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
+| [20261007154842506](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 | V0.9 | vectorz | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -307,7 +309,6 @@
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
-| [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Regrouper les artefacts de méthode hors de docs/ — un dossier agnostique (ex. scrum/) + skills à jour | refactor | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20261002130235353](20261002130235353_en-cours-deduit-des-branches.md) | « En cours » se déduit des branches, il ne s'écrit pas | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261002130917993](20261002130917993_release-local-first-macos.md) | Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 |  | mega-city | 💡 idea |  |
@@ -325,6 +326,9 @@
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 | V0.9 | vectorz | 💡 idea |  |
+| [20261007154842780](20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | V0.9 | vectorz | 💡 idea |  |
+| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 | V0.9 | vectorz | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |

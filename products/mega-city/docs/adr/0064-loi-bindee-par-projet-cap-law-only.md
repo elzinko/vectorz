@@ -4,7 +4,7 @@
 **Date :** 2026-10-07
 **Deciders :** PO + ezk-architect
 **Fiche :** [`20261007115129448`](../../../../features/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) — CLAUDE.md proxy + loi bindée par projet
-**S'appuie sur :** [ADR-0003](0003-moteur-deterministe-caps.md) (cap par hôte, DIP) · [ADR-0055](0055-artefacts-generes-hors-versionnage.md) (une vue générée reste en git si un humain la lit) · [ADR-0056](0056-loi-du-socle-par-le-global.md)
+**S'appuie sur :** [ADR-0003](0003-moteur-bind-plan-pur-coquille-io.md) (cap par hôte, DIP) · [ADR-0055](0055-artefacts-generes-hors-versionnage.md) (une vue générée reste en git si un humain la lit) · [ADR-0056](0056-loi-du-socle-par-le-global.md)
 
 ## En clair
 
