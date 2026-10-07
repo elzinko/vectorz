@@ -7,7 +7,7 @@ product: vectorz
 milestone: rationalisation
 version: V0.9
 labels: [convention, arborescence]
-status: idea
+status: ready
 pr:
 evidence: none # doc + refactor d'arborescence, pas d'UI
 created: 2026-10-07
