@@ -4,7 +4,7 @@
 
 Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
 (`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de V0.1 à
-V0.6. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
+V0.9. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
 fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`BACKLOG.md`](BACKLOG.md).
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
@@ -34,7 +34,9 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **V0.4** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | ✅ livrée le 2026-10-01 |
 | **V0.5** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, la fiche rangée avec son merge, product-build qui enchaîne les sprints | ▶️ en cours |
 | **V0.6** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ⏭️ ensuite (décidé le 2026-10-02) |
-| **V0.7** | Amélioration mesurée | contrat d'améliorabilité, observabilité | ⏸️ parkée (ADR-030) |
+| **V0.7** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche, dans une interface reliée au board (le journal durable des moments d'abord, puis l'interface) | ⏭️ ensuite (après V0.6) |
+| **V0.8** | Amélioration mesurée | métriques & qualité : KPI agrégés commit→PR→sprint→version, viz qualité par PR, gate DoD, agent d'analyse | ⏸️ ensuite |
+| **V0.9** | Ranger la maison | rationalisation : `docs/` redevient de la doc, le process regroupé dans `scrum/`, la config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ⏭️ ensuite |
 | **V1.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
@@ -109,7 +111,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261004192802897` — cockpit : le menu des projets et les fiches du projet choisi, pouces dans le bon projet · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
 - ~~`20261004192802964` — cockpit : la page « config » du projet choisi, en sections · découpé le 2026-10-04 · prête le 2026-10-04 · `build`~~ — shipped
 - ~~`20261003011750521` — les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres · P1 depuis la rétro du run cockpit (2026-10-04) · `groom` → `build`~~ — shipped
-- `20261005100026946` — la clôture de session committe l'archive qu'elle écrit · P1, décision PO du 2026-10-05 · `groom` → `build`
+- ~~`20261005100026946` — la clôture de session committe l'archive qu'elle écrit · P1, décision PO du 2026-10-05 · `groom` → `build`~~ — shipped
 - `20261005100027029` — chaque sprint laisse un compte rendu committé et standard, que la rétro lit · P1, décision PO du 2026-10-05 · `groom` → `build`
 - `20261002205205417` — régler le modèle et l'effort des agents par projet, en trois niveaux · prête le 2026-10-03, bloquée le 2026-10-04 : à découper · `groom` → `build` (après la page « config » du cockpit : sa section « Agents » y vit)
 - `20261002115451315` — voir les fiches posées sur le schéma du process, avec leur session · `groom` → `build`

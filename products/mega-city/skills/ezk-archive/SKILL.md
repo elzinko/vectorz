@@ -240,8 +240,21 @@ qui ne demandent aucun jugement.
        par construction (la clôture), aucun nouveau déclencheur à inventer ; section
        vide ou absente → ne rien ajouter (même garde-fou qu'`ezk-retro` : rien à
        retenir → on n'écrit rien) ;
-     - proposer le commit : `docs(sessions): archive session YYYY-MM-DD <slug>`
-       (ne pas committer à l'aveugle — laisser la main à l'utilisateur) ;
+     - **committer et intégrer** l'archive (fiche 20261005100026946,
+       [ADR-0063](../../docs/adr/0063-cloture-committe-son-archive.md)) — la clôture ne la laisse
+       plus hors de git dans le worktree :
+       ```bash
+       P="$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')"   # le checkout principal
+       bash <skill>/scripts/archive-commit.sh --repo "$P" \
+         --file "$PWD/docs/sessions/YYYY-MM-DD-<slug>.md" \
+         --date YYYY-MM-DD --slug <slug> --subject 'docs(sessions): archive session YYYY-MM-DD <slug>'
+       ```
+       Le script committe l'archive sur une branche `docs/archive-session-<date>` via un **worktree
+       jetable issu de `main`** (jamais le checkout principal, jamais la branche de session → seule
+       l'archive entre dans le commit), puis : en **mode local** il l'intègre sur le `main` local
+       (rien poussé — le push reste au PO) ; en **mode PR** il laisse la branche et donne la commande
+       d'ouverture. **Dossier principal sale → archive sauvée sur sa branche, non intégrée, la sortie
+       dit pourquoi.** Tu ne pousses jamais toi-même ;
      - **laisser `SPRINT.md` en place** (scratch éphémère du sprint) ;
      - le handoff **pointe** vers le chemin d'archive (`**Archive session :** …`) —
        **ne duplique pas** le corps de `SPRINT.md` dans la note.
