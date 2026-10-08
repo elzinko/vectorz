@@ -65,3 +65,10 @@ pnpm --dir products/mega-city test
   (douleur non prouvée aujourd'hui). Valeur croît après F1
   (20261008154803440_consommateur-cite-un-bundle.md) et F2
   (20261008154804532_dod-dor-contrat-partage.md).
+- **Coût de ne rien faire** (coupe du 2026-10-08) : aujourd'hui faible — l'info « agent +
+  ses règles » est éparpillée (`.claude/agents/<id>.md` vs `.iamthelaw/ENTRY.md`), mais un
+  `grep` suffit sur un petit jeu de règles. Le coût monte **après F1/F2** : l'indirection
+  bundle→règles et le contrat partagé (vérifier que dev et reviewer lisent la MÊME liste)
+  rendent le traçage à l'œil pénible et faillible.
+- **Déclencheur** : réveiller cette fiche quand **F1 et F2 sont livrées**. Avant, elle reste
+  en `idea` P2 (douleur non prouvée). Ne pas fermer : la valeur est réelle, juste pas encore.
