@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: vectorz
 milestone: portabilite
-version: V0.10
+version: v0.10.0
 labels: [portabilite, generateur, cli]
 status: ready
 pr:

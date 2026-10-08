@@ -4,7 +4,7 @@ title: "ezk-archive plus léger et plus juste (voie rapide, bon compte, survit a
 type: refactor
 priority: P1
 product: mega-city
-version: V0.4
+version: v0.4.0
 epic:
 labels: [session]
 status: shipped

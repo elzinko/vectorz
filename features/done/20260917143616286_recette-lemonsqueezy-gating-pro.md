@@ -4,7 +4,7 @@ title: "Recette : vendre une app avec Lemon Squeezy et une licence Pro"
 type: chore
 priority: P2
 product: vectorz
-version: V0.3
+version: v0.3.0
 epic:
 milestone:
 labels: [recettes]

@@ -4,7 +4,7 @@ title: "Chaque rétro laisse un compte rendu clair et des propositions ciblées"
 type: feature
 priority: P2
 product: mega-city
-version: V0.4
+version: v0.4.0
 labels: [sprint]
 epic:
 status: shipped

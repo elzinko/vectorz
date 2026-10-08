@@ -4,7 +4,7 @@ title: "Une seule commande `ezk` pour tout lancer"
 type: feature
 priority: P1
 product: mega-city
-version: V0.3
+version: v0.3.0
 epic:
 labels: [installation]
 status: shipped

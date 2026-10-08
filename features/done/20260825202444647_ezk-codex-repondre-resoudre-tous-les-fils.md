@@ -4,7 +4,7 @@ title: "ezk-codex répond et ferme tous les fils de revue traités"
 type: feature
 priority: P2
 product: mega-city
-version: V0.3
+version: v0.3.0
 labels: [revue]
 status: shipped
 pr: "#288"

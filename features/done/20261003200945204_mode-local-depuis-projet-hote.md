@@ -5,7 +5,7 @@ type: bug
 priority: P0
 product: mega-city
 milestone:
-version: V0.5
+version: v0.5.0
 labels: [installation, github-optionnel]
 status: shipped
 pr: "local (eb8de257)"

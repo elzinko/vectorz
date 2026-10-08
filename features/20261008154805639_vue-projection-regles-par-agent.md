@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version: V0.8
+version: v0.8.0
 labels: [observabilite]
 status: idea
 pr:

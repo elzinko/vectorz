@@ -4,7 +4,7 @@ title: "Découper le backlog en versions et vérifier la cohérence d'un lot"
 type: feature
 priority: P1
 product: mega-city
-version: V0.3
+version: v0.3.0
 labels: [backlog]
 epic:
 status: shipped

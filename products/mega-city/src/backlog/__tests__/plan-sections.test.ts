@@ -104,7 +104,7 @@ describe('parsePlanSections (fiche 20260825213807501 — vue Plan)', () => {
     expect(parsePlanSections('')).toEqual([]);
   });
 
-  it('charge le vrai features/PLAN.md : une section par version (V0.1 → V0.4) et au moins les ids de parseOrder', () => {
+  it('charge le vrai features/PLAN.md : une section par version (v0.1.0 → v0.4.0) et au moins les ids de parseOrder', () => {
     const planPath = resolve(
       dirname(fileURLToPath(import.meta.url)),
       '../../../../../features/PLAN.md',
@@ -112,9 +112,9 @@ describe('parsePlanSections (fiche 20260825213807501 — vue Plan)', () => {
     const planMd = readFileSync(planPath, 'utf8');
     const sections = parsePlanSections(planMd);
     const labels = sections.map((s) => s.label);
-    // Plan du tri du 2026-09-30 : une section par version, de V0.1 à V0.4.
-    expect(labels.some((l) => /V0\.1/.test(l))).toBe(true);
-    expect(labels.some((l) => /V0\.4/.test(l))).toBe(true);
+    // Plan du tri du 2026-09-30 : une section par version, de v0.1.0 à v0.4.0.
+    expect(labels.some((l) => /v0\.1\.0/.test(l))).toBe(true);
+    expect(labels.some((l) => /v0\.4\.0/.test(l))).toBe(true);
     // La vue capte au moins tout ce que parseOrder retient (contraste : elle capte AUSSI
     // les paquets multi-ids sans marqueur — couvert par les fixtures ci-dessus).
     const allIds = new Set(sections.flatMap((s) => s.entries.flatMap((e) => e.ids)));

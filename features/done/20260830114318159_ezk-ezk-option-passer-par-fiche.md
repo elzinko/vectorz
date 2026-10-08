@@ -5,7 +5,7 @@ type: feature
 priority: P3
 product: mega-city
 labels: [fabrique]
-version: V0.4
+version: v0.4.0
 epic:
 depends: []
 status: shipped

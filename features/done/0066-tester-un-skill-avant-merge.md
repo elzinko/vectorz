@@ -4,7 +4,7 @@ title: "Tester un skill pour de vrai avant de le merger"
 type: feature
 priority: P2
 product: mega-city
-version: V0.4
+version: v0.4.0
 milestone: rationalisation
 labels: [fabrique]
 status: shipped

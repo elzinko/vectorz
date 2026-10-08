@@ -9,7 +9,7 @@ status: shipped
 pr: "#267"
 created: 2026-08-23
 milestone: fondation
-version: V0.1
+version: v0.1.0
 ---
 
 # Modèle de statut kanban — des colonnes contrôlées, pas un champ date bancal

@@ -4,7 +4,7 @@ title: "Valider fiches et carte depuis le tableau de bord (👍/👎 enregistré
 type: feature
 priority: P2
 product: mega-city
-version: V0.3
+version: v0.3.0
 epic:
 labels: [carte]
 status: shipped

@@ -4,7 +4,7 @@ title: "Rendre l'installation des skills robuste (3 défauts de lawgiver)"
 type: bug
 priority: P2
 product: mega-city
-version: V0.4
+version: v0.4.0
 labels: [installation]
 epic:
 status: shipped

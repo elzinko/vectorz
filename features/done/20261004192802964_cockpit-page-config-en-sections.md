@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: cockpit
-version: V0.6
+version: v0.6.0
 labels: [ezk-map, config]
 status: shipped
 pr: "local (ec7fc3ec)"

@@ -4,7 +4,7 @@ title: "Installer les slash-commands comme les skills"
 type: feature
 priority: P3
 product: mega-city
-version: V0.4
+version: v0.4.0
 labels: [installation]
 epic:
 status: shipped

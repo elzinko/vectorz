@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone:
-version: V0.7
+version: v0.7.0
 labels: [sprint, retro, archive]
 status: split
 pr: "split — scindée en 20261008072305169, 20261008072306360"

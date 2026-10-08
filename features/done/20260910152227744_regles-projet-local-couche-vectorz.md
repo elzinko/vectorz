@@ -4,7 +4,7 @@ title: "Des règles propres à un projet (ex. « samplerz en hexagonal »)"
 type: feature # feature | bug | refactor | chore | epic
 priority: P2
 product: vectorz # obligatoire dans ce monorepo — vectorz | mega-city | …
-version: V0.4
+version: v0.4.0
 labels: [installation]
 epic:
 status: shipped

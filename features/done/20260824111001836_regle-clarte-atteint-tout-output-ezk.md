@@ -5,7 +5,7 @@ type: refactor
 priority: P1
 product: mega-city
 labels: [lisibilite]
-version: V0.1
+version: v0.1.0
 epic:
 status: shipped
 pr: "#273"

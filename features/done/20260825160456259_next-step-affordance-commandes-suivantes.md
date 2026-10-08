@@ -4,7 +4,7 @@ title: "À la fin d'une commande, proposer les 1 à 3 commandes suivantes"
 type: feature
 priority: P2
 product: mega-city
-version: V0.3
+version: v0.3.0
 labels: [lisibilite]
 epic:
 milestone: rationalisation

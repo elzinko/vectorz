@@ -4,7 +4,7 @@ title: "Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jet
 type: chore
 priority: P2
 product: mega-city
-version: V0.4
+version: v0.4.0
 epic:
 labels: [fabrique]
 status: shipped

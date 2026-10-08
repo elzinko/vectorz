@@ -4,7 +4,7 @@ title: "Critères de « prête » (DoR) adaptables par projet"
 type: feature
 priority: P3
 product: mega-city
-version: V0.4
+version: v0.4.0
 milestone: rationalisation
 labels: [backlog]
 status: shipped

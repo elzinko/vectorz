@@ -4,7 +4,7 @@ title: "ezk-scout : chasser les bugs en tâche de fond, sans corriger"
 type: feature
 priority: P2
 product: mega-city
-version: V0.2
+version: v0.2.0
 epic:
 depends: ["20260821210633457", "0102", "20260812104022228"]
 labels: [test-local]

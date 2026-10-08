@@ -5,7 +5,7 @@ type: refactor
 priority: P1
 product: mega-city
 milestone:
-version: V0.5
+version: v0.5.0
 labels: [sprint]
 depends: ["20260930194219046", "20260930123438875"]
 status: shipped

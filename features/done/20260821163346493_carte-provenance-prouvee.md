@@ -4,7 +4,7 @@ title: "Chaque élément de la carte montre le fichier d'où il vient"
 type: feature
 priority: P1
 product: mega-city
-version: V0.1
+version: v0.1.0
 milestone: fondation
 labels: [carte]
 status: shipped
