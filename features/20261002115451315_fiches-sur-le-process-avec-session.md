@@ -65,7 +65,35 @@ est respecté.
 revue) demandent que `ezk-sprint` annonce son étape à chaque passage. Hors de cette fiche. Piste :
 [rendre les étapes d'un skill configurables](20260830110131228_schema-etapes-skill-configurables.md).
 
+## Conception (avis de l'architecte, 2026-10-08)
+
+Le calcul d'étape vit dans un **module pur**, nourri par des données déjà produites ailleurs. Il ne
+touche ni git ni le réseau lui-même ; on lui injecte ses entrées. Aucun objet « sprint » persistant
+n'apparaît : le verdict du panel du 2026-08-23 tient.
+
+- **Où** : `products/mega-city/src/core/process-data.ts`, sur le modèle de `src/core/sessions-data.ts`
+  (pur, sans I/O, testable par injection). Il expose `buildProcessData(entrées)`.
+- **Entrées injectées** : les fiches (qui portent `status`), les branches `feat/*` (signal « en
+  sprint »), les sessions (sortie du collecteur de `ezk-sessions`, pour rattacher worktree+session par
+  branche), et `openPrByBranch` — **nullable de première classe** : `null` = pas de `gh`/remote.
+- **Sortie** : chaque fiche posée sur **une** étape via l'échelle pure `livrée → en revue → en sprint →
+  prête → idée` (premier match gagne).
+- **Réutilisation, pas duplication** : le collecteur de sessions (worktrees, `git branch`, `gh pr list`,
+  mtimes) vit déjà dans `bin/ezk-sessions.ts`. On **extrait** sa fonction de collecte vers
+  `src/io/sessions-collect.ts`, partagée par `ezk-sessions` et la vue process. Le module process ne fait
+  qu'une **jointure** fiches ↔ sessions par branche `feat/<id>-…`.
+- **Branchement cockpit** : une entrée de plus dans `DATA_VIEWS` de `src/io/derived-views.ts` (id
+  `process`) ; `bin/ezk-map.ts` la sert sans ligne de plus.
+
+Un **ADR court** (« l'étape de process se calcule à la volée, par jointure ») sera écrit à l'étape Archi
+du sprint. *(Note de numérotation : `0067` a été pris entre-temps par une autre session — prendre le
+prochain libre.)*
+
 ## Critères d'acceptation
+
+**Périmètre du sprint = Tranche 1 (le POC).** Cinq critères, deux surfaces (la page du tableau de
+bord + le calcul d'étape). Les critères de robustesse et de portabilité attendent « Après le POC » :
+ils ne conditionnent pas la valeur, qui est de **voir** les fiches posées sur le process.
 
 - [ ] Une page du tableau de bord dessine les cinq étapes et place chaque fiche active sur la
       sienne, selon la table ci-dessus.
@@ -77,8 +105,14 @@ revue) demandent que `ezk-sprint` annonce son étape à chaque passage. Hors de 
 - [ ] Cliquer une fiche ouvre son détail, comme sur le board.
 - [ ] Les données sont calculées depuis les fiches, git et les PR, jamais saisies. Un test prouve
       que la page dit vrai sur le backlog réel.
-- [ ] Sans `gh` ni remote, l'étape « En revue » se dégrade proprement : la page le dit, elle ne
-      plante pas.
+- [ ] L'absence de PR (pas de `gh`/remote) est un **cas de première classe** dans les entrées du
+      calcul (`openPrByBranch` nullable) : une fiche à ce moment reste « En sprint », jamais
+      rétrogradée en silence. Un test couvre le cas `null`.
+
+### Après le POC (hors de ce sprint)
+
+- [ ] Le **message visible** quand `gh`/remote manque se polit : la page affiche « revue
+      indéterminée » plutôt que de laisser deviner (le type d'entrée, lui, est déjà posé en POC).
 - [ ] La page marche sur un autre projet, avec `ezk --root <projet> dashboard`.
 
 ## Comment vérifier
@@ -100,10 +134,16 @@ ezk sessions state             # chaque session affichée correspond à une sess
 
 ## Notes / décisions
 
-- **Jalon `cockpit`, version V0.6** (décision PO du 2026-10-02 ; la V0.5 est « le sprint au lot »). Liaison par jalon, pas de fiche
-  chapeau. Fiche sœur :
+- **Jalon `cockpit`** (décision PO du 2026-10-02). À l'origine rattachée à la V0.6 ; **réassignée à
+  la V0.7 « voir sous le capot »** (le front-matter fait foi : `version: V0.7`), car cette vue est
+  l'interface du socle V0.7. Liaison par jalon, pas de fiche chapeau. Fiche sœur :
   [un seul tableau de bord pour tous tes projets](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md).
-  Son ADR dira dans quelle page vit cette vue : à faire d'abord.
+- **Dépendance levée — la page hôte est tranchée (constaté le 2026-10-08).** La note d'origine
+  disait « son ADR dira dans quelle page vit cette vue : à faire d'abord ». C'est fait :
+  [ADR-0062 — le tableau de bord devient le cockpit](../products/mega-city/docs/adr/0062-le-tableau-de-bord-devient-le-cockpit-multi-projets.md)
+  est **Accepté**, et le cockpit est livré (ses 3 fiches filles sont en `done/`). La vue « process »
+  est donc une **page de plus du cockpit `ezk dashboard`**, servie par `bin/ezk-map.ts` comme les
+  autres. Plus rien à attendre côté structure d'accueil.
 - **Suite de** [Vue d'avancement](done/20260823124042842_vue-avancement-sprints-fiches.md), sa
   partie « schéma du process avec les fiches posées ». La frise des sprints reste hors périmètre.
 - Créée le 2026-10-02, P1 (PO).
