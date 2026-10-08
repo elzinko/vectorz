@@ -336,6 +336,7 @@
 | [20261007151859473](20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | V0.10 | vectorz | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261007151859479](20261007151859479_chemin-lite-sprint-fiches-triviales.md) | Chemin « lite » du sprint pour fiches triviales (éviter la sur-cérémonie) | refactor | P2 |  | vectorz | 💡 idea |  |
+| [20261008154856357](20261008154856357_retaguer-v03-v06-semver-aligner-plan.md) | re-taguer V0.3–V0.6 en semver (vX.Y.Z) + aligner PLAN.md | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
