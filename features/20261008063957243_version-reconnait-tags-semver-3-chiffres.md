@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [backlog, version]
-status: idea
+status: ready
 blocked:
 pr:
 created: 2026-10-08
