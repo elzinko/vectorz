@@ -42,9 +42,9 @@ moteur/méthode : ADR-0039.
 
 ## Proposition
 
-1. **Test pas cher d'abord — condition de la fiche.** Vérifier si les règles appliquées par
-   `ezk-dev` et contrôlées par `ezk-reviewer` **divergent vraiment** aujourd'hui, et si une rétro
-   l'a noté. **Sans divergence prouvée, la fiche se re-parque** (décision PO 2026-10-08).
+1. **Prérequis** : le spike `20261008183238365`
+   (20261008183238365_spike-divergence-dev-reviewer.md) a **prouvé** la divergence dev↔reviewer.
+   Sans cette preuve, cette fiche se re-parque (décision PO 2026-10-08).
 2. Définir la **DoD** et la **DoR** comme des **listes** référençant des **règles et/ou des
    bundles** (via F1). Une liste n'est pas un bundle : elle **compose**.
 3. La **même** liste est lue des deux côtés : `ezk-dev` l'applique, `ezk-reviewer` la contrôle —
@@ -60,8 +60,6 @@ moteur/méthode : ADR-0039.
 
 ## Critères d'acceptation
 
-- [ ] Test de divergence dev↔reviewer **fait et consigné** ; la suite n'est engagée **que** si la
-      divergence est prouvée.
 - [ ] La DoD est une **liste** référençant règles et/ou bundles — **pas** un bundle — contenant
       **uniquement** des critères de « done » (aucun procédé dev).
 - [ ] `ezk-dev` et `ezk-reviewer` lisent la **même** liste DoD (via F1) ; aucune recopie manuelle.
@@ -88,10 +86,12 @@ pnpm --dir products/mega-city graph:check
 
 ## Notes / décisions
 
-- **Conditionnée au test de divergence** (décision PO 2026-10-08) : on lance le test pas cher ;
-  on n'implémente **que** si dev et reviewer divergent réellement, sinon re-park.
-- **Dépend de F1** (20261008154803440_consommateur-cite-un-bundle.md). **ADR neuf** à créer,
-  amendant **ADR-0016** (cycle DoR) et **ADR-0050** (couche `.vectorz/`).
+- **Conditionnée au spike `20261008183238365`**
+  (20261008183238365_spike-divergence-dev-reviewer.md) : tirable **seulement** s'il prouve la
+  divergence dev↔reviewer, sinon re-park (décision PO 2026-10-08). Le test lui-même était le
+  critère 1 de cette fiche ; il en est sorti par la coupe du 2026-10-08.
+- **Dépend de F1** (20261008154803440_consommateur-cite-un-bundle.md) **et du spike** ci-dessus.
+  **ADR neuf** à créer, amendant **ADR-0016** (cycle DoR) et **ADR-0050** (couche `.vectorz/`).
 - Voisines (à référencer, pas fusionner) : **0053 — gate DoD sur métrique**
   (0053-gate-dod-metrique.md), **le relecteur coche les critères**
   (20261003075821760_relecteur-coche-les-criteres.md).

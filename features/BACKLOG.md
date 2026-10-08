@@ -306,6 +306,7 @@
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
 | [20261008154804532](20261008154804532_dod-dor-contrat-partage.md) | DoD et DoR — des listes de règles/bundles qui définissent prêt et fini (contrat partagé) | feature | P0 | v0.8.0 | mega-city | 💡 idea |  |
+| [20261008183238365](20261008183238365_spike-divergence-dev-reviewer.md) | Spike — ezk-dev et ezk-reviewer contrôlent-ils vraiment un contrat différent ? | chore | P0 | v0.8.0 | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | v0.7.0 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
