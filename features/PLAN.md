@@ -128,6 +128,12 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261005100027029` — chaque sprint laisse un compte rendu committé, lu par la rétro · `idea` → `groom`~~ — split
 > Hors lot socle, après maquette / décision PO : la refonte du Moniteur (`20261007135620590`) et les hooks d'émission (`0077`, optionnel).
 
+### ⑨ V0.8 — amélioration mesurée : système de règles composable (décidé le 2026-10-08)
+> Le système de règles devient composable : d'abord citer un bundle (la brique), puis la DoD/DoR en listes partagées dev/reviewer, puis la vue de projection. Avis ezk-architect / ezk-pm / product-brainstorming intégrés.
+- `20261008154803440` — un consommateur (agent/skill) peut citer un bundle · P0 · `idea` → prérequis, amende ADR-0040
+- `20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → conditionnée au test de divergence
+- `20261008154805639` — vue de projection par projet (agent + ses règles) · P2 · `idea` → différée
+
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296

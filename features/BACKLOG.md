@@ -302,8 +302,8 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
-| [20261008154803440](20261008154803440_consommateur-cite-un-bundle.md) | Un consommateur (agent/skill) peut citer un bundle, pas seulement des règles unitaires | feature | P0 |  | mega-city | 💡 idea |  |
-| [20261008154804532](20261008154804532_dod-dor-contrat-partage.md) | DoD et DoR — des listes de règles/bundles qui définissent prêt et fini (contrat partagé) | feature | P0 |  | mega-city | 💡 idea |  |
+| [20261008154803440](20261008154803440_consommateur-cite-un-bundle.md) | Un consommateur (agent/skill) peut citer un bundle, pas seulement des règles unitaires | feature | P0 | V0.8 | mega-city | 💡 idea |  |
+| [20261008154804532](20261008154804532_dod-dor-contrat-partage.md) | DoD et DoR — des listes de règles/bundles qui définissent prêt et fini (contrat partagé) | feature | P0 | V0.8 | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
@@ -338,7 +338,7 @@
 | [20261007151859473](20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | V0.10 | vectorz | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261007151859479](20261007151859479_chemin-lite-sprint-fiches-triviales.md) | Chemin « lite » du sprint pour fiches triviales (éviter la sur-cérémonie) | refactor | P2 |  | vectorz | 💡 idea |  |
-| [20261008154805639](20261008154805639_vue-projection-regles-par-agent.md) | Vue de projection par projet — chaque agent/skill avec ses règles dépliées | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261008154805639](20261008154805639_vue-projection-regles-par-agent.md) | Vue de projection par projet — chaque agent/skill avec ses règles dépliées | feature | P2 | V0.8 | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
