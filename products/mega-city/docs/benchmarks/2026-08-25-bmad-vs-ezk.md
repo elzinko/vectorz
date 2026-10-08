@@ -32,7 +32,7 @@ Chaque ligne : qui fait le travail, qui s'en sort le mieux, et ce qui se transpo
 |---|---|---|---|---|
 | **Découvrabilité / « et maintenant ? »** | menu numéroté à l'activation + routeur global `/bmad-help` + « Next Steps » en fin d'étape | `/ezk-help` (index plat généré), sinon prose ; rien en fin de commande | **BMAD** | **Oui** — [20260825160456259](../../../../features/done/20260825160456259_next-step-affordance-commandes-suivantes.md) |
 | **Elicitation (raffinement guidé)** | boucle `advanced-elicitation` : 50 méthodes, propose 5, applique, re-propose | absente ; `groom` délègue à un brainstorm libre | **BMAD** | **Oui** — [20260825161522791](../../../../features/done/20260825161522791_elicitation-raffinement-structure-groom.md) |
-| **Templates de livrables** | PRD, archi, story, epic… templatés avec instructions embarquées | 1 seul vrai template (la fiche) + ADR | **BMAD** | Partiel — [20260817113353538](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
+| **Templates de livrables** | PRD, archi, story, epic… templatés avec instructions embarquées | 1 seul vrai template (la fiche) + ADR | **BMAD** | Partiel — [20260817113353538](../../../../features/done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
 | **Modèle / graphe** | manifests CSV compilés (`bmad-help.csv`, `agent-manifest.csv`, SHA-256) | schéma typé `domain.ts` **mais aucune instance compilée** ; graphe dérivé à la volée | **BMAD** (sur ce point précis) | **Oui** — [20260821204737357](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md) |
 | **Orchestration** | 4 phases longues, un « OS » `workflow.xml` interprété par le LLM | boucle sprint 0→10, étapes déléguées à des agents typés | Nul (choix différents) | Non |
 | **Sûreté / cœur** | tout est un prompt **non appliqué** (« NEVER skip a step ») | cœur déterministe testé (ADR-0001) ; LLM jamais load-bearing | **ezk** | — |
@@ -157,7 +157,7 @@ Les recommandations sont **déjà rangées dans le backlog** (dédoublonnées co
 |---|---|
 | **« Et maintenant ? »** en fin de commande | Fiche **neuve** [`20260825160456259`](../../../../features/done/20260825160456259_next-step-affordance-commandes-suivantes.md) (idée #1) |
 | **Boucle d'elicitation** dans `groom` | Fiche **neuve** [`20260825161522791`](../../../../features/done/20260825161522791_elicitation-raffinement-structure-groom.md) |
-| **Bibliothèque de templates + étude prior-art** | **Enrichit** l'étude existante [`20260817113353538`](../../../../features/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
+| **Bibliothèque de templates + étude prior-art** | **Enrichit** l'étude existante [`20260817113353538`](../../../../features/done/20260817113353538_etude-prior-art-bmad-templates-elicitation.md) |
 | **Graphe compilé** (instance, pas vues) | **Existe déjà**, argumenté : [`20260821204737357`](../../../../features/done/20260821204737357_cabler-la-methode-modele-compile.md) |
 
 Ce qu'on **n'imite pas** volontairement : le pipeline documentaire long (4 phases), l'« OS »
