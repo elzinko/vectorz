@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone:
-version: V0.7
+version: v0.7.0
 labels: [supervision, moniteur, lisibilite]
 status: idea
 pr:

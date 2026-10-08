@@ -40,12 +40,16 @@ court est toléré si la source complète reste pointée à côté ; un fichier 
 non. Sur du contenu **hérité** (normalisé avant que cette gate existe), signale sans réécrire
 d'office.
 
-### Les deux SHOULD
+### Les trois SHOULD
 
 - **`recipe/lists-tasks-and-composes`** : un playbook en liste de tâches (pas un paragraphe
   continu), `composes:` déclaré quand la recette s'appuie sur une autre, `profile:` référencé
   s'il existe.
 - **`recipe/plain-language-first`** : une section « En clair » en tête.
+- **`recipe/tools-capability-first`** : la section « Ustensiles » nomme une **capacité**, puis
+  l'outil (un MCP existant — de préférence local/installable — sinon un CLI/REST/script, sinon
+  un outil à créer) ; un connecteur cloud à **OAuth de session** est **signalé** comme confort
+  non portable ; un MCP par **token** (sans OAuth interactif) est un cas sain (ADR-0067).
 
 Une recette qui viole un SHOULD reste indexée et utilisable — signalée, pas bloquée.
 

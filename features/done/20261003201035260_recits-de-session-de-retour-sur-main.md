@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version: V0.7
+version: v0.7.0
 labels: [archive, sessions]
 status: shipped
 pr: "local (274d25b4)"

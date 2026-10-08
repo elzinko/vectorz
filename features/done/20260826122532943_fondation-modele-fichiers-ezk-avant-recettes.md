@@ -4,7 +4,7 @@ title: "Fondation — le modèle de fichiers ezk : compilé, schématisé, valid
 type: feature
 priority: P0
 product: mega-city
-version: V0.1
+version: v0.1.0
 epic:
 depends: []
 labels: [socle]

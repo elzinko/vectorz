@@ -27,18 +27,23 @@ et **tu valides avant chaque écriture** sur un service externe.
    bucket », vérifier ce qui existe déjà (souvent : c'est fait). Voir le
    [catalogue](catalogue-secrets.md) et le [journal de l'app](journal/).
 
-## Outils : CLI oui, connecteurs (MCP) non — et pourquoi
+## Ustensiles : capacité → outil (capacité d'abord)
 
-| Service | Connecteur MCP | Pourquoi hors-jeu en session Claude Code | CLI / voie qui marche |
-|---|---|---|---|
-| GitHub | existe | échoue à se connecter (en-tête d'auth mal formé) selon session | `gh` (authentifié une fois, `gh auth status`) |
-| Vercel | existe | demande une **auth OAuth interactive** — impossible en session headless | `vercel` (authentifié une fois, `vercel whoami`) |
-| Cloudflare R2 | **aucun** | pas de connecteur | `aws s3` (R2 = **S3-compatible**) + `--endpoint-url` ; ou `wrangler` si installé |
-| Lemon Squeezy | **aucun** | pas de connecteur ni de CLI officiel | **API REST** `api.lemonsqueezy.com` + clé Bearer |
-| IONOS (DNS) | via MCP dédié | voir recette [`dns-ionos-mcp.md`](../dns-ionos-mcp.md) | MCP IONOS |
+Pour chaque capacité d'infra, l'outil préféré ([ADR-0067](../../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md)) :
+un **MCP local** s'il existe, sinon un **CLI / API REST**. On **signale** les connecteurs cloud à
+**OAuth de session** : pratiques en session, mais ils se re-autorisent à chaque fois et ne marchent
+pas hors session — on ne s'appuie pas dessus pour l'infra.
 
-> Leçon : un CLI authentifié dans le trousseau système ne redemande pas d'OAuth à
-> chaque session ; c'est pour ça qu'il est plus fiable qu'un connecteur ici.
+| Capacité (service) | Outil préféré | Nature |
+|---|---|---|
+| Versionner / CI (GitHub) | `gh` (authentifié une fois, `gh auth status`) | CLI — le connecteur MCP GitHub est un OAuth de session, **signalé**, non utilisé ici |
+| Déployer le site (Vercel) | `vercel` (authentifié une fois, `vercel whoami`) | CLI — le connecteur MCP Vercel est un OAuth **interactif**, hors-jeu en headless |
+| Stocker / servir des binaires (Cloudflare R2) | `aws s3` + `--endpoint-url` (R2 = S3) ou `wrangler` | CLI / API — pas de MCP |
+| Vendre (Lemon Squeezy) | **API REST** `api.lemonsqueezy.com` + clé Bearer | REST — ni MCP ni CLI officiel |
+| Gérer le DNS (IONOS) | **MCP IONOS (par token)** | **MCP par token** — pas d'OAuth interactif : cas **sain**, voir [`dns-ionos-mcp.md`](../dns-ionos-mcp.md) |
+
+> Leçon : un CLI — ou un MCP **par token** — authentifié une fois ne redemande rien à chaque
+> session ; c'est pour ça qu'il est plus fiable qu'un connecteur à **OAuth de session**.
 
 ## Où vivent les secrets (le modèle mental)
 

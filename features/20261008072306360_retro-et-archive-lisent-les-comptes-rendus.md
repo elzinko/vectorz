@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: compte-rendu-sprint
-version: V0.7
+version: v0.7.0
 labels: [retro, archive]
 status: idea
 pr:

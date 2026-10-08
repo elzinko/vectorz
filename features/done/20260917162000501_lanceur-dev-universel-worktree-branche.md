@@ -5,7 +5,7 @@ type: feature
 priority: P0
 product: mega-city
 labels: [test-local]
-version: V0.2
+version: v0.2.0
 epic:
 status: shipped
 pr: "#274"

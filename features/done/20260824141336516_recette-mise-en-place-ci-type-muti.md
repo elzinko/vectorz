@@ -4,7 +4,7 @@ title: "Recette : mettre en place la CI d'un projet type muti"
 type: feature
 priority: P3
 product: mega-city
-version: V0.3
+version: v0.3.0
 epic:
 labels: [recettes]
 depends: []

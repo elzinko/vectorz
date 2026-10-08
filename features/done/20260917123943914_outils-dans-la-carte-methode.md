@@ -4,7 +4,7 @@ title: "Montrer sur la carte les scripts et commandes de la méthode"
 type: feature
 priority: P3
 product: mega-city
-version: V0.3
+version: v0.3.0
 milestone: fondation
 labels: [carte]
 status: shipped

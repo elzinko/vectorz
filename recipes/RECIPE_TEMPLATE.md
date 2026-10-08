@@ -29,12 +29,21 @@ Ce qu'il faut **avoir** avant de commencer — comptes, **secrets**, variables d
 (ex. compte R2, `R2_PUBLIC_URL`, token Vercel, nom de domaine). Pas les outils qui exécutent
 (ça, c'est la section Ustensiles) : ici, ce qu'on possède.
 
-## Ustensiles (outils — CLI d'abord)
+## Ustensiles (outils — capacité d'abord)
 
-Les **CLI** qui font le travail (`wrangler`, `vercel`, `gh`, `cloudflared`…). Principe : on
-pilote les fournisseurs **par leur CLI**, jamais par des clics. Les secrets se récupèrent et
-se câblent **par la CLI** (`gh auth token`, `wrangler secret put`, `vercel env`), pas par
-copier-coller manuel.
+Nomme la **capacité** (le verbe : « poser un DNS », « déposer un binaire »), puis **avec quoi**
+la faire. Ordre de préférence ([ADR-0067](../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md)) :
+
+1. **Un MCP qui existe déjà**, de préférence **local et installable** (Claude Desktop/Code) —
+   dis lequel et quels verbes ; pas de clics, pas d'OAuth à redemander.
+2. **Sinon un CLI / une API REST / un script** (`wrangler`, `vercel`, `gh`, `aws`, `cloudflared`…),
+   authentifié **une fois** au trousseau, câblé par la CLI (`gh auth token`, `wrangler secret put`,
+   `vercel env`), jamais par copier-coller manuel. « Pour le moment » est assumé : un repli, pas un échec.
+3. **Si l'outil manque**, note-le comme **outil à créer**.
+
+**Signale** un outil qui est un **connecteur cloud à OAuth de session** (se re-autorise à chaque
+session, meurt hors session) : c'est un confort, pas une base portable d'un projet à l'autre. Un
+MCP par **token** (sans OAuth interactif) est, lui, un cas sain.
 
 ## Préliminaires (gestes manuels ⚙️)
 

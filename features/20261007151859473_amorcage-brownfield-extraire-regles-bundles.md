@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: vectorz
 milestone: portabilite
-version: V0.10
+version: v0.10.0
 labels: [portabilite, brownfield, regles]
 status: idea
 pr:

@@ -50,12 +50,12 @@ beforeEach(() => {
   git('init', '--quiet');
   git('config', 'user.email', 'test@example.com');
   git('config', 'user.name', 'Test');
-  put('features/done/20260101000000001_a.md', fm('20260101000000001', 'status: shipped\nversion: V0.2'));
-  put('features/done/20260101000000002_b.md', fm('20260101000000002', 'status: shipped\nversion: V0.2'));
-  put('features/20260101000000003_c.md', fm('20260101000000003', 'status: ready\nversion: V0.3'));
+  put('features/done/20260101000000001_a.md', fm('20260101000000001', 'status: shipped\nversion: v0.2.0'));
+  put('features/done/20260101000000002_b.md', fm('20260101000000002', 'status: shipped\nversion: v0.2.0'));
+  put('features/20260101000000003_c.md', fm('20260101000000003', 'status: ready\nversion: v0.3.0'));
   put(
     'features/20260101000000004_d.md',
-    fm('20260101000000004', 'status: idea\nmilestone: parked\nversion: V0.4'),
+    fm('20260101000000004', 'status: idea\nmilestone: parked\nversion: v0.4.0'),
   );
   git('add', '.');
   git('commit', '--quiet', '-m', 'chore: seed');
@@ -70,16 +70,16 @@ describe('backlog:version — le bin', () => {
     const r = run();
     expect(r.code).toBe(0);
     expect(r.out.startsWith('En clair :')).toBe(true);
-    expect(r.out).toMatch(/V0\.2\s+2\s+2\s+0\s+0\s+0\s+0\s+à clore/);
-    expect(r.out).toMatch(/V0\.3\s+1\s+0\s+1\s+1\s+0\s+0\s+en cours/);
+    expect(r.out).toMatch(/v0\.2\.0\s+2\s+2\s+0\s+0\s+0\s+0\s+à clore/);
+    expect(r.out).toMatch(/v0\.3\.0\s+1\s+0\s+1\s+1\s+0\s+0\s+en cours/);
     expect(git('status', '--porcelain')).toBe('');
     expect(git('tag', '-l')).toBe('');
   });
 
   it('reconnaît une étiquette semver à 3 chiffres (v0.2.0) : la version est « livrée », close refuse', () => {
-    git('tag', 'v0.2.0'); // la vraie convention de release (semver), pas le synthétique v0.2
-    expect(run().out).toMatch(/V0\.2\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
-    const r = run('close', 'V0.2');
+    git('tag', 'v0.2.0'); // la version EST son tag de release (semver strict)
+    expect(run().out).toMatch(/v0\.2\.0\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
+    const r = run('close', 'v0.2.0');
     expect(r.code).toBe(1);
     expect(r.out).toContain("déjà livrée : l'étiquette v0.2.0 existe");
   });
@@ -87,20 +87,20 @@ describe('backlog:version — le bin', () => {
   it('check : une fiche parkée rangée dans une version fait échouer (code 1) et nomme la fiche', () => {
     const r = run('check');
     expect(r.code).toBe(1);
-    expect(r.out).toContain('[parkee] V0.4 · 20260101000000004');
-    expect(run('check', 'V0.3').code).toBe(0); // V0.3 tient debout
-    expect(run('check', 'V9.9').code).toBe(1); // une version que personne ne porte n'est pas « saine »
+    expect(r.out).toContain('[parkee] v0.4.0 · 20260101000000004');
+    expect(run('check', 'v0.3.0').code).toBe(0); // v0.3.0 tient debout
+    expect(run('check', 'v9.9.0').code).toBe(1); // une version que personne ne porte n'est pas « saine »
   });
 
   it('close : refuse tant qu’il reste des fiches, sans écrire ni étiqueter', () => {
-    const r = run('close', 'V0.3');
+    const r = run('close', 'v0.3.0');
     expect(r.code).toBe(1);
     expect(r.out).toContain('20260101000000003');
     expect(git('tag', '-l')).toBe('');
   });
 
-  it('close sur une version complète : PROPOSE l’étiquette semver (vX.Y.0) et n’exécute rien', () => {
-    const r = run('close', 'V0.2');
+  it('close sur une version complète : PROPOSE l’étiquette semver (vX.Y.Z) et n’exécute rien', () => {
+    const r = run('close', 'v0.2.0');
     expect(r.code).toBe(0);
     expect(r.out).toContain('git tag -a v0.2.0');
     expect(r.out).toContain('git push origin v0.2.0');
@@ -110,21 +110,21 @@ describe('backlog:version — le bin', () => {
 
   it('close --tag : crée l’étiquette semver LOCALE, jamais de poussée, puis la version est « livrée »', () => {
     const head = git('rev-parse', 'HEAD').trim();
-    const r = run('close', 'V0.2', '--tag');
+    const r = run('close', 'v0.2.0', '--tag');
     expect(r.code).toBe(0);
     expect(r.out).toContain('git push origin v0.2.0'); // proposé à l'humain, pas exécuté
     expect(git('tag', '-l').trim()).toBe('v0.2.0');
     expect(git('rev-list', '-n', '1', 'v0.2.0').trim()).toBe(head);
     expect(git('status', '--porcelain')).toBe(''); // aucune fiche touchée
-    expect(run().out).toMatch(/V0\.2\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
-    const again = run('close', 'V0.2'); // idempotent : on ne reclôt pas
+    expect(run().out).toMatch(/v0\.2\.0\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
+    const again = run('close', 'v0.2.0'); // idempotent : on ne reclôt pas
     expect(again.code).toBe(1);
     expect(again.out).toContain('déjà livrée');
   });
 
   it('close refuse (code 1) quand features/ porte des changements non commités : l’état validé n’est pas celui de HEAD', () => {
     appendFileSync(join(root, 'features/20260101000000003_c.md'), 'ajout non commité\n');
-    for (const args of [['close', 'V0.2'], ['close', 'V0.2', '--tag']]) {
+    for (const args of [['close', 'v0.2.0'], ['close', 'v0.2.0', '--tag']]) {
       const r = run(...args);
       expect(r.code).toBe(1);
       expect(r.out).toContain('non commités');
@@ -140,12 +140,12 @@ describe('backlog:version — le bin', () => {
     const head = git('rev-parse', 'HEAD').trim();
     git('update-ref', 'refs/remotes/origin/main', seed); // origin/main est en retard sur HEAD
 
-    const proposal = run('close', 'V0.2');
+    const proposal = run('close', 'v0.2.0');
     expect(proposal.code).toBe(0);
-    expect(proposal.out).toContain(`git tag -a v0.2.0 -m "Version V0.2" ${head}`);
+    expect(proposal.out).toContain(`git tag -a v0.2.0 -m "Version v0.2.0" ${head}`);
     expect(proposal.out).toContain("n'est pas la pointe de origin/main");
 
-    expect(run('close', 'V0.2', '--tag').code).toBe(0);
+    expect(run('close', 'v0.2.0', '--tag').code).toBe(0);
     expect(git('rev-list', '-n', '1', 'v0.2.0').trim()).toBe(head); // jamais origin/main
   });
 

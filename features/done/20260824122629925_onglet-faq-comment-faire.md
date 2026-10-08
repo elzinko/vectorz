@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 labels: [lisibilite]
-version: V0.3
+version: v0.3.0
 epic:
 depends: ["20260824122629794"]
 status: shipped

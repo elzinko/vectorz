@@ -4,7 +4,7 @@ title: "Mettre le code en conformité avec les règles de dev récentes"
 type: chore
 priority: P2
 product: mega-city
-version: V0.1
+version: v0.1.0
 epic:
 labels: [socle]
 status: shipped

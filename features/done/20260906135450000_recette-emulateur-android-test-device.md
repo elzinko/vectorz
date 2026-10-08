@@ -4,7 +4,7 @@ title: "Recette : lancer l'émulateur Android pour tester sur mobile"
 type: feature
 priority: P3
 product: vectorz
-version: V0.2
+version: v0.2.0
 epic:
 depends: []
 labels: [test-local]

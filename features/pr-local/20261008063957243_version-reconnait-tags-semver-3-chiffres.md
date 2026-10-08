@@ -73,7 +73,7 @@ strict, ces six versions passeront « à clore » tant qu'elles ne sont pas re-t
 pnpm --dir products/mega-city test -- versions
 
 # contrôle de bout en bout sur muti (V1.7 doit passer « livrée (v1.7.0) »)
-ezk --root /Users/elzinko/git/bacasable/muti backlog version | grep -i "V1.7"
+ezk --root /Users/elzinko/git/bacasable/muti backlog version | grep -i "v1.7.0"
 ```
 
 Attendu après le fix : `version list` montre `V1.7 … livrée (v1.7.0)`, et `version close V1.7`

@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: mega-city
 labels: [installation]
-version: V0.4
+version: v0.4.0
 epic:
 status: shipped
 pr: "#299"

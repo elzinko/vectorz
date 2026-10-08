@@ -13,14 +13,14 @@ import { TERMINAUX } from '../core/fiche-schema.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { parsePlanSections } from './plan-sections.js';
 
-/** Le format d'une version : `V0.3`, `V1.0`, `V0.3.1`. */
-export const VERSION_FORMAT = /^V\d+\.\d+(?:\.\d+)?$/;
+/** Le format d'une version : semver strict `vX.Y.Z` (`v0.3.0`, `v1.0.0`) — décision 2026-10-08. */
+export const VERSION_FORMAT = /^v\d+\.\d+\.\d+$/;
 
 /** Calibrage PROVISOIRE : au-delà, un lot est signalé « trop gros » (réglable par `--max`). */
 export const LOT_MAX = 15;
 
-/** Une version citée dans un titre de section de PLAN.md. */
-const VERSION_TOKEN = /\bV\d+\.\d+(?:\.\d+)?\b/g;
+/** Une version citée dans un titre de section de PLAN.md (semver `vX.Y.Z`). */
+const VERSION_TOKEN = /\bv\d+\.\d+\.\d+\b/g;
 
 /** Ordre naturel : V0.2 avant V0.10, V0.3 avant V0.3.1. Réservé aux versions bien formées. */
 export function compareVersions(a: string, b: string): number {
@@ -307,7 +307,7 @@ export function checkVersions(
       code: 'format',
       version: f.version,
       ficheId: f.id,
-      message: `version illisible « ${f.version} » (attendu : V0.3). La fiche n'est dans aucun lot.`,
+      message: `version illisible « ${f.version} » (attendu : v0.3.0). La fiche n'est dans aucun lot.`,
     });
   }
   for (const lot of report.lots) {

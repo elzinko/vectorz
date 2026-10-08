@@ -9,7 +9,7 @@ status: superseded
 pr: "superseded — fusionnée dans 20260903134909124 (tri 2026-09-30)"
 created: 2026-08-23
 milestone: fondation
-version: V0.1
+version: v0.1.0
 ---
 
 # lawgiver doctor — attraper l'écart silencieux entre le profil et le déploiement réel

@@ -4,7 +4,7 @@ title: "Une seule source pour le modèle de fiche (3 copies divergent aujourd'hu
 type: chore # feature | bug | refactor | chore | epic
 priority: P2
 product: mega-city # obligatoire dans ce monorepo — vectorz | mega-city | …
-version: V0.1
+version: v0.1.0
 epic: # optionnel — id de la fiche épic parente (type: epic)
 labels: [socle]
 status: shipped

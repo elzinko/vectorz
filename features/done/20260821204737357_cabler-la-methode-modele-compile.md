@@ -4,7 +4,7 @@ title: "Compiler la méthode en un seul graphe que tout le monde lit"
 type: feature
 priority: P0
 product: mega-city
-version: V0.1
+version: v0.1.0
 milestone: fondation
 labels: [socle]
 status: shipped

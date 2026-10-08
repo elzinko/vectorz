@@ -4,7 +4,7 @@ title: "Run autonome transparent : ce qu'il va faire, puis ce qu'il a fait"
 type: chore
 priority: P1
 product: mega-city
-version: V0.4
+version: v0.4.0
 epic:
 depends: []
 labels: [sprint]

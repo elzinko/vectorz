@@ -5,7 +5,7 @@ type: chore
 priority: P1
 product: mega-city
 labels: [backlog]
-version: V0.3
+version: v0.3.0
 epic:
 depends: []
 status: shipped

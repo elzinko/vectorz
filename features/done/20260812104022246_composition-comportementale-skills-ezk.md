@@ -4,7 +4,7 @@ title: "Composer des consignes réutilisables dans les skills"
 type: feature
 priority: P2
 product: mega-city
-version: V0.4
+version: v0.4.0
 labels: [fabrique]
 epic:
 status: shipped

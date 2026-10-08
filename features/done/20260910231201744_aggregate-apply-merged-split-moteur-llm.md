@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 labels: [backlog]
 epic:
-version: V0.3
+version: v0.3.0
 status: shipped
 pr: "#292"
 created: 2026-09-10

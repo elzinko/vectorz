@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: vectorz
 milestone: rationalisation
-version: V0.9
+version: v0.9.0
 labels: [convention, arborescence]
 status: ready
 pr:

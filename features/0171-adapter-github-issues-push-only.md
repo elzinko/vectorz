@@ -5,7 +5,7 @@ type: feature
 product: mega-city
 labels: [github-optionnel, plugin]
 milestone:
-version: V0.7
+version: v0.7.0
 priority: P1
 epic:
 depends: [0170]

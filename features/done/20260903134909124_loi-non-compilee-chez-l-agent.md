@@ -5,7 +5,7 @@ type: bug
 priority: P1
 product: mega-city
 labels: [installation]
-version: V0.3
+version: v0.3.0
 epic:
 status: shipped
 pr: "#284"

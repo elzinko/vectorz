@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version: V0.5
+version: v0.5.0
 labels: [cross-repo]
 status: shipped
 pr: "#344"

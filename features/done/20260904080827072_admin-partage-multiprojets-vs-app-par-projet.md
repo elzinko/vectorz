@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: cockpit
-version: V0.6
+version: v0.6.0
 labels: [ezk-map, supervision]
 status: split
 pr: "split — scindée en 20261004192802828, 20261004192802897, 20261004192802964"

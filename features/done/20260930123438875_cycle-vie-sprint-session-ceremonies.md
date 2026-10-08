@@ -4,7 +4,7 @@ title: "Séparer clairement fiche, sprint et session (ezk-sprint start/close)"
 type: feature
 priority: P0
 product: mega-city
-version: V0.4
+version: v0.4.0
 milestone:
 labels: [sprint]
 status: shipped

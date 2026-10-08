@@ -4,7 +4,7 @@ title: "Un modèle standard pour tout texte destiné à un humain"
 type: feature
 priority: P2
 product: mega-city
-version: V0.3
+version: v0.3.0
 epic:
 depends: []
 labels: [lisibilite]

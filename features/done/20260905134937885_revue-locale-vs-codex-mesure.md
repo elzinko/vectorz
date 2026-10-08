@@ -4,7 +4,7 @@ title: "Mesurer si la revue locale peut remplacer Codex (et sortir la PR du chem
 type: feature
 priority: P2
 product: mega-city
-version: V0.4
+version: v0.4.0
 epic:
 labels: [revue]
 status: shipped

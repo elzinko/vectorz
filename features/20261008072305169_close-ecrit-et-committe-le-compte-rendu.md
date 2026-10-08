@@ -5,12 +5,13 @@ type: feature
 priority: P1
 product: mega-city
 milestone: compte-rendu-sprint
-version: V0.7
+version: v0.7.0
 labels: [sprint, archive]
 status: ready
 pr:
 evidence: none # scripts et skills, pas d'écran
 created: 2026-10-08
+split_from: "20261005100027029"
 ---
 
 # 20261008072305169 — Au close, le sprint écrit et committe son compte rendu

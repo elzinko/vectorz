@@ -76,9 +76,9 @@ function parseArgs(argv: string[]): Args {
   const version = positional.shift();
   if (positional.length > 0) usage(`argument en trop : ${positional.join(' ')}`);
   if (version !== undefined && !VERSION_FORMAT.test(version)) {
-    usage(`« ${version} » n'a pas le format V<n>.<n> (exemple : V0.3)`);
+    usage(`« ${version} » n'a pas le format semver v<n>.<n>.<n> (exemple : v0.3.0)`);
   }
-  if (verb === 'close' && version === undefined) usage('close attend une version (exemple : close V0.3)');
+  if (verb === 'close' && version === undefined) usage('close attend une version (exemple : close v0.3.0)');
   if (verb === 'list' && version !== undefined) usage('list ne prend pas de version');
   return { verb, version, root, max, usePlan, tag };
 }

@@ -4,7 +4,7 @@ title: "Corriger la fausse « chaîne de montage » en haut de la carte"
 type: feature
 priority: P2
 product: mega-city
-version: V0.1
+version: v0.1.0
 milestone: fondation
 labels: [carte]
 status: shipped

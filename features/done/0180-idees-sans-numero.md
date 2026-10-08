@@ -8,7 +8,7 @@ status: shipped
 pr: "#124"
 created: 2026-08-01
 milestone: fondation
-version: V0.1
+version: v0.1.0
 ---
 
 # 0180 — Fiches datées : id = timestamp à la capture
