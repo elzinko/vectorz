@@ -43,6 +43,7 @@
 | [20260930194219046](done/20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 | v0.5.0 | mega-city | ✅ shipped | #324 |
 | [20261003200945204](done/20261003200945204_mode-local-depuis-projet-hote.md) | Le mode local de la méthode marche depuis un projet hôte, sans contournement | bug | P0 | v0.5.0 | mega-city | ✅ shipped | local (eb8de257) |
 | [20261004074008211](done/20261004074008211_merge-local-ne-supprime-jamais-main.md) | Le merge local ne supprime jamais main, et dit chaque branche qu'il supprime | bug | P0 | v0.5.0 | mega-city | ✅ shipped | local (80af4fbf) |
+| [20261008154803440](20261008154803440_consommateur-cite-un-bundle.md) | Un consommateur (agent/skill) peut citer un bundle, pas seulement des règles unitaires | feature | P0 | v0.8.0 | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -304,7 +305,6 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
-| [20261008154803440](20261008154803440_consommateur-cite-un-bundle.md) | Un consommateur (agent/skill) peut citer un bundle, pas seulement des règles unitaires | feature | P0 | v0.8.0 | mega-city | 💡 idea |  |
 | [20261008154804532](20261008154804532_dod-dor-contrat-partage.md) | DoD et DoR — des listes de règles/bundles qui définissent prêt et fini (contrat partagé) | feature | P0 | v0.8.0 | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | v0.7.0 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |

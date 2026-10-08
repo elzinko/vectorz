@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.8.0
 labels: [loi]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-08
