@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [backlog, version]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (77ec3162)"
 created: 2026-10-08
 ---
 

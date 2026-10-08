@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261008063957243_version-reconnait-tags-semver-3-chiffres.md](../20261008063957243_version-reconnait-tags-semver-3-chiffres.md)
+> 🗎 Rendu de la fiche [features/20261008063957243_version-reconnait-tags-semver-3-chiffres.md](../done/20261008063957243_version-reconnait-tags-semver-3-chiffres.md)
 
 # 20261008063957243 — backlog version reconnaît les tags semver à 3 chiffres
 
