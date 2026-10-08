@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [backlog, version]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (d7936b30)"
 created: 2026-10-08
 ---
 
@@ -27,7 +27,7 @@ inachevées. On pose les quatre étiquettes semver manquantes et on remet PLAN.m
 Le 2026-10-08, la commande `ezk backlog version` est passée en **semver strict** : elle
 reconnaît une version comme livrée seulement si une étiquette `vX.Y.Z` existe. Le changement
 vit dans la fiche sœur, déjà livrée :
-[backlog version reconnaît les tags semver à 3 chiffres](done/20261008063957243_version-reconnait-tags-semver-3-chiffres.md)
+[backlog version reconnaît les tags semver à 3 chiffres](20261008063957243_version-reconnait-tags-semver-3-chiffres.md)
 (commit `77ec3162`).
 
 Conséquence sur vectorz. V0.1 et V0.2 ont déjà un `v0.x.0`, elles restent « livrée ». Mais
