@@ -7,7 +7,7 @@ composes: []
 status: draft # pas de `source:` honnête — recette de configuration, signalé (voir Statut)
 home: central
 created: 2026-08-29
-updated: 2026-08-30
+updated: 2026-10-08
 ---
 
 # Recette (brique) — Gérer les DNS IONOS via leur MCP
@@ -127,3 +127,9 @@ Normalisée le 2026-08-30 (front-matter ajouté, étape 5 de la fiche
 **`status: draft`** : recette de **configuration** (créer un token, brancher un serveur MCP
 tiers) — aucune implémentation de code à pointer, `source:` laissé vide plutôt qu'inventé.
 Signalé au PO.
+
+Précision ([ADR-0067](../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md),
+2026-10-08) : l'outil de cette recette est un **MCP par token**, pas un connecteur à OAuth
+interactif de session. C'est un cas **sain** de la règle `recipe/tools-capability-first` — un MCP
+local/par-token est même l'outil **préféré**, pas une exception. Le `status: draft` tient à
+l'absence de `source:` de code, **pas** à l'usage d'un MCP.
