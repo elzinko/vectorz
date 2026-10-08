@@ -4,16 +4,16 @@ title: "Outils d'une recette : capacité d'abord, MCP local préféré, script s
 type: chore
 priority: P3
 product: mega-city
-status: idea
+status: shipped
 labels: [recette, methode]
-pr:
+pr: "local (b27c513c)"
 evidence: none # convention de gabarit + règle, pas d'écran
 created: 2026-10-07
 ---
 
 # 20261007213357925 — Outils d'une recette : capacité d'abord, MCP local préféré, script sinon
 
-**En clair.** La section « Ustensiles » d'une recette doit nommer une **capacité**, puis dire avec quoi la faire : un MCP local s'il existe, un script sinon, et signaler les outils à OAuth de session qui vieillissent mal. [ADR-0067](../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md) tranche ; cette fiche en applique les quatre gestes.
+**En clair.** La section « Ustensiles » d'une recette doit nommer une **capacité**, puis dire avec quoi la faire : un MCP local s'il existe, un script sinon, et signaler les outils à OAuth de session qui vieillissent mal. [ADR-0067](../../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md) tranche ; cette fiche en applique les quatre gestes.
 
 **Si tu arrives frais.** Une *recette* vectorz est une procédure transférable (on l'adapte projet par projet). Ses *ustensiles* sont les outils qui exécutent. Un *MCP* est un outil branché à l'agent ; un *MCP local* s'installe une fois dans Claude Desktop/Code, sans ré-autorisation par session.
 
@@ -44,5 +44,5 @@ ls products/mega-city/rules/recipe/tools-capability-first.md
 
 ## Notes / décisions
 
-- Décision : [ADR-0067](../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md), ratifié PO 2026-10-07.
+- Décision : [ADR-0067](../../products/mega-city/docs/adr/0067-outils-d-une-recette-capacite-mcp-local-ou-script.md), ratifié PO 2026-10-07.
 - Différé (hors de cette fiche) : Direction B (MCP comme nœud du graphe, extension d'ADR-0058) et le transport MCP de la méthode (mode dynamique d'ADR-0005).
