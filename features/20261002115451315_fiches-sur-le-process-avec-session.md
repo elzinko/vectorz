@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version: V0.7
 labels: [ezk-map, session]
-status: idea
+status: ready
 pr:
-evidence:
+evidence: auto
 created: 2026-10-02
 ---
 
