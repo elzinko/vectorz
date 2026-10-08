@@ -111,7 +111,7 @@ du front-matter de cette skill).
 | `ready <id>` | **Gate DoR** : refuse si un slot manque (socle ou slot du projet) ; au vert passe la fiche en `status: ready` (la colonne — il n'y a plus de champ date `ready:`) + regen + commit |
 | `next --ready-only` | Renvoie LA prochaine fiche **tirable** (ready, non-épic) — point d'entrée unique d'ezk-sprint / ezk-product-build (`next` seul reste l'alias de `list`) |
 | `next --lot N` | Choisit le **lot** d'un sprint : N fiches **tirables** dans l'ordre du plan, tête bloquée signalée. Tend la ligne `sprint.sh start --lot` qui le fige dans `SPRINT.md` |
-| `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon NOW court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
+| `plan [set …]` | Persiste la **séquence décidée** (inter-sessions) dans `features/PLAN.md` (curé ; horizon proche et court) — distinct des buckets `priority` et du gate `ready`. Sans arg : affiche le plan. |
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
 | `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`ezk backlog ship`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
@@ -153,7 +153,7 @@ vivent dans `docs/sessions/` (snapshot à la clôture via `ezk-archive run`).
 features/
   README.md            # guide humain CURÉ (marque layout_version) — pas l'index
   BACKLOG.md           # index/suivi auto-généré (id, titre, type, priorité, statut, PR)
-  PLAN.md              # séquence décidée (curée) — NOW = prochaines N cartes
+  PLAN.md              # séquence décidée (curée) — horizon proche = prochaines N cartes
   20260810143052123_slug.md   # fiches ACTIVES (idea / ready / in-progress) — id horodaté AAAAMMDDHHMMSSmmm (fiche 0180)
   0002-autre-slug.md          # format historique 4 chiffres — toujours valide (bascule en avant, pas de renommage)
   done/                # fiches LIVRÉES (déplacées ici quand status: shipped)
@@ -708,8 +708,10 @@ puis les bugs admin… ») ne vivait nulle part → perdue entre sessions. `plan
   `main` (comme le backlog). Son **contenu n'est jamais régénéré** par `regen` (ce n'est pas un
   index dérivé du front-matter, c'est une décision). En revanche le **lien** vers `PLAN.md`
   dans `features/BACKLOG.md` est **émis par `regen`** (quand `PLAN.md` existe).
-- **Horizon** : la section **NOW** = les **prochaines N cartes** (court, actionnable) — pas
-  une encyclopédie de tout le stock. NEXT / plus loin peut exister, mais rester mince ;
+- **Horizon** : la tête du plan = les **prochaines N cartes** (court, actionnable) — pas
+  une encyclopédie de tout le stock. Une suite (« plus loin ») peut exister, mais rester mince ;
+  les sections du plan portent des **intitulés libres** (par version, par chantier…), le parseur
+  ne cherche aucun mot-clé imposé ;
   le détail vit dans les fiches.
 - **Contenu** : une liste **ordonnée** d'entrées `‹id› — ‹intention en une ligne› ‹marqueur›`
   où le marqueur ∈ {`build` | `audit` | `ship` | `groom`} ; regroupées en **jalons** nommés si
