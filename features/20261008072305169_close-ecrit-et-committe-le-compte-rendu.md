@@ -7,11 +7,10 @@ product: mega-city
 milestone: compte-rendu-sprint
 version: V0.7
 labels: [sprint, archive]
-status: idea
+status: ready
 pr:
 evidence: none # scripts et skills, pas d'écran
 created: 2026-10-08
-split_from: "20261005100027029"
 ---
 
 # 20261008072305169 — Au close, le sprint écrit et committe son compte rendu
@@ -86,3 +85,9 @@ ls docs/sprints/
 - Dépendances constatées le 2026-10-08 (reprises de la source) : la clôture-committe-l'archive est
   livrée (ADR-0063, base du helper de commit) ; le rapport de sprint est livré (base de l'extracteur) ;
   la fondation `scrum:` est en V0.9, donc non bloquante.
+- **Taille — pourquoi elle reste entière.** 4 critères ; elle touche 3 surfaces (l'extracteur
+  `sprint:report`, le skill `ezk-sprint`+gabarit, le helper de commit partagé), au-dessus du seuil de
+  2. On ne découpe pas davantage : les trois forment **une seule tranche verticale** pour une seule
+  capacité — « le `close` produit un compte rendu committé ». Découper plus donnerait des fiches qui
+  ne shippent pas seules (un extracteur étendu que rien n'appelle, un helper sans second appelant). La
+  vraie ligne de fracture — producteur vs consommateurs — a déjà été prise (fille B).
