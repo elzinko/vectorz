@@ -1,17 +1,4 @@
----
-id: "20261008063957243"
-title: "backlog version : reconnaître les étiquettes semver à 3 chiffres (v1.7.0)"
-type: bug
-priority: P1
-product: mega-city
-milestone:
-version:
-labels: [backlog, version]
-status: ready
-blocked:
-pr:
-created: 2026-10-08
----
+> 🗎 Rendu de la fiche [features/20261008063957243_version-reconnait-tags-semver-3-chiffres.md](../20261008063957243_version-reconnait-tags-semver-3-chiffres.md)
 
 # 20261008063957243 — backlog version reconnaît les tags semver à 3 chiffres
 
@@ -102,3 +89,14 @@ refuse avec « déjà livrée : l'étiquette v1.7.0 existe » au lieu de propose
 - Surfaces touchées : `versions.ts` (`releaseTagFor` semver strict + `proposedTagOf` + `releaseTag`
   sur le lot), `versions-render.ts` (tag réel). Deux fichiers d'un module, plus leurs tests — pas
   d'ADR.
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| Gate locale | ✅ (isolée; flake de charge connu fiche 20261001133500727) |
+| Typecheck | ✅ |
+| Tests | ✅ 257 (16 fichiers) |
+| Revue adverse | ⏳ re-revue semver strict |
+| Before/after (UI) | N.A. — code .ts seul |

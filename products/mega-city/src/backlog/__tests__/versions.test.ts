@@ -13,6 +13,8 @@ import {
   closeVersion,
   compareVersions,
   hasErrors,
+  proposedTagOf,
+  releaseTagFor,
   tagOf,
 } from '../versions.js';
 import { renderFindings, renderProposal, renderVersionList } from '../versions-render.js';
@@ -65,6 +67,53 @@ describe('compareVersions / tagOf / format', () => {
   });
 });
 
+describe('étiquettes semver strict — sortie = tag vX.Y.Z seulement (pas vX.Y nu)', () => {
+  it('proposedTagOf complète en 3 composantes : vX.Y → vX.Y.0, vX.Y.Z inchangé', () => {
+    expect(proposedTagOf('V1.8')).toBe('v1.8.0');
+    expect(proposedTagOf('V0.3.1')).toBe('v0.3.1');
+  });
+
+  it('releaseTagFor n’accepte que le semver à 3 composantes, la version en préfixe', () => {
+    expect(releaseTagFor('V1.7', new Set(['v1.7.0']))).toBe('v1.7.0');
+    expect(releaseTagFor('V1.7', new Set(['v1.7']))).toBeUndefined(); // tag nu : refusé (semver strict)
+    expect(releaseTagFor('V1.7', new Set(['v1.7.0-rc.6']))).toBeUndefined(); // pré-version : pas la sortie
+    expect(releaseTagFor('V1.7', new Set(['v1.70.0']))).toBeUndefined(); // minor voisin, pas V1.7
+    expect(releaseTagFor('V1.8', new Set(['v1.7.0']))).toBeUndefined(); // autre version
+    expect(releaseTagFor('V0.3.1', new Set(['v0.3.1']))).toBe('v0.3.1'); // version 3 composantes : exacte
+    expect(releaseTagFor('V1.6', new Set(['v1.6.0', 'v1.6.9', 'v1.5.0']))).toBe('v1.6.9'); // le plus haut patch
+    expect(releaseTagFor('V1.*' as string, new Set(['v1.0.0']))).toBeUndefined(); // format non valide : pas d'injection
+  });
+
+  it('une version taguée en semver est « livrée » ; un tag nu vX.Y ne suffit pas', () => {
+    const livree = buildVersions([shipped(1, 'V1.7')], new Set(['v1.7.0'])).lots[0];
+    expect(livree.state).toBe('livree');
+    expect(livree.releaseTag).toBe('v1.7.0');
+    const bareTag = buildVersions([shipped(1, 'V1.7')], new Set(['v1.7'])).lots[0];
+    expect(bareTag.state).toBe('a-clore'); // tag nu non reconnu : reste à clore
+    expect(bareTag.releaseTag).toBeUndefined();
+  });
+
+  it('« rouverte » reconnaît le tag semver et nomme le tag réel', () => {
+    const findings = checkVersions([shipped(1, 'V1.7'), todo(2, 'V1.7')], new Set(['v1.7.0']));
+    expect(findings.map((f) => f.code)).toContain('rouverte');
+    expect(findings.find((f) => f.code === 'rouverte')?.message).toContain('v1.7.0');
+  });
+
+  it('le rendu affiche le tag trouvé (v1.7.0), pas le synthétique v1.7', () => {
+    const text = renderVersionList(buildVersions([shipped(1, 'V1.7')], new Set(['v1.7.0']))).join('\n');
+    expect(text).toContain('livrée (v1.7.0)');
+    expect(text).not.toContain('(v1.7)');
+  });
+
+  it('closeVersion : refuse une version déjà sortie (tag réel), propose du semver sinon', () => {
+    const r = closeVersion([shipped(1, 'V1.7')], new Set(['v1.7.0']), 'V1.7');
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reasons.join('\n')).toContain("déjà livrée : l'étiquette v1.7.0 existe");
+    const ok = closeVersion([shipped(1, 'V1.8')], noTags, 'V1.8'); // pas encore sortie
+    expect(ok).toEqual({ ok: true, tag: 'v1.8.0', shipped: 1 }); // propose vX.Y.0, pas vX.Y
+  });
+});
+
 describe('buildVersions — un lot par version, rien de perdu', () => {
   it('groupe par version dans l’ordre naturel et compte livrées / à faire / prêtes / bloquées', () => {
     const report = buildVersions(
@@ -89,12 +138,12 @@ describe('buildVersions — un lot par version, rien de perdu', () => {
   it('calcule l’état : en cours, à clore, livrée (étiquette), rouverte (étiquette + fiche à faire), vide', () => {
     const fiches = [
       todo(1, 'V0.3'), // en cours
-      shipped(2, 'V0.2'), // à clore (pas d'étiquette v0.2)
-      shipped(3, 'V0.1'), // livrée (étiquette v0.1)
-      todo(4, 'V0.4'), // rouverte (étiquette v0.4 + fiche à faire)
+      shipped(2, 'V0.2'), // à clore (pas d'étiquette v0.2.0)
+      shipped(3, 'V0.1'), // livrée (étiquette semver v0.1.0)
+      todo(4, 'V0.4'), // rouverte (étiquette v0.4.0 + fiche à faire)
       parked(5, 'V0.5'), // vide : seulement un intrus
     ];
-    const report = buildVersions(fiches, new Set(['v0.1', 'v0.4']));
+    const report = buildVersions(fiches, new Set(['v0.1.0', 'v0.4.0']));
     const state = Object.fromEntries(report.lots.map((l) => [l.version, l.state]));
     expect(state).toEqual({
       'V0.1': 'livree',
@@ -163,9 +212,9 @@ describe('checkVersions — la cohérence d’un lot', () => {
   });
 
   it('signale une version déjà livrée mais rouverte (erreur, une ligne par version)', () => {
-    const findings = checkVersions([shipped(1, 'V0.2'), todo(2, 'V0.2'), todo(3, 'V0.2')], new Set(['v0.2']));
+    const findings = checkVersions([shipped(1, 'V0.2'), todo(2, 'V0.2'), todo(3, 'V0.2')], new Set(['v0.2.0']));
     expect(codes(findings)).toEqual(['error:rouverte']);
-    expect(findings[0].message).toContain('v0.2');
+    expect(findings[0].message).toContain('v0.2.0');
     expect(findings[0].message).toContain('2 fiche');
   });
 
@@ -317,22 +366,22 @@ describe('closeVersion — le geste qui clôt', () => {
     if (!r.ok) expect(r.reasons.join('\n')).toContain(I(2));
   });
 
-  it('refuse une version déjà livrée (l’étiquette existe)', () => {
-    const r = closeVersion([shipped(1, 'V0.2')], new Set(['v0.2']), 'V0.2');
+  it('refuse une version déjà livrée (l’étiquette semver existe)', () => {
+    const r = closeVersion([shipped(1, 'V0.2')], new Set(['v0.2.0']), 'V0.2');
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reasons.join('\n')).toContain('v0.2');
+    if (!r.ok) expect(r.reasons.join('\n')).toContain('v0.2.0');
   });
 
-  it('accepte une version complète et rend son étiquette', () => {
+  it('accepte une version complète et propose son étiquette semver (vX.Y.0)', () => {
     const r = closeVersion([shipped(1, 'V0.2'), shipped(2, 'V0.2')], noTags, 'V0.2');
-    expect(r).toEqual({ ok: true, tag: 'v0.2', shipped: 2 });
+    expect(r).toEqual({ ok: true, tag: 'v0.2.0', shipped: 2 });
   });
 });
 
 describe('rendu texte — « En clair » d’abord', () => {
   const report = buildVersions(
     [shipped(1, 'V0.1'), parked(2, 'V0.1'), todo(3, 'V0.3', { status: 'ready' }), todo(4, ''), parked(5)],
-    new Set(['v0.1']),
+    new Set(['v0.1.0']),
   );
 
   it('la liste ouvre par « En clair », donne un tableau et dit les fiches sans version', () => {

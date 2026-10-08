@@ -6,7 +6,7 @@ import {
   type VersionFinding,
   type VersionState,
   type VersionsReport,
-  tagOf,
+  proposedTagOf,
 } from './versions.js';
 
 const STATE_LABEL: Record<VersionState, string> = {
@@ -54,7 +54,8 @@ export function renderVersionList(report: VersionsReport): string[] {
     String(l.ready.length),
     String(l.blocked.length),
     String(l.intruders.length),
-    l.state === 'livree' ? `${STATE_LABEL[l.state]} (${tagOf(l.version)})` : STATE_LABEL[l.state],
+    // `livree` implique `releaseTag` défini ; le `??` garde le type optionnel total sans `!` non sûr.
+    l.state === 'livree' ? `${STATE_LABEL[l.state]} (${l.releaseTag ?? proposedTagOf(l.version)})` : STATE_LABEL[l.state],
   ]);
   return [
     intro,

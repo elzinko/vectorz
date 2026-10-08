@@ -76,6 +76,14 @@ describe('backlog:version — le bin', () => {
     expect(git('tag', '-l')).toBe('');
   });
 
+  it('reconnaît une étiquette semver à 3 chiffres (v0.2.0) : la version est « livrée », close refuse', () => {
+    git('tag', 'v0.2.0'); // la vraie convention de release (semver), pas le synthétique v0.2
+    expect(run().out).toMatch(/V0\.2\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
+    const r = run('close', 'V0.2');
+    expect(r.code).toBe(1);
+    expect(r.out).toContain("déjà livrée : l'étiquette v0.2.0 existe");
+  });
+
   it('check : une fiche parkée rangée dans une version fait échouer (code 1) et nomme la fiche', () => {
     const r = run('check');
     expect(r.code).toBe(1);
@@ -91,24 +99,24 @@ describe('backlog:version — le bin', () => {
     expect(git('tag', '-l')).toBe('');
   });
 
-  it('close sur une version complète : PROPOSE l’étiquette et n’exécute rien', () => {
+  it('close sur une version complète : PROPOSE l’étiquette semver (vX.Y.0) et n’exécute rien', () => {
     const r = run('close', 'V0.2');
     expect(r.code).toBe(0);
-    expect(r.out).toContain('git tag -a v0.2');
-    expect(r.out).toContain('git push origin v0.2');
+    expect(r.out).toContain('git tag -a v0.2.0');
+    expect(r.out).toContain('git push origin v0.2.0');
     expect(git('tag', '-l')).toBe('');
     expect(git('status', '--porcelain')).toBe('');
   });
 
-  it('close --tag : crée l’étiquette LOCALE, jamais de poussée, puis la version est « livrée »', () => {
+  it('close --tag : crée l’étiquette semver LOCALE, jamais de poussée, puis la version est « livrée »', () => {
     const head = git('rev-parse', 'HEAD').trim();
     const r = run('close', 'V0.2', '--tag');
     expect(r.code).toBe(0);
-    expect(r.out).toContain('git push origin v0.2'); // proposé à l'humain, pas exécuté
-    expect(git('tag', '-l').trim()).toBe('v0.2');
-    expect(git('rev-list', '-n', '1', 'v0.2').trim()).toBe(head);
+    expect(r.out).toContain('git push origin v0.2.0'); // proposé à l'humain, pas exécuté
+    expect(git('tag', '-l').trim()).toBe('v0.2.0');
+    expect(git('rev-list', '-n', '1', 'v0.2.0').trim()).toBe(head);
     expect(git('status', '--porcelain')).toBe(''); // aucune fiche touchée
-    expect(run().out).toMatch(/V0\.2\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\)/);
+    expect(run().out).toMatch(/V0\.2\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
     const again = run('close', 'V0.2'); // idempotent : on ne reclôt pas
     expect(again.code).toBe(1);
     expect(again.out).toContain('déjà livrée');
@@ -134,11 +142,11 @@ describe('backlog:version — le bin', () => {
 
     const proposal = run('close', 'V0.2');
     expect(proposal.code).toBe(0);
-    expect(proposal.out).toContain(`git tag -a v0.2 -m "Version V0.2" ${head}`);
+    expect(proposal.out).toContain(`git tag -a v0.2.0 -m "Version V0.2" ${head}`);
     expect(proposal.out).toContain("n'est pas la pointe de origin/main");
 
     expect(run('close', 'V0.2', '--tag').code).toBe(0);
-    expect(git('rev-list', '-n', '1', 'v0.2').trim()).toBe(head); // jamais origin/main
+    expect(git('rev-list', '-n', '1', 'v0.2.0').trim()).toBe(head); // jamais origin/main
   });
 
   it('refuse les usages invalides (code 2) sans rien faire', () => {

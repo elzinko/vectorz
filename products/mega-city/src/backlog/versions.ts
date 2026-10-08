@@ -46,6 +46,37 @@ function compareLoose(a: string, b: string): number {
 /** L'étiquette git d'une version : `V0.3` → `v0.3`. */
 export const tagOf = (version: string): string => `v${version.slice(1)}`;
 
+/**
+ * Le tag semver PROPOSÉ pour sortir une version : `vX.Y` → `vX.Y.0`, `vX.Y.Z` → `vX.Y.Z`.
+ * On tague toujours en semver à trois composantes (décision 2026-10-08) ; une version à deux
+ * composantes est complétée par un patch `.0`.
+ */
+export function proposedTagOf(version: string): string {
+  const base = tagOf(version);
+  return base.split('.').length >= 3 ? base : `${base}.0`;
+}
+
+/**
+ * Le tag de RELEASE semver (`vA.B.C`, trois composantes, sans pré-version) qui atteste qu'une version
+ * est sortie, ou `undefined`. La version doit être le PRÉFIXE numérique du tag : `V1.7` est sortie par
+ * `v1.7.0` (ou `v1.7.5`…), `V0.3.1` par `v0.3.1`. Un tag nu `vX.Y` ou une pré-version `vX.Y.Z-rc.N`
+ * ne compte PAS (décision 2026-10-08 : semver strict). Plusieurs patchs : on rend le plus haut.
+ * `version` est supposée au `VERSION_FORMAT` ; sinon `undefined`.
+ */
+export function releaseTagFor(version: string, tags: ReadonlySet<string>): string | undefined {
+  if (!VERSION_FORMAT.test(version)) return undefined;
+  const parts = version.slice(1).split('.').map(Number);
+  let best: string | undefined;
+  for (const t of tags) {
+    const m = /^v(\d+)\.(\d+)\.(\d+)$/.exec(t);
+    if (m === null) continue;
+    const tagParts = [Number(m[1]), Number(m[2]), Number(m[3])];
+    if (!parts.every((p, i) => p === tagParts[i])) continue;
+    if (best === undefined || compareVersions(t, best) > 0) best = t;
+  }
+  return best;
+}
+
 /** Parkée = `idea` + `milestone: parked` (même règle que le board : jalon fermé par le PO). */
 const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
 
@@ -71,6 +102,8 @@ export interface VersionLot {
   blocked: Fiche[];
   /** Fiches parkées qui portent pourtant cette version : hors lot, mais signalées. */
   intruders: Fiche[];
+  /** L'étiquette de release trouvée (`v1.7.0`), si la version est sortie — sinon `undefined`. */
+  releaseTag?: string;
 }
 
 export interface VersionsReport {
@@ -91,7 +124,8 @@ function lotOf(version: string, members: Fiche[], tags: ReadonlySet<string>): Ve
   const shipped = sorted.filter((f) => f.status === 'shipped');
   const intruders = sorted.filter((f) => f.status !== 'shipped' && isParked(f));
   const todo = sorted.filter((f) => f.status !== 'shipped' && !isParked(f));
-  const tagged = tags.has(tagOf(version));
+  const releaseTag = releaseTagFor(version, tags);
+  const tagged = releaseTag !== undefined;
   let state: VersionState = 'vide';
   if (todo.length > 0) state = tagged ? 'rouverte' : 'en-cours';
   else if (shipped.length > 0) state = tagged ? 'livree' : 'a-clore';
@@ -103,6 +137,7 @@ function lotOf(version: string, members: Fiche[], tags: ReadonlySet<string>): Ve
     ready: todo.filter((f) => f.status === 'ready'),
     blocked: todo.filter((f) => f.blocked !== ''),
     intruders,
+    releaseTag,
   };
 }
 
@@ -286,11 +321,12 @@ export function checkVersions(
       });
     }
     if (lot.state === 'rouverte') {
+      // `rouverte` implique `releaseTag` défini ; le `??` garde le type optionnel total, sans `!` non sûr.
       found.push({
         severity: 'error',
         code: 'rouverte',
         version: lot.version,
-        message: `${lot.version} est déjà livrée (étiquette ${tagOf(lot.version)}) mais ${lot.todo.length} fiche(s) restent à faire : ${lot.todo.map((f) => f.id).join(', ')}`,
+        message: `${lot.version} est déjà livrée (étiquette ${lot.releaseTag ?? proposedTagOf(lot.version)}) mais ${lot.todo.length} fiche(s) restent à faire : ${lot.todo.map((f) => f.id).join(', ')}`,
       });
     }
     for (const f of lot.blocked) {
@@ -353,7 +389,10 @@ export function closeVersion(
     (f) => f.severity === 'error' && f.code !== 'rouverte', // « rouverte » = les fiches à faire, déjà listées
   );
   for (const f of errors) reasons.push(`[${f.code}]${f.ficheId ? ` ${f.ficheId}` : ''} ${f.message}`);
-  const tag = tagOf(version);
-  if (reasons.length === 0 && tags.has(tag)) reasons.push(`déjà livrée : l'étiquette ${tag} existe`);
+  const tag = proposedTagOf(version);
+  const released = releaseTagFor(version, tags);
+  if (reasons.length === 0 && released !== undefined) {
+    reasons.push(`déjà livrée : l'étiquette ${released} existe`);
+  }
   return reasons.length > 0 ? { ok: false, reasons } : { ok: true, tag, shipped: lot.shipped.length };
 }
