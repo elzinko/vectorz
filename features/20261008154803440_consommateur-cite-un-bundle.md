@@ -46,10 +46,6 @@ matérialise tout ça dans un projet.
 3. Résoudre **au bind**, **par référence** : la liste des ids atterrit, le **texte** ne se
    duplique pas dans chaque `ENTRY.md` (budget tokens). Séparer « agrégation de profil » et
    « résolution de contrat ».
-4. Trancher la redondance `applique`↔`enforces` : la **règle possède sa garantie**
-   (`enforcements[].agent`), le **consommateur possède sa participation** (`applies`). Là où ça
-   se recouvre, **un seul côté écrit, l'autre dérivé** ; interdire le double-write, le valider
-   par `graph:check`.
 
 ## Critères d'acceptation
 
@@ -61,8 +57,15 @@ matérialise tout ça dans un projet.
       `ENTRY.md` (référence, pas recopie).
 - [ ] Le test `graph-vocabulary` est mis à jour **délibérément** (une arête de plus, vocabulaire
       fermé).
-- [ ] Pas de double-write `applique` / `enforces` : le recouvrement est dérivé, non re-listé à la
-      main.
+
+## Suite (hors de cette fiche)
+
+- **Trancher la redondance `applique` ↔ `enforces`** : la règle possède sa garantie
+  (`enforcements[].agent`), le consommateur sa participation (`applies`) ; là où ça se recouvre,
+  **un seul côté écrit, l'autre est dérivé**, et `graph:check` interdit le double-write.
+  **Pourquoi plus tard** : ce recouvrement existe **déjà** au niveau des règles, indépendamment
+  des bundles. Le résoudre est un nettoyage de modèle, pas un prérequis pour citer un bundle.
+  À ouvrir en fiche sœur si on le veut.
 
 ## Comment vérifier
 
@@ -81,8 +84,9 @@ pnpm --dir products/mega-city graph:check
 ## Notes / décisions
 
 - **Amende ADR-0040** (nouvelle arête dans le vocabulaire fermé). Avis `ezk-architect` :
-  GO-avec-réserves (exactement cette arête ; résolution par référence, pas par recopie ; trancher
-  la redondance). Avis `ezk-pm` : **P0, à faire en premier** — prérequis de F2.
+  GO sur le périmètre restant (exactement cette arête ; résolution par référence, pas par recopie).
+  La réserve « trancher la redondance `applique`↔`enforces` » est **sortie du scope** vers la
+  section « Suite » (coupe du 2026-10-08). Avis `ezk-pm` : **P0, à faire en premier** — prérequis de F2.
 - Brique habilitante de **F2 — DoD/DoR, listes de règles/bundles (contrat partagé)**
   (20261008154804532_dod-dor-contrat-partage.md) et de **F3 — vue de projection**
   (20261008154805639_vue-projection-regles-par-agent.md).
