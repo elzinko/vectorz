@@ -148,6 +148,7 @@
 | [20261004192802897](done/20261004192802897_cockpit-menu-projets-et-leurs-fiches.md) | Cockpit : le tableau de bord liste tes projets et montre les fiches du projet choisi | feature | P1 | V0.6 | mega-city | ✅ shipped | local (7841c073) |
 | [20261004192802964](done/20261004192802964_cockpit-page-config-en-sections.md) | Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule | feature | P1 | V0.6 | mega-city | ✅ shipped | local (ec7fc3ec) |
 | [20261005100026946](done/20261005100026946_cloture-session-committe-son-archive.md) | La clôture de session committe l'archive qu'elle écrit, au lieu de la laisser hors de git dans le dossier de travail | bug | P1 | V0.6 | mega-city | ✅ shipped | local (807fdd95) |
+| [20261005100027029](done/20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md) | Chaque sprint laisse un compte rendu committé et standard, que la rétro lit | feature | P1 | V0.7 | mega-city | 🧩 split | split — scindée en 20261008072305169, 20261008072306360 |
 | [20261007151859470](20261007151859470_generateur-multi-ide-cli-moteur.md) | Générateur multi-IDE : une source → .claude/ + .cursor/ + AGENTS.md, CLI moteur | feature | P1 | V0.10 | vectorz | 🔵 ready |  |
 | [20261008063957243](20261008063957243_version-reconnait-tags-semver-3-chiffres.md) | backlog version : reconnaître les étiquettes semver à 3 chiffres (v1.7.0) | bug | P1 |  | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
@@ -308,8 +309,9 @@
 | [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261005100027029](20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md) | Chaque sprint laisse un compte rendu committé et standard, que la rétro lit | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Refondre la vue de supervision du Moniteur pour qu'elle soit lisible | feature | P1 | V0.7 | cop1 | 💡 idea |  |
+| [20261008072305169](20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) | Au close, le sprint écrit et committe son compte rendu | feature | P1 | V0.7 | mega-city | 💡 idea |  |
+| [20261008072306360](20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) | La rétro et l'archive lisent les comptes rendus de sprint | feature | P1 | V0.7 | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |

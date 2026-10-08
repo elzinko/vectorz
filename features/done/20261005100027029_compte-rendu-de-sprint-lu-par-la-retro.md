@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version: V0.7
 labels: [sprint, retro, archive]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261008072305169, 20261008072306360"
 evidence: none # scripts et skills, pas d'écran
 created: 2026-10-05
+split_into: ["20261008072305169", "20261008072306360"]
 ---
 
 # 20261005100027029 — Chaque sprint laisse un compte rendu committé et standard, que la rétro lit
@@ -89,10 +90,26 @@ bash products/mega-city/skills/ezk-sprint/scripts/sprint.sh close   # → écrit
 ls docs/sprints/
 ```
 
+## Dépendances constatées (2026-10-08)
+
+État réel des pièces voisines et de la fondation, vérifié sur `main` :
+
+| Fiche | État | Effet sur cette fiche |
+|---|---|---|
+| [clôture committe l'archive](20261005100026946_cloture-session-committe-son-archive.md) | **livrée** (ADR-0063) | acquis : l'archive de session est déjà committée ; le critère « l'archive renvoie aux comptes rendus » s'appuie dessus |
+| [rapport de sprint / métriques](20260826082120062_domaine-metriques-de-sprint-rapport.md) | **livrée** | base de format + dossier `docs/sprints/` déjà posés ; on compose avec, on ne refait pas |
+| [journal par branche](../20261004181110201_sprint-md-par-branche-hors-worktree.md) | `idea` | voisine, pas bloqueur (journal vivant ≠ compte rendu durable) |
+| [rapport ne retrouve pas la trace supervision](../20261002230039863_sprint-report-trace-supervision.md) | `idea` | voisine, pas bloqueur |
+| [chemins `scrum:` configurables](../20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | `ready`, **V0.9** | **planifiée APRÈS** cette fiche (V0.7) → on ne l'attend pas |
+
+**Lieu tranché : `docs/sprints/` maintenant.** La fondation `scrum:` arrive en V0.9 ; cette fiche est en
+V0.7. Le compte rendu vit donc dans `docs/sprints/` (là où le rapport déjà livré écrit). Quand `scrum:`
+atterrira, la relocalisation passera par ce mécanisme — ce n'est pas un bloqueur ici.
+
 ## Notes / décisions
 
-- 2026-10-05 : créée à la demande du PO, après la clôture de la session V0.5 + cockpit. P1 et V0.6,
-  décision PO du même jour.
+- 2026-10-05 : créée à la demande du PO, après la clôture de la session V0.5 + cockpit. P1 ; rattachée
+  à l'origine V0.6, **réassignée V0.7** (le front-matter fait foi : `version: V0.7`).
 - **À groomer avant de construire** : le lieu des fichiers (`docs/sprints/`, ou le dossier
   « process » de la fiche « Regrouper les artefacts de méthode hors de docs/ », 20261001192624192), le
   moment du commit en mode PR, et peut-être un ADR sur le format. Six critères : au seuil de la règle
