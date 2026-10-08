@@ -11,6 +11,7 @@ status: ready
 pr:
 evidence: none # scripts et skills, pas d'écran
 created: 2026-10-08
+split_from: "20261005100027029"
 ---
 
 # 20261008072305169 — Au close, le sprint écrit et committe son compte rendu
