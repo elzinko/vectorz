@@ -128,11 +128,12 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261005100027029` — chaque sprint laisse un compte rendu committé, lu par la rétro · `idea` → `groom`~~ — split
 > Hors lot socle, après maquette / décision PO : la refonte du Moniteur (`20261007135620590`) et les hooks d'émission (`0077`, optionnel).
 
-### ⑨ v0.8.0 — amélioration mesurée : système de règles composable (décidé le 2026-10-08)
-> Le système de règles devient composable : d'abord citer un bundle (la brique), puis la DoD/DoR en listes partagées dev/reviewer, puis la vue de projection. Avis ezk-architect / ezk-pm / product-brainstorming intégrés.
-- `20261008154803440` — un consommateur (agent/skill) peut citer un bundle · P0 · `idea` → prérequis, amende ADR-0040
-- `20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → conditionnée au test de divergence
-- `20261008154805639` — vue de projection par projet (agent + ses règles) · P2 · `idea` → différée
+### ⑨ v0.8.0 — amélioration mesurée : système de règles composable (décidé le 2026-10-08, réaligné le 2026-10-09)
+> Le système de règles devient composable : citer un bundle (la brique) et prouver la divergence dev/reviewer (spike), puis la DoD/DoR en listes partagées, puis la vue de projection. Avis ezk-architect / ezk-pm / product-brainstorming intégrés.
+- `20261008154803440` — un consommateur (agent/skill) peut citer un bundle · P0 · **ready** → `build` ; amende ADR-0040 (double-write sorti en Suite)
+- `20261008183238365` — spike : dev et reviewer divergent-ils vraiment ? · P0 · **ready** → `build` ; conditionne F2
+- `20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → `groom` ; conditionnée au spike + dépend de F1
+- `20261008154805639` — vue de projection par projet (agent + ses règles) · P2 · `idea` → différée (déclencheur F1/F2)
 
 ### ⑩ v0.9.0 — ranger la maison (rationalisation)
 > Rationalisation de la surface : fichiers (docs/, scrum/, config cop1, CLAUDE.md proxy) et CLI.
