@@ -134,6 +134,10 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → conditionnée au test de divergence
 - `20261008154805639` — vue de projection par projet (agent + ses règles) · P2 · `idea` → différée
 
+### ⑩ v0.9.0 — ranger la maison (rationalisation)
+> Rationalisation de la surface : fichiers (docs/, scrum/, config cop1, CLAUDE.md proxy) et CLI.
+- `20261009104436287` — `next` nu montre la suite (pas la liste) ; `plan-head` démoté · P1 · **ready** → `build`
+
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
