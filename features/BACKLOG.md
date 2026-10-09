@@ -317,7 +317,7 @@
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Refondre la vue de supervision du Moniteur pour qu'elle soit lisible | feature | P1 | v0.7.0 | cop1 | 💡 idea |  |
 | [20261008072306360](20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) | La rétro et l'archive lisent les comptes rendus de sprint | feature | P1 | v0.7.0 | mega-city | 💡 idea |  |
-| [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 |  | mega-city | 💡 idea |  |
+| [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 | v0.9.0 | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
