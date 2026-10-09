@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.9.0
 labels: [ergonomie-cli]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-09
