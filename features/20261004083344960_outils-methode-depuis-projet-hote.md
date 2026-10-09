@@ -23,7 +23,7 @@ created: 2026-10-04
 
 Vécu au sprint 1 de samplerz, le 2026-10-03, puis à sa rétro :
 
-- Ces commandes refusent un projet hôte : `ezk evidence`, `ezk pr emit-local`, `ezk sprint report`, `ezk backlog apply`, `ezk backlog plan-head`, `ezk backlog plan-lot`, `ezk docs check-links`. Le script sous-jacent accepte parfois `--root` (`backlog:apply`, `sprint:report`), la commande `ezk` non.
+- Ces commandes refusent un projet hôte : `ezk evidence`, `ezk pr emit-local`, `ezk sprint report`, `ezk backlog aggregate`, `ezk backlog apply`, `ezk backlog plan-head`, `ezk backlog plan-lot`, `ezk docs check-links`. Le script sous-jacent accepte parfois `--root` (`backlog:apply`, `sprint:report`), la commande `ezk` non.
 - Le message de refus conseille « ajoute --root » suivi du chemin de vectorz. Pour un projet hôte, c'est la mauvaise cible.
 - Appelé en direct sans `--root`, le script `plan:lot` a lu le backlog de vectorz depuis samplerz, sans prévenir.
 - `sprint:report` exige la supervision, absente de samplerz. Aucun chiffre de durée ni de jetons par fiche ; `ezk-chef suggest` n'a pas pu tourner à la rétro.
@@ -35,3 +35,4 @@ Vécu au sprint 1 de samplerz, le 2026-10-03, puis à sa rétro :
 
 - Priorité P1. Fiche captée le 2026-10-04 par la rétro samplerz du 2026-10-03, piste 1, retenue par le PO. Capture : `docs/captures/2026-10-03-retro-premier-sprint-format-methode.md` dans le dépôt samplerz. À groomer avant d'être tirée.
 - Mesure retenue : au prochain sprint de samplerz, 0 script jetable et 100 % des fiches chiffrées en jetons ; 5 refus sur 5 nomment le projet hôte.
+- Re-constaté le 2026-10-09 depuis samplerz : `ezk backlog aggregate --root <projet>` refuse avec « n'est pas le dépôt de la méthode », alors qu'un projet doit pouvoir regrouper ses propres fiches. Ajouté à la liste des commandes à ouvrir au `--root`. `aggregate` a été fait à la main côté samplerz faute d'outil.
