@@ -37,25 +37,38 @@ pas la prochaine **action** de session.
   recommande l'étape suivante. On garde l'idée (dire ce qui vient après), pas un moteur de menu
   (garde-fou ADR-0013).
 
-## Proposition (esquisse — à groomer)
+## Proposition
 
-Une commande (nom à trancher, **pas `ezk-next`** : collision avec `ezk-backlog next`) qui :
+Une commande **top-level `ezk-now`** (pas `ezk-next` : collision avec `ezk-backlog next` ; pas une
+sous-commande de `ezk-backlog`, sinon on la ré-enferme dans le backlog) qui :
 
-- lit le **contexte de session** quand il existe (ce qu'on vient de faire dans le fil) ;
-- se rabat sur les **traces du dépôt** comme filet quand la session est neuve ou son contexte a
-  été résumé : dernier commit, état du backlog, `SPRINT.md`, journal ;
-- s'appuie sur une **source d'ordre** pour savoir ce qui suit : les tables « Et maintenant ? »
-  déjà portées par les skills, ou un graphe de la méthode ;
-- rend **1 à 3 suites motivées**, au format `next-step-affordance`.
+- lit **toujours** les traces du dépôt — dernier commit, `BACKLOG`, `PLAN.md`, `SPRINT.md`, journal —
+  comme **socle déterministe** : la boussole répond même en session neuve ;
+- **affine** avec le contexte de session quand il existe (« tu viens de groomer → `ready` »), sans
+  jamais en dépendre ;
+- tire « ce qui vient après » des **tables « Et maintenant ? »** des skills (colonne `quand` =
+  l'état), **pas** du graphe compilé (cf. Décisions tranchées) ;
+- rend **1 à 3 suites motivées**, au format `next-step-affordance` — le modèle rédige, aucun moteur
+  de menu (ADR-0013).
 
-## Décisions ouvertes (à trancher au groom)
+## Décisions tranchées (groom 2026-10-10, avis `engineering:architecture`)
 
-- **Nom** de la commande (hors `ezk-next`).
-- **Portée de lecture** : session + dépôt sont complémentaires, pas exclusifs — à confirmer.
-- **Source d'ordre** : réutiliser les tables « Et maintenant ? » des skills, ou compiler un graphe.
-- **Lien avec le socle** : la base commune de règles héritée par un groupe de skills
-  ([Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md))
-  rendrait le bloc « Et maintenant ? » fiable partout ; la boussole en serait la façade.
+- **Nom → `ezk-now`.** Court, transversal, évoque « maintenant », aucune collision. Top-level, pas
+  sous `ezk-backlog`. Écartés : `ezk-status` (évoque un état figé), `ezk-what-next` (verbeux).
+- **Portée → le dépôt suffit toujours, la session est un bonus.** Les traces du dépôt sont le socle
+  obligatoire (déterministes, présentes en session neuve) ; le contexte de chat affine mais n'est
+  jamais requis. Plus robuste que « session d'abord ».
+- **Source d'ordre → les tables « Et maintenant ? », pas le graphe.** Le graphe compilé (ADR-0040) a
+  un jeu de verbes **fermé** et **structurel** (`compose`, `applique`…) ; il n'a aucun verbe de
+  succession, et ne doit pas en avoir : l'ordre est **conditionnel à l'état** (« après `ready` →
+  `next` »), ce qu'une arête statique ne capte pas, mais que la colonne `quand` des tables capte.
+  `ezk-now` lit les tables + l'état ; le graphe reste structurel.
+- **Couverture.** `ezk-now` n'est bon que là où les tables existent (2 skills aujourd'hui). Le socle
+  [Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md)
+  généralisera les tables à un groupe de skills ; la boussole en est la façade.
+- **ADR.** Pas d'ADR maintenant (idea). Au **build**, ouvrir un ADR court sur la frontière « l'ordre
+  vit dans les tables, pas dans le graphe fermé » — décision durable, susceptible d'être contestée
+  (quelqu'un voudra ajouter un verbe `succède`).
 
 ## Critères d'acceptation (ébauche)
 
@@ -85,3 +98,5 @@ Une commande (nom à trancher, **pas `ezk-next`** : collision avec `ezk-backlog 
   (v0.8.0) : à poser **après** lui.
 - Voisine ergonomie CLI : [`next` nu montre la suite](20261009104436287_next-nu-montre-la-suite.md)
   (retouche `ezk-backlog next`, périmètre différent).
+- Groom 2026-10-10 : technique « avis-architecte » jouée (nom / portée / source d'ordre tranchés,
+  cf. « Décisions tranchées »). Statut inchangé (`idea`) — le gate `ready` reste à passer.
