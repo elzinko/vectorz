@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.10.0
 labels: [ergonomie-cli]
-status: idea
+status: ready
 pr:
 evidence: none # commande CLI, pas d'écran
 created: 2026-10-10
@@ -127,4 +127,5 @@ rend la suite. Tout le reste est en « Suite » ci-dessous.
   (retouche `ezk-backlog next`, périmètre différent).
 - Groom 2026-10-10 : techniques « avis-architecte » (nom / portée / source d'ordre, cf. « Décisions
   tranchées »), « couper-au-poc » (POC + « Suite ») et « valeur-par-l'absence » jouées. Socle DoR
-  complet (problème / valeur / critères). Statut inchangé (`idea`) — `ready` reste à passer.
+  complet (problème / valeur / critères). Statut inchangé par le groom ; **passée `ready` le
+  2026-10-10** (gate DoR vérifié : problème / valeur / critères, 4 critères, 1 surface).
