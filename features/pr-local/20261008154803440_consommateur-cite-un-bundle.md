@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261008154803440_consommateur-cite-un-bundle.md](../20261008154803440_consommateur-cite-un-bundle.md)
+> 🗎 Rendu de la fiche [features/20261008154803440_consommateur-cite-un-bundle.md](../done/20261008154803440_consommateur-cite-un-bundle.md)
 
 # 20261008154803440 — Un consommateur peut citer un bundle
 

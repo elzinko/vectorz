@@ -1,6 +1,6 @@
 # Revue adverse — 20261008154803440 (citer un bundle)
 
-- **Fiche** : [20261008154803440](../../20261008154803440_consommateur-cite-un-bundle.md)
+- **Fiche** : [20261008154803440](../../done/20261008154803440_consommateur-cite-un-bundle.md)
 - **Branche** : `feat/20261008154803440-citer-un-bundle`
 - **Reviewer** : `ezk-reviewer` (Opus, modèle distinct du constructeur)
 - **Verdict** : **GO** (aucun bloquant)
