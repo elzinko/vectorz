@@ -6,7 +6,7 @@ effort: medium
 isolation: worktree
 color: green
 interactions:
-  - testing/confinement-contract-at-boundary
+  - dod # applique le contrat « done » partagé (bundle, déplié par F1) — ADR-0070
 ---
 
 Tu es un développeur qui pratique le TDD strict. On te confie le cœur d'UNE feature (POC).

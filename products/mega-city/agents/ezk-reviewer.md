@@ -19,11 +19,7 @@ color: red
 competences:
   - ezk-ci
 interactions:
-  - clean-code/no-dead-code
-  - development/adversarial-review-before-merge
-  - development/test-philosophy
-  - testing/confinement-contract-at-boundary
-  - clean-code/no-silent-mutation
+  - dod # contrôle le contrat « done » partagé (bundle, déplié par F1) — plus de recopie, ADR-0070
 ---
 
 # ezk-reviewer — revue adverse

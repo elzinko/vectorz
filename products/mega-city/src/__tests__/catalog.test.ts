@@ -63,13 +63,10 @@ describe('loadCatalog (données réelles du repo)', () => {
     const agent = catalog.agents.get('ezk-reviewer');
     expect(agent?.id).toBe('ezk-reviewer');
     expect(agent?.competences).toEqual(['ezk-ci']);
-    expect(agent?.interactions).toEqual([
-      'clean-code/no-dead-code',
-      'development/adversarial-review-before-merge',
-      'development/test-philosophy',
-      'testing/confinement-contract-at-boundary',
-      'clean-code/no-silent-mutation',
-    ]);
+    // Depuis F2 (ADR-0070) le reviewer cite le bundle `dod` (contrat « done » partagé), déplié
+    // par F1, au lieu de recopier les 5 règles à la main. Le dépliage en règles est prouvé par
+    // dod-contract.test.ts.
+    expect(agent?.interactions).toEqual(['dod']);
     expect(agent?.role).toMatch(/reviewer senior/i); // insensible à la casse : l'agent réécrit dit « reviewer senior en posture adverse »
   });
 
