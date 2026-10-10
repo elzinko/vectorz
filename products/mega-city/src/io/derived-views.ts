@@ -20,6 +20,7 @@ import { buildMapDataBlock } from '../core/map-data.js';
 import { buildPilotageDataBlock } from '../core/pilotage-data.js';
 import { buildPlanDeltaBlock } from '../core/plan-delta-data.js';
 import { buildPlanViewDataBlock } from '../core/plan-view-data.js';
+import { buildProcessDataBlock } from '../core/process-data.js';
 import { buildRunsDataBlock } from '../core/runs-data.js';
 import { buildVerdictsBlock } from '../core/verdicts.js';
 import { loadCatalog } from '../loaders/catalog.js';
@@ -28,10 +29,11 @@ import { loadMapSources } from '../loaders/map-sources.js';
 import { loadMethodDoc } from '../loaders/method.js';
 import { loadRuns } from '../loaders/runs.js';
 import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
+import { collectProcessIo } from './sessions-collect.js';
 import { loadVerdicts } from './verdicts.js';
 
 export interface DataView {
-  id: 'board' | 'pilotage' | 'runs' | 'carte';
+  id: 'board' | 'pilotage' | 'runs' | 'process' | 'carte';
   /** Fichier de données, relatif à la racine du dépôt — ignoré par git. */
   out: string;
   /** Page HTML (committée) qui le charge par `<script src>`. */
@@ -88,6 +90,17 @@ export const DATA_VIEWS: readonly DataView[] = [
     out: 'diagrams/runs/runs.data.js',
     page: 'diagrams/runs/runs.html',
     build: (repoRoot) => `${HEADER}${buildRunsDataBlock(loadRuns(repoRoot))}\n`,
+  },
+  {
+    // La vue « process » (fiche 20261002115451315) : chaque fiche posée sur son étape (idée, prête,
+    // en sprint, en revue, livrée). Les FICHES viennent du projet désigné (`repoRoot`) ; les signaux
+    // git/gh (branches, worktrees, PR ouvertes) du dépôt local, collectés par `collectProcessIo`.
+    // L'étape se DÉDUIT, aucun objet « sprint » n'est créé (verdict du panel du 2026-08-23).
+    id: 'process',
+    out: 'diagrams/process/process.data.js',
+    page: 'diagrams/process/process.html',
+    build: (repoRoot) =>
+      `${HEADER}${buildProcessDataBlock({ fiches: loadFiches(repoRoot), ...collectProcessIo() })}\n`,
   },
   {
     // La carte de la méthode (suite de l'ADR-0055). Ses données ne viennent pas des fiches mais du

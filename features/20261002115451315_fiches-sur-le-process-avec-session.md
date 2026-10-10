@@ -108,8 +108,17 @@ ils ne conditionnent pas la valeur, qui est de **voir** les fiches posées sur l
 - [ ] L'absence de PR (pas de `gh`/remote) est un **cas de première classe** dans les entrées du
       calcul (`openPrByBranch` nullable) : une fiche à ce moment reste « En sprint », jamais
       rétrogradée en silence. Un test couvre le cas `null`.
+- [ ] Chaque carte montre sa **version** (et son milestone s'il existe) ; une **barre de filtres**
+      réduit la vue par recherche (titre/id), version, milestone et priorité. Sous filtre, les
+      comptes des colonnes disent le nombre de résultats (pas le « X / Y » de la troncature).
+      *(Ajouté en cours de sprint, demande PO du 2026-10-10 : « on ne voit pas les versions, on ne
+      peut pas filtrer ».)*
 
 ### Après le POC (hors de ce sprint)
+
+- [ ] Le détail d'une fiche **d'un autre projet** s'ouvre sans 404 — limite de cockpit partagée avec
+      le board, fichée à part :
+      [20261010100030780](20261010100030780_cockpit-sert-detail-fiches-projet-choisi.md).
 
 - [ ] Le **message visible** quand `gh`/remote manque se polit : la page affiche « revue
       indéterminée » plutôt que de laisser deviner (le type d'entrée, lui, est déjà posé en POC).

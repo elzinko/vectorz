@@ -1,0 +1,15 @@
+title: "Les fiches sur le process — chaque fiche active posée sur son étape, avec sa session"
+categorie: pilotage
+date: 2026-10-10
+type: board
+links:
+  entry: process.html
+  fiche: ../../features/20261002115451315_fiches-sur-le-process-avec-session.md
+  compilateur: ../../products/mega-city/src/core/process-data.ts
+  regen: "pnpm --dir products/mega-city views:regen"
+note: >-
+  Tranche 1 (fiche 20261002115451315) : chaque fiche posée sur une des cinq étapes
+  (idée · prête · en sprint · en revue · livrée), déduites du statut, des branches
+  feat/<id>-…, des PR ouvertes et des sessions — aucun objet « sprint » inventé
+  (verdict du panel du 2026-08-23). L'absence de gh/remote est un cas de première
+  classe : une fiche avec branche reste « en sprint », jamais rétrogradée en silence.

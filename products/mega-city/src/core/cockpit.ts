@@ -8,7 +8,9 @@
  * IDENTIFIANT dans le registre, jamais par un chemin venu du navigateur (ADR-0057).
  *
  * Aucune I/O ici (ADR-0003) : la lecture du registre et des dossiers vit dans `src/io/cockpit.ts`.
+ * `resolve`/`sep` (node:path) sont des calculs de chemin PURS, sans I/O — l'existence est testée au bord.
  */
+import { join, resolve, sep } from 'node:path';
 
 /** Le préfixe du cookie qui porte le projet choisi. */
 export const PROJECT_COOKIE = 'ezk-projet';
@@ -136,6 +138,28 @@ export function dataTarget(choice: ProjectChoice, defaultRoot: string): DataTarg
     return { kind: 'refus', status: 409, reason: `${project.id} : ${stateLabel(project.state)}` };
   }
   return { kind: 'lire', root: project.root };
+}
+
+/**
+ * Où lire le FICHIER d'une fiche (son détail `.md`, servi en lecture) pour ce choix : TOUJOURS sous
+ * `<projet>/features/`, jamais ailleurs dans le projet ni hors du projet. Résout le chemin relatif
+ * contre la racine du projet puis garde contre la traversée hors de `features/` (`..` ne sort pas).
+ * On confine au DOSSIER, pas seulement à la racine : la garantie ne dépend ainsi d'aucune pré-
+ * normalisation de l'appelant (revue P1). Un refus de `dataTarget` (projet inconnu/illisible) est
+ * repassé tel quel. Pur, sans I/O : le bord (ezk-map) teste l'existence (fiche 20261010100030780 —
+ * fin des 404 quand on clique une fiche d'un autre projet que la méthode).
+ */
+export type FichePathTarget =
+  | { kind: 'lire'; path: string }
+  | { kind: 'refus'; status: 400 | 409; reason: string }
+  | { kind: 'traversee' };
+
+export function resolveFichePath(target: DataTarget, rel: string): FichePathTarget {
+  if (target.kind === 'refus') return target;
+  const fichesDir = join(target.root, 'features');
+  const path = resolve(target.root, rel);
+  if (path !== fichesDir && !path.startsWith(fichesDir + sep)) return { kind: 'traversee' };
+  return { kind: 'lire', path };
 }
 
 /**

@@ -18,6 +18,7 @@ import {
   readCookie,
   renderProjectBar,
   resolveChoice,
+  resolveFichePath,
   nameProjectInPage,
   safeReturnPath,
   shownProjectName,
@@ -90,6 +91,45 @@ describe('le choix porté par la requête', () => {
   it('un projet qu’on ne sait pas lire est refusé avec la raison, sans racine', () => {
     const target = dataTarget(resolveChoice(projects, 'vieux'), '/lancement');
     expect(target).toEqual({ kind: 'refus', status: 409, reason: 'vieux : format en retard (version 2, attendue 5)' });
+  });
+
+  // resolveFichePath (fiche 20261010100030780) : le détail d'une fiche se lit SOUS la racine du
+  // projet choisi, jamais ailleurs. Fin des 404 en cliquant une fiche d'un autre projet que la méthode.
+  it('détail de fiche : résolu sous la racine du projet choisi', () => {
+    const muti = dataTarget(resolveChoice(projects, 'muti'), '/lancement');
+    expect(resolveFichePath(muti, 'features/0001_slug.md')).toEqual({
+      kind: 'lire',
+      path: join('/muti', 'features/0001_slug.md'),
+    });
+    expect(resolveFichePath(muti, 'features/done/0002_slug.md')).toEqual({
+      kind: 'lire',
+      path: join('/muti', 'features/done/0002_slug.md'),
+    });
+  });
+
+  it('détail de fiche : projet par défaut = la racine du lancement (comportement d’avant)', () => {
+    const defaut = dataTarget(resolveChoice(projects, undefined), '/lancement');
+    expect(resolveFichePath(defaut, 'features/0001_slug.md')).toEqual({
+      kind: 'lire',
+      path: join('/lancement', 'features/0001_slug.md'),
+    });
+  });
+
+  it('détail de fiche : toute traversée hors de <projet>/features/ est refusée', () => {
+    const muti = dataTarget(resolveChoice(projects, 'muti'), '/lancement');
+    // `..` qui sortirait du projet → refus de traversée.
+    expect(resolveFichePath(muti, '../../etc/passwd')).toEqual({ kind: 'traversee' });
+    expect(resolveFichePath(muti, 'features/../../secret')).toEqual({ kind: 'traversee' });
+    // Et même un `..` qui RESTE dans le projet mais SORT de features/ est refusé (confinement au
+    // dossier, pas seulement à la racine — revue P1 : la garantie ne dépend d'aucun pré-traitement).
+    expect(resolveFichePath(muti, 'features/../secret')).toEqual({ kind: 'traversee' });
+    expect(resolveFichePath(muti, 'features/../.env')).toEqual({ kind: 'traversee' });
+  });
+
+  it('détail de fiche : un refus de projet (inconnu/illisible) est repassé tel quel', () => {
+    const inconnu = dataTarget(resolveChoice(projects, 'vieux'), '/lancement');
+    expect(resolveFichePath(inconnu, 'features/0001_slug.md')).toEqual(inconnu);
+    expect(resolveFichePath(inconnu, 'features/0001_slug.md')).toMatchObject({ kind: 'refus', status: 409 });
   });
 
   it('après un choix, on revient à la page d’où il est fait, jamais ailleurs', () => {
