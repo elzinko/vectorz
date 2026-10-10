@@ -70,12 +70,26 @@ sous-commande de `ezk-backlog`, sinon on la ré-enferme dans le backlog) qui :
   vit dans les tables, pas dans le graphe fermé » — décision durable, susceptible d'être contestée
   (quelqu'un voudra ajouter un verbe `succède`).
 
-## Critères d'acceptation (ébauche)
+## Critères d'acceptation
 
-- [ ] Tapée sans contexte explicite, la commande rend 1 à 3 suites motivées adaptées à l'état.
+**Périmètre POC** : `ezk-now` lit le **dépôt seul** (dernier commit, `BACKLOG`, `PLAN.md`,
+`SPRINT.md`) + les tables « Et maintenant ? » **déjà présentes** (`ezk-backlog`, `ezk-sprint`) et
+rend la suite. Tout le reste est en « Suite » ci-dessous.
+
+- [ ] Tapée sans contexte explicite, la commande rend 1 à 3 suites motivées d'après l'état du dépôt
+      et les **tables existantes**.
 - [ ] En session neuve (sans historique de chat), elle se fonde sur les traces du dépôt.
 - [ ] Aucun conflit de nom avec `ezk-backlog next`.
 - [ ] Elle ne réimplémente pas un moteur de menu : elle lit l'état et laisse le modèle rédiger.
+
+## Suite (hors POC)
+
+- **Affinage par le contexte de session** — bonus non requis ; le POC marche sans, on l'ajoute une
+  fois le socle déterministe prouvé.
+- **Généraliser les tables « Et maintenant ? » aux autres skills** — dépend du socle
+  [Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md) ;
+  chantier séparé. Le POC se contente des 2 skills qui ont déjà la table.
+- **ADR court frontière graphe / tables** — à ouvrir au build, pas au POC.
 
 ## Comment vérifier
 
