@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.8.0
 labels: [loi, revue]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-08
@@ -95,6 +95,7 @@ pnpm --dir products/mega-city graph:check
 - Voisines (à référencer, pas fusionner) : **0053 — gate DoD sur métrique**
   (0053-gate-dod-metrique.md), **le relecteur coche les critères**
   (20261003075821760_relecteur-coche-les-criteres.md).
+- **Gate DoR passé le 2026-10-10** : conditions levées (F1 livrée 58357fb6 + spike 20261008183238365 → divergence prouvée). Concurrence `ezk-pm` (mode auto sans --review) → **GO** : problème/valeur/critères testables, deps levées ; l'ADR neuf est du travail de build, pas un slot DoR. `idea → ready`.
 - Ordre : au **PLAN** après F1 (prérequis). Avis : `ezk-architect` GO-avec-réserves fortes
   (liste composant règles/bundles, pas de `kind`, honnêteté 0050, checkpoint DoR préservé) ;
   `ezk-pm` P0 après F1 ; `product-brainstorming` conditionner au test (retenu).
