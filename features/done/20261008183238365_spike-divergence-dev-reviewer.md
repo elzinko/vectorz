@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.8.0
 labels: [loi, revue]
-status: ready
-pr:
+status: shipped
+pr: "local (constat spike 2026-10-10)"
 evidence: none
 created: 2026-10-08
 ---
@@ -45,13 +45,16 @@ veut supprimer.
 
 ## Critères d'acceptation
 
-- [ ] Les règles suivies par `ezk-dev` et par `ezk-reviewer` sont **listées** côte à côte, et les
-      écarts relevés.
-- [ ] Une rétro qui a noté la divergence est **citée**, ou la fiche dit qu'il n'y en a pas.
-- [ ] **Seuil tranché** : « divergence prouvée » = au moins une règle contrôlée côté reviewer qui
-      n'est pas appliquée côté dev (ou l'inverse), **constatée dans les fichiers**, pas supposée.
-- [ ] Le verdict est **consigné** : divergence prouvée → on tire F2 ; sinon → re-park F2 avec la
-      raison.
+- [x] Les règles suivies par `ezk-dev` et par `ezk-reviewer` sont **listées** côte à côte, et les
+      écarts relevés. → voir « Constat ».
+- [x] Une rétro qui a noté la divergence est **citée**, ou la fiche dit qu'il n'y en a pas. → aucune
+      rétro ne note cette divergence (les « divergence » des captures portent sur le contrat de
+      supervisabilité, pas dev↔reviewer). La preuve vient des fichiers d'agents.
+- [x] **Seuil tranché** : « divergence prouvée » = au moins une règle contrôlée côté reviewer qui
+      n'est pas appliquée côté dev (ou l'inverse), **constatée dans les fichiers**, pas supposée. →
+      3 règles de ce type (voir « Constat »).
+- [x] Le verdict est **consigné** : divergence prouvée → on tire F2 ; sinon → re-park F2 avec la
+      raison. → **divergence prouvée → F2 à tirer** (voir « Constat »).
 
 ## Comment vérifier
 
@@ -65,6 +68,34 @@ grep -A20 '^interactions:' products/mega-city/agents/ezk-dev.md products/mega-ci
 - `spike` — une investigation bornée qui produit un **constat** (ici : divergence oui/non), pas du
   code produit.
 - `contrat` — l'ensemble des règles qu'un agent applique ou contrôle.
+
+## Constat (spike) — 2026-10-10
+
+Lu dans `products/mega-city/agents/ezk-dev.md` et `ezk-reviewer.md` (champ `interactions:`,
+les règles que chaque agent déclare suivre) :
+
+| Règle | `ezk-dev` applique | `ezk-reviewer` contrôle |
+|---|:---:|:---:|
+| `testing/confinement-contract-at-boundary` | ✅ | ✅ |
+| `clean-code/no-dead-code` | — | ✅ |
+| `development/test-philosophy` | — | ✅ |
+| `clean-code/no-silent-mutation` | — | ✅ |
+| `development/adversarial-review-before-merge` | — | ✅ (propre au reviewer par nature) |
+
+**Écart** : `ezk-dev` ne déclare suivre qu'**une** règle ; `ezk-reviewer` en contrôle **cinq**.
+Trois sont des règles de **procédé** que le dev devrait appliquer en codant mais ne déclare pas :
+`no-dead-code`, `test-philosophy`, `no-silent-mutation`. (La 4ᵉ, `adversarial-review-before-merge`,
+est propre à l'acte de revue : elle ne compte pas comme divergence de contrat.)
+
+**Rétros** : aucune rétro ne note cette divergence précise. Les occurrences de « divergence » dans
+`docs/captures/` portent sur le contrat de supervisabilité (miroir/incident), pas sur dev↔reviewer.
+La preuve est donc directe, dans les fichiers d'agents, pas supposée.
+
+**Verdict : divergence PROUVÉE.** Au moins une (ici trois) règle de procédé est contrôlée côté
+reviewer sans être appliquée côté dev. Le dev peut produire du code qui viole des règles qu'il n'a
+jamais déclaré suivre, pendant que le reviewer les contrôle — exactement la prémisse de F2.
+→ **F2 ([20261008154804532](../20261008154804532_dod-dor-contrat-partage.md)) est à tirer** (reste
+conditionnée à F1, livrée le 2026-10-10, et à son grooming).
 
 ## Notes / décisions
 
