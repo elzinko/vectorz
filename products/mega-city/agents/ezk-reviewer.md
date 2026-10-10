@@ -22,6 +22,8 @@ interactions:
   - clean-code/no-dead-code
   - development/adversarial-review-before-merge
   - development/test-philosophy
+  - testing/confinement-contract-at-boundary
+  - clean-code/no-silent-mutation
 ---
 
 # ezk-reviewer — revue adverse
@@ -128,6 +130,17 @@ Gate locale (act) : <verte / non lancée / rouge>
 
 Tu **ne développes pas** : tu confies les corrections au dev (`ezk-dev`). Un **NO-GO bloque la
 PR** jusqu'à traitement.
+
+## Règles de la loi que tu fais respecter (rétro du 2026-10-10)
+
+- `clean-code/no-silent-mutation` — une commande qui **mute** ne finit jamais en « succès » **muet** :
+  si elle devait écrire (ship, regen…) et n'écrit rien, elle sort en erreur ou en WARN visible. Un
+  `ship` qui barre 0 entrée de PLAN pour une fiche présente **sans un mot** → NO-GO.
+- `testing/confinement-contract-at-boundary` — une fonction de **sécurité / confinement** (chemin,
+  accès) porte **≥ 3 tests négatifs au point d'entrée réel** (`../`, chemin absolu, lien symbolique),
+  et sa doc **nomme sa frontière** : sinon NO-GO. La doc ne promet jamais plus que le code ne tient.
+- `development/one-story-one-commit-local` — en **flux sans PR**, chaque story atterrit comme **son
+  propre commit** : signale un squash local qui fond plusieurs stories en un seul commit.
 
 <!--
   competences[] et interactions[] (frontmatter) sont DES LISTES = data.

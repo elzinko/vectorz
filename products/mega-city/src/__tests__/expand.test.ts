@@ -138,7 +138,7 @@ const MIGRATED_BUNDLES = [
 ];
 
 describe('expandProfile — 8 bundles migrés depuis iamthelaw (fiche 0006, -2 orphelins 2026-08-30)', () => {
-  it('charge les 8 bundles sans erreur et résout 60 règles distinctes (48 + 5 le 2026-09-05 + 2 le 2026-09-20 + 1 le 2026-10-01 + 2 le 2026-10-03 + 2 le 2026-10-04)', () => {
+  it('charge les 8 bundles sans erreur et résout 64 règles distinctes (48 + 5 le 2026-09-05 + 2 le 2026-09-20 + 1 le 2026-10-01 + 2 le 2026-10-03 + 2 le 2026-10-04 + 4 le 2026-10-10)', () => {
     const catalog = loadCatalog(repoRoot);
     const profile = { id: 'iamthelaw-full', bundles: MIGRATED_BUNDLES, agents: [], skills: [] };
     const resolved = expandProfile(profile, catalog);
@@ -152,8 +152,11 @@ describe('expandProfile — 8 bundles migrés depuis iamthelaw (fiche 0006, -2 o
     // +1 le 2026-10-03 : rétro itération V0.5 → token-economy/retro-due-choix-chiffre.
     // +1 le 2026-10-04 : rétro légère de fin de V0.5 → development/host-project-proof-before-ship.
     // +1 le 2026-10-04 : rétro légère du run cockpit V0.6 → token-economy/fiche-tient-dans-un-sprint.
-    expect(resolved.rules).toHaveLength(60);
+    // +4 le 2026-10-10 : rétro « vue process » → clean-code/no-silent-mutation,
+    //  testing/capped-list-filter-scenario, testing/confinement-contract-at-boundary,
+    //  development/one-story-one-commit-local.
+    expect(resolved.rules).toHaveLength(64);
     // pas de doublon d'id malgré 8 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(60);
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(64);
   });
 });

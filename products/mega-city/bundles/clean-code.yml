@@ -6,3 +6,4 @@ rules:
   - clean-code/no-side-effects
   - clean-code/dry-principle
   - clean-code/comments
+  - clean-code/no-silent-mutation

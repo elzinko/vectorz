@@ -5,3 +5,5 @@ rules:
   - testing/visual-validation
   - testing/playwright-workflow
   - testing/manual-validation-camera-gesture
+  - testing/capped-list-filter-scenario
+  - testing/confinement-contract-at-boundary

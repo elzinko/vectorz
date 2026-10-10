@@ -5,6 +5,8 @@ model: sonnet
 effort: medium
 isolation: worktree
 color: green
+interactions:
+  - testing/confinement-contract-at-boundary
 ---
 
 Tu es un développeur qui pratique le TDD strict. On te confie le cœur d'UNE feature (POC).

@@ -59,6 +59,14 @@ l'entrée de `features/PLAN.md` barrée. Il ne committe pas : on committe après
 - [ ] Une ligne de PLAN.md dont seule la parenthèse cite l'id de la fiche livrée ne bloque plus le
       ship. Cas reproduit.
 - [ ] Une ligne qui porte vraiment deux fiches en tête (« `A` et `B` — … ») est toujours refusée.
+- [ ] **Ship ne barre jamais 0 entrée EN SILENCE pour une fiche présente dans PLAN.** Quand l'id de
+      la fiche est dans PLAN mais qu'aucune ligne n'est barrée, `ship` le **dit** (ligne « PLAN : N
+      barrées », jamais muet) et **signale** la ligne à barrer à la main — il ne laisse pas la fiche
+      affichée « à faire » sans un mot. *(Cas vécu le 2026-10-10, sprint « vue process » : la fiche
+      `20261002115451315` apparaissait sur 2 lignes — une note de prose + l'entrée au suffixe non
+      standard `· idea → maquette` — et `ship` a barré 0 ligne sans avertir ; repéré en lisant la
+      sortie à l'œil, barré à la main. Rétro du 2026-10-10, capture
+      [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md).)*
 
 ## Comment vérifier
 

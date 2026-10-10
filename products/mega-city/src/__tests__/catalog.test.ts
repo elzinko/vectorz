@@ -67,6 +67,8 @@ describe('loadCatalog (données réelles du repo)', () => {
       'clean-code/no-dead-code',
       'development/adversarial-review-before-merge',
       'development/test-philosophy',
+      'testing/confinement-contract-at-boundary',
+      'clean-code/no-silent-mutation',
     ]);
     expect(agent?.role).toMatch(/reviewer senior/i); // insensible à la casse : l'agent réécrit dit « reviewer senior en posture adverse »
   });
