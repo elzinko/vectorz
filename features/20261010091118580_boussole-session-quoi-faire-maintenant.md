@@ -37,6 +37,19 @@ pas la prochaine **action** de session.
   recommande l'étape suivante. On garde l'idée (dire ce qui vient après), pas un moteur de menu
   (garde-fou ADR-0013).
 
+## Valeur
+
+**Si `ezk-now` n'existe jamais :** à chaque reprise — session neuve, contexte résumé, changement de
+worktree — on ne voit pas d'un coup où on en est ni quoi lancer. Il faut **relire à la main**
+`BACKLOG`, `PLAN.md`, `SPRINT.md` pour reconstituer l'état, avec le risque de tirer la mauvaise fiche
+ou de sauter une étape (inversion de séquence).
+
+**Pour qui, quand :** le PO d'abord, dès qu'une session repart de zéro — fréquent sur les longues
+sessions et le travail multi-worktree.
+
+**Pourquoi `P2` et pas plus haut :** la gêne est **contournable à la main** (relire les vues) et par
+le bloc « Et maintenant ? » quand il est poussé. Réelle et récurrente, mais pas bloquante.
+
 ## Proposition
 
 Une commande **top-level `ezk-now`** (pas `ezk-next` : collision avec `ezk-backlog next` ; pas une
@@ -112,5 +125,6 @@ rend la suite. Tout le reste est en « Suite » ci-dessous.
   (v0.8.0) : à poser **après** lui.
 - Voisine ergonomie CLI : [`next` nu montre la suite](20261009104436287_next-nu-montre-la-suite.md)
   (retouche `ezk-backlog next`, périmètre différent).
-- Groom 2026-10-10 : technique « avis-architecte » jouée (nom / portée / source d'ordre tranchés,
-  cf. « Décisions tranchées »). Statut inchangé (`idea`) — le gate `ready` reste à passer.
+- Groom 2026-10-10 : techniques « avis-architecte » (nom / portée / source d'ordre, cf. « Décisions
+  tranchées »), « couper-au-poc » (POC + « Suite ») et « valeur-par-l'absence » jouées. Socle DoR
+  complet (problème / valeur / critères). Statut inchangé (`idea`) — `ready` reste à passer.
