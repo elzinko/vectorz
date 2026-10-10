@@ -36,6 +36,12 @@ matérialise tout ça dans un projet.
   comme une règle → introuvable.
 - Résultat : pour faire suivre un **lot** de règles à un agent, on recopie chaque id à la main.
   La branche DoR en cours bute précisément là-dessus.
+- **Cas d'usage daté (PO, 2026-10-10).** Le bloc « Et maintenant ? » (règle
+  `documentation-guidelines/next-step-affordance`) n'est déclaré que par 2 skills (`ezk-backlog`,
+  `ezk-sprint`) sur les ~5 skills de cycle qui devraient le porter (`ezk-product-build`, `ezk-pr`,
+  `ezk-retro`, `ezk-archive`, `ezk-codex`) : `applies:` recopié à la main → oublis silencieux. Un
+  bundle « skills de cycle » cité une fois fermerait ce trou. C'est un **cas d'usage**, pas un
+  élargissement du scope de cette fiche.
 
 ## Proposition
 
@@ -90,3 +96,6 @@ pnpm --dir products/mega-city graph:check
 - Brique habilitante de **F2 — DoD/DoR, listes de règles/bundles (contrat partagé)**
   (20261008154804532_dod-dor-contrat-partage.md) et de **F3 — vue de projection**
   (20261008154805639_vue-projection-regles-par-agent.md).
+- Enrichie 2026-10-10 : cas d'usage « skills de cycle » ajouté au Contexte (symptôme PO). Scope,
+  priorité et critères **inchangés**. Application concrète du mécanisme :
+  [`ezk-now` — boussole de session](20261010091118580_boussole-session-quoi-faire-maintenant.md).
