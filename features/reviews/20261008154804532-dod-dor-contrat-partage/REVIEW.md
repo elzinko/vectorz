@@ -1,6 +1,6 @@
 # Revue adverse — 20261008154804532 (DoD/DoR contrat partagé)
 
-- **Fiche** : [20261008154804532](../../20261008154804532_dod-dor-contrat-partage.md)
+- **Fiche** : [20261008154804532](../../done/20261008154804532_dod-dor-contrat-partage.md)
 - **Branche** : `feat/20261008154804532-dod-dor-contrat-partage`
 - **Reviewer** : `ezk-reviewer` (Opus, modèle distinct), self-review signalée (le patch modifie son propre agent)
 - **Verdict** : **GO** (aucun bloquant) — 3 réserves **corrigées avant merge**

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261008154804532_dod-dor-contrat-partage.md](../20261008154804532_dod-dor-contrat-partage.md)
+> 🗎 Rendu de la fiche [features/20261008154804532_dod-dor-contrat-partage.md](../done/20261008154804532_dod-dor-contrat-partage.md)
 
 # 20261008154804532 — DoD et DoR, listes de règles/bundles (contrat partagé)
 

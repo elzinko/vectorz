@@ -132,7 +132,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 > Le système de règles devient composable : citer un bundle (la brique) et prouver la divergence dev/reviewer (spike), puis la DoD/DoR en listes partagées, puis la vue de projection. Avis ezk-architect / ezk-pm / product-brainstorming intégrés.
 - ~~`20261008154803440` — un consommateur (agent/skill) peut citer un bundle · P0 · **ready** → `build` ; amende ADR-0040 (double-write sorti en Suite)~~ — shipped local (58357fb6)
 - ~~`20261008183238365` — spike : dev et reviewer divergent-ils vraiment ? · P0 · **ready** → `build` ; conditionne F2~~ — shipped local (constat 2026-10-10 : divergence PROUVÉE → F2 à tirer)
-- `20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → `groom` ; conditionnée au spike + dépend de F1
+- ~~`20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → `groom` ; conditionnée au spike + dépend de F1~~ — shipped local (c44c236f ; ADR-0070, DoD = bundle `dod`)
 - `20261008154805639` — vue de projection par projet (agent + ses règles) · P2 · `idea` → différée (déclencheur F1/F2)
 
 ### ⑩ v0.9.0 — ranger la maison (rationalisation)

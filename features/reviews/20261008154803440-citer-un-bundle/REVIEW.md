@@ -23,7 +23,7 @@ Aucun.
   production (brique posée pour F2).** Le bind ne l'appelle pas encore : `ENTRY.md` se
   construit depuis les profils et le manifeste, pas depuis les `applies`/`interactions`. La
   promesse « dépliée au bind » de la fiche n'est donc pas *observable* ici — c'est le câblage
-  de **F2** ([20261008154804532](../../20261008154804532_dod-dor-contrat-partage.md)). Les 4
+  de **F2** ([20261008154804532](../../done/20261008154804532_dod-dor-contrat-partage.md)). Les 4
   critères passent quand même (critère 1 prouvé par test unitaire ; critère 3 négatif,
   satisfait à vide). **Risque** : si F2 ne se fait pas, `appliedRuleIds` devient du code mort
   à retirer (`clean-code/no-dead-code`, MUST). F2 est la prochaine fiche P0 du plan → risque

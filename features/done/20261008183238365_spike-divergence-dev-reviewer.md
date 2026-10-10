@@ -94,7 +94,7 @@ La preuve est donc directe, dans les fichiers d'agents, pas supposée.
 **Verdict : divergence PROUVÉE.** Au moins une (ici trois) règle de procédé est contrôlée côté
 reviewer sans être appliquée côté dev. Le dev peut produire du code qui viole des règles qu'il n'a
 jamais déclaré suivre, pendant que le reviewer les contrôle — exactement la prémisse de F2.
-→ **F2 ([20261008154804532](../20261008154804532_dod-dor-contrat-partage.md)) est à tirer** (reste
+→ **F2 ([20261008154804532](20261008154804532_dod-dor-contrat-partage.md)) est à tirer** (reste
 conditionnée à F1, livrée le 2026-10-10, et à son grooming).
 
 ## Notes / décisions

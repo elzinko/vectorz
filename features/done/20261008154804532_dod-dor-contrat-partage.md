@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.8.0
 labels: [loi, revue]
-status: ready
-pr:
+status: shipped
+pr: "local (c44c236f)"
 evidence: none
 created: 2026-10-08
 ---
