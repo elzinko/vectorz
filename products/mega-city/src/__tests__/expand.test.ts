@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadCatalog } from '../loaders/catalog.js';
-import { expandProfile } from '../core/expand.js';
+import { appliedRuleIds, expandProfile } from '../core/expand.js';
+import type { Bundle } from '../domain/model.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, '../..');
@@ -13,6 +14,37 @@ function expandMobile() {
   if (!mobile) throw new Error('profil mobile introuvable');
   return expandProfile(mobile, catalog);
 }
+
+describe('appliedRuleIds — un consommateur déplie un bundle cité en ses ids de règles (fiche 20261008154803440)', () => {
+  const bundles = new Map<string, Bundle>([
+    ['devpack', { id: 'devpack', rules: ['clean/y', 'clean/x'] }],
+    ['meta', { id: 'meta', extends: ['devpack'], rules: ['doc/z'] }],
+  ]);
+
+  it('déplie un id de bundle en ses règles (par référence : des ids, pas du texte)', () => {
+    expect(appliedRuleIds(['devpack'], bundles)).toEqual(['clean/x', 'clean/y']);
+  });
+
+  it('garde un id de règle tel quel, et mélange règles + bundle en dédupliquant et triant', () => {
+    expect(appliedRuleIds(['clean/z', 'devpack', 'clean/x'], bundles)).toEqual([
+      'clean/x',
+      'clean/y',
+      'clean/z',
+    ]);
+  });
+
+  it('suit `extends` du bundle (meta → devpack)', () => {
+    expect(appliedRuleIds(['meta'], bundles)).toEqual(['clean/x', 'clean/y', 'doc/z']);
+  });
+
+  it('ne renvoie que des ids (string), jamais un objet Rule — « par référence »', () => {
+    for (const id of appliedRuleIds(['devpack'], bundles)) expect(typeof id).toBe('string');
+  });
+
+  it('un id inconnu (ni bundle) est laissé tel quel — le graphe tranche le pendouillant, pas ce pur', () => {
+    expect(appliedRuleIds(['inconnu'], bundles)).toEqual(['inconnu']);
+  });
+});
 
 describe('expandProfile(mobile)', () => {
   it('résout les bundles (mobile → base) en règles, triées stablement par id', () => {

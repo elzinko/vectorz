@@ -35,6 +35,24 @@ function collectBundleRuleIds(
   out.push(...bundle.rules);
 }
 
+/**
+ * Les ids de RÈGLES qu'un consommateur applique à partir de ses refs `applies` (skill) /
+ * `interactions` (agent) : un id de BUNDLE est DÉPLIÉ en ses règles — par référence, via
+ * `collectBundleRuleIds` : l'id de règle atterrit, jamais le texte — ; un id de règle est gardé
+ * tel quel. Dédupliqué, trié stablement. PUR.
+ *
+ * C'est la « résolution de contrat » (un consommateur qui suit un pack de règles nommé),
+ * distincte de l'« agrégation de profil » (`expandProfile`). Fiche 20261008154803440.
+ */
+export function appliedRuleIds(refs: readonly string[], bundles: Map<string, Bundle>): string[] {
+  const out: string[] = [];
+  for (const ref of refs) {
+    if (bundles.has(ref)) collectBundleRuleIds(ref, bundles, new Set(), out);
+    else out.push(ref);
+  }
+  return [...new Set(out)].sort((a, b) => a.localeCompare(b));
+}
+
 /** Collecte un profil et ses ancêtres (`extends`), sans cycle. */
 function collectProfiles(
   profileId: string,

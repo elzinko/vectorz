@@ -47,7 +47,9 @@ export type LinkType =
   | 'roles'
   | 'competences'
   | 'interactions'
+  | 'interactions-bundle'
   | 'applies'
+  | 'applies-bundle'
   | 'enforces'
   | 'participants'
   | 'uses'
@@ -104,6 +106,12 @@ export const EDGE_SOURCES: readonly EdgeSource[] = [
   { link: 'competences', fromKind: 'agent', toKind: 'skill', verb: 'compose' },
   { link: 'interactions', fromKind: 'agent', toKind: 'rule', verb: 'applique' },
   { link: 'applies', fromKind: 'skill', toKind: 'rule', verb: 'applique' },
+  // Un consommateur peut citer un BUNDLE (un pack de règles) là où il cite des règles : même
+  // verbe `applique`, cible `bundle`. Un id de `applies`/`interactions` présent dans le catalogue
+  // des bundles part en arête `*-bundle` ; sinon il reste une arête règle (cassée si l'id n'existe
+  // nulle part → `graph:check` rouge, pas d'ignore silencieux). Amende ADR-0040 ; fiche 20261008154803440.
+  { link: 'interactions-bundle', fromKind: 'agent', toKind: 'bundle', verb: 'applique' },
+  { link: 'applies-bundle', fromKind: 'skill', toKind: 'bundle', verb: 'applique' },
   { link: 'enforces', fromKind: 'rule', toKind: 'agent', verb: 'est-verifie-par' },
   // Un protocole d'interaction fait venir ses participants : il les convoque.
   { link: 'participants', fromKind: 'rule', toKind: 'agent', verb: 'convoque' },
@@ -162,10 +170,20 @@ function targetsFor(catalog: Catalog, src: EdgeSource): { from: string; to: stri
       for (const a of catalog.agents.values()) push(a.id, a.competences);
       break;
     case 'interactions':
-      for (const a of catalog.agents.values()) push(a.id, a.interactions);
+      for (const a of catalog.agents.values())
+        push(a.id, a.interactions?.filter((id) => !catalog.bundles.has(id)));
+      break;
+    case 'interactions-bundle':
+      for (const a of catalog.agents.values())
+        push(a.id, a.interactions?.filter((id) => catalog.bundles.has(id)));
       break;
     case 'applies':
-      for (const s of catalog.skills.values()) push(s.id, s.applies);
+      for (const s of catalog.skills.values())
+        push(s.id, s.applies?.filter((id) => !catalog.bundles.has(id)));
+      break;
+    case 'applies-bundle':
+      for (const s of catalog.skills.values())
+        push(s.id, s.applies?.filter((id) => catalog.bundles.has(id)));
       break;
     case 'enforces':
       for (const r of catalog.rules.values())

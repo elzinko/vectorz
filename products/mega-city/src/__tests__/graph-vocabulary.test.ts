@@ -75,7 +75,15 @@ describe('vocabulaire de liens — jeu fermé de 5 verbes (ADR-0040 D1, amendé 
       'skill>skill',
     ]);
     expect(couples('convoque')).toEqual(['rule>agent', 'skill>agent']);
-    expect(couples('applique')).toEqual(['agent>rule', 'profile>rule', 'skill>rule']);
+    // `applique` relie aussi un consommateur à un BUNDLE (pack de règles) depuis la
+    // fiche 20261008154803440 : skill/agent → bundle, même verbe (amende ADR-0040).
+    expect(couples('applique')).toEqual([
+      'agent>bundle',
+      'agent>rule',
+      'profile>rule',
+      'skill>bundle',
+      'skill>rule',
+    ]);
     expect(couples('est-verifie-par')).toEqual(['rule>agent']);
     expect(couples('utilise')).toEqual(['skill>tool']); // ADR-0058 : « ce skill lance cet outil »
   });
@@ -133,5 +141,67 @@ describe('applies — skill → règle, par id (fiche 357, premier incrément de
     });
 
     expect(() => compileGraph(catalog)).toThrow(/regle-fantome/);
+  });
+});
+
+describe('applies / interactions → bundle — citer un pack de règles (fiche 20261008154803440)', () => {
+  const ruleX: Rule = { id: 'clean/x', kind: 'disposition', level: 'MUST', content: '' };
+  const ruleY: Rule = { id: 'clean/y', kind: 'disposition', level: 'MUST', content: '' };
+  const pack: Bundle = { id: 'devpack', rules: ['clean/x', 'clean/y'] };
+
+  it('un skill qui cite un BUNDLE dans `applies` → arête skill → bundle, verbe « applique »', () => {
+    const catalog = catalogOf({
+      skills: index<Skill>([{ id: 'a', content: '', applies: ['devpack'] }]),
+      rules: index<Rule>([ruleX, ruleY]),
+      bundles: index<Bundle>([pack]),
+    });
+
+    expect(compileGraph(catalog).edges).toContainEqual({
+      from: 'a',
+      fromKind: 'skill',
+      link: 'applies-bundle',
+      verb: 'applique',
+      to: 'devpack',
+      toKind: 'bundle',
+    });
+  });
+
+  it('un agent qui cite un BUNDLE dans `interactions` → arête agent → bundle', () => {
+    const catalog = catalogOf({
+      agents: index<Agent>([{ id: 'r', role: '', competences: [], interactions: ['devpack'] }]),
+      rules: index<Rule>([ruleX, ruleY]),
+      bundles: index<Bundle>([pack]),
+    });
+
+    expect(compileGraph(catalog).edges).toContainEqual({
+      from: 'r',
+      fromKind: 'agent',
+      link: 'interactions-bundle',
+      verb: 'applique',
+      to: 'devpack',
+      toKind: 'bundle',
+    });
+  });
+
+  it('un id de bundle ne crée PAS de faux lien règle cassé (il est routé vers le catalogue bundle)', () => {
+    const catalog = catalogOf({
+      skills: index<Skill>([{ id: 'a', content: '', applies: ['devpack'] }]),
+      rules: index<Rule>([ruleX, ruleY]),
+      bundles: index<Bundle>([pack]),
+    });
+
+    expect(() => compileGraph(catalog)).not.toThrow();
+    const edges = graphEdges(catalog);
+    expect(edges.some((e) => e.link === 'applies' && e.to === 'devpack')).toBe(false);
+  });
+
+  it('un id INCONNU (ni règle ni bundle) cité par un consommateur → compilation ROUGE', () => {
+    const catalog = catalogOf({
+      skills: index<Skill>([{ id: 'a', content: '', applies: ['fantome'] }]),
+      rules: index<Rule>([ruleX]),
+      bundles: index<Bundle>([pack]),
+    });
+
+    expect(() => compileGraph(catalog)).toThrow(/fantome/);
   });
 });

@@ -106,10 +106,11 @@ describe('validateGraph — détection des liens cassés', () => {
     expect(new Set(keys).size).toBe(keys.length); // aucun doublon
   });
 
-  it('les seize types de lien du vocabulaire réuni sont couverts par la table', () => {
+  it('les dix-huit types de lien du vocabulaire réuni sont couverts par la table', () => {
     expect(new Set(EDGE_SOURCES.map((s) => s.link)).size).toBe(EDGE_SOURCES.length);
     // 13 + `applies` (fiche 357) + `uses` (ADR-0058) + `delegates` (fiche 20260812104022246)
-    expect(EDGE_SOURCES.length).toBe(16);
+    // + `applies-bundle` & `interactions-bundle` (consommateur → bundle, fiche 20261008154803440)
+    expect(EDGE_SOURCES.length).toBe(18);
   });
 
   it('delegates: entre dans le graphe, et une cible fantôme est un lien cassé comme pour composes:', () => {
