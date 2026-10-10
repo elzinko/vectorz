@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version:
 labels: [ezk-map, cockpit]
-status: idea
-pr:
+status: shipped
+pr: "local (bc8a0316)"
 evidence: auto
 created: 2026-10-10
 ---

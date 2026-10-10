@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002115451315_fiches-sur-le-process-avec-session.md](../20261002115451315_fiches-sur-le-process-avec-session.md)
+> 🗎 Rendu de la fiche [features/20261002115451315_fiches-sur-le-process-avec-session.md](../done/20261002115451315_fiches-sur-le-process-avec-session.md)
 
 # 20261002115451315 — Voir les fiches posées sur le schéma du process, avec leur session
 
@@ -105,7 +105,7 @@ ils ne conditionnent pas la valeur, qui est de **voir** les fiches posées sur l
 
 - [ ] Le détail d'une fiche **d'un autre projet** s'ouvre sans 404 — limite de cockpit partagée avec
       le board, fichée à part :
-      [20261010100030780](../20261010100030780_cockpit-sert-detail-fiches-projet-choisi.md).
+      [20261010100030780](../done/20261010100030780_cockpit-sert-detail-fiches-projet-choisi.md).
 
 - [ ] Le **message visible** quand `gh`/remote manque se polit : la page affiche « revue
       indéterminée » plutôt que de laisser deviner (le type d'entrée, lui, est déjà posé en POC).

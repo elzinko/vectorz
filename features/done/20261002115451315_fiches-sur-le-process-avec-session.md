@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.7.0
 labels: [ezk-map, session]
-status: ready
-pr:
+status: shipped
+pr: "local (bc8a0316)"
 evidence: auto
 created: 2026-10-02
 ---
@@ -26,7 +26,7 @@ travail du dépôt, sur sa propre branche.
 ## Contexte / Problème
 
 - Cette vue a déjà été conçue, dans
-  [Vue d'avancement — les fiches positionnées sur le process scrum](done/20260823124042842_vue-avancement-sprints-fiches.md).
+  [Vue d'avancement — les fiches positionnées sur le process scrum](20260823124042842_vue-avancement-sprints-fiches.md).
   Elle prévoyait trois parties : le board, la frise des sprints, et le schéma du process avec les
   fiches posées dessus.
 - Un panel d'archi (2026-08-23) n'a gardé que le board. Il a mis le reste en attente « jusqu'à ce
@@ -34,7 +34,7 @@ travail du dépôt, sur sa propre branche.
 - Le 2026-10-02, le PO décrit précisément ce manque : « visualiser les fiches dans les étapes du
   process, avec leur session, pour s'y repérer ». C'est le signal d'usage qu'attendait le panel.
 - Les morceaux existent, éparpillés : le statut de chaque fiche, le
-  [cockpit des sessions](done/20260825141012293_ezk-sessions-cockpit.md) (quelle session tient
+  [cockpit des sessions](20260825141012293_ezk-sessions-cockpit.md) (quelle session tient
   quelle branche), l'historique des runs (quelle session a livré quoi), l'état des PR.
 - Les journaux de supervision ne disent pas l'étape. Un battement de cœur porte une `note` en texte
   libre (« lecture du backlog… »), jamais « fiche X, étape revue » dans un champ lisible.
@@ -63,7 +63,7 @@ est respecté.
 
 **Tranche 2 — la position fine, plus tard.** Les étapes internes d'un sprint (BDD, TDD, gate,
 revue) demandent que `ezk-sprint` annonce son étape à chaque passage. Hors de cette fiche. Piste :
-[rendre les étapes d'un skill configurables](20260830110131228_schema-etapes-skill-configurables.md).
+[rendre les étapes d'un skill configurables](../20260830110131228_schema-etapes-skill-configurables.md).
 
 ## Conception (avis de l'architecte, 2026-10-08)
 
@@ -146,13 +146,13 @@ ezk sessions state             # chaque session affichée correspond à une sess
 - **Jalon `cockpit`** (décision PO du 2026-10-02). À l'origine rattachée à la V0.6 ; **réassignée à
   la V0.7 « voir sous le capot »** (le front-matter fait foi : `version: V0.7`), car cette vue est
   l'interface du socle V0.7. Liaison par jalon, pas de fiche chapeau. Fiche sœur :
-  [un seul tableau de bord pour tous tes projets](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md).
+  [un seul tableau de bord pour tous tes projets](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md).
 - **Dépendance levée — la page hôte est tranchée (constaté le 2026-10-08).** La note d'origine
   disait « son ADR dira dans quelle page vit cette vue : à faire d'abord ». C'est fait :
-  [ADR-0062 — le tableau de bord devient le cockpit](../products/mega-city/docs/adr/0062-le-tableau-de-bord-devient-le-cockpit-multi-projets.md)
+  [ADR-0062 — le tableau de bord devient le cockpit](../../products/mega-city/docs/adr/0062-le-tableau-de-bord-devient-le-cockpit-multi-projets.md)
   est **Accepté**, et le cockpit est livré (ses 3 fiches filles sont en `done/`). La vue « process »
   est donc une **page de plus du cockpit `ezk dashboard`**, servie par `bin/ezk-map.ts` comme les
   autres. Plus rien à attendre côté structure d'accueil.
-- **Suite de** [Vue d'avancement](done/20260823124042842_vue-avancement-sprints-fiches.md), sa
+- **Suite de** [Vue d'avancement](20260823124042842_vue-avancement-sprints-fiches.md), sa
   partie « schéma du process avec les fiches posées ». La frise des sprints reste hors périmètre.
 - Créée le 2026-10-02, P1 (PO).

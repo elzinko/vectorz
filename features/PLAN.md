@@ -124,7 +124,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261004101755756` — écrire le contrat du bus : le catalogue des moments de la méthode · P1 · `build`~~ — shipped local (2e395663)
 - `20261002133125444` — fermer un run de supervision ne doit fermer que le sien · P2 · **ready** — lot socle
 - `20261003201035260` — les récits de session reviennent sur main (historique des runs figé au 30 août) · P2 · **ready** — lot socle
-- `20261002115451315` — voir les fiches posées sur le process, avec leur session · `idea` → **maquette avant `ready`**
+- ~~`20261002115451315` — voir les fiches posées sur le process, avec leur session~~ — shipped local (bc8a0316) ; livrée avec version, filtres et le fix détail cross-projet (fiche 20261010100030780)
 - ~~`20261005100027029` — chaque sprint laisse un compte rendu committé, lu par la rétro · `idea` → `groom`~~ — split
 > Hors lot socle, après maquette / décision PO : la refonte du Moniteur (`20261007135620590`) et les hooks d'émission (`0077`, optionnel).
 

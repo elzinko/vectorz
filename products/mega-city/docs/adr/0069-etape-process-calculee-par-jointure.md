@@ -5,7 +5,7 @@
   - [ADR-0003](0003-moteur-bind-plan-pur-coquille-io.md) — cœur pur, coquille d'I/O : le calcul d'étape vit dans un module **pur**, le bord collecte et **injecte**.
   - [ADR-0055](0055-artefacts-generes-hors-versionnage.md) — vues générées non committées : la page `process.html` est committée, son `process.data.js` ne l'est pas.
   - [ADR-0042](0042-concurrence-inter-sessions-advisory-visibilite.md) — le cockpit de sessions dont on **réutilise** le collecteur (worktrees, branches, PR).
-- **Fiche** : [Voir les fiches posées sur le schéma du process, avec leur session](../../../../features/20261002115451315_fiches-sur-le-process-avec-session.md).
+- **Fiche** : [Voir les fiches posées sur le schéma du process, avec leur session](../../../../features/done/20261002115451315_fiches-sur-le-process-avec-session.md).
 - **Déciders** : PO (Thomas) ; avis d'architecte du 2026-10-08 porté dans la fiche.
 
 ## Contexte
