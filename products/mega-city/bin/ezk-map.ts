@@ -64,6 +64,7 @@ import {
   readCookie,
   renderProjectBar,
   resolveChoice,
+  resolveFichePath,
 } from '../src/core/cockpit.js';
 import { cockpitRegistryDir, currentLayoutVersion, loadCockpitProjects } from '../src/io/cockpit.js';
 import { configSections } from '../src/io/config-page.js';
@@ -281,6 +282,35 @@ const server = createServer((req, res) => {
     }
 
     const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, '');
+
+    // Le détail d'une fiche (`features/<id>.md`, `features/done/…`, et les fichiers de `features/`
+    // qu'une vue lie) vient du PROJET CHOISI dans le cockpit, pas de la méthode : sinon cliquer une
+    // fiche d'un autre projet donne un 404 (fiche 20261010100030780). Même brique `dataTarget` que
+    // les vues de données et le pouce ; projet par défaut = la méthode (comportement d'avant). La
+    // garde de traversée est dans `resolveFichePath` (on ne sort jamais de la racine du projet).
+    if (rel.split(/[/\\]/)[0] === 'features') {
+      const { choice } = cockpitFor(req.headers.cookie, cookieName);
+      const fiche = resolveFichePath(dataTarget(choice, PROJECT_ROOT), rel);
+      if (fiche.kind === 'refus') {
+        res.writeHead(fiche.status, { 'Content-Type': 'text/plain; charset=utf-8' }).end(`${fiche.reason}\n`);
+        return;
+      }
+      if (fiche.kind === 'traversee') {
+        res.writeHead(403).end('403');
+        return;
+      }
+      if (!existsSync(fiche.path) || statSync(fiche.path).isDirectory()) {
+        res.writeHead(404).end('404');
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': MIME[extname(fiche.path).toLowerCase()] ?? MIME['.md'],
+        'Cache-Control': 'no-store',
+      });
+      createReadStream(fiche.path).pipe(res);
+      return;
+    }
+
     const target = resolve(REPO_ROOT, rel);
 
     // Garde-fou de traversée : on ne sort JAMAIS de la racine de la méthode, d'où viennent tous les

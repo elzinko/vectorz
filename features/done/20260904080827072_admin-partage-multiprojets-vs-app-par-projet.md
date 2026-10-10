@@ -248,7 +248,7 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
   le faire.
 - **Jalon `cockpit`, version V0.6** (décision PO du 2026-10-02 ; la V0.5 est « le sprint au lot »). Les fiches du cockpit se lient par
   ce jalon, pas par une fiche chapeau. Fiche sœur :
-  [voir les fiches posées sur le schéma du process, avec leur session](../20261002115451315_fiches-sur-le-process-avec-session.md).
+  [voir les fiches posées sur le schéma du process, avec leur session](20261002115451315_fiches-sur-le-process-avec-session.md).
   Idée liée, sans version :
   [une page d'accueil, une ligne par projet](../20261002115451451_page-une-ligne-par-projet.md).
 - **Historique.** Créée le 2026-09-04 comme question d'archi ouverte, « admin ezk : partagé

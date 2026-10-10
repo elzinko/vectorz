@@ -77,6 +77,6 @@ Le **format est la première marche** ; la reconfiguration vient après.
 Sortie du parking et rattachée au jalon `cockpit`, **sans version**. La priorité ne change pas (P3).
 
 Raison : décrire les étapes d'un skill comme de la donnée est le socle de la **position fine** dans
-la vue [voir les fiches posées sur le schéma du process, avec leur session](20261002115451315_fiches-sur-le-process-avec-session.md).
+la vue [voir les fiches posées sur le schéma du process, avec leur session](done/20261002115451315_fiches-sur-le-process-avec-session.md).
 La position fine, ce sont les étapes internes du sprint : BDD, TDD, gate, revue. Le panel
 `ezk-architect` + `ezk-pm` reste requis avant tout build.

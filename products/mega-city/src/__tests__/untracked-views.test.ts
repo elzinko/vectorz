@@ -16,6 +16,7 @@ import { runInNewContext } from 'node:vm';
 import { describe, expect, it } from 'vitest';
 import { AVANCEMENT_DATA_BEGIN } from '../core/avancement-data.js';
 import { TERMINAUX } from '../core/fiche-schema.js';
+import { buildProcessData } from '../core/process-data.js';
 import { PLAN_DELTA_BEGIN } from '../core/plan-delta-data.js';
 import { PLAN_DATA_BEGIN } from '../core/plan-view-data.js';
 import {
@@ -111,6 +112,38 @@ describe('fidélité par construction (dépôt réel)', () => {
     expect(r.runs).toHaveLength(expected);
     expect(r.counts.total).toBe(expected);
   });
+
+  it('process : chaque fiche active du backlog RÉEL est posée sur UNE étape, les terminales en sont absentes', () => {
+    // Critère n°5 de la fiche : prouver sur le backlog RÉEL, pas une fixture. On injecte des signaux
+    // git/gh VIDES (déterministe, sans réseau) : ce qu'on vérifie ici, c'est le placement par STATUT
+    // et l'exclusion des terminales/parkées sur les vraies fiches du dépôt. La logique branche/PR est
+    // prouvée purement dans process-data.test.ts.
+    const fiches = loadFiches(repoRoot);
+    const data = buildProcessData({ fiches, sessions: [], branches: [], openPrByBranch: {} });
+
+    const placed = new Map<string, number>();
+    for (const g of data.stages) {
+      for (const f of g.fiches) placed.set(f.id, (placed.get(f.id) ?? 0) + 1);
+    }
+    // Aucune fiche posée en double (une fiche, une étape).
+    for (const [id, n] of placed) expect(n, `${id} apparaît ${n} fois`).toBe(1);
+
+    for (const f of fiches) {
+      const parked = f.status === 'idea' && f.milestone === 'parked';
+      const terminalHorsVue = TERMINAUX.includes(f.status) && f.status !== 'shipped';
+      if (terminalHorsVue || parked) {
+        expect(placed.has(f.id), `${f.id} (${f.status}) ne doit pas être dans la vue`).toBe(false);
+      } else if (!f.done && f.status !== 'shipped') {
+        // Une fiche active (features/, non terminale, non parkée) : toujours posée quelque part.
+        expect(placed.has(f.id), `${f.id} (${f.status}) doit être posée`).toBe(true);
+      }
+      // shipped : seules les plus récentes sont montrées → présence non garantie, pas assertée.
+    }
+
+    // Les cinq étapes sont toujours là ; au moins une fiche active du vrai backlog est posée.
+    expect(data.stages.map((g) => g.stage)).toEqual(['idee', 'prete', 'en-sprint', 'en-revue', 'livree']);
+    expect(placed.size).toBeGreaterThan(0);
+  });
 });
 
 describe('construction à la demande', () => {
@@ -130,9 +163,11 @@ describe('construction à la demande', () => {
     return root;
   }
 
-  // La carte lit le catalogue de la MÉTHODE, pas celui du dépôt jetable : l'y écrire n'aurait pas de
-  // sens, on l'écarte ici (elle est prouvée sur le dépôt réel dans map-data.test.ts).
-  const FIXTURE_VIEWS = DATA_VIEWS.filter((v) => v.id !== 'carte');
+  // Deux vues ne lisent pas le dépôt jetable, on les écarte de ce test hermétique :
+  //  - `carte` lit le catalogue de la MÉTHODE (prouvée sur le dépôt réel dans map-data.test.ts) ;
+  //  - `process` lit le git/gh AMBIANT (branches, worktrees, PR), pas la fixture — ses signaux sont
+  //    prouvés purement dans process-data.test.ts, où l'I/O est injecté.
+  const FIXTURE_VIEWS = DATA_VIEWS.filter((v) => v.id !== 'carte' && v.id !== 'process');
 
   it('writeDataViews écrit les trois fichiers, et un second passage n’écrit rien', () => {
     const root = fixtureRepo();
