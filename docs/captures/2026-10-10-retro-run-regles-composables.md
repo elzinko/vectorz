@@ -81,15 +81,16 @@ garde-fou qui refuse une capture bourrée de jargon non défini.
 
 ## Ce que tu décides
 
-Pour chacun : on en fait une fiche (une tâche à construire plus tard) — oui / non ?
+**Les 5 grains sont fichés** (décision PO du 2026-10-10, fiches « idée » à groomer plus tard) :
 
-- [ ] 1 · Mémoire du contrôle de sécurité
-- [ ] 2 · Dire « étiquette, pas comportement » quand on touche ces en-têtes
-- [ ] 3 · Barrer une ligne de plan à un seul nom, même avec des mots en plus
-- [ ] 4 · L'outil de bilan accepte une livraison locale
-- [ ] 5 · La lisibilité d'une rétro devient un critère tenu (le plus important)
+- [x] 1 · Mémoire du contrôle de sécurité → fiche `20261010213746514` (affiné : distinguer
+      worktree vivant / abandonné)
+- [x] 2 · Dire « étiquette, pas comportement » quand on touche ces en-têtes → fiche `20261010235329987`
+- [x] 3 · Barrer une ligne de plan à un seul nom, même avec des mots en plus → fiche `20261010235330053`
+- [x] 4 · L'outil de bilan accepte une livraison locale → fiche `20261010235330118`
+- [x] 5 · La lisibilité d'une rétro devient un critère tenu (le plus important) → fiche `20261010213353647`
 
-Rien n'est lancé tant que tu n'as pas coché.
+Les fiches naissent « idée » : le grooming et la priorité se tranchent au moment de les tirer.
 
 ---
 

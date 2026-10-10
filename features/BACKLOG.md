@@ -353,6 +353,9 @@
 | [20261010114133469](20261010114133469_groom-ajout-comportement-est-une-story.md) | Au grooming : un ajout de comportement en cours de sprint est une story ou reçoit un critère | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261010153046143](20261010153046143_brainstorm-dsl-cli-methode.md) | Brainstorm : la CLI de la méthode est-elle un DSL cohérent et professionnel ? (ezk / mc, toute la surface) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [20261010213746514](20261010213746514_portier-ignore-worktree-sans-session-vivante.md) | Le portier de sprint distingue un worktree vivant d'un worktree abandonné (ne plus crier au loup) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261010235329987](20261010235329987_etiquette-pas-comportement-en-tetes-agent.md) | Quand on touche les règles déclarées d'un agent, dire si ça change son comportement ou juste l'étiquette | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261010235330053](20261010235330053_ship-barre-ligne-plan-id-unique.md) | ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261010235330118](20261010235330118_run-report-accepte-livraison-locale.md) | ezk run report accepte une livraison locale (local <sha>) quand GitHub est coupé | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
