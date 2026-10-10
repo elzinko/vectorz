@@ -66,6 +66,51 @@ la surface** de la CLI, avant tout code. Il tranche au moins :
 Le brainstorm **pose des décisions** (un ou plusieurs ADR), puis un **plan de refonte** découpé en
 fiches. Il ne ré-écrit pas la CLI dans cette fiche.
 
+## Déjà tranché par le PO (2026-10-10)
+
+Deux points sont **déjà décidés** — le panel les entérine, il ne les re-débat pas :
+
+- **`dashboard` + `map` → `board`.** On supprime `dashboard` et `map` **sans dépréciation** (produit
+  sous contrôle du PO). Cible : `board show` (le texte, existant), `board open` (le web, ex-`dashboard`),
+  `board stop`. `board stop` est du **code neuf** (suivre le serveur pour l'arrêter) → fiche fille.
+- **« run » n'est pas un mot du domaine.** `run` est du jargon technique générique (comme *job*, *task*).
+  Le concept réel = une **exécution autonome de `product-build`**. À trancher au panel : le **renommer**
+  dans le vocabulaire de la méthode, ou **ranger** `run context` / `run report` sous le domaine qui gère
+  déjà les runs (`supervision`) — ce qui résorbe le chevauchement des trois « report » (`run report`,
+  `sprint report`, `supervision analyze`).
+
+## Matière : revue du CLI (2026-10-10)
+
+Versée en grooming, avant le panel. Alimente surtout la **question 2 (grammaire du DSL)**.
+
+Le CLI suit déjà le bon modèle `ezk <nom> <verbe>` (façon `docker`/`gh`). Trois défauts cassent la
+cohérence : des domaines en double (board/dashboard/map), des **verbes au tiret**, des **domaines sans
+verbe**. **Garde-fou** : les **flags longs en kebab-case** (`--ready-only`, `--dry-run`) sont le
+**standard** — on n'y touche pas. Tiret **interdit** dans un nom de commande, **obligatoire** dans un
+flag long.
+
+**Convention cible, 4 règles :**
+1. `ezk <nom> <verbe> [args] [--flags]`, toujours.
+2. Nom de commande : un mot, minuscule, zéro tiret ; un groupe s'**imbrique** (`supervision registry
+   add`), ne se **colle** pas (`registry-add`).
+3. Flags longs : kebab-case, comme partout.
+4. Un concept = un domaine.
+
+**Changements (actuel → cible) :**
+
+| Aujourd'hui | Cible | Pourquoi |
+|---|---|---|
+| `dashboard`, `map` | `board open` / `board stop` | un seul domaine « board » (tranché) |
+| `supervision registry-add` | `supervision registry add` | objet + verbe imbriqués |
+| `pr emit-local` | `pr emit --local` | une variante = un flag |
+| `pr check-body` | `pr check` | objet implicite |
+| `backlog plan-head/lot/order` | `backlog plan head/lot/order` | sous-objet `plan` |
+| `docs check-links/check-adr-ids` | `docs check links/adr` | verbe `check` + objet |
+| `config`, `sessions` (nus) | `config show`, `sessions show` | tout est nom+verbe |
+| `backlog portfolio` | `views …` | portfolio est une vue |
+| `run context/report` | voir « Déjà tranché » | « run » hors vocabulaire |
+| `--ready-only`, `--dry-run` | **inchangés** | kebab-case = standard |
+
 ## Critères d'acceptation
 
 - [ ] Un brainstorm cadré a eu lieu (panel), avec une **capture** des options et des arbitrages.
@@ -89,3 +134,7 @@ publique** de la méthode, utilisée depuis vectorz **et** depuis tout projet h�
 cop1…). Le brainstorm juge l'ergonomie **de bout en bout**, pas un repli technique de `lawgiver`.
 Priorité P2 **provisoire** — à confirmer au grooming / à l'ouverture du brainstorm. Rattachement
 possible au thème « ranger la maison » (rationalisation, train V0.9), à trancher.
+
+Grooming 2026-10-10 (session du PO) : décisions `dashboard`/`map` et « run » actées, et la **revue du
+CLI** versée comme matière (voir sections ci-dessus). Le **panel complet** (ADR + plan de refonte) reste
+à tenir en session dédiée.
