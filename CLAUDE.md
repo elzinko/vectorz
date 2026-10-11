@@ -1,14 +1,16 @@
 # CLAUDE.md — vectorz
 
-## Écrire pour être lu du premier coup
-
-« En clair » d'abord : 1 à 3 phrases simples (situation, ce qu'il faut retenir, la suite),
-le jargon ensuite et défini. Phrases courtes, une idée par phrase, voix active — pas de
-chaînes de tirets ni de parenthèses empilées. Le détail technique (tableaux, `fichier:ligne`,
-IDs) vient sur demande ou en bas de réponse, jamais en tête. Même exigence dans les livrables
-(fiches, PR, docs) : le template fixe le format, pas la lisibilité du texte.
-
-Dans le chat, écris en **Markdown seul** : jamais `<details>`, `<summary>` ni HTML brut (le
-terminal les affiche tels quels). Le détail va en bas, sous un titre. Cite une fiche par son
-**titre + lien**, jamais par son id nu ; l'id peut suivre le titre. Règle complète :
+**La loi de ce projet** est compilée dans `.iamthelaw/ENTRY.md` (bloc managé ci-dessous, posé par
+`lawgiver … claude-code-law`) : lis-la avant d'agir. Elle porte les règles du socle, dont la règle
+de clarté complète (« En clair » d'abord, phrases courtes, voix active). On ne recopie plus la règle
+entière ici : une seule source. Pour la relire ou l'amender :
 [human-facing-lisibility](products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md).
+
+**Clause de chat (au point d'usage).** Dans le chat, écris en **Markdown seul** : jamais
+`<details>`, `<summary>` ni HTML brut (le terminal les affiche tels quels). Le détail va en bas,
+sous un titre. Cite une fiche par son **titre + lien**, jamais par son **id nu** ; l'id peut suivre
+le titre.
+
+<!-- iamthelaw:start -->
+> **iamthelaw** : avant toute action, lis et applique `.iamthelaw/ENTRY.md` (la loi de ce projet).
+<!-- iamthelaw:end -->

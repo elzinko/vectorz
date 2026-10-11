@@ -150,7 +150,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261007154842780` — nettoyer `docs/` : supprimer `archive/`, requalifier `e2e/` · P2 · **ready** → `build`
 - `20261007154842917` — note de migration `scrum/` + bascule d'un consommateur (muti) · P2 · **ready** → `build`
 - ~~`20261007115128214` — descendre `cop1.config.example.yaml` vers `products/cop1/` · P2 · **ready** → `build`~~ — shipped
-- `20261007115129448` — `CLAUDE.md` = simple proxy vers la loi, bindée par projet · P2 · **ready** → `build`
+- ~~`20261007115129448` — `CLAUDE.md` = simple proxy vers la loi, bindée par projet · P2 · **ready** → `build`~~ — shipped
 
 ### ⑪ v0.10.0 — portabilité multi-IDE (ajouté au plan le 2026-10-10)
 > Une source de règles → plusieurs IDE (`.claude/`, `.cursor/`, `AGENTS.md`), la CLI comme moteur portable. Était absent du plan alors que les fiches existaient déjà.

@@ -7,8 +7,8 @@ product: vectorz
 milestone: rationalisation
 version: v0.9.0
 labels: [convention, loi]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.9.0)"
 evidence: none # refactor d'outillage/convention, pas d'UI
 created: 2026-10-07
 ---
@@ -45,7 +45,7 @@ règles : une seule source, des rendus qui pointent.
 ## Proposition
 
 POC d'abord (binder vectorz sur lui-même en dogfooding), polish ensuite. Décision d'archi prise le
-2026-10-07 — [ADR-0064](../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md).
+2026-10-07 — [ADR-0064](../../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md).
 
 1. **Un nouvel hôte `claude-code-law`** dans `lawgiver` (pas un flag). Il pose seulement
    `<projet>/.iamthelaw/ENTRY.md` (la loi compilée) + le bloc managé de `CLAUDE.md` qui pointe vers
@@ -71,7 +71,7 @@ registre (OCP/DIP, ADR-0003).
       `CLAUDE.md`, et **n'écrit ni** `.claude/agents` **ni** `.claude/skills` dans le dépôt.
 - [ ] `.iamthelaw/ENTRY.md` est committé et **égale** la loi du profil `base`.
 - [ ] `CLAUDE.md` ne recopie plus de règle : orientation + pointeur vers la loi seulement.
-- [ ] Décision consignée en [ADR-0064](../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md).
+- [ ] Décision consignée en [ADR-0064](../../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md).
 
 **Mesure de suivi** — anti-dérive : `.iamthelaw/ENTRY.md` est un artefact généré committé (ADR-0055) ;
 si `rules/` change sans re-bind, il ment. Une garde légère (recompiler et exiger un `git diff` propre,
@@ -102,7 +102,7 @@ git diff --exit-code .iamthelaw/ENTRY.md && echo "OK — pas de dérive"
 - **Origine** : revue PO 2026-10-06/07 (lecture du `CLAUDE.md` + question « iamthelaw, global ou par
   projet ? »). Jugé connexe au rangement, d'où le lot V0.9, mais concern distinct des docs → fiche
   à part.
-- **Lien** : fiche sœur [regrouper les artefacts de méthode](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md),
+- **Lien** : fiche sœur [regrouper les artefacts de méthode](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md),
   même lot « Ranger la maison ».
 - **Prior art** : fiches déjà livrées sur lawgiver — `0106` (bind cap claude-code), `0111` (migrer
   les rulesets vers iamthelaw), `0140` (geler/archiver iamthelaw). Vérifier au grooming qu'on ne
@@ -137,5 +137,17 @@ dépend de cette voie.
 **Résolu le 2026-10-07 (avis `ezk-architect`)** : voie **B**, implémentée comme un **nouvel hôte
 `claude-code-law`** (pas un flag `--law-only`, qui descendrait une condition dans le cœur `bind.ts`).
 Profil **`base`**. `bind.ts` et la CLI restent intacts (l'hôte est déjà positionnel). Détail et
-schéma : [ADR-0064](../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md). La
+schéma : [ADR-0064](../../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md). La
 Proposition et les Critères ci-dessus reflètent cette décision.
+
+- **Build du 2026-10-11 (run auto).** Cap `claude-code-law` créé (`src/caps/claude-code-law.ts`) +
+  enregistré (`registry.ts`), `bind.ts` **intact**, test unitaire vert (loi + pointeur seuls, ni
+  agents ni skills). Bind de vectorz : `.iamthelaw/ENTRY.md` (loi du profil `base`, dont
+  `human-facing-lisibility` MUST) écrit + bloc managé `CLAUDE.md` posé, et `CLAUDE.md` **aminci**
+  (orientation + pointeur, plus de règle recopiée). Le vérificateur de liens ne scanne pas
+  `.iamthelaw/` (comme la loi globale), donc la loi compilée committée ne casse pas la gate.
+  **Réserve — hook non posé en worktree :** `poseHook` code `.git/hooks` en dur, qui échoue quand
+  on binde depuis un worktree (`.git` est un fichier). Pour vectorz le hook `commit-msg` existe déjà
+  (partagé), donc l'échec portait sur une écriture redondante ; les artefacts de la fiche (loi +
+  `CLAUDE.md`) sont corrects. Correctif worktree-aware fiché à part :
+  [20261011111526693](../20261011111526693_lawgiver-bind-hooks-worktree-aware.md).

@@ -38,7 +38,7 @@ pour le cadre, run neuf en session) a montré deux choses :
   `.cursor/`, `AGENTS.md`, avec une garde anti-dérive.
 
 C'est l'esprit de l'ADR-0029 (« la fiche est le document, la PR en est le rendu ») étendu : **une
-source, des rendus par IDE**. La [fiche « CLAUDE.md = proxy vers la loi »](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
+source, des rendus par IDE**. La [fiche « CLAUDE.md = proxy vers la loi »](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
 en est **une facette** (les règles → `CLAUDE.md`) ; cette keystone généralise aux **commandes et
 skills**, et à plusieurs IDE.
 
@@ -88,7 +88,7 @@ printf '\nDERIVE\n' >> .cursor/commands/<cmd>.md && pnpm --dir products/mega-cit
 ## Notes / décisions
 
 - **Origine** : session de brainstorm + benchmark du 2026-10-07 (OpenSpec / Superpowers / BMAD / vectorz).
-- **Facettes liées** : [CLAUDE.md = proxy vers la loi](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
+- **Facettes liées** : [CLAUDE.md = proxy vers la loi](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
   (V0.9, les règles → `CLAUDE.md`) et [ezk multi-client : cap Cursor + modèle par hôte](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md)
   (parkée, le cap Cursor). Elles restent où elles sont ; cette keystone les généralise, sans les absorber de force.
 - **Prior art** : OpenSpec (`openspec init --tools claude,cursor,agents`), standard AGENTS.md.
