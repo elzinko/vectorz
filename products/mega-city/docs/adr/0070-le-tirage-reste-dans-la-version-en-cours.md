@@ -3,7 +3,7 @@
 **Statut :** Accepté (grooming, 2026-10-11)
 **Date :** 2026-10-11
 **Deciders :** PO (Thomas, décision du 2026-10-10) ; conception tranchée par `ezk-architect` au grooming
-**Fiche :** [`20261010215345931`](../../../../features/20261010215345931_tirage-reste-dans-version-en-cours.md) (« Le tirage reste dans la version en cours »)
+**Fiche :** [`20261010215345931`](../../../../features/done/20261010215345931_tirage-reste-dans-version-en-cours.md) (« Le tirage reste dans la version en cours »)
 **Compose :** [`src/backlog/versions.ts`](../../src/backlog/versions.ts) (`buildVersions`, `releaseTagFor`) · s'appuie sur [ADR-0001](0001-monorepo-composable-coeur-deterministe.md) / [ADR-0003](0003-moteur-bind-plan-pur-coquille-io.md) (cœur pur déterministe, bords I/O) et l'axe unique `version:` ([ADR-0054](0054-cloture-sprint-vs-archive-session.md))
 
 ## En clair

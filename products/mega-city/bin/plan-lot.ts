@@ -14,10 +14,13 @@ import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { formatLot, selectLot } from '../src/backlog/plan-lot.js';
 import { parsePlanOrder } from '../src/backlog/plan-order.js';
+import { applyVersionScope, formatVersionScope, versionScope } from '../src/backlog/version-scope.js';
+import { buildVersions } from '../src/backlog/versions.js';
+import { localTags } from '../src/io/git-tags.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 
-const USAGE = 'usage : pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md] [--root <projet>]';
+const USAGE = 'usage : pnpm --dir products/mega-city plan:lot <N> [chemin/vers/PLAN.md] [--all-versions] [--root <projet>]';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
@@ -36,7 +39,10 @@ if (rest.includes('-h') || rest.includes('--help')) {
   process.exit(0);
 }
 
-const [sizeArg, planArg] = rest;
+// La soupape --all-versions lève le périmètre de version (ADR-0070) ; on la retire des positionnels.
+const allVersions = rest.includes('--all-versions');
+const positional = rest.filter((a) => a !== '--all-versions');
+const [sizeArg, planArg] = positional;
 if (!sizeArg || !/^[1-9]\d*$/.test(sizeArg)) fail(`taille du lot attendue (un entier ≥ 1), reçu : ${sizeArg ?? 'rien'}`);
 
 const invokedFrom = process.env.INIT_CWD || process.cwd();
@@ -48,7 +54,16 @@ const planPath = planArg
 if (planArg && !existsSync(planPath)) fail(`PLAN.md introuvable : ${planPath}`);
 const planIds = existsSync(planPath) ? parsePlanOrder(readFileSync(planPath, 'utf8')) : null;
 
-const cards = loadFiches(root).map((f) => ({
+// Garde-fou de séquence : on filtre les fiches par version AVANT la sélection (ADR-0070). Le cœur
+// `selectLot` reste intact. Les ids d'une version écartée quittent aussi l'ordre du plan, pour ne pas
+// les faire passer pour « introuvables ».
+const allFiches = loadFiches(root);
+const scope = versionScope(buildVersions(allFiches, localTags(root)), { allVersions });
+const { kept, deferred } = applyVersionScope(allFiches, scope);
+const deferredIds = new Set(deferred.map((f) => f.id));
+const scopedPlanIds = planIds ? planIds.filter((id) => !deferredIds.has(id)) : null;
+
+const cards = kept.map((f) => ({
   id: f.id,
   product: f.product,
   type: f.type,
@@ -60,7 +75,8 @@ const cards = loadFiches(root).map((f) => ({
   // L'id s'affiche en lien vers la fiche, relatif au dossier d'où la commande est lancée.
   path: relative(invokedFrom, join(root, f.file)),
 }));
-const lot = selectLot(planIds, cards, Number(sizeArg));
+const lot = selectLot(scopedPlanIds, cards, Number(sizeArg));
 // sprint.sh se lance depuis la racine du projet (c'est là qu'il écrit SPRINT.md).
 const sprintScript = relative(root, join(megaCity, 'skills', 'ezk-sprint', 'scripts', 'sprint.sh'));
-for (const l of formatLot(lot, { planned: planIds !== null, sprintScript })) console.log(l);
+for (const l of formatLot(lot, { planned: scopedPlanIds !== null, sprintScript })) console.log(l);
+for (const l of formatVersionScope(scope)) console.log(l);

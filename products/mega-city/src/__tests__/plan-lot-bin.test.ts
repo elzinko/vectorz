@@ -91,3 +91,66 @@ describe('plan:lot → sprint.sh start --lot', () => {
     expect(ran.stdout, ran.stderr).toContain('reçu: start --lot 0001');
   });
 });
+
+/**
+ * Le garde-fou de séquence de bout en bout (fiche 20261010215345931, ADR-0070) : sur un projet jetable
+ * avec v0.1 étiquetée, v0.2 (en cours) et v0.4 (non contiguë, supérieure), `plan:lot` ne tire que la
+ * version en cours ; `--all-versions` lève le périmètre. La logique pure est prouvée dans
+ * `backlog/__tests__/version-scope.test.ts` ; ici on vérifie le câblage réel du bord.
+ */
+describe('plan:lot — garde-fou de version (ADR-0070)', () => {
+  const V1 = '20991231000000011'; // v0.1.0, livrée + étiquetée
+  const V2 = '20991231000000012'; // v0.2.0, en cours (plus bas lot non étiqueté)
+  const V4 = '20991231000000014'; // v0.4.0, version supérieure NON contiguë
+  let vproj: string;
+
+  function vfiche(id: string, status: string, version: string, done = false): void {
+    writeFileSync(
+      join(vproj, 'features', `${id}_f.md`),
+      ['---', `id: "${id}"`, `title: "F ${id.slice(-2)}"`, 'type: feature', 'priority: P1', `status: ${status}`, `version: ${version}`, ...(done ? ['done: true'] : []), '---', ''].join('\n'),
+    );
+  }
+  const vgit = (...args: string[]): void => {
+    execFileSync('git', args, { cwd: vproj, stdio: 'ignore' });
+  };
+  const run = (extra: string[]) =>
+    spawnSync(process.execPath, [tsxCli, join(megaCity, 'bin', 'plan-lot.ts'), '5', ...extra, '--root', vproj], {
+      cwd: vproj,
+      encoding: 'utf8',
+      env: { ...process.env, EZK_ROOT: '', INIT_CWD: '' },
+    });
+
+  beforeAll(() => {
+    vproj = realpathSync(mkdtempSync(join(tmpdir(), 'ezk-lot-ver-')));
+    mkdirSync(join(vproj, 'features'));
+    vfiche(V1, 'shipped', 'v0.1.0', true);
+    vfiche(V2, 'ready', 'v0.2.0');
+    vfiche(V4, 'ready', 'v0.4.0');
+    writeFileSync(join(vproj, 'features', 'PLAN.md'), `# Plan\n\n- ${V2} — courante\n- ${V4} — supérieure\n`);
+    writeFileSync(join(vproj, '.gitignore'), 'SPRINT.md\n');
+    vgit('init', '-q', '-b', 'main');
+    vgit('config', 'user.email', 't@t');
+    vgit('config', 'user.name', 't');
+    vgit('config', 'commit.gpgsign', 'false');
+    vgit('add', '.');
+    vgit('commit', '-qm', 'base');
+    vgit('tag', 'v0.1.0'); // v0.1 livrée → v0.2 devient la version en cours
+  });
+  afterAll(() => rmSync(vproj, { recursive: true, force: true }));
+
+  it('par défaut, ne tire que la version en cours ; la version supérieure non contiguë est écartée', { timeout: 60_000 }, () => {
+    const r = run([]);
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toContain(V2); // v0.2.0 tirée
+    expect(r.stdout).not.toContain(V4); // v0.4.0 absente du tirage (ni lot, ni introuvable)
+    expect(r.stdout).toContain('écartées hors version en cours (v0.2.0)');
+    expect(r.stdout).toContain('v0.4.0');
+  });
+
+  it('--all-versions lève le périmètre : la version supérieure redevient tirable, avec l’avertissement', { timeout: 60_000 }, () => {
+    const r = run(['--all-versions']);
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toContain(V4); // v0.4.0 de nouveau visible
+    expect(r.stdout).toContain('--all-versions : périmètre de version LEVÉ');
+  });
+});

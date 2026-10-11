@@ -14,6 +14,10 @@ import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type PlanCard, crossBacklogHead } from '../src/backlog/plan-head.js';
 import { parsePlanOrder } from '../src/backlog/plan-order.js';
+import { applyVersionScope, formatVersionScope, versionScope } from '../src/backlog/version-scope.js';
+import { buildVersions } from '../src/backlog/versions.js';
+import type { Fiche } from '../src/loaders/fiches.js';
+import { localTags } from '../src/io/git-tags.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 
@@ -23,13 +27,13 @@ function fail(message: string): never {
 }
 
 /**
- * Liste unique à la racine (actifs + `done/`) — le produit vient du front-matter (0064). La lecture
- * passe par le loader testé (règle `development/fiche-read-via-loader`) : défauts `—` / `feature` /
- * `idea`, valeurs quotées et commentaires gérés, deux formats d'id (fiche 0180) reconnus.
+ * Index des fiches fournies — le produit vient du front-matter (0064). Les fiches sont lues par le
+ * loader testé (règle `development/fiche-read-via-loader`), puis déjà filtrées par le garde-fou de
+ * version (ADR-0070) : seule la version en cours (et les sans-version) arrive ici.
  */
-function collect(root: string): Map<string, PlanCard> {
+function indexOf(fiches: readonly Fiche[]): Map<string, PlanCard> {
   const index = new Map<string, PlanCard>();
-  for (const f of loadFiches(root)) {
+  for (const f of fiches) {
     index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status });
   }
   return index;
@@ -38,11 +42,15 @@ function collect(root: string): Map<string, PlanCard> {
 // Le projet dont on lit le plan : --root > EZK_ROOT > ce dépôt (fiche 20260826173221323).
 const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const { root, rest } = projectRootOrExit(ownRoot);
-const arg = rest[0];
+// La soupape --all-versions lève le périmètre de version (ADR-0070) ; on la retire des positionnels.
+const allVersions = rest.includes('--all-versions');
+const positional = rest.filter((a) => a !== '--all-versions');
+const arg = positional[0];
 if (arg === '-h' || arg === '--help') {
-  console.log('usage : pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md] [--root <projet>]');
+  console.log('usage : pnpm --dir products/mega-city plan:head [chemin/vers/PLAN.md] [--all-versions] [--root <projet>]');
   console.log('');
   console.log('Imprime la tête réelle du plan sur la liste unique features/ (champ product:).');
+  console.log('Défaut : seule la version en cours est tirable (ADR-0070) ; --all-versions lève le périmètre.');
   console.log('Défaut du PLAN.md : <racine>/features/PLAN.md. --root (ou EZK_ROOT) : le plan d’un autre projet.');
   process.exit(0);
 }
@@ -53,7 +61,13 @@ const planPath = isAbsolute(planArg) ? planArg : resolve(invokedFrom, planArg);
 if (!existsSync(planPath)) fail(`PLAN.md introuvable : ${planPath}`);
 
 const planIds = parsePlanOrder(readFileSync(planPath, 'utf8'));
-const { head, blockedAhead, unresolved } = crossBacklogHead(planIds, collect(root));
+// Garde-fou de séquence : on écarte les fiches de version supérieure AVANT la sélection (ADR-0070).
+const allFiches = loadFiches(root);
+const scope = versionScope(buildVersions(allFiches, localTags(root)), { allVersions });
+const { kept, deferred } = applyVersionScope(allFiches, scope);
+const deferredIds = new Set(deferred.map((f) => f.id));
+const scopedPlanIds = planIds.filter((id) => !deferredIds.has(id));
+const { head, blockedAhead, unresolved } = crossBacklogHead(scopedPlanIds, indexOf(kept));
 
 if (head) {
   console.log(`tête : ${head.id} (${head.product}) — ready ✓ TIRABLE`);
@@ -67,3 +81,4 @@ if (blockedAhead.length > 0) {
 if (unresolved.length > 0) {
   console.log(`introuvables (dans le plan, absentes de features/) : ${unresolved.join(', ')}`);
 }
+for (const l of formatVersionScope(scope)) console.log(l);

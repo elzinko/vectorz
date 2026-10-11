@@ -31,6 +31,7 @@ import {
   renderRefusal,
   renderVersionList,
 } from '../src/backlog/versions-render.js';
+import { localTags } from '../src/io/git-tags.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 
 const VERBS = ['list', 'check', 'close'] as const;
@@ -81,16 +82,6 @@ function parseArgs(argv: string[]): Args {
   if (verb === 'close' && version === undefined) usage('close attend une version (exemple : close v0.3.0)');
   if (verb === 'list' && version !== undefined) usage('list ne prend pas de version');
   return { verb, version, root, max, usePlan, tag };
-}
-
-/** Les étiquettes git locales. Hors dépôt git (ou sans git) : aucune, et l'état se calcule sans. */
-function localTags(root: string): Set<string> {
-  try {
-    const out = execFileSync('git', ['tag', '-l'], { cwd: root, encoding: 'utf8', stdio: 'pipe' });
-    return new Set(out.split('\n').filter((t) => t !== ''));
-  } catch {
-    return new Set();
-  }
 }
 
 /** Sortie d'une commande git dans `root`, ou `undefined` si elle échoue (hors dépôt, référence inconnue). */

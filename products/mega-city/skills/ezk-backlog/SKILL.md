@@ -441,6 +441,10 @@ backlog plan-head` lit `features/` + le champ `product:` du front-matter : 1re c
 ezk-sprint et ezk-product-build passent par **ici**, ou par `next --lot N` qui applique les mêmes
 règles à N fiches : aucune logique de gate réimplémentée en aval (test de séparabilité).
 
+**Périmètre de version (ADR-0070).** Par défaut, `plan-head` ne regarde que la **version en cours** —
+une version supérieure est écartée tant que les inférieures ne sont pas étiquetées. La soupape
+`--all-versions` lève le périmètre. Détail : section « Le périmètre de version » ci-dessous.
+
 ### `next --lot N` — le lot d'un sprint (sprint backlog) et son incrément
 
 **En clair.** `next --ready-only` tire **une** fiche. `next --lot N` en choisit **N** : le lot d'un
@@ -477,6 +481,31 @@ squash-merges sur `main`. `sprint.sh close` le scelle dans `SPRINT.md`. Il n'exi
 
 Hors du monorepo mega-city, le helper est absent : applique les mêmes règles à la main, comme pour
 `next --ready-only`.
+
+### Le périmètre de version — le tirage reste dans la version en cours (ADR-0070)
+
+**En clair.** Par défaut, `next --ready-only` (`plan-head`) et `next --lot N` (`plan-lot`) ne tirent
+que la **version en cours** : le train de versions se code **une version à la fois**. Avant, le
+tirage suivait l'ordre du `PLAN.md` **sans regarder la version** — un lot pouvait proposer du v0.8
+pendant que la v0.7 n'était pas finie. C'est corrigé par un filtre posé **avant** la sélection
+(fiche 20261010215345931).
+
+- **Version en cours** = le **plus bas lot qui ne porte pas encore son étiquette git** `vX.Y.Z`.
+  Une version tout livré mais pas taguée **reste** en cours jusqu'au tag. « Taguée = validée par le
+  PO », car pousser le tag est **son** geste.
+- **En scope** : la version en cours **et les fiches sans `version:`** (petits correctifs hors train).
+  **Écartées** : toute fiche d'une version **strictement supérieure** — signalées, jamais supprimées
+  ni comptées « introuvables ».
+- **Grooming inchangé** : `groom` / `ready` restent libres sur **n'importe quelle** version. On
+  discipline le **tirage**, pas la préparation.
+- **Soupape `--all-versions`** (bruyante) : `plan-head` / `plan-lot --all-versions` lève le périmètre
+  et regarde au-delà, avec un avertissement. Décision à journaliser (fiche + scratch de sprint).
+- **Deux fins de scope, aucun saut muet** : version en cours avec seulement des idées/bloquées →
+  « groome la tête » ; version **tout livré mais pas étiquetée** → « pousse l'étiquette
+  (`ezk backlog version close <vX.Y.Z>`) » pour débloquer la suivante.
+
+Hors dépôt git ou sans étiquette : le calcul dégrade sans planter (la version la plus basse est « en
+cours »). Les étiquettes sont lues en **local** (git les partage entre worktrees).
 
 ### `aggregate [options]` — le grand ménage à la demande (fiche 20260812104022240, ADR-0051)
 
