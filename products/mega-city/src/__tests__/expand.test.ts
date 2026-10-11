@@ -50,6 +50,7 @@ describe('expandProfile(mobile)', () => {
   it('résout les bundles (mobile → base) en règles, triées stablement par id', () => {
     const resolved = expandMobile();
     expect(resolved.rules.map((r) => r.id)).toEqual([
+      'agent-ops/verify-access-before-asking',
       'clean-code/no-dead-code',
       'conventional-commits/format',
       'development/pr-before-after-media',
@@ -79,6 +80,7 @@ describe('expandProfile(mobile)', () => {
     };
     const resolved = expandProfile(profile, catalog);
     expect(resolved.rules.map((r) => r.id)).toEqual([
+      'agent-ops/verify-access-before-asking',
       'clean-code/no-dead-code',
       'conventional-commits/format',
       'development/pr-before-after-media',
