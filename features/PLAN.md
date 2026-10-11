@@ -143,12 +143,12 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 ### ⑩ v0.9.0 — ranger la maison (rationalisation)
 > Rationalisation de la surface : fichiers (docs/, scrum/, config cop1, CLAUDE.md proxy) et CLI. Lot **entièrement prêt** (8 fiches ready) — complété au réalignement du 2026-10-10 ; à tirer après la v0.7 puis la v0.8.
-- `20261009104436287` — `next` nu montre la suite (pas la liste) ; `plan-head` démoté · P1 · **ready** → `build`
+- ~~`20261009104436287` — `next` nu montre la suite (pas la liste) ; `plan-head` démoté · P1~~ — parkée, sortie de v0.9 (prémisse périmée : pas de verbe `next`/`list` au CLI, migré vers `plan-head`/`plan-lot` ; résidu = décision nommage PO ; run 2026-10-11)
 - ~~`20261001192624192` — chemins des artefacts de méthode configurables (`scrum:`) — la fondation · P2 · **ready** → `build`~~ — shipped
 - ~~`20261007154842506` — brancher skills/scripts/bins sur le résolveur de chemins · P2 · **ready** → `build`~~ — shipped
-- `20261007154842643` — basculer vectorz vers `scrum/` (git mv des 5 dossiers) · P2 · **ready** → `build`
+- ~~`20261007154842643` — basculer vectorz vers `scrum/` (git mv des 5 dossiers) · P2~~ — parkée, sortie de v0.9 (déménagement à l'échelle du dépôt : 168 .md + loi compilée ; à faire sous revue, pas en run autonome ; run 2026-10-11)
 - ~~`20261007154842780` — nettoyer `docs/` : supprimer `archive/`, requalifier `e2e/` · P2 · **ready** → `build`~~ — shipped
-- `20261007154842917` — note de migration `scrum/` + bascule d'un consommateur (muti) · P2 · **ready** → `build`
+- ~~`20261007154842917` — note de migration `scrum/` + bascule d'un consommateur (muti) · P2~~ — parkée, sortie de v0.9 (dépend de la bascule `scrum/` parquée ; run 2026-10-11)
 - ~~`20261007115128214` — descendre `cop1.config.example.yaml` vers `products/cop1/` · P2 · **ready** → `build`~~ — shipped
 - ~~`20261007115129448` — `CLAUDE.md` = simple proxy vers la loi, bindée par projet · P2 · **ready** → `build`~~ — shipped
 
