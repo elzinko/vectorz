@@ -4,8 +4,8 @@ title: "Refondre la vue de supervision du Moniteur pour qu'elle soit lisible"
 type: feature
 priority: P1
 product: cop1
-milestone:
-version: v0.7.0
+milestone: parked
+version:
 labels: [supervision, moniteur, lisibilite]
 status: idea
 pr:
@@ -97,3 +97,12 @@ POC d'abord (l'écran se lit), polish ensuite.
   « une page : une ligne par projet » ([20261002115451451](20261002115451451_page-une-ligne-par-projet.md)),
   « viz qualité par PR » ([0056](0056-viz-qualite-mission-control.md)).
 - Référence « ce qui se lit » : page rapide des 32 runs, https://claude.ai/artifact/5EevcXyhCQ14AEqnr3HEte
+
+## Sortie de v0.7 — parkée (run autonome 2026-10-11)
+
+Sortie de v0.7 par le run autonome `ezk-product-build` : **non construisable sans geste humain**. La
+fiche dit elle-même qu'elle commence par un **gros brainstorming avec le PO débouchant sur une maquette**
+— donc une décision/un geste produit, hors d'un build autonome ; et c'est une **webapp cop1** (hors du
+périmètre vectorz de ce run, besoin du banc). Les 3 autres fiches v0.7 ont été livrées ; celle-ci est
+**parkée, sans version**, pour laisser la v0.7 se clore. **À re-verser par le PO** (re-mettre `version:`
++ dé-parker) après le brainstorming et la maquette.

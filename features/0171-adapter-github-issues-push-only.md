@@ -4,8 +4,8 @@ title: "Recopier sur GitHub ce que la méthode écrit en local : issues, PR, lab
 type: feature
 product: mega-city
 labels: [github-optionnel, plugin]
-milestone:
-version: v0.7.0
+milestone: parked
+version:
 priority: P1
 epic:
 depends: [0170]
@@ -245,3 +245,11 @@ Vérifié sans défaut : `init` crée un `features/done/` vide que git ne garde 
   ([rationalisation du backlog](done/20260812104022240_backlog-rationalisation-tags-script-llm.md)) :
   projetés par l'étape 5 du cycle.
 - Renommage « feature ↔ user story » : hors de cette fiche.
+
+## Sortie de v0.7 — parkée (run autonome 2026-10-11)
+
+Sortie de v0.7 par le run autonome `ezk-product-build` : **non construisable sans geste humain** dans
+cette session. Elle **dépend de `0170`** et exige le **plugin GitHub** (accès non autorisé dans la
+session), plus des arbitrages produit (quoi recopier, gestion des conflits). Les 3 autres fiches v0.7
+ont été livrées ; celle-ci est **parkée, sans version**, pour laisser la v0.7 se clore. **À re-verser par
+le PO** (re-mettre `version:` + dé-parker) quand le plugin GitHub est branché et `0170` prête.

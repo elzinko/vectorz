@@ -313,7 +313,6 @@
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
 | [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
-| [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 | v0.7.0 | mega-city | 💡 idea |  |
 | [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 |  | mega-city | 💡 idea |  |
@@ -321,7 +320,6 @@
 | [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Refondre la vue de supervision du Moniteur pour qu'elle soit lisible | feature | P1 | v0.7.0 | cop1 | 💡 idea |  |
 | [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261010213353647](20261010213353647_capture-retro-lisible-pour-le-po.md) | Une capture de rétro (et tout artefact committé lu par le PO) doit être lisible, et quelque chose doit le vérifier | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
@@ -377,7 +375,9 @@
 | [0156](0156-ezk-marketing.md) | ezk-marketing — orchestrateur de promotion produit (articles d'épopée, canaux, vidéos) | feature | P1 |  | mega-city | 💡 idea |  |
 | [0157](0157-ezk-landing-pages.md) | ezk-landing — skill de création de landing pages pro FR/EN (patrons réutilisés) | feature | P1 |  | mega-city | 💡 idea |  |
 | [0165](0165-contrat-ameliorabilite-v01-mvp-b.md) | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 💡 idea |  |
+| [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | 💡 idea |  |
+| [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Refondre la vue de supervision du Moniteur pour qu'elle soit lisible | feature | P1 |  | cop1 | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 |  | vectorz | 💡 idea |  |
