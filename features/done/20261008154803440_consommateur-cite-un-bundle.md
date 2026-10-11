@@ -98,4 +98,4 @@ pnpm --dir products/mega-city graph:check
   (20261008154805639_vue-projection-regles-par-agent.md).
 - Enrichie 2026-10-10 : cas d'usage « skills de cycle » ajouté au Contexte (symptôme PO). Scope,
   priorité et critères **inchangés**. Application concrète du mécanisme :
-  [`ezk-now` — boussole de session](../20261010091118580_boussole-session-quoi-faire-maintenant.md).
+  [`ezk-now` — boussole de session](20261010091118580_boussole-session-quoi-faire-maintenant.md).

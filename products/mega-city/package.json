@@ -33,6 +33,7 @@
     "graph:query": "tsx bin/graph-query.ts",
     "graph:project": "tsx bin/graph-project.ts",
     "paths": "tsx bin/paths.ts",
+    "now": "tsx bin/ezk-now.ts",
     "map:data": "tsx bin/views-regen.ts",
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",

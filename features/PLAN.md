@@ -155,7 +155,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ### ⑪ v0.10.0 — portabilité multi-IDE (ajouté au plan le 2026-10-10)
 > Une source de règles → plusieurs IDE (`.claude/`, `.cursor/`, `AGENTS.md`), la CLI comme moteur portable. Était absent du plan alors que les fiches existaient déjà.
 - `20261007151859470` — générateur multi-IDE : une source → `.claude/` + `.cursor/` + `AGENTS.md`, CLI moteur · P1 · **ready** → `build`
-- `20261010091118580` — boussole de session : une commande qui dit quoi faire maintenant · P2 · **ready** → `build`
+- ~~`20261010091118580` — boussole de session : une commande qui dit quoi faire maintenant · P2 · **ready** → `build`~~ — shipped
 - `20261007151859473` — amorçage brownfield : extraire les règles d'un projet existant → bundles · P2 · `idea` → `groom`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)

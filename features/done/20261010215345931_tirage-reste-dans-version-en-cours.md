@@ -111,7 +111,7 @@ ezk backlog next --all-versions --root <fixture> # → voit au-delà, et le sign
 ## Notes
 
 - Lié : [next nu montre la suite](../20261009104436287_next-nu-montre-la-suite.md) (v0.9) et
-  [boussole de session](../20261010091118580_boussole-session-quoi-faire-maintenant.md) (v0.10) —
+  [boussole de session](20261010091118580_boussole-session-quoi-faire-maintenant.md) (v0.10) —
   ce sont du **confort de restitution** ; cette fiche est le **verrou**.
 - Décision PO du 2026-10-10 : le tirage doit rester dans la version en cours ; on ne déplace une
   fiche que si l'on **bute** dessus (grooming ou code impossible), et alors de façon journalisée.

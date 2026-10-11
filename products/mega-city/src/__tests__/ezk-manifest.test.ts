@@ -75,6 +75,7 @@ describe('ezk-manifest.yml', () => {
       'dor health',
       'dor show',
       'map',
+      'now',
       'paths',
       'pr emit-local',
       'retro captures',

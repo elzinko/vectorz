@@ -278,6 +278,10 @@ commands:
     run: bin/paths.ts
     summary: Imprime le chemin relatif résolu d'un artefact de process (clé scrum, lecture seule).
     project: true
+  - domain: now
+    run: bin/ezk-now.ts
+    summary: Boussole de session — que faire maintenant, vu l'état du dépôt (lecture seule).
+    project: true
   - domain: views
     verb: regen
     run: bin/views-regen.ts

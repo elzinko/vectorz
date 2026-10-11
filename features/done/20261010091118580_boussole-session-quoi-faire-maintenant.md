@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.10.0
 labels: [ergonomie-cli]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.10.0)"
 evidence: none # commande CLI, pas d'écran
 created: 2026-10-10
 ---
@@ -21,7 +21,7 @@ que les skills **poussent** en fin de commande. Aujourd'hui, personne ne répond
 « que faire maintenant, dans cet état ? ».
 
 **Si tu arrives frais.** Le bloc « Et maintenant ? » est une règle de la méthode
-([`next-step-affordance`](../products/mega-city/rules/documentation-guidelines/next-step-affordance.md)) :
+([`next-step-affordance`](../../products/mega-city/rules/documentation-guidelines/next-step-affordance.md)) :
 une commande qui se termine propose la suite. `ezk-help` liste **toutes** les commandes qui
 existent, pas « laquelle lancer ici ». `ezk-backlog next` donne la prochaine **fiche** à tirer,
 pas la prochaine **action** de session.
@@ -77,7 +77,7 @@ sous-commande de `ezk-backlog`, sinon on la ré-enferme dans le backlog) qui :
   `next` »), ce qu'une arête statique ne capte pas, mais que la colonne `quand` des tables capte.
   `ezk-now` lit les tables + l'état ; le graphe reste structurel.
 - **Couverture.** `ezk-now` n'est bon que là où les tables existent (2 skills aujourd'hui). Le socle
-  [Un consommateur peut citer un bundle](done/20261008154803440_consommateur-cite-un-bundle.md)
+  [Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md)
   généralisera les tables à un groupe de skills ; la boussole en est la façade.
 - **ADR.** Pas d'ADR maintenant (idea). Au **build**, ouvrir un ADR court sur la frontière « l'ordre
   vit dans les tables, pas dans le graphe fermé » — décision durable, susceptible d'être contestée
@@ -100,7 +100,7 @@ rend la suite. Tout le reste est en « Suite » ci-dessous.
 - **Affinage par le contexte de session** — bonus non requis ; le POC marche sans, on l'ajoute une
   fois le socle déterministe prouvé.
 - **Généraliser les tables « Et maintenant ? » aux autres skills** — dépend du socle
-  [Un consommateur peut citer un bundle](done/20261008154803440_consommateur-cite-un-bundle.md) ;
+  [Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md) ;
   chantier séparé. Le POC se contente des 2 skills qui ont déjà la table.
 - **ADR court frontière graphe / tables** — à ouvrir au build, pas au POC.
 
@@ -121,11 +121,16 @@ rend la suite. Tout le reste est en « Suite » ci-dessous.
 
 - Née `idea` le 2026-10-10 (brainstorm PO). Priorité `P2` par alignement sur les autres idées de
   méthode — à confirmer par le PO.
-- Dépend conceptuellement du socle [Un consommateur peut citer un bundle](done/20261008154803440_consommateur-cite-un-bundle.md)
+- Dépend conceptuellement du socle [Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md)
   (v0.8.0) : à poser **après** lui.
-- Voisine ergonomie CLI : [`next` nu montre la suite](20261009104436287_next-nu-montre-la-suite.md)
+- Voisine ergonomie CLI : [`next` nu montre la suite](../20261009104436287_next-nu-montre-la-suite.md)
   (retouche `ezk-backlog next`, périmètre différent).
 - Groom 2026-10-10 : techniques « avis-architecte » (nom / portée / source d'ordre, cf. « Décisions
   tranchées »), « couper-au-poc » (POC + « Suite ») et « valeur-par-l'absence » jouées. Socle DoR
   complet (problème / valeur / critères). Statut inchangé par le groom ; **passée `ready` le
   2026-10-10** (gate DoR vérifié : problème / valeur / critères, 4 critères, 1 surface).
+- **Build 2026-10-11 (run auto v0.10).** Commande `ezk now` livrée : cœur pur `suggestNow`
+  (`src/core/now.ts`) + bord `bin/ezk-now.ts` qui lit SPRINT.md, la tête du plan et le dernier commit.
+  L'ADR court est ouvert : [ADR-0072](../../products/mega-city/docs/adr/0072-ordre-de-session-dans-les-tables-pas-le-graphe.md)
+  (l'ordre vit dans les tables, pas le graphe). La tête reflète `plan-lot` (ignore les fiches
+  `blocked:`), pas `plan-head`. Généralisation aux autres skills : « Suite » (après le socle bundle).
