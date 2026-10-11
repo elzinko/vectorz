@@ -123,7 +123,7 @@ rend la suite. Tout le reste est en « Suite » ci-dessous.
   méthode — à confirmer par le PO.
 - Dépend conceptuellement du socle [Un consommateur peut citer un bundle](20261008154803440_consommateur-cite-un-bundle.md)
   (v0.8.0) : à poser **après** lui.
-- Voisine ergonomie CLI : [`next` nu montre la suite](../20261009104436287_next-nu-montre-la-suite.md)
+- Voisine ergonomie CLI : [`next` nu montre la suite](20261009104436287_next-nu-montre-la-suite.md)
   (retouche `ezk-backlog next`, périmètre différent).
 - Groom 2026-10-10 : techniques « avis-architecte » (nom / portée / source d'ordre, cf. « Décisions
   tranchées »), « couper-au-poc » (POC + « Suite ») et « valeur-par-l'absence » jouées. Socle DoR

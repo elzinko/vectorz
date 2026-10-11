@@ -33,7 +33,7 @@ tout moment, sur n'importe quelle version ; c'est le **tirage** qu'on discipline
 - **Preuve (2026-10-10)** : `ezk backlog plan-lot 3` sur ce backlog a proposé
   [20261008154803440](20261008154803440_consommateur-cite-un-bundle.md) (v0.8),
   [20261008183238365](20261008183238365_spike-divergence-dev-reviewer.md) (v0.8) et
-  [20261009104436287](../20261009104436287_next-nu-montre-la-suite.md) (v0.9) — **aucune v0.7** —
+  [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) (v0.9) — **aucune v0.7** —
   pendant que la v0.7 avait encore une fiche prête et trois idées.
 - Cause : `PLAN.md` périmé **plus** aucune porte de version. Le garde-fou ne peut pas reposer
   sur un `PLAN.md` curé à jour — il doit lire la version réelle des fiches.
@@ -110,7 +110,7 @@ ezk backlog next --all-versions --root <fixture> # → voit au-delà, et le sign
 
 ## Notes
 
-- Lié : [next nu montre la suite](../20261009104436287_next-nu-montre-la-suite.md) (v0.9) et
+- Lié : [next nu montre la suite](20261009104436287_next-nu-montre-la-suite.md) (v0.9) et
   [boussole de session](20261010091118580_boussole-session-quoi-faire-maintenant.md) (v0.10) —
   ce sont du **confort de restitution** ; cette fiche est le **verrou**.
 - Décision PO du 2026-10-10 : le tirage doit rester dans la version en cours ; on ne déplace une

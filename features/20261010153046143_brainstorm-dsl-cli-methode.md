@@ -42,6 +42,14 @@ Demande PO du 2026-10-10, en marge du déploiement des règles de la rétro. Sym
 - **Verbosité / valeurs par défaut.** `--link`, le profil `global` : lesquels sont des défauts ?
 - **Nommage `ezk` vs `mc`.** Non tranché — cf. fiche
   [renommer ezk vers mc](20260904074824499_renommer-ezk-vers-mc.md) (idea).
+- **Vocabulaire `next` / `list` ≠ verbes CLI réels.** La doc humaine et le SKILL.md d'`ezk-backlog`
+  parlent encore de `next --ready-only` / `next --lot` / `list`, alors que le CLI n'a **ni `next` ni
+  `list`** : les verbes réels sont `plan-head` / `plan-lot` / `plan-order`. Le mot « next » a même été
+  retiré volontairement à la refonte du tirage (périmètre de version, ADR-0070). À trancher au panel :
+  faut-il exposer un verbe humain `next` (« montre la suite, pas tout le stock »), ou **aligner la doc**
+  sur `plan head` / `plan lot` et abandonner `next`/`list` en surface ? *(Absorbe la question de
+  nommage de la fiche « next nu montre la suite », 20261009104436287, supersedée le 2026-10-11 : sa
+  prémisse — « `next` nu = alias de `list` » — décrivait un état antérieur à la refonte.)*
 - **Découvrabilité.** Pas de référence des commandes **et de leurs paramètres** dans le board.
   `ezk:help` existe (index des commandes) et la carte montre déjà les outils, mais sans les
   paramètres ni une vue navigable depuis le tableau de bord.
@@ -118,8 +126,9 @@ flag long.
       un ou plusieurs **ADR**.
 - [ ] Un **plan de refonte** découpé en fiches filles (par même milestone/version, sans fiche-parapluie)
       sort du brainstorm.
-- [ ] Les fiches existantes « renommer ezk→mc » et « cli ezk publié » sont **absorbées ou reliées**,
-      pas laissées en doublon.
+- [ ] Les fiches existantes « renommer ezk→mc », « cli ezk publié » et le résidu de « next nu montre
+      la suite » (vocabulaire `next`/`list` vs `plan head/lot`) sont **absorbés ou reliés**, pas
+      laissés en doublon.
 
 ## Comment vérifier
 
