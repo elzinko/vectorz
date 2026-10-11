@@ -350,7 +350,7 @@ write_closed() { # $1 = ligne du journal des incréments ; $2 = raison d'abandon
 # via le helper partagé `commit-doc-via-worktree.sh` (local = squash local ; PR = branche + commande).
 # Best-effort : tout échec ici LAISSE le sprint scellé (le compte rendu est un livrable, pas le sceau).
 emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison d'abandon (vide si sceau normal)
-  local n="$1" obj="$2" reason="$3" root slug tmp report_md day dest_rel helper tsx
+  local n="$1" obj="$2" reason="$3" root repo_main slug tmp report_md day dest_rel helper tsx
   # On appelle le bin DIRECTEMENT (pas `ezk sprint report`, dont le wrapper refuse hors dépôt de méthode).
   # tsx + le bin vivent dans le catalogue ($MC) ; absents (install en copie) → on dégrade proprement.
   tsx="$MC/node_modules/.bin/tsx"
@@ -358,6 +358,11 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
     echo "SPRINT-REPORT: sauté (catalogue indisponible) — sprint scellé"; return 0
   fi
   root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+  # Le commit du compte rendu vise le dépôt où `main` est checkout. En WORKTREE, ce n'est PAS `root`
+  # (le worktree est sur une autre branche) mais le checkout principal = parent du git-dir commun ;
+  # sinon `ship-merge --local` échoue (« main is already used by worktree »). En dépôt simple, c'est `root`.
+  repo_main="$(cd "$(dirname "$(git rev-parse --git-common-dir 2>/dev/null)")" 2>/dev/null && pwd)" || repo_main="$root"
+  [[ -n "$repo_main" ]] || repo_main="$root"
   # slug sûr depuis l'objectif (accents retirés), repli n<N> : il entre dans un nom de fichier.
   slug="$(printf '%s' "${obj:-sprint $n}" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//;s/-*$//' | cut -c1-48 | sed 's/-*$//')"
   [[ -n "$slug" ]] || slug="n${n}"
@@ -374,7 +379,7 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
   dest_rel="docs/sprints/$(basename "$report_md")"
   helper="$MC/bin/commit-doc-via-worktree.sh"
   if [[ -f "$helper" ]]; then
-    bash "$helper" --repo "$root" --file "$report_md" --dest-rel "$dest_rel" \
+    bash "$helper" --repo "$repo_main" --file "$report_md" --dest-rel "$dest_rel" \
       --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
       --kind-tag SPRINT-REPORT --kind-noun "compte rendu" || echo "SPRINT-REPORT: commit non intégré (cf. ci-dessus) — sprint scellé" >&2
   else
