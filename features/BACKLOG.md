@@ -359,6 +359,7 @@
 | [20261011091552583](20261011091552583_regen-root-ecrit-titre-casse.md) | regen écrit un titre cassé quand on lui passe --root | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261011091553794](20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | Le run autonome filtre l'éligibilité avant de délibérer et s'arrête à la borne de version | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261011103839682](20261011103839682_product-build-run-multi-versions-regles.md) | ezk-product-build — un run multi-versions avec rétro + tag par version (3 manques) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
