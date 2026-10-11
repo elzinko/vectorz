@@ -32,6 +32,7 @@
     "graph:compile": "tsx bin/graph-compile.ts",
     "graph:query": "tsx bin/graph-query.ts",
     "graph:project": "tsx bin/graph-project.ts",
+    "paths": "tsx bin/paths.ts",
     "map:data": "tsx bin/views-regen.ts",
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",

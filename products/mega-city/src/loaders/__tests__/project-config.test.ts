@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { githubCapabilities } from '../project-config.js';
+import { githubCapabilities, scrumPaths } from '../project-config.js';
 
 const ON = { pr: true, ci: true, codexReview: true };
 
@@ -53,5 +53,28 @@ describe('githubCapabilities — lecture de .vectorz/config.yml (fiche 202609162
     mkdirSync(join(root, '.vectorz'), { recursive: true });
     writeFileSync(join(root, '.vectorz', 'config.yaml'), 'github: false\n', 'utf8');
     expect(githubCapabilities(root)).toEqual({ pr: false, ci: false, codexReview: false });
+  });
+});
+
+describe('scrumPaths — lecture de .vectorz/config.yml (fiche 20261001192624192)', () => {
+  it('pas de fichier → disposition LEGACY (docs/…)', () => {
+    expect(scrumPaths(root).journal).toBe('docs/journal');
+  });
+
+  it('`scrum: true` → disposition groupée (scrum/…)', () => {
+    writeConfig('scrum: true\n');
+    expect(scrumPaths(root).journal).toBe('scrum/journal');
+    expect(scrumPaths(root).retroCaptures).toBe('scrum/retro/captures');
+  });
+
+  it('objet : clé donnée remplacée, autres restées LEGACY', () => {
+    writeConfig('scrum:\n  journal: scrum/journal\n');
+    expect(scrumPaths(root).journal).toBe('scrum/journal');
+    expect(scrumPaths(root).sprints).toBe('docs/sessions');
+  });
+
+  it('YAML malformé → erreur explicite (jamais une coupure silencieuse)', () => {
+    writeConfig('scrum: "guillemet non fermé\n');
+    expect(() => scrumPaths(root)).toThrow(/malform/i);
   });
 });

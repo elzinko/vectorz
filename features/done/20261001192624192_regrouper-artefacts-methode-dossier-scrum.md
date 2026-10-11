@@ -7,8 +7,8 @@ product: vectorz
 milestone: rationalisation
 version: v0.9.0
 labels: [convention, arborescence]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.9.0)"
 evidence: none # refactor d'outillage, pas d'UI
 created: 2026-10-01
 ---
@@ -35,7 +35,7 @@ unique, avant tout déplacement.
 
 Le dépôt a déjà la bonne forme : `resolveGithub` (cœur pur, sans I/O) + un loader qui lit
 `.vectorz/config.yml`, avec « clé absente = comportement inchangé ». On **clone ce frère**, on
-n'invente rien. Décision d'archi et carte du lot : [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
+n'invente rien. Décision d'archi et carte du lot : [ADR-0066](../../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 
 ## Proposition
 
@@ -99,11 +99,11 @@ pnpm --dir products/mega-city ezk --root "$(git rev-parse --show-toplevel)" path
   **découpée en 5 fiches sœurs** (pas de fiche chapeau — décision PO ; les sœurs sont liées par le
   **même `milestone: rationalisation` + `version: V0.9`**). Le dossier décisionnel complet (revue PO
   2026-10-06, arbitrages, mécanisme, conséquences) vit désormais dans
-  [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
+  [ADR-0066](../../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 - **Fiches sœurs du lot** (liées par le milestone, chacune autonome) :
-  [2 — brancher les skills](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) ·
-  [3 — basculer vectorz vers scrum/](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) ·
-  [4 — nettoyer docs/ (archive, e2e)](20261007154842780_nettoyer-docs-archive-e2e.md) ·
-  [5 — migration des consommateurs](20261007154842917_note-migration-bascule-consommateurs-scrum.md).
+  [2 — brancher les skills](../20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) ·
+  [3 — basculer vectorz vers scrum/](../20261007154842643_basculer-vectorz-vers-dossier-scrum.md) ·
+  [4 — nettoyer docs/ (archive, e2e)](../20261007154842780_nettoyer-docs-archive-e2e.md) ·
+  [5 — migration des consommateurs](../20261007154842917_note-migration-bascule-consommateurs-scrum.md).
 - **Dépendances** : cette fiche (1) ne dépend de rien ; 2 dépend de 1 ; 3 et 5 dépendent de 2 ; 4
   est parallèle.

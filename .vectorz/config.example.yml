@@ -23,3 +23,22 @@ github:
   pr: true
   ci: true
   codex-review: true
+
+# --- Chemins des artefacts de process (`scrum:`) — fiche 20261001192624192, ADR-0066 ---
+# Où vivent les récits de sprint, le journal, les preuves de PR et les sorties de rétro.
+# ABSENT = disposition LEGACY (rien ne bouge) :
+#   sprints → docs/sessions · journal → docs/journal · evidence → docs/pr-evidence
+#   retroNotes → docs/retro-notes · retroCaptures → docs/captures
+# (docs/adr/ et features/ ne sont PAS configurables : ils restent fixes.)
+#
+# Trois formes :
+#
+#   scrum: true             # tout groupé sous scrum/ :
+#                           #   scrum/sprints · scrum/journal · scrum/evidence
+#                           #   scrum/retro/notes · scrum/retro/captures
+#
+#   scrum:                  # base LEGACY, chaque clé donnée REMPLACE son chemin
+#     journal: scrum/journal  #   (les clés non citées restent sur docs/… — on ne range
+#                             #    que ce qu'on nomme, jamais de déplacement silencieux)
+#
+#   (clé absente / scrum: false → LEGACY)

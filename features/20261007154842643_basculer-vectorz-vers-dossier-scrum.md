@@ -20,7 +20,7 @@ dossiers de process sous `scrum/`, on pose `scrum: true` dans `.vectorz/config.y
 jour les fixtures de test qui codaient les anciens chemins. Un seul commit atomique. vectorz est le
 premier banc d'essai réel du résolveur.
 
-**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
+**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
 mécanisme et carte du lot dans [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 
 ## Contexte / Problème

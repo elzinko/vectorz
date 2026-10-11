@@ -75,6 +75,7 @@ describe('ezk-manifest.yml', () => {
       'dor health',
       'dor show',
       'map',
+      'paths',
       'pr emit-local',
       'retro captures',
       'retro note',
@@ -125,7 +126,11 @@ describe('ezk config — lire un autre projet par --root, écrire seulement par 
   const muti = { root: '/muti', hasFeatures: true };
 
   it('`ezk --root <projet> config show` lit le projet désigné', () => {
-    const r = route(manifest, ['config', 'show'], { ownRoot: own, cwdRepo: muti, rootFlag: '/samplerz' });
+    const r = route(manifest, ['config', 'show'], {
+      ownRoot: own,
+      cwdRepo: muti,
+      rootFlag: '/samplerz',
+    });
     expect(r).toMatchObject({ kind: 'run', projectRoot: '/samplerz' });
   });
 
@@ -135,7 +140,11 @@ describe('ezk config — lire un autre projet par --root, écrire seulement par 
   });
 
   it('une EZK_ROOT restée dans le shell ne redirige pas `config github off` : le dossier courant gagne', () => {
-    const r = route(manifest, ['config', 'github', 'off'], { ownRoot: own, cwdRepo: muti, envRoot: '/samplerz' });
+    const r = route(manifest, ['config', 'github', 'off'], {
+      ownRoot: own,
+      cwdRepo: muti,
+      envRoot: '/samplerz',
+    });
     expect(r).toMatchObject({ kind: 'run', projectRoot: '/muti' });
   });
 });

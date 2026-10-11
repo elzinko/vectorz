@@ -11,8 +11,13 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { Document, isMap, parse as parseYaml, parseDocument } from 'yaml';
-import { type GithubCapabilities, resolveGithub } from '../core/project-config.js';
+import { Document, isMap, parseDocument, parse as parseYaml } from 'yaml';
+import {
+  type GithubCapabilities,
+  type ScrumPaths,
+  resolveGithub,
+  resolveScrumPaths,
+} from '../core/project-config.js';
 
 /** Dossier conventionnel de la config projet (ADR-0050 : `.vectorz/` = le contrat). */
 export const PROJECT_CONFIG_DIR = '.vectorz';
@@ -45,6 +50,17 @@ export function githubCapabilities(projectRoot: string): GithubCapabilities {
   const config = loadProjectConfig(projectRoot);
   const github = (config as { github?: unknown } | undefined)?.github;
   return resolveGithub(github);
+}
+
+/**
+ * Chemins des artefacts de process effectifs pour le projet à `projectRoot`
+ * (fiche 20261001192624192). Compose le loader (I/O) et le cœur pur `resolveScrumPaths`.
+ * Un YAML malformé lève l'erreur claire de `loadProjectConfig` (jamais de coupure silencieuse).
+ */
+export function scrumPaths(projectRoot: string): ScrumPaths {
+  const config = loadProjectConfig(projectRoot);
+  const scrum = (config as { scrum?: unknown } | undefined)?.scrum;
+  return resolveScrumPaths(scrum);
 }
 
 /** Les trois capacités pilotables de la famille `github` (clés YAML canoniques, kebab). */

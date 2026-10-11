@@ -274,6 +274,10 @@ commands:
     root: cwd
     project: true
     writes: true
+  - domain: paths
+    run: bin/paths.ts
+    summary: Imprime le chemin relatif résolu d'un artefact de process (clé scrum, lecture seule).
+    project: true
   - domain: views
     verb: regen
     run: bin/views-regen.ts

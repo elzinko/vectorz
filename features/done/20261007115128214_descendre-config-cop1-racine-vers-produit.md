@@ -89,7 +89,7 @@ grep -n "products/cop1/cop1.config.example.yaml" scripts/dogfood-guided.sh
 ## Notes / décisions
 
 - **Origine** : revue PO de la racine, 2026-10-06/07. Sortie du périmètre de la fiche
-  [regrouper les artefacts de méthode](../20261001192624192_regrouper-artefacts-methode-dossier-scrum.md)
+  [regrouper les artefacts de méthode](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md)
   car c'est de la config produit, pas du process.
 - **Grooming 2026-10-07** : périmètre réduit de 3 fichiers à 1 après vérification terrain ; les
   `supervision.registry.*` restent à la racine (infra partagée lue par du code, décision PO).

@@ -20,7 +20,7 @@ chemins `docs/…` **codés en dur** dans les 7 skills par un appel au résolveu
 reste legacy, **le comportement ne change pas** : c'est un refactor vers l'indirection, les tests
 restent verts. Après ça, un projet peut changer de disposition par config seule.
 
-**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
+**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
 mécanisme et carte du lot dans [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 
 ## Contexte / Problème

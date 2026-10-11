@@ -20,7 +20,7 @@ created: 2026-10-07
 + `scrum: true`) et on la **prouve sur au moins un consommateur** (muti) : un seul commit atomique,
 historique préservé.
 
-**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
+**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
 mécanisme et carte du lot dans [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 
 ## Contexte / Problème

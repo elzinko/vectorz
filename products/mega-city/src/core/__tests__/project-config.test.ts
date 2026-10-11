@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { type GithubCapabilities, resolveGithub } from '../project-config.js';
+import {
+  type GithubCapabilities,
+  SCRUM_GROUPED,
+  SCRUM_LEGACY,
+  type ScrumPaths,
+  resolveGithub,
+  resolveScrumPaths,
+} from '../project-config.js';
 
 const ON: GithubCapabilities = { pr: true, ci: true, codexReview: true };
 const OFF: GithubCapabilities = { pr: false, ci: false, codexReview: false };
@@ -65,5 +72,38 @@ describe('resolveGithub — capacités du plugin github (fiche 20260916225506856
     const a = resolveGithub(undefined) as { pr: boolean };
     a.pr = false;
     expect(resolveGithub(undefined)).toEqual(ON);
+  });
+});
+
+describe('resolveScrumPaths — chemins des artefacts de process (fiche 20261001192624192)', () => {
+  it('défaut LEGACY (docs/…) quand `scrum` est absent / false / inattendu (non-régression)', () => {
+    expect(resolveScrumPaths(undefined)).toEqual(SCRUM_LEGACY);
+    expect(resolveScrumPaths(null)).toEqual(SCRUM_LEGACY);
+    expect(resolveScrumPaths(false)).toEqual(SCRUM_LEGACY);
+    expect(resolveScrumPaths('scrum/')).toEqual(SCRUM_LEGACY); // valeur inattendue → défaut sûr
+    expect(SCRUM_LEGACY.journal).toBe('docs/journal');
+  });
+
+  it('`scrum: true` groupe tout sous scrum/…', () => {
+    expect(resolveScrumPaths(true)).toEqual(SCRUM_GROUPED);
+    expect(SCRUM_GROUPED.retroCaptures).toBe('scrum/retro/captures');
+  });
+
+  it('objet : base LEGACY, chaque clé donnée remplace son chemin (pas de déplacement silencieux)', () => {
+    const resolved: ScrumPaths = resolveScrumPaths({
+      journal: 'scrum/journal',
+      evidence: 'ailleurs/preuves',
+    });
+    expect(resolved.journal).toBe('scrum/journal');
+    expect(resolved.evidence).toBe('ailleurs/preuves');
+    // les clés non citées restent LEGACY (on ne range que ce qu'on nomme)
+    expect(resolved.sprints).toBe('docs/sessions');
+    expect(resolved.retroCaptures).toBe('docs/captures');
+  });
+
+  it('objet : une clé vide ou non-chaîne est ignorée (reste LEGACY, jamais un chemin vide)', () => {
+    const resolved = resolveScrumPaths({ journal: '', sprints: 42 });
+    expect(resolved.journal).toBe('docs/journal');
+    expect(resolved.sprints).toBe('docs/sessions');
   });
 });

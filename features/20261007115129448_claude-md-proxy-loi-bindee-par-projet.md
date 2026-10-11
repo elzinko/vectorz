@@ -102,7 +102,7 @@ git diff --exit-code .iamthelaw/ENTRY.md && echo "OK — pas de dérive"
 - **Origine** : revue PO 2026-10-06/07 (lecture du `CLAUDE.md` + question « iamthelaw, global ou par
   projet ? »). Jugé connexe au rangement, d'où le lot V0.9, mais concern distinct des docs → fiche
   à part.
-- **Lien** : fiche sœur [regrouper les artefacts de méthode](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md),
+- **Lien** : fiche sœur [regrouper les artefacts de méthode](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md),
   même lot « Ranger la maison ».
 - **Prior art** : fiches déjà livrées sur lawgiver — `0106` (bind cap claude-code), `0111` (migrer
   les rulesets vers iamthelaw), `0140` (geler/archiver iamthelaw). Vérifier au grooming qu'on ne
