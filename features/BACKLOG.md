@@ -364,6 +364,7 @@
 | [20261011112934507](20261011112934507_retro-v09-ship-merge-untracked-et-rayon-fiches.md) | Rétro v0.9 : ship-merge --local vs fichier non suivi concurrent + mesurer le rayon d'une fiche qui déplace | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011113632532](20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context / run report : viser le projet hôte (pas le dépôt de méthode) + accepter le flux local github:false | bug | P2 |  | vectorz | 💡 idea |  |
 | [20261011113632688](20261011113632688_spike-flux-ajout-regle-fichier-bundle-bind.md) | Spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) | chore | P2 |  | vectorz | 💡 idea |  |
+| [20261011114725137](20261011114725137_retro-v10-plan-head-ignore-blocked.md) | Rétro v0.10 : plan-head ignore le drapeau blocked: (plan-lot le respecte) | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
