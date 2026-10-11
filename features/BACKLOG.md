@@ -153,7 +153,7 @@
 | [20261004192802964](done/20261004192802964_cockpit-page-config-en-sections.md) | Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule | feature | P1 | v0.6.0 | mega-city | ✅ shipped | local (ec7fc3ec) |
 | [20261005100026946](done/20261005100026946_cloture-session-committe-son-archive.md) | La clôture de session committe l'archive qu'elle écrit, au lieu de la laisser hors de git dans le dossier de travail | bug | P1 | v0.6.0 | mega-city | ✅ shipped | local (807fdd95) |
 | [20261005100027029](done/20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md) | Chaque sprint laisse un compte rendu committé et standard, que la rétro lit | feature | P1 | v0.7.0 | mega-city | 🧩 split | split — scindée en 20261008072305169, 20261008072306360 |
-| [20261007151859470](20261007151859470_generateur-multi-ide-cli-moteur.md) | Générateur multi-IDE : une source → .claude/ + .cursor/ + AGENTS.md, CLI moteur | feature | P1 | v0.10.0 | vectorz | 🔵 ready |  |
+| [20261007151859470](20261007151859470_generateur-multi-ide-cli-moteur.md) | Générateur multi-IDE : une source → .claude/ + .cursor/ + AGENTS.md, CLI moteur | feature | P1 |  | vectorz | 🔵 ready |  |
 | [20261008063957243](done/20261008063957243_version-reconnait-tags-semver-3-chiffres.md) | backlog version : reconnaître les étiquettes semver à 3 chiffres (v1.7.0) | bug | P1 |  | mega-city | ✅ shipped | local (77ec3162) |
 | [20261008072305169](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) | Au close, le sprint écrit et committe son compte rendu | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
 | [20261008072306360](done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) | La rétro et l'archive lisent les comptes rendus de sprint | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
@@ -264,6 +264,7 @@
 | [20261003201035260](done/20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 | v0.7.0 | mega-city | ✅ shipped | local (274d25b4) |
 | [20261007115128214](done/20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9) |
 | [20261007115129448](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
+| [20261007151859473](20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | v0.10.0 | vectorz | 🔵 ready |  |
 | [20261007154842506](done/20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
 | [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 |  | vectorz | 🔵 ready |  |
 | [20261007154842780](done/20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
@@ -344,7 +345,6 @@
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261007151859473](20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | v0.10.0 | vectorz | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261007151859479](20261007151859479_chemin-lite-sprint-fiches-triviales.md) | Chemin « lite » du sprint pour fiches triviales (éviter la sur-cérémonie) | refactor | P2 |  | vectorz | 💡 idea |  |
 | [20261010114133097](20261010114133097_allocateur-id-adr-deux-dossiers.md) | Un allocateur d'id d'ADR unique sur les deux dossiers (fin des collisions de numéro) | feature | P2 |  | mega-city | 💡 idea |  |

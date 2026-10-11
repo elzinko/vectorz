@@ -5,9 +5,10 @@ type: feature
 priority: P1
 product: vectorz
 milestone: portabilite
-version: v0.10.0
+version:
 labels: [portabilite, generateur, cli]
 status: ready
+blocked: "keystone non autonome (run 2026-10-11) : commit un ADR durable (frontière portable/premium) ET produit des fichiers .cursor/ + AGENTS.md dont la correction ne se PROUVE pas sans un Cursor/consommateur à tester (pas dispo en session) — un POC non vérifiable viole « build→prouve ». + promotion de verbes CLI. À faire en effort dédié avec un IDE cible."
 pr:
 evidence: none
 created: 2026-10-07

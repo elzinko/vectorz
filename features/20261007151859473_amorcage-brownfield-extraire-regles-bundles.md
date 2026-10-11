@@ -7,7 +7,7 @@ product: vectorz
 milestone: portabilite
 version: v0.10.0
 labels: [portabilite, brownfield, regles]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-07
@@ -64,3 +64,11 @@ ls products/mega-city/rules/<cat>/<regle>.md && grep -n "<regle>" products/mega-
 - **Lié** : la keystone [générateur multi-IDE](20261007151859470_generateur-multi-ide-cli-moteur.md)
   (même thème portabilité / amorçage ailleurs que Claude Code).
 - **À vérifier au grooming** : recoupe-t-on `ezk-scout` existant ? L'étendre plutôt que créer.
+- **Groom du 2026-10-11 (run auto v0.10).** Question tranchée : **étendre `ezk-scout`** (qui chasse
+  déjà en tâche de fond) d'un mode `extract` qui **propose** des règles candidates — ne pas créer un
+  nouvel outil. DoR confirmée : critères d'acceptation vérifiables présents (propose sans appliquer,
+  règle dans `rules/` ET `bundles/`, agents chargent, PO arbitre), « comment vérifier » rejouable sur
+  un repo cobaye. Passée `ready`. **Non construite ce run** : feature large et par nature floue
+  (inférer des conventions depuis le code) — mérite un effort dédié (POC sur un cobaye + arbitrage PO
+  règle par règle). Laissée `ready` en v0.10, à tirer ensuite. N'a PAS le verrou Cursor du générateur
+  (vérifiable en local sur un repo cobaye), donc **pas parquée** : juste différée faute de temps ce run.
