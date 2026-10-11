@@ -8,34 +8,48 @@ actions:
   - proposition: "Parité du flux local : run report accepte un sha local (pas que #PR), close daté par l'id du run du journal (pas une égalité de slugs), regen --root propre — DIP : dépendre d'une abstraction d'identité/merge, pas d'un détail d'infra"
     kind: feature
     by: [architecture, qualite, produit]
-    status: ⏳
+    status: ✅
+    decision: "Découpée sans doublon : run report local → lien vers la fiche existante 20261010235330118 ; close daté → enrichissement de la fiche existante 20261002230039863 (symptôme slug ≠) ; regen --root → nouvelle fiche 20261011091552583"
+    date: 2026-10-11
   - proposition: "Marqueur de blocage typé : étendre le champ blocked: existant (fiche 652) avec des raisons lisibles (po-defer / needs-mockup / needs-github / risky-selfedit) que next et le run sautent sans délibérer"
     kind: feature
     by: [produit]
-    status: ⏳
+    status: ✅
+    decision: "Pas de doublon : enrichit la fiche existante 20261002133125418 (extension « raisons typées » ajoutée à son champ blocked:)"
+    date: 2026-10-11
   - proposition: "Le run autonome filtre l'éligibilité AVANT de délibérer (taille / risque structurel / blocked / PO-différé → escalade immédiate) et s'arrête par défaut à la borne de version (la suivante n'est tirable qu'au tag)"
     kind: regle
     target: skill:ezk-product-build
     by: [architecture, produit]
-    status: ⏳
+    status: ✅
+    decision: "Nouvelle fiche backlog 20261011091553794 (le PO a demandé de corriger l'outil par une fiche) ; dépend du marqueur typé 20261002133125418 ; complète le garde-fou version-scope (ADR-0070)"
+    date: 2026-10-11
   - proposition: "Contrôle de forme des vues générées (le H1 dérive du vrai titre, jamais d'un flag CLI) + test de contrat CLI : aucun flag ne fuit dans la sortie, un flag inconnu échoue"
     kind: regle
     target: skill:ezk-sprint
     by: [qualite, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Nouvelle fiche 20261011091555006 (fusionnée avec la détection de confinement en gate ci-dessous)"
+    date: 2026-10-11
   - proposition: "La gate détecte « garde de confinement ajoutée sans test au point d'entrée » (script check-boundary-tests câblé dans test:scripts) — la règle testing/confinement-contract-at-boundary existe, mais seule la revue adverse l'a appliquée"
     kind: regle
     target: agent:ezk-reviewer
     by: [qualite, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Fusionnée dans la nouvelle fiche 20261011091555006 (deux invariants de gate dans une seule fiche)"
+    date: 2026-10-11
   - proposition: "Banc jetable E2E « flux local » (github:false, worktree) rejouant run report / sprint close / backlog regen et relisant les artefacts (sha accepté, date et durée non nulles, bon dépôt visé)"
     kind: spike
     by: [qualite]
-    status: ⏳
+    status: ✅
+    decision: "Nouvelle fiche spike 20261011091556212"
+    date: 2026-10-11
   - proposition: "Capitaliser l'invariant « un ship/commit vise le checkout principal, pas le worktree courant » dans ezk-pr / ezk-sprint (déjà corrigé ce run) — pas une fiche, une ligne d'invariant"
     kind: action
     by: [architecture]
-    status: ⏳
+    status: ✅
+    decision: "Note d'invariant, pas de fiche : déjà corrigé ce run (sprint.sh vise le checkout principal via git-common-dir). À consigner dans ezk-pr / ezk-sprint comme invariant"
+    date: 2026-10-11
 ---
 
 **En clair :** le run a bien livré la v0.7, mais il a frotté sur deux choses. D'abord, les outils du flux **local** (sans GitHub) sont en retard sur le flux PR : le bilan de run exige un numéro de PR, le compte rendu de sprint reste « non daté », et une régénération a corrompu un titre en silence. Ensuite, en **autonomie**, le run a longuement hésité « je continue ou j'arrête ? » sur des fiches qu'il n'aurait pas dû toucher. Les trois lentilles proposent 7 améliorations ; **à toi de cocher** celles qu'on range.
@@ -73,4 +87,23 @@ Vérifié par le pilote (`ezk-steward` indisponible cette session). **Aucune con
 
 ## 5 · Ce qui est proposé au PO
 
-Les 7 propositions ci-dessus, toutes en `⏳`. Ton feu vert les range : les `feature` / `spike` / `action` vers le backlog (`ezk-backlog add`), les `regle` vers `rules/<cat>/` + un bundle, avec la cible liée. Rien n'est rangé tant que tu n'as pas coché.
+Les 7 propositions ci-dessus. **Décision PO du 2026-10-11 : « ok pour tout, mais vérifie d'abord que les
+fiches n'existent pas déjà ».** La vérification anti-doublon a montré que 3 propositions avaient déjà une
+fiche. Le rangement en a tenu compte : on lie ou on enrichit l'existant, on ne crée du neuf que là où rien
+n'existait.
+
+## 7 · Décisions du PO
+
+| Proposition | Décision | Date |
+|---|---|---|
+| S1 — parité du flux local (run report / close daté / regen) | Lien [20261010235330118](../../features/20261010235330118_run-report-accepte-livraison-locale.md) + enrichissement [20261002230039863](../../features/20261002230039863_sprint-report-trace-supervision.md) + nouvelle fiche [20261011091552583](../../features/20261011091552583_regen-root-ecrit-titre-casse.md) | 2026-10-11 |
+| S7 — marqueur de blocage typé | Enrichit [20261002133125418](../../features/20261002133125418_tete-plan-ignore-drapeau-bloquee.md), pas de doublon | 2026-10-11 |
+| S5 — run : éligibilité avant délibération + arrêt à la borne | Nouvelle fiche [20261011091553794](../../features/20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | 2026-10-11 |
+| S4a+S4b — gate : forme des vues + confinement testé | Nouvelle fiche [20261011091555006](../../features/20261011091555006_gate-attrape-forme-vues-et-confinement.md) | 2026-10-11 |
+| S6 — banc jetable E2E flux local | Nouvelle fiche spike [20261011091556212](../../features/20261011091556212_banc-jetable-e2e-flux-local.md) | 2026-10-11 |
+| S7-invariant — ship vise le checkout principal | Note d'invariant, pas de fiche (déjà corrigé ce run) | 2026-10-11 |
+
+**Doublon repéré à signaler.** Deux fiches couvrent déjà « le bilan de run en local » :
+[20261010235330118](../../features/20261010235330118_run-report-accepte-livraison-locale.md) et
+[20261004211038053](../../features/20261004211038053_run-report-livraison-locale.md). Elles font double
+emploi. À fusionner à un prochain grooming — je ne les touche pas ici.

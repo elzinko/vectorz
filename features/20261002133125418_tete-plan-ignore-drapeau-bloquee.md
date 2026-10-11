@@ -29,16 +29,27 @@ Constaté le 2026-10-02 par l'agent de sprint de la V0.5. `plan:lot` n'accepte q
 active, hors épic et sans drapeau `blocked:`. `plan:head` ne regarde pas ce drapeau : une fiche prête et
 bloquée y apparaît « ✓ TIRABLE ».
 
+**Deuxième symptôme, daté — extension demandée.** 2026-10-11, run autonome v0.7. Le run a longuement
+hésité sur des fiches que le PO avait différées (« réveiller quand F1/F2 »). Le drapeau `blocked:` existe,
+mais sa raison est du texte libre : le tirage et le run ne peuvent pas la lire pour décider seuls. Il
+faudrait des raisons **typées** (par exemple : différée-PO, attend-maquette, attend-GitHub, auto-édition
+risquée) que `next` et le run sautent sans délibérer.
+
 ## Proposition
 
 `plan:head` reprend la règle d'éligibilité de `plan:lot`. Une fiche prête mais bloquée est sautée et
 signalée avec sa raison, comme le fait déjà le lot.
+
+Extension : étendre le champ `blocked:` existant avec des **raisons typées et lisibles**, que `next` et le
+run autonome savent interpréter pour sauter une fiche sans délibérer. C'est le socle machine qui rend la
+règle d'arrêt du run (fiche sœur [[20261011091553794]]) déterministe.
 
 ## Critères d'acceptation
 
 - [ ] Une fiche prête marquée `blocked:` n'est jamais affichée « tirable » par `plan:head`.
 - [ ] `plan:head` la signale, avec la raison du drapeau.
 - [ ] `plan:head` et `plan:lot` donnent la même première fiche sur un même backlog.
+- [ ] Le champ `blocked:` accepte une raison typée dans une liste fermée, et une raison inconnue échoue.
 
 ## Comment vérifier
 
@@ -51,3 +62,5 @@ pnpm --dir products/mega-city plan:lot 1
 ## Notes / décisions
 
 - Repéré pendant la construction du lot, PR #324.
+- Enrichie à la rétro du 2026-10-11 (run autonome v0.7),
+  [capture](../docs/captures/2026-10-11-retro-run-v07-autonome.md), S7 : extension « raisons typées » ajoutée, pas de doublon créé.
