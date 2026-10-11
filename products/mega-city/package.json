@@ -60,10 +60,10 @@
     "@types/node": "^26.4.1",
     "tsx": "^4.23.13",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.3"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "gray-matter": "^4.0.3",
     "yaml": "^2.9.0",
     "zod": "^4.5.4"
