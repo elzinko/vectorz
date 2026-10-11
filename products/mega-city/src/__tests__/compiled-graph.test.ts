@@ -12,6 +12,7 @@ import {
   type CompiledNode,
   compileGraph,
   isRelation,
+  projectConsumers,
   queryGraph,
   resolveNode,
 } from '../core/compiled-graph.js';
@@ -89,7 +90,7 @@ const skill = (id: string): CompiledNode => ({ kind: 'skill', id });
 const agent = (id: string): CompiledNode => ({ kind: 'agent', id });
 const rule = (id: string): CompiledNode => ({ kind: 'rule', id });
 
-describe('queryGraph — interroger l\'objet compilé sans grep (fiche 357)', () => {
+describe("queryGraph — interroger l'objet compilé sans grep (fiche 357)", () => {
   // Deux skills (`a` applique la règle, `b` est composé par `a`), un agent qui applique
   // aussi la règle et qui la vérifie : de quoi distinguer « applique » de « est-vérifié-par ».
   const graph: CompiledGraph = compileGraph(
@@ -125,7 +126,7 @@ describe('queryGraph — interroger l\'objet compilé sans grep (fiche 357)', ()
     expect(queryGraph(graph, 'applique', rule('clean/x'), true)).toEqual(['a', 'reviewer']);
   });
 
-  it('« est-vérifié-par » ne se confond pas avec « applique » : seul l\'agent vérifie', () => {
+  it("« est-vérifié-par » ne se confond pas avec « applique » : seul l'agent vérifie", () => {
     expect(queryGraph(graph, 'est-verifie-par', rule('clean/x'))).toEqual(['reviewer']);
     expect(queryGraph(graph, 'est-verifie-par', rule('clean/x'), true)).toEqual([]);
   });
@@ -162,7 +163,7 @@ describe("resolveNode — un id n'est pas une identité : le kind en fait partie
     }),
   );
 
-  it("REFUSE un id partagé quand le VERBE ne dit pas lequel : jamais une réponse mélangée", () => {
+  it('REFUSE un id partagé quand le VERBE ne dit pas lequel : jamais une réponse mélangée', () => {
     expect(resolveNode(twins, 'compose', 'twin')).toEqual({
       status: 'ambiguous',
       kinds: ['agent', 'skill'],
@@ -177,7 +178,7 @@ describe("resolveNode — un id n'est pas une identité : le kind en fait partie
     expect(viaAgent).toEqual({ status: 'found', node: agent('twin') });
   });
 
-  it('sens inverse : c\'est le kind d\'ARRIVÉE du lien qui tranche', () => {
+  it("sens inverse : c'est le kind d'ARRIVÉE du lien qui tranche", () => {
     // Qui compose le skill `twin` ? `composes` arrive sur un skill.
     expect(resolveNode(twins, 'composes', 'twin', true)).toEqual({
       status: 'found',
@@ -200,15 +201,56 @@ describe("resolveNode — un id n'est pas une identité : le kind en fait partie
     expect(queryGraph(twins, 'compose', agent('twin'))).toEqual(['c']);
   });
 
-  it('un id qui n\'existe pas, ou pas sous ce kind, est inconnu (faute de frappe ≠ « aucune arête »)', () => {
+  it("un id qui n'existe pas, ou pas sous ce kind, est inconnu (faute de frappe ≠ « aucune arête »)", () => {
     expect(resolveNode(twins, 'compose', 'ghost')).toEqual({ status: 'unknown' });
     expect(resolveNode(twins, 'compose', 'rule:twin')).toEqual({ status: 'unknown' });
     // Un préfixe qui n'est pas un kind reste dans l'id : il n'est pas avalé en silence.
     expect(resolveNode(twins, 'compose', 'skil:twin')).toEqual({ status: 'unknown' });
   });
 
-  it("un id unique répond sans kind, même si le lien ne peut pas partir de lui (réponse vide, comme avant)", () => {
+  it('un id unique répond sans kind, même si le lien ne peut pas partir de lui (réponse vide, comme avant)', () => {
     expect(resolveNode(twins, 'composes', 'b')).toEqual({ status: 'found', node: skill('b') });
     expect(queryGraph(twins, 'competences', skill('b'))).toEqual([]);
+  });
+});
+
+describe('projectConsumers — la vue de projection (fiche 20261008154805639)', () => {
+  // Un agent qui applique une règle ET un bundle ; un skill qui applique une règle ; un agent nu.
+  const graph = compileGraph(
+    catalogOf({
+      agents: index<Agent>([
+        { id: 'reviewer', role: '', competences: [], interactions: ['r1', 'bdl'] },
+        { id: 'nu', role: '', competences: [], interactions: [] },
+      ]),
+      skills: index<Skill>([{ id: 's1', content: '', applies: ['r2'] }]),
+      rules: index<Rule>([
+        { id: 'r1', kind: 'disposition', level: 'SHOULD', content: '' },
+        { id: 'r2', kind: 'disposition', level: 'SHOULD', content: '' },
+      ]),
+      bundles: index<Bundle>([{ id: 'bdl', rules: ['r1'] }]),
+    }),
+  );
+
+  it("liste chaque agent/skill avec les règles et bundles qu'il applique", () => {
+    const proj = projectConsumers(graph);
+    expect(proj).toEqual([
+      { consumer: agent('nu'), rules: [], bundles: [] },
+      { consumer: agent('reviewer'), rules: ['r1'], bundles: ['bdl'] },
+      { consumer: skill('s1'), rules: ['r2'], bundles: [] },
+    ]);
+  });
+
+  it('ne projette QUE les agents et les skills (pas les règles ni les bundles eux-mêmes)', () => {
+    const kinds = new Set(projectConsumers(graph).map((p) => p.consumer.kind));
+    expect([...kinds].sort()).toEqual(['agent', 'skill']);
+  });
+
+  it('un agent sans interactions a une liste vide (minimale : arêtes directes, sans grep)', () => {
+    const proj = projectConsumers(graph);
+    expect(proj.find((p) => p.consumer.id === 'nu')).toEqual({
+      consumer: agent('nu'),
+      rules: [],
+      bundles: [],
+    });
   });
 });

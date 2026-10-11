@@ -35,7 +35,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **v0.5.0** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, la fiche rangée avec son merge, product-build qui enchaîne les sprints | ✅ livrée le 2026-10-04 |
 | **v0.6.0** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ✅ livrée (`v0.6.0`), 2026-10-07 |
 | **v0.7.0** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche, dans une interface reliée au board (le journal durable des moments d'abord, puis l'interface) | ▶️ **en cours** — socle d'abord (2026-10-07) |
-| **v0.8.0** | Amélioration mesurée | métriques & qualité : KPI agrégés commit→PR→sprint→version, viz qualité par PR, gate DoD, agent d'analyse | ⏸️ ensuite |
+| **v0.8.0** | Amélioration mesurée | système de règles composable : citer un bundle, prouver la divergence dev/reviewer, DoD/DoR en listes partagées, vue de projection par projet (réaligné le 2026-10-08/09 ; voir section ⑨) | ▶️ **en cours** — 3/4 livrées |
 | **v0.9.0** | Ranger la maison | rationalisation : `docs/` redevient de la doc, le process regroupé dans `scrum/`, la config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ⏭️ ensuite |
 | **v0.10.0** | Portabilité multi-IDE | une source de règles → `.claude/` + `.cursor/` + `AGENTS.md`, la CLI comme moteur portable | ⏭️ ensuite |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |

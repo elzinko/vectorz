@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.8.0
 labels: [observabilite]
-status: idea
-pr:
+status: shipped
+pr: "local (v0.8.0)"
 evidence: none
 created: 2026-10-08
 ---
@@ -72,3 +72,7 @@ pnpm --dir products/mega-city test
   rendent le traçage à l'œil pénible et faillible.
 - **Déclencheur** : réveiller cette fiche quand **F1 et F2 sont livrées**. Avant, elle reste
   en `idea` P2 (douleur non prouvée). Ne pas fermer : la valeur est réelle, juste pas encore.
+- **Groom du 2026-10-11 (run auto v0.8.0)** : déclencheur tombé — F1 (citer un bundle) et F2
+  (DoD/DoR en bundles, ADR-0071) livrées. DoR confirmée : critères d'acceptation testables déjà
+  présents, « comment vérifier » rejouable. Concurrence `ezk-pm` : GO version minimale (lecture
+  seule du graphe compilé, aucune décision humaine en jeu). Passée `ready` puis construite.

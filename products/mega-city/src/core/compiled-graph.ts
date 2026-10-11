@@ -1,3 +1,4 @@
+import type { Catalog } from '../loaders/catalog.js';
 /**
  * compiled-graph — l'INSTANCE compilée du graphe de la méthode. DÉTERMINISTE et PUR
  * (ADR-0003). Fiche 357, étape 1 de l'ADR-0040.
@@ -28,7 +29,6 @@ import {
   validateGraph,
 } from './graph.js';
 import type { Edge } from './graph.js';
-import type { Catalog } from '../loaders/catalog.js';
 
 export interface CompiledNode {
   kind: NodeKind;
@@ -148,4 +148,35 @@ export function queryGraph(
     .filter((e) => matches(e) && isNode(e))
     .map((e) => (inverse ? e.from : e.to));
   return [...new Set(found)].sort();
+}
+
+/** Un consommateur (agent ou skill) avec les règles et bundles qu'il APPLIQUE. */
+export interface ConsumerProjection {
+  consumer: CompiledNode;
+  /** Règles appliquées en direct (arête `applique` vers un nœud `rule`), triées, sans doublon. */
+  rules: string[];
+  /** Bundles appliqués (arête `applique` vers un nœud `bundle`), triés, sans doublon. */
+  bundles: string[];
+}
+
+/**
+ * Projection LECTURE SEULE (fiche 20261008154805639) : pour chaque agent et skill, les règles
+ * et bundles qu'il APPLIQUE, lus des arêtes `applique` du graphe déjà compilé — jamais de
+ * recompilation (borne ADR-0040 D5). Version minimale : les arêtes directes, sans déplier les
+ * bundles en leurs règles (le dépliage est la version riche, après F1/F2). Résultat trié par
+ * (kind, id) pour un rendu stable.
+ */
+export function projectConsumers(graph: CompiledGraph): ConsumerProjection[] {
+  const applies = (e: Edge): boolean => (e.verb ?? LINK_VERB[e.link]) === 'applique';
+  return graph.nodes
+    .filter((n) => n.kind === 'agent' || n.kind === 'skill')
+    .sort((a, b) => (a.kind === b.kind ? a.id.localeCompare(b.id) : a.kind.localeCompare(b.kind)))
+    .map((consumer) => {
+      const out = graph.edges.filter(
+        (e) => e.fromKind === consumer.kind && e.from === consumer.id && applies(e),
+      );
+      const to = (kind: NodeKind): string[] =>
+        [...new Set(out.filter((e) => e.toKind === kind).map((e) => e.to))].sort();
+      return { consumer, rules: to('rule'), bundles: to('bundle') };
+    });
 }
