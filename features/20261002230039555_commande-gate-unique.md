@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [sprint]
-status: idea
+status: ready
 pr:
 evidence: none # outillage de validation, pas d'écran
 created: 2026-10-03

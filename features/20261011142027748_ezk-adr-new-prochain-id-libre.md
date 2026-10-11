@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [adr, dx]
-status: idea
+status: ready
 split_from: "20261010114133097"
 pr:
 evidence: none # outillage CLI, pas d'écran

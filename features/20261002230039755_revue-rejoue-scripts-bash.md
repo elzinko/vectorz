@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [revue]
-status: idea
+status: ready
 pr:
 evidence: none # changement de méthode de revue, pas d'écran
 created: 2026-10-03

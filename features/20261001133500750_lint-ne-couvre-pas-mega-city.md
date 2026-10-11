@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [dette]
-status: idea
+status: ready
 pr:
 evidence: none # pas d'écran
 created: 2026-10-01

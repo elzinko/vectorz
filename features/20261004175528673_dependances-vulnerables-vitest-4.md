@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [dependances]
-status: idea
+status: ready
 pr:
 evidence: none # dépendances et lockfile, pas d'écran
 created: 2026-10-04
