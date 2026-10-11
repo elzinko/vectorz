@@ -11,6 +11,7 @@ status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-02
+merged_from: ["20261011114725137"]
 ---
 
 # 20261002133125418 — La tête du plan montre comme tirable une fiche marquée bloquée
@@ -50,6 +51,7 @@ règle d'arrêt du run (fiche sœur [[20261011091553794]]) déterministe.
 - [ ] `plan:head` la signale, avec la raison du drapeau.
 - [ ] `plan:head` et `plan:lot` donnent la même première fiche sur un même backlog.
 - [ ] Le champ `blocked:` accepte une raison typée dans une liste fermée, et une raison inconnue échoue.
+- [ ] La boussole `ezk now` peut **retirer son filtre `blocked:` local** une fois la règle portée par `crossBacklogHead` (test unitaire `crossBacklogHead` avec une fiche `ready`+`blocked`).
 
 ## Comment vérifier
 
@@ -64,3 +66,4 @@ pnpm --dir products/mega-city plan:lot 1
 - Repéré pendant la construction du lot, PR #324.
 - Enrichie à la rétro du 2026-10-11 (run autonome v0.7),
   [capture](../docs/captures/2026-10-11-retro-run-v07-autonome.md), S7 : extension « raisons typées » ajoutée, pas de doublon créé.
+- **Fusion (2026-10-11)** : absorbe « Rétro v0.10 : plan-head ignore le drapeau blocked: » (20261011114725137) — même bug. Cause pointée : `crossBacklogHead` (`src/backlog/plan-head.ts`) teste `status` mais pas `blocked:`, et `PlanCard` ne porte pas le champ ; `plan-lot` (`src/backlog/plan-lot.ts`) l'exclut déjà. La boussole `ezk now` (`bin/ezk-now.ts`) contourne en filtrant `blocked:` elle-même.

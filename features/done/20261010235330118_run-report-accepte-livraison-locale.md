@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version:
 labels: [ezk-product-build, outillage]
-status: idea
-pr:
+status: merged
+pr: "merged — fusionnée dans 20261011113632532"
 evidence: none
 created: 2026-10-10
+merged_into: "20261011113632532"
 ---
 
 # 20261010235330118 — Le bilan de run accepte une livraison locale
@@ -66,5 +67,5 @@ ezk run report --no-github --fiche "<id>|mergée|local (<sha>)|verte|GO|tests|-"
 ## Notes / décisions
 
 - Née de la rétro du 2026-10-10 (grain n°4), capture
-  [docs/captures/2026-10-10-retro-run-regles-composables.md](../docs/captures/2026-10-10-retro-run-regles-composables.md).
+  [docs/captures/2026-10-10-retro-run-regles-composables.md](../../docs/captures/2026-10-10-retro-run-regles-composables.md).
 - Implémentation de référence : `products/mega-city/bin/run-report.ts` (validation du champ PR).

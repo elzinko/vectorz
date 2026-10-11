@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version:
 labels: [ezk-backlog, outillage]
-status: idea
-pr:
+status: merged
+pr: "merged — fusionnée dans 20261004211037977"
 evidence: none
 created: 2026-10-10
+merged_into: "20261004211037977"
 ---
 
 # 20261010235330053 — ship barre une ligne de plan à id unique, même avec un marqueur
@@ -64,6 +65,6 @@ ezk backlog ship --dry-run --pr '…' features/<id>_<slug>.md
 ## Notes / décisions
 
 - Née de la rétro du 2026-10-10 (grain n°3), capture
-  [docs/captures/2026-10-10-retro-run-regles-composables.md](../docs/captures/2026-10-10-retro-run-regles-composables.md).
+  [docs/captures/2026-10-10-retro-run-regles-composables.md](../../docs/captures/2026-10-10-retro-run-regles-composables.md).
 - Comportement actuel assumé et documenté dans `ezk-backlog` (« barre-la à la main » quand la
   ligne mêle plusieurs fiches) ; cette fiche réduit les cas où c'est manuel.

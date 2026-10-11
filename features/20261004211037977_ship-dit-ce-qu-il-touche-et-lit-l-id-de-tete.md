@@ -11,6 +11,7 @@ status: idea
 pr:
 evidence: none # commande de terminal, pas d'écran
 created: 2026-10-04
+merged_from: ["20261010235330053"]
 ---
 
 # 20261004211037977 — ezk backlog ship dit tout ce qu'il touche, et ne lit que l'id de tête dans PLAN.md
@@ -58,7 +59,9 @@ l'entrée de `features/PLAN.md` barrée. Il ne committe pas : on committe après
 - [ ] Après `git add` de cette liste et le commit, le dossier est propre (`git status` vide).
 - [ ] Une ligne de PLAN.md dont seule la parenthèse cite l'id de la fiche livrée ne bloque plus le
       ship. Cas reproduit.
-- [ ] Une ligne qui porte vraiment deux fiches en tête (« `A` et `B` — … ») est toujours refusée.
+- [ ] Une ligne à **un seul** id est barrée automatiquement **même avec un marqueur ou du texte en
+      queue** (`→ build`, `conditionne F2`, `dépend de X`). Cas reproduit.
+- [ ] Une ligne qui porte vraiment deux fiches en tête (« `A` et `B` — … »), ou plusieurs ids, est toujours refusée.
 - [ ] **Ship ne barre jamais 0 entrée EN SILENCE pour une fiche présente dans PLAN.** Quand l'id de
       la fiche est dans PLAN mais qu'aucune ligne n'est barrée, `ship` le **dit** (ligne « PLAN : N
       barrées », jamais muet) et **signale** la ligne à barrer à la main — il ne laisse pas la fiche
@@ -82,5 +85,6 @@ ezk backlog ship --dry-run --pr 'local (abc1234)' features/<id>_<slug>.md   # li
   Reprend deux notes du carnet (`docs/retro-notes/traitees/20261004214345799-…` et
   `…20261004222239608-…`).
 - P2 proposé par le pilote (un contournement à la main existe) ; à confirmer au planning.
+- **Fusion (2026-10-11)** : absorbe « ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue » (20261010235330053, rétro run règles composables du 2026-10-10) — même surface `ship:fiche`, critère du marqueur en queue repris ci-dessus.
 - Voisine : [la transaction de ship](done/20260830194601233_ship-transactionnel-liens-vues.md),
   livrée (20260830194601233).

@@ -8,9 +8,10 @@ milestone:
 version:
 labels: [retro, backlog, cli]
 created: 2026-10-11
-status: idea
-pr:
+status: merged
+pr: "merged — fusionnée dans 20261002133125418"
 evidence: none
+merged_into: "20261002133125418"
 ---
 
 # 20261011114725137 — Rétro v0.10 : `plan-head` ignore `blocked:`

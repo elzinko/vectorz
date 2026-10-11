@@ -262,6 +262,7 @@
 | [20261002223842228](done/20261002223842228_ship-fiche-autre-depot-root.md) | ship:fiche livre aussi les fiches d'un autre dépôt (--root) | feature | P2 |  | mega-city | ✅ shipped | #336 |
 | [20261003072823731](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 | v0.5.0 | mega-city | ✅ shipped | #344 |
 | [20261003201035260](done/20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 | v0.7.0 | mega-city | ✅ shipped | local (274d25b4) |
+| [20261004211038053](done/20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261011113632532 |
 | [20261007115128214](done/20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9) |
 | [20261007115129448](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
 | [20261007151859473](done/20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | v0.10.0 | vectorz | ✅ shipped | local (v0.10.0) |
@@ -274,6 +275,9 @@
 | [20261010091118580](done/20261010091118580_boussole-session-quoi-faire-maintenant.md) | Boussole de session — une commande qui dit quoi faire maintenant | feature | P2 | v0.10.0 | mega-city | ✅ shipped | local (v0.10.0) |
 | [20261010100030780](done/20261010100030780_cockpit-sert-detail-fiches-projet-choisi.md) | Le cockpit ouvre le détail d'une fiche du projet choisi (fin des 404 cross-projet) | feature | P2 |  | mega-city | ✅ shipped | local (bc8a0316) |
 | [20261010213000378](done/20261010213000378_spike-agent-opere-services-sans-friction.md) | Spike : l'agent opère GitHub / Vercel / LemonSqueezy sans me redemander (CLI/MCP + ezk-secret) | chore | P2 |  | vectorz | ✅ shipped | local (spike exécuté 2026-10-10) |
+| [20261010235330053](done/20261010235330053_ship-barre-ligne-plan-id-unique.md) | ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue | feature | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261004211037977 |
+| [20261010235330118](done/20261010235330118_run-report-accepte-livraison-locale.md) | ezk run report accepte une livraison locale (local <sha>) quand GitHub est coupé | feature | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261011113632532 |
+| [20261011114725137](done/20261011114725137_retro-v10-plan-head-ignore-blocked.md) | Rétro v0.10 : plan-head ignore le drapeau blocked: (plan-lot le respecte) | bug | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261002133125418 |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -344,7 +348,6 @@
 | [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261007151859479](20261007151859479_chemin-lite-sprint-fiches-triviales.md) | Chemin « lite » du sprint pour fiches triviales (éviter la sur-cérémonie) | refactor | P2 |  | vectorz | 💡 idea |  |
 | [20261010114133097](20261010114133097_allocateur-id-adr-deux-dossiers.md) | Un allocateur d'id d'ADR unique sur les deux dossiers (fin des collisions de numéro) | feature | P2 |  | mega-city | 💡 idea |  |
@@ -354,17 +357,14 @@
 | [20261010153046143](20261010153046143_brainstorm-dsl-cli-methode.md) | Brainstorm : la CLI de la méthode est-elle un DSL cohérent et professionnel ? (ezk / mc, toute la surface) | refactor | P2 |  | mega-city | 💡 idea |  |
 | [20261010213746514](20261010213746514_portier-ignore-worktree-sans-session-vivante.md) | Le portier de sprint distingue un worktree vivant d'un worktree abandonné (ne plus crier au loup) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261010235329987](20261010235329987_etiquette-pas-comportement-en-tetes-agent.md) | Quand on touche les règles déclarées d'un agent, dire si ça change son comportement ou juste l'étiquette | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261010235330053](20261010235330053_ship-barre-ligne-plan-id-unique.md) | ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261010235330118](20261010235330118_run-report-accepte-livraison-locale.md) | ezk run report accepte une livraison locale (local <sha>) quand GitHub est coupé | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011091552583](20261011091552583_regen-root-ecrit-titre-casse.md) | regen écrit un titre cassé quand on lui passe --root | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261011091553794](20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | Le run autonome filtre l'éligibilité avant de délibérer et s'arrête à la borne de version | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011103839682](20261011103839682_product-build-run-multi-versions-regles.md) | ezk-product-build — un run multi-versions avec rétro + tag par version (3 manques) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011111526693](20261011111526693_lawgiver-bind-hooks-worktree-aware.md) | lawgiver bind : écrire les hooks de façon worktree-aware (.git peut être un fichier) | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261011112934507](20261011112934507_retro-v09-ship-merge-untracked-et-rayon-fiches.md) | Rétro v0.9 : ship-merge --local vs fichier non suivi concurrent + mesurer le rayon d'une fiche qui déplace | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261011113632532](20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context / run report : viser le projet hôte (pas le dépôt de méthode) + accepter le flux local github:false | bug | P2 |  | vectorz | 💡 idea |  |
+| [20261011113632532](20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context / run report : viser le projet hôte (pas le dépôt de méthode) + accepter le flux local github:false | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261011113632688](20261011113632688_spike-flux-ajout-regle-fichier-bundle-bind.md) | Spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) | chore | P2 |  | vectorz | 💡 idea |  |
-| [20261011114725137](20261011114725137_retro-v10-plan-head-ignore-blocked.md) | Rétro v0.10 : plan-head ignore le drapeau blocked: (plan-lot le respecte) | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |

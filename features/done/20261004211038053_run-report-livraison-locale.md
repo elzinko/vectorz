@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version:
 labels: [product-build, mode-local]
-status: idea
-pr:
+status: merged
+pr: "merged — fusionnée dans 20261011113632532"
 evidence: none # commande de terminal, pas d'écran
 created: 2026-10-04
+merged_into: "20261011113632532"
 ---
 
 # 20261004211038053 — ezk run report décrit un run livré en local, sans numéro de PR
@@ -66,5 +67,5 @@ ezk run report --no-github --fiche "20261004192802828|mergée|local (43dcb587)|v
   `docs/captures/2026-10-04-retro-run-cockpit-v0-6-legere.md`), proposition 2, retenue par le PO.
   Reprend la note du carnet `docs/retro-notes/traitees/20261004222239269-…`.
 - P2 proposé par le pilote ; à confirmer au planning.
-- Voisine : [« un seul guichet pour GitHub »](20261004083838593_guichet-unique-github-archive-reconcile.md)
+- Voisine : [« un seul guichet pour GitHub »](../20261004083838593_guichet-unique-github-archive-reconcile.md)
   (20261004083838593), qui ne couvre pas ce bilan.
