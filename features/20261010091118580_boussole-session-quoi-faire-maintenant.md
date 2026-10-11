@@ -4,10 +4,10 @@ title: Boussole de session — une commande qui dit quoi faire maintenant
 type: feature
 priority: P2
 product: mega-city
-milestone: parked
-version:
+milestone:
+version: v0.10.0
 labels: [ergonomie-cli]
-status: idea
+status: ready
 pr:
 evidence: none # commande CLI, pas d'écran
 created: 2026-10-10
@@ -129,7 +129,3 @@ rend la suite. Tout le reste est en « Suite » ci-dessous.
   tranchées »), « couper-au-poc » (POC + « Suite ») et « valeur-par-l'absence » jouées. Socle DoR
   complet (problème / valeur / critères). Statut inchangé par le groom ; **passée `ready` le
   2026-10-10** (gate DoR vérifié : problème / valeur / critères, 4 critères, 1 surface).
-
-## Sortie de version — parkée (run autonome 2026-10-11)
-
-Non construisable proprement en autonome ce run : substantielle (nouvelle skill ezk-now + ADR + déploiement lawgiver sur ~/.claude partagé). Sortie de **v0.10.0** et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.10.0`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

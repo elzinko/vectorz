@@ -8,6 +8,7 @@ milestone: parked
 version:
 labels: [supervision, moniteur, lisibilite]
 status: idea
+blocked: "attend brainstorming + maquette PO ; webapp cop1 (sorti de v0.7, run 2026-10-11)"
 pr:
 evidence: before-after
 created: 2026-10-07

@@ -4,10 +4,10 @@ title: "Chemins des artefacts de méthode configurables (`scrum:`) — la fondat
 type: refactor
 priority: P2
 product: vectorz
-milestone: parked
-version:
+milestone: rationalisation
+version: v0.9.0
 labels: [convention, arborescence]
-status: idea
+status: ready
 pr:
 evidence: none # refactor d'outillage, pas d'UI
 created: 2026-10-01
@@ -107,7 +107,3 @@ pnpm --dir products/mega-city ezk --root "$(git rev-parse --show-toplevel)" path
   [5 — migration des consommateurs](20261007154842917_note-migration-bascule-consommateurs-scrum.md).
 - **Dépendances** : cette fiche (1) ne dépend de rien ; 2 dépend de 1 ; 3 et 5 dépendent de 2 ; 4
   est parallèle.
-
-## Sortie de version — parkée (run autonome 2026-10-11)
-
-Non construisable proprement en autonome ce run : chaîne scrum/ (fondation) — restructuration de vectorz, risquée en autonome. Sortie de **v0.9.0** (milestone `rationalisation`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0` + `milestone: rationalisation`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

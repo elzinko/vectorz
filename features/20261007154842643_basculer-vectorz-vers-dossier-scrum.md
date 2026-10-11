@@ -4,10 +4,10 @@ title: "Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true)"
 type: refactor
 priority: P2
 product: vectorz
-milestone: parked
-version:
+milestone: rationalisation
+version: v0.9.0
 labels: [convention, arborescence]
-status: idea
+status: ready
 pr:
 evidence: none # refactor d'arborescence, pas d'UI
 created: 2026-10-07
@@ -71,7 +71,3 @@ bash bin/test-links-repo.sh .
 - **Dépend de** la fiche 2 (les skills doivent lire la config avant la bascule, sinon ils
   écriraient encore dans un `docs/` devenu vide).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
-
-## Sortie de version — parkée (run autonome 2026-10-11)
-
-Non construisable proprement en autonome ce run : chaîne scrum/ (git mv des dossiers de vectorz) — haut risque, peut casser la méthode. Sortie de **v0.9.0** (milestone `rationalisation`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0` + `milestone: rationalisation`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

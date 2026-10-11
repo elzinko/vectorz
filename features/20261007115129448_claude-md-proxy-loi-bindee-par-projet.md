@@ -4,10 +4,10 @@ title: "CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans
 type: refactor
 priority: P2
 product: vectorz
-milestone: parked
-version:
+milestone: rationalisation
+version: v0.9.0
 labels: [convention, loi]
-status: idea
+status: ready
 pr:
 evidence: none # refactor d'outillage/convention, pas d'UI
 created: 2026-10-07
@@ -139,7 +139,3 @@ dépend de cette voie.
 Profil **`base`**. `bind.ts` et la CLI restent intacts (l'hôte est déjà positionnel). Détail et
 schéma : [ADR-0064](../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md). La
 Proposition et les Critères ci-dessus reflètent cette décision.
-
-## Sortie de version — parkée (run autonome 2026-10-11)
-
-Non construisable proprement en autonome ce run : restructuration de CLAUDE.md (proxy vers la loi) — structurel vectorz, à faire avec le PO. Sortie de **v0.9.0** (milestone `rationalisation`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0` + `milestone: rationalisation`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

@@ -4,10 +4,10 @@ title: "Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/"
 type: chore
 priority: P2
 product: vectorz
-milestone: parked
-version:
+milestone: rationalisation
+version: v0.9.0
 labels: [convention, arborescence]
-status: idea
+status: ready
 pr:
 evidence: none # ménage de dossiers, pas d'UI
 created: 2026-10-07
@@ -71,7 +71,3 @@ grep -nE "auth|moniteur|monitor" scripts/cobaye-smoke.sh
 - **Indépendante** (ne dépend pas du résolveur). Seule coordination : l'édition de `docs/index.md`
   avec la fiche 3.
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
-
-## Sortie de version — parkée (run autonome 2026-10-11)
-
-Non construisable proprement en autonome ce run : chaîne scrum/ (nettoyage docs/) — dépend de la bascule. Sortie de **v0.9.0** (milestone `rationalisation`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0` + `milestone: rationalisation`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

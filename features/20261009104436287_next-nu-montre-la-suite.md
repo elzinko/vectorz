@@ -4,10 +4,10 @@ title: next nu montre la suite, pas la liste entière
 type: refactor
 priority: P1
 product: mega-city
-milestone: parked
-version:
+milestone:
+version: v0.9.0
 labels: [ergonomie-cli]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-09
@@ -85,7 +85,3 @@ ezk backlog list          # déballage complet
 - **Avis architecte 2026-10-09** : rétro-compat par synonyme `--ready-only` (appelants intacts) ;
   `plan-head` démoté (option C — callable mais hors surface humaine). **Pas d'ADR** : convention
   CLI locale, pas une décision durable ; au plus une ligne dans le SKILL.md d'`ezk-backlog`.
-
-## Sortie de version — parkée (run autonome 2026-10-11)
-
-Non construisable proprement en autonome ce run : postulat CLI faux (verbes next/list inexistants) — à regroomer avec le PO. Sortie de **v0.9.0** et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

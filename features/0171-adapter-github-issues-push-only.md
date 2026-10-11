@@ -10,6 +10,7 @@ priority: P1
 epic:
 depends: [0170]
 status: idea
+blocked: "plugin GitHub non autorisé en session + dépend de 0170 + arbitrages PO (sorti de v0.7, run 2026-10-11)"
 pr:
 evidence: none # pas d'écran produit : la preuve est l'état de l'issue et de la PR sur GitHub (gh … --json)
 created: 2026-07-30
