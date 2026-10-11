@@ -52,6 +52,11 @@ commands:
     run: bin/lawgiver.ts doctor
     summary: Dit ce qui est déclaré mais pas installé (code 1 s'il y a un écart), sans rien écrire.
     root: none
+  - domain: law
+    verb: gen-ide
+    run: bin/lawgiver.ts gen-ide
+    summary: Génère les commandes par IDE (.claude/.cursor/AGENTS.md) depuis une source unique.
+    root: none
 
   # --- board : le tableau kanban ---
   - domain: board

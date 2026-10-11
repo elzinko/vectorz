@@ -5,11 +5,10 @@ type: feature
 priority: P1
 product: vectorz
 milestone: portabilite
-version:
+version: v0.10.0
 labels: [portabilite, generateur, cli]
-status: ready
-blocked: "keystone non autonome (run 2026-10-11) : commit un ADR durable (frontière portable/premium) ET produit des fichiers .cursor/ + AGENTS.md dont la correction ne se PROUVE pas sans un Cursor/consommateur à tester (pas dispo en session) — un POC non vérifiable viole « build→prouve ». + promotion de verbes CLI. À faire en effort dédié avec un IDE cible."
-pr:
+status: shipped
+pr: "local (v0.10.0)"
 evidence: none
 created: 2026-10-07
 ---
@@ -28,7 +27,7 @@ de façon fiable).
 
 ## Contexte / Problème
 
-Le benchmark du 2026-10-07 ([4 méthodes sur une feature identique](../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md)
+Le benchmark du 2026-10-07 ([4 méthodes sur une feature identique](../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md)
 pour le cadre, run neuf en session) a montré deux choses :
 
 - **Toutes les méthodes sont portables dans leurs artefacts** (markdown + code). Le verrou IDE ne
@@ -39,7 +38,7 @@ pour le cadre, run neuf en session) a montré deux choses :
   `.cursor/`, `AGENTS.md`, avec une garde anti-dérive.
 
 C'est l'esprit de l'ADR-0029 (« la fiche est le document, la PR en est le rendu ») étendu : **une
-source, des rendus par IDE**. La [fiche « CLAUDE.md = proxy vers la loi »](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
+source, des rendus par IDE**. La [fiche « CLAUDE.md = proxy vers la loi »](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
 en est **une facette** (les règles → `CLAUDE.md`) ; cette keystone généralise aux **commandes et
 skills**, et à plusieurs IDE.
 
@@ -89,11 +88,24 @@ printf '\nDERIVE\n' >> .cursor/commands/<cmd>.md && pnpm --dir products/mega-cit
 ## Notes / décisions
 
 - **Origine** : session de brainstorm + benchmark du 2026-10-07 (OpenSpec / Superpowers / BMAD / vectorz).
-- **Facettes liées** : [CLAUDE.md = proxy vers la loi](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
-  (V0.9, les règles → `CLAUDE.md`) et [ezk multi-client : cap Cursor + modèle par hôte](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md)
+- **Facettes liées** : [CLAUDE.md = proxy vers la loi](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
+  (V0.9, les règles → `CLAUDE.md`) et [ezk multi-client : cap Cursor + modèle par hôte](../20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md)
   (parkée, le cap Cursor). Elles restent où elles sont ; cette keystone les généralise, sans les absorber de force.
 - **Prior art** : OpenSpec (`openspec init --tools claude,cursor,agents`), standard AGENTS.md.
 - **Spike** : `gen.mjs` (preuve du patron, hors dépôt).
 - **Taille** : reste entière — POC borné (2 IDE + `AGENTS.md`, sous-ensemble de commandes). Le
   découpage viendra au build si la frontière générateur / CLI / ADR le demande (règle
-  [token-economy/fiche-tient-dans-un-sprint](../products/mega-city/rules/token-economy/fiche-tient-dans-un-sprint.md)).
+  [token-economy/fiche-tient-dans-un-sprint](../../products/mega-city/rules/token-economy/fiche-tient-dans-un-sprint.md)).
+- **Build du 2026-10-11 (run auto v0.10).** POC livré : `ezk law gen-ide [--root <projet>] [--check]`
+  (sous-commande de `lawgiver`) + cœur pur `genIdeFiles` (`src/core/gen-ide.ts`, testé). Depuis la
+  source unique (le manifeste), génère `.claude/commands/`, `.cursor/commands/` et `AGENTS.md` pour un
+  sous-ensemble (`now`, `paths`, `backlog check`, `graph query`) ; entre `.claude` et `.cursor` **seule
+  la ligne d'invocation diffère** (`$ARGUMENTS` vs `{{args}}`) ; `--check` **échoue** (code 1) si une
+  copie a été éditée à la main. Prouvé en local (tests + smoke sur dossier temp) — **sans** exiger un
+  Cursor à l'exécution, car les critères portent sur la génération, pas sur le runtime Cursor. Frontière
+  portable/premium : [ADR-0073](../../products/mega-city/docs/adr/0073-generateur-multi-ide-frontiere-portable-premium.md).
+  Suite : tout le manifeste + éprouver dans un vrai Cursor. **Note** : construit après que l'étiquette
+  `v0.10.0` a été coupée — l'étiquette locale est déplacée pour inclure ce keystone.
+- **Correctif d'auto-évaluation (run 2026-10-11).** J'avais d'abord parqué cette fiche en la jugeant
+  « invérifiable sans Cursor ». C'était faux : ses critères sont vérifiables en local. Dé-parquée et
+  construite le jour même.

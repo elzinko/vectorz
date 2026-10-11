@@ -61,7 +61,7 @@ ls products/mega-city/rules/<cat>/<regle>.md && grep -n "<regle>" products/mega-
 - **Origine** : vision exprimée par le PO le 2026-10-07 (« le jour où je pars d'un projet existant,
   vectorz extrait les règles dans un ou des bundles pour que les agents s'en servent »).
 - **Prior art** : Agent OS (Builder Methods) — standards-first, part du code.
-- **Lié** : la keystone [générateur multi-IDE](../20261007151859470_generateur-multi-ide-cli-moteur.md)
+- **Lié** : la keystone [générateur multi-IDE](20261007151859470_generateur-multi-ide-cli-moteur.md)
   (même thème portabilité / amorçage ailleurs que Claude Code).
 - **À vérifier au grooming** : recoupe-t-on `ezk-scout` existant ? L'étendre plutôt que créer.
 - **Groom du 2026-10-11 (run auto v0.10).** Question tranchée : **étendre `ezk-scout`** (qui chasse

@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 /**
@@ -30,6 +31,8 @@ import { checkComposition, checkRoles } from '../src/core/composition.js';
 import { diagnose, exitCodeOf, renderDiagnosis } from '../src/core/deploy-doctor.js';
 import { expectedItems, inspect, renderStatus } from '../src/core/deploy-state.js';
 import { expandProfile } from '../src/core/expand.js';
+import { parseManifest } from '../src/core/ezk-cli.js';
+import { type CommandSpec, IDE_TARGETS, genIdeFiles } from '../src/core/gen-ide.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
 import { applyGlobalPlan, applyPlan, staleFlatSkillFiles } from '../src/io/apply.js';
 import { applyCapture } from '../src/io/capture.js';
@@ -64,7 +67,9 @@ function targetOf(args: string[]): { target: string; explicit: boolean } {
   if (at === -1) return { target: defaultTarget(), explicit: false };
   const value = args[at + 1];
   if (value === undefined || value.startsWith('--')) {
-    console.error("lawgiver: « --target » attend un dossier (sans lui, la cible serait le vrai ~/.claude).");
+    console.error(
+      'lawgiver: « --target » attend un dossier (sans lui, la cible serait le vrai ~/.claude).',
+    );
     process.exit(2);
   }
   return { target: value, explicit: true };
@@ -94,7 +99,9 @@ function runDoctor(profile: string, target: string, explicitTarget: boolean): vo
       fact: (rel) => probePath(root, rel),
       readText: (rel) => readText(root, rel),
     });
-    process.stdout.write(renderDiagnosis(profile, root, diagnosis, explicitTarget ? { target: root } : {}));
+    process.stdout.write(
+      renderDiagnosis(profile, root, diagnosis, explicitTarget ? { target: root } : {}),
+    );
     process.exitCode = exitCodeOf(diagnosis);
   } catch (error) {
     console.error(`lawgiver: ${error instanceof Error ? error.message : String(error)}`);
@@ -230,8 +237,64 @@ function parseContentFlag(args: string[]): string {
   return content;
 }
 
+/**
+ * gen-ide — génère, depuis la source unique (le manifeste), un jeu de fichiers PAR IDE
+ * (`.claude/`, `.cursor/`, `AGENTS.md`) où seule la syntaxe d'invocation diffère (fiche
+ * 20261007151859470, ADR-0073). POC : un sous-ensemble de commandes `ezk`, lecture seule du côté
+ * logique (les fichiers générés ne font qu'appeler `ezk`). `--check` échoue si une copie a dérivé.
+ */
+const GEN_IDE_POC_SUBSET: ReadonlySet<string> = new Set([
+  'now',
+  'paths',
+  'backlog check',
+  'graph query',
+]);
+
+function genIdeCommandSpecs(): CommandSpec[] {
+  const manifest = parseManifest(readFileSync(join(repoRoot, 'ezk-manifest.yml'), 'utf8'));
+  const specs: CommandSpec[] = [];
+  for (const e of manifest.commands) {
+    const name = e.verb ? `${e.domain} ${e.verb}` : e.domain;
+    if (!GEN_IDE_POC_SUBSET.has(name)) continue;
+    specs.push({ slug: name.replace(/\s+/g, '-'), invocation: `ezk ${name}`, summary: e.summary });
+  }
+  return specs.sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+function runGenIde(root: string, check: boolean): void {
+  const files = genIdeFiles(genIdeCommandSpecs());
+  if (check) {
+    const drift = files.filter((f) => {
+      const abs = join(root, f.path);
+      return !existsSync(abs) || readFileSync(abs, 'utf8') !== f.content;
+    });
+    if (drift.length > 0) {
+      console.error(
+        `gen-ide --check : ${drift.length} fichier(s) absent(s) ou édité(s) à la main :`,
+      );
+      for (const f of drift) console.error(`  - ${f.path}`);
+      console.error('Régénère : lawgiver gen-ide --root <projet>');
+      process.exit(1);
+    }
+    console.log(`gen-ide --check : ${files.length} fichier(s) à jour (aucune dérive).`);
+    return;
+  }
+  for (const f of files) {
+    const abs = join(root, f.path);
+    mkdirSync(dirname(abs), { recursive: true });
+    writeFileSync(abs, f.content);
+  }
+  console.log(
+    `gen-ide : ${files.length} fichier(s) sous ${root} (${IDE_TARGETS.join('/')} + AGENTS.md). Régénérable ; ne pas éditer les copies.`,
+  );
+}
+
 function main(argv: string[]): void {
   const [command, ...rest] = argv;
+  if (command === 'gen-ide') {
+    const root = parseFlag(rest, '--root') ?? process.env.INIT_CWD ?? process.cwd();
+    return runGenIde(resolve(root), rest.includes('--check'));
+  }
   if (command === 'bind') {
     const force = rest.includes('--force');
     const [profile, projectDir, host = 'claude-code'] = rest.filter((arg) => arg !== '--force');

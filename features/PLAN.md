@@ -154,7 +154,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 ### ⑪ v0.10.0 — portabilité multi-IDE (ajouté au plan le 2026-10-10)
 > Une source de règles → plusieurs IDE (`.claude/`, `.cursor/`, `AGENTS.md`), la CLI comme moteur portable. Était absent du plan alors que les fiches existaient déjà.
-- ~~`20261007151859470` — générateur multi-IDE : une source → `.claude/` + `.cursor/` + `AGENTS.md`, CLI moteur · P1~~ — parkée, sortie de v0.10 (ADR durable + sortie `.cursor/`/`AGENTS.md` non vérifiable sans IDE cible ; effort dédié ; run 2026-10-11)
+- ~~`20261007151859470` — générateur multi-IDE : une source → `.claude/` + `.cursor/` + `AGENTS.md`, CLI moteur · P1 · **ready** → `build`~~ — shipped
 - ~~`20261010091118580` — boussole de session : une commande qui dit quoi faire maintenant · P2 · **ready** → `build`~~ — shipped local (ADR-0072, `ezk now`)
 - ~~`20261007151859473` — amorçage brownfield : extraire les règles d'un projet existant → bundles · P2 · **ready** (groomée 2026-10-11 : étendre `ezk-scout`) → `build`~~ — shipped
 
