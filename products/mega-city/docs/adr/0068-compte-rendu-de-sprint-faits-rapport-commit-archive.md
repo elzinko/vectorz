@@ -2,7 +2,7 @@
 
 **Statut :** Accepté
 **Date :** 2026-10-08
-**Fiches :** [A — `close` écrit et committe le compte rendu](../../../../features/done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) · [B — la rétro et l'archive lisent les comptes rendus](../../../../features/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) · source [20261005100027029](../../../../features/done/20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md)
+**Fiches :** [A — `close` écrit et committe le compte rendu](../../../../features/done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) · [B — la rétro et l'archive lisent les comptes rendus](../../../../features/done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) · source [20261005100027029](../../../../features/done/20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md)
 
 ## En clair
 

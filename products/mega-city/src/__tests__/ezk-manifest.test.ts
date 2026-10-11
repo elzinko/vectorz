@@ -78,6 +78,7 @@ describe('ezk-manifest.yml', () => {
       'pr emit-local',
       'retro captures',
       'retro note',
+      'retro reports',
       'review emit',
       'rules apply',
       'rules check',

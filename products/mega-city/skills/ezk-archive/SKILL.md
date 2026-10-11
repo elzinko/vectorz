@@ -240,6 +240,16 @@ qui ne demandent aucun jugement.
        par construction (la clôture), aucun nouveau déclencheur à inventer ; section
        vide ou absente → ne rien ajouter (même garde-fou qu'`ezk-retro` : rien à
        retenir → on n'écrit rien) ;
+     - **renvoie aux comptes rendus de sprint, ne recopie pas `SPRINT.md`** (fiche 20261008072306360,
+       [ADR-0068](../../docs/adr/0068-compte-rendu-de-sprint-faits-rapport-commit-archive.md)) : chaque
+       `close` de la session a écrit un compte rendu committé sous `docs/sprints/<date>-sprint-<slug>.md`
+       (lot scellé + décisions + galères de CE sprint). Dans le récit, **liste ces comptes rendus de la
+       session avec leur chemin** plutôt que de recopier la zone `## Incréments scellés de la session` de
+       `SPRINT.md` (accumulée, polluée par l'héritage quand l'app recycle le dossier). `ezk --root "$(git rev-parse --show-toplevel)" retro reports`
+       aide à les retrouver — mais il liste **depuis la dernière capture, toutes sessions confondues** ;
+       pour l'archive, **retiens parmi eux ceux de CETTE session** (les comptes rendus des `close` que tu
+       viens de jouer). Pas de compte rendu (sprint non clos par `close`, ou mode dégradé) → s'en tenir au
+       récit, sans inventer ;
      - **committer et intégrer** l'archive (fiche 20261005100026946,
        [ADR-0063](../../docs/adr/0063-cloture-committe-son-archive.md)) — la clôture ne la laisse
        plus hors de git dans le worktree :

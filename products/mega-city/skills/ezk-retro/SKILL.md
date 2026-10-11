@@ -73,6 +73,13 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
   friction/idée/problème déposé par une session passée. Ces notes
   s'ajoutent aux symptômes de la session courante — c'est le corpus accumulé qui garantit qu'aucun
   sujet inter-session n'est oublié. Dossier absent ou vide → rien à ajouter (pas d'erreur).
+- **Lis les comptes rendus de sprint depuis la dernière capture** (fiche 20261008072306360, ADR-0068) :
+  `ezk --root "$(git rev-parse --show-toplevel)" retro reports` liste les `docs/sprints/<date>-sprint-<slug>.md`
+  écrits **depuis la dernière capture** (`docs/captures/`), **quelle que soit la session** qui les a
+  produits — tous les sprints atterrissent dans le même `docs/sprints/` committé. Lis-les : ils portent
+  le lot scellé, les décisions et les galères de chaque sprint. C'est ce qui garantit qu'une rétro jouée
+  **dans une autre session** voit les sprints qu'elle n'a pas vécus (et non la seule mémoire de l'agent).
+  Aucun compte rendu → rien à ajouter (pas d'erreur).
 - **Candidats-recette — périmètre `sprint` uniquement.** Un sprint qui vient de finir peut
   contenir une galère *capitalisable* en recette. Ce signal-là ne se lit pas dans les mots :
   on le **demande à `ezk-chef`**. Une PR, une friction, « la méthode » **sautent** cette

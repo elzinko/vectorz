@@ -124,7 +124,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 > La clé de voûte (le contrat du bus / catalogue des moments) et le socle « runs » sont livrés ; reste le garde-fou de séquence (P0, décidé le 2026-10-10), le compte rendu de sprint et ce que la rétro/l'archive en lisent ; l'**interface** attend la maquette. **Réaligné le 2026-10-10.**
 - ~~`20261010215345931` — le tirage reste dans la version en cours (garde-fou de séquence) · P0 · **ready** → `build` (groomée 2026-10-11, ADR-0070)~~ — shipped (local v0.7)
 - ~~`20261008072305169` — au close, le sprint écrit et committe son compte rendu · P1 · **ready** → `build`~~ — shipped
-- `20261008072306360` — la rétro et l'archive lisent les comptes rendus de sprint · P1 · `idea` → `groom`
+- ~~`20261008072306360` — la rétro et l'archive lisent les comptes rendus de sprint · P1 · `idea` → `groom`~~ — shipped
 - `0171` — recopier sur GitHub ce que la méthode écrit en local (issues, PR, labels, versions) · P1 · `idea` → `groom`
 - `20261007135620590` — refondre la vue de supervision du Moniteur (après maquette / décision PO) · P1 · `idea` → `groom`
 - ~~`20261004101755756` — écrire le contrat du bus : le catalogue des moments de la méthode · P1 · `build`~~ — shipped local (2e395663)
