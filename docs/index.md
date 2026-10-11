@@ -5,7 +5,7 @@ status: living doc map (epoch 2) — les artefacts BMAD d'époque-1 sont archiv�
 
 # cop1 / vectorz — Documentation Index
 
-> Carte du dossier `docs/` pour l'**époque 2** (dogfood mega-city + supervision cop1). Le point d'entrée du projet reste le [README](../README.md) (pitch + quickstart). Les artefacts de planification BMAD d'époque-1 (`prd`, `epics`, `architecture`, `adr-010…014`, `sprint-status.yaml`) ont été **retirés du dépôt** avec le backend pilote (E4 / [ADR-029](./adr/ADR-029-emancipation-bmad-politique-archivage.md), fiche [0039](../features/done/0039-e4-retrait-bmad.md)) — ce qui a été conservé est sous l'[archive époque-1](#epoch-1-bmad-archive).
+> Carte du dossier `docs/` pour l'**époque 2** (dogfood mega-city + supervision cop1). Le point d'entrée du projet reste le [README](../README.md) (pitch + quickstart). Les artefacts de planification BMAD d'époque-1 (`prd`, `epics`, `architecture`, `adr-010…014`, `sprint-status.yaml`) ont été **retirés du dépôt** avec le backend pilote (E4 / [ADR-029](./adr/ADR-029-emancipation-bmad-politique-archivage.md), fiche [0039](../features/done/0039-e4-retrait-bmad.md)). L'ancienne `docs/archive/` (BMAD époque-1 + docs pré-pivot) a été **retirée du dépôt** le 2026-10-11 (fiche 20261007154842780) : git en garde l'historique.
 
 ## Onboarding & run
 
@@ -30,15 +30,9 @@ status: living doc map (epoch 2) — les artefacts BMAD d'époque-1 sont archiv�
 
 ## Runtime artefacts (not docs)
 
-- [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — **deprecated stub** ; epoch-1 BMAD playbook archived under [`docs/archive/epoch-1-bmad/`](./archive/epoch-1-bmad/README.md).
+- [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — **deprecated stub** ; l'ancien playbook BMAD époque-1 a été retiré du dépôt (git garde l'historique).
 - [`cop1.config.example.yaml`](../products/cop1/cop1.config.example.yaml) — gabarit versionné (sous `products/cop1/`) ; le `cop1.config.yaml` réel est gitignoré, local à chaque poste.
 
-## Epoch-1 BMAD archive
+## Archives retirées (git garde l'historique)
 
-Pilot-era BMAD docs (orchestrator playbook, version audit) — **not** the vectorz dogfood path since E4 (0039):
-
-- [`docs/archive/epoch-1-bmad/`](./archive/epoch-1-bmad/README.md) — playbook + `bmad-version-audit.md` (was at repo root / `docs/`).
-
-## Pre-Phase-A archive
-
-Four root-level docs that described the pre-pivot product (REST API, SQLite, old package names) were moved on 2026-04-15 to [`docs/archive/pre-phase-a/`](./archive/pre-phase-a/). Their internal links point at the old structure **by design** (frozen snapshot). See the brownfield snapshot §10.1 for the drift analysis.
+L'ancienne `docs/archive/` a été retirée du dépôt le 2026-10-11 (fiche 20261007154842780) : les docs BMAD d'époque-1 (playbook, `bmad-version-audit.md`) et les docs pré-pivot (REST API, SQLite, anciens noms de paquets) ne sont plus inline. Pour les consulter, remonter l'historique git. L'analyse de dérive d'avant-pivot reste dans le [brownfield snapshot](./brownfield-snapshot.md).

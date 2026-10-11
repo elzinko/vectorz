@@ -147,7 +147,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261001192624192` — chemins des artefacts de méthode configurables (`scrum:`) — la fondation · P2 · **ready** → `build`~~ — shipped
 - ~~`20261007154842506` — brancher skills/scripts/bins sur le résolveur de chemins · P2 · **ready** → `build`~~ — shipped
 - `20261007154842643` — basculer vectorz vers `scrum/` (git mv des 5 dossiers) · P2 · **ready** → `build`
-- `20261007154842780` — nettoyer `docs/` : supprimer `archive/`, requalifier `e2e/` · P2 · **ready** → `build`
+- ~~`20261007154842780` — nettoyer `docs/` : supprimer `archive/`, requalifier `e2e/` · P2 · **ready** → `build`~~ — shipped
 - `20261007154842917` — note de migration `scrum/` + bascule d'un consommateur (muti) · P2 · **ready** → `build`
 - ~~`20261007115128214` — descendre `cop1.config.example.yaml` vers `products/cop1/` · P2 · **ready** → `build`~~ — shipped
 - ~~`20261007115129448` — `CLAUDE.md` = simple proxy vers la loi, bindée par projet · P2 · **ready** → `build`~~ — shipped

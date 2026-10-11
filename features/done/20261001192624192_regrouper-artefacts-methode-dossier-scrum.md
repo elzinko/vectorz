@@ -103,7 +103,7 @@ pnpm --dir products/mega-city ezk --root "$(git rev-parse --show-toplevel)" path
 - **Fiches sœurs du lot** (liées par le milestone, chacune autonome) :
   [2 — brancher les skills](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) ·
   [3 — basculer vectorz vers scrum/](../20261007154842643_basculer-vectorz-vers-dossier-scrum.md) ·
-  [4 — nettoyer docs/ (archive, e2e)](../20261007154842780_nettoyer-docs-archive-e2e.md) ·
+  [4 — nettoyer docs/ (archive, e2e)](20261007154842780_nettoyer-docs-archive-e2e.md) ·
   [5 — migration des consommateurs](../20261007154842917_note-migration-bascule-consommateurs-scrum.md).
 - **Dépendances** : cette fiche (1) ne dépend de rien ; 2 dépend de 1 ; 3 et 5 dépendent de 2 ; 4
   est parallèle.

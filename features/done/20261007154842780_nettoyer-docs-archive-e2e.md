@@ -7,8 +7,8 @@ product: vectorz
 milestone: rationalisation
 version: v0.9.0
 labels: [convention, arborescence]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.9.0)"
 evidence: none # ménage de dossiers, pas d'UI
 created: 2026-10-07
 ---
@@ -20,8 +20,8 @@ created: 2026-10-07
 supprime `archive/` (git garde l'historique) et on requalifie ou supprime `e2e/`. Indépendante des
 autres fiches du lot — peut démarrer tout de suite.
 
-**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
-carte du lot dans [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
+**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
+carte du lot dans [ADR-0066](../../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 
 ## Contexte / Problème
 

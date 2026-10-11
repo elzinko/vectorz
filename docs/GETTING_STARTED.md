@@ -82,9 +82,9 @@ mega-city skills and profiles live under `products/mega-city/`.
 
 See [`docs/brancher-une-methode-existante.md`](brancher-une-methode-existante.md). Full BMAD supervisability contract = fiche [0162](../features/0162-bmad-contrat-supervisabilite.md) (LATER).
 
-## Epoch-1 BMAD docs (archive only)
+## Epoch-1 BMAD docs (retirés)
 
-- Playbook + version audit → [`docs/archive/epoch-1-bmad/`](archive/epoch-1-bmad/README.md)
+- Playbook + version audit : ancienne `docs/archive/epoch-1-bmad/` retirée du dépôt le 2026-10-11 (fiche 20261007154842780) — git garde l'historique.
 - E4 code removal → fiche [0039](../features/done/0039-e4-retrait-bmad.md)
 
 ## Further reading

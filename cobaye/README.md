@@ -31,7 +31,7 @@ pnpm install && pnpm build && pnpm --filter @cop1/web build
 pnpm cobaye:smoke
 ```
 
-Voir aussi `docs/e2e/moniteur-smoke.md` (checklist manuelle < 2 min).
+Voir aussi `docs/tests/moniteur-smoke.md` (checklist manuelle < 2 min).
 
 ## Hors scope (volontaire)
 

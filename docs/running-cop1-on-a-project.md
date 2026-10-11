@@ -65,7 +65,7 @@ cop1 init-bmad-bridge
 
 Guide: [`brancher-une-methode-existante.md`](brancher-une-methode-existante.md). Full contract: fiche [0162](../features/0162-bmad-contrat-supervisabilite.md).
 
-Archived epoch-1 playbook: [`docs/archive/epoch-1-bmad/supervisor-playbook.md`](archive/epoch-1-bmad/supervisor-playbook.md).
+Ancien playbook BMAD époque-1 retiré du dépôt le 2026-10-11 (fiche 20261007154842780) — git garde l'historique.
 
 ## 6. Observe a run
 
