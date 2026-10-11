@@ -39,6 +39,7 @@
 | [20260916225506856](done/20260916225506856_github-optionnel-fichier-pr-local.md) | GitHub optionnel par config — le fichier PR local (fiche rendue) devient le défaut | feature | P0 |  | mega-city | ✅ shipped | #250 |
 | [20260917162000501](done/20260917162000501_lanceur-dev-universel-worktree-branche.md) | Une commande pour lancer l'app de n'importe quelle branche ou worktree | feature | P0 | v0.2.0 | mega-city | ✅ shipped | #274 |
 | [20260920111652514](done/20260920111652514_piloter-plugin-github-config.md) | Piloter le plugin github par la config — commande terminal `ezk config github on/off` | feature | P0 |  | mega-city | ✅ shipped | #259 |
+| [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 | v0.11.0 | mega-city | 🔵 ready |  |
 | [20260930123438875](done/20260930123438875_cycle-vie-sprint-session-ceremonies.md) | Séparer clairement fiche, sprint et session (ezk-sprint start/close) | feature | P0 | v0.4.0 | mega-city | ✅ shipped | #275 |
 | [20260930194219046](done/20260930194219046_ezk-backlog-lot.md) | ezk-backlog : concept de lot (sprint backlog) + définition d'incrément | feature | P0 | v0.5.0 | mega-city | ✅ shipped | #324 |
 | [20261003200945204](done/20261003200945204_mode-local-depuis-projet-hote.md) | Le mode local de la méthode marche depuis un projet hôte, sans contournement | bug | P0 | v0.5.0 | mega-city | ✅ shipped | local (eb8de257) |
@@ -326,7 +327,6 @@
 
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
-| [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 | v0.11.0 | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
@@ -334,6 +334,7 @@
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 | v0.14.0 | mega-city | 💡 idea |  |
 | [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 | v0.13.0 | mega-city | 💡 idea |  |
 | [20261010213353647](20261010213353647_capture-retro-lisible-pour-le-po.md) | Une capture de rétro (et tout artefact committé lu par le PO) doit être lisible, et quelque chose doit le vérifier | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261011153019643](20261011153019643_revue-design-system-step-composable-release.md) | Revue design-system : un step composable branché sur ezk-release | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 | v0.15.0 | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |

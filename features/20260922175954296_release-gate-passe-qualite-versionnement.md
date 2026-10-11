@@ -6,7 +6,7 @@ priority: P0
 product: mega-city
 milestone:
 version: v0.11.0
-status: idea
+status: ready
 pr:
 evidence: none # capacité méthode / concept, pas d'écran
 created: 2026-09-22
@@ -16,11 +16,13 @@ created: 2026-09-22
 
 ## En clair
 
-Avant de taguer une version, on veut une **passe ultime** qui verrouille la qualité : un agent
-vérifie que le **design system** est respecté, un autre **chasse les bugs** de fonctionnement, et le
-versionnement est **bloqué** tant que ce n'est pas GO. C'est la *Definition of Done* d'un incrément
-(revue de mise en production), à jouer en **fin d'itération** — le lot de features qui compose une
-version, pas à chaque feature. Capacité **méthode**, réutilisable par tous les projets.
+Avant de taguer une version, on veut une **passe ultime** qui verrouille la qualité et **bloque le
+tag** tant que ce n'est pas GO. On en fait un **skill `ezk-release`**, joué en **fin d'itération**
+(le lot de features d'une version, pas chaque feature). Il est **composable** : au départ il enchaîne
+deux passes bloquantes — la *Definition of Done* mécanique (gate locale verte) et une **chasse aux
+bugs** adverse. D'autres passes, comme une **revue design-system** (fiche sœur
+[[20261011153019643]]), s'y **branchent** ensuite, sans être mélangées. Capacité **méthode**,
+réutilisable par tous les projets et **désactivable** par config.
 
 ## Contexte / Problème
 
@@ -34,40 +36,54 @@ version, pas à chaque feature. Capacité **méthode**, réutilisable par tous l
 
 ## Proposition
 
-**Composer, ne pas réimplémenter.** Un « release gate » qui, **avant un tag de version**, enchaîne
-deux passes **bloquantes** (GO/NO-GO), en plus de la DoD (gate locale verte, pas de régression) :
+**Un skill `ezk-release`** (forme tranchée par le PO le 2026-10-11), joué **avant un tag de version**.
+Il **compose**, il ne réimplémente rien. Il enchaîne des **passes bloquantes composables** (GO/NO-GO) ;
+au départ, deux :
 
-1. **Revue design-system** : un agent vérifie la conformité de l'UI de la version au **référentiel
-   du projet** (ex. muti `.rules/design-system.md`). NO-GO si écarts bloquants.
-2. **Chasse aux bugs de fonctionnement** : un agent adverse cherche des dysfonctionnements sur le
-   lot (parcours réels, régressions), au-delà des tests unitaires. GO/NO-GO.
+1. **DoD mécanique** : la **gate locale** existante est verte (tests + scripts), 0 lien cassé, la
+   version est complète (toutes ses fiches livrées). NO-GO sinon.
+2. **Chasse aux bugs de fonctionnement** : un agent adverse (`ezk-reviewer` en mode adverse) rejoue
+   les **parcours réels** du lot et cherche les régressions, au-delà des tests unitaires. GO/NO-GO.
 
-**Forme (à trancher au grooming/panel) :** soit un **cran dans `ezk-product-build`** (fin
-d'itération, avant que le PO tague), soit un petit skill **`ezk-release`**. Compose des agents
-existants/à créer : un **design/UX reviewer** (rejoint l'agent `ezk-ux` prévu, jalon UX) + un agent
-**chasse-bugs** (`ezk-reviewer`/`ezk-qa` en mode adverse). Config-gated si besoin (projet sans
-release taguée = gate off).
+**Composable, pas monolithique** (demande PO : « le design-system peut être un step supplémentaire,
+pas forcément mélangé — j'aime la composition »). Les passes sont **déclarées**, pas codées en dur :
+ajouter une passe ne réécrit pas le skill. La **revue design-system** est la première passe ajoutée
+ainsi — elle vit dans sa **fiche sœur** [[20261011153019643]], pas ici.
 
-**Vocabulaire (à aligner) :** dans ezk, un « sprint » = 1 feature. Ce que le PO appelle « sprint »
-(plusieurs fiches → une version) = une **itération**. Le gate se place en **fin d'itération**.
+**Verdict et blocage.** GO seulement si toutes les passes sont GO. Un NO-GO **bloque le tag** :
+`ezk backlog version close <vX.Y> --tag` refuse tant que ce n'est pas traité. **Soupape PO
+journalisée** possible (décision explicite, notée).
+
+**Désactivable par config** : `.vectorz/config.yml` → `release.gate: off` (projet sans version taguée)
+→ le skill se saute proprement.
+
+**Restitution** : un compte rendu de release lisible (passes jouées, verdict, ce qui a bloqué) —
+gabarit + rendu, règle des livrables.
+
+**Vocabulaire :** dans ezk, un « sprint » = 1 feature ; ce que le PO appelle « sprint » (plusieurs
+fiches → une version) = une **itération**. Le gate se place en **fin d'itération**.
 
 ## Critères d'acceptation
 
-À compléter au grooming / panel (fiche `idea`).
-
-- [ ] Avant un tag, la méthode lance une **revue design-system** + une **chasse aux bugs**, chacune
-      rendant un verdict GO/NO-GO.
-- [ ] Un **NO-GO bloque le versionnement** (pas de tag tant que non traité, ou soupape PO
-      **journalisée**).
-- [ ] La revue design-system s'appuie sur le **référentiel du projet** (ex. `.rules/design-system.md`).
-- [ ] Capacité **réutilisable** par tout projet (méthode), config-gated.
-- [ ] **Appliqué à muti 1.8.0** comme première preuve — en attendant l'outil, la passe est jouée
-      **manuellement** (2 agents) avant le tag.
+- [ ] `ezk release <vX.Y>` enchaîne des passes **composables** ; au départ (1) DoD mécanique et (2)
+      chasse aux bugs adverse, chacune GO/NO-GO.
+- [ ] Un NO-GO **bloque le tag** (`version close --tag` refuse) tant qu'il n'est pas traité, sauf
+      soupape PO journalisée.
+- [ ] `release.gate: off` (ou projet sans version taguée) → le skill se saute proprement.
+- [ ] Il **compose** la gate locale + `ezk-reviewer` adverse, sans réimplémenter de logique de revue.
+- [ ] **Ajouter une passe** (ex. la revue design-system, fiche sœur) ne demande **pas** de réécrire
+      le skill : les passes sont déclarées.
+- [ ] Première preuve : sur un lot avec une régression connue → **NO-GO** qui la nomme ; sur un lot
+      propre → **GO** et tag autorisé.
 
 ## Comment vérifier
 
-À définir après cadrage (fiche de concept). Piste : rejouer le gate sur un lot portant un écart DS
-**connu** → il rend **NO-GO** et nomme l'écart ; puis sur un lot propre → **GO**.
+```bash
+# Lot propre : GO, le tag est autorisé.
+ezk release v0.11.0
+# Introduire une régression connue, rejouer : NO-GO nommé, tag refusé.
+ezk release v0.11.0
+```
 
 ## Notes / décisions
 
@@ -83,3 +99,7 @@ release taguée = gate off).
   PR (`chore/fiche-release-gate`), retrouvée au ménage des branches. Remise telle quelle : seul le
   champ `ready:`, retiré par la migration 005, a été enlevé. Priorité et version restent à trancher
   au grooming par le PO.
+- **Grooming 2026-10-11 (PO)** : forme tranchée = **skill `ezk-release`** (pas un cran dans
+  `ezk-product-build`). La **revue design-system** est sortie en **step composable**, dans la fiche
+  sœur [[20261011153019643]] ; v0.11 livre le squelette composable + DoD mécanique + chasse aux bugs.
+  Rangée v0.11.0, passée `ready`.
