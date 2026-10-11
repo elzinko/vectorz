@@ -5,8 +5,8 @@ type: chore
 priority: P2
 product: vectorz
 labels: [spike, secrets, dx, architecture]
-status: idea
-pr:
+status: shipped
+pr: "local (spike exécuté 2026-10-10)"
 evidence: none
 created: 2026-10-10
 ---
@@ -61,11 +61,11 @@ Trois symptômes vécus le 2026-10-10 (session muti, changement de prix €49→
 
 ## Critères d'acceptation
 
-- [ ] Une **note de décision** : les 3 couches + la règle, options tranchées (pourquoi `ezk-secret` et pas `op`/`sops` ; touchId ou pas ; MCP en complément).
-- [ ] La règle « vérifier avant de demander » **rédigée** (candidate à `rules/`), mesurable.
-- [ ] **Preuve éprouvée** : 1 appel API LemonSqueezy réussi (ex. HTTP 200 sur un code promo), jeton lu au trousseau, **exécuté depuis un worktree secondaire**, 0 secret affiché en chat, 0 `.env` copié.
-- [ ] Le jeton LS rangé en secret **niveau compte** (`from:`), + le jeton de test, documentés au catalogue de secrets.
-- [ ] Les **fiches de suite** listées (connecter les MCP ; migrer les `.env` critiques vers le trousseau ; etc.).
+- [x] Une **note de décision** : les 3 couches + la règle, options tranchées (pourquoi `ezk-secret` et pas `op`/`sops` ; touchId ou pas ; MCP en complément).
+- [x] La règle « vérifier avant de demander » **rédigée** (candidate à `rules/`), mesurable.
+- [x] **Preuve éprouvée** : 1 appel API LemonSqueezy réussi (ex. HTTP 200 sur un code promo), jeton lu au trousseau, **exécuté depuis un worktree secondaire**, 0 secret affiché en chat, 0 `.env` copié.
+- [x] Le jeton LS rangé en secret **niveau compte** (`from:`), + le jeton de test, documentés au catalogue de secrets.
+- [x] Les **fiches de suite** listées (connecter les MCP ; migrer les `.env` critiques vers le trousseau ; etc.).
 
 ## Comment vérifier
 
@@ -76,6 +76,34 @@ TOKEN=$(ezk-secret get LEMONSQUEEZY_API_KEY) && test -n "$TOKEN" && echo "jeton 
 curl -s -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/vnd.api+json" https://api.lemonsqueezy.com/v1/discounts
 ```
+
+## Résultat du spike (2026-10-10)
+
+**Fait.** Les 5 critères sont tenus ; le mécanisme marche **aujourd'hui**, sans rien construire de neuf.
+
+- **Preuve éprouvée** : `GET /v1/discounts` → **HTTP 200**, jeton lu au trousseau
+  (`LEMONSQUEEZY_API_KEY`, longueur 1035, jamais affiché, source Keychain **pas** `.env`), exécuté
+  **depuis ce worktree** ; a listé le code `LAUNCH9` (status `published`). 0 secret en chat, 0 `.env` lu.
+- **Décision (les 3 couches)** : (1) OPÉRER par CLI/MCP authentifiés ; (2) INJECTER par `ezk-secret`
+  pour les services « dashboard-only » (LemonSqueezy) ; (3) GARDER LA MAIN par l'accès-sur-demande du
+  trousseau (touchId possible). Validé : la capacité existe **déjà**, aucun outil à inventer.
+
+**Règle candidate** (feu vert PO pour entrer dans `rules/`) :
+
+> `agent-ops/verify-access-before-asking` **[SHOULD]** — Avant de demander à l'humain d'exécuter une
+> opération sur un service externe (changer un prix / une variable, déployer, pousser), l'agent vérifie
+> D'ABORD s'il peut la faire lui-même : CLI authentifiée (`gh`, `vercel`), MCP connecté, ou secret au
+> trousseau (`ezk-secret list`). Il ne sollicite l'humain que pour **créer / déposer un secret** ou pour
+> une des **4 décisions humaines**. Origine : session 2026-10-10 (demande Vercel alors que la CLI était
+> là ; 3 allers-retours dashboard sur LemonSqueezy alors que le jeton API était au trousseau).
+> Mesure : sur les 5 prochaines sessions touchant un service externe, 0 délégation à l'humain sans vérif préalable.
+
+**Fiches de suite** (à groomer) :
+
+1. **Migrer le `.env` racine → trousseau** (import en masse, valeurs jamais affichées) — règle le `.env` non cloné en worktree. Le plus gros gain.
+2. **Déclarer la règle** `agent-ops/verify-access-before-asking` dans `rules/` (sous feu vert PO).
+3. **Connecter les MCP** `vercel` / `github` / `supabase` (complément des CLI).
+4. **Déposer les secrets `⏳ à déposer`** du manifeste muti, puis un `ezk-secret sync` ciblé.
 
 ## Notes / décisions
 
@@ -90,6 +118,6 @@ curl -s -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $TOKEN" \
   `LEMONSQUEEZY_API_KEY_TEST`), et `GET /v1/stores` répond **HTTP 200** (boutique « muti »). La capacité
   d'opérer LS **existe donc déjà** — le manque était le réflexe « vérifier avant de demander ». En
   revanche, muti n'a **pas** de `secrets.yaml` : le manifeste déclaratif reste à créer (1er pas d'urbanisme).
-- **Lié** : recette `secrets-trousseau` ; fiches [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) (manifeste par projet) et [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) (scope par app) ; ADR-0023.
+- **Lié** : recette `secrets-trousseau` ; fiches [20261001104806732](../20261001104806732_ezk-secret-sync-manifeste-par-projet.md) (manifeste par projet) et [20261001142603963](../20261001142603963_ezk-secret-apply-scope-compte-par-app.md) (scope par app) ; ADR-0023.
 - **C'est un SPIKE** : borné, il livre une **décision + une preuve**, pas une implémentation complète.
   Les suites deviennent des fiches.
