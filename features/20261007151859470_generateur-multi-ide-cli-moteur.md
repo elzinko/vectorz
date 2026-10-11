@@ -4,10 +4,10 @@ title: "Générateur multi-IDE : une source → .claude/ + .cursor/ + AGENTS.md,
 type: feature
 priority: P1
 product: vectorz
-milestone: portabilite
-version: v0.10.0
+milestone: parked
+version:
 labels: [portabilite, generateur, cli]
-status: ready
+status: idea
 pr:
 evidence: none
 created: 2026-10-07
@@ -96,3 +96,7 @@ printf '\nDERIVE\n' >> .cursor/commands/<cmd>.md && pnpm --dir products/mega-cit
 - **Taille** : reste entière — POC borné (2 IDE + `AGENTS.md`, sous-ensemble de commandes). Le
   découpage viendra au build si la frontière générateur / CLI / ADR le demande (règle
   [token-economy/fiche-tient-dans-un-sprint](../products/mega-city/rules/token-economy/fiche-tient-dans-un-sprint.md)).
+
+## Sortie de version — parkée (run autonome 2026-10-11)
+
+Non construisable proprement en autonome ce run : gros nouveau chantier (générateur multi-IDE) — à cadrer avec le PO. Sortie de **v0.10.0** (milestone `portabilite`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.10.0` + `milestone: portabilite`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

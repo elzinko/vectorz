@@ -153,11 +153,9 @@
 | [20261004192802964](done/20261004192802964_cockpit-page-config-en-sections.md) | Cockpit : la page « config » du projet choisi, en sections qui se lisent chacune seule | feature | P1 | v0.6.0 | mega-city | ✅ shipped | local (ec7fc3ec) |
 | [20261005100026946](done/20261005100026946_cloture-session-committe-son-archive.md) | La clôture de session committe l'archive qu'elle écrit, au lieu de la laisser hors de git dans le dossier de travail | bug | P1 | v0.6.0 | mega-city | ✅ shipped | local (807fdd95) |
 | [20261005100027029](done/20261005100027029_compte-rendu-de-sprint-lu-par-la-retro.md) | Chaque sprint laisse un compte rendu committé et standard, que la rétro lit | feature | P1 | v0.7.0 | mega-city | 🧩 split | split — scindée en 20261008072305169, 20261008072306360 |
-| [20261007151859470](20261007151859470_generateur-multi-ide-cli-moteur.md) | Générateur multi-IDE : une source → .claude/ + .cursor/ + AGENTS.md, CLI moteur | feature | P1 | v0.10.0 | vectorz | 🔵 ready |  |
 | [20261008063957243](done/20261008063957243_version-reconnait-tags-semver-3-chiffres.md) | backlog version : reconnaître les étiquettes semver à 3 chiffres (v1.7.0) | bug | P1 |  | mega-city | ✅ shipped | local (77ec3162) |
 | [20261008072305169](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) | Au close, le sprint écrit et committe son compte rendu | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
 | [20261008072306360](done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) | La rétro et l'archive lisent les comptes rendus de sprint | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
-| [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 | v0.9.0 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -258,19 +256,12 @@
 | [20260920213500176](done/20260920213500176_spike-cout-sprint-autorat-skill-allege.md) | Réduire le coût d'un sprint qui ne fait qu'éditer un skill (~330k jetons) | chore | P2 | v0.4.0 | mega-city | ✅ shipped | #300 |
 | [20260922160651394](done/20260922160651394_conformer-code-aux-regles-loader-et-vues-terminales.md) | Mettre le code en conformité avec les règles de dev récentes | chore | P2 | v0.1.0 | mega-city | ✅ shipped | #270 |
 | [20260923220631498](done/20260923220631498_portier-archive-compte-egale-enumeration.md) | Portier ezk-archive — le compte annoncé doit égaler l'énumération (ou dire « X/Y ») | bug | P2 |  | mega-city | 🗑️ superseded | superseded — fusionnée dans 20260904091853948 (tri 2026-09-30) |
-| [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Chemins des artefacts de méthode configurables (`scrum:`) — la fondation | refactor | P2 | v0.9.0 | vectorz | 🔵 ready |  |
 | [20261002133125444](done/20261002133125444_fermer-run-supervision-vise-son-run.md) | Fermer un run de supervision peut fermer celui d'une autre session | bug | P2 | v0.7.0 | mega-city | ✅ shipped | local (29ee1834) |
 | [20261002223842228](done/20261002223842228_ship-fiche-autre-depot-root.md) | ship:fiche livre aussi les fiches d'un autre dépôt (--root) | feature | P2 |  | mega-city | ✅ shipped | #336 |
 | [20261003072823731](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 | v0.5.0 | mega-city | ✅ shipped | #344 |
 | [20261003201035260](done/20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 | v0.7.0 | mega-city | ✅ shipped | local (274d25b4) |
 | [20261007115128214](done/20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9) |
-| [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | v0.9.0 | vectorz | 🔵 ready |  |
-| [20261007154842506](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 | v0.9.0 | vectorz | 🔵 ready |  |
-| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 | v0.9.0 | vectorz | 🔵 ready |  |
-| [20261007154842780](20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | v0.9.0 | vectorz | 🔵 ready |  |
-| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 | v0.9.0 | vectorz | 🔵 ready |  |
 | [20261008154856357](done/20261008154856357_retaguer-v03-v06-semver-aligner-plan.md) | re-taguer V0.3–V0.6 en semver (vX.Y.Z) + aligner PLAN.md | chore | P2 |  | mega-city | ✅ shipped | local (d7936b30) |
-| [20261010091118580](20261010091118580_boussole-session-quoi-faire-maintenant.md) | Boussole de session — une commande qui dit quoi faire maintenant | feature | P2 | v0.10.0 | mega-city | 🔵 ready |  |
 | [20261010100030780](done/20261010100030780_cockpit-sert-detail-fiches-projet-choisi.md) | Le cockpit ouvre le détail d'une fiche du projet choisi (fin des 404 cross-projet) | feature | P2 |  | mega-city | ✅ shipped | local (bc8a0316) |
 | [20261010213000378](done/20261010213000378_spike-agent-opere-services-sans-friction.md) | Spike : l'agent opère GitHub / Vercel / LemonSqueezy sans me redemander (CLI/MCP + ezk-secret) | chore | P2 |  | vectorz | ✅ shipped | local (spike exécuté 2026-10-10) |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
@@ -343,10 +334,8 @@
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261004211038053](20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261007151859473](20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | v0.10.0 | vectorz | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261007151859479](20261007151859479_chemin-lite-sprint-fiches-triviales.md) | Chemin « lite » du sprint pour fiches triviales (éviter la sur-cérémonie) | refactor | P2 |  | vectorz | 💡 idea |  |
-| [20261008154805639](20261008154805639_vue-projection-regles-par-agent.md) | Vue de projection par projet — chaque agent/skill avec ses règles dépliées | feature | P2 | v0.8.0 | mega-city | 💡 idea |  |
 | [20261010114133097](20261010114133097_allocateur-id-adr-deux-dossiers.md) | Un allocateur d'id d'ADR unique sur les deux dossiers (fin des collisions de numéro) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261010114133220](20261010114133220_registry-add-preserve-commentaires.md) | registry-add préserve les commentaires d'en-tête du registre de supervision | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261010114133345](20261010114133345_cockpit-liste-lancement-une-fois.md) | Le cockpit liste le projet de lancement une seule fois (aujourd'hui deux fois) | bug | P2 |  | mega-city | 💡 idea |  |
@@ -378,6 +367,8 @@
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | 💡 idea |  |
 | [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Refondre la vue de supervision du Moniteur pour qu'elle soit lisible | feature | P1 |  | cop1 | 💡 idea |  |
+| [20261007151859470](20261007151859470_generateur-multi-ide-cli-moteur.md) | Générateur multi-IDE : une source → .claude/ + .cursor/ + AGENTS.md, CLI moteur | feature | P1 |  | vectorz | 💡 idea |  |
+| [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 |  | mega-city | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 |  | vectorz | 💡 idea |  |
@@ -424,6 +415,15 @@
 | [20260906122942770](20260906122942770_spike-isolation-worktree-avant-harvest.md) | Comprendre pourquoi un sous-agent en worktree écrit à part | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260906122942825](20260906122942825_spike-cout-gate-fraicheur-offline.md) | Que faire du contrôle « base fraîche » hors ligne ? | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260910155608287](20260910155608287_problematique-regles-ezk-typologie-verification-mesure.md) | Cadrer toute la problématique des règles (mesure d'efficacité…) | feature | P2 |  | vectorz | 💡 idea |  |
+| [20261001192624192](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) | Chemins des artefacts de méthode configurables (`scrum:`) — la fondation | refactor | P2 |  | vectorz | 💡 idea |  |
+| [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 |  | vectorz | 💡 idea |  |
+| [20261007151859473](20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 |  | vectorz | 💡 idea |  |
+| [20261007154842506](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 |  | vectorz | 💡 idea |  |
+| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 |  | vectorz | 💡 idea |  |
+| [20261007154842780](20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 |  | vectorz | 💡 idea |  |
+| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 |  | vectorz | 💡 idea |  |
+| [20261008154805639](20261008154805639_vue-projection-regles-par-agent.md) | Vue de projection par projet — chaque agent/skill avec ses règles dépliées | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261010091118580](20261010091118580_boussole-session-quoi-faire-maintenant.md) | Boussole de session — une commande qui dit quoi faire maintenant | feature | P2 |  | mega-city | 💡 idea |  |
 | [0029](0029-contrat-supervisabilite-v02-differes.md) | Contrat de supervisabilité v0.2 — les différés du gel v0.1 (multi-piste, anti-surplace) | chore | P3 |  | vectorz | 💡 idea |  |
 | [0046](0046-differes-contrat-ameliorabilite-parking.md) | Différés du contrat d'améliorabilité — parking gated « après boucles réelles » | chore | P3 |  | vectorz | 💡 idea |  |
 | [0047](0047-migration-reflexive-produit-se-teste.md) | Migration réflexive — quand le produit se teste lui-même, la migration devient un problème réflexif (→ ADR + article) | feature | P3 |  | vectorz | 💡 idea |  |

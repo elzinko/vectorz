@@ -4,10 +4,10 @@ title: "Brancher les skills/scripts/bins sur le résolveur de chemins (retirer l
 type: refactor
 priority: P2
 product: vectorz
-milestone: rationalisation
-version: v0.9.0
+milestone: parked
+version:
 labels: [convention, arborescence]
-status: ready
+status: idea
 pr:
 evidence: none # refactor d'outillage, pas d'UI
 created: 2026-10-07
@@ -83,3 +83,7 @@ cd products/mega-city && pnpm build && pnpm test && pnpm test:scripts
 - **Dépend de** la fiche 1 (le résolveur doit exister). Débloque les fiches 3 (bascule vectorz) et
   5 (migration des consommateurs).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
+
+## Sortie de version — parkée (run autonome 2026-10-11)
+
+Non construisable proprement en autonome ce run : chaîne scrum/ (câblage résolveur) — dépend de la fondation. Sortie de **v0.9.0** (milestone `rationalisation`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0` + `milestone: rationalisation`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

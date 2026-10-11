@@ -4,10 +4,10 @@ title: "Note de migration scrum/ + bascule d'un projet consommateur (muti)"
 type: chore
 priority: P2
 product: vectorz
-milestone: rationalisation
-version: v0.9.0
+milestone: parked
+version:
 labels: [convention, arborescence]
-status: ready
+status: idea
 pr:
 evidence: none # doc + refactor d'arborescence, pas d'UI
 created: 2026-10-07
@@ -68,3 +68,7 @@ ezk --root "$M" paths sprints   # → scrum/sprints (après scrum: true)
   `docs/captures` (4), `docs/pr-evidence` (42) — **pas** `docs/journal`. La recette ne bouge donc
   que les dossiers **présents** (4 `git mv` pour muti, pas 5).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
+
+## Sortie de version — parkée (run autonome 2026-10-11)
+
+Non construisable proprement en autonome ce run : chaîne scrum/ (note de migration + bascule muti) — dépend de la bascule. Sortie de **v0.9.0** (milestone `rationalisation`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.9.0` + `milestone: rationalisation`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

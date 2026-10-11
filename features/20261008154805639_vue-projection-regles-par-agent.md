@@ -4,8 +4,8 @@ title: Vue de projection par projet — chaque agent/skill avec ses règles dép
 type: feature
 priority: P2
 product: mega-city
-milestone:
-version: v0.8.0
+milestone: parked
+version:
 labels: [observabilite]
 status: idea
 pr:
@@ -72,3 +72,7 @@ pnpm --dir products/mega-city test
   rendent le traçage à l'œil pénible et faillible.
 - **Déclencheur** : réveiller cette fiche quand **F1 et F2 sont livrées**. Avant, elle reste
   en `idea` P2 (douleur non prouvée). Ne pas fermer : la valeur est réelle, juste pas encore.
+
+## Sortie de version — parkée (run autonome 2026-10-11)
+
+Non construisable proprement en autonome ce run : PO l'a explicitement différée (réveiller quand F1/F2 livrées, douleur non prouvée). Sortie de **v0.8.0** et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.8.0`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.

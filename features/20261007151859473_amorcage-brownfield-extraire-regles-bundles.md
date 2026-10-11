@@ -4,8 +4,8 @@ title: "Amorçage brownfield : extraire les règles d'un projet existant → bun
 type: feature
 priority: P2
 product: vectorz
-milestone: portabilite
-version: v0.10.0
+milestone: parked
+version:
 labels: [portabilite, brownfield, regles]
 status: idea
 pr:
@@ -64,3 +64,7 @@ ls products/mega-city/rules/<cat>/<regle>.md && grep -n "<regle>" products/mega-
 - **Lié** : la keystone [générateur multi-IDE](20261007151859470_generateur-multi-ide-cli-moteur.md)
   (même thème portabilité / amorçage ailleurs que Claude Code).
 - **À vérifier au grooming** : recoupe-t-on `ezk-scout` existant ? L'étendre plutôt que créer.
+
+## Sortie de version — parkée (run autonome 2026-10-11)
+
+Non construisable proprement en autonome ce run : gros nouveau chantier (amorçage brownfield) — à cadrer avec le PO. Sortie de **v0.10.0** (milestone `portabilite`) et parkée pour laisser la version se clore (run arrêté à la demande du PO). **À re-verser par le PO** : re-mettre `version: v0.10.0` + `milestone: portabilite`, puis dé-parker (statut + milestone). Détail : rapport de run du 2026-10-11.
