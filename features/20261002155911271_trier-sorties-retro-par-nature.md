@@ -19,7 +19,9 @@ created: 2026-10-02
 l'ADR-0054 dit « des fiches », le skill `ezk-retro` range des règles directement, et le README
 `.rules/` d'un projet range des règles « en observation ». On les aligne sur un seul tri : ce qui
 **se construit** devient une fiche, ce qui **se discipline** devient une règle en observation, ce qui
-**récidive** fait +1 sur une règle existante.
+**récidive** fait +1 sur une règle existante. Le tri a **deux axes** : la *nature* (fiche vs règle)
+**et** la *destination* — une friction du produit va au backlog du projet hôte, une friction de la
+méthode va dans vectorz.
 
 **Si tu arrives frais.** Une *règle en observation* (`buffered`) est écrite mais pas appliquée ; elle
 s'active quand le problème revient. L'*ADR-0054* sépare fiche, sprint et session, et dit que la rétro
@@ -36,12 +38,17 @@ que les trois textes divergent, deux rétros peuvent ranger la même sortie de d
 
 - ADR-0054 : remplacer « la rétro produit des fiches » par le tri par nature.
 - `ezk-retro`, temps 5 : écrire le même tri (fiche, règle en observation, +1).
+- `ezk-retro`, temps 5 : **nommer le backlog cible** selon la nature de la friction — produit →
+  backlog du projet hôte (`--root <projet>`), méthode → vectorz. Aujourd'hui le temps 5 range
+  « via `/ezk-backlog add` » sans dire lequel : c'est le trou que cette puce bouche.
 - Gabarit du README `.rules/` des projets hôtes : rappeler ce tri.
 
 ## Critères d'acceptation
 
 - [ ] Les trois textes énoncent le même tri, dans les mêmes mots.
 - [ ] `ezk-retro` donne un exemple pour chaque branche du tri (construit, discipline, récidive).
+- [ ] Une friction **produit** surgie en rétro produit une fiche dans le backlog du **projet hôte**,
+  pas dans vectorz ; une friction **méthode** va dans vectorz.
 
 ## Comment vérifier
 
@@ -54,3 +61,6 @@ Relire les trois passages côte à côte ; la rétro suivante range ses sorties 
   `docs/captures/2026-10-02-retro-frictions-outillage-cross-repo.md`). Décision PO ✅, P2. Le dev
   voulait P3 (pur alignement de textes) ; la QA, P2 (plus on attend, plus les rétros divergent).
 - Version V0.6 proposée par le pilote ; à confirmer au planning.
+- Grooming 2026-10-11 (PO) : ajout de l'axe **destination** (produit → backlog du projet hôte,
+  méthode → vectorz) en plus du tri par nature. Déclencheur : rétro muti du 2026-10-11 rangée
+  entièrement dans vectorz, le PO a demandé où devait atterrir une friction produit.
