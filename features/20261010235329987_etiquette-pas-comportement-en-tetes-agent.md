@@ -73,6 +73,6 @@ La forme exacte (lentille reviewer vs item de règle) se décide au grooming.
 
 - Née de la rétro du 2026-10-10 (grain n°2), capture
   [docs/captures/2026-10-10-retro-run-regles-composables.md](../docs/captures/2026-10-10-retro-run-regles-composables.md).
-- Lié à [ADR-0070](../products/mega-city/docs/adr/0070-dod-dor-contrat-partage-bundle-role-methode.md)
+- Lié à [ADR-0071](../products/mega-city/docs/adr/0071-dod-dor-contrat-partage-bundle-role-methode.md)
   (qui pose déjà la distinction « déclaré/chargé » vs « appliqué ») et à la fiche sœur
   [capture de rétro lisible](20261010213353647_capture-retro-lisible-pour-le-po.md).

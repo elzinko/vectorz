@@ -1,7 +1,7 @@
 # DoD — Definition of Done : le contrat « quand est-ce fini ? », partagé.
 # C'est un BUNDLE (aucun kind nouveau), mais il JOUE LE RÔLE de DoD : le rôle
 # (qui applique, qui contrôle, à quel checkpoint) vit dans la MÉTHODE, pas ici
-# (ADR-0039 / ADR-0070). `ezk-dev` l'APPLIQUE et `ezk-reviewer` le CONTRÔLE, en
+# (ADR-0039 / ADR-0071). `ezk-dev` l'APPLIQUE et `ezk-reviewer` le CONTRÔLE, en
 # citant ce même bundle dans leur `interactions:` — déplié par F1 en la même
 # liste des deux côtés, fini la recopie à la main.
 # N'y mets QUE des critères de « done » observables sur l'incrément — jamais du

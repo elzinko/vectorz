@@ -24,7 +24,7 @@ change pas le prompt runtime. L'enforcement réel du reviewer (prose + cliquet `
 
 ## Réserves (toutes corrigées avant merge)
 
-- **[P1 — corrigé] Honnêteté ADR-0050.** L'ADR-0070 affirmait que la DoD est « injectée dans le
+- **[P1 — corrigé] Honnêteté ADR-0050.** L'ADR-0071 affirmait que la DoD est « injectée dans le
   prompt des deux côtés » → faux (voir ci-dessus). **Corrigé** : l'ADR dit maintenant que le
   contrat est unifié au **catalogue/graphe** (déterministe, auditable), que `interactions:` n'est
   pas lu par le modèle, et que l'enforcement réel reste prose + `law-coverage`.

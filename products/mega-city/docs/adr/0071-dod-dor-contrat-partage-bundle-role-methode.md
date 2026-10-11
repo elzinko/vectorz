@@ -1,4 +1,4 @@
-# ADR 0070 — DoD et DoR : un bundle qui joue le rôle de contrat partagé (amende ADR-0016 et ADR-0050)
+# ADR 0071 — DoD et DoR : un bundle qui joue le rôle de contrat partagé (amende ADR-0016 et ADR-0050)
 
 - Statut : **accepté** (décision de conception `ezk-architect`, fiche `20261008154804532`)
 - Date : 2026-10-10

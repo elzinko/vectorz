@@ -1,3 +1,42 @@
+---
+type: retro
+date: 2026-10-10
+theme: "Run « règles composables » (v0.8.0) — 5 frictions"
+scope: "Le run ezk-product-build autonome du 2026-10-10 : 3 sprints livrés en local (F1 citer un bundle, spike divergence dev↔reviewer, F2 DoD=bundle partagé) et les frictions relevées à la clôture. Rétro légère (choix PO), tenue inline par le pilote."
+participants: [produit, po]
+actions:
+  - proposition: "Le portier distingue un worktree vivant d'un worktree abandonné (ne plus crier au loup)"
+    kind: feature
+    by: [produit]
+    status: ✅
+    decision: "Fichée : 20261010213746514"
+    date: 2026-10-10
+  - proposition: "Dire « étiquette, pas comportement » quand on touche les règles déclarées d'un agent"
+    kind: feature
+    by: [produit]
+    status: ✅
+    decision: "Fichée : 20261010235329987"
+    date: 2026-10-10
+  - proposition: "ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue"
+    kind: feature
+    by: [produit]
+    status: ✅
+    decision: "Fichée : 20261010235330053"
+    date: 2026-10-10
+  - proposition: "ezk run report accepte une livraison locale (local <sha>) sans GitHub"
+    kind: feature
+    by: [produit]
+    status: ✅
+    decision: "Fichée : 20261010235330118"
+    date: 2026-10-10
+  - proposition: "La lisibilité d'une capture de rétro devient un critère tenu (le plus important)"
+    kind: feature
+    by: [produit]
+    status: ✅
+    decision: "Fichée : 20261010213353647 — désignée la plus importante par le PO"
+    date: 2026-10-10
+---
+
 # Rétro du run du 2026-10-10 — « les règles qui se regroupent »
 
 ## En clair
@@ -99,7 +138,7 @@ Les fiches naissent « idée » : le grooming et la priorité se tranchent au mo
 Run `ezk-product-build --mode auto --retro end`, 3 sprints livrés en local :
 F1 `20261008154803440` (citer un bundle, `58357fb6`) · spike `20261008183238365` (divergence
 dev↔reviewer prouvée, `476af66e`) · F2 `20261008154804532` (DoD = bundle `dod`, `c44c236f`,
-ADR-0070). Frictions ↔ pistes outillage : (1) `check.sh` mémoire d'override par worktree voisin ;
+ADR-0071). Frictions ↔ pistes outillage : (1) `check.sh` mémoire d'override par worktree voisin ;
 (2) lentille « déclaration catalogue/graphe vs effet prompt » sur tout livrable touchant
 `interactions:`/`applies:` ; (3) heuristique de barrage `ship-fiche` sur ligne `PLAN.md` à id
 unique ; (4) `run report --no-github` accepte `local (<sha>)` dans le champ PR ; (5) garde-fou

@@ -46,6 +46,7 @@
 | [20261008154803440](done/20261008154803440_consommateur-cite-un-bundle.md) | Un consommateur (agent/skill) peut citer un bundle, pas seulement des règles unitaires | feature | P0 | v0.8.0 | mega-city | ✅ shipped | local (58357fb6) |
 | [20261008154804532](done/20261008154804532_dod-dor-contrat-partage.md) | DoD et DoR — des listes de règles/bundles qui définissent prêt et fini (contrat partagé) | feature | P0 | v0.8.0 | mega-city | ✅ shipped | local (c44c236f) |
 | [20261008183238365](done/20261008183238365_spike-divergence-dev-reviewer.md) | Spike — ezk-dev et ezk-reviewer contrôlent-ils vraiment un contrat différent ? | chore | P0 | v0.8.0 | mega-city | ✅ shipped | local (constat spike 2026-10-10) |
+| [20261010215345931](20261010215345931_tirage-reste-dans-version-en-cours.md) | Le tirage reste dans la version en cours (garde-fou de séquence) | feature | P0 | v0.7.0 | mega-city | 🔵 ready |  |
 | [0001](done/0001-lanceur-run-mission-control.md) | Story B — lanceur de run + mission-control live | feature | P1 |  | vectorz | ✅ shipped | #24 |
 | [0002](done/0002-fix-emplacement-worktree-concurrent.md) | Fix emplacement du worktree en session concurrente | bug | P1 |  | vectorz | ✅ shipped | #26 |
 | [0013](done/0013-dodcheck-port-registry-seam.md) | DoDCheck port + registry + refactor du seam de transition (POC DoD automatisée) | feature | P1 |  | vectorz | ✅ shipped | #33 |
@@ -352,6 +353,7 @@
 | [20261010114133345](20261010114133345_cockpit-liste-lancement-une-fois.md) | Le cockpit liste le projet de lancement une seule fois (aujourd'hui deux fois) | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261010114133469](20261010114133469_groom-ajout-comportement-est-une-story.md) | Au grooming : un ajout de comportement en cours de sprint est une story ou reçoit un critère | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261010153046143](20261010153046143_brainstorm-dsl-cli-methode.md) | Brainstorm : la CLI de la méthode est-elle un DSL cohérent et professionnel ? (ezk / mc, toute la surface) | refactor | P2 |  | mega-city | 💡 idea |  |
+| [20261010213000378](20261010213000378_spike-agent-opere-services-sans-friction.md) | Spike : l'agent opère GitHub / Vercel / LemonSqueezy sans me redemander (CLI/MCP + ezk-secret) | chore | P2 |  | vectorz | 💡 idea |  |
 | [20261010213746514](20261010213746514_portier-ignore-worktree-sans-session-vivante.md) | Le portier de sprint distingue un worktree vivant d'un worktree abandonné (ne plus crier au loup) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261010235329987](20261010235329987_etiquette-pas-comportement-en-tetes-agent.md) | Quand on touche les règles déclarées d'un agent, dire si ça change son comportement ou juste l'étiquette | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261010235330053](20261010235330053_ship-barre-ligne-plan-id-unique.md) | ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue | feature | P2 |  | mega-city | 💡 idea |  |

@@ -63,7 +63,7 @@ describe('loadCatalog (données réelles du repo)', () => {
     const agent = catalog.agents.get('ezk-reviewer');
     expect(agent?.id).toBe('ezk-reviewer');
     expect(agent?.competences).toEqual(['ezk-ci']);
-    // Depuis F2 (ADR-0070) le reviewer cite le bundle `dod` (contrat « done » partagé), déplié
+    // Depuis F2 (ADR-0071) le reviewer cite le bundle `dod` (contrat « done » partagé), déplié
     // par F1, au lieu de recopier les 5 règles à la main. Le dépliage en règles est prouvé par
     // dod-contract.test.ts.
     expect(agent?.interactions).toEqual(['dod']);

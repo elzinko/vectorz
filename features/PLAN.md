@@ -4,7 +4,7 @@
 
 Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
 (`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de v0.1.0 à
-v0.9.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
+v0.10.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
 fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`BACKLOG.md`](BACKLOG.md).
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
@@ -37,6 +37,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **v0.7.0** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche, dans une interface reliée au board (le journal durable des moments d'abord, puis l'interface) | ▶️ **en cours** — socle d'abord (2026-10-07) |
 | **v0.8.0** | Amélioration mesurée | métriques & qualité : KPI agrégés commit→PR→sprint→version, viz qualité par PR, gate DoD, agent d'analyse | ⏸️ ensuite |
 | **v0.9.0** | Ranger la maison | rationalisation : `docs/` redevient de la doc, le process regroupé dans `scrum/`, la config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ⏭️ ensuite |
+| **v0.10.0** | Portabilité multi-IDE | une source de règles → `.claude/` + `.cursor/` + `AGENTS.md`, la CLI comme moteur portable | ⏭️ ensuite |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
@@ -120,24 +121,42 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 > (dispo, futur lot hygiène). v0.6.0 est **à clore** : `ezk backlog version close v0.6.0 --tag` + push de l'étiquette.
 
 ### ⑧ v0.7.0 — voir sous le capot (socle d'abord — décidé le 2026-10-07)
-> La clé de voûte (le contrat du bus / catalogue des moments) est livrée ; puis le **socle** qui fiabilise la trace ; l'**interface** attend la maquette.
+> La clé de voûte (le contrat du bus / catalogue des moments) et le socle « runs » sont livrés ; reste le garde-fou de séquence (P0, décidé le 2026-10-10), le compte rendu de sprint et ce que la rétro/l'archive en lisent ; l'**interface** attend la maquette. **Réaligné le 2026-10-10.**
+- `20261010215345931` — le tirage reste dans la version en cours (garde-fou de séquence) · P0 · **ready** → `build` (groomée 2026-10-11, ADR-0070)
+- `20261008072305169` — au close, le sprint écrit et committe son compte rendu · P1 · **ready** → `build`
+- `20261008072306360` — la rétro et l'archive lisent les comptes rendus de sprint · P1 · `idea` → `groom`
+- `0171` — recopier sur GitHub ce que la méthode écrit en local (issues, PR, labels, versions) · P1 · `idea` → `groom`
+- `20261007135620590` — refondre la vue de supervision du Moniteur (après maquette / décision PO) · P1 · `idea` → `groom`
 - ~~`20261004101755756` — écrire le contrat du bus : le catalogue des moments de la méthode · P1 · `build`~~ — shipped local (2e395663)
-- `20261002133125444` — fermer un run de supervision ne doit fermer que le sien · P2 · **ready** — lot socle
-- `20261003201035260` — les récits de session reviennent sur main (historique des runs figé au 30 août) · P2 · **ready** — lot socle
+- ~~`20261002133125444` — fermer un run de supervision ne doit fermer que le sien · P2 · `build`~~ — shipped local
+- ~~`20261003201035260` — les récits de session reviennent sur main (historique des runs figé au 30 août) · P2 · `build`~~ — shipped local
 - ~~`20261002115451315` — voir les fiches posées sur le process, avec leur session~~ — shipped local (bc8a0316) ; livrée avec version, filtres et le fix détail cross-projet (fiche 20261010100030780)
 - ~~`20261005100027029` — chaque sprint laisse un compte rendu committé, lu par la rétro · `idea` → `groom`~~ — split
-> Hors lot socle, après maquette / décision PO : la refonte du Moniteur (`20261007135620590`) et les hooks d'émission (`0077`, optionnel).
+> Hors lot socle, après maquette / décision PO : les hooks d'émission (`0077`, optionnel).
 
 ### ⑨ v0.8.0 — amélioration mesurée : système de règles composable (décidé le 2026-10-08, réaligné le 2026-10-09)
 > Le système de règles devient composable : citer un bundle (la brique) et prouver la divergence dev/reviewer (spike), puis la DoD/DoR en listes partagées, puis la vue de projection. Avis ezk-architect / ezk-pm / product-brainstorming intégrés.
 - ~~`20261008154803440` — un consommateur (agent/skill) peut citer un bundle · P0 · **ready** → `build` ; amende ADR-0040 (double-write sorti en Suite)~~ — shipped local (58357fb6)
 - ~~`20261008183238365` — spike : dev et reviewer divergent-ils vraiment ? · P0 · **ready** → `build` ; conditionne F2~~ — shipped local (constat 2026-10-10 : divergence PROUVÉE → F2 à tirer)
-- ~~`20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → `groom` ; conditionnée au spike + dépend de F1~~ — shipped local (c44c236f ; ADR-0070, DoD = bundle `dod`)
+- ~~`20261008154804532` — DoD/DoR en listes de règles/bundles (contrat partagé) · P0 · `idea` → `groom` ; conditionnée au spike + dépend de F1~~ — shipped local (c44c236f ; ADR-0071, DoD = bundle `dod`)
 - `20261008154805639` — vue de projection par projet (agent + ses règles) · P2 · `idea` → différée (déclencheur F1/F2)
 
 ### ⑩ v0.9.0 — ranger la maison (rationalisation)
-> Rationalisation de la surface : fichiers (docs/, scrum/, config cop1, CLAUDE.md proxy) et CLI.
+> Rationalisation de la surface : fichiers (docs/, scrum/, config cop1, CLAUDE.md proxy) et CLI. Lot **entièrement prêt** (8 fiches ready) — complété au réalignement du 2026-10-10 ; à tirer après la v0.7 puis la v0.8.
 - `20261009104436287` — `next` nu montre la suite (pas la liste) ; `plan-head` démoté · P1 · **ready** → `build`
+- `20261001192624192` — chemins des artefacts de méthode configurables (`scrum:`) — la fondation · P2 · **ready** → `build`
+- `20261007154842506` — brancher skills/scripts/bins sur le résolveur de chemins · P2 · **ready** → `build`
+- `20261007154842643` — basculer vectorz vers `scrum/` (git mv des 5 dossiers) · P2 · **ready** → `build`
+- `20261007154842780` — nettoyer `docs/` : supprimer `archive/`, requalifier `e2e/` · P2 · **ready** → `build`
+- `20261007154842917` — note de migration `scrum/` + bascule d'un consommateur (muti) · P2 · **ready** → `build`
+- `20261007115128214` — descendre `cop1.config.example.yaml` vers `products/cop1/` · P2 · **ready** → `build`
+- `20261007115129448` — `CLAUDE.md` = simple proxy vers la loi, bindée par projet · P2 · **ready** → `build`
+
+### ⑪ v0.10.0 — portabilité multi-IDE (ajouté au plan le 2026-10-10)
+> Une source de règles → plusieurs IDE (`.claude/`, `.cursor/`, `AGENTS.md`), la CLI comme moteur portable. Était absent du plan alors que les fiches existaient déjà.
+- `20261007151859470` — générateur multi-IDE : une source → `.claude/` + `.cursor/` + `AGENTS.md`, CLI moteur · P1 · **ready** → `build`
+- `20261010091118580` — boussole de session : une commande qui dit quoi faire maintenant · P2 · **ready** → `build`
+- `20261007151859473` — amorçage brownfield : extraire les règles d'un projet existant → bundles · P2 · `idea` → `groom`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

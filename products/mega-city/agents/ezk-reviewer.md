@@ -19,7 +19,7 @@ color: red
 competences:
   - ezk-ci
 interactions:
-  - dod # contrôle le contrat « done » partagé (bundle, déplié par F1) — plus de recopie, ADR-0070
+  - dod # contrôle le contrat « done » partagé (bundle, déplié par F1) — plus de recopie, ADR-0071
 ---
 
 # ezk-reviewer — revue adverse
