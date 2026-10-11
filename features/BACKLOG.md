@@ -265,9 +265,9 @@
 | [20261007115128214](done/20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9) |
 | [20261007115129448](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | v0.9.0 | vectorz | 🔵 ready |  |
 | [20261007154842506](done/20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
-| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 | v0.9.0 | vectorz | 🔵 ready |  |
+| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 |  | vectorz | 🔵 ready |  |
 | [20261007154842780](20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | v0.9.0 | vectorz | 🔵 ready |  |
-| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 | v0.9.0 | vectorz | 🔵 ready |  |
+| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 |  | vectorz | 🔵 ready |  |
 | [20261008154805639](done/20261008154805639_vue-projection-regles-par-agent.md) | Vue de projection par projet — chaque agent/skill avec ses règles dépliées | feature | P2 | v0.8.0 | mega-city | ✅ shipped | local (v0.8.0) |
 | [20261008154856357](done/20261008154856357_retaguer-v03-v06-semver-aligner-plan.md) | re-taguer V0.3–V0.6 en semver (vX.Y.Z) + aligner PLAN.md | chore | P2 |  | mega-city | ✅ shipped | local (d7936b30) |
 | [20261010091118580](20261010091118580_boussole-session-quoi-faire-maintenant.md) | Boussole de session — une commande qui dit quoi faire maintenant | feature | P2 | v0.10.0 | mega-city | 🔵 ready |  |

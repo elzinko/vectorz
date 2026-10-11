@@ -5,7 +5,8 @@ type: chore
 priority: P2
 product: vectorz
 milestone: rationalisation
-version: v0.9.0
+version:
+blocked: "dépend de la bascule scrum/ (20261007154842643), parquée hors v0.9 (déménagement à l'échelle du dépôt, à faire sous revue — run 2026-10-11)"
 labels: [convention, arborescence]
 status: ready
 pr:
