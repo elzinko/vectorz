@@ -1,31 +1,34 @@
 ---
 id: "20261007135620590"
-title: "Refondre la vue de supervision du Moniteur pour qu'elle soit lisible"
+title: "Unifier les tableaux de bord en un seul (Moniteur + cockpit + board), guidé par maquette"
 type: feature
 priority: P1
 product: cop1
 milestone: parked
 version:
-labels: [supervision, moniteur, lisibilite]
+labels: [supervision, moniteur, cockpit, board, lisibilite, ux]
 status: idea
-blocked: "attend brainstorming + maquette PO ; webapp cop1 (sorti de v0.7, run 2026-10-11)"
+blocked: "re-scopée en refonte unifiée (PO 2026-10-11) ; maquettes en cours de production + évaluation par agents UX/UI ; à versionner et dé-parker une fois la maquette validée par le PO"
 pr:
 evidence: before-after
 created: 2026-10-07
 ---
 
-# 20261007135620590 — Refondre la vue de supervision du Moniteur pour qu'elle soit lisible
+# 20261007135620590 — Unifier les tableaux de bord en un seul, guidé par maquette
 
-**En clair.** Le Moniteur montre bien les runs, mais il se lit mal : on ne voit pas d'un coup d'œil
-ce qui s'est passé, le coût en tokens s'affiche « non mesuré » partout, et deux vues du même projet
-se contredisent (une dit « aucun run », l'autre en montre 32). On veut le refondre pour qu'il soit
-lisible. Avant de coder, on fait un **gros brainstorming** avec le PO, qui débouche sur une
-**maquette** ; c'est ce travail-là qui remplit cette fiche.
+**En clair.** Aujourd'hui il y a **trois tableaux de bord éparpillés** : le Moniteur (les runs), le
+cockpit (les projets et leur config), et ezk:map/board (le plan, le board, les sprints). On ne sait
+pas où regarder, les vues se contredisent, et le coût en tokens s'affiche « non mesuré » partout. On
+veut **un seul tableau de bord lisible** qui réunit ces trois surfaces. Avant de coder, on produit
+**une ou deux maquettes**, on les fait **départager par des agents UX/UI**, et la maquette retenue
+(validée par le PO) devient la cible de la fiche.
 
-**Si tu arrives frais.** Le *Moniteur* est la webapp (produit cop1) qui lit le journal de
-supervision (`.supervision/runs/`) et affiche les *runs* (un passage d'une méthode) et leurs
-*jalons* (checkpoints de sprint, inter-sprint, dérives de tokens). Une *maquette* est une page
-d'exemple du nouvel écran, sans le vrai code derrière.
+**Si tu arrives frais.** Une *maquette* est une page d'exemple du nouvel écran, sans le vrai code
+derrière. Les trois surfaces à unifier :
+- le **Moniteur** — webapp cop1 qui lit le journal de supervision (`.supervision/runs/`) et affiche
+  les *runs* (un passage d'une méthode) et leurs *jalons* (checkpoints) ;
+- le **cockpit** — tableau de bord multi-projets (v0.6) : choisir un projet, voir sa config, ses fiches ;
+- **ezk:map / board** — les vues côté méthode : accueil, vue Plan, board d'avancement, sprints réalisés.
 
 ## Contexte / Problème
 
@@ -46,15 +49,19 @@ sert de référence de ce qui se lit facilement, pas de cible finale.
 
 ## Proposition
 
-À élaborer **au grooming, avec le PO**, en deux temps :
+**Objectif : un seul tableau de bord** qui réunit les trois surfaces (Moniteur, cockpit, board), avec
+une hiérarchie claire — « où en suis-je », « qu'est-ce qui a coûté cher », « qu'est-ce qui a bloqué ».
+On distingue ce qui relève de la **présentation** (cette fiche) et de la **donnée manquante** (les
+tokens par fiche/sprint/version — c'est le socle, voir Notes).
 
-1. **Un gros brainstorming** (product-brainstorming) : qui regarde cet écran et pour quoi faire,
-   qu'est-ce qu'on veut voir d'un coup d'œil, quelles questions l'écran doit répondre (« où en
-   suis-je », « qu'est-ce qui a coûté cher », « qu'est-ce qui a bloqué »). On distingue ce qui
-   relève de la **présentation** (cette fiche) et ce qui relève de la **donnée manquante** (les
-   tokens, la clé par fiche/sprint/version — ça, c'est le socle, voir Notes).
-2. **Une maquette** du nouvel écran, itérée avec le PO jusqu'à accord. La maquette validée devient
-   l'artefact de référence de la fiche ; les critères d'acceptation en découlent.
+Démarche **guidée par maquette**, avec un départage UX :
+
+1. **Une ou deux maquettes** du tableau de bord unifié (pages d'exemple, sans backend).
+2. **Départage par des agents UX/UI** : on leur fait évaluer et tester les maquettes contre des
+   critères d'usage (lisibilité au premier coup d'œil, hiérarchie, une seule vérité par projet,
+   parcours « où en suis-je »), et ils disent **laquelle est la mieux** et pourquoi.
+3. **Validation PO** : le PO tranche sur la maquette gagnante (ou demande une itération). La maquette
+   validée devient l'**artefact de référence** de la fiche ; les critères d'acceptation en découlent.
 
 POC d'abord (l'écran se lit), polish ensuite.
 
@@ -62,6 +69,8 @@ POC d'abord (l'écran se lit), polish ensuite.
 
 > À remplir au grooming, une fois la maquette validée. Graines connues, à confirmer :
 
+- [ ] La maquette retenue **réunit les trois surfaces** (runs, projets/config, plan/board/sprints) en un seul écran cohérent.
+- [ ] La maquette a été **départagée par des agents UX/UI** (verdict + justification) avant la validation PO.
 - [ ] Un lecteur neuf dit, en regardant l'écran sans explication, ce qui s'est passé et où regarder.
 - [ ] Le coût en tokens d'un run est visible (ou son absence est explicite et justifiée, pas un
       « non mesuré » muet).
@@ -98,6 +107,16 @@ POC d'abord (l'écran se lit), polish ensuite.
   « une page : une ligne par projet » ([20261002115451451](20261002115451451_page-une-ligne-par-projet.md)),
   « viz qualité par PR » ([0056](0056-viz-qualite-mission-control.md)).
 - Référence « ce qui se lit » : page rapide des 32 runs, https://claude.ai/artifact/5EevcXyhCQ14AEqnr3HEte
+
+## Re-scope — refonte unifiée (PO 2026-10-11)
+
+Le PO a élargi la fiche : au-delà de la vue de supervision du Moniteur, **unifier les trois tableaux
+de bord éparpillés** (Moniteur + cockpit + board) en un seul. Démarche demandée : je produis **une ou
+deux maquettes**, je les fais **tester et départager par des agents UX/UI**, le PO tranche sur la
+gagnante. La fiche reste parkée tant que la maquette n'est pas validée ; ensuite on la versionne
+(place pressentie : près de **v0.15 « Voir les runs »**, ou une version UX dédiée) et on la dé-parke.
+Lien décision de regroupement des commandes : [brainstorm CLI/DSL](20261010153046143_brainstorm-dsl-cli-methode.md)
+(`dashboard` + `map` → `board`).
 
 ## Sortie de v0.7 — parkée (run autonome 2026-10-11)
 

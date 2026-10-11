@@ -390,7 +390,7 @@
 | [0165](0165-contrat-ameliorabilite-v01-mvp-b.md) | Contrat d'améliorabilité v0.1 — texte, registre des surfaces, kit émetteur, extension ezk-backlog, première boucle fermée (MVP B) | feature | P1 |  | mega-city | 💡 idea |  |
 | [0171](0171-adapter-github-issues-push-only.md) | Recopier sur GitHub ce que la méthode écrit en local : issues, PR, labels, versions | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260813131259846](20260813131259846_ameliorabilite-surfaces-gelees-gated-adr030.md) | Contrat d'améliorabilité — validateur noyau + miroir + chien de garde (surfaces gelées) — gated ADR-030 ratifié | feature | P1 |  | vectorz | 💡 idea |  |
-| [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Refondre la vue de supervision du Moniteur pour qu'elle soit lisible | feature | P1 |  | cop1 | 💡 idea |  |
+| [20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md) | Unifier les tableaux de bord en un seul (Moniteur + cockpit + board), guidé par maquette | feature | P1 |  | cop1 | 💡 idea |  |
 | [0043](0043-article-self-hosting-cop1-developpe-cop1.md) | article — « Self-hosting : le jour où cop1 développera cop1 » (dogfooding → self-hosting → RSI) | feature | P2 |  | vectorz | 💡 idea |  |
 | [0045](0045-moisson-pipeline-amelioration-epoque-1.md) | Moisson du pipeline d'amélioration d'époque 1 (Epics 9+12) — extraire la sémantique avant qu'elle ne se disperse | chore | P2 |  | vectorz | 💡 idea |  |
 | [0053](0053-gate-dod-metrique.md) | Gate DoD adossé à une métrique — bloquer une PR si un seuil qualité n'est pas tenu | feature | P2 |  | vectorz | 💡 idea |  |
