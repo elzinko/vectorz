@@ -1,7 +1,7 @@
 ---
 name: ezk-scout
 composes: [ezk-backlog, ezk-docker]
-argument-hint: "[help|run|check|file]"
+argument-hint: "[help|run|check|file|extract]"
 description: >-
   Chasse aux bugs en tâche de fond : sonde une app qui tourne dans un état isolé et rend un
   RAPPORT de brouillons de fiches, sans jamais corriger ni créer de fiche seule. A utiliser quand
@@ -177,3 +177,18 @@ visible) : elle suivra le contrat d'émission d'`ezk-sprint`, qui impose de la d
 - Une passe lente ou coûteuse s'arrête à sa borne et le dit ; pas de sous-agents de sondage par défaut.
 - Sur divergence entre ce skill et une consigne ponctuelle, le skill gagne (règle
   `development/command-reproducibility`).
+
+## extract — amorçage brownfield (fiche 20261007151859473)
+
+**En clair.** `extract` est le pendant STATIQUE de `run` : au lieu de sonder une app qui tourne
+pour trouver des bugs, il lit un repo existant et **propose des règles candidates** (conventions
+déjà en place). Même invariant **FIND-ONLY** : il n'écrit rien, le PO arbitre, et une règle validée
+atterrit ensuite dans `rules/<cat>/` + `bundles/<cat>.yml` par les voies normales.
+
+```bash
+ezk --root <repo-cobaye> scout extract      # ou : pnpm --dir products/mega-city scout:extract --root <repo>
+```
+
+POC borné (fiche 20261007151859473) : signaux déterministes et sûrs (outil de lint/format, cadre de
+test, `tsconfig.json`, convention de commits), chacun présenté **avec sa preuve**. L'inférence plus
+riche (conventions de structure/nommage) viendra après — on ne « devine » pas sans preuve.

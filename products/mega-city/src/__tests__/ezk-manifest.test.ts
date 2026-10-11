@@ -85,6 +85,7 @@ describe('ezk-manifest.yml', () => {
       'rules apply',
       'rules check',
       'rules show',
+      'scout extract',
     ]);
   });
 

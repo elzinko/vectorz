@@ -34,6 +34,7 @@
     "graph:project": "tsx bin/graph-project.ts",
     "paths": "tsx bin/paths.ts",
     "now": "tsx bin/ezk-now.ts",
+    "scout:extract": "tsx bin/ezk-scout-extract.ts",
     "map:data": "tsx bin/views-regen.ts",
     "fiches:check": "tsx bin/check-fiches.ts",
     "avancement": "tsx bin/avancement.ts",

@@ -156,7 +156,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 > Une source de règles → plusieurs IDE (`.claude/`, `.cursor/`, `AGENTS.md`), la CLI comme moteur portable. Était absent du plan alors que les fiches existaient déjà.
 - ~~`20261007151859470` — générateur multi-IDE : une source → `.claude/` + `.cursor/` + `AGENTS.md`, CLI moteur · P1~~ — parkée, sortie de v0.10 (ADR durable + sortie `.cursor/`/`AGENTS.md` non vérifiable sans IDE cible ; effort dédié ; run 2026-10-11)
 - ~~`20261010091118580` — boussole de session : une commande qui dit quoi faire maintenant · P2 · **ready** → `build`~~ — shipped local (ADR-0072, `ezk now`)
-- `20261007151859473` — amorçage brownfield : extraire les règles d'un projet existant → bundles · P2 · **ready** (groomée 2026-10-11 : étendre `ezk-scout`) → `build` (différé ce run : feature large)
+- ~~`20261007151859473` — amorçage brownfield : extraire les règles d'un projet existant → bundles · P2 · **ready** (groomée 2026-10-11 : étendre `ezk-scout`) → `build`~~ — shipped
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

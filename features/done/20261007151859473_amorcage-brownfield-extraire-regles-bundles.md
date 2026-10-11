@@ -7,8 +7,8 @@ product: vectorz
 milestone: portabilite
 version: v0.10.0
 labels: [portabilite, brownfield, regles]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.10.0)"
 evidence: none
 created: 2026-10-07
 ---
@@ -61,7 +61,7 @@ ls products/mega-city/rules/<cat>/<regle>.md && grep -n "<regle>" products/mega-
 - **Origine** : vision exprimée par le PO le 2026-10-07 (« le jour où je pars d'un projet existant,
   vectorz extrait les règles dans un ou des bundles pour que les agents s'en servent »).
 - **Prior art** : Agent OS (Builder Methods) — standards-first, part du code.
-- **Lié** : la keystone [générateur multi-IDE](20261007151859470_generateur-multi-ide-cli-moteur.md)
+- **Lié** : la keystone [générateur multi-IDE](../20261007151859470_generateur-multi-ide-cli-moteur.md)
   (même thème portabilité / amorçage ailleurs que Claude Code).
 - **À vérifier au grooming** : recoupe-t-on `ezk-scout` existant ? L'étendre plutôt que créer.
 - **Groom du 2026-10-11 (run auto v0.10).** Question tranchée : **étendre `ezk-scout`** (qui chasse
@@ -70,5 +70,12 @@ ls products/mega-city/rules/<cat>/<regle>.md && grep -n "<regle>" products/mega-
   règle dans `rules/` ET `bundles/`, agents chargent, PO arbitre), « comment vérifier » rejouable sur
   un repo cobaye. Passée `ready`. **Non construite ce run** : feature large et par nature floue
   (inférer des conventions depuis le code) — mérite un effort dédié (POC sur un cobaye + arbitrage PO
-  règle par règle). Laissée `ready` en v0.10, à tirer ensuite. N'a PAS le verrou Cursor du générateur
-  (vérifiable en local sur un repo cobaye), donc **pas parquée** : juste différée faute de temps ce run.
+  règle par règle). N'a PAS le verrou Cursor du générateur (vérifiable en local sur un repo cobaye).
+- **Build du 2026-10-11 (run auto v0.10).** POC livré : `ezk scout extract` (bin
+  `bin/ezk-scout-extract.ts`) + cœur pur `extractCandidates` (`src/core/scout-extract.ts`, testé).
+  Lit des signaux statiques **déterministes** (outil de lint/format via `biome.json`/deps, cadre de
+  test, `tsconfig.json`, convention de commits) et **PROPOSE** des règles candidates avec leur
+  preuve — **jamais écrites** (FIND-ONLY). Vérifié sur vectorz : 3 candidats (biome, conventional-
+  commits 29/30, vitest). Le SKILL `ezk-scout` porte la sous-commande `extract`. L'arbitrage PO +
+  l'écriture dans `rules/`+`bundles/` (AC 2-4) restent les voies normales, en aval. Inférence plus
+  riche (structure/nommage) = suite, on ne devine pas sans preuve.

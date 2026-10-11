@@ -282,6 +282,11 @@ commands:
     run: bin/ezk-now.ts
     summary: Boussole de session — que faire maintenant, vu l'état du dépôt (lecture seule).
     project: true
+  - domain: scout
+    verb: extract
+    run: bin/ezk-scout-extract.ts
+    summary: Propose des règles candidates d'un repo existant (brownfield, lecture seule).
+    project: true
   - domain: views
     verb: regen
     run: bin/views-regen.ts
