@@ -5,9 +5,10 @@ type: refactor
 priority: P1
 product: mega-city
 milestone:
-version: v0.9.0
+version:
 labels: [ergonomie-cli]
-status: ready
+status: idea
+blocked: "prémisse périmée : le CLI n'a ni `next` ni `list` (migré vers plan-head/plan-lot, périmètre de version ADR-0070) ; construire un `next` reviendrait en arrière. Résidu = renommage de vocabulaire = décision PO (run auto 2026-10-11)"
 pr:
 evidence: none
 created: 2026-10-09
@@ -85,3 +86,14 @@ ezk backlog list          # déballage complet
 - **Avis architecte 2026-10-09** : rétro-compat par synonyme `--ready-only` (appelants intacts) ;
   `plan-head` démoté (option C — callable mais hors surface humaine). **Pas d'ADR** : convention
   CLI locale, pas une décision durable ; au plus une ligne dans le SKILL.md d'`ezk-backlog`.
+- **Sortie de v0.9.0 — run auto du 2026-10-11.** Constat au build : le CLI `ezk backlog` n'expose
+  **ni `next` ni `list`** (verbes réels : `plan-head`, `plan-lot`, `plan-order`). La prémisse de la
+  fiche (« `next` nu = alias de `list` ») décrit un état **antérieur** à la refonte tirage
+  (`plan-head`/`plan-lot`, périmètre de version ADR-0070). L'intention « montrer la suite, pas tout
+  déballer » est **déjà tenue** par `plan-head`. Construire un verbe `next` comme décrit
+  **réintroduirait** le vocabulaire que le CLI a volontairement retiré → conflit avec le design
+  livré. Le seul résidu réel est un **renommage de vocabulaire** : le SKILL.md d'`ezk-backlog` parle
+  encore de `next --ready-only`/`next --lot` en surface alors que le CLI dit `plan-head`/`plan-lot`.
+  Aligner (renommer, ou garder la double lecture) est une **décision de nommage PO**, pas un build
+  autonome. Fiche sortie de version, `blocked:` posé. À re-scoper par le PO : « faut-il aligner le
+  vocabulaire SKILL sur les verbes CLI ? ».

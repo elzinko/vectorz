@@ -157,7 +157,6 @@
 | [20261008063957243](done/20261008063957243_version-reconnait-tags-semver-3-chiffres.md) | backlog version : reconnaître les étiquettes semver à 3 chiffres (v1.7.0) | bug | P1 |  | mega-city | ✅ shipped | local (77ec3162) |
 | [20261008072305169](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) | Au close, le sprint écrit et committe son compte rendu | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
 | [20261008072306360](done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) | La rétro et l'archive lisent les comptes rendus de sprint | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
-| [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 | v0.9.0 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -321,6 +320,7 @@
 | [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261009104436287](20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 |  | mega-city | 💡 idea |  |
 | [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261010213353647](20261010213353647_capture-retro-lisible-pour-le-po.md) | Une capture de rétro (et tout artefact committé lu par le PO) doit être lisible, et quelque chose doit le vérifier | feature | P1 |  | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
