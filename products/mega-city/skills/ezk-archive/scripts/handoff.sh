@@ -98,7 +98,9 @@ if stat -c %Y . >/dev/null 2>&1; then mtime() { stat -c %Y "$1"; }   # GNU coreu
 else                                  mtime() { stat -f %m "$1"; }   # BSD / macOS
 fi
 
-SESSIONS_DIR="$ROOT/docs/sessions"
+# Dossier des récits/archives de session : résolu par la config projet (`scrum:`), défaut legacy
+# `docs/sessions` (fiche 20261007154842506). Bandeau `--root` sur stderr.
+SESSIONS_DIR="$ROOT/$(ezk --root "$ROOT" paths sprints)"
 
 # La copie versionnée la plus récente. L'heure est dans le nom : l'ordre des noms est l'ordre du temps.
 latest_durable() {

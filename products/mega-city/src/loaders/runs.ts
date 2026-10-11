@@ -10,6 +10,7 @@
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { scrumPaths } from './project-config.js';
 
 export interface RunReport {
   /** Chemin relatif à la racine du repo (ex. `docs/sessions/2026-08-26-....md`) — lien cliquable. */
@@ -55,7 +56,10 @@ function readPrs(text: string): string[] {
 
 /** Charge tous les récits de `docs/sessions/`, triés du plus RÉCENT au plus ancien. Déterministe. */
 export function loadRuns(rootDir: string): RunReport[] {
-  const dir = join(rootDir, 'docs', 'sessions');
+  // Chemin des récits de sprint : résolu par la config projet (`scrum:`), défaut legacy
+  // `docs/sessions` (fiche 20261007154842506) — comportement inchangé tant que `scrum:` est absent.
+  const sprintsRel = scrumPaths(rootDir).sprints;
+  const dir = join(rootDir, sprintsRel);
   if (!existsSync(dir)) return [];
   const runs: RunReport[] = [];
   for (const filename of readdirSync(dir).sort()) {
@@ -63,7 +67,7 @@ export function loadRuns(rootDir: string): RunReport[] {
     if (!m) continue;
     const text = readFileSync(join(dir, filename), 'utf8');
     runs.push({
-      file: `docs/sessions/${filename}`,
+      file: `${sprintsRel}/${filename}`,
       date: m[1],
       slug: m[2],
       title: readTitle(text) || m[2],
@@ -72,5 +76,7 @@ export function loadRuns(rootDir: string): RunReport[] {
     });
   }
   // Plus récent d'abord ; à date égale, ordre de nom stable (décroissant) pour un tri déterministe.
-  return runs.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug < b.slug ? 1 : -1));
+  return runs.sort((a, b) =>
+    a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug < b.slug ? 1 : -1,
+  );
 }

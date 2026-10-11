@@ -101,7 +101,7 @@ pnpm --dir products/mega-city ezk --root "$(git rev-parse --show-toplevel)" path
   2026-10-06, arbitrages, mécanisme, conséquences) vit désormais dans
   [ADR-0066](../../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 - **Fiches sœurs du lot** (liées par le milestone, chacune autonome) :
-  [2 — brancher les skills](../20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) ·
+  [2 — brancher les skills](20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) ·
   [3 — basculer vectorz vers scrum/](../20261007154842643_basculer-vectorz-vers-dossier-scrum.md) ·
   [4 — nettoyer docs/ (archive, e2e)](../20261007154842780_nettoyer-docs-archive-e2e.md) ·
   [5 — migration des consommateurs](../20261007154842917_note-migration-bascule-consommateurs-scrum.md).

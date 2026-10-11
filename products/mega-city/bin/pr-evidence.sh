@@ -39,7 +39,9 @@ EOF
 
 git_root() { git rev-parse --show-toplevel; }
 
-default_out() { printf '%s/docs/pr-evidence' "$(git_root)"; }
+# Dossier des preuves : résolu par la config projet (`scrum:`), défaut legacy `docs/pr-evidence`
+# (fiche 20261007154842506). Le bandeau `--root` part sur stderr, pas dans la capture.
+default_out() { local r; r="$(git_root)"; printf '%s/%s' "$r" "$(ezk --root "$r" paths evidence)"; }
 
 # ── capture ──────────────────────────────────────────────────────────────────────
 cmd_capture() {

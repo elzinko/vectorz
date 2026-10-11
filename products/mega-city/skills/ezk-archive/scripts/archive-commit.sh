@@ -48,7 +48,7 @@ HELPER="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../bin" 2>/dev/null && pwd)/c
 [[ -f "$HELPER" ]] || { echo "archive-commit.sh : helper introuvable : $HELPER" >&2; exit 2; }
 
 args=(
-  --repo "$repo" --file "$file" --dest-rel "docs/sessions/$date-$slug.md"
+  --repo "$repo" --file "$file" --dest-rel "$(ezk --root "$repo" paths sprints)/$date-$slug.md"
   --branch-base "docs/archive-session-$date" --subject "$subject" --base "$base"
   --kind-tag ARCHIVE --kind-noun archive
 )

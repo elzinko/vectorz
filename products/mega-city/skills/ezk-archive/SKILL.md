@@ -324,7 +324,8 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
   qui scelle l'incrément dans `SPRINT.md`), ezk-archive ferme la *session*. Typiquement invoqué
   **après** le `close` du dernier sprint de la session. À la clôture `run`/`close`, archive un
   snapshot de `SPRINT.md` (tous les incréments scellés de la session y figurent) dans
-  `docs/sessions/` (voir `docs/sessions/README.md` du projet).
+  `docs/sessions/` (voir `docs/sessions/README.md` du projet). Ce dossier est résolu par
+  `ezk paths sprints` depuis la config projet `scrum:` (défaut `docs/sessions`, fiche 20261007154842506).
 - **`ezk-commits`** : tout commit produit suit les Conventional Commits.
 - **`ezk-product-build`** : à ses pauses inter-sprint, il **rappelle** que
   `/ezk-archive` est disponible — il ne réimplémente rien du handoff ni de

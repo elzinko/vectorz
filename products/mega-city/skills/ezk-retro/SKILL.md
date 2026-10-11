@@ -67,6 +67,9 @@ Déroule **toujours** ces 5 temps. Les 3 premiers sont les **3 soudures** de la 
 - Fixe le **périmètre** (PR, sprint, friction, méthode en général).
 - Rassemble les **symptômes observés** : frictions vécues, échecs, retouches manuelles de
   PR, leçons ré-expliquées, points de douleur.
+- *(Les dossiers de process cités ici — `docs/retro-notes/`, `docs/captures/`, `docs/sessions/` —
+  sont résolus par `ezk paths retroNotes|retroCaptures|sprints` depuis la config projet `scrum:` ;
+  défaut `docs/…`, fiche 20261007154842506.)*
 - **Lis le carnet de préparation**, en deux lieux : `docs/retro-notes/` (hors `README.md` et
   `traitees/`), et les notes déposées hors de git par `ezk retro note`, que liste
   `bash <skill>/scripts/note.sh list` (une note par ligne). Chaque fichier `<id>-<slug>.md` est une

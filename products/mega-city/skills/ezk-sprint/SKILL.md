@@ -233,7 +233,9 @@ fichier durable, hors `SPRINT.md`, avec
 `bash products/mega-city/bin/journal-add.sh <id-fiche> "<titre>" "<ce qui a coincé>" "<comment réglé>" ["<pourquoi>"]`.
 Une entrée par galère, **taguée par fiche**. Le fichier est propre à la session (le nom de la
 branche) : deux sprints en parallèle ne se marchent pas dessus. Le journal est indépendant du
-labo : `ezk-chef extract` le lit à la demande. Format et règles : `docs/journal/README.md`. La
+labo : `ezk-chef extract` le lit à la demande. Format et règles : `docs/journal/README.md`. (Les
+chemins de process — récits, journal, preuves, captures — sont résolus par `ezk paths <clé>` depuis
+la config projet `scrum:` ; défaut `docs/…`, fiche 20261007154842506.) La
 section de `SPRINT.md` ci-dessus reste lue (rétro-compatibilité), mais n'est plus la voie
 recommandée.
 

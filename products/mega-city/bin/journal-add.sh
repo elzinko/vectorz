@@ -72,7 +72,10 @@ if [ -n "$SLUG_BRUT" ] && [ "$SLUG" != "$SLUG_BRUT" ]; then
   SLUG="${SLUG}-$(printf '%s' "$SLUG_BRUT" | cksum | awk '{ printf "%08x", $1 }')"
 fi
 
-DIR="$ROOT/docs/journal"
+# Dossier du journal : résolu par la config projet (`scrum:`) via le résolveur de la méthode,
+# défaut legacy `docs/journal` (fiche 20261007154842506). Le bandeau `--root` part sur stderr.
+REL="$(ezk --root "$ROOT" paths journal)"
+DIR="$ROOT/$REL"
 mkdir -p "$DIR"
 
 # Un seul fichier par slug : on reprend le plus ancien s'il existe, sinon on le crée à la date du jour.

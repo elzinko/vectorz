@@ -102,9 +102,12 @@ fi
 # Verse la section « Galères & gestes (labo) » dans les Préliminaires, avec un pointeur vers
 # le récit source (entonnoir ADR-0013 — jamais de code recopié). Tri déterministe (glob trié).
 labo_sessions() {
-  local id="$1" f header
-  [ -d docs/sessions ] || return 0
-  for f in docs/sessions/*.md; do
+  # Dossier des récits : résolu par la config projet (`scrum:`), défaut legacy `docs/sessions`
+  # (fiche 20261007154842506). Bandeau `--root` sur stderr.
+  local id="$1" f header dir
+  dir="$(ezk --root "$ROOT" paths sprints)"
+  [ -d "$dir" ] || return 0
+  for f in "$dir"/*.md; do
     [ -e "$f" ] || continue
     header="$(awk '/^fiches:/ { print; exit }' "$f")"
     printf '%s' "$header" | grep -Eq "(^|[^0-9])${id}([^0-9]|\$)" && printf '%s\n' "$f"
@@ -129,9 +132,12 @@ PRELIM_LABO="${PRELIM_LABO%$'\n\n'}"
 # On ne lit que les fichiers préfixés d'une date (README.md et autres docs du dossier restent
 # ignorés) et que les entrées dont le titre est `## [FICHE_ID] …` (borne : id exact, pas préfixe).
 journal_files() {
-  local id="$1" f
-  [ -d docs/journal ] || return 0
-  for f in docs/journal/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.md; do
+  # Dossier du journal : résolu par la config projet (`scrum:`), défaut legacy `docs/journal`
+  # (fiche 20261007154842506). Bandeau `--root` sur stderr.
+  local id="$1" f dir
+  dir="$(ezk --root "$ROOT" paths journal)"
+  [ -d "$dir" ] || return 0
+  for f in "$dir"/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.md; do
     [ -e "$f" ] || continue
     grep -q "^## \[${id}\] " "$f" && printf '%s\n' "$f"
   done | LC_ALL=C sort

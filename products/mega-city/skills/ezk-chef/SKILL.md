@@ -79,7 +79,8 @@ problème, la proposition, les critères, le « Comment vérifier » et, via sa 
    - la section **En clair** recopiée telle quelle ;
    - les **galères de la fiche** versées en Préliminaires, avec un pointeur vers leur fichier :
      la section « Galères & gestes (labo) » des récits de `docs/sessions/` **et** les entrées du
-     journal `docs/journal/` taguées de l'id (voir `docs/journal/README.md`) ;
+     journal `docs/journal/` taguées de l'id (voir `docs/journal/README.md`) — ces deux dossiers
+     sont résolus par `ezk paths sprints|journal` (config projet `scrum:`, défaut `docs/…`) ;
    - un **amorçage du playbook** depuis les listes numérotées/à puces de « Proposition » et
      « Comment vérifier » de la fiche, chaque ligne préfixée `TODO(jugement, depuis « … »)` ;
    - `status: draft`, `home: central`, `created`/`updated` à aujourd'hui.

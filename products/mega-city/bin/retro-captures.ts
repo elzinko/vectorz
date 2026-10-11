@@ -10,18 +10,19 @@
  * Code 0 : tout est lisible. Code 1 : au moins une capture ne respecte pas le format (le fichier et le
  * champ fautif sont nommés). Code 2 : mauvais usage.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  type RetroCapture,
+  type RetroProblem,
   captureNameProblem,
   isRetroCaptureName,
   parseRetroCapture,
   renderCaptures,
-  type RetroCapture,
-  type RetroProblem,
 } from '../src/core/retro-capture.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
+import { scrumPaths } from '../src/loaders/project-config.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const methodRoot = resolve(here, '..', '..', '..');
@@ -74,12 +75,16 @@ function main(): void {
 
   let files: Array<{ label: string; path: string }>;
   if (checkAt !== -1) {
-    const base = target.source === 'default' ? (process.env.INIT_CWD ?? process.cwd()) : target.root;
+    const base =
+      target.source === 'default' ? (process.env.INIT_CWD ?? process.cwd()) : target.root;
     files = checked.map((f) => ({ label: f, path: resolve(base, f) }));
   } else {
-    const dir = join(target.root, 'docs', 'captures');
+    // Dossier des captures de rétro : résolu par la config projet (`scrum:`), défaut legacy
+    // `docs/captures` (fiche 20261007154842506).
+    const capturesRel = scrumPaths(target.root).retroCaptures;
+    const dir = join(target.root, capturesRel);
     const names = existsSync(dir) ? readdirSync(dir).filter(isRetroCaptureName).sort() : [];
-    files = names.map((n) => ({ label: `docs/captures/${n}`, path: join(dir, n) }));
+    files = names.map((n) => ({ label: `${capturesRel}/${n}`, path: join(dir, n) }));
   }
 
   const { captures, problems } = load(files);
@@ -87,11 +92,14 @@ function main(): void {
   if (json) {
     console.log(JSON.stringify({ captures, problems }, null, 2));
   } else if (checkAt !== -1) {
-    for (const c of captures) console.log(`OK ${c.file} (${c.actions.length} décision${c.actions.length > 1 ? 's' : ''})`);
+    for (const c of captures)
+      console.log(`OK ${c.file} (${c.actions.length} décision${c.actions.length > 1 ? 's' : ''})`);
   } else if (captures.length > 0) {
     console.log(renderCaptures(captures));
   } else if (problems.length === 0) {
-    console.log('Aucune capture de rétro dans docs/captures/ (nom attendu : AAAA-MM-JJ-retro-<slug>.md).');
+    console.log(
+      'Aucune capture de rétro dans docs/captures/ (nom attendu : AAAA-MM-JJ-retro-<slug>.md).',
+    );
   }
 
   for (const p of problems) console.error(`${p.file} : ${p.where} — ${p.message}`);

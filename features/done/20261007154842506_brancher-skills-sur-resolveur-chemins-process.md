@@ -7,8 +7,8 @@ product: vectorz
 milestone: rationalisation
 version: v0.9.0
 labels: [convention, arborescence]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.9.0)"
 evidence: none # refactor d'outillage, pas d'UI
 created: 2026-10-07
 ---
@@ -20,8 +20,8 @@ chemins `docs/…` **codés en dur** dans les 7 skills par un appel au résolveu
 reste legacy, **le comportement ne change pas** : c'est un refactor vers l'indirection, les tests
 restent verts. Après ça, un projet peut changer de disposition par config seule.
 
-**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](done/20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
-mécanisme et carte du lot dans [ADR-0066](../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
+**Si tu arrives frais.** Fiche sœur de la [fondation `scrum:`](20261001192624192_regrouper-artefacts-methode-dossier-scrum.md) ;
+mécanisme et carte du lot dans [ADR-0066](../../products/mega-city/docs/adr/0066-chemins-process-configurables-scrum.md).
 
 ## Contexte / Problème
 
@@ -83,3 +83,15 @@ cd products/mega-city && pnpm build && pnpm test && pnpm test:scripts
 - **Dépend de** la fiche 1 (le résolveur doit exister). Débloque les fiches 3 (bascule vectorz) et
   5 (migration des consommateurs).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
+- **Interprétation du grep au build (run auto 2026-10-11).** Le grep de « Comment vérifier » est
+  volontairement large ; appliqué à la lettre il attrape aussi (a) **les constantes du résolveur
+  lui-même** (`SCRUM_LEGACY` dans `src/core/project-config.ts`, qui DOIVENT porter `docs/…` comme
+  défaut) et (b) **les commentaires / citations historiques** (ex. `docs/captures/2026-09-04-…`,
+  un fichier daté précis, pas un chemin d'écriture). Le critère réel visé est : **aucun chemin de
+  process EXÉCUTÉ (écrit ou lu) en dur**. Rebranché sur le résolveur (8 fichiers) : `src/loaders/runs.ts`,
+  `bin/retro-captures.ts`, `bin/retro-reports.ts`, `bin/journal-add.sh`, `bin/pr-evidence.sh`,
+  `bin/ezk-chef-extract.sh`, `skills/ezk-archive/scripts/{handoff.sh,archive-commit.sh}`. Non touchés
+  à dessein : `skills/ezk-retro/scripts/note.sh` (écrit en fait dans `<git-common-dir>/ezk/retro-notes`,
+  pas `docs/`), les constantes du résolveur, et les prose/commentaires où `docs/…` est un exemple.
+  Les 6 SKILL.md portent une note « chemins résolus par `ezk paths <clé>` » en gardant l'exemple
+  concret (règle de clarté : ne pas obscurcir un chemin lisible).

@@ -14,6 +14,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { reportsSince } from '../src/core/sprint-reports-since.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
+import { scrumPaths } from '../src/loaders/project-config.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const methodRoot = resolve(here, '..', '..', '..');
@@ -28,11 +29,17 @@ function main(): void {
   if (process.argv.slice(2).some((a) => a === '--help' || a === '-h')) {
     console.log('usage: retro:reports [--root <projet>]');
     console.log('');
-    console.log('Liste les comptes rendus de sprint (docs/sprints/) écrits depuis la dernière capture (docs/captures/).');
+    console.log(
+      'Liste les comptes rendus de sprint (docs/sprints/) écrits depuis la dernière capture (docs/captures/).',
+    );
     process.exit(0);
   }
   const target = projectRootOrExit(methodRoot);
-  const captures = namesIn(target.root, join('docs', 'captures')).filter((n) => n.endsWith('.md'));
+  // Dossier des captures : résolu par la config projet (`scrum:`), défaut legacy `docs/captures`
+  // (fiche 20261007154842506). `docs/sprints` n'est pas une clé scrum (artefact distinct) : fixe.
+  const captures = namesIn(target.root, scrumPaths(target.root).retroCaptures).filter((n) =>
+    n.endsWith('.md'),
+  );
   const reports = namesIn(target.root, join('docs', 'sprints')).filter((n) => n.endsWith('.md'));
   const since = reportsSince(captures, reports);
   if (since.length === 0) {
