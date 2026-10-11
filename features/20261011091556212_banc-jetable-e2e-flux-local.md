@@ -5,7 +5,7 @@ type: chore
 priority: P3
 product: mega-city
 milestone:
-version:
+version: v0.12.0
 labels: [backlog, spike]
 status: idea
 pr:

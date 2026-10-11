@@ -142,9 +142,9 @@
 | [20261002155911250](done/20261002155911250_portier-archive-origin-main-squash.md) | Le portier d'ezk-archive compare à origin/main et reconnaît un squash-merge | bug | P1 | v0.5.0 | mega-city | ✅ shipped | #345 |
 | [20261002155911257](done/20261002155911257_skills-trouvent-mega-city-depuis-projet-hote.md) | Les skills ezk retrouvent le catalogue mega-city depuis un projet hôte | bug | P1 | v0.5.0 | mega-city | ✅ shipped | #343 |
 | [20261002205205417](20261002205205417_modele-effort-agents-par-projet.md) | Régler le modèle et l'effort de chaque agent, projet par projet | feature | P1 |  | mega-city | 🔵 ready |  |
-| [20261002231845120](20261002231845120_backlog-md-sans-conflit-entre-pr.md) | BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps | feature | P1 |  | mega-city | 🔵 ready |  |
+| [20261002231845120](20261002231845120_backlog-md-sans-conflit-entre-pr.md) | BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps | feature | P1 | v0.13.0 | mega-city | 🔵 ready |  |
 | [20261003011750521](done/20261003011750521_portier-copies-reserve.md) | Les portiers d'ezk-sprint et d'ezk-archive laissent tranquilles les copies de réserve propres | bug | P1 | v0.6.0 | mega-city | ✅ shipped | local (f0a5b0a9) |
-| [20261003075821760](20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 |  | mega-city | 🔵 ready |  |
+| [20261003075821760](20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 | v0.11.0 | mega-city | 🔵 ready |  |
 | [20261003105820077](done/20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | v0.5.0 | mega-city | ✅ shipped | local (527868b7) |
 | [20261004101755756](done/20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (f56d17f5) |
 | [20261004181110120](done/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md) | ezk ne croit plus un INIT_CWD laissé par un pnpm parent : le test de « ezk retro note » n'écrit plus dans le vrai dépôt | bug | P1 |  | mega-city | ✅ shipped | local (f62e0128) |
@@ -268,13 +268,14 @@
 | [20261007115129448](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
 | [20261007151859473](done/20261007151859473_amorcage-brownfield-extraire-regles-bundles.md) | Amorçage brownfield : extraire les règles d'un projet existant → bundles | feature | P2 | v0.10.0 | vectorz | ✅ shipped | local (v0.10.0) |
 | [20261007154842506](done/20261007154842506_brancher-skills-sur-resolveur-chemins-process.md) | Brancher les skills/scripts/bins sur le résolveur de chemins (retirer les chemins en dur) | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
-| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 |  | vectorz | 🔵 ready |  |
+| [20261007154842643](20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true) | refactor | P2 | v0.16.0 | vectorz | 🔵 ready |  |
 | [20261007154842780](done/20261007154842780_nettoyer-docs-archive-e2e.md) | Nettoyer docs/ : supprimer archive/, requalifier ou supprimer e2e/ | chore | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
-| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 |  | vectorz | 🔵 ready |  |
+| [20261007154842917](20261007154842917_note-migration-bascule-consommateurs-scrum.md) | Note de migration scrum/ + bascule d'un projet consommateur (muti) | chore | P2 | v0.16.0 | vectorz | 🔵 ready |  |
 | [20261008154805639](done/20261008154805639_vue-projection-regles-par-agent.md) | Vue de projection par projet — chaque agent/skill avec ses règles dépliées | feature | P2 | v0.8.0 | mega-city | ✅ shipped | local (v0.8.0) |
 | [20261008154856357](done/20261008154856357_retaguer-v03-v06-semver-aligner-plan.md) | re-taguer V0.3–V0.6 en semver (vX.Y.Z) + aligner PLAN.md | chore | P2 |  | mega-city | ✅ shipped | local (d7936b30) |
 | [20261010091118580](done/20261010091118580_boussole-session-quoi-faire-maintenant.md) | Boussole de session — une commande qui dit quoi faire maintenant | feature | P2 | v0.10.0 | mega-city | ✅ shipped | local (v0.10.0) |
 | [20261010100030780](done/20261010100030780_cockpit-sert-detail-fiches-projet-choisi.md) | Le cockpit ouvre le détail d'une fiche du projet choisi (fin des 404 cross-projet) | feature | P2 |  | mega-city | ✅ shipped | local (bc8a0316) |
+| [20261010114133097](done/20261010114133097_allocateur-id-adr-deux-dossiers.md) | Un allocateur d'id d'ADR unique sur les deux dossiers (fin des collisions de numéro) | feature | P2 |  | mega-city | 🧩 split | split — scindée en 20261011142027748, 20261011142027875 |
 | [20261010213000378](done/20261010213000378_spike-agent-opere-services-sans-friction.md) | Spike : l'agent opère GitHub / Vercel / LemonSqueezy sans me redemander (CLI/MCP + ezk-secret) | chore | P2 |  | vectorz | ✅ shipped | local (spike exécuté 2026-10-10) |
 | [20261010235330053](done/20261010235330053_ship-barre-ligne-plan-id-unique.md) | ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue | feature | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261004211037977 |
 | [20261010235330118](done/20261010235330118_run-report-accepte-livraison-locale.md) | ezk run report accepte une livraison locale (local <sha>) quand GitHub est coupé | feature | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261011113632532 |
@@ -318,60 +319,61 @@
 
 | # | Titre | Type | Prio | Version | Produit | Statut | PR |
 |---|-------|------|------|---------|---------|--------|----|
-| [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 |  | mega-city | 💡 idea |  |
-| [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 |  | mega-city | 💡 idea |  |
+| [20260922175954296](20260922175954296_release-gate-passe-qualite-versionnement.md) | Release gate — passe qualité avant versionnement (revue design-system + chasse aux bugs) | feature | P0 | v0.11.0 | mega-city | 💡 idea |  |
+| [20261002230039555](20261002230039555_commande-gate-unique.md) | Une seule commande « gate » rejoue toute la validation locale | feature | P1 | v0.11.0 | mega-city | 💡 idea |  |
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261003201034897](20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 |  | mega-city | 💡 idea |  |
-| [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
+| [20261004175528673](20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 | v0.11.0 | mega-city | 💡 idea |  |
+| [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 | v0.14.0 | mega-city | 💡 idea |  |
+| [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 | v0.13.0 | mega-city | 💡 idea |  |
 | [20261010213353647](20261010213353647_capture-retro-lisible-pour-le-po.md) | Une capture de rétro (et tout artefact committé lu par le PO) doit être lisible, et quelque chose doit le vérifier | feature | P1 |  | mega-city | 💡 idea |  |
-| [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 |  | cop1 | 💡 idea |  |
+| [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 | v0.15.0 | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
-| [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |
+| [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 | v0.11.0 | mega-city | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
-| [20261002130235353](20261002130235353_en-cours-deduit-des-branches.md) | « En cours » se déduit des branches, il ne s'écrit pas | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261002130235353](20261002130235353_en-cours-deduit-des-branches.md) | « En cours » se déduit des branches, il ne s'écrit pas | feature | P2 | v0.16.0 | mega-city | 💡 idea |  |
 | [20261002130917993](20261002130917993_release-local-first-macos.md) | Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes) | feature | P2 |  | vectorz | 💡 idea |  |
-| [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261002155911264](20261002155911264_ezk-archive-reprise-run-interrompu.md) | ezk-archive reprend proprement un run interrompu | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261002155911271](20261002155911271_trier-sorties-retro-par-nature.md) | Trier les sorties de rétro par nature : aligner ADR-0054, ezk-retro et .rules/ | chore | P2 |  | mega-city | 💡 idea |  |
-| [20261002205428200](20261002205428200_garde-ship-branche-reelle-de-la-pr.md) | La garde de ship lit la vraie branche de la PR, pas l'argument --branch | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261002230039650](20261002230039650_ship-pose-une-fois-apres-codex.md) | Poser le commit ship une seule fois, après la revue et la première passe Codex | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261002230039755](20261002230039755_revue-rejoue-scripts-bash.md) | La revue locale rejoue les scripts bash modifiés sur des entrées hostiles | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261002133125418](20261002133125418_tete-plan-ignore-drapeau-bloquee.md) | La tête du plan montre comme tirable une fiche marquée bloquée | bug | P2 | v0.13.0 | mega-city | 💡 idea |  |
+| [20261002155911264](20261002155911264_ezk-archive-reprise-run-interrompu.md) | ezk-archive reprend proprement un run interrompu | feature | P2 | v0.14.0 | mega-city | 💡 idea |  |
+| [20261002155911271](20261002155911271_trier-sorties-retro-par-nature.md) | Trier les sorties de rétro par nature : aligner ADR-0054, ezk-retro et .rules/ | chore | P2 | v0.16.0 | mega-city | 💡 idea |  |
+| [20261002205428200](20261002205428200_garde-ship-branche-reelle-de-la-pr.md) | La garde de ship lit la vraie branche de la PR, pas l'argument --branch | bug | P2 | v0.13.0 | mega-city | 💡 idea |  |
+| [20261002230039650](20261002230039650_ship-pose-une-fois-apres-codex.md) | Poser le commit ship une seule fois, après la revue et la première passe Codex | feature | P2 | v0.13.0 | mega-city | 💡 idea |  |
+| [20261002230039755](20261002230039755_revue-rejoue-scripts-bash.md) | La revue locale rejoue les scripts bash modifiés sur des entrées hostiles | feature | P2 | v0.11.0 | mega-city | 💡 idea |  |
 | [20261003011750433](20261003011750433_portier-sprint-md-commite.md) | sprint.sh start/close distingue un sprint ouvert d'un SPRINT.md commité | bug | P2 |  | mega-city | 💡 idea |  |
 | [20261003011750607](20261003011750607_checkpoint-sprint-termes-en-clair.md) | Le checkpoint d'ezk-sprint définit en clair les termes de chaque option | chore | P2 |  | mega-city | 💡 idea |  |
-| [20261003201035080](20261003201035080_skills-sans-section-double-tests-sans-donnee-figee.md) | Un contrôle refuse une section en double dans un skill, et les tests ne figent plus l'état du backlog | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261003201035168](20261003201035168_portier-archive-fiches-et-adr-contre-origin-main.md) | Le portier d'ezk-archive juge les fiches livrées et les ADR contre origin/main | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261004083345055](20261004083345055_pr-range-sa-fiche-seule.md) | Une PR ne range que sa fiche : l'index se régénère après la fusion | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261003201035080](20261003201035080_skills-sans-section-double-tests-sans-donnee-figee.md) | Un contrôle refuse une section en double dans un skill, et les tests ne figent plus l'état du backlog | feature | P2 | v0.16.0 | mega-city | 💡 idea |  |
+| [20261003201035168](20261003201035168_portier-archive-fiches-et-adr-contre-origin-main.md) | Le portier d'ezk-archive juge les fiches livrées et les ADR contre origin/main | bug | P2 | v0.14.0 | mega-city | 💡 idea |  |
+| [20261004083345055](20261004083345055_pr-range-sa-fiche-seule.md) | Une PR ne range que sa fiche : l'index se régénère après la fusion | feature | P2 | v0.13.0 | mega-city | 💡 idea |  |
+| [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 | v0.12.0 | mega-city | 💡 idea |  |
+| [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 | v0.12.0 | mega-city | 💡 idea |  |
+| [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 | v0.13.0 | mega-city | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261007151859479](20261007151859479_chemin-lite-sprint-fiches-triviales.md) | Chemin « lite » du sprint pour fiches triviales (éviter la sur-cérémonie) | refactor | P2 |  | vectorz | 💡 idea |  |
-| [20261010114133097](20261010114133097_allocateur-id-adr-deux-dossiers.md) | Un allocateur d'id d'ADR unique sur les deux dossiers (fin des collisions de numéro) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261010114133220](20261010114133220_registry-add-preserve-commentaires.md) | registry-add préserve les commentaires d'en-tête du registre de supervision | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261010114133345](20261010114133345_cockpit-liste-lancement-une-fois.md) | Le cockpit liste le projet de lancement une seule fois (aujourd'hui deux fois) | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261010114133469](20261010114133469_groom-ajout-comportement-est-une-story.md) | Au grooming : un ajout de comportement en cours de sprint est une story ou reçoit un critère | feature | P2 |  | mega-city | 💡 idea |  |
+| [20261010114133220](20261010114133220_registry-add-preserve-commentaires.md) | registry-add préserve les commentaires d'en-tête du registre de supervision | bug | P2 | v0.15.0 | mega-city | 💡 idea |  |
+| [20261010114133345](20261010114133345_cockpit-liste-lancement-une-fois.md) | Le cockpit liste le projet de lancement une seule fois (aujourd'hui deux fois) | bug | P2 | v0.16.0 | mega-city | 💡 idea |  |
+| [20261010114133469](20261010114133469_groom-ajout-comportement-est-une-story.md) | Au grooming : un ajout de comportement en cours de sprint est une story ou reçoit un critère | feature | P2 | v0.16.0 | mega-city | 💡 idea |  |
 | [20261010153046143](20261010153046143_brainstorm-dsl-cli-methode.md) | Brainstorm : la CLI de la méthode est-elle un DSL cohérent et professionnel ? (ezk / mc, toute la surface) | refactor | P2 |  | mega-city | 💡 idea |  |
-| [20261010213746514](20261010213746514_portier-ignore-worktree-sans-session-vivante.md) | Le portier de sprint distingue un worktree vivant d'un worktree abandonné (ne plus crier au loup) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261010235329987](20261010235329987_etiquette-pas-comportement-en-tetes-agent.md) | Quand on touche les règles déclarées d'un agent, dire si ça change son comportement ou juste l'étiquette | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261011091552583](20261011091552583_regen-root-ecrit-titre-casse.md) | regen écrit un titre cassé quand on lui passe --root | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261011091553794](20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | Le run autonome filtre l'éligibilité avant de délibérer et s'arrête à la borne de version | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261011103839682](20261011103839682_product-build-run-multi-versions-regles.md) | ezk-product-build — un run multi-versions avec rétro + tag par version (3 manques) | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261011111526693](20261011111526693_lawgiver-bind-hooks-worktree-aware.md) | lawgiver bind : écrire les hooks de façon worktree-aware (.git peut être un fichier) | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261010213746514](20261010213746514_portier-ignore-worktree-sans-session-vivante.md) | Le portier de sprint distingue un worktree vivant d'un worktree abandonné (ne plus crier au loup) | feature | P2 | v0.14.0 | mega-city | 💡 idea |  |
+| [20261010235329987](20261010235329987_etiquette-pas-comportement-en-tetes-agent.md) | Quand on touche les règles déclarées d'un agent, dire si ça change son comportement ou juste l'étiquette | feature | P2 | v0.16.0 | mega-city | 💡 idea |  |
+| [20261011091552583](20261011091552583_regen-root-ecrit-titre-casse.md) | regen écrit un titre cassé quand on lui passe --root | bug | P2 | v0.11.0 | mega-city | 💡 idea |  |
+| [20261011091553794](20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | Le run autonome filtre l'éligibilité avant de délibérer et s'arrête à la borne de version | feature | P2 | v0.15.0 | mega-city | 💡 idea |  |
+| [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 | v0.11.0 | mega-city | 💡 idea |  |
+| [20261011103839682](20261011103839682_product-build-run-multi-versions-regles.md) | ezk-product-build — un run multi-versions avec rétro + tag par version (3 manques) | feature | P2 | v0.15.0 | mega-city | 💡 idea |  |
+| [20261011111526693](20261011111526693_lawgiver-bind-hooks-worktree-aware.md) | lawgiver bind : écrire les hooks de façon worktree-aware (.git peut être un fichier) | bug | P2 | v0.14.0 | mega-city | 💡 idea |  |
 | [20261011112934507](20261011112934507_retro-v09-ship-merge-untracked-et-rayon-fiches.md) | Rétro v0.9 : ship-merge --local vs fichier non suivi concurrent + mesurer le rayon d'une fiche qui déplace | feature | P2 |  | mega-city | 💡 idea |  |
-| [20261011113632532](20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context / run report : viser le projet hôte (pas le dépôt de méthode) + accepter le flux local github:false | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261011113632532](20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context/report visent le projet construit, pas la méthode (+ flux local) | bug | P2 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261011113632688](20261011113632688_spike-flux-ajout-regle-fichier-bundle-bind.md) | Spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) | chore | P2 |  | vectorz | 💡 idea |  |
+| [20261011142027748](20261011142027748_ezk-adr-new-prochain-id-libre.md) | ezk adr new — un seul prochain id d'ADR libre sur les deux dossiers | feature | P2 | v0.11.0 | mega-city | 💡 idea |  |
+| [20261011142027875](20261011142027875_ou-vivent-les-adr-repo-multi-projets.md) | Où vivent les ADR dans un repo multi-projets (décision + panel) | chore | P2 | v0.16.0 | vectorz | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
-| [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
-| [20261003105820099](20261003105820099_menage-archive-lancable-mode-auto.md) | Le ménage d'ezk-archive se lance en mode auto | bug | P3 |  | mega-city | 💡 idea |  |
+| [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 | v0.12.0 | mega-city | 💡 idea |  |
+| [20261003105820099](20261003105820099_menage-archive-lancable-mode-auto.md) | Le ménage d'ezk-archive se lance en mode auto | bug | P3 | v0.14.0 | mega-city | 💡 idea |  |
 | [20261004083838781](20261004083838781_ezk-config-help-lu-comme-un-chemin.md) | « ezk config --help » prend --help pour un chemin et affiche un faux statut | bug | P3 |  | mega-city | 💡 idea |  |
 | [20261007213454366](20261007213454366_spike-voir-histoire-feature-au-meme-endroit.md) | Spike : voir toute l'histoire d'une feature au même endroit (vue par id vs co-localisation) | chore | P3 |  | vectorz | 💡 idea |  |
-| [20261011091556212](20261011091556212_banc-jetable-e2e-flux-local.md) | Banc jetable E2E du flux local (sans GitHub) | chore | P3 |  | mega-city | 💡 idea |  |
+| [20261011091556212](20261011091556212_banc-jetable-e2e-flux-local.md) | Banc jetable E2E du flux local (sans GitHub) | chore | P3 | v0.12.0 | mega-city | 💡 idea |  |
 
 ## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
 

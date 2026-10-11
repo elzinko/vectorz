@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.15.0
 labels: [supervision, registre]
 status: idea
 pr:
@@ -15,10 +15,13 @@ created: 2026-10-10
 
 # 20261010114133220 — registry-add préserve les commentaires d'en-tête du registre
 
-**En clair.** `ezk supervision registry-add <projet>` réécrit `supervision.registry.yaml` et **efface
-ses 12 lignes de commentaires d'en-tête** — celles qui expliquent le registre et son invariant « aucun
-chemin de journal ». Le code l'annonce (« commentaires perdus, acceptable pour le POC »). On veut que
-l'en-tête survive à un ajout de projet.
+**En clair.** Ajouter un projet au suivi (`ezk supervision registry-add <projet>`) réécrit le fichier
+de suivi et **efface les 12 lignes de mode d'emploi en haut du fichier** — celles qui expliquent à quoi
+il sert et comment le remplir. On veut que ce mode d'emploi survive à l'ajout d'un projet.
+
+**Si tu arrives frais.** Le *registre de supervision* (`supervision.registry.yaml`) est le fichier qui
+liste les projets dont la méthode suit les runs. Ses premières lignes sont des commentaires : un mode
+d'emploi écrit à la main. Une commande qui ajoute un projet ne devrait pas effacer ce mode d'emploi.
 
 ## Contexte / Problème
 

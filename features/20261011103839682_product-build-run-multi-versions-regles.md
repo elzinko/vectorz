@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.15.0
 labels: [methode, ezk-product-build]
 status: idea
 pr:

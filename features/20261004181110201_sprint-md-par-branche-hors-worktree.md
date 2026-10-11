@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.14.0
 labels: [sprint, worktree, archive]
 status: idea
 pr:

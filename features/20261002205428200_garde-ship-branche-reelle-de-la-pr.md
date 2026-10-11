@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.13.0
 labels: [sprint]
 status: idea
 pr:

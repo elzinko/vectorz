@@ -20,7 +20,8 @@ created: 2026-08-30
 Aujourd'hui la **boucle** d'un skill est écrite en **prose** (ex. les étapes 0→9 d'`ezk-sprint`).
 On ne peut donc ni **activer/désactiver** une étape, ni **changer son ordre** de façon
 déclarative. L'idée : donner aux **étapes** un **schéma** (comme on l'a déjà fait pour les
-fiches et le graphe de liens), pour les rendre configurables par composition.
+fiches et le graphe de liens), pour qu'on puisse **activer, désactiver ou réordonner** une étape
+sans réécrire le skill en prose.
 
 ## Contexte / Problème
 
@@ -53,6 +54,14 @@ Le **format est la première marche** ; la reconfiguration vient après.
 - [ ] À définir au grooming — **confrontation obligatoire au backlog existant via un panel
       `ezk-architect` + `ezk-pm`** (demande PO du 2026-08-30). Vérifier le recouvrement avec
       ADR-0040, ADR-0039, Skema et l'épic `dor-agent-native-extensible-observable`.
+
+## Comment vérifier
+
+```
+Relecture : après le panel (ezk-architect + ezk-pm), un ADR dit si les étapes d'un skill
+deviennent de la donnée typée, et un exemple montre une étape activée, désactivée ou
+réordonnée sans toucher à la prose du skill.
+```
 
 ## Notes / décisions
 

@@ -1,9 +1,11 @@
 ---
 id: "20261011113632532"
-title: "ezk run context / run report : viser le projet hôte (pas le dépôt de méthode) + accepter le flux local github:false"
+title: "ezk run context/report visent le projet construit, pas la méthode (+ flux local)"
 type: bug
 priority: P2
 product: mega-city
+milestone:
+version: v0.12.0
 labels: [run, dx, host-project, mode-local]
 status: idea
 pr:
@@ -21,6 +23,11 @@ ils affichent les faits de **vectorz** (la méthode), pas du projet qu'on constr
 **refuse** le flux local sans PR GitHub (il exige `--pr '#<numéro>'`), donc il est inutilisable sur
 un projet `github: false`. Cette fiche demande de les faire refléter le **projet hôte** et accepter
 une **référence locale**.
+
+**Si tu arrives frais.** `ezk run context` imprime les faits d'ouverture d'un run autonome (base
+`origin/main`, retard de HEAD, worktree). `ezk run report` imprime son bilan de fin (une ligne par
+fiche). `github: false` est le mode d'un projet qui ne passe pas par GitHub : les livraisons sont des
+squash locaux marqués `local (<sha>)`, pas des numéros de pull request.
 
 ## Contexte / Problème
 

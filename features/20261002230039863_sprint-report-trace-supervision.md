@@ -5,7 +5,7 @@ type: bug
 priority: P3
 product: mega-city
 milestone:
-version:
+version: v0.12.0
 labels: [retro]
 status: idea
 pr:

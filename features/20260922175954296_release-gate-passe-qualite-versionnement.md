@@ -5,6 +5,7 @@ type: feature
 priority: P0
 product: mega-city
 milestone:
+version: v0.11.0
 status: idea
 pr:
 evidence: none # capacité méthode / concept, pas d'écran

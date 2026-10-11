@@ -4,7 +4,7 @@ title: "Une PR ne range que sa fiche : l'index se régénère après la fusion"
 type: feature
 priority: P2
 product: mega-city
-version:
+version: v0.13.0
 labels: []
 epic:
 status: idea
@@ -23,6 +23,20 @@ created: 2026-10-04
 - Le conflit reviendra à chaque lot de 2 stories ou plus : ce sont des fichiers générés, que chaque PR réécrit.
 - La rétro a retenu la variante « la PR ne range que sa fiche ; le reste se régénère après la fusion, en commit direct sur `main` ». Elle amende l'ADR-0049.
 - Variantes écartées : sortir `BACKLOG.md` du suivi git ferait perdre un fichier lisible sur GitHub ; un pilote de fusion serait un outil de plus à maintenir. Le repli « seule la dernière PR du lot régénère » est rejeté : l'ordre des fusions n'est pas garanti.
+
+## Critères d'acceptation
+
+- [ ] Une PR de story ne modifie **que sa fiche** (ni `BACKLOG.md`, ni `PLAN.md`, ni les liens).
+- [ ] Après la fusion, l'index, le plan et les liens se régénèrent en **un seul geste** (commit direct sur `main`).
+- [ ] Un lot de 2 PR ou plus se fusionne **sans conflit** sur `BACKLOG.md` / `PLAN.md`.
+- [ ] Mesure : 0 conflit d'index sur les 3 prochains lots de 2 stories ou plus.
+
+## Comment vérifier
+
+```bash
+# Rejouer un lot de 2 stories : chaque PR ne touche que sa fiche ; l'index se régénère après fusion.
+cd products/mega-city && pnpm test:scripts
+```
 
 ## Notes / décisions
 

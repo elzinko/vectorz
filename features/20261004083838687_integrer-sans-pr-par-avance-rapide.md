@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.12.0
 labels: [github-optionnel, cross-repo]
 status: idea
 pr:

@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.11.0
 labels: [dette]
 status: idea
 pr:

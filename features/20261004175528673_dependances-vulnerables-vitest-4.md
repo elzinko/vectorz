@@ -5,7 +5,7 @@ type: chore
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.11.0
 labels: [dependances]
 status: idea
 pr:

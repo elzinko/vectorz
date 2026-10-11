@@ -4,7 +4,7 @@ title: "Les outils de la méthode marchent depuis un projet hôte"
 type: feature
 priority: P1
 product: mega-city
-version:
+version: v0.12.0
 labels: [installation]
 epic:
 status: idea
@@ -30,6 +30,22 @@ Vécu au sprint 1 de samplerz, le 2026-10-03, puis à sa rétro :
 - Le skill `ezk-sprint` prescrit `bash products/mega-city/skills/ezk-pr/scripts/ship-in-pr.sh`, un chemin qui n'existe que dans vectorz.
 - Effets : 2 scripts Playwright jetables pour les preuves avant/après, un worktree temporaire pour l'état « avant », un script jetable pour rendre le corps de PR depuis la fiche, relancé à chaque PR.
 - Pendant la conversion du backlog de samplerz, l'agent architecte a proposé de garder le slug comme id. Le contrat « id numérique en tête du nom de fichier » n'était pas écrit là où il le lit.
+
+## Critères d'acceptation
+
+- [ ] Les commandes listées (`ezk evidence`, `ezk pr emit-local`, `ezk sprint report`, `ezk backlog aggregate`, `ezk backlog apply`, `ezk backlog plan-head`, `ezk backlog plan-lot`, `ezk docs check-links`, `ezk board check`) acceptent `--root <projet hôte>` et visent **ce** dépôt.
+- [ ] Un refus nomme la racine du **projet hôte**, pas celle de vectorz.
+- [ ] Sans `--root`, une commande lancée depuis un projet hôte ne lit **jamais** le backlog de vectorz en silence : elle vise le dépôt du dossier courant, ou refuse en le disant.
+- [ ] Le skill `ezk-sprint` ne prescrit plus un chemin `products/mega-city/…` qui n'existe que dans vectorz.
+- [ ] Mesure : au prochain sprint samplerz, 0 script jetable, 100 % des fiches chiffrées en jetons, et 5 refus sur 5 nomment le projet hôte.
+
+## Comment vérifier
+
+```bash
+cd <projet-hote>                                                  # ex. samplerz
+ezk backlog plan-lot 1 --root "$(git rev-parse --show-toplevel)"  # lit le backlog du projet hôte, pas de vectorz
+ezk backlog aggregate --root "$(git rev-parse --show-toplevel)"   # ne refuse plus un projet hôte
+```
 
 ## Notes / décisions
 

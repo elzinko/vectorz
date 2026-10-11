@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version:
 labels: [adr, dx]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261011142027748, 20261011142027875"
 evidence: none # outillage CLI, pas d'écran
 created: 2026-10-10
+split_into: ["20261011142027748", "20261011142027875"]
 ---
 
 # 20261010114133097 — Un allocateur d'id d'ADR unique sur les deux dossiers
@@ -30,7 +31,7 @@ donne le prochain id libre des deux, pour ne plus deviner.
   on écrit d'abord, on découvre la collision au test.
 - Un seul **espace d'id logique**, deux **séquences physiques**, pas d'autorité d'allocation.
 - Issu de la rétro du 2026-10-10 (capture
-  [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
+  [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
   proposition 5 (architecte + produit).
 
 ## Proposition

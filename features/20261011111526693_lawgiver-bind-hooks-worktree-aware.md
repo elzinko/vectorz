@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.14.0
 labels: [lawgiver, worktree]
 status: idea
 pr:

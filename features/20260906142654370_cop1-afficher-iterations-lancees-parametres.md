@@ -4,7 +4,7 @@ title: cop1 — afficher les itérations lancées (ezk-product-build) avec leurs
 type: feature
 priority: P2
 product: cop1
-version:
+version: v0.15.0
 epic:
 status: idea
 pr:
@@ -50,6 +50,14 @@ veut l'**inventaire des lancements** et leur **configuration**, consultable apr�
       version, date, seat, **paramètres**, statut, lien vers la trace.
 - [ ] Fonctionne pour un run **nocturne** (`auto`/`yolo`) consulté **au retour** du PO.
 - [ ] Aucune logique de méthode dans cop1 (il lit/affiche, il ne décide pas).
+
+## Comment vérifier
+
+```bash
+# Lancer 2 runs ezk-product-build, puis ouvrir cop1 / le Moniteur :
+# les 2 itérations apparaissent, chacune avec ses paramètres retenus (--mode, --max-sprints,
+# --tokens), son statut, et un lien vers sa trace (SPRINT.md du run).
+```
 
 ## Provenance
 

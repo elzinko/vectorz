@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.12.0
 labels: [ezk, cross-repo]
 status: idea
 pr:

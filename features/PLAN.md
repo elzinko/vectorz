@@ -34,11 +34,21 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **v0.4.0** | La méthode se tient | cycle de vie sprint/session, run transparent, archive allégée, rétro v2, installation ailleurs, fabrique de skills | ✅ livrée le 2026-10-01 |
 | **v0.5.0** | Le sprint au lot | le lot de stories choisi dans ezk-backlog, la fiche rangée avec son merge, product-build qui enchaîne les sprints | ✅ livrée le 2026-10-04 |
 | **v0.6.0** | Le cockpit : voir où en est chaque projet | un tableau de bord pour tous les projets, les fiches posées sur le process | ✅ livrée (`v0.6.0`), 2026-10-07 |
-| **v0.7.0** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche, dans une interface reliée au board (le journal durable des moments d'abord, puis l'interface) | ▶️ **en cours** — socle d'abord (2026-10-07) |
-| **v0.8.0** | Amélioration mesurée | système de règles composable : citer un bundle, prouver la divergence dev/reviewer, DoD/DoR en listes partagées, vue de projection par projet (réaligné le 2026-10-08/09 ; voir section ⑨) | ▶️ **en cours** — 3/4 livrées |
-| **v0.9.0** | Ranger la maison | rationalisation : `docs/` redevient de la doc, le process regroupé dans `scrum/`, la config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ⏭️ ensuite |
-| **v0.10.0** | Portabilité multi-IDE | une source de règles → `.claude/` + `.cursor/` + `AGENTS.md`, la CLI comme moteur portable | ⏭️ ensuite |
+| **v0.7.0** | Voir sous le capot | observabilité : voir ce qui s'est passé par version / sprint / fiche | ✅ livrée (local) |
+| **v0.8.0** | Amélioration mesurée | système de règles composable : citer un bundle, prouver la divergence dev/reviewer, DoD/DoR en listes partagées | ✅ livrée (local) |
+| **v0.9.0** | Ranger la maison (1er jet) | rationalisation : `docs/` redevient de la doc, config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ✅ livrée (local) |
+| **v0.10.0** | Portabilité multi-IDE | une source de règles → `.claude/` + `.cursor/` + `AGENTS.md`, la CLI comme moteur portable | ✅ livrée (`v0.10.0`) |
+| **v0.11.0** | La qualité tient | passe qualité avant de versionner (release-gate), dépendances à jour, gate locale unique, critères prouvés | ▶️ **en cours** (train rouvert le 2026-10-11) |
+| **v0.12.0** | Le flux local sans friction | les outils `ezk` marchent depuis un projet hôte, `github: false` respecté de bout en bout | ⏭️ ensuite |
+| **v0.13.0** | La transaction ship, d'un bloc | ship/backlog/PLAN et réconciliation worktree en une seule surface cohérente | ⏭️ ensuite |
+| **v0.14.0** | Les portiers robustes | archive, journal de sprint et worktree : des gardes qui ne crient plus au loup | ⏭️ ensuite |
+| **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | ⏭️ ensuite |
+| **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | ⏭️ ensuite |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
+
+> **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
+> (3 fusions de doublons, 1 split, 1 fiche supersedée), les fiches vivantes ont été loties en 6 nouvelles
+> versions, validées par le PO après une revue adverse. Séquence détaillée en sections ⑫→⑰ ci-dessous.
 
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
 
@@ -157,6 +167,66 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261007151859470` — générateur multi-IDE : une source → `.claude/` + `.cursor/` + `AGENTS.md`, CLI moteur · P1 · **ready** → `build`~~ — shipped
 - ~~`20261010091118580` — boussole de session : une commande qui dit quoi faire maintenant · P2 · **ready** → `build`~~ — shipped local (ADR-0072, `ezk now`)
 - ~~`20261007151859473` — amorçage brownfield : extraire les règles d'un projet existant → bundles · P2 · **ready** (groomée 2026-10-11 : étendre `ezk-scout`) → `build`~~ — shipped
+
+### ⑫ v0.11.0 — la qualité tient (train rouvert le 2026-10-11)
+> Ouvre après le grooming de la P0 (forme retenue : un skill `ezk-release` dédié). La sécurité d'abord (cheap, indépendante).
+- `20261004175528673` — corriger les 20 dépendances vulnérables (vitest 4) · P1 · `groom`
+- `20260922175954296` — release-gate : passe qualité avant de versionner (skill `ezk-release`) · P0 · `groom`
+- `20261002230039555` — une seule commande « gate » rejoue la validation locale · P1 · `groom`
+- `20261003075821760` — le relecteur coche les critères, pas le constructeur · P1 · `build`
+- `20261011091555006` — la gate attrape les défauts de forme des vues · P2 · `groom`
+- `20261011091552583` — regen n'écrit plus un titre cassé avec `--root` · P2 · `groom`
+- `20261002230039755` — la revue locale rejoue les scripts bash sur entrées hostiles · P2 · `groom`
+- `20261001133500750` — le lint couvre enfin le code de mega-city · P2 · `groom`
+- `20261011142027748` — `ezk adr new` : prochain id d'ADR libre des deux dossiers · P2 · `groom`
+
+### ⑬ v0.12.0 — le flux local sans friction
+> Les commandes `ezk` doivent travailler depuis un projet hôte, et `github: false` tenir de bout en bout.
+- `20261004083344960` — les outils de la méthode marchent depuis un projet hôte · P1 · `groom`
+- `20261003201034897` — `ezk` dit quand le dossier principal est en retard · P1 · `groom`
+- `20261004083838593` — un seul guichet GitHub (`github: false` respecté) · P2 · `groom`
+- `20261004083838687` — sans PR, intégrer par avance rapide · P2 · `groom`
+- `20261011113632532` — `ezk run context/report` visent le projet construit + flux local · P2 · `groom`
+- `20261002230039863` — le rapport de sprint retrouve sa trace de supervision · P3 · `groom`
+- `20261011091556212` — banc jetable E2E du flux local (sans GitHub) · P3 · `groom`
+
+### ⑭ v0.13.0 — la transaction ship, d'un bloc
+> Toute la surface ship/backlog/PLAN et la réconciliation worktree dans une seule version (évite de rééditer deux fois le même point d'entrée).
+- `20261010114132970` — réconcilier le worktree après un ship local · P1 · `groom`
+- `20261002231845120` — `BACKLOG.md` ne fait plus conflit entre deux PR · P1 · `build`
+- `20261004211037977` — ship dit ce qu'il touche + lit/barre `PLAN.md` · P2 · `groom`
+- `20261002230039650` — poser le commit ship une seule fois · P2 · `groom`
+- `20261002205428200` — la garde de ship lit la vraie branche de la PR · P2 · `groom`
+- `20261004083345055` — une PR ne range que sa fiche · P2 · `groom`
+- `20261002133125418` — `plan-head` respecte `blocked:` (+ raisons typées) · P2 · `groom`
+
+### ⑮ v0.14.0 — les portiers robustes
+> Archive, journal de sprint et worktree : des gardes qui ne crient plus au loup.
+- `20261004181110201` — le journal de sprint se range par branche, hors du worktree · P1 · `groom`
+- `20261010213746514` — le portier distingue un worktree vivant d'un abandonné · P2 · `groom`
+- `20261011111526693` — `lawgiver bind` gère un `.git` fichier (worktree) · P2 · `groom`
+- `20261002155911264` — `ezk-archive` reprend proprement un run interrompu · P2 · `groom`
+- `20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `groom`
+- `20261003105820099` — le ménage `ezk-archive` en mode auto · P3 · `groom`
+
+### ⑯ v0.15.0 — voir les runs (observabilité)
+> Le run autonome sait s'arrêter à la bonne borne, et on voit après coup ce qui a tourné. Le release-gate (v0.11) est un prérequis de l'auto-tag multi-versions.
+- `20261011091553794` — le run autonome filtre l'éligibilité + borne de version · P2 · `groom`
+- `20261011103839682` — `ezk-product-build` enchaîne plusieurs versions (rétro + tag) · P2 · `groom`
+- `20261010114133220` — `registry-add` préserve l'en-tête du registre · P2 · `groom`
+- `20260906142654370` — cop1 affiche les itérations lancées · P2 · `groom`
+
+### ⑰ v0.16.0 — ranger la maison (2e jet)
+> Le gros déménagement `scrum/` d'abord, SOUS REVUE (168 fichiers + loi compilée, pas en run autonome), puis le ménage cockpit et la discipline de grooming.
+- `20261007154842643` — basculer vectorz vers `scrum/` (gate manuelle) · P2 · `build`
+- `20261007154842917` — note de migration `scrum/` + bascule muti · P2 · `build`
+- `20261011142027875` — où vivent les ADR dans un repo multi-projets (panel) · P2 · `groom`
+- `20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `groom`
+- `20261002155911271` — trier les sorties de rétro par nature · P2 · `groom`
+- `20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `groom`
+- `20261002130235353` — « en cours » se déduit des branches · P2 · `groom`
+- `20261010235329987` — étiquette ≠ comportement quand on touche les règles d'un agent · P2 · `groom`
+- `20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `groom`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

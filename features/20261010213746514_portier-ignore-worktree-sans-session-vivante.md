@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.14.0
 labels: [ezk-sprint, portier]
 status: idea
 pr:
