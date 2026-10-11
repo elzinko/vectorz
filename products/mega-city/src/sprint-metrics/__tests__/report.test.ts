@@ -11,6 +11,7 @@ const baseInput = {
   shippedFeatures: { count: 1, ids: ['20260826082120062'] },
   blockages: { count: 0, events: [] },
   prRetouches: { total: 1, sansRetouche: 1, indetermine: 0 },
+  lot: { entries: [{ id: '20260826082120062', result: 'shipped' as const, title: 'Rapport de sprint' }] },
   generatedAt: '2026-08-30T12:00:00.000Z',
 };
 

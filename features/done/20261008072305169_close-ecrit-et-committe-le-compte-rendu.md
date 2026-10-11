@@ -7,8 +7,8 @@ product: mega-city
 milestone: compte-rendu-sprint
 version: v0.7.0
 labels: [sprint, archive]
-status: ready
-pr:
+status: shipped
+pr: "local (v0.7)"
 evidence: none # scripts et skills, pas d'écran
 created: 2026-10-08
 split_from: "20261005100027029"
@@ -33,7 +33,7 @@ et 04, encore le 2026-10-05). Le rapport de sprint existe mais n'est jamais lanc
 sort ni le lot ni les décisions.
 
 Cette fiche est le **producteur** du compte rendu. Sa sœur [la rétro et l'archive lisent les comptes
-rendus](20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) en est le consommateur.
+rendus](../20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) en est le consommateur.
 
 ## Valeur — ce que coûte de ne rien faire
 
@@ -44,7 +44,7 @@ rendus](20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) en est 
 ## Proposition (conception — avis de l'architecte, 2026-10-08)
 
 On ne crée **ni** nouvel extracteur **ni** nouveau mécanisme de commit. Voir
-[ADR-0068](../products/mega-city/docs/adr/0068-compte-rendu-de-sprint-faits-rapport-commit-archive.md).
+[ADR-0068](../../products/mega-city/docs/adr/0068-compte-rendu-de-sprint-faits-rapport-commit-archive.md).
 
 1. **L'extracteur est `sprint:report`, étendu** (`bin/sprint-report.ts` + domaine `src/sprint-metrics/`) :
    il sort en plus le **lot scellé** (ids + résultat `[x]`/`[~]`) dans son `.json`. Le skill `ezk-sprint`
@@ -82,7 +82,7 @@ ls docs/sprints/
 ## Notes / décisions
 
 - Fille **producteur** du découpage de la fiche source (décision PO 2026-10-08, ADR-0068). Sœur
-  consommateur : [20261008072306360](20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md).
+  consommateur : [20261008072306360](../20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md).
 - Dépendances constatées le 2026-10-08 (reprises de la source) : la clôture-committe-l'archive est
   livrée (ADR-0063, base du helper de commit) ; le rapport de sprint est livré (base de l'extracteur) ;
   la fondation `scrum:` est en V0.9, donc non bloquante.

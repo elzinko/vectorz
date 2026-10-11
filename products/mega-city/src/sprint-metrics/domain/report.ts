@@ -1,6 +1,7 @@
 import {
   SPRINT_REPORT_SCHEMA,
   type BlockagesSummary,
+  type LotSummary,
   type PrRetouchesSummary,
   type ShippedFeaturesSummary,
   type SprintReport,
@@ -16,6 +17,8 @@ export interface BuildSprintReportInput {
   shippedFeatures: ShippedFeaturesSummary;
   blockages: BlockagesSummary;
   prRetouches: PrRetouchesSummary;
+  /** Le lot scellé du sprint (ADR-0068) — `{ entries: [] }` si `SPRINT.md` absent. */
+  lot: LotSummary;
   generatedAt: string;
 }
 
@@ -38,6 +41,7 @@ export function buildSprintReport(input: BuildSprintReportInput): SprintReport {
       blockages: input.blockages,
       prRetouches: input.prRetouches,
     },
+    lot: input.lot,
     steps: {
       ventilated: false,
       note:

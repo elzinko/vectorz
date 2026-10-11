@@ -25,6 +25,7 @@ SUITES=(
   "skills/ezk-archive/scripts/test-fastpath.sh"          # fiche 20260904091853948 — voie rapide, compte juste, fiches travaillées, durable
   "skills/ezk-archive/scripts/test-cleanup.sh"           # fiche 20260904091853948 — ménage : inventaire sûr, read-only
   "skills/ezk-archive/scripts/test-archive-commit.sh"    # fiche 20261005100026946 — la clôture committe et intègre son archive (ADR-0063)
+  "bin/test-commit-doc-via-worktree.sh"                  # fiche 20261008072305169 — garde de confinement du helper partagé (ADR-0068, loi confinement-contract-at-boundary)
   "skills/ezk-sprint/scripts/test-check-gate.sh"         # fiche 0090 — contrat du portier (= le dry-run de `start`, ADR-0054)
   "skills/ezk-sprint/scripts/test-sprint-lifecycle.sh"   # fiche 20260930123438875 — start/close, check ≡ start --dry-run, la session reste à ezk-archive
   "bin/test-regen-backlog.sh"                            # ezk-backlog — régénération de l'index

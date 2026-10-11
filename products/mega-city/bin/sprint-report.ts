@@ -7,7 +7,7 @@
  *   pnpm --dir products/mega-city sprint:report <slug>
  *     [--repo-root <path>] [--project-root <path>] [--product <name>] [--out <dir>]
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GitGhRepoSource } from '../src/sprint-metrics/adapters/repoSource.js';
@@ -27,6 +27,8 @@ Options:
   --repo-root <path>     Racine git (fiches features/done + PR) — défaut : racine du repo
   --project-root <path>  Racine produit (.supervision/ + transcripts) — défaut : products/mega-city
   --product <name>       Nom du produit dans le rapport (défaut : mega-city)
+  --sprint-md <path>     SPRINT.md dont lire le lot scellé (défaut : <repo-root>/SPRINT.md s'il existe)
+  --allow-undated        Rapport non daté si aucun gate de supervision (lot seulement) au lieu d'échouer
   --out <dir>            Dossier de sortie (défaut : <repo-root>/docs/sprints)
 `);
   process.exit(2);
@@ -47,12 +49,16 @@ function main(): void {
   let projectRoot = megaCityRoot;
   let product = 'mega-city';
   let out: string | undefined;
+  let sprintMdPath: string | undefined;
+  let allowUndated = false;
 
   for (let i = 1; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === '--repo-root') repoRoot = resolve(argv[++i]);
     else if (a === '--project-root') projectRoot = resolve(argv[++i]);
     else if (a === '--product') product = argv[++i];
+    else if (a === '--sprint-md') sprintMdPath = resolve(argv[++i]);
+    else if (a === '--allow-undated') allowUndated = true;
     else if (a === '--out') out = resolve(argv[++i]);
     else {
       console.error(`option inconnue : ${a}`);
@@ -60,8 +66,13 @@ function main(): void {
     }
   }
 
+  // Le lot scellé vient de SPRINT.md (ADR-0068). Défaut : <repo-root>/SPRINT.md s'il existe. Absent → lot vide.
+  const sprintMdDefault = join(repoRoot, 'SPRINT.md');
+  const resolvedSprintMd = sprintMdPath ?? (existsSync(sprintMdDefault) ? sprintMdDefault : undefined);
+  const sprintMd = resolvedSprintMd && existsSync(resolvedSprintMd) ? readFileSync(resolvedSprintMd, 'utf8') : undefined;
+
   const report = collectSprintReport(
-    { projectRoot, repoRoot, slug, product },
+    { projectRoot, repoRoot, slug, product, sprintMd, allowUndated },
     {
       journal: new SupervisionJournalSource(),
       transcript: new ClaudeCodeTranscriptSource(),

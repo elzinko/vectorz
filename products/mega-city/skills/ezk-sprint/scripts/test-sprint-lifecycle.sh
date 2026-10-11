@@ -118,7 +118,8 @@ ok "rend la main à la session : retro, planning, sprint suivant, archive nommé
 ok "Statut: clos" 'grep -q "^Statut: clos" SPRINT.md'
 ok "incrément inscrit dans « Incréments scellés de la session », la story reportée nommée" 'grep -qxF -- "- Sprint 1 — Premier sprint — 1 livrée, 1 reportée : $A (PR #12) — reportée : $B" SPRINT.md && grep -qxF "## Incréments scellés de la session" SPRINT.md'
 ok "la session n'est pas touchée (docs/sessions, handoff)" '[ "$(sum docs/sessions/2026-10-01-marker.md)" = "$SESS_MARK" ] && [ "$(sum "$HF")" = "$SESS_HAND" ] && [ "$(ls docs/sessions | wc -l | tr -d " ")" = 1 ]'
-ok "close n'a créé ni branche ni commit, l'arbre reste propre" '[ "$(git rev-parse HEAD)" = "$HEAD0" ] && [ "$(git for-each-ref | sort)" = "$REFS0" ] && [ -z "$(git status --porcelain)" ]'
+ok "close committe le compte rendu du sprint (ADR-0068) sans salir l'arbre" 'printf "%s\n" "$OUT7" | grep -q "^SPRINT-REPORT: committ" && git log --all --format=%s | grep -q "compte rendu du sprint 1" && [ -z "$(git status --porcelain)" ]'
+ok "le compte rendu porte le lot scellé (## Lot scellé + la story livrée)" 'SHA="$(git log --all --format=%H --grep="compte rendu du sprint 1" | head -1)" && git show "$SHA" -- "docs/sprints/*" | grep -q "Lot scellé" && git show "$SHA" -- "docs/sprints/*" | grep -q "$A"'
 
 echo "S8 — close sans sprint ouvert : refus, pas de double scellé"
 SUM8="$(sum SPRINT.md)"

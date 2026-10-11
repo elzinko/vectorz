@@ -345,6 +345,44 @@ write_closed() { # $1 = ligne du journal des incréments ; $2 = raison d'abandon
   ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
 }
 
+# Le compte rendu du sprint (fiche 20261008072305169, ADR-0068) : à la clôture, on sort les FAITS par
+# `ezk sprint report` (lot scellé lu dans SPRINT.md, périmètre « ce sprint ») et on committe le document
+# via le helper partagé `commit-doc-via-worktree.sh` (local = squash local ; PR = branche + commande).
+# Best-effort : tout échec ici LAISSE le sprint scellé (le compte rendu est un livrable, pas le sceau).
+emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison d'abandon (vide si sceau normal)
+  local n="$1" obj="$2" reason="$3" root slug tmp report_md day dest_rel helper tsx
+  # On appelle le bin DIRECTEMENT (pas `ezk sprint report`, dont le wrapper refuse hors dépôt de méthode).
+  # tsx + le bin vivent dans le catalogue ($MC) ; absents (install en copie) → on dégrade proprement.
+  tsx="$MC/node_modules/.bin/tsx"
+  if [[ ! -x "$tsx" || ! -f "$MC/bin/sprint-report.ts" ]]; then
+    echo "SPRINT-REPORT: sauté (catalogue indisponible) — sprint scellé"; return 0
+  fi
+  root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+  # slug sûr depuis l'objectif (accents retirés), repli n<N> : il entre dans un nom de fichier.
+  slug="$(printf '%s' "${obj:-sprint $n}" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//;s/-*$//' | cut -c1-48 | sed 's/-*$//')"
+  [[ -n "$slug" ]] || slug="n${n}"
+  tmp="$(mktemp -d)"
+  if ! "$tsx" "$MC/bin/sprint-report.ts" "$slug" --repo-root "$root" --project-root "$root" --sprint-md "$PWD/$FILE" --allow-undated --out "$tmp" >/dev/null 2>&1; then
+    echo "SPRINT-REPORT: non produit (sprint:report a échoué) — sprint scellé quand même" >&2
+    rm -rf "$tmp" 2>/dev/null || true; return 0
+  fi
+  report_md="$(ls "$tmp"/*-sprint-"$slug".md 2>/dev/null | head -1)"
+  [[ -f "$report_md" ]] || { echo "SPRINT-REPORT: non produit (fichier absent) — sprint scellé quand même" >&2; rm -rf "$tmp"; return 0; }
+  # Sprint abandonné : la raison entre dans le compte rendu (ADR-0068, cas abandon).
+  [[ -n "$reason" ]] && printf '\n## Abandon\n\n%s\n' "$reason" >> "$report_md"
+  day="$(basename "$report_md")"; day="${day%%-sprint-*}"
+  dest_rel="docs/sprints/$(basename "$report_md")"
+  helper="$MC/bin/commit-doc-via-worktree.sh"
+  if [[ -f "$helper" ]]; then
+    bash "$helper" --repo "$root" --file "$report_md" --dest-rel "$dest_rel" \
+      --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
+      --kind-tag SPRINT-REPORT --kind-noun "compte rendu" || echo "SPRINT-REPORT: commit non intégré (cf. ci-dessus) — sprint scellé" >&2
+  else
+    echo "SPRINT-REPORT: helper introuvable ($helper) — compte rendu non committé (sprint scellé)" >&2
+  fi
+  rm -rf "$tmp" 2>/dev/null || true
+}
+
 do_close() {
   if [[ "$(sprint_state)" != "open" ]]; then
     echo "CLOSE: REFUSED not_open"
@@ -423,6 +461,8 @@ do_close() {
   if (( n_def > 0 )); then
     lot_lines | grep -F -- '- [~] ' | sed -E 's/^- \[~\] /STORY_DEFERRED: /'
   fi
+  # Compte rendu du sprint (ADR-0068) : écrit + committé après le sceau, pour SEALED comme pour ABANDONED.
+  emit_sprint_report "$n" "${obj:-sans objectif}" "$ABANDON"
   echo "NEXT: session — ezk-retro (rétro) · ezk-backlog next|groom (planning) · ezk-sprint start (sprint suivant) · ezk-archive (lever la session)"
   end
 }

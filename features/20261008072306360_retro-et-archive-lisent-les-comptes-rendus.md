@@ -26,7 +26,7 @@ sa clôture, sous `docs/sessions/`.
 
 ## Contexte / Problème
 
-Dépend de sa sœur [au close, le sprint écrit et committe son compte rendu](20261008072305169_close-ecrit-et-committe-le-compte-rendu.md),
+Dépend de sa sœur [au close, le sprint écrit et committe son compte rendu](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md),
 qui produit les comptes rendus sous `docs/sprints/`. Sans lecteurs, ces comptes rendus existent mais
 personne ne s'en sert : la rétro continue de ne voir que la mémoire de l'agent, et l'archive continue de
 recopier un `SPRINT.md` parfois pollué.
@@ -60,5 +60,5 @@ cd products/mega-city && pnpm test:scripts
 ## Notes / décisions
 
 - Fille **consommateur** du découpage de la fiche source (décision PO 2026-10-08, ADR-0068). Sœur
-  producteur : [20261008072305169](20261008072305169_close-ecrit-et-committe-le-compte-rendu.md).
+  producteur : [20261008072305169](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md).
   **Dépend de A** : ne se teste qu'une fois A produisant des comptes rendus. À tirer après A.

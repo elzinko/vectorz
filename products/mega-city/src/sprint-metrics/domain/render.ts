@@ -1,4 +1,4 @@
-import type { SprintReport } from './types.js';
+import type { LotResult, SprintReport } from './types.js';
 
 function fmtDuration(ms: number): string {
   const totalMinutes = Math.round(ms / 60_000);
@@ -6,6 +6,8 @@ function fmtDuration(ms: number): string {
   const m = totalMinutes % 60;
   return h === 0 ? `${m} min` : `${h} h ${String(m).padStart(2, '0')}`;
 }
+
+const LOT_LABEL: Record<LotResult, string> = { shipped: 'livrée', reported: 'reportée', open: 'restée ouverte' };
 
 /** Rendu markdown DEPUIS le JSON (source de vérité) — ouvre par « En clair ». */
 export function renderSprintReportMarkdown(report: SprintReport): string {
@@ -25,6 +27,16 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
     lines.push(`> ${report.steps.note}`);
     lines.push('');
   }
+  lines.push('## Lot scellé');
+  lines.push('');
+  if (report.lot.entries.length === 0) {
+    lines.push('_Aucun lot lu (`SPRINT.md` absent ou sans section `## Lot`)._');
+  } else {
+    for (const e of report.lot.entries) {
+      lines.push(`- \`${e.id}\`${e.title ? ` — ${e.title}` : ''} — **${LOT_LABEL[e.result]}**`);
+    }
+  }
+  lines.push('');
   lines.push('## Détail');
   lines.push('');
   lines.push(`- **Fenêtre** : ${report.window.startTs} → ${report.window.endTs}`);

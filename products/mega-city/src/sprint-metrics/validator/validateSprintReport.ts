@@ -157,6 +157,24 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
     });
   }
 
+  // `lot` est OPTIONNEL (ajouté après le schéma 0.1 — ADR-0068) : on ne l'exige pas (les anciens
+  // rapports n'en ont pas), mais s'il est là, sa forme doit tenir — sinon on ne ment pas sur le périmètre.
+  if ('lot' in report) {
+    const lot = asObject(report.lot);
+    const entries = lot ? (lot.entries as unknown) : undefined;
+    if (lot === null || !Array.isArray(entries)) {
+      violations.push({ code: 'lot.invalid', message: 'Champ "lot" présent mais mal formé (attendu { entries: [...] })' });
+    } else {
+      const ok = entries.every(
+        (e) => asObject(e) !== null && typeof (e as { id?: unknown }).id === 'string' &&
+          ['shipped', 'reported', 'open'].includes(String((e as { result?: unknown }).result)),
+      );
+      if (!ok) {
+        violations.push({ code: 'lot.invalid_entry', message: 'Une entrée de "lot" n\'a pas {id: string, result: shipped|reported|open}' });
+      }
+    }
+  }
+
   const steps = report.steps as Record<string, unknown> | undefined;
   if (steps?.ventilated === true) {
     const breakdown = (steps as { breakdown?: Array<{ durationMs?: number }> }).breakdown;

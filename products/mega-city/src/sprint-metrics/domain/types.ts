@@ -55,6 +55,24 @@ export interface StepsSummary {
   note: string;
 }
 
+/** Résultat d'une story du lot scellé : livrée `[x]`, reportée `[~]`, ou restée ouverte `[ ]` (abandon). */
+export type LotResult = 'shipped' | 'reported' | 'open';
+
+export interface LotEntrySummary {
+  id: string;
+  result: LotResult;
+  /** Titre de la story tel qu'écrit dans `## Lot` (sans le suffixe `(PR #N)` / `(reportée : …)`). */
+  title?: string;
+}
+
+/**
+ * Le LOT SCELLÉ du sprint (ADR-0068) : le périmètre « ce sprint » vient de la section `## Lot` de
+ * `SPRINT.md`, jamais de `## Incréments scellés de la session` (zone accumulée, polluée par héritage).
+ */
+export interface LotSummary {
+  entries: LotEntrySummary[];
+}
+
 export interface SprintReport {
   schema: typeof SPRINT_REPORT_SCHEMA;
   sprint: { slug: string; product?: string };
@@ -67,5 +85,7 @@ export interface SprintReport {
     blockages: BlockagesSummary;
     prRetouches: PrRetouchesSummary;
   };
+  /** Le lot scellé de CE sprint (périmètre « ce sprint », ADR-0068) — vide si `SPRINT.md` absent. */
+  lot: LotSummary;
   steps: StepsSummary;
 }

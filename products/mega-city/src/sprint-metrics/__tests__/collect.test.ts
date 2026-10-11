@@ -66,4 +66,24 @@ describe('collectSprintReport', () => {
     const noMatch = new StubJournalSource([{ ts: SPRINT_START, slug: 'autre-sprint' }]);
     expect(() => collectSprintReport(input, { ...ports, journal: noMatch })).toThrow(/aucun gate/i);
   });
+
+  it('lit le lot scellé depuis SPRINT.md (## Lot), avec le résultat par story', () => {
+    const sprintMd = '## Lot\n- [x] 20260826082120062 — Rapport (PR #9)\n- [~] 20991231000000001 — Reportée (reportée : X)\n';
+    const report = collectSprintReport({ ...input, sprintMd }, fixturePorts());
+    expect(report.lot.entries).toEqual([
+      { id: '20260826082120062', result: 'shipped', title: 'Rapport' },
+      { id: '20991231000000001', result: 'reported', title: 'Reportée' },
+    ]);
+  });
+
+  it('allowUndated : sans checkpoint, rend un rapport NON DATÉ (lot gardé, durée/tokens à zéro + mention)', () => {
+    const ports = fixturePorts();
+    const noMatch = new StubJournalSource([{ ts: SPRINT_START, slug: 'autre-sprint' }]);
+    const sprintMd = '## Lot\n- [x] 20260826082120062 — Rapport\n';
+    const report = collectSprintReport({ ...input, sprintMd, allowUndated: true }, { ...ports, journal: noMatch });
+    expect(report.duration.ms).toBe(0);
+    expect(report.tokens.totalTokens).toBe(0);
+    expect(report.tokens.note).toMatch(/supervision absente/i);
+    expect(report.lot.entries).toEqual([{ id: '20260826082120062', result: 'shipped', title: 'Rapport' }]);
+  });
 });
