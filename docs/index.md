@@ -31,7 +31,7 @@ status: living doc map (epoch 2) — les artefacts BMAD d'époque-1 sont archiv�
 ## Runtime artefacts (not docs)
 
 - [`supervisor-playbook.md`](../products/cop1/supervisor-playbook.md) — **deprecated stub** ; epoch-1 BMAD playbook archived under [`docs/archive/epoch-1-bmad/`](./archive/epoch-1-bmad/README.md).
-- [`cop1.config.example.yaml`](../cop1.config.example.yaml) — gabarit versionné ; le `cop1.config.yaml` réel est gitignoré, local à chaque poste.
+- [`cop1.config.example.yaml`](../products/cop1/cop1.config.example.yaml) — gabarit versionné (sous `products/cop1/`) ; le `cop1.config.yaml` réel est gitignoré, local à chaque poste.
 
 ## Epoch-1 BMAD archive
 

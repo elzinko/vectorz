@@ -219,7 +219,7 @@ log "Étape 3/6 — Moniteur (automatique si possible)"
 WE_STARTED_DAEMON=0
 
 if [[ ! -f "$ROOT/cop1.config.yaml" ]]; then
-  cp "$ROOT/cop1.config.example.yaml" "$ROOT/cop1.config.yaml"
+  cp "$ROOT/products/cop1/cop1.config.example.yaml" "$ROOT/cop1.config.yaml"
   # Injecte watch_roots (YAML simple) — config locale gitignorée
   if grep -q 'watch_roots: \[\]' "$ROOT/cop1.config.yaml"; then
     # macOS / BSD sed

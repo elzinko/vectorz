@@ -82,7 +82,7 @@ Prouve la mécanique. **Ne prouve pas** qu’un skill Claude Code émet, ni l’
 ## Si le Moniteur n’est pas démarré
 
 ```bash
-cp -n cop1.config.example.yaml cop1.config.yaml
+cp -n products/cop1/cop1.config.example.yaml cop1.config.yaml
 # Éditer supervision.watch_roots: ["/chemin/absolu/vers/vectorz"]
 
 node products/cop1/packages/app/dist/cli/index.js start
