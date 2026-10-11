@@ -361,6 +361,7 @@
 | [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011103839682](20261011103839682_product-build-run-multi-versions-regles.md) | ezk-product-build — un run multi-versions avec rétro + tag par version (3 manques) | feature | P2 |  | mega-city | 💡 idea |  |
 | [20261011111526693](20261011111526693_lawgiver-bind-hooks-worktree-aware.md) | lawgiver bind : écrire les hooks de façon worktree-aware (.git peut être un fichier) | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261011112934507](20261011112934507_retro-v09-ship-merge-untracked-et-rayon-fiches.md) | Rétro v0.9 : ship-merge --local vs fichier non suivi concurrent + mesurer le rayon d'une fiche qui déplace | feature | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 |  | mega-city | 💡 idea |  |
