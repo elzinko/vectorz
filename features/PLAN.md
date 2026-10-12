@@ -44,6 +44,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **v0.14.0** | Les portiers robustes | archive, journal de sprint et worktree : des gardes qui ne crient plus au loup | ⏭️ ensuite |
 | **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | ⏭️ ensuite |
 | **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | ⏭️ ensuite |
+| **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches, deux portées de config — conçu par maquette (ADR-039) | 🎨 conçu (maquette v17), APRÈS le socle |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 > **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
@@ -228,6 +229,17 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261002130235353` — « en cours » se déduit des branches · P2 · `groom`
 - `20261010235329987` — étiquette ≠ comportement quand on touche les règles d'un agent · P2 · `groom`
 - `20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `groom`
+
+### ⑱ v0.17.0 — le board unifié (cop1, après le socle)
+> Un seul tableau de bord, conçu par maquette (v17) et validé par le PO le 2026-10-12. Design de référence : fiche `20261007135620590` ; décision : `ADR-039` ; maquette : `docs/maquettes/board-ezk-dashboard.html`. 8 tranches sœurs (milestone `board`). À séquencer APRÈS le socle (catalogue des moments livré ; métriques tokens `0052`/`0055`).
+- `20261012231419185` — coque + vue d'ensemble · P1 · `groom`
+- `20261012231419211` — activité par run → moments → fiches + modale fiche · P1 · `groom`
+- `20261012231419198` — les deux pipelines : cadrage et développement · P2 · `groom`
+- `20261012231419224` — vue Fiches : filtre par catégorie de version · P2 · `groom`
+- `20261012231419237` — chronologie condensée · P2 · `groom`
+- `20261012231419250` — config projet (lancement/qualité/intégration) + modèle résolu · P2 · `groom`
+- `20261012231419263` — assistant d'ajout de projet · P2 · `groom`
+- `20261002205205417` — config modèle & effort (moteur + mapping outil) · P1 · `découper` (fiche prête, à relier)
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

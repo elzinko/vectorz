@@ -335,6 +335,8 @@
 | [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 | v0.13.0 | mega-city | 💡 idea |  |
 | [20261010213353647](20261010213353647_capture-retro-lisible-pour-le-po.md) | Une capture de rétro (et tout artefact committé lu par le PO) doit être lisible, et quelque chose doit le vérifier | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261011153019643](20261011153019643_revue-design-system-step-composable-release.md) | Revue design-system : un step composable branché sur ezk-release | feature | P1 |  | mega-city | 💡 idea |  |
+| [20261012231419185](20261012231419185_board-coque-vue-ensemble.md) | Board : la coque + la vue d'ensemble (métriques, entonnoir, versions dans le process) | feature | P1 | v0.17.0 | cop1 | 💡 idea |  |
+| [20261012231419211](20261012231419211_board-activite-run-moments-fiches.md) | Board : l'activité par run → moments → fiches, et la modale fiche | feature | P1 | v0.17.0 | cop1 | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 | v0.15.0 | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001142603963](20261001142603963_ezk-secret-apply-scope-compte-par-app.md) | ezk-secret apply — scope compte/par-app, secrets déclarés par recette et valorisés à l'application | feature | P2 |  | vectorz | 💡 idea |  |
@@ -368,6 +370,11 @@
 | [20261011113632532](20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context/report visent le projet construit, pas la méthode (+ flux local) | bug | P2 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261011113632688](20261011113632688_spike-flux-ajout-regle-fichier-bundle-bind.md) | Spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) | chore | P2 |  | vectorz | 💡 idea |  |
 | [20261011142027875](20261011142027875_ou-vivent-les-adr-repo-multi-projets.md) | Où vivent les ADR dans un repo multi-projets (décision + panel) | chore | P2 | v0.16.0 | vectorz | 💡 idea |  |
+| [20261012231419198](20261012231419198_board-cadrage-developpement.md) | Board : les deux pipelines — vue Cadrage et vue Développement | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
+| [20261012231419224](20261012231419224_board-vue-fiches-filtre-categorie.md) | Board : la vue Fiches (kanban/liste + filtre par catégorie de version) | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
+| [20261012231419237](20261012231419237_board-chronologie-condensee.md) | Board : la chronologie condensée (une ligne par évènement, filtres) | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
+| [20261012231419250](20261012231419250_board-config-projet.md) | Board : la config projet (lancement, qualité, intégration) + modèle résolu par rôle | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
+| [20261012231419263](20261012231419263_board-assistant-ajout-projet.md) | Board : l'assistant d'ajout de projet (racine, outil, défauts) | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 | v0.12.0 | mega-city | 💡 idea |  |

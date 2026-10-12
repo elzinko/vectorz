@@ -6,7 +6,7 @@ priority: P1
 product: mega-city
 milestone: parked
 version:
-labels: [installation, ezk-map]
+labels: [installation, ezk-map, board]
 status: ready
 blocked: "à découper avant de construire : 12 critères, estimée à 500-700k (règle token-economy/fiche-tient-dans-un-sprint, rétro du 2026-10-04)"
 pr:
@@ -282,3 +282,12 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
 - **Drapeau `blocked:` posé le 2026-10-04** au rangement de la rétro, sur avis de la revue : sans lui,
   le prochain run l'aurait tirée entière. Le statut reste « prête » ; le PO retire le drapeau, ou la
   fiche se découpe (`ezk backlog apply split`) et le drapeau part avec elle.
+- **Design du tableau de bord affiné par maquette (v17, 2026-10-12).** La refonte du board
+  ([ADR-039](../docs/adr/ADR-039-board-unifie-run-moments-fiches-deux-portees-config.md),
+  [design de référence](20261007135620590_refondre-vue-supervision-moniteur-lisible.md),
+  [maquette](../docs/maquettes/board-ezk-dashboard.html)) range cette config en **deux portées** :
+  côté **projet**, un tier par rôle (voyage avec le repo) ; côté **outil** (poste), le mapping
+  tier → modèle concret, **éditable**, sur une page globale (bouton ⚙), par IDE — car un mapping écrit
+  dans le projet casserait dans un autre IDE. Le board affiche aussi le **modèle résolu** en bout de
+  chaque ligne de rôle. Cette fiche reste le **moteur** de config derrière la tranche « config » du
+  board ; à relier à la version `board` (v0.17.0) et à découper au grooming — surtout pas dupliquer.
