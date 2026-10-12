@@ -1,0 +1,555 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board ezk</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Board ezk. Vue d'ensemble = entonnoir (pipeline actif) + métriques + En cours (liste).
+     Cadrage = liste des lots → page d'un lot (fiches + commandes). Développement = lancer depuis
+     un lot groomé + historique. Process = workflow de la méthode, cliquable, par projet. Mock. */
+  :root{
+    --bg:#f4f6f9; --surface:#fff; --surface-2:#eef1f6; --line:#d9dfe8;
+    --fg:#1b2230; --muted:#5a6475; --faint:#8b94a3;
+    --accent:#3a5bd9; --accent-soft:#e5ebfb;
+    --go:#1f8a53; --go-soft:#dcf0e4; --warn:#9a6a12; --warn-soft:#f6ebd5; --crit:#c23b4b; --crit-soft:#f7dde1;
+    --groom:#7a4fd0; --groom-soft:#ece3fb; --idea:#8b94a3; --idea-soft:#e9edf2;
+    --font-ui:"IBM Plex Sans",system-ui,-apple-system,sans-serif; --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace; --r:10px;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#11151c; --surface:#191f29; --surface-2:#212936; --line:#2d3644; --fg:#e6ebf2; --muted:#9aa6b6; --faint:#697385;
+    --accent:#7d97f0; --accent-soft:#23304d; --go:#4cc088; --go-soft:#16382a; --warn:#d8a24a; --warn-soft:#3a2f16; --crit:#e26d7a; --crit-soft:#3d1f24; --groom:#a98ae6; --groom-soft:#271d3d; --idea:#697385; --idea-soft:#222a36; color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#11151c; --surface:#191f29; --surface-2:#212936; --line:#2d3644; --fg:#e6ebf2; --muted:#9aa6b6; --faint:#697385;
+    --accent:#7d97f0; --accent-soft:#23304d; --go:#4cc088; --go-soft:#16382a; --warn:#d8a24a; --warn-soft:#3a2f16; --crit:#e26d7a; --crit-soft:#3d1f24; --groom:#a98ae6; --groom-soft:#271d3d; --idea:#697385; --idea-soft:#222a36; color-scheme:dark;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);line-height:1.45;margin:0}
+  h1,h2,h3,h4{margin:0;text-wrap:balance} a{color:var(--accent)} button{font:inherit;cursor:pointer} code{font-family:var(--font-data)} summary{cursor:pointer}
+  .top{position:sticky;top:env(safe-area-inset-top,0);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:10px clamp(12px,2.5vw,20px);flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px} .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--accent)}
+  .brand .bv{font-family:var(--font-data);font-size:11px;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:20px}
+  .projbtn{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);border-radius:9px;padding:6px 13px;font-size:14px;font-weight:600} .projbtn:hover{border-color:var(--accent)} .projbtn .cv{font-family:var(--font-data);font-size:11px;font-weight:500;color:var(--muted)} .projbtn .ch{color:var(--faint);font-size:11px}
+  .search{margin-left:auto;display:flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);border-radius:20px;padding:5px 12px;min-width:150px} .search input{border:0;background:transparent;color:var(--fg);outline:none;font:inherit;width:100%} .search svg{flex:none;color:var(--faint)}
+  select{font:inherit;font-size:13px;color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  .shell{display:grid;grid-template-columns:210px 1fr;min-height:calc(100% - 52px)}
+  .nav{border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:3px;background:var(--surface)}
+  .nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);padding:12px 8px 4px}
+  .nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:8px;border:0;background:transparent;color:var(--fg);font-size:14px}
+  .nav button:hover{background:var(--surface-2)} .nav button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .nav button .ic{width:16px;text-align:center;color:var(--faint);flex:none} .nav button.on .ic{color:var(--accent)}
+  .main{padding:20px clamp(14px,3vw,28px);min-width:0;display:flex;flex-direction:column;gap:18px}
+  .vh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap} .vh h2{font-size:20px} .vh .sub{color:var(--muted);font-size:13px}
+  .back{align-self:flex-start;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:5px 12px;font-size:13px} .back:hover{background:var(--surface-2)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:visible;min-width:0}
+  .card.clip{overflow:hidden}
+  .card>h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);padding:13px 16px 9px;display:flex;justify-content:space-between;align-items:center;margin:0;gap:10px} .card>h3 a{color:var(--accent);text-decoration:none;font-size:12px;text-transform:none;letter-spacing:0}
+  .pill{font-family:var(--font-data);font-size:11.5px;font-weight:500;padding:2px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap} .pill.ver{background:var(--accent-soft);color:var(--accent)}
+  .prio{font-family:var(--font-data);font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px;background:var(--surface-2);color:var(--muted)} .prio.P0{background:var(--crit-soft);color:var(--crit)} .prio.P1{background:var(--warn-soft);color:var(--warn)}
+  .stat{font-family:var(--font-data);font-size:11px;padding:1px 7px;border-radius:5px}
+  .s-idea{background:var(--idea-soft);color:var(--idea)} .s-ready{background:var(--groom-soft);color:var(--groom)} .s-wip{background:var(--warn-soft);color:var(--warn)} .s-done{background:var(--go-soft);color:var(--go)}
+  .verdict{font-family:var(--font-data);font-size:11px;padding:1px 7px;border-radius:5px} .v-go{background:var(--go-soft);color:var(--go)} .v-stop{background:var(--crit-soft);color:var(--crit)} .v-warn{background:var(--warn-soft);color:var(--warn)}
+  .costtag{font-family:var(--font-data);font-size:11px;padding:1px 7px;border-radius:5px;background:var(--surface-2);color:var(--muted)} .costtag.hi{background:var(--crit-soft);color:var(--crit)} .costtag.mid{background:var(--warn-soft);color:var(--warn)} .costtag.lo{background:var(--go-soft);color:var(--go)}
+  .muted{color:var(--muted)} .faint{color:var(--faint)}
+  .live{width:8px;height:8px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px var(--go-soft);display:inline-block;animation:pulse 1.8s infinite} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}} @media (prefers-reduced-motion:reduce){.live{animation:none}}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:8px 15px;font-size:13px;font-weight:600;white-space:nowrap} .btn:hover{filter:brightness(1.07)} .btn.ghost{background:transparent;color:var(--accent)} .btn.sm{padding:6px 11px;font-size:12.5px}
+  .modal{position:fixed;inset:0;z-index:50;background:rgba(10,14,20,.5);display:flex;align-items:center;justify-content:center;padding:20px} .modal[hidden]{display:none}
+  .sheet2{background:var(--bg);border:1px solid var(--line);border-radius:14px;width:min(560px,100%);max-height:85vh;overflow:auto;padding:18px} .sheet2 .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px} .sheet2 .mh h3{font-size:16px} .sheet2 .x{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:5px 11px}
+  .pmlist{display:grid;grid-template-columns:1fr 1fr;gap:12px} .pmcard{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:7px} .pmcard:hover{border-color:var(--accent);background:var(--surface-2)} .pmcard.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .pmcard .nm{font-weight:600;display:flex;align-items:center;gap:7px} .pmcard .pv{font-family:var(--font-data);font-size:12px;color:var(--accent)} .pmcard .prow{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .funnel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+  .funbar{height:30px;border-radius:7px;overflow:hidden;display:flex} .funbar i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;min-width:0}
+  .fun-idea{background:var(--idea)} .fun-ready{background:var(--groom)} .fun-wip{background:var(--warn)}
+  .funlegend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px} .funlegend span{display:inline-flex;align-items:center;gap:7px;color:var(--muted)} .funlegend b{color:var(--fg);font-family:var(--font-data)}
+  .funextra{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:11px} .funextra b{color:var(--fg);font-family:var(--font-data)}
+  .mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:0} .mcell{padding:13px 15px;border-right:1px solid var(--line);border-top:1px solid var(--line)} .mcell .mv{font-family:var(--font-data);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums} .mcell .mk{font-size:12px;color:var(--muted)}
+  .gauges{display:flex;flex-direction:column;gap:13px} .gauge .gh{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:5px;gap:8px;flex-wrap:wrap} .gauge .gl{font-weight:600;display:inline-flex;align-items:center;gap:7px} .gauge .gn{font-family:var(--font-data);color:var(--muted)}
+  .track{height:11px;border-radius:6px;background:var(--surface-2);overflow:hidden} .track i{display:block;height:100%} .fill-groom{background:var(--groom)} .fill-dev{background:var(--go)}
+  .enc{font-size:11.5px;padding:1px 8px;border-radius:20px;background:var(--go-soft);color:var(--go);display:inline-flex;align-items:center;gap:6px}
+  .work{border:1px solid var(--line);border-radius:var(--r);padding:15px 17px;display:flex;flex-direction:column;gap:13px;background:var(--surface)} .work.cad{border-left:4px solid var(--groom)} .work.dev{border-left:4px solid var(--go)}
+  .work .wh{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-weight:600}
+  .row{display:grid;grid-template-columns:auto 1fr auto;gap:3px 12px;align-items:center;padding:11px 16px;border-top:1px solid var(--line)} .row .when{font-family:var(--font-data);font-size:12px;color:var(--faint);grid-row:1/3;align-self:center} .row .ttl{font-weight:500;font-size:14px} .row .meta{font-size:12px;color:var(--muted);display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .clk{cursor:pointer} .clk:hover{background:var(--surface-2)}
+  /* lots list */
+  .vstack{display:flex;flex-direction:column;gap:10px} .vrow{display:grid;grid-template-columns:auto 1fr auto;gap:5px 12px;align-items:center;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);cursor:pointer} .vrow:hover{background:var(--surface-2)} .vrow.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .vrow .vname{font-weight:600} .vrow .minigs{grid-column:1/3;display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);align-items:center} .minibar{width:90px;height:7px;border-radius:5px;background:var(--surface-2);overflow:hidden;display:inline-block;vertical-align:middle} .minibar i{display:block;height:100%} .arr{color:var(--faint)} .grpv{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:4px 0 0}
+  .lotcols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start} .lotcol{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0} .lotcol>h4{font-size:12px;padding:11px 13px;display:flex;justify-content:space-between;color:var(--muted);border-bottom:1px solid var(--line)} .lotcol .cnt{font-family:var(--font-data)}
+  .lotmini{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 13px;border-top:1px solid var(--line);cursor:pointer} .lotmini:first-of-type{border-top:0} .lotmini:hover{background:var(--surface-2)}
+  .lmn{min-width:0;display:flex;flex-direction:column;gap:4px} .lmt{font-size:13px;font-weight:500;line-height:1.25} .lmg{display:flex;flex-direction:column;gap:4px}
+  .gmini{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted);font-family:var(--font-data)} .gmini .gl{width:22px} .minibar2{width:64px;height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden} .minibar2 i{display:block;height:100%} .gmini .gv{width:30px;text-align:right}
+  .actline{display:flex;align-items:center;gap:9px;padding:10px 16px;border-top:1px solid var(--line)} .actline:first-of-type{border-top:0} .actline.clk{cursor:pointer} .actline.clk:hover{background:var(--surface-2)} .al-t{font-weight:500;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%} .al-when{margin-left:auto;font-family:var(--font-data);font-size:12px;color:var(--faint);white-space:nowrap;flex-shrink:0} .al-x{font-family:var(--font-data);font-size:11.5px;white-space:nowrap;flex-shrink:0}
+  .schips{display:flex;gap:4px;overflow:hidden;flex:1 1 auto;min-width:0;flex-wrap:nowrap} .schip{font-size:10.5px;padding:1px 7px;border-radius:20px;background:var(--surface-2);color:var(--muted);white-space:nowrap;cursor:pointer;border:1px solid transparent;flex-shrink:0} .schip:hover{border-color:var(--accent);color:var(--accent)} .schip.more{cursor:default;color:var(--faint)}
+  .ptrow{display:grid;grid-template-columns:1.55fr 1fr 1fr .5fr .95fr;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)} .ptrow.clk{cursor:pointer} .ptrow.clk:hover{background:var(--surface-2)} .ptrow.run{background:var(--go-soft)} .ptrow.run.clk:hover{background:var(--go-soft)} .ptact{display:flex;justify-content:flex-end;align-items:center} .runbadge{font-family:var(--font-data);font-size:10.5px;color:var(--go);font-weight:600;white-space:nowrap;margin-left:2px} .ptrow.hd{border-top:0;color:var(--faint);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em} .ptc{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:var(--font-data)} .ptn{font-size:13px;display:flex;gap:8px;align-items:center;min-width:0} .ptn .nm{font-weight:500}
+  @media(max-width:820px){.lotcols{grid-template-columns:1fr}}
+  /* toolbar + fiches */
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap} .toolbar label{font-size:13px;color:var(--muted)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden} .seg button{padding:6px 12px;background:transparent;border:0;color:var(--muted);font-size:13px} .seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  details.cmd{position:relative} details.cmd>summary{list-style:none;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:7px 12px;font-size:13px} details.cmd>summary::-webkit-details-marker{display:none} details.cmd[open]>summary{border-color:var(--groom);color:var(--groom)}
+  .cmdmenu{position:absolute;z-index:9;margin-top:6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:6px;min-width:240px;display:flex;flex-direction:column;gap:2px}
+  .cmdmenu button{text-align:left;border:0;background:transparent;color:var(--fg);border-radius:7px;padding:8px 10px;font-size:13px;display:flex;flex-direction:column;gap:1px} .cmdmenu button:hover{background:var(--surface-2)} .cmdmenu button code{font-size:11px;color:var(--faint)}
+  .kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start} .col{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0} .col>h4{font-size:12px;padding:11px 13px;display:flex;justify-content:space-between;color:var(--muted);border-bottom:1px solid var(--line)} .col .cnt{font-family:var(--font-data)}
+  .fcard{padding:10px 13px;border-top:1px solid var(--line);cursor:pointer} .fcard:first-of-type{border-top:0} .fcard:hover{background:var(--surface-2)} .fcard .ft{font-size:13px;font-weight:500;margin-bottom:5px} .fcard .fm{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .flist .fli{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:10px;align-items:center;padding:11px 16px;border-top:1px solid var(--line);cursor:pointer} .flist .fli:first-child{border-top:0} .flist .fli:hover{background:var(--surface-2)} .fli .fn{font-size:13.5px;min-width:0}
+  .msg{background:var(--groom-soft);color:var(--groom);border-radius:8px;padding:10px 14px;font-size:13px}
+  /* launch / dev */
+  .launch{display:flex;flex-direction:column;gap:14px} .knob{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:13px 16px} .knob .kt{font-size:13px;font-weight:600;margin-bottom:3px} .knob .kd{font-size:12px;color:var(--muted);margin-bottom:9px}
+  .opts{display:flex;gap:8px;flex-wrap:wrap} .opt{border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:20px;padding:6px 13px;font-size:13px} .opt.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .summary{background:var(--accent-soft);color:var(--accent);border-radius:var(--r);padding:14px 16px;font-size:14px;display:flex;flex-direction:column;gap:11px} .summary b{font-weight:700} .summary .act{display:flex;gap:10px;flex-wrap:wrap;align-items:center} .done-msg{background:var(--go-soft);color:var(--go);border-radius:var(--r);padding:12px 15px;font-size:13.5px}
+  .readylots{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px} .rlot{border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:9px;background:var(--surface)} .rlot .gz{font-size:11.5px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+  .sprintrow{display:grid;grid-template-columns:auto 1fr auto auto;gap:4px 12px;align-items:center;padding:11px 16px;border-top:1px solid var(--line);cursor:pointer} .sprintrow:hover{background:var(--surface-2)} .sprintrow .sn{font-family:var(--font-data);font-weight:600;font-size:13px} .sprintrow .sf{font-size:13px;color:var(--muted)} .sprintrow .sr{font-size:11px;color:var(--groom)}
+  /* timeline */
+  .tl-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .chip{font-size:12px;padding:4px 11px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--muted)} .chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .timeline{position:relative;padding-left:26px} .timeline::before{content:"";position:absolute;left:9px;top:4px;bottom:4px;width:2px;background:var(--line)}
+  .tev{position:relative;padding:11px 14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)} .tev.clk{cursor:pointer} .tev.clk:hover{background:var(--surface-2)}
+  .tev::before{content:"";position:absolute;left:-21px;top:17px;width:11px;height:11px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px var(--bg)}
+  .tev[data-kind=lancement]::before{background:var(--accent)} .tev[data-kind=tag]::before{background:var(--warn)} .tev[data-kind=retro]::before{background:var(--crit)} .tev[data-kind=gate]::before{background:var(--muted)} .tev.liveev{border-color:var(--go);box-shadow:0 0 0 1px var(--go)}
+  .tev .th{display:flex;gap:9px;align-items:center;flex-wrap:wrap} .tev .td{font-family:var(--font-data);font-size:12px;color:var(--faint)} .tev .tt{font-weight:500;font-size:14px;margin-top:3px} .tev .tm{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:9px;flex-wrap:wrap;align-items:center} .tev .arr{position:absolute;right:12px;top:14px;color:var(--faint)}
+  .kindtag{font-family:var(--font-data);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:20px;background:var(--surface-2);color:var(--muted)}
+  .loadmore{display:block;margin:4px auto 2px;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:500} .loadmore:hover{background:var(--surface-2)} .tl-end{text-align:center;color:var(--faint);font-size:12px;padding:8px}
+  /* process */
+  .flow{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch} .fstep{flex:1 1 150px;min-width:140px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:13px 14px;cursor:pointer;display:flex;flex-direction:column;gap:6px} .fstep:hover{border-color:var(--accent)} .fstep.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
+  .fstep .sn{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)} .fstep .snm{font-weight:600;font-size:14px} .fstep .sc{font-family:var(--font-data);font-size:22px;font-weight:600} .fstep .sd{font-size:11.5px;color:var(--muted)} .fstep.off{opacity:.5}
+  .substeps{display:flex;gap:6px;flex-wrap:wrap;padding:0 2px 2px} .substep{font-size:11px;padding:2px 9px;border-radius:20px;background:var(--surface-2);color:var(--muted)}
+  .pflow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:20px 16px}
+  .pnode{position:relative;background:var(--accent-soft);border:1.5px solid var(--accent);color:var(--accent);border-radius:24px;padding:11px 17px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;gap:3px;min-width:96px;text-align:center} .pnode:hover{box-shadow:0 3px 10px rgba(58,91,217,.22)}
+  .pnode.sub{border-style:double;border-width:4px} .pnode.leaf{background:var(--surface);color:var(--fg);border-color:var(--line)}
+  .pnode .pc{font-family:var(--font-data);font-size:11px;background:var(--surface);color:var(--accent);border-radius:12px;padding:0 8px;min-width:22px} .pnode .psub{font-size:9px;text-transform:uppercase;letter-spacing:.06em;opacity:.8} .pnode .pimpl{font-size:10px;font-weight:500;color:var(--muted);max-width:120px}
+  .parr{color:var(--faint);font-size:20px;flex:none}
+  .docmodal .docsheet{background:var(--bg);border:1px solid var(--line);border-radius:14px;width:min(920px,100%);height:min(88vh,100%);display:flex;flex-direction:column;overflow:hidden}
+  .dmh{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:13px 20px;border-bottom:1px solid var(--line);background:var(--surface)} .dmh .dmt{font-weight:700;font-size:15px;display:flex;gap:9px;align-items:center;min-width:0;flex-wrap:wrap} .dmh .dmt code{font-size:12px;color:var(--muted);font-weight:400} .dmh .dmbtns{display:flex;gap:7px;flex:none} .dmh button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:5px 11px;font-size:13px} .dmh button:hover{background:var(--surface-2)}
+  .docbody{overflow:auto;padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+  .doc-sec h4{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:6px} .doc-sec p{margin:0 0 8px;font-size:14px} .doc-sec ul{margin:0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+  .lvl{font-family:var(--font-data);font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:5px} .lvl.MUST{background:var(--crit-soft);color:var(--crit)} .lvl.SHOULD{background:var(--warn-soft);color:var(--warn)} .lvl.MAY{background:var(--surface-2);color:var(--muted)}
+  .filekind{font-size:11px;padding:1px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
+  .doclink{color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px} .doclink:hover{opacity:.78}
+  .aggsec{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--surface)} .aggsec>h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin:0 0 9px;display:flex;gap:8px;align-items:center}
+  .rulecard{border:1px solid var(--line);border-radius:8px;padding:11px 13px;cursor:pointer;display:flex;gap:9px;align-items:baseline;flex-wrap:wrap} .rulecard:hover{background:var(--surface-2)} .rulecard .rt{font-weight:600;font-size:13.5px} .rulecard .rd{font-size:12.5px;color:var(--muted);flex-basis:100%}
+  .nodeacts{display:flex;gap:9px;flex-wrap:wrap}
+  .cfg{display:grid;grid-template-columns:1fr 1fr;gap:14px} .kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;padding:14px 16px} .kv dt{color:var(--muted);font-size:13px} .kv dd{margin:0;font-size:13.5px;font-family:var(--font-data)}
+  .togglepill{font-size:11px;padding:1px 8px;border-radius:20px} .on-y{background:var(--go-soft);color:var(--go)} .on-n{background:var(--surface-2);color:var(--muted)}
+  .doclist{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;padding:14px 16px} .doc{padding:11px 13px;border:1px solid var(--line);border-radius:8px} .doc .dt{font-weight:600;font-size:13.5px} .doc .dd{font-size:12px;color:var(--muted);margin-top:2px}
+  .banner{background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:9px 13px;font-size:12.5px;margin:0 16px 14px}
+  .detail{display:flex;flex-direction:column;gap:16px} .dhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .enclair{background:var(--accent-soft);border-radius:10px;padding:14px 16px;font-size:14.5px} .enclair b{color:var(--accent)}
+  .sec h4{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:6px} .sec p{margin:0 0 7px} .sec{font-size:14px}
+  .dgrid{display:grid;grid-template-columns:1.3fr .7fr;gap:16px;align-items:start}
+  .crit{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px} .crit li{display:flex;gap:9px;align-items:flex-start;font-size:14px} .crit .box{width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;flex:none;margin-top:2px}
+  .codeblock{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-family:var(--font-data);font-size:12.5px;white-space:pre-wrap;overflow-x:auto}
+  .metrics4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px} .metric{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 13px} .metric .mv{font-family:var(--font-data);font-size:18px;font-weight:600} .metric .mk{font-size:11px;color:var(--muted)}
+  .tags{display:flex;gap:7px;flex-wrap:wrap} .tagc{font-size:12px;padding:3px 10px;border-radius:20px;background:var(--surface-2);color:var(--muted)}
+  .foot{color:var(--faint);font-size:12px;text-align:center;padding:4px 0 10px}
+  @media (max-width:900px){ .shell{grid-template-columns:150px 1fr} .kanban{grid-template-columns:repeat(2,1fr)} .cfg,.dgrid{grid-template-columns:1fr} .metrics4{grid-template-columns:repeat(2,1fr)} .mgrid{grid-template-columns:repeat(2,1fr)} .pmlist{grid-template-columns:1fr} }
+  @media (max-width:620px){ .shell{grid-template-columns:50px 1fr} .nav{padding:12px 5px} .nav .grp,.nav .lbl{display:none} .nav button{justify-content:center;padding:11px 0} .kanban{grid-template-columns:1fr} }
+</style>
+
+<div class="top">
+  <span class="brand"><span class="dot"></span>board <span class="bv" id="brandver">v0.11.0</span></span>
+  <button class="projbtn" id="projbtn"></button>
+  <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input id="gsearch" placeholder="Rechercher…"></label>
+</div>
+<div class="shell">
+  <nav class="nav" id="nav">
+    <div class="grp" id="navproj">Projet</div>
+    <button data-s="overview" class="on" title="Vue d'ensemble"><span class="ic">◧</span><span class="lbl">Vue d'ensemble</span></button>
+    <button data-s="cadrage" title="Cadrage"><span class="ic">✎</span><span class="lbl">Cadrage</span></button>
+    <button data-s="dev" title="Développement"><span class="ic">▸</span><span class="lbl">Développement</span></button>
+    <button data-s="fiches" title="Fiches"><span class="ic">▦</span><span class="lbl">Fiches</span></button>
+    <button data-s="timeline" title="Chronologie"><span class="ic">◷</span><span class="lbl">Chronologie</span></button>
+    <button data-s="config" title="Configuration"><span class="ic">⚙</span><span class="lbl">Configuration</span></button>
+    <div class="grp">Méthode</div>
+    <button data-s="process" title="Process"><span class="ic">❖</span><span class="lbl">Process</span></button>
+  </nav>
+  <main class="main" id="main"></main>
+</div>
+<div class="modal" id="projmodal" hidden><div class="sheet2"><div class="mh"><h3>Choisir un projet</h3><button class="x" id="pmx">Fermer ✕</button></div><div class="pmlist" id="pmlist"></div></div></div>
+<div class="modal docmodal" id="docmodal" hidden><div class="docsheet"><div class="dmh"><span class="dmt" id="doctitle"></span><div class="dmbtns"><button id="docback" hidden>‹ préc.</button><button id="docx">Fermer ✕</button></div></div><div class="docbody" id="docbody"></div></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+const F=(id,title,prio,status,ver,enclair,extra)=>Object.assign({id,title,prio,status,ver,enclair,ctx:(extra&&extra.ctx)||"—",crit:(extra&&extra.crit)||["à préciser"],verif:(extra&&extra.verif)||"à définir"},extra||{});
+const FICHES_V = {
+  "20261004175528673":F("20261004175528673","Corriger les 20 dépendances vulnérables","P1","ready","v0.11.0","GitHub signale 20 failles, dont une haute.",{verif:"pnpm audit --prod"}),
+  "20260922175954296":F("20260922175954296","Release-gate (skill ezk-release)","P0","ready","v0.11.0","Passe qualité composable avant le tag ; bloque si NO-GO.",{verif:"ezk release v0.11.0"}),
+  "20261002230039555":F("20261002230039555","Une seule commande « gate »","P1","ready","v0.11.0","Une commande rejoue toute la validation locale.",{verif:"ezk gate"}),
+  "20261003075821760":F("20261003075821760","Le relecteur coche les critères","P1","ready","v0.11.0","Une case cochée = prouvé, par la revue."),
+  "20261011091555006":F("20261011091555006","La gate attrape les défauts de forme des vues","P2","ready","v0.11.0","La gate attrape les vues malformées."),
+  "20261011091552583":F("20261011091552583","regen écrit un titre cassé avec --root","P2","ready","v0.11.0","regen --root écrivait « # --root »."),
+  "20261002230039755":F("20261002230039755","La revue rejoue les scripts bash sur entrées hostiles","P2","ready","v0.11.0","La revue rejoue les .sh en bac à sable."),
+  "20261001133500750":F("20261001133500750","Le lint couvre enfin mega-city","P2","ready","v0.11.0","Le lint couvre le code de mega-city."),
+  "20261011142027748":F("20261011142027748","ezk adr new — prochain id d'ADR libre","P2","ready","v0.11.0","Le prochain id d'ADR libre des deux dossiers.",{split_from:"20261010114133097"}),
+  "f1201":F("f1201","Les outils de la méthode marchent depuis un projet hôte","P1","ready","v0.12.0","Les commandes ezk acceptent --root."),
+  "f1202":F("f1202","ezk dit quand le dossier principal est en retard","P1","idea","v0.12.0","ezk signale un principal en retard."),
+  "f1203":F("f1203","Un seul guichet GitHub (github:false respecté)","P2","idea","v0.12.0","github:false coupe tous les appels GitHub."),
+  "f1301":F("f1301","Réconcilier le worktree après un ship local","P1","idea","v0.13.0","Réconcilier le worktree sans écraser un champ écrit par un script."),
+  "f1302":F("f1302","ship barre la bonne ligne de PLAN.md","P2","idea","v0.13.0","ship barre une ligne à id unique même avec un marqueur."),
+  "f1401":F("f1401","Le journal de sprint se range par branche","P1","idea","v0.14.0","Le journal de sprint hors du worktree."),
+  "f1402":F("f1402","Le portier distingue un worktree vivant d'un abandonné","P2","idea","v0.14.0","Ne plus crier au loup sur un worktree abandonné."),
+  "f1501":F("f1501","Le run autonome filtre l'éligibilité + borne de version","P2","idea","v0.15.0","Le run s'arrête à la bonne borne."),
+  "f1502":F("f1502","ezk-product-build enchaîne plusieurs versions","P2","idea","v0.15.0","Run multi-versions avec rétro + tag."),
+  "f1601":F("f1601","Basculer vectorz vers scrum/ (sous revue)","P2","ready","v0.16.0","Déménager 5 dossiers sous scrum/."),
+  "f1602":F("f1602","Trier les sorties de rétro par nature","P2","idea","v0.16.0","Une source unique décrit les sorties de rétro."),
+  "p1001":F("p1001","Générateur multi-IDE","P1","done","v0.10.0","Une source de règles génère chaque IDE.",{pr:"local 920b6b62"}),
+  "p1002":F("p1002","Boussole ezk now","P2","done","v0.10.0","Quoi faire maintenant.",{pr:"local ADR-0072"}),
+  "p1003":F("p1003","Amorçage brownfield","P2","done","v0.10.0","ezk scout extract amorce les bundles.",{pr:"local"}),
+  "p0901":F("p0901","Résolveur de chemins configurable","P2","done","v0.9.0","Chemins d'artefacts configurables.",{pr:"local"}),
+  "p0902":F("p0902","Brancher skills/scripts sur le résolveur","P2","done","v0.9.0","Les bins visent le résolveur.",{pr:"local"}),
+  "p0903":F("p0903","Nettoyer docs/","P2","done","v0.9.0","docs/ redevient de la doc.",{pr:"local"}),
+  "p0904":F("p0904","Config cop1 chez son produit","P2","done","v0.9.0","products/cop1/.",{pr:"local"}),
+  "p0905":F("p0905","CLAUDE.md = proxy vers la loi","P2","done","v0.9.0","CLAUDE.md pointe vers la loi.",{pr:"local"}),
+  "u1":F("u1","ezk-debugging — skill de débogage","P2","idea","","Un skill de débogage en 4 phases."),
+  "u2":F("u2","Release local-first — macOS signé en local","P2","idea","","Signer macOS en local."),
+  "u3":F("u3","Deux formes de PR","P1","idea","","Dev rend la fiche, backlog la désigne."),
+  "u6":F("u6","Normaliser le format de version (Vx.y ↔ vx.y.z)","P1","idea","","Un vieux « V0.9 » doit matcher « v0.9.0 ».",{ctx:"Risque semver repéré au board.",crit:["Les vues normalisent le format.","Test V0.9 ↔ v0.9.0."]}),
+};
+const RUNS_V = {
+  r1:{id:"r1",title:"Cadrage & lotissement du backlog",date:"aujourd'hui · démarré il y a 12 min",ver:"v0.11.0",kind:"cadrage",verdict:"en cours",tok:"218 k",cost:"lo",dur:"52 min",live:true,note:"Tri, lotissement en 6 versions, grooming de v0.11 (9/9).",sprints:[{n:1,label:"Grooming v0.11",fiches:9,status:"wip",retro:false,tok:"218 k"}]},
+  rv10:{id:"rv10",title:"Réalisation v0.10 — portabilité multi-IDE",date:"hier",ver:"v0.10.0",kind:"dev",verdict:"GO",tok:"512 k",cost:"hi",dur:"2 h 10",note:"3 fiches en 3 sprints. Rétro à la fin.",sprints:[{n:1,label:"Générateur multi-IDE",fiches:1,status:"done",retro:false,tok:"210 k"},{n:2,label:"Boussole ezk now",fiches:1,status:"done",retro:false,tok:"170 k"},{n:3,label:"Brownfield scout",fiches:1,status:"done",retro:true,tok:"132 k"}]},
+  rv9:{id:"rv9",title:"Réalisation v0.9 — ranger la maison",date:"hier",ver:"v0.9.0",kind:"dev",verdict:"NO-GO→corrigé",tok:"402 k",cost:"mid",dur:"1 h 40",note:"5 fiches en 3 sprints. Un NO-GO corrigé.",sprints:[{n:1,label:"Résolveur de chemins",fiches:2,status:"done",retro:false,tok:"150 k"},{n:2,label:"Nettoyage docs/",fiches:2,status:"done",retro:false,tok:"140 k"},{n:3,label:"CLAUDE.md proxy",fiches:1,status:"done",retro:true,tok:"112 k"}]},
+  rv8:{id:"rv8",title:"Réalisation v0.8 — règles composables",date:"2 j",ver:"v0.8.0",kind:"dev",verdict:"GO",tok:"357 k",cost:"mid",dur:"1 h 25",note:"4 fiches en 2 sprints auto.",sprints:[{n:1,label:"bundle + spike",fiches:2,status:"done",retro:false,tok:"200 k"},{n:2,label:"DoD/DoR + projection",fiches:2,status:"done",retro:true,tok:"157 k"}]},
+};
+const RETRO_V = [
+  {ver:"v0.10.0",date:"2026-10-11",title:"Rétro v0.10",report:"Générateur parqué. Défaut de tirage capturé. Boussole livrée.",pts:["plan-head ignore blocked:","générateur parqué","boussole livrée"],fiches:[{id:"20261011091552583",ver:"v0.11.0"}],rules:["token-economy/borne-de-version"]},
+  {ver:"v0.9.0",date:"2026-10-11",title:"Rétro v0.9",report:"ship-merge --local en conflit. scrum/ trop lourd → sous revue.",pts:["ship-merge vs fichier non suivi","scrum/ → sous revue"],fiches:[{id:"f1601",ver:"v0.16.0"},{id:"f1602",ver:"v0.16.0"}],rules:["clean-code/no-dead-code"]},
+  {ver:"v0.8.0",date:"2026-10-10",title:"Rétro v0.8",report:"Divergence dev/reviewer prouvée. Sprints auto bien calibrés.",pts:["divergence prouvée","sprints auto calibrés"],fiches:[],rules:["agent-ops/sprint-size-auto"]},
+  {ver:"v0.7.0",date:"2026-10-11",title:"Rétro v0.7",report:"Le run a hésité sur des fiches différées → borne de version.",pts:["borne de version","garde-fou de séquence → P0 livré"],fiches:[{id:"20261011091555006",ver:"v0.11.0"}],rules:["agent-ops/arret-run-deterministe"]},
+];
+const TL_V = [
+  {d:"maintenant",kind:"lancement",ver:"v0.11.0",t:"Cadrage v0.11 en cours",m:"grooming 9/9",steps:["grooming","ready"],tok:"218 k",cost:"lo",live:true,ref:{type:"run",id:"r1"}},
+  {d:"aujourd'hui",kind:"gate",ver:"v0.11.0",t:"Lot v0.11 figé — 9 fiches",m:"release-gate incluse",steps:["grooming","ready","release"],ref:{type:"version",ver:"v0.11.0"}},
+  {d:"hier",kind:"gate",ver:"v0.10.0",t:"Lot v0.10 figé — 3 fiches",m:"cadré puis lancé",steps:["grooming","ready","release"],ref:{type:"version",ver:"v0.10.0"}},
+  {d:"2 j",kind:"gate",ver:"v0.9.0",t:"Lot v0.9 figé — 5 fiches",m:"cadré puis lancé",steps:["grooming","ready","release"],ref:{type:"version",ver:"v0.9.0"}},
+  {d:"hier",kind:"tag",ver:"v0.10.0",t:"Version v0.10.0 taguée",m:"portabilité multi-IDE",ref:{type:"version",ver:"v0.10.0"}},
+  {d:"hier",kind:"retro",ver:"v0.10.0",t:"Rétro v0.10",m:"3 points · 1 fiche",ref:{type:"retro",i:0}},
+  {d:"hier",kind:"sprint",ver:"v0.10.0",t:"Sprint 3 — Brownfield scout",m:"1 fiche · rétro",tok:"132 k",cost:"lo",ref:{type:"sprint",id:"rv10",n:3}},
+  {d:"hier",kind:"sprint",ver:"v0.10.0",t:"Sprint 2 — Boussole ezk now",m:"1 fiche",tok:"170 k",cost:"lo",ref:{type:"sprint",id:"rv10",n:2}},
+  {d:"hier",kind:"sprint",ver:"v0.10.0",t:"Sprint 1 — Générateur multi-IDE",m:"1 fiche",tok:"210 k",cost:"mid",ref:{type:"sprint",id:"rv10",n:1}},
+  {d:"hier",kind:"lancement",ver:"v0.10.0",t:"Lancement réalisation v0.10",m:"3 sprints · rétro fin",ref:{type:"run",id:"rv10"}},
+  {d:"2 j",kind:"tag",ver:"v0.9.0",t:"Version v0.9.0 taguée",m:"ranger la maison",ref:{type:"version",ver:"v0.9.0"}},
+  {d:"2 j",kind:"retro",ver:"v0.9.0",t:"Rétro v0.9",m:"2 points · 2 fiches",ref:{type:"retro",i:1}},
+  {d:"2 j",kind:"sprint",ver:"v0.9.0",t:"Sprint 3 — CLAUDE.md proxy",m:"1 fiche · NO-GO corrigé",tok:"112 k",cost:"lo",ref:{type:"sprint",id:"rv9",n:3}},
+  {d:"2 j",kind:"sprint",ver:"v0.9.0",t:"Sprint 2 — Nettoyage docs/",m:"2 fiches",tok:"140 k",cost:"lo",ref:{type:"sprint",id:"rv9",n:2}},
+  {d:"2 j",kind:"sprint",ver:"v0.9.0",t:"Sprint 1 — Résolveur de chemins",m:"2 fiches",tok:"150 k",cost:"lo",ref:{type:"sprint",id:"rv9",n:1}},
+  {d:"3 j",kind:"tag",ver:"v0.8.0",t:"Version v0.8.0 taguée",m:"règles composables",ref:{type:"version",ver:"v0.8.0"}},
+  {d:"3 j",kind:"retro",ver:"v0.8.0",t:"Rétro v0.8",m:"sprints auto calibrés",ref:{type:"retro",i:2}},
+  {d:"3 j",kind:"sprint",ver:"v0.8.0",t:"Sprint 2 — DoD/DoR",m:"2 fiches · rétro",tok:"157 k",cost:"lo",ref:{type:"sprint",id:"rv8",n:2}},
+  {d:"3 j",kind:"sprint",ver:"v0.8.0",t:"Sprint 1 — bundle + spike",m:"2 fiches",tok:"200 k",cost:"mid",ref:{type:"sprint",id:"rv8",n:1}},
+  {d:"5 j",kind:"tag",ver:"v0.7.0",t:"Version v0.7.0 taguée",m:"voir sous le capot",ref:{type:"version",ver:"v0.7.0"}},
+  {d:"5 j",kind:"retro",ver:"v0.7.0",t:"Rétro v0.7",m:"2 points · 1 fiche",ref:{type:"retro",i:3}},
+  {d:"12 j",kind:"tag",ver:"v0.1.0",t:"Versions v0.1 → v0.6 taguées",m:"le socle, le cockpit…",ref:null},
+  {d:"origine",kind:"gate",ver:null,t:"Création du projet vectorz",m:"premier commit",ref:null},
+];
+const VERSIONS_V = {
+  current:{ver:"v0.11.0",name:"La qualité tient",done:0,wip:0,ready:9,idea:0,total:9},
+  upcoming:[{ver:"v0.12.0",name:"Le flux local sans friction",done:0,wip:0,ready:1,idea:6,total:7},{ver:"v0.13.0",name:"La transaction ship, d'un bloc",done:0,wip:0,ready:0,idea:7,total:7},{ver:"v0.14.0",name:"Les portiers robustes",done:0,wip:0,ready:0,idea:6,total:6},{ver:"v0.15.0",name:"Voir les runs",done:0,wip:0,ready:0,idea:4,total:4},{ver:"v0.16.0",name:"Ranger la maison (2e jet)",done:0,wip:0,ready:2,idea:7,total:9}],
+  past:[{ver:"v0.10.0",name:"Portabilité multi-IDE",done:3,wip:0,ready:0,idea:0,total:3,date:"2026-10-11",tok:"512 k"},{ver:"v0.9.0",name:"Ranger la maison",done:5,wip:0,ready:0,idea:0,total:5,date:"2026-10-11",tok:"402 k"},{ver:"v0.8.0",name:"Amélioration mesurée",done:4,wip:0,ready:0,idea:0,total:4,date:"2026-10-10",tok:"357 k"}],
+};
+const CONFIG_V={github:"false (sur cette branche)",root:"~/git/bacasable/vectorz",groomPolicy:"auto",sprintSize:"auto",retro:"à la fin",releaseGate:"on",modelDefault:"Opus 4.8",notes:"la méthode s'auto-héberge"};
+const DATA = {
+  vectorz:{name:"vectorz",desc:"la méthode",live:true,session:"12 min",cost7j:"1,84 M",funnel:{idea:56,ready:14,wip:0,unversioned:20,parked:71},metrics:{done:296,tokens:"18,4 M",temps:"~42 h",sprints:120,runs:32,retros:14,perFiche:"62 k"},versions:VERSIONS_V,fiches:FICHES_V,runs:RUNS_V,retros:RETRO_V,timeline:TL_V,config:CONFIG_V,procExtra:[],next:{title:"Lancer la réalisation",why:"le lot v0.11 est groomé (9/9). Le dev n'a pas démarré."}},
+  muti:{name:"muti",desc:"app carte & admin",live:true,session:"3 h",cost7j:"910 k",funnel:{idea:2,ready:3,wip:1,unversioned:0,parked:4},metrics:{done:14,tokens:"4,1 M",temps:"~11 h",sprints:9,runs:7,retros:3,perFiche:"293 k"},
+    versions:{current:{ver:"v1.8.0",name:"Correctifs carte admin",done:14,wip:1,ready:3,idea:2,total:20},upcoming:[{ver:"v1.9.0",name:"Comptes & rôles",done:0,wip:0,ready:0,idea:6,total:6}],past:[{ver:"v1.7.0",name:"Signalements",done:12,wip:0,ready:0,idea:0,total:12,date:"2026-09-20",tok:"1,2 M"}]},
+    fiches:{"m1":F("m1","Rendu hors design-system sur la carte admin","P0","wip","v1.8.0","Rendu hors charte. Release-gate NO-GO.",{verif:"ezk release v1.8.0"})},
+    runs:{rm1:{id:"rm1",title:"Réalisation 1.8.0 — carte admin",date:"3 h · en cours",ver:"v1.8.0",kind:"dev",verdict:"en cours",tok:"260 k",cost:"mid",dur:"1 h",live:true,note:"sprint en cours ; le release-gate bloquera le tag tant que le rendu est hors charte.",sprints:[{n:1,label:"Carte admin",fiches:3,status:"wip",retro:false,tok:"260 k"}]}},
+    retros:[{ver:"v1.7.0",date:"2026-09-20",title:"Rétro 1.7",report:"Corps de PR opaque → rendre la fiche.",pts:["rendre la fiche dans la PR","portier origin/main"],fiches:[],rules:["documentation-guidelines/fiche-est-le-document"]}],
+    timeline:[{d:"3 h",kind:"sprint",ver:"v1.8.0",t:"Sprint 1 — carte admin",m:"en cours · release-gate",tok:"260 k",cost:"mid",live:true,ref:{type:"sprint",id:"rm1",n:1}},{d:"1 sem",kind:"tag",ver:"v1.7.0",t:"Version 1.7.0 taguée",m:"signalements",ref:{type:"version",ver:"v1.7.0"}}],
+    config:{github:"true",root:"~/git/muti",groomPolicy:"exiger mon grooming",sprintSize:"3 fiches",retro:"après chaque sprint",releaseGate:"on",modelDefault:"Sonnet 4.5",notes:"projet hôte"},
+    procExtra:["Revue design-system"],next:{title:"Reprendre le rendu admin",why:"release-gate NO-GO avant de taguer 1.8.0."}},
+  samplerz:{name:"samplerz",desc:"produit cobaye",live:false,session:null,cost7j:"120 k",funnel:{idea:3,ready:1,wip:0,unversioned:0,parked:2},metrics:{done:10,tokens:"0,8 M",temps:"~3 h",sprints:4,runs:3,retros:2,perFiche:"80 k"},
+    versions:{current:{ver:"v0.3.0",name:"Format méthode depuis projet hôte",done:4,wip:0,ready:1,idea:3,total:11},upcoming:[],past:[{ver:"v0.2.0",name:"Socle",done:6,wip:0,ready:0,idea:0,total:6,date:"2026-09-10",tok:"300 k"}]},
+    fiches:{"s1":F("s1","Les outils ezk marchent depuis samplerz","P1","ready","v0.3.0","Les commandes ezk acceptent --root.")},
+    runs:{rs1:{id:"rs1",title:"Réalisation 0.3 — sprint 1",date:"2 j",ver:"v0.3.0",kind:"dev",verdict:"GO",tok:"120 k",cost:"lo",dur:"40 min",note:"2 PR livrées.",sprints:[{n:1,label:"Format méthode hôte",fiches:2,status:"done",retro:true,tok:"120 k"}]}},
+    retros:[{ver:"v0.2.0",date:"2026-09-10",title:"Rétro — premier sprint",report:"Scripts jetables ; viser 0.",pts:["0 script jetable","jetons par fiche"],fiches:[],rules:[]}],
+    timeline:[{d:"2 j",kind:"sprint",ver:"v0.3.0",t:"Sprint 1 — format méthode",m:"GO · 2 PR",tok:"120 k",cost:"lo",ref:{type:"sprint",id:"rs1",n:1}},{d:"1 mois",kind:"tag",ver:"v0.2.0",t:"Version 0.2.0 taguée",m:"socle",ref:{type:"version",ver:"v0.2.0"}}],
+    config:{github:"true",root:"~/git/samplerz",groomPolicy:"auto",sprintSize:"2 fiches",retro:"après chaque sprint",releaseGate:"off",modelDefault:"Sonnet 4.5",notes:"banc de test"},
+    procExtra:[],next:{title:"Groomer les 3 idées de v0.3",why:"1 seule fiche prête."}},
+  cop1:{name:"cop1",desc:"plan de contrôle / Moniteur",live:false,session:null,cost7j:"0",funnel:{idea:1,ready:0,wip:0,unversioned:1,parked:0},metrics:{done:0,tokens:"0",temps:"—",sprints:0,runs:0,retros:0,perFiche:"—"},
+    versions:{current:null,upcoming:[{ver:"à cadrer",name:"Moniteur lisible (refonte dashboard)",done:0,wip:0,ready:0,idea:1,total:1}],past:[]},
+    fiches:{"c1":F("c1","Unifier les 3 dashboards — guidé par maquette","P1","idea","","Unifier Moniteur + cockpit + board.")},
+    runs:{},retros:[],timeline:[{d:"aujourd'hui",kind:"gate",ver:null,t:"Maquette dashboard en évaluation UX",m:"3 agents · panel",ref:null}],
+    config:{github:"n/a",root:"~/git/vectorz/products/cop1",groomPolicy:"—",sprintSize:"—",retro:"—",releaseGate:"off",modelDefault:"—",notes:"webapp Moniteur / board"},
+    procExtra:[],next:{title:"Valider la maquette",why:"brainstorming + maquette = geste PO."}},
+};
+const STLABEL={idea:["Idées","s-idea","idée"],ready:["Prêtes","s-ready","prête"],wip:["En cours","s-wip","en cours"],done:["Livrées","s-done","livrée"]};
+const KINDLABEL={sprint:"sprint",lancement:"lancement",tag:"version",retro:"rétro",gate:"jalon"};
+const BATCH=9;
+const GROOM={auto:"auto-groomé par l'agent","exiger mon grooming":"exige ton grooming (bloque sinon)",mixte:"mixte"};
+const SPRINTOPT={auto:"sprints auto (l'agent décide)","2":"2 fiches / sprint","3":"3 fiches / sprint","5":"5 fiches / sprint"};
+const RETROOPT={aucune:"aucune rétro","après chaque sprint":"rétro après chaque sprint","à la fin":"rétro à la fin"};
+const CADCMDS=[["Ajouter une idée","ezk backlog add"],["Groomer la tête","ezk backlog groom <id>"],["Passer prête","ezk backlog ready <id>"],["Revue du stock","ezk backlog review"],["Dédoublonner / regrouper","ezk backlog aggregate"],["Figer le lot","ezk backlog version check"]];
+const PROC=[
+ {id:"ideation",nm:"Idéation",impl:"ezk-backlog add",stage:"idea",file:"skills/ezk-backlog/SKILL.md",prompt:"Capturer une idée cheap (status: idea), sans la cadrer. L'anti-doublon protège le backlog.",rules:["documentation-guidelines/human-facing-lisibility"],model:"— (commande)"},
+ {id:"grooming",nm:"Grooming",impl:"ezk-backlog groom",file:"skills/ezk-backlog/SKILL.md",prompt:"Faire mûrir une fiche vers la DoR par une boucle guidée (catalogue de techniques). Architecte + brainstorm inclus.",rules:["documentation-guidelines/readable-deliverable-trio"],model:"—"},
+ {id:"ready",nm:"Prête — gate DoR",impl:"ezk-backlog ready",stage:"ready",file:"skills/ezk-backlog/SKILL.md",prompt:"Gate DoR bloquant : refuse si un slot manque (problème / valeur / critères). Au vert → status: ready.",rules:["token-economy/fiche-tient-dans-un-sprint"],model:"—"},
+ {id:"sprint",nm:"Sprint",impl:"ezk-sprint",stage:"wip",sub:["TDD","dev","revue","QA"],file:"skills/ezk-sprint/SKILL.md",prompt:"Boucle 0→10 : intake, BDD/TDD (RED/GREEN/REFACTOR via l'agent ezk-dev), gate, revue, ship.",rules:["clean-code/no-dead-code","conventional-commits/format"],roles:"ezk-architect, ezk-dev, ezk-qa, ezk-reviewer",model:"compose : ezk-backlog, ezk-ci, ezk-commits"},
+ {id:"review",nm:"Revue",impl:"agent ezk-reviewer",stage:"wip",file:"agents/ezk-reviewer.md",prompt:"Revue adverse du diff : bugs, références croisées cassées, erreurs silencieuses. Verdict GO / NO-GO.",rules:["panels-adverses (convention)"],model:"frontmatter agent (model / effort)"},
+ {id:"retro",nm:"Rétro",impl:"ezk-retro",file:"skills/ezk-retro/SKILL.md",prompt:"Tirer les leçons → une capture + des règles/fiches, triées par nature.",rules:["documentation-guidelines/readable-deliverable-trio"],model:"—"},
+ {id:"release",nm:"Release-gate",impl:"ezk-release (v0.11)",file:"skills/ezk-release/SKILL.md (à construire)",prompt:"Passe qualité composable avant le tag : DoD + chasse aux bugs. Bloque le tag si NO-GO.",rules:["development/pr-before-after-media"],model:"—"},
+ {id:"livre",nm:"Livré / Tag",impl:"ezk-backlog ship + version close",stage:"done",file:"skills/ezk-backlog/SKILL.md",prompt:"ship : la fiche passe en done/ en une transaction. version close : propose le tag (geste PO).",rules:["clean-code/no-dead-code"],model:"—"},
+];
+const SUBPROC=[
+ {id:"sp-tdd",nm:"TDD (BDD)",impl:"agent ezk-dev",file:"agents/ezk-dev.md",prompt:"RED → GREEN → REFACTOR : un test rouge avant le code, puis le minimum pour le faire passer.",rules:["clean-code/no-dead-code"],model:"frontmatter agent (model / effort)"},
+ {id:"sp-dev",nm:"dev",impl:"agent ezk-dev",file:"agents/ezk-dev.md",prompt:"Implémenter la story : commits conventionnels, pas de code mort.",rules:["conventional-commits/format","clean-code/no-dead-code"],model:"frontmatter agent"},
+ {id:"sp-revue",nm:"revue",impl:"agent ezk-reviewer",file:"agents/ezk-reviewer.md",prompt:"Revue adverse du diff : bugs, refs croisées, erreurs silencieuses. Verdict GO / NO-GO.",rules:["panels-adverses"],model:"frontmatter agent"},
+ {id:"sp-qa",nm:"QA",impl:"agent ezk-qa",file:"agents/ezk-qa.md",prompt:"Vérification fonctionnelle au-delà des tests unitaires : parcours réels, régressions.",rules:[],model:"frontmatter agent"},
+];
+const RULES={
+ "clean-code/no-dead-code":{lvl:"MUST",title:"Pas de code mort",fam:"clean-code",enclair:"Pas de code mort, pas de TODO masqué, pas de code simulé. Toute branche est atteignable et testée.",body:["Si un bout n'est plus utilisé, on le supprime — git garde l'historique.","Vérifié à la revue par l'agent ezk-reviewer (enforcement niveau 1)."],bundles:["dod"]},
+ "conventional-commits/format":{lvl:"MUST",title:"Format Conventional Commits",fam:"conventional-commits",enclair:"Chaque commit suit Conventional Commits v1.0.0 : type(scope)?: sujet, à l'impératif, sans point final.",body:["type ∈ feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.","Garanti par un git hook commit-msg (enforcement niveau 2, bloquant)."],bundles:["dod"]},
+ "token-economy/fiche-tient-dans-un-sprint":{lvl:"SHOULD",title:"Une fiche tient dans un sprint",fam:"token-economy",enclair:"Une fiche de plus de six critères, ou qui touche plus de deux surfaces, se découpe avant d'être tirée — ou dit pourquoi elle reste entière.",body:["Évite les sprints qui explosent en jetons.","Contrôlée au gate ready."],bundles:[]},
+ "documentation-guidelines/human-facing-lisibility":{lvl:"MUST",title:"Lisibilité des artefacts humains",fam:"documentation-guidelines",enclair:"Tout artefact lu par un humain ouvre par « En clair » (≤ 3 phrases), avant le détail. Le jargon interne reste en annexe.",body:["Markdown seul dans le chat (jamais de HTML brut).","Une fiche se cite par titre + lien, jamais par id nu."],bundles:[]},
+ "documentation-guidelines/readable-deliverable-trio":{lvl:"SHOULD",title:"Trio de livrable lisible",fam:"documentation-guidelines",enclair:"Un livrable humain = gabarit + extracteur + rendu. Le script range les faits, le LLM juge et rédige.",body:["Le gabarit impose l'ouverture « En clair ».","Source unique : le skill lie le gabarit, il ne le recopie pas."],bundles:[]},
+ "development/pr-before-after-media":{lvl:"MUST",title:"Preuve avant/après en PR",fam:"development",enclair:"Toute PR à effet visible porte une preuve avant/après (captures) dans sa description — compréhensible sans lire le diff.",body:["Captures hébergées dans la PR ou committées légères.","Exception chore/docs/infra : N.A. motivé."],bundles:["dod"]},
+ "panels-adverses":{lvl:"SHOULD",title:"Panels adverses",fam:"review",enclair:"Les décisions structurantes passent par un panel adverse (architecte + devs + juge). 3 revues = 3 classes de défauts vues par quelqu'un d'autre.",body:["Construire → prouver → retirer.","Le panel est un texte que rien ne compile : tester avant merge."],bundles:[]},
+};
+const BUNDLES={"dod":{title:"Bundle « dod »",fam:"Definition of Done",desc:"Les règles qu'une fiche livrée doit tenir avant d'être considérée « faite » (ADR-0071).",rules:["clean-code/no-dead-code","conventional-commits/format","development/pr-before-after-media"]}};
+const FILES={
+ "skills/ezk-backlog/SKILL.md":{kind:"skill",title:"ezk-backlog",enclair:"Maintient le backlog d'un projet : une liste de fiches stable, ordonnée par priorité, et qui ne se perd jamais.",secs:[{h:"Sous-commandes clés",b:["add — crée une fiche après anti-doublon + cadrage","groom — fait mûrir une fiche vers la DoR (boucle guidée)","ready — gate DoR bloquant","ship — passe une fiche en done/ en une transaction"]},{h:"Invariant",b:["Le backlog vit sur main, commité. Source de vérité = le front-matter des fiches."]}],applies:["documentation-guidelines/human-facing-lisibility","token-economy/fiche-tient-dans-un-sprint"]},
+ "skills/ezk-sprint/SKILL.md":{kind:"skill",title:"ezk-sprint",enclair:"Déroule un sprint : de l'intake d'une fiche prête jusqu'au ship, via BDD/TDD, gate et revue adverse.",secs:[{h:"Boucle 0→10",b:["0-2 intake (reconcile, next, start)","3-5 BDD puis TDD : RED → GREEN → REFACTOR","6 gate locale","7 revue adverse","9-10 ship + close"]},{h:"Compose",b:["ezk-backlog (le quoi/où), ezk-ci, ezk-commits"]}],applies:["clean-code/no-dead-code","conventional-commits/format"],roles:["ezk-architect","ezk-dev","ezk-qa","ezk-reviewer"]},
+ "skills/ezk-retro/SKILL.md":{kind:"skill",title:"ezk-retro",enclair:"Tire les leçons d'une itération : une capture lisible + des règles/fiches, triées par nature.",secs:[{h:"Trame",b:["symptôme vécu → proposition → effet pour le lecteur","la capture est obligatoire"]}],applies:["documentation-guidelines/readable-deliverable-trio"]},
+ "agents/ezk-reviewer.md":{kind:"agent",title:"ezk-reviewer",enclair:"Revue adverse d'un diff : cherche bugs, références croisées cassées, erreurs silencieuses. Verdict GO / NO-GO.",secs:[{h:"Configuration",b:["model: claude-opus · effort: high","isolation: worktree"]},{h:"Interactions",b:["applique le bundle dod","lit le diff, pas tout le repo"]}],applies:["panels-adverses"]},
+ "agents/ezk-dev.md":{kind:"agent",title:"ezk-dev",enclair:"Développe une story en TDD strict : RED (test qui échoue) → GREEN (code minimal) → REFACTOR.",secs:[{h:"Discipline",b:["un test rouge avant tout code","pas de code mort (clean-code)"]}],applies:["clean-code/no-dead-code","conventional-commits/format"]},
+ "agents/ezk-qa.md":{kind:"agent",title:"ezk-qa",enclair:"Vérifie la qualité fonctionnelle au-delà des tests unitaires : parcours réels, régressions.",secs:[{h:"Rôle",b:["exerce les parcours réels du lot","remonte les régressions avant le ship"]}],applies:[]},
+ "skills/ezk-release/SKILL.md (à construire)":{kind:"skill",title:"ezk-release (à construire)",enclair:"Passe qualité composable avant le tag : DoD mécanique + chasse aux bugs. Bloque le tag si NO-GO.",secs:[{h:"Statut",b:["fiche v0.11 groomée (ready), pas encore construite","forme : skill composable (décision PO)"]}],applies:["development/pr-before-after-media"]},
+};
+const nodeById=(d,id)=>procSteps(d).concat(SUBPROC).find(x=>x.id===id);
+const STEPTAG={ideation:"idée",grooming:"groom",ready:"DoR",sprint:"sprint",review:"revue",retro:"rétro",release:"release-gate",livre:"tag","sp-tdd":"TDD","sp-dev":"dev","sp-revue":"revue","sp-qa":"QA",ds:"design-system"};
+function stepChips(steps){if(!steps||!steps.length)return'';const show=steps.slice(0,6);return `<span class="schips">${show.map(s=>{const id=typeof s==='string'?s:s.id,lbl=typeof s==='string'?(STEPTAG[s]||s):(s.label||STEPTAG[s.id]||s.id);return `<span class="schip" data-ref='${JSON.stringify({type:"node",id})}'>${esc(lbl)}</span>`;}).join("")}${steps.length>show.length?`<span class="schip more">+${steps.length-show.length}</span>`:''}</span>`;}
+function actLine(o){return `<div class="actline${o.ref?' clk':''}"${o.ref?` data-ref='${JSON.stringify(o.ref)}'`:''}><span class="al-t">${esc(o.t)}</span>${o.ver?`<span class="pill ver">${o.ver}</span>`:''}${stepChips(o.steps)}${o.extra?`<span class="al-x">${o.extra}</span>`:''}<span class="al-when">${esc(o.when||'')}</span></div>`;}
+let CUR="vectorz",SECTION="overview",DETAIL=null,HIST=[];
+let TLFILTER="all",TLVER="all",TLSHOWN=BATCH,QUERY="",FVER="all",FSORT="prio",FMODE="status",FCAT={avenir:true,encours:true,realisees:false};
+let LOTVER="",LOTMODE="list",CADMSG="",DEVLOT="",PROCSTEP="",LAUNCH={groom:"auto",sprint:"auto",retro:"à la fin"},LAUNCHED=false;
+const $=s=>document.querySelector(s),main=$("#main");
+const esc=s=>(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const costTag=(c,tok)=>tok?`<span class="costtag ${c==='hi'?'hi':c==='mid'?'mid':'lo'}" title="${tok} tokens">${c==='hi'?'lourd':c==='mid'?'moyen':'léger'} · ${tok}</span>`:"";
+const groomed=v=>v?(v.done+v.wip+v.ready):0;
+const liveRuns=d=>Object.values(d.runs||{}).filter(r=>r.live);
+function svKey(v){const m=(v||"").replace(/^v/i,"").match(/^(\d+)\.(\d+)(?:\.(\d+))?/);return m?[+m[1],+m[2],+(m[3]||0)]:[9999,9999,9999];}
+function svCmp(a,b){const ka=svKey(a),kb=svKey(b);for(let i=0;i<3;i++){if(ka[i]!==kb[i])return ka[i]-kb[i];}return (a||"~").localeCompare(b||"~");}
+function gaugeGroom(v,live){const t=v.total||1,g=groomed(v),p=(g/t*100).toFixed(1)+"%";return `<div class="gauge"><div class="gh"><span class="gl"><span class="sw" style="background:var(--groom)"></span>Cadrage — grooming ${live?'<span class="enc"><span class="live"></span>en cours</span>':''}</span><span class="gn">${g} / ${t} prêtes</span></div><div class="track"><i class="fill-groom" style="width:${p}"></i></div></div>`;}
+function gaugeDev(v,live){const t=v.total||1,p=(v.done/t*100).toFixed(1)+"%";return `<div class="gauge"><div class="gh"><span class="gl"><span class="sw" style="background:var(--go)"></span>Réalisation — dev ${live?'<span class="enc"><span class="live"></span>en cours</span>':''}</span><span class="gn">${v.done} / ${t} livrées</span></div><div class="track"><i class="fill-dev" style="width:${p}"></i></div></div>`;}
+function twoGauge(v,lk,showDev){return `<div class="gauges">${gaugeGroom(v,lk==='cadrage')}${showDev?gaugeDev(v,lk==='dev'):''}</div>`;}
+const fRowL=f=>`<div class="fli clk" data-f="${f.id}"><span class="prio ${f.prio}">${f.prio}</span><span class="stat s-${f.status}">${STLABEL[f.status][2]}</span><span class="fn">${esc(f.title)}</span><span class="pill ver" style="${f.ver?'':'visibility:hidden'}">${f.ver||'—'}</span><span class="faint">›</span></div>`;
+const allVersions=d=>{const V=d.versions,o=[];if(V.current)o.push(V.current.ver);V.upcoming.forEach(v=>o.push(v.ver));V.past.forEach(v=>o.push(v.ver));return o;};
+const findVer=(d,ver)=>{const V=d.versions;if(V.current&&V.current.ver===ver)return V.current;return V.upcoming.concat(V.past).find(x=>x.ver===ver);};
+const isCurVer=(d,ver)=>d.versions.current&&d.versions.current.ver===ver;
+const verCat=(d,ver)=>{const V=d.versions;if(V.past.some(x=>x.ver===ver))return"realisees";if(V.current&&V.current.ver===ver)return"encours";if(V.upcoming.some(x=>x.ver===ver))return"avenir";return null;};
+const isPastVer=(d,ver)=>d.versions.past.some(x=>x.ver===ver);
+
+
+function devTable(d){const V=d.versions,all=(V.current?[V.current]:[]).concat(V.upcoming,V.past),cadre=v=>groomed(v)===v.total;
+  const avenir=all.filter(v=>cadre(v)&&v.done===0&&v.total>0),encours=all.filter(v=>v.done>0&&v.done<v.total),faits=all.filter(v=>v.total>0&&v.done===v.total);
+  const gauge=v=>`<div class="gmini"><span class="gl">dev</span><span class="minibar2"><i class="fill-dev" style="width:${(v.done/(v.total||1)*100).toFixed(0)}%"></i></span><span class="gv">${v.done}/${v.total}</span></div>`;
+  const row=(v,launch)=>`<div class="lotmini clk" data-ref='${JSON.stringify({type:"version",ver:v.ver})}'><div class="lmn"><span class="pill ver">${v.ver}</span><span class="lmt">${esc(v.name)}</span></div><div class="lmg">${launch?`<button class="btn sm" data-devlot="${v.ver}">▸ Lancer</button>`:gauge(v)}</div></div>`;
+  const col=(t,a,launch)=>`<div class="lotcol"><h4>${t} <span class="cnt">${a.length}</span></h4>${a.length?a.map(v=>row(v,launch)).join(""):'<div class="lotmini"><span class="muted" style="padding:2px 0">—</span><span></span></div>'}</div>`;
+  return `<section class="lotcols">${col("À venir — à développer",avenir,true)}${col("En cours",encours,false)}${col("Développé",faits,false)}</section>`;}
+function procTable(d){const V=d.versions,all=(V.current?[V.current]:[]).concat(V.upcoming,V.past).slice().sort((a,b)=>svCmp(b.ver,a.ver)),cadre=v=>groomed(v)===v.total,past=v=>V.past.some(x=>x.ver===v.ver);
+  const bar=(cls,frac,tot)=>`<span class="minibar"><i class="${cls}" style="width:${(frac/(tot||1)*100).toFixed(0)}%"></i></span> ${frac}/${tot}`;
+  const runByVer={};liveRuns(d).forEach(r=>{runByVer[r.ver]=r;});
+  const act=v=>{const lr=runByVer[v.ver];if(lr)return `<button class="btn sm" data-ref='${JSON.stringify({type:"run",id:lr.id})}'>Voir le run</button>`;if(cadre(v)&&v.done<v.total&&v.total>0)return `<button class="btn sm" data-devlot="${v.ver}">▸ Lancer</button>`;return '';};
+  return `<section class="card"><h3>Versions dans le process <span class="sub" style="text-transform:none;letter-spacing:0">où en est chaque version · ligne verte = en run · clique pour le détail</span></h3>
+   <div class="ptrow hd"><span>Version</span><span>Cadrage</span><span>Développement</span><span>Versionné</span><span></span></div>
+   ${all.map(v=>{const lr=runByVer[v.ver];return `<div class="ptrow clk${lr?' run':''}" data-ref='${JSON.stringify({type:"version",ver:v.ver})}'><span class="ptn"><span class="pill ver">${v.ver}</span><span class="nm">${esc(v.name)}</span>${lr?'<span class="runbadge">● en run</span>':''}</span><span class="ptc">${bar('fill-groom',groomed(v),v.total)}</span><span class="ptc">${cadre(v)?bar('fill-dev',v.done,v.total):'<span class="faint">— pas cadré</span>'}</span><span class="ptc">${past(v)?'<span style="color:var(--go)">✓ taguée</span>':'<span class="faint">—</span>'}</span><span class="ptact">${act(v)}</span></div>`;}).join("")}</section>`;}
+function viewOverview(d){const f=d.funnel,m=d.metrics;
+  const tot=f.idea+f.ready+f.wip||1,p=x=>(x/tot*100).toFixed(1)+"%",ratio=f.idea?(f.ready/f.idea):0;
+  return `<div class="vh"><h2>Vue d'ensemble — ${esc(d.name)}</h2><span class="sub">${esc(d.desc)}</span></div>
+   <section class="card clip"><h3>Depuis le début</h3><div class="mgrid"><div class="mcell"><div class="mv">${m.done}</div><div class="mk">fiches livrées</div></div><div class="mcell"><div class="mv">${m.tokens}</div><div class="mk">tokens consommés</div></div><div class="mcell"><div class="mv">${m.temps}</div><div class="mk">temps cumulé</div></div><div class="mcell"><div class="mv">${m.perFiche}</div><div class="mk">tokens / fiche (moy.)</div></div><div class="mcell"><div class="mv">${m.sprints}</div><div class="mk">sprints</div></div><div class="mcell"><div class="mv">${m.runs}</div><div class="mk">lancements</div></div><div class="mcell"><div class="mv">${m.retros}</div><div class="mk">rétrospectives</div></div><div class="mcell"><div class="mv">${d.versions.past.length+ (d.versions.current?1:0)}</div><div class="mk">versions</div></div></div></section>
+   <section class="funnel"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px"><b>Entonnoir — le pipeline actif</b><span class="sub">ratio prêtes / idées : <b style="color:var(--fg);font-family:var(--font-data)">${ratio.toFixed(2)}</b></span></div>
+     <div class="funbar"><i class="fun-idea" style="width:${p(f.idea)}">${f.idea}</i><i class="fun-ready" style="width:${p(f.ready)}">${f.ready}</i><i class="fun-wip" style="width:${p(f.wip)}">${f.wip||''}</i></div>
+     <div class="funlegend"><span><span class="sw" style="background:var(--idea)"></span>idées <b>${f.idea}</b></span><span><span class="sw" style="background:var(--groom)"></span>prêtes <b>${f.ready}</b></span><span><span class="sw" style="background:var(--warn)"></span>en cours <b>${f.wip}</b></span></div>
+     <div class="funextra"><span>sans version : <b>${f.unversioned}</b></span><span>parkées : <b>${f.parked}</b></span></div></section>
+   ${procTable(d)}`;}
+
+function viewCadrage(d){const V=d.versions,all=(V.current?[V.current]:[]).concat(V.upcoming,V.past);
+  const inDev=v=>v.done>0&&v.done<v.total,q=(x,t)=>(x/(t||1)*100).toFixed(0)+"%";
+  const acadrer=all.filter(v=>v.total>0&&groomed(v)===0&&v.done<v.total);
+  const encadr=all.filter(v=>groomed(v)>0&&groomed(v)<v.total);
+  const cadres=all.filter(v=>groomed(v)===v.total&&v.done<v.total);
+  const gauges=v=>`<div class="gmini"><span class="minibar2"><i class="fill-groom" style="width:${q(groomed(v),v.total)}"></i></span><span class="gv">${groomed(v)}/${v.total}</span></div>${inDev(v)?`<div class="gmini"><span class="gl">dev</span><span class="minibar2"><i class="fill-dev" style="width:${q(v.done,v.total)}"></i></span><span class="gv">${v.done}/${v.total}</span></div>`:''}`;
+  const row=v=>`<div class="lotmini clk" data-ref='${JSON.stringify({type:"version",ver:v.ver})}'><div class="lmn"><span class="pill ver">${v.ver}</span><span class="lmt">${esc(v.name)}</span></div><div class="lmg">${gauges(v)}</div></div>`;
+  const col=(title,arr)=>`<div class="lotcol"><h4>${title} <span class="cnt">${arr.length}</span></h4>${arr.length?arr.map(row).join(""):'<div class="lotmini"><span class="muted" style="padding:2px 0">—</span><span></span></div>'}</div>`;
+  const cadEvents=(d.timeline||[]).filter(e=>(e.kind==="gate"&&e.ver)||(e.kind==="lancement"&&/Cadrage/.test(e.t))).slice(0,4);
+  return `<div class="vh"><h2>Cadrage — ${esc(d.name)}</h2><span class="sub">préparer les lots · clique un lot pour entrer et le groomer</span></div>
+   <section class="lotcols">${col("À venir — à cadrer",acadrer)}${col("En cours",encadr)}${col("Cadré",cadres)}</section>
+   <section class="card"><h3>Activité de cadrage récente <a data-goto="timeline" data-tlf="gate" href="#">chronologie →</a></h3>${cadEvents.length?cadEvents.map(e=>actLine({t:e.t,ver:e.ver,steps:e.steps,when:e.d,ref:e.ref})).join(""):'<div class="actline"><span class="muted">aucune</span></div>'}</section>`;}
+
+function viewDev(d){const launchable=allVersions(d).filter(x=>{const vv=findVer(d,x);return vv&&groomed(vv)===vv.total&&vv.done<vv.total;});
+  if(DEVLOT&&!launchable.includes(DEVLOT))DEVLOT="";
+  const runs=Object.values(d.runs||{});
+  const cfg=DEVLOT?`<section class="launch"><div class="vh" style="margin-top:4px"><h2 style="font-size:16px">Lancer la réalisation — ${DEVLOT}</h2></div>
+     <div class="knob"><div class="kt">Grooming (pendant le dev)</div><div class="opts">${Object.keys(GROOM).map(k=>`<button class="opt ${LAUNCH.groom===k?'on':''}" data-lk="groom" data-lv="${k}">${k}</button>`).join("")}</div></div>
+     <div class="knob"><div class="kt">Taille de sprint</div><div class="opts">${Object.keys(SPRINTOPT).map(k=>`<button class="opt ${LAUNCH.sprint===k?'on':''}" data-lk="sprint" data-lv="${k}">${k}</button>`).join("")}</div></div>
+     <div class="knob"><div class="kt">Rétrospective</div><div class="opts">${Object.keys(RETROOPT).map(k=>`<button class="opt ${LAUNCH.retro===k?'on':''}" data-lk="retro" data-lv="${k}">${k}</button>`).join("")}</div></div>
+     <div class="summary"><div>Tu vas lancer : <b>${DEVLOT}</b> · ${esc(GROOM[LAUNCH.groom])} · ${esc(SPRINTOPT[LAUNCH.sprint])} · ${esc(RETROOPT[LAUNCH.retro])}</div><div class="act"><button class="btn" id="go">▸ Lancer</button><button class="btn ghost" id="devcancel">Annuler</button></div>${LAUNCHED?`<div class="done-msg">✓ Lancement simulé de <b>${DEVLOT}</b>, sprint par sprint. (maquette)</div>`:''}</div></section>`:"";
+  return `<div class="vh"><h2>Développement — ${esc(d.name)}</h2><span class="sub">l'état de dev des lots · lancer un lot groomé · suivre les sprints</span></div>
+   ${devTable(d)}
+   ${cfg}
+   <section class="card"><h3>Historique — lancements &amp; sprints <a data-goto="timeline" data-tlf="sprint" href="#">chronologie (dev) →</a></h3>
+     ${runs.length?runs.map(r=>{const steps=(r.sprints||[]).map(s=>({id:"sprint",label:"S"+s.n})).concat((r.sprints||[]).some(s=>s.retro)?[{id:"retro",label:"rétro"}]:[]);const vcol=/NO-GO/.test(r.verdict)?'var(--warn)':(r.verdict==='GO'?'var(--go)':'var(--muted)');return actLine({t:r.title,ver:r.ver,steps,extra:`${r.live?'<span class="live"></span> ':''}<span style="color:${vcol};font-weight:600">${esc(r.verdict)}</span>`,when:r.date.split('·')[0].trim(),ref:{type:"run",id:r.id}});}).join(""):'<div class="actline"><span class="muted">aucun lancement</span></div>'}</section>`;}
+
+function viewFiches(d){const cols=["idea","ready","wip","done"],vers=["all"].concat(allVersions(d)).concat(["sans version"]);
+  let list=Object.values(d.fiches);
+  if(FVER==="sans version")list=list.filter(f=>!f.ver);
+  else if(FVER!=="all")list=list.filter(f=>f.ver===FVER);
+  else{const sel=Object.keys(FCAT).filter(k=>FCAT[k]);list=list.filter(f=>{const c=verCat(d,f.ver);return c?sel.includes(c):true;});}
+  if(QUERY)list=list.filter(f=>(f.title+" "+f.id).toLowerCase().includes(QUERY));
+  const prioN={P0:0,P1:1,P2:2,P3:3},stN={idea:0,ready:1,wip:2,done:3};
+  const sorters={prio:(a,b)=>(prioN[a.prio]-prioN[b.prio])||a.title.localeCompare(b.title),statut:(a,b)=>(stN[a.status]-stN[b.status])||(prioN[a.prio]-prioN[b.prio]),version:(a,b)=>svCmp(a.ver,b.ver)||(prioN[a.prio]-prioN[b.prio]),titre:(a,b)=>a.title.localeCompare(b.title)};
+  list=list.slice().sort(sorters[FSORT]||sorters.prio);
+  const body=FMODE==="status"
+    ?`<section class="kanban">${cols.map(c=>{const fsx=list.filter(f=>f.status===c);return `<div class="col"><h4>${STLABEL[c][0]} <span class="cnt">${fsx.length}</span></h4>${fsx.map(f=>`<div class="fcard clk" data-f="${f.id}"><div class="ft">${esc(f.title)}</div><div class="fm"><span class="prio ${f.prio}">${f.prio}</span><span class="pill ver">${f.ver||'sans version'}</span></div></div>`).join("")||'<div class="fcard muted" style="cursor:default">—</div>'}</div>`;}).join("")}</section>`
+    :`<section class="card flist">${list.length?list.map(fRowL).join(""):'<div class="fli"><span></span><span></span><span class="muted">aucune fiche</span><span></span><span></span></div>'}</section>`;
+  const catseg=`<span class="seg">${[["avenir","à venir"],["encours","en cours"],["realisees","réalisées"]].map(c=>`<button data-fcat="${c[0]}" class="${FCAT[c[0]]?'on':''}">${c[1]}</button>`).join("")}</span>`;
+  return `<div class="vh"><h2>Fiches — ${esc(d.name)}</h2><span class="sub">${list.length} fiche(s)</span></div>
+   <div class="toolbar"><label>Lot</label><select id="fversel">${vers.map(v=>`<option value="${v}" ${v===FVER?'selected':''}>${v==="all"?"toutes versions":(v==="sans version"?v:v+(isCurVer(d,v)?"  ● en cours":""))}</option>`).join("")}</select>
+     ${FVER==="all"?`<label>Afficher</label>${catseg}`:''}
+     <label>Trier</label><select id="fsort">${[["prio","priorité"],["statut","statut"],["version","version"],["titre","titre"]].map(o=>`<option value="${o[0]}" ${o[0]===FSORT?'selected':''}>${o[1]}</option>`).join("")}</select>
+     <span class="seg"><button data-fm="status" class="${FMODE==='status'?'on':''}">Par statut</button><button data-fm="list" class="${FMODE==='list'?'on':''}">En ligne</button></span></div>
+   <div class="banner">Vue illustrative : seules quelques fiches par version sont modélisées.</div>${body}`;}
+
+function viewTimeline(d){const kinds=["all","sprint","lancement","tag","retro","gate"],vers=["all"].concat(allVersions(d));
+  const all=(d.timeline||[]).filter(e=>(TLFILTER==="all"||e.kind===TLFILTER)&&(TLVER==="all"||e.ver===TLVER)&&(!QUERY||(e.t+" "+e.m).toLowerCase().includes(QUERY)));
+  const shown=all.slice(0,TLSHOWN),more=all.length-shown.length;
+  return `<div class="vh"><h2>Chronologie — ${esc(d.name)}</h2><span class="sub">tout l'historique · filtre par type et par lot</span></div>
+   <div class="tl-controls">${kinds.map(k=>`<button class="chip ${TLFILTER===k?'on':''}" data-tl="${k}">${k==="all"?"tout":KINDLABEL[k]}</button>`).join("")}<span style="margin-left:6px"></span><label class="muted" style="font-size:12px">Lot</label><select id="tlversel">${vers.map(v=>`<option value="${v}" ${v===TLVER?'selected':''}>${v==="all"?"tous":v}</option>`).join("")}</select></div>
+   <div class="timeline">${shown.map(e=>`<div class="tev ${e.ref?'clk':''} ${e.live?'liveev':''}" data-kind="${e.kind}" ${e.ref?`data-ref='${JSON.stringify(e.ref)}'`:''}><div class="th"><span class="td">${e.d}</span><span class="kindtag">${KINDLABEL[e.kind]}</span>${e.ver?`<span class="pill ver">${e.ver}</span>`:''}${e.tok?costTag(e.cost,e.tok):""}${e.live?'<span class="live"></span>':''}</div><div class="tt">${esc(e.t)}</div><div class="tm">${esc(e.m)}</div>${e.ref?'<span class="arr">›</span>':''}</div>`).join("")||'<div class="tl-end">aucun évènement</div>'}</div>
+   ${more>0?`<button class="loadmore" id="loadmore">Afficher plus (${more})</button>`:(all.length?'<div class="tl-end">↑ début du projet</div>':'')}`;}
+
+function viewConfig(d){const c=d.config||{},yn=v=>/^on|true/i.test(v)?`<span class="togglepill on-y">${v}</span>`:/^off|false|n\/a/i.test(v)?`<span class="togglepill on-n">${v}</span>`:esc(v);
+  return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">.vectorz/config.yml · lecture</span></div>
+   <div class="banner">Défauts de <b>lancement</b> (surchargés au Développement). Un jour, le <b>process sera configurable par projet</b>.</div>
+   <div class="cfg"><section class="card"><h3>Lancement par défaut</h3><dl class="kv"><dt>Grooming</dt><dd>${esc(c.groomPolicy)}</dd><dt>Taille de sprint</dt><dd>${esc(c.sprintSize)}</dd><dt>Rétro</dt><dd>${esc(c.retro)}</dd></dl></section>
+     <section class="card"><h3>Intégration</h3><dl class="kv"><dt>GitHub</dt><dd>${yn(c.github)}</dd><dt>Racine</dt><dd>${esc(c.root)}</dd></dl></section>
+     <section class="card"><h3>Qualité</h3><dl class="kv"><dt>Release-gate</dt><dd>${yn(c.releaseGate)}</dd><dt>Modèle</dt><dd>${esc(c.modelDefault)}</dd></dl></section>
+     <section class="card"><h3>Notes</h3><dl class="kv"><dt>—</dt><dd style="font-family:var(--font-ui)">${esc(c.notes)}</dd></dl></section></div>`;}
+
+function procSteps(d){let steps=PROC.slice();if(d.procExtra&&d.procExtra.length){steps.splice(5,0,{id:"ds",nm:d.procExtra[0],impl:"agent ezk-ux (projet)",file:"agents/ezk-ux.md (projet)",prompt:"Revue de conformité au design-system du projet.",rules:["development/pr-before-after-media"],model:"—",extra:true});}return steps;}
+function pflow(nodes){return `<div class="pflow">${nodes.map((n,i)=>`${i?'<span class="parr">→</span>':''}<button class="pnode ${n.sub?'sub':''} ${n.leaf?'leaf':''}" data-ref='${JSON.stringify({type:"node",id:n.id})}'>${n.sub?'<span class="psub">sous-process</span>':''}<span>${esc(n.nm)}</span>${n.pimpl?`<span class="pimpl">${esc(n.pimpl)}</span>`:''}${n.count!=null?`<span class="pc">${n.count}</span>`:''}</button>`).join("")}</div>`;}
+function viewProcess(d){const f=d.funnel,cnt={idea:f.idea,ready:f.ready,wip:f.wip,done:d.metrics.done},steps=procSteps(d);
+  const nodes=steps.map(s=>({id:s.id,nm:s.nm,pimpl:s.impl,count:s.stage?cnt[s.stage]:null,sub:!!s.sub}));
+  return `<div class="vh"><h2>Process — ${esc(d.name)}</h2><span class="sub">le workflow de la méthode, cliquable · par projet</span></div>
+   <div class="banner">Calculé depuis la méthode : la <b>carte des cérémonies</b> (<code>method/ceremonies.yml</code>), le <b>graphe compilé</b> (<code>.ezk/graph.compiled.json</code>) et la <b>position à 5 étapes</b> des fiches (ADR-0069). Le <b>pas-à-pas interne</b> du sprint vit encore en prose — fiche idée <b>20260830110131228</b>, à groomer avec un architecte.${d.procExtra.length?' <b>'+esc(d.name)+'</b> ajoute l&rsquo;étape « '+esc(d.procExtra[0])+' ».':''}</div>
+   <section class="card"><h3>Le process <span class="sub" style="text-transform:none;letter-spacing:0">clique un nœud · le Sprint s'ouvre en sous-process</span></h3>${pflow(nodes)}</section>`;}
+
+/* ---------- details ---------- */
+function detailFiche(d,fid){const f=d.fiches[fid];if(!f)return"<button class='back' data-back>‹ retour</button><p>introuvable</p>";
+  const vers=[""].concat(allVersions(d));
+  return `<button class="back" data-back>‹ retour</button><div class="detail"><div class="dhead"><span class="prio ${f.prio}">${f.prio}</span><span class="stat s-${f.status}">${STLABEL[f.status][2]}</span><span class="pill ver">${f.ver||'sans version'}</span>${f.pr?`<span class="costtag">${esc(f.pr)}</span>`:''}</div>
+   <h2 style="font-size:23px">${esc(f.title)}</h2><div class="enclair"><b>En clair.</b> ${esc(f.enclair)}</div>
+   <div class="dgrid"><div style="display:flex;flex-direction:column;gap:16px"><div class="sec"><h4>Contexte</h4><p>${esc(f.ctx)}</p></div><div class="sec"><h4>Critères</h4><ul class="crit">${f.crit.map(c=>`<li><span class="box"></span><span>${esc(c)}</span></li>`).join("")}</ul></div><div class="sec"><h4>Comment vérifier</h4><div class="codeblock">${esc(f.verif)}</div></div></div>
+   <div><section class="card"><h3>Infos</h3><dl class="kv"><dt>id</dt><dd>${f.id}</dd><dt>associer à un lot</dt><dd><select data-assign="${f.id}">${vers.map(v=>`<option value="${v}" ${v===(f.ver||"")?'selected':''}>${v||'— sans version —'}</option>`).join("")}</select></dd><dt>statut</dt><dd>${STLABEL[f.status][2]}</dd>${f.split_from?`<dt>provenance</dt><dd>split de ${f.split_from}</dd>`:''}</dl></section></div></div></div>`;}
+function detailRun(d,id){const r=(d.runs||{})[id];if(!r)return"<button class='back' data-back>‹ retour</button><p>introuvable</p>";
+  const vc=r.verdict.startsWith("GO")?"v-go":r.verdict.startsWith("NO")?"v-stop":r.live?"v-go":"v-warn";
+  return `<button class="back" data-back>‹ retour</button><div class="detail"><div class="dhead"><span class="kindtag">lancement</span>${r.live?'<span class="live"></span>':''}<span class="verdict ${vc}">${esc(r.verdict)}</span><span class="pill ver">${r.ver}</span><span class="faint">${r.date}</span></div>
+   <h2 style="font-size:23px">${esc(r.title)}</h2><div class="enclair"><b>Ce lancement.</b> ${esc(r.note)}</div>
+   <section class="metrics4"><div class="metric"><div class="mv">${r.sprints?r.sprints.length:0}</div><div class="mk">sprints</div></div><div class="metric"><div class="mv">${r.tok}</div><div class="mk">tokens</div></div><div class="metric"><div class="mv">${r.dur}</div><div class="mk">durée</div></div><div class="metric"><div class="mv">${esc(r.kind)}</div><div class="mk">type</div></div></section>
+   <section class="card"><h3>Sprints <span class="sub" style="text-transform:none;letter-spacing:0">clique pour le détail</span></h3>${(r.sprints||[]).map(s=>`<div class="sprintrow clk" data-ref='${JSON.stringify({type:"sprint",id:r.id,n:s.n})}'><span class="sn">Sprint ${s.n}</span><span class="sf">${esc(s.label)} · ${s.fiches} fiche${s.fiches>1?'s':''}</span><span>${s.retro?'<span class="sr">↺ rétro</span>':''}</span><span><span class="stat s-${s.status}">${STLABEL[s.status][2]}</span> ${costTag('lo',s.tok)}</span></div>`).join("")||'<div class="sprintrow"><span class="muted">aucun sprint</span></div>'}</section></div>`;}
+function detailSprint(d,id,n){const r=(d.runs||{})[id];const s=r&&(r.sprints||[]).find(x=>x.n==n);if(!s)return"<button class='back' data-back>‹ retour</button><p>introuvable</p>";
+  return `<button class="back" data-back>‹ retour</button><div class="detail"><div class="dhead"><span class="kindtag">sprint</span><span class="verdict ${s.status==='done'?'v-go':'v-warn'}">${STLABEL[s.status][2]}</span><span class="pill ver">${r.ver}</span>${s.retro?'<span class="sr" style="font-size:12px;color:var(--groom)">↺ rétro</span>':''}</div>
+   <h2 style="font-size:23px">Sprint ${s.n} — ${esc(s.label)}</h2><div class="enclair"><b>Ce sprint.</b> ${s.fiches} fiche${s.fiches>1?'s':''} ${s.status==='done'?'livrée'+(s.fiches>1?'s':''):'en cours'}, dans « ${esc(r.title)} ».</div>
+   <section class="metrics4"><div class="metric"><div class="mv">${s.fiches}</div><div class="mk">fiches</div></div><div class="metric"><div class="mv">${s.tok||'—'}</div><div class="mk">tokens</div></div><div class="metric"><div class="mv">${STLABEL[s.status][2]}</div><div class="mk">statut</div></div><div class="metric"><div class="mv">${s.retro?'oui':'non'}</div><div class="mk">rétro</div></div></section>
+   <section class="card"><h3>Dans le lancement</h3><div class="row clk" data-ref='${JSON.stringify({type:"run",id:r.id})}'><span></span><span class="ttl">${esc(r.title)}</span><span class="meta">${r.ver} · ${r.sprints.length} sprints →</span></div></section></div>`;}
+function detailRetro(d,i){const r=(d.retros||[])[i];if(!r)return"<button class='back' data-back>‹ retour</button><p>introuvable</p>";
+  return `<button class="back" data-back>‹ retour</button><div class="detail"><div class="dhead"><span class="kindtag">rétrospective</span><span class="pill ver">${r.ver}</span><span class="faint">${r.date}</span></div>
+   <h2 style="font-size:23px">${esc(r.title)}</h2><div class="enclair"><b>Rapport.</b> ${esc(r.report||"")}</div>
+   <div class="sec"><h4>Points</h4><ul class="crit">${r.pts.map(p=>`<li><span class="box" style="border-radius:50%"></span><span>${esc(p)}</span></li>`).join("")}</ul></div>
+   ${r.fiches&&r.fiches.length?`<section class="card flist"><h3>Fiches créées par cette rétro</h3>${r.fiches.map(x=>d.fiches[x.id]?fRowL(d.fiches[x.id]):`<div class="fli"><span></span><span></span><span class="fn">${esc(x.id)} (${x.ver})</span><span></span><span></span></div>`).join("")}</section>`:''}
+   ${r.rules&&r.rules.length?`<div class="sec"><h4>Règles ajoutées / rappelées</h4><div class="tags">${r.rules.map(x=>`<span class="tagc">${esc(x)}</span>`).join("")}</div></div>`:''}</div>`;}
+function detailVersion(d,ver){const v=findVer(d,ver),isCur=isCurVer(d,ver),isPast=isPastVer(d,ver),lr=liveRuns(d)[0],lk=(isCur&&lr)?lr.kind:null;
+  const fs=Object.values(d.fiches).filter(f=>f.ver===ver),cols=["idea","ready","wip","done"];
+  const canGroom=v&&groomed(v)<v.total, canLaunch=v&&isCur&&groomed(v)===v.total;
+  const body=LOTMODE==="status"
+    ?`<section class="kanban">${cols.map(c=>{const col=fs.filter(f=>f.status===c);return `<div class="col"><h4>${STLABEL[c][0]} <span class="cnt">${col.length}</span></h4>${col.map(f=>`<div class="fcard clk" data-f="${f.id}"><div class="ft">${esc(f.title)}</div><div class="fm"><span class="prio ${f.prio}">${f.prio}</span></div></div>`).join("")||'<div class="fcard muted" style="cursor:default">—</div>'}</div>`;}).join("")}</section>`
+    :`<section class="card flist">${fs.length?fs.map(fRowL).join(""):`<div class="fli"><span></span><span></span><span class="muted">fiches (exemple)</span><span></span><span></span></div>`}</section>`;
+  return `<button class="back" data-back>‹ retour</button><div class="detail"><div class="dhead"><span class="pill ver">${ver}</span>${v?`<b style="font-size:17px">${esc(v.name)}</b>`:''}${isCur?'<span class="pill ver">lot en cours</span>':(isPast?`<span class="faint">taguée le ${v.date}</span>`:'<span class="faint">à venir</span>')}</div>
+   ${v?`<section class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);padding:16px 18px">${twoGauge(v,lk,isCur||isPast)}</section>`:''}
+   <div class="toolbar"><span class="seg"><button data-lm="list" class="${LOTMODE==='list'?'on':''}">En ligne</button><button data-lm="status" class="${LOTMODE==='status'?'on':''}">Par statut</button></span>
+     ${canGroom?`<details class="cmd"><summary>Commandes de cadrage ▾</summary><div class="cmdmenu">${CADCMDS.map(c=>`<button data-cad="${esc(c[1])}">${esc(c[0])}<code>${esc(c[1])}</code></button>`).join("")}</div></details>`:''}
+     ${canLaunch?`<button class="btn sm" data-goto="dev">▸ Lancer la réalisation</button>`:''}${(!isCur&&!isPast)?`<button class="btn ghost sm" data-goto="cadrage">↑ Cadrer</button>`:''}</div>
+   ${CADMSG?`<div class="msg">⟳ Simulé : <code>${esc(CADMSG)}</code> (maquette)</div>`:''}
+   ${body}</div>`;}
+
+function detailNode(d,id){const f=d.funnel,cnt={idea:f.idea,ready:f.ready,wip:f.wip,done:d.metrics.done};
+  const s=nodeById(d,id);if(!s)return"<button class='back' data-back>‹ retour</button><p>introuvable</p>";
+  const fs=s.stage?Object.values(d.fiches).filter(x=>x.status===s.stage):[];
+  const ruleLinks=(s.rules||[]).length?s.rules.map(r=>`<span class="doclink" data-doc="rule:${esc(r)}">${esc(r)}</span>`).join(', '):'—';
+  const subNodes=(s.sub?SUBPROC:[]).map(x=>({id:x.id,nm:x.nm,pimpl:x.impl,leaf:true}));
+  return `<button class="back" data-back>‹ retour</button><div class="detail"><div class="dhead"><span class="kindtag">nœud de process</span><span style="font-size:17px;font-weight:600">${esc(s.nm)}</span>${s.stage?`<span class="pill ver">${cnt[s.stage]} fiche(s)</span>`:'<span class="faint">cérémonie (transition)</span>'}${s.sub?'<span class="costtag">sous-process</span>':''}</div>
+   <div class="enclair"><b>Ce que fait ce nœud.</b> ${esc(s.prompt)}</div>
+   <div class="nodeacts"><button class="btn" data-doc="context:${esc(s.id)}">⛶ Voir le contexte complet (ce que lit le LLM)</button><button class="btn ghost" data-doc="file:${esc(s.file)}">Ouvrir ${esc(s.file.split('/').pop())}</button></div>
+   <section class="card"><h3>Déclaration <span class="sub" style="text-transform:none;letter-spacing:0">lu depuis les fichiers (déterministe)</span></h3><dl class="kv"><dt>implémenté par</dt><dd>${esc(s.impl)}</dd><dt>fichier (prompt)</dt><dd style="font-family:var(--font-ui)"><span class="doclink" data-doc="file:${esc(s.file)}">${esc(s.file)}</span></dd><dt>règles (applies)</dt><dd style="font-family:var(--font-ui)">${ruleLinks}</dd>${s.roles?`<dt>rôles (convoque)</dt><dd style="font-family:var(--font-ui)">${esc(s.roles)}</dd>`:''}<dt>config</dt><dd style="font-family:var(--font-ui)">${esc(s.model)}</dd></dl><div class="faint" style="font-size:12px;padding:2px 16px 14px">Source : <code>graph:query applique ${esc(s.id)}</code> sur <code>.ezk/graph.compiled.json</code>.</div></section>
+   ${s.sub?`<section class="card"><h3>Sous-process <span class="sub" style="text-transform:none;letter-spacing:0">clique une étape</span></h3>${pflow(subNodes)}<div class="faint" style="font-size:12.5px;padding:0 16px 14px">⚠ Cette séquence vit <b>en prose</b> dans <code>${esc(s.file)}</code> — pas encore un graphe calculable. Fiche <b>20260830110131228</b> (étapes-comme-données).</div></section>`:''}
+   ${s.stage?`<section class="card flist"><h3>Fiches à cette étape <span class="sub" style="text-transform:none;letter-spacing:0">${fs.length} modélisée(s) / ${cnt[s.stage]} réelles</span></h3>${fs.map(fRowL).join("")||'<div class="fli"><span></span><span></span><span class="muted">aucune fiche modélisée ici</span><span></span><span></span></div>'}</section>`:''}</div>`;}
+
+/* ---------- render ---------- */
+function renderProjbtn(){const d=DATA[CUR];$("#projbtn").innerHTML=`${d.live?'<span class="live"></span>':''}${esc(CUR)} <span class="cv">${d.versions.current?d.versions.current.ver:'—'}</span> <span class="ch">▾</span>`;$("#navproj").textContent="Projet · "+CUR;$("#brandver").textContent=DATA.vectorz.versions.current.ver;}
+function render(){const d=DATA[CUR];
+  if(DETAIL){main.innerHTML={fiche:()=>detailFiche(d,DETAIL.fid),run:()=>detailRun(d,DETAIL.id),sprint:()=>detailSprint(d,DETAIL.id,DETAIL.n),retro:()=>detailRetro(d,DETAIL.i),version:()=>detailVersion(d,DETAIL.ver),node:()=>detailNode(d,DETAIL.id)}[DETAIL.type]();return;}
+  main.innerHTML={overview:viewOverview,cadrage:viewCadrage,dev:viewDev,fiches:viewFiches,timeline:viewTimeline,config:viewConfig,process:viewProcess}[SECTION](d);
+  if(SECTION==="process")mountMermaid();}
+function mountMermaid(){if(!window.mermaid)return;try{mermaid.run({querySelector:".mermaid:not([data-processed])"});}catch(e){}}
+function setNavOn(s){document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===s));}
+function setSection(s){DETAIL=null;HIST=[];SECTION=s;if(s==="timeline")TLSHOWN=BATCH;if(s==="dev")LAUNCHED=false;if(s==="process")PROCSTEP="";setNavOn(s);render();}
+function openDetail(ref){HIST.push({s:SECTION,d:DETAIL});DETAIL=ref;if(ref.type==="version"){CADMSG="";LOTMODE="list";}render();try{window.scrollTo(0,0);}catch(e){}}
+function goBack(){const p=HIST.pop();if(p){SECTION=p.s;DETAIL=p.d;}else{DETAIL=null;}setNavOn(SECTION);render();try{window.scrollTo(0,0);}catch(e){}}
+function openModal(){$("#pmlist").innerHTML=Object.values(DATA).map(p=>`<button class="pmcard ${p.name===CUR?'on':''}" data-pm="${p.name}"><div class="nm">${p.live?'<span class="live"></span>':''}${esc(p.name)}</div><div class="pv">${p.versions.current?p.versions.current.ver:'—'} · ${esc(p.desc)}</div><div class="prow"><span>${p.funnel.ready} prêtes · ${p.funnel.wip} en cours</span><span>${p.funnel.idea} idées</span></div></button>`).join("");$("#projmodal").hidden=false;}
+let CURDOC=null,DOCHIST=[];
+function docRule(id){const r=RULES[id];if(!r)return{title:`<code>${esc(id)}</code>`,body:'<p class="muted">Règle non modélisée dans la maquette.</p>'};
+  return {title:`<span class="lvl ${r.lvl}">${r.lvl}</span> ${esc(r.title)} <code>${esc(id)}</code>`,body:`<div class="enclair"><b>En clair.</b> ${esc(r.enclair)}</div><div class="doc-sec"><h4>Détail</h4><ul>${r.body.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>${r.bundles&&r.bundles.length?`<div class="doc-sec"><h4>Dans les bundles</h4><p>${r.bundles.map(b=>`<span class="doclink" data-doc="bundle:${esc(b)}">${esc(b)}</span>`).join(', ')}</p></div>`:''}<div class="faint" style="font-size:12px">Source : <code>rules/${esc(r.fam)}/${esc(id.split('/').pop())}.md</code> · niveau ${r.lvl}</div>`};}
+function docBundle(id){const b=BUNDLES[id];if(!b)return{title:esc(id),body:'<p class="muted">—</p>'};
+  return {title:`${esc(b.title)} <code>${esc(id)}</code>`,body:`<div class="enclair"><b>En clair.</b> ${esc(b.desc)}</div><div class="doc-sec"><h4>Règles du bundle (${b.rules.length})</h4><div style="display:flex;flex-direction:column;gap:8px">${b.rules.map(r=>{const rr=RULES[r];return `<div class="rulecard" data-doc="rule:${esc(r)}"><span class="lvl ${rr?rr.lvl:''}">${rr?rr.lvl:''}</span><span class="rt">${rr?esc(rr.title):esc(r)}</span><span class="rd">${rr?esc(rr.enclair):''}</span></div>`;}).join("")}</div></div><div class="faint" style="font-size:12px">Source : <code>bundles/${esc(id)}.yml</code></div>`};}
+function docFile(path){const f=FILES[path];if(!f)return{title:`<code>${esc(path)}</code>`,body:'<p class="muted">Fichier non modélisé dans la maquette.</p>'};
+  return {title:`<span class="filekind">${esc(f.kind)}</span> ${esc(f.title)} <code>${esc(path)}</code>`,body:`<div class="enclair"><b>En clair.</b> ${esc(f.enclair)}</div>${f.secs.map(sc=>`<div class="doc-sec"><h4>${esc(sc.h)}</h4><ul>${sc.b.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}${f.applies&&f.applies.length?`<div class="doc-sec"><h4>Règles appliquées (applies)</h4><p>${f.applies.map(r=>`<span class="doclink" data-doc="rule:${esc(r)}">${esc(r)}</span>`).join(', ')}</p></div>`:''}${f.roles&&f.roles.length?`<div class="doc-sec"><h4>Rôles (roles)</h4><p>${f.roles.map(esc).join(', ')}</p></div>`:''}<div class="faint" style="font-size:12px">Rendu lisible — le markdown du fichier est mis en forme, pas affiché brut.</div>`};}
+function docContext(d,id){const n=nodeById(d,id);if(!n)return{title:"—",body:""};const f=FILES[n.file];
+  const ruleSecs=(n.rules||[]).map(r=>{const rr=RULES[r];return rr?`<div class="aggsec"><h3><span class="lvl ${rr.lvl}">${rr.lvl}</span> ${esc(rr.title)} <span class="doclink" data-doc="rule:${esc(r)}" style="font-size:12px;font-weight:400">${esc(r)}</span></h3><p style="font-size:13.5px;margin:0">${esc(rr.enclair)}</p></div>`:'';}).join("");
+  return {title:`Contexte complet — ${esc(n.nm)}`,body:`<div class="faint" style="font-size:12.5px">C'est, en substance, ce que le LLM reçoit pour ce nœud : le texte du skill/agent + les règles compilées qu'il applique, agrégés déterministiquement depuis les fichiers.</div>
+   <div class="aggsec"><h3>① Prompt — <span class="doclink" data-doc="file:${esc(n.file)}" style="font-weight:400">${esc(n.file)}</span></h3>${f?`<div class="enclair" style="margin-bottom:10px"><b>En clair.</b> ${esc(f.enclair)}</div>${f.secs.map(sc=>`<div class="doc-sec"><h4>${esc(sc.h)}</h4><ul>${sc.b.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}`:`<p>${esc(n.prompt)}</p>`}</div>
+   <div class="aggsec"><h3>② Règles agrégées (${(n.rules||[]).length})</h3>${ruleSecs||'<p class="muted" style="margin:0">aucune règle</p>'}</div>
+   ${n.roles?`<div class="aggsec"><h3>③ Rôles convoqués</h3><p style="margin:0">${esc(n.roles)}</p></div>`:''}`};}
+function renderDoc(){const d=DATA[CUR];if(!CURDOC)return;const i=CURDOC.indexOf(":"),kind=CURDOC.slice(0,i),key=CURDOC.slice(i+1);
+  let r=kind==="rule"?docRule(key):kind==="bundle"?docBundle(key):kind==="file"?docFile(key):kind==="context"?docContext(d,key):{title:"—",body:""};
+  $("#doctitle").innerHTML=r.title;$("#docbody").innerHTML=r.body;$("#docback").hidden=DOCHIST.length===0;}
+function openDoc(spec){if(CURDOC)DOCHIST.push(CURDOC);CURDOC=spec;$("#docmodal").hidden=false;renderDoc();try{$("#docbody").scrollTo(0,0);}catch(e){}}
+function docBack(){if(DOCHIST.length){CURDOC=DOCHIST.pop();renderDoc();try{$("#docbody").scrollTo(0,0);}catch(e){}}}
+function closeDoc(){$("#docmodal").hidden=true;CURDOC=null;DOCHIST=[];}
+try{mermaid.initialize({startOnLoad:false,theme:(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'default'),securityLevel:'loose',flowchart:{useMaxWidth:true}});}catch(e){}
+renderProjbtn();render();
+document.addEventListener("click",e=>{
+  const back=e.target.closest("[data-back]"),nav=e.target.closest("#nav button"),goto=e.target.closest("[data-goto]"),
+    tl=e.target.closest("[data-tl]"),fm=e.target.closest("[data-fm]"),fcat=e.target.closest("[data-fcat]"),lm2=e.target.closest("[data-lm]"),f=e.target.closest("[data-f]"),rt=e.target.closest("[data-retro]"),
+    ref=e.target.closest("[data-ref]"),lm=e.target.closest("#loadmore"),lk=e.target.closest("[data-lk]"),go=e.target.closest("#go"),
+    cad=e.target.closest("[data-cad]"),devlot=e.target.closest("[data-devlot]"),devcancel=e.target.closest("#devcancel"),step=e.target.closest("[data-step]"),
+    pbtn=e.target.closest("#projbtn"),pm=e.target.closest("[data-pm]"),pmx=e.target.closest("#pmx"),modalbg=e.target.closest("#projmodal");
+  const _doc=e.target.closest("[data-doc]");
+  if(e.target.closest("#docx")||e.target.id==="docmodal"){closeDoc();return;}
+  if(e.target.closest("#docback")){docBack();return;}
+  if(_doc){openDoc(_doc.dataset.doc);return;}
+  if(pbtn){openModal();return;}
+  if(pm){CUR=pm.dataset.pm;DETAIL=null;FVER="all";TLVER="all";DEVLOT="";$("#projmodal").hidden=true;renderProjbtn();setSection("overview");return;}
+  if(pmx||(modalbg&&e.target===modalbg)){$("#projmodal").hidden=true;return;}
+  if(cad){CADMSG=cad.dataset.cad;const dd=e.target.closest("details.cmd");if(dd)dd.open=false;render();return;}
+  if(back){goBack();return;}
+  if(nav){setSection(nav.dataset.s);return;}
+  if(goto){e.preventDefault();if(goto.dataset.tlf){TLFILTER=goto.dataset.tlf;TLSHOWN=BATCH;}setSection(goto.dataset.goto);return;}
+  if(lm){TLSHOWN+=BATCH;render();return;}
+  if(tl){TLFILTER=tl.dataset.tl;TLSHOWN=BATCH;render();return;}
+  if(fm){FMODE=fm.dataset.fm;render();return;}
+  if(fcat){FCAT[fcat.dataset.fcat]=!FCAT[fcat.dataset.fcat];render();return;}
+  if(lm2){LOTMODE=lm2.dataset.lm;render();return;}
+  if(devlot){DEVLOT=devlot.dataset.devlot;LAUNCHED=false;setSection("dev");return;}
+  if(devcancel){DEVLOT="";LAUNCHED=false;render();return;}
+  if(lk){LAUNCH[lk.dataset.lk]=lk.dataset.lv;LAUNCHED=false;render();return;}
+  if(go){LAUNCHED=true;render();return;}
+  if(step){PROCSTEP=(PROCSTEP===step.dataset.step?"":step.dataset.step);render();return;}
+  if(f){openDetail({type:"fiche",fid:f.dataset.f});return;}
+  if(rt){openDetail({type:"retro",i:+rt.dataset.retro});return;}
+  if(ref){try{openDetail(JSON.parse(ref.dataset.ref));}catch(e){}return;}
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="fversel"){FVER=e.target.value;render();}
+  else if(e.target.id==="fsort"){FSORT=e.target.value;render();}
+  else if(e.target.id==="tlversel"){TLVER=e.target.value;TLSHOWN=BATCH;render();}
+  else if(e.target.dataset&&e.target.dataset.assign){const f=DATA[CUR].fiches[e.target.dataset.assign];if(f){f.ver=e.target.value;render();}}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#docmodal").hidden){closeDoc();return;}$("#projmodal").hidden=true;}});
+$("#gsearch").addEventListener("input",e=>{QUERY=e.target.value.toLowerCase();TLSHOWN=BATCH;if(DETAIL)DETAIL=null;if(SECTION!=="timeline"&&SECTION!=="fiches")setSection("fiches");else render();$("#gsearch").focus();});
+</script>
