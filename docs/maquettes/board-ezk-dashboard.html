@@ -82,6 +82,9 @@
   .actg{display:grid;grid-template-columns:1.7fr auto 1.5fr auto;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)} .actg:first-of-type{border-top:0} .actg.clk{cursor:pointer} .actg.clk:hover{background:var(--surface-2)} .al-run{font-weight:500;font-size:13.5px;display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .moment{border-top:1px solid var(--line);padding:11px 16px} .moment:first-of-type{border-top:0} .mh{display:flex;align-items:center;gap:8px;margin-bottom:6px} .mh .ml{font-weight:500;font-size:13px} .mh .mt{margin-left:auto;font-family:var(--font-data);font-size:11.5px;color:var(--faint)}
   .mfiche{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:center;padding:6px 9px;border-radius:7px;font-size:13px} .mfiche[data-doc]{cursor:pointer} .mfiche[data-doc]:hover{background:var(--surface-2)} .mft{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .mtrans{font-family:var(--font-data);font-size:11px;color:var(--muted)}
+  .cfgrow{display:flex;align-items:center;gap:12px;padding:8px 16px;border-top:1px solid var(--line);flex-wrap:wrap} .cfgrow:first-of-type{border-top:0} .cfgk{font-size:13px;min-width:140px} .cfgk.mono{font-family:var(--font-data);font-size:12.5px} .cfgsub{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);padding:12px 16px 2px;margin:0}
+  .resolved{padding:6px 16px 12px;display:flex;flex-direction:column;gap:6px} .rrow{display:flex;align-items:center;gap:9px;font-size:13px;flex-wrap:wrap} .rrow .mono{font-family:var(--font-data);font-size:12px;min-width:108px} .rtier{font-family:var(--font-data);font-size:11px;padding:1px 7px;border-radius:5px;background:var(--accent-soft);color:var(--accent);font-weight:600} .rarr{color:var(--faint)} .rmodel{font-weight:600} .reff{font-family:var(--font-data);font-size:11px;color:var(--muted)}
+  .tev1{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line)} .tev1:first-of-type{border-top:0} .tev1.clk{cursor:pointer} .tev1.clk:hover{background:var(--surface-2)} .tev1 .tw{font-family:var(--font-data);font-size:12px;color:var(--faint);width:46px;flex-shrink:0;text-align:right} .tev1 .tt1{font-weight:500;font-size:13.5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1} .tev1 .arr{color:var(--faint);flex-shrink:0}
   .ptrow{display:grid;grid-template-columns:1.55fr 1fr 1fr .5fr .95fr;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)} .ptrow.clk{cursor:pointer} .ptrow.clk:hover{background:var(--surface-2)} .ptrow.run{background:var(--go-soft)} .ptrow.run.clk:hover{background:var(--go-soft)} .ptact{display:flex;justify-content:flex-end;align-items:center} .runbadge{font-family:var(--font-data);font-size:10.5px;color:var(--go);font-weight:600;white-space:nowrap;margin-left:2px} .ptrow.hd{border-top:0;color:var(--faint);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em} .ptc{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:var(--font-data)} .ptn{font-size:13px;display:flex;gap:8px;align-items:center;min-width:0} .ptn .nm{font-weight:500}
   @media(max-width:820px){.lotcols{grid-template-columns:1fr}}
   /* toolbar + fiches */
@@ -101,11 +104,6 @@
   .readylots{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px} .rlot{border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:9px;background:var(--surface)} .rlot .gz{font-size:11.5px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
   /* timeline */
   .tl-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .chip{font-size:12px;padding:4px 11px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--muted)} .chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-  .timeline{position:relative;padding-left:26px} .timeline::before{content:"";position:absolute;left:9px;top:4px;bottom:4px;width:2px;background:var(--line)}
-  .tev{position:relative;padding:11px 14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)} .tev.clk{cursor:pointer} .tev.clk:hover{background:var(--surface-2)}
-  .tev::before{content:"";position:absolute;left:-21px;top:17px;width:11px;height:11px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px var(--bg)}
-  .tev[data-kind=lancement]::before{background:var(--accent)} .tev[data-kind=tag]::before{background:var(--warn)} .tev[data-kind=retro]::before{background:var(--crit)} .tev[data-kind=gate]::before{background:var(--muted)} .tev.liveev{border-color:var(--go);box-shadow:0 0 0 1px var(--go)}
-  .tev .th{display:flex;gap:9px;align-items:center;flex-wrap:wrap} .tev .td{font-family:var(--font-data);font-size:12px;color:var(--faint)} .tev .tt{font-weight:500;font-size:14px;margin-top:3px} .tev .tm{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:9px;flex-wrap:wrap;align-items:center} .tev .arr{position:absolute;right:12px;top:14px;color:var(--faint)}
   .kindtag{font-family:var(--font-data);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:20px;background:var(--surface-2);color:var(--muted)}
   .loadmore{display:block;margin:4px auto 2px;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:500} .loadmore:hover{background:var(--surface-2)} .tl-end{text-align:center;color:var(--faint);font-size:12px;padding:8px}
   /* process */
@@ -164,6 +162,7 @@
   <main class="main" id="main"></main>
 </div>
 <div class="modal" id="projmodal" hidden><div class="sheet2"><div class="mh"><h3>Choisir un projet</h3><button class="x" id="pmx">Fermer ✕</button></div><div class="pmlist" id="pmlist"></div></div></div>
+<div class="modal" id="addproj" hidden><div class="sheet2"><div class="mh"><h3>Ajouter un projet</h3><button class="x" id="addprojx">Fermer ✕</button></div><div id="addprojbody"></div></div></div>
 <div class="modal docmodal" id="docmodal" hidden><div class="docsheet"><div class="dmh"><span class="dmt" id="doctitle"></span><div class="dmbtns"><button id="docback" hidden>‹ préc.</button><button id="docx">Fermer ✕</button></div></div><div class="docbody" id="docbody"></div></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
@@ -256,7 +255,15 @@ const VERSIONS_V = {
   upcoming:[{ver:"v0.12.0",name:"Le flux local sans friction",done:0,wip:0,ready:1,idea:6,total:7},{ver:"v0.13.0",name:"La transaction ship, d'un bloc",done:0,wip:0,ready:0,idea:7,total:7},{ver:"v0.14.0",name:"Les portiers robustes",done:0,wip:0,ready:0,idea:6,total:6},{ver:"v0.15.0",name:"Voir les runs",done:0,wip:0,ready:0,idea:4,total:4},{ver:"v0.16.0",name:"Ranger la maison (2e jet)",done:0,wip:0,ready:2,idea:7,total:9}],
   past:[{ver:"v0.10.0",name:"Portabilité multi-IDE",done:3,wip:0,ready:0,idea:0,total:3,date:"2026-10-11",tok:"512 k"},{ver:"v0.9.0",name:"Ranger la maison",done:5,wip:0,ready:0,idea:0,total:5,date:"2026-10-11",tok:"402 k"},{ver:"v0.8.0",name:"Amélioration mesurée",done:4,wip:0,ready:0,idea:0,total:4,date:"2026-10-10",tok:"357 k"}],
 };
-const CONFIG_V={github:"false (sur cette branche)",root:"~/git/bacasable/vectorz",groomPolicy:"auto",sprintSize:"auto",retro:"à la fin",releaseGate:"on",modelDefault:"Opus 4.8",notes:"la méthode s'auto-héberge"};
+const CONFIG_V={github:"false (sur cette branche)",root:"~/git/bacasable/vectorz",groomPolicy:"auto",sprintSize:"auto",retro:"à la fin",releaseGate:"on",modelDefault:"middle",effortDefault:"middle",roles:{"ezk-architect":"high","ezk-dev":"middle","ezk-reviewer":"high","ezk-qa":"low"},notes:"la méthode s'auto-héberge"};
+const TIERS=["high","middle","low"],ROLE_ORDER=["ezk-architect","ezk-dev","ezk-reviewer","ezk-qa"];
+/* Portée POSTE/OUTIL (partagée par tous les projets sur cet IDE, ne voyage pas avec le repo) :
+   le mapping tier abstrait → modèle concret. Un projet choisit un tier, l'outil le résout. */
+const IDEMAP={
+ "Claude Code":{models:{high:"Opus 4.8",middle:"Sonnet 5.5",low:"Haiku 5.5"},effort:{high:"high",middle:"medium",low:"low"},catalog:["Opus 4.8","Sonnet 5.5","Haiku 5.5"]},
+ "Cursor":{models:{high:"GPT-5",middle:"Grok 4",low:"Cursor Small"},effort:{high:"—",middle:"—",low:"—"},catalog:["GPT-5","Grok 4","Sonnet 5.5","Cursor Small"]},
+ "Codex CLI":{models:{high:"GPT-5 Pro",middle:"GPT-5",low:"GPT-5 mini"},effort:{high:"high",middle:"medium",low:"low"},catalog:["GPT-5 Pro","GPT-5","GPT-5 mini"]},
+};
 const DATA = {
   vectorz:{name:"vectorz",desc:"la méthode",live:true,session:"12 min",cost7j:"1,84 M",funnel:{idea:56,ready:14,wip:0,unversioned:20,parked:71},metrics:{done:296,tokens:"18,4 M",temps:"~42 h",sprints:120,runs:32,retros:14,perFiche:"62 k"},versions:VERSIONS_V,fiches:FICHES_V,runs:RUNS_V,retros:RETRO_V,timeline:TL_V,config:CONFIG_V,procExtra:[],next:{title:"Lancer la réalisation",why:"le lot v0.11 est groomé (9/9). Le dev n'a pas démarré."}},
   muti:{name:"muti",desc:"app carte & admin",live:true,session:"3 h",cost7j:"910 k",funnel:{idea:2,ready:3,wip:1,unversioned:0,parked:4},metrics:{done:14,tokens:"4,1 M",temps:"~11 h",sprints:9,runs:7,retros:3,perFiche:"293 k"},
@@ -334,6 +341,7 @@ function activityTable(d,lens){const runs=Object.values(d.runs||{}).filter(r=>ru
   return runs.length?runs.map(r=>`<div class="actg clk" data-ref='${JSON.stringify({type:"run",id:r.id})}'><span class="al-run">${r.live?'<span class="live"></span>':''}${esc(r.name)}</span><span class="pill ver">${r.ver}</span>${stepChips(runChips(r,lens))}<span class="al-when">${esc(r.when||'')}</span></div>`).join(""):'<div class="actg"><span class="muted">aucun run</span></div>';}
 let CUR="vectorz",SECTION="overview",DETAIL=null,HIST=[];
 let TLFILTER="all",TLVER="all",TLSHOWN=BATCH,QUERY="",FVER="all",FSORT="prio",FMODE="status",FCAT={avenir:true,encours:true,realisees:false};
+let CFGSCOPE="projet",CFGIDE="Claude Code",ADDPROJDONE=false;
 let LOTVER="",LOTMODE="list",CADMSG="",DEVLOT="",PROCSTEP="",LAUNCH={groom:"auto",sprint:"auto",retro:"à la fin"},LAUNCHED=false;
 const $=s=>document.querySelector(s),main=$("#main");
 const esc=s=>(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
@@ -420,21 +428,38 @@ function viewFiches(d){const cols=["idea","ready","wip","done"],vers=["all"].con
      <span class="seg"><button data-fm="status" class="${FMODE==='status'?'on':''}">Par statut</button><button data-fm="list" class="${FMODE==='list'?'on':''}">En ligne</button></span></div>
    <div class="banner">Vue illustrative : seules quelques fiches par version sont modélisées.</div>${body}`;}
 
+const compactWhen=s=>({"maintenant":"now","aujourd'hui":"auj.","hier":"1 j","origine":"début"}[s]||s);
 function viewTimeline(d){const kinds=["all","sprint","lancement","tag","retro","gate"],vers=["all"].concat(allVersions(d));
   const all=(d.timeline||[]).filter(e=>(TLFILTER==="all"||e.kind===TLFILTER)&&(TLVER==="all"||e.ver===TLVER)&&(!QUERY||(e.t+" "+e.m).toLowerCase().includes(QUERY)));
   const shown=all.slice(0,TLSHOWN),more=all.length-shown.length;
   return `<div class="vh"><h2>Chronologie — ${esc(d.name)}</h2><span class="sub">tout l'historique · filtre par type et par lot</span></div>
    <div class="tl-controls">${kinds.map(k=>`<button class="chip ${TLFILTER===k?'on':''}" data-tl="${k}">${k==="all"?"tout":KINDLABEL[k]}</button>`).join("")}<span style="margin-left:6px"></span><label class="muted" style="font-size:12px">Lot</label><select id="tlversel">${vers.map(v=>`<option value="${v}" ${v===TLVER?'selected':''}>${v==="all"?"tous":v}</option>`).join("")}</select></div>
-   <div class="timeline">${shown.map(e=>`<div class="tev ${e.ref?'clk':''} ${e.live?'liveev':''}" data-kind="${e.kind}" ${e.ref?`data-ref='${JSON.stringify(e.ref)}'`:''}><div class="th"><span class="td">${e.d}</span><span class="kindtag">${KINDLABEL[e.kind]}</span>${e.ver?`<span class="pill ver">${e.ver}</span>`:''}${e.tok?costTag(e.cost,e.tok):""}${e.live?'<span class="live"></span>':''}</div><div class="tt">${esc(e.t)}</div><div class="tm">${esc(e.m)}</div>${e.ref?'<span class="arr">›</span>':''}</div>`).join("")||'<div class="tl-end">aucun évènement</div>'}</div>
+   <section class="card">${shown.map(e=>`<div class="tev1 ${e.ref?'clk':''}" ${e.ref?`data-ref='${JSON.stringify(e.ref)}'`:''}><span class="tw">${compactWhen(e.d)}</span><span class="kindtag">${KINDLABEL[e.kind]}</span><span class="tt1">${esc(e.t)}</span>${e.ver?`<span class="pill ver">${e.ver}</span>`:''}${e.tok?costTag(e.cost,e.tok):""}${e.live?'<span class="live"></span>':''}${e.ref?'<span class="arr">›</span>':''}</div>`).join("")||'<div class="tl-end" style="padding:14px 16px">aucun évènement</div>'}</section>
    ${more>0?`<button class="loadmore" id="loadmore">Afficher plus (${more})</button>`:(all.length?'<div class="tl-end">↑ début du projet</div>':'')}`;}
 
 function viewConfig(d){const c=d.config||{},yn=v=>/^on|true/i.test(v)?`<span class="togglepill on-y">${v}</span>`:/^off|false|n\/a/i.test(v)?`<span class="togglepill on-n">${v}</span>`:esc(v);
-  return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">.vectorz/config.yml · lecture</span></div>
-   <div class="banner">Défauts de <b>lancement</b> (surchargés au Développement). Un jour, le <b>process sera configurable par projet</b>.</div>
+  const dft=c.modelDefault||"middle",eff=c.effortDefault||"middle",roles=c.roles||{};
+  const tierSeg=(cur,key)=>`<span class="seg">${TIERS.map(t=>`<button data-settier="${key}" data-tierval="${t}" class="${cur===t?'on':''}">${t}</button>`).join("")}</span>`;
+  const scopeBar=`<div class="toolbar"><span class="seg"><button data-cfgscope="projet" class="${CFGSCOPE==='projet'?'on':''}">Projet</button><button data-cfgscope="poste" class="${CFGSCOPE==='poste'?'on':''}">Poste / outil</button></span><span class="sub">${CFGSCOPE==='projet'?'.vectorz/config.yml · voyage avec le repo':'réglage de l&rsquo;outil · partagé par tes projets'}</span></div>`;
+  if(CFGSCOPE==="poste"){const M=IDEMAP[CFGIDE];
+    return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">deux portées : le projet, et l'outil</span></div>${scopeBar}
+     <div class="banner">Le mapping « tier → modèle concret » vit <b>ici</b>, pas dans le projet : sinon le projet casse quand on l'ouvre dans un autre IDE.</div>
+     <section class="card"><h3>Outil actif</h3><div class="cfgrow"><span class="cfgk">IDE</span><span class="seg">${Object.keys(IDEMAP).map(k=>`<button data-cfgide="${k}" class="${CFGIDE===k?'on':''}">${esc(k)}</button>`).join("")}</span></div></section>
+     <section class="card"><h3>Mapping — tier → modèle concret <span class="sub" style="text-transform:none;letter-spacing:0">pour ${esc(CFGIDE)}</span></h3>
+      ${TIERS.map(t=>`<div class="cfgrow"><span class="cfgk"><span class="rtier">${t}</span></span><span class="rmodel">${esc(M.models[t])}</span><span class="reff">effort ${esc(M.effort[t])}</span></div>`).join("")}
+      <div class="faint" style="font-size:12px;padding:6px 16px 14px">Catalogue ${esc(CFGIDE)} : ${M.catalog.map(esc).join(" · ")}</div></section>
+     <div class="banner">Un projet peut <b>surcharger</b> ce mapping (soupape rare). Par défaut, il hérite du poste.</div>`;}
+  return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">deux portées : le projet, et l'outil</span></div>${scopeBar}
    <div class="cfg"><section class="card"><h3>Lancement par défaut</h3><dl class="kv"><dt>Grooming</dt><dd>${esc(c.groomPolicy)}</dd><dt>Taille de sprint</dt><dd>${esc(c.sprintSize)}</dd><dt>Rétro</dt><dd>${esc(c.retro)}</dd></dl></section>
-     <section class="card"><h3>Intégration</h3><dl class="kv"><dt>GitHub</dt><dd>${yn(c.github)}</dd><dt>Racine</dt><dd>${esc(c.root)}</dd></dl></section>
-     <section class="card"><h3>Qualité</h3><dl class="kv"><dt>Release-gate</dt><dd>${yn(c.releaseGate)}</dd><dt>Modèle</dt><dd>${esc(c.modelDefault)}</dd></dl></section>
-     <section class="card"><h3>Notes</h3><dl class="kv"><dt>—</dt><dd style="font-family:var(--font-ui)">${esc(c.notes)}</dd></dl></section></div>`;}
+     <section class="card"><h3>Qualité</h3><dl class="kv"><dt>Release-gate</dt><dd>${yn(c.releaseGate)}</dd><dt>DoD</dt><dd><span class="doclink" data-doc="bundle:dod">bundle « dod »</span></dd></dl></section>
+     <section class="card"><h3>Intégration</h3><dl class="kv"><dt>GitHub</dt><dd>${yn(c.github)}</dd><dt>Racine</dt><dd>${esc(c.root)}</dd></dl></section></div>
+   <section class="card"><h3>Modèle & effort <span class="sub" style="text-transform:none;letter-spacing:0">tiers abstraits · résolus par l'outil (${esc(CFGIDE)})</span></h3>
+     <div class="cfgrow"><span class="cfgk">Modèle par défaut</span>${tierSeg(dft,"default")}</div>
+     <div class="cfgrow"><span class="cfgk">Effort par défaut</span>${tierSeg(eff,"effort")}</div>
+     <h4 class="cfgsub">Par rôle — surcharge le défaut</h4>
+     ${ROLE_ORDER.map(r=>`<div class="cfgrow"><span class="cfgk mono">${r}</span>${tierSeg(roles[r]||dft,"role:"+r)}</div>`).join("")}
+     <h4 class="cfgsub">Résolu — ce qui tournera</h4>
+     <div class="resolved">${ROLE_ORDER.map(r=>{const t=roles[r]||dft,M=IDEMAP[CFGIDE];return `<div class="rrow"><span class="mono">${r}</span><span class="rtier">${t}</span><span class="rarr">→</span><span class="rmodel">${esc(M.models[t])}</span><span class="reff">effort ${esc(M.effort[eff])}</span></div>`;}).join("")}</div></section>`;}
 
 function procSteps(d){let steps=PROC.slice();if(d.procExtra&&d.procExtra.length){steps.splice(5,0,{id:"ds",nm:d.procExtra[0],impl:"agent ezk-ux (projet)",file:"agents/ezk-ux.md (projet)",prompt:"Revue de conformité au design-system du projet.",rules:["development/pr-before-after-media"],model:"—",extra:true});}return steps;}
 function pflow(nodes){return `<div class="pflow">${nodes.map((n,i)=>`${i?'<span class="parr">→</span>':''}<button class="pnode ${n.sub?'sub':''} ${n.leaf?'leaf':''}" data-ref='${JSON.stringify({type:"node",id:n.id})}'>${n.sub?'<span class="psub">sous-process</span>':''}<span>${esc(n.nm)}</span>${n.pimpl?`<span class="pimpl">${esc(n.pimpl)}</span>`:''}${n.count!=null?`<span class="pc">${n.count}</span>`:''}</button>`).join("")}</div>`;}
@@ -514,7 +539,15 @@ function setNavOn(s){document.querySelectorAll('#nav button').forEach(b=>b.class
 function setSection(s){DETAIL=null;HIST=[];SECTION=s;if(s==="timeline")TLSHOWN=BATCH;if(s==="dev")LAUNCHED=false;if(s==="process")PROCSTEP="";setNavOn(s);render();}
 function openDetail(ref){HIST.push({s:SECTION,d:DETAIL});DETAIL=ref;if(ref.type==="version"){CADMSG="";LOTMODE="list";}render();try{window.scrollTo(0,0);}catch(e){}}
 function goBack(){const p=HIST.pop();if(p){SECTION=p.s;DETAIL=p.d;}else{DETAIL=null;}setNavOn(SECTION);render();try{window.scrollTo(0,0);}catch(e){}}
-function openModal(){$("#pmlist").innerHTML=Object.values(DATA).map(p=>`<button class="pmcard ${p.name===CUR?'on':''}" data-pm="${p.name}"><div class="nm">${p.live?'<span class="live"></span>':''}${esc(p.name)}</div><div class="pv">${p.versions.current?p.versions.current.ver:'—'} · ${esc(p.desc)}</div><div class="prow"><span>${p.funnel.ready} prêtes · ${p.funnel.wip} en cours</span><span>${p.funnel.idea} idées</span></div></button>`).join("");$("#projmodal").hidden=false;}
+function openModal(){$("#pmlist").innerHTML=Object.values(DATA).map(p=>`<button class="pmcard ${p.name===CUR?'on':''}" data-pm="${p.name}"><div class="nm">${p.live?'<span class="live"></span>':''}${esc(p.name)}</div><div class="pv">${p.versions.current?p.versions.current.ver:'—'} · ${esc(p.desc)}</div><div class="prow"><span>${p.funnel.ready} prêtes · ${p.funnel.wip} en cours</span><span>${p.funnel.idea} idées</span></div></button>`).join("")+'<button class="pmcard" id="addprojbtn" style="text-align:center;color:var(--accent);font-weight:600">+ Ajouter un projet…</button>';$("#projmodal").hidden=false;}
+function openAddProj(){ADDPROJDONE=false;$("#projmodal").hidden=true;$("#addproj").hidden=false;renderAddProj();}
+function renderAddProj(){$("#addprojbody").innerHTML=ADDPROJDONE
+  ?`<div class="msg" style="margin:4px 16px">✓ Projet « mon-projet » créé (simulé). Config par défaut appliquée ; le mapping tier→modèle vient du poste (${esc(CFGIDE)}).</div><div style="padding:8px 16px 4px"><button class="btn ghost" id="addprojcancel">Fermer</button></div>`
+  :`<div class="cfgrow" style="border-top:0"><span class="cfgk">Racine du projet</span><code>~/git/mon-projet</code></div>
+    <div class="cfgrow"><span class="cfgk">Outil (IDE)</span><span class="seg">${Object.keys(IDEMAP).map(k=>`<button data-cfgide="${k}" class="${CFGIDE===k?'on':''}">${esc(k)}</button>`).join("")}</span></div>
+    <div class="cfgrow"><span class="cfgk">Config de départ</span><span class="sub" style="text-transform:none;letter-spacing:0">défauts de la méthode · modifiables ensuite</span></div>
+    <div class="faint" style="font-size:12.5px;padding:8px 16px">Le mapping tier→modèle vient du <b>poste</b> (réglé une fois), pas redemandé à chaque projet.</div>
+    <div style="padding:6px 16px 6px;display:flex;gap:9px"><button class="btn" id="addprojcreate">▸ Créer (simulé)</button><button class="btn ghost" id="addprojcancel">Annuler</button></div>`;}
 let CURDOC=null,DOCHIST=[];
 function docRule(id){const r=RULES[id];if(!r)return{title:`<code>${esc(id)}</code>`,body:'<p class="muted">Règle non modélisée dans la maquette.</p>'};
   return {title:`<span class="lvl ${r.lvl}">${r.lvl}</span> ${esc(r.title)} <code>${esc(id)}</code>`,body:`<div class="enclair"><b>En clair.</b> ${esc(r.enclair)}</div><div class="doc-sec"><h4>Détail</h4><ul>${r.body.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>${r.bundles&&r.bundles.length?`<div class="doc-sec"><h4>Dans les bundles</h4><p>${r.bundles.map(b=>`<span class="doclink" data-doc="bundle:${esc(b)}">${esc(b)}</span>`).join(', ')}</p></div>`:''}<div class="faint" style="font-size:12px">Source : <code>rules/${esc(r.fam)}/${esc(id.split('/').pop())}.md</code> · niveau ${r.lvl}</div>`};}
@@ -549,6 +582,7 @@ document.addEventListener("click",e=>{
     tl=e.target.closest("[data-tl]"),fm=e.target.closest("[data-fm]"),fcat=e.target.closest("[data-fcat]"),lm2=e.target.closest("[data-lm]"),f=e.target.closest("[data-f]"),rt=e.target.closest("[data-retro]"),
     ref=e.target.closest("[data-ref]"),lm=e.target.closest("#loadmore"),lk=e.target.closest("[data-lk]"),go=e.target.closest("#go"),
     cad=e.target.closest("[data-cad]"),devlot=e.target.closest("[data-devlot]"),devcancel=e.target.closest("#devcancel"),step=e.target.closest("[data-step]"),
+    cfgscope=e.target.closest("[data-cfgscope]"),cfgide=e.target.closest("[data-cfgide]"),settier=e.target.closest("[data-settier]"),
     pbtn=e.target.closest("#projbtn"),pm=e.target.closest("[data-pm]"),pmx=e.target.closest("#pmx"),modalbg=e.target.closest("#projmodal");
   const _doc=e.target.closest("[data-doc]");
   if(e.target.closest("#docx")||e.target.id==="docmodal"){closeDoc();return;}
@@ -558,6 +592,9 @@ document.addEventListener("click",e=>{
   if(pbtn){openModal();return;}
   if(pm){CUR=pm.dataset.pm;DETAIL=null;FVER="all";TLVER="all";DEVLOT="";$("#projmodal").hidden=true;renderProjbtn();setSection("overview");return;}
   if(pmx||(modalbg&&e.target===modalbg)){$("#projmodal").hidden=true;return;}
+  if(e.target.closest("#addprojbtn")){openAddProj();return;}
+  if(e.target.closest("#addprojx")||e.target.closest("#addprojcancel")||e.target.id==="addproj"){$("#addproj").hidden=true;return;}
+  if(e.target.closest("#addprojcreate")){ADDPROJDONE=true;renderAddProj();return;}
   if(cad){CADMSG=cad.dataset.cad;const dd=e.target.closest("details.cmd");if(dd)dd.open=false;render();return;}
   if(back){goBack();return;}
   if(nav){setSection(nav.dataset.s);return;}
@@ -566,6 +603,9 @@ document.addEventListener("click",e=>{
   if(tl){TLFILTER=tl.dataset.tl;TLSHOWN=BATCH;render();return;}
   if(fm){FMODE=fm.dataset.fm;render();return;}
   if(fcat){FCAT[fcat.dataset.fcat]=!FCAT[fcat.dataset.fcat];render();return;}
+  if(cfgscope){CFGSCOPE=cfgscope.dataset.cfgscope;render();return;}
+  if(cfgide){CFGIDE=cfgide.dataset.cfgide;if(!$("#addproj").hidden)renderAddProj();else render();return;}
+  if(settier){const key=settier.dataset.settier,val=settier.dataset.tierval,c=DATA[CUR].config;if(key==="default")c.modelDefault=val;else if(key==="effort")c.effortDefault=val;else{c.roles=c.roles||{};c.roles[key.slice(5)]=val;}render();return;}
   if(lm2){LOTMODE=lm2.dataset.lm;render();return;}
   if(devlot){DEVLOT=devlot.dataset.devlot;LAUNCHED=false;setSection("dev");return;}
   if(devcancel){DEVLOT="";LAUNCHED=false;render();return;}
@@ -582,6 +622,6 @@ document.addEventListener("change",e=>{
   else if(e.target.id==="tlversel"){TLVER=e.target.value;TLSHOWN=BATCH;render();}
   else if(e.target.dataset&&e.target.dataset.assign){const f=DATA[CUR].fiches[e.target.dataset.assign];if(f){f.ver=e.target.value;render();}}
 });
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#docmodal").hidden){closeDoc();return;}$("#projmodal").hidden=true;}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#docmodal").hidden){closeDoc();return;}$("#addproj").hidden=true;$("#projmodal").hidden=true;}});
 $("#gsearch").addEventListener("input",e=>{QUERY=e.target.value.toLowerCase();TLSHOWN=BATCH;if(DETAIL)DETAIL=null;if(SECTION!=="timeline"&&SECTION!=="fiches")setSection("fiches");else render();$("#gsearch").focus();});
 </script>
