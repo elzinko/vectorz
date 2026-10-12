@@ -75,7 +75,7 @@
   .vrow .vname{font-weight:600} .vrow .minigs{grid-column:1/3;display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);align-items:center} .minibar{width:90px;height:7px;border-radius:5px;background:var(--surface-2);overflow:hidden;display:inline-block;vertical-align:middle} .minibar i{display:block;height:100%} .arr{color:var(--faint)} .grpv{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:4px 0 0}
   .lotcols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start} .lotcol{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0} .lotcol>h4{font-size:12px;padding:11px 13px;display:flex;justify-content:space-between;color:var(--muted);border-bottom:1px solid var(--line)} .lotcol .cnt{font-family:var(--font-data)}
   .lotmini{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 13px;border-top:1px solid var(--line);cursor:pointer} .lotmini:first-of-type{border-top:0} .lotmini:hover{background:var(--surface-2)}
-  .lmn{min-width:0;display:flex;flex-direction:column;gap:4px} .lmt{font-size:13px;font-weight:500;line-height:1.25} .lmg{display:flex;flex-direction:column;gap:4px}
+  .lmn{min-width:0;display:flex;flex-direction:column;gap:4px;align-items:flex-start} .lmn .pill{align-self:flex-start} .lmt{font-size:13px;font-weight:500;line-height:1.25} .lmg{display:flex;flex-direction:column;gap:4px}
   .gmini{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted);font-family:var(--font-data)} .gmini .gl{width:22px} .minibar2{width:64px;height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden} .minibar2 i{display:block;height:100%} .gmini .gv{width:30px;text-align:right}
   .al-when{margin-left:auto;font-family:var(--font-data);font-size:12px;color:var(--faint);white-space:nowrap;flex-shrink:0}
   .schips{display:flex;gap:4px;overflow:hidden;flex:1 1 auto;min-width:0;flex-wrap:nowrap} .schip{font-size:10.5px;padding:1px 7px;border-radius:20px;background:var(--surface-2);color:var(--muted);white-space:nowrap;cursor:pointer;border:1px solid transparent;flex-shrink:0} .schip:hover{border-color:var(--accent);color:var(--accent)} .schip.more{cursor:default;color:var(--faint)}
@@ -83,7 +83,7 @@
   .moment{border-top:1px solid var(--line);padding:11px 16px} .moment:first-of-type{border-top:0} .mh{display:flex;align-items:center;gap:8px;margin-bottom:6px} .mh .ml{font-weight:500;font-size:13px} .mh .mt{margin-left:auto;font-family:var(--font-data);font-size:11.5px;color:var(--faint)}
   .mfiche{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:center;padding:6px 9px;border-radius:7px;font-size:13px} .mfiche[data-doc]{cursor:pointer} .mfiche[data-doc]:hover{background:var(--surface-2)} .mft{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .mtrans{font-family:var(--font-data);font-size:11px;color:var(--muted)}
   .cfgrow{display:flex;align-items:center;gap:12px;padding:8px 16px;border-top:1px solid var(--line);flex-wrap:wrap} .cfgrow:first-of-type{border-top:0} .cfgk{font-size:13px;min-width:140px} .cfgk.mono{font-family:var(--font-data);font-size:12.5px} .cfgsub{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);padding:12px 16px 2px;margin:0}
-  .resolved{padding:6px 16px 12px;display:flex;flex-direction:column;gap:6px} .rrow{display:flex;align-items:center;gap:9px;font-size:13px;flex-wrap:wrap} .rrow .mono{font-family:var(--font-data);font-size:12px;min-width:108px} .rtier{font-family:var(--font-data);font-size:11px;padding:1px 7px;border-radius:5px;background:var(--accent-soft);color:var(--accent);font-weight:600} .rarr{color:var(--faint)} .rmodel{font-weight:600} .reff{font-family:var(--font-data);font-size:11px;color:var(--muted)}
+  .rtier{font-family:var(--font-data);font-size:11px;padding:1px 7px;border-radius:5px;background:var(--accent-soft);color:var(--accent);font-weight:600} .rarr{color:var(--faint)} .rmodel{font-weight:600} .reff{font-family:var(--font-data);font-size:11px;color:var(--muted)} .cfgrow select{font-family:var(--font-ui);font-size:13px;padding:4px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--fg)}
   .tev1{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line)} .tev1:first-of-type{border-top:0} .tev1.clk{cursor:pointer} .tev1.clk:hover{background:var(--surface-2)} .tev1 .tw{font-family:var(--font-data);font-size:12px;color:var(--faint);width:46px;flex-shrink:0;text-align:right} .tev1 .tt1{font-weight:500;font-size:13.5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1} .tev1 .arr{color:var(--faint);flex-shrink:0}
   .ptrow{display:grid;grid-template-columns:1.55fr 1fr 1fr .5fr .95fr;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)} .ptrow.clk{cursor:pointer} .ptrow.clk:hover{background:var(--surface-2)} .ptrow.run{background:var(--go-soft)} .ptrow.run.clk:hover{background:var(--go-soft)} .ptact{display:flex;justify-content:flex-end;align-items:center} .runbadge{font-family:var(--font-data);font-size:10.5px;color:var(--go);font-weight:600;white-space:nowrap;margin-left:2px} .ptrow.hd{border-top:0;color:var(--faint);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em} .ptc{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:var(--font-data)} .ptn{font-size:13px;display:flex;gap:8px;align-items:center;min-width:0} .ptn .nm{font-weight:500}
   @media(max-width:820px){.lotcols{grid-template-columns:1fr}}
@@ -146,6 +146,7 @@
   <span class="brand"><span class="dot"></span>board <span class="bv" id="brandver">v0.11.0</span></span>
   <button class="projbtn" id="projbtn"></button>
   <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input id="gsearch" placeholder="Rechercher…"></label>
+  <button id="toolbtn" title="Configuration de l'outil (global)" style="margin-left:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:15px;color:var(--fg);line-height:1">⚙</button>
 </div>
 <div class="shell">
   <nav class="nav" id="nav">
@@ -255,8 +256,8 @@ const VERSIONS_V = {
   upcoming:[{ver:"v0.12.0",name:"Le flux local sans friction",done:0,wip:0,ready:1,idea:6,total:7},{ver:"v0.13.0",name:"La transaction ship, d'un bloc",done:0,wip:0,ready:0,idea:7,total:7},{ver:"v0.14.0",name:"Les portiers robustes",done:0,wip:0,ready:0,idea:6,total:6},{ver:"v0.15.0",name:"Voir les runs",done:0,wip:0,ready:0,idea:4,total:4},{ver:"v0.16.0",name:"Ranger la maison (2e jet)",done:0,wip:0,ready:2,idea:7,total:9}],
   past:[{ver:"v0.10.0",name:"Portabilité multi-IDE",done:3,wip:0,ready:0,idea:0,total:3,date:"2026-10-11",tok:"512 k"},{ver:"v0.9.0",name:"Ranger la maison",done:5,wip:0,ready:0,idea:0,total:5,date:"2026-10-11",tok:"402 k"},{ver:"v0.8.0",name:"Amélioration mesurée",done:4,wip:0,ready:0,idea:0,total:4,date:"2026-10-10",tok:"357 k"}],
 };
-const CONFIG_V={github:"false (sur cette branche)",root:"~/git/bacasable/vectorz",groomPolicy:"auto",sprintSize:"auto",retro:"à la fin",releaseGate:"on",modelDefault:"middle",effortDefault:"middle",roles:{"ezk-architect":"high","ezk-dev":"middle","ezk-reviewer":"high","ezk-qa":"low"},notes:"la méthode s'auto-héberge"};
-const TIERS=["high","middle","low"],ROLE_ORDER=["ezk-architect","ezk-dev","ezk-reviewer","ezk-qa"];
+const CONFIG_V={github:"false (sur cette branche)",root:"~/git/bacasable/vectorz",groomPolicy:"auto",sprintSize:"auto",retro:"à la fin",releaseGate:"on",roles:{"ezk-architect":"high","ezk-dev":"middle","ezk-reviewer":"high","ezk-qa":"low"},notes:"la méthode s'auto-héberge"};
+const TIERS=["high","middle","low"],EFFORTS_CONCRETE=["high","medium","low","—"],ROLE_ORDER=["ezk-architect","ezk-dev","ezk-reviewer","ezk-qa"];
 /* Portée POSTE/OUTIL (partagée par tous les projets sur cet IDE, ne voyage pas avec le repo) :
    le mapping tier abstrait → modèle concret. Un projet choisit un tier, l'outil le résout. */
 const IDEMAP={
@@ -341,7 +342,7 @@ function activityTable(d,lens){const runs=Object.values(d.runs||{}).filter(r=>ru
   return runs.length?runs.map(r=>`<div class="actg clk" data-ref='${JSON.stringify({type:"run",id:r.id})}'><span class="al-run">${r.live?'<span class="live"></span>':''}${esc(r.name)}</span><span class="pill ver">${r.ver}</span>${stepChips(runChips(r,lens))}<span class="al-when">${esc(r.when||'')}</span></div>`).join(""):'<div class="actg"><span class="muted">aucun run</span></div>';}
 let CUR="vectorz",SECTION="overview",DETAIL=null,HIST=[];
 let TLFILTER="all",TLVER="all",TLSHOWN=BATCH,QUERY="",FVER="all",FSORT="prio",FMODE="status",FCAT={avenir:true,encours:true,realisees:false};
-let CFGSCOPE="projet",CFGIDE="Claude Code",ADDPROJDONE=false;
+let GCFG={ide:"Claude Code",defaultTier:"middle",defaultEffort:"middle"},ADDPROJDONE=false;
 let LOTVER="",LOTMODE="list",CADMSG="",DEVLOT="",PROCSTEP="",LAUNCH={groom:"auto",sprint:"auto",retro:"à la fin"},LAUNCHED=false;
 const $=s=>document.querySelector(s),main=$("#main");
 const esc=s=>(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
@@ -438,28 +439,25 @@ function viewTimeline(d){const kinds=["all","sprint","lancement","tag","retro","
    ${more>0?`<button class="loadmore" id="loadmore">Afficher plus (${more})</button>`:(all.length?'<div class="tl-end">↑ début du projet</div>':'')}`;}
 
 function viewConfig(d){const c=d.config||{},yn=v=>/^on|true/i.test(v)?`<span class="togglepill on-y">${v}</span>`:/^off|false|n\/a/i.test(v)?`<span class="togglepill on-n">${v}</span>`:esc(v);
-  const dft=c.modelDefault||"middle",eff=c.effortDefault||"middle",roles=c.roles||{};
+  const roles=c.roles||{},M=IDEMAP[GCFG.ide];
   const tierSeg=(cur,key)=>`<span class="seg">${TIERS.map(t=>`<button data-settier="${key}" data-tierval="${t}" class="${cur===t?'on':''}">${t}</button>`).join("")}</span>`;
-  const scopeBar=`<div class="toolbar"><span class="seg"><button data-cfgscope="projet" class="${CFGSCOPE==='projet'?'on':''}">Projet</button><button data-cfgscope="poste" class="${CFGSCOPE==='poste'?'on':''}">Poste / outil</button></span><span class="sub">${CFGSCOPE==='projet'?'.vectorz/config.yml · voyage avec le repo':'réglage de l&rsquo;outil · partagé par tes projets'}</span></div>`;
-  if(CFGSCOPE==="poste"){const M=IDEMAP[CFGIDE];
-    return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">deux portées : le projet, et l'outil</span></div>${scopeBar}
-     <div class="banner">Le mapping « tier → modèle concret » vit <b>ici</b>, pas dans le projet : sinon le projet casse quand on l'ouvre dans un autre IDE.</div>
-     <section class="card"><h3>Outil actif</h3><div class="cfgrow"><span class="cfgk">IDE</span><span class="seg">${Object.keys(IDEMAP).map(k=>`<button data-cfgide="${k}" class="${CFGIDE===k?'on':''}">${esc(k)}</button>`).join("")}</span></div></section>
-     <section class="card"><h3>Mapping — tier → modèle concret <span class="sub" style="text-transform:none;letter-spacing:0">pour ${esc(CFGIDE)}</span></h3>
-      ${TIERS.map(t=>`<div class="cfgrow"><span class="cfgk"><span class="rtier">${t}</span></span><span class="rmodel">${esc(M.models[t])}</span><span class="reff">effort ${esc(M.effort[t])}</span></div>`).join("")}
-      <div class="faint" style="font-size:12px;padding:6px 16px 14px">Catalogue ${esc(CFGIDE)} : ${M.catalog.map(esc).join(" · ")}</div></section>
-     <div class="banner">Un projet peut <b>surcharger</b> ce mapping (soupape rare). Par défaut, il hérite du poste.</div>`;}
-  return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">deux portées : le projet, et l'outil</span></div>${scopeBar}
+  return `<div class="vh"><h2>Configuration — ${esc(d.name)}</h2><span class="sub">.vectorz/config.yml · voyage avec le repo</span></div>
    <div class="cfg"><section class="card"><h3>Lancement par défaut</h3><dl class="kv"><dt>Grooming</dt><dd>${esc(c.groomPolicy)}</dd><dt>Taille de sprint</dt><dd>${esc(c.sprintSize)}</dd><dt>Rétro</dt><dd>${esc(c.retro)}</dd></dl></section>
      <section class="card"><h3>Qualité</h3><dl class="kv"><dt>Release-gate</dt><dd>${yn(c.releaseGate)}</dd><dt>DoD</dt><dd><span class="doclink" data-doc="bundle:dod">bundle « dod »</span></dd></dl></section>
      <section class="card"><h3>Intégration</h3><dl class="kv"><dt>GitHub</dt><dd>${yn(c.github)}</dd><dt>Racine</dt><dd>${esc(c.root)}</dd></dl></section></div>
-   <section class="card"><h3>Modèle & effort <span class="sub" style="text-transform:none;letter-spacing:0">tiers abstraits · résolus par l'outil (${esc(CFGIDE)})</span></h3>
-     <div class="cfgrow"><span class="cfgk">Modèle par défaut</span>${tierSeg(dft,"default")}</div>
-     <div class="cfgrow"><span class="cfgk">Effort par défaut</span>${tierSeg(eff,"effort")}</div>
-     <h4 class="cfgsub">Par rôle — surcharge le défaut</h4>
-     ${ROLE_ORDER.map(r=>`<div class="cfgrow"><span class="cfgk mono">${r}</span>${tierSeg(roles[r]||dft,"role:"+r)}</div>`).join("")}
-     <h4 class="cfgsub">Résolu — ce qui tournera</h4>
-     <div class="resolved">${ROLE_ORDER.map(r=>{const t=roles[r]||dft,M=IDEMAP[CFGIDE];return `<div class="rrow"><span class="mono">${r}</span><span class="rtier">${t}</span><span class="rarr">→</span><span class="rmodel">${esc(M.models[t])}</span><span class="reff">effort ${esc(M.effort[eff])}</span></div>`;}).join("")}</div></section>`;}
+   <section class="card"><h3>Modèle par rôle <span class="sub" style="text-transform:none;letter-spacing:0">tier → modèle résolu par ${esc(GCFG.ide)} · <span class="doclink" data-goto-tool>régler l'outil →</span></span></h3>
+     ${ROLE_ORDER.map(r=>{const t=roles[r]||GCFG.defaultTier;return `<div class="cfgrow"><span class="cfgk mono">${r}</span>${tierSeg(t,"role:"+r)}<span class="rarr">→</span><span class="rmodel">${esc(M.models[t])}</span></div>`;}).join("")}
+     <div class="faint" style="font-size:12px;padding:8px 16px 4px">Défaut (<b>${esc(GCFG.defaultTier)}</b>), effort et mapping tier→modèle se règlent dans la <span class="doclink" data-goto-tool>config de l'outil</span>.</div></section>`;}
+function viewTool(){const M=IDEMAP[GCFG.ide];
+  const gseg=(cur,key)=>`<span class="seg">${TIERS.map(t=>`<button data-gset="${key}" data-gval="${t}" class="${cur===t?'on':''}">${t}</button>`).join("")}</span>`;
+  return `<div class="vh"><h2>Configuration de l'outil</h2><span class="sub">global · partagé par tous tes projets · ne voyage pas avec les repos</span></div>
+   <div class="banner">Le mapping « tier → modèle concret » vit <b>ici</b>, pas dans les projets : sinon un projet casse quand on l'ouvre dans un autre IDE.</div>
+   <section class="card"><h3>Outil actif</h3><div class="cfgrow"><span class="cfgk">IDE</span><span class="seg">${Object.keys(IDEMAP).map(k=>`<button data-gide="${k}" class="${GCFG.ide===k?'on':''}">${esc(k)}</button>`).join("")}</span></div></section>
+   <section class="card"><h3>Défauts</h3><div class="cfgrow"><span class="cfgk">Modèle par défaut</span>${gseg(GCFG.defaultTier,"deftier")}</div><div class="cfgrow"><span class="cfgk">Effort par défaut</span>${gseg(GCFG.defaultEffort,"defeffort")}</div></section>
+   <section class="card"><h3>Mapping — tier → modèle concret <span class="sub" style="text-transform:none;letter-spacing:0">pour ${esc(GCFG.ide)} · éditable</span></h3>
+     ${TIERS.map(t=>`<div class="cfgrow"><span class="cfgk"><span class="rtier">${t}</span></span><select data-map="${t}">${M.catalog.map(m=>`<option ${m===M.models[t]?'selected':''}>${esc(m)}</option>`).join("")}</select><span class="reff">effort</span><select data-mapeff="${t}">${EFFORTS_CONCRETE.map(e=>`<option ${e===M.effort[t]?'selected':''}>${esc(e)}</option>`).join("")}</select></div>`).join("")}
+     <div class="faint" style="font-size:12px;padding:6px 16px 14px">Catalogue ${esc(GCFG.ide)} : ${M.catalog.map(esc).join(" · ")}</div></section>
+   <div class="banner">Un projet peut <b>surcharger</b> ce mapping (soupape rare, en réserve).</div>`;}
 
 function procSteps(d){let steps=PROC.slice();if(d.procExtra&&d.procExtra.length){steps.splice(5,0,{id:"ds",nm:d.procExtra[0],impl:"agent ezk-ux (projet)",file:"agents/ezk-ux.md (projet)",prompt:"Revue de conformité au design-system du projet.",rules:["development/pr-before-after-media"],model:"—",extra:true});}return steps;}
 function pflow(nodes){return `<div class="pflow">${nodes.map((n,i)=>`${i?'<span class="parr">→</span>':''}<button class="pnode ${n.sub?'sub':''} ${n.leaf?'leaf':''}" data-ref='${JSON.stringify({type:"node",id:n.id})}'>${n.sub?'<span class="psub">sous-process</span>':''}<span>${esc(n.nm)}</span>${n.pimpl?`<span class="pimpl">${esc(n.pimpl)}</span>`:''}${n.count!=null?`<span class="pc">${n.count}</span>`:''}</button>`).join("")}</div>`;}
@@ -532,7 +530,7 @@ function detailNode(d,id){const f=d.funnel,cnt={idea:f.idea,ready:f.ready,wip:f.
 function renderProjbtn(){const d=DATA[CUR];$("#projbtn").innerHTML=`${d.live?'<span class="live"></span>':''}${esc(CUR)} <span class="cv">${d.versions.current?d.versions.current.ver:'—'}</span> <span class="ch">▾</span>`;$("#navproj").textContent="Projet · "+CUR;$("#brandver").textContent=DATA.vectorz.versions.current.ver;}
 function render(){const d=DATA[CUR];
   if(DETAIL){main.innerHTML={fiche:()=>detailFiche(d,DETAIL.fid),run:()=>detailRun(d,DETAIL.id),sprint:()=>detailSprint(d,DETAIL.id,DETAIL.n),retro:()=>detailRetro(d,DETAIL.i),version:()=>detailVersion(d,DETAIL.ver),node:()=>detailNode(d,DETAIL.id)}[DETAIL.type]();return;}
-  main.innerHTML={overview:viewOverview,cadrage:viewCadrage,dev:viewDev,fiches:viewFiches,timeline:viewTimeline,config:viewConfig,process:viewProcess}[SECTION](d);
+  main.innerHTML={overview:viewOverview,cadrage:viewCadrage,dev:viewDev,fiches:viewFiches,timeline:viewTimeline,config:viewConfig,tool:viewTool,process:viewProcess}[SECTION](d);
   if(SECTION==="process")mountMermaid();}
 function mountMermaid(){if(!window.mermaid)return;try{mermaid.run({querySelector:".mermaid:not([data-processed])"});}catch(e){}}
 function setNavOn(s){document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===s));}
@@ -542,9 +540,9 @@ function goBack(){const p=HIST.pop();if(p){SECTION=p.s;DETAIL=p.d;}else{DETAIL=n
 function openModal(){$("#pmlist").innerHTML=Object.values(DATA).map(p=>`<button class="pmcard ${p.name===CUR?'on':''}" data-pm="${p.name}"><div class="nm">${p.live?'<span class="live"></span>':''}${esc(p.name)}</div><div class="pv">${p.versions.current?p.versions.current.ver:'—'} · ${esc(p.desc)}</div><div class="prow"><span>${p.funnel.ready} prêtes · ${p.funnel.wip} en cours</span><span>${p.funnel.idea} idées</span></div></button>`).join("")+'<button class="pmcard" id="addprojbtn" style="text-align:center;color:var(--accent);font-weight:600">+ Ajouter un projet…</button>';$("#projmodal").hidden=false;}
 function openAddProj(){ADDPROJDONE=false;$("#projmodal").hidden=true;$("#addproj").hidden=false;renderAddProj();}
 function renderAddProj(){$("#addprojbody").innerHTML=ADDPROJDONE
-  ?`<div class="msg" style="margin:4px 16px">✓ Projet « mon-projet » créé (simulé). Config par défaut appliquée ; le mapping tier→modèle vient du poste (${esc(CFGIDE)}).</div><div style="padding:8px 16px 4px"><button class="btn ghost" id="addprojcancel">Fermer</button></div>`
+  ?`<div class="msg" style="margin:4px 16px">✓ Projet « mon-projet » créé (simulé). Config par défaut appliquée ; le mapping tier→modèle vient de l'outil (${esc(GCFG.ide)}).</div><div style="padding:8px 16px 4px"><button class="btn ghost" id="addprojcancel">Fermer</button></div>`
   :`<div class="cfgrow" style="border-top:0"><span class="cfgk">Racine du projet</span><code>~/git/mon-projet</code></div>
-    <div class="cfgrow"><span class="cfgk">Outil (IDE)</span><span class="seg">${Object.keys(IDEMAP).map(k=>`<button data-cfgide="${k}" class="${CFGIDE===k?'on':''}">${esc(k)}</button>`).join("")}</span></div>
+    <div class="cfgrow"><span class="cfgk">Outil (IDE)</span><span class="seg">${Object.keys(IDEMAP).map(k=>`<button data-gide="${k}" class="${GCFG.ide===k?'on':''}">${esc(k)}</button>`).join("")}</span></div>
     <div class="cfgrow"><span class="cfgk">Config de départ</span><span class="sub" style="text-transform:none;letter-spacing:0">défauts de la méthode · modifiables ensuite</span></div>
     <div class="faint" style="font-size:12.5px;padding:8px 16px">Le mapping tier→modèle vient du <b>poste</b> (réglé une fois), pas redemandé à chaque projet.</div>
     <div style="padding:6px 16px 6px;display:flex;gap:9px"><button class="btn" id="addprojcreate">▸ Créer (simulé)</button><button class="btn ghost" id="addprojcancel">Annuler</button></div>`;}
@@ -582,7 +580,7 @@ document.addEventListener("click",e=>{
     tl=e.target.closest("[data-tl]"),fm=e.target.closest("[data-fm]"),fcat=e.target.closest("[data-fcat]"),lm2=e.target.closest("[data-lm]"),f=e.target.closest("[data-f]"),rt=e.target.closest("[data-retro]"),
     ref=e.target.closest("[data-ref]"),lm=e.target.closest("#loadmore"),lk=e.target.closest("[data-lk]"),go=e.target.closest("#go"),
     cad=e.target.closest("[data-cad]"),devlot=e.target.closest("[data-devlot]"),devcancel=e.target.closest("#devcancel"),step=e.target.closest("[data-step]"),
-    cfgscope=e.target.closest("[data-cfgscope]"),cfgide=e.target.closest("[data-cfgide]"),settier=e.target.closest("[data-settier]"),
+    gide=e.target.closest("[data-gide]"),gset=e.target.closest("[data-gset]"),gototool=e.target.closest("[data-goto-tool]"),toolbtn=e.target.closest("#toolbtn"),settier=e.target.closest("[data-settier]"),
     pbtn=e.target.closest("#projbtn"),pm=e.target.closest("[data-pm]"),pmx=e.target.closest("#pmx"),modalbg=e.target.closest("#projmodal");
   const _doc=e.target.closest("[data-doc]");
   if(e.target.closest("#docx")||e.target.id==="docmodal"){closeDoc();return;}
@@ -603,9 +601,10 @@ document.addEventListener("click",e=>{
   if(tl){TLFILTER=tl.dataset.tl;TLSHOWN=BATCH;render();return;}
   if(fm){FMODE=fm.dataset.fm;render();return;}
   if(fcat){FCAT[fcat.dataset.fcat]=!FCAT[fcat.dataset.fcat];render();return;}
-  if(cfgscope){CFGSCOPE=cfgscope.dataset.cfgscope;render();return;}
-  if(cfgide){CFGIDE=cfgide.dataset.cfgide;if(!$("#addproj").hidden)renderAddProj();else render();return;}
-  if(settier){const key=settier.dataset.settier,val=settier.dataset.tierval,c=DATA[CUR].config;if(key==="default")c.modelDefault=val;else if(key==="effort")c.effortDefault=val;else{c.roles=c.roles||{};c.roles[key.slice(5)]=val;}render();return;}
+  if(toolbtn||gototool){setSection("tool");return;}
+  if(gide){GCFG.ide=gide.dataset.gide;if(!$("#addproj").hidden)renderAddProj();else render();return;}
+  if(gset){GCFG[gset.dataset.gset==="deftier"?"defaultTier":"defaultEffort"]=gset.dataset.gval;render();return;}
+  if(settier){const c=DATA[CUR].config;c.roles=c.roles||{};c.roles[settier.dataset.settier.slice(5)]=settier.dataset.tierval;render();return;}
   if(lm2){LOTMODE=lm2.dataset.lm;render();return;}
   if(devlot){DEVLOT=devlot.dataset.devlot;LAUNCHED=false;setSection("dev");return;}
   if(devcancel){DEVLOT="";LAUNCHED=false;render();return;}
@@ -620,6 +619,8 @@ document.addEventListener("change",e=>{
   if(e.target.id==="fversel"){FVER=e.target.value;render();}
   else if(e.target.id==="fsort"){FSORT=e.target.value;render();}
   else if(e.target.id==="tlversel"){TLVER=e.target.value;TLSHOWN=BATCH;render();}
+  else if(e.target.dataset&&e.target.dataset.map){IDEMAP[GCFG.ide].models[e.target.dataset.map]=e.target.value;render();}
+  else if(e.target.dataset&&e.target.dataset.mapeff){IDEMAP[GCFG.ide].effort[e.target.dataset.mapeff]=e.target.value;render();}
   else if(e.target.dataset&&e.target.dataset.assign){const f=DATA[CUR].fiches[e.target.dataset.assign];if(f){f.ver=e.target.value;render();}}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#docmodal").hidden){closeDoc();return;}$("#addproj").hidden=true;$("#projmodal").hidden=true;}});
