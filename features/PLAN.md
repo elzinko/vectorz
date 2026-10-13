@@ -191,7 +191,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261013074251767` — ezk-archive et reconcile passent par le guichet + cliquet · P2 · `build` (ready)~~ — shipped
 - ~~`20261004083838687` — sans PR, intégrer par avance rapide · P2 · `build` (ready)~~ — shipped
 - ~~`20261011113632532` — `ezk run context/report` visent le projet construit + flux local · P2 · `groom`~~ — shipped
-- `20261002230039863` — le rapport de sprint retrouve sa trace de supervision · P3 · `build` (ready)
+- ~~`20261002230039863` — le rapport de sprint retrouve sa trace de supervision · P3 · `build` (ready)~~ — shipped
 - ~~`20261011091556212` — banc jetable E2E du flux local (sans GitHub) · P3 · `groom`~~ — shipped
 
 ### ⑭ v0.13.0 — la transaction ship, d'un bloc

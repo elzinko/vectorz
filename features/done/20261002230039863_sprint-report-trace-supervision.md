@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [retro]
-status: ready
-pr:
+status: shipped
+pr: "local (c4f65f2a)"
 evidence: none # outil en ligne de commande, pas d'écran
 created: 2026-10-03
 ---
@@ -33,7 +33,7 @@ dossier de travail `.claude/worktrees/ready-todo-status-distinction-d96e52`, ré
 Le run `2026-10-02T14-26-35-210Z-e464ca1f` existe pourtant ; il a été écrit sous une autre racine.
 
 C'est la suite de la fiche livrée
-[« Domaine métriques de sprint »](done/20260826082120062_domaine-metriques-de-sprint-rapport.md).
+[« Domaine métriques de sprint »](20260826082120062_domaine-metriques-de-sprint-rapport.md).
 
 **Deuxième symptôme, daté — même famille.** 2026-10-11, run autonome v0.7. Le compte rendu écrit
 par `ezk-sprint close` reste **non daté** tant que le slug du checkpoint de supervision ne coïncide
@@ -66,8 +66,8 @@ pnpm --dir products/mega-city sprint:report <slug> --out /tmp/rapport
 ## Notes / décisions
 
 - Retenue à la rétro du 2026-10-03 :
-  [capture](../docs/captures/2026-10-03-retro-session-2026-10-02.md), proposition 6.
+  [capture](../../docs/captures/2026-10-03-retro-session-2026-10-02.md), proposition 6.
 - Enrichie à la rétro du 2026-10-11 (run autonome v0.7),
-  [capture](../docs/captures/2026-10-11-retro-run-v07-autonome.md), S3 : symptôme slug ≠ ajouté, pas de doublon créé.
+  [capture](../../docs/captures/2026-10-11-retro-run-v07-autonome.md), S3 : symptôme slug ≠ ajouté, pas de doublon créé.
 - Priorité **P3 proposée** par l'agent, sur délégation du PO.
 - **Preuve (2026-10-13)** — éprouvé depuis un **worktree secondaire** (sans `.supervision/`) : `sprint report` remonte au `.mcp.json` du checkout principal, suit `SUPERVISION_PROJECT_ROOT` et lit ses runs réels. Quand le run courant porte un checkpoint de sprint (slug différent de l'objectif), le rapport est **daté** ; quand il n'en porte aucun, il reste **non daté et rapide** (0,3 s, aucun emprunt à un vieux run). Fixtures synthétiques (`.mcp.json` jetable) + 55 tests sprint-metrics verts.

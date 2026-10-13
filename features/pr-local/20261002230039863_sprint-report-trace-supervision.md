@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002230039863_sprint-report-trace-supervision.md](../20261002230039863_sprint-report-trace-supervision.md)
+> 🗎 Rendu de la fiche [features/20261002230039863_sprint-report-trace-supervision.md](../done/20261002230039863_sprint-report-trace-supervision.md)
 
 # 20261002230039863 — Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint
 

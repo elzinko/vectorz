@@ -96,7 +96,7 @@ n'existait.
 
 | Proposition | Décision | Date |
 |---|---|---|
-| S1 — parité du flux local (run report / close daté / regen) | Lien [20261010235330118](../../features/done/20261010235330118_run-report-accepte-livraison-locale.md) + enrichissement [20261002230039863](../../features/20261002230039863_sprint-report-trace-supervision.md) + nouvelle fiche [20261011091552583](../../features/done/20261011091552583_regen-root-ecrit-titre-casse.md) | 2026-10-11 |
+| S1 — parité du flux local (run report / close daté / regen) | Lien [20261010235330118](../../features/done/20261010235330118_run-report-accepte-livraison-locale.md) + enrichissement [20261002230039863](../../features/done/20261002230039863_sprint-report-trace-supervision.md) + nouvelle fiche [20261011091552583](../../features/done/20261011091552583_regen-root-ecrit-titre-casse.md) | 2026-10-11 |
 | S7 — marqueur de blocage typé | Enrichit [20261002133125418](../../features/20261002133125418_tete-plan-ignore-drapeau-bloquee.md), pas de doublon | 2026-10-11 |
 | S5 — run : éligibilité avant délibération + arrêt à la borne | Nouvelle fiche [20261011091553794](../../features/20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | 2026-10-11 |
 | S4a+S4b — gate : forme des vues + confinement testé | Nouvelle fiche [20261011091555006](../../features/20261011091555006_gate-attrape-forme-vues-et-confinement.md) | 2026-10-11 |
