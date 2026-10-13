@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261011091552583_regen-root-ecrit-titre-casse.md](../20261011091552583_regen-root-ecrit-titre-casse.md)
+> 🗎 Rendu de la fiche [features/20261011091552583_regen-root-ecrit-titre-casse.md](../done/20261011091552583_regen-root-ecrit-titre-casse.md)
 
 # 20261011091552583 — regen écrit un titre cassé quand on lui passe --root
 

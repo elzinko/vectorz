@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [backlog]
-status: ready
-pr:
+status: shipped
+pr: "local (379d0eb4)"
 evidence: none # pas d'écran
 created: 2026-10-11
 ---
