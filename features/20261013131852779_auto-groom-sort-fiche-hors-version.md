@@ -60,5 +60,5 @@ pnpm --dir products/mega-city test
   l'auto-tag est [auto-tag et clôture en opt-in](20261013131852581_auto-tag-close-local-opt-in.md).
   Même version v0.15.0.
 - S'appuie sur les **raisons typées** du drapeau `blocked:` posées en v0.13
-  ([raisons typées pour blocked:](20261013131632484_raisons-typees-pour-blocked.md)) : la raison de la
+  ([raisons typées pour blocked:](done/20261013131632484_raisons-typees-pour-blocked.md)) : la raison de la
   sortie est une raison typée.

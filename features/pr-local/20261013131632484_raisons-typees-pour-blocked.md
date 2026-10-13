@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261013131632484_raisons-typees-pour-blocked.md](../20261013131632484_raisons-typees-pour-blocked.md)
+> 🗎 Rendu de la fiche [features/20261013131632484_raisons-typees-pour-blocked.md](../done/20261013131632484_raisons-typees-pour-blocked.md)
 
 # 20261013131632484 — Des raisons typées pour le drapeau bloquée
 
