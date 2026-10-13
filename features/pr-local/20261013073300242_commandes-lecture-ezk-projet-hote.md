@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261013073300242_commandes-lecture-ezk-projet-hote.md](../20261013073300242_commandes-lecture-ezk-projet-hote.md)
+> 🗎 Rendu de la fiche [features/20261013073300242_commandes-lecture-ezk-projet-hote.md](../done/20261013073300242_commandes-lecture-ezk-projet-hote.md)
 
 # 20261013073300242 — Les commandes ezk de lecture visent le projet hôte
 

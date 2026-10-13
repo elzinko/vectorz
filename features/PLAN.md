@@ -183,7 +183,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 ### ⑬ v0.12.0 — le flux local sans friction
 > Les commandes `ezk` doivent travailler depuis un projet hôte, et `github: false` tenir de bout en bout.
 - ~~`20261004083344960` — les outils de la méthode marchent depuis un projet hôte · P1 · `groom`~~ — split en ↓
-- `20261013073300242` — les commandes ezk de lecture visent le projet hôte · P1 · `build` (ready)
+- ~~`20261013073300242` — les commandes ezk de lecture visent le projet hôte · P1 · `build` (ready)~~ — shipped
 - `20261013073300256` — les commandes ezk qui écrivent visent le bon dépôt hôte · P1 · `build` (ready)
 - ~~`20261003201034897` — `ezk` dit quand le dossier principal est en retard · P1 · `groom`~~ — shipped
 - ~~`20261004083838593` — un seul guichet GitHub (`github: false` respecté) · P2 · `groom`~~ — split en ↓
