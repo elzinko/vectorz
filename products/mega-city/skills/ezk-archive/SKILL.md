@@ -223,8 +223,9 @@ qui ne demandent aucun jugement.
      `docs/sessions/`. Propose le commit `docs(sessions): handoff <date>` et dis en toutes lettres
      qu'il faut le **pousser** avant de fermer : sans push, la copie disparaît avec le conteneur.
      Tu ne commites ni ne pousses jamais toi-même ;
-   - **8. Archive session** — si `SPRINT.md` existe à la racine **et** a du contenu réel
-     (pas un stub vide) :
+   - **8. Archive session** — si le **journal de sprint de la branche** (hors du worktree,
+     `<git-common-dir>/ezk/sprints/<branche>.md` — cf. `ezk-sprint`, fiche 20261004181110201) a du
+     contenu réel (pas un stub vide) ; le portier le lit déjà pour toi (`FASTPATH: NO reason=sprint`) :
      - copier vers `docs/sessions/YYYY-MM-DD-<slug>.md` (créer `docs/sessions/` si besoin ;
        en cas de collision de nom, suffixer `-2`, `-3`… — **ne jamais écraser**) ;
      - **si la session a travaillé une ou plusieurs fiches** : **entête `fiches: <id>[,<id>]`**
@@ -234,18 +235,18 @@ qui ne demandent aucun jugement.
        `feat/<id>-<slug>` — ADR-0018). **Les ids sont ceux de `--worked`** (livrées ou non) ;
        **session sans fiche** (`--worked none`) → **pas d'entête**, ne jamais inventer d'id
        (même interdiction que le reste des faits de session) ;
-     - si `SPRINT.md` porte une section **`## Galères & gestes (labo)`** avec du contenu
+     - si le journal porte une section **`## Galères & gestes (labo)`** avec du contenu
        (pas vide) : la **reprendre telle quelle** dans le récit sous le même titre
        `## Galères & gestes (labo)` — c'est le moment où « corrigé + validé » est vrai
        par construction (la clôture), aucun nouveau déclencheur à inventer ; section
        vide ou absente → ne rien ajouter (même garde-fou qu'`ezk-retro` : rien à
        retenir → on n'écrit rien) ;
-     - **renvoie aux comptes rendus de sprint, ne recopie pas `SPRINT.md`** (fiche 20261008072306360,
+     - **renvoie aux comptes rendus de sprint, ne recopie pas le journal** (fiche 20261008072306360,
        [ADR-0068](../../docs/adr/0068-compte-rendu-de-sprint-faits-rapport-commit-archive.md)) : chaque
        `close` de la session a écrit un compte rendu committé sous `docs/sprints/<date>-sprint-<slug>.md`
        (lot scellé + décisions + galères de CE sprint). Dans le récit, **liste ces comptes rendus de la
        session avec leur chemin** plutôt que de recopier la zone `## Incréments scellés de la session` de
-       `SPRINT.md` (accumulée, polluée par l'héritage quand l'app recycle le dossier). `ezk --root "$(git rev-parse --show-toplevel)" retro reports`
+       le journal (accumulée au fil des sprints de la session). `ezk --root "$(git rev-parse --show-toplevel)" retro reports`
        aide à les retrouver — mais il liste **depuis la dernière capture, toutes sessions confondues** ;
        pour l'archive, **retiens parmi eux ceux de CETTE session** (les comptes rendus des `close` que tu
        viens de jouer). Pas de compte rendu (sprint non clos par `close`, ou mode dégradé) → s'en tenir au
@@ -265,9 +266,9 @@ qui ne demandent aucun jugement.
        (rien poussé — le push reste au PO) ; en **mode PR** il laisse la branche et donne la commande
        d'ouverture. **Dossier principal sale → archive sauvée sur sa branche, non intégrée, la sortie
        dit pourquoi.** Tu ne pousses jamais toi-même ;
-     - **laisser `SPRINT.md` en place** (scratch éphémère du sprint) ;
+     - **laisser le journal en place** (éphémère, hors du worktree — il survit à la session) ;
      - le handoff **pointe** vers le chemin d'archive (`**Archive session :** …`) —
-       **ne duplique pas** le corps de `SPRINT.md` dans la note.
+       **ne duplique pas** le corps du journal dans la note.
    - **9. Carnet de rétro (best-effort)** — invite la session à déposer une note **si** une
      friction ou une idée durable mérite d'atteindre la prochaine rétro. Une commande suffit, sans
      commit ni PR : `ezk retro note "<titre>" [--type friction|idée|problème] <<< "<corps>"`. La note

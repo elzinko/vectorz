@@ -195,13 +195,16 @@ exactement le flux actuel.
   **La revue n'est jamais sautée.**
 - **Cible : ≤ 200k jetons par fiche** en moyenne de run. Dis ta consommation dans ton compte rendu.
 
-## L'état du sprint — `SPRINT.md`
+## L'état du sprint — le journal de sprint
 
-`SPRINT.md`, à la racine du projet, suit le **lot** du sprint courant. `sprint.sh start` le crée, tu le tiens à jour, `sprint.sh close` le scelle. Il **survit à la compaction de contexte**.
+Le **journal de sprint** suit le **lot** du sprint courant. `sprint.sh start` le crée, tu le tiens à jour, `sprint.sh close` le scelle. Il **survit à la compaction de contexte**.
+
+**Où il vit (fiche 20261004181110201).** Hors du worktree, un fichier **par branche**, dans `<git-common-dir>/ezk/sprints/<branche>.md` — le dossier git que tous les worktrees d'un dépôt partagent, même lieu que la note de passation. L'app Claude recycle un worktree d'une session à l'autre : un journal rangé à la racine du worktree partait avec lui, ou pire, la session suivante — sur une **autre** branche — en héritait. Clé par branche : chaque branche a son récit, un worktree neuf sur une branche neuve ouvre « Sprint 1 », et le journal survit à `git worktree remove`. `start` imprime son chemin sur la ligne `SPRINT_FILE:`. Un `SPRINT.md` resté à la racine d'avant la bascule est **repris une fois** s'il porte la marque de la branche courante (`SPRINT-MIGRATION`), **signalé** sinon (`SPRINT-FOREIGN`) — jamais repris en silence.
 
 ```
 # Sprint N — <objectif>
 Statut: en cours   Ouvert: <date>
+Branche: <branche>
 
 ## Lot  (1 ligne = 1 story = 1 PR ; [x] livrée · [~] reportée · [ ] ouverte)
 - [ ] <id> — <titre>                 <- en cours

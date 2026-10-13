@@ -583,9 +583,17 @@ fp_reason() { FP_REASONS="${FP_REASONS:+$FP_REASONS,}$1"; }
 [[ "$VERDICT" != "CLEAN" ]] && fp_reason verdict
 if [[ -z "$SHIPPED" ]]; then fp_reason shipped_undeclared; elif [[ "$SHIPPED" != "none" ]]; then fp_reason shipped; fi
 if [[ -z "$WORKED" ]]; then fp_reason worked_undeclared; elif [[ "$WORKED" != "none" ]]; then fp_reason worked; fi
-# Un SPRINT.md qui porte autre chose que des titres, des lignes vides et des commentaires est du
-# contenu à archiver (docs/sessions/). Dans le doute, on déroule la clôture.
-if [[ -f SPRINT.md ]] && grep -qvE '^[[:space:]]*($|#|<!--)' SPRINT.md 2>/dev/null; then fp_reason sprint; fi
+# Le journal de sprint vit HORS du worktree, un fichier par BRANCHE, dans le dossier git commun
+# (fiche 20261004181110201 ; même lieu que la note de passation). On lit CELUI de la branche de la
+# session — jamais un SPRINT.md étranger qu'un worktree recyclé aurait laissé à la racine. Un journal
+# qui porte autre chose que des titres, des lignes vides et des commentaires est du contenu à archiver
+# (docs/sessions/). Dans le doute, on déroule la clôture. La résolution du chemin est la même que
+# sprint.sh (sinon le portier lirait un autre fichier que celui que `ezk-sprint` écrit).
+SPRINT_BRANCH="$(git branch --show-current 2>/dev/null)"
+[[ -n "$SPRINT_BRANCH" ]] || SPRINT_BRANCH="_detached/$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+SPRINT_BRANCH="$(printf '%s' "$SPRINT_BRANCH" | LC_ALL=C sed 's#[^A-Za-z0-9._/-]#-#g')"
+SPRINT_JOURNAL="$H_COMMON/ezk/sprints/$SPRINT_BRANCH.md"
+if [[ -f "$SPRINT_JOURNAL" ]] && grep -qvE '^[[:space:]]*($|#|<!--)' "$SPRINT_JOURNAL" 2>/dev/null; then fp_reason sprint; fi
 if [[ -z "$FP_REASONS" ]]; then
   FASTPATH_LINE="FASTPATH: EMPTY"
   # Le travail non commité d'un AUTRE worktree (un agent, une autre session) n'est vu ni par P1, qui lit

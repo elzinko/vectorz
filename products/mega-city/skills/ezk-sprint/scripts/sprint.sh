@@ -6,8 +6,8 @@
 # (reconcile, review, next) restent du jugement : ils sont décrits dans SKILL.md.
 #
 #   start --dry-run        ≡ `check` : exactement le portier, strictement READ-ONLY.
-#   start --lot <ids>      passe le portier puis écrit SPRINT.md (gitignoré). N'écrit RIEN d'autre :
-#                          ni branche, ni commit, ni statut de fiche.
+#   start --lot <ids>      passe le portier puis écrit le journal de branche (hors du worktree, cf. plus
+#                          bas). N'écrit RIEN d'autre : ni branche git, ni commit, ni statut de fiche.
 #   close                  scelle l'incrément. Ne touche JAMAIS la session (docs/sessions/,
 #                          .claude/handoff.md) : c'est le métier d'ezk-archive.
 #   close --abandon "<r>"  fin ANORMALE : ferme le sprint sans incrément. Seule sortie quand rien
@@ -54,7 +54,10 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd -P)"
 MC="$(cd "$HERE/../../.." && pwd)" # products/mega-city quand le script est lancé depuis le catalogue ou par un lien
 CHECK="$HERE/check.sh"
-FILE="SPRINT.md"
+# Le journal vit HORS du worktree, un fichier par BRANCHE, dans le dossier git commun (FILE, calculé
+# après `cd` plus bas). L'ancien lieu — la racine du worktree — ne sert plus qu'à reprendre un journal
+# resté là avant la bascule (fiche 20261004181110201).
+LEGACY_FILE="SPRINT.md"
 H_NOTES="## Notes / décisions"
 H_LABO="## Galères & gestes (labo)" # titre exact : lu par ezk-archive et ezk-chef
 H_SEALED="## Incréments scellés de la session"
@@ -64,8 +67,8 @@ usage() {
 sprint.sh — cycle de vie du sprint (ezk-sprint start / close, ADR-0054)
 
   start --dry-run                  ≡ `check` : le portier, strictement read-only
-  start --lot <id[,id…]>           ouvre un sprint (passe le portier, écrit SPRINT.md)
-        [--objective "<texte>"]    objectif du sprint (titre de SPRINT.md)
+  start --lot <id[,id…]>           ouvre un sprint (passe le portier, écrit le journal de branche)
+        [--objective "<texte>"]    objectif du sprint (titre du journal)
         [--override "<raison>"]    passe outre un portier ALERT ; la raison est journalisée
   close                            scelle l'incrément (refuse si une story du lot est ouverte)
   close --abandon "<raison>"       fin anormale : ferme le sprint SANS incrément (raison journalisée)
@@ -120,6 +123,22 @@ cd "$(git rev-parse --show-toplevel)" || exit 2
 
 # `check` ≡ `start --dry-run` : on rend la main au portier, tel quel. Rien n'est écrit.
 if (( DRY )); then exec bash "$CHECK" --gate; fi
+
+# --- où vit le journal : hors du worktree, un fichier par BRANCHE ------------------
+# L'app Claude recycle un worktree d'une session à l'autre. Un journal rangé à la racine du worktree
+# partait avec lui — ou pire, la session suivante, sur une AUTRE branche, en héritait (arrivé 3 fois en
+# 2 jours). On le range dans `<git-common-dir>/ezk/sprints/<branche>.md`, le dossier git que TOUS les
+# worktrees d'un dépôt partagent — même lieu et même raison que la note de passation (handoff.sh,
+# fiche 20261003105820077). Clé par branche : chaque branche a son récit, un worktree neuf sur une
+# branche neuve ouvre « Sprint 1 », et le journal survit à `git worktree remove`.
+# `pwd -P` : le même chemin qu'on parte du principal ou d'un worktree (macOS : /var → /private/var).
+EZK_COMMON="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)" || exit 2
+BRANCH="$(git branch --show-current 2>/dev/null)"
+[[ -n "$BRANCH" ]] || BRANCH="_detached/$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+# Jamais de caractère hors [A-Za-z0-9._/-] dans le chemin ; le « / » d'une branche devient un sous-dossier,
+# comme git range ses refs (git interdit déjà une branche « a » et « a/b » ensemble : pas de collision).
+BRANCH_SAFE="$(printf '%s' "$BRANCH" | LC_ALL=C sed 's#[^A-Za-z0-9._/-]#-#g')"
+FILE="$EZK_COMMON/ezk/sprints/$BRANCH_SAFE.md"
 
 # --- lecture de SPRINT.md ----------------------------------------------------------
 sprint_state() { # none | open | closed — un SPRINT.md d'ancien format (sans `Statut: clos`) compte comme ouvert
@@ -207,21 +226,25 @@ loader_root() {
 }
 
 # --- start -------------------------------------------------------------------------
-# SPRINT.md ne se committe pas. Un projet hôte qui ne l'ignore pas le verrait « non suivi », et le
-# merge local (ship-merge.sh --local) refuserait un dépôt qu'il juge sale. On l'exclut donc de git
-# EN LOCAL (info/exclude), sans toucher un fichier du projet ni exiger de migration (fiche
-# 20261003200945204). Déjà ignoré ou déjà suivi : rien à faire.
+# Le journal vit désormais hors du worktree (dossier git commun) : git ne le voit jamais, rien à exclure.
+# Mais un SPRINT.md d'AVANT la bascule peut traîner à la racine (étranger, non repris). Ce script ne
+# l'écrit plus, mais un leftover « non suivi » rendrait le dépôt sale, et le merge local
+# (ship-merge.sh --local) refuserait un dépôt qu'il juge sale. On l'exclut donc de git EN LOCAL
+# (info/exclude), sans toucher un fichier du projet (fiche 20261003200945204). Absent, déjà ignoré
+# ou déjà suivi : rien à faire.
 exclude_sprint_file() {
-  git check-ignore -q "$FILE" 2>/dev/null && return 0
-  git ls-files --error-unmatch -- "$FILE" >/dev/null 2>&1 && return 0
+  [[ -e "$LEGACY_FILE" ]] || return 0
+  git check-ignore -q "$LEGACY_FILE" 2>/dev/null && return 0
+  git ls-files --error-unmatch -- "$LEGACY_FILE" >/dev/null 2>&1 && return 0
   local excl
   excl="$(git rev-parse --git-path info/exclude)" || return 1
-  mkdir -p "$(dirname "$excl")" && printf '/%s\n' "$FILE" >> "$excl"
+  mkdir -p "$(dirname "$excl")" && printf '/%s\n' "$LEGACY_FILE" >> "$excl"
 }
 
-sprint_file_content() { # le nouveau SPRINT.md, sur stdout (variables de do_start)
+sprint_file_content() { # le nouveau journal de sprint, sur stdout (variables de do_start)
   echo "# Sprint ${n} — ${OBJ:-sans objectif}"
   echo "Statut: en cours   Ouvert: ${today}"
+  echo "Branche: ${BRANCH}"
   echo
   echo "## Lot  (1 ligne = 1 story = 1 PR ; [x] livrée · [~] reportée · [ ] ouverte)"
   printf '%s' "$lot_text"
@@ -238,6 +261,28 @@ sprint_file_content() { # le nouveau SPRINT.md, sur stdout (variables de do_star
 
 do_start() {
   [[ -n "$LOT" ]] || die_usage "start demande --lot <id[,id…]> (ou --dry-run pour le seul portier)"
+  mkdir -p "$(dirname "$FILE")"
+
+  # 0) bascule depuis l'ancien lieu. On ne regarde un SPRINT.md resté à la racine QUE si la branche n'a
+  #    pas encore de journal commun : dès qu'il existe, la racine est ignorée pour toujours (la branche
+  #    a déjà son récit). Jamais repris en silence : repris une fois s'il porte la marque de la branche
+  #    courante, signalé sinon (fiche 20261004181110201).
+  if [[ ! -e "$FILE" && -s "$LEGACY_FILE" ]]; then
+    local legacy_branch
+    legacy_branch="$(sed -nE 's/^Branche:[[:space:]]*(.*[^[:space:]])[[:space:]]*$/\1/p' "$LEGACY_FILE" 2>/dev/null | head -1)"
+    if [[ -n "$legacy_branch" && "$legacy_branch" == "$BRANCH" ]]; then
+      if mv "$LEGACY_FILE" "$FILE" 2>/dev/null; then
+        echo "SPRINT-MIGRATION: ancien ${LEGACY_FILE} repris pour la branche ${BRANCH} → ${FILE}"
+      fi
+    else
+      echo "SPRINT-FOREIGN: ${LEGACY_FILE} à la racine du worktree n'appartient pas à la branche courante (${BRANCH})${legacy_branch:+ — il porte « ${legacy_branch} »} : non repris, journal neuf ouvert."
+    fi
+  fi
+
+  # Un leftover resté à la racine (étranger signalé, ou coexistant) ne doit pas salir le dépôt : le
+  # portier le verrait « non suivi », et le merge local (ship-merge.sh --local) refuserait. On l'exclut
+  # AVANT le portier. Absent, déjà ignoré ou déjà suivi : rien à faire.
+  exclude_sprint_file || echo "WARN: ${LEGACY_FILE} n'a pas pu être exclu de git (leftover vu comme non suivi)" >&2
 
   # 1) un seul sprint ouvert à la fois
   if [[ "$(sprint_state)" == "open" ]]; then
@@ -311,7 +356,6 @@ do_start() {
     echo "sprint.sh : écriture de ${FILE} impossible" >&2
     exit 2
   fi
-  exclude_sprint_file || warn="${warn:+$warn$'\n'}WARN: ${FILE} n'a pas pu être exclu de git : le merge local le verra comme un fichier non suivi"
 
   echo "START: OPENED sprint=${n} stories=${n_stories}"
   echo "SPRINT_FILE: ${FILE}"
@@ -367,7 +411,7 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
   slug="$(printf '%s' "${obj:-sprint $n}" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//;s/-*$//' | cut -c1-48 | sed 's/-*$//')"
   [[ -n "$slug" ]] || slug="n${n}"
   tmp="$(mktemp -d)"
-  if ! "$tsx" "$MC/bin/sprint-report.ts" "$slug" --repo-root "$root" --project-root "$root" --sprint-md "$PWD/$FILE" --allow-undated --out "$tmp" >/dev/null 2>&1; then
+  if ! "$tsx" "$MC/bin/sprint-report.ts" "$slug" --repo-root "$root" --project-root "$root" --sprint-md "$FILE" --allow-undated --out "$tmp" >/dev/null 2>&1; then
     echo "SPRINT-REPORT: non produit (sprint:report a échoué) — sprint scellé quand même" >&2
     rm -rf "$tmp" 2>/dev/null || true; return 0
   fi

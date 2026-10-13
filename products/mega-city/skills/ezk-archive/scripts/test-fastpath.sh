@@ -3,7 +3,7 @@
 #
 # Ce que ces cas verrouillent :
 #   F  la VOIE RAPIDE : `FASTPATH: EMPTY` seulement quand il n'y a rien à sauver (verdict propre,
-#      rien livré, rien travaillé, pas de SPRINT.md avec du contenu). Chaque obstacle rend
+#      rien livré, rien travaillé, pas de journal de sprint avec du contenu). Chaque obstacle rend
 #      `FASTPATH: NO reason=…` : une session sale déroule toujours la clôture complète.
 #   W  `--worked` : les fiches TRAVAILLÉES (livrées ou non) passent par le gate, pour que
 #      l'agent délégué pose l'en-tête `fiches:` d'après elles, pas d'après `--shipped`.
@@ -66,13 +66,22 @@ OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
 ok "branche réelle : reason=verdict"         "echo \"\$OUT\" | grep -qx 'FASTPATH: NO reason=verdict'"
 git branch -q -D vol
 
-echo "F5 — SPRINT.md : du contenu bloque la voie rapide, un simple gabarit non :"
-printf '# Sprint\n\n## Notes / décisions\n\n<!-- rien -->\n' > SPRINT.md
+echo "F5 — le journal de sprint (par branche, hors du worktree) : du contenu bloque la voie rapide, un gabarit non ;"
+echo "      un SPRINT.md étranger resté à la racine ne la bloque JAMAIS (fiche 20261004181110201) :"
+J="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)/ezk/sprints/$(git branch --show-current).md"
+mkdir -p "$(dirname "$J")"
+printf '# Sprint\n\n## Notes / décisions\n\n<!-- rien -->\n' > "$J"
 OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
 ok "gabarit vide : toujours EMPTY"           "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY'"
-printf '# Sprint\n\n- [x] 0042 — une story livrée (PR #12)\n' > SPRINT.md
+printf '# Sprint\n\n- [x] 0042 — une story livrée (PR #12)\n' > "$J"
 OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
-ok "story dans le lot : reason=sprint"       "echo \"\$OUT\" | grep -qx 'FASTPATH: NO reason=sprint'"
+ok "story dans le journal de branche : reason=sprint"  "echo \"\$OUT\" | grep -qx 'FASTPATH: NO reason=sprint'"
+rm -f "$J"
+# Un SPRINT.md d'une AUTRE session, laissé à la racine par un worktree recyclé, n'est PAS le journal de
+# cette branche : le portier l'ignore (sinon il archiverait le récit d'autrui). C'est le bug de la fiche.
+printf '# Sprint\n\n- [x] 9999 — story héritée (PR #99)\n' > SPRINT.md
+OUT="$(bash "$CHECK" --gate --shipped none --worked none)"
+ok "SPRINT.md étranger à la racine : toujours EMPTY"   "echo \"\$OUT\" | grep -qx 'FASTPATH: EMPTY'"
 rm -f SPRINT.md
 
 echo "F6 — le portier reste strictement read-only :"
