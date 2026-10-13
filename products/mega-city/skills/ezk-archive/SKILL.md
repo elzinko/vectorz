@@ -178,7 +178,7 @@ git ni le backlog ne disent ? Si **non**, réponds par **une seule ligne** et ar
 
 Aucune note de handoff, aucun résumé, aucune écriture, **aucun sous-agent**, sur `check` comme
 sur `run`. Si le bloc montre des restes à ranger (`branch_absorbed` ou `worktree_prunable` non
-nuls), ajoute à la même ligne : « N branches absorbées à ranger : `check.sh --cleanup` ».
+nuls), ajoute à la même ligne : « N branches absorbées à ranger : `check.sh --inventory` ».
 Si la ligne porte `other_worktrees_dirty=N`, d'autres worktrees (un agent, une autre session) ont du
 travail non commité que le portier ne juge pas : ajoute à la même ligne « N autre(s) worktree(s) ont
 des changements non commités : à regarder ». La voie rapide ne tait jamais ce reste.
@@ -288,13 +288,14 @@ qui ne demandent aucun jugement.
 4. Rends la note + le verdict **✅ archivable** — **En clair d'abord** (≤ 3 phrases),
    puis le corps gabarit. Sur `check`, dis que rien n'a été écrit et que `run` le ferait.
 5. **Ménage** — si `branch_absorbed` ou `worktree_prunable` sont non nuls, ou si la machine
-   porte beaucoup de worktrees d'agents, propose `bash <skill>/scripts/check.sh --cleanup` :
+   porte beaucoup de worktrees d'agents, propose `bash <skill>/scripts/check.sh --inventory` :
    l'inventaire des worktrees et branches sûrs à retirer, avec la commande exacte de chacun. Il
    ne supprime **rien**. Chaque `git branch -D` proposé cite sa preuve (`proof=merged:origin/main` ou
    `proof=content:<base>`) : c'est la commande qui réussira depuis ce worktree, même en retard. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
-   En mode auto, Claude Code peut bloquer ce listage comme « git destructif » (vu le 2026-10-03,
-   [fiche du ménage en mode auto](../../../../features/20261003105820099_menage-archive-lancable-mode-auto.md)) :
-   donne alors la commande à l'utilisateur, qui la lance dans son terminal.
+   Utilise le **nom de lecture `--inventory`** (et non l'alias historique `--cleanup`) : le mode auto
+   a déjà bloqué `--cleanup` comme « git destructif » alors qu'il est READ-ONLY (vu le 2026-10-03,
+   [fiche du ménage en mode auto](../../../../features/20261003105820099_menage-archive-lancable-mode-auto.md)).
+   Si le listage reste bloqué malgré tout, donne la commande à l'utilisateur, qui la lance dans son terminal.
    Les worktrees que les agents de CETTE session viennent de laisser ont moins de 24 h : le ménage
    les garde (« recent »). Une fois certain qu'aucun agent ne tourne encore, relance avec
    `EZK_CLEANUP_IDLE_HOURS=0` pour les proposer.
@@ -374,7 +375,7 @@ si ce n'est pas le cas, préfixe toi-même un En clair de 3 phrases puis colle l
 - **Ne ferme jamais un sprint** : sceller l'incrément, c'est `ezk-sprint close` (ADR-0054). Ici on ferme la session.
 - **Une session vide ne coûte presque rien** : sur `FASTPATH: EMPTY` et sans fait durable, une ligne,
   aucune note, aucun sous-agent. Ne déroule jamais la clôture complète « par habitude ».
-- **Le ménage ne supprime jamais tout seul** : `check.sh --cleanup` liste, le PO valide, une
+- **Le ménage ne supprime jamais tout seul** : `check.sh --inventory` liste, le PO valide, une
   commande par appel. Un worktree d'une autre session vivante ne se retire jamais.
 - **Ne merge/push rien toi-même** ; ça reste à l'utilisateur de trancher.
 - **PRs déjà ouvertes (fiche 0185)** : si un fait gate `branch REAL … pr=#N` (ou

@@ -159,6 +159,13 @@ EXPECT='cmd=git branch -d evil\;touch\$\{IFS\}pwn'
 ok "la branche hostile est proposée, citée pour le shell" "echo \"\$OUT7\" | grep -qF -- \"\$EXPECT\""
 ok "aucun « ; » nu dans une commande proposée"            "! echo \"\$OUT7\" | grep 'cmd=' | grep -qE 'cmd=[^;]*[^\\\\];touch'"
 
+echo "K9 — --inventory : nom de lecture, alias de --cleanup, MÊME sortie read-only (fiche 20261003105820099) :"
+# Le mode auto de Claude Code a bloqué --cleanup comme « git destructif » alors qu'il ne supprime rien.
+# --inventory est le nom de lecture : le listage se lance sous un nom qui ne crie pas « destructif ».
+INV="$(bash "$CHECK" --inventory)"
+ok "--inventory produit exactement la sortie de --cleanup (lançable, read-only identique)" '[ "$INV" = "$OUT7" ]'
+ok "--inventory liste bien le geste proposé (il n'est pas devenu muet)" "echo \"\$INV\" | grep -q 'cmd=git branch'"
+
 echo
 if (( FAIL )); then echo "test-cleanup: ÉCHECS"; exit 1; fi
 echo "test-cleanup: TOUT VERT"

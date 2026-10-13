@@ -66,5 +66,22 @@ Puis, dans une session Claude Code en mode auto : demander le ménage et constat
 - P3 / V0.6 proposés par le pilote (gêne, sans perte) ; à confirmer au planning.
 - **Grooming 2026-10-13** : cadrée en **spike-correctif**. Le critère 1 identifie le déclencheur ; le
   critère 2 applique le correctif qui en découle. « Done » = déclencheur trouvé + listage lançable en auto.
+- **Spike + correctif (2026-10-14, run v0.14).**
+  - *Spike.* Le blocage n'a **pas pu être reproduit** dans la session de build : elle a des permissions
+    Bash larges et son état n'avait rien à ranger, donc `check.sh --cleanup` y passe sans frein. Deux
+    déclencheurs plausibles ressortent de la lecture du script : (a) le **nom `--cleanup`** (le mot
+    « cleanup » lu comme destructif) ; (b) les **tokens git destructifs** que le mode émet dans sa
+    sortie — `cmd=git worktree remove …`, `cmd=git branch -D …` — qu'un classifieur lisant le script
+    prendrait pour des gestes. Le fait que le mode soit **read-only** (il n'exécute que
+    `git worktree prune --dry-run` et des lectures) est invisible à un classifieur qui ne voit que des
+    motifs.
+  - *Correctif retenu* : option (a) de la fiche — un **nom de lecture `--inventory`**, alias de
+    `--cleanup` (conservé). Le mode est intrinsèquement un inventaire : le renommer dit la vérité et
+    retire le signal « cleanup ». Vérifiable : `test-cleanup.sh` (K9) prouve `--inventory` ≡ `--cleanup`,
+    read-only. Le `SKILL.md` d'ezk-archive pointe désormais `--inventory`.
+  - *Résiduel honnête* : si une session en mode auto **strict** bloque encore le listage (déclencheur
+    (b), un classifieur qui lit les tokens du script), le suivi est d'écrire les commandes proposées
+    dans un **fichier** plutôt que de les afficher (option (b) de la fiche). Non fait ici faute de pouvoir
+    reproduire le blocage ; le critère 4 (le pilote confie au PO en cas de blocage) reste le filet.
 - Voisines : portier d'archive et squash [[20261002155911250]] ; copies de réserve
   [[20261003011750521]].

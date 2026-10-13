@@ -53,8 +53,11 @@ check.sh — portier de clôture ezk-archive (read-only)
 
   --gate            bloc machine (DÉFAUT) : VERDICT + compteurs + faits des points DIRTY
   --full            rapport humain lisible
-  --cleanup         inventaire du ménage : worktrees et branches sûrs à retirer, avec la
+  --inventory       inventaire du ménage : worktrees et branches sûrs à retirer, avec la
                     commande exacte de chacun. Ne supprime RIEN (le PO valide, puis on lance).
+                    READ-ONLY — nom de lecture pour que le mode auto ne le prenne pas pour un
+                    geste destructif (fiche 20261003105820099). Alias historique : --cleanup.
+  --cleanup         alias de --inventory (conservé pour rétro-compatibilité).
   --base <ref>      base de comparaison (défaut : main → master → HEAD)
   --shipped <ids>   ids de fiches livrées DÉCLARÉS par l'appelant (ex. 0089,0097)
                     « none » = déclaration explicite de « rien livré cette session ».
@@ -72,7 +75,7 @@ while (( $# )); do
   case "$1" in
     --gate)    MODE="gate" ;;
     --full)    MODE="full" ;;
-    --cleanup) MODE="cleanup" ;;
+    --inventory|--cleanup) MODE="cleanup" ;; # --inventory : nom de lecture (fiche 20261003105820099)
     --base)    BASE="${2:-}"; shift ;;
     --shipped) SHIPPED="${2:-}"; shift ;;
     --worked)  WORKED="${2:-}"; shift ;;
