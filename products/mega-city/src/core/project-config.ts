@@ -139,3 +139,20 @@ export function resolveScrumPaths(raw: unknown): ScrumPaths {
   // undefined / null / false / string / number… → défaut sûr (legacy, rien ne bouge)
   return SCRUM_LEGACY;
 }
+
+/**
+ * Cœur pur — la STRATÉGIE D'INTÉGRATION sans PR, résolue depuis la clé `integration` de la config
+ * `.vectorz/` (ADR-0061 D3, fiche 20261004083838687). AUCUNE I/O : la lecture du fichier vit dans
+ * le loader. Comment une story validée arrive sur `main` quand GitHub est coupé :
+ *   - `local-squash` — squash sur le `main` LOCAL, rien poussé (défaut, comportement d'avant).
+ *   - `push-ff`      — push en avance rapide sur `origin/<base>` (muti) : marche depuis un worktree.
+ * Avec `pr` allumé, la stratégie est sans objet : c'est `gh pr merge --squash` qui intègre.
+ */
+export type IntegrationStrategy = 'local-squash' | 'push-ff';
+
+export const INTEGRATION_STRATEGIES: readonly IntegrationStrategy[] = ['local-squash', 'push-ff'];
+
+/** Défaut = `local-squash` : sans clé (ou valeur inattendue), le comportement sans PR ne change pas. */
+export function resolveIntegration(raw: unknown): IntegrationStrategy {
+  return raw === 'push-ff' ? 'push-ff' : 'local-squash';
+}

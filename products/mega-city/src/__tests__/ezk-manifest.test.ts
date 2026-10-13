@@ -80,6 +80,7 @@ describe('ezk-manifest.yml', () => {
       'dor health',
       'dor show',
       'forge changes',
+      'forge integrate',
       'journal add',
       'map',
       'now',

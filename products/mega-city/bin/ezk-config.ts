@@ -20,6 +20,7 @@ import {
   type GithubCapKey,
   type GithubMutation,
   githubCapabilities,
+  integrationStrategy,
   writeGithubConfig,
 } from '../src/loaders/project-config.js';
 import { githubStatusText } from '../src/core/project-config.js';
@@ -40,6 +41,8 @@ function fail(message: string): never {
 
 function printStatus(root: string): void {
   console.log(githubStatusText(`${root}/.vectorz/config.yml`, githubCapabilities(root)));
+  // La stratégie d'intégration sans PR (ADR-0061 D3, fiche 20261004083838687).
+  console.log(`integration          ${integrationStrategy(root)}   (sans PR : comment une story arrive sur main)`);
 }
 
 function parseOnOff(word: string | undefined, ctx: string): boolean {

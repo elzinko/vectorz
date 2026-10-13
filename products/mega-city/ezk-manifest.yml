@@ -201,6 +201,12 @@ commands:
     summary: Guichet GitHub — liste les PR (--open/--merged) ; états ok/off/unavailable (--root).
     root: none
     project: true
+  - domain: forge
+    verb: integrate
+    run: bin/forge-integrate.ts
+    summary: Intègre une story sur main selon la config (PR, squash local, ou push-ff ; --root).
+    root: none
+    project: true
   - domain: evidence
     run: bin/pr-evidence.sh
     summary: Capture, rend et tranche les preuves avant/après d'une PR (--root <projet>).

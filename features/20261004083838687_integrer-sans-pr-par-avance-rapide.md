@@ -101,6 +101,7 @@ pnpm --dir products/mega-city test
   qui pose le guichet.
 - **Décidé (grooming 2026-10-13)** : `push-ff` pousse les commits de la branche **tels quels** (comme muti), sans squash préalable. Un squash avant push pourra s'ajouter plus tard, en option de config, hors de ce premier cran.
 - Le merge strictement hors ligne reste couvert par `local-squash` (ADR-0052 D5).
+- **Preuve sur projet hôte (2026-10-13)** — éprouvé sur un **remote git nu local** (`git init --bare`, aucun réseau). Depuis un worktree où `main` est sorti ailleurs, `ezk forge integrate --branch feat/demo` (config `push-ff`) a poussé `feat/demo` sur `origin/main` en **avance rapide, sans commit de fusion**. Quand `origin/main` a avancé, le même geste **refuse** (rc=3, rien poussé) et dit de rebaser. Sans clé `integration`, le défaut reste le squash local. `ezk config show` affiche la stratégie.
 - **Cas du 2026-10-03** (note du carnet
   `docs/retro-notes/traitees/20261003202803910-revue-backlog-mode-local.md`, rétro légère du
   2026-10-04) : un squash local qui ne contenait que des fiches, le plan et une ligne de config

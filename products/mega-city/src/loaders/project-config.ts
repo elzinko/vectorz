@@ -14,8 +14,10 @@ import { dirname, join } from 'node:path';
 import { Document, isMap, parseDocument, parse as parseYaml } from 'yaml';
 import {
   type GithubCapabilities,
+  type IntegrationStrategy,
   type ScrumPaths,
   resolveGithub,
+  resolveIntegration,
   resolveScrumPaths,
 } from '../core/project-config.js';
 
@@ -61,6 +63,16 @@ export function scrumPaths(projectRoot: string): ScrumPaths {
   const config = loadProjectConfig(projectRoot);
   const scrum = (config as { scrum?: unknown } | undefined)?.scrum;
   return resolveScrumPaths(scrum);
+}
+
+/**
+ * Stratégie d'intégration sans PR effective pour le projet à `projectRoot` (ADR-0061 D3,
+ * fiche 20261004083838687). Compose le loader (I/O) et le cœur pur `resolveIntegration`.
+ */
+export function integrationStrategy(projectRoot: string): IntegrationStrategy {
+  const config = loadProjectConfig(projectRoot);
+  const integration = (config as { integration?: unknown } | undefined)?.integration;
+  return resolveIntegration(integration);
 }
 
 /** Les trois capacités pilotables de la famille `github` (clés YAML canoniques, kebab). */

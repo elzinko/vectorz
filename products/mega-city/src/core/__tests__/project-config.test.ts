@@ -5,6 +5,7 @@ import {
   SCRUM_LEGACY,
   type ScrumPaths,
   resolveGithub,
+  resolveIntegration,
   resolveScrumPaths,
 } from '../project-config.js';
 
@@ -105,5 +106,19 @@ describe('resolveScrumPaths — chemins des artefacts de process (fiche 20261001
     const resolved = resolveScrumPaths({ journal: '', sprints: 42 });
     expect(resolved.journal).toBe('docs/journal');
     expect(resolved.sprints).toBe('docs/sessions');
+  });
+});
+
+describe('resolveIntegration — stratégie sans PR (ADR-0061 D3, fiche 20261004083838687)', () => {
+  it('défaut (clé absente / valeur inattendue) = local-squash : rien ne change sans PR', () => {
+    expect(resolveIntegration(undefined)).toBe('local-squash');
+    expect(resolveIntegration(null)).toBe('local-squash');
+    expect(resolveIntegration('local-squash')).toBe('local-squash');
+    expect(resolveIntegration('nimportequoi')).toBe('local-squash');
+    expect(resolveIntegration(true)).toBe('local-squash');
+  });
+
+  it('« push-ff » est la seule valeur qui bascule en avance rapide', () => {
+    expect(resolveIntegration('push-ff')).toBe('push-ff');
   });
 });

@@ -91,7 +91,7 @@ Trois capacités — `pr` · `ci` · `codex-review`. **Config ou capacité absen
 
 | Capacité `off` | Ce que tu changes |
 |---|---|
-| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales réelles** non absorbées que rend le classifieur `ezk-archive` (fiche 0076) — **tout préfixe réel** (`feat/…`, `fix/…`, comme `ezk-sprint` l'autorise), pas un seul motif — voir `plan` §1. `ship` = **squash local** (`ship-merge.sh --local`), **jamais** `gh pr merge`, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`ezk review emit`) et le corps de PR dans le fichier local (`ezk pr emit-local`), cf. `ezk-sprint` § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
+| `pr: false` | Le stock n'est **pas** `gh pr list` mais les **branches locales réelles** non absorbées que rend le classifieur `ezk-archive` (fiche 0076) — **tout préfixe réel** (`feat/…`, `fix/…`, comme `ezk-sprint` l'autorise), pas un seul motif — voir `plan` §1. `ship` = **`ezk forge integrate`** (squash local par défaut, ou push-ff selon la config), **jamais** `gh pr merge` à la main, puis `ezk-backlog ship <id> local (<sha>)` (cf. `ship` merge-local-first). `report` ne poste **pas** de commentaire GitHub : le compte-rendu vit dans le fichier de revue local (`ezk review emit`) et le corps de PR dans le fichier local (`ezk pr emit-local`), cf. `ezk-sprint` § Capacités GitHub. **Même avec un remote présent**, aucun `gh pr …`. |
 | `ci: false` | Pas d'attente de CI cloud entre deux merges (`ship` §, « CI re-verte ») : la **gate locale** (`act`/`ezk-ci` ou gate hôte) est la seule validation. |
 | `codex-review: false` | Pas de revue Codex attendue sur les PR ; la revue adverse reste `ezk-reviewer` (local), cf. `ezk-sprint`. |
 
@@ -272,7 +272,8 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   Pour chaque PR de story, `ship-in-pr.sh check --repo . --ref <head> --fiche-id <id>`.
   S'il manque, sur la branche de la PR : `ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>`,
   `git push`, puis attends la CI sur ce nouveau head. **Ensuite** le squash-merge, dans
-  l'ordre du plan, par `ship-merge.sh --remote` : sa garde refuse une story sans son ship.
+  l'ordre du plan, par `ezk forge integrate --branch <br> --pr <N>` (pr allumé → `gh pr merge
+  --squash`) : sa garde refuse une story sans son ship.
   Deux PR shippées régénèrent toutes deux `BACKLOG.md` (et barrent `PLAN.md`) : après le
   premier merge, la seconde **conflicte**, UI GitHub comprise. Reprise mécanique : la recette
   « Conflit sur `BACKLOG.md` » d'`ezk-backlog` (merger `origin/main`, régénérer, pousser),
@@ -287,8 +288,8 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   le filet, plus la routine.
 - **En `pr: false`** (github coupé, cf. § Capacités GitHub) — **aucune cible GitHub** : `report`
   ne poste pas de commentaire, le compte-rendu de revue va dans le **fichier local**
-  (`ezk review emit`) et le corps de PR dans `ezk pr emit-local` ; `ship` = squash **local**
-  (`ship-merge.sh --local`) + **`ezk-backlog ship <id> local (<sha>)`** — **jamais** de suppression
+  (`ezk review emit`) et le corps de PR dans `ezk pr emit-local` ; `ship` = **`ezk forge integrate`**
+  (squash local par défaut, ou push-ff selon `integration:`) + **`ezk-backlog ship <id> local (<sha>)`** — **jamais** de suppression
   de branche distante ni de `#PR` à poster ou à inventer. C'est le chemin « Sans remote » ci-dessous,
   emprunté aussi quand un remote existe mais que `pr` est coupé.
 
