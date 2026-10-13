@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [sprint]
-status: ready
-pr:
+status: shipped
+pr: "local (d770e9f0)"
 evidence: none # outillage de validation, pas d'écran
 created: 2026-10-03
 ---
@@ -60,6 +60,6 @@ pnpm --dir products/mega-city gate
 ## Notes / décisions
 
 - Retenue à la rétro du 2026-10-03, unanime :
-  [capture](../docs/captures/2026-10-03-retro-session-2026-10-02.md), proposition 1.
+  [capture](../../docs/captures/2026-10-03-retro-session-2026-10-02.md), proposition 1.
 - Priorité **P1 proposée** par l'agent, sur délégation du PO : c'est la cause directe d'une CI
   rouge et d'une passe Codex de plus.

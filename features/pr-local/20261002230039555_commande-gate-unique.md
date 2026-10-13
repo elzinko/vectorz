@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002230039555_commande-gate-unique.md](../20261002230039555_commande-gate-unique.md)
+> 🗎 Rendu de la fiche [features/20261002230039555_commande-gate-unique.md](../done/20261002230039555_commande-gate-unique.md)
 
 # 20261002230039555 — Une seule commande « gate » rejoue toute la validation locale
 
