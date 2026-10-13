@@ -7,10 +7,11 @@ product: mega-city
 version: v0.12.0
 labels: [installation]
 epic:
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261013073300242, 20261013073300256"
 evidence: none # commandes et messages de terminal, pas d'écran
 created: 2026-10-04
+split_into: ["20261013073300242", "20261013073300256"]
 ---
 
 # 20261004083344960 — Les outils de la méthode marchent depuis un projet hôte
@@ -52,7 +53,7 @@ ezk backlog aggregate --root "$(git rev-parse --show-toplevel)"   # ne refuse pl
 - Priorité P1. Fiche captée le 2026-10-04 par la rétro samplerz du 2026-10-03, piste 1, retenue par le PO. Capture : `docs/captures/2026-10-03-retro-premier-sprint-format-methode.md` dans le dépôt samplerz. À groomer avant d'être tirée.
 - Mesure retenue : au prochain sprint de samplerz, 0 script jetable et 100 % des fiches chiffrées en jetons ; 5 refus sur 5 nomment le projet hôte.
 - Re-constaté le 2026-10-09 depuis samplerz : `ezk backlog aggregate --root <projet>` refuse avec « n'est pas le dépôt de la méthode », alors qu'un projet doit pouvoir regrouper ses propres fiches. Ajouté à la liste des commandes à ouvrir au `--root`. `aggregate` a été fait à la main côté samplerz faute d'outil.
-- Re-constaté le 2026-10-10 (rétro « vue process ») : `ezk board check --root <principal>` refuse de même. Or après un ship fait depuis un **worktree**, le filet « fiche shippée encore montrée à faire » doit pouvoir viser le **principal** où le ship a atterri. Ajouté à la liste des commandes à ouvrir au `--root`. Capture [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md).
+- Re-constaté le 2026-10-10 (rétro « vue process ») : `ezk board check --root <principal>` refuse de même. Or après un ship fait depuis un **worktree**, le filet « fiche shippée encore montrée à faire » doit pouvoir viser le **principal** où le ship a atterri. Ajouté à la liste des commandes à ouvrir au `--root`. Capture [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md).
 
 - **Même surface (2026-10-13)** : rendre `ezk run context` / `ezk run report` *project-aware*
   (viser le projet hôte, pas vectorz) est le critère « run context vise le projet hôte » déplacé

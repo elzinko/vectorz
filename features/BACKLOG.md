@@ -149,6 +149,7 @@
 | [20261003075821760](done/20261003075821760_relecteur-coche-les-criteres.md) | Le relecteur coche les critères d'acceptation, pas le constructeur | feature | P1 | v0.11.0 | mega-city | ✅ shipped | local (2f62e6a0) |
 | [20261003105820077](done/20261003105820077_handoff-carnet-hors-worktree-app.md) | La note de passation et le carnet de rétro survivent à la suppression d'un worktree de l'app | bug | P1 | v0.5.0 | mega-city | ✅ shipped | local (527868b7) |
 | [20261003201034897](done/20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md) | La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer | feature | P1 | v0.12.0 | mega-city | ✅ shipped | local (d520e6f4) |
+| [20261004083344960](done/20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 | v0.12.0 | mega-city | 🧩 split | split — scindée en 20261013073300242, 20261013073300256 |
 | [20261004101755756](done/20261004101755756_contrat-bus-catalogue-moments.md) | Écrire le contrat du bus : le catalogue des moments de la méthode | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (f56d17f5) |
 | [20261004175528673](done/20261004175528673_dependances-vulnerables-vitest-4.md) | Corriger les 20 dépendances vulnérables de vectorz (vitest 4 partout, cinq paquets indirects) | chore | P1 | v0.11.0 | mega-city | ✅ shipped | local (c2f51e2b) |
 | [20261004181110120](done/20261004181110120_test-retro-note-fuit-vers-le-vrai-depot.md) | ezk ne croit plus un INIT_CWD laissé par un pnpm parent : le test de « ezk retro note » n'écrit plus dans le vrai dépôt | bug | P1 |  | mega-city | ✅ shipped | local (f62e0128) |
@@ -331,13 +332,14 @@
 |---|-------|------|------|---------|---------|--------|----|
 | [20261003075821858](20261003075821858_deux-formes-de-pr-dev-et-backlog.md) | Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la désigne | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261003201034990](20261003201034990_voir-pr-et-branches-paralleles-avant-lot-ou-groom.md) | Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche | feature | P1 |  | mega-city | 💡 idea |  |
-| [20261004083344960](20261004083344960_outils-methode-depuis-projet-hote.md) | Les outils de la méthode marchent depuis un projet hôte | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261004181110201](20261004181110201_sprint-md-par-branche-hors-worktree.md) | Le journal de sprint se range par branche, hors du worktree : un worktree recyclé n'hérite plus du sprint d'une autre session | feature | P1 | v0.14.0 | mega-city | 💡 idea |  |
 | [20261010114132970](20261010114132970_reconcilier-worktree-apres-ship-local.md) | Réconcilier le worktree après un ship local (et ne jamais écraser un champ qu'un script vient d'écrire) | feature | P1 | v0.13.0 | mega-city | 💡 idea |  |
 | [20261010213353647](20261010213353647_capture-retro-lisible-pour-le-po.md) | Une capture de rétro (et tout artefact committé lu par le PO) doit être lisible, et quelque chose doit le vérifier | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261011153019643](20261011153019643_revue-design-system-step-composable-release.md) | Revue design-system : un step composable branché sur ezk-release | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261012231419185](20261012231419185_board-coque-vue-ensemble.md) | Board : la coque + la vue d'ensemble (métriques, entonnoir, versions dans le process) | feature | P1 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261012231419211](20261012231419211_board-activite-run-moments-fiches.md) | Board : l'activité par run → moments → fiches, et la modale fiche | feature | P1 | v0.17.0 | cop1 | 💡 idea |  |
+| [20261013073300242](20261013073300242_commandes-lecture-ezk-projet-hote.md) | Les commandes ezk de lecture visent le projet hôte (--root) | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
+| [20261013073300256](20261013073300256_commandes-ecriture-ezk-projet-hote.md) | Les commandes ezk qui écrivent visent le bon dépôt hôte (--root, garde d'écriture) | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 | v0.15.0 | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |

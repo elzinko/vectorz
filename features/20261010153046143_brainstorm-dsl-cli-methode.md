@@ -54,7 +54,7 @@ Demande PO du 2026-10-10, en marge du déploiement des règles de la rétro. Sym
   `ezk:help` existe (index des commandes) et la carte montre déjà les outils, mais sans les
   paramètres ni une vue navigable depuis le tableau de bord.
 - **Ergonomie multi-projets.** Plusieurs commandes refusent `--root` depuis un projet hôte, cf. fiche
-  [outils de la méthode depuis un projet hôte](20261004083344960_outils-methode-depuis-projet-hote.md).
+  [outils de la méthode depuis un projet hôte](done/20261004083344960_outils-methode-depuis-projet-hote.md).
 - **Publication.** cf. fiche [CLI ezk complet publié](20260903134908019_cli-ezk-complet-publie.md)
   (idea).
 
