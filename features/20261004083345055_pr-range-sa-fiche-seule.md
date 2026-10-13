@@ -7,6 +7,7 @@ product: mega-city
 version: v0.13.0
 labels: []
 status: ready
+blocked: "attend-panel — renverse les fiches 4/5 livrées (ship DANS la PR) et révise l'ADR-0049 §2 ; décision structurelle à trancher en panel avec le PO avant de construire (run v0.13, 2026-10-13)"
 pr:
 evidence: none # flux git et fichiers générés, pas d'écran
 created: 2026-10-04
