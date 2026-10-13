@@ -392,6 +392,8 @@
 | [20261007213454366](20261007213454366_spike-voir-histoire-feature-au-meme-endroit.md) | Spike : voir toute l'histoire d'une feature au même endroit (vue par id vs co-localisation) | chore | P3 |  | vectorz | 💡 idea |  |
 | [20261013013553179](20261013013553179_grooming-applique-regle-taille-fiche.md) | Le grooming applique la règle de taille : découper une fiche > 2 surfaces avant ready | chore | P3 |  | mega-city | 💡 idea |  |
 | [20261013131625303](20261013131625303_ezk-retro-mode-light.md) | ezk-retro : un mode light (cérémonie courte) pour un petit périmètre | feature | P3 |  | mega-city | 💡 idea |  |
+| [20261013143324404](20261013143324404_root-uniforme-avant-apres-verbe.md) | Uniformiser --root : accepté avant ET après le verbe sur toutes les commandes projet | refactor | P3 |  | mega-city | 💡 idea |  |
+| [20261013143324505](20261013143324505_sprint-report-cout-chemin-date.md) | Borner le coût du chemin daté de sprint:report (scan transcripts + gh pr list) | refactor | P3 |  | mega-city | 💡 idea |  |
 
 ## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
 
