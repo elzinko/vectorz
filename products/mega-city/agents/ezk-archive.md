@@ -259,9 +259,10 @@ et les notes n'auraient plus la même forme selon le chemin emprunté
      (uniquement si `3 ∈ SCOPE`), et **purge des branches ABSORBÉES** que le gate a
      prouvées (`git branch -D`, précédé de `git worktree remove` si la branche est tenue
      par un worktree **propre** ; liste ce qui a été purgé). Pour le ménage plus large
-     (worktrees d'agents dormants, branches mergées), `bash <skill>/scripts/check.sh --cleanup`
-     donne l'inventaire et la commande exacte de chaque geste : ne supprime que ce que
-     l'utilisateur a validé, une commande par appel ;
+     (worktrees d'agents dormants, branches mergées), `bash <skill>/scripts/check.sh --inventory`
+     (nom de lecture, alias de --cleanup : le mode auto ne le prend pas pour un geste destructif,
+     fiche 20261003105820099) donne l'inventaire et la commande exacte de chaque geste : ne supprime
+     que ce que l'utilisateur a validé, une commande par appel ;
    - **puis les points d'écriture, toujours dus** : mémoire (5), note de handoff via
      `handoff.sh carry` + `add` (6), verdict (7), archive session (8) si `SPRINT.md`
      a de la matière.

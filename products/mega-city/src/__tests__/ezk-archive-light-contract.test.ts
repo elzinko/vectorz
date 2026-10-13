@@ -69,9 +69,11 @@ describe('ezk-archive — justesse', () => {
   });
 
   it('le ménage liste, le PO valide, une commande par appel', () => {
-    expect(skill).toContain('check.sh --cleanup');
+    // Nom de lecture --inventory (alias de --cleanup) : le mode auto ne le bloque pas comme
+    // destructif alors qu'il est READ-ONLY (fiche 20261003105820099).
+    expect(skill).toContain('check.sh --inventory');
     expect(skill).toMatch(/ne supprime \*\*rien\*\*/);
-    expect(agent).toContain('check.sh --cleanup');
+    expect(agent).toContain('check.sh --inventory');
   });
 });
 
