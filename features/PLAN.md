@@ -176,11 +176,9 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20260922175954296` — release-gate : passe qualité avant de versionner (skill `ezk-release`) · P0 · `groom`~~ — shipped
 - ~~`20261002230039555` — une seule commande « gate » rejoue la validation locale · P1 · `groom`~~ — shipped
 - ~~`20261003075821760` — le relecteur coche les critères, pas le constructeur · P1 · `build`~~ — shipped
-- `20261011091555006` — la gate attrape les défauts de forme des vues · P2 · `groom`
+> **Deux fiches reportées hors v0.11** (repassées en `idea`, run autonome 2026-10-13), donc retirées de ce lot : « la gate attrape forme/confinement » (critères 1-2 couverts par le correctif `regen --root`, critère 3 = spike « garde de confinement sans test ») et « le lint couvre mega-city » (396 erreurs, résorption massive ou baseline à trancher). Elles vivent dans le backlog, sans version.
 - ~~`20261011091552583` — regen n'écrit plus un titre cassé avec `--root` · P2 · `groom`~~ — shipped
-- ~~`20261002230039755` — la revue locale rejoue les scripts bash sur entrées hostiles · P2 · `groom`~~ — shipped
-- `20261001133500750` — le lint couvre enfin le code de mega-city · P2 · `groom`
-- ~~`20261011142027748` — `ezk adr new` : prochain id d'ADR libre des deux dossiers · P2 · `groom`~~ — shipped
+- ~~`20261002230039755` — la revue locale rejoue les scripts bash sur entrées hostiles · P2 · `groom`~~ — shipped- ~~`20261011142027748` — `ezk adr new` : prochain id d'ADR libre des deux dossiers · P2 · `groom`~~ — shipped
 
 ### ⑬ v0.12.0 — le flux local sans friction
 > Les commandes `ezk` doivent travailler depuis un projet hôte, et `github: false` tenir de bout en bout.
