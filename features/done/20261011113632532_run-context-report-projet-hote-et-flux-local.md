@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [run, dx, host-project, mode-local]
-status: ready
-pr:
+status: shipped
+pr: "local (d2f337b8)"
 evidence: none
 created: 2026-10-11
 merged_from: ["20261004211038053", "20261010235330118"]
@@ -31,7 +31,7 @@ squash locaux marqués `local (<sha>)`, pas des numéros de pull request.
 
 ## Contexte / Problème
 
-Vécu en session muti 2026-10-10/11 (rétro [`2026-10-11-retro-outillage-et-autonomie-agent`](../docs/captures/2026-10-11-retro-outillage-et-autonomie-agent.md)) :
+Vécu en session muti 2026-10-10/11 (rétro [`2026-10-11-retro-outillage-et-autonomie-agent`](../../docs/captures/2026-10-11-retro-outillage-et-autonomie-agent.md)) :
 
 - `ezk --root <vectorz> run context` depuis le worktree muti a affiché `Base origin/main = <sha vectorz>`
   et `Worktree … /…/vectorz` — alors que le run construit **muti**. Le bloc d'ouverture d'un run
