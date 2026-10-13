@@ -63,3 +63,8 @@ Au choix, à trancher au grooming :
 ## Notes
 
 - Sortie de la rétro du run autonome v0.11 (2026-10-13). Observé 2× dans la même session.
+- **Confirmé au run v0.12 (2026-10-13) : 3 occurrences de plus.** Les ships de `20261013074251752`,
+  `20261013074251767` et `20261002230039863` ont recalé des liens dans `docs/adr/0061-*.md` et
+  `docs/captures/2026-10-*.md` ; le `git add features/` du commit de ship les a oubliés → `main` est
+  resté sale → il a fallu les rattacher à la main (sinon le `close`/merge suivant refusait).
+  Symptôme désormais vu sur **5 ships au total**. Priorité P2 maintenue.

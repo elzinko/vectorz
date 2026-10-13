@@ -383,12 +383,15 @@
 | [20261012231419250](20261012231419250_board-config-projet.md) | Board : la config projet (lancement, qualité, intégration) + modèle résolu par rôle | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261012231419263](20261012231419263_board-assistant-ajout-projet.md) | Board : l'assistant d'ajout de projet (racine, outil, défauts) | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261013013553044](20261013013553044_ship-committe-recals-liens-hors-features.md) | ship/close committe les recals de liens hors features/ (sinon principal dirty) | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261013131625101](20261013131625101_helper-commit-doc-worktree-install-copie.md) | archive-commit trouve commit-doc-via-worktree.sh en install copie (helper partagé) | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261013131625202](20261013131625202_fiche-decoupee-critere-hors-perimetre.md) | Une fiche découpée ne porte pas un critère du périmètre de sa fiche sœur (grooming) | chore | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261003105820099](20261003105820099_menage-archive-lancable-mode-auto.md) | Le ménage d'ezk-archive se lance en mode auto | bug | P3 | v0.14.0 | mega-city | 💡 idea |  |
 | [20261004083838781](20261004083838781_ezk-config-help-lu-comme-un-chemin.md) | « ezk config --help » prend --help pour un chemin et affiche un faux statut | bug | P3 |  | mega-city | 💡 idea |  |
 | [20261007213454366](20261007213454366_spike-voir-histoire-feature-au-meme-endroit.md) | Spike : voir toute l'histoire d'une feature au même endroit (vue par id vs co-localisation) | chore | P3 |  | vectorz | 💡 idea |  |
 | [20261013013553179](20261013013553179_grooming-applique-regle-taille-fiche.md) | Le grooming applique la règle de taille : découper une fiche > 2 surfaces avant ready | chore | P3 |  | mega-city | 💡 idea |  |
+| [20261013131625303](20261013131625303_ezk-retro-mode-light.md) | ezk-retro : un mode light (cérémonie courte) pour un petit périmètre | feature | P3 |  | mega-city | 💡 idea |  |
 
 ## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)
 
