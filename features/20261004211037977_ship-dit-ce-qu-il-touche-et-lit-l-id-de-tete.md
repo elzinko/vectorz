@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [backlog, ship, mode-local]
-status: idea
+status: ready
 pr:
 evidence: none # commande de terminal, pas d'écran
 created: 2026-10-04

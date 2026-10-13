@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [qualite, tests]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-03

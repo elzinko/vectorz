@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [lisibilité, revue, loi]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-10

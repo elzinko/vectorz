@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.15.0
 labels: [supervision, registre]
-status: idea
+status: ready
 pr:
 evidence: none # CLI, pas d'écran
 created: 2026-10-10

@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [sprint, worktree, archive]
-status: idea
+status: ready
 pr:
 evidence: none # scripts de sprint, pas d'écran
 created: 2026-10-04

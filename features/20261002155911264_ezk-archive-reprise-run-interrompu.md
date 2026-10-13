@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [archive]
-status: idea
+status: ready
 pr:
 evidence: none # outillage de clôture, pas d'écran
 created: 2026-10-02
@@ -37,8 +37,6 @@ sessions ».
 - Écrire un marqueur de progression (étapes faites) au fil du run.
 - Au relancement, `check` signale « run incomplet » et liste les étapes manquantes.
 - Rendre chaque écriture idempotente : pas de doublon dans le handoff ni dans l'index.
-- Repli si c'est trop lourd : une ligne dans le skill, « si interrompu, relancer `check` puis
-  compléter ».
 
 ## Critères d'acceptation
 
@@ -48,13 +46,13 @@ sessions ».
 
 ## Comment vérifier
 
-Un test de la suite shell simule l'interruption (arrêt après l'étape 2), puis la relance :
+Un test de la suite shell simule l'interruption (arrêt après l'étape 2), relance le run, et vérifie
+trois choses : les étapes manquantes (3-4) sont complétées, le handoff et l'index de mémoire n'ont
+aucun doublon, et un `check` sur l'état coupé affiche « run incomplet ».
 
 ```bash
 pnpm --dir products/mega-city test:scripts
 ```
-
-*(Bloc provisoire, précisé au grooming.)*
 
 ## Notes / décisions
 
@@ -63,3 +61,6 @@ pnpm --dir products/mega-city test:scripts
   L'architecte : la cause est connue (écritures non reprenables), une exploration préalable
   n'apprendrait rien. Avis minoritaires : P3 (dev), exploration d'abord (QA).
 - Version V0.6 proposée par le pilote (P2 → release suivante) ; à confirmer au planning.
+- **Grooming 2026-10-13** : le repli « une ligne dans le skill » est retiré du périmètre — il ne
+  satisferait pas les critères 1-2 (reprise idempotente, zéro doublon). Le livrable est le mécanisme
+  marqueur de progression + `check`.

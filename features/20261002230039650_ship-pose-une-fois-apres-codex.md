@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [sprint]
-status: idea
+status: ready
 pr:
 evidence: none # changement de méthode, pas d'écran
 created: 2026-10-03
@@ -60,5 +60,9 @@ Codex de plus. La fiche a coûté environ 400 000 jetons, pour une cible de 200 
   architecture la portent ; qualité et dev la voyaient en simple consigne.
 - Juge de cohérence : compatible avec l'ADR-0049 (ship après le GO, avant le merge) et
   l'ADR-0059, **à condition** que l'attente de Codex soit bornée.
-- L'architecture conseille un panel, l'ADR-0049 étant récent.
+- L'architecture conseillait un panel, l'ADR-0049 étant récent. **Renonciation datée au grooming
+  (2026-10-13)** : l'amendement est une **précision d'ordonnancement** du ship (quand le poser), pas
+  un changement de décision — le critère 2 l'exige « sans en changer la décision ». Un panel adverse
+  est disproportionné pour une note non structurelle. L'architecte ratifie l'amendement au build ; si
+  la précision s'avérait toucher la décision, le panel se tiendra alors.
 - Priorité **P2 proposée** par l'agent, sur délégation du PO.

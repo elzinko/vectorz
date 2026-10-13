@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [sprint]
-status: idea
+status: ready
 pr:
 evidence: none # script de merge, aucun écran
 created: 2026-10-02

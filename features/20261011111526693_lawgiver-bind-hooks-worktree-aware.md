@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [lawgiver, worktree]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-11

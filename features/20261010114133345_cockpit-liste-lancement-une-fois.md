@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [ezk-map, cockpit]
-status: idea
+status: ready
 pr:
 evidence: auto
 created: 2026-10-10

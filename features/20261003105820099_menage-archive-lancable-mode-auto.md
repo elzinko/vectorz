@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [archive, worktree]
-status: idea
+status: ready
 pr:
 evidence: none # script de ménage, pas d'écran
 created: 2026-10-03
@@ -44,7 +44,10 @@ les lancer. Le *ménage* est le mode `--cleanup` du portier d'`ezk-archive`
 
 ## Critères d'acceptation
 
-- [ ] En mode auto, le listage du ménage se lance sans blocage (constaté dans une session).
+- [ ] **Spike** : le déclencheur du blocage est identifié (le nom de l'option `--cleanup`, ou les
+      commandes `git worktree remove` / `git branch -d` que le script affiche), et consigné dans la fiche.
+- [ ] Selon le déclencheur, le listage du ménage se lance sans blocage en mode auto : option au nom de
+      lecture (ex. `--inventory`), ou commandes de suppression écrites dans un fichier au lieu d'être affichées.
 - [ ] La sortie reste en lecture seule : `test-cleanup.sh` reste vert.
 - [x] Le `SKILL.md` d'`ezk-archive` dit quoi faire si le mode auto bloque le ménage.
 
@@ -61,5 +64,7 @@ Puis, dans une session Claude Code en mode auto : demander le ménage et constat
 - 2026-10-03 : née de la rétro muti `docs/captures/2026-10-03-retro-cloture-et-menage.md`, décision
   PO ✅. Aucune règle de permission : le PO a déjà refusé ce type de règle.
 - P3 / V0.6 proposés par le pilote (gêne, sans perte) ; à confirmer au planning.
+- **Grooming 2026-10-13** : cadrée en **spike-correctif**. Le critère 1 identifie le déclencheur ; le
+  critère 2 applique le correctif qui en découle. « Done » = déclencheur trouvé + listage lançable en auto.
 - Voisines : portier d'archive et squash [[20261002155911250]] ; copies de réserve
   [[20261003011750521]].

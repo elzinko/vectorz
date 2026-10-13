@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [worktree, ship, dx]
-status: idea
+status: ready
 pr:
 evidence: none # outillage CLI/git, pas d'écran
 created: 2026-10-10

@@ -7,7 +7,7 @@ product: mega-city
 milestone: rationalisation
 version: v0.16.0
 labels: [retro]
-status: idea
+status: ready
 pr:
 evidence: none # documentation de méthode, pas d'écran
 created: 2026-10-02
@@ -52,8 +52,14 @@ que les trois textes divergent, deux rétros peuvent ranger la même sortie de d
 
 ## Comment vérifier
 
-Relire les trois passages côte à côte ; la rétro suivante range ses sorties sans ambiguïté.
-*(Bloc provisoire, précisé au grooming.)*
+Relire les trois passages côte à côte — ADR-0054, `ezk-retro` temps 5, gabarit README `.rules/` — et
+vérifier qu'ils énoncent le **même tri dans les mêmes mots** (construit → fiche, discipline → règle en
+observation, récidive → +1) et nomment le même axe destination (produit → backlog du projet hôte,
+méthode → vectorz). Un test de la suite shell fige la phrase-clé du tri et casse si l'un des trois diverge.
+
+```bash
+pnpm --dir products/mega-city test:scripts
+```
 
 ## Notes / décisions
 
@@ -61,6 +67,10 @@ Relire les trois passages côte à côte ; la rétro suivante range ses sorties 
   `docs/captures/2026-10-02-retro-frictions-outillage-cross-repo.md`). Décision PO ✅, P2. Le dev
   voulait P3 (pur alignement de textes) ; la QA, P2 (plus on attend, plus les rétros divergent).
 - Version V0.6 proposée par le pilote ; à confirmer au planning.
+- **Grooming 2026-10-13** : la fiche touche 3 surfaces de texte (ADR-0054, `ezk-retro`, gabarit
+  `.rules/`), au-delà du seuil de 2. Elle **reste entière** : le but est que les trois disent la même
+  chose aux mêmes mots ; les découper casserait l'alignement visé. Justification explicite au titre de
+  la règle `token-economy/fiche-tient-dans-un-sprint`.
 - Grooming 2026-10-11 (PO) : ajout de l'axe **destination** (produit → backlog du projet hôte,
   méthode → vectorz) en plus du tri par nature. Déclencheur : rétro muti du 2026-10-11 rangée
   entièrement dans vectorz, le PO a demandé où devait atterrir une friction produit.

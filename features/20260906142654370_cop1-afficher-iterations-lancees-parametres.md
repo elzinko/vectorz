@@ -5,8 +5,7 @@ type: feature
 priority: P2
 product: cop1
 version: v0.15.0
-epic:
-status: idea
+status: ready
 pr:
 created: 2026-09-06
 ---
@@ -15,10 +14,10 @@ created: 2026-09-06
 
 ## En clair
 
-Quand un run `ezk-product-build` tourne (surtout la nuit, en `auto`/`yolo`), on ne voit pas
+Quand un run `ezk-product-build` tourne (surtout la nuit, en `--mode auto`), on ne voit pas
 facilement **ce qui a été lancé ni avec quels réglages**. cop1 (le plan de contrôle /
 Moniteur) devrait **afficher la liste des itérations lancées** — quelle commande, quels
-paramètres retenus (`--mode`, `--check-ready`, `--delivery`, `--max-sprints`, `--tokens`) —
+paramètres retenus (`--mode`, `--review`, `--max-sprints`, `--tokens`) —
 pour qu'au retour on sache d'un coup d'œil ce qui a tourné et comment.
 
 ## Contexte / Problème
@@ -35,15 +34,15 @@ veut l'**inventaire des lancements** et leur **configuration**, consultable apr�
 
 - **Source** : l'émission de supervisabilité existante. À l'ouverture d'un run,
   `ezk-product-build` émet déjà `run_start {method_name, method_version, seat}` — **enrichir
-  l'enveloppe (ou un event dédié) avec les paramètres retenus** (`--mode`, `--check-ready`,
-  `--delivery`, `--max-sprints`, `--tokens`).
+  l'enveloppe (ou un event dédié) avec les paramètres retenus** (`--mode`, `--review`,
+  `--max-sprints`, `--tokens`).
 - **Affichage** : cop1 / le Moniteur liste les runs (méthode, date, seat, **paramètres**,
   statut : en cours / terminé / abandonné) et pointe vers leur trace (`SPRINT.md` /
   `REVIEW.md` du run).
 - **Frontière** : cop1 reste **aveugle au métier** (ADR-0011/ADR-022) — il **affiche** ce que
   la méthode émet, il ne décide rien.
 
-## Critères d'acceptation (à groomer avant `ready`)
+## Critères d'acceptation
 
 - [ ] `run_start` (ou un event dédié) **transporte les paramètres retenus** du run.
 - [ ] cop1 / le Moniteur affiche une **liste des itérations** avec, par run : méthode +
@@ -71,8 +70,14 @@ de contrôle aveugle au métier).
 **Dédoublonnage (2026-09-06)** — pas un doublon, mais **voisines** à ne pas re-créer :
 [0030](done/0030-mvp-demo-desktop.md) (Moniteur bout-en-bout, mode moniteur pur) et
 [20260826173005368](done/20260826173005368_renommer-ezk-map.md) (ezk:map = site de monitoring de la
-méthode). Cette fiche est vraisemblablement **une capacité D'affichage DE cette surface**
-(lister les runs + paramètres), **pas une nouvelle surface** — à trancher au grooming.
+méthode). **Tranché au grooming (2026-10-13)** : c'est une **capacité d'affichage de la surface existante**
+(Moniteur / `ezk:map`), **pas une nouvelle surface**. Deux surfaces, dans le budget de taille :
+(1) enrichir l'émission `run_start` avec les paramètres retenus ; (2) lister les runs là où le
+Moniteur les montre déjà. Le board unifié (v0.17) hébergera plus tard la vue riche des runs
+([activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)) ; cette
+fiche v0.15 pose la **donnée** (paramètres dans `run_start`) et une liste sur la surface actuelle.
+Réglages cités remis à jour au grooming : `--mode manuel|auto`, `--review` (ex-`--check-ready`,
+ADR-0053), `--max-sprints`, `--tokens` ; `yolo` et `--delivery` retirés.
 
 **Sauvetage (2026-10-02)** — fiche créée le 2026-09-06 sur une branche locale jamais ouverte en PR
 (`claude/ezk-product-build-sprints-91ceaa`), retrouvée au ménage des branches. Remise telle quelle,

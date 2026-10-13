@@ -6,8 +6,7 @@ priority: P2
 product: mega-city
 version: v0.13.0
 labels: []
-epic:
-status: idea
+status: ready
 pr:
 evidence: none # flux git et fichiers générés, pas d'écran
 created: 2026-10-04
@@ -27,7 +26,7 @@ created: 2026-10-04
 ## Critères d'acceptation
 
 - [ ] Une PR de story ne modifie **que sa fiche** (ni `BACKLOG.md`, ni `PLAN.md`, ni les liens).
-- [ ] Après la fusion, l'index, le plan et les liens se régénèrent en **un seul geste** (commit direct sur `main`).
+- [ ] Après la fusion, **la fiche passe en `done/`** et l'index, le plan et les liens se régénèrent en **un seul geste** (commit direct sur `main`), pour que `main` ne porte jamais de lien cassé.
 - [ ] Un lot de 2 PR ou plus se fusionne **sans conflit** sur `BACKLOG.md` / `PLAN.md`.
 - [ ] Mesure : 0 conflit d'index sur les 3 prochains lots de 2 stories ou plus.
 
@@ -41,5 +40,5 @@ cd products/mega-city && pnpm test:scripts
 ## Notes / décisions
 
 - Priorité P2. Fiche captée le 2026-10-04 par la rétro samplerz du 2026-10-03, piste 2, retenue par le PO. Capture : `docs/captures/2026-10-03-retro-premier-sprint-format-methode.md` dans le dépôt samplerz. À groomer, avec l'architecte : l'amendement de l'ADR-0049 est une décision de conception.
-- Question pour le grooming : la PR déplace sa fiche vers `done/`, mais les liens qui y mènent ne seraient recalés qu'après la fusion. Faut-il accepter des liens cassés quelques minutes sur `main`, ou déplacer la fiche après la fusion, elle aussi ?
+- **Tranché au grooming (2026-10-13)** : la PR **ne déplace pas** sa fiche. Le déplacement vers `done/` se fait dans le **commit de régénération post-fusion**, avec l'index, le plan et les liens. Raison : le filet de liens du dépôt (`test-links-repo`) interdit un lien cassé sur `main`, même quelques minutes — déplacer la fiche dans la PR le violerait. L'amendement de l'ADR-0049 reste une décision de conception à **ratifier par l'architecte au build**.
 - Mesure retenue : 0 conflit d'index sur les 3 prochains lots de 2 stories ou plus.

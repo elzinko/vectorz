@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [ezk-sprint, portier]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-10
@@ -51,17 +51,18 @@ travaille dedans.
 
 ## Critères d'acceptation
 
-- [ ] Le portier **ne lève pas** d'`ALERT` bloquante pour un dossier voisin dont la session est
-      archivée / non vivante.
-- [ ] Il **lève** toujours l'`ALERT` pour un dossier tenu par une session vivante en parallèle.
-- [ ] Un dossier abandonné détecté est **signalé en information** (« reste à nettoyer »), pas en
-      alerte.
+- [ ] Un worktree voisin **propre** (aucun changement non committé) dont la branche est **déjà
+      fusionnée dans `main`** est classé « abandonné » : signal d'information, pas d'`ALERT` bloquante.
+- [ ] Tout worktree voisin qui a des changements non committés, **ou** dont la branche n'est pas
+      fusionnée dans `main`, est classé « vivant » et **lève** l'`ALERT` (le doute reste une `ALERT`).
+- [ ] Le classement est fait par `check.sh` **seul** (git, sans dépendre de l'app) ; un test rejoue
+      les deux scénarios (abandonné → info, vivant → ALERT).
 
 ## Comment vérifier
 
 ```bash
-# scénario 1 : un worktree voisin dont la session est archivée → portier CLEAR (ou info, pas ALERT)
-# scénario 2 : un worktree voisin tenu par une session vivante → portier ALERT
+# scénario « abandonné » : worktree voisin propre + branche fusionnée dans main → info, pas d'ALERT
+# scénario « vivant » : worktree voisin avec un changement non committé (ou branche non fusionnée) → ALERT
 bash products/mega-city/skills/ezk-sprint/scripts/check.sh --gate
 ```
 
@@ -75,9 +76,10 @@ bash products/mega-city/skills/ezk-sprint/scripts/check.sh --gate
 
 - Née de la rétro du run « règles composables » du 2026-10-10 (grain n°1), capture
   [docs/captures/2026-10-10-retro-run-regles-composables.md](../docs/captures/2026-10-10-retro-run-regles-composables.md).
-- **Question ouverte pour le grooming** : comment un script bash (`check.sh`) apprend-il
-  qu'un worktree a une session vivante ? L'app connaît l'état des sessions ; un script, non
-  directement. Pistes à trancher : lire une liste de sessions exposée par l'app, ou un repli
-  heuristique (worktree sans commit récent + branche déjà fusionnée = probablement mort). À
-  cadrer avant de construire.
+- **Tranché au grooming (2026-10-13)** : le portier n'interroge **pas** l'app (couplage fragile). Il
+  décide par une **heuristique git, dans `check.sh` seul**, et **fail-safe** : un worktree voisin
+  n'est « abandonné » que s'il est **propre ET sa branche fusionnée dans `main`** ; tout le reste
+  (changements non committés, ou branche non fusionnée) reste « vivant » → `ALERT`. Le doute reste
+  une alerte. Ce socle couvre le symptôme du 2026-10-10 (sessions archivées, branches fusionnées).
+  Une liste de sessions exposée par l'app pourra l'affiner plus tard, sans changer ce socle.
 - Priorité P2 proposée (réduction de bruit, confort d'autonomie) ; à confirmer.

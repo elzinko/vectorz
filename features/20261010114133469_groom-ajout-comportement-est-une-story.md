@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [ezk-backlog, grooming, dor]
-status: idea
+status: ready
 pr:
 evidence: none # convention + gate, pas d'écran
 created: 2026-10-10
