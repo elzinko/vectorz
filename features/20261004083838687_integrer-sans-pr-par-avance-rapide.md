@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [github-optionnel, cross-repo]
-status: idea
+status: ready
 pr:
 evidence: none # commandes git, aucun écran
 created: 2026-10-04
@@ -22,7 +22,7 @@ push en avance rapide. Elle marche depuis n'importe quel worktree.
 
 **Si tu arrives frais.** Un projet à `github: false` (dans `.vectorz/config.yml`) n'ouvre pas de
 PR. Le guichet `ezk forge` est posé par la fiche
-[20261004083838593](done/20261004083838593_guichet-unique-github-archive-reconcile.md) ; le motif est
+[Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md) ; le motif est
 dans [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 
 ## Contexte / Problème
@@ -97,14 +97,19 @@ pnpm --dir products/mega-city test
 
 ## Notes / décisions
 
-- Dépend de [20261004083838593](done/20261004083838593_guichet-unique-github-archive-reconcile.md),
+- Dépend de [Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md),
   qui pose le guichet.
-- À trancher au grooming : squasher la branche avant le `push-ff`, ou pousser ses commits tels
-  quels (muti pousse tels quels aujourd'hui).
+- **Décidé (grooming 2026-10-13)** : `push-ff` pousse les commits de la branche **tels quels** (comme muti), sans squash préalable. Un squash avant push pourra s'ajouter plus tard, en option de config, hors de ce premier cran.
 - Le merge strictement hors ligne reste couvert par `local-squash` (ADR-0052 D5).
 - **Cas du 2026-10-03** (note du carnet
   `docs/retro-notes/traitees/20261003202803910-revue-backlog-mode-local.md`, rétro légère du
   2026-10-04) : un squash local qui ne contenait que des fiches, le plan et une ligne de config
   (`f0e93201`, branche `squash/github-local`) a vu son push refusé par le garde-fou de Claude Code,
   au motif d'un « merge sans revue ». En mode local, un changement de fiches seul n'a pas de chemin
-  de revue prévu. À trancher au grooming : quelle revue, légère, pour un changement sans code.
+  de revue prévu.
+- **Décidé (grooming 2026-10-13)** : `push-ff` ne porte que le geste mécanique — fetch, garde
+  d'ancêtre, push. La **revue qui précède** reste celle du projet, inchangée par cette fiche. Le
+  garde-fou « merge sans revue » de Claude Code est sa propre sécurité ; il se lève par la
+  confirmation du push par le PO (règle « push toujours confirmé »), pas par du code ici. La
+  question « quelle revue légère pour un changement sans code » est une **politique de revue**,
+  distincte de ce mécanisme : hors périmètre, à traiter ailleurs si le besoin revient.

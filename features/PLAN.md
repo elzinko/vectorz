@@ -186,10 +186,12 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261013073300242` — les commandes ezk de lecture visent le projet hôte · P1 · `build` (ready)
 - `20261013073300256` — les commandes ezk qui écrivent visent le bon dépôt hôte · P1 · `build` (ready)
 - ~~`20261003201034897` — `ezk` dit quand le dossier principal est en retard · P1 · `groom`~~ — shipped
-- ~~`20261004083838593` — un seul guichet GitHub (`github: false` respecté) · P2 · `groom`~~ — split
-- `20261004083838687` — sans PR, intégrer par avance rapide · P2 · `groom`
+- ~~`20261004083838593` — un seul guichet GitHub (`github: false` respecté) · P2 · `groom`~~ — split en ↓
+- `20261013074251752` — le guichet `ezk forge` : une commande, trois états · P2 · `build` (ready)
+- `20261013074251767` — ezk-archive et reconcile passent par le guichet + cliquet · P2 · `build` (ready)
+- `20261004083838687` — sans PR, intégrer par avance rapide · P2 · `build` (ready)
 - ~~`20261011113632532` — `ezk run context/report` visent le projet construit + flux local · P2 · `groom`~~ — shipped
-- `20261002230039863` — le rapport de sprint retrouve sa trace de supervision · P3 · `groom`
+- `20261002230039863` — le rapport de sprint retrouve sa trace de supervision · P3 · `build` (ready)
 - ~~`20261011091556212` — banc jetable E2E du flux local (sans GitHub) · P3 · `groom`~~ — shipped
 
 ### ⑭ v0.13.0 — la transaction ship, d'un bloc

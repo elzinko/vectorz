@@ -92,7 +92,7 @@ Avis du pilote, en l'absence de juge (rétro légère) :
   [transaction de ship](../../features/done/20260830194601233_ship-transactionnel-liens-vues.md)
   (20260830194601233, livrée). Pas de doublon.
 - **Run report en local** : cohérent avec le mode local (`github: false`) ; la fiche
-  [« un seul guichet pour GitHub »](../../features/20261004083838593_guichet-unique-github-archive-reconcile.md)
+  [« un seul guichet pour GitHub »](../../features/done/20261004083838593_guichet-unique-github-archive-reconcile.md)
   (20261004083838593) en est voisine sans le couvrir.
 - **Règle de taille** : aucune règle de `rules/` ne fixe une taille de fiche (recherche sur « taille »,
   « découp »). Voisine de la technique de grooming « couper au plus petit morceau utile », qui reste

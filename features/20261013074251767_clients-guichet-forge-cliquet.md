@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 version: v0.12.0
 labels: [github-optionnel, cross-repo]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # commandes et scripts, aucun écran

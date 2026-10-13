@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [retro]
-status: idea
+status: ready
 pr:
 evidence: none # outil en ligne de commande, pas d'écran
 created: 2026-10-03
