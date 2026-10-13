@@ -5,9 +5,9 @@ type: chore
 priority: P2
 product: mega-city
 milestone:
-version: v0.11.0
+version:
 labels: [dette]
-status: ready
+status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-01
@@ -60,3 +60,12 @@ pnpm lint
 ## Notes / décisions
 
 - Voir aussi la fiche livrée [Résorber les warnings biome](done/0005-resorber-warnings-biome.md) (0005).
+
+- **Sortie de v0.11 le 2026-10-13 (run autonome).** En retirant `products/mega-city` de
+  `files.ignore` de biome.json, Biome trouve **396 erreurs + 8 avertissements** (363 fichiers,
+  95 correctifs « unsafe » proposés). Trop pour inclure mega-city dans `pnpm lint` sans rougir.
+  Deux chemins à trancher par le PO (re-grooming) : (a) **résorption massive** — `biome check
+  --fix` puis correctifs à la main, gros diff (~363 fichiers) à revoir, ou par lots ; (b)
+  **baseline** — lint mega-city en CI sur les fichiers CHANGÉS seulement (`biome check --changed
+  --since=origin/main`), qui tolère l'existant et refuse le neuf (critère 2), sans toucher aux
+  396. Biome 1.9 n'a pas de fichier de baseline natif. Hors passe lean.
