@@ -1,4 +1,4 @@
-# ADR-039 — Le board unifié : run → moments → fiches, et deux portées de configuration
+# ADR-074 — Le board unifié : run → moments → fiches, et deux portées de configuration
 
 - **Statut** : Accepté (2026-10-13)
 - **Compose** (sans les rouvrir) :

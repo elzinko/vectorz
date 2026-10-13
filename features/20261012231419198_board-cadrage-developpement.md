@@ -49,4 +49,4 @@ Hors périmètre : les tables d'activité par run (tranche dédiée).
 
 - Design de référence : [Unifier les tableaux de bord](20261007135620590_refondre-vue-supervision-moniteur-lisible.md).
 - Maquette : [docs/maquettes/board-ezk-dashboard.html](../docs/maquettes/board-ezk-dashboard.html).
-- Décision : [ADR-039](../docs/adr/ADR-039-board-unifie-run-moments-fiches-deux-portees-config.md).
+- Décision : [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md).

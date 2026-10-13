@@ -283,7 +283,7 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
   le prochain run l'aurait tirée entière. Le statut reste « prête » ; le PO retire le drapeau, ou la
   fiche se découpe (`ezk backlog apply split`) et le drapeau part avec elle.
 - **Design du tableau de bord affiné par maquette (v17, 2026-10-12).** La refonte du board
-  ([ADR-039](../docs/adr/ADR-039-board-unifie-run-moments-fiches-deux-portees-config.md),
+  ([ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md),
   [design de référence](20261007135620590_refondre-vue-supervision-moniteur-lisible.md),
   [maquette](../docs/maquettes/board-ezk-dashboard.html)) range cette config en **deux portées** :
   côté **projet**, un tier par rôle (voyage avec le repo) ; côté **outil** (poste), le mapping
