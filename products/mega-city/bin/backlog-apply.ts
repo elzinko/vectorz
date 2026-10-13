@@ -21,6 +21,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type ApplyGesture, planAggregateApply } from '../src/backlog/aggregate-apply.js';
 import { ShipFailure, ShipRefusal, applyShip } from '../src/backlog/ship-fiche.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { nodeRepoFs, nodeShipIo } from '../src/io/ship-fiche-io.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -43,22 +44,23 @@ interface Args {
 }
 
 function parseArgs(argv: string[]): Args {
+  // Le dépôt visé : --root > EZK_ROOT > vectorz (fiche 20261013073300256). Le helper retire --root
+  // des arguments ; depuis un projet hôte via `ezk`, le routeur passe le projet désigné par EZK_ROOT.
+  const { root, rest } = projectRootOrExit(resolve(megaCity, '..', '..'), argv);
   const positional: string[] = [];
   let into: string[] | undefined;
-  let root = resolve(megaCity, '..', '..');
   let dryRun = false;
   let barPlan = true;
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
+  for (let i = 0; i < rest.length; i += 1) {
+    const arg = rest[i];
     if (arg === '--dry-run') dryRun = true;
     else if (arg === '--no-bar-plan') barPlan = false;
     else if (arg === '--into') {
-      const value = argv[++i];
+      const value = rest[++i];
       if (value === undefined) usage('--into attend un ou plusieurs ids (séparés par des virgules)');
       into = value.split(',').filter((id) => id !== '');
-    } else if (arg === '--root') root = resolve(argv[++i] ?? usage('--root attend un dossier'));
-    else if (arg.startsWith('--')) usage(`option inconnue : ${arg}`);
-    else positional.push(arg);
+    } else if (arg?.startsWith('--')) usage(`option inconnue : ${arg}`);
+    else if (arg !== undefined) positional.push(arg);
   }
   const verb = positional.shift();
   if (verb === 'merge') {

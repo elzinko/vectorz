@@ -18,9 +18,7 @@
  *                    inventé refusé, rejets listés), puis rendues (`src/backlog/aggregate-llm.ts`) ;
  *   both             script, puis llm, puis le croisement des deux.
  */
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { existsSync, readFileSync } from 'node:fs';
 import {
   type AggregateCluster,
   type AggregateReport,
@@ -37,6 +35,8 @@ import {
   validateProposals,
 } from '../src/backlog/aggregate-llm.js';
 import { type Fiche, loadFiches } from '../src/loaders/fiches.js';
+import { findGitRoot } from '../src/core/ezk-cli.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 
 type Mode = 'script' | 'llm' | 'both';
 type Focus = 'merge' | 'split' | 'dedup' | 'reprioritize';
@@ -78,7 +78,12 @@ function parseArgs(argv: string[]): Args {
   if (proposals !== undefined && rawMode === 'script') {
     die('--proposals demande --mode llm ou both : le moteur script ne lit pas de propositions.');
   }
-  const root = resolve(get('--root') ?? resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..'));
+  // Le dépôt visé : --root > EZK_ROOT > la racine git du dossier courant (fiche 20261013073300256).
+  // Le défaut est le dépôt où l'on est (INIT_CWD, posé par le routeur), jamais l'emplacement du script :
+  // depuis un projet hôte sans --root, on vise l'hôte, jamais vectorz en silence.
+  const invokedFrom = process.env.INIT_CWD ?? process.cwd();
+  const fallbackRoot = findGitRoot(invokedFrom, existsSync) ?? invokedFrom;
+  const { root } = projectRootOrExit(fallbackRoot, argv);
   return { scope, focus: (rawFocus as Focus | undefined) ?? null, mode: rawMode as Mode, proposals, root };
 }
 

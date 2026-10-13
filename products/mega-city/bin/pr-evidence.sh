@@ -37,7 +37,12 @@ Usage :
 EOF
 }
 
-git_root() { git rev-parse --show-toplevel; }
+# Le dépôt visé : --root (extrait par main, posé dans EZK_ROOT) > EZK_ROOT de l'environnement >
+# le dépôt git du dossier courant (fiche 20261013073300256). Depuis un projet hôte, on vise l'hôte,
+# jamais vectorz : le routeur lance evidence avec cwd = dossier de l'utilisateur (root: none).
+git_root() {
+  if [ -n "${EZK_ROOT:-}" ]; then git -C "$EZK_ROOT" rev-parse --show-toplevel; else git rev-parse --show-toplevel; fi
+}
 
 # Dossier des preuves : résolu par la config projet (`scrum:`), défaut legacy `docs/pr-evidence`
 # (fiche 20261007154842506). Le bandeau `--root` part sur stderr, pas dans la capture.
@@ -236,6 +241,21 @@ cmd_decide() {
 
 # ── dispatch ─────────────────────────────────────────────────────────────────────
 main() {
+  # --root <dir>, où qu'il soit : désigne le dépôt visé (posé dans EZK_ROOT pour git_root).
+  # Retiré des arguments avant le dispatch, pour ne pas heurter les parseurs des sous-commandes.
+  local rest=() ; local a
+  while [ $# -gt 0 ]; do
+    a="$1"
+    if [ "$a" = "--root" ]; then
+      [ $# -ge 2 ] || { echo "erreur: --root attend un dossier" >&2; exit 2; }
+      export EZK_ROOT="$2"; shift 2
+    elif [ "${a#--root=}" != "$a" ]; then
+      export EZK_ROOT="${a#--root=}"; shift
+    else
+      rest+=("$a"); shift
+    fi
+  done
+  set -- ${rest[@]+"${rest[@]}"}
   local sub="${1:-}"
   [ $# -gt 0 ] && shift
   case "$sub" in

@@ -8,17 +8,19 @@
  *     [--repo-root <path>] [--project-root <path>] [--product <name>] [--out <dir>]
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
 import { GitGhRepoSource } from '../src/sprint-metrics/adapters/repoSource.js';
 import { SupervisionJournalSource } from '../src/sprint-metrics/adapters/journalSource.js';
 import { ClaudeCodeTranscriptSource } from '../src/sprint-metrics/adapters/transcriptSource.js';
 import { collectSprintReport } from '../src/sprint-metrics/collect.js';
 import { renderSprintReportMarkdown } from '../src/sprint-metrics/domain/render.js';
+import { findGitRoot } from '../src/core/ezk-cli.js';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const megaCityRoot = resolve(here, '..');
-const repoRootDefault = resolve(here, '..', '..', '..');
+// Le projet visé : --root (ou --repo-root/--project-root) > le dépôt git du dossier courant
+// (fiche 20261013073300256). Le défaut est le dépôt où l'on est (INIT_CWD, posé par le routeur),
+// jamais l'emplacement du script : depuis un projet hôte, le rapport vise l'hôte, pas vectorz.
+const invokedFrom = process.env.INIT_CWD ?? process.cwd();
+const repoRootDefault = findGitRoot(invokedFrom, existsSync) ?? invokedFrom;
 
 function usage(): never {
   console.error(`usage: sprint:report <slug> [options]
@@ -46,7 +48,7 @@ function main(): void {
     usage();
   }
   let repoRoot = repoRootDefault;
-  let projectRoot = megaCityRoot;
+  let projectRoot = repoRootDefault;
   let product = 'mega-city';
   let out: string | undefined;
   let sprintMdPath: string | undefined;
@@ -54,7 +56,13 @@ function main(): void {
 
   for (let i = 1; i < argv.length; i += 1) {
     const a = argv[i];
-    if (a === '--repo-root') repoRoot = resolve(argv[++i]);
+    if (a === '--root') {
+      // Raccourci projet hôte : pose la racine du dépôt ET du projet (supervision) d'un coup,
+      // comme `close` passe --repo-root et --project-root à la même valeur (fiche 20261013073300256).
+      const d = resolve(argv[++i]);
+      repoRoot = d;
+      projectRoot = d;
+    } else if (a === '--repo-root') repoRoot = resolve(argv[++i]);
     else if (a === '--project-root') projectRoot = resolve(argv[++i]);
     else if (a === '--product') product = argv[++i];
     else if (a === '--sprint-md') sprintMdPath = resolve(argv[++i]);

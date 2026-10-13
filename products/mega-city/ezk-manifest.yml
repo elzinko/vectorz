@@ -112,11 +112,16 @@ commands:
   - domain: backlog
     verb: apply
     run: bin/backlog-apply.ts
-    summary: Applique une fusion ou un découpage de fiches décidé par le PO.
+    summary: Applique une fusion ou un découpage de fiches (dépôt où tu es, ou --root <projet>).
+    root: cwd
+    project: true
+    writes: true
   - domain: backlog
     verb: aggregate
     run: bin/backlog-aggregate.ts
-    summary: Regroupe des fiches (cœur d'« ezk-backlog aggregate »).
+    summary: Regroupe des fiches (dépôt où tu es, ou --root <projet>).
+    root: none
+    project: true
   - domain: backlog
     verb: version
     run: bin/backlog-version.ts --root {root}
@@ -192,7 +197,8 @@ commands:
   # --- evidence, pr, review, ci : la livraison ---
   - domain: evidence
     run: bin/pr-evidence.sh
-    summary: Capture, rend et tranche les preuves avant/après d'une PR (capture, render, decide).
+    summary: Capture, rend et tranche les preuves avant/après d'une PR (--root <projet>).
+    root: none
   - domain: pr
     verb: check-body
     run: skills/ezk-pr/scripts/check-pr-body.sh
@@ -248,7 +254,8 @@ commands:
   - domain: sprint
     verb: report
     run: bin/sprint-report.ts
-    summary: Collecte le rapport de sprint (durée, jetons, indicateurs).
+    summary: Collecte le rapport de sprint (durée, jetons, indicateurs ; --root <projet>).
+    root: none
   - domain: retro
     verb: captures
     run: bin/retro-captures.ts
