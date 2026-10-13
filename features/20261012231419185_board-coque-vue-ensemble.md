@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.17.0
 labels: [dashboard, board, ux, vue-ensemble]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -35,15 +35,20 @@ Hors périmètre : le contenu des autres onglets (chacun sa tranche).
 
 ## Critères d'acceptation
 
-> À affiner au grooming.
-
 - [ ] L'écran réel reprend la coque et la vue d'ensemble de la maquette.
 - [ ] Le tableau des versions surligne la version en run et offre le bon bouton selon l'état.
 - [ ] Une seule vérité par projet (pas de métrique contradictoire).
 
 ## Comment vérifier
 
-> À définir au grooming : comparaison écran ↔ maquette ; `pnpm --dir products/cop1/packages/web build`.
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Ouvrir le board : l'en-tête (marque, sélecteur de projet, recherche, bouton ⚙), la navigation de
+   gauche et la vue d'ensemble (métriques « depuis le début », entonnoir, tableau des versions)
+   reprennent la maquette.
+3. Le tableau des versions surligne la version en run et montre « Lancer » (version prête) ou
+   « Voir le run » (version en cours) selon l'état.
+
+Preuve : capture avant/après de la vue d'ensemble, côte à côte avec la maquette.
 
 ## Notes / décisions
 

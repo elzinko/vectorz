@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version: v0.15.0
 labels: [methode, ezk-product-build]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261013131852375, 20261013131852581, 20261013131852779"
 evidence: none
 created: 2026-10-11
+split_into: ["20261013131852375", "20261013131852581", "20261013131852779"]
 ---
 
 # 20261011103839682 — ezk-product-build : run multi-versions, rétro + tag par version

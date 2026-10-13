@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.17.0
 labels: [dashboard, board, ux, supervision, runs]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -33,15 +33,19 @@ Périmètre :
 
 ## Critères d'acceptation
 
-> À affiner au grooming.
-
 - [ ] Chaque ligne d'activité porte un **nom de run réel** et des **pastilles de moments réels** — aucun texte inventé.
 - [ ] On descend run → moments → fiches ; chaque fiche montre sa transition de statut.
 - [ ] Un clic sur une fiche ouvre la modale avec lien vers sa page.
 
 ## Comment vérifier
 
-> À définir au grooming : comparaison écran ↔ maquette ; parcours filmé run → moment → fiche.
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Les tables d'activité (Cadrage, Développement) listent des runs : chaque ligne porte un nom de run
+   réel + des pastilles de moments réels, aucun texte résumé inventé.
+3. Cliquer un run déroule ses moments ; chaque moment montre ses fiches et leur transition de statut ;
+   cliquer une fiche ouvre la modale avec le lien vers sa page.
+
+Preuve : court parcours filmé run → moment → fiche (évidence animée admise pour un flux de navigation).
 
 ## Notes / décisions
 

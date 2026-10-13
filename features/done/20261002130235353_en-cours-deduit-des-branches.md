@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [sprint]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261013131852984, 20261013131853182"
 evidence: auto # la vue des sessions affiche l'état « en cours » ; décidé par le diff à la PR
 created: 2026-10-02
+split_into: ["20261013131852984", "20261013131853182"]
 ---
 
 # 20261002130235353 — « En cours » se déduit des branches
@@ -37,16 +38,16 @@ du travail en cours ailleurs. Le statut existe, il est lu, personne ne l'écrit.
 - Écrit sur la branche de la story, le statut reste invisible des autres sessions jusqu'au merge.
   Après le merge, il est déjà faux : la story est livrée.
 - Écrit sur `main` à la prise, il recrée le blocage
-  qu'[ADR-0049](../products/mega-city/docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md) a
+  qu'[ADR-0049](../../products/mega-city/docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md) a
   supprimé : une session en worktree ne peut pas committer sur `main` quand il est pris. Et chaque
   prise régénérerait l'index du backlog, donc un conflit de plus entre sessions.
 
 **Ce que disent déjà les décisions.**
-[ADR-0042](../products/mega-city/docs/adr/0042-concurrence-inter-sessions-advisory-visibilite.md) :
+[ADR-0042](../../products/mega-city/docs/adr/0042-concurrence-inter-sessions-advisory-visibilite.md) :
 la concurrence entre sessions se gère par la visibilité, pas par des verrous ni par le statut.
-[ADR-0043](../products/mega-city/docs/adr/0043-vue-sessions-live-servie-jamais-committee.md) :
+[ADR-0043](../../products/mega-city/docs/adr/0043-vue-sessions-live-servie-jamais-committee.md) :
 l'état vivant des sessions est calculé à la lecture, jamais committé.
-[ADR-0055](../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md) : les données
+[ADR-0055](../../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md) : les données
 du board restent une **fonction pure des fichiers committés** ; l'état propre à la machine (sessions,
 worktrees, branches locales) reste **hors** d'`ezk:map`.
 
@@ -107,16 +108,16 @@ simple présence d'une branche ne prouve donc pas qu'une story est en cours.
 ## Notes / décisions
 
 - **Origine** : découpage du grooming de la fiche mère
-  [La fiche d'une story arrive en done avec son merge](done/20261002114435782_done-par-story-a-la-validation.md),
+  [La fiche d'une story arrive en done avec son merge](20261002114435782_done-par-story-a-la-validation.md),
   le 2026-10-02. Le « done » y reste ; le « en cours » vient ici, car il ne cause pas la corvée de
   rattrapage et il touche au schéma des statuts.
 - **Priorité P2** : un cran sous la fiche mère, qui porte la corvée. Acceptée par le PO au grooming
   du 2026-10-02.
-- **Précédent écarté** : la fiche [cohérence de sprint](done/0090-coherence-de-sprint.md)
+- **Précédent écarté** : la fiche [cohérence de sprint](0090-coherence-de-sprint.md)
   envisageait un verrou par `status: in-progress` committé. ADR-0042 a écarté les verrous au profit
   de la visibilité.
 - **Voisine distincte** :
-  [Retrouver quand une fiche est passée prête ou livrée](20260823121712716_vues-generees-board-kanban-history-git.md)
+  [Retrouver quand une fiche est passée prête ou livrée](../20260823121712716_vues-generees-board-kanban-history-git.md)
   fait le même constat (les étapes committées sur une branche disparaissent au squash), mais vise un
   autre besoin : l'historique des dates.
 - **Panel adverse facultatif** : la décision sur la valeur `in-progress` est nouvelle. `ezk-reviewer`

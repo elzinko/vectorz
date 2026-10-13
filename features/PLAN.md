@@ -38,13 +38,13 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 | **v0.8.0** | Amélioration mesurée | système de règles composable : citer un bundle, prouver la divergence dev/reviewer, DoD/DoR en listes partagées | ✅ livrée (local) |
 | **v0.9.0** | Ranger la maison (1er jet) | rationalisation : `docs/` redevient de la doc, config cop1 chez son produit, `CLAUDE.md` proxy vers la loi | ✅ livrée (local) |
 | **v0.10.0** | Portabilité multi-IDE | une source de règles → `.claude/` + `.cursor/` + `AGENTS.md`, la CLI comme moteur portable | ✅ livrée (`v0.10.0`) |
-| **v0.11.0** | La qualité tient | passe qualité avant de versionner (release-gate), dépendances à jour, gate locale unique, critères prouvés | ▶️ **en cours** (train rouvert le 2026-10-11) |
-| **v0.12.0** | Le flux local sans friction | les outils `ezk` marchent depuis un projet hôte, `github: false` respecté de bout en bout | ⏭️ ensuite |
-| **v0.13.0** | La transaction ship, d'un bloc | ship/backlog/PLAN et réconciliation worktree en une seule surface cohérente | ⏭️ ensuite |
-| **v0.14.0** | Les portiers robustes | archive, journal de sprint et worktree : des gardes qui ne crient plus au loup | ⏭️ ensuite |
-| **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | ⏭️ ensuite |
-| **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | ⏭️ ensuite |
-| **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches, deux portées de config — conçu par maquette (ADR-074) | 🎨 conçu (maquette v17), APRÈS le socle |
+| **v0.11.0** | La qualité tient | passe qualité avant de versionner (release-gate), dépendances à jour, gate locale unique, critères prouvés | ✅ livrée (`v0.11.0`) |
+| **v0.12.0** | Le flux local sans friction | les outils `ezk` marchent depuis un projet hôte, `github: false` respecté de bout en bout | ✅ livrée (`v0.12.0`) |
+| **v0.13.0** | La transaction ship, d'un bloc | ship/backlog/PLAN et réconciliation worktree en une seule surface cohérente | 📋 groomée (prête à construire, 2026-10-13) |
+| **v0.14.0** | Les portiers robustes | archive, journal de sprint et worktree : des gardes qui ne crient plus au loup | 📋 groomée (prête, 2026-10-13) |
+| **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | 📋 groomée (prête, 2026-10-13) |
+| **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | 📋 groomée (prête ; 1 fiche ADR en attente de panel) |
+| **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches, deux portées de config — conçu par maquette (ADR-074) | 📋 groomée (prête) — APRÈS le socle |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 > **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
@@ -195,53 +195,63 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261011091556212` — banc jetable E2E du flux local (sans GitHub) · P3 · `groom`~~ — shipped
 
 ### ⑭ v0.13.0 — la transaction ship, d'un bloc
-> Toute la surface ship/backlog/PLAN et la réconciliation worktree dans une seule version (évite de rééditer deux fois le même point d'entrée).
-- `20261010114132970` — réconcilier le worktree après un ship local · P1 · `groom`
-- `20261002231845120` — `BACKLOG.md` ne fait plus conflit entre deux PR · P1 · `build`
-- `20261004211037977` — ship dit ce qu'il touche + lit/barre `PLAN.md` · P2 · `groom`
-- `20261002230039650` — poser le commit ship une seule fois · P2 · `groom`
-- `20261002205428200` — la garde de ship lit la vraie branche de la PR · P2 · `groom`
-- `20261004083345055` — une PR ne range que sa fiche · P2 · `groom`
-- `20261002133125418` — `plan-head` respecte `blocked:` (+ raisons typées) · P2 · `groom`
+> Toute la surface ship/backlog/PLAN et la réconciliation worktree dans une seule version (évite de rééditer deux fois le même point d'entrée). **Groomée 2026-10-13 : tout ready.**
+- `20261010114132970` — réconcilier le worktree après un ship local · P1 · `build` (ready)
+- `20261002231845120` — `BACKLOG.md` ne fait plus conflit entre deux PR · P1 · `build` (ready)
+- `20261004211037977` — ship dit ce qu'il touche + lit/barre `PLAN.md` · P2 · `build` (ready)
+- `20261002230039650` — poser le commit ship une seule fois · P2 · `build` (ready)
+- `20261002205428200` — la garde de ship lit la vraie branche de la PR · P2 · `build` (ready)
+- `20261004083345055` — une PR ne range que sa fiche · P2 · `build` (ready)
+- ~~`20261002133125418` — `plan-head` respecte `blocked:` (+ raisons typées) · P2 · `groom`~~ — split en ↓
+- `20261013131632277` — la tête du plan respecte le drapeau bloquée · P2 · `build` (ready)
+- `20261013131632484` — raisons typées pour le drapeau bloquée · P2 · `build` (ready)
 
 ### ⑮ v0.14.0 — les portiers robustes
-> Archive, journal de sprint et worktree : des gardes qui ne crient plus au loup.
-- `20261004181110201` — le journal de sprint se range par branche, hors du worktree · P1 · `groom`
-- `20261010213746514` — le portier distingue un worktree vivant d'un abandonné · P2 · `groom`
-- `20261011111526693` — `lawgiver bind` gère un `.git` fichier (worktree) · P2 · `groom`
-- `20261002155911264` — `ezk-archive` reprend proprement un run interrompu · P2 · `groom`
-- `20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `groom`
-- `20261003105820099` — le ménage `ezk-archive` en mode auto · P3 · `groom`
+> Archive, journal de sprint et worktree : des gardes qui ne crient plus au loup. **Groomée 2026-10-13 : tout ready.**
+- `20261004181110201` — le journal de sprint se range par branche, hors du worktree · P1 · `build` (ready)
+- `20261010213746514` — le portier distingue un worktree vivant d'un abandonné · P2 · `build` (ready)
+- `20261011111526693` — `lawgiver bind` gère un `.git` fichier (worktree) · P2 · `build` (ready)
+- `20261002155911264` — `ezk-archive` reprend proprement un run interrompu · P2 · `build` (ready)
+- `20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `build` (ready)
+- `20261003105820099` — le ménage `ezk-archive` en mode auto (spike-correctif) · P3 · `build` (ready)
 
 ### ⑯ v0.15.0 — voir les runs (observabilité)
-> Le run autonome sait s'arrêter à la bonne borne, et on voit après coup ce qui a tourné. Le release-gate (v0.11) est un prérequis de l'auto-tag multi-versions.
-- `20261011091553794` — le run autonome filtre l'éligibilité + borne de version · P2 · `groom`
-- `20261011103839682` — `ezk-product-build` enchaîne plusieurs versions (rétro + tag) · P2 · `groom`
-- `20261010114133220` — `registry-add` préserve l'en-tête du registre · P2 · `groom`
-- `20260906142654370` — cop1 affiche les itérations lancées · P2 · `groom`
+> Le run autonome sait s'arrêter à la bonne borne, et on voit après coup ce qui a tourné. Le release-gate (v0.11) est un prérequis de l'auto-tag multi-versions. **Groomée 2026-10-13 : tout ready.**
+- `20261011091553794` — le run autonome filtre l'éligibilité + borne de version · P2 · `build` (ready)
+- ~~`20261011103839682` — `ezk-product-build` enchaîne plusieurs versions (rétro + tag) · P2 · `groom`~~ — split en ↓
+- `20261013131852375` — ezk-product-build enchaîne plusieurs versions (POC boucle) · P2 · `build` (ready)
+- `20261013131852581` — auto-tag/close local en opt-in (+ ADR) · P2 · `build` (ready)
+- `20261013131852779` — l'auto-groom sort une fiche hors version · P2 · `build` (ready)
+- `20261010114133220` — `registry-add` préserve l'en-tête du registre · P2 · `build` (ready)
+- `20260906142654370` — cop1 affiche les itérations lancées · P2 · `build` (ready)
 
 ### ⑰ v0.16.0 — ranger la maison (2e jet)
-> Le gros déménagement `scrum/` d'abord, SOUS REVUE (168 fichiers + loi compilée, pas en run autonome), puis le ménage cockpit et la discipline de grooming.
-- `20261007154842643` — basculer vectorz vers `scrum/` (gate manuelle) · P2 · `build`
-- `20261007154842917` — note de migration `scrum/` + bascule muti · P2 · `build`
-- `20261011142027875` — où vivent les ADR dans un repo multi-projets (panel) · P2 · `groom`
-- `20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `groom`
-- `20261002155911271` — trier les sorties de rétro par nature · P2 · `groom`
-- `20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `groom`
-- `20261002130235353` — « en cours » se déduit des branches · P2 · `groom`
-- `20261010235329987` — étiquette ≠ comportement quand on touche les règles d'un agent · P2 · `groom`
-- `20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `groom`
+> Le gros déménagement `scrum/` d'abord, SOUS REVUE (168 fichiers + loi compilée, pas en run autonome), puis le ménage cockpit et la discipline de grooming. **Groomée 2026-10-13 : tout ready sauf la décision ADR (panel).**
+- `20261007154842643` — basculer vectorz vers `scrum/` (gate manuelle) · P2 · `build` (ready, bloquée : sous revue)
+- `20261007154842917` — note de migration `scrum/` + bascule muti · P2 · `build` (ready, bloquée : dépend de la bascule)
+- `20261011142027875` — où vivent les ADR dans un repo multi-projets · P2 · `idea` — **bloquée : panel requis** (décision structurelle, avec le PO)
+- `20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `build` (ready)
+- `20261002155911271` — trier les sorties de rétro par nature · P2 · `build` (ready)
+- `20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `build` (ready)
+- ~~`20261002130235353` — « en cours » se déduit des branches · P2 · `groom`~~ — split en ↓
+- `20261013131852984` — « en cours » se déduit des branches (portier + vue) · P2 · `build` (ready)
+- `20261013131853182` — trancher le sort de la valeur `in-progress` (ADR court) · P2 · `build` (ready)
+- `20261010235329987` — étiquette ≠ comportement quand on touche les règles d'un agent · P2 · `build` (ready)
+- `20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `build` (ready)
 
 ### ⑱ v0.17.0 — le board unifié (cop1, après le socle)
-> Un seul tableau de bord, conçu par maquette (v17) et validé par le PO le 2026-10-12. Design de référence : fiche `20261007135620590` ; décision : `ADR-074` ; maquette : `docs/maquettes/board-ezk-dashboard.html`. 8 tranches sœurs (milestone `board`). À séquencer APRÈS le socle (catalogue des moments livré ; métriques tokens `0052`/`0055`).
-- `20261012231419185` — coque + vue d'ensemble · P1 · `groom`
-- `20261012231419211` — activité par run → moments → fiches + modale fiche · P1 · `groom`
-- `20261012231419198` — les deux pipelines : cadrage et développement · P2 · `groom`
-- `20261012231419224` — vue Fiches : filtre par catégorie de version · P2 · `groom`
-- `20261012231419237` — chronologie condensée · P2 · `groom`
-- `20261012231419250` — config projet (lancement/qualité/intégration) + modèle résolu · P2 · `groom`
-- `20261012231419263` — assistant d'ajout de projet · P2 · `groom`
-- `20261002205205417` — config modèle & effort (moteur + mapping outil) · P1 · `découper` (fiche prête, à relier)
+> Un seul tableau de bord, conçu par maquette (v17) et validé par le PO le 2026-10-12. Design de référence : fiche `20261007135620590` ; décision : `ADR-074` ; maquette : `docs/maquettes/board-ezk-dashboard.html`. Tranches sœurs (milestone `board`) : 7 vues + 3 tranches du moteur de config (découpé de `20261002205205417` le 2026-10-13). À séquencer APRÈS le socle (catalogue des moments livré ; métriques tokens `0052`/`0055`). **Groomée 2026-10-13 : tout ready.**
+- `20261012231419185` — coque + vue d'ensemble · P1 · `build` (ready)
+- `20261012231419211` — activité par run → moments → fiches + modale fiche · P1 · `build` (ready)
+- `20261012231419198` — les deux pipelines : cadrage et développement · P2 · `build` (ready)
+- `20261012231419224` — vue Fiches : filtre par catégorie de version · P2 · `build` (ready)
+- `20261012231419237` — chronologie condensée · P2 · `build` (ready)
+- `20261012231419250` — config projet (lancement/qualité/intégration) + modèle résolu · P2 · `build` (ready)
+- `20261012231419263` — assistant d'ajout de projet · P2 · `build` (ready)
+- ~~`20261002205205417` — config modèle & effort (moteur + mapping outil) · P1 · `découper`~~ — split en ↓
+- `20261013132218242` — config modèles : schéma à deux portées + résolveur pur · P1 · `build` (ready)
+- `20261013132218451` — config modèles : pointeurs au bind + commande `ezk config` · P1 · `build` (ready)
+- `20261013132218656` — board : page ⚙ config outil (mapping) + route gardée · P2 · `build` (ready)
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

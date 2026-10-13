@@ -242,7 +242,7 @@ git status --porcelain features/reviews/verdicts/   # depuis vectorz → rien
   Point dur pour la migration : chez samplerz, un `.feature` est à la fois la fiche et, parfois, un
   test qui tourne (6 fichiers de tests l'exécutent avec pytest-bdd).
 - **Fiche sœur qui écrit dans la page « config ».**
-  [Régler le modèle et l'effort de chaque agent, projet par projet](../20261002205205417_modele-effort-agents-par-projet.md)
+  [Régler le modèle et l'effort de chaque agent, projet par projet](20261002205205417_modele-effort-agents-par-projet.md)
   y ajoute une section « Agents » modifiable. Ici, la page reste en lecture seule. L'écriture de la
   config demandera d'amender l'ADR-0057, qui n'autorise qu'une écriture : c'est à la fiche sœur de
   le faire.

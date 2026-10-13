@@ -7,11 +7,12 @@ product: mega-city
 milestone: parked
 version:
 labels: [installation, ezk-map, board]
-status: ready
+status: split
 blocked: "à découper avant de construire : 12 critères, estimée à 500-700k (règle token-economy/fiche-tient-dans-un-sprint, rétro du 2026-10-04)"
-pr:
+pr: "split — scindée en 20261013132218242, 20261013132218451, 20261013132218656"
 evidence: auto
 created: 2026-10-02
+split_into: ["20261013132218242", "20261013132218451", "20261013132218656"]
 ---
 
 # 20261002205205417 — Régler le modèle et l'effort de chaque agent, projet par projet
@@ -118,7 +119,7 @@ courts (`opus`, `sonnet`…), et pas d'effort.
   `--root`, elle écrit dans le projet courant. Elle affiche le chemin du fichier modifié.
 - La page « config » du tableau de bord gagne une section « Agents » : le même tableau. On y
   modifie un niveau ou un agent. L'écriture passe par le même code que la commande.
-- Cette écriture est la deuxième du tableau de bord. L'[ADR-0057](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md)
+- Cette écriture est la deuxième du tableau de bord. L'[ADR-0057](../../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md)
   n'en autorise qu'une, les pouces 👍/👎 : cette fiche l'amende. La nouvelle route reprend les mêmes
   gardes, et n'écrit que dans `.vectorz/config.yml` du projet choisi.
 
@@ -258,18 +259,18 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
   `ezk config` ne lit que le projet courant. La fiche du tableau de bord ajoute `--root` dans ses
   critères. Si elle n'est pas livrée avant, cette fiche le construit, une seule fois.
 - **Fiches liées.**
-  - [ezk multi-client : cap Cursor + modèle & effort configurables par hôte](20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md) :
+  - [ezk multi-client : cap Cursor + modèle & effort configurables par hôte](../20260901173549334_ezk-multi-client-cursor-modeles-par-hote.md) :
     même calcul, axe « hôte ». Avec les niveaux, elle n'aura que trois lignes à traduire. Parkée.
-  - [Un seul tableau de bord pour tous tes projets](done/20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) :
+  - [Un seul tableau de bord pour tous tes projets](20260904080827072_admin-partage-multiprojets-vs-app-par-projet.md) :
     la page « config » où s'ajoute la section « Agents ». Même version V0.6.
-  - [Frontmatter des agents : model, effort, isolation](done/0144-frontmatter-tuning-agents-model-effort-isolation.md)
-    et [sérialiser model/effort dans les caps](done/0148-serialiser-model-effort-isolation-dans-les-caps.md) :
+  - [Frontmatter des agents : model, effort, isolation](0144-frontmatter-tuning-agents-model-effort-isolation.md)
+    et [sérialiser model/effort dans les caps](0148-serialiser-model-effort-isolation-dans-les-caps.md) :
     l'origine des champs `model` et `effort`.
 - **Décisions d'architecture à lire.**
-  [ADR-0047](../products/mega-city/docs/adr/0047-multi-client-cursor-et-modeles-par-hote.md) (modèles par hôte, alternative D),
-  [ADR-0048](../products/mega-city/docs/adr/0048-contenu-mono-source-modele-en-surcouche.md) (le rôle à un seul endroit, le pointeur),
-  [ADR-0050](../products/mega-city/docs/adr/0050-couche-regles-projet-local.md) (la couche `.vectorz/` du projet),
-  et la doctrine des modèles : [`ezk-model-and-lisibility.md`](../products/mega-city/docs/ezk-model-and-lisibility.md).
+  [ADR-0047](../../products/mega-city/docs/adr/0047-multi-client-cursor-et-modeles-par-hote.md) (modèles par hôte, alternative D),
+  [ADR-0048](../../products/mega-city/docs/adr/0048-contenu-mono-source-modele-en-surcouche.md) (le rôle à un seul endroit, le pointeur),
+  [ADR-0050](../../products/mega-city/docs/adr/0050-couche-regles-projet-local.md) (la couche `.vectorz/` du projet),
+  et la doctrine des modèles : [`ezk-model-and-lisibility.md`](../../products/mega-city/docs/ezk-model-and-lisibility.md).
 - **Code existant à réutiliser.** Le lecteur de config :
   `products/mega-city/src/loaders/project-config.ts`. La commande : `products/mega-city/bin/ezk-config.ts`.
 - **À découper avant de construire (2026-10-04).** Le run cockpit de la V0.6 s'est arrêté devant
@@ -283,9 +284,9 @@ ezk --root <chemin-de-samplerz> config modeles set performant --effort extra
   le prochain run l'aurait tirée entière. Le statut reste « prête » ; le PO retire le drapeau, ou la
   fiche se découpe (`ezk backlog apply split`) et le drapeau part avec elle.
 - **Design du tableau de bord affiné par maquette (v17, 2026-10-12).** La refonte du board
-  ([ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md),
-  [design de référence](20261007135620590_refondre-vue-supervision-moniteur-lisible.md),
-  [maquette](../docs/maquettes/board-ezk-dashboard.html)) range cette config en **deux portées** :
+  ([ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md),
+  [design de référence](../20261007135620590_refondre-vue-supervision-moniteur-lisible.md),
+  [maquette](../../docs/maquettes/board-ezk-dashboard.html)) range cette config en **deux portées** :
   côté **projet**, un tier par rôle (voyage avec le repo) ; côté **outil** (poste), le mapping
   tier → modèle concret, **éditable**, sur une page globale (bouton ⚙), par IDE — car un mapping écrit
   dans le projet casserait dans un autre IDE. Le board affiche aussi le **modèle résolu** en bout de

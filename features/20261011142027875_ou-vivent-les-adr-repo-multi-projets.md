@@ -8,6 +8,7 @@ milestone:
 version: v0.16.0
 labels: [adr, archi]
 status: idea
+blocked: "attend un panel adverse (ezk-architect + ezk-pm) — fiche de décision structurelle (où vivent les ADR), à tenir avec le PO, pas un build autonome"
 split_from: "20261010114133097"
 pr:
 evidence: none # décision + ADR, pas d'écran
@@ -59,3 +60,6 @@ dossier » ; aucune reco de fusion n'a été appliquée sans cet ADR.
 - Issue du découpage de « Un allocateur d'id d'ADR unique sur les deux dossiers » (20261010114133097)
   au grooming du 2026-10-11 : la partie **décision/panel** est isolée ici, rangée en v0.16 (« ranger
   la maison ») ; le câblage `--next` est tiré tôt (v0.11, fiche sœur).
+- **Grooming 2026-10-13** : laissée `idea` + `blocked:` à dessein. Son livrable est un **panel + ADR**,
+  pas du code — décision structurelle (leçon mémoire : pas de reco de fusion des dossiers sans panel).
+  Elle se tranche en séance avec le PO, pas par un run autonome. Les 8 autres fiches v0.16 sont prêtes.

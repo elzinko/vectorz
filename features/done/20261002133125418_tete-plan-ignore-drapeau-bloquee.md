@@ -7,11 +7,12 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [backlog]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261013131632277, 20261013131632484"
 evidence: none # pas d'écran
 created: 2026-10-02
 merged_from: ["20261011114725137"]
+split_into: ["20261013131632277", "20261013131632484"]
 ---
 
 # 20261002133125418 — La tête du plan montre comme tirable une fiche marquée bloquée
@@ -65,5 +66,5 @@ pnpm --dir products/mega-city plan:lot 1
 
 - Repéré pendant la construction du lot, PR #324.
 - Enrichie à la rétro du 2026-10-11 (run autonome v0.7),
-  [capture](../docs/captures/2026-10-11-retro-run-v07-autonome.md), S7 : extension « raisons typées » ajoutée, pas de doublon créé.
+  [capture](../../docs/captures/2026-10-11-retro-run-v07-autonome.md), S7 : extension « raisons typées » ajoutée, pas de doublon créé.
 - **Fusion (2026-10-11)** : absorbe « Rétro v0.10 : plan-head ignore le drapeau blocked: » (20261011114725137) — même bug. Cause pointée : `crossBacklogHead` (`src/backlog/plan-head.ts`) teste `status` mais pas `blocked:`, et `PlanCard` ne porte pas le champ ; `plan-lot` (`src/backlog/plan-lot.ts`) l'exclut déjà. La boussole `ezk now` (`bin/ezk-now.ts`) contourne en filtrant `blocked:` elle-même.

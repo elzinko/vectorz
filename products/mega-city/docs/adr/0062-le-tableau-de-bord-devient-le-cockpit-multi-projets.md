@@ -87,7 +87,7 @@ Ce que ça veut dire pour toi : un coup d'œil suffit pour tous tes projets, san
 - La page « config » (fiche dédiée) passe par les mêmes lecteurs que `ezk config show`,
   `ezk rules show` et `ezk dor show`, en lecture seule. L'écrire depuis la page demandera d'amender
   l'ADR-0057 : c'est la fiche
-  [« régler le modèle et l'effort de chaque agent, projet par projet »](../../../../features/20261002205205417_modele-effort-agents-par-projet.md)
+  [« régler le modèle et l'effort de chaque agent, projet par projet »](../../../../features/done/20261002205205417_modele-effort-agents-par-projet.md)
   qui le fera.
 - Le registre contient des chemins absolus vers les projets hors du dépôt. Il est suivi par git dans
   un dépôt public : un chemin de poste y est visible. Accepté, comme avant cette décision.

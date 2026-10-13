@@ -84,7 +84,7 @@ toutes les suites bash.
   appel manuel de `ship-merge.sh` avec une mauvaise branche. Et un merge depuis l'UI contourne la
   garde de toute façon : l'ADR-0049 assume ce filet partiel. Priorité et version restent à trancher
   au grooming ; la V0.5 en serait la suite naturelle.
-- **Voisines** : [« En cours » se déduit des branches](20261002130235353_en-cours-deduit-des-branches.md)
+- **Voisines** : [« En cours » se déduit des branches](done/20261002130235353_en-cours-deduit-des-branches.md)
   fait le même rapprochement branche ↔ PR, mais pour l'affichage.
   [La story livrée par #333](done/20261002114435782_done-par-story-a-la-validation.md) a construit la
   garde. Décision de fond :

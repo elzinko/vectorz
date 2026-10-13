@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.17.0
 labels: [dashboard, board, ux, chronologie]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -33,15 +33,18 @@ Périmètre :
 
 ## Critères d'acceptation
 
-> À affiner au grooming.
-
 - [ ] Chaque évènement tient sur une ligne, temps compact à gauche.
 - [ ] Les filtres par type et par lot marchent.
 - [ ] Cliquer une ligne ouvre le bon détail (run, version, rétro…).
 
 ## Comment vérifier
 
-> À définir au grooming : comparaison écran ↔ maquette ; build cop1.
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Chaque évènement tient sur une ligne : temps compact à gauche, type, titre, pastilles (version, coût).
+3. Les filtres par type (sprint / lancement / version / rétro / jalon) et par lot marchent ;
+   « afficher plus » charge par lots ; cliquer une ligne ouvre son détail.
+
+Preuve : capture avant (ancienne frise verbeuse) / après (condensée, une ligne par évènement).
 
 ## Notes / décisions
 

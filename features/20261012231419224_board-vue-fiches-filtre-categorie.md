@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.17.0
 labels: [dashboard, board, ux, fiches]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -34,15 +34,19 @@ Périmètre :
 
 ## Critères d'acceptation
 
-> À affiner au grooming.
-
 - [ ] Le filtre par catégorie cache les fiches des versions réalisées par défaut.
 - [ ] Le sélecteur de lot marque la version en cours.
 - [ ] Kanban et liste montrent les mêmes fiches filtrées.
 
 ## Comment vérifier
 
-> À définir au grooming : comparaison écran ↔ maquette ; build cop1.
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Le filtre par catégorie de version (à venir / en cours / réalisées) masque les versions réalisées
+   par défaut ; cocher « réalisées » les fait apparaître.
+3. Kanban et liste montrent le même ensemble filtré ; le sélecteur de lot marque la version en cours ;
+   le tri (priorité / statut / version / titre) fonctionne.
+
+Preuve : capture avant (défaut sans l'archive) / après (avec « réalisées »).
 
 ## Notes / décisions
 

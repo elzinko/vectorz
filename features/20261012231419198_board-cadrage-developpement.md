@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.17.0
 labels: [dashboard, board, ux, cadrage, developpement]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -35,15 +35,19 @@ Hors périmètre : les tables d'activité par run (tranche dédiée).
 
 ## Critères d'acceptation
 
-> À affiner au grooming.
-
 - [ ] Les colonnes rangent les versions par étape, fidèles à la maquette.
 - [ ] Le bouton « Lancer » n'apparaît que sur un lot prêt sans run en cours.
 - [ ] Les jauges cadrage et dev restent distinctes.
 
 ## Comment vérifier
 
-> À définir au grooming : comparaison écran ↔ maquette ; build cop1.
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Vue Cadrage : trois colonnes (à cadrer / en cours / cadré) rangent les versions ; la jauge de
+   cadrage s'affiche ; la jauge de dev n'apparaît que pour un lot en cours de dev.
+3. Vue Développement : trois colonnes (à développer / en cours / développé) ; le bouton « Lancer »
+   n'apparaît que sur un lot groomé, figé et sans run en cours, et ouvre le configurateur.
+
+Preuve : captures avant/après des deux vues, côte à côte avec la maquette.
 
 ## Notes / décisions
 

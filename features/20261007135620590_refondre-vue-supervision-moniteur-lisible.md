@@ -113,7 +113,7 @@ pnpm --dir products/cop1/packages/web build
 | Fiches | kanban/liste + filtre par catégorie de version | surfaces fiches existantes |
 | Chronologie | frise condensée + filtres | socle moments |
 | Config projet | lancement/qualité/intégration + modèle par rôle | la fille « config outil » |
-| Config outil (globale) + mapping tier→modèle | page ⚙, IDE, défauts, mapping éditable, indirection | **recouvre la fiche [20261002205205417](20261002205205417_modele-effort-agents-par-projet.md)** (ready) — à fusionner/enrichir, pas dupliquer |
+| Config outil (globale) + mapping tier→modèle | page ⚙, IDE, défauts, mapping éditable, indirection | **tranche [20261013132218656](20261013132218656_config-outil-page-reglage-mapping.md)** (découpée du moteur 20261002205205417 le 2026-10-13) |
 | Ajout de projet | assistant de démarrage | config projet + outil |
 
 Deux fiches voisines à **relier** (affichages du même board, pas des doublons) :
@@ -144,5 +144,5 @@ Deux fiches voisines à **relier** (affichages du même board, pas des doublons)
 - **Dépendances données (socle).** Pour que l'activité et les coûts soient **vrais**, le journal doit enregistrer les moments par run et par fiche, et les tokens. Le socle est **livré** : [catalogue des moments](done/20261004101755756_contrat-bus-catalogue-moments.md) (v0.7). Les tokens par fiche/sprint/version relèvent du cluster métriques : [0052](0052-socle-metrique-port-adaptateur-silo.md), [0055](0055-kpi-agreges-commit-pr-sprint-version.md).
 - **Process view.** Le graphe du process s'appuie sur les étapes déclarées ; leur complétude déterministe est le sujet de [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) (étapes comme données). La pose des fiches sur le schéma est déjà livrée : [20261002115451315](done/20261002115451315_fiches-sur-le-process-avec-session.md).
 - **Produit & version.** Un seul backlog, un seul train ; le produit est le champ `product:` (ici **cop1**). Version pressentie : **v0.15 « Voir les runs »**, ou une version UX dédiée. **Décision PO.**
-- **Chevauchement config/modèle.** La tranche « config outil » recouvre la fiche **ready** [20261002205205417](20261002205205417_modele-effort-agents-par-projet.md). À fusionner/enrichir au grooming, surtout pas dupliquer.
+- **Chevauchement config/modèle** — résolu le 2026-10-13 : le moteur 20261002205205417 a été découpé en trois tranches v0.17 — [schéma/résolveur](20261013132218242_config-modeles-schema-et-resolveur-pur.md), [pointeurs/CLI](20261013132218451_config-modeles-pointeurs-et-cli.md), et la [page ⚙ config outil](20261013132218656_config-outil-page-reglage-mapping.md). Pas de duplication : le board affiche, le moteur calcule.
 - Référence « ce qui se lit » (page rapide des 32 runs, PO) : https://claude.ai/artifact/5EevcXyhCQ14AEqnr3HEte

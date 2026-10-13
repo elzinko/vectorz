@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.17.0
 labels: [dashboard, board, ux, config, onboarding]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -33,14 +33,19 @@ Périmètre :
 
 ## Critères d'acceptation
 
-> À affiner au grooming.
-
-- [ ] On ajoute un projet depuis l'interface, avec une config par défaut.
-- [ ] L'assistant hérite du mapping de l'outil, sans le redemander.
+- [ ] Le bouton « + Ajouter un projet » ouvre un assistant : racine du projet, outil (IDE), config de
+      départ (défauts de la méthode).
+- [ ] Après l'assistant, le projet apparaît dans le sélecteur avec sa config par défaut.
+- [ ] L'assistant hérite du mapping tier→modèle de l'outil, sans le redemander.
 
 ## Comment vérifier
 
-> À définir au grooming : comparaison écran ↔ maquette ; build cop1.
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Cliquer « + Ajouter un projet », saisir une racine jetable + un IDE : le projet apparaît dans le
+   sélecteur avec les défauts de la méthode.
+3. Le mapping tier→modèle vient de la config outil (non redemandé dans l'assistant).
+
+Preuve : court parcours filmé de l'ajout d'un projet.
 
 ## Notes / décisions
 

@@ -59,7 +59,7 @@ ship de fin de lot.
 
 **Hors périmètre : le statut « en cours ».** Aucune fiche n'a jamais été « en cours », ce qui rend
 le portier d'`ezk-sprint` aveugle. Ce geste est sorti dans la fiche sœur
-[« En cours » se déduit des branches](../20261002130235353_en-cours-deduit-des-branches.md) : il ne
+[« En cours » se déduit des branches](20261002130235353_en-cours-deduit-des-branches.md) : il ne
 cause pas la corvée de rattrapage, et il touche au schéma des statuts.
 
 ## Proposition
@@ -174,7 +174,7 @@ gh pr list --state merged --limit 40 --json number,headRefName \
   [ADR-0018](../../products/mega-city/docs/adr/0018-reconciliation-done-etat-reel-des-prs.md) — la
   piste B, qui le touchait, est écartée.
 - **Découpage du 2026-10-02 (grooming)** : le « en cours » est sorti dans la fiche sœur
-  [« En cours » se déduit des branches](../20261002130235353_en-cours-deduit-des-branches.md) (P2).
+  [« En cours » se déduit des branches](20261002130235353_en-cours-deduit-des-branches.md) (P2).
   Cette fiche garde le plus petit morceau qui supprime la corvée : le « done ».
 - **Voisines distinctes** (vérifiées, pas des doublons) :
   [0053 — gate DoD adossé à une métrique](../0053-gate-dod-metrique.md) (même famille DoD, mais
