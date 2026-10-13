@@ -1,7 +1,7 @@
 # En clair : où en est le backlog
 
 > **Carte lisible** (fiche 0091) — relis en ≤ 2 minutes l'état du stock, des PR ouvertes
-> et de la séquence décidée. Index détaillé : [`features/BACKLOG.md`](../features/BACKLOG.md).
+> et de la séquence décidée. Index détaillé : `features/BACKLOG.md` (généré en local, non committé — ADR-0075).
 > Ordre de travail : [`features/PLAN.md`](../features/PLAN.md). Glossaire :
 > [`glossaire-jargon-ezk.md`](glossaire-jargon-ezk.md).
 >
@@ -63,7 +63,7 @@ bloquées avant elle dans l'ordre du plan.
 | Fichier | Rôle en une phrase |
 |---|---|
 | [`features/PLAN.md`](../features/PLAN.md) | **L'ordre** décidé (NOW / NEXT / LATER) — curé, jamais régénéré |
-| [`features/BACKLOG.md`](../features/BACKLOG.md) | **L'index** auto-généré depuis le front-matter de chaque fiche |
+| `features/BACKLOG.md` | **L'index** auto-généré en local depuis le front-matter de chaque fiche (non committé — ADR-0075) |
 | [`features/[NNNN]-slug.md`](../features/) | **La fiche** — source de vérité du statut, critères, PR |
 
 Priorité (`P0`→`P3`) = importance relative. **PLAN** = quoi d'abord. Une fiche **prête**

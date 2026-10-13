@@ -5,7 +5,7 @@
 Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
 (`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de v0.1.0 à
 v0.10.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
-fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`BACKLOG.md`](BACKLOG.md).
+fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (généré en local, non committé) : `BACKLOG.md`.
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
 
@@ -22,7 +22,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 > **NOW** = les prochaines N cartes (horizon court) — pas une encyclopédie du stock.
 > Source de vérité du **statut** = le front-matter des fiches ; ce fichier est **curé**,
 > jamais régénéré. Une seule liste : `features/` (produit = champ `product:`).
-> Index généré : [`BACKLOG.md`](BACKLOG.md) · guide : [`README.md`](README.md).
+> Index généré en local (non committé) : `BACKLOG.md` · guide : [`README.md`](README.md).
 
 ## 🚂 Train de versions (décidé le 2026-09-23, recalé au tri du 2026-09-30, puis le 2026-10-02)
 

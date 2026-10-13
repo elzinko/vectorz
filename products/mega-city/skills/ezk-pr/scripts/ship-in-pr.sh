@@ -141,16 +141,10 @@ do_undo() {
   sha="$(last_ship_commit)"
   [[ -n "$sha" ]] || die 1 "la fiche ${id} est en done/ sans commit ship sur cette branche (héritée de '$base' ?) — rien retiré"
   if ! git_c revert --no-commit "$sha" >/dev/null 2>&1; then
-    # Cas courant : la branche a fusionné main après le ship d'une autre PR, et l'index généré
-    # porte les deux ships. Ce conflit-là se résout mécaniquement (ADR-0049 §3) : on régénère
-    # l'index depuis les fiches. Tout autre conflit (PLAN.md, une fiche) se tranche à la main.
-    if [[ "$(git_c diff --name-only --diff-filter=U)" != "features/BACKLOG.md" ]]; then
-      git_c revert --abort
-      die 2 "le revert du ship ${sha:0:8} conflicte avec un commit plus récent — rien retiré, résous à la main"
-    fi
-    git_c checkout --ours -- features/BACKLOG.md
-    bash "$LOADER/bin/regen-backlog.sh" "$repo" >/dev/null
-    git_c add -- features/BACKLOG.md
+    # `features/BACKLOG.md` est sorti de git (ADR-0075) : il ne peut plus conflicter. Tout conflit
+    # restant (PLAN.md, une fiche) est réel — on arrête et on laisse l'humain trancher.
+    git_c revert --abort
+    die 2 "le revert du ship ${sha:0:8} conflicte avec un commit plus récent — rien retiré, résous à la main"
   fi
   git_c commit -q -m "revert(features): retire le ship ${id} après un no-go de revue" \
     -m "Annule ${sha:0:8} (ADR-0049) : la branche ne présente plus la story comme livrée."

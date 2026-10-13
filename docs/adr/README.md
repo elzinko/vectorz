@@ -128,7 +128,7 @@ vit dans le front-matter des fiches.
 
 ## Backlog
 
-Le backlog vivant est [`features/BACKLOG.md`](../../features/BACKLOG.md) (index régénéré ;
+Le backlog vivant est [`features/README.md`](../../features/README.md) (index régénéré ;
 guide humain dans [`features/README.md`](../../features/README.md)),
 fiches actives triées P0→P3, livrées dans `done/`. Épic directeur :
 [0034](../../features/done/0034-mise-a-plat-post-pivot.md) ; amont :

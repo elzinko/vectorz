@@ -56,6 +56,7 @@ new_repo() {
   echo '{}' > "$r/products/mega-city/package.json"
   printf -- '---\nid: "%s"\ntitle: fiche x\ntype: feature\npriority: P1\nstatus: ready\npr:\ncreated: 2099-01-01\n---\n# x\n' "$ID" > "$r/features/${ID}_x.md"
   echo "# Backlog" > "$r/features/BACKLOG.md"
+  echo 'features/BACKLOG.md' > "$r/.gitignore"   # ADR-0075 : l'index sort de git, jamais committé
   git -C "$r" add -A
   git -C "$r" commit -qm "chore: base"
   git -C "$r" checkout -qb "feat/${ID}-x"
@@ -91,7 +92,7 @@ OUT="$(bash "$SCRIPT" add --repo "$REPO" --fiche-id "$ID" --pr '#12')"
 grep -q "^SHIP: added " <<<"$OUT" && ok "SHIP: added <sha>" || fail "sortie add : $OUT"
 [[ "$(git -C "$REPO" log -1 --format=%s)" == "docs(features): ship ${ID} #12" ]] && ok "sujet conventional « docs(features): ship <id> #12 »" || fail "sujet : $(git -C "$REPO" log -1 --format=%s)"
 FILES="$(git -C "$REPO" show --no-renames --name-only --format= HEAD | sort | tr '\n' ' ')"
-[[ "$FILES" == "features/${ID}_x.md features/BACKLOG.md features/done/${ID}_x.md " ]] && ok "le commit ne porte que le ship (fiche déplacée + index)" || fail "fichiers du commit : $FILES"
+[[ "$FILES" == "features/${ID}_x.md features/done/${ID}_x.md " ]] && ok "le commit ne porte que le ship (fiche déplacée, pas d'index — ADR-0075)" || fail "fichiers du commit : $FILES"
 grep -q '^status: shipped$' "$REPO/features/done/${ID}_x.md" && ok "status: shipped dans done/" || fail "statut non posé"
 [[ -z "$(git -C "$REPO" status --porcelain)" ]] && ok "arbre propre après add" || fail "arbre sale après add"
 bash "$SCRIPT" check --repo "$REPO" --ref HEAD --fiche-id "$ID" >/dev/null && ok "check → SHIP: present" || fail "check après add"
@@ -177,23 +178,6 @@ chmod +x "$FAUX_MC/node_modules/.bin/tsx"
 rc=0; MEGA_CITY_ROOT="$FAUX_MC" bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID" >/dev/null 2>&1 || rc=$?
 [[ $rc -eq 2 ]] && bash "$SCRIPT" check --repo "$REPO" --ref HEAD --fiche-id "$ID" >/dev/null \
   && ok "loader en panne → undo exit 2, jamais un faux « SHIP: none »" || fail "loader en panne : rc=$rc"
-
-echo "=== undo — après fusion de main portant un autre ship : l'index se régénère ==="
-REPO4="$WORK/repo4"
-new_repo "$REPO4"
-bash "$SCRIPT" add --repo "$REPO4" --fiche-id "$ID" --pr 5 >/dev/null
-git -C "$REPO4" checkout -q main
-echo "- livrée autre" >> "$REPO4/features/BACKLOG.md"
-git -C "$REPO4" commit -qam "docs(features): ship d'une autre story"
-git -C "$REPO4" checkout -q "feat/${ID}-x"
-git -C "$REPO4" merge -q main >/dev/null 2>&1 || true
-printf '# Backlog\n- livrée %s_x.md\n- livrée autre\n' "$ID" > "$REPO4/features/BACKLOG.md"
-git -C "$REPO4" add features/BACKLOG.md
-git -C "$REPO4" commit -qm "merge: main dans la story (index régénéré)"
-rc=0; OUT="$(bash "$SCRIPT" undo --repo "$REPO4" --fiche-id "$ID" 2>&1)" || rc=$?
-[[ $rc -eq 0 ]] && grep -q "^SHIP: undone " <<<"$OUT" && ok "conflit sur l'index seul → résolu par régénération, ship retiré" || fail "undo après fusion : rc=$rc out=$OUT"
-[[ -f "$REPO4/features/${ID}_x.md" && -z "$(git -C "$REPO4" status --porcelain)" ]] && ok "fiche revenue sous features/, arbre propre" || fail "état après undo fusionné"
-grep -q "livrée ${ID}_x.md" "$REPO4/features/BACKLOG.md" && fail "l'index présente encore la story comme livrée" || ok "l'index régénéré ne la présente plus comme livrée"
 
 echo "=== undo — refus : revert en conflit, fiche héritée de main ==="
 # Un commit plus récent retouche la ligne même que le revert doit rétablir : conflit franc.

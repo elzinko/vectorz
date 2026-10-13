@@ -30,6 +30,7 @@ SUITES=(
   "skills/ezk-sprint/scripts/test-check-gate.sh"         # fiche 0090 — contrat du portier (= le dry-run de `start`, ADR-0054)
   "skills/ezk-sprint/scripts/test-sprint-lifecycle.sh"   # fiche 20260930123438875 — start/close, check ≡ start --dry-run, la session reste à ezk-archive
   "bin/test-regen-backlog.sh"                            # ezk-backlog — régénération de l'index
+  "bin/test-backlog-no-conflict.sh"                      # fiche 20261002231845120 — BACKLOG.md sort de git (ADR-0075), zéro conflit
   "bin/test-portfolio.sh"                                # fiche 20260922160651394 — portfolio.sh lit par le loader (fiche-rows)
   "bin/test-regen-recipes.sh"                            # ezk-chef — régénération du livre de recettes (fiche 20260824185422122)
   "bin/test-ezk-chef-extract.sh"                         # ezk-chef extract — fiche shippée → brouillon de recette (fiche 20260824122629794)

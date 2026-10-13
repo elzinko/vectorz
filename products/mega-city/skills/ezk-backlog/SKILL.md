@@ -55,7 +55,7 @@ jamais par son id nu. Dans une liste, le lien reste sur l'id et le titre s'affic
 résout **là où l'humain lit** :
 - **restitution en chat/CLI** (transitoire, lue depuis le terminal) → **relatif au cwd** :
   depuis la racine du projet, `[0050](features/0050-slug.md)` ;
-- **index généré `features/BACKLOG.md`** (artefact markdown committé, lu comme document) →
+- **index généré `features/BACKLOG.md`** (généré en local, non committé — ADR-0075) →
   **relatif à ce fichier** : `[0050](0050-slug.md)`, `[0000](done/0000-slug.md)` (jamais
   `features/…`, qui résoudrait `features/features/…`). C'est `regen` qui émet ces liens —
   l'index ne s'édite pas à la main.
@@ -688,13 +688,10 @@ qu'au filet : une PR mergée **sans** son ship, que `reconcile` propose. Livrais
 fiche `shipped` encore présentée comme à faire dans `PLAN.md` (et dans `PORTFOLIO.md` s'il traîne
 en local). Reste utile pour un ship fait à la main ou hors flux.
 
-**Conflit sur `BACKLOG.md` entre deux ships parallèles** (ADR-0049 §3). Depuis l'ADR-0055, c'est la
-seule vue générée qui peut encore se disputer. Recette, dans cet ordre : (1) `git merge origin/main`
-dans la branche, jamais de rebase d'une branche poussée ; (2) sur `features/BACKLOG.md` en conflit,
-prendre n'importe quel côté (`git checkout --ours features/BACKLOG.md`), puis la régénérer
-(`bash products/mega-city/bin/regen-backlog.sh .`) ; (3) `git add features/BACKLOG.md`, terminer le
-merge, rejouer la gate. Jamais d'édition à la main d'une vue générée. Un conflit sur `PLAN.md` (curé)
-se résout à la main.
+**Conflit sur une vue committée.** `features/BACKLOG.md` est **sorti de git** (ADR-0075) : il ne
+peut plus conflicter entre deux ships parallèles. La seule vue committée qui reste est
+`features/PLAN.md` (curée) ; un conflit dessus se résout **à la main**. Jamais d'édition à la main
+d'une vue générée.
 
 `ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
 détection ne bascule rien seule ; l'arbitrage reste au PO).

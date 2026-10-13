@@ -93,7 +93,7 @@ try {
     execFileSync('bash', [join(megaCity, 'bin', 'regen-backlog.sh'), repoRoot], { stdio: 'inherit' });
   };
   applyShip(plan, nodeShipIo(repoRoot, regen));
-  console.log('  BACKLOG.md : régénéré. Reste à committer (`git add features` puis ezk-commits).');
+  console.log('  BACKLOG.md : régénéré en local (non committé — gitignore, ADR-0075).');
 } catch (error) {
   if (error instanceof ShipRefusal) {
     console.error(`✗ ship refusé — rien n'a été écrit :\n  ${error.reasons.join('\n  ')}`);
