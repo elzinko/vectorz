@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261010114132970_reconcilier-worktree-apres-ship-local.md](../20261010114132970_reconcilier-worktree-apres-ship-local.md)
+> 🗎 Rendu de la fiche [features/20261010114132970_reconcilier-worktree-apres-ship-local.md](../done/20261010114132970_reconcilier-worktree-apres-ship-local.md)
 
 # 20261010114132970 — Réconcilier le worktree après un ship local
 

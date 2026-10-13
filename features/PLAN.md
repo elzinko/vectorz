@@ -196,7 +196,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 ### ⑭ v0.13.0 — la transaction ship, d'un bloc
 > Toute la surface ship/backlog/PLAN et la réconciliation worktree dans une seule version (évite de rééditer deux fois le même point d'entrée). **Groomée 2026-10-13 : tout ready.**
-- `20261010114132970` — réconcilier le worktree après un ship local · P1 · `build` (ready)
+- ~~`20261010114132970` — réconcilier le worktree après un ship local · P1 · `build` (ready)~~ — shipped
 - `20261002231845120` — `BACKLOG.md` ne fait plus conflit entre deux PR · P1 · `build` (ready)
 - `20261004211037977` — ship dit ce qu'il touche + lit/barre `PLAN.md` · P2 · `build` (ready)
 - `20261002230039650` — poser le commit ship une seule fois · P2 · `build` (ready)

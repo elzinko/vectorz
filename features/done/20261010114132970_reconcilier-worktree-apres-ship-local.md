@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [worktree, ship, dx]
-status: ready
-pr:
+status: shipped
+pr: "local (5f05274c)"
 evidence: none # outillage CLI/git, pas d'écran
 created: 2026-10-10
 ---
@@ -38,7 +38,7 @@ fiche livrée (la déplace en `done/`, régénère l'index, barre son entrée du
 - C'est **structurel** (le modèle worktree a `main` ailleurs), pas un oubli : une règle « pense à
   resynchroniser » ne l'a jamais éteint — d'où une **feature**.
 - Issu de la rétro du 2026-10-10 (capture
-  [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
+  [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
   proposition 1, convergence des 3 lentilles.
 
 ## Proposition
