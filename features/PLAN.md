@@ -212,7 +212,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20261010213746514` — le portier distingue un worktree vivant d'un abandonné · P2 · `build` (ready)~~ — superseded
 - ~~`20261011111526693` — `lawgiver bind` gère un `.git` fichier (worktree) · P2 · `build` (ready)~~ — shipped
 - ~~`20261002155911264` — `ezk-archive` reprend proprement un run interrompu · P2 · `build` (ready)~~ — shipped
-- `20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `build` (ready)
+- ~~`20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `build` (ready)~~ — shipped
 - `20261003105820099` — le ménage `ezk-archive` en mode auto (spike-correctif) · P3 · `build` (ready)
 
 ### ⑯ v0.15.0 — voir les runs (observabilité)

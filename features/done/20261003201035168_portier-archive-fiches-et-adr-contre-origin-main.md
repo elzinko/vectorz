@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [archive]
-status: ready
-pr:
+status: shipped
+pr: "local (495eb9cb)"
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
 ---
@@ -26,7 +26,7 @@ fiches) et 4 (les ADR) lisent les fichiers du worktree courant.
 
 - 2026-10-02, clôture d'une session muti : une fiche livrée dite « non livrée », un ADR dit « non
   fusionné ». Cas noté dans la fiche
-  [Le portier d'ezk-archive compare à origin/main](done/20261002155911250_portier-archive-origin-main-squash.md),
+  [Le portier d'ezk-archive compare à origin/main](20261002155911250_portier-archive-origin-main-squash.md),
   qui ne le portait pas en critère.
 
 ## Proposition
