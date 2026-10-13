@@ -247,6 +247,39 @@ ok "elle n'est pas classée réelle"                    "! echo \"\$OUT8\" | gre
 ok "la branche jamais fusionnée reste réelle"         "echo \"\$OUT8\" | grep -q 'branch REAL feat/reelle '"
 cd "$TMP/repo"
 
+echo "G11 — worktree en retard : fiche livrée + ADR fusionnés sur origin/main ne sont pas dits non-livré/non-fusionné (fiche 20261003201035168)"
+cd "$TMP" && git init -q --bare -b main origin10.git
+git init -q -b main repo10 && cd repo10
+git config user.email test@test && git config user.name test && git config commit.gpgsign false
+mkdir -p features/done docs/adr && echo "# Backlog" > features/README.md
+echo base > a.txt && git add . && git commit -qm base
+git remote add origin "$TMP/origin10.git" && git push -q origin main
+# Une branche de session committe un ADR (HEAD l'a), même contenu que ce qui sera fusionné sur origin.
+git checkout -q -b feat/sess main
+printf '# ADR-0099 — une décision\n' > docs/adr/0099-decision.md
+git add docs/adr/0099-decision.md && git commit -qm "adr 0099 (session)"
+# Une autre session livre la fiche 7777 (done/, shipped, pr) ET le même ADR, puis pousse sur origin/main.
+cd "$TMP" && git clone -q --branch main origin10.git other10 && cd other10
+git config user.email test@test && git config user.name test && git config commit.gpgsign false
+mkdir -p features/done docs/adr
+printf -- '---\nid: 7777\ntitle: livree ailleurs\nstatus: shipped\npr: "local abc1234"\n---\n' > features/done/7777-livree.md
+printf '# ADR-0099 — une décision\n' > docs/adr/0099-decision.md
+git add . && git commit -qm "ship 7777 + adr 0099" && git push -q origin main
+# Le worktree de session fetch SANS avancer son main local → il est en retard ; HEAD reste feat/sess.
+cd "$TMP/repo10" && git fetch -q origin
+OUT10="$(bash "$CHECK" --gate --shipped 7777 --worked none)"
+ok "le main local est en retard (la fixture prouve quelque chose)" "[ \"\$(git rev-list --count main..origin/main)\" = 1 ]"
+ok "P3 CLEAN : fiche livrée sur origin/main pas dite « non livrée »" "echo \"\$OUT10\" | grep -q '^P3_BACKLOG: CLEAN'"
+ok "aucun fait P3 pour 7777"                      "! echo \"\$OUT10\" | grep -q 'declared 7777'"
+ok "P4 CLEAN : ADR fusionné sur origin/main pas dit « pending-merge »" "echo \"\$OUT10\" | grep -q '^P4_ADR: CLEAN'"
+ok "aucun fait P4 pending-merge pour 0099"        "! echo \"\$OUT10\" | grep -q 'pending-merge.*0099'"
+# Anti-régression : un ADR jamais fusionné (absent d'origin) reste signalé — le doute reste une alerte.
+printf '# ADR-0100 — pas fusionné\n' > docs/adr/0100-pending.md
+git add docs/adr/0100-pending.md && git commit -qm "adr 0100 (pending, jamais poussé)"
+OUT10b="$(bash "$CHECK" --gate --shipped 7777 --worked none)"
+ok "un ADR jamais fusionné reste pending-merge"   "echo \"\$OUT10b\" | grep -q 'pending-merge.*0100'"
+cd "$TMP/repo"
+
 echo "G3 — option inconnue et hors dépôt :"
 ok "option inconnue ⇒ exit 2"    "! bash \"\$CHECK\" --nawak >/dev/null 2>&1"
 ok "hors dépôt git ⇒ exit 2"     "( cd \"\$TMP\" && ! bash \"\$CHECK\" >/dev/null 2>&1 )"

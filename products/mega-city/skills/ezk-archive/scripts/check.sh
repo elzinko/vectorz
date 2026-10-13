@@ -147,6 +147,11 @@ elif git show-ref --verify --quiet "refs/remotes/origin/$BASE"; then
 else
   PROOF_BASES="$BASE"
 fi
+# La ref où LIRE l'état livré — fiche en done/ (point 3), ADR fusionné (point 4) : la plus à jour des
+# bases de preuve, soit origin/<base> quand elle existe (le worktree peut être EN RETARD), sinon la base
+# locale. Même garantie que PROOF_BASES : aucun fetch (le skill rafraîchit avant). Miroir, pour les
+# points 3 et 4, de ce que la PR #345 a fait pour le point 2 (fiche 20261003201035168).
+BASE_REF="${PROOF_BASES%% *}"
 # Un remote n'implique PAS des pull requests : un bare local (`file://`), un serveur git
 # perso ou un GitLab n'en ont aucune que `gh` puisse lire. Sans cette distinction, on
 # confond « je ne peux pas lire les PRs » (⇒ UNKNOWN, prudent) et « il n'y a pas de PRs
@@ -488,6 +493,22 @@ else
     fi
     # nom de fichier : `<num>-<slug>` (legacy) OU `<num>_<slug>` (horodaté, fiche 0180) → [-_]
     found="$(git ls-files "$dir/done/${num}[-_]*.md" 2>/dev/null | head -1)"
+    st=""; pr=""
+    if [[ -n "$found" ]]; then
+      st="$(grep -m1 '^status:' "$found" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"
+      pr="$(grep -m1 '^pr:' "$found" 2>/dev/null | sed 's/^pr: *//')"
+    else
+      # Worktree EN RETARD : la fiche peut être en done/ sur origin/<base> alors qu'elle n'est pas encore
+      # dans le worktree (fiche 20261003201035168). On la lit sur BASE_REF — lecture LOCALE de la ref,
+      # aucun fetch — plutôt que de crier « non livrée » à tort.
+      ofound="$(git ls-tree -r --name-only "$BASE_REF" -- "$dir/done/" 2>/dev/null | grep -E "/${num}[-_][^/]*\.md$" | head -1)"
+      if [[ -n "$ofound" ]]; then
+        found="$ofound"
+        ocontent="$(git show "$BASE_REF:$ofound" 2>/dev/null || true)"
+        st="$(printf '%s\n' "$ocontent" | grep -m1 '^status:' | sed 's/^status: *//;s/ *#.*//')"
+        pr="$(printf '%s\n' "$ocontent" | grep -m1 '^pr:' | sed 's/^pr: *//')"
+      fi
+    fi
     if [[ -z "$found" ]]; then
       stray="$(git ls-files "$dir/${num}[-_]*.md" 2>/dev/null | head -1)"
       P3_STATE="DIRTY"
@@ -495,11 +516,9 @@ else
         st="$(grep -m1 '^status:' "$stray" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"
         add_fact P3 "declared $id not shipped: found=$stray status=${st:-?} (attendu: $dir/done/ + status: shipped)"
       else
-        add_fact P3 "declared $id introuvable dans $dir/"
+        add_fact P3 "declared $id introuvable dans $dir/ (ni en local ni sur $BASE_REF)"
       fi
     else
-      st="$(grep -m1 '^status:' "$found" 2>/dev/null | sed 's/^status: *//;s/ *#.*//')"
-      pr="$(grep -m1 '^pr:' "$found" 2>/dev/null | sed 's/^pr: *//')"
       if [[ "$st" != "shipped" ]]; then
         P3_STATE="DIRTY"; add_fact P3 "declared $id en done/ mais status=$st (attendu shipped) — $found"
       elif [[ -z "$pr" ]]; then
@@ -514,6 +533,21 @@ fi
 adr_filter='(^|/)(adr|adrs|decisions)/|(^|/)adr[-_][^/]*\.md$|[-_]adr\.md$'
 COMMITTED_ADR="$(git log "$BASE"..HEAD --name-only --pretty=format: 2>/dev/null \
                  | grep -Ei "$adr_filter" | sort -u || true)"
+# Worktree EN RETARD : un ADR committé sur HEAD dont le CONTENU est déjà sur origin/<base> est fusionné,
+# pas « pending-merge » (fiche 20261003201035168). On le retire des candidats : égalité de blob au même
+# chemin sur BASE_REF (le squash conserve le contenu). Lecture LOCALE de la ref, aucun fetch. Un ADR
+# RÉ-ÉDITÉ après fusion (blob différent) reste signalé — le doute reste une alerte.
+if [[ -n "$COMMITTED_ADR" ]]; then
+  _adr_pending=""
+  while IFS= read -r _f; do
+    [[ -z "$_f" ]] && continue
+    _hb="$(git rev-parse --quiet --verify "HEAD:$_f" 2>/dev/null || true)"
+    _ob="$(git rev-parse --quiet --verify "$BASE_REF:$_f" 2>/dev/null || true)"
+    [[ -n "$_hb" && "$_hb" == "$_ob" ]] && continue   # même contenu sur BASE_REF ⇒ fusionné
+    _adr_pending="${_adr_pending:+$_adr_pending$'\n'}$_f"
+  done <<< "$COMMITTED_ADR"
+  COMMITTED_ADR="$_adr_pending"
+fi
 WT_ADR="$( { git diff --name-only 2>/dev/null; \
              git diff --name-only --cached 2>/dev/null; \
              git ls-files --others --exclude-standard 2>/dev/null; } \
