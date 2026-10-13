@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261013073300256_commandes-ecriture-ezk-projet-hote.md](../20261013073300256_commandes-ecriture-ezk-projet-hote.md)
+> 🗎 Rendu de la fiche [features/20261013073300256_commandes-ecriture-ezk-projet-hote.md](../done/20261013073300256_commandes-ecriture-ezk-projet-hote.md)
 
 # 20261013073300256 — Les commandes ezk qui écrivent visent le bon dépôt hôte
 

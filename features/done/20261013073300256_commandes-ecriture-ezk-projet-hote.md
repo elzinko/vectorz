@@ -6,9 +6,9 @@ priority: P1
 product: mega-city
 version: v0.12.0
 labels: [installation, flux-local]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (958f60e3)"
 evidence: none # commandes et messages de terminal, pas d'écran
 split_from: "20261004083344960"
 created: 2026-10-13
@@ -45,7 +45,7 @@ ezk pr emit-local --root "$(git rev-parse --show-toplevel)" …     # écrit dan
 
 ## Notes / décisions
 
-- Découpée de la fiche `20261004083344960` le 2026-10-13 (côté **écriture**). Le côté **lecture** est la fiche sœur [Les commandes ezk de lecture visent le projet hôte](done/20261013073300242_commandes-lecture-ezk-projet-hote.md). Même version v0.12.0.
-- `ezk sprint report` dépend de la supervision ; l'absence de journal sur un hôte relève de la fiche sœur [Le rapport de sprint retrouve sa trace de supervision](20261002230039863_sprint-report-trace-supervision.md) — ici on ne traite que le `--root`.
+- Découpée de la fiche `20261004083344960` le 2026-10-13 (côté **écriture**). Le côté **lecture** est la fiche sœur [Les commandes ezk de lecture visent le projet hôte](20261013073300242_commandes-lecture-ezk-projet-hote.md). Même version v0.12.0.
+- `ezk sprint report` dépend de la supervision ; l'absence de journal sur un hôte relève de la fiche sœur [Le rapport de sprint retrouve sa trace de supervision](../20261002230039863_sprint-report-trace-supervision.md) — ici on ne traite que le `--root`.
 - Dépendance **samplerz** (projet hôte de validation) — accès constaté le 2026-10-03 (`~/git/samplerz`, `main`). Le build vit dans mega-city, autonome (testable sur un dossier jetable) ; samplerz ne sert qu'à la mesure.
 - **Preuve sur projet hôte (2026-10-13)** — éprouvé sur un dépôt git **jetable** (`mktemp`). Depuis cet hôte : `backlog apply` (écrit, `--root` avant ou après), `backlog aggregate` (`--root` avant ou après, défaut = hôte), `ezk evidence decide --root <hôte>`, `ezk sprint report <slug> --root <hôte>` visent tous l'hôte ; sans `--root`, elles visent le dépôt courant, jamais vectorz. `pr emit-local`/`review emit` gèrent déjà `--root`. La **mesure** du critère (0 script jetable pour preuves/rapports) reste à faire au prochain sprint samplerz.

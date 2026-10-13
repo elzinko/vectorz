@@ -46,7 +46,7 @@ ezk run context --root "$(git rev-parse --show-toplevel)"         # vise l'hôte
 
 ## Notes / décisions
 
-- Découpée de la fiche `20261004083344960` le 2026-10-13 (côté **lecture**). Le côté **écriture** est la fiche sœur [Les commandes ezk qui écrivent visent le bon dépôt hôte](../20261013073300256_commandes-ecriture-ezk-projet-hote.md). Même version v0.12.0.
+- Découpée de la fiche `20261004083344960` le 2026-10-13 (côté **lecture**). Le côté **écriture** est la fiche sœur [Les commandes ezk qui écrivent visent le bon dépôt hôte](20261013073300256_commandes-ecriture-ezk-projet-hote.md). Même version v0.12.0.
 - Origine : rétro samplerz 2026-10-03 + rétro « vue process » 2026-10-10 + run v0.11 2026-10-13 (règle de taille `20261013013553179`).
 - Dépendance **samplerz** (projet hôte de validation) — accès constaté le 2026-10-03 (`~/git/samplerz`, `main`). Le build vit dans mega-city, autonome (testable sur un dossier jetable) ; samplerz ne sert qu'à la mesure.
 - **Preuve sur projet hôte (2026-10-13)** — éprouvé sur un dépôt git **jetable** (`mktemp`, avec `features/PLAN.md` + une fiche), comme le prévoit la ligne ci-dessus. Depuis cet hôte : `board check`, `run context`, `run report` acceptent `--root` (avant ou après le verbe) et visent l'hôte ; `docs check-links` accepte `--root` avant le verbe et refuse sans en nommant le projet (jamais vectorz) ; `ezk journal add` et `ezk pr ship-in-pr` tournent sur l'hôte. La **mesure** du critère #5 (5 refus sur 5 nommant l'hôte) reste à faire au prochain sprint samplerz.
