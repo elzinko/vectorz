@@ -109,7 +109,7 @@ export function buildPlanViewData(planMd: string, fiches: Fiche[]): PlanViewData
 
   // Tête tirable + têtes bloquées : on RÉUTILISE crossBacklogHead sur l'ordre plat (0089).
   const planIndex = new Map<string, PlanCard>(
-    fiches.map((f) => [f.id, { id: f.id, product: f.product, type: f.type, status: f.status }]),
+    fiches.map((f) => [f.id, { id: f.id, product: f.product, type: f.type, status: f.status, blocked: f.blocked ?? '' }]),
   );
   const cross = crossBacklogHead(parsePlanOrder(planMd), planIndex);
   const head = cross.head ? toCardView(cross.head.id, index) : null;

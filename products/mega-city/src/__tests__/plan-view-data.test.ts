@@ -82,6 +82,29 @@ describe('buildPlanViewData (fiche 20260825213807501)', () => {
   });
 });
 
+describe('tête bloquée — le drapeau blocked: diffère une fiche prête (fiche 652)', () => {
+  // Régression : buildPlanViewData doit TRANSMETTRE `blocked` à crossBacklogHead.
+  // Avant le correctif, la carte du plan était construite sans `blocked` → `undefined`
+  // à l'exécution (tsx strip les types sans les vérifier). Le garde-fou `if (card.blocked)`
+  // ne tirait jamais, et une fiche `ready` mais bloquée devenait la tête du board Plan —
+  // en désaccord avec la CLI `plan:head`, qui, elle, passe bien `blocked`.
+  const PLAN_BLOQUEE = [
+    '## ▶️ NOW',
+    '1. **0010** — ready mais bloquée · `build`',
+    '2. **0011** — ready, la vraie tête',
+  ].join('\n');
+  const FICHES_BLOQUEE = [
+    fiche({ id: '0010', status: 'ready', blocked: 'attend un arbitrage PO' }),
+    fiche({ id: '0011', status: 'ready', title: 'La tête tirable' }),
+  ];
+
+  it('saute la fiche ready+blocked et prend la prochaine ready non bloquée', () => {
+    const data = buildPlanViewData(PLAN_BLOQUEE, FICHES_BLOQUEE);
+    expect(data.head?.id).toBe('0011'); // 0010 est différée, pas tirable
+    expect(data.head?.title).toBe('La tête tirable');
+  });
+});
+
 describe('bloc géré window.EZK_PLAN (marqueurs disjoints d’avancement)', () => {
   it('le bloc est délimité par ses marqueurs, déterministe, et affecte window.EZK_PLAN', () => {
     const block = buildPlanViewDataBlock(PLAN, FICHES);
