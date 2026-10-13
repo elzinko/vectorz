@@ -15,8 +15,31 @@
 set -euo pipefail
 
 _SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-if [[ -n "${1:-}" ]]; then
-  ROOT="$1"
+
+# Arguments. `--root <chemin>` et `--title <titre>` sont des DRAPEAUX : jamais confondus avec un
+# positionnel, jamais pris pour un titre. La forme historique positionnelle [racine] [titre] reste
+# acceptée. Un drapeau INCONNU échoue (code 2) au lieu d'être avalé ou glissé dans le H1 — sinon
+# `regen --root <x>` écrivait « # --root » en tête de BACKLOG.md (fiche 20261011091552583).
+ROOT=""
+TITLE=""
+_positionals=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --root) ROOT="${2:-}"; [[ -n "$ROOT" ]] || { echo "erreur: --root attend un chemin" >&2; exit 2; }; shift 2;;
+    --root=*) ROOT="${1#--root=}"; shift;;
+    --title) TITLE="${2:-}"; [[ -n "$TITLE" ]] || { echo "erreur: --title attend un titre" >&2; exit 2; }; shift 2;;
+    --title=*) TITLE="${1#--title=}"; shift;;
+    --) shift; while [[ $# -gt 0 ]]; do _positionals+=("$1"); shift; done;;
+    --*) echo "erreur: drapeau inconnu: $1 (attendu --root <chemin> ou --title <titre>)" >&2; exit 2;;
+    *) _positionals+=("$1"); shift;;
+  esac
+done
+# Compat positionnelle [racine] [titre], seulement si le drapeau ne l'a pas déjà fixé.
+[[ -z "$ROOT" && -n "${_positionals[0]:-}" ]] && ROOT="${_positionals[0]}"
+[[ -z "$TITLE" && -n "${_positionals[1]:-}" ]] && TITLE="${_positionals[1]}"
+
+if [[ -n "$ROOT" ]]; then
+  : # racine fournie (drapeau --root ou positionnel)
 elif [[ "$(basename "$_SCRIPT_DIR")" == "bin" ]]; then
   ROOT="$(cd "$_SCRIPT_DIR/.." && pwd)"
   # Défaut « parent du bin » refusé s'il est NICHÉ sous un autre backlog (ex. products/mega-city
@@ -37,11 +60,10 @@ fi
 cd "$ROOT"
 [ -d features ] || { echo "erreur: pas de dossier features/ dans ${ROOT}" >&2; exit 1; }
 
-# Titre de l'index (ligne 1) : le [titre-index] passé, sinon `backlog_title:` dans l'en-tête de
-# features/README.md, sinon un titre neutre. Le projet déclare son titre une fois et tous les
-# outils le lisent : un appelant qui passerait le sien ferait basculer la ligne 1 d'un outil à
-# l'autre (défaut constaté le 2026-10-02, « Backlog — mega-city » ↔ « … — vectorz »).
-TITLE="${2:-}"
+# Titre de l'index (ligne 1) : le titre passé (--title ou positionnel), sinon `backlog_title:` dans
+# l'en-tête de features/README.md, sinon un titre neutre. Le projet déclare son titre une fois et
+# tous les outils le lisent : un appelant qui passerait le sien ferait basculer la ligne 1 d'un
+# outil à l'autre (défaut constaté le 2026-10-02, « Backlog — mega-city » ↔ « … — vectorz »).
 if [[ -z "$TITLE" && -f features/README.md ]]; then
   TITLE="$(awk '
     NR == 1 && !/^---[[:space:]]*$/ { exit }

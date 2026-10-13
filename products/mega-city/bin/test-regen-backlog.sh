@@ -365,4 +365,35 @@ if [ "$n_titles" != 1 ]; then
   printf '%s' "$paths" | awk -F'\t' '{ printf "      %s → %s\n", $2, ($1 == "" ? "(aucun index écrit)" : $1) }'
 fi
 
+# ── Cas K : `--root` est un DRAPEAU (chemin), jamais un titre ; drapeau inconnu échoue ──
+# Régression de la fiche 20261011091552583 : `ezk backlog regen --root <x>` écrivait « # --root »
+# en tête de BACKLOG.md (le drapeau pris pour le titre positionnel), sans erreur.
+K="$TMP/k"
+fiche "$K/features" 0001 story 'type: feature
+priority: P1
+status: idea'
+echo ''
+echo "Cas K (--root drapeau, pas titre) :"
+bash "$SCRIPT" --root "$K" >/dev/null 2>&1
+check "regen --root <chemin> : H1 neutre, jamais « # --root »" \
+  "head -1 '$K/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs' && ! head -1 '$K/features/BACKLOG.md' | grep -q -- '--root'"
+# Le scénario exact du bug : racine positionnelle PUIS --root (comme le routeur le passait).
+rm -f "$K/features/BACKLOG.md"
+bash "$SCRIPT" "$K" --root "$K" >/dev/null 2>&1
+check "positionnel + --root : le drapeau gagne, H1 jamais « # --root »" \
+  "head -1 '$K/features/BACKLOG.md' | grep -qxF '# Backlog features & bugs'"
+# Drapeau inconnu : échec propre (exit 2), message clair, rien écrit.
+rm -f "$K/features/BACKLOG.md"
+set +e
+out_k="$(bash "$SCRIPT" "$K" --bogus 2>&1)"; rc_k=$?
+set -e
+check "drapeau inconnu → exit 2"        "test '$rc_k' -eq 2"
+check "drapeau inconnu → message clair" "printf '%s' \"\$out_k\" | grep -q 'drapeau inconnu'"
+check "drapeau inconnu → rien écrit"    "! test -e '$K/features/BACKLOG.md'"
+# `--root` sans valeur : échec, pas de titre vide avalé.
+set +e
+bash "$SCRIPT" --root >/dev/null 2>&1; rc_k2=$?
+set -e
+check "--root sans valeur → exit 2"     "test '$rc_k2' -eq 2"
+
 if [ "$FAIL" = 0 ]; then echo 'test-regen-backlog: TOUT VERT'; else echo 'test-regen-backlog: ÉCHECS' >&2; exit 1; fi

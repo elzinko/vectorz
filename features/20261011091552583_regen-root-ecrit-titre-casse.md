@@ -38,9 +38,9 @@ lieu d'être avalé.
 
 ## Critères d'acceptation
 
-- [ ] `ezk backlog regen --root <chemin>` écrit le H1 normal de `BACKLOG.md`, jamais « # --root ».
-- [ ] Un drapeau inconnu fait échouer la commande avec un message clair.
-- [ ] Un test couvre le cas « `--root` passé » et vérifie le H1 produit.
+- [x] `ezk backlog regen --root <chemin>` écrit le H1 normal de `BACKLOG.md`, jamais « # --root ».
+- [x] Un drapeau inconnu fait échouer la commande avec un message clair.
+- [x] Un test couvre le cas « `--root` passé » et vérifie le H1 produit.
 
 ## Comment vérifier
 
