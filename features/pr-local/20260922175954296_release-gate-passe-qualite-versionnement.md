@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20260922175954296_release-gate-passe-qualite-versionnement.md](../20260922175954296_release-gate-passe-qualite-versionnement.md)
+> 🗎 Rendu de la fiche [features/20260922175954296_release-gate-passe-qualite-versionnement.md](../done/20260922175954296_release-gate-passe-qualite-versionnement.md)
 
 # 20260922175954296 — Release gate : passe qualité avant versionnement
 

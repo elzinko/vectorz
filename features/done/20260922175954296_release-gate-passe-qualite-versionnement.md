@@ -6,8 +6,8 @@ priority: P0
 product: mega-city
 milestone:
 version: v0.11.0
-status: ready
-pr:
+status: shipped
+pr: "local (9b2c0cff)"
 evidence: none # capacité méthode / concept, pas d'écran
 created: 2026-09-22
 ---
