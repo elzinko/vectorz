@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [backlog]
-status: ready
+status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-11
