@@ -8,8 +8,8 @@ const SPRINT_END = '2026-08-30T11:00:00.000Z';
 function fixturePorts() {
   const journal = new StubJournalSource(
     [
-      { ts: SPRINT_START, slug: 'precedent' },
-      { ts: SPRINT_END, slug: 'metriques-sprint' },
+      { ts: SPRINT_START, slug: 'precedent', runId: 'run-1' },
+      { ts: SPRINT_END, slug: 'metriques-sprint', runId: 'run-1' },
     ],
     [{ ts: '2026-08-30T10:00:00.000Z', detail: 'gh indisponible' }],
   );
@@ -61,10 +61,21 @@ describe('collectSprintReport', () => {
     expect(report.tokens.note).toBeDefined();
   });
 
-  it('lève une erreur explicite si aucun checkpoint ne porte le slug demandé', () => {
+  it('lève une erreur explicite quand AUCUN checkpoint de sprint n’existe', () => {
     const ports = fixturePorts();
-    const noMatch = new StubJournalSource([{ ts: SPRINT_START, slug: 'autre-sprint' }]);
-    expect(() => collectSprintReport(input, { ...ports, journal: noMatch })).toThrow(/aucun gate/i);
+    const aucun = new StubJournalSource([]);
+    expect(() => collectSprintReport(input, { ...ports, journal: aucun })).toThrow(/impossible de dater/i);
+  });
+
+  it('un checkpoint au slug différent DATE quand même le sprint (fiche 20261002230039863)', () => {
+    // Le slug du gate diffère de celui de l'objectif : on ne jette plus, on date depuis le checkpoint
+    // le plus récent (celui du run qu'on vient de clore).
+    const ports = fixturePorts();
+    // Le checkpoint est DANS le run courant (run-1), juste avec un slug différent de l'objectif.
+    const slugDifferent = new StubJournalSource([{ ts: SPRINT_START, slug: 'autre-sprint', runId: 'run-1' }], [], undefined, 'run-1');
+    const report = collectSprintReport(input, { ...ports, journal: slugDifferent });
+    expect(report.duration.ms).toBeGreaterThanOrEqual(0);
+    expect(report.tokens.note ?? '').not.toMatch(/supervision absente/i);
   });
 
   it('lit le lot scellé depuis SPRINT.md (## Lot), avec le résultat par story', () => {
@@ -76,11 +87,11 @@ describe('collectSprintReport', () => {
     ]);
   });
 
-  it('allowUndated : sans checkpoint, rend un rapport NON DATÉ (lot gardé, durée/tokens à zéro + mention)', () => {
+  it('allowUndated : sans AUCUN checkpoint, rend un rapport NON DATÉ (lot gardé, durée/tokens à zéro + mention)', () => {
     const ports = fixturePorts();
-    const noMatch = new StubJournalSource([{ ts: SPRINT_START, slug: 'autre-sprint' }]);
+    const aucun = new StubJournalSource([]);
     const sprintMd = '## Lot\n- [x] 20260826082120062 — Rapport\n';
-    const report = collectSprintReport({ ...input, sprintMd, allowUndated: true }, { ...ports, journal: noMatch });
+    const report = collectSprintReport({ ...input, sprintMd, allowUndated: true }, { ...ports, journal: aucun });
     expect(report.duration.ms).toBe(0);
     expect(report.tokens.totalTokens).toBe(0);
     expect(report.tokens.note).toMatch(/supervision absente/i);

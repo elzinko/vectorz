@@ -11,6 +11,8 @@ export class StubJournalSource implements JournalSource {
     private readonly checkpoints: SprintCheckpointEvent[] = [],
     private readonly blockedEscalations: BlockedEscalationEvent[] = [],
     private readonly runStartedTs: string | undefined = undefined,
+    /** Run courant ; par défaut, celui du dernier checkpoint (ou undefined si aucun). */
+    private readonly currentRunId: string | undefined = undefined,
   ) {}
 
   listSprintCheckpoints(): SprintCheckpointEvent[] {
@@ -23,6 +25,10 @@ export class StubJournalSource implements JournalSource {
 
   earliestRunStartedTs(): string | undefined {
     return this.runStartedTs;
+  }
+
+  latestRunId(): string | undefined {
+    return this.currentRunId ?? this.checkpoints[this.checkpoints.length - 1]?.runId;
   }
 }
 

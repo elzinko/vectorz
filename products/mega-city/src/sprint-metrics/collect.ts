@@ -48,12 +48,17 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
 
   const checkpoints = ports.journal.listSprintCheckpoints(input.projectRoot);
   const fallbackStart = ports.journal.earliestRunStartedTs(input.projectRoot);
-  const window = computeSprintWindow(checkpoints, input.slug, fallbackStart);
+  // Le run COURANT (le plus récent) : on apparie le sprint à SON run, pas à un vieux checkpoint
+  // d'un autre run (fiche 20261002230039863).
+  const currentRunId = ports.journal.latestRunId(input.projectRoot);
+  const window = computeSprintWindow(checkpoints, input.slug, fallbackStart, currentRunId);
   if (window === null) {
     if (!input.allowUndated) {
       throw new Error(
-        `sprint-metrics: aucun gate "sprint-${input.slug}-checkpoint" trouvé sous ` +
-          `${input.projectRoot}/.supervision/runs — impossible de dater le sprint "${input.slug}".`,
+        `sprint-metrics: aucun checkpoint de sprint trouvé pour "${input.slug}" — impossible de dater le sprint.\n` +
+          `  Cherché sous « .supervision/runs » de la racine déclarée dans .mcp.json ` +
+          `(SUPERVISION_PROJECT_ROOT), à défaut sous ${input.projectRoot}.\n` +
+          `  Pointe la bonne racine avec --root <projet supervisé>, ou vérifie que le run a bien été journalisé.`,
       );
     }
     // Non daté : on NE SCANNE PAS l'historique (git merges, transcripts, fiches) — tout serait à zéro

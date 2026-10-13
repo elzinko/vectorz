@@ -70,3 +70,4 @@ pnpm --dir products/mega-city sprint:report <slug> --out /tmp/rapport
 - Enrichie à la rétro du 2026-10-11 (run autonome v0.7),
   [capture](../docs/captures/2026-10-11-retro-run-v07-autonome.md), S3 : symptôme slug ≠ ajouté, pas de doublon créé.
 - Priorité **P3 proposée** par l'agent, sur délégation du PO.
+- **Preuve (2026-10-13)** — éprouvé depuis un **worktree secondaire** (sans `.supervision/`) : `sprint report` remonte au `.mcp.json` du checkout principal, suit `SUPERVISION_PROJECT_ROOT` et lit ses runs réels. Quand le run courant porte un checkpoint de sprint (slug différent de l'objectif), le rapport est **daté** ; quand il n'en porte aucun, il reste **non daté et rapide** (0,3 s, aucun emprunt à un vieux run). Fixtures synthétiques (`.mcp.json` jetable) + 55 tests sprint-metrics verts.
