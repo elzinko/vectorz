@@ -26,6 +26,20 @@ export interface FicheLine {
 
 const FIELDS = ['id', 'état', 'PR', 'gate', 'revue', 'validation', 'raison'] as const;
 const PR_FORM = /^#\d+$/;
+/** Livraison locale (flux `github: false`) : `local (<sha>)`, le commit du squash — comme `backlog ship`. */
+const LOCAL_PR_FORM = /^local \(([0-9a-f]{7,40})\)$/;
+
+/** La référence d'une PR est-elle acceptable : un `#<numéro>` GitHub, ou un `local (<sha>)` local. */
+function prFormOk(pr: string): boolean {
+  return PR_FORM.test(pr) || LOCAL_PR_FORM.test(pr);
+}
+
+/** Le sha d'une référence locale `local (<sha>)`, ou `null` si ce n'en est pas une. */
+export function localRefSha(pr: string | null): string | null {
+  if (!pr) return null;
+  const m = LOCAL_PR_FORM.exec(pr);
+  return m ? (m[1] ?? null) : null;
+}
 
 /**
  * Lit `id|état|PR|gate|revue|validation|raison`. `-` dit « sans objet » : un champ vide est refusé, pour
@@ -43,8 +57,10 @@ export function parseFicheArg(arg: string): { line?: FicheLine; error?: string }
     return { error: `état « ${state} » inconnu : mergée, PR-ouverte, bloquée ou sautée (fiche ${id})` };
   }
   const prNeeded = state === 'mergée' || state === 'PR-ouverte';
-  if ((prNeeded && !PR_FORM.test(pr)) || (pr !== '-' && !PR_FORM.test(pr))) {
-    return { error: `PR attendue pour la fiche ${id}${prNeeded ? '' : ' (ou -)'}, forme #<numéro>, reçu « ${pr} »` };
+  if ((prNeeded && !prFormOk(pr)) || (pr !== '-' && !prFormOk(pr))) {
+    return {
+      error: `PR attendue pour la fiche ${id}${prNeeded ? '' : ' (ou -)'}, forme #<numéro> ou local (<sha>), reçu « ${pr} »`,
+    };
   }
   if (state !== 'mergée' && reason === '-') {
     return { error: `raison obligatoire hors mergée (fiche ${id}) : dis pourquoi elle n'est pas mergée` };
@@ -119,7 +135,7 @@ export interface Discrepancy {
 export function crossCheck(lines: FicheLine[], prs: Map<string, PrFacts | null>): Discrepancy[] {
   const out: Discrepancy[] = [];
   for (const line of lines) {
-    if (!line.pr) continue;
+    if (!line.pr || localRefSha(line.pr)) continue; // les réfs locales se vérifient hors GitHub (checkLocalRefs)
     const facts = prs.get(line.pr) ?? null;
     if (!facts) {
       out.push({ id: line.id, message: `PR ${line.pr} illisible sur GitHub : non vérifiée`, severity: 'unverified' });
@@ -139,6 +155,28 @@ export function crossCheck(lines: FicheLine[], prs: Map<string, PrFacts | null>)
       } else if (facts.latestReview === 'negative') {
         mismatch('revue GO déclarée, mais le dernier verdict de la PR est négatif (modifications demandées ou NO-GO)');
       }
+    }
+  }
+  return out;
+}
+
+/**
+ * Vérifie les livraisons LOCALES (`local (<sha>)`) contre le `main` local, sans GitHub (fiche
+ * 20261011113632532). Le prédicat `shaOnMain` (fourni par le bord, I/O) dit si un sha est bien sur
+ * `main`. Un sha présent → accepté (aucun écart) ; un sha ABSENT → écart `mismatch` (code 1), nommé.
+ * N'est appelé qu'en mode par défaut : `--no-github` prend le déclaré tel quel, sans ce contrôle.
+ */
+export function checkLocalRefs(lines: FicheLine[], shaOnMain: (sha: string) => boolean): Discrepancy[] {
+  const out: Discrepancy[] = [];
+  for (const line of lines) {
+    const sha = localRefSha(line.pr);
+    if (sha === null) continue;
+    if (!shaOnMain(sha)) {
+      out.push({
+        id: line.id,
+        message: `livraison locale ${line.pr} : le sha ${sha} n'est pas sur le main local (livré ailleurs, ou jamais mergé)`,
+        severity: 'mismatch',
+      });
     }
   }
   return out;

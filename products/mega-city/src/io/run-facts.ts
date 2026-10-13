@@ -90,6 +90,15 @@ export function collectHeadFacts(cwd: string, o: GitOptions = {}): HeadFacts {
   };
 }
 
+/**
+ * Le sha est-il sur la branche `base` LOCALE (ancêtre ou pointe) ? Flux local (`github: false`) :
+ * un `local (<sha>)` d'une fiche livrée doit être sur `main`. `merge-base --is-ancestor` rend 0 si
+ * oui ; un sha absent ou hors-branche rend non-zéro → `false` (donc « pas livré ici »).
+ */
+export function shaOnLocalBranch(cwd: string, sha: string, base = 'main'): boolean {
+  return run('git', ['merge-base', '--is-ancestor', sha, base], cwd) !== null;
+}
+
 /** Ce que GitHub dit d'une PR (`#123`), ou `null` si `gh` ne répond pas. */
 export function fetchPrFacts(cwd: string, pr: string): PrFacts | null {
   const number = pr.replace(/^#/, '');

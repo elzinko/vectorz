@@ -161,8 +161,13 @@ async function main(argv: string[]): Promise<number> {
   // INIT_CWD laissée par un pnpm parent est périmée : on la remplace par le vrai dossier, que les
   // scripts lancés relisent eux-mêmes (fiche 20261004181110120 : un test écrivait dans le vrai dépôt
   // de vectorz).
-  const { dir: userCwd, staleInitCwd } = userDirectory(process.env, process.cwd(), real);
-  if (staleInitCwd) process.env.INIT_CWD = userCwd;
+  const { dir: userCwd } = userDirectory(process.env, process.cwd(), real);
+  // On pose TOUJOURS INIT_CWD au vrai dossier de l'utilisateur : une INIT_CWD périmée (pnpm parent)
+  // est remplacée, ET une INIT_CWD absente (appel direct d'`ezk`) est posée — sinon une commande
+  // « fixe » (cwd = dépôt de la méthode) ferait croire aux scripts qu'ils visent vectorz alors que
+  // l'utilisateur est dans un projet hôte (run context/report affichaient le mauvais dépôt, fiche
+  // 20261011113632532 ; test d'écriture dans le vrai dépôt, fiche 20261004181110120).
+  process.env.INIT_CWD = userCwd;
   const checkout = findCheckoutRoot(userCwd, existsSync);
   const other = delegationTarget({
     ownRoot: OWN_ROOT,

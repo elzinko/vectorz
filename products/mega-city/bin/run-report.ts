@@ -14,15 +14,17 @@
  * Code 2 : mauvais usage ou ligne de fiche incomplète.
  */
 import {
+  checkLocalRefs,
   crossCheck,
   type Discrepancy,
   type FicheLine,
+  localRefSha,
   parseFicheArg,
   type PrFacts,
   renderRunReport,
   type Tokens,
 } from '../src/core/run-report.js';
-import { collectHeadFacts, fetchPrFacts } from '../src/io/run-facts.js';
+import { collectHeadFacts, fetchPrFacts, shaOnLocalBranch } from '../src/io/run-facts.js';
 
 function usage(): never {
   console.error(`usage: run:report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …]
@@ -82,11 +84,16 @@ function main(): void {
   let state: 'checked' | 'skipped' | 'unreachable' = github ? 'checked' : 'skipped';
   let discrepancies: Discrepancy[] = [];
   if (github) {
+    // Les réfs locales `local (<sha>)` ne passent pas par GitHub : on ne les fetch pas, on les
+    // vérifie contre le main local (fiche 20261011113632532).
     const prs = new Map<string, PrFacts | null>();
-    for (const l of lines) if (l.pr && !prs.has(l.pr)) prs.set(l.pr, fetchPrFacts(cwd, l.pr));
+    for (const l of lines) if (l.pr && !localRefSha(l.pr) && !prs.has(l.pr)) prs.set(l.pr, fetchPrFacts(cwd, l.pr));
     const answered = [...prs.values()].some((p) => p !== null);
     if (prs.size > 0 && !answered) state = 'unreachable';
-    else discrepancies = crossCheck(lines, prs);
+    else {
+      const local = checkLocalRefs(lines, (sha) => shaOnLocalBranch(cwd, sha, base ?? 'main'));
+      discrepancies = [...crossCheck(lines, prs), ...local];
+    }
   }
 
   const head = collectHeadFacts(cwd, { fetch, ...(base ? { base } : {}) });

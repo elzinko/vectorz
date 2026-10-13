@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [run, dx, host-project, mode-local]
-status: idea
+status: ready
 pr:
 evidence: none
 created: 2026-10-11
@@ -48,13 +48,18 @@ Vécu en session muti 2026-10-10/11 (rétro [`2026-10-11-retro-outillage-et-auto
 
 ## Critères d'acceptation
 
-- [ ] `ezk run context` lancé depuis un projet hôte montre l'`origin/main` et le worktree **du projet**, pas de vectorz.
-- [ ] `ezk run report` accepte une ligne de fiche avec `--pr "local (<ref>)"` (pas seulement `#<numéro>`), et ne refuse pas un projet `github: false`.
-- [ ] En mode local, un `local (<sha>)` dont le sha est sur le `main` local est **accepté et rendu** ; un sha **absent** du `main` local sort en **écart (code 1)**, le sha nommé.
-- [ ] Une fiche `mergée` sans PR ni `local (<sha>)` est **toujours refusée**.
-- [ ] La comparaison « déclaré vs GitHub » de `run report` est **sautée** proprement quand il n'y a pas de PR GitHub.
-- [ ] Le mode GitHub (`#<numéro>`) ne change pas ; `--no-github` dans un dépôt GitHub prend le déclaré tel quel, sans regarder le `main` local.
-- [ ] Un test couvre une livraison locale acceptée en `--no-github`.
+> **Critère « run context vise le projet hôte » déplacé (2026-10-13).** `run context`/`run report` sont
+> des commandes « méthode » (root `fixed`) qui refusent un projet hôte ; les rendre *project-aware*
+> (accepter `--root <hôte>` et lire SES faits git) relève de la même surface que la fiche hôte
+> `20261004083344960` — à traiter là. Un pas fait au passage : le routeur `ezk` pose désormais
+> toujours `INIT_CWD` au dossier de l'utilisateur, donc `run context` lancé **depuis un worktree**
+> (appel direct hors pnpm) ne retombe plus sur vectorz.
+- [x] `ezk run report` accepte une ligne de fiche avec `--pr "local (<ref>)"` (pas seulement `#<numéro>`), et ne refuse pas un projet `github: false`.
+- [x] En mode local, un `local (<sha>)` dont le sha est sur le `main` local est **accepté et rendu** ; un sha **absent** du `main` local sort en **écart (code 1)**, le sha nommé.
+- [x] Une fiche `mergée` sans PR ni `local (<sha>)` est **toujours refusée**.
+- [x] La comparaison « déclaré vs GitHub » de `run report` est **sautée** proprement quand il n'y a pas de PR GitHub.
+- [x] Le mode GitHub (`#<numéro>`) ne change pas ; `--no-github` dans un dépôt GitHub prend le déclaré tel quel, sans regarder le `main` local.
+- [x] Un test couvre une livraison locale acceptée en `--no-github`.
 
 ## Comment vérifier
 
