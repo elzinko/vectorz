@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md](../20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md)
+> 🗎 Rendu de la fiche [features/20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md](../done/20261003201034897_ezk-dit-quand-le-principal-est-en-retard.md)
 
 # 20261003201034897 — La commande ezk dit quand le dossier principal de vectorz est en retard, et quoi lancer
 

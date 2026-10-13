@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [ezk, cross-repo]
-status: ready
-pr:
+status: shipped
+pr: "local (d520e6f4)"
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
 ---
