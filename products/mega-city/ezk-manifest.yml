@@ -263,6 +263,12 @@ commands:
     summary: Rend le bilan de fin de run, une ligne par fiche, avec HEAD et jetons (--root <projet>).
     root: none
     project: true
+  - domain: run
+    verb: reconcile
+    run: skills/ezk-pr/scripts/reconcile-worktree.sh
+    summary: Réaligne le worktree de session sur main après un ship local, ou dit N commits de retard (--root <projet>).
+    root: none
+    project: true
   - domain: sprint
     verb: report
     run: bin/sprint-report.ts
