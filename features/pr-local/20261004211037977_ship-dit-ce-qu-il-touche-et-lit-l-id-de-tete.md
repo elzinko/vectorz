@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md](../20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md)
+> 🗎 Rendu de la fiche [features/20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md](../done/20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md)
 
 # 20261004211037977 — ezk backlog ship dit tout ce qu'il touche, et ne lit que l'id de tête dans PLAN.md
 

@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [backlog, ship, mode-local]
-status: ready
-pr:
+status: shipped
+pr: "local (3162a04c)"
 evidence: none # commande de terminal, pas d'écran
 created: 2026-10-04
 merged_from: ["20261010235330053"]
@@ -69,7 +69,7 @@ l'entrée de `features/PLAN.md` barrée. Il ne committe pas : on committe après
       `20261002115451315` apparaissait sur 2 lignes — une note de prose + l'entrée au suffixe non
       standard `· idea → maquette` — et `ship` a barré 0 ligne sans avertir ; repéré en lisant la
       sortie à l'œil, barré à la main. Rétro du 2026-10-10, capture
-      [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md).)*
+      [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md).)*
 
 ## Comment vérifier
 
@@ -86,5 +86,5 @@ ezk backlog ship --dry-run --pr 'local (abc1234)' features/<id>_<slug>.md   # li
   `…20261004222239608-…`).
 - P2 proposé par le pilote (un contournement à la main existe) ; à confirmer au planning.
 - **Fusion (2026-10-11)** : absorbe « ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue » (20261010235330053, rétro run règles composables du 2026-10-10) — même surface `ship:fiche`, critère du marqueur en queue repris ci-dessus.
-- Voisine : [la transaction de ship](done/20260830194601233_ship-transactionnel-liens-vues.md),
+- Voisine : [la transaction de ship](20260830194601233_ship-transactionnel-liens-vues.md),
   livrée (20260830194601233).
