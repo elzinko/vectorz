@@ -44,7 +44,7 @@ Aujourd'hui, les moments existent mais sont éparpillés :
   `heartbeat`, `run_finished`), décrits dans `products/mega-city/src/supervision/README.md` et
   recopiés dans le texte d'`ezk-sprint` et d'`ezk-product-build` ;
 - les gestes GitHub deviennent des verbes du guichet `ezk forge` (`changes`, `integrate`), par la
-  fiche [20261004083838593](../20261004083838593_guichet-unique-github-archive-reconcile.md) ;
+  fiche [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) ;
 - la fiche [0171](../0171-adapter-github-issues-push-only.md) ajoute des moments à elle : créer une
   issue au passage en `ready`, une release à la clôture d'une version ;
 - la revue a sa règle « plancher et filet » dans
@@ -105,7 +105,7 @@ au hasard, quand il se produit, s'il bloque la méthode, et quel outil peut s'y 
 
 - Décidé par l'ADR-0061, section « Perspective », sous-section « Faut-il attendre un deuxième
   plugin ? ».
-- Voisines : [20261004083838593](../20261004083838593_guichet-unique-github-archive-reconcile.md)
+- Voisines : [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md)
   (le guichet, premier canal), [20260830110131298](../20260830110131298_supervision-ezk-plugin-separable.md)
   (sortir la supervision du texte des skills, futur canal des événements),
   [0029](../0029-contrat-supervisabilite-v02-differes.md) (la v0.2 du contrat de supervisabilité,

@@ -7,10 +7,11 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [github-optionnel, cross-repo]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261013074251752, 20261013074251767"
 evidence: none # commandes et scripts, aucun écran
 created: 2026-10-04
+split_into: ["20261013074251752", "20261013074251767"]
 ---
 
 # 20261004083838593 — Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false »
@@ -23,7 +24,7 @@ revenir.
 
 **Si tu arrives frais.** `.vectorz/config.yml` est la config d'un projet suivi par la méthode ;
 `github: false` y coupe les PR, la CI cloud et la revue Codex. Le motif retenu est décrit dans
-[ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
+[ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 
 ## Contexte / Problème
 
@@ -43,7 +44,7 @@ seulement lisent la config (relevé dans l'ADR-0061).
 ## Proposition
 
 Mettre en œuvre les décisions D1, D2 et D4 de
-[ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md), pour le premier
+[ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md), pour le premier
 cran seulement :
 
 1. **Le guichet.** Une commande `ezk forge changes --open|--merged`. Un cœur pur choisit l'adaptateur
@@ -99,8 +100,8 @@ pnpm --dir products/mega-city test
 
 ## Notes / décisions
 
-- Motif et options écartées : [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
-- Suite : [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le
+- Motif et options écartées : [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
+- Suite : [20261004083838687](../20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le
   verbe `integrate` sur ce guichet.
 - Codes de sortie des trois états : à fixer au grooming.
 - Demandé depuis muti : sa gate locale (`ci:local:signal`) fait déjà son propre contrôle (option A

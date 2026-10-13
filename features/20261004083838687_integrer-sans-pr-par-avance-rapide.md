@@ -22,7 +22,7 @@ push en avance rapide. Elle marche depuis n'importe quel worktree.
 
 **Si tu arrives frais.** Un projet à `github: false` (dans `.vectorz/config.yml`) n'ouvre pas de
 PR. Le guichet `ezk forge` est posé par la fiche
-[20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) ; le motif est
+[20261004083838593](done/20261004083838593_guichet-unique-github-archive-reconcile.md) ; le motif est
 dans [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 
 ## Contexte / Problème
@@ -97,7 +97,7 @@ pnpm --dir products/mega-city test
 
 ## Notes / décisions
 
-- Dépend de [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md),
+- Dépend de [20261004083838593](done/20261004083838593_guichet-unique-github-archive-reconcile.md),
   qui pose le guichet.
 - À trancher au grooming : squasher la branche avant le `push-ff`, ou pousser ses commits tels
   quels (muti pousse tels quels aujourd'hui).

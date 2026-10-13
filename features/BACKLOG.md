@@ -271,6 +271,7 @@
 | [20261002230039755](done/20261002230039755_revue-rejoue-scripts-bash.md) | La revue locale rejoue les scripts bash modifiés sur des entrées hostiles | feature | P2 | v0.11.0 | mega-city | ✅ shipped | local (186c5d8b) |
 | [20261003072823731](done/20261003072823731_ezk-backlog-vise-le-dossier-courant.md) | Sans --root, ezk backlog vise le dépôt du dossier où on tape la commande | feature | P2 | v0.5.0 | mega-city | ✅ shipped | #344 |
 | [20261003201035260](done/20261003201035260_recits-de-session-de-retour-sur-main.md) | Les récits de session reviennent sur main : l'historique des runs est figé au 30 août | bug | P2 | v0.7.0 | mega-city | ✅ shipped | local (274d25b4) |
+| [20261004083838593](done/20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 | v0.12.0 | mega-city | 🧩 split | split — scindée en 20261013074251752, 20261013074251767 |
 | [20261004211038053](done/20261004211038053_run-report-livraison-locale.md) | ezk run report décrit un run livré en local, sans numéro de PR | bug | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261011113632532 |
 | [20261007115128214](done/20261007115128214_descendre-config-cop1-racine-vers-produit.md) | Descendre cop1.config.example.yaml de la racine vers products/cop1/ | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9) |
 | [20261007115129448](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md) | CLAUDE.md = simple proxy vers la loi, bindée par projet et visible dans le dépôt | refactor | P2 | v0.9.0 | vectorz | ✅ shipped | local (v0.9.0) |
@@ -356,7 +357,6 @@
 | [20261003201035080](20261003201035080_skills-sans-section-double-tests-sans-donnee-figee.md) | Un contrôle refuse une section en double dans un skill, et les tests ne figent plus l'état du backlog | feature | P2 | v0.16.0 | mega-city | 💡 idea |  |
 | [20261003201035168](20261003201035168_portier-archive-fiches-et-adr-contre-origin-main.md) | Le portier d'ezk-archive juge les fiches livrées et les ADR contre origin/main | bug | P2 | v0.14.0 | mega-city | 💡 idea |  |
 | [20261004083345055](20261004083345055_pr-range-sa-fiche-seule.md) | Une PR ne range que sa fiche : l'index se régénère après la fusion | feature | P2 | v0.13.0 | mega-city | 💡 idea |  |
-| [20261004083838593](20261004083838593_guichet-unique-github-archive-reconcile.md) | Un seul guichet pour GitHub : ezk-archive et reconcile respectent « github: false » | feature | P2 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) | Sans PR, intégrer par push en avance rapide, au choix du projet | feature | P2 | v0.12.0 | mega-city | 💡 idea |  |
 | [20261004211037977](20261004211037977_ship-dit-ce-qu-il-touche-et-lit-l-id-de-tete.md) | ezk backlog ship dit tous les fichiers qu'il touche, et ne lit que l'id en tête d'une ligne de PLAN.md | bug | P2 | v0.13.0 | mega-city | 💡 idea |  |
 | [20261007151859476](20261007151859476_ezk-debugging-debogage-systematique.md) | ezk-debugging — skill de débogage systématique (4 phases) | feature | P2 |  | vectorz | 💡 idea |  |
@@ -380,6 +380,8 @@
 | [20261012231419250](20261012231419250_board-config-projet.md) | Board : la config projet (lancement, qualité, intégration) + modèle résolu par rôle | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261012231419263](20261012231419263_board-assistant-ajout-projet.md) | Board : l'assistant d'ajout de projet (racine, outil, défauts) | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261013013553044](20261013013553044_ship-committe-recals-liens-hors-features.md) | ship/close committe les recals de liens hors features/ (sinon principal dirty) | bug | P2 |  | mega-city | 💡 idea |  |
+| [20261013074251752](20261013074251752_guichet-forge-trois-etats.md) | Le guichet ezk forge : une commande, trois états (ok/off/unavailable) | feature | P2 | v0.12.0 | mega-city | 💡 idea |  |
+| [20261013074251767](20261013074251767_clients-guichet-forge-cliquet.md) | ezk-archive et reconcile passent par le guichet forge (+ cliquet anti-régression) | feature | P2 | v0.12.0 | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 | v0.12.0 | mega-city | 💡 idea |  |
