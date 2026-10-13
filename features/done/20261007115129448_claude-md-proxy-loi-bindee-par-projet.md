@@ -150,4 +150,4 @@ Proposition et les Critères ci-dessus reflètent cette décision.
   on binde depuis un worktree (`.git` est un fichier). Pour vectorz le hook `commit-msg` existe déjà
   (partagé), donc l'échec portait sur une écriture redondante ; les artefacts de la fiche (loi +
   `CLAUDE.md`) sont corrects. Correctif worktree-aware fiché à part :
-  [20261011111526693](../20261011111526693_lawgiver-bind-hooks-worktree-aware.md).
+  [20261011111526693](20261011111526693_lawgiver-bind-hooks-worktree-aware.md).

@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [lawgiver, worktree]
-status: ready
-pr:
+status: shipped
+pr: "local (3505dc23)"
 evidence: none
 created: 2026-10-11
 ---
@@ -26,7 +26,7 @@ vers le vrai dossier git commun.
 
 ## Contexte / Problème
 
-Remonté par le dogfooding de la fiche [CLAUDE.md proxy](done/20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
+Remonté par le dogfooding de la fiche [CLAUDE.md proxy](20261007115129448_claude-md-proxy-loi-bindee-par-projet.md)
 (run auto 2026-10-11) : `pnpm … lawgiver bind base <worktree> claude-code-law` écrit bien
 `.iamthelaw/ENTRY.md` et le bloc `CLAUDE.md`, puis échoue sur :
 
