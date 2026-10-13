@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261011142027748_ezk-adr-new-prochain-id-libre.md](../20261011142027748_ezk-adr-new-prochain-id-libre.md)
+> 🗎 Rendu de la fiche [features/20261011142027748_ezk-adr-new-prochain-id-libre.md](../done/20261011142027748_ezk-adr-new-prochain-id-libre.md)
 
 # 20261011142027748 — ezk adr new : le prochain id d'ADR libre, sans deviner
 

@@ -180,7 +180,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261011091552583` — regen n'écrit plus un titre cassé avec `--root` · P2 · `groom`~~ — shipped
 - ~~`20261002230039755` — la revue locale rejoue les scripts bash sur entrées hostiles · P2 · `groom`~~ — shipped
 - `20261001133500750` — le lint couvre enfin le code de mega-city · P2 · `groom`
-- `20261011142027748` — `ezk adr new` : prochain id d'ADR libre des deux dossiers · P2 · `groom`
+- ~~`20261011142027748` — `ezk adr new` : prochain id d'ADR libre des deux dossiers · P2 · `groom`~~ — shipped
 
 ### ⑬ v0.12.0 — le flux local sans friction
 > Les commandes `ezk` doivent travailler depuis un projet hôte, et `github: false` tenir de bout en bout.

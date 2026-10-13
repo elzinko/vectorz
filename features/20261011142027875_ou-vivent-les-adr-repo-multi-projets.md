@@ -25,7 +25,7 @@ déplacement de fichiers.
 **Si tu arrives frais.** Un *ADR* est une note de décision d'architecture, numérotée. Le dépôt
 est un monorepo : la méthode (`products/mega-city/`) et le reste (`docs/`) ont chacun leur
 dossier d'ADR. Le câblage « prochain id libre des deux dossiers » est traité à part
-(fiche sœur [ezk adr new](20261011142027748_ezk-adr-new-prochain-id-libre.md)) ; ici, c'est la
+(fiche sœur [ezk adr new](done/20261011142027748_ezk-adr-new-prochain-id-libre.md)) ; ici, c'est la
 **décision de fond**.
 
 ## Contexte / Problème
