@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002230039650_ship-pose-une-fois-apres-codex.md](../20261002230039650_ship-pose-une-fois-apres-codex.md)
+> 🗎 Rendu de la fiche [features/20261002230039650_ship-pose-une-fois-apres-codex.md](../done/20261002230039650_ship-pose-une-fois-apres-codex.md)
 
 # 20261002230039650 — Poser le commit ship une seule fois, après la revue et la première passe Codex
 

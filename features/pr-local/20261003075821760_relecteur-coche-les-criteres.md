@@ -73,7 +73,7 @@ Concrètement :
 
 - **Avant le ship, toujours** : le ship range la fiche dans `done/`, les cases doivent y être déjà.
   Compatible avec la fiche
-  [« Poser le commit ship une seule fois »](../20261002230039650_ship-pose-une-fois-apres-codex.md),
+  [« Poser le commit ship une seule fois »](../done/20261002230039650_ship-pose-une-fois-apres-codex.md),
   quel que soit le moment du ship.
 - **Un verdict au format fixe**, une ligne par critère : `critère N : prouvé — <preuve>` ou
   `critère N : non prouvé — <manque>`. On peut ainsi vérifier mécaniquement que les cases de la fiche
