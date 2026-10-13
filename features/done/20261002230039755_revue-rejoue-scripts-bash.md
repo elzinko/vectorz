@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [revue]
-status: ready
-pr:
+status: shipped
+pr: "local (186c5d8b)"
 evidence: none # changement de méthode de revue, pas d'écran
 created: 2026-10-03
 ---
@@ -59,7 +59,7 @@ famille trouvé par Codex après le GO local (point de départ : 3 sur la PR #33
 ## Notes / décisions
 
 - Retenue à la rétro du 2026-10-03 :
-  [capture](../docs/captures/2026-10-03-retro-session-2026-10-02.md), proposition 4. Portée par
+  [capture](../../docs/captures/2026-10-03-retro-session-2026-10-02.md), proposition 4. Portée par
   la revue, soutenue par qualité, architecture et produit.
 - Réserve du dev : le coût de ce rejeu à chaque diff bash. À mesurer au build ; s'il pèse trop,
   limiter le rejeu aux scripts que le diff modifie vraiment.

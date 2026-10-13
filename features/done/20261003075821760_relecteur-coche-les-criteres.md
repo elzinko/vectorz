@@ -132,7 +132,7 @@ pnpm --dir products/mega-city test
   et accepter sont deux gestes ; le relecteur prouve, le PO accepte, l'agent qualité fournit ses
   preuves quand il est appelé) et « avis de l'architecte » (la preuve tombe entre la revue et le
   ship, verdict au format fixe, cases recopiées).
-- Voisine distincte : [« La revue locale rejoue les scripts bash modifiés »](../20261002230039755_revue-rejoue-scripts-bash.md)
+- Voisine distincte : [« La revue locale rejoue les scripts bash modifiés »](20261002230039755_revue-rejoue-scripts-bash.md)
   (même agent, autre geste : exécuter les scripts, pas valider les critères).
 - Lien avec la règle `development/acceptance-criteria-before-merge` : elle garantit que chaque
   critère **peut** se cocher avant le merge ; cette fiche dit **qui** le coche.

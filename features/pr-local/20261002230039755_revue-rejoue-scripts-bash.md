@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002230039755_revue-rejoue-scripts-bash.md](../20261002230039755_revue-rejoue-scripts-bash.md)
+> 🗎 Rendu de la fiche [features/20261002230039755_revue-rejoue-scripts-bash.md](../done/20261002230039755_revue-rejoue-scripts-bash.md)
 
 # 20261002230039755 — La revue locale rejoue les scripts bash modifiés sur des entrées hostiles
 
