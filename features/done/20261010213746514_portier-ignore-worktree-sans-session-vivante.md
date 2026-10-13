@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [ezk-sprint, portier]
-status: ready
-pr:
+status: superseded
+pr: "superseded by 20261003011750521 (f0a5b0a9)"
 evidence: none
 created: 2026-10-10
 ---
@@ -75,7 +75,7 @@ bash products/mega-city/skills/ezk-sprint/scripts/check.sh --gate
 ## Notes / décisions
 
 - Née de la rétro du run « règles composables » du 2026-10-10 (grain n°1), capture
-  [docs/captures/2026-10-10-retro-run-regles-composables.md](../docs/captures/2026-10-10-retro-run-regles-composables.md).
+  [docs/captures/2026-10-10-retro-run-regles-composables.md](../../docs/captures/2026-10-10-retro-run-regles-composables.md).
 - **Tranché au grooming (2026-10-13)** : le portier n'interroge **pas** l'app (couplage fragile). Il
   décide par une **heuristique git, dans `check.sh` seul**, et **fail-safe** : un worktree voisin
   n'est « abandonné » que s'il est **propre ET sa branche fusionnée dans `main`** ; tout le reste
@@ -83,3 +83,14 @@ bash products/mega-city/skills/ezk-sprint/scripts/check.sh --gate
   une alerte. Ce socle couvre le symptôme du 2026-10-10 (sessions archivées, branches fusionnées).
   Une liste de sessions exposée par l'app pourra l'affiner plus tard, sans changer ce socle.
 - Priorité P2 proposée (réduction de bruit, confort d'autonomie) ; à confirmer.
+- **SUPERSEDED (2026-10-14, run v0.14).** Le socle demandé par cette fiche était **déjà livré** par
+  la fiche « les portiers ignorent les copies de réserve propres (règle unique partagée) »
+  (20261003011750521), commit `f0a5b0a9` du **2026-10-05** — avant même le symptôme du 2026-10-10.
+  La lib `lib-worktree-safety.sh` (`worktree_safe_reason`) classe déjà : propre + branche fusionnée
+  dans `main` → `fusionnee` (ignoré, pas d'`ALERT`) ; changements non committés → `dirty`, branche
+  non fusionnée → `unmerged` (→ `ALERT`). `ezk-sprint/scripts/check.sh` la source (point P2) ; le test
+  `test-check-gate.sh` rejoue les deux scénarios (S4 abandonné → CLEAR, S5 vivant → ALERT). Les trois
+  critères d'acceptation sont donc tenus par du code en place et vert. Le symptôme du 2026-10-10
+  (ALERT sur un voisin archivé mais **non fusionné**) est, par la règle fail-safe que cette fiche
+  elle-même retient, le comportement **correct** — la vraie résolution était de nettoyer le dossier
+  mort (fait). Rien à construire : marquée superseded pour ne pas dupliquer du livré (no-dead-code).

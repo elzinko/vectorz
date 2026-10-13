@@ -209,7 +209,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 ### ⑮ v0.14.0 — les portiers robustes
 > Archive, journal de sprint et worktree : des gardes qui ne crient plus au loup. **Groomée 2026-10-13 : tout ready.**
 - ~~`20261004181110201` — le journal de sprint se range par branche, hors du worktree · P1 · `build` (ready)~~ — shipped
-- `20261010213746514` — le portier distingue un worktree vivant d'un abandonné · P2 · `build` (ready)
+- ~~`20261010213746514` — le portier distingue un worktree vivant d'un abandonné · P2 · `build` (ready)~~ — superseded
 - `20261011111526693` — `lawgiver bind` gère un `.git` fichier (worktree) · P2 · `build` (ready)
 - `20261002155911264` — `ezk-archive` reprend proprement un run interrompu · P2 · `build` (ready)
 - `20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `build` (ready)
