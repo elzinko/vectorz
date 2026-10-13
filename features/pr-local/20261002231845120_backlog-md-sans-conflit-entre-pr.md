@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002231845120_backlog-md-sans-conflit-entre-pr.md](../20261002231845120_backlog-md-sans-conflit-entre-pr.md)
+> 🗎 Rendu de la fiche [features/20261002231845120_backlog-md-sans-conflit-entre-pr.md](../done/20261002231845120_backlog-md-sans-conflit-entre-pr.md)
 
 # 20261002231845120 — BACKLOG.md ne fait plus conflit entre deux PR ouvertes en même temps
 

@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [backlog]
-status: ready
-pr:
+status: shipped
+pr: "local (ae5520ef)"
 evidence: none # vue générée et outillage git, pas d'écran
 created: 2026-10-03
 ---
@@ -21,7 +21,7 @@ conflit, à chaque fois. Depuis que le ship voyage dans la PR (ADR-0049), **chaq
 touche. On veut que deux PR ouvertes en même temps se mergent l'une après l'autre sans conflit.
 
 **Si tu arrives frais.** `BACKLOG.md` est l'index du backlog, **généré** depuis les fiches par
-`regen-backlog.sh`. On ne l'édite jamais à la main. L'[ADR-0055](../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md)
+`regen-backlog.sh`. On ne l'édite jamais à la main. L'[ADR-0055](../../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md)
 a sorti de git les autres vues générées, mais il a **gardé** celle-ci, parce qu'on la lit sur GitHub.
 
 ## Contexte / Problème
@@ -39,7 +39,7 @@ PR B : livre une fiche   → réécrit BACKLOG.md ─┘
 ```
 
 **Pourquoi ça empire.** La fiche livrée
-[« La fiche d'une story arrive en done avec son merge »](done/20261002114435782_done-par-story-a-la-validation.md)
+[« La fiche d'une story arrive en done avec son merge »](20261002114435782_done-par-story-a-la-validation.md)
 fait entrer le commit ship, donc la régénération de `BACKLOG.md`, dans **chaque** PR de story.
 Deux stories en parallèle conflicteront donc toujours.
 
@@ -107,7 +107,7 @@ pnpm --dir products/mega-city test:scripts
 ## Notes / décisions
 
 - **Suite de** la fiche livrée
-  [« Décider quelles vues générées ne plus committer »](done/20260830194601376_spike-degiter-vues-outillage.md),
+  [« Décider quelles vues générées ne plus committer »](20260830194601376_spike-degiter-vues-outillage.md),
   qui a produit l'ADR-0055 et gardé `BACKLOG.md` versionné.
 - **P1 demandée par le PO** le 2026-10-03 : le conflit touche désormais chaque PR de story.
 - **Grooming du 2026-10-03** : technique « avis de l'architecte », gardée par le PO. Faits vérifiés

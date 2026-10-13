@@ -81,5 +81,5 @@ pnpm --dir products/mega-city test:scripts
   Écartées pour l'instant : garder le rendu complet avec un bandeau « aperçu » (redondant avec
   l'onglet « Files changed » de GitHub) ; supprimer les PR de backlog au profit d'un push direct sur
   `main` (une confirmation de push à chaque geste ; à revoir après la fiche
-  [« BACKLOG.md ne fait plus conflit »](20261002231845120_backlog-md-sans-conflit-entre-pr.md)).
+  [« BACKLOG.md ne fait plus conflit »](done/20261002231845120_backlog-md-sans-conflit-entre-pr.md)).
 - Le corps de la PR #339 a été réécrit à la main dans la forme courte, le 2026-10-03, comme essai.

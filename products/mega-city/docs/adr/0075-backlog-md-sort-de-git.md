@@ -37,4 +37,4 @@ GitHub. La liste des fiches de `features/` (noms `<id>_<slug>`) y reste lisible 
   (le guide) ou `features/PLAN.md` (la séquence) : un clone frais n'a plus le fichier tant que
   `regen` n'a pas tourné.
 - **Réversible** : il suffit de recommiter le fichier et de retirer la ligne du `.gitignore`.
-- Fiche : [20261002231845120](../../../../features/20261002231845120_backlog-md-sans-conflit-entre-pr.md).
+- Fiche : [20261002231845120](../../../../features/done/20261002231845120_backlog-md-sans-conflit-entre-pr.md).
