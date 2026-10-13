@@ -41,6 +41,13 @@ for p in $PATHS; do
   fi
 done
 files="$(printf '%s' "$files" | grep -v '^[[:space:]]*$' || true)"
+# Les vues générées NON committées (features/BACKLOG.md, PORTFOLIO.md… — gitignored, ADR-0075) sont
+# transitoires et régénérées à la demande : une copie périmée dans un worktree ferait un faux rouge.
+# Elles ne sont pas une source de vérité pour les liens — on les retire du périmètre.
+if [ -n "$files" ] && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  ignored="$(printf '%s\n' "$files" | git check-ignore --stdin 2>/dev/null || true)"
+  [ -n "$ignored" ] && files="$(printf '%s\n' "$files" | grep -vxF "$ignored" || true)"
+fi
 [ -n "$files" ] || { echo "erreur: aucun .md dans le périmètre : $PATHS" >&2; exit 2; }
 nb_files="$(printf '%s\n' "$files" | wc -l | tr -d ' ')"
 

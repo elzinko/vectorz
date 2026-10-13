@@ -228,6 +228,38 @@ describe('planShip — calcule tout en mémoire, refuse avant d’écrire', () =
     ).toThrow(/mêle une fiche livrée/);
   });
 
+  it('une ligne qui CITE l’id livré (pas en tête) ne bloque plus le ship (fiche 20261004211037977)', () => {
+    const files = fixture();
+    files['features/PLAN.md'] =
+      '## NOW\n\n- `20260101000000001` — la fiche A · `build`\n- `20260101000000003` — autre, dépend de `20260101000000001` · `build`\n';
+    const plan = planShip(memFs(files), { ...ship, files: [A] });
+    expect(plan.planBarred).toEqual(['20260101000000001']); // sa propre ligne barrée
+    // La ligne de 003 CITE A, mais A n’en est pas le sujet (après le —) → ni « mêlée », ni refus, intacte.
+    expect(plan.writes.get('features/PLAN.md')).toContain(
+      '- `20260101000000003` — autre, dépend de `20260101000000001` · `build`',
+    );
+  });
+
+  it('touched : liste TOUS les fichiers modifiés, pas seulement features/ (fiche 20261004211037977)', () => {
+    const plan = planShip(memFs(fixture()), { ...ship, files: [A, B] });
+    expect(plan.touched).toContain('docs/x.md'); // lien recalé HORS features/ : à committer aussi
+    expect(plan.touched).toContain('features/done/20260101000000001_a.md');
+    expect(plan.touched).toContain('features/done/20260101000000002_b.md');
+    expect(plan.touched).toContain('features/done/20260101000000009_z.md'); // lien entrant recalé
+    expect(plan.touched).toContain('features/PLAN.md');
+    expect(plan.touched).not.toContain('features/BACKLOG.md'); // régénéré à part, non suivi (ADR-0075)
+  });
+
+  it('planPresentNotBarred : une fiche livrée encore citée sans ligne barrée est signalée, jamais muet', () => {
+    const files = fixture();
+    // B n’a pas d’entrée à faire (avec marqueur) : juste une note de prose qui le cite.
+    files['features/PLAN.md'] =
+      '## NOW\n\n- `20260101000000001` — la fiche A · `build`\n- note : voir aussi `20260101000000002`\n';
+    const plan = planShip(memFs(files), { ...ship, files: [B] });
+    expect(plan.planBarred).toEqual([]); // aucune ligne barrée automatiquement pour B
+    expect(plan.planPresentNotBarred).toEqual(['20260101000000002']); // mais B reste cité → signalé
+  });
+
   it('filet : un recaleur défaillant fait monter les liens cassés → refus, avec les liens fautifs', () => {
     const sabote = { recal: (text: string) => ({ text, count: 0 }) };
     let refus: ShipRefusal | undefined;

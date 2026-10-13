@@ -22,6 +22,12 @@ export type PlanMarker = 'build' | 'audit' | 'ship' | 'groom';
 export interface PlanEntry {
   /** Tous les ids de la ligne, dans l'ordre du document, dédupliqués intra-ligne. */
   ids: string[];
+  /**
+   * Les ids de TÊTE : le(s) sujet(s) de la ligne, avant le premier tiret cadratin « — ». Un id
+   * cité plus loin (parenthèse, « dépend de X ») n'en fait pas partie. C'est eux que le plan
+   * « barre » quand la fiche est livrée — pas un id simplement mentionné (fiche 20261004211037977).
+   */
+  headIds: string[];
   /** Le contenu de la ligne (après la puce), brut — l'intention/le marqueur en clair. */
   text: string;
   /** Marqueur d'action du contrat `plan`, ou null. */
@@ -78,9 +84,22 @@ export function parsePlanSections(planMd: string): PlanSection[] {
     }
     if (ids.length === 0) continue; // puce racine sans id = prose structurante, pas une entrée
 
+    // Ids de tête : ceux du segment AVANT le premier tiret cadratin « — » (le sujet de la ligne).
+    // Un id cité après le tiret (parenthèse, « dépend de X ») n'en est pas. Un sujet en prose
+    // (« Distribution — 0087 · 0050 … ») n'a AUCUN id de tête : la ligne n'est le sujet d'aucune
+    // fiche, donc jamais barrée automatiquement (fiche 20261004211037977). Sans tiret, tout le
+    // contenu est la tête.
+    const headPart = content.split('—')[0].replace(ISO_DATE_RE, ' ');
+    const headIds: string[] = [];
+    for (const m of headPart.matchAll(ID_RE)) {
+      const id = m[1];
+      if (!headIds.includes(id)) headIds.push(id);
+    }
+
     const marker = content.match(MARKER_RE);
     current.entries.push({
       ids,
+      headIds,
       text: content,
       marker: marker ? (marker[1].toLowerCase() as PlanMarker) : null,
       struck: content.includes('~~'),

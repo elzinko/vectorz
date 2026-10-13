@@ -155,6 +155,20 @@ check "message explicite"         "grep -q 'chemin absent' '$TMP/i.err'"
 "$SCRIPT" "$TMP/racine-absente" >/dev/null 2>"$TMP/i2.err"; rc_i2=$?
 check "racine absente → code 2"   "[ $rc_i2 -eq 2 ]"
 
+# ── Cas J : une vue générée gitignorée (BACKLOG.md) n'est PAS vérifiée (ADR-0075) ─────────
+# Transitoire et régénérée : une copie périmée en worktree ferait un faux rouge.
+J="$TMP/j"
+md "$J/features/0001-alpha.md" '# alpha' 'ok [0002](0002-beta.md).'
+md "$J/features/0002-beta.md"  '# beta'  'ok [0001](0001-alpha.md).'
+md "$J/features/BACKLOG.md"    '# index' 'lien périmé [x](0099-disparue.md).'  # cassé, mais gitignored
+git -C "$J" init -q >/dev/null 2>&1
+echo 'features/BACKLOG.md' > "$J/.gitignore"
+out_j="$("$SCRIPT" "$J" features 2>"$TMP/j.err")"; rc_j=$?
+echo "Cas J (vue générée gitignorée ignorée) :"
+check "code 0 malgré le lien cassé de BACKLOG.md" "[ $rc_j -eq 0 ]"
+check "le lien cassé de BACKLOG.md n'est pas signalé" "[ -z \"\$out_j\" ]"
+check "BACKLOG.md hors du décompte (2 liens vérifiés)" "grep -q '2 lien(s) relatif(s)' '$TMP/j.err'"
+
 echo
 if [ "$FAIL" -eq 0 ]; then echo "check-links : tous les cas passent."; else echo "check-links : ÉCHEC."; fi
 exit "$FAIL"

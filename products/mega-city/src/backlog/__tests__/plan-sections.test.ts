@@ -52,6 +52,21 @@ describe('parsePlanSections (fiche 20260825213807501 — vue Plan)', () => {
     expect(parsePlanOrder(md)).toEqual([]);
   });
 
+  it('distingue l’id de TÊTE (sujet, avant le —) d’un id seulement cité (fiche 20261004211037977)', () => {
+    const md = [
+      '## ▶️ NOW',
+      '1. **0094** — config, voir 0062 · `build`', // tête 0094, cite 0062 dans le texte
+      '2. **0017** et **0033** — chantier commun · `build`', // deux sujets de tête
+      '3. **0050** — garde · `build`, dépend de 0078', // tête 0050, cite 0078 en queue
+      '- ⚠️ **Distribution** — 0087 · 0096. NE PAS PUBLIER.', // sujet en prose : aucun id de tête
+    ].join('\n');
+    const [now] = parsePlanSections(md);
+    expect(now.entries.map((e) => e.headIds)).toEqual([['0094'], ['0017', '0033'], ['0050'], []]);
+    // Les ids complets restent capturés (citations incluses) — on ne perd rien.
+    expect(now.entries[0].ids).toEqual(['0094', '0062']);
+    expect(now.entries[2].ids).toEqual(['0050', '0078']);
+  });
+
   it('capte le marqueur d’action et l’état barré (curation « livré »)', () => {
     const md = [
       '## ▶️ NOW',

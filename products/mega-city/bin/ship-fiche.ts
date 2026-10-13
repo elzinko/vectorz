@@ -87,6 +87,14 @@ try {
     `  liens recalés : ${plan.linksRewritten} · cassés avant : ${plan.brokenBefore}, après : ${plan.brokenAfter}`,
   );
   console.log(`  PLAN.md : ${plan.planBarred.length} entrée(s) barrée(s)`);
+  if (plan.planPresentNotBarred.length > 0) {
+    console.log(
+      `  ⚠ PLAN.md : ${plan.planPresentNotBarred.length} fiche(s) encore citée(s), aucune ligne barrée pour elles — à barrer/retirer à la main : ${plan.planPresentNotBarred.join(', ')}`,
+    );
+  }
+  console.log(`  fichiers touchés (${plan.touched.length}) — à committer TOUS, pas seulement features/ :`);
+  for (const f of plan.touched) console.log(`    ${f}`);
+  console.log(`  git add ${plan.touched.join(' ')}`);
   if (dryRun) process.exit(0);
 
   const regen = (): void => {

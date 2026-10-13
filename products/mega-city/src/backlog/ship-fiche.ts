@@ -170,10 +170,10 @@ export function barPlanEntries(
   for (const section of parsePlanSections(planMd)) {
     for (const entry of section.entries) {
       if (entry.struck || !entry.marker) continue; // déjà curée, ou sans action annoncée
-      const hit = entry.ids.filter((id) => shipped.has(id));
-      if (hit.length === 0) continue;
-      if (hit.length < entry.ids.length) {
-        unbarrable.push(...hit);
+      const hit = entry.headIds.filter((id) => shipped.has(id));
+      if (hit.length === 0) continue; // la fiche n'est pas un sujet de la ligne (au plus citée) : on passe
+      if (hit.length < entry.headIds.length) {
+        unbarrable.push(...hit); // plusieurs sujets, tous pas encore livrés : jugement humain
         continue;
       }
       strike.set(entry.text, shipped.get(hit[0]) as string);
@@ -204,7 +204,7 @@ function openPlanEntries(
   for (const section of parsePlanSections(planMd)) {
     for (const entry of section.entries) {
       if (entry.struck || !entry.marker) continue;
-      for (const id of entry.ids) if (ids.has(id)) open.push({ id, where: section.label });
+      for (const id of entry.headIds) if (ids.has(id)) open.push({ id, where: section.label });
     }
   }
   return open;
@@ -240,6 +240,10 @@ export interface ShipPlan {
   brokenBefore: number;
   brokenAfter: number;
   planBarred: string[];
+  /** Tous les fichiers que le ship a modifiés (chemins FINAUX), à committer — pas seulement features/. */
+  touched: string[];
+  /** Fiches livrées encore citées dans PLAN sans qu'une ligne soit barrée : à barrer à la main (jamais muet). */
+  planPresentNotBarred: string[];
 }
 
 /** Un contrôle est rouge : rien n'a été écrit. */
@@ -354,6 +358,23 @@ export function planShip(fs: RepoFs, input: ShipInput, seams: ShipSeams = {}): S
   }
 
   if (reasons.length > 0) throw new ShipRefusal(reasons);
+
+  // Tous les fichiers modifiés, chemins FINAUX (après déplacement) : ce que l'humain doit committer,
+  // pas seulement features/ (un lien recalé dans un ADR en fait partie — fiche 20261004211037977).
+  const touchedSet = new Set<string>();
+  for (const p of writes.keys()) touchedSet.add(moved.get(p) ?? p);
+  for (const to of moved.values()) touchedSet.add(to);
+
+  // Jamais muet : une fiche livrée encore citée dans PLAN sans qu'une ligne soit barrée (note de
+  // prose, suffixe non standard, ou seulement citée) est signalée — à barrer/retirer à la main.
+  const planPresentNotBarred: string[] = [];
+  if (planAfter !== undefined) {
+    for (const id of ids.keys()) {
+      if (planBarred.includes(id)) continue;
+      if (new RegExp(`(?<!\\d)(?:mc-)?${id}(?!\\d)`).test(planAfter)) planPresentNotBarred.push(id);
+    }
+  }
+
   return {
     moves: [...moved].map(([from, to]) => ({ from, to })),
     writes,
@@ -361,6 +382,8 @@ export function planShip(fs: RepoFs, input: ShipInput, seams: ShipSeams = {}): S
     brokenBefore: brokenBefore.length,
     brokenAfter: brokenAfter.length,
     planBarred,
+    touched: [...touchedSet].sort(),
+    planPresentNotBarred,
   };
 }
 
