@@ -55,6 +55,7 @@ SUITES=(
   "skills/ezk-scout/scripts/test-check-report.sh"        # fiche 20260910165637000 — forme du rapport de brouillons (comptes, bornes, garde)
   "skills/ezk-scout/scripts/test-demo-app.sh"            # fiche 20260910165637000 — défauts connus de l'app de démonstration
   "../../tools/launcher/test-dev-branch.sh"              # fiche 20260917162000501 — lanceur universel (projet-jouet : ports, arbres, arrêt ciblé)
+  "bin/test-flux-local-e2e.sh"                           # fiche 20261011091556212 — banc E2E jetable du flux local (github:false) : run report local + regen
 )
 
 FAILED=()

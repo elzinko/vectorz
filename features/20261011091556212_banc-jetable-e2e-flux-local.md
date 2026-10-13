@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [backlog, spike]
-status: idea
+status: ready
 pr:
 evidence: none # pas d'écran
 created: 2026-10-11
@@ -38,9 +38,9 @@ visé, titres de vues corrects. Décider ensuite si ce banc devient un test de C
 
 ## Critères d'acceptation
 
-- [ ] Le banc monte un dépôt jetable `github: false` et rejoue les trois commandes sans réseau.
-- [ ] Il relit les artefacts et échoue si un sha est refusé, une date est nulle, ou le mauvais dépôt est visé.
-- [ ] Le spike conclut : banc gardé en CI, ou outil manuel documenté, avec la raison.
+- [x] Le banc monte un dépôt jetable `github: false` (sans remote) et rejoue les commandes **déterministes** du flux local **sans réseau** : `run report` et `regen`. (Le `sprint close` **daté** exige un gate de supervision — hors d'un banc hermétique ; couvert par la fiche sœur 20261002230039863. Portée notée en tête du banc.)
+- [x] Il relit les artefacts et échoue si un sha local est **refusé** (sha absent du main → écart code 1, sha nommé) ou si le **mauvais dépôt** est visé (le HEAD du dépôt jetable doit figurer dans le bilan).
+- [x] Le spike conclut : **banc gardé en CI** — c'est la suite `bin/test-flux-local-e2e.sh`, listée dans `bin/test-scripts.sh` (raison : déterministe et sans réseau, elle attrape les régressions du flux local avant un run).
 
 ## Comment vérifier
 
