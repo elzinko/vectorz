@@ -24,6 +24,7 @@ import {
   renderRunReport,
   type Tokens,
 } from '../src/core/run-report.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { collectHeadFacts, fetchPrFacts, shaOnLocalBranch } from '../src/io/run-facts.js';
 
 function usage(): never {
@@ -46,7 +47,10 @@ const integer = (value: string | undefined, flag: string): number => {
 };
 
 function main(): void {
-  const argv = process.argv.slice(2);
+  // Le dépôt visé : --root > EZK_ROOT > le dossier courant (jamais vectorz en silence depuis un
+  // projet hôte, fiche 20261013073300242). On retire --root des arguments avant de les parcourir.
+  const fallbackCwd = process.env.INIT_CWD ?? process.cwd();
+  const { root, rest: argv } = projectRootOrExit(fallbackCwd);
   if (argv.length === 0 || argv.includes('--help') || argv.includes('-h')) usage();
   const lines: FicheLine[] = [];
   const errors: string[] = [];
@@ -80,7 +84,7 @@ function main(): void {
     usage();
   }
 
-  const cwd = process.env.INIT_CWD ?? process.cwd();
+  const cwd = root;
   let state: 'checked' | 'skipped' | 'unreachable' = github ? 'checked' : 'skipped';
   let discrepancies: Discrepancy[] = [];
   if (github) {

@@ -230,7 +230,7 @@ brouillon de recette (PR #196).
 
 **Où écrire désormais : le journal des difficultés.** Écris l'entrée **directement** dans un
 fichier durable, hors `SPRINT.md`, avec
-`bash products/mega-city/bin/journal-add.sh <id-fiche> "<titre>" "<ce qui a coincé>" "<comment réglé>" ["<pourquoi>"]`.
+`ezk journal add <id-fiche> "<titre>" "<ce qui a coincé>" "<comment réglé>" ["<pourquoi>"]` (vise le dépôt où tu es, ou `--root <projet>` — marche depuis un projet hôte).
 Une entrée par galère, **taguée par fiche**. Le fichier est propre à la session (le nom de la
 branche) : deux sprints en parallèle ne se marchent pas dessus. Le journal est indépendant du
 labo : `ezk-chef extract` le lit à la demande. Format et règles : `docs/journal/README.md`. (Les
@@ -250,7 +250,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
 4. **TDD POC** — délègue à **`ezk-dev`** : red → green → refactor sur le cœur.
-5. **Gate locale (pipeline)** — rejoue **toute** la validation locale par la commande **unique** `pnpm --dir products/mega-city gate` (vitest **puis** les suites bash `test:scripts`, arrêt au premier rouge — fiche 20261002230039555) ; jamais une seule des deux suites à la main. Puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
+5. **Gate locale (pipeline)** — rejoue **toute** la validation locale du **projet** : ses tests **puis** ses suites bash, arrêt au premier rouge, jamais une seule des deux à la main. Quand tu construis **la méthode elle-même** (vectorz), c'est la commande **unique** `pnpm gate` depuis `products/mega-city` (vitest + `test:scripts`, fiche 20261002230039555). Sur un **projet hôte**, c'est la gate du projet (sa commande de test). Puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR. Cette revue locale est le **plancher** ([ADR-0059](../../docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md)) : aucun merge sans son `GO`, avec ou sans Codex. Garde son verdict tel quel (un fichier) : il laisse une **trace**. La PR n'existe pas encore à cette étape, donc en `pr: on` tu le postes en commentaire de la PR dès son ouverture (étape 8, `gh pr review <N> --comment --body-file <verdict>`), **avant le merge** ; en `pr: off`, `ezk review emit`. Codex est un filet en plus, jamais une condition de merge. **Les critères d'acceptation, c'est `ezk-reviewer` qui les PROUVE, jamais le constructeur** (fiche 20261003075821760) : il rejoue « Comment vérifier » et juge chaque critère `prouvé — <preuve>` ou `non prouvé — <manque>`, une ligne par critère ; **aucun GO tant qu'un critère n'est pas prouvé**.
 7b. **Reporter les cases** — l'orchestrateur **recopie dans la fiche** les cases d'après le verdict du relecteur, **telles quelles** (chaque `[ ]` → `[x]` seulement si le critère est `prouvé`), dans un **commit dédié**, **avant** le commit ship de l'étape 8 (le ship range la fiche en `done/`, cases comprises). Le constructeur ne coche jamais ses propres critères.
@@ -263,21 +263,21 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
    **Before/after — procédure** (règle [`development/pr-before-after-media`](../../rules/development/pr-before-after-media.md), [ADR-0045](../../docs/adr/0045-pr-preuve-avant-apres-outillage-loi.md)) :
 
    1. Lis `evidence:` dans la fiche (vide = `auto`).
-   2. Décide : `git diff --name-only main...HEAD | bash products/mega-city/bin/pr-evidence.sh decide --evidence <valeur>` → `capture` ou `N.A. — <raison>`.
-   3. Sur `capture` : pour chaque vue listée dans « Comment vérifier » de la fiche (convention : une ligne `- vue <nom> : <URL ou route>`), capture l'**après** sur l'app de la branche (`pr-evidence.sh capture <id> --view <nom> --phase after --url …`). Puis l'**avant** sur la base : `git worktree add /tmp/ezk-base-<id> main`, démarre l'app de ce worktree sur un second port, `capture … --phase before --url …`, retire le worktree.
-   4. Commit scopé des PNG (`git add docs/pr-evidence/<id>/*.png`), puis `pr-evidence.sh render <id>` : colle le bloc dans « Comment vérifier » de la fiche (donc dans le corps rendu) et mets la ligne « Before / after (UI) » de la matrice à ✅. Sur `N.A. — <raison>` : recopie la raison dans la matrice, aucune capture.
-   5. Avant d'ouvrir la PR : `git diff --name-only main...HEAD > /tmp/changed && bash <chemin>/check-pr-body.sh --changed-files /tmp/changed < corps.md`.
+   2. Décide : `git diff --name-only main...HEAD | ezk evidence decide --evidence <valeur>` → `capture` ou `N.A. — <raison>`.
+   3. Sur `capture` : pour chaque vue listée dans « Comment vérifier » de la fiche (convention : une ligne `- vue <nom> : <URL ou route>`), capture l'**après** sur l'app de la branche (`ezk evidence capture <id> --view <nom> --phase after --url …`). Puis l'**avant** sur la base : `git worktree add /tmp/ezk-base-<id> main`, démarre l'app de ce worktree sur un second port, `ezk evidence capture … --phase before --url …`, retire le worktree.
+   4. Commit scopé des PNG (`git add docs/pr-evidence/<id>/*.png`), puis `ezk evidence render <id>` : colle le bloc dans « Comment vérifier » de la fiche (donc dans le corps rendu) et mets la ligne « Before / after (UI) » de la matrice à ✅. Sur `N.A. — <raison>` : recopie la raison dans la matrice, aucune capture.
+   5. Avant d'ouvrir la PR : `git diff --name-only main...HEAD > /tmp/changed && ezk pr check-body --changed-files /tmp/changed < corps.md`.
 
    Apps de bureau (Tauri, Electron) : `evidence: none # <raison>` ou capture manuelle. Gabarit du rendu : [`ezk-pr` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr/assets/PULL_REQUEST_TEMPLATE.thin.md).
 
    **Ship dans la PR : le dernier commit de la branche** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)). Dès que la DoD de la story est verte (revue `ezk-reviewer` GO, validation verte, PR ouverte donc son numéro connu), range la fiche **dans la PR**, avant le checkpoint :
 
    ```bash
-   bash products/mega-city/skills/ezk-pr/scripts/ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>
+   ezk pr ship-in-pr add --repo . --fiche-id <id> --pr <N>
    git push
    ```
 
-   Le script lance la transaction `ship:fiche` et committe `docs(features): ship <id> #<N>`. Le squash fera atterrir le code et la fiche **d'un seul coup**, quel que soit le canal de merge : UI GitHub, `gh` ou le flux. Le lien de provenance du corps pointe alors vers `features/done/<id>_*.md`. **Un NO-GO arrivé après** (revue, retour Codex retenu, CI rouge) : `ship-in-pr.sh undo --repo . --fiche-id <id>` annule le ship par un commit de revert, sans réécrire l'historique. Corrige, puis refais `add` : le ship reste le **dernier** commit de la branche.
+   Le verbe lance la transaction `ship:fiche` et committe `docs(features): ship <id> #<N>`. Le squash fera atterrir le code et la fiche **d'un seul coup**, quel que soit le canal de merge : UI GitHub, `gh` ou le flux. Le lien de provenance du corps pointe alors vers `features/done/<id>_*.md`. **Un NO-GO arrivé après** (revue, retour Codex retenu, CI rouge) : `ezk pr ship-in-pr undo --repo . --fiche-id <id>` annule le ship par un commit de revert, sans réécrire l'historique. Corrige, puis refais `add` : le ship reste le **dernier** commit de la branche.
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
    puis résume + « on continue ? ». **Présente au PO la liste des critères d'acceptation PROUVÉS**
    (le verdict du relecteur, une ligne par critère), avant de lui demander d'accepter la story :

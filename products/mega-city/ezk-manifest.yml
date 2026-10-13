@@ -62,7 +62,9 @@ commands:
   - domain: board
     verb: check
     run: bin/check-planning-views.ts
-    summary: Signale une fiche livrée encore présentée comme à faire dans le plan.
+    summary: Signale une fiche livrée encore présentée comme à faire dans le plan (--root <projet>).
+    root: none
+    project: true
   - domain: board
     verb: show
     run: bin/avancement.ts
@@ -202,10 +204,22 @@ commands:
     root: cwd
     project: true
     writes: true
+  - domain: pr
+    verb: ship-in-pr
+    run: skills/ezk-pr/scripts/ship-in-pr.sh
+    summary: Range la fiche d'une story dans sa PR avant le merge (add/undo/check ; --repo <dépôt>).
+    root: none
   - domain: review
     verb: emit
     run: bin/review-emit.ts
     summary: Écrit une revue de PR au format markdown (dépôt où tu es, ou --root <projet>).
+    root: cwd
+    project: true
+    writes: true
+  - domain: journal
+    verb: add
+    run: bin/journal-add.sh --root {root}
+    summary: Écrit une entrée au journal des difficultés, taguée par fiche (dépôt où tu es, ou --root).
     root: cwd
     project: true
     writes: true
@@ -222,11 +236,15 @@ commands:
   - domain: run
     verb: context
     run: bin/run-context.ts
-    summary: Affiche le contexte d'un run auto et son contrat en trois lignes.
+    summary: Affiche le contexte d'un run auto et son contrat en trois lignes (--root <projet>).
+    root: none
+    project: true
   - domain: run
     verb: report
     run: bin/run-report.ts
-    summary: Rend le bilan de fin de run, une ligne par fiche, avec HEAD et les jetons.
+    summary: Rend le bilan de fin de run, une ligne par fiche, avec HEAD et jetons (--root <projet>).
+    root: none
+    project: true
   - domain: sprint
     verb: report
     run: bin/sprint-report.ts
@@ -253,7 +271,8 @@ commands:
   - domain: docs
     verb: check-links
     run: bin/check-links.sh {root} features docs/adr docs/captures
-    summary: Vérifie les liens markdown relatifs du dépôt (features, docs/adr, docs/captures).
+    summary: Vérifie les liens markdown relatifs du dépôt (--root <projet> pour un autre projet).
+    project: true
   - domain: docs
     verb: check-adr-ids
     run: bin/check-adr-ids.sh {root}

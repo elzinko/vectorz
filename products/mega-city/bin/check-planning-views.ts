@@ -1,8 +1,9 @@
 #!/usr/bin/env tsx
-import { readFileSync, readdirSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { findStalePlanningViews, fmField } from '../src/backlog/planning-views.js';
+import { findGitRoot } from '../src/core/ezk-cli.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 
 /**
  * Filet CLI : signale toute fiche `shipped` encore présentée comme à faire dans
@@ -10,8 +11,13 @@ import { findStalePlanningViews, fmField } from '../src/backlog/planning-views.j
  * Exit 0 si à jour, 1 s'il reste des incohérences, 2 si une vue est introuvable.
  */
 
-const here = dirname(fileURLToPath(import.meta.url));
-const repoRoot = resolve(here, '../../..');
+// Le projet dont on lit les vues : --root > EZK_ROOT > le dépôt où l'on est (fiche 20261013073300242).
+// Le défaut est la RACINE GIT du dossier courant (INIT_CWD, posé par le routeur), jamais l'emplacement
+// du script : depuis un projet hôte sans --root, on vise l'hôte ; depuis un sous-dossier, on remonte à
+// la racine ; on ne lit jamais vectorz en silence.
+const invokedFrom = process.env.INIT_CWD ?? process.cwd();
+const fallbackRoot = findGitRoot(invokedFrom, existsSync) ?? invokedFrom;
+const { root: repoRoot } = projectRootOrExit(fallbackRoot);
 
 /** id → statut réel, scanné sur `features/` (actifs) + `features/done/`. */
 function loadStatuses(): Map<string, string> {

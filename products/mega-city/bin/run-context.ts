@@ -19,6 +19,7 @@ import {
   type RunSettings,
   type TokenSetting,
 } from '../src/core/run-context.js';
+import { projectRootOrExit } from '../src/io/project-root.js';
 import { collectRunFacts } from '../src/io/run-facts.js';
 
 function usage(): never {
@@ -39,7 +40,10 @@ const oneOf = <T extends string>(value: string | undefined, allowed: readonly T[
 };
 
 function main(): void {
-  const argv = process.argv.slice(2);
+  // Le dépôt visé : --root > EZK_ROOT > le dossier courant (jamais vectorz en silence depuis un
+  // projet hôte, fiche 20261013073300242). On retire --root des arguments avant de les parcourir.
+  const fallbackCwd = process.env.INIT_CWD ?? process.cwd();
+  const { root, rest: argv } = projectRootOrExit(fallbackCwd);
   if (argv.includes('--help') || argv.includes('-h')) usage();
   const settings: RunSettings = { mode: 'auto', delivery: 'per-feature', tokens: 'lean' };
   let fetch = true;
@@ -62,8 +66,7 @@ function main(): void {
       usage();
     }
   }
-  const cwd = process.env.INIT_CWD ?? process.cwd();
-  const facts = collectRunFacts(cwd, { fetch, ...(base ? { base } : {}) });
+  const facts = collectRunFacts(root, { fetch, ...(base ? { base } : {}) });
   console.log(buildRunContext(settings, facts).lines.join('\n'));
 }
 
