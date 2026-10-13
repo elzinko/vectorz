@@ -54,3 +54,4 @@ pnpm --dir products/mega-city test
 - Découpée de la fiche `20261004083838593` le 2026-10-13 (côté **clients**). **Dépend du guichet** : fiche sœur [Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md) — à construire d'abord. Même version v0.12.0.
 - Motif : [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 - Dépendance **muti** (projet hôte d'origine) — accès constaté le 2026-10-04 (`github: false`, commit `c3a5d48b`). Le build vit dans mega-city, autonome.
+- **Preuve sur projet hôte (2026-10-13)** — éprouvé sur un dépôt git **jetable** (`mktemp`, remote GitHub + `gh` factice qui journalise ses appels). En `github: false` : `check.sh --gate` rend « PR sans objet : GitHub coupé par la config » et le journal `gh` reste **vide** (zéro appel, pas même `gh auth status`). Config absente : `check.sh` appelle `gh` (non-régression). Le cliquet `forge-gh-ratchet` passe sur la base d'aujourd'hui.

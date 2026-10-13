@@ -11,7 +11,7 @@
 #
 #   github: true            # (défaut) tout allumé : PR + CI + revue Codex
 #
-#   github: false           # tout coupé : 100 % local, aucun appel GitHub
+#   github: false           # tout coupé : 100 % local, aucun appel à l'API GitHub (gh) — ADR-0061 D3
 #                           # (le « déconnecter GitHub » — on travaille plus vite)
 #
 #   github:                 # granulaire — une capacité coupée = `false`, sinon allumée

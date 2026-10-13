@@ -608,7 +608,11 @@ sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged*
 **Ce que ça fait.**
 1. Liste les fiches **actives** (hors `done/`, hors `type: epic`) — celles sans `pr:` posé
    sont les candidates prioritaires (une fiche `shipped` avec `pr:` n'est plus concernée).
-2. `gh pr list --state merged --json number,headRefName,title,body,mergedAt` (fenêtre
+2. **D'abord le guichet `ezk forge changes --merged`** (ADR-0061, fiche 20261013074251767) :
+   si l'état est `off` (config `github: false`), dis « réconciliation sans objet : GitHub
+   coupé par la config » et **arrête-toi** — aucun appel GitHub. Si `unavailable`, dis-le et
+   retombe sur le mode local-only ci-dessous. Si `ok`, poursuis la lecture détaillée :
+   `gh pr list --state merged --json number,headRefName,title,body,mergedAt` (fenêtre
    récente suffit ; `body` est nécessaire au repli LLM ci-dessous — sur un gros stock,
    ne le tirer qu'au besoin via `gh pr view <n> --json body` pour les candidats ambigus).
    **Rapproche** chaque PR mergée d'une fiche :

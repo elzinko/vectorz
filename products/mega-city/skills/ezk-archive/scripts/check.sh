@@ -110,8 +110,22 @@ fi
 [[ -z "$BASE" ]] && BASE="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || echo HEAD)"
 CUR="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD)"
 
+# `github: false` dans .vectorz/config.yml coupe GitHub (ADR-0061, fiche 20261013074251767) : le
+# guichet dit « sans objet », et surtout AUCUN appel gh — PAS MÊME `gh auth status`. La config prime
+# sur la présence d'un remote. On ne gère ici que le « déconnecter » franc (`github: false`) ; le
+# réglage granulaire passe par le guichet `ezk forge`. Lecture seule, sans sous-processus (portier léger).
+P2_GITHUB_OFF=0
+_ezk_top="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [[ -n "$_ezk_top" ]]; then
+  _ezk_cfg="$_ezk_top/.vectorz/config.yml"; [[ -f "$_ezk_cfg" ]] || _ezk_cfg="$_ezk_top/.vectorz/config.yaml"
+  if [[ -f "$_ezk_cfg" ]] && grep -qE '^[[:space:]]*github:[[:space:]]*false[[:space:]]*$' "$_ezk_cfg"; then
+    P2_GITHUB_OFF=1
+  fi
+fi
+
 HAS_REMOTE=0; [[ -n "$(git remote 2>/dev/null)" ]] && HAS_REMOTE=1
-HAS_GH=0; command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && HAS_GH=1
+# En `github: false`, on ne touche jamais gh — même pas `gh auth status` (critère « aucun appel gh »).
+HAS_GH=0; [[ "$P2_GITHUB_OFF" -eq 0 ]] && command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && HAS_GH=1
 # Le ménage ne regarde que les branches et les worktrees : inutile de payer l'aller-retour GitHub.
 [[ "$MODE" == "cleanup" ]] && HAS_GH=0
 # Le main LOCAL peut avoir des dizaines de commits de retard (un squash-merge n'avance pas le main
@@ -139,6 +153,9 @@ fi
 # à lire » (⇒ rien à prouver), et tout dépôt à remote non-GitHub tombe en DIRTY perpétuel.
 HAS_PR_HOST=0
 [[ "$HAS_REMOTE" -eq 1 ]] && git remote -v 2>/dev/null | grep -qE 'github\.com|github\.' && HAS_PR_HOST=1
+
+# GitHub coupé par la config : aucune PR à lire (la détection est faite plus haut, avant tout gh).
+[[ "$P2_GITHUB_OFF" -eq 1 ]] && HAS_PR_HOST=0
 
 # --- helpers d'accumulation ---------------------------------------------------
 # Deux bornes, car une seule ne suffit pas : celle par point empêche un point bavard de
@@ -249,6 +266,9 @@ if [[ "${EZK_ARCHIVE_TEST:-}" == "1" && -n "${EZK_ARCHIVE_TEST_PRS:-}" ]]; then
   # Format TSV : headRefName<TAB>number<TAB>title[<TAB>draft] — sans jq système.
   ingest_pr_tsv "$EZK_ARCHIVE_TEST_PRS"
   P2_NOTE="FIXTURE EZK_ARCHIVE_TEST=1 — donnees PR NON reelles (gh non consulte)"
+elif [[ "$P2_GITHUB_OFF" -eq 1 ]]; then
+  # GitHub coupé par la config : aucune PR à lire, aucun appel gh (fiche 20261013074251767).
+  P2_NOTE="PR sans objet : GitHub coupé par la config (.vectorz/config.yml)"
 elif [[ "$HAS_PR_HOST" -eq 1 && "$HAS_GH" -eq 1 ]]; then
   # ⚠ Le CODE RETOUR compte autant que la sortie (finding Codex PR #56).
   # jq EMBARQUÉ de `gh` (--jq / gojq) — JAMAIS de `jq` système (sinon faux CLEAN
