@@ -100,32 +100,42 @@ n_before="$(git -C "$REPO" rev-list --count HEAD)"
 OUT="$(bash "$SCRIPT" add --repo "$REPO" --fiche-id "$ID" --pr 12)"
 [[ "$OUT" == "SHIP: already" && "$(git -C "$REPO" rev-list --count HEAD)" == "$n_before" ]] && ok "add rejoué → SHIP: already, aucun commit en plus" || fail "add idempotent : $OUT"
 
-echo "=== ship-merge.sh --remote — garde ADR-0049 avant tout appel à gh ==="
+echo "=== ship-merge.sh --remote — garde ADR-0049 + branche réelle de la PR (fiche 20261002205428200) ==="
 git -C "$REPO" remote add origin https://example.invalid/repo.git
+# Le faux gh répond à `pr view` par la branche réelle de la PR (FAKE_PR_BRANCH, une LECTURE, jamais
+# journalisée) ; tout autre appel (pr merge…) est journalisé dans GH_MARKER — la garde ne doit pas
+# atteindre le MERGE sur un refus.
 GH_MARKER="$WORK/gh-called"
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
+if [[ "\$1" == "pr" && "\$2" == "view" ]]; then echo "\${FAKE_PR_BRANCH:-feat/${ID}-x}"; exit 0; fi
 echo "gh appelé: \$*" >> "$GH_MARKER"
 EOF
 chmod +x "$FAKE_BIN/gh"
 SHIPPED="$(git -C "$REPO" rev-parse HEAD)"
 UNSHIPPED="$(git -C "$REPO" rev-parse HEAD~1)"
-OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$SHIPPED" --dry-run)"
+# $1 = branche réelle de la PR (ce que `gh pr view` renverra) ; le reste = arguments de ship-merge.
+run_merge() { FAKE_PR_BRANCH="$1" bash "$MERGE" "${@:2}"; }
+OUT="$(run_merge "feat/${ID}-x" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$SHIPPED" --dry-run)"
 grep -q "SHIP-GUARD: present" <<<"$OUT" && grep -q "^DRY-RUN: gh pr merge 12" <<<"$OUT" && ok "head avec le ship → merge construit" || fail "head shippé : $OUT"
-rc=0; ERR="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" 2>&1)" || rc=$?
-[[ $rc -eq 3 && ! -f "$GH_MARKER" ]] && grep -q "ship-in-pr.sh add" <<<"$ERR" && ok "head sans le ship → refus (exit 3), remède imprimé, gh jamais appelé" || fail "head non shippé : rc=$rc err=$ERR"
-rc=0; bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha cafe1234 >/dev/null 2>&1 || rc=$?
-[[ $rc -eq 3 && ! -f "$GH_MARKER" ]] && ok "head inconnu → refus (exit 3), gh jamais appelé" || fail "head inconnu : rc=$rc"
-OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" --allow-unshipped "livraison partielle" --dry-run)"
+rc=0; ERR="$(run_merge "feat/${ID}-x" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" 2>&1)" || rc=$?
+[[ $rc -eq 3 && ! -f "$GH_MARKER" ]] && grep -q "ship-in-pr.sh add" <<<"$ERR" && ok "head sans le ship → refus (exit 3), remède imprimé, gh pr merge jamais appelé" || fail "head non shippé : rc=$rc err=$ERR"
+rc=0; run_merge "feat/${ID}-x" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha cafe1234 >/dev/null 2>&1 || rc=$?
+[[ $rc -eq 3 && ! -f "$GH_MARKER" ]] && ok "head inconnu → refus (exit 3), gh pr merge jamais appelé" || fail "head inconnu : rc=$rc"
+# Le scénario Codex : --branch erroné sur une PR feat/<id>-… → refus, les DEUX branches nommées.
+rc=0; ERR="$(run_merge "feat/${ID}-x" --repo "$REPO" --remote --pr 12 --branch "docs/rangement" --subject s --body b --head-sha "$UNSHIPPED" 2>&1)" || rc=$?
+[[ $rc -eq 3 && ! -f "$GH_MARKER" ]] && grep -q "docs/rangement" <<<"$ERR" && grep -q "feat/${ID}-x" <<<"$ERR" && ok "mauvaise branche → refus (exit 3), les deux branches nommées" || fail "mauvaise branche : rc=$rc err=$ERR"
+OUT="$(run_merge "feat/${ID}-x" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" --allow-unshipped "livraison partielle" --dry-run)"
 grep -q "SHIP-GUARD: override (${ID}) — livraison partielle" <<<"$OUT" && grep -q "^DRY-RUN:" <<<"$OUT" && ok "--allow-unshipped : passe, raison imprimée" || fail "override : $OUT"
-OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "docs/rangement" --subject s --body b --head-sha "$UNSHIPPED" --dry-run)"
-grep -q "SHIP-GUARD: skip" <<<"$OUT" && ok "branche sans id de fiche → garde non concernée" || fail "branche sans id : $OUT"
+# Branche SANS id, mais COHÉRENTE avec la PR (PR légitime hors story) → la garde skip proprement.
+OUT="$(run_merge "docs/rangement" --repo "$REPO" --remote --pr 12 --branch "docs/rangement" --subject s --body b --head-sha "$UNSHIPPED" --dry-run)"
+grep -q "SHIP-GUARD: skip" <<<"$OUT" && ok "branche sans id cohérente → garde non concernée" || fail "branche sans id : $OUT"
 for br in retro/2026-09-23-versions feat/2026-09-23-x; do
-  OUT="$(bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "$br" --subject s --body b --head-sha "$UNSHIPPED" --dry-run)"
+  OUT="$(run_merge "$br" --repo "$REPO" --remote --pr 12 --branch "$br" --subject s --body b --head-sha "$UNSHIPPED" --dry-run)"
   grep -q "SHIP-GUARD: skip" <<<"$OUT" && ok "branche datée $br → une date n'est pas un id" || fail "branche datée $br : $OUT"
 done
-rc=0; bash "$MERGE" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" --allow-unshipped --dry-run >/dev/null 2>&1 || rc=$?
-[[ $rc -eq 2 && ! -f "$GH_MARKER" ]] && ok "--allow-unshipped sans raison n'avale pas --dry-run (exit 2, gh jamais appelé)" || fail "raison avalée : rc=$rc"
+rc=0; run_merge "feat/${ID}-x" --repo "$REPO" --remote --pr 12 --branch "feat/${ID}-x" --subject s --body b --head-sha "$UNSHIPPED" --allow-unshipped --dry-run >/dev/null 2>&1 || rc=$?
+[[ $rc -eq 2 && ! -f "$GH_MARKER" ]] && ok "--allow-unshipped sans raison n'avale pas --dry-run (exit 2, gh pr merge jamais appelé)" || fail "raison avalée : rc=$rc"
 
 echo "=== undo — NO-GO après le ship : la fiche revient sous features/ ==="
 OUT="$(bash "$SCRIPT" undo --repo "$REPO" --fiche-id "$ID")"

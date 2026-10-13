@@ -179,6 +179,19 @@ ship_remote() {
   # `gh` refuse plutôt que de squasher un head jamais testé. Rendre le guard OPTIONNEL le
   # rendrait contournable par simple omission (retour Codex) — donc on l'EXIGE.
   [[ -n "$head_sha" ]] || { echo "ship-merge.sh: --head-sha <sha validé> requis en mode remote (anti-course : épingle le merge sur le head testé)" >&2; exit 2; }
+  # Fiche 20261002205428200 : la garde lit la VRAIE branche de la PR (une LECTURE `gh pr view`, pas
+  # le merge), pas l'argument --branch tapé à la main. Une mauvaise branche passée PAR ERREUR
+  # (ex. docs/rangement sur une PR feat/<id>-…) ferait taire la garde — son texte n'a pas d'id — et
+  # laisserait merger une story sans son ship (ADR-0049). gh indisponible → repli sur --branch (dégradé).
+  local pr_branch
+  pr_branch="$( cd "$repo" && gh pr view "$pr" --json headRefName --jq .headRefName 2>/dev/null || true )"
+  if [[ -n "$pr_branch" ]]; then
+    if [[ -n "$branch" && "$branch" != "$pr_branch" ]]; then
+      echo "ship-merge.sh: --branch '$branch' ne correspond pas à la branche de la PR #$pr ('$pr_branch') — merge refusé (fiche 20261002205428200)." >&2
+      exit 3
+    fi
+    branch="$pr_branch"   # la branche de la PR fait foi : ship_guard en tire l'id
+  fi
   ship_guard
   local cmd=(gh pr merge "$pr" --squash --delete-branch --subject "$subject" --body "$body" --match-head-commit "$head_sha")
   if (( dry_run )); then
