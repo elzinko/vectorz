@@ -33,6 +33,7 @@ import {
 } from '../src/backlog/versions-render.js';
 import { localTags } from '../src/io/git-tags.js';
 import { loadFiches } from '../src/loaders/fiches.js';
+import { readReleaseVerdict, releaseConfig } from '../src/loaders/release-passes.js';
 
 const VERBS = ['list', 'check', 'close'] as const;
 type Verb = (typeof VERBS)[number];
@@ -40,7 +41,7 @@ type Verb = (typeof VERBS)[number];
 function usage(message?: string): never {
   if (message) console.error(`erreur: ${message}`);
   console.error(
-    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | close <X> [--tag] [--max <n>] [--no-plan]   (--root <dossier> pour un autre dépôt)',
+    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | close <X> [--tag] [--release-ok "<raison>"] [--max <n>] [--no-plan]   (--root <dossier> pour un autre dépôt)',
   );
   process.exit(2);
 }
@@ -52,6 +53,7 @@ interface Args {
   max: number;
   usePlan: boolean;
   tag: boolean;
+  releaseOk: string | undefined;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -60,10 +62,12 @@ function parseArgs(argv: string[]): Args {
   let max = LOT_MAX;
   let usePlan = true;
   let tag = false;
+  let releaseOk: string | undefined;
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--no-plan') usePlan = false;
     else if (arg === '--tag') tag = true;
+    else if (arg === '--release-ok') releaseOk = argv[++i] ?? usage('--release-ok attend une raison (soupape PO journalisée)');
     else if (arg === '--root') root = resolve(argv[++i] ?? usage('--root attend un dossier'));
     else if (arg === '--max') {
       const n = Number(argv[++i]);
@@ -81,7 +85,7 @@ function parseArgs(argv: string[]): Args {
   }
   if (verb === 'close' && version === undefined) usage('close attend une version (exemple : close v0.3.0)');
   if (verb === 'list' && version !== undefined) usage('list ne prend pas de version');
-  return { verb, version, root, max, usePlan, tag };
+  return { verb, version, root, max, usePlan, tag, releaseOk };
 }
 
 /** Sortie d'une commande git dans `root`, ou `undefined` si elle échoue (hors dépôt, référence inconnue). */
@@ -150,6 +154,28 @@ function main(): void {
       ...dirty.split('\n').slice(0, 5).map((line) => `  ${line}`),
     ]);
     process.exit(1);
+  }
+  // Gate de release (fiche 20260922175954296) : le tag est refusé si la passe qualité de la
+  // version n'est pas GO — sauf soupape PO journalisée (--release-ok "<raison>"). Désactivée
+  // par `release.gate: off`. Un verdict établi sur un autre commit que HEAD est périmé.
+  if (args.tag && releaseConfig(args.root).gate) {
+    if (args.releaseOk) {
+      say([`Soupape PO — gate de release outrepassée pour ${version} : ${args.releaseOk}`, '']);
+    } else {
+      const v = readReleaseVerdict(args.root, version);
+      const reason =
+        v === undefined
+          ? `aucune gate de release jouée — lance d'abord : ezk release ${version}`
+          : v.head && v.head !== head
+            ? `gate de release périmée (jouée sur ${v.head.slice(0, 9)}, HEAD = ${head.slice(0, 9)}) — rejoue : ezk release ${version}`
+            : v.verdict !== 'GO'
+              ? `gate de release NO-GO (passes bloquantes : ${v.passes.filter((p) => !p.go).map((p) => p.id).join(', ') || '—'})`
+              : undefined;
+      if (reason !== undefined) {
+        say(renderRefusal(version, [reason, 'soupape PO : close … --tag --release-ok "<raison>" (journalisée)']));
+        process.exit(1);
+      }
+    }
   }
   if (!args.tag) {
     say(renderProposal(version, result.tag, head, gitOut(args.root, ['rev-parse', 'origin/main'])));

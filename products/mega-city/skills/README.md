@@ -24,6 +24,7 @@ ezk-commits/
 | `ezk-archive` | clôturer une session sans rien perdre : verdict propre ou sale, note de passation | global | importé, ADR-0021 |
 | `ezk-commits` | écrire des messages de commit au bon format, avec un hook qui le vérifie | global | importé |
 | `ezk-pr` | tester puis fusionner un lot de PRs ouvertes, dans le bon ordre | global | ADR-0009 |
+| `ezk-release` | passe qualité composable (GO/NO-GO) d'une version entière avant son tag — DoD mécanique + chasse aux bugs | global | fiche 20260922175954296 |
 | `ezk-codex` | traiter les retours du relecteur Codex sur une PR : corriger ou décliner, sans fusionner | global | ADR-0024 |
 | `ezk-retro` | faire une rétro : transformer une friction vécue en règle mesurable, sous ton contrôle | global | fiche 0167 |
 | `ezk-ezk` | transformer une session de travail en skill réutilisable | global | ADR-0007 |

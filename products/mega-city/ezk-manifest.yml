@@ -213,6 +213,12 @@ commands:
     verb: conso
     run: bin/ci-conso.ts
     summary: Affiche la consommation GitHub Actions du mois.
+  - domain: release
+    run: bin/ezk-release.ts
+    summary: Passe qualité composable (GO/NO-GO) d'une version avant son tag — ezk release <vX.Y>.
+    root: cwd
+    project: true
+    writes: true
   - domain: run
     verb: context
     run: bin/run-context.ts

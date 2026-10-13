@@ -80,6 +80,8 @@ docs/dogfood-reports/
 /.ezk/
 # Lanceur universel (fiche 20260917162000501) : état d'exécution des stacks, jamais suivi.
 .vectorz/run/
+# Verdicts de la gate de release (fiche 20260922175954296) : état transitoire par version, jamais suivi.
+.vectorz/release/
 
 # Vues générées NON committées (fiche 20260830194601376, ADR-0055) — construites à la demande par
 # `pnpm --dir products/mega-city views:regen` ou servies à la volée par `pnpm ezk:map`. Seules les

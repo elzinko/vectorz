@@ -78,6 +78,7 @@ describe('ezk-manifest.yml', () => {
       'now',
       'paths',
       'pr emit-local',
+      'release',
       'retro captures',
       'retro note',
       'retro reports',
@@ -100,6 +101,7 @@ describe('ezk-manifest.yml', () => {
       'backlog version',
       'config',
       'pr emit-local',
+      'release',
       'retro note',
       'review emit',
     ]);
