@@ -13,6 +13,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { constants } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { bind } from '../core/bind.js';
 import { applyPlan } from '../io/apply.js';
 
@@ -88,6 +89,46 @@ describe('applyPlan (coquille I/O, projet jouet)', () => {
     const escape = { files: [{ path: '../escape.md', content: 'pwned' }], hooks: [] };
     expect(() => applyPlan(escape, projectDir)).toThrow(/hors du projet/);
     expect(existsSync(join(projectDir, '..', 'escape.md'))).toBe(false);
+  });
+
+  it('pose le hook depuis un WORKTREE (.git est un fichier) dans le dossier de hooks commun, sans planter (fiche 20261011111526693)', () => {
+    // Un vrai dépôt + un worktree : dans le worktree, `.git` est un FICHIER (`gitdir: …`), pas un dossier.
+    const mainDir = mkdtempSync(join(tmpdir(), 'lawgiver-main-'));
+    const wtParent = mkdtempSync(join(tmpdir(), 'lawgiver-wt-'));
+    const wtDir = join(wtParent, 'wt');
+    const git = (cwd: string, ...args: string[]): void => {
+      execFileSync('git', args, { cwd, stdio: 'ignore' });
+    };
+    try {
+      git(mainDir, 'init', '--quiet', '-b', 'main');
+      git(mainDir, 'config', 'user.email', 't@t');
+      git(mainDir, 'config', 'user.name', 't');
+      git(mainDir, 'config', 'commit.gpgsign', 'false');
+      writeFileSync(join(mainDir, 'a.txt'), 'x');
+      git(mainDir, 'add', '.');
+      git(mainDir, 'commit', '--quiet', '-m', 'base');
+      git(mainDir, 'worktree', 'add', '--quiet', wtDir, '-b', 'feat');
+      expect(statSync(join(wtDir, '.git')).isFile()).toBe(true); // bien un fichier, pas un dossier
+
+      const plan = { files: [], hooks: [{ stage: 'commit-msg', script: '#!/bin/sh\nexit 0\n' }] };
+      expect(() => applyPlan(plan, wtDir)).not.toThrow(); // avant le fix : ENOTDIR sur mkdir .git/hooks
+
+      // Le hook atterrit dans le dossier de hooks COMMUN (celui du dépôt principal), exécutable.
+      const commonHook = join(mainDir, '.git', 'hooks', 'commit-msg');
+      expect(existsSync(commonHook)).toBe(true);
+      expect(statSync(commonHook).mode & constants.S_IXUSR).toBe(constants.S_IXUSR);
+      // et aucun faux dossier `.git/hooks` n'a été créé sous le worktree (`.git` y est un fichier).
+      expect(existsSync(join(wtDir, '.git', 'hooks'))).toBe(false);
+    } finally {
+      rmSync(mainDir, { recursive: true, force: true });
+      rmSync(wtParent, { recursive: true, force: true });
+    }
+  });
+
+  it('refuse un nom d’étape de hook qui tenterait une traversée : l’exception hooks reste étroite (F1)', () => {
+    const evil = { files: [], hooks: [{ stage: '../../evil', script: 'pwned' }] };
+    expect(() => applyPlan(evil, projectDir)).toThrow(/invalide|traversée/i);
+    expect(existsSync(resolve(projectDir, '..', '..', 'evil'))).toBe(false);
   });
 
   it("réinitialise les permissions quand un asset redevient non-exécutable (finding Codex #138)", () => {

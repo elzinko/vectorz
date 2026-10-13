@@ -4,7 +4,8 @@
  * Consomme un WritePlan (calculé purement par `bind`) et le matérialise :
  *   - crée les dossiers parents, écrit les fichiers (avec leur `mode` éventuel) ;
  *   - initialise un dépôt git si nécessaire (pour pouvoir poser les hooks) ;
- *   - pose les git hooks dans `.git/hooks/<stage>`, exécutables (chmod +x).
+ *   - pose les git hooks dans le dossier de hooks résolu par git (`--git-path hooks` ;
+ *     `.git/hooks/<stage>` en dépôt normal, le dossier commun en worktree), exécutables (chmod +x).
  *
  * Aucune logique métier ici : tout le « quoi écrire » vient du plan.
  */
@@ -94,12 +95,49 @@ function ensureGitRepo(projectDir: string): void {
 }
 
 /**
+ * Le dossier des hooks git du projet, résolu par git lui-même (fiche 20261011111526693).
+ * `git rev-parse --git-path hooks` répond juste PARTOUT : en dépôt normal `<projet>/.git/hooks`,
+ * et en WORKTREE — où `.git` est un FICHIER (`gitdir: …`), pas un dossier — le dossier de hooks du
+ * dépôt COMMUN, hors du projet. Avant, `poseHook` codait `.git/hooks` en dur : dans un worktree le
+ * `mkdir` plantait en `ENOTDIR` (`.git` est un fichier), et le bind restait à moitié fait.
+ * C'est le SEUL chemin hors projet qu'on autorise, et uniquement pour un hook dont le nom d'étape
+ * est validé (assertSafeHookStage) : la garde F1 (resolveInsideProject) reste entière pour tout
+ * fichier du plan. On fait confiance à git pour ce chemin — il honore aussi `core.hooksPath`, et un
+ * hook DOIT être écrit là où git ira le chercher pour être effectif.
+ */
+function gitHooksDir(projectDir: string): string {
+  try {
+    const out = execFileSync('git', ['rev-parse', '--git-path', 'hooks'], {
+      cwd: projectDir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    // relatif en dépôt normal (`.git/hooks`), déjà absolu en worktree (dossier commun).
+    if (out) return resolve(projectDir, out);
+  } catch {
+    // git n'a pas pu répondre (pas un vrai dépôt) → repli ci-dessous.
+  }
+  // Repli sur le littéral historique UNIQUEMENT quand git ne résout pas (ex. un `.git` qui n'est pas
+  // un dépôt). Un worktree RÉEL, lui, répond toujours à `rev-parse` : le repli ne ré-ouvre donc pas le
+  // bug ENOTDIR corrigé — il ne couvre que le cas où `.git/hooks` est de toute façon le seul défaut sensé.
+  return resolve(projectDir, '.git', 'hooks');
+}
+
+/** Un nom d'étape de hook SÛR : un seul segment, jamais une traversée de chemin ni un absolu. */
+function assertSafeHookStage(stage: string): void {
+  if (stage === '.' || stage === '..' || !/^[A-Za-z0-9._-]+$/.test(stage)) {
+    throw new Error(`nom de hook invalide (traversée refusée) : ${JSON.stringify(stage)}`);
+  }
+}
+
+/**
  * Pose un hook selon son intention (fiche 0010). `skip-if-exists` : un hook
  * perso préexistant qui DIFFÈRE n'est jamais écrasé sans `force` (sinon backup `.bak`
  * puis refus explicite). Identique → idempotent, pas d'erreur.
  */
-function poseHook(projectDir: string, hook: HookWrite, force: boolean): void {
-  const hookPath = resolveInsideProject(projectDir, join('.git', 'hooks', hook.stage));
+function poseHook(hooksDir: string, hook: HookWrite, force: boolean): void {
+  assertSafeHookStage(hook.stage);
+  const hookPath = join(hooksDir, hook.stage);
   if (hook.intent === 'skip-if-exists' && existsSync(hookPath)) {
     const current = readFileSync(hookPath, 'utf8');
     if (current === hook.script) return; // déjà à jour : idempotent.
@@ -122,8 +160,9 @@ export function applyPlan(plan: WritePlan, projectDir: string, options: ApplyOpt
   }
   if (plan.hooks.length > 0) {
     ensureGitRepo(projectDir);
+    const hooksDir = gitHooksDir(projectDir); // worktree-aware (.git peut être un fichier)
     for (const hook of plan.hooks) {
-      poseHook(projectDir, hook, force);
+      poseHook(hooksDir, hook, force);
     }
   }
 }

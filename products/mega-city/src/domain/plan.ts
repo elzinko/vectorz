@@ -35,7 +35,8 @@ export interface FileWrite {
 }
 
 /**
- * Un git hook à poser (toujours exécutable, posé dans .git/hooks par la coquille I/O).
+ * Un git hook à poser (toujours exécutable, posé dans le dossier de hooks git résolu par la coquille
+ * I/O — `.git/hooks` en dépôt normal, le dossier commun en worktree).
  * `intent` (défaut `replace`) : un hook perso préexistant qui diffère n'est jamais
  * écrasé silencieusement quand `intent === 'skip-if-exists'`.
  */
