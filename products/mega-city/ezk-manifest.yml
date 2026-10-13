@@ -195,6 +195,12 @@ commands:
     summary: Régénère le graphe « composes » des skills (Mermaid).
 
   # --- evidence, pr, review, ci : la livraison ---
+  - domain: forge
+    verb: changes
+    run: bin/forge-changes.ts
+    summary: Guichet GitHub — liste les PR (--open/--merged) ; états ok/off/unavailable (--root).
+    root: none
+    project: true
   - domain: evidence
     run: bin/pr-evidence.sh
     summary: Capture, rend et tranche les preuves avant/après d'une PR (--root <projet>).

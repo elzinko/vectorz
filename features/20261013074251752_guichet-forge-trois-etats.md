@@ -59,3 +59,4 @@ pnpm --dir products/mega-city test
 - Motif et options écartées : [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 - La fiche [Sans PR, intégrer par avance rapide](20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le verbe `integrate` sur ce guichet.
 - Dépendance **muti** (projet hôte d'origine) — accès constaté le 2026-10-04 (`github: false`, commit `c3a5d48b`). Le build vit dans mega-city, autonome ; muti a motivé le besoin.
+- **Preuve sur projet hôte (2026-10-13)** — éprouvé sur un dépôt git **jetable** (`mktemp`, remote GitHub + `gh` factice). Trois états vérifiés : `github: false` → `off` (rc=0, zéro appel `gh`) ; config allumée + `gh` qui échoue → `unavailable` (rc=3) ; config allumée + `gh` qui répond → `ok` avec la liste. `ezk help` liste `forge changes`.
