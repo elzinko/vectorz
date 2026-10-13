@@ -186,9 +186,11 @@ Si **oui** (un fait durable existe), compose le résumé et déroule la branche 
 
 #### `FASTPATH: NO reason=…` → la clôture complète
 
-La raison (`verdict`, `shipped`, `worked`, `sprint`, `shipped_undeclared`, `worked_undeclared`)
-dit pourquoi. Compose le résumé de l'étape 1, puis lis `VERDICT:` — et une seule des deux
-branches suivantes.
+La raison (`verdict`, `shipped`, `worked`, `sprint`, `archive_incomplete`, `shipped_undeclared`,
+`worked_undeclared`) dit pourquoi. `archive_incomplete` ⇒ un run ezk-archive **précédent** a été
+coupé : la ligne `ARCHIVE_RUN: INCOMPLETE missing=…` nomme les points restants (voir « Reprise d'un
+run interrompu » plus bas). Compose le résumé de l'étape 1, puis lis `VERDICT:` — et une seule des
+deux branches suivantes.
 
 #### `VERDICT: CLEAN` → tu traites la clôture toi-même
 
@@ -209,8 +211,15 @@ qui ne demandent aucun jugement.
    affiche tels quels) ; le détail va en bas, sous un titre. Une fiche se cite par son
    **titre + lien**, jamais par son id nu.
 3. **Si — et seulement si — la sous-commande est `run`/`close`** :
+   - **marqueur de progression (fiche 20261002155911264)** — un run peut être coupé en plein travail
+     (fin de session, contexte). Ouvre-le avant d'écrire, et **marque chaque point d'écriture FAIT, au
+     fil de l'eau** : `bash <skill>/scripts/archive-progress.sh begin`, puis après chaque point
+     `… done <point>` (`memoire` · `handoff` · `verdict` · `archive-session` · `carnet`). Si `check`
+     a affiché `ARCHIVE_RUN: INCOMPLETE missing=…`, un run précédent a été coupé : **ne refais QUE les
+     points manquants** (voir « Reprise d'un run interrompu »). Le run entièrement fini : `… clear`.
    - **mémoire projet** : les faits durables non-dérivables du repo (dates relatives
      converties en absolues) ; ne mémorise pas ce que le repo encode déjà ;
+     *(point fait → `archive-progress.sh done memoire`)* ;
    - persiste la note :
      ```bash
      bash <skill>/scripts/handoff.sh add "<date> — <titre> — clôture ezk-archive" <<'EOF'
@@ -289,6 +298,21 @@ qui ne demandent aucun jugement.
    Les worktrees que les agents de CETTE session viennent de laisser ont moins de 24 h : le ménage
    les garde (« recent »). Une fois certain qu'aucun agent ne tourne encore, relance avec
    `EZK_CLEANUP_IDLE_HOURS=0` pour les proposer.
+6. **Run fini → `bash <skill>/scripts/archive-progress.sh clear`** : efface le marqueur de progression.
+   N'efface JAMAIS tant qu'un point requis manque (`status` dirait encore `INCOMPLETE`).
+
+#### Reprise d'un run interrompu (fiche 20261002155911264)
+
+Un run `run`/`close` coupé en plein travail (fin de session, contexte) laissait un état à moitié écrit,
+que le pilote revérifiait à la main. Le **marqueur de progression** le rend reprenable, sans doublon :
+
+- chaque point d'écriture (`memoire` · `handoff` · `verdict` · `archive-session` · `carnet`) est marqué
+  FAIT au fil de l'eau (`archive-progress.sh done <point>`) ; le marqueur vit hors du worktree, par
+  branche (`<git-common-dir>/ezk/archive-runs/<branche>.md`), donc il survit au recyclage du worktree ;
+- au relancement, `check` lit le marqueur et affiche `ARCHIVE_RUN: INCOMPLETE done=… missing=…` (et
+  refuse la voie rapide). Tu **ne refais QUE les points `missing`** : les points déjà faits ne sont pas
+  réécrits, donc zéro doublon dans la note de passation ni dans la mémoire ;
+- le run entièrement fini, `archive-progress.sh clear` efface le marqueur ; `check` redevient silencieux.
 
 #### `VERDICT: DIRTY points=…` → tu délègues, scopé
 

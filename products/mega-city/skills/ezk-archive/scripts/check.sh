@@ -594,6 +594,12 @@ SPRINT_BRANCH="$(git branch --show-current 2>/dev/null)"
 SPRINT_BRANCH="$(printf '%s' "$SPRINT_BRANCH" | LC_ALL=C sed 's#[^A-Za-z0-9._/-]#-#g')"
 SPRINT_JOURNAL="$H_COMMON/ezk/sprints/$SPRINT_BRANCH.md"
 if [[ -f "$SPRINT_JOURNAL" ]] && grep -qvE '^[[:space:]]*($|#|<!--)' "$SPRINT_JOURNAL" 2>/dev/null; then fp_reason sprint; fi
+# Un run ezk-archive PRÉCÉDENT laissé incomplet (fiche 20261002155911264 ; coupé en plein travail) :
+# il reste des points de clôture à finir → on refuse la voie rapide et on le dit (ci-dessous). READ-ONLY.
+ARCHIVE_RUN_STATUS="$(bash "$(dirname "$0")/archive-progress.sh" status 2>/dev/null || true)"
+case "$ARCHIVE_RUN_STATUS" in
+  "ARCHIVE_RUN: INCOMPLETE"*) fp_reason archive_incomplete ;;
+esac
 if [[ -z "$FP_REASONS" ]]; then
   FASTPATH_LINE="FASTPATH: EMPTY"
   # Le travail non commité d'un AUTRE worktree (un agent, une autre session) n'est vu ni par P1, qui lit
@@ -790,7 +796,9 @@ if [[ "$MODE" == "gate" ]]; then
   echo "P4_ADR: $P4_STATE committed=$P4_COMMITTED uncommitted=$P4_UNCOMMITTED"
   echo "MAINSYNC: $MAINSYNC_STATE ahead=$MS_AHEAD behind=$MS_BEHIND stale_ref=$MS_STALE"
   echo "HANDOFF: entries=$H_ENTRIES lines=$H_LINES bytes=$H_BYTES rotate=$H_ROTATE durable=$H_DURABLE"
-  echo "NOTE: points 5 (memoire) / 6 (handoff) / 7 (verdict) ne sont PAS couverts par ce gate"
+  # Silencieux dans le cas courant (NONE) : on ne surcharge le bloc que lorsqu'un run reste à finir.
+  if [[ "$ARCHIVE_RUN_STATUS" != "ARCHIVE_RUN: NONE" ]]; then echo "$ARCHIVE_RUN_STATUS"; fi
+  echo "NOTE: points 5/6/7 non dérivés ; si un run précédent reste à finir, ARCHIVE_RUN le dit (fiche 20261002155911264)"
   [[ -n "$FACT_OUT" ]] && printf '%s\n' "$FACT_OUT"
   echo "--- END ---"
   exit 0
@@ -917,4 +925,9 @@ if [[ "$FASTPATH_LINE" == "FASTPATH: EMPTY"* ]]; then
 else
   echo "— voie rapide : non (${FASTPATH_LINE#FASTPATH: NO reason=})."
 fi
+case "$ARCHIVE_RUN_STATUS" in
+  "ARCHIVE_RUN: INCOMPLETE"*)
+    echo "— run ezk-archive PRÉCÉDENT incomplet : ${ARCHIVE_RUN_STATUS#ARCHIVE_RUN: INCOMPLETE }."
+    echo "  reprends les points manquants (ne refais pas ceux déjà faits), puis archive-progress.sh clear." ;;
+esac
 echo "— fin du rapport read-only. Aucune modification effectuée."
