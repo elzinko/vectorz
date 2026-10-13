@@ -163,6 +163,8 @@
 | [20261008072305169](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md) | Au close, le sprint écrit et committe son compte rendu | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
 | [20261008072306360](done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md) | La rétro et l'archive lisent les comptes rendus de sprint | feature | P1 | v0.7.0 | mega-city | ✅ shipped | local (v0.7) |
 | [20261009104436287](done/20261009104436287_next-nu-montre-la-suite.md) | next nu montre la suite, pas la liste entière | refactor | P1 |  | mega-city | 🗑️ superseded | superseded — prémisse périmée (CLI sans next/list, ADR-0070) ; question de nommage absorbée par 20261010153046143 |
+| [20261013073300242](20261013073300242_commandes-lecture-ezk-projet-hote.md) | Les commandes ezk de lecture visent le projet hôte (--root) | feature | P1 | v0.12.0 | mega-city | 🔵 ready |  |
+| [20261013073300256](20261013073300256_commandes-ecriture-ezk-projet-hote.md) | Les commandes ezk qui écrivent visent le bon dépôt hôte (--root, garde d'écriture) | feature | P1 | v0.12.0 | mega-city | 🔵 ready |  |
 | [0003](done/0003-e2e-playwright-panneau-darkmode.md) | E2E Playwright — panneau auth (🟢 + modèle) | chore | P2 |  | vectorz | ✅ shipped | #34 |
 | [0004](done/0004-sanitize-error-auth-check.md) | Sanitiser/tronquer le champ error de /api/auth/check | bug | P2 |  | vectorz | ✅ shipped | #29 |
 | [0006](done/0006-v11-dod-iamthelaw-budget.md) | V1.1 — DoD automatisée, iamthelaw et enforcement budget | feature | P2 |  | vectorz | ✅ shipped | #32 |
@@ -338,8 +340,6 @@
 | [20261011153019643](20261011153019643_revue-design-system-step-composable-release.md) | Revue design-system : un step composable branché sur ezk-release | feature | P1 |  | mega-city | 💡 idea |  |
 | [20261012231419185](20261012231419185_board-coque-vue-ensemble.md) | Board : la coque + la vue d'ensemble (métriques, entonnoir, versions dans le process) | feature | P1 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261012231419211](20261012231419211_board-activite-run-moments-fiches.md) | Board : l'activité par run → moments → fiches, et la modale fiche | feature | P1 | v0.17.0 | cop1 | 💡 idea |  |
-| [20261013073300242](20261013073300242_commandes-lecture-ezk-projet-hote.md) | Les commandes ezk de lecture visent le projet hôte (--root) | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
-| [20261013073300256](20261013073300256_commandes-ecriture-ezk-projet-hote.md) | Les commandes ezk qui écrivent visent le bon dépôt hôte (--root, garde d'écriture) | feature | P1 | v0.12.0 | mega-city | 💡 idea |  |
 | [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) | cop1 — afficher les itérations lancées (ezk-product-build) avec leurs paramètres retenus | feature | P2 | v0.15.0 | cop1 | 💡 idea |  |
 | [20261001104806732](20261001104806732_ezk-secret-sync-manifeste-par-projet.md) | ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle | feature | P2 |  | vectorz | 💡 idea |  |
 | [20261001133500750](20261001133500750_lint-ne-couvre-pas-mega-city.md) | Le lint ne vérifie pas le code de mega-city | chore | P2 |  | mega-city | 💡 idea |  |

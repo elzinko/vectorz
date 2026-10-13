@@ -6,7 +6,7 @@ priority: P1
 product: mega-city
 version: v0.12.0
 labels: [installation, flux-local]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # commandes et messages de terminal, pas d'écran
@@ -48,3 +48,4 @@ ezk run context --root "$(git rev-parse --show-toplevel)"         # vise l'hôte
 
 - Découpée de la fiche `20261004083344960` le 2026-10-13 (côté **lecture**). Le côté **écriture** est la fiche sœur [Les commandes ezk qui écrivent visent le bon dépôt hôte](20261013073300256_commandes-ecriture-ezk-projet-hote.md). Même version v0.12.0.
 - Origine : rétro samplerz 2026-10-03 + rétro « vue process » 2026-10-10 + run v0.11 2026-10-13 (règle de taille `20261013013553179`).
+- Dépendance **samplerz** (projet hôte de validation) — accès constaté le 2026-10-03 (`~/git/samplerz`, `main`). Le build vit dans mega-city, autonome (testable sur un dossier jetable) ; samplerz ne sert qu'à la mesure.

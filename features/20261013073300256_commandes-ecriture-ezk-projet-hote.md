@@ -6,7 +6,7 @@ priority: P1
 product: mega-city
 version: v0.12.0
 labels: [installation, flux-local]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # commandes et messages de terminal, pas d'écran
@@ -47,3 +47,4 @@ ezk pr emit-local --root "$(git rev-parse --show-toplevel)" …     # écrit dan
 
 - Découpée de la fiche `20261004083344960` le 2026-10-13 (côté **écriture**). Le côté **lecture** est la fiche sœur [Les commandes ezk de lecture visent le projet hôte](20261013073300242_commandes-lecture-ezk-projet-hote.md). Même version v0.12.0.
 - `ezk sprint report` dépend de la supervision ; l'absence de journal sur un hôte relève de la fiche sœur [Le rapport de sprint retrouve sa trace de supervision](20261002230039863_sprint-report-trace-supervision.md) — ici on ne traite que le `--root`.
+- Dépendance **samplerz** (projet hôte de validation) — accès constaté le 2026-10-03 (`~/git/samplerz`, `main`). Le build vit dans mega-city, autonome (testable sur un dossier jetable) ; samplerz ne sert qu'à la mesure.
