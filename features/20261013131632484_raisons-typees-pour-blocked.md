@@ -58,7 +58,7 @@ pnpm --dir products/mega-city plan:head   # une fiche « différée-PO » n'est 
 
 - Découpée de la fiche `20261002133125418` le 2026-10-13 (côté **raisons typées**, symptôme du run v0.7
   du 2026-10-11). Le bug d'alignement `plan:head`/`plan:lot` est la fiche sœur
-  [La tête du plan respecte le drapeau bloquée](20261013131632277_tete-plan-respecte-drapeau-bloquee.md).
+  [La tête du plan respecte le drapeau bloquée](done/20261013131632277_tete-plan-respecte-drapeau-bloquee.md).
   Même version v0.13.0 ; la liste fermée des raisons se partage entre les deux.
 - **Socle de** la règle d'arrêt du run autonome
   [Le run filtre l'éligibilité + borne de version](20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md)

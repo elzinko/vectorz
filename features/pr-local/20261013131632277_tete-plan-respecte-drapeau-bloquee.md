@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261013131632277_tete-plan-respecte-drapeau-bloquee.md](../20261013131632277_tete-plan-respecte-drapeau-bloquee.md)
+> 🗎 Rendu de la fiche [features/20261013131632277_tete-plan-respecte-drapeau-bloquee.md](../done/20261013131632277_tete-plan-respecte-drapeau-bloquee.md)
 
 # 20261013131632277 — La tête du plan respecte le drapeau bloquée, comme le lot
 

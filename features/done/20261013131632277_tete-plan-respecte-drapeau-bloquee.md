@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [backlog]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (a1ace256)"
 evidence: none # commandes, pas d'écran
 split_from: "20261002133125418"
 created: 2026-10-13
@@ -62,7 +62,7 @@ pnpm --dir products/mega-city plan:lot 1
 
 - Découpée de la fiche `20261002133125418` le 2026-10-13 (côté **bug `plan:head`**, symptôme du
   2026-10-02). Les **raisons typées** du drapeau `blocked:` sont la fiche sœur
-  [Raisons typées pour le drapeau bloquée](20261013131632484_raisons-typees-pour-blocked.md). Même
+  [Raisons typées pour le drapeau bloquée](../20261013131632484_raisons-typees-pour-blocked.md). Même
   version v0.13.0.
 - Repéré pendant la construction du lot, PR #324. La fiche d'origine a aussi absorbé le doublon
   « Rétro v0.10 : plan-head ignore le drapeau blocked: » (20261011114725137) — même bug.
