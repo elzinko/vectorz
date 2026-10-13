@@ -52,6 +52,12 @@ Détecte la situation du projet et route :
 | **(c)** | des `.github/workflows/*.yml` existent mais aucun setup local | **bootstrap** (section dédiée) |
 | **(d)** | pas de GitHub Actions du tout | skill non applicable — sors et dis-le |
 
+> **La gate locale de tests de mega-city = une seule commande** (fiche 20261002230039555) :
+> `pnpm --dir products/mega-city gate` rejoue vitest **puis** les suites bash (`test:scripts`) et
+> s'arrête au premier rouge. C'est elle que `ezk-sprint` (étape 5) et `ezk-codex` (avant chaque
+> push) citent — jamais une seule des deux suites. Le mode `native` ci-dessous couvre, lui, la
+> **pipeline** (lint + tests + build) hors Docker.
+
 ## Pré-requis (modes `act` — `list`/`dryrun`/`run`/`bootstrap`)
 
 > Le mode dégradé **`native`** s'en **exempte délibérément** : c'est justement

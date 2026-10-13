@@ -11,6 +11,7 @@
     "test": "tsx bin/graph-compile.ts && vitest run",
     "test:watch": "vitest",
     "test:scripts": "bash bin/test-scripts.sh",
+    "gate": "pnpm test && pnpm test:scripts",
     "typecheck": "tsc --noEmit",
     "ezk": "tsx bin/ezk.ts",
     "lawgiver": "tsx bin/lawgiver.ts",

@@ -162,7 +162,12 @@ Co-Authored-By: Claude <modèle> <noreply@anthropic.com>
 
 ### 4. Push, clore les fils corrigés, puis re-déclencher Codex
 
+**Avant chaque push de correctif**, rejoue la gate locale par la commande **unique**
+`pnpm --dir products/mega-city gate` (vitest **puis** `test:scripts`, arrêt au premier rouge —
+fiche 20261002230039555) : ne pousse jamais un correctif sans qu'elle soit verte.
+
 ```bash
+pnpm --dir products/mega-city gate
 git push origin "$HEAD_BRANCH"
 ```
 
