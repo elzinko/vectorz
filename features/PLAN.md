@@ -175,7 +175,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - ~~`20261004175528673` — corriger les 20 dépendances vulnérables (vitest 4) · P1 · `groom`~~ — shipped
 - ~~`20260922175954296` — release-gate : passe qualité avant de versionner (skill `ezk-release`) · P0 · `groom`~~ — shipped
 - ~~`20261002230039555` — une seule commande « gate » rejoue la validation locale · P1 · `groom`~~ — shipped
-- `20261003075821760` — le relecteur coche les critères, pas le constructeur · P1 · `build`
+- ~~`20261003075821760` — le relecteur coche les critères, pas le constructeur · P1 · `build`~~ — shipped
 - `20261011091555006` — la gate attrape les défauts de forme des vues · P2 · `groom`
 - `20261011091552583` — regen n'écrit plus un titre cassé avec `--root` · P2 · `groom`
 - `20261002230039755` — la revue locale rejoue les scripts bash sur entrées hostiles · P2 · `groom`

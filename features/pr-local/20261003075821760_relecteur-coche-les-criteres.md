@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261003075821760_relecteur-coche-les-criteres.md](../20261003075821760_relecteur-coche-les-criteres.md)
+> 🗎 Rendu de la fiche [features/20261003075821760_relecteur-coche-les-criteres.md](../done/20261003075821760_relecteur-coche-les-criteres.md)
 
 # 20261003075821760 — Le relecteur coche les critères d'acceptation, pas le constructeur
 

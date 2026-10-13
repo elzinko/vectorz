@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [revue]
-status: ready
-pr:
+status: shipped
+pr: "local (2f62e6a0)"
 evidence: none # changement de méthode de revue, pas d'écran
 created: 2026-10-03
 ---
@@ -86,7 +86,7 @@ Concrètement :
 
 - **Avant le ship, toujours** : le ship range la fiche dans `done/`, les cases doivent y être déjà.
   Compatible avec la fiche
-  [« Poser le commit ship une seule fois »](20261002230039650_ship-pose-une-fois-apres-codex.md),
+  [« Poser le commit ship une seule fois »](../20261002230039650_ship-pose-une-fois-apres-codex.md),
   quel que soit le moment du ship.
 - **Un verdict au format fixe**, une ligne par critère : `critère N : prouvé — <preuve>` ou
   `critère N : non prouvé — <manque>`. On peut ainsi vérifier mécaniquement que les cases de la fiche
@@ -132,7 +132,7 @@ pnpm --dir products/mega-city test
   et accepter sont deux gestes ; le relecteur prouve, le PO accepte, l'agent qualité fournit ses
   preuves quand il est appelé) et « avis de l'architecte » (la preuve tombe entre la revue et le
   ship, verdict au format fixe, cases recopiées).
-- Voisine distincte : [« La revue locale rejoue les scripts bash modifiés »](20261002230039755_revue-rejoue-scripts-bash.md)
+- Voisine distincte : [« La revue locale rejoue les scripts bash modifiés »](../20261002230039755_revue-rejoue-scripts-bash.md)
   (même agent, autre geste : exécuter les scripts, pas valider les critères).
 - Lien avec la règle `development/acceptance-criteria-before-merge` : elle garantit que chaque
   critère **peut** se cocher avant le merge ; cette fiche dit **qui** le coche.
