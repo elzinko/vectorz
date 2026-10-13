@@ -48,11 +48,11 @@ function planHead(repo: string): { headReady: string | null; blockedAhead: strin
   const { kept, deferred } = applyVersionScope(allFiches, scope);
   const deferredIds = new Set(deferred.map((f: Fiche) => f.id));
   const index = new Map<string, PlanCard>();
-  // Une fiche au drapeau `blocked:` n'est ni tirable ni à groomer maintenant (parquée) — même
-  // éligibilité que `plan-lot` (`src/backlog/plan-lot.ts`), que `plan-head` n'applique PAS. La
-  // boussole ne propose jamais de développer une fiche bloquée.
-  for (const f of kept.filter((c: Fiche) => c.blocked === ''))
-    index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status });
+  // `crossBacklogHead` applique désormais l'éligibilité `blocked:` lui-même (fiche 20261013131632277,
+  // même règle que `plan-lot`). La boussole lui passe TOUTES les fiches avec leur drapeau et ne
+  // filtre plus elle-même : une fiche prête mais bloquée n'est jamais proposée comme tête.
+  for (const f of kept)
+    index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status, blocked: f.blocked ?? '' });
   const { head, blockedAhead } = crossBacklogHead(
     planIds.filter((id) => !deferredIds.has(id)),
     index,

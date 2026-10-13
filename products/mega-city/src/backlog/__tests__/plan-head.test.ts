@@ -6,8 +6,9 @@ function card(
   product: string,
   status: string,
   type = 'feature',
+  blocked = '',
 ): PlanCard {
-  return { id, product, type, status };
+  return { id, product, type, status, blocked };
 }
 
 function indexOf(...cards: PlanCard[]): Map<string, PlanCard> {
@@ -96,7 +97,21 @@ describe('crossBacklogHead (fiche 0097)', () => {
 
   it('renvoie head null et listes vides sur un plan vide', () => {
     const r = crossBacklogHead([], new Map());
-    expect(r).toEqual({ head: null, blockedAhead: [], unresolved: [] });
+    expect(r).toEqual({ head: null, blockedAhead: [], blockedReady: [], unresolved: [] });
+  });
+
+  it('écarte une carte `ready` mais au drapeau `blocked:` : jamais tête, signalée (fiche 20261013131632277)', () => {
+    const planIds = ['0094', '0041'];
+    const index = indexOf(
+      card('0094', 'mega-city', 'ready', 'feature', 'différée-PO'), // prête MAIS bloquée
+      card('0041', 'vectorz', 'ready'), // la vraie tête tirable
+    );
+    const r = crossBacklogHead(planIds, index);
+    expect(r.head).toEqual(card('0041', 'vectorz', 'ready')); // pas 0094, bloquée
+    expect(r.blockedReady).toEqual([
+      { card: card('0094', 'mega-city', 'ready', 'feature', 'différée-PO'), reason: 'différée-PO' },
+    ]);
+    expect(r.blockedAhead).toEqual([]); // une ready+blocked n'est pas une idea à groomer
   });
 
   it('traite un id HORODATÉ (17 chiffres, fiche 0180) comme une tête normale, aux côtés du legacy', () => {

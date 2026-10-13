@@ -15,13 +15,20 @@ export interface PlanCard {
   /** `feature | bug | refactor | chore`. */
   type: string;
   status: string;
+  /** Raison du drapeau `blocked:` (fiche 652), `''` si absent — même champ que `plan:lot`. */
+  blocked: string;
 }
 
 export interface CrossBacklogHead {
-  /** 1re carte `ready` dans l'ordre du plan. */
+  /** 1re carte `ready` ET NON bloquée dans l'ordre du plan. */
   head: PlanCard | null;
   /** Cartes `idea` (pas encore prêtes) qui PRÉCÈDENT la tête dans l'ordre — à groomer. */
   blockedAhead: PlanCard[];
+  /**
+   * Cartes `ready` mais au drapeau `blocked:` rencontrées avant la tête : différées, jamais tête,
+   * signalées avec leur raison (même règle d'éligibilité que `plan:lot` — fiche 20261013131632277).
+   */
+  blockedReady: Array<{ card: PlanCard; reason: string }>;
   /** Ids du plan introuvables dans `features/` — signalés, jamais ignorés. */
   unresolved: string[];
 }
@@ -36,6 +43,7 @@ export function crossBacklogHead(
 ): CrossBacklogHead {
   let head: PlanCard | null = null;
   const blockedAhead: PlanCard[] = [];
+  const blockedReady: Array<{ card: PlanCard; reason: string }> = [];
   const unresolved: string[] = [];
 
   // On parcourt TOUT le plan (pas de return anticipé) : les introuvables doivent
@@ -48,15 +56,22 @@ export function crossBacklogHead(
     }
     if (head) continue; // tête déjà trouvée : on ne scanne plus que les introuvables
     if (card.status === 'ready') {
+      // Prête MAIS bloquée : différée, jamais tête — même exclusion que `plan:lot`
+      // (fiche 20261013131632277). On la signale avec sa raison, on ne s'arrête pas dessus.
+      // Test de vérité : `''` et absent = non bloquée ; une raison non vide = bloquée.
+      if (card.blocked) {
+        blockedReady.push({ card, reason: card.blocked });
+        continue;
+      }
       head = card;
       continue;
     }
     if (card.status === 'idea') {
       blockedAhead.push(card);
     }
-    // blocked | in-progress | shipped → ni tirable, ni signal de blocage
+    // in-progress | shipped → ni tirable, ni signal de blocage
     // à l'intake : on passe (miroir de la règle 0089).
   }
 
-  return { head, blockedAhead, unresolved };
+  return { head, blockedAhead, blockedReady, unresolved };
 }

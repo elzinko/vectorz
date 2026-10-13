@@ -34,7 +34,7 @@ function fail(message: string): never {
 function indexOf(fiches: readonly Fiche[]): Map<string, PlanCard> {
   const index = new Map<string, PlanCard>();
   for (const f of fiches) {
-    index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status });
+    index.set(f.id, { id: f.id, product: f.product, type: f.type, status: f.status, blocked: f.blocked ?? '' });
   }
   return index;
 }
@@ -67,12 +67,16 @@ const scope = versionScope(buildVersions(allFiches, localTags(root)), { allVersi
 const { kept, deferred } = applyVersionScope(allFiches, scope);
 const deferredIds = new Set(deferred.map((f) => f.id));
 const scopedPlanIds = planIds.filter((id) => !deferredIds.has(id));
-const { head, blockedAhead, unresolved } = crossBacklogHead(scopedPlanIds, indexOf(kept));
+const { head, blockedAhead, blockedReady, unresolved } = crossBacklogHead(scopedPlanIds, indexOf(kept));
 
 if (head) {
   console.log(`tête : ${head.id} (${head.product}) — ready ✓ TIRABLE`);
 } else {
   console.log('tête : aucune fiche tirable (status: ready) dans le plan');
+}
+if (blockedReady.length > 0) {
+  console.log('différées (prêtes mais au drapeau blocked: — comme plan:lot) :');
+  for (const { card, reason } of blockedReady) console.log(`  · ${card.id} (${card.product}) — ${reason}`);
 }
 if (blockedAhead.length > 0) {
   console.log('bloquées avant (idea — à groomer) :');
