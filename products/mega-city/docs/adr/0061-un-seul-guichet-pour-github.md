@@ -3,7 +3,7 @@
 - Statut : **Accepté** (ratifié par le PO le 2026-10-04, perspective du bus comprise).
 - Date : 2026-10-04 · perspective du bus ajoutée le même jour, à la demande du PO
 - Compose / précise : [ADR-0003](0003-moteur-bind-plan-pur-coquille-io.md) (cœur pur, coquille d'I/O), [ADR-0039](0039-trois-etages-moteur-methode-branchements-plugin.md) §2 (GitHub est un module), [ADR-0050](0050-couche-regles-projet-local.md) (la couche `.vectorz/`), [ADR-0052](0052-merge-local-first-github-execute-le-squash-main-se-realigne.md) (le local décide, GitHub exécute), [ADR-0059](0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md) (la PR devient optionnelle par la config)
-- Fiches : [20261013074251752](../../../../features/20261013074251752_guichet-forge-trois-etats.md) (le guichet) + [20261013074251767](../../../../features/20261013074251767_clients-guichet-forge-cliquet.md) (ses clients), [20261004083838687](../../../../features/20261004083838687_integrer-sans-pr-par-avance-rapide.md) (intégrer sans PR), [20261004083838781](../../../../features/20261004083838781_ezk-config-help-lu-comme-un-chemin.md) (bug à part)
+- Fiches : [20261013074251752](../../../../features/done/20261013074251752_guichet-forge-trois-etats.md) (le guichet) + [20261013074251767](../../../../features/20261013074251767_clients-guichet-forge-cliquet.md) (ses clients), [20261004083838687](../../../../features/20261004083838687_integrer-sans-pr-par-avance-rapide.md) (intégrer sans PR), [20261004083838781](../../../../features/20261004083838781_ezk-config-help-lu-comme-un-chemin.md) (bug à part)
 
 ## En clair
 
@@ -171,7 +171,7 @@ intention de plus.
 
 1. Le guichet, découpé en deux fiches sœurs (même version v0.12.0, le `20261004083838593` d'origine
    est [en `done/`](../../../../features/done/20261004083838593_guichet-unique-github-archive-reconcile.md)) :
-   - [20261013074251752](../../../../features/20261013074251752_guichet-forge-trois-etats.md) :
+   - [20261013074251752](../../../../features/done/20261013074251752_guichet-forge-trois-etats.md) :
      poser `ezk forge` avec le verbe `changes` et ses trois états (`ok`/`off`/`unavailable`).
    - [20261013074251767](../../../../features/20261013074251767_clients-guichet-forge-cliquet.md) :
      y faire passer `ezk-archive` et `reconcile`, poser le test à cliquet. Dépend de la précédente.

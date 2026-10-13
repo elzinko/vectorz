@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261013074251752_guichet-forge-trois-etats.md](../20261013074251752_guichet-forge-trois-etats.md)
+> 🗎 Rendu de la fiche [features/20261013074251752_guichet-forge-trois-etats.md](../done/20261013074251752_guichet-forge-trois-etats.md)
 
 # 20261013074251752 — Le guichet ezk forge : une commande, trois états
 

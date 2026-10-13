@@ -22,7 +22,7 @@ push en avance rapide. Elle marche depuis n'importe quel worktree.
 
 **Si tu arrives frais.** Un projet à `github: false` (dans `.vectorz/config.yml`) n'ouvre pas de
 PR. Le guichet `ezk forge` est posé par la fiche
-[Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md) ; le motif est
+[Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md) ; le motif est
 dans [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 
 ## Contexte / Problème
@@ -97,7 +97,7 @@ pnpm --dir products/mega-city test
 
 ## Notes / décisions
 
-- Dépend de [Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md),
+- Dépend de [Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md),
   qui pose le guichet.
 - **Décidé (grooming 2026-10-13)** : `push-ff` pousse les commits de la branche **tels quels** (comme muti), sans squash préalable. Un squash avant push pourra s'ajouter plus tard, en option de config, hors de ce premier cran.
 - Le merge strictement hors ligne reste couvert par `local-squash` (ADR-0052 D5).
