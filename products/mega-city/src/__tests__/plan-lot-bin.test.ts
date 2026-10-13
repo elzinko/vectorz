@@ -72,10 +72,18 @@ describe('plan:lot → sprint.sh start --lot', () => {
     const startLine = lot.stdout.split('\n').find((l) => l.includes(' start --lot '))?.trim() ?? '';
     expect(startLine).toMatch(new RegExp(`^bash \\S+sprint\\.sh start --lot ${READY_A},${READY_C}$`));
 
-    // Collée telle quelle depuis la racine du projet : c'est elle qui fige le lot dans SPRINT.md.
+    // Collée telle quelle depuis la racine du projet : c'est elle qui fige le lot dans le journal de
+    // sprint. Depuis la fiche 20261004181110201, ce journal vit HORS du worktree (dossier git commun),
+    // un fichier par branche ; sprint.sh en imprime le chemin sur la ligne SPRINT_FILE.
     const opened = spawnSync('bash', ['-c', startLine], { cwd: project, encoding: 'utf8' });
     expect(opened.stdout, opened.stderr).toContain('START: OPENED sprint=1 stories=2');
-    const sprintMd = readFileSync(join(project, 'SPRINT.md'), 'utf8');
+    const sprintFile = opened.stdout
+      .split('\n')
+      .find((l) => l.startsWith('SPRINT_FILE:'))
+      ?.slice('SPRINT_FILE:'.length)
+      .trim();
+    if (!sprintFile) throw new Error(`SPRINT_FILE absent de la sortie start :\n${opened.stdout}`);
+    const sprintMd = readFileSync(sprintFile, 'utf8');
     expect(sprintMd).toContain(`- [ ] ${READY_A} — Fiche 1`);
     expect(sprintMd).toContain(`- [ ] ${READY_C} — Fiche 3`);
   });
