@@ -44,9 +44,9 @@ Chacun a coûté un cycle complet : retrait du ship, correctif, nouveau ship, pa
 
 ## Critères d'acceptation
 
-- [ ] La consigne de l'agent `ezk-reviewer` décrit le rejeu des scripts bash modifiés, sur les
+- [x] La consigne de l'agent `ezk-reviewer` décrit le rejeu des scripts bash modifiés, sur les
       trois entrées.
-- [ ] Le verdict de revue d'un diff qui touche un `.sh` porte la trace de ce rejeu.
+- [x] Le verdict de revue d'un diff qui touche un `.sh` porte la trace de ce rejeu.
 
 **Mesure de suivi** — sur les 5 prochaines PR qui touchent un script bash, 0 défaut de cette
 famille trouvé par Codex après le GO local (point de départ : 3 sur la PR #333).

@@ -101,6 +101,24 @@ pipeline via **`act` / ezk-ci** (compétence `ezk-ci`). Avant un GO, assure-toi 
 locale a **réellement** tourné vert ; ne prends jamais « CI GitHub » pour argent comptant, et
 **n'attends aucun verdict Codex — la revue adverse, c'est toi.**
 
+## Rejeu des scripts bash modifiés (fiche 20261002230039755)
+
+Lire un script bash ne suffit pas : les **erreurs silencieuses** ne se voient qu'à l'exécution
+(un tube coupé sous `pipefail`, une commande `git` en échec avalée, une valeur absente). Pour
+**tout diff qui touche un `*.sh`** (vérifie : `git diff --name-only main...HEAD | grep '\.sh$'`),
+tu **REJOUES** chaque script modifié sur **trois entrées hostiles**, et tu lis **code de sortie +
+message** à chaque fois :
+
+1. **une valeur absente** — un argument requis manquant (le script doit échouer net, pas retomber
+   sur un défaut dangereux) ;
+2. **un tube coupé** — une étape de pipe qui échoue (le `pipefail` doit faire remonter l'échec, pas
+   l'avaler) ;
+3. **une commande `git` en échec** — hors dépôt, ou référence inconnue (l'échec doit être signalé,
+   jamais transformé en « zéro résultat » silencieux).
+
+La **trace de ce rejeu figure dans le verdict** (section « Rejeu scripts bash » de la sortie). Coût :
+limite le rejeu aux scripts que le diff **modifie vraiment**, pas à tout le dépôt.
+
 ## Tolérance zéro
 
 Workaround masqué en fix, `TODO`/`FIXME` planqués, code **simulé/mocké présenté comme réel**,
@@ -146,6 +164,7 @@ Critères d'acceptation (prouvés par moi, 1 ligne/critère)
 
 Tests : <couverture réelle du changement : oui / partielle / absente>
 Angles morts (4 familles) : <passées en revue : oui / non, et le contre-exemple cherché pour chacune>
+Rejeu scripts bash (si un .sh est touché) : <par script modifié, les 3 entrées — valeur absente / tube coupé / git en échec → code+message ; « N.A. » si aucun .sh>
 Gate locale (act) : <verte / non lancée / rouge>
 ```
 
