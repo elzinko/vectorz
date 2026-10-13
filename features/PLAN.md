@@ -200,7 +200,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20261002231845120` — `BACKLOG.md` ne fait plus conflit entre deux PR · P1 · `build` (ready)~~ — shipped
 - ~~`20261004211037977` — ship dit ce qu'il touche + lit/barre `PLAN.md` · P2 · `build` (ready)~~ — shipped
 - ~~`20261002230039650` — poser le commit ship une seule fois · P2 · `build` (ready)~~ — shipped
-- `20261002205428200` — la garde de ship lit la vraie branche de la PR · P2 · `build` (ready)
+- ~~`20261002205428200` — la garde de ship lit la vraie branche de la PR · P2 · `build` (ready)~~ — shipped
 - `20261004083345055` — une PR ne range que sa fiche · P2 · `build` (ready)
 - ~~`20261002133125418` — `plan-head` respecte `blocked:` (+ raisons typées) · P2 · `groom`~~ — split en ↓
 - `20261013131632277` — la tête du plan respecte le drapeau bloquée · P2 · `build` (ready)

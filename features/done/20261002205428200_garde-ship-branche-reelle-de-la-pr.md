@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.13.0
 labels: [sprint]
-status: ready
-pr:
+status: shipped
+pr: "local (f952c946)"
 evidence: none # script de merge, aucun écran
 created: 2026-10-02
 ---
@@ -28,7 +28,7 @@ sans ce commit.
 
 ## Contexte / Problème
 
-La garde vit dans [`ship-merge.sh`](../products/mega-city/skills/ezk-pr/scripts/ship-merge.sh),
+La garde vit dans [`ship-merge.sh`](../../products/mega-city/skills/ezk-pr/scripts/ship-merge.sh),
 fonction `ship_guard` (l. 135). Elle tire l'id de la fiche du texte de `--branch` (l. 137), avec le
 motif `feat|fix/<id>-<slug>`. Sans id, elle écrit `SHIP-GUARD: skip` et laisse merger (l. 138).
 
@@ -84,8 +84,8 @@ toutes les suites bash.
   appel manuel de `ship-merge.sh` avec une mauvaise branche. Et un merge depuis l'UI contourne la
   garde de toute façon : l'ADR-0049 assume ce filet partiel. Priorité et version restent à trancher
   au grooming ; la V0.5 en serait la suite naturelle.
-- **Voisines** : [« En cours » se déduit des branches](done/20261002130235353_en-cours-deduit-des-branches.md)
+- **Voisines** : [« En cours » se déduit des branches](20261002130235353_en-cours-deduit-des-branches.md)
   fait le même rapprochement branche ↔ PR, mais pour l'affichage.
-  [La story livrée par #333](done/20261002114435782_done-par-story-a-la-validation.md) a construit la
+  [La story livrée par #333](20261002114435782_done-par-story-a-la-validation.md) a construit la
   garde. Décision de fond :
-  [ADR-0049](../products/mega-city/docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md).
+  [ADR-0049](../../products/mega-city/docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md).

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261002205428200_garde-ship-branche-reelle-de-la-pr.md](../20261002205428200_garde-ship-branche-reelle-de-la-pr.md)
+> 🗎 Rendu de la fiche [features/20261002205428200_garde-ship-branche-reelle-de-la-pr.md](../done/20261002205428200_garde-ship-branche-reelle-de-la-pr.md)
 
 # 20261002205428200 — La garde de ship lit la vraie branche de la PR, pas l'argument --branch
 
