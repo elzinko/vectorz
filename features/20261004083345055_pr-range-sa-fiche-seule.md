@@ -4,9 +4,10 @@ title: "Une PR ne range que sa fiche : l'index se régénère après la fusion"
 type: feature
 priority: P2
 product: mega-city
+milestone: parked
 version: v0.13.0
 labels: []
-status: ready
+status: idea
 blocked: "attend-panel — renverse les fiches 4/5 livrées (ship DANS la PR) et révise l'ADR-0049 §2 ; décision structurelle à trancher en panel avec le PO avant de construire (run v0.13, 2026-10-13)"
 pr:
 evidence: none # flux git et fichiers générés, pas d'écran
