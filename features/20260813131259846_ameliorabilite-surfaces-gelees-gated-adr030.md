@@ -7,7 +7,7 @@ product: vectorz
 milestone: parked
 status: idea
 labels: [contrat]
-blocked: "ADR-030 non ratifié (panel adverse + arbitrage PO en attente sur la décision A2 transport)"
+blocked: "attend-panel — ADR-030 non ratifié (panel adverse + arbitrage PO en attente sur la décision A2 transport)"
 pr:
 created: 2026-08-13
 ---

@@ -8,7 +8,7 @@ milestone: parked
 version:
 labels: [supervision, moniteur, cockpit, board, dashboard, lisibilite, ux]
 status: idea
-blocked: "maquette validée (v17) + specs capturées le 2026-10-12. Attend 3 décisions PO : (1) la version — pressentie v0.15 « Voir les runs », ou une version UX dédiée ; (2) le découpage en fiches filles (voir « Découpage proposé ») ; (3) l'ADR qui grave le modèle (run → moments → fiches, deux portées de config). Puis dé-parker + versionner + groomer chaque fille."
+blocked: "différée-PO — maquette validée (v17) + specs capturées le 2026-10-12. Attend 3 décisions PO : (1) la version — pressentie v0.15 « Voir les runs », ou une version UX dédiée ; (2) le découpage en fiches filles (voir « Découpage proposé ») ; (3) l'ADR qui grave le modèle (run → moments → fiches, deux portées de config). Puis dé-parker + versionner + groomer chaque fille."
 pr:
 evidence: before-after
 created: 2026-10-07

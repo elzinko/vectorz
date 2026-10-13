@@ -8,7 +8,7 @@ milestone:
 version:
 labels: [ergonomie-cli]
 status: superseded
-blocked: "prémisse périmée : le CLI n'a ni `next` ni `list` (migré vers plan-head/plan-lot, périmètre de version ADR-0070) ; construire un `next` reviendrait en arrière. Résidu = renommage de vocabulaire = décision PO (run auto 2026-10-11)"
+blocked: "différée-PO — prémisse périmée : le CLI n'a ni `next` ni `list` (migré vers plan-head/plan-lot, périmètre de version ADR-0070) ; construire un `next` reviendrait en arrière. Résidu = renommage de vocabulaire = décision PO (run auto 2026-10-11)"
 pr: "superseded — prémisse périmée (CLI sans next/list, ADR-0070) ; question de nommage absorbée par 20261010153046143"
 evidence: none
 created: 2026-10-09

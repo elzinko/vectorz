@@ -26,6 +26,20 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
     expect(validateFicheFrontMatter('features/x.md', text, { monorepo: false })).toEqual([]);
   });
 
+  it('blocked: raison typée connue → aucune anomalie blocked (fiche 20261013131632484)', () => {
+    const text = fm({ ...VALID_FIELDS, blocked: '"différée-PO — contexte libre pour l’humain"' });
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    expect(anomalies.filter((a) => a.field === 'blocked')).toEqual([]);
+  });
+
+  it('blocked: raison hors liste fermée → anomalie nommant la valeur (fiche 20261013131632484)', () => {
+    const text = fm({ ...VALID_FIELDS, blocked: '"inconnu-xyz — un texte libre"' });
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    const blocked = anomalies.find((a) => a.field === 'blocked');
+    expect(blocked).toBeDefined();
+    expect(blocked?.message).toContain('inconnu-xyz');
+  });
+
   it('status hors-enum → listé (n-importe-quoi)', () => {
     const text = fm({ ...VALID_FIELDS, status: 'n-importe-quoi' });
     const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });

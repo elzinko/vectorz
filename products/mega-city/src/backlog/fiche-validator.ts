@@ -14,6 +14,7 @@
 import { EVIDENCE, PRIOS, TYPES } from '../core/avancement-data.js';
 import { CHAMPS_RETIRES, STATUTS } from '../core/fiche-schema.js';
 import { frontMatter, readField } from '../loaders/fiches.js';
+import { BLOCKED_REASONS, blockedType, isKnownBlockedReason } from './blocked-reasons.js';
 
 export interface FicheAnomaly {
   file: string;
@@ -58,6 +59,17 @@ export function validateFicheFrontMatter(
         message: `${field} inconnu : "${value}" (attendu : ${values.join(', ')})`,
       });
     }
+  }
+
+  // Raison typée du drapeau `blocked:` : une liste fermée, pour que le tirage et le run autonome la
+  // lisent sans délibérer (fiche 20261013131632484). Vide = non bloquée. Format : `<type> — <contexte>`.
+  const blocked = readField(text, 'blocked');
+  if (!isKnownBlockedReason(blocked)) {
+    anomalies.push({
+      file,
+      field: 'blocked',
+      message: `raison blocked: inconnue : "${blockedType(blocked)}" (attendu : ${BLOCKED_REASONS.join(', ')})`,
+    });
   }
 
   // Champs RETIRÉS (migration Skema, ex. `ready:` depuis la 005) : leur simple présence dans le

@@ -8,7 +8,7 @@ epic:
 depends: []
 labels: [test-local]
 status: superseded
-blocked: "raison non tracée à la création — statut hérité, migré en drapeau sans preuve documentée (sliver B, fiche 652)"
+blocked: "hérité — raison non tracée à la création — statut hérité, migré en drapeau sans preuve documentée (sliver B, fiche 652)"
 pr: "superseded — fusionnée dans 20260917162000501 (tri 2026-09-30)"
 created: 2026-07-26
 ---

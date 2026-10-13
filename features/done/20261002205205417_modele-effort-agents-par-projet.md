@@ -8,7 +8,7 @@ milestone: parked
 version:
 labels: [installation, ezk-map, board]
 status: split
-blocked: "à découper avant de construire : 12 critères, estimée à 500-700k (règle token-economy/fiche-tient-dans-un-sprint, rétro du 2026-10-04)"
+blocked: "à-découper — à découper avant de construire : 12 critères, estimée à 500-700k (règle token-economy/fiche-tient-dans-un-sprint, rétro du 2026-10-04)"
 pr: "split — scindée en 20261013132218242, 20261013132218451, 20261013132218656"
 evidence: auto
 created: 2026-10-02

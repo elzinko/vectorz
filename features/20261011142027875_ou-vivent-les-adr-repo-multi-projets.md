@@ -8,7 +8,7 @@ milestone:
 version: v0.16.0
 labels: [adr, archi]
 status: idea
-blocked: "attend un panel adverse (ezk-architect + ezk-pm) — fiche de décision structurelle (où vivent les ADR), à tenir avec le PO, pas un build autonome"
+blocked: "attend-panel — attend un panel adverse (ezk-architect + ezk-pm) — fiche de décision structurelle (où vivent les ADR), à tenir avec le PO, pas un build autonome"
 split_from: "20261010114133097"
 pr:
 evidence: none # décision + ADR, pas d'écran
