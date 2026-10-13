@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [backlog, spike]
-status: ready
-pr:
+status: shipped
+pr: "local (f400ebdf)"
 evidence: none # pas d'écran
 created: 2026-10-11
 ---

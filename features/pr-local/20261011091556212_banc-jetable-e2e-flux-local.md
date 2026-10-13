@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261011091556212_banc-jetable-e2e-flux-local.md](../20261011091556212_banc-jetable-e2e-flux-local.md)
+> 🗎 Rendu de la fiche [features/20261011091556212_banc-jetable-e2e-flux-local.md](../done/20261011091556212_banc-jetable-e2e-flux-local.md)
 
 # 20261011091556212 — Banc jetable E2E du flux local (sans GitHub)
 

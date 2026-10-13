@@ -188,7 +188,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 - `20261004083838687` — sans PR, intégrer par avance rapide · P2 · `groom`
 - ~~`20261011113632532` — `ezk run context/report` visent le projet construit + flux local · P2 · `groom`~~ — shipped
 - `20261002230039863` — le rapport de sprint retrouve sa trace de supervision · P3 · `groom`
-- `20261011091556212` — banc jetable E2E du flux local (sans GitHub) · P3 · `groom`
+- ~~`20261011091556212` — banc jetable E2E du flux local (sans GitHub) · P3 · `groom`~~ — shipped
 
 ### ⑭ v0.13.0 — la transaction ship, d'un bloc
 > Toute la surface ship/backlog/PLAN et la réconciliation worktree dans une seule version (évite de rééditer deux fois le même point d'entrée).

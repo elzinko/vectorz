@@ -100,7 +100,7 @@ n'existait.
 | S7 — marqueur de blocage typé | Enrichit [20261002133125418](../../features/20261002133125418_tete-plan-ignore-drapeau-bloquee.md), pas de doublon | 2026-10-11 |
 | S5 — run : éligibilité avant délibération + arrêt à la borne | Nouvelle fiche [20261011091553794](../../features/20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md) | 2026-10-11 |
 | S4a+S4b — gate : forme des vues + confinement testé | Nouvelle fiche [20261011091555006](../../features/20261011091555006_gate-attrape-forme-vues-et-confinement.md) | 2026-10-11 |
-| S6 — banc jetable E2E flux local | Nouvelle fiche spike [20261011091556212](../../features/20261011091556212_banc-jetable-e2e-flux-local.md) | 2026-10-11 |
+| S6 — banc jetable E2E flux local | Nouvelle fiche spike [20261011091556212](../../features/done/20261011091556212_banc-jetable-e2e-flux-local.md) | 2026-10-11 |
 | S7-invariant — ship vise le checkout principal | Note d'invariant, pas de fiche (déjà corrigé ce run) | 2026-10-11 |
 
 **Doublon repéré à signaler.** Deux fiches couvrent déjà « le bilan de run en local » :
