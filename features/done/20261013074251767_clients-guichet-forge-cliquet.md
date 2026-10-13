@@ -6,9 +6,9 @@ priority: P2
 product: mega-city
 version: v0.12.0
 labels: [github-optionnel, cross-repo]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (140f340f)"
 evidence: none # commandes et scripts, aucun écran
 split_from: "20261004083838593"
 created: 2026-10-13
@@ -18,7 +18,7 @@ created: 2026-10-13
 
 **En clair.** Deux outils appellent encore `gh` sans lire la config : le `check.sh` d'`ezk-archive` et le texte de `reconcile`. On les fait passer par le guichet `ezk forge`, et un **test à cliquet** refuse ensuite tout nouvel appel à `gh` hors du guichet — l'oubli ne peut plus revenir.
 
-**Si tu arrives frais.** Le guichet `ezk forge` est posé par la fiche sœur [Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md). Un *cliquet* est une liste qui rétrécit mais ne grandit jamais.
+**Si tu arrives frais.** Le guichet `ezk forge` est posé par la fiche sœur [Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md). Un *cliquet* est une liste qui rétrécit mais ne grandit jamais.
 
 ## Contexte / Problème
 
@@ -51,7 +51,7 @@ pnpm --dir products/mega-city test
 
 ## Notes / décisions
 
-- Découpée de la fiche `20261004083838593` le 2026-10-13 (côté **clients**). **Dépend du guichet** : fiche sœur [Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md) — à construire d'abord. Même version v0.12.0.
-- Motif : [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
+- Découpée de la fiche `20261004083838593` le 2026-10-13 (côté **clients**). **Dépend du guichet** : fiche sœur [Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md) — à construire d'abord. Même version v0.12.0.
+- Motif : [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 - Dépendance **muti** (projet hôte d'origine) — accès constaté le 2026-10-04 (`github: false`, commit `c3a5d48b`). Le build vit dans mega-city, autonome.
 - **Preuve sur projet hôte (2026-10-13)** — éprouvé sur un dépôt git **jetable** (`mktemp`, remote GitHub + `gh` factice qui journalise ses appels). En `github: false` : `check.sh --gate` rend « PR sans objet : GitHub coupé par la config » et le journal `gh` reste **vide** (zéro appel, pas même `gh auth status`). Config absente : `check.sh` appelle `gh` (non-régression). Le cliquet `forge-gh-ratchet` passe sur la base d'aujourd'hui.

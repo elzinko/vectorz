@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261013074251767_clients-guichet-forge-cliquet.md](../20261013074251767_clients-guichet-forge-cliquet.md)
+> 🗎 Rendu de la fiche [features/20261013074251767_clients-guichet-forge-cliquet.md](../done/20261013074251767_clients-guichet-forge-cliquet.md)
 
 # 20261013074251767 — ezk-archive et reconcile passent par le guichet forge
 
