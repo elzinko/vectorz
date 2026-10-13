@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004175528673_dependances-vulnerables-vitest-4.md](../20261004175528673_dependances-vulnerables-vitest-4.md)
+> 🗎 Rendu de la fiche [features/20261004175528673_dependances-vulnerables-vitest-4.md](../done/20261004175528673_dependances-vulnerables-vitest-4.md)
 
 # 20261004175528673 — Corriger les dépendances vulnérables de vectorz
 

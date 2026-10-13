@@ -172,7 +172,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index : [`
 
 ### ⑫ v0.11.0 — la qualité tient (train rouvert le 2026-10-11)
 > Ouvre après le grooming de la P0 (forme retenue : un skill `ezk-release` dédié). La sécurité d'abord (cheap, indépendante).
-- `20261004175528673` — corriger les 20 dépendances vulnérables (vitest 4) · P1 · `groom`
+- ~~`20261004175528673` — corriger les 20 dépendances vulnérables (vitest 4) · P1 · `groom`~~ — shipped
 - `20260922175954296` — release-gate : passe qualité avant de versionner (skill `ezk-release`) · P0 · `groom`
 - `20261002230039555` — une seule commande « gate » rejoue la validation locale · P1 · `groom`
 - `20261003075821760` — le relecteur coche les critères, pas le constructeur · P1 · `build`

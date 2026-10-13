@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.11.0
 labels: [dependances]
-status: ready
-pr:
+status: shipped
+pr: "local (c2f51e2b)"
 evidence: none # dépendances et lockfile, pas d'écran
 created: 2026-10-04
 ---
@@ -73,5 +73,5 @@ gh api 'repos/elzinko/vectorz/dependabot/alerts?state=open' --jq length   # apr�
 ## Notes / décisions
 
 - Priorité P1 fixée par le PO le 2026-10-04. Version non fixée.
-- Voisine, sans doublon : [Vérifier les dépendances en local plutôt qu'avec Dependabot](20260816194833618_deps-sante-audit-local-par-profil.md),
+- Voisine, sans doublon : [Vérifier les dépendances en local plutôt qu'avec Dependabot](../20260816194833618_deps-sante-audit-local-par-profil.md),
   qui porte l'outillage d'audit, pas la correction d'aujourd'hui.
