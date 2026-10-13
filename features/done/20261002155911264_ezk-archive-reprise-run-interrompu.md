@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [archive]
-status: ready
-pr:
+status: shipped
+pr: "local (25b4f219)"
 evidence: none # outillage de clôture, pas d'écran
 created: 2026-10-02
 ---
