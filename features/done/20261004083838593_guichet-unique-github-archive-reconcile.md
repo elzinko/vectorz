@@ -101,7 +101,7 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - Motif et options écartées : [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
-- Suite : [20261004083838687](../20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le
+- Suite : [20261004083838687](20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le
   verbe `integrate` sur ce guichet.
 - Codes de sortie des trois états : à fixer au grooming.
 - Demandé depuis muti : sa gate locale (`ci:local:signal`) fait déjà son propre contrôle (option A

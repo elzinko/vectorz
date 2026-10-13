@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [github-optionnel, cross-repo]
-status: ready
-pr:
+status: shipped
+pr: "local (dae12c4b)"
 evidence: none # commandes git, aucun écran
 created: 2026-10-04
 ---
@@ -22,8 +22,8 @@ push en avance rapide. Elle marche depuis n'importe quel worktree.
 
 **Si tu arrives frais.** Un projet à `github: false` (dans `.vectorz/config.yml`) n'ouvre pas de
 PR. Le guichet `ezk forge` est posé par la fiche
-[Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md) ; le motif est
-dans [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
+[Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md) ; le motif est
+dans [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
 
 ## Contexte / Problème
 
@@ -39,13 +39,13 @@ Vécu sur muti le 2026-10-04 :
   `git merge-base --is-ancestor origin/main HEAD` et `git push origin HEAD:main`. La session l'a
   fait à la main, hors de la méthode.
 
-Le squash local reste juste pour un dépôt sans remote ([ADR-0052](../products/mega-city/docs/adr/0052-merge-local-first-github-execute-le-squash-main-se-realigne.md)
+Le squash local reste juste pour un dépôt sans remote ([ADR-0052](../../products/mega-city/docs/adr/0052-merge-local-first-github-execute-le-squash-main-se-realigne.md)
 D5). Il manque une option pour un dépôt qui a un remote mais pas de PR.
 
 ## Proposition
 
 Mettre en œuvre la décision D3 de
-[ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) :
+[ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) :
 
 1. **Le verbe.** `ezk forge integrate --branch <b> [--base main]`. Adaptateur GitHub :
    `gh pr merge --squash`, comme aujourd'hui. Adaptateur local : la stratégie du projet.
@@ -97,7 +97,7 @@ pnpm --dir products/mega-city test
 
 ## Notes / décisions
 
-- Dépend de [Le guichet ezk forge](done/20261013074251752_guichet-forge-trois-etats.md),
+- Dépend de [Le guichet ezk forge](20261013074251752_guichet-forge-trois-etats.md),
   qui pose le guichet.
 - **Décidé (grooming 2026-10-13)** : `push-ff` pousse les commits de la branche **tels quels** (comme muti), sans squash préalable. Un squash avant push pourra s'ajouter plus tard, en option de config, hors de ce premier cran.
 - Le merge strictement hors ligne reste couvert par `local-squash` (ADR-0052 D5).

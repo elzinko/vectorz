@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261004083838687_integrer-sans-pr-par-avance-rapide.md](../20261004083838687_integrer-sans-pr-par-avance-rapide.md)
+> 🗎 Rendu de la fiche [features/20261004083838687_integrer-sans-pr-par-avance-rapide.md](../done/20261004083838687_integrer-sans-pr-par-avance-rapide.md)
 
 # 20261004083838687 — Sans PR, intégrer par push en avance rapide, au choix du projet
 

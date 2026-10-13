@@ -43,7 +43,7 @@ pnpm --dir products/mega-city test
 
 - Découpée de la fiche `20261004083838593` le 2026-10-13 (côté **guichet**). Les clients (ezk-archive, reconcile) + le cliquet = fiche sœur [ezk-archive et reconcile passent par le guichet](../done/20261013074251767_clients-guichet-forge-cliquet.md). Même version v0.12.0.
 - Motif et options écartées : [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md).
-- La fiche [Sans PR, intégrer par avance rapide](../20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le verbe `integrate` sur ce guichet.
+- La fiche [Sans PR, intégrer par avance rapide](../done/20261004083838687_integrer-sans-pr-par-avance-rapide.md) ajoute le verbe `integrate` sur ce guichet.
 - Dépendance **muti** (projet hôte d'origine) — accès constaté le 2026-10-04 (`github: false`, commit `c3a5d48b`). Le build vit dans mega-city, autonome ; muti a motivé le besoin.
 
 
