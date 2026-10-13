@@ -46,6 +46,15 @@ régénérer **toute** vue dérivée d'une fiche — board inclus — **et dépl
 PR. Cette extension du contrat `ship`/`sprint` fait partie de l'**implémentation** de cet ADR (fiche
 `20260823121712781`), pas d'un acquis.
 
+**Précision d'ordonnancement (fiche 20261002230039650, 2026-10-13).** Le commit de ship est posé
+**une seule fois** : après le GO de la revue locale **et** la première passe Codex traitée (ses
+retours retenus corrigés en un seul lot). **Attente de Codex bornée** : muet, ou `codex-review:
+false`, on pose le ship sur le GO local seul — Codex reste un filet, jamais une condition de merge
+(ADR-0059). Un retour Codex **tardif** garde le geste `undo` → correctif → `add`. Ceci **ne change
+pas la décision** (le ship reste le dernier commit, après le GO, avant le merge) : c'est une
+précision sur *quand* le poser, pour éviter le va-et-vient retrait/repose (PR #333 : 3 poses, 2
+retraits, ~400k jetons).
+
 **2 — Pas de « vues post-merge ».** La garantie **primaire** est le **contrat `ship`** : il régénère
 **toutes** les vues dérivées dans la PR, donc elles y sont cohérentes **par construction** — pas par la
 grâce d'un gate. La CI n'est qu'un **filet conditionnel** : `check-links` attrape un `BACKLOG.md`

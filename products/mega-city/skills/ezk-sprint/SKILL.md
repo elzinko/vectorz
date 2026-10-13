@@ -270,7 +270,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 
    Apps de bureau (Tauri, Electron) : `evidence: none # <raison>` ou capture manuelle. Gabarit du rendu : [`ezk-pr` `assets/PULL_REQUEST_TEMPLATE.thin.md`](../ezk-pr/assets/PULL_REQUEST_TEMPLATE.thin.md).
 
-   **Ship dans la PR : le dernier commit de la branche** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)). Dès que la DoD de la story est verte (revue `ezk-reviewer` GO, validation verte, PR ouverte donc son numéro connu), range la fiche **dans la PR**, avant le checkpoint :
+   **Ship dans la PR : le dernier commit de la branche** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)). **Pose-le une seule fois** : dès que la DoD de la story est verte (revue `ezk-reviewer` GO, validation verte, PR ouverte donc son numéro connu) **et que la première passe Codex est traitée** — ses retours retenus corrigés en un seul lot —, range la fiche **dans la PR**, avant le checkpoint. **Attente de Codex bornée** : s'il reste muet, ou `codex-review: false`, pose le ship sur le GO local seul (Codex est un filet, jamais une condition de merge — ADR-0059). Un retour Codex **tardif** garde le geste habituel (`undo`, correctif, `add`). But : au plus un retrait de ship par PR (fiche 20261002230039650).
 
    ```bash
    ezk pr ship-in-pr add --repo . --fiche-id <id> --pr <N>

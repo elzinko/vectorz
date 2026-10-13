@@ -268,7 +268,7 @@ Option `--changed-files <fichier>` (liste de chemins, un par ligne, ex. `git dif
   ❌ échec avec le signal observé / ⏳ reste), horodaté. Un échec ⇒ la PR sort
   de la file de merge et retourne au dev (ezk-sprint), avec le signal en main.
 - `ship` : uniquement les PRs dont **toutes les modalités bloquantes** sont ✅.
-  **D'abord le ship dans la PR** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)).
+  **D'abord le ship dans la PR** ([ADR-0049](../../docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)), **posé une seule fois** : après le GO local **et** la première passe Codex traitée (attente bornée ; Codex muet ou `codex-review: false` → ship sur le GO local — fiche 20261002230039650).
   Pour chaque PR de story, `ship-in-pr.sh check --repo . --ref <head> --fiche-id <id>`.
   S'il manque, sur la branche de la PR : `ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>`,
   `git push`, puis attends la CI sur ce nouveau head. **Ensuite** le squash-merge, dans
