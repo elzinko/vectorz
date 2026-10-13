@@ -107,6 +107,27 @@ Workaround masqué en fix, `TODO`/`FIXME` planqués, code **simulé/mocké prés
 valeur en dur qui devrait être configurable, code mort, `catch` qui avale l'erreur. Chacun est
 au minimum un finding ; s'il touche le chemin critique, **NO-GO**.
 
+## Critères d'acceptation — c'est TOI qui les prouves (fiche 20261003075821760)
+
+Le constructeur ne coche plus ses propres critères : **tu les prouves**. Pour chaque case de
+« Critères d'acceptation » de la fiche, **rejoue « Comment vérifier »** et juge-la :
+
+- **prouvé** — avec la **preuve** : la commande **et sa sortie**, ou `fichier:ligne`. Jamais un
+  « oui » auto-déclaré.
+- **non prouvé** — avec **ce qui manque** pour la prouver.
+
+**Un format fixe, une ligne par critère** (vérifiable mécaniquement, les cases de la fiche s'y
+reportent telles quelles) :
+
+```
+critère 1 : prouvé — <preuve : commande+sortie, ou fichier:ligne>
+critère 2 : non prouvé — <ce qui manque>
+```
+
+**Pas de GO tant qu'un critère reste non prouvé** (c'est un P0 : la story n'est pas « done »).
+Le bloc « Mesure de suivi » n'est **pas** concerné (il se relève après la livraison). Après un
+correctif, **seuls les critères qu'il touche** repassent devant toi, pas toute la revue.
+
 ## Sortie
 
 ```
@@ -118,6 +139,10 @@ NO-GO (bloquant)
 À corriger (non bloquant)
 - [P1] fichier:ligne — <…>
 - [P2] fichier:ligne — <…>
+
+Critères d'acceptation (prouvés par moi, 1 ligne/critère)
+- critère 1 : prouvé — <preuve>
+- critère 2 : non prouvé — <manque>   ← tout critère non prouvé ⇒ NO-GO
 
 Tests : <couverture réelle du changement : oui / partielle / absente>
 Angles morts (4 familles) : <passées en revue : oui / non, et le contre-exemple cherché pour chacune>

@@ -98,15 +98,15 @@ Concrètement :
 
 ## Critères d'acceptation
 
-- [ ] La consigne d'`ezk-reviewer` décrit le jugement critère par critère, avec la preuve exigée, et
+- [x] La consigne d'`ezk-reviewer` décrit le jugement critère par critère, avec la preuve exigée, et
       interdit un GO tant qu'un critère n'est pas prouvé.
-- [ ] L'étape 7 et la DoD d'`ezk-sprint` disent que les cases sont cochées d'après le verdict du
+- [x] L'étape 7 et la DoD d'`ezk-sprint` disent que les cases sont cochées d'après le verdict du
       relecteur, jamais par le constructeur.
-- [ ] Le verdict suit le format « une ligne par critère », et les cases de la fiche correspondent
+- [x] Le verdict suit le format « une ligne par critère », et les cases de la fiche correspondent
       au verdict, avant le commit ship.
-- [ ] Le point d'arrêt d'`ezk-sprint` (étape 9) présente au PO la liste des critères prouvés, avant
+- [x] Le point d'arrêt d'`ezk-sprint` (étape 9) présente au PO la liste des critères prouvés, avant
       de lui demander d'accepter.
-- [ ] Un test de contrat sur le texte vérifie ces consignes.
+- [x] Un test de contrat sur le texte vérifie ces consignes.
 
 **Mesure de suivi** — sur les 5 prochaines PR de story, chaque case cochée a sa preuve dans le
 verdict du relecteur.
