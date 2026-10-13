@@ -62,6 +62,7 @@ describe('ezk-manifest.yml', () => {
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
       .sort();
     expect(labels).toEqual([
+      'adr new',
       'backlog check',
       'backlog plan-head',
       'backlog plan-lot',
@@ -96,6 +97,7 @@ describe('ezk-manifest.yml', () => {
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
       .sort();
     expect(labels).toEqual([
+      'adr new',
       'backlog regen',
       'backlog ship',
       'backlog version',

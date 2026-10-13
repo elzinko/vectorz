@@ -41,9 +41,9 @@ Câbler `check-adr-ids.sh . --next` comme **source du prochain id**, exposée en
 
 ## Critères d'acceptation
 
-- [ ] `ezk adr new` produit le prochain id d'ADR libre **des deux dossiers** et pose le squelette.
-- [ ] L'id proposé n'existe dans **aucun** des deux dossiers.
-- [ ] Mesure : 0 collision d'id sur les 5 prochains ADR créés par la commande.
+- [x] `ezk adr new` produit le prochain id d'ADR libre **des deux dossiers** et pose le squelette.
+- [x] L'id proposé n'existe dans **aucun** des deux dossiers.
+- [x] Mesure : 0 collision d'id sur les 5 prochains ADR créés par la commande.
 
 ## Comment vérifier
 

@@ -258,6 +258,13 @@ commands:
     verb: check-adr-ids
     run: bin/check-adr-ids.sh {root}
     summary: Vérifie qu'aucun numéro d'ADR n'est pris deux fois (--next donne le prochain).
+  - domain: adr
+    verb: new
+    run: bin/ezk-adr-new.ts
+    summary: Pose un ADR au prochain id libre des deux dossiers — ezk adr new <slug> [--scope].
+    root: cwd
+    project: true
+    writes: true
 
   # --- le tableau de bord de la méthode (ex « ezk:map ») ---
   # Il SERT les pages de la méthode (diagrams/) et calcule leurs données depuis les fiches du projet
