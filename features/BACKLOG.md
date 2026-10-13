@@ -285,7 +285,7 @@
 | [20261010235330053](done/20261010235330053_ship-barre-ligne-plan-id-unique.md) | ship barre une ligne de PLAN.md à un seul id, même avec un marqueur en queue | feature | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261004211037977 |
 | [20261010235330118](done/20261010235330118_run-report-accepte-livraison-locale.md) | ezk run report accepte une livraison locale (local <sha>) quand GitHub est coupé | feature | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261011113632532 |
 | [20261011091552583](done/20261011091552583_regen-root-ecrit-titre-casse.md) | regen écrit un titre cassé quand on lui passe --root | bug | P2 | v0.11.0 | mega-city | ✅ shipped | local (379d0eb4) |
-| [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 | v0.11.0 | mega-city | 🔵 ready |  |
+| [20261011091555006](20261011091555006_gate-attrape-forme-vues-et-confinement.md) | La gate attrape les défauts que la revue a dû rattraper (forme des vues, confinement) | feature | P2 |  | mega-city | 🔵 ready |  |
 | [20261011114725137](done/20261011114725137_retro-v10-plan-head-ignore-blocked.md) | Rétro v0.10 : plan-head ignore le drapeau blocked: (plan-lot le respecte) | bug | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261002133125418 |
 | [20261011142027748](20261011142027748_ezk-adr-new-prochain-id-libre.md) | ezk adr new — un seul prochain id d'ADR libre sur les deux dossiers | feature | P2 | v0.11.0 | mega-city | 🔵 ready |  |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |

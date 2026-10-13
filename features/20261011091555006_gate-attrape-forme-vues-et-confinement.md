@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version: v0.11.0
+version:
 labels: [backlog]
 status: ready
 pr:
@@ -59,3 +59,9 @@ pnpm --dir products/mega-city test:scripts
 - Sort de la rétro du run autonome v0.7 (capture `docs/captures/2026-10-11-retro-run-v07-autonome.md`, S4).
 - Durcit la règle existante `testing/confinement-contract-at-boundary` (il manquait la détection en gate).
 - Le défaut de forme est le même bug que [[20261011091552583]] ; ici c'est le filet de gate qui l'aurait vu.
+
+- **Sortie de v0.11 le 2026-10-13 (run autonome).** Critères 1 et 2 (test de forme des vues +
+  contrat de drapeau) déjà couverts par le test de régression de la fiche 20261011091552583
+  (Cas K de `test-regen-backlog.sh`). Reste le critère 3 — un contrôle de gate détectant *toute*
+  garde de confinement au point d'entrée sans test — qui demande une décision de conception
+  (convention de marquage + heuristique) : à re-scoper en spike. Hors passe lean.
