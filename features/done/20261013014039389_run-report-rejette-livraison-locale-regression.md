@@ -7,15 +7,15 @@ product: mega-city
 milestone:
 version:
 labels: [dette, revue]
-status: idea
-pr:
+status: superseded
+pr: "superseded — livrée par 20261011113632532 (run report accepte local <sha>)"
 evidence: none # outillage de bilan, pas d'écran
 created: 2026-10-13
 ---
 
 # 20261013014039389 — run report rejette encore la livraison locale
 
-**En clair.** La fiche [« ezk run report accepte une livraison locale »](done/20261010235330118_run-report-accepte-livraison-locale.md)
+**En clair.** La fiche [« ezk run report accepte une livraison locale »](20261010235330118_run-report-accepte-livraison-locale.md)
 est marquée **livrée** (`done/`), mais le code sur `main` **rejette toujours** `local (<sha>)` pour
 une fiche « mergée » : `PR_FORM = /^#\d+$/` exige un `#<numéro>`. En flux local (github:false, le
 défaut), le bilan de fin de run ne peut donc pas s'émettre — il faut l'écrire à la main. Un cas

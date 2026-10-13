@@ -288,6 +288,7 @@
 | [20261011113632532](done/20261011113632532_run-context-report-projet-hote-et-flux-local.md) | ezk run context/report visent le projet construit, pas la méthode (+ flux local) | bug | P2 | v0.12.0 | mega-city | ✅ shipped | local (d2f337b8) |
 | [20261011114725137](done/20261011114725137_retro-v10-plan-head-ignore-blocked.md) | Rétro v0.10 : plan-head ignore le drapeau blocked: (plan-lot le respecte) | bug | P2 |  | mega-city | 🔀 merged | merged — fusionnée dans 20261002133125418 |
 | [20261011142027748](done/20261011142027748_ezk-adr-new-prochain-id-libre.md) | ezk adr new — un seul prochain id d'ADR libre sur les deux dossiers | feature | P2 | v0.11.0 | mega-city | ✅ shipped | local (fd89d74b) |
+| [20261013014039389](done/20261013014039389_run-report-rejette-livraison-locale-regression.md) | ezk run report rejette encore la livraison locale (régression de 20261010235330118) | bug | P2 |  | mega-city | 🗑️ superseded | superseded — livrée par 20261011113632532 (run report accepte local <sha>) |
 | [0005](done/0005-resorber-warnings-biome.md) | Résorber les warnings biome | chore | P3 |  | vectorz | ✅ shipped | #45 |
 | [0007](done/0007-v11-session-log-commit-discipline.md) | Format de session log + discipline de commit (anchor réel) | chore | P3 |  | vectorz | 🗑️ superseded | superseded — couvert (ezk-commits + docs/sessions), reliquat cop1 |
 | [0010](done/0010-mission-control-heartbeat-interval.md) | Heartbeat mission-control — setInterval recréé à chaque frame SSE | refactor | P3 |  | vectorz | ✅ shipped | #40 |
@@ -376,7 +377,6 @@
 | [20261012231419250](20261012231419250_board-config-projet.md) | Board : la config projet (lancement, qualité, intégration) + modèle résolu par rôle | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261012231419263](20261012231419263_board-assistant-ajout-projet.md) | Board : l'assistant d'ajout de projet (racine, outil, défauts) | feature | P2 | v0.17.0 | cop1 | 💡 idea |  |
 | [20261013013553044](20261013013553044_ship-committe-recals-liens-hors-features.md) | ship/close committe les recals de liens hors features/ (sinon principal dirty) | bug | P2 |  | mega-city | 💡 idea |  |
-| [20261013014039389](20261013014039389_run-report-rejette-livraison-locale-regression.md) | ezk run report rejette encore la livraison locale (régression de 20261010235330118) | bug | P2 |  | mega-city | 💡 idea |  |
 | [20260830110131228](20260830110131228_schema-etapes-skill-configurables.md) | Rendre les étapes d'un skill configurables (schéma) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) | Une page d'accueil : une ligne par projet (config, fiches prêtes, session active, dernier run) | feature | P3 |  | mega-city | 💡 idea |  |
 | [20261002230039863](20261002230039863_sprint-report-trace-supervision.md) | Le rapport de sprint ne retrouve pas la trace de supervision d'un sprint | bug | P3 | v0.12.0 | mega-city | 💡 idea |  |
