@@ -74,6 +74,15 @@ refresh() {
   local args=(--repo "$repo" --base "$base")
   [[ -n "$target" ]] && args+=(--target-ref "$target")
   bash "$(dirname "$0")/refresh-worktrees.sh" "${args[@]}"
+  # Fiche 20261003201034897 : si le dépôt de base est en retard sur origin/main (sans fetch),
+  # le dire en clair AVEC la commande à lancer — sinon une commande ezk y tourne du vieux code,
+  # sans le dire. Additif : le protocole SIGNAL (consommé ailleurs) reste intact.
+  local behind
+  behind="$(git_c rev-list --count HEAD..origin/main 2>/dev/null || echo 0)"
+  if [[ "$behind" =~ ^[0-9]+$ && "$behind" -gt 0 ]]; then
+    local c=commits; [[ "$behind" == 1 ]] && c=commit
+    echo "ezk : le code d'ezk ($repo) a $behind $c de retard sur origin/main — lance : git -C $repo pull --ff-only"
+  fi
 }
 
 # --- Branches absorbées : même algorithme que classify_ref (check.sh, fiche 0076), en

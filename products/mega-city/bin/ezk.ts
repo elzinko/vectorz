@@ -17,7 +17,7 @@
  * la racine du dépôt pour une commande qui travaille sur ses fichiers (« fixed »), depuis le
  * dossier de l'utilisateur sinon (« none »). Aucune logique métier ici : les scripts gardent la leur.
  */
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { constants } from 'node:os';
@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url';
 import {
   type Manifest,
   type Step,
+  behindNotice,
   childEnv,
   delegationTarget,
   findCheckoutRoot,
@@ -126,6 +127,24 @@ function runStep(step: Step, cwd: string, env: NodeJS.ProcessEnv): Promise<numbe
   return spawnAndWait(cmd, args, cwd, env, step.script);
 }
 
+/**
+ * Commits dont le checkout `root` est en retard sur `origin/main` — SANS fetch (ref locale déjà
+ * connue), donc < 100 ms. 0 si pas de remote, pas d'`origin/main`, ou hors dépôt (rien à signaler).
+ * Fiche 20261003201034897.
+ */
+function countBehind(root: string): number {
+  try {
+    const out = execFileSync('git', ['-C', root, 'rev-list', '--count', 'HEAD..origin/main'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    const n = Number(out);
+    return Number.isFinite(n) ? n : 0;
+  } catch {
+    return 0;
+  }
+}
+
 async function main(argv: string[]): Promise<number> {
   const flags = splitRouterFlags(argv);
   if (flags.error) {
@@ -133,6 +152,11 @@ async function main(argv: string[]): Promise<number> {
     return 2;
   }
   const manifest = parseManifest(readFileSync(join(MEGA_CITY, 'ezk-manifest.yml'), 'utf8'));
+  // Avertir si le code d'ezk (ce checkout) est en retard sur origin/main : sinon une commande
+  // tourne du code d'avant la dernière livraison, sans le dire (fiche 20261003201034897). On ne
+  // lance rien — le checkout peut appartenir à une autre session.
+  const behind = behindNotice(countBehind(OWN_ROOT), OWN_ROOT);
+  if (behind) warn(behind);
   // pnpm change de dossier avant de lancer le script ; INIT_CWD garde celui de l'utilisateur. Une
   // INIT_CWD laissée par un pnpm parent est périmée : on la remplace par le vrai dossier, que les
   // scripts lancés relisent eux-mêmes (fiche 20261004181110120 : un test écrivait dans le vrai dépôt

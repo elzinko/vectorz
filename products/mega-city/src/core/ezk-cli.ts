@@ -457,3 +457,16 @@ export function findGitRoot(cwd: string, exists: (path: string) => boolean): str
 export function findCheckoutRoot(cwd: string, exists: (path: string) => boolean): string | undefined {
   return nearestAncestorWith(MANIFEST_RELPATH, cwd, exists);
 }
+
+/**
+ * L'avertissement « le code d'ezk est en retard », ou `null` si à jour (fiche 20261003201034897).
+ * `ezk` exécute le code d'un checkout donné ; si ce checkout est en retard sur `origin/main`, une
+ * commande tourne sur du code d'avant la dernière livraison, sans le dire. On avertit, avec la
+ * commande à lancer — on ne lance jamais rien (le checkout peut appartenir à une autre session).
+ * Pur : le comptage `behind` (git, sans fetch) est fait au bord et passé ici.
+ */
+export function behindNotice(behind: number, root: string): string | null {
+  if (!Number.isFinite(behind) || behind <= 0) return null;
+  const commits = behind === 1 ? '1 commit' : `${behind} commits`;
+  return `ezk : le code d'ezk (${root}) a ${commits} de retard sur origin/main — lance : git -C ${root} pull --ff-only`;
+}

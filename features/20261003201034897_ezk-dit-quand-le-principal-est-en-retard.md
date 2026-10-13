@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.12.0
 labels: [ezk, cross-repo]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
@@ -42,10 +42,10 @@ qu'après un `git pull` dans ce dossier.
 
 ## Critères d'acceptation
 
-- [ ] Sur un dépôt jetable dont le « principal » est en retard d'un commit sur `origin/main`, `ezk`
+- [x] Sur un dépôt jetable dont le « principal » est en retard d'un commit sur `origin/main`, `ezk`
       affiche la phrase et la commande ; à jour, il n'affiche rien.
-- [ ] `ship-merge.sh` affiche la même phrase après une fusion, au lieu de « SIGNAL behind ».
-- [ ] Le contrôle ne fait aucun `fetch` et coûte moins de 100 ms.
+- [x] `ship-merge.sh` affiche la même phrase après une fusion, au lieu de « SIGNAL behind ».
+- [x] Le contrôle ne fait aucun `fetch` et coûte moins de 100 ms.
 
 ## Comment vérifier
 
