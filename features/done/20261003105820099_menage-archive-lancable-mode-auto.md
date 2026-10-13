@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.14.0
 labels: [archive, worktree]
-status: ready
-pr:
+status: shipped
+pr: "local (dd86eb59)"
 evidence: none # script de ménage, pas d'écran
 created: 2026-10-03
 ---

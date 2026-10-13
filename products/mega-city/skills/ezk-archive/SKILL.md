@@ -294,7 +294,7 @@ qui ne demandent aucun jugement.
    `proof=content:<base>`) : c'est la commande qui réussira depuis ce worktree, même en retard. Montre la liste au PO ; ne lance que ce qu'il valide, **une commande par appel**.
    Utilise le **nom de lecture `--inventory`** (et non l'alias historique `--cleanup`) : le mode auto
    a déjà bloqué `--cleanup` comme « git destructif » alors qu'il est READ-ONLY (vu le 2026-10-03,
-   [fiche du ménage en mode auto](../../../../features/20261003105820099_menage-archive-lancable-mode-auto.md)).
+   [fiche du ménage en mode auto](../../../../features/done/20261003105820099_menage-archive-lancable-mode-auto.md)).
    Si le listage reste bloqué malgré tout, donne la commande à l'utilisateur, qui la lance dans son terminal.
    Les worktrees que les agents de CETTE session viennent de laisser ont moins de 24 h : le ménage
    les garde (« recent »). Une fois certain qu'aucun agent ne tourne encore, relance avec

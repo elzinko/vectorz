@@ -213,7 +213,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20261011111526693` — `lawgiver bind` gère un `.git` fichier (worktree) · P2 · `build` (ready)~~ — shipped
 - ~~`20261002155911264` — `ezk-archive` reprend proprement un run interrompu · P2 · `build` (ready)~~ — shipped
 - ~~`20261003201035168` — le portier `ezk-archive` juge contre `origin/main` · P2 · `build` (ready)~~ — shipped
-- `20261003105820099` — le ménage `ezk-archive` en mode auto (spike-correctif) · P3 · `build` (ready)
+- ~~`20261003105820099` — le ménage `ezk-archive` en mode auto (spike-correctif) · P3 · `build` (ready)~~ — shipped
 
 ### ⑯ v0.15.0 — voir les runs (observabilité)
 > Le run autonome sait s'arrêter à la bonne borne, et on voit après coup ce qui a tourné. Le release-gate (v0.11) est un prérequis de l'auto-tag multi-versions. **Groomée 2026-10-13 : tout ready.**
