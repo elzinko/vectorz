@@ -164,8 +164,10 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 
 ## Critères d'acceptation
 
-- [ ] Un **ADR** tranche le **modèle** : définition de *run* vs *session*, leur lien (m:n),
-      et **qui rattache** une session à un run (la méthode/ezk).
+- [x] Un **ADR** tranche le **modèle** : définition de *run* vs *session*, leur lien (m:n),
+      et **qui rattache** une session à un run (la méthode/ezk). →
+      [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) (Proposé, à ratifier
+      en panel ; modèle de concurrence B recommandé, B vs C au panel).
 - [ ] Une **maquette** dans `docs/maquettes/` rend, et le PO valide la lisibilité d'un coup
       d'œil : (1) 1 session / 1 run ; (2) 3 worktrees, 3 sessions vivantes ; (3) 1 pilote +
       2 worktrees ; (4) un orphelin à côté de 2 vivants ; (5) plusieurs projets multi-sessions ;
@@ -209,6 +211,12 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - **Tout le reste de l'app doit tenir** sous concurrence, pas seulement l'activité : la
   Chronologie, la Vue d'ensemble, les compteurs, les badges « en run », le minuteur de
   silence. C'est un critère, pas un détail.
+- **ADR** : [ADR-075 — Run et session, deux entités distinctes](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)
+  (Proposé le 2026-10-14, à ratifier en panel adverse). Il grave : run ≠ session, la jointure par
+  l'évènement (`session_id` + `run_id`), l'identité par git (tool-agnostique), la concurrence par
+  visibilité (pas de verrou), **un journal par worktree** (modèle B recommandé ; C au panel), le
+  contrat `@0.2`, et la représentation board (chronologie D+B, accueil « Tous les projets »,
+  rattachement opt-out). Clé : la **session existe déjà** (`ezk-sessions`, ADR-0042/0043), on la relie.
 - **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
   — 8 cas : 1-5 côté Activité (étiquette d'impact chacun), **6 la Chronologie — piste retenue
   D+B, 3 niveaux** (runs → run+sessions → session), **7 la hiérarchie avec 2 variantes** (arbre ·
