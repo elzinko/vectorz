@@ -136,10 +136,12 @@ Règle d'or : **en un coup d'œil**, un humain répond à « combien de sessions
 fait chacune, sur quel run ? ». La maquette brouillon le montre côté **Activité**. Reste à
 l'**intégrer dans les surfaces validées de v0.17**, sans les casser :
 
-- **Vue globale (tous projets)** : le board validé choisit **un** projet par liste déroulante —
-  insuffisant pour voir la flotte (le cas 5 montre tous les projets et leurs sessions). Ajouter
-  une **vue d'accueil « Tous les projets »** (piste 1, recommandée) ou un **rail** de projets
-  persistant (piste 2) ; la déroulante reste un raccourci. Maquette cas 8.
+- **Vue globale (tous projets)** : **piste 1 retenue** (décision PO du 2026-10-14) — une **vue
+  d'accueil « Tous les projets »** montre la flotte (chaque projet, ses sessions, leur état), on
+  clique pour entrer dans le board d'un projet (inchangé), et la **liste déroulante reste un
+  raccourci**. Écartées : rail persistant (piste 2), déroulante enrichie (piste 3). Le board
+  validé choisissait un seul projet par déroulante — insuffisant pour voir la flotte (cas 5).
+  Maquette cas 8.
 - **Vue d'ensemble → bloc « En cours »** : passe d'« une ligne » à « N sessions », groupées,
   étiquetées par branche/worktree, triées de façon stable (pas de saut à chaque battement).
 - **Activité (Cadrage / Développement)** : les lignes de run gagnent les sessions qui y ont
