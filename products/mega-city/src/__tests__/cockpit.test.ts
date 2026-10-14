@@ -177,6 +177,33 @@ describe('renderProjectBar — la barre de choix', () => {
     expect(html).not.toContain('<option value="" selected>');
     expect(html).toContain('href="/projet?id=&amp;retour=%2Fdiagrams%2Favancement%2Fboard.html"');
   });
+
+  // Fiche 20261010114133345 : le projet de lancement est déjà le choix « défaut » ; s'il est aussi
+  // au registre (même racine), on ne le liste pas une 2e fois. Mesure : 1 occurrence du lancement.
+  it('le projet de lancement, déjà au registre, n’apparaît qu’une fois (pas en double)', () => {
+    const withLaunch = [ok('vectorz', '/repo'), ok('muti')];
+    const html = renderProjectBar(withLaunch, { kind: 'defaut' }, 'projet de lancement (vectorz)', null, '/', '/repo');
+    expect(html).toContain('<option value="" selected>projet de lancement (vectorz)</option>');
+    expect(html).not.toContain('<option value="vectorz"');
+    // les autres projets restent listés
+    expect(html).toContain('<option value="muti">muti</option>');
+    // une seule occurrence de « vectorz » dans les options (le libellé du défaut)
+    expect(html.match(/vectorz/g)?.length).toBe(1);
+  });
+
+  it('choisir le projet de lancement par son id revient au défaut (pas de doublon sélectionné)', () => {
+    const withLaunch = [ok('vectorz', '/repo'), ok('muti')];
+    const html = renderProjectBar(withLaunch, resolveChoice(withLaunch, 'vectorz'), 'projet de lancement (vectorz)', null, '/', '/repo');
+    expect(html).toContain('<option value="" selected>projet de lancement (vectorz)</option>');
+    expect(html).not.toContain('<option value="vectorz"');
+  });
+
+  it('sans launchRoot : comportement d’avant, le registre est listé tel quel', () => {
+    const withLaunch = [ok('vectorz', '/repo'), ok('muti')];
+    const html = renderProjectBar(withLaunch, { kind: 'defaut' }, 'projet de lancement (vectorz)');
+    expect(html).toContain('<option value="vectorz">vectorz</option>');
+    expect(html).toContain('<option value="muti">muti</option>');
+  });
 });
 
 describe('le nom du projet affiché — les coques ne mentent pas', () => {

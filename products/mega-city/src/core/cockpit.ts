@@ -200,6 +200,11 @@ function escapeHtml(s: string): string {
  * boutons de navigation : à gauche, elle couvrirait le titre des pages). Un formulaire GET vers `/projet` : il marche sans JS (bouton dans `<noscript>`),
  * le JS ne fait que l'envoyer au changement. Un projet qu'on ne sait pas lire le dit dans la liste,
  * et un bandeau le redit quand c'est lui qui est choisi.
+ *
+ * `launchRoot` (la racine résolue du projet de lancement) dédoublonne la liste : le projet de
+ * lancement est DÉJÀ le choix « par défaut » (`value=""`). S'il est aussi au registre (même racine),
+ * on ne l'ajoute pas une seconde fois — sinon il apparaît en double (fiche 20261010114133345). Un
+ * choix qui tombe sur lui vaut le défaut : l'option vide reste sélectionnée, pas de doublon visible.
  */
 export function renderProjectBar(
   projects: readonly CockpitProject[],
@@ -207,8 +212,20 @@ export function renderProjectBar(
   defaultLabel: string,
   registryProblem: string | null = null,
   currentPath = '/',
+  launchRoot?: string,
 ): string {
-  const chosenId = choice.kind === 'projet' ? choice.project.id : choice.kind === 'inconnu' ? choice.id : '';
+  // Le projet de lancement, déjà porté par l'option « défaut » : s'il est au registre (même racine
+  // résolue), on le retire de la liste pour ne pas le compter deux fois. Choisir ce projet revient
+  // donc au défaut.
+  const isLaunch = (p: CockpitProject): boolean => launchRoot !== undefined && p.root === launchRoot;
+  const chosenIsLaunch = choice.kind === 'projet' && isLaunch(choice.project);
+  const chosenId = chosenIsLaunch
+    ? ''
+    : choice.kind === 'projet'
+      ? choice.project.id
+      : choice.kind === 'inconnu'
+        ? choice.id
+        : '';
   // Un choix inconnu (projet retiré du registre, registre cassé) reste sélectionné et dit ce qu'il
   // est : sinon le navigateur afficherait le choix par défaut, et le re-choisir ne changerait rien.
   const unknownOption =
@@ -218,11 +235,13 @@ export function renderProjectBar(
   const options = [
     `<option value=""${chosenId === '' ? ' selected' : ''}>${escapeHtml(defaultLabel)}</option>`,
     ...unknownOption,
-    ...projects.map((p) => {
-      const label = stateLabel(p.state);
-      const text = label ? `${p.id} — ${label}` : p.id;
-      return `<option value="${escapeHtml(p.id)}"${p.id === chosenId ? ' selected' : ''}>${escapeHtml(text)}</option>`;
-    }),
+    ...projects
+      .filter((p) => !isLaunch(p))
+      .map((p) => {
+        const label = stateLabel(p.state);
+        const text = label ? `${p.id} — ${label}` : p.id;
+        return `<option value="${escapeHtml(p.id)}"${p.id === chosenId ? ' selected' : ''}>${escapeHtml(text)}</option>`;
+      }),
   ].join('');
   const backHome = `${PROJECT_ROUTE}?id=&amp;retour=${encodeURIComponent(safeReturnPath(currentPath))}`;
   const parts: string[] = [];
@@ -231,7 +250,7 @@ export function renderProjectBar(
     parts.push(
       `${escapeHtml(`projet inconnu du registre : ${choice.id} — rien n'est lu.`)} <a href="${backHome}">Revenir au projet du lancement</a>`,
     );
-  } else if (choice.kind === 'projet' && choice.project.state.kind !== 'ok') {
+  } else if (choice.kind === 'projet' && !chosenIsLaunch && choice.project.state.kind !== 'ok') {
     parts.push(escapeHtml(`${choice.project.id} : ${stateLabel(choice.project.state)} — aucune fiche affichée.`));
   }
   const banner = parts.join('<br>');
