@@ -41,7 +41,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--versions all|<liste>] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -308,6 +308,30 @@ autonome). **Défaut : absent** (autonome).
 délégable] et (b) *ça vaut le coup* [humain]. Défaut autonome = le PO a déjà tranché (b) en
 sélectionnant le lot ; la machine ne fait que (a), avec `ezk-pm` comme second regard. **La
 sélection du lot reste à l'humain — la machine ne décide jamais *quoi* construire.**
+
+## Boucle multi-versions — configurable (`--versions`)
+
+Règle **combien de versions** le run enchaîne. **Sans `--versions`** : une **itération unique** — la
+version en cours, point (non-régression stricte, comportement d'avant). **Avec `--versions`** : la
+boucle enchaîne **plusieurs versions** du plan, chacune avec sa **frontière** = rétro (selon `--retro`)
+puis **clôture de version**. Adossé à la fiche 20261013131852375 (le **POC** de l'enchaînement).
+
+- **`--versions all`** — toutes les versions **à faire** du plan, dans l'ordre (la version en cours,
+  puis les suivantes qui ont des fiches à livrer).
+- **`--versions <v1,v2,…>`** — une liste explicite ; les versions inconnues, déjà livrées ou sans
+  fiche à faire sont **signalées, jamais tues**.
+
+**La suite se lit par `ezk run versions [--versions all|<liste>]`** (déterministe, ordre du plan) : le
+pilote la déroule version par version. À **chaque frontière** :
+
+1. la version courante est construite (la boucle de sprints habituelle, filtre d'éligibilité compris) ;
+2. **rétro** si due (`--retro`, ≥ 2 sprints dans la version) ;
+3. **clôture de version** — `ezk backlog version close <v>` (la gate de release joue). Le POC **ne tague
+   pas** tout seul : l'auto-tag est **opt-in** (fiche sœur `--seal-versions`, ci-dessous), et le
+   park-hors-version d'une fiche inconstruisable est une autre fiche sœur.
+
+Garde-fou ADR-0001 tenu : le skill **décide** quand passer à la version suivante ; `ezk backlog version`
+**exécute** le git.
 
 ## Mode livraison — configurable (`--delivery`)
 

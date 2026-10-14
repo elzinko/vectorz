@@ -270,6 +270,12 @@ commands:
     root: none
     project: true
   - domain: run
+    verb: versions
+    run: bin/run-versions.ts
+    summary: Liste les versions qu'un run multi-versions enchaîne, dans l'ordre (--root <projet>).
+    root: none
+    project: true
+  - domain: run
     verb: reconcile
     run: skills/ezk-pr/scripts/reconcile-worktree.sh
     summary: Réaligne le worktree sur main après un ship local, sinon dit le retard (--root).
