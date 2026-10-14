@@ -230,7 +230,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - `20261007154842643` — basculer vectorz vers `scrum/` (gate manuelle) · P2 · `build` (ready, bloquée : sous revue)
 - `20261007154842917` — note de migration `scrum/` + bascule muti · P2 · `build` (ready, bloquée : dépend de la bascule)
 - `20261011142027875` — où vivent les ADR dans un repo multi-projets · P2 · `idea` — **bloquée : panel requis** (décision structurelle, avec le PO)
-- `20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `build` (ready)
+- ~~`20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `build` (ready)~~ — shipped
 - `20261002155911271` — trier les sorties de rétro par nature · P2 · `build` (ready)
 - `20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `build` (ready)
 - ~~`20261002130235353` — « en cours » se déduit des branches · P2 · `groom`~~ — split en ↓
