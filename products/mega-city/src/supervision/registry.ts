@@ -186,9 +186,27 @@ export function pathLabelForRegistry(registryDir: string, absoluteRoot: string):
 }
 
 /**
+ * Le bloc de commentaires d'EN-TÊTE : les lignes de tête (commentaires `#` ou blanches) AVANT la
+ * première clé YAML. `stringify` les perdrait ; on les relit pour les réémettre, afin qu'un
+ * `registry-add` ne détruise pas le mode d'emploi écrit à la main (fiche 20261010114133220).
+ */
+function headerComments(raw: string): string {
+  const header: string[] = [];
+  for (const line of raw.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed === '' || trimmed.startsWith('#')) header.push(line);
+    else break;
+  }
+  // On retire les lignes blanches de fin ; une seule ligne vide sépare l'en-tête du YAML.
+  while (header.length > 0 && header[header.length - 1].trim() === '') header.pop();
+  return header.length > 0 ? `${header.join('\n')}\n\n` : '';
+}
+
+/**
  * fiche 0063 — ajoute un projet au registre (écriture humaine / CLI siège).
- * Refuse les doublons d'`id` ou de racine résolue. Recrée le YAML (commentaires
- * du fichier perdu — acceptable pour le POC).
+ * Refuse les doublons d'`id` ou de racine résolue. Recrée le YAML mais **préserve le bloc de
+ * commentaires d'en-tête** (le mode d'emploi), qu'un générateur ne doit pas détruire
+ * (fiche 20261010114133220).
  */
 export function appendRegistryProject(
   registryDir: string,
@@ -221,9 +239,9 @@ export function appendRegistryProject(
     method: project.method.trim(),
   };
   const next: Registry = { projects: [...existing.projects, nextProject] };
-  writeFile(
-    path.join(registryDir, REGISTRY_FILENAME),
-    `${stringify(next).trimEnd()}\n`,
-  );
+  const filePath = path.join(registryDir, REGISTRY_FILENAME);
+  // On relit l'en-tête AVANT de réécrire : le mode d'emploi en tête survit à l'ajout du projet.
+  const header = fs.existsSync(filePath) ? headerComments(fs.readFileSync(filePath, 'utf-8')) : '';
+  writeFile(filePath, `${header}${stringify(next).trimEnd()}\n`);
   return next;
 }
