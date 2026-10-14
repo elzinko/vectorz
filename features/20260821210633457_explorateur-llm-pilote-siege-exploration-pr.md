@@ -119,6 +119,19 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
   explorateur, label `exploration-app`) sera **challengée par un panel** (architecte + devs + juge)
   avant tout `ready` — « voir si l'approche est correcte ou non ». Le doute sur l'agent qualifieur
   ci-dessus est la **première question** du panel.
+- **Panel adverse — résultat (2026-10-14).** Verdicts : *saine-avec-changements* (archi),
+  *vaut-le-coup-si* (produit), *risqué* (dev). L'explorateur est jugé **le vrai produit** (besoin
+  prouvé, oracle livré). Conditions avant `ready` :
+  - **Découpler du cache** — le garder strictement optionnel, prouver l'explorateur **cache éteint**,
+    ne pas conditionner son `ready` au cache (jugé fragile, cf. [[20261014113049954]]).
+  - **Découper** brique 2 (siège auto) / brique 3 (explorateur), livrer la 2 d'abord.
+  - **Choisir une parade « juge et partie »** dès le groom (la moins chère : journaliser tout refus).
+  - **Charnière de l'agent qualifieur** : mon « probablement non » était **pré-conclu** (archi E1).
+    Vraie question **PO** : la qualification se fait-elle **face à l'app qui tourne** ? Non → composer
+    `ezk-backlog add` + déléguer `ezk-pm` suffit. Oui → `ezk-pm` n'a pas d'« yeux » sur l'app → cas
+    rôle + yeux (ADR-0026), une **capability neuve**, et il faut **nommer** l'agent de la passe
+    indépendante.
+  - **Sas `brainstormed`** : non tranché ; défaut = modèle existant (`idea` + label de provenance).
 - **Sas `features/brainstormed` — question ouverte (PO 2026-10-14)** : le PO veut les propositions
   dans un **dossier séparé** du backlog de travail, pas mêlées aux fiches actives. ⚠ Tension à
   trancher avec la politique actuelle (rapport sous gate humaine, aucune carte créée seule, naissance

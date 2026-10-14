@@ -130,6 +130,11 @@ ezk carto show <zone>         # un LLM lit l'état d'une zone, sans re-explorer
 
 ## Architecture — avis de l'architecte (2026-10-14, `--archi`)
 
+> ⚠ **Contesté par le panel adverse (2026-10-14).** Le mécanisme central ci-dessous — « cache
+> incrémental clé par SHA » — est jugé **contradictoire** et dépendant du mapping fichier→zone
+> différé. Lis la section **Revue adverse** plus bas avant de t'appuyer sur ces décisions. Un reframe
+> (index statique + test de valeur) attend l'arbitrage du PO.
+
 Cette section tranche les six points durs. Elle s'appuie sur des décisions **déjà prises** par la
 méthode, pour ne pas les rouvrir. POC d'abord : le moins de pièces possible, on mesure, on ajoute au
 besoin.
@@ -223,6 +228,53 @@ sous-état.
 Au `ready`, cette fiche se **découpe** sûrement (règle « une fiche tient dans un sprint ») : (1) le
 moteur de cache, (2) le câblage du signal d'invalidation dans les agents de dev, (3) l'intégration d'un
 consommateur. Sœurs liées par un milestone, **pas** de fiche chapeau.
+
+## Revue adverse (panel — 2026-10-14)
+
+Trois lentilles adverses (architecte / dev / produit) ont challengé l'approche. **Convergence forte,
+et sévère** sur le cache.
+
+**Verdicts** : architecte → *fragile-à-revoir* ; dev → *risqué* ; produit → *à abandonner ou réduire*.
+
+**Failles confirmées** (recoupées par au moins deux lentilles) :
+
+1. **Le mécanisme central se contredit.** La Décision 2 décrit un cache **mutable** (on invalide, on
+   reconstruit en place) ; la Décision 4 un magasin **immuable par SHA**. Les deux ne tiennent pas
+   ensemble. Pire : l'**invalidation** se produit en *temps working-tree* (arbre sale, pas encore de
+   SHA — l'état même où les agents usent l'app), donc inadressable dans un magasin clé par SHA.
+2. **La valeur dépend de la pièce différée.** L'invalidation fiable ET l'« héritage du commit parent »
+   exigent le mapping **fichier→zone** (option B) que la fiche renvoie à plus tard. Sans B, « cache
+   incrémental » est un **nom, pas un mécanisme** : on garde la pièce chère (passe complète) et on
+   diffère celle qui rapporte.
+3. **Appui ADR-0055 / ADR-0043 pris à l'envers.** Ces vues-là sont des **fonctions pures de fichiers
+   committés** (reconstructibles, jamais périmées). Le cache, lui, doit **exécuter l'app** → il périme
+   et peut **mentir**. ADR-0043 a même **écarté** l'alternative « regen hors-git servi » pour les
+   raisons qui frappent le cache (péremption, dépendance d'ordre, fichier à gérer).
+4. **Trous de cycle de vie** : aucune **éviction** (magasin de snapshots non borné), aucune
+   **concurrence** traitée (deux sessions dans le même bucket SHA réintroduisent le conflit que
+   l'ADR-0055 a tué), et une passe complète **bornée** présente une carte **tronquée** comme « la
+   carte » (ment — cf. la loi « un compte à côté d'une liste tronquée ment »).
+5. **Besoin non prouvé (YAGNI).** Aucun consommateur shippé ne réclame le cache : `ezk-scout` (livré)
+   re-explore exprès, l'explorateur est parké. Le coût « lent / cher » n'est **ni chiffré ni daté**
+   (`evidence: none`). La méthode vient justement de **payer** (ADR-0055) pour apprendre qu'un généré
+   cher et divergent est un passif.
+
+**Ce qui tient** : find-only + isolation (réemploi `ezk-scout`), évidence dure (capture + DOM),
+dégradation propre + interrupteur projet, « hors dépôt » (vrai progrès sur « committé »), et la clé
+par SHA **pour la correction** (une entrée ne décrit jamais en douce la mauvaise version).
+
+**Recommandation convergente** : **réduire**. Démarrer par un **index statique des routes** (fonction
+pure du routeur — reconstructible, ne ment jamais sur la topologie), répondre déjà à « où est l'action
+X ? », et **mesurer la valeur** (sur un vrai run : ce que la re-exploration coûte vs ce qu'une carte
+économise) **avant** de bâtir le cache vivant. Le cache vivant (invalidation, magasin SHA, passe
+complète) reste **différé** derrière ce test chiffré.
+
+**Arbitrages PO** :
+- Réduire au départ à l'index statique + test de valeur, **ou** réparer l'archi du cache vivant
+  (réconcilier invalidation ↔ adressage, éviction, concurrence, **ADR dédié** qui assume la déviation)
+  avant `ready`, **ou** mettre le cache en pause ?
+- Si cache vivant : budget de rétention du magasin, et faut-il d'abord **factoriser la brique
+  d'exploration commune** (le moteur de `ezk-scout` est livré **en ligne**, non factorisé) ?
 
 ## Glossaire
 
