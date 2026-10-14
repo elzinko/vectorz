@@ -55,6 +55,16 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
         method_name: z.string(),
         method_version: z.string(),
         seat: z.string().optional(),
+        // Paramètres retenus du run (fiche 20260906142654370) : transportés tels quels dans le
+        // payload run.started pour l'affichage cop1. Tous optionnels, journal tolérant à l'absence.
+        params: z
+          .object({
+            mode: z.string().optional(),
+            review: z.boolean().optional(),
+            maxSprints: z.number().optional(),
+            tokens: z.string().optional(),
+          })
+          .optional(),
       },
     },
     (args) => {

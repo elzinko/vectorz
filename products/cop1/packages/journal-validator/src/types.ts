@@ -81,6 +81,22 @@ export interface MethodRef {
   version?: string;
 }
 
+/**
+ * Paramètres RETENUS d'un run, déclarés par `run.started.payload.params`
+ * (fiche 20260906142654370). Tous optionnels : un journal qui n'en porte pas
+ * (émetteur ancien) les laisse `undefined`, affichés comme absents, jamais inventés.
+ */
+export interface RunParams {
+  /** `--mode` : `auto` | `manuel`. */
+  mode?: string;
+  /** `--review` : le PO tamponne `ready` lui-même. */
+  review?: boolean;
+  /** `--max-sprints` : borne de la boucle. */
+  maxSprints?: number;
+  /** `--tokens` : `lean` | `cap` | `full`. */
+  tokens?: string;
+}
+
 /** Issue terminalisée d'un run (fiche 0022) — dérivée de `run.finished.payload.status`. */
 export type RunIssue = 'success' | 'failure' | 'abandoned';
 
@@ -118,6 +134,11 @@ export interface RunProjection {
    */
   method?: MethodRef;
   seat?: string;
+  /**
+   * Paramètres retenus du run (fiche 20260906142654370), depuis
+   * `run.started.payload.params`. `undefined` si le journal ne les porte pas.
+   */
+  params?: RunParams;
   /**
    * Provenance d'abandon depuis `run.finished` (ADR-035) — `seat` | `method` | absent.
    * Présent uniquement si le run est `finished` avec `status: abandoned`.

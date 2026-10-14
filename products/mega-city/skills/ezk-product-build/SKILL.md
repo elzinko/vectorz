@@ -504,7 +504,11 @@ bruit** :
 
 - **Au lancement d'un `run` (y compris `--once`) — UNE fois par session, pas à chaque tour de
   boucle** : `run_start {method_name: "ezk-product-build", method_version: <version du
-  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human", params: {mode, review,
+  maxSprints, tokens}}`. Les **paramètres retenus** du run (fiche 20260906142654370) sont transportés
+  dans le payload pour que cop1 affiche « ce qui a été lancé et comment » ; omets un champ que tu n'as
+  pas (le journal tolère l'absence). Si l'outil refuse `params` (émetteur plus ancien), réémets sans :
+  c'est best-effort, jamais un blocage.
   **Retiens le `run_id` rendu** : `run_finished` l'exige à la clôture, pour ne fermer que TON run
   (fiche 20261002133125444). Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un
   run déjà ouvert), c'est **toi** qui ouvres le run quand tu es la tête de chaîne.

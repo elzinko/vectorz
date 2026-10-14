@@ -15,6 +15,18 @@ interface MethodRef {
   version?: string;
 }
 
+/**
+ * Paramètres retenus d'un run (fiche 20260906142654370), recopiés du contrat serveur
+ * `RunProjection.params`. Tous optionnels : un journal qui ne les porte pas les laisse
+ * `undefined`, affichés comme absents, jamais inventés.
+ */
+interface RunParams {
+  mode?: string;
+  review?: boolean;
+  maxSprints?: number;
+  tokens?: string;
+}
+
 interface GateProjection {
   gateEventId: string;
   gateId?: string;
@@ -55,6 +67,8 @@ interface RunSnapshot {
   tokens: TokenMeasure;
   method?: MethodRef;
   seat?: string;
+  /** Paramètres retenus du run (fiche 20260906142654370), depuis `run.started`. */
+  params?: RunParams;
   /**
    * ADR-035 — provenance d'abandon depuis `run.finished` (`seat` | `method`).
    * Affiché sur la carte finished (AC1 E2E).
@@ -143,6 +157,23 @@ function formatTokenLine(tokens: TokenMeasure): string {
   const parts = [`${tokens.total.toLocaleString('fr-FR')} tokens`];
   if (tokens.usd !== undefined) parts.push(`~${tokens.usd.toFixed(2)} $`);
   return parts.join(' · ');
+}
+
+/**
+ * Paramètres retenus d'un run en une ligne lisible (fiche 20260906142654370) : mode, tokens,
+ * review, borne de sprints. Les champs absents sont omis ; `null` si aucun n'est présent (l'absence
+ * s'affiche comme absence, jamais une valeur par défaut).
+ */
+function formatParams(params?: RunParams): string | null {
+  if (!params) return null;
+  const parts: string[] = [];
+  if (params.mode) parts.push(params.mode);
+  if (params.tokens) parts.push(params.tokens);
+  if (params.review !== undefined) parts.push(params.review ? 'review' : 'sans review');
+  if (params.maxSprints !== undefined) {
+    parts.push(`≤${params.maxSprints} sprint${params.maxSprints > 1 ? 's' : ''}`);
+  }
+  return parts.length > 0 ? parts.join(' · ') : null;
 }
 
 function currentAgentLabel(run: Pick<RunSnapshot, 'method' | 'currentNote'>): string | null {
@@ -412,6 +443,11 @@ const RunCard = memo(function RunCard({ run }: { run: RunSnapshot }) {
             <i className="run-card__k">siège</i> {run.seat}
           </span>
         )}
+        {formatParams(run.params) && (
+          <span data-testid="run-params">
+            <i className="run-card__k">paramètres</i> {formatParams(run.params)}
+          </span>
+        )}
         {(run.state === 'finished' || run.state === 'finished_at_gate') && run.abandonedBy && (
           <span data-testid="abandoned-by">
             <i className="run-card__k">abandon</i>{' '}
@@ -648,6 +684,9 @@ function RunHistoryPanel({ filterProjectRoot }: { filterProjectRoot?: string | n
                 )}
                 {entry.durationMs !== undefined && <span>{formatAge(entry.durationMs)}</span>}
                 {entry.issue && <span>{ISSUE_LABEL[entry.issue]}</span>}
+                {formatParams(entry.params) && (
+                  <span data-testid="history-params">{formatParams(entry.params)}</span>
+                )}
                 <span>{formatTokenLine(entry.tokens)}</span>
               </div>
             </li>

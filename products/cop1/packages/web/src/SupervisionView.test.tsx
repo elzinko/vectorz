@@ -10,13 +10,17 @@ interface FakeEventSource {
 let lastEventSource: FakeEventSource | null = null;
 
 function stubEventSource(): void {
+  // Le Moniteur fait `new EventSource('/events')`. Sous vitest 4, un mock `vi.fn()` n'est pas
+  // constructible via `new` (il l'était sous vitest 2) : une vraie classe l'est dans les deux.
   vi.stubGlobal(
     'EventSource',
-    vi.fn().mockImplementation(() => {
-      const instance: FakeEventSource = { onmessage: null, close: vi.fn() };
-      lastEventSource = instance;
-      return instance;
-    }),
+    class {
+      onmessage: ((event: { data: string }) => void) | null = null;
+      close = vi.fn();
+      constructor() {
+        lastEventSource = this as unknown as FakeEventSource;
+      }
+    },
   );
 }
 
@@ -87,6 +91,25 @@ describe('SupervisionView', () => {
 
     expect(await screen.findByText(/v0\.1\.0/)).toBeTruthy();
     expect(await screen.findByText(/human/)).toBeTruthy();
+  });
+
+  it('shows the retained run params (fiche 20260906142654370)', async () => {
+    stubFetch([makeSnapshot({ params: { mode: 'auto', review: false, maxSprints: 3, tokens: 'lean' } })]);
+    render(<SupervisionView />);
+
+    const params = await screen.findByTestId('run-params');
+    expect(params.textContent).toContain('auto');
+    expect(params.textContent).toContain('lean');
+    expect(params.textContent).toContain('sans review');
+    expect(params.textContent).toContain('≤3 sprints');
+  });
+
+  it('omits the params line when a journal omits them (absence shown as absence)', async () => {
+    stubFetch([makeSnapshot({ params: undefined })]);
+    render(<SupervisionView />);
+
+    expect(await screen.findByText(/demo-methode/)).toBeTruthy();
+    expect(screen.queryByTestId('run-params')).toBeNull();
   });
 
   it('shows "méthode non déclarée" when a journal omits method (fiche 0061)', async () => {
