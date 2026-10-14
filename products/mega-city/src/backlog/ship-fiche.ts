@@ -137,7 +137,8 @@ export function setFrontMatter(text: string, fields: Record<string, string>): st
   let end = lines.findIndex((l, n) => n > 0 && /^---\s*$/.test(l));
   if (end === -1) throw new Error('front-matter non fermé');
   for (const [key, value] of Object.entries(fields)) {
-    const row = `${key}: ${value}`;
+    // Valeur vide → `key:` sans espace en trop (comme une fiche sans version/jalon), jamais `key: `.
+    const row = value === '' ? `${key}:` : `${key}: ${value}`;
     const at = lines.findIndex((l, n) => n > 0 && n < end && l.startsWith(`${key}:`));
     if (at === -1) {
       lines.splice(end, 0, row);

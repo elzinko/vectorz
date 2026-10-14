@@ -416,6 +416,16 @@ secret/CI absent), **conflit stratégique** (contredit un ADR accepté ou une au
 pourquoi. Si **tout** le stock tirable skippe → **STOP humain** (« rien de constructible, voici
 pourquoi chaque fiche a été skippée »), jamais une boucle folle.
 
+**🅿️ Parker hors version (fiche 20261013131852779).** Skipper laisse la fiche **dans la version** : le
+run rebute dessus à chaque passage. Quand une fiche est jugée **durablement inconstruisable** (le même
+blocage réel reviendrait run après run, ou elle n'a pas d'outcome testable dérivable), tu la **sors de
+sa version** au lieu de seulement la sauter : `ezk backlog park <id> --reason <raison-typée>`. Le geste
+vide `version:`, marque la fiche parkée (`idea` + `milestone: parked`) avec la raison TYPÉE, et rend une
+**ligne de journal**. La version avance sans la traîner. C'est **réversible** : la fiche reste au
+backlog, réveillable au grooming (repose version + status, retire `blocked:`). Le RUN-REPORT la **nomme**
+en état `sautée` avec la raison « parkée hors version ». Après un park, **régénère les vues** (`ezk
+backlog regen`) et committe. Parker reste un geste du run ; il ne contourne **aucun** des 4 STOP.
+
 **Les 4 STOP humains restent absolus** (irréversible/sortant · hausse de budget · direction produit
 sur backlog vide · exigences contradictoires) — l'auto-groom et l'auto-tampon ne les contournent
 jamais.

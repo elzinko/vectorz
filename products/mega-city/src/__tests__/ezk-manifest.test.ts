@@ -66,6 +66,7 @@ describe('ezk-manifest.yml', () => {
       'backlog aggregate',
       'backlog apply',
       'backlog check',
+      'backlog park',
       'backlog plan-head',
       'backlog plan-lot',
       'backlog regen',
@@ -110,6 +111,7 @@ describe('ezk-manifest.yml', () => {
     expect(labels).toEqual([
       'adr new',
       'backlog apply',
+      'backlog park',
       'backlog regen',
       'backlog ship',
       'backlog version',

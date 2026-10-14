@@ -117,6 +117,13 @@ commands:
     project: true
     writes: true
   - domain: backlog
+    verb: park
+    run: bin/backlog-park.ts --root {root}
+    summary: Sort une fiche inconstruisable de sa version (parkée, réversible) (--root <projet>).
+    root: cwd
+    project: true
+    writes: true
+  - domain: backlog
     verb: aggregate
     run: bin/backlog-aggregate.ts
     summary: Regroupe des fiches (dépôt où tu es, ou --root <projet>).
