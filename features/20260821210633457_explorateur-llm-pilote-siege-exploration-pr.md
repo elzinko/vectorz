@@ -102,6 +102,18 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
 
 ## Notes / décisions
 
+- **Mémoire partagée — le cache de cartographie [[20261014113049954]] (ajout PO 2026-10-14)** : au
+  lieu de remonter le banc et de re-parcourir toute l'app à chaque PR, l'explorateur **consulte** une
+  carte vivante versionnée de l'app (le « cache de cartographie applicative »), activable par projet.
+  C'est un **outil à part** ; l'explorateur le compose **ou non**. À intégrer quand le cache existe.
+- **Deux agents, pas un — précision PO (2026-10-14)** : séparer l'**explorateur « en rupture »** (il
+  diverge, propose des approches nouvelles) de l'**agent qualifieur** (il rationalise la proposition
+  avec l'app : pertinente ou non, type, priorité suggérée). Le qualifieur **qualifie, il ne filtre
+  pas** — il annote la proposition, il ne la jette pas. Point de design à cadrer au grooming.
+- **Sas `features/brainstormed` — question ouverte (PO 2026-10-14)** : le PO veut les propositions
+  dans un **dossier séparé** du backlog de travail, pas mêlées aux fiches actives. ⚠ Tension à
+  trancher avec la politique actuelle (rapport sous gate humaine, aucune carte créée seule, naissance
+  `idea` + label de provenance) : un sas physique est un **autre modèle**. À arbitrer au grooming.
 - **Division avec `ezk-scout` ([[20260910165637000]]) — décision PO (2026-09-10)** : deux cartes
   **SÉPARÉES**. Cette carte cherche des **NOUVELLES FEATURES** (adaptations, trous à combler) ;
   `ezk-scout` cherche les **BUGS**. Les deux **mutualisent la commande d'exploration** — une
