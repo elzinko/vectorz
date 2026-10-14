@@ -45,6 +45,11 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 | **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | 📋 groomée (prête, 2026-10-13) |
 | **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | 📋 groomée (prête ; 1 fiche ADR en attente de panel) |
 | **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches, deux portées de config — conçu par maquette (ADR-074) | 📋 groomée (prête) — APRÈS le socle |
+| **v0.18.0** | La CLI se tient | surface de commande cohérente et ergonomique : audit DSL, `--root` uniforme, bug `--help`, secrets par projet | 📝 proposée (2026-10-14), à valider |
+| **v0.19.0** | La gate ne laisse plus rien passer | la gate attrape ce que la revue rattrapait : forme des vues, confinement, lint mega-city, recals de liens, santé des dépendances | 📝 proposée (2026-10-14), à valider |
+| **v0.20.0** | Le flux se lit et s'allège | cérémonies légères + restitutions lisibles : capture de rétro vérifiée, chemin lite du sprint, checkpoint en clair, rétro light | 📝 proposée (2026-10-14), à valider |
+| **v0.21.0** | Le backlog se discipline | modèle backlog / PR / grooming : deux formes de PR, voir les PR avant un lot, règles de découpe au grooming | 📝 proposée (2026-10-14), à valider |
+| **v0.22.0** | L'app se cartographie | exploration-app : index statique des routes (cache Pas 1) + l'explorateur de features, sur ezk-scout déjà livré | 📝 proposée (2026-10-14), à valider |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 > **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
@@ -252,6 +257,47 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - `20261013132218242` — config modèles : schéma à deux portées + résolveur pur · P1 · `build` (ready)
 - `20261013132218451` — config modèles : pointeurs au bind + commande `ezk config` · P1 · `build` (ready)
 - `20261013132218656` — board : page ⚙ config outil (mapping) + route gardée · P2 · `build` (ready)
+
+### ⑲ v0.18.0 — la CLI se tient (proposée le 2026-10-14, à valider)
+> DX de la ligne de commande, le plus rentable au quotidien. Le brainstorm DSL vient EN PREMIER : il peut recadrer les autres. Fiches encore `idea` → chacune passe par `groom` puis `ready` avant d'être tirable.
+- `20261010153046143` — brainstorm : la CLI est-elle un DSL cohérent (ezk / mc, toute la surface) · P2 · `groom` (à faire en 1er)
+- `20261013143324404` — uniformiser `--root` avant ET après le verbe · P3 · `groom`
+- `20261004083838781` — `ezk config --help` lu comme un chemin (faux statut) · P3 · `groom`
+- `20261001104806732` — `ezk-secret sync` : un manifeste de secrets par projet · P2 · `groom`
+- `20261001142603963` — `ezk-secret apply` : scope compte/par-app, secrets par recette · P2 · `groom`
+- `20261011113632688` — spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) · P2 · `groom`
+
+### ⑳ v0.19.0 — la gate ne laisse plus rien passer (proposée le 2026-10-14, à valider)
+> Les trous de qualité que la revue a dû rattraper deviennent mécaniques.
+- `20261011091555006` — la gate attrape forme des vues + confinement · P2 · `groom`
+- `20261001133500750` — le lint couvre le code de mega-city · P2 · `groom`
+- `20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`
+- `20260816194833618` — santé des dépendances : audit local + place dans le process · P2 · `groom`
+- `20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`
+
+### ㉑ v0.20.0 — le flux se lit et s'allège (proposée le 2026-10-14, à valider)
+> Cérémonies légères pour les petits périmètres, et restitutions lisibles.
+- `20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`
+- `20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2 · `groom`
+- `20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`
+- `20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3 · `groom`
+- `20261007151859476` — ezk-debugging : skill de débogage systématique (4 phases) · P2 · `groom`
+
+### ㉒ v0.21.0 — le backlog se discipline (proposée le 2026-10-14, à valider)
+> Le modèle backlog / PR / grooming se resserre.
+- `20261003075821858` — deux formes de PR (dev rend la fiche, backlog la désigne) · P1 · `groom`
+- `20261003201034990` — voir les PR ouvertes et les branches avant un lot ou un groom · P1 · `groom`
+- `20261013131625202` — une fiche découpée ne porte pas un critère de sa sœur · P2 · `groom`
+- `20261013013553179` — le grooming applique la règle de taille (> 2 surfaces → découper) · P3 · `groom`
+- `20261007213454366` — spike : voir toute l'histoire d'une feature au même endroit · P3 · `groom`
+- `20261011112934507` — `ship-merge --local` tolère un fichier non suivi + mesure du rayon en DoR · P2 · `groom`
+
+### ㉓ v0.22.0 — l'app se cartographie (proposée le 2026-10-14, à valider)
+> Exploration-app : la carte d'abord (réduite au Pas 1), l'explorateur ensuite, sur `ezk-scout` déjà livré. Dépend du board v0.17 pour le « où vit le cache » si la version vivante sort un jour.
+- `20261014113049954` — cache de cartographie, Pas 1 : index statique des routes + test de valeur · P2 · `groom`
+- `20260821210633457` — l'explorateur de features par PR (à dé-parker) · P2 · `groom`
+> **Reste à caser** (le PO slotte) : `20261002130917993` (release local-first) et `20261011153019643` (step design-system dans `ezk-release`) — thème release, aiguillage en attente.
+> **Rattachées au board v0.17** (pas une version libre) : `20261002115451451` (page une ligne par projet), `20260830110131228` (étapes de skill configurables), `20261013143324505` (borner `sprint:report`).
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

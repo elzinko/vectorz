@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.20.0
 labels: [lisibilité, retro]
 status: idea
 pr:
