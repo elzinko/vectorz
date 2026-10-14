@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 milestone:
 version:
-labels: [test-local]
+labels: [test-local, exploration-app]
 status: idea
 pr:
 evidence: none # capacité de méthode (outil + agents) ; preuve = ses tests + un run de démonstration

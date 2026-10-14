@@ -7,7 +7,7 @@ product: mega-city
 milestone: parked
 epic:
 depends: ["0169"]
-labels: [test-local]
+labels: [test-local, exploration-app]
 status: idea
 pr:
 created: 2026-08-21
@@ -106,10 +106,19 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
   lieu de remonter le banc et de re-parcourir toute l'app à chaque PR, l'explorateur **consulte** une
   carte vivante versionnée de l'app (le « cache de cartographie applicative »), activable par projet.
   C'est un **outil à part** ; l'explorateur le compose **ou non**. À intégrer quand le cache existe.
-- **Deux agents, pas un — précision PO (2026-10-14)** : séparer l'**explorateur « en rupture »** (il
-  diverge, propose des approches nouvelles) de l'**agent qualifieur** (il rationalise la proposition
-  avec l'app : pertinente ou non, type, priorité suggérée). Le qualifieur **qualifie, il ne filtre
-  pas** — il annote la proposition, il ne la jette pas. Point de design à cadrer au grooming.
+- **Deux lentilles, pas forcément deux agents neufs — analyse de groom (2026-10-14)** : on sépare bien
+  l'**explorateur « en rupture »** (il diverge, propose des approches nouvelles) de la **qualification**
+  (rationaliser la proposition face à l'app et au backlog : pertinente ? type ? priorité ?). La
+  qualification **annote, elle ne filtre pas**. Mais « faut-il un *nouvel agent* qualifieur ? » — la
+  doctrine répond **probablement non** :
+  - la part **mécanique** (anti-doublon, type, priorité) est déjà `ezk-backlog add` → on **compose**, on ne refait pas ;
+  - le **jugement produit** (« ça vaut le coup ? ») est le rôle **`ezk-pm`** [[0141]], déjà existant → on **délègue** ;
+  - l'**indépendance** vis-à-vis de l'explorateur (le vrai besoin derrière « deux agents » : qu'un divergent ne s'auto-censure pas) s'obtient par une **passe séparée à lentille différente**, pas par un type d'agent neuf.
+  Un agent neuf ne se justifierait — [ADR-0026](../products/mega-city/docs/adr/0026-capacite-ux-agent-plus-skill-mince.md), « un agent = un *rôle* manquant, pas une *méthode* manquante » — que si le panel trouve que la qualification exige un jugement ou des « yeux » que ni `ezk-pm` ni une 2ᵉ passe de l'explorateur ne donnent.
+- **Validation par panel adverse (demande PO 2026-10-14)** : l'approche des deux fiches sœurs (cache +
+  explorateur, label `exploration-app`) sera **challengée par un panel** (architecte + devs + juge)
+  avant tout `ready` — « voir si l'approche est correcte ou non ». Le doute sur l'agent qualifieur
+  ci-dessus est la **première question** du panel.
 - **Sas `features/brainstormed` — question ouverte (PO 2026-10-14)** : le PO veut les propositions
   dans un **dossier séparé** du backlog de travail, pas mêlées aux fiches actives. ⚠ Tension à
   trancher avec la politique actuelle (rapport sous gate humaine, aucune carte créée seule, naissance
