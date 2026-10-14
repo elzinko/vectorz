@@ -39,10 +39,21 @@ le code est la vérité. Il répond déjà à « où est l'action X ? ». Zéro 
 à stocker durablement. C'est le plus petit pas honnête, et il s'aligne sur la méthode (une vue
 générée = fonction pure de fichiers, ADR-0055/0043).
 
+**Précision de groom (2026-10-14)** : lire les routes dépend de la **stack** (React Router, routage
+par fichiers Next, Vue, routeur backend…). Pour rester portable, le projet **déclare sa source de
+routes** dans `.vectorz/config.yml` (un chemin, un glob, ou une petite commande) ; le POC lit **une
+seule** stack réelle — l'app jouet du testbed, ou la webapp cop1. Aucun adaptateur multi-stack au POC
+(YAGNI).
+
 **Pas 2 — un test de valeur chiffré.** Sur un vrai run d'exploration (scout ou explorateur), mesurer
 ce que la re-exploration coûte (tokens, temps) et ce qu'une carte — même faite à la main une fois —
 économiserait sur la passe suivante. Économie marginale → on s'arrête à l'index. Économie forte → le
 cache vivant gagne son droit d'exister.
+
+**Protocole de groom (2026-10-14)** : prendre un run `ezk-scout` réel, relever le coût de sa passe
+(tokens, temps) ; refaire une passe en lui fournissant l'index statique en contexte ; comparer, puis
+écrire les deux chiffres et le verdict **dans cette fiche**. Seuil indicatif : sous ~15 % d'économie,
+on en reste à l'index.
 
 **Différé derrière le test — le cache vivant.** L'invalidation zone par zone, le mapping code→zone, le
 magasin par SHA, la passe complète : toute la section **Architecture** ci-dessous. Elle ne se rouvre
