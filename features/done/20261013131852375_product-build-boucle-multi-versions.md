@@ -58,6 +58,6 @@ pnpm --dir products/mega-city test
 - Découpée de la fiche `20261011103839682` le 2026-10-13 (le **POC** : boucle + rétro/clôture par
   version). Les deux autres manques sont les fiches sœurs, même version v0.15.0 :
   [auto-tag/close local en opt-in](20261013131852581_auto-tag-close-local-opt-in.md) et
-  [l'auto-groom sort une fiche hors version](../20261013131852779_auto-groom-sort-fiche-hors-version.md).
+  [l'auto-groom sort une fiche hors version](20261013131852779_auto-groom-sort-fiche-hors-version.md).
 - Garde-fou ADR-0001 tenu : le skill **décide** (quand clore), `ezk backlog version` **exécute** le git.
 - Née de la rétro légère de v0.8.0 (run auto du 2026-10-11).
