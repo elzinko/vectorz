@@ -264,6 +264,12 @@ commands:
     root: none
     project: true
   - domain: run
+    verb: eligibility
+    run: bin/run-eligibility.ts
+    summary: Teste l'éligibilité d'une fiche au run avant de délibérer (--root <projet>).
+    root: none
+    project: true
+  - domain: run
     verb: reconcile
     run: skills/ezk-pr/scripts/reconcile-worktree.sh
     summary: Réaligne le worktree sur main après un ship local, sinon dit le retard (--root).

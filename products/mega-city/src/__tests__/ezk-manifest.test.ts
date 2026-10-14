@@ -95,6 +95,7 @@ describe('ezk-manifest.yml', () => {
       'rules check',
       'rules show',
       'run context',
+      'run eligibility',
       'run report',
       'scout extract',
     ]);
