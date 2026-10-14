@@ -417,6 +417,63 @@ ok "repris UNE fois : plus de SPRINT.md à la racine (déplacé au lieu commun)"
 ok "le journal garde le labo ET l'incrément de l'ancien" 'grep -q "galère de la branche courante" "$ADO_J" && grep -q "Sprint 3 — à reprendre" "$ADO_J"'
 ok "le nouveau sprint est la suite (sprint=4)" 'printf "%s\n" "$OUT22B" | grep -qx "START: OPENED sprint=4 stories=1"'
 
+echo "S23 — garde d'appartenance : un journal commun portant une AUTRE branche est REFUSÉ, jamais écrasé (revue v0.14)"
+# La sanitisation du nom de branche n'est pas injective (`a+b`/`a-b` → `a-b.md`) : une collision partagerait
+# un journal. La garde compare l'en-tête `Branche:` du journal à la branche courante et refuse si elle diffère.
+git init -q -b main "$TMP/owner"
+(
+  cd "$TMP/owner"
+  git config user.email test@test && git config user.name test && git config commit.gpgsign false
+  mkdir -p features && mkfiche "$A" "Alpha" alpha
+  printf 'SPRINT.md\n' > .gitignore
+  git add . && git commit -qm base
+)
+OWN_J="$(journal_of "$TMP/owner")"
+mkdir -p "$(dirname "$OWN_J")"
+cat > "$OWN_J" <<EOF
+# Sprint 1 — venu d'ailleurs
+Statut: en cours   Ouvert: 2026-10-01
+Branche: feat-autre-collision
+
+## Lot
+- [ ] 0099 — story d'une autre branche
+EOF
+OUT23="$(cd "$TMP/owner" && bash "$SPRINT" start --lot "$A")"
+ok "START: REFUSED journal_mismatch (courante=main, journal=feat-autre-collision)" 'printf "%s\n" "$OUT23" | grep -qx "START: REFUSED journal_mismatch branche=main journal=feat-autre-collision"'
+ok "le journal de l'autre branche n'est NI écrasé NI adopté" 'grep -q "story d.une autre branche" "$OWN_J" && ! grep -q "Alpha" "$OWN_J"'
+# Un journal SANS en-tête Branche: (ancien format) est grandfathered : pas de refus.
+cat > "$OWN_J" <<'EOF'
+# Sprint 1 — ancien format sans branche
+Statut: en cours   Ouvert: 2026-10-01
+
+## Lot
+- [ ] 0099 — story
+EOF
+OUT23B="$(cd "$TMP/owner" && bash "$SPRINT" start --lot "$A")"
+ok "un journal sans en-tête Branche: n'est PAS refusé (grandfather)" '! printf "%s\n" "$OUT23B" | grep -q "journal_mismatch"'
+
+echo "S24 — HEAD détaché : clé de journal STABLE ; un sprint ouvert se retrouve APRÈS un commit (revue v0.14)"
+# Avant le fix, la clé `_detached/<sha-court>` bougeait à chaque commit → le sprint ouvert devenait
+# introuvable à close (un sprint produit des commits). Clé stable `_detached` : close le retrouve.
+git init -q -b main "$TMP/det"
+(
+  cd "$TMP/det"
+  git config user.email test@test && git config user.name test && git config commit.gpgsign false
+  mkdir -p features && mkfiche "$A" "Alpha" alpha
+  printf 'SPRINT.md\n' > .gitignore
+  echo base > a.txt && git add . && git commit -qm base
+  git checkout -q --detach
+)
+DET_J="$(cd "$TMP/det" && echo "$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)/ezk/sprints/_detached.md")"
+OUT24="$(cd "$TMP/det" && bash "$SPRINT" start --lot "$A" --objective "Détaché")"
+ok "START: OPENED sprint=1 en détaché, clé _detached" 'printf "%s\n" "$OUT24" | grep -qx "START: OPENED sprint=1 stories=1" && [ -f "$DET_J" ]'
+ok "l'en-tête porte Branche: _detached" 'grep -qx "Branche: _detached" "$DET_J"'
+# le sprint produit un commit → HEAD bouge, la clé ne doit PAS bouger
+(cd "$TMP/det" && echo y > y.txt && git add y.txt && git commit -qm "travail du sprint")
+sed -i.bak -e "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (local abc1234)/" "$DET_J" && rm -f "$DET_J.bak"
+OUT24B="$(cd "$TMP/det" && bash "$SPRINT" close)"
+ok "après un commit, close RETROUVE le sprint (clé stable), pas de REFUSED not_open" 'printf "%s\n" "$OUT24B" | grep -qx "CLOSE: SEALED sprint=1 done=1 deferred=0"'
+
 if (( FAIL )); then
   echo "FAIL"
   exit 1

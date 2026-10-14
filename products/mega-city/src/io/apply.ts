@@ -118,8 +118,9 @@ function gitHooksDir(projectDir: string): string {
     // git n'a pas pu répondre (pas un vrai dépôt) → repli ci-dessous.
   }
   // Repli sur le littéral historique UNIQUEMENT quand git ne résout pas (ex. un `.git` qui n'est pas
-  // un dépôt). Un worktree RÉEL, lui, répond toujours à `rev-parse` : le repli ne ré-ouvre donc pas le
-  // bug ENOTDIR corrigé — il ne couvre que le cas où `.git/hooks` est de toute façon le seul défaut sensé.
+  // un dépôt). Un worktree RÉEL répond toujours à `rev-parse` : il ne tombe jamais dans ce repli, donc le
+  // bug ENOTDIR corrigé ne revient pas pour lui. Seul un `.git` fichier ILLISIBLE (pointeur de worktree
+  // cassé) y tomberait et replanterait — mais ce cas dégénéré plantait déjà à l'identique avant le correctif.
   return resolve(projectDir, '.git', 'hooks');
 }
 

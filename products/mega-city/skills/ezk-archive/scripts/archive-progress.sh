@@ -71,7 +71,7 @@ fi
 # Chemin du marqueur : même résolution que sprint.sh / handoff.sh (pwd -P, par branche).
 COMMON="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)" || exit 2
 BRANCH="$(git branch --show-current 2>/dev/null)"
-[[ -n "$BRANCH" ]] || BRANCH="_detached/$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+[[ -n "$BRANCH" ]] || BRANCH="_detached"  # clé STABLE (même choix que sprint.sh/check.sh, revue v0.14)
 BRANCH_SAFE="$(printf '%s' "$BRANCH" | LC_ALL=C sed 's#[^A-Za-z0-9._/-]#-#g')"
 FILE="$COMMON/ezk/archive-runs/$BRANCH_SAFE.md"
 

@@ -93,6 +93,10 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 2
 fi
 HANDOFF_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/handoff.sh"
+# Résolu comme les frères (BASH_SOURCE, AVANT le `cd` ligne 104) : `$0` après le cd casserait pour une
+# invocation en chemin relatif, et le statut vide qui s'ensuit ferait rater un run incomplet EN SILENCE
+# (revue v0.14). Le marqueur de progression du run de clôture vit à côté de ce script.
+AP_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/archive-progress.sh"
 # La règle « copie voisine sans risque » (classify_ref / absorbed_by_any / wt_proof_bases) vit dans une
 # lib partagée, définie UNE fois et sourcée ici en dur comme par ezk-sprint/check.sh (fiche 20261003011750521).
 # Dépendance DURE (archive ne sait pas prouver sans elle) : sous `set -uo pipefail` sans `-e`, un source
@@ -627,13 +631,13 @@ if [[ -z "$WORKED" ]]; then fp_reason worked_undeclared; elif [[ "$WORKED" != "n
 # (docs/sessions/). Dans le doute, on déroule la clôture. La résolution du chemin est la même que
 # sprint.sh (sinon le portier lirait un autre fichier que celui que `ezk-sprint` écrit).
 SPRINT_BRANCH="$(git branch --show-current 2>/dev/null)"
-[[ -n "$SPRINT_BRANCH" ]] || SPRINT_BRANCH="_detached/$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+[[ -n "$SPRINT_BRANCH" ]] || SPRINT_BRANCH="_detached"  # clé STABLE (même choix que sprint.sh, revue v0.14)
 SPRINT_BRANCH="$(printf '%s' "$SPRINT_BRANCH" | LC_ALL=C sed 's#[^A-Za-z0-9._/-]#-#g')"
 SPRINT_JOURNAL="$H_COMMON/ezk/sprints/$SPRINT_BRANCH.md"
 if [[ -f "$SPRINT_JOURNAL" ]] && grep -qvE '^[[:space:]]*($|#|<!--)' "$SPRINT_JOURNAL" 2>/dev/null; then fp_reason sprint; fi
 # Un run ezk-archive PRÉCÉDENT laissé incomplet (fiche 20261002155911264 ; coupé en plein travail) :
 # il reste des points de clôture à finir → on refuse la voie rapide et on le dit (ci-dessous). READ-ONLY.
-ARCHIVE_RUN_STATUS="$(bash "$(dirname "$0")/archive-progress.sh" status 2>/dev/null || true)"
+ARCHIVE_RUN_STATUS="$(bash "$AP_SCRIPT" status 2>/dev/null || true)"
 case "$ARCHIVE_RUN_STATUS" in
   "ARCHIVE_RUN: INCOMPLETE"*) fp_reason archive_incomplete ;;
 esac
@@ -834,7 +838,8 @@ if [[ "$MODE" == "gate" ]]; then
   echo "MAINSYNC: $MAINSYNC_STATE ahead=$MS_AHEAD behind=$MS_BEHIND stale_ref=$MS_STALE"
   echo "HANDOFF: entries=$H_ENTRIES lines=$H_LINES bytes=$H_BYTES rotate=$H_ROTATE durable=$H_DURABLE"
   # Silencieux dans le cas courant (NONE) : on ne surcharge le bloc que lorsqu'un run reste à finir.
-  if [[ "$ARCHIVE_RUN_STATUS" != "ARCHIVE_RUN: NONE" ]]; then echo "$ARCHIVE_RUN_STATUS"; fi
+  # `-n` d'abord : une valeur VIDE (archive-progress.sh absent/en échec) vaut NONE, pas une ligne vide parasite.
+  if [[ -n "$ARCHIVE_RUN_STATUS" && "$ARCHIVE_RUN_STATUS" != "ARCHIVE_RUN: NONE" ]]; then echo "$ARCHIVE_RUN_STATUS"; fi
   echo "NOTE: points 5/6/7 non dérivés ; si un run précédent reste à finir, ARCHIVE_RUN le dit (fiche 20261002155911264)"
   [[ -n "$FACT_OUT" ]] && printf '%s\n' "$FACT_OUT"
   echo "--- END ---"

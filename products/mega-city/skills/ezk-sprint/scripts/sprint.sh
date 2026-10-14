@@ -134,9 +134,13 @@ if (( DRY )); then exec bash "$CHECK" --gate; fi
 # `pwd -P` : le même chemin qu'on parte du principal ou d'un worktree (macOS : /var → /private/var).
 EZK_COMMON="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)" && pwd -P)" || exit 2
 BRANCH="$(git branch --show-current 2>/dev/null)"
-[[ -n "$BRANCH" ]] || BRANCH="_detached/$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
-# Jamais de caractère hors [A-Za-z0-9._/-] dans le chemin ; le « / » d'une branche devient un sous-dossier,
-# comme git range ses refs (git interdit déjà une branche « a » et « a/b » ensemble : pas de collision).
+# HEAD détaché : pas de branche. La clé doit être STABLE pendant tout le sprint — un sprint PRODUIT des
+# commits, donc un `_detached/<sha>` bougerait à chaque commit et rendrait le sprint ouvert introuvable à
+# `close` (revue v0.14). On fixe `_detached` ; l'appartenance est vérifiée plus bas (garde journal_mismatch).
+[[ -n "$BRANCH" ]] || BRANCH="_detached"
+# Le « / » d'une branche devient un sous-dossier, comme git range ses refs. La sanitisation n'est PAS
+# injective (`a+b` et `a-b` → `a-b.md`) : une collision est possible mais RARE, et la garde d'appartenance
+# (journal_mismatch, plus bas) la rattrape — elle refuse d'écrire sur le journal d'une autre branche.
 BRANCH_SAFE="$(printf '%s' "$BRANCH" | LC_ALL=C sed 's#[^A-Za-z0-9._/-]#-#g')"
 FILE="$EZK_COMMON/ezk/sprints/$BRANCH_SAFE.md"
 
@@ -273,9 +277,28 @@ do_start() {
     if [[ -n "$legacy_branch" && "$legacy_branch" == "$BRANCH" ]]; then
       if mv "$LEGACY_FILE" "$FILE" 2>/dev/null; then
         echo "SPRINT-MIGRATION: ancien ${LEGACY_FILE} repris pour la branche ${BRANCH} → ${FILE}"
+      else
+        # Jamais repris en silence (contrat) : si le mv échoue, on le DIT — sinon la branche repartirait
+        # de zéro et son historique resterait bloqué à la racine, git-exclu, sans un mot (revue v0.14).
+        echo "SPRINT-MIGRATION-FAILED: impossible de déplacer ${LEGACY_FILE} → ${FILE} ; l'ancien journal reste à la racine et n'est PAS repris. Déplace-le à la main avant de relancer." >&2
       fi
     else
       echo "SPRINT-FOREIGN: ${LEGACY_FILE} à la racine du worktree n'appartient pas à la branche courante (${BRANCH})${legacy_branch:+ — il porte « ${legacy_branch} »} : non repris, journal neuf ouvert."
+    fi
+  fi
+
+  # Garde d'appartenance : si le journal commun existe DÉJÀ mais porte une AUTRE branche (collision de
+  # sanitisation `a+b`/`a-b`, ou résidu d'une autre session détachée), ne l'adopte PAS en silence — refuse
+  # avec la raison (revue v0.14). Un journal sans en-tête `Branche:` (ancien format, ou adopté pré-bascule)
+  # est grandfathered : on ne refuse pas. L'adoption ci-dessus a déjà posé `Branche: <courante>`.
+  if [[ -e "$FILE" ]]; then
+    local file_branch
+    file_branch="$(sed -nE 's/^Branche:[[:space:]]*(.*[^[:space:]])[[:space:]]*$/\1/p' "$FILE" 2>/dev/null | head -1)"
+    if [[ -n "$file_branch" && "$file_branch" != "$BRANCH" ]]; then
+      echo "START: REFUSED journal_mismatch branche=${BRANCH} journal=${file_branch}"
+      echo "SPRINT_FILE: ${FILE}"
+      echo "HINT: ce chemin de journal appartient à « ${file_branch} » (collision de nom de branche ?) — renomme ta branche ou déplace ${FILE}, puis relance."
+      end
     fi
   fi
 
