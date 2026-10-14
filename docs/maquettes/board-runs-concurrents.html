@@ -1,0 +1,261 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board — runs concurrents</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Maquette : comment le board montre PLUSIEURS sessions sur un même dépôt.
+     Reprend les tokens de board-ezk-dashboard.html (ADR-074). 5 cas concrets.
+     Fiche 20261014122044421. Statique, aucune donnée réelle — mock. */
+  :root{
+    --bg:#f4f6f9; --surface:#fff; --surface-2:#eef1f6; --line:#d9dfe8;
+    --fg:#1b2230; --muted:#5a6475; --faint:#8b94a3;
+    --accent:#3a5bd9; --accent-soft:#e5ebfb;
+    --go:#1f8a53; --go-soft:#dcf0e4; --warn:#9a6a12; --warn-soft:#f6ebd5; --crit:#c23b4b; --crit-soft:#f7dde1;
+    --groom:#7a4fd0; --groom-soft:#ece3fb; --idea:#8b94a3; --idea-soft:#e9edf2;
+    --font-ui:"IBM Plex Sans",system-ui,-apple-system,sans-serif; --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace; --r:10px;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#11151c; --surface:#191f29; --surface-2:#212936; --line:#2d3644; --fg:#e6ebf2; --muted:#9aa6b6; --faint:#697385;
+    --accent:#7d97f0; --accent-soft:#23304d; --go:#4cc088; --go-soft:#16382a; --warn:#d8a24a; --warn-soft:#3a2f16; --crit:#e26d7a; --crit-soft:#3d1f24; --groom:#a98ae6; --groom-soft:#271d3d; --idea:#697385; --idea-soft:#222a36; color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#11151c; --surface:#191f29; --surface-2:#212936; --line:#2d3644; --fg:#e6ebf2; --muted:#9aa6b6; --faint:#697385;
+    --accent:#7d97f0; --accent-soft:#23304d; --go:#4cc088; --go-soft:#16382a; --warn:#d8a24a; --warn-soft:#3a2f16; --crit:#e26d7a; --crit-soft:#3d1f24; --groom:#a98ae6; --groom-soft:#271d3d; --idea:#697385; --idea-soft:#222a36; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);line-height:1.45;margin:0;padding:22px clamp(14px,3vw,30px) 60px}
+  h1,h2,h3,h4{margin:0;text-wrap:balance}
+  code{font-family:var(--font-data)}
+  .wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+  .lead{display:flex;flex-direction:column;gap:9px}
+  .lead h1{font-size:23px;display:flex;align-items:center;gap:9px}
+  .lead .dot{width:12px;height:12px;border-radius:3px;background:var(--accent)}
+  .lead p{margin:0;font-size:14.5px;color:var(--muted);max-width:66ch}
+  .enclair{background:var(--accent-soft);border-radius:10px;padding:13px 16px;font-size:14px}
+  .enclair b{color:var(--accent)}
+  /* légende */
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:11px 15px;background:var(--surface)}
+  .legend b{color:var(--fg)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px}
+  /* cas */
+  .case{display:flex;flex-direction:column;gap:11px}
+  .case>.ch{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .case>.ch .n{font-family:var(--font-data);font-size:12px;font-weight:600;color:#fff;background:var(--accent);border-radius:6px;padding:2px 9px}
+  .case>.ch h2{font-size:17px}
+  .case>.ch .sub{color:var(--muted);font-size:13px}
+  .impact{font-size:12.5px;color:var(--muted);display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;background:var(--surface-2);border-radius:8px;padding:8px 12px}
+  .itag{font-family:var(--font-data);font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:5px;white-space:nowrap}
+  .i-lo{background:var(--go-soft);color:var(--go)} .i-mid{background:var(--warn-soft);color:var(--warn)} .i-hi{background:var(--crit-soft);color:var(--crit)}
+  /* carte board */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .card>h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);padding:13px 16px 11px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0}
+  .card>h3 .cnt{font-family:var(--font-data);text-transform:none;letter-spacing:0;color:var(--muted)}
+  /* ligne de session */
+  .srow{display:flex;align-items:center;gap:13px;padding:12px 16px;border-top:1px solid var(--line);border-left:4px solid var(--line)}
+  .srow:first-of-type{border-top:0}
+  .srow.live{border-left-color:var(--go)} .srow.gate{border-left-color:var(--warn)} .srow.dead{border-left-color:var(--crit);background:var(--crit-soft)} .srow.done{border-left-color:var(--idea)}
+  .srow.child{padding-left:30px;border-left-style:dashed}
+  .sdot{flex:none;width:9px;height:9px;border-radius:50%}
+  .sdot.live{background:var(--go);box-shadow:0 0 0 3px var(--go-soft);animation:pulse 1.8s infinite} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}} @media(prefers-reduced-motion:reduce){.sdot.live{animation:none}}
+  .sdot.gate{background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)} .sdot.dead{background:var(--crit);box-shadow:0 0 0 3px var(--crit-soft)} .sdot.done{background:var(--idea)}
+  .sid{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+  .sname{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pilot{font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:.04em;padding:1px 7px;border-radius:5px;background:var(--accent-soft);color:var(--accent)}
+  .ident{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .branch{font-family:var(--font-data);font-size:11.5px;padding:1px 8px;border-radius:5px;background:var(--surface-2);color:var(--fg);display:inline-flex;align-items:center;gap:5px}
+  .wt{font-family:var(--font-data);font-size:11px;color:var(--faint)}
+  .runid{font-family:var(--font-data);font-size:10.5px;color:var(--faint);opacity:.75}
+  .smid{flex:none;display:flex;align-items:center;gap:7px}
+  .chip{font-size:11px;padding:1px 9px;border-radius:20px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+  .chip.now{background:var(--groom-soft);color:var(--groom);font-weight:600}
+  .sright{flex:none;margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right}
+  .age{font-family:var(--font-data);font-size:11.5px;color:var(--faint);white-space:nowrap}
+  .verdict{font-family:var(--font-data);font-size:10.5px;padding:1px 7px;border-radius:5px} .v-go{background:var(--go-soft);color:var(--go)} .v-warn{background:var(--warn-soft);color:var(--warn)} .v-stop{background:var(--crit-soft);color:var(--crit)}
+  .btn{border:1px solid var(--crit);background:transparent;color:var(--crit);border-radius:7px;padding:4px 10px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}
+  /* overview multi-projets */
+  .projrow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+  .projrow:first-of-type{border-top:0}
+  .pname{font-weight:600;font-size:14px;display:flex;align-items:center;gap:9px}
+  .pcount{font-family:var(--font-data);font-size:12px;color:var(--muted)}
+  .pcount b{color:var(--fg)}
+  .minidots{display:flex;gap:4px}
+  .md{width:8px;height:8px;border-radius:50%} .md.live{background:var(--go)} .md.gate{background:var(--warn)} .md.dead{background:var(--crit)}
+  .note{font-size:12.5px;color:var(--muted);padding:2px 2px 0}
+  .foot{color:var(--faint);font-size:12px;text-align:center;margin-top:8px}
+  .glossn{font-family:var(--font-data)}
+</style>
+
+<div class="wrap">
+
+  <div class="lead">
+    <h1><span class="dot"></span> Board — plusieurs sessions sur un même dépôt</h1>
+    <p>Maquette de travail pour la fiche <code>20261014122044421</code>. On cherche une seule chose : qu'un humain réponde <b>d'un coup d'œil</b> à « combien de sessions tournent ici, et que fait chacune ? ». Cinq cas concrets, du plus simple au plus chargé. Aucune donnée réelle.</p>
+    <div class="enclair">Le changement tient en deux gestes. <b>1.</b> Chaque run porte une <b>étiquette lisible</b> — sa branche, son worktree, le nom de sa session — au lieu d'un identifiant opaque. <b>2.</b> Quand plusieurs sessions tournent, le board les <b>groupe et les trie</b> de façon stable, avec les silences et orphelins bien visibles.</div>
+  </div>
+
+  <div class="legend">
+    <span class="k"><span class="sdot live" style="box-shadow:none"></span> <b>vivant</b></span>
+    <span class="k"><span class="sdot gate" style="box-shadow:none"></span> <b>au jalon</b> (attend une décision)</span>
+    <span class="k"><span class="sdot dead" style="box-shadow:none"></span> <b>silence prolongé / orphelin</b></span>
+    <span class="k"><span class="sdot done" style="box-shadow:none"></span> <b>terminé</b></span>
+    <span class="k"><span class="branch">⎇ branche</span> + <span class="wt">worktree</span> = l'étiquette d'un run</span>
+  </div>
+
+  <!-- CAS 1 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 1</span><h2>Une seule session, un seul run</h2><span class="sub">l'écran d'aujourd'hui, inchangé</span></div>
+    <div class="impact"><span class="itag i-lo">impact faible</span> gagne juste une étiquette de branche. Pur affichage, zéro changement d'émetteur.</div>
+    <div class="card">
+      <h3>Activité — vectorz <span class="cnt">1 session</span></h3>
+      <div class="srow live">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Réalisation v0.17 — le board unifié</div>
+          <div class="ident"><span class="branch">⎇ feat/0211-board-activite</span><span class="wt">wt-board</span></div>
+        </div>
+        <div class="sright"><span class="age">sprint 2/3 · il y a 4 min</span><span class="verdict v-go">en cours</span></div>
+      </div>
+    </div>
+    <p class="note">Rien ne bouge pour l'usage courant. On ajoute seulement la ligne <code>⎇ feat/0211-board-activite · wt-board</code> sous le nom. C'est le socle « identité » qui sert partout ensuite.</p>
+  </section>
+
+  <!-- CAS 2 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 2</span><h2>Trois worktrees, trois runs vivants</h2><span class="sub">le cœur du problème</span></div>
+    <div class="impact"><span class="itag i-hi">impact fort</span> demande l'identité (émetteur) + le groupement + un tri stable + que l'émetteur accepte plusieurs runs ouverts (choix B ou C).</div>
+    <div class="card">
+      <h3>Activité — vectorz <span class="cnt">3 sessions en cours</span></h3>
+      <div class="srow live">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Réalisation v0.17 — board unifié</div>
+          <div class="ident"><span class="branch">⎇ feat/0211-board-activite</span><span class="wt">wt-board</span></div>
+        </div>
+        <div class="smid"><span class="chip now">sprint 2/3</span></div>
+        <div class="sright"><span class="age">il y a 4 min</span></div>
+      </div>
+      <div class="srow gate">
+        <span class="sdot gate"></span>
+        <div class="sid">
+          <div class="sname">Grooming — chronologie condensée</div>
+          <div class="ident"><span class="branch">⎇ feat/0237-chronologie</span><span class="wt">wt-chrono</span></div>
+        </div>
+        <div class="smid"><span class="chip now">au jalon : attend un avis</span></div>
+        <div class="sright"><span class="age">il y a 12 min</span></div>
+      </div>
+      <div class="srow live">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Correctif — liens de fiches cassés</div>
+          <div class="ident"><span class="branch">⎇ fix/0191-liens-casses</span><span class="wt">wt-fix</span></div>
+        </div>
+        <div class="smid"><span class="chip now">revue</span></div>
+        <div class="sright"><span class="age">il y a 1 min</span></div>
+      </div>
+    </div>
+    <p class="note">Trois cartes, trois branches, trois états. On lit en une ligne ce que fait chacune. <b>Tri stable</b> : l'ordre ne saute pas à chaque battement — d'abord ce qui attend (au jalon), puis les vivants par ancienneté de début. Jamais d'identifiant opaque.</p>
+  </section>
+
+  <!-- CAS 3 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 3</span><h2>Une session pilote + deux worktrees</h2><span class="sub">une topologie parmi d'autres</span></div>
+    <div class="impact"><span class="itag i-mid">impact moyen</span> réutilise le cas 2 ; ajoute une relation « piloté par » optionnelle (un champ de plus, un léger décalage visuel).</div>
+    <div class="card">
+      <h3>Activité — vectorz <span class="cnt">1 pilote · 2 sessions</span></h3>
+      <div class="srow live">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Orchestration v0.17 <span class="pilot">PILOTE</span></div>
+          <div class="ident"><span class="branch">⎇ main</span><span class="wt">checkout principal</span></div>
+        </div>
+        <div class="smid"><span class="chip now">pilote 2 sprints</span></div>
+        <div class="sright"><span class="age">il y a 20 min</span></div>
+      </div>
+      <div class="srow live child">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Sprint — activité run→moments</div>
+          <div class="ident"><span class="branch">⎇ feat/0211-board-activite</span><span class="wt">wt-a</span></div>
+        </div>
+        <div class="smid"><span class="chip now">sprint en cours</span></div>
+        <div class="sright"><span class="age">il y a 6 min</span></div>
+      </div>
+      <div class="srow live child">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Sprint — vue Fiches</div>
+          <div class="ident"><span class="branch">⎇ feat/0224-vue-fiches</span><span class="wt">wt-b</span></div>
+        </div>
+        <div class="smid"><span class="chip now">sprint en cours</span></div>
+        <div class="sright"><span class="age">il y a 3 min</span></div>
+      </div>
+    </div>
+    <p class="note">La même grille représente aussi un <b>pilote</b> qui a lancé deux sessions filles (lignes en retrait, trait pointillé). Le badge <span class="pilot">PILOTE</span> et le décalage suffisent — pas une vue à part. Si tu ne veux pas de pilote, le cas 2 reste valable : trois pairs sans hiérarchie.</p>
+  </section>
+
+  <!-- CAS 4 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 4</span><h2>Un orphelin à côté de deux vivants</h2><span class="sub">une session est morte sans fermer son run</span></div>
+    <div class="impact"><span class="itag i-mid">impact moyen</span> réutilise l'état « silence prolongé » existant (ADR-035) ; le rend lisible <i>parmi</i> des runs concurrents.</div>
+    <div class="card">
+      <h3>Activité — vectorz <span class="cnt">2 vivants · 1 à récupérer</span></h3>
+      <div class="srow dead">
+        <span class="sdot dead"></span>
+        <div class="sid">
+          <div class="sname">Réalisation v0.16 — rationalisation</div>
+          <div class="ident"><span class="branch">⎇ feat/0188-en-cours-branches</span><span class="wt">wt-rat</span></div>
+        </div>
+        <div class="smid"><span class="chip">silence depuis 34 min</span></div>
+        <div class="sright"><span class="verdict v-stop">présumé mort</span><button class="btn">Abandonner ce run</button></div>
+      </div>
+      <div class="srow live">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Réalisation v0.17 — board unifié</div>
+          <div class="ident"><span class="branch">⎇ feat/0211-board-activite</span><span class="wt">wt-board</span></div>
+        </div>
+        <div class="smid"><span class="chip now">sprint 3/3</span></div>
+        <div class="sright"><span class="age">il y a 2 min</span></div>
+      </div>
+      <div class="srow live">
+        <span class="sdot live"></span>
+        <div class="sid">
+          <div class="sname">Correctif — liens de fiches cassés</div>
+          <div class="ident"><span class="branch">⎇ fix/0191-liens-casses</span><span class="wt">wt-fix</span></div>
+        </div>
+        <div class="smid"><span class="chip now">revue</span></div>
+        <div class="sright"><span class="age">il y a 1 min</span></div>
+      </div>
+    </div>
+    <p class="note">L'orphelin remonte en tête (fond rouge pâle) avec son bouton d'abandon — la seule main humaine prévue par <code>ADR-035</code>. Les deux vivants restent lisibles juste en dessous. On distingue « mort » de « vivant » sans effort.</p>
+  </section>
+
+  <!-- CAS 5 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 5</span><h2>Plusieurs projets, chacun multi-sessions</h2><span class="sub">la vue d'ensemble, un cran au-dessus</span></div>
+    <div class="impact"><span class="itag i-mid">impact moyen</span> agrège par projet ; le board doit découvrir les runs de plusieurs racines (lié au choix B/C).</div>
+    <div class="card">
+      <h3>Tous les projets <span class="cnt">3 projets · 6 sessions</span></h3>
+      <div class="projrow">
+        <div class="pname">vectorz</div>
+        <div class="minidots"><span class="md live"></span><span class="md gate"></span><span class="md live"></span></div>
+        <div class="pcount"><b>3</b> en cours</div>
+      </div>
+      <div class="projrow">
+        <div class="pname">samplerz</div>
+        <div class="minidots"><span class="md live"></span><span class="md dead"></span></div>
+        <div class="pcount"><b>1</b> en cours · 1 à récupérer</div>
+      </div>
+      <div class="projrow">
+        <div class="pname">muti</div>
+        <div class="minidots"><span class="md live"></span></div>
+        <div class="pcount"><b>1</b> en cours</div>
+      </div>
+    </div>
+    <p class="note">Au niveau du dessus, chaque projet dit son <b>compte</b> de sessions et l'état de chacune (les pastilles). On clique un projet pour descendre sur ses cartes (cas 2 à 4). Un orphelin se voit dès ce niveau.</p>
+  </section>
+
+  <div class="foot">Maquette statique · fiche 20261014122044421 · tokens repris de board-ezk-dashboard.html (ADR-074)</div>
+
+</div>

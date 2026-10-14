@@ -131,8 +131,8 @@ que fait chacune ? » sans cliquer. D'où des **contraintes de représentation**
 
 ## Comment vérifier
 
-1. Ouvrir la maquette `docs/maquettes/<nom>.html` dans un navigateur : les cinq cas
-   s'affichent, chacun lisible sans explication.
+1. Ouvrir la maquette [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
+   dans un navigateur : les cinq cas s'affichent, chacun lisible sans explication.
 2. Test « nouveau venu » : une personne neuve regarde le cas (2) et dit, en une phrase,
    combien de sessions tournent et ce que fait chacune — sans cliquer, sans jargon.
 3. Aucune carte n'affiche un `runId` nu comme seule identité.
@@ -142,6 +142,10 @@ que fait chacune ? » sans cliquer. D'où des **contraintes de représentation**
 
 ## Notes / décisions
 
+- **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
+  — les 5 cas, avec une étiquette d'impact par cas (faible / moyen / fort). Sert à décider
+  si la fiche rejoint v0.17 (si l'impact est faible) ou reste en v0.18 (si fort). À valider
+  par le PO avant de graver l'ADR.
 - **Voisine, pas doublon** : contraint la tranche
   [Board : l'activité par run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
   et [Board : la chronologie condensée](20261012231419237_board-chronologie-condensee.md).
