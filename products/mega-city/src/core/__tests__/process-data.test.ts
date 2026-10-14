@@ -96,6 +96,30 @@ describe('buildProcessData — l’étape se déduit du statut et des signaux (c
     expect(stageOf(data, '0007')).toBe('en-sprint');
   });
 
+  // Fiche 20261013131852984, critère 4 : une branche restée après le merge (absorbée par main) ne
+  // doit PAS faire croire que la story est encore en cours.
+  it('une branche feat/<id>-… ABSORBÉE par main ne pose PAS « en sprint » (reste à son étape de statut)', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0008', status: 'ready' })],
+        branches: ['feat/0008-slug'],
+        absorbedBranches: ['feat/0008-slug'],
+      }),
+    );
+    expect(stageOf(data, '0008')).toBe('prete');
+  });
+
+  it('une branche de SESSION absorbée ne pose pas « en sprint » non plus', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0014', status: 'ready' })],
+        sessions: [session('/w', 'feat/0014-slug')],
+        absorbedBranches: ['feat/0014-slug'],
+      }),
+    );
+    expect(stageOf(data, '0014')).toBe('prete');
+  });
+
   it('status shipped → Livrée', () => {
     const data = buildProcessData(
       inputs({ fiches: [fiche({ id: '0009', status: 'shipped', done: true })] }),

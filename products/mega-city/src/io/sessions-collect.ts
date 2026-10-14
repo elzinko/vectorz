@@ -61,6 +61,38 @@ export function collectBranches(): string[] {
 }
 
 /**
+ * Les branches ABSORBÉES par `base` (défaut `main`) : les merger n'y changerait plus rien — le
+ * squash est déjà passé, ou c'était une avance rapide. Même algorithme que le classifieur d'ezk-archive
+ * (fiche 0076, `classify_ref`) et `is_absorbed` de ship-merge : `git merge-tree --write-tree base b`
+ * rend l'arbre de `base`. Sert à ne PAS compter « en cours » une branche de story restée après le
+ * merge (fiche 20261013131852984, critère 4).
+ *
+ * `git < 2.38` (pas de `--write-tree`) ou un merge en conflit → la branche n'est PAS jugée absorbée :
+ * dégradé SÛR (on garde « en cours » plutôt que d'effacer à tort un travail réel), cohérent avec les
+ * autres collecteurs best-effort.
+ */
+export function collectAbsorbedBranches(branches: string[], base = 'main'): string[] {
+  let baseTree: string;
+  try {
+    baseTree = execFileSync('git', ['rev-parse', `${base}^{tree}`], { encoding: 'utf8' }).trim();
+  } catch {
+    return []; // pas de `main` local — rien à comparer
+  }
+  if (!baseTree) return [];
+  const absorbed: string[] = [];
+  for (const b of branches) {
+    if (b === base) continue;
+    try {
+      const out = execFileSync('git', ['merge-tree', '--write-tree', base, b], { encoding: 'utf8' });
+      if (out.split('\n')[0]?.trim() === baseTree) absorbed.push(b);
+    } catch {
+      // merge-tree sort non-zéro sur un conflit (git ≥ 2.38) : la branche a du travail réel → non absorbée.
+    }
+  }
+  return absorbed;
+}
+
+/**
  * `git status --porcelain -z` DANS le worktree — fichiers non commités, chemins relatifs.
  * `-z` = séparateur NUL, chemins littéraux (pas de C-quoting sur espaces/unicode). Un
  * renommage (`R`/`C`) occupe DEUX champs NUL (nouveau puis ancien) : on compte les deux,
@@ -162,18 +194,22 @@ export function collect(): CollectedInputs {
   return { worktrees, mergedBranches, uncommittedByPath, lastSessionMtimeByPath, prStateByBranch };
 }
 
-/** Les trois entrées I/O dont la vue process a besoin, en plus des fiches (lues côté `derived-views`). */
+/** Les entrées I/O dont la vue process a besoin, en plus des fiches (lues côté `derived-views`). */
 export interface ProcessIo {
   sessions: SessionRow[];
   branches: string[];
+  /** Les branches absorbées par `main` : écartées de « en cours » (fiche 20261013131852984). */
+  absorbedBranches: string[];
   openPrByBranch: Record<string, string> | null;
 }
 
 /** Collecte tout ce que la vue process tire du git/gh local (les fiches viennent du projet désigné). */
 export function collectProcessIo(): ProcessIo {
+  const branches = collectBranches();
   return {
     sessions: buildSessionsData(collect()).rows,
-    branches: collectBranches(),
+    branches,
+    absorbedBranches: collectAbsorbedBranches(branches),
     openPrByBranch: collectOpenPrByBranch(),
   };
 }
