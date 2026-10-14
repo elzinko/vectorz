@@ -7,9 +7,9 @@ product: mega-city
 milestone: rationalisation
 version: v0.16.0
 labels: [sprint]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local 351dc74e"
 evidence: none # schéma + ADR, pas d'écran
 split_from: "20261002130235353"
 created: 2026-10-13
@@ -28,7 +28,7 @@ qui ne sert plus.
 
 ## Contexte / Problème
 
-La fiche sœur [« En cours » se déduit des branches](done/20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
+La fiche sœur [« En cours » se déduit des branches](20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
 rend l'état « en cours » **calculé**, jamais écrit. Reste une décision durable : que devient la valeur
 `in-progress` du schéma, que plus personne n'écrit (0 fiche sur 330) ? La laisser sans trancher, c'est
 du code mort latent. L'option choisie borne le petit build qui suit.

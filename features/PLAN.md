@@ -235,7 +235,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `build` (ready)~~ — shipped
 - ~~`20261002130235353` — « en cours » se déduit des branches · P2 · `groom`~~ — split en ↓
 - ~~`20261013131852984` — « en cours » se déduit des branches (portier + vue) · P2 · `build` (ready)~~ — shipped
-- `20261013131853182` — trancher le sort de la valeur `in-progress` (ADR court) · P2 · `build` (ready)
+- ~~`20261013131853182` — trancher le sort de la valeur `in-progress` (ADR court) · P2 · `build` (ready)~~ — shipped
 - `20261010235329987` — étiquette ≠ comportement quand on touche les règles d'un agent · P2 · `build` (ready)
 - `20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `build` (ready)
 
