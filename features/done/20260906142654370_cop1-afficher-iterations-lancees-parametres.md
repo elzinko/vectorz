@@ -5,8 +5,8 @@ type: feature
 priority: P2
 product: cop1
 version: v0.15.0
-status: ready
-pr:
+status: shipped
+pr: "local 1eac510f"
 created: 2026-09-06
 ---
 
@@ -68,13 +68,13 @@ supervisabilité (`products/mega-city/src/supervision/`), le Moniteur, ADR-0011 
 de contrôle aveugle au métier).
 
 **Dédoublonnage (2026-09-06)** — pas un doublon, mais **voisines** à ne pas re-créer :
-[0030](done/0030-mvp-demo-desktop.md) (Moniteur bout-en-bout, mode moniteur pur) et
-[20260826173005368](done/20260826173005368_renommer-ezk-map.md) (ezk:map = site de monitoring de la
+[0030](0030-mvp-demo-desktop.md) (Moniteur bout-en-bout, mode moniteur pur) et
+[20260826173005368](20260826173005368_renommer-ezk-map.md) (ezk:map = site de monitoring de la
 méthode). **Tranché au grooming (2026-10-13)** : c'est une **capacité d'affichage de la surface existante**
 (Moniteur / `ezk:map`), **pas une nouvelle surface**. Deux surfaces, dans le budget de taille :
 (1) enrichir l'émission `run_start` avec les paramètres retenus ; (2) lister les runs là où le
 Moniteur les montre déjà. Le board unifié (v0.17) hébergera plus tard la vue riche des runs
-([activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)) ; cette
+([activité run → moments → fiches](../20261012231419211_board-activite-run-moments-fiches.md)) ; cette
 fiche v0.15 pose la **donnée** (paramètres dans `run_start`) et une liste sur la surface actuelle.
 Réglages cités remis à jour au grooming : `--mode manuel|auto`, `--review` (ex-`--check-ready`,
 ADR-0053), `--max-sprints`, `--tokens` ; `yolo` et `--delivery` retirés.

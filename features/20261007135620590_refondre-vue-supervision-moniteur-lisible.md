@@ -117,7 +117,7 @@ pnpm --dir products/cop1/packages/web build
 | Ajout de projet | assistant de démarrage | config projet + outil |
 
 Deux fiches voisines à **relier** (affichages du même board, pas des doublons) :
-- « cop1 — afficher les itérations lancées avec leurs paramètres » : [20260906142654370](20260906142654370_cop1-afficher-iterations-lancees-parametres.md) (v0.15).
+- « cop1 — afficher les itérations lancées avec leurs paramètres » : [20260906142654370](done/20260906142654370_cop1-afficher-iterations-lancees-parametres.md) (v0.15).
 - « une page : une ligne par projet » : [20261002115451451](20261002115451451_page-une-ligne-par-projet.md) (cockpit).
 - « viz qualité par PR » : [0056](0056-viz-qualite-mission-control.md).
 

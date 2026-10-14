@@ -223,7 +223,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20261013131852581` — auto-tag/close local en opt-in (+ ADR) · P2 · `build` (ready)~~ — shipped
 - ~~`20261013131852779` — l'auto-groom sort une fiche hors version · P2 · `build` (ready)~~ — shipped
 - ~~`20261010114133220` — `registry-add` préserve l'en-tête du registre · P2 · `build` (ready)~~ — shipped
-- `20260906142654370` — cop1 affiche les itérations lancées · P2 · `build` (ready)
+- ~~`20260906142654370` — cop1 affiche les itérations lancées · P2 · `build` (ready)~~ — shipped
 
 ### ⑰ v0.16.0 — ranger la maison (2e jet)
 > Le gros déménagement `scrum/` d'abord, SOUS REVUE (168 fichiers + loi compilée, pas en run autonome), puis le ménage cockpit et la discipline de grooming. **Groomée 2026-10-13 : tout ready sauf la décision ADR (panel).**
