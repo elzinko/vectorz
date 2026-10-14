@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { STATUTS, STATUT_DEFS } from '../core/fiche-schema.js';
+import { STATUTS_ECRITS, STATUT_DEFS } from '../core/fiche-schema.js';
 
 /**
  * CONTRAT du schéma des statuts (fiche 20260823121712652, critère (a)).
@@ -68,10 +68,11 @@ describe('contrat du schéma — gabarits et documentation', () => {
     'products/mega-city/skills/ezk-backlog/SKILL.md',
   ];
   for (const rel of docs) {
-    it(`${rel} : le commentaire du champ status: liste exactement les statuts du schéma`, () => {
+    it(`${rel} : le commentaire du champ status: liste exactement les statuts ÉCRIVABLES (ADR-0077)`, () => {
       const p = join(REPO, rel);
       expect(existsSync(p), `${rel} absent`).toBe(true);
-      expect(statusComment(read(p), rel)).toEqual([...STATUTS]);
+      // Le commentaire dit ce qu'une fiche peut PORTER : les statuts écrivables, pas les états calculés.
+      expect(statusComment(read(p), rel)).toEqual([...STATUTS_ECRITS]);
     });
   }
 

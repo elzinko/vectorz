@@ -132,12 +132,10 @@ function byPrioThenId(a: ProcessFiche, b: ProcessFiche): number {
  * premier match gagnant. « Livrée » est traité à part (avant), sur le statut `shipped`.
  */
 function activeStage(status: string, hasBranch: boolean, hasOpenPr: boolean): ProcessStage {
+  // « En cours » (en-sprint) se déduit des SIGNAUX vivants (PR ouverte, branche de travail), jamais
+  // d'un status écrit : `in-progress` n'est plus écrivable (ADR-0077), il est CALCULÉ ici même.
   if (hasOpenPr) return 'en-revue';
   if (hasBranch) return 'en-sprint';
-  // `in-progress` = travail engagé : « en sprint », même si sa branche n'est plus détectée
-  // (nettoyée, mergée, ou hors format `feat/<id>-`). Sans ce cran, une fiche in-progress sans
-  // branche reculerait en « idée » — une rétrogradation silencieuse, que la fiche jure d'éviter.
-  if (status === 'in-progress') return 'en-sprint';
   if (status === 'ready') return 'prete';
   return 'idee';
 }

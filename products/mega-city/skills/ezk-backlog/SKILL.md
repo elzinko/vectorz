@@ -173,7 +173,7 @@ product:             # obligatoire dans ce monorepo — vectorz | mega-city | �
 milestone:           # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre propre au projet
 version:             # optionnel — release ciblée, ex. "V1.1" (vide si non pertinent)
 labels:              # optionnel — thèmes, en ligne : [a, b]
-status: idea         # idea | ready | in-progress | shipped | superseded | merged | split
+status: idea         # idea | ready | shipped | superseded | merged | split
 blocked:             # optionnel — raison d'un blocage : un DRAPEAU posé par-dessus la colonne (une fiche peut être ready ET bloquée) ; un geste attendu du PO se nomme ici
 pr:                  # ex. "#118" quand une PR existe
 created: 2026-06-23

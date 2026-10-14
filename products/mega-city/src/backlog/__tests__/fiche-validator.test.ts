@@ -48,6 +48,15 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
     );
   });
 
+  it('status: in-progress (état CALCULÉ, ADR-0077) → anomalie « calculé », pas « inconnu »', () => {
+    const text = fm({ ...VALID_FIELDS, status: 'in-progress' });
+    const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
+    const status = anomalies.find((a) => a.field === 'status');
+    expect(status).toBeDefined();
+    expect(status?.message).toContain('CALCULÉ');
+    expect(status?.message).not.toContain('inconnu');
+  });
+
   it('champ requis absent (title) → listé', () => {
     const { title: _title, ...rest } = VALID_FIELDS;
     const text = fm(rest);

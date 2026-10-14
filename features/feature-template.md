@@ -8,7 +8,7 @@ product: # obligatoire dans un monorepo — sinon omettre
 milestone: # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre propre au projet
 version: # optionnel — release ciblée, ex. "v1.1.0" (distincte du milestone)
 labels: # optionnel — thèmes, en ligne : [a, b]
-status: idea # idea | ready | in-progress | shipped | superseded | merged | split
+status: idea # idea | ready | shipped | superseded | merged | split
 pr: # ex. "#123" quand une PR existe
 evidence: # before-after | auto | none — preuve d'écran avant/après en PR (règle development/pr-before-after-media) ; vide = auto
 created: <YYYY-MM-DD>

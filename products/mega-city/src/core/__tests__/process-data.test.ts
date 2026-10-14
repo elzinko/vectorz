@@ -127,17 +127,20 @@ describe('buildProcessData — l’étape se déduit du statut et des signaux (c
     expect(stageOf(data, '0009')).toBe('livree');
   });
 
-  it('in-progress sans branche → En sprint, JAMAIS « Idée » (pas de rétrogradation silencieuse)', () => {
+  // ADR-0077 : `in-progress` n'est plus un status écrivable — « en cours » se déduit des branches.
+  // La vue ne pose donc plus une fiche « en sprint » sur la foi du status seul : elle suit les signaux
+  // vivants (branche, PR). Le cran de repli sur le status a disparu.
+  it('status in-progress SANS signal vivant → suit les signaux, pas d’épinglage « en sprint » (ADR-0077)', () => {
     const data = buildProcessData(
       inputs({ fiches: [fiche({ id: '0012', status: 'in-progress' })] }),
     );
-    expect(stageOf(data, '0012')).toBe('en-sprint');
+    expect(stageOf(data, '0012')).toBe('idee');
   });
 
-  it('in-progress AVEC branche → En sprint aussi', () => {
+  it('une branche de travail pose « en sprint », quel que soit le status écrit', () => {
     const data = buildProcessData(
       inputs({
-        fiches: [fiche({ id: '0013', status: 'in-progress' })],
+        fiches: [fiche({ id: '0013', status: 'ready' })],
         branches: ['feat/0013-slug'],
       }),
     );
