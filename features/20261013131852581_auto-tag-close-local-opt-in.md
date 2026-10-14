@@ -61,7 +61,7 @@ pnpm --dir products/mega-city test
 
 - Découpée de la fiche `20261011103839682` le 2026-10-13 (le point 2 : l'auto-tag, qui touche un
   garde-fou PO voulu). Le POC de boucle est la fiche sœur
-  [ezk-product-build enchaîne plusieurs versions](20261013131852375_product-build-boucle-multi-versions.md) ;
+  [ezk-product-build enchaîne plusieurs versions](done/20261013131852375_product-build-boucle-multi-versions.md) ;
   le park-hors-version est [l'auto-groom sort une fiche hors version](20261013131852779_auto-groom-sort-fiche-hors-version.md).
   Même version v0.15.0.
 - **Demande PO explicite** (2026-10-11) : le PO a déjà tagué en local sur autorisation à chaque run
