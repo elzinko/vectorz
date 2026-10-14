@@ -140,11 +140,12 @@ l'**intégrer dans les surfaces validées de v0.17**, sans les casser :
   étiquetées par branche/worktree, triées de façon stable (pas de saut à chaque battement).
 - **Activité (Cadrage / Développement)** : les lignes de run gagnent les sessions qui y ont
   contribué.
-- **Chronologie** : le point sensible, à **départager sur maquette** (gros travail, PO). La
-  maquette tient déjà **4 pistes** : (A) un seul fil + filtre et libellé de session ; (B)
-  liste des sessions (hiérarchie) → la chronologie de celle choisie ; (C) couloirs, une
-  colonne par session ; (D) vue globale par run → entrer dans un run pour voir ses sessions.
-  On en garde une, ou on en combine, après les avoir regardées côte à côte.
+- **Chronologie** : **piste retenue = D + B combinés** (décision PO du 2026-10-14), une
+  navigation à **3 niveaux**. (1) Les **runs**, vue globale, peu de détail. (2) Un **run** :
+  ses sessions (liste avec hiérarchie) + son **fil fusionné** (tous ses évènements, étiquetés
+  par session). (3) Une **session** : son **propre fil**. Le menu de gauche fait double emploi,
+  liste des sessions **et** filtre : « Tout le run » = niveau 2, une session = niveau 3.
+  Écartées : A (fil unique, trop dense) et C (couloirs, tient mal au-delà de 3-4 sessions).
 - **Compteurs et badges** : vérifier qu'ils tiennent (le badge « ● en run » sur une version,
   les compteurs « lancements » / « sprints », le minuteur « silence prolongé ») — par
   session, sans double compte ni ambiguïté.
@@ -176,8 +177,8 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - [ ] **Rattachement par défaut** : supervision activée ⇒ une session ouverte s'y rattache
       sans geste (opt-out), **débrayable** par config projet ou demande explicite ; une session
       « hors méthode » est visible comme telle (cas 7B).
-- [ ] La **Chronologie** est tranchée après avoir **regardé les 4 variantes** de la maquette
-      côte à côte (le PO en garde une ou en combine), pas sur description.
+- [ ] La **Chronologie retenue** (D+B, navigation à 3 niveaux : runs → run+sessions → session)
+      est validée sur maquette, puis portée par l'ADR surface par surface.
 - [ ] Les **tranches de build** sont découpées en fiches sœurs et liées, **sans chapeau**
       (identité émetteur = mega-city ; représentation board = cop1) ; le dossier vit dans l'ADR.
 
