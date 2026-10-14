@@ -136,6 +136,10 @@ Règle d'or : **en un coup d'œil**, un humain répond à « combien de sessions
 fait chacune, sur quel run ? ». La maquette brouillon le montre côté **Activité**. Reste à
 l'**intégrer dans les surfaces validées de v0.17**, sans les casser :
 
+- **Vue globale (tous projets)** : le board validé choisit **un** projet par liste déroulante —
+  insuffisant pour voir la flotte (le cas 5 montre tous les projets et leurs sessions). Ajouter
+  une **vue d'accueil « Tous les projets »** (piste 1, recommandée) ou un **rail** de projets
+  persistant (piste 2) ; la déroulante reste un raccourci. Maquette cas 8.
 - **Vue d'ensemble → bloc « En cours »** : passe d'« une ligne » à « N sessions », groupées,
   étiquetées par branche/worktree, triées de façon stable (pas de saut à chaque battement).
 - **Activité (Cadrage / Développement)** : les lignes de run gagnent les sessions qui y ont
@@ -204,10 +208,11 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
   Chronologie, la Vue d'ensemble, les compteurs, les badges « en run », le minuteur de
   silence. C'est un critère, pas un détail.
 - **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
-  — 7 cas : 1-5 côté Activité (étiquette d'impact chacun), **6 la Chronologie avec 4 variantes**
-  (filtre · maître-détail · couloirs · global→run), **7 la hiérarchie avec 2 variantes** (arbre ·
-  groupé par run + « hors méthode »). Chaque variante porte ses pour/contre. Sert à départager,
-  et à décider si une part rejoint v0.17 (impact faible) ou reste en v0.18 (impact fort).
+  — 8 cas : 1-5 côté Activité (étiquette d'impact chacun), **6 la Chronologie — piste retenue
+  D+B, 3 niveaux** (runs → run+sessions → session), **7 la hiérarchie avec 2 variantes** (arbre ·
+  groupé par run + « hors méthode »), **8 la vue globale des projets avec 3 pistes** (accueil
+  « Tous les projets » · rail persistant · déroulante enrichie). Sert à départager, et à décider
+  si une part rejoint v0.17 ou reste en v0.18.
 - **Voisine, pas doublon** : contraint les tranches
   [activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
   et [chronologie condensée](20261012231419237_board-chronologie-condensee.md). Sujet distinct

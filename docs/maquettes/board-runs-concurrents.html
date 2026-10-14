@@ -130,13 +130,32 @@
   .rungrp .members{display:flex;gap:8px;flex-wrap:wrap;padding:11px 13px}
   .rungrp.loose{border-color:var(--crit)} .rungrp.loose>h5{color:var(--crit);border-color:var(--crit-soft)}
   @media(max-width:720px){.lanes{grid-template-columns:1fr}.md2{grid-template-columns:1fr}}
+  /* cas 8 : vue globale des projets */
+  .frame{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+  .ftop{display:flex;align-items:center;gap:9px;padding:7px 11px;background:var(--surface);border-bottom:1px solid var(--line);font-size:12px}
+  .fbrand{font-weight:700;display:flex;align-items:center;gap:6px} .fbrand .fd{width:9px;height:9px;border-radius:3px;background:var(--accent)}
+  .fsel{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface-2);border-radius:7px;padding:3px 10px;font-weight:600;font-size:12px}
+  .fspace{margin-left:auto;color:var(--faint)}
+  .fbody{display:grid;grid-template-columns:148px 1fr}
+  .fbody.rail{grid-template-columns:132px 132px 1fr}
+  .fnav{border-right:1px solid var(--line);background:var(--surface);padding:9px 7px;display:flex;flex-direction:column;gap:2px;font-size:11.5px;min-width:0}
+  .fnav .fg{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);padding:8px 6px 3px}
+  .fnav .fb{padding:6px 8px;border-radius:6px;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .fnav .fb.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .frail{border-right:1px solid var(--line);background:var(--surface-2);padding:9px 7px;display:flex;flex-direction:column;gap:3px;font-size:11.5px}
+  .frail .fp{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:6px;white-space:nowrap} .frail .fp.on{background:var(--surface);border:1px solid var(--line);font-weight:600}
+  .fmain{padding:11px 13px;min-width:0;background:var(--bg)}
+  .fmain h5{margin:0 0 9px;font-size:13px}
+  .overlay{position:relative;margin-top:4px;border:1px solid var(--accent);border-radius:9px;background:var(--surface);box-shadow:0 8px 20px rgba(0,0,0,.12);padding:10px}
+  .ocards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .ocard{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:12px;display:flex;flex-direction:column;gap:5px} .ocard .on-nm{font-weight:600;display:flex;align-items:center;gap:6px}
+  @media(max-width:720px){.fbody,.fbody.rail{grid-template-columns:1fr}.ocards{grid-template-columns:1fr}}
 </style>
 
 <div class="wrap">
 
   <div class="lead">
     <h1><span class="dot"></span> Board — plusieurs sessions sur un même dépôt</h1>
-    <p>Maquette de travail pour la fiche <code>20261014122044421</code>. On cherche une seule chose : qu'un humain réponde <b>d'un coup d'œil</b> à « combien de sessions tournent ici, et que fait chacune ? ». Sept cas concrets : 1 à 5 côté activité, 6 la chronologie (piste retenue D+B, 3 niveaux), 7 la hiérarchie (2 variantes). Aucune donnée réelle.</p>
+    <p>Maquette de travail pour la fiche <code>20261014122044421</code>. On cherche une seule chose : qu'un humain réponde <b>d'un coup d'œil</b> à « combien de sessions tournent ici, et que fait chacune ? ». Huit cas concrets : 1 à 5 côté activité, 6 la chronologie (piste retenue D+B, 3 niveaux), 7 la hiérarchie (2 variantes), 8 la vue globale des projets (3 pistes). Aucune donnée réelle.</p>
     <div class="enclair">Le changement tient en deux gestes. <b>1.</b> Chaque run porte une <b>étiquette lisible</b> — sa branche, son worktree, le nom de sa session — au lieu d'un identifiant opaque. <b>2.</b> Quand plusieurs sessions tournent, le board les <b>groupe et les trie</b> de façon stable, avec les silences et orphelins bien visibles.</div>
   </div>
 
@@ -383,6 +402,84 @@
       </div>
       <div class="proscons"><span class="pro">+ montre le rattachement run↔sessions ET les sessions qui échappent à la méthode</span><span class="con">− la hiérarchie pilote→fille est moins explicite</span></div>
     </div>
+  </section>
+
+  <!-- CAS 8 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 8</span><h2>La vue globale des projets</h2><span class="sub">la liste déroulante ne suffit plus · 3 pistes d'intégration</span></div>
+    <div class="impact"><span class="itag i-mid">impact moyen · IA</span> le board validé <b>choisit un projet</b> par une liste déroulante — il ne montre jamais toute la flotte d'un coup. Le cas 5 (tous les projets, leurs sessions) demande une <b>vraie vue globale</b>. Voici 3 façons de l'intégrer.</div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">1</span><h4>Une vue « Tous les projets » comme accueil</h4><span class="vd">recommandé</span></div>
+      <div class="frame">
+        <div class="ftop"><span class="fbrand"><span class="fd"></span>board</span><span class="fsel">Tous les projets ▾</span><span class="fspace">⚙</span></div>
+        <div class="fbody">
+          <div class="fnav">
+            <div class="fg">Global</div>
+            <div class="fb on">Tous les projets</div>
+            <div class="fb">Chronologie globale</div>
+            <div class="fg">Projet · vectorz</div>
+            <div class="fb">Vue d'ensemble</div>
+            <div class="fb">Cadrage</div>
+            <div class="fb">Développement</div>
+          </div>
+          <div class="fmain">
+            <h5>Tous les projets · 3 projets · 6 sessions</h5>
+            <div class="grow">
+              <div class="projrow"><div class="pname">vectorz</div><div class="minidots"><span class="md live"></span><span class="md gate"></span><span class="md live"></span></div><div class="pcount"><b>3</b> en cours</div></div>
+              <div class="projrow"><div class="pname">samplerz</div><div class="minidots"><span class="md live"></span><span class="md dead"></span></div><div class="pcount"><b>1</b> · 1 à récupérer</div></div>
+              <div class="projrow"><div class="pname">muti</div><div class="minidots"><span class="md live"></span></div><div class="pcount"><b>1</b> en cours</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="proscons"><span class="pro">+ on atterrit sur la flotte ; le board par projet ne change pas ; la déroulante reste comme raccourci</span><span class="con">− ajoute un niveau d'accueil</span></div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">2</span><h4>Un rail de projets, toujours visible</h4><span class="vd">la flotte sous les yeux en permanence</span></div>
+      <div class="frame">
+        <div class="ftop"><span class="fbrand"><span class="fd"></span>board</span><span class="fspace">recherche · ⚙</span></div>
+        <div class="fbody rail">
+          <div class="frail">
+            <div class="fp on"><span class="sdot live"></span>vectorz <span class="muted">3</span></div>
+            <div class="fp"><span class="sdot dead"></span>samplerz <span class="muted">1</span></div>
+            <div class="fp"><span class="sdot live"></span>muti <span class="muted">1</span></div>
+            <div class="fp" style="color:var(--accent)">+ ajouter</div>
+          </div>
+          <div class="fnav">
+            <div class="fg">vectorz</div>
+            <div class="fb on">Vue d'ensemble</div>
+            <div class="fb">Cadrage</div>
+            <div class="fb">Chronologie</div>
+            <div class="fb">Fiches</div>
+          </div>
+          <div class="fmain"><h5>vectorz · Vue d'ensemble</h5><span class="muted" style="font-size:12px">les sessions, l'entonnoir, les métriques…</span></div>
+        </div>
+      </div>
+      <div class="proscons"><span class="pro">+ la flotte toujours visible ; bascule en 1 clic</span><span class="con">− une colonne de plus ; s'allonge avec beaucoup de projets</span></div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">3</span><h4>Garder la déroulante, mais la rendre « flotte »</h4><span class="vd">le plus léger</span></div>
+      <div class="frame">
+        <div class="ftop"><span class="fbrand"><span class="fd"></span>board</span><span class="fsel">vectorz ▾</span><span class="fspace">⚙</span></div>
+        <div class="fmain">
+          <div class="muted" style="font-size:11px">↓ la déroulante ouvre un panneau « flotte »</div>
+          <div class="overlay">
+            <div class="muted" style="font-size:11px;margin-bottom:8px">Projets · 6 sessions en cours</div>
+            <div class="ocards">
+              <div class="ocard"><span class="on-nm"><span class="sdot live"></span>vectorz</span><span class="muted">3 sessions · ●●●</span></div>
+              <div class="ocard"><span class="on-nm"><span class="sdot dead"></span>samplerz</span><span class="muted">1 · 1 à récupérer</span></div>
+              <div class="ocard"><span class="on-nm"><span class="sdot live"></span>muti</span><span class="muted">1 session</span></div>
+              <div class="ocard" style="color:var(--accent);justify-content:center">+ ajouter un projet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="proscons"><span class="pro">+ changement minimal ; la liste devient riche (sessions, états)</span><span class="con">− reste cachée derrière un clic ; pas une vue persistante</span></div>
+    </div>
+    <p class="note">Mon avis : la <b>piste 1</b> (accueil « Tous les projets ») change le moins le board validé — le board par projet reste tel quel, on ajoute juste une porte d'entrée sur la flotte — et la déroulante peut rester comme raccourci. La <b>piste 2</b> si tu veux la flotte toujours à l'écran.</p>
   </section>
 
   <div class="foot">Maquette statique · fiche 20261014122044421 · tokens repris de board-ezk-dashboard.html (ADR-074)</div>
