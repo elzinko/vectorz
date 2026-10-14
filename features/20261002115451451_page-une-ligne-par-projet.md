@@ -53,3 +53,7 @@ Direction, à cadrer au grooming. Sur la liste des projets du cockpit, une ligne
   projets, dont elle réutilise la liste.
 - **Suite de** [onglet « Projets » dans le Moniteur](done/0062-onglet-projets-moniteur.md).
 - Créée le 2026-10-02, P3 (PO).
+- **Review ciblé 2026-10-14** : ses ancrages (menu cockpit, onglet « Projets » du Moniteur) sont
+  **fondus** dans le board unifié v0.17 ([[20261007135620590]]). À **rattacher** à ce design (la vue
+  transverse « une ligne par projet » y est-elle ?) plutôt qu'à reprogrammer seule ; superséder si le
+  board la couvre.

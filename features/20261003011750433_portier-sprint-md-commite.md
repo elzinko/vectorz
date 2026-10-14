@@ -2,7 +2,7 @@
 id: "20261003011750433"
 title: "sprint.sh start/close distingue un sprint ouvert d'un SPRINT.md commité"
 type: bug
-priority: P2
+priority: P3
 product: mega-city
 milestone:
 version:
@@ -55,3 +55,7 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
 
 - 2026-10-03 : née de la rétro muti docs/captures/2026-10-03-retro-fps-auto-adaptatif.md (dépôt muti), retenue (choix délégué par le PO au pilote).
 - Voisine : portier et copies de réserve [[20261003011750521]].
+- **Review ciblé 2026-10-14** : v0.14 a refait le portier de sprint (journal par branche, hors
+  worktree), mais le cœur de `sprint_state()` garde « ancien format = ouvert » (sprint.sh, l. 150).
+  Le cas ne mord donc plus qu'un **projet hôte avec un vieux `SPRINT.md` committé** → edge legacy en
+  voie de disparition. **Repassée P2 → P3.**
