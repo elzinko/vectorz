@@ -237,7 +237,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20261013131852984` — « en cours » se déduit des branches (portier + vue) · P2 · `build` (ready)~~ — shipped
 - ~~`20261013131853182` — trancher le sort de la valeur `in-progress` (ADR court) · P2 · `build` (ready)~~ — shipped
 - ~~`20261010235329987` — étiquette ≠ comportement quand on touche les règles d'un agent · P2 · `build` (ready)~~ — shipped
-- `20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `build` (ready)
+- ~~`20261003201035080` — un contrôle refuse une section en double dans un skill · P2 · `build` (ready)~~ — shipped
 
 ### ⑱ v0.17.0 — le board unifié (cop1, après le socle)
 > Un seul tableau de bord, conçu par maquette (v17) et validé par le PO le 2026-10-12. Design de référence : fiche `20261007135620590` ; décision : `ADR-074` ; maquette : `docs/maquettes/board-ezk-dashboard.html`. Tranches sœurs (milestone `board`) : 7 vues + 3 tranches du moteur de config (découpé de `20261002205205417` le 2026-10-13). À séquencer APRÈS le socle (catalogue des moments livré ; métriques tokens `0052`/`0055`). **Groomée 2026-10-13 : tout ready.**
