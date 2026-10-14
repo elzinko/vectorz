@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: vectorz
 milestone:
-version: v0.17.0
+version: v0.16.0
 labels: [adr, archi]
 status: idea
 blocked: "attend-panel — attend un panel adverse (ezk-architect + ezk-pm) — fiche de décision structurelle (où vivent les ADR), à tenir avec le PO, pas un build autonome"
