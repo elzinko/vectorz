@@ -217,7 +217,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 
 ### ⑯ v0.15.0 — voir les runs (observabilité)
 > Le run autonome sait s'arrêter à la bonne borne, et on voit après coup ce qui a tourné. Le release-gate (v0.11) est un prérequis de l'auto-tag multi-versions. **Groomée 2026-10-13 : tout ready.**
-- `20261011091553794` — le run autonome filtre l'éligibilité + borne de version · P2 · `build` (ready)
+- ~~`20261011091553794` — le run autonome filtre l'éligibilité + borne de version · P2 · `build` (ready)~~ — shipped
 - ~~`20261011103839682` — `ezk-product-build` enchaîne plusieurs versions (rétro + tag) · P2 · `groom`~~ — split en ↓
 - `20261013131852375` — ezk-product-build enchaîne plusieurs versions (POC boucle) · P2 · `build` (ready)
 - `20261013131852581` — auto-tag/close local en opt-in (+ ADR) · P2 · `build` (ready)
