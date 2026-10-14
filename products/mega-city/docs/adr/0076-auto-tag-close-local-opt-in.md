@@ -3,7 +3,7 @@
 **Statut :** Accepté (grooming, 2026-10-14)
 **Date :** 2026-10-14
 **Deciders :** PO (Thomas, demande du 2026-10-11 : « tague et merge en local tout seul » pour un run multi-versions) ; conception tranchée au build autonome v0.15
-**Fiche :** [`20261013131852581`](../../../../features/20261013131852581_auto-tag-close-local-opt-in.md) (« Auto-tag et clôture de version en local, en opt-in explicite »)
+**Fiche :** [`20261013131852581`](../../../../features/done/20261013131852581_auto-tag-close-local-opt-in.md) (« Auto-tag et clôture de version en local, en opt-in explicite »)
 **Compose :** [`src/core/run-context.ts`](../../src/core/run-context.ts) (`sealPolicy`, `RunSettings.sealVersions`) · [`skills/ezk-product-build/SKILL.md`](../../skills/ezk-product-build/SKILL.md) · s'appuie sur [`bin/backlog-version.ts`](../../bin/backlog-version.ts) (`close --tag`, existant) et [ADR-0001](0001-monorepo-composable-coeur-deterministe.md) (le skill décide, le script exécute le git)
 
 ## En clair

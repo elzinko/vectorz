@@ -57,7 +57,7 @@ pnpm --dir products/mega-city test
 
 - Découpée de la fiche `20261011103839682` le 2026-10-13 (le point 3 : parker hors version). Le POC de
   boucle est [ezk-product-build enchaîne plusieurs versions](done/20261013131852375_product-build-boucle-multi-versions.md) ;
-  l'auto-tag est [auto-tag et clôture en opt-in](20261013131852581_auto-tag-close-local-opt-in.md).
+  l'auto-tag est [auto-tag et clôture en opt-in](done/20261013131852581_auto-tag-close-local-opt-in.md).
   Même version v0.15.0.
 - S'appuie sur les **raisons typées** du drapeau `blocked:` posées en v0.13
   ([raisons typées pour blocked:](done/20261013131632484_raisons-typees-pour-blocked.md)) : la raison de la
