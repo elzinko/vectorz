@@ -208,6 +208,12 @@ P0→P3. Le **grooming** (`groom <id>`, moteur `product-brainstorming`) le fait 
 et le **gate `ready <id>`** le promeut en `ready` quand on le tire — c'est là
 qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
 
+> **Rappel du gate (fiche 20261010114133469).** `ezk dor check <id>` ouvre sa liste de contrôle par :
+> « tout ajout de comportement est une story, ou reçoit au moins un critère d'acceptation vérifiable
+> avant le ship ». C'est le garde-fou du comportement greffé en cours de sprint (ex. des « filtres »
+> ajoutés sans critère) : sans critère, rien ne le teste et un bug file jusqu'à la revue adverse. Il
+> s'appuie sur la règle [`development/acceptance-criteria-before-merge`](../../rules/development/acceptance-criteria-before-merge.md) — pas un moteur de plus.
+
 - `list` / `regen` **trient les `idea` à part**, sous l'actionnable (comme `blocked`) —
   ils ne comptent pas dans le flux P0→P3.
 - `add` : si la demande est une **direction non mûre** plutôt qu'une fiche prête, crée-la

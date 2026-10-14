@@ -144,6 +144,16 @@ describe('ezk dor check', () => {
     // Même sans manifeste : une faute de frappe sur l’id ne passe pas pour un succès.
     expect(run('check', B, ['99999999']).code).toBe(2);
   });
+
+  // Fiche 20261010114133469 : le gate rappelle qu'un ajout de comportement est une story ou reçoit un
+  // critère — même sans manifeste de projet (le socle exige toujours un critère).
+  it('rappelle « ajout de comportement = story ou critère » à chaque fiche, avec ou sans manifeste', () => {
+    const rappel = 'tout ajout de comportement est une story, ou reçoit au moins un critère';
+    expect(run('check', A, ['20260101000000002']).out).toContain(rappel);
+    expect(run('check', B, ['20260101000000001']).out).toContain(rappel);
+    // mais pas sur une faute d'usage (id manquant) : le rappel suit une fiche réelle.
+    expect(run('check', A).out).not.toContain(rappel);
+  });
 });
 
 describe('ezk dor health', () => {
