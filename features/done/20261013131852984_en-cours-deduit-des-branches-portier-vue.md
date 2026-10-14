@@ -7,9 +7,9 @@ product: mega-city
 milestone: rationalisation
 version: v0.16.0
 labels: [sprint]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local 5dd0f4c3"
 evidence: auto # la vue des sessions affiche « en cours » ; décidé par le diff à la PR
 split_from: "20261002130235353"
 created: 2026-10-13
@@ -70,7 +70,7 @@ dans le nom de branche), comme pour `reconcile`.
 
 - Découpée de la fiche `20261002130235353` le 2026-10-13 (le **mécanisme**, critères 1-5). Le **sort de
   la valeur `in-progress` du schéma** (garder-calculé ou retirer) est la fiche sœur
-  [Trancher le sort de in-progress](20261013131853182_sort-valeur-in-progress-schema.md), même
+  [Trancher le sort de in-progress](../20261013131853182_sort-valeur-in-progress-schema.md), même
   version v0.16.0.
 - Origine : grooming de la fiche mère « done par story » (2026-10-02), revue Codex de la PR #327
   intégrée (une PR mergée/fermée et une branche absorbée l'emportent sur une branche restante ; pas
