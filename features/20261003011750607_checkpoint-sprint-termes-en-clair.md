@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.20.0
 labels: [sprint, lisibilite]
 status: idea
 pr:
