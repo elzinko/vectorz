@@ -58,6 +58,12 @@ jamais par son id nu.
      de rendu / event loop.
    - **Contrats** : rupture d'API ou de format de sortie, **parité entre canaux/adaptateurs**,
      compat ascendante, migration de données.
+   - **Déclaration vs comportement** (étiquettes d'agent, fiche 20261010235329987) : un livrable
+     qui touche `interactions:` / `applies:` / le graphe **dit-il** s'il change le **prompt runtime**
+     de l'agent (sa prose, ce qu'il fait) ou **seulement la déclaration auditable** (le graphe,
+     `graph:check`) ? Ces champs sont **retirés du prompt** — le modèle ne les lit jamais. Un texte
+     (fiche/ADR/PR) qui promet un **effet runtime** via eux sur-promet une garantie : **NO-GO** jusqu'à
+     correction, sauf si l'effet runtime est réel ET prouvé (pas « auto-déclaré »).
    - **Tests** : couvrent-ils **vraiment** le changement, ou sont-ils tautologiques / mockés au
      point de ne rien prouver ? **Un fix de bug sans test de non-régression = NO-GO** (un bug
      doit repartir avec la garde qui l'aurait attrapé).
