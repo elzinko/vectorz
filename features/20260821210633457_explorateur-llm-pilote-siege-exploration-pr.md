@@ -125,7 +125,11 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
   - **Découpler du cache** — le garder strictement optionnel, prouver l'explorateur **cache éteint**,
     ne pas conditionner son `ready` au cache (jugé fragile, cf. [[20261014113049954]]).
   - **Découper** brique 2 (siège auto) / brique 3 (explorateur), livrer la 2 d'abord.
-  - **Choisir une parade « juge et partie »** dès le groom (la moins chère : journaliser tout refus).
+  - **Parade « juge et partie » choisie (groom 2026-10-14)** : **journaliser tout refus** rencontré
+    pendant la passe (la moins chère), à implémenter et tester avant `ready`. Les deux autres parades
+    (recoupement journal ↔ transcript, 2ᵉ agent adverse) viennent plus tard si besoin.
+  - **Agent SDK (brique 2)** : **spike borné dans le temps** avant de s'engager (lire la doc
+    `code.claude.com/docs/en/agent-sdk`), pas une intégration ouverte.
   - **Agent qualifieur — TRANCHÉ PO (2026-10-14) : pas de nouvel agent.** La qualification juge **sur
     dossier** — la proposition + l'évidence (capture, DOM) déjà prise par l'explorateur — donc sans
     re-voir l'app. On **compose** `ezk-backlog add` (anti-doublon, type, priorité) et on **délègue** le
