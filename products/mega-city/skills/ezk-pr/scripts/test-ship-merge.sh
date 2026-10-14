@@ -260,6 +260,55 @@ grep -qxF "pruned: feat/y ($SHA_Y) — git branch feat/y $SHA_Y" <<<"$OUT8" && o
 grep -qxF "pruned: old-absorbed ($SHA_OLD) — git branch old-absorbed $SHA_OLD" <<<"$OUT8" && ok "la suppression de old-absorbed se dit aussi" || fail "suppression de old-absorbed muette : $OUT8"
 grep -qE "pruned: (main|master|trunk) " <<<"$OUT8" && fail "une branche principale annoncée supprimée : $OUT8" || ok "aucune branche principale dans les suppressions"
 
+# --- Cas 9 : local --dry-run — ne touche NI main, NI l'index, NI l'arbre ---------------
+# Le bug (2026-10-14) : --dry-run n'était honoré qu'en remote ; en local il squashait POUR DE
+# VRAI sur main. Un « essai à blanc » doit seulement DIRE ce qu'il ferait, et ne rien écrire.
+echo "=== Cas 9 — local --dry-run : main inchangé, arbre propre, branche non prunée ==="
+REPO9="$WORK/repo-dryrun"
+git init -q -b main "$REPO9"
+git -C "$REPO9" config user.email t@t.io
+git -C "$REPO9" config user.name t
+echo v1 > "$REPO9/f.txt"; git -C "$REPO9" add f.txt; git -C "$REPO9" commit -qm "chore: v1"
+git -C "$REPO9" checkout -qb feat/d
+echo v2 >> "$REPO9/f.txt"; git -C "$REPO9" add f.txt; git -C "$REPO9" commit -qm "feat: d"
+git -C "$REPO9" checkout -q main
+MAIN_BEFORE9="$(git -C "$REPO9" rev-parse main)"
+BRANCH_BEFORE9="$(git -C "$REPO9" symbolic-ref --short HEAD)"
+
+if OUT9="$(bash "$SCRIPT" --local --repo "$REPO9" --branch feat/d --base main \
+  --subject "feat: d" --body "corps d" --dry-run 2>&1)"; then RC9=0; else RC9=$?; fi
+echo "$OUT9"
+
+(( RC9 == 0 )) && ok "dry-run d'un merge propre : exit 0" || fail "dry-run propre a renvoyé exit $RC9"
+grep -qF "DRY-RUN" <<<"$OUT9" && ok "la sortie annonce DRY-RUN" || fail "sortie sans marqueur DRY-RUN : $OUT9"
+grep -qiF "propre" <<<"$OUT9" && ok "dit que le merge serait propre" || fail "ne qualifie pas le merge : $OUT9"
+[[ "$(git -C "$REPO9" rev-parse main)" == "$MAIN_BEFORE9" ]] && ok "main INCHANGÉ (git rev-parse main stable) — le bug est fermé" || fail "main a avancé en dry-run (LE bug)"
+[[ -z "$(git -C "$REPO9" status --porcelain)" ]] && ok "index + arbre propres après dry-run" || fail "dry-run a sali l'index/l'arbre"
+[[ "$(git -C "$REPO9" symbolic-ref --short HEAD)" == "$BRANCH_BEFORE9" ]] && ok "aucun checkout : toujours sur $BRANCH_BEFORE9" || fail "dry-run a basculé de branche (checkout indû)"
+git -C "$REPO9" show-ref --verify -q refs/heads/feat/d && ok "feat/d non prunée (rien n'a été intégré)" || fail "feat/d prunée alors que c'était un essai à blanc"
+
+# --- Cas 9b : local --dry-run d'un merge EN CONFLIT — signale, exit 3, rien touché -----
+echo "=== Cas 9b — local --dry-run, merge en conflit : CONFLIT annoncé, exit 3, rien touché ==="
+REPO9B="$WORK/repo-dryrun-conflit"
+git init -q -b main "$REPO9B"
+git -C "$REPO9B" config user.email t@t.io
+git -C "$REPO9B" config user.name t
+printf 'ligne commune\n' > "$REPO9B/f.txt"; git -C "$REPO9B" add f.txt; git -C "$REPO9B" commit -qm "chore: base"
+git -C "$REPO9B" checkout -qb feat/c
+printf 'version branche\n' > "$REPO9B/f.txt"; git -C "$REPO9B" add f.txt; git -C "$REPO9B" commit -qm "feat: c"
+git -C "$REPO9B" checkout -q main
+printf 'version main\n' > "$REPO9B/f.txt"; git -C "$REPO9B" add f.txt; git -C "$REPO9B" commit -qm "chore: main diverge"
+MAIN_BEFORE9B="$(git -C "$REPO9B" rev-parse main)"
+
+if OUT9B="$(bash "$SCRIPT" --local --repo "$REPO9B" --branch feat/c --base main \
+  --subject "feat: c" --body b --dry-run 2>&1)"; then RC9B=0; else RC9B=$?; fi
+echo "$OUT9B"
+
+(( RC9B == 3 )) && ok "dry-run en conflit : exit 3 (même code refus que push-ff)" || fail "dry-run en conflit a renvoyé exit $RC9B (attendu 3)"
+grep -qiF "conflit" <<<"$OUT9B" && ok "annonce le CONFLIT" || fail "ne dit pas le conflit : $OUT9B"
+[[ "$(git -C "$REPO9B" rev-parse main)" == "$MAIN_BEFORE9B" ]] && ok "main inchangé malgré le conflit simulé" || fail "main a bougé en dry-run conflit"
+[[ -z "$(git -C "$REPO9B" status --porcelain)" ]] && ok "index + arbre propres après dry-run conflit" || fail "dry-run conflit a sali l'index/l'arbre"
+
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
   exit 1

@@ -15,10 +15,12 @@
 # est `gh pr merge --squash`, la seule sortie sans remote reste locale (jamais de push).
 #
 # Usage:
-#   ship-merge.sh --repo <dir> --branch <br> --base <base> --subject <s> --body <b>
+#   ship-merge.sh --repo <dir> --branch <br> --base <base> --subject <s> --body <b> [--dry-run]
 #       Sans remote (ou avec --local) : refuse si le dépôt est sale, squash local, prune
 #       les branches absorbées, fetch --prune si un remote existe quand même, puis réaligne
 #       les vues vers <base> LOCAL (refresh-worktrees.sh).
+#       --dry-run : SIMULE le merge en mémoire (git merge-tree), dit « merge propre » ou
+#       « conflit », puis SORT sans toucher <base>, l'index ni l'arbre (exit 3 si conflit).
 #   ship-merge.sh --repo <dir> --remote --pr <n> --branch <br> --subject <s> --body <b> \
 #                 [--head-sha <sha>] [--dry-run]
 #       Construit `gh pr merge <n> --squash --delete-branch --subject <s> --body <b>`, et
@@ -130,6 +132,19 @@ prune_absorbed_branches() {
 }
 
 ship_local() {
+  # Essai à blanc (--dry-run) : on ne touche NI <base>, NI l'index, NI l'arbre. On SIMULE
+  # le merge en mémoire avec `git merge-tree` (le même outil que is_absorbed, git ≥ 2.38) et
+  # on DIT seulement ce qu'on ferait. Ce court-circuit vient AVANT le checkout/merge/commit :
+  # sans lui, le flag n'était honoré qu'en remote et un « essai à blanc » local squashait pour
+  # de vrai sur le main partagé. Exit 3 si le merge ne serait pas trivial (même code que push-ff).
+  if (( dry_run )); then
+    if git_c merge-tree --write-tree "$base" "$branch" >/dev/null 2>&1; then
+      echo "DRY-RUN: squash local de '$branch' sur '$base' — merge propre, rien n'est écrit (ni $base, ni l'index, ni l'arbre)."
+      return 0
+    fi
+    echo "DRY-RUN: squash local de '$branch' sur '$base' — CONFLIT au merge, rien n'est écrit." >&2
+    return 3
+  fi
   # Garde-fou de propreté AVANT de basculer sur <base> : un changement stagé non
   # conflictuel SURVIT au `checkout` puis est embarqué par le commit de squash — ce qui
   # publierait du travail non validé à côté du squash. On refuse net un dépôt sale.
