@@ -169,8 +169,11 @@ export function buildProcessData(input: ProcessInputs): ProcessData {
   }
 
   // Première session trouvée par id (déterministe : les sessions arrivent déjà triées par le collecteur).
+  // Une session sur une branche ABSORBÉE ne « travaille » plus la fiche (son travail est déjà livré) :
+  // on l'écarte comme pour l'étape, sinon la pastille contredirait le stage (fiche 20261013131852984).
   const sessionByI: Map<string, ProcessSession> = new Map();
   for (const s of input.sessions) {
+    if (absorbed.has(s.branch)) continue;
     const id = ficheIdFromBranch(s.branch);
     if (id && !sessionByI.has(id)) sessionByI.set(id, { path: s.path, branch: s.branch });
   }

@@ -127,7 +127,8 @@ fi
 # --- P3 : stories « en cours », DÉDUITES des branches ------------------------
 # Fiche 20261013131852984 : « en cours » n'est PAS un status écrit — aucune des fiches ne l'a jamais
 # porté (0 sur 330), donc l'ancien scan de `status: in-progress` ne voyait rien. On le DÉDUIT à la
-# lecture : une story est en cours tant qu'une branche `feat|fix/<id>-…` NON ABSORBÉE par `main`
+# lecture : une story est en cours tant qu'une branche de travail `<type>/<id>-…` NON ABSORBÉE par `main`
+# (mêmes préfixes « type sprint » que la vue process : feat|fix|chore|refactor|docs|test|perf)
 # existe pour une fiche encore ACTIVE (pas dans `done/`). Rien n'est committé. Une branche restée après
 # le merge (copie locale, branche tenue par un autre worktree) est absorbée → écartée. Même classifieur
 # d'absorption que ship-merge/ezk-archive (fiche 0076). Sert à repérer deux sessions sur la même story.
@@ -155,7 +156,7 @@ seen=" "
 while IFS= read -r br; do
   [[ -n "$br" ]] || continue
   [[ "$br" == "$CUR" ]] && continue   # ma propre branche n'est pas une story « en cours ailleurs »
-  id="$(sed -nE 's#^(feat|fix)/([0-9]{4,})[-_].*#\2#p' <<<"$br")"
+  id="$(sed -nE 's#^(feat|fix|chore|refactor|docs|test|perf)/([0-9]{4,})[-_].*#\2#p' <<<"$br")"
   [[ -n "$id" ]] || continue
   [[ "$seen" == *" $id "* ]] && continue   # une fiche n'est comptée qu'une fois, même avec 2 branches
   fpath=""
@@ -236,7 +237,7 @@ echo "## P2 — Worktrees : ${P2}"
 for f in "${P2_FACTS[@]+"${P2_FACTS[@]}"}"; do echo "- ${f#\[P2\] }"; done
 [[ "$P2" == "CLEAR" ]] && echo "- un seul worktree"
 echo
-echo "## P3 — Fiches in-progress : ${P3}"
+echo "## P3 — Stories en cours (déduites des branches) : ${P3}"
 for f in "${P3_FACTS[@]+"${P3_FACTS[@]}"}"; do echo "- ${f#\[P3\] }"; done
 [[ "$P3" == "CLEAR" ]] && echo "- aucune"
 echo

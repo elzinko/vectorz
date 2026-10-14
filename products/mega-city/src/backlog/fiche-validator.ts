@@ -4,7 +4,7 @@
  * I/O (bin/check-fiches.ts). Absorbe la fiche 281 et promeut en vrai validateur les
  * warnings d'intégrité déjà émis par regen-backlog.sh (id dupliqué, etc. — inchangés ici).
  *
- * Enums réutilisées, pas dupliquées : STATUTS vient du schéma unique `../core/fiche-schema.js`
+ * Enums réutilisées, pas dupliquées : STATUTS_ECRITS/STATUTS_CALCULES viennent du schéma unique `../core/fiche-schema.js`
  * (avec les CHAMPS_RETIRES), PRIOS/TYPES de `../core/avancement-data.js`.
  * Lecture de champ réutilisée : `readField` vient de `../loaders/fiches.js`.
  *

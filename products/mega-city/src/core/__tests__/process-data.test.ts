@@ -120,6 +120,20 @@ describe('buildProcessData — l’étape se déduit du statut et des signaux (c
     expect(stageOf(data, '0014')).toBe('prete');
   });
 
+  // Fiche 20261013131852984 : une session sur une branche absorbée ne « travaille » plus la fiche —
+  // la pastille de session ne doit pas contredire le stage (sinon « Prête » + « quelqu'un bosse »).
+  it('une session sur une branche absorbée n’attache PAS de pastille de session', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0015', status: 'ready' })],
+        sessions: [session('/w', 'feat/0015-slug')],
+        absorbedBranches: ['feat/0015-slug'],
+      }),
+    );
+    expect(stageOf(data, '0015')).toBe('prete');
+    expect(ficheIn(data, '0015').session).toBeNull();
+  });
+
   it('status shipped → Livrée', () => {
     const data = buildProcessData(
       inputs({ fiches: [fiche({ id: '0009', status: 'shipped', done: true })] }),

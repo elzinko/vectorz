@@ -76,6 +76,14 @@ git branch -D feat/0043-todo >/dev/null
 OUT3c="$(bash "$CHECK" --gate)"
 ok "plus aucune story en cours" "echo \"\$OUT3c\" | grep -q '^P3_IN_PROGRESS: CLEAR'"
 
+echo "S3d — un préfixe de story autre que feat/fix (chore/refactor…) est AUSSI détecté (aligné sur la vue)"
+git branch chore/0043-todo main
+git checkout -q chore/0043-todo && echo wip > wip43.txt && git add wip43.txt && git commit -qm "wip 0043"
+git checkout -q main
+OUT3d="$(bash "$CHECK" --gate)"
+ok "0043 en cours via chore/<id> (préfixes alignés sur la vue)" "echo \"\$OUT3d\" | grep -q 'id=0043'"
+git branch -D chore/0043-todo >/dev/null
+
 echo "S4 — copies voisines PROPRES (principal + réserves détachées + branche fusionnée) → CLEAR (fiche 20261003011750521)"
 # Un repo neuf, pour un décor de worktrees maîtrisé. Une branche absorbée = contenu squashé sur main.
 R2="$TMP/repo2"
