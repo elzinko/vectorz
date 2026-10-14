@@ -56,11 +56,22 @@ describe('version-sequence — suite de versions d\'un run multi-versions (fiche
       versions: ['v0.15.0', 'v0.16.0', 'v0.17.0', 'v0.99.0', 'v0.16'],
     });
     expect(sequence).toEqual(['v0.17.0']);
+    // Les lisibles d'abord (ordre du plan), l'illisible rangé en fin par compareLoose.
     expect(skipped).toEqual([
       { version: 'v0.15.0', reason: 'déjà livrée (étiquette v0.15.0)' },
       { version: 'v0.16.0', reason: 'rien à faire (tout est livré ou parké)' },
-      { version: 'v0.16', reason: 'format illisible (attendu v0.3.0)' },
       { version: 'v0.99.0', reason: 'aucune fiche ne porte cette version' },
+      { version: 'v0.16', reason: 'format illisible (attendu v0.3.0)' },
     ]);
+  });
+
+  it("liste explicite : un jeton non numérique ne corrompt pas l'ordre des versions valides (bug-hunt v0.15)", () => {
+    // Régression : `compareVersions` nu rendait NaN sur « vnext » et désordonnait le tri V8.
+    const r = report([lot('v0.3.0', 1), lot('v0.5.0', 1), lot('v0.16.0', 1), lot('v0.17.0', 1)]);
+    const { sequence, skipped } = versionSequence(r, {
+      versions: ['v0.17.0', 'vnext', 'v0.3.0', 'v0.16.0', 'v0.5.0'],
+    });
+    expect(sequence).toEqual(['v0.3.0', 'v0.5.0', 'v0.16.0', 'v0.17.0']);
+    expect(skipped).toEqual([{ version: 'vnext', reason: 'format illisible (attendu v0.3.0)' }]);
   });
 });

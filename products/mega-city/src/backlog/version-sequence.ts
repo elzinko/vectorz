@@ -10,7 +10,7 @@
  * construit le `VersionsReport` (`versions.ts`) et imprime la suite. Les lots du report sont déjà
  * triés en ordre naturel, donc la suite sort dans l'ordre du plan sans retri.
  */
-import { VERSION_FORMAT, type VersionsReport, compareVersions } from './versions.js';
+import { VERSION_FORMAT, type VersionsReport, compareLoose } from './versions.js';
 
 export interface VersionSequenceInput {
   /** `all` = toutes les versions à faire, dans l'ordre ; sinon la liste explicite demandée. */
@@ -44,7 +44,10 @@ export function versionSequence(report: VersionsReport, input: VersionSequenceIn
   const skipped: VersionSequence['skipped'] = [];
   const seen = new Set<string>();
   // L'ordre de SORTIE vient du plan (ordre naturel), pas de l'ordre où l'humain a tapé les versions.
-  const requested = [...new Set(input.versions)].sort(compareVersions);
+  // `compareLoose` (jamais `compareVersions` nu) : un jeton illisible (`vnext`, `v1.2.0-rc.1`) rendrait
+  // NaN et corromprait le tri des versions VALIDES entre elles. compareLoose range l'illisible en fin,
+  // sans toucher l'ordre des lisibles ; l'illisible est ensuite écarté (VERSION_FORMAT) avec sa raison.
+  const requested = [...new Set(input.versions)].sort(compareLoose);
   for (const version of requested) {
     if (seen.has(version)) continue;
     seen.add(version);
