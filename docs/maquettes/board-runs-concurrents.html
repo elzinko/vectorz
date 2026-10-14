@@ -84,13 +84,58 @@
   .note{font-size:12.5px;color:var(--muted);padding:2px 2px 0}
   .foot{color:var(--faint);font-size:12px;text-align:center;margin-top:8px}
   .glossn{font-family:var(--font-data)}
+  /* cas 6-7 : chronologie (variantes) & hiérarchie */
+  .variant{display:flex;flex-direction:column;gap:9px;border:1px solid var(--line);border-radius:10px;padding:13px 15px;background:var(--surface)}
+  .vlabel{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .vlabel .vn{font-family:var(--font-data);font-size:11px;font-weight:700;color:#fff;background:var(--groom);border-radius:6px;padding:2px 9px}
+  .vlabel h4{font-size:14px} .vlabel .vd{font-size:12.5px;color:var(--muted)}
+  .proscons{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;border-top:1px dashed var(--line);padding-top:8px}
+  .proscons .pro{color:var(--go)} .proscons .con{color:var(--crit)}
+  .filters{display:flex;gap:7px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted);padding:1px 0 3px}
+  .fchip{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--muted);font-family:var(--font-data)}
+  .fchip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .fchip .d{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+  .tl{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+  .trow{display:flex;align-items:center;gap:10px;padding:9px 13px;border-top:1px solid var(--line)} .trow:first-child{border-top:0}
+  .tw{font-family:var(--font-data);font-size:11px;color:var(--faint);width:54px;flex:none;text-align:right}
+  .ktag{font-family:var(--font-data);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;padding:1px 7px;border-radius:20px;background:var(--surface-2);color:var(--muted);flex:none}
+  .tt{font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sbadge{font-family:var(--font-data);font-size:10.5px;padding:1px 8px;border-radius:5px;flex:none}
+  .verp{font-family:var(--font-data);font-size:10.5px;padding:1px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent);flex:none}
+  .md2{display:grid;grid-template-columns:238px 1fr;gap:12px;align-items:start}
+  .slist{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+  .sitem{display:flex;align-items:center;gap:8px;padding:9px 11px;border-top:1px solid var(--line);font-size:12.5px} .sitem:first-child{border-top:0}
+  .sitem.sel{background:var(--accent-soft)} .sitem.ind{padding-left:26px}
+  .sitem .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:start}
+  .lane{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+  .lane>h5{margin:0;font-size:11.5px;padding:9px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;font-weight:600}
+  .lane .le{padding:8px 10px;border-top:1px solid var(--line);font-size:12px;display:flex;flex-direction:column;gap:2px} .lane .le:first-of-type{border-top:0}
+  .lane .le .lw{font-family:var(--font-data);font-size:10px;color:var(--faint)}
+  .grow{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+  .grrow{display:flex;align-items:center;gap:11px;padding:11px 13px;border-top:1px solid var(--line);cursor:pointer} .grrow:first-child{border-top:0} .grrow.open{background:var(--surface-2)}
+  .grn{font-weight:600;font-size:13.5px;flex:1;min-width:0}
+  .spark{display:flex;gap:3px;align-items:center;flex:none} .spark i{width:7px;height:7px;border-radius:50%}
+  .drill{margin-top:8px;border-left:3px solid var(--accent);padding-left:10px}
+  .drill .dh{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .tree{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 14px;font-size:13px;display:flex;flex-direction:column;gap:2px}
+  .tnode{display:flex;align-items:center;gap:8px;padding:5px 0;min-width:0}
+  .tnode.ind1{padding-left:24px}
+  .tnode .arm{color:var(--faint);font-family:var(--font-data);flex:none}
+  .tnode .tn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .torun{font-family:var(--font-data);font-size:10px;color:var(--accent);background:var(--accent-soft);padding:1px 7px;border-radius:5px;margin-left:auto;flex:none}
+  .rungrp{border:1px solid var(--line);border-radius:9px;background:var(--surface);overflow:hidden}
+  .rungrp>h5{margin:0;font-size:12px;padding:10px 13px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}
+  .rungrp .members{display:flex;gap:8px;flex-wrap:wrap;padding:11px 13px}
+  .rungrp.loose{border-color:var(--crit)} .rungrp.loose>h5{color:var(--crit);border-color:var(--crit-soft)}
+  @media(max-width:720px){.lanes{grid-template-columns:1fr}.md2{grid-template-columns:1fr}}
 </style>
 
 <div class="wrap">
 
   <div class="lead">
     <h1><span class="dot"></span> Board — plusieurs sessions sur un même dépôt</h1>
-    <p>Maquette de travail pour la fiche <code>20261014122044421</code>. On cherche une seule chose : qu'un humain réponde <b>d'un coup d'œil</b> à « combien de sessions tournent ici, et que fait chacune ? ». Cinq cas concrets, du plus simple au plus chargé. Aucune donnée réelle.</p>
+    <p>Maquette de travail pour la fiche <code>20261014122044421</code>. On cherche une seule chose : qu'un humain réponde <b>d'un coup d'œil</b> à « combien de sessions tournent ici, et que fait chacune ? ». Sept cas concrets : 1 à 5 côté activité, 6 la chronologie (4 variantes), 7 la hiérarchie (2 variantes). Aucune donnée réelle.</p>
     <div class="enclair">Le changement tient en deux gestes. <b>1.</b> Chaque run porte une <b>étiquette lisible</b> — sa branche, son worktree, le nom de sa session — au lieu d'un identifiant opaque. <b>2.</b> Quand plusieurs sessions tournent, le board les <b>groupe et les trie</b> de façon stable, avec les silences et orphelins bien visibles.</div>
   </div>
 
@@ -254,6 +299,108 @@
       </div>
     </div>
     <p class="note">Au niveau du dessus, chaque projet dit son <b>compte</b> de sessions et l'état de chacune (les pastilles). On clique un projet pour descendre sur ses cartes (cas 2 à 4). Un orphelin se voit dès ce niveau.</p>
+  </section>
+
+  <!-- CAS 6 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 6</span><h2>La Chronologie avec plusieurs sessions</h2><span class="sub">4 pistes à départager</span></div>
+    <div class="impact"><span class="itag i-hi">impact fort · à trancher</span> le fil validé est <b>unique et sans session</b>. Voici 4 façons d'y mettre les sessions — on en garde une, ou on en combine. Couleurs de session : <span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0211</span> <span class="sbadge" style="background:var(--accent-soft);color:var(--accent)">⎇ feat/0224</span> <span class="sbadge" style="background:var(--groom-soft);color:var(--groom)">⎇ groom</span>.</div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">A</span><h4>Un seul fil + filtre & libellé de session</h4><span class="vd">le plus proche du validé</span></div>
+      <div class="filters">filtrer : <button class="fchip on">toutes</button><button class="fchip"><span class="d" style="background:var(--go)"></span>feat/0211</button><button class="fchip"><span class="d" style="background:var(--accent)"></span>feat/0224</button><button class="fchip"><span class="d" style="background:var(--groom)"></span>groom</button><span style="margin-left:4px">· type · lot (déjà là)</span></div>
+      <div class="tl">
+        <div class="trow"><span class="tw">maintenant</span><span class="ktag">grooming</span><span class="tt">2 fiches cristallisées (0252, 0253)</span><span class="sbadge" style="background:var(--groom-soft);color:var(--groom)">⎇ groom</span></div>
+        <div class="trow"><span class="tw">2 min</span><span class="ktag">sprint</span><span class="tt">Sprint 2 — activité run→moments</span><span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0211</span></div>
+        <div class="trow"><span class="tw">4 min</span><span class="ktag">gate</span><span class="tt">Revue demandée</span><span class="sbadge" style="background:var(--accent-soft);color:var(--accent)">⎇ feat/0224</span></div>
+        <div class="trow"><span class="tw">8 min</span><span class="ktag">sprint</span><span class="tt">Sprint 1 — vue Fiches démarré</span><span class="sbadge" style="background:var(--accent-soft);color:var(--accent)">⎇ feat/0224</span></div>
+        <div class="trow"><span class="tw">12 min</span><span class="ktag">gate</span><span class="tt">Groom 0250 au jalon</span><span class="sbadge" style="background:var(--groom-soft);color:var(--groom)">⎇ groom</span></div>
+        <div class="trow"><span class="tw">20 min</span><span class="ktag">lancement</span><span class="tt">Réalisation v0.17 lancée</span><span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0211</span></div>
+      </div>
+      <div class="proscons"><span class="pro">+ change très peu le validé ; une ligne reste lisible</span><span class="con">− 3 sessions entrelacées restent denses</span></div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">B</span><h4>Liste des sessions (hiérarchie) → la chronologie de celle choisie</h4><span class="vd">ton idée</span></div>
+      <div class="md2">
+        <div class="slist">
+          <div class="sitem"><span class="sdot live"></span><span class="nm">Orchestration · pilote</span></div>
+          <div class="sitem ind sel"><span class="sdot live"></span><span class="nm">Sprint activité · feat/0211</span></div>
+          <div class="sitem ind"><span class="sdot gate"></span><span class="nm">Sprint fiches · feat/0224</span></div>
+          <div class="sitem"><span class="sdot live"></span><span class="nm">Grooming · feat/0237</span></div>
+        </div>
+        <div class="tl">
+          <div class="trow"><span class="tw">2 min</span><span class="ktag">sprint</span><span class="tt">Sprint 2 — activité run→moments</span></div>
+          <div class="trow"><span class="tw">10 min</span><span class="ktag">gate</span><span class="tt">Revue passée · GO</span></div>
+          <div class="trow"><span class="tw">18 min</span><span class="ktag">sprint</span><span class="tt">Sprint 1 — modale fiche · livrée</span></div>
+          <div class="trow"><span class="tw">20 min</span><span class="ktag">lancement</span><span class="tt">Réalisation v0.17 lancée</span></div>
+        </div>
+      </div>
+      <div class="proscons"><span class="pro">+ une session = un fil clair ; la hiérarchie sert de menu (cas 7)</span><span class="con">− on perd la vue d'ensemble du temps</span></div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">C</span><h4>Couloirs — une colonne par session</h4><span class="vd">le parallélisme d'un coup d'œil</span></div>
+      <div class="lanes">
+        <div class="lane"><h5><span class="sdot live"></span>feat/0211</h5>
+          <div class="le"><span class="lw">2 min · sprint</span>Sprint 2 — activité</div>
+          <div class="le"><span class="lw">20 min · lancement</span>Réalisation v0.17</div>
+        </div>
+        <div class="lane"><h5><span class="sdot gate"></span>feat/0224</h5>
+          <div class="le"><span class="lw">4 min · gate</span>Revue demandée</div>
+          <div class="le"><span class="lw">8 min · sprint</span>Sprint 1 — vue Fiches</div>
+        </div>
+        <div class="lane"><h5><span class="sdot live"></span>groom</h5>
+          <div class="le"><span class="lw">now · grooming</span>2 fiches cristallisées</div>
+          <div class="le"><span class="lw">12 min · gate</span>Groom 0250 au jalon</div>
+        </div>
+      </div>
+      <div class="proscons"><span class="pro">+ voit le parallélisme ; chaque session isolée</span><span class="con">− l'ordre temporel entre colonnes se lit mal ; tient mal au-delà de 3-4 sessions</span></div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">D</span><h4>Vue globale par run → entrer dans un run (ses sessions)</h4><span class="vd">ton idée « moins de détail, puis détail »</span></div>
+      <div class="grow">
+        <div class="grrow open"><span class="sdot live"></span><span class="grn">Réalisation v0.17</span><span class="verp">v0.17.0</span><span class="spark"><i style="background:var(--go)"></i><i style="background:var(--accent)"></i><i style="background:var(--go)"></i></span><span class="muted" style="font-size:12px">3 sessions · 2 sprints</span><span class="age">il y a 2 min ›</span></div>
+        <div class="grrow"><span class="sdot gate"></span><span class="grn">Cadrage v0.18</span><span class="verp">v0.18.0</span><span class="spark"><i style="background:var(--groom)"></i></span><span class="muted" style="font-size:12px">1 session · grooming</span><span class="age">il y a 12 min ›</span></div>
+      </div>
+      <div class="drill">
+        <div class="dh">↳ détail du run « Réalisation v0.17 » — les évènements de ses 3 sessions, étiquetés</div>
+        <div class="tl">
+          <div class="trow"><span class="tw">2 min</span><span class="ktag">sprint</span><span class="tt">Sprint 2 — activité</span><span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0211</span></div>
+          <div class="trow"><span class="tw">4 min</span><span class="ktag">gate</span><span class="tt">Revue demandée</span><span class="sbadge" style="background:var(--accent-soft);color:var(--accent)">⎇ feat/0224</span></div>
+          <div class="trow"><span class="tw">20 min</span><span class="ktag">lancement</span><span class="tt">Réalisation v0.17 lancée</span><span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0211</span></div>
+        </div>
+      </div>
+      <div class="proscons"><span class="pro">+ lisible au survol ; le détail à la demande ; marche avec 1 OU N sessions</span><span class="con">− deux niveaux à naviguer</span></div>
+    </div>
+  </section>
+
+  <!-- CAS 7 -->
+  <section class="case">
+    <div class="ch"><span class="n">Cas 7</span><h2>La hiérarchie des sessions</h2><span class="sub">2 pistes · sert aussi de menu au cas 6B</span></div>
+    <div class="impact"><span class="itag i-mid">impact moyen</span> montre qui pilote qui, et à quel <b>run</b> chaque session est rattachée — y compris celles qui <b>échappent à la méthode</b>.</div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">A</span><h4>Arbre — pilote → sessions filles</h4></div>
+      <div class="tree">
+        <div class="tnode"><span class="sdot live"></span><b class="tn">Orchestration v0.17</b><span class="pilot">PILOTE</span><span class="branch">⎇ main</span><span class="torun">run · Réalisation v0.17</span></div>
+        <div class="tnode ind1"><span class="arm">└─</span><span class="sdot live"></span><span class="tn">Sprint activité</span><span class="branch">⎇ feat/0211</span><span class="torun">run · Réalisation v0.17</span></div>
+        <div class="tnode ind1"><span class="arm">└─</span><span class="sdot gate"></span><span class="tn">Sprint fiches</span><span class="branch">⎇ feat/0224</span><span class="torun">run · Réalisation v0.17</span></div>
+        <div class="tnode"><span class="sdot live"></span><b class="tn">Grooming chronologie</b><span class="branch">⎇ feat/0237</span><span class="torun">run · Cadrage v0.18</span></div>
+      </div>
+      <div class="proscons"><span class="pro">+ montre la hiérarchie ET le rattachement au run</span><span class="con">− un run à N sessions se lit en arbre, pas en groupe</span></div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel"><span class="vn">B</span><h4>Groupé par run — et le groupe « hors méthode »</h4></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="rungrp"><h5><span class="verp">Réalisation v0.17</span> 3 sessions</h5><div class="members"><span class="sbadge" style="background:var(--accent-soft);color:var(--accent)">⎇ main · pilote</span><span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0211</span><span class="sbadge" style="background:var(--go-soft);color:var(--go)">⎇ feat/0224</span></div></div>
+        <div class="rungrp"><h5><span class="verp">Cadrage v0.18</span> 1 session</h5><div class="members"><span class="sbadge" style="background:var(--groom-soft);color:var(--groom)">⎇ feat/0237</span></div></div>
+        <div class="rungrp loose"><h5>⚠ Hors méthode — non rattachées</h5><div class="members"><span class="sbadge" style="background:var(--crit-soft);color:var(--crit)">⎇ wip/essai-local</span></div></div>
+      </div>
+      <div class="proscons"><span class="pro">+ montre le rattachement run↔sessions ET les sessions qui échappent à la méthode</span><span class="con">− la hiérarchie pilote→fille est moins explicite</span></div>
+    </div>
   </section>
 
   <div class="foot">Maquette statique · fiche 20261014122044421 · tokens repris de board-ezk-dashboard.html (ADR-074)</div>

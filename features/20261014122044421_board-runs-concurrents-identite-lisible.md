@@ -33,7 +33,7 @@ fil d'évènements trié par le temps.
 
 ## Contexte / Problème
 
-Cinq faits du code, constatés le 2026-10-14, cadrent le problème.
+Six faits du code et de l'usage, constatés le 2026-10-14, cadrent le problème.
 
 1. **Le modèle actuel confond run et session.** ADR-074 pose « un run = une session de la
    méthode ». Mais un même travail de méthode peut s'étaler sur **plusieurs sessions** (je
@@ -54,6 +54,11 @@ Cinq faits du code, constatés le 2026-10-14, cadrent le problème.
 5. **Le board est déjà multi-outils** : la config résout les tiers (`high/middle/low`) en
    modèles concrets **par IDE** — Claude Code, Cursor, Codex CLI (ADR-074). Le contrat de
    supervisabilité lui-même est **MCP + JSONL**, deux standards non liés à Claude.
+6. **Les sessions ne se ressemblent pas** (usage PO). Une session de **grooming** crée des
+   fiches et les **cristallise** en fin de course — une *fiche* = la *user story* / l'*issue*
+   de la méthode (terme à figer dans l'ADR). Une session de **dev** tient un sprint. Il y a de
+   la **hiérarchie** (un pilote lance des filles) ou pas. Et il arrive qu'une session **ne
+   passe pas par la méthode** — à éviter.
 
 Résultat : le board ne peut pas répondre d'un coup d'œil à « combien de sessions tournent
 sur ce projet, que fait chacune, et à quel travail de méthode elles contribuent ? ». Et ce
@@ -100,6 +105,15 @@ Ajouter à l'ouverture d'une session un ou deux champs **lisibles par un humain*
   emprunté à une API propre à un outil. L'identité vient de **git (pur FS)**. Donc **aucune
   dépendance à Claude Desktop** ni à un IDE précis : tout outil qui parle MCP émet pareil.
 
+### Volet 1bis — le rattachement par défaut (comportement, PO)
+
+Quand la supervision est **activée** sur le projet, **toute session ouverte s'y rattache par
+défaut** — *opt-out*, pas *opt-in*. On évite ainsi les sessions qui échappent au suivi (le
+groupe « hors méthode » du cas 7). Le rattachement est **débrayable** : par la **config du
+projet**, ou sur **demande explicite** d'une session. C'est **ezk** qui attache une session au
+bon run (volet 0). Contrainte tool-agnostique : ce comportement vit côté méthode/émetteur, pas
+dans un IDE précis.
+
 ### Volet 2 — le modèle de concurrence (comment les sessions coexistent)
 
 Trois options, à départager par la maquette et l'architecte :
@@ -126,10 +140,11 @@ l'**intégrer dans les surfaces validées de v0.17**, sans les casser :
   étiquetées par branche/worktree, triées de façon stable (pas de saut à chaque battement).
 - **Activité (Cadrage / Développement)** : les lignes de run gagnent les sessions qui y ont
   contribué.
-- **Chronologie** : le point sensible. Le fil reste trié par le temps, mais chaque ligne
-  devient **attribuable à une session** — un libellé de session + un **filtre « session »**
-  à côté des filtres type/version existants, et/ou des **couloirs** (swimlanes) par session.
-  Sans ça, les évènements de 2-3 sessions s'empilent sans qu'on sache qui fait quoi.
+- **Chronologie** : le point sensible, à **départager sur maquette** (gros travail, PO). La
+  maquette tient déjà **4 pistes** : (A) un seul fil + filtre et libellé de session ; (B)
+  liste des sessions (hiérarchie) → la chronologie de celle choisie ; (C) couloirs, une
+  colonne par session ; (D) vue globale par run → entrer dans un run pour voir ses sessions.
+  On en garde une, ou on en combine, après les avoir regardées côte à côte.
 - **Compteurs et badges** : vérifier qu'ils tiennent (le badge « ● en run » sur une version,
   les compteurs « lancements » / « sprints », le minuteur « silence prolongé ») — par
   session, sans double compte ni ambiguïté.
@@ -158,6 +173,11 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
       par l'émetteur — **aucune dépendance à une API propre à Claude**. Le croisement de
       transcripts Claude Code (`analyze.ts`) est explicitement **hors périmètre** (diagnostic
       optionnel, pas le board ni le contrat).
+- [ ] **Rattachement par défaut** : supervision activée ⇒ une session ouverte s'y rattache
+      sans geste (opt-out), **débrayable** par config projet ou demande explicite ; une session
+      « hors méthode » est visible comme telle (cas 7B).
+- [ ] La **Chronologie** est tranchée après avoir **regardé les 4 variantes** de la maquette
+      côte à côte (le PO en garde une ou en combine), pas sur description.
 - [ ] Les **tranches de build** sont découpées en fiches sœurs et liées, **sans chapeau**
       (identité émetteur = mega-city ; représentation board = cop1) ; le dossier vit dans l'ADR.
 
@@ -183,9 +203,10 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
   Chronologie, la Vue d'ensemble, les compteurs, les badges « en run », le minuteur de
   silence. C'est un critère, pas un détail.
 - **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
-  — 5 cas côté Activité, une étiquette d'impact par cas. À compléter par le cas Chronologie
-  (6) et la vue hiérarchie (7). Sert aussi à décider si une part rejoint v0.17 (impact faible)
-  ou reste en v0.18 (impact fort).
+  — 7 cas : 1-5 côté Activité (étiquette d'impact chacun), **6 la Chronologie avec 4 variantes**
+  (filtre · maître-détail · couloirs · global→run), **7 la hiérarchie avec 2 variantes** (arbre ·
+  groupé par run + « hors méthode »). Chaque variante porte ses pour/contre. Sert à départager,
+  et à décider si une part rejoint v0.17 (impact faible) ou reste en v0.18 (impact fort).
 - **Voisine, pas doublon** : contraint les tranches
   [activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
   et [chronologie condensée](20261012231419237_board-chronologie-condensee.md). Sujet distinct
