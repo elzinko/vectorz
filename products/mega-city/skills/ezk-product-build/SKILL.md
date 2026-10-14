@@ -333,6 +333,25 @@ pilote la déroule version par version. À **chaque frontière** :
 Garde-fou ADR-0001 tenu : le skill **décide** quand passer à la version suivante ; `ezk backlog version`
 **exécute** le git.
 
+## Scellage des versions — configurable (`--seal-versions`)
+
+Règle **si le run pose l'étiquette de version lui-même**. Poser le tag (`version close --tag`) est le
+**seul geste git réservé au PO** : ce drapeau le rend **délégable au run**, mais sous double condition.
+Adossé à [ADR-0076](../../docs/adr/0076-auto-tag-close-local-opt-in.md) (l'assouplissement et sa limite).
+**Défaut : absent** — le run clôt chaque version (`version close`) mais **ne tague pas**, le tag reste au PO.
+
+- **`--seal-versions local`** (opt-in) — à chaque frontière de version, en **flux local**
+  (`github: false`, rien n'est poussé), le run pose l'étiquette **lui-même**, en local et réversible
+  (`git tag -d` pour la retirer). La gate de release joue toujours : pas de tag tant que la passe
+  qualité n'est pas GO.
+- **Hors flux local** (GitHub actif) — le drapeau **ne mord pas** : le tag reste au PO. Jamais
+  d'auto-tag quand quelque chose serait poussé.
+- **Rien n'est poussé, jamais.** `--seal-versions local` crée une étiquette **locale** ; le
+  `git push origin <tag>` reste un geste du PO en toutes lettres.
+
+Le contrat du run (`ezk run context --seal-versions local`) **affiche** la politique de scellage en
+clair. Garde-fou ADR-0001 : le skill **décide** de passer `--tag` ; `ezk backlog version` **exécute** le git.
+
 ## Mode livraison — configurable (`--delivery`)
 
 Règle **comment un lot cohérent de fiches est livré** (mergé) : au fil de l'eau, ou de façon

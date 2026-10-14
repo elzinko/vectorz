@@ -6,7 +6,7 @@
  * jamais un texte figé.
  */
 import { describe, expect, it } from 'vitest';
-import { buildRunContext, type RunFacts, type RunSettings } from '../run-context.js';
+import { buildRunContext, type RunFacts, type RunSettings, sealPolicy } from '../run-context.js';
 
 const settings = (over: Partial<RunSettings> = {}): RunSettings => ({
   mode: 'auto',
@@ -124,5 +124,33 @@ describe('buildRunContext — le briefing reste court', () => {
 
   it('ouvre par le titre « Contexte de run »', () => {
     expect(buildRunContext(settings(), facts()).lines[0]).toBe('Contexte de run');
+  });
+});
+
+describe('buildRunContext — le scellage des versions (fiche 20261013131852581, ADR-0076)', () => {
+  it('sealPolicy : opt-in strict, jamais d\'auto-tag hors flux local (ou flux non résolu)', () => {
+    expect(sealPolicy(undefined, true)).toBe('po-default');
+    expect(sealPolicy('local', true)).toBe('auto-local');
+    expect(sealPolicy('local', false)).toBe('po-not-local');
+    expect(sealPolicy('local', undefined)).toBe('po-not-local');
+  });
+
+  it('défaut (sans --seal-versions) : trois lignes de contrat, aucune mention de tag', () => {
+    const c = buildRunContext(settings(), facts()).lines.filter((l) => /^\s*\d+\. /.test(l));
+    expect(c).toHaveLength(3);
+    expect(c.join('\n')).not.toMatch(/étiquette|--seal-versions/);
+  });
+
+  it('--seal-versions local en flux local : 4e ligne « je pose l\'étiquette moi-même », bloc ≤ 12 lignes', () => {
+    const out = buildRunContext(settings({ sealVersions: 'local' }), facts({ githubLocalFlow: true }));
+    const txt = out.lines.join('\n');
+    expect(txt).toContain('--seal-versions local');
+    expect(txt).toMatch(/4\..*étiquette moi-même.*local/);
+    expect(out.lines.length).toBeLessThanOrEqual(12);
+  });
+
+  it('--seal-versions local hors flux local : le drapeau ne mord pas, le tag reste au PO', () => {
+    const txt = buildRunContext(settings({ sealVersions: 'local' }), facts({ githubLocalFlow: false })).lines.join('\n');
+    expect(txt).toMatch(/4\..*flux n'est pas local.*tag reste au PO/);
   });
 });
