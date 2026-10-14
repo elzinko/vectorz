@@ -63,8 +63,9 @@ Un agent/LLM veut l'état →  il LIT l'entrée fraîche (cache hit, zéro re-ex
 
 Les pièces :
 
-- **Un format versionné, committé.** Il décrit les zones et évolue avec l'app. Lisible par un humain
-  et par un LLM.
+- **Un format versionné.** Une entrée par zone, estampillée du SHA git qu'elle décrit. Il évolue avec
+  l'app, se lit par un humain comme par un LLM, et vit **hors du dépôt cible** (décision d'archi
+  ci-dessous — pas « committé », contrairement au premier jet).
 - **L'invalidation.** Les agents de dev et de conception (sprint, product-build…) marquent périmées
   les zones qu'ils modifient. C'est le registre « ce qui a été touché ».
 - **La repasse ciblée.** Elle ne visite que les zones invalidées, reconstruit leurs entrées, et peut
@@ -87,8 +88,9 @@ commune** déjà décidée par le PO. Le cache est la **couche mémoire** sous c
 Niveau *idée* : ces critères donnent la cible. Les détails (granularité d'une zone, format exact,
 noms de commandes) se tranchent au grooming et avec l'architecte.
 
-- [ ] Un **format versionné committé** décrit les zones de l'app (écran / route, actions possibles,
-      contexte), lisible par un humain et par un LLM.
+- [ ] Un **format versionné** (une entrée par zone, estampillée du SHA décrit) couvre les zones de
+      l'app (écran / route, actions, contexte, évidence), lisible par un humain et par un LLM, et vit
+      **hors du dépôt cible** (voir § Architecture).
 - [ ] Un agent de dev peut marquer une zone **invalidée** après l'avoir modifiée, par un signal
       traçable.
 - [ ] Une **repasse ciblée** ne visite que les zones invalidées et reconstruit leurs entrées.
@@ -126,6 +128,102 @@ ezk carto show <zone>         # un LLM lit l'état d'une zone, sans re-explorer
 - **Interrupteur projet** : cache désactivé dans `.vectorz/config.yml`, une passe d'`ezk-scout`
   tourne quand même (re-exploration), aucune erreur.
 
+## Architecture — avis de l'architecte (2026-10-14, `--archi`)
+
+Cette section tranche les six points durs. Elle s'appuie sur des décisions **déjà prises** par la
+méthode, pour ne pas les rouvrir. POC d'abord : le moins de pièces possible, on mesure, on ajoute au
+besoin.
+
+### Décision 1 — Qu'est-ce qu'une « zone »
+
+Une zone = un **état d'écran atteignable et distinguable**, repéré par une clé stable. Au POC, **grain
+route** : une entrée par écran / route. Chaque entrée porte sa clé, les **actions** possibles dans ce
+contexte, les **préconditions** pour l'atteindre, le **dernier état vu**, et une **évidence** (capture
++ assertions DOM).
+
+Pourquoi ce grain : c'est le plus grossier qui reste stable, donc le plus facile à relier au code.
+Descendre aux sous-états (modale, étape de formulaire) fait exploser la carte **et** le problème de
+mapping. On affine plus tard si besoin (YAGNI).
+
+### Décision 2 — Le signal « code → zone » (le point dur)
+
+| Option | Principe | Faiblesse |
+|---|---|---|
+| A — Explicite | l'agent de dev marque la zone qu'il touche | repose sur la discipline ; un oubli laisse une entrée périmée |
+| B — Par diff | déduire les zones d'après les fichiers changés, via un mapping fichier↔zone | le mapping doit exister, se maintenir, et reste approximatif (un util partagé touche tout) |
+| C — Hybride | A + B + passe complète périodique | la plus complète, mais B coûte cher à écrire |
+
+**Décision : C, par étapes.** Le POC livre **A (signal explicite) + la passe complète en filet** — les
+deux plus fiables et les moins chers. Le mapping fichier↔zone (B) est **différé** : on ne construit pas
+d'abord la pièce la plus fragile. On mesure le taux de dérive (déjà prévu en « mesure de suivi »), et
+on ajoute B seulement s'il est trop haut.
+
+**Sous-décision clé** : marquer une zone est un geste **cheap et local** — une écriture dans le magasin
+du cache (hors dépôt), jamais un commit ni une PR. Aucun churn.
+
+### Décision 3 — Où vit le cache (et la tension « committé »)
+
+Le cache est un **artefact généré**, gros, qui change tout le temps. La méthode a déjà tranché ce cas :
+
+- une vue générée ne reste dans git que si on la lit sur GitHub — [ADR-0055](../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md) ;
+- un état vivant propre à la machine se sert en direct, jamais committé — [ADR-0043](../products/mega-city/docs/adr/0043-vue-sessions-live-servie-jamais-committee.md) ;
+- `ezk-scout` [[20260910165637000]] range déjà rapport, captures et journal **hors du dépôt cible**.
+
+**Décision : le cache vit HORS du dépôt cible, clé par SHA git.** Pas committé. « Versionné » veut dire
+**estampillé du commit décrit**, pas « rangé dans git ».
+
+⚠ **Ceci corrige le mot « committé »** de mon premier jet. Le committer rejouerait exactement les
+conflits entre PR que l'ADR-0055 a tués. Un test garde la frontière (le magasin n'est jamais suivi par
+le git du dépôt cible), sur le modèle d'`untracked-views.test.ts`.
+
+```
+dépôt cible (git)                 magasin du cache (hors dépôt, par SHA)
+  features/*.md                     <cache>/<repo>/<sha>/
+  code produit        ──┐             index + une entrée par zone + évidences
+                        └─ une passe LIT le code et l'app,
+                           ÉCRIT seulement dans le magasin (jamais dans le dépôt)
+```
+
+### Décision 4 — Partagé, pas par-branche
+
+Magasin **partagé, clé par SHA**. Deux branches sur le même commit partagent les entrées. Une branche
+sur un autre commit hérite des entrées encore fraîches du commit parent et reconstruit le reste. Clé
+par SHA = une entrée décrit toujours une **version connue** de l'app.
+
+### Décision 5 — Bornage du coût
+
+On réutilise `ezk-scout` : bornes `--max-probes` / `--max-min` sur une passe, avertissement avant tout
+fan-out coûteux. La passe **ciblée** est cheap par construction (seulement les zones invalidées). La
+passe **complète** est la chère : bornée et explicite.
+
+### Décision 6 — Risque « juge et partie »
+
+Une entrée stocke une **évidence dure** (capture + assertions DOM), pas seulement la prose d'un agent.
+Un lecteur, humain ou agent, peut auditer ce que la passe a vraiment vu. Le risque est plus faible ici
+que pour l'agent découvreur : le cache **enregistre un état**, il ne décide pas de ce qui mérite d'être
+signalé.
+
+### Invariant transverse — find-only + banc isolé
+
+La passe est **find-only** sur le code produit (elle explore, ne modifie jamais), via le garde-fou et
+l'isolation d'état d'`ezk-scout`. Le seul écrit d'une passe est le magasin du cache, hors dépôt.
+
+### Interrupteur projet (aligné sur [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md))
+
+Le projet déclare l'intention dans `.vectorz/config.yml` (« carto : on / off »), qui **voyage avec le
+repo**. L'emplacement du magasin est un réglage du **poste**, qui ne voyage pas — exactement la « config
+à deux portées » d'ADR-074. Désactivé, les agents re-explorent, sans erreur.
+
+### Ordre de construction (et découpe probable au `ready`)
+
+POC → format d'entrée + magasin par SHA + signal explicite + passe complète + **un** consommateur
+(ex. `ezk-scout` qui lit la carte). Plus tard : mapping par diff (B), émission vers le Moniteur, grain
+sous-état.
+
+Au `ready`, cette fiche se **découpe** sûrement (règle « une fiche tient dans un sprint ») : (1) le
+moteur de cache, (2) le câblage du signal d'invalidation dans les agents de dev, (3) l'intégration d'un
+consommateur. Sœurs liées par un milestone, **pas** de fiche chapeau.
+
 ## Glossaire
 
 - `cache de cartographie` — la carte de l'app stockée et réutilisée, comme un cache mémoire : on lit
@@ -162,15 +260,14 @@ ezk carto show <zone>         # un LLM lit l'état d'une zone, sans re-explorer
   liste les surfaces **au grooming**, avant de construire ; ici, carte **vivante** d'une app qui tourne.
 - **Distinct de** la carte de la **méthode** (method-map / `ezk dashboard`) : là ce sont les skills ;
   ici, l'app du projet cible.
-- **À trancher au groom / par l'architecte** :
-  - Qu'est-ce qu'une « zone », et à quelle granularité ? (route, composant, parcours ?)
-  - **Point dur** : comment un agent de dev **signale** qu'il a touché une zone ? Mapping code → zone,
-    convention, ou détection par diff ?
-  - Format versionné : un fichier par zone, un index ? Où vit-il — dans le dépôt cible, ou hors dépôt
-    comme les rapports `ezk-scout` ?
-  - Cache partagé entre agents, ou par-branche ?
-  - Bornage du coût tokens d'une passe complète.
-  - Risque **« juge et partie »** hérité de l'explorateur : un agent qui explore peut taire ce qui le
-    gêne. La parade reste à choisir.
-- **Risque de dérive.** Si le mapping code → zone est approximatif, le cache **ment** (zones dérivées
-  non vues). La passe complète périodique est le garde-fou ; sa fréquence est à régler.
+- **Décisions d'architecture (2026-10-14, `--archi`)** : les six points durs sont tranchés dans la
+  section **Architecture** ci-dessus (grain de zone, signal code → zone, emplacement hors dépôt clé par
+  SHA, magasin partagé, bornage, parade juge-et-partie). Appuis : ADR-0055, ADR-0043, ADR-074 et le
+  précédent `ezk-scout`.
+- **Restent ouverts (PO / panel)** : le nom exact de l'interrupteur dans `.vectorz/config.yml` ; le
+  seuil de fréquence de la passe complète (à régler sur le taux de dérive mesuré) ; l'opportunité
+  d'ajouter le mapping par diff (option B), à décider **après** mesure. Un panel adverse peut ratifier
+  l'ensemble avant le `ready` (décisions structurantes).
+- **Risque de dérive.** Si le signal explicite est trop souvent oublié, le cache **ment** (zones
+  dérivées non vues). La passe complète périodique est le garde-fou ; sa fréquence se règle sur le taux
+  de dérive (mesure de suivi).
