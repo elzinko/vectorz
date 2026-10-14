@@ -15,17 +15,40 @@ created: 2026-10-14
 
 # 20261014113049954 — Cache de cartographie applicative
 
-**En clair.** Aujourd'hui, quand un agent veut explorer l'app pour trouver des bugs ou des idées,
-il remonte le banc et re-parcourt toute l'application à chaque fois. Rien ne se souvient de ce qui
-existe déjà. Je propose un **cache de cartographie** : une carte vivante de l'app (ses écrans, ses
-actions, le contexte), tenue à jour **au fil des devs**, que les agents lisent au lieu de tout
-re-explorer. Un dev qui touche une zone **invalide** son entrée ; une repasse ciblée la reconstruit.
+**En clair.** Un agent qui explore l'app la re-parcourt entièrement à chaque fois, sans mémoire. On
+aimerait une carte de l'app que les agents et les LLM consultent au lieu de tout re-explorer. **Le
+panel adverse a tranché le POC** (voir plus bas) : on démarre par le plus honnête et le moins cher —
+un **index statique des routes**, tiré du code du routeur, qui ne ment jamais. On **mesure** ensuite
+ce qu'une carte fait gagner sur un vrai run. Le **cache vivant** — la carte tenue à jour au fil des
+devs, invalidée zone par zone — ne se construit qu'**après** cette preuve.
 
 **Si tu arrives frais.** La méthode ezk fabrique des *skills* (capacités) et des *agents*. Deux
 existent déjà pour explorer une app qui tourne : `ezk-scout` chasse les bugs, et une fiche
 « explorateur » cherche des features. Cette carte leur donne une **mémoire partagée** : au lieu de
 redécouvrir l'app à chaque passe, ils consultent une entrée de cache. L'image juste (ta formulation,
 PO 2026-10-14) : **presque un cache de cartographie applicative**.
+
+## Direction (décision PO — 2026-10-14)
+
+Le panel a démoli le mécanisme du cache vivant (voir **Revue adverse**). Le PO tranche : on réduit, en
+deux pas.
+
+**Pas 1 — un index statique des routes.** Une **fonction pure** du code (le routeur, la config) : la
+liste des écrans/routes et des actions possibles, **reconstructible à la demande**, jamais périmée —
+le code est la vérité. Il répond déjà à « où est l'action X ? ». Zéro invalidation, zéro dérive, rien
+à stocker durablement. C'est le plus petit pas honnête, et il s'aligne sur la méthode (une vue
+générée = fonction pure de fichiers, ADR-0055/0043).
+
+**Pas 2 — un test de valeur chiffré.** Sur un vrai run d'exploration (scout ou explorateur), mesurer
+ce que la re-exploration coûte (tokens, temps) et ce qu'une carte — même faite à la main une fois —
+économiserait sur la passe suivante. Économie marginale → on s'arrête à l'index. Économie forte → le
+cache vivant gagne son droit d'exister.
+
+**Différé derrière le test — le cache vivant.** L'invalidation zone par zone, le mapping code→zone, le
+magasin par SHA, la passe complète : toute la section **Architecture** ci-dessous. Elle ne se rouvre
+qu'avec une valeur **prouvée** ET un **ADR dédié** qui règle ce que le panel a cassé (invalidation ↔
+adressage, éviction, concurrence). Au `ready`, le Pas 1 sera vraisemblablement une fiche sœur tirable
+à part ; le cache vivant reste une idée différée.
 
 ## Contexte / Problème
 
@@ -85,55 +108,54 @@ commune** déjà décidée par le PO. Le cache est la **couche mémoire** sous c
 
 ## Critères d'acceptation
 
-Niveau *idée* : ces critères donnent la cible. Les détails (granularité d'une zone, format exact,
-noms de commandes) se tranchent au grooming et avec l'architecte.
+Niveau *idée*, **scope réduit** (décision PO — voir § Direction). *Près* = le Pas 1 et le Pas 2 ; le
+reste est **différé** derrière le test de valeur.
 
-- [ ] Un **format versionné** (une entrée par zone, estampillée du SHA décrit) couvre les zones de
-      l'app (écran / route, actions, contexte, évidence), lisible par un humain et par un LLM, et vit
-      **hors du dépôt cible** (voir § Architecture).
-- [ ] Un agent de dev peut marquer une zone **invalidée** après l'avoir modifiée, par un signal
-      traçable.
-- [ ] Une **repasse ciblée** ne visite que les zones invalidées et reconstruit leurs entrées.
-- [ ] Une **passe complète** rebâtit tout le cache et **détecte les zones dérivées** (changées sans
-      avoir été marquées).
-- [ ] Le cache est **activable / désactivable par projet** via la config ezk ; désactivé, les agents
-      re-explorent sans erreur.
-- [ ] Au moins un agent (`ezk-scout` ou l'explorateur) **consulte** le cache : démontré sur un cas où
-      la passe avec cache est plus courte que sans.
-- [ ] Un LLM **lit l'état** d'une zone depuis le cache sans re-capturer (ex. « où est l'action X ? »
-      répondu depuis le cache).
+**Pas 1 — index statique des routes**
+- [ ] Un **index des routes/écrans + actions** est produit par une **fonction pure** du code
+      (routeur / config), **reconstructible à la demande**, sans rien stocker durablement.
+- [ ] Un LLM répond « où est l'action X ? » depuis cet index, **sans explorer l'app**.
+- [ ] L'index est **activable / désactivable par projet** via la config ezk ; absent, aucun agent ne casse.
+
+**Pas 2 — test de valeur**
+- [ ] Sur **un run réel** (scout ou explorateur), le coût de re-exploration (tokens, temps) et
+      l'économie estimée d'une carte sont **mesurés et écrits** dans la fiche.
+- [ ] La décision « index seul » vs « cache vivant justifié » est **tranchée sur ce chiffre**, pas au feeling.
+
 - [ ] Gate locale verte (typecheck / lint / tests).
 
-**Mesure de suivi** *(après merge)* — sur quelques sprints réels, vérifier qu'une repasse ciblée
-coûte nettement moins qu'une passe complète (tokens / temps), et que les dérives rattrapées par la
-passe complète restent rares (sinon le signal d'invalidation est trop lâche).
+**Différé derrière le test** (le cache vivant — section Architecture, ne pas construire sans ADR
+dédié) : format versionné hors dépôt clé par SHA, signal d'invalidation code→zone, repasse ciblée,
+passe complète anti-dérive, éviction, concurrence.
 
 ## Comment vérifier
 
-Procédure cible (noms de commandes **indicatifs**, à trancher au groom). À jouer sur l'app jouet du
-testbed, pas sur une app réelle.
+Procédure cible du **scope réduit** (noms indicatifs, à trancher au groom).
 
 ```bash
-# POC sur l'app de démonstration
-ezk carto build <app>         # passe complète → écrit le cache versionné
-ezk carto invalidate <zone>   # un dev marque une zone touchée
-ezk carto refresh             # repasse ciblée : seules les zones invalidées
-ezk carto show <zone>         # un LLM lit l'état d'une zone, sans re-explorer
+# Pas 1 — index statique, fonction pure du routeur (rien de stocké)
+ezk carto routes <app>       # liste écrans/routes + actions, calculée à la demande
+ezk carto where "action X"   # où trouver l'action X, répondu depuis l'index
+
+# Pas 2 — test de valeur, sur un vrai run
+#   mesurer le coût d'une re-exploration complète (tokens, temps)
+#   l'écrire dans la fiche, décider index-seul vs cache-vivant sur ce chiffre
 ```
 
-- **Ciblage** : après `invalidate` sur une zone, `refresh` ne touche **que** cette entrée dans le
-  cache (diff du cache à l'appui).
-- **Anti-dérive** : modifier une zone **sans** l'invalider, puis lancer `build` complet — la passe
-  **signale** la zone dérivée.
-- **Interrupteur projet** : cache désactivé dans `.vectorz/config.yml`, une passe d'`ezk-scout`
-  tourne quand même (re-exploration), aucune erreur.
+- **Fonction pure** : deux appels de `routes` sur le même commit rendent le même index ; aucun fichier
+  durable écrit (rien à gitignorer, rien à purger).
+- **Interrupteur projet** : index désactivé dans `.vectorz/config.yml`, les agents tournent sans erreur.
+- **Test de valeur** : le chiffre (coût re-exploration vs économie estimée) est **présent dans la
+  fiche** avant d'ouvrir le cache vivant.
 
 ## Architecture — avis de l'architecte (2026-10-14, `--archi`)
 
 > ⚠ **Contesté par le panel adverse (2026-10-14).** Le mécanisme central ci-dessous — « cache
 > incrémental clé par SHA » — est jugé **contradictoire** et dépendant du mapping fichier→zone
-> différé. Lis la section **Revue adverse** plus bas avant de t'appuyer sur ces décisions. Un reframe
-> (index statique + test de valeur) attend l'arbitrage du PO.
+> différé. Lis la section **Revue adverse** plus bas avant de t'appuyer sur ces décisions. Le reframe
+> **est décidé** (PO 2026-10-14, voir § Direction) : le cache vivant est **différé** derrière un test
+> de valeur ; les décisions ci-dessous ne concernent que ce futur étage et **restent à réparer**
+> (invalidation ↔ adressage, éviction, concurrence, ADR dédié).
 
 Cette section tranche les six points durs. Elle s'appuie sur des décisions **déjà prises** par la
 méthode, pour ne pas les rouvrir. POC d'abord : le moins de pièces possible, on mesure, on ajoute au

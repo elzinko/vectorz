@@ -126,11 +126,12 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
     ne pas conditionner son `ready` au cache (jugé fragile, cf. [[20261014113049954]]).
   - **Découper** brique 2 (siège auto) / brique 3 (explorateur), livrer la 2 d'abord.
   - **Choisir une parade « juge et partie »** dès le groom (la moins chère : journaliser tout refus).
-  - **Charnière de l'agent qualifieur** : mon « probablement non » était **pré-conclu** (archi E1).
-    Vraie question **PO** : la qualification se fait-elle **face à l'app qui tourne** ? Non → composer
-    `ezk-backlog add` + déléguer `ezk-pm` suffit. Oui → `ezk-pm` n'a pas d'« yeux » sur l'app → cas
-    rôle + yeux (ADR-0026), une **capability neuve**, et il faut **nommer** l'agent de la passe
-    indépendante.
+  - **Agent qualifieur — TRANCHÉ PO (2026-10-14) : pas de nouvel agent.** La qualification juge **sur
+    dossier** — la proposition + l'évidence (capture, DOM) déjà prise par l'explorateur — donc sans
+    re-voir l'app. On **compose** `ezk-backlog add` (anti-doublon, type, priorité) et on **délègue** le
+    jugement produit à `ezk-pm`. L'indépendance vient d'une **passe séparée à lentille différente**,
+    pas d'un type d'agent neuf. (Soupape : si un jour qualifier exige de re-voir l'app en marche,
+    rouvrir le cas rôle + yeux d'ADR-0026.)
   - **Sas `brainstormed`** : non tranché ; défaut = modèle existant (`idea` + label de provenance).
 - **Sas `features/brainstormed` — question ouverte (PO 2026-10-14)** : le PO veut les propositions
   dans un **dossier séparé** du backlog de travail, pas mêlées aux fiches actives. ⚠ Tension à
