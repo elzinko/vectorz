@@ -76,7 +76,7 @@ clôture — c'est voulu). Les voici :
 | [trier les sorties de rétro](../../features/20261002155911271_trier-sorties-retro-par-nature.md) | ready, **sautée** | prémisse absente du code → arbitrage PO (cf. plus haut) |
 | [basculer vectorz vers `scrum/`](../../features/20261007154842643_basculer-vectorz-vers-dossier-scrum.md) | bloquée `sous-revue` | déménagement 168 fichiers, « à faire sous revue, pas en run autonome » |
 | [note de migration `scrum/`](../../features/20261007154842917_note-migration-bascule-consommateurs-scrum.md) | bloquée `attend-dépendance` | dépend de la bascule `scrum/` |
-| [où vivent les ADR (multi-projets)](../../features/20261011142027875_ou-vivent-les-adr-repo-multi-projets.md) | bloquée `attend-panel` | « décision structurelle à tenir avec le PO, pas un build autonome » |
+| [où vivent les ADR (multi-projets)](../../features/done/20261011142027875_ou-vivent-les-adr-repo-multi-projets.md) | bloquée `attend-panel` | « décision structurelle à tenir avec le PO, pas un build autonome » |
 
 Un run autonome ne peut pas taguer une version qui porte des fiches que la méthode réserve au PO. J'ai
 tenté de les reporter à v0.17.0 pour débloquer la clôture, puis **annulé** : la place de ces fiches dans

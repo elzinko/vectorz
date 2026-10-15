@@ -232,7 +232,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 
 ### ⑰ v0.16.0 — ranger la maison (2e jet)
 > Livré en run autonome 2026-10-14 : nettoyage cockpit, discipline de grooming, « en cours » déduit des branches (+ADR-0077), lentille étiquette≠comportement, garde-fous de test. La **décision ADR** (où vivent les ADR) a été tranchée en séance → ADR-078. **Parkées hors v0.16 le 2026-10-15** (réveil au grooming) : le déménagement `scrum/` (`20261007154842643` + `20261007154842917` — sous revue, pas en run autonome) et le tri des sorties de rétro (`20261002155911271` — grooming + panel adverse).
-- `20261011142027875` — où vivent les ADR : deux dossiers + règle de routage · P2 · `build` → ADR-078
+- ~~`20261011142027875` — où vivent les ADR : deux dossiers + règle de routage · P2 · `build` → ADR-078~~ — shipped
 - ~~`20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `build` (ready)~~ — shipped
 - ~~`20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `build` (ready)~~ — shipped
 - ~~`20261002130235353` — « en cours » se déduit des branches · P2 · `groom`~~ — split en ↓

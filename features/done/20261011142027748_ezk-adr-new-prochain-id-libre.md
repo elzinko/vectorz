@@ -37,7 +37,7 @@ physiques pour un seul espace de numéros logique.
 Câbler `check-adr-ids.sh . --next` comme **source du prochain id**, exposée en commande
 (`ezk adr new`) qui scanne les **deux** registres et crée le squelette au bon numéro. Partie
 **purement mécanique** : aucune décision d'archi (celle-ci vit dans la fiche sœur
-[où vivent les ADR dans un repo multi-projets](../20261011142027875_ou-vivent-les-adr-repo-multi-projets.md)).
+[où vivent les ADR dans un repo multi-projets](20261011142027875_ou-vivent-les-adr-repo-multi-projets.md)).
 
 ## Critères d'acceptation
 
