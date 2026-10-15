@@ -105,14 +105,19 @@ Ajouter à l'ouverture d'une session un ou deux champs **lisibles par un humain*
   emprunté à une API propre à un outil. L'identité vient de **git (pur FS)**. Donc **aucune
   dépendance à Claude Desktop** ni à un IDE précis : tout outil qui parle MCP émet pareil.
 
-### Volet 1bis — le rattachement par défaut (comportement, PO)
+### Volet 1bis — le rattachement : explicite, jamais deviné (PO, ADR-075 D3)
 
-Quand la supervision est **activée** sur le projet, **toute session ouverte s'y rattache par
-défaut** — *opt-out*, pas *opt-in*. On évite ainsi les sessions qui échappent au suivi (le
-groupe « hors méthode » du cas 7). Le rattachement est **débrayable** : par la **config du
-projet**, ou sur **demande explicite** d'une session. C'est **ezk** qui attache une session au
-bon run (volet 0). Contrainte tool-agnostique : ce comportement vit côté méthode/émetteur, pas
-dans un IDE précis.
+Une session est rattachée à un chantier (run) **seulement quand on l'a dit** — jamais par
+co-présence dans un projet. Deux voies :
+
+- **Piloté** : une session pilote lance les ouvrières et leur **passe la clé** du chantier.
+- **À la main** : une **étape d'accueil** à l'ouverture (crochet `CLAUDE.md` + skill
+  d'ouverture) lit les chantiers ouverts + la version/le sprint en cours et **propose**
+  rattachement ou autonome ; l'humain confirme, une règle de config peut auto-confirmer les cas
+  clairs, sinon la session est **autonome** (ou « hors méthode », cas 7B).
+
+Garde-fous : advisory (pas un verrou), **ne bloque jamais**, **dégrade en autonome**,
+**débrayable par config**. Tool-agnostique : vit côté méthode, pas dans un IDE.
 
 ### Volet 2 — le modèle de concurrence (comment les sessions coexistent)
 
@@ -212,11 +217,13 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
   Chronologie, la Vue d'ensemble, les compteurs, les badges « en run », le minuteur de
   silence. C'est un critère, pas un détail.
 - **ADR** : [ADR-075 — Run et session, deux entités distinctes](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)
-  (Proposé le 2026-10-14, à ratifier en panel adverse). Il grave : run ≠ session, la jointure par
-  l'évènement (`session_id` + `run_id`), l'identité par git (tool-agnostique), la concurrence par
-  visibilité (pas de verrou), **un journal par worktree** (modèle B recommandé ; C au panel), le
-  contrat `@0.2`, et la représentation board (chronologie D+B, accueil « Tous les projets »,
-  rattachement opt-out). Clé : la **session existe déjà** (`ezk-sessions`, ADR-0042/0043), on la relie.
+  (**Accepté** le 2026-10-15 — ratifié en panel adverse le 2026-10-14, **modèle B**, corrections
+  intégrées). Il grave : run (chantier) ≠ session (ouvrier), la jointure par l'évènement, la
+  **clé de chantier** (version+milestone, en payload de `run.started`) comme clé d'agrégation
+  (**jamais le `run_id`** ; `runDir` reste clé de stockage), le **rattachement explicite**
+  (piloté ou étape d'accueil, jamais deviné), **un journal par worktree** (B), le contrat `@0.2`,
+  et le read-model + la découverte des worktrees comme **travail neuf**. La **session existe déjà**
+  (`ezk-sessions`, ADR-0042/0043), on la relie. Découpage de build : 5 fiches sœurs en fin d'ADR.
 - **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
   — 8 cas : 1-5 côté Activité (étiquette d'impact chacun), **6 la Chronologie — piste retenue
   D+B, 3 niveaux** (runs → run+sessions → session), **7 la hiérarchie avec 2 variantes** (arbre ·

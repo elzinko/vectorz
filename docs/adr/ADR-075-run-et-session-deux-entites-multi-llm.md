@@ -1,208 +1,157 @@
 # ADR-075 — Run et session : deux entités distinctes, pour superviser plusieurs LLM concurrents
 
-- **Statut** : Proposé (2026-10-14) — ratification via panel adverse (architecte + devs + juge), sur le modèle d'ADR-0042/0043.
-- **Cadre la fiche** : [20261014122044421 — Board : runs et sessions concurrents](../../features/20261014122044421_board-runs-concurrents-identite-lisible.md) (P1, v0.18.0, milestone board) ; conçu par maquette ([docs/maquettes/board-runs-concurrents.html](../maquettes/board-runs-concurrents.html), 8 cas).
-- **Amende (de façon bornée)** :
-  - [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md):21 — « un run = une session de la méthode » devient **« un run réunit une ou plusieurs sessions »**. Le reste d'ADR-074 (run → moments → fiches, deux portées de config) est intact.
-  - `products/mega-city/docs/adr/0019` (normalisation de la racine vers l'arbre principal) — son **défaut** change **quand la supervision multi-sessions est activée** : on écrit **un journal par worktree** (voir D5). L'échappatoire `SUPERVISION_PER_WORKTREE` devient le mode normal dans ce cas.
+- **Statut** : Accepté (2026-10-15). Ratifié par **panel adverse** le 2026-10-14 (architecte + dev émetteur + dev board + juge → GO-avec-changements, **modèle B**) ; corrections du panel intégrées ; **attribution du chantier tranchée avec le PO** le 2026-10-15.
+- **Cadre la fiche** : [20261014122044421 — Board : runs et sessions concurrents](../../features/20261014122044421_board-runs-concurrents-identite-lisible.md) (P1, v0.18.0, milestone board) ; conçu par maquette ([board-runs-concurrents.html](../maquettes/board-runs-concurrents.html), 8 cas).
+- **Amende de façon bornée** :
+  - [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md):21 — « un run = une session » devient **« un run (chantier) réunit une ou plusieurs sessions »**.
+  - `products/mega-city/docs/adr/0019` (normalisation racine → arbre principal) — le défaut devient **un journal par worktree** quand la supervision multi-sessions est activée (D5).
+  - [ADR-028](ADR-028-lecteur-journal-mode-moniteur.md) — « un snapshot par `runId` » et le **hot-reload différé des watch-roots** sont rouverts : N journaux par chantier, racines dynamiques (D8, D9).
+  - La **lecture niveau-run** d'[ADR-035](ADR-035-abandon-siege-run-orphelin.md) — le cycle de vie d'un chantier réparti sur N journaux est nouveau (D8). *(La garde d'**écriture** d'ADR-035, elle, est respectée — voir ci-dessous.)*
 - **Respecte sans les rouvrir** :
-  - [ADR-035](ADR-035-abandon-siege-run-orphelin.md) — un seul run **écrivain** par journal, `run_finished` exige `run_id`, garde `expected_run_id`. Ces gardes **restent**, appliquées **par journal** (donc par session).
-  - `products/mega-city/docs/adr/0042` (concurrence inter-sessions = **visibilité advisory, pas verrou**) et `0043` (vue des sessions servie **live**, jamais committée).
-  - [ADR-036](ADR-036-transport-emission-separable-du-runtime.md) (émission = noyau, transports séparables) ; [ADR-028](ADR-028-lecteur-journal-mode-moniteur.md) (projection serveur, front passif) ; [ADR-033](ADR-033-port-metrique-qualite-produit.md) (métriques lues par un port).
-- **Déciders** : PO (Thomas). Modèle d'affichage conçu par maquette et tranché par le PO le 2026-10-14. Le modèle de concurrence (D5, choix B) reste à **ratifier en panel**.
+  - [ADR-035](ADR-035-abandon-siege-run-orphelin.md) **écriture** : un seul écrivain par journal, `run_finished` exige `run_id`, garde `expected_run_id` — tiennent **par journal** (donc par session), inchangés.
+  - [ADR-036](ADR-036-transport-emission-separable-du-runtime.md) y compris **#4** (interdit de rattacher l'émission à un run existant) : `run_id` reste **frappé par l'émetteur**, on ne « reprend » jamais un run_id ; le rattachement passe par une **clé de chantier en payload** (D2), pas par le run_id.
+  - `products/mega-city/docs/adr/0042` (concurrence = **visibilité, pas verrou**), `0043`/`0055` (vues **live, jamais committées**), `0021` (cop1 **n'importe pas** mega-city → la découverte des worktrees est du code **neuf, cop1-local**, D9).
 
 ## En clair
 
-Aujourd'hui le mot « run » porte deux choses à la fois : le **travail de méthode** (réaliser
-une version) et la **session** qui le fait (un LLM, sur un worktree). Dès qu'on lance
-plusieurs sessions, ça coince : le board ne sait plus qui fait quoi.
+Un **run** est un **chantier** : un travail de méthode avec un début et une fin (« réaliser la v0.17 »). Une **session** est un **ouvrier** : un LLM qui travaille un moment, dans son worktree. Un chantier **réunit plusieurs ouvriers** ; chaque note qu'un ouvrier écrit dit **qui** l'a écrite et **pour quel chantier**.
 
-Décision : **séparer les deux**. Un **run** est un travail de méthode. Une **session** est une
-période de travail d'un LLM, attachée à un worktree et une branche. Un run **réunit plusieurs
-sessions** ; chaque évènement du journal dit **qui** l'a produit (session) et **à quel travail**
-il appartient (run). La session n'est pas un concept neuf : elle existe déjà dans le cockpit
-`ezk-sessions` (basé sur les worktrees git). On **relie** ce concept au journal, on n'en crée
-pas un deuxième.
+Deux ouvriers sont sur le même chantier **seulement quand on l'a dit explicitement** — jamais deviné. Deux voies : **piloté** (un chef lance les ouvriers et leur passe le chantier) ou **à la main** (une étape d'accueil propose, l'humain confirme, sinon la session est autonome). Chaque ouvrier a **son carnet** (un journal par worktree, « modèle B ») ; le tableau ramasse les carnets et les **regroupe par chantier**.
 
-Rien de tout ça n'est propre à Claude : l'identité vient de **git** (lecture de fichiers), le
-contrat reste **MCP + JSONL**. Tout outil LLM qui parle MCP émet pareil.
+Rien n'est propre à Claude : l'identité vient de **git**, le contrat est **MCP + JSONL**.
 
 ## Contexte
 
-Six faits cadrent la décision (détaillés dans la fiche).
+Six faits cadrent la décision (détail dans la fiche).
 
-1. **Le modèle confond run et session** (ADR-074). Un travail de méthode s'étale sur plusieurs
-   sessions, ou est mené par plusieurs sessions en parallèle.
-2. **Par défaut, un seul journal par dépôt, un seul run ouvert** : deux sessions concurrentes se
-   bloquent, ou la seconde devient invisible (`project-root.ts` normalise worktree → arbre
-   principal ; `findOpenRun` + l'invariant d'ADR-035).
-3. **Une session n'a pas d'identité parlante** dans le journal : seul un `runId` opaque.
-4. **La Chronologie du board est un fil unique sans notion de session** : les évènements de
-   plusieurs sessions s'entrelacent sans attribution.
-5. **La session existe déjà ailleurs** : le cockpit `ezk-sessions` dérive les sessions des
-   worktrees git, gère la concurrence par **visibilité advisory** (intersection des fichiers
-   touchés), et sert sa vue **live, jamais committée** (ADR-0042/0043). Le journal et le cockpit
-   décrivent tous deux « des sessions », mais depuis deux sources qui ne se parlent pas.
-6. **Tout doit rester tool-agnostique** : le board résout déjà les modèles par IDE (Claude Code,
-   Cursor, Codex CLI, ADR-074) ; le contrat est MCP + JSONL.
+1. Le modèle confond run et session (ADR-074) — or un chantier s'étale sur plusieurs ouvriers, en parallèle ou dans le temps.
+2. Par défaut un seul journal par dépôt et un seul run ouvert → deux sessions concurrentes se bloquent ou l'une devient invisible.
+3. Une session n'a pas d'identité parlante dans le journal (un `runId` opaque).
+4. La Chronologie du board est un fil unique **sans notion de session** → les évènements s'entrelacent sans attribution.
+5. **La session existe déjà** : le cockpit `ezk-sessions` la dérive des worktrees, gère la concurrence par visibilité advisory, sert sa vue live/jamais committée (ADR-0042/0043). On **relie** ce concept au journal.
+6. Tout doit rester **tool-agnostique** (le board résout déjà les modèles par IDE ; contrat MCP + JSONL).
 
 ## Décision
 
-### D1 — Deux entités distinctes : run et session
+### D1 — Deux entités : chantier (run) et ouvrier (session)
 
-- **Run** = une unité de **travail de méthode** (un cadrage, la réalisation d'une version).
-  C'est l'objet autour duquel le board s'organise (run → moments → fiches, ADR-074).
-- **Session** = une **période de travail d'un émetteur LLM**, attachée à **un worktree** et
-  **une branche**, avec un outil donné. C'est la session du cockpit `ezk-sessions` (ADR-0042) —
-  **le même objet**, pas un nouveau. Son type (grooming, dev…) reste une **étiquette
-  d'affichage** dérivée du préfixe de branche (ADR-0042 D2), jamais l'axe de sécurité.
+- **Run = chantier** : une unité de travail de méthode (cadrer un lot, réaliser une version), faite d'étapes (moments) touchant des fiches (ADR-074).
+- **Session = ouvrier** : une période de travail d'un émetteur LLM, attachée à **un worktree** et **une branche**. C'est la session d'`ezk-sessions` — **le même objet**, pas un nouveau. Son type (grooming, dev…) reste une étiquette d'affichage dérivée du préfixe de branche (ADR-0042).
 
-### D2 — L'évènement du journal est la jointure run ↔ session
+### D2 — La jointure, et la clé d'agrégation (tranché, panel)
 
-Chaque évènement porte **deux** identifiants dans son enveloppe : `session_id` (qui l'a produit)
-et `run_id` (à quel travail de méthode il appartient).
+Chaque évènement porte, dans son enveloppe, **`session_id`** (qui) et une **clé de chantier** (pour quel travail). Règles, **vérifiées contre le code** :
 
-- Un run **réunit N sessions** (successives ou concurrentes) : on retrouve ses sessions en
-  groupant ses évènements par `session_id`.
-- Une session **contribue à un ou plusieurs runs** au fil de sa vie.
-- **Pas de clé de durée de vie** entre les deux : la jointure, c'est l'évènement. Le board
-  reconstruit l'arbre run → sessions → évènements en lisant le journal.
+- `run_id` reste **frappé par l'émetteur**, horodaté, **unique par session** (`generateRunId`, `runtime.ts:100-103`). Cela préserve le tri de `findOpenRun`, l'invariant « un seul run ouvert par journal » et l'interdit ADR-036 #4. **On n'agrège JAMAIS par `run_id`.**
+- La **clé de chantier** (« réalisation v0.17 ») voyage dans le **payload de `run.started`**. Elle est **construite depuis la `version` (+ `milestone`)** — pas un champ qu'un humain remplit sur une fiche.
+- Le board **regroupe par cette clé, qualifiée par la racine de projet**. La **clé de stockage reste `runDir`** : la conception anti-collision de `SupervisionService.ts:29-33` (« le runId n'est qu'un champ d'affichage, jamais une clé ») est **préservée intacte**. La clé de chantier est traitée en donnée semi-hostile (forme validée, scopée par racine).
 
-### D3 — Qui frappe quoi, et l'identité vient de git
+### D3 — Comment une session reçoit sa clé de chantier (tranché, PO)
 
-- `session_id` : **frappé par l'émetteur** à l'ouverture de la session (comme `run_id`
-  aujourd'hui), accompagné d'un **libellé lisible** dérivé de **git en pur file-system** —
-  nom de worktree, branche (lecture de `.git/HEAD`, sans lancer `git`, contrainte
-  mega-city ADR-0019). Repli : nom de worktree si la branche est détachée.
-- `run_id` : reste **frappé par l'émetteur**, mais **la méthode (ezk) décide le rattachement** —
-  ouvrir un nouveau run, ou **reprendre** un run existant quand une session poursuit un travail
-  déjà commencé. Le mécanisme exact (comment ezk nomme et retrouve « le run réalisation v0.17 »)
-  est un détail de build ; l'ADR fige que **l'identité du run appartient à la méthode**, celle
-  de la session à l'émetteur.
-- **Tool-agnostique, dur** : aucune dépendance à une API propre à Claude Desktop ni à un IDE.
-  Le croisement de transcripts Claude Code (`analyze.ts`) reste **hors contrat et hors board**
-  (diagnostic local optionnel).
+**Le lien est toujours explicite — jamais deviné par co-présence dans un projet.** Deux voies :
 
-### D4 — La concurrence se gère par la visibilité, pas par un verrou (aligne ADR-0042)
+- **Piloté** : une session **pilote** (orchestrateur) ouvre le chantier et **passe la clé** aux sessions ouvrières qu'elle lance. C'est le cas « plusieurs features indépendantes d'une version », et c'est déjà l'esprit d'`ezk-product-build`.
+- **À la main** : une **étape d'accueil** à l'ouverture de session (crochet `CLAUDE.md` + skill d'ouverture) lit les **chantiers ouverts** + la **version/le sprint en cours**, puis **propose** : rattacher, ou autonome. L'humain confirme ; une **règle de config** peut auto-confirmer les cas clairs (ex. branche du sprint en cours) ; sinon la session est **autonome** (son propre chantier) ou **hors méthode** (visible comme telle, cas 7B).
 
-Plusieurs sessions ouvertes **en même temps** sont **normales** et **montrées**. On n'ajoute
-**aucun verrou exclusif**. Le garde-fou de collision reste celui d'ADR-0042 (intersection des
-fichiers touchés, advisory pour les sessions supervisées, bloquant pour les runs autonomes).
+Garde-fous de l'accueil : **advisory, pas un verrou** (ADR-0042) ; **ne bloque jamais** le travail ; **dégrade en autonome** s'il ne sait pas trancher ; **configurable par projet** (débrayable). En run **autonome** sans humain : clé passée par le pilote (explicite) ou autonome par défaut — aucune question.
 
-Corollaire : **l'invariant « un seul run ouvert » d'ADR-035 n'est pas une politique de
-concurrence** — c'est une **garde d'intégrité d'écriture** d'**un** journal (enveloppe, `seq`,
-`event_id` calculés en un seul endroit). On la **préserve**, on ne l'étend pas en interdit
-multi-sessions.
+### D4 — Concurrence par visibilité, pas verrou
 
-### D5 — Un journal par session (= par worktree) — modèle B, **recommandé**
+Plusieurs sessions ouvertes en même temps sont normales et montrées. **Aucun verrou exclusif** (ADR-0042). L'invariant « un seul run ouvert » d'ADR-035 est une **garde d'intégrité d'écriture** d'**un** journal, pas une politique de concurrence : on le **préserve**, on ne l'étend pas en interdit multi-sessions.
 
-Pour que la garde d'écriture d'ADR-035 tienne **sans aucun nouveau verrou**, chaque session
-écrit **son propre journal** : `<worktree>/.supervision/runs/`. Le mode par-worktree
-(`SUPERVISION_PER_WORKTREE`, échappatoire de mega-city ADR-0019) **devient le mode normal**
-quand la supervision multi-sessions est activée.
+### D5 — Un journal par session (= par worktree) : modèle B (ratifié)
 
-- Deux sessions n'écrivent **jamais** dans le même journal ⇒ « un seul run ouvert » tient **par
-  journal** (donc par session), **inchangé**. Zéro verrou ajouté.
-- Le **board (daemon) découvre les worktrees** (`git worktree list`, exactement comme
-  `ezk-sessions` le fait déjà) et **agrège par `run_id`** : un run qui s'étale sur deux
-  worktrees voit ses évènements réunis à la lecture.
-- La **détection d'orphelin** (`presumed_dead`, ADR-028) et l'**abandon siège** (ADR-035)
-  restent **par session/run**, inchangés.
+Chaque session écrit **son propre journal** (`<worktree>/.supervision/runs/`) : la garde d'écriture d'ADR-035 tient **par journal**, **zéro nouveau verrou**. Le mode par-worktree devient le mode normal en multi-session (amende le défaut de mega-city 0019).
 
-C'est le choix le plus conservateur : il ne touche **pas** à l'invariant d'intégrité, et il
-**aligne** session = worktree, déjà le modèle d'`ezk-sessions`. Son coût est la **découverte
-multi-racines** par le daemon (déjà outillée côté `ezk-sessions`).
+- **B vs C — pourquoi B.** C garderait une seule racine mais obligerait à réécrire `findOpenRun` en « liste des runs ouverts » + orphelin par run : on toucherait la garde d'écriture durcie sur un bug P0 (fiche 0168). Un bug en **lecture** (B) dégrade une vue ; un bug en **écriture** (C) corrompt des journaux. **B paie en travail de lecture ce que C paierait en risque sur l'intégrité.**
+- **Limite de B, assumée** : session = worktree est **rigide**. Deux LLM dans le **même** checkout → le second est bloqué (comme aujourd'hui). YAGNI, aucun besoin prouvé ; énoncé comme frontière, pas tu.
+- **`.supervision/` gitignoré sur TOUTES les branches** (+ un garde type `untracked-views`), sinon un worktree sur une vieille branche tracke son journal → churn (rouvre 0043/0055).
 
-Le **choix B vs C** (ci-dessous) est le point que le **panel** doit ratifier.
+### D6 — Substrat et cycle de vie d'une session (panel, émetteur)
 
-### D6 — Contrat additif : `cop1/supervisability@0.2`
+Le runtime est **sans mémoire** et le journal est **par-run** : il n'y a pas de domicile naturel pour une session qui couvre plusieurs runs. Donc :
 
-Deux ajouts à l'enveloppe/aux types, **rétro-compatibles** : le champ d'enveloppe `session_id`,
-et deux types d'évènement `session.started` / `session.finished` (identité lisible dans le
-payload du premier). Un lecteur de `@0.1` **tolère** ces évènements et ce champ (il les ignore).
-Comme l'ajout touche l'**enveloppe** et non un simple champ de payload (contrairement à
-`abandoned_by`, ADR-035), on **bump** l'URI en `@0.2`. La doctrine « la norme, c'est le format »
-d'ADR-036 tient : un seul endroit calcule l'enveloppe.
+- `session_id` vit dans l'**enveloppe** des évènements run-scopés, **frappé par l'émetteur** (comme `run_id`) ; un petit fichier par worktree (`<worktree>/.supervision/session.json`) le fige une fois.
+- `run.started` **reste la première ligne** de chaque journal de run (le validateur l'exige, `reduceState.ts`) : `session.*` ne sont pas des évènements de tête.
+- `session.started` / `session.finished` sont **best-effort** : le process MCP est tué par l'hôte, sans hook fiable → **le board infère la fin** (silence prolongé / dernier run clos).
+- Les `session.*` sont émis **hors fenêtre de jalon ouvert** (sinon violation `state.activity_while_gate_open`).
 
-### D7 — La représentation sur le board (tranchée par maquette, PO 2026-10-14)
+### D7 — Contrat `cop1/supervisability@0.2`
 
-Servie **live** depuis le journal, **jamais committée** (aligne ADR-0043/0055 : les vues
-dérivées des fiches committées restent séparées).
+Ajouts **additifs** : champ d'enveloppe `session_id`, clé de chantier en payload de `run.started`, types `session.started`/`session.finished`. Le bump est une **honnêteté de format** (l'enveloppe change, ADR-036), pas une nécessité d'interop. **Le lecteur `@0.2` doit enregistrer** `session_id` et les types `session.*` (`KNOWN_ENVELOPE_FIELDS`, `KNOWN_EVENT_TYPES`) : sinon un lecteur `@0.1` **ne les ignore pas** — il émet une notice par ligne, et un `session.*` pendant un jalon ouvert devient une violation. Fixtures `@0.1` à mettre à jour.
 
-- **Chronologie** = pistes **D + B combinées**, navigation à **3 niveaux** : les runs (global,
-  peu de détail) → un run (ses sessions avec hiérarchie + son fil fusionné, chaque évènement
-  étiqueté par sa session) → une session (son propre fil). Le menu de gauche sert à la fois de
-  **liste des sessions** et de **filtre**.
-- **Vue globale des projets** = **accueil « Tous les projets »** (piste 1) : la liste déroulante
-  seule ne montrait pas la flotte. Elle reste un raccourci.
-- **Rattachement par défaut** : supervision activée ⇒ une session ouverte **s'y rattache sans
-  geste** (opt-out), **débrayable** par la config du projet ou sur demande explicite. On évite
-  les sessions « hors méthode » ; celles qui le sont restent **visibles comme telles**.
+### D8 — Read-model étendu = travail neuf (panel, board)
 
-### D8 — Hiérarchie des sessions
+Aujourd'hui `projectRun` lit **un** journal et rend des **agrégats** (pas de liste d'évènements, aucune notion de session). À construire :
 
-Une session peut en **piloter** d'autres (un orchestrateur lance des filles). La relation
-« piloté par » est portée par un champ optionnel de `session.started` et **affichée** en arbre
-(cas 7 de la maquette). Elle alimente le menu de gauche de la Chronologie (D7).
+- un projecteur exposant la **liste d'évènements étiquetés `session_id`** ;
+- un **index « clé de chantier → sessions → évènements »** (+ le champ `piloted_by` pour l'arbre de hiérarchie, cas 7) ;
+- une **règle d'ordonnancement inter-journaux tolérante** : pas le `ts` brut (semi-hostile, déjà écarté au profit de `lastAbsorbedAt`) — `ts` + départage stable par `session_id`/`seq`, dérive bornée ;
+- le **cycle de vie d'un chantier réparti sur N journaux** (en cours / au jalon / fini / orphelin) et la **sémantique badges/compteurs** (par-session vs par-chantier), sans double compte.
+
+### D9 — Découverte des worktrees = code neuf, cop1-local (panel, ADR-021)
+
+Le watcher prend des `watchRoots` **statiques**, lus une fois (`JournalWatcherAdapter.ts:97-113`). D5 exige :
+
+- un **énumérateur de worktrees propre à cop1** (pas d'import mega-city, ADR-021 — recopie légère comme le lecteur `registry.ts`) ;
+- une **gestion dynamique des watch-roots** (ajout/retrait à chaud) — rouvre le hot-reload différé d'ADR-028 — avec l'impact sur le cap `MAX_WATCHED_RUN_DIRS=512` (projets × worktrees × runs) ;
+- noter la re-projection **fichier entier** (ADR-028) sur de longs journaux multi-sessions : le replay incrémental différé est rouvert (borné).
+
+### D10 — Identité par git, pur FS, chemin correct ; tool-agnostique
+
+Dans un worktree lié, `.git` est un **fichier** `gitdir:` → la branche se lit dans `<gitdir>/HEAD` (symref `ref: refs/heads/<branche>`), pas `<root>/.git/HEAD`. On **réutilise la résolution de `project-root.ts`** (gitdir/commondir, déjà en pur FS, sans `git`). Repli HEAD détachée → nom de worktree. Aucune dépendance à une API Claude ; le croisement de transcripts Claude Code (`analyze.ts`) reste **hors contrat et hors board**.
+
+### D11 — Représentation board (PO, sur maquette — hors débat panel)
+
+Servie **live** depuis les journaux, **jamais committée** (ADR-0043/0055). Chronologie **D+B à 3 niveaux** (les chantiers → un chantier avec ses sessions + son fil fusionné → une session) ; **accueil « Tous les projets »** ; rattachement par l'accueil (D3).
 
 ```mermaid
 flowchart TB
-  subgraph METHODE["Travail de méthode (ezk possède l'identité du run)"]
-    RUN["RUN · réalisation v0.17<br/>run_id"]
+  K["CHANTIER (run)<br/>clé « réalisation v0.17 » = version (+ milestone)<br/>posée par la méthode au démarrage"]
+  subgraph RATT["Rattachement — toujours explicite"]
+    P1["piloté : le chef passe la clé<br/>aux ouvriers qu'il lance"]
+    P2["à la main : l'accueil propose,<br/>l'humain confirme, sinon autonome"]
   end
-  subgraph SESS["Sessions concurrentes = worktrees (l'émetteur possède session_id)"]
-    S1["session A<br/>⎇ feat/0211 · wt-board"]
-    S2["session B<br/>⎇ feat/0224 · wt-fiches"]
-  end
-  RUN -. rattache .- S1
-  RUN -. rattache .- S2
-  S1 -->|"events {session_id:A, run_id:v0.17}"| J1[(".supervision/runs/<br/>de wt-board")]
-  S2 -->|"events {session_id:B, run_id:v0.17}"| J2[(".supervision/runs/<br/>de wt-fiches")]
-  J1 --> BOARD["Board / daemon<br/>découvre les worktrees,<br/>agrège par run_id"]
-  J2 --> BOARD
-  BOARD --> VIEW["Chronologie : RUN v0.17 → sessions A, B → leurs fils"]
+  K --> P1
+  K --> P2
+  P1 --> S1["session A · feat/0211<br/>events {session_id, clé}"]
+  P2 --> S2["session B · feat/0224<br/>events {session_id, clé}"]
+  S1 --> J1[(".supervision/ du worktree A")]
+  S2 --> J2[(".supervision/ du worktree B")]
+  J1 --> BO["Board : regroupe par CLÉ de chantier<br/>(jamais par run_id ; runDir = clé de stockage)"]
+  J2 --> BO
+  BO --> V["Chronologie : chantier v0.17 → sessions A, B → leurs fils"]
 ```
 
-> **Figure — Un run, deux sessions, deux journaux (modèle B).** La méthode possède l'identité du
-> run ; l'émetteur, celle de la session. Chaque évènement porte les deux. Le board découvre les
-> worktrees et réassemble par `run_id`. Aucun journal n'est partagé entre sessions, donc la garde
-> d'écriture d'ADR-035 tient par journal, sans nouveau verrou.
+> **Figure.** La méthode pose la clé du chantier (depuis version+milestone). Deux voies explicites l'amènent à une session : le chef (piloté) ou l'accueil (manuel). Chaque session écrit son propre journal (B). Le board regroupe par la clé, jamais par le `run_id` (qui reste un identifiant d'affichage, per-session) ; `runDir` reste la clé de stockage anti-collision.
 
 ## Options considérées
 
 | # | Option | Verdict |
 |---|---|---|
-| **B** | **Un journal par session (par worktree), agrégé par le board** | ✅ **Recommandé**. Ne touche pas à l'invariant d'intégrité d'ADR-035 ; aligne session = worktree (ezk-sessions) ; découverte multi-racines déjà outillée. Coût : le daemon surveille plusieurs racines. |
-| **C** | **Racine partagée, N runs ouverts concurrents indexés par id** | 🔁 **À départager en panel**. Garde **une seule racine** (le Moniteur voit tout sans découverte), et c'est *faisable* car les verrous d'écriture sont **déjà par dossier de run** et `run_finished` exige déjà `run_id`. Mais il faut **relâcher** l'invariant « un seul run ouvert » d'ADR-035 (réécrire `findOpenRun` en « liste des runs ouverts », orphelin par run) — on touche une garde durement acquise. Reporté derrière B tant que le besoin « deux sessions dans le même worktree » n'est pas prouvé. |
-| A | **Pilote unique : un seul run supervisé par dépôt** | ❌ Aucune visibilité du parallélisme — contredit le besoin de la fiche. |
-| — | **Verrou exclusif inter-sessions** | ❌ Déjà écarté par ADR-0042 (visibilité, pas verrou). |
-| — | **Inventer un concept « session » parallèle à `ezk-sessions`** | ❌ Deux modèles de session divergeraient. On unifie sur l'existant (worktree). |
+| **B** | Un journal par session (par worktree), regroupé par clé de chantier | ✅ **Ratifié** (panel). Préserve la garde d'écriture d'ADR-035 ; aligne session = worktree. Coût : découverte multi-racines + read-model neuf (D8/D9). |
+| C | Racine partagée, N runs ouverts indexés par id | ❌ Rouvre l'invariant d'écriture d'ADR-035 (risque sur une garde P0) ; le casse-tête read-model est **identique** à B ⇒ C n'achète rien en lecture et coûte en risque. |
+| — | `run_id` déterministe (dérivé de version+milestone) comme clé d'agrégation | ❌ Casse le tri chrono de `findOpenRun` et est collision-prone ; la clé logique va en **payload**, pas dans le run_id. |
+| — | Agréger par `run_id` | ❌ Contredit l'anti-collision de `SupervisionService` (run_id = affichage, jamais une clé). |
+| A | Pilote unique obligatoire | ❌ Interdirait les sessions manuelles autonomes (grooming, correctif hors cadre) — besoin réel du PO. |
+| — | Relier deux sessions par co-présence dans le projet (deviner) | ❌ Faux et risqué ; le lien est explicite (D3). |
 
 ## Conséquences
 
-- ✅ **Le board peut dire vrai en multi-sessions** : combien de sessions, que fait chacune, sur
-  quel run — en activité comme en chronologie.
-- ✅ **Zéro nouveau mécanisme de concurrence** : on réutilise git (worktrees), la garde
-  d'écriture d'ADR-035 et le détecteur de collision d'ADR-0042.
-- ✅ **Tool-agnostique** : identité par git, contrat MCP + JSONL ; marche pour tout LLM.
-- ✅ **Un seul concept de session** : le journal et `ezk-sessions` convergent sur le worktree.
-- ⚠️ **Le daemon surveille plusieurs racines** (découverte des worktrees) — nouveau travail de
-  projection, borné (même machinerie qu'`ezk-sessions`).
-- ⚠️ **Contrat `@0.2`** : additif et rétro-compatible, mais c'est un bump d'enveloppe ; les
-  lecteurs et fixtures doivent l'accepter.
-- ⚠️ **Le défaut de normalisation de racine change** en multi-sessions (mega-city ADR-0019
-  amendé) : à documenter pour ne pas surprendre une session mono-worktree.
-- 🔁 **Différé (YAGNI)** : le modèle C (racine partagée, N runs ouverts) ; deux sessions dans un
-  même worktree ; tout TTL d'auto-abandon (ADR-035 D7 tient).
+- ✅ Le board dit vrai en multi-sessions (activité **et** chronologie), sans que le PO coordonne à la main : le lien est posé par le pilote ou proposé par l'accueil.
+- ✅ Zéro nouveau mécanisme de concurrence ni de verrou ; la garde d'écriture d'ADR-035 reste intacte.
+- ✅ Un seul concept de session (worktree), unifié avec `ezk-sessions` ; tool-agnostique.
+- ⚠️ **Travail neuf non trivial** : read-model étendu (D8) et découverte dynamique des worktrees (D9) — c'est le vrai coût, à ne pas sous-estimer.
+- ⚠️ Contrat `@0.2` (lecteur + fixtures) ; `.supervision/` gitignoré partout + garde.
+- ⚠️ `session = worktree` rigide (D5) ; défaut de normalisation de racine changé en multi-session.
+- 🔁 Différé : modèle C ; deux sessions dans un même worktree ; tout TTL d'auto-abandon.
 
-## Découpage de build (sans chapeau, ADR-029 : la fiche est le document)
+## Découpage de build (sans chapeau, ADR-029)
 
-Fiches sœurs à créer après ratification, liées par `milestone: board` + une version, référençant
-cet ADR (pas de fiche chapeau) :
+Fiches sœurs, liées par `milestone: board` + une version, référençant cet ADR :
 
-1. **Émetteur (mega-city)** — `session_id` + `session.started/finished`, identité git pur FS,
-   mode par-worktree normal, contrat `@0.2`.
-2. **Board — modèle de lecture (cop1)** — agrégation multi-racines par `run_id`, read-model
-   run → sessions → évènements.
-3. **Board — Chronologie D+B** (3 niveaux) et **accueil « Tous les projets »**.
-4. **Rattachement par défaut** (opt-out débrayable) côté méthode.
+1. **Émetteur (mega-city)** — `session_id` (enveloppe) + `session.json` par worktree + `session.started/finished` best-effort ; clé de chantier en payload de `run.started` (depuis version+milestone) ; mode par-worktree par défaut ; branche via `<gitdir>/HEAD` ; contrat `@0.2` + lecteur + fixtures ; `.supervision/` gitignoré partout + garde.
+2. **Board — read-model (cop1)** — projecteur à liste d'évènements étiquetés session + index clé→sessions→events + ordonnancement inter-journaux tolérant + cycle de vie du chantier multi-journaux ; regroupement par clé (runDir reste clé de stockage).
+3. **Board — découverte & watch dynamique (cop1)** — énumérateur de worktrees cop1-local + watch-roots dynamiques + cap 512 revu.
+4. **Board — Chronologie D+B (3 niveaux) + accueil « Tous les projets »** (servis live).
+5. **Rattachement — étape d'accueil (méthode)** — crochet `CLAUDE.md` + skill d'ouverture : propose rattachement/autonome, débrayable par config, advisory, dégrade en autonome.
