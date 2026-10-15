@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.23.0
 labels: [dashboard, board, supervision, multi-session, read-model]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # couche de lecture, pas d'écran ; prouvée par tests du read-model
@@ -31,6 +31,11 @@ Le projecteur actuel lit un seul journal et rend des agrégats (état, jalons), 
 d'évènements ni notion de session, et la clé de stockage est le **dossier de run** (anti-collision
 délibérée : le `run_id` n'est jamais une clé). Un chantier réparti sur N journaux n'a donc, pour
 l'instant, aucun moyen d'être reconstitué.
+
+**Valeur.** Sans cette couche, le board **ne peut pas dire vrai** en multi-sessions : il montre
+un ouvrier et laisse les autres invisibles. Avec elle, « un chantier, ses ouvriers, ce que fait
+chacun » devient affichable. C'est le **socle de lecture** dont dépendent les trois surfaces
+d'après — découverte des worktrees, chronologie à 3 niveaux, accueil « Tous les projets ».
 
 ## Proposition (ADR-079 §D2, D8)
 
@@ -65,6 +70,13 @@ l'instant, aucun moyen d'être reconstitué.
 
 ## Notes / décisions
 
+- **Taille (évaluée).** Cinq critères, **une seule surface** (la couche de lecture cop1) : sous
+  les deux seuils de découpe (plus de 6 critères, ou plus de 2 surfaces). Les cinq critères sont
+  cohésifs — fusion par clé, non-fusion inter-racines, anti-clé `run_id`, ordre tolérant, cycle de
+  vie — et le cycle de vie se calcule **sur** le modèle fusionné, pas à côté. **Elle reste entière**
+  (le « se découpera peut-être » du panel est tranché : non). Si le build déborde, le seam naturel
+  serait « fusion + ordre » (critères 1-4) d'un côté, « cycle de vie + compteurs » (critère 5) de
+  l'autre — à décider en cours de sprint, pas d'avance.
 - Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8. Dépend
   de la clé posée par l'émetteur ([T3 clé de chantier](20261015133600328_emetteur-cle-de-chantier.md)).
 - **Sœurs (sans chapeau)** : émetteur, découverte, chronologie+accueil, étape d'accueil —

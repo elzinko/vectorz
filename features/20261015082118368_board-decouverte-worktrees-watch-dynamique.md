@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.23.0
 labels: [dashboard, board, supervision, multi-session, daemon]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # plomberie daemon ; prouvée par tests + logs
@@ -31,6 +31,10 @@ Le watcher reçoit une liste de racines **statique** (lue une fois à l'init ; l
 différé par ADR-028). Les worktrees, eux, naissent et meurent en cours de session. Et cop1
 **n'importe jamais mega-city** (ADR-0021) : l'outillage worktree d'`ezk-sessions` vit dans
 mega-city — il faut une couture **propre à cop1**.
+
+**Valeur.** Le board ne voit que les établis connus **au démarrage**. Un ouvrier qui ouvre son
+worktree après coup reste **invisible** — c'est exactement le trou que la supervision
+multi-sessions doit boucher. Cette fiche alimente le read-model : sans les carnets, rien à fusionner.
 
 ## Proposition (ADR-079 §D9)
 

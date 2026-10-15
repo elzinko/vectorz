@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: v0.23.0
 labels: [dashboard, board, ux, supervision, multi-session]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after # l'écran chronologie + l'accueil, avant/après multi-sessions

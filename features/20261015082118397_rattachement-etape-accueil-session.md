@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version: v0.23.0
 labels: [supervision, methode, multi-session, onboarding]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # comportement de méthode ; prouvé par le journal (clé posée) + le texte
