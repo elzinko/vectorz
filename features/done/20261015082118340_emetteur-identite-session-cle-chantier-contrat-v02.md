@@ -7,12 +7,20 @@ product: mega-city
 milestone: board
 version: v0.23.0
 labels: [supervision, emetteur, multi-session, contrat]
-status: idea
+status: split
+split_into: ["20261015133600298", "20261015133600314", "20261015133600328"]
 blocked:
 pr:
 evidence: none # brique émetteur, pas d'écran ; prouvée par journal + validateur
 created: 2026-10-15
 ---
+
+> 🧩 **Découpée le 2026-10-15** (règle de taille : ~5 surfaces, seuil 2) en 3 tranches, dans
+> l'ordre des dépendances :
+> [T1 contrat @0.2 + journal par worktree](../20261015133600298_emetteur-contrat-v02-journal-par-worktree.md) ·
+> [T2 identité de session](../20261015133600314_emetteur-identite-de-session.md) ·
+> [T3 clé de chantier](../20261015133600328_emetteur-cle-de-chantier.md).
+> Le contenu ci-dessous est la fiche d'origine, conservée pour trace.
 
 # 20261015082118340 — Émetteur : identité de session + clé de chantier + contrat @0.2
 
@@ -23,7 +31,7 @@ contrat du journal en `@0.2`.
 
 **Si tu arrives frais.** Le *journal* est le fichier où la méthode note ce qu'elle fait. Une
 *session* = un LLM sur un worktree. Un *chantier* (run) = un travail de méthode. Détail et
-justification dans [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
+justification dans [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
 
 ## Contexte / Problème
 
@@ -64,8 +72,8 @@ de dire qui a écrit quoi, ni de réunir deux sessions d'un même chantier. L'é
 
 ## Notes / décisions
 
-- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Accepté,
-  modèle B). Fiche de design : [runs et sessions concurrents](20261014122044421_board-runs-concurrents-identite-lisible.md).
+- Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Accepté,
+  modèle B). Fiche de design : [runs et sessions concurrents](../20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : read-model, découverte, chronologie+accueil, étape d'accueil —
   liées par `milestone: board` + `v0.23.0`. Découpage en fin d'ADR-079.
 - **Taille** : touche plusieurs surfaces (enveloppe, cycle de vie, contrat, gitignore) — **à

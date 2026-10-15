@@ -299,7 +299,9 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 
 ### ㉔ v0.23.0 — superviser plusieurs LLM (multi-sessions, conçu + ratifié en panel)
 > Run (chantier) ≠ session (ouvrier) : un journal par worktree, reconstruit par chantier, chronologie à 3 niveaux, accueil « Tous les projets ». Conçu par maquette (8 cas) et **ratifié en panel adverse** (`ADR-079`, modèle B) le 2026-10-14 ; design de référence `20261014122044421`. Affine le board v0.17 ; ses écrans (activité, chronologie) se construisent **sans graver « run = session »** pour étendre au lieu de réécrire. Ordre = dépendances : l'émetteur pose l'identité, le read-model et la découverte l'exploitent, l'écran vient après. **Fiches créées le 2026-10-15, à groomer.**
-- `20261015082118340` — émetteur : identité session + clé de chantier + contrat @0.2 · P1 · `groom`
+- `20261015133600298` — émetteur T1 : contrat @0.2 + journal par worktree · P1 · `groom`
+- `20261015133600314` — émetteur T2 : identité de session · P1 · `groom`
+- `20261015133600328` — émetteur T3 : clé de chantier · P1 · `groom`
 - `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `groom`
 - `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `groom`
 - `20261015082118382` — board : chronologie 3 niveaux + accueil « Tous les projets » · P2 · `groom`

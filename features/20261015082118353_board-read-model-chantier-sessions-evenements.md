@@ -66,7 +66,7 @@ l'instant, aucun moyen d'être reconstitué.
 ## Notes / décisions
 
 - Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8. Dépend
-  de la clé posée par l'émetteur ([fiche émetteur](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md)).
+  de la clé posée par l'émetteur ([T3 clé de chantier](20261015133600328_emetteur-cle-de-chantier.md)).
 - **Sœurs (sans chapeau)** : émetteur, découverte, chronologie+accueil, étape d'accueil —
   `milestone: board` + `v0.23.0`.
 - Respecte « live, jamais committé » (ADR-0043/0055) : le read-model sert, il n'écrit rien.
