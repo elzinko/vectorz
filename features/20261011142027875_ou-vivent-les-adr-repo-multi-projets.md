@@ -7,8 +7,8 @@ product: vectorz
 milestone:
 version: v0.16.0
 labels: [adr, archi]
-status: idea
-blocked: "attend-panel — attend un panel adverse (ezk-architect + ezk-pm) — fiche de décision structurelle (où vivent les ADR), à tenir avec le PO, pas un build autonome"
+status: ready
+blocked:
 split_from: "20261010114133097"
 pr:
 evidence: none # décision + ADR, pas d'écran
@@ -63,3 +63,15 @@ dossier » ; aucune reco de fusion n'a été appliquée sans cet ADR.
 - **Grooming 2026-10-13** : laissée `idea` + `blocked:` à dessein. Son livrable est un **panel + ADR**,
   pas du code — décision structurelle (leçon mémoire : pas de reco de fusion des dossiers sans panel).
   Elle se tranche en séance avec le PO, pas par un run autonome. Les 8 autres fiches v0.16 sont prêtes.
+
+## Décision (2026-10-15, en séance avec le PO)
+
+Tranchée : **option B — garder les deux dossiers + écrire la règle de routage**, actée dans
+[ADR-078](../docs/adr/ADR-078-ou-vivent-les-adr-routage.md). Le panel adverse complet a été jugé
+**non nécessaire** : l'analyse en lecture seule (lentilles architecte + method-owner) a convergé, et
+l'option ne déplace **rien** physiquement (0 lien cassé, respecte ADR-025 §5 « les ADR ne déménagent
+pas »). Le vrai trou était l'absence d'une règle écrite, pas la numérotation (déjà réglée par la suite
+unique + `ezk adr new`). Décision du PO.
+
+- [x] Un ADR tranche où vivent les ADR (deux dossiers assumés + règle de routage) — ADR-078.
+- [x] Pas de fusion décidée → pas de plan de migration à porter (N.A.).

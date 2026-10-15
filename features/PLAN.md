@@ -231,12 +231,9 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - ~~`20260906142654370` — cop1 affiche les itérations lancées · P2 · `build` (ready)~~ — shipped
 
 ### ⑰ v0.16.0 — ranger la maison (2e jet)
-> Le gros déménagement `scrum/` d'abord, SOUS REVUE (168 fichiers + loi compilée, pas en run autonome), puis le ménage cockpit et la discipline de grooming. **Groomée 2026-10-13 : tout ready sauf la décision ADR (panel).**
-- `20261007154842643` — basculer vectorz vers `scrum/` (gate manuelle) · P2 · `build` (ready, bloquée : sous revue)
-- `20261007154842917` — note de migration `scrum/` + bascule muti · P2 · `build` (ready, bloquée : dépend de la bascule)
-- `20261011142027875` — où vivent les ADR dans un repo multi-projets · P2 · `idea` — **bloquée : panel requis** (décision structurelle, avec le PO)
+> Livré en run autonome 2026-10-14 : nettoyage cockpit, discipline de grooming, « en cours » déduit des branches (+ADR-0077), lentille étiquette≠comportement, garde-fous de test. La **décision ADR** (où vivent les ADR) a été tranchée en séance → ADR-078. **Parkées hors v0.16 le 2026-10-15** (réveil au grooming) : le déménagement `scrum/` (`20261007154842643` + `20261007154842917` — sous revue, pas en run autonome) et le tri des sorties de rétro (`20261002155911271` — grooming + panel adverse).
+- `20261011142027875` — où vivent les ADR : deux dossiers + règle de routage · P2 · `build` → ADR-078
 - ~~`20261010114133345` — le cockpit ne liste plus le projet deux fois · P2 · `build` (ready)~~ — shipped
-- `20261002155911271` — trier les sorties de rétro par nature · P2 · `build` (ready)
 - ~~`20261010114133469` — un ajout de comportement en cours de sprint = story · P2 · `build` (ready)~~ — shipped
 - ~~`20261002130235353` — « en cours » se déduit des branches · P2 · `groom`~~ — split en ↓
 - ~~`20261013131852984` — « en cours » se déduit des branches (portier + vue) · P2 · `build` (ready)~~ — shipped
