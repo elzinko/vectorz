@@ -53,3 +53,10 @@ Preuve : court parcours filmé run → moment → fiche (évidence animée admis
 - Design de référence : [Unifier les tableaux de bord](20261007135620590_refondre-vue-supervision-moniteur-lisible.md).
 - Maquette : [docs/maquettes/board-ezk-dashboard.html](../docs/maquettes/board-ezk-dashboard.html).
 - Décision : [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md).
+- **Garde-fou multi-sessions (ADR-075)** : **ne pas graver « un run = une session »** dans la
+  forme des données. La refonte v0.18
+  ([ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)) fait d'un run un
+  **chantier qui réunit plusieurs sessions**. Prévoir qu'une ligne d'activité puisse porter un
+  **libellé de session** et qu'un run en réunisse N, pour **étendre** cette vue plus tard au lieu
+  de la réécrire. Tranche v0.18 qui la généralise :
+  [activité par chantier/sessions](20261015082118382_board-chronologie-3-niveaux-accueil-projets.md).
