@@ -233,7 +233,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - **Voisine, pas doublon** : contraint les tranches
   [activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
   et [chronologie condensée](20261012231419237_board-chronologie-condensee.md). Sujet distinct
-  de [« En cours » se déduit des branches](20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
+  de [« En cours » se déduit des branches](done/20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
   (côté branches committées, pas journal).
 - **Design de référence** : [coque + vue d'ensemble](20261012231419185_board-coque-vue-ensemble.md)
   et [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ;
