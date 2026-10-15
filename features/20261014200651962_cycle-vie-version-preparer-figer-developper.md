@@ -90,6 +90,49 @@ ezk backlog version list           # montre l'état (brouillon/figée/livrée) +
 # le board v0.17 LIT et affiche l'état
 ```
 
+## Architecture — avis de l'architecte (2026-10-15, `--archi`)
+
+S'appuie sur des décisions déjà prises (ADR-0070 tirage, ADR-074 « le board lit, il n'écrit pas »,
+ADR-0001 « le script range, le LLM juge »). POC d'abord.
+
+### Décision 1 — La force : **photographier** (force 2), pas verrouiller
+
+Figer = poser une **photo immuable** du périmètre, pas un cadenas. Raisons :
+- ça livre le besoin PO (vérifiable + persistant + dérive détectable) au coût le plus bas ;
+- **verrouiller** (une garde qui refuse d'éditer une fiche figée) est **différé** : plus intrusif, il
+  ne se justifie que si « des fiches figées se font éditer par erreur » devient une vraie douleur
+  (YAGNI). Il se poserait **par-dessus** la photo (il faut d'abord savoir ce qui est figé), jamais à
+  sa place.
+- **Limite assumée** : la photo *enregistre et détecte*, elle n'*empêche* pas. C'est un choix, pas un oubli.
+
+### Décision 2 — Le mécanisme : un tag `freeze/vX.Y.Z`, distinct de la release
+
+- **Figer** = `version freeze <X>` pose un **tag annoté** `freeze/vX.Y.Z` sur `HEAD` (le commit-base ;
+  l'annotation porte date + auteur). **Défiger** = `unfreeze` supprime le tag (opération de ref, **pas
+  de commit**).
+- **État dérivé, zéro fichier** (ADR-0001) : release `vX.Y.Z` → **livrée** ; `freeze/vX.Y.Z` sans
+  release → **figée** ; ni l'un ni l'autre → **brouillon**.
+- **Aucune interférence avec le tirage** : le préfixe `freeze/` fait qu'ADR-0070 (qui lit `vX.Y.Z`) ne
+  le prend jamais pour une release.
+- **Base vs ajouts** : la **base** = les fiches `version: X` présentes dans l'arbre du commit
+  `freeze/vX.Y.Z` ; les **ajouts** = celles entrées après. `version diff <X>` montre la dérive.
+- **Local par défaut** : le tag reste local (marqueur du poste), poussé seulement si on veut le
+  partager — cohérent avec « push = geste PO ».
+
+### Décision 3 — Le « bouton » du board ne casse pas ADR-074
+
+ADR-074 interdit au board d'**inventer** une donnée, pas de **déclencher** une commande. Le bouton
+**appelle** `version freeze` — c'est la **méthode** qui écrit le tag, le board se contente ensuite de
+le **lire** pour afficher le marqueur. POC : la commande d'abord ; le bouton est une tranche du build
+du board v0.17.
+
+### Verbes & ordre de construction
+
+`version freeze <X>` · `version unfreeze <X>` · `version diff <X>`, en extension de `version
+list/check/close` (socle livré). POC = la commande + l'état dérivé dans `version list`, éprouvé sur la
+méthode elle-même. Plus tard : le bouton côté board ; la garde « verrouiller » **uniquement** si un
+besoin de prévention se montre.
+
 ## Glossaire
 
 - `gel souple` — figer le périmètre d'une version comme **base de référence**, tout en autorisant des
@@ -113,9 +156,13 @@ ezk backlog version list           # montre l'état (brouillon/figée/livrée) +
   **persistant** — en git, relisable au retour sur le dashboard, pas un état volatile de cop1 ;
   (c) **pas** un `VERSIONS.md` déclaratif — préférence pour **photographier** (un tag git sur le commit
   de référence).
-- **À trancher au groom / archi** : (1) la **force** exacte — photographier (tag) suffit-il, ou
-  faut-il **verrouiller** (une garde refusant l'édition d'une fiche figée) ? ; (2) le verbe `version
-  freeze` / `unfreeze` et où le tag est nommé ; (3) la sémantique « ajout » vs « réouverture ».
+- **Tranché par l'avis d'architecte (2026-10-15, voir § Architecture)** : force = **photographier**
+  (tag `freeze/vX.Y.Z`, pas de cadenas) ; mécanisme = tag annoté distinct de la release, état dérivé
+  des refs ; verbes `freeze` / `unfreeze` / `diff` ; le bouton du board **déclenche** la commande (ne
+  viole pas ADR-074).
+- **Restent pour le PO / panel** : (a) ajouter un jour la garde « verrouiller » (force 3) — **seulement
+  si** un besoin de prévention se montre ; (b) le chemin d'écriture du bouton, à cadrer avec le build
+  du board v0.17 ; (c) la sémantique fine « ajout » vs « réouverture ».
 - **Limite honnête** : git ne *verrouille* pas un fichier. Un tag **enregistre et détecte** (diff), il
   n'*empêche* pas. Seule une garde (force « verrouiller ») empêche vraiment — à peser si le besoin est
   la prévention, pas seulement la preuve.
