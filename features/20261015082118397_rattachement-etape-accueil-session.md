@@ -61,7 +61,7 @@ d'accueil qui rend le lien **facile** sans le rendre **deviné**.
 ## Notes / décisions
 
 - Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3 ; affine
-  le volet « rattachement » de la [fiche de design](20261014122044421_board-runs-concurrents-identite-lisible.md).
+  le volet « rattachement » de la [fiche de design](done/20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, chronologie+accueil —
   `milestone: board` + `v0.23.0`.
 - Rejoint le besoin déjà noté d'un **rituel d'ouverture de session** ; lui donne un job précis.

@@ -73,7 +73,7 @@ de dire qui a écrit quoi, ni de réunir deux sessions d'un même chantier. L'é
 ## Notes / décisions
 
 - Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Accepté,
-  modèle B). Fiche de design : [runs et sessions concurrents](../20261014122044421_board-runs-concurrents-identite-lisible.md).
+  modèle B). Fiche de design : [runs et sessions concurrents](20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : read-model, découverte, chronologie+accueil, étape d'accueil —
   liées par `milestone: board` + `v0.23.0`. Découpage en fin d'ADR-079.
 - **Taille** : touche plusieurs surfaces (enveloppe, cycle de vie, contrat, gitignore) — **à

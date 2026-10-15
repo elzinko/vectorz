@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version: v0.23.0
 labels: [dashboard, board, ux, supervision, runs, multi-session, multi-llm]
-status: idea
+status: shipped
 blocked:
-pr:
+pr: "local (maquette fe287dac, ADR-079 e4a80b39)"
 evidence: before-after # vue d'activité ET chronologie du board, avant/après plusieurs sessions
 created: 2026-10-14
 ---
@@ -66,8 +66,8 @@ doit tenir pour tout outil LLM, pas seulement Claude.
 
 Cette fiche **affine le board après v0.17** : la vue Activité et la Chronologie de v0.17
 sortent telles quelles, celle-ci décide ensuite comment elles représentent le parallélisme.
-Elle contraint les tranches [Board : l'activité par run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
-et [Board : la chronologie condensée](20261012231419237_board-chronologie-condensee.md).
+Elle contraint les tranches [Board : l'activité par run → moments → fiches](../20261012231419211_board-activite-run-moments-fiches.md)
+et [Board : la chronologie condensée](../20261012231419237_board-chronologie-condensee.md).
 
 ## Proposition
 
@@ -171,7 +171,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 
 - [x] Un **ADR** tranche le **modèle** : définition de *run* vs *session*, leur lien (m:n),
       et **qui rattache** une session à un run (la méthode/ezk). →
-      [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Proposé, à ratifier
+      [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Proposé, à ratifier
       en panel ; modèle de concurrence B recommandé, B vs C au panel).
 - [ ] Une **maquette** dans `docs/maquettes/` rend, et le PO valide la lisibilité d'un coup
       d'œil : (1) 1 session / 1 run ; (2) 3 worktrees, 3 sessions vivantes ; (3) 1 pilote +
@@ -197,7 +197,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 
 ## Comment vérifier
 
-1. Ouvrir la maquette [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
+1. Ouvrir la maquette [docs/maquettes/board-runs-concurrents.html](../../docs/maquettes/board-runs-concurrents.html)
    dans un navigateur : les sept cas s'affichent, chacun lisible sans explication.
 2. Test « nouveau venu » : une personne neuve regarde le cas (2) et le cas (6) et dit, en une
    phrase chacun, combien de sessions tournent / que fait chacune — sans cliquer, sans jargon.
@@ -216,7 +216,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - **Tout le reste de l'app doit tenir** sous concurrence, pas seulement l'activité : la
   Chronologie, la Vue d'ensemble, les compteurs, les badges « en run », le minuteur de
   silence. C'est un critère, pas un détail.
-- **ADR** : [ADR-079 — Run et session, deux entités distinctes](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
+- **ADR** : [ADR-079 — Run et session, deux entités distinctes](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
   (**Accepté** le 2026-10-15 — ratifié en panel adverse le 2026-10-14, **modèle B**, corrections
   intégrées). Il grave : run (chantier) ≠ session (ouvrier), la jointure par l'évènement, la
   **clé de chantier** (version+milestone, en payload de `run.started`) comme clé d'agrégation
@@ -224,22 +224,22 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
   (piloté ou étape d'accueil, jamais deviné), **un journal par worktree** (B), le contrat `@0.2`,
   et le read-model + la découverte des worktrees comme **travail neuf**. La **session existe déjà**
   (`ezk-sessions`, ADR-0042/0043), on la relie. Découpage de build : 5 fiches sœurs en fin d'ADR.
-- **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html)
+- **Maquette (brouillon)** : [docs/maquettes/board-runs-concurrents.html](../../docs/maquettes/board-runs-concurrents.html)
   — 8 cas : 1-5 côté Activité (étiquette d'impact chacun), **6 la Chronologie — piste retenue
   D+B, 3 niveaux** (runs → run+sessions → session), **7 la hiérarchie avec 2 variantes** (arbre ·
   groupé par run + « hors méthode »), **8 la vue globale des projets avec 3 pistes** (accueil
   « Tous les projets » · rail persistant · déroulante enrichie). Sert à départager, et à décider
   si une part rejoint v0.17 ou reste en v0.23.
 - **Voisine, pas doublon** : contraint les tranches
-  [activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
-  et [chronologie condensée](20261012231419237_board-chronologie-condensee.md). Sujet distinct
-  de [« En cours » se déduit des branches](done/20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
+  [activité run → moments → fiches](../20261012231419211_board-activite-run-moments-fiches.md)
+  et [chronologie condensée](../20261012231419237_board-chronologie-condensee.md). Sujet distinct
+  de [« En cours » se déduit des branches](20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
   (côté branches committées, pas journal).
-- **Design de référence** : [coque + vue d'ensemble](20261012231419185_board-coque-vue-ensemble.md)
-  et [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ;
+- **Design de référence** : [coque + vue d'ensemble](../20261012231419185_board-coque-vue-ensemble.md)
+  et [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ;
   maquette validée `docs/maquettes/board-ezk-dashboard.html`.
-- **Garde-fou orphelin** : [ADR-035](../docs/adr/ADR-035-abandon-siege-run-orphelin.md).
-  **Émetteur sans git** : [ADR-019](../docs/adr/ADR-019-worktree-location.md).
+- **Garde-fou orphelin** : [ADR-035](../../docs/adr/ADR-035-abandon-siege-run-orphelin.md).
+  **Émetteur sans git** : [ADR-019](../../docs/adr/ADR-019-worktree-location.md).
 - Origine : session 2026-10-14 — analyse « plusieurs sessions et chronologie du board ». Le
   PO a soulevé : le run devient ambigu si des sessions se cumulent ; tout l'app doit tenir ;
   une vue hiérarchie des sessions serait utile ; et **ça doit marcher pour tout LLM, pas que
