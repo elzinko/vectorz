@@ -4,11 +4,11 @@ title: "Note de migration scrum/ + bascule d'un projet consommateur (muti)"
 type: chore
 priority: P2
 product: vectorz
-milestone: rationalisation
-version: v0.16.0
-blocked: "attend-dépendance — dépend de la bascule scrum/ (20261007154842643), parquée hors v0.9 (déménagement à l'échelle du dépôt, à faire sous revue — run 2026-10-11)"
+milestone: parked
+version:
+blocked: attend-dépendance — parké hors version par auto-groom le 2026-10-15
 labels: [convention, arborescence]
-status: ready
+status: idea
 pr:
 evidence: none # doc + refactor d'arborescence, pas d'UI
 created: 2026-10-07

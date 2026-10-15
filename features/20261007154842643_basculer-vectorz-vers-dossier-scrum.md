@@ -4,11 +4,11 @@ title: "Basculer vectorz vers scrum/ (git mv des 5 dossiers + scrum: true)"
 type: refactor
 priority: P2
 product: vectorz
-milestone: rationalisation
-version: v0.16.0
+milestone: parked
+version:
 labels: [convention, arborescence]
-status: ready
-blocked: "sous-revue — déménagement à l'échelle du dépôt : 168 fichiers .md référencent ces dossiers (356 occurrences), dont les règles compilées en loi + des ADR/captures qui se citent + le CLAUDE.md global hors dépôt. À faire sous revue, pas en run autonome (sorti de v0.9, run 2026-10-11). La fondation configurable — fiches 20261001192624192 + 20261007154842506 — est livrée."
+status: idea
+blocked: sous-revue — parké hors version par auto-groom le 2026-10-15
 pr:
 evidence: none # refactor d'arborescence, pas d'UI
 created: 2026-10-07

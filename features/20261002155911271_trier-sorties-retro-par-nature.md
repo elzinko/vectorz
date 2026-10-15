@@ -4,13 +4,14 @@ title: "Trier les sorties de rétro par nature : aligner ADR-0054, ezk-retro et 
 type: chore
 priority: P2
 product: mega-city
-milestone: rationalisation
-version: v0.16.0
+milestone: parked
+version:
 labels: [retro]
-status: ready
+status: idea
 pr:
 evidence: none # documentation de méthode, pas d'écran
 created: 2026-10-02
+blocked: attend-panel — parké hors version par auto-groom le 2026-10-15
 ---
 
 # 20261002155911271 — Trier les sorties de rétro par nature
