@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version: v0.23.0
 labels: [supervision, emetteur, multi-session]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # brique émetteur ; prouvée par le journal + le validateur
