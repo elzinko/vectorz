@@ -298,14 +298,14 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 > **Rattachées au board v0.17** (pas une version libre) : `20261002115451451` (page une ligne par projet), `20260830110131228` (étapes de skill configurables), `20261013143324505` (borner `sprint:report`).
 
 ### ㉔ v0.23.0 — superviser plusieurs LLM (multi-sessions, conçu + ratifié en panel)
-> Run (chantier) ≠ session (ouvrier) : un journal par worktree, reconstruit par chantier, chronologie à 3 niveaux, accueil « Tous les projets ». Conçu par maquette (8 cas) et **ratifié en panel adverse** (`ADR-079`, modèle B) le 2026-10-14 ; design de référence `20261014122044421`. Affine le board v0.17 ; ses écrans (activité, chronologie) se construisent **sans graver « run = session »** pour étendre au lieu de réécrire. Ordre = dépendances : l'émetteur pose l'identité, le read-model et la découverte l'exploitent, l'écran vient après. **Fiches créées le 2026-10-15, à groomer.**
-- `20261015133600298` — émetteur T1 : contrat @0.2 + journal par worktree · P1 · `groom`
-- `20261015133600314` — émetteur T2 : identité de session · P1 · `groom`
-- `20261015133600328` — émetteur T3 : clé de chantier · P1 · `groom`
-- `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `groom`
-- `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `groom`
-- `20261015082118382` — board : chronologie 3 niveaux + accueil « Tous les projets » · P2 · `groom`
-- `20261015082118397` — rattachement : étape d'accueil de session · P2 · `groom`
+> Run (chantier) ≠ session (ouvrier) : un journal par worktree, reconstruit par chantier, chronologie à 3 niveaux, accueil « Tous les projets ». Conçu par maquette (8 cas) et **ratifié en panel adverse** (`ADR-079`, modèle B) le 2026-10-14 ; design de référence `20261014122044421` livré (maquette + ADR-079). Affine le board v0.17 ; ses écrans (activité, chronologie) se construisent **sans graver « run = session »** pour étendre au lieu de réécrire. Ordre = dépendances : l'émetteur pose l'identité, le read-model et la découverte l'exploitent, l'écran vient après. **Les 7 tranches sont prêtes — groomées + gate DoR le 2026-10-15.**
+- `20261015133600298` — émetteur T1 : contrat @0.2 + journal par worktree · P1 · `build`
+- `20261015133600314` — émetteur T2 : identité de session · P1 · `build`
+- `20261015133600328` — émetteur T3 : clé de chantier · P1 · `build`
+- `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `build`
+- `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `build`
+- `20261015082118382` — board : chronologie 3 niveaux + accueil « Tous les projets » · P2 · `build`
+- `20261015082118397` — rattachement : étape d'accueil de session · P2 · `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
