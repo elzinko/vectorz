@@ -4,7 +4,7 @@
 
 Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
 (`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de v0.1.0 à
-v0.10.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
+v0.23.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
 fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (généré en local, non committé) : `BACKLOG.md`.
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
@@ -50,6 +50,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 | **v0.20.0** | Le flux se lit et s'allège | cérémonies légères + restitutions lisibles : capture de rétro vérifiée, chemin lite du sprint, checkpoint en clair, rétro light | 📝 proposée (2026-10-14), à valider |
 | **v0.21.0** | Le backlog se discipline | modèle backlog / PR / grooming : deux formes de PR, voir les PR avant un lot, règles de découpe au grooming | 📝 proposée (2026-10-14), à valider |
 | **v0.22.0** | L'app se cartographie | exploration-app : index statique des routes (cache Pas 1) + l'explorateur de features, sur ezk-scout déjà livré | 📝 proposée (2026-10-14), à valider |
+| **v0.23.0** | Superviser plusieurs LLM | run (chantier) ≠ session (ouvrier), un journal par worktree, chronologie à 3 niveaux, accueil « Tous les projets » — conçu par maquette, ratifié en panel (ADR-075) | 📝 fiches créées (à groomer) — APRÈS le board v0.17 |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 > **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
@@ -298,6 +299,14 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - `20260821210633457` — l'explorateur de features par PR (à dé-parker) · P2 · `groom`
 > **Reste à caser** (le PO slotte) : `20261002130917993` (release local-first) et `20261011153019643` (step design-system dans `ezk-release`) — thème release, aiguillage en attente.
 > **Rattachées au board v0.17** (pas une version libre) : `20261002115451451` (page une ligne par projet), `20260830110131228` (étapes de skill configurables), `20261013143324505` (borner `sprint:report`).
+
+### ㉔ v0.23.0 — superviser plusieurs LLM (multi-sessions, conçu + ratifié en panel)
+> Run (chantier) ≠ session (ouvrier) : un journal par worktree, reconstruit par chantier, chronologie à 3 niveaux, accueil « Tous les projets ». Conçu par maquette (8 cas) et **ratifié en panel adverse** (`ADR-075`, modèle B) le 2026-10-14 ; design de référence `20261014122044421`. Affine le board v0.17 ; ses écrans (activité, chronologie) se construisent **sans graver « run = session »** pour étendre au lieu de réécrire. Ordre = dépendances : l'émetteur pose l'identité, le read-model et la découverte l'exploitent, l'écran vient après. **Fiches créées le 2026-10-15, à groomer.**
+- `20261015082118340` — émetteur : identité session + clé de chantier + contrat @0.2 · P1 · `groom`
+- `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `groom`
+- `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `groom`
+- `20261015082118382` — board : chronologie 3 niveaux + accueil « Tous les projets » · P2 · `groom`
+- `20261015082118397` — rattachement : étape d'accueil de session · P2 · `groom`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped

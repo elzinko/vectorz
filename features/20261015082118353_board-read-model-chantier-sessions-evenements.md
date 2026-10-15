@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version: v0.18.0
+version: v0.23.0
 labels: [dashboard, board, supervision, multi-session, read-model]
 status: idea
 blocked:
@@ -68,5 +68,5 @@ l'instant, aucun moyen d'être reconstitué.
 - Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D8. Dépend
   de la clé posée par l'émetteur ([fiche émetteur](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md)).
 - **Sœurs (sans chapeau)** : émetteur, découverte, chronologie+accueil, étape d'accueil —
-  `milestone: board` + `v0.18.0`.
+  `milestone: board` + `v0.23.0`.
 - Respecte « live, jamais committé » (ADR-0043/0055) : le read-model sert, il n'écrit rien.

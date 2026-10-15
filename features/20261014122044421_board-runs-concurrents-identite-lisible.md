@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version: v0.18.0
+version: v0.23.0
 labels: [dashboard, board, ux, supervision, runs, multi-session, multi-llm]
 status: idea
 blocked:
@@ -229,7 +229,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
   D+B, 3 niveaux** (runs → run+sessions → session), **7 la hiérarchie avec 2 variantes** (arbre ·
   groupé par run + « hors méthode »), **8 la vue globale des projets avec 3 pistes** (accueil
   « Tous les projets » · rail persistant · déroulante enrichie). Sert à départager, et à décider
-  si une part rejoint v0.17 ou reste en v0.18.
+  si une part rejoint v0.17 ou reste en v0.23.
 - **Voisine, pas doublon** : contraint les tranches
   [activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
   et [chronologie condensée](20261012231419237_board-chronologie-condensee.md). Sujet distinct
@@ -243,4 +243,8 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - Origine : session 2026-10-14 — analyse « plusieurs sessions et chronologie du board ». Le
   PO a soulevé : le run devient ambigu si des sessions se cumulent ; tout l'app doit tenir ;
   une vue hiérarchie des sessions serait utile ; et **ça doit marcher pour tout LLM, pas que
-  Claude**. Priorité P1, version v0.18.0 décidées par le PO le 2026-10-14.
+  Claude**. Priorité P1 décidée par le PO le 2026-10-14.
+- **Version v0.23.0** (PO, 2026-10-15) : d'abord rangée en v0.18, **re-slottée en v0.23** après
+  synchronisation avec `main` — une session de planning y avait déjà pris v0.18→v0.22 (v0.18 = « La
+  CLI se tient »). Le lot multi-sessions vient **après le board v0.17**. Aucun doublon : le design
+  (ADR-075) était neuf, absent de main.

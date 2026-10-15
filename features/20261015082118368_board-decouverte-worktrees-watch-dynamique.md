@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version: v0.18.0
+version: v0.23.0
 labels: [dashboard, board, supervision, multi-session, daemon]
 status: idea
 blocked:
@@ -61,4 +61,4 @@ mega-city — il faut une couture **propre à cop1**.
 - Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D9
   (amende le hot-reload différé d'ADR-028).
 - **Sœurs (sans chapeau)** : émetteur, read-model, chronologie+accueil, étape d'accueil —
-  `milestone: board` + `v0.18.0`. Alimente la [fiche read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md).
+  `milestone: board` + `v0.23.0`. Alimente la [fiche read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md).

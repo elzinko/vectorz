@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: board
-version: v0.18.0
+version: v0.23.0
 labels: [supervision, emetteur, multi-session, contrat]
 status: idea
 blocked:
@@ -67,6 +67,6 @@ de dire qui a écrit quoi, ni de réunir deux sessions d'un même chantier. L'é
 - Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) (Accepté,
   modèle B). Fiche de design : [runs et sessions concurrents](20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : read-model, découverte, chronologie+accueil, étape d'accueil —
-  liées par `milestone: board` + `v0.18.0`. Découpage en fin d'ADR-075.
+  liées par `milestone: board` + `v0.23.0`. Découpage en fin d'ADR-075.
 - **Taille** : touche plusieurs surfaces (enveloppe, cycle de vie, contrat, gitignore) — **à
   découper au grooming** si elle ne tient pas dans un sprint.

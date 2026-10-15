@@ -1,7 +1,7 @@
 # ADR-075 — Run et session : deux entités distinctes, pour superviser plusieurs LLM concurrents
 
 - **Statut** : Accepté (2026-10-15). Ratifié par **panel adverse** le 2026-10-14 (architecte + dev émetteur + dev board + juge → GO-avec-changements, **modèle B**) ; corrections du panel intégrées ; **attribution du chantier tranchée avec le PO** le 2026-10-15.
-- **Cadre la fiche** : [20261014122044421 — Board : runs et sessions concurrents](../../features/20261014122044421_board-runs-concurrents-identite-lisible.md) (P1, v0.18.0, milestone board) ; conçu par maquette ([board-runs-concurrents.html](../maquettes/board-runs-concurrents.html), 8 cas).
+- **Cadre la fiche** : [20261014122044421 — Board : runs et sessions concurrents](../../features/20261014122044421_board-runs-concurrents-identite-lisible.md) (P1, v0.23.0, milestone board) ; conçu par maquette ([board-runs-concurrents.html](../maquettes/board-runs-concurrents.html), 8 cas).
 - **Amende de façon bornée** :
   - [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md):21 — « un run = une session » devient **« un run (chantier) réunit une ou plusieurs sessions »**.
   - `products/mega-city/docs/adr/0019` (normalisation racine → arbre principal) — le défaut devient **un journal par worktree** quand la supervision multi-sessions est activée (D5).

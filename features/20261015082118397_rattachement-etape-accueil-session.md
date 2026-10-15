@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: board
-version: v0.18.0
+version: v0.23.0
 labels: [supervision, methode, multi-session, onboarding]
 status: idea
 blocked:
@@ -63,5 +63,5 @@ d'accueil qui rend le lien **facile** sans le rendre **deviné**.
 - Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D3 ; affine
   le volet « rattachement » de la [fiche de design](20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, chronologie+accueil —
-  `milestone: board` + `v0.18.0`.
+  `milestone: board` + `v0.23.0`.
 - Rejoint le besoin déjà noté d'un **rituel d'ouverture de session** ; lui donne un job précis.
