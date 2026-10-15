@@ -4,7 +4,7 @@
 
 Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
 (`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de v0.1.0 à
-v0.10.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
+v0.18.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
 fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (généré en local, non committé) : `BACKLOG.md`.
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
@@ -45,6 +45,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 | **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | 📋 groomée (prête, 2026-10-13) |
 | **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | 📋 groomée (prête ; 1 fiche ADR en attente de panel) |
 | **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches, deux portées de config — conçu par maquette (ADR-074) | 📋 groomée (prête) — APRÈS le socle |
+| **v0.18.0** | Superviser plusieurs LLM | run (chantier) ≠ session (ouvrier), un journal par worktree, chronologie à 3 niveaux, accueil « Tous les projets » — conçu par maquette, ratifié en panel (ADR-075) | 📝 fiches créées (à groomer) — APRÈS v0.17 |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
 > **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
@@ -252,6 +253,14 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - `20261013132218242` — config modèles : schéma à deux portées + résolveur pur · P1 · `build` (ready)
 - `20261013132218451` — config modèles : pointeurs au bind + commande `ezk config` · P1 · `build` (ready)
 - `20261013132218656` — board : page ⚙ config outil (mapping) + route gardée · P2 · `build` (ready)
+
+### ⑲ v0.18.0 — superviser plusieurs LLM (multi-sessions, après v0.17)
+> Run (chantier) ≠ session (ouvrier) : un journal par worktree, reconstruit par chantier, chronologie à 3 niveaux, accueil « Tous les projets ». Conçu par maquette (8 cas) et **ratifié en panel adverse** (`ADR-075`, modèle B). Fondation groupée ici, PAS en v0.17 ; les deux écrans v0.17 (`20261012231419211` activité, `20261012231419237` chronologie) se construisent **sans graver « run = session »** pour étendre au lieu de réécrire. L'ordre suit les dépendances : l'émetteur pose l'identité, le read-model et la découverte l'exploitent, l'écran vient après. **Fiches créées le 2026-10-15, à groomer.**
+- `20261015082118340` — émetteur : identité session + clé de chantier + contrat @0.2 · P1 · `groom` (puis découpe probable)
+- `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `groom`
+- `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `groom`
+- `20261015082118382` — board : chronologie 3 niveaux + accueil « Tous les projets » · P2 · `groom`
+- `20261015082118397` — rattachement : étape d'accueil de session · P2 · `groom`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
