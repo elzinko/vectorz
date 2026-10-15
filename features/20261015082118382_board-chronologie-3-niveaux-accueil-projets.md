@@ -23,16 +23,16 @@ validée ; ici on la construit.
 
 **Si tu arrives frais.** Maquette de référence :
 [board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html) (cas 6 chronologie,
-cas 8 accueil) ; décision [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)
+cas 8 accueil) ; décision [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
 §D11.
 
 ## Contexte / Problème
 
 La chronologie validée de v0.17 est un fil unique sans notion de session, bâtie sur l'axiome « un
-run = une session » qu'ADR-075 remplace. La vue des projets passe par une liste déroulante qui ne
+run = une session » qu'ADR-079 remplace. La vue des projets passe par une liste déroulante qui ne
 montre jamais la flotte. On construit les deux surfaces sur le nouveau read-model.
 
-## Proposition (maquette cas 6 et 8 ; ADR-075 §D11)
+## Proposition (maquette cas 6 et 8 ; ADR-079 §D11)
 
 - **Chronologie D+B, 3 niveaux** : (1) les chantiers (vue globale) → (2) un chantier, avec la
   **liste de ses sessions** (hiérarchie) + son **fil fusionné** (évènements étiquetés par session)

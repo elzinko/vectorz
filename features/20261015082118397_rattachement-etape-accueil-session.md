@@ -22,7 +22,7 @@ réponds en un mot. Jamais deviné en silence. C'est ça, le rattachement « à 
 voie étant le pilote qui passe la clé à ses ouvriers.
 
 **Si tu arrives frais.** Un *chantier* (run) = un travail de méthode ; sa *clé* vient de la
-version. Détail dans [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D3.
+version. Détail dans [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3.
 
 ## Contexte / Problème
 
@@ -30,7 +30,7 @@ Sans ce pas, soit la session manuelle n'est reliée à rien (tu dois tout gérer
 soit on devine le rattachement par co-présence dans le projet (faux et dangereux). On veut un pas
 d'accueil qui rend le lien **facile** sans le rendre **deviné**.
 
-## Proposition (ADR-075 §D3)
+## Proposition (ADR-079 §D3)
 
 - À l'ouverture d'une session, une **étape d'accueil** (crochet `CLAUDE.md` + skill d'ouverture)
   lit les **chantiers ouverts** + la **version/le sprint en cours** et **propose** : rattacher à
@@ -60,7 +60,7 @@ d'accueil qui rend le lien **facile** sans le rendre **deviné**.
 
 ## Notes / décisions
 
-- Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D3 ; affine
+- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3 ; affine
   le volet « rattachement » de la [fiche de design](20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, chronologie+accueil —
   `milestone: board` + `v0.23.0`.

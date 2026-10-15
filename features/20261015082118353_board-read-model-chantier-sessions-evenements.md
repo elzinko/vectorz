@@ -23,7 +23,7 @@ created: 2026-10-15
 
 **Si tu arrives frais.** Le *read-model* est la couche qui transforme les journaux bruts en
 données prêtes à afficher. Détail et contraintes dans
-[ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D8.
+[ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8.
 
 ## Contexte / Problème
 
@@ -32,7 +32,7 @@ d'évènements ni notion de session, et la clé de stockage est le **dossier de 
 délibérée : le `run_id` n'est jamais une clé). Un chantier réparti sur N journaux n'a donc, pour
 l'instant, aucun moyen d'être reconstitué.
 
-## Proposition (ADR-075 §D2, D8)
+## Proposition (ADR-079 §D2, D8)
 
 - Un projecteur qui expose la **liste d'évènements étiquetés `session_id`** (pas seulement des
   agrégats).
@@ -65,7 +65,7 @@ l'instant, aucun moyen d'être reconstitué.
 
 ## Notes / décisions
 
-- Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D8. Dépend
+- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8. Dépend
   de la clé posée par l'émetteur ([fiche émetteur](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md)).
 - **Sœurs (sans chapeau)** : émetteur, découverte, chronologie+accueil, étape d'accueil —
   `milestone: board` + `v0.23.0`.

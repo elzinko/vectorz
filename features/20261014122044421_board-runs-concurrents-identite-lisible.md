@@ -105,7 +105,7 @@ Ajouter à l'ouverture d'une session un ou deux champs **lisibles par un humain*
   emprunté à une API propre à un outil. L'identité vient de **git (pur FS)**. Donc **aucune
   dépendance à Claude Desktop** ni à un IDE précis : tout outil qui parle MCP émet pareil.
 
-### Volet 1bis — le rattachement : explicite, jamais deviné (PO, ADR-075 D3)
+### Volet 1bis — le rattachement : explicite, jamais deviné (PO, ADR-079 D3)
 
 Une session est rattachée à un chantier (run) **seulement quand on l'a dit** — jamais par
 co-présence dans un projet. Deux voies :
@@ -171,7 +171,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 
 - [x] Un **ADR** tranche le **modèle** : définition de *run* vs *session*, leur lien (m:n),
       et **qui rattache** une session à un run (la méthode/ezk). →
-      [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) (Proposé, à ratifier
+      [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Proposé, à ratifier
       en panel ; modèle de concurrence B recommandé, B vs C au panel).
 - [ ] Une **maquette** dans `docs/maquettes/` rend, et le PO valide la lisibilité d'un coup
       d'œil : (1) 1 session / 1 run ; (2) 3 worktrees, 3 sessions vivantes ; (3) 1 pilote +
@@ -216,7 +216,7 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - **Tout le reste de l'app doit tenir** sous concurrence, pas seulement l'activité : la
   Chronologie, la Vue d'ensemble, les compteurs, les badges « en run », le minuteur de
   silence. C'est un critère, pas un détail.
-- **ADR** : [ADR-075 — Run et session, deux entités distinctes](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)
+- **ADR** : [ADR-079 — Run et session, deux entités distinctes](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
   (**Accepté** le 2026-10-15 — ratifié en panel adverse le 2026-10-14, **modèle B**, corrections
   intégrées). Il grave : run (chantier) ≠ session (ouvrier), la jointure par l'évènement, la
   **clé de chantier** (version+milestone, en payload de `run.started`) comme clé d'agrégation
@@ -247,4 +247,4 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
 - **Version v0.23.0** (PO, 2026-10-15) : d'abord rangée en v0.18, **re-slottée en v0.23** après
   synchronisation avec `main` — une session de planning y avait déjà pris v0.18→v0.22 (v0.18 = « La
   CLI se tient »). Le lot multi-sessions vient **après le board v0.17**. Aucun doublon : le design
-  (ADR-075) était neuf, absent de main.
+  (ADR-079) était neuf, absent de main.

@@ -23,7 +23,7 @@ C'est du code neuf, et le panel a insisté : ce n'est pas « déjà outillé ».
 
 **Si tu arrives frais.** Le *daemon* est le service du board qui lit les journaux en continu. Un
 *watch-root* est un dossier qu'il surveille. Détail dans
-[ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D9.
+[ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9.
 
 ## Contexte / Problème
 
@@ -32,7 +32,7 @@ différé par ADR-028). Les worktrees, eux, naissent et meurent en cours de sess
 **n'importe jamais mega-city** (ADR-0021) : l'outillage worktree d'`ezk-sessions` vit dans
 mega-city — il faut une couture **propre à cop1**.
 
-## Proposition (ADR-075 §D9)
+## Proposition (ADR-079 §D9)
 
 - Un **énumérateur de worktrees local à cop1** (recopie légère, comme le lecteur `registry.ts`
   l'a fait pour éviter la dépendance mega-city).
@@ -58,7 +58,7 @@ mega-city — il faut une couture **propre à cop1**.
 
 ## Notes / décisions
 
-- Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) §D9
+- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9
   (amende le hot-reload différé d'ADR-028).
 - **Sœurs (sans chapeau)** : émetteur, read-model, chronologie+accueil, étape d'accueil —
   `milestone: board` + `v0.23.0`. Alimente la [fiche read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md).

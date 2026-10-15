@@ -23,7 +23,7 @@ contrat du journal en `@0.2`.
 
 **Si tu arrives frais.** Le *journal* est le fichier où la méthode note ce qu'elle fait. Une
 *session* = un LLM sur un worktree. Un *chantier* (run) = un travail de méthode. Détail et
-justification dans [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md).
+justification dans [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
 
 ## Contexte / Problème
 
@@ -31,7 +31,7 @@ Aujourd'hui une note de journal ne porte qu'un `run_id` opaque, unique par sessi
 de dire qui a écrit quoi, ni de réunir deux sessions d'un même chantier. L'émetteur est le seul
 écrivain du journal (ADR-035) : c'est donc ici que l'identité doit naître.
 
-## Proposition (ADR-075 §D2, D6, D7, D10)
+## Proposition (ADR-079 §D2, D6, D7, D10)
 
 - **`session_id` dans l'enveloppe** de chaque évènement, frappé par l'émetteur ; un fichier
   `<worktree>/.supervision/session.json` le fige une fois (le runtime est sans mémoire).
@@ -64,9 +64,9 @@ de dire qui a écrit quoi, ni de réunir deux sessions d'un même chantier. L'é
 
 ## Notes / décisions
 
-- Décision : [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md) (Accepté,
+- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (Accepté,
   modèle B). Fiche de design : [runs et sessions concurrents](20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : read-model, découverte, chronologie+accueil, étape d'accueil —
-  liées par `milestone: board` + `v0.23.0`. Découpage en fin d'ADR-075.
+  liées par `milestone: board` + `v0.23.0`. Découpage en fin d'ADR-079.
 - **Taille** : touche plusieurs surfaces (enveloppe, cycle de vie, contrat, gitignore) — **à
   découper au grooming** si elle ne tient pas dans un sprint.

@@ -51,9 +51,9 @@ Preuve : capture avant (ancienne frise verbeuse) / après (condensée, une ligne
 - Design de référence : [Unifier les tableaux de bord](20261007135620590_refondre-vue-supervision-moniteur-lisible.md).
 - Maquette : [docs/maquettes/board-ezk-dashboard.html](../docs/maquettes/board-ezk-dashboard.html).
 - Décision : [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md).
-- **Garde-fou multi-sessions (ADR-075)** : construire cette chronologie **sans supposer « un run =
+- **Garde-fou multi-sessions (ADR-079)** : construire cette chronologie **sans supposer « un run =
   une session »** ni « un seul fil par projet ». La refonte v0.23
-  ([ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)) ajoute une **dimension
+  ([ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)) ajoute une **dimension
   session** : libellé de session par ligne, filtre par session, navigation à 3 niveaux. Prévoir
   qu'une ligne puisse porter un libellé de session, pour **étendre** au lieu de réécrire. Tranche
   v0.23 qui la généralise :

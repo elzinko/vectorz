@@ -30,7 +30,7 @@ lesquelles restent en idée (et pourquoi), lesquelles ont été **découpées** 
 `ezk-backlog groom <id>` traite une seule fiche, en boucle guidée. Le mode **non-interactif**
 (sans opérateur) existe déjà — `ezk-product-build` l'utilise : « pour chaque slot manquant,
 applique toi-même la technique la plus utile ». Mais il n'y a **pas** de commande qui l'applique
-à **toutes les fiches d'une version** et qui dise ce qui a bougé. Préparer v0.18 (6 fiches idée)
+à **toutes les fiches d'une version** et qui dise ce qui a bougé. Préparer v0.23 (6 fiches idée)
 le rendrait évident.
 
 ## Proposition
@@ -67,6 +67,6 @@ le rendrait évident.
   le gate `ready` inchangé. Distinct d'`aggregate` (restructuration du stock) et de `review`
   (sanity check périodique).
 - Origine : demande PO du 2026-10-15 (préparer une version en un geste, avec un rapport du delta),
-  née en préparant la v0.18 (6 fiches idée, [ADR-075](../docs/adr/ADR-075-run-et-session-deux-entites-multi-llm.md)).
+  née en préparant le lot multi-sessions (v0.23, [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)).
 - **Priorité P2 et version à confirmer par le PO** (proposées : P2, sans version — outillage à
   glisser quand il y a de la marge).
