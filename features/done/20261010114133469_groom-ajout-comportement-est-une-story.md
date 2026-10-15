@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [ezk-backlog, grooming, dor]
-status: ready
-pr:
+status: shipped
+pr: "local 56f9b984"
 evidence: none # convention + gate, pas d'écran
 created: 2026-10-10
 ---
@@ -32,7 +32,7 @@ Une *story* est une fiche = une unité de travail.
   `development/acceptance-criteria-before-merge` exige déjà le critère **dans** la PR ; le trou, c'est
   de ne pas avoir reconnu l'ajout comme une story.
 - Issu de la rétro du 2026-10-10 (capture
-  [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
+  [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
   proposition 12.
 
 ## Proposition

@@ -5,7 +5,7 @@ type: refactor
 priority: P3
 product: mega-city
 milestone:
-version:
+version: v0.18.0
 labels: [cli, ergonomie]
 status: idea
 pr:

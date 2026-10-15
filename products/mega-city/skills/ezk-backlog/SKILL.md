@@ -173,7 +173,7 @@ product:             # obligatoire dans ce monorepo — vectorz | mega-city | �
 milestone:           # optionnel — jalon d'ordre (ADR-0017 A16), valeur libre propre au projet
 version:             # optionnel — release ciblée, ex. "V1.1" (vide si non pertinent)
 labels:              # optionnel — thèmes, en ligne : [a, b]
-status: idea         # idea | ready | in-progress | shipped | superseded | merged | split
+status: idea         # idea | ready | shipped | superseded | merged | split
 blocked:             # optionnel — raison d'un blocage : un DRAPEAU posé par-dessus la colonne (une fiche peut être ready ET bloquée) ; un geste attendu du PO se nomme ici
 pr:                  # ex. "#118" quand une PR existe
 created: 2026-06-23
@@ -207,6 +207,12 @@ Projects) : capturé **cheap** pour ne rien perdre, **sans polluer** la liste de
 P0→P3. Le **grooming** (`groom <id>`, moteur `product-brainstorming`) le fait mûrir,
 et le **gate `ready <id>`** le promeut en `ready` quand on le tire — c'est là
 qu'on fixe problème/valeur/critères, pas à la capture (ADR-0016).
+
+> **Rappel du gate (fiche 20261010114133469).** `ezk dor check <id>` ouvre sa liste de contrôle par :
+> « tout ajout de comportement est une story, ou reçoit au moins un critère d'acceptation vérifiable
+> avant le ship ». C'est le garde-fou du comportement greffé en cours de sprint (ex. des « filtres »
+> ajoutés sans critère) : sans critère, rien ne le teste et un bug file jusqu'à la revue adverse. Il
+> s'appuie sur la règle [`development/acceptance-criteria-before-merge`](../../rules/development/acceptance-criteria-before-merge.md) — pas un moteur de plus.
 
 - `list` / `regen` **trient les `idea` à part**, sous l'actionnable (comme `blocked`) —
   ils ne comptent pas dans le flux P0→P3.

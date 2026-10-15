@@ -117,6 +117,13 @@ commands:
     project: true
     writes: true
   - domain: backlog
+    verb: park
+    run: bin/backlog-park.ts --root {root}
+    summary: Sort une fiche inconstruisable de sa version (parkée, réversible) (--root <projet>).
+    root: cwd
+    project: true
+    writes: true
+  - domain: backlog
     verb: aggregate
     run: bin/backlog-aggregate.ts
     summary: Regroupe des fiches (dépôt où tu es, ou --root <projet>).
@@ -261,6 +268,18 @@ commands:
     verb: report
     run: bin/run-report.ts
     summary: Rend le bilan de fin de run, une ligne par fiche, avec HEAD et jetons (--root <projet>).
+    root: none
+    project: true
+  - domain: run
+    verb: eligibility
+    run: bin/run-eligibility.ts
+    summary: Teste l'éligibilité d'une fiche au run avant de délibérer (--root <projet>).
+    root: none
+    project: true
+  - domain: run
+    verb: versions
+    run: bin/run-versions.ts
+    summary: Liste les versions qu'un run multi-versions enchaîne, dans l'ordre (--root <projet>).
     root: none
     project: true
   - domain: run

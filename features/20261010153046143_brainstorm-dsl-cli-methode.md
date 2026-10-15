@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.18.0
 labels: [cli, dsl, dx, ezk]
 status: idea
 pr:

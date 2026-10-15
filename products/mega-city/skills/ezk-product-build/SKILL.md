@@ -41,7 +41,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--versions all|<liste>] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -104,6 +104,19 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    **tirables** (ready, non-épic) dans l'ordre du plan. Avec `--lot 1`, c'est LA prochaine fiche
    tirable, comme `next --ready-only` — sauf qu'une fiche prête mais marquée `blocked:` est
    écartée et signalée, au lieu d'être construite.
+
+   **Filtre d'éligibilité AVANT toute délibération** (fiche 20261011091553794) : sur une fiche de
+   tête, lance `ezk run eligibility --fiche <id>` et lis la ligne `disposition:` —
+   - `build` → construis (3) ;
+   - `escalate` → **escalade immédiatement, sans délibérer** : une fiche grosse (`à-découper`),
+     risquée (`sous-revue`, `auto-édition-risquée`), bloquée (`attend-*`) ou différée par le PO
+     (`différée-PO`) ne vaut pas qu'on pèse le pour et le contre avec des agents. Journalise la
+     raison typée dans `SPRINT.md` et remonte-la au bilan (`ezk run report`, état `bloquée`) ;
+   - `groom` → auto-groom vers la DoR (cf. § dédié) ;
+   - `defer` → **borne de version atteinte** : le run s'arrête par défaut à la fin de la version en
+     cours ; la soupape `--all-versions` (sur `ezk run eligibility` comme sur le tirage) la lève.
+   Le tri est **déterministe** : il lit le marqueur `blocked:` typé et la borne de version
+   (ADR-0070), jamais un texte libre que seul un humain décoderait.
 2. **Décision « quoi »** :
    - **Lot non vide ET aucune tête bloquée signalée** → va construire (3). Un lot incomplet (moins
      de N fiches prêtes) se construit tel quel : ne le complète jamais avec une fiche non prête.
@@ -296,6 +309,49 @@ délégable] et (b) *ça vaut le coup* [humain]. Défaut autonome = le PO a déj
 sélectionnant le lot ; la machine ne fait que (a), avec `ezk-pm` comme second regard. **La
 sélection du lot reste à l'humain — la machine ne décide jamais *quoi* construire.**
 
+## Boucle multi-versions — configurable (`--versions`)
+
+Règle **combien de versions** le run enchaîne. **Sans `--versions`** : une **itération unique** — la
+version en cours, point (non-régression stricte, comportement d'avant). **Avec `--versions`** : la
+boucle enchaîne **plusieurs versions** du plan, chacune avec sa **frontière** = rétro (selon `--retro`)
+puis **clôture de version**. Adossé à la fiche 20261013131852375 (le **POC** de l'enchaînement).
+
+- **`--versions all`** — toutes les versions **à faire** du plan, dans l'ordre (la version en cours,
+  puis les suivantes qui ont des fiches à livrer).
+- **`--versions <v1,v2,…>`** — une liste explicite ; les versions inconnues, déjà livrées ou sans
+  fiche à faire sont **signalées, jamais tues**.
+
+**La suite se lit par `ezk run versions [--versions all|<liste>]`** (déterministe, ordre du plan) : le
+pilote la déroule version par version. À **chaque frontière** :
+
+1. la version courante est construite (la boucle de sprints habituelle, filtre d'éligibilité compris) ;
+2. **rétro** si due (`--retro`, ≥ 2 sprints dans la version) ;
+3. **clôture de version** — `ezk backlog version close <v>` (la gate de release joue). Le POC **ne tague
+   pas** tout seul : l'auto-tag est **opt-in** (fiche sœur `--seal-versions`, ci-dessous), et le
+   park-hors-version d'une fiche inconstruisable est une autre fiche sœur.
+
+Garde-fou ADR-0001 tenu : le skill **décide** quand passer à la version suivante ; `ezk backlog version`
+**exécute** le git.
+
+## Scellage des versions — configurable (`--seal-versions`)
+
+Règle **si le run pose l'étiquette de version lui-même**. Poser le tag (`version close --tag`) est le
+**seul geste git réservé au PO** : ce drapeau le rend **délégable au run**, mais sous double condition.
+Adossé à [ADR-0076](../../docs/adr/0076-auto-tag-close-local-opt-in.md) (l'assouplissement et sa limite).
+**Défaut : absent** — le run clôt chaque version (`version close`) mais **ne tague pas**, le tag reste au PO.
+
+- **`--seal-versions local`** (opt-in) — à chaque frontière de version, en **flux local**
+  (`github: false`, rien n'est poussé), le run pose l'étiquette **lui-même**, en local et réversible
+  (`git tag -d` pour la retirer). La gate de release joue toujours : pas de tag tant que la passe
+  qualité n'est pas GO.
+- **Hors flux local** (GitHub actif) — le drapeau **ne mord pas** : le tag reste au PO. Jamais
+  d'auto-tag quand quelque chose serait poussé.
+- **Rien n'est poussé, jamais.** `--seal-versions local` crée une étiquette **locale** ; le
+  `git push origin <tag>` reste un geste du PO en toutes lettres.
+
+Le contrat du run (`ezk run context --seal-versions local`) **affiche** la politique de scellage en
+clair. Garde-fou ADR-0001 : le skill **décide** de passer `--tag` ; `ezk backlog version` **exécute** le git.
+
 ## Mode livraison — configurable (`--delivery`)
 
 Règle **comment un lot cohérent de fiches est livré** (mergé) : au fil de l'eau, ou de façon
@@ -359,6 +415,16 @@ secret/CI absent), **conflit stratégique** (contredit un ADR accepté ou une au
 **décision humaine requise** — tu **skippes vers la prochaine fiche tirable** en **journalisant**
 pourquoi. Si **tout** le stock tirable skippe → **STOP humain** (« rien de constructible, voici
 pourquoi chaque fiche a été skippée »), jamais une boucle folle.
+
+**🅿️ Parker hors version (fiche 20261013131852779).** Skipper laisse la fiche **dans la version** : le
+run rebute dessus à chaque passage. Quand une fiche est jugée **durablement inconstruisable** (le même
+blocage réel reviendrait run après run, ou elle n'a pas d'outcome testable dérivable), tu la **sors de
+sa version** au lieu de seulement la sauter : `ezk backlog park <id> --reason <raison-typée>`. Le geste
+vide `version:`, marque la fiche parkée (`idea` + `milestone: parked`) avec la raison TYPÉE, et rend une
+**ligne de journal**. La version avance sans la traîner. C'est **réversible** : la fiche reste au
+backlog, réveillable au grooming (repose version + status, retire `blocked:`). Le RUN-REPORT la **nomme**
+en état `sautée` avec la raison « parkée hors version ». Après un park, **régénère les vues** (`ezk
+backlog regen`) et committe. Parker reste un geste du run ; il ne contourne **aucun** des 4 STOP.
 
 **Les 4 STOP humains restent absolus** (irréversible/sortant · hausse de budget · direction produit
 sur backlog vide · exigences contradictoires) — l'auto-groom et l'auto-tampon ne les contournent
@@ -438,7 +504,11 @@ bruit** :
 
 - **Au lancement d'un `run` (y compris `--once`) — UNE fois par session, pas à chaque tour de
   boucle** : `run_start {method_name: "ezk-product-build", method_version: <version du
-  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human", params: {mode, review,
+  maxSprints, tokens}}`. Les **paramètres retenus** du run (fiche 20260906142654370) sont transportés
+  dans le payload pour que cop1 affiche « ce qui a été lancé et comment » ; omets un champ que tu n'as
+  pas (le journal tolère l'absence). Si l'outil refuse `params` (émetteur plus ancien), réémets sans :
+  c'est best-effort, jamais un blocage.
   **Retiens le `run_id` rendu** : `run_finished` l'exige à la clôture, pour ne fermer que TON run
   (fiche 20261002133125444). Contrairement à `ezk-sprint` (qui s'absorbe quand il est appelé dans un
   run déjà ouvert), c'est **toi** qui ouvres le run quand tu es la tête de chaîne.

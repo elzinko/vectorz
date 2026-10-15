@@ -45,18 +45,44 @@ ok "VERDICT ALERT points=1" "echo \"\$OUT2\" | grep -q '^VERDICT: ALERT points=1
 ok "P1 ALERT" "echo \"\$OUT2\" | grep -q '^P1_TREE: ALERT'"
 git checkout -- a.txt
 
-echo "S3 — fiche in-progress → ALERT point 3"
+echo "S3 — « en cours » DÉDUIT des branches (fiche 20261013131852984), jamais d'un status écrit"
 cat > features/0099-en-cours.md <<'EOF'
 ---
 id: 0099
 title: sprint en vol
-status: in-progress
+status: ready
 ---
 EOF
-git add features/0099-en-cours.md && git commit -qm "fixture: fiche in-progress"
+git add features/0099-en-cours.md && git commit -qm "fixture: fiche active 0099"
+# une branche de story avec du travail NON livré sur main (non absorbée) → la story est « en cours »
+git branch feat/0099-sprint-en-vol main
+git checkout -q feat/0099-sprint-en-vol && echo wip > wip0099.txt && git add wip0099.txt && git commit -qm "wip 0099"
+git checkout -q main
 OUT3="$(bash "$CHECK" --gate)"
 ok "VERDICT ALERT points=3" "echo \"\$OUT3\" | grep -q '^VERDICT: ALERT points=3'"
-ok "P3 ALERT + id" "echo \"\$OUT3\" | grep -q 'id=0099'"
+ok "P3 ALERT + id déduit de la branche" "echo \"\$OUT3\" | grep -q 'id=0099'"
+ok "aucun status in-progress n'a été écrit" "! grep -rqs 'status: in-progress' features/"
+
+echo "S3b — une branche ABSORBÉE par main (résidu de squash) ne rend PAS la story « en cours » (critère 4)"
+# feat/0043 pointe sur main : la merger ne changerait rien → absorbée → écartée. La fiche 0043 est active.
+git branch feat/0043-todo main
+OUT3b="$(bash "$CHECK" --gate)"
+ok "0043 (branche absorbée) PAS en cours" "! echo \"\$OUT3b\" | grep -q 'id=0043'"
+ok "0099 (branche réelle) toujours en cours" "echo \"\$OUT3b\" | grep -q 'id=0099'"
+
+echo "S3c — branche supprimée → l'état « en cours » disparaît (critère 3)"
+git branch -D feat/0099-sprint-en-vol >/dev/null
+git branch -D feat/0043-todo >/dev/null
+OUT3c="$(bash "$CHECK" --gate)"
+ok "plus aucune story en cours" "echo \"\$OUT3c\" | grep -q '^P3_IN_PROGRESS: CLEAR'"
+
+echo "S3d — un préfixe de story autre que feat/fix (chore/refactor…) est AUSSI détecté (aligné sur la vue)"
+git branch chore/0043-todo main
+git checkout -q chore/0043-todo && echo wip > wip43.txt && git add wip43.txt && git commit -qm "wip 0043"
+git checkout -q main
+OUT3d="$(bash "$CHECK" --gate)"
+ok "0043 en cours via chore/<id> (préfixes alignés sur la vue)" "echo \"\$OUT3d\" | grep -q 'id=0043'"
+git branch -D chore/0043-todo >/dev/null
 
 echo "S4 — copies voisines PROPRES (principal + réserves détachées + branche fusionnée) → CLEAR (fiche 20261003011750521)"
 # Un repo neuf, pour un décor de worktrees maîtrisé. Une branche absorbée = contenu squashé sur main.

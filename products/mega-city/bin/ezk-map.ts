@@ -112,7 +112,7 @@ function cockpitFor(
   const { projects, problem } = loadCockpitProjects(REGISTRY_DIR, CURRENT_LAYOUT);
   const choice = resolveChoice(projects, readCookie(cookieHeader, cookieName));
   const launchName = shownProjectName({ kind: 'defaut' }, projects, LAUNCH_ROOT, LAUNCH_FALLBACK);
-  const bar = renderProjectBar(projects, choice, `projet de lancement (${launchName})`, problem, currentPath);
+  const bar = renderProjectBar(projects, choice, `projet de lancement (${launchName})`, problem, currentPath, LAUNCH_ROOT);
   const rename = choice.kind === 'projet' || ROOT_SOURCE !== 'default';
   return {
     choice,

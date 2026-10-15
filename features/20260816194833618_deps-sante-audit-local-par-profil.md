@@ -4,6 +4,7 @@ title: "Santé des dépendances : audit local activable + sa place dans le proce
 type: feature
 priority: P2
 product: mega-city
+version: v0.19.0
 labels: [dette, securite]
 milestone:
 epic:

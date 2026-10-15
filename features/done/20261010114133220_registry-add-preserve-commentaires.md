@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.15.0
 labels: [supervision, registre]
-status: ready
-pr:
+status: shipped
+pr: "local 7dc5df29"
 evidence: none # CLI, pas d'écran
 created: 2026-10-10
 ---
@@ -30,7 +30,7 @@ d'emploi écrit à la main. Une commande qui ajoute un projet ne devrait pas eff
 - Même famille que « une commande qui mute détruit ce qu'elle n'a pas produit » (règle de rétro du
   2026-10-10). Waiver POC explicite posé à l'époque.
 - Issu de la rétro du 2026-10-10 (capture
-  [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
+  [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
   proposition 9.
 
 ## Proposition

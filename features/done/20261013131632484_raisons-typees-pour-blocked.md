@@ -61,7 +61,7 @@ pnpm --dir products/mega-city plan:head   # une fiche « différée-PO » n'est 
   [La tête du plan respecte le drapeau bloquée](20261013131632277_tete-plan-respecte-drapeau-bloquee.md).
   Même version v0.13.0 ; la liste fermée des raisons se partage entre les deux.
 - **Socle de** la règle d'arrêt du run autonome
-  [Le run filtre l'éligibilité + borne de version](../20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md)
+  [Le run filtre l'éligibilité + borne de version](20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md)
   (v0.15) : cette fiche doit shipper avant, dans l'ordre des versions.
 - Enrichie à la rétro du 2026-10-11 (run autonome v0.7),
   [capture](../../docs/captures/2026-10-11-retro-run-v07-autonome.md), S7.

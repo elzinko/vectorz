@@ -43,6 +43,16 @@ export interface RunStartArgs {
   method_name: string;
   method_version: string;
   seat?: string;
+  /**
+   * Paramètres RETENUS du run (fiche 20260906142654370) — transportés dans le payload
+   * `run.started` pour que cop1 affiche « ce qui a été lancé et comment ». Tous optionnels.
+   */
+  params?: {
+    mode?: string;
+    review?: boolean;
+    maxSprints?: number;
+    tokens?: string;
+  };
 }
 
 export interface GateReachedArgs {
@@ -266,6 +276,7 @@ export class SupervisionRuntime {
     journal.append('run.started', {
       method: { name: args.method_name, version: args.method_version },
       seat: args.seat ?? 'human',
+      ...(args.params !== undefined ? { params: args.params } : {}),
       ...(mismatch !== undefined ? { _method_mismatch: mismatch } : {}),
     });
     return { run_id: runId };

@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [qualite, tests]
-status: ready
-pr:
+status: shipped
+pr: "local 89840129"
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
 ---

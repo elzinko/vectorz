@@ -7,9 +7,9 @@ product: mega-city
 milestone: rationalisation
 version: v0.16.0
 labels: [sprint]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local 351dc74e"
 evidence: none # schéma + ADR, pas d'écran
 split_from: "20261002130235353"
 created: 2026-10-13

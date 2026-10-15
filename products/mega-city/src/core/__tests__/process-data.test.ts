@@ -96,6 +96,44 @@ describe('buildProcessData — l’étape se déduit du statut et des signaux (c
     expect(stageOf(data, '0007')).toBe('en-sprint');
   });
 
+  // Fiche 20261013131852984, critère 4 : une branche restée après le merge (absorbée par main) ne
+  // doit PAS faire croire que la story est encore en cours.
+  it('une branche feat/<id>-… ABSORBÉE par main ne pose PAS « en sprint » (reste à son étape de statut)', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0008', status: 'ready' })],
+        branches: ['feat/0008-slug'],
+        absorbedBranches: ['feat/0008-slug'],
+      }),
+    );
+    expect(stageOf(data, '0008')).toBe('prete');
+  });
+
+  it('une branche de SESSION absorbée ne pose pas « en sprint » non plus', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0014', status: 'ready' })],
+        sessions: [session('/w', 'feat/0014-slug')],
+        absorbedBranches: ['feat/0014-slug'],
+      }),
+    );
+    expect(stageOf(data, '0014')).toBe('prete');
+  });
+
+  // Fiche 20261013131852984 : une session sur une branche absorbée ne « travaille » plus la fiche —
+  // la pastille de session ne doit pas contredire le stage (sinon « Prête » + « quelqu'un bosse »).
+  it('une session sur une branche absorbée n’attache PAS de pastille de session', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0015', status: 'ready' })],
+        sessions: [session('/w', 'feat/0015-slug')],
+        absorbedBranches: ['feat/0015-slug'],
+      }),
+    );
+    expect(stageOf(data, '0015')).toBe('prete');
+    expect(ficheIn(data, '0015').session).toBeNull();
+  });
+
   it('status shipped → Livrée', () => {
     const data = buildProcessData(
       inputs({ fiches: [fiche({ id: '0009', status: 'shipped', done: true })] }),
@@ -103,17 +141,20 @@ describe('buildProcessData — l’étape se déduit du statut et des signaux (c
     expect(stageOf(data, '0009')).toBe('livree');
   });
 
-  it('in-progress sans branche → En sprint, JAMAIS « Idée » (pas de rétrogradation silencieuse)', () => {
+  // ADR-0077 : `in-progress` n'est plus un status écrivable — « en cours » se déduit des branches.
+  // La vue ne pose donc plus une fiche « en sprint » sur la foi du status seul : elle suit les signaux
+  // vivants (branche, PR). Le cran de repli sur le status a disparu.
+  it('status in-progress SANS signal vivant → suit les signaux, pas d’épinglage « en sprint » (ADR-0077)', () => {
     const data = buildProcessData(
       inputs({ fiches: [fiche({ id: '0012', status: 'in-progress' })] }),
     );
-    expect(stageOf(data, '0012')).toBe('en-sprint');
+    expect(stageOf(data, '0012')).toBe('idee');
   });
 
-  it('in-progress AVEC branche → En sprint aussi', () => {
+  it('une branche de travail pose « en sprint », quel que soit le status écrit', () => {
     const data = buildProcessData(
       inputs({
-        fiches: [fiche({ id: '0013', status: 'in-progress' })],
+        fiches: [fiche({ id: '0013', status: 'ready' })],
         branches: ['feat/0013-slug'],
       }),
     );

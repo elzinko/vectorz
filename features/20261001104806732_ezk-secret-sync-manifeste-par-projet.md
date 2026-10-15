@@ -4,6 +4,7 @@ title: "ezk-secret sync — un manifeste de secrets par projet, poussé à l'ave
 type: feature
 priority: P2
 product: vectorz
+version: v0.18.0
 labels: [secrets, ci, dx]
 status: idea
 pr:

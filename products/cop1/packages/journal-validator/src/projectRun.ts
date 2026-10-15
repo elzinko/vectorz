@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { readEnvelopes } from './reader.js';
 import { reduceState } from './reduceState.js';
-import type { MethodRef, Notice, RunIssue, RunProjection, Violation } from './types.js';
+import type { MethodRef, Notice, RunIssue, RunParams, RunProjection, Violation } from './types.js';
 
 /**
  * Extraction TOLÉRANTE de la méthode + du siège depuis le payload de
@@ -30,6 +30,25 @@ function readMethodAndSeat(payload: Record<string, unknown> | undefined): {
   if (typeof rawSeat === 'string' && rawSeat.length > 0) result.seat = rawSeat;
 
   return result;
+}
+
+/**
+ * Extraction TOLÉRANTE des paramètres retenus depuis `run.started.payload.params`
+ * (fiche 20260906142654370). Chaque champ n'est retenu que s'il a le bon type ; un
+ * `params` absent ou non-objet ⇒ `undefined` (jamais inventé). Rend `undefined` si
+ * aucun champ exploitable, pour que l'absence s'affiche comme absence.
+ */
+function readParams(payload: Record<string, unknown> | undefined): RunParams | undefined {
+  if (!payload || typeof payload !== 'object') return undefined;
+  const raw = (payload as Record<string, unknown>).params;
+  if (!raw || typeof raw !== 'object') return undefined;
+  const o = raw as Record<string, unknown>;
+  const params: RunParams = {};
+  if (typeof o.mode === 'string' && o.mode.length > 0) params.mode = o.mode;
+  if (typeof o.review === 'boolean') params.review = o.review;
+  if (typeof o.maxSprints === 'number' && Number.isFinite(o.maxSprints)) params.maxSprints = o.maxSprints;
+  if (typeof o.tokens === 'string' && o.tokens.length > 0) params.tokens = o.tokens;
+  return Object.keys(params).length > 0 ? params : undefined;
 }
 
 /**
@@ -67,6 +86,7 @@ export function projectRun(runDir: string): RunProjection {
   const started = events.find((e) => e.envelope.type === 'run.started');
   const startedAt = started?.envelope.ts;
   const { method, seat } = readMethodAndSeat(started?.envelope.payload);
+  const params = readParams(started?.envelope.payload);
 
   let currentNote: string | undefined;
   for (const entry of events) {
@@ -123,6 +143,7 @@ export function projectRun(runDir: string): RunProjection {
     tokens: { provenance: 'absent' },
     method,
     seat,
+    params,
     abandonedBy,
   };
 }

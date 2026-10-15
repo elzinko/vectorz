@@ -2,9 +2,11 @@
 
 **En clair.** v0.14.0 est **livrée et taguée en local**, rien poussé. Sur ses 6 fiches, 5 sont
 construites et livrées, 1 s'est avérée **déjà livrée** (superseded). Une **chasse aux bugs adverse**
-a trouvé 4 vrais bugs avant le tag ; tous corrigés. Le tag `v0.14.0` est sur `main` local au commit
-`6b64ed1f` ; il a débloqué v0.15.0. **Ce qu'il te reste à faire** : pousser l'étiquette quand tu veux
-(`git push origin v0.14.0`) — c'est le seul geste laissé au PO.
+a trouvé 4 vrais bugs avant le tag ; tous corrigés. Le tag `v0.14.0` était d'abord sur `6b64ed1f`
+(fin de ce run) ; le PO l'a ensuite **re-pointé sur `671bf415`** pour y inclure deux follow-ups
+d'autres sessions — la gate `tsc --noEmit` en tête (`c1cca9f3`) et le fix `ship_local --dry-run`
+(`671bf415`). Il a débloqué v0.15.0. **Ce qu'il te reste à faire** : pousser l'étiquette quand tu veux
+(`git push origin v0.14.0`, qui pointe désormais `671bf415`) — c'est le seul geste laissé au PO.
 
 ## Le lot livré (flux local, github: false)
 

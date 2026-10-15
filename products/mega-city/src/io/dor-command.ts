@@ -26,6 +26,15 @@ export interface DorRun {
 
 const NO_MANIFEST = 'Aucun manifeste DoR (.vectorz/dor.yml absent) : le socle 3+1 seul.';
 
+/**
+ * Le rappel de la liste de contrôle (fiche 20261010114133469, règle `development/acceptance-criteria-before-merge`) :
+ * un comportement greffé en cours de sprint (ex. des filtres sur une vue) n'est pas « gratuit » — il est
+ * une story, ou il reçoit au moins un critère vérifiable, sinon rien ne le teste et un bug file jusqu'à la
+ * revue adverse. Pas un moteur : une ligne que le gate répète à chaque `check`.
+ */
+const BEHAVIOR_REMINDER =
+  'Rappel DoR (acceptance-criteria-before-merge) : tout ajout de comportement est une story, ou reçoit au moins un critère d\'acceptation vérifiable avant le ship.';
+
 /** Le manifeste du projet, ou la raison pour laquelle il est inutilisable (déjà formulée). */
 function manifestOf(root: string): { manifest: DorManifest; file?: string } | { problem: string } {
   let loaded: ReturnType<typeof loadDor>;
@@ -69,6 +78,9 @@ function check(run: DorRun, manifest: DorManifest): number {
     run.err(`Fiche « ${id} » introuvable dans features/ de ${run.root}.\n`);
     return 2;
   }
+  // Le rappel de comportement ouvre la liste de contrôle d'une fiche : il vaut même sans manifeste
+  // de projet (le socle, lui, exige toujours un critère).
+  run.out(`${BEHAVIOR_REMINDER}\n`);
   if (manifest.slots.length === 0) {
     run.out(`${NO_MANIFEST}\n`);
     return 0;

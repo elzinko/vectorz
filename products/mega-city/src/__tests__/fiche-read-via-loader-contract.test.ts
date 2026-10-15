@@ -81,7 +81,7 @@ const LEGACY: Record<string, string> = {
   'products/mega-city/skills/ezk-archive/scripts/check.sh':
     'grep/sed sur status: et pr: ; skill déployable hors monorepo',
   'products/mega-city/skills/ezk-sprint/scripts/check.sh':
-    'awk sur status: ; skill déployable hors monorepo',
+    'awk sur title: (la story « en cours » se déduit des branches, plus du status) ; skill déployable hors monorepo',
   'products/mega-city/src/sprint-metrics/adapters/repoSource.ts':
     'regex id/status sur le fichier ENTIER (pas seulement le front-matter) ; adaptateur sans test',
   'tools/outcomes/sources.ts': 'mêmes regex que repoSource.ts',

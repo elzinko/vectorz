@@ -34,7 +34,7 @@ export function compareVersions(a: string, b: string): number {
 }
 
 /** Comme `compareVersions`, mais tolère une valeur illisible ou vide (rangée après les lisibles). */
-function compareLoose(a: string, b: string): number {
+export function compareLoose(a: string, b: string): number {
   const okA = VERSION_FORMAT.test(a);
   const okB = VERSION_FORMAT.test(b);
   if (okA && okB) return compareVersions(a, b);

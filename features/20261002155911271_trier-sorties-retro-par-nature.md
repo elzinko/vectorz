@@ -74,3 +74,18 @@ pnpm --dir products/mega-city test:scripts
 - Grooming 2026-10-11 (PO) : ajout de l'axe **destination** (produit → backlog du projet hôte,
   méthode → vectorz) en plus du tri par nature. Déclencheur : rétro muti du 2026-10-11 rangée
   entièrement dans vectorz, le PO a demandé où devait atterrir une friction produit.
+- **Run v0.16 autonome 2026-10-14 — sautée, à re-groomer (arbitrage produit).** En voulant
+  construire, le pilote a buté sur une divergence entre la fiche et la réalité du code :
+  - La 3ᵉ surface à aligner — « le README `.rules/` d'un projet qui range des règles *en
+    observation* » — **n'existe nulle part dans le dépôt** (aucun gabarit `.rules/`, aucun README
+    de règles hôte ; le mot « .rules/ » n'apparaît dans aucun doc/skill).
+  - Le **concept « règle en observation / buffered »** (écrite mais pas appliquée, activée au retour
+    du problème) **n'est implémenté par aucun outil**. `ezk-retro` temps 5 écrit des règles
+    **vivantes** dans `rules/<cat>/` + un bundle, pas un tampon.
+  - Donc écrire « discipline → règle en observation » dans `ezk-retro` et l'ADR décrirait un
+    **comportement inexistant** (anti-pattern « livré ≠ tourne »).
+  - **Décision à prendre par le PO** (hors chore autonome) : soit (a) reformuler le tri sur ce que
+    la méthode **fait vraiment** (discipline → règle vivante `rules/` + bundle, retirable ; pas de
+    tampon), et aligner ALORS les 2 surfaces réelles (ADR-0054 + `ezk-retro`) ; soit (b) ficher à
+    part la **construction du tampon « en observation »** (nouvel état de cycle de vie d'une règle +
+    gabarit `.rules/`), puis aligner les 3 textes une fois le mécanisme livré.

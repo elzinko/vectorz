@@ -33,21 +33,39 @@ export interface StatutDef {
   label: string;
   /** Clôturé sans livraison standard : sort du stock actif même si la fiche reste dans `features/`. */
   terminal: boolean;
+  /**
+   * Peut-on ÉCRIRE ce statut dans le front-matter d'une fiche ? Défaut : oui. `false` = état CALCULÉ,
+   * affiché par les vues mais jamais écrit (ADR-0077). `in-progress` : « en cours » se déduit des
+   * branches (fiche 20261013131852984), le validateur refuse de l'écrire.
+   */
+  writable?: boolean;
 }
 
 /** LA table. L'ordre est celui du flux, puis des terminaux ; les vues l'affichent tel quel. */
 export const STATUT_DEFS: readonly StatutDef[] = [
   { id: 'idea', label: '💡 idea', terminal: false },
   { id: 'ready', label: '🔵 ready', terminal: false },
-  { id: 'in-progress', label: '🟠 in-progress', terminal: false },
+  { id: 'in-progress', label: '🟠 in-progress', terminal: false, writable: false },
   { id: 'shipped', label: '✅ shipped', terminal: false },
   { id: 'superseded', label: '🗑️ superseded', terminal: true },
   { id: 'merged', label: '🔀 merged', terminal: true },
   { id: 'split', label: '🧩 split', terminal: true },
 ];
 
-/** Les valeurs admises de `status:` — dérivées de la table. */
+/** Toutes les valeurs de `status:` connues (écrivables + calculées) — dérivées de la table. */
 export const STATUTS: readonly string[] = STATUT_DEFS.map((d) => d.id);
+
+/**
+ * Les statuts qu'une fiche peut porter en front-matter (ce que le validateur admet à l'écriture).
+ * Exclut les états CALCULÉS (ADR-0077). L'ordre de la table est conservé.
+ */
+export const STATUTS_ECRITS: readonly string[] = STATUT_DEFS.filter((d) => d.writable !== false).map((d) => d.id);
+
+/**
+ * Les statuts CALCULÉS : affichés par les vues, jamais écrits. Écrire l'un d'eux en `status:` est une
+ * anomalie que le validateur signale (ADR-0077 ; aujourd'hui : `in-progress`, déduit des branches).
+ */
+export const STATUTS_CALCULES: readonly string[] = STATUT_DEFS.filter((d) => d.writable === false).map((d) => d.id);
 
 /**
  * Statuts TERMINAUX. Ils sortent du STOCK ACTIF même quand la fiche reste physiquement dans

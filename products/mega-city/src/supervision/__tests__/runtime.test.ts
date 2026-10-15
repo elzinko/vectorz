@@ -107,6 +107,28 @@ describe('Rubrique A — Run nominal complet', () => {
     expect(events.map((e) => e.seq)).toEqual([1, 2, 3, 4]);
     expect(events[3]).toMatchObject({ payload: { status: 'success' } });
   });
+
+  it('transporte les paramètres retenus du run dans le payload run.started (fiche 20260906142654370)', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const started = runtime.runStart({
+      method_name: 'ezk-product-build',
+      method_version: 'v0.15.0',
+      seat: 'human',
+      params: { mode: 'auto', review: false, maxSprints: 3, tokens: 'lean' },
+    });
+    const events = readEvents(projectRoot, started.run_id);
+    expect(events[0]).toMatchObject({
+      type: 'run.started',
+      payload: { params: { mode: 'auto', review: false, maxSprints: 3, tokens: 'lean' } },
+    });
+  });
+
+  it("sans params, le payload run.started n'ajoute pas de champ params (compat)", () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+    const events = readEvents(projectRoot, started.run_id);
+    expect(events[0].payload).not.toHaveProperty('params');
+  });
 });
 
 describe('Rubrique B — enveloppe (intégration runtime)', () => {

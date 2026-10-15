@@ -28,6 +28,11 @@ export interface RunSettings {
   maxSprints?: number;
   /** La fiche visée, quand on la connaît. */
   fiche?: string;
+  /**
+   * `--seal-versions local` (fiche 20261013131852581, ADR-0076) : opt-in pour que le run pose
+   * l'étiquette de version LUI-MÊME, en flux local. Absent par défaut : le tag reste au PO.
+   */
+  sealVersions?: 'local';
 }
 
 /** Les faits git, rassemblés avant l'appel (après `git fetch`). */
@@ -46,6 +51,11 @@ export interface RunFacts {
   /** HEAD est un ancêtre d'origin/main : un fast-forward strict est possible. */
   fastForwardable: boolean;
   worktree: { kind: 'primary' | 'secondary'; path: string; branch?: string | undefined };
+  /**
+   * Flux local = aucune pull request (`github.pr` coupé) : rien n'est poussé, donc l'auto-tag
+   * (`--seal-versions local`) est permis. `undefined` quand on ne l'a pas résolu (compat).
+   */
+  githubLocalFlow?: boolean;
 }
 
 export interface RunContext {
@@ -72,7 +82,25 @@ function baseLine(facts: RunFacts): string {
   return `  Base       ${where} · ${late} : avertissement seul, rien n'est déplacé (arbre sale ou divergent) — décision : rebase, stop ou go`;
 }
 
-function contractLines(s: RunSettings): string[] {
+/** La politique de scellage des versions par le run (fiche 20261013131852581, ADR-0076). */
+export type SealPolicy = 'auto-local' | 'po-not-local' | 'po-default';
+
+/**
+ * Tranche si le run pose l'étiquette de version lui-même. Opt-in STRICT, par sûreté :
+ *   - sans `--seal-versions local` → `po-default` : le run clôt mais NE TAGUE PAS (tag au PO) ;
+ *   - `--seal-versions local` en flux local confirmé → `auto-local` : le run tague, en local, réversible ;
+ *   - `--seal-versions local` hors flux local (GitHub actif, ou flux non résolu) → `po-not-local` :
+ *     le drapeau ne mord pas, le tag reste au PO (jamais d'auto-tag si quelque chose serait poussé).
+ */
+export function sealPolicy(
+  sealVersions: RunSettings['sealVersions'],
+  githubLocalFlow: boolean | undefined,
+): SealPolicy {
+  if (sealVersions !== 'local') return 'po-default';
+  return githubLocalFlow === true ? 'auto-local' : 'po-not-local';
+}
+
+function contractLines(s: RunSettings, seal: SealPolicy): string[] {
   const one =
     s.mode === 'manuel'
       ? "En manuel, je ne décide rien seul : je m'arrête à chaque checkpoint."
@@ -87,17 +115,26 @@ function contractLines(s: RunSettings): string[] {
       : s.tokens === 'full'
         ? 'Plafond de jetons : full — fan-out libre, aucun plafond automatique : surveille la consommation toi-même.'
         : "Plafond de jetons : lean — délégation simple et séquentielle, je préviens avant tout fan-out ; une dérive qui persiste m'arrête (hausse de budget = décision humaine).";
-  return [`    1. ${one}`, `    2. ${two}`, `    3. ${three}`];
+  const lines = [`    1. ${one}`, `    2. ${two}`, `    3. ${three}`];
+  // Ligne de scellage ajoutée SEULEMENT en opt-in : le défaut garde trois lignes de contrat.
+  if (seal === 'auto-local') {
+    lines.push('    4. À chaque frontière de version, je pose l\'étiquette moi-même, en local et réversible (opt-in --seal-versions local).');
+  } else if (seal === 'po-not-local') {
+    lines.push('    4. --seal-versions local est posé, mais le flux n\'est pas local (GitHub actif) : le tag reste au PO.');
+  }
+  return lines;
 }
 
 /** Rend le bloc. Ne jette jamais : une base illisible devient un avertissement dans la ligne Base. */
 export function buildRunContext(settings: RunSettings, facts: RunFacts): RunContext {
+  const seal = sealPolicy(settings.sealVersions, facts.githubLocalFlow);
   const flags = [
     `--mode ${settings.mode}`,
     `--tokens ${settings.tokens}`,
     `--delivery ${settings.delivery}`,
     `--review ${settings.review ? 'présent' : 'absent'}`,
     ...(settings.maxSprints !== undefined ? [`--max-sprints ${settings.maxSprints}`] : []),
+    ...(settings.sealVersions ? [`--seal-versions ${settings.sealVersions}`] : []),
   ];
   const target = settings.fiche ? ` · fiche visée ${settings.fiche}` : '';
   const wt = facts.worktree;
@@ -116,7 +153,7 @@ export function buildRunContext(settings: RunSettings, facts: RunFacts): RunCont
       `  Worktree   ${wt.kind === 'secondary' ? 'secondaire' : 'principal'} · ${branch} · ${wt.path}`,
       write,
       '  Contrat',
-      ...contractLines(settings),
+      ...contractLines(settings, seal),
     ],
   };
 }

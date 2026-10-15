@@ -7,9 +7,9 @@ product: mega-city
 milestone: rationalisation
 version: v0.16.0
 labels: [sprint]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local 5dd0f4c3"
 evidence: auto # la vue des sessions affiche « en cours » ; décidé par le diff à la PR
 split_from: "20261002130235353"
 created: 2026-10-13

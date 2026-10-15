@@ -4,10 +4,11 @@ title: "Un agent qui utilise l'app d'une PR et propose des fiches"
 type: feature
 priority: P2
 product: mega-city
-milestone: parked
+version: v0.22.0
+milestone:
 epic:
 depends: ["0169"]
-labels: [test-local]
+labels: [test-local, exploration-app]
 status: idea
 pr:
 created: 2026-08-21
@@ -102,6 +103,45 @@ Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué se
 
 ## Notes / décisions
 
+- **Mémoire partagée — le cache de cartographie [[20261014113049954]] (ajout PO 2026-10-14)** : au
+  lieu de remonter le banc et de re-parcourir toute l'app à chaque PR, l'explorateur **consulte** une
+  carte vivante versionnée de l'app (le « cache de cartographie applicative »), activable par projet.
+  C'est un **outil à part** ; l'explorateur le compose **ou non**. À intégrer quand le cache existe.
+- **Deux lentilles, pas forcément deux agents neufs — analyse de groom (2026-10-14)** : on sépare bien
+  l'**explorateur « en rupture »** (il diverge, propose des approches nouvelles) de la **qualification**
+  (rationaliser la proposition face à l'app et au backlog : pertinente ? type ? priorité ?). La
+  qualification **annote, elle ne filtre pas**. Mais « faut-il un *nouvel agent* qualifieur ? » — la
+  doctrine répond **probablement non** :
+  - la part **mécanique** (anti-doublon, type, priorité) est déjà `ezk-backlog add` → on **compose**, on ne refait pas ;
+  - le **jugement produit** (« ça vaut le coup ? ») est le rôle **`ezk-pm`** [[0141]], déjà existant → on **délègue** ;
+  - l'**indépendance** vis-à-vis de l'explorateur (le vrai besoin derrière « deux agents » : qu'un divergent ne s'auto-censure pas) s'obtient par une **passe séparée à lentille différente**, pas par un type d'agent neuf.
+  Un agent neuf ne se justifierait — [ADR-0026](../products/mega-city/docs/adr/0026-capacite-ux-agent-plus-skill-mince.md), « un agent = un *rôle* manquant, pas une *méthode* manquante » — que si le panel trouve que la qualification exige un jugement ou des « yeux » que ni `ezk-pm` ni une 2ᵉ passe de l'explorateur ne donnent.
+- **Validation par panel adverse (demande PO 2026-10-14)** : l'approche des deux fiches sœurs (cache +
+  explorateur, label `exploration-app`) sera **challengée par un panel** (architecte + devs + juge)
+  avant tout `ready` — « voir si l'approche est correcte ou non ». Le doute sur l'agent qualifieur
+  ci-dessus est la **première question** du panel.
+- **Panel adverse — résultat (2026-10-14).** Verdicts : *saine-avec-changements* (archi),
+  *vaut-le-coup-si* (produit), *risqué* (dev). L'explorateur est jugé **le vrai produit** (besoin
+  prouvé, oracle livré). Conditions avant `ready` :
+  - **Découpler du cache** — le garder strictement optionnel, prouver l'explorateur **cache éteint**,
+    ne pas conditionner son `ready` au cache (jugé fragile, cf. [[20261014113049954]]).
+  - **Découper** brique 2 (siège auto) / brique 3 (explorateur), livrer la 2 d'abord.
+  - **Parade « juge et partie » choisie (groom 2026-10-14)** : **journaliser tout refus** rencontré
+    pendant la passe (la moins chère), à implémenter et tester avant `ready`. Les deux autres parades
+    (recoupement journal ↔ transcript, 2ᵉ agent adverse) viennent plus tard si besoin.
+  - **Agent SDK (brique 2)** : **spike borné dans le temps** avant de s'engager (lire la doc
+    `code.claude.com/docs/en/agent-sdk`), pas une intégration ouverte.
+  - **Agent qualifieur — TRANCHÉ PO (2026-10-14) : pas de nouvel agent.** La qualification juge **sur
+    dossier** — la proposition + l'évidence (capture, DOM) déjà prise par l'explorateur — donc sans
+    re-voir l'app. On **compose** `ezk-backlog add` (anti-doublon, type, priorité) et on **délègue** le
+    jugement produit à `ezk-pm`. L'indépendance vient d'une **passe séparée à lentille différente**,
+    pas d'un type d'agent neuf. (Soupape : si un jour qualifier exige de re-voir l'app en marche,
+    rouvrir le cas rôle + yeux d'ADR-0026.)
+  - **Sas `brainstormed`** : non tranché ; défaut = modèle existant (`idea` + label de provenance).
+- **Sas `features/brainstormed` — question ouverte (PO 2026-10-14)** : le PO veut les propositions
+  dans un **dossier séparé** du backlog de travail, pas mêlées aux fiches actives. ⚠ Tension à
+  trancher avec la politique actuelle (rapport sous gate humaine, aucune carte créée seule, naissance
+  `idea` + label de provenance) : un sas physique est un **autre modèle**. À arbitrer au grooming.
 - **Division avec `ezk-scout` ([[20260910165637000]]) — décision PO (2026-09-10)** : deux cartes
   **SÉPARÉES**. Cette carte cherche des **NOUVELLES FEATURES** (adaptations, trous à combler) ;
   `ezk-scout` cherche les **BUGS**. Les deux **mutualisent la commande d'exploration** — une

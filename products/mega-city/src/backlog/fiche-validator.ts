@@ -4,7 +4,7 @@
  * I/O (bin/check-fiches.ts). Absorbe la fiche 281 et promeut en vrai validateur les
  * warnings d'intégrité déjà émis par regen-backlog.sh (id dupliqué, etc. — inchangés ici).
  *
- * Enums réutilisées, pas dupliquées : STATUTS vient du schéma unique `../core/fiche-schema.js`
+ * Enums réutilisées, pas dupliquées : STATUTS_ECRITS/STATUTS_CALCULES viennent du schéma unique `../core/fiche-schema.js`
  * (avec les CHAMPS_RETIRES), PRIOS/TYPES de `../core/avancement-data.js`.
  * Lecture de champ réutilisée : `readField` vient de `../loaders/fiches.js`.
  *
@@ -12,7 +12,7 @@
  * jamais. La bascule bloquante (exit ≠ 0, préflight/CI) est hors périmètre (D2).
  */
 import { EVIDENCE, PRIOS, TYPES } from '../core/avancement-data.js';
-import { CHAMPS_RETIRES, STATUTS } from '../core/fiche-schema.js';
+import { CHAMPS_RETIRES, STATUTS_CALCULES, STATUTS_ECRITS } from '../core/fiche-schema.js';
 import { frontMatter, readField } from '../loaders/fiches.js';
 import { BLOCKED_REASONS, blockedType, isKnownBlockedReason } from './blocked-reasons.js';
 
@@ -29,10 +29,11 @@ export interface ValidateOptions {
 
 const REQUIRED_FIELDS = ['id', 'title', 'type', 'priority', 'status'] as const;
 
+// `status` est traité à part (plus bas) : il distingue un statut écrivable d'un état CALCULÉ
+// (in-progress, ADR-0077), avec un message propre à chaque cas.
 const ENUM_FIELDS: ReadonlyArray<{ field: string; values: readonly string[] }> = [
   { field: 'type', values: TYPES },
   { field: 'priority', values: PRIOS },
-  { field: 'status', values: STATUTS },
   { field: 'evidence', values: EVIDENCE },
 ];
 
@@ -59,6 +60,23 @@ export function validateFicheFrontMatter(
         message: `${field} inconnu : "${value}" (attendu : ${values.join(', ')})`,
       });
     }
+  }
+
+  // `status` : un statut ÉCRIVABLE, ou rien. Un état CALCULÉ (in-progress, ADR-0077) est refusé avec un
+  // message propre — il se déduit des branches (fiche 20261013131852984), il ne s'écrit pas.
+  const statut = readField(text, 'status');
+  if (statut !== '' && STATUTS_CALCULES.includes(statut)) {
+    anomalies.push({
+      file,
+      field: 'status',
+      message: `status "${statut}" est CALCULÉ (déduit des branches feat/<id>-…, ADR-0077), jamais écrit — retire-le du front-matter`,
+    });
+  } else if (statut !== '' && !STATUTS_ECRITS.includes(statut)) {
+    anomalies.push({
+      file,
+      field: 'status',
+      message: `status inconnu : "${statut}" (attendu : ${STATUTS_ECRITS.join(', ')})`,
+    });
   }
 
   // Raison typée du drapeau `blocked:` : une liste fermée, pour que le tirage et le run autonome la

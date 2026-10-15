@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version: v0.15.0
 labels: [methode, ezk-product-build]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local 8156ad0c"
 evidence: none # pilote de run + ADR, pas d'écran
 split_from: "20261011103839682"
 created: 2026-10-13

@@ -46,6 +46,13 @@ export interface ProcessInputs {
   /** TOUTES les branches locales (nom court), brutes. Signal « en sprint » même sans worktree. */
   branches: string[];
   /**
+   * Les branches ABSORBÉES par `main` (les merger n'y changerait plus rien : squash déjà passé, ou
+   * fusion en avance rapide). Une branche de story restée après le merge (copie locale, branche tenue
+   * par un autre worktree) ne doit PAS rendre sa fiche « en cours » : on l'écarte ici
+   * (fiche 20261013131852984, critère 4). Absente/vide = aucune exclusion (comportement d'avant).
+   */
+  absorbedBranches?: string[];
+  /**
    * État des PR OUVERTES par branche — NULLABLE DE PREMIÈRE CLASSE. `null` = pas de `gh`/remote :
    * l'étape « en revue » est alors INDÉTERMINABLE. Une fiche avec une branche reste « en sprint »,
    * jamais rétrogradée en silence (critère de la fiche). Une map (même vide) = `gh` a répondu.
@@ -125,12 +132,10 @@ function byPrioThenId(a: ProcessFiche, b: ProcessFiche): number {
  * premier match gagnant. « Livrée » est traité à part (avant), sur le statut `shipped`.
  */
 function activeStage(status: string, hasBranch: boolean, hasOpenPr: boolean): ProcessStage {
+  // « En cours » (en-sprint) se déduit des SIGNAUX vivants (PR ouverte, branche de travail), jamais
+  // d'un status écrit : `in-progress` n'est plus écrivable (ADR-0077), il est CALCULÉ ici même.
   if (hasOpenPr) return 'en-revue';
   if (hasBranch) return 'en-sprint';
-  // `in-progress` = travail engagé : « en sprint », même si sa branche n'est plus détectée
-  // (nettoyée, mergée, ou hors format `feat/<id>-`). Sans ce cran, une fiche in-progress sans
-  // branche reculerait en « idée » — une rétrogradation silencieuse, que la fiche jure d'éviter.
-  if (status === 'in-progress') return 'en-sprint';
   if (status === 'ready') return 'prete';
   return 'idee';
 }
@@ -138,13 +143,18 @@ function activeStage(status: string, hasBranch: boolean, hasOpenPr: boolean): Pr
 export function buildProcessData(input: ProcessInputs): ProcessData {
   const prKnown = input.openPrByBranch !== null;
 
-  // Les ids qui portent une branche de travail : branches locales + branches des sessions.
+  // Les ids qui portent une branche de travail NON LIVRÉE : branches locales + branches des sessions,
+  // en écartant les branches absorbées par `main` (travail déjà squashé/fusionné — fiche 20261013131852984).
+  // Une branche restée après le merge ne doit pas faire croire que la story est encore en cours.
+  const absorbed = new Set(input.absorbedBranches ?? []);
   const branchIds = new Set<string>();
   for (const b of input.branches) {
+    if (absorbed.has(b)) continue;
     const id = ficheIdFromBranch(b);
     if (id) branchIds.add(id);
   }
   for (const s of input.sessions) {
+    if (absorbed.has(s.branch)) continue;
     const id = ficheIdFromBranch(s.branch);
     if (id) branchIds.add(id);
   }
@@ -159,8 +169,11 @@ export function buildProcessData(input: ProcessInputs): ProcessData {
   }
 
   // Première session trouvée par id (déterministe : les sessions arrivent déjà triées par le collecteur).
+  // Une session sur une branche ABSORBÉE ne « travaille » plus la fiche (son travail est déjà livré) :
+  // on l'écarte comme pour l'étape, sinon la pastille contredirait le stage (fiche 20261013131852984).
   const sessionByI: Map<string, ProcessSession> = new Map();
   for (const s of input.sessions) {
+    if (absorbed.has(s.branch)) continue;
     const id = ficheIdFromBranch(s.branch);
     if (id && !sessionByI.has(id)) sessionByI.set(id, { path: s.path, branch: s.branch });
   }

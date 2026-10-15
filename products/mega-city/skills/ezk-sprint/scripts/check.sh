@@ -124,39 +124,48 @@ if (( ${#SIBLINGS[@]} > 0 )); then
   fi
 fi
 
-# --- P3 : fiches in-progress --------------------------------------------------
+# --- P3 : stories « en cours », DÉDUITES des branches ------------------------
+# Fiche 20261013131852984 : « en cours » n'est PAS un status écrit — aucune des fiches ne l'a jamais
+# porté (0 sur 330), donc l'ancien scan de `status: in-progress` ne voyait rien. On le DÉDUIT à la
+# lecture : une story est en cours tant qu'une branche de travail `<type>/<id>-…` NON ABSORBÉE par `main`
+# (mêmes préfixes « type sprint » que la vue process : feat|fix|chore|refactor|docs|test|perf)
+# existe pour une fiche encore ACTIVE (pas dans `done/`). Rien n'est committé. Une branche restée après
+# le merge (copie locale, branche tenue par un autre worktree) est absorbée → écartée. Même classifieur
+# d'absorption que ship-merge/ezk-archive (fiche 0076). Sert à repérer deux sessions sur la même story.
 P3="CLEAR"
 P3_FACTS=()
 INPROG=()
-scan_in_progress() {
-  local dir="$1"
-  local f id title status
-  for f in "$dir"/[0-9]*.md; do
-    [[ -e "$f" ]] || continue
-    status="$(awk '
-      BEGIN { infm=0 }
-      /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-      infm==1 && $0 ~ /^status:/ {
-        sub(/^status:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); print; exit
-      }
-    ' "$f")"
-    [[ "$status" == "in-progress" ]] || continue
-    id="$(awk '
-      BEGIN { infm=0 }
-      /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-      infm==1 && $0 ~ /^id:/ { sub(/^id:[[:space:]]*/, ""); gsub(/^"|"$/, ""); print; exit }
-    ' "$f")"
-    title="$(awk '
-      BEGIN { infm=0 }
-      /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
-      infm==1 && $0 ~ /^title:/ {
-        sub(/^title:[[:space:]]*/, ""); gsub(/^"|"$/, ""); print; exit
-      }
-    ' "$f")"
-    INPROG+=("${id}|${f}|${title}")
-  done
+
+base_tree="$(git rev-parse 'main^{tree}' 2>/dev/null || true)"
+is_absorbed_branch() { # vrai si merger $1 sur main ne changerait rien (squash déjà passé / avance rapide)
+  local merged
+  [[ -n "$base_tree" ]] || return 1
+  merged="$(git merge-tree --write-tree main "$1" 2>/dev/null | head -1)"
+  [[ -n "$merged" && "$merged" == "$base_tree" ]]
 }
-scan_in_progress "features"
+fiche_title() { # $1 = fichier : le titre du front-matter, dé-guillemeté (parse maison toléré, LEGACY :
+  # le portier est déployable HORS monorepo, sans tsx ni loader sous la main — fiche-read-via-loader).
+  awk '
+    BEGIN { infm=0 }
+    /^---[[:space:]]*$/ { infm++; if (infm==2) exit; next }
+    infm==1 && $0 ~ /^title:/ { sub(/^title:[[:space:]]*/, ""); gsub(/^"|"$/, ""); print; exit }
+  ' "$1"
+}
+
+seen=" "
+while IFS= read -r br; do
+  [[ -n "$br" ]] || continue
+  [[ "$br" == "$CUR" ]] && continue   # ma propre branche n'est pas une story « en cours ailleurs »
+  id="$(sed -nE 's#^(feat|fix|chore|refactor|docs|test|perf)/([0-9]{4,})[-_].*#\2#p' <<<"$br")"
+  [[ -n "$id" ]] || continue
+  [[ "$seen" == *" $id "* ]] && continue   # une fiche n'est comptée qu'une fois, même avec 2 branches
+  fpath=""
+  for cand in features/"$id"*.md; do [[ -e "$cand" ]] && { fpath="$cand"; break; }; done
+  [[ -n "$fpath" ]] || continue       # fiche absente ou déjà dans done/ : pas une story active
+  is_absorbed_branch "$br" && continue # branche absorbée par main : travail déjà livré, pas « en cours »
+  seen="$seen$id "
+  INPROG+=("${id}|${fpath}|$(fiche_title "$fpath")")
+done < <(git branch --format='%(refname:short)' 2>/dev/null)
 # Liste unique `features/` depuis 0064 (ADR-0017 A14) — plus de backlog séparé mega-city à scanner.
 
 if (( ${#INPROG[@]} > 0 )); then
@@ -228,7 +237,7 @@ echo "## P2 — Worktrees : ${P2}"
 for f in "${P2_FACTS[@]+"${P2_FACTS[@]}"}"; do echo "- ${f#\[P2\] }"; done
 [[ "$P2" == "CLEAR" ]] && echo "- un seul worktree"
 echo
-echo "## P3 — Fiches in-progress : ${P3}"
+echo "## P3 — Stories en cours (déduites des branches) : ${P3}"
 for f in "${P3_FACTS[@]+"${P3_FACTS[@]}"}"; do echo "- ${f#\[P3\] }"; done
 [[ "$P3" == "CLEAR" ]] && echo "- aucune"
 echo

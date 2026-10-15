@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.16.0
 labels: [ezk-map, cockpit]
-status: ready
-pr:
+status: shipped
+pr: "local c26c36b6"
 evidence: auto
 created: 2026-10-10
 ---
@@ -26,7 +26,7 @@ regarde (`ezk dashboard`, ADR-0062).
 - Carnet 2026-10-05 : « le cockpit liste deux fois le projet du lancement ». Bug d'affichage : le
   projet de lancement, déjà présent dans le registre, est ajouté une seconde fois comme « défaut ».
 - Issu de la rétro du 2026-10-10 (capture
-  [2026-10-10-retro-vue-process-worktree-silences](../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
+  [2026-10-10-retro-vue-process-worktree-silences](../../docs/captures/2026-10-10-retro-vue-process-worktree-silences.md)),
   proposition 10 (bug UI, pas une règle de méthode).
 
 ## Proposition

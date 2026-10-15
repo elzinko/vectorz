@@ -234,6 +234,36 @@ projects:
     ).toThrow(/déjà présent/);
   });
 
+  it("préserve le bloc de commentaires d'en-tête (fiche 20261010114133220)", () => {
+    writeRegistry(`# Registre de supervision — mode d'emploi
+# Ligne 2 : à quoi sert ce fichier
+# Ligne 3 : comment ajouter un projet
+
+projects:
+  - id: vectorz
+    path: .
+    method: mega-city
+`);
+    appendRegistryProject(tmpDir, { id: 'muti', path: '/tmp/muti', method: 'mega-city' });
+    const after = fs.readFileSync(path.join(tmpDir, REGISTRY_FILENAME), 'utf-8');
+    expect(after).toContain("# Registre de supervision — mode d'emploi");
+    expect(after).toContain('# Ligne 2 : à quoi sert ce fichier');
+    expect(after).toContain('# Ligne 3 : comment ajouter un projet');
+    // L'en-tête survit ET le projet est ajouté, registre toujours valide.
+    expect(loadRegistry(tmpDir)?.projects.map((p) => p.id)).toEqual(['vectorz', 'muti']);
+  });
+
+  it("sans en-tête, l'écriture reste propre (pas de ligne vide parasite en tête)", () => {
+    writeRegistry(`projects:
+  - id: vectorz
+    path: .
+    method: mega-city
+`);
+    appendRegistryProject(tmpDir, { id: 'muti', path: '/tmp/muti', method: 'mega-city' });
+    const after = fs.readFileSync(path.join(tmpDir, REGISTRY_FILENAME), 'utf-8');
+    expect(after.startsWith('projects:')).toBe(true);
+  });
+
   it('pathLabelForRegistry préfère un relatif sous le siège', () => {
     expect(pathLabelForRegistry('/repo', '/repo')).toBe('.');
     expect(pathLabelForRegistry('/repo', '/repo/apps/foo')).toBe('apps/foo');

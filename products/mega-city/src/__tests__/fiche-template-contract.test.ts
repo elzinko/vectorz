@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { EVIDENCE, PRIOS, TYPES } from '../core/avancement-data.js';
-import { STATUTS } from '../core/fiche-schema.js';
+import { STATUTS_ECRITS } from '../core/fiche-schema.js';
 
 /**
  * CONTRAT du gabarit de fiche (fiche 20260918114726706).
@@ -63,7 +63,8 @@ describe('contrat du gabarit de fiche — une seule source', () => {
     expect(listComment(ref, 'type')).toEqual([...TYPES]);
     expect(listComment(ref, 'priority')).toEqual([...PRIOS]);
     expect(listComment(ref, 'evidence')).toEqual([...EVIDENCE]);
-    expect(listComment(ref, 'status')).toEqual([...STATUTS]);
+    // Le commentaire liste les statuts ÉCRIVABLES (in-progress est calculé, ADR-0077).
+    expect(listComment(ref, 'status')).toEqual([...STATUTS_ECRITS]);
   });
 
   it("l'exemple de front-matter du SKILL ne montre plus le champ retiré epic:", () => {

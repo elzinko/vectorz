@@ -12,7 +12,7 @@ Ce dossier est le **suivi versionné** des features / bugs / chores. Il vit sur
 
 | Fichier / dossier | Rôle |
 |---|---|
-| `<id>_slug.md` | Fiches **actives** (`idea` / `ready` / `in-progress`) — `id` horodaté `AAAAMMDDHHMMSSmmm` ; legacy `0001-slug.md` (4 chiffres) toléré |
+| `<id>_slug.md` | Fiches **actives** (`idea` / `ready` ; « en cours » est CALCULÉ des branches, jamais écrit — ADR-0077) — `id` horodaté `AAAAMMDDHHMMSSmmm` ; legacy `0001-slug.md` (4 chiffres) toléré |
 | [`BACKLOG.md`](BACKLOG.md) | **Index généré** (`regen`) — ne pas éditer à la main |
 | [`PLAN.md`](PLAN.md) | Séquence décidée (curée) — horizon proche et court, pas une encyclopédie |
 | [`done/`](done/) | Fiches **closes** : `shipped` (livrées), ou clôturées sans livraison : `superseded` / `merged` / `split` |

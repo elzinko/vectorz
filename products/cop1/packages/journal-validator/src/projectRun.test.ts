@@ -154,6 +154,52 @@ describe('projectRun — read-model de projection live (fiche 0031 / ADR-028)', 
     }
   });
 
+  it('projette les paramètres retenus depuis run.started.payload.params (fiche 20260906142654370)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'jv-params-'));
+    const lines = [
+      {
+        event_id: 'e1',
+        run_id: 'params-run',
+        seq: 1,
+        ts: '2026-10-14T10:00:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: {
+          method: { name: 'ezk-product-build', version: 'v0.15.0' },
+          seat: 'human',
+          params: { mode: 'auto', review: false, maxSprints: 3, tokens: 'lean' },
+        },
+      },
+    ];
+    writeFileSync(join(dir, 'events.jsonl'), `${lines.map((l) => JSON.stringify(l)).join('\n')}\n`);
+    try {
+      expect(projectRun(dir).params).toEqual({ mode: 'auto', review: false, maxSprints: 3, tokens: 'lean' });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('un run.started sans params (émetteur ancien) projette params undefined, sans casser', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'jv-params-none-'));
+    const lines = [
+      {
+        event_id: 'e1',
+        run_id: 'no-params',
+        seq: 1,
+        ts: '2026-10-14T10:00:00.000Z',
+        contract: 'cop1/supervisability@0.1',
+        type: 'run.started',
+        payload: { method: { name: 'm' }, seat: 'human' },
+      },
+    ];
+    writeFileSync(join(dir, 'events.jsonl'), `${lines.map((l) => JSON.stringify(l)).join('\n')}\n`);
+    try {
+      expect(projectRun(dir).params).toBeUndefined();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('ignore un run.finished post_finished pour abandonedBy (premier terminal gagne)', () => {
     const dir = mkdtempSync(join(tmpdir(), 'jv-abandon-post-'));
     const lines = [
