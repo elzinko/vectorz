@@ -7,6 +7,23 @@ Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rang
 v0.23.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
 fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (généré en local, non committé) : `BACKLOG.md`.
 
+## 🧭 Ordre de marche (horizon proche — décidé le 2026-10-16)
+
+Raffine le train ci-dessous pour les prochaines cartes. **Règle de version (intérimaire)** : le numéro
+se pose **à la construction, dans l'ordre — jamais de saut**. Les numéros ≥ v0.18 d'aujourd'hui sont
+des étiquettes **provisoires**. Ça tient jusqu'au modèle milestones/itérations, différé (voir
+[ADR-0081](../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md)).
+
+1. **Board v0.17** — en cours, 10 fiches prêtes (section ⑱) → se tague **v0.17.0**.
+2. **Board multi-session** — prêt (section ㉔, étiqueté `v0.23` provisoirement) → **prendra v0.18** à la
+   construction. Ses écrans étendent v0.17 (activité, chronologie) : il vient juste après.
+3. **Les thèmes** (secrets, santé des dépendances, UX sprint, formes de PR, cartographie) — encore des
+   idées, à groomer avant de construire ; numéros posés à leur tour.
+
+**À part, sans version** :
+[`20261016114857813`](20261016114857813_lire-depends-et-desambiguiser-en-cours.md) (lire `depends:` en
+avertissement + désambiguïser « en cours ») — autonome, à glisser dans un sprint qui a de la marge.
+
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
 
 > **Une méthode LLM-native digne de confiance pour voir et piloter ses produits** :
@@ -308,6 +325,7 @@ fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (gé
 - `20261015082118397` — rattachement : étape d'accueil de session · P2 · `build`
 
 ### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
+- `20261016114857813` — lire `depends:` en avertissement + désambiguïser « en cours » · P2, **prête** · `build` (autonome, sans version — le noyau d'ADR-0081)
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
 - ~~`0117` — corriger les signatures de domain.ts qui ne collent plus au code · `build`~~ — shipped #295
