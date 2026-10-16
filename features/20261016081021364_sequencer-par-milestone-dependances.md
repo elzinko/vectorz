@@ -16,59 +16,67 @@ created: 2026-10-16
 
 # 20261016081021364 — Séquencer par milestone + dépendances inter-milestones
 
-**En clair.** Aujourd'hui les versions forment un **train numérique** : on ne tire que la plus
-basse non taguée, et toute version plus haute attend derrière, même si elle n'a aucun rapport.
-Cas vécu : v0.23 (board multi-session) est prête, mais coincée derrière v0.18–v0.22 qui ne la
-concernent pas. L'idée : **séquencer par milestone**, avec des **dépendances explicites entre
-milestones**, pour enchaîner dans n'importe quel ordre compatible — au lieu d'un ordre imposé par
-les numéros.
+**En clair.** Aujourd'hui les versions forment un **train numérique** : on ne tire que la plus basse
+non taguée, et toute version plus haute attend derrière, même sans rapport (cas vécu : v0.23 prête,
+coincée derrière v0.18–v0.22). Un **panel adverse a tranché le 2026-10-16** ([ADR-0081](../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md)) :
+on **fait maintenant le petit noyau utile**, et on **diffère le gros chantier** (refondre l'ordre
+par milestone avec un vrai graphe de dépendances) tant qu'un besoin réel n'est pas prouvé.
 
 **Si tu arrives frais.** Un *milestone* est un thème de travail (champ `milestone:`, ADR-0017) ;
-une *version* est un lot de release numéroté (`v0.X.Y`). `depends:` est un champ de fiche qui
-existe **déjà**, mais que l'outil de séquencement **ne lit pas encore**.
+une *version* est un lot de release numéroté (`v0.X.Y`). `depends:` est un champ de fiche qui existe
+**déjà**, où l'on écrit « cette fiche en attend une autre » — mais que l'outil **ne lit pas encore**.
 
-## Contexte / Problème
+## Décision du panel (ADR-0081)
 
-Le tirage est gouverné par la version en cours — la plus basse non taguée (ADR-0070). Bonne
-discipline de cadence, mais elle **confond deux choses** :
+Revue adverse à 3 lentilles (architecte, dev, PO/YAGNI) le 2026-10-16 → option **B**. Détail et
+verrous : [ADR-0081](../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md) ·
+record : [capture du panel](../docs/captures/2026-10-16-panel-sequencement-version-milestone.md).
 
-- la **version** = l'étiquette de release (numéro, ordre strict) ;
-- le **milestone** = le thème de travail, qui **s'étale déjà** sur plusieurs versions.
+### Le noyau — à faire maintenant
 
-Preuve vivante : le milestone « board » couvre **v0.17 (10 fiches) ET v0.23 (8 fiches)**. Le même
-thème vit dans deux seaux numériques, avec cinq versions sans rapport coincées entre les deux. La
-seule vraie dépendance — « board multi-session (v0.23) s'appuie sur board fondation (v0.17) » — est
-**thématique**, pas numérique. Le train la noie dans une file de six versions.
+- **Lire `depends:`** (l'ajouter au type `Fiche` + au loader) et le **vérifier en avertissement, pas
+  en barrage** : signaler un `PLAN.md` ou un `version:` qui place une fiche avant une dépendance non
+  livrée ; refuser un cycle. Contrôle pur, avant la sélection — `ADR-0070` inchangé.
+- **Désambiguïser « en cours »** : deux libellés (lot incomplet vs version active).
+- **Découper le grain** `board` → `board-fondation` / `board-multisession` (geste de grooming).
+- **Débloquer une version haute sans lien avec le train** par `--all-versions` ou renumérotation
+  (déjà câblé).
 
-En face, `depends:` existe comme champ (plusieurs fiches le portent), mais le séquenceur **avoue
-ne pas le lire** (`version check` : « le champ `depends:` n'est pas encore lu »). La dépendance est
-donc **déclarée mais inerte**.
+Ce noyau est cheap, ne touche **pas** au rôle de `version` et ne rouvre ni ADR-0070 ni ADR-0080.
 
-## Piste (à challenger)
+### Le basculement — différé
 
-Démêler l'axe unique en trois rôles distincts :
+`version` → simple étiquette, `milestone` = unité séquencée, vrai **graphe (DAG)** inter-milestone,
+migration du stock : reste **`idea`**, bloqué derrière les 4 verrous plus bas. Le détail de la cible
+est conservé ci-dessous pour le jour où on la rouvrira.
+
+## Le problème (pourquoi cette idée existe)
+
+Le tirage est gouverné par la version en cours — la plus basse non taguée (ADR-0070). Bonne discipline
+de cadence, mais elle **confond deux choses** : la **version** (étiquette de release, ordre strict) et
+le **milestone** (thème de travail, qui s'étale déjà sur plusieurs versions). Preuve vivante : le
+milestone « board » couvre **v0.17 ET v0.23**, avec cinq versions sans rapport coincées entre les
+deux. La seule vraie dépendance (board multi-session s'appuie sur board fondation) est **thématique**,
+pas numérique.
+
+En face, `depends:` existe mais le séquenceur **avoue ne pas le lire** — la dépendance est **déclarée
+mais inerte**. C'est le point que le noyau corrige en premier.
+
+## Le basculement, en détail (la cible différée)
+
+Démêler l'axe unique en trois rôles :
 
 - **milestone** = l'unité qu'on séquence (le lot de travail cohérent) ;
 - **depends** = les arêtes entre milestones → un **graphe orienté** (DAG), pas une file ;
-- **version** = l'étiquette de release, posée quand un milestone sort (dérivée, cosmétique).
+- **version** = l'étiquette de release, posée quand un milestone sort (dérivée).
 
-Le séquenceur tire alors le prochain milestone **dont toutes les dépendances sont livrées**, dans
-n'importe quel ordre compatible. Exemple : `board-fondation` → `board-multisession`, sans traverser
-v0.18–v0.22.
+Le séquenceur tirerait alors le prochain milestone **dont toutes les dépendances sont livrées**.
+Deux couches complémentaires :
 
-## Roadmap et dépendances — deux couches complémentaires
-
-Une roadmap figée **n'est pas** en tension avec les dépendances : ce sont deux couches.
-
-- **`depends:` = les rails** — les contraintes dures, ce qui *doit* précéder quoi. Vérifiable par
-  la machine (un DAG : détection de cycle, ordre topologique).
-- **`PLAN.md` = le marbre** — le chemin *choisi* parmi les ordres que les rails autorisent. Curé,
-  révisable, committé sur `main`. C'est là que vit le « chemin idéal gravé mais révisable ».
-
-Le DAG **contraint** la roadmap ; la roadmap **raffine** le DAG en linéarisant ce qu'il laisse
-parallèle (un choix humain au-dessus d'un garde-fou machine). À câbler : le séquenceur doit
-**vérifier que `PLAN.md` respecte le DAG** — il contrôle déjà le plan contre la `version:`
-(`plan-ecart`, `plan-ambigue`), il lui manque le contrôle contre `depends:`.
+- **`depends:` = les rails** — les contraintes dures, vérifiables par la machine (cycle, ordre topo) ;
+- **`PLAN.md` = le marbre** — le chemin *choisi* parmi les ordres que les rails autorisent (curé,
+  révisable, committé). Le DAG contraint la roadmap ; la roadmap raffine le DAG en linéarisant ce
+  qu'il laisse parallèle.
 
 ```
 DAG (depends:)    board-fondation ──▶ board-multisession    arête dure (23 après 17)
@@ -76,47 +84,48 @@ DAG (depends:)    board-fondation ──▶ board-multisession    arête dure (2
 Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dans les rails
 ```
 
-## Questions ouvertes (ce qui bloque encore la DoR)
+## Les 4 verrous du basculement (ce qui doit être vrai avant de le construire)
 
-1. **Rôles version vs milestone** : la version devient-elle une simple étiquette, coexiste-t-elle,
-   ou disparaît-elle ? C'est le cœur de l'emmêlement actuel.
-2. **Grain** : « board » est trop gros pour un lot — c'est en fait deux milestones
-   (`board-fondation`, `board-multisession`). Quelle granularité, et qui la fixe ?
-3. **Graphe** : dépendances inter-milestones = un DAG → détection de cycle + ordre topologique ;
-   `depends:` est aujourd'hui par-fiche, pas par-milestone — comment on l'agrège.
-4. **Release humaine** : les humains lisent des numéros (`v0.X`). Garde-t-on un numéro comme
-   étiquette finale, posée à la sortie d'un milestone ?
+1. **Preuve d'usage chiffrée** : un seuil fixé d'avance (ex. ≥ N arêtes inter-milestone réelles que
+   l'ordre du plan n'exprime pas). Aujourd'hui : **0 arête inter-milestone**.
+2. **Trou de modèle résolu** : agréger `depends:` par-fiche → par-milestone, et détecter le cycle
+   **au niveau agrégé** (un graphe par-fiche sain peut boucler au niveau milestone).
+3. **Milestone promu en objet** : sinon un 3ᵉ sens sur une chaîne libre qui porte déjà `parked`.
+4. **ADR amendés, pas contredits en silence** : ADR-0070 a rejeté les deux axes (« un seul, décision
+   PO ») → amender ; ADR-0080 étendre.
 
-## Comment vérifier (à préciser au grooming)
+## Comment vérifier
 
-- Un milestone B qui ne dépend que de A se tire **dès que A est livré**, sans traverser les
-  milestones sans rapport.
-- Une dépendance en cycle est **refusée** (le séquenceur ne boucle pas).
-- `depends:` est **lu** par le séquenceur (fini le « non contrôlé »).
+**Le noyau (testable maintenant) :**
+
+- `depends:` est **lu** par le séquenceur (fini le « non lu ») ;
+- une entrée de plan placée avant une dépendance non livrée est **signalée** (avertissement) ;
+- une dépendance en cycle est **refusée** ;
+- « en cours » affiche deux libellés distincts (lot incomplet vs version active).
+
+**Le basculement (quand il partira) :**
+
+- un milestone B qui ne dépend que de A se tire **dès que A est livré**, sans traverser les milestones
+  sans rapport.
 
 ## Notes / décisions
 
-- **Structurel** : touche le modèle du process → passe par un **ADR + panel adverse** avant toute
-  construction (comme ADR-0070 et ADR-0017). Ne pas bricoler dans un coin.
-- **Rejoint l'audit du 2026-10-15** (découpage de la méthode) : la « gate version prête » y était
-  pointée comme la **composition manquante n°1**, avec des manques de modèle. Cette fiche en est
-  probablement un. *(Audit en mémoire de session, pas encore un doc committé.)*
-- **Entoure / amende** [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md)
-  (le tirage reste dans la version en cours) : l'idée **remplace** l'ordre numérique par un ordre de
-  dépendances. La soupape `--all-versions` d'ADR-0070 est le palliatif actuel.
-- **Différée par ADR-0080** : le panel « checkpoint de version » (2026-10-16) a tranché
-  « dépendances = **signal** (plan + milestone), **pas un graphe** » et « pas d'extension du modèle
-  de process maintenant ». Cette fiche **est** cette extension différée — à instruire quand le PO
-  rouvre le modèle version/milestone (un panel dédié). Voir
+- **Tranché par panel (ADR-0081, 2026-10-16)** : noyau maintenant, basculement différé — voir la
+  section « Décision du panel » ci-dessus.
+- **Aligne ADR-0080** : « dépendances = **signal**, pas graphe ; pas d'extension du modèle de process
+  maintenant ». Cette fiche **est** l'extension différée. Voir
   [ADR-0080](../products/mega-city/docs/adr/0080-checkpoint-de-version.md) et la fiche
   [checkpoint de version](20261015125606808_frontiere-version-checkpoint-run-autonome.md).
+- **Entoure / amende** [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md)
+  (le tirage reste dans la version en cours) : la soupape `--all-versions` est le palliatif actuel,
+  et le noyau s'y appuie pour débloquer v0.23.
 - **Câblage, pas greenfield** : les champs `milestone:` (ADR-0017) et `depends:` existent déjà ;
-  il s'agit de les **relier** au séquencement et de recadrer les rôles.
-- **Symptôme à lever — « en cours » surchargé** : la colonne État de `version list` dit « en cours »
-  = *lot incomplet* (plusieurs à la fois), alors que la règle de tirage (ADR-0070) entend *la version
-  active* (une seule). Sous le modèle milestone, une seule milestone est « en dev » : le mot cesse
-  d'être ambigu.
-- **Voisines** (cluster « cycle de vie des versions » — à regrouper peut-être) :
+  il s'agit de les relier au séquencement.
+- **Fait neuf du code** : deux axes d'ordre coexistent déjà — le tirage lit `version:`, le board range
+  par un `MILESTONE_ORDER` codé en dur (`avancement-data.ts`) qui n'alimente que l'affichage.
+- **Voisines** (cluster « cycle de vie des versions ») :
   [cycle de vie d'une version](20261014200651962_cycle-vie-version-preparer-figer-developper.md),
   [frontière de version = checkpoint](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
   [groom par version](20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md).
+- **Si on sort le noyau en fiche tirable** : ce serait un `add` séparé (une fiche « lire `depends:` +
+  désambiguïser en cours », DoR-able tout de suite) ; cette fiche-ci resterait la cible différée.
