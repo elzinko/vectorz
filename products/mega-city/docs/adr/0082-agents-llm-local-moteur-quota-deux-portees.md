@@ -3,7 +3,7 @@
 - Statut : **Accepté** (2026-10-16) — principes actés, **implémentation différée**. Ratifié par **panel adverse** (5 lentilles : architecte, dev, PO coût, reviewer qualité, juge) ; arbitrage PO (moteur = quota).
 - Date : 2026-10-16
 - Cadrage : [spike — agents sur LLM locaux](../spikes/2026-10-16-agents-sur-llm-local-cadrage.md)
-- Lié : [ADR-074](../../../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) (config à deux portées) · [ADR-0047](0047-multi-client-cursor-et-modeles-par-hote.md) / [ADR-0048](0048-contenu-mono-source-modele-en-surcouche.md) (modèles & surcouche par hôte) · [ADR-0070](0070-le-tirage-reste-dans-la-version-en-cours.md) · ADR-0013 (sur-construction sans preuve d'usage) · [fiche 0023](../../../../features/done/0023-exposer-model-tiering-config.md) (`model_tiering` vs provenance locale) · [fiche résolveur](../../../../features/20261013132218242_config-modeles-schema-et-resolveur-pur.md)
+- Lié : [ADR-074](../../../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) (config à deux portées) · [ADR-0047](0047-multi-client-cursor-et-modeles-par-hote.md) / [ADR-0048](0048-contenu-mono-source-modele-en-surcouche.md) (modèles & surcouche par hôte) · [ADR-0070](0070-le-tirage-reste-dans-la-version-en-cours.md) · ADR-0013 (sur-construction sans preuve d'usage) · [fiche 0023](../../../../features/done/0023-exposer-model-tiering-config.md) (`model_tiering` vs provenance locale) · [fiche résolveur](../../../../features/done/20261013132218242_config-modeles-schema-et-resolveur-pur.md)
 
 ## En clair
 
