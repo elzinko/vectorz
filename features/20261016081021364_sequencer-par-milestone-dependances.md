@@ -104,6 +104,12 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
 - **Entoure / amende** [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md)
   (le tirage reste dans la version en cours) : l'idée **remplace** l'ordre numérique par un ordre de
   dépendances. La soupape `--all-versions` d'ADR-0070 est le palliatif actuel.
+- **Différée par ADR-0080** : le panel « checkpoint de version » (2026-10-16) a tranché
+  « dépendances = **signal** (plan + milestone), **pas un graphe** » et « pas d'extension du modèle
+  de process maintenant ». Cette fiche **est** cette extension différée — à instruire quand le PO
+  rouvre le modèle version/milestone (un panel dédié). Voir
+  [ADR-0080](../products/mega-city/docs/adr/0080-checkpoint-de-version.md) et la fiche
+  [checkpoint de version](20261015125606808_frontiere-version-checkpoint-run-autonome.md).
 - **Câblage, pas greenfield** : les champs `milestone:` (ADR-0017) et `depends:` existent déjà ;
   il s'agit de les **relier** au séquencement et de recadrer les rôles.
 - **Symptôme à lever — « en cours » surchargé** : la colonne État de `version list` dit « en cours »
