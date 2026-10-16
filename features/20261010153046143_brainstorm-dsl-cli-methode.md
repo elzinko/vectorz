@@ -39,6 +39,14 @@ Demande PO du 2026-10-10, en marge du déploiement des règles de la rétro. Sym
   la sous-commande (`bind-global`), une fois dans le profil passé en argument. La portée devrait être
   un **argument ou un flag**, pas un morceau du nom de commande. Cible proposée par le PO :
   `ezk law bind global --link`.
+- **Pas de portée « version / sprint cible » au lancement** (besoin PO 2026-10-16). On ne peut pas dire
+  à `ezk-sprint` / `ezk-product-build` « travaille CETTE version / CE sprint » par un flag uniforme
+  (`--version <v>` / `--sprint <s>`) : le périmètre se **déduit** aujourd'hui (ADR-0070). Une instance
+  est déjà fichée pour le groom
+  ([groomer une version en une passe](20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md)),
+  et le [checkpoint de version](20261015125606808_frontiere-version-checkpoint-run-autonome.md) en a
+  besoin à l'entrée (ADR-0080). À trancher ici comme une **grammaire de portée uniforme** (point 2 de la
+  Proposition), pas commande par commande — puis sortir une fiche fille si le besoin dépasse le groom.
 - **Verbosité / valeurs par défaut.** `--link`, le profil `global` : lesquels sont des défauts ?
 - **Nommage `ezk` vs `mc`.** Non tranché — cf. fiche
   [renommer ezk vers mc](20260904074824499_renommer-ezk-vers-mc.md) (idea).
