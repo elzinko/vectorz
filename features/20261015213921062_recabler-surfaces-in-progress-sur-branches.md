@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 labels: [methode, pilotage, dette]
-milestone:
+milestone: rationalisation
 version:
 status: idea
 pr:

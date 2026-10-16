@@ -4,14 +4,14 @@ title: "La version est un checkpoint du run : lançable à l'entrée, scellable 
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: autonomie-run
 version:
 labels: [methode, ezk-product-build]
 status: idea
 pr:
 evidence: none # pilote de run, pas d'écran
 created: 2026-10-15
-blocked: attend-panel — le modèle est tranché par le PO (2026-10-16) ; reste à concevoir en panel le mécanisme (touche ADR-0070 et le contrat d'arrêt du run)
+blocked:
 ---
 
 # 20261015125606808 — La version est un checkpoint du run : entrée et sortie
@@ -87,7 +87,7 @@ Le sort d'une fiche non livrée **dépend de sa raison de blocage** — d'où l'
 
 ## Critères d'acceptation
 
-> Modèle tranché par le PO (2026-10-16) ; le mécanisme exact reste à finaliser en panel.
+> Modèle tranché par le PO et mécanisme conçu en panel (2026-10-16, ADR-0080) ; reste à groomer pour le build.
 
 - [ ] En `--mode auto`, backlog loti : une version ne **démarre** ses sprints que si toutes ses fiches
       sont prêtes, ou le run fait surface ce qui manque (gate d'entrée).
@@ -118,9 +118,7 @@ pnpm --dir products/mega-city test
   mécanique n'est pas remplie (prêtes à l'entrée, livrées/reportées à la sortie). (2) En auto
   multi-versions, le PO décide du sort des fiches non livrables **selon leur raison de blocage**. (3) Le
   sceau est un geste PO, apposable **en mode auto** si tout est OK (ou pré-autorisé v0.15).
-- **Reste au panel** : le mécanisme (où vit la gate, comment le run fait surface la décision) et le
-  **défaut** sans drapeau — s'arrêter-et-demander, ou s'arrêter tout court. Lié au **modèle de process**
-  de l'audit (une gate est un objet du modèle, pas un one-off) et aux **raisons typées de `blocked`**.
+- **Conception retenue — panel du 2026-10-16, gravée dans [ADR-0080](../products/mega-city/docs/adr/0080-checkpoint-de-version.md) (GO unanime).** Une brique pure à deux verdicts calculés ; « faire surface » = STOP dans la boucle (pas de moment de bus neuf) ; **tag honnête par report-hors** ; dépendances = **signal** (plan + milestone), pas un graphe ; pas d'extension du modèle de process maintenant. Garde-fous : anti-waterfall (verdict + groom progressif) et anti-Goodhart (seule « concurrence/budget » s'auto-résout, le reste escalade ; push = 4-STOP ; bilan de sceau honnête). Points laissés **ouverts** dans l'ADR : `current` sur tags locaux, et le but de version.
 - Sœur du thème « autonomie du run » livré en v0.15 : filtre d'éligibilité, boucle multi-versions,
   auto-tag opt-in. En multi-sessions, la décision de scellage passe par la session **MASTER pilote**.
 - **Placement** : aucune version ouverte ne porte ce thème ; à affecter par le PO. Priorité P2.
@@ -132,17 +130,17 @@ pnpm --dir products/mega-city test
   pour une raison valable, **tant que ça ne casse pas le plan** ; (2) développer au maximum les fiches
   de la version, et pour une fiche bloquée la **mettre de côté** (status `blocked`) si ce n'est pas
   grave pour la suite, ou la **reporter** ; (3) **sceller** quand chaque fiche est **traitée** —
-  livrée, reportée, ou bloquée-actée ; (4) passer à la version suivante (grooming, sprint) si
+  livrée, ou **reportée hors version** (re-version si possible, sinon park) ; (4) passer à la version suivante (grooming, sprint) si
   plusieurs versions sont demandées (boucle multi-versions, livrée en v0.15).
   Deux précisions que ces points font surgir :
   - *« sans casser le plan » = un contrôle de dépendances.* Reporter ou bloquer une fiche n'est permis
     que si rien d'aval ne la requiert ; sinon le report **cascade** (on reporte aussi les dépendantes)
     ou le run **fait surface** le conflit. C'est la condition réelle derrière « si ce n'est pas grave
     pour la suite ».
-  - *Tag honnête (point 3).* Si une fiche reste **bloquée dans** une version scellée, le tag ne doit
-    pas prétendre l'avoir livrée. Au scellage, une fiche encore bloquée est soit **reportée hors** de
-    la version, soit **marquée explicitement « différée, hors du tag »** — le tag = le lot réellement
-    livré (cohérent avec « lot livré ≠ version complète » de l'audit).
+  - *Tag honnête (point 3, tranché en panel).* Une fiche encore bloquée à la frontière **sort** de la
+    version — on lui **propose une autre version** si possible, **sinon on la parke** (réversible). Le
+    panel a **écarté** le marquage « différée, en place » : il ferait mentir le tag et imposerait un
+    sous-état que chaque vue devrait exclure. Le tag = le lot réellement livré.
 - **Besoin transverse (PO 2026-10-16) : désigner une version / un sprint cible au lancement.** Pouvoir
   lancer `ezk-sprint` / `ezk-product-build` (et consorts) en **précisant la version ou le sprint
   visé** (ex. `--version <v>`). Aujourd'hui le périmètre se déduit (ADR-0070) ; un paramètre explicite

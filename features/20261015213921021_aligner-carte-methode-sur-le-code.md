@@ -4,7 +4,7 @@ title: "Aligner la carte de la méthode sur le code (épic retiré, statut todo,
 type: chore
 priority: P2
 product: mega-city
-milestone:
+milestone: rationalisation
 version:
 labels: [methode, carte, dette]
 status: idea
@@ -43,6 +43,10 @@ Quatre dérives, toutes du même genre : une copie de modèle qui n'a pas suivi 
   `todo` a été retiré (migration Skema) et `in-progress` est calculé, non écrit (ADR-0077).
 - **`moments.yml` orphelin.** Son validateur ne contrôle que la forme ; `clients: [ezk-forge]`
   (`moments.yml:55`) pointe un skill qui n'existe pas, et rien ne le signale.
+- **Liens d'ADR périmés.** Ex. `products/mega-city/docs/adr/0077-…:7` pointe
+  `0055-board-fonction-pure-des-fichiers.md`, alors que le vrai 0055 est
+  `0055-artefacts-generes-hors-versionnage.md`. `ezk docs check-links` sur le dossier ADR de la méthode
+  le signale (constaté 2026-10-16).
 
 Pourquoi ça compte : la carte est le référentiel que l'auto-amélioration est censée pouvoir auditer.
 Une carte qui ment oriente mal la prochaine itération.
