@@ -127,5 +127,6 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
   [cycle de vie d'une version](20261014200651962_cycle-vie-version-preparer-figer-developper.md),
   [frontière de version = checkpoint](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
   [groom par version](20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md).
-- **Si on sort le noyau en fiche tirable** : ce serait un `add` séparé (une fiche « lire `depends:` +
-  désambiguïser en cours », DoR-able tout de suite) ; cette fiche-ci resterait la cible différée.
+- **Noyau sorti en fiche tirable** :
+  [lire `depends:` + désambiguïser « en cours »](20261016114857813_lire-depends-et-desambiguiser-en-cours.md)
+  (prête). Cette fiche-ci reste la **cible différée**.
