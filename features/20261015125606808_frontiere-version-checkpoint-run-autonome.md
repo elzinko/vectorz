@@ -25,7 +25,7 @@ vX+1, ou je m'arrête ? ». Le sceau reste au PO ; le run ne fait que poser la q
 
 **Si tu arrives frais.** Le *run autonome* = `ezk-product-build run --mode auto`, qui enchaîne les
 sprints seul. Une *version* = le lot de livraison (champ `version:` des fiches). La *frontière de
-version* = le garde-fou [ADR-0070](../docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) :
+version* = le garde-fou [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) :
 on ne tire pas la version suivante tant que la courante n'a pas son étiquette git. *Sceller* =
 `ezk backlog version close <v> --tag` (poser l'étiquette).
 
