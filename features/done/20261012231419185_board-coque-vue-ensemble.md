@@ -1,0 +1,69 @@
+---
+id: "20261012231419185"
+title: "Board : la coque + la vue d'ensemble (métriques, entonnoir, versions dans le process)"
+type: feature
+priority: P1
+product: cop1
+milestone: board
+version: v0.17.0
+labels: [dashboard, board, ux, vue-ensemble]
+status: shipped
+blocked:
+pr: "local (9da9696e)"
+evidence: before-after
+created: 2026-10-13
+---
+
+# 20261012231419185 — Board : la coque + la vue d'ensemble
+
+**En clair.** C'est le squelette du board unifié : l'en-tête, la navigation par projet, le sélecteur de projet, et la première page. La vue d'ensemble montre, pour un projet, les métriques « depuis le début », l'entonnoir du pipeline, et un tableau « Versions dans le process » (une ligne par version, la version en run surlignée, un bouton « Lancer » ou « Voir le run »).
+
+**Si tu arrives frais.** Le board est la webapp cop1 qui remplace les trois tableaux de bord éparpillés. Une *version* est un lot de fiches ; un *run* est une session de la méthode.
+
+## Contexte / Problème
+
+Tranche de la refonte dashboard. C'est la fondation : les autres vues se branchent sur cette coque.
+
+## Proposition
+
+Périmètre de cette tranche :
+- en-tête (marque, sélecteur de projet par modale, recherche, bouton ⚙ vers la config outil) ;
+- navigation de gauche (par projet) + section « méthode » (process) ;
+- vue d'ensemble : métriques « depuis le début », entonnoir, tableau des versions avec ligne « en run » surlignée et boutons « Lancer » / « Voir le run ».
+
+Hors périmètre : le contenu des autres onglets (chacun sa tranche).
+
+## Critères d'acceptation
+
+- [ ] L'écran réel reprend la coque et la vue d'ensemble de la maquette.
+- [ ] Le tableau des versions surligne la version en run et offre le bon bouton selon l'état.
+- [ ] Une seule vérité par projet (pas de métrique contradictoire).
+
+## Comment vérifier
+
+1. `pnpm --dir products/cop1/packages/web build` passe.
+2. Ouvrir le board : l'en-tête (marque, sélecteur de projet, recherche, bouton ⚙), la navigation de
+   gauche et la vue d'ensemble (métriques « depuis le début », entonnoir, tableau des versions)
+   reprennent la maquette.
+3. Le tableau des versions surligne la version en run et montre « Lancer » (version prête) ou
+   « Voir le run » (version en cours) selon l'état.
+
+Preuve : capture avant/après de la vue d'ensemble, côte à côte avec la maquette.
+
+## Notes / décisions
+
+- Design de référence : [Unifier les tableaux de bord](../20261007135620590_refondre-vue-supervision-moniteur-lisible.md).
+- Maquette : [docs/maquettes/board-ezk-dashboard.html](../../docs/maquettes/board-ezk-dashboard.html).
+- Décision : [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md).
+- **Données** : la vue d'ensemble lit un modèle typé d'amorçage (`src/board/data.ts`), une
+  source unique par projet. Le read-model réel (journal + backlog) le remplacera aux tranches
+  suivantes sans changer les types ni les vues.
+- **Ancien moniteur** : `main.tsx` rend désormais le board. Les trois vues historiques
+  (`App`, `ProjectsView`, `ReportingView`, `SupervisionView` + helpers + `index.css`) ne sont
+  plus reliées à l'entrée. Leur **retrait** est une tranche de nettoyage dédiée (suppression
+  bloquée ici par le garde-fou « action irréversible » — décision PO) ; d'ici là elles restent
+  présentes et testées, et leurs tests hérités (3 rouges pré-existants) ne relèvent pas de cette
+  tranche.
+- **Revue adverse** : NO-GO initial corrigé — barre de dev affichée dès qu'il y a du dev (une
+  version en run ne lit plus « pas cadré » en cachant son avancement), garde anti-« Lancer » sur
+  une version taguée, fermeture clavier/fond de la modale.

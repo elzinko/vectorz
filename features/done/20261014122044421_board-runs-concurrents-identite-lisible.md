@@ -66,8 +66,8 @@ doit tenir pour tout outil LLM, pas seulement Claude.
 
 Cette fiche **affine le board après v0.17** : la vue Activité et la Chronologie de v0.17
 sortent telles quelles, celle-ci décide ensuite comment elles représentent le parallélisme.
-Elle contraint les tranches [Board : l'activité par run → moments → fiches](../20261012231419211_board-activite-run-moments-fiches.md)
-et [Board : la chronologie condensée](../20261012231419237_board-chronologie-condensee.md).
+Elle contraint les tranches [Board : l'activité par run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
+et [Board : la chronologie condensée](20261012231419237_board-chronologie-condensee.md).
 
 ## Proposition
 
@@ -231,11 +231,11 @@ qui, quelles sessions sont attachées à quel run, lesquelles sont vivantes. Len
   « Tous les projets » · rail persistant · déroulante enrichie). Sert à départager, et à décider
   si une part rejoint v0.17 ou reste en v0.23.
 - **Voisine, pas doublon** : contraint les tranches
-  [activité run → moments → fiches](../20261012231419211_board-activite-run-moments-fiches.md)
-  et [chronologie condensée](../20261012231419237_board-chronologie-condensee.md). Sujet distinct
+  [activité run → moments → fiches](20261012231419211_board-activite-run-moments-fiches.md)
+  et [chronologie condensée](20261012231419237_board-chronologie-condensee.md). Sujet distinct
   de [« En cours » se déduit des branches](20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
   (côté branches committées, pas journal).
-- **Design de référence** : [coque + vue d'ensemble](../20261012231419185_board-coque-vue-ensemble.md)
+- **Design de référence** : [coque + vue d'ensemble](20261012231419185_board-coque-vue-ensemble.md)
   et [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ;
   maquette validée `docs/maquettes/board-ezk-dashboard.html`.
 - **Garde-fou orphelin** : [ADR-035](../../docs/adr/ADR-035-abandon-siege-run-orphelin.md).

@@ -88,3 +88,12 @@ pnpm test:scripts                                                # si un test fi
 - Nettoyage à valeur immédiate et indépendant : il rend la carte de nouveau fiable, ce dont dépend
   tout le reste de l'audit. Lié au brainstorm DSL (surface CLI) et au futur moteur de process (la
   vraie parade de fond), mais ne les attend pas.
+- **Donnée d'audit versée (rétro v0.17, 2026-10-16).** Deuxième instance de la même dérive, au
+  niveau des fiches produit cette fois : les fiches sœurs 242 et 451 (config des modèles cop1),
+  issues d'un même design, ont employé la clé `modeles:` avec **deux sens différents** (tier-par-rôle
+  d'un côté, tier→modèle de l'autre). La revue l'a rattrapé en cours de build, pas au grooming. Le
+  schéma de config vivait dans la **prose des deux fiches**, sans source unique, donc il a divergé —
+  exactement l'argument pour la parade de fond (un graphe compilé qui porte le schéma, dont les
+  fiches ne seraient que des projections). Versé ici plutôt qu'érigé en règle (cas unique, déjà
+  attrapé par la revue). Provenance :
+  [rétro v0.17](../docs/captures/2026-10-16-retro-v017-board-unifie-light.md).

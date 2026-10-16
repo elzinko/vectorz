@@ -64,6 +64,6 @@ Preuve : before/after de la chronologie (fil unique → 3 niveaux) et de l'accue
   la [découverte des worktrees](20261015082118368_board-decouverte-worktrees-watch-dynamique.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, étape d'accueil —
   `milestone: board` + `v0.23.0`.
-- Contraint les tranches v0.17 [activité run→moments→fiches](20261012231419211_board-activite-run-moments-fiches.md)
-  et [chronologie condensée](20261012231419237_board-chronologie-condensee.md) : les construire
+- Contraint les tranches v0.17 [activité run→moments→fiches](done/20261012231419211_board-activite-run-moments-fiches.md)
+  et [chronologie condensée](done/20261012231419237_board-chronologie-condensee.md) : les construire
   **sans graver « run = session »** pour que cette fiche étende au lieu de réécrire.

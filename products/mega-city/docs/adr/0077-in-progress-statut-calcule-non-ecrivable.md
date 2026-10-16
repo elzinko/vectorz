@@ -4,7 +4,7 @@
 **Date :** 2026-10-14
 **Deciders :** pilote du run v0.16 (décision bornée, deux options claires, panel adverse facultatif — la fiche le notait) ; revue adverse de release (`ezk-reviewer`, ADR-0059)
 **Fiche :** [`20261013131853182`](../../../../features/done/20261013131853182_sort-valeur-in-progress-schema.md) (« Trancher le sort de la valeur in-progress du schéma »), sœur de [`20261013131852984`](../../../../features/done/20261013131852984_en-cours-deduit-des-branches-portier-vue.md)
-**Compose :** [`src/core/fiche-schema.ts`](../../src/core/fiche-schema.ts) (`STATUT_DEFS.writable`, `STATUTS_ECRITS`, `STATUTS_CALCULES`) · [`src/backlog/fiche-validator.ts`](../../src/backlog/fiche-validator.ts) · s'appuie sur [ADR-0055](0055-board-fonction-pure-des-fichiers.md) (le board ne lit que le committé)
+**Compose :** [`src/core/fiche-schema.ts`](../../src/core/fiche-schema.ts) (`STATUT_DEFS.writable`, `STATUTS_ECRITS`, `STATUTS_CALCULES`) · [`src/backlog/fiche-validator.ts`](../../src/backlog/fiche-validator.ts) · s'appuie sur [ADR-0055](0055-artefacts-generes-hors-versionnage.md) (le board ne lit que le committé)
 
 ## En clair
 

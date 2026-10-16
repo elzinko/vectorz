@@ -261,17 +261,17 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 
 ### ⑱ v0.17.0 — le board unifié (cop1, après le socle)
 > Un seul tableau de bord, conçu par maquette (v17) et validé par le PO le 2026-10-12. Design de référence : fiche `20261007135620590` ; décision : `ADR-074` ; maquette : `docs/maquettes/board-ezk-dashboard.html`. Tranches sœurs (milestone `board`) : 7 vues + 3 tranches du moteur de config (découpé de `20261002205205417` le 2026-10-13). À séquencer APRÈS le socle (catalogue des moments livré ; métriques tokens `0052`/`0055`). **Groomée 2026-10-13 : tout ready.**
-- `20261012231419185` — coque + vue d'ensemble · P1 · `build` (ready)
-- `20261012231419211` — activité par run → moments → fiches + modale fiche · P1 · `build` (ready)
-- `20261012231419198` — les deux pipelines : cadrage et développement · P2 · `build` (ready)
-- `20261012231419224` — vue Fiches : filtre par catégorie de version · P2 · `build` (ready)
-- `20261012231419237` — chronologie condensée · P2 · `build` (ready)
-- `20261012231419250` — config projet (lancement/qualité/intégration) + modèle résolu · P2 · `build` (ready)
-- `20261012231419263` — assistant d'ajout de projet · P2 · `build` (ready)
+- ~~`20261012231419185` — coque + vue d'ensemble · P1 · `build` (ready)~~ — shipped
+- ~~`20261012231419211` — activité par run → moments → fiches + modale fiche · P1 · `build` (ready)~~ — shipped
+- ~~`20261012231419198` — les deux pipelines : cadrage et développement · P2 · `build` (ready)~~ — shipped
+- ~~`20261012231419224` — vue Fiches : filtre par catégorie de version · P2 · `build` (ready)~~ — shipped
+- ~~`20261012231419237` — chronologie condensée · P2 · `build` (ready)~~ — shipped
+- ~~`20261012231419250` — config projet (lancement/qualité/intégration) + modèle résolu · P2 · `build` (ready)~~ — shipped
+- ~~`20261012231419263` — assistant d'ajout de projet · P2 · `build` (ready)~~ — shipped
 - ~~`20261002205205417` — config modèle & effort (moteur + mapping outil) · P1 · `découper`~~ — split en ↓
-- `20261013132218242` — config modèles : schéma à deux portées + résolveur pur · P1 · `build` (ready)
-- `20261013132218451` — config modèles : pointeurs au bind + commande `ezk config` · P1 · `build` (ready)
-- `20261013132218656` — board : page ⚙ config outil (mapping) + route gardée · P2 · `build` (ready)
+- ~~`20261013132218242` — config modèles : schéma à deux portées + résolveur pur · P1 · `build` (ready)~~ — shipped
+- ~~`20261013132218451` — config modèles : pointeurs au bind + commande `ezk config` · P1 · `build` (ready)~~ — shipped
+- ~~`20261013132218656` — board : page ⚙ config outil (mapping) + route gardée · P2 · `build` (ready)~~ — shipped
 
 ### ⑲ v0.18.0 — la CLI se tient (proposée le 2026-10-14, à valider)
 > DX de la ligne de commande, le plus rentable au quotidien. Le brainstorm DSL vient EN PREMIER : il peut recadrer les autres. Fiches encore `idea` → chacune passe par `groom` puis `ready` avant d'être tirable.

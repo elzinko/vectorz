@@ -35,6 +35,8 @@ import { parseManifest } from '../src/core/ezk-cli.js';
 import { type CommandSpec, IDE_TARGETS, genIdeFiles } from '../src/core/gen-ide.js';
 import type { HostId, LearningEntry } from '../src/domain/model.js';
 import { applyGlobalPlan, applyPlan, staleFlatSkillFiles } from '../src/io/apply.js';
+import { applyModelPointers } from '../src/core/model-pointers.js';
+import { loadModelConfig } from '../src/loaders/model-config.js';
 import { applyCapture } from '../src/io/capture.js';
 import { probePath, readText } from '../src/io/deploy-probe.js';
 import { loadCatalog } from '../src/loaders/catalog.js';
@@ -128,7 +130,23 @@ function runStatus(profile: string, target: string): void {
 
 function runBind(profile: string, projectDir: string, host: HostId, force: boolean): void {
   const absoluteProject = resolve(projectDir);
-  const plan = bind(profile, absoluteProject, host, repoRoot);
+  const basePlan = bind(profile, absoluteProject, host, repoRoot);
+  // Pointeurs modèle (fiche 451) : un agent dont la config modèles du projet diffère
+  // du défaut reçoit un POINTEUR MINCE (modèle/effort, rôle chargé depuis la source)
+  // au lieu du rôle recopié. Lecture de la config ici (côté I/O) ; la transformation
+  // du plan reste pure. Seul le bind projet « claude-code » est concerné.
+  let plan = basePlan;
+  if (host === 'claude-code') {
+    try {
+      plan = applyModelPointers(basePlan, loadModelConfig(absoluteProject));
+    } catch (err) {
+      // Une config modèles invalide n'empêche pas le bind : on avertit et on garde
+      // le plan sans pointeurs (les agents restent au défaut).
+      console.error(
+        `lawgiver: config modèles ignorée (${(err as Error).message}) — pointeurs non appliqués.`,
+      );
+    }
+  }
   applyPlan(plan, absoluteProject, { force });
   const files = plan.files.length;
   const hooks = plan.hooks.length;
