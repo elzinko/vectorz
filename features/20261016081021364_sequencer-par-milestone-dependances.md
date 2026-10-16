@@ -56,6 +56,26 @@ Le séquenceur tire alors le prochain milestone **dont toutes les dépendances s
 n'importe quel ordre compatible. Exemple : `board-fondation` → `board-multisession`, sans traverser
 v0.18–v0.22.
 
+## Roadmap et dépendances — deux couches complémentaires
+
+Une roadmap figée **n'est pas** en tension avec les dépendances : ce sont deux couches.
+
+- **`depends:` = les rails** — les contraintes dures, ce qui *doit* précéder quoi. Vérifiable par
+  la machine (un DAG : détection de cycle, ordre topologique).
+- **`PLAN.md` = le marbre** — le chemin *choisi* parmi les ordres que les rails autorisent. Curé,
+  révisable, committé sur `main`. C'est là que vit le « chemin idéal gravé mais révisable ».
+
+Le DAG **contraint** la roadmap ; la roadmap **raffine** le DAG en linéarisant ce qu'il laisse
+parallèle (un choix humain au-dessus d'un garde-fou machine). À câbler : le séquenceur doit
+**vérifier que `PLAN.md` respecte le DAG** — il contrôle déjà le plan contre la `version:`
+(`plan-ecart`, `plan-ambigue`), il lui manque le contrôle contre `depends:`.
+
+```
+DAG (depends:)    board-fondation ──▶ board-multisession    arête dure (23 après 17)
+                  milestone X    milestone Y                parallèles : ordre libre
+Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dans les rails
+```
+
 ## Questions ouvertes (ce qui bloque encore la DoR)
 
 1. **Rôles version vs milestone** : la version devient-elle une simple étiquette, coexiste-t-elle,
@@ -86,6 +106,10 @@ v0.18–v0.22.
   dépendances. La soupape `--all-versions` d'ADR-0070 est le palliatif actuel.
 - **Câblage, pas greenfield** : les champs `milestone:` (ADR-0017) et `depends:` existent déjà ;
   il s'agit de les **relier** au séquencement et de recadrer les rôles.
+- **Symptôme à lever — « en cours » surchargé** : la colonne État de `version list` dit « en cours »
+  = *lot incomplet* (plusieurs à la fois), alors que la règle de tirage (ADR-0070) entend *la version
+  active* (une seule). Sous le modèle milestone, une seule milestone est « en dev » : le mot cesse
+  d'être ambigu.
 - **Voisines** (cluster « cycle de vie des versions » — à regrouper peut-être) :
   [cycle de vie d'une version](20261014200651962_cycle-vie-version-preparer-figer-developper.md),
   [frontière de version = checkpoint](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
