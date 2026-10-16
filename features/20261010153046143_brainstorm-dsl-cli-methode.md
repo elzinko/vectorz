@@ -147,3 +147,17 @@ possible au thème « ranger la maison » (rationalisation, train V0.9), à tran
 Grooming 2026-10-10 (session du PO) : décisions `dashboard`/`map` et « run » actées, et la **revue du
 CLI** versée comme matière (voir sections ci-dessus). Le **panel complet** (ADR + plan de refonte) reste
 à tenir en session dédiée.
+
+**Grooming 2026-10-15 (audit adverse du découpage).** L'audit **renforce** plusieurs points de ce
+brainstorm : « run » hors vocabulaire (et le chevauchement des trois « report »), les verbes au tiret,
+`dashboard`/`map` → `board`. Il nomme surtout une dimension **sœur mais distincte** que ce brainstorm
+ne couvre pas : la **surface CLI** est une chose, le **modèle de process** en est une autre. « Où en
+est une fiche / un sprint / une version, et quoi ensuite » est ré-écrit à **8 endroits** (statut
+`fiche-schema.ts`, position `process-data.ts`, cycle `cycle.ts`, cérémonies `ceremonies.yml`, moments
+`moments.yml`, boucle de sprint en prose, éligibilité, « et maintenant »), reliés par de la **prose**,
+et **exclu du graphe compilé** (`src/core/graph.ts` : `NodeKind` sans `state`/`step`/`moment`). Angle
+proposé au panel : étendre le graphe compilé à la dimension process (nœuds `state`/`step`/`moment`,
+**validés** comme le catalogue l'est), **source unique** dont les 8 vues ne sont plus que des
+**projections** — le jugement (groom, revue, rétro) restant en markdown. À décider : même panel
+(cohérence de la méthode, surface **et** modèle), ou fiche/ADR distincts. Source : rapport d'audit du
+découpage, 2026-10-15.

@@ -1,6 +1,6 @@
 ---
 id: "20261015125606808"
-title: La frontière de version est un checkpoint explicite du run autonome (sceller ou s'arrêter)
+title: "La version est un checkpoint du run : lançable à l'entrée, scellable à la sortie"
 type: feature
 priority: P2
 product: mega-city
@@ -8,89 +8,143 @@ milestone:
 version:
 labels: [methode, ezk-product-build]
 status: idea
-blocked: attend-panel — décision structurelle (touche ADR-0070 et le contrat d'arrêt du run), à tenir avec le PO
 pr:
 evidence: none # pilote de run, pas d'écran
 created: 2026-10-15
+blocked: attend-panel — le modèle est tranché par le PO (2026-10-16) ; reste à concevoir en panel le mécanisme (touche ADR-0070 et le contrat d'arrêt du run)
 ---
 
-# 20261015125606808 — La frontière de version est un checkpoint explicite du run autonome
+# 20261015125606808 — La version est un checkpoint du run : entrée et sortie
 
-**En clair.** Versionner n'est pas une étape de *build*. Construire, c'est transformer des fiches
-prêtes en incréments livrés (des sprints). **Sceller** une version — poser l'étiquette — est une
-décision de **release** du PO. Aujourd'hui, en `--mode auto` sur un backlog découpé en versions, le
-run construit la version en cours puis **s'arrête en silence** à la frontière. On veut que cette
-frontière devienne un **arrêt explicite** : « la version vX est complète — la sceller pour débloquer
-vX+1, ou je m'arrête ? ». Le sceau reste au PO ; le run ne fait que poser la question.
+**En clair.** Une version n'est pas une étape de *build*, c'est un **checkpoint** avec deux gates.
+À l'**entrée** : on ne lance les sprints d'une version que si **toutes ses fiches sont prêtes**
+(DoR-ok). À la **sortie** : on ne **scelle** (pose l'étiquette) que si **toutes ses fiches sont
+livrées ou reportées** hors de la version. Aujourd'hui le run autonome franchit ces deux bords **en
+silence** — il démarre sans vérifier, et il s'arrête muet à la frontière. On veut deux gates
+**explicites** : un script vérifie le **mécanique** (prêtes / livrées) ; les **décisions** (reporter
+une fiche, apposer le sceau) restent au PO, et le run les **fait surface** au lieu de deviner.
 
 **Si tu arrives frais.** Le *run autonome* = `ezk-product-build run --mode auto`, qui enchaîne les
-sprints seul. Une *version* = le lot de livraison (champ `version:` des fiches). La *frontière de
-version* = le garde-fou [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) :
-on ne tire pas la version suivante tant que la courante n'a pas son étiquette git. *Sceller* =
-`ezk backlog version close <v> --tag` (poser l'étiquette).
+sprints seul. Une *version* = le lot de livraison (champ `version:` des fiches). *Sceller* =
+`ezk backlog version close <v> --tag` (poser l'étiquette git). Garde-fou
+[ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) : on ne
+tire pas la version suivante tant que la courante n'a pas son étiquette.
 
 ## Contexte / Problème
 
-Discussion PO du 2026-10-15, après le run v0.15. Deux constats mêlés :
+Discussions PO des 2026-10-15 et 2026-10-16, et audit du découpage (2026-10-15). Deux bords d'une même
+frontière, aujourd'hui tous deux **muets** :
 
-1. **Versionner n'est pas intrinsèque au build.** On doit pouvoir lancer `ezk-product-build` et
-   enchaîner des sprints **sans jamais versionner**. C'est déjà le cas sur un backlog **non loti**
-   (fiches sans `version:`) : le périmètre les garde toutes tirables, aucune frontière, le run va
-   jusqu'à épuisement du stock prêt.
-2. **Mais sur un backlog loti, l'arrêt à la frontière est muet.** ADR-0070 bloque la version
-   suivante tant que la courante n'est pas scellée. Le run construit la version en cours, puis
-   `plan-lot` ne rend plus rien → le run **s'arrête sans rien demander**. Le signal « version
-   complète → pousse l'étiquette » existe dans la sortie de `plan-lot`, mais n'est pas un checkpoint.
+- **Entrée muette.** Rien ne répond « cette version est-elle **lançable** ? » avant de lancer ses
+  sprints. `version check` ne signale même pas une fiche `idea` dans le lot
+  (`src/backlog/versions.ts:180`). Une version a été lancée en portant des fiches pas prêtes (v0.16),
+  vu seulement à la clôture.
+- **Sortie muette.** Sur un backlog loti, quand le run a construit tout le constructible, `plan-lot`
+  ne rend plus rien et le run **s'arrête sans rien demander**. ADR-0070 bloque la version suivante
+  tant que la courante n'est pas scellée, mais le run ne dit ni pourquoi il s'arrête, ni ce qu'il
+  reste à décider.
 
-Le manque : en auto, atteindre une frontière avec d'autres versions en attente devrait **faire
-surface** à la décision de scellage, au lieu de s'arrêter en silence.
+Le manque est le même aux deux bords : la **condition mécanique** (prêtes / livrées) n'est pas rendue
+en une **gate explicite**, et les **décisions** qui restent (reporter une fiche, sceller) ne **font
+pas surface**.
 
 ## Proposition
 
-Ajouter un **moment de checkpoint « frontière de version »** au run autonome : quand la version en
-cours est complète (tout livré, pas encore étiquetée) et qu'au moins une version suit dans le plan,
-le run **s'arrête et demande** — « sceller vX pour débloquer vX+1, ou stop ? ». Le sceau (tag) reste
-une **décision humaine** (un des 4 STOP), **sauf** pré-autorisation déjà livrée en v0.15 :
-`--seal-versions local` (auto-tag en flux local) ou `--versions all` (enchaînement rétro + clôture à
-chaque frontière). En multi-sessions, cette décision passe par la session **MASTER pilote** (règle de
-coordination : le versionnement se propose depuis le pilote de la chaîne, pas depuis une session sœur).
+Modéliser la version comme **un checkpoint à deux gates**, sur la doctrine ADR-0001 (le script
+vérifie le mécanique, le PO décide, le run fait surface) :
 
-C'est un **POC léger** : élever le signal de frontière existant en checkpoint, pas réécrire la boucle.
+### Gate d'entrée — « version lançable »
+
+Avant de lancer les sprints d'une version, un verdict **lecture seule** composant les briques
+existantes (`version check` + `dor health` + `run eligibility`) : « lançable : N prêtes, 0 idée,
+M réservées-PO ». Vert = toutes les fiches sont prêtes (DoR-ok). Sinon, le run **groome** ce qui
+manque (c'est la Phase 1 du mode auto en 2 phases), ou **fait surface** ce qu'il ne peut pas groomer
+seul. Soupape PO journalisée, comme le gate `ready`.
+
+### Gate de sortie — « version scellable »
+
+Quand le run atteint la frontière, la version doit être **propre** : chaque fiche prévue est
+**livrée** ou **reportée hors de la version**. Pour chaque fiche **non livrée**, le PO décide **selon
+ce qui la bloque** (table ci-dessous) : reporter à la version suivante, parker, clôturer, ou tenir.
+Une fois la version propre, le **sceau** (tag) est apposé **par le PO — y compris en mode auto** si
+tout est OK, ou par pré-autorisation déjà livrée en v0.15 (`--seal-versions local`, `--versions all`).
+Le run ne scelle jamais sans décision ni pré-autorisation ; mais il **ne s'arrête plus muet** : il
+présente la liste des fiches non livrées, leur raison, et la décision attendue.
+
+### La décision dépend de ce qui bloque (PO 2026-10-16)
+
+Le sort d'une fiche non livrée **dépend de sa raison de blocage** — d'où l'intérêt des raisons
+**typées** de `blocked` (fiche sœur « raisons typées pour blocked »). Rappel : `ready` veut dire bien
+écrite et tirable, pas garantie livrable.
+
+| Pourquoi la fiche n'est pas livrée | Décision typique au frontière |
+|---|---|
+| Dépendance externe dure (service, secret, repo absent) | reporter à la version où la dépendance arrive |
+| Geste réservé au PO (vidéo, test machine, arbitrage, panel) | le PO fait le geste, ou reporte |
+| Prémisse absente du code (fiche `ready`, surfaces inexistantes) | re-groomer, ou reporter / clôturer |
+| Invalidée par un pivot (ADR postérieur) | révoquer `ready`, clôturer ou superseder |
+| Collision de concurrence / budget épuisé | **pas** une décision de frontière : le run réessaie plus tard |
 
 ## Critères d'acceptation
 
-> Provisoires — à finaliser au panel (cf. la question ouverte dans les Notes).
+> Modèle tranché par le PO (2026-10-16) ; le mécanisme exact reste à finaliser en panel.
 
-- [ ] En `--mode auto`, backlog loti, version en cours complète et une version suivante en attente :
-      le run **s'arrête et demande** s'il faut sceller, au lieu de s'arrêter en silence.
-- [ ] `--seal-versions local` et `--versions all` **lèvent** cette demande (comportement v0.15 inchangé).
-- [ ] Backlog **non loti** (fiches sans `version:`) : **aucune** frontière, le run enchaîne sans jamais
-      demander de versionner (non-régression).
-- [ ] La décision de scellage reste humaine (ou MASTER pilote) ; le run ne tague jamais sans
-      pré-autorisation explicite.
+- [ ] En `--mode auto`, backlog loti : une version ne **démarre** ses sprints que si toutes ses fiches
+      sont prêtes, ou le run fait surface ce qui manque (gate d'entrée).
+- [ ] À la frontière, le run **ne s'arrête plus en silence** : il présente les fiches non livrées,
+      **leur raison de blocage**, et la décision attendue (reporter / parker / clôturer / sceller).
+- [ ] Le **sceau** peut être apposé par le PO en mode auto quand la version est propre ; les drapeaux
+      v0.15 (`--seal-versions local`, `--versions all`) **lèvent** la demande (comportement inchangé).
+- [ ] Backlog **non loti** : aucune frontière, le run enchaîne jusqu'à épuisement du stock prêt
+      (non-régression).
 
 ## Comment vérifier
 
 ```bash
 pnpm --dir products/mega-city test
-# dérouler un run --mode auto sur un plan jouet loti : à la frontière, constater l'arrêt-qui-demande ;
-# puis avec --seal-versions local / --versions all : plus de demande ; puis sur un plan non loti :
-# aucune demande, le run va jusqu'au bout du stock prêt.
+# dérouler un run --mode auto sur un plan jouet loti portant une fiche bloquée :
+# - à l'entrée, la gate « lançable » refuse ou fait surface le manque ;
+# - à la sortie, le run présente la fiche non livrée + sa raison + la décision, au lieu de s'arrêter muet ;
+# - avec --seal-versions local / --versions all : plus de demande de sceau ;
+# - sur un plan non loti : aucune frontière, le run va jusqu'au bout du stock prêt.
 ```
 
 ## Notes / décisions
 
-- **Panel requis** (drapeau `blocked: attend-panel`) : la fiche retouche ADR-0070 (la frontière) et le
-  **contrat d'arrêt** du run (ses moments de checkpoint). Décision structurelle, à tenir avec le PO —
-  pas à construire en run autonome tant que le panel n'a pas tranché.
-- **Sœur du thème « autonomie du run »** livré en v0.15 : filtre d'éligibilité
-  ([`20261011091553794`](done/20261011091553794_run-autonome-filtre-eligibilite-avant-deliberer.md)),
-  boucle multi-versions
-  ([`20261013131852375`](done/20261013131852375_product-build-boucle-multi-versions.md)), auto-tag
-  opt-in ([`20261013131852581`](done/20261013131852581_auto-tag-close-local-opt-in.md)).
-- **Placement** : aucune version ouverte ne porte ce thème (v0.16 = ranger la maison, v0.17 = board
-  cop1). Laissée **sans version** : à affecter par le PO à une future passe « autonomie du run », ou à
-  glisser dans une version qui a de la marge. Priorité **P2** par cohérence avec les sœurs — ajustable.
-- **Question ouverte (à trancher au panel)** : comportement **par défaut**, sans drapeau — le run auto
-  loti **s'arrête-et-demande** à chaque frontière, ou **s'arrête tout court** (statu quo) et ne demande
-  que si on passe un futur `--seal …` ? L'un privilégie l'autonomie guidée, l'autre la frugalité.
+- **Fusion (2026-10-16).** Cette fiche absorbe la **gate d'entrée** (« version lançable », issue de
+  l'audit du découpage et de la note de rétro du 2026-10-15) : entrée et sortie sont les deux bords
+  **d'un même checkpoint de version**. Un seul concept, une seule fiche.
+- **Tranché par le PO (2026-10-16).** (1) Peu importe le mode, on ne franchit pas tant que la condition
+  mécanique n'est pas remplie (prêtes à l'entrée, livrées/reportées à la sortie). (2) En auto
+  multi-versions, le PO décide du sort des fiches non livrables **selon leur raison de blocage**. (3) Le
+  sceau est un geste PO, apposable **en mode auto** si tout est OK (ou pré-autorisé v0.15).
+- **Reste au panel** : le mécanisme (où vit la gate, comment le run fait surface la décision) et le
+  **défaut** sans drapeau — s'arrêter-et-demander, ou s'arrêter tout court. Lié au **modèle de process**
+  de l'audit (une gate est un objet du modèle, pas un one-off) et aux **raisons typées de `blocked`**.
+- Sœur du thème « autonomie du run » livré en v0.15 : filtre d'éligibilité, boucle multi-versions,
+  auto-tag opt-in. En multi-sessions, la décision de scellage passe par la session **MASTER pilote**.
+- **Placement** : aucune version ouverte ne porte ce thème ; à affecter par le PO. Priorité P2.
+- Origine : note de rétro « frontière de version / checkpoint » (2026-10-15), audit du découpage
+  (2026-10-15), clarifications PO (2026-10-16).
+- **Confirmation PO (2026-10-16) — les 4 capacités du run auto.** En `--mode auto`,
+  `ezk-product-build` est autonome et peut : (1) amener toutes les fiches d'une version en `ready`
+  avant de lancer les dev, ou **reporter** à une version ultérieure celles qu'il ne peut pas groomer
+  pour une raison valable, **tant que ça ne casse pas le plan** ; (2) développer au maximum les fiches
+  de la version, et pour une fiche bloquée la **mettre de côté** (status `blocked`) si ce n'est pas
+  grave pour la suite, ou la **reporter** ; (3) **sceller** quand chaque fiche est **traitée** —
+  livrée, reportée, ou bloquée-actée ; (4) passer à la version suivante (grooming, sprint) si
+  plusieurs versions sont demandées (boucle multi-versions, livrée en v0.15).
+  Deux précisions que ces points font surgir :
+  - *« sans casser le plan » = un contrôle de dépendances.* Reporter ou bloquer une fiche n'est permis
+    que si rien d'aval ne la requiert ; sinon le report **cascade** (on reporte aussi les dépendantes)
+    ou le run **fait surface** le conflit. C'est la condition réelle derrière « si ce n'est pas grave
+    pour la suite ».
+  - *Tag honnête (point 3).* Si une fiche reste **bloquée dans** une version scellée, le tag ne doit
+    pas prétendre l'avoir livrée. Au scellage, une fiche encore bloquée est soit **reportée hors** de
+    la version, soit **marquée explicitement « différée, hors du tag »** — le tag = le lot réellement
+    livré (cohérent avec « lot livré ≠ version complète » de l'audit).
+- **Besoin transverse (PO 2026-10-16) : désigner une version / un sprint cible au lancement.** Pouvoir
+  lancer `ezk-sprint` / `ezk-product-build` (et consorts) en **précisant la version ou le sprint
+  visé** (ex. `--version <v>`). Aujourd'hui le périmètre se déduit (ADR-0070) ; un paramètre explicite
+  manque. À capturer à part (fiche dédiée, ou absorbé par le brainstorm DSL côté grammaire des flags) —
+  noté ici car il conditionne les 4 capacités ci-dessus.

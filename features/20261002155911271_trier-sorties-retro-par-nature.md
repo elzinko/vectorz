@@ -90,3 +90,25 @@ pnpm --dir products/mega-city test:scripts
     tampon), et aligner ALORS les 2 surfaces réelles (ADR-0054 + `ezk-retro`) ; soit (b) ficher à
     part la **construction du tampon « en observation »** (nouvel état de cycle de vie d'une règle +
     gabarit `.rules/`), puis aligner les 3 textes une fois le mécanisme livré.
+- **Grooming 2026-10-15 (audit adverse du découpage — lentille scrum master).** Deux apports, à
+  trancher au panel ; ils ne remplacent pas la Proposition ci-dessus, ils l'affinent.
+  - *Réflexion PO (2026-10-15)* : et si **toute sortie de rétro qui est du travail** passait par une
+    **fiche**, la règle n'étant que le **livrable** de cette fiche ? Raison : sans fiche, pas
+    d'historique pour vérifier qu'une règle marche. Repère Scrum : les actions de rétro deviennent des
+    items de backlog — sauf les actions individuelles immédiates.
+  - *Règle proposée (tranchée par l'audit)* — une seule question : **« reste-t-il du travail au-delà
+    d'écrire le texte ? »**
+    - `feature` / `spike` / `recette`, ou une action qui **survit** à la rétro → **fiche**.
+    - action **immédiate et close** dans la cérémonie (retirer une règle, corriger un lien) → **pas de
+      fiche**.
+    - règle **auto-portante** (une ligne, applicable telle quelle) → **pas de fiche** : `rules/` + sa
+      **mesure de retrait** obligatoire comme historique. `impose` reste la voie rapide **pour ce seul
+      cas** (garde-fou : une règle qui exige du build ne se faufile pas par `impose` pour éviter la
+      fiche de son enforcement).
+    - règle **avec enforcement à construire** (script, test, gate) → **règle immédiate + fiche pour
+      l'enforcement** (le patron d'ADR-0071 / `dod.yml`).
+  - *Pourquoi ça débloque la décision (a)/(b) du 2026-10-14* : l'historique d'une règle n'a **pas**
+    besoin du tampon « en observation » (inexistant). La **mesure de retrait** que `rules/` exige déjà
+    **est** cet historique. On peut donc aligner les **2 surfaces réelles** (ADR-0054 + `ezk-retro`
+    temps 5) sans construire de tampon — c'est l'option (a) — et traiter le gabarit `.rules/` à part
+    s'il doit exister. Source : rapport d'audit du découpage de la méthode, 2026-10-15.
