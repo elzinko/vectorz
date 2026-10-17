@@ -284,3 +284,22 @@ export function computeHealth(fiches: readonly FicheStock[], minReady?: number):
   };
   return minReady === undefined ? health : { ...health, minReady, enough: ready >= minReady };
 }
+
+// ─── La règle de taille au grooming (fiche 20261013013553179) ────────────────────────────────
+// « Une fiche tient dans un sprint » (règle token-economy/fiche-tient-dans-un-sprint) : au `ready`,
+// on COMPTE les critères d'acceptation. Au-delà du seuil, on avertit et on propose un découpage —
+// jamais un blocage (soupape PO : le groomeur juge si ça tient). Le compte des SURFACES reste au
+// jugement du groomeur (pas de signal mécanique fiable dans la fiche). PUR.
+
+/** Au-delà de ce nombre de critères d'acceptation, la fiche est probablement trop grosse pour un sprint. */
+export const MAX_ACCEPTANCE_CRITERIA = 6;
+
+/**
+ * Le nombre de critères d'acceptation d'une fiche : les cases à cocher sous « Critères d'acceptation ».
+ * À défaut de section nommée, on compte toutes les cases du corps (meilleure estimation).
+ */
+export function acceptanceCriteriaCount(markdown: string): number {
+  const section = /##\s*Crit[eè]res?\s+d['’]acceptation[^\n]*\n([\s\S]*?)(?:\n#{1,6}\s|$)/i.exec(markdown);
+  const scope = section?.[1] ?? markdown;
+  return (scope.match(/^[ \t]*[-*]\s*\[[ xX]\]/gm) ?? []).length;
+}
