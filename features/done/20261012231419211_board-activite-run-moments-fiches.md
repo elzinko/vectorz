@@ -59,4 +59,4 @@ Preuve : court parcours filmé run → moment → fiche (évidence animée admis
   **chantier qui réunit plusieurs sessions**. Prévoir qu'une ligne d'activité puisse porter un
   **libellé de session** et qu'un run en réunisse N, pour **étendre** cette vue plus tard au lieu
   de la réécrire. Tranche v0.23 qui la généralise :
-  [activité par chantier/sessions](../20261015082118382_board-chronologie-3-niveaux-accueil-projets.md).
+  [activité par chantier/sessions](20261015082118382_board-chronologie-3-niveaux-accueil-projets.md).

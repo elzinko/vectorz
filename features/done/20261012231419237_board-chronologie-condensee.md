@@ -57,4 +57,4 @@ Preuve : capture avant (ancienne frise verbeuse) / après (condensée, une ligne
   session** : libellé de session par ligne, filtre par session, navigation à 3 niveaux. Prévoir
   qu'une ligne puisse porter un libellé de session, pour **étendre** au lieu de réécrire. Tranche
   v0.23 qui la généralise :
-  [chronologie 3 niveaux + accueil](../20261015082118382_board-chronologie-3-niveaux-accueil-projets.md).
+  [chronologie 3 niveaux + accueil](20261015082118382_board-chronologie-3-niveaux-accueil-projets.md).

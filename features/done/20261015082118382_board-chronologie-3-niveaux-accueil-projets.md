@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version: v0.18.0
 labels: [dashboard, board, ux, supervision, multi-session]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (9555603b)"
 evidence: before-after # l'écran chronologie + l'accueil, avant/après multi-sessions
 created: 2026-10-15
 ---
@@ -22,8 +22,8 @@ les projets »** qui montre la flotte avant d'entrer dans un projet. La maquette
 validée ; ici on la construit.
 
 **Si tu arrives frais.** Maquette de référence :
-[board-runs-concurrents.html](../docs/maquettes/board-runs-concurrents.html) (cas 6 chronologie,
-cas 8 accueil) ; décision [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
+[board-runs-concurrents.html](../../docs/maquettes/board-runs-concurrents.html) (cas 6 chronologie,
+cas 8 accueil) ; décision [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
 §D11.
 
 ## Contexte / Problème
@@ -60,10 +60,10 @@ Preuve : before/after de la chronologie (fil unique → 3 niveaux) et de l'accue
 
 ## Notes / décisions
 
-- Dépend du [read-model](done/20261015082118353_board-read-model-chantier-sessions-evenements.md) et de
-  la [découverte des worktrees](done/20261015082118368_board-decouverte-worktrees-watch-dynamique.md).
+- Dépend du [read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md) et de
+  la [découverte des worktrees](20261015082118368_board-decouverte-worktrees-watch-dynamique.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, étape d'accueil —
   `milestone: board` + `v0.23.0`.
-- Contraint les tranches v0.17 [activité run→moments→fiches](done/20261012231419211_board-activite-run-moments-fiches.md)
-  et [chronologie condensée](done/20261012231419237_board-chronologie-condensee.md) : les construire
+- Contraint les tranches v0.17 [activité run→moments→fiches](20261012231419211_board-activite-run-moments-fiches.md)
+  et [chronologie condensée](20261012231419237_board-chronologie-condensee.md) : les construire
   **sans graver « run = session »** pour que cette fiche étende au lieu de réécrire.
