@@ -4,13 +4,14 @@ title: La gate attrape les défauts que la revue a dû rattraper (forme des vues
 type: feature
 priority: P2
 product: mega-city
-milestone:
-version: v0.19.0
+milestone: parked
+version:
 labels: [backlog]
 status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-11
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261011091555006 — La gate attrape les défauts que la revue a dû rattraper
