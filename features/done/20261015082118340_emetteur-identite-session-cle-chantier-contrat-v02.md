@@ -19,7 +19,7 @@ created: 2026-10-15
 > l'ordre des dépendances :
 > [T1 contrat @0.2 + journal par worktree](20261015133600298_emetteur-contrat-v02-journal-par-worktree.md) ·
 > [T2 identité de session](20261015133600314_emetteur-identite-de-session.md) ·
-> [T3 clé de chantier](../20261015133600328_emetteur-cle-de-chantier.md).
+> [T3 clé de chantier](20261015133600328_emetteur-cle-de-chantier.md).
 > Le contenu ci-dessous est la fiche d'origine, conservée pour trace.
 
 # 20261015082118340 — Émetteur : identité de session + clé de chantier + contrat @0.2

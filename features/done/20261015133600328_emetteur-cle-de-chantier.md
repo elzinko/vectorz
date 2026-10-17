@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version: v0.18.0
 labels: [supervision, emetteur, multi-session]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (92c3db93)"
 evidence: none # brique émetteur ; prouvée par le payload de run.started
 split_from: "20261015082118340"
 created: 2026-10-15
@@ -23,7 +23,7 @@ board de **réunir** les sessions d'un même travail — jamais le `run_id`, qui
 chaque session.
 
 **Si tu arrives frais.** Un *chantier* (run) = un travail de méthode (« réaliser v0.17 »). Détail :
-[ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D2.
+[ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D2.
 
 ## Contexte / Problème
 
@@ -53,8 +53,8 @@ une **clé partagée** que la méthode pose, distincte du `run_id`.
 
 ## Notes / décisions
 
-- Découpée de [Émetteur : identité + clé + @0.2](done/20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15.
-- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D2 ; le board
-  regroupe par cette clé ([read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md)).
-- **Dépend de** [T1 contrat @0.2](done/20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
-  **Sœur** : [identité de session](done/20261015133600314_emetteur-identite-de-session.md) — `milestone: board` + `v0.23.0`.
+- Découpée de [Émetteur : identité + clé + @0.2](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15.
+- Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D2 ; le board
+  regroupe par cette clé ([read-model](../20261015082118353_board-read-model-chantier-sessions-evenements.md)).
+- **Dépend de** [T1 contrat @0.2](20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
+  **Sœur** : [identité de session](20261015133600314_emetteur-identite-de-session.md) — `milestone: board` + `v0.23.0`.

@@ -78,7 +78,7 @@ d'après — découverte des worktrees, chronologie à 3 niveaux, accueil « Tou
   serait « fusion + ordre » (critères 1-4) d'un côté, « cycle de vie + compteurs » (critère 5) de
   l'autre — à décider en cours de sprint, pas d'avance.
 - Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8. Dépend
-  de la clé posée par l'émetteur ([T3 clé de chantier](20261015133600328_emetteur-cle-de-chantier.md)).
+  de la clé posée par l'émetteur ([T3 clé de chantier](done/20261015133600328_emetteur-cle-de-chantier.md)).
 - **Sœurs (sans chapeau)** : émetteur, découverte, chronologie+accueil, étape d'accueil —
   `milestone: board` + `v0.23.0`.
 - Respecte « live, jamais committé » (ADR-0043/0055) : le read-model sert, il n'écrit rien.

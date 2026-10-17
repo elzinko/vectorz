@@ -60,5 +60,5 @@ On pose donc le format et l'emplacement d'abord.
 - Découpée de [Émetteur : identité + clé + @0.2](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15 (règle de taille : la mère touchait ~5 surfaces).
 - Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
 - **Sœurs (sans chapeau)** : [identité de session](20261015133600314_emetteur-identite-de-session.md),
-  [clé de chantier](../20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
+  [clé de chantier](20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
   Celles-ci **dépendent de T1** (le format doit accepter les champs avant qu'on les écrive).
