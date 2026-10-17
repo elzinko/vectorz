@@ -308,10 +308,10 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 ### ㉒ v0.21.0 — le flux se lit et s'allège (proposée le 2026-10-14, à valider)
 > Cérémonies légères pour les petits périmètres, et restitutions lisibles.
 - ~~`20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`~~ — shipped
-- `20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2 · `groom`
+- ~~`20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2~~ — parké hors version (à-découper : refonte de cérémonie du sprint, comportement de skill)
 - ~~`20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`~~ — shipped
-- `20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3 · `groom`
-- `20261007151859476` — ezk-debugging : skill de débogage systématique (4 phases) · P2 · `groom`
+- ~~`20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3~~ — parké hors version (à-découper : comportement de skill, prose)
+- ~~`20261007151859476` — ezk-debugging : skill de débogage systématique (4 phases) · P2~~ — parké hors version (à-découper : nouveau skill, non testable mécaniquement)
 
 ### ㉓ v0.22.0 — le backlog se discipline (proposée le 2026-10-14, à valider)
 > Le modèle backlog / PR / grooming se resserre.

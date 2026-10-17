@@ -4,13 +4,14 @@ title: "Chemin « lite » du sprint pour fiches triviales (éviter la sur-céré
 type: refactor
 priority: P2
 product: vectorz
-milestone:
-version: v0.21.0
+milestone: parked
+version:
 labels: [outillage, sprint, token-economy]
 status: idea
 pr:
 evidence: none
 created: 2026-10-07
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261007151859479 — Chemin « lite » du sprint pour fiches triviales
