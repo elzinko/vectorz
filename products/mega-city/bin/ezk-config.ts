@@ -15,6 +15,7 @@
  * `install` / `uninstall` sont HORS PÉRIMÈTRE (axe 1 de la fiche 20260916225506858 —
  * rendre le plugin disponible par projet, non couvert ici).
  */
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   type GithubCapKey,
@@ -39,6 +40,22 @@ const CAP_KEYS: readonly GithubCapKey[] = ['pr', 'ci', 'codex-review'];
 function fail(message: string): never {
   console.error(message);
   process.exit(2);
+}
+
+/** L'aide (`--help` / `-h`) : le même usage que le JSDoc en tête, sur stdout, code 0. */
+function usage(): void {
+  console.log(
+    [
+      'usage : ezk [--root <projet>] config <sous-commande>',
+      '  ezk config [show]                  statut GitHub + modèles du projet',
+      '  ezk config <dossier>               statut d’un autre dossier (ancienne forme)',
+      '  ezk config github [status]         statut GitHub',
+      '  ezk config github on|off           (dé)connecte GitHub',
+      '  ezk config github <cap> on|off     granulaire (pr|ci|codex-review)',
+      '  ezk config roles|modeles|agents …  règle les modèles par agent',
+      '  ezk config --help | -h             cette aide',
+    ].join('\n'),
+  );
 }
 
 function printStatus(root: string): void {
@@ -137,6 +154,17 @@ function parseOnOff(word: string | undefined, ctx: string): boolean {
 
 const argv = target.rest;
 
+// `--help` / `-h` : l'usage, code 0 — AVANT la rétro-compat « un mot = une racine » (sinon `--help`
+// serait pris pour un dossier et afficherait un faux statut « tout ON »). Fiche 20261004083838781.
+if (argv[0] === '--help' || argv[0] === '-h') {
+  usage();
+  process.exit(0);
+}
+// Toute AUTRE option inconnue (commence par « - ») : refus net, code 2, en la nommant.
+if (argv[0]?.startsWith('-')) {
+  fail(`ezk:config : option inconnue « ${argv[0]} » (voir « ezk config --help »).`);
+}
+
 // `roles` / `modeles` / `agents` : régler la config des modèles (projet visé).
 if (argv[0] === 'roles' || argv[0] === 'modeles' || argv[0] === 'agents') {
   handleModels(target.root, argv);
@@ -146,7 +174,13 @@ if (argv[0] === 'roles' || argv[0] === 'modeles' || argv[0] === 'agents') {
 // `show` (ou rien) : le statut du projet + le modèle par agent.
 // Rétro-compat 856 : un autre mot est une racine de projet.
 if (argv[0] !== 'github') {
-  const root = argv[0] && argv[0] !== 'show' ? resolve(base, argv[0]) : target.root;
+  const explicit = Boolean(argv[0]) && argv[0] !== 'show';
+  const root = explicit ? resolve(base, argv[0] as string) : target.root;
+  // Ancienne forme `ezk config <dossier>` : un dossier absent → erreur, jamais le faux défaut
+  // « tout ON » (sinon on croit GitHub allumé sur un projet qui n'existe pas). Fiche 20261004083838781.
+  if (explicit && !existsSync(root)) {
+    fail(`ezk:config : dossier introuvable « ${argv[0]} » (${root}).`);
+  }
   printStatus(root);
   printModels(root);
   process.exit(0);
