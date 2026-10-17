@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: vectorz
 milestone:
-version: v0.20.0
+version: v0.21.0
 labels: [outillage, sprint, token-economy]
 status: idea
 pr:

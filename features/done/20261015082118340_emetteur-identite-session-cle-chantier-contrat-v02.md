@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: board
-version: v0.23.0
+version: v0.18.0
 labels: [supervision, emetteur, multi-session, contrat]
 status: split
 split_into: ["20261015133600298", "20261015133600314", "20261015133600328"]

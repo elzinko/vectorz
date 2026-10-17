@@ -4,7 +4,7 @@ title: "Un agent qui utilise l'app d'une PR et propose des fiches"
 type: feature
 priority: P2
 product: mega-city
-version: v0.22.0
+version: v0.23.0
 milestone:
 epic:
 depends: ["0169"]

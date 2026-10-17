@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version: v0.23.0
+version: v0.18.0
 labels: [dashboard, board, ux, supervision, runs, multi-session, multi-llm]
 status: shipped
 blocked:

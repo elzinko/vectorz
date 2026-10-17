@@ -5,7 +5,7 @@ type: bug
 priority: P3
 product: mega-city
 milestone:
-version: v0.18.0
+version: v0.20.0
 labels: [cli]
 status: idea
 pr:

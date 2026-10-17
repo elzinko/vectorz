@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: board
-version: v0.23.0
+version: v0.18.0
 labels: [supervision, methode, multi-session, onboarding]
 status: ready
 blocked:

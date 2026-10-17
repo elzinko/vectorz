@@ -5,7 +5,7 @@ type: chore
 priority: P3
 product: vectorz
 milestone:
-version: v0.21.0
+version: v0.22.0
 labels: [backlog-model, spike]
 status: idea
 pr:

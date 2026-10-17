@@ -4,7 +4,7 @@ title: "ezk-secret apply — scope compte/par-app, secrets déclarés par recett
 type: feature
 priority: P2
 product: vectorz
-version: v0.18.0
+version: v0.20.0
 labels: [secrets, dx, ci]
 status: idea
 pr:

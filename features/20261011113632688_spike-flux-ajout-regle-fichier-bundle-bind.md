@@ -4,7 +4,7 @@ title: "Spike : outiller/documenter l'ajout d'une règle (fichier + bundle + pro
 type: chore
 priority: P2
 product: vectorz
-version: v0.18.0
+version: v0.20.0
 labels: [spike, law, dx]
 status: idea
 pr:

@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: board
-version: v0.23.0
+version: v0.18.0
 labels: [supervision, emetteur, multi-session, contrat]
 status: ready
 blocked:
