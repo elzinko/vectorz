@@ -143,6 +143,43 @@ export interface TimelineEvent {
   session?: string;
 }
 
+/** L'état d'une session (un ouvrier) : vivante, au jalon, finie, ou présumée morte. */
+export type SessionState = 'live' | 'gate' | 'done' | 'dead';
+
+/**
+ * Une session (un ouvrier) vue dans un chantier (ADR-079 §D8/D11). Elle porte son
+ * propre fil (niveau 3 de la chronologie) et, si elle pilote, le drapeau `pilot`.
+ */
+export interface ChantierSession {
+  /** Clé stable de la session (sert d'id de navigation et de filtre). */
+  id: string;
+  /** Libellé lisible : branche + rôle (« feat/0211 · activité », « Orchestration · pilote »). */
+  label: string;
+  state: SessionState;
+  /** Vrai pour la session qui pilote les autres (hiérarchie). */
+  pilot?: boolean;
+  /** Le fil propre de cette session (niveau 3). */
+  events: TimelineEvent[];
+}
+
+/**
+ * Un chantier (un travail de méthode, ex. « Réalisation v0.17 ») qui réunit N
+ * sessions par la clé de chantier (ADR-079 §D2/D8). C'est le niveau 1 et 2 de la
+ * chronologie : la vue globale liste les chantiers, un chantier montre ses sessions
+ * et son fil fusionné (`merged`, chaque évènement étiqueté par sa session).
+ */
+export interface BoardChantier {
+  key: string;
+  name: string;
+  ver?: string;
+  state: SessionState;
+  /** Temps compact de la dernière activité (« il y a 2 min », « hier »). */
+  age: string;
+  sessions: ChantierSession[];
+  /** Fil fusionné des sessions (niveau 2) — chaque évènement porte son libellé `session`. */
+  merged: TimelineEvent[];
+}
+
 /** Une fiche en détail, telle que la modale la montre. */
 export interface FicheDetail {
   id: string;
@@ -171,6 +208,12 @@ export interface BoardProject {
   fiches?: Record<string, FicheDetail>;
   /** Les évènements de chronologie, du plus récent au plus ancien. Facultatif. */
   timeline?: TimelineEvent[];
+  /**
+   * Les chantiers du projet (multi-sessions, ADR-079). Présent = la chronologie
+   * se navigue en 3 niveaux (chantiers → chantier → session) ; absent = fil unique
+   * (`timeline`). Alimente aussi l'accueil « Tous les projets » (compte de sessions).
+   */
+  chantiers?: BoardChantier[];
   /** La config du projet (portée projet, `.vectorz/config.yml`). Facultatif. */
   config?: ProjectConfig;
 }

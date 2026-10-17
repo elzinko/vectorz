@@ -129,6 +129,83 @@ export const BOARD_DATA: BoardData = {
       { when: '12 j', kind: 'tag', ver: 'v0.1.0', title: 'Versions v0.1 → v0.6 taguées' },
       { when: 'origine', kind: 'gate', title: 'Création du projet vectorz' },
     ],
+    chantiers: [
+      {
+        key: 'v0.17.0',
+        name: 'Réalisation v0.17',
+        ver: 'v0.17.0',
+        state: 'live',
+        age: 'il y a 2 min',
+        sessions: [
+          {
+            id: 'pilote',
+            label: 'Orchestration · pilote',
+            state: 'live',
+            pilot: true,
+            events: [{ when: '20 min', kind: 'lancement', title: 'Réalisation v0.17 lancée' }],
+          },
+          {
+            id: 'feat/0211',
+            label: 'feat/0211 · activité',
+            state: 'live',
+            events: [
+              { when: '2 min', kind: 'sprint', title: 'Sprint 2 — activité run→moments' },
+              { when: '35 min', kind: 'gate', title: 'Revue passée · GO' },
+              { when: '1 h', kind: 'sprint', title: 'Sprint 1 — modale fiche · livrée' },
+            ],
+          },
+          {
+            id: 'feat/0224',
+            label: 'feat/0224 · fiches',
+            state: 'gate',
+            events: [
+              { when: '4 min', kind: 'gate', title: 'Revue demandée' },
+              { when: '8 min', kind: 'sprint', title: 'Sprint 1 — vue Fiches démarré' },
+            ],
+          },
+        ],
+        merged: [
+          { when: '2 min', kind: 'sprint', title: 'Sprint 2 — activité', session: '⎇ feat/0211' },
+          { when: '4 min', kind: 'gate', title: 'Revue demandée', session: '⎇ feat/0224' },
+          { when: '8 min', kind: 'sprint', title: 'Sprint 1 — vue Fiches démarré', session: '⎇ feat/0224' },
+          { when: '20 min', kind: 'lancement', title: 'Réalisation v0.17 lancée', session: '⎇ main · pilote' },
+        ],
+      },
+      {
+        key: 'v0.18.0',
+        name: 'Cadrage v0.18',
+        ver: 'v0.18.0',
+        state: 'gate',
+        age: 'il y a 12 min',
+        sessions: [
+          {
+            id: 'feat/0237',
+            label: 'feat/0237 · grooming',
+            state: 'gate',
+            events: [{ when: '12 min', kind: 'gate', title: 'Grooming — chronologie condensée' }],
+          },
+        ],
+        merged: [
+          { when: '12 min', kind: 'gate', title: 'Grooming — chronologie condensée', session: '⎇ feat/0237' },
+        ],
+      },
+      {
+        key: 'v0.16.0',
+        name: 'Réalisation v0.16',
+        ver: 'v0.16.0',
+        state: 'done',
+        age: 'hier',
+        sessions: [
+          {
+            id: 'feat/0199',
+            label: 'feat/0199 · ranger',
+            state: 'done',
+            events: [{ when: 'hier', kind: 'tag', title: 'Version v0.16.0 taguée' }],
+          },
+        ],
+        merged: [{ when: 'hier', kind: 'tag', title: 'Version v0.16.0 taguée', session: '⎇ feat/0199' }],
+      },
+    ],
     config: {
       groomPolicy: 'auto',
       sprintSize: 'auto',
@@ -183,6 +260,24 @@ export const BOARD_DATA: BoardData = {
     fiches: {
       m1: f('m1', 'Rendu hors design-system sur la carte admin', 'P0', 'wip', 'v1.8.0', 'Rendu hors charte. Release-gate NO-GO.', { ctx: 'Le rendu de la carte admin sort de la charte du design-system.', crit: ['Rendu conforme à la charte', 'Release-gate GO'], verif: 'ezk release v1.8.0' }),
     },
+    chantiers: [
+      {
+        key: 'v1.8.0',
+        name: 'Réalisation 1.8',
+        ver: 'v1.8.0',
+        state: 'live',
+        age: '3 h',
+        sessions: [
+          {
+            id: 'feat/carte-admin',
+            label: 'feat/carte-admin · dev',
+            state: 'live',
+            events: [{ when: '3 h', kind: 'sprint', title: 'Sprint 1 — carte admin' }],
+          },
+        ],
+        merged: [{ when: '3 h', kind: 'sprint', title: 'Sprint 1 — carte admin', session: '⎇ feat/carte-admin' }],
+      },
+    ],
     config: {
       groomPolicy: 'exiger mon grooming',
       sprintSize: '3 fiches',
@@ -218,6 +313,33 @@ export const BOARD_DATA: BoardData = {
       ],
     },
     runs: {},
+    chantiers: [
+      {
+        key: 'v0.4.0',
+        name: 'Durcir le format hôte',
+        ver: 'v0.4.0',
+        state: 'live',
+        age: '1 h',
+        sessions: [
+          {
+            id: 'feat/durcir',
+            label: 'feat/durcir · dev',
+            state: 'live',
+            events: [{ when: '1 h', kind: 'sprint', title: 'Sprint 1 — format hôte' }],
+          },
+          {
+            id: 'wip/essai-local',
+            label: 'wip/essai-local · hors méthode',
+            state: 'dead',
+            events: [{ when: '2 j', kind: 'lancement', title: 'Session locale — silence prolongé' }],
+          },
+        ],
+        merged: [
+          { when: '1 h', kind: 'sprint', title: 'Sprint 1 — format hôte', session: '⎇ feat/durcir' },
+          { when: '2 j', kind: 'lancement', title: 'Session locale', session: '⎇ wip/essai-local' },
+        ],
+      },
+    ],
     config: {
       groomPolicy: 'auto',
       sprintSize: '2 fiches',

@@ -17,6 +17,7 @@ import type { BoardProject } from './types.js';
 import { DevView } from './DevView.js';
 import { FicheModal } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
+import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
@@ -24,6 +25,7 @@ import { TimelineView } from './TimelineView.js';
 const BRAND_VERSION = 'v0.17.0';
 
 type ViewId =
+  | 'fleet'
   | 'overview'
   | 'cadrage'
   | 'dev'
@@ -47,6 +49,8 @@ const PROJECT_NAV: NavItem[] = [
   { id: 'timeline', icon: '◷', label: 'Chronologie' },
   { id: 'config', icon: '⚙', label: 'Configuration' },
 ];
+
+const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les projets' }];
 
 const METHOD_NAV: NavItem[] = [{ id: 'process', icon: '❖', label: 'Process' }];
 
@@ -110,6 +114,8 @@ function makeNewProject(root: string): BoardProject {
 
 export function Board(): JSX.Element {
   const [projectName, setProjectName] = useState<string>(DEFAULT_PROJECT);
+  // Accueil « Tous les projets » (cas 8 piste 1) en tête de nav Global ; le board par
+  // projet, lui, ne change pas — on ouvre comme avant sur sa vue d'ensemble.
   const [view, setView] = useState<ViewId>('overview');
   // Drill-down dans la vue courante (détail d'un run) — null = la vue elle-même.
   const [runDetailId, setRunDetailId] = useState<string | null>(null);
@@ -221,6 +227,20 @@ export function Board(): JSX.Element {
 
       <div className="shell">
         <nav className="nav" aria-label="Navigation du board">
+          <div className="grp">Global</div>
+          {GLOBAL_NAV.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={view === item.id ? 'on' : undefined}
+              aria-current={view === item.id ? 'page' : undefined}
+              title={item.label}
+              onClick={() => go(item.id)}
+            >
+              <span className="ic" aria-hidden="true">{item.icon}</span>
+              <span className="lbl">{item.label}</span>
+            </button>
+          ))}
           <div className="grp">Projet</div>
           {PROJECT_NAV.map((item) => (
             <button
@@ -259,6 +279,8 @@ export function Board(): JSX.Element {
               onBack={() => setRunDetailId(null)}
               onOpenFiche={setFicheModalId}
             />
+          ) : view === 'fleet' ? (
+            <FleetView projects={allProjects} onOpenProject={chooseProject} />
           ) : view === 'overview' ? (
             <OverviewView
               project={project}
