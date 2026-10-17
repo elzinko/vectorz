@@ -309,7 +309,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 > Cérémonies légères pour les petits périmètres, et restitutions lisibles.
 - ~~`20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`~~ — shipped
 - `20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2 · `groom`
-- `20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`
+- ~~`20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`~~ — shipped
 - `20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3 · `groom`
 - `20261007151859476` — ezk-debugging : skill de débogage systématique (4 phases) · P2 · `groom`
 

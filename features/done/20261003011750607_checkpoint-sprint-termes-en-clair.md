@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.21.0
 labels: [sprint, lisibilite]
-status: ready
-pr:
+status: shipped
+pr: "local (01eaf0d6)"
 evidence: none # texte de skill, pas d'écran
 created: 2026-10-03
 ---
