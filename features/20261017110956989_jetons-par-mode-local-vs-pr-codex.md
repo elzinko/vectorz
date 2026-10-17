@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [supervision, observabilite]
-status: idea
+status: ready
 pr:
 evidence: none # commande / rapport, pas d'écran
 created: 2026-10-17
