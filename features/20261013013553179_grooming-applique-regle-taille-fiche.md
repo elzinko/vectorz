@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.22.0
 labels: [backlog, dette]
-status: idea
+status: ready
 pr:
 evidence: none # convention de grooming, pas d'écran
 created: 2026-10-13
@@ -59,3 +59,16 @@ ezk dor check <id-d-une-fiche-trop-grosse>   # doit avertir sur la taille
 
 - Sortie de la rétro du run autonome v0.11 (2026-10-13). Priorité P3 : garde-fou de process, pas un
   blocage de livraison.
+
+## Décision de grooming (2026-10-17, run v0.22 auto/lean)
+
+Bras **critères** implémenté (le plus sûr mécaniquement) : `ezk dor check <id>` compte les critères
+d'acceptation (cases à cocher sous « Critères d'acceptation ») et **avertit** au-delà de 6
+(`MAX_ACCEPTANCE_CRITERIA`), en citant la règle `token-economy/fiche-tient-dans-un-sprint` et en
+proposant un découpage — **sans bloquer** (soupape PO : le groomeur juge « ça tient dans un sprint »).
+Vaut même sans manifeste de projet. Tests : `dor-command.test.ts` (3 cas : >6 avertit, ≤6 non, sans manifeste).
+
+**Bras surfaces reporté** (hors critère mécanisable fiable) : « touchant plus de 2 surfaces » reste au
+**jugement du groomeur** — la fiche n'a pas de signal mécanique de surface fiable (pas de champ dédié),
+et le comptage de chemins ferait du faux positif. Conforme au cadrage de la fiche (« le jugement ça
+tient dans un sprint reste au groomeur »).
