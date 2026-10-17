@@ -318,7 +318,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 - `20261003075821858` — deux formes de PR (dev rend la fiche, backlog la désigne) · P1 · `groom`
 - `20261003201034990` — voir les PR ouvertes et les branches avant un lot ou un groom · P1 · `groom`
 - `20261013131625202` — une fiche découpée ne porte pas un critère de sa sœur · P2 · `groom`
-- `20261013013553179` — le grooming applique la règle de taille (> 2 surfaces → découper) · P3 · `groom`
+- ~~`20261013013553179` — le grooming applique la règle de taille (> 2 surfaces → découper) · P3 · `groom`~~ — shipped
 - `20261007213454366` — spike : voir toute l'histoire d'une feature au même endroit · P3 · `groom`
 - `20261011112934507` — `ship-merge --local` tolère un fichier non suivi + mesure du rayon en DoR · P2 · `groom`
 

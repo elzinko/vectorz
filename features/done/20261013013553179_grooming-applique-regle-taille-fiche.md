@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.22.0
 labels: [backlog, dette]
-status: ready
-pr:
+status: shipped
+pr: "local (1c965462)"
 evidence: none # convention de grooming, pas d'écran
 created: 2026-10-13
 ---
