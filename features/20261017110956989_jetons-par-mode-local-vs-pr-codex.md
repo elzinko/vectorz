@@ -61,18 +61,22 @@ traite la **vitesse** de la mesure, pas son contenu. Aucune ne couvre l'attribut
 
 ## Proposition
 
-Tranche mince, **adossée à `sprint-metrics`** (on étend, on ne réécrit pas) :
+Tranche mince, adossée à `sprint-metrics` (on étend, on ne réécrit pas). Trois décisions de
+structure, tranchées par l'avis architecte (2026-10-17) :
 
-1. **Taguer l'attribution par mode.** Dériver le mode du run (`pr`, `codex-review` lus dans la
-   config, ou le `run.started` du journal) et le porter jusqu'à l'agrégat des jetons. Grain à
-   décider au grooming : par run, ou par fiche.
-2. **Sortir la comparaison.** Dans `sprint:report` (ou `run:report`), une ligne « jetons par
-   mode » qui met local et PR+Codex côte à côte, pour trancher la question par la mesure.
-3. **Trancher le cache (spike court).** Décider si l'on capte `cache_read` / `cache_creation`
-   et comment on les pondère. Sans cette décision, le chiffre n'est pas un coût, juste un
-   volume de jetons.
+1. **Mode dérivé du run, au rapport.** `local` | `pr-codex` déduit de la config (`pr`,
+   `codex-review`) ou du `run.started`, au moment de l'attribution. `UsageEvent` reste pur
+   (ts, session, entrée, sortie, cache). Pas de changement au chemin d'émission.
+2. **Grain = run, un mode par run.** Un run mixte (des fiches locales, d'autres en PR) est
+   marqué « mode mixte — non ventilé » et différé, comme le repli grain-session existant.
+3. **Jetons de cache captés, pas pondérés.** `UsageEvent` gagne `cacheRead` + `cacheCreation`
+   (les `message.usage` des transcripts les portent) ; on rapporte les quatre nombres côte à
+   côte, sans prix figé. Le coût en euros (pondération cache) est une étape ultérieure.
 
-POC d'abord : un seul run rejoué, deux modes, un chiffre par mode. Polish ensuite.
+POC d'abord : un run rejoué, deux modes, quatre nombres par mode. Polish ensuite.
+
+**ADR :** pas à la capture ; un ADR court n'ouvre qu'au build si la pondération prix (cache →
+coût) devient une policy.
 
 ## Critères d'acceptation
 
@@ -82,8 +86,8 @@ POC d'abord : un seul run rejoué, deux modes, un chiffre par mode. Polish ensui
       ou du journal du run, pas saisi à la main.
 - [ ] `sprint:report` (ou `run:report`) affiche les jetons **répartis par mode**, lisible sans
       lire le code.
-- [ ] La décision sur les jetons de **cache** est prise et écrite : captés et pondérés, ou
-      exclus avec la raison.
+- [ ] Les jetons de **cache** (`cacheRead`, `cacheCreation`) sont captés et rapportés à part,
+      sans prix figé.
 - [ ] Le repli honnête de `sprint-metrics` est préservé : fenêtre vide → grain session, avec
       sa note, jamais un total faux.
 
