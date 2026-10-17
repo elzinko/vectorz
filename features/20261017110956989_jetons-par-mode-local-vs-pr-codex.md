@@ -93,16 +93,17 @@ coût) devient une policy.
 
 ## Critères d'acceptation
 
-*(à affiner au grooming — fiche capturée en `idea`)*
-
-- [ ] L'attribution des jetons porte un **mode** (`local` | `pr-codex`), dérivé de la config
-      ou du journal du run, pas saisi à la main.
-- [ ] `sprint:report` (ou `run:report`) affiche les jetons **répartis par mode**, lisible sans
-      lire le code.
-- [ ] Les jetons de **cache** (`cacheRead`, `cacheCreation`) sont captés et rapportés à part,
-      sans prix figé.
-- [ ] Le repli honnête de `sprint-metrics` est préservé : fenêtre vide → grain session, avec
-      sa note, jamais un total faux.
+- [ ] **Mode dérivé, pas saisi.** L'attribution porte `local` | `pr-codex`, calculé depuis la
+      config (`pr`, `codex-review`) ou le `run.started` — jamais à la main. *Preuve : un test
+      qui change la config et voit le mode changer, sans toucher aux transcripts.*
+- [ ] **Comparaison affichée.** `sprint:report` (ou `run:report`) imprime les jetons par mode,
+      local et PR+Codex côte à côte. *Preuve : la sortie de la commande sur un run rejoué.*
+- [ ] **Somme conservée.** La somme des deux modes égale le total du run : rien perdu, rien
+      compté deux fois. *Preuve : un test d'égalité « somme-par-mode == total ».*
+- [ ] **Cache réel.** `cacheRead` et `cacheCreation` sont captés et rapportés à part, non nuls
+      sur un run réellement caché, sans prix figé. *Preuve : la sortie sur un run avec cache.*
+- [ ] **Repli honnête préservé.** Fenêtre vide → grain session, avec sa note ; jamais un total
+      faux. *Preuve : le test existant de `attributeTokens` reste vert.*
 
 ## Comment vérifier
 
