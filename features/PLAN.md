@@ -300,7 +300,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 > DX de la ligne de commande, le plus rentable au quotidien. Le brainstorm DSL vient EN PREMIER : il peut recadrer les autres. Fiches encore `idea` → chacune passe par `groom` puis `ready` avant d'être tirable.
 - `20261010153046143` — brainstorm : la CLI est-elle un DSL cohérent (ezk / mc, toute la surface) · P2 · `groom` (à faire en 1er)
 - `20261013143324404` — uniformiser `--root` avant ET après le verbe · P3 · `groom`
-- `20261004083838781` — `ezk config --help` lu comme un chemin (faux statut) · P3 · `groom`
+- ~~`20261004083838781` — `ezk config --help` lu comme un chemin (faux statut) · P3 · `groom`~~ — shipped
 - `20261001104806732` — `ezk-secret sync` : un manifeste de secrets par projet · P2 · `groom`
 - `20261001142603963` — `ezk-secret apply` : scope compte/par-app, secrets par recette · P2 · `groom`
 - `20261011113632688` — spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) · P2 · `groom`

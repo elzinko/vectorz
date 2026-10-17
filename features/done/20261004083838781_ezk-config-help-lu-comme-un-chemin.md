@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.20.0
 labels: [cli]
-status: ready
-pr:
+status: shipped
+pr: "local (f8c2dd18)"
 evidence: none # sortie de terminal, aucun écran
 created: 2026-10-04
 ---
@@ -70,7 +70,7 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - Vu pendant la coupure de GitHub dans muti. Indépendant du guichet de
-  [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) : tirable tout de
+  [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) : tirable tout de
   suite.
 - **Cas voisin, trouvé à la revue du socle du cockpit le 2026-10-04** (ADR-0062) : l'entrée `config`
   du manifeste déclare `root: cwd` et `writes: true`. Lancé sans `--root` dans un dépôt sans dossier
