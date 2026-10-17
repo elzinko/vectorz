@@ -54,6 +54,14 @@ export interface RunStartArgs {
     maxSprints?: number;
     tokens?: string;
   };
+  /**
+   * Coordonnées du CHANTIER (le « quel travail », ADR-079 §D2) : la méthode les tamponne
+   * au démarrage, l'émetteur en DÉRIVE une clé stable posée dans le payload `run.started`.
+   * Deux sessions sur la même `version` partagent la même clé → le board les réunit.
+   * Jamais `run_id` (per-session, horodaté) comme clé d'agrégation.
+   */
+  version?: string;
+  milestone?: string;
 }
 
 export interface GateReachedArgs {
@@ -105,6 +113,19 @@ interface OpenRunState {
   runId: string;
   runDir: string;
   openGate?: OpenGate;
+}
+
+/**
+ * Dérive la CLÉ DE CHANTIER (ADR-079 §D2) depuis `version` (+ `milestone`) : la clé
+ * partagée que la méthode pose, distincte du `run_id`. Deux sessions réalisant la même
+ * version produisent la MÊME clé. Pure. `undefined` si aucune version exploitable (le
+ * `run.started` n'ajoute alors pas de champ `chantier` — rétro-compat).
+ */
+export function deriveChantierKey(version?: string, milestone?: string): string | undefined {
+  const v = typeof version === 'string' ? version.trim() : '';
+  if (v.length === 0) return undefined;
+  const m = typeof milestone === 'string' ? milestone.trim() : '';
+  return m.length > 0 ? `${m}:${v}` : v;
 }
 
 /** Génère un run_id trié chronologiquement (préfixe timestamp) : sert à retrouver le run le plus récent sur disque. */
@@ -287,9 +308,12 @@ export class SupervisionRuntime {
         ? { declared: args.method_name, expected: this.expectedMethod }
         : undefined;
 
+    const chantier = deriveChantierKey(args.version, args.milestone);
+
     journal.append('run.started', {
       method: { name: args.method_name, version: args.method_version },
       seat: args.seat ?? 'human',
+      ...(chantier !== undefined ? { chantier } : {}),
       ...(args.params !== undefined ? { params: args.params } : {}),
       ...(mismatch !== undefined ? { _method_mismatch: mismatch } : {}),
     });

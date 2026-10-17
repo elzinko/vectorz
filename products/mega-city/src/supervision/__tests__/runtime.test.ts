@@ -9,7 +9,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { CONTRACT_URI, readJournalEvents } from '../journal.js';
-import { SupervisionRuntime } from '../runtime.js';
+import { SupervisionRuntime, deriveChantierKey } from '../runtime.js';
 
 let projectRoot: string;
 let extraWorktree: string | undefined;
@@ -128,6 +128,49 @@ describe('Rubrique A — Run nominal complet', () => {
     const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
     const events = readEvents(projectRoot, started.run_id);
     expect(events[0].payload).not.toHaveProperty('params');
+  });
+});
+
+describe('Clé de chantier — run.started (ADR-079 §D2, fiche 20261015133600328)', () => {
+  it('run.started porte la clé de chantier dérivée de version + milestone', () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const started = runtime.runStart({
+      method_name: 'ezk-product-build',
+      method_version: 'v0.18.0',
+      version: 'v0.18.0',
+      milestone: 'board',
+    });
+    const events = readEvents(projectRoot, started.run_id);
+    expect(events[0]).toMatchObject({ type: 'run.started', payload: { chantier: 'board:v0.18.0' } });
+  });
+
+  it('deux sessions sur la même version émettent la même clé mais des run_id différents', () => {
+    const rtA = new SupervisionRuntime(projectRoot);
+    const a = rtA.runStart({ method_name: 'm', method_version: '1', version: 'v0.18.0' });
+    rtA.runFinished({ run_id: a.run_id, status: 'success' });
+    const rtB = new SupervisionRuntime(projectRoot);
+    const b = rtB.runStart({ method_name: 'm', method_version: '1', version: 'v0.18.0' });
+
+    const evA = readEvents(projectRoot, a.run_id);
+    const evB = readEvents(projectRoot, b.run_id);
+    expect(evA[0]).toMatchObject({ payload: { chantier: 'v0.18.0' } });
+    expect(evB[0]).toMatchObject({ payload: { chantier: 'v0.18.0' } });
+    expect(a.run_id).not.toBe(b.run_id);
+  });
+
+  it("sans version, run.started n'ajoute pas de champ chantier (compat)", () => {
+    const runtime = new SupervisionRuntime(projectRoot);
+    const started = runtime.runStart({ method_name: 'm', method_version: '1.0.0' });
+    const events = readEvents(projectRoot, started.run_id);
+    expect(events[0].payload).not.toHaveProperty('chantier');
+  });
+
+  it('deriveChantierKey : version seule, version+milestone, et vide → undefined', () => {
+    expect(deriveChantierKey('v0.18.0')).toBe('v0.18.0');
+    expect(deriveChantierKey('v0.18.0', 'board')).toBe('board:v0.18.0');
+    expect(deriveChantierKey('v0.18.0')).toBe(deriveChantierKey('v0.18.0'));
+    expect(deriveChantierKey('')).toBeUndefined();
+    expect(deriveChantierKey(undefined)).toBeUndefined();
   });
 });
 

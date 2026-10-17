@@ -65,6 +65,10 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
             tokens: z.string().optional(),
           })
           .optional(),
+        // Coordonnées du chantier (ADR-079 §D2) : l'émetteur en dérive la clé d'agrégation
+        // posée dans run.started. Optionnelles — journal tolérant à l'absence.
+        version: z.string().optional(),
+        milestone: z.string().optional(),
       },
     },
     (args) => {
