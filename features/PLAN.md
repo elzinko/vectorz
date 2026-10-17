@@ -307,7 +307,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 
 ### ㉒ v0.21.0 — le flux se lit et s'allège (proposée le 2026-10-14, à valider)
 > Cérémonies légères pour les petits périmètres, et restitutions lisibles.
-- `20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`
+- ~~`20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`~~ — shipped
 - `20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2 · `groom`
 - `20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`
 - `20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3 · `groom`
