@@ -290,10 +290,10 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 
 ### ⑳ v0.19.0 — la gate ne laisse plus rien passer (proposée le 2026-10-14, à valider)
 > Les trous de qualité que la revue a dû rattraper deviennent mécaniques. **Gardée en v0.19 lors de la rotation du 2026-10-17 : elle paye tôt, chaque version qui suit se livre plus propre.**
-- `20261011091555006` — la gate attrape forme des vues + confinement · P2 · `groom`
-- `20261001133500750` — le lint couvre le code de mega-city · P2 · `groom`
+- ~~`20261011091555006` — la gate attrape forme des vues + confinement · P2~~ — parké hors version (à-découper : critère 3 = spike, hors passe lean)
+- ~~`20261001133500750` — le lint couvre le code de mega-city · P2~~ — parké hors version (différée-PO : 396 erreurs + CI off sous github:false)
 - ~~`20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`~~ — shipped
-- `20260816194833618` — santé des dépendances : audit local + place dans le process · P2 · `groom`
+- ~~`20260816194833618` — santé des dépendances : audit local + place dans le process · P2~~ — parké hors version (à-découper : arbitrage de périmètre non tranché)
 - ~~`20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`~~ — shipped
 
 ### ㉑ v0.20.0 — la CLI se tient (proposée le 2026-10-14, à valider)
