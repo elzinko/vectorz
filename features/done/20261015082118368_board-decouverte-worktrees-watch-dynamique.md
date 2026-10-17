@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version: v0.18.0
 labels: [dashboard, board, supervision, multi-session, daemon]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (40f331b7)"
 evidence: none # plomberie daemon ; prouvée par tests + logs
 created: 2026-10-15
 ---
@@ -23,7 +23,7 @@ C'est du code neuf, et le panel a insisté : ce n'est pas « déjà outillé ».
 
 **Si tu arrives frais.** Le *daemon* est le service du board qui lit les journaux en continu. Un
 *watch-root* est un dossier qu'il surveille. Détail dans
-[ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9.
+[ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9.
 
 ## Contexte / Problème
 
@@ -62,7 +62,7 @@ multi-sessions doit boucher. Cette fiche alimente le read-model : sans les carne
 
 ## Notes / décisions
 
-- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9
+- Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9
   (amende le hot-reload différé d'ADR-028).
 - **Sœurs (sans chapeau)** : émetteur, read-model, chronologie+accueil, étape d'accueil —
-  `milestone: board` + `v0.23.0`. Alimente la [fiche read-model](done/20261015082118353_board-read-model-chantier-sessions-evenements.md).
+  `milestone: board` + `v0.23.0`. Alimente la [fiche read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md).
