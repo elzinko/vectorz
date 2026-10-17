@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version: v0.18.0
 labels: [supervision, emetteur, multi-session, contrat]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (941c8538)"
 evidence: none # brique émetteur ; prouvée par le lecteur + les fixtures
 split_from: "20261015082118340"
 created: 2026-10-15
@@ -22,7 +22,7 @@ les données multi-sessions, **avant** d'écrire quoi que ce soit de neuf. Le le
 accepter les futurs champs, et chaque worktree a désormais son propre journal.
 
 **Si tu arrives frais.** Le *contrat* est le format figé du journal (`cop1/supervisability`).
-Un *worktree* = une copie de travail isolée. Détail : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D5, D7.
+Un *worktree* = une copie de travail isolée. Détail : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D5, D7.
 
 ## Contexte / Problème
 
@@ -57,8 +57,8 @@ On pose donc le format et l'emplacement d'abord.
 
 ## Notes / décisions
 
-- Découpée de [Émetteur : identité + clé + @0.2](done/20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15 (règle de taille : la mère touchait ~5 surfaces).
-- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
-- **Sœurs (sans chapeau)** : [identité de session](20261015133600314_emetteur-identite-de-session.md),
-  [clé de chantier](20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
+- Découpée de [Émetteur : identité + clé + @0.2](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15 (règle de taille : la mère touchait ~5 surfaces).
+- Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
+- **Sœurs (sans chapeau)** : [identité de session](../20261015133600314_emetteur-identite-de-session.md),
+  [clé de chantier](../20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
   Celles-ci **dépendent de T1** (le format doit accepter les champs avant qu'on les écrive).

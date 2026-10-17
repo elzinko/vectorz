@@ -58,5 +58,5 @@ process MCP est tué par l'hôte) → best-effort, le board l'infère.
 
 - Découpée de [Émetteur : identité + clé + @0.2](done/20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15.
 - Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
-- **Dépend de** [T1 contrat @0.2 + journal par worktree](20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
+- **Dépend de** [T1 contrat @0.2 + journal par worktree](done/20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
   **Sœur** : [clé de chantier](20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
