@@ -4,13 +4,14 @@ title: "Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot o
 type: feature
 priority: P1
 product: mega-city
-milestone:
-version: v0.22.0
+milestone: parked
+version:
 labels: [coordination, backlog]
 status: idea
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261003201034990 — Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche

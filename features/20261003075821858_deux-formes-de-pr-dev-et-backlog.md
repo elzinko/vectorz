@@ -4,13 +4,14 @@ title: Deux formes de PR — la PR de dev rend la fiche, la PR de backlog la dé
 type: feature
 priority: P1
 product: mega-city
-milestone:
-version: v0.22.0
+milestone: parked
+version:
 labels: [pr]
 status: idea
 pr:
 evidence: none # forme du corps de PR, pas d'écran
 created: 2026-10-03
+blocked: attend-GitHub — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261003075821858 — Deux formes de PR : la PR de dev rend la fiche, la PR de backlog la désigne

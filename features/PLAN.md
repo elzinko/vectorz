@@ -315,12 +315,12 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 
 ### ㉓ v0.22.0 — le backlog se discipline (proposée le 2026-10-14, à valider)
 > Le modèle backlog / PR / grooming se resserre.
-- `20261003075821858` — deux formes de PR (dev rend la fiche, backlog la désigne) · P1 · `groom`
-- `20261003201034990` — voir les PR ouvertes et les branches avant un lot ou un groom · P1 · `groom`
-- `20261013131625202` — une fiche découpée ne porte pas un critère de sa sœur · P2 · `groom`
+- ~~`20261003075821858` — deux formes de PR (dev rend la fiche, backlog la désigne) · P1~~ — parké hors version (attend-GitHub : modèle de PR, muet sous github:false)
+- ~~`20261003201034990` — voir les PR ouvertes et les branches avant un lot ou un groom · P1~~ — parké hors version (à-découper : buildable mais multi-surface — run context + skill groom ; bon prochain pick)
+- ~~`20261013131625202` — une fiche découpée ne porte pas un critère de sa sœur · P2~~ — parké hors version (à-découper : contrôle mécanique vs lentille de revue non tranché)
 - ~~`20261013013553179` — le grooming applique la règle de taille (> 2 surfaces → découper) · P3 · `groom`~~ — shipped
-- `20261007213454366` — spike : voir toute l'histoire d'une feature au même endroit · P3 · `groom`
-- `20261011112934507` — `ship-merge --local` tolère un fichier non suivi + mesure du rayon en DoR · P2 · `groom`
+- ~~`20261007213454366` — spike : voir toute l'histoire d'une feature au même endroit · P3~~ — parké hors version (à-découper : spike exploratoire)
+- ~~`20261011112934507` — `ship-merge --local` tolère un fichier non suivi + mesure du rayon en DoR · P2~~ — parké hors version (à-découper : deux sujets mêlés, à découper)
 
 ### ㉔ v0.23.0 — l'app se cartographie (proposée le 2026-10-14, à valider)
 > Exploration-app : la carte d'abord (réduite au Pas 1), l'explorateur ensuite, sur `ezk-scout` déjà livré. Dépend du board v0.17 pour le « où vit le cache » si la version vivante sort un jour.

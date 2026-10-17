@@ -4,13 +4,14 @@ title: "Rétro v0.9 : ship-merge --local vs fichier non suivi concurrent + mesur
 type: feature
 priority: P2
 product: mega-city
-milestone:
-version: v0.22.0
+milestone: parked
+version:
 labels: [retro, ezk-pr, backlog]
 status: idea
 pr:
 evidence: none
 created: 2026-10-11
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261011112934507 — Rétro v0.9 (run auto 2026-10-11)

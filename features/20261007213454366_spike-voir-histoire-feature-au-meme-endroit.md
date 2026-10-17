@@ -4,13 +4,14 @@ title: "Spike : voir toute l'histoire d'une feature au même endroit (vue par id
 type: chore
 priority: P3
 product: vectorz
-milestone:
-version: v0.22.0
+milestone: parked
+version:
 labels: [backlog-model, spike]
 status: idea
 pr:
 evidence: none # exploration, produit une reco écrite, pas d'UI
 created: 2026-10-07
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261007213454366 — Spike : voir toute l'histoire d'une feature au même endroit
