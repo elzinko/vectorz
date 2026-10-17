@@ -281,7 +281,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 ### ⑲ v0.18.0 — superviser plusieurs LLM (multi-sessions, conçu + ratifié en panel)
 > Run (chantier) ≠ session (ouvrier) : un journal par worktree, reconstruit par chantier, chronologie à 3 niveaux, accueil « Tous les projets ». Conçu par maquette (8 cas) et **ratifié en panel adverse** (`ADR-079`, modèle B) le 2026-10-14 ; design de référence `20261014122044421` livré (maquette + ADR-079). Affine le board v0.17 ; ses écrans (activité, chronologie) se construisent **sans graver « run = session »** pour étendre au lieu de réécrire. Ordre = dépendances : l'émetteur pose l'identité, le read-model et la découverte l'exploitent, l'écran vient après. **Les 7 tranches sont prêtes — groomées + gate DoR le 2026-10-15 ; prochaine version à construire.**
 - ~~`20261015133600298` — émetteur T1 : contrat @0.2 + journal par worktree · P1 · `build`~~ — shipped
-- `20261015133600314` — émetteur T2 : identité de session · P1 · `build`
+- ~~`20261015133600314` — émetteur T2 : identité de session · P1 · `build`~~ — shipped
 - `20261015133600328` — émetteur T3 : clé de chantier · P1 · `build`
 - `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `build`
 - `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `build`

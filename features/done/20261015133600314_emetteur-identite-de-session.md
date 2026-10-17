@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version: v0.18.0
 labels: [supervision, emetteur, multi-session]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (425203ea)"
 evidence: none # brique émetteur ; prouvée par le journal + le validateur
 split_from: "20261015082118340"
 created: 2026-10-15
@@ -22,7 +22,7 @@ identifiant stable et un libellé lisible (sa branche), portés sur chaque évè
 board distingue les ouvriers d'un coup d'œil.
 
 **Si tu arrives frais.** Une *session* = un LLM sur un worktree. L'*enveloppe* est l'en-tête
-commun de chaque évènement. Détail : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D6, D10.
+commun de chaque évènement. Détail : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D6, D10.
 
 ## Contexte / Problème
 
@@ -56,7 +56,7 @@ process MCP est tué par l'hôte) → best-effort, le board l'infère.
 
 ## Notes / décisions
 
-- Découpée de [Émetteur : identité + clé + @0.2](done/20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15.
-- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
-- **Dépend de** [T1 contrat @0.2 + journal par worktree](done/20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
-  **Sœur** : [clé de chantier](20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
+- Découpée de [Émetteur : identité + clé + @0.2](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15.
+- Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md).
+- **Dépend de** [T1 contrat @0.2 + journal par worktree](20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
+  **Sœur** : [clé de chantier](../20261015133600328_emetteur-cle-de-chantier.md) — `milestone: board` + `v0.23.0`.
