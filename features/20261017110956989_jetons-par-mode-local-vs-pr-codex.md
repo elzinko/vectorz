@@ -59,6 +59,19 @@ parkées et portent l'**observabilité qualité** (couverture, DoD) ; 0052 exclu
 le coût jetons. [Borner le coût du chemin daté de sprint:report](20261013143324505_sprint-report-cout-chemin-date.md)
 traite la **vitesse** de la mesure, pas son contenu. Aucune ne couvre l'attribution par mode.
 
+## Valeur
+
+**Si on ne la fait jamais ?** Pour « local vs PR+Codex », rien de grave : le modèle répond
+déjà (même coût d'appel, Codex gratuit). La valeur est ailleurs, et elle est réelle :
+
+- **Piloter la doctrine lean.** « Batcher, moins d'appels » est affirmé, pas mesuré. Un coût
+  réel par fiche dit si ces gestes baissent vraiment la facture.
+- **Attraper la dérive de coût.** Une évolution de méthode qui gonfle les jetons par fiche se
+  verrait ici, au lieu de ne se sentir que dans le quota Max.
+
+Le cœur, c'est **voir le coût réel par fiche** ; la comparaison local vs PR+Codex en est le
+**premier consommateur**, pas le but.
+
 ## Proposition
 
 Tranche mince, adossée à `sprint-metrics` (on étend, on ne réécrit pas). Trois décisions de
