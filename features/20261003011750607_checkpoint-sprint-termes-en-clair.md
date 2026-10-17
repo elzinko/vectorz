@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.21.0
 labels: [sprint, lisibilite]
-status: idea
+status: ready
 pr:
 evidence: none # texte de skill, pas d'écran
 created: 2026-10-03
@@ -52,3 +52,12 @@ pnpm --dir products/mega-city test
 
 - 2026-10-03 : née de la rétro muti docs/captures/2026-10-03-retro-fps-auto-adaptatif.md (dépôt muti), retenue (choix délégué par le PO au pilote). Pas de
   nouvelle règle : c'est la même règle de lisibilité qui récidive (avis du juge).
+
+## Décision de grooming (2026-10-17, run v0.21 auto/lean)
+
+L'étape 9 (⛳ Checkpoint) d'`ezk-sprint/SKILL.md` porte la consigne : **dire chaque option au PO par
+son effet concret d'abord** (« j'intègre la PR dans main, en un commit »), **définir chaque terme
+technique (merge, statut, gate) à sa première apparition**, avec **renvoi** à la règle
+`documentation-guidelines/human-facing-lisibility` (pas de recopie). Un test de contrat de texte
+(`ezk-sprint-lifecycle-contract.test.ts`) fige la présence de la consigne dans l'étape 9.
+Critère 3 (« 0 pas-compris sur 5 checkpoints ») = mesure de la règle, hors test automatique.
