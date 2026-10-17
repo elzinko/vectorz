@@ -41,7 +41,7 @@ La cause exacte n'est pas établie : worktree jetable créé depuis `main` quand
 un worktree, verrou git partagé entre worktrees (`index.lock`, `HEAD`), ou attente réseau dans le
 helper. D'où une fiche **spike-first** : on diagnostique avant de coder le correctif.
 
-Lien de voisinage : [le helper introuvable en install copie](20261013131625101_helper-commit-doc-worktree-install-copie.md)
+Lien de voisinage : [le helper introuvable en install copie](done/20261013131625101_helper-commit-doc-worktree-install-copie.md)
 touche le **même** `commit-doc-via-worktree.sh`, mais un autre symptôme (introuvable, pas bloqué).
 Correctifs distincts ; à ne pas fondre.
 
@@ -83,7 +83,7 @@ time bash products/mega-city/skills/ezk-sprint/scripts/sprint.sh close
 - Provenance : rétro légère de l'itération v0.17
   ([capture](../docs/captures/2026-10-16-retro-v017-board-unifie-light.md)), proposition « spike :
   close ne doit jamais se bloquer en worktree », retenue par le PO le 2026-10-16.
-- Même fichier que [la fiche helper introuvable](20261013131625101_helper-commit-doc-worktree-install-copie.md),
+- Même fichier que [la fiche helper introuvable](done/20261013131625101_helper-commit-doc-worktree-install-copie.md),
   symptôme différent (blocage vs introuvable). Le groom pourra décider de les traiter ensemble ou
   séparément.
 - `type: bug` faute de type `spike` dans le schéma ; le label `spike` porte la nature (diagnostic

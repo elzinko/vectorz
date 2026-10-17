@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.19.0
 labels: [installation, dette]
-status: ready
-pr:
+status: shipped
+pr: "local (776c2f68)"
 evidence: none # outillage, pas d'écran
 created: 2026-10-13
 ---
@@ -55,7 +55,7 @@ mega-city lié au poste, résolu depuis `ezk`).
 ## Notes / décisions
 
 - Origine : note de carnet `20261011141013200-archive-commit-sh-helper-...`, versée à la rétro du
-  run v0.12 ([capture](../docs/captures/2026-10-13-retro-run-v012.md)).
+  run v0.12 ([capture](../../docs/captures/2026-10-13-retro-run-v012.md)).
 - Le helper existe à `products/mega-city/bin/commit-doc-via-worktree.sh`.
 
 ## Décision de grooming (2026-10-17, run v0.19 auto/lean)

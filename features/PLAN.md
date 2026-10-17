@@ -294,7 +294,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 - `20261001133500750` — le lint couvre le code de mega-city · P2 · `groom`
 - ~~`20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`~~ — shipped
 - `20260816194833618` — santé des dépendances : audit local + place dans le process · P2 · `groom`
-- `20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`
+- ~~`20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`~~ — shipped
 
 ### ㉑ v0.20.0 — la CLI se tient (proposée le 2026-10-14, à valider)
 > DX de la ligne de commande, le plus rentable au quotidien. Le brainstorm DSL vient EN PREMIER : il peut recadrer les autres. Fiches encore `idea` → chacune passe par `groom` puis `ready` avant d'être tirable.
