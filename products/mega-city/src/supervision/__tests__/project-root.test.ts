@@ -175,6 +175,24 @@ describe('resolveSupervisionRoot — rubrique E (échappatoire, AC3)', () => {
     expect(real(resolved.root)).toBe(real(mainRoot));
     expect(resolved.perWorktree).toBeUndefined();
   });
+
+  it.each(['1', 'true'])(
+    'SUPERVISION_MULTI_SESSION=%s fait du journal par-worktree le défaut (ADR-079 §D5)',
+    (value) => {
+      const resolved = resolveSupervisionRoot({ SUPERVISION_MULTI_SESSION: value }, worktreeDir);
+
+      expect(resolved.root).toBe(worktreeDir);
+      expect(resolved.perWorktree).toBe(true);
+      expect(resolved.normalizedFromWorktree).toBeUndefined();
+    },
+  );
+
+  it('sans multi-sessions, un worktree normalise toujours vers l’arbre principal (défaut single-session préservé)', () => {
+    const resolved = resolveSupervisionRoot({}, worktreeDir);
+
+    expect(real(resolved.root)).toBe(real(mainRoot));
+    expect(resolved.perWorktree).toBeUndefined();
+  });
 });
 
 describe('formatRootAnnouncement — rubrique A (annonce, AC4)', () => {

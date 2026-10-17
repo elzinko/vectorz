@@ -1,0 +1,6 @@
+{"event_id":"ev-1","run_id":"run-test-02","seq":1,"ts":"2026-10-17T10:00:00.000Z","contract":"cop1/supervisability@0.2","type":"run.started","session_id":"sess-abc","payload":{}}
+{"event_id":"ev-2","run_id":"run-test-02","seq":2,"ts":"2026-10-17T10:00:01.000Z","contract":"cop1/supervisability@0.2","type":"session.started","session_id":"sess-abc","payload":{}}
+{"event_id":"ev-gate-1","run_id":"run-test-02","seq":3,"ts":"2026-10-17T10:00:02.000Z","contract":"cop1/supervisability@0.2","type":"gate.reached","session_id":"sess-abc","payload":{"gate_id":"sprint-x-checkpoint","outcome":"ok"}}
+{"event_id":"ev-4","run_id":"run-test-02","seq":4,"ts":"2026-10-17T10:00:03.000Z","contract":"cop1/supervisability@0.2","type":"session.finished","session_id":"sess-abc","payload":{}}
+{"event_id":"ev-5","run_id":"run-test-02","seq":5,"ts":"2026-10-17T10:00:04.000Z","contract":"cop1/supervisability@0.2","type":"gate.resumed","session_id":"sess-abc","payload":{"gate_event_id":"ev-gate-1"}}
+{"event_id":"ev-6","run_id":"run-test-02","seq":6,"ts":"2026-10-17T10:00:05.000Z","contract":"cop1/supervisability@0.2","type":"run.finished","session_id":"sess-abc","payload":{}}

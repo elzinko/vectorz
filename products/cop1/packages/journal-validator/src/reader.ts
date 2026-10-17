@@ -56,7 +56,18 @@ const REQUIRED_ENVELOPE_FIELDS = [
   'type',
   'payload',
 ] as const;
-const KNOWN_ENVELOPE_FIELDS = new Set<string>(REQUIRED_ENVELOPE_FIELDS);
+
+/**
+ * Champs d'enveloppe optionnels mais CONNUS du contrat `@0.2` (ADR-079 §D7) :
+ * présents, ils ne déclenchent PAS la notice « champ additionnel inconnu ». Le
+ * lecteur les enregistre AVANT que l'émetteur ne les écrive (fiche T1) — un
+ * lecteur `@0.1` les prendrait pour des champs inconnus.
+ */
+const KNOWN_OPTIONAL_ENVELOPE_FIELDS = ['session_id'] as const;
+const KNOWN_ENVELOPE_FIELDS = new Set<string>([
+  ...REQUIRED_ENVELOPE_FIELDS,
+  ...KNOWN_OPTIONAL_ENVELOPE_FIELDS,
+]);
 
 /**
  * Lit le fichier, découpe en lignes tolérantes et vérifie l'enveloppe de base.

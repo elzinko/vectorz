@@ -15,7 +15,13 @@ const KNOWN_EVENT_TYPES = new Set([
   'gate.resumed',
   'heartbeat',
   'escalation',
+  // Contrat @0.2 (ADR-079 §D7) : cycle de vie de session, best-effort, orthogonal au run.
+  'session.started',
+  'session.finished',
 ]);
+
+/** Types @0.2 de cycle de vie de session (ADR-079 §D5/D7) — acceptés à tout moment, même pendant un jalon ouvert. */
+const SESSION_LIFECYCLE_TYPES = new Set(['session.started', 'session.finished']);
 
 /**
  * Transition d'état pure factorisée : rejoue une séquence d'enveloppes déjà
@@ -85,7 +91,7 @@ export function reduceState(
     if (!KNOWN_EVENT_TYPES.has(envelope.type)) {
       notices.push({
         code: 'contract.notice',
-        message: `Type d'événement inconnu du contrat v0.1 : "${envelope.type}"`,
+        message: `Type d'événement inconnu du contrat @0.2 : "${envelope.type}"`,
         seq: envelope.seq,
       });
     }
@@ -147,6 +153,12 @@ export function reduceState(
           seq: envelope.seq,
         });
       }
+      continue;
+    }
+
+    // Cycle de vie de session (@0.2) : best-effort, orthogonal au run — jamais une
+    // activité « pendant un jalon ouvert », donc ni violation ni changement d'état.
+    if (SESSION_LIFECYCLE_TYPES.has(envelope.type)) {
       continue;
     }
 

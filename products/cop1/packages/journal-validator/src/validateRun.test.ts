@@ -72,6 +72,17 @@ describe('validateRun — invariant gate ouvert', () => {
   });
 });
 
+describe('validateRun — contrat @0.2 (ADR-079 §D7)', () => {
+  it('un journal @0.2 (session_id + session.*) passe sans notice ni violation, même pendant un jalon ouvert', () => {
+    const result = validateRun(fixture('contrat-0.2-session'));
+
+    expect(result.violations).toEqual([]);
+    expect(result.notices).toEqual([]);
+    expect(result.state).toBe('finished');
+    expect(result.code).toBe(0);
+  });
+});
+
 describe('validateRun — enveloppe et intégrité du fichier', () => {
   it('un trou dans la séquence est détecté comme perte', () => {
     const result = validateRun(fixture('seq-gap'));

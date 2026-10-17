@@ -148,6 +148,17 @@ function isPerWorktreeEscapeHatchEnabled(env: NodeJS.ProcessEnv): boolean {
 }
 
 /**
+ * `SUPERVISION_MULTI_SESSION` ('1' ou 'true') active le mode multi-sessions : le
+ * défaut bascule sur **un journal par worktree** (ADR-079 §D5) — chaque worktree
+ * écrit son propre `.supervision/runs/` au lieu de normaliser vers l'arbre
+ * principal, pour que deux sessions parallèles ne se bloquent pas. Distinct de
+ * `SUPERVISION_PER_WORKTREE`, qui reste le forçage explicite par-run.
+ */
+function isMultiSessionEnabled(env: NodeJS.ProcessEnv): boolean {
+  return env.SUPERVISION_MULTI_SESSION === '1' || env.SUPERVISION_MULTI_SESSION === 'true';
+}
+
+/**
  * Orchestrateur composition-root (ADR décision 2) : calcule la racine effective
  * de supervision AVANT construction du `SupervisionRuntime`, qui la reçoit déjà
  * normalisée — `runtime.ts` reste git-agnostique.
@@ -157,7 +168,10 @@ export function resolveSupervisionRoot(env: NodeJS.ProcessEnv, cwd: string): Res
   const provenance: RootProvenance = explicitValue !== undefined ? 'explicit' : 'cwd';
   const base = explicitValue !== undefined ? assertValidExplicitRoot(explicitValue) : cwd;
 
-  if (isPerWorktreeEscapeHatchEnabled(env)) {
+  // Par-worktree si forcé explicitement (par-run) OU si le mode multi-sessions
+  // est actif (défaut D5) : dans les deux cas, pas de normalisation vers l'arbre
+  // principal — la base reste celle du worktree courant.
+  if (isPerWorktreeEscapeHatchEnabled(env) || isMultiSessionEnabled(env)) {
     return { root: base, provenance, perWorktree: true };
   }
 
