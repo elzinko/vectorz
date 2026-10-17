@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.19.0
 labels: [installation, dette]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-13
@@ -57,3 +57,17 @@ mega-city lié au poste, résolu depuis `ezk`).
 - Origine : note de carnet `20261011141013200-archive-commit-sh-helper-...`, versée à la rétro du
   run v0.12 ([capture](../docs/captures/2026-10-13-retro-run-v012.md)).
 - Le helper existe à `products/mega-city/bin/commit-doc-via-worktree.sh`.
+
+## Décision de grooming (2026-10-17, run v0.19 auto/lean)
+
+**Option (b) retenue** : `archive-commit.sh` cherche le helper via un repli, sans dépendre d'un
+re-bind. Chaîne de résolution :
+
+1. Chemin relatif au script (`../../../bin`) — marche en install **lien** et en source.
+2. Repli en install **copie** : le `ezk` du PATH est un lien vers le vrai `products/mega-city/bin/`
+   (`realpath` via node, garanti présent puisque `ezk` tourne dessus). Le helper en est le voisin.
+
+Pourquoi pas l'option (a) (le bind global déploie le helper dans `~/.claude/bin/`) : elle n'agirait
+qu'après un re-bind, et il faudrait énumérer les helpers partagés à copier. Le repli corrige les
+installs copie **déjà posées**. Testé par le cas **H** de `test-archive-commit.sh` : depuis une
+disposition copie-install (sans `bin/` à `../../../`), l'archive s'intègre quand même.
