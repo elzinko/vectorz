@@ -55,6 +55,6 @@ une **clé partagée** que la méthode pose, distincte du `run_id`.
 
 - Découpée de [Émetteur : identité + clé + @0.2](20261015082118340_emetteur-identite-session-cle-chantier-contrat-v02.md) le 2026-10-15.
 - Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D2 ; le board
-  regroupe par cette clé ([read-model](../20261015082118353_board-read-model-chantier-sessions-evenements.md)).
+  regroupe par cette clé ([read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md)).
 - **Dépend de** [T1 contrat @0.2](20261015133600298_emetteur-contrat-v02-journal-par-worktree.md).
   **Sœur** : [identité de session](20261015133600314_emetteur-identite-de-session.md) — `milestone: board` + `v0.23.0`.

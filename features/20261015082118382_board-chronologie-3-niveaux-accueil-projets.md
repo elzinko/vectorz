@@ -60,7 +60,7 @@ Preuve : before/after de la chronologie (fil unique → 3 niveaux) et de l'accue
 
 ## Notes / décisions
 
-- Dépend du [read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md) et de
+- Dépend du [read-model](done/20261015082118353_board-read-model-chantier-sessions-evenements.md) et de
   la [découverte des worktrees](20261015082118368_board-decouverte-worktrees-watch-dynamique.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, étape d'accueil —
   `milestone: board` + `v0.23.0`.

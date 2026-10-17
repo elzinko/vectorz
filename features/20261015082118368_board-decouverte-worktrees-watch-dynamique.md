@@ -65,4 +65,4 @@ multi-sessions doit boucher. Cette fiche alimente le read-model : sans les carne
 - Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9
   (amende le hot-reload différé d'ADR-028).
 - **Sœurs (sans chapeau)** : émetteur, read-model, chronologie+accueil, étape d'accueil —
-  `milestone: board` + `v0.23.0`. Alimente la [fiche read-model](20261015082118353_board-read-model-chantier-sessions-evenements.md).
+  `milestone: board` + `v0.23.0`. Alimente la [fiche read-model](done/20261015082118353_board-read-model-chantier-sessions-evenements.md).

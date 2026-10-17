@@ -283,7 +283,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 - ~~`20261015133600298` — émetteur T1 : contrat @0.2 + journal par worktree · P1 · `build`~~ — shipped
 - ~~`20261015133600314` — émetteur T2 : identité de session · P1 · `build`~~ — shipped
 - ~~`20261015133600328` — émetteur T3 : clé de chantier · P1 · `build`~~ — shipped
-- `20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `build`
+- ~~`20261015082118353` — board : read-model chantier → sessions → évènements · P1 · `build`~~ — shipped
 - `20261015082118368` — board : découverte worktrees + watch dynamique · P1 · `build`
 - `20261015082118382` — board : chronologie 3 niveaux + accueil « Tous les projets » · P2 · `build`
 - `20261015082118397` — rattachement : étape d'accueil de session · P2 · `build`
