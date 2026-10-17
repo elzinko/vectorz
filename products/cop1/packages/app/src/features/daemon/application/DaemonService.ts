@@ -9,7 +9,7 @@ import { RunHistoryService } from '../../supervision/application/RunHistoryServi
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
 import { EmitterCliAbandonAdapter } from '../../supervision/infrastructure/EmitterCliAbandonAdapter.js';
 import { EmitterCliAnchorAdapter } from '../../supervision/infrastructure/EmitterCliAnchorAdapter.js';
-import { JournalWatcherAdapter } from '../../supervision/infrastructure/JournalWatcherAdapter.js';
+import { DynamicWatchRoots } from '../../supervision/infrastructure/DynamicWatchRoots.js';
 import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
 import { checkAuth } from '../infrastructure/AuthChecker.js';
@@ -30,7 +30,7 @@ export class DaemonService {
   private readonly eventBus: EventBus;
   private supervisionService: SupervisionService | null = null;
   private runHistoryService: RunHistoryService | null = null;
-  private journalWatcher: JournalWatcherAdapter | null = null;
+  private journalWatcher: DynamicWatchRoots | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -148,7 +148,9 @@ export class DaemonService {
       },
     });
 
-    this.journalWatcher = new JournalWatcherAdapter(watchRoots, (root, runDir) => {
+    // Surveillance dynamique (ADR-079 §D9) : un adaptateur par racine, ré-énumérée
+    // périodiquement — un worktree qui apparaît/disparaît est suivi/retiré sans redémarrage.
+    this.journalWatcher = new DynamicWatchRoots(watchRoots, (root, runDir) => {
       this.supervisionService?.absorb(root, runDir);
     });
     this.journalWatcher.start();
