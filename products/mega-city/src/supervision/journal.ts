@@ -22,12 +22,19 @@ import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-/** URI de contrat versionnée, stable sur tout le run (squelette v0.1 du §7). */
-export const CONTRACT_URI = 'cop1/supervisability@0.1';
+/**
+ * URI de contrat versionnée, stable sur tout le run. Bumpée en `@0.2` (ADR-079 §D7)
+ * dès lors que l'enveloppe peut porter `session_id` — honnêteté de format : l'enveloppe
+ * change, le numéro aussi. Les champs ajoutés sont additifs (le lecteur `@0.2` les connaît,
+ * fiche T1), un lecteur `@0.1` ne casse pas pour autant.
+ */
+export const CONTRACT_URI = 'cop1/supervisability@0.2';
 
 export interface JournalEvent {
   event_id: string;
   run_id: string;
+  /** Identité de la session émettrice (le « qui »), présente dès que l'émetteur la connaît (contrat @0.2). */
+  session_id?: string;
   seq: number;
   ts: string;
   contract: string;
@@ -226,6 +233,8 @@ export class Journal {
   constructor(
     runDir: string,
     private readonly runId: string,
+    /** Identité de session frappée sur chaque enveloppe (le « qui », contrat @0.2). Absente → enveloppe @0.1. */
+    private readonly sessionId?: string,
   ) {
     fs.mkdirSync(runDir, { recursive: true });
     this.runDir = runDir;
@@ -273,6 +282,7 @@ export class Journal {
       const event: JournalEvent = {
         event_id: randomUUID(),
         run_id: this.runId,
+        ...(this.sessionId !== undefined ? { session_id: this.sessionId } : {}),
         seq: this.nextSeqValue,
         ts: new Date().toISOString(),
         contract: CONTRACT_URI,

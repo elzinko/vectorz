@@ -29,6 +29,17 @@ describe('Journal — enveloppe et append (rubrique B)', () => {
     expect(fs.existsSync(path.join(runDir, 'events.jsonl'))).toBe(true);
   });
 
+  it('frappe session_id sur l’enveloppe quand l’émetteur connaît la session (contrat @0.2)', () => {
+    const journal = new Journal(runDir, 'run-1', 'sess-xyz');
+    journal.append('run.started', { foo: 'bar' });
+    journal.append('heartbeat', {});
+    const lines = readLines(runDir);
+    expect(lines).toHaveLength(2);
+    for (const event of lines) {
+      expect((event as Record<string, unknown>).session_id).toBe('sess-xyz');
+    }
+  });
+
   it('chaque ligne contient exactement les champs imposés par l’enveloppe', () => {
     const journal = new Journal(runDir, 'run-1');
     journal.append('run.started', { foo: 'bar' });

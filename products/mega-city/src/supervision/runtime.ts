@@ -14,6 +14,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { computeUpgradeOk } from './upgrade-ok.js';
 import { Journal, readJournalEvents, withRunWriteLock, type JournalEvent } from './journal.js';
+import { resolveSessionIdentity } from './session-identity.js';
 
 const RUNS_DIR_SEGMENTS = ['.supervision', 'runs'] as const;
 
@@ -257,6 +258,19 @@ export class SupervisionRuntime {
     private readonly expectedMethod?: string,
   ) {}
 
+  /**
+   * `session_id` frappé sur chaque enveloppe (le « qui », contrat @0.2). Résolu une
+   * fois par instance depuis `<root>/.supervision/session.json` (id stable, relu s'il
+   * existe) ; les instances sont jetables, donc une par appel relit le même id figé.
+   */
+  private cachedSessionId: string | undefined;
+  private sessionId(): string {
+    if (this.cachedSessionId === undefined) {
+      this.cachedSessionId = resolveSessionIdentity(this.projectRoot).sessionId;
+    }
+    return this.cachedSessionId;
+  }
+
   runStart(args: RunStartArgs): { run_id: string } {
     const state = findOpenRun(this.projectRoot);
     if (state) {
@@ -266,7 +280,7 @@ export class SupervisionRuntime {
     }
     const runId = generateRunId();
     const runDir = path.join(this.projectRoot, ...RUNS_DIR_SEGMENTS, runId);
-    const journal = new Journal(runDir, runId);
+    const journal = new Journal(runDir, runId, this.sessionId());
 
     const mismatch =
       this.expectedMethod !== undefined && args.method_name !== this.expectedMethod
@@ -424,7 +438,7 @@ export class SupervisionRuntime {
       if (options.expectedRunId !== undefined && state.runId !== options.expectedRunId) {
         throw this.wrongRunError(toolName, state, options.expectedRunId);
       }
-      const journal = new Journal(state.runDir, state.runId);
+      const journal = new Journal(state.runDir, state.runId, this.sessionId());
       return mutate(state, journal);
     });
   }

@@ -175,7 +175,10 @@ describe('Serveur MCP émetteur — E2E stdio (process réel)', () => {
       expect(event).toHaveProperty('contract');
       expect(event).toHaveProperty('type');
       expect(event).toHaveProperty('payload');
-      expect(event.contract).toBe('cop1/supervisability@0.1');
+      expect(event.contract).toBe('cop1/supervisability@0.2');
+      // T2 (ADR-079 §D6/D10) : le « qui » (session_id) est frappé sur chaque enveloppe.
+      expect(event).toHaveProperty('session_id');
+      expect(typeof (event as Record<string, unknown>).session_id).toBe('string');
     }
 
     // report_ref relatif, pointant vers un fichier md existant sous le dossier du run
