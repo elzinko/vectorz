@@ -86,3 +86,30 @@ describe('retro:captures --check — la commande', { timeout: 30_000 }, () => {
     expect(r.out).not.toMatch(/^OK/);
   });
 });
+
+describe('retro:captures --check --lens — la lentille de lisibilité (fiche 20261010213353647)', { timeout: 30_000 }, () => {
+  const tsx = createRequire(import.meta.url).resolve('tsx/cli');
+  const vectorz = resolve(mega, '..', '..');
+  const lens = (path: string): { code: number | null; out: string; err: string } => {
+    const r = spawnSync(process.execPath, [tsx, join(mega, 'bin', 'retro-captures.ts'), '--check', path, '--lens'], { encoding: 'utf8', cwd: mega });
+    return { code: r.status, out: r.stdout, err: r.stderr };
+  };
+
+  it('laisse passer une capture récente qui ouvre par « En clair » (pas de faux positif)', () => {
+    const r = lens(join(vectorz, 'docs', 'captures', '2026-10-13-retro-run-v012.md'));
+    expect(r.code).toBe(0);
+    expect(r.err).not.toMatch(/En clair/);
+  });
+
+  it('signale une capture sans ouverture « En clair » (code 1)', () => {
+    const r = lens(join(vectorz, 'docs', 'captures', '2026-07-18-retro-cinq-sprints.md'));
+    expect(r.code).toBe(1);
+    expect(r.err).toMatch(/doit ouvrir par « En clair »/);
+  });
+
+  it('--lens sans --check est refusé (usage)', () => {
+    const r = spawnSync(process.execPath, [tsx, join(mega, 'bin', 'retro-captures.ts'), '--lens'], { encoding: 'utf8', cwd: mega });
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toMatch(/usage/);
+  });
+})
