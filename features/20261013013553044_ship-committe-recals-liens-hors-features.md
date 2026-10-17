@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version: v0.19.0
 labels: [dette, revue]
-status: idea
+status: ready
 pr:
 evidence: none # outillage de livraison, pas d'écran
 created: 2026-10-13
@@ -68,3 +68,16 @@ Au choix, à trancher au grooming :
   `docs/captures/2026-10-*.md` ; le `git add features/` du commit de ship les a oubliés → `main` est
   resté sale → il a fallu les rattacher à la main (sinon le `close`/merge suivant refusait).
   Symptôme désormais vu sur **5 ships au total**. Priorité P2 maintenue.
+
+## Décision de grooming (2026-10-17, run v0.19 auto/lean)
+
+**Option 1 retenue** : `ship` stage lui-même tous les fichiers touchés. `ship-fiche.ts` connaissait
+déjà `plan.touched` (chemins finaux, recals hors `features/` compris) et l'imprimait ; le `git mv`
+ne stageait que les déplacements, laissant les recals de contenu en working tree. `applyShip` appelle
+désormais `io.stage(plan.touched)` après la régénération (nouveau méthode `stage` de l'interface
+`ShipIo`, implémentée par `nodeShipIo` en `git add -- <touchés>`). Il ne committe toujours pas : le
+commit reste à `ezk-commits`. Un recal hors `features/` est maintenant dans l'index avant le commit,
+donc le `close` suivant trouve un principal propre.
+
+Critère 3 (« un test couvre : fiche citée depuis docs/ → ship committe le recal ») couvert par le
+test d'intégration `ship-fiche.test.ts` « un recal hors features/ (docs/) est stagé par le ship ».
