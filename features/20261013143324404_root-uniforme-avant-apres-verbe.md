@@ -4,13 +4,14 @@ title: "Uniformiser --root : accepté avant ET après le verbe sur toutes les co
 type: refactor
 priority: P3
 product: mega-city
-milestone:
-version: v0.20.0
+milestone: parked
+version:
 labels: [cli, ergonomie]
 status: idea
 pr:
 evidence: none # commandes, pas d'écran
 created: 2026-10-13
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261013143324404 — `--root` accepté partout, avant ou après le verbe

@@ -298,12 +298,12 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 
 ### ㉑ v0.20.0 — la CLI se tient (proposée le 2026-10-14, à valider)
 > DX de la ligne de commande, le plus rentable au quotidien. Le brainstorm DSL vient EN PREMIER : il peut recadrer les autres. Fiches encore `idea` → chacune passe par `groom` puis `ready` avant d'être tirable.
-- `20261010153046143` — brainstorm : la CLI est-elle un DSL cohérent (ezk / mc, toute la surface) · P2 · `groom` (à faire en 1er)
-- `20261013143324404` — uniformiser `--root` avant ET après le verbe · P3 · `groom`
+- ~~`20261010153046143` — brainstorm : la CLI est-elle un DSL cohérent (ezk / mc, toute la surface) · P2~~ — parké hors version (attend-panel : décisions produit, ezk vs mc, rapatrier lawgiver)
+- ~~`20261013143324404` — uniformiser `--root` avant ET après le verbe · P3~~ — parké hors version (à-découper : spike routeur, doit respecter la sûreté flag-only des commandes d'écriture)
 - ~~`20261004083838781` — `ezk config --help` lu comme un chemin (faux statut) · P3 · `groom`~~ — shipped
-- `20261001104806732` — `ezk-secret sync` : un manifeste de secrets par projet · P2 · `groom`
-- `20261001142603963` — `ezk-secret apply` : scope compte/par-app, secrets par recette · P2 · `groom`
-- `20261011113632688` — spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) · P2 · `groom`
+- ~~`20261001104806732` — `ezk-secret sync` : un manifeste de secrets par projet · P2~~ — parké hors version (attend-GitHub : pousse des secrets vers GitHub, désactivé sous github:false)
+- ~~`20261001142603963` — `ezk-secret apply` : scope compte/par-app, secrets par recette · P2~~ — parké hors version (attend-dépendance : s'appuie sur ezk-secret sync)
+- ~~`20261011113632688` — spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) · P2~~ — parké hors version (à-découper : investiguer→décider avant d'outiller)
 
 ### ㉒ v0.21.0 — le flux se lit et s'allège (proposée le 2026-10-14, à valider)
 > Cérémonies légères pour les petits périmètres, et restitutions lisibles.
