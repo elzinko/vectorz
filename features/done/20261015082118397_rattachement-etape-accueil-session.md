@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version: v0.18.0
 labels: [supervision, methode, multi-session, onboarding]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (c322143c)"
 evidence: none # comportement de méthode ; prouvé par le journal (clé posée) + le texte
 created: 2026-10-15
 ---
@@ -22,7 +22,7 @@ réponds en un mot. Jamais deviné en silence. C'est ça, le rattachement « à 
 voie étant le pilote qui passe la clé à ses ouvriers.
 
 **Si tu arrives frais.** Un *chantier* (run) = un travail de méthode ; sa *clé* vient de la
-version. Détail dans [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3.
+version. Détail dans [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3.
 
 ## Contexte / Problème
 
@@ -60,8 +60,8 @@ d'accueil qui rend le lien **facile** sans le rendre **deviné**.
 
 ## Notes / décisions
 
-- Décision : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3 ; affine
-  le volet « rattachement » de la [fiche de design](done/20261014122044421_board-runs-concurrents-identite-lisible.md).
+- Décision : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D3 ; affine
+  le volet « rattachement » de la [fiche de design](20261014122044421_board-runs-concurrents-identite-lisible.md).
 - **Sœurs (sans chapeau)** : émetteur, read-model, découverte, chronologie+accueil —
   `milestone: board` + `v0.23.0`.
 - Rejoint le besoin déjà noté d'un **rituel d'ouverture de session** ; lui donne un job précis.
