@@ -396,6 +396,15 @@ export interface ShipIo {
   /** Un seul `git mv` groupé vers `destDir` (même dossier pour toutes les sources). */
   gitMove(sources: string[], destDir: string): void;
   regenBacklog(): void;
+  /**
+   * Stage tous les fichiers touchés (`git add`), recals compris — y compris hors `features/`
+   * (un lien recalé dans un doc ou une capture). Le `git mv` ne stage que les déplacements ;
+   * les recals de contenu restent en working tree. Sans ce `git add`, le checkout reste sale
+   * après le ship et le `close` du sprint suivant refuse d'intégrer son compte rendu
+   * (« dossier principal non propre »). Ne committe pas : le commit reste à `ezk-commits`.
+   * Fiche 20261013013553044.
+   */
+  stage(paths: string[]): void;
 }
 
 /** L'application a échoué ; le dépôt a été remis dans son état initial (ou le dit s'il n'a pas pu). */
@@ -432,6 +441,10 @@ export function applyShip(plan: ShipPlan, io: ShipIo): void {
     );
     moved = true;
     io.regenBacklog();
+    // Stage TOUT ce que le ship a touché (recals hors `features/` compris) : le `git mv` n'a staged
+    // que les déplacements. Sans ça, un recal de lien dans un doc reste non committé → principal sale
+    // → le `close` suivant refuse. Fiche 20261013013553044.
+    io.stage(plan.touched);
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     try {

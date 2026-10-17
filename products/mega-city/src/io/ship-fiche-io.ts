@@ -44,5 +44,9 @@ export function nodeShipIo(root: string, regenBacklog: () => void): ShipIo {
       execFileSync('git', ['mv', ...sources, destDir], { cwd: root, stdio: 'pipe' });
     },
     regenBacklog,
+    stage: (paths) => {
+      if (paths.length === 0) return;
+      execFileSync('git', ['add', '--', ...paths], { cwd: root, stdio: 'pipe' });
+    },
   };
 }

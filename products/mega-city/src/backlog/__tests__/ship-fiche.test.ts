@@ -353,6 +353,23 @@ describe('sur un dépôt git jetable — la vraie gate check-links.sh mesure le 
     expect(brokenByGate(root)).toBe(baseline);
   });
 
+  it('un recal hors features/ (docs/) est stagé par le ship — checkout prêt, pas de résidu (fiche 20261013013553044)', slow, () => {
+    const root = toyRepo();
+    // docs/x.md citait la fiche A sous features/ : c'est un lien HORS features/ qui va être recalé.
+    const plan = planShip(nodeRepoFs(root), { ...ship, files: [A, B] });
+    const regen = () => writeFileSync(join(root, 'features/BACKLOG.md'), '# index régénéré\n');
+    applyShip(plan, nodeShipIo(root, regen));
+
+    // Le lien de docs/x.md pointe désormais vers done/ (recal appliqué dans un fichier hors features/).
+    expect(readFileSync(join(root, 'docs/x.md'), 'utf8')).toContain(
+      '../features/done/20260101000000001_a.md',
+    );
+    // Et ce recal est STAGÉ (dans l'index), pas laissé en working tree — sinon le `close` suivant refuse.
+    expect(git(root, 'diff', '--cached', '--name-only').split('\n')).toContain('docs/x.md');
+    // Le recal n'est PAS laissé non stagé (BACKLOG.md régénéré est gitignore dans le vrai dépôt).
+    expect(git(root, 'diff', '--name-only')).not.toContain('docs/x.md');
+  });
+
   it('refuse une fiche pas encore suivie par git, avant d’écrire quoi que ce soit', slow, () => {
     const root = toyRepo();
     const neuve = 'features/20260101000000042_neuve.md';
