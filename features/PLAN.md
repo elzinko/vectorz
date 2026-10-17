@@ -292,7 +292,7 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 > Les trous de qualité que la revue a dû rattraper deviennent mécaniques. **Gardée en v0.19 lors de la rotation du 2026-10-17 : elle paye tôt, chaque version qui suit se livre plus propre.**
 - `20261011091555006` — la gate attrape forme des vues + confinement · P2 · `groom`
 - `20261001133500750` — le lint couvre le code de mega-city · P2 · `groom`
-- `20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`
+- ~~`20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`~~ — shipped
 - `20260816194833618` — santé des dépendances : audit local + place dans le process · P2 · `groom`
 - `20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`
 

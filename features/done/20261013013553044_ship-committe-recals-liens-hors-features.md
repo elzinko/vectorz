@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.19.0
 labels: [dette, revue]
-status: ready
-pr:
+status: shipped
+pr: "local (d7559d50)"
 evidence: none # outillage de livraison, pas d'écran
 created: 2026-10-13
 ---
