@@ -260,3 +260,19 @@ describe('Option A — ezk-product-build enchaîne des lots, plus des fiches (fi
     for (const re of stale) expect(texts, String(re)).not.toMatch(re);
   });
 });
+
+describe('ezk-sprint — le checkpoint dit chaque option en clair (fiche 20261003011750607)', () => {
+  const text = body(sprintDir);
+  // L'étape 9 (⛳ Checkpoint) jusqu'à l'étape 10.
+  const step9 = text.slice(text.indexOf('⛳ Checkpoint'), text.indexOf('\n10.'));
+
+  it('la consigne « effet concret d’abord » est au checkpoint', () => {
+    expect(step9).toContain('effet concret');
+    expect(step9).toMatch(/première apparition/);
+  });
+
+  it('elle renvoie à la règle de lisibilité, sans la recopier', () => {
+    expect(step9).toContain('documentation-guidelines/human-facing-lisibility');
+    expect(step9).toMatch(/pas de recopie/);
+  });
+})

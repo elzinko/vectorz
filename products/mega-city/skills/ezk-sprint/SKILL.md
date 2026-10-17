@@ -282,7 +282,11 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 
    Le verbe lance la transaction `ship:fiche` et committe `docs(features): ship <id> #<N>`. Le squash fera atterrir le code et la fiche **d'un seul coup**, quel que soit le canal de merge : UI GitHub, `gh` ou le flux. Le lien de provenance du corps pointe alors vers `features/done/<id>_*.md`. **Un NO-GO arrivé après** (revue, retour Codex retenu, CI rouge) : `ezk pr ship-in-pr undo --repo . --fiche-id <id>` annule le ship par un commit de revert, sans réécrire l'historique. Corrige, puis refais `add` : le ship reste le **dernier** commit de la branche.
 9. **⛳ Checkpoint** — **STOP.** Mets à jour `SPRINT.md` (livré, suite, notes / décisions)
-   puis résume + « on continue ? ». **Présente au PO la liste des critères d'acceptation PROUVÉS**
+   puis résume + « on continue ? ». **Dis chaque option au PO par son effet concret d'abord**
+   (« j'intègre la PR dans main, en un commit », « j'attends que le voyant de la vérification passe
+   au vert »), et **définis chaque terme technique (merge, statut, gate) à sa première apparition**
+   dans le message — règle [`documentation-guidelines/human-facing-lisibility`](../../rules/documentation-guidelines/human-facing-lisibility.md),
+   pas de recopie. **Présente au PO la liste des critères d'acceptation PROUVÉS**
    (le verdict du relecteur, une ligne par critère), avant de lui demander d'accepter la story :
    il accepte sur des preuves, pas sur des cases que le constructeur aurait cochées (fiche
    20261003075821760). En mode autonome, `ezk-pm` accepte sur cette même liste.
