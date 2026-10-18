@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, data-wiring]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-10-18
@@ -201,7 +201,14 @@ chacune référençant cette fiche + ADR-074 + ADR-079 + la maquette. Cette fich
 
 - **Une seule fiche, pas un chapeau.** Elle enregistre le contrat et le transport ; elle se construit
   telle quelle, et se coupe en trois sœurs seulement si le sprint déborde (voir « Découpe
-  naturelle »). Prochaine étape : la groomer `ready` pour la v0.24.0.
+  naturelle »).
+- **Taille (évaluée).** Six critères (sous le seuil), mais plusieurs surfaces (web, endpoint, deux
+  adaptateurs). Elle **reste entière** à dessein : les trois morceaux partagent **un seul contrat**
+  (`BoardData`) et **un seul transport** ; le premier sprint bâtit le **tuyau de bout en bout** en
+  servant d'abord l'échantillon (POC du câblage), les sources se branchent ensuite. Le seam est
+  **documenté** et se coupe en cours de sprint s'il déborde — même pli que la fiche read-model
+  [353](done/20261015082118353_board-read-model-chantier-sessions-evenements.md) (« si le build
+  déborde, le seam naturel serait… »). On ne pré-découpe pas d'avance.
 - **Anti-doublon fait.** Toutes les fiches `milestone: board` sont en `features/done/`. Les deux plus
   proches ne couvrent pas le branchement :
   [activité run→moments→fiches](done/20261012231419211_board-activite-run-moments-fiches.md) a bâti
