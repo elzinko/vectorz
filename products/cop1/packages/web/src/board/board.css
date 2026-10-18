@@ -52,6 +52,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .nav button.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .nav button .ic { width: 16px; text-align: center; color: var(--faint); flex: none; }
 .nav button.on .ic { color: var(--accent); }
+.nav a { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 9px 10px; border-radius: 8px; color: var(--fg); font-size: 14px; text-decoration: none; }
+.nav a:hover { background: var(--surface-2); }
+.nav a .ic { width: 16px; text-align: center; color: var(--faint); flex: none; }
 .main { padding: 20px clamp(14px, 3vw, 28px); min-width: 0; display: flex; flex-direction: column; gap: 18px; }
 
 .vh { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
@@ -282,7 +285,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
   .shell { grid-template-columns: 50px 1fr; }
   .nav { padding: 12px 5px; }
   .nav .grp, .nav .lbl { display: none; }
-  .nav button { justify-content: center; padding: 11px 0; }
+  .nav button, .nav a { justify-content: center; padding: 11px 0; }
 }
 
 /* Chronologie à 3 niveaux + accueil flotte (fiche 20261015082118382, ADR-079 §D11) */

@@ -269,6 +269,11 @@ export function Board(): JSX.Element {
               <span className="lbl">{item.label}</span>
             </button>
           ))}
+          <div className="grp">Archives</div>
+          <a href="/v1/index.html" title="Pages de l'ancien dashboard (benchmark, diagrammes qualité, cartes)">
+            <span className="ic" aria-hidden="true">🗄</span>
+            <span className="lbl">v1 / archives</span>
+          </a>
         </nav>
 
         <main className="main">
