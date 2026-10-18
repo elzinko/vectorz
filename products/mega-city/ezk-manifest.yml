@@ -332,17 +332,12 @@ commands:
   # Il SERT les pages de la méthode (diagrams/) et calcule leurs données depuis les fiches du projet
   # désigné (--root, EZK_ROOT ; par défaut la méthode). Il ne les écrit pas — sauf UNE route, le
   # pouce 👍/👎 d'une fiche (features/reviews/verdicts/ du projet, ADR-0057). Il marche de n'importe quel dossier.
-  - domain: dashboard
+  - domain: board
+    verb: open
     run: bin/ezk-map.ts
-    summary: Ouvre le tableau de bord dans le navigateur (--root <projet> pour un autre projet).
+    summary: Ouvre le tableau de bord (web) dans le navigateur (--root <projet> pour un autre projet).
     root: none
     project: true
-  - domain: map
-    run: bin/ezk-map.ts
-    summary: Ancien nom du tableau de bord.
-    root: none
-    project: true
-    deprecated: dashboard
 
   # --- sessions, config, vues générées, supervision ---
   - domain: sessions

@@ -70,8 +70,9 @@ describe('les outils du dépôt réel', () => {
 
   it('le manifeste donne ses commandes à l’outil qu’elles lancent', () => {
     const dashboard = tools.get('bin/ezk-map.ts')?.commands ?? [];
-    expect(dashboard).toContain('ezk dashboard');
-    expect(dashboard).not.toContain('ezk map'); // l’ancien nom (deprecated) est exclu
+    expect(dashboard).toContain('ezk board open');
+    expect(dashboard).not.toContain('ezk dashboard'); // l’ancien nom a été retiré (board open)
+    expect(dashboard).not.toContain('ezk map'); // l’ancien alias aussi
     expect(tools.get('bin/ezk.ts')?.internal).toMatch(/routeur/);
     expect(tools.get('bin/ezk.mjs')?.commands).toContain('ezk'); // la commande installée par package.json
   });

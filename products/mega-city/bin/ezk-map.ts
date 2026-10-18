@@ -2,10 +2,10 @@
 /**
  * ezk-map — le tableau de bord de la méthode : sert `diagrams/` (cartes, board, plan) au navigateur.
  *
- *   pnpm ezk dashboard                # la carte de la méthode (défaut)
- *   pnpm ezk dashboard <slug>         # une autre carte de diagrams/
- *   pnpm ezk dashboard --list         # ce qui est disponible
- *   pnpm ezk --root <projet> dashboard   # les fiches d'un AUTRE projet (ou EZK_ROOT=<projet>)
+ *   ezk board open                    # la carte de la méthode (défaut)
+ *   ezk board open <slug>             # une autre carte de diagrams/
+ *   ezk board open --list             # ce qui est disponible
+ *   ezk --root <projet> board open    # les fiches d'un AUTRE projet (ou EZK_ROOT=<projet>)
  *
  * LE COCKPIT (ADR-0062, fiche 20261004192802897) : une barre « Projet » liste les projets du registre
  * de la supervision (`supervision.registry.yaml`, relu à chaque requête, jamais écrit ici). Choisir
@@ -19,8 +19,8 @@
  * les DONNÉES (fiches, PLAN.md, récits, pouces) viennent du projet désigné, par défaut la méthode.
  * Sans `--root` ni `EZK_ROOT`, rien ne change.
  *
- * « dashboard » est le nom de commande depuis la fiche 20260903134906920 ; `ezk map` et
- * `pnpm ezk:map` marchent encore (ils préviennent). Le fichier garde son nom pour l'instant.
+ * « board open » est le nom de commande depuis la rotation CLI 2026-10-18 (décision PO 2026-10-10 :
+ * `dashboard` et `map` → `board`). Le fichier garde son nom (`ezk-map.ts`) pour l'instant.
  *
  * POURQUOI un serveur plutôt qu'un double-clic sur le fichier : ouvert en `file://`,
  * un navigateur applique des règles d'origine strictes — les polices distantes et une

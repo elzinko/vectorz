@@ -247,7 +247,7 @@ function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
     return (
       `${name} : « --root ${env.rootFlag} » n'est pas le dépôt de la méthode (${env.ownRoot}). ` +
       "Cette commande écrit dans le dépôt de la méthode : elle ne vise pas un autre projet. " +
-      'Seules les commandes qui travaillent sur un projet désigné (« ezk dashboard », « ezk board show », « ezk rules »…) acceptent --root.'
+      'Seules les commandes qui travaillent sur un projet désigné (« ezk board open », « ezk board show », « ezk rules »…) acceptent --root.'
     );
   }
   if (env.checkoutRoot === env.ownRoot) return undefined;
