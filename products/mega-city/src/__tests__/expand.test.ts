@@ -190,8 +190,11 @@ describe('expandProfile — 8 bundles migrés depuis iamthelaw (fiche 0006, -2 o
     // +4 le 2026-10-10 : rétro « vue process » → clean-code/no-silent-mutation,
     //  testing/capped-list-filter-scenario, testing/confinement-contract-at-boundary,
     //  development/one-story-one-commit-local.
-    expect(resolved.rules).toHaveLength(64);
+    // +4 le 2026-10-19 : rétro « run qui parke au lieu de tenter » → development/tenter-avant-de-parker,
+    //  development/machine-ne-tranche-pas-version-ni-depark, development/decision-informee-au-depart,
+    //  development/tenter-decoupage-et-local-avant-ecarter.
+    expect(resolved.rules).toHaveLength(68);
     // pas de doublon d'id malgré 8 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(64);
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(68);
   });
 });
