@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version:
+version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, data-wiring]
 status: idea
 pr:
@@ -18,8 +18,8 @@ created: 2026-10-18
 **En clair.** Le nouveau tableau de bord web est fini côté écran, mais il affiche un **jeu
 d'exemple figé** au lieu du vrai projet. Cette fiche cadre le chantier qui le **branche sur les
 vraies données** : le vrai plan (fiches + versions) et les vrais runs (le journal de supervision).
-C'est le prérequis pour que ce board **remplace** l'ancien. Le chantier est trop gros pour un seul
-sprint : on le **découpe** en trois sœurs (voir plus bas). Rien à coder ici — on cadre.
+C'est le prérequis pour que ce board **remplace** l'ancien. Le chantier a une **découpe naturelle en
+trois morceaux** si un sprint ne suffit pas (voir plus bas). Rien à coder ici — on cadre.
 
 **Si tu arrives frais.** Le produit est **cop1**, la webapp qui observe les projets de la méthode.
 Son nouveau board (`products/cop1/packages/web`, `Board.tsx`) a été refait par maquette en
@@ -128,8 +128,8 @@ adaptateur de read-model). En dev, vite relaie ce chemin.
 - [ ] Preuve **avant / après** en PR (règle `development/pr-before-after-media`) : board sur
       échantillon → board sur vraies données, pour un projet réel.
 
-**Mesure de suivi** *(optionnel)* : une fois les trois sœurs livrées, `ezk board open` peut basculer
-sur le board neuf (bascule hors périmètre de cette fiche, c'est la suite du chantier « une seule
+**Mesure de suivi** *(optionnel)* : une fois ce chantier livré, `ezk board open` peut basculer sur le
+board neuf (bascule hors périmètre de cette fiche, c'est la suite du chantier « une seule
 interface »).
 
 ## Comment vérifier
@@ -149,37 +149,41 @@ pnpm --dir products/cop1/packages/journal-validator test
 #    - APRÈS : board sur un projet réel (vrai plan + vrais runs), + le cas repli (serveur éteint)
 ```
 
-## Découpage proposé
+## Découpe naturelle (si le sprint déborde)
 
-> Trop gros pour un sprint (deux sources + un transport, mappings de types non triviaux).
-> **Pas de fiche chapeau** : trois sœurs, liées par `milestone: board` + une même `version:` (à
-> trancher par le PO), qui référencent cette fiche + ADR-074 + ADR-079 + la maquette. Ordre et
-> version à ratifier.
+> **Une seule fiche** (pas de chapeau). Si le build déborde un sprint, le seam se coupe ici, en
+> trois morceaux cohésifs — à décider **en cours de sprint**, pas d'avance. Chaque morceau livre une
+> **valeur observable** (preuve avant/après), pas une couche invisible.
 
-| Tranche | Ce qu'elle couvre | Dépend de |
+| Morceau | Ce qu'il couvre | Dépend de |
 |---|---|---|
 | **1. Le tuyau + repli gated** | `Board.tsx` lit une source injectée au lieu de `BOARD_DATA` ; endpoint local (étend le daemon cop1) servant `BoardData` ; activation par config projet ; repli échantillon explicite. Prouvé d'abord en servant **l'échantillon** par le vrai chemin (le câblage marche, la donnée viendra ensuite). | daemon cop1 existant |
-| **2. Le plan réel (backlog)** | lecteur de backlog **cop1-local** (fiches + `PLAN.md`, ADR-021) → `funnel` / `versions` / `fiches` / `metrics.done`, branché dans le tuyau. Le board montre le vrai plan. | tranche 1 |
-| **3. Les runs réels (journal)** | adaptateur `projectChantiers` → `runs` / `chantiers` / `timeline` / `moments` + les trois mappings de types (cycle de vie → état, évènements → moments → transitions, tokens honnêtes). Le board montre les vrais runs. | tranche 1 ; `projectChantiers` (livré v0.18) |
+| **2. Le plan réel (backlog)** | lecteur de backlog **cop1-local** (fiches + `PLAN.md`, ADR-021) → `funnel` / `versions` / `fiches` / `metrics.done`, branché dans le tuyau. Le board montre le vrai plan. | morceau 1 |
+| **3. Les runs réels (journal)** | adaptateur `projectChantiers` → `runs` / `chantiers` / `timeline` / `moments` + les trois mappings de types (cycle de vie → état, évènements → moments → transitions, tokens honnêtes). Le board montre les vrais runs. | morceau 1 ; `projectChantiers` (livré v0.18) |
 
-Chaque tranche livre une **valeur observable** (preuve avant/après), pas une couche invisible.
+Si on coupe, les morceaux deviennent des **sœurs** (`milestone: board` + `version: v0.24.0`),
+chacune référençant cette fiche + ADR-074 + ADR-079 + la maquette. Cette fiche-ci devient alors le
+`split`, pas un parent dormant.
 
-## Décisions qui restent au PO
+## Décisions prises (PO, 2026-10-18)
 
-1. **Dé-parquer la parente ?** La fiche
+1. **La parente est dé-zombifiée, pas dé-parquée.** La fiche
    [Unifier les tableaux de bord](20261007135620590_refondre-vue-supervision-moniteur-lisible.md)
-   est parkée. Cette fiche-ci prend en charge **le branchement données**, un trou que le « Découpage
-   proposé » de la parente (par surface, tout livré) ne couvre pas. À décider : laisser la parente
-   parkée (cette fiche la relaie) ou la dé-parquer.
-2. **Quelle version ?** Les trois sœurs héritent de ce choix. Candidats : une version data/UX dédiée,
-   ou rescoper la v0.23 (« L'app se cartographie », aujourd'hui en STOP faute de tranche lean).
-3. **Un ADR neuf, ou les ADR existants suffisent ?** **Ma reco : aucun ADR neuf.** Le modèle et le
-   contrat sont dans [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ;
-   le read-model, le cop1-local et la vue live sont dans
+   repasse en `milestone: board`, son `blocked:` périmé est vidé, et elle porte un bandeau
+   « réalisé » : ses surfaces sont livrées, elle reste le **document de design** (cité par ADR-074 et
+   8 fiches livrées), le branchement données est repris ici. Pas d'archivage vers `done/` : il
+   casserait ~15 citations.
+2. **Version : v0.24.0.** Un patch (ex. `0.22.1`) ne convient pas — un patch corrige une version déjà
+   taguée, or ici on **ajoute** une capacité neuve (le board ne sait pas encore lire les vraies
+   données). Trois morceaux de feature = un lot mineur. (Alternative écartée : rescoper la v0.23, dont
+   le thème « L'app se cartographie » est distinct.)
+3. **Aucun ADR neuf.** Le modèle et le contrat sont dans
+   [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; le
+   read-model, le cop1-local et la vue live sont dans
    [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (§D8, §D9, §D11) ; « live,
    jamais committé » est dans ADR-0043/0055 ; « cop1 n'importe pas mega-city » est dans ADR-021. Le
    transport runtime et le lecteur cop1-local **appliquent** ces décisions, ils n'en gravent pas de
-   neuve. À confirmer par le PO.
+   neuve.
 
 ## Glossaire
 
@@ -195,9 +199,9 @@ Chaque tranche livre une **valeur observable** (preuve avant/après), pas une co
 
 ## Notes / décisions
 
-- **Fiche de cadrage, comme la parente.** Elle enregistre le contrat et le découpage ; elle n'est
-  **pas** une fiche chapeau. Les trois sœurs seront des fiches à part entière, groomées une fois le
-  découpage et la version ratifiés (décisions PO ci-dessus).
+- **Une seule fiche, pas un chapeau.** Elle enregistre le contrat et le transport ; elle se construit
+  telle quelle, et se coupe en trois sœurs seulement si le sprint déborde (voir « Découpe
+  naturelle »). Prochaine étape : la groomer `ready` pour la v0.24.0.
 - **Anti-doublon fait.** Toutes les fiches `milestone: board` sont en `features/done/`. Les deux plus
   proches ne couvrent pas le branchement :
   [activité run→moments→fiches](done/20261012231419211_board-activite-run-moments-fiches.md) a bâti

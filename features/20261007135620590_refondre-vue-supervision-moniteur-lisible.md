@@ -4,17 +4,26 @@ title: "Unifier les tableaux de bord en un seul (Moniteur + cockpit + board), gu
 type: feature
 priority: P1
 product: cop1
-milestone: parked
+milestone: board
 version:
 labels: [supervision, moniteur, cockpit, board, dashboard, lisibilite, ux]
 status: idea
-blocked: "différée-PO — maquette validée (v17) + specs capturées le 2026-10-12. Attend 3 décisions PO : (1) la version — pressentie v0.15 « Voir les runs », ou une version UX dédiée ; (2) le découpage en fiches filles (voir « Découpage proposé ») ; (3) l'ADR qui grave le modèle (run → moments → fiches, deux portées de config). Puis dé-parker + versionner + groomer chaque fille."
+blocked:
 pr:
 evidence: before-after
 created: 2026-10-07
 ---
 
 # 20261007135620590 — Unifier les tableaux de bord en un seul
+
+> **Statut : réalisé (document de design, plus un travail en attente).** Les sept surfaces de
+> cette maquette sont **livrées** (milestone `board`, v0.17/v0.18) ; le modèle est gravé dans
+> [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) et
+> [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md). Le **seul reste** —
+> brancher le board sur les vraies données au lieu de l'échantillon — est repris par la fiche
+> [Brancher le board web sur les vraies données](20261018121537582_brancher-board-web-vraies-donnees.md)
+> (v0.24.0). Cette fiche-ci n'est plus parkée : elle reste **le document de design** (maquette +
+> specs), cité par l'ADR et les tranches livrées, pas un chantier dormant.
 
 **En clair.** On remplace les **trois tableaux de bord éparpillés** par **un seul**, pour piloter la méthode d'un coup d'œil. On l'a conçu par **maquette** : plusieurs itérations, départagée par des agents UX puis validée par le PO. La maquette est la **référence** de ce qu'on construit. Cette fiche **enregistre le design validé**. Elle est trop grosse pour un sprint : on la **découpe** en fiches filles avant de coder (voir plus bas).
 
