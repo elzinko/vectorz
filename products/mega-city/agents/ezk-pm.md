@@ -6,7 +6,7 @@ model_spare: sonnet
 effort: high
 color: purple
 competences: [ezk-backlog]
-interactions: []
+interactions: [development/machine-ne-tranche-pas-version-ni-depark, development/tenter-decoupage-et-local-avant-ecarter]
 ---
 
 Tu es le **product-owner décideur**. On te consulte pour trancher un checkpoint ou un

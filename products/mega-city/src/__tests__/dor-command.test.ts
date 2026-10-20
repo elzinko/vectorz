@@ -211,3 +211,32 @@ describe('bin/ezk-dor.ts — le câblage du script et de --root', () => {
     expect(r.stdout).toContain('surfaces : VIDE');
   });
 });
+
+describe('dor check — la règle de taille au grooming (fiche 20261013013553179)', () => {
+  const sept = '## Critères d\'acceptation\n\n- [ ] a\n- [ ] b\n- [ ] c\n- [ ] d\n- [ ] e\n- [ ] f\n- [ ] g';
+  const deux = '## Critères d\'acceptation\n\n- [ ] a\n- [ ] b';
+  const E = project({
+    '.vectorz/dor.yml': DOR_YML,
+    'features/20260101000000010_grosse.md': fiche('idea', `## Surfaces impactées\n\n- doc : oui\n- site : non\n- README : non\n\n${sept}`),
+    'features/20260101000000011_fine.md': fiche('idea', `## Surfaces impactées\n\n- doc : oui\n- site : non\n- README : non\n\n${deux}`),
+  });
+  // Sans manifeste : la règle de taille s'applique quand même (le socle vaut partout).
+  const F = project({ 'features/20260101000000010_grosse.md': fiche('idea', sept) });
+
+  it('avertit (sans bloquer) une fiche de plus de 6 critères, en citant la règle', () => {
+    const r = run('check', E, ['20260101000000010']);
+    expect(r.out).toMatch(/taille : 7 critères/);
+    expect(r.out).toContain('fiche-tient-dans-un-sprint');
+    expect(r.out).toMatch(/découpage/);
+  });
+
+  it('n’avertit pas une fiche de 2 critères', () => {
+    const r = run('check', E, ['20260101000000011']);
+    expect(r.out).not.toMatch(/⚠ taille/);
+  });
+
+  it('applique la règle de taille même sans manifeste de projet', () => {
+    const r = run('check', F, ['20260101000000010']);
+    expect(r.out).toMatch(/taille : 7 critères/);
+  });
+})

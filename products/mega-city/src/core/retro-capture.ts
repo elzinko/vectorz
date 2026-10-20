@@ -217,6 +217,61 @@ export function parseRetroCapture(file: string, markdown: string): RetroParse {
   return { capture: { file, date, theme, scope, participants, actions }, problems };
 }
 
+// ─── La lentille de lisibilité (fiche 20261010213353647) ─────────────────────────────────────
+// Élargit la règle `documentation-guidelines/human-facing-lisibility` aux captures committées : le
+// RÉCIT (le corps, lu par le PO) doit ouvrir par « En clair », et cette ouverture ne doit PAS porter
+// de code interne nu (id de fiche, numéro d'ADR, réf #PR, nom de script) — il va en annexe/glossaire.
+// Mécanique, à faible faux-positif : on ne juge que l'ouverture, pas tout le corps (le reste du récit
+// cite légitimement des ids). Le jugement sémantique « un nouveau venu reformule » reste à la lentille
+// humaine (ezk-reviewer, doc newcomer-readability-lens) ; ici, ce qu'un script voit.
+
+/** Un code interne nu : id de fiche (≥ 15 chiffres), ADR-NNN, réf #NN, ou nom de fichier script. */
+const INTERNAL_CODE = /\b\d{15,}\b|\bADR-\d+\b|(?:^|\s)#\d+\b|\b[\w-]+\.(?:sh|ts|mjs|js)\b/gi;
+
+/** Le corps après l'en-tête YAML (le récit lu par l'humain). */
+function bodyAfterFrontMatter(markdown: string): string {
+  const m = FRONT_MATTER.exec(markdown);
+  return m ? markdown.slice(m[0].length) : markdown;
+}
+
+/** L'ouverture « En clair » : du marqueur jusqu'au prochain titre ou à la ligne vide suivante. */
+function enClairOpening(body: string): string | undefined {
+  const start = body.search(/(?:^|\n)[ \t>*_#]*En clair\b/i);
+  if (start === -1) return undefined;
+  const after = body.slice(start).replace(/^(?:\n)/, '');
+  // S'arrête au prochain titre Markdown, sinon à la première ligne vide (fin de paragraphe).
+  const stop = after.search(/\n[ \t]*\n|\n#{1,6}\s/);
+  return stop === -1 ? after : after.slice(0, stop);
+}
+
+/**
+ * Les défauts de lisibilité d'une capture committée (fiche 20261010213353647) : récit sans
+ * ouverture « En clair », ou codes internes nus DANS cette ouverture. Pur, sans I/O.
+ */
+export function readabilityProblems(file: string, markdown: string): RetroProblem[] {
+  const problems: RetroProblem[] = [];
+  const body = bodyAfterFrontMatter(markdown);
+  const opening = enClairOpening(body);
+  if (opening === undefined) {
+    problems.push({
+      file,
+      where: 'récit',
+      message: 'le corps doit ouvrir par « En clair » (≤ 3 phrases en langage simple) — voir references/capture-template.md',
+    });
+    return problems;
+  }
+  const codes = [...opening.matchAll(INTERNAL_CODE)].map((m) => m[0].trim()).filter(Boolean);
+  if (codes.length > 0) {
+    const uniq = [...new Set(codes)];
+    problems.push({
+      file,
+      where: 'ouverture « En clair »',
+      message: `code interne nu dans l'ouverture (${uniq.join(', ')}) : mets-le en annexe/glossaire, l'ouverture reste en langage courant`,
+    });
+  }
+  return problems;
+}
+
 /** Le rendu texte de la liste des décisions : une ligne par action, la plus récente rétro d'abord. */
 export function renderCaptures(captures: RetroCapture[]): string {
   const sorted = [...captures].sort((a, b) => b.date.localeCompare(a.date) || a.file.localeCompare(b.file));

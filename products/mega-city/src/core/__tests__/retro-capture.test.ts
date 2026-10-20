@@ -13,6 +13,7 @@ import {
   captureNameProblem,
   isRetroCaptureName,
   parseRetroCapture,
+  readabilityProblems,
   renderCaptures,
   type RetroCapture,
 } from '../retro-capture.js';
@@ -214,3 +215,30 @@ describe('les vraies captures du dépôt', () => {
     expect(problems).toEqual([]);
   });
 });
+
+describe('readabilityProblems — la lentille de lisibilité du récit (fiche 20261010213353647)', () => {
+  const fm = '---\ntype: retro\ndate: 2026-10-17\n---\n\n';
+
+  it('un récit qui ouvre par « En clair » en langage courant ne pose aucun problème', () => {
+    const md = `${fm}## Le récit\n\n**En clair :** la sortie partait sur le mauvais canal ; on la remet au bon endroit.\n\n## 1 · Les faits\n\ndétail avec la fiche 20261013013553044 et ADR-0070 ici, c'est permis hors ouverture.\n`;
+    expect(readabilityProblems('c.md', md)).toEqual([]);
+  });
+
+  it('un récit sans ouverture « En clair » est signalé', () => {
+    const md = `${fm}## Le récit\n\nOn attaque direct les faits, sans résumer d'abord.\n`;
+    const problems = readabilityProblems('c.md', md);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]?.where).toBe('récit');
+    expect(problems[0]?.message).toMatch(/En clair/);
+  });
+
+  it('un code interne nu DANS l’ouverture « En clair » est signalé, en le nommant', () => {
+    const md = `${fm}**En clair :** le bug 20261013013553044 vu dans archive-commit.sh, tranché par ADR-0070 et la PR #42.\n\n## suite\n`;
+    const problems = readabilityProblems('c.md', md);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]?.where).toBe('ouverture « En clair »');
+    expect(problems[0]?.message).toContain('20261013013553044');
+    expect(problems[0]?.message).toContain('ADR-0070');
+    expect(problems[0]?.message).toContain('archive-commit.sh');
+  });
+})

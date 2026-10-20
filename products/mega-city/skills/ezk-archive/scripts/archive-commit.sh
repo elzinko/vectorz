@@ -44,7 +44,20 @@ case "$slug" in */*|*..*|*' '*|"") echo "archive-commit.sh : --slug invalide (ni
 
 # Le helper partagé : relatif à ce script (skills/ezk-archive/scripts → bin). ship-merge surchargeable
 # en test par EZK_ARCHIVE_SHIP_MERGE (contrat historique du DoD d'archive), relayé au helper.
+# INSTALL LIEN / SOURCE : `../../../bin` tombe sur le vrai `products/mega-city/bin`.
 HELPER="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../bin" 2>/dev/null && pwd)/commit-doc-via-worktree.sh"
+# INSTALL COPIE (défaut du bind global) : `../../../bin` = ~/.claude/bin, que la copie ne crée pas
+# (seuls les fichiers du skill sont copiés, pas les helpers partagés). On résout alors le helper à
+# côté du `ezk` sur le PATH : c'est un lien vers le vrai `products/mega-city/bin/` du catalogue, où
+# vit `commit-doc-via-worktree.sh`. node est garanti présent (ezk tourne dessus). Fiche 20261013131625101.
+if [[ ! -f "$HELPER" ]]; then
+  ezk_bin="$(command -v ezk || true)"
+  if [[ -n "$ezk_bin" ]]; then
+    ezk_real="$(node -e 'process.stdout.write(require("fs").realpathSync(process.argv[1]))' "$ezk_bin" 2>/dev/null || true)"
+    [[ -n "$ezk_real" && -f "$(dirname "$ezk_real")/commit-doc-via-worktree.sh" ]] && \
+      HELPER="$(dirname "$ezk_real")/commit-doc-via-worktree.sh"
+  fi
+fi
 [[ -f "$HELPER" ]] || { echo "archive-commit.sh : helper introuvable : $HELPER" >&2; exit 2; }
 
 args=(

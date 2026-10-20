@@ -4,13 +4,14 @@ title: "Brainstorm : la CLI de la méthode est-elle un DSL cohérent et professi
 type: refactor
 priority: P2
 product: mega-city
-milestone:
-version: v0.20.0
+milestone: parked
+version:
 labels: [cli, dsl, dx, ezk]
 status: idea
 pr:
 evidence: none # exploration + CLI, pas d'écran
 created: 2026-10-10
+blocked: attend-panel — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261010153046143 — La CLI de la méthode est-elle un DSL cohérent et professionnel ?

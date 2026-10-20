@@ -4,13 +4,14 @@ title: "Une fiche découpée ne porte pas un critère du périmètre de sa fiche
 type: chore
 priority: P2
 product: mega-city
-milestone:
-version: v0.22.0
+milestone: parked
+version:
 labels: [backlog, grooming, process]
 status: idea
 pr:
 evidence: none # règle de process, pas d'écran
 created: 2026-10-13
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261013131625202 — Une fiche découpée reste dans son périmètre

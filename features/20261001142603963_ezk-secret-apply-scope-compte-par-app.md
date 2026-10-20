@@ -4,12 +4,14 @@ title: "ezk-secret apply — scope compte/par-app, secrets déclarés par recett
 type: feature
 priority: P2
 product: vectorz
-version: v0.20.0
+version:
 labels: [secrets, dx, ci]
 status: idea
 pr:
 evidence: none
 created: 2026-10-01
+milestone: parked
+blocked: attend-dépendance — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261001142603963 — ezk-secret apply — scope compte/par-app, secrets déclarés par recette

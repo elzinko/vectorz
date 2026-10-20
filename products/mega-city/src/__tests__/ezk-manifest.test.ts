@@ -50,10 +50,9 @@ describe('ezk-manifest.yml', () => {
     expect(regen && entryStep(regen).script).toBe('bin/views-regen.ts');
   });
 
-  it('le tableau de bord, qui ne fait que servir les fichiers de son dépôt, marche de partout', () => {
-    for (const domain of ['dashboard', 'map']) {
-      expect(manifest.commands.find((e) => e.domain === domain)?.root, domain).toBe('none');
-    }
+  it('le tableau de bord (web, « board open »), qui ne fait que servir les fichiers de son dépôt, marche de partout', () => {
+    const open = manifest.commands.find((e) => e.domain === 'board' && e.verb === 'open');
+    expect(open?.root).toBe('none');
   });
 
   it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744, 20261002155911257, 20261003200945204 et 20261003105820077)', () => {
@@ -73,9 +72,9 @@ describe('ezk-manifest.yml', () => {
       'backlog ship',
       'backlog version',
       'board check',
+      'board open',
       'board show',
       'config',
-      'dashboard',
       'docs check-links',
       'dor check',
       'dor health',
@@ -83,7 +82,6 @@ describe('ezk-manifest.yml', () => {
       'forge changes',
       'forge integrate',
       'journal add',
-      'map',
       'now',
       'paths',
       'pr emit-local',

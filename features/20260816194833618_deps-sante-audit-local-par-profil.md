@@ -4,13 +4,14 @@ title: "Santé des dépendances : audit local activable + sa place dans le proce
 type: feature
 priority: P2
 product: mega-city
-version: v0.19.0
+version:
 labels: [dette, securite]
-milestone:
+milestone: parked
 epic:
 status: idea
 pr:
 created: 2026-08-16
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20260816194833618 — Santé des dépendances : audit local + sa place dans le process

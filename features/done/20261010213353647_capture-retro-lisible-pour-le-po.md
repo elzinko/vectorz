@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.21.0
 labels: [lisibilité, retro]
-status: idea
-pr:
+status: shipped
+pr: "local (9fbc5e69)"
 evidence: none
 created: 2026-10-10
 ---
@@ -36,12 +36,12 @@ comprend ? », mais elle s'applique aux corps de PR et aux fiches, pas aux captu
   compréhensible pour moi… c'est un peu le comble ». Elle recopiait le vocabulaire interne
   (« portier », « bundle », « graph:check », noms de scripts).
 - **Pourquoi ça arrive.** La règle « écrire clair pour l'humain »
-  ([`human-facing-lisibility`](../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md))
+  ([`human-facing-lisibility`](../../products/mega-city/rules/documentation-guidelines/human-facing-lisibility.md))
   existe et couvre explicitement les rétros. Mais rien ne la **contrôle** sur une capture : le
   relecteur juge des diffs de code, pas la prose d'un fichier de doc. Elle tient donc par la
   seule discipline du rédacteur — qui dérive sur un run long et technique.
 - **Lentille déjà construite, mais pas branchée ici.** La fiche 0191
-  ([done/0191](done/0191-lisibilite-templates-llm-au-moment-genere.md)) a posé la lentille
+  ([done/0191](0191-lisibilite-templates-llm-au-moment-genere.md)) a posé la lentille
   nouveau-venu pour les corps de PR et les fiches. Les **captures** et les **notes de passation**
   restent hors de sa portée.
 
@@ -88,8 +88,23 @@ La commande exacte dépend de la forme retenue au grooming (script de vérificat
 ## Notes / décisions
 
 - Née de la rétro du run « règles composables » du 2026-10-10 (grain n°5), capture
-  [docs/captures/2026-10-10-retro-run-regles-composables.md](../docs/captures/2026-10-10-retro-run-regles-composables.md).
+  [docs/captures/2026-10-10-retro-run-regles-composables.md](../../docs/captures/2026-10-10-retro-run-regles-composables.md).
 - Le PO l'a désignée comme le point le plus important de ce retour.
-- Voisines à **référencer, pas fusionner** : [0191 — lentille nouveau-venu](done/0191-lisibilite-templates-llm-au-moment-genere.md)
-  (corps de PR / fiches, livrée) et [0188 — ADR aussi lisibles qu'un article](0188-adr-lisibles-comme-articles.md).
+- Voisines à **référencer, pas fusionner** : [0191 — lentille nouveau-venu](0191-lisibilite-templates-llm-au-moment-genere.md)
+  (corps de PR / fiches, livrée) et [0188 — ADR aussi lisibles qu'un article](../0188-adr-lisibles-comme-articles.md).
 - Priorité P1 proposée (le PO a souligné l'importance) ; à confirmer.
+
+## Décision de grooming (2026-10-17, run v0.21 auto/lean)
+
+Garde-fou mécanique **opt-in** `retro captures --check <fichier> --lens` (nouvelle fonction pure
+`readabilityProblems` dans `src/core/retro-capture.ts`). Il signale deux défauts qu'un script voit
+sûrement, à faible faux-positif : récit sans ouverture « En clair », ou **code interne nu dans cette
+ouverture** (id de fiche, ADR-NNN, réf #NN, nom de script). Fidèle à la règle `human-facing-lisibility`
+(« codes internes interdits dans l'ouverture ») — on ne juge QUE l'ouverture, pas tout le récit (qui
+cite légitimement des ids). Le jugement sémantique « un nouveau venu reformule » (critère 4) reste à la
+lentille humaine `newcomer-readability-lens` (ezk-reviewer), non mécanisable.
+
+**Étape obligatoire documentée** (critère 2) : l'étape « Valider avant la PR » d'`ezk-retro` et le
+gabarit lancent désormais `--check … --lens`. Opt-in exprès : les captures historiques (antérieures à
+la règle) ne cassent aucun gate. Tests : `retro-capture.test.ts` (3 cas purs) +
+`ezk-retro-capture-contract.test.ts` (3 cas bin, dont zéro faux positif sur une vraie capture récente).

@@ -89,6 +89,22 @@ ok "sortie : LOCAL-FAILED (jamais « intégrée »)" "echo \"\$OUTF\" | grep -q 
 ok "archive gardée sur sa branche"     "git -C \"\$ROOT/f/principal\" log docs/archive-session-2026-10-06 --oneline | grep -q 'archive session 2026-10-06 demo'"
 ok "archive PAS sur main"              "! git -C \"\$ROOT/f/principal\" log main --oneline | grep -q 'archive session 2026-10-06 demo'"
 
+echo "H — install COPIE (helper hors ../../../bin) : résolu via le ezk du PATH, archive intégrée (fiche 20261013131625101) :"
+if command -v ezk >/dev/null 2>&1; then
+  # Copie-install : le script vit sous skills/ezk-archive/scripts SANS `bin/` partagé à ../../../bin.
+  # C'est le défaut du bind global : seuls les fichiers du skill sont copiés, pas les helpers partagés.
+  mkdir -p "$ROOT/h/copyinstall/skills/ezk-archive/scripts"
+  cp "$SCRIPT" "$ROOT/h/copyinstall/skills/ezk-archive/scripts/archive-commit.sh"
+  # (aucun "$ROOT/h/copyinstall/bin" : c'est précisément le trou que le repli doit combler)
+  setup h local
+  COPYSCRIPT="$ROOT/h/copyinstall/skills/ezk-archive/scripts/archive-commit.sh"
+  OUTH="$(bash "$COPYSCRIPT" --repo "$ROOT/h/principal" --file "$ROOT/h/session/docs/sessions/2026-10-06-demo.md" --date 2026-10-06 --slug demo --subject "docs(sessions): archive session 2026-10-06 demo" 2>&1)"
+  ok "pas d'erreur « helper introuvable »"           "! echo \"\$OUTH\" | grep -q 'helper introuvable'"
+  ok "archive intégrée sur main (le repli a trouvé le helper)" "echo \"\$OUTH\" | grep -q '^LOCAL: archive intégrée sur main'"
+else
+  echo "  ⚠ ezk absent du PATH — cas copie-install ignoré (pré-requis de prod)"
+fi
+
 echo "G — gardes : refus net, rien écrit :"
 ok "--file manquant → exit 2"          "setup g local; ! bash \"\$SCRIPT\" --repo \"\$ROOT/g/principal\" --date 2026-10-06 --slug x --subject s >/dev/null 2>&1"
 ok "archive introuvable → exit 2"      "bash \"\$SCRIPT\" --repo \"\$ROOT/g/principal\" --file \"\$ROOT/g/absente.md\" --date 2026-10-06 --slug x --subject s >/dev/null 2>&1; [ \$? -eq 2 ]"

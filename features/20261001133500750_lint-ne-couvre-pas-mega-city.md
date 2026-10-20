@@ -4,13 +4,14 @@ title: Le lint ne vérifie pas le code de mega-city
 type: chore
 priority: P2
 product: mega-city
-milestone:
-version: v0.19.0
+milestone: parked
+version:
 labels: [dette]
 status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-01
+blocked: différée-PO — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261001133500750 — Le lint ne vérifie pas le code de mega-city

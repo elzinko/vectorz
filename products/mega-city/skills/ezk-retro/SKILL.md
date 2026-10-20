@@ -172,8 +172,9 @@ jamais par son id nu.
 `docs/captures/AAAA-MM-JJ-retro-<slug>.md`, écrit **sans que le PO le demande**. Pars du gabarit
 [`references/capture-template.md`](references/capture-template.md), source unique : un en-tête YAML
 qui liste les décisions, puis le récit lisible. Pose chaque action en `⏳`. Quand le PO tranche, tu
-passes à `✅` ou `❌` avec sa décision et la date — jamais avant. Valide le fichier avant la PR :
-`ezk --root "$(git rev-parse --show-toplevel)" retro captures --check docs/captures/<fichier>.md`. La PR de
+passes à `✅` ou `❌` avec sa décision et la date — jamais avant. Valide le fichier avant la PR,
+**lisibilité comprise** (`--lens` : le récit ouvre par « En clair », sans code interne nu dedans) :
+`ezk --root "$(git rev-parse --show-toplevel)" retro captures --check docs/captures/<fichier>.md --lens`. La PR de
 rangement **cite la capture** dans son corps. Pas de capture, pas de rangement.
 
 Puis le rangement :

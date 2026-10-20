@@ -37,8 +37,8 @@ describe('diagrams/avancement/board.html — la coque', () => {
     expect(html).toContain('id="f-revue"'); // le filtre validée / rejetée / non revue
     expect(html).toContain("fetch('/api/verdict'"); // la seule route d'écriture du tableau de bord
     expect(html).toContain('aria-pressed'); // l'état du pouce est annoncé, pas seulement coloré
-    // Page ouverte sans `ezk dashboard` : on le dit, on ne fait pas semblant d'enregistrer.
-    expect(html).toContain('pnpm ezk dashboard');
+    // Page ouverte sans `ezk board open` : on le dit, on ne fait pas semblant d'enregistrer.
+    expect(html).toContain('ezk board open');
     // Le verdict, la date et les fichiers illisibles viennent de fichiers : jamais via innerHTML.
     expect(html).not.toMatch(/innerHTML\s*=\s*[^;]*\b(verdict|illisibles|banniere|date)\b/);
   });

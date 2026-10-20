@@ -102,7 +102,8 @@ Les termes d'équipe, traduits.
 ## Valider avant la PR de rangement
 
 ```bash
-ezk --root "$(git rev-parse --show-toplevel)" retro captures --check docs/captures/AAAA-MM-JJ-retro-<slug>.md
+# `--lens` vérifie AUSSI la lisibilité du récit : ouverture « En clair », pas de code interne nu dedans.
+ezk --root "$(git rev-parse --show-toplevel)" retro captures --check docs/captures/AAAA-MM-JJ-retro-<slug>.md --lens
 ```
 
 La PR de rangement **cite la capture** dans son corps : c'est la trace qui relie chaque règle au

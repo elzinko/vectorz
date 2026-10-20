@@ -19,6 +19,7 @@ import {
   captureNameProblem,
   isRetroCaptureName,
   parseRetroCapture,
+  readabilityProblems,
   renderCaptures,
 } from '../src/core/retro-capture.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
@@ -32,6 +33,7 @@ function usage(): never {
 
   (sans option)     liste les décisions de toutes les captures de docs/captures/
   --check <fichier> valide ces captures (n'importe quel projet) et dit combien de décisions chacune porte
+  --lens            avec --check : vérifie aussi la lisibilité du récit (ouverture « En clair », pas de code interne nu dans l'ouverture)
   --json            rend les captures valides en JSON
   --root <projet>   le projet dont on lit les captures (aussi EZK_ROOT) ; --check se lit depuis lui`);
   process.exit(2);
@@ -67,11 +69,13 @@ function main(): void {
   if (args.includes('--help') || args.includes('-h')) usage();
 
   const json = args.includes('--json');
+  const lens = args.includes('--lens');
   const checkAt = args.indexOf('--check');
-  const known = new Set(['--json', '--check']);
+  const known = new Set(['--json', '--check', '--lens']);
   const checked = checkAt === -1 ? [] : args.slice(checkAt + 1).filter((a) => !known.has(a));
   const stray = args.filter((a, i) => a.startsWith('--') && !known.has(a) && i !== checkAt);
   if (stray.length > 0 || (checkAt !== -1 && checked.length === 0)) usage();
+  if (lens && checkAt === -1) usage(); // --lens n'a de sens qu'avec --check (une capture nommée)
 
   let files: Array<{ label: string; path: string }>;
   if (checkAt !== -1) {
@@ -88,6 +92,14 @@ function main(): void {
   }
 
   const { captures, problems } = load(files);
+
+  // Lentille de lisibilité (opt-in) : le récit ouvre par « En clair », sans code interne nu dedans.
+  if (lens) {
+    for (const { label, path } of files) {
+      if (!existsSync(path)) continue; // l'absence est déjà signalée par load()
+      problems.push(...readabilityProblems(label, readFileSync(path, 'utf8')));
+    }
+  }
 
   if (json) {
     console.log(JSON.stringify({ captures, problems }, null, 2));

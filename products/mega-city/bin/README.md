@@ -10,7 +10,7 @@ pnpm ezk help                 # toutes les commandes de terminal ET de chat, une
 pnpm ezk help law             # le détail d'un domaine : quel script il lance
 pnpm ezk views regen          # toutes les vues générées hors git, d'un coup (ADR-0055)
 pnpm ezk law status global    # ce qui est déployé dans ~/.claude (lien, copie, absent)
-pnpm ezk dashboard            # le tableau de bord de la méthode (ex « ezk:map »)
+pnpm ezk board open           # le tableau de bord (web) de la méthode (ex « dashboard » / « ezk:map »)
 pnpm ezk --dry-run <commande> # montre les scripts qui seraient lancés, sans rien faire
 ```
 
@@ -18,17 +18,17 @@ Sur un poste, `pnpm link --global` depuis `products/mega-city` expose `ezk` part
 qui n'a pas besoin de `tsx` installé). Une commande qui travaille sur les fichiers du dépôt de la
 méthode part toujours de la racine de ce dépôt, même lancée depuis un sous-dossier, et refuse de
 tourner depuis un autre dépôt en disant comment faire (`--root <dépôt>` avant la commande). Les
-autres (`law`, `dashboard`, `help`) partent du dossier où tu es. Les anciens scripts pnpm
+autres (`law`, `board open`, `help`) partent du dossier où tu es. Les anciens scripts pnpm
 (`lawgiver`, `graph:compile`, `ezk:map`…) marchent toujours.
 
 ## Lire les fiches d'un autre projet (muti, samplerz)
 
-Cinq commandes ne font que **lire** des fiches : `ezk dashboard`, `ezk board show`,
+Cinq commandes ne font que **lire** des fiches : `ezk board open`, `ezk board show`,
 `ezk backlog check`, `ezk backlog plan-head` et `ezk backlog plan-lot`. Elles lisent par défaut les fiches de la méthode.
 (`ezk rules`, plus bas, vise un projet lui aussi.) Pour lire les fiches d'un autre projet, désigne-le :
 
 ```bash
-pnpm ezk --root ../muti dashboard         # l'option, avant la commande
+pnpm ezk --root ../muti board open        # l'option, avant la commande
 EZK_ROOT=../muti pnpm ezk board show      # ou la variable
 pnpm ezk board show                       # sans rien : les fiches de la méthode, comme avant
 ```

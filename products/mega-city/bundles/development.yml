@@ -18,3 +18,7 @@ rules:
   - development/acceptance-criteria-before-merge
   - development/host-project-proof-before-ship
   - development/one-story-one-commit-local
+  - development/tenter-avant-de-parker
+  - development/machine-ne-tranche-pas-version-ni-depark
+  - development/decision-informee-au-depart
+  - development/tenter-decoupage-et-local-avant-ecarter

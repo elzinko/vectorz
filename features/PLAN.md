@@ -290,37 +290,37 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 
 ### ⑳ v0.19.0 — la gate ne laisse plus rien passer (proposée le 2026-10-14, à valider)
 > Les trous de qualité que la revue a dû rattraper deviennent mécaniques. **Gardée en v0.19 lors de la rotation du 2026-10-17 : elle paye tôt, chaque version qui suit se livre plus propre.**
-- `20261011091555006` — la gate attrape forme des vues + confinement · P2 · `groom`
-- `20261001133500750` — le lint couvre le code de mega-city · P2 · `groom`
-- `20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`
-- `20260816194833618` — santé des dépendances : audit local + place dans le process · P2 · `groom`
-- `20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`
+- ~~`20261011091555006` — la gate attrape forme des vues + confinement · P2~~ — parké hors version (à-découper : critère 3 = spike, hors passe lean)
+- ~~`20261001133500750` — le lint couvre le code de mega-city · P2~~ — parké hors version (différée-PO : 396 erreurs + CI off sous github:false)
+- ~~`20261013013553044` — ship/close committe les recals de liens hors `features/` · P2 · `groom`~~ — shipped
+- ~~`20260816194833618` — santé des dépendances : audit local + place dans le process · P2~~ — parké hors version (à-découper : arbitrage de périmètre non tranché)
+- ~~`20261013131625101` — helper `commit-doc-via-worktree` partagé en install copie · P2 · `groom`~~ — shipped
 
 ### ㉑ v0.20.0 — la CLI se tient (proposée le 2026-10-14, à valider)
 > DX de la ligne de commande, le plus rentable au quotidien. Le brainstorm DSL vient EN PREMIER : il peut recadrer les autres. Fiches encore `idea` → chacune passe par `groom` puis `ready` avant d'être tirable.
-- `20261010153046143` — brainstorm : la CLI est-elle un DSL cohérent (ezk / mc, toute la surface) · P2 · `groom` (à faire en 1er)
-- `20261013143324404` — uniformiser `--root` avant ET après le verbe · P3 · `groom`
-- `20261004083838781` — `ezk config --help` lu comme un chemin (faux statut) · P3 · `groom`
-- `20261001104806732` — `ezk-secret sync` : un manifeste de secrets par projet · P2 · `groom`
-- `20261001142603963` — `ezk-secret apply` : scope compte/par-app, secrets par recette · P2 · `groom`
-- `20261011113632688` — spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) · P2 · `groom`
+- ~~`20261010153046143` — brainstorm : la CLI est-elle un DSL cohérent (ezk / mc, toute la surface) · P2~~ — parké hors version (attend-panel : décisions produit, ezk vs mc, rapatrier lawgiver)
+- ~~`20261013143324404` — uniformiser `--root` avant ET après le verbe · P3~~ — parké hors version (à-découper : spike routeur, doit respecter la sûreté flag-only des commandes d'écriture)
+- ~~`20261004083838781` — `ezk config --help` lu comme un chemin (faux statut) · P3 · `groom`~~ — shipped
+- ~~`20261001104806732` — `ezk-secret sync` : un manifeste de secrets par projet · P2~~ — parké hors version (attend-GitHub : pousse des secrets vers GitHub, désactivé sous github:false)
+- ~~`20261001142603963` — `ezk-secret apply` : scope compte/par-app, secrets par recette · P2~~ — parké hors version (attend-dépendance : s'appuie sur ezk-secret sync)
+- ~~`20261011113632688` — spike : outiller/documenter l'ajout d'une règle (fichier + bundle + profil + bind) · P2~~ — parké hors version (à-découper : investiguer→décider avant d'outiller)
 
 ### ㉒ v0.21.0 — le flux se lit et s'allège (proposée le 2026-10-14, à valider)
 > Cérémonies légères pour les petits périmètres, et restitutions lisibles.
-- `20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`
-- `20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2 · `groom`
-- `20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`
-- `20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3 · `groom`
-- `20261007151859476` — ezk-debugging : skill de débogage systématique (4 phases) · P2 · `groom`
+- ~~`20261010213353647` — une capture de rétro lisible, et quelque chose qui le vérifie · P1 · `groom`~~ — shipped
+- ~~`20261007151859479` — chemin « lite » du sprint pour fiches triviales · P2~~ — parké hors version (à-découper : refonte de cérémonie du sprint, comportement de skill)
+- ~~`20261003011750607` — le checkpoint d'ezk-sprint définit ses termes en clair · P2 · `groom`~~ — shipped
+- ~~`20261013131625303` — ezk-retro : un mode light (cérémonie courte) · P3~~ — parké hors version (à-découper : comportement de skill, prose)
+- ~~`20261007151859476` — ezk-debugging : skill de débogage systématique (4 phases) · P2~~ — parké hors version (à-découper : nouveau skill, non testable mécaniquement)
 
 ### ㉓ v0.22.0 — le backlog se discipline (proposée le 2026-10-14, à valider)
 > Le modèle backlog / PR / grooming se resserre.
-- `20261003075821858` — deux formes de PR (dev rend la fiche, backlog la désigne) · P1 · `groom`
-- `20261003201034990` — voir les PR ouvertes et les branches avant un lot ou un groom · P1 · `groom`
-- `20261013131625202` — une fiche découpée ne porte pas un critère de sa sœur · P2 · `groom`
-- `20261013013553179` — le grooming applique la règle de taille (> 2 surfaces → découper) · P3 · `groom`
-- `20261007213454366` — spike : voir toute l'histoire d'une feature au même endroit · P3 · `groom`
-- `20261011112934507` — `ship-merge --local` tolère un fichier non suivi + mesure du rayon en DoR · P2 · `groom`
+- ~~`20261003075821858` — deux formes de PR (dev rend la fiche, backlog la désigne) · P1~~ — parké hors version (attend-GitHub : modèle de PR, muet sous github:false)
+- ~~`20261003201034990` — voir les PR ouvertes et les branches avant un lot ou un groom · P1~~ — parké hors version (à-découper : buildable mais multi-surface — run context + skill groom ; bon prochain pick)
+- ~~`20261013131625202` — une fiche découpée ne porte pas un critère de sa sœur · P2~~ — parké hors version (à-découper : contrôle mécanique vs lentille de revue non tranché)
+- ~~`20261013013553179` — le grooming applique la règle de taille (> 2 surfaces → découper) · P3 · `groom`~~ — shipped
+- ~~`20261007213454366` — spike : voir toute l'histoire d'une feature au même endroit · P3~~ — parké hors version (à-découper : spike exploratoire)
+- ~~`20261011112934507` — `ship-merge --local` tolère un fichier non suivi + mesure du rayon en DoR · P2~~ — parké hors version (à-découper : deux sujets mêlés, à découper)
 
 ### ㉔ v0.23.0 — l'app se cartographie (proposée le 2026-10-14, à valider)
 > Exploration-app : la carte d'abord (réduite au Pas 1), l'explorateur ensuite, sur `ezk-scout` déjà livré. Dépend du board v0.17 pour le « où vit le cache » si la version vivante sort un jour.

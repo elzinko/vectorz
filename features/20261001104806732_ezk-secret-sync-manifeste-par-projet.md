@@ -4,12 +4,14 @@ title: "ezk-secret sync — un manifeste de secrets par projet, poussé à l'ave
 type: feature
 priority: P2
 product: vectorz
-version: v0.20.0
+version:
 labels: [secrets, ci, dx]
 status: idea
 pr:
 evidence: none
 created: 2026-10-01
+milestone: parked
+blocked: attend-GitHub — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261001104806732 — ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle

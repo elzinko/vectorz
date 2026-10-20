@@ -4,12 +4,14 @@ title: "Spike : outiller/documenter l'ajout d'une règle (fichier + bundle + pro
 type: chore
 priority: P2
 product: vectorz
-version: v0.20.0
+version:
 labels: [spike, law, dx]
 status: idea
 pr:
 evidence: none
 created: 2026-10-11
+milestone: parked
+blocked: à-découper — parké hors version par auto-groom le 2026-10-17
 ---
 
 # 20261011113632688 — Spike : le flux d'ajout d'une règle

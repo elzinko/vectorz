@@ -10,7 +10,14 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type DorManifest, checkFiche, computeHealth, parseDorManifest } from '../core/dor-manifest.js';
+import {
+  type DorManifest,
+  MAX_ACCEPTANCE_CRITERIA,
+  acceptanceCriteriaCount,
+  checkFiche,
+  computeHealth,
+  parseDorManifest,
+} from '../core/dor-manifest.js';
 import { loadDor } from '../loaders/dor.js';
 import { loadFiches } from '../loaders/fiches.js';
 
@@ -81,11 +88,20 @@ function check(run: DorRun, manifest: DorManifest): number {
   // Le rappel de comportement ouvre la liste de contrôle d'une fiche : il vaut même sans manifeste
   // de projet (le socle, lui, exige toujours un critère).
   run.out(`${BEHAVIOR_REMINDER}\n`);
+  const body = readFileSync(join(run.root, fiche.file), 'utf8');
+  // Règle de taille (fiche 20261013013553179) : avertir fort, sans bloquer (soupape PO au groomeur).
+  const criteria = acceptanceCriteriaCount(body);
+  if (criteria > MAX_ACCEPTANCE_CRITERIA) {
+    run.out(
+      `  ⚠ taille : ${criteria} critères d'acceptation (seuil ${MAX_ACCEPTANCE_CRITERIA}) — règle « token-economy/fiche-tient-dans-un-sprint ». ` +
+        `Envisage un découpage avant ready (soupape PO : groome quand même si ça tient dans un sprint).\n`,
+    );
+  }
   if (manifest.slots.length === 0) {
     run.out(`${NO_MANIFEST}\n`);
     return 0;
   }
-  const reports = checkFiche(manifest, readFileSync(join(run.root, fiche.file), 'utf8'));
+  const reports = checkFiche(manifest, body);
   run.out(`DoR du projet, fiche ${id} (${fiche.file})\n`);
   let refused = 0;
   for (const r of reports) {

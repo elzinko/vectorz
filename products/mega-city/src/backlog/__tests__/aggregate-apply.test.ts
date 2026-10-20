@@ -174,6 +174,7 @@ function memIo(files: Record<string, string>, fail: 'move' | 'regen' | null = nu
       calls.regen += 1;
       if (fail === 'regen') throw new Error('regen KO');
     },
+    stage: () => {},
   };
   return { io, calls };
 }

@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version: v0.20.0
 labels: [cli]
-status: idea
-pr:
+status: shipped
+pr: "local (f8c2dd18)"
 evidence: none # sortie de terminal, aucun écran
 created: 2026-10-04
 ---
@@ -70,10 +70,26 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - Vu pendant la coupure de GitHub dans muti. Indépendant du guichet de
-  [ADR-0061](../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) : tirable tout de
+  [ADR-0061](../../products/mega-city/docs/adr/0061-un-seul-guichet-pour-github.md) : tirable tout de
   suite.
 - **Cas voisin, trouvé à la revue du socle du cockpit le 2026-10-04** (ADR-0062) : l'entrée `config`
   du manifeste déclare `root: cwd` et `writes: true`. Lancé sans `--root` dans un dépôt sans dossier
   `features/`, `ezk config show` est refusé avec « ce n'est pas un backlog… Rien n'a été écrit »,
   alors que la commande ne fait que lire. À traiter avec ce bug : la lecture de la config ne devrait
   pas exiger un backlog.
+
+## Décision de grooming (2026-10-17, run v0.20 auto/lean)
+
+Les **4 critères d'acceptation** sont couverts dans `bin/ezk-config.ts` :
+
+- `--help` / `-h` → l'usage, code 0 (traité AVANT la rétro-compat « un mot = une racine », sinon
+  `--help` était pris pour un dossier → faux statut « tout ON »).
+- toute autre option `-…` → refus code 2 qui nomme l'option.
+- ancienne forme `ezk config <dossier>` : dossier absent → erreur (`existsSync`), plus le faux défaut.
+- `show` / `github …` / `roles|modeles|agents` inchangés.
+
+Test : `src/__tests__/ezk-config-cli.test.ts` (lance le vrai bin, 5 cas).
+
+**Cas voisin reporté (hors critères, hors lean).** La lecture de la config exige encore un backlog
+(`writes: true` au manifeste + `projectRootOrExit`). Le découpler touche le manifeste et la règle de
+racine (rayon plus large) ; laissé au PO comme suite.

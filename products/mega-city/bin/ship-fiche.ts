@@ -92,10 +92,14 @@ try {
       `  ⚠ PLAN.md : ${plan.planPresentNotBarred.length} fiche(s) encore citée(s), aucune ligne barrée pour elles — à barrer/retirer à la main : ${plan.planPresentNotBarred.join(', ')}`,
     );
   }
-  console.log(`  fichiers touchés (${plan.touched.length}) — à committer TOUS, pas seulement features/ :`);
+  if (dryRun) {
+    console.log(`  fichiers touchés (${plan.touched.length}) — à committer TOUS, pas seulement features/ :`);
+    for (const f of plan.touched) console.log(`    ${f}`);
+    console.log(`  git add ${plan.touched.join(' ')}`);
+    process.exit(0);
+  }
+  console.log(`  fichiers touchés (${plan.touched.length}) — stagés par le ship (git add), recals hors features/ compris :`);
   for (const f of plan.touched) console.log(`    ${f}`);
-  console.log(`  git add ${plan.touched.join(' ')}`);
-  if (dryRun) process.exit(0);
 
   const regen = (): void => {
     execFileSync('bash', [join(megaCity, 'bin', 'regen-backlog.sh'), repoRoot], { stdio: 'inherit' });

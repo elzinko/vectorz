@@ -3,7 +3,7 @@ roles: [ezk-pm]
 name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget, token-economy/retro-due-choix-chiffre]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget, token-economy/retro-due-choix-chiffre, development/tenter-avant-de-parker, development/decision-informee-au-depart]
 argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
