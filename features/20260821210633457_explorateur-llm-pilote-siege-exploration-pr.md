@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 version: v0.23.0
-milestone:
+milestone: exploration-app
 epic:
 depends: ["0169"]
 labels: [test-local, exploration-app]

@@ -4,7 +4,7 @@ title: "Revue design-system : un step composable branché sur ezk-release"
 type: feature
 priority: P1
 product: mega-city
-milestone:
+milestone: qualite
 version:
 labels: [release, design-system, ux]
 status: idea

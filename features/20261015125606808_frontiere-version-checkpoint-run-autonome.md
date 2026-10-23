@@ -4,7 +4,7 @@ title: "La version est un checkpoint du run : lançable à l'entrée, scellable 
 type: feature
 priority: P2
 product: mega-city
-milestone: autonomie-run
+milestone: preparation
 version:
 labels: [methode, ezk-product-build]
 status: idea

@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 labels: [methode, dor]
-milestone:
+milestone: preparation
 version:
 status: idea
 pr:

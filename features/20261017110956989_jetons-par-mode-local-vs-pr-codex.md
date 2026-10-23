@@ -4,7 +4,7 @@ title: Attribuer les jetons réels par mode de revue (local vs PR+Codex) pour co
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: observabilite
 version:
 labels: [supervision, observabilite]
 status: ready

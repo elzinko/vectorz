@@ -4,7 +4,7 @@ title: "ezk-sprint close ne doit jamais se bloquer en worktree (helper de compte
 type: bug
 priority: P1
 product: mega-city
-milestone:
+milestone: preparation
 version:
 labels: [outillage, sprint, worktree, spike]
 status: idea

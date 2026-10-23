@@ -5,9 +5,9 @@ type: bug
 priority: P2
 product: mega-city
 labels: [methode, pilotage, dette]
-milestone: rationalisation
+milestone: carte
 version:
-status: idea
+status: ready
 pr:
 evidence: none # sortie CLI / vue texte, pas d'écran web
 created: 2026-10-15

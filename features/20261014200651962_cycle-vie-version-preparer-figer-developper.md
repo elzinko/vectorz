@@ -4,10 +4,10 @@ title: "Cycle de vie d'une version — préparer, figer (marqueur vérifiable), 
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: preparation
 version:
 labels: [backlog, version, board]
-status: idea
+status: ready
 pr:
 evidence: none # capacité de méthode (commande version + bouton côté board) ; preuve = tests + démo
 created: 2026-10-14
@@ -142,6 +142,11 @@ besoin de prévention se montre.
 
 ## Notes / décisions
 
+- **Aligné sur [ADR-083](../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md)
+  (2026-10-23)** : ce qu'on prépare et qu'on fige, c'est la **milestone** ; le numéro de version se
+  pose à la construction. Lire « version en brouillon » comme « milestone en préparation ». Le gel
+  (tag `freeze/…`) photographie le périmètre de la milestone au moment où on lui assigne son numéro.
+  Milestone de cette fiche : `preparation`. Groomée « prête » le 2026-10-23.
 - **Origine** : vision PO du 2026-10-14 (conversation de planning) — « préparer les versions et les
   modifier ensuite », « un bouton pour valider et figer pour développer », « droit d'ajouter des
   fiches (fix, Dependabot…) pour que la version soit aboutie ».

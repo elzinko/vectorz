@@ -4,10 +4,10 @@ title: "Le rapport de run affiche le ratio parké/livré + la couverture de groo
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: preparation
 version:
 labels: [backlog, observabilite]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-19

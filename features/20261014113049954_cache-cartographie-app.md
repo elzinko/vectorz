@@ -4,7 +4,7 @@ title: "Cache de cartographie applicative — une carte vivante de l'app que les
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: exploration-app
 version: v0.23.0
 labels: [test-local, exploration-app]
 status: idea

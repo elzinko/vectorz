@@ -2,32 +2,46 @@
 
 ## En clair
 
-Le backlog a été trié le **2026-09-30** : **46 fiches actives**, chacune rangée par chantier
-(`labels:`) et par version cible (`version:`). Ce plan donne l'**ordre** de travail de v0.1.0 à
-v0.23.0. La priorité (P0→P3) reste l'importance d'une fiche ; ici, c'est « quoi d'abord ». Les
-fiches parkées (`milestone: parked`) et les articles sont hors plan. Index (généré en local, non committé) : `BACKLOG.md`.
+Ce plan donne l'**ordre des milestones** à construire. Depuis le **2026-10-23**, on prépare par
+**lot de fiches sur une même milestone** (champ `milestone:`), pas par lot de version : le numéro de
+version est une **étiquette** posée à la construction, dans l'ordre, qui s'incrémente seule
+([ADR-083](../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md)).
+La priorité (P0→P3) reste l'importance d'une fiche. Les fiches parkées (`milestone: parked`) et les
+articles sont hors plan. Index (généré en local, non committé) : `BACKLOG.md`.
 
-## 🧭 Ordre de marche (horizon proche — décidé le 2026-10-16, train tourné le 2026-10-17)
+## 🧭 Ordre de marche — par milestone (2026-10-23)
 
-Raffine le train ci-dessous pour les prochaines cartes. **Règle de version (intérimaire)** : le numéro
-se pose **à la construction, dans l'ordre — jamais de saut**. Les numéros ≥ v0.19 d'aujourd'hui sont
-des étiquettes **provisoires**. Ça tient jusqu'au modèle milestones/itérations, différé (voir
-[ADR-0081](../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md)).
+On construit **milestone par milestone**, dans cet ordre (c'est aussi l'ordre de tirage). Le numéro de
+version se pose à la construction (étiquette). Détail :
+[Préparer par milestone](../docs/plans/2026-10-23-preparer-par-milestone.md).
 
-> **Rotation du 2026-10-17.** Le board multi-session, déjà prêt et ratifié en panel (ADR-079), prend
-> **v0.18** et passe devant le nettoyage CLI. La gate garde **v0.19** (elle paye tôt : chaque version
-> qui suit se livre plus propre). CLI, flux, backlog et cartographie reculent d'un cran. 33 fiches
-> rebadgées, aucun fichier déplacé.
+**Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
+- `20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build
+- `20261014200651962` — cycle de vie d'une version : préparer, figer (tag freeze) · build
+- `20261015122120198` — groomer les fiches d'une milestone en une passe, avec rapport · build
+- `20261018234206166` — `park` refuse une fiche non groomée · build
+- `20261018234207272` — rapport de run : ratio parké/livré + couverture de groom · build
+- `20261015125606808` — la version est un checkpoint du run (gates entrée/sortie) · groom
+- `20261015213921103` — « prête » vérifie la prémisse interne de la fiche · groom
+- `20261016203544694` — ezk-sprint close ne se bloque jamais en worktree · groom
 
-1. **Board v0.17** — livré, taggé **v0.17.0**.
-2. **Board multi-session** — **v0.18** (section ⑲), prêt : 7 fiches tirables. Prochaine version à
-   construire. Ses écrans étendent v0.17 (activité, chronologie) : il vient juste après.
-3. **La gate** — **v0.19** (section ⑳) : montée devant le polish CLI, car elle compose — chaque version suivante se livre plus propre.
-4. **Les thèmes** (CLI, flux, backlog, cartographie) — encore des idées, à groomer avant de construire ; numéros posés à leur tour.
+**Milestone `board` — « Le board dit vrai »** :
+- `20261018121537582` — brancher le board web sur les vraies données · build
+- `20261007135620590` — unifier les tableaux de bord en un seul (design par maquette) · groom
 
-**À part, sans version** :
-[`20261016114857813`](20261016114857813_lire-depends-et-desambiguiser-en-cours.md) (lire `depends:` en
-avertissement + désambiguïser « en cours ») — autonome, à glisser dans un sprint qui a de la marge.
+**Milestone `carte` — « La carte dit vrai »** :
+- `20261015213921021` — aligner la carte de la méthode sur le code · build
+- `20261015213921062` — recâbler les surfaces « in-progress » sur les branches · build
+
+**Milestone `recettes` — « Recettes & découvrabilité »** (rapatriée de muti, panel) :
+- `20261023120000001` — déclarer et rendre découvrables les outils/recettes d'un projet · groom
+- `20261023120000002` — contrat de recette auto-déclarée + catalogue · groom
+
+**Plus tard (milestones amorcées)** : `exploration-app` (ex-« v0.23 »), `cockpit`, `qualite` (revue
+design-system, release macOS, coût `sprint:report`), `observabilite` (jetons par mode — prête).
+
+**Passe de tri du parké (88 fiches)** : les ressortir **milestone par milestone** depuis leur
+`labels:` — le `park` a écrasé leur milestone d'origine par `parked`.
 
 ## 🎯 Product Goal — brouillon du 2026-08-23, à valider/réécrire par le PO
 
@@ -62,22 +76,21 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 | **v0.10.0** | Portabilité multi-IDE | une source de règles → `.claude/` + `.cursor/` + `AGENTS.md`, la CLI comme moteur portable | ✅ livrée (`v0.10.0`) |
 | **v0.11.0** | La qualité tient | passe qualité avant de versionner (release-gate), dépendances à jour, gate locale unique, critères prouvés | ✅ livrée (`v0.11.0`) |
 | **v0.12.0** | Le flux local sans friction | les outils `ezk` marchent depuis un projet hôte, `github: false` respecté de bout en bout | ✅ livrée (`v0.12.0`) |
-| **v0.13.0** | La transaction ship, d'un bloc | ship/backlog/PLAN et réconciliation worktree en une seule surface cohérente | 📋 groomée (prête à construire, 2026-10-13) |
-| **v0.14.0** | Les portiers robustes | archive, journal de sprint et worktree : des gardes qui ne crient plus au loup | 📋 groomée (prête, 2026-10-13) |
-| **v0.15.0** | Voir les runs | observabilité des runs autonomes : éligibilité, multi-versions, inventaire des lancements | 📋 groomée (prête, 2026-10-13) |
-| **v0.16.0** | Ranger la maison (2e jet) | déménagement `scrum/` sous revue, nettoyage cockpit, discipline de grooming, décision ADR | 📋 groomée (prête ; 1 fiche ADR en attente de panel) |
-| **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches, deux portées de config — conçu par maquette (ADR-074) | 📋 groomée (prête) — APRÈS le socle |
-| **v0.18.0** | Superviser plusieurs LLM | run (chantier) ≠ session (ouvrier), un journal par worktree, chronologie à 3 niveaux, accueil « Tous les projets » — conçu par maquette, ratifié en panel (ADR-079) | 🔵 prête (7 fiches tirables) — construite juste après v0.17 |
-| **v0.19.0** | La gate ne laisse plus rien passer | la gate attrape ce que la revue rattrapait : forme des vues, confinement, lint mega-city, recals de liens, santé des dépendances | 📝 proposée (2026-10-14), à valider |
-| **v0.20.0** | La CLI se tient | surface de commande cohérente et ergonomique : audit DSL, `--root` uniforme, bug `--help`, secrets par projet | 📝 proposée (2026-10-14), à valider |
-| **v0.21.0** | Le flux se lit et s'allège | cérémonies légères + restitutions lisibles : capture de rétro vérifiée, chemin lite du sprint, checkpoint en clair, rétro light | 📝 proposée (2026-10-14), à valider |
-| **v0.22.0** | Le backlog se discipline | modèle backlog / PR / grooming : deux formes de PR, voir les PR avant un lot, règles de découpe au grooming | 📝 proposée (2026-10-14), à valider |
-| **v0.23.0** | L'app se cartographie | exploration-app : index statique des routes (cache Pas 1) + l'explorateur de features, sur ezk-scout déjà livré | 📝 proposée (2026-10-14), à valider |
+| **v0.13.0** | La transaction ship, d'un bloc | ship/backlog/PLAN et réconciliation worktree cohérents | ✅ livrée (local) |
+| **v0.14.0** | Les portiers robustes | archive, journal de sprint et worktree : des gardes fiables | ✅ livrée (local) |
+| **v0.15.0** | Voir les runs | observabilité des runs : éligibilité, multi-versions, inventaire | ✅ livrée (local) |
+| **v0.16.0** | Ranger la maison (2e jet) | `scrum/` sous revue, nettoyage cockpit, discipline de grooming | ✅ livrée (local) |
+| **v0.17.0** | Le board unifié (cop1) | un seul tableau de bord : runs → moments → fiches (ADR-074) | ✅ livrée (local) |
+| **v0.18.0** | Superviser plusieurs LLM | run ≠ session, journal par worktree, chronologie 3 niveaux (ADR-079) | ✅ livrée (local) |
+| **v0.19 → v0.22** | Gate, CLI, flux, backlog | lots amincis : l'essentiel livré, 16 fiches renvoyées au backlog (parkées) | ✅ livrées (local, thin) |
+| **« v0.23 »** | L'app se cartographie | milestone `exploration-app` : index des routes + explorateur de features | 🔵 en cours |
+| **« v0.24 »** | Le board sur vraies données | milestone `board` : brancher le board sur le read-model réel | 🔵 en cours (1 prête) |
 | **v1.0.0** | Ouvrable aux autres | multi-client, distribution, articles | ⏸️ « ne pas publier » (PO) |
 
-> **Train rouvert le 2026-10-11.** Les 10 premières versions sont livrées. Après un grand tri du backlog
-> (3 fusions de doublons, 1 split, 1 fiche supersedée), les fiches vivantes ont été loties en 6 nouvelles
-> versions, validées par le PO après une revue adverse. Séquence détaillée en sections ⑫→⑰ ci-dessous.
+> **2026-10-23 — le train devient un historique.** Les numéros de version sont des **étiquettes déjà
+> posées** : v0.1 → v0.22 sont livrées. La préparation se fait désormais **par milestone** (voir
+> « Ordre de marche » ci-dessus) ; le numéro se pose à la construction. Les sections détaillées
+> ci-dessous (①→⑳) sont l'**historique** des lots livrés, gardées pour la trace.
 
 ## ▶️ Séquence — décidée le 2026-09-30 (tri, mode auto)
 
@@ -329,8 +342,9 @@ avertissement + désambiguïser « en cours ») — autonome, à glisser dans un
 > **Reste à caser** (le PO slotte) : `20261002130917993` (release local-first) et `20261011153019643` (step design-system dans `ezk-release`) — thème release, aiguillage en attente.
 > **Rattachées au board v0.17** (pas une version libre) : `20261002115451451` (page une ligne par projet), `20260830110131228` (étapes de skill configurables), `20261013143324505` (borner `sprint:report`).
 
-### 🧹 En continu — petits correctifs (à glisser dans un sprint qui a de la marge)
-- `20261016114857813` — lire `depends:` en avertissement + désambiguïser « en cours » · P2, **prête** · `build` (autonome, sans version — le noyau d'ADR-0081)
+### 🧹 En continu — petits correctifs (historique)
+> La fiche `20261016114857813` (lire `depends:` + désambiguïser « en cours ») a rejoint la milestone
+> `preparation` — voir « Ordre de marche » en tête.
 - ~~`20261004181110120` — ezk ne croit plus un INIT_CWD laissé par un pnpm parent (le test de « ezk retro note » écrivait dans le vrai dépôt) · P1, prête le 2026-10-04 · `build` (avant la rétro du run cockpit, décision PO)~~ — shipped
 - ~~`0024` — supprimer le vieux code d'avant le pivot · `build`~~ — shipped #296
 - ~~`0117` — corriger les signatures de domain.ts qui ne collent plus au code · `build`~~ — shipped #295

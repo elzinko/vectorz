@@ -4,10 +4,10 @@ title: "Aligner la carte de la méthode sur le code (épic retiré, statut todo,
 type: chore
 priority: P2
 product: mega-city
-milestone: rationalisation
+milestone: carte
 version:
 labels: [methode, carte, dette]
-status: idea
+status: ready
 pr:
 evidence: none # alignement de données/doc de méthode, pas d'écran
 created: 2026-10-15

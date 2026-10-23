@@ -4,7 +4,7 @@ title: "Lire enfin depends: (en avertissement) + désambiguïser « en cours »"
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: preparation
 version:
 labels: [methode, backlog, versioning, sequencement, dette]
 status: ready

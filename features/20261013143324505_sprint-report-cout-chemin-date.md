@@ -4,7 +4,7 @@ title: "Borner le coût du chemin daté de sprint:report (scan transcripts + gh 
 type: refactor
 priority: P3
 product: mega-city
-milestone:
+milestone: qualite
 version:
 labels: [performance, supervision, github-optionnel]
 status: idea

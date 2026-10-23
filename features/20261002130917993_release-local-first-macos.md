@@ -1,5 +1,6 @@
 ---
 id: "20261002130917993"
+milestone: qualite
 title: "Release local-first — macOS signé/notarisé en local, la CI seulement pour Windows (économie de minutes)"
 type: feature
 priority: P2

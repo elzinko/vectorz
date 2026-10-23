@@ -4,10 +4,10 @@ title: "La commande park refuse une fiche non groomée (compile « tenter avant 
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: preparation
 version:
 labels: [backlog, agent-ops]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-19

@@ -1,24 +1,24 @@
 ---
 id: "20261015122120198"
-title: "ezk-backlog : groomer les fiches d'une version en une passe, avec rapport du delta"
+title: "ezk-backlog : groomer les fiches d'une milestone en une passe, avec rapport du delta"
 type: feature
 priority: P2
 product: mega-city
-milestone:
+milestone: preparation
 version:
 labels: [ezk-backlog, grooming, cli, tooling]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # commande CLI/skill ; prouvée par le rapport produit
 created: 2026-10-15
 ---
 
-# 20261015122120198 — Groomer une version en une passe, avec rapport
+# 20261015122120198 — Groomer une milestone en une passe, avec rapport
 
 **En clair.** Aujourd'hui on groome **une fiche à la fois** (`ezk-backlog groom <id>`). Quand on
 prépare une version, c'est fastidieux. On veut une commande qui **mûrit d'un coup toutes les
-fiches d'une version** (en auto-groom) et rend un **rapport** : lesquelles sont devenues prêtes,
+fiches d'une milestone** (en auto-groom) et rend un **rapport** : lesquelles sont devenues prêtes,
 lesquelles restent en idée (et pourquoi), lesquelles ont été **découpées** (filles ajoutées) ou
 **exclues** (fusionnées/supersedées).
 
@@ -30,13 +30,13 @@ lesquelles restent en idée (et pourquoi), lesquelles ont été **découpées** 
 `ezk-backlog groom <id>` traite une seule fiche, en boucle guidée. Le mode **non-interactif**
 (sans opérateur) existe déjà — `ezk-product-build` l'utilise : « pour chaque slot manquant,
 applique toi-même la technique la plus utile ». Mais il n'y a **pas** de commande qui l'applique
-à **toutes les fiches d'une version** et qui dise ce qui a bougé. Préparer v0.23 (6 fiches idée)
-le rendrait évident.
+à **toutes les fiches d'une milestone** et qui dise ce qui a bougé. Préparer une milestone de 6
+fiches idée le rendrait évident.
 
 ## Proposition
 
-- Une option / sous-commande : `ezk-backlog groom --version vX.Y` (ou `groom-version vX.Y`).
-- Elle sélectionne les **fiches actives de la version** encore à mûrir (idée, ou prête mais
+- Une option / sous-commande : `ezk-backlog groom --milestone <nom>` (ou `groom-milestone <nom>`).
+- Elle sélectionne les **fiches actives de la milestone** encore à mûrir (idée, ou prête mais
   faible), et lance sur chacune l'**auto-groom non-interactif** (une technique par slot manquant).
 - Elle **ne force jamais** `ready` : c'est le gate `ready <id>` qui promeut. Une fiche qui demande
   un **arbitrage humain** (ex. décision structurante / panel) **reste idée**, signalée.
@@ -49,17 +49,17 @@ le rendrait évident.
 
 ## Critères d'acceptation
 
-- [ ] `groom --version vX.Y` mûrit en une passe les fiches idée de la version (auto-groom non-
+- [ ] `groom --milestone <nom>` mûrit en une passe les fiches idée de la milestone (auto-groom non-
       interactif), sans forcer `ready`.
 - [ ] Le **rapport** liste : prêtes / toujours idée (avec raison) / découpées / exclues.
 - [ ] Une fiche nécessitant un arbitrage humain **reste idée** et est **nommée** dans le rapport.
-- [ ] Rien n'est passé `ready` sans le gate ; aucune fiche d'une **autre** version n'est touchée.
+- [ ] Rien n'est passé `ready` sans le gate ; aucune fiche d'une **autre** milestone n'est touchée.
 
 ## Comment vérifier
 
-- Sur une version à N idées, lancer la commande → elle les groome et le rapport nomme le delta.
+- Sur une milestone à N idées, lancer la commande → elle les groome et le rapport nomme le delta.
 - Une fiche « panel requis » reste idée dans le rapport, avec sa raison.
-- Vérifier qu'aucune fiche hors version n'a bougé.
+- Vérifier qu'aucune fiche hors milestone n'a bougé.
 
 ## Notes / décisions
 
@@ -68,5 +68,6 @@ le rendrait évident.
   (sanity check périodique).
 - Origine : demande PO du 2026-10-15 (préparer une version en un geste, avec un rapport du delta),
   née en préparant le lot multi-sessions (v0.23, [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)).
-- **Priorité P2 et version à confirmer par le PO** (proposées : P2, sans version — outillage à
-  glisser quand il y a de la marge).
+- **Milestone `preparation`** (ADR-083 : on groome par milestone ; le numéro de version se pose à la
+  construction, plus à la préparation). Outillage à glisser quand il y a de la marge.
+- Groomée « prête » le 2026-10-23 avec le lot de la milestone « Préparer une milestone ».
