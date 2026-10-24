@@ -60,3 +60,12 @@ après. Cible : le chemin daté tient sous ~10 s sur vectorz (49 runs).
 - **Groomée `ready` (2026-10-24), prémisse vérifiée.** Le guichet `ezk forge changes --merged` existe
   (`bin/forge-changes.ts`, ADR-0061) et respecte `github: false` : l'approche est **arrêtée**, ce n'est
   plus un spike. DoR socle vert. Refactor de perf borné, critères mesurables (< ~10 s).
+
+- **AC « github:false → aucun gh » LIVRÉE et testée (2026-10-24).** `GitGhRepoSource.listMergedPrs`
+  consulte `githubCapabilities(repoRoot)` (lecteur de config testé) et **court-circuite avant tout appel
+  `gh`** quand `pr` est coupé. Un lanceur `gh` injectable (`GhRunner`) rend la garde **prouvable** :
+  `repoSource.test.ts` vérifie que `gh` n'est jamais appelé en `github:false` (et qu'il l'est, et parse,
+  config allumée). Vectorz étant `github:false`, son propre `sprint:report` ne lance plus `gh`.
+- **RESTE (fiche pas close) :** AC « scan borné à la fenêtre » (passer la fenêtre à `listMergedPrs` +
+  filtrer les transcripts en amont) et AC « < 10 s sur vectorz » — cette dernière **non mesurable** sans
+  un run daté portant un gate de supervision. La fiche reste `ready`, partiellement entamée.

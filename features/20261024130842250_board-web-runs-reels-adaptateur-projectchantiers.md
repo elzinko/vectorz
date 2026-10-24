@@ -8,7 +8,7 @@ milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, cop1]
 status: ready
-blocked: "donnée amont absente — les journaux de run n'émettent ni clé chantier (0/55) ni moments/verdict/jetons ; l'adaptateur n'aurait rien de réel à montrer"
+blocked: "attend-dépendance — journaux de run sans clé chantier ni moments/verdict (0/55) ; dépend d'un enrichissement amont de l'émetteur de supervision"
 pr:
 evidence: before-after
 created: 2026-10-24
