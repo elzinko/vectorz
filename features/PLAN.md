@@ -18,7 +18,7 @@ version se pose à la construction (étiquette). Détail :
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped
 - ~~`20261014200651962` — cycle de vie d'une version : préparer, figer (tag freeze) · build~~ — shipped
-- `20261015122120198` — groomer les fiches d'une milestone en une passe, avec rapport · build
+- ~~`20261015122120198` — groomer les fiches d'une milestone en une passe, avec rapport · build~~ — shipped
 - `20261018234206166` — `park` refuse une fiche non groomée · build
 - `20261018234207272` — rapport de run : ratio parké/livré + couverture de groom · build
 - `20261015125606808` — la version est un checkpoint du run (gates entrée/sortie) · groom

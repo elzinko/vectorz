@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md](../20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md)
+> 🗎 Rendu de la fiche [features/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md](../done/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md)
 
 # 20261015122120198 — Groomer une milestone en une passe, avec rapport
 

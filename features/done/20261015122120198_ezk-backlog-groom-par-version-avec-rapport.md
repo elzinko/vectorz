@@ -7,9 +7,9 @@ product: mega-city
 milestone: preparation
 version:
 labels: [ezk-backlog, grooming, cli, tooling]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (HEAD)"
 evidence: none # commande CLI/skill ; prouvée par le rapport produit
 created: 2026-10-15
 ---
@@ -67,7 +67,7 @@ fiches idée le rendrait évident.
   le gate `ready` inchangé. Distinct d'`aggregate` (restructuration du stock) et de `review`
   (sanity check périodique).
 - Origine : demande PO du 2026-10-15 (préparer une version en un geste, avec un rapport du delta),
-  née en préparant le lot multi-sessions (v0.23, [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)).
+  née en préparant le lot multi-sessions (v0.23, [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)).
 - **Milestone `preparation`** (ADR-083 : on groome par milestone ; le numéro de version se pose à la
   construction, plus à la préparation). Outillage à glisser quand il y a de la marge.
 - Groomée « prête » le 2026-10-23 avec le lot de la milestone « Préparer une milestone ».

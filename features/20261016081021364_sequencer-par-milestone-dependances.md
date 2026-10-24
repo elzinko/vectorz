@@ -126,7 +126,7 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
 - **Voisines** (cluster « cycle de vie des versions ») :
   [cycle de vie d'une version](done/20261014200651962_cycle-vie-version-preparer-figer-developper.md),
   [frontière de version = checkpoint](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
-  [groom par version](20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md).
+  [groom par version](done/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md).
 - **Noyau sorti en fiche tirable** :
   [lire `depends:` + désambiguïser « en cours »](done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md)
   (prête). Cette fiche-ci reste la **cible différée**.
