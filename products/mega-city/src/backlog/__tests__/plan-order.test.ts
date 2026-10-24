@@ -122,9 +122,10 @@ describe('parsePlanOrder (fiche 0089)', () => {
     );
     const planMd = readFileSync(planPath, 'utf8');
     const ids = parsePlanOrder(planMd);
-    // Plan du tri du 2026-09-30 : la tête du socle V0.1 (graphe compilé) vient en premier.
-    expect(ids[0]).toBe('20260821204737357');
-    // V0.1 → V0.2 (ezk-scout) → P0 (ship sûr) → V0.3 (versions) : l’ordre du document est préservé.
+    // Depuis la bascule par milestone (2026-10-23), le plan MÈNE par la milestone courante
+    // (`preparation`), plus par la tête V0.1 (graphe compilé) depuis longtemps livrée.
+    expect(ids[0]).toBe('20261016114857813');
+    // L’ordre du document reste préservé parmi les sections historiques V0.1 → V0.2 → P0 → V0.3.
     expect(ids.indexOf('20260821204737357')).toBeLessThan(ids.indexOf('20260910165637000'));
     expect(ids.indexOf('20260910165637000')).toBeLessThan(ids.indexOf('20260830194601233'));
     expect(ids.indexOf('20260830194601233')).toBeLessThan(ids.indexOf('20260824204751403'));

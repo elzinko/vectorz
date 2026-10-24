@@ -7,7 +7,7 @@
  * On fige ici les deux régimes (valeur quotée littérale vs commentaire hors guillemets).
  */
 import { describe, expect, it } from 'vitest';
-import { frontMatter, readField } from '../fiches.js';
+import { frontMatter, readField, readListField } from '../fiches.js';
 
 describe('readField — valeur quotée lue littéralement', () => {
   it('pr: "#29" → #29 (le # est la valeur, pas un commentaire) [bug PR #221]', () => {
@@ -87,6 +87,18 @@ describe('readField — bords', () => {
     // formé → la faute reste visible ; alors que `"idea" # note` (avec blanc) rend `idea`.
     expect(readField('status: "idea"#typo', 'status')).not.toBe('idea');
     expect(readField('status: "idea" # note', 'status')).toBe('idea');
+  });
+});
+
+describe('readListField — champ depends (fiche 20261016114857813 : lu enfin)', () => {
+  it('depends: ["0169", "0170"] → ["0169", "0170"]', () => {
+    expect(readListField('depends: ["0169", "0170"]', 'depends')).toEqual(['0169', '0170']);
+  });
+  it('depends: absent → [] (champ optionnel)', () => {
+    expect(readListField('status: idea', 'depends')).toEqual([]);
+  });
+  it('depends: vide (sans crochets) → []', () => {
+    expect(readListField('depends:\nstatus: idea', 'depends')).toEqual([]);
   });
 });
 

@@ -16,6 +16,7 @@ import {
   checkVersions,
   closeVersion,
   compareVersions,
+  dependencyFindings,
   hasErrors,
   proposedTagOf,
   releaseTagFor,
@@ -37,6 +38,7 @@ function fiche(o: Partial<Fiche> & { id: string }): Fiche {
     product: 'mega-city',
     pr: '',
     labels: [],
+    depends: [],
     blocked: '',
     done: false,
     file: `features/${o.id}_x.md`,
@@ -393,7 +395,7 @@ describe('rendu texte — « En clair » d’abord', () => {
     const text = lines.join('\n');
     expect(text).toContain('Version');
     expect(text).toMatch(/v0\.1\.0\s+1\s+1\s+0\s+0\s+0\s+1\s+livrée/);
-    expect(text).toMatch(/v0\.3\.0\s+1\s+0\s+1\s+1\s+0\s+0\s+en cours/);
+    expect(text).toMatch(/v0\.3\.0\s+1\s+0\s+1\s+1\s+0\s+0\s+active \(tirage\)/);
     expect(text).toContain('2 fiche(s) active(s)');
     expect(text).toContain('dont 1 parkée(s)');
   });
@@ -425,5 +427,69 @@ describe('rendu texte — « En clair » d’abord', () => {
     expect(apart).toContain('git tag -a v0.2.0 -m "Version v0.2.0" abc1234567890'); // toujours HEAD
     const unknown = renderProposal('v0.2.0', 'v0.2.0', 'abc1234').join('\n');
     expect(unknown).toContain('Pas de origin/main connu');
+  });
+});
+
+describe('dependencyFindings — depends: lu comme signal (ADR-0081, fiche 20261016114857813)', () => {
+  it('avertit quand une fiche est placée AVANT une dépendance non livrée (par version)', () => {
+    const a = fiche({ id: I(1), version: 'v0.1.0', depends: [I(2)] });
+    const b = fiche({ id: I(2), version: 'v0.2.0' }); // non livrée, planifiée plus tard
+    const ordre = dependencyFindings([a, b]).filter((f) => f.code === 'depends-ordre');
+    expect(ordre).toHaveLength(1);
+    expect(ordre[0].severity).toBe('warning');
+    expect(ordre[0].ficheId).toBe(I(1));
+    expect(ordre[0].message).toContain(I(2));
+  });
+
+  it('n’avertit pas quand la fiche est bien placée APRÈS sa dépendance', () => {
+    const a = fiche({ id: I(1), version: 'v0.3.0', depends: [I(2)] });
+    const b = fiche({ id: I(2), version: 'v0.1.0' });
+    expect(dependencyFindings([a, b]).filter((f) => f.code === 'depends-ordre')).toHaveLength(0);
+  });
+
+  it('n’avertit pas quand la dépendance est déjà livrée', () => {
+    const a = fiche({ id: I(1), version: 'v0.1.0', depends: [I(2)] });
+    const b = shipped(2, 'v0.1.0');
+    expect(dependencyFindings([a, b])).toHaveLength(0);
+  });
+
+  it('n’avertit pas quand la dépendance est close sans livraison (superseded)', () => {
+    const a = fiche({ id: I(1), version: 'v0.1.0', depends: [I(2)] });
+    const b = fiche({ id: I(2), status: 'superseded' }); // terminale : ne bloquera jamais
+    expect(dependencyFindings([a, b]).filter((f) => f.code === 'depends-ordre')).toHaveLength(0);
+  });
+
+  it('refuse (erreur) un cycle de dépendances et nomme la boucle', () => {
+    const a = fiche({ id: I(1), depends: [I(2)] });
+    const b = fiche({ id: I(2), depends: [I(1)] });
+    const found = dependencyFindings([a, b]);
+    const cycle = found.filter((f) => f.code === 'depends-cycle');
+    expect(cycle).toHaveLength(1);
+    expect(cycle[0].severity).toBe('error');
+    expect(cycle[0].message).toContain(I(1));
+    expect(cycle[0].message).toContain(I(2));
+    expect(hasErrors(found)).toBe(true);
+  });
+
+  it('remonte dans checkVersions (le signal rejoint le contrôle de lot)', () => {
+    const a = fiche({ id: I(1), version: 'v0.1.0', depends: [I(2)] });
+    const b = fiche({ id: I(2), version: 'v0.2.0' });
+    expect(checkVersions([a, b], noTags).some((f) => f.code === 'depends-ordre')).toBe(true);
+  });
+
+  it('priorise l’ordre du PLAN.md quand il est fourni', () => {
+    const a = fiche({ id: I(1), depends: [I(2)] }); // sans version : seul le plan tranche
+    const b = fiche({ id: I(2) });
+    const planMd = ['## NOW', `- \`${I(1)}\` — a · build`, `- \`${I(2)}\` — b · build`].join('\n');
+    expect(dependencyFindings([a, b], planMd).filter((f) => f.code === 'depends-ordre')).toHaveLength(1);
+  });
+});
+
+describe('renderVersionList — « en cours » désambiguïsé (fiche 20261016114857813)', () => {
+  it('la version active du tirage porte « active », les autres lots incomplets « incomplète »', () => {
+    const text = renderVersionList(buildVersions([todo(1, 'v0.1.0'), todo(2, 'v0.2.0')], noTags)).join('\n');
+    expect(text).toMatch(/v0\.1\.0.*active \(tirage\)/); // la plus basse non taguée = active
+    expect(text).toMatch(/v0\.2\.0.*incomplète/);
+    expect(text).not.toContain('en cours'); // l’ancien libellé ambigu a disparu
   });
 });

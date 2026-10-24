@@ -21,6 +21,7 @@ function fiche(o: Partial<Fiche> & { id: string }): Fiche {
     product: 'mega-city',
     pr: '',
     labels: [],
+    depends: [],
     blocked: '',
     done: false,
     file: `features/${o.id}_x.md`,

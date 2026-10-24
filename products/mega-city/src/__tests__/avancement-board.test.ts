@@ -55,6 +55,7 @@ describe('diagrams/avancement/board.html — la coque', () => {
       pr: '',
       labels,
       blocked: '',
+      depends: [],
       version: '',
       done: false,
       file: `features/${id}.md`,

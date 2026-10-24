@@ -9,8 +9,12 @@ import {
   proposedTagOf,
 } from './versions.js';
 
+// « en cours » voulait dire DEUX choses (fiche 20261016114857813) : un lot incomplet (État de
+// chaque version) et la version active du tirage (ADR-0070, une seule). On les sépare : l'État dit
+// « incomplète » (le lot) ; la version active (la plus basse non taguée, calculée au rendu) porte
+// « active ».
 const STATE_LABEL: Record<VersionState, string> = {
-  'en-cours': 'en cours',
+  'en-cours': 'incomplète',
   'a-clore': 'à clore',
   livree: 'livrée',
   rouverte: 'rouverte',
@@ -46,6 +50,15 @@ export function renderVersionList(report: VersionsReport): string[] {
   }
 
   if (report.lots.length === 0) return [intro];
+  // La version ACTIVE du tirage (ADR-0070) = la plus basse non taguée qui a du travail — le 1er lot
+  // `en-cours` dans l'ordre naturel. Elle porte « active » ; les autres lots incomplets, « incomplète ».
+  const activeVersion = report.lots.find((l) => l.state === 'en-cours')?.version;
+  const stateCell = (l: (typeof report.lots)[number]): string => {
+    // `livree` implique `releaseTag` défini ; le `??` garde le type optionnel total sans `!` non sûr.
+    if (l.state === 'livree') return `${STATE_LABEL[l.state]} (${l.releaseTag ?? proposedTagOf(l.version)})`;
+    if (l.state === 'en-cours') return l.version === activeVersion ? 'active (tirage)' : STATE_LABEL['en-cours'];
+    return STATE_LABEL[l.state];
+  };
   const rows = report.lots.map((l) => [
     l.version,
     String(l.shipped.length + l.todo.length),
@@ -54,8 +67,7 @@ export function renderVersionList(report: VersionsReport): string[] {
     String(l.ready.length),
     String(l.blocked.length),
     String(l.intruders.length),
-    // `livree` implique `releaseTag` défini ; le `??` garde le type optionnel total sans `!` non sûr.
-    l.state === 'livree' ? `${STATE_LABEL[l.state]} (${l.releaseTag ?? proposedTagOf(l.version)})` : STATE_LABEL[l.state],
+    stateCell(l),
   ]);
   return [
     intro,
@@ -80,7 +92,7 @@ export function renderFindings(findings: readonly VersionFinding[], scope: strin
     intro,
     ...(lines.length > 0 ? ['', ...lines] : []),
     '',
-    "Non contrôlé ici : le séquencement des dépendances (le champ `depends:` n'est pas encore lu).",
+    "Dépendances (`depends:`) : lues et vérifiées en avertissement (une fiche placée avant une dépendance non livrée) ; un cycle est refusé. Un signal, pas un barrage (ADR-0081).",
   ];
 }
 

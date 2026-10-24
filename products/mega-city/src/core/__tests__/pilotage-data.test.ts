@@ -18,6 +18,7 @@ const F = (over: Partial<Fiche>): Fiche => ({
   product: 'mega-city',
   pr: '',
   labels: [],
+  depends: [],
   blocked: '',
   version: '',
   done: false,

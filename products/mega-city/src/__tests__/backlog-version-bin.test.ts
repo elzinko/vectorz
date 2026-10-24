@@ -74,7 +74,7 @@ describe('backlog:version — le bin', () => {
     expect(r.code).toBe(0);
     expect(r.out.startsWith('En clair :')).toBe(true);
     expect(r.out).toMatch(/v0\.2\.0\s+2\s+2\s+0\s+0\s+0\s+0\s+à clore/);
-    expect(r.out).toMatch(/v0\.3\.0\s+1\s+0\s+1\s+1\s+0\s+0\s+en cours/);
+    expect(r.out).toMatch(/v0\.3\.0\s+1\s+0\s+1\s+1\s+0\s+0\s+active \(tirage\)/);
     expect(git('status', '--porcelain')).toBe('');
     expect(git('tag', '-l')).toBe('');
   });

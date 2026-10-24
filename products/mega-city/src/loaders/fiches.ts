@@ -23,6 +23,8 @@ export interface Fiche {
   product: string; // vectorz | mega-city | …
   pr: string; // '#123' | 'local …' | ''
   labels: string[]; // tags libres du front-matter (`labels: [bmad, …]`), [] si absent
+  /** Ids des fiches dont celle-ci dépend (`depends: [0169]`). SIGNAL, pas barrage (ADR-0081) ; [] si absent. */
+  depends: string[];
   /** Drapeau orthogonal à la colonne (sliver B, fiche 652) : raison de `blocked:`, '' si absent. */
   blocked: string;
   done: boolean; // vit dans features/done/ (livrée)
@@ -106,6 +108,7 @@ export function loadFiches(rootDir: string): Fiche[] {
         product: readField(fm, 'product') || '—',
         pr: readField(fm, 'pr'),
         labels: readListField(fm, 'labels'),
+        depends: readListField(fm, 'depends'),
         blocked: readField(fm, 'blocked'),
         done,
         file: `features/${done ? 'done/' : ''}${filename}`,

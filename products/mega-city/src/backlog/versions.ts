@@ -12,6 +12,7 @@
 import { TERMINAUX } from '../core/fiche-schema.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { parsePlanSections } from './plan-sections.js';
+import { parsePlanOrder } from './plan-order.js';
 
 /** Le format d'une version : semver strict `vX.Y.Z` (`v0.3.0`, `v1.0.0`) — décision 2026-10-08. */
 export const VERSION_FORMAT = /^v\d+\.\d+\.\d+$/;
@@ -185,7 +186,9 @@ export type FindingCode =
   | 'taille'
   | 'plan-ecart'
   | 'plan-absente'
-  | 'plan-ambigue';
+  | 'plan-ambigue'
+  | 'depends-cycle'
+  | 'depends-ordre';
 
 export interface VersionFinding {
   severity: Severity;
@@ -281,6 +284,123 @@ function planFindings(
   return found;
 }
 
+/**
+ * Lecture du champ `depends:` — un SIGNAL, pas un barrage (ADR-0081). Deux constats, purs, AVANT
+ * toute sélection (ADR-0070 inchangé : on prévient, on ne bloque pas le tirage) :
+ *   - `depends-cycle` (ERREUR) : des dépendances qui bouclent ; le message nomme la boucle ;
+ *   - `depends-ordre` (AVERTISSEMENT) : une fiche placée AVANT (ou en même temps qu') une dépendance
+ *     non livrée. L'ordre se lit dans `PLAN.md` quand il est fourni (les deux fiches y figurent),
+ *     sinon dans `version:`. On n'alerte que si l'ordre est POSITIVEMENT établi comme fautif (jamais
+ *     au doute : deux fiches sans version ni entrée de plan ne déclenchent rien).
+ */
+export function dependencyFindings(fiches: readonly Fiche[], planMd?: string): VersionFinding[] {
+  const known = new Map(fiches.map((f) => [f.id, f] as const));
+  const found: VersionFinding[] = [];
+
+  // 1) Cycles — l'erreur qui refuse. Restreints aux fiches connues.
+  const cycles = findDependencyCycles(known);
+  const inCycle = new Set<string>(cycles.flat());
+  for (const loop of cycles) {
+    found.push({
+      severity: 'error',
+      code: 'depends-cycle',
+      version: known.get(loop[0])?.version ?? '',
+      ficheId: loop[0],
+      message: `dépendances en cycle : ${[...loop, loop[0]].join(' → ')}. Casse la boucle.`,
+    });
+  }
+
+  // 2) Ordre — l'avertissement. Une fiche non livrée placée avant une dépendance non livrée.
+  const planPos = planMd === undefined ? undefined : indexOfPlan(parsePlanOrder(planMd));
+  for (const f of fiches) {
+    if (isDelivered(f) || inCycle.has(f.id)) continue; // son ordre est joué, ou le cycle prime
+    for (const depId of f.depends) {
+      const dep = known.get(depId);
+      if (!dep || isDelivered(dep)) continue; // dépendance inconnue, ou déjà satisfaite
+      if (placedBeforeOrEqual(f, dep, planPos)) {
+        found.push({
+          severity: 'warning',
+          code: 'depends-ordre',
+          version: f.version,
+          versions: dep.version && dep.version !== f.version ? [f.version, dep.version] : undefined,
+          ficheId: f.id,
+          message: `dépend de ${depId} (non livrée) mais n'est pas placée après elle — l'ordre n'est pas garanti.`,
+        });
+      }
+    }
+  }
+  return found;
+}
+
+// Une dépendance n'est plus « en attente » si elle est livrée OU close sans livraison (superseded /
+// merged / split) : dans les deux cas elle ne bloquera jamais, comme le fait déjà `planFindings`.
+const isDelivered = (f: Fiche): boolean =>
+  f.done || f.status === 'shipped' || isClosedWithoutDelivery(f);
+
+/** id → rang dans l'ordre du plan (1re occurrence). */
+function indexOfPlan(ids: readonly string[]): Map<string, number> {
+  const m = new Map<string, number>();
+  ids.forEach((id, i) => {
+    if (!m.has(id)) m.set(id, i);
+  });
+  return m;
+}
+
+/**
+ * `f` est-elle placée AVANT ou EN MÊME TEMPS que sa dépendance `g` (donc fautive) ? Plan d'abord
+ * (si les deux y figurent), sinon `version:`. Au doute (aucune des deux sources ne tranche) : `false`.
+ */
+function placedBeforeOrEqual(f: Fiche, g: Fiche, planPos?: Map<string, number>): boolean {
+  if (planPos) {
+    const pf = planPos.get(f.id);
+    const pg = planPos.get(g.id);
+    if (pf !== undefined && pg !== undefined) return pf <= pg;
+  }
+  if (f.version && g.version) return compareVersions(f.version, g.version) <= 0;
+  if (f.version && !g.version) return true; // `f` est planifiée dans une version, sa dépendance non
+  return false; // indéterminé : on ne crie pas au loup
+}
+
+/**
+ * Cycles du graphe `depends:` restreint aux fiches connues (DFS tricolore). Chaque boucle est
+ * rendue une fois, nommée depuis son plus petit point d'entrée dans la pile. Déterministe.
+ */
+function findDependencyCycles(known: Map<string, Fiche>): string[][] {
+  const WHITE = 0;
+  const GRAY = 1;
+  const BLACK = 2;
+  const color = new Map<string, number>();
+  const stack: string[] = [];
+  const cycles: string[][] = [];
+  const seen = new Set<string>();
+
+  const visit = (id: string): void => {
+    color.set(id, GRAY);
+    stack.push(id);
+    for (const dep of known.get(id)?.depends ?? []) {
+      if (!known.has(dep)) continue;
+      const c = color.get(dep) ?? WHITE;
+      if (c === GRAY) {
+        const loop = stack.slice(stack.indexOf(dep));
+        const key = [...loop].sort().join(',');
+        if (!seen.has(key)) {
+          seen.add(key);
+          cycles.push(loop);
+        }
+      } else if (c === WHITE) {
+        visit(dep);
+      }
+    }
+    stack.pop();
+    color.set(id, BLACK);
+  };
+
+  for (const id of [...known.keys()].sort()) {
+    if ((color.get(id) ?? WHITE) === WHITE) visit(id);
+  }
+  return cycles;
+}
+
 function compareFindings(a: VersionFinding, b: VersionFinding): number {
   const bySeverity = a.severity === b.severity ? 0 : a.severity === 'error' ? -1 : 1;
   return (
@@ -348,6 +468,7 @@ export function checkVersions(
     }
   }
   if (opts.planMd !== undefined) found.push(...planFindings(fiches, report, opts.planMd));
+  found.push(...dependencyFindings(fiches, opts.planMd));
 
   const wanted = opts.version;
   const scoped =

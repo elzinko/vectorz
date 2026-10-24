@@ -13,6 +13,7 @@ function fiche(overrides: Partial<Fiche> & { id: string }): Fiche {
     product: 'mega-city',
     pr: '',
     labels: [],
+    depends: [],
     blocked: '',
     version: '',
     done: false,
