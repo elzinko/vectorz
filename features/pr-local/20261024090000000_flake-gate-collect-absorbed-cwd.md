@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261024090000000_flake-gate-collect-absorbed-cwd.md](../20261024090000000_flake-gate-collect-absorbed-cwd.md)
+> 🗎 Rendu de la fiche [features/20261024090000000_flake-gate-collect-absorbed-cwd.md](../done/20261024090000000_flake-gate-collect-absorbed-cwd.md)
 
 # 20261024090000000 — La gate ne flake plus (test git `collect-absorbed`)
 

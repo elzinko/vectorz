@@ -8,8 +8,8 @@ milestone: qualite
 version:
 labels: [qualite, gate, test-infra, flake]
 depends:
-status: ready
-pr:
+status: shipped
+pr: "local (b42684d2)"
 evidence: none # correctif de test-infra, pas d'écran ; preuve = suite complète verte en série
 created: 2026-10-24
 ---
