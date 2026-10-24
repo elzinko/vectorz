@@ -24,7 +24,7 @@ d'`ezk-archive`).
 - **Séquence v0.18 → v0.22** posée dans [PLAN.md](../../features/PLAN.md) (+ `version:` sur 24 fiches),
   marquée « proposée, à valider » : *La CLI se tient · La gate ne laisse plus rien passer · Le flux se
   lit et s'allège · Le backlog se discipline · L'app se cartographie*.
-- **Cycle de vie d'une version** (nouvelle fiche, idée, P2) — [20261014200651962](../../features/20261014200651962_cycle-vie-version-preparer-figer-developper.md).
+- **Cycle de vie d'une version** (nouvelle fiche, idée, P2) — [20261014200651962](../../features/done/20261014200651962_cycle-vie-version-preparer-figer-developper.md).
   Avis d'architecte : **figer = un marqueur** (pas un gate de dev), **photographié** par un tag git
   `freeze/vX.Y.Z` (persistant, vérifiable), **pas** un `VERSIONS.md`. N'interfère pas avec le tirage
   (ADR-0070), ne viole pas le board lecteur-seul (ADR-074).

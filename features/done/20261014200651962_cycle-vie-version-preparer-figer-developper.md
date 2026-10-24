@@ -7,8 +7,8 @@ product: mega-city
 milestone: preparation
 version:
 labels: [backlog, version, board]
-status: ready
-pr:
+status: shipped
+pr: "local (7252d95c)"
 evidence: none # capacité de méthode (commande version + bouton côté board) ; preuve = tests + démo
 created: 2026-10-14
 ---
@@ -142,7 +142,7 @@ besoin de prévention se montre.
 
 ## Notes / décisions
 
-- **Aligné sur [ADR-083](../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md)
+- **Aligné sur [ADR-083](../../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md)
   (2026-10-23)** : ce qu'on prépare et qu'on fige, c'est la **milestone** ; le numéro de version se
   pose à la construction. Lire « version en brouillon » comme « milestone en préparation ». Le gel
   (tag `freeze/…`) photographie le périmètre de la milestone au moment où on lui assigne son numéro.
@@ -153,7 +153,7 @@ besoin de prévention se montre.
 - **Étend** la commande `version` (livrée, [[20260824204751403]]) et le **board v0.17**
   ([[20261007135620590]], deux jauges par version, ADR-074).
 - **N'interfère pas avec le tirage** :
-  [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) reste
+  [ADR-0070](../../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) reste
   seul maître de « quelle version on code » ; figer est un marqueur **parallèle** (décision PO
   2026-10-15 : le gel ne commande pas le dev).
 - **Grain** : le gel de version est **au-dessus** de `sprint start --lot` (grain sprint).

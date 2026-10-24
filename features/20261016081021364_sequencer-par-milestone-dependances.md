@@ -124,7 +124,7 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
 - **Fait neuf du code** : deux axes d'ordre coexistent déjà — le tirage lit `version:`, le board range
   par un `MILESTONE_ORDER` codé en dur (`avancement-data.ts`) qui n'alimente que l'affichage.
 - **Voisines** (cluster « cycle de vie des versions ») :
-  [cycle de vie d'une version](20261014200651962_cycle-vie-version-preparer-figer-developper.md),
+  [cycle de vie d'une version](done/20261014200651962_cycle-vie-version-preparer-figer-developper.md),
   [frontière de version = checkpoint](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
   [groom par version](20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md).
 - **Noyau sorti en fiche tirable** :
