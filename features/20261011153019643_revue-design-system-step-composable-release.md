@@ -7,7 +7,7 @@ product: mega-city
 milestone: qualite
 version:
 labels: [release, design-system, ux]
-status: idea
+status: ready
 pr:
 evidence: none # capacité méthode, pas d'écran propre
 created: 2026-10-11
@@ -64,3 +64,10 @@ ezk release v0.X.0        # avec le step design-system activé
   à ranger dans un jalon UX (agent `ezk-ux`) quand le PO le décide.
 - Réutilise le référentiel par projet né côté muti (`.rules/design-system.md`). Première preuve
   visée : muti (le « verrou moche »).
+- **Groomée `ready` (2026-10-24), prémisse vérifiée.** `ezk-release` est bien composable : ses passes
+  sont des **données** dans `.vectorz/release-passes.yml` (`{id, title, command}`), ajoutées « une ligne
+  de plus, sans toucher au skill ». Sa `SKILL.md` **cite déjà cette fiche** comme exemple de passe
+  ajoutée. La prémisse « ezk-release accueille un step déclaré » tient donc ; reste à écrire la
+  **commande de revue** (lit le référentiel, compare, rend GO/NO-GO). DoR socle vert. Le **jalon de
+  version** reste au PO (étiquette posée à la construction, ADR-083) ; la fiche est tirable dès que son
+  tour vient dans la milestone `qualite`.
