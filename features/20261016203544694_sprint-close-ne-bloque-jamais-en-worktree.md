@@ -58,11 +58,13 @@ POC = rendre `close` increvable, sans encore comprendre toute la cause :
 
 ## Critères d'acceptation
 
-- [ ] En worktree, `ezk-sprint close` rend **toujours** un verdict (`SEALED`, au besoin sans compte
+- [x] En worktree, `ezk-sprint close` rend **toujours** un verdict (`SEALED`, au besoin sans compte
       rendu) sans dépasser un court délai — jamais de blocage qui force à tuer le process.
-- [ ] Quand le helper de compte rendu est borné et échoue, le sprint reste **scellé** (le sceau ne
+      *(Le commit du compte rendu passe par `run-bounded.sh 20 …` : plafond 20 s < le seuil 30 s.)*
+- [x] Quand le helper de compte rendu est borné et échoue, le sprint reste **scellé** (le sceau ne
       dépend pas du compte rendu — comportement best-effort déjà documenté).
-- [ ] La cause du blocage en worktree est nommée dans les notes de la fiche (diagnostic du spike).
+      *(`run-bounded` rend 124 au plafond, 124 tombe dans le `rc != 0` best-effort déjà en place.)*
+- [x] La cause du blocage en worktree est nommée dans les notes de la fiche (diagnostic du spike).
 
 **Mesure de suivi** — sur les **3 prochaines clôtures en worktree**, 0 blocage > 30 s ; `close`
 rend un verdict à tous les coups.
@@ -90,3 +92,20 @@ time bash products/mega-city/skills/ezk-sprint/scripts/sprint.sh close
   d'abord). C'est un vrai défaut : `close` ne doit jamais pendre.
 
 - Groomée « prête » le 2026-10-23 : DoR tenue (spike borné, critères + comment vérifier).
+
+- **Diagnostic (spike), 2026-10-24.** La cause nommée : `close` committe le compte rendu par
+  `commit-doc-via-worktree.sh`, qui **compose `ship-merge.sh --local`**, lequel fait un
+  `git fetch --prune` réseau (`skills/ezk-pr/scripts/ship-merge.sh:163`). En worktree avec un remote
+  configuré, ce fetch peut **pendre sans fin** (réseau lent/injoignable), sans aucun plafond — d'où
+  le process à tuer après 120 s sur tout le run v0.17. Cause secondaire plausible, non exclue : la
+  création d'un worktree jetable imbriqué (verrou partagé du git-dir commun). Le correctif ne cherche
+  pas à distinguer les deux : il **borne le temps** côté appelant, donc il couvre toute cause de
+  blocage, réseau comme verrou.
+
+- **Correctif (POC), 2026-10-24.** Nouveau `bin/run-bounded.sh` : un plafond de temps **portable**
+  (ce poste macOS n'a ni `timeout` ni `gtimeout` — repli arrière-plan + surveillance + kill, code 124
+  au plafond). `emit_sprint_report` (sprint.sh) enveloppe l'appel du helper : `run-bounded.sh 20 bash
+  <helper> …`. Dépassé 20 s, `close` **scelle quand même** (124 tombe dans le repli best-effort déjà
+  là). Prouvé par `bin/test-run-bounded.sh` (dans la gate `test:scripts`) : commande rapide → son
+  propre code ; commande qui pend 30 s → tuée en 3 s, code 124. Limite connue : on tue le processus
+  lancé, pas forcément un enfant `git fetch` déjà parti sur le réseau — mais `close` a rendu la main.

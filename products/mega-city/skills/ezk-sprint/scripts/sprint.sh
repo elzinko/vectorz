@@ -417,7 +417,7 @@ write_closed() { # $1 = ligne du journal des incréments ; $2 = raison d'abandon
 # via le helper partagé `commit-doc-via-worktree.sh` (local = squash local ; PR = branche + commande).
 # Best-effort : tout échec ici LAISSE le sprint scellé (le compte rendu est un livrable, pas le sceau).
 emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison d'abandon (vide si sceau normal)
-  local n="$1" obj="$2" reason="$3" root repo_main slug tmp report_md day dest_rel helper tsx
+  local n="$1" obj="$2" reason="$3" root repo_main slug tmp report_md day dest_rel helper tsx bounded rc
   # On appelle le bin DIRECTEMENT (pas `ezk sprint report`, dont le wrapper refuse hors dépôt de méthode).
   # tsx + le bin vivent dans le catalogue ($MC) ; absents (install en copie) → on dégrade proprement.
   tsx="$MC/node_modules/.bin/tsx"
@@ -445,10 +445,28 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
   day="$(basename "$report_md")"; day="${day%%-sprint-*}"
   dest_rel="docs/sprints/$(basename "$report_md")"
   helper="$MC/bin/commit-doc-via-worktree.sh"
+  bounded="$MC/bin/run-bounded.sh"
   if [[ -f "$helper" ]]; then
-    bash "$helper" --repo "$repo_main" --file "$report_md" --dest-rel "$dest_rel" \
-      --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
-      --kind-tag SPRINT-REPORT --kind-noun "compte rendu" || echo "SPRINT-REPORT: commit non intégré (cf. ci-dessus) — sprint scellé" >&2
+    # BORNÉ (fiche 20261016203544694) : en worktree, le helper compose `ship-merge.sh --local`, dont
+    # le `git fetch --prune` réseau peut pendre sans fin. On plafonne à 20 s (< le seuil de 30 s de la
+    # mesure de suivi) ; dépassé, `close` scelle quand même. run-bounded.sh absent (install copie) →
+    # appel direct, comme avant (le blocage ne touche que le worktree, où le catalogue est présent).
+    if [[ -f "$bounded" ]]; then
+      bash "$bounded" 20 bash "$helper" --repo "$repo_main" --file "$report_md" --dest-rel "$dest_rel" \
+        --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
+        --kind-tag SPRINT-REPORT --kind-noun "compte rendu"
+      rc=$?
+    else
+      bash "$helper" --repo "$repo_main" --file "$report_md" --dest-rel "$dest_rel" \
+        --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
+        --kind-tag SPRINT-REPORT --kind-noun "compte rendu"
+      rc=$?
+    fi
+    if (( rc == 124 )); then
+      echo "SPRINT-REPORT: commit borné à 20 s puis interrompu (helper pendu — ex. fetch réseau de ship-merge en worktree) — sprint scellé" >&2
+    elif (( rc != 0 )); then
+      echo "SPRINT-REPORT: commit non intégré (cf. ci-dessus) — sprint scellé" >&2
+    fi
   else
     echo "SPRINT-REPORT: helper introuvable ($helper) — compte rendu non committé (sprint scellé)" >&2
   fi
