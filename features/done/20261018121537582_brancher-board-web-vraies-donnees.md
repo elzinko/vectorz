@@ -7,10 +7,11 @@ product: cop1
 milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, data-wiring]
-status: ready
-pr:
+status: split
+pr: "split — scindée en 20261024130841976, 20261024130842122, 20261024130842250"
 evidence: before-after
 created: 2026-10-18
+split_into: ["20261024130841976", "20261024130842122", "20261024130842250"]
 ---
 
 # 20261018121537582 — Brancher le board web sur les vraies données
@@ -168,7 +169,7 @@ chacune référençant cette fiche + ADR-074 + ADR-079 + la maquette. Cette fich
 ## Décisions prises (PO, 2026-10-18)
 
 1. **La parente est dé-zombifiée, pas dé-parquée.** La fiche
-   [Unifier les tableaux de bord](20261007135620590_refondre-vue-supervision-moniteur-lisible.md)
+   [Unifier les tableaux de bord](../20261007135620590_refondre-vue-supervision-moniteur-lisible.md)
    repasse en `milestone: board`, son `blocked:` périmé est vidé, et elle porte un bandeau
    « réalisé » : ses surfaces sont livrées, elle reste le **document de design** (cité par ADR-074 et
    8 fiches livrées), le branchement données est repris ici. Pas d'archivage vers `done/` : il
@@ -178,9 +179,9 @@ chacune référençant cette fiche + ADR-074 + ADR-079 + la maquette. Cette fich
    données). Trois morceaux de feature = un lot mineur. (Alternative écartée : rescoper la v0.23, dont
    le thème « L'app se cartographie » est distinct.)
 3. **Aucun ADR neuf.** Le modèle et le contrat sont dans
-   [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; le
+   [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; le
    read-model, le cop1-local et la vue live sont dans
-   [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (§D8, §D9, §D11) ; « live,
+   [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) (§D8, §D9, §D11) ; « live,
    jamais committé » est dans ADR-0043/0055 ; « cop1 n'importe pas mega-city » est dans ADR-021. Le
    transport runtime et le lecteur cop1-local **appliquent** ces décisions, ils n'en gravent pas de
    neuve.
@@ -207,17 +208,17 @@ chacune référençant cette fiche + ADR-074 + ADR-079 + la maquette. Cette fich
   (`BoardData`) et **un seul transport** ; le premier sprint bâtit le **tuyau de bout en bout** en
   servant d'abord l'échantillon (POC du câblage), les sources se branchent ensuite. Le seam est
   **documenté** et se coupe en cours de sprint s'il déborde — même pli que la fiche read-model
-  [353](done/20261015082118353_board-read-model-chantier-sessions-evenements.md) (« si le build
+  [353](20261015082118353_board-read-model-chantier-sessions-evenements.md) (« si le build
   déborde, le seam naturel serait… »). On ne pré-découpe pas d'avance.
 - **Anti-doublon fait.** Toutes les fiches `milestone: board` sont en `features/done/`. Les deux plus
   proches ne couvrent pas le branchement :
-  [activité run→moments→fiches](done/20261012231419211_board-activite-run-moments-fiches.md) a bâti
+  [activité run→moments→fiches](20261012231419211_board-activite-run-moments-fiches.md) a bâti
   l'UI **sur l'échantillon** ;
-  [read-model chantier→sessions→events](done/20261015082118353_board-read-model-chantier-sessions-evenements.md)
+  [read-model chantier→sessions→events](20261015082118353_board-read-model-chantier-sessions-evenements.md)
   a bâti **la couche de lecture** (`evidence: none`, « couche de lecture, pas d'écran »). Le read-model
   et l'UI existent ; ce chantier est le **fil qui les relie**.
 - **Précédent de l'ancien board.** `bin/ezk-map.ts` (mega-city, port 4173) sert ses `*.data.js`
   **calculés à chaque requête** depuis les fiches + `PLAN.md` + les récits `docs/sessions/*.md` — il
   n'a aucun lien avec le journal `events.jsonl`. Le chantier reprend son transport (runtime, local),
   mais branche la part runs sur le **vrai journal**, pas sur la prose.
-- **Maquette de référence :** [docs/maquettes/board-ezk-dashboard.html](../docs/maquettes/board-ezk-dashboard.html).
+- **Maquette de référence :** [docs/maquettes/board-ezk-dashboard.html](../../docs/maquettes/board-ezk-dashboard.html).

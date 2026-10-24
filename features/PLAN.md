@@ -26,7 +26,7 @@ version se pose à la construction (étiquette). Détail :
 - ~~`20261016203544694` — ezk-sprint close ne se bloque jamais en worktree · groom~~ — shipped
 
 **Milestone `board` — « Le board dit vrai »** :
-- `20261018121537582` — brancher le board web sur les vraies données · build
+- ~~`20261018121537582` — brancher le board web sur les vraies données · build~~ — split
 - `20261007135620590` — unifier les tableaux de bord en un seul (design par maquette) · groom
 
 **Milestone `carte` — « La carte dit vrai »** :

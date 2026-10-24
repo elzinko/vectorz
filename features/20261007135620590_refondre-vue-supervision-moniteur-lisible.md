@@ -21,7 +21,7 @@ created: 2026-10-07
 > [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) et
 > [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md). Le **seul reste** —
 > brancher le board sur les vraies données au lieu de l'échantillon — est repris par la fiche
-> [Brancher le board web sur les vraies données](20261018121537582_brancher-board-web-vraies-donnees.md)
+> [Brancher le board web sur les vraies données](done/20261018121537582_brancher-board-web-vraies-donnees.md)
 > (v0.24.0). Cette fiche-ci n'est plus parkée : elle reste **le document de design** (maquette +
 > specs), cité par l'ADR et les tranches livrées, pas un chantier dormant.
 

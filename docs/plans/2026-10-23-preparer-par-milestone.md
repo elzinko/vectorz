@@ -65,7 +65,7 @@ Voici la vérité, lue de `ezk backlog version` et des fiches.
 Les **3 fiches prêtes** (tirables tout de suite, quelle que soit la milestone) :
 
 - [Lire enfin `depends:` + désambiguïser « en cours »](../../features/done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — tête du plan.
-- [Brancher le board web sur les vraies données](../../features/20261018121537582_brancher-board-web-vraies-donnees.md).
+- [Brancher le board web sur les vraies données](../../features/done/20261018121537582_brancher-board-web-vraies-donnees.md).
 - [Attribuer les jetons réels par mode de revue (local vs PR+Codex)](../../features/done/20261017110956989_jetons-par-mode-local-vs-pr-codex.md).
 
 ## Les prochaines milestones (lots de fiches, dans l'ordre)
@@ -94,7 +94,7 @@ les dépendances. Il paie tôt : chaque milestone suivante se prépare mieux.
 Pourquoi : valeur visible et **à moitié prête**. Le board montre des données d'échantillon ; on le
 branche sur le réel, et on fond les trois tableaux de bord en un.
 
-- [Brancher le board web sur les vraies données (read-model + backlog)](../../features/20261018121537582_brancher-board-web-vraies-donnees.md) — **prête**.
+- [Brancher le board web sur les vraies données (read-model + backlog)](../../features/done/20261018121537582_brancher-board-web-vraies-donnees.md) — **prête**.
 - [Unifier les tableaux de bord en un seul (Moniteur + cockpit + board), guidé par maquette](../../features/20261007135620590_refondre-vue-supervision-moniteur-lisible.md) — à groomer, P1.
 
 État : **1 prête, 1 en idée** (milestone `board` assignée ; l'unification est un sujet de design, à faire par maquette).
