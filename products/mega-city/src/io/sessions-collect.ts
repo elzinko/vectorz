@@ -71,10 +71,13 @@ export function collectBranches(): string[] {
  * dégradé SÛR (on garde « en cours » plutôt que d'effacer à tort un travail réel), cohérent avec les
  * autres collecteurs best-effort.
  */
-export function collectAbsorbedBranches(branches: string[], base = 'main'): string[] {
+export function collectAbsorbedBranches(branches: string[], base = 'main', cwd = process.cwd()): string[] {
+  // `cwd` INJECTÉ (défaut `process.cwd()`, rétro-compatible) : le test passe son dépôt jetable au
+  // lieu de `process.chdir`, qui est GLOBAL au process et courait entre fichiers en suite parallèle
+  // (fiche 20261023…, flake de gate). Pur quant à l'ambiance : plus de lecture du cwd ambiant.
   let baseTree: string;
   try {
-    baseTree = execFileSync('git', ['rev-parse', `${base}^{tree}`], { encoding: 'utf8' }).trim();
+    baseTree = execFileSync('git', ['rev-parse', `${base}^{tree}`], { encoding: 'utf8', cwd }).trim();
   } catch {
     return []; // pas de `main` local — rien à comparer
   }
@@ -83,7 +86,7 @@ export function collectAbsorbedBranches(branches: string[], base = 'main'): stri
   for (const b of branches) {
     if (b === base) continue;
     try {
-      const out = execFileSync('git', ['merge-tree', '--write-tree', base, b], { encoding: 'utf8' });
+      const out = execFileSync('git', ['merge-tree', '--write-tree', base, b], { encoding: 'utf8', cwd });
       if (out.split('\n')[0]?.trim() === baseTree) absorbed.push(b);
     } catch {
       // merge-tree sort non-zéro sur un conflit (git ≥ 2.38) : la branche a du travail réel → non absorbée.

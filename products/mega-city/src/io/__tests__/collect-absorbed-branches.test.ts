@@ -8,11 +8,16 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it, vi } from 'vitest';
 import { collectAbsorbedBranches } from '../sessions-collect.js';
 
+// Ce fichier lance de VRAIS git (init, commit, merge-tree --write-tree) par sous-processus. Sous
+// charge (suite parallèle, plusieurs workers), un `git` grimpe au-delà du délai vitest par défaut
+// (5 s) et le test rougit par intermittence — alors qu'en isolation il passe (fiche 20261024090000000,
+// même cause et même parade que `backlog-version-bin.test.ts`). On élargit le délai POUR CE FICHIER.
+vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 });
+
 const made: string[] = [];
-let cwd0: string;
 
 /** Un dépôt git jetable avec `main`, une branche absorbée (pointe sur main) et une branche réelle. */
 function repo(): string {
@@ -35,21 +40,17 @@ function repo(): string {
   return dir;
 }
 
-beforeEach(() => {
-  cwd0 = process.cwd();
-});
-afterEach(() => {
-  process.chdir(cwd0); // la fonction lit process.cwd() : on restaure toujours
-});
 afterAll(() => {
   for (const d of made) rmSync(d, { recursive: true, force: true });
 });
 
+// On passe le dépôt par le paramètre `cwd` de `collectAbsorbedBranches`, jamais par `process.chdir` :
+// le cwd est GLOBAL au process et courait entre fichiers en suite parallèle (flake de gate,
+// fiche 20261024…). Chaque test est ainsi hermétique, sans toucher à l'ambiance du process.
 describe('collectAbsorbedBranches', () => {
   it('rend les branches absorbées par main, jamais les branches au travail réel ni main', () => {
     const dir = repo();
-    process.chdir(dir);
-    const absorbed = collectAbsorbedBranches(['feat/0001-absorbee', 'feat/0002-reelle', 'main']);
+    const absorbed = collectAbsorbedBranches(['feat/0001-absorbee', 'feat/0002-reelle', 'main'], 'main', dir);
     expect(absorbed).toContain('feat/0001-absorbee');
     expect(absorbed).not.toContain('feat/0002-reelle');
     expect(absorbed).not.toContain('main'); // la base n'est jamais jugée absorbée d'elle-même
@@ -57,14 +58,12 @@ describe('collectAbsorbedBranches', () => {
 
   it('base absente → liste vide (dégradé SÛR : on garde « en cours »)', () => {
     const dir = repo();
-    process.chdir(dir);
-    expect(collectAbsorbedBranches(['feat/0001-absorbee'], 'inexistante')).toEqual([]);
+    expect(collectAbsorbedBranches(['feat/0001-absorbee'], 'inexistante', dir)).toEqual([]);
   });
 
   it('hors d’un dépôt git → liste vide, sans exception', () => {
     const empty = realpathSync(mkdtempSync(join(tmpdir(), 'ezk-nogit-')));
     made.push(empty);
-    process.chdir(empty);
-    expect(collectAbsorbedBranches(['feat/0001-x'])).toEqual([]);
+    expect(collectAbsorbedBranches(['feat/0001-x'], 'main', empty)).toEqual([]);
   });
 });
