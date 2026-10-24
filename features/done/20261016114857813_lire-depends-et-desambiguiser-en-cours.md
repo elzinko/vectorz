@@ -7,9 +7,9 @@ product: mega-city
 milestone: preparation
 version:
 labels: [methode, backlog, versioning, sequencement, dette]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (14f40a56)"
 evidence: none # correctif CLI + couche de lecture, pas d'écran ; prouvé par tests
 created: 2026-10-16
 ---
@@ -76,9 +76,9 @@ pnpm --dir products/mega-city test
 ## Notes / décisions
 
 - **Extrait de** la cible différée
-  [séquencer par milestone + dépendances](20261016081021364_sequencer-par-milestone-dependances.md),
+  [séquencer par milestone + dépendances](../20261016081021364_sequencer-par-milestone-dependances.md),
   par décision du panel
-  [ADR-0081](../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md) : c'est le
+  [ADR-0081](../../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md) : c'est le
   « noyau à faire maintenant ». Le basculement de modèle (milestone = unité, vrai graphe) reste dans
   la fiche parente, différé.
 - **Ne touche pas** au rôle de `version` ; **ne rouvre pas** ADR-0070 ; **aligne** ADR-0080

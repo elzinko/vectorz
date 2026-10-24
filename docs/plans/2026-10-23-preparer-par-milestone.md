@@ -64,7 +64,7 @@ Voici la vérité, lue de `ezk backlog version` et des fiches.
 
 Les **3 fiches prêtes** (tirables tout de suite, quelle que soit la milestone) :
 
-- [Lire enfin `depends:` + désambiguïser « en cours »](../../features/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — tête du plan.
+- [Lire enfin `depends:` + désambiguïser « en cours »](../../features/done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — tête du plan.
 - [Brancher le board web sur les vraies données](../../features/20261018121537582_brancher-board-web-vraies-donnees.md).
 - [Attribuer les jetons réels par mode de revue (local vs PR+Codex)](../../features/20261017110956989_jetons-par-mode-local-vs-pr-codex.md).
 
@@ -80,7 +80,7 @@ Pourquoi en premier : c'est l'outillage qui **rend ce plan opérable**. Il disci
 (groomer un lot, refuser une fiche non prête, mesurer ce qui part vs ce qui est parké) et lit enfin
 les dépendances. Il paie tôt : chaque milestone suivante se prépare mieux.
 
-- [Lire `depends:` (en avertissement) + désambiguïser « en cours »](../../features/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — **prête**, tête du plan. Le noyau de l'ADR-0081.
+- [Lire `depends:` (en avertissement) + désambiguïser « en cours »](../../features/done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — **prête**, tête du plan. Le noyau de l'ADR-0081.
 - [Cycle de vie d'une version — préparer, figer (marqueur vérifiable)](../../features/20261014200651962_cycle-vie-version-preparer-figer-developper.md) — à groomer. Exactement « préparer puis sceller une milestone ».
 - [Groomer les fiches d'une version en une passe, avec rapport](../../features/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md) — à groomer. Préparer un lot d'un coup.
 - [La commande `park` refuse une fiche non groomée](../../features/20261018234206166_park-refuse-une-fiche-non-groomee.md) — à groomer.
@@ -187,6 +187,6 @@ Rien n'est committé ni irréversible : tu relis le diff.
 
 ## Et maintenant ?
 
-- `/ezk-sprint run` — la fiche-ancre de la milestone 1 ([lire `depends:` + désambiguïser](../../features/20261016114857813_lire-depends-et-desambiguiser-en-cours.md)) est tirable ; construis la milestone 1.
+- `/ezk-sprint run` — la fiche-ancre de la milestone 1 ([lire `depends:` + désambiguïser](../../features/done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md)) est tirable ; construis la milestone 1.
 - `ezk backlog version` — relire l'état réel des versions (le tableau de PLAN.md est périmé).
 - `git diff` + `git status` — relire les fiches groomées, l'ADR et la bannière du PLAN avant de committer.

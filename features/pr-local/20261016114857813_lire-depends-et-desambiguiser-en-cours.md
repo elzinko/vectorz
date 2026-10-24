@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261016114857813_lire-depends-et-desambiguiser-en-cours.md](../20261016114857813_lire-depends-et-desambiguiser-en-cours.md)
+> 🗎 Rendu de la fiche [features/20261016114857813_lire-depends-et-desambiguiser-en-cours.md](../done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md)
 
 # 20261016114857813 — Lire enfin `depends:` + désambiguïser « en cours »
 
