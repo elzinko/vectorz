@@ -206,6 +206,79 @@ export interface RunReportInput {
   head: HeadFacts;
   tokens: Tokens;
   github: 'checked' | 'skipped' | 'unreachable';
+  /** Le bilan parké/livré + couverture de groom (fiche 20261018234207272), calculé par le bord. */
+  parkRatio?: ParkRatioVerdict;
+}
+
+/** Le verdict parké/livré (fiche 20261018234207272) : les faits, et le drapeau s'il mord. */
+export interface ParkRatioVerdict {
+  parked: number;
+  delivered: number;
+  /** parké ÷ (parké + livré), en pourcentage entier ; 0 si rien n'est parti. */
+  ratioPercent: number;
+  /** Couverture du groom, si rapportée (`groomé X / Y idées rencontrées`). */
+  coverage?: { attempted: number; ideaEncountered: number };
+  flagged: boolean;
+  /** Pourquoi le drapeau est levé, ou `''`. */
+  flagReason: string;
+}
+
+/** Parké / livré lus dans les lignes : livré = `mergée` ; parké = `sautée` dont la raison dit « park ». */
+const PARK_REASON = /park\S*\s+hors\s+version/i; // « parké/parkée hors version » (journal du park ; \S* pour le é accolé)
+
+export function countParkDelivered(lines: readonly FicheLine[]): { parked: number; delivered: number } {
+  let parked = 0;
+  let delivered = 0;
+  for (const l of lines) {
+    if (l.state === 'mergée') delivered += 1;
+    else if (l.state === 'sautée' && PARK_REASON.test(l.reason)) parked += 1;
+  }
+  return { parked, delivered };
+}
+
+/**
+ * Le drapeau « la boîte parke plus qu'elle ne construit » (fiche 20261018234207272). Un compteur à côté
+ * d'une liste MENT s'il ne signale pas l'anomalie : le rapport lève un drapeau quand le ratio
+ * parké/(parké+livré) DÉPASSE le seuil (défaut 30 %), OU quand on a parké SANS tenter le moindre groom
+ * (`attempted === 0`). Pur : le script constate, le LLM ne compte pas (ADR-0001).
+ */
+export function parkRatioVerdict(
+  parked: number,
+  delivered: number,
+  groom?: { attempted?: number; ideaEncountered?: number },
+  thresholdPercent = 30,
+): ParkRatioVerdict {
+  const denom = parked + delivered;
+  const ratioPercent = denom === 0 ? 0 : Math.round((parked / denom) * 100);
+  const attempted = groom?.attempted;
+  const coverage =
+    attempted === undefined
+      ? undefined
+      : { attempted, ideaEncountered: groom?.ideaEncountered ?? attempted };
+  const overThreshold = denom > 0 && ratioPercent > thresholdPercent;
+  const groomSkipped = parked > 0 && attempted === 0;
+  const flagReason = groomSkipped
+    ? `${parked} fiche(s) parkée(s) et aucun groom tenté`
+    : overThreshold
+      ? `${ratioPercent} % du lot parké (seuil ${thresholdPercent} %)`
+      : '';
+  return { parked, delivered, ratioPercent, coverage, flagged: groomSkipped || overThreshold, flagReason };
+}
+
+/** Les lignes du bilan parké/livré pour le rapport (ratio, couverture, et le drapeau s'il mord). */
+export function renderParkRatio(v: ParkRatioVerdict): string[] {
+  const lines = [
+    `Parké / livré : ${v.parked} parké, ${v.delivered} livré — ratio ${v.ratioPercent} %.`,
+    v.coverage === undefined
+      ? 'Couverture de groom : non mesurée (passe --groom-attempted à run:report).'
+      : `Couverture de groom : groomé ${v.coverage.attempted} / ${v.coverage.ideaEncountered} fiche(s) idée rencontrée(s).`,
+  ];
+  if (v.flagged) {
+    lines.push(
+      `⚠ Drapeau : ${v.flagReason} — la boîte parke plus qu'elle ne construit (lot mal calibré, ou grooming sauté ?).`,
+    );
+  }
+  return lines;
 }
 
 const spaced = (n: number): string => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -286,6 +359,7 @@ export function renderRunReport(input: RunReportInput): string {
     headLine(input.head),
     tokensLine(input.tokens),
     github,
+    ...(input.parkRatio ? ['', ...renderParkRatio(input.parkRatio)] : []),
   ];
   if (input.discrepancies.length > 0) {
     out.push('', 'Écarts avec GitHub :');

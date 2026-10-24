@@ -15,10 +15,12 @@
  */
 import {
   checkLocalRefs,
+  countParkDelivered,
   crossCheck,
   type Discrepancy,
   type FicheLine,
   localRefSha,
+  parkRatioVerdict,
   parseFicheArg,
   type PrFacts,
   renderRunReport,
@@ -31,6 +33,7 @@ function usage(): never {
   console.error(`usage: run:report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …]
                   [--no-github] [--no-fetch] [--base <branche>]
                   [--tokens-used N] [--tokens-cap N] [--tokens-setting lean|cap|full]
+                  [--groom-attempted N] [--idea-encountered N]   (ratio parké/livré + couverture de groom)
 
   état : mergée | PR-ouverte | bloquée | sautée      « - » = sans objet (jamais de champ vide)
   exemple : --fiche "0080|mergée|#277|verte|GO|faite|-"`);
@@ -58,6 +61,7 @@ function main(): void {
   let github = true;
   let fetch = true;
   let base: string | undefined;
+  const groom: { attempted?: number; ideaEncountered?: number } = {};
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === '--fiche') {
@@ -70,6 +74,8 @@ function main(): void {
     else if (a === '--tokens-used') tokens.used = integer(argv[++i], '--tokens-used');
     else if (a === '--tokens-cap') tokens.cap = integer(argv[++i], '--tokens-cap');
     else if (a === '--tokens-setting') tokens.setting = argv[++i];
+    else if (a === '--groom-attempted') groom.attempted = integer(argv[++i], '--groom-attempted');
+    else if (a === '--idea-encountered') groom.ideaEncountered = integer(argv[++i], '--idea-encountered');
     else {
       console.error(`option inconnue : ${a}`);
       usage();
@@ -101,8 +107,12 @@ function main(): void {
   }
 
   const head = collectHeadFacts(cwd, { fetch, ...(base ? { base } : {}) });
-  console.log(renderRunReport({ lines, discrepancies, head, tokens, github: state }));
-  process.exit(discrepancies.some((d) => d.severity === 'mismatch') ? 1 : 0);
+  const { parked, delivered } = countParkDelivered(lines);
+  const parkRatio = parkRatioVerdict(parked, delivered, groom);
+  console.log(renderRunReport({ lines, discrepancies, head, tokens, github: state, parkRatio }));
+  // Code dédié : 1 = écart GitHub (prioritaire), 3 = drapeau parké/livré (attention, pas un échec), 0 = rien.
+  if (discrepancies.some((d) => d.severity === 'mismatch')) process.exit(1);
+  process.exit(parkRatio.flagged ? 3 : 0);
 }
 
 main();

@@ -167,10 +167,14 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
 6. **Clôture — le RUN-REPORT.** Quand la boucle s'arrête **et que le run a construit plus d'un
    sprint**, émets le bilan avec `ezk run report` : une ligne par fiche (`mergée`, `PR-ouverte`,
    `bloquée`, `sautée`) avec son PR, sa gate, sa revue, sa validation et, hors `mergée`, sa raison.
-   `ezk run report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] [--tokens-used N] [--tokens-setting <lean|cap|full>]`.
+   `ezk run report --fiche "<id>|<état>|<PR>|<gate>|<revue>|<validation>|<raison>" [--fiche …] [--tokens-used N] [--tokens-setting <lean|cap|full>] [--groom-attempted N] [--idea-encountered N]`.
    Le script refuse une ligne incomplète, compare le déclaré à GitHub (un écart sort en code 1) et
-   ajoute HEAD contre `origin/main` et les jetons. Tu restitues son rapport **tel quel** : c'est la
-   dernière sortie du run. Un run d'**un seul** sprint n'en émet pas.
+   ajoute HEAD contre `origin/main` et les jetons. **Passe `--groom-attempted N` et `--idea-encountered N`**
+   (combien de fiches idée tu as rencontrées, combien tu as tenté de groomer) : le rapport en tire le
+   **ratio parké/livré** et la **couverture de groom**, et **lève un drapeau** (code 3) si la boîte parke
+   plus qu'elle ne construit, ou si elle a parké sans tenter un seul groom (fiche 20261018234207272).
+   Tu restitues son rapport **tel quel** : c'est la dernière sortie du run. Un run d'**un seul** sprint
+   n'en émet pas.
 
 Entre les checkpoints, tu **décides seul** (archi, scope, choix techniques). En cas
 de doute, tu peux **consulter un sous-agent** spécialisé pour avis — mais **tu tranches**.

@@ -7,12 +7,15 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  countParkDelivered,
   crossCheck,
   type FicheLine,
   type HeadFacts,
+  parkRatioVerdict,
   parseFicheArg,
   parsePrFacts,
   type PrFacts,
+  renderParkRatio,
   renderRunReport,
 } from '../run-report.js';
 
@@ -240,5 +243,54 @@ describe('renderRunReport', () => {
     const out = render([MERGED, OPEN, BLOCKED]);
     expect(out).toMatch(/Ce que ça veut dire pour toi : .*1 PR à merger.*#278/);
     expect(out).toMatch(/1 fiche bloquée à trancher/);
+  });
+});
+
+describe('parkRatioVerdict — le drapeau parké/livré (fiche 20261018234207272)', () => {
+  it('16 parké / 6 livré → drapeau (ratio au-dessus du seuil de 30 %)', () => {
+    const v = parkRatioVerdict(16, 6, { attempted: 10, ideaEncountered: 16 });
+    expect(v.ratioPercent).toBe(73); // 16/22 ≈ 72,7
+    expect(v.flagged).toBe(true);
+  });
+
+  it('2 parké / 20 livré → pas de drapeau (ratio sous le seuil)', () => {
+    const v = parkRatioVerdict(2, 20, { attempted: 5, ideaEncountered: 5 });
+    expect(v.ratioPercent).toBe(9); // 2/22 ≈ 9
+    expect(v.flagged).toBe(false);
+  });
+
+  it('parké > 0 et aucun groom tenté → drapeau, quel que soit le ratio', () => {
+    const v = parkRatioVerdict(1, 100, { attempted: 0 }); // ratio ~1 %, mais groom 0
+    expect(v.flagged).toBe(true);
+    expect(v.flagReason).toContain('aucun groom tenté');
+  });
+
+  it('couverture non rapportée : le drapeau « groom sauté » ne mord pas, le ratio seul décide', () => {
+    expect(parkRatioVerdict(1, 100).flagged).toBe(false); // ratio 1 %, groom non mesuré
+    expect(parkRatioVerdict(16, 6).flagged).toBe(true); // ratio seul suffit
+  });
+
+  it('rien parti (0 parké, 0 livré) → ratio 0, pas de drapeau', () => {
+    expect(parkRatioVerdict(0, 0).flagged).toBe(false);
+  });
+});
+
+describe('countParkDelivered — livré = mergée, parké = sautée dont la raison dit « park »', () => {
+  it('compte mergées et sautées parkées, ignore les autres sautées', () => {
+    const lines = [
+      ok('0001|mergée|#1|verte|GO|faite|-'),
+      ok('0002|sautée|-|-|-|-|parkée hors version : à-découper'),
+      ok('0003|sautée|-|-|-|-|skip temporaire, pas parkée'),
+    ];
+    expect(countParkDelivered(lines)).toEqual({ parked: 1, delivered: 1 });
+  });
+});
+
+describe('renderParkRatio — les lignes du bilan', () => {
+  it('affiche le ratio et la couverture, et le drapeau s’il est levé', () => {
+    const text = renderParkRatio(parkRatioVerdict(16, 6, { attempted: 0 })).join('\n');
+    expect(text).toContain('16 parké, 6 livré');
+    expect(text).toContain('Couverture de groom');
+    expect(text).toContain('⚠ Drapeau');
   });
 });
