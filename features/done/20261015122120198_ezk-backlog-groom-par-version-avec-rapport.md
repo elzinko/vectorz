@@ -9,7 +9,7 @@ version:
 labels: [ezk-backlog, grooming, cli, tooling]
 status: shipped
 blocked:
-pr: "local (HEAD)"
+pr: "local (a5253200)"
 evidence: none # commande CLI/skill ; prouvée par le rapport produit
 created: 2026-10-15
 ---
