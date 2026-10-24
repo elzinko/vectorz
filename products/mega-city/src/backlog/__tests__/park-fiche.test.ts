@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { frontMatter, readField } from '../../loaders/fiches.js';
 import { blockedType } from '../blocked-reasons.js';
-import { parkOutOfVersion } from '../park-fiche.js';
+import { parkGuard, parkOutOfVersion } from '../park-fiche.js';
+import type { Disposition, EligibilityVerdict } from '../run-eligibility.js';
 
 const fiche = (over: { version?: string; status?: string; milestone?: string } = {}): string =>
   [
@@ -60,5 +61,28 @@ describe('park-fiche — sortir une fiche de sa version (fiche 20261013131852779
   it('ne touche pas le corps de la fiche', () => {
     const { text } = parkOutOfVersion(fiche(), { reason: 'sous-revue', date: '2026-10-14' });
     expect(text).toContain('# corps');
+  });
+});
+
+describe('parkGuard — « tenter avant de parker » (fiche 20261018234206166)', () => {
+  const verdict = (disposition: Disposition): EligibilityVerdict => ({ disposition, reason: '', message: '' });
+
+  it('refuse une fiche à groomer (idée) sans --after-groom', () => {
+    const refus = parkGuard(verdict('groom'), false);
+    expect(refus).toBeDefined();
+    expect(refus).toContain('tente-la');
+  });
+
+  it('refuse une fiche prête (build) sans --after-groom', () => {
+    expect(parkGuard(verdict('build'), false)).toBeDefined();
+  });
+
+  it('autorise avec --after-groom (tentative attestée), même à groomer', () => {
+    expect(parkGuard(verdict('groom'), true)).toBeUndefined();
+  });
+
+  it('autorise de plein droit une fiche bloquée (escalate) ou hors version (defer)', () => {
+    expect(parkGuard(verdict('escalate'), false)).toBeUndefined();
+    expect(parkGuard(verdict('defer'), false)).toBeUndefined();
   });
 });

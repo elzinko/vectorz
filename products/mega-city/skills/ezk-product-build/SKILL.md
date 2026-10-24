@@ -426,6 +426,12 @@ backlog, réveillable au grooming (repose version + status, retire `blocked:`). 
 en état `sautée` avec la raison « parkée hors version ». Après un park, **régénère les vues** (`ezk
 backlog regen`) et committe. Parker reste un geste du run ; il ne contourne **aucun** des 4 STOP.
 
+> **Tenter avant de parker (fiche 20261018234206166).** `park` **refuse** (code ≠ 0) une fiche que tu
+> n'as pas tentée : une idée à groomer, ou une fiche déjà prête. **Groome-la d'abord** (`groom <id>`,
+> ou `ezk backlog groom-milestone`) ; si le grooming échoue à la rendre constructible, parke-la avec
+> **`--after-groom <ref>`** (un SHA d'essai ou une ligne de `SPRINT.md`) qui atteste la tentative. Une
+> fiche déjà **bloquée** (raison typée) ou **hors version** se parke de plein droit, sans ce drapeau.
+
 **Les 4 STOP humains restent absolus** (irréversible/sortant · hausse de budget · direction produit
 sur backlog vide · exigences contradictoires) — l'auto-groom et l'auto-tampon ne les contournent
 jamais.

@@ -15,6 +15,7 @@
  */
 import { frontMatter, readField } from '../loaders/fiches.js';
 import type { BlockedReason } from './blocked-reasons.js';
+import type { EligibilityVerdict } from './run-eligibility.js';
 import { setFrontMatter } from './ship-fiche.js';
 
 export interface ParkInput {
@@ -52,4 +53,22 @@ export function parkOutOfVersion(text: string, input: ParkInput): ParkResult {
   const where = previousVersion === '' ? 'sans version' : `version ${previousVersion} vidée`;
   const journal = `parké hors version : ${id === '' ? '(sans id)' : id} — ${input.reason} (${where}, status→idea, milestone→parked) — réversible`;
   return { text: updated, previousVersion, journal };
+}
+
+/**
+ * Garde « tenter avant de parker » (règle development/tenter-avant-de-parker, fiche 20261018234206166).
+ * On ne parke pas une fiche qu'on n'a pas tentée : si le filtre d'éligibilité la dit `groom` (idée à
+ * mûrir) ou `build` (prête), le park est REFUSÉ — sauf preuve de tentative passée (`afterGroom`). Les
+ * fiches `escalate` (blocage typé, épic) et `defer` (hors version) restent parkables de plein droit.
+ * Rend le message de refus, ou `undefined` si le park est permis. Pur (ADR-0003).
+ */
+export function parkGuard(verdict: EligibilityVerdict, afterGroom: boolean): string | undefined {
+  if (afterGroom) return undefined; // --after-groom : la tentative est attestée, on parke
+  if (verdict.disposition === 'groom') {
+    return "pas encore groomée (idée) : tente-la avant de l'écarter. Groome-la (ezk backlog groom-milestone, ou groom <id>), ou passe --after-groom <ref> si tu l'as déjà tenté.";
+  }
+  if (verdict.disposition === 'build') {
+    return "déjà prête (ready) : elle n'a rien d'inconstruisable. Construis-la, ou passe --after-groom <ref> si tu l'écartes sciemment.";
+  }
+  return undefined; // escalate (bloquée / épic) ou defer (hors version) : parkable de plein droit
 }
