@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, data-wiring, runtime, cop1]
-status: ready
-pr:
+status: shipped
+pr: "local (8079da5c)"
 evidence: before-after
 created: 2026-10-24
 split_from: "20261018121537582"
@@ -29,7 +29,7 @@ qui sert le journal sur `127.0.0.1` ; on l'étend d'une route board.
 
 ## Contexte / Problème
 
-C'est la 1re des 3 sœurs de [brancher le board sur les vraies données](done/20261018121537582_brancher-board-web-vraies-donnees.md)
+C'est la 1re des 3 sœurs de [brancher le board sur les vraies données](20261018121537582_brancher-board-web-vraies-donnees.md)
 (découpe « tuyau / plan réel / runs réels »). Faits, vérifiés dans le code :
 
 - `Board.tsx:14` importe `BOARD_DATA` depuis `src/board/data.ts` (constante figée).
@@ -68,10 +68,10 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
 
 ## Notes / décisions
 
-- Sœur de [board-web (fiche source)](done/20261018121537582_brancher-board-web-vraies-donnees.md),
+- Sœur de [board-web (fiche source)](20261018121537582_brancher-board-web-vraies-donnees.md),
   découpée au grooming (2026-10-24). Modèle et contrat :
-  [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; read-model,
-  cop1-local et vue live : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
+  [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; read-model,
+  cop1-local et vue live : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md)
   (§D8/D9/D11) ; « live, jamais committé » : ADR-0043/0055 ; maquette du board validée en v0.17/v0.18.
 - Runtime, pas build-time (décision de la fiche source) : un instantané figé mentirait dès qu'un run
   tourne. L'endpoint calcule à la demande, comme l'ancien board (`bin/ezk-map.ts`).
