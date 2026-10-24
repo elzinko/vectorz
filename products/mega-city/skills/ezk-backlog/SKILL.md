@@ -357,6 +357,27 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
 4. Écris les enrichissements dans la fiche. **Ne change pas le statut** —
    c'est le job du gate.
 
+### `groom-milestone <nom>` — groomer un lot d'un coup, avec rapport (fiche 20261015122120198)
+
+Préparer une milestone, c'est groomer ses fiches une par une : fastidieux. Cette passe le fait **en
+un geste**. Le script `ezk backlog groom-milestone <nom>` donne les deux faits ; toi, tu groomes.
+
+1. **Sélection.** `ezk backlog groom-milestone <nom>` liste les fiches actives de la milestone :
+   `~` à groomer (idées non bloquées), `!` à arbitrer par l'humain (bloquées / panel — elles
+   **restent idée**, nommées avec leur raison), les prêtes déjà vertes. Il imprime aussi un
+   **instantané** des statuts de départ : garde-le.
+2. **Auto-groom.** Pour **chaque** fiche `~`, applique l'**auto-groom non-interactif** (section
+   `groom <id>`, branche « Sans opérateur » : une technique par slot manquant). **Ne force jamais
+   `ready`** — c'est le gate `ready <id>` qui promeut, fiche par fiche, quand les critères tiennent.
+   Une fiche `!` : on ne la touche pas, elle attend l'humain.
+3. **Rapport.** `ezk backlog groom-milestone <nom> --report --since "<instantané>"` rend le **delta** :
+   prêtes (passées au gate) / toujours idée (+ raison) / découpées (filles ajoutées) / exclues
+   (fermées sans livraison). Restitue-le en clair.
+
+Garde-fou : la passe ne touche **qu'une** milestone (le script filtre), et rien ne passe `ready` sans
+le gate. Best-effort : `ezk` absent → applique la règle à la main (sélectionne les idées de la
+milestone, groome, nomme le delta).
+
 Quand groomer : au moment de **tirer** la fiche (pas à la capture — une `idea` jamais
 tirée ne mérite pas de grooming). Cadrer une demande floue à la création reste le job
 d'`add` (étape 1).

@@ -135,6 +135,11 @@ commands:
     summary: Dit où en est chaque version, contrôle un lot, clôt une version (--root <projet>).
     project: true
     writes: true
+  - domain: backlog
+    verb: groom-milestone
+    run: bin/backlog-groom-milestone.ts --root {root}
+    summary: Prépare une milestone en une passe — liste ses fiches à mûrir, puis le delta (--report).
+    project: true
 
   # --- rules : les règles propres à un projet (.vectorz/, ADR-0050) ---
   # Le projet visé : --root, EZK_ROOT, sinon la racine git du dossier courant. Elles n'écrivent que

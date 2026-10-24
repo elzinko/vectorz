@@ -65,6 +65,7 @@ describe('ezk-manifest.yml', () => {
       'backlog aggregate',
       'backlog apply',
       'backlog check',
+      'backlog groom-milestone',
       'backlog park',
       'backlog plan-head',
       'backlog plan-lot',
