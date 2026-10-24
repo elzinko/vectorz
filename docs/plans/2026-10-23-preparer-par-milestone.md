@@ -87,7 +87,7 @@ les dépendances. Il paie tôt : chaque milestone suivante se prépare mieux.
 - [Le rapport de run affiche le ratio parké/livré + la couverture de grooming](../../features/20261018234207272_rapport-run-ratio-parke-livre-drapeau.md) — à groomer.
 - *En option, même thème, laissées en idée* : [La version est un checkpoint du run](../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md) et [« Prête » vérifie la prémisse interne de la fiche](../../features/20261015213921103_dor-verifie-premisse-dans-le-code.md).
 
-État : **5 prêtes** — groomées le 2026-10-23 (milestone `preparation`). La fiche « groomer une passe » a été réalignée « par version » → « par milestone ». Lot prêt à construire.
+État : **construction démarrée.** La fiche-ancre (lire `depends:` + désambiguïser « en cours ») est **construite, revue, gate verte, shippée en local** (2026-10-23). 4 fiches restent dans le lot (3 prêtes + la cycle-de-vie, prête). Prochaine tête tirable : `20261014200651962` (cycle de vie d'une version).
 
 ### Milestone 2 — « Le board dit vrai »
 
@@ -181,6 +181,7 @@ Rien n'est committé ni irréversible : tu relis le diff.
 
 - **Ajouté** : [ADR-083](../../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md), ce plan, et 2 fiches `recettes` rapatriées de muti.
 - **Fiches** : tout le pipeline actif porte un `milestone:` (9 milestones) ; 9 fiches `ready` (dont les 5 de `preparation`, les 2 de `carte`) ; la fiche « groomer en une passe » réalignée « version » → « milestone ».
+- **Build (1er sprint)** : la fiche-ancre de `preparation` est **construite et shippée en local** — lecture de `depends:` (cycle = erreur, ordre = avertissement), « en cours » coupé en « active » / « incomplète ». Gate verte (2164 tests), revue locale GO (1 constat corrigé). 4 commits locaux, **rien poussé**.
 - **[`PLAN.md`](../../features/PLAN.md)** : « Ordre de marche » réécrit **par milestone** ; le tableau du train devient un **historique** (v0.1 → v0.22 livrées).
 - **Gate verte** : `backlog check`, `check-links` et `board check` passent. Le faux positif « ADR-0081 → fiche 0081 » du board check a disparu (la fiche-ancre a quitté le vieux bloc « petits correctifs »).
 - **Rien n'est committé.**
