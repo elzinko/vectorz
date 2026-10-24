@@ -143,6 +143,15 @@ function frontMatter(text: string): Record<string, unknown> {
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : typeof v === 'number' ? String(v) : '');
 
+/**
+ * L'id d'une fiche vient du NOM DE FICHIER (`<id>_slug.md` ou `<id>-slug.md`), jamais du front-matter :
+ * `yaml` coerce `id: 0029` en nombre (zéros de tête perdus) et un id à 17 chiffres perd en précision.
+ * Le nom de fichier porte l'id exact, et il survit même quand le YAML de la fiche est invalide.
+ */
+export function ficheIdFromFilename(name: string): string {
+  return name.match(/^(\d+)[-_]/)?.[1] ?? '';
+}
+
 /** BORD I/O — lit `features/*.md` + `features/done/*.md` sous `root` en `PlanFiche[]`. Best-effort. */
 export function readBacklogFiches(root: string): PlanFiche[] {
   const out: PlanFiche[] = [];
@@ -157,15 +166,16 @@ export function readBacklogFiches(root: string): PlanFiche[] {
       continue; // dossier absent — non bloquant
     }
     for (const name of names) {
-      let fm: Record<string, unknown>;
+      const id = ficheIdFromFilename(name);
+      if (!id) continue; // pas d'id dans le nom → pas une fiche
+      let fm: Record<string, unknown> = {};
       try {
         fm = frontMatter(readFileSync(join(dir, name), 'utf8'));
       } catch {
-        continue;
+        fm = {}; // YAML invalide : on garde la fiche (id du nom), champs vides, jamais perdue
       }
-      if (!fm.id) continue;
       out.push({
-        id: str(fm.id),
+        id,
         title: str(fm.title),
         type: str(fm.type),
         priority: str(fm.priority),

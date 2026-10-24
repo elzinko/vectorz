@@ -13,6 +13,7 @@
  */
 import { execFileSync } from 'node:child_process';
 import { type PlanData, projectPlan, readBacklogFiches } from './backlogReader.js';
+import { type FicheDetailData, readFicheDetails } from './ficheDetail.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
 export interface BoardProjectInput {
@@ -40,11 +41,18 @@ export interface BoardPlanProject {
   };
   /** Vide tant que l'adaptateur des runs (fiche sœur) n'est pas branché — jamais un faux run. */
   runs: Record<string, never>;
+  /** Détail des fiches ACTIVES (pour la modale du board) — part « plan réel ». */
+  fiches: Record<string, FicheDetailData>;
 }
 
 /** CŒUR PUR — met le plan calculé à la forme d'un `BoardProject`. Les chiffres non encore câblés
  *  (jetons, temps, sprints, runs, rétros) sont des placeholders honnêtes, jamais de faux zéros déguisés. */
-export function shapeProject(name: string, desc: string, plan: PlanData): BoardPlanProject {
+export function shapeProject(
+  name: string,
+  desc: string,
+  plan: PlanData,
+  fiches: Record<string, FicheDetailData> = {},
+): BoardPlanProject {
   return {
     name,
     desc,
@@ -53,6 +61,7 @@ export function shapeProject(name: string, desc: string, plan: PlanData): BoardP
     versions: plan.versions,
     metrics: { done: plan.done, tokens: '—', temps: '—', perFiche: '—', sprints: '—', runs: '—', retros: '—' },
     runs: {},
+    fiches,
   };
 }
 
@@ -89,7 +98,7 @@ export function composeProject(input: BoardProjectInput, now: number = Date.now(
   const hit = cache.get(input.root);
   if (hit && now - hit.at < CACHE_TTL_MS) return hit.value;
   const plan = projectPlan(readBacklogFiches(input.root), readTags(input.root));
-  const value = shapeProject(input.name, input.desc ?? '', plan);
+  const value = shapeProject(input.name, input.desc ?? '', plan, readFicheDetails(input.root));
   cache.set(input.root, { at: now, value });
   return value;
 }
