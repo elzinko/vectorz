@@ -85,7 +85,10 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
   };
   const blockages = summarizeBlockages(ports.journal.listBlockedEscalations(input.projectRoot), window);
   const shippedFeatures = summarizeShippedFeatures(ports.repo.listShippedFiches(input.repoRoot), window);
-  const prRetouches = summarizePrRetouches(ports.repo.listMergedPrs(input.repoRoot), window);
+  const prRetouches = summarizePrRetouches(
+    ports.repo.listMergedPrs(input.repoRoot, window.startTs),
+    window,
+  );
 
   return buildSprintReport({
     slug: input.slug,

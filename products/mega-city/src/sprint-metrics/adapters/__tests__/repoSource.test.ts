@@ -39,3 +39,29 @@ describe('GitGhRepoSource.listMergedPrs — garde github:false', () => {
     expect(out[0]?.commits[0]?.authorType).toBe('agent');
   });
 });
+
+describe('GitGhRepoSource.listMergedPrs — borne de fenêtre (AC fenêtre)', () => {
+  it('sinceIso fourni → la requête gh porte `merged:>=<jour>` (pas tout l’historique)', () => {
+    let listArgs: string[] = [];
+    const src = new GitGhRepoSource((_root, args) => {
+      if (args.includes('list')) {
+        listArgs = args;
+        return '[]';
+      }
+      return '{"commits":[]}';
+    });
+    src.listMergedPrs(repoWith(), '2026-10-13T17:00:00Z'); // défaut ON → gh interrogé
+    expect(listArgs).toContain('--search');
+    expect(listArgs).toContain('merged:>=2026-10-13');
+  });
+
+  it('sans sinceIso → aucune borne --search (rétro-compatible)', () => {
+    let listArgs: string[] = [];
+    const src = new GitGhRepoSource((_root, args) => {
+      if (args.includes('list')) listArgs = args;
+      return '[]';
+    });
+    src.listMergedPrs(repoWith());
+    expect(listArgs).not.toContain('--search');
+  });
+});

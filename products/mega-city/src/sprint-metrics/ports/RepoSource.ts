@@ -20,5 +20,6 @@ export interface MergedPrRecord {
 
 export interface RepoSource {
   listShippedFiches(repoRoot: string): ShippedFicheRecord[];
-  listMergedPrs(repoRoot: string): MergedPrRecord[];
+  /** `sinceIso` (optionnel) borne la recherche à la fenêtre du sprint : ne pas lister tout l'historique. */
+  listMergedPrs(repoRoot: string, sinceIso?: string): MergedPrRecord[];
 }

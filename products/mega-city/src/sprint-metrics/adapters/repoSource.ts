@@ -65,21 +65,16 @@ export class GitGhRepoSource implements RepoSource {
       .map((r) => ({ id: r.id, mergedAt: r.mergedAt }));
   }
 
-  listMergedPrs(repoRoot: string): MergedPrRecord[] {
+  listMergedPrs(repoRoot: string, sinceIso?: string): MergedPrRecord[] {
     // Projet GitHub coupé (github:false / pr:false) → aucun appel gh (fiche 20261013143324505, AC github:false).
     if (!githubCapabilities(repoRoot).pr) return [];
+    const args = ['pr', 'list', '--state', 'merged', '--limit', '200', '--json', 'number,headRefName,mergedAt'];
+    // Borne la requête à la fenêtre du sprint plutôt que tout l'historique (fiche 20261013143324505, AC fenêtre).
+    // Grain jour (large côté bas) ; le filtre précis par timestamp reste en aval (summarizePrRetouches).
+    if (sinceIso) args.push('--search', `merged:>=${sinceIso.slice(0, 10)}`);
     let raw: string;
     try {
-      raw = this.runGh(repoRoot, [
-        'pr',
-        'list',
-        '--state',
-        'merged',
-        '--limit',
-        '200',
-        '--json',
-        'number,headRefName,mergedAt',
-      ]);
+      raw = this.runGh(repoRoot, args);
     } catch {
       return [];
     }
