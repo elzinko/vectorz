@@ -91,3 +91,5 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
   la part qui demande l'œil du PO sur l'archi de SON produit (board conçu par maquette) — pas construite
   à l'aveugle. Contrat choisi côté web : `GET /api/board` → `BoardData` (la map des projets), proxy vite
   `/api` déjà en place.
+
+- **Sprint board (2026-10-24), via ezk-sprint — reportée.** La moitié **web** est construite et mergée en local : `Board.tsx` lit `/api/board`, retombe sur l'échantillon **signalé à l'écran** quand la source est injoignable, test `board-source-injectee.test.tsx`. Reste la moitié **daemon** : l'endpoint `/api/board` + la **provenance multi-projets**. C'est un **build structurel du board** → réservé au **panel/maquette** (garde-fou du jour : le structurel ne se bâtit pas en autonomie hands-off), pas tiré en l'état.

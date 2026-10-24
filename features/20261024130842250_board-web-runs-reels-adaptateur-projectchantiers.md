@@ -65,3 +65,5 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
   garde tokens : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8/D9 ;
   `projectChantiers` livré en v0.18 ; maquette validée en v0.17/v0.18.
 - **Dépend de la sœur 1** (le tuyau) et de `projectChantiers` (déjà livré).
+
+- **Sprint board (2026-10-24), via ezk-sprint — reportée, non entamée.** L'adaptateur `projectChantiers → runs/chantiers/timeline/moments` et la provenance des runs sont un **build structurel du board** → réservé au **panel/maquette**, pas d'autonomie hands-off.

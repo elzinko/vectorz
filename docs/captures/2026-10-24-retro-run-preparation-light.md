@@ -63,3 +63,21 @@ pas de l'autonomie sans relecture. Rien n'est poussé.
 
 Note : le carnet `docs/retro-notes` (hors git) porte des notes des sessions des 2026-10-14/15, déjà
 fichées pour la plupart — hors périmètre de cette rétro light ; à passer dans une rétro complète dédiée.
+
+## 4 · Application de la décision « board → panel » (suite du 2026-10-24)
+
+La décision ✅ « board sur vraies données → panel/maquette » a été **appliquée le jour même**, sans
+rien re-décider :
+
+- La fiche board a été **découpée en 3 sœurs** (tuyau · plan réel · runs réels).
+- Deux **cœurs sûrs et bornés** ont été construits, mergés en local et vérifiés : la moitié web du
+  tuyau (`Board.tsx` lit une source injectée, repli signalé, test vert) et le lecteur de backlog
+  cop1-local (`projectPlan` + `readBacklogFiches`, validé sur le vrai backlog vectorz, 215 tests).
+- Le **reste structurel** — endpoint daemon `/api/board`, provenance multi-projets, adaptateur des
+  runs — a été **confirmé différé au panel**, pas bâti en aveugle. Sprint `Board web` fermé en
+  **abandon motivé** ; les 3 sœurs restent `ready`, tirables une fois le panel tenu.
+
+Nuance apprise : sur une fiche structurelle, les **cœurs testables et isolés** (un lecteur pur, un
+repli d'UI) peuvent se faire en autonomie ; c'est le **câblage qui porte une décision d'archi** (quels
+projets, quelle provenance) qui attend le panel. La frontière n'est pas « toute la fiche », c'est
+« la partie qui tranche une architecture ».
