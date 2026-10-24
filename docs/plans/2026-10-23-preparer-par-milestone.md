@@ -83,7 +83,7 @@ les dépendances. Il paie tôt : chaque milestone suivante se prépare mieux.
 - [Lire `depends:` (en avertissement) + désambiguïser « en cours »](../../features/done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — **prête**, tête du plan. Le noyau de l'ADR-0081.
 - [Cycle de vie d'une version — préparer, figer (marqueur vérifiable)](../../features/done/20261014200651962_cycle-vie-version-preparer-figer-developper.md) — à groomer. Exactement « préparer puis sceller une milestone ».
 - [Groomer les fiches d'une version en une passe, avec rapport](../../features/done/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md) — à groomer. Préparer un lot d'un coup.
-- [La commande `park` refuse une fiche non groomée](../../features/20261018234206166_park-refuse-une-fiche-non-groomee.md) — à groomer.
+- [La commande `park` refuse une fiche non groomée](../../features/done/20261018234206166_park-refuse-une-fiche-non-groomee.md) — à groomer.
 - [Le rapport de run affiche le ratio parké/livré + la couverture de grooming](../../features/20261018234207272_rapport-run-ratio-parke-livre-drapeau.md) — à groomer.
 - *En option, même thème, laissées en idée* : [La version est un checkpoint du run](../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md) et [« Prête » vérifie la prémisse interne de la fiche](../../features/20261015213921103_dor-verifie-premisse-dans-le-code.md).
 

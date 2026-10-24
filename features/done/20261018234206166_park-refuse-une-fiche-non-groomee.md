@@ -7,8 +7,8 @@ product: mega-city
 milestone: preparation
 version:
 labels: [backlog, agent-ops]
-status: ready
-pr:
+status: shipped
+pr: "local (f8a863e9)"
 evidence: none # outillage, pas d'écran
 created: 2026-10-19
 ---
@@ -16,7 +16,7 @@ created: 2026-10-19
 # 20261018234206166 — park refuse une fiche non groomée
 
 **En clair.** Une règle que rien ne compile reste une intention. La règle
-[`development/tenter-avant-de-parker`](../products/mega-city/rules/development/tenter-avant-de-parker.md)
+[`development/tenter-avant-de-parker`](../../products/mega-city/rules/development/tenter-avant-de-parker.md)
 dit « on tente avant d'écarter » — mais `ezk backlog park` peut écarter n'importe quelle fiche,
 tout de suite, sans preuve de tentative. On veut que la commande **refuse** une fiche qu'on n'a pas
 groomée.
