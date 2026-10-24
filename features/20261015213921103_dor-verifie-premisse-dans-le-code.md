@@ -72,3 +72,11 @@ cd products/mega-city && pnpm ezk dor check 20261002155911271
   note de rétro « une fiche ready peut porter une prémisse absente du code » (2026-10-14).
 - Cas fondateur : [trier les sorties de rétro](20261002155911271_trier-sorties-retro-par-nature.md).
 - `blocked: attend-panel` : change le modèle de la DoR — à tenir avec le PO, pas en run autonome.
+
+- **Nouveau cas daté (2026-10-24, run board) — la donnée, pas seulement le code.** La sœur 3
+  [runs réels](20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md) était `ready`,
+  mais sa prémisse — des journaux portant la clé `chantier` + les moments — **n'existe pas dans la
+  donnée vécue** (0 clé chantier sur 132 journaux réels, même en contrat v0.2). C'est le symptôme exact
+  de cette fiche, côté **donnée émise** plutôt que surface de code. Renforce la voie (a) : la DoR d'un
+  **read-model** devrait confronter au réel la donnée qu'il prétend afficher, pas seulement les surfaces
+  de code citées. (Capture : `docs/captures/2026-10-24-retro-board-build-light.md`.)
