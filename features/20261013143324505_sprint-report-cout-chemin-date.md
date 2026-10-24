@@ -77,3 +77,14 @@ après. Cible : le chemin daté tient sous ~10 s sur vectorz (49 runs).
   l'AC « < 10 s sur vectorz »** — une **mesure**, pas un build : elle exige un run daté portant un gate de
   supervision (le `sprint:report` daté), qu'on ne peut pas fabriquer ici. 2 des 3 AC construites et testées ;
   la fiche reste `ready` jusqu'à cette mesure.
+
+- **AC « < 10 s » ATTEINTE — mais le vrai coût n'était PAS celui que la fiche croyait (2026-10-24).**
+  En mesurant sur un vrai slug daté (`v07-socle-story1`, 28 s), j'ai profilé chaque composant du chemin
+  daté : checkpoints 0,0 s, transcripts 0,3 s, `gh` 0,0 s (vectorz est `github:false`). **Le coût réel —
+  26 s — était `listShippedFiches` : un `git log` par fiche livrée, ×313.** La Proposition accusait `gh`
+  et les transcripts ; c'était un **mauvais diagnostic**. Vrai fix : **un seul `git log --diff-filter=A
+  --name-only -- features/done/`** (parseur pur `parseShipDates`, testé) au lieu de 313 spawns. Mesuré :
+  **28 s → 0,7 s**, et rapport **identique** vérifié (shippedFeatures / prRetouches / window / tokens).
+  Les 3 AC sont remplies : `github:false` → aucun `gh` ; requête `gh` + transcripts bornés à la fenêtre ;
+  chemin daté **< 10 s** (0,7 s). Les optimisations `gh`/transcripts restent (correctes, bornées) même si
+  le gros gain venait de `listShippedFiches`. **Fiche prête à shipper.**
