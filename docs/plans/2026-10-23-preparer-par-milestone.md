@@ -125,7 +125,7 @@ Pourquoi : la carte de la méthode et le statut « in-progress » mentent par en
 ciblées remettent la carte d'aplomb.
 
 - [Aligner la carte de la méthode sur le code](../../features/20261015213921021_aligner-carte-methode-sur-le-code.md) — **prête**.
-- [Recâbler les surfaces « in-progress » sur le signal déduit des branches](../../features/20261015213921062_recabler-surfaces-in-progress-sur-branches.md) — **prête**.
+- [Recâbler les surfaces « in-progress » sur le signal déduit des branches](../../features/done/20261015213921062_recabler-surfaces-in-progress-sur-branches.md) — **prête**.
 
 État : **2 prêtes** — groomées le 2026-10-23 (milestone `carte`).
 

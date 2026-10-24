@@ -31,7 +31,7 @@ version se pose à la construction (étiquette). Détail :
 
 **Milestone `carte` — « La carte dit vrai »** :
 - `20261015213921021` — aligner la carte de la méthode sur le code · build
-- `20261015213921062` — recâbler les surfaces « in-progress » sur les branches · build
+- ~~`20261015213921062` — recâbler les surfaces « in-progress » sur les branches · build~~ — shipped
 
 **Milestone `recettes` — « Recettes & découvrabilité »** (rapatriée de muti, panel) :
 - `20261023120000001` — déclarer et rendre découvrables les outils/recettes d'un projet · groom

@@ -7,8 +7,8 @@ product: mega-city
 labels: [methode, pilotage, dette]
 milestone: carte
 version:
-status: ready
-pr:
+status: shipped
+pr: "local (6f13e9e4)"
 evidence: none # sortie CLI / vue texte, pas d'écran web
 created: 2026-10-15
 ---
