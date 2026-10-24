@@ -85,3 +85,11 @@ rg -n "mega-city" products/cop1/packages/<pkg-du-lecteur>/src   # attendu : aucu
   passées v0.22→v0.1) et `metrics.done` (383), sans import mega-city (ADR-021, vérifié sur les imports réels).
   Preuve sur le vrai backlog. RESTE pour clore : le **détail de fiche** (`fiches?` = parse du CORPS) + l'écart
   de parse ~10. Reste `ready`.
+
+- **Livrée (2026-10-24), run board autonome.** La part « plan » ET le **détail de fiche** sont servis
+  par `/api/board`. Le détail (`fiches?`) vient d'un parser cop1-local (`ficheDetail.ts`) — en-clair,
+  contexte, critères, comment vérifier — pour les **103 fiches actives**, prouvé sur le vrai backlog.
+  L'id vient du **nom de fichier** (exact, survit à un YAML cassé) : correctif d'un vrai bug trouvé en
+  **revue adverse** (coercition YAML de `id: 0029` en nombre ; 5 fiches perdues) qui touchait aussi le
+  lecteur du plan — corrigé des deux côtés, + 5 titres quotés à la racine. `metrics.done` et versions =
+  vrai backlog, sans import mega-city (ADR-021). Revue adverse repassée après corrections. Mergé local.
