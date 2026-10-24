@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, portier]
-status: ready
+status: idea
 pr:
 evidence: none # script de sprint, pas d'écran
 created: 2026-10-03
@@ -62,3 +62,12 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
 - **Groomée `ready` (2026-10-24).** DoR socle vert ; prémisse confirmée par la revue du 2026-10-14
   (`sprint_state()` compte encore « ancien format = ouvert », sprint.sh l.150). Bug borné et testable
   via `test-sprint-lifecycle.sh`. Edge legacy mais réel — tirable.
+
+- **`ready` RÉVOQUÉE (2026-10-24) — prémisse dépassée par le refactor v0.14.** En voulant la construire,
+  j'ai relu `sprint.sh` : `sprint_state()` lit un `FILE` **hors arbre** (`$EZK_COMMON/ezk/sprints/<branche>.md`),
+  et `exclude_sprint_file` exclut de git un `SPRINT.md` racine. Donc `sprint_state()` ne lit **jamais** un
+  `SPRINT.md` committé à la racine : le symptôme décrit (« REFUSED open_sprint » à cause d'un SPRINT.md
+  committé) **ne se reproduit plus** par ce mécanisme. J'avais groomé la fiche `ready` en me fiant à la note
+  du 14/10 sans relire le code — faute corrigée. Retour `idea` : **à re-scoper** (reste au plus un
+  durcissement défensif de `sprint_state()` : reconnaître `en cours` explicitement, un fichier sans marqueur
+  = instantané). Nouvelle preuve pour la fiche « [prête vérifie la prémisse](20261015213921103_dor-verifie-premisse-dans-le-code.md) ».
