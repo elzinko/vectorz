@@ -56,7 +56,7 @@ Ce qui empêche de **mesurer** cette réponse au lieu de l'estimer, vérifié da
 Fiches voisines écartées, pour mémoire : [Socle vertical — port de métrique](../0052-socle-metrique-port-adaptateur-silo.md)
 et [KPI agrégés commit→PR→sprint→version](../0055-kpi-agreges-commit-pr-sprint-version.md) sont
 parkées et portent l'**observabilité qualité** (couverture, DoD) ; 0052 exclut explicitement
-le coût jetons. [Borner le coût du chemin daté de sprint:report](../20261013143324505_sprint-report-cout-chemin-date.md)
+le coût jetons. [Borner le coût du chemin daté de sprint:report](20261013143324505_sprint-report-cout-chemin-date.md)
 traite la **vitesse** de la mesure, pas son contenu. Aucune ne couvre l'attribution par mode.
 
 ## Valeur

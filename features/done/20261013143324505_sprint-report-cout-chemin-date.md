@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [performance, supervision, github-optionnel]
-status: ready
-pr:
+status: shipped
+pr: "local (251b3225)"
 evidence: none # commande, pas d'écran
 created: 2026-10-13
 ---
@@ -54,7 +54,7 @@ après. Cible : le chemin daté tient sous ~10 s sur vectorz (49 runs).
 
 ## Notes / décisions
 
-- Origine : rétro du run v0.12 ([capture](../docs/captures/2026-10-13-retro-run-v012.md)), piste P5.
+- Origine : rétro du run v0.12 ([capture](../../docs/captures/2026-10-13-retro-run-v012.md)), piste P5.
 - Suite de 20261002230039863 (qui a réglé le cas « non daté rapide » ; ici on borne le cas daté).
 - Peut réutiliser le guichet `ezk forge changes --merged` (fiche 20261013074251752) pour les PR mergées.
 - **Groomée `ready` (2026-10-24), prémisse vérifiée.** Le guichet `ezk forge changes --merged` existe
