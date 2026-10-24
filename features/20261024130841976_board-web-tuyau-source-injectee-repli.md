@@ -50,12 +50,14 @@ C'est la 1re des 3 sœurs de [brancher le board sur les vraies données](done/20
 
 ## Critères d'acceptation
 
-- [ ] `Board.tsx` **ne lit plus `BOARD_DATA` en dur** : il lit une source injectée (endpoint ou repli).
-- [ ] L'endpoint local `/api/board/<projet>` répond `BoardData` (l'échantillon à cette étape).
-- [ ] **Activation par projet** : réglage présent → source ; réglage absent ou serveur injoignable →
-      repli sur l'échantillon, **signalé à l'écran**, sans crash.
-- [ ] Preuve **avant / après** en PR : board sur `BOARD_DATA` → board servi par l'endpoint (même
-      échantillon, mais par le vrai chemin) + le cas repli (serveur éteint).
+- [x] `Board.tsx` **ne lit plus `BOARD_DATA` en dur** : il lit une source injectée (`fetch /api/board`),
+      repli sur l'échantillon. *(Livré côté web + testé : succès → live, échec → repli.)*
+- [ ] L'endpoint local `/api/board` répond `BoardData` (l'échantillon à cette étape). *(RESTE : moitié
+      daemon — route + provider dans `packages/app`, décision d'archi cop1 sur la provenance de l'échantillon.)*
+- [~] **Activation par projet** + **repli signalé**. *(Repli signalé LIVRÉ + prouvé navigateur ; activation
+      par config RESTE, avec la moitié daemon.)*
+- [~] Preuve **avant / après** : le cas **repli** est prouvé (capture : board qui tente le live, retombe
+      sur l'échantillon, badge « échantillon · live indisponible »). Le cas « servi par l'endpoint » suit la moitié daemon.
 
 ## Comment vérifier
 
@@ -74,3 +76,18 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
 - Runtime, pas build-time (décision de la fiche source) : un instantané figé mentirait dès qu'un run
   tourne. L'endpoint calcule à la demande, comme l'ancien board (`bin/ezk-map.ts`).
 - **Prérequis des sœurs 2 et 3** : elles branchent les vraies sources (backlog, journal) dans ce tuyau.
+
+- **Moitié WEB livrée (2026-10-24), en autonomie.** `Board.tsx` lit une source injectée : au montage,
+  `fetch('/api/board')` (best-effort, bulletproof) ; succès → remplace l'échantillon ; échec / 404 / pas
+  de daemon / JSON cassé / `fetch` absent → **repli sur `BOARD_DATA`, signalé** par un badge « échantillon
+  · live indisponible ». Testé (`board-source-injectee.test.tsx` : les deux bords) ; `web typecheck` +
+  `web test` (93) + `web build` verts ; **prouvé navigateur** (dev server sans daemon → `/api/board` 500 →
+  repli + badge visible, capture jointe). Le board ne lit plus `BOARD_DATA` en dur.
+- **Moitié DAEMON à faire = archi cop1, pas mécanique.** L'endpoint `/api/board` vit dans `packages/app`
+  (daemon fait-main, pattern provider). Nœud de conception non tranché : **d'où vient `BoardData` côté
+  daemon ?** L'échantillon vit dans `web` (pas importable par `app`), et les vraies sources sont les
+  sœurs 2 (backlog cop1-local) et 3 (adaptateur journal). « Servir l'échantillon par l'endpoint »
+  suppose donc de décider la provenance (échantillon partagé ? stub ? attendre les sœurs 2/3 ?). C'est
+  la part qui demande l'œil du PO sur l'archi de SON produit (board conçu par maquette) — pas construite
+  à l'aveugle. Contrat choisi côté web : `GET /api/board` → `BoardData` (la map des projets), proxy vite
+  `/api` déjà en place.

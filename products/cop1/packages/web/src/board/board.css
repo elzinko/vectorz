@@ -34,6 +34,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; }
 .brand .dot { width: 11px; height: 11px; border-radius: 3px; background: var(--accent); }
 .brand .bv { font-family: var(--font-data); font-size: 11px; font-weight: 500; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 20px; }
+/* Repli sur l'échantillon (source live injoignable) — badge discret, jamais un faux chiffre muet (fiche 20261024130841976). */
+.brand .src-sample { font-family: var(--font-data); font-size: 10px; font-weight: 600; letter-spacing: .02em; color: var(--warn, #b45309); background: var(--warn-soft, rgba(180, 83, 9, 0.12)); padding: 2px 8px; border-radius: 20px; }
 .projbtn { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 9px; padding: 6px 13px; font-size: 14px; font-weight: 600; }
 .projbtn:hover { border-color: var(--accent); }
 .projbtn .cv { font-family: var(--font-data); font-size: 11px; font-weight: 500; color: var(--muted); }

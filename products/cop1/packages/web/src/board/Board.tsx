@@ -13,7 +13,7 @@ import { ConfigView } from './ConfigView.js';
 import { defaultToolConfig, type Role, type Tier } from './configModel.js';
 import { BOARD_DATA, DEFAULT_PROJECT } from './data.js';
 import { ToolConfigView } from './ToolConfigView.js';
-import type { BoardProject } from './types.js';
+import type { BoardData, BoardProject } from './types.js';
 import { DevView } from './DevView.js';
 import { FicheModal } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
@@ -134,6 +134,32 @@ export function Board(): JSX.Element {
   // Projets ajoutés par l'assistant (simulés), fusionnés avec les projets amorcés.
   const [addedProjects, setAddedProjects] = useState<Record<string, BoardProject>>({});
   const [addProjOpen, setAddProjOpen] = useState(false);
+  // Source des données du board (fiche 20261024130841976, sœur « tuyau » de board-web) : au montage,
+  // on TENTE la source live (endpoint local `/api/board`) ; échec, absence ou serveur injoignable →
+  // on retombe sur l'échantillon figé `BOARD_DATA`, et on l'affiche clairement (jamais un faux chiffre
+  // muet, jamais un écran cassé). Le web ne lit plus `BOARD_DATA` en dur : il lit la source injectée.
+  const [liveData, setLiveData] = useState<BoardData | null>(null);
+  const [dataSource, setDataSource] = useState<'live' | 'sample'>('sample');
+
+  // Montage : fetch best-effort de la source live. Bulletproof — toute erreur (pas de daemon, 404,
+  // réseau, JSON cassé, `fetch` absent) laisse l'échantillon en place. Pas de dépendance : une fois.
+  useEffect(() => {
+    if (typeof fetch !== 'function') return;
+    let alive = true;
+    fetch('/api/board')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((data: BoardData) => {
+        if (!alive || !data || typeof data !== 'object' || Object.keys(data).length === 0) return;
+        setLiveData(data);
+        setDataSource('live');
+      })
+      .catch(() => {
+        /* source live indisponible : on garde l'échantillon, signalé à l'écran */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // Fermeture clavier de la modale (Échap) tant qu'elle est ouverte.
   useEffect(() => {
@@ -145,8 +171,10 @@ export function Board(): JSX.Element {
     return () => window.removeEventListener('keydown', onKey);
   }, [projModalOpen]);
 
-  const allProjects: Record<string, BoardProject> = { ...BOARD_DATA, ...addedProjects };
-  const project = allProjects[projectName] ?? allProjects[DEFAULT_PROJECT];
+  // La base vient de la source live si elle a répondu, sinon de l'échantillon (repli signalé).
+  const base: BoardData = liveData ?? BOARD_DATA;
+  const allProjects: Record<string, BoardProject> = { ...base, ...addedProjects };
+  const project = allProjects[projectName] ?? allProjects[DEFAULT_PROJECT] ?? Object.values(allProjects)[0];
   const currentVer = project.versions.current?.ver ?? '—';
 
   /** Crée un projet depuis l'assistant, l'ajoute au sélecteur, le choisit, et
@@ -186,6 +214,11 @@ export function Board(): JSX.Element {
         <span className="brand">
           <span className="dot" aria-hidden="true" />
           board <span className="bv">{BRAND_VERSION}</span>
+          {dataSource === 'sample' && (
+            <span className="src-sample" title="Le serveur de données live est injoignable — affichage de l'échantillon figé.">
+              échantillon · live indisponible
+            </span>
+          )}
         </span>
         <button
           type="button"
