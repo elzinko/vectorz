@@ -30,7 +30,7 @@ version se pose à la construction (étiquette). Détail :
 - `20261007135620590` — unifier les tableaux de bord en un seul (design par maquette) · groom
 
 **Milestone `carte` — « La carte dit vrai »** :
-- `20261015213921021` — aligner la carte de la méthode sur le code · build
+- ~~`20261015213921021` — aligner la carte de la méthode sur le code · build~~ — shipped
 - ~~`20261015213921062` — recâbler les surfaces « in-progress » sur les branches · build~~ — shipped
 
 **Milestone `recettes` — « Recettes & découvrabilité »** (rapatriée de muti, panel) :

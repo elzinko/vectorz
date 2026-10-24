@@ -7,8 +7,8 @@ product: mega-city
 milestone: carte
 version:
 labels: [methode, carte, dette]
-status: ready
-pr:
+status: shipped
+pr: "local (b14c4248)"
 evidence: none # alignement de données/doc de méthode, pas d'écran
 created: 2026-10-15
 ---
@@ -99,7 +99,7 @@ pnpm test:scripts                                                # si un test fi
   exactement l'argument pour la parade de fond (un graphe compilé qui porte le schéma, dont les
   fiches ne seraient que des projections). Versé ici plutôt qu'érigé en règle (cas unique, déjà
   attrapé par la revue). Provenance :
-  [rétro v0.17](../docs/captures/2026-10-16-retro-v017-board-unifie-light.md).
+  [rétro v0.17](../../docs/captures/2026-10-16-retro-v017-board-unifie-light.md).
 
 - **Construit (2026-10-24).** Chaque référence `epic:` dans les skills était **couplée à une
   prétendue capacité du code** ; purger la prose seule aurait créé de nouveaux mensonges. Constat en
