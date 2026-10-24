@@ -67,3 +67,15 @@ rg -n "mega-city" products/cop1/packages/<pkg-du-lecteur>/src   # attendu : aucu
   [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9 ; frontière cop1↔mega-city :
   ADR-021 ; maquette validée en v0.17/v0.18.
 - **Dépend de la sœur 1** (le tuyau + l'endpoint) : elle branche la source dans le chemin déjà posé.
+
+- **Cœur construit (2026-10-24), via ezk-sprint.** `packages/app/src/features/board/backlogReader.ts` :
+  `projectPlan` (PUR) calcule **l'entonnoir** (idea/ready/wip/sans-version/parkées), **les versions**
+  (en cours = plus bas lot non tagué, ADR-0070 ; à venir ; passées) et le **compte livré**, depuis les
+  fiches + les tags git. Bord I/O `readBacklogFiches` parse le front-matter **chez cop1** (dép `yaml`),
+  **sans importer mega-city** (ADR-021). Testé (`backlogReader.test.ts`, 3 cas) ET **validé sur le vrai
+  backlog vectorz** : version en cours `v0.23.0`, à venir `v0.24.0`, passées `v0.22→v0.18` avec leurs
+  décomptes. `cop1 app` typecheck + 215 tests verts. Mergé main local `d8ca66d8`.
+- **RESTE :** (a) le **détail de fiche** (`fiches?` : en-clair/contexte/critères/vérif = parse du CORPS,
+  pas que le front-matter) ; (b) un écart de ~10 fiches lues vs `regen` (parse à durcir) ; (c) **brancher
+  dans l'endpoint daemon** (sœur 1 moitié daemon) pour que le board SERVE ce plan — c'est là que se
+  décide la provenance multi-projets (le daemon sert un registre de projets). La fiche reste `ready`.
