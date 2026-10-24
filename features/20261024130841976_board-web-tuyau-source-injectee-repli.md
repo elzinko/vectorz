@@ -93,3 +93,9 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
   `/api` déjà en place.
 
 - **Sprint board (2026-10-24), via ezk-sprint — reportée.** La moitié **web** est construite et mergée en local : `Board.tsx` lit `/api/board`, retombe sur l'échantillon **signalé à l'écran** quand la source est injoignable, test `board-source-injectee.test.tsx`. Reste la moitié **daemon** : l'endpoint `/api/board` + la **provenance multi-projets**. C'est un **build structurel du board** → réservé au **panel/maquette** (garde-fou du jour : le structurel ne se bâtit pas en autonomie hands-off), pas tiré en l'état.
+
+- **Livrée (2026-10-24), run board autonome.** Les DEUX moitiés sont faites et prouvées. Web : `Board.tsx`
+  lit `/api/board`, repli sur l'échantillon signalé, test `board-source-injectee.test.tsx`. Daemon : route
+  `GET /api/board` (`HttpServer`), provider câblé dans `DaemonService` via le registre (`locateRegistry`,
+  repli projet courant). Preuve bout-en-bout : le serveur rend **HTTP 200 + JSON** avec le vrai plan vectorz.
+  Revue adverse passée (NO-GO soft corrigé : `timeout` git + cache court 5 s + try/catch de route). Mergé local.
