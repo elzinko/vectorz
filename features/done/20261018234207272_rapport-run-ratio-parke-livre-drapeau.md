@@ -7,8 +7,8 @@ product: mega-city
 milestone: preparation
 version:
 labels: [backlog, observabilite]
-status: ready
-pr:
+status: shipped
+pr: "local (63474320)"
 evidence: none # outillage, pas d'écran
 created: 2026-10-19
 ---
