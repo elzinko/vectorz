@@ -79,3 +79,9 @@ rg -n "mega-city" products/cop1/packages/<pkg-du-lecteur>/src   # attendu : aucu
   pas que le front-matter) ; (b) un écart de ~10 fiches lues vs `regen` (parse à durcir) ; (c) **brancher
   dans l'endpoint daemon** (sœur 1 moitié daemon) pour que le board SERVE ce plan — c'est là que se
   décide la provenance multi-projets (le daemon sert un registre de projets). La fiche reste `ready`.
+
+- **Part PLAN servie (2026-10-24).** Le lecteur `backlogReader` est désormais branché dans l'endpoint
+  `/api/board` : le board reçoit le vrai entonnoir, les vraies versions (en cours v0.23.0, à venir v0.24.0,
+  passées v0.22→v0.1) et `metrics.done` (383), sans import mega-city (ADR-021, vérifié sur les imports réels).
+  Preuve sur le vrai backlog. RESTE pour clore : le **détail de fiche** (`fiches?` = parse du CORPS) + l'écart
+  de parse ~10. Reste `ready`.

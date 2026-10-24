@@ -67,3 +67,9 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
 - **Dépend de la sœur 1** (le tuyau) et de `projectChantiers` (déjà livré).
 
 - **Sprint board (2026-10-24), via ezk-sprint — reportée, non entamée.** L'adaptateur `projectChantiers → runs/chantiers/timeline/moments` et la provenance des runs sont un **build structurel du board** → réservé au **panel/maquette**, pas d'autonomie hands-off.
+
+- **Toujours `ready` (2026-10-24).** La part plan est servie (sœurs 1+2) ; les **runs** restent à brancher.
+  L'adaptateur `ChantierProjection → BoardRun/BoardChantier/TimelineEvent` est la seule part manquante ;
+  `BoardProject.runs` est volontairement `{}` (aucun faux run). À traiter en même temps : les constats FAIBLES
+  de la revue adverse — collision de noms de projets (clé `name`), `git` absent pris pour « aucun tag »
+  (versions taguées affichées comme courantes), comparaison de tag `V`/`v` (hors diff, `backlogReader.ts:115/119`).
