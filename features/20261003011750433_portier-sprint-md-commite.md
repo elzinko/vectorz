@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, portier]
-status: idea
+status: ready
 pr:
 evidence: none # script de sprint, pas d'écran
 created: 2026-10-03
@@ -59,3 +59,6 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
   worktree), mais le cœur de `sprint_state()` garde « ancien format = ouvert » (sprint.sh, l. 150).
   Le cas ne mord donc plus qu'un **projet hôte avec un vieux `SPRINT.md` committé** → edge legacy en
   voie de disparition. **Repassée P2 → P3.**
+- **Groomée `ready` (2026-10-24).** DoR socle vert ; prémisse confirmée par la revue du 2026-10-14
+  (`sprint_state()` compte encore « ancien format = ouvert », sprint.sh l.150). Bug borné et testable
+  via `test-sprint-lifecycle.sh`. Edge legacy mais réel — tirable.
