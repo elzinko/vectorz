@@ -14,9 +14,29 @@ import { createRequire } from 'node:module';
 import { networkInterfaces, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { buildAvancementData } from '../core/avancement-data.js';
 import { loadFiches } from '../loaders/fiches.js';
+
+// Ce fichier lance un VRAI serveur enfant et le `fetch` beaucoup. Sous charge (suite parallèle),
+// le serveur est affamé et une requête casse sa socket (« fetch failed / UND_ERR_SOCKET »), ou le
+// démarrage traîne au-delà du délai vitest par défaut (5 s) : le test rougit par intermittence, alors
+// qu'en isolation il passe (fiche 20261024090000000, classe « tests serveur/sous-processus sous charge »).
+// Parade : un délai large POUR CE FICHIER + un `fetchRetry` qui ré-essaie sur erreur réseau transitoire.
+vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 });
+
+/** `fetch` résilient : ré-essaie sur une erreur réseau transitoire (socket fermée sous charge). */
+async function fetchRetry(input: string, init?: RequestInit, tries = 4): Promise<Response> {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await globalThis.fetch(input, init);
+    } catch (error) {
+      // Les erreurs réseau de `fetch` sont des TypeError (cause UND_ERR_SOCKET / ECONNRESET sous charge).
+      if (attempt >= tries || !(error instanceof TypeError)) throw error;
+      await new Promise((ok) => setTimeout(ok, 150 * attempt));
+    }
+  }
+}
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const repoRoot = realpathSync(resolve(megaCity, '..', '..'));
@@ -221,10 +241,10 @@ describe('ezk dashboard — les données du projet désigné, les pages de la m�
   });
 
   it('sert les données du board depuis le projet désigné, et la page depuis la méthode', async () => {
-    const data = await (await fetch(`${origin}/diagrams/avancement/board.data.js`)).text();
+    const data = await (await fetchRetry(`${origin}/diagrams/avancement/board.data.js`)).text();
     expect(data).toContain(PROJECT_FICHE);
     expect(data).not.toContain(A_VECTORZ_FICHE);
-    expect((await fetch(`${origin}/diagrams/avancement/board.html`)).status).toBe(200);
+    expect((await fetchRetry(`${origin}/diagrams/avancement/board.html`)).status).toBe(200);
   });
 
   it('ne lit rien hors de la racine (traversée), ni dans la méthode ni dans le projet', async () => {
@@ -234,14 +254,14 @@ describe('ezk dashboard — les données du projet désigné, les pages de la m�
       '/..%2f..%2f..%2f..%2f..%2f..%2f..%2fetc%2fpasswd',
       `/..%2f..%2f..${project.replaceAll('/', '%2f')}%2ffeatures`,
     ]) {
-      const r = await fetch(`${origin}${path}`);
+      const r = await fetchRetry(`${origin}${path}`);
       expect([403, 404, 400]).toContain(r.status);
       expect(await r.text()).not.toContain('root:');
     }
   });
 
   it('écrit le pouce dans le projet désigné, nulle part ailleurs', async () => {
-    const r = await fetch(`${origin}/api/verdict`, {
+    const r = await fetchRetry(`${origin}/api/verdict`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ id: PROJECT_FICHE, verdict: 'up' }),
@@ -317,7 +337,7 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
   });
 
   it('la page liste les projets du registre, avec l’état de ceux qu’on ne sait pas lire', async () => {
-    const html = await (await fetch(`${origin}/`)).text();
+    const html = await (await fetchRetry(`${origin}/`)).text();
     for (const id of ['courant', 'ancien', 'sans-format', 'bmad', 'parti']) expect(html).toContain(`value="${id}"`);
     expect(html).toContain('ancien — format en retard (version 4, attendue 5)');
     expect(html).toContain('sans-format — format de fiches non pris en charge');
@@ -327,56 +347,56 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
 
   it('choisir un projet pose le cookie ; ses fiches arrivent, sans relancer le serveur', async () => {
     const back = '/diagrams/avancement/board.html';
-    const r = await fetch(`${origin}/projet?id=courant&retour=${encodeURIComponent(back)}`, { redirect: 'manual' });
+    const r = await fetchRetry(`${origin}/projet?id=courant&retour=${encodeURIComponent(back)}`, { redirect: 'manual' });
     expect(r.status).toBe(303);
     expect(r.headers.get('set-cookie')).toContain(`ezk-projet-${new URL(origin).port}=courant`);
     expect(r.headers.get('location')).toBe(back);
-    const data = await (await fetch(`${origin}/diagrams/avancement/board.data.js`, { headers: cookie('courant') })).text();
+    const data = await (await fetchRetry(`${origin}/diagrams/avancement/board.data.js`, { headers: cookie('courant') })).text();
     expect(data).toContain(COCKPIT_FICHE);
     expect(data).not.toContain(A_VECTORZ_FICHE);
-    const page = await (await fetch(`${origin}/diagrams/avancement/board.html`, { headers: cookie('courant') })).text();
+    const page = await (await fetchRetry(`${origin}/diagrams/avancement/board.html`, { headers: cookie('courant') })).text();
     expect(page).toContain('Avancement — courant</h1>');
     expect(page).toContain('<option value="courant" selected>');
   });
 
   it('sans choix : les fiches du projet du lancement, et la page telle qu’avant', async () => {
-    const data = await (await fetch(`${origin}/diagrams/avancement/board.data.js`)).text();
+    const data = await (await fetchRetry(`${origin}/diagrams/avancement/board.data.js`)).text();
     expect(data).toContain(A_VECTORZ_FICHE);
     expect(data).not.toContain(COCKPIT_FICHE);
-    const page = await (await fetch(`${origin}/diagrams/avancement/board.html`)).text();
+    const page = await (await fetchRetry(`${origin}/diagrams/avancement/board.html`)).text();
     expect(page).toContain('Avancement — vectorz</h1>');
   });
 
   it('un cookie posé pour un autre port est ignoré : le choix ne fuit pas d’un serveur à l’autre', async () => {
-    const data = await (await fetch(`${origin}/diagrams/avancement/board.data.js`, { headers: { cookie: 'ezk-projet-1=courant' } })).text();
+    const data = await (await fetchRetry(`${origin}/diagrams/avancement/board.data.js`, { headers: { cookie: 'ezk-projet-1=courant' } })).text();
     expect(data).toContain(A_VECTORZ_FICHE);
     expect(data).not.toContain(COCKPIT_FICHE);
   });
 
   it('un choix périmé ne coince pas : la page le montre et offre le retour', async () => {
-    const page = await fetch(`${origin}/diagrams/avancement/board.html`, { headers: cookie('retire-du-registre') });
+    const page = await fetchRetry(`${origin}/diagrams/avancement/board.html`, { headers: cookie('retire-du-registre') });
     expect(page.status).toBe(200);
     const html = await page.text();
     expect(html).toContain('<option value="retire-du-registre" selected>(inconnu) retire-du-registre</option>');
     expect(html).toContain('href="/projet?id=&amp;retour=');
-    const back = await fetch(`${origin}/projet?id=&retour=${encodeURIComponent('/diagrams/avancement/board.html')}`, { redirect: 'manual' });
+    const back = await fetchRetry(`${origin}/projet?id=&retour=${encodeURIComponent('/diagrams/avancement/board.html')}`, { redirect: 'manual' });
     expect(back.status).toBe(303);
     expect(back.headers.get('set-cookie')).toContain('Max-Age=0');
   });
 
   it('le retour après un choix ne quitte jamais le serveur', async () => {
     for (const retour of ['//ailleurs.example/x', '/\t/ailleurs.example', 'https://ailleurs.example']) {
-      const r = await fetch(`${origin}/projet?id=&retour=${encodeURIComponent(retour)}`, { redirect: 'manual' });
+      const r = await fetchRetry(`${origin}/projet?id=&retour=${encodeURIComponent(retour)}`, { redirect: 'manual' });
       expect(r.status).toBe(303);
       expect(r.headers.get('location')).toBe('/');
     }
   });
 
   it('un identifiant inconnu est refusé : ni cookie, ni donnée', async () => {
-    const r = await fetch(`${origin}/projet?id=${encodeURIComponent('../../etc')}`, { redirect: 'manual' });
+    const r = await fetchRetry(`${origin}/projet?id=${encodeURIComponent('../../etc')}`, { redirect: 'manual' });
     expect(r.status).toBe(400);
     expect(r.headers.get('set-cookie')).toBeNull();
-    const data = await fetch(`${origin}/diagrams/avancement/board.data.js`, { headers: cookie('../../etc') });
+    const data = await fetchRetry(`${origin}/diagrams/avancement/board.data.js`, { headers: cookie('../../etc') });
     expect(data.status).toBe(400);
     const body = await data.text();
     expect(body).not.toContain(A_VECTORZ_FICHE);
@@ -391,19 +411,19 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
       ['parti', 'introuvable sur le disque'],
     ];
     for (const [id, label] of cases) {
-      const data = await fetch(`${origin}/diagrams/avancement/board.data.js`, { headers: cookie(id) });
+      const data = await fetchRetry(`${origin}/diagrams/avancement/board.data.js`, { headers: cookie(id) });
       expect(data.status).toBe(409);
       const body = await data.text();
       expect(body).toContain(label);
       expect(body).not.toContain(COCKPIT_FICHE);
-      const page = await fetch(`${origin}/diagrams/avancement/board.html`, { headers: cookie(id) });
+      const page = await fetchRetry(`${origin}/diagrams/avancement/board.html`, { headers: cookie(id) });
       expect(page.status).toBe(200);
       expect(await page.text()).toContain(`${id} : ${label} — aucune fiche affichée.`);
     }
   });
 
   it('le pouce s’écrit dans le projet choisi, et seulement là', async () => {
-    const r = await fetch(`${origin}/api/verdict`, {
+    const r = await fetchRetry(`${origin}/api/verdict`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', ...cookie('courant') },
       body: JSON.stringify({ id: COCKPIT_FICHE, verdict: 'up' }),
@@ -411,7 +431,7 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
     expect(r.status).toBe(200);
     expect(existsSync(join(registry, 'courant', 'features', 'reviews', 'verdicts', `${COCKPIT_FICHE}.json`))).toBe(true);
     expect(existsSync(join(repoRoot, 'features', 'reviews', 'verdicts', `${COCKPIT_FICHE}.json`))).toBe(false);
-    const refused = await fetch(`${origin}/api/verdict`, {
+    const refused = await fetchRetry(`${origin}/api/verdict`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', ...cookie('ancien') },
       body: JSON.stringify({ id: COCKPIT_FICHE, verdict: 'up' }),
@@ -444,7 +464,7 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
     const root = join(registry, 'configure');
     const contract = ['config.yml', 'rules.yml', 'dor.yml'].map((f) => join(root, '.vectorz', f));
     const before = contract.map((f) => readFileSync(f, 'utf8'));
-    const page = await fetch(`${origin}/config`, { headers: cookie('configure') });
+    const page = await fetchRetry(`${origin}/config`, { headers: cookie('configure') });
     expect(page.status).toBe(200);
     const html = await page.text();
     expect(html).toContain('Config — configure</h1>');
@@ -470,7 +490,7 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
     const intact = readFileSync(file, 'utf8');
     writeFileSync(file, 'github: [\n');
     try {
-      const html = await (await fetch(`${origin}/config`, { headers: cookie('configure') })).text();
+      const html = await (await fetchRetry(`${origin}/config`, { headers: cookie('configure') })).text();
       expect(html).toContain('<strong>illisible</strong> : <code>');
       expect(html).toContain(file);
       expect((html.match(/class="section illisible"/g) ?? []).length).toBe(1);
@@ -483,7 +503,7 @@ describe('le cockpit — choisir un projet du registre sans relancer le serveur'
   });
 
   it('un projet d’une autre méthode n’a pas de page « config » inventée', async () => {
-    const html = await (await fetch(`${origin}/config`, { headers: cookie('bmad') })).text();
+    const html = await (await fetchRetry(`${origin}/config`, { headers: cookie('bmad') })).text();
     expect(html).toContain('méthode non prise en charge (bmad) — aucune config affichée.');
     expect(preBlocks(html)).toEqual([]);
   });
