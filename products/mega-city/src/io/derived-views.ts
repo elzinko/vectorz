@@ -29,7 +29,7 @@ import { loadMapSources } from '../loaders/map-sources.js';
 import { loadMethodDoc } from '../loaders/method.js';
 import { loadRuns } from '../loaders/runs.js';
 import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
-import { collectProcessIo } from './sessions-collect.js';
+import { collectInProgressIds, collectProcessIo } from './sessions-collect.js';
 import { loadVerdicts } from './verdicts.js';
 
 export interface DataView {
@@ -67,8 +67,9 @@ export const DATA_VIEWS: readonly DataView[] = [
     build(repoRoot) {
       const fiches = loadFiches(repoRoot);
       const plan = readPlan(repoRoot);
+      // « En cours » déduit des branches ouvertes (ADR-0077) : une fiche en cours ne compte pas « tirable ».
       const blocks = [
-        buildAvancementDataBlock(fiches),
+        buildAvancementDataBlock(fiches, collectInProgressIds(repoRoot)),
         buildPlanViewDataBlock(plan, fiches),
         buildPlanDeltaBlock(plan, fiches),
         // Les pouces 👍/👎 posés depuis le tableau de bord (fiche 20260826072532622) : relus à

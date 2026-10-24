@@ -98,6 +98,15 @@ describe('buildAvancementData — logique du board', () => {
     expect(data.tirables).toBe(1);
   });
 
+  it('une ready dont une branche feat/<id>- est ouverte ne compte PAS tirable (en cours, ADR-0077)', () => {
+    const fiches = [
+      F({ id: '0001', status: 'ready' }), // branche ouverte → en cours
+      F({ id: '0002', status: 'ready' }), // libre
+    ];
+    expect(buildAvancementData(fiches).tirables).toBe(2); // sans signal : les deux comptent (défaut)
+    expect(buildAvancementData(fiches, new Set(['0001'])).tirables).toBe(1); // 0001 en cours → exclue
+  });
+
   it('expose des filtres dédupliqués (statuts, priorités, produits)', () => {
     const data = buildAvancementData([
       F({ id: '0001', status: 'ready', priority: 'P0', product: 'mega-city' }),

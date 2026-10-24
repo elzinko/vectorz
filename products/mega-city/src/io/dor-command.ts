@@ -20,6 +20,7 @@ import {
 } from '../core/dor-manifest.js';
 import { loadDor } from '../loaders/dor.js';
 import { loadFiches } from '../loaders/fiches.js';
+import { collectInProgressIds } from './sessions-collect.js';
 
 export interface DorRun {
   verb: 'check' | 'show' | 'health';
@@ -127,7 +128,9 @@ function check(run: DorRun, manifest: DorManifest): number {
 }
 
 function health(run: DorRun, manifest: DorManifest): number {
-  const h = computeHealth(loadFiches(run.root), manifest.minReady);
+  // « En cours » déduit des branches ouvertes du projet visé (ADR-0077) : sans ce signal, le compte
+  // affichait toujours 0 (le statut `in-progress` n'est plus écrit). git/hors-dépôt dégrade en « 0 » (SÛR).
+  const h = computeHealth(loadFiches(run.root), manifest.minReady, collectInProgressIds(run.root));
   run.out('Santé du backlog (stock actif, hors épics)\n');
   run.out(`  tirables (ready)  : ${h.ready}\n`);
   run.out(`  pas prêtes (idea) : ${h.notReady}\n`);

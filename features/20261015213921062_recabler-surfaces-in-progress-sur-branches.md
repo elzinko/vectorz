@@ -53,10 +53,13 @@ code mort trompeur.
 
 ## Critères d'acceptation
 
-- [ ] `ezk dor health` et `PORTFOLIO.md` affichent un « en cours » qui reflète les branches ouvertes,
-      pas un 0 systématique.
-- [ ] Plus aucune lecture de `status: in-progress` écrit ne subsiste (code mort retiré).
-- [ ] Le compte « tirables » n'inclut pas une fiche dont une branche `feat/<id>-…` est ouverte.
+- [x] `ezk dor health` et `PORTFOLIO.md` affichent un « en cours » qui reflète les branches ouvertes,
+      pas un 0 systématique. *(Les deux lisent le signal partagé `inProgressIdsFromBranches` — dor
+      health par `collectBranches` ; portfolio par le bin `in-progress-ids.ts`.)*
+- [x] Plus aucune lecture de `status: in-progress` écrit ne subsiste (code mort retiré). *(Retiré de
+      `computeHealth` et du filtre portfolio ; `buildProcessData` ne l'a jamais lu.)*
+- [x] Le compte « tirables » n'inclut pas une fiche dont une branche `feat/<id>-…` est ouverte.
+      *(`buildAvancementData` reçoit le set « en cours » et l'exclut ; test dans avancement-data.test.ts.)*
 
 ## Comment vérifier
 
@@ -68,6 +71,20 @@ pnpm test
 ```
 
 ## Notes / décisions
+
+- **Construit (POC), 2026-10-24.** Signal « en cours » partagé, PUR : `inProgressIdsFromBranches`
+  (process-data.ts) déduit les ids des branches `feat/<id>-…` ouvertes, en écartant les branches
+  absorbées par `main` (fiche 20261013131852984) — `buildProcessData` le réutilise (plus de duplication).
+  Les surfaces le reçoivent par injection (défaut : set vide = comportement d'avant, zéro régression
+  pour les appelants qui ne le passent pas) : `computeHealth(..., inProgressIds)` pour `ezk dor health`,
+  `buildAvancementData(..., inProgressIds)` pour le board et son compte « tirables ». Côté BASH, nouveau
+  bin `in-progress-ids.ts` que `portfolio.sh` appelle (le bash ne peut pas appeler le cœur TS).
+- **Nuance absorbée.** Une branche fraîche SANS commit pointe sur `main` : `merge-tree` la juge absorbée,
+  donc « pas en cours » tant qu'il n'y a aucun commit. Cohérent avec la vue web process (même collecteur).
+  Dès le premier commit, la branche diverge et la fiche apparaît « en cours ».
+- **Hors périmètre, laissé tel quel :** `deriveMilestoneStatus` (avancement-data) et la colonne par
+  produit de portfolio additionnent `in-progress` par statut — toujours 0, mais ce sont des cumuls, pas
+  les deux surfaces nommées par la fiche. Nettoyage distinct si besoin.
 
 - Provenance : rapport d'audit du découpage, 2026-10-15 ; conséquence directe d'ADR-0077 (statut
   calculé non écrivable), livré en v0.16.

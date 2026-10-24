@@ -13,6 +13,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { inProgressIdsFromBranches } from '../core/process-data.js';
 import {
   type CollectedInputs,
   type SessionRow,
@@ -51,13 +52,24 @@ export function collectMergedBranches(): string[] {
 }
 
 /** Toutes les branches locales (nom court). Signal « en sprint » même sans worktree (vue process). */
-export function collectBranches(): string[] {
+export function collectBranches(cwd = process.cwd()): string[] {
   try {
-    const out = execFileSync('git', ['branch', '--format=%(refname:short)'], { encoding: 'utf8' });
+    const out = execFileSync('git', ['branch', '--format=%(refname:short)'], { encoding: 'utf8', cwd });
     return out.split('\n').map((b) => b.trim()).filter(Boolean);
   } catch {
     return []; // git absent ou hors dépôt — non bloquant
   }
+}
+
+/**
+ * Les ids de fiche « EN COURS » du dépôt `cwd` : branches ouvertes `feat/<id>-…` moins celles absorbées
+ * par `main` (ADR-0077). C'est la COLLECTE I/O (git) qui compose le cœur pur `inProgressIdsFromBranches` ;
+ * les surfaces (`ezk dor health`, le board, `portfolio.sh` via son bin) s'en servent sans répéter la
+ * mécanique ni figer la base `main` chacune de leur côté. git absent / hors dépôt → ensemble vide (SÛR).
+ */
+export function collectInProgressIds(cwd = process.cwd()): Set<string> {
+  const branches = collectBranches(cwd);
+  return inProgressIdsFromBranches(branches, collectAbsorbedBranches(branches, 'main', cwd));
 }
 
 /**

@@ -115,6 +115,28 @@ export function ficheIdFromBranch(branch: string): string | null {
   return m ? m[1] : null;
 }
 
+/**
+ * Les ids de fiche « en cours » DÉDUITS des branches de travail ouvertes `feat/<id>-…`, en écartant
+ * les branches ABSORBÉES par `main` (travail déjà squashé/fusionné — fiche 20261013131852984) : une
+ * branche restée après le merge ne doit pas faire croire que la story est encore en cours. C'est LE
+ * signal « in-progress » depuis ADR-0077 (statut calculé, jamais écrit dans la fiche). PUR : on reçoit
+ * les listes (branches locales, branches absorbées, branches de session), aucune I/O ici.
+ */
+export function inProgressIdsFromBranches(
+  branches: readonly string[],
+  absorbedBranches: readonly string[] = [],
+  sessionBranches: readonly string[] = [],
+): Set<string> {
+  const absorbed = new Set(absorbedBranches);
+  const ids = new Set<string>();
+  for (const b of [...branches, ...sessionBranches]) {
+    if (absorbed.has(b)) continue;
+    const id = ficheIdFromBranch(b);
+    if (id) ids.add(id);
+  }
+  return ids;
+}
+
 const prioRank = (p: string): number => {
   const i = PRIOS.indexOf(p);
   return i === -1 ? PRIOS.length : i;
@@ -147,17 +169,11 @@ export function buildProcessData(input: ProcessInputs): ProcessData {
   // en écartant les branches absorbées par `main` (travail déjà squashé/fusionné — fiche 20261013131852984).
   // Une branche restée après le merge ne doit pas faire croire que la story est encore en cours.
   const absorbed = new Set(input.absorbedBranches ?? []);
-  const branchIds = new Set<string>();
-  for (const b of input.branches) {
-    if (absorbed.has(b)) continue;
-    const id = ficheIdFromBranch(b);
-    if (id) branchIds.add(id);
-  }
-  for (const s of input.sessions) {
-    if (absorbed.has(s.branch)) continue;
-    const id = ficheIdFromBranch(s.branch);
-    if (id) branchIds.add(id);
-  }
+  const branchIds = inProgressIdsFromBranches(
+    input.branches,
+    input.absorbedBranches ?? [],
+    input.sessions.map((s) => s.branch),
+  );
 
   // Les ids qui ont une PR OUVERTE (seulement si `gh`/remote a répondu).
   const prIds = new Set<string>();

@@ -5,6 +5,7 @@ import {
   buildProcessData,
   buildProcessDataBlock,
   ficheIdFromBranch,
+  inProgressIdsFromBranches,
   type ProcessInputs,
   type ProcessStage,
 } from '../process-data.js';
@@ -76,6 +77,23 @@ describe('ficheIdFromBranch', () => {
 
   it.each(['main', 'feat/sans-id', 'develop'])('%s → null (pas de branche de travail à id)', (b) => {
     expect(ficheIdFromBranch(b)).toBeNull();
+  });
+});
+
+describe('inProgressIdsFromBranches — « en cours » déduit des branches (ADR-0077)', () => {
+  it('garde les ids des branches de travail, ignore les branches sans id', () => {
+    const ids = inProgressIdsFromBranches(['feat/0001-a', 'main', 'develop', 'fix/0002-b']);
+    expect([...ids].sort()).toEqual(['0001', '0002']);
+  });
+
+  it('écarte une branche ABSORBÉE par main (travail déjà fusionné) — pas « en cours »', () => {
+    const ids = inProgressIdsFromBranches(['feat/0001-a', 'feat/0003-c'], ['feat/0003-c']);
+    expect([...ids]).toEqual(['0001']);
+  });
+
+  it('prend aussi les branches de session', () => {
+    const ids = inProgressIdsFromBranches([], [], ['feat/0005-e']);
+    expect([...ids]).toEqual(['0005']);
   });
 });
 

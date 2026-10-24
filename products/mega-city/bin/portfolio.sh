@@ -75,9 +75,19 @@ emit_table() {
   if [ -n "$readies" ]; then printf '%s\n' "$readies" | emit_table; else echo '_Aucune fiche ready — flux gelé, groomer une tête de file._'; fi
   echo ''
 
-  echo '## 🟠 En cours (`in-progress`)'
+  echo '## 🟠 En cours (branche `feat/<id>-…` ouverte)'
   echo ''
-  inprog="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="in-progress"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
+  # « En cours » est CALCULÉ des branches ouvertes (ADR-0077), jamais lu du champ `status` écrit (il ne
+  # l'est plus : lire `$5=="in-progress"` montrait toujours 0, fiche 20261015213921062). Le bin partage
+  # le signal avec la vue web process et `ezk dor health`. git absent → liste vide (« rien en cours »).
+  inprog_ids="$("$TSX" "$MC/bin/in-progress-ids.ts" 2>/dev/null || true)"
+  if [ -n "$inprog_ids" ]; then
+    inprog="$(printf '%s' "$rows" | awk -F"$SEP" -v ids="$inprog_ids" '
+      BEGIN { n = split(ids, a, "\n"); for (i = 1; i <= n; i++) if (a[i] != "") want[a[i]] = 1 }
+      ($1 in want)' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
+  else
+    inprog=""
+  fi
   if [ -n "$inprog" ]; then printf '%s\n' "$inprog" | emit_table; else echo '_Rien en cours._'; fi
   echo ''
 

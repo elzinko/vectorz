@@ -241,6 +241,8 @@ export function checkFiche(manifest: DorManifest, ficheText: string): SlotReport
 // --- la santé du lot -----------------------------------------------------------------------------
 
 export interface FicheStock {
+  /** L'id de la fiche — sert à croiser le signal « en cours » déduit des branches (ADR-0077). Optionnel : les fixtures qui ne testent pas « en cours » peuvent l'omettre. */
+  readonly id?: string;
   readonly status: string;
   readonly type: string;
   readonly done: boolean;
@@ -262,18 +264,30 @@ export interface Health {
   readonly enough?: boolean;
 }
 
-export function computeHealth(fiches: readonly FicheStock[], minReady?: number): Health {
+/** Ensemble vide partagé : défaut de `computeHealth` quand aucun signal de branche n'est fourni (comportement d'avant). */
+const EMPTY_IDS: ReadonlySet<string> = new Set();
+
+export function computeHealth(
+  fiches: readonly FicheStock[],
+  minReady?: number,
+  inProgressIds: ReadonlySet<string> = EMPTY_IDS,
+): Health {
   let ready = 0;
   let notReady = 0;
   let inProgress = 0;
   let blockedReady = 0;
   for (const fiche of fiches) {
     if (fiche.done || fiche.type === 'epic') continue;
+    // « En cours » est CALCULÉ des branches ouvertes (ADR-0077), jamais lu d'un `status` écrit (il ne
+    // l'est plus) : une fiche dont une branche `feat/<id>-…` est ouverte compte « en cours », pas tirable.
+    if (fiche.id && inProgressIds.has(fiche.id)) {
+      inProgress += 1;
+      continue;
+    }
     if (fiche.status === 'ready') {
       if (fiche.blocked) blockedReady += 1;
       else ready += 1;
     } else if (fiche.status === 'idea') notReady += 1;
-    else if (fiche.status === 'in-progress') inProgress += 1;
   }
   const health: Health = {
     total: ready + notReady + inProgress + blockedReady,

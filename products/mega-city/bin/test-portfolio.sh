@@ -68,7 +68,11 @@ check "commentaire de fin du statut retiré"           "! grep -qF 'groomée le'
 check "statut du corps ignoré (reste ready)"          "! grep -qF '0001 | Fix: le deux-points # et le dièse | feature | P0' '$OUT' && ! grep -qF '✅ shipped | #29' '$OUT'"
 check "produit absent → repli vectorz ; commentaire du titre nu retiré" \
   "grep -qF '| vectorz | 0002 | Une idée sans produit | chore | P2 | 💡 idea |' '$OUT'"
-check "statut quoté (\"in-progress\") reconnu, pas ❓" "! grep -qF '❓' '$OUT' && grep -qF '🟠 in-progress' '$OUT'"
+# Le statut quoté « in-progress » est RECONNU (quotes retirées) : le compteur vectorz le compte « 1 »
+# ci-dessous — si le loader gardait les quotes, la clé ne matcherait pas et le compteur dirait 0.
+# Plus de section listant les fiches « in-progress » écrites : « en cours » est désormais DÉDUIT des
+# branches ouvertes (ADR-0077, fiche 20261015213921062), pas du champ `status`. On garde juste : aucun ❓.
+check "statut quoté (\"in-progress\") reconnu, pas ❓" "! grep -qF '❓' '$OUT'"
 check "compteur mega-city (1 ready)"                  "grep -qF '| mega-city | 1 | 1 | 0 | 0 | 0 | 0 | 0 |' '$OUT'"
 check "compteur vectorz (1 en cours, 1 idée)"         "grep -qF '| vectorz | 2 | 0 | 1 | 0 | 1 | 0 | 0 |' '$OUT'"
 

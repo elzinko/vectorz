@@ -14,12 +14,14 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STATUTS, buildAvancementData } from '../src/core/avancement-data.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
+import { collectInProgressIds } from '../src/io/sessions-collect.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 
 // Le projet dont on lit les fiches : --root > EZK_ROOT > ce dépôt (fiche 20260826173221323).
 const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const { root: repoRoot } = projectRootOrExit(ownRoot);
-const data = buildAvancementData(loadFiches(repoRoot));
+// « En cours » déduit des branches ouvertes (ADR-0077) : les fiches en cours ne comptent pas « tirables ».
+const data = buildAvancementData(loadFiches(repoRoot), collectInProgressIds(repoRoot));
 
 if (process.argv.includes('--json')) {
   console.log(JSON.stringify(data, null, 1));

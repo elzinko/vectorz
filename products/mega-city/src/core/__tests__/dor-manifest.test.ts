@@ -189,7 +189,7 @@ describe('checkFiche — le mécanique du slot : présent, non vide, tous les it
 });
 
 describe('computeHealth — combien de fiches sont tirables (0100)', () => {
-  const f = (status: string, extra: Partial<{ type: string; done: boolean; blocked: string }> = {}) => ({
+  const f = (status: string, extra: Partial<{ id: string; type: string; done: boolean; blocked: string }> = {}) => ({
     status,
     type: 'feature',
     done: false,
@@ -197,20 +197,28 @@ describe('computeHealth — combien de fiches sont tirables (0100)', () => {
     ...extra,
   });
 
-  it('compte prêtes, pas prêtes (idea), en cours ; ignore épics, livrées et terminales', () => {
+  it('compte prêtes, pas prêtes (idea) ; ignore épics, livrées et terminales', () => {
     const health = computeHealth([
       f('ready'),
       f('ready'),
       f('idea'),
       f('idea'),
       f('idea'),
-      f('in-progress'),
       f('ready', { type: 'epic' }),
       f('shipped'),
       f('superseded'),
       f('idea', { done: true }),
     ]);
-    expect(health).toMatchObject({ total: 6, ready: 2, notReady: 3, inProgress: 1, blockedReady: 0 });
+    expect(health).toMatchObject({ total: 5, ready: 2, notReady: 3, inProgress: 0, blockedReady: 0 });
+  });
+
+  it('« en cours » vient des branches ouvertes (ADR-0077), pas d’un status écrit : la ready concernée passe en cours, plus tirable', () => {
+    const health = computeHealth(
+      [f('ready', { id: '0001' }), f('ready', { id: '0002' }), f('idea', { id: '0003' })],
+      undefined,
+      new Set(['0001']), // id 0001 porte une branche feat/0001-… ouverte
+    );
+    expect(health).toMatchObject({ total: 3, ready: 1, notReady: 1, inProgress: 1, blockedReady: 0 });
   });
 
   it('une fiche ready mais bloquée n’est pas tirable : comptée à part', () => {

@@ -15,6 +15,9 @@ import { STATUTS, TERMINAUX } from './fiche-schema.js';
  */
 export { STATUTS, TERMINAUX };
 
+/** Ensemble vide partagé : défaut quand aucun signal « en cours » déduit des branches n'est fourni (board hors dépôt git, tests). */
+const EMPTY_IDS: ReadonlySet<string> = new Set();
+
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
 export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
 
@@ -137,7 +140,10 @@ function deriveMilestoneStatus(
 const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
 
 /** Compile le board. Tout est trié → sortie stable (F4). */
-export function buildAvancementData(fiches: Fiche[]): AvancementData {
+export function buildAvancementData(
+  fiches: Fiche[],
+  inProgressIds: ReadonlySet<string> = EMPTY_IDS,
+): AvancementData {
   const counts: Record<string, number> = {};
   for (const f of fiches) counts[f.status] = (counts[f.status] ?? 0) + 1;
 
@@ -149,7 +155,9 @@ export function buildAvancementData(fiches: Fiche[]): AvancementData {
     .sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || (a.id < b.id ? -1 : 1))
     .map(toBoard);
 
-  const tirables = actives.filter((f) => f.status === 'ready').length;
+  // « Tirables » = ready SANS branche de travail ouverte : une fiche dont une branche `feat/<id>-…`
+  // tourne est « en cours » (ADR-0077), pas du stock libre — sinon le board sur-compte (fiche 20261015213921062).
+  const tirables = actives.filter((f) => f.status === 'ready' && !inProgressIds.has(f.id)).length;
 
   // Cumul par MILESTONE (jalon d'ordre, ADR-0017 A16) : regroupe les fiches NON-TERMINALES par
   // milestone. « N fiches — k livrées » : total = fiches du jalon (idea/ready/in-progress/shipped),
@@ -212,11 +220,11 @@ export const AVANCEMENT_DATA_BEGIN = '/*ezk-avancement-data:begin*/';
 export const AVANCEMENT_DATA_END = '/*ezk-avancement-data:end*/';
 
 /** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `board.data.js`. */
-export function buildAvancementDataBlock(fiches: Fiche[]): string {
+export function buildAvancementDataBlock(fiches: Fiche[], inProgressIds: ReadonlySet<string> = EMPTY_IDS): string {
   // `<` échappé en < : protège la SOURCE (un titre
   // contenant `</script>` ne peut pas fermer la balise <script> qui porte le bloc). Le
   // RENDU est protégé séparément — board.html pose les données via textContent, jamais
   // innerHTML (revue P0). Les deux protections sont nécessaires et distinctes.
-  const json = JSON.stringify(buildAvancementData(fiches), null, 1).replace(/</g, '\\u003c');
+  const json = JSON.stringify(buildAvancementData(fiches, inProgressIds), null, 1).replace(/</g, '\\u003c');
   return `${AVANCEMENT_DATA_BEGIN}\nwindow.EZK_AVANCEMENT = ${json};\n${AVANCEMENT_DATA_END}`;
 }
