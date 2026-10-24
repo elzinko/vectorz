@@ -7,7 +7,7 @@ product: mega-city
 milestone: qualite
 version:
 labels: [performance, supervision, github-optionnel]
-status: idea
+status: ready
 pr:
 evidence: none # commande, pas d'écran
 created: 2026-10-13
@@ -32,12 +32,12 @@ sur vectorz. Deux causes : `listMergedPrs` fait `gh pr list --limit 200` sans bo
 sans regarder la config `github: false`), et `listUsageEvents` parse tous les transcripts avant de
 filtrer sur la fenêtre.
 
-## Proposition *(spike)*
+## Proposition
 
-Explorer : (1) borner `gh pr list` / le lire via le guichet `ezk forge changes --merged` (qui respecte
-`github: false` → pas d'appel en projet coupé) ; (2) filtrer les transcripts au plus tôt sur la
-fenêtre du sprint plutôt que tout charger. Cible indicative : le chemin daté tient sous ~10 s sur
-vectorz.
+Deux gestes, approche arrêtée (le guichet existe déjà) : (1) lire les PR mergées **uniquement** via le
+guichet `ezk forge changes --merged`, qui respecte `github: false` (aucun `gh` en projet coupé) et
+borne la fenêtre ; (2) filtrer les transcripts sur la fenêtre du sprint **avant** de les parser, pas
+après. Cible : le chemin daté tient sous ~10 s sur vectorz (49 runs).
 
 ## Critères d'acceptation
 
@@ -57,3 +57,6 @@ vectorz.
 - Origine : rétro du run v0.12 ([capture](../docs/captures/2026-10-13-retro-run-v012.md)), piste P5.
 - Suite de 20261002230039863 (qui a réglé le cas « non daté rapide » ; ici on borne le cas daté).
 - Peut réutiliser le guichet `ezk forge changes --merged` (fiche 20261013074251752) pour les PR mergées.
+- **Groomée `ready` (2026-10-24), prémisse vérifiée.** Le guichet `ezk forge changes --merged` existe
+  (`bin/forge-changes.ts`, ADR-0061) et respecte `github: false` : l'approche est **arrêtée**, ce n'est
+  plus un spike. DoR socle vert. Refactor de perf borné, critères mesurables (< ~10 s).
