@@ -87,7 +87,7 @@ les dépendances. Il paie tôt : chaque milestone suivante se prépare mieux.
 - [Le rapport de run affiche le ratio parké/livré + la couverture de grooming](../../features/done/20261018234207272_rapport-run-ratio-parke-livre-drapeau.md) — à groomer.
 - *En option, même thème, laissées en idée* : [La version est un checkpoint du run](../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md) et [« Prête » vérifie la prémisse interne de la fiche](../../features/20261015213921103_dor-verifie-premisse-dans-le-code.md).
 
-État : **toutes les fiches prêtes du lot sont livrées — 5 shippées en local** (2026-10-23) : lire `depends:` + désambiguïser « en cours » ; cycle de vie d'une version (figer/dégeler/diff) ; groomer une milestone en une passe ; `park` refuse une fiche non groomée ; rapport de run (ratio parké/livré + drapeau). Le 2026-10-24, **2 de ces idées ont été groomées « prête »** ([version = checkpoint du run](../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md) et [sprint-close jamais bloqué en worktree](../../features/20261016203544694_sprint-close-ne-bloque-jamais-en-worktree.md)). Reste **1 idée en attente de panel** : [« prête » vérifie la prémisse](../../features/20261015213921103_dor-verifie-premisse-dans-le-code.md) — à ne pas groomer sans arbitrage. La tête tirable passe à la milestone suivante (`carte`).
+État : **toutes les fiches prêtes du lot sont livrées — 5 shippées en local** (2026-10-23) : lire `depends:` + désambiguïser « en cours » ; cycle de vie d'une version (figer/dégeler/diff) ; groomer une milestone en une passe ; `park` refuse une fiche non groomée ; rapport de run (ratio parké/livré + drapeau). Le 2026-10-24, **2 de ces idées ont été groomées « prête »** ([version = checkpoint du run](../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md) et [sprint-close jamais bloqué en worktree](../../features/done/20261016203544694_sprint-close-ne-bloque-jamais-en-worktree.md)). Reste **1 idée en attente de panel** : [« prête » vérifie la prémisse](../../features/20261015213921103_dor-verifie-premisse-dans-le-code.md) — à ne pas groomer sans arbitrage. La tête tirable passe à la milestone suivante (`carte`).
 
 ### Milestone 2 — « Le board dit vrai »
 
@@ -137,7 +137,7 @@ ciblées remettent la carte d'aplomb.
 - **« Le cockpit s'ouvre »** : [une page d'accueil, une ligne par projet](../../features/20261002115451451_page-une-ligne-par-projet.md) + [rendre les étapes d'un skill configurables](../../features/20260830110131228_schema-etapes-skill-configurables.md).
 - **« La qualité tient »** : [revue design-system comme step de release](../../features/20261011153019643_revue-design-system-step-composable-release.md), [release local-first macOS signé/notarisé](../../features/20261002130917993_release-local-first-macos.md), [borner le coût du chemin daté de sprint:report](../../features/20261013143324505_sprint-report-cout-chemin-date.md).
 - **« Voir le vrai coût »** : [attribuer les jetons par mode de revue](../../features/20261017110956989_jetons-par-mode-local-vs-pr-codex.md) — **prête**, autonome.
-- **« Les portiers ne crient plus au loup »** : [ezk-sprint close ne se bloque jamais en worktree](../../features/20261016203544694_sprint-close-ne-bloque-jamais-en-worktree.md), P1.
+- **« Les portiers ne crient plus au loup »** : [ezk-sprint close ne se bloque jamais en worktree](../../features/done/20261016203544694_sprint-close-ne-bloque-jamais-en-worktree.md), P1.
 
 ## Le tas parké (88 fiches) — une passe de tri à prévoir
 

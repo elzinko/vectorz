@@ -23,7 +23,7 @@ version se pose à la construction (étiquette). Détail :
 - ~~`20261018234207272` — rapport de run : ratio parké/livré + couverture de groom · build~~ — shipped
 - `20261015125606808` — la version est un checkpoint du run (gates entrée/sortie) · groom
 - `20261015213921103` — « prête » vérifie la prémisse interne de la fiche · groom
-- `20261016203544694` — ezk-sprint close ne se bloque jamais en worktree · groom
+- ~~`20261016203544694` — ezk-sprint close ne se bloque jamais en worktree · groom~~ — shipped
 
 **Milestone `board` — « Le board dit vrai »** :
 - `20261018121537582` — brancher le board web sur les vraies données · build
