@@ -2,8 +2,14 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MergedPrRecord, PrCommitRecord, RepoSource, ShippedFicheRecord } from '../ports/RepoSource.js';
+import { githubCapabilities } from '../../loaders/project-config.js';
 
 const AGENT_BRANCH_PATTERN = /^(claude|feat|fix|docs|chore|refactor)\//;
+
+/** Lanceur `gh` injectable : permet de prouver, en test, que la garde github:false ne touche pas au réseau. */
+export type GhRunner = (repoRoot: string, args: string[]) => string;
+const defaultGhRunner: GhRunner = (repoRoot, args) =>
+  execFileSync('gh', args, { cwd: repoRoot, encoding: 'utf8' });
 
 /** Copie de `tools/outcomes/sources.ts#classifyCommitMessage` (même heuristique PO provisoire). */
 function classifyCommitMessage(message: string): PrCommitRecord {
@@ -25,6 +31,9 @@ function classifyCommitMessage(message: string): PrCommitRecord {
  * tests unitaires (dépendance process/réseau), utilisé côté CLI seulement.
  */
 export class GitGhRepoSource implements RepoSource {
+  /** `runGh` est injectable pour tester la garde github:false sans toucher au réseau. */
+  constructor(private readonly runGh: GhRunner = defaultGhRunner) {}
+
   private git(repoRoot: string, args: string[]): string {
     return execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8' }).trim();
   }
@@ -57,13 +66,20 @@ export class GitGhRepoSource implements RepoSource {
   }
 
   listMergedPrs(repoRoot: string): MergedPrRecord[] {
+    // Projet GitHub coupé (github:false / pr:false) → aucun appel gh (fiche 20261013143324505, AC github:false).
+    if (!githubCapabilities(repoRoot).pr) return [];
     let raw: string;
     try {
-      raw = execFileSync(
-        'gh',
-        ['pr', 'list', '--state', 'merged', '--limit', '200', '--json', 'number,headRefName,mergedAt'],
-        { cwd: repoRoot, encoding: 'utf8' },
-      );
+      raw = this.runGh(repoRoot, [
+        'pr',
+        'list',
+        '--state',
+        'merged',
+        '--limit',
+        '200',
+        '--json',
+        'number,headRefName,mergedAt',
+      ]);
     } catch {
       return [];
     }
@@ -72,10 +88,7 @@ export class GitGhRepoSource implements RepoSource {
     return agentPrs.map((pr) => {
       let detail: { commits: { messageHeadline: string; messageBody?: string }[] } = { commits: [] };
       try {
-        const detailRaw = execFileSync('gh', ['pr', 'view', String(pr.number), '--json', 'commits'], {
-          cwd: repoRoot,
-          encoding: 'utf8',
-        });
+        const detailRaw = this.runGh(repoRoot, ['pr', 'view', String(pr.number), '--json', 'commits']);
         detail = JSON.parse(detailRaw);
       } catch {
         // PR détaillée indisponible (permissions, réseau) → commits vides, PR quand même comptée.
