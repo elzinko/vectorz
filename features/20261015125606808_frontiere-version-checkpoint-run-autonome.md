@@ -91,14 +91,18 @@ Le sort d'une fiche non livrée **dépend de sa raison de blocage** — d'où l'
 > 2026-10-23 : DoR tenue (problème / valeur / critères vérifiables / comment vérifier), mécanisme déjà
 > gravé par l'ADR-0080 — tirable pour le build.
 
-- [ ] En `--mode auto`, backlog loti : une version ne **démarre** ses sprints que si toutes ses fiches
-      sont prêtes, ou le run fait surface ce qui manque (gate d'entrée).
-- [ ] À la frontière, le run **ne s'arrête plus en silence** : il présente les fiches non livrées,
+- [x] En `--mode auto`, backlog loti : une version ne **démarre** ses sprints que si toutes ses fiches
+      sont prêtes, ou le run fait surface ce qui manque (gate d'entrée). *(Verbe `ezk backlog version
+      ready [<v>]` → verdict `launch` ; instruction de run dans ezk-product-build SKILL, étape Intake.)*
+- [x] À la frontière, le run **ne s'arrête plus en silence** : il présente les fiches non livrées,
       **leur raison de blocage**, et la décision attendue (reporter / parker / clôturer / sceller).
-- [ ] Le **sceau** peut être apposé par le PO en mode auto quand la version est propre ; les drapeaux
+      *(`ezk backlog version close <v>` rend la table `fiche → raison → décision` via `seal` ; SKILL, bullet `defer`.)*
+- [x] Le **sceau** peut être apposé par le PO en mode auto quand la version est propre ; les drapeaux
       v0.15 (`--seal-versions local`, `--versions all`) **lèvent** la demande (comportement inchangé).
-- [ ] Backlog **non loti** : aucune frontière, le run enchaîne jusqu'à épuisement du stock prêt
-      (non-régression).
+      *(Inchangé : `close --tag` + gate de release ; les drapeaux v0.15 restent la pré-autorisation.)*
+- [x] Backlog **non loti** : aucune frontière, le run enchaîne jusqu'à épuisement du stock prêt
+      (non-régression). *(Sans train, `version ready` dit « aucune version en cours » et `defer` ne
+      se déclenche jamais — le run va au bout du stock prêt.)*
 
 ## Comment vérifier
 
@@ -124,6 +128,25 @@ pnpm --dir products/mega-city test
 - Sœur du thème « autonomie du run » livré en v0.15 : filtre d'éligibilité, boucle multi-versions,
   auto-tag opt-in. En multi-sessions, la décision de scellage passe par la session **MASTER pilote**.
 - **Placement** : aucune version ouverte ne porte ce thème ; à affecter par le PO. Priorité P2.
+
+- **Construit (2026-10-24).** Brique pure neuve `src/backlog/version-checkpoint.ts` : `launch(lot, scope)`
+  (entrée — ventile les fiches non livrées par `runDisposition` : build / groom / escalate / defer) et
+  `seal(lot, scope)` (sortie — table `fiche → raison typée → décision attendue`, via `expectedDecision`).
+  Verbe neuf `ezk backlog version ready [<v>]` (verdict d'entrée) ; `version close` **enrichi** : son
+  refus liste désormais la décision attendue par fiche. Les deux gates lèvent la **borne de tirage**
+  (`allVersions`) : on juge la version VISÉE sur elle-même (statut/blocage), pas contre l'ordre du train.
+- **Écart assumé à l'ADR-0080 (wiring).** L'ADR disait « `closeVersion` **délègue** à `seal()` ». Le
+  graphe de modules l'interdit : `versions.ts` (où vit `closeVersion`) ne peut importer `run-eligibility`
+  (qui l'importe déjà) → import circulaire. Réalisation équivalente, sans cycle : le **prédicat de
+  scellabilité** reste unique (`lot.todo` vide, lu par les deux), et c'est le BIN `close` qui compose
+  `seal()` pour la table riche. Même garantie (source unique), direction inversée. Décision du modèle
+  (deux gates, report-hors, pas de graphe) **inchangée** — seul le câblage diffère.
+- **Couvert par les tests :** `version-checkpoint.test.ts` (launch/seal/expectedDecision, 9 cas) et
+  `backlog-version-bin.test.ts` (`ready` lançable/pas-lançable, `close` surface la décision). Prouvé
+  live sur le vrai backlog : `version ready` dit v0.23.0 pas lançable (2 à groomer, code 1).
+- **Hors périmètre (laissé au run, prose) :** l'enchaînement exact phase-1-groom / phase-2-build en
+  `--mode auto` reste piloté par le LLM d'ezk-product-build (SKILL, étape Intake). Le mécanisme
+  — les deux verdicts calculés — est ici ; le « quand » reste à la méthode (ADR-0065).
 - Origine : note de rétro « frontière de version / checkpoint » (2026-10-15), audit du découpage
   (2026-10-15), clarifications PO (2026-10-16).
 - **Confirmation PO (2026-10-16) — les 4 capacités du run auto.** En `--mode auto`,

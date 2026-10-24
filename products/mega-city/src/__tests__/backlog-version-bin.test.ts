@@ -160,6 +160,41 @@ describe('backlog:version — le bin', () => {
   });
 });
 
+// Checkpoint de version (fiche 20261015125606808, ADR-0080) : entrée « lançable ? », sortie « scellable ? ».
+describe('backlog:version ready — gate d’entrée', () => {
+  it('toutes les fiches prêtes → LANÇABLE (code 0)', () => {
+    const r = run('ready', 'v0.3.0'); // le lot v0.3.0 n'a que la fiche 0003 ready
+    expect(r.code).toBe(0);
+    expect(r.out).toContain('LANÇABLE');
+  });
+
+  it('une idée dans le lot → PAS lançable (code 1), la fiche est nommée « à groomer »', () => {
+    put('features/20260101000000009_i.md', fm('20260101000000009', 'status: idea\nversion: v0.3.0'));
+    git('add', '.');
+    git('commit', '--quiet', '-m', 'idée dans v0.3.0');
+    const r = run('ready', 'v0.3.0');
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('à groomer');
+    expect(r.out).toContain('20260101000000009');
+  });
+});
+
+describe('backlog:version close — surface la décision, fiche par fiche (sortie)', () => {
+  it('refuse en nommant la raison typée ET la décision attendue de chaque fiche non livrée', () => {
+    put(
+      'features/20260101000000008_e.md',
+      fm('20260101000000008', 'status: ready\nversion: v0.3.0\nblocked: attend-maquette'),
+    );
+    git('add', '.');
+    git('commit', '--quiet', '-m', 'bloquée dans v0.3.0');
+    const r = run('close', 'v0.3.0');
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('Décision attendue');
+    expect(r.out).toContain('attend-maquette');
+    expect(r.out).toContain('20260101000000008');
+  });
+});
+
 // Gate de release (fiche 20260922175954296) — ici la gate est ACTIVE (on efface le `off` du setup).
 describe('backlog:version close --tag — gate de release', () => {
   beforeEach(() => {

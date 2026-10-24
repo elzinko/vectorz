@@ -36,11 +36,13 @@ import {
   renderRefusal,
   renderVersionList,
 } from '../src/backlog/versions-render.js';
+import { type LaunchVerdict, launch, seal } from '../src/backlog/version-checkpoint.js';
+import { versionScope } from '../src/backlog/version-scope.js';
 import { localTags } from '../src/io/git-tags.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 import { readReleaseVerdict, releaseConfig } from '../src/loaders/release-passes.js';
 
-const VERBS = ['list', 'check', 'close', 'freeze', 'unfreeze', 'diff'] as const;
+const VERBS = ['list', 'check', 'ready', 'close', 'freeze', 'unfreeze', 'diff'] as const;
 type Verb = (typeof VERBS)[number];
 
 /** Les verbes qui exigent une version en argument. */
@@ -49,7 +51,7 @@ const NEEDS_VERSION: ReadonlySet<Verb> = new Set(['close', 'freeze', 'unfreeze',
 function usage(message?: string): never {
   if (message) console.error(`erreur: ${message}`);
   console.error(
-    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | close <X> [--tag] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
+    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | ready [<X>] | close <X> [--tag] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
   );
   process.exit(2);
 }
@@ -135,6 +137,29 @@ function frozenBaseIds(root: string, version: string, freezeTag: string): string
   }
 }
 
+/** Rend le verdict d'entrée « version lançable ? » : l'« En clair », puis ce qui reste à faire. */
+function renderLaunch(v: LaunchVerdict): string[] {
+  const n = (xs: unknown[]): number => xs.length;
+  const head = v.launchable
+    ? `En clair : ${v.version} est LANÇABLE — ${n(v.build)} fiche(s) prête(s), rien à groomer ni à escalader.`
+    : `En clair : ${v.version} n'est PAS encore lançable — ${n(v.build)} prête(s), ${n(v.groom)} à groomer, ${n(v.escalate)} à escalader${n(v.defer) ? `, ${n(v.defer)} hors borne` : ''}.`;
+  const lines = [head, ''];
+  const block = (titre: string, fiches: { id: string; title: string; verdict: { message: string } }[]): void => {
+    if (fiches.length === 0) return;
+    lines.push(titre);
+    for (const f of fiches) lines.push(`  ${f.id} ${f.title}`);
+    lines.push('');
+  };
+  block('À construire (prêtes) :', v.build);
+  block('À groomer avant de construire :', v.groom);
+  block('À escalader (blocage, épic, statut inattendu) :', v.escalate);
+  block('Hors borne de version :', v.defer);
+  if (!v.launchable) {
+    lines.push('Le run groome ce qu’il peut (mode auto 2 phases), et fait surface le reste au PO — il ne démarre pas en silence.');
+  }
+  return lines;
+}
+
 function main(): void {
   const args = parseArgs(process.argv.slice(2).filter((a) => a !== '--'));
   const fiches = loadFiches(args.root);
@@ -162,6 +187,27 @@ function main(): void {
       console.log("Non contrôlé ici : l'accord avec PLAN.md (--no-plan, ou fichier absent).");
     }
     process.exit(hasErrors(findings) ? 1 : 0);
+  }
+
+  if (args.verb === 'ready') {
+    // Gate d'ENTRÉE (ADR-0080) : « cette version est-elle lançable ? ». Lecture seule, un VERDICT.
+    // Borne de tirage LEVÉE (`allVersions`) : on juge la version VISÉE sur elle-même (statut/blocage),
+    // pas contre l'ordre du train — sinon une version au-dessus de la courante paraîtrait « hors borne ».
+    const report = buildVersions(fiches, tags);
+    const scope = versionScope(report, { allVersions: true });
+    const version = args.version ?? scope.current;
+    if (version === undefined) {
+      say(['En clair : aucune version en cours (le train est entièrement étiqueté). Rien à lancer.']);
+      return;
+    }
+    const lot = report.lots.find((l) => l.version === version);
+    if (!lot) {
+      say([`En clair : aucune fiche ne porte la version ${version}.`]);
+      process.exit(1);
+    }
+    const verdict = launch(lot, scope);
+    say(renderLaunch(verdict));
+    process.exit(verdict.launchable ? 0 : 1);
   }
 
   if (args.verb === 'freeze' || args.verb === 'unfreeze' || args.verb === 'diff') {
@@ -246,7 +292,18 @@ function main(): void {
   const version = args.version as string; // garanti par parseArgs
   const result = closeVersion(fiches, tags, version, opts);
   if (!result.ok) {
-    say(renderRefusal(version, result.reasons));
+    // Gate de SORTIE (ADR-0080) : on ne s'arrête plus muet. Pour chaque fiche non livrée, la raison
+    // typée et la décision attendue du PO (reporter / parker / clôturer / construire) — pas juste la liste.
+    const report = buildVersions(fiches, tags);
+    const lot = report.lots.find((l) => l.version === version);
+    const sealLines: string[] = [];
+    if (lot && lot.todo.length > 0) {
+      // Borne LEVÉE : la raison porte sur la fiche elle-même (statut/blocage), pas sur l'ordre du train.
+      const verdict = seal(lot, versionScope(report, { allVersions: true }));
+      sealLines.push('', 'Décision attendue, fiche par fiche :');
+      for (const row of verdict.pending) sealLines.push(`  ${row.id} [${row.reason}] → ${row.decision}`);
+    }
+    say([...renderRefusal(version, result.reasons), ...sealLines]);
     process.exit(1);
   }
 

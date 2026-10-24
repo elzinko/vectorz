@@ -98,7 +98,11 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    4 STOP, le plafond de jetons. En `--mode auto`, c'est l'écho qui permet à l'opérateur de
    s'absenter en sachant ce que la boucle fera. Un retard sur `origin/main` ou l'absence de remote
    avertit, **ne bloque jamais**. Format : [`references/run-report-template.md`](references/run-report-template.md).
-1. **Intake** — si un review est dû (`review --delta` avant le planning ; complet
+1. **Intake** — **gate d'entrée de version** d'abord (ADR-0080, `--mode auto` sur un backlog loti) :
+   `ezk backlog version ready [<v>]` dit si la version visée est **lançable** (toutes ses fiches prêtes).
+   Lançable → enchaîne l'intake. Pas lançable → le run **groome** ce qu'il peut (phase 1 du mode auto),
+   et **fait surface** au PO ce qu'il ne peut pas groomer seul (fiches à escalader) — jamais un démarrage
+   muet. Puis, si un review est dû (`review --delta` avant le planning ; complet
    post-pivot / tous les 5 sprints — ADR-0016), passe-le d'abord. Puis
    `ezk-backlog next --lot N` (N = `--lot`, défaut 1) : prends le **lot** du sprint, N fiches
    **tirables** (ready, non-épic) dans l'ordre du plan. Avec `--lot 1`, c'est LA prochaine fiche
@@ -115,6 +119,11 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    - `groom` → auto-groom vers la DoR (cf. § dédié) ;
    - `defer` → **borne de version atteinte** : le run s'arrête par défaut à la fin de la version en
      cours ; la soupape `--all-versions` (sur `ezk run eligibility` comme sur le tirage) la lève.
+     **Ne t'arrête jamais muet à la frontière** (ADR-0080) : lance `ezk backlog version close <v>` —
+     s'il refuse, il liste chaque fiche non livrée avec sa **raison typée** et la **décision attendue**
+     (reporter / parker / clôturer / construire). En `--mode manuel` → STOP, le PO tranche. En
+     `--mode auto` → `ezk-pm`, ou la pré-autorisation `--seal-versions`/`--versions` (v0.15). Le **tag
+     ne couvre que le livré** : une fiche bloquée **sort** de la version (report-hors, sinon `park`).
    Le tri est **déterministe** : il lit le marqueur `blocked:` typé et la borne de version
    (ADR-0070), jamais un texte libre que seul un humain décoderait.
 2. **Décision « quoi »** :
