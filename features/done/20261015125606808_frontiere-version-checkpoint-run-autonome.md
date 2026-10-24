@@ -7,8 +7,8 @@ product: mega-city
 milestone: preparation
 version:
 labels: [methode, ezk-product-build]
-status: ready
-pr:
+status: shipped
+pr: "local (45433022)"
 evidence: none # pilote de run, pas d'écran
 created: 2026-10-15
 blocked:
@@ -27,7 +27,7 @@ une fiche, apposer le sceau) restent au PO, et le run les **fait surface** au li
 **Si tu arrives frais.** Le *run autonome* = `ezk-product-build run --mode auto`, qui enchaîne les
 sprints seul. Une *version* = le lot de livraison (champ `version:` des fiches). *Sceller* =
 `ezk backlog version close <v> --tag` (poser l'étiquette git). Garde-fou
-[ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) : on ne
+[ADR-0070](../../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) : on ne
 tire pas la version suivante tant que la courante n'a pas son étiquette.
 
 ## Contexte / Problème
@@ -124,7 +124,7 @@ pnpm --dir products/mega-city test
   mécanique n'est pas remplie (prêtes à l'entrée, livrées/reportées à la sortie). (2) En auto
   multi-versions, le PO décide du sort des fiches non livrables **selon leur raison de blocage**. (3) Le
   sceau est un geste PO, apposable **en mode auto** si tout est OK (ou pré-autorisé v0.15).
-- **Conception retenue — panel du 2026-10-16, gravée dans [ADR-0080](../products/mega-city/docs/adr/0080-checkpoint-de-version.md) (GO unanime).** Une brique pure à deux verdicts calculés ; « faire surface » = STOP dans la boucle (pas de moment de bus neuf) ; **tag honnête par report-hors** ; dépendances = **signal** (plan + milestone), pas un graphe ; pas d'extension du modèle de process maintenant. Garde-fous : anti-waterfall (verdict + groom progressif) et anti-Goodhart (seule « concurrence/budget » s'auto-résout, le reste escalade ; push = 4-STOP ; bilan de sceau honnête). Points laissés **ouverts** dans l'ADR : `current` sur tags locaux, et le but de version.
+- **Conception retenue — panel du 2026-10-16, gravée dans [ADR-0080](../../products/mega-city/docs/adr/0080-checkpoint-de-version.md) (GO unanime).** Une brique pure à deux verdicts calculés ; « faire surface » = STOP dans la boucle (pas de moment de bus neuf) ; **tag honnête par report-hors** ; dépendances = **signal** (plan + milestone), pas un graphe ; pas d'extension du modèle de process maintenant. Garde-fous : anti-waterfall (verdict + groom progressif) et anti-Goodhart (seule « concurrence/budget » s'auto-résout, le reste escalade ; push = 4-STOP ; bilan de sceau honnête). Points laissés **ouverts** dans l'ADR : `current` sur tags locaux, et le but de version.
 - Sœur du thème « autonomie du run » livré en v0.15 : filtre d'éligibilité, boucle multi-versions,
   auto-tag opt-in. En multi-sessions, la décision de scellage passe par la session **MASTER pilote**.
 - **Placement** : aucune version ouverte ne porte ce thème ; à affecter par le PO. Priorité P2.

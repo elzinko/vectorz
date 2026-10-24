@@ -115,7 +115,7 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
 - **Aligne ADR-0080** : « dépendances = **signal**, pas graphe ; pas d'extension du modèle de process
   maintenant ». Cette fiche **est** l'extension différée. Voir
   [ADR-0080](../products/mega-city/docs/adr/0080-checkpoint-de-version.md) et la fiche
-  [checkpoint de version](20261015125606808_frontiere-version-checkpoint-run-autonome.md).
+  [checkpoint de version](done/20261015125606808_frontiere-version-checkpoint-run-autonome.md).
 - **Entoure / amende** [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md)
   (le tirage reste dans la version en cours) : la soupape `--all-versions` est le palliatif actuel,
   et le noyau s'y appuie pour débloquer v0.23.
@@ -125,7 +125,7 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
   par un `MILESTONE_ORDER` codé en dur (`avancement-data.ts`) qui n'alimente que l'affichage.
 - **Voisines** (cluster « cycle de vie des versions ») :
   [cycle de vie d'une version](done/20261014200651962_cycle-vie-version-preparer-figer-developper.md),
-  [frontière de version = checkpoint](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
+  [frontière de version = checkpoint](done/20261015125606808_frontiere-version-checkpoint-run-autonome.md),
   [groom par version](done/20261015122120198_ezk-backlog-groom-par-version-avec-rapport.md).
 - **Noyau sorti en fiche tirable** :
   [lire `depends:` + désambiguïser « en cours »](done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md)

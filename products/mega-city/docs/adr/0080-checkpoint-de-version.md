@@ -8,7 +8,7 @@
   version), [0069](0069-etape-process-calculee-par-jointure.md) (l'étape se calcule, zéro objet
   persistant), [0065](0065-contrat-du-bus-des-moments.md) (contrat du bus), [0001](0001-monorepo-composable-coeur-deterministe.md)
   (le script range, le LLM juge). Garde-fou ADR-0013 (anti-surproduction de méta-outillage). DoR : ADR-0016.
-- Fiche : [La version est un checkpoint du run](../../../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md).
+- Fiche : [La version est un checkpoint du run](../../../../features/done/20261015125606808_frontiere-version-checkpoint-run-autonome.md).
 
 ## En clair
 
