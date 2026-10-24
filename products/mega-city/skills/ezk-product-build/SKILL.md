@@ -155,8 +155,8 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    **Grain de livraison (`--delivery`, cf. § dédié)** : en `per-feature` (défaut) chaque PR du
    lot est livrée **au fil de l'eau**, avant `close` — son squash-merge suit son cours normal (statu quo
    strict : c'est `ezk-sprint` qui merge, **pas toi**). En `per-epic`, tu **ne
-   shippes pas** isolément une fiche appartenant à un lot cohérent (même `epic:`, ou lot
-   désigné en opt-in) : tu **laisses sa PR ouverte** et poursuis le lot. **Le lot complet, et
+   shippes pas** isolément une fiche appartenant à un lot cohérent (même `labels: theme:` ou
+   `milestone:`, ou lot désigné en opt-in) : tu **laisses sa PR ouverte** et poursuis le lot. **Le lot complet, et
    avant `close`**, tu **confies la livraison coordonnée à `ezk-pr`** (`plan` → branche
    d'intégration = test groupé → `ship` en cascade) : `close` ne scelle que des stories
    **mergées** (sinon `CLOSE: REFUSED empty_increment`, et le `start` suivant refuse tant que le
@@ -368,7 +368,7 @@ clair. Garde-fou ADR-0001 : le skill **décide** de passer `--tag` ; `ezk backlo
 ## Mode livraison — configurable (`--delivery`)
 
 Règle **comment un lot cohérent de fiches est livré** (mergé) : au fil de l'eau, ou de façon
-coordonnée. Ici, « lot cohérent » = des fiches à livrer ensemble (même `epic:`, ou désignées) ; ne
+coordonnée. Ici, « lot cohérent » = des fiches à livrer ensemble (même `labels: theme:` / `milestone:`, ou désignées) ; ne
 le confonds pas avec le lot du sprint (`--lot N`), qui dit seulement quoi construire. Adossé à [ADR-037](../../../../docs/adr/ADR-037-grain-merge-separable-du-grain-revue.md)
 (version réduite, panel adverse passé). Défaut : `per-feature`. **Le flag DÉCIDE — il n'exécute
 aucun git** (frontière ADR-0001 : c'est `ezk-pr` qui range). **Sépare le grain de *livraison*
@@ -385,9 +385,10 @@ du grain de *revue*** : la **PR reste l'unité de revue/merge** dans les deux mo
   passe** (jetable, conditionnée `merge-tree` propre) → `ship` en **cascade** (squash-merge PR
   par PR, CI re-verte, `ezk-backlog ship` par fiche).
 
-**Déclencheur = `epic:` auto + opt-in explicite** (arbitrages 0065 tranchés le 2026-08-13) :
-les fiches partageant un même `epic:` (ADR-0017) se coordonnent **automatiquement** en `per-epic` ;
-un **opt-in explicite** permet de désigner un lot cohérent **hors épic** (ex. `ADR + son article`)
+**Déclencheur = thème / milestone auto + opt-in explicite** (arbitrages 0065 tranchés le 2026-08-13) :
+les fiches partageant un même `labels: theme:` ou `milestone:` (le modèle en vigueur depuis le retrait
+de l'épic, ADR-0017 A16) se coordonnent **automatiquement** en `per-epic` ;
+un **opt-in explicite** permet de désigner un lot cohérent **hors thème** (ex. `ADR + son article`)
 en nommant les fiches au checkpoint. **Pas de seuil de N**, **pas de mode `batched`/plafond** —
 ils regrouperaient des fiches indépendantes, soit la « PR obèse » que 0065 refuse.
 

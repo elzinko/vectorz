@@ -21,7 +21,7 @@ la **méthode** (ce qu'on fait) et le **contrat** (les événements qu'on émet 
 flowchart TB
     PO(["🫵 PO — décide & garde la main"])
     subgraph BL["📚 Backlog · ezk-backlog"]
-        F["fiches : 💡idea → 🔴todo → 🟠in-progress → ✅shipped"]
+        F["fiches : 💡idea → 🔵ready → 🟠in-progress (calculé) → ✅shipped"]
     end
     PB["🤖 ezk-product-build<br/>enchaîne les sprints (autonome)"]
     subgraph SP["🏃 Sprint · ezk-sprint — 1 fiche = 1 PR"]

@@ -110,7 +110,8 @@ extract() { # $1=file → champs \x1f : id, title, type, priority, status, pr, c
       if ($0 ~ /^pr:/)       { sub(/^pr:[[:space:]]*/, "");       pr=unquote($0) }
       if ($0 ~ /^created:/)  { sub(/^created:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); created=$0 }
       if ($0 ~ /^version:/)  { sub(/^version:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); version=unquote($0) }
-      if ($0 ~ /^epic:/)     { sub(/^epic:[[:space:]]*/, "");     sub(/[[:space:]]*#.*$/, ""); epic=unquote($0) }
+      # Le type `epic` a été retiré du modèle (ADR-0017 A16) : plus de champ épic à lire. Le 9e champ
+      # reste émis VIDE pour ne pas renuméroter les colonnes en aval (product=10, milestone=11).
       if ($0 ~ /^product:/)  { sub(/^product:[[:space:]]*/, "");  sub(/[[:space:]]*#.*$/, ""); product=unquote($0) }
       if ($0 ~ /^milestone:/){ sub(/^milestone:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, ""); milestone=unquote($0) }
     }
@@ -128,20 +129,11 @@ for f in features/[0-9]*.md features/done/[0-9]*.md; do
   rows="${rows}${line}${SEP}${f#features/}"$'\n'
 done
 
-# Intégrité épics (ADR-0017 A7) + unicité des ids (fiche 0064) — warnings non bloquants.
+# Unicité des ids (fiche 0064) — warning non bloquant. (L'intégrité épics a été retirée avec le type
+# `epic`, ADR-0017 A16 : plus de référence inter-fiches à vérifier ici.)
 printf '%s' "$rows" | awk -F"$SEP" '
-  NF {
-    nr++; rowid[nr]=$1; rowtype[nr]=$3; ref[nr]=$9
-    if ($3 == "epic") isepic[$1]=1
-    seen[$1]++
-  }
+  NF { seen[$1]++ }
   END {
-    for (i=1; i<=nr; i++) {
-      if (ref[i] != "" && !(ref[i] in isepic))
-        printf "warning: fiche %s — epic: %s introuvable ou non-epic\n", rowid[i], ref[i] | "cat 1>&2"
-      if (ref[i] != "" && rowtype[i] == "epic")
-        printf "warning: fiche %s — une épic ne référence pas d%sépic (2 niveaux max, ADR-0017)\n", rowid[i], "\047" | "cat 1>&2"
-    }
     for (id in seen)
       if (seen[id] > 1)
         printf "warning: id %s en double (%d fiches) — collision structurelle\n", id, seen[id] | "cat 1>&2"

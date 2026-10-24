@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # DoD exécutable de la fiche 0072 — teste regen-backlog.sh sur fixtures jetables.
-# Cas : A non-cassant (sans epic:/version:) · B colonnes + section Épics + exclusion du
-# tirage · C warnings d'intégrité · D paramétrage racine/titre · E lien PLAN.md conditionnel
-# (PR #43 / ADR-0018).
+# Cas : A non-cassant (sans version:) · B colonne Version + liens document-relatifs · D paramétrage
+# racine/titre · E lien PLAN.md conditionnel (PR #43 / ADR-0018). (Le type `epic` a été retiré,
+# ADR-0017 A16 : plus de cas « colonnes/section/intégrité Épics ».)
 set -euo pipefail
 
 SCRIPT="$(cd "$(dirname "$0")" && pwd)/regen-backlog.sh"
@@ -50,68 +50,32 @@ check "stats émises"               "printf '%s' \"\$out_a\" | grep -q 'stats: t
 check "résumé Livrées cliquable (done/)" \
   "grep '^> Livrées' '$A/features/BACKLOG.md' | grep -qF '[0000](done/0000-vieux.md)'"
 
-# ── Cas B : épics + version → colonnes, section, exclusion du tableau actionnable ─
+# ── Cas B : colonne Version conditionnelle + liens document-relatifs ──────────────
 B="$TMP/b"
-fiche "$B/features"      0010 epic-pivot 'type: epic
-priority: P0
-status: idea'
-fiche "$B/features"      0011 enfant-a 'type: feature
+fiche "$B/features"      0011 story-a 'type: feature
 priority: P1
-status: idea
-epic: 0010'
+status: idea'
 fiche "$B/features"      0012 jalon 'type: chore
 priority: P2
 version: V1.1
 status: idea'
-fiche "$B/features/done" 0009 enfant-livre 'type: feature
+fiche "$B/features/done" 0009 livre 'type: feature
 priority: P1
 status: shipped
-epic: 0010
 pr: "#2"'
 "$SCRIPT" "$B" "Backlog — test B" >/dev/null 2>"$TMP/b.err"
 idx="$B/features/BACKLOG.md"
-echo "Cas B (colonnes + section Épics) :"
+echo "Cas B (colonne Version + liens) :"
 check "colonne Version présente"   "grep -q '| Version |' '$idx'"
-check "colonne Épic présente"      "grep -q '| Épic |' '$idx'"
-check "section Épics présente"     "grep -q '## 🧭 Épics' '$idx'"
-check "épic 0010 HORS tableau actionnable" \
-  "! awk '/^## /{exit} {print}' '$idx' | grep -q '^| \[0010\]'"
-check "épic 0010 dans la section Épics" \
-  "sed -n '/## 🧭 Épics/,/## 💡/p' '$idx' | grep -q '^| \[0010\]'"
-check "enfant 0011 porte la réf 0010"  "grep -q '^| \[0011\].*| 0010 |' '$idx'"
 check "version V1.1 rendue"            "grep -q '^| \[0012\].*| V1.1 |' '$idx'"
-check "zéro warning (refs valides)"    "! test -s '$TMP/b.err'"
+check "zéro warning"                   "! test -s '$TMP/b.err'"
 # Liens cliquables (règle human-facing-lisibility, revue Codex #184) : relatifs au doc.
 check "id actif → lien vers sa fiche (relatif au doc)" \
-  "grep -qF '| [0011](0011-enfant-a.md) |' '$idx'"
+  "grep -qF '| [0011](0011-story-a.md) |' '$idx'"
 check "id livré → lien vers done/ (relatif au doc)" \
-  "grep -qF '[0009](done/0009-enfant-livre.md)' '$idx'"
+  "grep -qF '[0009](done/0009-livre.md)' '$idx'"
 check "AUCUN lien préfixé features/ (résolution document-relative)" \
   "! grep -qF '](features/' '$idx'"
-
-# ── Cas C : intégrité — réf pendante, cible non-epic, sous-épic ───────────────────
-C="$TMP/c"
-fiche "$C/features" 0020 epic-ok 'type: epic
-priority: P1
-status: idea'
-fiche "$C/features" 0021 pendante 'type: feature
-priority: P1
-status: idea
-epic: 9999'
-fiche "$C/features" 0022 vers-non-epic 'type: feature
-priority: P2
-status: idea
-epic: 0021'
-fiche "$C/features" 0023 sous-epic 'type: epic
-priority: P2
-status: idea
-epic: 0020'
-"$SCRIPT" "$C" "Backlog — test C" >/dev/null 2>"$TMP/c.err"
-echo "Cas C (warnings intégrité) :"
-check "warning réf pendante (0021→9999)"    "grep -q 'fiche 0021 — epic: 9999 introuvable' '$TMP/c.err'"
-check "warning cible non-epic (0022→0021)"  "grep -q 'fiche 0022 — epic: 0021 introuvable ou non-epic' '$TMP/c.err'"
-check "warning sous-épic (0023)"            "grep -q 'fiche 0023 — une épic ne référence pas' '$TMP/c.err'"
-check "warnings NON bloquants (index écrit)" "test -s '$C/features/BACKLOG.md'"
 
 # ── Cas D : défauts (racine = parent de bin/, titre neutre) — hermétique ──────────
 # (revue Codex PR #30 : ne JAMAIS régénérer le vrai index depuis le banc — copie du

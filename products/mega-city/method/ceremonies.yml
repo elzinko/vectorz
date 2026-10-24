@@ -141,9 +141,9 @@ elements:
     etat: adapte
     implemente_par: [ezk-sprint]
     note: >-
-      Deux sens mélangés aujourd'hui (panel B-4) : les scénarios Gherkin (= critères
-      d'acceptation par fiche) et la checklist de sortie (gate verte, E2E, revue GO).
-      La séparation des mots est au lot vocabulaire du plan.
+      Les deux sens sont désormais séparés et livrés (ADR-0071) : les scénarios Gherkin sont les
+      critères d'acceptation PAR FICHE ; la checklist de sortie (gate verte, E2E, revue GO) vit
+      dans bundles/dod.yml et s'applique au lot. Plus un chantier ouvert.
 
   - id: product-goal
     type: artefact

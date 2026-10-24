@@ -52,12 +52,12 @@ moments:
     sorte: commande
     etape: etat-des-changements
     transporte: "cible(branche|pr)"
-    clients: [ezk-forge]
+    clients: [ezk-pr]
   - nom: integrate
     sorte: commande
     etape: integration
     transporte: "fiche, branche, pr?"
-    clients: [ezk-forge]
+    clients: [ezk-pr]
 
   # — Projet → GitHub en recopie (fiche 0171, push-only) : déclarés au contrat,
   #   pas encore branchés (clients vides tant que 0171 n'est pas livrée).

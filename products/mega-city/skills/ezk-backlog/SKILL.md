@@ -444,14 +444,15 @@ Parcours le backlog **dans cet ordre** et renvoie la **première fiche éligible
 **Réponds toujours en deux parties** : (a) la fiche tirable (ou « aucune ») ET (b) la
 **tête bloquée** — les fiches **`status: idea`** qui la **précèdent dans
 l'ordre** (`PLAN.md` si présent, sinon la priorité) et sont sautées (et rien d'autre :
-`blocked`, `in-progress` et `type: epic` sont hors de ce signal — pas tirables par
+`blocked` et `in-progress` sont hors de ce signal — pas tirables par
 nature, ne se groome-gatent pas à l'intake). **Ne saute jamais silencieusement une `idea`
 de tête** : construire une fiche `ready` pendant qu'une `idea` **plus haut dans le
 plan** attend est une inversion de séquence que l'appelant doit arbitrer (groomer la tête
 d'abord, ou décision journalisée).
 
-- Une fiche `type: epic` (ADR-0017) n'est **jamais tirable** : descends sur son prochain
-  enfant ready (champ `epic:`), sinon passe à la fiche suivante.
+- Le type `epic` a été **retiré du modèle** (ADR-0017 A16) : plus de navigation épic. Les fiches
+  se regroupent par **thème** (`labels: theme:`) et par **`milestone:`** ; le tirage reste `ready`,
+  non bloquée, dans l'ordre du plan.
 - Aucune fiche éligible → dis-le et **propose le groom de la fiche de tête** ; en run
   autonome, c'est le checkpoint bloquant « aucune fiche ready » d'ezk-product-build.
 - **Seuil de lot** (fiche 20260815080414006, reprend la fiche 0100) : si le projet déclare
@@ -542,18 +543,18 @@ Distinct de `review` (hygiène périodique, cadence bornée) : `aggregate` est l
 (ADR-0001).
 
 ```bash
-ezk backlog aggregate [--scope <all|<produit>|Pn|epic:<id>>] \
+ezk backlog aggregate [--scope <all|<produit>|Pn>] \
   [--focus <merge|split|epics|dedup|reprioritize>] [--mode <script|llm|both>] [--proposals <fichier.json>]
 ```
 
 - `--scope` restreint la passe : `all` (défaut, tout le stock actif), un `<produit>`,
-  un seau de priorité `Pn`, ou `epic:<id>` (les enfants d'un épic).
+  ou un seau de priorité `Pn`.
 - `--focus` cible l'affichage sur un type de remaniement (`merge`, `split`, `epics`,
   `dedup`, `reprioritize`) ; sans arg, tout est montré. `split`/`reprioritize` ne sont
   **pas produits** par le moteur `script` : c'est le jugement du moteur `llm` — le dit sans planter.
 - `--mode` choisit le moteur :
   - **`script`** (défaut) — clustering **mécanique et déterministe** sur `labels:`
-    partagés (multi-appartenance), enfants d'un même `epic:`, et 1er mot du titre.
+    partagés (multi-appartenance) et 1er mot du titre.
     Rend toujours sa **couverture** (« N/M fiches taguées ») : jamais de crash sur
     des fiches sans tag, jamais de bascule silencieuse.
   - **`llm`** — le jugement par le sens est celui de **l'agent**, jamais du code (ADR-0051).
@@ -633,7 +634,7 @@ sur `main`. Le `status` est un **cache** de la vérité GitHub (l'état *merged*
 `reconcile` est son **rafraîchissement** — à cadence bornée, jamais sur `list`/`next`.
 
 **Ce que ça fait.**
-1. Liste les fiches **actives** (hors `done/`, hors `type: epic`) — celles sans `pr:` posé
+1. Liste les fiches **actives** (hors `done/`) — celles sans `pr:` posé
    sont les candidates prioritaires (une fiche `shipped` avec `pr:` n'est plus concernée).
 2. **D'abord le guichet `ezk forge changes --merged`** (ADR-0061, fiche 20261013074251767) :
    si l'état est `off` (config `github: false`), dis « réconciliation sans objet : GitHub
@@ -788,14 +789,14 @@ Délègue au script **paramétré** de mega-city : `products/mega-city/bin/regen
 le script vit dans le produit (fiche 0072 — le MÊME script sert tous les backlogs, plus
 d'« adaptation » manuelle). Il reconstruit `features/BACKLOG.md`
 depuis le front-matter de **toutes** les fiches : colonnes
-`# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id, plus deux
-**colonnes conditionnelles** (ADR-0017 A12) : `Version` si au moins un `version:`,
-`Épic` si au moins un `epic:`. Sections à part, hors tri actionnable P0→P3 :
-« 🧭 Épics » (les `type: epic`, jamais tirables) et « 💡 Idées (non groomées) ».
+`# | Titre | Type | Prio | Statut | PR`, triées par priorité puis id, plus la
+**colonne conditionnelle** (ADR-0017 A12) `Version` si au moins un `version:`. Section à part,
+hors tri actionnable P0→P3 : « 💡 Idées (non groomées) ». (Le type `epic` est retiré du modèle,
+ADR-0017 A16 : plus de colonne ni de section « Épics ».)
 Le script émet aussi sur stdout les **compteurs déterministes** (par statut, `ready`,
-épics, création médiane des `ready`) — `review` les lit tels quels, le LLM ne
-recompte jamais (ADR-0001 / ADR-0016 §5) — et des **warnings d'intégrité** non
-bloquants sur stderr (A7) : `epic:` pendant, cible non-épic, sous-épic (2 niveaux max).
+création médiane des `ready`) — `review` les lit tels quels, le LLM ne
+recompte jamais (ADR-0001 / ADR-0016 §5) — et un **warning d'intégrité** non
+bloquant sur stderr : un id en double (collision structurelle).
 **Titre de l'index** (sa ligne 1) : le `[titre]` passé, sinon la clé `backlog_title:` de
 l'en-tête de `features/README.md`, sinon « Backlog features & bugs ». Un projet qui a
 déclaré `backlog_title:` ne passe **jamais** de titre : sinon la ligne 1 change selon l'outil

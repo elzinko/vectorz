@@ -67,10 +67,13 @@ Ici, c'est du nettoyage immédiat, indépendant de ce moteur.
 
 ## Critères d'acceptation
 
-- [ ] Aucune référence à `type: epic` ni au champ `epic:` ne subsiste dans les skills ni la carte.
-- [ ] `ceremonies.yml` décrit la DoD comme livrée (`bundles/dod.yml`), plus comme un chantier.
-- [ ] `method-map.md` montre le lifecycle réel (`idea → ready → [in-progress calculé] → shipped`).
-- [ ] `moments.yml` n'a plus de client inexistant (ou le client existe).
+- [x] Aucune référence à `type: epic` ni au champ `epic:` ne subsiste dans les skills ni la carte.
+      *(Vérifié : `rg "type:\s*epic|epic:" skills/ method/ docs/method-map.md` → vide. Tirage, triggers
+      `per-epic`, `aggregate --scope`, clustering, générateur : tous réalignés sur le modèle en vigueur.)*
+- [x] `ceremonies.yml` décrit la DoD comme livrée (`bundles/dod.yml`), plus comme un chantier.
+- [x] `method-map.md` montre le lifecycle réel (`idea → ready → in-progress calculé → shipped`).
+- [x] `moments.yml` n'a plus de client inexistant : `ezk-forge` (phantom) → `ezk-pr`, le vrai skill
+      d'intégration (forge en est l'ancien nom).
 
 ## Comment vérifier
 
@@ -97,3 +100,21 @@ pnpm test:scripts                                                # si un test fi
   fiches ne seraient que des projections). Versé ici plutôt qu'érigé en règle (cas unique, déjà
   attrapé par la revue). Provenance :
   [rétro v0.17](../docs/captures/2026-10-16-retro-v017-board-unifie-light.md).
+
+- **Construit (2026-10-24).** Chaque référence `epic:` dans les skills était **couplée à une
+  prétendue capacité du code** ; purger la prose seule aurait créé de nouveaux mensonges. Constat en
+  construisant : plusieurs de ces capacités **n'existaient déjà plus** dans le code (`aggregate
+  --scope epic:` jamais implémenté par `selectScope` ; clustering par épic jamais fait par
+  `aggregate.ts`, qui ne groupe que par `label` et `title-prefix`). Donc aligner la prose sur le code
+  revenait souvent à **retirer un mensonge de doc**, pas à changer le code. Fait : tirage (plus de
+  navigation épic), triggers `per-epic` (→ `labels: theme:` / `milestone:`), `aggregate --scope` et
+  clustering (épic retiré), DoD de `ceremonies.yml` (→ livrée, ADR-0071), lifecycle de `method-map.md`
+  (→ `idea → ready → in-progress calculé → shipped`), `moments.yml` (`ezk-forge` → `ezk-pr`).
+- **Générateur (`regen-backlog.sh`) — purge BORNÉE, sans renumérotation.** Les deux dernières
+  occurrences `epic:` vivaient dans le générateur du backlog (lecture du champ + warning d'intégrité).
+  Retirées ; le **9e champ reste émis vide** pour ne pas renuméroter les colonnes en aval (risque trop
+  élevé pour un run autonome). La colonne/section « Épics » restantes sont **inertes** (gardées par un
+  drapeau toujours à 0, aucun `epic:` littéral) : dette morte sûre, retrait complet laissé en suivi.
+  Test `test-regen-backlog.sh` réaligné (Cas B réduit à Version+liens, Cas C « intégrité épics »
+  retiré) ; garde byte-identique `bin` ↔ `skill` tenue. `portfolio.sh` (hors périmètre `skills/`) garde
+  sa colonne épic inerte — même suivi.
