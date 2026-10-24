@@ -13,8 +13,10 @@ import { GitGhRepoSource } from '../src/sprint-metrics/adapters/repoSource.js';
 import { SupervisionJournalSource } from '../src/sprint-metrics/adapters/journalSource.js';
 import { ClaudeCodeTranscriptSource } from '../src/sprint-metrics/adapters/transcriptSource.js';
 import { collectSprintReport } from '../src/sprint-metrics/collect.js';
+import { reviewMode } from '../src/sprint-metrics/domain/tokens.js';
 import { renderSprintReportMarkdown } from '../src/sprint-metrics/domain/render.js';
 import { findGitRoot } from '../src/core/ezk-cli.js';
+import { githubCapabilities } from '../src/loaders/project-config.js';
 
 // Le projet visé : --root (ou --repo-root/--project-root) > le dépôt git du dossier courant
 // (fiche 20261013073300256). Le défaut est le dépôt où l'on est (INIT_CWD, posé par le routeur),
@@ -79,8 +81,11 @@ function main(): void {
   const resolvedSprintMd = sprintMdPath ?? (existsSync(sprintMdDefault) ? sprintMdDefault : undefined);
   const sprintMd = resolvedSprintMd && existsSync(resolvedSprintMd) ? readFileSync(resolvedSprintMd, 'utf8') : undefined;
 
+  // Mode de revue DÉDUIT de la config du projet (fiche 20261017110956989) : `pr` coupé = tout-local.
+  const mode = reviewMode(githubCapabilities(repoRoot));
+
   const report = collectSprintReport(
-    { projectRoot, repoRoot, slug, product, sprintMd, allowUndated },
+    { projectRoot, repoRoot, slug, product, sprintMd, allowUndated, reviewMode: mode },
     {
       journal: new SupervisionJournalSource(),
       transcript: new ClaudeCodeTranscriptSource(),

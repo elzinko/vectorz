@@ -9,7 +9,7 @@ const completeReport = buildSprintReport({
   slug: 'metriques-sprint',
   product: 'mega-city',
   window: { startTs: '2026-08-30T09:00:00.000Z', endTs: '2026-08-30T11:00:00.000Z', durationMs: 7_200_000 },
-  tokens: { grain: 'sprint', inputTokens: 300, outputTokens: 70, totalTokens: 370 },
+  tokens: { grain: 'sprint', inputTokens: 300, outputTokens: 70, cacheRead: 0, cacheCreation: 0, totalTokens: 370 },
   shippedFeatures: { count: 1, ids: ['20260826082120062'] },
   blockages: { count: 0, events: [] },
   prRetouches: { total: 1, sansRetouche: 1, indetermine: 0 },
@@ -127,6 +127,17 @@ describe('validateSprintReport', () => {
   it('refuse un rapport où tokens.totalTokens ≠ input+output', () => {
     const broken = { ...completeReport, tokens: { ...completeReport.tokens, totalTokens: 99_999 } };
     const result = validateSprintReport(writeReport(broken));
+    expect(result.code).toBe(1);
+    expect(result.violations.some((v) => v.code === 'tokens.sum_mismatch')).toBe(true);
+  });
+
+  it('le total DOIT inclure le cache : valide avec cache, refuse s’il l’oublie (fiche 20261017110956989)', () => {
+    // entrée 300 + sortie 70 + cache lu 1000 + cache créé 200 = 1570
+    const withCache = { ...completeReport.tokens, inputTokens: 300, outputTokens: 70, cacheRead: 1000, cacheCreation: 200, totalTokens: 1570 };
+    expect(validateSprintReport(writeReport({ ...completeReport, tokens: withCache })).code).toBe(0);
+    // Le même total qui OUBLIE le cache (370 = input+output seul) doit être refusé.
+    const forgetsCache = { ...withCache, totalTokens: 370 };
+    const result = validateSprintReport(writeReport({ ...completeReport, tokens: forgetsCache }));
     expect(result.code).toBe(1);
     expect(result.violations.some((v) => v.code === 'tokens.sum_mismatch')).toBe(true);
   });

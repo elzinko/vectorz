@@ -10,8 +10,10 @@ function numberOr0(v: unknown): number {
  * Adaptateur réel : lit les transcripts Claude Code (`~/.claude/projects/<slug>/*.jsonl`)
  * via `findTranscriptFiles` (réutilisé de `supervision/analyze.ts`). Extrait les lignes
  * assistant qui portent `message.usage` — pas encore fait par `analyze.ts` (qui extrait
- * les appels MCP), c'est l'extension apportée ici. `inputTokens` inclut les tokens de
- * cache (création + lecture) : ils sont facturés, donc comptés dans le total consommé.
+ * les appels MCP), c'est l'extension apportée ici. `inputTokens` = l'entrée NEUVE seule ; les jetons
+ * de cache (lecture + création) sont captés À PART (`cacheRead` / `cacheCreation`) — facturés bien
+ * moins cher, ils sont rapportés sans être fondus dans l'entrée (fiche 20261017110956989). Le total
+ * brut (domaine) les additionne quand même, donc le total consommé est inchangé.
  */
 export class ClaudeCodeTranscriptSource implements TranscriptSource {
   listUsageEvents(projectRoot: string, options: TranscriptSourceOptions = {}): UsageEvent[] {
@@ -36,10 +38,11 @@ export class ClaudeCodeTranscriptSource implements TranscriptSource {
         const usage = (message as Record<string, unknown>).usage;
         if (!usage || typeof usage !== 'object') continue;
         const u = usage as Record<string, unknown>;
-        const inputTokens =
-          numberOr0(u.input_tokens) + numberOr0(u.cache_creation_input_tokens) + numberOr0(u.cache_read_input_tokens);
+        const inputTokens = numberOr0(u.input_tokens); // entrée NEUVE seule — le cache est capté à part
+        const cacheCreation = numberOr0(u.cache_creation_input_tokens);
+        const cacheRead = numberOr0(u.cache_read_input_tokens);
         const outputTokens = numberOr0(u.output_tokens);
-        events.push({ ts, sessionId, inputTokens, outputTokens });
+        events.push({ ts, sessionId, inputTokens, outputTokens, cacheRead, cacheCreation });
       }
     }
     return events;

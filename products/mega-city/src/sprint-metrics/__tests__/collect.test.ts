@@ -37,7 +37,7 @@ describe('collectSprintReport', () => {
   it('(i) produit un rapport avec les 3 familles : durée, tokens, KPI scrum', () => {
     const report = collectSprintReport(input, fixturePorts());
     expect(report.duration.ms).toBe(2 * 60 * 60 * 1000);
-    expect(report.tokens).toEqual({ grain: 'sprint', inputTokens: 300, outputTokens: 70, totalTokens: 370 });
+    expect(report.tokens).toEqual({ grain: 'sprint', inputTokens: 300, outputTokens: 70, cacheRead: 0, cacheCreation: 0, totalTokens: 370 });
     expect(report.kpi.shippedFeatures).toEqual({ count: 1, ids: ['20260826082120062'] });
     expect(report.kpi.blockages.count).toBe(1);
     expect(report.kpi.prRetouches).toEqual({ total: 1, sansRetouche: 1, indetermine: 0 });

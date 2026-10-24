@@ -9,6 +9,13 @@ export const SPRINT_REPORT_SCHEMA = 'sprint-report@0.1';
 /** Granularité RÉELLE des tokens rapportés — jamais silencieusement fausse. */
 export type TokensGrain = 'sprint' | 'session';
 
+/**
+ * Mode de revue du run (fiche 20261017110956989) : `local` = revue `ezk-reviewer` + squash local,
+ * aucune PR ; `pr-codex` = PR ouverte (+ revue Codex). Déduit de la config (`pr`), au rapport, jamais
+ * saisi. Un run tient UN seul mode ; un run mixte serait marqué à part (différé au grooming).
+ */
+export type ReviewMode = 'local' | 'pr-codex';
+
 export interface SprintWindow {
   startTs: string;
   endTs: string;
@@ -19,7 +26,14 @@ export interface TokensSummary {
   grain: TokensGrain;
   inputTokens: number;
   outputTokens: number;
+  /** Lecture de cache : facturée bien moins cher qu'une entrée neuve → rapportée À PART, non pondérée. */
+  cacheRead: number;
+  /** Création de cache : idem, à part, sans prix figé (fiche 20261017110956989). */
+  cacheCreation: number;
+  /** Total brut = entrée + sortie + cache (lecture + création) : conserve le total d'avant (où le cache était fondu dans l'entrée). */
   totalTokens: number;
+  /** Mode de revue du run (`local` | `pr-codex`), déduit de la config au rapport. Absent si inconnu. */
+  mode?: ReviewMode;
   /** Présent seulement en repli grain session : explique pourquoi. */
   note?: string;
 }

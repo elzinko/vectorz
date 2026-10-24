@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { attributeTokens } from '../domain/tokens.js';
+import { attributeTokens, reviewMode } from '../domain/tokens.js';
+
+describe('reviewMode — déduit de la config, jamais saisi (fiche 20261017110956989)', () => {
+  it('pr coupé → tout-local', () => {
+    expect(reviewMode({ pr: false })).toBe('local');
+  });
+  it('pr actif → PR + Codex', () => {
+    expect(reviewMode({ pr: true })).toBe('pr-codex');
+  });
+});
 
 const window = { startTs: '2026-08-30T09:00:00.000Z', endTs: '2026-08-30T11:00:00.000Z' };
 
@@ -16,7 +25,25 @@ describe('attributeTokens', () => {
       grain: 'sprint',
       inputTokens: 300,
       outputTokens: 70,
+      cacheRead: 0,
+      cacheCreation: 0,
       totalTokens: 370,
+    });
+  });
+
+  it('somme le cache À PART, et le total brut l’inclut (fiche 20261017110956989)', () => {
+    const events = [
+      { ts: '2026-08-30T09:30:00.000Z', sessionId: 's1', inputTokens: 100, outputTokens: 50, cacheRead: 2000, cacheCreation: 300 },
+      { ts: '2026-08-30T10:30:00.000Z', sessionId: 's1', inputTokens: 200, outputTokens: 20, cacheRead: 1000 }, // cacheCreation absent → 0
+    ];
+    const result = attributeTokens(events, window);
+    expect(result).toEqual({
+      grain: 'sprint',
+      inputTokens: 300,
+      outputTokens: 70,
+      cacheRead: 3000,
+      cacheCreation: 300,
+      totalTokens: 300 + 70 + 3000 + 300, // entrée + sortie + cache lu + cache créé
     });
   });
 
@@ -28,7 +55,7 @@ describe('attributeTokens', () => {
       { ts: window.endTs, sessionId: 's1', inputTokens: 7, outputTokens: 3 }, // pile sur endTs → inclus
     ];
     const result = attributeTokens(events, window);
-    expect(result).toEqual({ grain: 'sprint', inputTokens: 7, outputTokens: 3, totalTokens: 10 });
+    expect(result).toEqual({ grain: 'sprint', inputTokens: 7, outputTokens: 3, cacheRead: 0, cacheCreation: 0, totalTokens: 10 });
   });
 
   it('repli grain session (somme du run entier) et étiquette la note quand la fenêtre est vide', () => {
@@ -44,6 +71,6 @@ describe('attributeTokens', () => {
 
   it('aucun événement du tout → repli session à zéro (jamais d’exception)', () => {
     const result = attributeTokens([], window);
-    expect(result).toEqual({ grain: 'session', inputTokens: 0, outputTokens: 0, totalTokens: 0, note: expect.any(String) });
+    expect(result).toEqual({ grain: 'session', inputTokens: 0, outputTokens: 0, cacheRead: 0, cacheCreation: 0, totalTokens: 0, note: expect.any(String) });
   });
 });

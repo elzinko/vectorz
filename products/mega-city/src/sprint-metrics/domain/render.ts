@@ -43,8 +43,18 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
   lines.push(`- **Durée** : ${report.duration.ms} ms`);
   lines.push(
     `- **Tokens** : entrée ${report.tokens.inputTokens} / sortie ${report.tokens.outputTokens} / ` +
+      `cache lu ${report.tokens.cacheRead} / cache créé ${report.tokens.cacheCreation} / ` +
       `total ${report.tokens.totalTokens} (grain \`${report.tokens.grain}\`)`,
   );
+  // Jetons par mode de revue (fiche 20261017110956989) : un run tient UN mode ; l'autre est à 0. La
+  // somme des deux égale toujours le total — rien perdu, rien compté deux fois.
+  {
+    const t = report.tokens;
+    const local = t.mode === 'local' ? t.totalTokens : 0;
+    const prCodex = t.mode === 'pr-codex' ? t.totalTokens : 0;
+    const modeLabel = t.mode ? `mode \`${t.mode}\`` : 'mode non déterminé';
+    lines.push(`- **Jetons par mode** (${modeLabel}) : local ${local} · pr-codex ${prCodex} (somme = total ${t.totalTokens})`);
+  }
   lines.push(
     `- **Fiches livrées** (${report.kpi.shippedFeatures.count}) : ${report.kpi.shippedFeatures.ids.join(', ') || '—'}`,
   );

@@ -3,7 +3,7 @@ import { summarizeBlockages, summarizePrRetouches, summarizeShippedFeatures } fr
 import { parseSprintLot } from './domain/lot.js';
 import { buildSprintReport } from './domain/report.js';
 import { attributeTokens } from './domain/tokens.js';
-import type { SprintReport } from './domain/types.js';
+import type { ReviewMode, SprintReport } from './domain/types.js';
 import type { JournalSource } from './ports/JournalSource.js';
 import type { RepoSource } from './ports/RepoSource.js';
 import type { TranscriptSource, TranscriptSourceOptions } from './ports/TranscriptSource.js';
@@ -23,6 +23,8 @@ export interface CollectSprintReportInput {
    * zéro avec mention) — ce que `close` veut pour committer un compte rendu même hors supervision (ADR-0068).
    */
   allowUndated?: boolean;
+  /** Mode de revue du run (`local` | `pr-codex`), déduit de la config par l'appelant I/O et posé sur les tokens (fiche 20261017110956989). */
+  reviewMode?: ReviewMode;
   /** Horloge injectable — déterminisme des tests. */
   now?: () => string;
   /** Override de résolution des transcripts (tests / `--transcript`). */
@@ -68,7 +70,7 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
       slug: input.slug,
       product: input.product,
       window: { startTs: generatedAt, endTs: generatedAt, durationMs: 0 },
-      tokens: { grain: 'session', inputTokens: 0, outputTokens: 0, totalTokens: 0, note: 'fenêtre de supervision absente — durée et tokens non datés (lot seulement)' },
+      tokens: { grain: 'session', inputTokens: 0, outputTokens: 0, cacheRead: 0, cacheCreation: 0, totalTokens: 0, mode: input.reviewMode, note: 'fenêtre de supervision absente — durée et tokens non datés (lot seulement)' },
       shippedFeatures: { count: 0, ids: [] },
       blockages: { count: 0, events: [] },
       prRetouches: { total: 0, sansRetouche: 0, indetermine: 0 },
@@ -77,7 +79,10 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
     });
   }
 
-  const tokens = attributeTokens(ports.transcript.listUsageEvents(input.projectRoot, input.transcriptOptions), window);
+  const tokens = {
+    ...attributeTokens(ports.transcript.listUsageEvents(input.projectRoot, input.transcriptOptions), window),
+    mode: input.reviewMode, // mode DÉDUIT au rapport (fiche 20261017110956989) — l'attribution reste pure
+  };
   const blockages = summarizeBlockages(ports.journal.listBlockedEscalations(input.projectRoot), window);
   const shippedFeatures = summarizeShippedFeatures(ports.repo.listShippedFiches(input.repoRoot), window);
   const prRetouches = summarizePrRetouches(ports.repo.listMergedPrs(input.repoRoot), window);

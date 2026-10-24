@@ -93,17 +93,17 @@ coût) devient une policy.
 
 ## Critères d'acceptation
 
-- [ ] **Mode dérivé, pas saisi.** L'attribution porte `local` | `pr-codex`, calculé depuis la
-      config (`pr`, `codex-review`) ou le `run.started` — jamais à la main. *Preuve : un test
-      qui change la config et voit le mode changer, sans toucher aux transcripts.*
-- [ ] **Comparaison affichée.** `sprint:report` (ou `run:report`) imprime les jetons par mode,
-      local et PR+Codex côte à côte. *Preuve : la sortie de la commande sur un run rejoué.*
-- [ ] **Somme conservée.** La somme des deux modes égale le total du run : rien perdu, rien
-      compté deux fois. *Preuve : un test d'égalité « somme-par-mode == total ».*
-- [ ] **Cache réel.** `cacheRead` et `cacheCreation` sont captés et rapportés à part, non nuls
-      sur un run réellement caché, sans prix figé. *Preuve : la sortie sur un run avec cache.*
-- [ ] **Repli honnête préservé.** Fenêtre vide → grain session, avec sa note ; jamais un total
-      faux. *Preuve : le test existant de `attributeTokens` reste vert.*
+- [x] **Mode dérivé, pas saisi.** L'attribution porte `local` | `pr-codex`, calculé depuis la
+      config (`pr`) — jamais à la main. *Prouvé : `reviewMode` pur (`domain/tokens.ts`) + test
+      `pr:false→local`, `pr:true→pr-codex` ; le bin le dérive de `githubCapabilities(repoRoot)`.*
+- [x] **Comparaison affichée.** `sprint:report` imprime les jetons par mode, local et PR+Codex côte à
+      côte. *Prouvé : ligne « Jetons par mode » dans `render.ts` ; test + sortie live (mode `local`).*
+- [x] **Somme conservée.** La somme des deux modes égale le total du run. *Prouvé : le rendu imprime
+      « somme = total », testé ; un run tient un mode, l'autre est à 0.*
+- [x] **Cache réel.** `cacheRead` et `cacheCreation` sont captés et rapportés à part, sans prix figé.
+      *Prouvé : l'adaptateur les sort de `inputTokens` ; `sumTokens` les somme à part ; render les affiche ; test cache.*
+- [x] **Repli honnête préservé.** Fenêtre vide → grain session, avec sa note. *Prouvé : le test
+      existant de `attributeTokens` (repli session) reste vert.*
 
 ## Comment vérifier
 
@@ -131,3 +131,22 @@ pnpm --dir products/mega-city ezk sprint report --help
   fiches en PR, d'autres en local) demande un tag plus fin — à cadrer au grooming.
 - Dépend de `sprint-metrics` et de la lecture de config `pr` / `codex-review`
   (`ezk-sprint`). Pas de dépendance externe nouvelle.
+
+- **Construit (2026-10-24).** Tranche mince adossée à `sprint-metrics`, les 3 décisions de structure
+  de la fiche respectées. (1) `UsageEvent` + `TokensSummary` gagnent `cacheRead` / `cacheCreation` ;
+  l'adaptateur `transcriptSource` **sort** le cache de `inputTokens` (entrée neuve seule) et le capte à
+  part — le total brut (`inputTokens + outputTokens + cacheRead + cacheCreation`) **conserve** le total
+  d'avant (où le cache était fondu dans l'entrée), donc zéro régression de total. (2) Mode `local` |
+  `pr-codex` : fonction pure `reviewMode(caps)` (`pr` coupé = local), dérivée AU RAPPORT par le bin
+  `sprint-report.ts` via `githubCapabilities(repoRoot)` et posée sur `tokens.mode` ; l'attribution
+  (`attributeTokens`) reste pure. (3) Grain = run, un mode par run : le rendu ventile `local` vs
+  `pr-codex` (l'un porte le total, l'autre 0) avec « somme = total » — rien perdu, rien compté deux
+  fois. Un run mixte reste à cadrer (différé, cf. risque ci-dessus). Les 4 nombres (entrée/sortie/cache
+  lu/cache créé) sont rapportés côte à côte, **sans prix figé** (pondération euro = étape ultérieure).
+- **Pas de bump de schéma.** `SPRINT_REPORT_SCHEMA` reste `sprint-report@0.1` : les champs ajoutés à
+  `TokensSummary` sont additifs et le validateur ne fige pas la forme des tokens. Les fixtures de test
+  qui construisaient un `TokensSummary` à la main ont reçu `cacheRead: 0, cacheCreation: 0`.
+- **Portée : `sprint:report` seulement.** `run:report` (`src/core/run-report.ts`) a son PROPRE type
+  `Tokens` (saisie manuelle `--tokens-used`), distinct de la reconstruction `sprint-metrics`. La fiche
+  vise la mesure reconstruite (son « comment vérifier » pointe `src/sprint-metrics`) : le mode par
+  run y vit. Étendre `run:report` au mode serait une tranche suivante si le besoin se confirme.

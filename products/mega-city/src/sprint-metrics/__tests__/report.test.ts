@@ -7,7 +7,7 @@ const baseInput = {
   slug: 'metriques-sprint',
   product: 'mega-city',
   window: { startTs: '2026-08-30T09:00:00.000Z', endTs: '2026-08-30T11:00:00.000Z', durationMs: 7_200_000 },
-  tokens: { grain: 'sprint' as const, inputTokens: 300, outputTokens: 70, totalTokens: 370 },
+  tokens: { grain: 'sprint' as const, inputTokens: 300, outputTokens: 70, cacheRead: 0, cacheCreation: 0, totalTokens: 370 },
   shippedFeatures: { count: 1, ids: ['20260826082120062'] },
   blockages: { count: 0, events: [] },
   prRetouches: { total: 1, sansRetouche: 1, indetermine: 0 },
@@ -40,8 +40,21 @@ describe('renderSprintReportMarkdown', () => {
   it('signale explicitement le repli grain session quand présent', () => {
     const report = buildSprintReport({
       ...baseInput,
-      tokens: { grain: 'session', inputTokens: 10, outputTokens: 5, totalTokens: 15, note: 'repli honnête' },
+      tokens: { grain: 'session', inputTokens: 10, outputTokens: 5, cacheRead: 0, cacheCreation: 0, totalTokens: 15, note: 'repli honnête' },
     });
     expect(renderSprintReportMarkdown(report)).toMatch(/repli honnête/);
+  });
+
+  it('rapporte le cache à part et ventile les jetons par mode (fiche 20261017110956989)', () => {
+    const report = buildSprintReport({
+      ...baseInput,
+      // entrée 300 + sortie 70 + cache lu 2000 + cache créé 300 = 2670, mode local
+      tokens: { grain: 'sprint', inputTokens: 300, outputTokens: 70, cacheRead: 2000, cacheCreation: 300, totalTokens: 2670, mode: 'local' },
+    });
+    const md = renderSprintReportMarkdown(report);
+    expect(md).toMatch(/cache lu 2000/);
+    expect(md).toMatch(/cache créé 300/);
+    // Jetons par mode : local porte le total, pr-codex à 0, et la somme égale le total (rien perdu).
+    expect(md).toMatch(/Jetons par mode.*mode `local`.*local 2670.*pr-codex 0.*somme = total 2670/);
   });
 });

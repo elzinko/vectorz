@@ -5,6 +5,9 @@ export interface UsageEvent {
   sessionId: string;
   inputTokens: number;
   outputTokens: number;
+  /** Jetons de cache lus / créés — captés À PART de l'entrée neuve (fiche 20261017110956989). */
+  cacheRead?: number;
+  cacheCreation?: number;
 }
 
 export interface TranscriptSourceOptions {

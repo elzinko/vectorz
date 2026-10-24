@@ -32,11 +32,11 @@ describe('ClaudeCodeTranscriptSource (fixture jsonl réelle sur disque)', () => 
 
     const source = new ClaudeCodeTranscriptSource();
     expect(source.listUsageEvents('/fake/project', { transcript: transcriptPath })).toEqual([
-      { ts: '2026-08-30T09:30:00.000Z', sessionId: 's1', inputTokens: 10, outputTokens: 5 },
+      { ts: '2026-08-30T09:30:00.000Z', sessionId: 's1', inputTokens: 10, outputTokens: 5, cacheRead: 0, cacheCreation: 0 },
     ]);
   });
 
-  it('inclut les tokens de cache (création + lecture) dans inputTokens — facturés donc comptés', () => {
+  it('capte les tokens de cache À PART : inputTokens = entrée neuve seule (fiche 20261017110956989)', () => {
     const lines = [
       line({
         type: 'assistant',
@@ -49,7 +49,9 @@ describe('ClaudeCodeTranscriptSource (fixture jsonl réelle sur disque)', () => 
 
     const source = new ClaudeCodeTranscriptSource();
     const [event] = source.listUsageEvents('/fake/project', { transcript: transcriptPath });
-    expect(event.inputTokens).toBe(2 + 500 + 300);
+    expect(event.inputTokens).toBe(2); // entrée NEUVE seule, le cache n'est plus fondu dedans
+    expect(event.cacheCreation).toBe(500);
+    expect(event.cacheRead).toBe(300);
     expect(event.outputTokens).toBe(100);
   });
 

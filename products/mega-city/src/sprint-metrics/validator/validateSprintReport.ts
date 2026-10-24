@@ -109,12 +109,15 @@ export function validateSprintReport(jsonPath: string): ValidationResult {
       });
     }
     const { inputTokens, outputTokens, totalTokens } = tokens;
+    // Le cache est capté à part (fiche 20261017110956989) ; absent (anciens rapports), il vaut 0.
+    const cacheRead = typeof tokens.cacheRead === 'number' ? tokens.cacheRead : 0;
+    const cacheCreation = typeof tokens.cacheCreation === 'number' ? tokens.cacheCreation : 0;
     if (typeof inputTokens !== 'number' || typeof outputTokens !== 'number' || typeof totalTokens !== 'number') {
       violations.push({ code: 'report.missing_field', message: 'Champ manquant/invalide : "tokens.{input,output,total}Tokens"' });
-    } else if (inputTokens + outputTokens !== totalTokens) {
+    } else if (inputTokens + outputTokens + cacheRead + cacheCreation !== totalTokens) {
       violations.push({
         code: 'tokens.sum_mismatch',
-        message: `input+output (${inputTokens}+${outputTokens}) ≠ total (${totalTokens})`,
+        message: `input+output+cache (${inputTokens}+${outputTokens}+${cacheRead}+${cacheCreation}) ≠ total (${totalTokens})`,
       });
     }
   }

@@ -1,22 +1,43 @@
-import type { TokensSummary } from './types.js';
+import type { ReviewMode, TokensSummary } from './types.js';
 
 export interface UsageEvent {
   ts: string;
   sessionId: string;
   inputTokens: number;
   outputTokens: number;
+  /** Jetons de cache lus / créés — à part de l'entrée neuve. Optionnels : un relevé sans cache vaut 0. */
+  cacheRead?: number;
+  cacheCreation?: number;
 }
 
-function sumTokens(
-  events: readonly UsageEvent[],
-): { inputTokens: number; outputTokens: number; totalTokens: number } {
+/**
+ * Mode de revue du run DÉDUIT de la config (fiche 20261017110956989, ADR-0059/0060). PUR. `pr` coupé =
+ * tout-local (revue `ezk-reviewer` + squash local) ; `pr` actif = PR ouverte, Codex en filet. Le mode
+ * ne distingue que l'ouverture d'une PR : Codex est un bot externe à zéro jeton côté vectorz.
+ */
+export function reviewMode(caps: { pr: boolean }): ReviewMode {
+  return caps.pr ? 'pr-codex' : 'local';
+}
+
+function sumTokens(events: readonly UsageEvent[]): {
+  inputTokens: number;
+  outputTokens: number;
+  cacheRead: number;
+  cacheCreation: number;
+  totalTokens: number;
+} {
   let inputTokens = 0;
   let outputTokens = 0;
+  let cacheRead = 0;
+  let cacheCreation = 0;
   for (const e of events) {
     inputTokens += e.inputTokens;
     outputTokens += e.outputTokens;
+    cacheRead += e.cacheRead ?? 0;
+    cacheCreation += e.cacheCreation ?? 0;
   }
-  return { inputTokens, outputTokens, totalTokens: inputTokens + outputTokens };
+  // Total brut = les quatre, sans pondération : conserve le total d'avant (où le cache était fondu dans l'entrée).
+  return { inputTokens, outputTokens, cacheRead, cacheCreation, totalTokens: inputTokens + outputTokens + cacheRead + cacheCreation };
 }
 
 /**
