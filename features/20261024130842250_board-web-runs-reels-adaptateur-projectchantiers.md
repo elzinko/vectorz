@@ -8,6 +8,7 @@ milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, cop1]
 status: ready
+blocked: "donnée amont absente — les journaux de run n'émettent ni clé chantier (0/55) ni moments/verdict/jetons ; l'adaptateur n'aurait rien de réel à montrer"
 pr:
 evidence: before-after
 created: 2026-10-24
@@ -73,3 +74,22 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
   `BoardProject.runs` est volontairement `{}` (aucun faux run). À traiter en même temps : les constats FAIBLES
   de la revue adverse — collision de noms de projets (clé `name`), `git` absent pris pour « aucun tag »
   (versions taguées affichées comme courantes), comparaison de tag `V`/`v` (hors diff, `backlogReader.ts:115/119`).
+
+- **Bloquée sur une donnée amont (constaté 2026-10-24, run board autonome).** Avant de construire
+  l'adaptateur, j'ai inspecté les **132 journaux réels** de vectorz (`.supervision/runs/*/events.jsonl`).
+  Résultat : `projectChantiers` **ne produirait rien**, parce que la donnée que le board attend n'est pas
+  émise :
+  - **0 `run.started` sur 55 ne porte la clé `chantier`** que `projectChantiers` exige pour grouper
+    (sans elle, `readRun` ignore le journal). Le modèle multi-sessions (ADR-079) n'a donc **aucune donnée**.
+  - Les payloads ne portent **ni moments (transitions de fiches), ni verdict, ni jetons, ni durée** —
+    exactement les champs riches de `BoardRun`/`Moment`. Types d'évènements présents : `heartbeat`,
+    `gate.reached`/`gate.resumed`, `run.started`/`run.finished`, `escalation` ; `run.started.payload` =
+    `{method, seat}` seulement.
+  - **Conséquence** : construire l'adaptateur maintenant afficherait des runs **vides** sur le vrai
+    backlog — invérifiable, exactement le piège « livré ≠ tourne ». Ce n'est **pas** un manque de panel :
+    c'est un manque de **donnée source**.
+  - **Vrai prérequis** (probablement sa propre fiche, côté émetteur de supervision) : écrire la clé
+    `chantier` dans `run.started`, et enrichir les payloads (fiches traitées → moments, verdict, jetons).
+    Une fois ces champs émis, l'adaptateur `ChantierProjection → BoardRun/BoardChantier/TimelineEvent`
+    devient direct et prouvable. En attendant, `BoardProject.runs` reste `{}` (aucun faux run), ce qui est
+    le comportement honnête déjà en place.
