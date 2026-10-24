@@ -87,7 +87,7 @@ les dépendances. Il paie tôt : chaque milestone suivante se prépare mieux.
 - [Le rapport de run affiche le ratio parké/livré + la couverture de grooming](../../features/20261018234207272_rapport-run-ratio-parke-livre-drapeau.md) — à groomer.
 - *En option, même thème, laissées en idée* : [La version est un checkpoint du run](../../features/20261015125606808_frontiere-version-checkpoint-run-autonome.md) et [« Prête » vérifie la prémisse interne de la fiche](../../features/20261015213921103_dor-verifie-premisse-dans-le-code.md).
 
-État : **3 fiches construites et shippées en local** (2026-10-23) : lire `depends:` + désambiguïser « en cours » ; cycle de vie d'une version (figer/dégeler/diff) ; groomer une milestone en une passe (`ezk backlog groom-milestone`). 2 fiches prêtes restent (`park` refuse non groomée, rapport ratio parké/livré) + 3 idées (checkpoint, DoR prémisse, sprint-close worktree). Tête tirable suivante : `20261018234206166`.
+État : **4 fiches construites et shippées en local** (2026-10-23) : lire `depends:` + désambiguïser « en cours » ; cycle de vie d'une version (figer/dégeler/diff) ; groomer une milestone en une passe ; `park` refuse une fiche non groomée. 1 fiche prête reste (rapport ratio parké/livré) + 3 idées (checkpoint, DoR prémisse, sprint-close worktree). Tête tirable suivante : `20261018234207272`.
 
 ### Milestone 2 — « Le board dit vrai »
 
@@ -181,7 +181,7 @@ Rien n'est committé ni irréversible : tu relis le diff.
 
 - **Ajouté** : [ADR-083](../../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md), ce plan, et 2 fiches `recettes` rapatriées de muti.
 - **Fiches** : tout le pipeline actif porte un `milestone:` (9 milestones) ; 9 fiches `ready` (dont les 5 de `preparation`, les 2 de `carte`) ; la fiche « groomer en une passe » réalignée « version » → « milestone ».
-- **Build (3 sprints)** : trois fiches de `preparation` **construites et shippées en local**. (1) Lecture de `depends:` (cycle = erreur, ordre = avertissement) + « en cours » coupé en « active » / « incomplète ». (2) Cycle de vie d'une version : `freeze`/`unfreeze`/`diff` (tag `freeze/…` qui photographie le périmètre), brouillon → figée → livrée, sans toucher au tirage. (3) `ezk backlog groom-milestone` : prépare une milestone en une passe (sélection + rapport de delta), sans forcer `ready`. Gate verte (2184 tests + scripts), revues locales GO (5 constats corrigés). 12 commits locaux, **rien poussé**.
+- **Build (4 sprints)** : quatre fiches de `preparation` **construites et shippées en local**. (1) Lecture de `depends:` (cycle = erreur, ordre = avertissement) + « en cours » coupé en « active » / « incomplète ». (2) Cycle de vie d'une version : `freeze`/`unfreeze`/`diff` (tag `freeze/…`), brouillon → figée → livrée, sans toucher au tirage. (3) `ezk backlog groom-milestone` : prépare une milestone en une passe (sélection + rapport de delta). (4) `park` refuse une fiche non groomée (garde « tenter avant de parker », `--after-groom` lève le refus). Gate verte (2192 tests + scripts), revues locales GO (6 constats corrigés). 15 commits locaux, **rien poussé**.
 - **[`PLAN.md`](../../features/PLAN.md)** : « Ordre de marche » réécrit **par milestone** ; le tableau du train devient un **historique** (v0.1 → v0.22 livrées).
 - **Gate verte** : `backlog check`, `check-links` et `board check` passent. Le faux positif « ADR-0081 → fiche 0081 » du board check a disparu (la fiche-ancre a quitté le vieux bloc « petits correctifs »).
 - **Rien n'est committé.**
