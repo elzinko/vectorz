@@ -7,7 +7,7 @@ product: mega-city
 milestone: preparation
 version:
 labels: [outillage, sprint, worktree, spike]
-status: idea
+status: ready
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-16
@@ -88,3 +88,5 @@ time bash products/mega-city/skills/ezk-sprint/scripts/sprint.sh close
   séparément.
 - `type: bug` faute de type `spike` dans le schéma ; le label `spike` porte la nature (diagnostic
   d'abord). C'est un vrai défaut : `close` ne doit jamais pendre.
+
+- Groomée « prête » le 2026-10-23 : DoR tenue (spike borné, critères + comment vérifier).

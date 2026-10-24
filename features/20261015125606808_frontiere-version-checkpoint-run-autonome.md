@@ -7,7 +7,7 @@ product: mega-city
 milestone: preparation
 version:
 labels: [methode, ezk-product-build]
-status: idea
+status: ready
 pr:
 evidence: none # pilote de run, pas d'écran
 created: 2026-10-15
@@ -87,7 +87,9 @@ Le sort d'une fiche non livrée **dépend de sa raison de blocage** — d'où l'
 
 ## Critères d'acceptation
 
-> Modèle tranché par le PO et mécanisme conçu en panel (2026-10-16, ADR-0080) ; reste à groomer pour le build.
+> Modèle tranché par le PO et mécanisme conçu en panel (2026-10-16, ADR-0080). Groomée « prête » le
+> 2026-10-23 : DoR tenue (problème / valeur / critères vérifiables / comment vérifier), mécanisme déjà
+> gravé par l'ADR-0080 — tirable pour le build.
 
 - [ ] En `--mode auto`, backlog loti : une version ne **démarre** ses sprints que si toutes ses fiches
       sont prêtes, ou le run fait surface ce qui manque (gate d'entrée).
