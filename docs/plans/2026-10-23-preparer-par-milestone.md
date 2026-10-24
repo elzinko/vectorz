@@ -66,7 +66,7 @@ Les **3 fiches prêtes** (tirables tout de suite, quelle que soit la milestone) 
 
 - [Lire enfin `depends:` + désambiguïser « en cours »](../../features/done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md) — tête du plan.
 - [Brancher le board web sur les vraies données](../../features/20261018121537582_brancher-board-web-vraies-donnees.md).
-- [Attribuer les jetons réels par mode de revue (local vs PR+Codex)](../../features/20261017110956989_jetons-par-mode-local-vs-pr-codex.md).
+- [Attribuer les jetons réels par mode de revue (local vs PR+Codex)](../../features/done/20261017110956989_jetons-par-mode-local-vs-pr-codex.md).
 
 ## Les prochaines milestones (lots de fiches, dans l'ordre)
 
@@ -136,7 +136,7 @@ ciblées remettent la carte d'aplomb.
 - **« L'app se cartographie »** (l'actuelle « v0.23 ») : [un agent qui utilise l'app d'une PR](../../features/20260821210633457_explorateur-llm-pilote-siege-exploration-pr.md) + [cache de cartographie applicative](../../features/20261014113049954_cache-cartographie-app.md).
 - **« Le cockpit s'ouvre »** : [une page d'accueil, une ligne par projet](../../features/20261002115451451_page-une-ligne-par-projet.md) + [rendre les étapes d'un skill configurables](../../features/20260830110131228_schema-etapes-skill-configurables.md).
 - **« La qualité tient »** : [revue design-system comme step de release](../../features/20261011153019643_revue-design-system-step-composable-release.md), [release local-first macOS signé/notarisé](../../features/20261002130917993_release-local-first-macos.md), [borner le coût du chemin daté de sprint:report](../../features/20261013143324505_sprint-report-cout-chemin-date.md).
-- **« Voir le vrai coût »** : [attribuer les jetons par mode de revue](../../features/20261017110956989_jetons-par-mode-local-vs-pr-codex.md) — **prête**, autonome.
+- **« Voir le vrai coût »** : [attribuer les jetons par mode de revue](../../features/done/20261017110956989_jetons-par-mode-local-vs-pr-codex.md) — **prête**, autonome.
 - **« Les portiers ne crient plus au loup »** : [ezk-sprint close ne se bloque jamais en worktree](../../features/done/20261016203544694_sprint-close-ne-bloque-jamais-en-worktree.md), P1.
 
 ## Le tas parké (88 fiches) — une passe de tri à prévoir

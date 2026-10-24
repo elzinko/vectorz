@@ -7,8 +7,8 @@ product: mega-city
 milestone: observabilite
 version:
 labels: [supervision, observabilite]
-status: ready
-pr:
+status: shipped
+pr: "local (e7e916ce)"
 evidence: none # commande / rapport, pas d'écran
 created: 2026-10-17
 ---
@@ -36,8 +36,8 @@ Séance du 2026-10-17. Le PO demande si faire tourner la méthode en tout-local 
 cher en jetons que le mode PR + Codex. Réponse donnée au **modèle** : le coût d'une fiche est
 fixé par l'unique appel `ezk-reviewer` (~85k de contexte fixe par appel, 107-162k pour la
 revue), identique dans les deux modes ; Codex est un bot externe à **zéro jeton** côté
-vectorz. Sources : [Coût de sprint compté en appels d'agent](../products/mega-city/docs/adr/0060-cout-sprint-compte-en-appels-agent.md)
-et [Revue locale plancher, Codex filet, PR optionnelle](../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md).
+vectorz. Sources : [Coût de sprint compté en appels d'agent](../../products/mega-city/docs/adr/0060-cout-sprint-compte-en-appels-agent.md)
+et [Revue locale plancher, Codex filet, PR optionnelle](../../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md).
 
 Ce qui empêche de **mesurer** cette réponse au lieu de l'estimer, vérifié dans le code :
 
@@ -53,10 +53,10 @@ Ce qui empêche de **mesurer** cette réponse au lieu de l'estimer, vérifié da
    `usage`. Tout est reconstruit **après coup** depuis les transcripts ; `run:report` prend
    même les jetons en saisie manuelle (`--tokens-used`, sinon « non mesurés »).
 
-Fiches voisines écartées, pour mémoire : [Socle vertical — port de métrique](0052-socle-metrique-port-adaptateur-silo.md)
-et [KPI agrégés commit→PR→sprint→version](0055-kpi-agreges-commit-pr-sprint-version.md) sont
+Fiches voisines écartées, pour mémoire : [Socle vertical — port de métrique](../0052-socle-metrique-port-adaptateur-silo.md)
+et [KPI agrégés commit→PR→sprint→version](../0055-kpi-agreges-commit-pr-sprint-version.md) sont
 parkées et portent l'**observabilité qualité** (couverture, DoD) ; 0052 exclut explicitement
-le coût jetons. [Borner le coût du chemin daté de sprint:report](20261013143324505_sprint-report-cout-chemin-date.md)
+le coût jetons. [Borner le coût du chemin daté de sprint:report](../20261013143324505_sprint-report-cout-chemin-date.md)
 traite la **vitesse** de la mesure, pas son contenu. Aucune ne couvre l'attribution par mode.
 
 ## Valeur
