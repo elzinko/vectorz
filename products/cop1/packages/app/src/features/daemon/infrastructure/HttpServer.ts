@@ -26,6 +26,9 @@ export interface SupervisionProjectDto {
 
 export type ProjectsProvider = () => SupervisionProjectDto[];
 
+/** fiche board (ADR-074) — GET /api/board : la donnée du board, projets indexés par nom. */
+export type BoardProvider = () => Record<string, unknown>;
+
 export interface RuleProposalRecord {
   ruleId: string;
   type: string;
@@ -72,6 +75,7 @@ export class HttpServer {
   private supervisionProvider: SupervisionProvider | null = null;
   private historyProvider: HistoryProvider | null = null;
   private projectsProvider: ProjectsProvider | null = null;
+  private boardProvider: BoardProvider | null = null;
   private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private blocageApiHandler: BlocageApiPort | null = null;
@@ -91,6 +95,11 @@ export class HttpServer {
   /** fiche 0062 — liste registre (vide si absent). */
   setProjectsProvider(provider: ProjectsProvider): void {
     this.projectsProvider = provider;
+  }
+
+  /** fiche board (ADR-074) — GET /api/board */
+  setBoardProvider(provider: BoardProvider): void {
+    this.boardProvider = provider;
   }
 
   setRuleProposalProvider(provider: RuleProposalProvider): void {
@@ -176,6 +185,18 @@ export class HttpServer {
 
     if (req.method === 'GET' && req.url === '/api/supervision/projects') {
       const data = this.projectsProvider?.() ?? [];
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+      return;
+    }
+
+    if (req.method === 'GET' && req.url === '/api/board') {
+      let data: Record<string, unknown> = {};
+      try {
+        data = this.boardProvider?.() ?? {};
+      } catch {
+        data = {}; // le board dégrade proprement plutôt que de faire crasher le daemon
+      }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(data));
       return;

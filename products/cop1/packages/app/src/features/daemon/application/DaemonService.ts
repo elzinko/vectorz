@@ -1,5 +1,6 @@
-import { isAbsolute, resolve } from 'node:path';
+import { basename, isAbsolute, resolve } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
+import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
@@ -90,6 +91,7 @@ export class DaemonService {
 
     // fiche 0062/0063 — relecture à chaque GET (après registry-add sans restart)
     this.httpServer.setProjectsProvider(() => this.readRegistryProjects(projectPath));
+    this.httpServer.setBoardProvider(() => composeBoardData(this.boardProjects(projectPath)));
 
     try {
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
@@ -169,6 +171,26 @@ export class DaemonService {
     } catch {
       return [];
     }
+  }
+
+  /**
+   * Les projets servis au board (part plan) : le MÊME registre que `readRegistryProjects`
+   * (`name = id du projet`, `root = sa racine`). Repli sur le projet courant si aucun registre
+   * n'est trouvé, pour qu'un daemon mono-projet serve quand même son plan.
+   */
+  private boardProjects(projectPath: string): BoardProjectInput[] {
+    try {
+      const located = locateRegistry([projectPath]);
+      if (located !== null && located.registry.projects.length > 0) {
+        return located.registry.projects.map((p) => ({
+          name: p.id,
+          root: isAbsolute(p.path) ? p.path : resolve(located.dir, p.path),
+        }));
+      }
+    } catch {
+      // pas de registre lisible → repli ci-dessous
+    }
+    return [{ name: basename(projectPath), root: projectPath }];
   }
 
   private wireAnchorHandler(

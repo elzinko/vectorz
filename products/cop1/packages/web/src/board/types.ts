@@ -56,9 +56,10 @@ export interface Metrics {
   tokens: string;
   temps: string;
   perFiche: string;
-  sprints: number;
-  runs: number;
-  retros: number;
+  /** `'—'` = non encore câblé par le read-model (jamais un faux 0 présenté comme une mesure). */
+  sprints: number | '—';
+  runs: number | '—';
+  retros: number | '—';
 }
 
 /** La lentille d'un run : côté cadrage, ou côté développement. */
