@@ -19,7 +19,7 @@ OUT="PORTFOLIO.md"
 
 # Lecture des fiches : par le loader testé (règle development/fiche-read-via-loader), jamais par un
 # awk maison. `bin/fiche-rows.ts` imprime une ligne par fiche : id, title, type, prio, status, pr,
-# created, version, epic, PRODUIT, milestone (séparés par \x1f). Le produit vient du front-matter
+# created, version, PRODUIT, milestone (séparés par \x1f). Le produit vient du front-matter
 # `product:` (liste unifiée `features/`, ADR-0017 A14) ; « vectorz » n'est qu'un repli si le champ
 # manque (sinon toute fiche mega-city de la liste racine était comptée vectorz, retour Codex #128).
 TSX="$MC/node_modules/.bin/tsx"
@@ -51,7 +51,7 @@ st_label() { # $1=statut → « emoji statut » ; « ❓ statut » si inconnu (l
 emit_table() {
   echo '| Prod | # | Titre | Type | Prio | Statut | PR |'
   echo '|------|---|-------|------|------|--------|----|'
-  while IFS="$SEP" read -r id title type prio status pr created version epic product milestone; do
+  while IFS="$SEP" read -r id title type prio status pr created version product milestone; do
     [ -z "$id" ] && continue
     title="${title//|/\\|}"; pr="${pr//|/\\|}"
     echo "| ${product} | ${id} | ${title} | ${type} | ${prio} | $(st_label "$status") | ${pr} |"
@@ -71,7 +71,7 @@ emit_table() {
   echo ''
   echo 'Les fiches `ready` (DoR passée), dans l’ordre de tirage (P0→P3, puis produit, puis id).'
   echo ''
-  readies="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" && $3!="epic"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
+  readies="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="ready"' | sort -t"$SEP" -k4,4 -k9,9 -k1,1)"
   if [ -n "$readies" ]; then printf '%s\n' "$readies" | emit_table; else echo '_Aucune fiche ready — flux gelé, groomer une tête de file._'; fi
   echo ''
 
@@ -84,7 +84,7 @@ emit_table() {
   if [ -n "$inprog_ids" ]; then
     inprog="$(printf '%s' "$rows" | awk -F"$SEP" -v ids="$inprog_ids" '
       BEGIN { n = split(ids, a, "\n"); for (i = 1; i <= n; i++) if (a[i] != "") want[a[i]] = 1 }
-      ($1 in want)' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
+      ($1 in want)' | sort -t"$SEP" -k4,4 -k9,9 -k1,1)"
   else
     inprog=""
   fi
@@ -95,27 +95,19 @@ emit_table() {
   echo ''
   echo 'Tri P0→P3, puis produit, puis id. `blocked` inclus (dépendance dure — voir la fiche).'
   echo ''
-  printf '%s' "$rows" | awk -F"$SEP" '($5=="ready" || $5=="blocked") && $3!="epic"' \
-    | sort -t"$SEP" -k4,4 -k10,10 -k1,1 | emit_table
+  printf '%s' "$rows" | awk -F"$SEP" '$5=="ready" || $5=="blocked"' \
+    | sort -t"$SEP" -k4,4 -k9,9 -k1,1 | emit_table
   echo ''
-
-  epics="$(printf '%s' "$rows" | awk -F"$SEP" '$3=="epic"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
-  if [ -n "$epics" ]; then
-    echo '## 🧭 Épics (jamais tirables — tirer leurs enfants ready)'
-    echo ''
-    printf '%s\n' "$epics" | emit_table
-    echo ''
-  fi
 
   echo '## 💡 Idées (non groomées, hors flux P0→P3)'
   echo ''
-  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $11!="parked"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
+  ideas="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $10!="parked"' | sort -t"$SEP" -k4,4 -k9,9 -k1,1)"
   if [ -n "$ideas" ]; then printf '%s\n' "$ideas" | emit_table; else echo '_Aucune idée en attente._'; fi
   echo ''
 
   # Parkées : idea + `milestone: parked` = jalon fermé par le PO, hors flux (cohérent avec le
   # bloc « Parkées » de features/BACKLOG.md et l'exclusion du board d'avancement).
-  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $3!="epic" && $11=="parked"' | sort -t"$SEP" -k4,4 -k10,10 -k1,1)"
+  parked="$(printf '%s' "$rows" | awk -F"$SEP" '$5=="idea" && $10=="parked"' | sort -t"$SEP" -k4,4 -k9,9 -k1,1)"
   if [ -n "$parked" ]; then
     echo '## ⏸️ Parkées (hors flux — jalon fermé par le PO, à rouvrir pour tirer)'
     echo ''
@@ -128,18 +120,17 @@ emit_table() {
   echo ''
   printf '%s' "$rows" | awk -F"$SEP" '
     NF {
-      p=$10; tot[p]++; totall++
-      if ($3=="epic") { epic[p]++; next }
-      if ($5=="idea" && $11=="parked") { parked[p]++; next }
+      p=$9; tot[p]++; totall++
+      if ($5=="idea" && $10=="parked") { parked[p]++; next }
       st[p"/"$5]++
     }
     END {
-      printf "| Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked | 🧭 épics |\n"
-      printf "|---------|-------|----------|-----------|-----------|---------|-----------|---------|\n"
+      printf "| Produit | Total | 🔵 ready | 🟠 in-prog | ⛔ blocked | 💡 idea | ⏸️ parked |\n"
+      printf "|---------|-------|----------|-----------|-----------|---------|-----------|\n"
       split("vectorz mega-city", order, " ")
       for (i=1;i<=2;i++){ p=order[i];
-        printf "| %s | %d | %d | %d | %d | %d | %d | %d |\n", p, tot[p]+0, \
-          st[p"/ready"]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, parked[p]+0, epic[p]+0 }
+        printf "| %s | %d | %d | %d | %d | %d | %d |\n", p, tot[p]+0, \
+          st[p"/ready"]+0, st[p"/in-progress"]+0, st[p"/blocked"]+0, st[p"/idea"]+0, parked[p]+0 }
     }'
   echo ''
   echo '> Ne compte pas les fiches livrées (`done/`) — voir chaque `BACKLOG.md` de backlog pour l’historique.'

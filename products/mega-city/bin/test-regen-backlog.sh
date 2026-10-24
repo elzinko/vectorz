@@ -263,7 +263,7 @@ check "statut inconnu visible en ❓"    "grep -q '| ❓ to-do |' '$idxi'"
 check "légende = tous les statuts du schéma, sans blocked" \
   "grep -q 'Statuts : 💡 idea · 🔵 ready · 🟠 in-progress · ✅ shipped · 🗑️ superseded · 🔀 merged · 🧩 split\\.' '$idxi' && ! grep -q 'Statuts :.*blocked' '$idxi'"
 check "stats : un compteur par statut du schéma, dans l'ordre" \
-  "printf '%s' \"\$out_i\" | grep -q 'stats: total=9 · idea=1 · parked=0 · ready=2 · in-progress=1 · shipped=1 · superseded=1 · merged=1 · split=1 · épics=0'"
+  "printf '%s' \"\$out_i\" | grep -q 'stats: total=9 · idea=1 · parked=0 · ready=2 · in-progress=1 · shipped=1 · superseded=1 · merged=1 · split=1'"
 check "stats : plus de compteur blocked" "! printf '%s' \"\$out_i\" | grep -q 'blocked='"
 check "vieux format (ready: daté) lu sans planter, colonne = status" \
   "grep -q '^| \[0009\](0009-i-vieux.md) |.*| 🔵 ready |' '$idxi'"

@@ -73,8 +73,8 @@ check "produit absent → repli vectorz ; commentaire du titre nu retiré" \
 # Plus de section listant les fiches « in-progress » écrites : « en cours » est désormais DÉDUIT des
 # branches ouvertes (ADR-0077, fiche 20261015213921062), pas du champ `status`. On garde juste : aucun ❓.
 check "statut quoté (\"in-progress\") reconnu, pas ❓" "! grep -qF '❓' '$OUT'"
-check "compteur mega-city (1 ready)"                  "grep -qF '| mega-city | 1 | 1 | 0 | 0 | 0 | 0 | 0 |' '$OUT'"
-check "compteur vectorz (1 en cours, 1 idée)"         "grep -qF '| vectorz | 2 | 0 | 1 | 0 | 1 | 0 | 0 |' '$OUT'"
+check "compteur mega-city (1 ready)"                  "grep -qF '| mega-city | 1 | 1 | 0 | 0 | 0 | 0 |' '$OUT'"
+check "compteur vectorz (1 en cours, 1 idée)"         "grep -qF '| vectorz | 2 | 0 | 1 | 0 | 1 | 0 |' '$OUT'"
 
 echo "portfolio.sh sans aucune fiche :"
 E="$TMP/e"

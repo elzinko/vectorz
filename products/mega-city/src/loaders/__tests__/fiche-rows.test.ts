@@ -12,7 +12,7 @@ const byName = (text: string, defaultProduct?: string): Record<string, string> =
   Object.fromEntries(ROW_FIELDS.map((f, i) => [f, ficheRowFields(text, defaultProduct)[i]]));
 
 describe('ficheRowFields — le front-matter, rien que lui', () => {
-  it('lit les onze champs dans l’ordre des anciens extract() awk', () => {
+  it('lit les dix champs dans l’ordre des anciens extract() awk (champ epic retiré, ADR-0017 A16)', () => {
     const text = fiche(
       [
         'id: "20260918114726706"',
@@ -23,7 +23,7 @@ describe('ficheRowFields — le front-matter, rien que lui', () => {
         'pr: "#268"',
         'created: 2026-09-18',
         'version: V0.1',
-        'epic:',
+        'epic: 0001', // champ retiré du modèle : présent dans le texte mais PLUS lu/émis
         'product: mega-city',
         'milestone: parked',
       ].join('\n'),
@@ -37,7 +37,6 @@ describe('ficheRowFields — le front-matter, rien que lui', () => {
       '#268',
       '2026-09-18',
       'V0.1',
-      '',
       'mega-city',
       'parked',
     ]);

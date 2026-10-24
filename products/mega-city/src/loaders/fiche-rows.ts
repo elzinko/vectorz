@@ -1,8 +1,9 @@
 /**
- * fiche-rows — les onze champs de front-matter que les vues bash (`portfolio.sh`) lisaient par
+ * fiche-rows — les dix champs de front-matter que les vues bash (`portfolio.sh`) lisaient par
  * `awk`, produits par les primitives du loader (`frontMatter` + `readField`). Règle
  * `development/fiche-read-via-loader` : UNE lecture testée du front-matter, plusieurs
- * consommateurs — le bash appelle ce module au lieu de re-parser.
+ * consommateurs — le bash appelle ce module au lieu de re-parser. (Le champ `epic` a été retiré
+ * du modèle, ADR-0017 A16 : plus émis.)
  *
  * Valeurs BRUTES (pas de défauts `feature` / `idea` / `—` comme `loadFiches`) : un champ absent
  * reste vide, car les vues bash décident d'afficher une colonne (Version, Produit…) sur « au moins
@@ -13,7 +14,7 @@ import { frontMatter, readField } from './fiches.js';
 /** Séparateur de champs (US, \x1f) — ne se trouve dans aucun titre. */
 export const FIELD_SEP = '\x1f';
 
-/** Ordre fixe, celui des anciens `extract()` awk. */
+/** Ordre fixe, celui des anciens `extract()` awk (champ `epic` retiré — ADR-0017 A16). */
 export const ROW_FIELDS = [
   'id',
   'title',
@@ -23,12 +24,11 @@ export const ROW_FIELDS = [
   'pr',
   'created',
   'version',
-  'epic',
   'product',
   'milestone',
 ] as const;
 
-/** Les onze valeurs d'une fiche, dans l'ordre de `ROW_FIELDS`. `defaultProduct` remplace un `product:` vide. */
+/** Les dix valeurs d'une fiche, dans l'ordre de `ROW_FIELDS`. `defaultProduct` remplace un `product:` vide. */
 export function ficheRowFields(text: string, defaultProduct = ''): string[] {
   const fm = frontMatter(text);
   return ROW_FIELDS.map((field) => {
