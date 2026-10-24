@@ -17,7 +17,11 @@ import {
   closeVersion,
   compareVersions,
   dependencyFindings,
+  diffFrozen,
+  freezeTagFor,
+  freezeTagOf,
   hasErrors,
+  lifecycleOf,
   proposedTagOf,
   releaseTagFor,
   tagOf,
@@ -491,5 +495,53 @@ describe('renderVersionList — « en cours » désambiguïsé (fiche 2026101611
     expect(text).toMatch(/v0\.1\.0.*active \(tirage\)/); // la plus basse non taguée = active
     expect(text).toMatch(/v0\.2\.0.*incomplète/);
     expect(text).not.toContain('en cours'); // l’ancien libellé ambigu a disparu
+  });
+});
+
+describe('cycle de vie d’une version — gel (fiche 20261014200651962)', () => {
+  it('freezeTagOf / freezeTagFor : le tag de gel est freeze/vX.Y.Z', () => {
+    expect(freezeTagOf('v0.3.0')).toBe('freeze/v0.3.0');
+    expect(freezeTagFor('v0.3.0', new Set(['freeze/v0.3.0']))).toBe('freeze/v0.3.0');
+    expect(freezeTagFor('v0.3.0', new Set(['v0.3.0']))).toBeUndefined(); // une release n'est pas un gel
+  });
+
+  it('lifecycle dérivé des refs : brouillon → figée → livrée', () => {
+    const brouillon = buildVersions([todo(1, 'v0.3.0')], noTags).lots[0];
+    expect(brouillon.frozen).toBe(false);
+    expect(lifecycleOf(brouillon)).toBe('brouillon');
+
+    const figee = buildVersions([todo(1, 'v0.3.0')], new Set(['freeze/v0.3.0'])).lots[0];
+    expect(figee.frozen).toBe(true);
+    expect(lifecycleOf(figee)).toBe('figee');
+
+    // une version sortie est livrée, même si un tag de gel traîne encore : jamais re-marquée figée
+    const livree = buildVersions([shipped(1, 'v0.3.0')], new Set(['v0.3.0', 'freeze/v0.3.0'])).lots[0];
+    expect(livree.frozen).toBe(false);
+    expect(lifecycleOf(livree)).toBe('livree');
+  });
+
+  it('le gel ne change pas le tirage (ADR-0070) : un tag freeze/ n’est pas une release', () => {
+    const lot = buildVersions([todo(1, 'v0.3.0')], new Set(['freeze/v0.3.0'])).lots[0];
+    expect(lot.releaseTag).toBeUndefined(); // figée ≠ livrée
+    expect(lot.state).toBe('en-cours'); // la complétude (donc le tirage) est inchangée
+  });
+
+  it('renderVersionList marque « · figée » et explique le cycle', () => {
+    const text = renderVersionList(buildVersions([todo(1, 'v0.3.0')], new Set(['freeze/v0.3.0']))).join('\n');
+    expect(text).toContain('· figée');
+    expect(text).toContain('Cycle de vie : brouillon');
+  });
+
+  it('diffFrozen : base, ajouts (entrés après), retirés (sortis depuis)', () => {
+    const d = diffFrozen(['0001', '0002'], ['0002', '0003']);
+    expect(d.base).toEqual(['0001', '0002']);
+    expect(d.ajouts).toEqual(['0003']); // dans la version maintenant, absent de la base
+    expect(d.retires).toEqual(['0001']); // dans la base, sorti depuis
+  });
+
+  it('diffFrozen : périmètre inchangé → aucun ajout ni retrait', () => {
+    const d = diffFrozen(['0001', '0002'], ['0002', '0001']);
+    expect(d.ajouts).toEqual([]);
+    expect(d.retires).toEqual([]);
   });
 });

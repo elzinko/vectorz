@@ -14,7 +14,8 @@
  * Codes de sortie : 0 fait · 1 refus ou erreur de lot (rien d'écrit) · 2 usage ou échec git.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -23,10 +24,14 @@ import {
   buildVersions,
   checkVersions,
   closeVersion,
+  diffFrozen,
+  freezeTagFor,
+  freezeTagOf,
   hasErrors,
 } from '../src/backlog/versions.js';
 import {
   renderFindings,
+  renderFrozenDiff,
   renderProposal,
   renderRefusal,
   renderVersionList,
@@ -35,13 +40,16 @@ import { localTags } from '../src/io/git-tags.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 import { readReleaseVerdict, releaseConfig } from '../src/loaders/release-passes.js';
 
-const VERBS = ['list', 'check', 'close'] as const;
+const VERBS = ['list', 'check', 'close', 'freeze', 'unfreeze', 'diff'] as const;
 type Verb = (typeof VERBS)[number];
+
+/** Les verbes qui exigent une version en argument. */
+const NEEDS_VERSION: ReadonlySet<Verb> = new Set(['close', 'freeze', 'unfreeze', 'diff']);
 
 function usage(message?: string): never {
   if (message) console.error(`erreur: ${message}`);
   console.error(
-    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | close <X> [--tag] [--release-ok "<raison>"] [--max <n>] [--no-plan]   (--root <dossier> pour un autre dépôt)',
+    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | close <X> [--tag] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
   );
   process.exit(2);
 }
@@ -83,7 +91,7 @@ function parseArgs(argv: string[]): Args {
   if (version !== undefined && !VERSION_FORMAT.test(version)) {
     usage(`« ${version} » n'a pas le format semver v<n>.<n>.<n> (exemple : v0.3.0)`);
   }
-  if (verb === 'close' && version === undefined) usage('close attend une version (exemple : close v0.3.0)');
+  if (NEEDS_VERSION.has(verb) && version === undefined) usage(`${verb} attend une version (exemple : ${verb} v0.3.0)`);
   if (verb === 'list' && version !== undefined) usage('list ne prend pas de version');
   return { verb, version, root, max, usePlan, tag, releaseOk };
 }
@@ -99,6 +107,32 @@ function gitOut(root: string, args: string[]): string | undefined {
 
 function say(lines: string[]): void {
   console.log(lines.join('\n'));
+}
+
+/**
+ * Les ids des fiches qui portaient `version: X` au commit du gel `freezeTag`. On extrait l'arbre
+ * `features/` figé (`git archive`) dans un dossier jetable, puis on LIT par le loader (`loadFiches`) —
+ * jamais un parseur maison du front-matter (règle `development/fiche-read-via-loader`). Best-effort :
+ * hors dépôt, sans `tar`, ou arbre absent → liste vide.
+ */
+function frozenBaseIds(root: string, version: string, freezeTag: string): string[] {
+  let tmp: string | undefined;
+  try {
+    tmp = mkdtempSync(join(tmpdir(), 'ezk-freeze-base-'));
+    const tar = join(tmp, 'tree.tar');
+    execFileSync('git', ['archive', '--output', tar, freezeTag, 'features'], {
+      cwd: root,
+      stdio: 'pipe',
+    });
+    execFileSync('tar', ['-xf', tar, '-C', tmp], { stdio: 'pipe' });
+    return loadFiches(tmp)
+      .filter((f) => f.version === version)
+      .map((f) => f.id);
+  } catch {
+    return []; // best-effort : hors dépôt, sans tar, tmp non inscriptible ou arbre absent
+  } finally {
+    if (tmp !== undefined) rmSync(tmp, { recursive: true, force: true });
+  }
 }
 
 function main(): void {
@@ -128,6 +162,84 @@ function main(): void {
       console.log("Non contrôlé ici : l'accord avec PLAN.md (--no-plan, ou fichier absent).");
     }
     process.exit(hasErrors(findings) ? 1 : 0);
+  }
+
+  if (args.verb === 'freeze' || args.verb === 'unfreeze' || args.verb === 'diff') {
+    const version = args.version as string; // garanti par parseArgs
+    const lot = buildVersions(fiches, tags).lots.find((l) => l.version === version);
+    if (!lot) {
+      say([`En clair : aucune fiche ne porte la version ${version}.`]);
+      process.exit(1);
+    }
+    const freezeTag = freezeTagFor(version, tags);
+
+    if (args.verb === 'freeze') {
+      if (lot.releaseTag !== undefined) {
+        say([`En clair : ${version} est déjà livrée (${lot.releaseTag}). Inutile de la figer.`]);
+        process.exit(1);
+      }
+      if (freezeTag !== undefined) {
+        say([`En clair : ${version} est déjà figée (${freezeTag}). « diff » pour voir la dérive, « unfreeze » pour la dégeler.`]);
+        process.exit(1);
+      }
+      const head = gitOut(args.root, ['rev-parse', 'HEAD']);
+      if (head === undefined) {
+        say([`En clair : pas de dépôt git (ou aucun commit) ici : impossible de figer ${version}.`]);
+        process.exit(1);
+      }
+      const dirty = gitOut(args.root, ['status', '--porcelain', '--', 'features']);
+      if (dirty) {
+        say([
+          `En clair : des fiches ne sont pas commitées — figer photographierait un périmètre instable. Rien n'a été écrit.`,
+          '',
+          "Committe (ou annule) d'abord les changements de features/ :",
+          ...dirty.split('\n').slice(0, 5).map((line) => `  ${line}`),
+        ]);
+        process.exit(1);
+      }
+      const tag = freezeTagOf(version);
+      try {
+        execFileSync(
+          'git',
+          ['tag', '-a', tag, '-m', `Gel du périmètre de ${version} (${new Date().toISOString().slice(0, 10)})`, head],
+          { cwd: args.root, stdio: 'pipe' },
+        );
+      } catch (error) {
+        console.error(`✗ gel non posé : ${error instanceof Error ? error.message : String(error)}`);
+        process.exit(2);
+      }
+      say([
+        `En clair : ${version} est figée. Le périmètre est photographié par ${tag} sur HEAD (${head.slice(0, 9)}).`,
+        `Gel souple : ajouter une fiche reste permis ; « diff » montre l'écart. Dégeler : backlog:version unfreeze ${version}.`,
+        `Local, jamais poussé (comme une release). Pour retirer à la main : git tag -d ${tag}.`,
+      ]);
+      return;
+    }
+
+    if (args.verb === 'unfreeze') {
+      if (freezeTag === undefined) {
+        say([`En clair : ${version} n'est pas figée : rien à dégeler.`]);
+        process.exit(1);
+      }
+      try {
+        execFileSync('git', ['tag', '-d', freezeTag], { cwd: args.root, stdio: 'pipe' });
+      } catch (error) {
+        console.error(`✗ dégel impossible : ${error instanceof Error ? error.message : String(error)}`);
+        process.exit(2);
+      }
+      say([`En clair : ${version} est dégelée (${freezeTag} retiré). Elle revient en brouillon.`]);
+      return;
+    }
+
+    // diff
+    if (freezeTag === undefined) {
+      say([`En clair : ${version} n'est pas figée : rien à comparer. Fige-la d'abord : backlog:version freeze ${version}.`]);
+      process.exit(1);
+    }
+    const baseIds = frozenBaseIds(args.root, version, freezeTag);
+    const currentIds = fiches.filter((f) => f.version === version).map((f) => f.id);
+    say(renderFrozenDiff(version, freezeTag, diffFrozen(baseIds, currentIds)));
+    return;
   }
 
   // close

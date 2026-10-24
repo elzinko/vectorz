@@ -206,3 +206,35 @@ describe('backlog:version close --tag — gate de release', () => {
     expect(git('tag', '-l').trim()).toBe('v0.2.0');
   });
 });
+
+describe('backlog:version — gel (freeze / unfreeze / diff, fiche 20261014200651962)', () => {
+  it('freeze pose freeze/vX.Y.Z, list affiche « figée », unfreeze le retire', () => {
+    const f = run('freeze', 'v0.3.0');
+    expect(f.code).toBe(0);
+    expect(f.out).toContain('figée');
+    expect(git('tag', '-l', 'freeze/v0.3.0').trim()).toBe('freeze/v0.3.0');
+    expect(run().out).toMatch(/v0\.3\.0.*· figée/);
+    const u = run('unfreeze', 'v0.3.0');
+    expect(u.code).toBe(0);
+    expect(git('tag', '-l', 'freeze/v0.3.0').trim()).toBe('');
+  });
+
+  it('diff lit la base figée par le loader et voit un ajout entré après le gel', () => {
+    expect(run('freeze', 'v0.3.0').code).toBe(0);
+    expect(run('diff', 'v0.3.0').out).toContain("n'a pas bougé"); // base = 1 fiche, aucun ajout
+    put('features/20260101000000005_e.md', fm('20260101000000005', 'status: ready\nversion: v0.3.0'));
+    git('add', '.');
+    git('commit', '--quiet', '-m', 'feat: ajout post-gel');
+    const after = run('diff', 'v0.3.0');
+    expect(after.code).toBe(0);
+    expect(after.out).toContain('1 ajout');
+    expect(after.out).toContain('20260101000000005');
+  });
+
+  it('freeze refuse une version déjà figée ; diff/unfreeze refusent une version non figée', () => {
+    expect(run('diff', 'v0.3.0').code).toBe(1);
+    expect(run('unfreeze', 'v0.3.0').code).toBe(1);
+    expect(run('freeze', 'v0.3.0').code).toBe(0);
+    expect(run('freeze', 'v0.3.0').code).toBe(1); // déjà figée
+  });
+});

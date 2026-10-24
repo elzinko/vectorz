@@ -78,6 +78,53 @@ export function releaseTagFor(version: string, tags: ReadonlySet<string>): strin
   return best;
 }
 
+/**
+ * Le tag de GEL d'une version : `freeze/vX.Y.Z` (fiche 20261014200651962, avis d'architecte 2026-10-15).
+ * Figer, c'est PHOTOGRAPHIER le périmètre — un tag annoté sur le commit-base, pas un cadenas. Le préfixe
+ * `freeze/` fait qu'ADR-0070 (qui lit `vX.Y.Z`) ne le prend jamais pour une release.
+ */
+export const freezeTagOf = (version: string): string => `freeze/${version}`;
+
+/** Le tag de gel présent pour cette version, ou `undefined`. */
+export function freezeTagFor(version: string, tags: ReadonlySet<string>): string | undefined {
+  if (!VERSION_FORMAT.test(version)) return undefined;
+  const t = freezeTagOf(version);
+  return tags.has(t) ? t : undefined;
+}
+
+/**
+ * Cycle de vie d'une version (fiche 20261014200651962), dérivé des refs — zéro fichier d'état (ADR-0001) :
+ * une release `vX.Y.Z` → `livree` ; un `freeze/vX.Y.Z` sans release → `figee` ; ni l'un ni l'autre →
+ * `brouillon`. Orthogonal au tirage (ADR-0070) : figer est un marqueur, pas la « version en cours ».
+ */
+export type Lifecycle = 'brouillon' | 'figee' | 'livree';
+export function lifecycleOf(lot: VersionLot): Lifecycle {
+  if (lot.releaseTag !== undefined) return 'livree';
+  return lot.frozen ? 'figee' : 'brouillon';
+}
+
+/** Le gel souple : la base photographiée, et ce qui a bougé depuis (fiche 20261014200651962). */
+export interface FrozenDiff {
+  /** Ids de la version au moment du gel (le périmètre photographié). */
+  base: string[];
+  /** Entrés APRÈS le gel : dans la version maintenant, absents de la base (ajouts de complétude). */
+  ajouts: string[];
+  /** Sortis DEPUIS le gel : dans la base, plus dans la version maintenant. */
+  retires: string[];
+}
+
+/** Compare le périmètre photographié (`baseIds`) à l'état courant (`currentIds`). Pur. */
+export function diffFrozen(baseIds: readonly string[], currentIds: readonly string[]): FrozenDiff {
+  const base = [...new Set(baseIds)].sort();
+  const baseSet = new Set(base);
+  const cur = new Set(currentIds);
+  return {
+    base,
+    ajouts: [...cur].filter((id) => !baseSet.has(id)).sort(),
+    retires: base.filter((id) => !cur.has(id)),
+  };
+}
+
 /** Parkée = `idea` + `milestone: parked` (même règle que le board : jalon fermé par le PO). */
 const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
 
@@ -105,6 +152,10 @@ export interface VersionLot {
   intruders: Fiche[];
   /** L'étiquette de release trouvée (`v1.7.0`), si la version est sortie — sinon `undefined`. */
   releaseTag?: string;
+  /** Le périmètre est-il GELÉ (tag `freeze/…` présent et pas encore sortie) ? (fiche 20261014200651962) */
+  frozen: boolean;
+  /** Le tag de gel (`freeze/vX.Y.Z`), s'il existe — même sortie (l'info de gel survit au tag de release). */
+  freezeTag?: string;
 }
 
 export interface VersionsReport {
@@ -127,6 +178,7 @@ function lotOf(version: string, members: Fiche[], tags: ReadonlySet<string>): Ve
   const todo = sorted.filter((f) => f.status !== 'shipped' && !isParked(f));
   const releaseTag = releaseTagFor(version, tags);
   const tagged = releaseTag !== undefined;
+  const freezeTag = freezeTagFor(version, tags);
   let state: VersionState = 'vide';
   if (todo.length > 0) state = tagged ? 'rouverte' : 'en-cours';
   else if (shipped.length > 0) state = tagged ? 'livree' : 'a-clore';
@@ -139,6 +191,8 @@ function lotOf(version: string, members: Fiche[], tags: ReadonlySet<string>): Ve
     blocked: todo.filter((f) => f.blocked !== ''),
     intruders,
     releaseTag,
+    frozen: freezeTag !== undefined && releaseTag === undefined,
+    freezeTag,
   };
 }
 

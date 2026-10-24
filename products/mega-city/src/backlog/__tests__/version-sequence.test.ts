@@ -13,6 +13,7 @@ const lot = (version: string, todoCount: number, releaseTag?: string): VersionLo
   ready: [],
   blocked: [],
   intruders: [],
+  frozen: false,
   ...(releaseTag !== undefined ? { releaseTag } : {}),
 });
 

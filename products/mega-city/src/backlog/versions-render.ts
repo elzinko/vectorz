@@ -3,6 +3,7 @@
  * PUR : des lignes en entrée de `console.log`, « En clair » toujours en tête (règle de lisibilité).
  */
 import {
+  type FrozenDiff,
   type VersionFinding,
   type VersionState,
   type VersionsReport,
@@ -53,12 +54,17 @@ export function renderVersionList(report: VersionsReport): string[] {
   // La version ACTIVE du tirage (ADR-0070) = la plus basse non taguée qui a du travail — le 1er lot
   // `en-cours` dans l'ordre naturel. Elle porte « active » ; les autres lots incomplets, « incomplète ».
   const activeVersion = report.lots.find((l) => l.state === 'en-cours')?.version;
-  const stateCell = (l: (typeof report.lots)[number]): string => {
+  const completeness = (l: (typeof report.lots)[number]): string => {
     // `livree` implique `releaseTag` défini ; le `??` garde le type optionnel total sans `!` non sûr.
     if (l.state === 'livree') return `${STATE_LABEL[l.state]} (${l.releaseTag ?? proposedTagOf(l.version)})`;
     if (l.state === 'en-cours') return l.version === activeVersion ? 'active (tirage)' : STATE_LABEL['en-cours'];
     return STATE_LABEL[l.state];
   };
+  // Cycle de vie (fiche 20261014200651962) : le gel est un marqueur PARALLÈLE, appondu à l'état de
+  // complétude. Une version sortie est déjà « livrée » (lifecycle livrée), jamais re-marquée « figée ».
+  const stateCell = (l: (typeof report.lots)[number]): string =>
+    l.frozen ? `${completeness(l)} · figée` : completeness(l);
+  const anyFrozen = report.lots.some((l) => l.frozen);
   const rows = report.lots.map((l) => [
     l.version,
     String(l.shipped.length + l.todo.length),
@@ -73,6 +79,9 @@ export function renderVersionList(report: VersionsReport): string[] {
     intro,
     '',
     ...table(['Version', 'Fiches', 'Livrées', 'À faire', 'Prêtes', 'Bloquées', 'Intrus', 'État'], rows),
+    ...(anyFrozen
+      ? ['', 'Cycle de vie : brouillon (par défaut) → figée (périmètre photographié, tag freeze/…) → livrée (étiquette de release).']
+      : []),
   ];
 }
 
@@ -94,6 +103,25 @@ export function renderFindings(findings: readonly VersionFinding[], scope: strin
     '',
     "Dépendances (`depends:`) : lues et vérifiées en avertissement (une fiche placée avant une dépendance non livrée) ; un cycle est refusé. Un signal, pas un barrage (ADR-0081).",
   ];
+}
+
+/** La dérive depuis le gel : la base photographiée, et ce qui a bougé (fiche 20261014200651962). */
+export function renderFrozenDiff(version: string, freezeTag: string, diff: FrozenDiff): string[] {
+  const drift = diff.ajouts.length + diff.retires.length;
+  const intro =
+    drift === 0
+      ? `En clair : ${version} est figée (${freezeTag}) et n'a pas bougé : ${diff.base.length} fiche(s), aucun ajout, aucun retrait.`
+      : `En clair : ${version} est figée (${freezeTag}) ; ${diff.ajouts.length} ajout(s) et ${diff.retires.length} retrait(s) depuis le gel.`;
+  const lines: string[] = [];
+  if (diff.ajouts.length > 0) {
+    lines.push('', 'Ajouts depuis le gel (complétude : fix, dépendances, dette) :');
+    for (const id of diff.ajouts) lines.push(`  + ${id}`);
+  }
+  if (diff.retires.length > 0) {
+    lines.push('', 'Retirés depuis le gel (sortis du périmètre) :');
+    for (const id of diff.retires) lines.push(`  - ${id}`);
+  }
+  return [intro, ...lines];
 }
 
 /** La clôture refusée : ce qui reste, en clair. */
