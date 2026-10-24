@@ -1,9 +1,45 @@
-import { readFileSync } from 'node:fs';
+import { closeSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { findTranscriptFiles } from '../../supervision/analyze.js';
 import type { TranscriptSource, TranscriptSourceOptions, UsageEvent } from '../ports/TranscriptSource.js';
 
 function numberOr0(v: unknown): number {
   return typeof v === 'number' && Number.isFinite(v) ? v : 0;
+}
+
+/**
+ * CŒUR PUR — un fichier peut-il être SAUTÉ sans risque, parce que son intervalle ne chevauche pas la
+ * fenêtre ? `mtimeMs` (dernière modif ≈ dernier évènement) et `firstTs` (1er évènement, lu à bas coût)
+ * bornent l'intervalle. On ne saute QUE si tout est avant (mtime < début) ou tout après (1er > fin) :
+ * jamais un fichier qui pourrait porter un évènement dans la fenêtre (fiche 20261013143324505, AC fenêtre).
+ */
+export function fileOutsideWindow(
+  firstTs: string | undefined,
+  mtimeMs: number,
+  window: { startTs: string; endTs: string },
+): boolean {
+  const start = Date.parse(window.startTs);
+  const end = Date.parse(window.endTs);
+  if (Number.isFinite(mtimeMs) && Number.isFinite(start) && mtimeMs < start) return true; // tout avant
+  if (firstTs) {
+    const f = Date.parse(firstTs);
+    if (Number.isFinite(f) && Number.isFinite(end) && f > end) return true; // tout après
+  }
+  return false;
+}
+
+/** Lit à bas coût (8 Ko) le 1er horodatage d'un transcript, pour borner son intervalle sans le parser. */
+function peekFirstTs(file: string): string | undefined {
+  let fd: number | undefined;
+  try {
+    fd = openSync(file, 'r');
+    const buf = Buffer.alloc(8192);
+    const n = readSync(fd, buf, 0, 8192, 0);
+    return buf.toString('utf8', 0, n).match(/"timestamp":"([^"]+)"/)?.[1];
+  } catch {
+    return undefined;
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
 }
 
 /**
@@ -18,7 +54,17 @@ function numberOr0(v: unknown): number {
 export class ClaudeCodeTranscriptSource implements TranscriptSource {
   listUsageEvents(projectRoot: string, options: TranscriptSourceOptions = {}): UsageEvent[] {
     const events: UsageEvent[] = [];
+    const window = options.window;
     for (const file of findTranscriptFiles(projectRoot, options)) {
+      if (window) {
+        let mtimeMs = Number.NaN;
+        try {
+          mtimeMs = statSync(file).mtimeMs;
+        } catch {
+          // stat impossible → on ne saute pas (on lira le fichier, comportement d'avant)
+        }
+        if (fileOutsideWindow(peekFirstTs(file), mtimeMs, window)) continue; // hors fenêtre → pas de lecture complète
+      }
       const raw = readFileSync(file, 'utf8');
       for (const line of raw.split('\n')) {
         if (!line.includes('"usage"')) continue;

@@ -6,6 +6,27 @@ import { githubCapabilities } from '../../loaders/project-config.js';
 
 const AGENT_BRANCH_PATTERN = /^(claude|feat|fix|docs|chore|refactor)\//;
 
+/**
+ * CŒUR PUR — parse `git log --diff-filter=A --format=%cI --name-only -- features/done/` en
+ * { chemin → date du PLUS ANCIEN ajout } (= date de ship). git liste du plus récent au plus ancien, donc
+ * on écrase à chaque occurrence pour garder la plus ancienne — équivaut à l'ancien `.at(-1)`, mais en
+ * UN SEUL `git log` au lieu d'un par fiche (fiche 20261013143324505 : le vrai coût du chemin daté).
+ */
+export function parseShipDates(gitLogOutput: string): Map<string, string> {
+  const map = new Map<string, string>();
+  let date = '';
+  for (const raw of gitLogOutput.split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (/^\d{4}-\d{2}-\d{2}T/.test(line)) {
+      date = line;
+      continue;
+    }
+    if (date) map.set(line, date); // ligne `--name-only` (chemin) ; écrase → garde la plus ancienne
+  }
+  return map;
+}
+
 /** Lanceur `gh` injectable : permet de prouver, en test, que la garde github:false ne touche pas au réseau. */
 export type GhRunner = (repoRoot: string, args: string[]) => string;
 const defaultGhRunner: GhRunner = (repoRoot, args) =>
@@ -47,9 +68,21 @@ export class GitGhRepoSource implements RepoSource {
     return shipDate || undefined;
   }
 
+  /** Les dates de ship de TOUT `features/done/` en un seul `git log` (au lieu d'un par fiche). Best-effort. */
+  private shipDatesFromLog(repoRoot: string): Map<string, string> {
+    try {
+      return parseShipDates(
+        this.git(repoRoot, ['log', '--diff-filter=A', '--format=%cI', '--name-only', '--', 'features/done/']),
+      );
+    } catch {
+      return new Map();
+    }
+  }
+
   listShippedFiches(repoRoot: string): ShippedFicheRecord[] {
     const doneDir = join(repoRoot, 'features', 'done');
     if (!existsSync(doneDir)) return [];
+    const shipDates = this.shipDatesFromLog(repoRoot); // UN git log pour tout done/, pas un par fiche
     return readdirSync(doneDir)
       .filter((f) => f.endsWith('.md'))
       .map((f) => {
@@ -57,12 +90,13 @@ export class GitGhRepoSource implements RepoSource {
         const content = readFileSync(join(doneDir, f), 'utf8');
         const id = /^id:\s*"?(\S+?)"?\s*$/m.exec(content)?.[1] ?? f;
         const status = /^status:\s*"?([^"\s#]+)/m.exec(content)?.[1] ?? '';
-        return { id, status, mergedAt: this.ficheMergedAt(repoRoot, relPath) };
+        return { id, status, relPath };
       })
       // Vélocité = fiches réellement LIVRÉES. Une fiche `superseded` (clôturée sans
       // livraison) vit aussi dans done/ mais ne compte pas — idem futurs `merged`/`split`.
       .filter((r) => r.status === 'shipped')
-      .map((r) => ({ id: r.id, mergedAt: r.mergedAt }));
+      // Fallback par fiche (git log unitaire) seulement pour un `shipped` absent du lot — rare, jamais 313 spawns.
+      .map((r) => ({ id: r.id, mergedAt: shipDates.get(r.relPath) ?? this.ficheMergedAt(repoRoot, r.relPath) }));
   }
 
   listMergedPrs(repoRoot: string, sinceIso?: string): MergedPrRecord[] {

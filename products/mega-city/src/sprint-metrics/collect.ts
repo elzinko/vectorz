@@ -80,7 +80,10 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
   }
 
   const tokens = {
-    ...attributeTokens(ports.transcript.listUsageEvents(input.projectRoot, input.transcriptOptions), window),
+    ...attributeTokens(
+      ports.transcript.listUsageEvents(input.projectRoot, { ...input.transcriptOptions, window }),
+      window,
+    ),
     mode: input.reviewMode, // mode DÉDUIT au rapport (fiche 20261017110956989) — l'attribution reste pure
   };
   const blockages = summarizeBlockages(ports.journal.listBlockedEscalations(input.projectRoot), window);

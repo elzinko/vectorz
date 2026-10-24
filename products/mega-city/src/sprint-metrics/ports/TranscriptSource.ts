@@ -15,6 +15,8 @@ export interface TranscriptSourceOptions {
   claudeProjectsDir?: string;
   /** Fichier transcript explicite (tests / `--transcript`), contourne la résolution par slug. */
   transcript?: string;
+  /** Fenêtre du sprint : les fichiers dont l'intervalle ne la chevauche pas sont sautés sans lecture complète (perf). */
+  window?: { startTs: string; endTs: string };
 }
 
 export interface TranscriptSource {
