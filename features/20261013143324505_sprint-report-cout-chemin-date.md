@@ -69,3 +69,11 @@ après. Cible : le chemin daté tient sous ~10 s sur vectorz (49 runs).
 - **RESTE (fiche pas close) :** AC « scan borné à la fenêtre » (passer la fenêtre à `listMergedPrs` +
   filtrer les transcripts en amont) et AC « < 10 s sur vectorz » — cette dernière **non mesurable** sans
   un run daté portant un gate de supervision. La fiche reste `ready`, partiellement entamée.
+
+- **AC « scan borné à la fenêtre » LIVRÉE et testée (2026-10-24).** `listMergedPrs(root, sinceIso?)`
+  ajoute `--search "merged:>=<jour>"` à la requête `gh` (borne basse = début de la fenêtre du sprint,
+  `window.startTs`) au lieu de lister tout l'historique ; le filtre précis par timestamp reste en aval,
+  donc **résultats inchangés, requête bornée**. Testé (args `gh` portent la borne). **Il ne reste que
+  l'AC « < 10 s sur vectorz »** — une **mesure**, pas un build : elle exige un run daté portant un gate de
+  supervision (le `sprint:report` daté), qu'on ne peut pas fabriquer ici. 2 des 3 AC construites et testées ;
+  la fiche reste `ready` jusqu'à cette mesure.
