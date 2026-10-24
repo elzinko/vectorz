@@ -87,3 +87,15 @@ gh api /repos/elzinko/samplerz/actions/billing/usage # (ou le tableau billing)
 - Première implémentation : samplerz (le pipeline de signature y est prouvé).
 - Déclencheur : demande PO 2026-10-02 — « faire le max en local pendant les sprints de nuit pour
   économiser les minutes GitHub ».
+
+## Décision (2026-10-24, run autonome) — reste `idea`, pas tirable seule
+
+Deux raisons **factuelles**, pas un report vague :
+
+1. **Dépendance parkée.** La proposition s'appuie sur `ezk-secret sync` / `ezk-secret apply` (creds R2
+   depuis le trousseau) — **tous deux `milestone: parked`** par le PO. On ne groome pas une fiche
+   tirable par-dessus une dépendance que le PO a mise en sommeil.
+2. **Choix d'infra + argent.** Signer/notariser engage l'**identité de signature** et le **compte
+   Apple Developer** (coût annuel, credentials) : décision du PO, hors autonomie.
+
+Geste qui la débloque : dé-parker `ezk-secret`, ou valider l'infra de release. Jusque-là, `idea` assumé.

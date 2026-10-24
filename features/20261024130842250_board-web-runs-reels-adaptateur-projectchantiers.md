@@ -93,3 +93,11 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
     Une fois ces champs émis, l'adaptateur `ChantierProjection → BoardRun/BoardChantier/TimelineEvent`
     devient direct et prouvable. En attendant, `BoardProject.runs` reste `{}` (aucun faux run), ce qui est
     le comportement honnête déjà en place.
+
+- **Précision (2026-10-24) — l'émetteur n'est PAS à créer, il est shippé.** La fiche
+  [émetteur clé de chantier](done/20261015133600328_emetteur-cle-de-chantier.md) est livrée : l'émetteur
+  SAIT écrire la clé. Le blocage est à l'**usage** : les runs réels de vectorz sont mono-session et n'en
+  posent pas (0 clé chantier, même sur les journaux contrat v0.2 du 17/10), et les payloads restent
+  minces (ni moments, ni verdict, ni jetons). Donc **aucune fiche émetteur à créer** (ce serait un
+  doublon) : il faut que de vrais runs multi-sessions posent la clé ET des payloads enrichis avant que
+  l'adaptateur montre du réel. C'est un blocage de **donnée vécue**, pas de code manquant.
