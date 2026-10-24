@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, backlog, cop1]
-status: ready
-pr:
+status: shipped
+pr: "local (d4d748c5)"
 evidence: before-after
 created: 2026-10-24
 split_from: "20261018121537582"
@@ -27,7 +27,7 @@ propre à cop1** (recopié léger), et le branche dans l'endpoint du tuyau.
 
 ## Contexte / Problème
 
-2e des 3 sœurs de [brancher le board sur les vraies données](done/20261018121537582_brancher-board-web-vraies-donnees.md).
+2e des 3 sœurs de [brancher le board sur les vraies données](20261018121537582_brancher-board-web-vraies-donnees.md).
 L'ancien board calcule le plan dans **mega-city** (`loadFiches` + `readPlan`) — import interdit à cop1
 (ADR-021). cop1 a déjà fait ce genre de recopie léger pour l'énumérateur de worktrees (ADR-079 §D9,
 précédent `registry.ts`). Il manque l'équivalent pour le backlog.
@@ -61,10 +61,10 @@ rg -n "mega-city" products/cop1/packages/<pkg-du-lecteur>/src   # attendu : aucu
 
 ## Notes / décisions
 
-- Sœur de [board-web (fiche source)](done/20261018121537582_brancher-board-web-vraies-donnees.md),
+- Sœur de [board-web (fiche source)](20261018121537582_brancher-board-web-vraies-donnees.md),
   découpée au grooming (2026-10-24). Contrat :
-  [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; cop1-local :
-  [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9 ; frontière cop1↔mega-city :
+  [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; cop1-local :
+  [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D9 ; frontière cop1↔mega-city :
   ADR-021 ; maquette validée en v0.17/v0.18.
 - **Dépend de la sœur 1** (le tuyau + l'endpoint) : elle branche la source dans le chemin déjà posé.
 
