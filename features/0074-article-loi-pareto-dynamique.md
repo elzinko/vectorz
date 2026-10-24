@@ -1,6 +1,6 @@
 ---
 id: 0074
-title: article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve)
+title: "article — la loi de Pareto dynamique (rollout à curseur : mesurer d'abord, détailler sur preuve)"
 type: feature
 priority: P3
 product: mega-city

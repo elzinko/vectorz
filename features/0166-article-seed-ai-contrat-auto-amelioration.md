@@ -1,6 +1,6 @@
 ---
 id: 0166
-title: article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère »
+title: "article — « Seed AI d'équipe : un contrat d'auto-amélioration auquel la méthode adhère »"
 type: feature
 priority: P2
 product: mega-city

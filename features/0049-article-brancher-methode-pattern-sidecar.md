@@ -1,6 +1,6 @@
 ---
 id: 0049
-title: article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD)
+title: "article — « Brancher une méthode qu'on ne possède pas : le pattern sidecar » (ADR-032, cas BMAD)"
 type: feature
 priority: P3
 product: vectorz

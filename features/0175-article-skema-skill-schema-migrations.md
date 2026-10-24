@@ -1,6 +1,6 @@
 ---
 id: 0175
-title: article — Skema : versionner une skill LLM avec des migrations markdown
+title: "article — Skema : versionner une skill LLM avec des migrations markdown"
 type: feature
 priority: P2
 product: mega-city
