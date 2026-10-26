@@ -80,3 +80,11 @@ cd products/mega-city && pnpm ezk dor check 20261002155911271
   de cette fiche, côté **donnée émise** plutôt que surface de code. Renforce la voie (a) : la DoR d'un
   **read-model** devrait confronter au réel la donnée qu'il prétend afficher, pas seulement les surfaces
   de code citées. (Capture : `docs/captures/2026-10-24-retro-board-build-light.md`.)
+
+- **Nouveau cas daté (2026-10-26, rétro ADR-084) — le caveat en note libre, invisible à l'intake.** La
+  même fiche [runs réels](done/20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
+  portait aussi « réservé panel/maquette, pas d'autonomie hands-off » en **note libre** : l'intake, qui
+  n'écarte que sur le champ `blocked:`, ne l'a pas vu — le caveat n'a surfacé qu'en pleine construction.
+  **Facette à trancher au panel** : un **champ structuré** « réservé / needs-design » (comme `blocked:`),
+  lu par l'intake AVANT le build, plutôt qu'une phrase que personne ne lit. (Capture :
+  `docs/captures/2026-10-26-retro-session-adr084-board.md`.)

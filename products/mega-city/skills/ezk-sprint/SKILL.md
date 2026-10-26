@@ -126,6 +126,11 @@ Ne supprime jamais `SPRINT.md` pour sortir d'une impasse : tu perdrais le labo, 
 
 Les sous-agents de rôle dédiés (bindés par les profils) :
 
+> **Repli desktop.** Dans l'app Claude Code, ces sous-agents de rôle ne sont **pas bindables** : la
+> revue et les étapes déléguées retombent sur un agent `general-purpose` (nourri du contexte) ou sur
+> le PO, **jamais en silence** — on nomme le remplacement, et une revue ainsi faite n'est pas
+> `ezk-reviewer` (rétro 2026-10-26).
+
 | Rôle | Sous-agent | Quand |
 | --- | --- | --- |
 | Architecte | `ezk-architect` | décision de conception non triviale (clean arch / SOLID / ADR) |

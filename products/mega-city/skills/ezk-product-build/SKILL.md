@@ -294,6 +294,13 @@ tokens · idée produit sur backlog vide · exigences contradictoires.
 contexte bindé**, l'arrêt délégable retombe en `manuel` — jamais d'improvisation. (`ezk-pm`
 est dans le profil `global` ; vérifie sa présence avant de compter dessus.)
 
+**Repli desktop (nommé, jamais silencieux).** Dans l'app Claude Code (desktop), les agents de rôle
+(`ezk-dev`/`ezk-qa`/`ezk-reviewer`/`ezk-pm`/`ezk-architect`) ne sont **pas bindables** comme personas.
+Pour une **revue ou un panel**, un agent `general-purpose` nourri du contexte complet est le repli
+**assumé** — mais il PERD la persona de rôle : **dis-le** (« revue par un agent générique, pas par
+`ezk-reviewer` »). Pour une **décision** délégable, le repli reste le PO (`manuel`), jamais un
+générique. On nomme toujours le remplacement (rétro 2026-10-26).
+
 **Le décideur, c'est `ezk-pm`** : en `auto` tu lui confies les arbitrages de checkpoint —
 tu composes son jugement, tu ne le réimplémentes pas (même doctrine que pour les 3 autres
 compétences).

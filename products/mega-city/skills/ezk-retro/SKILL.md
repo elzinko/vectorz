@@ -121,6 +121,12 @@ référence pas tant qu'il n'est pas dans `global.yml`). **Deux tours :**
 - *Option : tirer l'**ordre** des agents au sort pour couper l'effet d'ancrage du premier qui
   parle (l'ordre est déterministe par défaut — petit ajout).*
 
+> **Repli desktop.** Dans l'app Claude Code, ces agents de rôle ne sont **pas bindables** : les
+> lentilles sont alors portées par l'orchestrateur (ou des agents `general-purpose`) depuis le
+> contexte, **pas** par des sous-agents indépendants. L'indépendance du round-robin en souffre — on
+> le **nomme dans la capture** (« round-robin dégradé »), jamais en silence, et le PO en tient compte
+> (rétro 2026-10-26).
+
 ### 3. Sortie typée — *soudure 1 (suite) : ce qui sort de la cérémonie*
 Chaque proposition retenue est **rattachée à un symptôme** et **porte un critère mesurable**,
 et tombe dans **une** catégorie :
