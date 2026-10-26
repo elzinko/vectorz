@@ -317,7 +317,11 @@ Si les outils MCP d'émission (`run_start`, `gate_reached`, `gate_resumed`, `esc
 bruit** :
 
 - **À l'ouverture du sprint (`start`, étape 0)** : `run_start {method_name: "ezk-sprint", method_version:
-  <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human"}`.
+  <version du catalogue mega-city (package.json), à défaut le SHA court>, seat: "human", version: <la
+  version du lot (frontmatter `version:` des fiches, ex. "v0.23.0")>, milestone: <le milestone du lot
+  (frontmatter `milestone:`), s'il existe>}`. **`version`/`milestone` posent la clé de chantier** qui
+  réunit les runs d'un même travail côté board — l'émetteur la dérive ; sans elles, aucun run n'est
+  regroupable (fiche 20261026095125469, ADR-084 G5).
   **Retiens le `run_id` rendu** : `run_finished` l'exige pour ne fermer QUE ton run, et non celui
   d'une autre session (fiche 20261002133125444). Passe-le aussi à `gate_reached`/`heartbeat` si tu veux
   qu'ils refusent un run qui n'est pas le tien.

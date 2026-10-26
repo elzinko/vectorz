@@ -34,7 +34,9 @@ dans le contexte : **STOP** — explique la config manquante, n'émets rien.
 ## Le déroulé (strict, 2 gates)
 
 1. **`run_start`** `{method_name: "supervision-demo", method_version: "0.1.0",
-   seat: "human"}` — annonce le run. Montre à l'utilisateur le `run_id` retourné,
+   seat: "human", version: "v0.0.0-demo", milestone: "demo"}` — annonce le run.
+   **`version`/`milestone` posent la clé de chantier** : le jouet exerce donc le regroupement
+   board aussi (fiche 20261026095125469, ADR-084 G5). Montre à l'utilisateur le `run_id` retourné,
    et **garde-le** : `run_finished` l'exige pour ne fermer que ce run (fiche 20261002133125444).
 2. **Étape 1 (travail simulé)** : produis 3-5 lignes sur le sujet donné en argument
    (n'importe quoi de plausible — c'est un jouet). Émets un **`heartbeat`**

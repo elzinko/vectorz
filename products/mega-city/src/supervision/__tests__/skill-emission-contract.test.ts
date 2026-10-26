@@ -87,6 +87,27 @@ function mentionsAbsorptionRule(content: string): boolean {
   return /absorb/i.test(content);
 }
 
+/**
+ * Extrait le PAYLOAD `{…}` équilibré de la consigne `run_start` d'une skill — le bloc qui
+ * contient `method_name: "<id>"`. Isole les VRAIS arguments de la prose d'explication autour
+ * (fiche 20261026095125469, revue : une fenêtre de chars attrapait le texte, pas la structure).
+ */
+function runStartPayload(content: string, id: string): string {
+  const anchor = content.indexOf(`method_name: "${id}"`);
+  if (anchor < 0) return '';
+  const open = content.lastIndexOf('{', anchor);
+  if (open < 0) return '';
+  let depth = 0;
+  for (let i = open; i < content.length; i += 1) {
+    if (content[i] === '{') depth += 1;
+    else if (content[i] === '}') {
+      depth -= 1;
+      if (depth === 0) return content.slice(open, i + 1);
+    }
+  }
+  return '';
+}
+
 /** ids des skills listées dans le tableau « Méthodes réelles intégrées » du kit. */
 function skillsDocumenteesDansLeKit(): Set<string> {
   const ids = new Set<string>();
@@ -136,6 +157,27 @@ describe("contrat d'émission de supervisabilité (fiche 0050) — non-récidive
           ).toBeGreaterThanOrEqual(2);
         },
       );
+
+      it('tamponne la clé de chantier dans son run_start (version + milestone) — ADR-084 G5', () => {
+        // Fiche 20261026095125469 : sans version/milestone, l'émetteur ne dérive aucune clé de
+        // chantier, et `projectChantiers` ignore tous les journaux (0/55 constaté le 2026-10-24).
+        // On exige que la consigne run_start NOMME les deux coordonnées, pas seulement
+        // method_name/seat. Ce n'est pas un parseur complet — c'est un pas sur le trou nommé en
+        // tête de fichier (finding b : compter ne vérifie pas la structure).
+        const payload = runStartPayload(skillContent(id), id);
+        expect(
+          payload,
+          `\`${id}\`/SKILL.md : aucune consigne run_start avec method_name: "${id}"`,
+        ).not.toBe('');
+        expect(
+          /\bmilestone\s*:/.test(payload),
+          `\`${id}\`/SKILL.md : le payload run_start ne transmet pas \`milestone\` (clé de chantier, ADR-084 G5)`,
+        ).toBe(true);
+        expect(
+          /[^_]version\s*:/.test(payload),
+          `\`${id}\`/SKILL.md : le payload run_start ne transmet pas la coordonnée \`version\` (distincte de method_version)`,
+        ).toBe(true);
+      });
 
       if (requiresAbsorptionRule) {
         it("énonce la règle d'absorption (run déjà ouvert = pas de nouveau run)", () => {

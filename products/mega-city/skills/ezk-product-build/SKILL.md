@@ -524,8 +524,11 @@ bruit** :
 
 - **Au lancement d'un `run` (y compris `--once`) — UNE fois par session, pas à chaque tour de
   boucle** : `run_start {method_name: "ezk-product-build", method_version: <version du
-  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human", params: {mode, review,
-  maxSprints, tokens}}`. Les **paramètres retenus** du run (fiche 20260906142654370) sont transportés
+  catalogue mega-city (package.json), à défaut le SHA court>, seat: "human", version: <la version en
+  cours du run (celle du lot tiré, ex. "v0.23.0")>, milestone: <le milestone en cours, s'il existe>,
+  params: {mode, review, maxSprints, tokens}}`. **`version`/`milestone` posent la clé de chantier** :
+  l'émetteur la dérive, et sans elles le board ne peut réunir aucun run (fiche 20261026095125469,
+  ADR-084 G5). Les **paramètres retenus** du run (fiche 20260906142654370) sont transportés
   dans le payload pour que cop1 affiche « ce qui a été lancé et comment » ; omets un champ que tu n'as
   pas (le journal tolère l'absence). Si l'outil refuse `params` (émetteur plus ancien), réémets sans :
   c'est best-effort, jamais un blocage.
