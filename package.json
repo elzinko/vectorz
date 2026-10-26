@@ -21,6 +21,7 @@
     "outcomes:measure": "pnpm --dir products/mega-city exec tsx ../../tools/outcomes/cli.ts",
     "ezk": "pnpm --dir products/mega-city ezk",
     "ezk:map": "pnpm --dir products/mega-city ezk:map",
+    "dev": "bash scripts/cop1-dev.sh",
     "cop1:dev": "bash scripts/cop1-dev.sh",
     "dev:branch": "bash scripts/dev-branch.sh"
   },

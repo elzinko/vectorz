@@ -5,8 +5,9 @@
 # le daemon, on n'a plus le piège « échantillon · live indisponible » du démarrage
 # (le web qui charge avant que le daemon réponde, reste collé sur le décor figé).
 #
-# Usage :  pnpm cop1:dev            # build + daemon + web
-#          pnpm cop1:dev --no-build # saute la compilation (daemon + web seulement)
+# Usage :  pnpm dev                 # (= pnpm cop1:dev) build + daemon + web
+#          pnpm dev --no-build      # saute la compilation (daemon + web seulement)
+# `dev` = le dashboard cop1 (l'app principale) ; `cop1:dev` est l'alias explicite.
 #
 # Ports réglables (défauts choisis HORS des ports de muti, 5173) :
 #   COP1_DAEMON_PORT   (défaut 4343)  — le daemon qui sert /api/board
