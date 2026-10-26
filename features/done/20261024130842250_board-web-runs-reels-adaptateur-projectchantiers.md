@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, cop1]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local 9a013909"
 evidence: before-after
 created: 2026-10-24
 split_from: "20261018121537582"
@@ -28,7 +28,7 @@ de types qui ne se mappent pas 1:1.
 
 ## Contexte / Problème
 
-3e des 3 sœurs de [brancher le board sur les vraies données](done/20261018121537582_brancher-board-web-vraies-donnees.md).
+3e des 3 sœurs de [brancher le board sur les vraies données](20261018121537582_brancher-board-web-vraies-donnees.md).
 La couche de lecture live existe (`projectChantiers`, v0.18) mais **personne ne l'appelle** hors tests.
 Il manque l'adaptateur `ChantierProjection[]` / `RunProjection` → `BoardProject` / `BoardChantier` /
 `BoardRun`, et les trois mappings de types nommés dans la fiche source.
@@ -64,10 +64,10 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
 
 ## Notes / décisions
 
-- Sœur de [board-web (fiche source)](done/20261018121537582_brancher-board-web-vraies-donnees.md),
+- Sœur de [board-web (fiche source)](20261018121537582_brancher-board-web-vraies-donnees.md),
   découpée au grooming (2026-10-24). Contrat :
-  [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; read-model et
-  garde tokens : [ADR-079](../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8/D9 ;
+  [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) ; read-model et
+  garde tokens : [ADR-079](../../docs/adr/ADR-079-run-et-session-deux-entites-multi-llm.md) §D8/D9 ;
   `projectChantiers` livré en v0.18 ; maquette validée en v0.17/v0.18.
 - **Dépend de la sœur 1** (le tuyau) et de `projectChantiers` (déjà livré).
 
@@ -99,14 +99,14 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
     le comportement honnête déjà en place.
 
 - **Précision (2026-10-24) — l'émetteur n'est PAS à créer, il est shippé.** La fiche
-  [émetteur clé de chantier](done/20261015133600328_emetteur-cle-de-chantier.md) est livrée : l'émetteur
+  [émetteur clé de chantier](20261015133600328_emetteur-cle-de-chantier.md) est livrée : l'émetteur
   SAIT écrire la clé. Le blocage est à l'**usage** : les runs réels de vectorz sont mono-session et n'en
   posent pas (0 clé chantier, même sur les journaux contrat v0.2 du 17/10), et les payloads restent
   minces (ni moments, ni verdict, ni jetons). Donc **aucune fiche émetteur à créer** (ce serait un
   doublon) : il faut que de vrais runs multi-sessions posent la clé ET des payloads enrichis avant que
   l'adaptateur montre du réel. C'est un blocage de **donnée vécue**, pas de code manquant.
 
-- **Livré (2026-10-26, v0.24.0) — vue MINCE, débloquée par [ADR-084 G5](../docs/adr/ADR-084-surface-emission-declaree-et-moments.md).**
+- **Livré (2026-10-26, v0.24.0) — vue MINCE, débloquée par [ADR-084 G5](../../docs/adr/ADR-084-surface-emission-declaree-et-moments.md).**
   Adaptateur `projectChantiers → runs/chantiers/timeline`
   (`products/cop1/packages/app/src/features/board/chantierAdapter.ts`), branché dans `boardProvider`,
   testé sur fixtures + revue adverse (GO, réserves appliquées : ordre récent-d'abord, badge branche,

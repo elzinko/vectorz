@@ -76,7 +76,7 @@ pnpm --dir products/mega-city exec vitest run src/supervision/__tests__/skill-em
   seul geste validé à l'unanimité par le panel adverse (contrat/gel, QA, PM) — les deux autres
   gestes (arête de graphe `emits`, moment `fiche.transition`) ont été écartés ou différés.
 - **Débloque** la fiche
-  [board web — les runs réels](../20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
+  [board web — les runs réels](20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
   côté **donnée amont** : une fois la clé posée, l'adaptateur de cette fiche a de quoi réunir. Les
   **moments** de fiche (transitions) restent **différés** (G4 de l'ADR-084, NO-GO en l'état).
 - `status: ready` posé sur **direction explicite du PO** (2026-10-26) + l'ADR-084 panel-revu comme
