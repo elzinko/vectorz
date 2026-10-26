@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version: "v0.23.0"
 labels: [supervision, emetteur, board, cop1]
-status: ready
-pr:
+status: shipped
+pr: "local a117a666"
 evidence: none # tuyauterie d'émission ; prouvée par le test-garde + le journal d'un run réel
 created: 2026-10-26
 ---
@@ -39,7 +39,7 @@ journaux**, et la vue des runs du board n'a rien à afficher. Or tout est câbl�
 Le seul trou : les **4 skills émetteurs** (`ezk-sprint`, `ezk-product-build`, `vz-product-builder`,
 `supervision-demo`) appellent `run_start` **sans** `version` ni `milestone`. C'est un manque
 d'**usage**, pas de code. Tranché par le panel adverse de
-[ADR-084](../docs/adr/ADR-084-surface-emission-declaree-et-moments.md) (décision **G5**, verdict
+[ADR-084](../../docs/adr/ADR-084-surface-emission-declaree-et-moments.md) (décision **G5**, verdict
 unanime : seul geste sûr, **zéro contrat**).
 
 ## Proposition
@@ -72,11 +72,11 @@ pnpm --dir products/mega-city exec vitest run src/supervision/__tests__/skill-em
 
 ## Notes / décisions
 
-- Issue de la décision **G5** de [ADR-084](../docs/adr/ADR-084-surface-emission-declaree-et-moments.md),
+- Issue de la décision **G5** de [ADR-084](../../docs/adr/ADR-084-surface-emission-declaree-et-moments.md),
   seul geste validé à l'unanimité par le panel adverse (contrat/gel, QA, PM) — les deux autres
   gestes (arête de graphe `emits`, moment `fiche.transition`) ont été écartés ou différés.
 - **Débloque** la fiche
-  [board web — les runs réels](20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
+  [board web — les runs réels](../20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
   côté **donnée amont** : une fois la clé posée, l'adaptateur de cette fiche a de quoi réunir. Les
   **moments** de fiche (transitions) restent **différés** (G4 de l'ADR-084, NO-GO en l'état).
 - `status: ready` posé sur **direction explicite du PO** (2026-10-26) + l'ADR-084 panel-revu comme
