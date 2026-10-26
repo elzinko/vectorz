@@ -8,7 +8,7 @@ milestone: board
 version: "v0.24.0"
 labels: [dashboard, board, read-model, supervision, cop1]
 status: ready
-blocked: "attend-dépendance — journaux de run sans clé chantier ni moments/verdict (0/55) ; dépend d'un enrichissement amont de l'émetteur de supervision"
+blocked:
 pr:
 evidence: before-after
 created: 2026-10-24
@@ -44,11 +44,15 @@ Il manque l'adaptateur `ChantierProjection[]` / `RunProjection` → `BoardProjec
 
 ## Critères d'acceptation
 
-- [ ] Le board affiche les **vrais runs** : runs, chantiers et chronologie tirés de `projectChantiers`,
-      nom de session réel, moments réels — aucun texte inventé.
-- [ ] Les **tokens absents** s'affichent comme une absence explicite et justifiée, pas comme un faux chiffre.
-- [ ] Les trois mappings de types sont couverts (cycle de vie → état ; évènements → moments → transitions ; tokens honnêtes).
-- [ ] Preuve **avant / après** en PR : part runs sur échantillon → part runs sur le vrai journal d'un projet réel.
+- [x] Le board affiche les **vrais runs** : runs, chantiers et chronologie (lancement, jalons) tirés de
+      `projectChantiers`, nom de session/branche réel — aucun texte inventé. **Moments de fiche différés**
+      (le journal ne les émet pas ; ADR-084 G4).
+- [x] Les **tokens absents** s'affichent comme une absence explicite et justifiée, pas comme un faux chiffre.
+- [x] Mappings couverts : cycle de vie → état ; évènements → fil (lancement/gate) ; tokens honnêtes. La
+      branche évènements → **transitions de fiche** reste différée (aucun évènement `fiche.transition`).
+- [x] Preuve **avant / après** : vérifiée sur **fixtures** (test) et sur un run keyé réel (ce run,
+      `board:v0.24.0`) ; le vrai backlog d'avant G5 reste vide (journaux sans clé) — se remplit avec les
+      runs keyés à venir.
 
 ## Comment vérifier
 
@@ -101,3 +105,12 @@ pnpm --dir products/cop1/packages/web build && pnpm --dir products/cop1/packages
   minces (ni moments, ni verdict, ni jetons). Donc **aucune fiche émetteur à créer** (ce serait un
   doublon) : il faut que de vrais runs multi-sessions posent la clé ET des payloads enrichis avant que
   l'adaptateur montre du réel. C'est un blocage de **donnée vécue**, pas de code manquant.
+
+- **Livré (2026-10-26, v0.24.0) — vue MINCE, débloquée par [ADR-084 G5](../docs/adr/ADR-084-surface-emission-declaree-et-moments.md).**
+  Adaptateur `projectChantiers → runs/chantiers/timeline`
+  (`products/cop1/packages/app/src/features/board/chantierAdapter.ts`), branché dans `boardProvider`,
+  testé sur fixtures + revue adverse (GO, réserves appliquées : ordre récent-d'abord, badge branche,
+  borne de récence). Vue **fidèle mais mince** : les **moments de fiche, jetons et verdicts restent
+  absents** tant que le journal ne les émet pas — jamais un faux chiffre. État vide honnête sur les
+  journaux d'avant G5. **Enrichissement = fiche future** : émettre `fiche.transition` (moments) + les
+  jetons, puis remplir `LiveRun.moments`/`tok`.

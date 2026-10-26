@@ -12,8 +12,12 @@
  * `composeBoardData`, `readTags`) = lecture du backlog + des étiquettes git.
  */
 import { execFileSync } from 'node:child_process';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { projectChantiers, type ChantierInput } from '@cop1/journal-validator';
 import { type PlanData, projectPlan, readBacklogFiches } from './backlogReader.js';
 import { type FicheDetailData, readFicheDetails } from './ficheDetail.js';
+import { adaptChantiers, type LiveBoard, type LiveChantier, type LiveRun } from './chantierAdapter.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
 export interface BoardProjectInput {
@@ -39,8 +43,10 @@ export interface BoardPlanProject {
     runs: number | '—';
     retros: number | '—';
   };
-  /** Vide tant que l'adaptateur des runs (fiche sœur) n'est pas branché — jamais un faux run. */
-  runs: Record<string, never>;
+  /** Runs observés via l'adaptateur `projectChantiers` — vide tant qu'aucun journal keyé n'existe (jamais un faux run). */
+  runs: Record<string, LiveRun>;
+  /** Chantiers multi-sessions (ADR-079), fils du plus récent au plus ancien — présent seulement s'il y en a. */
+  chantiers?: LiveChantier[];
   /** Détail des fiches ACTIVES (pour la modale du board) — part « plan réel ». */
   fiches: Record<string, FicheDetailData>;
 }
@@ -52,15 +58,27 @@ export function shapeProject(
   desc: string,
   plan: PlanData,
   fiches: Record<string, FicheDetailData> = {},
+  live: LiveBoard = { runs: {}, chantiers: [] },
 ): BoardPlanProject {
+  const runsCount = Object.keys(live.runs).length;
+  const anyLive = Object.values(live.runs).some((r) => r.live);
   return {
     name,
     desc,
-    live: false,
+    live: anyLive,
     funnel: plan.funnel,
     versions: plan.versions,
-    metrics: { done: plan.done, tokens: '—', temps: '—', perFiche: '—', sprints: '—', runs: '—', retros: '—' },
-    runs: {},
+    metrics: {
+      done: plan.done,
+      tokens: '—',
+      temps: '—',
+      perFiche: '—',
+      sprints: '—',
+      runs: runsCount > 0 ? runsCount : '—',
+      retros: '—',
+    },
+    runs: live.runs,
+    ...(live.chantiers.length > 0 ? { chantiers: live.chantiers } : {}),
     fiches,
   };
 }
@@ -93,12 +111,36 @@ export function readTags(root: string): Set<string> {
 const CACHE_TTL_MS = 5_000;
 const cache = new Map<string, { at: number; value: BoardPlanProject }>();
 
+/**
+ * BORD I/O — lit les journaux de supervision du projet (`<root>/.supervision/runs/*`) et en tire la
+ * part live (runs/chantiers/timeline) via l'adaptateur. Aucun dossier de runs, ou aucun journal keyé
+ * (clé de chantier absente — cas d'avant G5), → part live VIDE : jamais un faux run.
+ */
+export function composeLive(root: string, now: number = Date.now()): LiveBoard {
+  const runsDir = join(root, '.supervision', 'runs');
+  if (!existsSync(runsDir)) return { runs: {}, chantiers: [] };
+  try {
+    const inputs: ChantierInput[] = readdirSync(runsDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => ({ projectRoot: root, runDir: join(runsDir, e.name) }));
+    return adaptChantiers(projectChantiers(inputs, { now }), now);
+  } catch {
+    return { runs: {}, chantiers: [] };
+  }
+}
+
 /** BORD I/O — compose un `BoardProject` (part plan) en lisant le backlog + les tags d'un projet. */
 export function composeProject(input: BoardProjectInput, now: number = Date.now()): BoardPlanProject {
   const hit = cache.get(input.root);
   if (hit && now - hit.at < CACHE_TTL_MS) return hit.value;
   const plan = projectPlan(readBacklogFiches(input.root), readTags(input.root));
-  const value = shapeProject(input.name, input.desc ?? '', plan, readFicheDetails(input.root));
+  const value = shapeProject(
+    input.name,
+    input.desc ?? '',
+    plan,
+    readFicheDetails(input.root),
+    composeLive(input.root, now),
+  );
   cache.set(input.root, { at: now, value });
   return value;
 }
