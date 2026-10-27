@@ -339,7 +339,7 @@ design-system, release macOS, coût `sprint:report`), `observabilite` (jetons pa
 > Exploration-app : la carte d'abord (réduite au Pas 1), l'explorateur ensuite, sur `ezk-scout` déjà livré. Dépend du board v0.17 pour le « où vit le cache » si la version vivante sort un jour.
 - `20261014113049954` — cache de cartographie, Pas 1 : index statique des routes + test de valeur · P2 · `groom`
 - `20260821210633457` — l'explorateur de features par PR (à dé-parker) · P2 · `groom`
-> **Reste à caser** (le PO slotte) : `20261002130917993` (release local-first) et `20261011153019643` (step design-system dans `ezk-release`) — thème release, aiguillage en attente.
+> **Reste à caser** (le PO slotte) : `20261002130917993` (release local-first) — thème release, aiguillage en attente. (~~`20261011153019643` (step design-system dans `ezk-release`)~~ — shipped local `a55e4c27`.)
 > **Rattachées au board v0.17** (pas une version libre) : `20261002115451451` (page une ligne par projet), `20260830110131228` (étapes de skill configurables), `20261013143324505` (borner `sprint:report`).
 
 ### 🧹 En continu — petits correctifs (historique)

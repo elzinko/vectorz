@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [release, design-system, ux]
-status: ready
-pr:
+status: shipped
+pr: "local (a55e4c27)"
 evidence: none # capacité méthode, pas d'écran propre
 created: 2026-10-11
 ---
