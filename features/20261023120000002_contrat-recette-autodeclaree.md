@@ -7,7 +7,7 @@ product: mega-city
 milestone: recettes
 version:
 labels: [recettes, decouvrabilite, methode, contrat, spike]
-depends: ["20261023120000001"]
+depends:
 status: idea
 pr:
 evidence: none # spike de contrat ; preuve = un répertoire-pilote reconnu comme recette
