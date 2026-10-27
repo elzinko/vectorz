@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { type DorManifest, checkFiche, computeHealth, parseDorManifest } from '../dor-manifest.js';
+import {
+  type DorManifest,
+  checkFiche,
+  computeHealth,
+  parseDorManifest,
+  reservationInProse,
+} from '../dor-manifest.js';
 
 const SURFACES = {
   id: 'surfaces',
@@ -234,5 +240,32 @@ describe('computeHealth — combien de fiches sont tirables (0100)', () => {
     expect(computeHealth([f('ready'), f('ready'), f('ready')], 3).enough).toBe(true);
     expect(computeHealth([f('ready'), f('ready')], 3).enough).toBe(false);
     expect(computeHealth([], 1).enough).toBe(false);
+  });
+});
+
+describe('reservationInProse — réservation en prose sans blocked: typé (fiche 20261015213921103)', () => {
+  const body = (text: string): string => `---\nid: "1"\ntitle: "t"\nstatus: ready\n---\n\n# Titre\n\n${text}\n`;
+
+  it('repère « réservé au panel, pas d’autonomie hands-off » quand blocked est vide', () => {
+    const r = reservationInProse(body('Cette fiche est réservée au panel, pas d’autonomie hands-off.'), '');
+    expect(r.reserved).toBe(true);
+    expect(r.marker).toBeDefined();
+  });
+
+  it('repère « réservé panel/maquette » malgré le slash et les accents', () => {
+    expect(reservationInProse(body('Réservé panel/maquette avant de construire.'), '').reserved).toBe(true);
+  });
+
+  it('ne signale rien si un blocked: typé porte déjà la réservation', () => {
+    expect(reservationInProse(body('Réservé au panel, pas d’autonomie.'), 'panel').reserved).toBe(false);
+  });
+
+  it('ne signale rien sur une fiche sans phrase de réservation', () => {
+    expect(reservationInProse(body('On ajoute un filtre par catégorie de version.'), '').reserved).toBe(false);
+  });
+
+  it('ignore le front-matter : une phrase dans l’en-tête ne compte pas', () => {
+    const text = '---\nid: "1"\ntitle: "hands-off pas d’autonomie"\nstatus: ready\n---\n\n# Titre\n\nCorps neutre.\n';
+    expect(reservationInProse(text, '').reserved).toBe(false);
   });
 });

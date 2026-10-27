@@ -317,3 +317,50 @@ export function acceptanceCriteriaCount(markdown: string): number {
   const scope = section?.[1] ?? markdown;
   return (scope.match(/^[ \t]*[-*]\s*\[[ xX]\]/gm) ?? []).length;
 }
+
+// ─── Réservation laissée en prose (fiche 20261015213921103) ──────────────────────────────────
+// Un caveat « réservé panel/maquette, pas d'autonomie hands-off » écrit en PROSE échappe à l'intake :
+// il ne lit que le champ `blocked:`. Ce SIGNAL (jamais un blocage) le repère quand AUCUN `blocked:`
+// typé ne le porte, pour que « prête » le dise au lieu de le laisser surgir en plein build. Jugement
+// humain derrière (ADR-0001) : une fiche qui ne fait que PARLER de réservations peut déclencher à tort,
+// d'où un simple signal. PUR.
+
+/** Phrases de réservation (déjà normalisées par `plainLoose` : minuscules, sans accents, '/ - ' → espace). */
+export const RESERVATION_MARKERS: readonly string[] = [
+  'hands off',
+  'pas d autonomie',
+  'pas en autonomie',
+  'reserve panel',
+  'reserve maquette',
+  'reserve au panel',
+  'reserve a la maquette',
+  'reserve a un panel',
+];
+
+export interface ReservationSignal {
+  readonly reserved: boolean;
+  /** La phrase repérée (normalisée), pour le message. */
+  readonly marker?: string;
+}
+
+/** `plain` + apostrophes, tirets et slashs réduits à des espaces : la comparaison des phrases. */
+function plainLoose(text: string): string {
+  return plain(text)
+    .replace(/['’/-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Une réservation est-elle écrite en PROSE sans `blocked:` typé ? Si `blocked` est non vide, elle est
+ * déjà déclarée — rien à signaler. Sinon on cherche une phrase de réservation dans le corps (hors
+ * front-matter). SIGNAL seulement : le groomeur juge (ADR-0001), jamais un refus automatique.
+ */
+export function reservationInProse(ficheText: string, blocked: string): ReservationSignal {
+  if (blocked.trim() !== '') return { reserved: false };
+  const body = plainLoose(ficheText.replace(FRONT_MATTER, ''));
+  for (const marker of RESERVATION_MARKERS) {
+    if (body.includes(marker)) return { reserved: true, marker };
+  }
+  return { reserved: false };
+}

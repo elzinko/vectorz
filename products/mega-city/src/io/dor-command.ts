@@ -17,6 +17,7 @@ import {
   checkFiche,
   computeHealth,
   parseDorManifest,
+  reservationInProse,
 } from '../core/dor-manifest.js';
 import { loadDor } from '../loaders/dor.js';
 import { loadFiches } from '../loaders/fiches.js';
@@ -96,6 +97,15 @@ function check(run: DorRun, manifest: DorManifest): number {
     run.out(
       `  ⚠ taille : ${criteria} critères d'acceptation (seuil ${MAX_ACCEPTANCE_CRITERIA}) — règle « token-economy/fiche-tient-dans-un-sprint ». ` +
         `Envisage un découpage avant ready (soupape PO : groome quand même si ça tient dans un sprint).\n`,
+    );
+  }
+  // Réservation laissée en prose sans `blocked:` typé (fiche 20261015213921103) : un signal, pas un
+  // blocage (une fiche qui PARLE de réservations peut déclencher à tort — le groomeur juge, ADR-0001).
+  const reservation = reservationInProse(body, fiche.blocked);
+  if (reservation.reserved) {
+    run.out(
+      `  ⚠ réservation en prose : « ${reservation.marker} » dans le corps, mais aucun blocked: typé ne la porte. ` +
+        `Si c'est une vraie réservation, pose un blocked: typé (p.ex. panel, design) pour que l'intake l'écarte avant le build ; sinon ignore.\n`,
     );
   }
   if (manifest.slots.length === 0) {
