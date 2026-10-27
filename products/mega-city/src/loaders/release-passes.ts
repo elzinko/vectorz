@@ -10,6 +10,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
+import { type DesignSystemConfig, type DesignSystemVerdict, resolveDesignSystem } from '../core/design-system-review.js';
 import { DEFAULT_PASSES, type ReleaseConfig, type ReleasePass, type ReleaseVerdict, resolveRelease } from '../core/release-gate.js';
 import { PROJECT_CONFIG_DIR } from './project-config.js';
 import { loadProjectConfig } from './project-config.js';
@@ -78,5 +79,37 @@ export function readReleaseVerdict(projectRoot: string, version: string): Releas
     return JSON.parse(readFileSync(file, 'utf8')) as ReleaseVerdict;
   } catch (cause) {
     throw new Error(`Verdict de release illisible : ${file}`, { cause });
+  }
+}
+
+// --- Revue design-system (passe composable, fiche 20261011153019643) ---
+
+/** Le réglage design-system effectif du projet (chemin du référentiel). */
+export function designSystemConfig(projectRoot: string): DesignSystemConfig {
+  const config = loadProjectConfig(projectRoot);
+  return resolveDesignSystem((config as { release?: unknown } | undefined)?.release);
+}
+
+/** Chemin du verdict design-system d'une version (à côté du verdict de release). */
+export function designSystemVerdictPath(projectRoot: string, version: string): string {
+  return join(releaseDir(projectRoot), `${version}.design-system.json`);
+}
+
+/** Écrit le verdict design-system d'une version (crée le dossier au besoin). */
+export function writeDesignSystemVerdict(projectRoot: string, verdict: DesignSystemVerdict): string {
+  const file = designSystemVerdictPath(projectRoot, verdict.version);
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, `${JSON.stringify(verdict, null, 2)}\n`, 'utf8');
+  return file;
+}
+
+/** Lit le verdict design-system d'une version, ou `undefined` s'il n'a jamais été enregistré. */
+export function readDesignSystemVerdict(projectRoot: string, version: string): DesignSystemVerdict | undefined {
+  const file = designSystemVerdictPath(projectRoot, version);
+  if (!existsSync(file)) return undefined;
+  try {
+    return JSON.parse(readFileSync(file, 'utf8')) as DesignSystemVerdict;
+  } catch (cause) {
+    throw new Error(`Verdict design-system illisible : ${file}`, { cause });
   }
 }

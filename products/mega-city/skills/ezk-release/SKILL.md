@@ -49,10 +49,10 @@ passes:
   - id: chasse-aux-bugs
     title: Chasse aux bugs adverse — verdict ezk-reviewer requis
     command: test -f {root}/.vectorz/release/{version}.bughunt-go
-  # Passe ajoutée sans toucher au skill (fiche sœur 20261011153019643) :
+  # Passe ajoutée sans toucher au skill (fiche sœur 20261011153019643) — une ligne de plus :
   # - id: design-system
-  #   title: Revue design-system
-  #   command: ezk --root {root} ...
+  #   title: Revue design-system — l'UI livrée respecte le référentiel du projet
+  #   command: ezk --root {root} design-system check {version}
 ```
 
 **Les deux passes du socle** (v0.11) :
@@ -62,6 +62,26 @@ passes:
    réels du lot au-delà des tests unitaires. Le skill ne juge pas lui-même : la passe exige un
    **feu vert enregistré** par la revue, le fichier `.vectorz/release/<version>.bughunt-go`
    (créé une fois la chasse aux bugs faite et GO). Tant qu'il manque, la passe est NO-GO.
+
+## La passe design-system (opt-in, fiche 20261011153019643)
+
+Une passe prête à déclarer, pour verrouiller que l'**UI livrée respecte le référentiel de design**
+du projet (le « verrou moche » de muti, découvert trop tard). Elle n'est pas dans le socle : on
+l'**ajoute en donnée** quand le projet a un design-system (preuve de la composition).
+
+```yaml
+  - id: design-system
+    title: Revue design-system — l'UI livrée respecte le référentiel du projet
+    command: ezk --root {root} design-system check {version}
+```
+
+`ezk design-system check <vX.Y>` se comporte comme la chasse aux bugs — **il ne juge pas lui-même** :
+
+- **Référentiel absent** (défaut `.rules/design-system.md`, surchargé par
+  `.vectorz/config.yml → release.design_system.reference`) → passe **sautée proprement** (GO).
+- **Référentiel présent, aucun verdict** → **NO-GO** : un agent (ex. `ezk-ux`) fait la revue puis
+  enregistre `.vectorz/release/<version>.design-system.json` (`{ version, verdict, gaps, at, head }`).
+- **Verdict GO** → GO. **Verdict NO-GO** → NO-GO en **nommant les écarts**.
 
 ## Désactivation
 
