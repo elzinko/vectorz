@@ -43,9 +43,9 @@ describe('run-eligibility — filtre d\'éligibilité du run autonome (fiche 202
   });
 
   it('raison blocked: typée → escalade, message dérivé du type (sans délibérer)', () => {
-    const v = runDisposition(f({ blocked: 'différée-PO — attend 3 décisions' }), scopeV15);
+    const v = runDisposition(f({ blocked: 'deferred — attend 3 décisions' }), scopeV15);
     expect(v.disposition).toBe('escalate');
-    expect(v.reason).toBe('différée-PO');
+    expect(v.reason).toBe('deferred');
     expect(v.message).toContain('différée par le PO');
   });
 
@@ -66,7 +66,7 @@ describe('run-eligibility — filtre d\'éligibilité du run autonome (fiche 202
   });
 
   it('le blocage prime tout : une fiche prête ET bloquée escalade quand même', () => {
-    expect(runDisposition(f({ status: 'ready', blocked: 'sous-revue' }), scopeV15).disposition).toBe(
+    expect(runDisposition(f({ status: 'ready', blocked: 'review' }), scopeV15).disposition).toBe(
       'escalate',
     );
   });

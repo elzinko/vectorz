@@ -27,7 +27,7 @@ describe('validateFicheFrontMatter (ADR-0040 D2 — mode warning, non bloquant)'
   });
 
   it('blocked: raison typée connue → aucune anomalie blocked (fiche 20261013131632484)', () => {
-    const text = fm({ ...VALID_FIELDS, blocked: '"différée-PO — contexte libre pour l’humain"' });
+    const text = fm({ ...VALID_FIELDS, blocked: '"deferred — contexte libre pour l’humain"' });
     const anomalies = validateFicheFrontMatter('features/x.md', text, { monorepo: false });
     expect(anomalies.filter((a) => a.field === 'blocked')).toEqual([]);
   });

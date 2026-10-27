@@ -21,7 +21,7 @@ import { setFrontMatter } from './ship-fiche.js';
 export interface ParkInput {
   /** La raison TYPÉE de la sortie (liste fermée `BLOCKED_REASONS`) — ex. `à-découper`. */
   reason: BlockedReason;
-  /** Date du geste (ISO court, `2026-10-14`) : tracée dans le contexte de `blocked:`. */
+  /** Date du geste (ISO court, `2026-10-14`) : tracée dans la ligne de journal. */
   date: string;
 }
 
@@ -36,14 +36,15 @@ export interface ParkResult {
 
 /**
  * Parke une fiche hors de sa version. Front-matter mis à jour : `version` vidée, `status: idea`,
- * `milestone: parked`, `blocked: <raison typée> — parké hors version par auto-groom le <date>`.
- * Rend aussi la version quittée et une ligne de journal nommant la fiche et la raison.
+ * `milestone: parked`, `blocked: <raison typée>` (un seul mot — le contexte « parké … le <date> » va
+ * dans la ligne de journal, pas dans la valeur ; fiche 20261027180541168).
+ * Rend aussi la version quittée et une ligne de journal nommant la fiche, la raison et la date.
  */
 export function parkOutOfVersion(text: string, input: ParkInput): ParkResult {
   const fm = frontMatter(text);
   const id = readField(fm, 'id');
   const previousVersion = readField(fm, 'version');
-  const blocked = `${input.reason} — parké hors version par auto-groom le ${input.date}`;
+  const blocked = input.reason; // un seul mot (fiche 20261027180541168) — le contexte va au journal
   const updated = setFrontMatter(text, {
     version: '', // vidée : `setFrontMatter` émet `version:` sans espace en trop
     status: 'idea',
@@ -51,7 +52,7 @@ export function parkOutOfVersion(text: string, input: ParkInput): ParkResult {
     blocked,
   });
   const where = previousVersion === '' ? 'sans version' : `version ${previousVersion} vidée`;
-  const journal = `parké hors version : ${id === '' ? '(sans id)' : id} — ${input.reason} (${where}, status→idea, milestone→parked) — réversible`;
+  const journal = `parké hors version par auto-groom le ${input.date} : ${id === '' ? '(sans id)' : id} — ${input.reason} (${where}, status→idea, milestone→parked) — réversible`;
   return { text: updated, previousVersion, journal };
 }
 

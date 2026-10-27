@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-11
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261011091555006 — La gate attrape les défauts que la revue a dû rattraper
@@ -66,3 +66,4 @@ pnpm --dir products/mega-city test:scripts
   (Cas K de `test-regen-backlog.sh`). Reste le critère 3 — un contrôle de gate détectant *toute*
   garde de confinement au point d'entrée sans test — qui demande une décision de conception
   (convention de marquage + heuristique) : à re-scoper en spike. Hors passe lean.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

@@ -11,7 +11,7 @@ pr:
 evidence: none
 created: 2026-10-01
 milestone: parked
-blocked: attend-GitHub — parké hors version par auto-groom le 2026-10-17
+blocked: github
 ---
 
 # 20261001104806732 — ezk-secret sync — un manifeste de secrets par projet, poussé à l'aveugle
@@ -138,3 +138,4 @@ bash recipes/secrets-trousseau/test-ezk-secret.sh
   et sert **tous** les projets.
 - Portée POC : GitHub d'abord, puis `.env` local, puis Vercel. Les secrets lus uniquement en local
   (IONOS, Lemon Squeezy) restent hors POC.
+- 2026-10-27 : raison blocked: passée à `github` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

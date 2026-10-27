@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # exploration, produit une reco écrite, pas d'UI
 created: 2026-10-07
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261007213454366 — Spike : voir toute l'histoire d'une feature au même endroit
@@ -98,3 +98,4 @@ ls docs/ | grep -iE "co-?localisation|histoire-feature"   # la note de comparais
 - **Liens** : règle [`split` sans chapeau](20261007154842917_note-migration-bascule-consommateurs-scrum.md)
   n'est pas le sujet, mais la même famille (composition des fiches) ; `milestone` reste l'outil de
   **regroupement logique** retenu en attendant.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

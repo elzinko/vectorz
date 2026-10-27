@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # outillage, pas d'écran
 created: 2026-10-03
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261003201034990 — Voir les PR ouvertes et les branches parallèles avant d'ouvrir un lot ou de groomer une fiche
@@ -56,3 +56,4 @@ pnpm --dir products/mega-city test
 
 - Née de la rétro de l'itération V0.5 (capture `docs/captures/2026-10-03-retro-iteration-v0-5.md`), ralliée par les quatre lentilles. Retenue par
   choix délégué du PO à l'agent, P1. Traite la note de carnet sur les groomings parallèles.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

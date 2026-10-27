@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # commandes, pas d'écran
 created: 2026-10-13
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261013143324404 — `--root` accepté partout, avant ou après le verbe
@@ -59,3 +59,4 @@ silence (garde-fou des fiches 242/256). Trancher la politique unique, puis l'app
 
 - Origine : rétro du run v0.12 ([capture](../docs/captures/2026-10-13-retro-run-v012.md)), piste P3.
 - Lié aux fiches livrées 20261013073300242 (lecture `--root`) et 20261013073300256 (écriture `--root`).
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

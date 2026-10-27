@@ -183,14 +183,14 @@ describe('backlog:version close — surface la décision, fiche par fiche (sorti
   it('refuse en nommant la raison typée ET la décision attendue de chaque fiche non livrée', () => {
     put(
       'features/20260101000000008_e.md',
-      fm('20260101000000008', 'status: ready\nversion: v0.3.0\nblocked: attend-maquette'),
+      fm('20260101000000008', 'status: ready\nversion: v0.3.0\nblocked: design'),
     );
     git('add', '.');
     git('commit', '--quiet', '-m', 'bloquée dans v0.3.0');
     const r = run('close', 'v0.3.0');
     expect(r.code).toBe(1);
     expect(r.out).toContain('Décision attendue');
-    expect(r.out).toContain('attend-maquette');
+    expect(r.out).toContain('design');
     expect(r.out).toContain('20260101000000008');
   });
 });

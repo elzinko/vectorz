@@ -11,7 +11,7 @@ pr:
 evidence: none
 created: 2026-10-01
 milestone: parked
-blocked: attend-dépendance — parké hors version par auto-groom le 2026-10-17
+blocked: dependency
 ---
 
 # 20261001142603963 — ezk-secret apply — scope compte/par-app, secrets déclarés par recette
@@ -115,3 +115,4 @@ ezk-secret check  --project samplerz            # ✅/❌/⚙️ par secret, sco
   même idée de projection, mais source = `.env`. Ici la source devient le **trousseau**.
 - **Priorité P2** : hors chemin critique de la 1.0, mais c'est le mécanisme qui « simplifie la
   gestion de tout ça » réclamé, et il sert tous les projets.
+- 2026-10-27 : raison blocked: passée à `dependency` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

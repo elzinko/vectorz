@@ -85,18 +85,18 @@ export function expectedDecision(verdict: EligibilityVerdict): string {
   switch (verdict.reason) {
     case 'epic':
       return 'découper en stories, ou sortir de la version';
-    case 'attend-dépendance':
-    case 'attend-GitHub':
+    case 'dependency':
+    case 'github':
       return 'reporter à la version où la dépendance arrive';
-    case 'différée-PO':
-    case 'attend-panel':
-    case 'attend-maquette':
-    case 'sous-revue':
-    case 'auto-édition-risquée':
+    case 'deferred':
+    case 'panel':
+    case 'design':
+    case 'review':
+    case 'risky':
       return 'le PO fait le geste, ou reporte la fiche à une autre version';
-    case 'à-découper':
+    case 'oversized':
       return 're-groomer (découper), ou reporter / clôturer';
-    case 'hérité':
+    case 'legacy':
     case 'blocked-non-typé':
       return 'requalifier le blocage, puis décider';
     default:

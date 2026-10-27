@@ -35,7 +35,7 @@ describe('selectMilestone — ne voit qu’une milestone, et classe', () => {
   const fiches = [
     fiche({ id: '0001', milestone: 'preparation', status: 'idea' }), // à groomer
     fiche({ id: '0002', milestone: 'preparation', status: 'ready' }), // déjà prête
-    fiche({ id: '0003', milestone: 'preparation', status: 'idea', blocked: 'attend-panel' }), // arbitrage
+    fiche({ id: '0003', milestone: 'preparation', status: 'idea', blocked: 'panel' }), // arbitrage
     fiche({ id: '0004', milestone: 'board', status: 'idea' }), // AUTRE milestone — ignorée
     fiche({ id: '0005', milestone: 'preparation', status: 'idea', done: true }), // done/ — ignorée
   ];
@@ -50,7 +50,7 @@ describe('selectMilestone — ne voit qu’une milestone, et classe', () => {
     expect(byId.get('0001')?.disposition).toBe('groom');
     expect(byId.get('0002')?.disposition).toBe('build');
     expect(byId.get('0003')?.disposition).toBe('escalate');
-    expect(byId.get('0003')?.reason).toBe('attend-panel');
+    expect(byId.get('0003')?.reason).toBe('panel');
   });
 
   it('ignore la borne de version (préparer n’est pas tirer) : une idée d’une version haute reste « à groomer »', () => {
@@ -77,13 +77,13 @@ describe('groomPassDelta — ce que la passe a changé', () => {
   it('prêtes (idée→ready), toujours idée (+ raison), découpées (nouvelles), exclues (terminales)', () => {
     const after = [
       fiche({ id: '0001', status: 'ready' }), // groomée → prête
-      fiche({ id: '0002', status: 'idea', blocked: 'attend-panel' }), // reste idée
+      fiche({ id: '0002', status: 'idea', blocked: 'panel' }), // reste idée
       fiche({ id: '0003', status: 'superseded' }), // exclue
       fiche({ id: '0010', status: 'idea' }), // fille ajoutée (découpage)
     ];
     const d = groomPassDelta(before, after, 'preparation');
     expect(d.pretes).toEqual(['0001']);
-    expect(d.toujoursIdee).toEqual([{ id: '0002', reason: 'attend-panel' }]);
+    expect(d.toujoursIdee).toEqual([{ id: '0002', reason: 'panel' }]);
     expect(d.exclues).toEqual([{ id: '0003', status: 'superseded' }]);
     expect(d.decoupees).toEqual(['0010']);
   });
@@ -106,18 +106,18 @@ describe('rendus — en clair', () => {
   it('la sélection annonce les trois tas et le détail', () => {
     const text = renderGroomSelection('preparation', selectMilestone([
       fiche({ id: '0001', status: 'idea' }),
-      fiche({ id: '0003', status: 'idea', blocked: 'attend-panel' }),
+      fiche({ id: '0003', status: 'idea', blocked: 'panel' }),
     ], 'preparation')).join('\n');
     expect(text).toContain('1 à groomer');
     expect(text).toContain('À groomer');
     expect(text).toContain('Arbitrage humain');
-    expect(text).toContain('attend-panel');
+    expect(text).toContain('panel');
   });
 
   it('le delta nomme chaque catégorie non vide', () => {
     const text = renderGroomDelta('preparation', {
       pretes: ['0001'],
-      toujoursIdee: [{ id: '0002', reason: 'attend-panel' }],
+      toujoursIdee: [{ id: '0002', reason: 'panel' }],
       decoupees: ['0010'],
       exclues: [{ id: '0003', status: 'superseded' }],
     }).join('\n');

@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: before-after
 created: 2026-10-26
-blocked: attend-panel — ajoute des évènements/champs au contrat de supervisabilité gelé (ADR-084 G4), arbitrage PO + panel requis
+blocked: panel
 ---
 
 # 20261026132118384 — Board : enrichir les runs (moments + jetons)
@@ -74,3 +74,4 @@ Donc `LiveRun.moments` et `LiveRun.tok` restent vides. Pour les remplir, il faut
   de la fiche adaptateur livrée (vue mince assumée).
 - **Dépend d'une décision de contrat** (les 3 pistes ci-dessus) — pas de construction en run autonome
   tant que le panel n'a pas tranché.
+- 2026-10-27 : raison blocked: passée à `panel` ; contexte d'origine déplacé de la valeur : ajoute des évènements/champs au contrat de supervisabilité gelé (ADR-084 G4), arbitrage PO + panel requis

@@ -112,9 +112,9 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    **Filtre d'éligibilité AVANT toute délibération** (fiche 20261011091553794) : sur une fiche de
    tête, lance `ezk run eligibility --fiche <id>` et lis la ligne `disposition:` —
    - `build` → construis (3) ;
-   - `escalate` → **escalade immédiatement, sans délibérer** : une fiche grosse (`à-découper`),
-     risquée (`sous-revue`, `auto-édition-risquée`), bloquée (`attend-*`) ou différée par le PO
-     (`différée-PO`) ne vaut pas qu'on pèse le pour et le contre avec des agents. Journalise la
+   - `escalate` → **escalade immédiatement, sans délibérer** : une fiche grosse (`oversized`),
+     risquée (`review`, `risky`), bloquée (`panel`, `design`, `github`, `dependency`) ou différée par
+     le PO (`deferred`) ne vaut pas qu'on pèse le pour et le contre avec des agents. Journalise la
      raison typée dans `SPRINT.md` et remonte-la au bilan (`ezk run report`, état `bloquée`) ;
    - `groom` → auto-groom vers la DoR (cf. § dédié) ;
    - `defer` → **borne de version atteinte** : le run s'arrête par défaut à la fin de la version en

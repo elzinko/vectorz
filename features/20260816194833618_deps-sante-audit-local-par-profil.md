@@ -11,7 +11,7 @@ epic:
 status: idea
 pr:
 created: 2026-08-16
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20260816194833618 — Santé des dépendances : audit local + sa place dans le process
@@ -98,3 +98,4 @@ ezk release vX.Y --root "$(git rev-parse --show-toplevel)"   # NO-GO si un criti
 - **Voisines** : [[20260812134515706]] (`ezk-ci harden`/`apply`) · [[0177]] (capacités portables) ·
   [[0170]] / [[0087]] (extension + distribution plugin) · [[0174]] (`ezk-issues`) · les profils
   `products/mega-city/profiles/`.
+- 2026-10-27 : raison `blocked:` passée à `oversized` ; contexte d'origine (parké hors version par auto-groom le 2026-10-17) déplacé de la valeur vers ces notes.

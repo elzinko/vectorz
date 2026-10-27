@@ -8,7 +8,7 @@ milestone: parked
 version:
 labels: [convention, arborescence]
 status: idea
-blocked: sous-revue — parké hors version par auto-groom le 2026-10-15
+blocked: review
 pr:
 evidence: none # refactor d'arborescence, pas d'UI
 created: 2026-10-07
@@ -72,3 +72,4 @@ bash bin/test-links-repo.sh .
 - **Dépend de** la fiche 2 (les skills doivent lire la config avant la bascule, sinon ils
   écriraient encore dans un `docs/` devenu vide).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
+- 2026-10-27 : raison blocked: passée à `review` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-15

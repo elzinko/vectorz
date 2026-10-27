@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # documentation de méthode, pas d'écran
 created: 2026-10-02
-blocked: attend-panel — parké hors version par auto-groom le 2026-10-15
+blocked: panel
 ---
 
 # 20261002155911271 — Trier les sorties de rétro par nature
@@ -112,3 +112,4 @@ pnpm --dir products/mega-city test:scripts
     **est** cet historique. On peut donc aligner les **2 surfaces réelles** (ADR-0054 + `ezk-retro`
     temps 5) sans construire de tampon — c'est l'option (a) — et traiter le gabarit `.rules/` à part
     s'il doit exister. Source : rapport d'audit du découpage de la méthode, 2026-10-15.
+- 2026-10-27 : raison blocked: passée à `panel` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-15

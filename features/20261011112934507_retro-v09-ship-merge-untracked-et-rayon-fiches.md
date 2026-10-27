@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none
 created: 2026-10-11
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261011112934507 — Rétro v0.9 (run auto 2026-10-11)
@@ -70,3 +70,4 @@ cd products/mega-city && pnpm test && pnpm test:scripts   # dont un cas ship-mer
 - Sortie de la **rétro de v0.9** (run auto 2026-10-11, mode `lean`). Les autres apprentissages du run
   sont déjà fichés : le hook worktree (`20261011111526693`) et les 3 manques de `ezk-product-build`
   (`20261011103839682`). Cette fiche capture les deux frictions non encore fichées.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

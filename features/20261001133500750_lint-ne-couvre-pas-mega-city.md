@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # pas d'écran
 created: 2026-10-01
-blocked: différée-PO — parké hors version par auto-groom le 2026-10-17
+blocked: deferred
 ---
 
 # 20261001133500750 — Le lint ne vérifie pas le code de mega-city
@@ -70,3 +70,4 @@ pnpm lint
   **baseline** — lint mega-city en CI sur les fichiers CHANGÉS seulement (`biome check --changed
   --since=origin/main`), qui tolère l'existant et refuse le neuf (critère 2), sans toucher aux
   396. Biome 1.9 n'a pas de fichier de baseline natif. Hors passe lean.
+- 2026-10-27 : raison blocked: passée à `deferred` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

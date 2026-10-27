@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # forme du corps de PR, pas d'écran
 created: 2026-10-03
-blocked: attend-GitHub — parké hors version par auto-groom le 2026-10-17
+blocked: github
 ---
 
 # 20261003075821858 — Deux formes de PR : la PR de dev rend la fiche, la PR de backlog la désigne
@@ -84,3 +84,4 @@ pnpm --dir products/mega-city test:scripts
   `main` (une confirmation de push à chaque geste ; à revoir après la fiche
   [« BACKLOG.md ne fait plus conflit »](done/20261002231845120_backlog-md-sans-conflit-entre-pr.md)).
 - Le corps de la PR #339 a été réécrit à la main dans la forme courte, le 2026-10-03, comme essai.
+- 2026-10-27 : raison blocked: passée à `github` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

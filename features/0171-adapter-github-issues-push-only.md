@@ -10,7 +10,7 @@ priority: P1
 epic:
 depends: [0170]
 status: idea
-blocked: "attend-GitHub — plugin GitHub non autorisé en session + dépend de 0170 + arbitrages PO (sorti de v0.7, run 2026-10-11)"
+blocked: github
 pr:
 evidence: none # pas d'écran produit : la preuve est l'état de l'issue et de la PR sur GitHub (gh … --json)
 created: 2026-07-30
@@ -246,6 +246,7 @@ Vérifié sans défaut : `init` crée un `features/done/` vide que git ne garde 
   ([rationalisation du backlog](done/20260812104022240_backlog-rationalisation-tags-script-llm.md)) :
   projetés par l'étape 5 du cycle.
 - Renommage « feature ↔ user story » : hors de cette fiche.
+- 2026-10-27 : raison blocked: passée à `github` ; contexte d'origine déplacé de la valeur : plugin GitHub non autorisé en session + dépend de 0170 + arbitrages PO (sorti de v0.7, run 2026-10-11)
 
 ## Sortie de v0.7 — parkée (run autonome 2026-10-11)
 

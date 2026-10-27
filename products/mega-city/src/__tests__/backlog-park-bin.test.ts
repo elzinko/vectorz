@@ -42,7 +42,7 @@ const milestoneOf = (file: string): string =>
 beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), 'backlog-park-'));
   put('features/0001_a.md', fm('0001', 'status: idea\nmilestone:\nblocked:')); // idée en périmètre
-  put('features/0002_b.md', fm('0002', 'status: idea\nmilestone:\nblocked: attend-panel')); // bloquée
+  put('features/0002_b.md', fm('0002', 'status: idea\nmilestone:\nblocked: panel')); // bloquée
 });
 
 afterEach(() => {
@@ -51,7 +51,7 @@ afterEach(() => {
 
 describe('backlog:park — « tenter avant de parker »', () => {
   it('REFUSE (code ≠ 0) de parker une idée en périmètre sans --after-groom, sans rien écrire', () => {
-    const r = run('0001', '--reason', 'à-découper');
+    const r = run('0001', '--reason', 'oversized');
     expect(r.code).not.toBe(0);
     expect(r.out).toContain('park refusé');
     expect(statusOf('features/0001_a.md')).toBe('idea'); // intacte
@@ -59,13 +59,13 @@ describe('backlog:park — « tenter avant de parker »', () => {
   });
 
   it('PARKE la même fiche avec --after-groom (tentative attestée)', () => {
-    const r = run('0001', '--reason', 'à-découper', '--after-groom', 'sha-essai-123');
+    const r = run('0001', '--reason', 'oversized', '--after-groom', 'sha-essai-123');
     expect(r.code).toBe(0);
     expect(milestoneOf('features/0001_a.md')).toBe('parked');
   });
 
   it('PARKE de plein droit une fiche déjà bloquée (arbitrage humain)', () => {
-    const r = run('0002', '--reason', 'sous-revue');
+    const r = run('0002', '--reason', 'review');
     expect(r.code).toBe(0);
     expect(milestoneOf('features/0002_b.md')).toBe('parked');
   });

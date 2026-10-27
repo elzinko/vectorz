@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # exploration + CLI, pas d'écran
 created: 2026-10-10
-blocked: attend-panel — parké hors version par auto-groom le 2026-10-17
+blocked: panel
 ---
 
 # 20261010153046143 — La CLI de la méthode est-elle un DSL cohérent et professionnel ?
@@ -170,3 +170,5 @@ proposé au panel : étendre le graphe compilé à la dimension process (nœuds 
 **projections** — le jugement (groom, revue, rétro) restant en markdown. À décider : même panel
 (cohérence de la méthode, surface **et** modèle), ou fiche/ADR distincts. Source : rapport d'audit du
 découpage, 2026-10-15.
+
+- 2026-10-27 : raison `blocked:` passée à `panel` ; contexte d'origine (parké hors version par auto-groom le 2026-10-17) déplacé de la valeur vers ces notes.

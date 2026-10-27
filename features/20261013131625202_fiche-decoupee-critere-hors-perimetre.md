@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none # règle de process, pas d'écran
 created: 2026-10-13
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261013131625202 — Une fiche découpée reste dans son périmètre
@@ -59,3 +59,4 @@ exige de construire le périmètre d'une sœur.
 - Adjacent à « une story = une fiche » et « split : pas de chapeau » (sans les contredire : ici on
   parle du périmètre des CRITÈRES, pas du nombre de fiches).
 - À groomer en **règle** `rules/<cat>/` + bundle (cible `skill:ezk-backlog`), pas construit tel quel.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

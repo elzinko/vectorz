@@ -50,7 +50,7 @@ describe('launch — « version lançable ? » (entrée)', () => {
       [
         fiche({ id: '0001', status: 'ready', version: 'v0.17.0' }),
         fiche({ id: '0002', status: 'idea', version: 'v0.17.0' }),
-        fiche({ id: '0003', status: 'ready', version: 'v0.17.0', blocked: 'attend-panel' }),
+        fiche({ id: '0003', status: 'ready', version: 'v0.17.0', blocked: 'panel' }),
       ],
       'v0.17.0',
     );
@@ -74,14 +74,14 @@ describe('seal — « version scellable ? » (sortie)', () => {
     const { lot, scope } = lotAndScope(
       [
         fiche({ id: '0001', status: 'shipped', done: true, version: 'v0.17.0' }),
-        fiche({ id: '0002', status: 'ready', version: 'v0.17.0', blocked: 'attend-maquette' }),
+        fiche({ id: '0002', status: 'ready', version: 'v0.17.0', blocked: 'design' }),
       ],
       'v0.17.0',
     );
     const v = seal(lot, scope);
     expect(v.sealable).toBe(false);
     expect(v.pending).toHaveLength(1);
-    expect(v.pending[0]).toMatchObject({ id: '0002', reason: 'attend-maquette' });
+    expect(v.pending[0]).toMatchObject({ id: '0002', reason: 'design' });
     expect(v.pending[0].decision).toContain('PO');
   });
 
@@ -101,10 +101,10 @@ describe('seal — « version scellable ? » (sortie)', () => {
 
 describe('expectedDecision — la décision dépend de la raison typée', () => {
   it('dépendance externe → reporter à la version où elle arrive', () => {
-    expect(expectedDecision({ disposition: 'escalate', reason: 'attend-dépendance', message: '' })).toContain('reporter');
+    expect(expectedDecision({ disposition: 'escalate', reason: 'dependency', message: '' })).toContain('reporter');
   });
   it('geste PO (panel) → le PO fait le geste ou reporte', () => {
-    expect(expectedDecision({ disposition: 'escalate', reason: 'attend-panel', message: '' })).toContain('PO');
+    expect(expectedDecision({ disposition: 'escalate', reason: 'panel', message: '' })).toContain('PO');
   });
   it('idée → groomer', () => {
     expect(expectedDecision({ disposition: 'groom', reason: '', message: '' })).toContain('groomer');

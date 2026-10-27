@@ -103,13 +103,13 @@ describe('crossBacklogHead (fiche 0097)', () => {
   it('écarte une carte `ready` mais au drapeau `blocked:` : jamais tête, signalée (fiche 20261013131632277)', () => {
     const planIds = ['0094', '0041'];
     const index = indexOf(
-      card('0094', 'mega-city', 'ready', 'feature', 'différée-PO'), // prête MAIS bloquée
+      card('0094', 'mega-city', 'ready', 'feature', 'deferred'), // prête MAIS bloquée
       card('0041', 'vectorz', 'ready'), // la vraie tête tirable
     );
     const r = crossBacklogHead(planIds, index);
     expect(r.head).toEqual(card('0041', 'vectorz', 'ready')); // pas 0094, bloquée
     expect(r.blockedReady).toEqual([
-      { card: card('0094', 'mega-city', 'ready', 'feature', 'différée-PO'), reason: 'différée-PO' },
+      { card: card('0094', 'mega-city', 'ready', 'feature', 'deferred'), reason: 'deferred' },
     ]);
     expect(r.blockedAhead).toEqual([]); // une ready+blocked n'est pas une idea à groomer
   });

@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none
 created: 2026-10-07
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261007151859479 — Chemin « lite » du sprint pour fiches triviales
@@ -59,3 +59,4 @@ pnpm --dir products/mega-city ezk sprint run --lite <fiche-triviale>
 - **Lié** : règle [token-economy/fiche-tient-dans-un-sprint](../products/mega-city/rules/token-economy/fiche-tient-dans-un-sprint.md)
   (une fiche doit tenir dans un sprint) — le mode lite en est le pendant côté exécution.
 - **Hors** du thème portabilité — planifiable seul.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

@@ -38,7 +38,7 @@ beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), 'groom-milestone-'));
   put('features/0001_a.md', fm('0001', 'milestone: preparation\nstatus: idea'));
   put('features/0002_b.md', fm('0002', 'milestone: preparation\nstatus: ready'));
-  put('features/0003_c.md', fm('0003', 'milestone: preparation\nstatus: idea\nblocked: attend-panel'));
+  put('features/0003_c.md', fm('0003', 'milestone: preparation\nstatus: idea\nblocked: panel'));
   put('features/0004_d.md', fm('0004', 'milestone: board\nstatus: idea')); // AUTRE milestone
 });
 
@@ -53,7 +53,7 @@ describe('backlog:groom-milestone — le bin', () => {
     expect(r.out).toContain('1 à groomer');
     expect(r.out).toContain('0001'); // idée → à groomer
     expect(r.out).toContain('0003'); // bloquée → arbitrage humain
-    expect(r.out).toContain('attend-panel');
+    expect(r.out).toContain('panel');
     expect(r.out).not.toContain('0004'); // autre milestone, jamais touchée
     expect(r.out).toContain('0001:idea'); // l’instantané machine
   });
@@ -65,6 +65,6 @@ describe('backlog:groom-milestone — le bin', () => {
     expect(r.code).toBe(0);
     expect(r.out).toContain('1 prête(s)');
     expect(r.out).toContain('0001');
-    expect(r.out).toContain('0003 — attend-panel'); // restée idée, raison nommée
+    expect(r.out).toContain('0003 — panel'); // restée idée, raison nommée
   });
 });

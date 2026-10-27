@@ -279,7 +279,7 @@ describe('countParkDelivered — livré = mergée, parké = sautée dont la rais
   it('compte mergées et sautées parkées, ignore les autres sautées', () => {
     const lines = [
       ok('0001|mergée|#1|verte|GO|faite|-'),
-      ok('0002|sautée|-|-|-|-|parkée hors version : à-découper'),
+      ok('0002|sautée|-|-|-|-|parkée hors version : oversized'),
       ok('0003|sautée|-|-|-|-|skip temporaire, pas parkée'),
     ];
     expect(countParkDelivered(lines)).toEqual({ parked: 1, delivered: 1 });

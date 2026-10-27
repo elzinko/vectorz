@@ -8,7 +8,7 @@ milestone: parked
 version:
 epic:
 status: idea
-blocked: "attend-dépendance — dépend de l'agent ezk-ux (ADR-0026, statut proposé) — pas encore construit"
+blocked: dependency
 pr:
 created: 2026-08-29
 labels: [fabrique]
@@ -77,3 +77,4 @@ téléchargement de muti), et vérifier que la règle est citée dans le plan de
   un fichier `.md` à frontmatter, une entrée de profil, ou un check d'agent.
 - **Priorité P3** : différée car bloquée par un prérequis lointain ; à remonter quand
   `ezk-ux` passe en construction.
+- 2026-10-27 : raison blocked: passée à `dependency` ; contexte d'origine déplacé de la valeur : dépend de l'agent ezk-ux (ADR-0026, statut proposé) — pas encore construit

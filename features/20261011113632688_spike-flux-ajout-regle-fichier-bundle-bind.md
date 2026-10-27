@@ -11,7 +11,7 @@ pr:
 evidence: none
 created: 2026-10-11
 milestone: parked
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261011113632688 — Spike : le flux d'ajout d'une règle
@@ -62,3 +62,4 @@ ezk law bind-global global  # la règle témoin est présente dès ce bind
 ## Notes / décisions
 
 - Origine : rétro 2026-10-11, proposition P3. La règle qui a révélé le trou : `agent-ops/verify-access-before-asking` (câblée au bundle `base` après coup).
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

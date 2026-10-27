@@ -7,7 +7,7 @@ product: vectorz
 milestone: parked
 status: idea
 labels: [contrat]
-blocked: "attend-panel — ADR-030 non ratifié (panel adverse + arbitrage PO en attente sur la décision A2 transport)"
+blocked: panel
 pr:
 created: 2026-08-13
 ---
@@ -63,3 +63,4 @@ fiche. → **Cette fiche ne peut pas passer `ready` tant qu'ADR-030 n'est pas ra
   toute modification ultérieure = PO après panel.
 - Dépend du socle livré par [0044](done/0044-mesureur-outcomes-script-append-mvp-a.md) (le
   mesureur nu et `outcomes.jsonl` existent déjà quand cette fiche démarre).
+- 2026-10-27 : raison blocked: passée à `panel` ; contexte d'origine déplacé de la valeur : ADR-030 non ratifié (panel adverse + arbitrage PO en attente sur la décision A2 transport)

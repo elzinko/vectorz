@@ -31,15 +31,15 @@ export interface EligibilityVerdict {
  * Couvre toute la liste fermée de `blocked-reasons.ts` : une raison connue a toujours son message.
  */
 export const ESCALATION_BY_REASON: Record<BlockedReason, string> = {
-  'différée-PO': 'différée par le PO — réveil sur sa décision, pas un sujet de run autonome',
-  'attend-panel': 'attend un panel adverse — décision structurelle à tenir avec le PO',
-  'attend-maquette': 'attend une maquette validée avant de construire',
-  'attend-GitHub': 'attend une capacité ou une autorisation GitHub',
-  'attend-dépendance': 'attend une autre fiche, un agent ou un service pas encore prêt',
-  'sous-revue': 'gros changement sous revue manuelle — jamais en run autonome',
-  'auto-édition-risquée': 'édition risquée de la méthode par elle-même — à faire sous garde humaine',
-  'à-découper': 'trop grosse pour un sprint — à découper avant de construire',
-  'hérité': 'drapeau hérité, raison non tracée — à requalifier avant de délibérer',
+  deferred: 'différée par le PO — réveil sur sa décision, pas un sujet de run autonome',
+  panel: 'attend un panel adverse — décision structurelle à tenir avec le PO',
+  design: 'attend une maquette / un design validé avant de construire',
+  github: 'attend une capacité ou une autorisation GitHub',
+  dependency: 'attend une autre fiche, un agent ou un service pas encore prêt',
+  review: 'gros changement sous revue manuelle — jamais en run autonome',
+  risky: 'édition risquée de la méthode par elle-même — à faire sous garde humaine',
+  oversized: 'trop grosse pour un sprint — à découper avant de construire',
+  legacy: 'drapeau hérité, raison non tracée — à requalifier avant de délibérer',
 };
 
 /** Les champs d'une fiche que le filtre lit. Sous-ensemble du type `Fiche` (jamais le disque). */

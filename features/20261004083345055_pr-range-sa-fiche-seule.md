@@ -8,7 +8,7 @@ milestone: parked
 version:
 labels: []
 status: idea
-blocked: "attend-panel — renverse les fiches 4/5 livrées (ship DANS la PR) et révise l'ADR-0049 §2 ; décision structurelle à trancher en panel avec le PO avant de construire (run v0.13, 2026-10-13)"
+blocked: panel
 pr:
 evidence: none # flux git et fichiers générés, pas d'écran
 created: 2026-10-04
@@ -44,3 +44,4 @@ cd products/mega-city && pnpm test:scripts
 - Priorité P2. Fiche captée le 2026-10-04 par la rétro samplerz du 2026-10-03, piste 2, retenue par le PO. Capture : `docs/captures/2026-10-03-retro-premier-sprint-format-methode.md` dans le dépôt samplerz. À groomer, avec l'architecte : l'amendement de l'ADR-0049 est une décision de conception.
 - **Tranché au grooming (2026-10-13)** : la PR **ne déplace pas** sa fiche. Le déplacement vers `done/` se fait dans le **commit de régénération post-fusion**, avec l'index, le plan et les liens. Raison : le filet de liens du dépôt (`test-links-repo`) interdit un lien cassé sur `main`, même quelques minutes — déplacer la fiche dans la PR le violerait. L'amendement de l'ADR-0049 reste une décision de conception à **ratifier par l'architecte au build**.
 - Mesure retenue : 0 conflit d'index sur les 3 prochains lots de 2 stories ou plus.
+- 2026-10-27 : raison blocked: passée à `panel` ; contexte d'origine déplacé de la valeur : renverse les fiches 4/5 livrées (ship DANS la PR) et révise l'ADR-0049 §2 ; décision structurelle à trancher en panel avec le PO avant de construire (run v0.13, 2026-10-13)

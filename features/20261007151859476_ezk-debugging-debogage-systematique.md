@@ -11,7 +11,7 @@ status: idea
 pr:
 evidence: none
 created: 2026-10-07
-blocked: à-découper — parké hors version par auto-groom le 2026-10-17
+blocked: oversized
 ---
 
 # 20261007151859476 — ezk-debugging : débogage systématique
@@ -59,3 +59,4 @@ grep -nE "reproduire|isoler|cause racine|vérifier" products/mega-city/skills/ez
 - **Prior art** : Superpowers `systematic-debugging` (analyse de cause racine en phases).
 - **Garde-fou** : une vraie procédure, pas un label. La valeur est dans la méthode nommée.
 - **Nommage** : `ezk-debugging` (bande Outillage, ADR-0020). Hors du thème portabilité — planifiable seul.
+- 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17

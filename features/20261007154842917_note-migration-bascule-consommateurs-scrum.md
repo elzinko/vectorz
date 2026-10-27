@@ -6,7 +6,7 @@ priority: P2
 product: vectorz
 milestone: parked
 version:
-blocked: attend-dépendance — parké hors version par auto-groom le 2026-10-15
+blocked: dependency
 labels: [convention, arborescence]
 status: idea
 pr:
@@ -69,3 +69,4 @@ ezk --root "$M" paths sprints   # → scrum/sprints (après scrum: true)
   `docs/captures` (4), `docs/pr-evidence` (42) — **pas** `docs/journal`. La recette ne bouge donc
   que les dossiers **présents** (4 `git mv` pour muti, pas 5).
 - Lot V0.9, lié par `milestone: rationalisation` + `version: V0.9` (pas de chapeau).
+- 2026-10-27 : raison blocked: passée à `dependency` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-15

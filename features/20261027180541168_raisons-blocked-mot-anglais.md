@@ -74,7 +74,8 @@ universel.
 - [ ] Plus aucune raison française dans une fiche active. Vérif :
       `grep -rE "^blocked: (attend-|différée-|sous-revue|auto-édition|à-découper|hérité)" features/*.md` rend 0.
 - [ ] Le modèle de fiche, le `SKILL.md` d'ezk-backlog et toute doc citant ces raisons listent les mots
-      anglais. Les fiches `done/` (historique) sont laissées telles quelles.
+      anglais. Les fiches `done/` qui portaient encore une raison `blocked:` ont leur **token** aligné
+      aussi (le validateur contrôle tout le corpus) — leur contexte historique est conservé.
 
 ## Comment vérifier
 
