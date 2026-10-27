@@ -7,8 +7,8 @@ product: mega-city
 labels: [methode, dor]
 milestone: preparation
 version:
-status: ready
-pr:
+status: shipped
+pr: "local (9e95dad8)"
 evidence: none # cran de process, pas d'écran
 created: 2026-10-15
 blocked:
@@ -30,7 +30,7 @@ il ne vérifie pas que ce qu'elles **citent** existe dans le code.
 ## Contexte / Problème
 
 Relevé par l'audit adverse du découpage (2026-10-15, lentille PO), sur un cas vécu : au run v0.16, la
-fiche [trier les sorties de rétro](20261002155911271_trier-sorties-retro-par-nature.md) était prête
+fiche [trier les sorties de rétro](../20261002155911271_trier-sorties-retro-par-nature.md) était prête
 mais a dû être sautée — elle demandait d'aligner une 3ᵉ surface (« README `.rules/` ») et un concept
 (« règle en observation ») qui n'existent dans aucun fichier.
 
@@ -50,7 +50,7 @@ mais a dû être sautée — elle demandait d'aligner une 3ᵉ surface (« READM
 
 1. **La surface citée n'existe pas.** La fiche suppose un `README .rules/`, une « règle en observation »
    absents du code. Le pilote la croit tirable ; elle ne l'est pas.
-   *(cas v0.16 : [trier les sorties de rétro](20261002155911271_trier-sorties-retro-par-nature.md).)*
+   *(cas v0.16 : [trier les sorties de rétro](../20261002155911271_trier-sorties-retro-par-nature.md).)*
 2. **Le caveat est invisible à l'intake.** La fiche porte « réservé panel/maquette » en **note libre**.
    L'intake n'écarte que sur `blocked:` ; le caveat surgit en plein build.
    *(cas 2026-10-24 et 2026-10-26, voir Notes.)*
@@ -117,11 +117,11 @@ rg "needs-design" src   # → 0
 
 - Provenance : rapport d'audit du découpage, 2026-10-15 (famille « vrai manque de modèle »). Cas daté :
   note de rétro « une fiche ready peut porter une prémisse absente du code » (2026-10-14).
-- Cas fondateur : [trier les sorties de rétro](20261002155911271_trier-sorties-retro-par-nature.md).
+- Cas fondateur : [trier les sorties de rétro](../20261002155911271_trier-sorties-retro-par-nature.md).
 - `blocked: attend-panel` : change le modèle de la DoR — à tenir avec le PO, pas en run autonome.
 
 - **Nouveau cas daté (2026-10-24, run board) — la donnée, pas seulement le code.** La sœur 3
-  [runs réels](done/20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md) était `ready`,
+  [runs réels](20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md) était `ready`,
   mais sa prémisse — des journaux portant la clé `chantier` + les moments — **n'existe pas dans la
   donnée vécue** (0 clé chantier sur 132 journaux réels, même en contrat v0.2). C'est le symptôme exact
   de cette fiche, côté **donnée émise** plutôt que surface de code. Renforce la voie (a) : la DoR d'un
@@ -129,7 +129,7 @@ rg "needs-design" src   # → 0
   de code citées. (Capture : `docs/captures/2026-10-24-retro-board-build-light.md`.)
 
 - **Nouveau cas daté (2026-10-26, rétro ADR-084) — le caveat en note libre, invisible à l'intake.** La
-  même fiche [runs réels](done/20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
+  même fiche [runs réels](20261024130842250_board-web-runs-reels-adaptateur-projectchantiers.md)
   portait aussi « réservé panel/maquette, pas d'autonomie hands-off » en **note libre** : l'intake, qui
   n'écarte que sur le champ `blocked:`, ne l'a pas vu — le caveat n'a surfacé qu'en pleine construction.
   **Facette à trancher au panel** : un **champ structuré** « réservé / needs-design » (comme `blocked:`),
@@ -140,7 +140,7 @@ rg "needs-design" src   # → 0
   Verdict unanime GO-sous-conditions, qui **renverse** la reco « champ `needs-design:` » : ce champ
   doublonne `blocked:`, dont les raisons typées sont déjà lues par `plan:head`, `plan:lot` et
   `run-eligibility` (`src/backlog/blocked-reasons.ts` ; patron posé par
-  [raisons typées pour blocked](done/20261013131632484_raisons-typees-pour-blocked.md)). Risque relevé
+  [raisons typées pour blocked](20261013131632484_raisons-typees-pour-blocked.md)). Risque relevé
   par le dev : le validateur ne refuse aucun champ inconnu, donc un `needs-design:` mal orthographié
   passerait en silence. Voie retenue : **gate sur `blocked:`** — « prête » refuse une réservation laissée
   en prose libre sans `blocked:` typé. Panne 1 (confronter au code) → spike séparé, hors gate.

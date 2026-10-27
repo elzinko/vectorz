@@ -8,8 +8,8 @@ milestone: preparation
 version:
 labels: [methode, dor, blocked, refactor, lisibilite]
 depends:
-status: ready
-pr:
+status: shipped
+pr: "local (e00cff22)"
 evidence: none # vocabulaire de méthode, pas d'écran ; preuve = tests + grep
 created: 2026-10-27
 ---
@@ -99,7 +99,7 @@ cd products/mega-city && pnpm test && pnpm test:scripts
 - **Sœur de** [« prête » force un caveat dans un `blocked:` typé](20261015213921103_dor-verifie-premisse-dans-le-code.md) :
   les deux touchent `blocked-reasons.ts`. Celle qui se construit en second rebase sur la première.
 - Le mécanisme (liste fermée typée, lue par l'intake + le run) a été posé par
-  [raisons typées pour blocked](done/20261013131632484_raisons-typees-pour-blocked.md) — on garde le
+  [raisons typées pour blocked](20261013131632484_raisons-typees-pour-blocked.md) — on garde le
   mécanisme, on change le vocabulaire.
 - Mots les plus discutables au build : `risky` (ex-`auto-édition-risquée`), `oversized` (ex-`à-découper`),
   `dependency` (ex-`attend-dépendance`) — ajustables si un meilleur mot émerge, tant qu'ils restent un

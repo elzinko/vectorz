@@ -70,4 +70,4 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
   committé) **ne se reproduit plus** par ce mécanisme. J'avais groomé la fiche `ready` en me fiant à la note
   du 14/10 sans relire le code — faute corrigée. Retour `idea` : **à re-scoper** (reste au plus un
   durcissement défensif de `sprint_state()` : reconnaître `en cours` explicitement, un fichier sans marqueur
-  = instantané). Nouvelle preuve pour la fiche « [prête vérifie la prémisse](20261015213921103_dor-verifie-premisse-dans-le-code.md) ».
+  = instantané). Nouvelle preuve pour la fiche « [prête vérifie la prémisse](done/20261015213921103_dor-verifie-premisse-dans-le-code.md) ».
