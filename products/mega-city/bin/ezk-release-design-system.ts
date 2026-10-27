@@ -1,9 +1,9 @@
 #!/usr/bin/env tsx
 /**
- * `ezk design-system check <vX.Y>` — la revue design-system d'une version (fiche 20261011153019643).
+ * `ezk design check <vX.Y>` — la revue design-system d'une version (fiche 20261011153019643).
  *
  * Passe composable d'`ezk-release` : déclarée en DONNÉE dans `.vectorz/release-passes.yml`
- *   (`command: ezk --root {root} design-system check {version}`), elle rend GO/NO-GO.
+ *   (`command: ezk --root {root} design check {version}`), elle rend GO/NO-GO.
  *
  * Elle NE JUGE PAS elle-même (comme la chasse aux bugs du socle) : un agent de revue enregistre
  * le verdict (`.vectorz/release/<version>.design-system.json`) ; ce bin le relit. Référentiel du
@@ -23,7 +23,7 @@ const root = target.root;
 const version = target.rest.find((a) => !a.startsWith('-'));
 
 if (!version) {
-  console.error('usage : ezk design-system check <vX.Y>   (--root <projet> pour un autre dépôt)');
+  console.error('usage : ezk design check <vX.Y>   (--root <projet> pour un autre dépôt)');
   process.exit(2);
 }
 

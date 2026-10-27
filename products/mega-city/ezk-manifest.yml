@@ -263,7 +263,7 @@ commands:
     root: cwd
     project: true
     writes: true
-  - domain: design-system
+  - domain: design
     verb: check
     run: bin/ezk-release-design-system.ts
     summary: Revue design-system d'une version — GO/NO-GO et écarts nommés, sautée sans référentiel.

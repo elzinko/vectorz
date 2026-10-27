@@ -120,13 +120,13 @@ describe('loader design-system — config + verdict + composition', () => {
         '    command: ezk --root {root} backlog version check {version}',
         '  - id: design-system',
         '    title: Revue design-system',
-        '    command: ezk --root {root} design-system check {version}',
+        '    command: ezk --root {root} design check {version}',
         '',
       ].join('\n'),
     );
     const passes = loadReleasePasses(dir);
     const ds = passes.find((p) => p.id === 'design-system');
     expect(ds).toBeDefined();
-    expect(ds?.command).toBe('ezk --root {root} design-system check {version}');
+    expect(ds?.command).toBe('ezk --root {root} design check {version}');
   });
 });

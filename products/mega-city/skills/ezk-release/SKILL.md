@@ -52,7 +52,7 @@ passes:
   # Passe ajoutée sans toucher au skill (fiche sœur 20261011153019643) — une ligne de plus :
   # - id: design-system
   #   title: Revue design-system — l'UI livrée respecte le référentiel du projet
-  #   command: ezk --root {root} design-system check {version}
+  #   command: ezk --root {root} design check {version}
 ```
 
 **Les deux passes du socle** (v0.11) :
@@ -72,10 +72,10 @@ l'**ajoute en donnée** quand le projet a un design-system (preuve de la composi
 ```yaml
   - id: design-system
     title: Revue design-system — l'UI livrée respecte le référentiel du projet
-    command: ezk --root {root} design-system check {version}
+    command: ezk --root {root} design check {version}
 ```
 
-`ezk design-system check <vX.Y>` se comporte comme la chasse aux bugs — **il ne juge pas lui-même** :
+`ezk design check <vX.Y>` se comporte comme la chasse aux bugs — **il ne juge pas lui-même** :
 
 - **Référentiel absent** (défaut `.rules/design-system.md`, surchargé par
   `.vectorz/config.yml → release.design_system.reference`) → passe **sautée proprement** (GO).
