@@ -45,10 +45,31 @@ pourraient se déclarer différemment.
 
 ## Proposition
 
-À cadrer au grooming et avec l'architecte (panel). Direction : un manifeste de projet, lisible par
-agents et humains, qui recense outils et recettes (nom, source, comment lancer). Distinguer
-**déclarer** (bon marché, rend la découverte possible) de **extraire** (sortir le code en librairie,
-ADR-0015 : au 2e consommateur). On déclare tout de suite ; on extrait plus tard.
+> Trois voies, à départager en panel (sujet d'architecture). La recommandation ci-dessous **prépare**
+> la décision ; elle ne la tranche pas. La fiche reste `idea` tant que le panel n'a pas statué — ne
+> pas forcer `ready`.
+
+**Principe posé dès maintenant.** *Déclarer* (bon marché, rend la découverte possible) vient avant
+*extraire* (sortir le code en librairie, ADR-0015, au 2e consommateur). On déclare tout de suite ; on
+extrait plus tard.
+
+**Où vit la déclaration ?**
+
+| Voie | Idée | Pour | Contre |
+|---|---|---|---|
+| **(a) Manifeste dédié** | un fichier propre, ex. `.vectorz/recipes.yml` (nom, source, comment lancer), lu par une commande `ezk` de découverte | explicite ; un seul endroit ; versionné avec le repo ; extensible | un fichier de plus ; risque de dériver du réel (déclaré ≠ installé) |
+| **(b) Étendre `config.yml`** | une section `recipes:` dans `.vectorz/config.yml` que `ezk config` lit déjà | pas de nouveau fichier ; `ezk config show` l'affiche ; une seule porte de config (ADR-0062) | mêle config (comportement) et catalogue (découverte) ; `config.yml` grossit |
+| **(c) Dérivation auto** | aucune déclaration : `ezk` scanne le réel (skills installés, `secrets.yaml`, `.rules/`) et génère le catalogue à la volée | jamais périmé ; rien à maintenir ; « déclaré = réel » par construction | rate l'intention projet (« ici on utilise X pour Y ») et le « comment lancer » propre au projet ; ne distingue pas outil/recette sans heuristique |
+
+**Choix recommandé : (a) + un garde-fou (c).** Un manifeste dédié porte l'**intention** du projet (ce
+qu'il utilise, comment le lancer) ; la commande de découverte le lit **et signale la dérive** contre le
+réel installé (« déclaré X, absent » / « installé Y, non déclaré »). On gagne l'intention de (a) et la
+fraîcheur de (c). La voie (b) est écartée : un catalogue de découverte n'est pas de la config de
+comportement ; les mêler alourdit `config.yml` et brouille deux rôles.
+
+**À relier à la sœur.** Le manifeste doit partager son schéma avec le
+[contrat de recette auto-déclarée](20261023120000002_contrat-recette-autodeclaree.md) : une recette se
+déclare une fois, le manifeste la liste. L'ADR s'ouvre quand le panel tranche la voie et le schéma.
 
 ## Critères d'acceptation
 
@@ -73,3 +94,6 @@ Niveau *idée* — la cible, à préciser au grooming/panel.
   muti y travaillent).
 - Milestone `recettes` (découvrabilité), sœur de [Contrat de recette auto-déclarée](20261023120000002_contrat-recette-autodeclaree.md).
 - **Statut idea assumé** : sujet d'architecture, à groomer en panel (ne pas forcer `ready`).
+- **2026-10-27 : groomée (avis-architecte).** Trois voies posées dans la Proposition — manifeste dédié
+  (a) / étendre `config.yml` (b) / dérivation auto (c) —, compromis et choix recommandé : (a) + garde-fou
+  de dérive (c). Reste `idea` : le panel tranche la voie et le schéma du manifeste.

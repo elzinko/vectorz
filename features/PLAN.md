@@ -27,7 +27,7 @@ version se pose à la construction (étiquette). Détail :
 
 **Milestone `board` — « Le board dit vrai »** :
 - ~~`20261018121537582` — brancher le board web sur les vraies données · build~~ — split
-- `20261007135620590` — unifier les tableaux de bord en un seul (design par maquette) · groom
+- ~~`20261007135620590` — unifier les tableaux de bord en un seul (design par maquette) · groom~~ — split (document de design livré, retiré du plan le 2026-10-27)
 
 **Milestone `carte` — « La carte dit vrai »** :
 - ~~`20261015213921021` — aligner la carte de la méthode sur le code · build~~ — shipped

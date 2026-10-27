@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [supervision, moniteur, cockpit, board, dashboard, lisibilite, ux]
-status: idea
+status: split
 blocked:
 pr:
 evidence: before-after
@@ -155,3 +155,7 @@ Deux fiches voisines à **relier** (affichages du même board, pas des doublons)
 - **Produit & version.** Un seul backlog, un seul train ; le produit est le champ `product:` (ici **cop1**). Version pressentie : **v0.15 « Voir les runs »**, ou une version UX dédiée. **Décision PO.**
 - **Chevauchement config/modèle** — résolu le 2026-10-13 : le moteur 20261002205205417 a été découpé en trois tranches v0.17 — [schéma/résolveur](done/20261013132218242_config-modeles-schema-et-resolveur-pur.md), [pointeurs/CLI](done/20261013132218451_config-modeles-pointeurs-et-cli.md), et la [page ⚙ config outil](done/20261013132218656_config-outil-page-reglage-mapping.md). Pas de duplication : le board affiche, le moteur calcule.
 - Référence « ce qui se lit » (page rapide des 32 runs, PO) : https://claude.ai/artifact/5EevcXyhCQ14AEqnr3HEte
+- **2026-10-27 : retirée de la tête du plan (statut `split`).** Son travail est livré : les 7 surfaces
+  par les tranches sœurs de la milestone `board` (v0.17/v0.18), et le seul reste — brancher le board
+  sur les vraies données — par la fiche `20261018121537582`. Cette fiche reste **le document de design**
+  dans `features/`, citée par ADR-074 et ADR-079 ; **pas** déplacée dans `done/`, sinon ces liens casseraient.
