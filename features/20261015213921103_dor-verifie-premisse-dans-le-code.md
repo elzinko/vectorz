@@ -41,15 +41,46 @@ mais a dû être sautée — elle demandait d'aligner une 3ᵉ surface (« READM
 
 ## Proposition
 
-**Décision de modèle, réservée au PO / au panel** (d'où `blocked: attend-panel`). Deux voies :
+**Décision de modèle, réservée au PO / au panel** (d'où `blocked: attend-panel`). L'avis d'architecte
+ci-dessous éclaire le choix ; il ne le tranche pas.
 
-- **(a)** Ajouter un cran de DoR « les surfaces / concepts internes cités existent » — vérification
-  semi-mécanique au grooming : le LLM liste les surfaces citées, un contrôle vérifie leur présence
-  dans le dépôt (doctrine ADR-0001 : le script range, le LLM juge).
-- **(b)** Acter que « prête » = promesse de rédaction, et compter sur le groom ou le dev pour buter
-  sur la prémisse absente (statu quo, assumé).
+### Le constat de l'architecte : deux pannes distinctes, pas une
 
-Pas de construction tant que le panel n'a pas tranché.
+Le titre parle d'« une » prémisse, mais les cas vécus montrent **deux pannes différentes**.
+
+1. **La surface citée n'existe pas.** La fiche suppose un `README .rules/`, une « règle en
+   observation » qui ne sont nulle part. Le pilote la croit tirable ; elle ne l'est pas.
+   *(cas v0.16 : [trier les sorties de rétro](20261002155911271_trier-sorties-retro-par-nature.md).)*
+2. **Le caveat est invisible à l'intake.** La fiche porte « réservé panel/maquette » en **note
+   libre**. L'intake ne la lit pas — il n'écarte que sur le champ `blocked:`. Le caveat surgit en
+   plein build. *(cas 2026-10-24 et 2026-10-26 : board runs réels, voir Notes.)*
+
+Les trois voies ne répondent donc pas à la même question. (a) attaque la panne 1. (c) attaque la
+panne 2. (b) ne touche à rien. **(a) et (c) ne s'excluent pas** : elles réparent deux choses.
+
+### Les options
+
+| Voie | Ce qu'elle fait | Complexité | Fiabilité | Panne visée |
+|---|---|---|---|---|
+| **(a)** confronter au code | le LLM liste les surfaces citées, un script vérifie leur présence dans le dépôt | haute | **incertaine** — « règle en observation » n'est pas un chemin greppable ; faux positifs/négatifs | panne 1 |
+| **(b)** statu quo | « prête » = promesse de rédaction | nulle | — | aucune |
+| **(c)** champ `needs-design:` | un champ structuré, lu par l'intake avant le build, comme `blocked:` | basse | **sûre** — c'est de la donnée, le script la lit (ADR-0001) | panne 2 |
+
+### Choix recommandé — (c) maintenant, (a) en spike, (b) écartée
+
+- **(c) d'abord.** C'est le plus petit morceau utile. Il reprend le patron **éprouvé** de `blocked:` :
+  un champ, l'intake le lit, aucune intelligence à écrire. Il règle la panne la plus récente et la
+  plus concrète (2026-10-26). Réversible, doctrine-propre (le script range, personne ne juge).
+- **(a) en spike, pas en gate dès la v1.** Confronter la prémisse au code a de la valeur, mais sa
+  fiabilité n'est **pas prouvée** : comment grepper un concept comme « règle en observation » ? Gater
+  « prête » sur un contrôle qui se trompe serait pire que le mal. À éprouver d'abord sur quelques
+  fiches, hors gate, avant d'en faire un cran bloquant.
+- **(b) écartée comme réponse permanente.** Trois cas datés chiffrent le coût du statu quo : des
+  sprints sautés, des caveats découverts en plein build.
+
+**ADR à ouvrir quand le panel valide.** La décision change le modèle de la DoR : elle est durable,
+donc elle mérite un ADR court. Mais pas avant l'arbitrage — la fiche reste `blocked: attend-panel`,
+et il n'y a **pas de construction** tant que le panel n'a pas tranché.
 
 ## Critères d'acceptation
 
