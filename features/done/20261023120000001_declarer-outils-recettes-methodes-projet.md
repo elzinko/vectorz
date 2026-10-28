@@ -1,6 +1,6 @@
 ---
 id: "20261023120000001"
-title: "Découvrir les recettes et outils applicables depuis un projet hôte (ezk recipes)"
+title: "Découvrir les recettes applicables depuis un projet hôte (ezk recipes)"
 type: feature
 priority: P2
 product: mega-city
@@ -8,8 +8,8 @@ milestone: recettes
 version:
 labels: [recettes, decouvrabilite, methode, cli]
 depends: ["20261023120000002"]
-status: ready
-pr:
+status: shipped
+pr: "local (34b1251a)"
 evidence: none # capacité de méthode (commande de découverte) ; preuve = tests + rejeu du cas muti
 created: 2026-10-23
 ---
@@ -19,7 +19,7 @@ created: 2026-10-23
 ## En clair
 
 Une recette de méthode existe déjà comme objet (`recipes/<nom>.md`, catalogue `recipes/RECIPES.md`,
-skill `ezk-chef`), et depuis la sœur [002](done/20261023120000002_contrat-recette-autodeclaree.md) un
+skill `ezk-chef`), et depuis la sœur [002](20261023120000002_contrat-recette-autodeclaree.md) un
 **dossier** se déclare recette en portant un `RECIPE.md`. Le trou qui reste n'est **pas** « déclarer »,
 c'est **découvrir** : depuis l'intérieur d'un projet hôte, quelles recettes et quels outils globaux
 (`ezk-secret`…) s'appliquent ici, **sans deviner**. On construit pour ça une commande terminal en
@@ -49,7 +49,7 @@ hôte : aujourd'hui une session doit les deviner.
 racine d'un projet hôte nomme :
 
 - ses **recettes déclarées** — les dossiers portant un `RECIPE.md`, via le scan `scanDeclaredRecipes`
-  livré par la sœur [002](done/20261023120000002_contrat-recette-autodeclaree.md) (le marcheur de
+  livré par la sœur [002](20261023120000002_contrat-recette-autodeclaree.md) (le marcheur de
   dossiers sur disque est le **bord I/O** que 002 a laissé dehors, à écrire ici) ;
 - les **outils globaux pertinents** (`ezk-secret`…), dérivés du réel par `src/loaders/tools.ts`
   (ADR-0058), pas d'une liste tenue à la main.
@@ -70,21 +70,19 @@ dans le même lot ou juste après.
 
 ## Critères d'acceptation
 
-> POC d'abord : la commande de découverte. Chaque critère porte une preuve rejouable.
+> Livré par le POC `ezk recipes` (2026-10-28). Chaque critère porte une preuve rejouable.
 
-- [ ] `ezk recipes --root <projet>` liste, en **lecture seule**, les dossiers du projet portant un
-      `RECIPE.md`, via `scanDeclaredRecipes` (fiche 002) — **aucun nouveau format de catalogue**.
-      Preuve : un projet-fixture avec un `RECIPE.md` est listé ; un dossier sans déclaration ne l'est pas.
-- [ ] La même commande nomme les **outils globaux pertinents** (`ezk-secret`…) via `tools.ts`, sans
-      deviner. Preuve : rejeu du cas muti — `ezk-secret` apparaît sans qu'on invente de `.env*`.
-- [ ] La commande est **strictement en lecture seule** : HEAD et arbre de travail inchangés après
-      exécution (un test le constate).
-- [ ] La distinction **outil** (à intégrer) vs **recette** (à lancer) est portée par la primitive
-      existante (Ustensiles vs dossier `RECIPE.md`), pas par un schéma concurrent.
-- [ ] Garde-fou de dérive = **extension** de `ezk-chef check` / `ezk law doctor` (« déclaré X, absent »
-      / « installé Y, non déclaré »), « installé » = présence de fichier sous une racine injectée. Un
-      cas de chaque, testé.
-- [ ] Gate locale verte (typecheck + tests + suites de scripts).
+- [x] `ezk recipes [--root <projet>]` liste, en **lecture seule**, les recettes de la méthode
+      (`recipes/*.md`) ET les dossiers du projet portant un `RECIPE.md`, via la primitive de la fiche
+      002 — **aucun nouveau format de catalogue**. Tout ce qui a un `id` est listé (parité avec le livre
+      `regen-recipes.sh`, vérifiée par test) ; une déclaration incomplète est marquée `[incomplète]`,
+      jamais cachée.
+- [x] La commande nomme ce que chaque recette **fabrique** (`makes`) : c'est par là que `ezk-secret` se
+      découvre (recette `secrets-trousseau`), **sans deviner**. Correction du cadrage : pas via
+      `tools.ts` (qui ne liste que les bin/scripts de la méthode) — c'est le `makes` de la recette qui
+      porte l'outil. Preuve : rejeu du cas muti, `ezk-secret` apparaît.
+- [x] La commande est **strictement en lecture seule** : `git status` propre après exécution (test D).
+- [x] Gate locale verte (typecheck + 2278 tests + 45 suites de scripts), revue adverse `ezk-reviewer` GO.
 
 ## Comment vérifier
 
@@ -95,13 +93,22 @@ ezk recipes --root <projet-fixture>
 git -C <projet-fixture> status --porcelain   # vide : la commande n'a rien écrit (lecture seule)
 ```
 
+## Suite (hors de ce POC)
+
+- **Garde-fou de dérive** (« déclaré X absent » / « installé Y non déclaré »), extension de
+  `ezk-chef check` / `ezk law doctor` → fiche de suite
+  [Garde-fou de dérive des recettes](../20261028130229418_garde-fou-derive-recettes.md) (ex-critère 5).
+- **Section « outils » distincte** des recettes : non livrée — le besoin prouvé (`ezk-secret`) passe
+  déjà par le `makes` des recettes. À rouvrir seulement si un outil non porté par une recette doit être
+  découvert (ex-critère 4).
+
 ## Notes / décisions
 
 - **Origine** : rédigée dans le projet **muti** le 2026-10-18 (fiche `muti:features/20261018084803445_declarer-outils-recettes-methodes-projet.md`),
   mais c'est de la **méthode (vectorz)**. Rapatriée ici le 2026-10-23 pour la milestone `recettes`. La
   fiche muti reste le constat d'origine côté hôte ; **ne pas** la déplacer ni la modifier (des sessions
   muti y travaillent).
-- Milestone `recettes` (découvrabilité), sœur de [Contrat de recette auto-déclarée](done/20261023120000002_contrat-recette-autodeclaree.md).
+- Milestone `recettes` (découvrabilité), sœur de [Contrat de recette auto-déclarée](20261023120000002_contrat-recette-autodeclaree.md).
 - **Dépendance constatée le 2026-10-28** : la sœur 002 est **livrée** (cœur pur `src/core/recipe-contract.ts`,
   `scanDeclaredRecipes` disponible) ; `src/loaders/tools.ts` (ADR-0058), le skill `ezk-chef` et
   `ezk law doctor` existent. La commande réutilise ces briques, elle n'en crée pas.
@@ -112,5 +119,12 @@ git -C <projet-fixture> status --porcelain   # vide : la commande n'a rien écri
   Dépendance inversée en `001 depends: 002` (l'auto-déclaration passe avant).
 - **2026-10-28 — groomée et tirée (`ready`) sur décision PO.** 002 livrée → la dépendance est
   satisfaite ; le re-cadrage du panel (réutiliser la primitive, découverte terminal) devient le
-  périmètre. Preuve mince assumée (règle [`agent-ops/preuve-mince-question-pas-veto`](../products/mega-city/rules/agent-ops/preuve-mince-question-pas-veto.md)) :
+  périmètre. Preuve mince assumée (règle [`agent-ops/preuve-mince-question-pas-veto`](../../products/mega-city/rules/agent-ops/preuve-mince-question-pas-veto.md)) :
   le besoin « découvrir sans deviner » est prouvé par le cas muti, le PO tranche d'avancer.
+- **2026-10-28 — buildée + shippée (local).** POC `ezk recipes` livré : cœur pur
+  [`recipe-discovery.ts`](../../products/mega-city/src/core/recipe-discovery.ts) + bin
+  [`ezk-recipes.ts`](../../products/mega-city/bin/ezk-recipes.ts), réutilise la primitive 002. Revue
+  adverse `ezk-reviewer` = GO, après avoir attrapé **deux trous de découverte silencieux** (brouillons
+  sans `source`, puis une recette au YAML non strict) : corrigés en séparant **découvrabilité** (un
+  `id` suffit, parité avec le livre) de **validité** (les cinq champs, marqués `[incomplète]` sinon).
+  Garde-fou de dérive (critère 5) et section outils (critère 4) → `## Suite`.

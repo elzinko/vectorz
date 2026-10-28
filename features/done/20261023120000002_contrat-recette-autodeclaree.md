@@ -48,7 +48,7 @@ en lecture seule** bâtit le **catalogue** des recettes déclarées d'un projet 
 `recipes/RECIPES.md`, étendue aux répertoires d'un projet hôte. Spike borné : éprouver le contrat sur
 le pilote muti `apps/desktop/validation/` avant de généraliser. La découverte depuis un projet hôte
 (la commande `ezk recipes`) et le garde-fou de dérive vivent dans la sœur
-[001](../20261023120000001_declarer-outils-recettes-methodes-projet.md), qui dépend de celle-ci.
+[001](20261023120000001_declarer-outils-recettes-methodes-projet.md), qui dépend de celle-ci.
 
 ## Critères d'acceptation
 
@@ -70,7 +70,7 @@ Niveau *spike* — on cherche la forme du contrat, pas encore le moteur.
 - **Origine** : rédigée dans muti le 2026-10-18 (fiche `muti:features/20261018110931402_contrat-recette-autodeclaree.md`,
   type spike). La fiche muti le dit : « c'est de la méthode (vectorz)… à reprendre dans une session
   vectorz ». Rapatriée ici le 2026-10-23. **Ne pas** déplacer ni modifier la fiche muti ni son pilote.
-- Milestone `recettes`. Sœur de [Déclarer les outils/recettes/méthodes](../20261023120000001_declarer-outils-recettes-methodes-projet.md),
+- Milestone `recettes`. Sœur de [Déclarer les outils/recettes/méthodes](20261023120000001_declarer-outils-recettes-methodes-projet.md),
   qui **dépend de celle-ci** (`001 depends: 002`) : la déclaration est l'atome, le catalogue et la
   découverte en dérivent.
 - **Dépendance constatée le 2026-10-28** : la primitive recette existe déjà —
@@ -90,6 +90,6 @@ Niveau *spike* — on cherche la forme du contrat, pas encore le moteur.
   schéma neuf. Le scan liste les dossiers déclarés, écarte les non-déclarés **et** les `RECIPE.md`
   mal formés sans planter. Revue adverse `ezk-reviewer` : **GO** — elle a attrapé deux vrais bugs
   (scan qui plantait sur un YAML cassé ; `id` numérique nu silencieusement corrompu), corrigés et
-  gardés par des tests. **Hors scope, à la sœur [001](../20261023120000001_declarer-outils-recettes-methodes-projet.md)** :
+  gardés par des tests. **Hors scope, à la sœur [001](20261023120000001_declarer-outils-recettes-methodes-projet.md)** :
   le marcheur de dossiers sur disque et la commande terminal `ezk recipes` (découverte depuis un
   projet hôte). Le cœur est pur (ADR-0003) ; il reçoit des dossiers déjà lus.
