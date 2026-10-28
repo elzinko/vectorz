@@ -12,7 +12,9 @@ import {
   RECIPE_DECLARATION_FILE,
   RECIPE_REQUIRED_FIELDS,
   declaredRecipe,
+  indexedRecipe,
   scanDeclaredRecipes,
+  scanIndexedRecipes,
 } from '../recipe-contract.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
@@ -120,6 +122,34 @@ describe('scanDeclaredRecipes — le catalogue des dossiers déclarés', () => {
       { dir: 'ko', recipeMd: '---\ntitle: [unclosed\n---\n' },
     ]);
     expect(catalog.map((c) => c.dir)).toEqual(['ok']);
+  });
+});
+
+describe('indexedRecipe / scanIndexedRecipes — découvrabilité (règle du livre : un id)', () => {
+  // Brouillon : un id, mais `source` absent → le contrat STRICT l'écarte, la découvrabilité le garde.
+  const draftNoSource = '---\nid: "20261018110931402"\ntitle: Brouillon\nmakes: m\nstatus: draft\n---\ncorps\n';
+
+  it('indexe un brouillon (source vide) que le contrat strict écarte', () => {
+    expect(indexedRecipe(draftNoSource)?.id).toBe('20261018110931402');
+    expect(declaredRecipe(draftNoSource).declared).toBe(false);
+  });
+
+  it("n'indexe pas un texte sans id", () => {
+    expect(indexedRecipe('---\ntitle: pas d id\n---\n')).toBeNull();
+  });
+
+  it('indexe une recette dont le front-matter est du YAML non strict (valeur à `:` nu)', () => {
+    // Le livre regen-recipes.sh (awk) lit l'id ligne à ligne ; indexedRecipe ne doit pas la cacher
+    // juste parce que parseYaml échoue sur « savoir : détail ».
+    const quirky = '---\nid: "20261001005135652"\nmakes: un test faute de savoir : le détail\nstatus: draft\n---\n';
+    expect(indexedRecipe(quirky)?.id).toBe('20261001005135652');
+    expect(declaredRecipe(quirky).declared).toBe(false); // strict : YAML non valide → incomplète
+  });
+
+  it('scanIndexedRecipes garde le brouillon que scanDeclaredRecipes jette (parité avec le livre)', () => {
+    const entries = [{ dir: 'd', recipeMd: draftNoSource }];
+    expect(scanIndexedRecipes(entries).map((r) => r.id)).toEqual(['20261018110931402']);
+    expect(scanDeclaredRecipes(entries)).toEqual([]);
   });
 });
 

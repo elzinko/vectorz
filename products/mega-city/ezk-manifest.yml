@@ -270,6 +270,11 @@ commands:
     root: cwd
     project: true
     writes: true
+  - domain: recipes
+    run: bin/ezk-recipes.ts
+    summary: Montre les recettes de la méthode et celles déclarées dans ce projet (lecture seule).
+    root: none
+    project: true
   - domain: run
     verb: context
     run: bin/run-context.ts

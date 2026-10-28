@@ -1,7 +1,7 @@
 ---
 id: "20261001005135652"
 title: Tester sur mobile Android — démarrer l'émulateur ou utiliser un appareil
-makes: Un test sur appareil Android qui ne saute plus faute de savoir : l'émulateur démarre en une commande, l'app s'y lance selon la stack (Capacitor ou Expo)
+makes: "Un test sur appareil Android qui ne saute plus faute de savoir : l'émulateur démarre en une commande, l'app s'y lance selon la stack (Capacitor ou Expo)"
 source: ~/git/bacasable/muti
 composes: []
 status: draft # commandes rejouées le 2026-10-01 sur ce Mac (boot de l'émulateur, piège des deux racines) ; build d'app non rejoué ici

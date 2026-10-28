@@ -35,6 +35,7 @@ SUITES=(
   "bin/test-backlog-no-conflict.sh"                      # fiche 20261002231845120 — BACKLOG.md sort de git (ADR-0075), zéro conflit
   "bin/test-portfolio.sh"                                # fiche 20260922160651394 — portfolio.sh lit par le loader (fiche-rows)
   "bin/test-regen-recipes.sh"                            # ezk-chef — régénération du livre de recettes (fiche 20260824185422122)
+  "bin/test-ezk-recipes.sh"                              # ezk recipes — découverte lecture seule depuis un projet hôte (fiche 20261023120000001)
   "bin/test-ezk-chef-extract.sh"                         # ezk-chef extract — fiche shippée → brouillon de recette (fiche 20260824122629794)
   "bin/test-ezk-help.sh"                                 # /ezk-help — index de commandes généré (fiche 20260816131704335)
   "bin/test-supervision-registry-add.sh"                 # fiche 20261004192802828 — registry-add dit où il écrit (ADR-0062)

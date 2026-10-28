@@ -56,21 +56,22 @@ function fieldValue(data: Record<string, unknown>, key: string): string {
  * `declared: true` + la recette quand les cinq champs requis sont présents et non vides ;
  * sinon `declared: false` + la liste des champs manquants (pour un message actionnable).
  */
-export function declaredRecipe(recipeMdText: string): RecipeContractResult {
+/** Les données du front-matter d'une recette. Bloc absent ou YAML mal formé → `{}` (jamais une
+ * exception : le scan parcourt tous les dossiers d'un projet, un `RECIPE.md` cassé est courant). */
+function frontMatterData(recipeMdText: string): Record<string, unknown> {
   const block = frontMatterBlock(recipeMdText);
-  // Un front-matter YAML mal formé ÉCARTE le dossier (declared:false) ; il ne doit JAMAIS faire
-  // planter le scan, qui parcourt tous les dossiers d'un projet (un RECIPE.md cassé est courant).
-  let parsed: unknown = null;
-  if (block !== null) {
-    try {
-      parsed = parseYaml(block);
-    } catch {
-      parsed = null;
-    }
+  if (block === null) return {};
+  let parsed: unknown;
+  try {
+    parsed = parseYaml(block);
+  } catch {
+    return {};
   }
-  const data: Record<string, unknown> =
-    parsed !== null && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
+  return parsed !== null && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
+}
 
+export function declaredRecipe(recipeMdText: string): RecipeContractResult {
+  const data = frontMatterData(recipeMdText);
   const missing = RECIPE_REQUIRED_FIELDS.filter((f) => fieldValue(data, f) === '');
   if (missing.length > 0) return { declared: false, missing };
 
@@ -108,6 +109,70 @@ export function scanDeclaredRecipes(entries: ScanEntry[]): CatalogEntry[] {
     if (recipeMd === null) continue;
     const res = declaredRecipe(recipeMd);
     if (res.declared) catalog.push({ dir, ...res.recipe });
+  }
+  return catalog.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/**
+ * Lecture TOLÉRANTE du front-matter, à la manière de `regen-recipes.sh` (awk) : on tente le YAML, et
+ * s'il est non strict (ex. une valeur à `:` nu, que le livre lit quand même), on retombe sur une
+ * lecture ligne à ligne. But : la DÉCOUVERTE ne doit JAMAIS cacher une recette que le livre indexe.
+ */
+function tolerantData(recipeMdText: string): Record<string, unknown> {
+  const block = frontMatterBlock(recipeMdText);
+  if (block === null) return {};
+  try {
+    const parsed = parseYaml(block);
+    if (parsed !== null && typeof parsed === 'object') return parsed as Record<string, unknown>;
+  } catch {
+    // YAML non strict : on retombe sur la lecture ligne à ligne ci-dessous.
+  }
+  return lineFields(block);
+}
+
+/** Champs plats `clé: valeur` en tête de ligne (col. 0), comme regen-recipes.sh : valeur telle quelle,
+ * dé-quote simple, commentaire ` # …` de fin retiré. Ne gère pas le YAML imbriqué — inutile ici. */
+function lineFields(block: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const raw of block.split('\n')) {
+    const m = /^([A-Za-z_][\w-]*):[ \t]*(.*)$/.exec(raw);
+    if (!m || m[1] in out) continue;
+    let v = m[2].replace(/\s+#.*$/, '').trim();
+    if (v.length >= 2 && ((v[0] === '"' && v.endsWith('"')) || (v[0] === "'" && v.endsWith("'")))) {
+      v = v.slice(1, -1);
+    }
+    out[m[1]] = v;
+  }
+  return out;
+}
+
+/**
+ * DÉCOUVRABILITÉ (distincte de la validité ci-dessus) : une recette est **indexable** dès qu'elle a
+ * un `id` — exactement la règle du livre `regen-recipes.sh` (lecture tolérante). Les autres champs
+ * sont rendus au mieux. Un brouillon ou un front-matter à `:` nu RESTE découvrable : le cacher, c'est
+ * renvoyer la session au grep. La VALIDITÉ (`declaredRecipe`, YAML strict + cinq champs) est un
+ * contrôle à part, celui que fait `ezk-chef`. Rendre tolérant ≠ affaiblir le contrat : deux questions.
+ */
+export function indexedRecipe(recipeMdText: string): DeclaredRecipe | null {
+  const data = tolerantData(recipeMdText);
+  const id = fieldValue(data, 'id');
+  if (id === '') return null;
+  return {
+    id,
+    title: fieldValue(data, 'title'),
+    makes: fieldValue(data, 'makes'),
+    source: fieldValue(data, 'source'),
+    status: fieldValue(data, 'status'),
+  };
+}
+
+/** Les recettes indexables (règle du livre : un `id`) parmi des dossiers déjà lus, triées par id. */
+export function scanIndexedRecipes(entries: ScanEntry[]): CatalogEntry[] {
+  const catalog: CatalogEntry[] = [];
+  for (const { dir, recipeMd } of entries) {
+    if (recipeMd === null) continue;
+    const r = indexedRecipe(recipeMd);
+    if (r) catalog.push({ dir, ...r });
   }
   return catalog.sort((a, b) => a.id.localeCompare(b.id));
 }

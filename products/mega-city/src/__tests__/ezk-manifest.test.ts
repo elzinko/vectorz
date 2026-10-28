@@ -87,6 +87,7 @@ describe('ezk-manifest.yml', () => {
       'now',
       'paths',
       'pr emit-local',
+      'recipes',
       'release',
       'retro captures',
       'retro note',
