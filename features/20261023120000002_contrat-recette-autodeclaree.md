@@ -8,7 +8,7 @@ milestone: recettes
 version:
 labels: [recettes, decouvrabilite, methode, contrat, spike]
 depends:
-status: idea
+status: ready
 pr:
 evidence: none # spike de contrat ; preuve = un répertoire-pilote reconnu comme recette
 created: 2026-10-23
@@ -32,17 +32,23 @@ Deux constats de la session du 2026-10-18 (muti).
    capacité qu'un humain invoque. Un outil, une recette ou un composant, c'est une *brique* qu'un skill
    (ou n'importe quel objet du domaine) réutilise. Les deux ne se confondent pas. Un répertoire peut
    porter un skill ET être une recette réutilisable : deux déclarations, deux fichiers.
-2. **Déclarer et extraire sont deux axes différents.** L'ADR-0015 dit « on extrait le moteur en package
-   au 2e consommateur » (anti sur-ingénierie) — vrai pour l'**extraction**, pas pour la **déclaration**.
-   Déclarer est bon marché et c'est CE QUI REND la découverte possible. Attendre un 2e besoin pour
-   déclarer tue le catalogue. Donc on déclare tout de suite ; on extrait plus tard.
+2. **Déclarer et extraire sont deux axes différents.** L'**ADR-0013** encadre l'**extraction** d'un
+   moteur générique : on attend un 2e usage (règle de trois), et son amendement du 2026-08-24 en fait
+   même une **question à instruire**, pas un veto. Mais cela vise l'extraction, **pas la déclaration** :
+   déclarer est bon marché et c'est CE QUI REND la découverte possible. Attendre un 2e besoin pour
+   déclarer tue le catalogue. Donc on déclare tout de suite ; on extrait plus tard. *(La fiche citait
+   « ADR-0015 » — corrigé : la règle du 2e cas est l'ADR-0013.)*
 
 ## Proposition
 
-À cadrer en panel. Direction : un **contrat** (ex. `RECIPE.md` ou un petit front-matter) qu'un
-répertoire porte pour se déclarer recette ; un **scan** qui bâtit le catalogue des recettes déclarées
-d'un (ou plusieurs) projet(s). Spike : éprouver le contrat sur le pilote muti `validation/` avant de
-généraliser.
+Réutiliser la **primitive recette existante**, pas un format neuf. Un répertoire d'un projet hôte se
+déclare recette en portant un **fichier de déclaration** — un `RECIPE.md` à front-matter, le même
+contrat que [`recipe-frontmatter.ts`](../products/mega-city/src/core/recipe-frontmatter.ts). Un **scan
+en lecture seule** bâtit le **catalogue** des recettes déclarées d'un projet : la même sortie que
+`recipes/RECIPES.md`, étendue aux répertoires d'un projet hôte. Spike borné : éprouver le contrat sur
+le pilote muti `apps/desktop/validation/` avant de généraliser. La découverte depuis un projet hôte
+(la commande `ezk recipes`) et le garde-fou de dérive vivent dans la sœur
+[001](20261023120000001_declarer-outils-recettes-methodes-projet.md), qui dépend de celle-ci.
 
 ## Critères d'acceptation
 
@@ -52,6 +58,7 @@ Niveau *spike* — on cherche la forme du contrat, pas encore le moteur.
 - [ ] Un scan liste les recettes déclarées d'un projet (catalogue).
 - [ ] Le pilote muti `apps/desktop/validation/` est reconnu comme recette par le contrat.
 - [ ] La déclaration d'une recette est distincte de celle d'un skill (`SKILL.md`).
+- [ ] Le contrat réutilise le front-matter recette existant (`recipe-frontmatter.ts`), sans schéma concurrent.
 
 ## Comment vérifier
 
@@ -63,5 +70,15 @@ Niveau *spike* — on cherche la forme du contrat, pas encore le moteur.
 - **Origine** : rédigée dans muti le 2026-10-18 (fiche `muti:features/20261018110931402_contrat-recette-autodeclaree.md`,
   type spike). La fiche muti le dit : « c'est de la méthode (vectorz)… à reprendre dans une session
   vectorz ». Rapatriée ici le 2026-10-23. **Ne pas** déplacer ni modifier la fiche muti ni son pilote.
-- Milestone `recettes`, dépend de [Déclarer les outils/recettes/méthodes](20261023120000001_declarer-outils-recettes-methodes-projet.md).
-- **Statut idea assumé** : sujet d'architecture, à groomer en panel.
+- Milestone `recettes`. Sœur de [Déclarer les outils/recettes/méthodes](20261023120000001_declarer-outils-recettes-methodes-projet.md),
+  qui **dépend de celle-ci** (`001 depends: 002`) : la déclaration est l'atome, le catalogue et la
+  découverte en dérivent.
+- **Dépendance constatée le 2026-10-28** : la primitive recette existe déjà —
+  [`recipe-frontmatter.ts`](../products/mega-city/src/core/recipe-frontmatter.ts) (contrat de
+  front-matter) et `bin/regen-recipes.sh` (catalogue `recipes/RECIPES.md`). Le spike réutilise ce
+  contrat, il ne crée pas de format neuf.
+- **2026-10-28 — tirée (`ready`) sur décision PO.** Le panel du 2026-10-27 recommandait déjà « 002
+  avant 001 » : 002 est l'atome que le panel endosse. La preuve ne repose que sur un cas (muti), mais
+  ce n'est pas un veto (règle
+  [`agent-ops/preuve-mince-question-pas-veto`](../products/mega-city/rules/agent-ops/preuve-mince-question-pas-veto.md),
+  ADR-0013 amendé). Le PO tranche d'avancer maintenant : la découvrabilité servira en avance.

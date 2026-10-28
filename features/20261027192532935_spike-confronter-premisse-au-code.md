@@ -33,7 +33,7 @@ chemins qu'on peut grepper. D'où le doute sur la fiabilité — et donc ce spik
 ## Contexte / Problème
 
 - **Cas fondateur (run v0.16)** : la fiche « trier les sorties de rétro »
-  ([done/20261002155911271](done/20261002155911271_trier-sorties-retro-par-nature.md)) était prête mais
+  ([20261002155911271](20261002155911271_trier-sorties-retro-par-nature.md)) était prête mais
   a dû être sautée — elle citait une 3ᵉ surface (« README `.rules/` ») et un concept (« règle en
   observation ») absents de tout fichier.
 - Le panel du 2026-10-27 ([ADR-085](../docs/adr/ADR-085-prete-gate-reservations-via-blocked.md)) a
@@ -68,7 +68,7 @@ Un spike **borné** (pas une feature à livrer d'emblée) :
 ```bash
 # Rejouer le cas fondateur : la fiche cite « .rules/ » et « règle en observation » absents du code.
 # Le spike doit dire ce qu'un contrôle automatique attrape et ce qu'il rate.
-cat features/done/20261002155911271_trier-sorties-retro-par-nature.md
+cat features/20261002155911271_trier-sorties-retro-par-nature.md
 ```
 
 ## Notes / décisions

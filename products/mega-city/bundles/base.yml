@@ -8,3 +8,4 @@ rules:
   - documentation-guidelines/next-step-affordance
   - documentation-guidelines/readable-deliverable-trio
   - agent-ops/verify-access-before-asking
+  - agent-ops/preuve-mince-question-pas-veto

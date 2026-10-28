@@ -86,6 +86,16 @@ techniques:
       Brainstorm ciblé avec product-brainstorming sur le slot le plus faible : explore des pistes,
       challenge les hypothèses, puis converge sur une formulation que l'opérateur garde.
 
+  - id: pourquoi-pas-maintenant
+    title: Pourquoi pas maintenant ?
+    slot: valeur
+    ask: >-
+      Compte les cas réels et datés qui prouvent ce besoin. Un seul cas n'interdit RIEN : le nombre de
+      cas est une question à instruire — « pourquoi pas maintenant ? » —, pas un veto (ADR-0013,
+      amendement du 2026-08-24). Si le PO décide d'agir sur un seul cas, écris sa raison dans les Notes
+      et avance. Garde-fou : ne confonds pas DÉCLARER un artefact (bon marché, tout de suite) et EXTRAIRE
+      un moteur générique (là seulement, attends un 2e usage).
+
   - id: slot-du-projet
     title: Remplir un slot propre au projet
     slot: projet

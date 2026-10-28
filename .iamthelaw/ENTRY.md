@@ -2,6 +2,27 @@
 
 Règles compilées de ce projet (cap claude-code-law).
 
+## agent-ops/preuve-mince-question-pas-veto  `[SHOULD]`
+
+- Quand une fiche, une recette ou un build n'a qu'**un seul cas** pour preuve, ce n'est pas un motif
+  de refus. Le nombre de cas (« preuve dans ≥ 2 repos », « règle de trois ») est une **question à
+  instruire** — « pourquoi pas maintenant ? » —, dont la réponse se **journalise dans la fiche**
+  (ADR-0013, amendement du 2026-08-24). Motif PO : « je suis en mesure de savoir ce qui va me servir
+  en avance ».
+- Au **grooming** comme en **panel adverse**, la minceur de preuve se **signale** et se discute ; elle
+  ne **bloque** jamais toute seule. Le PO tranche ; sa décision d'agir sur un seul cas est valable dès
+  qu'elle est journalisée. Ne re-pose pas le veto à chaque session : l'amendement a déjà retiré l'interdit.
+- **Déclarer n'est pas extraire.** Déclarer un artefact — une recette, un contrat — est bon marché, et
+  c'est ce qui rend la découverte possible : on déclare tout de suite. Le gate du 2e cas ne vise que
+  l'**extraction d'un moteur générique** (le méta-outillage qu'encadre l'ADR-0013), jamais la simple
+  déclaration.
+- Origine : panel recettes du 2026-10-27 — un panel a re-bloqué une fiche sur « attends un 2e cas », en
+  ignorant que l'amendement ADR-0013 (décision PO du 2026-08-22) avait déjà retiré ce veto. La règle
+  dormait dans l'ADR, invisible au point d'usage ; elle vit désormais dans la loi.
+- Mesure (removability) : sur les 5 prochains panels ou groomings qui rencontrent une preuve mince,
+  0 cas où elle est posée comme un refus sans que le PO ait tranché ; et 0 fiche de simple déclaration
+  bloquée au nom du gate du 2e cas.
+
 ## agent-ops/verify-access-before-asking  `[SHOULD]`
 
 - Avant de demander à l'humain d'exécuter une opération sur un service externe — changer un
@@ -11,12 +32,17 @@ Règles compilées de ce projet (cap claude-code-law).
 - Il ne sollicite l'humain que pour **créer / déposer un secret**, ou pour une des **4 décisions
   humaines** (action irréversible ou sortante, hausse de budget, idée produit sur backlog vide,
   exigences contradictoires).
+- Quand l'agent dit à l'humain de **lancer une commande de méthode**, il la **vérifie à jour**
+  (`ezk help`, `ezk help <domaine>`) d'abord : un verbe a pu être **renommé ou retiré** depuis
+  la mémoire de l'agent (ex. `lawgiver bind-global` → `ezk law bind-global`).
 - Origine : session 2026-10-10 — l'agent a demandé un changement Vercel alors que la CLI `vercel`
   était authentifiée, et a enchaîné 3 allers-retours sur le dashboard LemonSqueezy pour un prix,
-  alors que le jeton API était au trousseau depuis le début (spike 20261010213000378).
+  alors que le jeton API était au trousseau depuis le début (spike 20261010213000378). Affûtée en
+  rétro 2026-10-11 : commande périmée `lawgiver bind-global` transmise à l'humain.
 - Mesure (removability) : sur les 5 prochaines sessions touchant un service externe, 0 cas où
   l'agent délègue une opération à l'humain sans avoir d'abord vérifié CLI / MCP / trousseau et
-  constaté qu'aucun ne permet de la faire.
+  constaté qu'aucun ne permet de la faire ; **et 0 commande de méthode périmée ou renommée**
+  transmise à l'humain.
 
 ## clean-code/no-dead-code  `[MUST]`
 
