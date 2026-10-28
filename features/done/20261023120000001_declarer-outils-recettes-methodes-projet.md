@@ -97,7 +97,7 @@ git -C <projet-fixture> status --porcelain   # vide : la commande n'a rien écri
 
 - **Garde-fou de dérive** (« déclaré X absent » / « installé Y non déclaré »), extension de
   `ezk-chef check` / `ezk law doctor` → fiche de suite
-  [Garde-fou de dérive des recettes](../20261028130229418_garde-fou-derive-recettes.md) (ex-critère 5).
+  [Garde-fou de dérive des recettes](20261028130229418_garde-fou-derive-recettes.md) (ex-critère 5).
 - **Section « outils » distincte** des recettes : non livrée — le besoin prouvé (`ezk-secret`) passe
   déjà par le `makes` des recettes. À rouvrir seulement si un outil non porté par une recette doit être
   découvert (ex-critère 4).

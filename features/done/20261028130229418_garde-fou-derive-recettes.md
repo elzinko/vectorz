@@ -8,8 +8,8 @@ milestone: recettes
 version:
 labels: [recettes, decouvrabilite, methode, derive]
 depends: ["20261023120000001"]
-status: ready
-pr:
+status: shipped
+pr: "local (68af0098)"
 evidence: none # garde-fou de méthode sans écran ; preuve = un cas « source: absente » sur une fixture, testé
 created: 2026-10-28
 ---
@@ -25,7 +25,7 @@ une recette dont le champ `source:` pointe un chemin qui n'existe plus est signa
 
 ## Contexte / Problème
 
-- La fiche sœur [Découvrir les recettes (`ezk recipes`)](done/20261023120000001_declarer-outils-recettes-methodes-projet.md)
+- La fiche sœur [Découvrir les recettes (`ezk recipes`)](20261023120000001_declarer-outils-recettes-methodes-projet.md)
   a livré la **découverte** en lecture seule. Elle a laissé de côté le **contrôle de cohérence** :
   rien ne vérifie qu'une déclaration correspond encore au réel.
 - Une recette porte un champ `source:` — le chemin de son implémentation. Rien n'empêche ce chemin
@@ -85,7 +85,7 @@ Le contrôle réutilise les primitives déjà livrées, sans rien réimplémente
 ## Notes / décisions
 
 - **Origine** : critère de dérive de la fiche
-  [Découvrir les recettes (`ezk recipes`)](done/20261023120000001_declarer-outils-recettes-methodes-projet.md),
+  [Découvrir les recettes (`ezk recipes`)](20261023120000001_declarer-outils-recettes-methodes-projet.md),
   différé à la livraison du POC `ezk recipes` (2026-10-28, revue `ezk-reviewer` GO). Séparé pour que
   la découverte ship proprement.
 - **Décision de structure (grooming 2026-10-28)** : maison = `ezk-chef check`, pas `ezk law doctor`.
@@ -95,4 +95,4 @@ Le contrôle réutilise les primitives déjà livrées, sans rien réimplémente
   Le cas « installé, non déclaré » part en `## Suite` (ci-dessus), faute de frontière testable.
 - La minceur de preuve (un seul cas moteur) ne bloque pas : déclarer et contrôler une recette est
   bon marché, c'est ce qui rend la découverte fiable (règle `agent-ops/preuve-mince-question-pas-veto`,
-  amendement [ADR-0013](../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md)).
+  amendement [ADR-0013](../../products/mega-city/docs/adr/0013-ezk-recipy-entonnoir-de-sourcing-jamais-fabrique.md)).
