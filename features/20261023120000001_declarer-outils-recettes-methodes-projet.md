@@ -1,6 +1,6 @@
 ---
 id: "20261023120000001"
-title: "Déclarer et rendre découvrables les outils, recettes et méthodes d'un projet"
+title: "Découvrir les recettes et outils applicables depuis un projet hôte (ezk recipes)"
 type: feature
 priority: P2
 product: mega-city
@@ -8,104 +8,92 @@ milestone: recettes
 version:
 labels: [recettes, decouvrabilite, methode, cli]
 depends: ["20261023120000002"]
-status: idea
+status: ready
 pr:
-evidence: none # capacité de méthode (manifeste de projet) ; preuve = tests + démo de découverte
+evidence: none # capacité de méthode (commande de découverte) ; preuve = tests + rejeu du cas muti
 created: 2026-10-23
 ---
 
-# 20261023120000001 — Déclarer les outils, recettes et méthodes d'un projet
+# 20261023120000001 — Découvrir les recettes et outils d'un projet (`ezk recipes`)
 
 ## En clair
 
-Une **recette** de méthode est déjà un objet qui existe : un dossier `recipes/<nom>.md` avec son
-front-matter, listé dans `recipes/RECIPES.md` (auto-généré), gouverné par le skill `ezk-chef`. Le trou
-n'est donc **pas** « déclarer » — c'est **découvrir**, depuis l'intérieur d'un projet hôte, quelles
-recettes et quels outils globaux (`ezk-secret`…) s'appliquent ici, sans deviner. Panel du 2026-10-27 :
-**pas de nouveau manifeste** (ce serait un doublon de `recipes/`). Reste `idea` : à re-cadrer, et après
-la sœur 002.
+Une recette de méthode existe déjà comme objet (`recipes/<nom>.md`, catalogue `recipes/RECIPES.md`,
+skill `ezk-chef`), et depuis la sœur [002](done/20261023120000002_contrat-recette-autodeclaree.md) un
+**dossier** se déclare recette en portant un `RECIPE.md`. Le trou qui reste n'est **pas** « déclarer »,
+c'est **découvrir** : depuis l'intérieur d'un projet hôte, quelles recettes et quels outils globaux
+(`ezk-secret`…) s'appliquent ici, **sans deviner**. On construit pour ça une commande terminal en
+lecture seule, `ezk recipes`. **Pas de nouveau manifeste** : on réutilise la primitive recette.
 
 ## Si tu arrives frais
 
 Un **outil** = du code déjà fait, à **intégrer** (ex. `ezk-secret`). Une **recette** = une procédure à
-**lancer** (un skill, un runbook). Les deux manquent d'un point de déclaration au niveau du projet, et
-pourraient se déclarer différemment.
+**lancer** (un skill, un runbook). Les deux manquent d'un point de **découverte** au niveau du projet
+hôte : aujourd'hui une session doit les deviner.
 
 ## Contexte / Problème
 
 - **Symptôme vécu (2026-10-18, projet muti)** : pour notariser un build beta, une session a dû deviner
-  l'existence de `ezk-secret` (via les commentaires de `secrets.yaml` et `ezk help`), faute de
-  déclaration dans le projet. Elle a même commencé par inventer un `.env.beta.local` hors convention
+  l'existence de `ezk-secret` (via les commentaires de `secrets.yaml` et `ezk help`), faute de point de
+  découverte dans le projet. Elle a même commencé par inventer un `.env.beta.local` hors convention
   avant d'être recadrée.
-- **Ce qui existe** : `ezk` est une CLI de méthode liée **globalement**. Les skills `ezk-*` sont
-  globaux. Un projet hôte porte déjà des déclarations partielles et éparses : `CLAUDE.md`, la mémoire
-  de l'agent, `secrets.yaml`, `.rules/`, l'index `ezk-help`.
-- **Le manque** : aucun **manifeste** au niveau du projet ne recense « les outils, recettes et méthodes
-  disponibles ici, leur source, et comment les lancer ». La découverte repose sur la convention et la
-  mémoire, pas sur un fichier lisible.
+- **Ce qui existe** : `ezk` est une CLI de méthode liée **globalement** ; les skills `ezk-*` sont
+  globaux ; un projet hôte porte des déclarations partielles et éparses (`CLAUDE.md`, mémoire,
+  `secrets.yaml`, `.rules/`, `ezk help`). La sœur 002 ajoute le contrat `RECIPE.md` par dossier.
+- **Le manque** : aucune surface ne répond, depuis la racine d'un projet, « quelles recettes et quels
+  outils puis-je utiliser ici ? ». La découverte repose sur la convention et la mémoire.
 
 ## Proposition
 
-**Panel adverse du 2026-10-27, 3 voix : NO-GO sur la voie initiale (un manifeste `.vectorz/recipes.yml`).**
-Le fait qui tranche : la primitive « recette » **existe déjà et est livrée**, et l'incident fondateur
-portait sur une recette **qui existait**.
+**Ce qu'on construit.** Une commande terminal **`ezk recipes`**, en **lecture seule**, qui depuis la
+racine d'un projet hôte nomme :
 
-### Ce que le panel a trouvé dans le code
+- ses **recettes déclarées** — les dossiers portant un `RECIPE.md`, via le scan `scanDeclaredRecipes`
+  livré par la sœur [002](done/20261023120000002_contrat-recette-autodeclaree.md) (le marcheur de
+  dossiers sur disque est le **bord I/O** que 002 a laissé dehors, à écrire ici) ;
+- les **outils globaux pertinents** (`ezk-secret`…), dérivés du réel par `src/loaders/tools.ts`
+  (ADR-0058), pas d'une liste tenue à la main.
 
-- `recipes/<nom>.md` porte un front-matter de déclaration (`src/core/recipe-frontmatter.ts` :
-  id/title/makes/source/composes/status/home) ; `recipes/RECIPE_TEMPLATE.md` déclare déjà les
-  **Ustensiles** (outils + comment les lancer) et les **Ingrédients** (secrets) ; `bin/regen-recipes.sh`
-  génère le **catalogue** `recipes/RECIPES.md` ; le skill `ezk-chef` (list/check/regen) le gouverne.
-- La voie (c) pour les **outils** est déjà construite : `src/loaders/tools.ts` (ADR-0058) dérive le
-  catalogue d'outils du réel (`bin/*`, `skills/<s>/scripts/*`).
-- **Clincher** : l'incident muti (2026-10-18, « deviner `ezk-secret` ») portait sur
-  [`recipes/secrets-trousseau.md`](../recipes/secrets-trousseau.md), **status `ready` depuis le
-  2026-10-03** (avant l'incident), dont le champ `makes:` nomme littéralement `ezk-secret` et
-  `secrets.yaml`. Ce n'était pas une primitive manquante : c'était un échec de **découverte** d'une
-  recette existante.
+Puis un **garde-fou de dérive**, en **extension** de `ezk-chef check` / `ezk law doctor` (pas un
+vérificateur neuf) : « déclaré X, absent » / « installé Y, non déclaré ». « Installé » se mesure par
+**présence de fichier sous une racine injectée** (jamais via le `PATH` — sinon test flaky).
 
-Créer un `.vectorz/recipes.yml` + un 2ᵉ catalogue serait le doublon `needs-design:` vs `blocked:` du
-panel précédent : une 2ᵉ surface de listing, au nom qui percute l'existante, et un fichier statique qui
-pourrit (la dérive annoncée). La voie (b) reste écartée (`config.yml` = porte de **comportement**, pas
-un catalogue).
+**Pourquoi cette voie (panel adverse du 2026-10-27).** Pas de nouveau manifeste ni de 2ᵉ catalogue : la
+primitive recette existe déjà et est réutilisée. L'incident fondateur (muti, deviner `ezk-secret`)
+portait sur une recette **qui existait** (`recipes/secrets-trousseau.md`, `ready` depuis le 2026-10-03)
+— un trou de **découverte**, pas une primitive manquante. La voie « manifeste `.vectorz/recipes.yml` »
+est écartée (2ᵉ surface de listing, fichier statique qui pourrit) ; la voie « étendre `config.yml` »
+aussi (une porte de **comportement**, pas un catalogue).
 
-### La voie retenue (re-cadrage)
-
-- **Pas de nouveau fichier.** On réutilise la primitive recette (`recipes/` + `ezk-chef` + `tools.ts`).
-- Le vrai cœur = **la découverte depuis un projet hôte** : une commande terminal en lecture seule
-  (`ezk recipes`, autonome — pas greffée sur `ezk now`) qui montre, depuis la racine d'un projet, ses
-  recettes applicables **et** les outils globaux pertinents (`ezk-secret`…). Aujourd'hui `ezk-chef` est
-  un skill chat sans domaine CLI ; la découverte terminal côté projet hôte manque.
-- **Garde-fou de dérive** = **extension** de `ezk-chef check` / `law doctor`, pas un vérificateur neuf :
-  « déclaré X, absent » / « installé Y, non déclaré ». « Installé » se mesure par **présence de fichier
-  sous une racine injectée** (jamais via le `PATH` — sinon test flaky).
-
-### Ordre corrigé — 002 AVANT 001
-
-La déclaration ([002](done/20261023120000002_contrat-recette-autodeclaree.md) : un dossier se déclare recette,
-`RECIPE.md` en place) est l'**atome** ; le catalogue / la découverte (001) en **dérive**. La dépendance
-était inversée (`002 depends: 001`) : corrigée en **`001 depends: 002`**. On rend 002 tirable d'abord.
+**POC d'abord** : la commande de découverte (la douleur prouvée). Le garde-fou de dérive vient ensuite,
+dans le même lot ou juste après.
 
 ## Critères d'acceptation
 
-> Re-cadrés par le panel. 001 ne devient `ready` qu'après 002 (`depends:`), et sur un arbitrage PO.
+> POC d'abord : la commande de découverte. Chaque critère porte une preuve rejouable.
 
-- [ ] La fiche réutilise la primitive recette existante (`recipes/`, `recipe-frontmatter.ts`,
-      `regen-recipes.sh`, `RECIPES.md`, `ezk-chef`, `tools.ts`) — **aucun nouveau format de catalogue**.
-- [ ] Depuis la racine d'un **projet hôte**, une surface terminal en lecture seule nomme ses recettes
-      applicables + les outils globaux pertinents, **sans deviner**. Preuve : rejeu du cas muti
-      (`ezk-secret` trouvé sans inventer de `.env*`).
-- [ ] Le garde-fou de dérive est une **extension** de `ezk-chef check` / `law doctor` (« déclaré X,
-      absent » / « installé Y, non déclaré »), « installé » mesuré par présence de fichier sous une
-      racine injectée. Un cas de chaque, testé.
+- [ ] `ezk recipes --root <projet>` liste, en **lecture seule**, les dossiers du projet portant un
+      `RECIPE.md`, via `scanDeclaredRecipes` (fiche 002) — **aucun nouveau format de catalogue**.
+      Preuve : un projet-fixture avec un `RECIPE.md` est listé ; un dossier sans déclaration ne l'est pas.
+- [ ] La même commande nomme les **outils globaux pertinents** (`ezk-secret`…) via `tools.ts`, sans
+      deviner. Preuve : rejeu du cas muti — `ezk-secret` apparaît sans qu'on invente de `.env*`.
+- [ ] La commande est **strictement en lecture seule** : HEAD et arbre de travail inchangés après
+      exécution (un test le constate).
 - [ ] La distinction **outil** (à intégrer) vs **recette** (à lancer) est portée par la primitive
-      existante (Ustensiles vs dossier recette), pas par un schéma concurrent.
-- [ ] Gate locale verte.
+      existante (Ustensiles vs dossier `RECIPE.md`), pas par un schéma concurrent.
+- [ ] Garde-fou de dérive = **extension** de `ezk-chef check` / `ezk law doctor` (« déclaré X, absent »
+      / « installé Y, non déclaré »), « installé » = présence de fichier sous une racine injectée. Un
+      cas de chaque, testé.
+- [ ] Gate locale verte (typecheck + tests + suites de scripts).
 
 ## Comment vérifier
 
-- Depuis un projet neuf, une session lit le manifeste et nomme les outils/recettes disponibles sans
-  les deviner.
+```bash
+# Depuis un projet-fixture portant un dossier avec RECIPE.md et un outil global applicable :
+ezk recipes --root <projet-fixture>
+# → liste la recette déclarée ET nomme ezk-secret, sans rien deviner.
+git -C <projet-fixture> status --porcelain   # vide : la commande n'a rien écrit (lecture seule)
+```
 
 ## Notes / décisions
 
@@ -114,14 +102,15 @@ La déclaration ([002](done/20261023120000002_contrat-recette-autodeclaree.md) :
   fiche muti reste le constat d'origine côté hôte ; **ne pas** la déplacer ni la modifier (des sessions
   muti y travaillent).
 - Milestone `recettes` (découvrabilité), sœur de [Contrat de recette auto-déclarée](done/20261023120000002_contrat-recette-autodeclaree.md).
-- **Statut idea assumé** : sujet d'architecture, à groomer en panel (ne pas forcer `ready`).
-- **2026-10-27 : groomée (avis-architecte).** Trois voies posées — manifeste dédié (a) / étendre
-  `config.yml` (b) / dérivation auto (c) —, choix alors recommandé (a) + garde-fou (c). **Renversé par
-  le panel le même jour (voir ci-dessous).**
+- **Dépendance constatée le 2026-10-28** : la sœur 002 est **livrée** (cœur pur `src/core/recipe-contract.ts`,
+  `scanDeclaredRecipes` disponible) ; `src/loaders/tools.ts` (ADR-0058), le skill `ezk-chef` et
+  `ezk law doctor` existent. La commande réutilise ces briques, elle n'en crée pas.
 - **2026-10-27 : panel adverse (3 voix) → NO-GO sur un manifeste neuf.** Fait décisif : la primitive
   recette existe (`recipes/` + `ezk-chef` + `tools.ts`), et l'incident muti portait sur une recette
-  déjà `ready` (`recipes/secrets-trousseau.md`, 2026-10-03). Le trou est la **découverte depuis un
-  projet hôte**, pas une primitive manquante. Voie retenue : réutiliser la primitive + une surface de
-  découverte terminal (`ezk recipes`) + étendre `ezk-chef check` / `law doctor` pour la dérive.
-  Dépendance **inversée** : `001 depends: 002` (002, l'auto-déclaration, passe avant). Reste `idea` :
-  re-cadrée, pas tirable tant que 002 n'est pas fait — arbitrage PO.
+  déjà `ready`. Le trou est la **découverte depuis un projet hôte**. Voie retenue : réutiliser la
+  primitive + la commande `ezk recipes` + étendre `ezk-chef check` / `law doctor` pour la dérive.
+  Dépendance inversée en `001 depends: 002` (l'auto-déclaration passe avant).
+- **2026-10-28 — groomée et tirée (`ready`) sur décision PO.** 002 livrée → la dépendance est
+  satisfaite ; le re-cadrage du panel (réutiliser la primitive, découverte terminal) devient le
+  périmètre. Preuve mince assumée (règle [`agent-ops/preuve-mince-question-pas-veto`](../products/mega-city/rules/agent-ops/preuve-mince-question-pas-veto.md)) :
+  le besoin « découvrir sans deviner » est prouvé par le cas muti, le PO tranche d'avancer.
