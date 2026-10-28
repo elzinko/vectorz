@@ -24,6 +24,11 @@ code (`ezk-reviewer`), pas LA LOI (`iamthelaw`).
    - Une section « Fichiers de référence (entonnoir — pointer, jamais copier) » avec **au
      moins un pointeur `fichier:ligne`**, et la racine `source:` qui existe
      (`recipe/points-to-real-example`, MUST).
+   - `pnpm --dir products/mega-city exec tsx bin/ezk-chef-check-drift.ts --root <racine-vectorz>`
+     — garde-fou de dérive (fiche 20261028130229418) : chaque `source:` **locale** (relative, sous
+     la racine) résout vers un fichier réel ; sort 1 si une recette ment (« déclaré, absent »). Les
+     sources **externes** (`~/…`, absolues) restent de **ton** ressort — le script ne les vérifie
+     pas, elles sont machine-dépendantes (il les compte, sans juger).
    - `bash products/mega-city/bin/check-links.sh <racine-vectorz> recipes` — liens markdown
      relatifs de `recipes/` valides.
 

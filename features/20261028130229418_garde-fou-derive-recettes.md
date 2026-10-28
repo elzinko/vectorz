@@ -52,6 +52,9 @@ Le contrôle réutilise les primitives déjà livrées, sans rien réimplémente
 - le marcheur de dossiers de la fiche 001 pour trouver les `RECIPE.md` d'un projet ;
 - **« existe »** se mesure par **présence de fichier sous une racine injectée**, jamais via le
   `PATH` (sinon le test devient non reproductible).
+- Une source **absolue ou « maison »** (`~/git/autre-dépôt`, comme le fait le livre par conception —
+  ADR-0013) pointe un autre dépôt : machine-dépendante, elle est **comptée mais jamais jugée**. Le
+  rapport dit « sur N vérifiées » pour que « 0 dérive » ne se lise pas « tout vérifié ».
 
 ## Critères d'acceptation
 
