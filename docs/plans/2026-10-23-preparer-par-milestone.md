@@ -109,7 +109,7 @@ et humains les trouvent du premier coup.
 Rapatriées côté vectorz le 2026-10-23 (milestone `recettes`, idée, à groomer en panel) :
 
 - [Déclarer et rendre découvrables les outils, recettes et méthodes d'un projet](../../features/20261023120000001_declarer-outils-recettes-methodes-projet.md).
-- [Contrat de recette auto-déclarée + catalogue (pilote muti)](../../features/20261023120000002_contrat-recette-autodeclaree.md).
+- [Contrat de recette auto-déclarée + catalogue (pilote muti)](../../features/done/20261023120000002_contrat-recette-autodeclaree.md).
 
 **Coordination.** Les fiches **muti d'origine** (`muti:features/20261018084803445…` et `…110931402…`)
 restent en place, **ni déplacées ni modifiées** — des sessions muti y travaillent. Les fiches vectorz

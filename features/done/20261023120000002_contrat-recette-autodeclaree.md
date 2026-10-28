@@ -8,8 +8,8 @@ milestone: recettes
 version:
 labels: [recettes, decouvrabilite, methode, contrat, spike]
 depends:
-status: ready
-pr:
+status: shipped
+pr: "local (e1b13c9b)"
 evidence: none # spike de contrat ; preuve = un répertoire-pilote reconnu comme recette
 created: 2026-10-23
 ---
@@ -43,22 +43,22 @@ Deux constats de la session du 2026-10-18 (muti).
 
 Réutiliser la **primitive recette existante**, pas un format neuf. Un répertoire d'un projet hôte se
 déclare recette en portant un **fichier de déclaration** — un `RECIPE.md` à front-matter, le même
-contrat que [`recipe-frontmatter.ts`](../products/mega-city/src/core/recipe-frontmatter.ts). Un **scan
+contrat que [`recipe-frontmatter.ts`](../../products/mega-city/src/core/recipe-frontmatter.ts). Un **scan
 en lecture seule** bâtit le **catalogue** des recettes déclarées d'un projet : la même sortie que
 `recipes/RECIPES.md`, étendue aux répertoires d'un projet hôte. Spike borné : éprouver le contrat sur
 le pilote muti `apps/desktop/validation/` avant de généraliser. La découverte depuis un projet hôte
 (la commande `ezk recipes`) et le garde-fou de dérive vivent dans la sœur
-[001](20261023120000001_declarer-outils-recettes-methodes-projet.md), qui dépend de celle-ci.
+[001](../20261023120000001_declarer-outils-recettes-methodes-projet.md), qui dépend de celle-ci.
 
 ## Critères d'acceptation
 
 Niveau *spike* — on cherche la forme du contrat, pas encore le moteur.
 
-- [ ] Un contrat minimal décide si un répertoire est une recette (il porte le fichier de déclaration).
-- [ ] Un scan liste les recettes déclarées d'un projet (catalogue).
-- [ ] Le pilote muti `apps/desktop/validation/` est reconnu comme recette par le contrat.
-- [ ] La déclaration d'une recette est distincte de celle d'un skill (`SKILL.md`).
-- [ ] Le contrat réutilise le front-matter recette existant (`recipe-frontmatter.ts`), sans schéma concurrent.
+- [x] Un contrat minimal décide si un répertoire est une recette (il porte le fichier de déclaration).
+- [x] Un scan liste les recettes déclarées d'un projet (catalogue).
+- [x] Un dossier calqué sur le pilote muti `apps/desktop/validation/` (hors dépôt, non touché) est reconnu par le contrat.
+- [x] La déclaration d'une recette est distincte de celle d'un skill (`SKILL.md`).
+- [x] Le contrat réutilise le front-matter recette existant (`recipe-frontmatter.ts`), sans schéma concurrent.
 
 ## Comment vérifier
 
@@ -70,15 +70,26 @@ Niveau *spike* — on cherche la forme du contrat, pas encore le moteur.
 - **Origine** : rédigée dans muti le 2026-10-18 (fiche `muti:features/20261018110931402_contrat-recette-autodeclaree.md`,
   type spike). La fiche muti le dit : « c'est de la méthode (vectorz)… à reprendre dans une session
   vectorz ». Rapatriée ici le 2026-10-23. **Ne pas** déplacer ni modifier la fiche muti ni son pilote.
-- Milestone `recettes`. Sœur de [Déclarer les outils/recettes/méthodes](20261023120000001_declarer-outils-recettes-methodes-projet.md),
+- Milestone `recettes`. Sœur de [Déclarer les outils/recettes/méthodes](../20261023120000001_declarer-outils-recettes-methodes-projet.md),
   qui **dépend de celle-ci** (`001 depends: 002`) : la déclaration est l'atome, le catalogue et la
   découverte en dérivent.
 - **Dépendance constatée le 2026-10-28** : la primitive recette existe déjà —
-  [`recipe-frontmatter.ts`](../products/mega-city/src/core/recipe-frontmatter.ts) (contrat de
+  [`recipe-frontmatter.ts`](../../products/mega-city/src/core/recipe-frontmatter.ts) (contrat de
   front-matter) et `bin/regen-recipes.sh` (catalogue `recipes/RECIPES.md`). Le spike réutilise ce
   contrat, il ne crée pas de format neuf.
 - **2026-10-28 — tirée (`ready`) sur décision PO.** Le panel du 2026-10-27 recommandait déjà « 002
   avant 001 » : 002 est l'atome que le panel endosse. La preuve ne repose que sur un cas (muti), mais
   ce n'est pas un veto (règle
-  [`agent-ops/preuve-mince-question-pas-veto`](../products/mega-city/rules/agent-ops/preuve-mince-question-pas-veto.md),
+  [`agent-ops/preuve-mince-question-pas-veto`](../../products/mega-city/rules/agent-ops/preuve-mince-question-pas-veto.md),
   ADR-0013 amendé). Le PO tranche d'avancer maintenant : la découvrabilité servira en avance.
+- **2026-10-28 — spike livré (local).** La forme du contrat est éprouvée : cœur **pur**
+  [`recipe-contract.ts`](../../products/mega-city/src/core/recipe-contract.ts) + 13 tests
+  ([`recipe-contract.test.ts`](../../products/mega-city/src/core/__tests__/recipe-contract.test.ts)).
+  Un dossier EST une recette s'il porte un `RECIPE.md` à front-matter recette — **mêmes champs** que
+  `recipe-frontmatter.ts` / `regen-recipes.sh` (`id`, `title`, `makes`, `source`, `status`), aucun
+  schéma neuf. Le scan liste les dossiers déclarés, écarte les non-déclarés **et** les `RECIPE.md`
+  mal formés sans planter. Revue adverse `ezk-reviewer` : **GO** — elle a attrapé deux vrais bugs
+  (scan qui plantait sur un YAML cassé ; `id` numérique nu silencieusement corrompu), corrigés et
+  gardés par des tests. **Hors scope, à la sœur [001](../20261023120000001_declarer-outils-recettes-methodes-projet.md)** :
+  le marcheur de dossiers sur disque et la commande terminal `ezk recipes` (découverte depuis un
+  projet hôte). Le cœur est pur (ADR-0003) ; il reçoit des dossiers déjà lus.

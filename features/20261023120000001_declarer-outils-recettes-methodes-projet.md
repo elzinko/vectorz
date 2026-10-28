@@ -82,7 +82,7 @@ un catalogue).
 
 ### Ordre corrigé — 002 AVANT 001
 
-La déclaration ([002](20261023120000002_contrat-recette-autodeclaree.md) : un dossier se déclare recette,
+La déclaration ([002](done/20261023120000002_contrat-recette-autodeclaree.md) : un dossier se déclare recette,
 `RECIPE.md` en place) est l'**atome** ; le catalogue / la découverte (001) en **dérive**. La dépendance
 était inversée (`002 depends: 001`) : corrigée en **`001 depends: 002`**. On rend 002 tirable d'abord.
 
@@ -113,7 +113,7 @@ La déclaration ([002](20261023120000002_contrat-recette-autodeclaree.md) : un d
   mais c'est de la **méthode (vectorz)**. Rapatriée ici le 2026-10-23 pour la milestone `recettes`. La
   fiche muti reste le constat d'origine côté hôte ; **ne pas** la déplacer ni la modifier (des sessions
   muti y travaillent).
-- Milestone `recettes` (découvrabilité), sœur de [Contrat de recette auto-déclarée](20261023120000002_contrat-recette-autodeclaree.md).
+- Milestone `recettes` (découvrabilité), sœur de [Contrat de recette auto-déclarée](done/20261023120000002_contrat-recette-autodeclaree.md).
 - **Statut idea assumé** : sujet d'architecture, à groomer en panel (ne pas forcer `ready`).
 - **2026-10-27 : groomée (avis-architecte).** Trois voies posées — manifeste dédié (a) / étendre
   `config.yml` (b) / dérivation auto (c) —, choix alors recommandé (a) + garde-fou (c). **Renversé par

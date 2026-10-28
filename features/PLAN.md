@@ -36,7 +36,7 @@ version se pose à la construction (étiquette). Détail :
 
 **Milestone `recettes` — « Recettes & découvrabilité »** (rapatriée de muti, panel) :
 - `20261023120000001` — déclarer et rendre découvrables les outils/recettes d'un projet · groom
-- `20261023120000002` — contrat de recette auto-déclarée + catalogue · groom
+- ~~`20261023120000002` — contrat de recette auto-déclarée + catalogue · groom~~ — shipped
 
 **Plus tard (milestones amorcées)** : `exploration-app` (ex-« v0.23 »), `cockpit`, `qualite` (revue
 design-system, release macOS, coût `sprint:report`), `observabilite` (jetons par mode — prête).
