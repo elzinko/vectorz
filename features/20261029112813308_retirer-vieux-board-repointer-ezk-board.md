@@ -8,6 +8,7 @@ milestone: board
 version:
 labels: [board, dashboard, cockpit, cleanup]
 status: ready
+blocked: panel
 pr:
 evidence: before-after
 created: 2026-10-29
