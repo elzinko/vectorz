@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [board, dashboard, cockpit, cleanup]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-10-29
@@ -54,14 +54,32 @@ n'a pas reprises :
 Supprimer `ezk-map.ts` sans traiter ces trois points casserait en silence la carte de la loi
 et le pouce de revue.
 
+## Valeur
+
+Pour qui : toi, qui pilotes, et toute session qui tape `ezk board`.
+
+Aujourd'hui la commande officielle ouvre la **vieille** interface. Le neuf se lance par un
+autre chemin (`mission-control`). Deux portes pour une même chose, et la mauvaise est la porte
+d'entrée. Si on ne fait rien : la confusion dure, le code du vieux board reste à maintenir, et
+un lecteur neuf ne sait pas lequel fait foi.
+
+Après : **une seule porte**, qui ouvre le board qui dit vrai (données réelles). Moins de code
+mort. Un piège en moins pour qui découvre la méthode.
+
 ## Proposition
 
 Un chantier en trois temps, dans cet ordre.
 
 1. **Vérifier la parité.** Pour chacune des trois capacités, décider : reprise dans
-   `@cop1/web`, ou abandon assumé et journalisé. Les pages `diagrams/` et le pouce de revue
-   sont les deux à trancher ; le sélecteur de projet existe déjà côté neuf (vue flotte /
-   `AddProjectModal`) — confirmer.
+   `@cop1/web`, ou abandon assumé et journalisé. Défauts recommandés, à confirmer au build :
+   - **Pages `diagrams/`** → les **garder en pages statiques liées** depuis le neuf (le lien
+     `/v1/index.html` existe déjà). Pas de réécriture React : on sert `diagrams/` à part et on
+     pointe dessus. Le moins cher, et ça n'efface rien.
+   - **Sélecteur de projet** → **déjà couvert** côté neuf (vue flotte, `AddProjectModal`).
+     Juste confirmer, rien à reprendre.
+   - **Pouce 👍/👎** → **reprendre l'écriture** dans le neuf (une route qui écrit
+     `features/reviews/verdicts/<id>.json`, ADR-0057). C'est la seule capacité qui écrit : on
+     ne la perd pas sans décision explicite.
 2. **Repointer la commande.** `ezk board open` ouvre le nouveau dashboard. Mettre à jour
    l'entrée `board / open` du manifeste (`ezk-manifest.yml`, aujourd'hui `run: bin/ezk-map.ts`)
    et la config `mission-control` de `.claude/launch.json`.
@@ -112,4 +130,4 @@ et **après** (nouveau dashboard). À joindre au corps de PR / rendu local (ADR-
   [page des rétros passées](20260826072532537_vue-retros-actions-ezk-map.md). Décider si on les
   rapatrie dans le neuf ou si on les laisse vivre en pages statiques liées.
 - Le pouce de revue est cadré par l'ADR-0057 (une seule écriture, `features/reviews/verdicts/`).
-- Priorité P2 posée par défaut (rangement, non urgent) — à ajuster au grooming.
+- Priorité P2 (rangement, non urgent), confirmée au grooming.
