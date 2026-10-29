@@ -54,6 +54,29 @@ n'a pas reprises :
 Supprimer `ezk-map.ts` sans traiter ces trois points casserait en silence la carte de la loi
 et le pouce de revue.
 
+## Découverte au build (2026-10-29) — le neuf n'est pas un simple remplaçant
+
+En câblant le build, j'ai vu que les deux boards ne sont pas la même couche.
+
+Le vieux (`ezk-map.ts`) est le **dashboard de la MÉTHODE** : un serveur sans dépendance, qui
+marche depuis n'importe quel projet hôte (`ezk board open --root <projet>`), sert `diagrams/`
+et calcule les vues à la volée. Il est **portable et product-agnostique**.
+
+Le neuf (`@cop1/web`) est un **produit cop1** : une appli Vite qui **proxie `/api` vers un
+daemon cop1** (`@cop1/app`, port 4242). Les données viennent du daemon, pas d'un serveur
+portable. Pour l'ouvrir, il faut lancer **le daemon ET le web**.
+
+Conséquence : « repointer `ezk board` sur le neuf » n'est pas « changer une ligne du
+manifeste ». C'est faire qu'une **commande de la méthode lance un produit cop1**, et faire
+**absorber par le daemon** les trois capacités method-level (pages `diagrams/`, pouce de revue
+pour n'importe quel `--root`). Tant que le daemon ne les porte pas, le neuf ne remplace pas le
+vieux pour un projet hôte.
+
+Ça recoupe le chantier board déjà en cours
+(voir [Unifier les tableaux de bord](20261007135620590_refondre-vue-supervision-moniteur-lisible.md),
+`split`, et sa suite board différée en attente de v0.24 + read-model). Le retrait du vieux
+board est donc la **dernière marche** de ce chantier, pas un ménage indépendant.
+
 ## Valeur
 
 Pour qui : toi, qui pilotes, et toute session qui tape `ezk board`.
@@ -68,25 +91,26 @@ mort. Un piège en moins pour qui découvre la méthode.
 
 ## Proposition
 
-Un chantier en trois temps, dans cet ordre.
+Un chantier en quatre temps, dans cet ordre. La découverte ci-dessus insère une marche
+**avant** le repointage : le daemon doit porter les capacités method-level, sinon le neuf ne
+remplace pas le vieux.
 
-1. **Vérifier la parité.** Pour chacune des trois capacités, décider : reprise dans
-   `@cop1/web`, ou abandon assumé et journalisé. Défauts recommandés, à confirmer au build :
-   - **Pages `diagrams/`** → les **garder en pages statiques liées** depuis le neuf (le lien
-     `/v1/index.html` existe déjà). Pas de réécriture React : on sert `diagrams/` à part et on
-     pointe dessus. Le moins cher, et ça n'efface rien.
-   - **Sélecteur de projet** → **déjà couvert** côté neuf (vue flotte, `AddProjectModal`).
-     Juste confirmer, rien à reprendre.
-   - **Pouce 👍/👎** → **reprendre l'écriture** dans le neuf (une route qui écrit
-     `features/reviews/verdicts/<id>.json`, ADR-0057). C'est la seule capacité qui écrit : on
-     ne la perd pas sans décision explicite.
-2. **Repointer la commande.** `ezk board open` ouvre le nouveau dashboard. Mettre à jour
-   l'entrée `board / open` du manifeste (`ezk-manifest.yml`, aujourd'hui `run: bin/ezk-map.ts`)
-   et la config `mission-control` de `.claude/launch.json`.
+1. **Faire absorber les capacités method-level par le daemon cop1.** C'est le vrai travail,
+   et il relève du chantier board (v0.24).
+   - **Pages `diagrams/`** → les servir en statique (le lien `/v1/index.html` existe déjà).
+     Décider qui les sert une fois `ezk-map` parti : le daemon, ou un service statique à part.
+   - **Pouce 👍/👎** → porter l'écriture `features/reviews/verdicts/<id>.json` (ADR-0057) dans
+     le daemon, pour n'importe quel projet désigné. Seule capacité qui écrit.
+   - **Sélecteur de projet** → **déjà couvert** côté neuf (vue flotte, `AddProjectModal`) ; à
+     confirmer.
+2. **Repointer la commande.** `ezk board open` lance le daemon + le web (plus `ezk-map`).
+   Mettre à jour l'entrée `board / open` du manifeste (`ezk-manifest.yml`, aujourd'hui
+   `run: bin/ezk-map.ts`) et la config `mission-control` de `.claude/launch.json`. Trancher la
+   doctrine : une commande de la **méthode** lance-t-elle un **produit cop1** ? (voir Notes.)
 3. **Retirer le code mort.** Supprimer `bin/ezk-map.ts`, ses tests et ce qui ne sert plus
    qu'à lui (sans casser `verdict-endpoint`, `cockpit` et les autres modules partagés s'ils
-   gardent un usage). Mettre à jour les skills, docs et mémoires qui disent « le board =
-   ezk-map ».
+   gardent un usage).
+4. **Mettre à jour** les skills, docs et mémoires qui disent « le board = ezk-map ».
 
 ## Critères d'acceptation
 
@@ -130,4 +154,8 @@ et **après** (nouveau dashboard). À joindre au corps de PR / rendu local (ADR-
   [page des rétros passées](20260826072532537_vue-retros-actions-ezk-map.md). Décider si on les
   rapatrie dans le neuf ou si on les laisse vivre en pages statiques liées.
 - Le pouce de revue est cadré par l'ADR-0057 (une seule écriture, `features/reviews/verdicts/`).
+- **Décision de doctrine à trancher (panel)** : une commande de la **méthode** (`ezk board`)
+  doit-elle lancer un **produit** (le daemon cop1) ? La méthode est censée rester
+  product-agnostique. Alternative : garder `ezk board` sur un dashboard portable et faire du
+  neuf le dashboard **de cop1** uniquement. À décider avant le temps 2.
 - Priorité P2 (rangement, non urgent), confirmée au grooming.
