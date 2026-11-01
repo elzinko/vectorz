@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261101175006022_sprint-cite-la-regle-du-worktree.md](../20261101175006022_sprint-cite-la-regle-du-worktree.md)
+> 🗎 Rendu de la fiche [features/20261101175006022_sprint-cite-la-regle-du-worktree.md](../done/20261101175006022_sprint-cite-la-regle-du-worktree.md)
 
 ## En clair
 

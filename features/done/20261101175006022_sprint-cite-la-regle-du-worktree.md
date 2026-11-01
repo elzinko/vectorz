@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [sprint, worktree, regles]
-status: ready
-pr:
+status: shipped
+pr: "local (4b8fdccc)"
 evidence: none # texte de skill et test de contrat, sans écran
 created: 2026-11-01
 ---
@@ -23,7 +23,7 @@ reprendre la story dans une autre session.
 ## Contexte
 
 - La rétro du 2026-11-01 a posé la règle
-  [Une story se construit dans un worktree dédié](../products/mega-city/rules/development/story-dans-un-worktree-dedie.md).
+  [Une story se construit dans un worktree dédié](../../products/mega-city/rules/development/story-dans-un-worktree-dedie.md).
 - Son texte vit dans le bundle `development`. Seul le profil `cop1-target` déploie ce bundle. La
   session de tous les jours ne charge que le socle.
 - Le skill `ezk-sprint` liste l'id de la règle dans son en-tête `applies:`. Son corps n'en dit rien.
