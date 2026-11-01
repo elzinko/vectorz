@@ -9,49 +9,67 @@ actions:
     kind: regle
     target: skill:ezk-sprint
     by: [architecture, dev]
-    status: ⏳
+    status: ✅
+    decision: "Règle rangée : rules/development/story-dans-un-worktree-dedie.md (SHOULD), bundle development, liée à ezk-sprint (applies)."
+    date: 2026-11-01
   - proposition: "Une commande dont le code de sortie compte (git add, tests, gate) ne se pipe jamais vers tail ou grep sans garder son statut : set -o pipefail, ou && avant le pipe."
     kind: regle
     target: global
     by: [dev, qualite]
-    status: ⏳
+    status: ✅
+    decision: "Règle rangée : rules/agent-ops/pipe-garde-le-code-de-sortie.md (SHOULD), bundle base, globale."
+    date: 2026-11-01
   - proposition: "La gate ne dépend ni de l'index features/BACKLOG.md (non versionné) ni du retard de la branche sur origin/main."
     kind: feature
     by: [qualite]
-    status: ⏳
+    status: ✅
+    decision: "Fiche créée : 20261101131505997 (idée, P2, milestone qualite)."
+    date: 2026-11-01
   - proposition: "Une commande --json, ou lue par un autre programme, se vérifie en vrai avant livraison : par un tuyau, sur le plus gros projet du registre."
     kind: regle
     target: skill:ezk-sprint
     by: [qualite, produit]
-    status: ⏳
+    status: ✅
+    decision: "Règle rangée : rules/testing/sortie-machine-verifiee-par-un-tuyau.md (SHOULD, vérifiée par ezk-reviewer), bundle testing, liée à ezk-sprint."
+    date: 2026-11-01
   - proposition: "Un compte rendu de sprint non daté le dit dès sa première phrase (durée et jetons non mesurés), jamais par un zéro ; et le run autonome pose le point de passage qui date le sprint."
     kind: feature
     by: [produit]
-    status: ⏳
+    status: ✅
+    decision: "Fiche créée : 20261101131506082 (idée, P2, milestone observabilite)."
+    date: 2026-11-01
   - proposition: "Trouver le test qui laisse un serveur ezk-map orphelin (dossier temporaire ezk-ailleurs-*) et l'arrêter dans son afterAll, même sur délai dépassé."
     kind: action
     by: [qualite]
-    status: ⏳
+    status: ✅
+    decision: "Fiche créée : 20261101131506169 (idée, P2, milestone qualite)."
+    date: 2026-11-01
   - proposition: "Après un découpage de fiche, l'outil propose d'inscrire les fiches sœurs au PLAN dans la même passe, avec l'accord du PO."
     kind: feature
     by: [produit, dev]
-    status: ⏳
+    status: ✅
+    decision: "Fiche créée : 20261101131506254 (idée, P2, milestone preparation)."
+    date: 2026-11-01
   - proposition: "Avant de pousser main, ou de proposer le push, lister git log origin/main..main et nommer au PO les commits qu'on n'a pas faits soi-même, y compris ceux d'une autre session."
     kind: regle
     target: global
     by: [produit, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Règle rangée : rules/agent-ops/push-nomme-les-commits-d-autrui.md (SHOULD), bundle base, globale."
+    date: 2026-11-01
   - proposition: "Recette « publier un contrat JSON versionné » : format décrit en zod (strict pour le producteur), schéma publié tolérant, exemples générés sur une fixture, test de contrat."
     kind: recette
     by: [architecture]
-    status: ⏳
+    status: ✅
+    decision: "Fiche créée : 20261101131506339 (idée, P2, milestone recettes)."
+    date: 2026-11-01
 ---
 
 **En clair :** ce run a livré en local les deux premiers contrats JSON de la méthode. Mission control
 pourra donc lire le board et le détail des fiches sans les recopier. Cinq frictions reviennent : une
 autre session écrivait et poussait dans le même dossier ; un `git add` a raté trois fois sans bruit ;
 la gate dépend de l'état local du dépôt ; un bug de sortie n'a été trouvé qu'en vrai ; et les comptes
-rendus annoncent « 0 min, 0 jeton ». Neuf propositions attendent ta décision.
+rendus annoncent « 0 min, 0 jeton ». Le PO a accepté les neuf propositions le 2026-11-01 : quatre règles rangées, cinq fiches créées.
 
 ## 1 · Les faits de départ
 
@@ -163,12 +181,12 @@ Rétro du 2026-10-26 :
 
 | Proposition | Décision | Date |
 |---|---|---|
-| P1 · construire à part | ⏳ | |
-| P2 · ne pas masquer un échec | ⏳ | |
-| P3 · une gate qui ne dépend pas du poste | ⏳ | |
-| P4 · vérifier en vrai une sortie machine | ⏳ | |
-| P5 · un compte rendu qui ne ment pas | ⏳ | |
-| P6 · le serveur de test qui fuit | ⏳ | |
-| P7 · un découpage qui n'oublie pas le plan | ⏳ | |
-| P8 · nommer ce qu'un push emporte | ⏳ | |
-| P9 · la recette du contrat JSON | ⏳ | |
+| P1 · construire à part | ✅ Règle rangée : rules/development/story-dans-un-worktree-dedie.md (SHOULD), bundle development, liée à ezk-sprint (applies). | 2026-11-01 |
+| P2 · ne pas masquer un échec | ✅ Règle rangée : rules/agent-ops/pipe-garde-le-code-de-sortie.md (SHOULD), bundle base, globale. | 2026-11-01 |
+| P3 · une gate qui ne dépend pas du poste | ✅ Fiche créée : 20261101131505997 (idée, P2, milestone qualite). | 2026-11-01 |
+| P4 · vérifier en vrai une sortie machine | ✅ Règle rangée : rules/testing/sortie-machine-verifiee-par-un-tuyau.md (SHOULD, vérifiée par ezk-reviewer), bundle testing, liée à ezk-sprint. | 2026-11-01 |
+| P5 · un compte rendu qui ne ment pas | ✅ Fiche créée : 20261101131506082 (idée, P2, milestone observabilite). | 2026-11-01 |
+| P6 · le serveur de test qui fuit | ✅ Fiche créée : 20261101131506169 (idée, P2, milestone qualite). | 2026-11-01 |
+| P7 · un découpage qui n'oublie pas le plan | ✅ Fiche créée : 20261101131506254 (idée, P2, milestone preparation). | 2026-11-01 |
+| P8 · nommer ce qu'un push emporte | ✅ Règle rangée : rules/agent-ops/push-nomme-les-commits-d-autrui.md (SHOULD), bundle base, globale. | 2026-11-01 |
+| P9 · la recette du contrat JSON | ✅ Fiche créée : 20261101131506339 (idée, P2, milestone recettes). | 2026-11-01 |
