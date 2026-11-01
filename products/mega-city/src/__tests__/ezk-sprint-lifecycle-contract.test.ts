@@ -276,3 +276,34 @@ describe('ezk-sprint — le checkpoint dit chaque option en clair (fiche 2026100
     expect(step9).toMatch(/pas de recopie/);
   });
 })
+
+describe('ezk-sprint — la story se construit dans son propre worktree (fiche 20261101175006022)', () => {
+  const text = body(sprintDir);
+  const rule = 'development/story-dans-un-worktree-dedie';
+  // Le bloc « Où construire la story », sous l'étape 0, jusqu'à l'étape 1.
+  const start = text.indexOf('**Où construire la story.**');
+  const block = start < 0 ? '' : text.slice(start, text.indexOf('\n1. **Cadrage POC**', start));
+
+  it('cite la règle dans le corps, par un lien qui mène à son fichier', () => {
+    expect(block, 'bloc « Où construire la story » absent du corps').not.toBe('');
+    expect(block).toContain(`[\`${rule}\`](../../rules/${rule}.md)`);
+    expect(existsSync(join(megaCity, 'rules', `${rule}.md`))).toBe(true);
+  });
+
+  it('dit comment savoir où l’on est, et le geste pour chacun des deux cas', () => {
+    expect(block).toContain('git rev-parse --path-format=absolute --git-dir --git-common-dir');
+    // Les deux branches de story partent de main, jamais du HEAD d'un worktree recyclé.
+    expect(block).toContain('git switch -c feat/<id>-<slug> main`');
+    expect(block).toContain('git worktree add .claude/worktrees/<slug> -b feat/<id>-<slug> main');
+    expect(block).toContain('`.claude/` doit être ignoré par git');
+    expect(block).toContain('Dans le dossier principal, jamais de `git switch`');
+  });
+
+  it('dit comment reprendre la story dans une autre session, et ce qui survit au worktree', () => {
+    expect(block).toContain('<git-common-dir>/ezk/sprints/<branche>.md');
+    // Une branche encore ouverte dans un worktree ne se rattache pas à un second.
+    expect(block).toContain('regarde d\'abord `git worktree list`');
+    expect(block).toContain('git worktree add .claude/worktrees/<slug> feat/<id>-<slug>`');
+    expect(block).toContain('committe avant de quitter la session');
+  });
+});
