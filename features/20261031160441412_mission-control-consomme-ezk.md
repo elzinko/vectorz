@@ -69,5 +69,11 @@ cd products/mega-city && pnpm exec tsx ../../docs/captures/2026-10-30-enquete-bo
 ## Notes
 
 - Fiche sœur du milestone `board`, découpée le 2026-10-31 (ADR-086).
+- Le contrat est livré (2026-11-01) : schéma, exemple et règles dans
+  `products/mega-city/contracts/board-show/`. Les tests de cop1 lisent `v1/example.json`.
+- Coût d'un appel, relevé par la revue du contrat : `ezk board show --json` lance un
+  `git merge-tree` par branche locale pour trouver les fiches « en cours » (plus de 230 branches sur
+  vectorz). Le daemon ne doit donc pas l'appeler à chaque requête : il garde la dernière réponse et
+  la rafraîchit à un rythme mesuré. Un cache côté méthode est une piste, hors de ce contrat.
 - Dépend de [le contrat JSON de la méthode](20261029112813308_contrat-json-methode-board-show.md) et
   de [le détail d'une fiche calculé par la méthode](20261031160441267_detail-fiche-calcule-par-la-methode.md).

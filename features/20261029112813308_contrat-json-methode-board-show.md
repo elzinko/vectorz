@@ -80,20 +80,20 @@ On range dans le dépôt :
 
 ## Critères d'acceptation
 
-- [ ] `ezk board show --json` sort `schema_version: 1`, et la sortie respecte le schéma rangé dans le
+- [x] `ezk board show --json` sort `schema_version: 1`, et la sortie respecte le schéma rangé dans le
       dépôt (test de contrat vert).
-- [ ] Sur la fixture des cinq causes, les comptes interprétés sont ceux des règles de la méthode : en
+- [x] Sur la fixture des cinq causes, les comptes interprétés sont ceux des règles de la méthode : en
       cours = 1, bloquées = 1, la fiche au titre « : » lue avec son statut, la fiche remplacée hors du
       lot de sa version, la version `V1.1` listée comme illisible.
-- [ ] Chaque fiche active porte sa version, son drapeau « en cours » et sa raison de blocage.
-- [ ] Les lots de version sortent avec leur état et leur cycle de vie, et la version en cours est
+- [x] Chaque fiche active porte sa version, son drapeau « en cours » et sa raison de blocage.
+- [x] Les lots de version sortent avec leur état et leur cycle de vie, et la version en cours est
       nommée.
-- [ ] Les pouces de revue posés sortent.
-- [ ] Les exemples rangés pour les consommateurs sont régénérés par une commande, et le test échoue
+- [x] Les pouces de revue posés sortent.
+- [x] Les exemples rangés pour les consommateurs sont régénérés par une commande, et le test échoue
       s'ils ne correspondent plus à la sortie.
-- [ ] Les champs actuels restent présents et identiques ; `ezk board show` sans `--json` ne change
+- [x] Les champs actuels restent présents et identiques ; `ezk board show` sans `--json` ne change
       pas.
-- [ ] La gate reste verte (`pnpm test` et `pnpm test:scripts`).
+- [x] La gate reste verte (`pnpm test` et `pnpm test:scripts`).
 
 ## Comment vérifier
 
@@ -113,6 +113,11 @@ cd products/mega-city && pnpm test && pnpm test:scripts
   touche qu'une surface, la commande `ezk board show --json`. Les deux derniers critères gardent
   l'existant (champs actuels, gate verte) ; ils n'ajoutent pas de comportement. Tamponnée « prête »
   par le PO le 2026-11-01.
+- Livraison (2026-11-01) : le format est décrit en zod dans `products/mega-city/src/core/board-contract.ts`.
+  Le schéma JSON et l'exemple sont générés dans `products/mega-city/contracts/board-show/v1/`
+  (`pnpm --dir products/mega-city board:contract --write`). Test de contrat :
+  `products/mega-city/src/__tests__/board-contract.test.ts`. Revue adverse : NO-GO (test trop lent
+  sous charge, schéma publié trop strict, test tautologique), corrigé, puis GO.
 - Cette fiche a été **regroomée le 2026-10-31**. Elle s'appelait « Retirer le vieux board (ezk-map) et
   repointer `ezk board` sur le nouveau dashboard ». L'enquête a montré que le vrai problème n'était pas
   le board mais la lecture des fiches. Son ancien périmètre est caduc : on ne retire pas le board de

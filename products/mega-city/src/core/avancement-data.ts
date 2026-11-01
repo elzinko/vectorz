@@ -62,6 +62,10 @@ export interface BoardFiche {
   labels: string[];
   /** Drapeau orthogonal (sliver B, fiche 652) : raison si `blocked:` est posé, '' sinon. */
   blocked: string;
+  /** Version ciblée telle qu'écrite (`v1.2.0`, ou '' sans version) — fiche 20261029112813308. */
+  version: string;
+  /** Une branche de travail est ouverte pour la fiche (ADR-0077) — déduit, jamais écrit. */
+  enCours: boolean;
   file: string; // chemin relatif à la racine du repo — la vue en fait un lien cliquable
 }
 
@@ -99,7 +103,7 @@ export interface AvancementData {
   };
 }
 
-const toBoard = (f: Fiche): BoardFiche => ({
+const toBoard = (f: Fiche, inProgressIds: ReadonlySet<string>): BoardFiche => ({
   id: f.id,
   title: f.title,
   type: f.type,
@@ -110,6 +114,8 @@ const toBoard = (f: Fiche): BoardFiche => ({
   pr: f.pr,
   labels: f.labels,
   blocked: f.blocked,
+  version: f.version,
+  enCours: inProgressIds.has(f.id),
   file: f.file,
 });
 
@@ -153,11 +159,11 @@ export function buildAvancementData(
   const actives = fiches
     .filter((f) => !f.done && !TERMINAUX.includes(f.status) && !isParked(f))
     .sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || (a.id < b.id ? -1 : 1))
-    .map(toBoard);
+    .map((f) => toBoard(f, inProgressIds));
 
   // « Tirables » = ready SANS branche de travail ouverte : une fiche dont une branche `feat/<id>-…`
   // tourne est « en cours » (ADR-0077), pas du stock libre — sinon le board sur-compte (fiche 20261015213921062).
-  const tirables = actives.filter((f) => f.status === 'ready' && !inProgressIds.has(f.id)).length;
+  const tirables = actives.filter((f) => f.status === 'ready' && !f.enCours).length;
 
   // Cumul par MILESTONE (jalon d'ordre, ADR-0017 A16) : regroupe les fiches NON-TERMINALES par
   // milestone. « N fiches — k livrées » : total = fiches du jalon (idea/ready/in-progress/shipped),

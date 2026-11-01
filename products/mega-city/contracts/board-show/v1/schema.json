@@ -1,0 +1,454 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "counts": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9007199254740991
+      },
+      "description": "Hérité : fiches par statut écrit, brut, sans interprétation. Pour afficher, lire comptes."
+    },
+    "tirables": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "actives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "milestone": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "pr": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocked": {
+            "type": "string",
+            "description": "Raison du blocage (`blocked:`), '' si la fiche n'est pas bloquée."
+          },
+          "version": {
+            "type": "string",
+            "description": "Version ciblée telle qu'écrite, '' sans version."
+          },
+          "enCours": {
+            "type": "boolean",
+            "description": "Une branche de travail est ouverte pour la fiche (ADR-0077)."
+          },
+          "file": {
+            "type": "string",
+            "description": "Chemin de la fiche, relatif à la racine du projet."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "type",
+          "priority",
+          "status",
+          "milestone",
+          "product",
+          "pr",
+          "labels",
+          "blocked",
+          "version",
+          "enCours",
+          "file"
+        ]
+      },
+      "description": "Fiches à faire, hors parkées, triées priorité puis id."
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "milestone": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "shipped": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "counts": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "milestone",
+          "status",
+          "total",
+          "shipped",
+          "counts",
+          "children"
+        ]
+      }
+    },
+    "filtres": {
+      "type": "object",
+      "properties": {
+        "statuts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "priorites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "produits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "statuts",
+        "priorites",
+        "produits",
+        "labels",
+        "milestones"
+      ]
+    },
+    "comptes": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Toutes les fiches du projet."
+        },
+        "idees": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Idées, hors parkées et hors en cours."
+        },
+        "pretes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Prêtes sans branche ouverte : le stock tirable."
+        },
+        "enCours": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Fiches avec une branche de travail ouverte (ADR-0077)."
+        },
+        "parkees": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Idées rangées dans la milestone `parked`."
+        },
+        "livrees": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Statut `shipped`."
+        },
+        "closes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Closes sans livraison : superseded, merged, split."
+        },
+        "autres": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Statut inconnu de la méthode (le validateur le signale)."
+        },
+        "bloquees": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Drapeau : fiches à faire (idées, prêtes, en cours, autres) qui portent `blocked:`. Recoupe les colonnes."
+        },
+        "sansVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Drapeau : fiches à faire sans version, hors parkées. Recoupe les colonnes."
+        }
+      },
+      "required": [
+        "total",
+        "idees",
+        "pretes",
+        "enCours",
+        "parkees",
+        "livrees",
+        "closes",
+        "autres",
+        "bloquees",
+        "sansVersion"
+      ],
+      "description": "Comptes interprétés par les règles de la méthode. Les colonnes de idees à autres se partagent les fiches : leur somme vaut total."
+    },
+    "versions": {
+      "type": "object",
+      "properties": {
+        "courante": {
+          "description": "La version en cours : le premier lot sans étiquette (ADR-0070).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ecartees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Versions après la version en cours, écartées du tirage."
+        },
+        "lots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string"
+              },
+              "etat": {
+                "type": "string",
+                "enum": [
+                  "en-cours",
+                  "a-clore",
+                  "livree",
+                  "rouverte",
+                  "vide"
+                ]
+              },
+              "cycleDeVie": {
+                "type": "string",
+                "enum": [
+                  "brouillon",
+                  "figee",
+                  "livree"
+                ]
+              },
+              "etiquette": {
+                "description": "Étiquette git de release (`v1.2.0`), null si la version n’est pas sortie.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "etiquetteGel": {
+                "description": "Étiquette de gel (`freeze/v1.2.0`), null sans gel.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "livrees": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Ids des fiches livrées du lot."
+              },
+              "aFaire": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Ids des fiches restant à livrer, hors parkées."
+              },
+              "pretes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Parmi aFaire : les fiches prêtes."
+              },
+              "bloquees": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Parmi aFaire : les fiches bloquées."
+              },
+              "intrus": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Fiches parkées qui portent pourtant cette version : hors lot."
+              }
+            },
+            "required": [
+              "version",
+              "etat",
+              "cycleDeVie",
+              "etiquette",
+              "etiquetteGel",
+              "livrees",
+              "aFaire",
+              "pretes",
+              "bloquees",
+              "intrus"
+            ]
+          },
+          "description": "Un lot par version bien écrite. Les fiches closes sans livraison n’y sont pas."
+        },
+        "illisibles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "file": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "version",
+              "file"
+            ]
+          },
+          "description": "Fiches dont la version est mal écrite : dans aucun lot, jamais ignorées."
+        }
+      },
+      "required": [
+        "courante",
+        "ecartees",
+        "lots",
+        "illisibles"
+      ]
+    },
+    "verdicts": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down"
+            ]
+          },
+          "date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "date"
+        ]
+      },
+      "description": "Pouces de revue posés, par id de fiche (ADR-0057)."
+    },
+    "verdictsIllisibles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fichiers de verdict illisibles, jamais ignorés en silence."
+    }
+  },
+  "required": [
+    "schema_version",
+    "counts",
+    "tirables",
+    "actives",
+    "milestones",
+    "filtres",
+    "comptes",
+    "versions",
+    "verdicts",
+    "verdictsIllisibles"
+  ]
+}

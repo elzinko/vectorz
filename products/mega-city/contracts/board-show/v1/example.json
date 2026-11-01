@@ -1,0 +1,209 @@
+{
+ "schema_version": 1,
+ "counts": {
+  "ready": 2,
+  "idea": 4,
+  "superseded": 1,
+  "shipped": 1
+ },
+ "tirables": 1,
+ "actives": [
+  {
+   "id": "20990101000000001",
+   "title": "En cours",
+   "type": "feature",
+   "priority": "P1",
+   "status": "ready",
+   "milestone": "",
+   "product": "—",
+   "pr": "",
+   "labels": [],
+   "blocked": "",
+   "version": "v1.0.0",
+   "enCours": true,
+   "file": "features/20990101000000001_en-cours.md"
+  },
+  {
+   "id": "20990101000000003",
+   "title": "Bloquée",
+   "type": "feature",
+   "priority": "P1",
+   "status": "ready",
+   "milestone": "",
+   "product": "—",
+   "pr": "",
+   "labels": [],
+   "blocked": "panel",
+   "version": "v1.0.0",
+   "enCours": false,
+   "file": "features/20990101000000003_bloquee.md"
+  },
+  {
+   "id": "20990101000000002",
+   "title": "Tour Driver.js : tracking",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "milestone": "",
+   "product": "—",
+   "pr": "",
+   "labels": [],
+   "blocked": "",
+   "version": "v2.0.0",
+   "enCours": false,
+   "file": "features/20990101000000002_deux-points.md"
+  },
+  {
+   "id": "20990101000000008",
+   "title": "Sans version",
+   "type": "feature",
+   "priority": "P2",
+   "status": "idea",
+   "milestone": "board",
+   "product": "—",
+   "pr": "",
+   "labels": [
+    "contrat"
+   ],
+   "blocked": "",
+   "version": "",
+   "enCours": false,
+   "file": "features/20990101000000008_sans-version.md"
+  },
+  {
+   "id": "20990101000000005",
+   "title": "Version mal écrite",
+   "type": "feature",
+   "priority": "P3",
+   "status": "idea",
+   "milestone": "",
+   "product": "—",
+   "pr": "",
+   "labels": [],
+   "blocked": "",
+   "version": "V1.1",
+   "enCours": false,
+   "file": "features/20990101000000005_version-mal-ecrite.md"
+  }
+ ],
+ "milestones": [
+  {
+   "milestone": "parked",
+   "status": "idea",
+   "total": 1,
+   "shipped": 0,
+   "counts": {
+    "idea": 1
+   },
+   "children": [
+    "20990101000000007"
+   ]
+  },
+  {
+   "milestone": "board",
+   "status": "in-progress",
+   "total": 2,
+   "shipped": 1,
+   "counts": {
+    "shipped": 1,
+    "idea": 1
+   },
+   "children": [
+    "20990101000000008"
+   ]
+  }
+ ],
+ "filtres": {
+  "statuts": [
+   "idea",
+   "ready"
+  ],
+  "priorites": [
+   "P1",
+   "P2",
+   "P3"
+  ],
+  "produits": [
+   "—"
+  ],
+  "labels": [
+   "contrat"
+  ],
+  "milestones": [
+   "board"
+  ]
+ },
+ "comptes": {
+  "total": 8,
+  "idees": 3,
+  "pretes": 1,
+  "enCours": 1,
+  "parkees": 1,
+  "livrees": 1,
+  "closes": 1,
+  "autres": 0,
+  "bloquees": 1,
+  "sansVersion": 1
+ },
+ "versions": {
+  "courante": "v1.0.0",
+  "ecartees": [
+   "v2.0.0"
+  ],
+  "lots": [
+   {
+    "version": "v1.0.0",
+    "etat": "en-cours",
+    "cycleDeVie": "brouillon",
+    "etiquette": null,
+    "etiquetteGel": null,
+    "livrees": [
+     "20990101000000006"
+    ],
+    "aFaire": [
+     "20990101000000001",
+     "20990101000000003"
+    ],
+    "pretes": [
+     "20990101000000001",
+     "20990101000000003"
+    ],
+    "bloquees": [
+     "20990101000000003"
+    ],
+    "intrus": []
+   },
+   {
+    "version": "v2.0.0",
+    "etat": "en-cours",
+    "cycleDeVie": "figee",
+    "etiquette": null,
+    "etiquetteGel": "freeze/v2.0.0",
+    "livrees": [],
+    "aFaire": [
+     "20990101000000002"
+    ],
+    "pretes": [],
+    "bloquees": [],
+    "intrus": []
+   }
+  ],
+  "illisibles": [
+   {
+    "id": "20990101000000005",
+    "title": "Version mal écrite",
+    "version": "V1.1",
+    "file": "features/20990101000000005_version-mal-ecrite.md"
+   }
+  ]
+ },
+ "verdicts": {
+  "20990101000000002": {
+   "verdict": "up",
+   "date": "2026-11-01"
+  }
+ },
+ "verdictsIllisibles": [
+  "features/reviews/verdicts/20990101000000003.json"
+ ]
+}

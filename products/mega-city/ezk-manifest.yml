@@ -415,3 +415,5 @@ internal:
     reason: le routeur lui-même (script pnpm « ezk »)
   - script: bin/ezk-help.ts
     reason: bibliothèque de « ezk help » (liste des skills de chat) ; l'ancien « pnpm ezk:help » marche toujours
+  - script: bin/board-contract.ts
+    reason: outil de maintenance du contrat « board show --json » (régénère ou vérifie contracts/board-show/) ; pas une commande de projet
