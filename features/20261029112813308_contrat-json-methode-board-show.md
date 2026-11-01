@@ -7,8 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [board, contrat, json]
-status: idea
-blocked: panel
+status: ready
 pr:
 evidence: none # contrat en ligne de commande, sans écran ; preuve = tests de contrat et fixture
 created: 2026-10-29
@@ -109,7 +108,11 @@ cd products/mega-city && pnpm test && pnpm test:scripts
 ## Notes
 
 - Décision : [ADR-086 — la méthode est le seul lecteur des fiches](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
-  (Proposed). Le `blocked: panel` se lève quand le PO l'accepte.
+  (accepté par le PO le 2026-11-01 ; le `blocked: panel` est levé).
+- Taille (2026-11-01) : huit critères, au-dessus du seuil de six. La fiche reste entière : elle ne
+  touche qu'une surface, la commande `ezk board show --json`. Les deux derniers critères gardent
+  l'existant (champs actuels, gate verte) ; ils n'ajoutent pas de comportement. Tamponnée « prête »
+  par le PO le 2026-11-01.
 - Cette fiche a été **regroomée le 2026-10-31**. Elle s'appelait « Retirer le vieux board (ezk-map) et
   repointer `ezk board` sur le nouveau dashboard ». L'enquête a montré que le vrai problème n'était pas
   le board mais la lecture des fiches. Son ancien périmètre est caduc : on ne retire pas le board de

@@ -1,6 +1,6 @@
 # ADR-086 — La méthode est le seul lecteur des fiches ; ses données sortent par `ezk … --json`
 
-Statut : Proposed
+Statut : accepté (PO, 2026-11-01)
 Date : 2026-10-31 (remplace la version du 2026-10-29, « `ezk board` reste portable »)
 Décideurs : PO, après deux panels adverses et une enquête passée en revue adverse
 Amende : [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) décision 1 ·
