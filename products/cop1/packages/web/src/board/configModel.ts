@@ -68,11 +68,19 @@ export interface ProjectConfig {
    * applique ses défauts. Absent = config d'exemple (assistant d'ajout).
    */
   file?: string | null;
-  /** Le tier choisi par rôle ; un rôle absent prend le défaut de l'outil. */
-  roles: Partial<Record<Role, Tier>>;
-  /** Les rôles dont la config est mal saisie, avec la raison donnée par la méthode. */
-  errors?: Partial<Record<Role, string>>;
+  /** Le tier choisi par rôle (config d'exemple) ; un rôle absent prend le défaut de l'outil. */
+  roles?: Partial<Record<Role, Tier>>;
+  /**
+   * Projet surveillé : chaque agent tel que la méthode le résout. Présent = le modèle
+   * affiché est celui qu'elle lance, pas celui du mapping de l'outil.
+   */
+  agents?: AgentModel[];
 }
+
+/** Un agent résolu par la méthode (tier, modèle, effort, d'où vient la valeur) ou mal configuré. */
+export type AgentModel =
+  | { agent: string; tier: string; model: string; effort: string; source: string }
+  | { agent: string; error: string };
 
 /**
  * La config de l'outil (portée POSTE) : IDE actif, tier par défaut, et le mapping

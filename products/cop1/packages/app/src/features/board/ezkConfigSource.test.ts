@@ -20,21 +20,41 @@ const EXAMPLE = readFileSync(
 const example = (): Record<string, unknown> => JSON.parse(EXAMPLE) as Record<string, unknown>;
 
 describe('translateConfig — traduit le contrat, ne recalcule rien', () => {
-  it('l’exemple du contrat : fichier, GitHub à la carte, intégration, gate, tiers par agent', () => {
+  it('l’exemple du contrat : fichier, GitHub à la carte, intégration, gate', () => {
     const c = translateConfig(example(), '/p');
     expect(c.file).toBe('.vectorz/config.yml');
     expect(c.github).toBe('PR on · CI off · revue Codex off');
     expect(c.integration).toBe('push-ff');
     expect(c.releaseGate).toBe(false);
     expect(c.root).toBe('/p');
-    expect(c.roles['ezk-dev']).toBe('high');
-    expect(c.roles['ezk-architect']).toBe('high');
   });
 
-  it('un agent mal configuré sort dans `errors`, jamais avec un tier inventé', () => {
+  it('chaque agent passe tel que la méthode le résout : tier, modèle, effort, source', () => {
     const c = translateConfig(example(), '/p');
-    expect(c.errors['ezk-steward']).toContain('enorme');
-    expect(c.roles['ezk-steward']).toBeUndefined();
+    expect(c.agents).toHaveLength(8);
+    expect(c.agents.find((a) => a.agent === 'ezk-qa')).toEqual({
+      agent: 'ezk-qa',
+      tier: 'middle',
+      model: 'haiku',
+      effort: 'medium',
+      source: 'agent',
+    });
+    expect(c.agents.find((a) => a.agent === 'ezk-dev')).toMatchObject({
+      tier: 'high',
+      model: 'claude-opus-4-8',
+      source: 'tier-projet',
+    });
+  });
+
+  it('un agent mal configuré garde la raison de la méthode, jamais un modèle inventé', () => {
+    const c = translateConfig(example(), '/p');
+    const steward = c.agents.find((a) => a.agent === 'ezk-steward');
+    expect(steward).toEqual({ agent: 'ezk-steward', error: expect.stringContaining('enorme') });
+  });
+
+  it('un agent sans modèle ni erreur est refusé, jamais affiché à moitié', () => {
+    const agents = [{ agent: 'ezk-dev', tier: 'high', effort: 'high', source: 'defaut' }];
+    expect(() => translateConfig({ ...example(), agents }, '/p')).toThrow(/ezk-dev/);
   });
 
   it('pas de fichier : file vaut null (les autres champs sont les défauts de la méthode)', () => {

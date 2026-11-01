@@ -10,7 +10,16 @@
  * ADR-086). Tant qu'elle n'est pas arrivée, la page dit pourquoi : elle ne conclut
  * jamais que le fichier manque.
  */
-import { ROLE_ORDER, TIERS, resolveRole, type ProjectConfig, type Role, type Tier, type ToolConfig } from './configModel.js';
+import {
+  ROLE_ORDER,
+  TIERS,
+  resolveRole,
+  type AgentModel,
+  type ProjectConfig,
+  type Role,
+  type Tier,
+  type ToolConfig,
+} from './configModel.js';
 import type { BoardProject, PlanState } from './types.js';
 
 interface ConfigViewProps {
@@ -31,6 +40,48 @@ function TierSeg({ value, onChange }: { value: Tier; onChange: (t: Tier) => void
         </button>
       ))}
     </span>
+  );
+}
+
+/** D'où vient la valeur d'un agent, en mots (contrat `ezk config show --json`). */
+const SOURCE_LABEL: Record<string, string> = {
+  defaut: 'défaut de la méthode',
+  'tier-projet': 'tier du projet',
+  agent: 'réglé pour cet agent',
+};
+
+/** Les modèles que la méthode lance, agent par agent. En lecture : un tier se change par `ezk`. */
+function MethodModels({ agents }: { agents: AgentModel[] }): JSX.Element {
+  return (
+    <section className="card">
+      <h3>
+        Modèle par agent{' '}
+        <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
+          résolu par la méthode
+        </span>
+      </h3>
+      {agents.map((a) =>
+        'error' in a ? (
+          <div className="cfgrow" key={a.agent}>
+            <span className="cfgk mono">{a.agent}</span>
+            <span className="faint">config invalide : {a.error}</span>
+          </div>
+        ) : (
+          <div className="cfgrow" key={a.agent}>
+            <span className="cfgk mono">{a.agent}</span>
+            <span className="rtier">{a.tier}</span>
+            <span className="rarr">→</span>
+            <span className="rmodel">{a.model}</span>
+            <span className="reff">{a.effort}</span>
+            <span className="faint">{SOURCE_LABEL[a.source] ?? a.source}</span>
+          </div>
+        ),
+      )}
+      <div className="faint" style={{ fontSize: 12, padding: '8px 16px 4px' }}>
+        Ce sont les modèles que la méthode lance. Pour changer le tier d'un agent :{' '}
+        <code>ezk config roles set &lt;agent&gt; &lt;tier&gt;</code>
+      </div>
+    </section>
   );
 }
 
@@ -120,6 +171,9 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
         </section>
       </div>
 
+      {c.agents ? (
+        <MethodModels agents={c.agents} />
+      ) : (
       <section className="card">
         <h3>
           Modèle par rôle{' '}
@@ -131,15 +185,6 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
           </span>
         </h3>
         {ROLE_ORDER.map((role) => {
-          const invalid = c.errors?.[role];
-          if (invalid !== undefined) {
-            return (
-              <div className="cfgrow" key={role}>
-                <span className="cfgk mono">{role}</span>
-                <span className="faint">config invalide : {invalid}</span>
-              </div>
-            );
-          }
           const resolved = resolveRole(roles, role, tool);
           return (
             <div className="cfgrow" key={role}>
@@ -159,6 +204,7 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
           .
         </div>
       </section>
+      )}
     </>
   );
 }

@@ -19,11 +19,14 @@ export interface ProjectConfigData {
   releaseGate: boolean;
   /** La racine du projet, telle que le registre la donne. */
   root: string;
-  /** Le tier de chaque agent, tel que la méthode le résout. */
-  roles: Record<string, string>;
-  /** Les agents dont la config est mal saisie, avec la raison donnée par la méthode. */
-  errors: Record<string, string>;
+  /** Chaque agent tel que la méthode le résout : le modèle qu'elle lance, ou la raison d'une erreur. */
+  agents: AgentModelData[];
 }
+
+/** Un agent résolu (tier, modèle, effort, d'où vient la valeur) ou mal configuré (la raison). */
+export type AgentModelData =
+  | { agent: string; tier: string; model: string; effort: string; source: string }
+  | { agent: string; error: string };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -59,13 +62,27 @@ export function translateConfig(raw: unknown, root: string): ProjectConfigData {
   if (typeof releaseGate !== 'boolean') fail('champ releaseGate illisible');
   if (!Array.isArray(agents)) fail('champ agents illisible');
 
-  const roles: Record<string, string> = {};
-  const errors: Record<string, string> = {};
-  for (const a of agents) {
-    if (!isRecord(a) || typeof a.agent !== 'string') fail('un agent sans nom');
-    if (typeof a.error === 'string') errors[a.agent] = a.error;
-    else if (typeof a.tier === 'string') roles[a.agent] = a.tier;
-    else fail(`agent ${a.agent} sans tier ni erreur`);
+  return {
+    file,
+    github: githubText(github),
+    integration,
+    releaseGate,
+    root,
+    agents: agents.map(agentModel),
+  };
+}
+
+function agentModel(a: unknown): AgentModelData {
+  if (!isRecord(a) || typeof a.agent !== 'string') fail('un agent sans nom');
+  if (typeof a.error === 'string') return { agent: a.agent, error: a.error };
+  const { tier, model, effort, source } = a;
+  if (
+    typeof tier !== 'string' ||
+    typeof model !== 'string' ||
+    typeof effort !== 'string' ||
+    typeof source !== 'string'
+  ) {
+    fail(`agent ${a.agent} sans tier, modèle, effort et source`);
   }
-  return { file, github: githubText(github), integration, releaseGate, root, roles, errors };
+  return { agent: a.agent, tier, model, effort, source };
 }

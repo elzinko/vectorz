@@ -101,8 +101,9 @@ const config: ProjectConfigData = {
   integration: 'local-squash',
   releaseGate: true,
   root: '/p',
-  roles: { 'ezk-dev': 'middle' },
-  errors: {},
+  agents: [
+    { agent: 'ezk-dev', tier: 'middle', model: 'sonnet', effort: 'medium', source: 'defaut' },
+  ],
 };
 const noLive = { runs: {}, chantiers: [] };
 

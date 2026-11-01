@@ -59,7 +59,7 @@ const PROJECT: BoardProject = {
 };
 
 function renderConfig(over?: { roles?: Partial<Record<Role, Tier>>; onSetRole?: (r: Role, t: Tier) => void; onGotoTool?: () => void }) {
-  const roles = over?.roles ?? PROJECT.config!.roles;
+  const roles = over?.roles ?? PROJECT.config!.roles ?? {};
   return render(
     <ConfigView
       project={PROJECT}
@@ -108,8 +108,12 @@ function liveProject(over: Partial<BoardProject> = {}): BoardProject {
       integration: 'local-squash',
       root: '/Users/moi/vectorz',
       file: '.vectorz/config.yml',
-      roles: { 'ezk-architect': 'high', 'ezk-dev': 'middle' },
-      errors: {},
+      agents: [
+        { agent: 'ezk-architect', tier: 'high', model: 'claude-opus-4-8', effort: 'high', source: 'defaut' },
+        { agent: 'ezk-dev', tier: 'high', model: 'claude-opus-4-8', effort: 'high', source: 'tier-projet' },
+        { agent: 'ezk-qa', tier: 'middle', model: 'haiku', effort: 'medium', source: 'agent' },
+        { agent: 'ezk-steward', tier: 'low', model: 'sonnet', effort: 'low', source: 'defaut' },
+      ],
     },
     configState: { state: 'ok' },
     ...over,
@@ -149,15 +153,48 @@ describe('ConfigView — la config lue par la méthode (ADR-086)', () => {
     expect(screen.getByText('pas de .vectorz/config.yml · réglages par défaut de la méthode')).toBeTruthy();
   });
 
-  it('un rôle mal configuré montre la raison de la méthode, jamais un tier inventé', () => {
+  it('le modèle affiché est celui que la méthode lance, agent par agent, avec sa source', () => {
+    renderProject(liveProject());
+    const qaRow = screen.getByText('ezk-qa').closest('.cfgrow') as HTMLElement;
+    expect(within(qaRow).getByText('haiku')).toBeTruthy();
+    expect(within(qaRow).getByText('réglé pour cet agent')).toBeTruthy();
+    const devRow = screen.getByText('ezk-dev').closest('.cfgrow') as HTMLElement;
+    expect(within(devRow).getByText('claude-opus-4-8')).toBeTruthy();
+    expect(within(devRow).getByText('tier du projet')).toBeTruthy();
+    // Les agents hors des 4 rôles de la page sortent aussi : la méthode en lance 8.
+    expect(screen.getByText('ezk-steward')).toBeTruthy();
+  });
+
+  it('rien à régler ici : pas de bouton de tier, la commande qui change un tier est donnée', () => {
+    renderProject(liveProject());
+    expect(screen.queryByRole('button', { name: 'high' })).toBeNull();
+    expect(screen.queryByRole('button', { name: /régler l'outil/ })).toBeNull();
+    expect(screen.getByText('ezk config roles set <agent> <tier>')).toBeTruthy();
+  });
+
+  it('un agent mal configuré montre la raison de la méthode, jamais un modèle inventé', () => {
     const base = liveProject();
     renderProject({
       ...base,
-      config: { ...base.config!, errors: { 'ezk-dev': 'Tier inconnu pour ezk-dev : « enorme »' } },
+      config: {
+        ...base.config!,
+        agents: [{ agent: 'ezk-dev', error: 'Tier inconnu pour ezk-dev : « enorme »' }],
+      },
     });
     const devRow = screen.getByText('ezk-dev').closest('.cfgrow') as HTMLElement;
     expect(within(devRow).getByText(/config invalide : Tier inconnu pour ezk-dev/)).toBeTruthy();
-    expect(within(devRow).queryAllByRole('button')).toHaveLength(0);
+  });
+
+  it('une source que la page ne connaît pas s’affiche telle quelle', () => {
+    const base = liveProject();
+    renderProject({
+      ...base,
+      config: {
+        ...base.config!,
+        agents: [{ agent: 'ezk-dev', tier: 'low', model: 'sonnet', effort: 'low', source: 'poste' }],
+      },
+    });
+    expect(screen.getByText('poste')).toBeTruthy();
   });
 
   it('config en chargement : la page le dit, sans prétendre que le fichier manque', () => {
