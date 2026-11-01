@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261031160441267_detail-fiche-calcule-par-la-methode.md](../20261031160441267_detail-fiche-calcule-par-la-methode.md)
+> 🗎 Rendu de la fiche [features/20261031160441267_detail-fiche-calcule-par-la-methode.md](../done/20261031160441267_detail-fiche-calcule-par-la-methode.md)
 
 ## En clair
 

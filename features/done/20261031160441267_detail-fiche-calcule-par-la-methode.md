@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version:
 labels: [board, contrat, json]
-status: ready
-pr:
+status: shipped
+pr: "local (1f4434b6)"
 evidence: none # contrat en ligne de commande, sans écran ; preuve = tests de contrat
 created: 2026-10-31
 ---
@@ -42,8 +42,8 @@ actives d'un coup (`readFicheDetails`), pour ouvrir la fenêtre sans attendre. U
 environ une seconde. Une commande qui ne sort qu'une fiche l'obligerait à lancer `ezk` une fois par
 fiche.
 
-Décision : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
-Enquête : [les deux boards](../docs/captures/2026-10-30-enquete-boards/README.md), constat 1.
+Décision : [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+Enquête : [les deux boards](../../docs/captures/2026-10-30-enquete-boards/README.md), constat 1.
 
 ## Valeur
 
@@ -52,7 +52,7 @@ découpeur de markdown.
 
 Mission control peut supprimer `ficheDetail.ts`. Les deux lecteurs de sections de la méthode n'en
 font plus qu'un. C'est la deuxième pièce dont dépend
-[mission control lit le board de la méthode par `ezk`](20261031160441412_mission-control-consomme-ezk.md).
+[mission control lit le board de la méthode par `ezk`](../20261031160441412_mission-control-consomme-ezk.md).
 
 ## Proposition
 
@@ -115,9 +115,9 @@ cd products/mega-city && pnpm test && pnpm test:scripts
 ## Notes
 
 - Fiche sœur du milestone `board`, découpée le 2026-10-31 (ADR-086, section « Le découpage »).
-- Débloque [mission control lit le board de la méthode par `ezk`](20261031160441412_mission-control-consomme-ezk.md).
+- Débloque [mission control lit le board de la méthode par `ezk`](../20261031160441412_mission-control-consomme-ezk.md).
 - Groomée le 2026-11-01 pendant le run autonome, après la livraison du
-  [contrat JSON du board](done/20261029112813308_contrat-json-methode-board-show.md). Deux faits
+  [contrat JSON du board](20261029112813308_contrat-json-methode-board-show.md). Deux faits
   trouvés au grooming : la méthode a déjà un lecteur de sections (`sectionLines`), et mission control
   charge tous les détails d'un coup. D'où la forme sans id et le lecteur partagé.
 - Taille : six critères, trois surfaces proches (une commande, un module pur, les fichiers du

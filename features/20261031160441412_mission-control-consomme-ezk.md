@@ -80,4 +80,4 @@ cd products/mega-city && pnpm exec tsx ../../docs/captures/2026-10-30-enquete-bo
   relit chaque fichier deux fois (front-matter puis corps) : négligeable devant le coût de lancer
   `ezk`, à reprendre si on le mesure.
 - Dépend de [le contrat JSON de la méthode](done/20261029112813308_contrat-json-methode-board-show.md) et
-  de [le détail d'une fiche calculé par la méthode](20261031160441267_detail-fiche-calcule-par-la-methode.md).
+  de [le détail d'une fiche calculé par la méthode](done/20261031160441267_detail-fiche-calcule-par-la-methode.md).

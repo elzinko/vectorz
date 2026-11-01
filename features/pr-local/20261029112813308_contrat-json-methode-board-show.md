@@ -110,7 +110,7 @@ cd products/mega-city && pnpm test && pnpm test:scripts
   le board mais la lecture des fiches. Son ancien périmètre est caduc : on ne retire pas le board de
   la méthode, et `ezk board` ne lance pas mission control.
 - Fiches sœurs du milestone `board`, sans fiche chapeau :
-  - [Le détail d'une fiche calculé par la méthode](../20261031160441267_detail-fiche-calcule-par-la-methode.md)
+  - [Le détail d'une fiche calculé par la méthode](../done/20261031160441267_detail-fiche-calcule-par-la-methode.md)
   - [Mission control lit le board de la méthode par `ezk`](../20261031160441412_mission-control-consomme-ezk.md)
     (dépend de celle-ci et de la précédente)
   - [Un seul vocabulaire pour les boards](../20261031160441559_un-seul-vocabulaire-boards.md)
