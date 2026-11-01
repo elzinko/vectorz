@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version:
 labels: [board, contrat, json]
-status: ready
-pr:
+status: shipped
+pr: "local (28d7e432)"
 evidence: none # contrat en ligne de commande, sans écran ; preuve = tests de contrat et fixture
 created: 2026-10-29
 ---
@@ -40,7 +40,7 @@ par `ezk … --json`. Mais aujourd'hui `ezk board show --json` ne suffit pas :
 - les pouces de revue n'y sont pas ;
 - le format n'a pas de numéro de version.
 
-Preuves et références : [l'enquête sur les deux boards](../docs/captures/2026-10-30-enquete-boards/README.md),
+Preuves et références : [l'enquête sur les deux boards](../../docs/captures/2026-10-30-enquete-boards/README.md),
 constats 2 et 3.
 
 ## Valeur
@@ -107,7 +107,7 @@ cd products/mega-city && pnpm test && pnpm test:scripts
 
 ## Notes
 
-- Décision : [ADR-086 — la méthode est le seul lecteur des fiches](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+- Décision : [ADR-086 — la méthode est le seul lecteur des fiches](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   (accepté par le PO le 2026-11-01 ; le `blocked: panel` est levé).
 - Taille (2026-11-01) : huit critères, au-dessus du seuil de six. La fiche reste entière : elle ne
   touche qu'une surface, la commande `ezk board show --json`. Les deux derniers critères gardent
@@ -123,9 +123,9 @@ cd products/mega-city && pnpm test && pnpm test:scripts
   le board mais la lecture des fiches. Son ancien périmètre est caduc : on ne retire pas le board de
   la méthode, et `ezk board` ne lance pas mission control.
 - Fiches sœurs du milestone `board`, sans fiche chapeau :
-  - [Le détail d'une fiche calculé par la méthode](20261031160441267_detail-fiche-calcule-par-la-methode.md)
-  - [Mission control lit le board de la méthode par `ezk`](20261031160441412_mission-control-consomme-ezk.md)
+  - [Le détail d'une fiche calculé par la méthode](../20261031160441267_detail-fiche-calcule-par-la-methode.md)
+  - [Mission control lit le board de la méthode par `ezk`](../20261031160441412_mission-control-consomme-ezk.md)
     (dépend de celle-ci et de la précédente)
-  - [Un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md)
+  - [Un seul vocabulaire pour les boards](../20261031160441559_un-seul-vocabulaire-boards.md)
 - Priorité P2 gardée du grooming du 2026-10-29. Elle mérite peut-être P1 : mission control affiche
   aujourd'hui des chiffres faux. Au PO de trancher.

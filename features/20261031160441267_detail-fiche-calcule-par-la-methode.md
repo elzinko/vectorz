@@ -38,7 +38,7 @@ réécrire un découpeur de markdown.
 
 À préciser au grooming. Piste : un cœur pur dans mega-city qui découpe une fiche en sections, repris
 de `ficheDetail.ts` et de ses tests ; une commande `ezk backlog show <id> --json`, au même format
-versionné que [le contrat JSON de la méthode](20261029112813308_contrat-json-methode-board-show.md).
+versionné que [le contrat JSON de la méthode](done/20261029112813308_contrat-json-methode-board-show.md).
 
 ## Critères d'acceptation
 

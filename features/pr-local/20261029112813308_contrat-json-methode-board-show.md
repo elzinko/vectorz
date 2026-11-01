@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261029112813308_contrat-json-methode-board-show.md](../20261029112813308_contrat-json-methode-board-show.md)
+> 🗎 Rendu de la fiche [features/20261029112813308_contrat-json-methode-board-show.md](../done/20261029112813308_contrat-json-methode-board-show.md)
 
 ## En clair
 
