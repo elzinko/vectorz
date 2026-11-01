@@ -112,6 +112,8 @@ describe('loadCatalog (données réelles du repo)', () => {
       'documentation-guidelines/readable-deliverable-trio',
       'agent-ops/verify-access-before-asking',
       'agent-ops/preuve-mince-question-pas-veto',
+      'agent-ops/pipe-garde-le-code-de-sortie',
+      'agent-ops/push-nomme-les-commits-d-autrui',
     ]);
     expect(catalog.bundles.get('mobile')?.extends).toEqual(['base']);
     expect(catalog.profiles.get('mobile')?.bundles).toEqual(['mobile']);

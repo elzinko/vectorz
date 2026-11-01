@@ -50,7 +50,9 @@ describe('expandProfile(mobile)', () => {
   it('résout les bundles (mobile → base) en règles, triées stablement par id', () => {
     const resolved = expandMobile();
     expect(resolved.rules.map((r) => r.id)).toEqual([
+      'agent-ops/pipe-garde-le-code-de-sortie',
       'agent-ops/preuve-mince-question-pas-veto',
+      'agent-ops/push-nomme-les-commits-d-autrui',
       'agent-ops/verify-access-before-asking',
       'clean-code/no-dead-code',
       'conventional-commits/format',
@@ -81,7 +83,9 @@ describe('expandProfile(mobile)', () => {
     };
     const resolved = expandProfile(profile, catalog);
     expect(resolved.rules.map((r) => r.id)).toEqual([
+      'agent-ops/pipe-garde-le-code-de-sortie',
       'agent-ops/preuve-mince-question-pas-veto',
+      'agent-ops/push-nomme-les-commits-d-autrui',
       'agent-ops/verify-access-before-asking',
       'clean-code/no-dead-code',
       'conventional-commits/format',
@@ -195,10 +199,12 @@ describe('expandProfile — 8 bundles migrés depuis iamthelaw (fiche 0006, -2 o
     // +4 le 2026-10-19 : rétro « run qui parke au lieu de tenter » → development/tenter-avant-de-parker,
     //  development/machine-ne-tranche-pas-version-ni-depark, development/decision-informee-au-depart,
     //  development/tenter-decoupage-et-local-avant-ecarter.
+    // +2 le 2026-11-01 : rétro légère du run des contrats JSON → development/story-dans-un-worktree-dedie,
+    //  testing/sortie-machine-verifiee-par-un-tuyau (les deux règles globales du jour vivent dans `base`).
     // NB : agent-ops/preuve-mince-question-pas-veto (2026-10-28) vit dans `base`, PAS dans ces 8
     //  bundles de catégorie — le socle reste à l'écart de ce décompte (cf. mobile/base plus haut).
-    expect(resolved.rules).toHaveLength(68);
+    expect(resolved.rules).toHaveLength(70);
     // pas de doublon d'id malgré 8 bundles distincts
-    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(68);
+    expect(new Set(resolved.rules.map((r) => r.id)).size).toBe(70);
   });
 });

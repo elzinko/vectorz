@@ -7,3 +7,4 @@ rules:
   - testing/manual-validation-camera-gesture
   - testing/capped-list-filter-scenario
   - testing/confinement-contract-at-boundary
+  - testing/sortie-machine-verifiee-par-un-tuyau

@@ -9,3 +9,5 @@ rules:
   - documentation-guidelines/readable-deliverable-trio
   - agent-ops/verify-access-before-asking
   - agent-ops/preuve-mince-question-pas-veto
+  - agent-ops/pipe-garde-le-code-de-sortie
+  - agent-ops/push-nomme-les-commits-d-autrui

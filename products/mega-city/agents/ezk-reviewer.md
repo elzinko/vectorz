@@ -187,6 +187,9 @@ PR** jusqu'à traitement.
   et sa doc **nomme sa frontière** : sinon NO-GO. La doc ne promet jamais plus que le code ne tient.
 - `development/one-story-one-commit-local` — en **flux sans PR**, chaque story atterrit comme **son
   propre commit** : signale un squash local qui fond plusieurs stories en un seul commit.
+- `testing/sortie-machine-verifiee-par-un-tuyau` — une commande dont la sortie est **lue par un autre
+  programme** (`--json`, un contrat) a été **vérifiée en vrai, par un tuyau, sur le plus gros projet du
+  registre** ; un `process.exit()` juste après une grosse sortie la coupe à 64 Ko → NO-GO.
 
 <!--
   competences[] et interactions[] (frontmatter) sont DES LISTES = data.

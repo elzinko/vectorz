@@ -1,7 +1,7 @@
 ---
 roles: [ezk-architect, ezk-dev, ezk-qa, ezk-reviewer]
 composes: [ezk-backlog, ezk-ci, ezk-commits]
-applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/pr-before-after-media, development/host-project-proof-before-ship, development/one-story-one-commit-local]
+applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/next-step-affordance, development/pr-before-after-media, development/host-project-proof-before-ship, development/one-story-one-commit-local, development/story-dans-un-worktree-dedie, testing/sortie-machine-verifiee-par-un-tuyau]
 argument-hint: "[help|start|close|check|run]"
 description: Orchestrateur de developpement produit en sprints autonomes. A
   utiliser quand l'utilisateur veut construire ou iterer une feature ou un
