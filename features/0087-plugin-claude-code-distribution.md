@@ -242,8 +242,15 @@ l'historique git, au commit `61ce71ed`.
 Constat utile pour le point non résolu. Une extension Desktop activée est aussi chargée
 dans l'onglet Code, avec un seul dossier projet figé. Elle aurait écrit le journal de tous
 les projets dans ce dossier-là. Un plugin global aurait le même défaut s'il figeait la
-racine. Piste à instruire : ne pas fixer `SUPERVISION_PROJECT_ROOT` et laisser le serveur
-prendre le dossier de la session. Ce repli existe déjà dans `src/supervision/project-root.ts`.
+racine.
+
+**Correction du même jour, après panel adverse.** La première version de cette note disait que
+le repli sur le dossier courant suffisait. C'est faux : le lanceur actuel passe par
+`pnpm --dir`, qui déplace ce dossier vers `products/mega-city`, et le serveur s'arrête au
+démarrage. La voie vérifiée pour le plugin : sa config MCP substitue `${CLAUDE_PROJECT_DIR}`
+(doc officielle). Écrire `SUPERVISION_PROJECT_ROOT: "${CLAUDE_PROJECT_DIR}"` dans le plugin
+donne la racine de chaque session, sans paramètre d'outil. Détail et alternatives :
+[panel du 2026-11-01](../docs/captures/2026-11-01-panel-adverse-extension-supervision-centrale.md).
 
 ### 6. La méthode DANS le projet (`.vectorz/`, façon BMAD) — 3ᵉ voie de distribution (question PO 2026-07-26)
 
