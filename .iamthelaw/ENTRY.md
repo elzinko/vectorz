@@ -2,6 +2,21 @@
 
 Règles compilées de ce projet (cap claude-code-law).
 
+## agent-ops/pipe-garde-le-code-de-sortie  `[SHOULD]`
+
+- **En clair.** `commande | tail -3` rend le code de `tail`, pas celui de la commande. Un `git add` qui
+  échoue, une suite de tests rouge ou une gate qui tombe passent alors pour réussis. Une commande dont
+  le code compte (git add, tests, gate, build) garde son statut : `set -o pipefail`, `&&` avant le
+  tuyau, ou un code relevé à part (`; echo "EXIT=$?"`).
+- **Symptôme fondateur** (rétro du 2026-11-01) : trois fois, dont deux le même jour,
+  `git add a b c 2>&1 | tail -2; git status && git commit`. Un chemin déjà renommé a fait échouer tout
+  le `git add`, le tuyau a masqué l'échec, et le commit est parti avec le seul renommage. La revue a
+  aussi relevé qu'un `vitest … | tail` masque le code de sortie.
+- **Mesure (removability).** Sur les 5 prochains runs : 0 commit partiel et 0 gate lue verte à tort.
+
+Origine : rétro du 2026-11-01, capture `docs/captures/2026-11-01-retro-run-contrats-json-light.md`
+(proposition 2, lentilles dev et qualité). Cible : globale.
+
 ## agent-ops/preuve-mince-question-pas-veto  `[SHOULD]`
 
 - Quand une fiche, une recette ou un build n'a qu'**un seul cas** pour preuve, ce n'est pas un motif
@@ -22,6 +37,26 @@ Règles compilées de ce projet (cap claude-code-law).
 - Mesure (removability) : sur les 5 prochains panels ou groomings qui rencontrent une preuve mince,
   0 cas où elle est posée comme un refus sans que le PO ait tranché ; et 0 fiche de simple déclaration
   bloquée au nom du gate du 2e cas.
+
+## agent-ops/push-nomme-les-commits-d-autrui  `[SHOULD]`
+
+- **En clair.** Plusieurs sessions committent sur le même `main` local. Un push emporte tout ce qui est
+  en avance sur GitHub, y compris le travail des autres, parfois pas encore fini ou corrigé. Avant de
+  pousser `main`, ou de proposer de le faire, on liste `git log origin/main..main`, et on nomme au PO
+  les commits qu'on n'a pas faits soi-même.
+- **Symptôme fondateur** (rétro du 2026-11-01) : une session a poussé `main` deux fois (11 h 44 et
+  13 h 27). Ces pushes ont emporté les commits d'un run voisin, dont une version de `ezk backlog show`
+  qui coupait sa sortie à 64 Ko ; le correctif, lui, est resté local. Le run voisin ne l'a appris
+  qu'en lisant `git reflog show origin/main`.
+- **Frontière.** Ne remplace pas la confirmation d'un push par le PO (action sortante) : elle la
+  rend informée.
+- **Preuve mince.** Un seul incident : posée en SHOULD, sur décision du PO du 2026-11-01 (règle
+  `agent-ops/preuve-mince-question-pas-veto`).
+- **Mesure (removability).** 0 push de `main` qui emporte des commits d'une autre session sans les
+  nommer.
+
+Origine : rétro du 2026-11-01, capture `docs/captures/2026-11-01-retro-run-contrats-json-light.md`
+(proposition 8, lentilles produit et architecture). Cible : globale.
 
 ## agent-ops/verify-access-before-asking  `[SHOULD]`
 
