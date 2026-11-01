@@ -19,43 +19,51 @@ import { projectRootOrExit } from '../src/io/project-root.js';
 const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const { root } = projectRootOrExit(ownRoot);
 
-const args = process.argv.slice(2);
-const json = args.includes('--json');
-// Les arguments libres, hors `--root <projet>` déjà lu par projectRootOrExit.
-const free = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--root');
-if (free.length > 1 || (free.length === 1 && !/^\d{4,}$/.test(free[0]))) {
-  console.error('usage : ezk backlog show [<id>] [--json] [--root <projet>]');
-  process.exit(2);
-}
-const id = free[0];
+// Pas de `process.exit` après une sortie : il couperait le JSON à 64 Ko quand il part dans un tuyau,
+// ce que fait mission control (constat du 2026-11-01). La commande rend son code et se termine seule.
+process.exitCode = main(process.argv.slice(2));
 
-if (id === undefined) {
+function main(args: readonly string[]): number {
+  const json = args.includes('--json');
+  // Les arguments libres, hors `--root <projet>` déjà lu par projectRootOrExit.
+  const free = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--root');
+  if (free.length > 1 || (free.length === 1 && !/^\d{4,}$/.test(free[0]))) {
+    console.error('usage : ezk backlog show [<id>] [--json] [--root <projet>]');
+    return 2;
+  }
+  const id = free[0];
+  if (id === undefined) return showListe(json);
+
+  const fiche = backlogShowFiche(root, id);
+  if (fiche === undefined) {
+    console.error(`En clair : la fiche ${id} n'existe pas dans ${root} (ni dans features/, ni dans features/done/).`);
+    return 1;
+  }
+  if (json) {
+    console.log(JSON.stringify(fiche, null, 1));
+    return 0;
+  }
+  const flags = `${fiche.enCours ? ' · en cours' : ''}${fiche.blocked ? ` · bloquée : ${fiche.blocked}` : ''}`;
+  const done = fiche.criteres.filter((c) => c.coche).length;
+  console.log(fiche.title);
+  console.log(`${fiche.id} · ${fiche.status}${flags} · ${fiche.file}`);
+  console.log(`\nEn clair : ${fiche.enClair || '(absent)'}`);
+  console.log(`\nCritères (${done}/${fiche.criteres.length} cochés) :`);
+  for (const c of fiche.criteres) console.log(`  [${c.coche ? 'x' : ' '}] ${c.texte}`);
+  return 0;
+}
+
+/** La liste : le contrat JSON, ou une ligne par fiche. */
+function showListe(json: boolean): number {
   const liste = backlogShowListe(root);
   if (json) {
     console.log(JSON.stringify(liste, null, 1));
-    process.exit(0);
+    return 0;
   }
   console.log(`En clair : ${liste.fiches.length} fiche(s) dans features/, hors done/.`);
   for (const f of liste.fiches) {
     const flags = `${f.enCours ? ' · en cours' : ''}${f.blocked ? ` · bloquée : ${f.blocked}` : ''}`;
     console.log(`  ${f.id}  ${f.status.padEnd(10)} ${f.title.slice(0, 70)}${flags}`);
   }
-  process.exit(0);
+  return 0;
 }
-
-const fiche = backlogShowFiche(root, id);
-if (fiche === undefined) {
-  console.error(`En clair : la fiche ${id} n'existe pas dans ${root} (ni dans features/, ni dans features/done/).`);
-  process.exit(1);
-}
-if (json) {
-  console.log(JSON.stringify(fiche, null, 1));
-  process.exit(0);
-}
-const flags = `${fiche.enCours ? ' · en cours' : ''}${fiche.blocked ? ` · bloquée : ${fiche.blocked}` : ''}`;
-const done = fiche.criteres.filter((c) => c.coche).length;
-console.log(fiche.title);
-console.log(`${fiche.id} · ${fiche.status}${flags} · ${fiche.file}`);
-console.log(`\nEn clair : ${fiche.enClair || '(absent)'}`);
-console.log(`\nCritères (${done}/${fiche.criteres.length} cochés) :`);
-for (const c of fiche.criteres) console.log(`  [${c.coche ? 'x' : ' '}] ${c.texte}`);

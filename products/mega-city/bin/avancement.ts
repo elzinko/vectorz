@@ -23,42 +23,48 @@ const ownRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..
 const { root: repoRoot } = projectRootOrExit(ownRoot);
 
 // Le contrat JSON (fiche 20261029112813308) : format décrit dans src/core/board-contract.ts,
-// schéma et exemple rangés dans contracts/board-show/.
+// schéma et exemple rangés dans contracts/board-show/. Pas de `process.exit` après la sortie : il
+// couperait le JSON à 64 Ko quand il part dans un tuyau (constat du 2026-11-01).
 if (process.argv.includes('--json')) {
   console.log(JSON.stringify(boardShowData(repoRoot), null, 1));
-  process.exit(0);
+} else {
+  printText();
 }
 
-// « En cours » déduit des branches ouvertes (ADR-0077) : les fiches en cours ne comptent pas « tirables ».
-const data = buildAvancementData(loadFiches(repoRoot), collectInProgressIds(repoRoot));
+/** Le board en texte, pour un humain. */
+function printText(): void {
+  // « En cours » déduit des branches ouvertes (ADR-0077) : les fiches en cours ne comptent pas « tirables ».
+  const data = buildAvancementData(loadFiches(repoRoot), collectInProgressIds(repoRoot));
 
-// En clair d'abord (règle human-facing-lisibility).
-const actives = data.actives.length;
-console.log(
-  `En clair : ${actives} fiches actives, dont ${data.tirables} tirable(s) (todo + ready). ` +
-    `${data.counts.shipped ?? 0} livrées, ${data.milestones.length} milestone(s).`,
-);
-console.log(
-  `\nPar statut : ${STATUTS.filter((s) => data.counts[s]).map((s) => `${s} ${data.counts[s]}`).join(' · ')}`,
-);
 
-console.log('\nActives par priorité (les tirables marquées ✓) :');
-let prio = '';
-for (const f of data.actives) {
-  if (f.priority !== prio) {
-    prio = f.priority;
-    console.log(`\n  ${prio || '(sans prio)'}`);
+  // En clair d'abord (règle human-facing-lisibility).
+  const actives = data.actives.length;
+  console.log(
+    `En clair : ${actives} fiches actives, dont ${data.tirables} tirable(s) (todo + ready). ` +
+      `${data.counts.shipped ?? 0} livrées, ${data.milestones.length} milestone(s).`,
+  );
+  console.log(
+    `\nPar statut : ${STATUTS.filter((s) => data.counts[s]).map((s) => `${s} ${data.counts[s]}`).join(' · ')}`,
+  );
+
+  console.log('\nActives par priorité (les tirables marquées ✓) :');
+  let prio = '';
+  for (const f of data.actives) {
+    if (f.priority !== prio) {
+      prio = f.priority;
+      console.log(`\n  ${prio || '(sans prio)'}`);
+    }
+    const tag = f.status === 'ready' ? '✓' : f.status === 'blocked' ? '⛔' : ' ';
+    const ms = f.milestone ? ` ⤷${f.milestone}` : '';
+    console.log(`    ${tag} ${f.id}  ${f.status.padEnd(11)} ${f.title.slice(0, 66)}${ms}`);
   }
-  const tag = f.status === 'ready' ? '✓' : f.status === 'blocked' ? '⛔' : ' ';
-  const ms = f.milestone ? ` ⤷${f.milestone}` : '';
-  console.log(`    ${tag} ${f.id}  ${f.status.padEnd(11)} ${f.title.slice(0, 66)}${ms}`);
-}
 
-if (data.milestones.length > 0) {
-  console.log('\nMilestones (avancement cumulé) :');
-  for (const m of data.milestones) {
-    console.log(
-      `  ${m.milestone.padEnd(16)} [${m.status}] — ${m.total} fiche(s), ${m.shipped} livrée(s)`,
-    );
+  if (data.milestones.length > 0) {
+    console.log('\nMilestones (avancement cumulé) :');
+    for (const m of data.milestones) {
+      console.log(
+        `  ${m.milestone.padEnd(16)} [${m.status}] — ${m.total} fiche(s), ${m.shipped} livrée(s)`,
+      );
+    }
   }
 }
