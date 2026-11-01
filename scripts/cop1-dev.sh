@@ -32,6 +32,17 @@ if [ "$BUILD" = "1" ]; then
   pnpm build
 fi
 
+# Un ancien daemon tient déjà le port : refus net. Sinon le nouveau plante sur « port déjà
+# utilisé », et la page parle en silence à l'ancien, qui sert un code périmé.
+if command -v lsof >/dev/null 2>&1; then
+  BUSY="$(lsof -t -nP -iTCP:"$DAEMON_PORT" -sTCP:LISTEN 2>/dev/null | xargs || true)"
+  if [ -n "$BUSY" ]; then
+    echo "✗ le port $DAEMON_PORT est déjà pris (pid $BUSY) : un ancien daemon tourne encore." >&2
+    echo "  Arrête-le (kill $BUSY), ou prends un autre port : COP1_DAEMON_PORT=4344 pnpm dev" >&2
+    exit 1
+  fi
+fi
+
 echo "▶ daemon cop1 → port $DAEMON_PORT (lit supervision.registry.yaml à la racine)"
 node products/cop1/packages/app/dist/cli/daemon-entry.js --port "$DAEMON_PORT" &
 DAEMON_PID=$!
@@ -47,6 +58,11 @@ trap cleanup EXIT INT TERM
 # Attends que le daemon réponde AVANT de lancer le web (c'est ça qui tue le « live indisponible »).
 echo "▶ attente du daemon…"
 for i in $(seq 1 40); do
+  # Notre daemon est mort au démarrage : on s'arrête, au lieu d'ouvrir une page sans serveur.
+  if ! kill -0 "$DAEMON_PID" 2>/dev/null; then
+    echo "✗ le daemon s'est arrêté au démarrage (voir l'erreur au-dessus)." >&2
+    exit 1
+  fi
   if curl -s -o /dev/null "http://127.0.0.1:$DAEMON_PORT/api/board"; then
     echo "  daemon prêt."
     break
