@@ -39,7 +39,7 @@ découpeur de markdown.
 
 Mission control peut supprimer `ficheDetail.ts`. Les deux lecteurs de sections de la méthode n'en
 font plus qu'un. C'est la deuxième pièce dont dépend
-[mission control lit le board de la méthode par `ezk`](../20261031160441412_mission-control-consomme-ezk.md).
+[mission control lit le board de la méthode par `ezk`](../done/20261031160441412_mission-control-consomme-ezk.md).
 
 ## Proposition
 
@@ -102,7 +102,7 @@ cd products/mega-city && pnpm test && pnpm test:scripts
 ## Notes
 
 - Fiche sœur du milestone `board`, découpée le 2026-10-31 (ADR-086, section « Le découpage »).
-- Débloque [mission control lit le board de la méthode par `ezk`](../20261031160441412_mission-control-consomme-ezk.md).
+- Débloque [mission control lit le board de la méthode par `ezk`](../done/20261031160441412_mission-control-consomme-ezk.md).
 - Groomée le 2026-11-01 pendant le run autonome, après la livraison du
   [contrat JSON du board](../done/20261029112813308_contrat-json-methode-board-show.md). Deux faits
   trouvés au grooming : la méthode a déjà un lecteur de sections (`sectionLines`), et mission control

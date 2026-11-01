@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261031160441412_mission-control-consomme-ezk.md](../20261031160441412_mission-control-consomme-ezk.md)
+> 🗎 Rendu de la fiche [features/20261031160441412_mission-control-consomme-ezk.md](../done/20261031160441412_mission-control-consomme-ezk.md)
 
 ## En clair
 

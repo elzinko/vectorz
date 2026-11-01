@@ -31,7 +31,7 @@ version se pose à la construction (étiquette). Détail :
 - ~~`20261007135620590` — unifier les tableaux de bord en un seul (design par maquette) · groom~~ — split (document de design livré, retiré du plan le 2026-10-27)
 - ~~`20261029112813308` — le contrat JSON de la méthode : `ezk board show --json` complet et versionné · build (prête le 2026-11-01, ADR-086)~~ — shipped
 - ~~`20261031160441267` — le détail d'une fiche calculé par la méthode (`ezk backlog show <id> --json`) · groom~~ — shipped
-- `20261031160441412` — mission control lit le board de la méthode par `ezk` · groom (dépend des deux précédentes)
+- ~~`20261031160441412` — mission control lit le board de la méthode par `ezk` · groom (dépend des deux précédentes)~~ — shipped
 - `20261031160441559` — un seul vocabulaire pour les boards · groom (indépendante)
 
 **Milestone `carte` — « La carte dit vrai »** :

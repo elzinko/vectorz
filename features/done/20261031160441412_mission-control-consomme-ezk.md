@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261029112813308", "20261031160441267"]
 labels: [board, contrat, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (37d5de88)"
 evidence: before-after
 created: 2026-10-31
 ---
@@ -38,9 +38,9 @@ Sans serveur de données, la page affiche en plus des chiffres d'exemple, avec u
 · live indisponible » (`products/cop1/packages/web/src/board/Board.tsx:149`). Le PO l'a vu le
 2026-11-01 : le lanceur d'aperçu ne démarrait que la page web.
 
-Décision : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), qui
+Décision : [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), qui
 amende l'ADR-021 : cop1 dépend officiellement de la commande `ezk`.
-Enquête : [les deux boards](../docs/captures/2026-10-30-enquete-boards/README.md).
+Enquête : [les deux boards](../../docs/captures/2026-10-30-enquete-boards/README.md).
 
 ## Valeur
 
@@ -111,7 +111,7 @@ recopiés. Après : « 326 fiches livrées » et 1 en cours, les chiffres d'`ezk
 
 | Vue | Avant | Après |
 |---|---|---|
-| vue-ensemble | ![vue-ensemble avant](../docs/pr-evidence/20261031160441412/vue-ensemble-before.png) | ![vue-ensemble après](../docs/pr-evidence/20261031160441412/vue-ensemble-after.png) |
+| vue-ensemble | ![vue-ensemble avant](../../docs/pr-evidence/20261031160441412/vue-ensemble-before.png) | ![vue-ensemble après](../../docs/pr-evidence/20261031160441412/vue-ensemble-after.png) |
 
 ```bash
 grep -rn "readBacklogFiches\|readFicheDetails" products/cop1/packages --include="*.ts" --include="*.tsx"
@@ -123,8 +123,8 @@ fiches de cop1 et leurs appels.
 ## Notes
 
 - Fiche sœur du milestone `board`, découpée le 2026-10-31 (ADR-086). Ses deux dépendances sont
-  livrées : [le contrat JSON de la méthode](done/20261029112813308_contrat-json-methode-board-show.md)
-  et [le détail d'une fiche calculé par la méthode](done/20261031160441267_detail-fiche-calcule-par-la-methode.md).
+  livrées : [le contrat JSON de la méthode](20261029112813308_contrat-json-methode-board-show.md)
+  et [le détail d'une fiche calculé par la méthode](20261031160441267_detail-fiche-calcule-par-la-methode.md).
 - **Référence des chiffres : le contrat, pas le script d'enquête.** Le script
   `docs/captures/2026-10-30-enquete-boards/mesure-ecarts.ts` compte « livrées » = les fichiers de
   `done/` (404 sur vectorz). Le contrat sépare `livrees` (326) et `closes` (79). Mission control
