@@ -79,19 +79,19 @@ Ensuite :
 
 ## Critères d'acceptation
 
-- [ ] **Mêmes chiffres.** Pour chaque projet du registre, les idées, prêtes, en cours, parkées, sans
+- [x] **Mêmes chiffres.** Pour chaque projet du registre, les idées, prêtes, en cours, parkées, sans
       version, livrées et la version en cours affichées par mission control valent celles
       d'`ezk --root <projet> board show --json`. Un test le prouve sur l'exemple du contrat.
-- [ ] **Même détail.** La fenêtre d'une fiche vient d'`ezk backlog show --json`. Une fiche dont
+- [x] **Même détail.** La fenêtre d'une fiche vient d'`ezk backlog show --json`. Une fiche dont
       l'en-tête contient « : » montre son vrai statut. Une fiche bloquée porte « bloquée » et sa raison.
-- [ ] **Jamais d'attente.** `/api/board` répond en moins de 100 ms pendant qu'un rafraîchissement
+- [x] **Jamais d'attente.** `/api/board` répond en moins de 100 ms pendant qu'un rafraîchissement
       tourne. Un test le prouve avec un faux `ezk` qui met 2 secondes.
-- [ ] **Jamais de faux chiffre.** Sans `ezk`, avec un `ezk` en erreur ou avec un `schema_version`
+- [x] **Jamais de faux chiffre.** Sans `ezk`, avec un `ezk` en erreur ou avec un `schema_version`
       inconnu : les runs s'affichent, avec « plan indisponible » et la raison. Les chiffres d'exemple
       n'apparaissent dans aucun de ces cas.
-- [ ] **La copie disparaît.** `backlogReader.ts` et `ficheDetail.ts` sont supprimés. Plus aucun fichier
+- [x] **La copie disparaît.** `backlogReader.ts` et `ficheDetail.ts` sont supprimés. Plus aucun fichier
       de `products/cop1/packages/app/src` ne lit l'en-tête d'une fiche.
-- [ ] **`ezk` se règle.** `supervision.ezk_command` dans la config de cop1 change la commande appelée ;
+- [x] **`ezk` se règle.** `supervision.ezk_command` dans la config de cop1 change la commande appelée ;
       absent, c'est `ezk`. L'exemple de config le documente.
 
 ## Comment vérifier
@@ -105,7 +105,13 @@ Ouvrir http://localhost:5273 et choisir le projet muti. Signal observable : les 
 valent ceux du JSON (aujourd'hui 66 idées, 21 parkées, 63 sans version). Le bandeau « échantillon »
 n'apparaît plus. Arrêter `ezk` (mettre `ezk_command: ["false"]`) : la page dit « plan indisponible ».
 
-Preuve avant / après : capture de mission control sur muti, avant (65 idées, 19 parkées) et après.
+**Avant / après** (règle `development/pr-before-after-media`) : la vue d'ensemble de vectorz dans
+mission control, capturée le 2026-11-01. Avant : « 404 fiches livrées » et 0 en cours, chiffres
+recopiés. Après : « 326 fiches livrées » et 1 en cours, les chiffres d'`ezk board show --json`.
+
+| Vue | Avant | Après |
+|---|---|---|
+| vue-ensemble | ![vue-ensemble avant](../docs/pr-evidence/20261031160441412/vue-ensemble-before.png) | ![vue-ensemble après](../docs/pr-evidence/20261031160441412/vue-ensemble-after.png) |
 
 ```bash
 grep -rn "readBacklogFiches\|readFicheDetails" products/cop1/packages --include="*.ts" --include="*.tsx"

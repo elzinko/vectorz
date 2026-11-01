@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AddProjectModal } from './AddProjectModal.js';
-import Board from './Board.js';
+import { renderBoardOn } from './testing/renderBoard.js';
 
 afterEach(cleanup);
 
@@ -39,7 +39,7 @@ describe('AddProjectModal (fiche 263)', () => {
 
 describe('Board — ajouter un projet (intégration)', () => {
   it('l’assistant ajoute un projet qui apparaît dans le sélecteur', async () => {
-    render(<Board />);
+    await renderBoardOn();
     // Ouvrir le sélecteur de projet, puis l'assistant.
     await userEvent.click(screen.getByRole('button', { name: /vectorz/ }));
     await userEvent.click(screen.getByRole('button', { name: /Ajouter un projet/ }));
@@ -59,7 +59,7 @@ describe('Board — ajouter un projet (intégration)', () => {
   });
 
   it('n’écrase pas un projet amorcé en cas de collision de nom', async () => {
-    render(<Board />);
+    await renderBoardOn();
     await userEvent.click(screen.getByRole('button', { name: /vectorz/ }));
     await userEvent.click(screen.getByRole('button', { name: /Ajouter un projet/ }));
     const input = screen.getByLabelText('Racine du projet');

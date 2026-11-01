@@ -1,28 +1,44 @@
 /**
- * Sœur « tuyau » de board-web (fiche 20261024130841976) : le board lit une SOURCE INJECTÉE
- * (`/api/board`) au lieu de `BOARD_DATA` en dur, et retombe sur l'échantillon — signalé à
- * l'écran — quand la source est injoignable. On éprouve les deux bords en moquant `fetch`.
+ * Le board lit une SOURCE INJECTÉE (`/api/board`) et n'affiche jamais de chiffres d'exemple
+ * (ADR-086) : serveur injoignable → un message clair, pas un échantillon. On éprouve les bords en
+ * moquant `fetch`.
  */
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import Board from './Board.js';
+import { BOARD_DATA } from './testing/sampleBoard.js';
 
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
-describe('board-web : source injectée + repli signalé', () => {
-  it('fetch échoue (pas de daemon) → repli sur l’échantillon, SIGNALÉ, sans crash', async () => {
+describe('board-web : source injectée, jamais d’échantillon', () => {
+  it('fetch échoue (pas de daemon) → « serveur injoignable », jamais les chiffres d’exemple', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('ECONNREFUSED')));
     render(<Board />);
-    // Le repli est explicite à l'écran — jamais un faux chiffre muet.
-    expect(await screen.findByText(/échantillon · live indisponible/)).toBeTruthy();
-    // Et le board reste fonctionnel sur l'échantillon (le projet par défaut s'affiche).
-    expect(screen.getByText("Vue d'ensemble — vectorz")).toBeTruthy();
+    expect(await screen.findByText(/serveur de mission control injoignable/)).toBeTruthy();
+    expect(screen.queryByText(/échantillon/)).toBeNull();
+    expect(screen.queryByText("Vue d'ensemble — vectorz")).toBeNull();
+    expect(document.body.textContent).not.toContain(String(BOARD_DATA.vectorz?.metrics.done));
   });
 
-  it('fetch réussit → la source live remplace l’échantillon, pas de bandeau « indisponible »', async () => {
+  it('fetch répond une erreur HTTP → même message, pas d’échantillon', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response));
+    render(<Board />);
+    expect(await screen.findByText(/serveur de mission control injoignable/)).toBeTruthy();
+    expect(screen.queryByText(/échantillon/)).toBeNull();
+  });
+
+  it('fetch répond sans aucun projet → le dit, sans échantillon', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as Response));
+    render(<Board />);
+    expect(await screen.findByText(/aucun projet surveillé/)).toBeTruthy();
+    expect(screen.queryByText(/échantillon/)).toBeNull();
+  });
+
+  it('fetch réussit → la source live s’affiche, sans bandeau', async () => {
     const live = {
       'projet-live': {
         name: 'projet-live',
@@ -42,8 +58,8 @@ describe('board-web : source injectée + repli signalé', () => {
       vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(live) } as Response),
     );
     render(<Board />);
-    await waitFor(() => expect(screen.queryByText(/échantillon · live indisponible/)).toBeNull());
-    // Le sélecteur de projet montre le projet live, pas un projet de l'échantillon.
-    expect(screen.getByText('projet-live')).toBeTruthy();
+    await waitFor(() => expect(screen.getByText('projet-live')).toBeTruthy());
+    expect(screen.queryByText(/injoignable/)).toBeNull();
+    expect(screen.queryByText(/plan indisponible/)).toBeNull();
   });
 });

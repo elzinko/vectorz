@@ -1,23 +1,26 @@
 /**
- * boardProvider — compose la part « PLAN » des données du board (ADR-074) depuis le backlog de
- * chaque projet surveillé, chez cop1, SANS importer mega-city (ADR-021). Il réutilise le lecteur
- * sœur `backlogReader` (`projectPlan` + `readBacklogFiches`).
+ * boardProvider — compose les données du board de chaque projet surveillé, chez cop1, SANS importer
+ * mega-city (ADR-021). Le PLAN (entonnoir, versions, détail des fiches) vient de la méthode par la
+ * commande `ezk` (ADR-086), via `EzkPlanSource` : cop1 ne lit plus lui-même les fiches.
  *
- * Ce qu'il remplit : `funnel`, `versions`, `metrics.done`. Ce qu'il LAISSE vide sciemment : les
- * `runs` (et `chantiers`/`timeline`), qui demandent l'adaptateur `projectChantiers → BoardRun`
- * (fiche sœur « runs réels », à brancher). `BoardProject` les déclare optionnels/vides : un projet
- * sans runs s'affiche donc honnêtement avec son seul plan, jamais un faux run.
+ * Quand le plan n'est pas là (`loading`, `unavailable`), l'entonnoir, les versions et les fiches
+ * restent VIDES et `plan` dit pourquoi : jamais un faux chiffre. Les runs, eux, se lisent dans
+ * `<root>/.supervision/runs` et s'affichent dans tous les cas.
  *
  * Cœur PUR (`shapeProject`) = mise en forme testable sans disque ; bord I/O (`composeProject`,
- * `composeBoardData`, `readTags`) = lecture du backlog + des étiquettes git.
+ * `composeBoardData`, `composeLive`) = lecture de la source de plan et des journaux de runs.
  */
-import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { projectChantiers, type ChantierInput } from '@cop1/journal-validator';
-import { type PlanData, projectPlan, readBacklogFiches } from './backlogReader.js';
-import { type FicheDetailData, readFicheDetails } from './ficheDetail.js';
-import { adaptChantiers, type LiveBoard, type LiveChantier, type LiveRun } from './chantierAdapter.js';
+import { type ChantierInput, projectChantiers } from '@cop1/journal-validator';
+import {
+  type LiveBoard,
+  type LiveChantier,
+  type LiveRun,
+  adaptChantiers,
+} from './chantierAdapter.js';
+import type { EzkPlanSource, PlanSnapshot } from './ezkPlanSource.js';
+import type { FicheDetailData, PlanFunnel, PlanVersions } from './planTypes.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
 export interface BoardProjectInput {
@@ -26,13 +29,21 @@ export interface BoardProjectInput {
   desc?: string;
 }
 
+/** L'état du plan d'un projet, tel que la page l'affiche. */
+export type BoardPlanState =
+  | { state: 'ok' }
+  | { state: 'loading' }
+  | { state: 'unavailable'; reason: string };
+
 /** La part « plan » d'un `BoardProject` (sous-ensemble structurel des types du board web, ADR-074). */
 export interface BoardPlanProject {
   name: string;
   desc: string;
   live: boolean;
-  funnel: PlanData['funnel'];
-  versions: PlanData['versions'];
+  /** Le plan est-il arrivé ? Sinon `funnel`, `versions` et `fiches` sont vides. */
+  plan: BoardPlanState;
+  funnel: PlanFunnel;
+  versions: PlanVersions;
   metrics: {
     done: number;
     tokens: string;
@@ -47,29 +58,38 @@ export interface BoardPlanProject {
   runs: Record<string, LiveRun>;
   /** Chantiers multi-sessions (ADR-079), fils du plus récent au plus ancien — présent seulement s'il y en a. */
   chantiers?: LiveChantier[];
-  /** Détail des fiches ACTIVES (pour la modale du board) — part « plan réel ». */
+  /** Détail des fiches NON livrées (pour la modale du board). */
   fiches: Record<string, FicheDetailData>;
 }
 
-/** CŒUR PUR — met le plan calculé à la forme d'un `BoardProject`. Les chiffres non encore câblés
+const EMPTY_FUNNEL: PlanFunnel = { idea: 0, ready: 0, wip: 0, unversioned: 0, parked: 0 };
+const EMPTY_VERSIONS: PlanVersions = { current: null, upcoming: [], past: [] };
+
+function planState(snapshot: PlanSnapshot): BoardPlanState {
+  if (snapshot.state === 'unavailable') return { state: 'unavailable', reason: snapshot.reason };
+  return { state: snapshot.state };
+}
+
+/** CŒUR PUR — met le plan reçu à la forme d'un `BoardProject`. Les chiffres non encore câblés
  *  (jetons, temps, sprints, runs, rétros) sont des placeholders honnêtes, jamais de faux zéros déguisés. */
 export function shapeProject(
   name: string,
   desc: string,
-  plan: PlanData,
-  fiches: Record<string, FicheDetailData> = {},
+  snapshot: PlanSnapshot,
   live: LiveBoard = { runs: {}, chantiers: [] },
 ): BoardPlanProject {
   const runsCount = Object.keys(live.runs).length;
   const anyLive = Object.values(live.runs).some((r) => r.live);
+  const received = snapshot.state === 'ok' ? snapshot : null;
   return {
     name,
     desc,
     live: anyLive,
-    funnel: plan.funnel,
-    versions: plan.versions,
+    plan: planState(snapshot),
+    funnel: received ? received.plan.funnel : EMPTY_FUNNEL,
+    versions: received ? received.plan.versions : EMPTY_VERSIONS,
     metrics: {
-      done: plan.done,
+      done: received ? received.plan.done : 0,
       tokens: '—',
       temps: '—',
       perFiche: '—',
@@ -79,37 +99,16 @@ export function shapeProject(
     },
     runs: live.runs,
     ...(live.chantiers.length > 0 ? { chantiers: live.chantiers } : {}),
-    fiches,
+    fiches: received ? received.fiches : {},
   };
 }
 
-/** Lit les étiquettes de version d'un dépôt git (`v*`) pour classer les versions. Best-effort. */
-export function readTags(root: string): Set<string> {
-  try {
-    const out = execFileSync('git', ['-C', root, 'tag', '--list', 'v*'], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 2000, // ne jamais figer le daemon si git bloque (lock, dépôt géant)
-      maxBuffer: 1 << 20,
-    });
-    return new Set(
-      out
-        .split('\n')
-        .map((s) => s.trim())
-        .filter(Boolean),
-    );
-  } catch {
-    return new Set(); // pas de git / pas de tags → versions non taguées, dégrade proprement
-  }
-}
-
 /**
- * Cache court, par racine de projet. `/api/board` peut être poll souvent ; sans cache, chaque
- * requête relirait TOUT le backlog et relancerait `git` par projet, sur la boucle unique du daemon.
- * TTL volontairement bas : le board reste frais à quelques secondes près.
+ * Cache court des runs, par racine de projet. `/api/board` peut être poll souvent ; sans cache,
+ * chaque requête relirait tous les journaux du projet sur la boucle unique du daemon.
  */
-const CACHE_TTL_MS = 5_000;
-const cache = new Map<string, { at: number; value: BoardPlanProject }>();
+const LIVE_CACHE_TTL_MS = 5_000;
+const liveCache = new Map<string, { at: number; value: LiveBoard }>();
 
 /**
  * BORD I/O — lit les journaux de supervision du projet (`<root>/.supervision/runs/*`) et en tire la
@@ -129,25 +128,34 @@ export function composeLive(root: string, now: number = Date.now()): LiveBoard {
   }
 }
 
-/** BORD I/O — compose un `BoardProject` (part plan) en lisant le backlog + les tags d'un projet. */
-export function composeProject(input: BoardProjectInput, now: number = Date.now()): BoardPlanProject {
-  const hit = cache.get(input.root);
-  if (hit && now - hit.at < CACHE_TTL_MS) return hit.value;
-  const plan = projectPlan(readBacklogFiches(input.root), readTags(input.root));
-  const value = shapeProject(
-    input.name,
-    input.desc ?? '',
-    plan,
-    readFicheDetails(input.root),
-    composeLive(input.root, now),
-  );
-  cache.set(input.root, { at: now, value });
+function cachedLive(root: string, now: number): LiveBoard {
+  const hit = liveCache.get(root);
+  if (hit && now - hit.at < LIVE_CACHE_TTL_MS) return hit.value;
+  const value = composeLive(root, now);
+  liveCache.set(root, { at: now, value });
   return value;
 }
 
+/** BORD I/O — compose un `BoardProject` : plan déjà en mémoire (jamais d'attente) + runs du journal. */
+export function composeProject(
+  input: BoardProjectInput,
+  source: EzkPlanSource,
+  now: number = Date.now(),
+): BoardPlanProject {
+  return shapeProject(
+    input.name,
+    input.desc ?? '',
+    source.get(input.root),
+    cachedLive(input.root, now),
+  );
+}
+
 /** BORD I/O — compose la `BoardData` (projets indexés par nom) des projets surveillés. */
-export function composeBoardData(projects: readonly BoardProjectInput[]): Record<string, BoardPlanProject> {
+export function composeBoardData(
+  projects: readonly BoardProjectInput[],
+  source: EzkPlanSource,
+): Record<string, BoardPlanProject> {
   const out: Record<string, BoardPlanProject> = {};
-  for (const p of projects) out[p.name] = composeProject(p);
+  for (const p of projects) out[p.name] = composeProject(p, source);
   return out;
 }

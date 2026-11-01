@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TimelineView } from './TimelineView.js';
-import { BOARD_DATA } from './data.js';
+import { BOARD_DATA } from './testing/sampleBoard.js';
 import type { BoardProject } from './types.js';
 
 afterEach(cleanup);

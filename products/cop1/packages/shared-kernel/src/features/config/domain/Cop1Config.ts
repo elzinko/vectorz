@@ -70,5 +70,7 @@ export interface Cop1Config {
     registry_add_command: string[];
     /** fiche 0063 — spawn lawgiver bind (méthode seule). */
     bind_command: string[];
+    /** ADR-086 — commande qui lance la méthode (`ezk`) : le plan du board en vient. */
+    ezk_command: string[];
   };
 }

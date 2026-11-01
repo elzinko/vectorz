@@ -1,13 +1,8 @@
 /**
- * Board unifié cop1 — données d'amorçage (modèle typé, échantillon représentatif).
- *
- * Chaque projet est la SEULE source de ses chiffres : l'entonnoir, les métriques
- * « depuis le début » et les versions viennent d'ici, pas d'un calcul parallèle.
- * Le read-model réel (journal par worktree + backlog) remplacera ces constantes
- * aux tranches suivantes (fiches 20261012231419211, 20261015082118353…) sans
- * toucher aux types ni aux vues.
+ * Board unifié cop1 — ÉCHANTILLON DE TEST (modèle typé, représentatif). N'est importé que par les
+ * tests : à l'exécution, le board lit `/api/board` et n'affiche jamais ces chiffres (ADR-086).
  */
-import type { BoardData, FicheDetail, FicheStatus } from './types.js';
+import type { BoardData, FicheDetail, FicheStatus } from '../types.js';
 
 /** Fabrique une fiche en détail avec des valeurs par défaut lisibles. */
 function f(
@@ -384,5 +379,3 @@ export const BOARD_DATA: BoardData = {
   },
 };
 
-/** Le projet affiché par défaut à l'ouverture du board. */
-export const DEFAULT_PROJECT = 'vectorz';

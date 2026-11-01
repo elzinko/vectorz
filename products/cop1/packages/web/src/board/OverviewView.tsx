@@ -119,8 +119,10 @@ export function OverviewView(props: OverviewViewProps): JSX.Element {
   // ne doit pas exclure les versions planifiées, sinon le chiffre ment.
   const versionCount = allVersions(project).length;
 
+  // Sans plan (chargement, indisponible), le compte livré n'est pas connu : « — », jamais un faux 0.
+  const planKnown = !project.plan || project.plan.state === 'ok';
   const cells: Array<[string | number, string]> = [
-    [m.done, 'fiches livrées'],
+    [planKnown ? m.done : '—', 'fiches livrées'],
     [m.tokens, 'tokens consommés'],
     [m.temps, 'temps cumulé'],
     [m.perFiche, 'tokens / fiche (moy.)'],

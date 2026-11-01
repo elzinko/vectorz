@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ActivityTable } from './ActivityTable.js';
 import { RunDetailView } from './RunDetailView.js';
 import { FicheModal } from './FicheModal.js';
-import { BOARD_DATA } from './data.js';
+import { BOARD_DATA } from './testing/sampleBoard.js';
 import type { FicheDetail } from './types.js';
 
 afterEach(cleanup);

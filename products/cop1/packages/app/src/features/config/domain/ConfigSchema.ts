@@ -109,6 +109,8 @@ export const ConfigSchema = z
         registry_add_command: z.array(z.string()).default([]),
         /** fiche 0063 : spawn lawgiver bind (mode méthode seule ; défaut [] = dormant). */
         bind_command: z.array(z.string()).default([]),
+        /** ADR-086 : commande qui lance la méthode ; le plan du board vient de `ezk … --json`. */
+        ezk_command: z.array(z.string()).default(['ezk']),
       })
       .default({
         watch_roots: [],
@@ -117,6 +119,7 @@ export const ConfigSchema = z
         link_command: [],
         registry_add_command: [],
         bind_command: [],
+        ezk_command: ['ezk'],
       }),
   })
   .refine(

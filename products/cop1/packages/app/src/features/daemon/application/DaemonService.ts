@@ -1,16 +1,17 @@
 import { basename, isAbsolute, resolve } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
-import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
+import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
+import { EzkPlanSource } from '../../board/ezkPlanSource.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
 import { AnchorProjectUseCase } from '../../supervision/application/AnchorProjectUseCase.js';
 import { RunHistoryService } from '../../supervision/application/RunHistoryService.js';
 import { SupervisionService } from '../../supervision/application/SupervisionService.js';
+import { DynamicWatchRoots } from '../../supervision/infrastructure/DynamicWatchRoots.js';
 import { EmitterCliAbandonAdapter } from '../../supervision/infrastructure/EmitterCliAbandonAdapter.js';
 import { EmitterCliAnchorAdapter } from '../../supervision/infrastructure/EmitterCliAnchorAdapter.js';
-import { DynamicWatchRoots } from '../../supervision/infrastructure/DynamicWatchRoots.js';
 import { locateRegistry, resolveWatchRoots } from '../../supervision/infrastructure/registry.js';
 import { DEFAULT_PORT } from '../domain/DaemonState.js';
 import { checkAuth } from '../infrastructure/AuthChecker.js';
@@ -32,6 +33,9 @@ export class DaemonService {
   private supervisionService: SupervisionService | null = null;
   private runHistoryService: RunHistoryService | null = null;
   private journalWatcher: DynamicWatchRoots | null = null;
+  /** ADR-086 : commande qui lance la méthode (`supervision.ezk_command`), défaut `ezk`. */
+  private ezkCommand: string[] = ['ezk'];
+  private ezkPlanSource: EzkPlanSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -91,7 +95,9 @@ export class DaemonService {
 
     // fiche 0062/0063 — relecture à chaque GET (après registry-add sans restart)
     this.httpServer.setProjectsProvider(() => this.readRegistryProjects(projectPath));
-    this.httpServer.setBoardProvider(() => composeBoardData(this.boardProjects(projectPath)));
+    this.httpServer.setBoardProvider(() =>
+      composeBoardData(this.boardProjects(projectPath), this.planSource()),
+    );
 
     try {
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
@@ -103,6 +109,7 @@ export class DaemonService {
       linkCommand = config.supervision?.link_command ?? [];
       registryAddCommand = config.supervision?.registry_add_command ?? [];
       bindCommand = config.supervision?.bind_command ?? [];
+      this.ezkCommand = config.supervision?.ezk_command ?? ['ezk'];
       tokenBudget = {
         sprintMaxTokens: config.budget?.sprint_max_tokens,
         maxUsdPerSession: config.budget?.max_usd_per_session,
@@ -178,6 +185,12 @@ export class DaemonService {
    * (`name = id du projet`, `root = sa racine`). Repli sur le projet courant si aucun registre
    * n'est trouvé, pour qu'un daemon mono-projet serve quand même son plan.
    */
+  /** La source de plan, créée au premier besoin avec la commande lue dans la config. */
+  private planSource(): EzkPlanSource {
+    this.ezkPlanSource ??= new EzkPlanSource({ command: this.ezkCommand });
+    return this.ezkPlanSource;
+  }
+
   private boardProjects(projectPath: string): BoardProjectInput[] {
     try {
       const located = locateRegistry([projectPath]);

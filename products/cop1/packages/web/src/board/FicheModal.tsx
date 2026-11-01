@@ -41,6 +41,7 @@ export function FicheModal({ fiche, onClose, onOpenPage }: FicheModalProps): JSX
             <span className={`stat s-${fiche.status}`}>{STATUS_LABEL[fiche.status]}</span>
             <span className="pill ver">{fiche.ver || 'sans version'}</span>
             {fiche.pr && <span className="costtag">{fiche.pr}</span>}
+            {fiche.blocked && <span className="pill">bloquée : {fiche.blocked}</span>}
           </div>
           <button type="button" className="x" onClick={onClose}>
             Fermer ✕

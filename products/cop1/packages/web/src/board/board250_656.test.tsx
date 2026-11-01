@@ -1,7 +1,7 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import Board from './Board.js';
+import { renderBoardOn } from './testing/renderBoard.js';
 import { ConfigView } from './ConfigView.js';
 import { ToolConfigView } from './ToolConfigView.js';
 import {
@@ -120,7 +120,7 @@ describe('ToolConfigView (fiche 656)', () => {
 
 describe('Board — le modèle résolu suit l’IDE actif (intégration 250 ↔ 656)', () => {
   it('changer l’IDE dans la config outil change le modèle résolu de la config projet', async () => {
-    render(<Board />);
+    await renderBoardOn();
     await userEvent.click(screen.getByRole('button', { name: 'Configuration' }));
     // vectorz : ezk-dev = middle → Claude Code = Sonnet 5.5
     expect(screen.getByText('Sonnet 5.5')).toBeTruthy();
@@ -133,7 +133,7 @@ describe('Board — le modèle résolu suit l’IDE actif (intégration 250 ↔ 
   });
 
   it('le tier édité dans la config projet survit au passage par la config outil', async () => {
-    render(<Board />);
+    await renderBoardOn();
     await userEvent.click(screen.getByRole('button', { name: 'Configuration' }));
     // vectorz : ezk-qa = low. On le passe à high.
     const qaRow = screen.getByText('ezk-qa').closest('.cfgrow') as HTMLElement;

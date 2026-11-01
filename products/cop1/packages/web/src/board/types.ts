@@ -193,13 +193,23 @@ export interface FicheDetail {
   crit: string[];
   verif: string;
   pr?: string;
+  /** Raison du blocage (fiche bloquée) ; absente ou vide si la fiche n'est pas bloquée. */
+  blocked?: string;
 }
+
+/** Où en est le plan d'un projet : reçu de la méthode, en chargement, ou indisponible (avec la raison). */
+export type PlanState =
+  | { state: 'ok' }
+  | { state: 'loading' }
+  | { state: 'unavailable'; reason: string };
 
 /** Un projet : la seule source de vérité de ses chiffres. */
 export interface BoardProject {
   name: string;
   desc: string;
   live: boolean;
+  /** État du plan (ADR-086). Absent = plan reçu. Sinon `funnel`, `versions` et `fiches` sont vides. */
+  plan?: PlanState;
   funnel: Funnel;
   metrics: Metrics;
   versions: ProjectVersions;

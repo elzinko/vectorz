@@ -43,3 +43,7 @@ supervision:
   # link_command: ["pnpm", "--dir", "products/mega-city", "supervision:link"]
   # registry_add_command: ["pnpm", "--dir", "products/mega-city", "supervision:registry-add"]
   # bind_command: ["pnpm", "--dir", "products/mega-city", "lawgiver", "bind", "default"]
+  # ADR-086 — le plan du board (entonnoir, versions, fiches) vient de la méthode : le daemon appelle
+  # `<ezk_command> --root <projet> board show --json` et `… backlog show --json`.
+  # Défaut ["ezk"] = la commande trouvée dans le PATH. Si elle échoue, la page dit « plan indisponible ».
+  # ezk_command: ["ezk"]

@@ -11,9 +11,8 @@ import { AddProjectModal } from './AddProjectModal.js';
 import { CadrageView } from './CadrageView.js';
 import { ConfigView } from './ConfigView.js';
 import { defaultToolConfig, type Role, type Tier } from './configModel.js';
-import { BOARD_DATA, DEFAULT_PROJECT } from './data.js';
 import { ToolConfigView } from './ToolConfigView.js';
-import type { BoardData, BoardProject } from './types.js';
+import type { BoardData, BoardProject, PlanState } from './types.js';
 import { DevView } from './DevView.js';
 import { FicheModal } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
@@ -23,6 +22,11 @@ import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
 
 const BRAND_VERSION = 'v0.17.0';
+
+/** Le projet affiché par défaut à l'ouverture du board. */
+const DEFAULT_PROJECT = 'vectorz';
+/** Délai avant de redemander le board quand un plan est encore en chargement côté serveur. */
+const LOADING_RETRY_MS = 2000;
 
 type ViewId =
   | 'fleet'
@@ -112,6 +116,42 @@ function makeNewProject(root: string): BoardProject {
   };
 }
 
+/** Où en est la source des données du board. */
+type BoardSource =
+  | { kind: 'loading' }
+  | { kind: 'unreachable' }
+  | { kind: 'empty' }
+  | { kind: 'live'; data: BoardData };
+
+const SOURCE_MESSAGE: Record<Exclude<BoardSource['kind'], 'live'>, string> = {
+  loading: 'chargement du board…',
+  unreachable: 'serveur de mission control injoignable',
+  empty: 'aucun projet surveillé',
+};
+
+/** Écran sans données : un message clair, jamais des chiffres d'exemple. */
+function SourceMessage({ kind }: { kind: Exclude<BoardSource['kind'], 'live'> }): JSX.Element {
+  return (
+    <div className="bd">
+      <div className="top">
+        <span className="brand">
+          <span className="dot" aria-hidden="true" />
+          board <span className="bv">{BRAND_VERSION}</span>
+          <span className="src-sample" role="status">
+            {SOURCE_MESSAGE[kind]}
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/** Le message à montrer quand le plan d'un projet n'est pas arrivé ; `null` s'il l'est. */
+function planMessage(plan: PlanState | undefined): string | null {
+  if (!plan || plan.state === 'ok') return null;
+  return plan.state === 'loading' ? 'plan en cours de chargement' : `plan indisponible : ${plan.reason}`;
+}
+
 export function Board(): JSX.Element {
   const [projectName, setProjectName] = useState<string>(DEFAULT_PROJECT);
   // Accueil « Tous les projets » (cas 8 piste 1) en tête de nav Global ; le board par
@@ -134,30 +174,41 @@ export function Board(): JSX.Element {
   // Projets ajoutés par l'assistant (simulés), fusionnés avec les projets amorcés.
   const [addedProjects, setAddedProjects] = useState<Record<string, BoardProject>>({});
   const [addProjOpen, setAddProjOpen] = useState(false);
-  // Source des données du board (fiche 20261024130841976, sœur « tuyau » de board-web) : au montage,
-  // on TENTE la source live (endpoint local `/api/board`) ; échec, absence ou serveur injoignable →
-  // on retombe sur l'échantillon figé `BOARD_DATA`, et on l'affiche clairement (jamais un faux chiffre
-  // muet, jamais un écran cassé). Le web ne lit plus `BOARD_DATA` en dur : il lit la source injectée.
-  const [liveData, setLiveData] = useState<BoardData | null>(null);
-  const [dataSource, setDataSource] = useState<'live' | 'sample'>('sample');
+  // Source des données du board : l'endpoint local `/api/board` (le plan y vient de la méthode,
+  // ADR-086). Jamais d'échantillon figé : tant que la source n'a pas répondu, ou si elle est
+  // injoignable, la page le dit au lieu d'inventer des chiffres.
+  const [source, setSource] = useState<BoardSource>({ kind: 'loading' });
 
-  // Montage : fetch best-effort de la source live. Bulletproof — toute erreur (pas de daemon, 404,
-  // réseau, JSON cassé, `fetch` absent) laisse l'échantillon en place. Pas de dépendance : une fois.
+  // Montage : fetch de la source live. Toute erreur (pas de daemon, HTTP, réseau, JSON cassé,
+  // `fetch` absent) donne « injoignable ». Le serveur demande son plan à `ezk` en arrière-plan :
+  // tant qu'un projet est encore « en cours de chargement », la page redemande toutes les
+  // LOADING_RETRY_MS, puis s'arrête.
   useEffect(() => {
-    if (typeof fetch !== 'function') return;
+    if (typeof fetch !== 'function') {
+      setSource({ kind: 'unreachable' });
+      return;
+    }
     let alive = true;
-    fetch('/api/board')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((data: BoardData) => {
-        if (!alive || !data || typeof data !== 'object' || Object.keys(data).length === 0) return;
-        setLiveData(data);
-        setDataSource('live');
-      })
-      .catch(() => {
-        /* source live indisponible : on garde l'échantillon, signalé à l'écran */
-      });
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const load = (): void => {
+      fetch('/api/board')
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((data: BoardData) => {
+          if (!alive) return;
+          const valid = data && typeof data === 'object' && Object.keys(data).length > 0;
+          setSource(valid ? { kind: 'live', data } : { kind: 'empty' });
+          if (valid && Object.values(data).some((p) => p.plan?.state === 'loading')) {
+            retry = setTimeout(load, LOADING_RETRY_MS);
+          }
+        })
+        .catch(() => {
+          if (alive) setSource({ kind: 'unreachable' });
+        });
+    };
+    load();
     return () => {
       alive = false;
+      if (retry) clearTimeout(retry);
     };
   }, []);
 
@@ -171,8 +222,8 @@ export function Board(): JSX.Element {
     return () => window.removeEventListener('keydown', onKey);
   }, [projModalOpen]);
 
-  // La base vient de la source live si elle a répondu, sinon de l'échantillon (repli signalé).
-  const base: BoardData = liveData ?? BOARD_DATA;
+  if (source.kind !== 'live') return <SourceMessage kind={source.kind} />;
+  const base: BoardData = source.data;
   const allProjects: Record<string, BoardProject> = { ...base, ...addedProjects };
   const project = allProjects[projectName] ?? allProjects[DEFAULT_PROJECT] ?? Object.values(allProjects)[0];
   const currentVer = project.versions.current?.ver ?? '—';
@@ -214,9 +265,9 @@ export function Board(): JSX.Element {
         <span className="brand">
           <span className="dot" aria-hidden="true" />
           board <span className="bv">{BRAND_VERSION}</span>
-          {dataSource === 'sample' && (
-            <span className="src-sample" title="Le serveur de données live est injoignable — affichage de l'échantillon figé.">
-              échantillon · live indisponible
+          {planMessage(project.plan) && (
+            <span className="src-sample" role="status">
+              {planMessage(project.plan)}
             </span>
           )}
         </span>
@@ -387,12 +438,17 @@ export function Board(): JSX.Element {
                     {p.name}
                   </span>
                   <span className="pv">{p.versions.current?.ver ?? '—'}</span>
-                  <span className="prow">
-                    <span>
-                      {p.funnel.ready} prêtes · {p.funnel.wip} en cours
+                  {/* Sans plan, pas de compteurs : des zéros passeraient pour de vrais chiffres. */}
+                  {planMessage(p.plan) ? (
+                    <span className="prow">{planMessage(p.plan)}</span>
+                  ) : (
+                    <span className="prow">
+                      <span>
+                        {p.funnel.ready} prêtes · {p.funnel.wip} en cours
+                      </span>
+                      <span>{p.funnel.idea} idées</span>
                     </span>
-                    <span>{p.funnel.idea} idées</span>
-                  </span>
+                  )}
                 </button>
               ))}
               <button

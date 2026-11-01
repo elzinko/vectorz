@@ -489,4 +489,23 @@ model_tiering:
       expect(config.model_tiering?.fallback).toBe('haiku');
     });
   });
+
+  describe('supervision.ezk_command (ADR-086)', () => {
+    it('vaut ["ezk"] par défaut : la commande trouvée dans le PATH', () => {
+      expect(loader.load(testDir).supervision?.ezk_command).toEqual(['ezk']);
+    });
+
+    it('se règle dans le fichier de config', () => {
+      writeFileSync(
+        join(testDir, 'cop1.config.yaml'),
+        'supervision:\n  ezk_command: ["pnpm", "--dir", "products/mega-city", "ezk"]\n',
+      );
+      expect(loader.load(testDir).supervision?.ezk_command).toEqual([
+        'pnpm',
+        '--dir',
+        'products/mega-city',
+        'ezk',
+      ]);
+    });
+  });
 });
