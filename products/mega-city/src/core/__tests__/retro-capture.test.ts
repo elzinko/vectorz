@@ -81,6 +81,14 @@ describe('parseRetroCapture — une capture valide', () => {
     expect(problemsOf(capture(actions))).toEqual([]);
   });
 
+  it('accepte la cible projet : la règle reste dans le projet de la capture', () => {
+    const actions = `  - proposition: "Une règle de ce projet seulement"
+    kind: regle
+    target: projet
+    status: ⏳`;
+    expect(problemsOf(capture(actions))).toEqual([]);
+  });
+
   it("accepte les cibles agent:<nom> et skill:<nom>, et un statut suivi du sélecteur U+FE0F", () => {
     const actions = `  - proposition: "Cible agent"
     kind: regle
@@ -128,9 +136,9 @@ describe('parseRetroCapture — les refus nomment le fichier et le champ', () =>
   it('refuse une règle sans cible, ou avec une cible mal formée', () => {
     const sans = ACTION_OK.replace('    target: global\n', '');
     expect(problemsOf(capture(sans)).join('\n')).toMatch(at('target', 'une règle porte une cible'));
-    for (const mauvaise of ['agent:', 'skill:Ezk Dev', 'tout-le-monde']) {
+    for (const mauvaise of ['agent:', 'skill:Ezk Dev', 'tout-le-monde', 'projet:muti', 'Projet']) {
       const bad = ACTION_OK.replace('target: global', `target: "${mauvaise}"`);
-      expect(problemsOf(capture(bad)).join('\n'), mauvaise).toMatch(at('target', 'global, agent:<nom> ou skill:<nom>'));
+      expect(problemsOf(capture(bad)).join('\n'), mauvaise).toMatch(at('target', 'global, projet, agent:<nom> ou skill:<nom>'));
     }
   });
 

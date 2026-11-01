@@ -39,6 +39,15 @@ describe('ezk-retro — la capture est obligatoire', () => {
     }
   });
 
+  it('range une règle de projet dans le projet, par défaut, et dit sa portée en mots au PO', () => {
+    for (const word of ['`projet`', '.vectorz/rules/', 'rules apply', 'Par défaut, `projet`']) {
+      expect(skill, word).toContain(word);
+    }
+    for (const reach of ['« ce projet seulement »', '« tous tes projets »']) {
+      expect(skill, reach).toContain(reach);
+    }
+  });
+
   it('dit quand proposer une feature et ne pré-remplit jamais la case du PO', () => {
     expect(skill).toContain('Quand proposer une `feature`');
     expect(skill).toMatch(/jamais pré-remplie/);
@@ -51,6 +60,10 @@ describe('le gabarit de capture', () => {
   it('existe et ouvre par « En clair »', () => {
     expect(existsSync(templatePath)).toBe(true);
     expect(template).toContain('**En clair :**');
+  });
+
+  it('liste la cible projet, celle par défaut', () => {
+    expect(template).toContain('`projet` (le défaut)');
   });
 
   it('décrit les mêmes natures et les mêmes statuts que l’extracteur', () => {

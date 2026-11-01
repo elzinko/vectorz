@@ -30,7 +30,7 @@ participants: [architecture, qualite, dev, produit, juge, po]
 actions:
   - proposition: "la proposition, en mots simples"
     kind: regle
-    target: global
+    target: projet
     by: [architecture, qualite]
     status: ⏳
 ---
@@ -44,7 +44,7 @@ actions:
 | `actions` | oui, au moins une | une entrée par proposition retenue ou écartée |
 | `proposition` | oui | texte non vide, en mots simples |
 | `kind` | oui | `regle`, `feature`, `action`, `spike` ou `recette` |
-| `target` | oui pour une `regle` | `global`, `agent:<nom>` ou `skill:<nom>` |
+| `target` | oui pour une `regle` | `projet` (le défaut), `global`, `agent:<nom>` ou `skill:<nom>` |
 | `by` | non | qui a proposé : les lentilles du tour 1 |
 | `status` | oui | `⏳` en attente, `✅` retenue, `❌` écartée |
 | `decision` | oui si `✅` ou `❌`, **interdite** si `⏳` | ce que le PO a décidé, et où cela atterrit |
@@ -69,6 +69,7 @@ Un verdict par proposition : cohérente, doublon ou contradiction.
 
 ## 5 · Ce qui est proposé au PO
 Pour chaque proposition : le fait vécu, la proposition, la mesure.
+Pour une règle, sa portée en mots : « ce projet seulement », « tous tes projets »…
 
 ## 6 · Suivi des décisions de la rétro précédente
 Pour chaque décision de la rétro d'avant : a-t-elle tenu, faut-il la retirer, est-ce trop tôt ?
@@ -90,11 +91,14 @@ Les termes d'équipe, traduits.
    `✅` ou `❌` sans décision ni date, et un `⏳` qui porte déjà l'une ou l'autre.
 2. **L'en-tête et le tableau « Décisions du PO » disent la même chose.** L'en-tête est la source
    pour le script, le tableau est la lecture pour l'humain. Si l'un bouge, l'autre bouge.
-3. **Une règle porte une cible.** Le fichier de règle entre toujours dans `rules/<catégorie>/` et
-   dans un bundle : le bundle **déploie le texte**, et il vaut pour tout le profil. La **portée**
-   se déclare à part. `global` : rien de plus. `agent:<nom>` : l'id de la règle s'ajoute à
-   `interactions:` de l'agent. `skill:<nom>` : il s'ajoute à `applies:` du skill. Ce lien dit **qui**
-   suit la règle : `graph:query applique <règle> --inverse` ne rend que la cible.
+3. **Une règle porte une cible, et le PO lit sa portée en mots.** `projet` est le défaut : la
+   règle reste dans le projet de la rétro, sous `.vectorz/rules/`, puis `ezk rules apply` l'écrit
+   pour Claude. Portée : « ce projet seulement ». Les trois autres cibles changent la méthode
+   elle-même. Leur fichier entre dans `rules/<catégorie>/` et dans un bundle : le bundle
+   **déploie le texte**. Le bundle `base` va dans tous tes projets ; un autre bundle, dans les
+   projets dont le profil le prend. `global` : rien de plus. `agent:<nom>` : l'id de la règle
+   s'ajoute à `interactions:` de l'agent. `skill:<nom>` : il s'ajoute à `applies:` du skill. Ce lien
+   dit **qui** suit la règle : `graph:query applique <règle> --inverse` ne rend que la cible.
 4. **Une `feature` se propose quand le symptôme est structurel** : il revient, et une règle de
    discipline ne suffit pas à l'éteindre. Elle part au backlog par `ezk-backlog add`. L'écarter se
    trace aussi : la capture dit pourquoi.

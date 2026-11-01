@@ -16,7 +16,8 @@ description: >-
   (ezk-architect, ezk-qa, ezk-dev, ezk-pm) —, les passe à un JUGE DE COHÉRENCE (chief-judge
   / ezk-steward : doublons ? contradictions avec les règles existantes ?), puis
   range SOUS CONTRÔLE DU PO : les non-règles vers ezk-backlog, les règles validées
-  vers rules/ · bundles/ · DoD (toujours réversibles). Laisse toujours une CAPTURE
+  vers la couche du projet (.vectorz/rules/) ou, pour la méthode elle-même, vers
+  rules/ · bundles/ · DoD (toujours réversibles). Laisse toujours une CAPTURE
   lisible et extractible dans docs/captures/ (qui a proposé quoi, ce qui est écarté,
   ce que le PO a tranché). Pilotable par sous-commandes :
   help, run, impose, retire. Le PO garde la main — AUCUNE auto-application. N'EST
@@ -143,9 +144,29 @@ et tombe dans **une** catégorie :
 > la création de la fiche ou le rangement de la règle attend ton feu vert au temps 5. Une
 > proposition `⏳` ou `❌` ne crée **rien**.
 
-> **Cible d'une règle.** Une proposition `règle` dit **qui** elle concerne : `global`,
+> **Cible d'une règle.** Une proposition `règle` dit **qui** elle concerne : `projet`, `global`,
 > `agent:<nom>` ou `skill:<nom>`. Sans cible, elle est refusée comme une règle sans symptôme.
 > Les autres types n'ont pas besoin de cible.
+>
+> | Cible | La règle concerne | Elle est rangée dans |
+> |---|---|---|
+> | `projet` | le projet où se joue la rétro, vectorz compris | la couche du projet, `.vectorz/rules/` |
+> | `global` | la méthode entière | le catalogue de la méthode, `rules/` et un bundle |
+> | `agent:<nom>` | un agent de la méthode | le catalogue, plus `interactions:` de l'agent |
+> | `skill:<nom>` | un skill de la méthode | le catalogue, plus `applies:` du skill |
+>
+> **Par défaut, `projet`.** « Par défaut » dit quoi choisir, pas quoi omettre : la capture
+> écrit toujours la cible. Une friction née d'un projet donne une règle de ce projet. Le
+> catalogue ne reçoit qu'une règle qui corrige la **méthode elle-même** : ses skills, ses agents,
+> son socle. Dans vectorz, une règle sur le dépôt lui-même est donc `projet`, elle aussi. Depuis
+> un projet hôte, une règle du catalogue se range dans vectorz, pas dans le projet : dis-le au PO.
+>
+> **Dis la portée en mots.** Quand le PO tranche une règle, écris sa portée en clair à côté de
+> sa cible. Le PO n'accepte jamais une règle du catalogue sans lire jusqu'où elle va.
+> - `projet` : « ce projet seulement ».
+> - Catalogue, bundle `base` : « tous tes projets ». `ezk law bind-global` la copie dans `~/.claude`.
+> - Catalogue, autre bundle : « les projets dont le profil prend le bundle <nom> ».
+> - `agent:<nom>` ou `skill:<nom>` : ajoute « suivie par <nom>, partout où il tourne ».
 
 > **Quand proposer une `feature`.** Le biais « discipline d'abord » reste un garde-fou, pas un
 > couvercle. Quand un symptôme est **structurel** — il revient, et une règle de discipline ne
@@ -160,6 +181,8 @@ et tombe dans **une** catégorie :
 Chaque **règle** candidate passe devant le **juge de cohérence** (compose la fiche
 [0008 chief-judge](../../../../features/0113-chief-judge.md) / l'agent `ezk-steward`) :
 « cette règle **contredit-elle** une règle existante de `rules/` ? est-ce un **doublon** ? ».
+Pour une règle `projet`, il lit aussi `.vectorz/rules/` du projet : une règle de projet peut
+ajouter ou durcir une règle de la méthode, jamais la desserrer.
 L'avis est **consultatif** — **le PO tranche**. Consigne l'avis (garder la trace).
 
 ### 5. Rangement sous contrôle PO — *soudure 3 : le pont*
@@ -192,7 +215,21 @@ Puis le rangement :
   fiche source et ses galères (résolvables par id dans `docs/sessions/` après clôture,
   convention ADR-0018), part au sprint suivant selon ton mode (auto / manuel), et **ne contient
   pas la recette** : c'est le sprint N+1 qui la construit (`ezk-chef extract`, ADR-0013) ;
-- **règles validées** → dans la **structure existante**, jamais un nouveau silo :
+- **règles validées, cible `projet`** → la **couche du projet**
+  ([ADR-0050](../../docs/adr/0050-couche-regles-projet-local.md)), à la racine du projet où se
+  joue la rétro. Le catalogue de la méthode n'est pas touché : ni bundle, ni compteur.
+  1. La règle va dans `.vectorz/rules/<id>.md`. Front-matter : `id`, `level` (`MUST`, `SHOULD`
+     ou `MAY`), `title` facultatif. Le corps ouvre par « En clair », puis dit la règle, son
+     origine (la capture) et sa mesure.
+  2. Crée `.vectorz/rules.yml` s'il manque, même vide : sans lui, aucune règle locale n'est
+     chargée. Un `MUST` y reçoit son binding, `gate` ou `review`, sinon il est refusé. Un
+     `SHOULD` ou un `MAY` sans binding reste un conseil.
+  3. Contrôle, puis écris le jeu du projet :
+     `ezk --root "$(git rev-parse --show-toplevel)" rules check`, puis `… rules apply`. Ce
+     dernier écrit `.claude/rules/vectorz-project.md`, que Claude ne lit que dans ce projet.
+  4. La PR de rangement committe les trois : la règle, le manifeste, le fichier écrit.
+- **règles validées, cible `global`, `agent:` ou `skill:`** → le **catalogue de la méthode**,
+  dans la **structure existante**, jamais un nouveau silo :
   `rules/<catégorie>/<slug>.md` (format maison : front-matter `id / kind / level(MUST|SHOULD)
   / enforcements[]`) **et** un bundle (`bundles/<catégorie>.yml`, sinon la règle reste orpheline :
   aucun profil ne la déploie ; relève alors le compteur de `expand.test.ts`), ou intégrées au
@@ -227,7 +264,9 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
   ni la prouver ni la retirer).
 - **`retire <réf-règle>`** — retire une règle. **Réversible et tracé** : supprime le fichier
   `rules/<cat>/<slug>.md` (ou l'entrée de `bundle`), retire son id de `interactions:` ou
-  `applies:` s'il y figure, et **consigne la raison dans le message de
+  `applies:` s'il y figure. Pour une règle de projet : supprime `.vectorz/rules/<id>.md` et son
+  binding dans `.vectorz/rules.yml`, puis relance `ezk rules apply`. Dans les deux cas,
+  **consigne la raison dans le message de
   commit** (`chore(rules): retire <slug> — <raison>`) ; l'archive git conserve la version
   retirée (réintroduction = décision PO). *Post-MVP : un `rules/CHANGELOG.md` daté si le volume
   le justifie.*
@@ -235,7 +274,9 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
 ## Ce que le skill compose (il ne réinvente rien)
 
 - **Juge de cohérence** : fiche [0008 chief-judge](../../../../features/0113-chief-judge.md) + agent `ezk-steward`.
-- **Stockage des règles** : `rules/<cat>/` + `bundles/` (LA LOI ; 53 règles déjà migrées, fiche `done/0006`).
+- **Stockage des règles** : `rules/<cat>/` + `bundles/` pour la méthode (LA LOI ; 53 règles déjà
+  migrées, fiche `done/0006`) ; la couche du projet `.vectorz/rules/` et la commande `ezk rules`
+  pour un projet ([ADR-0050](../../docs/adr/0050-couche-regles-projet-local.md)).
 - **Rangement des non-règles** : skill [`ezk-backlog`](../ezk-backlog/) (`add`).
 - **Capture de la rétro** : gabarit [`references/capture-template.md`](references/capture-template.md)
   et extracteur `ezk retro captures` (pattern gabarit + extracteur + rendu, fiche 0080).
@@ -263,4 +304,7 @@ Hors cérémonie, le PO garde la main sur la liste des règles :
   « construire → prouver → retirer ».
 - **Consensus, pas vote majoritaire brut** : on garde ce qui rallie *avec preuve/argument*,
   pas ce qui gagne au nombre.
-- **Ne range jamais dans un nouveau silo** : `rules/`, `bundles/`, DoD/DoR ou backlog existants.
+- **Ne range jamais dans un nouveau silo** : `rules/`, `bundles/`, `.vectorz/rules/` du projet,
+  DoD/DoR ou backlog existants.
+- **Une règle de projet reste dans son projet** : la cible `projet` est le défaut, et le PO lit
+  la portée en mots avant de trancher.

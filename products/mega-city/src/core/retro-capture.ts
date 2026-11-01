@@ -23,7 +23,11 @@ export type RetroStatus = (typeof RETRO_STATUSES)[number];
 export interface RetroAction {
   proposition: string;
   kind: RetroKind;
-  /** `global`, `agent:<nom>` ou `skill:<nom>` : obligatoire pour une règle. */
+  /**
+   * `global`, `projet`, `agent:<nom>` ou `skill:<nom>` : obligatoire pour une règle. `projet` garde la
+   * règle dans le projet de la capture (`.vectorz/rules/`, ADR-0050) ; les trois autres la rangent dans
+   * le catalogue de la méthode.
+   */
   target?: string;
   by: string[];
   status: RetroStatus;
@@ -52,7 +56,7 @@ export interface RetroParse {
   problems: RetroProblem[];
 }
 
-const TARGET = /^(global|agent:[a-z0-9][a-z0-9-]*|skill:[a-z0-9][a-z0-9-]*)$/;
+const TARGET = /^(global|projet|agent:[a-z0-9][a-z0-9-]*|skill:[a-z0-9][a-z0-9-]*)$/;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const CAPTURE_NAME = /^\d{4}-\d{2}-\d{2}-retro-.+\.md$/;
 const FRONT_MATTER = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/;
@@ -122,9 +126,9 @@ function parseAction(
 
   const target = text(raw.target);
   if (kind === 'regle' && !target) {
-    fail('target', 'une règle porte une cible : global, agent:<nom> ou skill:<nom>');
+    fail('target', 'une règle porte une cible : global, projet, agent:<nom> ou skill:<nom>');
   } else if (target && !TARGET.test(target)) {
-    fail('target', `global, agent:<nom> ou skill:<nom> attendu, reçu « ${target} »`);
+    fail('target', `global, projet, agent:<nom> ou skill:<nom> attendu, reçu « ${target} »`);
   }
 
   let by: string[] = [];
