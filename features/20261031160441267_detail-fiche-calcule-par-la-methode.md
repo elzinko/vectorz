@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [board, contrat, json]
-status: idea
+status: ready
 pr:
 evidence: none # contrat en ligne de commande, sans écran ; preuve = tests de contrat
 created: 2026-10-31
@@ -124,3 +124,4 @@ cd products/mega-city && pnpm test && pnpm test:scripts
   contrat). Elle tient dans un sprint : le patron du contrat du board se réutilise tel quel.
 - Forme de la liste sans id, tranchée au grooming : une liste `fiches`, triée par id. Une liste se
   parcourt et se compare plus simplement qu'un objet par id.
+- Tamponnée « prête » par le PO le 2026-11-01.
