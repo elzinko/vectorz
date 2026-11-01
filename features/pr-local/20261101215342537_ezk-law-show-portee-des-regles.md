@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261101215342537_ezk-law-show-portee-des-regles.md](../20261101215342537_ezk-law-show-portee-des-regles.md)
+> 🗎 Rendu de la fiche [features/20261101215342537_ezk-law-show-portee-des-regles.md](../done/20261101215342537_ezk-law-show-portee-des-regles.md)
 
 ## En clair
 

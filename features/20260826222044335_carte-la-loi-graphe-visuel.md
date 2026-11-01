@@ -91,7 +91,7 @@ dédié.
 
 ## Notes
 
-- Dépend de [La méthode publie sa loi en JSON](20261101215342537_ezk-law-show-portee-des-regles.md),
+- Dépend de [La méthode publie sa loi en JSON](done/20261101215342537_ezk-law-show-portee-des-regles.md),
   qui fournit le contrat. Découpage du 2026-11-01, sans fiche chapeau, lié par `milestone: board`.
 - Réécrite le 2026-11-01. Avant, elle visait à dessiner les traits dans la carte « LA LOI » du board
   de la méthode, et elle était parkée. Le PO a choisi mission control comme écran : la fiche change

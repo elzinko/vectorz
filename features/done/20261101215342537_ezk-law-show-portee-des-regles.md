@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version:
 labels: [loi, contrat, json, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (0961c355)"
 evidence: none # une commande en lecture seule, sans écran
 created: 2026-11-01
 ---
@@ -45,7 +45,7 @@ Les pièces existent, mais pas assemblées :
 - `.ezk/graph.compiled.json` contient le graphe, mais c'est un fichier de travail : non suivi par
   git, sans numéro de format, et périmé dès qu'une règle bouge.
 
-Décision amont : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+Décision amont : [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
 La méthode est le seul programme qui interprète ses fichiers, et elle publie le résultat par
 `ezk … --json`.
 
@@ -123,7 +123,7 @@ nombre de règles du catalogue au jour du build.
 
 ## Notes
 
-- Fiche sœur de [Mission control montre la loi](20260826222044335_carte-la-loi-graphe-visuel.md), qui
+- Fiche sœur de [Mission control montre la loi](../20260826222044335_carte-la-loi-graphe-visuel.md), qui
   consomme ce contrat. Découpage du 2026-11-01, sans fiche chapeau, lié par `milestone: board`, sur
   le modèle de l'ADR-086.
 - Limite assumée : une règle `citee` peut quand même être lue, si un skill recopie son texte dans son
