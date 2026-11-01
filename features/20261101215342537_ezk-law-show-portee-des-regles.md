@@ -74,8 +74,15 @@ Puis on classe chaque règle dans une seule portée, dans cet ordre : `partout`,
 `rangee`, `orpheline`. Un fichier de loi absent est dit (« loi globale non installée »). Il n'est
 jamais compté comme zéro règle.
 
-**Une entrée par consommateur** (skill ou agent) : les règles qu'il applique, comme
-`ezk graph project`.
+**Une entrée par objet du modèle qui porte des règles** : skill, agent, bundle, profil. Chaque objet
+a un champ `regles`, la liste des ids de règles qui s'y attachent, avec le lien qui les attache :
+`applies` pour un skill, `interactions` pour un agent, ses règles pour un bundle, ses bundles pour un
+profil. Un programme récupère ainsi les règles d'un objet sans lire de Markdown.
+
+**Le schéma publié joue le rôle d'une DTD.** `contracts/law-show/v1/schema.json` déclare chaque type
+d'objet et son champ `regles`, comme une DTD déclare les éléments d'un XML, ou un schéma OpenAPI les
+objets d'une API. Il reprend le modèle typé de la méthode (`src/core/graph.ts`, ADR-0040), qui
+déclare déjà ces liens.
 
 **En texte** : une ouverture « En clair » avec les cinq comptes, puis la liste des règles citées sans
 être installées. C'est la liste sur laquelle le PO peut agir.
@@ -90,8 +97,9 @@ calcule depuis le catalogue courant, jamais depuis un `.ezk/graph.compiled.json`
 
 - [ ] **Texte.** `ezk law show` ouvre par « En clair » avec les cinq comptes, qui somment au total des
       règles, puis liste les règles citées sans être installées, chacune avec qui la cite.
-- [ ] **JSON.** `ezk law show --json` sort `schema_version: 1`, une entrée par règle, une par
-      consommateur, et les comptes. Le schéma et l'exemple sont dans `contracts/law-show/v1/`, et un
+- [ ] **JSON.** `ezk law show --json` sort `schema_version: 1`, une entrée par règle, une par objet
+      (skill, agent, bundle, profil) avec son champ `regles`, et les comptes. Le schéma déclare ce
+      champ pour chaque type d'objet. Le schéma et l'exemple sont dans `contracts/law-show/v1/`, et un
       test échoue s'ils ne correspondent plus à la sortie.
 - [ ] **Portée vraie.** Sur un jeu de test (catalogue et fichiers de loi factices), chaque règle tombe
       dans la bonne portée, les cinq portées sont couvertes, et un fichier de loi absent est signalé
@@ -105,6 +113,7 @@ calcule depuis le catalogue courant, jamais depuis un `.ezk/graph.compiled.json`
 ```bash
 ezk law show
 ezk law show --json | jq '.comptes'
+ezk law show --json | jq '.objets[] | select(.id == "skill:ezk-sprint") | .regles'
 ezk --root /Users/elzinko/git/bacasable/muti law show --json | jq '.comptes'
 ```
 
