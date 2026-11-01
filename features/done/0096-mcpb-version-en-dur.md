@@ -6,8 +6,8 @@ priority: P2
 product: mega-city
 milestone: parked
 epic:
-status: idea
-pr:
+status: superseded
+pr: "superseded — paquet .mcpb retiré, supervision branchée par supervision:link (2026-11-01)"
 created: 2026-07-25
 labels: [installation]
 ---

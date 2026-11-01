@@ -234,6 +234,17 @@ carte. Comment le serveur sait-il quel projet superviser quand il arrive par le 
 (cwd de la session ? config par projet ? détection de racine git ?) — **à instruire**, c'est
 la seule vraie inconnue technique de l'intégration MCP.
 
+**MAJ 2026-11-01 — le `.mcpb` est retiré.** La colonne Desktop du tableau ci-dessus n'existe
+plus. Le PO travaille dans Claude Code, branché projet par projet par `supervision:link`.
+Le script `bin/build-mcpb.sh` est supprimé. Sa recette de bundling reste lisible dans
+l'historique git, au commit `61ce71ed`.
+
+Constat utile pour le point non résolu. Une extension Desktop activée est aussi chargée
+dans l'onglet Code, avec un seul dossier projet figé. Elle aurait écrit le journal de tous
+les projets dans ce dossier-là. Un plugin global aurait le même défaut s'il figeait la
+racine. Piste à instruire : ne pas fixer `SUPERVISION_PROJECT_ROOT` et laisser le serveur
+prendre le dossier de la session. Ce repli existe déjà dans `src/supervision/project-root.ts`.
+
 ### 6. La méthode DANS le projet (`.vectorz/`, façon BMAD) — 3ᵉ voie de distribution (question PO 2026-07-26)
 
 **La question PO :** la méthode peut-elle vivre dans un **sous-dossier du projet**

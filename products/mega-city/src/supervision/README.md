@@ -14,15 +14,19 @@ Fiche : `features/0050-kit-emetteur-supervisabilite.md`.
   relève du flux d'adoption (fiche 0050), le signal ne ment jamais.
 - `runtime.ts` — machine à états stateless (replay disque à chaque appel).
 - `mcp-server.ts` + `bin/supervision-mcp.ts` — serveur MCP stdio, **6 outils étroits**
-  (chemin nominal Claude Desktop, classe de conformité B ; `heartbeat` = fiche 0103).
+  (chemin nominal Claude Code via `supervision:link`, classe de conformité B ;
+  `heartbeat` = fiche 0103).
 
-## Configurer dans Claude Desktop
+## Configurer le serveur à la main
 
-> **Chemin nominal : le paquet un-double-clic.** `bash bin/build-mcpb.sh` produit
-> `dist/vectorz-supervision.mcpb` — serveur embarqué, aucun prérequis côté utilisateur
-> (Claude Desktop fournit son propre Node), sélecteur de dossier à l'installation.
-> Le câblage manuel ci-dessous est le **chemin de secours** : utile pour lancer le
-> serveur depuis les sources, ou si l'installation par paquet n'est pas possible.
+> **Chemin nominal : Claude Code, une commande.** `supervision:link` (section suivante)
+> écrit ce bloc pour toi dans le `.mcp.json` du projet. Le câblage manuel ci-dessous sert
+> à comprendre ce que la commande écrit. Il sert aussi pour l'onglet Chat de Claude
+> Desktop (`claude_desktop_config.json`), qui ne lit pas le `.mcp.json` d'un projet.
+>
+> **Le paquet d'extension Desktop (`.mcpb`) est retiré** depuis le 2026-11-01. Une
+> extension Desktop activée est aussi chargée dans l'onglet Code, avec **un seul** dossier
+> projet figé. Elle aurait donc écrit le journal de tous tes projets dans ce dossier-là.
 
 Prérequis du câblage manuel : Node ≥ 20 + pnpm ≥ 9 installés, et **`pnpm install`** lancé
 une fois à la racine du dépôt (le serveur a besoin de `tsx` et du SDK MCP dans
@@ -146,8 +150,8 @@ reformule les verdicts. Le dogfood guidé l’enchaîne auto après la démo
 (`scripts/dogfood-guided.sh` étape analyze).
 ## Conformité prouvée — déroulé méthode jouet → validateur (AC1, fiche 0050)
 
-Le chemin nominal est la session Claude Desktop (skill `supervision-demo` + serveur MCP
-ci-dessus). Le **déroulé reproductible sans client LLM** pilote le même runtime que le
+Le chemin nominal est une session Claude Code (skill `supervision-demo` + serveur MCP
+branché par `supervision:link`). Le **déroulé reproductible sans client LLM** pilote le même runtime que le
 serveur MCP, directement en script — joué en réel le 2026-07-18, validateur cop1 vert :
 
 ```bash
