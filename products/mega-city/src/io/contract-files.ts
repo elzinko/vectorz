@@ -1,12 +1,13 @@
 /**
  * contract-files — les schémas et les exemples rangés pour les consommateurs des contrats JSON de la
- * méthode (ADR-086) : `ezk board show --json` (fiche 20261029112813308) et `ezk backlog show --json`
- * (fiche 20261031160441267).
+ * méthode (ADR-086) : `ezk board show --json` (fiche 20261029112813308), `ezk backlog show --json`
+ * (fiche 20261031160441267) et `ezk config show --json`.
  *
  * Tous GÉNÉRÉS, jamais écrits à la main (`pnpm board:contract --write`) :
  *   contracts/board-show/v1/schema.json, example.json
  *   contracts/backlog-show/v1/schema.json, example.json            ← la liste, sans id
  *   contracts/backlog-show/v1/fiche.schema.json, fiche.example.json ← une fiche, avec son id
+ *   contracts/config-show/v1/schema.json, example.json             ← la config résolue du projet
  * Chaque schéma est tiré du schéma zod ; chaque exemple est la sortie de la commande sur la fixture.
  *
  * La fixture est un faux projet : une fiche par cas que mission control lisait mal (enquête du
@@ -20,9 +21,11 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { z } from 'zod';
 import { BOARD_SCHEMA_VERSION, BoardContractSchema } from '../core/board-contract.js';
+import { CONFIG_SCHEMA_VERSION, ConfigShowSchema } from '../core/config-contract.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
 import { boardShowData } from './board-show.js';
+import { configShowData } from './config-show.js';
 
 /** Les fichiers rangés, chemins relatifs à `products/mega-city`. */
 const BOARD_DIR = `contracts/board-show/v${BOARD_SCHEMA_VERSION}`;
@@ -33,6 +36,30 @@ export const BACKLOG_SCHEMA_FILE = `${BACKLOG_DIR}/schema.json`;
 export const BACKLOG_EXAMPLE_FILE = `${BACKLOG_DIR}/example.json`;
 export const BACKLOG_FICHE_SCHEMA_FILE = `${BACKLOG_DIR}/fiche.schema.json`;
 export const BACKLOG_FICHE_EXAMPLE_FILE = `${BACKLOG_DIR}/fiche.example.json`;
+const CONFIG_DIR = `contracts/config-show/v${CONFIG_SCHEMA_VERSION}`;
+export const CONFIG_SCHEMA_FILE = `${CONFIG_DIR}/schema.json`;
+export const CONFIG_EXAMPLE_FILE = `${CONFIG_DIR}/example.json`;
+
+/**
+ * La config de la fixture : chaque portée réglée au moins une fois (GitHub granulaire, intégration,
+ * gate coupée, tier de projet, repli d'agent), plus un tier mal saisi qui sort en erreur.
+ */
+const FIXTURE_CONFIG = [
+  'github:',
+  '  pr: true',
+  '  ci: false',
+  '  codex-review: false',
+  'integration: push-ff',
+  'release:',
+  '  gate: off',
+  'roles:',
+  '  ezk-dev: high',
+  '  ezk-steward: enorme',
+  'agents:',
+  '  ezk-qa:',
+  '    model: haiku',
+  '',
+].join('\n');
 
 /** La fiche de la fixture qui a une branche de travail ouverte. */
 export const FIXTURE_EN_COURS = '20990101000000001';
@@ -111,6 +138,7 @@ export function makeContractFixture(): string {
   }
   write('features/reviews/verdicts/20990101000000002.json', '{\n  "verdict": "up",\n  "date": "2026-11-01"\n}\n');
   write('features/reviews/verdicts/20990101000000003.json', '{ illisible\n');
+  write('.vectorz/config.yml', FIXTURE_CONFIG);
   const git = (...args: string[]): void => {
     execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', ...args], { stdio: 'ignore' });
   };
@@ -163,6 +191,8 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [BACKLOG_EXAMPLE_FILE]: exampleText(backlogShowListe(root)),
       [BACKLOG_FICHE_SCHEMA_FILE]: schemaText(BacklogShowFicheSchema),
       [BACKLOG_FICHE_EXAMPLE_FILE]: exampleText(backlogShowFiche(root, FIXTURE_DETAIL)),
+      [CONFIG_SCHEMA_FILE]: schemaText(ConfigShowSchema),
+      [CONFIG_EXAMPLE_FILE]: exampleText(configShowData(root)),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

@@ -7,6 +7,7 @@
  *
  * Usage (le projet : `ezk --root <projet> config …`, sinon le dossier courant) :
  *   ezk config [show]                    # statut
+ *   ezk config [show] --json             # la config résolue en JSON (contrat ADR-086, mission control)
  *   ezk config <projectRoot>             # statut d'un autre dossier (ancienne forme, gardée)
  *   ezk config github [status]           # statut
  *   ezk config github on|off             # (dé)connecte GitHub
@@ -25,6 +26,7 @@ import {
   writeGithubConfig,
 } from '../src/loaders/project-config.js';
 import { githubStatusText } from '../src/core/project-config.js';
+import { configShowData } from '../src/io/config-show.js';
 import { EFFORTS, ROLES, TIERS, resolveAgent } from '../src/core/model-config.js';
 import { type ModelMutation, loadModelConfig, writeModelConfig } from '../src/loaders/model-config.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
@@ -48,6 +50,7 @@ function usage(): void {
     [
       'usage : ezk [--root <projet>] config <sous-commande>',
       '  ezk config [show]                  statut GitHub + modèles du projet',
+      '  ezk config [show] --json           la même config en JSON (contrat lu par mission control)',
       '  ezk config <dossier>               statut d’un autre dossier (ancienne forme)',
       '  ezk config github [status]         statut GitHub',
       '  ezk config github on|off           (dé)connecte GitHub',
@@ -62,6 +65,19 @@ function printStatus(root: string): void {
   console.log(githubStatusText(`${root}/.vectorz/config.yml`, githubCapabilities(root)));
   // La stratégie d'intégration sans PR (ADR-0061 D3, fiche 20261004083838687).
   console.log(`integration          ${integrationStrategy(root)}   (sans PR : comment une story arrive sur main)`);
+}
+
+/**
+ * Le contrat JSON (`--json`, ADR-086) : la config que la méthode résout, pour mission control.
+ * Un YAML malformé sort en erreur nommant le fichier, jamais les défauts en silence.
+ */
+function printJson(root: string): void {
+  try {
+    console.log(JSON.stringify(configShowData(root), null, 1));
+  } catch (err) {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  }
 }
 
 /** Affiche, pour chaque agent : tier, modèle, effort et la SOURCE de la valeur. */
@@ -159,6 +175,18 @@ const argv = target.rest;
 if (argv[0] === '--help' || argv[0] === '-h') {
   usage();
   process.exit(0);
+}
+// `--json` (seul ou après `show`) : le contrat lu par mission control.
+if ((argv[0] === '--json' && argv.length === 1) || (argv[0] === 'show' && argv[1] === '--json' && argv.length === 2)) {
+  printJson(target.root);
+  process.exit(0);
+}
+// `--json` et `show` n'acceptent rien d'autre : un mot en trop est refusé, jamais ignoré en silence.
+if (argv[0] === '--json' && argv.length > 1) {
+  fail(`ezk:config --json : argument inconnu « ${argv[1]} » (voir « ezk config --help »).`);
+}
+if (argv[0] === 'show' && argv.length > 1) {
+  fail(`ezk:config show : argument inconnu « ${argv[1]} » (voir « ezk config --help »).`);
 }
 // Toute AUTRE option inconnue (commence par « - ») : refus net, code 2, en la nommant.
 if (argv[0]?.startsWith('-')) {

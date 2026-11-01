@@ -32,16 +32,20 @@ export const PROJECT_CONFIG_NAMES = ['config.yml', 'config.yaml'] as const;
  * présent mais malformé.
  */
 export function loadProjectConfig(projectRoot: string): unknown {
-  for (const name of PROJECT_CONFIG_NAMES) {
-    const file = join(projectRoot, PROJECT_CONFIG_DIR, name);
-    if (!existsSync(file)) continue;
-    try {
-      return parseYaml(readFileSync(file, 'utf8'));
-    } catch (cause) {
-      throw new Error(`Config projet illisible (YAML malformé) : ${file}`, { cause });
-    }
+  const file = findProjectConfigFile(projectRoot);
+  if (file === undefined) return undefined;
+  try {
+    return parseYaml(readFileSync(file, 'utf8'));
+  } catch (cause) {
+    throw new Error(`Config projet illisible (YAML malformé) : ${file}`, { cause });
   }
-  return undefined;
+}
+
+/** Le fichier de config projet présent sous `projectRoot` (`.yml` prioritaire), ou `undefined`. */
+export function findProjectConfigFile(projectRoot: string): string | undefined {
+  return PROJECT_CONFIG_NAMES.map((name) => join(projectRoot, PROJECT_CONFIG_DIR, name)).find((file) =>
+    existsSync(file),
+  );
 }
 
 /**

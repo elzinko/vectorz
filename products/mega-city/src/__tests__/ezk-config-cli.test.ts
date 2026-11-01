@@ -73,3 +73,33 @@ describe('ezk config — aide et options (fiche 20261004083838781)', () => {
     expect(r.out).toMatch(/github/i);
   });
 });
+
+describe('ezk config show --json — le contrat lu par mission control (ADR-086)', () => {
+  it('show --json sort le contrat : le fichier lu et GitHub coupé', () => {
+    const r = cfg(['show', '--json']);
+    expect(r.code).toBe(0);
+    const data = JSON.parse(r.out);
+    expect(data.schema_version).toBe(1);
+    expect(data.file).toBe('.vectorz/config.yml');
+    expect(data.github).toEqual({ pr: false, ci: false, codexReview: false });
+  });
+
+  it('--json seul vaut show --json', () => {
+    const r = cfg(['--json']);
+    expect(r.code).toBe(0);
+    expect(JSON.parse(r.out).schema_version).toBe(1);
+  });
+
+  it('une option inconnue après show sort en 2 en la nommant, jamais ignorée en silence', () => {
+    const r = cfg(['show', '--nimporte']);
+    expect(r.code).toBe(2);
+    expect(r.err).toContain('--nimporte');
+  });
+
+  it('un mot en trop après --json sort en 2 en nommant ce mot, pas --json', () => {
+    const r = cfg(['--json', 'extra']);
+    expect(r.code).toBe(2);
+    expect(r.err).toContain('« extra »');
+    expect(r.err).not.toMatch(/option inconnue « --json »/);
+  });
+});

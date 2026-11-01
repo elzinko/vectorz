@@ -1,0 +1,66 @@
+{
+ "schema_version": 1,
+ "file": ".vectorz/config.yml",
+ "github": {
+  "pr": true,
+  "ci": false,
+  "codexReview": false
+ },
+ "integration": "push-ff",
+ "releaseGate": false,
+ "agents": [
+  {
+   "agent": "ezk-architect",
+   "tier": "high",
+   "model": "claude-opus-4-8",
+   "effort": "high",
+   "source": "defaut"
+  },
+  {
+   "agent": "ezk-pm",
+   "tier": "high",
+   "model": "claude-opus-4-8",
+   "effort": "high",
+   "source": "defaut"
+  },
+  {
+   "agent": "ezk-reviewer",
+   "tier": "high",
+   "model": "claude-opus-4-8",
+   "effort": "high",
+   "source": "defaut"
+  },
+  {
+   "agent": "ezk-dev",
+   "tier": "high",
+   "model": "claude-opus-4-8",
+   "effort": "high",
+   "source": "tier-projet"
+  },
+  {
+   "agent": "ezk-qa",
+   "tier": "middle",
+   "model": "haiku",
+   "effort": "medium",
+   "source": "agent"
+  },
+  {
+   "agent": "ezk-archive",
+   "tier": "middle",
+   "model": "sonnet",
+   "effort": "medium",
+   "source": "defaut"
+  },
+  {
+   "agent": "ezk-steward",
+   "error": "Tier inconnu pour ezk-steward : « enorme » (attendus : high, middle, low)."
+  },
+  {
+   "agent": "ezk-chef",
+   "tier": "low",
+   "model": "sonnet",
+   "effort": "low",
+   "source": "defaut"
+  }
+ ]
+}

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "file": {
+      "description": "Le fichier de config lu, relatif à la racine du projet ; null si le projet n’en a pas (défauts de la méthode).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "github": {
+      "type": "object",
+      "properties": {
+        "pr": {
+          "type": "boolean"
+        },
+        "ci": {
+          "type": "boolean"
+        },
+        "codexReview": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pr",
+        "ci",
+        "codexReview"
+      ]
+    },
+    "integration": {
+      "type": "string",
+      "enum": [
+        "local-squash",
+        "push-ff"
+      ],
+      "description": "Sans PR : comment une story arrive sur main."
+    },
+    "releaseGate": {
+      "type": "boolean",
+      "description": "La gate de release bloque-t-elle le tag d’une version ?"
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "agent": {
+                "type": "string"
+              },
+              "tier": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "middle",
+                  "low"
+                ]
+              },
+              "model": {
+                "type": "string"
+              },
+              "effort": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "enum": [
+                  "agent",
+                  "tier-projet",
+                  "defaut"
+                ],
+                "description": "D'où vient la valeur : réglage de l'agent, tier du projet, ou défaut de la méthode."
+              }
+            },
+            "required": [
+              "agent",
+              "tier",
+              "model",
+              "effort",
+              "source"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "agent": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string",
+                "description": "La config de cet agent est mal saisie : la raison, qui nomme la clé et la valeur."
+              }
+            },
+            "required": [
+              "agent",
+              "error"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "file",
+    "github",
+    "integration",
+    "releaseGate",
+    "agents"
+  ]
+}

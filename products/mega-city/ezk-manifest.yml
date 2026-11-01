@@ -367,7 +367,7 @@ commands:
     summary: Cockpit des sessions Claude Code (qui travaille sur quoi).
   - domain: config
     run: bin/ezk-config.ts
-    summary: Lit (show) et pilote (github) les capacités GitHub (dépôt où tu es, ou --root).
+    summary: Lit (show, --json) et pilote (github) les capacités GitHub (dépôt où tu es, ou --root).
     root: cwd
     project: true
     writes: true
