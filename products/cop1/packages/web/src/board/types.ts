@@ -227,6 +227,8 @@ export interface BoardProject {
   chantiers?: BoardChantier[];
   /** La config du projet (portée projet, `.vectorz/config.yml`). Facultatif. */
   config?: ProjectConfig;
+  /** État de la lecture de la config (ADR-086). Absent = config reçue. Sinon `config` est absent. */
+  configState?: PlanState;
 }
 
 /** L'ensemble des projets, indexés par leur nom (clé de navigation). */

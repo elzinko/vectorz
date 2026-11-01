@@ -6,7 +6,8 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it, vi } from 'vitest';
-import { EzkPlanSource, type EzkRunner } from './ezkPlanSource.js';
+import { EzkPlanSource } from './ezkPlanSource.js';
+import type { EzkRunner } from './ezkSource.js';
 
 const example = (path: string): string =>
   readFileSync(

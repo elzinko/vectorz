@@ -5,9 +5,13 @@
  * la qualité, l'intégration. Plus le MODÈLE PAR RÔLE : un tier abstrait par rôle,
  * et le modèle RÉSOLU en bout de ligne (il suit l'IDE actif). Un lien renvoie à la
  * config de l'outil. On n'édite PAS le mapping ici (il vit côté outil).
+ *
+ * Pour un projet surveillé, la config vient de la méthode (`ezk config show --json`,
+ * ADR-086). Tant qu'elle n'est pas arrivée, la page dit pourquoi : elle ne conclut
+ * jamais que le fichier manque.
  */
-import { ROLE_ORDER, TIERS, resolveRole, type Role, type Tier, type ToolConfig } from './configModel.js';
-import type { BoardProject } from './types.js';
+import { ROLE_ORDER, TIERS, resolveRole, type ProjectConfig, type Role, type Tier, type ToolConfig } from './configModel.js';
+import type { BoardProject, PlanState } from './types.js';
 
 interface ConfigViewProps {
   project: BoardProject;
@@ -30,6 +34,22 @@ function TierSeg({ value, onChange }: { value: Tier; onChange: (t: Tier) => void
   );
 }
 
+/**
+ * Le message quand la config n'est pas là : chargement, indisponible (avec la raison). Sans aucun
+ * état, le serveur ne connaît pas encore la config : il tourne sur un code plus ancien que la page.
+ */
+function configMessage(state: PlanState | undefined): string {
+  if (state?.state === 'loading') return 'config en cours de chargement';
+  if (state?.state === 'unavailable') return `config indisponible : ${state.reason}`;
+  return 'le serveur de mission control n’envoie pas la config : il tourne sur un code plus ancien que la page. Relance-le (pnpm cop1:dev).';
+}
+
+/** D'où vient la config : le fichier lu, les défauts de la méthode, ou une config d'exemple. */
+function fileLabel(file: ProjectConfig['file']): string {
+  if (file === null) return 'pas de .vectorz/config.yml · réglages par défaut de la méthode';
+  return `${file ?? '.vectorz/config.yml'} · voyage avec le repo`;
+}
+
 export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: ConfigViewProps): JSX.Element {
   const c = project.config;
 
@@ -42,32 +62,36 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
         </div>
         <section className="card">
           <div className="row">
-            <span className="ttl">Ce projet n'a pas encore de .vectorz/config.yml.</span>
+            <span className="ttl">{configMessage(project.configState)}</span>
           </div>
         </section>
       </>
     );
   }
 
+  const hasLaunch = c.groomPolicy !== undefined || c.sprintSize !== undefined || c.retro !== undefined;
+
   return (
     <>
       <div className="vh">
         <h2>Configuration — {project.name}</h2>
-        <span className="sub">.vectorz/config.yml · voyage avec le repo</span>
+        <span className="sub">{fileLabel(c.file)}</span>
       </div>
 
       <div className="cfg">
-        <section className="card">
-          <h3>Lancement par défaut</h3>
-          <dl className="kv">
-            <dt>Grooming</dt>
-            <dd>{c.groomPolicy}</dd>
-            <dt>Taille de sprint</dt>
-            <dd>{c.sprintSize}</dd>
-            <dt>Rétro</dt>
-            <dd>{c.retro}</dd>
-          </dl>
-        </section>
+        {hasLaunch && (
+          <section className="card">
+            <h3>Lancement par défaut</h3>
+            <dl className="kv">
+              <dt>Grooming</dt>
+              <dd>{c.groomPolicy ?? '—'}</dd>
+              <dt>Taille de sprint</dt>
+              <dd>{c.sprintSize ?? '—'}</dd>
+              <dt>Rétro</dt>
+              <dd>{c.retro ?? '—'}</dd>
+            </dl>
+          </section>
+        )}
         <section className="card">
           <h3>Qualité</h3>
           <dl className="kv">
@@ -84,6 +108,12 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
           <dl className="kv">
             <dt>GitHub</dt>
             <dd>{c.github}</dd>
+            {c.integration !== undefined && (
+              <>
+                <dt>Sans PR</dt>
+                <dd>{c.integration}</dd>
+              </>
+            )}
             <dt>Racine</dt>
             <dd>{c.root}</dd>
           </dl>
@@ -101,6 +131,15 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
           </span>
         </h3>
         {ROLE_ORDER.map((role) => {
+          const invalid = c.errors?.[role];
+          if (invalid !== undefined) {
+            return (
+              <div className="cfgrow" key={role}>
+                <span className="cfgk mono">{role}</span>
+                <span className="faint">config invalide : {invalid}</span>
+              </div>
+            );
+          }
           const resolved = resolveRole(roles, role, tool);
           return (
             <div className="cfgrow" key={role}>

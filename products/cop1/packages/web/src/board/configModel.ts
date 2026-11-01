@@ -51,16 +51,27 @@ export const DEFAULT_IDE_MAP: Record<string, IdeMapping> = {
 /**
  * La config d'un projet (portée PROJET, `.vectorz/config.yml`, voyage avec le
  * repo). Elle ne porte PAS le mapping tier → modèle (celui-ci vit côté outil).
+ * Pour un projet surveillé, elle vient de la méthode (`ezk config show --json`,
+ * ADR-086) ; les réglages de lancement n'y existent pas encore, ils restent absents.
  */
 export interface ProjectConfig {
-  groomPolicy: string;
-  sprintSize: string;
-  retro: string;
+  groomPolicy?: string;
+  sprintSize?: string;
+  retro?: string;
   releaseGate: boolean;
   github: string;
+  /** Sans PR : comment une story arrive sur main (`local-squash`, `push-ff`). */
+  integration?: string;
   root: string;
+  /**
+   * Le fichier lu, relatif à la racine ; `null` = le projet n'en a pas, la méthode
+   * applique ses défauts. Absent = config d'exemple (assistant d'ajout).
+   */
+  file?: string | null;
   /** Le tier choisi par rôle ; un rôle absent prend le défaut de l'outil. */
   roles: Partial<Record<Role, Tier>>;
+  /** Les rôles dont la config est mal saisie, avec la raison donnée par la méthode. */
+  errors?: Partial<Record<Role, string>>;
 }
 
 /**

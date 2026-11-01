@@ -1,14 +1,16 @@
 /**
  * boardProvider — compose les données du board de chaque projet surveillé, chez cop1, SANS importer
- * mega-city (ADR-021). Le PLAN (entonnoir, versions, détail des fiches) vient de la méthode par la
- * commande `ezk` (ADR-086), via `EzkPlanSource` : cop1 ne lit plus lui-même les fiches.
+ * mega-city (ADR-021). Le PLAN (entonnoir, versions, détail des fiches) et la CONFIG du projet
+ * viennent de la méthode par la commande `ezk` (ADR-086), via `EzkPlanSource` et `EzkConfigSource` :
+ * cop1 ne lit lui-même ni les fiches ni `.vectorz/config.yml`.
  *
  * Quand le plan n'est pas là (`loading`, `unavailable`), l'entonnoir, les versions et les fiches
- * restent VIDES et `plan` dit pourquoi : jamais un faux chiffre. Les runs, eux, se lisent dans
- * `<root>/.supervision/runs` et s'affichent dans tous les cas.
+ * restent VIDES et `plan` dit pourquoi : jamais un faux chiffre. De même, sans config reçue, `config`
+ * est absent et `configState` dit pourquoi. Les runs, eux, se lisent dans `<root>/.supervision/runs`
+ * et s'affichent dans tous les cas.
  *
  * Cœur PUR (`shapeProject`) = mise en forme testable sans disque ; bord I/O (`composeProject`,
- * `composeBoardData`, `composeLive`) = lecture de la source de plan et des journaux de runs.
+ * `composeBoardData`, `composeLive`) = lecture des sources de la méthode et des journaux de runs.
  */
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -19,7 +21,10 @@ import {
   type LiveRun,
   adaptChantiers,
 } from './chantierAdapter.js';
+import type { ConfigSnapshot, EzkConfigSource } from './ezkConfigSource.js';
+import type { ProjectConfigData } from './ezkConfigTranslator.js';
 import type { EzkPlanSource, PlanSnapshot } from './ezkPlanSource.js';
+import type { SourceSnapshot } from './ezkSource.js';
 import type { FicheDetailData, PlanFunnel, PlanVersions } from './planTypes.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
@@ -29,7 +34,13 @@ export interface BoardProjectInput {
   desc?: string;
 }
 
-/** L'état du plan d'un projet, tel que la page l'affiche. */
+/** Les lectures de la méthode dont le board a besoin. */
+export interface BoardSources {
+  plan: EzkPlanSource;
+  config: EzkConfigSource;
+}
+
+/** L'état d'une lecture de la méthode (le plan, la config), tel que la page l'affiche. */
 export type BoardPlanState =
   | { state: 'ok' }
   | { state: 'loading' }
@@ -60,12 +71,16 @@ export interface BoardPlanProject {
   chantiers?: LiveChantier[];
   /** Détail des fiches NON livrées (pour la modale du board). */
   fiches: Record<string, FicheDetailData>;
+  /** La config est-elle arrivée ? Sinon `config` est absent. */
+  configState: BoardPlanState;
+  /** La config du projet, telle que la méthode la résout (`ezk config show --json`). */
+  config?: ProjectConfigData;
 }
 
 const EMPTY_FUNNEL: PlanFunnel = { idea: 0, ready: 0, wip: 0, unversioned: 0, parked: 0 };
 const EMPTY_VERSIONS: PlanVersions = { current: null, upcoming: [], past: [] };
 
-function planState(snapshot: PlanSnapshot): BoardPlanState {
+function readState(snapshot: SourceSnapshot<unknown>): BoardPlanState {
   if (snapshot.state === 'unavailable') return { state: 'unavailable', reason: snapshot.reason };
   return { state: snapshot.state };
 }
@@ -77,6 +92,7 @@ export function shapeProject(
   desc: string,
   snapshot: PlanSnapshot,
   live: LiveBoard = { runs: {}, chantiers: [] },
+  config: ConfigSnapshot = { state: 'loading' },
 ): BoardPlanProject {
   const runsCount = Object.keys(live.runs).length;
   const anyLive = Object.values(live.runs).some((r) => r.live);
@@ -85,7 +101,7 @@ export function shapeProject(
     name,
     desc,
     live: anyLive,
-    plan: planState(snapshot),
+    plan: readState(snapshot),
     funnel: received ? received.plan.funnel : EMPTY_FUNNEL,
     versions: received ? received.plan.versions : EMPTY_VERSIONS,
     metrics: {
@@ -100,6 +116,8 @@ export function shapeProject(
     runs: live.runs,
     ...(live.chantiers.length > 0 ? { chantiers: live.chantiers } : {}),
     fiches: received ? received.fiches : {},
+    configState: readState(config),
+    ...(config.state === 'ok' ? { config: config.config } : {}),
   };
 }
 
@@ -136,26 +154,27 @@ function cachedLive(root: string, now: number): LiveBoard {
   return value;
 }
 
-/** BORD I/O — compose un `BoardProject` : plan déjà en mémoire (jamais d'attente) + runs du journal. */
+/** BORD I/O — compose un `BoardProject` : plan et config déjà en mémoire (jamais d'attente) + runs du journal. */
 export function composeProject(
   input: BoardProjectInput,
-  source: EzkPlanSource,
+  sources: BoardSources,
   now: number = Date.now(),
 ): BoardPlanProject {
   return shapeProject(
     input.name,
     input.desc ?? '',
-    source.get(input.root),
+    sources.plan.get(input.root),
     cachedLive(input.root, now),
+    sources.config.get(input.root),
   );
 }
 
 /** BORD I/O — compose la `BoardData` (projets indexés par nom) des projets surveillés. */
 export function composeBoardData(
   projects: readonly BoardProjectInput[],
-  source: EzkPlanSource,
+  sources: BoardSources,
 ): Record<string, BoardPlanProject> {
   const out: Record<string, BoardPlanProject> = {};
-  for (const p of projects) out[p.name] = composeProject(p, source);
+  for (const p of projects) out[p.name] = composeProject(p, sources);
   return out;
 }

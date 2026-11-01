@@ -98,6 +98,87 @@ describe('ConfigView (fiche 250)', () => {
   });
 });
 
+/** Un projet surveillé : sa config vient de la méthode (`ezk config show --json`, ADR-086). */
+function liveProject(over: Partial<BoardProject> = {}): BoardProject {
+  return {
+    ...PROJECT,
+    config: {
+      releaseGate: true,
+      github: 'coupé (100 % local)',
+      integration: 'local-squash',
+      root: '/Users/moi/vectorz',
+      file: '.vectorz/config.yml',
+      roles: { 'ezk-architect': 'high', 'ezk-dev': 'middle' },
+      errors: {},
+    },
+    configState: { state: 'ok' },
+    ...over,
+  };
+}
+
+function renderProject(project: BoardProject) {
+  return render(
+    <ConfigView
+      project={project}
+      tool={defaultToolConfig()}
+      roles={project.config?.roles ?? {}}
+      onSetRole={() => {}}
+      onGotoTool={() => {}}
+    />,
+  );
+}
+
+describe('ConfigView — la config lue par la méthode (ADR-086)', () => {
+  it('un projet avec config.yml : le fichier est nommé, ses vrais réglages s’affichent', () => {
+    renderProject(liveProject());
+    expect(screen.getByText('.vectorz/config.yml · voyage avec le repo')).toBeTruthy();
+    expect(screen.getByText('coupé (100 % local)')).toBeTruthy();
+    expect(screen.getByText('local-squash')).toBeTruthy();
+    expect(screen.getByText('/Users/moi/vectorz')).toBeTruthy();
+    expect(screen.queryByText(/pas encore de/)).toBeNull();
+  });
+
+  it('les réglages de lancement, absents de la méthode, ne s’affichent pas inventés', () => {
+    renderProject(liveProject());
+    expect(screen.queryByText('Lancement par défaut')).toBeNull();
+  });
+
+  it('un projet sans config.yml : la page dit que les défauts de la méthode s’appliquent', () => {
+    const base = liveProject();
+    renderProject({ ...base, config: { ...base.config!, file: null } });
+    expect(screen.getByText('pas de .vectorz/config.yml · réglages par défaut de la méthode')).toBeTruthy();
+  });
+
+  it('un rôle mal configuré montre la raison de la méthode, jamais un tier inventé', () => {
+    const base = liveProject();
+    renderProject({
+      ...base,
+      config: { ...base.config!, errors: { 'ezk-dev': 'Tier inconnu pour ezk-dev : « enorme »' } },
+    });
+    const devRow = screen.getByText('ezk-dev').closest('.cfgrow') as HTMLElement;
+    expect(within(devRow).getByText(/config invalide : Tier inconnu pour ezk-dev/)).toBeTruthy();
+    expect(within(devRow).queryAllByRole('button')).toHaveLength(0);
+  });
+
+  it('config en chargement : la page le dit, sans prétendre que le fichier manque', () => {
+    renderProject(liveProject({ config: undefined, configState: { state: 'loading' } }));
+    expect(screen.getByText('config en cours de chargement')).toBeTruthy();
+    expect(screen.queryByText(/pas encore de/)).toBeNull();
+  });
+
+  it('config indisponible : la page donne la raison d’ezk', () => {
+    renderProject(
+      liveProject({ config: undefined, configState: { state: 'unavailable', reason: 'YAML malformé' } }),
+    );
+    expect(screen.getByText('config indisponible : YAML malformé')).toBeTruthy();
+  });
+
+  it('ni config ni état (serveur plus ancien que la page) : la page dit de le relancer', () => {
+    renderProject(liveProject({ config: undefined, configState: undefined }));
+    expect(screen.getByText(/il tourne sur un code plus ancien que la page\. Relance-le/)).toBeTruthy();
+  });
+});
+
 describe('ToolConfigView (fiche 656)', () => {
   it('éditer le mapping émet une nouvelle config', async () => {
     let tool: ToolConfig = defaultToolConfig();

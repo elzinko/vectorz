@@ -3,6 +3,7 @@ import { EventBus } from '@cop1/shared-kernel';
 import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
+import { EzkConfigSource } from '../../board/ezkConfigSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
@@ -36,6 +37,7 @@ export class DaemonService {
   /** ADR-086 : commande qui lance la méthode (`supervision.ezk_command`), défaut `ezk`. */
   private ezkCommand: string[] = ['ezk'];
   private ezkPlanSource: EzkPlanSource | null = null;
+  private ezkConfigSource: EzkConfigSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -96,7 +98,10 @@ export class DaemonService {
     // fiche 0062/0063 — relecture à chaque GET (après registry-add sans restart)
     this.httpServer.setProjectsProvider(() => this.readRegistryProjects(projectPath));
     this.httpServer.setBoardProvider(() =>
-      composeBoardData(this.boardProjects(projectPath), this.planSource()),
+      composeBoardData(this.boardProjects(projectPath), {
+        plan: this.planSource(),
+        config: this.configSource(),
+      }),
     );
 
     try {
@@ -189,6 +194,12 @@ export class DaemonService {
   private planSource(): EzkPlanSource {
     this.ezkPlanSource ??= new EzkPlanSource({ command: this.ezkCommand });
     return this.ezkPlanSource;
+  }
+
+  /** La source de config (`ezk config show --json`), créée au premier besoin comme celle du plan. */
+  private configSource(): EzkConfigSource {
+    this.ezkConfigSource ??= new EzkConfigSource({ command: this.ezkCommand });
+    return this.ezkConfigSource;
   }
 
   private boardProjects(projectPath: string): BoardProjectInput[] {

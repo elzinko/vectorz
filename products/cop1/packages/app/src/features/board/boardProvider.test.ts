@@ -5,6 +5,8 @@
  */
 import { describe, expect, it } from 'vitest';
 import { composeBoardData, shapeProject } from './boardProvider.js';
+import { EzkConfigSource } from './ezkConfigSource.js';
+import type { ProjectConfigData } from './ezkConfigTranslator.js';
 import { EzkPlanSource, type PlanSnapshot } from './ezkPlanSource.js';
 import type { FicheDetailData, PlanData } from './planTypes.js';
 
@@ -93,13 +95,52 @@ describe('shapeProject — met le plan à la forme BoardProject', () => {
   });
 });
 
-describe('composeBoardData — synchrone, lit l’état de la source', () => {
+const config: ProjectConfigData = {
+  file: '.vectorz/config.yml',
+  github: 'coupé (100 % local)',
+  integration: 'local-squash',
+  releaseGate: true,
+  root: '/p',
+  roles: { 'ezk-dev': 'middle' },
+  errors: {},
+};
+const noLive = { runs: {}, chantiers: [] };
+
+describe('shapeProject — la config du projet, lue par ezk (ADR-086)', () => {
+  it('config reçue : elle passe telle quelle, et configState dit « ok »', () => {
+    const p = shapeProject('vectorz', '', ok, noLive, { state: 'ok', at: 1, config });
+    expect(p.configState).toEqual({ state: 'ok' });
+    expect(p.config).toEqual(config);
+  });
+
+  it('config en chargement : pas de config, configState dit « loading »', () => {
+    const p = shapeProject('vectorz', '', ok, noLive, { state: 'loading' });
+    expect(p.configState).toEqual({ state: 'loading' });
+    expect(p.config).toBeUndefined();
+  });
+
+  it('config indisponible : la raison est portée, le plan arrive quand même', () => {
+    const p = shapeProject('vectorz', '', ok, noLive, {
+      state: 'unavailable',
+      reason: 'YAML malformé',
+    });
+    expect(p.configState).toEqual({ state: 'unavailable', reason: 'YAML malformé' });
+    expect(p.config).toBeUndefined();
+    expect(p.plan).toEqual({ state: 'ok' });
+  });
+});
+
+describe('composeBoardData — synchrone, lit l’état des sources', () => {
   it('rend tout de suite « loading » pour un ezk lent, sans attendre', () => {
     const never = new Promise<string>(() => {});
-    const source = new EzkPlanSource({ command: ['ezk'], run: () => never });
+    const sources = {
+      plan: new EzkPlanSource({ command: ['ezk'], run: () => never }),
+      config: new EzkConfigSource({ command: ['ezk'], run: () => never }),
+    };
     const t0 = performance.now();
-    const data = composeBoardData([{ name: 'p', root: '/introuvable' }], source);
+    const data = composeBoardData([{ name: 'p', root: '/introuvable' }], sources);
     expect(performance.now() - t0).toBeLessThan(100);
     expect(data.p?.plan).toEqual({ state: 'loading' });
+    expect(data.p?.configState).toEqual({ state: 'loading' });
   });
 });

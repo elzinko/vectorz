@@ -246,10 +246,11 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .tl-end { text-align: center; color: var(--faint); font-size: 12px; padding: 8px; }
 
 /* --- Config projet (250) + config outil (656) --- */
-.cfg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; padding: 14px 16px; margin: 0; }
+.cfg { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.kv { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 12px; padding: 14px 16px; margin: 0; }
 .kv dt { color: var(--muted); font-size: 13px; }
-.kv dd { margin: 0; font-size: 13.5px; font-family: var(--font-data); }
+/* Une valeur longue (chemin absolu de la racine) passe à la ligne au lieu d'élargir la carte. */
+.kv dd { margin: 0; font-size: 13.5px; font-family: var(--font-data); overflow-wrap: anywhere; }
 .cfgrow { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-top: 1px solid var(--line); flex-wrap: wrap; }
 .cfgrow:first-of-type { border-top: 0; }
 .cfgk { font-size: 13px; min-width: 140px; }
