@@ -132,3 +132,7 @@ cd products/mega-city && pnpm test && pnpm test:scripts
   bloquantes ; une appliquée (le contrôle de prêt réutilise `ficheBodyText`). Les deux autres
   restent ouvertes, notées pour la fiche mission control : la liste relit chaque fichier deux fois,
   et une case écrite dans un bloc de code sous « Critères » compterait comme un critère.
+- Correctif après livraison (2026-11-01, `f13f1491`) : vérifiée en vrai sur muti, la liste sortait
+  coupée à 64 Ko à travers un tuyau (JSON illisible). Cause : `process.exit` juste après la sortie.
+  Les deux commandes du contrat (`backlog show` et `board show`) se terminent maintenant seules ; un
+  test à 300 fiches lit leur sortie par un tuyau. Revue du correctif : GO.
