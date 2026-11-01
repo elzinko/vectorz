@@ -14,6 +14,7 @@
     "gate": "pnpm typecheck && pnpm test && pnpm test:scripts",
     "typecheck": "tsc --noEmit",
     "board:contract": "tsx bin/board-contract.ts",
+    "law:contract": "tsx bin/law-contract.ts",
     "ezk": "tsx bin/ezk.ts",
     "lawgiver": "tsx bin/lawgiver.ts",
     "ezk:help": "tsx bin/ezk-help.ts",

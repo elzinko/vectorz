@@ -74,7 +74,7 @@ export function provenancePath(kind: LoiNodeKind, id: string): string {
  * Fermeture transitive des ancêtres de `startId` par un lien d'héritage donné
  * (`profile-extends` ou `bundle-extends`). Sûre aux cycles (Set de vus).
  */
-function ancestors(
+export function ancestors(
   loi: LoiGraph,
   startId: string,
   link: 'profile-extends' | 'bundle-extends',

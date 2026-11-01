@@ -85,6 +85,7 @@ describe('ezk-manifest.yml', () => {
       'forge changes',
       'forge integrate',
       'journal add',
+      'law show',
       'now',
       'paths',
       'pr emit-local',

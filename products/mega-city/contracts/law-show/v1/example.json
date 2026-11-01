@@ -1,0 +1,223 @@
+{
+ "schema_version": 1,
+ "lois": {
+  "globale": {
+   "chemin": "~/.claude/rules/iamthelaw.md",
+   "installee": true
+  },
+  "projet": {
+   "chemin": ".iamthelaw/ENTRY.md",
+   "installee": true
+  }
+ },
+ "comptes": {
+  "total": 6,
+  "partout": 1,
+  "projet": 1,
+  "citee": 2,
+  "rangee": 1,
+  "orpheline": 1
+ },
+ "regles": [
+  {
+   "id": "r/citee",
+   "titre": "Règle r/citee",
+   "niveau": "MUST",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/citee.md",
+   "bundles": [
+    "b2"
+   ],
+   "profils": [],
+   "appliqueePar": [
+    {
+     "objet": "agent:a1",
+     "via": "direct"
+    },
+    {
+     "objet": "skill:s1",
+     "via": "direct"
+    },
+    {
+     "objet": "skill:s2",
+     "via": "bundle:b2"
+    }
+   ],
+   "verifieePar": [],
+   "portee": "citee"
+  },
+  {
+   "id": "r/citee-bundle",
+   "titre": "Règle r/citee-bundle",
+   "niveau": "SHOULD",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/citee-bundle.md",
+   "bundles": [
+    "b2"
+   ],
+   "profils": [],
+   "appliqueePar": [
+    {
+     "objet": "skill:s2",
+     "via": "bundle:b2"
+    }
+   ],
+   "verifieePar": [],
+   "portee": "citee"
+  },
+  {
+   "id": "r/globale",
+   "titre": "Règle r/globale",
+   "niveau": "MUST",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/globale.md",
+   "bundles": [
+    "base"
+   ],
+   "profils": [
+    "p1"
+   ],
+   "appliqueePar": [],
+   "verifieePar": [
+    "a1"
+   ],
+   "portee": "partout"
+  },
+  {
+   "id": "r/orpheline",
+   "titre": "Règle r/orpheline",
+   "niveau": "MUST",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/orpheline.md",
+   "bundles": [],
+   "profils": [],
+   "appliqueePar": [],
+   "verifieePar": [],
+   "portee": "orpheline"
+  },
+  {
+   "id": "r/projet",
+   "titre": "Règle r/projet",
+   "niveau": "SHOULD",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/projet.md",
+   "bundles": [
+    "base"
+   ],
+   "profils": [
+    "p1"
+   ],
+   "appliqueePar": [],
+   "verifieePar": [],
+   "portee": "projet"
+  },
+  {
+   "id": "r/rangee",
+   "titre": "Règle r/rangee",
+   "niveau": "MAY",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/rangee.md",
+   "bundles": [
+    "b3"
+   ],
+   "profils": [
+    "p1"
+   ],
+   "appliqueePar": [],
+   "verifieePar": [],
+   "portee": "rangee"
+  }
+ ],
+ "objets": [
+  {
+   "id": "agent:a1",
+   "type": "agent",
+   "regles": [
+    {
+     "id": "r/citee",
+     "via": "direct"
+    }
+   ]
+  },
+  {
+   "id": "skill:s1",
+   "type": "skill",
+   "regles": [
+    {
+     "id": "r/citee",
+     "via": "direct"
+    }
+   ]
+  },
+  {
+   "id": "skill:s2",
+   "type": "skill",
+   "regles": [
+    {
+     "id": "r/citee",
+     "via": "bundle:b2"
+    },
+    {
+     "id": "r/citee-bundle",
+     "via": "bundle:b2"
+    }
+   ]
+  },
+  {
+   "id": "bundle:b2",
+   "type": "bundle",
+   "regles": [
+    {
+     "id": "r/citee",
+     "via": "direct"
+    },
+    {
+     "id": "r/citee-bundle",
+     "via": "direct"
+    }
+   ]
+  },
+  {
+   "id": "bundle:b3",
+   "type": "bundle",
+   "regles": [
+    {
+     "id": "r/rangee",
+     "via": "direct"
+    }
+   ]
+  },
+  {
+   "id": "bundle:base",
+   "type": "bundle",
+   "regles": [
+    {
+     "id": "r/globale",
+     "via": "direct"
+    },
+    {
+     "id": "r/projet",
+     "via": "direct"
+    }
+   ]
+  },
+  {
+   "id": "profile:p1",
+   "type": "profile",
+   "regles": [
+    {
+     "id": "r/globale",
+     "via": "bundle:base"
+    },
+    {
+     "id": "r/projet",
+     "via": "bundle:base"
+    },
+    {
+     "id": "r/rangee",
+     "via": "bundle:b3"
+    }
+   ]
+  }
+ ]
+}

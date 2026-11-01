@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [loi, contrat, json, mission-control]
-status: idea
+status: ready
 pr:
 evidence: none # une commande en lecture seule, sans écran
 created: 2026-11-01
@@ -95,18 +95,18 @@ calcule depuis le catalogue courant, jamais depuis un `.ezk/graph.compiled.json`
 
 ## Critères d'acceptation
 
-- [ ] **Texte.** `ezk law show` ouvre par « En clair » avec les cinq comptes, qui somment au total des
+- [x] **Texte.** `ezk law show` ouvre par « En clair » avec les cinq comptes, qui somment au total des
       règles, puis liste les règles citées sans être installées, chacune avec qui la cite.
-- [ ] **JSON.** `ezk law show --json` sort `schema_version: 1`, une entrée par règle, une par objet
+- [x] **JSON.** `ezk law show --json` sort `schema_version: 1`, une entrée par règle, une par objet
       (skill, agent, bundle, profil) avec son champ `regles`, et les comptes. Le schéma déclare ce
       champ pour chaque type d'objet. Le schéma et l'exemple sont dans `contracts/law-show/v1/`, et un
       test échoue s'ils ne correspondent plus à la sortie.
-- [ ] **Portée vraie.** Sur un jeu de test (catalogue et fichiers de loi factices), chaque règle tombe
+- [x] **Portée vraie.** Sur un jeu de test (catalogue et fichiers de loi factices), chaque règle tombe
       dans la bonne portée, les cinq portées sont couvertes, et un fichier de loi absent est signalé
       au lieu de compter zéro.
-- [ ] **Jamais périmé.** Une règle ajoutée au catalogue apparaît dans la sortie sans relancer
+- [x] **Jamais périmé.** Une règle ajoutée au catalogue apparaît dans la sortie sans relancer
       `ezk graph compile`.
-- [ ] **Projet hôte.** `ezk --root <projet> law show --json` lit la loi de ce projet-là.
+- [x] **Projet hôte.** `ezk --root <projet> law show --json` lit la loi de ce projet-là.
 
 ## Comment vérifier
 

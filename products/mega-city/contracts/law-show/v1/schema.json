@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "lois": {
+      "type": "object",
+      "properties": {
+        "globale": {
+          "type": "object",
+          "properties": {
+            "chemin": {
+              "type": "string",
+              "description": "Où la méthode a cherché ce fichier de loi."
+            },
+            "installee": {
+              "type": "boolean",
+              "description": "Le fichier existe. Faux : aucune règle ne peut y être lue."
+            }
+          },
+          "required": [
+            "chemin",
+            "installee"
+          ]
+        },
+        "projet": {
+          "type": "object",
+          "properties": {
+            "chemin": {
+              "type": "string",
+              "description": "Où la méthode a cherché ce fichier de loi."
+            },
+            "installee": {
+              "type": "boolean",
+              "description": "Le fichier existe. Faux : aucune règle ne peut y être lue."
+            }
+          },
+          "required": [
+            "chemin",
+            "installee"
+          ]
+        }
+      },
+      "required": [
+        "globale",
+        "projet"
+      ]
+    },
+    "comptes": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Toutes les règles du catalogue."
+        },
+        "partout": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Titre présent dans la loi globale installée."
+        },
+        "projet": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Dans la loi du projet, pas dans la globale."
+        },
+        "citee": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Citée par un skill ou un agent, installée nulle part."
+        },
+        "rangee": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Dans un bundle, ni installée ni citée."
+        },
+        "orpheline": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Dans aucun bundle, citée par personne."
+        }
+      },
+      "required": [
+        "total",
+        "partout",
+        "projet",
+        "citee",
+        "rangee",
+        "orpheline"
+      ],
+      "description": "Les cinq portées se partagent les règles : leur somme vaut `total`."
+    },
+    "regles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "titre": {
+            "type": "string",
+            "description": "Le titre de la règle, à défaut son id."
+          },
+          "niveau": {
+            "type": "string",
+            "enum": [
+              "MUST",
+              "SHOULD",
+              "MAY"
+            ]
+          },
+          "categorie": {
+            "type": "string",
+            "description": "Le préfixe de l'id, avant le premier `/`."
+          },
+          "fichier": {
+            "type": "string",
+            "description": "Chemin du fichier de la règle, relatif à la racine du dépôt de la méthode."
+          },
+          "bundles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Les bundles qui listent la règle."
+          },
+          "profils": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Les profils qui portent un de ces bundles, héritage compris."
+          },
+          "appliqueePar": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "objet": {
+                  "type": "string",
+                  "description": "`skill:<id>` ou `agent:<id>`."
+                },
+                "via": {
+                  "type": "string",
+                  "description": "`direct`, ou `bundle:<id>` quand c'est un bundle qui apporte la règle."
+                }
+              },
+              "required": [
+                "objet",
+                "via"
+              ]
+            },
+            "description": "Les skills et agents qui citent la règle."
+          },
+          "verifieePar": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Les agents qui contrôlent la règle (`enforces`)."
+          },
+          "portee": {
+            "type": "string",
+            "enum": [
+              "partout",
+              "projet",
+              "citee",
+              "rangee",
+              "orpheline"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "titre",
+          "niveau",
+          "categorie",
+          "fichier",
+          "bundles",
+          "profils",
+          "appliqueePar",
+          "verifieePar",
+          "portee"
+        ]
+      }
+    },
+    "objets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "`skill:<id>`, `agent:<id>`, `bundle:<id>` ou `profile:<id>`."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "skill",
+              "agent",
+              "bundle",
+              "profile"
+            ]
+          },
+          "regles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Id de la règle."
+                },
+                "via": {
+                  "type": "string",
+                  "description": "`direct`, ou `bundle:<id>` quand c'est un bundle qui apporte la règle."
+                }
+              },
+              "required": [
+                "id",
+                "via"
+              ]
+            },
+            "description": "Les règles qui s'attachent à l'objet : `applies` pour un skill, `interactions` pour un agent, ses règles pour un bundle, ses bundles pour un profil."
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "regles"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "lois",
+    "comptes",
+    "regles",
+    "objets"
+  ]
+}

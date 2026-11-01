@@ -160,7 +160,7 @@ export function makeContractFixture(): string {
  * tolère ainsi un champ ajouté (règle du README) ; les `additionalProperties` qui typent un
  * dictionnaire (`counts`, `verdicts`) restent.
  */
-function tolerant(node: unknown): unknown {
+export function tolerant(node: unknown): unknown {
   if (Array.isArray(node)) return node.map(tolerant);
   if (typeof node !== 'object' || node === null) return node;
   const out: Record<string, unknown> = {};

@@ -1,0 +1,258 @@
+/**
+ * Le contrat de `ezk law show` (fiche 20261101215342537, ADR-086).
+ *
+ * En clair : la commande dit, pour chaque règle du catalogue, où elle est rangée, qui l'applique et si
+ * elle est vraiment installée. On le prouve sur un petit catalogue factice et des fichiers de loi
+ * factices, jamais sur le vrai ~/.claude : les cinq portées sont couvertes, un fichier de loi absent est
+ * signalé, une règle ajoutée apparaît tout de suite, et la sortie JSON passe un tuyau en entier.
+ */
+import { spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { type LawShow, LawShowSchema, installedRuleIds, renderLawText } from '../core/law-show.js';
+import {
+  LAW_EXAMPLE_FILE,
+  LAW_SCHEMA_FILE,
+  type LawFixture,
+  makeLawFixture,
+  renderLawContractFiles,
+  writeLawFixtureFile,
+} from '../io/law-contract-files.js';
+import { lawShowData } from '../io/law-show.js';
+import { loadCatalog } from '../loaders/catalog.js';
+
+vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 });
+
+const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const tsxCli = createRequire(import.meta.url).resolve('tsx/cli');
+
+let fx: LawFixture;
+let data: LawShow;
+
+beforeAll(() => {
+  fx = makeLawFixture();
+  data = lawShowData(fx.catalogRoot, { target: fx.target, projectRoot: fx.projectRoot });
+});
+afterAll(() => rmSync(fx.dir, { recursive: true, force: true }));
+
+const regle = (id: string) => data.regles.find((r) => r.id === id);
+const objet = (id: string) => data.objets.find((o) => o.id === id);
+
+describe('law show --json — la portée vraie', () => {
+  it('sort schema_version 1 et respecte le schéma, sans champ en trop', () => {
+    expect(data.schema_version).toBe(1);
+    expect(LawShowSchema.safeParse(data).success).toBe(true);
+  });
+
+  it('range chaque règle dans la bonne portée, les cinq portées couvertes', () => {
+    expect(regle('r/globale')?.portee).toBe('partout');
+    expect(regle('r/projet')?.portee).toBe('projet');
+    expect(regle('r/citee')?.portee).toBe('citee');
+    expect(regle('r/citee-bundle')?.portee).toBe('citee');
+    expect(regle('r/rangee')?.portee).toBe('rangee');
+    expect(regle('r/orpheline')?.portee).toBe('orpheline');
+  });
+
+  it('les cinq comptes somment au total', () => {
+    const c = data.comptes;
+    expect(c).toEqual({ total: 6, partout: 1, projet: 1, citee: 2, rangee: 1, orpheline: 1 });
+    expect(c.partout + c.projet + c.citee + c.rangee + c.orpheline).toBe(c.total);
+  });
+
+  it('dit qui applique chaque règle, en direct ou par un bundle, et qui la vérifie', () => {
+    expect(regle('r/citee')?.appliqueePar).toEqual([
+      { objet: 'agent:a1', via: 'direct' },
+      { objet: 'skill:s1', via: 'direct' },
+      { objet: 'skill:s2', via: 'bundle:b2' },
+    ]);
+    expect(regle('r/citee-bundle')?.appliqueePar).toEqual([{ objet: 'skill:s2', via: 'bundle:b2' }]);
+    expect(regle('r/globale')?.verifieePar).toEqual(['a1']);
+  });
+
+  it('donne le niveau, la catégorie, le fichier, les bundles et les profils', () => {
+    const r = regle('r/rangee');
+    expect(r).toMatchObject({ niveau: 'MAY', categorie: 'r', bundles: ['b3'], profils: ['p1'] });
+    expect(r?.fichier).toBe('products/mega-city/rules/r/rangee.md');
+    expect(regle('r/orpheline')?.bundles).toEqual([]);
+  });
+
+  it('chaque objet porte son champ regles, avec le lien', () => {
+    expect(objet('skill:s1')?.regles).toEqual([{ id: 'r/citee', via: 'direct' }]);
+    expect(objet('skill:s2')?.regles).toEqual([
+      { id: 'r/citee', via: 'bundle:b2' },
+      { id: 'r/citee-bundle', via: 'bundle:b2' },
+    ]);
+    expect(objet('agent:a1')?.type).toBe('agent');
+    expect(objet('agent:a1')?.regles).toEqual([{ id: 'r/citee', via: 'direct' }]);
+    expect(objet('bundle:b3')).toEqual({
+      id: 'bundle:b3',
+      type: 'bundle',
+      regles: [{ id: 'r/rangee', via: 'direct' }],
+    });
+    expect(objet('profile:p1')?.regles.map((r) => r.id)).toEqual(['r/globale', 'r/projet', 'r/rangee']);
+    expect(objet('profile:p1')?.regles[0]).toEqual({ id: 'r/globale', via: 'bundle:base' });
+  });
+
+  it('lit les lois installées et le dit', () => {
+    expect(data.lois.globale.installee).toBe(true);
+    expect(data.lois.projet.installee).toBe(true);
+    expect(data.lois.globale.chemin).toBe(join(fx.target, 'rules', 'iamthelaw.md'));
+    expect(data.lois.projet.chemin).toBe(join(fx.projectRoot, '.iamthelaw', 'ENTRY.md'));
+  });
+});
+
+describe('law show — un fichier de loi absent est signalé, jamais compté zéro', () => {
+  it('installee false, aucune règle partout ni projet, et le texte le dit', () => {
+    const vide = mkdtempSync(join(tmpdir(), 'law-vide-'));
+    try {
+      const d = lawShowData(fx.catalogRoot, { target: vide, projectRoot: vide });
+      expect(d.lois.globale.installee).toBe(false);
+      expect(d.lois.projet.installee).toBe(false);
+      expect(d.comptes.partout).toBe(0);
+      expect(d.comptes.projet).toBe(0);
+      expect(d.comptes.total).toBe(6);
+      const texte = renderLawText(d);
+      expect(texte).toContain('loi globale non installée');
+      expect(texte).toContain('loi du projet non installée');
+    } finally {
+      rmSync(vide, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('law show — jamais périmé', () => {
+  it('une règle ajoutée au catalogue apparaît sans compiler le graphe', () => {
+    writeLawFixtureFile(
+      fx.catalogRoot,
+      'rules/r/nouvelle.md',
+      '---\nid: r/nouvelle\nkind: disposition\nlevel: MUST\n---\n\nTexte.\n',
+    );
+    try {
+      const d = lawShowData(fx.catalogRoot, { target: fx.target, projectRoot: fx.projectRoot });
+      expect(d.regles.find((r) => r.id === 'r/nouvelle')?.portee).toBe('orpheline');
+      expect(d.comptes.total).toBe(7);
+    } finally {
+      rmSync(join(fx.catalogRoot, 'rules', 'r', 'nouvelle.md'));
+    }
+  });
+});
+
+describe('law show — le texte', () => {
+  it('ouvre par « En clair » avec les cinq comptes, puis liste les règles citées avec leur source', () => {
+    const texte = renderLawText(data);
+    expect(texte.split('\n')[0]).toBe(
+      'En clair : 6 règles. 1 lues partout, 1 lues dans ce projet seulement, 2 citées sans être installées, 1 rangées sans effet, 1 orphelines.',
+    );
+    expect(texte).toContain('r/citee');
+    expect(texte).toContain('agent:a1');
+    expect(texte).toContain('skill:s1');
+    expect(texte).toContain('r/citee-bundle');
+    expect(texte).toContain('skill:s2 (via bundle:b2)');
+    expect(texte).not.toContain('r/rangee');
+    expect(texte).not.toContain('r/globale');
+  });
+});
+
+describe('law show — la commande', () => {
+  const run = (args: string[]) =>
+    spawnSync(process.execPath, [tsxCli, join(megaCity, 'bin', 'law-show.ts'), ...args], {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+    });
+
+  it('--json dans un tuyau : le JSON complet se lit, sur le vrai catalogue', () => {
+    const vide = mkdtempSync(join(tmpdir(), 'law-cible-'));
+    try {
+      const r = run(['--json', '--target', vide, '--root', fx.projectRoot]);
+      expect(r.status).toBe(0);
+      const sortie = JSON.parse(r.stdout) as LawShow;
+      expect(LawShowSchema.safeParse(sortie).success).toBe(true);
+      expect(sortie.comptes.total).toBe(loadCatalog(megaCity).rules.size);
+      expect(sortie.lois.globale.installee).toBe(false);
+    } finally {
+      rmSync(vide, { recursive: true, force: true });
+    }
+  });
+
+  it('--root désigne le projet dont on lit la loi', () => {
+    const cible = mkdtempSync(join(tmpdir(), 'law-cible-'));
+    const projet = mkdtempSync(join(tmpdir(), 'law-projet-'));
+    try {
+      mkdirSync(join(projet, '.iamthelaw'));
+      writeFileSync(join(projet, '.iamthelaw', 'ENTRY.md'), '## clean-code/no-dead-code  `[MUST]`\n\n- x\n');
+      const r = run(['--json', '--target', cible, '--root', projet]);
+      expect(r.status).toBe(0);
+      const sortie = JSON.parse(r.stdout) as LawShow;
+      expect(sortie.lois.projet.chemin).toBe(join(projet, '.iamthelaw', 'ENTRY.md'));
+      expect(sortie.regles.find((x) => x.id === 'clean-code/no-dead-code')?.portee).toBe('projet');
+      expect(sortie.comptes.projet).toBe(1);
+    } finally {
+      rmSync(cible, { recursive: true, force: true });
+      rmSync(projet, { recursive: true, force: true });
+    }
+  });
+
+  it('sans --json, ouvre par « En clair »', () => {
+    const cible = mkdtempSync(join(tmpdir(), 'law-cible-'));
+    try {
+      const r = run(['--target', cible, '--root', fx.projectRoot]);
+      expect(r.status).toBe(0);
+      expect(r.stdout.startsWith('En clair : ')).toBe(true);
+    } finally {
+      rmSync(cible, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('law show — schéma et exemple rangés', () => {
+  it('sont à jour avec le schéma zod et la sortie sur la fixture', () => {
+    const files = renderLawContractFiles();
+    expect(readFileSync(join(megaCity, LAW_SCHEMA_FILE), 'utf8')).toBe(files[LAW_SCHEMA_FILE]);
+    expect(readFileSync(join(megaCity, LAW_EXAMPLE_FILE), 'utf8')).toBe(files[LAW_EXAMPLE_FILE]);
+  });
+
+  it('l’exemple respecte le schéma zod', () => {
+    const exemple = JSON.parse(readFileSync(join(megaCity, LAW_EXAMPLE_FILE), 'utf8'));
+    expect(LawShowSchema.safeParse(exemple).success).toBe(true);
+  });
+
+  it('le schéma publié déclare le champ regles de chaque objet et tolère un champ ajouté', () => {
+    const schema = JSON.stringify(JSON.parse(readFileSync(join(megaCity, LAW_SCHEMA_FILE), 'utf8')));
+    expect(schema).toContain('"regles"');
+    expect(schema).not.toContain('"additionalProperties":false');
+  });
+});
+
+describe('law show — une règle installée est un vrai titre, jamais une ligne de bloc de code', () => {
+  it('ignore un « ## <id> » dans un bloc de code clôturé', () => {
+    const texte = '## real/rule  `[MUST]`\n\n```md\n## fake/rule\n```\n\n~~~\n## autre/fake\n~~~\n\n## after/rule\n';
+    expect([...installedRuleIds(texte)]).toEqual(['real/rule', 'after/rule']);
+  });
+});
+
+describe('law show — les règles héritées par extends', () => {
+  it('une règle d’un bundle parent rejoint le bundle enfant et les profils qui en héritent', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'law-extends-'));
+    try {
+      const write = (rel: string, text: string) => writeLawFixtureFile(join(dir, 'catalog'), rel, text);
+      write('rules/r/heritee.md', '---\nid: r/heritee\nkind: disposition\nlevel: MUST\n---\n\nTexte.\n');
+      write('bundles/parent.yml', 'id: parent\nrules:\n  - r/heritee\n');
+      write('bundles/enfant.yml', 'id: enfant\nextends: [parent]\nrules: []\n');
+      write('profiles/socle.yml', 'id: socle\nbundles: [enfant]\nagents: []\nskills: []\n');
+      write('profiles/poste.yml', 'id: poste\nextends: [socle]\nbundles: []\nagents: []\nskills: []\n');
+      const out = lawShowData(join(dir, 'catalog'), { target: join(dir, 'claude'), projectRoot: join(dir, 'projet') });
+      const regle = out.regles.find((r) => r.id === 'r/heritee');
+      expect(regle?.profils).toEqual(['poste', 'socle']);
+      const ids = (id: string) => out.objets.find((o) => o.id === id)?.regles.map((l) => l.id) ?? [];
+      expect(ids('bundle:enfant')).toContain('r/heritee');
+      expect(ids('profile:socle')).toContain('r/heritee');
+      expect(ids('profile:poste')).toContain('r/heritee');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
