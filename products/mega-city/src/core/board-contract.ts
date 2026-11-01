@@ -13,7 +13,7 @@
  *
  * Le schéma zod est STRICT : il refuse un champ qu'il ne décrit pas. C'est le contrôle du
  * producteur (tout ce qui sort est décrit). Le schéma JSON publié, lui, tolère un champ ajouté
- * (`board-contract-files.ts`), pour qu'un consommateur qui le valide ne casse pas à un ajout.
+ * (`io/contract-files.ts`), pour qu'un consommateur qui le valide ne casse pas à un ajout.
  *
  * Nommage : les clés suivent le board d'avancement (`tirables`, `actives`, `filtres`). Seule
  * `schema_version` garde la forme courante des formats versionnés : c'est la clé qu'un

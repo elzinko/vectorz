@@ -71,6 +71,7 @@ describe('ezk-manifest.yml', () => {
       'backlog plan-lot',
       'backlog regen',
       'backlog ship',
+      'backlog show',
       'backlog version',
       'board check',
       'board open',

@@ -78,6 +78,11 @@ commands:
     summary: Vérifie que les fiches respectent le schéma (--root <projet> pour un autre projet).
     project: true
   - domain: backlog
+    verb: show
+    run: bin/backlog-show.ts
+    summary: Détail d'une fiche (<id>) ou de toutes ; --json = contrat versionné (--root <projet>).
+    project: true
+  - domain: backlog
     verb: regen
     run: bin/regen-backlog.sh {root}
     summary: Régénère l'index features/BACKLOG.md du dépôt où tu es (ou de --root <projet>).

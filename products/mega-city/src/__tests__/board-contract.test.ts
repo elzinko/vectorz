@@ -15,12 +15,12 @@ import { buildAvancementData } from '../core/avancement-data.js';
 import { type BoardContract, BoardContractSchema, buildBoardContract } from '../core/board-contract.js';
 import { TERMINAUX } from '../core/fiche-schema.js';
 import {
-  EXAMPLE_FILE,
+  BOARD_EXAMPLE_FILE as EXAMPLE_FILE,
+  BOARD_SCHEMA_FILE as SCHEMA_FILE,
   FIXTURE_EN_COURS,
-  SCHEMA_FILE,
-  makeBoardFixture,
+  makeContractFixture,
   renderContractFiles,
-} from '../io/board-contract-files.js';
+} from '../io/contract-files.js';
 import { boardShowData } from '../io/board-show.js';
 import { collectInProgressIds } from '../io/sessions-collect.js';
 import { type Fiche, loadFiches } from '../loaders/fiches.js';
@@ -38,7 +38,7 @@ let fixture: string;
 let data: BoardContract;
 
 beforeAll(() => {
-  fixture = makeBoardFixture();
+  fixture = makeContractFixture();
   data = boardShowData(fixture);
 });
 afterAll(() => rmSync(fixture, { recursive: true, force: true }));

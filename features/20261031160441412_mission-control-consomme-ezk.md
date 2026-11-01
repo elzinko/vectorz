@@ -75,5 +75,9 @@ cd products/mega-city && pnpm exec tsx ../../docs/captures/2026-10-30-enquete-bo
   `git merge-tree` par branche locale pour trouver les fiches « en cours » (plus de 230 branches sur
   vectorz). Le daemon ne doit donc pas l'appeler à chaque requête : il garde la dernière réponse et
   la rafraîchit à un rythme mesuré. Un cache côté méthode est une piste, hors de ce contrat.
+- Le détail des fiches est livré (2026-11-01) : `ezk backlog show --json` sort toutes les fiches de
+  `features/` en un appel ; exemples dans `products/mega-city/contracts/backlog-show/v1/`. La liste
+  relit chaque fichier deux fois (front-matter puis corps) : négligeable devant le coût de lancer
+  `ezk`, à reprendre si on le mesure.
 - Dépend de [le contrat JSON de la méthode](done/20261029112813308_contrat-json-methode-board-show.md) et
   de [le détail d'une fiche calculé par la méthode](20261031160441267_detail-fiche-calcule-par-la-methode.md).

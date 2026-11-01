@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "fiches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "Le statut écrit. « En cours » est le drapeau enCours, jamais un statut."
+          },
+          "milestone": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version ciblée telle qu'écrite, '' sans version."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocked": {
+            "type": "string",
+            "description": "Raison du blocage (`blocked:`), '' si la fiche n'est pas bloquée."
+          },
+          "pr": {
+            "type": "string"
+          },
+          "enCours": {
+            "type": "boolean",
+            "description": "Une branche de travail est ouverte pour la fiche (ADR-0077)."
+          },
+          "done": {
+            "type": "boolean",
+            "description": "La fiche est rangée dans `features/done/`."
+          },
+          "file": {
+            "type": "string",
+            "description": "Chemin de la fiche, relatif à la racine du projet."
+          },
+          "enClair": {
+            "type": "string",
+            "description": "Section « En clair », ou paragraphe `**En clair.**` ; vide si absent."
+          },
+          "contexte": {
+            "type": "string",
+            "description": "Section dont le titre commence par « Contexte » ; vide si absente."
+          },
+          "criteres": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "texte": {
+                  "type": "string",
+                  "description": "Le texte du critère, lignes de suite comprises."
+                },
+                "coche": {
+                  "type": "boolean",
+                  "description": "La case est cochée (`- [x]`)."
+                }
+              },
+              "required": [
+                "texte",
+                "coche"
+              ]
+            },
+            "description": "Cases à cocher de la section « Critères… », dans l’ordre."
+          },
+          "commentVerifier": {
+            "type": "string",
+            "description": "Section « Comment vérifier », blocs de code compris ; vide si absente."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "type",
+          "priority",
+          "status",
+          "milestone",
+          "product",
+          "version",
+          "labels",
+          "blocked",
+          "pr",
+          "enCours",
+          "done",
+          "file",
+          "enClair",
+          "contexte",
+          "criteres",
+          "commentVerifier"
+        ]
+      },
+      "description": "Les fiches de features/, hors done/, triées par id."
+    }
+  },
+  "required": [
+    "schema_version",
+    "fiches"
+  ]
+}

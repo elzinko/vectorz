@@ -10,8 +10,10 @@
  *     mentionne chaque item de la liste à balayer. Il ne juge JAMAIS la qualité de la réponse ;
  *   - `computeHealth` compte les fiches tirables, pour le seuil de lot (`health.min-ready`).
  *
- * AUCUNE I/O ici (ADR-0003) : la lecture du fichier vit dans `src/loaders/dor.ts`.
+ * AUCUNE I/O ici (ADR-0003) : la lecture du fichier vit dans `src/loaders/dor.ts`. Le lecteur de
+ * sections est partagé avec le détail d'une fiche : `fiche-sections.ts`.
  */
+import { ficheBodyText, plain, plainHeading, sectionLines } from './fiche-sections.js';
 
 export interface DorSlot {
   /** Identifiant stable, en kebab-case. */
@@ -47,20 +49,6 @@ function isFilled(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-/** Minuscules, sans accents, espaces fusionnés : la comparaison tolérante des titres et des items. */
-function plain(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '')
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/** Un titre comparé sans décor markdown (gras, code) ni deux-points final. */
-function plainHeading(text: string): string {
-  return plain(text.replace(/[*_`]/g, '')).replace(/\s*:$/, '');
-}
 
 function unknownKeys(record: Record<string, unknown>, allowed: string[], path: string, errors: string[]): void {
   for (const key of Object.keys(record)) {
@@ -167,39 +155,8 @@ export interface SlotReport {
   readonly reason?: 'absente' | 'sans contenu';
 }
 
-const FRONT_MATTER = /^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/;
-const HEADING = /^(#{1,6})[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$/;
-const FENCE = /^\s{0,3}(?:```|~~~)/;
 /** Un « marqueur » n'est pas une réponse : à définir, à groomer, TODO, TBD, N.A. seul, points de suspension. */
 const PLACEHOLDER = /^(?:\(?\s*à\s+(?:définir|groomer|compléter|remplir)[^)]*\)?|<\s*à\s+[^>]*>|todo|tbd|n(?:\/a|\.a\.?)|…|\.{3}|\?)$/i;
-
-/** Les lignes de la section de titre `heading` (jusqu'au titre suivant de même niveau ou plus haut). */
-function sectionLines(body: string, heading: string): string[] | undefined {
-  const target = plainHeading(heading);
-  const out: string[] = [];
-  let inFence = false;
-  let found = false;
-  let level = 0;
-  for (const line of body.split(/\r?\n/)) {
-    if (FENCE.test(line)) {
-      inFence = !inFence;
-      if (found) out.push(line);
-      continue;
-    }
-    const m = inFence ? null : HEADING.exec(line);
-    if (m) {
-      const depth = m[1].length;
-      if (found && depth <= level) break;
-      if (!found && plainHeading(m[2]) === target) {
-        found = true;
-        level = depth;
-        continue;
-      }
-    }
-    if (found) out.push(line);
-  }
-  return found ? out : undefined;
-}
 
 /**
  * L'item est-il mentionné ? Comme MOT entier (pluriel simple toléré), jamais comme morceau d'un autre
@@ -226,7 +183,7 @@ function answerLines(lines: readonly string[]): string[] {
  * mentionne-t-elle chaque item ? Le corps seul est lu (le front-matter est retiré d'abord).
  */
 export function checkFiche(manifest: DorManifest, ficheText: string): SlotReport[] {
-  const body = ficheText.replace(FRONT_MATTER, '');
+  const body = ficheBodyText(ficheText);
   return manifest.slots.map((slot): SlotReport => {
     const lines = sectionLines(body, slot.heading);
     if (lines === undefined) return { slot, state: 'vide', missing: [], reason: 'absente' };
@@ -358,7 +315,7 @@ function plainLoose(text: string): string {
  */
 export function reservationInProse(ficheText: string, blocked: string): ReservationSignal {
   if (blocked.trim() !== '') return { reserved: false };
-  const body = plainLoose(ficheText.replace(FRONT_MATTER, ''));
+  const body = plainLoose(ficheBodyText(ficheText));
   for (const marker of RESERVATION_MARKERS) {
     if (body.includes(marker)) return { reserved: true, marker };
   }

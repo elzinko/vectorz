@@ -1,17 +1,18 @@
 #!/usr/bin/env tsx
 /**
- * board-contract — régénère ou vérifie le schéma et l'exemple du contrat `ezk board show --json`
- * (fiche 20261029112813308, ADR-086).
+ * board-contract — régénère ou vérifie les schémas et les exemples des contrats JSON de la méthode :
+ * `ezk board show --json` et `ezk backlog show --json` (ADR-086 ; liste dans `src/io/contract-files.ts`).
  *
  *   pnpm --dir products/mega-city board:contract           # vérifie : code 1 si un fichier n'est plus à jour
- *   pnpm --dir products/mega-city board:contract --write   # régénère les deux fichiers
+ *   pnpm --dir products/mega-city board:contract --write   # régénère tous les fichiers
  *
- * Le format se change dans `src/core/board-contract.ts`, jamais dans les fichiers rangés.
+ * Un format se change dans son schéma zod (`src/core/board-contract.ts`, `src/core/fiche-detail.ts`),
+ * jamais dans les fichiers rangés.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { renderContractFiles } from '../src/io/board-contract-files.js';
+import { renderContractFiles } from '../src/io/contract-files.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const files = renderContractFiles();
@@ -29,8 +30,8 @@ const stale = Object.entries(files)
   .filter(([rel, text]) => !existsSync(join(megaCity, rel)) || readFileSync(join(megaCity, rel), 'utf8') !== text)
   .map(([rel]) => rel);
 if (stale.length > 0) {
-  console.error(`En clair : ${stale.length} fichier(s) du contrat ne sont plus à jour : ${stale.join(', ')}.`);
+  console.error(`En clair : ${stale.length} fichier(s) des contrats ne sont plus à jour : ${stale.join(', ')}.`);
   console.error('Régénère-les : pnpm --dir products/mega-city board:contract --write');
   process.exit(1);
 }
-console.log('En clair : le schéma et l’exemple du contrat sont à jour.');
+console.log('En clair : les schémas et les exemples des contrats sont à jour.');

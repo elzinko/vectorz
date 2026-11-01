@@ -86,16 +86,16 @@ Hors périmètre : brancher mission control (fiche sœur) ; les fiches livrées 
 
 ## Critères d'acceptation
 
-- [ ] `ezk backlog show <id> --json` sort `schema_version: 1`, l'identité et les quatre sections de la
+- [x] `ezk backlog show <id> --json` sort `schema_version: 1`, l'identité et les quatre sections de la
       fiche, critères avec leur état coché ; la sortie respecte le schéma rangé (test de contrat).
-- [ ] `ezk backlog show --json` sans id sort le détail de toutes les fiches actives en un seul appel.
-- [ ] Les cas testés chez cop1 (`ficheDetail.test.ts`) passent côté méthode, plus le titre qui
+- [x] `ezk backlog show --json` sans id sort le détail de toutes les fiches actives en un seul appel.
+- [x] Les cas testés chez cop1 (`ficheDetail.test.ts`) passent côté méthode, plus le titre qui
       contient « : » : section coupée par un `##` dans un bloc de code, « en clair » en ligne, id de
       17 chiffres intact, id tiré du nom de fichier, fins de ligne CRLF.
-- [ ] Un id inconnu donne le code de sortie 1 et un message qui le nomme, jamais un JSON vide.
-- [ ] La méthode n'a plus qu'un lecteur de sections : le contrôle de prêt l'utilise, et ses tests
+- [x] Un id inconnu donne le code de sortie 1 et un message qui le nomme, jamais un JSON vide.
+- [x] La méthode n'a plus qu'un lecteur de sections : le contrôle de prêt l'utilise, et ses tests
       restent verts sans modification.
-- [ ] Le schéma et l'exemple sont rangés et régénérés par `board:contract --write` ; le test échoue
+- [x] Le schéma et l'exemple sont rangés et régénérés par `board:contract --write` ; le test échoue
       s'ils ne correspondent plus ; la gate reste verte (`pnpm test` et `pnpm test:scripts`).
 
 ## Comment vérifier
@@ -125,3 +125,10 @@ cd products/mega-city && pnpm test && pnpm test:scripts
 - Forme de la liste sans id, tranchée au grooming : une liste `fiches`, triée par id. Une liste se
   parcourt et se compare plus simplement qu'un objet par id.
 - Tamponnée « prête » par le PO le 2026-11-01.
+- Livraison (2026-11-01) : `ezk backlog show [<id>] [--json]` (`products/mega-city/bin/backlog-show.ts`).
+  Le découpage vit dans `src/core/fiche-detail.ts`, sur le lecteur de sections partagé
+  `src/core/fiche-sections.ts`, que le contrôle de prêt utilise aussi. Schémas, exemples et mode
+  d'emploi : `products/mega-city/contracts/backlog-show/`. Revue adverse : GO, trois remarques non
+  bloquantes ; une appliquée (le contrôle de prêt réutilise `ficheBodyText`). Les deux autres
+  restent ouvertes, notées pour la fiche mission control : la liste relit chaque fichier deux fois,
+  et une case écrite dans un bloc de code sous « Critères » compterait comme un critère.

@@ -84,6 +84,33 @@ export function frontMatter(text: string): string {
 /** Les deux formats d'id coexistent (fiche 0180) : `0094-slug.md` et `20260810143052123_slug.md`. */
 const FICHE_FILE = /^(\d{4,})[-_].*\.md$/;
 
+/**
+ * Une fiche depuis son nom de fichier et son texte. PUR : `loadFiches` et le détail d'une fiche
+ * (`core/fiche-detail.ts`) lisent par ici. L'id vient du NOM de fichier, jamais du front-matter.
+ * `undefined` si le nom n'est pas celui d'une fiche.
+ */
+export function ficheFromText(filename: string, text: string, done: boolean): Fiche | undefined {
+  const idMatch = filename.match(FICHE_FILE);
+  if (!idMatch) return undefined;
+  const fm = frontMatter(text);
+  return {
+    id: idMatch[1],
+    title: readField(fm, 'title'),
+    type: readField(fm, 'type') || 'feature',
+    priority: readField(fm, 'priority'),
+    status: readField(fm, 'status') || 'idea',
+    milestone: readField(fm, 'milestone'),
+    version: readField(fm, 'version'),
+    product: readField(fm, 'product') || '—',
+    pr: readField(fm, 'pr'),
+    labels: readListField(fm, 'labels'),
+    depends: readListField(fm, 'depends'),
+    blocked: readField(fm, 'blocked'),
+    done,
+    file: `features/${done ? 'done/' : ''}${filename}`,
+  };
+}
+
 /** Charge toutes les fiches (actives + `done/`) depuis la racine du repo. Déterministe. */
 export function loadFiches(rootDir: string): Fiche[] {
   const base = join(rootDir, 'features');
@@ -94,25 +121,9 @@ export function loadFiches(rootDir: string): Fiche[] {
   ] as const) {
     if (!existsSync(sub)) continue;
     for (const filename of readdirSync(sub).sort()) {
-      const idMatch = filename.match(FICHE_FILE);
-      if (!idMatch) continue;
-      const fm = frontMatter(readFileSync(join(sub, filename), 'utf8'));
-      fiches.push({
-        id: idMatch[1],
-        title: readField(fm, 'title'),
-        type: readField(fm, 'type') || 'feature',
-        priority: readField(fm, 'priority'),
-        status: readField(fm, 'status') || 'idea',
-        milestone: readField(fm, 'milestone'),
-        version: readField(fm, 'version'),
-        product: readField(fm, 'product') || '—',
-        pr: readField(fm, 'pr'),
-        labels: readListField(fm, 'labels'),
-        depends: readListField(fm, 'depends'),
-        blocked: readField(fm, 'blocked'),
-        done,
-        file: `features/${done ? 'done/' : ''}${filename}`,
-      });
+      if (!FICHE_FILE.test(filename)) continue;
+      const fiche = ficheFromText(filename, readFileSync(join(sub, filename), 'utf8'), done);
+      if (fiche) fiches.push(fiche);
     }
   }
   return fiches.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
