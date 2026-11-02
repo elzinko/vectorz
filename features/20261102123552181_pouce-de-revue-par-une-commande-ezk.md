@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: []
 labels: [board, un-seul-ecran]
-status: idea
+status: ready
 pr:
 evidence: none # commande en ligne de commande, sans écran ; l'écran est dans la fiche sœur
 created: 2026-11-02
