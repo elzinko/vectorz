@@ -30,6 +30,19 @@ La méthode promet déjà le contraire dans `skills/ezk-sprint/SKILL.md` (sectio
 sprint ») : « jamais un faux zéro ». L'outil ne tient pas cette promesse. Effet de bord : la
 détection des candidats-recette (`ezk-chef suggest`) ne peut pas tourner, faute de rapport daté.
 
+Constaté aussi le 2026-11-02 : un sprint daté peut porter des chiffres absurdes. Sur 27 comptes
+rendus de vectorz, 23 ont une durée de 0 et 3 seulement une durée mesurée. Deux de ces trois sont
+faux :
+
+- `2026-11-01-sprint-mission-control-lit-le-board-par-ezk.md` dit 390 h 35, 3,5 milliards de jetons
+  et 49 fiches livrées, pour un sprint d'une soirée et une fiche ;
+- `2026-10-17-sprint-board-multi-llm-v0-18-emetteur-contrat-0-2-journ.md` dit 3 milliards de jetons
+  en 8 minutes.
+
+La fenêtre de mesure semble partir d'un point de passage bien plus ancien que le sprint. Ces chiffres
+empêchent aussi mission control d'afficher le temps et les jetons cumulés
+([vue d'ensemble : sprints et rétros réels](20261102104443762_vue-ensemble-sprints-retros-reels.md)).
+
 ## Valeur
 
 Pour le PO qui relit un sprint : un chiffre faux en première phrase trompe plus qu'une absence
@@ -50,6 +63,9 @@ dite. Et un sprint daté rend la rétro outillée (recettes, durées) possible.
       de durée ou de jetons n'y apparaît.
 - [ ] Au prochain run autonome, chaque compte rendu de sprint porte une durée non nulle.
 - [ ] `ezk sprint report <slug>` d'un sprint de run autonome ne refuse plus faute de point de passage.
+- [ ] La fenêtre d'un sprint commence à son ouverture : rejoué sur le sprint
+      `mission-control-lit-le-board-par-ezk`, le compte rendu ne dit plus 390 h, ni 49 fiches livrées
+      pour une seule fiche au lot.
 
 ## Comment vérifier
 
