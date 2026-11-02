@@ -8,6 +8,7 @@
  *   contracts/backlog-show/v1/schema.json, example.json            ← la liste, sans id
  *   contracts/backlog-show/v1/fiche.schema.json, fiche.example.json ← une fiche, avec son id
  *   contracts/config-show/v1/schema.json, example.json             ← la config résolue du projet
+ *   contracts/board-process/v1/schema.json, example.json           ← chaque fiche sur son étape
  * Chaque schéma est tiré du schéma zod ; chaque exemple est la sortie de la commande sur la fixture.
  *
  * La fixture est un faux projet : une fiche par cas que mission control lisait mal (enquête du
@@ -22,8 +23,10 @@ import { dirname, join } from 'node:path';
 import { z } from 'zod';
 import { BOARD_SCHEMA_VERSION, BoardContractSchema } from '../core/board-contract.js';
 import { CONFIG_SCHEMA_VERSION, ConfigShowSchema } from '../core/config-contract.js';
+import { PROCESS_SCHEMA_VERSION, ProcessContractSchema } from '../core/process-contract.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
+import { boardProcessData } from './board-process.js';
 import { boardShowData } from './board-show.js';
 import { configShowData } from './config-show.js';
 
@@ -39,6 +42,9 @@ export const BACKLOG_FICHE_EXAMPLE_FILE = `${BACKLOG_DIR}/fiche.example.json`;
 const CONFIG_DIR = `contracts/config-show/v${CONFIG_SCHEMA_VERSION}`;
 export const CONFIG_SCHEMA_FILE = `${CONFIG_DIR}/schema.json`;
 export const CONFIG_EXAMPLE_FILE = `${CONFIG_DIR}/example.json`;
+const PROCESS_DIR = `contracts/board-process/v${PROCESS_SCHEMA_VERSION}`;
+export const PROCESS_SCHEMA_FILE = `${PROCESS_DIR}/schema.json`;
+export const PROCESS_EXAMPLE_FILE = `${PROCESS_DIR}/example.json`;
 
 /**
  * La config de la fixture : chaque portée réglée au moins une fois (GitHub granulaire, intégration,
@@ -203,6 +209,9 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [BACKLOG_FICHE_EXAMPLE_FILE]: exampleText(backlogShowFiche(root, FIXTURE_DETAIL)),
       [CONFIG_SCHEMA_FILE]: schemaText(ConfigShowSchema),
       [CONFIG_EXAMPLE_FILE]: exampleText(configShowData(root)),
+      [PROCESS_SCHEMA_FILE]: schemaText(ProcessContractSchema),
+      // GitHub non lu : l'exemple ne dépend ni du réseau ni d'un compte (« en revue » y est inconnue).
+      [PROCESS_EXAMPLE_FILE]: exampleText(boardProcessData(root, { github: false })),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

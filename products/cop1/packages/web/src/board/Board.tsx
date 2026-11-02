@@ -3,8 +3,8 @@
  *
  * L'en-tête (marque, sélecteur de projet, recherche, bouton ⚙), la navigation de
  * gauche (Projet / Méthode) et la zone principale qui route vers une vue. La vue
- * d'ensemble est livrée ici (tranche 20261012231419185) ; les autres vues
- * arrivent à leurs tranches et affichent pour l'instant un repère.
+ * d'ensemble est livrée ici (tranche 20261012231419185) ; chaque autre vue vit
+ * dans son fichier, la dernière à arriver étant « Process » (fiche 20261102123552183).
  */
 import { useEffect, useRef, useState } from 'react';
 import { AddProjectModal } from './AddProjectModal.js';
@@ -19,6 +19,7 @@ import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
 import { PilotageView } from './PilotageView.js';
+import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
 
@@ -63,29 +64,6 @@ const PROJECT_NAV: NavItem[] = [
 const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les projets' }];
 
 const METHOD_NAV: NavItem[] = [{ id: 'process', icon: '❖', label: 'Process' }];
-
-/** Les vues dont la tranche n'est pas encore construite : un repère, pas du vide. */
-const PENDING: Partial<Record<ViewId, { title: string; fiche: string }>> = {
-  process: { title: 'Process', fiche: '20260830110131228' },
-};
-
-function PendingView({ title, fiche }: { title: string; fiche: string }): JSX.Element {
-  return (
-    <>
-      <div className="vh">
-        <h2>{title}</h2>
-        <span className="sub">tranche à venir</span>
-      </div>
-      <section className="card">
-        <h3>À venir</h3>
-        <div className="row">
-          <span className="ttl">Cette vue arrive à sa tranche du board unifié.</span>
-          <span className="meta">fiche {fiche}</span>
-        </div>
-      </section>
-    </>
-  );
-}
 
 function basename(path: string): string {
   const parts = path.split('/').filter(Boolean);
@@ -454,7 +432,7 @@ export function Board(): JSX.Element {
           ) : view === 'tool' ? (
             <ToolConfigView tool={toolConfig} onChange={setToolConfig} />
           ) : (
-            <PendingView title={PENDING[view]!.title} fiche={PENDING[view]!.fiche} />
+            <ProcessView project={project} onOpenFiche={setFicheModalId} />
           )}
         </main>
       </div>

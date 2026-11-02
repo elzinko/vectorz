@@ -218,6 +218,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .seg button { padding: 6px 12px; background: transparent; border: 0; color: var(--muted); font-size: 13px; }
 .seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
+.pnote { margin: 0; padding: 9px 13px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--muted); font-size: 13px; }
+.kanban.process { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.fcard .why { margin-top: 5px; font-size: 11.5px; color: var(--muted); font-family: var(--font-data); overflow-wrap: anywhere; }
 .col { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
 .col > h4 { font-size: 12px; padding: 11px 13px; display: flex; justify-content: space-between; color: var(--muted); border-bottom: 1px solid var(--line); }
 .col .cnt { font-family: var(--font-data); }

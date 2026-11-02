@@ -371,3 +371,44 @@ describe('buildProcessDataBlock — le bloc pour process.data.js', () => {
     expect(block).not.toContain('</script>');
   });
 });
+
+describe('buildProcessData — le signal qui place la fiche (fiche 20261102123552183)', () => {
+  it('en revue : la PR ouverte et la branche sont nommées', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0005', status: 'ready' })],
+        branches: ['feat/0005-slug'],
+        openPrByBranch: { 'feat/0005-slug': '#12' },
+      }),
+    );
+    expect(ficheIn(data, '0005')).toMatchObject({ stage: 'en-revue', pr: '#12', branch: 'feat/0005-slug' });
+  });
+
+  it('en sprint par une session seule : la branche de la session est nommée', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0008', status: 'ready' })],
+        sessions: [session('/wt/feat-8', 'feat/0008-slug')],
+      }),
+    );
+    expect(ficheIn(data, '0008')).toMatchObject({ stage: 'en-sprint', branch: 'feat/0008-slug', pr: null });
+  });
+
+  it('une branche absorbée par main ne place rien : ni branche, ni étape « en sprint »', () => {
+    const data = buildProcessData(
+      inputs({
+        fiches: [fiche({ id: '0009', status: 'ready' })],
+        branches: ['feat/0009-slug'],
+        absorbedBranches: ['feat/0009-slug'],
+      }),
+    );
+    expect(ficheIn(data, '0009')).toMatchObject({ stage: 'prete', branch: null, pr: null });
+  });
+
+  it('une fiche livrée ne porte ni branche ni PR', () => {
+    const data = buildProcessData(
+      inputs({ fiches: [fiche({ id: '0010', status: 'shipped' })], branches: ['feat/0010-slug'] }),
+    );
+    expect(ficheIn(data, '0010')).toMatchObject({ stage: 'livree', branch: null, pr: null });
+  });
+});

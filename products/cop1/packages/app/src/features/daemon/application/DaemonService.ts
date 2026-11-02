@@ -5,6 +5,7 @@ import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandl
 import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { EzkConfigSource } from '../../board/ezkConfigSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
+import { EzkProcessSource } from '../../board/ezkProcessSource.js';
 import { execVerdictRunner, writeVerdictThroughEzk } from '../../board/verdictWriter.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
@@ -41,6 +42,7 @@ export class DaemonService {
   private ezkCommand: string[] = ['ezk'];
   private ezkPlanSource: EzkPlanSource | null = null;
   private ezkConfigSource: EzkConfigSource | null = null;
+  private ezkProcessSource: EzkProcessSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -105,6 +107,7 @@ export class DaemonService {
       composeBoardData(this.boardProjects(projectPath), {
         plan: this.planSource(),
         config: this.configSource(),
+        process: this.processSource(),
       }),
     );
     // fiche 20261102151630248 — le pouce de revue : le daemon lance `ezk review verdict`, puis
@@ -215,6 +218,12 @@ export class DaemonService {
   private configSource(): EzkConfigSource {
     this.ezkConfigSource ??= new EzkConfigSource({ command: this.ezkCommand });
     return this.ezkConfigSource;
+  }
+
+  /** La source du process (`ezk board process --json`), créée au premier besoin comme les deux autres. */
+  private processSource(): EzkProcessSource {
+    this.ezkProcessSource ??= new EzkProcessSource({ command: this.ezkCommand });
+    return this.ezkProcessSource;
   }
 
   private boardProjects(projectPath: string): BoardProjectInput[] {

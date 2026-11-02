@@ -26,6 +26,7 @@ import { buildVerdictsBlock } from '../core/verdicts.js';
 import { loadCatalog } from '../loaders/catalog.js';
 import { loadFiches } from '../loaders/fiches.js';
 import { loadMapSources } from '../loaders/map-sources.js';
+import { githubCapabilities } from '../loaders/project-config.js';
 import { loadMethodDoc } from '../loaders/method.js';
 import { loadRuns } from '../loaders/runs.js';
 import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
@@ -101,7 +102,7 @@ export const DATA_VIEWS: readonly DataView[] = [
     out: 'diagrams/process/process.data.js',
     page: 'diagrams/process/process.html',
     build: (repoRoot) =>
-      `${HEADER}${buildProcessDataBlock({ fiches: loadFiches(repoRoot), ...collectProcessIo() })}\n`,
+      `${HEADER}${buildProcessDataBlock({ fiches: loadFiches(repoRoot), ...collectProcessIo(repoRoot, { github: githubCapabilities(repoRoot).pr }) })}\n`,
   },
   {
     // La carte de la méthode (suite de l'ADR-0055). Ses données ne viennent pas des fiches mais du

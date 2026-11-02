@@ -79,6 +79,10 @@ export interface ProcessFiche {
   file: string; // chemin relatif au repo — la vue en fait un lien cliquable vers le détail
   /** La session (worktree + branche) qui travaille la fiche, `null` si aucune. */
   session: ProcessSession | null;
+  /** La branche de travail non livrée qui place la fiche « en sprint », `null` si aucune (fiche 20261102123552183). */
+  branch: string | null;
+  /** La PR ouverte qui place la fiche « en revue » (`#12`), `null` si aucune ou si GitHub n'est pas lu. */
+  pr: string | null;
   /** Vrai quand « en revue » n'a pas pu être évalué faute de `gh`/remote (openPrByBranch null). */
   reviewIndetermine: boolean;
 }
@@ -175,12 +179,21 @@ export function buildProcessData(input: ProcessInputs): ProcessData {
     input.sessions.map((s) => s.branch),
   );
 
-  // Les ids qui ont une PR OUVERTE (seulement si `gh`/remote a répondu).
-  const prIds = new Set<string>();
+  // La branche qui porte chaque id (la première rencontrée : branches locales, puis sessions), hors
+  // branches absorbées : c'est le « pourquoi » de l'étape « en sprint » (fiche 20261102123552183).
+  const branchById = new Map<string, string>();
+  for (const branch of [...input.branches, ...input.sessions.map((s) => s.branch)]) {
+    if (absorbed.has(branch)) continue;
+    const id = ficheIdFromBranch(branch);
+    if (id && !branchById.has(id)) branchById.set(id, branch);
+  }
+
+  // Les ids qui ont une PR OUVERTE (seulement si `gh`/remote a répondu), avec leur numéro.
+  const prById = new Map<string, string>();
   if (input.openPrByBranch) {
-    for (const branch of Object.keys(input.openPrByBranch)) {
+    for (const [branch, pr] of Object.entries(input.openPrByBranch)) {
       const id = ficheIdFromBranch(branch);
-      if (id) prIds.add(id);
+      if (id && !prById.has(id)) prById.set(id, pr);
     }
   }
 
@@ -215,17 +228,18 @@ export function buildProcessData(input: ProcessInputs): ProcessData {
     };
 
     if (f.status === 'shipped') {
-      shipped.push({ ...base, stage: 'livree', reviewIndetermine: false });
+      shipped.push({ ...base, branch: null, pr: null, stage: 'livree', reviewIndetermine: false });
       continue;
     }
 
     const hasBranch = branchIds.has(f.id);
-    const hasOpenPr = prKnown && prIds.has(f.id);
+    const hasOpenPr = prKnown && prById.has(f.id);
     const stage = activeStage(f.status, hasBranch, hasOpenPr);
     // « en revue » indéterminable : on ne sait pas si la fiche en sprint est en fait en revue
     // (pas de gh/remote). On la laisse « en sprint » et on le signale — jamais de silence.
     const reviewIndetermine = !prKnown && stage === 'en-sprint';
-    active.push({ ...base, stage, reviewIndetermine });
+    const branch = hasBranch ? (branchById.get(f.id) ?? null) : null;
+    active.push({ ...base, branch, pr: prById.get(f.id) ?? null, stage, reviewIndetermine });
   }
 
   // Toutes les livrées, plus récent d'abord (id décroissant ≈ plus récent). On NE tronque PAS la

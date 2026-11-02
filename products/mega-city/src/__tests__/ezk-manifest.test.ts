@@ -75,6 +75,7 @@ describe('ezk-manifest.yml', () => {
       'backlog version',
       'board check',
       'board open',
+      'board process',
       'board show',
       'carto record',
       'carto status',

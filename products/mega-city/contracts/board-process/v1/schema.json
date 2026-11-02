@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "github": {
+      "type": "boolean",
+      "description": "Vrai si GitHub a été lu ; faux si le projet l’a coupé (aucun `gh` lancé)."
+    },
+    "reviewIndetermine": {
+      "type": "boolean",
+      "description": "Vrai si l’étape « en revue » n’a pas pu être calculée."
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string",
+            "enum": [
+              "idee",
+              "prete",
+              "en-sprint",
+              "en-revue",
+              "livree"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "fiches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Le statut écrit dans la fiche."
+                },
+                "product": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "milestone": {
+                  "type": "string"
+                },
+                "stage": {
+                  "type": "string",
+                  "enum": [
+                    "idee",
+                    "prete",
+                    "en-sprint",
+                    "en-revue",
+                    "livree"
+                  ]
+                },
+                "file": {
+                  "type": "string",
+                  "description": "La fiche, relative à la racine du projet."
+                },
+                "session": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "string"
+                        },
+                        "branch": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "path",
+                        "branch"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "La session (dossier de travail et branche) qui travaille la fiche, ou null."
+                },
+                "branch": {
+                  "description": "La branche non livrée qui place la fiche « en sprint », ou null.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "pr": {
+                  "description": "La PR ouverte qui place la fiche « en revue » (`#12`), ou null.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reviewIndetermine": {
+                  "type": "boolean",
+                  "description": "Vrai quand « en revue » n’a pas pu être évalué : GitHub non lu."
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "priority",
+                "status",
+                "product",
+                "version",
+                "milestone",
+                "stage",
+                "file",
+                "session",
+                "branch",
+                "pr",
+                "reviewIndetermine"
+              ]
+            }
+          }
+        },
+        "required": [
+          "stage",
+          "label",
+          "fiches"
+        ]
+      },
+      "description": "Les cinq étapes dans l’ordre du flux ; « livrée » porte toutes les livrées, la plus récente d’abord."
+    },
+    "filtres": {
+      "type": "object",
+      "properties": {
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "priorites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "versions",
+        "milestones",
+        "priorites"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "github",
+    "reviewIndetermine",
+    "stages",
+    "filtres"
+  ]
+}

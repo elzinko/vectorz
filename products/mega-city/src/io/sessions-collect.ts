@@ -23,10 +23,10 @@ import {
 } from '../core/sessions-data.js';
 
 /** `git worktree list --porcelain` → une entrée par bloc séparé par une ligne vide. */
-export function collectWorktrees(): WorktreeInput[] {
+export function collectWorktrees(cwd = process.cwd()): WorktreeInput[] {
   let out: string;
   try {
-    out = execFileSync('git', ['worktree', 'list', '--porcelain'], { encoding: 'utf8' });
+    out = execFileSync('git', ['worktree', 'list', '--porcelain'], { encoding: 'utf8', cwd });
   } catch {
     return []; // git absent ou hors dépôt — dégradation propre, cohérente avec les autres collecteurs
   }
@@ -40,10 +40,11 @@ export function collectWorktrees(): WorktreeInput[] {
 }
 
 /** `git branch --merged main` — les têtes déjà entièrement dans `main`. */
-export function collectMergedBranches(): string[] {
+export function collectMergedBranches(cwd = process.cwd()): string[] {
   try {
     const out = execFileSync('git', ['branch', '--merged', 'main', '--format=%(refname:short)'], {
       encoding: 'utf8',
+      cwd,
     });
     return out.split('\n').map((b) => b.trim()).filter(Boolean);
   } catch {
@@ -153,12 +154,12 @@ export function collectLastSessionMtime(worktreePath: string): number | undefine
  * Vit dans la collecte (pas dans le rendu) → même donnée pour la CLI et le futur onglet map
  * (« une seule source de vérité », fiche). `{}` si `gh` absent/échoue → « — » à l'affichage.
  */
-export function collectPrStates(): Record<string, string> {
+export function collectPrStates(cwd = process.cwd()): Record<string, string> {
   try {
     const out = execFileSync(
       'gh',
       ['pr', 'list', '--state', 'all', '--json', 'number,headRefName,state', '--limit', '100'],
-      { encoding: 'utf8' },
+      { encoding: 'utf8', cwd },
     );
     const prs = JSON.parse(out) as { number: number; headRefName: string; state: string }[];
     const byBranch: Record<string, string> = {};
@@ -177,12 +178,12 @@ export function collectPrStates(): Record<string, string> {
  * `gh`/remote manque (on ne sait RIEN des PR → « en revue » indéterminable). Une map (même vide)
  * = `gh` a répondu : zéro PR ouverte est alors un FAIT, pas une ignorance (fiche 20261002115451315).
  */
-export function collectOpenPrByBranch(): Record<string, string> | null {
+export function collectOpenPrByBranch(cwd = process.cwd()): Record<string, string> | null {
   try {
     const out = execFileSync(
       'gh',
       ['pr', 'list', '--state', 'open', '--json', 'number,headRefName', '--limit', '200'],
-      { encoding: 'utf8' },
+      { encoding: 'utf8', cwd },
     );
     const prs = JSON.parse(out) as { number: number; headRefName: string }[];
     const byBranch: Record<string, string> = {};
@@ -195,11 +196,19 @@ export function collectOpenPrByBranch(): Record<string, string> | null {
   }
 }
 
-/** La collecte complète attendue par `buildSessionsData` (le cockpit de sessions). */
-export function collect(): CollectedInputs {
-  const worktrees = collectWorktrees();
-  const mergedBranches = collectMergedBranches();
-  const prStateByBranch = collectPrStates();
+/**
+ * Lire GitHub ou non. `github: false` (un projet qui a coupé GitHub, fiche 20261102123552183) : aucun
+ * `gh` n'est lancé, les PR sont inconnues. Absent = comme avant, `gh` est essayé.
+ */
+export interface CollectOptions {
+  github?: boolean;
+}
+
+/** La collecte complète attendue par `buildSessionsData` (le cockpit de sessions), dans le dépôt `cwd`. */
+export function collect(cwd = process.cwd(), options: CollectOptions = {}): CollectedInputs {
+  const worktrees = collectWorktrees(cwd);
+  const mergedBranches = collectMergedBranches(cwd);
+  const prStateByBranch = options.github === false ? {} : collectPrStates(cwd);
   const uncommittedByPath: Record<string, string[]> = {};
   const lastSessionMtimeByPath: Record<string, number | undefined> = {};
   for (const wt of worktrees) {
@@ -218,13 +227,16 @@ export interface ProcessIo {
   openPrByBranch: Record<string, string> | null;
 }
 
-/** Collecte tout ce que la vue process tire du git/gh local (les fiches viennent du projet désigné). */
-export function collectProcessIo(): ProcessIo {
-  const branches = collectBranches();
+/**
+ * Collecte tout ce que la vue process tire du git/gh du dépôt `cwd` (les fiches viennent du projet
+ * désigné). `github: false` : aucun `gh`, les PR sont inconnues (`null`), « en revue » l'est donc aussi.
+ */
+export function collectProcessIo(cwd = process.cwd(), options: CollectOptions = {}): ProcessIo {
+  const branches = collectBranches(cwd);
   return {
-    sessions: buildSessionsData(collect()).rows,
+    sessions: buildSessionsData(collect(cwd, options)).rows,
     branches,
-    absorbedBranches: collectAbsorbedBranches(branches),
-    openPrByBranch: collectOpenPrByBranch(),
+    absorbedBranches: collectAbsorbedBranches(branches, 'main', cwd),
+    openPrByBranch: options.github === false ? null : collectOpenPrByBranch(cwd),
   };
 }

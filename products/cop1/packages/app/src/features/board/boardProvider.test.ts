@@ -8,6 +8,7 @@ import { composeBoardData, shapeProject } from './boardProvider.js';
 import { EzkConfigSource } from './ezkConfigSource.js';
 import type { ProjectConfigData } from './ezkConfigTranslator.js';
 import { EzkPlanSource, type PlanSnapshot } from './ezkPlanSource.js';
+import { EzkProcessSource } from './ezkProcessSource.js';
 import type { FicheDetailData, PlanData } from './planTypes.js';
 
 const plan: PlanData = {
@@ -207,12 +208,14 @@ describe('composeBoardData — synchrone, lit l’état des sources', () => {
     const sources = {
       plan: new EzkPlanSource({ command: ['ezk'], run: () => never }),
       config: new EzkConfigSource({ command: ['ezk'], run: () => never }),
+      process: new EzkProcessSource({ command: ['ezk'], run: () => never }),
     };
     const t0 = performance.now();
     const data = composeBoardData([{ name: 'p', root: '/introuvable' }], sources);
     expect(performance.now() - t0).toBeLessThan(100);
     expect(data.p?.plan).toEqual({ state: 'loading' });
     expect(data.p?.configState).toEqual({ state: 'loading' });
+    expect(data.p?.processState).toEqual({ state: 'loading' });
   });
 });
 
@@ -238,5 +241,24 @@ describe('shapeProject — le pilotage (fiche 20261102123552182)', () => {
   it('plan reçu sans pilotage, ou plan pas encore là : aucun pilotage', () => {
     expect(shapeProject('vectorz', '', ok, noLive).pilotage).toBeUndefined();
     expect(shapeProject('vectorz', '', { state: 'loading' }, noLive).pilotage).toBeUndefined();
+  });
+});
+
+describe('shapeProject — le process (fiche 20261102123552183)', () => {
+  const process = { github: false, reviewUnknown: true, stages: [] };
+
+  it('passe tel quel le process publié par la méthode', () => {
+    const p = shapeProject('vectorz', '', ok, noLive, undefined, { state: 'ok', at: 1, process });
+    expect(p.processState).toEqual({ state: 'ok' });
+    expect(p.process).toEqual(process);
+  });
+
+  it('un process indisponible garde sa raison, et rien d’autre', () => {
+    const p = shapeProject('vectorz', '', ok, noLive, undefined, {
+      state: 'unavailable',
+      reason: 'ezk a échoué (code 2)',
+    });
+    expect(p.processState).toEqual({ state: 'unavailable', reason: 'ezk a échoué (code 2)' });
+    expect(p.process).toBeUndefined();
   });
 });

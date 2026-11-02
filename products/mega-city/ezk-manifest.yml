@@ -75,6 +75,11 @@ commands:
     run: bin/avancement.ts
     summary: Affiche le board d'avancement en texte (--root <projet> pour un autre projet).
     project: true
+  - domain: board
+    verb: process
+    run: bin/board-process.ts
+    summary: Pose chaque fiche sur son étape, avec sa branche, sa PR, sa session (--json, --root).
+    project: true
 
   # --- backlog : les fiches ---
   - domain: backlog

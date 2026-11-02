@@ -233,6 +233,37 @@ export interface Pilotage {
   sessions: PilotageSession[];
 }
 
+/** Les étapes du process, dans l'ordre du flux (fiche 20261102123552183). */
+export type ProcessStageId = 'idee' | 'prete' | 'en-sprint' | 'en-revue' | 'livree';
+
+/** Une fiche sur son étape, avec le signal qui l'y place, tel que la méthode le publie. */
+export interface ProcessFiche {
+  id: string;
+  title: string;
+  priority: string;
+  version: string;
+  branch: string | null;
+  pr: string | null;
+  /** Le dossier de la session qui travaille la fiche, ou `null`. */
+  session: string | null;
+}
+
+export interface ProcessStage {
+  stage: ProcessStageId;
+  label: string;
+  fiches: ProcessFiche[];
+  /** Le nombre de fiches de l'étape ; plus grand que `fiches` quand la liste est coupée (livrées). */
+  total: number;
+}
+
+/** Chaque fiche du projet posée sur son étape par la méthode (`ezk board process --json`). */
+export interface ProjectProcess {
+  github: boolean;
+  /** « En revue » inconnue : GitHub non lu ou muet. */
+  reviewUnknown: boolean;
+  stages: ProcessStage[];
+}
+
 /** Un projet : la seule source de vérité de ses chiffres. */
 export interface BoardProject {
   name: string;
@@ -261,6 +292,10 @@ export interface BoardProject {
   configState?: PlanState;
   /** Publié par la méthode avec le plan ; absent si elle ne le publie pas (la vue le dit). */
   pilotage?: Pilotage;
+  /** État de la lecture du process. Absent = process reçu. Sinon `process` est absent. */
+  processState?: PlanState;
+  /** Chaque fiche sur son étape (vue « Process »). */
+  process?: ProjectProcess;
 }
 
 /** L'ensemble des projets, indexés par leur nom (clé de navigation). */

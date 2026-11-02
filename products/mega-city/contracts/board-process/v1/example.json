@@ -1,0 +1,141 @@
+{
+ "schema_version": 1,
+ "github": false,
+ "stages": [
+  {
+   "stage": "idee",
+   "label": "Idée",
+   "fiches": [
+    {
+     "id": "20990101000000002",
+     "title": "Tour Driver.js : tracking",
+     "priority": "P2",
+     "status": "idea",
+     "product": "—",
+     "version": "v2.0.0",
+     "milestone": "",
+     "file": "features/20990101000000002_deux-points.md",
+     "session": null,
+     "branch": null,
+     "pr": null,
+     "stage": "idee",
+     "reviewIndetermine": false
+    },
+    {
+     "id": "20990101000000008",
+     "title": "Sans version",
+     "priority": "P2",
+     "status": "idea",
+     "product": "—",
+     "version": "",
+     "milestone": "board",
+     "file": "features/20990101000000008_sans-version.md",
+     "session": null,
+     "branch": null,
+     "pr": null,
+     "stage": "idee",
+     "reviewIndetermine": false
+    },
+    {
+     "id": "20990101000000005",
+     "title": "Version mal écrite",
+     "priority": "P3",
+     "status": "idea",
+     "product": "—",
+     "version": "V1.1",
+     "milestone": "",
+     "file": "features/20990101000000005_version-mal-ecrite.md",
+     "session": null,
+     "branch": null,
+     "pr": null,
+     "stage": "idee",
+     "reviewIndetermine": false
+    }
+   ]
+  },
+  {
+   "stage": "prete",
+   "label": "Prête",
+   "fiches": [
+    {
+     "id": "20990101000000003",
+     "title": "Bloquée",
+     "priority": "P1",
+     "status": "ready",
+     "product": "—",
+     "version": "v1.0.0",
+     "milestone": "",
+     "file": "features/20990101000000003_bloquee.md",
+     "session": null,
+     "branch": null,
+     "pr": null,
+     "stage": "prete",
+     "reviewIndetermine": false
+    }
+   ]
+  },
+  {
+   "stage": "en-sprint",
+   "label": "En sprint",
+   "fiches": [
+    {
+     "id": "20990101000000001",
+     "title": "En cours",
+     "priority": "P1",
+     "status": "ready",
+     "product": "—",
+     "version": "v1.0.0",
+     "milestone": "",
+     "file": "features/20990101000000001_en-cours.md",
+     "session": null,
+     "branch": "feat/20990101000000001-en-cours",
+     "pr": null,
+     "stage": "en-sprint",
+     "reviewIndetermine": true
+    }
+   ]
+  },
+  {
+   "stage": "en-revue",
+   "label": "En revue",
+   "fiches": []
+  },
+  {
+   "stage": "livree",
+   "label": "Livrée",
+   "fiches": [
+    {
+     "id": "20990101000000006",
+     "title": "Livrée",
+     "priority": "P2",
+     "status": "shipped",
+     "product": "—",
+     "version": "v1.0.0",
+     "milestone": "board",
+     "file": "features/done/20990101000000006_livree.md",
+     "session": null,
+     "branch": null,
+     "pr": null,
+     "stage": "livree",
+     "reviewIndetermine": false
+    }
+   ]
+  }
+ ],
+ "filtres": {
+  "versions": [
+   "V1.1",
+   "v1.0.0",
+   "v2.0.0"
+  ],
+  "milestones": [
+   "board"
+  ],
+  "priorites": [
+   "P1",
+   "P2",
+   "P3"
+  ]
+ },
+ "reviewIndetermine": true
+}

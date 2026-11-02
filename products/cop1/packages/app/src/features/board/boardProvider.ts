@@ -24,6 +24,8 @@ import {
 import type { ConfigSnapshot, EzkConfigSource } from './ezkConfigSource.js';
 import type { ProjectConfigData } from './ezkConfigTranslator.js';
 import type { EzkPlanSource, PlanSnapshot } from './ezkPlanSource.js';
+import type { EzkProcessSource, ProcessSnapshot } from './ezkProcessSource.js';
+import type { ProcessViewData } from './ezkProcessTranslator.js';
 import type { SourceReading } from './ezkSource.js';
 import type { FicheDetailData, PlanFunnel, PlanPilotage, PlanVersions } from './planTypes.js';
 
@@ -38,6 +40,7 @@ export interface BoardProjectInput {
 export interface BoardSources {
   plan: EzkPlanSource;
   config: EzkConfigSource;
+  process: EzkProcessSource;
 }
 
 /** L'état d'une lecture de la méthode (le plan, la config), tel que la page l'affiche.
@@ -77,6 +80,10 @@ export interface BoardPlanProject {
   fiches: Record<string, FicheDetailData>;
   /** Milestones et sessions closes publiées par la méthode (vue « Pilotage ») ; absent sinon. */
   pilotage?: PlanPilotage;
+  /** Le process est-il arrivé (`ezk board process --json`) ? Sinon `process` est absent. */
+  processState: BoardPlanState;
+  /** Chaque fiche sur son étape, telle que la méthode la place (vue « Process »). */
+  process?: ProcessViewData;
   /** La config est-elle arrivée ? Sinon `config` est absent. */
   configState: BoardPlanState;
   /** La config du projet, telle que la méthode la résout (`ezk config show --json`). */
@@ -112,6 +119,7 @@ export function shapeProject(
   snapshot: PlanSnapshot,
   live: LiveBoard = { runs: {}, chantiers: [] },
   config: ConfigSnapshot = { state: 'loading' },
+  process: ProcessSnapshot = { state: 'loading' },
 ): BoardPlanProject {
   const runsCount = Object.keys(live.runs).length;
   const anyLive = Object.values(live.runs).some((r) => r.live);
@@ -141,6 +149,8 @@ export function shapeProject(
     ...(received?.plan.pilotage ? { pilotage: received.plan.pilotage } : {}),
     configState: readState(config),
     ...(config.state === 'ok' ? { config: config.config } : {}),
+    processState: readState(process),
+    ...(process.state === 'ok' ? { process: process.process } : {}),
   };
 }
 
@@ -189,6 +199,7 @@ export function composeProject(
     sources.plan.get(input.root),
     cachedLive(input.root, now),
     sources.config.get(input.root),
+    sources.process.get(input.root),
   );
 }
 

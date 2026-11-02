@@ -25,11 +25,11 @@ describe('Board — la coque', () => {
     }
   });
 
-  it('route vers une vue non encore construite avec son repère', async () => {
+  it('route vers la vue Process : plus de coquille « tranche à venir » (fiche 20261102123552183)', async () => {
     await renderBoardOn();
     await userEvent.click(screen.getByRole('button', { name: 'Process' }));
-    expect(screen.getByText('tranche à venir')).toBeTruthy();
-    expect(screen.getByText(/20260830110131228/)).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Process' })).toBeTruthy();
+    expect(screen.queryByText('tranche à venir')).toBeNull();
   });
 
   it('le bouton ⚙ ouvre la configuration de l’outil', async () => {

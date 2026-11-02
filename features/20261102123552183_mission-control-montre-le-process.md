@@ -52,19 +52,19 @@ control l'affiche.
 
 ## Critères d'acceptation
 
-- [ ] **L'étape de la méthode.** Chaque fiche active apparaît dans la colonne que publie la commande ;
+- [x] **L'étape de la méthode.** Chaque fiche active apparaît dans la colonne que publie la commande ;
       aucune fiche n'est placée par mission control lui-même.
-- [ ] **Le bon projet.** `ezk --root <autre projet> board process --json` décrit les branches et les
+- [x] **Le bon projet.** `ezk --root <autre projet> board process --json` décrit les branches et les
       sessions de cet autre projet, pas celles du dossier d'où on lance la commande.
-- [ ] **GitHub coupé, GitHub muet.** Sur un projet `github: false`, la commande ne lance aucun `gh` ;
+- [x] **GitHub coupé, GitHub muet.** Sur un projet `github: false`, la commande ne lance aucun `gh` ;
       elle publie « en revue » comme inconnue, et mission control le dit.
-- [ ] **Le pourquoi de l'étape.** Une fiche en sprint ou en revue dit le signal qui l'y place : sa
+- [x] **Le pourquoi de l'étape.** Une fiche en sprint ou en revue dit le signal qui l'y place : sa
       branche, sa PR ou sa session.
-- [ ] **Plus de coquille vide.** L'entrée « Process » de mission control n'affiche plus « tranche à
+- [x] **Plus de coquille vide.** L'entrée « Process » de mission control n'affiche plus « tranche à
       venir ».
-- [ ] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu, la vue dit « process
+- [x] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu, la vue dit « process
       indisponible : <raison> ».
-- [ ] **Avant / après.** Capture de la page « process » de la méthode et de l'entrée « Process » de
+- [x] **Avant / après.** Capture de la page « process » de la méthode et de l'entrée « Process » de
       mission control (avant), puis de la nouvelle vue (après).
 
 ## Comment vérifier
