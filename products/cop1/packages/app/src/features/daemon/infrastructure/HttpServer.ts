@@ -80,6 +80,11 @@ export interface MapsHandler {
   ): Promise<{ status: number; contentType: string; body: string }>;
 }
 
+/** fiche 20260826222044335 — la loi d'un projet, lue depuis la mémoire du daemon (jamais d'attente). */
+export interface LawHandler {
+  read(projet: string): { status: number; body: unknown };
+}
+
 /** fiche 0063 — ancrage projet (geste humain depuis le Moniteur). */
 export interface ProjectAnchorHandler {
   execute(body: unknown): Promise<{ status: 200 | 400 | 409; body: unknown }>;
@@ -100,6 +105,7 @@ export class HttpServer {
   private projectAnchorHandler: ProjectAnchorHandler | null = null;
   private verdictHandler: VerdictHandler | null = null;
   private mapsHandler: MapsHandler | null = null;
+  private lawHandler: LawHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -159,6 +165,11 @@ export class HttpServer {
   /** fiche 20261102123552184 — GET /api/maps/<projet> et GET /api/maps/<projet>/<id>/<nom>. */
   setMapsHandler(handler: MapsHandler): void {
     this.mapsHandler = handler;
+  }
+
+  /** fiche 20260826222044335 — GET /api/law/<projet>. */
+  setLawHandler(handler: LawHandler): void {
+    this.lawHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -315,6 +326,12 @@ export class HttpServer {
       return;
     }
 
+    // fiche 20260826222044335 — la loi d'un projet, servie depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/law/')) {
+      this.handleLaw(req.url, res);
+      return;
+    }
+
     // fiche 0021 — GET /api/blocages + POST /api/blocages/:id/resolve. The
     // handler returns true when it owns the route (response already written).
     if (this.blocageApiHandler?.handle(req, res)) {
@@ -354,6 +371,26 @@ export class HttpServer {
         res.end(JSON.stringify({ error: message }));
       }
     });
+  }
+
+  private handleLaw(url: string, res: ServerResponse): void {
+    if (!this.lawHandler) {
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'law_unavailable' }));
+      return;
+    }
+    let projet = '';
+    try {
+      projet = decodeURIComponent((url.split('?')[0] ?? '').slice('/api/law/'.length));
+    } catch {
+      projet = '';
+    }
+    const { status, body } =
+      projet && !projet.includes('/')
+        ? this.lawHandler.read(projet)
+        : { status: 404, body: { error: 'not_found' } };
+    res.writeHead(status, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(body));
   }
 
   private async handleMaps(url: string, res: ServerResponse): Promise<void> {

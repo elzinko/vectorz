@@ -65,21 +65,21 @@ bouge rarement : un rafraîchissement toutes les cinq minutes suffit.
 
 ## Critères d'acceptation
 
-- [ ] **Mêmes comptes.** Les cinq compteurs valent `ezk law show --json | jq .comptes` pour le projet
+- [x] **Mêmes comptes.** Les cinq compteurs valent `ezk law show --json | jq .comptes` pour le projet
       affiché.
-- [ ] **Sélection reliée.** Sélectionner un skill met en avant ses règles et trace les traits vers
+- [x] **Sélection reliée.** Sélectionner un skill met en avant ses règles et trace les traits vers
       elles ; sélectionner une règle met en avant ses consommateurs, ses bundles et ses profils.
-- [ ] **Portée en mots.** Chaque règle dit sa portée par une phrase, jamais par un code. La règle
+- [x] **Portée en mots.** Chaque règle dit sa portée par une phrase, jamais par un code. La règle
       `development/story-dans-un-worktree-dedie` se lit « citée par ezk-sprint, absente de la loi
       installée ».
-- [ ] **Filtrer par un compteur.** Cliquer « citées sans être installées » ne laisse dans la liste que
+- [x] **Filtrer par un compteur.** Cliquer « citées sans être installées » ne laisse dans la liste que
       ces règles (17 pour vectorz le 2026-11-02).
-- [ ] **Le détail d'une règle.** Il montre son niveau, sa portée en mots, ses bundles, ses profils, qui
+- [x] **Le détail d'une règle.** Il montre son niveau, sa portée en mots, ses bundles, ses profils, qui
       l'applique, qui la vérifie et son fichier.
-- [ ] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu : « loi indisponible : <raison> »,
+- [x] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu : « loi indisponible : <raison> »,
       jamais de compteurs à zéro.
-- [ ] **Jamais d'attente.** `/api/law` répond en moins de 100 ms pendant qu'un appel à `ezk` tourne.
-- [ ] **Avant / après.** Capture de la carte « LA LOI » du board de la méthode (avant) et de la vue
+- [x] **Jamais d'attente.** `/api/law` répond en moins de 100 ms pendant qu'un appel à `ezk` tourne.
+- [x] **Avant / après.** Capture de la carte « LA LOI » du board de la méthode (avant) et de la vue
       « Loi » de mission control (après).
 
 ## Comment vérifier

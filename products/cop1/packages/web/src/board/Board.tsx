@@ -19,6 +19,7 @@ import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
 import { PilotageView } from './PilotageView.js';
+import { LawView } from './LawView.js';
 import { MapsView } from './MapsView.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
@@ -45,6 +46,7 @@ type ViewId =
   | 'config'
   | 'process'
   | 'maps'
+  | 'law'
   | 'tool';
 
 interface NavItem {
@@ -67,6 +69,7 @@ const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les proj
 
 const METHOD_NAV: NavItem[] = [
   { id: 'process', icon: '❖', label: 'Process' },
+  { id: 'law', icon: '§', label: 'Loi' },
   { id: 'maps', icon: '▤', label: 'Cartes' },
 ];
 
@@ -434,6 +437,8 @@ export function Board(): JSX.Element {
               }
               onGotoTool={() => go('tool')}
             />
+          ) : view === 'law' ? (
+            <LawView project={project} />
           ) : view === 'maps' ? (
             <MapsView project={project} />
           ) : view === 'tool' ? (

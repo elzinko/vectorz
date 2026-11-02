@@ -219,6 +219,22 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
 .pnote { margin: 0; padding: 9px 13px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--muted); font-size: 13px; }
+.lawcounts { display: flex; flex-wrap: wrap; gap: 8px; }
+.lawcount { padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--muted); font-size: 13px; cursor: pointer; }
+.lawcount b { color: var(--fg); font-family: var(--font-data); }
+.lawcount.on { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.lawcols { position: relative; display: grid; grid-template-columns: minmax(200px, 1fr) minmax(0, 2fr); gap: 64px; align-items: start; }
+.lawitem { display: flex; justify-content: space-between; gap: 10px; width: 100%; padding: 7px 14px; border: 0; border-top: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; color: inherit; font-size: 12.5px; }
+.lawitem:hover { background: var(--surface-2); }
+.lawitem.hl { background: var(--go-soft); }
+.lawitem.on { background: var(--accent-soft); }
+.lawitem .meta { font-size: 11px; color: var(--muted); font-family: var(--font-data); }
+.lawlinks { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.lawlinks line { stroke: var(--accent); stroke-width: 1.2; opacity: .55; }
+.lawdetail dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; padding: 4px 16px 14px; margin: 0; font-size: 13px; }
+.lawdetail dt { color: var(--muted); }
+.lawdetail dd { margin: 0; }
+@media (max-width: 760px) { .lawcols { grid-template-columns: 1fr; gap: 12px; } .lawlinks { display: none; } }
 .maps { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 12px; align-items: start; }
 .mapitem { display: flex; justify-content: space-between; gap: 10px; width: 100%; padding: 10px 14px; border: 0; border-top: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; color: inherit; }
 .mapitem:hover { background: var(--surface-2); }

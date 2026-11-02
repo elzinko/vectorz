@@ -5,6 +5,7 @@ import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandl
 import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { EzkConfigSource } from '../../board/ezkConfigSource.js';
 import { execEzkRunner } from '../../board/ezkExec.js';
+import { EzkLawSource } from '../../board/ezkLawSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
 import { EzkProcessSource } from '../../board/ezkProcessSource.js';
 import { MapsService } from '../../board/mapsService.js';
@@ -45,6 +46,7 @@ export class DaemonService {
   private ezkPlanSource: EzkPlanSource | null = null;
   private ezkConfigSource: EzkConfigSource | null = null;
   private ezkProcessSource: EzkProcessSource | null = null;
+  private ezkLawSource: EzkLawSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -130,6 +132,18 @@ export class DaemonService {
       run: (args) => execEzkRunner(this.ezkCommand)(args),
     });
     this.httpServer.setMapsHandler(maps);
+    // fiche 20260826222044335 — la loi : servie depuis la mémoire, relue en arrière-plan.
+    this.httpServer.setLawHandler({
+      read: (projet) => {
+        const root = this.boardProjects(projectPath).find((p) => p.name === projet)?.root;
+        if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
+        const snap = this.lawSource().get(root);
+        if (snap.state === 'ok') return { status: 200, body: { state: 'ok', law: snap.law } };
+        if (snap.state === 'unavailable')
+          return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
+        return { status: 200, body: { state: 'loading' } };
+      },
+    });
 
     try {
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);
@@ -233,6 +247,12 @@ export class DaemonService {
   private processSource(): EzkProcessSource {
     this.ezkProcessSource ??= new EzkProcessSource({ command: this.ezkCommand });
     return this.ezkProcessSource;
+  }
+
+  /** La source de la loi (`ezk law show --json`), créée au premier besoin comme les autres. */
+  private lawSource(): EzkLawSource {
+    this.ezkLawSource ??= new EzkLawSource({ command: this.ezkCommand });
+    return this.ezkLawSource;
   }
 
   private boardProjects(projectPath: string): BoardProjectInput[] {
