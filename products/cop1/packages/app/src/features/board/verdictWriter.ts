@@ -7,18 +7,13 @@
  * commande se lance sans shell, avec une liste d'arguments. La garde du daemon (requestGuard) a déjà
  * refusé les requêtes d'un autre site ou d'un autre type que JSON ; ici, on contrôle le fond.
  */
-import { execFile } from 'node:child_process';
 import type { BoardProjectInput } from './boardProvider.js';
-
-/** Lance `ezk` avec ces arguments et rend son code de sortie et ses deux sorties, sans jamais lever. */
-export type VerdictRunner = (
-  args: string[],
-) => Promise<{ code: number; stdout: string; stderr: string }>;
+import type { EzkExecRunner } from './ezkExec.js';
 
 export interface VerdictWriterDeps {
   /** Les projets du registre (`name` = id du projet, `root` = sa racine). */
   projects: () => BoardProjectInput[];
-  run: VerdictRunner;
+  run: EzkExecRunner;
   /** Appelé après une écriture réussie : le daemon relit le plan de ce projet tout de suite. */
   onWritten: (root: string) => void;
 }
@@ -27,28 +22,6 @@ export type VerdictResponse = { status: 200 | 400 | 404 | 502; body: unknown };
 
 const FICHE_ID = /^\d{4,20}$/;
 const VALUES = ['up', 'down', 'none'] as const;
-const EXEC_TIMEOUT_MS = 30_000;
-
-/** Le lanceur réel : `execFile` sans shell, la commande de la méthode lue dans la config. */
-export function execVerdictRunner(command: readonly string[]): VerdictRunner {
-  const [program, ...baseArgs] = command;
-  return (args) =>
-    new Promise((resolve) => {
-      if (program === undefined) {
-        resolve({ code: 127, stdout: '', stderr: 'commande ezk vide' });
-        return;
-      }
-      execFile(
-        program,
-        [...baseArgs, ...args],
-        { encoding: 'utf8', timeout: EXEC_TIMEOUT_MS },
-        (error, stdout, stderr) => {
-          const code = error ? (typeof error.code === 'number' ? error.code : 127) : 0;
-          resolve({ code, stdout, stderr: stderr || (error?.message ?? '') });
-        },
-      );
-    });
-}
 
 const refuse = (status: 400 | 404 | 502, error: string): VerdictResponse => ({
   status,

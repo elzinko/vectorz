@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Le dossier du document dans `diagrams/`."
+          },
+          "titre": {
+            "type": "string",
+            "description": "Le titre lu dans son `meta.yaml`, ou son id à défaut."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "html",
+              "svg"
+            ]
+          },
+          "fichier": {
+            "type": "string",
+            "description": "Le fichier principal du document."
+          },
+          "donnees": {
+            "description": "Le fichier de données que la page charge, calculé à la demande, ou null.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "titre",
+          "type",
+          "fichier",
+          "donnees"
+        ]
+      },
+      "description": "Les documents, triés par id ; les pages portées par une autre vue en sont écartées."
+    }
+  },
+  "required": [
+    "schema_version",
+    "documents"
+  ]
+}

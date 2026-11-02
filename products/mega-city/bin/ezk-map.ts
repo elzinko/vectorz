@@ -34,17 +34,14 @@
  * 👍/👎 d'une fiche, dans `features/reviews/verdicts/<id>.json` et nulle part ailleurs. Route
  * gardée (Host, Origin, type, taille, id), jamais de commit. Tout le reste du serveur lit.
  */
-import { createReadStream, existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { basename, extname, join, normalize, resolve, sep } from 'node:path';
 import { spawn } from 'node:child_process';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  type DiagramEntry,
   injectNavIntoHtml,
-  readMetaCategorie,
-  readMetaTitle,
   renderMenuHtml,
   renderNavBar,
   renderSvgWrapper,
@@ -69,6 +66,7 @@ import {
 import { cockpitRegistryDir, currentLayoutVersion, loadCockpitProjects } from '../src/io/cockpit.js';
 import { configSections } from '../src/io/config-page.js';
 import { dataViewForPath } from '../src/io/derived-views.js';
+import { listDiagrams } from '../src/io/method-maps.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { VERDICT_ROUTE, serveVerdict } from '../src/io/verdict-endpoint.js';
 import { findRegistryDir } from '../src/supervision/registry.js';
@@ -143,35 +141,13 @@ const MIME: Record<string, string> = {
   '.woff2': 'font/woff2',
 };
 
-/** Cartes disponibles : un dossier de `diagrams/` porteur d'un `.html` ou d'un `.svg`. */
-function listDiagrams(): DiagramEntry[] {
-  if (!existsSync(DIAGRAMS)) return [];
-  return readdirSync(DIAGRAMS)
-    .filter((d) => statSync(join(DIAGRAMS, d)).isDirectory())
-    .map((slug) => {
-      const dir = join(DIAGRAMS, slug);
-      const files = readdirSync(dir);
-      // une page interactive prime sur l'image : c'est la vue la plus riche
-      const entry =
-        files.find((f) => f.endsWith('.html')) ?? files.find((f) => f.endsWith('.svg')) ?? '';
-      // titre lisible pour le menu : balayage du meta.yaml (title: ou titre:), repli slug
-      const metaPath = join(dir, 'meta.yaml');
-      const meta = existsSync(metaPath) ? readFileSync(metaPath, 'utf8') : '';
-      const title = readMetaTitle(meta) ?? slug;
-      const categorie = readMetaCategorie(meta) ?? 'autres';
-      return { slug, entry, title, categorie };
-    })
-    .filter((d) => d.entry !== '')
-    .sort((a, b) => a.slug.localeCompare(b.slug));
-}
-
 function fail(msg: string, code = 1): never {
   console.error(msg);
   process.exit(code);
 }
 
 const args = cliArgs.filter((a) => a !== '--');
-const diagrams = listDiagrams();
+const diagrams = listDiagrams(DIAGRAMS);
 
 if (args.includes('--list') || args.includes('-l')) {
   if (diagrams.length === 0) fail('Aucune carte dans diagrams/.');

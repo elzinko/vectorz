@@ -9,6 +9,7 @@
  *   contracts/backlog-show/v1/fiche.schema.json, fiche.example.json ← une fiche, avec son id
  *   contracts/config-show/v1/schema.json, example.json             ← la config résolue du projet
  *   contracts/board-process/v1/schema.json, example.json           ← chaque fiche sur son étape
+ *   contracts/board-maps/v1/schema.json, example.json              ← les documents de la méthode
  * Chaque schéma est tiré du schéma zod ; chaque exemple est la sortie de la commande sur la fixture.
  *
  * La fixture est un faux projet : une fiche par cas que mission control lisait mal (enquête du
@@ -23,12 +24,14 @@ import { dirname, join } from 'node:path';
 import { z } from 'zod';
 import { BOARD_SCHEMA_VERSION, BoardContractSchema } from '../core/board-contract.js';
 import { CONFIG_SCHEMA_VERSION, ConfigShowSchema } from '../core/config-contract.js';
+import { MAPS_SCHEMA_VERSION, MapsContractSchema } from '../core/maps-contract.js';
 import { PROCESS_SCHEMA_VERSION, ProcessContractSchema } from '../core/process-contract.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
 import { boardProcessData } from './board-process.js';
 import { boardShowData } from './board-show.js';
 import { configShowData } from './config-show.js';
+import { methodMapsData } from './method-maps.js';
 
 /** Les fichiers rangés, chemins relatifs à `products/mega-city`. */
 const BOARD_DIR = `contracts/board-show/v${BOARD_SCHEMA_VERSION}`;
@@ -45,6 +48,9 @@ export const CONFIG_EXAMPLE_FILE = `${CONFIG_DIR}/example.json`;
 const PROCESS_DIR = `contracts/board-process/v${PROCESS_SCHEMA_VERSION}`;
 export const PROCESS_SCHEMA_FILE = `${PROCESS_DIR}/schema.json`;
 export const PROCESS_EXAMPLE_FILE = `${PROCESS_DIR}/example.json`;
+const MAPS_DIR = `contracts/board-maps/v${MAPS_SCHEMA_VERSION}`;
+export const MAPS_SCHEMA_FILE = `${MAPS_DIR}/schema.json`;
+export const MAPS_EXAMPLE_FILE = `${MAPS_DIR}/example.json`;
 
 /**
  * La config de la fixture : chaque portée réglée au moins une fois (GitHub granulaire, intégration,
@@ -155,6 +161,14 @@ export function makeContractFixture(): string {
   write('docs/sessions/README.md', '# Les récits de session\n');
   write('docs/sessions/2026-10-30-premiere-session.md', 'fiches: 20990101000000001\n\n# Première session\n\nLivré en PR #12.\n');
   write('docs/sessions/2026-10-31-seconde-session.md', '# Seconde session\n\nRien de livré.\n');
+  // Les documents de la méthode (fiche 20261102123552184) : une page à données, un schéma SVG, une
+  // page portée par une autre vue (écartée) et un dossier sans document (ignoré).
+  write('diagrams/methode-mega-city/carte-interactive.html', '<script src="carte-interactive.data.js"></script>\n');
+  write('diagrams/methode-mega-city/meta.yaml', 'title: "La méthode en une carte"\n');
+  write('diagrams/qualite-composants/diagram.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
+  write('diagrams/qualite-composants/meta.yaml', 'titre: Qualité — composants\n');
+  write('diagrams/pilotage/pilotage.html', '<p>pilotage</p>\n');
+  write('diagrams/notes/README.md', '# Pas un document\n');
   const git = (...args: string[]): void => {
     execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', ...args], { stdio: 'ignore' });
   };
@@ -212,6 +226,8 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [PROCESS_SCHEMA_FILE]: schemaText(ProcessContractSchema),
       // GitHub non lu : l'exemple ne dépend ni du réseau ni d'un compte (« en revue » y est inconnue).
       [PROCESS_EXAMPLE_FILE]: exampleText(boardProcessData(root, { github: false })),
+      [MAPS_SCHEMA_FILE]: schemaText(MapsContractSchema),
+      [MAPS_EXAMPLE_FILE]: exampleText(methodMapsData(join(root, 'diagrams'))),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

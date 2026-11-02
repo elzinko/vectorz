@@ -19,6 +19,7 @@ import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
 import { PilotageView } from './PilotageView.js';
+import { MapsView } from './MapsView.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
@@ -43,6 +44,7 @@ type ViewId =
   | 'timeline'
   | 'config'
   | 'process'
+  | 'maps'
   | 'tool';
 
 interface NavItem {
@@ -63,7 +65,10 @@ const PROJECT_NAV: NavItem[] = [
 
 const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les projets' }];
 
-const METHOD_NAV: NavItem[] = [{ id: 'process', icon: '❖', label: 'Process' }];
+const METHOD_NAV: NavItem[] = [
+  { id: 'process', icon: '❖', label: 'Process' },
+  { id: 'maps', icon: '▤', label: 'Cartes' },
+];
 
 function basename(path: string): string {
   const parts = path.split('/').filter(Boolean);
@@ -429,6 +434,8 @@ export function Board(): JSX.Element {
               }
               onGotoTool={() => go('tool')}
             />
+          ) : view === 'maps' ? (
+            <MapsView project={project} />
           ) : view === 'tool' ? (
             <ToolConfigView tool={toolConfig} onChange={setToolConfig} />
           ) : (

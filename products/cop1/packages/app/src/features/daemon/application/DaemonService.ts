@@ -4,9 +4,11 @@ import { BlockageService } from '@cop1/sprint-core';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { EzkConfigSource } from '../../board/ezkConfigSource.js';
+import { execEzkRunner } from '../../board/ezkExec.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
 import { EzkProcessSource } from '../../board/ezkProcessSource.js';
-import { execVerdictRunner, writeVerdictThroughEzk } from '../../board/verdictWriter.js';
+import { MapsService } from '../../board/mapsService.js';
+import { writeVerdictThroughEzk } from '../../board/verdictWriter.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
 import { AnchorProjectUseCase } from '../../supervision/application/AnchorProjectUseCase.js';
@@ -117,10 +119,17 @@ export class DaemonService {
       execute: (body) =>
         writeVerdictThroughEzk(body, {
           projects: () => this.boardProjects(projectPath),
-          run: execVerdictRunner(this.ezkCommand),
+          run: execEzkRunner(this.ezkCommand),
           onWritten: (root) => this.planSource().invalidate(root),
         }),
     });
+    // fiche 20261102123552184 — les documents de la méthode : liste et contenu par `ezk board maps`.
+    // Le lanceur est créé à chaque appel : la commande `ezk` est lue dans la config juste après.
+    const maps = new MapsService({
+      projects: () => this.boardProjects(projectPath),
+      run: (args) => execEzkRunner(this.ezkCommand)(args),
+    });
+    this.httpServer.setMapsHandler(maps);
 
     try {
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);

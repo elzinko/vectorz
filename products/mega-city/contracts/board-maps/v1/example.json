@@ -1,0 +1,19 @@
+{
+ "schema_version": 1,
+ "documents": [
+  {
+   "id": "methode-mega-city",
+   "titre": "La méthode en une carte",
+   "type": "html",
+   "fichier": "carte-interactive.html",
+   "donnees": "carte-interactive.data.js"
+  },
+  {
+   "id": "qualite-composants",
+   "titre": "Qualité — composants",
+   "type": "svg",
+   "fichier": "diagram.svg",
+   "donnees": null
+  }
+ ]
+}

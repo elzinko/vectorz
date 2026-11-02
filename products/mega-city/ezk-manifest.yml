@@ -76,6 +76,11 @@ commands:
     summary: Affiche le board d'avancement en texte (--root <projet> pour un autre projet).
     project: true
   - domain: board
+    verb: maps
+    run: bin/board-maps.ts
+    summary: Liste les documents de la méthode (--json), ou en rend un (--file <id> <nom>).
+    root: none
+  - domain: board
     verb: process
     run: bin/board-process.ts
     summary: Pose chaque fiche sur son étape, avec sa branche, sa PR, sa session (--json, --root).

@@ -70,6 +70,16 @@ export interface VerdictHandler {
   execute(body: unknown): Promise<{ status: number; body: unknown }>;
 }
 
+/** fiche 20261102123552184 — les documents de la méthode : la liste, puis un fichier listé. */
+export interface MapsHandler {
+  list(projet: string): Promise<{ status: number; body: unknown }>;
+  file(
+    projet: string,
+    id: string,
+    nom: string,
+  ): Promise<{ status: number; contentType: string; body: string }>;
+}
+
 /** fiche 0063 — ancrage projet (geste humain depuis le Moniteur). */
 export interface ProjectAnchorHandler {
   execute(body: unknown): Promise<{ status: 200 | 400 | 409; body: unknown }>;
@@ -89,6 +99,7 @@ export class HttpServer {
   private runAbandonHandler: RunAbandonHandler | null = null;
   private projectAnchorHandler: ProjectAnchorHandler | null = null;
   private verdictHandler: VerdictHandler | null = null;
+  private mapsHandler: MapsHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -143,6 +154,11 @@ export class HttpServer {
   /** fiche 20261102151630248 — POST /api/verdict. */
   setVerdictHandler(handler: VerdictHandler): void {
     this.verdictHandler = handler;
+  }
+
+  /** fiche 20261102123552184 — GET /api/maps/<projet> et GET /api/maps/<projet>/<id>/<nom>. */
+  setMapsHandler(handler: MapsHandler): void {
+    this.mapsHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -293,6 +309,12 @@ export class HttpServer {
       return;
     }
 
+    // fiche 20261102123552184 — les documents de la méthode, servis par la commande ezk
+    if (req.method === 'GET' && req.url?.startsWith('/api/maps/')) {
+      void this.handleMaps(req.url, res);
+      return;
+    }
+
     // fiche 0021 — GET /api/blocages + POST /api/blocages/:id/resolve. The
     // handler returns true when it owns the route (response already written).
     if (this.blocageApiHandler?.handle(req, res)) {
@@ -332,6 +354,53 @@ export class HttpServer {
         res.end(JSON.stringify({ error: message }));
       }
     });
+  }
+
+  private async handleMaps(url: string, res: ServerResponse): Promise<void> {
+    if (!this.mapsHandler) {
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'maps_unavailable' }));
+      return;
+    }
+    let parts: string[];
+    try {
+      parts = (url.split('?')[0] ?? '')
+        .slice('/api/maps/'.length)
+        .split('/')
+        .map(decodeURIComponent);
+    } catch {
+      parts = [];
+    }
+    try {
+      if (parts.length === 1 && parts[0]) {
+        const { status, body } = await this.mapsHandler.list(parts[0]);
+        res.writeHead(status, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(body));
+        return;
+      }
+      if (parts.length === 3 && parts.every(Boolean)) {
+        const [projet, id, nom] = parts as [string, string, string];
+        const { status, contentType, body } = await this.mapsHandler.file(projet, id, nom);
+        const headers: Record<string, string> = {
+          'Content-Type': contentType,
+          'Cache-Control': 'no-store',
+          'X-Content-Type-Options': 'nosniff',
+        };
+        // Un document s'ouvre isolé, même hors du cadre : ses scripts tournent, sans l'origine du daemon.
+        // Un SVG peut porter un script : il est isolé lui aussi.
+        if (contentType.startsWith('text/html') || contentType.startsWith('image/svg+xml')) {
+          headers['Content-Security-Policy'] = 'sandbox allow-scripts';
+        }
+        res.writeHead(status, headers);
+        res.end(body);
+        return;
+      }
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'not_found' }));
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
+    }
   }
 
   private async handleAuthCheck(res: ServerResponse): Promise<void> {

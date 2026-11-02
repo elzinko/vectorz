@@ -4,7 +4,8 @@
  * (jamais un vrai `ezk`) et vérifient les arguments exacts, les refus, et la relecture du plan.
  */
 import { describe, expect, it, vi } from 'vitest';
-import { type VerdictRunner, writeVerdictThroughEzk } from './verdictWriter.js';
+import type { EzkExecRunner } from './ezkExec.js';
+import { writeVerdictThroughEzk } from './verdictWriter.js';
 
 const ID = '20261102123552181';
 const projects = () => [
@@ -13,7 +14,7 @@ const projects = () => [
 ];
 
 function deps(result: { code: number; stdout?: string; stderr?: string }) {
-  const run = vi.fn<VerdictRunner>(async () => ({ stdout: '', stderr: '', ...result }));
+  const run = vi.fn<EzkExecRunner>(async () => ({ stdout: '', stderr: '', ...result }));
   const onWritten = vi.fn();
   return { run, onWritten, deps: { projects, run, onWritten } };
 }
