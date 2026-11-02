@@ -37,7 +37,34 @@ version se pose à la construction (étiquette). Détail :
 - ~~`20261029112813308` — le contrat JSON de la méthode : `ezk board show --json` complet et versionné · build (prête le 2026-11-01, ADR-086)~~ — shipped
 - ~~`20261031160441267` — le détail d'une fiche calculé par la méthode (`ezk backlog show <id> --json`) · groom~~ — shipped
 - ~~`20261031160441412` — mission control lit le board de la méthode par `ezk` · groom (dépend des deux précédentes)~~ — shipped
-- `20261031160441559` — un seul vocabulaire pour les boards · groom (indépendante)
+
+Suite décidée le 2026-11-02 (run autonome délégué par le PO : « je te laisse proposer le chemin »).
+Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendances :
+
+- `20261102165708468` — le daemon refuse les écritures venues d'un autre site · build (P1, sprint 1)
+- `20261102104443762` — la vue d'ensemble compte les vrais sprints et rétros · groom (P1, sprint 1)
+- `20261102123552181` — le pouce de revue se pose par une commande ezk · groom (sprint 2)
+- `20261102151630248` — mission control pose le pouce par la commande · groom (sprint 2)
+- `20261102123552182` — mission control montre le pilotage · groom (sprint 3)
+- `20261102123552183` — mission control montre le process · groom (sprint 3)
+- `20261102123552184` — mission control montre les cartes de la méthode · groom (sprint 4)
+- `20260826222044335` — mission control montre la loi · groom (sprint 4)
+- `20261031160441559` — un seul vocabulaire pour les boards · groom (sprint 5)
+- `20261102123552185` — retirer la page web de la méthode · groom (sprint 5, dépend de tout le reste)
+
+**Milestone `exploration-app` — « Le carnet de tests »** (suite du carnet livré le 2026-11-02) :
+- `20261102182259505` — ezk-scout part du carnet pour choisir quoi tester · groom
+- `20261102182259592` — tenir le carnet de tests de mission control · groom
+- `20261102182259680` — faire expirer une preuve quand le code change · groom
+- `20261102183114656` — ezk-scout propose aussi des améliorations · groom
+
+**Milestone `qualite` — « La méthode tient debout »** :
+- `20261102103553108` — chaque skill lit ses règles au démarrage · groom
+- `20261101131505997` — la gate ne dépend ni de l'index généré ni du retard sur GitHub · groom
+- `20261101162826995` — le dossier de contrat porte le nom de la méthode · groom
+
+**Milestone `observabilite`** :
+- `20261101131506082` — un compte rendu de sprint non daté le dit, sans faux zéro · groom
 
 **Milestone `carte` — « La carte dit vrai »** :
 - ~~`20261015213921021` — aligner la carte de la méthode sur le code · build~~ — shipped
