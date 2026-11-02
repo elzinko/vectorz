@@ -93,5 +93,5 @@ apparaît, et la fenêtre montre le pouce. Signal observable du `curl` : un refu
 - **Constat hors de cette fiche (2026-11-02).** Les quatre routes d'écriture actuelles du daemon ne
   vérifient ni l'origine ni le type de la requête : abandon d'un run, ancrage d'un projet, proposition
   de règle, levée d'un blocage. Une page d'un autre site, ouverte dans le navigateur, pourrait donc
-  les appeler. À traiter à part.
+  les appeler. Fiche dédiée, en P1 : [le daemon refuse les écritures venues d'un autre site](20261102165708468_daemon-refuse-ecritures-autre-site.md). Cette route réutilisera sa garde.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
