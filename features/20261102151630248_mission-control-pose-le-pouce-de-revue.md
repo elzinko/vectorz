@@ -26,7 +26,7 @@ demande vient bien de sa propre page.
 - L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   fait de mission control le seul écran. Le pouce, posé aujourd'hui dans la page web de la méthode,
   doit pouvoir se poser dans mission control avant le retrait de cette page.
-- La fiche sœur [le pouce de revue se pose par une commande ezk](20261102123552181_pouce-de-revue-par-une-commande-ezk.md)
+- La fiche sœur [le pouce de revue se pose par une commande ezk](done/20261102123552181_pouce-de-revue-par-une-commande-ezk.md)
   fournit la commande `ezk review verdict <id> up|down`. Seules les commandes `ezk` écrivent dans un
   projet (ADR-086, décision 1.4).
 - `ezk board show --json` publie déjà les pouces : mission control n'a qu'à les afficher.

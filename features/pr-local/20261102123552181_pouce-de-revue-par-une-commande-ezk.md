@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102123552181_pouce-de-revue-par-une-commande-ezk.md](../20261102123552181_pouce-de-revue-par-une-commande-ezk.md)
+> 🗎 Rendu de la fiche [features/20261102123552181_pouce-de-revue-par-une-commande-ezk.md](../done/20261102123552181_pouce-de-revue-par-une-commande-ezk.md)
 
 ## En clair
 
