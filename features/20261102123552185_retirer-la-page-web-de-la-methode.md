@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: ["20261102123552181", "20261102151630248", "20261102123552182", "20261102123552183", "20261102123552184", "20260826222044335"]
 labels: [board, un-seul-ecran]
-status: idea
+status: ready
 pr:
 evidence: none # retrait d'une page ; les écrans de remplacement ont leurs captures dans leurs fiches
 created: 2026-11-02
@@ -84,3 +84,16 @@ trouve plus de mention hors historique.
   corrige les mots ; celle-ci retire la commande.
 - Un projet hôte sans mission control garde le terminal : `ezk board show` et les commandes `--json`.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
+- Groom du 2026-11-03 (run autonome) : périmètre mesuré dans le code. Les vues générées sont cinq :
+  `board`, `pilotage`, `runs`, `process` et `carte`. Seule `carte` reste, car `ezk board maps --file`
+  en calcule les données. Partent avec les quatre autres leurs constructeurs de bloc
+  (`build…DataBlock`), et les modules qui ne servent qu'à eux ; un module qu'une commande utilise
+  encore reste (`buildProcessData` pour `ezk board process`, `buildAvancementData` pour
+  `ezk board show`). La route du pouce de `bin/ezk-map.ts` (`src/io/verdict-endpoint.ts`) part aussi :
+  `ezk review verdict` la remplace, et son test compare désormais le fichier écrit à la forme attendue,
+  plus à la route. Mentions vivantes trouvées : 16 fichiers de `src`, 5 de `bin`, un skill, un guide,
+  les deux `package.json`, le manifeste et une recette.
+- Le tableau de l'amendement est couvert par les fiches livrées des sprints 8 à 10 : pouce, pilotage,
+  process, cartes et loi.- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Deux commits
+  ordonnés dans la branche : le code et les pages, puis les mentions. Le corps de PR reprend une ligne
+  par entrée du tableau de l'amendement.
