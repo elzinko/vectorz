@@ -62,12 +62,17 @@ version. `engines` ne fait qu'avertir.
 
 ## Critères d'acceptation
 
-- [ ] Le `package.json` racine porte `"packageManager": "pnpm@10.28.2"`.
-- [ ] Sous un dossier personnel vide, `pnpm --version` lancé dans vectorz affiche `10.28.2`.
-- [ ] Aucune étape de CI ne fixe une version de pnpm différente de l'épingle. La CI installe et
-  teste sous pnpm 10.28.2.
-- [ ] Sur le poste, `pnpm install --frozen-lockfile` ne change rien : même version, lockfile
+- [x] Le `package.json` racine porte `"packageManager": "pnpm@10.28.2"`.
+- [x] Sous un dossier personnel vide, `pnpm --version` lancé dans vectorz affiche `10.28.2`.
+- [x] Aucune étape de CI ne fixe une version de pnpm différente de l'épingle.
+- [x] Sur le poste, `pnpm install --frozen-lockfile` ne change rien : même version, lockfile
   inchangé.
+
+**Mesure de suivi** — à relever après la livraison, au premier run de CI (GitHub ou `act`) :
+
+- La CI installe et teste sous pnpm 10.28.2. Non observable le 2026-11-02 : la CI cloud est coupée
+  par la config du projet et Docker était arrêté. Décision PO du 2026-11-02 : livrer sans attendre,
+  et relever ce point au premier run.
 
 ## Comment vérifier
 
