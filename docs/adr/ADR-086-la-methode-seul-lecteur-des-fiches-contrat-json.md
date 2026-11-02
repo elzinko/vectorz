@@ -1,6 +1,6 @@
 # ADR-086 — La méthode est le seul lecteur des fiches ; ses données sortent par `ezk … --json`
 
-Statut : accepté (PO, 2026-11-01)
+Statut : accepté (PO, 2026-11-01) ; amendé le 2026-11-02, un seul écran (voir l'amendement en fin)
 Date : 2026-10-31 (remplace la version du 2026-10-29, « `ezk board` reste portable »)
 Décideurs : PO, après deux panels adverses et une enquête passée en revue adverse
 Amende : [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) décision 1 ·
@@ -138,3 +138,69 @@ Deviennent plus durs ou assumés :
   ligne de commande que mission control consomme.
 - Enquête du 2026-10-30/31, revue par `ezk-reviewer` : NO-GO sur la première version du dossier,
   corrigé (fixture stable, photo datée, questions ouvertes nommées).
+
+## Amendement du 2026-11-02 (décision PO du 2026-11-02) — un seul écran
+
+### En clair
+
+La méthode n'a plus d'écran à elle. Elle garde sa ligne de commande : du texte pour l'humain, du JSON
+pour les programmes. Mission control devient le seul écran. La page web de la méthode
+(`ezk board open`) est retirée quand mission control montre tout ce qu'elle montre, pas avant.
+
+```
+avant    fiches → ezk (seul lecteur) → page web de la méthode
+                                     → JSON → mission control
+
+après    fiches → ezk (seul lecteur) → texte dans le terminal
+                                     → JSON → mission control (seul écran)
+```
+
+Motif du PO : « juste de quoi faire ce que la méthode doit faire avec un cli, et le mission control
+affiche tout ».
+
+### Ce qui change dans la décision 2
+
+- **La méthode** : `ezk board show`, `ezk board check` et toutes les commandes `ezk … --json`. Elle
+  reste utilisable seule, dans un terminal. Ses documents (`diagrams/`) restent des fichiers du dépôt.
+- **Mission control** : le seul écran. Il lit la méthode par ses contrats. Il n'écrit dans un projet
+  que par une commande `ezk`, le pouce de revue compris (décision 1, point 4).
+- **`ezk board open`** et son serveur `bin/ezk-map.ts` sont retirés à la fin du portage.
+
+Les décisions 1, 3 et 4 ne changent pas.
+
+### Pourquoi l'option A devient acceptable
+
+L'option A (« mission control remplace le board de la méthode ») était écartée pour deux raisons.
+
+1. **« La méthode dépendrait d'un produit. »** Ce n'est plus vrai : la méthode reste complète par sa
+   ligne de commande. Mission control reste optionnel.
+2. **« Chaque projet devrait faire tourner le daemon. »** C'est assumé : pour voir en graphique, on
+   lance mission control. Pour lire, le terminal suffit.
+
+### Ce qui est porté avant le retrait
+
+Rien ne se perd : chaque page de la méthode a son remplaçant avant le retrait.
+
+| Page de la méthode (`ezk board open`) | Dans mission control | Fiche |
+|---|---|---|
+| Avancement : fiches, plan, versions | vue d'ensemble, Fiches | déjà là |
+| Choix du projet, config en lecture | sélecteur de projet, Configuration | déjà là |
+| Le pouce de revue | la fenêtre d'une fiche | [pouce par `ezk`](../../features/20261102123552181_pouce-de-revue-par-ezk-dans-mission-control.md) |
+| Pilotage et historique des runs | une vue « Pilotage » | [pilotage](../../features/20261102123552182_mission-control-montre-le-pilotage.md) |
+| Process | la vue « Process » | [process](../../features/20261102123552183_mission-control-montre-le-process.md) |
+| La loi | une vue « Loi » | [la loi](../../features/20260826222044335_carte-la-loi-graphe-visuel.md) |
+| Sept documents : carte de la méthode, domaine, qualité (4), benchmark | une vue « Cartes » | [cartes](../../features/20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) |
+
+Le retrait vient en dernier, quand les cinq fiches sont livrées :
+[retirer la page web de la méthode](../../features/20261102123552185_retirer-la-page-web-de-la-methode.md).
+
+### Conséquences
+
+- Un projet hôte sans mission control n'a plus de vue graphique : il lit dans le terminal.
+- Les fiches qui prévoyaient une page dans le board de la méthode visent désormais mission control :
+  [une page d'accueil par projet](../../features/20261002115451451_page-une-ligne-par-projet.md) et
+  [la page des rétros passées](../../features/20260826072532537_vue-retros-actions-ezk-map.md).
+- Le doublon de la vue « runs », noté plus haut à revisiter, disparaît : l'historique vit dans la vue
+  « Pilotage » de mission control.
+- « Board de la méthode » (décision 3) désigne désormais ce que publient `ezk board show` et les
+  contrats, plus une page.

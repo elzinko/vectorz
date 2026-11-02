@@ -1,0 +1,79 @@
+---
+id: "20261102123552184"
+title: "Mission control montre les cartes et les documents de la méthode"
+type: feature
+priority: P2
+product: cop1
+milestone: board
+version:
+depends: ["20261031160441412"]
+labels: [board, mission-control, un-seul-ecran]
+status: idea
+pr:
+evidence: before-after
+created: 2026-11-02
+---
+
+## En clair
+
+La méthode range sept documents dans `diagrams/` : la carte de la méthode, le schéma du domaine,
+quatre schémas de qualité et un benchmark. Aujourd'hui, seule la page web de la méthode les montre.
+Cette fiche les montre dans mission control, dans une vue « Cartes ». La méthode dit quels documents
+existent ; mission control les affiche tels quels.
+
+## Contexte / Problème
+
+- L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+  fait de mission control le seul écran. Les documents servis par `ezk board open` doivent y trouver
+  leur place avant le retrait de la page web.
+- `ezk board open --list` liste douze cartes. Cinq sont des pages interactives, portées par d'autres
+  fiches : avancement, pilotage, runs, process et la loi. Les sept autres sont des documents :
+  - `methode-mega-city` (carte interactive en HTML) ;
+  - `domaine-mega-city` (SVG) ;
+  - `qualite-composants`, `qualite-composants-detail`, `qualite-deploiement`,
+    `qualite-flux-emission-agregation` (SVG) ;
+  - `benchmark-bmad-ezk` (HTML).
+- Ouvert en double-clic (`file://`), un document HTML s'affiche dégradé : c'est pourquoi la méthode
+  les sert par un petit serveur.
+
+## Valeur
+
+- Le PO garde l'accès à la carte de la méthode et aux schémas, dans le seul écran qu'il ouvre.
+- Un nouveau document rangé dans `diagrams/` apparaît sans changer mission control.
+
+## Proposition
+
+1. **La méthode publie la liste.** `ezk … --json` rend les documents de `diagrams/` : identifiant,
+   titre (lu dans `meta.yaml`), type (HTML ou SVG) et chemin. Un contrat versionné la décrit.
+2. **Mission control les montre.** Une vue « Cartes », dans la partie « Méthode », liste les documents
+   et en affiche un au clic. Le daemon sert le fichier que la méthode désigne, sans l'interpréter.
+
+## Critères d'acceptation
+
+- [ ] **La liste de la méthode.** La vue « Cartes » liste les mêmes documents que la commande, avec
+      leur titre ; les sept sont là pour vectorz.
+- [ ] **Un document s'affiche bien.** La carte interactive de la méthode et un schéma SVG s'affichent
+      dans mission control comme dans la page web de la méthode.
+- [ ] **Rien d'autre n'est servi.** Le daemon ne sert que les fichiers désignés par la méthode ; un
+      chemin hors de cette liste est refusé.
+- [ ] **Jamais de liste inventée.** Sans `ezk`, la vue dit « cartes indisponibles : <raison> ».
+- [ ] **Avant / après.** Capture de la carte de la méthode dans la page web (avant) et dans mission
+      control (après).
+
+## Comment vérifier
+
+```bash
+ezk board open --list
+pnpm cop1:dev
+```
+
+Ouvrir http://localhost:5273, « Méthode » puis « Cartes ». Signal observable : les sept documents sont
+listés, et la carte de la méthode s'ouvre au clic.
+
+## Notes
+
+- Une des cinq fiches du chantier « un seul écran », liées par `milestone: board` et le label
+  `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
+  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
+- Les documents restent des fichiers de la méthode : seul l'écran qui les montre change.
+- Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.

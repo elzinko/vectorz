@@ -57,3 +57,6 @@ Direction, à cadrer au grooming. Sur la liste des projets du cockpit, une ligne
   **fondus** dans le board unifié v0.17 ([[20261007135620590]]). À **rattacher** à ce design (la vue
   transverse « une ligne par projet » y est-elle ?) plutôt qu'à reprogrammer seule ; superséder si le
   board la couvre.
+- 2026-11-02 : [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) fait de mission control le seul écran. Cette page
+  d'accueil se construit donc dans mission control, pas dans la page web de la méthode, qui sera
+  retirée. Mission control a déjà une vue « Tous les projets » : à comparer au grooming.

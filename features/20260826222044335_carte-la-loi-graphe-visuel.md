@@ -102,3 +102,5 @@ dédié.
 - Hors de cette fiche : les outils qu'utilise chaque skill, et le retrait du board de la méthode.
   Ce retrait amende l'ADR-086 : c'est au PO de le trancher, une fois cette vue en service.
 - Priorité P2, inchangée.
+- 2026-11-02 : cette vue est l'une des pages à porter avant [le retrait de la page web de la
+  méthode](20261102123552185_retirer-la-page-web-de-la-methode.md), décidé par [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).

@@ -69,3 +69,6 @@ grep -rnE "ezk:map|ezk dashboard|Moniteur" --include='*.md' --include='*.yml' . 
 
 - Fiche sœur du milestone `board`, découpée le 2026-10-31 (ADR-086).
 - Indépendante des trois autres : elle peut se construire à tout moment.
+- 2026-11-02 : [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) retire la page web de la méthode. « Board de la
+  méthode » désigne désormais ce que publient `ezk board show` et les contrats, plus une page. La
+  commande `ezk board open` part avec [le retrait](20261102123552185_retirer-la-page-web-de-la-methode.md).

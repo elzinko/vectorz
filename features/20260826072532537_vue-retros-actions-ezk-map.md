@@ -147,3 +147,8 @@ regen ; la modifier sans regen → le test d'invariant rougit.
 >
 > **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
 > ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).
+
+## Note du 2026-11-02
+
+[L'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) fait de mission control le seul écran : la page web de la méthode
+(`ezk:map`) sera retirée. Cette page des rétros se construira donc dans mission control.
