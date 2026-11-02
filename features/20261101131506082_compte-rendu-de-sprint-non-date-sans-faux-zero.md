@@ -43,6 +43,12 @@ La fenêtre de mesure semble partir d'un point de passage bien plus ancien que l
 empêchent aussi mission control d'afficher le temps et les jetons cumulés
 ([vue d'ensemble : sprints et rétros réels](done/20261102104443762_vue-ensemble-sprints-retros-reels.md)).
 
+Revu le 2026-11-02 au soir, sprint 7 du run autonome : le compte rendu
+`2026-11-02-sprint-mission-control-se-prot-ge-et-compte-vrai.md` est daté (1 h 25, point de passage
+posé), mais il annonce « 0 fiche(s) livrée(s) » pour deux fiches livrées, et 306 millions de jetons.
+Le point de passage ne suffit donc pas : le compte des fiches et la fenêtre des jetons sont faux eux
+aussi.
+
 ## Valeur
 
 Pour le PO qui relit un sprint : un chiffre faux en première phrase trompe plus qu'une absence
