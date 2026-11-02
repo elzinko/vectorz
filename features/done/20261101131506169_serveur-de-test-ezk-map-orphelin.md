@@ -56,5 +56,5 @@ cd products/mega-city && pnpm test; ps -eo pid,command | grep "bin/ezk-map.ts" |
 - Née de la rétro légère du 2026-11-01 (P6 de la rétro), acceptée par le PO le même jour :
   [rétro du run des contrats JSON](../../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
-- 2026-11-02 : le serveur `ezk-map` disparaîtra avec [le retrait de la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
+- 2026-11-02 : le serveur `ezk-map` disparaîtra avec [le retrait de la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
   D'ici là, cette fiche reste utile : la fuite fait encore échouer des tests.

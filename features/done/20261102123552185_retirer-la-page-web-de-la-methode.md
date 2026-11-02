@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261102123552181", "20261102151630248", "20261102123552182", "20261102123552183", "20261102123552184", "20260826222044335"]
 labels: [board, un-seul-ecran]
-status: ready
-pr:
+status: shipped
+pr: "local (26e2878a)"
 evidence: none # retrait d'une page ; les écrans de remplacement ont leurs captures dans leurs fiches
 created: 2026-11-02
 ---
@@ -23,7 +23,7 @@ C'est la dernière fiche du chantier.
 
 ## Contexte / Problème
 
-- L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+- L'[amendement du 2026-11-02 de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   le décide : la méthode garde `ezk board show`, `ezk board check` et ses commandes `--json` ;
   mission control est le seul écran.
 - Deux écrans montrent aujourd'hui une partie des mêmes choses, chacun à sa façon. Le PO a jugé la
@@ -77,10 +77,10 @@ trouve plus de mention hors historique.
 - Dernière fiche du chantier « un seul écran ». Les fiches du chantier sont liées par
   `milestone: board` et le label `un-seul-ecran`, sans fiche chapeau. Elle dépend de toutes les
   fiches de portage, dont les deux du pouce, et de la
-  [vue « Loi » de mission control](done/20260826222044335_carte-la-loi-graphe-visuel.md).
-- Rend sans objet [le serveur de test ezk-map orphelin](done/20261101131506169_serveur-de-test-ezk-map-orphelin.md).
+  [vue « Loi » de mission control](20260826222044335_carte-la-loi-graphe-visuel.md).
+- Rend sans objet [le serveur de test ezk-map orphelin](20261101131506169_serveur-de-test-ezk-map-orphelin.md).
   Tant que la page existe, cette fiche reste utile.
-- La fiche [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md)
+- La fiche [un seul vocabulaire pour les boards](../20261031160441559_un-seul-vocabulaire-boards.md)
   corrige les mots ; celle-ci retire la commande.
 - Un projet hôte sans mission control garde le terminal : `ezk board show` et les commandes `--json`.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.

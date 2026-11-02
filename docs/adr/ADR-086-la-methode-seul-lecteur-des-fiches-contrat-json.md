@@ -192,7 +192,7 @@ Rien ne se perd : chaque page de la méthode a son remplaçant avant le retrait.
 | Sept documents : carte de la méthode, domaine, qualité (4), benchmark | une vue « Cartes » | [cartes](../../features/done/20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) |
 
 Le retrait vient en dernier, quand toutes les fiches de portage sont livrées :
-[retirer la page web de la méthode](../../features/20261102123552185_retirer-la-page-web-de-la-methode.md).
+[retirer la page web de la méthode](../../features/done/20261102123552185_retirer-la-page-web-de-la-methode.md).
 
 ### Conséquences
 

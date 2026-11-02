@@ -89,7 +89,7 @@ apparaît, et la fenêtre montre le pouce. Signal observable du `curl` : un refu
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Coupée de la fiche de la commande au grooming du 2026-11-02.
   Le retrait vient en dernier :
-  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - **Constat hors de cette fiche (2026-11-02).** Les quatre routes d'écriture actuelles du daemon ne
   vérifient ni l'origine ni le type de la requête : abandon d'un run, ancrage d'un projet, proposition
   de règle, levée d'un blocage. Une page d'un autre site, ouverte dans le navigateur, pourrait donc

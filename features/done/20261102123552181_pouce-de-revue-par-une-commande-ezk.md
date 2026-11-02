@@ -101,7 +101,7 @@ montre que ce fichier.
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Aucun pouce posé à ce jour. Le PO a tranché le 2026-11-02, au grooming : on garde le pouce (voir
   « Valeur »). Ne pas rouvrir la question sans nouveau fait.
 - Le nom de la commande est à confirmer au build, avec la fiche

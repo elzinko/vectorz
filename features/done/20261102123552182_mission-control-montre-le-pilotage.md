@@ -76,7 +76,7 @@ sessions valent ceux de la méthode.
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Cette vue règle le doublon « runs » que l'ADR-086 laissait à revisiter : la chronologie montre le
   direct, le pilotage montre l'historique.
 - Groom du 2026-11-02 (run autonome) : sources vérifiées dans le code. `runs-data.ts` existe et ne

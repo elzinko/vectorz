@@ -41,7 +41,7 @@ marchent.
 
 ## Proposition
 
-Un passage, dans cet ordre, après [le retrait de la page web](20261102123552185_retirer-la-page-web-de-la-methode.md) :
+Un passage, dans cet ordre, après [le retrait de la page web](done/20261102123552185_retirer-la-page-web-de-la-methode.md) :
 
 1. corriger ou retirer les commandes mortes, dont les scripts `ezk:map` des deux `package.json` et
    l'aide de `bin/ezk-map.ts` ;
@@ -73,7 +73,7 @@ grep -rnE "ezk:map|ezk dashboard|Moniteur" --include='*.md' --include='*.yml' . 
 - Indépendante des trois autres : elle peut se construire à tout moment.
 - 2026-11-02 : [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) retire la page web de la méthode. « Board de la
   méthode » désigne désormais ce que publient `ezk board show` et les contrats, plus une page. La
-  commande `ezk board open` part avec [le retrait](20261102123552185_retirer-la-page-web-de-la-methode.md).
+  commande `ezk board open` part avec [le retrait](done/20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Groom du 2026-11-03 (run autonome) : la fiche se construit après le retrait de la page web, qui
   supprime déjà `bin/ezk-map.ts` et les scripts `ezk:map`. Il reste les mots et les renvois. Un
   « document actif » est un skill, un agent, une règle, un guide de `docs/` hors `adr/`, `captures/`

@@ -67,7 +67,7 @@ dans la même colonne que sur la page « process » de la méthode, tant que cel
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](../done/20261102123552185_retirer-la-page-web-de-la-methode.md).
 - L'entrée « Process » renvoie aujourd'hui vers
   [le schéma des étapes d'un skill](../20260830110131228_schema-etapes-skill-configurables.md). Ce schéma
   reste un autre sujet ; le build retire ce renvoi.

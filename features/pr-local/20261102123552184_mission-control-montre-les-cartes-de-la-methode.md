@@ -72,7 +72,7 @@ listés, et la carte de la méthode s'ouvre au clic.
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](../done/20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Les documents restent des fichiers de la méthode : seul l'écran qui les montre change.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
 - Groom du 2026-11-02 (run autonome) : sources vérifiées. `ezk board open --list` liste bien douze
