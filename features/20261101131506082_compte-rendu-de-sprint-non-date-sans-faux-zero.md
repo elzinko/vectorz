@@ -56,6 +56,11 @@ c'est une fiche d'une autre session, le carnet de tests. Les deux fiches du lot,
 lectures de cache. Piste : le compte des fiches livrées ne reconnaît pas un ship local
 (`pr: local (<sha>)`), et prend ce qui a été livré dans la fenêtre, quelle que soit la session.
 
+Au sprint 9, le même soir, le compte rendu est juste : 2 fiches livrées sur 2, 33 minutes, des ships
+locaux eux aussi. Le défaut n'est donc pas « un ship local n'est jamais compté » : il dépend de la
+fenêtre. Piste plus précise : le compte retient ce qui tombe dans la fenêtre du point de passage, et
+les sprints 7 et 8 ont eu des ships hors de cette fenêtre, ou une fiche d'une autre session dedans.
+
 ## Valeur
 
 Pour le PO qui relit un sprint : un chiffre faux en première phrase trompe plus qu'une absence
