@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 milestone: board
 version:
-depends: ["20261102123552181", "20261102123552182", "20261102123552183", "20261102123552184", "20260826222044335"]
+depends: ["20261102123552181", "20261102151630248", "20261102123552182", "20261102123552183", "20261102123552184", "20260826222044335"]
 labels: [board, un-seul-ecran]
 status: idea
 pr:
@@ -38,7 +38,7 @@ C'est la dernière fiche du chantier.
 
 ## Proposition
 
-Attendre que les cinq fiches de portage soient livrées, puis retirer en une fois :
+Attendre que toutes les fiches de portage soient livrées, puis retirer en une fois :
 
 1. la commande `ezk board open`, son serveur `bin/ezk-map.ts` et le raccourci `pnpm ezk:map` ;
 2. les cinq pages interactives devenues inutiles : avancement, pilotage, runs, process et la carte
@@ -74,8 +74,9 @@ trouve plus de mention hors historique.
 
 ## Notes
 
-- Dernière des cinq fiches du chantier « un seul écran », liées par `milestone: board` et le label
-  `un-seul-ecran`, sans fiche chapeau. Elle dépend des quatre fiches de portage et de la
+- Dernière fiche du chantier « un seul écran ». Les fiches du chantier sont liées par
+  `milestone: board` et le label `un-seul-ecran`, sans fiche chapeau. Elle dépend de toutes les
+  fiches de portage, dont les deux du pouce, et de la
   [vue « Loi » de mission control](20260826222044335_carte-la-loi-graphe-visuel.md).
 - Rend sans objet [le serveur de test ezk-map orphelin](20261101131506169_serveur-de-test-ezk-map-orphelin.md).
   Tant que la page existe, cette fiche reste utile.

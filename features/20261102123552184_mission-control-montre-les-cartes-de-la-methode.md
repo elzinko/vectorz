@@ -72,7 +72,7 @@ listés, et la carte de la méthode s'ouvre au clic.
 
 ## Notes
 
-- Une des cinq fiches du chantier « un seul écran », liées par `milestone: board` et le label
+- Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
   [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Les documents restent des fichiers de la méthode : seul l'écran qui les montre change.

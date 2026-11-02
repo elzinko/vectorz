@@ -72,7 +72,7 @@ sessions valent ceux de la méthode.
 
 ## Notes
 
-- Une des cinq fiches du chantier « un seul écran », liées par `milestone: board` et le label
+- Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
   [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Cette vue règle le doublon « runs » que l'ADR-086 laissait à revisiter : la chronologie montre le
