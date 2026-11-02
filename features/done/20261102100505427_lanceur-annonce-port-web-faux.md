@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (main 1724dd06)"
 evidence: none # message du lanceur dans le terminal ; pas d'écran nouveau
 created: 2026-11-02
 ---
