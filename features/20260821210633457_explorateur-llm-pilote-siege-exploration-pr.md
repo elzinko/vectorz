@@ -1,159 +1,132 @@
 ---
 id: "20260821210633457"
-title: "Un agent qui utilise l'app d'une PR et propose des fiches"
+title: "Un siège automatique qui joue une vraie session Claude Code, pour tester la méthode sans humain"
 type: feature
 priority: P2
 product: mega-city
-version: v0.23.0
-milestone: exploration-app
-epic:
+milestone:
 depends: ["0169"]
-labels: [test-local, exploration-app]
+labels: [test-local, supervision, dogfood]
 status: idea
 pr:
+evidence: none # script et journal, sans écran ; la preuve, c'est le journal
 created: 2026-08-21
 ---
 
-# Explorateur LLM par PR — piloter le siège, puis user l'app pour de vrai
+# 20260821210633457 — Un siège automatique qui joue une vraie session Claude Code
 
-## En clair
+> **Recentrée le 2026-11-02**, sur décision du PO. Jusque-là, la fiche portait aussi un explorateur
+> par PR qui proposait des fiches. Cette part vit désormais ailleurs : voir § Notes / décisions.
 
-**Suite de [[0169]]** (l'oracle `analyze --expect`, scindé le 2026-08-21). Une fois qu'on sait
-**comparer un journal de session à un attendu**, on veut deux briques de plus : un **siège
-automatique** qui joue une session Claude Code réelle en répondant aux gates, puis un **explorateur**
-qui *use l'application pour de vrai* sur une PR et rapporte non pas un vert/rouge, mais des
-**propositions de fiches** (bug / trou / feature à adapter). C'est le vrai sujet ; l'oracle n'en était
-que le socle testable.
+**En clair.** Pour tester la méthode de bout en bout, il faut aujourd'hui qu'un humain ouvre Claude
+Code, tape une commande et réponde aux validations. On veut un siège automatique qui joue cette
+session à sa place. Chaque run qu'il joue est étiqueté, pour que personne ne le prenne pour une
+validation humaine. Le journal de la session se vérifie ensuite contre un attendu, sans humain.
+
+**Si tu arrives frais.** Une *session* est une conversation Claude Code qui exécute la méthode. Le MCP
+`supervision` y émet un journal d'événements : début de run, validations, fin. Mission control
+affiche ce journal. Le *siège* est celui qui répond aux validations : d'habitude, c'est toi.
 
 ## Contexte / Problème
 
-Le dogfooding manuel trouve des défauts que rien d'autre ne trouve (cf. 0105, 0168 : des **trous entre
-les pièces**, pas des bugs de fonction), mais il coûte une session humaine à chaque fois. `0169` a
-livré l'**oracle** (le moteur d'assertion sur le journal). Restent les deux briques qui automatisent
-le *geste* : jouer la session, et explorer.
+Le dogfooding manuel trouve des défauts que rien d'autre ne trouve : des trous entre les pièces, pas
+des bugs de fonction. Les fiches [0105](done/0105-bug-moniteur-silence-dogfood.md) et
+[0168](done/0168-run-orphelin-verrou-sans-cle.md) en sont nées. Mais chaque passe coûte une session
+humaine.
 
-`scripts/dogfood-guided.sh` fait déjà build + smoke + daemon/web + screenshots Playwright + `analyze`.
-Ses **deux seuls trous** sont des `pause_human` : « ouvre Claude Code » et « tape /supervision-demo ».
+`scripts/dogfood-guided.sh` enchaîne déjà le build, le daemon, l'interface et `analyze`. Il s'arrête
+trois fois pour attendre un humain :
+
+- démarrer l'interface web (`scripts/dogfood-guided.sh:263`) ;
+- ouvrir Claude Code avec le MCP `supervision` (`scripts/dogfood-guided.sh:282`) ;
+- taper `/supervision-demo` (`scripts/dogfood-guided.sh:291`).
+
+La première pause se scripte sans difficulté. Les deux autres demandent un siège.
+
+Deux pièces sont déjà là. L'oracle `analyze --expect` compare un journal à un attendu
+(`products/mega-city/bin/supervision-analyze.ts`, livré par la fiche
+[0169](done/0169-explorateur-llm-par-pr.md)). Le journal sait porter un siège : le champ `seat` est lu
+par la projection des runs (`products/cop1/packages/journal-validator/src/projectRun.ts:15`).
 
 ## Proposition
 
-### Brique 2 — Pilote de siège (remplacer les deux `pause_human`)
+```
+dogfood-guided.sh, mode autonome
+  ├── lance le daemon et l'interface        (plus de pause)
+  ├── siège automatique (Agent SDK)   ──▶   vraie session Claude Code, MCP supervision branché
+  │      répond seul aux validations        chaque run porte seat: agent (ou seat: ci)
+  └── analyze --expect <attendu>      ──▶   vert, ou rouge avec l'événement manquant
+```
 
-Une session Claude Code réelle, pilotée, MCP `supervision` branché, avec un **siège scripté** qui
-répond aux gates. Brique = **Claude Agent SDK** (Claude Code empaqueté en bibliothèque : outils
-intégrés, MCP, sous-agents) — **pas** l'API Messages, **pas** son tool runner. Doc :
-`code.claude.com/docs/en/agent-sdk` (à lire avant toute signature).
-
-**Contrainte non négociable : le siège automatique est étiqueté** (`seat: agent` / `ci`). Un
-`gate.resumed` non marqué ferait dire au journal « le siège humain a validé » alors que personne n'a
-validé — le harnais fabriquerait des preuves fausses sur la propriété même que le contrat garantit.
-Ces runs alimentent aussi le corpus du mesureur d'outcomes : à **filtrer**, sinon les mesures faussent.
-
-### Brique 3 — Explorateur par PR (le vrai sujet)
-
-Sur une PR : monter le banc, **user l'application** (parcours navigateur + émission MCP), et rendre
-**des propositions de fiches** qualifiées :
-
-| Classe | Ce que c'est | Exemple vécu |
-|---|---|---|
-| **bug** | un comportement contredit le contrat | — |
-| **trou** | rien n'est faux, il manque une pièce | 0168 : un verrou sans clé |
-| **feature à adapter** | ça marche, mais c'est illisible / inutilisable | 0105 : le Moniteur paraît cassé |
-
-Sortie = commentaire de PR + `ezk-backlog add` **proposé** (jamais appliqué seul — invariant
-`review`/`reconcile` : détecter propose, l'humain arbitre).
-
-### Garde-fous (ce qui décide si l'outil vaut quelque chose)
-
-- **Ne jamais mocker le LLM.** Un mock est une fixture payée au prix d'un LLM. Ce qui se script, c'est
-  le **siège**, l'horloge, l'environnement — pas les décisions du modèle : c'est le générateur
-  d'imprévu, et l'imprévu est le produit.
-- **Un screenshot est une pièce à conviction, pas un oracle.** Assertions dures sur le DOM.
-- **L'explorateur est juge et partie.** Rien ne garantit qu'un agent rapporte ce qui le gêne (le
-  2026-07-30 il aurait pu voir `run_start refusé`, hausser les épaules, et rendre un rapport vert).
-  **Point de conception à trancher au grooming de cette fiche** : journalisation forcée de tout refus
-  rencontré, vérification croisée journal ↔ transcript, ou second agent adverse.
-- **Non bloquant.** L'outil ne garde pas un merge (un test instable qui bloque est éteint en deux
-  semaines). La pyramide protège, l'explorateur trouve.
-- **Tout défaut trouvé se convertit en test déterministe** (via l'oracle 0169). Sinon on repaye un run
-  LLM chaque nuit pour re-découvrir le même bug — et on finira par l'éteindre.
+- **Le siège pilote une vraie session Claude Code**, par le Claude Agent SDK : Claude Code empaqueté
+  en bibliothèque, avec ses outils, ses MCP et ses sous-agents. Pas l'API Messages. Doc :
+  `code.claude.com/docs/en/agent-sdk`, à lire avant toute signature.
+- **On ne simule jamais le LLM.** Ce qui se scripte, c'est le siège, l'horloge et l'environnement.
+  Les décisions du modèle restent réelles : elles sont la source d'imprévu, et l'imprévu est ce qu'on
+  teste.
+- **Le siège automatique est toujours étiqueté** `seat: agent` ou `seat: ci`. Sans étiquette, le
+  journal dirait « le siège humain a validé » alors que personne n'a validé : le harnais fabriquerait
+  une fausse preuve.
+- **Ces runs sont exclus des mesures** qui lisent le journal, sinon ils les faussent.
+- **Le mode guidé reste disponible**, pour explorer à la main.
+- **L'outil ne bloque rien.** Il ne garde aucun merge : un test instable qui bloque finit éteint.
 
 ## Critères d'acceptation
 
-- [ ] `dogfood-guided.sh` tourne de bout en bout **sans `pause_human`** (mode autonome), et garde le
-      mode guidé pour l'exploratoire.
-- [ ] Les runs émis par un siège automatique sont **distinguables** dans le journal (`seat: agent`/`ci`)
-      et **exclus** des mesures d'outcomes.
-- [ ] Sur une PR de test contenant un défaut connu, l'explorateur produit une **proposition de fiche
-      correctement classée** (bug / trou / feature à adapter).
-- [ ] **Aucune fiche créée sans arbitrage humain.**
-- [ ] Le garde-fou « juge et partie » est **implémenté** (au moins une des trois parades) et testé.
-- [ ] Tout défaut trouvé est **convertible en test déterministe** via l'oracle 0169 (démontré sur 1 cas).
-- [ ] Ce que le harnais ne couvre pas est **journalisé** (pas de troncature silencieuse).
-- [ ] Gate locale verte (typecheck / lint / tests).
+- [ ] `scripts/dogfood-guided.sh` tourne de bout en bout sans pause humaine, en mode autonome. Le mode
+      guidé reste disponible.
+- [ ] Le siège joue une vraie session Claude Code, avec le MCP `supervision` branché, et répond seul
+      aux validations.
+- [ ] Chaque run joué par le siège porte `seat: agent` ou `seat: ci` dans le journal.
+- [ ] Ces runs sont exclus des mesures qui lisent le journal : une mesure donne le même résultat avec
+      ou sans eux.
+- [ ] Le journal de la session passe `analyze --expect` contre un attendu écrit d'avance. Un écart
+      échoue, et le message nomme l'événement manquant.
+- [ ] Gate locale verte : typecheck, lint et tests.
 
 ## Comment vérifier
 
-1. Lancer `dogfood-guided.sh` en mode autonome : la chaîne va jusqu'au bout sans intervention humaine,
-   et le journal montre un siège `agent`/`ci`.
-2. Vérifier que les runs `agent`/`ci` sont exclus du corpus d'outcomes (mesure inchangée avec/sans).
-3. Sur une PR-cobaye avec défaut connu : l'explorateur rend une proposition de fiche de la bonne classe,
-   **sans** créer la fiche seul.
-4. Prendre un défaut rapporté et écrire son **test déterministe** via `analyze --expect` (0169).
+1. Lancer `scripts/dogfood-guided.sh` en mode autonome, option à nommer au `ready` : la chaîne va
+   jusqu'au bout sans intervention.
+2. Le journal montre les runs de la session avec `seat: agent`.
+3. Calculer une mesure avec et sans ces runs : le chiffre est le même.
+4. Exiger dans l'attendu un événement que la session n'émet pas : `analyze --expect` échoue et le
+   nomme.
+
+## Glossaire
+
+- `siège` — celui qui répond aux validations d'une session : d'habitude l'humain, ici un programme.
+- `validation` (*gate*) — un point où la session s'arrête et attend la réponse du siège.
+- `Agent SDK` — Claude Code empaqueté en bibliothèque, pilotable par un programme.
+- `dogfooding` — utiliser la méthode sur elle-même pour en trouver les défauts.
 
 ## Notes / décisions
 
-- **Mémoire partagée — le cache de cartographie [[20261014113049954]] (ajout PO 2026-10-14)** : au
-  lieu de remonter le banc et de re-parcourir toute l'app à chaque PR, l'explorateur **consulte** une
-  carte vivante versionnée de l'app (le « cache de cartographie applicative »), activable par projet.
-  C'est un **outil à part** ; l'explorateur le compose **ou non**. À intégrer quand le cache existe.
-- **Deux lentilles, pas forcément deux agents neufs — analyse de groom (2026-10-14)** : on sépare bien
-  l'**explorateur « en rupture »** (il diverge, propose des approches nouvelles) de la **qualification**
-  (rationaliser la proposition face à l'app et au backlog : pertinente ? type ? priorité ?). La
-  qualification **annote, elle ne filtre pas**. Mais « faut-il un *nouvel agent* qualifieur ? » — la
-  doctrine répond **probablement non** :
-  - la part **mécanique** (anti-doublon, type, priorité) est déjà `ezk-backlog add` → on **compose**, on ne refait pas ;
-  - le **jugement produit** (« ça vaut le coup ? ») est le rôle **`ezk-pm`** [[0141]], déjà existant → on **délègue** ;
-  - l'**indépendance** vis-à-vis de l'explorateur (le vrai besoin derrière « deux agents » : qu'un divergent ne s'auto-censure pas) s'obtient par une **passe séparée à lentille différente**, pas par un type d'agent neuf.
-  Un agent neuf ne se justifierait — [ADR-0026](../products/mega-city/docs/adr/0026-capacite-ux-agent-plus-skill-mince.md), « un agent = un *rôle* manquant, pas une *méthode* manquante » — que si le panel trouve que la qualification exige un jugement ou des « yeux » que ni `ezk-pm` ni une 2ᵉ passe de l'explorateur ne donnent.
-- **Validation par panel adverse (demande PO 2026-10-14)** : l'approche des deux fiches sœurs (cache +
-  explorateur, label `exploration-app`) sera **challengée par un panel** (architecte + devs + juge)
-  avant tout `ready` — « voir si l'approche est correcte ou non ». Le doute sur l'agent qualifieur
-  ci-dessus est la **première question** du panel.
-- **Panel adverse — résultat (2026-10-14).** Verdicts : *saine-avec-changements* (archi),
-  *vaut-le-coup-si* (produit), *risqué* (dev). L'explorateur est jugé **le vrai produit** (besoin
-  prouvé, oracle livré). Conditions avant `ready` :
-  - **Découpler du cache** — le garder strictement optionnel, prouver l'explorateur **cache éteint**,
-    ne pas conditionner son `ready` au cache (jugé fragile, cf. [[20261014113049954]]).
-  - **Découper** brique 2 (siège auto) / brique 3 (explorateur), livrer la 2 d'abord.
-  - **Parade « juge et partie » choisie (groom 2026-10-14)** : **journaliser tout refus** rencontré
-    pendant la passe (la moins chère), à implémenter et tester avant `ready`. Les deux autres parades
-    (recoupement journal ↔ transcript, 2ᵉ agent adverse) viennent plus tard si besoin.
-  - **Agent SDK (brique 2)** : **spike borné dans le temps** avant de s'engager (lire la doc
-    `code.claude.com/docs/en/agent-sdk`), pas une intégration ouverte.
-  - **Agent qualifieur — TRANCHÉ PO (2026-10-14) : pas de nouvel agent.** La qualification juge **sur
-    dossier** — la proposition + l'évidence (capture, DOM) déjà prise par l'explorateur — donc sans
-    re-voir l'app. On **compose** `ezk-backlog add` (anti-doublon, type, priorité) et on **délègue** le
-    jugement produit à `ezk-pm`. L'indépendance vient d'une **passe séparée à lentille différente**,
-    pas d'un type d'agent neuf. (Soupape : si un jour qualifier exige de re-voir l'app en marche,
-    rouvrir le cas rôle + yeux d'ADR-0026.)
-  - **Sas `brainstormed`** : non tranché ; défaut = modèle existant (`idea` + label de provenance).
-- **Sas `features/brainstormed` — question ouverte (PO 2026-10-14)** : le PO veut les propositions
-  dans un **dossier séparé** du backlog de travail, pas mêlées aux fiches actives. ⚠ Tension à
-  trancher avec la politique actuelle (rapport sous gate humaine, aucune carte créée seule, naissance
-  `idea` + label de provenance) : un sas physique est un **autre modèle**. À arbitrer au grooming.
-- **Division avec `ezk-scout` ([[20260910165637000]]) — décision PO (2026-09-10)** : deux cartes
-  **SÉPARÉES**. Cette carte cherche des **NOUVELLES FEATURES** (adaptations, trous à combler) ;
-  `ezk-scout` cherche les **BUGS**. Les deux **mutualisent la commande d'exploration** — une
-  **brique commune** (monter le banc isolé, user l'app, collecter des observations, rendre un
-  **rapport** de brouillons sous gate humaine) surmontée de deux **lentilles** (features vs bugs).
-  Ne PAS dupliquer cette brique : la factoriser et que chaque carte la compose. Politique commune :
-  proposition → arbitrage humain, jamais de carte créée/committée seule.
-- **Dépend de [[0169]]** (l'oracle) — le socle d'assertion. **Brique 2 avant brique 3** (l'explorateur
-  a besoin d'un siège pilotable).
-- **Scindée de 0169 le 2026-08-21** (décision PO : garder l'oracle tirable seul, sortir le reste en suites).
-- Deux défauts d'`analyze` relevés le 2026-07-30, à rattacher ici ou à 0105 au grooming : aucun verdict
-  rendu sur un run abandonné ; le tableau des appels MCP ne distingue pas un appel réussi d'un refusé.
-- **À groomer avant de tirer** : le point « juge et partie » et le choix Agent SDK ne sont pas tranchés.
-  Fiche **non ready** (todo) — grooming au moment du tirage.
-- Voisines : [[0099]] (vérifier les directives d'émission), [[0104]] (kit d'analyse de session).
+- **Recentrée le 2026-11-02 (décision PO).** L'ancienne brique 3, utiliser l'app d'une PR et proposer
+  des fiches, est couverte ailleurs :
+  - les bugs, par `ezk-scout`, livré :
+    [20260910165637000](done/20260910165637000_ezk-scout-chasse-bugs-tache-de-fond.md) ;
+  - les améliorations :
+    [20261102183114656](20261102183114656_scout-lentille-ameliorations-fiches-feature.md) ;
+  - le suivi de ce qui est testé, par le carnet :
+    [20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
+
+  Le déclenchement « par PR » ne colle plus à vectorz, qui intègre sans PR. La fiche sort de la
+  version v0.23.0 et de la milestone `exploration-app`, qui portent « l'app se cartographie ». Sa
+  priorité ne change pas.
+- **Conditions du panel du 2026-10-14, toujours valables pour le siège** : un spike borné dans le
+  temps sur l'Agent SDK avant de s'engager ; un siège livré seul, sans dépendre d'aucune autre pièce
+  d'exploration.
+- **Décisions du 2026-10-14 reportées dans la fiche améliorations** : la parade « juge et partie »
+  (journaliser tout refus rencontré), l'absence d'agent qualifieur, et la question d'un dossier séparé
+  pour les propositions.
+- **Deux défauts d'`analyze` relevés le 2026-07-30**, à traiter ici au grooming : aucun verdict n'est
+  rendu sur un run abandonné ; le tableau des appels MCP ne distingue pas un appel réussi d'un appel
+  refusé.
+- **Dépend de** [0169](done/0169-explorateur-llm-par-pr.md), l'oracle, livré. **Scindée** de 0169 le
+  2026-08-21 ; le volet article vit dans [[20260821210633522]].
+- **Voisines** : [[0099]] (vérifier les directives d'émission), [[0104]] (kit d'analyse de session),
+  [20260825024356665](20260825024356665_expect-sous-sequence-sessions-live.md) (attendus en
+  sous-séquence).
+- **À trancher au grooming** : le spike sur l'Agent SDK, et la vérification de la session dans mission
+  control, seul écran depuis l'amendement de l'ADR-086.

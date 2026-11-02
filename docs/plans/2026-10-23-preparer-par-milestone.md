@@ -133,7 +133,7 @@ ciblées remettent la carte d'aplomb.
 
 À garder au chaud, pas prioritaires. Chacune est un lot cohérent déjà identifiable.
 
-- **« L'app se cartographie »** (l'actuelle « v0.23 ») : [un agent qui utilise l'app d'une PR](../../features/20260821210633457_explorateur-llm-pilote-siege-exploration-pr.md) + [cache de cartographie applicative](../../features/20261014113049954_cache-cartographie-app.md).
+- **« L'app se cartographie »** (l'actuelle « v0.23 ») : [un agent qui utilise l'app d'une PR](../../features/20260821210633457_explorateur-llm-pilote-siege-exploration-pr.md) + [cache de cartographie applicative](../../features/done/20261014113049954_cache-cartographie-app.md).
 - **« Le cockpit s'ouvre »** : [une page d'accueil, une ligne par projet](../../features/20261002115451451_page-une-ligne-par-projet.md) + [rendre les étapes d'un skill configurables](../../features/20260830110131228_schema-etapes-skill-configurables.md).
 - **« La qualité tient »** : [revue design-system comme step de release](../../features/done/20261011153019643_revue-design-system-step-composable-release.md), [release local-first macOS signé/notarisé](../../features/20261002130917993_release-local-first-macos.md), [borner le coût du chemin daté de sprint:report](../../features/done/20261013143324505_sprint-report-cout-chemin-date.md).
 - **« Voir le vrai coût »** : [attribuer les jetons par mode de revue](../../features/done/20261017110956989_jetons-par-mode-local-vs-pr-codex.md) — **prête**, autonome.

@@ -7,13 +7,17 @@ product: mega-city
 milestone: exploration-app
 version: v0.23.0
 labels: [test-local, exploration-app]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261102182259416, 20261102182259505, 20261102182259592, 20261102182259680"
 evidence: none # capacité de méthode (outil + agents) ; preuve = ses tests + un run de démonstration
 created: 2026-10-14
+split_into: ["20261102182259416", "20261102182259505", "20261102182259592", "20261102182259680"]
 ---
 
 # 20261014113049954 — Carte de l'app et suivi de ce qui est testé
+
+> **Découpée le 2026-11-02**, après le panel adverse et la décision du PO. La suite vit dans quatre
+> fiches sœurs, listées au § Revue adverse (panel — 2026-11-02). Cette fiche reste comme historique.
 
 **En clair.** Un agent qui explore l'app la re-parcourt entièrement à chaque fois, sans mémoire. On
 aimerait une carte de l'app que les agents et les LLM consultent au lieu de tout re-explorer. **Le
@@ -135,6 +139,12 @@ une décision du panel du 2026-10-14 : le groom passe donc par un panel adverse.
 ## Avis de l'agent — un registre, pas un cache (2026-11-02)
 
 > Avis rendu à la demande du PO, **à soumettre au panel du groom**. Ce n'est pas une décision.
+>
+> **Réfuté en partie par le panel du 2026-11-02** (§ Revue adverse — panel du 2026-11-02). Le
+> registre de faits datés est retenu. L'expiration par les imports est réfutée : elle se trompe dans
+> les deux sens. L'arbre ne se lit dans aucun routeur, car aucune app cible n'en a. L'affirmation
+> « aucun outil ne réunit les trois » est fausse en partie. Les réponses aux failles 2 et 3
+> ci-dessous ne tiennent donc pas.
 
 **En clair.** Le projet est viable s'il devient un **registre** : un carnet qui note ce qui a été
 testé. Il ne doit pas être un **cache** : une copie de l'app à tenir à jour. Le registre est un outil
@@ -374,8 +384,8 @@ du cache (hors dépôt), jamais un commit ni une PR. Aucun churn.
 
 Le cache est un **artefact généré**, gros, qui change tout le temps. La méthode a déjà tranché ce cas :
 
-- une vue générée ne reste dans git que si on la lit sur GitHub — [ADR-0055](../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md) ;
-- un état vivant propre à la machine se sert en direct, jamais committé — [ADR-0043](../products/mega-city/docs/adr/0043-vue-sessions-live-servie-jamais-committee.md) ;
+- une vue générée ne reste dans git que si on la lit sur GitHub — [ADR-0055](../../products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md) ;
+- un état vivant propre à la machine se sert en direct, jamais committé — [ADR-0043](../../products/mega-city/docs/adr/0043-vue-sessions-live-servie-jamais-committee.md) ;
 - `ezk-scout` [[20260910165637000]] range déjà rapport, captures et journal **hors du dépôt cible**.
 
 **Décision : le cache vit HORS du dépôt cible, clé par SHA git.** Pas committé. « Versionné » veut dire
@@ -417,7 +427,7 @@ signalé.
 La passe est **find-only** sur le code produit (elle explore, ne modifie jamais), via le garde-fou et
 l'isolation d'état d'`ezk-scout`. Le seul écrit d'une passe est le magasin du cache, hors dépôt.
 
-### Interrupteur projet (aligné sur [ADR-074](../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md))
+### Interrupteur projet (aligné sur [ADR-074](../../docs/adr/ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md))
 
 Le projet déclare l'intention dans `.vectorz/config.yml` (« carto : on / off »), qui **voyage avec le
 repo**. L'emplacement du magasin est un réglage du **poste**, qui ne voyage pas — exactement la « config
@@ -480,6 +490,100 @@ complète) reste **différé** derrière ce test chiffré.
 - Si cache vivant : budget de rétention du magasin, et faut-il d'abord **factoriser la brique
   d'exploration commune** (le moteur de `ezk-scout` est livré **en ligne**, non factorisé) ?
 
+## Revue adverse (panel — 2026-11-02)
+
+**En clair.** Trois lentilles adverses ont challengé le besoin PO et l'avis de l'agent : architecte,
+dev et produit. Elles retiennent le registre de faits datés. Elles réfutent l'expiration par les
+imports et l'arbre tiré d'un routeur. Elles proposent de commencer par un arbre écrit à la main et
+une expiration par date, sur mission control.
+
+**Verdicts** : architecte → *fragile-à-revoir* ; dev → *risqué* ; produit → *à réduire*. Les preuves
+ci-dessous ont été revérifiées dans le dépôt par le juge du panel, le 2026-11-02.
+
+**Failles confirmées.**
+
+1. **L'expiration par les imports se trompe dans les deux sens** (les trois lentilles). L'avis disait
+   « trop prudent, mais jamais faux » : c'est faux.
+   - Elle fait expirer presque tout. `types.ts` est importé par 23 fichiers de
+     `products/cop1/packages/web/src/board/`.
+   - Elle laisse passer de faux « valide ». L'écran lit ses données par `fetch('/api/board')`
+     (`products/cop1/packages/web/src/board/Board.tsx:205`). Un autre paquet les sert, en lisant
+     `ezk` (`products/cop1/packages/app/src/features/board/boardProvider.ts:1-6`). Aucun import ne
+     relie les deux. Le CSS global est importé hors de toute vue
+     (`products/cop1/packages/web/src/main.tsx:4`).
+   - Elle dépend du poste. Une empreinte sur du code non committé n'est pas une fonction pure de
+     fichiers committés. C'est pourtant l'appui que réclament les ADR-0055 et 0043
+     (`products/mega-city/docs/adr/0055-artefacts-generes-hors-versionnage.md:24-26`,
+     `products/mega-city/docs/adr/0043-vue-sessions-live-servie-jamais-committee.md:66-69`).
+2. **Aucune app cible n'a de routeur** (dev, produit). Mission control change d'écran par une
+   variable (`products/cop1/packages/web/src/main.tsx:6-10`,
+   `products/cop1/packages/web/src/board/Board.tsx:34-43`), sans bibliothèque de routage. L'appli
+   bureau de muti n'utilise pas `vue-router`. samplerz est écrit en JavaScript sans framework. Le
+   Pas 1, « une fonction pure du routeur », ne s'applique donc pas : l'arbre se déclare à la main.
+3. **Les preuves disparaissent** (dev, produit). Le scout range son journal et ses captures dans un
+   dossier temporaire (`products/mega-city/skills/ezk-scout/SKILL.md:79`). Le registre doit garder sa
+   propre copie de chaque preuve.
+4. **L'écriture concurrente n'était pas modélisée** (architecte, dev). Deux passes peuvent écrire en
+   même temps. Parade : un journal où l'on ne fait qu'ajouter, une ligne par nœud, axe et passe. On
+   n'y réécrit jamais une ligne.
+5. **« Aucun outil ne réunit les trois » est faux en partie** (produit). Qase relie des exigences au
+   dernier résultat de leurs tests, et signale ceux à refaire. Mais il suit des tickets, pas le code,
+   et c'est un service en ligne
+   (https://docs.qase.io/en/articles/9123660-requirements-traceability-report). Le panel n'a trouvé
+   aucun outil local, gratuit et pilotable par un agent. Les agents de test de Playwright produisent
+   un plan en Markdown, qui peut servir de premier arbre (https://playwright.dev/docs/test-agents).
+
+**Ce qui tient.** Des faits datés qu'on ne modifie jamais, plutôt qu'une copie de l'app à tenir à
+jour. Un module dans mega-city, séparé du scout. Un registre hors du dépôt : un registre dans le
+dépôt ferait aussi tomber la garde find-only du scout, qui lit les fichiers non suivis
+(`products/mega-city/skills/ezk-scout/scripts/find-only-guard.sh:57`). Un « X sur Y » calculé depuis
+le même arbre que la liste.
+
+**Points de vigilance.**
+
+- Le registre ne compte que les passes d'exploration. Mission control a déjà ses tests de
+  composants : le registre doit le dire, sinon ses « jamais testé » paraîtront faux.
+- Une expiration au moindre commit ferait tout passer « expiré » en quelques jours : `web/src` a
+  reçu 6 commits en 14 jours. D'où l'expiration par date, avec le nombre de commits depuis la preuve
+  affiché à côté.
+- L'axe visuel restera vide si le scout ne passe qu'en HTTP. La passe du 2026-11-02 sur mission
+  control n'utilisait que des requêtes (`docs/sessions/2026-11-02-scout-sprint5-mission-control.md:13`).
+
+**Mesure de valeur** (proposée par le produit), sur les 3 premières passes du scout sur mission
+control :
+
+- chaque passe part de la liste « à tester » du registre ;
+- « X sur Y testés » monte à chaque passe ;
+- au moins un défaut est trouvé sur un nœud jamais testé ;
+- quand le PO consulte, moins de la moitié des nœuds sont expirés.
+
+Deux échecs sur ces quatre points, et on retire l'outil.
+
+**Décisions PO (2026-11-02).** Le PO a accepté la synthèse en bloc (« applique tout ») :
+
+1. Un registre de faits datés plutôt qu'un cache.
+2. Un module dans mega-city, séparé du scout.
+3. Première app : mission control. L'app jouet du scout sert de fixture de test.
+4. L'arbre est déclaré à la main. Les preuves expirent par date au départ. L'expiration quand le code
+   change est différée derrière la mesure.
+5. Découpage en quatre fiches sœurs. Le mode « améliorations » du scout, qui propose des fiches de
+   fonctionnalité, est traité à part.
+
+**Découpage** (milestone `exploration-app`, sans fiche chapeau), dans l'ordre de construction :
+
+1. [20261102182259416](../20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md) — Un
+   carnet qui note ce qui est testé dans l'app, et quand la preuve expire.
+2. [20261102182259505](../20261102182259505_scout-lit-et-remplit-le-carnet.md) — `ezk-scout` part du
+   carnet pour choisir quoi tester, et y note ses résultats.
+3. [20261102182259592](../20261102182259592_carnet-mission-control-premiere-app-mesure.md) — Tenir le
+   carnet de tests de mission control, et mesurer s'il sert.
+4. [20261102182259680](../20261102182259680_carnet-expiration-quand-le-code-change.md) — Faire expirer
+   une preuve quand le code de la fonctionnalité change. Différée derrière la mesure.
+
+Le Pas 1 (index du routeur) et le Pas 2 (test d'économie de tokens) sont remplacés par ces fiches.
+L'architecture du cache vivant, plus haut, reste écartée. Coût du panel : environ 490 000 jetons,
+pour trois agents.
+
 ## Glossaire
 
 - `cache de cartographie` — la carte de l'app stockée et réutilisée, comme un cache mémoire : on lit
@@ -498,6 +602,9 @@ complète) reste **différé** derrière ce test chiffré.
 
 ## Notes / décisions
 
+- **Panel et découpage (2026-11-02).** Le panel adverse a réfuté l'expiration par les imports et
+  l'arbre tiré d'un routeur. Le PO a accepté sa synthèse, puis le découpage en quatre fiches sœurs.
+  Détail dans § Revue adverse (panel — 2026-11-02).
 - **Besoin PO — couverture (2026-11-02).** Le PO veut tester son app à la demande et savoir ce qui
   est testé, visuellement et fonctionnellement, avec des preuves qui expirent. Il voit la carte comme
   une bibliothèque à part, que `ezk-scout` utilise comme outil. Décision PO : **enrichir cette fiche**

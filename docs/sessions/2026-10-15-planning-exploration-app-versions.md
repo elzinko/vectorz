@@ -11,7 +11,7 @@ d'`ezk-archive`).
 
 ## Ce qui a été décidé / produit
 
-- **Cache de cartographie** (nouvelle fiche, idée, P2) — [20261014113049954](../../features/20261014113049954_cache-cartographie-app.md).
+- **Cache de cartographie** (nouvelle fiche, idée, P2) — [20261014113049954](../../features/done/20261014113049954_cache-cartographie-app.md).
   Cadrée « carte vivante », puis **réduite** après un **panel adverse** (archi / dev / produit) qui l'a
   jugée contradictoire sur son mécanisme et non prouvée. Nouveau périmètre : **index statique des
   routes + test de valeur** ; le cache vivant est différé derrière cette preuve.
