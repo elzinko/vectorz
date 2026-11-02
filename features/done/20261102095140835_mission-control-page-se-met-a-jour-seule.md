@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (0aabc89b)"
 evidence: before-after
 created: 2026-11-02
 ---
@@ -23,7 +23,7 @@ d'une minute si elle reste ouverte.
 
 ## Contexte / Problème
 
-- Depuis le [branchement du 2026-11-01](done/20261031160441412_mission-control-consomme-ezk.md),
+- Depuis le [branchement du 2026-11-01](20261031160441412_mission-control-consomme-ezk.md),
   le daemon de mission control garde la dernière réponse d'`ezk` et la relit en arrière-plan quand
   elle a plus de 30 secondes. C'est voulu : la page n'attend jamais.
 - Mais la page ne redemandait ses chiffres qu'au chargement. Le daemon relisait bien la méthode,
@@ -80,13 +80,13 @@ passe de 328 à 329 fiches livrées. On regarde la page 60 secondes plus tard, s
 
 | Départ (les deux cas) | Avant le correctif, 60 s après | Après le correctif, 60 s après |
 |---|---|---|
-| ![328 livrées au départ](../docs/pr-evidence/20261102095140835/page-ouverte-depart.png) | ![toujours 328](../docs/pr-evidence/20261102095140835/page-ouverte-before-t60.png) | ![329, comme la méthode](../docs/pr-evidence/20261102095140835/page-ouverte-after-t60.png) |
+| ![328 livrées au départ](../../docs/pr-evidence/20261102095140835/page-ouverte-depart.png) | ![toujours 328](../../docs/pr-evidence/20261102095140835/page-ouverte-before-t60.png) | ![329, comme la méthode](../../docs/pr-evidence/20261102095140835/page-ouverte-after-t60.png) |
 
 Mesure du délai, après le correctif : la page a montré 329 au bout de 27 secondes.
 
 ## Notes
 
-- Bug de la [fiche « mission control consomme ezk »](done/20261031160441412_mission-control-consomme-ezk.md),
+- Bug de la [fiche « mission control consomme ezk »](20261031160441412_mission-control-consomme-ezk.md),
   constaté le 2026-11-02. Priorité P2, reprise de la fiche mère.
 - Le délai de relecture du daemon reste à 30 secondes. Un envoi par le serveur (SSE) éviterait les
   demandes répétées, mais la demande toutes les 15 secondes coûte une lecture en mémoire : on garde le

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102095140835_mission-control-page-se-met-a-jour-seule.md](../20261102095140835_mission-control-page-se-met-a-jour-seule.md)
+> 🗎 Rendu de la fiche [features/20261102095140835_mission-control-page-se-met-a-jour-seule.md](../done/20261102095140835_mission-control-page-se-met-a-jour-seule.md)
 
 ## En clair
 
