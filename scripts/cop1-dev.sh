@@ -48,7 +48,7 @@ if [ "$BUILD" = "1" ]; then
 fi
 
 echo "▶ daemon cop1 → port $DAEMON_PORT (lit supervision.registry.yaml à la racine)"
-node products/cop1/packages/app/dist/cli/daemon-entry.js --port "$DAEMON_PORT" &
+node products/cop1/packages/app/dist/cli/daemon-entry.js --port "$DAEMON_PORT" --web-port "$WEB_PORT" &
 DAEMON_PID=$!
 
 # Arrête le daemon quand on quitte (Ctrl-C), pour ne pas le laisser traîner.

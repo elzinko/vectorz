@@ -1,7 +1,9 @@
 import { type IncomingMessage, type Server, type ServerResponse, createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import type { EventBus } from '@cop1/shared-kernel';
-import { COP1_VERSION, type HealthInfo } from '../domain/DaemonState.js';
+import { COP1_VERSION, DEFAULT_WEB_PORT, type HealthInfo } from '../domain/DaemonState.js';
 import type { AuthCheckResult } from './AuthChecker.js';
+import { guardRequest } from './requestGuard.js';
 
 const MAX_BODY_SIZE = 10_240; // 10 KB
 const VALID_STATUSES = ['pending', 'approved', 'rejected', 'debated'] as const;
@@ -82,6 +84,14 @@ export class HttpServer {
   private runAbandonHandler: RunAbandonHandler | null = null;
   private projectAnchorHandler: ProjectAnchorHandler | null = null;
   private eventBusWired = false;
+  /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
+  private boundPort = 0;
+  private webPort = DEFAULT_WEB_PORT;
+
+  /** fiche 20261102165708468 — le port de la page de mission control, dont l'Origin peut écrire. */
+  setWebPort(port: number): void {
+    this.webPort = port;
+  }
 
   setSupervisionProvider(provider: SupervisionProvider): void {
     this.supervisionProvider = provider;
@@ -145,12 +155,30 @@ export class HttpServer {
 
       this.server.on('error', reject);
       this.server.listen(port, '127.0.0.1', () => {
+        this.boundPort = (this.server?.address() as AddressInfo).port;
         resolve();
       });
     });
   }
 
   private handleRequest(req: IncomingMessage, res: ServerResponse): void {
+    // fiche 20261102165708468 — la garde passe avant toute route : un refus n'exécute rien.
+    const verdict = guardRequest(
+      {
+        method: req.method ?? 'GET',
+        host: req.headers.host,
+        origin: req.headers.origin,
+        contentType: req.headers['content-type'],
+      },
+      { daemonPort: this.boundPort, webPort: this.webPort },
+    );
+    if (!verdict.ok) {
+      req.resume(); // vide le corps non lu : sinon la connexion se coupe en plein envoi
+      res.writeHead(verdict.status, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: verdict.reason }));
+      return;
+    }
+
     if (req.method === 'GET' && req.url === '/health') {
       const health: HealthInfo = {
         status: 'ok',

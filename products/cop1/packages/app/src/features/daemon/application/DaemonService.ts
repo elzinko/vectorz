@@ -21,6 +21,8 @@ import { PidFileManager } from '../infrastructure/PidFileManager.js';
 
 export interface DaemonOptions {
   port?: number;
+  /** Port de la page web de mission control : son Origin peut écrire (fiche 20261102165708468). */
+  webPort?: number;
   projectPath?: string;
   /** Injectable for tests; defaults to a fresh in-process bus. */
   eventBus?: EventBus;
@@ -43,6 +45,7 @@ export class DaemonService {
     this.port = options.port ?? DEFAULT_PORT;
     const projectPath = options.projectPath ?? process.cwd();
     this.httpServer = new HttpServer();
+    if (options.webPort !== undefined) this.httpServer.setWebPort(options.webPort);
     this.pidManager = new PidFileManager(projectPath);
 
     this.eventBus = options.eventBus ?? new EventBus();

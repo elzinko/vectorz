@@ -419,8 +419,10 @@ describe('HttpServer', () => {
 
     it('falls through to 404 when no blocage route matches (PUT on resolve)', async () => {
       await server.start(TEST_PORT);
+      // JSON : la garde (fiche 20261102165708468) laisse passer, ce test vérifie le routage.
       const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/blocages/BLK-unknown/resolve`, {
         method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
       });
       expect(res.status).toBe(404);
     });

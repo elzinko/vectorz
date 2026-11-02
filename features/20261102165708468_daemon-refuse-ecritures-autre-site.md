@@ -77,16 +77,16 @@ l'ADR-021 lui interdit d'importer le code de mega-city.
 
 ## Critères d'acceptation
 
-- [ ] **Un autre site est refusé.** Chacune des quatre routes d'écriture refuse une requête dont
+- [x] **Un autre site est refusé.** Chacune des quatre routes d'écriture refuse une requête dont
       l'`Origin` est `https://exemple.test`, sans exécuter l'action.
-- [ ] **Un autre type est refusé.** Une écriture au type `text/plain` est refusée, sans exécuter
+- [x] **Un autre type est refusé.** Une écriture au type `text/plain` est refusée, sans exécuter
       l'action.
-- [ ] **Un Host étranger est refusé partout.** Une requête dont le `Host` est `piege.test:4343` est
+- [x] **Un Host étranger est refusé partout.** Une requête dont le `Host` est `piege.test:4343` est
       refusée, y compris sur `GET /api/board`.
-- [ ] **La page de mission control marche toujours.** Par le proxy de développement, la page lit le
+- [x] **La page de mission control marche toujours.** Par le proxy de développement, la page lit le
       board et déclenche les quatre actions comme avant.
-- [ ] **Le terminal marche toujours.** Une écriture sans `Origin`, au type JSON, passe.
-- [ ] **Une seule garde.** Les quatre routes passent par la même fonction, testée cas par cas.
+- [x] **Le terminal marche toujours.** Une écriture sans `Origin`, au type JSON, passe.
+- [x] **Une seule garde.** Les quatre routes passent par la même fonction, testée cas par cas.
 
 ## Comment vérifier
 
@@ -110,3 +110,7 @@ signe que la requête a été traitée, et la seconde rend 200.
   et [un corps invalide répond « introuvable »](20261102100506119_resolve-blocage-corps-invalide-404.md).
 - Priorité P1, fixée par le PO le 2026-11-02 : un trou de sécurité dans du code en service, à
   corriger avant le chantier « un seul écran ».
+- Revue adverse du 2026-11-02 (sprint 7 du run autonome) : GO, six critères prouvés par les tests. Deux
+  remarques non bloquantes, gardées pour plus tard : une future écriture en GET ou OPTIONS ne passerait
+  que le contrôle du Host ; les lectures ne contrôlent pas l'Origin, ce qui reste sûr tant qu'aucune ne
+  renvoie un secret.
