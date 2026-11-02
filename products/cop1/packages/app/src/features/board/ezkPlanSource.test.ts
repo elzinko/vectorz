@@ -55,7 +55,7 @@ describe('EzkPlanSource — jamais d’attente', () => {
     const t0 = performance.now();
     const first = source.get('/p');
     expect(performance.now() - t0).toBeLessThan(100);
-    expect(first).toEqual({ state: 'loading' });
+    expect(first).toEqual({ state: 'loading', refreshing: true });
 
     slow.release();
     await vi.waitFor(() => expect(source.get('/p').state).toBe('ok'));
@@ -100,6 +100,21 @@ describe('EzkPlanSource — jamais d’attente', () => {
     now += 2_000; // 31 s
     expect(source.get('/p').state).toBe('ok'); // répond d’abord avec l’ancien état
     await vi.waitFor(() => expect(calls).toHaveLength(4));
+  });
+
+  it('dit quand il relit : `refreshing` vrai tant qu’un rafraîchissement tourne, faux sinon', async () => {
+    let now = 1_000;
+    const { run } = fakeRunner();
+    const source = new EzkPlanSource({ command: ['ezk'], run, now: () => now });
+    expect(source.get('/p').refreshing).toBe(true);
+    await vi.waitFor(() => expect(source.get('/p').state).toBe('ok'));
+    expect(source.get('/p').refreshing).toBe(false);
+
+    now += 31_000;
+    const stale = source.get('/p');
+    expect(stale.state).toBe('ok'); // l’ancienne réponse, tout de suite…
+    expect(stale.refreshing).toBe(true); // …et la page sait qu’une relecture est en route
+    await vi.waitFor(() => expect(source.get('/p').refreshing).toBe(false));
   });
 
   it('suit chaque projet séparément', async () => {

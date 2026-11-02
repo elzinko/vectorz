@@ -4,9 +4,9 @@
  * `ezkSource.ts`, commun aux lectures de la méthode.
  */
 import { type TranslatedPlan, translatePlan } from './ezkPlanTranslator.js';
-import { EzkSource, type EzkSourceOptions, type SourceSnapshot } from './ezkSource.js';
+import { EzkSource, type EzkSourceOptions, type SourceReading } from './ezkSource.js';
 
-export type PlanSnapshot = SourceSnapshot<TranslatedPlan>;
+export type PlanSnapshot = SourceReading<TranslatedPlan>;
 
 export class EzkPlanSource extends EzkSource<TranslatedPlan> {
   constructor(options: EzkSourceOptions) {

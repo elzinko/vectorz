@@ -6,13 +6,13 @@
  * d'ensemble est livrée ici (tranche 20261012231419185) ; les autres vues
  * arrivent à leurs tranches et affichent pour l'instant un repère.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AddProjectModal } from './AddProjectModal.js';
 import { CadrageView } from './CadrageView.js';
 import { ConfigView } from './ConfigView.js';
 import { defaultToolConfig, type Role, type Tier } from './configModel.js';
 import { ToolConfigView } from './ToolConfigView.js';
-import type { BoardData, BoardProject, PlanState } from './types.js';
+import type { BoardData, BoardProject, FicheDetail, PlanState } from './types.js';
 import { DevView } from './DevView.js';
 import { FicheModal } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
@@ -25,8 +25,11 @@ const BRAND_VERSION = 'v0.17.0';
 
 /** Le projet affiché par défaut à l'ouverture du board. */
 const DEFAULT_PROJECT = 'vectorz';
-/** Délai avant de redemander le board quand un plan est encore en chargement côté serveur. */
+/** Délai avant de redemander le board quand une lecture se charge ou se relit côté serveur. */
 const LOADING_RETRY_MS = 2000;
+/** Rythme auquel une page ouverte redemande le board : la méthode a pu changer entre-temps. Chaque
+ *  demande est servie depuis la copie du serveur, qui ne relit `ezk` qu'au plus toutes les 30 s. */
+const REFRESH_MS = 15_000;
 
 type ViewId =
   | 'fleet'
@@ -146,6 +149,11 @@ function SourceMessage({ kind }: { kind: Exclude<BoardSource['kind'], 'live'> })
   );
 }
 
+/** Un chiffre plus frais arrive-t-il bientôt pour cette lecture ? */
+function awaitsFresher(state: PlanState | undefined): boolean {
+  return state?.state === 'loading' || state?.refreshing === true;
+}
+
 /** Le message à montrer quand le plan d'un projet n'est pas arrivé ; `null` s'il l'est. */
 function planMessage(plan: PlanState | undefined): string | null {
   if (!plan || plan.state === 'ok') return null;
@@ -161,6 +169,9 @@ export function Board(): JSX.Element {
   const [runDetailId, setRunDetailId] = useState<string | null>(null);
   // Fiche ouverte en modale par-dessus — null = aucune.
   const [ficheModalId, setFicheModalId] = useState<string | null>(null);
+  // Dernier détail vu de la fiche ouverte : livrée entre deux relectures, elle quitte le plan,
+  // mais sa fenêtre reste ouverte au lieu de se fermer en silence.
+  const lastFicheSeen = useRef<FicheDetail | undefined>(undefined);
   const [projModalOpen, setProjModalOpen] = useState(false);
   const [query, setQuery] = useState('');
   // Lot présélectionné quand on lance une version depuis la vue d'ensemble.
@@ -181,8 +192,8 @@ export function Board(): JSX.Element {
 
   // Montage : fetch de la source live. Toute erreur (pas de daemon, HTTP, réseau, JSON cassé,
   // `fetch` absent) donne « injoignable ». Le serveur demande son plan à `ezk` en arrière-plan :
-  // tant qu'un projet est encore « en cours de chargement », la page redemande toutes les
-  // LOADING_RETRY_MS, puis s'arrête.
+  // tant qu'une lecture se charge ou se relit, la page redemande toutes les LOADING_RETRY_MS ;
+  // sinon toutes les REFRESH_MS, pour suivre la méthode sans qu'on recharge.
   useEffect(() => {
     if (typeof fetch !== 'function') {
       setSource({ kind: 'unreachable' });
@@ -197,12 +208,15 @@ export function Board(): JSX.Element {
           if (!alive) return;
           const valid = data && typeof data === 'object' && Object.keys(data).length > 0;
           setSource(valid ? { kind: 'live', data } : { kind: 'empty' });
-          if (valid && Object.values(data).some((p) => p.plan?.state === 'loading')) {
-            retry = setTimeout(load, LOADING_RETRY_MS);
-          }
+          const pending =
+            valid &&
+            Object.values(data).some((p) => awaitsFresher(p.plan) || awaitsFresher(p.configState));
+          retry = setTimeout(load, pending ? LOADING_RETRY_MS : REFRESH_MS);
         })
         .catch(() => {
-          if (alive) setSource({ kind: 'unreachable' });
+          if (!alive) return;
+          setSource({ kind: 'unreachable' });
+          retry = setTimeout(load, REFRESH_MS);
         });
     };
     load();
@@ -257,7 +271,10 @@ export function Board(): JSX.Element {
   }
 
   const runDetail = runDetailId ? project.runs[runDetailId] : undefined;
-  const ficheModal = ficheModalId ? project.fiches?.[ficheModalId] : undefined;
+  const liveFiche = ficheModalId ? project.fiches?.[ficheModalId] : undefined;
+  if (liveFiche) lastFicheSeen.current = liveFiche;
+  const ficheModal =
+    liveFiche ?? (ficheModalId && lastFicheSeen.current?.id === ficheModalId ? lastFicheSeen.current : undefined);
 
   return (
     <div className="bd">

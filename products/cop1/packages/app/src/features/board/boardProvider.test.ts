@@ -131,6 +131,33 @@ describe('shapeProject — la config du projet, lue par ezk (ADR-086)', () => {
   });
 });
 
+describe('shapeProject — une relecture en cours se voit, pour que la page redemande vite', () => {
+  it('plan et config relus en arrière-plan → `refreshing: true` dans leur état', () => {
+    const p = shapeProject('vectorz', '', { ...ok, refreshing: true }, noLive, {
+      state: 'ok',
+      at: 1,
+      config,
+      refreshing: true,
+    });
+    expect(p.plan).toEqual({ state: 'ok', refreshing: true });
+    expect(p.configState).toEqual({ state: 'ok', refreshing: true });
+  });
+
+  it('indisponible et relu → la raison, et `refreshing: true`', () => {
+    const p = shapeProject('vectorz', '', {
+      state: 'unavailable',
+      reason: 'ezk en erreur',
+      refreshing: true,
+    });
+    expect(p.plan).toEqual({ state: 'unavailable', reason: 'ezk en erreur', refreshing: true });
+  });
+
+  it('rien ne se relit → l’état ne porte pas `refreshing`', () => {
+    const p = shapeProject('vectorz', '', { ...ok, refreshing: false });
+    expect(p.plan).toEqual({ state: 'ok' });
+  });
+});
+
 describe('composeBoardData — synchrone, lit l’état des sources', () => {
   it('rend tout de suite « loading » pour un ezk lent, sans attendre', () => {
     const never = new Promise<string>(() => {});

@@ -197,11 +197,13 @@ export interface FicheDetail {
   blocked?: string;
 }
 
-/** Où en est le plan d'un projet : reçu de la méthode, en chargement, ou indisponible (avec la raison). */
-export type PlanState =
+/** Où en est le plan d'un projet : reçu de la méthode, en chargement, ou indisponible (avec la raison).
+ *  `refreshing` : le serveur relit la méthode, un chiffre plus frais arrive. */
+export type PlanState = (
   | { state: 'ok' }
   | { state: 'loading' }
-  | { state: 'unavailable'; reason: string };
+  | { state: 'unavailable'; reason: string }
+) & { refreshing?: true };
 
 /** Un projet : la seule source de vérité de ses chiffres. */
 export interface BoardProject {

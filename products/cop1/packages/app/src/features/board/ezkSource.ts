@@ -4,7 +4,8 @@
  *
  * Règle : JAMAIS d'attente pendant une requête. Une source garde, par projet, la dernière réponse.
  * `get()` répond tout de suite avec cet état ; si la réponse a plus de `ttlMs` (ou n'existe pas) et
- * qu'aucun rafraîchissement ne tourne pour ce projet, il en lance un en arrière-plan.
+ * qu'aucun rafraîchissement ne tourne pour ce projet, il en lance un en arrière-plan. La réponse dit
+ * alors `refreshing: true` : la page sait qu'un chiffre plus frais arrive, et redemande vite.
  *
  * Chaque lecture (le plan, la config) est une source à part : l'échec de l'une ne cache pas l'autre.
  */
@@ -19,6 +20,9 @@ export type SourceSnapshot<T> =
   | { state: 'loading' }
   | ({ state: 'ok'; at: number } & T)
   | { state: 'unavailable'; reason: string };
+
+/** Ce que `get()` rend : l'état de la lecture, et si une relecture d'`ezk` est en route. */
+export type SourceReading<T> = SourceSnapshot<T> & { refreshing?: boolean };
 
 export interface EzkSourceOptions {
   /** La commande qui lance la méthode (`supervision.ezk_command`), ex. `["ezk"]`. */
@@ -98,7 +102,7 @@ export class EzkSource<T> {
   }
 
   /** L'état courant de la lecture pour ce projet — immédiat. Déclenche un rafraîchissement si besoin. */
-  get(root: string): SourceSnapshot<T> {
+  get(root: string): SourceReading<T> {
     let entry = this.entries.get(root);
     if (!entry) {
       entry = { snapshot: { state: 'loading' }, lastAttemptAt: 0, refreshing: false };
@@ -106,7 +110,7 @@ export class EzkSource<T> {
     }
     const stale = this.now() - entry.lastAttemptAt > this.ttlMs;
     if (!entry.refreshing && (stale || entry.lastAttemptAt === 0)) void this.refresh(root, entry);
-    return entry.snapshot;
+    return { ...entry.snapshot, refreshing: entry.refreshing };
   }
 
   private async refresh(root: string, entry: Entry<T>): Promise<void> {

@@ -100,7 +100,7 @@ describe('EzkConfigSource — la config par ezk, sans attente', () => {
       return EXAMPLE;
     };
     const source = new EzkConfigSource({ command: ['ezk'], run });
-    expect(source.get('/p')).toEqual({ state: 'loading' });
+    expect(source.get('/p')).toEqual({ state: 'loading', refreshing: true });
     await vi.waitFor(() => expect(source.get('/p').state).toBe('ok'));
     expect(calls).toEqual([['--root', '/p', 'config', 'show', '--json']]);
     const snap = source.get('/p');

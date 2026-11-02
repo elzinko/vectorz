@@ -3,7 +3,7 @@
  * et n'affiche JAMAIS les chiffres d'exemple. Une fiche bloquée porte la mention « bloquée » et sa
  * raison dans sa fenêtre de détail.
  */
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import Board from './Board.js';
@@ -92,6 +92,86 @@ describe('plan indisponible ou en chargement', () => {
     await renderBoardOn(withoutPlan({ state: 'ok' }));
     expect(screen.queryByText(/plan indisponible/)).toBeNull();
     expect(screen.queryByText(/plan en cours de chargement/)).toBeNull();
+  });
+});
+
+describe('la page suit la méthode sans qu’on la recharge', () => {
+  /** Un plan reçu, avec ce compte de fiches livrées et cet état. */
+  function withDone(done: number, plan: NonNullable<BoardProject['plan']>): BoardData {
+    const base = withoutPlan({ state: 'ok' }).mon_projet as BoardProject;
+    return { mon_projet: { ...base, plan, metrics: { ...base.metrics, done } } };
+  }
+  const answer = (data: BoardData): Response =>
+    ({ ok: true, json: () => Promise.resolve(data) }) as Response;
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('le serveur relit la méthode → la page redemande vite et montre le chiffre à jour', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(answer(withDone(327, { state: 'ok', refreshing: true })))
+      .mockResolvedValue(answer(withDone(328, { state: 'ok' })));
+    vi.stubGlobal('fetch', fetchMock);
+    render(<Board />);
+    expect(await screen.findByText('327')).toBeTruthy();
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(await screen.findByText('328')).toBeTruthy();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('page laissée ouverte → elle redemande toutes les 15 s et suit la méthode', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(answer(withDone(327, { state: 'ok' })))
+      .mockResolvedValue(answer(withDone(328, { state: 'ok' })));
+    vi.stubGlobal('fetch', fetchMock);
+    render(<Board />);
+    expect(await screen.findByText('327')).toBeTruthy();
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(fetchMock).toHaveBeenCalledTimes(1); // rien ne se relit : pas de demande rapide
+    await vi.advanceTimersByTimeAsync(13_000);
+    expect(await screen.findByText('328')).toBeTruthy();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('une fiche livrée entre deux relectures → sa fenêtre ouverte reste ouverte', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const [opened] = Object.values(vectorzSample.fiches ?? {});
+    if (!opened) throw new Error('l’échantillon doit porter au moins une fiche');
+    const { [opened.id]: _livree, ...others } = vectorzSample.fiches ?? {};
+    const before: BoardData = { vectorz: { ...vectorzSample, plan: { state: 'ok' } } };
+    const after: BoardData = { vectorz: { ...vectorzSample, plan: { state: 'ok' }, fiches: others } };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(answer(before))
+      .mockResolvedValue(answer(after));
+    vi.stubGlobal('fetch', fetchMock);
+    render(<Board />);
+    await user.click(await screen.findByRole('button', { name: 'Fiches' }));
+    await user.click(screen.getByText(opened.title));
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    await vi.advanceTimersByTimeAsync(15_000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(within(screen.getByRole('dialog')).getByText(opened.title)).toBeTruthy();
+  });
+
+  it('serveur injoignable puis revenu → la page le dit, puis montre le board sans recharger', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('connexion refusée'))
+      .mockResolvedValue(answer(withDone(328, { state: 'ok' })));
+    vi.stubGlobal('fetch', fetchMock);
+    render(<Board />);
+    expect(await screen.findByText(/injoignable/)).toBeTruthy();
+    await vi.advanceTimersByTimeAsync(15_000);
+    expect(await screen.findByText('328')).toBeTruthy();
+    expect(screen.queryByText(/injoignable/)).toBeNull();
   });
 });
 

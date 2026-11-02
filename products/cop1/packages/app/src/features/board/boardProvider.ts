@@ -24,7 +24,7 @@ import {
 import type { ConfigSnapshot, EzkConfigSource } from './ezkConfigSource.js';
 import type { ProjectConfigData } from './ezkConfigTranslator.js';
 import type { EzkPlanSource, PlanSnapshot } from './ezkPlanSource.js';
-import type { SourceSnapshot } from './ezkSource.js';
+import type { SourceReading } from './ezkSource.js';
 import type { FicheDetailData, PlanFunnel, PlanVersions } from './planTypes.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
@@ -40,11 +40,13 @@ export interface BoardSources {
   config: EzkConfigSource;
 }
 
-/** L'état d'une lecture de la méthode (le plan, la config), tel que la page l'affiche. */
-export type BoardPlanState =
+/** L'état d'une lecture de la méthode (le plan, la config), tel que la page l'affiche.
+ *  `refreshing` : la méthode est en train d'être relue, la page redemande bientôt. */
+export type BoardPlanState = (
   | { state: 'ok' }
   | { state: 'loading' }
-  | { state: 'unavailable'; reason: string };
+  | { state: 'unavailable'; reason: string }
+) & { refreshing?: true };
 
 /** La part « plan » d'un `BoardProject` (sous-ensemble structurel des types du board web, ADR-074). */
 export interface BoardPlanProject {
@@ -80,9 +82,15 @@ export interface BoardPlanProject {
 const EMPTY_FUNNEL: PlanFunnel = { idea: 0, ready: 0, wip: 0, unversioned: 0, parked: 0 };
 const EMPTY_VERSIONS: PlanVersions = { current: null, upcoming: [], past: [] };
 
-function readState(snapshot: SourceSnapshot<unknown>): BoardPlanState {
-  if (snapshot.state === 'unavailable') return { state: 'unavailable', reason: snapshot.reason };
-  return { state: snapshot.state };
+function readState(snapshot: SourceReading<unknown>): BoardPlanState {
+  const state: BoardPlanState =
+    snapshot.state === 'unavailable'
+      ? { state: 'unavailable', reason: snapshot.reason }
+      : { state: snapshot.state };
+  // « loading » dit déjà à la page de redemander : `refreshing` n'y ajoute rien.
+  return snapshot.refreshing && snapshot.state !== 'loading'
+    ? { ...state, refreshing: true }
+    : state;
 }
 
 /** CŒUR PUR — met le plan reçu à la forme d'un `BoardProject`. Les chiffres non encore câblés

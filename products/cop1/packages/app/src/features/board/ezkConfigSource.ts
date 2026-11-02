@@ -4,9 +4,9 @@
  * n'empêche pas le plan d'arriver, et l'inverse.
  */
 import { type ProjectConfigData, translateConfig } from './ezkConfigTranslator.js';
-import { EzkSource, type EzkSourceOptions, type SourceSnapshot } from './ezkSource.js';
+import { EzkSource, type EzkSourceOptions, type SourceReading } from './ezkSource.js';
 
-export type ConfigSnapshot = SourceSnapshot<{ config: ProjectConfigData }>;
+export type ConfigSnapshot = SourceReading<{ config: ProjectConfigData }>;
 
 export class EzkConfigSource extends EzkSource<{ config: ProjectConfigData }> {
   constructor(options: EzkSourceOptions) {
