@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-02
@@ -39,16 +39,25 @@ control l'affiche.
 
 ## Proposition
 
-1. **La méthode publie le process.** Une commande `ezk … --json` rend, pour chaque fiche active, son
-   étape et le signal qui l'y place (statut, branche, PR, session). Elle réutilise `process-data.ts` ;
-   un contrat versionné la décrit.
-2. **Mission control affiche le process.** La vue « Process » montre une colonne par étape, et les
+1. **La méthode publie le process.** Une commande à part, `ezk board process --json`, rend pour
+   chaque fiche son étape et le signal qui l'y place (statut, branche, PR, session). Elle réutilise
+   `process-data.ts`. Un contrat versionné `board-process` la décrit. Elle reste hors de
+   `board show --json`, car elle interroge git : 2,6 s sur vectorz le 2026-11-02.
+2. **La commande lit le bon projet, et respecte sa config.** Aujourd'hui, la collecte lit le dossier
+   courant, pas le projet de `--root`. Elle appelle aussi `gh` même quand le projet a coupé GitHub
+   (`github: false`) : le 2026-11-02, elle a interrogé GitHub depuis vectorz. La commande corrige les
+   deux. Sans GitHub, l'étape « en revue » est dite inconnue, jamais devinée.
+3. **Mission control affiche le process.** La vue « Process » montre une colonne par étape, et les
    fiches dedans. Un clic ouvre la fenêtre de la fiche, comme ailleurs.
 
 ## Critères d'acceptation
 
 - [ ] **L'étape de la méthode.** Chaque fiche active apparaît dans la colonne que publie la commande ;
       aucune fiche n'est placée par mission control lui-même.
+- [ ] **Le bon projet.** `ezk --root <autre projet> board process --json` décrit les branches et les
+      sessions de cet autre projet, pas celles du dossier d'où on lance la commande.
+- [ ] **GitHub coupé, GitHub muet.** Sur un projet `github: false`, la commande ne lance aucun `gh` ;
+      elle publie « en revue » comme inconnue, et mission control le dit.
 - [ ] **Le pourquoi de l'étape.** Une fiche en sprint ou en revue dit le signal qui l'y place : sa
       branche, sa PR ou sa session.
 - [ ] **Plus de coquille vide.** L'entrée « Process » de mission control n'affiche plus « tranche à
@@ -61,6 +70,7 @@ control l'affiche.
 ## Comment vérifier
 
 ```bash
+ezk board process --json | jq '.stages[] | {stage, fiches: (.fiches | length)}'
 pnpm cop1:dev
 ```
 
@@ -75,4 +85,11 @@ dans la même colonne que sur la page « process » de la méthode, tant que cel
 - L'entrée « Process » renvoie aujourd'hui vers
   [le schéma des étapes d'un skill](20260830110131228_schema-etapes-skill-configurables.md). Ce schéma
   reste un autre sujet ; le build retire ce renvoi.
+- Groom du 2026-11-02 (run autonome) : sources vérifiées dans le code. `process-data.ts` est pur ;
+  sa collecte vit dans `src/io/sessions-collect.ts` (`collectProcessIo`), qui lit `process.cwd()` et
+  lance `gh pr list` sans lire la config. Mesure : 2,6 s, 7 branches, 2 PR ouvertes trouvées sur
+  GitHub depuis un projet `github: false`. D'où une commande à part et les deux critères ajoutés.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
+- Prête le 2026-11-02 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Si le build
+  déborde, la coupe naturelle est « commande et corrections de collecte » puis « vue ». La forme JSON de
+  « en revue = inconnu » se choisit au build ; le critère fixe le comportement.

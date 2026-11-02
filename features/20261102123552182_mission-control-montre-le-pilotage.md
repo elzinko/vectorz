@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-02
@@ -41,9 +41,10 @@ les affiche.
 
 ## Proposition
 
-1. **La méthode publie l'historique.** Une commande `ezk … --json` rend la liste des sessions closes :
-   date, ce qu'elles ont livré (PR, fiches) et le chemin du récit. Elle réutilise `runs-data.ts` ; un
-   contrat versionné la décrit.
+1. **La méthode publie l'historique.** `ezk board show --json` gagne un bloc `sessions` : la liste
+   des sessions closes, avec leur date, ce qu'elles ont livré (PR, fiches) et le chemin du récit. Il
+   réutilise `loadRuns` et `runs-data.ts`. Pas de nouvelle commande : mission control lit déjà ce
+   contrat, et lire 27 récits ne coûte presque rien. Un champ ajouté ne change pas `schema_version`.
 2. **Mission control ouvre une vue « Pilotage ».** En haut, l'avancement par milestone, lu dans
    `milestones`. En dessous, l'historique des sessions, de la plus récente à la plus ancienne.
 
@@ -51,8 +52,9 @@ les affiche.
 
 - [ ] **Les milestones de la méthode.** Chaque milestone affiché vaut l'entrée de
       `ezk board show --json | jq .milestones` : total et livré.
-- [ ] **L'historique publié.** La commande rend autant de sessions qu'il y a de récits dans
-      `docs/sessions/` (27 pour vectorz le 2026-11-02), conformes à leur contrat.
+- [ ] **L'historique publié.** `ezk board show --json | jq '.sessions | length'` vaut le nombre de
+      récits de `docs/sessions/`, `README.md` exclu (27 pour vectorz le 2026-11-02). Le schéma et
+      l'exemple du contrat `board-show` sont régénérés, et le producteur valide le bloc.
 - [ ] **L'historique affiché.** La vue liste ces sessions, de la plus récente à la plus ancienne, avec
       leurs fiches et leurs PR.
 - [ ] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu, la vue dit « pilotage
@@ -63,7 +65,7 @@ les affiche.
 ## Comment vérifier
 
 ```bash
-ezk board show --json | jq '.milestones'
+ezk board show --json | jq '.milestones, (.sessions | length)'
 pnpm cop1:dev
 ```
 
@@ -77,4 +79,9 @@ sessions valent ceux de la méthode.
   [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Cette vue règle le doublon « runs » que l'ADR-086 laissait à revisiter : la chronologie montre le
   direct, le pilotage montre l'historique.
+- Groom du 2026-11-02 (run autonome) : sources vérifiées dans le code. `runs-data.ts` existe et ne
+  sert qu'à la page web. `docs/sessions/` porte 27 récits. Mission control ne lit pas encore
+  `milestones`. Choix : un bloc de plus dans `board show --json` plutôt qu'une commande neuve, pour
+  réutiliser la source que mission control interroge déjà.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
+- Prête le 2026-11-02 : porte « prête » passée en run autonome (ezk-pm GO).
