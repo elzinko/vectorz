@@ -234,5 +234,5 @@ if [[ "$APPLY" -eq 1 ]]; then
     ' "$tpl" > "$tmp" && cat "$tmp" > "$tpl"
     rm -f "$tmp"
   fi
-  echo "(layout_version: 5) → régénère les vues (regen-backlog.sh + avancement:regen …)."
+  echo "(layout_version: 5) → régénère les vues (regen-backlog.sh + views:regen …)."
 fi

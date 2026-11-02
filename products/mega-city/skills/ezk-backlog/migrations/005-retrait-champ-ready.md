@@ -71,4 +71,4 @@ dossier déjà en layout 5, `--apply` reste permis : c'est le rejeu voulu après
 une fiche portant encore `ready:`.
 
 Filet : les fiches sont versionnées. `git diff` montre chaque changement, `git checkout` l'annule.
-Après l'`--apply`, régénère les vues (`regen-backlog.sh`, `portfolio.sh`, `avancement:regen`, …).
+Après l'`--apply`, régénère les vues (`regen-backlog.sh`, `portfolio.sh`, `views:regen`, …).

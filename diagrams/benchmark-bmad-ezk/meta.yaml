@@ -9,5 +9,5 @@ note: >-
   Comparaison des deux méthodes agiles pilotées par LLM (BMAD-METHOD 6.0.4 vs ezk) sur
   8 dimensions, sourcée sur la lecture des deux codebases + un run BMAD réel. Verdict :
   garder le socle ezk (cœur déterministe ADR-0001), voler 3 affordances (next-step,
-  elicitation, graphe compilé). Servie par `pnpm ezk:map benchmark-bmad-ezk`. Le rapport
+  elicitation, graphe compilé). Ouverte dans mission control, vue « Cartes ». Le rapport
   complet (texte) vit dans docs/benchmarks/ ; cette page en est la vue lisible.

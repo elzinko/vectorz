@@ -36,7 +36,7 @@ describe('les outils du dépôt réel', () => {
       expect(id.split('/').pop(), id).not.toMatch(/^test-/);
       expect(existsSync(join(megaCity, id)), id).toBe(true);
     }
-    expect(tools.has('bin/ezk-map.ts')).toBe(true);
+    expect(tools.has('bin/board-maps.ts')).toBe(true);
     expect(tools.has('bin/test-regen-backlog.sh')).toBe(false);
     // Le hook git est un script sans extension, gardé en mode 644 par git : le `#!` le désigne.
     expect(tools.has('skills/ezk-commits/scripts/commit-msg')).toBe(true);
@@ -60,7 +60,7 @@ describe('les outils du dépôt réel', () => {
     for (const known of [
       'bin/regen-backlog.sh', // cité par ezk-backlog
       'skills/ezk-archive/scripts/check.sh', // cité par son propre skill
-      'bin/ezk-map.ts', // lancé à la main : `ezk dashboard`
+      'bin/board-maps.ts', // lancé par une commande : `ezk board maps`
       'bin/ezk.ts', // interne : le routeur lui-même
       'bin/ezk.mjs', // le lanceur installé : `bin` de package.json
     ]) {
@@ -69,10 +69,7 @@ describe('les outils du dépôt réel', () => {
   });
 
   it('le manifeste donne ses commandes à l’outil qu’elles lancent', () => {
-    const dashboard = tools.get('bin/ezk-map.ts')?.commands ?? [];
-    expect(dashboard).toContain('ezk board open');
-    expect(dashboard).not.toContain('ezk dashboard'); // l’ancien nom a été retiré (board open)
-    expect(dashboard).not.toContain('ezk map'); // l’ancien alias aussi
+    expect(tools.get('bin/board-maps.ts')?.commands ?? []).toContain('ezk board maps');
     expect(tools.get('bin/ezk.ts')?.internal).toMatch(/routeur/);
     expect(tools.get('bin/ezk.mjs')?.commands).toContain('ezk'); // la commande installée par package.json
   });

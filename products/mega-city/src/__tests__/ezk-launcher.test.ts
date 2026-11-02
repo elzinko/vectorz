@@ -72,7 +72,7 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     expect(flag.code).toBe(0);
     expect(flag.out).toContain(`projet visé = ${elsewhere}`);
     expect(flag.out).toContain('bin/avancement.ts');
-    const viaEnv = spawnSync(process.execPath, [launcher, '--dry-run', 'board', 'open'], {
+    const viaEnv = spawnSync(process.execPath, [launcher, '--dry-run', 'board', 'process'], {
       cwd: elsewhere,
       encoding: 'utf8',
       env: { PATH: '/usr/bin:/bin', HOME: elsewhere, EZK_ROOT: elsewhere },
@@ -81,12 +81,12 @@ describe('bin/ezk.mjs depuis un dossier jetable, sans tsx dans le PATH', () => {
     expect(viaEnv.stdout).toContain(`projet visé = ${elsewhere}`);
   });
 
-  it('« law » et le tableau de bord (« board open ») ne dépendent pas du dossier courant', { timeout: 60_000 }, () => {
+  it('« law » et les documents de la méthode (« board maps ») ne dépendent pas du dossier courant', { timeout: 60_000 }, () => {
     expect(ezk(['--dry-run', 'law', 'status', 'global']).code).toBe(0);
-    const now = ezk(['--dry-run', 'board', 'open', '--list']);
-    expect(now.code).toBe(0);
-    expect(now.err).toBe('');
-    expect(now.out).toContain('bin/ezk-map.ts --list');
+    const maps = ezk(['--dry-run', 'board', 'maps', '--json']);
+    expect(maps.code).toBe(0);
+    expect(maps.err).toBe('');
+    expect(maps.out).toContain('bin/board-maps.ts --json');
   });
 
   it('lance VRAIMENT un script TypeScript (sans --dry-run) et rend sa sortie', { timeout: 60_000 }, () => {

@@ -8,8 +8,8 @@
  * graphe validé par `validateGraph`. La carte ne peut plus montrer que ce qui existe.
  *
  * Le bloc est écrit dans `carte-interactive.data.js`, que la coque HTML charge par
- * `<script src>`. Ce fichier n'est dans AUCUN commit (ADR-0055) : `ezk:map` le calcule à chaque
- * requête, `pnpm views:regen` l'écrit sur disque. Sans copie committée, la carte ne peut pas être
+ * `<script src>`. Ce fichier n'est dans AUCUN commit (ADR-0055) : `ezk board maps --file` le calcule
+ * à chaque demande, `pnpm views:regen` l'écrit sur disque. Sans copie committée, la carte ne peut pas être
  * périmée ; un test prouve que le constructeur dit vrai sur le dépôt réel (fidélité par construction).
  */
 import type { Catalog } from '../loaders/catalog.js';

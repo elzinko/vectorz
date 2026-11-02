@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
  * map-data — la carte interactive est FIDÈLE PAR CONSTRUCTION (épic « carte fidèle », PR #162).
  *
  * Depuis l'ADR-0055, les données de la carte ne sont plus committées dans le HTML : la coque charge
- * `carte-interactive.data.js`, que `ezk:map` calcule à chaque requête. Plus de copie, donc plus de
+ * `carte-interactive.data.js`, que `ezk board maps --file` calcule à chaque demande. Plus de copie, donc plus de
  * dérive possible — et plus de test « le bloc committé égale le bloc régénéré ». Le filet change de
  * nature : on prouve que le constructeur dit vrai sur le dépôt RÉEL (chaque brique du catalogue est
  * sur la carte, aucune n'est inventée) et que le fichier se charge comme la coque l'attend.

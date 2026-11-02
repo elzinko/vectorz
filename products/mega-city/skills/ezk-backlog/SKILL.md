@@ -115,7 +115,7 @@ du front-matter de cette skill).
 | `review [--delta]` | Sanity check du stock : rapport + propositions, arbitrage PO (jamais d'auto-modification) |
 | `reconcile` | Croise les fiches **actives** avec les **PRs mergées** (via `gh`) → **propose** les fiches à `ship` (jamais de bascule auto). Détecte les merges hors-`ship` (UI GitHub, reviewer humain). Dégrade sans erreur si pas de remote/`gh`. |
 | `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`ezk backlog ship`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
-| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données du board / pilotage / runs) se construisent à part : `ezk views regen` (ADR-0055) ; `ezk:map` les calcule déjà à la volée |
+| `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données de la carte de la méthode) se construisent à part : `ezk views regen` (ADR-0055) ; mission control lit le reste par `ezk board show --json` |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
 | `version [list\|check\|close]` | Le niveau **version** : où en est chaque lot (champ `version:`), cohérence d'un lot, et clôture d'une version livrée (étiquette `vX.Y` **proposée**, jamais poussée) |
 

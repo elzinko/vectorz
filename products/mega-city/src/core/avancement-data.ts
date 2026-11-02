@@ -219,18 +219,3 @@ export function buildAvancementData(
     },
   };
 }
-
-// --- Bloc de données du board (fichier voisin `board.data.js`, non committé — ADR-0055) ---
-
-export const AVANCEMENT_DATA_BEGIN = '/*ezk-avancement-data:begin*/';
-export const AVANCEMENT_DATA_END = '/*ezk-avancement-data:end*/';
-
-/** Le bloc géré complet (marqueurs + affectation JS), prêt à écrire dans `board.data.js`. */
-export function buildAvancementDataBlock(fiches: Fiche[], inProgressIds: ReadonlySet<string> = EMPTY_IDS): string {
-  // `<` échappé en < : protège la SOURCE (un titre
-  // contenant `</script>` ne peut pas fermer la balise <script> qui porte le bloc). Le
-  // RENDU est protégé séparément — board.html pose les données via textContent, jamais
-  // innerHTML (revue P0). Les deux protections sont nécessaires et distinctes.
-  const json = JSON.stringify(buildAvancementData(fiches, inProgressIds), null, 1).replace(/</g, '\\u003c');
-  return `${AVANCEMENT_DATA_BEGIN}\nwindow.EZK_AVANCEMENT = ${json};\n${AVANCEMENT_DATA_END}`;
-}

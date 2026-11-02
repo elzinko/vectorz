@@ -7,8 +7,7 @@
  *   pnpm --dir products/mega-city avancement --root <projet>   # les fiches d'un AUTRE projet (ou EZK_ROOT)
  *
  * Le cœur (src/core/avancement-data.ts) compile depuis les fiches ; ce script est le
- * bord I/O. La vue interactive (`diagrams/avancement/`, servie par ezk-map) est la
- * brique suivante — ce texte prouve déjà la donnée, sans HTML.
+ * bord I/O. L'écran, c'est mission control : il lit `--json` (ADR-086).
  */
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

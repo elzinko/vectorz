@@ -386,17 +386,6 @@ commands:
     project: true
     writes: true
 
-  # --- le tableau de bord de la méthode (ex « ezk:map ») ---
-  # Il SERT les pages de la méthode (diagrams/) et calcule leurs données depuis les fiches du projet
-  # désigné (--root, EZK_ROOT ; par défaut la méthode). Il ne les écrit pas — sauf UNE route, le
-  # pouce 👍/👎 d'une fiche (features/reviews/verdicts/ du projet, ADR-0057). Il marche de n'importe quel dossier.
-  - domain: board
-    verb: open
-    run: bin/ezk-map.ts
-    summary: Ouvre le tableau de bord (web) dans le navigateur (--root <projet> pour un autre projet).
-    root: none
-    project: true
-
   # --- sessions, config, vues générées, supervision ---
   - domain: sessions
     run: bin/ezk-sessions.ts
@@ -423,7 +412,7 @@ commands:
   - domain: views
     verb: regen
     run: bin/views-regen.ts
-    summary: Régénère toutes les vues générées hors git (board, pilotage, runs, portfolio).
+    summary: Régénère les vues générées hors git (la carte de la méthode, le portfolio).
   - domain: supervision
     verb: link
     run: bin/supervision-link.ts

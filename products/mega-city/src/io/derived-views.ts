@@ -6,35 +6,23 @@
  * voisin `*.data.js`, ignoré par git, que la coque charge par `<script src>`. Deux sessions
  * parallèles ne peuvent plus se disputer ce bloc, puisqu'il n'est dans aucun commit.
  *
- * Qui construit : `ezk:map` calcule le fichier à CHAQUE requête (jamais périmé, même absent du
- * disque) ; `pnpm views:regen` l'écrit sur disque (lecture hors serveur) et régénère aussi
- * `PORTFOLIO.md`. Les `build*Block` restent PURS (ADR-0003) : ce module n'est que la colle I/O.
+ * Qui construit : `ezk board maps --file` calcule le fichier à CHAQUE demande (jamais périmé, même
+ * absent du disque) ; `pnpm views:regen` l'écrit sur disque et régénère aussi `PORTFOLIO.md`. Les
+ * `build*Block` restent PURS (ADR-0003) : ce module n'est que la colle I/O.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildAvancementDataBlock } from '../core/avancement-data.js';
 import { compileGraph } from '../core/compiled-graph.js';
 import { CYCLE_DOC } from '../core/cycle.js';
 import { buildMapDataBlock } from '../core/map-data.js';
-import { buildPilotageDataBlock } from '../core/pilotage-data.js';
-import { buildPlanDeltaBlock } from '../core/plan-delta-data.js';
-import { buildPlanViewDataBlock } from '../core/plan-view-data.js';
-import { buildProcessDataBlock } from '../core/process-data.js';
-import { buildRunsDataBlock } from '../core/runs-data.js';
-import { buildVerdictsBlock } from '../core/verdicts.js';
 import { loadCatalog } from '../loaders/catalog.js';
-import { loadFiches } from '../loaders/fiches.js';
 import { loadMapSources } from '../loaders/map-sources.js';
-import { githubCapabilities } from '../loaders/project-config.js';
 import { loadMethodDoc } from '../loaders/method.js';
-import { loadRuns } from '../loaders/runs.js';
 import { loadTaxonomieDoc } from '../loaders/taxonomie.js';
-import { collectInProgressIds, collectProcessIo } from './sessions-collect.js';
-import { loadVerdicts } from './verdicts.js';
 
 export interface DataView {
-  id: 'board' | 'pilotage' | 'runs' | 'process' | 'carte';
+  id: 'carte';
   /** Fichier de données, relatif à la racine du dépôt — ignoré par git. */
   out: string;
   /** Page HTML (committée) qui le charge par `<script src>`. */
@@ -51,59 +39,14 @@ const MEGA_CITY = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const METHOD_ROOT = resolve(MEGA_CITY, '..', '..');
 
 const HEADER =
-  '// Généré — NE PAS committer (ADR-0055). Reconstruit par `pnpm --dir products/mega-city views:regen`, servi à la volée par `ezk:map`.\n';
+  '// Généré — NE PAS committer (ADR-0055). Reconstruit par `pnpm --dir products/mega-city views:regen`, servi à la volée par `ezk board maps --file`.\n';
 
-/** `features/PLAN.md` est curé à la main ; absent, la vue Plan est simplement vide. */
-function readPlan(repoRoot: string): string {
-  const path = join(repoRoot, 'features', 'PLAN.md');
-  return existsSync(path) ? readFileSync(path, 'utf8') : '';
-}
-
-/** Les vues à données sorties de leur page. L'ordre des blocs du board suit celui de la coque. */
+/**
+ * Les vues à données sorties de leur page. Depuis le retrait de la page web de la méthode (fiche
+ * 20261102123552185), il n'en reste qu'une : la carte de la méthode, que `ezk board maps --file`
+ * calcule à la demande pour mission control.
+ */
 export const DATA_VIEWS: readonly DataView[] = [
-  {
-    id: 'board',
-    out: 'diagrams/avancement/board.data.js',
-    page: 'diagrams/avancement/board.html',
-    build(repoRoot) {
-      const fiches = loadFiches(repoRoot);
-      const plan = readPlan(repoRoot);
-      // « En cours » déduit des branches ouvertes (ADR-0077) : une fiche en cours ne compte pas « tirable ».
-      const blocks = [
-        buildAvancementDataBlock(fiches, collectInProgressIds(repoRoot)),
-        buildPlanViewDataBlock(plan, fiches),
-        buildPlanDeltaBlock(plan, fiches),
-        // Les pouces 👍/👎 posés depuis le tableau de bord (fiche 20260826072532622) : relus à
-        // chaque requête, comme le reste — un redémarrage ne les efface pas, ils sont dans des fichiers.
-        buildVerdictsBlock(loadVerdicts(repoRoot)),
-      ];
-      return `${HEADER}${blocks.join('\n')}\n`;
-    },
-  },
-  {
-    id: 'pilotage',
-    out: 'diagrams/pilotage/pilotage.data.js',
-    page: 'diagrams/pilotage/pilotage.html',
-    build: (repoRoot) =>
-      `${HEADER}${buildPilotageDataBlock(loadFiches(repoRoot), loadRuns(repoRoot))}\n`,
-  },
-  {
-    id: 'runs',
-    out: 'diagrams/runs/runs.data.js',
-    page: 'diagrams/runs/runs.html',
-    build: (repoRoot) => `${HEADER}${buildRunsDataBlock(loadRuns(repoRoot))}\n`,
-  },
-  {
-    // La vue « process » (fiche 20261002115451315) : chaque fiche posée sur son étape (idée, prête,
-    // en sprint, en revue, livrée). Les FICHES viennent du projet désigné (`repoRoot`) ; les signaux
-    // git/gh (branches, worktrees, PR ouvertes) du dépôt local, collectés par `collectProcessIo`.
-    // L'étape se DÉDUIT, aucun objet « sprint » n'est créé (verdict du panel du 2026-08-23).
-    id: 'process',
-    out: 'diagrams/process/process.data.js',
-    page: 'diagrams/process/process.html',
-    build: (repoRoot) =>
-      `${HEADER}${buildProcessDataBlock({ fiches: loadFiches(repoRoot), ...collectProcessIo(repoRoot, { github: githubCapabilities(repoRoot).pr }) })}\n`,
-  },
   {
     // La carte de la méthode (suite de l'ADR-0055). Ses données ne viennent pas des fiches mais du
     // CATALOGUE (`products/mega-city` : règles, skills, agents, graphe, sources) : même fonction pure
@@ -111,7 +54,7 @@ export const DATA_VIEWS: readonly DataView[] = [
     //
     // La carte décrit la MÉTHODE, jamais le projet dont on lit les fiches (`ezk --root <projet>`,
     // fiche 20260826173221323) : son catalogue est celui du dépôt où vit ce code. Elle ignore donc
-    // la racine qu'on lui passe — `ezk:map` y met le projet visé, qui n'a pas de catalogue.
+    // la racine qu'on lui passe : le projet visé n'a pas de catalogue.
     id: 'carte',
     out: 'diagrams/methode-mega-city/carte-interactive.data.js',
     page: 'diagrams/methode-mega-city/carte-interactive.html',
@@ -138,12 +81,6 @@ export const UNTRACKED_VIEW_PATHS: readonly string[] = [
   ...DATA_VIEWS.map((v) => v.out),
   'PORTFOLIO.md',
 ];
-
-/** La vue dont `rel` (chemin relatif à la racine, `/` ou `\`) est le fichier de données. */
-export function dataViewForPath(rel: string): DataView | undefined {
-  const norm = rel.replace(/\\/g, '/').replace(/^\.?\/+/, '');
-  return DATA_VIEWS.find((v) => v.out === norm);
-}
 
 export interface WriteReport {
   written: string[];

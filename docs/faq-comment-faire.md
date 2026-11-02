@@ -63,9 +63,9 @@ La rétro nomme son juge de cohérence de deux façons : `chief-judge` et `ezk-s
 
 ### Où voir comment les mécanismes s'emboîtent ?
 
-**En clair.** `pnpm ezk:map` ouvre la carte interactive de la méthode en 10 minutes. La [carte de la méthode](../products/mega-city/docs/method-map.md) la décrit en texte. Le [glossaire](glossaire-jargon-ezk.md) traduit le jargon (recette, rule, capability, profil…).
+**En clair.** Dans mission control, « Méthode » puis « Cartes » ouvre la carte interactive de la méthode. La [carte de la méthode](../products/mega-city/docs/method-map.md) la décrit en texte. Le [glossaire](glossaire-jargon-ezk.md) traduit le jargon (recette, rule, capability, profil…).
 
-- Commande : `pnpm ezk:map`.
+- Commande : `pnpm cop1:dev`, puis « Méthode » et « Cartes ». En terminal : `ezk board maps`.
 - Fait autorité : [carte interactive](../diagrams/methode-mega-city/carte-interactive.html), [glossaire](glossaire-jargon-ezk.md).
 
 ---

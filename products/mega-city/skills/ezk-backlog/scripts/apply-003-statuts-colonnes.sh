@@ -71,7 +71,7 @@ if [[ "$APPLY" -eq 1 ]]; then
     tmp="$(mktemp)"; sed 's/^status: todo.*/status: idea # idea | ready | in-progress | blocked | shipped/' "$tpl" > "$tmp" && mv "$tmp" "$tpl"
   fi
   echo "migration 003 appliquée : todo→ready = ${n_ready} · todo→idea = ${n_idea} (layout_version: 3)."
-  echo "→ régénère les vues (regen-backlog.sh + avancement:regen)."
+  echo "→ régénère les vues (regen-backlog.sh + views:regen)."
 else
   echo "DRY-RUN : todo→ready = ${n_ready} · todo→idea = ${n_idea}. Relance avec --apply pour écrire."
 fi

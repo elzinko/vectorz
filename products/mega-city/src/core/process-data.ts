@@ -269,16 +269,3 @@ export function buildProcessData(input: ProcessInputs): ProcessData {
 
   return { stages, filtres, reviewIndetermine: !prKnown };
 }
-
-// --- Bloc de données de la vue (fichier voisin `process.data.js`, non committé — ADR-0055) ---
-
-export const PROCESS_DATA_BEGIN = '/*ezk-process-data:begin*/';
-export const PROCESS_DATA_END = '/*ezk-process-data:end*/';
-
-/** Le bloc complet (marqueurs + affectation JS), prêt à écrire dans `process.data.js`. */
-export function buildProcessDataBlock(input: ProcessInputs): string {
-  // `<` échappé : un titre contenant `</script>` ne peut pas fermer la balise qui porte le bloc.
-  // Le RENDU est protégé séparément (process.html pose le texte par textContent, jamais innerHTML).
-  const json = JSON.stringify(buildProcessData(input), null, 1).replace(/</g, '\\u003c');
-  return `${PROCESS_DATA_BEGIN}\nwindow.EZK_PROCESS = ${json};\n${PROCESS_DATA_END}`;
-}

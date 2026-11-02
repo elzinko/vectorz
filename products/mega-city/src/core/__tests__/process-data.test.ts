@@ -3,7 +3,6 @@ import type { Fiche } from '../../loaders/fiches.js';
 import type { SessionRow } from '../sessions-data.js';
 import {
   buildProcessData,
-  buildProcessDataBlock,
   ficheIdFromBranch,
   inProgressIdsFromBranches,
   type ProcessInputs,
@@ -357,18 +356,6 @@ describe('buildProcessData — bornes et hygiène', () => {
     );
     const prete = data.stages.find((g) => g.stage === 'prete')!.fiches.map((f) => f.id);
     expect(prete).toEqual(['0001', '0003', '0002']);
-  });
-});
-
-describe('buildProcessDataBlock — le bloc pour process.data.js', () => {
-  it('pose window.EZK_PROCESS entre marqueurs et échappe les < (anti-fermeture de script)', () => {
-    const block = buildProcessDataBlock(
-      inputs({ fiches: [fiche({ id: '0001', status: 'ready', title: 'a </script> b' })] }),
-    );
-    expect(block).toContain('window.EZK_PROCESS =');
-    expect(block).toContain('/*ezk-process-data:begin*/');
-    expect(block).toContain('/*ezk-process-data:end*/');
-    expect(block).not.toContain('</script>');
   });
 });
 

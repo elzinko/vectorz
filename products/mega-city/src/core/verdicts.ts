@@ -1,17 +1,17 @@
 /**
- * verdicts — le pouce 👍/👎 posé sur une fiche depuis le tableau de bord. PUR (ADR-0003).
+ * verdicts — le pouce 👍/👎 posé sur une fiche. PUR (ADR-0003).
  *
- * Fiche 20260826072532622, ADR-0057. C'est la PREMIÈRE écriture du tableau de bord : il ne faisait
- * que lire. Pour que cette écriture reste sûre et sans conflit entre sessions parallèles :
+ * Fiche 20260826072532622, ADR-0057. Pour que cette écriture reste sûre et sans conflit entre
+ * sessions parallèles :
  *
  *   - un fichier PAR fiche (`features/reviews/verdicts/<id>.json`) — deux sessions qui jugent deux
  *     fiches créent deux fichiers, jamais deux lignes voisines d'un même fichier (qui, elles, se
  *     marchent dessus au merge : le test `verdicts-merge` le démontre) ;
  *   - un seul dossier est écrit, jamais le front-matter d'une fiche, jamais un commit ;
- *   - la route d'écriture est gardée : méthode, Host, Origin, type, taille, id, verdict. Chaque
- *     refus rend un code HTTP et n'écrit RIEN.
+ *   - une seule porte d'écriture : `ezk review verdict` (fiche 20261102123552181), que mission control
+ *     lance. Chaque refus sort en erreur et n'écrit RIEN.
  *
- * Aucun I/O ici : lire et écrire le dossier = `io/verdicts.ts`, parler HTTP = `io/verdict-endpoint.ts`.
+ * Aucun I/O ici : lire et écrire le dossier = `io/verdicts.ts`.
  */
 
 /** Les deux pouces. « Retirer » n'est pas un verdict : c'est l'absence de fichier (`none` à l'envoi). */
@@ -26,9 +26,6 @@ export interface VerdictRecord {
 
 /** Le SEUL dossier que le tableau de bord écrit, relatif à la racine du dépôt. */
 export const VERDICTS_DIR = 'features/reviews/verdicts';
-
-/** Au-delà, la requête est refusée avant d'être lue en entier : un verdict tient en 60 octets. */
-export const MAX_BODY_BYTES = 1024;
 
 /** Un id de fiche : les deux formats coexistent (fiche 0180) — `0094` et `20260826072532622`. */
 const FICHE_ID = /^\d{4,20}$/;
@@ -74,14 +71,7 @@ export function parseVerdict(text: string): ParsedVerdict {
   return { ok: true, record: { verdict: verdict as Verdict, date } };
 }
 
-/** Ce que le garde-fou lit d'une requête HTTP. Les noms d'en-têtes sont en minuscules (comme Node). */
-export interface RequestEnvelope {
-  method: string;
-  headers: Record<string, string | undefined>;
-  body: string;
-}
-
-/** Ce que la page demande : un pouce, ou `none` pour retirer le verdict. */
+/** Un pouce demandé, ou `none` pour retirer le verdict. */
 export interface VerdictRequest {
   id: string;
   verdict: Verdict | 'none';
@@ -91,57 +81,11 @@ export type RequestCheck =
   | { ok: true; request: VerdictRequest }
   | { ok: false; status: number; error: string };
 
-/** Le serveur n'écoute que sur la boucle locale ; un Host d'un autre nom trahit une requête détournée. */
-const LOOPBACK_HOST = /^(127\.0\.0\.1|localhost|\[::1\])(:\d{1,5})?$/;
-
 const refuse = (status: number, error: string): RequestCheck => ({ ok: false, status, error });
 
 /**
- * Le garde-fou de `POST /api/verdict`, dans l'ordre : méthode, Host (anti « DNS rebinding »),
- * Origin (anti requête d'un autre site), type JSON (un navigateur n'envoie ce type depuis un autre
- * site qu'après une requête préalable, que ce serveur ne sert jamais), taille, forme, id, verdict.
- * `isKnownFiche` dit si l'id est celui d'une fiche existante : on n'écrit jamais pour un id inconnu.
- * C'est une fonction, pas une liste : les refus bon marché passent d'abord, la lecture du dépôt
- * n'a lieu que pour une requête déjà bien formée.
- */
-export function checkVerdictRequest(
-  req: RequestEnvelope,
-  isKnownFiche: (id: string) => boolean,
-): RequestCheck {
-  if (req.method !== 'POST') return refuse(405, 'méthode non permise : POST seulement');
-
-  const host = req.headers.host;
-  if (host === undefined || !LOOPBACK_HOST.test(host)) {
-    return refuse(403, 'hôte refusé : le tableau de bord ne répond que sur la boucle locale');
-  }
-  const origin = req.headers.origin;
-  if (origin !== undefined && origin !== `http://${host}`) {
-    return refuse(403, 'origine refusée : la requête ne vient pas de la page du tableau de bord');
-  }
-
-  const type = (req.headers['content-type'] ?? '').split(';')[0]?.trim().toLowerCase();
-  if (type !== 'application/json') return refuse(415, 'corps refusé : application/json attendu');
-  if (Buffer.byteLength(req.body, 'utf8') > MAX_BODY_BYTES) {
-    return refuse(413, `corps trop gros : ${MAX_BODY_BYTES} octets au plus`);
-  }
-
-  let data: unknown;
-  try {
-    data = JSON.parse(req.body);
-  } catch {
-    return refuse(400, 'corps illisible : JSON attendu');
-  }
-  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-    return refuse(400, 'corps invalide : un objet { id, verdict } est attendu');
-  }
-  const { id, verdict } = data as Record<string, unknown>;
-  return checkVerdictValues(id, verdict, isKnownFiche);
-}
-
-/**
- * Les contrôles de fond d'un pouce, partagés par la route de la page et par `ezk review verdict`
- * (fiche 20261102123552181) : un id de fiche (jamais un chemin), une fiche qui existe, une valeur
- * permise. Les refus rendent le même code que la route.
+ * Les contrôles de fond d'un pouce, pour `ezk review verdict` (fiche 20261102123552181) : un id de
+ * fiche (jamais un chemin), une fiche qui existe, une valeur permise.
  */
 export function checkVerdictValues(
   id: unknown,
@@ -164,16 +108,4 @@ export interface VerdictsData {
   verdicts: Record<string, VerdictRecord>;
   /** Chemins (relatifs à la racine) des fichiers de verdict illisibles : signalés, jamais masqués. */
   illisibles: string[];
-}
-
-// --- Bloc de données du board (fichier voisin `board.data.js`, non committé — ADR-0055) ---
-
-export const VERDICTS_DATA_BEGIN = '/*ezk-verdicts-data:begin*/';
-export const VERDICTS_DATA_END = '/*ezk-verdicts-data:end*/';
-
-/** Le bloc géré complet (marqueurs + affectation JS), à la suite des autres blocs de `board.data.js`. */
-export function buildVerdictsBlock(data: VerdictsData): string {
-  // `<` échappé : un nom de fichier contenant `</script>` ne peut pas fermer la balise du bloc.
-  const json = JSON.stringify(data, null, 1).replace(/</g, '\\u003c');
-  return `${VERDICTS_DATA_BEGIN}\nwindow.EZK_VERDICTS = ${json};\n${VERDICTS_DATA_END}`;
 }

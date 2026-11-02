@@ -161,13 +161,12 @@ export function makeContractFixture(): string {
   write('docs/sessions/README.md', '# Les récits de session\n');
   write('docs/sessions/2026-10-30-premiere-session.md', 'fiches: 20990101000000001\n\n# Première session\n\nLivré en PR #12.\n');
   write('docs/sessions/2026-10-31-seconde-session.md', '# Seconde session\n\nRien de livré.\n');
-  // Les documents de la méthode (fiche 20261102123552184) : une page à données, un schéma SVG, une
-  // page portée par une autre vue (écartée) et un dossier sans document (ignoré).
+  // Les documents de la méthode (fiche 20261102123552184) : une page à données, un schéma SVG et un
+  // dossier sans document (ignoré).
   write('diagrams/methode-mega-city/carte-interactive.html', '<script src="carte-interactive.data.js"></script>\n');
   write('diagrams/methode-mega-city/meta.yaml', 'title: "La méthode en une carte"\n');
   write('diagrams/qualite-composants/diagram.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
   write('diagrams/qualite-composants/meta.yaml', 'titre: Qualité — composants\n');
-  write('diagrams/pilotage/pilotage.html', '<p>pilotage</p>\n');
   write('diagrams/notes/README.md', '# Pas un document\n');
   const git = (...args: string[]): void => {
     execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', ...args], { stdio: 'ignore' });

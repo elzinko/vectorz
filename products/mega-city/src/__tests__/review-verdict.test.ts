@@ -1,8 +1,8 @@
 /**
  * `ezk review verdict <id> up|down|none` — le pouce de revue par la ligne de commande
- * (fiche 20261102123552181). La page web de la méthode sera retirée (amendement de l'ADR-086 du
- * 2026-11-02) : la commande doit écrire le MÊME fichier qu'elle, refuser sans rien écrire, et ne
- * toucher à rien d'autre.
+ * (fiche 20261102123552181). La page web de la méthode est retirée (amendement de l'ADR-086 du
+ * 2026-11-02) : la commande écrit le fichier que la méthode relit, refuse sans rien écrire, et ne
+ * touche à rien d'autre.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -12,7 +12,6 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { verdictFile } from '../core/verdicts.js';
-import { handleVerdictRequest } from '../io/verdict-endpoint.js';
 import { localDay } from '../io/verdicts.js';
 
 vi.setConfig({ testTimeout: 60_000 });
@@ -59,30 +58,16 @@ beforeEach(() => {
 afterEach(() => rmSync(repo, { recursive: true, force: true }));
 
 describe('ezk review verdict — écrit le pouce', () => {
-  it('écrit features/reviews/verdicts/<id>.json, octet pour octet comme la page web', () => {
+  it('écrit features/reviews/verdicts/<id>.json, au format que la méthode relit', () => {
     const r = verdict(ID, 'up');
     expect(r.status, r.stderr).toBe(0);
-    // La page, sur un dépôt jumeau, le même jour.
-    const twin = makeRepo();
-    try {
-      const res = handleVerdictRequest(
-        {
-          method: 'POST',
-          headers: { host: '127.0.0.1:4173', 'content-type': 'application/json' },
-          body: JSON.stringify({ id: ID, verdict: 'up' }),
-        },
-        { repoRoot: twin, today: () => localDay() },
-      );
-      expect(res.status).toBe(200);
-      expect(readFileSync(join(repo, verdictFile(ID)), 'utf8')).toBe(
-        readFileSync(join(twin, verdictFile(ID)), 'utf8'),
-      );
-    } finally {
-      rmSync(twin, { recursive: true, force: true });
-    }
+    // La forme que lit `ezk board show --json` (et qu'écrivait la page web retirée) : JSON indenté, fin de ligne.
+    expect(readFileSync(join(repo, verdictFile(ID)), 'utf8')).toBe(
+      `{\n  "verdict": "up",\n  "date": "${localDay()}"\n}\n`,
+    );
   });
 
-  it('remplace un pouce, et `none` le retire, comme la page', () => {
+  it('remplace un pouce, et `none` le retire', () => {
     expect(verdict(ID, 'up').status).toBe(0);
     expect(verdict(ID, 'down').status).toBe(0);
     expect(JSON.parse(readFileSync(join(repo, verdictFile(ID)), 'utf8')).verdict).toBe('down');

@@ -1,16 +1,16 @@
 /**
- * method-maps — les cartes et les documents de la méthode (`diagrams/`), pour `ezk board open` et pour
- * `ezk board maps` (fiche 20261102123552184, ADR-086).
+ * method-maps — les documents de la méthode (`diagrams/`), pour `ezk board maps` (fiche
+ * 20261102123552184, ADR-086).
  *
- * Une carte est un dossier de `diagrams/` porteur d'un `.html` ou d'un `.svg`. `ezk board maps` n'en
- * publie que les DOCUMENTS : les pages interactives portées par d'autres fiches (avancement, pilotage,
- * runs, process, la loi) en sont écartées. Le contenu d'un document, et les données qu'il charge,
- * sortent par la commande : mission control ne lit jamais ces fichiers lui-même.
+ * Un document est un dossier de `diagrams/` porteur d'un `.html` ou d'un `.svg`. Depuis le retrait de
+ * la page web de la méthode (fiche 20261102123552185), il n'y reste que des documents : les pages
+ * interactives ont leur vue dans mission control. Le contenu d'un document, et les données qu'il
+ * charge, sortent par la commande : mission control ne lit jamais ces fichiers lui-même.
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { type DiagramEntry, readMetaCategorie, readMetaTitle } from '../core/ezk-map-menu.js';
+import { type DiagramEntry, readMetaCategorie, readMetaTitle } from '../core/diagram-meta.js';
 import { MAPS_SCHEMA_VERSION, type MapsContract } from '../core/maps-contract.js';
 import { DATA_VIEWS } from './derived-views.js';
 
@@ -18,14 +18,8 @@ import { DATA_VIEWS } from './derived-views.js';
 const METHOD_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 export const METHOD_DIAGRAMS = join(METHOD_ROOT, 'diagrams');
 
-/**
- * Les pages interactives portées par une fiche à elles, hors de la vue « Cartes » : avancement et
- * pilotage (vue « Pilotage »), runs (idem), process (vue « Process »), la loi (vue « Loi »).
- */
-export const PAGES_PORTEES: readonly string[] = ['avancement', 'carte-la-loi', 'pilotage', 'process', 'runs'];
-
 /** Cartes disponibles : un dossier de `diagrams/` porteur d'un `.html` ou d'un `.svg`. */
-export function listDiagrams(diagramsDir: string): DiagramEntry[] {
+function listDiagrams(diagramsDir: string): DiagramEntry[] {
   if (!existsSync(diagramsDir)) return [];
   return readdirSync(diagramsDir)
     .filter((d) => statSync(join(diagramsDir, d)).isDirectory())
@@ -55,7 +49,6 @@ export function methodMapsData(diagramsDir: string = METHOD_DIAGRAMS): MapsContr
   return {
     schema_version: MAPS_SCHEMA_VERSION,
     documents: listDiagrams(diagramsDir)
-      .filter((d) => !PAGES_PORTEES.includes(d.slug))
       .map((d) => ({
         id: d.slug,
         titre: d.title,

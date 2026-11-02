@@ -6,13 +6,12 @@
  *
  * Écrit sur disque, depuis les sources réelles (fiches, PLAN.md, récits de docs/sessions/,
  * catalogue de la méthode) :
- *   - les fichiers de données `*.data.js` de board / pilotage / runs / carte (ignorés par git) ;
+ *   - le fichier de données de la carte de la méthode (`*.data.js`, ignoré par git) ;
  *   - `PORTFOLIO.md` (via `portfolio.sh`, ignoré par git).
- * Ouvrir `pnpm ezk:map` suffit pour VOIR les pages à jour : le serveur calcule les données à
- * chaque requête. `views:regen` sert à lire hors serveur (file://, éditeur) et à repartir propre.
+ * Mission control montre la carte à jour sans ce script : `ezk board maps --file` calcule ses données
+ * à chaque demande. `views:regen` sert à lire hors serveur (file://, éditeur) et à repartir propre.
  *
- * Les anciennes commandes `avancement:regen`, `plan-view:regen`, `plan-delta:regen`,
- * `pilotage:regen`, `runs:regen` et `map:data` sont des alias de celle-ci. Les vues qui RESTENT committées
+ * L'ancienne commande `map:data` est un alias de celle-ci. Les vues qui RESTENT committées
  * (`features/BACKLOG.md`, `features/PLAN.md`) gardent leur propre outil : `regen-backlog.sh`.
  */
 import { execFileSync } from 'node:child_process';

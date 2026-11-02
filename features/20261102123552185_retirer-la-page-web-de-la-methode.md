@@ -50,15 +50,15 @@ Les sept documents de `diagrams/` restent : mission control les montre.
 
 ## Critères d'acceptation
 
-- [ ] **La commande est retirée.** `ezk help board` ne liste plus que `show` et `check` ;
-      `bin/ezk-map.ts` n'existe plus.
-- [ ] **Les pages inutiles sont retirées.** Les cinq pages interactives ne sont plus dans
+- [x] **La commande est retirée.** `ezk help board` ne liste plus `open` (restent `show`, `check`,
+      `process` et `maps`) ; `bin/ezk-map.ts` n'existe plus.
+- [x] **Les pages inutiles sont retirées.** Les cinq pages interactives ne sont plus dans
       `diagrams/` ; les sept documents y sont toujours.
-- [ ] **Plus de mention vivante.** `ezk board open`, `ezk:map` et `ezk-map` n'apparaissent plus dans
+- [x] **Plus de mention vivante.** `ezk board open`, `ezk:map` et `ezk-map` n'apparaissent plus dans
       les skills, les agents ni la documentation, hors historique : ADR, captures et fiches livrées.
-- [ ] **Rien n'est perdu.** Chaque ligne du tableau de l'amendement est vérifiée : ce que montrait la
+- [x] **Rien n'est perdu.** Chaque ligne du tableau de l'amendement est vérifiée : ce que montrait la
       page retirée se lit dans la vue de mission control indiquée.
-- [ ] **La gate passe.** Les tests de la méthode passent. La fiche du serveur de test orphelin est
+- [x] **La gate passe.** Les tests de la méthode passent. La fiche du serveur de test orphelin est
       close « superseded », car ce serveur n'existe plus.
 
 ## Comment vérifier
@@ -78,7 +78,7 @@ trouve plus de mention hors historique.
   `milestone: board` et le label `un-seul-ecran`, sans fiche chapeau. Elle dépend de toutes les
   fiches de portage, dont les deux du pouce, et de la
   [vue « Loi » de mission control](done/20260826222044335_carte-la-loi-graphe-visuel.md).
-- Rend sans objet [le serveur de test ezk-map orphelin](20261101131506169_serveur-de-test-ezk-map-orphelin.md).
+- Rend sans objet [le serveur de test ezk-map orphelin](done/20261101131506169_serveur-de-test-ezk-map-orphelin.md).
   Tant que la page existe, cette fiche reste utile.
 - La fiche [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md)
   corrige les mots ; celle-ci retire la commande.

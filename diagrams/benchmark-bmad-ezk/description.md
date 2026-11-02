@@ -14,9 +14,7 @@ La page se lit de haut en bas :
 
 ## Comment l'ouvrir
 
-```bash
-pnpm --dir products/mega-city ezk:map benchmark-bmad-ezk
-```
+Dans mission control (`pnpm cop1:dev`) : « Méthode », puis « Cartes ».
 
 Le rapport **texte** complet (versionné, lisible sur GitHub) :
 [`products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md`](../../products/mega-city/docs/benchmarks/2026-08-25-bmad-vs-ezk.md).

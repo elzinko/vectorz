@@ -61,9 +61,8 @@ function renderRecommendations(data: ReturnType<typeof buildSessionsData>): void
 
 /**
  * Serveur local (ADR-0043) : recalcule `collect()` + `buildSessionsData` + `renderSessionsHtml`
- * À CHAQUE requête — la page n'est jamais écrite sur disque. Patron recopié de `bin/ezk-map.ts`
- * (repli de port, ouverture navigateur best-effort) : dette assumée pour ne pas toucher un
- * fichier partagé (ADR-0043 D3).
+ * À CHAQUE requête — la page n'est jamais écrite sur disque (repli de port, ouverture navigateur
+ * best-effort ; ADR-0043 D3).
  */
 function runMapServer(): void {
   const envPort = Number(process.env.EZK_SESSIONS_PORT);

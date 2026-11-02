@@ -312,7 +312,7 @@ body{
       <h1>La méthode mega-city</h1>
     </div>
     <div class="spacer"></div>
-    <div class="proof" id="proof" title="Données compilées depuis les fichiers du dépôt à chaque chargement (pnpm ezk dashboard) — hors serveur : pnpm --dir products/mega-city views:regen"><span class="dot"></span><span><span id="proof-text">…</span><span class="ratio" id="proof-ratio"></span></span></div>
+    <div class="proof" id="proof" title="Données compilées depuis les fichiers du dépôt à chaque chargement (mission control, vue « Cartes ») — hors serveur : pnpm --dir products/mega-city views:regen"><span class="dot"></span><span><span id="proof-text">…</span><span class="ratio" id="proof-ratio"></span></span></div>
     <input class="search" id="search" type="search" placeholder="chercher (id, description)…" aria-label="Chercher dans la carte">
     <button class="theme-btn" id="open-domaine" style="width:auto;padding:0 12px;font-size:13px" title="Comprendre les relations du domaine">🧭 le domaine</button>
     <button class="theme-btn" id="theme" title="Basculer clair / sombre" aria-label="Basculer le thème">◐</button>
@@ -479,7 +479,7 @@ body{
     try{ localStorage.setItem('ezk-theme', root.dataset.theme); }catch(e){}
   });
 
-  if(!D){ $('proof-text').textContent = 'données absentes — lancer pnpm ezk dashboard (ou pnpm --dir products/mega-city views:regen)'; $('proof').classList.add('bad'); return; }
+  if(!D){ $('proof-text').textContent = 'données absentes — ouvrir la carte dans mission control (ou pnpm --dir products/mega-city views:regen)'; $('proof').classList.add('bad'); return; }
 
   /* ── vocabulaire d'affichage ── */
   const KIND = {
@@ -530,7 +530,7 @@ body{
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const firstSentence = (s) => { const m = String(s).split(/(?<=\.)\s/)[0]; return m.length > 170 ? m.slice(0,167)+'…' : m; };
 
-  /* ── provenance cliquable : le lien ouvre le fichier. Servie par `pnpm ezk:map` (boucle locale),
+  /* ── provenance cliquable : le lien ouvre le fichier. Servie en local,
      la carte lit le fichier du dépôt local ; ouverte ailleurs (file://, publiée), elle pointe GitHub.
      Hypothèse assumée : dépôt public `elzinko/vectorz`, branche `main` — si l'un des deux change,
      ce préfixe est la seule ligne à corriger. ── */

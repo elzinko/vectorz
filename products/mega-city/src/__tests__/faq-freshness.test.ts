@@ -43,7 +43,7 @@ describe('relevé des commandes citées (outil de fraîcheur)', () => {
     const md = [
       'En prose, /ezk-fantome ne compte pas.',
       '`/ezk-backlog ready <id>` · `/ezk-backlog next --ready-only` · `/ezk-help ezk-backlog`',
-      '`ezk-steward` · `pnpm ezk:map` · `pnpm --dir products/mega-city ezk:help`',
+      '`ezk-steward` · `pnpm cop1:dev` · `pnpm --dir products/mega-city ezk:help`',
       '`pnpm --dir products/mega-city exec vitest run` · `/tmp/ezk-fantome` · `ezk-chef-extract.sh`',
     ].join('\n');
     expect(ghostMentions(md, index)).toEqual([]);

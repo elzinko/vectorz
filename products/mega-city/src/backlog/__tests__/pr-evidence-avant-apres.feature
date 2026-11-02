@@ -97,7 +97,7 @@ Fonctionnalité: Outiller la règle "avant/après" des PR d'interface
   # ---------------------------------------------------------------------------
 
   Scénario: ezk-reviewer lève un finding bloquant sur une PR d'interface sans paire
-    Soit une PR modifiant une carte "ezk:map" sans lien avant/après dans son corps
+    Soit une PR modifiant une vue de mission control sans lien avant/après dans son corps
     Quand "ezk-reviewer" revoit cette PR
     Alors son verdict contient un finding de sévérité au moins "P1"
     Et ce finding cite l'absence de paire avant/après
