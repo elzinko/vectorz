@@ -1,0 +1,22 @@
+# Arbre du carnet de tests pour l'app jouet du scout (demo-app.mjs) — fiche 20261102182259416.
+#
+# Un projet déclare l'arbre de son app : des écrans, puis leurs actions. Chaque nœud se teste sur
+# un ou deux axes : visuel (l'écran s'affiche bien) et fonctionnel (l'action fait ce qu'elle doit).
+# L'app jouet n'a pas d'écran : seul l'axe fonctionnel s'applique.
+#
+# Déclaration dans .vectorz/config.yml :
+#   carto:
+#     trees:
+#       demo-app: products/mega-city/skills/ezk-scout/examples/carto-demo-app.yml
+app: demo-app
+axes: [fonctionnel]
+screens:
+  - id: sante
+    title: Le serveur répond sur GET /health
+  - id: export
+    title: Exporter une grille par POST /export
+    actions:
+      - id: bpm-invalide
+        title: Exporter avec un BPM nul ou négatif
+      - id: dossier-ferme
+        title: Exporter vers un dossier non inscriptible

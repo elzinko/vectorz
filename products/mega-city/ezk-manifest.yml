@@ -285,6 +285,20 @@ commands:
     summary: Montre les recettes de la méthode et celles déclarées dans ce projet (lecture seule).
     root: none
     project: true
+  # --- carto : le carnet de tests (fiche 20261102182259416) ---
+  - domain: carto
+    verb: status
+    run: bin/ezk-carto.ts status
+    summary: Carnet de tests — ce qui est testé, ce qui reste à tester ou a expiré (--todo, --json).
+    root: none
+    project: true
+  - domain: carto
+    verb: record
+    run: bin/ezk-carto.ts record
+    summary: Note au carnet un résultat de test et sa preuve (--axis, --verdict, --proof).
+    root: none
+    project: true
+    writes: true
   - domain: run
     verb: context
     run: bin/run-context.ts

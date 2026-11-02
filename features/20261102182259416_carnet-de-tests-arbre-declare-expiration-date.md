@@ -68,18 +68,18 @@ ezk carto status --todo   ◀── calculé à la lecture ────┘
 
 ## Critères d'acceptation
 
-- [ ] Un projet déclare l'arbre de son app, écrans puis actions, dans un fichier. Un arbre mal formé
+- [x] Un projet déclare l'arbre de son app, écrans puis actions, dans un fichier. Un arbre mal formé
       est refusé avec un message qui nomme la ligne fautive.
-- [ ] `ezk carto record` ajoute une ligne au journal, dans le dossier git commun : nœud, axe, verdict,
+- [x] `ezk carto record` ajoute une ligne au journal, dans le dossier git commun : nœud, axe, verdict,
       date, SHA et copie de la preuve. Un nœud inconnu ou une preuve absente est refusé.
-- [ ] `ezk carto status` affiche chaque nœud avec son état sur les deux axes : jamais testé, valide,
+- [x] `ezk carto status` affiche chaque nœud avec son état sur les deux axes : jamais testé, valide,
       en échec ou expiré.
-- [ ] Une preuve plus vieille que sa durée de validité, 14 jours par défaut et réglable, ressort
+- [x] Une preuve plus vieille que sa durée de validité, 14 jours par défaut et réglable, ressort
       « expirée » sans intervention. La sortie montre son âge et le nombre de commits depuis.
-- [ ] `status --todo` ne liste que les nœuds jamais testés ou expirés. Son en-tête dit « X sur Y
+- [x] `status --todo` ne liste que les nœuds jamais testés ou expirés. Son en-tête dit « X sur Y
       testés », calculé depuis le même arbre, et précise qu'il ne compte que les passes
       d'exploration.
-- [ ] `--json` rend le même contenu avec un numéro de format. Le tout est testé sur l'app jouet du
+- [x] `--json` rend le même contenu avec un numéro de format. Le tout est testé sur l'app jouet du
       scout, et la gate locale est verte.
 
 ## Comment vérifier
@@ -120,6 +120,16 @@ pnpm --dir products/mega-city typecheck
     et les sprints : partagés entre worktrees, hors de l'arbre de travail, jamais committés.
 - **Passée « prête » le 2026-11-02.** Socle complet : problème daté, valeur, 6 critères vérifiables,
   aucune dépendance externe. Une seule surface touchée, la commande `ezk`.
+- **Tirée avant 19 idées du plan (soupape PO, 2026-11-02).** Le plan place 19 idées plus anciennes,
+  sans version, avant cette fiche. Aucune n'a de lien avec le besoin de tester l'app. Le PO a décidé
+  de passer devant (« passe devant »). Le ménage de ces lignes du plan reste à faire à part.
+- **Revue adverse `ezk-reviewer` : GO (2026-11-02).** Les 6 critères sont prouvés par le relecteur,
+  qui a rejoué les tests et essayé des cas hostiles : traversée de chemin, option git déguisée en SHA,
+  journal corrompu, dépôt sans HEAD. Trois points mineurs ont été corrigés après la revue (SHA validé
+  dès la lecture du journal, valeur fautive affichée, limite des 14 jours fixée par un test).
+- **Limites connues, non bloquantes** : un chemin de preuve qui commence par `--` doit s'écrire
+  `./--nom` ; l'écriture concurrente repose sur l'ajout en fin de fichier, sûr en local mais fragile
+  sur un disque réseau.
 - **Hors périmètre** : le câblage du scout
   ([20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md)), mission control
   ([20261102182259592](20261102182259592_carnet-mission-control-premiere-app-mesure.md)),

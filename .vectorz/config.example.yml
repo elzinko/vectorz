@@ -42,3 +42,17 @@ github:
 #                             #    que ce qu'on nomme, jamais de déplacement silencieux)
 #
 #   (clé absente / scrum: false → LEGACY)
+
+# --- Carnet de tests (`carto:`) — fiche 20261102182259416 ---
+# Le carnet note ce qui est testé dans une app, avec une preuve datée qui expire.
+# Le projet déclare l'arbre de chaque app (écrans, puis actions) dans un fichier YAML ;
+# le journal et les preuves vivent hors de l'arbre de travail, dans <git-common-dir>/ezk/carto/.
+# ABSENT = pas de carnet : `ezk carto status` le dit, rien d'autre ne change.
+#
+#   carto:
+#     trees:
+#       demo-app: products/mega-city/skills/ezk-scout/examples/carto-demo-app.yml
+#     validity-days: 14     # durée de validité d'une preuve, en jours (défaut : 14)
+#
+# Lire :   ezk carto status [<app>] [--todo] [--json]
+# Noter :  ezk carto record <nœud> --axis fonctionnel --verdict echec --proof <fichier>
