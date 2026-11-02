@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: []
 labels: [mission-control, securite]
-status: idea
+status: ready
 pr:
 evidence: none # garde côté serveur, sans changement d'écran
 created: 2026-11-02
@@ -66,6 +66,11 @@ Une garde pure, dans cop1, testée cas par cas, appelée par toutes les routes a
    - le corps est de type `application/json` ;
    - la limite de taille actuelle reste.
 3. **Un refus** rend un code HTTP (403 ou 415) et n'exécute rien.
+
+**Le daemon doit connaître l'adresse de sa page.** Aujourd'hui, `scripts/cop1-dev.sh` ne lui passe
+que son propre port (`--port`). Le proxy de développement transmet l'`Origin` de la page
+(`http://localhost:<port web>`). Le lanceur, qui connaît `COP1_WEB_PORT`, donne donc aussi le port de
+la page au daemon. Sans cela, la garde bloquerait la page légitime.
 
 La garde de la méthode (`src/core/verdicts.ts`) sert de modèle. Mission control ne l'importe pas :
 l'ADR-021 lui interdit d'importer le code de mega-city.
