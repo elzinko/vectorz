@@ -43,6 +43,10 @@ export function loadVerdicts(repoRoot: string): VerdictsData {
   return data;
 }
 
+/** Le jour local (`AAAA-MM-JJ`) que porte un pouce : la page et la commande datent de la même façon. */
+export const localDay = (now: Date = new Date()): string =>
+  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
 /**
  * Pose, remplace ou retire (`none`) le verdict d'une fiche. `verdictFile` jette si `id` n'est pas
  * un id de fiche : le nom du fichier ne vient jamais d'un chemin saisi. L'écriture passe par un

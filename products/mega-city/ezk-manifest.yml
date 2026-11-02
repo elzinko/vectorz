@@ -256,6 +256,13 @@ commands:
     root: cwd
     project: true
     writes: true
+  - domain: review
+    verb: verdict
+    run: bin/review-verdict.ts
+    summary: Pose le pouce de revue d'une fiche (<id> up|down|none) (--root <projet>).
+    root: cwd
+    project: true
+    writes: true
   - domain: journal
     verb: add
     run: bin/journal-add.sh --root {root}

@@ -14,7 +14,7 @@ import {
   checkVerdictRequest,
 } from '../core/verdicts.js';
 import { loadFiches } from '../loaders/fiches.js';
-import { writeVerdict } from './verdicts.js';
+import { localDay, writeVerdict } from './verdicts.js';
 
 export const VERDICT_ROUTE = '/api/verdict';
 
@@ -29,9 +29,6 @@ export interface EndpointResult {
   status: number;
   body: Record<string, unknown>;
 }
-
-const localDay = (now: Date = new Date()): string =>
-  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
 /** Garde-fou puis écriture, sur une requête déjà lue. Synchrone : tout le travail tient là. */
 export function handleVerdictRequest(req: RequestEnvelope, ctx: EndpointContext): EndpointResult {

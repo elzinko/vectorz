@@ -71,11 +71,11 @@ Avis d'architecte du 2026-11-02, gardé par le PO.
 
 ## Critères d'acceptation
 
-- [ ] **La commande écrit le pouce.** `ezk review verdict <id> up` écrit
+- [x] **La commande écrit le pouce.** `ezk review verdict <id> up` écrit
       `features/reviews/verdicts/<id>.json`, octet pour octet comme la page web le fait aujourd'hui.
-- [ ] **Refus sans écriture.** Une fiche inconnue ou une valeur autre que `up` ou `down` est refusée,
-      avec un code d'erreur et aucun fichier écrit.
-- [ ] **Rien d'autre n'est écrit.** La commande ne touche ni le front-matter de la fiche ni un autre
+- [x] **Refus sans écriture.** Une fiche inconnue ou une valeur autre que `up`, `down` ou `none` est
+      refusée, avec un code d'erreur et aucun fichier écrit.
+- [x] **Rien d'autre n'est écrit.** La commande ne touche ni le front-matter de la fiche ni un autre
       dossier, et ne fait aucun commit.
 
 ## Comment vérifier
@@ -107,3 +107,5 @@ montre que ce fichier.
 - Le nom de la commande est à confirmer au build, avec la fiche
   [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md).
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
+- Décision du build (2026-11-02, run autonome) : la commande accepte aussi `none`, qui retire le pouce.
+  La page web le permettait ; sans `none`, son retrait aurait perdu ce geste.

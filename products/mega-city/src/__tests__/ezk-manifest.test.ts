@@ -97,6 +97,7 @@ describe('ezk-manifest.yml', () => {
       'retro note',
       'retro reports',
       'review emit',
+      'review verdict',
       'rules apply',
       'rules check',
       'rules show',
@@ -128,6 +129,7 @@ describe('ezk-manifest.yml', () => {
       'release',
       'retro note',
       'review emit',
+      'review verdict',
     ]);
   });
 

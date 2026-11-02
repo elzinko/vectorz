@@ -135,6 +135,19 @@ export function checkVerdictRequest(
     return refuse(400, 'corps invalide : un objet { id, verdict } est attendu');
   }
   const { id, verdict } = data as Record<string, unknown>;
+  return checkVerdictValues(id, verdict, isKnownFiche);
+}
+
+/**
+ * Les contrôles de fond d'un pouce, partagés par la route de la page et par `ezk review verdict`
+ * (fiche 20261102123552181) : un id de fiche (jamais un chemin), une fiche qui existe, une valeur
+ * permise. Les refus rendent le même code que la route.
+ */
+export function checkVerdictValues(
+  id: unknown,
+  verdict: unknown,
+  isKnownFiche: (id: string) => boolean,
+): RequestCheck {
   if (typeof id !== 'string' || !FICHE_ID.test(id)) {
     return refuse(400, 'id invalide : un id de fiche (chiffres seulement) est attendu');
   }
