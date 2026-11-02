@@ -79,7 +79,7 @@ montre que ce fichier.
 ## Suite
 
 - **Le bouton de mission control** : la route du daemon, ses gardes et l'affichage du pouce. C'est la
-  fiche sœur [mission control pose le pouce de revue](../20261102151630248_mission-control-pose-le-pouce-de-revue.md),
+  fiche sœur [mission control pose le pouce de revue](../done/20261102151630248_mission-control-pose-le-pouce-de-revue.md),
   coupée d'ici au grooming du 2026-11-02 : la fiche touchait trois surfaces, et la commande seule
   sert déjà dans un terminal.
 

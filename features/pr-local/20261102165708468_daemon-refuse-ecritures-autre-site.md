@@ -89,7 +89,7 @@ signe que la requête a été traitée, et la seconde rend 200.
 ## Notes
 
 - Trouvée au grooming du pouce de revue :
-  [mission control pose le pouce de revue](../20261102151630248_mission-control-pose-le-pouce-de-revue.md),
+  [mission control pose le pouce de revue](../done/20261102151630248_mission-control-pose-le-pouce-de-revue.md),
   qui réutilisera cette garde.
 - Deux bugs voisins touchent les mêmes routes, sans recouvrir celui-ci :
   [une proposition de règle répond « OK » sans rien faire](../20261102100505955_patch-proposition-regle-ok-sans-effet.md)

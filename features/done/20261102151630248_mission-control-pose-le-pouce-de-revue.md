@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261102123552181", "20261102165708468", "20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: ready
-pr:
+status: shipped
+pr: "local (b6711c6b)"
 evidence: before-after
 created: 2026-11-02
 ---
@@ -23,10 +23,10 @@ demande vient bien de sa propre page.
 
 ## Contexte / Problème
 
-- L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+- L'[amendement du 2026-11-02 de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   fait de mission control le seul écran. Le pouce, posé aujourd'hui dans la page web de la méthode,
   doit pouvoir se poser dans mission control avant le retrait de cette page.
-- La fiche sœur [le pouce de revue se pose par une commande ezk](done/20261102123552181_pouce-de-revue-par-une-commande-ezk.md)
+- La fiche sœur [le pouce de revue se pose par une commande ezk](20261102123552181_pouce-de-revue-par-une-commande-ezk.md)
   fournit la commande `ezk review verdict <id> up|down`. Seules les commandes `ezk` écrivent dans un
   projet (ADR-086, décision 1.4).
 - `ezk board show --json` publie déjà les pouces : mission control n'a qu'à les afficher.
@@ -89,9 +89,9 @@ apparaît, et la fenêtre montre le pouce. Signal observable du `curl` : un refu
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Coupée de la fiche de la commande au grooming du 2026-11-02.
   Le retrait vient en dernier :
-  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
 - **Constat hors de cette fiche (2026-11-02).** Les quatre routes d'écriture actuelles du daemon ne
   vérifient ni l'origine ni le type de la requête : abandon d'un run, ancrage d'un projet, proposition
   de règle, levée d'un blocage. Une page d'un autre site, ouverte dans le navigateur, pourrait donc
-  les appeler. Fiche dédiée, en P1 : [le daemon refuse les écritures venues d'un autre site](done/20261102165708468_daemon-refuse-ecritures-autre-site.md). Cette route réutilisera sa garde.
+  les appeler. Fiche dédiée, en P1 : [le daemon refuse les écritures venues d'un autre site](20261102165708468_daemon-refuse-ecritures-autre-site.md). Cette route réutilisera sa garde.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.

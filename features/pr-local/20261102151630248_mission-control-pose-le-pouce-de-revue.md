@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102151630248_mission-control-pose-le-pouce-de-revue.md](../20261102151630248_mission-control-pose-le-pouce-de-revue.md)
+> 🗎 Rendu de la fiche [features/20261102151630248_mission-control-pose-le-pouce-de-revue.md](../done/20261102151630248_mission-control-pose-le-pouce-de-revue.md)
 
 ## En clair
 
