@@ -6,7 +6,7 @@ priority: P2
 product: cop1
 milestone: board
 version:
-depends: ["20261102123552181", "20261031160441412"]
+depends: ["20261102123552181", "20261102165708468", "20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
 status: idea
 pr:
