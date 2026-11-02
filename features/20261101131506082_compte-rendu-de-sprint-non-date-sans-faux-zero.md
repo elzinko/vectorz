@@ -49,6 +49,13 @@ posé), mais il annonce « 0 fiche(s) livrée(s) » pour deux fiches livrées, e
 Le point de passage ne suffit donc pas : le compte des fiches et la fenêtre des jetons sont faux eux
 aussi.
 
+Même défaut au sprint 8, le même soir. Le compte rendu
+`2026-11-02-sprint-le-pouce-de-revue-passe-par-la-m-thode.md` annonce « 1 fiche(s) livrée(s) », et
+c'est une fiche d'une autre session, le carnet de tests. Les deux fiches du lot, livrées en local
+(`382412eb`, `b6711c6b`), n'y figurent pas. Les jetons annoncés, 152 millions, sont presque tous des
+lectures de cache. Piste : le compte des fiches livrées ne reconnaît pas un ship local
+(`pr: local (<sha>)`), et prend ce qui a été livré dans la fenêtre, quelle que soit la session.
+
 ## Valeur
 
 Pour le PO qui relit un sprint : un chiffre faux en première phrase trompe plus qu'une absence
