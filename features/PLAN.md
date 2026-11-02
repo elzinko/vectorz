@@ -17,7 +17,7 @@ version se pose à la construction (étiquette). Détail :
 
 **Correctifs de la passe scout du 2026-11-02** (hors milestone, en tête sur décision PO du 2026-11-02) :
 - ~~`20261102100505427` — le lanceur refuse un port web déjà pris, au lieu d'annoncer un port faux · build~~ — shipped
-- `20261102100506285` — épingler pnpm 10.28.2 pour le poste, la CI et tout environnement neuf · build
+- ~~`20261102100506285` — épingler pnpm 10.28.2 pour le poste, la CI et tout environnement neuf · build~~ — shipped
 
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped

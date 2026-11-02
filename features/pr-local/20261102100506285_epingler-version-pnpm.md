@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102100506285_epingler-version-pnpm.md](../20261102100506285_epingler-version-pnpm.md)
+> 🗎 Rendu de la fiche [features/20261102100506285_epingler-version-pnpm.md](../done/20261102100506285_epingler-version-pnpm.md)
 
 # Lancé depuis un environnement neuf, vectorz réinstalle ses dépendances avec un autre pnpm
 

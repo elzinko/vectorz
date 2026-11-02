@@ -7,8 +7,8 @@ product: vectorz
 milestone:
 version:
 labels: [scout, outillage]
-status: ready
-pr:
+status: shipped
+pr: "local (main 38de13e9)"
 evidence: none # configuration du dépôt ; pas d'écran
 created: 2026-11-02
 ---
@@ -114,4 +114,4 @@ qui a déclenché l'incident. Ce test-là se fait dans une copie du dépôt.
 - Effet de bord à connaître : avec l'épingle, corepack refusera de lancer yarn dans ce dépôt. C'est
   voulu.
 - Voisine livrée, sur un autre sujet (pnpm introuvable sous launchd) :
-  [checklist de démo desktop périmée](done/0060-checklist-demo-desktop-perimee.md).
+  [checklist de démo desktop périmée](0060-checklist-demo-desktop-perimee.md).
