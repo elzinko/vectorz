@@ -41,7 +41,7 @@ version se pose à la construction (étiquette). Détail :
 Suite décidée le 2026-11-02 (run autonome délégué par le PO : « je te laisse proposer le chemin »).
 Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendances :
 
-- `20261102165708468` — le daemon refuse les écritures venues d'un autre site · build (P1, sprint 1)
+- ~~`20261102165708468` — le daemon refuse les écritures venues d'un autre site · build (P1, sprint 1)~~ — shipped
 - `20261102104443762` — la vue d'ensemble compte les vrais sprints et rétros · groom (P1, sprint 1)
 - `20261102123552181` — le pouce de revue se pose par une commande ezk · groom (sprint 2)
 - `20261102151630248` — mission control pose le pouce par la commande · groom (sprint 2)

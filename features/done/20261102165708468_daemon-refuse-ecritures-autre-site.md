@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: []
 labels: [mission-control, securite]
-status: ready
-pr:
+status: shipped
+pr: "local (bd1cd7f5)"
 evidence: none # garde côté serveur, sans changement d'écran
 created: 2026-11-02
 ---
@@ -45,7 +45,7 @@ Constaté le 2026-11-02, en lisant le code au grooming du pouce de revue.
   - Le `PATCH` est protégé en pratique, car le navigateur demande d'abord la permission et le daemon
     ne la donne pas. Mais c'est le navigateur qui protège, pas le daemon.
 - La méthode avait déjà posé ces gardes pour la seule écriture de sa page web, le pouce de revue
-  ([ADR-0057](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md),
+  ([ADR-0057](../../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md),
   `src/core/verdicts.ts`). Mission control ne les a pas reprises.
 
 ## Valeur
@@ -103,11 +103,11 @@ signe que la requête a été traitée, et la seconde rend 200.
 ## Notes
 
 - Trouvée au grooming du pouce de revue :
-  [mission control pose le pouce de revue](20261102151630248_mission-control-pose-le-pouce-de-revue.md),
+  [mission control pose le pouce de revue](../20261102151630248_mission-control-pose-le-pouce-de-revue.md),
   qui réutilisera cette garde.
 - Deux bugs voisins touchent les mêmes routes, sans recouvrir celui-ci :
-  [une proposition de règle répond « OK » sans rien faire](20261102100505955_patch-proposition-regle-ok-sans-effet.md)
-  et [un corps invalide répond « introuvable »](20261102100506119_resolve-blocage-corps-invalide-404.md).
+  [une proposition de règle répond « OK » sans rien faire](../20261102100505955_patch-proposition-regle-ok-sans-effet.md)
+  et [un corps invalide répond « introuvable »](../20261102100506119_resolve-blocage-corps-invalide-404.md).
 - Priorité P1, fixée par le PO le 2026-11-02 : un trou de sécurité dans du code en service, à
   corriger avant le chantier « un seul écran ».
 - Revue adverse du 2026-11-02 (sprint 7 du run autonome) : GO, six critères prouvés par les tests. Deux

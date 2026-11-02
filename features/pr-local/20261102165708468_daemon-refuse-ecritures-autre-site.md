@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102165708468_daemon-refuse-ecritures-autre-site.md](../20261102165708468_daemon-refuse-ecritures-autre-site.md)
+> 🗎 Rendu de la fiche [features/20261102165708468_daemon-refuse-ecritures-autre-site.md](../done/20261102165708468_daemon-refuse-ecritures-autre-site.md)
 
 ## En clair
 
