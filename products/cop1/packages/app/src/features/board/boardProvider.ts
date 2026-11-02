@@ -25,7 +25,7 @@ import type { ConfigSnapshot, EzkConfigSource } from './ezkConfigSource.js';
 import type { ProjectConfigData } from './ezkConfigTranslator.js';
 import type { EzkPlanSource, PlanSnapshot } from './ezkPlanSource.js';
 import type { SourceReading } from './ezkSource.js';
-import type { FicheDetailData, PlanFunnel, PlanVersions } from './planTypes.js';
+import type { FicheDetailData, PlanFunnel, PlanPilotage, PlanVersions } from './planTypes.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
 export interface BoardProjectInput {
@@ -75,6 +75,8 @@ export interface BoardPlanProject {
   chantiers?: LiveChantier[];
   /** Détail des fiches NON livrées (pour la modale du board). */
   fiches: Record<string, FicheDetailData>;
+  /** Milestones et sessions closes publiées par la méthode (vue « Pilotage ») ; absent sinon. */
+  pilotage?: PlanPilotage;
   /** La config est-elle arrivée ? Sinon `config` est absent. */
   configState: BoardPlanState;
   /** La config du projet, telle que la méthode la résout (`ezk config show --json`). */
@@ -136,6 +138,7 @@ export function shapeProject(
     runs: live.runs,
     ...(live.chantiers.length > 0 ? { chantiers: live.chantiers } : {}),
     fiches: received ? received.fiches : {},
+    ...(received?.plan.pilotage ? { pilotage: received.plan.pilotage } : {}),
     configState: readState(config),
     ...(config.state === 'ok' ? { config: config.config } : {}),
   };

@@ -209,5 +209,25 @@
  "historique": {
   "sprints": 2,
   "retros": 1
- }
+ },
+ "sessions": [
+  {
+   "date": "2026-10-31",
+   "title": "Seconde session",
+   "file": "docs/sessions/2026-10-31-seconde-session.md",
+   "fiches": [],
+   "prs": []
+  },
+  {
+   "date": "2026-10-30",
+   "title": "Première session",
+   "file": "docs/sessions/2026-10-30-premiere-session.md",
+   "fiches": [
+    "20990101000000001"
+   ],
+   "prs": [
+    "12"
+   ]
+  }
+ ]
 }

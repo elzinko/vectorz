@@ -42,6 +42,34 @@ export interface PlanData {
    * Absent quand la méthode installée ne le publie pas : la page dit « — », jamais un faux 0.
    */
   history?: { sprints: number; retros: number };
+  /**
+   * L'avancement par milestone et les sessions closes, tels que la méthode les publie (fiche
+   * 20261102123552182). Absent quand la méthode installée ne publie pas les sessions : la vue
+   * « Pilotage » le dit, jamais une liste vide présentée comme réelle.
+   */
+  pilotage?: PlanPilotage;
+}
+
+/** Une milestone et son avancement (`milestones` de `ezk board show --json`). */
+export interface PlanMilestone {
+  name: string;
+  status: string;
+  total: number;
+  shipped: number;
+}
+
+/** Une session close (`sessions` de `ezk board show --json`), la plus récente d'abord. */
+export interface PlanSession {
+  date: string;
+  title: string;
+  file: string;
+  fiches: string[];
+  prs: string[];
+}
+
+export interface PlanPilotage {
+  milestones: PlanMilestone[];
+  sessions: PlanSession[];
 }
 
 /** Les quatre états du board (identiques au type `FicheStatus` du web). */

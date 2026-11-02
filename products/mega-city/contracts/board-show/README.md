@@ -3,8 +3,8 @@
 ## En clair
 
 `ezk board show --json` sort tout ce que la méthode sait du plan d'un projet : ses fiches, leurs
-comptes, ses versions, ses pouces de revue. Un autre programme l'affiche tel quel, sans relire les
-fiches ni recalculer une règle. Ce dossier range la description de ce format et un exemple de sortie.
+comptes, ses versions, ses pouces de revue, et ce qu'elle y a mené (sprints, rétros, sessions
+closes). Un autre programme l'affiche tel quel, sans relire les fiches ni recalculer une règle. Ce dossier range la description de ce format et un exemple de sortie.
 
 **Si tu arrives frais.** Une *fiche* est un fichier markdown du backlog. *Mission control* est le
 tableau de bord du produit cop1. La décision qui fait de la méthode le seul lecteur des fiches est
@@ -15,7 +15,8 @@ l'[ADR-086](../../../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-cont
 - `v1/schema.json` : le schéma JSON du format, version 1.
 - `v1/example.json` : la sortie de la commande sur un faux projet de huit fiches. Il contient une
   fiche en cours, une bloquée, une fiche dont le titre porte « : », une remplacée, une version mal
-  écrite, une livrée, une parkée et une fiche sans version.
+  écrite, une livrée, une parkée et une fiche sans version. Il porte aussi deux récits de session
+  close, dont l'un cite une fiche et une PR.
 
 Les deux fichiers sont **générés**. Ne les modifie pas à la main :
 

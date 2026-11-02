@@ -191,3 +191,38 @@ describe('translatePlan — le pouce de revue de chaque fiche (fiche 20261102151
     expect(translatePlan(b, backlog()).fiches['20990101000000002']?.verdict).toBeUndefined();
   });
 });
+
+describe('translatePlan — le pilotage : milestones et sessions closes (fiche 20261102123552182)', () => {
+  it('reprend chaque milestone du contrat : total et livré', () => {
+    const pilotage = translatePlan(board(), backlog()).plan.pilotage;
+    const expected = board().milestones.map((m: Json) => ({
+      name: m.milestone,
+      status: m.status,
+      total: m.total,
+      shipped: m.shipped,
+    }));
+    expect(expected.length).toBeGreaterThan(0);
+    expect(pilotage?.milestones).toEqual(expected);
+  });
+
+  it('reprend les sessions du contrat, dans son ordre (la plus récente d’abord)', () => {
+    const pilotage = translatePlan(board(), backlog()).plan.pilotage;
+    expect(board().sessions.length).toBeGreaterThan(0);
+    expect(pilotage?.sessions).toEqual(board().sessions);
+  });
+
+  it('sans sessions (méthode plus ancienne) : pas de pilotage, jamais une liste vide', () => {
+    const b = board();
+    b.sessions = undefined;
+    expect(translatePlan(b, backlog()).plan.pilotage).toBeUndefined();
+  });
+
+  it('une session ou une milestone mal formée : pas de pilotage, jamais une liste tronquée', () => {
+    const b = board();
+    b.sessions = [...b.sessions, { date: '2026-11-02', title: 'sans fiches' }];
+    expect(translatePlan(b, backlog()).plan.pilotage).toBeUndefined();
+    const c = board();
+    c.milestones = [{ milestone: 'm', status: 'ok', total: -1, shipped: 0 }];
+    expect(translatePlan(c, backlog()).plan.pilotage).toBeUndefined();
+  });
+});

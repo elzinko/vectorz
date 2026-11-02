@@ -215,3 +215,28 @@ describe('composeBoardData — synchrone, lit l’état des sources', () => {
     expect(data.p?.configState).toEqual({ state: 'loading' });
   });
 });
+
+describe('shapeProject — le pilotage (fiche 20261102123552182)', () => {
+  const pilotage = {
+    milestones: [{ name: 'board', status: 'en-cours', total: 10, shipped: 6 }],
+    sessions: [
+      {
+        date: '2026-11-02',
+        title: 'Run autonome',
+        file: 'docs/sessions/x.md',
+        fiches: ['1'],
+        prs: [],
+      },
+    ],
+  };
+
+  it('passe tel quel le pilotage publié par la méthode', () => {
+    const p = shapeProject('vectorz', '', { ...ok, plan: { ...plan, pilotage } }, noLive);
+    expect(p.pilotage).toEqual(pilotage);
+  });
+
+  it('plan reçu sans pilotage, ou plan pas encore là : aucun pilotage', () => {
+    expect(shapeProject('vectorz', '', ok, noLive).pilotage).toBeUndefined();
+    expect(shapeProject('vectorz', '', { state: 'loading' }, noLive).pilotage).toBeUndefined();
+  });
+});

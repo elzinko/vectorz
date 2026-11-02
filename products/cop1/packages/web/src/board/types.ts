@@ -209,6 +209,30 @@ export type PlanState = (
   | { state: 'unavailable'; reason: string }
 ) & { refreshing?: true };
 
+/** Une milestone et son avancement, tels que la méthode les publie (fiche 20261102123552182). */
+export interface PilotageMilestone {
+  name: string;
+  status: string;
+  total: number;
+  shipped: number;
+}
+
+/** Une session close, telle que la méthode la lit dans son récit. */
+export interface PilotageSession {
+  date: string;
+  title: string;
+  /** Le récit, relatif à la racine du projet. */
+  file: string;
+  fiches: string[];
+  prs: string[];
+}
+
+/** La vue « Pilotage » : l'avancement par milestone et les sessions closes, la plus récente d'abord. */
+export interface Pilotage {
+  milestones: PilotageMilestone[];
+  sessions: PilotageSession[];
+}
+
 /** Un projet : la seule source de vérité de ses chiffres. */
 export interface BoardProject {
   name: string;
@@ -235,6 +259,8 @@ export interface BoardProject {
   config?: ProjectConfig;
   /** État de la lecture de la config (ADR-086). Absent = config reçue. Sinon `config` est absent. */
   configState?: PlanState;
+  /** Publié par la méthode avec le plan ; absent si elle ne le publie pas (la vue le dit). */
+  pilotage?: Pilotage;
 }
 
 /** L'ensemble des projets, indexés par leur nom (clé de navigation). */

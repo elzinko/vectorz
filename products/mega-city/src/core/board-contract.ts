@@ -23,6 +23,7 @@ import { z } from 'zod';
 import { lifecycleOf, buildVersions } from '../backlog/versions.js';
 import { versionScope } from '../backlog/version-scope.js';
 import type { Fiche } from '../loaders/fiches.js';
+import type { RunReport } from '../loaders/runs.js';
 import { buildAvancementData } from './avancement-data.js';
 import { TERMINAUX } from './fiche-schema.js';
 import type { VerdictsData } from './verdicts.js';
@@ -101,6 +102,14 @@ const VersionsSchema = z.strictObject({
 
 const VerdictSchema = z.strictObject({ verdict: z.enum(['up', 'down']), date: z.string() });
 
+const SessionSchema = z.strictObject({
+  date: z.string().describe('`AAAA-MM-JJ`, lue du nom du récit.'),
+  title: z.string().describe('Le premier titre du récit, ou son nom à défaut.'),
+  file: z.string().describe('Le récit, relatif à la racine du projet.'),
+  fiches: z.array(z.string()).describe('Fiches travaillées (ligne `fiches:` du récit).'),
+  prs: z.array(z.string()).describe('Numéros de PR cités dans le récit.'),
+});
+
 export const BoardContractSchema = z.strictObject({
   schema_version: z.literal(BOARD_SCHEMA_VERSION),
   counts: z
@@ -125,6 +134,9 @@ export const BoardContractSchema = z.strictObject({
       retros: count().describe('Captures de rétro (`AAAA-MM-JJ-retro-<slug>.md`, dossier `scrum:` du projet).'),
     })
     .describe('Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762).'),
+  sessions: z
+    .array(SessionSchema)
+    .describe('Sessions closes, une par récit du dossier `scrum:` du projet, la plus récente d’abord (fiche 20261102123552182).'),
   verdictsIllisibles: z.array(z.string()).describe('Fichiers de verdict illisibles, jamais ignorés en silence.'),
 });
 
@@ -140,6 +152,8 @@ export interface BoardContractInput {
   verdicts: VerdictsData;
   /** Comptes rendus de sprint et captures de rétro, comptés au bord (`io/board-show.ts`). */
   historique: { sprints: number; retros: number };
+  /** Récits des sessions closes, lus au bord (`loaders/runs.ts`), la plus récente d'abord. */
+  sessions: readonly RunReport[];
 }
 
 const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
@@ -165,7 +179,7 @@ function colonneOf(f: Fiche, inProgressIds: ReadonlySet<string>): Colonne {
 
 /** Compile le contrat. Tout est trié : la même entrée donne toujours la même sortie. */
 export function buildBoardContract(input: BoardContractInput): BoardContract {
-  const { fiches, inProgressIds, tags, verdicts, historique } = input;
+  const { fiches, inProgressIds, tags, verdicts, historique, sessions } = input;
   const board = buildAvancementData([...fiches], inProgressIds);
   const report = buildVersions(fiches, tags);
   const scope = versionScope(report);
@@ -212,5 +226,6 @@ export function buildBoardContract(input: BoardContractInput): BoardContract {
     verdicts: Object.fromEntries(Object.entries(verdicts.verdicts).sort(([a], [b]) => (a < b ? -1 : 1))),
     verdictsIllisibles: [...verdicts.illisibles].sort(),
     historique: { sprints: historique.sprints, retros: historique.retros },
+    sessions: sessions.map((s) => ({ date: s.date, title: s.title, file: s.file, fiches: s.fiches, prs: s.prs })),
   };
 }

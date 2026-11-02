@@ -145,6 +145,10 @@ export function makeContractFixture(): string {
   write('docs/sprints/notes.md', '# Notes libres, pas un compte rendu\n');
   write('docs/captures/2026-10-31-retro-premiere.md', '# Rétro\n');
   write('docs/captures/2026-10-31-panel-board.md', '# Panel, pas une rétro\n');
+  // Les sessions closes (fiche 20261102123552182) : 2 récits, et le README du dossier, qui n'en est pas un.
+  write('docs/sessions/README.md', '# Les récits de session\n');
+  write('docs/sessions/2026-10-30-premiere-session.md', 'fiches: 20990101000000001\n\n# Première session\n\nLivré en PR #12.\n');
+  write('docs/sessions/2026-10-31-seconde-session.md', '# Seconde session\n\nRien de livré.\n');
   const git = (...args: string[]): void => {
     execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', ...args], { stdio: 'ignore' });
   };

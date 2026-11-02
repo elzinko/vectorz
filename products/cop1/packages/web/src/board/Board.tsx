@@ -18,6 +18,7 @@ import { FicheModal, type Pouce } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
+import { PilotageView } from './PilotageView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
 
@@ -34,6 +35,7 @@ const REFRESH_MS = 15_000;
 type ViewId =
   | 'fleet'
   | 'overview'
+  | 'pilotage'
   | 'cadrage'
   | 'dev'
   | 'fiches'
@@ -50,6 +52,7 @@ interface NavItem {
 
 const PROJECT_NAV: NavItem[] = [
   { id: 'overview', icon: '◧', label: "Vue d'ensemble" },
+  { id: 'pilotage', icon: '◔', label: 'Pilotage' },
   { id: 'cadrage', icon: '✎', label: 'Cadrage' },
   { id: 'dev', icon: '▸', label: 'Développement' },
   { id: 'fiches', icon: '▦', label: 'Fiches' },
@@ -425,6 +428,8 @@ export function Board(): JSX.Element {
               }}
               onViewRun={(runId) => setRunDetailId(runId)}
             />
+          ) : view === 'pilotage' ? (
+            <PilotageView project={project} />
           ) : view === 'cadrage' ? (
             <CadrageView project={project} onOpenRun={(id) => setRunDetailId(id)} />
           ) : view === 'dev' ? (

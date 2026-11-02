@@ -8,6 +8,9 @@ import type {
   FicheDetailStatus,
   PlanData,
   PlanFunnel,
+  PlanMilestone,
+  PlanPilotage,
+  PlanSession,
   PlanVersion,
 } from './planTypes.js';
 
@@ -38,6 +41,10 @@ interface BoardShow {
   historique?: unknown;
   /** Pouces de revue posés, par id de fiche (ADR-0057) ; lus sans confiance aveugle. */
   verdicts?: unknown;
+  /** L'avancement par milestone, lu sans confiance aveugle. */
+  milestones?: unknown;
+  /** Ajouté au contrat v1 (fiche 20261102123552182) : absent d'une méthode plus ancienne. */
+  sessions?: unknown;
 }
 
 interface BacklogFiche {
@@ -155,6 +162,43 @@ function readHistory(value: unknown): PlanData['history'] {
   return { sprints: value.sprints, retros: value.retros };
 }
 
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((v) => typeof v === 'string');
+
+function readMilestone(value: unknown): PlanMilestone | undefined {
+  if (!isRecord(value) || typeof value.milestone !== 'string' || typeof value.status !== 'string')
+    return undefined;
+  if (!isCount(value.total) || !isCount(value.shipped)) return undefined;
+  return {
+    name: value.milestone,
+    status: value.status,
+    total: value.total,
+    shipped: value.shipped,
+  };
+}
+
+function readSession(value: unknown): PlanSession | undefined {
+  if (!isRecord(value)) return undefined;
+  const { date, title, file, fiches, prs } = value;
+  if (typeof date !== 'string' || typeof title !== 'string' || typeof file !== 'string')
+    return undefined;
+  if (!isStringArray(fiches) || !isStringArray(prs)) return undefined;
+  return { date, title, file, fiches, prs };
+}
+
+/**
+ * Les milestones et les sessions publiées, ou `undefined` si l'un manque ou porte une entrée mal
+ * formée : la vue « Pilotage » dit alors qu'elle est indisponible, elle ne montre jamais une liste
+ * tronquée comme complète.
+ */
+function readPilotage(milestones: unknown, sessions: unknown): PlanPilotage | undefined {
+  if (!Array.isArray(milestones) || !Array.isArray(sessions)) return undefined;
+  const ms = milestones.map(readMilestone);
+  const ss = sessions.map(readSession);
+  if (ms.some((m) => m === undefined) || ss.some((s) => s === undefined)) return undefined;
+  return { milestones: ms as PlanMilestone[], sessions: ss as PlanSession[] };
+}
+
 /** Traduit les deux réponses d'`ezk` ; lève `EzkContractError` si leur forme n'est pas celle du contrat v1. */
 export function translatePlan(boardJson: unknown, backlogJson: unknown): TranslatedPlan {
   const board = asBoardShow(boardJson);
@@ -162,6 +206,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
   const { comptes, versions } = board;
   const history = readHistory(board.historique);
   const verdicts = readVerdicts(board.verdicts);
+  const pilotage = readPilotage(board.milestones, board.sessions);
 
   const funnel: PlanFunnel = {
     idea: comptes.idees,
@@ -198,6 +243,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
       },
       done: comptes.livrees,
       ...(history ? { history } : {}),
+      ...(pilotage ? { pilotage } : {}),
     },
     fiches,
   };

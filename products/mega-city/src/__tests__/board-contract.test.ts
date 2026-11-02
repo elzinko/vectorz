@@ -6,7 +6,7 @@
  * schéma comme l'exemple rangés pour les consommateurs sont à jour.
  */
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
@@ -135,6 +135,7 @@ describe('board show --json — la règle des bloquées (cœur pur)', () => {
       tags: new Set(),
       verdicts: { verdicts: {}, illisibles: [] },
       historique: { sprints: 0, retros: 0 },
+      sessions: [],
     });
     expect(contract.comptes.bloquees).toBe(2);
     expect(contract.comptes).toMatchObject({ pretes: 1, enCours: 1, parkees: 1, livrees: 1 });
@@ -159,10 +160,44 @@ describe('board show --json — ce que la méthode a mené (fiche 20261102104443
   });
 });
 
+describe('board show --json — les sessions closes (fiche 20261102123552182)', () => {
+  it('une session par récit, README exclu, la plus récente d’abord', () => {
+    expect(data.sessions.map((s) => s.file)).toEqual([
+      'docs/sessions/2026-10-31-seconde-session.md',
+      'docs/sessions/2026-10-30-premiere-session.md',
+    ]);
+  });
+
+  it('chaque session porte sa date, son titre, ses fiches et ses PR, lus dans le récit', () => {
+    expect(data.sessions[1]).toEqual({
+      date: '2026-10-30',
+      title: 'Première session',
+      file: 'docs/sessions/2026-10-30-premiere-session.md',
+      fiches: ['20990101000000001'],
+      prs: ['12'],
+    });
+    expect(data.sessions[0]).toMatchObject({ title: 'Seconde session', fiches: [], prs: [] });
+  });
+
+  it('un projet sans dossier de récits publie une liste vide, pas une erreur', () => {
+    const root = mkdtempSync(join(tmpdir(), 'board-sans-sessions-'));
+    try {
+      mkdirSync(join(root, 'features'));
+      spawnSync('git', ['init', '-q', '-b', 'main'], { cwd: root });
+      expect(boardShowData(root).sessions).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('board show --json — sur le vrai dépôt', () => {
   it('la sortie respecte le schéma, et les comptes interprétés recoupent les statuts écrits', () => {
     const real = boardShowData(repoRoot);
     expect(BoardContractSchema.safeParse(real).success).toBe(true);
+    // Autant de sessions que de récits au format `AAAA-MM-JJ-<slug>.md` (README et hors format exclus).
+    const recits = readdirSync(join(repoRoot, 'docs', 'sessions')).filter((f) => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f));
+    expect(real.sessions).toHaveLength(recits.length);
     // Recoupements qui échouent si une fiche change de colonne à tort (pas une simple somme).
     expect(real.comptes.livrees).toBe(real.counts.shipped ?? 0);
     expect(real.comptes.closes).toBe(TERMINAUX.reduce((n, t) => n + (real.counts[t] ?? 0), 0));

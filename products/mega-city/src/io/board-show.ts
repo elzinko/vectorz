@@ -2,8 +2,8 @@
  * board-show — le bord qui assemble le contrat JSON d'un projet (fiche 20261029112813308).
  *
  * Lit tout ce que le cœur pur (`core/board-contract.ts`) attend : les fiches, les branches de travail
- * ouvertes, les étiquettes git, les pouces de revue et les noms des comptes rendus de sprint et des
- * captures de rétro. `bin/avancement.ts --json` et le générateur
+ * ouvertes, les étiquettes git, les pouces de revue, les noms des comptes rendus de sprint et des
+ * captures de rétro, et les récits des sessions closes. `bin/avancement.ts --json` et le générateur
  * d'exemples (`bin/board-contract.ts`) passent tous deux par ici : l'exemple rangé sort du même chemin
  * que la commande.
  */
@@ -13,6 +13,7 @@ import { type BoardContract, buildBoardContract } from '../core/board-contract.j
 import { countHistory } from '../core/sprint-reports-since.js';
 import { loadFiches } from '../loaders/fiches.js';
 import { scrumPaths } from '../loaders/project-config.js';
+import { loadRuns } from '../loaders/runs.js';
 import { localTags } from './git-tags.js';
 import { collectInProgressIds } from './sessions-collect.js';
 import { loadVerdicts } from './verdicts.js';
@@ -36,5 +37,6 @@ export function boardShowData(root: string): BoardContract {
       namesIn(root, scrumPaths(root).retroCaptures),
       namesIn(root, join('docs', 'sprints')),
     ),
+    sessions: loadRuns(root),
   });
 }

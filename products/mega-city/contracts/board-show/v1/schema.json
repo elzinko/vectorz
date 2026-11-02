@@ -453,6 +453,48 @@
       ],
       "description": "Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762)."
     },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "`AAAA-MM-JJ`, lue du nom du récit."
+          },
+          "title": {
+            "type": "string",
+            "description": "Le premier titre du récit, ou son nom à défaut."
+          },
+          "file": {
+            "type": "string",
+            "description": "Le récit, relatif à la racine du projet."
+          },
+          "fiches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Fiches travaillées (ligne `fiches:` du récit)."
+          },
+          "prs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Numéros de PR cités dans le récit."
+          }
+        },
+        "required": [
+          "date",
+          "title",
+          "file",
+          "fiches",
+          "prs"
+        ]
+      },
+      "description": "Sessions closes, une par récit du dossier `scrum:` du projet, la plus récente d’abord (fiche 20261102123552182)."
+    },
     "verdictsIllisibles": {
       "type": "array",
       "items": {
@@ -472,6 +514,7 @@
     "versions",
     "verdicts",
     "historique",
+    "sessions",
     "verdictsIllisibles"
   ]
 }

@@ -50,16 +50,16 @@ les affiche.
 
 ## Critères d'acceptation
 
-- [ ] **Les milestones de la méthode.** Chaque milestone affiché vaut l'entrée de
+- [x] **Les milestones de la méthode.** Chaque milestone affiché vaut l'entrée de
       `ezk board show --json | jq .milestones` : total et livré.
-- [ ] **L'historique publié.** `ezk board show --json | jq '.sessions | length'` vaut le nombre de
+- [x] **L'historique publié.** `ezk board show --json | jq '.sessions | length'` vaut le nombre de
       récits de `docs/sessions/`, `README.md` exclu (27 pour vectorz le 2026-11-02). Le schéma et
       l'exemple du contrat `board-show` sont régénérés, et le producteur valide le bloc.
-- [ ] **L'historique affiché.** La vue liste ces sessions, de la plus récente à la plus ancienne, avec
+- [x] **L'historique affiché.** La vue liste ces sessions, de la plus récente à la plus ancienne, avec
       leurs fiches et leurs PR.
-- [ ] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu, la vue dit « pilotage
+- [x] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu, la vue dit « pilotage
       indisponible : <raison> », jamais une liste vide présentée comme réelle.
-- [ ] **Avant / après.** Capture de la page « pilotage » de la méthode (avant) et de la vue
+- [x] **Avant / après.** Capture de la page « pilotage » de la méthode (avant) et de la vue
       « Pilotage » de mission control (après).
 
 ## Comment vérifier
