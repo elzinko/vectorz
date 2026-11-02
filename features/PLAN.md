@@ -45,7 +45,7 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 - ~~`20261102104443762` — la vue d'ensemble compte les vrais sprints et rétros · groom (P1, sprint 1)~~ — shipped
 - ~~`20261102123552181` — le pouce de revue se pose par une commande ezk · groom (sprint 2)~~ — shipped
 - ~~`20261102151630248` — mission control pose le pouce par la commande · groom (sprint 2)~~ — shipped
-- `20261102123552182` — mission control montre le pilotage · groom (sprint 3)
+- ~~`20261102123552182` — mission control montre le pilotage · groom (sprint 3)~~ — shipped
 - `20261102123552183` — mission control montre le process · groom (sprint 3)
 - `20261102123552184` — mission control montre les cartes de la méthode · groom (sprint 4)
 - `20260826222044335` — mission control montre la loi · groom (sprint 4)

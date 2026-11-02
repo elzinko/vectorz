@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102123552182_mission-control-montre-le-pilotage.md](../20261102123552182_mission-control-montre-le-pilotage.md)
+> 🗎 Rendu de la fiche [features/20261102123552182_mission-control-montre-le-pilotage.md](../done/20261102123552182_mission-control-montre-le-pilotage.md)
 
 ## En clair
 

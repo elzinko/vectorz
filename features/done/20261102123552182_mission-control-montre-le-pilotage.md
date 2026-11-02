@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: ready
-pr:
+status: shipped
+pr: "local (c5c0af6e)"
 evidence: before-after
 created: 2026-11-02
 ---
@@ -23,7 +23,7 @@ les affiche.
 
 ## Contexte / Problème
 
-- L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+- L'[amendement du 2026-11-02 de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   fait de mission control le seul écran. Les pages « pilotage » et « runs » de la méthode doivent y
   trouver leur remplaçant avant le retrait de la page web.
 - L'avancement par milestone est déjà publié : `ezk board show --json` porte `milestones`, avec le
@@ -76,7 +76,7 @@ sessions valent ceux de la méthode.
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Cette vue règle le doublon « runs » que l'ADR-086 laissait à revisiter : la chronologie montre le
   direct, le pilotage montre l'historique.
 - Groom du 2026-11-02 (run autonome) : sources vérifiées dans le code. `runs-data.ts` existe et ne

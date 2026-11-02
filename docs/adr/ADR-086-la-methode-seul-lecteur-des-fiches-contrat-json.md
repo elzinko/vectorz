@@ -186,7 +186,7 @@ Rien ne se perd : chaque page de la méthode a son remplaçant avant le retrait.
 | Avancement : fiches, plan, versions | vue d'ensemble, Fiches | déjà là |
 | Choix du projet, config en lecture | sélecteur de projet, Configuration | déjà là |
 | Le pouce de revue | la fenêtre d'une fiche | [la commande](../../features/done/20261102123552181_pouce-de-revue-par-une-commande-ezk.md), puis [le bouton](../../features/done/20261102151630248_mission-control-pose-le-pouce-de-revue.md) |
-| Pilotage et historique des runs | une vue « Pilotage » | [pilotage](../../features/20261102123552182_mission-control-montre-le-pilotage.md) |
+| Pilotage et historique des runs | une vue « Pilotage » | [pilotage](../../features/done/20261102123552182_mission-control-montre-le-pilotage.md) |
 | Process | la vue « Process » | [process](../../features/20261102123552183_mission-control-montre-le-process.md) |
 | La loi | une vue « Loi » | [la loi](../../features/20260826222044335_carte-la-loi-graphe-visuel.md) |
 | Sept documents : carte de la méthode, domaine, qualité (4), benchmark | une vue « Cartes » | [cartes](../../features/20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) |
