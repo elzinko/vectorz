@@ -189,7 +189,7 @@ Rien ne se perd : chaque page de la méthode a son remplaçant avant le retrait.
 | Pilotage et historique des runs | une vue « Pilotage » | [pilotage](../../features/done/20261102123552182_mission-control-montre-le-pilotage.md) |
 | Process | la vue « Process » | [process](../../features/done/20261102123552183_mission-control-montre-le-process.md) |
 | La loi | une vue « Loi » | [la loi](../../features/20260826222044335_carte-la-loi-graphe-visuel.md) |
-| Sept documents : carte de la méthode, domaine, qualité (4), benchmark | une vue « Cartes » | [cartes](../../features/20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) |
+| Sept documents : carte de la méthode, domaine, qualité (4), benchmark | une vue « Cartes » | [cartes](../../features/done/20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) |
 
 Le retrait vient en dernier, quand toutes les fiches de portage sont livrées :
 [retirer la page web de la méthode](../../features/20261102123552185_retirer-la-page-web-de-la-methode.md).

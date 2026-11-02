@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: ready
-pr:
+status: shipped
+pr: "local (977774be)"
 evidence: before-after
 created: 2026-11-02
 ---
@@ -23,7 +23,7 @@ existent ; mission control les affiche tels quels.
 
 ## Contexte / Problème
 
-- L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+- L'[amendement du 2026-11-02 de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   fait de mission control le seul écran. Les documents servis par `ezk board open` doivent y trouver
   leur place avant le retrait de la page web.
 - `ezk board open --list` liste douze cartes. Cinq sont des pages interactives, portées par d'autres
@@ -86,7 +86,7 @@ listés, et la carte de la méthode s'ouvre au clic.
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Les documents restent des fichiers de la méthode : seul l'écran qui les montre change.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
 - Groom du 2026-11-02 (run autonome) : sources vérifiées. `ezk board open --list` liste bien douze
