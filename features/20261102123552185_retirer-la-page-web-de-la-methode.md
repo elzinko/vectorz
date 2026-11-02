@@ -94,6 +94,7 @@ trouve plus de mention hors historique.
   plus à la route. Mentions vivantes trouvées : 16 fichiers de `src`, 5 de `bin`, un skill, un guide,
   les deux `package.json`, le manifeste et une recette.
 - Le tableau de l'amendement est couvert par les fiches livrées des sprints 8 à 10 : pouce, pilotage,
-  process, cartes et loi.- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Deux commits
+  process, cartes et loi.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Deux commits
   ordonnés dans la branche : le code et les pages, puis les mentions. Le corps de PR reprend une ligne
   par entrée du tableau de l'amendement.
