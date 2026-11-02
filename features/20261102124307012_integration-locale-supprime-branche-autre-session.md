@@ -51,31 +51,72 @@ sessions : on ne modifie que ce qu'on a créé.
 
 ## Proposition
 
-À instruire au groom. Pistes :
+**Décision du groom : le nettoyage épargne toute branche dont la pointe est déjà dans l'historique de
+`main`.** Concrètement, `prune_absorbed_branches` saute une branche quand
+`git merge-base --is-ancestor <branche> <base>` réussit. Une seule condition de plus, dans une seule
+fonction.
 
-- ne supprimer que la branche intégrée par ce squash, plus celles qui ont un commit absorbé par lui ;
-- ou ne jamais supprimer une branche qui pointe exactement sur un commit de `main` : elle n'a encore
-  rien fait, ce n'est pas un reste de travail livré.
+Pourquoi ce critère. Après un squash, trois sortes de branches sont « absorbées » :
 
-Voisines livrées à relire au groom :
+| Sorte | Sa pointe est-elle dans l'historique de `main` ? | Que faire |
+|---|---|---|
+| La branche qu'on vient d'intégrer | non : ses commits ont été recopiés en un seul | supprimer (inchangé) |
+| Un reste d'un squash plus ancien | non : même raison | supprimer (inchangé, c'est l'hygiène de la fiche 0076) |
+| Une branche neuve, sans commit à elle | **oui** : elle pointe sur un commit de `main` | **épargner** |
+
+Un squash recopie le contenu d'une branche dans un commit neuf. Une branche livrée par squash garde
+donc des commits que `main` n'a pas dans son historique. Seule une branche qui n'a encore rien fait
+pointe sur un commit de `main`. Le critère sépare exactement les deux cas.
+
+Ce qu'on perd : une branche intégrée par avance rapide, sans squash, n'est plus nettoyée. Ce n'est pas
+le problème de la fiche 0076 : git la voit déjà comme fusionnée (`git branch --merged`), elle ne crée
+aucun faux « non fusionné ».
+
+Piste écartée : ne supprimer que la branche intégrée. Elle casserait l'hygiène de la fiche 0076, qui
+rattrape aussi les restes des squashs plus anciens.
+
+**Le test actuel est à réécrire.** `test-ship-merge.sh` simule « un reste d'une session précédente »
+par `git branch old-absorbed main`, aux cas 1 et 8. C'est la forme d'une branche neuve, pas celle d'un
+reste. La fixture devient un vrai reste : une branche avec un commit à elle, dont le contenu est déjà
+dans `main` par un squash.
+
+Voisines livrées, relues au groom :
 [hygiène des branches après un squash](done/0076-hygiene-branches-post-squash.md), qui a posé ce
 nettoyage, et [le merge local ne supprime jamais main](done/20261004074008211_merge-local-ne-supprime-jamais-main.md),
 qui l'a déjà restreint une fois.
 
 ## Critères d'acceptation
 
-- [ ] Une branche créée au commit de `main` par une autre session, sans dossier de travail, survit à
-  un squash local d'une autre branche.
-- [ ] La branche intégrée par le squash est toujours supprimée, comme aujourd'hui.
-- [ ] Les cas existants de `test-ship-merge.sh` restent verts.
+- [ ] Une branche créée au commit de `main`, sans dossier de travail, survit à un squash local d'une
+  autre branche.
+- [ ] Une branche qui pointe sur un commit plus ancien de `main` survit elle aussi.
+- [ ] La branche intégrée par le squash est toujours supprimée, avec la ligne `pruned:` qui la recrée.
+- [ ] Un reste d'un squash plus ancien, avec un commit à lui et son contenu déjà dans `main`, est
+  toujours supprimé.
+- [ ] `test-ship-merge.sh` est vert : la fixture `old-absorbed` est réécrite en vrai reste, et un cas
+  neuf couvre la branche neuve.
 
 ## Comment vérifier
 
-À écrire au groom : un cas de `test-ship-merge.sh`, sur un dépôt jetable, qui crée une branche au
-commit de `main`, squashe une autre branche, puis vérifie que la première existe encore.
+Depuis `products/mega-city` :
+
+```bash
+# Le test du script, avec le cas neuf et la fixture réécrite
+bash skills/ezk-pr/scripts/test-ship-merge.sh
+
+# La gate complète de la méthode (vitest + suites bash)
+pnpm gate
+```
+
+Attendu : toutes les lignes `ok`, aucune `fail`, et la gate verte. Le cas neuf affiche une ligne qui
+dit que la branche neuve est toujours là après le squash.
 
 ## Notes / décisions
 
 - Constaté le 2026-11-02 pendant le sprint 5 (corrections de la passe scout).
 - Appelants concernés : `ezk forge integrate` en squash local, `bin/commit-doc-via-worktree.sh`
-  (comptes rendus de sprint et d'archive), `ezk-pr ship --local`.
+  (comptes rendus de sprint et d'archive), `ezk-pr ship --local`. Tous passent par
+  `prune_absorbed_branches` : une seule correction les couvre.
+- Groom du 2026-11-02. Seul `ship-merge.sh` supprime des branches. Le portier d'`ezk-archive`
+  (`check.sh`) propose des commandes `git branch -D` à l'humain, sans les lancer : hors périmètre.
+- Dépendances externes : aucune. Taille : 5 critères, une surface (le script et son test).
